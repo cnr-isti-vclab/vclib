@@ -11,7 +11,8 @@ template<class Scalar, int N>
 template<class S>
 Point<Scalar, N>::Point(const Point<S, N>& p)
 {
-	*this << p;
+	for (size_t i = 0; i < size(); ++i)
+		operator()(i) = p(i);
 }
 
 template<class Scalar, int N>
@@ -27,9 +28,16 @@ Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, N, 1>& v)
 }
 
 template<class Scalar, int N>
-Scalar Point<Scalar, N>::dot(const Point<Scalar, N>& p1) const
+template<class S>
+Scalar Point<Scalar, N>::dot(const Point<S, N>& p1) const
 {
-	return Eigen::Matrix<Scalar, 1, N>::dot(p1);
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return Eigen::Matrix<Scalar, 1, N>::dot(p1);
+	}
+	else {
+		Point<Scalar, N> tmp(p1);
+		return Eigen::Matrix<Scalar, 1, N>::dot(tmp);
+	}
 }
 
 template<class Scalar, int N>

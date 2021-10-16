@@ -12,7 +12,7 @@ int main()
 	mgp::Point3d p1;
 	p1 << 1, 0, 0;
 
-	mgp::Point3d p2(0, 1, 0);
+	mgp::Point3f p2(0, 1, 0);
 
 	std::cout << "Point p1 is [" << p1 << "].\n";
 	std::cout << "Point p2 is [" << p2 << "].\n";

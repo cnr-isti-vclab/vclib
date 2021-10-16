@@ -27,10 +27,12 @@ public:
 	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
 	Point(const Eigen::Matrix<Scalar, N, 1>& v); // constructor from Nx1 eigen matrix
 
-	Scalar           dot(const Point<Scalar, N>& p1) const;
+	template<class S>
+	Scalar dot(const Point<S, N>& p1) const;
 
 	// eigen members
 	using Eigen::Matrix<Scalar, 1, N>::norm;
+	using Eigen::Matrix<Scalar, 1, N>::size;
 	using Eigen::Matrix<Scalar, 1, N>::setConstant;
 	using Eigen::Matrix<Scalar, 1, N>::setZero;
 	using Eigen::Matrix<Scalar, 1, N>::setOnes;
