@@ -1,2 +1,2 @@
-# gmplib
-Geometry and Mesh Processing Library
+# mgplib
+Mesh and Geometry Processing Library
