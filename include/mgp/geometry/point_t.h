@@ -23,7 +23,7 @@ public:
 	Point(const Eigen::Matrix<Scalar, 1, N>& v);
 	Point(const Eigen::Matrix<Scalar, N, 1>& v);
 
-	Scalar dot(const Point<Scalar, N>& p1) const;
+	Scalar           dot(const Point<Scalar, N>& p1) const;
 	Point<Scalar, N> cross(const Point<Scalar, N>& p1) const;
 
 	// eigen members
@@ -49,6 +49,7 @@ public:
 
 	template<class S, int M>
 	friend std::ostream& operator<<(std::ostream& out, const Point<S, M>& p);
+
 protected:
 	// to enable these members just on derived classes
 	using Eigen::Matrix<Scalar, 1, N>::x;

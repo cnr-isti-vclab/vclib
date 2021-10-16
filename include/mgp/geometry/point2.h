@@ -11,8 +11,8 @@
 namespace mgp {
 
 /**
- * @brief The Point3 class represents a 3-dimensional point containing 3 scalar values.
- * Specializes the Point class, providing some additional member functions useful for 3D points.
+ * @brief The Point2 class represents a 2-dimensional point containing 2 scalar values.
+ * Specializes the Point class, providing some additional member functions useful for 2D points.
  */
 template<class Scalar>
 class Point2 : public Point<Scalar, 2>
@@ -32,9 +32,14 @@ public:
 
 	template<class S>
 	friend std::ostream& operator<<(std::ostream& out, const Point2<S>& p);
+
 private:
-	using Point<Scalar, 2>::cross; //disable cross function for this class
+	using Point<Scalar, 2>::cross; // disable cross function for this class
 };
+
+typedef Point2<int>    Point2i;
+typedef Point2<float>  Point2f;
+typedef Point2<double> Point2d;
 
 template<class Scalar>
 std::ostream& operator<<(std::ostream& out, const Point2<Scalar>& p);
