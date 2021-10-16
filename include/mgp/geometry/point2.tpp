@@ -8,12 +8,8 @@
 namespace mgp {
 
 template<class Scalar>
-Point2<Scalar>::Point2()
-{
-}
-
-template<class Scalar>
-Point2<Scalar>::Point2(const Point<Scalar, 2>& p)
+template<class S>
+Point2<Scalar>::Point2(const Point<S, 2>& p)
 {
 	*this << p(0), p(1);
 }

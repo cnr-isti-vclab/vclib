@@ -9,10 +9,10 @@
 
 int main()
 {
-	mgp::Point2<double> p1;
+	mgp::Point2d p1;
 	p1 << 1, 0;
 
-	mgp::Point2<double> p2(0, 1);
+	mgp::Point2d p2(0, 1);
 
 	std::cout << "Point p1 is [" << p1 << "].\n";
 	std::cout << "Point p2 is [" << p2 << "].\n";

@@ -18,8 +18,11 @@ template<class Scalar>
 class Point3 : public Point<Scalar, 3>
 {
 public:
-	Point3();
-	Point3(const Point<Scalar, 3>& p);
+	Point3()                = default; // default empty constructor
+	Point3(const Point3& p) = default; // default copy constructor
+
+	template<class S>
+	Point3(const Point<S, 3>& p); // constructor from base class - will include all its constructors
 	Point3(const Scalar& x, const Scalar& y, const Scalar& z);
 
 	using Point<Scalar, 3>::x;

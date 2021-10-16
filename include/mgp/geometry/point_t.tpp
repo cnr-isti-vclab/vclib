@@ -8,8 +8,10 @@
 namespace mgp {
 
 template<class Scalar, int N>
-Point<Scalar, N>::Point() : Eigen::Matrix<Scalar, 1, N>()
+template<class S>
+Point<Scalar, N>::Point(const Point<S, N>& p)
 {
+	*this << p;
 }
 
 template<class Scalar, int N>

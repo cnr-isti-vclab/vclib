@@ -19,9 +19,13 @@ template<class Scalar, int N>
 class Point : private Eigen::Matrix<Scalar, 1, N>
 {
 public:
-	Point();
-	Point(const Eigen::Matrix<Scalar, 1, N>& v);
-	Point(const Eigen::Matrix<Scalar, N, 1>& v);
+	Point()               = default; // default empty constructor
+	Point(const Point& p) = default; // default copy constructor
+
+	template<class S>
+	Point(const Point<S, N>& p);                 // constructor from different scalar Point
+	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
+	Point(const Eigen::Matrix<Scalar, N, 1>& v); // constructor from Nx1 eigen matrix
 
 	Scalar           dot(const Point<Scalar, N>& p1) const;
 	Point<Scalar, N> cross(const Point<Scalar, N>& p1) const;
