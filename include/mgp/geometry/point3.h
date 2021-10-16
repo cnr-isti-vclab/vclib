@@ -19,6 +19,7 @@ class Point3 : public Point<Scalar, 3>
 {
 public:
 	Point3();
+	Point3(const Point<Scalar, 3>& p);
 	Point3(const Scalar& x, const Scalar& y, const Scalar& z);
 
 	using Point<Scalar, 3>::x;

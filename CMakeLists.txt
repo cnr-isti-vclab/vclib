@@ -19,11 +19,13 @@ set(MGP_SRC_DIR ${MGP_INCLUDE_DIR}/mgp)
 set(HEADERS
 	${MGP_SRC_DIR}/geometry/point_t.h
 	${MGP_SRC_DIR}/geometry/point.h
+	${MGP_SRC_DIR}/geometry/point2.h
 	${MGP_SRC_DIR}/geometry/point3.h
 	${MGP_SRC_DIR}/mesh/vertex/vertex.h)
 
 set(SOURCES
 	${MGP_SRC_DIR}/geometry/point_t.tpp
+	${MGP_SRC_DIR}/geometry/point2.tpp
 	${MGP_SRC_DIR}/geometry/point3.tpp)
 
 add_library(mgp INTERFACE)

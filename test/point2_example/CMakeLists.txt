@@ -2,8 +2,11 @@
 # This Source Code Form is subject to the terms of the GNU GPL 3.0
 
 cmake_minimum_required(VERSION 3.13)
-project(mgp-test)
+project(mgp-point2-example)
 
-add_subdirectory(point2_example)
-add_subdirectory(point3_example)
-add_subdirectory(mesh_example)
+set(SOURCES
+	main.cpp)
+
+add_executable(mgp-point2-example ${SOURCES})
+
+target_link_libraries(mgp-point2-example PUBLIC mgp)

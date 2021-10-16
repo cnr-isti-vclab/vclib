@@ -7,6 +7,7 @@
 #define MGP_POINT_T_H
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 namespace mgp {
 
@@ -18,6 +19,13 @@ template<class Scalar, int N>
 class Point : private Eigen::Matrix<Scalar, 1, N>
 {
 public:
+	Point();
+	Point(const Eigen::Matrix<Scalar, 1, N>& v);
+	Point(const Eigen::Matrix<Scalar, N, 1>& v);
+
+	Scalar dot(const Point<Scalar, N>& p1) const;
+	Point<Scalar, N> cross(const Point<Scalar, N>& p1) const;
+
 	// eigen members
 	using Eigen::Matrix<Scalar, 1, N>::norm;
 	using Eigen::Matrix<Scalar, 1, N>::setConstant;
@@ -28,6 +36,13 @@ public:
 	// operators
 	using Eigen::Matrix<Scalar, 1, N>::operator();
 	using Eigen::Matrix<Scalar, 1, N>::operator<<;
+
+	using Eigen::Matrix<Scalar, 1, N>::operator+;
+	using Eigen::Matrix<Scalar, 1, N>::operator-;
+	using Eigen::Matrix<Scalar, 1, N>::operator*;
+	using Eigen::Matrix<Scalar, 1, N>::operator+=;
+	using Eigen::Matrix<Scalar, 1, N>::operator-=;
+	using Eigen::Matrix<Scalar, 1, N>::operator*=;
 
 	Scalar  operator[](size_t i) const;
 	Scalar& operator[](size_t i);

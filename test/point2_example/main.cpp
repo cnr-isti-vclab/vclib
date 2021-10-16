@@ -9,10 +9,10 @@
 
 int main()
 {
-	mgp::Point3<double> p1;
-	p1 << 1, 0, 0;
+	mgp::Point2<double> p1;
+	p1 << 1, 0;
 
-	mgp::Point3<double> p2(0, 1, 0);
+	mgp::Point2<double> p2(0, 1);
 
 	std::cout << "Point p1 is [" << p1 << "].\n";
 	std::cout << "Point p2 is [" << p2 << "].\n";
@@ -21,10 +21,6 @@ int main()
 	std::cout << "p1 squared norm is " << p1.squaredNorm() << "\n";
 
 	std::cout << "p1 dot p2: " << p1.dot(p2) << "\n";
-
-	mgp::Point3 p3 = p1.cross(p2);
-
-	std::cout << "p1 cross p2: [" << p3 << "]\n";
 
 	return 0;
 }

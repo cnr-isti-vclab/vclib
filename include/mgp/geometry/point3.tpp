@@ -13,6 +13,12 @@ Point3<Scalar>::Point3()
 }
 
 template<class Scalar>
+Point3<Scalar>::Point3(const Point<Scalar, 3>& p)
+{
+	*this << p(0), p(1), p(2);
+}
+
+template<class Scalar>
 Point3<Scalar>::Point3(const Scalar& x, const Scalar& y, const Scalar& z)
 {
 	*this << x, y, z;
