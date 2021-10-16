@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include <mgp/geometry/point.h>
+#include <mgp/space/point.h>
 
 int main()
 {

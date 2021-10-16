@@ -6,8 +6,8 @@
 #ifndef MGP_POINT_H
 #define MGP_POINT_H
 
-#include "point2.h"
-#include "point3.h"
-#include "point4.h"
+#include "point/point2.h"
+#include "point/point3.h"
+#include "point/point4.h"
 
 #endif // MGP_POINT_H

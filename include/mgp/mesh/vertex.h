@@ -6,4 +6,15 @@
 #ifndef MGP_MESH_VERTEX_H
 #define MGP_MESH_VERTEX_H
 
+#include "vertex/component.h"
+
+namespace mgp {
+
+template<class... Args>
+class Vertex : public vert::Component<Args>...
+{
+};
+
+}
+
 #endif // MGP_MESH_VERTEX_H

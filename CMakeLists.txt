@@ -17,18 +17,24 @@ set(MGP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(MGP_SRC_DIR ${MGP_INCLUDE_DIR}/mgp)
 
 set(HEADERS
-	${MGP_SRC_DIR}/geometry/point_t.h
-	${MGP_SRC_DIR}/geometry/point.h
-	${MGP_SRC_DIR}/geometry/point2.h
-	${MGP_SRC_DIR}/geometry/point3.h
-	${MGP_SRC_DIR}/geometry/point4.h
-	${MGP_SRC_DIR}/mesh/vertex/vertex.h)
+	${MGP_SRC_DIR}/space/color.h
+	${MGP_SRC_DIR}/space/point.h
+	${MGP_SRC_DIR}/space/point/point_t.h
+	${MGP_SRC_DIR}/space/point/point2.h
+	${MGP_SRC_DIR}/space/point/point3.h
+	${MGP_SRC_DIR}/space/point/point4.h
+	${MGP_SRC_DIR}/mesh/vertex.h
+	${MGP_SRC_DIR}/mesh/vertex/color.h
+	${MGP_SRC_DIR}/mesh/vertex/component.h
+	${MGP_SRC_DIR}/mesh/vertex/normal.h
+	${MGP_SRC_DIR}/mesh/vertex/position.h)
 
 set(SOURCES
-	${MGP_SRC_DIR}/geometry/point_t.tpp
-	${MGP_SRC_DIR}/geometry/point2.tpp
-	${MGP_SRC_DIR}/geometry/point3.tpp
-	${MGP_SRC_DIR}/geometry/point4.tpp)
+	${MGP_SRC_DIR}/space/color.tpp
+	${MGP_SRC_DIR}/space/point/point_t.tpp
+	${MGP_SRC_DIR}/space/point/point2.tpp
+	${MGP_SRC_DIR}/space/point/point3.tpp
+	${MGP_SRC_DIR}/space/point/point4.tpp)
 
 add_library(mgp INTERFACE)
 
