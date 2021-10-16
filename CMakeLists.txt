@@ -17,6 +17,7 @@ set(MGP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(MGP_SRC_DIR ${MGP_INCLUDE_DIR}/mgp)
 
 set(HEADERS
+	${MGP_SRC_DIR}/space/box.h
 	${MGP_SRC_DIR}/space/color.h
 	${MGP_SRC_DIR}/space/point.h
 	${MGP_SRC_DIR}/space/point/point_t.h
@@ -30,6 +31,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/vertex/position.h)
 
 set(SOURCES
+	${MGP_SRC_DIR}/space/box.cpp
 	${MGP_SRC_DIR}/space/color.cpp
 	${MGP_SRC_DIR}/space/point/point_t.cpp
 	${MGP_SRC_DIR}/space/point/point2.cpp
