@@ -30,11 +30,11 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/vertex/position.h)
 
 set(SOURCES
-	${MGP_SRC_DIR}/space/color.tpp
-	${MGP_SRC_DIR}/space/point/point_t.tpp
-	${MGP_SRC_DIR}/space/point/point2.tpp
-	${MGP_SRC_DIR}/space/point/point3.tpp
-	${MGP_SRC_DIR}/space/point/point4.tpp)
+	${MGP_SRC_DIR}/space/color.cpp
+	${MGP_SRC_DIR}/space/point/point_t.cpp
+	${MGP_SRC_DIR}/space/point/point2.cpp
+	${MGP_SRC_DIR}/space/point/point3.cpp
+	${MGP_SRC_DIR}/space/point/point4.cpp)
 
 add_library(mgp INTERFACE)
 

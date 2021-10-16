@@ -67,7 +67,7 @@ std::ostream& operator<<(std::ostream& out, const Color& p);
 
 } // namespace mgp
 
-#include "color.tpp"
+#include "color.cpp"
 
 #endif
 

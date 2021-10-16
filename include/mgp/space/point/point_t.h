@@ -67,6 +67,6 @@ std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p);
 
 } // namespace mgp
 
-#include "point_t.tpp"
+#include "point_t.cpp"
 
 #endif // POINT_T_H

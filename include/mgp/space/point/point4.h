@@ -48,6 +48,6 @@ std::ostream& operator<<(std::ostream& out, const Point4<Scalar>& p);
 
 } // namespace mgp
 
-#include "point4.tpp"
+#include "point4.cpp"
 
 #endif // MGP_POINT4_H
