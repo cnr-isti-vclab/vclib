@@ -33,12 +33,6 @@ Scalar Point<Scalar, N>::dot(const Point<Scalar, N>& p1) const
 }
 
 template<class Scalar, int N>
-Point<Scalar, N> Point<Scalar, N>::cross(const Point<Scalar, N>& p1) const
-{
-	return Eigen::Matrix<Scalar, 1, N>::cross(p1);
-}
-
-template<class Scalar, int N>
 Scalar Point<Scalar, N>::operator[](size_t i) const
 {
 	return operator()(i);
@@ -48,6 +42,12 @@ template<class Scalar, int N>
 Scalar& Point<Scalar, N>::operator[](size_t i)
 {
 	return operator()(i);
+}
+
+template<class Scalar, int N>
+Point<Scalar, N> Point<Scalar, N>::cross(const Point<Scalar, N>& p1) const
+{
+	return Eigen::Matrix<Scalar, 1, N>::cross(p1);
 }
 
 template<class Scalar, int N>

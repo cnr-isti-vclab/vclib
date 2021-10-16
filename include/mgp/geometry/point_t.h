@@ -28,7 +28,6 @@ public:
 	Point(const Eigen::Matrix<Scalar, N, 1>& v); // constructor from Nx1 eigen matrix
 
 	Scalar           dot(const Point<Scalar, N>& p1) const;
-	Point<Scalar, N> cross(const Point<Scalar, N>& p1) const;
 
 	// eigen members
 	using Eigen::Matrix<Scalar, 1, N>::norm;
@@ -55,11 +54,12 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const Point<S, M>& p);
 
 protected:
-	// to enable these members just on derived classes
+	// to enable these members just on some derived classes
 	using Eigen::Matrix<Scalar, 1, N>::x;
 	using Eigen::Matrix<Scalar, 1, N>::y;
 	using Eigen::Matrix<Scalar, 1, N>::z;
 	using Eigen::Matrix<Scalar, 1, N>::w;
+	Point<Scalar, N> cross(const Point<Scalar, N>& p1) const;
 };
 
 template<class Scalar, int N>

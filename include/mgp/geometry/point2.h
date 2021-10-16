@@ -35,9 +35,6 @@ public:
 
 	template<class S>
 	friend std::ostream& operator<<(std::ostream& out, const Point2<S>& p);
-
-private:
-	using Point<Scalar, 2>::cross; // disable cross function for this class
 };
 
 typedef Point2<int>    Point2i;

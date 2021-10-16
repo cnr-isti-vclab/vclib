@@ -8,5 +8,6 @@
 
 #include "point2.h"
 #include "point3.h"
+#include "point4.h"
 
 #endif // MGP_POINT_H

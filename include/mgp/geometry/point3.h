@@ -28,6 +28,7 @@ public:
 	using Point<Scalar, 3>::x;
 	using Point<Scalar, 3>::y;
 	using Point<Scalar, 3>::z;
+	using Point<Scalar, 3>::cross;
 
 	// operators
 	using Point<Scalar, 3>::operator();
