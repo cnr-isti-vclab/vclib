@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "color.h"
+#include "face_adjacency_ref.h"
 #include "normal.h"
 #include "position.h"
 
@@ -32,6 +33,11 @@ class Component< vert::Normal<Scalar, N> > : public vert::Normal<Scalar, N>
 
 template<>
 class Component< vert::Color > : public vert::Color
+{
+};
+
+template<class Face>
+class Component< vert::FaceAdjacencyRef<Face> > : public vert::FaceAdjacencyRef<Face>
 {
 };
 

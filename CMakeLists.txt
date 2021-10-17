@@ -24,9 +24,13 @@ set(HEADERS
 	${MGP_SRC_DIR}/space/point/point2.h
 	${MGP_SRC_DIR}/space/point/point3.h
 	${MGP_SRC_DIR}/space/point/point4.h
+	${MGP_SRC_DIR}/mesh/face.h
+	${MGP_SRC_DIR}/mesh/face/component.h
+	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
 	${MGP_SRC_DIR}/mesh/vertex.h
 	${MGP_SRC_DIR}/mesh/vertex/color.h
 	${MGP_SRC_DIR}/mesh/vertex/component.h
+	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h
 	${MGP_SRC_DIR}/mesh/vertex/normal.h
 	${MGP_SRC_DIR}/mesh/vertex/position.h)
 

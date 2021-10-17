@@ -6,18 +6,31 @@
 #include <iostream>
 
 #include <mgp/mesh/vertex.h>
-#include <mgp/space/color.h>
+#include <mgp/mesh/face.h>
+
+class MyFace;
+class MyVertex;
 
 int main()
 {
-	mgp::Vertex<
+	typedef mgp::Vertex<
 		mgp::vert::Position3d,
 		mgp::vert::Normal3d,
-		mgp::vert::Color> v;
+		mgp::vert::Color> MyVertex;
 
-	std::cerr << "Coord : " << v.position() << "\n";
-	std::cerr << "Normal: " << v.normal() << "\n";
-	std::cerr << "Color : " << v.color() << "\n";
+	typedef mgp::Face<
+		mgp::face::VertexRefArray<MyVertex, 3>> MyFace;
+
+	MyVertex v0, v1, v2;
+
+	std::cerr << "Coord : " << v1.position() << "\n";
+	std::cerr << "Normal: " << v1.normal() << "\n";
+	std::cerr << "Color : " << v1.color() << "\n";
+
+	MyFace f;
+	f.setVertexReference(&v0, 0);
+	f.setVertexReference(&v1, 1);
+	f.setVertexReference(&v2, 2);
 
 	return 0;
 }
