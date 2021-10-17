@@ -8,18 +8,21 @@
 #include <mgp/mesh/vertex.h>
 #include <mgp/mesh/face.h>
 
-class MyFace;
 class MyVertex;
+class MyFace;
+
+class MyVertex: public mgp::Vertex<
+					 mgp::vert::Position3d,
+					 mgp::vert::Normal3d,
+					 mgp::vert::Color,
+					 mgp::vert::FaceAdjacencyRef<MyFace>> {};
+
+class MyFace: public mgp::Face<
+				   mgp::face::VertexRefArray<MyVertex, 3>> {};
 
 int main()
 {
-	typedef mgp::Vertex<
-		mgp::vert::Position3d,
-		mgp::vert::Normal3d,
-		mgp::vert::Color> MyVertex;
 
-	typedef mgp::Face<
-		mgp::face::VertexRefArray<MyVertex, 3>> MyFace;
 
 	MyVertex v0, v1, v2;
 
@@ -31,6 +34,8 @@ int main()
 	f.setVertexReference(&v0, 0);
 	f.setVertexReference(&v1, 1);
 	f.setVertexReference(&v2, 2);
+
+	v0.addFaceAdjacency(&f);
 
 	return 0;
 }
