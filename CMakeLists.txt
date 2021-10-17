@@ -17,6 +17,7 @@ set(MGP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(MGP_SRC_DIR ${MGP_INCLUDE_DIR}/mgp)
 
 set(HEADERS
+	${MGP_SRC_DIR}/trimesh.h
 	${MGP_SRC_DIR}/space/box.h
 	${MGP_SRC_DIR}/space/color.h
 	${MGP_SRC_DIR}/space/point.h
@@ -25,9 +26,11 @@ set(HEADERS
 	${MGP_SRC_DIR}/space/point/point3.h
 	${MGP_SRC_DIR}/space/point/point4.h
 	${MGP_SRC_DIR}/mesh/face.h
+	${MGP_SRC_DIR}/mesh/mesh.h
+	${MGP_SRC_DIR}/mesh/vertex.h
 	${MGP_SRC_DIR}/mesh/face/component.h
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
-	${MGP_SRC_DIR}/mesh/vertex.h
+	${MGP_SRC_DIR}/mesh/mesh/component.h
 	${MGP_SRC_DIR}/mesh/vertex/color.h
 	${MGP_SRC_DIR}/mesh/vertex/component.h
 	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h
