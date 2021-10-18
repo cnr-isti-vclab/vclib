@@ -13,6 +13,14 @@ namespace mgp {
 template<class... Args>
 class Mesh : public mesh::Container<Args>...
 {
+protected:
+	typedef typename Mesh::VertexContainer VertexContainer;
+public:
+	typedef typename Mesh::VertexType VertexType;
+	using VertexContainer::addVertex;
+
+protected:
+	std::vector<VertexType>& verts = VertexContainer::vertices;
 };
 
 }

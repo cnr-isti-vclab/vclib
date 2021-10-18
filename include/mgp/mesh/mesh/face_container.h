@@ -20,6 +20,8 @@ public:
 	typedef T FaceType;
 	Container() {facesEnabled = true;}
 protected:
+	typedef Container<T, std::enable_if_t<std::is_base_of_v<FaceID, T>>> FaceContainer;
+
 	std::vector<T> faces;
 };
 

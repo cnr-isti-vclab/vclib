@@ -21,6 +21,7 @@ class Container<T, std::enable_if_t<std::is_base_of_v<VertexID, T>>> : public vi
 	friend class Mesh;
 public:
 	typedef T VertexType;
+
 	Container() {verticesEnabled = true;}
 
 	const VertexType* vertex(unsigned int i) const {return &vertices[i];}
@@ -28,14 +29,16 @@ public:
 
 	unsigned int vertexNumber() const {return  vertices.size();};
 
+protected:
+	typedef Container<T, std::enable_if_t<std::is_base_of_v<VertexID, T>>> VertexContainer;
+
+	std::vector<T> vertices;
+
 	VertexType* addVertex() {
 		vertices.push_back(VertexType());
 		vertices[vertices.size()-1].id = vertices.size()-1;
 		return &vertices[vertices.size()-1];
 	};
-
-protected:
-	std::vector<T> vertices;
 };
 
 }
