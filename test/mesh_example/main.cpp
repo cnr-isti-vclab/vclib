@@ -30,5 +30,7 @@ int main()
 
 	m.vertex(1)->position() = mgp::Point3d(3,4,5);
 
+	std::cerr << "VN: " << m.vertexNumber() << "\n";
+
 	return 0;
 }
