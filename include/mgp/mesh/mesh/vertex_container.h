@@ -20,6 +20,15 @@ public:
 	typedef T VertexType;
 	Container() {verticesEnabled = true;}
 
+	VertexType* addVertex() {
+		vertices.push_back(VertexType());
+		vertices[vertices.size()-1].id = vertices.size()-1;
+		return &vertices[vertices.size()-1];
+	};
+
+	const VertexType* vertex(unsigned int i) const {return &vertices[i];}
+	VertexType* vertex(unsigned int i) {return &vertices[i];}
+
 protected:
 	std::vector<T> vertices;
 };

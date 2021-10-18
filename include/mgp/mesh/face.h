@@ -6,9 +6,23 @@
 #ifndef MGP_MESH_FACE_H
 #define MGP_MESH_FACE_H
 
-#include "face/component.h"
+#include "face/vertex_ref_array.h"
 
 namespace mgp {
+
+namespace mesh {
+template <typename, typename>
+class Container;
+}
+
+namespace face {
+
+template<class T>
+class Component : public T
+{
+};
+
+}
 
 class FaceID {
 public:
@@ -20,6 +34,7 @@ protected:
 template<class... Args>
 class Face : public FaceID, public face::Component<Args>...
 {
+	template<typename, typename> friend class mesh::Container;
 };
 
 }

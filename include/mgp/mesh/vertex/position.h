@@ -15,6 +15,8 @@ template<class Scalar, int N>
 class Position
 {
 public:
+	typedef Point<Scalar, N> PositionType;
+
 	const Point<Scalar, N>& position() const { return p; }
 	Point<Scalar, N>&       position() { return p; }
 
@@ -22,8 +24,21 @@ private:
 	Point<Scalar, N> p;
 };
 
-typedef Position<float, 3>  Position3f;
-typedef Position<double, 3> Position3d;
+template<class Scalar>
+class Position3
+{
+public:
+	typedef Point3<Scalar> PositionType;
+
+	const Point3<Scalar>& position() const { return p; }
+	Point3<Scalar>&       position() { return p; }
+
+private:
+	Point3<Scalar> p;
+};
+
+typedef Position3<float>  Position3f;
+typedef Position3<double> Position3d;
 
 } // namespace vert
 } // namespace mgp

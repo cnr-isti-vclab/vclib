@@ -15,6 +15,8 @@ template<class Scalar, int N>
 class Normal
 {
 public:
+	typedef Point<Scalar, N> NormalType;
+
 	const Point<Scalar, N>& normal() const { return p; }
 	Point<Scalar, N>&       normal() { return p; }
 
@@ -22,8 +24,21 @@ private:
 	Point<Scalar, N> p;
 };
 
-typedef Normal<float, 3>  Normal3f;
-typedef Normal<double, 3> Normal3d;
+template<class Scalar>
+class Normal3
+{
+public:
+	typedef Point3<Scalar> NormalType;
+
+	const Point3<Scalar>& normal() const { return p; }
+	Point3<Scalar>&       normal() { return p; }
+
+private:
+	Point3<Scalar> p;
+};
+
+typedef Normal3<float>  Normal3f;
+typedef Normal3<double> Normal3d;
 
 } // namespace vert
 } // namespace mgp

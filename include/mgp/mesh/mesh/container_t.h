@@ -6,8 +6,7 @@
 #ifndef MGP_MESH_MESH_CONTAIER_T_H
 #define MGP_MESH_MESH_CONTAIER_T_H
 
-#include "../vertex.h"
-#include "../face.h"
+#include <vector>
 
 namespace mgp {
 

@@ -24,5 +24,11 @@ int main()
 
 	v0.addFaceAdjacency(&f);
 
+	m.addVertex();
+	m.addVertex();
+	m.addVertex();
+
+	m.vertex(1)->position() = mgp::Point3d(3,4,5);
+
 	return 0;
 }

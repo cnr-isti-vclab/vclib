@@ -6,9 +6,28 @@
 #ifndef MGP_MESH_VERTEX_H
 #define MGP_MESH_VERTEX_H
 
-#include "vertex/component.h"
+#include "vertex/color.h"
+#include "vertex/face_adjacency_ref.h"
+#include "vertex/normal.h"
+#include "vertex/position.h"
 
 namespace mgp {
+
+namespace mesh {
+
+template <typename, typename>
+class Container;
+
+}
+
+namespace vert {
+
+template<class T>
+class Component : public T
+{
+};
+
+}
 
 class VertexID {
 public:
@@ -20,6 +39,7 @@ protected:
 template<class... Args>
 class Vertex : public VertexID, public vert::Component<Args>...
 {
+	template<typename, typename> friend class mesh::Container;
 };
 
 }
