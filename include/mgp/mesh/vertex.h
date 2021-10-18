@@ -10,8 +10,15 @@
 
 namespace mgp {
 
+class VertexID {
+public:
+	VertexID() : id(0) {}
+protected:
+	unsigned int id;
+};
+
 template<class... Args>
-class Vertex : public vert::Component<Args>...
+class Vertex : public VertexID, public vert::Component<Args>...
 {
 };
 

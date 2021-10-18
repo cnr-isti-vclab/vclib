@@ -6,12 +6,12 @@
 #ifndef MGP_MESH_MESH_H
 #define MGP_MESH_MESH_H
 
-#include "mesh/component.h"
+#include "mesh/containers.h"
 
 namespace mgp {
 
 template<class... Args>
-class Mesh : public mesh::Component<Args>...
+class Mesh : public mesh::Container<Args>...
 {
 };
 

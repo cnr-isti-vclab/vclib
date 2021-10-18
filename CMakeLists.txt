@@ -30,7 +30,10 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/vertex.h
 	${MGP_SRC_DIR}/mesh/face/component.h
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
-	${MGP_SRC_DIR}/mesh/mesh/component.h
+	${MGP_SRC_DIR}/mesh/mesh/container_t.h
+	${MGP_SRC_DIR}/mesh/mesh/containers.h
+	${MGP_SRC_DIR}/mesh/mesh/face_container.h
+	${MGP_SRC_DIR}/mesh/mesh/vertex_container.h
 	${MGP_SRC_DIR}/mesh/vertex/color.h
 	${MGP_SRC_DIR}/mesh/vertex/component.h
 	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h

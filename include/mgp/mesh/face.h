@@ -10,8 +10,15 @@
 
 namespace mgp {
 
+class FaceID {
+public:
+	FaceID() : id(0) {}
+protected:
+	unsigned int id;
+};
+
 template<class... Args>
-class Face : public face::Component<Args>...
+class Face : public FaceID, public face::Component<Args>...
 {
 };
 
