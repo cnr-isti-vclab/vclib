@@ -11,17 +11,17 @@
 
 namespace mgp {
 
-template <typename...> class Mesh;
-
 namespace mesh {
 
 template<class T>
 class Container<T, std::enable_if_t<std::is_base_of_v<VertexID, T>>> : public virtual EnabledContainers
 {
-	friend class Mesh;
-public:
+protected:
+	// types:
 	typedef T VertexType;
+	typedef Container<T, std::enable_if_t<std::is_base_of_v<VertexID, T>>> VertexContainer;
 
+public:
 	Container() {verticesEnabled = true;}
 
 	const VertexType* vertex(unsigned int i) const {return &vertices[i];}
@@ -30,11 +30,10 @@ public:
 	unsigned int vertexNumber() const {return  vertices.size();};
 
 protected:
-	typedef Container<T, std::enable_if_t<std::is_base_of_v<VertexID, T>>> VertexContainer;
-
 	std::vector<T> vertices;
 
-	VertexType* addVertex() {
+	VertexType* addVertex()
+	{
 		vertices.push_back(VertexType());
 		vertices[vertices.size()-1].id = vertices.size()-1;
 		return &vertices[vertices.size()-1];

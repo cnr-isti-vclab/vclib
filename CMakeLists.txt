@@ -36,7 +36,8 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/vertex/color.h
 	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h
 	${MGP_SRC_DIR}/mesh/vertex/normal.h
-	${MGP_SRC_DIR}/mesh/vertex/position.h)
+	${MGP_SRC_DIR}/mesh/vertex/position.h
+	${MGP_SRC_DIR}/misc/type_traits.h)
 
 set(SOURCES
 	${MGP_SRC_DIR}/space/box.cpp
@@ -44,7 +45,8 @@ set(SOURCES
 	${MGP_SRC_DIR}/space/point/point_t.cpp
 	${MGP_SRC_DIR}/space/point/point2.cpp
 	${MGP_SRC_DIR}/space/point/point3.cpp
-	${MGP_SRC_DIR}/space/point/point4.cpp)
+	${MGP_SRC_DIR}/space/point/point4.cpp
+	${MGP_SRC_DIR}/mesh/mesh.cpp)
 
 add_library(mgp INTERFACE)
 

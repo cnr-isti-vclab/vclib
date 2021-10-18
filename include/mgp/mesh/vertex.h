@@ -40,6 +40,8 @@ template<class... Args>
 class Vertex : public VertexID, public vert::Component<Args>...
 {
 	template<typename, typename> friend class mesh::Container;
+protected:
+	Vertex() {}
 };
 
 }

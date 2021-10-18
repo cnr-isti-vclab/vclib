@@ -11,24 +11,22 @@ int main()
 {
 
 	mgp::TriMesh m;
-	mgp::trimesh::Vertex v0, v1, v2;
-
-	std::cerr << "Coord : " << v1.position() << "\n";
-	std::cerr << "Normal: " << v1.normal() << "\n";
-	std::cerr << "Color : " << v1.color() << "\n";
-
-	mgp::trimesh::Face f;
-	f.setVertexReference(&v0, 0);
-	f.setVertexReference(&v1, 1);
-	f.setVertexReference(&v2, 2);
-
-	v0.addFaceAdjacency(&f);
 
 	m.addVertex();
 	m.addVertex();
 	m.addVertex();
 
-	m.vertex(1)->position() = mgp::Point3d(3,4,5);
+	m.vertex(0)->position() = mgp::Point3d(0,0,0);
+	m.vertex(1)->position() = mgp::Point3d(0,1,0);
+	m.vertex(2)->position() = mgp::Point3d(1,0,0);
+
+	m.addFace();
+
+	m.face(0)->setVertices({m.vertex(0), m.vertex(1), m.vertex(2)});
+
+	m.addVertex();
+	m.addVertex();
+	m.addVertex();
 
 	std::cerr << "VN: " << m.vertexNumber() << "\n";
 

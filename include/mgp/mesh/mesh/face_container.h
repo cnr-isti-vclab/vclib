@@ -16,13 +16,27 @@ namespace mesh {
 template<class T>
 class Container<T, std::enable_if_t<std::is_base_of_v<FaceID, T>>> : public virtual EnabledContainers
 {
-public:
-	typedef T FaceType;
-	Container() {facesEnabled = true;}
 protected:
+	// types:
+	typedef T FaceType;
 	typedef Container<T, std::enable_if_t<std::is_base_of_v<FaceID, T>>> FaceContainer;
 
+public:
+	Container() {facesEnabled = true;}
+
+	const FaceType* face(unsigned int i) const {return &faces[i];}
+	FaceType* face(unsigned int i) {return &faces[i];}
+
+	unsigned int faceNumber() const {return faces.size();}
+protected:
 	std::vector<T> faces;
+
+	FaceType* addFace()
+	{
+		faces.push_back(FaceType());
+		faces[faces.size()-1].id = faces.size()-1;
+		return &faces[faces.size()-1];
+	}
 };
 
 }

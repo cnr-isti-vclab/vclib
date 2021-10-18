@@ -14,15 +14,26 @@ template<class... Args>
 class Mesh : public mesh::Container<Args>...
 {
 protected:
-	typedef typename Mesh::VertexContainer VertexContainer;
+
 public:
-	typedef typename Mesh::VertexType VertexType;
-	using VertexContainer::addVertex;
+	typedef typename Mesh::VertexType Vertex;
+	typedef typename Mesh::FaceType Face;
+
+	Vertex* addVertex();
+
+	Face* addFace();
 
 protected:
-	std::vector<VertexType>& verts = VertexContainer::vertices;
+	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+
+	typedef typename Mesh::VertexContainer VertexContainer;
+	typedef typename Mesh::FaceContainer FaceContainer;
+	std::vector<Vertex>& vertices = VertexContainer::vertices;
+	std::vector<Face>& faces = FaceContainer::faces;
 };
 
 }
 
-#endif // MGP_MESH_FACE_H
+#include "mesh.cpp"
+
+#endif // MGP_MESH_MESH_H

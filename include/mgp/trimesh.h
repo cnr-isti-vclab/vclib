@@ -22,7 +22,7 @@ class Vertex: public mgp::Vertex<
 					 mgp::vert::FaceAdjacencyRef<Face>> {};
 
 class Face: public mgp::Face<
-				   mgp::face::VertexRefArray<Vertex, 3>> {};
+				   mgp::face::VertexRefsArray<Vertex, 3>> {};
 
 }
 
