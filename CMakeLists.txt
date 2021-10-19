@@ -34,9 +34,9 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/mesh/face_container.h
 	${MGP_SRC_DIR}/mesh/mesh/vertex_container.h
 	${MGP_SRC_DIR}/mesh/vertex/color.h
+	${MGP_SRC_DIR}/mesh/vertex/coordinate.h
 	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h
 	${MGP_SRC_DIR}/mesh/vertex/normal.h
-	${MGP_SRC_DIR}/mesh/vertex/position.h
 	${MGP_SRC_DIR}/misc/type_traits.h)
 
 set(SOURCES

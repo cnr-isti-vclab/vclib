@@ -16,7 +16,7 @@ class Vertex;
 class Face;
 
 class Vertex: public mgp::Vertex<
-					 mgp::vert::Position3d,
+					 mgp::vert::Coordinate3d,
 					 mgp::vert::Normal3d,
 					 mgp::vert::Color,
 					 mgp::vert::FaceAdjacencyRef<Face>> {};

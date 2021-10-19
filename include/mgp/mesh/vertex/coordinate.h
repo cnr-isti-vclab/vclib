@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_VERTEX_POSITION_H
-#define MGP_MESH_VERTEX_POSITION_H
+#ifndef MGP_MESH_VERTEX_COORDINATE_H
+#define MGP_MESH_VERTEX_COORDINATE_H
 
 #include <mgp/space/point.h>
 
@@ -12,10 +12,10 @@ namespace mgp {
 namespace vert {
 
 template<class Scalar, int N>
-class Position
+class Coordinate
 {
 public:
-	typedef Point<Scalar, N> PositionType;
+	typedef Point<Scalar, N> CoordinateType;
 
 	const Point<Scalar, N>& position() const { return p; }
 	Point<Scalar, N>&       position() { return p; }
@@ -25,10 +25,10 @@ private:
 };
 
 template<class Scalar>
-class Position3
+class Coordinate3
 {
 public:
-	typedef Point3<Scalar> PositionType;
+	typedef Point3<Scalar> CoordinateType;
 
 	const Point3<Scalar>& position() const { return p; }
 	Point3<Scalar>&       position() { return p; }
@@ -37,10 +37,10 @@ private:
 	Point3<Scalar> p;
 };
 
-typedef Position3<float>  Position3f;
-typedef Position3<double> Position3d;
+typedef Coordinate3<float>  Coordinate3f;
+typedef Coordinate3<double> Coordinate3d;
 
 } // namespace vert
 } // namespace mgp
 
-#endif // MGP_MESH_VERTEX_POSITION_H
+#endif // MGP_MESH_VERTEX_COORDINATE_H

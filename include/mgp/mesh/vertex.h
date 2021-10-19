@@ -7,9 +7,9 @@
 #define MGP_MESH_VERTEX_H
 
 #include "vertex/color.h"
+#include "vertex/coordinate.h"
 #include "vertex/face_adjacency_ref.h"
 #include "vertex/normal.h"
-#include "vertex/position.h"
 
 namespace mgp {
 
