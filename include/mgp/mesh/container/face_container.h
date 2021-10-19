@@ -10,7 +10,6 @@
 #include "container_t.h"
 
 namespace mgp {
-
 namespace mesh {
 
 template<class T>
@@ -23,36 +22,25 @@ protected:
 	typedef Container<T, mgp::ifIsBaseOf<FaceID, T>> FaceContainer;
 
 public:
-	Container() { facesEnabled = true; }
+	Container();
 
-	const FaceType* face(unsigned int i) const { return &faces[i]; }
-	FaceType*       face(unsigned int i) { return &faces[i]; }
+	const FaceType* face(unsigned int i) const;
+	FaceType*       face(unsigned int i);
 
-	unsigned int faceNumber() const { return faces.size(); }
+	unsigned int faceNumber() const;
 
 protected:
 	std::vector<T> faces;
 
-	unsigned int addFace()
-	{
-		faces.push_back(FaceType());
-		faces[faces.size() - 1].id = faces.size() - 1;
-		return faces[faces.size() - 1].id;
-	}
+	unsigned int addFace();
 
 	template<typename Vertex>
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
-	{
-		if constexpr (face::hasVertexRefsArray<FaceType>::value) {
-			for (unsigned int i = 0; i < faces.size(); ++i) {
-				faces[i].updateVertexReferences(oldBase, newBase);
-			}
-		}
-	}
+	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 };
 
 } // namespace mesh
-
 } // namespace mgp
+
+#include "face_container.cpp"
 
 #endif // MGP_MESH_CONTAINER_FACE_CONTAINER_H

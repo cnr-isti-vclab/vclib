@@ -10,7 +10,6 @@
 #include "container_t.h"
 
 namespace mgp {
-
 namespace mesh {
 
 template<class T>
@@ -23,26 +22,22 @@ protected:
 	typedef Container<T, mgp::ifIsBaseOf<VertexID, T>> VertexContainer;
 
 public:
-	Container() { verticesEnabled = true; }
+	Container();
 
-	const VertexType* vertex(unsigned int i) const { return &vertices[i]; }
-	VertexType*       vertex(unsigned int i) { return &vertices[i]; }
+	const VertexType* vertex(unsigned int i) const;
+	VertexType*       vertex(unsigned int i);
 
-	unsigned int vertexNumber() const { return vertices.size(); };
+	unsigned int vertexNumber() const;;
 
 protected:
 	std::vector<T> vertices;
 
-	unsigned int addVertex()
-	{
-		vertices.push_back(VertexType());
-		vertices[vertices.size() - 1].id = vertices.size() - 1;
-		return vertices[vertices.size() - 1].id;
-	};
+	unsigned int addVertex();;
 };
 
 } // namespace mesh
-
 } // namespace mgp
+
+#include "vertex_container.cpp"
 
 #endif // MGP_MESH_CONTAINER_VERTEX_CONTAINER_H
