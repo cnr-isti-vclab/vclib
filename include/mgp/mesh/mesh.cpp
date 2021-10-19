@@ -28,16 +28,7 @@ typename Mesh<Args...>::Face* Mesh<Args...>::addFace()
 template<class... Args>
 void Mesh<Args...>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
 {
-	if constexpr (face::hasVertexRefsArray<Mesh::Face>::value) {
-		for (unsigned int i = 0; i < faces.size(); ++i){
-			for (unsigned int j = 0; j < faces[i].N_VERTICES; ++j){
-				if (faces[i].v(j) != nullptr) {
-					size_t diff = faces[i].v(j) - oldBase;
-					faces[i].v(j) = (Vertex*)newBase + diff;
-				}
-			}
-		}
-	}
+	FaceContainer::updateVertexReferences(oldBase, newBase);
 }
 
 }

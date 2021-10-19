@@ -37,6 +37,16 @@ protected:
 		faces[faces.size()-1].id = faces.size()-1;
 		return &faces[faces.size()-1];
 	}
+
+	template<typename Vertex>
+	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
+	{
+		if constexpr (face::hasVertexRefsArray<FaceType>::value) {
+			for (unsigned int i = 0; i < faces.size(); ++i){
+				faces[i].updateVertexReferences(oldBase, newBase);
+			}
+		}
+	}
 };
 
 }

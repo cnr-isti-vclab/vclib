@@ -46,6 +46,7 @@ set(SOURCES
 	${MGP_SRC_DIR}/space/point/point2.cpp
 	${MGP_SRC_DIR}/space/point/point3.cpp
 	${MGP_SRC_DIR}/space/point/point4.cpp
+	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.cpp
 	${MGP_SRC_DIR}/mesh/mesh.cpp)
 
 add_library(mgp INTERFACE)
