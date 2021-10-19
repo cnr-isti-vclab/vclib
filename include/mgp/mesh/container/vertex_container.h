@@ -14,13 +14,13 @@ namespace mgp {
 namespace mesh {
 
 template<class T>
-class Container<T, std::enable_if_t<std::is_base_of_v<VertexID, T>>> :
+class Container<T, mgp::ifIsBaseOf<VertexID, T>> :
 		public virtual EnabledContainers
 {
 protected:
 	// types:
-	typedef T                                                              VertexType;
-	typedef Container<T, std::enable_if_t<std::is_base_of_v<VertexID, T>>> VertexContainer;
+	typedef T                                          VertexType;
+	typedef Container<T, mgp::ifIsBaseOf<VertexID, T>> VertexContainer;
 
 public:
 	Container() { verticesEnabled = true; }
@@ -33,11 +33,11 @@ public:
 protected:
 	std::vector<T> vertices;
 
-	VertexType* addVertex()
+	unsigned int addVertex()
 	{
 		vertices.push_back(VertexType());
 		vertices[vertices.size() - 1].id = vertices.size() - 1;
-		return &vertices[vertices.size() - 1];
+		return vertices[vertices.size() - 1].id;
 	};
 };
 

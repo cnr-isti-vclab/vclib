@@ -32,7 +32,7 @@ class Face :
 
 } // namespace trimesh
 
-class TriMesh : public mgp::Mesh<trimesh::Vertex, trimesh::Face>
+class TriMesh : public mgp::Mesh<trimesh::Vertex, trimesh::Face, mgp::common::Color>
 {
 };
 

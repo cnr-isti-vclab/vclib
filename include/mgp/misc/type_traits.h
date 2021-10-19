@@ -37,6 +37,24 @@ struct detector : std::false_type {};
 template <template <class...> class Trait, class... Args>
 struct detector<Trait, void_t<Trait<Args...>>, Args...> : std::true_type {};
 
+/**
+ * Utility template that allows to shorten the template parameter used to tell
+ * if a class D inherits from B (or, vice versa, if B is base of D)
+ *
+ * Usage:
+ *
+ * // generic
+ * template<class T, typename = void>
+ * class MyClass {}; // here, B is not a base of T
+ *
+ * // specialization
+ * template<class T>
+ * class MyClass<T, mgp::ifIsBaseOf<B, T>> {}; // here, B is base of T
+ */
+
+template <typename B, typename D>
+using ifIsBaseOf = std::enable_if_t<std::is_base_of<B,D>::value>;
+
 }
 
 #endif // MGP_TYPE_TRAITS_H

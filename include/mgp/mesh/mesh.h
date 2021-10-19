@@ -19,17 +19,15 @@ public:
 	typedef typename Mesh::VertexType Vertex;
 	typedef typename Mesh::FaceType Face;
 
-	Vertex* addVertex();
+	unsigned int addVertex();
 
-	Face* addFace();
+	unsigned int addFace();
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 
 	typedef typename Mesh::VertexContainer VertexContainer;
 	typedef typename Mesh::FaceContainer FaceContainer;
-	std::vector<Vertex>& vertices = VertexContainer::vertices;
-	std::vector<Face>& faces = FaceContainer::faces;
 };
 
 }

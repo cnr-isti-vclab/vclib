@@ -14,13 +14,13 @@ namespace mgp {
 namespace mesh {
 
 template<class T>
-class Container<T, std::enable_if_t<std::is_base_of_v<FaceID, T>>> :
+class Container<T, mgp::ifIsBaseOf<FaceID, T>> :
 		public virtual EnabledContainers
 {
 protected:
 	// types:
-	typedef T                                                            FaceType;
-	typedef Container<T, std::enable_if_t<std::is_base_of_v<FaceID, T>>> FaceContainer;
+	typedef T                                        FaceType;
+	typedef Container<T, mgp::ifIsBaseOf<FaceID, T>> FaceContainer;
 
 public:
 	Container() { facesEnabled = true; }
@@ -33,11 +33,11 @@ public:
 protected:
 	std::vector<T> faces;
 
-	FaceType* addFace()
+	unsigned int addFace()
 	{
 		faces.push_back(FaceType());
 		faces[faces.size() - 1].id = faces.size() - 1;
-		return &faces[faces.size() - 1];
+		return faces[faces.size() - 1].id;
 	}
 
 	template<typename Vertex>

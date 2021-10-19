@@ -8,6 +8,8 @@
 
 #include <vector>
 
+#include <mgp/misc/type_traits.h>
+
 namespace mgp {
 
 namespace mesh {
@@ -31,7 +33,7 @@ protected:
 };
 
 template<class T, typename = void>
-class Container
+class Container : public T
 {
 };
 
