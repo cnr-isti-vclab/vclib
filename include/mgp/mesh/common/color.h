@@ -3,25 +3,25 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_VERTEX_COLOR_H
-#define MGP_MESH_VERTEX_COLOR_H
+#ifndef MGP_MESH_COMMON_COLOR_H
+#define MGP_MESH_COMMON_COLOR_H
 
 #include <mgp/space/color.h>
 
 namespace mgp {
-namespace vert {
+namespace common {
 
 class Color
 {
 public:
-	const mgp::Color& color() const { return p; }
-	mgp::Color&       color() { return p; }
+	const mgp::Color& color() const { return c; }
+	mgp::Color&       color() { return c; }
 
 private:
-	mgp::Color p;
+	mgp::Color c;
 };
 
-} // namespace vert
+} // namespace common
 } // namespace mgp
 
-#endif // MGP_MESH_VERTEX_COLOR_H
+#endif // MGP_MESH_COMMON_COLOR_H

@@ -28,15 +28,17 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/face.h
 	${MGP_SRC_DIR}/mesh/mesh.h
 	${MGP_SRC_DIR}/mesh/vertex.h
+	${MGP_SRC_DIR}/mesh/common/color.h
+	${MGP_SRC_DIR}/mesh/common/normal.h
+	${MGP_SRC_DIR}/mesh/face/common.h
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
-	${MGP_SRC_DIR}/mesh/mesh/container_t.h
-	${MGP_SRC_DIR}/mesh/mesh/containers.h
-	${MGP_SRC_DIR}/mesh/mesh/face_container.h
-	${MGP_SRC_DIR}/mesh/mesh/vertex_container.h
-	${MGP_SRC_DIR}/mesh/vertex/color.h
+	${MGP_SRC_DIR}/mesh/container/container_t.h
+	${MGP_SRC_DIR}/mesh/container/containers.h
+	${MGP_SRC_DIR}/mesh/container/face_container.h
+	${MGP_SRC_DIR}/mesh/container/vertex_container.h
+	${MGP_SRC_DIR}/mesh/vertex/common.h
 	${MGP_SRC_DIR}/mesh/vertex/coordinate.h
 	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h
-	${MGP_SRC_DIR}/mesh/vertex/normal.h
 	${MGP_SRC_DIR}/misc/type_traits.h)
 
 set(SOURCES

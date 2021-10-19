@@ -15,21 +15,27 @@ namespace trimesh {
 class Vertex;
 class Face;
 
-class Vertex: public mgp::Vertex<
-					 mgp::vert::Coordinate3d,
-					 mgp::vert::Normal3d,
-					 mgp::vert::Color,
-					 mgp::vert::FaceAdjacencyRef<Face>> {};
+class Vertex :
+		public mgp::Vertex<
+			mgp::vert::Coordinate3d,
+			mgp::vert::Normal3d,
+			mgp::vert::Color,
+			mgp::vert::FaceAdjacencyRef<Face>>
+{
+};
 
-class Face: public mgp::Face<
-				   mgp::face::VertexRefsArray<Vertex, 3>> {};
+class Face :
+		public mgp::
+			Face<mgp::face::TriangleVertexRefsArray<Vertex>, mgp::vert::Normal3d, mgp::face::Color>
+{
+};
 
-}
+} // namespace trimesh
 
 class TriMesh : public mgp::Mesh<trimesh::Vertex, trimesh::Face>
 {
 };
 
-}
+} // namespace mgp
 
 #endif // MGP_MESH_FACE_H

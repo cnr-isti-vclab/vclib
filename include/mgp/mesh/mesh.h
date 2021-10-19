@@ -6,7 +6,7 @@
 #ifndef MGP_MESH_MESH_H
 #define MGP_MESH_MESH_H
 
-#include "mesh/containers.h"
+#include "container/containers.h"
 
 namespace mgp {
 

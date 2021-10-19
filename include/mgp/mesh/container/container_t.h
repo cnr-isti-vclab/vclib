@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_MESH_CONTAIER_T_H
-#define MGP_MESH_MESH_CONTAIER_T_H
+#ifndef MGP_MESH_CONTAINER_CONTAIER_T_H
+#define MGP_MESH_CONTAINER_CONTAIER_T_H
 
 #include <vector>
 
@@ -12,9 +12,17 @@ namespace mgp {
 
 namespace mesh {
 
-class EnabledContainers {
+class EnabledContainers
+{
 public:
-	EnabledContainers() : verticesEnabled(false), facesEnabled(false), edgesEnabled(false), halfEdgesEnabled(false) {}
+	EnabledContainers() :
+			verticesEnabled(false),
+			facesEnabled(false),
+			edgesEnabled(false),
+			halfEdgesEnabled(false)
+	{
+	}
+
 protected:
 	bool verticesEnabled;
 	bool facesEnabled;
@@ -27,8 +35,8 @@ class Container
 {
 };
 
-}
+} // namespace mesh
 
-}
+} // namespace mgp
 
-#endif // MGP_MESH_MESH_CONTAIER_T_H
+#endif // MGP_MESH_CONTAINER_CONTAIER_T_H
