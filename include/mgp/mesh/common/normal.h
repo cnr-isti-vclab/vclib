@@ -8,11 +8,13 @@
 
 #include <mgp/space/point.h>
 
+#include "info.h"
+
 namespace mgp {
 namespace common {
 
 template<class Scalar, int N>
-class Normal
+class Normal : virtual public Info
 {
 public:
 	typedef Point<Scalar, N> NormalType;
@@ -25,7 +27,7 @@ private:
 };
 
 template<class Scalar>
-class Normal3
+class Normal3 : virtual public Info
 {
 public:
 	typedef Point3<Scalar> NormalType;

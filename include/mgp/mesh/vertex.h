@@ -28,15 +28,11 @@ class Component : public T
 
 }
 
-class VertexID {
-public:
-	VertexID() : id(0) {}
-protected:
-	unsigned int id;
+class VertexTriggerer {
 };
 
 template<class... Args>
-class Vertex : public VertexID, public vert::Component<Args>...
+class Vertex : public VertexTriggerer, public vert::Component<Args>...
 {
 	template<typename, typename> friend class mesh::Container;
 protected:

@@ -6,16 +6,20 @@
 #ifndef MGP_MESH_VERTEX_COMMON_H
 #define MGP_MESH_VERTEX_COMMON_H
 
+#include "../common/info.h"
 #include "../common/color.h"
 #include "../common/normal.h"
 
 namespace mgp {
 namespace vert {
 
-/** Port Color class into face namespace **/
+/** Port Info class into vert namespace **/
+using Info = mgp::common::Info;
+
+/** Port Color class into vert namespace **/
 using Color = mgp::common::Color;
 
-/** Port Color classes into face namespace **/
+/** Port Color classes into vert namespace **/
 template<class Scalar, int N>
 using Normal = mgp::common::Normal<Scalar, N>;
 

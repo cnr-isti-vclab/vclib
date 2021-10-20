@@ -8,10 +8,12 @@
 
 #include <mgp/space/color.h>
 
+#include "info.h"
+
 namespace mgp {
 namespace common {
 
-class Color
+class Color : public virtual Info
 {
 public:
 	const mgp::Color& color() const { return c; }

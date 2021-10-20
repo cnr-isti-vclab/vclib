@@ -29,13 +29,17 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/mesh.h
 	${MGP_SRC_DIR}/mesh/vertex.h
 	${MGP_SRC_DIR}/mesh/common/color.h
+	${MGP_SRC_DIR}/mesh/common/info.h
 	${MGP_SRC_DIR}/mesh/common/normal.h
-	${MGP_SRC_DIR}/mesh/face/common.h
-	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
+	${MGP_SRC_DIR}/mesh/common/optional_color.h
+	${MGP_SRC_DIR}/mesh/common/optional_info.h
 	${MGP_SRC_DIR}/mesh/container/container_t.h
 	${MGP_SRC_DIR}/mesh/container/containers.h
 	${MGP_SRC_DIR}/mesh/container/face_container.h
+	${MGP_SRC_DIR}/mesh/container/optional_container.h
 	${MGP_SRC_DIR}/mesh/container/vertex_container.h
+	${MGP_SRC_DIR}/mesh/face/common.h
+	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
 	${MGP_SRC_DIR}/mesh/vertex/common.h
 	${MGP_SRC_DIR}/mesh/vertex/coordinate.h
 	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h

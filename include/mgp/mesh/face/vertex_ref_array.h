@@ -11,6 +11,8 @@
 
 #include <mgp/misc/type_traits.h>
 
+#include "common.h"
+
 namespace mgp {
 namespace face {
 
@@ -22,7 +24,7 @@ namespace face {
  * compile time.
  */
 template<class Vertex, int N>
-class VertexRefsArray
+class VertexRefsArray : virtual public Info
 {
 public:
 	constexpr static unsigned int N_VERTICES = N;

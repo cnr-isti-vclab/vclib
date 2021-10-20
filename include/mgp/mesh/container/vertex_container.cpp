@@ -9,37 +9,37 @@ namespace mgp {
 namespace mesh {
 
 template<class T>
-Container<T, mgp::ifIsBaseOf<VertexID, T> >::Container()
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::Container()
 {
 	verticesEnabled = true;
 }
 
 template<class T>
-const typename Container<T, mgp::ifIsBaseOf<VertexID, T> >::VertexType*
-mgp::mesh::Container<T, mgp::ifIsBaseOf<VertexID, T> >::vertex(unsigned int i) const
+const typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::VertexType*
+mgp::mesh::Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertex(unsigned int i) const
 {
 	return &vertices[i];
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<VertexID, T> >::VertexType*
-mgp::mesh::Container<T, mgp::ifIsBaseOf<VertexID, T> >::vertex(unsigned int i)
+typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::VertexType*
+mgp::mesh::Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertex(unsigned int i)
 {
 	return &vertices[i];
 }
 
 template<class T>
-unsigned int Container<T, mgp::ifIsBaseOf<VertexID, T> >::vertexNumber() const
+unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertexNumber() const
 {
 	return vertices.size();
 }
 
 template<class T>
-unsigned int Container<T, mgp::ifIsBaseOf<VertexID, T> >::addVertex()
+unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::addVertex()
 {
 	vertices.push_back(VertexType());
-	vertices[vertices.size() - 1].id = vertices.size() - 1;
-	return vertices[vertices.size() - 1].id;
+	vertices[vertices.size() - 1]._id = vertices.size() - 1;
+	return vertices[vertices.size() - 1]._id;
 }
 
 

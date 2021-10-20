@@ -8,11 +8,13 @@
 
 #include <mgp/space/point.h>
 
+#include "common.h"
+
 namespace mgp {
 namespace vert {
 
 template<class Scalar, int N>
-class Coordinate
+class Coordinate : virtual public Info
 {
 public:
 	typedef Point<Scalar, N> CoordinateType;
@@ -25,7 +27,7 @@ private:
 };
 
 template<class Scalar>
-class Coordinate3
+class Coordinate3 : virtual public Info
 {
 public:
 	typedef Point3<Scalar> CoordinateType;

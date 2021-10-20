@@ -13,13 +13,13 @@ namespace mgp {
 namespace mesh {
 
 template<class T>
-class Container<T, mgp::ifIsBaseOf<VertexID, T>> :
+class Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>> :
 		public virtual EnabledContainers
 {
 protected:
 	// types:
 	typedef T                                          VertexType;
-	typedef Container<T, mgp::ifIsBaseOf<VertexID, T>> VertexContainer;
+	typedef Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>> VertexContainer;
 
 public:
 	Container();

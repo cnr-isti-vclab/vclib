@@ -7,10 +7,24 @@
 #define MGP_MESH_FACE_COMMON_H
 
 #include "../common/color.h"
+#include "../common/info.h"
 #include "../common/normal.h"
+#include "../common/optional_info.h"
+#include "../common/optional_color.h"
 
 namespace mgp {
 namespace face {
+
+/** Port Info class into face namespace **/
+using Info = mgp::common::Info;
+
+/** Port OptionalInfo class into face namespace **/
+template <typename T>
+using OptionalInfo = mgp::common::OptionalInfo<T>;
+
+/** Port OptionalColor class into face namespace **/
+template <typename T>
+using OptionalColor = mgp::common::OptionalColor<T>;
 
 /** Port Color class into face namespace **/
 using Color = mgp::common::Color;

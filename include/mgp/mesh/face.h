@@ -25,17 +25,15 @@ class Component : public T
 
 }
 
-class FaceID {
-public:
-	FaceID() : id(0) {}
-protected:
-	unsigned int id;
+class FaceTriggerer {
 };
 
 template<class... Args>
-class Face : public FaceID, public face::Component<Args>...
+class Face : public FaceTriggerer, public face::Component<Args>...
 {
 	template<typename, typename> friend class mesh::Container;
+protected:
+	Face() {}
 };
 
 }

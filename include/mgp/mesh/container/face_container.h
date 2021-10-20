@@ -8,18 +8,19 @@
 
 #include "../face.h"
 #include "container_t.h"
+#include "optional_container.h"
 
 namespace mgp {
 namespace mesh {
 
 template<class T>
-class Container<T, mgp::ifIsBaseOf<FaceID, T>> :
+class Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>> :
 		public virtual EnabledContainers
 {
 protected:
 	// types:
 	typedef T                                        FaceType;
-	typedef Container<T, mgp::ifIsBaseOf<FaceID, T>> FaceContainer;
+	typedef Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>> FaceContainer;
 
 public:
 	Container();
@@ -31,6 +32,7 @@ public:
 
 protected:
 	std::vector<T> faces;
+	OptionalContainer<T> optionalContainer;
 
 	unsigned int addFace();
 

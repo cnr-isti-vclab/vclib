@@ -26,7 +26,10 @@ class Vertex :
 
 class Face :
 		public mgp::
-			Face<mgp::face::TriangleVertexRefsArray<Vertex>, mgp::vert::Normal3d, mgp::face::Color>
+			Face<
+				mgp::face::TriangleVertexRefsArray<Vertex>,
+				mgp::vert::Normal3d,
+				mgp::face::OptionalColor<Face>>
 {
 };
 

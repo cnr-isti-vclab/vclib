@@ -8,11 +8,13 @@
 
 #include <vector>
 
+#include "common.h"
+
 namespace mgp {
 namespace vert {
 
 template<class Face>
-class FaceAdjacencyRef
+class FaceAdjacencyRef : virtual public Info
 {
 public:
 	void addFaceAdjacency(Face* f) {refs.push_back(f);};
