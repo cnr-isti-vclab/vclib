@@ -50,7 +50,7 @@ void VertexRefsArray<Vertex, N>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
 {
-	for (unsigned int j = 0; j < N_VERTICES; ++j) {
+	for (unsigned int j = 0; j < N; ++j) {
 		if (v(j) != nullptr) {
 			size_t diff = v(j) - oldBase;
 			v(j)        = (Vertex*) newBase + diff;

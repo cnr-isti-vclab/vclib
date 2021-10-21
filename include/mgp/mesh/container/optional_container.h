@@ -6,12 +6,24 @@
 #ifndef MGP_MESH_CONTAINER_OPTIONAL_CONTAINER_H
 #define MGP_MESH_CONTAINER_OPTIONAL_CONTAINER_H
 
+#include <vector>
+
+#include "assert.h"
+
 namespace mgp {
 namespace mesh {
 
 template<typename T>
 class OptionalContainer
 {
+	typedef typename T::ColorType ColorType;
+	void enableColor(unsigned int size) {isColorEnabled = true; colors.resize(size);}
+	ColorType& color(unsigned int i) {assert(isColorEnabled); return colors[i];}
+	const ColorType& color (unsigned int i) const {assert(isColorEnabled); return colors[i];}
+
+private:
+	bool isColorEnabled = false;
+	std::vector<ColorType> colors;
 };
 
 } // namespace mesh

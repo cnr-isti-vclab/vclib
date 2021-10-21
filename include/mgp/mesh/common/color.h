@@ -16,6 +16,7 @@ namespace common {
 class Color : public virtual Info
 {
 public:
+	typedef mgp::Color ColorType;
 	const mgp::Color& color() const { return c; }
 	mgp::Color&       color() { return c; }
 

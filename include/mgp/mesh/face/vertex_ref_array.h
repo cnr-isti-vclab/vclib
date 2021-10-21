@@ -27,8 +27,6 @@ template<class Vertex, int N>
 class VertexRefsArray : virtual public Info
 {
 public:
-	constexpr static unsigned int N_VERTICES = N;
-
 	VertexRefsArray();
 
 	Vertex*&      v(unsigned int i);
