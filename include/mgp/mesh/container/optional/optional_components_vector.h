@@ -7,12 +7,17 @@
 #define MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H
 
 #include "optional_color_vector.h"
+#include "optional_normal_vector.h"
+#include "optional_scalar_vector.h"
 
 namespace mgp {
 namespace mesh {
 
 template<typename T>
-class OptionalComponentsVector : public OptionalColorVector<T>
+class OptionalComponentsVector :
+	public OptionalColorVector<T>,
+	public OptionalNormalVector<T>,
+	public OptionalScalarVector<T>
 {
 };
 

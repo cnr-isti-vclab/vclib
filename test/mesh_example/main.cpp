@@ -19,11 +19,15 @@ int main()
 	m.vertex(0).position() = mgp::Point3d(0,0,0);
 	m.vertex(1).position() = mgp::Point3d(0,1,0);
 	m.vertex(2).position() = mgp::Point3d(1,0,0);
+	
+	m.vertex(0).normal() = mgp::Point3d(1, 0, 0);
 
 	m.enableVertexColor();
 	m.vertex(0).color() = mgp::Color(3, 7, 4);
 	m.vertex(1).color() = mgp::Color(3, 63, 44);
 	m.vertex(2).color() = mgp::Color(3, 9, 2);
+	
+	m.enableFaceScalar();
 
 	m.addFace();
 

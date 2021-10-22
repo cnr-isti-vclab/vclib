@@ -13,7 +13,7 @@
 namespace mgp {
 namespace common {
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 class Normal : virtual public Info
 {
 public:
@@ -26,7 +26,7 @@ private:
 	Point<Scalar, N> n;
 };
 
-template<class Scalar>
+template<typename Scalar>
 class Normal3 : virtual public Info
 {
 public:

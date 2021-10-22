@@ -42,6 +42,22 @@ Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::enableVertexColor()
 }
 
 template<class T>
+template<class U>
+typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::enableVertexNormal()
+{
+	optionalComponentsVector.enableNormal(vertexNumber());
+}
+
+template<class T>
+template<class U>
+typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::enableVertexScalar()
+{
+	optionalComponentsVector.enableScalar(vertexNumber());
+}
+
+template<class T>
 unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::addVertex()
 {
 	vertices.push_back(VertexType());

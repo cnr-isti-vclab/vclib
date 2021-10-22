@@ -9,9 +9,11 @@
 #include "../common/color.h"
 #include "../common/info.h"
 #include "../common/normal.h"
+#include "../common/scalar.h"
 #include "../common/optional_info.h"
 #include "../common/optional_color.h"
 #include "../common/optional_normal.h"
+#include "../common/optional_scalar.h"
 
 namespace mgp {
 namespace face {
@@ -52,6 +54,23 @@ using OptionalNormal3f = mgp::common::OptionalNormal3f<T>;
 
 template <typename T>
 using OptionalNormal3d = mgp::common::OptionalNormal3d<T>;
+
+/** Port Scalar class into face namespace **/
+template<typename T>
+using Scalar = mgp::common::Scalar<T>;
+
+using Scalarf = mgp::common::Scalarf;
+using Scalard = mgp::common::Scalard;
+
+/** Port OptionalScalar class into face namespace **/
+template <typename S, typename T>
+using OptionalScalar = mgp::common::OptionalScalar<S, T>;
+
+template <typename T>
+using OptionalScalarf = mgp::common::OptionalScalar<float, T>;
+
+template <typename T>
+using OptionalScalard = mgp::common::OptionalScalar<double, T>;
 
 } // namespace face
 } // namespace mgp

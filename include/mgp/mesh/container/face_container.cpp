@@ -65,6 +65,22 @@ Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::enableFaceColor()
 	optionalComponentsVector.enableColor(faceNumber());
 }
 
+template<class T>
+template<class U>
+typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::enableFaceNormal()
+{
+	optionalComponentsVector.enableNormal(faceNumber());
+}
+
+template<class T>
+template<class U>
+typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::enableFaceScalar()
+{
+	optionalComponentsVector.enableScalar(faceNumber());
+}
+
 }
 }
 

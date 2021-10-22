@@ -39,6 +39,12 @@ public:
 
 	template<typename U = T>
 	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type enableVertexColor();
+	
+	template<typename U = T>
+	typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type enableVertexNormal();
+	
+	template<typename U = T>
+	typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type enableVertexScalar();
 
 protected:
 	/**

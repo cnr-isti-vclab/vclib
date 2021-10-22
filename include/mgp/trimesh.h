@@ -20,6 +20,7 @@ class Vertex :
 			mgp::vert::Coordinate3d,
 			mgp::vert::Normal3d,
 			mgp::vert::OptionalColor<Vertex>,
+			mgp::vert::Scalard,
 			mgp::vert::FaceAdjacencyRef<Face>>
 {
 };
@@ -29,6 +30,7 @@ class Face :
 			Face<
 				mgp::face::TriangleVertexRefsArray<Vertex>,
 				mgp::vert::Normal3d,
+				mgp::vert::OptionalScalard<Face>,
 				mgp::face::OptionalColor<Face>>
 {
 };

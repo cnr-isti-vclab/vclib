@@ -39,6 +39,10 @@ public:
 
 	template<typename U = T>
 	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type enableFaceColor();
+	template<typename U = T>
+	typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type enableFaceNormal();
+	template<typename U = T>
+	typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type enableFaceScalar();
 
 protected:
 	/**

@@ -23,7 +23,7 @@ public:
 	const NormalType& normal() const { return B::containerPointer->normal(B::id()); }
 	NormalType&       normal() { return B::containerPointer->normal(B::id()); }
 	
-	void __optional_normal__() {} // dummy member used just for detection of an OpionalColor object
+	void __optional_normal__() {} // dummy member used just for detection of an OpionalNormal object
 };
 
 template<typename Scalar, typename T>
@@ -36,7 +36,7 @@ public:
 	const NormalType& normal() const { return B::containerPointer->normal(B::id()); }
 	NormalType&       normal() { return B::containerPointer->normal(B::id()); }
 	
-	void __optional_normal__() {} // dummy member used just for detection of an OpionalColor object
+	void __optional_normal__() {} // dummy member used just for detection of an OpionalNormal object
 };
 
 template<typename T>
@@ -46,7 +46,7 @@ class OptionalNormal3d : public OptionalNormal3<double, T> {};
 
 
 /**
- * Detector to check if a class has (inherits) OptionalColor
+ * Detector to check if a class has (inherits) OpionalNormal
  */
 
 template<typename T>
