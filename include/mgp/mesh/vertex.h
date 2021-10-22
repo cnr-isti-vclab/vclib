@@ -14,6 +14,7 @@ namespace mgp {
 
 namespace mesh {
 
+// Container class declaration
 template <typename, typename>
 class Container;
 
@@ -21,6 +22,13 @@ class Container;
 
 namespace vert {
 
+/**
+ * @brief The Component fallback class, will be used when the template argument given to the Vertex
+ * is not one of the known Components.
+ *
+ * This class will just make the given template argument a Base of the Vertex, becoming a feature of
+ * the Vertex.
+ */
 template<class T>
 class Component : public T
 {
@@ -28,6 +36,7 @@ class Component : public T
 
 }
 
+// Dummy class used to detect the a mgp::Vertex regardless of its template arguments
 class VertexTriggerer {
 };
 

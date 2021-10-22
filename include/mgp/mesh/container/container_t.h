@@ -14,24 +14,17 @@ namespace mgp {
 
 namespace mesh {
 
-class EnabledContainers
-{
-public:
-	EnabledContainers() :
-			verticesEnabled(false),
-			facesEnabled(false),
-			edgesEnabled(false),
-			halfEdgesEnabled(false)
-	{
-	}
-
-protected:
-	bool verticesEnabled;
-	bool facesEnabled;
-	bool edgesEnabled;
-	bool halfEdgesEnabled;
-};
-
+/**
+ * @brief The Container fallback class, will be used when the template argument given to the
+ * Mesh is not one of the known Elements: mgp::Vertex, mgp::Face, mgp::Edge...
+ *
+ * This class will just make the given template argument a Base of the Mesh, becoming a feature of
+ * the Mesh.
+ *
+ * Example: if you want to add a label to your mesh, you just need to implement a small class having
+ * a member string and getter and setter members, and use this class as template argument of the
+ * mesh.
+ */
 template<class T, typename = void>
 class Container : public T
 {

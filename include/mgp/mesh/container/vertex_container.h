@@ -14,12 +14,19 @@ namespace mgp {
 namespace mesh {
 
 template<class T>
-class Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>> :
-		public virtual EnabledContainers
+/**
+ * @brief The Vertex Container class, will be used when the template argument given to the Mesh is a
+ * mgp::Vertex.
+ *
+ * This class adds a container (vector) of vertices to the Mesh, making available the accessors
+ * members to the vertices, the vertex number, iterators... This class will also take care to add
+ * enablers/disablers of the eventual optional components of the vertex.
+ */
+class Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>
 {
 protected:
 	// types:
-	typedef T                                          VertexType;
+	typedef T                                                 VertexType;
 	typedef Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>> VertexContainer;
 
 public:
@@ -31,14 +38,22 @@ public:
 	unsigned int vertexNumber() const;
 
 	template<typename U = T>
-	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type
-	enableVertexColor();
+	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type enableVertexColor();
 
 protected:
+	/**
+	 * @brief vertices: the vector of vertices, where each vertex contains only its static
+	 * components. Optional components will be contained in the optionalComponentsVector.
+	 */
 	std::vector<T> vertices;
+	/**
+	 * @brief optionalComponentsVector contains all the optional components data of the vertex, that
+	 * will be enabled - disabled at runtime.
+	 * Each vertex that has at least one optional component, will store a pointer to this vector.
+	 */
 	OptionalComponentsVector<T> optionalComponentsVector;
 
-	unsigned int addVertex();;
+	unsigned int addVertex();
 };
 
 } // namespace mesh

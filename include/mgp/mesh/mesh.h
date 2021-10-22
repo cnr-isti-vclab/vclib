@@ -10,14 +10,21 @@
 
 namespace mgp {
 
+/**
+ * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
+ * containers of Elements (which can be vertices, faces, edges...
+ * 
+ * The Mesh class will expose all the public members of its containers, and its role is to implement
+ * all the functionalities that allow these containers to comunicate (e.g. an operation on the vertex
+ * container that requires to update also some face information). 
+ */
 template<class... Args>
 class Mesh : public mesh::Container<Args>...
 {
 protected:
-
 public:
 	typedef typename Mesh::VertexType Vertex;
-	typedef typename Mesh::FaceType Face;
+	typedef typename Mesh::FaceType   Face;
 
 	unsigned int addVertex();
 
@@ -27,10 +34,10 @@ protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 
 	typedef typename Mesh::VertexContainer VertexContainer;
-	typedef typename Mesh::FaceContainer FaceContainer;
+	typedef typename Mesh::FaceContainer   FaceContainer;
 };
 
-}
+} // namespace mgp
 
 #include "mesh.cpp"
 

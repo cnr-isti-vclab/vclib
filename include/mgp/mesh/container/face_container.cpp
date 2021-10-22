@@ -11,7 +11,6 @@ namespace mesh {
 template<class T>
 Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::Container()
 {
-	facesEnabled = true;
 }
 
 template<class T>

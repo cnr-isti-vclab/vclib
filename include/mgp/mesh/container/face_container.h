@@ -13,13 +13,20 @@
 namespace mgp {
 namespace mesh {
 
+/**
+ * @brief The Face Container class, will be used when the template argument given to the Mesh is a
+ * mgp::Face.
+ *
+ * This class adds a container (vector) of faces to the Mesh, making available the accessors members
+ * to the faces, the face number, iterators... This class will also take care to add
+ * enablers/disablers of the eventual optional components of the face.
+ */
 template<class T>
-class Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>> :
-		public virtual EnabledContainers
+class Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>
 {
 protected:
 	// types:
-	typedef T                                        FaceType;
+	typedef T                                               FaceType;
 	typedef Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>> FaceContainer;
 
 public:
@@ -31,11 +38,19 @@ public:
 	unsigned int faceNumber() const;
 
 	template<typename U = T>
-	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type
-	enableFaceColor();
+	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type enableFaceColor();
 
 protected:
+	/**
+	 * @brief faces: the vector of faces, where each face contains only its static components.
+	 * Optional components will be contained in the optionalComponentsVector.
+	 */
 	std::vector<T> faces;
+	/**
+	 * @brief optionalComponentsVector contains all the optional components data of the face, that
+	 * will be enabled - disabled at runtime.
+	 * Each face that has at least one optional component, will store a pointer to this vector.
+	 */
 	OptionalComponentsVector<T> optionalComponentsVector;
 
 	unsigned int addFace();

@@ -11,7 +11,6 @@ namespace mesh {
 template<class T>
 Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::Container()
 {
-	verticesEnabled = true;
 }
 
 template<class T>
