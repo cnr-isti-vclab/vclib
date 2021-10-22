@@ -62,6 +62,16 @@ protected:
 	unsigned int addVertex();
 };
 
+/**
+ * Detector to check if a class has (inherits) a VertexContainer
+ */
+
+template<typename T>
+using hasVertexContainer_t = decltype(std::declval<T&>().vertexNumber());
+
+template <typename T>
+using hasVertexContainer = typename detector<hasVertexContainer_t, void, T>::type;
+
 } // namespace mesh
 } // namespace mgp
 

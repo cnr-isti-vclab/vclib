@@ -63,6 +63,17 @@ protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 };
 
+/**
+ * Detector to check if a class has (inherits) a FaceContainer
+ */
+
+template<typename T>
+using hasFaceContainer_t = decltype(std::declval<T&>().faceNumber());
+
+template <typename T>
+using hasFaceContainer = typename detector<hasFaceContainer_t, void, T>::type;
+
+
 } // namespace mesh
 } // namespace mgp
 
