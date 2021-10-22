@@ -6,42 +6,14 @@
 #ifndef MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H
 #define MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H
 
-#include <vector>
-
-#include "assert.h"
-
-#include <mgp/misc/type_traits.h>
-
-#include <mgp/mesh/common/optional_color.h>
+#include "optional_color_vector.h"
 
 namespace mgp {
 namespace mesh {
 
-template<typename, typename = void>
-struct ColorMembers {};
-
 template<typename T>
-struct ColorMembers<T, std::enable_if_t<common::hasOptionalColor<T>::value>>
+class OptionalComponentsVector : public OptionalColorVector<T>
 {
-	bool isColorEnabled = false;
-	std::vector<typename T::ColorType> colors;
-};
-
-template<typename T>
-class OptionalComponentsVector
-{
-public:
-	typename std::enable_if<common::hasOptionalColor<T>::value, void>::type
-	enableColor(unsigned int size) {_c.isColorEnabled = true; _c.colors.resize(size);}
-
-	typename std::enable_if<common::hasOptionalColor<T>::value, typename T::ColorType>::type&
-	color(unsigned int i) {assert(_c.isColorEnabled); return _c.colors[i];}
-
-	const typename std::enable_if<common::hasOptionalColor<T>::value, typename T::ColorType>::type&
-	color (unsigned int i) const {assert(_c.isColorEnabled); return _c.colors[i];}
-
-private:
-	ColorMembers<T> _c;
 };
 
 } // namespace mesh

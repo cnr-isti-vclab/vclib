@@ -22,14 +22,14 @@ using Info = mgp::common::Info;
 template <typename T>
 using OptionalInfo = mgp::common::OptionalInfo<T>;
 
+/** Port Color class into face namespace **/
+using Color = mgp::common::Color;
+
 /** Port OptionalColor class into face namespace **/
 template <typename T>
 using OptionalColor = mgp::common::OptionalColor<T>;
 
-/** Port Color class into face namespace **/
-using Color = mgp::common::Color;
-
-/** Port Color classes into face namespace **/
+/** Port Normal classes into face namespace **/
 template<class Scalar, int N>
 using Normal = mgp::common::Normal<Scalar, N>;
 

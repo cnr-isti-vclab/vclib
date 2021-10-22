@@ -20,6 +20,11 @@ int main()
 	m.vertex(1)->position() = mgp::Point3d(0,1,0);
 	m.vertex(2)->position() = mgp::Point3d(1,0,0);
 
+	m.enableVertexColor();
+	m.vertex(0)->color() = mgp::Color(3, 7, 4);
+	m.vertex(1)->color() = mgp::Color(3, 63, 44);
+	m.vertex(2)->color() = mgp::Color(3, 9, 2);
+
 	m.addFace();
 
 	m.face(0)->setVertices({m.vertex(0), m.vertex(1), m.vertex(2)});

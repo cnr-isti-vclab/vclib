@@ -19,7 +19,7 @@ class Vertex :
 		public mgp::Vertex<
 			mgp::vert::Coordinate3d,
 			mgp::vert::Normal3d,
-			mgp::vert::Color,
+			mgp::vert::OptionalColor<Vertex>,
 			mgp::vert::FaceAdjacencyRef<Face>>
 {
 };

@@ -9,6 +9,8 @@
 #include "../common/info.h"
 #include "../common/color.h"
 #include "../common/normal.h"
+#include "../common/optional_info.h"
+#include "../common/optional_color.h"
 
 namespace mgp {
 namespace vert {
@@ -16,10 +18,18 @@ namespace vert {
 /** Port Info class into vert namespace **/
 using Info = mgp::common::Info;
 
+/** Port OptionalInfo class into vert namespace **/
+template <typename T>
+using OptionalInfo = mgp::common::OptionalInfo<T>;
+
 /** Port Color class into vert namespace **/
 using Color = mgp::common::Color;
 
-/** Port Color classes into vert namespace **/
+/** Port OptionalColor class into vert namespace **/
+template <typename T>
+using OptionalColor = mgp::common::OptionalColor<T>;
+
+/** Port Normal classes into vert namespace **/
 template<class Scalar, int N>
 using Normal = mgp::common::Normal<Scalar, N>;
 

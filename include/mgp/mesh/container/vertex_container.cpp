@@ -35,14 +35,23 @@ unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertexNumber() 
 }
 
 template<class T>
+template<class U>
+typename std::enable_if<common::hasOptionalColor<U>::value, void>::type
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::enableVertexColor()
+{
+	optionalComponentsVector.enableColor(vertexNumber());
+}
+
+template<class T>
 unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::addVertex()
 {
 	vertices.push_back(VertexType());
 	vertices[vertices.size() - 1]._id = vertices.size() - 1;
+	if constexpr(common::hasOptionalInfo<VertexType>::value) {
+		vertices[vertices.size() - 1].setContainerPointer(&optionalComponentsVector);
+	}
 	return vertices[vertices.size() - 1]._id;
 }
-
-
 
 } // namespace mesh
 } // namespace mgp

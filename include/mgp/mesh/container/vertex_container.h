@@ -8,6 +8,7 @@
 
 #include "../vertex.h"
 #include "container_t.h"
+#include "optional/optional_components_vector.h"
 
 namespace mgp {
 namespace mesh {
@@ -27,10 +28,15 @@ public:
 	const VertexType* vertex(unsigned int i) const;
 	VertexType*       vertex(unsigned int i);
 
-	unsigned int vertexNumber() const;;
+	unsigned int vertexNumber() const;
+
+	template<typename U = T>
+	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type
+	enableVertexColor();
 
 protected:
 	std::vector<T> vertices;
+	OptionalComponentsVector<T> optionalComponentsVector;
 
 	unsigned int addVertex();;
 };
