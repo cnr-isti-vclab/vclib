@@ -18,7 +18,7 @@ namespace mgp {
  *
  * // declare the member function that you are looking for:
  * template<typename T>
- * using hasmyMembery_t = decltype(std::declval<const T&>().myMember(std::declval<int>()));
+ * using hasmyMember_t = decltype(std::declval<const T&>().myMember(std::declval<int>()));
  *
  * // create a type trait for that member in a templated T class
  * template <typename T>
@@ -32,8 +32,10 @@ namespace mgp {
 
 template <typename... Ts>
 using void_t = void;
+
 template <template <class...> class Trait, class AlwaysVoid, class... Args>
 struct detector : std::false_type {};
+
 template <template <class...> class Trait, class... Args>
 struct detector<Trait, void_t<Trait<Args...>>, Args...> : std::true_type {};
 
