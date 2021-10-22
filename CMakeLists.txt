@@ -33,6 +33,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/common/normal.h
 	${MGP_SRC_DIR}/mesh/common/optional_color.h
 	${MGP_SRC_DIR}/mesh/common/optional_info.h
+	${MGP_SRC_DIR}/mesh/common/optional_normal.h
 	${MGP_SRC_DIR}/mesh/container/container_t.h
 	${MGP_SRC_DIR}/mesh/container/containers.h
 	${MGP_SRC_DIR}/mesh/container/face_container.h

@@ -11,6 +11,7 @@
 #include "../common/normal.h"
 #include "../common/optional_info.h"
 #include "../common/optional_color.h"
+#include "../common/optional_normal.h"
 
 namespace mgp {
 namespace face {
@@ -30,14 +31,27 @@ template <typename T>
 using OptionalColor = mgp::common::OptionalColor<T>;
 
 /** Port Normal classes into face namespace **/
-template<class Scalar, int N>
+template<typename Scalar, int N>
 using Normal = mgp::common::Normal<Scalar, N>;
 
-template<class Scalar>
+template<typename Scalar>
 using Normal3 = mgp::common::Normal3<Scalar>;
 
 using Normal3f = mgp::common::Normal3f;
 using Normal3d = mgp::common::Normal3d;
+
+/** Port OptionalNormal class into face namespace **/
+template <typename Scalar, int N, typename T>
+using OptionalNormal = mgp::common::OptionalNormal<Scalar, N, T>;
+
+template <typename Scalar, typename T>
+using OptionalNormal3 = mgp::common::OptionalNormal3<Scalar, T>;
+
+template <typename T>
+using OptionalNormal3f = mgp::common::OptionalNormal3f<T>;
+
+template <typename T>
+using OptionalNormal3d = mgp::common::OptionalNormal3d<T>;
 
 } // namespace face
 } // namespace mgp
