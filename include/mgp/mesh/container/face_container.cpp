@@ -14,17 +14,17 @@ Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::Container()
 }
 
 template<class T>
-const typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::FaceType*
+const typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::FaceType&
 Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::face(unsigned int i) const
 {
-	return &faces[i];
+	return faces[i];
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::FaceType*
+typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::FaceType&
 mgp::mesh::Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::face(unsigned int i)
 {
-	return &faces[i];
+	return faces[i];
 }
 
 template<class T>

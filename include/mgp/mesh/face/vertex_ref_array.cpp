@@ -35,9 +35,8 @@ void VertexRefsArray<Vertex, N>::setVertex(Vertex* v, unsigned int i)
 }
 
 template<class Vertex, int N>
-void VertexRefsArray<Vertex, N>::setVertices(const std::initializer_list<Vertex*>& list)
+void VertexRefsArray<Vertex, N>::setVertices(const std::array<Vertex*, N>& list)
 {
-	// todo: static assert
 	unsigned int i = 0;
 	for (const auto& v : list) {
 		setVertex(v, i);

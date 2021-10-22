@@ -32,8 +32,8 @@ protected:
 public:
 	Container();
 
-	const FaceType* face(unsigned int i) const;
-	FaceType*       face(unsigned int i);
+	const FaceType& face(unsigned int i) const;
+	FaceType&       face(unsigned int i);
 
 	unsigned int faceNumber() const;
 

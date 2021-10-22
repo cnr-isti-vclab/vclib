@@ -14,17 +14,17 @@ Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::Container()
 }
 
 template<class T>
-const typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::VertexType*
+const typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::VertexType&
 mgp::mesh::Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertex(unsigned int i) const
 {
-	return &vertices[i];
+	return vertices[i];
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::VertexType*
+typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::VertexType&
 mgp::mesh::Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertex(unsigned int i)
 {
-	return &vertices[i];
+	return vertices[i];
 }
 
 template<class T>

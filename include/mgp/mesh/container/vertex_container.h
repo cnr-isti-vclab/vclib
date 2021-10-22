@@ -32,8 +32,8 @@ protected:
 public:
 	Container();
 
-	const VertexType* vertex(unsigned int i) const;
-	VertexType*       vertex(unsigned int i);
+	const VertexType& vertex(unsigned int i) const;
+	VertexType&       vertex(unsigned int i);
 
 	unsigned int vertexNumber() const;
 

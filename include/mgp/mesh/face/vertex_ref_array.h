@@ -33,7 +33,7 @@ public:
 	const Vertex* v(unsigned int i) const;
 
 	void setVertex(Vertex* v, unsigned int i);
-	void setVertices(const std::initializer_list<Vertex*>& list);
+	void setVertices(const std::array<Vertex*, N> &list);
 
 protected:
 	std::array<Vertex*, N> refs;
