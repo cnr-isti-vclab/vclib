@@ -22,6 +22,8 @@ public:
 	typedef mgp::Color ColorType;
 	const mgp::Color& color() const { return B::containerPointer->color(B::id()); }
 	mgp::Color&       color() { return B::containerPointer->colors(B::id()); }
+
+	void __optional_color__() {} // dummy member used just for detection of an OpionalColor object
 };
 
 } // namespace common

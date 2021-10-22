@@ -24,6 +24,8 @@ int main()
 
 	m.face(0)->setVertices({m.vertex(0), m.vertex(1), m.vertex(2)});
 
+	m.enableFaceColor();
+
 	m.addVertex();
 	m.addVertex();
 	m.addVertex();

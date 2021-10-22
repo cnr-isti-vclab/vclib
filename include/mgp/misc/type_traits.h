@@ -18,7 +18,7 @@ namespace mgp {
  *
  * // declare the member function that you are looking for:
  * template<typename T>
- * using hasmyMember_t = decltype(std::declval<const T&>().myMember(std::declval<int>()));
+ * using hasmyMember_t = decltype(std::declval<T&>().myMember(std::declval<int>()));
  *
  * // create a type trait for that member in a templated T class
  * template <typename T>
