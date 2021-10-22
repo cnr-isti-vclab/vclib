@@ -36,7 +36,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/container/container_t.h
 	${MGP_SRC_DIR}/mesh/container/containers.h
 	${MGP_SRC_DIR}/mesh/container/face_container.h
-	${MGP_SRC_DIR}/mesh/container/optional_container.h
+	${MGP_SRC_DIR}/mesh/container/optional/optional_components_vector.h
 	${MGP_SRC_DIR}/mesh/container/vertex_container.h
 	${MGP_SRC_DIR}/mesh/face/common.h
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h

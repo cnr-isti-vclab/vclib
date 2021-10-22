@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_CONTAINER_OPTIONAL_CONTAINER_H
-#define MGP_MESH_CONTAINER_OPTIONAL_CONTAINER_H
+#ifndef MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H
+#define MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H
 
 #include <vector>
 
@@ -14,7 +14,7 @@ namespace mgp {
 namespace mesh {
 
 template<typename T>
-class OptionalContainer
+class OptionalComponentsVector
 {
 	typedef typename T::ColorType ColorType;
 	void enableColor(unsigned int size) {isColorEnabled = true; colors.resize(size);}
@@ -29,4 +29,4 @@ private:
 } // namespace mesh
 } // namespace mgp
 
-#endif // MGP_MESH_CONTAINER_OPTIONAL_CONTAINER_H
+#endif // MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H

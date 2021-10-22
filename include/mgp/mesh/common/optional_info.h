@@ -14,7 +14,7 @@ namespace mgp {
 
 namespace mesh {
 template<typename T>
-class OptionalContainer;
+class OptionalComponentsVector;
 }
 
 namespace common {
@@ -27,8 +27,8 @@ public:
 	void __optional__() const {} // dummy member used just for detection of an OpionalInfo object
 
 protected:
-	void setContainerPointer(mesh::OptionalContainer<T>* cp) { containerPointer = cp; }
-	mesh::OptionalContainer<T>* containerPointer;
+	void setContainerPointer(mesh::OptionalComponentsVector<T>* cp) { containerPointer = cp; }
+	mesh::OptionalComponentsVector<T>* containerPointer;
 };
 
 /**

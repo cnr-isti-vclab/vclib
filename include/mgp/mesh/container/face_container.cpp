@@ -40,7 +40,7 @@ unsigned int Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::addFace()
 	faces.push_back(FaceType());
 	faces[faces.size() - 1]._id = faces.size() - 1;
 	if constexpr(common::hasOptionalInfo<FaceType>::value) {
-		faces[faces.size() - 1].setContainerPointer(&optionalContainer);
+		faces[faces.size() - 1].setContainerPointer(&optionalComponentsVector);
 	}
 	return faces[faces.size() - 1]._id;
 }

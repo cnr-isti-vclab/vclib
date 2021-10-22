@@ -8,7 +8,7 @@
 
 #include "../face.h"
 #include "container_t.h"
-#include "optional_container.h"
+#include "optional/optional_components_vector.h"
 
 namespace mgp {
 namespace mesh {
@@ -32,7 +32,7 @@ public:
 
 protected:
 	std::vector<T> faces;
-	OptionalContainer<T> optionalContainer;
+	OptionalComponentsVector<T> optionalComponentsVector;
 
 	unsigned int addFace();
 
