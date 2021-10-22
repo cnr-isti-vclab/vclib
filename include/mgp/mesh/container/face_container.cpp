@@ -57,6 +57,14 @@ void Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::updateVertexReferences(
 		}
 	}
 }
+
+template<class T>
+typename std::enable_if<common::hasOptionalColor<T>::value, void>::type
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::enableFaceColor()
+{
+	optionalComponentsVector.enableColor(faceNumber());
+}
+
 }
 }
 

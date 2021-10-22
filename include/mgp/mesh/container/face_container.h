@@ -30,9 +30,8 @@ public:
 
 	unsigned int faceNumber() const;
 
-	template<typename TT = void>
-	typename std::enable_if<hasOptionalColor<T>::value, TT>::type
-	enableFaceColor() {optionalComponentsVector.enableColor(faceNumber());}
+	typename std::enable_if<common::hasOptionalColor<T>::value, void>::type
+	enableFaceColor();
 
 protected:
 	std::vector<T> faces;

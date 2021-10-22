@@ -33,7 +33,7 @@ protected:
 };
 
 /**
- * Detector to check if a class has the method v(int)
+ * Detector to check if a class has (inherits) OptionalInfo
  */
 
 template<typename T>

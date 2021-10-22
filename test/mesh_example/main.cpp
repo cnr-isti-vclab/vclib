@@ -26,9 +26,13 @@ int main()
 
 	m.enableFaceColor();
 
+	m.face(0)->color() = mgp::Color(255, 134, 98);
+
 	m.addVertex();
 	m.addVertex();
 	m.addVertex();
+
+	std::cerr << m.face(0)->color() << "\n";
 
 	std::cerr << "VN: " << m.vertexNumber() << "\n";
 

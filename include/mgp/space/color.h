@@ -24,11 +24,11 @@ bool operator<(const QColor& c1, const QColor& c2);
 
 namespace mgp {
 
-class Color : public Point4<unsigned char>
+class Color : public Point4<uint8_t>
 {
 public:
 	Color();
-	Color(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 255);
+	Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
 	int   red() const;
 	int   green() const;
 	int   blue() const;
@@ -42,13 +42,13 @@ public:
 	int   hsvSaturation() const;
 	float hsvHueF() const;
 	float hsvSaturationF() const;
-	void  setAlpha(unsigned char alpha);
-	void  setRed(unsigned char red);
-	void  setGreen(unsigned char green);
-	void  setBlue(unsigned char blue);
+	void  setAlpha(uint8_t alpha);
+	void  setRed(uint8_t red);
+	void  setGreen(uint8_t green);
+	void  setBlue(uint8_t blue);
 	void
-	setRgb(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 255);
-	void setHsv(unsigned int h, unsigned char s, unsigned char v, unsigned char alpha = 255);
+	setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+	void setHsv(unsigned int h, uint8_t s, uint8_t v, uint8_t alpha = 255);
 	void setAlphaF(float alpha);
 	void setRedF(float red);
 	void setGreenF(float green);

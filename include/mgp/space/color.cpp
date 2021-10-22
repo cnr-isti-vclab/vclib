@@ -48,10 +48,10 @@ inline Color::Color() : Point4(0, 0, 0, 255)
  * @param[in] alpha: alpha component (default 255)
  */
 inline Color::Color(
-	unsigned char red,
-	unsigned char green,
-	unsigned char blue,
-	unsigned char alpha) :
+	uint8_t red,
+	uint8_t green,
+	uint8_t blue,
+	uint8_t alpha) :
 		Point4(red, green, blue, alpha)
 {
 }
@@ -143,8 +143,8 @@ inline float Color::alphaF() const
  */
 inline int Color::hsvHue() const
 {
-	unsigned char rgbMin, rgbMax;
-	unsigned char h;
+	uint8_t rgbMin, rgbMax;
+	uint8_t h;
 
 	rgbMin = x() < y() ? (x() < z() ? x() : z()) : (y() < z() ? y() : z());
 	rgbMax = x() > y() ? (x() > z() ? x() : z()) : (y() > z() ? y() : z());
@@ -174,7 +174,7 @@ inline int Color::hsvHue() const
  */
 inline int Color::hsvSaturation() const
 {
-	unsigned char rgbMin, rgbMax;
+	uint8_t rgbMin, rgbMax;
 
 	rgbMin = x() < y() ? (x() < z() ? x() : z()) : (y() < z() ? y() : z());
 	rgbMax = x() > y() ? (x() > z() ? x() : z()) : (y() > z() ? y() : z());
@@ -211,7 +211,7 @@ inline float Color::hsvSaturationF() const
  * Sets the alpha of this color [0-255]
  * @param[in] alpha
  */
-inline void Color::setAlpha(unsigned char alpha)
+inline void Color::setAlpha(uint8_t alpha)
 {
 	w() = alpha;
 }
@@ -221,7 +221,7 @@ inline void Color::setAlpha(unsigned char alpha)
  * Sets the red of this color [0-255]
  * @param[in] red
  */
-inline void Color::setRed(unsigned char red)
+inline void Color::setRed(uint8_t red)
 {
 	x() = red;
 }
@@ -231,7 +231,7 @@ inline void Color::setRed(unsigned char red)
  * Sets the green of this color [0-255]
  * @param[in] green
  */
-inline void Color::setGreen(unsigned char green)
+inline void Color::setGreen(uint8_t green)
 {
 	y() = green;
 }
@@ -241,7 +241,7 @@ inline void Color::setGreen(unsigned char green)
  * Sets the blue of this color [0-255]
  * @param[in] blue
  */
-inline void Color::setBlue(unsigned char blue)
+inline void Color::setBlue(uint8_t blue)
 {
 	z() = blue;
 }
@@ -256,7 +256,7 @@ inline void Color::setBlue(unsigned char blue)
  * @param[in] alpha: default 255
  */
 inline void
-Color::setRgb(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha)
+Color::setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 {
 	x() = red;
 	y() = green;
@@ -273,7 +273,7 @@ Color::setRgb(unsigned char red, unsigned char green, unsigned char blue, unsign
  * @param[in] v
  * @param[in] alpha: default 255
  */
-inline void Color::setHsv(unsigned int h, unsigned char s, unsigned char v, unsigned char alpha)
+inline void Color::setHsv(unsigned int h, uint8_t s, uint8_t v, uint8_t alpha)
 {
 	w() = alpha;
 	if (s == 0) {
@@ -283,7 +283,7 @@ inline void Color::setHsv(unsigned int h, unsigned char s, unsigned char v, unsi
 	}
 	else {
 		h = (h / 360.0) * 255;
-		unsigned char region, remainder, p, q, t;
+		uint8_t region, remainder, p, q, t;
 		region    = h / 43;
 		remainder = (h - (region * 43)) * 6;
 
@@ -333,7 +333,7 @@ inline void Color::setHsv(unsigned int h, unsigned char s, unsigned char v, unsi
  */
 inline void Color::setAlphaF(float alpha)
 {
-	w() = (unsigned char) (alpha * 255);
+	w() = (uint8_t) (alpha * 255);
 }
 
 /**
@@ -343,7 +343,7 @@ inline void Color::setAlphaF(float alpha)
  */
 inline void Color::setRedF(float red)
 {
-	x() = (unsigned char) (red * 255);
+	x() = (uint8_t) (red * 255);
 }
 
 /**
@@ -353,7 +353,7 @@ inline void Color::setRedF(float red)
  */
 inline void Color::setGreenF(float green)
 {
-	y() = (unsigned char) (green * 255);
+	y() = (uint8_t) (green * 255);
 }
 
 /**
@@ -363,7 +363,7 @@ inline void Color::setGreenF(float green)
  */
 inline void Color::setBlueF(float blue)
 {
-	z() = (unsigned char) (blue * 255);
+	z() = (uint8_t) (blue * 255);
 }
 
 /**
@@ -377,10 +377,10 @@ inline void Color::setBlueF(float blue)
  */
 inline void Color::setRgbF(float red, float green, float blue, float alpha)
 {
-	w() = (unsigned char) (alpha * 255);
-	x() = (unsigned char) (red * 255);
-	y() = (unsigned char) (green * 255);
-	z() = (unsigned char) (blue * 255);
+	w() = (uint8_t) (alpha * 255);
+	x() = (uint8_t) (red * 255);
+	y() = (uint8_t) (green * 255);
+	z() = (uint8_t) (blue * 255);
 }
 
 /**
