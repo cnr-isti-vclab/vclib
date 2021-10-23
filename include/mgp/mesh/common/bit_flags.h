@@ -9,6 +9,7 @@
 #include <assert.h>
 
 #include "info.h"
+#include <mgp/misc/type_traits.h>
 
 namespace mgp {
 namespace common {
@@ -54,6 +55,16 @@ private:
 	};
 	int flags = 0;
 };
+
+/**
+ * Detector to check if a class has (inherits) OptionalColor
+ */
+
+template<typename T>
+using hasBitFlags_t = decltype(std::declval<T&>().isDeleted());
+
+template <typename T>
+using hasBitFlags = typename detector<hasBitFlags_t, void, T>::type;
 
 } // namespace common
 } // namespace mgp

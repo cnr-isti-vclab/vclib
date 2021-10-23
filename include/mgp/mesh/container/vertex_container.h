@@ -25,7 +25,7 @@ template<class T>
 class Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>
 {
 	static_assert(
-		std::is_base_of<mgp::common::BitFlags,T>::value,
+		mgp::common::hasBitFlags<T>::value,
 		"You should include BitFlags as Vertex component in your Mesh definition.");
 protected:
 	// types:
