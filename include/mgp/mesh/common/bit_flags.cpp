@@ -5,8 +5,7 @@
 
 #include "bit_flags.h"
 
-namespace mgp {
-namespace common {
+namespace mgp::common {
 
 inline bool BitFlags::isDeleted() const
 {
@@ -28,7 +27,7 @@ inline bool BitFlags::isVisited() const
 	return flags & VISITED;
 }
 
-inline bool BitFlags::userBitFlag(unsigned int bit)
+inline bool BitFlags::userBitFlag(unsigned int bit) const
 {
 	assert(bit >= FIST_USER_BIT && bit < 32);
 	bit = 1 << bit;
@@ -42,7 +41,7 @@ inline bool BitFlags::userBitFlag(unsigned int bit)
 inline void BitFlags::clearAllFlags()
 {
 	bool isD = isDeleted();
-	flags = 0;
+	flags    = 0;
 	flags |= isD;
 }
 
@@ -98,5 +97,4 @@ inline void BitFlags::setDeleted(bool b)
 	}
 }
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common

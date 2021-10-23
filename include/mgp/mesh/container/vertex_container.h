@@ -10,8 +10,7 @@
 #include "container_t.h"
 #include "optional/optional_components_vector.h"
 
-namespace mgp {
-namespace mesh {
+namespace mgp::mesh {
 
 template<class T>
 /**
@@ -27,6 +26,7 @@ class Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>
 	static_assert(
 		mgp::common::hasBitFlags<T>::value,
 		"You should include BitFlags as Vertex component in your Mesh definition.");
+
 protected:
 	// types:
 	typedef T                                                 VertexType;
@@ -42,10 +42,14 @@ public:
 
 	template<typename U = T>
 	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type enableVertexColor();
-	
+
+	template<typename U = T>
+	typename std::enable_if<common::hasOptionalMutableBitFlags<U>::value, void>::type
+	enableVertexMutableBitFlags();
+
 	template<typename U = T>
 	typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type enableVertexNormal();
-	
+
 	template<typename U = T>
 	typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type enableVertexScalar();
 
@@ -78,11 +82,10 @@ protected:
 template<typename T>
 using hasVertexContainer_t = decltype(std::declval<T&>().vertexNumber());
 
-template <typename T>
+template<typename T>
 using hasVertexContainer = typename detector<hasVertexContainer_t, void, T>::type;
 
-} // namespace mesh
-} // namespace mgp
+} // namespace mgp::mesh
 
 #include "vertex_container.cpp"
 

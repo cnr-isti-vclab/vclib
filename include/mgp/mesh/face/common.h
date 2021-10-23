@@ -8,16 +8,15 @@
 
 #include "../common/bit_flags.h"
 #include "../common/color.h"
-#include "../common/info.h"
+#include "../common/mutable_bit_flags.h"
 #include "../common/normal.h"
 #include "../common/scalar.h"
-#include "../common/optional_info.h"
 #include "../common/optional_color.h"
+#include "../common/optional_mutable_bit_flags.h"
 #include "../common/optional_normal.h"
 #include "../common/optional_scalar.h"
 
-namespace mgp {
-namespace face {
+namespace mgp::face {
 
 /** Port Info class into face namespace **/
 using Info = mgp::common::Info;
@@ -28,6 +27,10 @@ using OptionalInfo = mgp::common::OptionalInfo<T>;
 
 /** Port BitFlags class into face namespace **/
 using BitFlags = mgp::common::BitFlags;
+
+/** Port OptionalMutableBitFlags class into face namespace **/
+template <typename T>
+using OptionalMutableBitFlags = mgp::common::OptionalMutableBitFlags<T>;
 
 /** Port Color class into face namespace **/
 using Color = mgp::common::Color;
@@ -76,7 +79,6 @@ using OptionalScalarf = mgp::common::OptionalScalar<float, T>;
 template <typename T>
 using OptionalScalard = mgp::common::OptionalScalar<double, T>;
 
-} // namespace face
-} // namespace mgp
+} // namespace mgp::face
 
 #endif // MGP_MESH_FACE_COMMON_H

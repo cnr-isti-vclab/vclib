@@ -9,14 +9,15 @@
 #include "face/common.h"
 #include "face/vertex_ref_array.h"
 
-namespace mgp {
+namespace mgp::mesh {
 
-namespace mesh {
-template <typename, typename>
+// Container class declaration
+template<typename, typename>
 class Container;
-}
 
-namespace face {
+} // namespace mgp::mesh
+
+namespace mgp::face {
 
 /**
  * @brief The Component fallback class, will be used when the template argument given to the Face
@@ -30,20 +31,25 @@ class Component : public T
 {
 };
 
-}
+} // namespace mgp::face
+
+namespace mgp {
 
 // Dummy class used to detect the a mgp::Face regardless of its template arguments
-class FaceTriggerer {
+class FaceTriggerer
+{
 };
 
 template<class... Args>
 class Face : public FaceTriggerer, public face::Component<Args>...
 {
-	template<typename, typename> friend class mesh::Container;
+	template<typename, typename>
+	friend class mesh::Container;
+
 protected:
 	Face() {}
 };
 
-}
+} // namespace mgp
 
 #endif // MGP_MESH_FACE_H

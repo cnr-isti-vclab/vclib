@@ -10,8 +10,7 @@
 
 #include "common.h"
 
-namespace mgp {
-namespace vert {
+namespace mgp::vert {
 
 template<class Face>
 class FaceAdjacencyRef : virtual public Info
@@ -23,7 +22,6 @@ private:
 	std::vector<Face*> refs;
 };
 
-} // namespace vert
-} // namespace mgp
+} // namespace mgp::vert
 
 #endif // MGP_MESH_VERTEX_FACE_ADJ_REF_H

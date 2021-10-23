@@ -10,8 +10,7 @@
 
 #include "optional_info.h"
 
-namespace mgp {
-namespace common {
+namespace mgp::common {
 
 template<typename Scalar, int N, typename T>
 class OptionalNormal : public virtual OptionalInfo<T>
@@ -55,8 +54,7 @@ using hasOptionalNormal_t = decltype(std::declval<T&>().__optional_color__());
 template <typename T>
 using hasOptionalNormal = typename detector<hasOptionalNormal_t, void, T>::type;
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common
 
 
 #endif // MGP_MESH_COMMON_OPTIONAL_NORMAL_H

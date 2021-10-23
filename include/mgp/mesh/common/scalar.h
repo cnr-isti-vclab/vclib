@@ -8,8 +8,7 @@
 
 #include "info.h"
 
-namespace mgp {
-namespace common {
+namespace mgp::common {
 
 template<typename T>
 class Scalar : public virtual Info
@@ -26,7 +25,6 @@ private:
 typedef Scalar<float>  Scalarf;
 typedef Scalar<double> Scalard;
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common
 
 #endif // MGP_MESH_COMMON_SCALAR_H

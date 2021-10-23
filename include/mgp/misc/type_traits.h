@@ -30,14 +30,18 @@ namespace mgp {
  * }
  */
 
-template <typename... Ts>
+template<typename... Ts>
 using void_t = void;
 
-template <template <class...> class Trait, class AlwaysVoid, class... Args>
-struct detector : std::false_type {};
+template<template<class...> class Trait, class AlwaysVoid, class... Args>
+struct detector : std::false_type
+{
+};
 
-template <template <class...> class Trait, class... Args>
-struct detector<Trait, void_t<Trait<Args...>>, Args...> : std::true_type {};
+template<template<class...> class Trait, class... Args>
+struct detector<Trait, void_t<Trait<Args...>>, Args...> : std::true_type
+{
+};
 
 /**
  * Utility template that allows to shorten the template parameter used to tell
@@ -54,9 +58,9 @@ struct detector<Trait, void_t<Trait<Args...>>, Args...> : std::true_type {};
  * class MyClass<T, mgp::ifIsBaseOf<B, T>> {}; // here, B is base of T
  */
 
-template <typename B, typename D>
-using ifIsBaseOf = std::enable_if_t<std::is_base_of<B,D>::value>;
+template<typename B, typename D>
+using ifIsBaseOf = std::enable_if_t<std::is_base_of<B, D>::value>;
 
-}
+} // namespace mgp
 
 #endif // MGP_TYPE_TRAITS_H

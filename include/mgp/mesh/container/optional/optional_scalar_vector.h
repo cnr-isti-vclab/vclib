@@ -10,22 +10,24 @@
 
 #include "optional_generic_vector.h"
 
-namespace mgp {
-namespace mesh {
+namespace mgp::mesh {
 
 template<typename, typename = void>
 class OptionalScalarVector
 {
+public:
+	void resize(unsigned int) {}
 };
 
 template<typename T>
 class OptionalScalarVector<T, std::enable_if_t<common::hasOptionalScalar<T>::value>> :
-		 private OptionalGenericVector<typename T::ScalarType>
+		private OptionalGenericVector<typename T::ScalarType>
 {
 	typedef typename T::ScalarType            ScalarType;
 	typedef OptionalGenericVector<ScalarType> Base;
-	
+
 public:
+	using Base::resize;
 	bool              isScalarEnabled() { return Base::isEnabled(); };
 	void              enableScalar(unsigned int size) { Base::enable(size); }
 	void              disableScalar() { Base::disable(); }
@@ -33,7 +35,6 @@ public:
 	const ScalarType& scalar(unsigned int i) const { return Base::at(i); }
 };
 
-} // namespace mesh
-} // namespace mgp
+} // namespace mgp::mesh
 
 #endif // MGP_MESH_CONTAINER_OPTIONAL_OPTIONAL_SCALAR_VECTOR_H

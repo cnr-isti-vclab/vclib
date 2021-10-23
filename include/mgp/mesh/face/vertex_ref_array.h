@@ -13,8 +13,7 @@
 
 #include "common.h"
 
-namespace mgp {
-namespace face {
+namespace mgp::face {
 
 /**
  * @brief The VertexRefsArray class is a Component of the Mesh::Face class which will contain
@@ -42,7 +41,7 @@ protected:
 };
 
 template<class Vertex>
-class TriangleVertexRefsArray : public VertexRefsArray<Vertex, 3>
+class TriangleVertexRefs : public VertexRefsArray<Vertex, 3>
 {
 	Vertex*&      v0() { return VertexRefsArray<Vertex, 3>::refs[0]; }
 	Vertex*&      v1() { return VertexRefsArray<Vertex, 3>::refs[1]; }
@@ -66,8 +65,7 @@ using hasVertexRefsArray_t = decltype(std::declval<const T&>().v(std::declval<in
 template<typename T>
 using hasVertexRefsArray = typename detector<hasVertexRefsArray_t, void, T>::type;
 
-} // namespace face
-} // namespace mgp
+} // namespace mgp::face
 
 #include "vertex_ref_array.cpp"
 

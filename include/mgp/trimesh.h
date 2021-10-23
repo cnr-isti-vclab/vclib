@@ -8,36 +8,36 @@
 
 #include "mesh/mesh.h"
 
-namespace mgp {
-
-namespace trimesh {
+namespace mgp::trimesh {
 
 class Vertex;
 class Face;
 
 class Vertex :
 		public mgp::Vertex<
-			mgp::vert::BitFlags,
-			mgp::vert::Coordinate3d,
-			mgp::vert::Normal3d,
-			mgp::vert::OptionalColor<Vertex>,
-			mgp::vert::Scalard,
-			mgp::vert::FaceAdjacencyRef<Face>>
+			mgp::vert::BitFlags,                        // 4b
+			mgp::vert::Coordinate3d,                    // 24b
+			mgp::vert::Normal3d,                        // 24b
+			mgp::vert::Color,                           // 4b
+			mgp::vert::Scalard,                         // 8b
+			mgp::vert::OptionalMutableBitFlags<Vertex>, // 0b
+			mgp::vert::FaceAdjacencyRef<Face>>          // N*8b
 {
 };
 
 class Face :
-		public mgp::
-			Face<
-				mgp::face::BitFlags,
-				mgp::face::TriangleVertexRefsArray<Vertex>,
-				mgp::vert::Normal3d,
-				mgp::vert::OptionalScalard<Face>,
-				mgp::face::OptionalColor<Face>>
+		public mgp::Face<
+			mgp::face::BitFlags,                   // 4b
+			mgp::face::TriangleVertexRefs<Vertex>, // 24b
+			mgp::face::Normal3d,                   // 24b
+			mgp::face::OptionalScalard<Face>,      // 0b
+			mgp::face::OptionalColor<Face>>        // 0b
 {
 };
 
-} // namespace trimesh
+} // namespace mgp::trimesh
+
+namespace mgp {
 
 class TriMesh : public mgp::Mesh<trimesh::Vertex, trimesh::Face, mgp::common::Color>
 {

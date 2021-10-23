@@ -47,11 +47,7 @@ inline Color::Color() : Point4(0, 0, 0, 255)
  * @param[in] blue: blue component
  * @param[in] alpha: alpha component (default 255)
  */
-inline Color::Color(
-	uint8_t red,
-	uint8_t green,
-	uint8_t blue,
-	uint8_t alpha) :
+inline Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) :
 		Point4(red, green, blue, alpha)
 {
 }
@@ -255,8 +251,7 @@ inline void Color::setBlue(uint8_t blue)
  * @param[in] blue
  * @param[in] alpha: default 255
  */
-inline void
-Color::setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
+inline void Color::setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 {
 	x() = red;
 	y() = green;

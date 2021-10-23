@@ -6,8 +6,7 @@
 #ifndef MGP_MESH_COMMON_INFO_H
 #define MGP_MESH_COMMON_INFO_H
 
-namespace mgp {
-namespace common {
+namespace mgp::common {
 
 class Info
 {
@@ -20,7 +19,6 @@ protected:
 	unsigned int _id;
 };
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common
 
 #endif // MGP_MESH_COMMON_INFO_H

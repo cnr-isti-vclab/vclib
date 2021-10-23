@@ -10,8 +10,7 @@
 
 #include "common.h"
 
-namespace mgp {
-namespace vert {
+namespace mgp::vert {
 
 template<class Scalar, int N>
 class Coordinate : virtual public Info
@@ -42,7 +41,6 @@ private:
 typedef Coordinate3<float>  Coordinate3f;
 typedef Coordinate3<double> Coordinate3d;
 
-} // namespace vert
-} // namespace mgp
+} // namespace mgp::vert
 
 #endif // MGP_MESH_VERTEX_COORDINATE_H

@@ -10,9 +10,7 @@
 
 #include <mgp/misc/type_traits.h>
 
-namespace mgp {
-
-namespace mesh {
+namespace mgp::mesh {
 
 /**
  * @brief The Container fallback class, will be used when the template argument given to the
@@ -30,8 +28,6 @@ class Container : public T
 {
 };
 
-} // namespace mesh
-
-} // namespace mgp
+} // namespace mgp::mesh
 
 #endif // MGP_MESH_CONTAINER_CONTAIER_T_H

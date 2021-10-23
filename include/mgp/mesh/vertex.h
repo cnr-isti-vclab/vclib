@@ -10,17 +10,15 @@
 #include "vertex/coordinate.h"
 #include "vertex/face_adjacency_ref.h"
 
-namespace mgp {
-
-namespace mesh {
+namespace mgp::mesh {
 
 // Container class declaration
-template <typename, typename>
+template<typename, typename>
 class Container;
 
-}
+} // namespace mgp::mesh
 
-namespace vert {
+namespace mgp::vert {
 
 /**
  * @brief The Component fallback class, will be used when the template argument given to the Vertex
@@ -34,20 +32,25 @@ class Component : public T
 {
 };
 
-}
+} // namespace mgp::vert
+
+namespace mgp {
 
 // Dummy class used to detect the a mgp::Vertex regardless of its template arguments
-class VertexTriggerer {
+class VertexTriggerer
+{
 };
 
 template<class... Args>
 class Vertex : public VertexTriggerer, public vert::Component<Args>...
 {
-	template<typename, typename> friend class mesh::Container;
+	template<typename, typename>
+	friend class mesh::Container;
+
 protected:
 	Vertex() {}
 };
 
-}
+} // namespace mgp
 
 #endif // MGP_MESH_VERTEX_H

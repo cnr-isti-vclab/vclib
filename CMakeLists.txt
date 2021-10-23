@@ -31,10 +31,12 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/common/bit_flags.h
 	${MGP_SRC_DIR}/mesh/common/color.h
 	${MGP_SRC_DIR}/mesh/common/info.h
+	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.h
 	${MGP_SRC_DIR}/mesh/common/normal.h
 	${MGP_SRC_DIR}/mesh/common/scalar.h
 	${MGP_SRC_DIR}/mesh/common/optional_color.h
 	${MGP_SRC_DIR}/mesh/common/optional_info.h
+	${MGP_SRC_DIR}/mesh/common/optional_mutable_bit_flags.h
 	${MGP_SRC_DIR}/mesh/common/optional_normal.h
 	${MGP_SRC_DIR}/mesh/common/optional_scalar.h
 	${MGP_SRC_DIR}/mesh/container/container_t.h
@@ -43,6 +45,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/container/optional/optional_color_vector.h
 	${MGP_SRC_DIR}/mesh/container/optional/optional_components_vector.h
 	${MGP_SRC_DIR}/mesh/container/optional/optional_generic_vector.h
+	${MGP_SRC_DIR}/mesh/container/optional/optional_mutable_bit_flags_vector.h
 	${MGP_SRC_DIR}/mesh/container/optional/optional_normal_vector.h
 	${MGP_SRC_DIR}/mesh/container/optional/optional_scalar_vector.h
 	${MGP_SRC_DIR}/mesh/container/vertex_container.h
@@ -61,6 +64,8 @@ set(SOURCES
 	${MGP_SRC_DIR}/space/point/point3.cpp
 	${MGP_SRC_DIR}/space/point/point4.cpp
 	${MGP_SRC_DIR}/mesh/common/bit_flags.cpp
+	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.cpp
+	${MGP_SRC_DIR}/mesh/common/optional_mutable_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/container/face_container.cpp
 	${MGP_SRC_DIR}/mesh/container/vertex_container.cpp
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.cpp

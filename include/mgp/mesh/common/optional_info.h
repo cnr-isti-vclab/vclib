@@ -10,14 +10,15 @@
 
 #include "info.h"
 
-namespace mgp {
 
-namespace mesh {
+namespace mgp::mesh {
+
 template<typename T>
 class OptionalComponentsVector;
+
 }
 
-namespace common {
+namespace mgp::common {
 
 template<typename T>
 class OptionalInfo : virtual public Info
@@ -42,7 +43,6 @@ using hasOptionalInfo_t = decltype(std::declval<const T&>().__optional_info__())
 template<typename T>
 using hasOptionalInfo = typename detector<hasOptionalInfo_t, void, T>::type;
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common
 
 #endif // MGP_MESH_COMMON_OPTIONAL_INFO_H

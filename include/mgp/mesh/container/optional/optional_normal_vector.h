@@ -10,22 +10,24 @@
 
 #include "optional_generic_vector.h"
 
-namespace mgp {
-namespace mesh {
+namespace mgp::mesh {
 
 template<typename, typename = void>
 class OptionalNormalVector
 {
+public:
+	void resize(unsigned int) {}
 };
 
 template<typename T>
 class OptionalNormalVector<T, std::enable_if_t<common::hasOptionalNormal<T>::value>> :
-	private OptionalGenericVector<typename T::NormalType>
+		private OptionalGenericVector<typename T::NormalType>
 {
 	typedef typename T::NormalType            NormalType;
 	typedef OptionalGenericVector<NormalType> Base;
-	
+
 public:
+	using Base::resize;
 	bool              isNormalEnabled() { return Base::isEnabled(); };
 	void              enableNormal(unsigned int size) { Base::enable(size); }
 	void              disableNormal() { Base::disable(); }
@@ -33,7 +35,6 @@ public:
 	const NormalType& normal(unsigned int i) const { return Base::at(i); }
 };
 
-} // namespace mesh
-} // namespace mgp
+} // namespace mgp::mesh
 
 #endif // MGP_MESH_CONTAINER_OPTIONAL_OPTIONAL_NORMAL_VECTOR_H

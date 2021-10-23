@@ -5,8 +5,7 @@
 
 #include "face_container.h"
 
-namespace mgp {
-namespace mesh {
+namespace mgp::mesh {
 
 template<class T>
 Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::Container()
@@ -14,21 +13,21 @@ Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::Container()
 }
 
 template<class T>
-const typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::FaceType&
-Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::face(unsigned int i) const
+const typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::FaceType&
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::face(unsigned int i) const
 {
 	return faces[i];
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::FaceType&
-mgp::mesh::Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::face(unsigned int i)
+typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::FaceType&
+mgp::mesh::Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::face(unsigned int i)
 {
 	return faces[i];
 }
 
 template<class T>
-unsigned int Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::faceNumber() const
+unsigned int Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::faceNumber() const
 {
 	return fn;
 }
@@ -36,7 +35,7 @@ unsigned int Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::faceNumber() cons
 template<class T>
 template<class U>
 typename std::enable_if<common::hasOptionalColor<U>::value, void>::type
-Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::enableFaceColor()
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceColor()
 {
 	optionalComponentsVector.enableColor(faceNumber());
 }
@@ -44,7 +43,7 @@ Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::enableFaceColor()
 template<class T>
 template<class U>
 typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type
-Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::enableFaceNormal()
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceNormal()
 {
 	optionalComponentsVector.enableNormal(faceNumber());
 }
@@ -52,19 +51,20 @@ Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::enableFaceNormal()
 template<class T>
 template<class U>
 typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type
-Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::enableFaceScalar()
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceScalar()
 {
 	optionalComponentsVector.enableScalar(faceNumber());
 }
 
 template<class T>
-unsigned int Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::addFace()
+unsigned int Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::addFace()
 {
 	faces.push_back(FaceType());
 	++fn;
 	faces[faces.size() - 1]._id = faces.size() - 1;
-	if constexpr(common::hasOptionalInfo<FaceType>::value) {
+	if constexpr (common::hasOptionalInfo<FaceType>::value) {
 		faces[faces.size() - 1].setContainerPointer(&optionalComponentsVector);
+		optionalComponentsVector.resize(faces.size());
 	}
 	return faces[faces.size() - 1]._id;
 }
@@ -82,6 +82,4 @@ void Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::updateVertexReferences(
 	}
 }
 
-}
-}
-
+} // namespace mgp::mesh

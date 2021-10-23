@@ -5,8 +5,7 @@
 
 #include "vertex_ref_array.h"
 
-namespace mgp {
-namespace face {
+namespace mgp::face {
 
 template<class Vertex, int N>
 VertexRefsArray<Vertex, N>::VertexRefsArray() : refs({nullptr})
@@ -57,5 +56,4 @@ void VertexRefsArray<Vertex, N>::updateVertexReferences(
 	}
 }
 
-} // namespace face
-} // namespace mgp
+} // namespace mgp::face

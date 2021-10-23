@@ -37,7 +37,6 @@ public:
 	float greenF() const;
 	float blueF() const;
 	float alphaF() const;
-	// toimplement
 	int   hsvHue() const;
 	int   hsvSaturation() const;
 	float hsvHueF() const;
@@ -46,15 +45,14 @@ public:
 	void  setRed(uint8_t red);
 	void  setGreen(uint8_t green);
 	void  setBlue(uint8_t blue);
-	void
-	setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
-	void setHsv(unsigned int h, uint8_t s, uint8_t v, uint8_t alpha = 255);
-	void setAlphaF(float alpha);
-	void setRedF(float red);
-	void setGreenF(float green);
-	void setBlueF(float blue);
-	void setRgbF(float red, float green, float blue, float alpha = 1.0);
-	void setHsvF(float hf, float sf, float vf, float alpha = 1.0);
+	void  setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+	void  setHsv(unsigned int h, uint8_t s, uint8_t v, uint8_t alpha = 255);
+	void  setAlphaF(float alpha);
+	void  setRedF(float red);
+	void  setGreenF(float green);
+	void  setBlueF(float blue);
+	void  setRgbF(float red, float green, float blue, float alpha = 1.0);
+	void  setHsvF(float hf, float sf, float vf, float alpha = 1.0);
 
 	bool operator==(const Color& otherColor) const;
 	bool operator!=(const Color& otherColor) const;

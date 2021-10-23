@@ -8,8 +8,7 @@
 
 #include "optional_info.h"
 
-namespace mgp {
-namespace common {
+namespace mgp::common {
 
 template<typename S, typename T>
 class OptionalScalar : public virtual OptionalInfo<T>
@@ -40,7 +39,6 @@ using hasOptionalScalar_t = decltype(std::declval<T&>().__optional_scalar__());
 template <typename T>
 using hasOptionalScalar = typename detector<hasOptionalScalar_t, void, T>::type;
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common
 
 #endif //  MGP_MESH_COMMON_OPTIONAL_SCALAR_H

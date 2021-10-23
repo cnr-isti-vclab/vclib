@@ -7,21 +7,29 @@
 #define MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H
 
 #include "optional_color_vector.h"
+#include "optional_mutable_bit_flags_vector.h"
 #include "optional_normal_vector.h"
 #include "optional_scalar_vector.h"
 
-namespace mgp {
-namespace mesh {
+namespace mgp::mesh {
 
 template<typename T>
 class OptionalComponentsVector :
-	public OptionalColorVector<T>,
-	public OptionalNormalVector<T>,
-	public OptionalScalarVector<T>
+		public OptionalMutableBitFlagsVector<T>,
+		public OptionalColorVector<T>,
+		public OptionalNormalVector<T>,
+		public OptionalScalarVector<T>
 {
+public:
+	void resize(unsigned int size)
+	{
+		OptionalMutableBitFlagsVector<T>::resize(size);
+		OptionalColorVector<T>::resize(size);
+		OptionalNormalVector<T>::resize(size);
+		OptionalScalarVector<T>::resize(size);
+	}
 };
 
-} // namespace mesh
-} // namespace mgp
+} // namespace mgp::mesh
 
 #endif // MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H

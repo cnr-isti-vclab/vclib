@@ -9,17 +9,13 @@
 #include <assert.h>
 #include <vector>
 
-namespace mgp {
-namespace mesh {
+namespace mgp::mesh {
 
 template<typename T>
 class OptionalGenericVector
 {
 protected:
-	bool isEnabled() const
-	{
-		return enabled;
-	}
+	bool isEnabled() const { return enabled; }
 	void enable(unsigned int size)
 	{
 		enabled = true;
@@ -29,6 +25,11 @@ protected:
 	{
 		enabled = false;
 		vec.clear();
+	}
+	void resize(unsigned int size)
+	{
+		if (enabled)
+			vec.resize(size);
 	}
 	T& at(unsigned int i)
 	{
@@ -46,7 +47,6 @@ private:
 	std::vector<T> vec;
 };
 
-} // namespace mesh
-} // namespace mgp
+} // namespace mgp::mesh
 
 #endif // MGP_MESH_CONTAINER_OPTIONAL_GENERIC_VECTOR_H

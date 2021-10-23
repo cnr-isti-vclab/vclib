@@ -8,15 +8,15 @@
 
 #include <assert.h>
 
-#include "info.h"
 #include <mgp/misc/type_traits.h>
 
-namespace mgp {
-namespace common {
+#include "info.h"
+
+namespace mgp::common {
 
 /**
  * @brief The BitFlags class represents a collection of 32 bits that will be part of an Element
- * (Vertex, Face, ...).
+ * (e.g. Vertex, Face, ...).
  *
  * This component is mandatory into every Element of the mesh.
  *
@@ -34,7 +34,7 @@ public:
 	bool isSelected() const;
 	bool isOnBorder() const;
 	bool isVisited() const;
-	bool userBitFlag(unsigned int bit);
+	bool userBitFlag(unsigned int bit) const;
 
 	void clearAllFlags();
 	void setSelected(bool b = true);
@@ -57,17 +57,16 @@ private:
 };
 
 /**
- * Detector to check if a class has (inherits) OptionalColor
+ * Detector to check if a class has (inherits) BitFlags
  */
 
 template<typename T>
 using hasBitFlags_t = decltype(std::declval<T&>().isDeleted());
 
-template <typename T>
+template<typename T>
 using hasBitFlags = typename detector<hasBitFlags_t, void, T>::type;
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common
 
 #include "bit_flags.cpp"
 

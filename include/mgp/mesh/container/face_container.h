@@ -10,8 +10,7 @@
 #include "container_t.h"
 #include "optional/optional_components_vector.h"
 
-namespace mgp {
-namespace mesh {
+namespace mgp::mesh {
 
 /**
  * @brief The Face Container class, will be used when the template argument given to the Mesh is a
@@ -83,8 +82,7 @@ template <typename T>
 using hasFaceContainer = typename detector<hasFaceContainer_t, void, T>::type;
 
 
-} // namespace mesh
-} // namespace mgp
+} // namespace mgp::mesh
 
 #include "face_container.cpp"
 

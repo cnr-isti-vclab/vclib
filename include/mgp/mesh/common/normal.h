@@ -10,8 +10,7 @@
 
 #include "info.h"
 
-namespace mgp {
-namespace common {
+namespace mgp::common {
 
 template<typename Scalar, int N>
 class Normal : virtual public Info
@@ -42,7 +41,6 @@ private:
 typedef Normal3<float>  Normal3f;
 typedef Normal3<double> Normal3d;
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common
 
 #endif // MGP_MESH_COMMON_NORMAL_H

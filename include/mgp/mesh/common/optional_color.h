@@ -10,8 +10,7 @@
 
 #include "optional_info.h"
 
-namespace mgp {
-namespace common {
+namespace mgp::common {
 
 template<typename T>
 class OptionalColor : public virtual OptionalInfo<T>
@@ -36,7 +35,6 @@ using hasOptionalColor_t = decltype(std::declval<T&>().__optional_color__());
 template <typename T>
 using hasOptionalColor = typename detector<hasOptionalColor_t, void, T>::type;
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common
 
 #endif // MGP_MESH_COMMON_OPTIONAL_COLOR_H

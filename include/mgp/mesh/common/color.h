@@ -10,8 +10,7 @@
 
 #include "info.h"
 
-namespace mgp {
-namespace common {
+namespace mgp::common {
 
 class Color : public virtual Info
 {
@@ -24,7 +23,6 @@ private:
 	mgp::Color c;
 };
 
-} // namespace common
-} // namespace mgp
+} // namespace mgp::common
 
 #endif // MGP_MESH_COMMON_COLOR_H
