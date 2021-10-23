@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_CONTAINER_OPTIONAL_GENERIC_VECTOR_H
-#define MGP_MESH_CONTAINER_OPTIONAL_GENERIC_VECTOR_H
+#ifndef MGP_MESH_COMPONENT_VECTOR_GENERIC_VECTOR_H
+#define MGP_MESH_COMPONENT_VECTOR_GENERIC_VECTOR_H
 
 #include <assert.h>
 #include <vector>
@@ -55,4 +55,4 @@ private:
 
 } // namespace mgp::mesh
 
-#endif // MGP_MESH_CONTAINER_OPTIONAL_GENERIC_VECTOR_H
+#endif // MGP_MESH_COMPONENT_VECTOR_GENERIC_VECTOR_H

@@ -14,7 +14,7 @@
 namespace mgp::mesh {
 
 template<typename T>
-class OptionalComponentsVector;
+class ComponentsVector;
 
 }
 
@@ -29,8 +29,8 @@ public:
 	void __optional_info__() const {} // dummy member used just for detection of an OpionalInfo object
 
 protected:
-	void setContainerPointer(mesh::OptionalComponentsVector<T>* cp) { containerPointer = cp; }
-	mesh::OptionalComponentsVector<T>* containerPointer;
+	void setContainerPointer(mesh::ComponentsVector<T>* cp) { containerPointer = cp; }
+	mesh::ComponentsVector<T>* containerPointer;
 };
 
 /**

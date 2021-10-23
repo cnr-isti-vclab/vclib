@@ -8,7 +8,7 @@
 
 #include "../face.h"
 #include "container_t.h"
-#include "optional/optional_components_vector.h"
+#include "../component_vector/components_vector.h"
 
 namespace mgp::mesh {
 
@@ -59,7 +59,7 @@ protected:
 	 * will be enabled - disabled at runtime.
 	 * Each face that has at least one optional component, will store a pointer to this vector.
 	 */
-	OptionalComponentsVector<T> optionalComponentsVector;
+	ComponentsVector<T> optionalComponentsVector;
 
 	/**
 	 * @brief fn: the number of faces in the container. Could be different from faces.size()

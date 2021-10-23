@@ -3,9 +3,10 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H
-#define MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H
+#ifndef MGP_MESH_COMPONENTS_VECTOR_H
+#define MGP_MESH_COMPONENTS_VECTOR_H
 
+#include "custom_attributes_vector.h"
 #include "optional_color_vector.h"
 #include "optional_mutable_bit_flags_vector.h"
 #include "optional_normal_vector.h"
@@ -14,11 +15,12 @@
 namespace mgp::mesh {
 
 template<typename T>
-class OptionalComponentsVector :
+class ComponentsVector :
 		public OptionalMutableBitFlagsVector<T>,
 		public OptionalColorVector<T>,
 		public OptionalNormalVector<T>,
-		public OptionalScalarVector<T>
+		public OptionalScalarVector<T>,
+		public CustomAttributesVector<T>
 {
 public:
 	void resize(unsigned int size)
@@ -27,6 +29,7 @@ public:
 		OptionalColorVector<T>::resize(size);
 		OptionalNormalVector<T>::resize(size);
 		OptionalScalarVector<T>::resize(size);
+		CustomAttributesVector<T>::resize(size);
 	}
 	void reserve(unsigned int size)
 	{
@@ -34,6 +37,7 @@ public:
 		OptionalColorVector<T>::reserve(size);
 		OptionalNormalVector<T>::reserve(size);
 		OptionalScalarVector<T>::reserve(size);
+		CustomAttributesVector<T>::reserve(size);
 	}
 };
 

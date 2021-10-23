@@ -8,6 +8,7 @@
 
 #include "../common/bit_flags.h"
 #include "../common/color.h"
+#include "../common/custom_attributes.h"
 #include "../common/mutable_bit_flags.h"
 #include "../common/normal.h"
 #include "../common/scalar.h"
@@ -78,6 +79,10 @@ using OptionalScalarf = mgp::common::OptionalScalar<float, T>;
 
 template <typename T>
 using OptionalScalard = mgp::common::OptionalScalar<double, T>;
+
+/** Port CustomAttributes class into face namespace **/
+template <typename T>
+using CustomAttributes = mgp::common::CustomAttributes<T>;
 
 } // namespace mgp::face
 

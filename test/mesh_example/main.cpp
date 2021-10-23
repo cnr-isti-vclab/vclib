@@ -9,7 +9,6 @@
 
 int main()
 {
-
 	mgp::TriMesh m;
 
 	m.addVertex();

@@ -21,7 +21,8 @@ class Vertex :
 			mgp::vert::Color,                           // 4b
 			mgp::vert::Scalard,                         // 8b
 			mgp::vert::OptionalMutableBitFlags<Vertex>, // 0b
-			mgp::vert::FaceAdjacencyRef<Face>>          // N*8b
+			mgp::vert::FaceAdjacencyRef<Face>,          // N*8b
+			mgp::vert::CustomAttributes<Vertex>>        // 0b
 {
 };
 
@@ -31,7 +32,8 @@ class Face :
 			mgp::face::TriangleVertexRefs<Vertex>, // 24b
 			mgp::face::Normal3d,                   // 24b
 			mgp::face::OptionalScalard<Face>,      // 0b
-			mgp::face::OptionalColor<Face>>        // 0b
+			mgp::face::OptionalColor<Face>,        // 0b
+			mgp::face::CustomAttributes<Face>>     // 0b
 {
 };
 

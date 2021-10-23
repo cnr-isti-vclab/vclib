@@ -8,7 +8,7 @@
 
 #include "../vertex.h"
 #include "container_t.h"
-#include "optional/optional_components_vector.h"
+#include "../component_vector/components_vector.h"
 
 namespace mgp::mesh {
 
@@ -66,7 +66,7 @@ protected:
 	 * will be enabled - disabled at runtime.
 	 * Each vertex that has at least one optional component, will store a pointer to this vector.
 	 */
-	OptionalComponentsVector<T> optionalComponentsVector;
+	ComponentsVector<T> optionalComponentsVector;
 
 	/**
 	 * @brief vn: the number of vertices in the container. Could be different from vertices.size()
