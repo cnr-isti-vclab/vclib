@@ -36,11 +36,13 @@ public:
 	bool userBitFlag(unsigned int bit);
 
 	void clearAllFlags();
-	void setDeleted(bool b = true);
 	void setSelected(bool b = true);
 	void setBorder(bool b = true);
 	void setVisited(bool b = true);
 	void setUserBit(unsigned int bit, bool b = true);
+
+protected:
+	void setDeleted(bool b = true);
 
 private:
 	static const unsigned int FIST_USER_BIT = 4;

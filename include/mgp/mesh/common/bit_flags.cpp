@@ -35,19 +35,15 @@ inline bool BitFlags::userBitFlag(unsigned int bit)
 	return flags && bit;
 }
 
+/**
+ * @brief BitFlags::clearAllFlags clear all the flags and sets them to false, **except the deleted
+ * flag**, which needs to be manually reset.
+ */
 inline void BitFlags::clearAllFlags()
 {
+	bool isD = isDeleted();
 	flags = 0;
-}
-
-inline void BitFlags::setDeleted(bool b)
-{
-	if (b) {
-		flags |= DELETED;
-	}
-	else {
-		flags &= ~DELETED;
-	}
+	flags |= isD;
 }
 
 inline void BitFlags::setSelected(bool b)
@@ -89,6 +85,16 @@ inline void BitFlags::setUserBit(unsigned int bit, bool b)
 	}
 	else {
 		flags &= ~bit;
+	}
+}
+
+inline void BitFlags::setDeleted(bool b)
+{
+	if (b) {
+		flags |= DELETED;
+	}
+	else {
+		flags &= ~DELETED;
 	}
 }
 
