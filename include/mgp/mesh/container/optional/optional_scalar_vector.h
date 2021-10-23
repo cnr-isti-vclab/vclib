@@ -16,6 +16,7 @@ template<typename, typename = void>
 class OptionalScalarVector
 {
 public:
+	void reserve(unsigned int) {}
 	void resize(unsigned int) {}
 };
 
@@ -27,6 +28,7 @@ class OptionalScalarVector<T, std::enable_if_t<common::hasOptionalScalar<T>::val
 	typedef OptionalGenericVector<ScalarType> Base;
 
 public:
+	using Base::reserve;
 	using Base::resize;
 	bool              isScalarEnabled() { return Base::isEnabled(); };
 	void              enableScalar(unsigned int size) { Base::enable(size); }

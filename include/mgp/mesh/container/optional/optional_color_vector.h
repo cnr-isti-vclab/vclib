@@ -17,6 +17,7 @@ class OptionalColorVector
 {
 public:
 	void resize(unsigned int) {}
+	void reserve(unsigned int) {}
 };
 
 template<typename T>
@@ -27,6 +28,7 @@ class OptionalColorVector<T, std::enable_if_t<common::hasOptionalColor<T>::value
 	typedef OptionalGenericVector<ColorType> Base;
 
 public:
+	using Base::reserve;
 	using Base::resize;
 	bool             isColorEnabled() { return Base::isEnabled(); };
 	void             enableColor(unsigned int size) { Base::enable(size); }

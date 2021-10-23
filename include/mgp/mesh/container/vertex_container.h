@@ -40,6 +40,8 @@ public:
 
 	unsigned int vertexNumber() const;
 
+	void reserveVertices(unsigned int size);
+
 	template<typename U = T>
 	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type enableVertexColor();
 

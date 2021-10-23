@@ -11,6 +11,7 @@ template<typename, typename = void>
 class OptionalMutableBitFlagsVector
 {
 public:
+	void reserve(unsigned int) {}
 	void resize(unsigned int) {}
 };
 
@@ -23,6 +24,7 @@ class OptionalMutableBitFlagsVector<
 	typedef OptionalGenericVector<int> Base;
 
 public:
+	using Base::reserve;
 	using Base::resize;
 	bool isMutableBitFlagsEnabled() { return Base::isEnabled(); };
 	void enableMutableBitFlags(unsigned int size) { Base::enable(size); }

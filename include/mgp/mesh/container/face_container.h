@@ -39,6 +39,8 @@ public:
 
 	unsigned int faceNumber() const;
 
+	void reserveFaces(unsigned int size);
+
 	template<typename U = T>
 	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type enableFaceColor();
 	template<typename U = T>

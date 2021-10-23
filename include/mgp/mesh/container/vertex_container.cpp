@@ -33,6 +33,15 @@ unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexNumber() c
 }
 
 template<class T>
+void Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::reserveVertices(unsigned int size)
+{
+	vertices.reserve(size);
+	if constexpr (common::hasOptionalInfo<VertexType>::value) {
+		optionalComponentsVector.reserve(size);
+	}
+}
+
+template<class T>
 template<class U>
 typename std::enable_if<common::hasOptionalColor<U>::value, void>::type
 Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexColor()

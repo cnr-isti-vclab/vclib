@@ -16,6 +16,7 @@ template<typename, typename = void>
 class OptionalNormalVector
 {
 public:
+	void reserve(unsigned int) {}
 	void resize(unsigned int) {}
 };
 
@@ -27,6 +28,7 @@ class OptionalNormalVector<T, std::enable_if_t<common::hasOptionalNormal<T>::val
 	typedef OptionalGenericVector<NormalType> Base;
 
 public:
+	using Base::reserve;
 	using Base::resize;
 	bool              isNormalEnabled() { return Base::isEnabled(); };
 	void              enableNormal(unsigned int size) { Base::enable(size); }

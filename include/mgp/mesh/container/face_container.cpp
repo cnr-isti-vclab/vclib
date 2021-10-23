@@ -33,6 +33,15 @@ unsigned int Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::faceNumber() const
 }
 
 template<class T>
+void Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::reserveFaces(unsigned int size)
+{
+	faces.reserve(size);
+	if constexpr (common::hasOptionalInfo<FaceType>::value) {
+		optionalComponentsVector.reserve(size);
+	}
+}
+
+template<class T>
 template<class U>
 typename std::enable_if<common::hasOptionalColor<U>::value, void>::type
 Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceColor()

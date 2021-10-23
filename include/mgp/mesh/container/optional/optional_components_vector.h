@@ -28,6 +28,13 @@ public:
 		OptionalNormalVector<T>::resize(size);
 		OptionalScalarVector<T>::resize(size);
 	}
+	void reserve(unsigned int size)
+	{
+		OptionalMutableBitFlagsVector<T>::reserve(size);
+		OptionalColorVector<T>::reserve(size);
+		OptionalNormalVector<T>::reserve(size);
+		OptionalScalarVector<T>::reserve(size);
+	}
 };
 
 } // namespace mgp::mesh

@@ -25,11 +25,17 @@ protected:
 	{
 		enabled = false;
 		vec.clear();
+		vec.swap(std::vector<T>()); // force free memory
 	}
 	void resize(unsigned int size)
 	{
 		if (enabled)
 			vec.resize(size);
+	}
+	void reserve(unsigned int size)
+	{
+		if (enabled)
+			vec.reserve(size);
 	}
 	T& at(unsigned int i)
 	{
