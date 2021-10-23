@@ -28,6 +28,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/face.h
 	${MGP_SRC_DIR}/mesh/mesh.h
 	${MGP_SRC_DIR}/mesh/vertex.h
+	${MGP_SRC_DIR}/mesh/common/bit_flags.h
 	${MGP_SRC_DIR}/mesh/common/color.h
 	${MGP_SRC_DIR}/mesh/common/info.h
 	${MGP_SRC_DIR}/mesh/common/normal.h
@@ -59,6 +60,7 @@ set(SOURCES
 	${MGP_SRC_DIR}/space/point/point2.cpp
 	${MGP_SRC_DIR}/space/point/point3.cpp
 	${MGP_SRC_DIR}/space/point/point4.cpp
+	${MGP_SRC_DIR}/mesh/common/bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/container/face_container.cpp
 	${MGP_SRC_DIR}/mesh/container/vertex_container.cpp
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.cpp

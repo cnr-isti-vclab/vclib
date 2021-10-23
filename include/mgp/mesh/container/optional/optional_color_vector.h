@@ -26,7 +26,7 @@ class OptionalColorVector<T, std::enable_if_t<common::hasOptionalColor<T>::value
 	typedef OptionalGenericVector<ColorType> Base;
 
 public:
-	bool             isColorEnabled() { Base::isEnabled; };
+	bool             isColorEnabled() { return Base::isEnabled(); };
 	void             enableColor(unsigned int size) { Base::enable(size); }
 	void             disableColor() { Base::disable(); }
 	ColorType&       color(unsigned int i) { return Base::at(i); }

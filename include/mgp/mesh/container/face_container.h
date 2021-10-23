@@ -24,6 +24,9 @@ namespace mesh {
 template<class T>
 class Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>
 {
+	static_assert(
+		std::is_base_of<mgp::common::BitFlags,T>::value,
+		"You should include BitFlags as Face component in your Mesh definition.");
 protected:
 	// types:
 	typedef T                                               FaceType;
@@ -56,6 +59,12 @@ protected:
 	 * Each face that has at least one optional component, will store a pointer to this vector.
 	 */
 	OptionalComponentsVector<T> optionalComponentsVector;
+
+	/**
+	 * @brief fn: the number of faces in the container. Could be different from faces.size()
+	 * due to faces marked as deleted into the container.
+	 */
+	unsigned int fn = 0;
 
 	unsigned int addFace();
 

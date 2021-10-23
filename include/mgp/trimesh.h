@@ -17,6 +17,7 @@ class Face;
 
 class Vertex :
 		public mgp::Vertex<
+			mgp::vert::BitFlags,
 			mgp::vert::Coordinate3d,
 			mgp::vert::Normal3d,
 			mgp::vert::OptionalColor<Vertex>,
@@ -28,6 +29,7 @@ class Vertex :
 class Face :
 		public mgp::
 			Face<
+				mgp::face::BitFlags,
 				mgp::face::TriangleVertexRefsArray<Vertex>,
 				mgp::vert::Normal3d,
 				mgp::vert::OptionalScalard<Face>,

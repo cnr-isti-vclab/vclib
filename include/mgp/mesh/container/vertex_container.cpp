@@ -30,7 +30,7 @@ mgp::mesh::Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertex(unsigned i
 template<class T>
 unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertexNumber() const
 {
-	return vertices.size();
+	return vn;
 }
 
 template<class T>
@@ -61,6 +61,7 @@ template<class T>
 unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::addVertex()
 {
 	vertices.push_back(VertexType());
+	++vn;
 	vertices[vertices.size() - 1]._id = vertices.size() - 1;
 	if constexpr(common::hasOptionalInfo<VertexType>::value) {
 		vertices[vertices.size() - 1].setContainerPointer(&optionalComponentsVector);

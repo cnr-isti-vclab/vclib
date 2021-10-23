@@ -6,8 +6,9 @@
 #ifndef MGP_MESH_VERTEX_COMMON_H
 #define MGP_MESH_VERTEX_COMMON_H
 
-#include "../common/info.h"
+#include "../common/bit_flags.h"
 #include "../common/color.h"
+#include "../common/info.h"
 #include "../common/normal.h"
 #include "../common/scalar.h"
 #include "../common/optional_info.h"
@@ -24,6 +25,9 @@ using Info = mgp::common::Info;
 /** Port OptionalInfo class into vert namespace **/
 template <typename T>
 using OptionalInfo = mgp::common::OptionalInfo<T>;
+
+/** Port BitFlags class into vert namespace **/
+using BitFlags = mgp::common::BitFlags;
 
 /** Port Color class into vert namespace **/
 using Color = mgp::common::Color;

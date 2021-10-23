@@ -26,7 +26,7 @@ class OptionalScalarVector<T, std::enable_if_t<common::hasOptionalScalar<T>::val
 	typedef OptionalGenericVector<ScalarType> Base;
 	
 public:
-	bool              isScalarEnabled() { Base::isEnabled; };
+	bool              isScalarEnabled() { return Base::isEnabled(); };
 	void              enableScalar(unsigned int size) { Base::enable(size); }
 	void              disableScalar() { Base::disable(); }
 	ScalarType&       scalar(unsigned int i) { return Base::at(i); }

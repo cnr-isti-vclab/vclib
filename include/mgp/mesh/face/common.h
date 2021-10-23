@@ -6,6 +6,7 @@
 #ifndef MGP_MESH_FACE_COMMON_H
 #define MGP_MESH_FACE_COMMON_H
 
+#include "../common/bit_flags.h"
 #include "../common/color.h"
 #include "../common/info.h"
 #include "../common/normal.h"
@@ -24,6 +25,9 @@ using Info = mgp::common::Info;
 /** Port OptionalInfo class into face namespace **/
 template <typename T>
 using OptionalInfo = mgp::common::OptionalInfo<T>;
+
+/** Port BitFlags class into face namespace **/
+using BitFlags = mgp::common::BitFlags;
 
 /** Port Color class into face namespace **/
 using Color = mgp::common::Color;
