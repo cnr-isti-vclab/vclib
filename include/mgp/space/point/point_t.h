@@ -19,6 +19,7 @@ template<class Scalar, int N>
 class Point : private Eigen::Matrix<Scalar, 1, N>
 {
 public:
+	const static int DIM = N;
 	Point()               = default; // default empty constructor
 	Point(const Point& p) = default; // default copy constructor
 

@@ -25,6 +25,15 @@ unsigned int Mesh<Args...>::addFace()
 	return fid;
 }
 
+template<class...Args>
+void Mesh<Args...>::updateBoundingBox()
+{
+	BoundingBox::setNull();
+	for (const Vertex& v : VertexContainer::vertexIterator()) {
+		BoundingBox::add(v.coordinate());
+	}
+}
+
 template<class... Args>
 void Mesh<Args...>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
 {

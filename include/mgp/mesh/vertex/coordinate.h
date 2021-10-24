@@ -18,8 +18,8 @@ class Coordinate : virtual public Info
 public:
 	typedef Point<Scalar, N> CoordinateType;
 
-	const Point<Scalar, N>& position() const { return p; }
-	Point<Scalar, N>&       position() { return p; }
+	const Point<Scalar, N>& coordinate() const { return p; }
+	Point<Scalar, N>&       coordinate() { return p; }
 
 private:
 	Point<Scalar, N> p;
@@ -31,8 +31,8 @@ class Coordinate3 : virtual public Info
 public:
 	typedef Point3<Scalar> CoordinateType;
 
-	const Point3<Scalar>& position() const { return p; }
-	Point3<Scalar>&       position() { return p; }
+	const Point3<Scalar>& coordinate() const { return p; }
+	Point3<Scalar>&       coordinate() { return p; }
 
 private:
 	Point3<Scalar> p;

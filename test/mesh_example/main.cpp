@@ -17,9 +17,9 @@ int main()
 
 	m.enableVertexMutableBitFlags();
 
-	m.vertex(0).position() = mgp::Point3d(0, 0, 0);
-	m.vertex(1).position() = mgp::Point3d(0, 1, 0);
-	m.vertex(2).position() = mgp::Point3d(1, 0, 0);
+	m.vertex(0).coordinate() = mgp::Point3d(0, 0, 0);
+	m.vertex(1).coordinate() = mgp::Point3d(0, 1, 0);
+	m.vertex(2).coordinate() = mgp::Point3d(1, 0, 0);
 
 	const mgp::TriMesh::Vertex& vv = m.vertex(0);
 	vv.setSelectedM();
@@ -44,6 +44,8 @@ int main()
 	m.addVertex();
 	m.addVertex();
 	m.addVertex();
+
+	m.updateBoundingBox();
 
 	std::cerr << m.face(0).color() << "\n";
 

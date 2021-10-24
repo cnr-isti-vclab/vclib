@@ -39,9 +39,9 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const Point3<S>& p);
 };
 
-typedef Point3<int>    Point3i;
-typedef Point3<float>  Point3f;
-typedef Point3<double> Point3d;
+using Point3i = Point3<int>;
+using Point3f = Point3<float>;
+using Point3d = Point3<double>;
 
 template<class Scalar>
 std::ostream& operator<<(std::ostream& out, const Point3<Scalar>& p);

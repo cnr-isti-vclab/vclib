@@ -25,10 +25,13 @@ protected:
 public:
 	typedef typename Mesh::VertexType Vertex;
 	typedef typename Mesh::FaceType   Face;
+	typedef typename Mesh::Box BoundingBox;
 
 	unsigned int addVertex();
 
 	unsigned int addFace();
+
+	void updateBoundingBox();
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);

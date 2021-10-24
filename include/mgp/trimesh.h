@@ -7,6 +7,7 @@
 #define MGP_MESH_TRIMESH_H
 
 #include "mesh/mesh.h"
+#include "space/box.h"
 
 namespace mgp::trimesh {
 
@@ -41,7 +42,11 @@ class Face :
 
 namespace mgp {
 
-class TriMesh : public mgp::Mesh<trimesh::Vertex, trimesh::Face, mgp::common::Color>
+class TriMesh : public mgp::Mesh<
+					trimesh::Vertex,
+					trimesh::Face,
+					mgp::Box3d,
+					mgp::common::Color>
 {
 };
 

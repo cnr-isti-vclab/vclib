@@ -10,24 +10,38 @@
 
 namespace mgp {
 
-template<class Scalar, int N>
+template<typename PointType>
 class Box
 {
 public:
 	Box();
+	Box(const PointType& p);
+	Box(const PointType& min, const PointType& max);
 
+	bool isNull() const;
+	bool isEmpty() const;
 	void setNull();
 
-	Point<Scalar, N> min;
-	Point<Scalar, N> max;
+	void add(const Box<PointType>& b);
+	void add(const PointType& p);
+	template<typename Scalar>
+	void add(const PointType& p, Scalar radius);
+
+	PointType min;
+	PointType max;
 };
 
-typedef Box<int, 2>    Box2i;
-typedef Box<float, 2>  Box2f;
-typedef Box<double, 2> Box2d;
-typedef Box<int, 3>    Box3i;
-typedef Box<float, 3>  Box3f;
-typedef Box<double, 3> Box3d;
+template <typename S>
+using Box2 = Box<Point2<S>>;
+using Box2i = Box<Point2i>;
+using Box2f = Box<Point2f>;
+using Box2d = Box<Point2d>;
+
+template <typename S>
+using Box3 = Box<Point3<S>>;
+using Box3i = Box<Point3i>;
+using Box3f = Box<Point3f>;
+using Box3d = Box<Point3d>;
 
 } // namespace mgp
 
