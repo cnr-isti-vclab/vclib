@@ -78,6 +78,9 @@ using hasOptionalMutableBitFlags_t = decltype(std::declval<T&>().__optional_muta
 template<typename T>
 using hasOptionalMutableBitFlags = typename detector<hasOptionalMutableBitFlags_t, void, T>::type;
 
+template<typename U, typename T>
+using ReturnIfHasOptionalMutableBitFlags = typename std::enable_if<hasOptionalMutableBitFlags<U>::value, T>::type;
+
 } // namespace mgp::common
 
 #include "optional_mutable_bit_flags.cpp"

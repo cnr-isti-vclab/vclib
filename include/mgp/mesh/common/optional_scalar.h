@@ -39,6 +39,9 @@ using hasOptionalScalar_t = decltype(std::declval<T&>().__optional_scalar__());
 template <typename T>
 using hasOptionalScalar = typename detector<hasOptionalScalar_t, void, T>::type;
 
+template<typename U, typename T>
+using ReturnIfHasOptionalScalar = typename std::enable_if<hasOptionalScalar<U>::value, T>::type;
+
 } // namespace mgp::common
 
 #endif //  MGP_MESH_COMMON_OPTIONAL_SCALAR_H

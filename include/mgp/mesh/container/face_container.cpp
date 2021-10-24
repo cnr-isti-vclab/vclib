@@ -43,7 +43,7 @@ void Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::reserveFaces(unsigned int 
 
 template<class T>
 template<class U>
-typename std::enable_if<common::hasOptionalColor<U>::value, void>::type
+common::ReturnIfHasOptionalColor<U, void>
 Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceColor()
 {
 	optionalComponentsVector.enableColor(faceNumber());
@@ -51,7 +51,7 @@ Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceColor()
 
 template<class T>
 template<class U>
-typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type
+common::ReturnIfHasOptionalNormal<U, void>
 Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceNormal()
 {
 	optionalComponentsVector.enableNormal(faceNumber());
@@ -59,7 +59,7 @@ Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceNormal()
 
 template<class T>
 template<class U>
-typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type
+common::ReturnIfHasOptionalScalar<U, void>
 Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceScalar()
 {
 	optionalComponentsVector.enableScalar(faceNumber());

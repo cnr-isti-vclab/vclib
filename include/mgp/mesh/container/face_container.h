@@ -51,11 +51,11 @@ public:
 	void reserveFaces(unsigned int size);
 
 	template<typename U = T>
-	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type enableFaceColor();
+	common::ReturnIfHasOptionalColor<U, void> enableFaceColor();
 	template<typename U = T>
-	typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type enableFaceNormal();
+	common::ReturnIfHasOptionalNormal<U, void> enableFaceNormal();
 	template<typename U = T>
-	typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type enableFaceScalar();
+	common::ReturnIfHasOptionalScalar<U, void> enableFaceScalar();
 
 	FaceIterator      faceBegin(bool jumpDeleted = true);
 	FaceIterator      faceEnd();
@@ -98,6 +98,9 @@ using hasFaceContainer_t = decltype(std::declval<T&>().faceNumber());
 
 template<typename T>
 using hasFaceContainer = typename detector<hasFaceContainer_t, void, T>::type;
+
+template<typename U, typename T>
+using ReturnIfHasFaceContainer = typename std::enable_if<hasFaceContainer<U>::value, T>::type;
 
 } // namespace mgp::mesh
 

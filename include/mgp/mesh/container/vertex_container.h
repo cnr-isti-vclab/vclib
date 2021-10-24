@@ -15,6 +15,10 @@
 
 namespace mgp::mesh {
 
+// to shorten triggerer for Vertex class
+template <class T>
+using IfIsVertex = mgp::ifIsBaseOf<VertexTriggerer, T>;
+
 template<class T>
 /**
  * @brief The Vertex Container class, will be used when the template argument given to the Mesh is a
@@ -51,17 +55,17 @@ public:
 	void reserveVertices(unsigned int size);
 
 	template<typename U = T>
-	typename std::enable_if<common::hasOptionalColor<U>::value, void>::type enableVertexColor();
+	common::ReturnIfHasOptionalColor<U, void> enableVertexColor();
 
 	template<typename U = T>
-	typename std::enable_if<common::hasOptionalMutableBitFlags<U>::value, void>::type
+	common::ReturnIfHasOptionalMutableBitFlags<U, void>
 	enableVertexMutableBitFlags();
 
 	template<typename U = T>
-	typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type enableVertexNormal();
+	common::ReturnIfHasOptionalNormal<U, void> enableVertexNormal();
 
 	template<typename U = T>
-	typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type enableVertexScalar();
+	common::ReturnIfHasOptionalScalar<U, void> enableVertexScalar();
 
 	VertexIterator      vertexBegin(bool jumpDeleted = true);
 	VertexIterator      vertexEnd();
@@ -101,6 +105,9 @@ using hasVertexContainer_t = decltype(std::declval<T&>().vertexNumber());
 
 template<typename T>
 using hasVertexContainer = typename detector<hasVertexContainer_t, void, T>::type;
+
+template<typename U, typename T>
+using ReturnIfHasVertexContainer = typename std::enable_if<hasVertexContainer<U>::value, T>::type;
 
 } // namespace mgp::mesh
 

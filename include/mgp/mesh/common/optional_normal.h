@@ -54,6 +54,9 @@ using hasOptionalNormal_t = decltype(std::declval<T&>().__optional_color__());
 template <typename T>
 using hasOptionalNormal = typename detector<hasOptionalNormal_t, void, T>::type;
 
+template<typename U, typename T>
+using ReturnIfHasOptionalNormal = typename std::enable_if<hasOptionalNormal<U>::value, T>::type;
+
 } // namespace mgp::common
 
 

@@ -7,6 +7,7 @@
 #define MGP_MESH_MESH_H
 
 #include "container/containers.h"
+#include <mgp/space/box.h>
 
 namespace mgp {
 
@@ -25,13 +26,15 @@ protected:
 public:
 	typedef typename Mesh::VertexType Vertex;
 	typedef typename Mesh::FaceType   Face;
-	typedef typename Mesh::Box BoundingBox;
+	//typedef typename Mesh::Box BoundingBox;
 
-	unsigned int addVertex();
+	template<typename U = Mesh>
+	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex();
+	template<typename U = Mesh>
+	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace();
 
-	unsigned int addFace();
-
-	void updateBoundingBox();
+	template<typename U = Mesh>
+	ReturnIfHasBox<U, void> updateBoundingBox();
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);

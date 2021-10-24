@@ -43,7 +43,7 @@ void Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::reserveVertices(unsigned
 
 template<class T>
 template<class U>
-typename std::enable_if<common::hasOptionalColor<U>::value, void>::type
+common::ReturnIfHasOptionalColor<U, void>
 Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexColor()
 {
 	optionalComponentsVector.enableColor(vertexNumber());
@@ -51,7 +51,7 @@ Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexColor()
 
 template<class T>
 template<class U>
-typename std::enable_if<common::hasOptionalMutableBitFlags<U>::value, void>::type
+common::ReturnIfHasOptionalMutableBitFlags<U, void>
 Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexMutableBitFlags()
 {
 	optionalComponentsVector.enableMutableBitFlags(vertexNumber());
@@ -59,7 +59,7 @@ Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexMutableBitFlags()
 
 template<class T>
 template<class U>
-typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type
+common::ReturnIfHasOptionalNormal<U, void>
 Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexNormal()
 {
 	optionalComponentsVector.enableNormal(vertexNumber());
@@ -67,7 +67,7 @@ Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexNormal()
 
 template<class T>
 template<class U>
-typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type
+common::ReturnIfHasOptionalScalar<U, void>
 Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexScalar()
 {
 	optionalComponentsVector.enableScalar(vertexNumber());

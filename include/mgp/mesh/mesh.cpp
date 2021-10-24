@@ -8,7 +8,8 @@
 namespace mgp {
 
 template<class... Args>
-unsigned int mgp::Mesh<Args...>::addVertex()
+template<typename U>
+mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex()
 {
 	Vertex* oldBase = VertexContainer::vertices.data();
 	unsigned int vid = VertexContainer::addVertex();
@@ -19,18 +20,20 @@ unsigned int mgp::Mesh<Args...>::addVertex()
 }
 
 template<class... Args>
-unsigned int Mesh<Args...>::addFace()
+template<typename U>
+mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 {
 	unsigned int fid = FaceContainer::addFace();
 	return fid;
 }
 
 template<class...Args>
-void Mesh<Args...>::updateBoundingBox()
+template<typename U>
+ReturnIfHasBox<U, void> Mesh<Args...>::updateBoundingBox()
 {
-	BoundingBox::setNull();
+	Mesh::Box::setNull();
 	for (const Vertex& v : VertexContainer::vertexIterator()) {
-		BoundingBox::add(v.coordinate());
+		Mesh::Box::add(v.coordinate());
 	}
 }
 
