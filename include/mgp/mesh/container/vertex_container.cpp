@@ -8,32 +8,32 @@
 namespace mgp::mesh {
 
 template<class T>
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::Container()
+Container<T, IfIsVertex<T>>::Container()
 {
 }
 
 template<class T>
-const typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::VertexType&
-mgp::mesh::Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertex(unsigned int i) const
-{
-	return vertices[i];
-}
-
-template<class T>
-typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::VertexType&
-mgp::mesh::Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertex(unsigned int i)
+const typename Container<T, IfIsVertex<T>>::VertexType&
+mgp::mesh::Container<T, IfIsVertex<T>>::vertex(unsigned int i) const
 {
 	return vertices[i];
 }
 
 template<class T>
-unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexNumber() const
+typename Container<T, IfIsVertex<T>>::VertexType&
+mgp::mesh::Container<T, IfIsVertex<T>>::vertex(unsigned int i)
+{
+	return vertices[i];
+}
+
+template<class T>
+unsigned int Container<T, IfIsVertex<T>>::vertexNumber() const
 {
 	return vn;
 }
 
 template<class T>
-void Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::reserveVertices(unsigned int size)
+void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {
 	vertices.reserve(size);
 	if constexpr (common::hasOptionalInfo<VertexType>::value) {
@@ -43,8 +43,7 @@ void Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::reserveVertices(unsigned
 
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalColor<U, void>
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexColor()
+common::ReturnIfHasOptionalColor<U, void> Container<T, IfIsVertex<T>>::enableVertexColor()
 {
 	optionalComponentsVector.enableColor(vertexNumber());
 }
@@ -52,30 +51,28 @@ Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexColor()
 template<class T>
 template<class U>
 common::ReturnIfHasOptionalMutableBitFlags<U, void>
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexMutableBitFlags()
+Container<T, IfIsVertex<T>>::enableVertexMutableBitFlags()
 {
 	optionalComponentsVector.enableMutableBitFlags(vertexNumber());
 }
 
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalNormal<U, void>
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexNormal()
+common::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsVertex<T>>::enableVertexNormal()
 {
 	optionalComponentsVector.enableNormal(vertexNumber());
 }
 
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalScalar<U, void>
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexScalar()
+common::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsVertex<T>>::enableVertexScalar()
 {
 	optionalComponentsVector.enableScalar(vertexNumber());
 }
 
 template<class T>
 typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::VertexIterator
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexBegin(bool jumpDeleted)
+Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 {
 	if (jumpDeleted) {
 		auto it = vertices.begin();
@@ -89,15 +86,14 @@ Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexBegin(bool jumpDeleted)
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::VertexIterator
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexEnd()
+typename Container<T, IfIsVertex<T>>::VertexIterator Container<T, IfIsVertex<T>>::vertexEnd()
 {
 	return VertexIterator(vertices.end(), vertices);
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::ConstVertexIterator
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexBegin(bool jumpDeleted) const
+typename Container<T, IfIsVertex<T>>::ConstVertexIterator
+Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted) const
 {
 	if (jumpDeleted) {
 		auto it = vertices.begin();
@@ -111,14 +107,14 @@ Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexBegin(bool jumpDeleted)
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::ConstVertexIterator
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexEnd() const
+typename Container<T, IfIsVertex<T>>::ConstVertexIterator
+Container<T, IfIsVertex<T>>::vertexEnd() const
 {
 	return ConstVertexIterator(vertices.end(), vertices);
 }
 
 template<class T>
-unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::addVertex()
+unsigned int Container<T, IfIsVertex<T>>::addVertex()
 {
 	vertices.push_back(VertexType());
 	++vn;
@@ -131,16 +127,16 @@ unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::addVertex()
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::VertexRangeIterator
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertexIterator(bool jumpDeleted)
+typename Container<T, IfIsVertex<T>>::VertexRangeIterator
+Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted)
 {
 	return VertexRangeIterator(
 		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::ConstVertexRangeIterator
-Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertexIterator(bool jumpDeleted) const
+typename Container<T, IfIsVertex<T>>::ConstVertexRangeIterator
+Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted) const
 {
 	return ConstVertexRangeIterator(
 		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);

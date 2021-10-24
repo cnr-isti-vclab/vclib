@@ -15,6 +15,10 @@
 
 namespace mgp::mesh {
 
+// to shorten triggerer for Vertex class
+template<class T>
+using IfIsFace = mgp::ifIsBaseOf<FaceTriggerer, T>;
+
 /**
  * @brief The Face Container class, will be used when the template argument given to the Mesh is a
  * mgp::Face.
@@ -24,7 +28,7 @@ namespace mgp::mesh {
  * enablers/disablers of the eventual optional components of the face.
  */
 template<class T>
-class Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>
+class Container<T, IfIsFace<T>>
 {
 	static_assert(
 		mgp::common::hasBitFlags<T>::value,
@@ -32,13 +36,13 @@ class Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>
 
 protected:
 	// types:
-	typedef T                                               FaceType;
-	typedef Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>> FaceContainer;
+	typedef T                         FaceType;
+	typedef Container<T, IfIsFace<T>> FaceContainer;
 
 public:
-	using FaceIterator      = ContainerIterator<T>;
-	using ConstFaceIterator = ConstContainerIterator<T>;
-	using FaceRangeIterator = RangeIterator<FaceContainer, FaceIterator>;
+	using FaceIterator           = ContainerIterator<T>;
+	using ConstFaceIterator      = ConstContainerIterator<T>;
+	using FaceRangeIterator      = RangeIterator<FaceContainer, FaceIterator>;
 	using ConstFaceRangeIterator = ConstRangeIterator<FaceContainer, ConstFaceIterator>;
 
 	Container();
@@ -57,11 +61,11 @@ public:
 	template<typename U = T>
 	common::ReturnIfHasOptionalScalar<U, void> enableFaceScalar();
 
-	FaceIterator      faceBegin(bool jumpDeleted = true);
-	FaceIterator      faceEnd();
-	ConstFaceIterator faceBegin(bool jumpDeleted = true) const;
-	ConstFaceIterator faceEnd() const;
-	FaceRangeIterator faceIterator(bool jumpDeleted = true);
+	FaceIterator           faceBegin(bool jumpDeleted = true);
+	FaceIterator           faceEnd();
+	ConstFaceIterator      faceBegin(bool jumpDeleted = true) const;
+	ConstFaceIterator      faceEnd() const;
+	FaceRangeIterator      faceIterator(bool jumpDeleted = true);
 	ConstFaceRangeIterator faceIterator(bool jumpDeleted = true) const;
 
 protected:

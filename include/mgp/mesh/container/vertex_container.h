@@ -16,7 +16,7 @@
 namespace mgp::mesh {
 
 // to shorten triggerer for Vertex class
-template <class T>
+template<class T>
 using IfIsVertex = mgp::ifIsBaseOf<VertexTriggerer, T>;
 
 template<class T>
@@ -28,7 +28,7 @@ template<class T>
  * members to the vertices, the vertex number, iterators... This class will also take care to add
  * enablers/disablers of the eventual optional components of the vertex.
  */
-class Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>
+class Container<T, IfIsVertex<T>>
 {
 	static_assert(
 		mgp::common::hasBitFlags<T>::value,
@@ -36,13 +36,13 @@ class Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>
 
 protected:
 	// types:
-	typedef T                                                 VertexType;
-	typedef Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>> VertexContainer;
+	typedef T                           VertexType;
+	typedef Container<T, IfIsVertex<T>> VertexContainer;
 
 public:
-	using VertexIterator      = ContainerIterator<T>;
-	using ConstVertexIterator = ConstContainerIterator<T>;
-	using VertexRangeIterator = RangeIterator<VertexContainer, VertexIterator>;
+	using VertexIterator           = ContainerIterator<T>;
+	using ConstVertexIterator      = ConstContainerIterator<T>;
+	using VertexRangeIterator      = RangeIterator<VertexContainer, VertexIterator>;
 	using ConstVertexRangeIterator = ConstRangeIterator<VertexContainer, ConstVertexIterator>;
 
 	Container();
@@ -58,8 +58,7 @@ public:
 	common::ReturnIfHasOptionalColor<U, void> enableVertexColor();
 
 	template<typename U = T>
-	common::ReturnIfHasOptionalMutableBitFlags<U, void>
-	enableVertexMutableBitFlags();
+	common::ReturnIfHasOptionalMutableBitFlags<U, void> enableVertexMutableBitFlags();
 
 	template<typename U = T>
 	common::ReturnIfHasOptionalNormal<U, void> enableVertexNormal();
@@ -67,11 +66,11 @@ public:
 	template<typename U = T>
 	common::ReturnIfHasOptionalScalar<U, void> enableVertexScalar();
 
-	VertexIterator      vertexBegin(bool jumpDeleted = true);
-	VertexIterator      vertexEnd();
-	ConstVertexIterator vertexBegin(bool jumpDeleted = true) const;
-	ConstVertexIterator vertexEnd() const;
-	VertexRangeIterator vertexIterator(bool jumpDeleted = true);
+	VertexIterator           vertexBegin(bool jumpDeleted = true);
+	VertexIterator           vertexEnd();
+	ConstVertexIterator      vertexBegin(bool jumpDeleted = true) const;
+	ConstVertexIterator      vertexEnd() const;
+	VertexRangeIterator      vertexIterator(bool jumpDeleted = true);
 	ConstVertexRangeIterator vertexIterator(bool jumpDeleted = true) const;
 
 protected:
