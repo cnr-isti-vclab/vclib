@@ -6,9 +6,11 @@
 #ifndef MGP_MESH_CONTAINER_FACE_CONTAINER_H
 #define MGP_MESH_CONTAINER_FACE_CONTAINER_H
 
-#include "../face.h"
 #include "container_t.h"
+
 #include "../component_vector/components_vector.h"
+#include "../face.h"
+#include "../iterators/container_iterator.h"
 
 namespace mgp::mesh {
 
@@ -26,12 +28,16 @@ class Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>
 	static_assert(
 		mgp::common::hasBitFlags<T>::value,
 		"You should include BitFlags as Face component in your Mesh definition.");
+
 protected:
 	// types:
 	typedef T                                               FaceType;
 	typedef Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>> FaceContainer;
 
 public:
+	using FaceIterator      = ContainerIterator<T>;
+	using ConstFaceIterator = ConstContainerIterator<T>;
+
 	Container();
 
 	const FaceType& face(unsigned int i) const;
@@ -47,6 +53,11 @@ public:
 	typename std::enable_if<common::hasOptionalNormal<U>::value, void>::type enableFaceNormal();
 	template<typename U = T>
 	typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type enableFaceScalar();
+
+	FaceIterator      faceBegin(bool jumpDeleted = true);
+	FaceIterator      faceEnd();
+	ConstFaceIterator faceBegin(bool jumpDeleted = true) const;
+	ConstFaceIterator faceEnd() const;
 
 protected:
 	/**
@@ -80,9 +91,8 @@ protected:
 template<typename T>
 using hasFaceContainer_t = decltype(std::declval<T&>().faceNumber());
 
-template <typename T>
+template<typename T>
 using hasFaceContainer = typename detector<hasFaceContainer_t, void, T>::type;
-
 
 } // namespace mgp::mesh
 

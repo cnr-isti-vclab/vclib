@@ -6,9 +6,11 @@
 #ifndef MGP_MESH_CONTAINER_VERTEX_CONTAINER_H
 #define MGP_MESH_CONTAINER_VERTEX_CONTAINER_H
 
-#include "../vertex.h"
 #include "container_t.h"
+
 #include "../component_vector/components_vector.h"
+#include "../iterators/container_iterator.h"
+#include "../vertex.h"
 
 namespace mgp::mesh {
 
@@ -33,6 +35,9 @@ protected:
 	typedef Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>> VertexContainer;
 
 public:
+	using VertexIterator      = ContainerIterator<T>;
+	using ConstVertexIterator = ConstContainerIterator<T>;
+
 	Container();
 
 	const VertexType& vertex(unsigned int i) const;
@@ -54,6 +59,11 @@ public:
 
 	template<typename U = T>
 	typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type enableVertexScalar();
+
+	VertexIterator      vertexBegin(bool jumpDeleted = true);
+	VertexIterator      vertexEnd();
+	ConstVertexIterator vertexBegin(bool jumpDeleted = true) const;
+	ConstVertexIterator vertexEnd() const;
 
 protected:
 	/**

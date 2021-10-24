@@ -33,7 +33,7 @@ unsigned int Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::faceNumber() const
 }
 
 template<class T>
-void Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::reserveFaces(unsigned int size)
+void Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::reserveFaces(unsigned int size)
 {
 	faces.reserve(size);
 	if constexpr (common::hasOptionalInfo<FaceType>::value) {
@@ -63,6 +63,50 @@ typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type
 Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::enableFaceScalar()
 {
 	optionalComponentsVector.enableScalar(faceNumber());
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::FaceIterator
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::faceBegin(bool jumpDeleted)
+{
+	if (jumpDeleted) {
+		auto it = faces.begin();
+		while (it->isDeleted()) {
+			++it;
+		}
+		return FaceIterator(it, faces, jumpDeleted);
+	}
+	else
+		return FaceIterator(faces.begin(), faces, jumpDeleted);
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::FaceIterator
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::faceEnd()
+{
+	return FaceIterator(faces.end(), faces);
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::ConstFaceIterator
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::faceBegin(bool jumpDeleted) const
+{
+	if (jumpDeleted) {
+		auto it = faces.begin();
+		while (it->isDeleted()) {
+			++it;
+		}
+		return ConstFaceIterator(it, faces, jumpDeleted);
+	}
+	else
+		return ConstFaceIterator(faces.begin(), faces, jumpDeleted);
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::ConstFaceIterator
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::faceEnd() const
+{
+	return ConstFaceIterator(faces.end(), faces);
 }
 
 template<class T>

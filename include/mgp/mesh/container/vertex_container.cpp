@@ -33,7 +33,7 @@ unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexNumber() c
 }
 
 template<class T>
-void Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::reserveVertices(unsigned int size)
+void Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::reserveVertices(unsigned int size)
 {
 	vertices.reserve(size);
 	if constexpr (common::hasOptionalInfo<VertexType>::value) {
@@ -71,6 +71,50 @@ typename std::enable_if<common::hasOptionalScalar<U>::value, void>::type
 Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::enableVertexScalar()
 {
 	optionalComponentsVector.enableScalar(vertexNumber());
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::VertexIterator
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexBegin(bool jumpDeleted)
+{
+	if (jumpDeleted) {
+		auto it = vertices.begin();
+		while (it->isDeleted()) {
+			++it;
+		}
+		return VertexIterator(it, vertices, jumpDeleted);
+	}
+	else
+		return VertexIterator(vertices.begin(), vertices, jumpDeleted);
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::VertexIterator
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexEnd()
+{
+	return VertexIterator(vertices.end(), vertices);
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::ConstVertexIterator
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexBegin(bool jumpDeleted) const
+{
+	if (jumpDeleted) {
+		auto it = vertices.begin();
+		while (it->isDeleted()) {
+			++it;
+		}
+		return ConstVertexIterator(it, vertices, jumpDeleted);
+	}
+	else
+		return ConstVertexIterator(vertices.begin(), vertices, jumpDeleted);
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::ConstVertexIterator
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::vertexEnd() const
+{
+	return ConstVertexIterator(vertices.end(), vertices);
 }
 
 template<class T>
