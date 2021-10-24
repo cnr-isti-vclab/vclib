@@ -42,12 +42,11 @@ class Face :
 
 namespace mgp {
 
-class TriMesh : public mgp::Mesh<
-					trimesh::Vertex,
-					trimesh::Face,
-					mgp::Box3d,
-					mgp::common::Color>
+class TriMesh : public mgp::Mesh<trimesh::Vertex, trimesh::Face, mgp::Box3d, mgp::common::Color>
 {
+public:
+	using Vertex = trimesh::Vertex;
+	using Face   = trimesh::Face;
 };
 
 } // namespace mgp

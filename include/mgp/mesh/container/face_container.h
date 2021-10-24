@@ -36,10 +36,10 @@ class Container<T, IfIsFace<T>>
 
 protected:
 	// types:
-	typedef T                         FaceType;
 	typedef Container<T, IfIsFace<T>> FaceContainer;
 
 public:
+	using FaceType               = T;
 	using FaceIterator           = ContainerIterator<T>;
 	using ConstFaceIterator      = ConstContainerIterator<T>;
 	using FaceRangeIterator      = RangeIterator<FaceContainer, FaceIterator>;

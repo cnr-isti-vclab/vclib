@@ -11,9 +11,12 @@ template<class... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex()
 {
-	Vertex* oldBase = VertexContainer::vertices.data();
-	unsigned int vid = VertexContainer::addVertex();
-	Vertex* newBase = VertexContainer::vertices.data();
+	using Vertex          = typename U::VertexType;
+	using VertexContainer = typename U::VertexContainer;
+
+	Vertex*      oldBase = VertexContainer::vertices.data();
+	unsigned int vid     = VertexContainer::addVertex();
+	Vertex*      newBase = VertexContainer::vertices.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateVertexReferences(oldBase, newBase);
 	return vid;
@@ -23,14 +26,19 @@ template<class... Args>
 template<typename U>
 mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 {
+	using FaceContainer = typename U::FaceContainer;
+
 	unsigned int fid = FaceContainer::addFace();
 	return fid;
 }
 
-template<class...Args>
+template<class... Args>
 template<typename U>
 ReturnIfHasBox<U, void> Mesh<Args...>::updateBoundingBox()
 {
+	using Vertex          = typename U::VertexType;
+	using VertexContainer = typename U::VertexContainer;
+
 	Mesh::Box::setNull();
 	for (const Vertex& v : VertexContainer::vertexIterator()) {
 		Mesh::Box::add(v.coordinate());
@@ -38,9 +46,16 @@ ReturnIfHasBox<U, void> Mesh<Args...>::updateBoundingBox()
 }
 
 template<class... Args>
-void Mesh<Args...>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
+template<typename U>
+mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::updateVertexReferences(
+	const typename U::VertexType* oldBase,
+	const typename U::VertexType* newBase)
 {
-	FaceContainer::updateVertexReferences(oldBase, newBase);
+	// update vertex references in the Face Container, if it exists
+	if constexpr (mesh::hasFaceContainer<U>::value) {
+		using FaceContainer = typename U::FaceContainer;
+		FaceContainer::updateVertexReferences(oldBase, newBase);
+	}
 }
 
-}
+} // namespace mgp

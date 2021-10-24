@@ -36,10 +36,10 @@ class Container<T, IfIsVertex<T>>
 
 protected:
 	// types:
-	typedef T                           VertexType;
 	typedef Container<T, IfIsVertex<T>> VertexContainer;
 
 public:
+	using VertexType               = T;
 	using VertexIterator           = ContainerIterator<T>;
 	using ConstVertexIterator      = ConstContainerIterator<T>;
 	using VertexRangeIterator      = RangeIterator<VertexContainer, VertexIterator>;

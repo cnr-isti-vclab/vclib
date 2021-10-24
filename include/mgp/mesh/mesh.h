@@ -24,10 +24,6 @@ class Mesh : public mesh::Container<Args>...
 {
 protected:
 public:
-	typedef typename Mesh::VertexType Vertex;
-	typedef typename Mesh::FaceType   Face;
-	//typedef typename Mesh::Box BoundingBox;
-
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex();
 	template<typename U = Mesh>
@@ -37,10 +33,9 @@ public:
 	ReturnIfHasBox<U, void> updateBoundingBox();
 
 protected:
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
-
-	typedef typename Mesh::VertexContainer VertexContainer;
-	typedef typename Mesh::FaceContainer   FaceContainer;
+	template<typename U = Mesh>
+	mesh::ReturnIfHasVertexContainer<U, void>
+	updateVertexReferences(const typename U::VertexType* oldBase, const typename U::VertexType* newBase);
 };
 
 } // namespace mgp
