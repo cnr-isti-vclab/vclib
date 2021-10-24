@@ -50,8 +50,8 @@ int main()
 	std::cerr << "VN: " << m.vertexNumber() << "\n";
 
 	//iterate over vertices
-	for (mgp::TriMesh::ConstVertexIterator it = m.vertexBegin(); it != m.vertexEnd(); ++it){
-		std::cerr << "V " << it->id() << "\n";
+	for (const mgp::TriMesh::Vertex& v : m.vertexIterator()){
+		std::cerr << "V " << v.id() << "\n";
 	}
 
 	return 0;

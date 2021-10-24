@@ -11,6 +11,7 @@
 #include "../component_vector/components_vector.h"
 #include "../face.h"
 #include "../iterators/container_iterator.h"
+#include "../iterators/container_range_iterator.h"
 
 namespace mgp::mesh {
 
@@ -37,6 +38,8 @@ protected:
 public:
 	using FaceIterator      = ContainerIterator<T>;
 	using ConstFaceIterator = ConstContainerIterator<T>;
+	using FaceRangeIterator = RangeIterator<FaceContainer, FaceIterator>;
+	using ConstFaceRangeIterator = ConstRangeIterator<FaceContainer, ConstFaceIterator>;
 
 	Container();
 
@@ -58,6 +61,8 @@ public:
 	FaceIterator      faceEnd();
 	ConstFaceIterator faceBegin(bool jumpDeleted = true) const;
 	ConstFaceIterator faceEnd() const;
+	FaceRangeIterator faceIterator(bool jumpDeleted = true);
+	ConstFaceRangeIterator faceIterator(bool jumpDeleted = true) const;
 
 protected:
 	/**

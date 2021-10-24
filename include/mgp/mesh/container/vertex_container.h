@@ -10,6 +10,7 @@
 
 #include "../component_vector/components_vector.h"
 #include "../iterators/container_iterator.h"
+#include "../iterators/container_range_iterator.h"
 #include "../vertex.h"
 
 namespace mgp::mesh {
@@ -37,6 +38,8 @@ protected:
 public:
 	using VertexIterator      = ContainerIterator<T>;
 	using ConstVertexIterator = ConstContainerIterator<T>;
+	using VertexRangeIterator = RangeIterator<VertexContainer, VertexIterator>;
+	using ConstVertexRangeIterator = ConstRangeIterator<VertexContainer, ConstVertexIterator>;
 
 	Container();
 
@@ -64,6 +67,8 @@ public:
 	VertexIterator      vertexEnd();
 	ConstVertexIterator vertexBegin(bool jumpDeleted = true) const;
 	ConstVertexIterator vertexEnd() const;
+	VertexRangeIterator vertexIterator(bool jumpDeleted = true);
+	ConstVertexRangeIterator vertexIterator(bool jumpDeleted = true) const;
 
 protected:
 	/**

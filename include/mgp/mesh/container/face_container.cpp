@@ -110,6 +110,22 @@ Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::faceEnd() const
 }
 
 template<class T>
+typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::FaceRangeIterator
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::faceIterator(bool jumpDeleted)
+{
+	return FaceRangeIterator(
+		*this, jumpDeleted, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::ConstFaceRangeIterator
+Container<T, mgp::ifIsBaseOf<FaceTriggerer, T> >::faceIterator(bool jumpDeleted) const
+{
+	return ConstFaceRangeIterator(
+		*this, jumpDeleted, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
+}
+
+template<class T>
 unsigned int Container<T, mgp::ifIsBaseOf<FaceTriggerer, T>>::addFace()
 {
 	faces.push_back(FaceType());

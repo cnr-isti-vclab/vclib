@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef CONTAINER_ITERATOR_H
-#define CONTAINER_ITERATOR_H
+#ifndef MESH_ITERATORS_CONTAINER_ITERATOR_H
+#define MESH_ITERATORS_CONTAINER_ITERATOR_H
 
 #include <vector>
 
@@ -85,9 +85,9 @@ public:
 
 	pointer operator->() const { return &*it; }
 
-	bool operator==(const ContainerIterator<T>& oi) const { return it == oi.it; }
+	bool operator==(const ConstContainerIterator<T>& oi) const { return it == oi.it; }
 
-	bool operator!=(const ContainerIterator<T>& oi) const { return it != oi.it; }
+	bool operator!=(const ConstContainerIterator<T>& oi) const { return it != oi.it; }
 
 	ConstContainerIterator operator++()
 	{
@@ -114,4 +114,4 @@ public:
 
 } // namespace mgp::mesh
 
-#endif // GENERIC_ITERATOR_H
+#endif // MESH_ITERATORS_CONTAINER_ITERATOR_H

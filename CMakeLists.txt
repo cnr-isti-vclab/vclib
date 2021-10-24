@@ -54,6 +54,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/face/common.h
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
 	${MGP_SRC_DIR}/mesh/iterators/container_iterator.h
+	${MGP_SRC_DIR}/mesh/iterators/container_range_iterator.h
 	${MGP_SRC_DIR}/mesh/vertex/common.h
 	${MGP_SRC_DIR}/mesh/vertex/coordinate.h
 	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h

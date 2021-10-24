@@ -130,4 +130,20 @@ unsigned int Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::addVertex()
 	return vertices[vertices.size() - 1]._id;
 }
 
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::VertexRangeIterator
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertexIterator(bool jumpDeleted)
+{
+	return VertexRangeIterator(
+		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
+}
+
+template<class T>
+typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::ConstVertexRangeIterator
+Container<T, mgp::ifIsBaseOf<VertexTriggerer, T> >::vertexIterator(bool jumpDeleted) const
+{
+	return ConstVertexRangeIterator(
+		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
+}
+
 } // namespace mgp::mesh
