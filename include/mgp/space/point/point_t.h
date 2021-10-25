@@ -46,9 +46,11 @@ public:
 	using Eigen::Matrix<Scalar, 1, N>::operator+;
 	using Eigen::Matrix<Scalar, 1, N>::operator-;
 	using Eigen::Matrix<Scalar, 1, N>::operator*;
+	using Eigen::Matrix<Scalar, 1, N>::operator/;
 	using Eigen::Matrix<Scalar, 1, N>::operator+=;
 	using Eigen::Matrix<Scalar, 1, N>::operator-=;
 	using Eigen::Matrix<Scalar, 1, N>::operator*=;
+	using Eigen::Matrix<Scalar, 1, N>::operator/=;
 
 	Scalar  operator[](size_t i) const;
 	Scalar& operator[](size_t i);

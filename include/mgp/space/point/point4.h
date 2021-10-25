@@ -29,22 +29,11 @@ public:
 	using Point<ScalarType, 4>::y;
 	using Point<ScalarType, 4>::z;
 	using Point<ScalarType, 4>::w;
-
-	// operators
-	using Point<ScalarType, 4>::operator();
-	using Point<ScalarType, 4>::operator[];
-	using Point<ScalarType, 4>::operator<<;
-
-	template<class S>
-	friend std::ostream& operator<<(std::ostream& out, const Point4<S>& p);
 };
 
 using Point4i = Point4<int>;
 using Point4f = Point4<float>;
 using Point4d = Point4<double>;
-
-template<class ScalarType>
-std::ostream& operator<<(std::ostream& out, const Point4<ScalarType>& p);
 
 } // namespace mgp
 

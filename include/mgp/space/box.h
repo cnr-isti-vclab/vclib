@@ -22,12 +22,28 @@ public:
 
 	bool isNull() const;
 	bool isEmpty() const;
+
+	bool isInside(const PointType& p) const;
+	bool isInsideOpenBox(const PointType& p) const;
+	bool collide(const Box<PointType>& b) const;
+	auto diagonal() const;
+	auto squaredDiagonal() const;
+	PointType center() const;
+	PointType size() const;
+	auto volume() const;
+	auto dim(unsigned int i) const;
+	auto minDim() const;
+	auto maxDim() const;
+
 	void setNull();
 
 	void add(const Box<PointType>& b);
 	void add(const PointType& p);
 	template<typename Scalar>
 	void add(const PointType& p, Scalar radius);
+
+	void intersect(const Box<PointType>& p);
+	void translate(const PointType& p);
 
 	PointType min;
 	PointType max;

@@ -20,11 +20,4 @@ Point4<ScalarType>::Point4(const ScalarType& x, const ScalarType& y, const Scala
 	*this << x, y, z, w;
 }
 
-template<class ScalarType>
-std::ostream& operator<<(std::ostream& out, const Point4<ScalarType>& p)
-{
-	out << static_cast<const Point<ScalarType, 4>&>(p);
-	return out;
-}
-
 } // namespace mgp
