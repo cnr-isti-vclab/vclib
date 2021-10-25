@@ -11,11 +11,11 @@
 namespace mgp {
 
 /**
- * @brief The Point4 class represents a 4-dimensional point containing 4 scalar values.
+ * @brief The Point4 class represents a 4-dimensional point containing 4 ScalarType values.
  * Specializes the Point class, providing some additional member functions useful for 4D points.
  */
-template<class Scalar>
-class Point4 : public Point<Scalar, 4>
+template<class ScalarType>
+class Point4 : public Point<ScalarType, 4>
 {
 public:
 	Point4()                = default; // default empty constructor
@@ -23,17 +23,17 @@ public:
 
 	template<class S>
 	Point4(const Point<S, 4>& p); // constructor from base class - will include all its constructors
-	Point4(const Scalar& x, const Scalar& y, const Scalar& z, const Scalar& w);
+	Point4(const ScalarType& x, const ScalarType& y, const ScalarType& z, const ScalarType& w);
 
-	using Point<Scalar, 4>::x;
-	using Point<Scalar, 4>::y;
-	using Point<Scalar, 4>::z;
-	using Point<Scalar, 4>::w;
+	using Point<ScalarType, 4>::x;
+	using Point<ScalarType, 4>::y;
+	using Point<ScalarType, 4>::z;
+	using Point<ScalarType, 4>::w;
 
 	// operators
-	using Point<Scalar, 4>::operator();
-	using Point<Scalar, 4>::operator[];
-	using Point<Scalar, 4>::operator<<;
+	using Point<ScalarType, 4>::operator();
+	using Point<ScalarType, 4>::operator[];
+	using Point<ScalarType, 4>::operator<<;
 
 	template<class S>
 	friend std::ostream& operator<<(std::ostream& out, const Point4<S>& p);
@@ -43,8 +43,8 @@ using Point4i = Point4<int>;
 using Point4f = Point4<float>;
 using Point4d = Point4<double>;
 
-template<class Scalar>
-std::ostream& operator<<(std::ostream& out, const Point4<Scalar>& p);
+template<class ScalarType>
+std::ostream& operator<<(std::ostream& out, const Point4<ScalarType>& p);
 
 } // namespace mgp
 

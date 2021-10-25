@@ -40,7 +40,7 @@ inline bool BitFlags::userBitFlag(unsigned int bit) const
  */
 inline void BitFlags::clearAllFlags()
 {
-	bool isD = isDeleted();
+	int isD = isDeleted();
 	flags    = 0;
 	flags |= isD;
 }

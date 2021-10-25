@@ -11,11 +11,11 @@
 namespace mgp {
 
 /**
- * @brief The Point3 class represents a 3-dimensional point containing 3 scalar values.
+ * @brief The Point3 class represents a 3-dimensional point containing 3 ScalarType values.
  * Specializes the Point class, providing some additional member functions useful for 3D points.
  */
-template<class Scalar>
-class Point3 : public Point<Scalar, 3>
+template<class ScalarType>
+class Point3 : public Point<ScalarType, 3>
 {
 public:
 	Point3()                = default; // default empty constructor
@@ -23,17 +23,17 @@ public:
 
 	template<class S>
 	Point3(const Point<S, 3>& p); // constructor from base class - will include all its constructors
-	Point3(const Scalar& x, const Scalar& y, const Scalar& z);
+	Point3(const ScalarType& x, const ScalarType& y, const ScalarType& z);
 
-	using Point<Scalar, 3>::x;
-	using Point<Scalar, 3>::y;
-	using Point<Scalar, 3>::z;
-	using Point<Scalar, 3>::cross;
+	using Point<ScalarType, 3>::x;
+	using Point<ScalarType, 3>::y;
+	using Point<ScalarType, 3>::z;
+	using Point<ScalarType, 3>::cross;
 
 	// operators
-	using Point<Scalar, 3>::operator();
-	using Point<Scalar, 3>::operator[];
-	using Point<Scalar, 3>::operator<<;
+	using Point<ScalarType, 3>::operator();
+	using Point<ScalarType, 3>::operator[];
+	using Point<ScalarType, 3>::operator<<;
 
 	template<class S>
 	friend std::ostream& operator<<(std::ostream& out, const Point3<S>& p);
@@ -43,8 +43,8 @@ using Point3i = Point3<int>;
 using Point3f = Point3<float>;
 using Point3d = Point3<double>;
 
-template<class Scalar>
-std::ostream& operator<<(std::ostream& out, const Point3<Scalar>& p);
+template<class ScalarType>
+std::ostream& operator<<(std::ostream& out, const Point3<ScalarType>& p);
 
 } // namespace mgp
 

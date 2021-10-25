@@ -7,23 +7,23 @@
 
 namespace mgp {
 
-template<class Scalar>
+template<class ScalarType>
 template<class S>
-Point4<Scalar>::Point4(const Point<S, 4>& p)
+Point4<ScalarType>::Point4(const Point<S, 4>& p)
 {
 	*this << p(0), p(1), p(2), p(3);
 }
 
-template<class Scalar>
-Point4<Scalar>::Point4(const Scalar& x, const Scalar& y, const Scalar& z, const Scalar& w)
+template<class ScalarType>
+Point4<ScalarType>::Point4(const ScalarType& x, const ScalarType& y, const ScalarType& z, const ScalarType& w)
 {
 	*this << x, y, z, w;
 }
 
-template<class Scalar>
-std::ostream& operator<<(std::ostream& out, const Point4<Scalar>& p)
+template<class ScalarType>
+std::ostream& operator<<(std::ostream& out, const Point4<ScalarType>& p)
 {
-	out << static_cast<const Point<Scalar, 4>&>(p);
+	out << static_cast<const Point<ScalarType, 4>&>(p);
 	return out;
 }
 
