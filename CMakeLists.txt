@@ -61,7 +61,13 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h
 	${MGP_SRC_DIR}/misc/timer.h
 	${MGP_SRC_DIR}/misc/tokenizer.h
-	${MGP_SRC_DIR}/misc/type_traits.h)
+	${MGP_SRC_DIR}/misc/type_traits.h
+	${MGP_SRC_DIR}/io/file_mesh_mode.h
+	${MGP_SRC_DIR}/io/load_ply.h
+	${MGP_SRC_DIR}/io/ply/ply.h
+	${MGP_SRC_DIR}/io/ply/ply_face.h
+	${MGP_SRC_DIR}/io/ply/ply_header.h
+	${MGP_SRC_DIR}/io/ply/ply_vertex.h)
 
 set(SOURCES
 	${MGP_SRC_DIR}/space/box.cpp
@@ -79,7 +85,12 @@ set(SOURCES
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.cpp
 	${MGP_SRC_DIR}/mesh/mesh.cpp
 	${MGP_SRC_DIR}/misc/timer.cpp
-	${MGP_SRC_DIR}/misc/tokenizer.cpp)
+	${MGP_SRC_DIR}/misc/tokenizer.cpp
+	${MGP_SRC_DIR}/io/load_ply.cpp
+	${MGP_SRC_DIR}/io/ply/ply.cpp
+	${MGP_SRC_DIR}/io/ply/ply_face.cpp
+	${MGP_SRC_DIR}/io/ply/ply_header.cpp
+	${MGP_SRC_DIR}/io/ply/ply_vertex.cpp)
 
 add_library(mgp INTERFACE)
 

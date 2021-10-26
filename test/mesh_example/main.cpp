@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <mgp/trimesh.h>
+#include <mgp/io/load_ply.h>
 
 int main()
 {

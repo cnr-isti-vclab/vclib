@@ -43,6 +43,7 @@ protected:
 template<class Vertex>
 class TriangleVertexRefs : public VertexRefsArray<Vertex, 3>
 {
+public:
 	Vertex*&      v0() { return VertexRefsArray<Vertex, 3>::refs[0]; }
 	Vertex*&      v1() { return VertexRefsArray<Vertex, 3>::refs[1]; }
 	Vertex*&      v2() { return VertexRefsArray<Vertex, 3>::refs[2]; }

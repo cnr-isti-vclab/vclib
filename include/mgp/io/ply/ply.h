@@ -9,10 +9,10 @@
 #include <assert.h>
 #include <fstream>
 #include <list>
+
 #include <mgp/misc/tokenizer.h>
 
-namespace mgp {
-namespace ply {
+namespace mgp::ply {
 
 typedef enum { ASCII, BINARY, UNKNOWN } Format;
 typedef enum { VERTEX, FACE, EDGE, MATERIAL, OTHER } ElementType;
@@ -135,8 +135,7 @@ T colorValue(mgp::Tokenizer::iterator& token, PropertyType type);
 
 } // namespace internal
 
-} // namespace ply
-} // namespace mgp
+} // namespace mgp::ply
 
 #include "ply.cpp"
 
