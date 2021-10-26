@@ -8,20 +8,6 @@
 namespace mgp::common {
 
 template<typename T>
-bool OptionalMutableBitFlags<T>::isSelectedM() const
-{
-	int& flags = B::containerPointer->flags(B::id());
-	return flags & SELECTED;
-}
-
-template<typename T>
-bool OptionalMutableBitFlags<T>::isOnBorderM() const
-{
-	int& flags = B::containerPointer->flags(B::id());
-	return flags & BORDER;
-}
-
-template<typename T>
 bool OptionalMutableBitFlags<T>::isVisitedM() const
 {
 	int& flags = B::containerPointer->flags(B::id());
@@ -42,30 +28,6 @@ void OptionalMutableBitFlags<T>::clearAllFlagsM() const
 {
 	int& flags = B::containerPointer->flags(B::id());
 	flags      = 0;
-}
-
-template<typename T>
-void OptionalMutableBitFlags<T>::setSelectedM(bool b) const
-{
-	int& flags = B::containerPointer->flags(B::id());
-	if (b) {
-		flags |= SELECTED;
-	}
-	else {
-		flags &= ~SELECTED;
-	}
-}
-
-template<typename T>
-void OptionalMutableBitFlags<T>::setBorderM(bool b) const
-{
-	int& flags = B::containerPointer->flags(B::id());
-	if (b) {
-		flags |= BORDER;
-	}
-	else {
-		flags &= ~BORDER;
-	}
 }
 
 template<typename T>

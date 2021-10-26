@@ -22,11 +22,6 @@ inline bool BitFlags::isOnBorder() const
 	return flags & BORDER;
 }
 
-inline bool BitFlags::isVisited() const
-{
-	return flags & VISITED;
-}
-
 inline bool BitFlags::userBitFlag(unsigned int bit) const
 {
 	assert(bit >= FIST_USER_BIT && bit < 32);
@@ -62,16 +57,6 @@ inline void BitFlags::setBorder(bool b)
 	}
 	else {
 		flags &= ~BORDER;
-	}
-}
-
-inline void BitFlags::setVisited(bool b)
-{
-	if (b) {
-		flags |= VISITED;
-	}
-	else {
-		flags &= ~VISITED;
 	}
 }
 
