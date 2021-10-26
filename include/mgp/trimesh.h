@@ -29,7 +29,7 @@ class Vertex :
 
 class Face :
 		public mgp::Face<
-			mgp::face::BitFlags,                   // 4b
+			mgp::face::TriangleBitFlags,           // 4b
 			mgp::face::TriangleVertexRefs<Vertex>, // 24b
 			mgp::face::Normal3d,                   // 24b
 			mgp::face::OptionalScalard<Face>,      // 0b

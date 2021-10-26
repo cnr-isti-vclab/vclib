@@ -32,6 +32,9 @@ namespace mgp::common {
  * The bits have the following meaning:
  * - 0: visited: if the current Element has been visited
  * - from 1 to 31: user bits that can have custom meanings to the user
+ *
+ * **List of incompatible components**:
+ * - common::OptionalMutableBitFlags
  */
 class MutableBitFlags
 {
@@ -39,17 +42,28 @@ public:
 	bool isVisitedM() const;
 	bool userBitFlagM(unsigned int bit) const;
 
+	void setVisitedM() const;
+	void setUserBitM(unsigned int bit) const;
+
 	void clearAllFlagsM() const;
-	void setVisitedM(bool b = true) const;
-	void setUserBitM(unsigned int bit, bool b = true) const;
+	void clearVisitedM() const;
+	void clearUserBitM(unsigned int bit) const;
 
 protected:
-	mutable int mutableFlags = 0;
+	bool flagValueM(unsigned int flag) const;
+	void setFlagM(unsigned int flag) const;
+	void clearFlagM(unsigned int flag) const;
 
-private:
-	static const unsigned int FIST_USER_BIT = 1;
+	bool userBitFlagM(unsigned int bit, unsigned int firstBit) const;
+	void setUserBitM(unsigned int bit, unsigned int firstBit) const;
+	void clearUserBitM(unsigned int bit, unsigned int firstBit) const;
+
+	mutable int mutableFlags = 0;
+	static const unsigned int FIRST_MUTABLE_USER_BIT = 1;
+
+	// values of the flags, used for flagValue, setFlag and clearFlag member functions
 	enum {
-		VISITED  = 1 << 0
+		VISITED = 1 << 0
 	};
 };
 

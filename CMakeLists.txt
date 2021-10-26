@@ -52,6 +52,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/component_vector/optional_scalar_vector.h
 	${MGP_SRC_DIR}/mesh/container/vertex_container.h
 	${MGP_SRC_DIR}/mesh/face/common.h
+	${MGP_SRC_DIR}/mesh/face/triangle_bit_flags.h
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
 	${MGP_SRC_DIR}/mesh/iterators/container_iterator.h
 	${MGP_SRC_DIR}/mesh/iterators/container_range_iterator.h
@@ -72,6 +73,7 @@ set(SOURCES
 	${MGP_SRC_DIR}/mesh/common/optional_mutable_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/container/face_container.cpp
 	${MGP_SRC_DIR}/mesh/container/vertex_container.cpp
+	${MGP_SRC_DIR}/mesh/face/triangle_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.cpp
 	${MGP_SRC_DIR}/mesh/mesh.cpp)
 

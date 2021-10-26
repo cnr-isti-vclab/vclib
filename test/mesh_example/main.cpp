@@ -22,9 +22,9 @@ int main()
 	m.vertex(2).coordinate() = mgp::Point3d(1, 0, 0);
 
 	const mgp::TriMesh::Vertex& vv = m.vertex(0);
-	vv.setSelectedM();
+	vv.setVisitedM();
 
-	assert(m.vertex(0).isSelectedM());
+	assert(m.vertex(0).isVisitedM());
 	
 	m.vertex(0).normal() = mgp::Point3d(1, 0, 0);
 

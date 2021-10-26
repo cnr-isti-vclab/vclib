@@ -34,21 +34,35 @@ public:
 	bool isOnBorder() const;
 	bool userBitFlag(unsigned int bit) const;
 
+	void setSelected();
+	void setOnBorder();
+	void setUserBit(unsigned int bit);
+
 	void clearAllFlags();
-	void setSelected(bool b = true);
-	void setBorder(bool b = true);
-	void setUserBit(unsigned int bit, bool b = true);
+	void clearSelected();
+	void clearOnBorder();
+	void clearUserBit(unsigned int bit);
 
 protected:
-	void setDeleted(bool b = true);
-	int flags = 0;
+	void setDeleted();
+	void clearDeleted();
 
-private:
-	static const unsigned int FIST_USER_BIT = 3;
+	bool flagValue(unsigned int flag) const;
+	void setFlag(unsigned int flag);
+	void clearFlag(unsigned int flag);
+
+	bool userBitFlag(unsigned int bit, unsigned int firstBit) const;
+	void setUserBit(unsigned int bit, unsigned int firstBit);
+	void clearUserBit(unsigned int bit, unsigned int firstBit);
+
+	int flags = 0;
+	static const unsigned int FIRST_USER_BIT = 3;
+
+	// values of the flags, used for flagValue, setFlag and clearFlag member functions
 	enum {
-		DELETED  = 1 << 0,
-		SELECTED = 1 << 1,
-		BORDER   = 1 << 2
+		DELETED  = 1 << 0, // bit 0
+		SELECTED = 1 << 1, // bit 1
+		BORDER   = 1 << 2  // bit 2
 	};
 };
 
