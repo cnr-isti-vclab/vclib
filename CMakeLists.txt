@@ -59,6 +59,8 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/vertex/common.h
 	${MGP_SRC_DIR}/mesh/vertex/coordinate.h
 	${MGP_SRC_DIR}/mesh/vertex/face_adjacency_ref.h
+	${MGP_SRC_DIR}/misc/timer.h
+	${MGP_SRC_DIR}/misc/tokenizer.h
 	${MGP_SRC_DIR}/misc/type_traits.h)
 
 set(SOURCES
@@ -75,7 +77,9 @@ set(SOURCES
 	${MGP_SRC_DIR}/mesh/container/vertex_container.cpp
 	${MGP_SRC_DIR}/mesh/face/triangle_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.cpp
-	${MGP_SRC_DIR}/mesh/mesh.cpp)
+	${MGP_SRC_DIR}/mesh/mesh.cpp
+	${MGP_SRC_DIR}/misc/timer.cpp
+	${MGP_SRC_DIR}/misc/tokenizer.cpp)
 
 add_library(mgp INTERFACE)
 
