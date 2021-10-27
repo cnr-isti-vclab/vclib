@@ -38,6 +38,9 @@ using hasOptionalColor = typename detector<hasOptionalColor_t, void, T>::type;
 template<typename U, typename T>
 using ReturnIfHasOptionalColor = typename std::enable_if<hasOptionalColor<U>::value, T>::type;
 
+template <typename T>
+bool constexpr hasOptionalColorComponent() {return hasOptionalColor<T>::value;}
+
 } // namespace mgp::common
 
 #endif // MGP_MESH_COMMON_OPTIONAL_COLOR_H

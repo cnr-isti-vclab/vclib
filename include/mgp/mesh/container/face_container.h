@@ -106,6 +106,9 @@ using hasFaceContainer = typename detector<hasFaceContainer_t, void, T>::type;
 template<typename U, typename T>
 using ReturnIfHasFaceContainer = typename std::enable_if<hasFaceContainer<U>::value, T>::type;
 
+template <typename T>
+constexpr bool hasFaces() { return mesh::hasFaceContainer<T>::value;}
+
 } // namespace mgp::mesh
 
 #include "face_container.cpp"

@@ -108,6 +108,9 @@ using hasVertexContainer = typename detector<hasVertexContainer_t, void, T>::typ
 template<typename U, typename T>
 using ReturnIfHasVertexContainer = typename std::enable_if<hasVertexContainer<U>::value, T>::type;
 
+template <typename T>
+constexpr bool hasVertices() { return mesh::hasVertexContainer<T>::value;}
+
 } // namespace mgp::mesh
 
 #include "vertex_container.cpp"

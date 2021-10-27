@@ -21,7 +21,7 @@ public:
 };
 
 template<typename T>
-class OptionalColorVector<T, std::enable_if_t<common::hasOptionalColor<T>::value>> :
+class OptionalColorVector<T, std::enable_if_t<common::hasOptionalColorComponent<T>()>> :
 		private OptionalGenericVector<typename T::ColorType>
 {
 	typedef typename T::ColorType            ColorType;

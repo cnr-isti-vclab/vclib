@@ -76,6 +76,9 @@ using hasBitFlags_t = decltype(std::declval<T&>().isDeleted());
 template<typename T>
 using hasBitFlags = typename detector<hasBitFlags_t, void, T>::type;
 
+template <typename T>
+constexpr bool hasBitFlagsComponent() { return hasBitFlags<T>::value;}
+
 } // namespace mgp::common
 
 #include "bit_flags.cpp"

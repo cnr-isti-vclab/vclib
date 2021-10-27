@@ -41,6 +41,19 @@ private:
 typedef Coordinate3<float>  Coordinate3f;
 typedef Coordinate3<double> Coordinate3d;
 
+/**
+ * Detector to check if a class has (inherits) Coordinate
+ */
+
+template<typename T>
+using hasCoordinate_t = decltype(std::declval<T&>().coordinate());
+
+template <typename T>
+using hasCoordinate = typename detector<hasCoordinate_t, void, T>::type;
+
+template <typename VertexType>
+constexpr bool hasCoordinateComponent() { return vert::hasCoordinate<VertexType>::value;}
+
 } // namespace mgp::vert
 
 #endif // MGP_MESH_VERTEX_COORDINATE_H

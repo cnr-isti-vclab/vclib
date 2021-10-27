@@ -52,7 +52,7 @@ mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::updateVertexReferences(
 	const typename U::VertexType* newBase)
 {
 	// update vertex references in the Face Container, if it exists
-	if constexpr (mesh::hasFaceContainer<U>::value) {
+	if constexpr (mgp::mesh::hasFaces<U>()) {
 		using FaceContainer = typename U::FaceContainer;
 		FaceContainer::updateVertexReferences(oldBase, newBase);
 	}

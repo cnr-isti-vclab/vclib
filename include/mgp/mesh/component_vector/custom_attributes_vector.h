@@ -39,8 +39,8 @@ public:
 	{
 		for (auto& p : map){
 			p.second.resize(size);
+			needToInitialize.at(p.first) = true;
 		}
-		needToInitialize = true;
 	}
 
 	template<typename AttrType>
@@ -48,6 +48,7 @@ public:
 	{
 		std::vector<std::any>& v = map[name];
 		v.resize(size, AttrType());
+		needToInitialize[name] = false;
 	}
 
 	void assertAttributeExists(const std::string& attrName) const
@@ -64,12 +65,12 @@ public:
 	const std::vector<std::any>& attrVector(const std::string& attrName) const
 	{
 		std::vector<std::any>& v = const_cast<std::vector<std::any>&>(map.at(attrName));
-		if (needToInitialize){
+		if (needToInitialize.at(attrName)){
 			for (std::any& a : v){
 				if (!a.has_value())
 					a = AttrType();
 			}
-			needToInitialize = false;
+			needToInitialize.at(attrName) = false;
 		}
 		return v;
 	}
@@ -78,19 +79,19 @@ public:
 	std::vector<std::any>& attrVector(const std::string& attrName)
 	{
 		std::vector<std::any>& v = map.at(attrName);
-		if (needToInitialize){
+		if (needToInitialize.at(attrName)){
 			for (std::any& a : v){
 				if (!a.has_value())
 					a = AttrType();
 			}
-			needToInitialize = false;
+			needToInitialize.at(attrName) = false;
 		}
 		return v;
 	}
 
 private:
 	std::unordered_map<std::string, std::vector<std::any>> map;
-	mutable bool needToInitialize = false;
+	mutable std::unordered_map<std::string, bool> needToInitialize;
 };
 
 } // namespace mgp::mesh

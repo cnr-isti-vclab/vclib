@@ -10,14 +10,15 @@
 
 namespace mgp {
 
-class MissingComponentException : public std::runtime_error
+class MissingPreconditionException : public std::runtime_error
 {
 public:
-	MissingComponentException(const std::string& err) : std::runtime_error(err) {}
+	MissingPreconditionException(const std::string& err) : std::runtime_error(err) {}
+
 	virtual const char* what() const throw()
 	{
 		static std::string error;
-		error = std::string("Missing Component Exception - ") + std::runtime_error::what();
+		error = std::string("Missing Mesh Precondition - ") + std::runtime_error::what();
 		return error.c_str();
 	}
 };
@@ -34,15 +35,14 @@ public:
 	}
 };
 
-class MissingPreconditionException : public std::runtime_error
+class MissingComponentException : public std::runtime_error
 {
 public:
-	MissingPreconditionException(const std::string& err) : std::runtime_error(err) {}
-
+	MissingComponentException(const std::string& err) : std::runtime_error(err) {}
 	virtual const char* what() const throw()
 	{
 		static std::string error;
-		error = std::string("Missing Mesh Precondition - ") + std::runtime_error::what();
+		error = std::string("Missing Component Exception - ") + std::runtime_error::what();
 		return error.c_str();
 	}
 };
