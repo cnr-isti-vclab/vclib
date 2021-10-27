@@ -6,11 +6,15 @@
 #include "ply/ply_face.h"
 
 // todo: remove this and make template
-#include <mgp/trimesh.h>
+#include <mgp/mesh/mesh.h>
 
 namespace mgp::io {
 
-void loadPly(TriMesh& m, const std::string& filenamem, FileMeshInfo& loadedInfo);
+template <typename MeshType>
+void loadPly(MeshType& m, const std::string& filename);
+
+template <typename MeshType>
+void loadPly(MeshType& m, const std::string& filename, FileMeshInfo& loadedInfo);
 
 }
 

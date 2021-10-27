@@ -18,13 +18,7 @@ set(MGP_SRC_DIR ${MGP_INCLUDE_DIR}/mgp)
 
 set(HEADERS
 	${MGP_SRC_DIR}/trimesh.h
-	${MGP_SRC_DIR}/space/box.h
-	${MGP_SRC_DIR}/space/color.h
-	${MGP_SRC_DIR}/space/point.h
-	${MGP_SRC_DIR}/space/point/point_t.h
-	${MGP_SRC_DIR}/space/point/point2.h
-	${MGP_SRC_DIR}/space/point/point3.h
-	${MGP_SRC_DIR}/space/point/point4.h
+	${MGP_SRC_DIR}/exception/mesh_exception.h
 	${MGP_SRC_DIR}/mesh/face.h
 	${MGP_SRC_DIR}/mesh/mesh.h
 	${MGP_SRC_DIR}/mesh/vertex.h
@@ -67,15 +61,16 @@ set(HEADERS
 	${MGP_SRC_DIR}/io/ply/ply.h
 	${MGP_SRC_DIR}/io/ply/ply_face.h
 	${MGP_SRC_DIR}/io/ply/ply_header.h
-	${MGP_SRC_DIR}/io/ply/ply_vertex.h)
+	${MGP_SRC_DIR}/io/ply/ply_vertex.h
+	${MGP_SRC_DIR}/space/box.h
+	${MGP_SRC_DIR}/space/color.h
+	${MGP_SRC_DIR}/space/point.h
+	${MGP_SRC_DIR}/space/point/point_t.h
+	${MGP_SRC_DIR}/space/point/point2.h
+	${MGP_SRC_DIR}/space/point/point3.h
+	${MGP_SRC_DIR}/space/point/point4.h)
 
 set(SOURCES
-	${MGP_SRC_DIR}/space/box.cpp
-	${MGP_SRC_DIR}/space/color.cpp
-	${MGP_SRC_DIR}/space/point/point_t.cpp
-	${MGP_SRC_DIR}/space/point/point2.cpp
-	${MGP_SRC_DIR}/space/point/point3.cpp
-	${MGP_SRC_DIR}/space/point/point4.cpp
 	${MGP_SRC_DIR}/mesh/common/bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/common/optional_mutable_bit_flags.cpp
@@ -90,7 +85,13 @@ set(SOURCES
 	${MGP_SRC_DIR}/io/ply/ply.cpp
 	${MGP_SRC_DIR}/io/ply/ply_face.cpp
 	${MGP_SRC_DIR}/io/ply/ply_header.cpp
-	${MGP_SRC_DIR}/io/ply/ply_vertex.cpp)
+	${MGP_SRC_DIR}/io/ply/ply_vertex.cpp
+	${MGP_SRC_DIR}/space/box.cpp
+	${MGP_SRC_DIR}/space/color.cpp
+	${MGP_SRC_DIR}/space/point/point_t.cpp
+	${MGP_SRC_DIR}/space/point/point2.cpp
+	${MGP_SRC_DIR}/space/point/point3.cpp
+	${MGP_SRC_DIR}/space/point/point4.cpp)
 
 add_library(mgp INTERFACE)
 

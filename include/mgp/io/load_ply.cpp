@@ -2,7 +2,15 @@
 
 namespace mgp::io {
 
-inline void loadPly(TriMesh& m, const std::string& filename, mgp::io::FileMeshInfo& loadedInfo)
+template<typename MeshType>
+void loadPly(MeshType& m, const std::string& filename)
+{
+	FileMeshInfo loadedInfo;
+	loadPly(m, filename, loadedInfo);
+}
+
+template <typename MeshType>
+inline void loadPly(MeshType& m, const std::string& filename, mgp::io::FileMeshInfo& loadedInfo)
 {
 	std::ifstream file(filename);
 	if (!file.is_open()) {
