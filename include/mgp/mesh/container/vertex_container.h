@@ -31,7 +31,7 @@ template<class T>
 class Container<T, IfIsVertex<T>>
 {
 	static_assert(
-		mgp::common::hasBitFlags<T>(),
+		mgp::vert::hasBitFlags<T>(),
 		"You should include BitFlags as Vertex component in your Mesh definition.");
 
 protected:

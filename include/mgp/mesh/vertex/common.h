@@ -28,6 +28,8 @@ using OptionalInfo = mgp::common::OptionalInfo<T>;
 
 /** Port BitFlags class into vert namespace **/
 using BitFlags = mgp::common::BitFlags;
+template <typename T>
+bool constexpr hasBitFlags() {return mgp::common::hasBitFlags<T>();};
 
 /** Port OptionalMutableBitFlags class into vert namespace **/
 template <typename T>

@@ -31,7 +31,7 @@ template<class T>
 class Container<T, IfIsFace<T>>
 {
 	static_assert(
-		mgp::common::hasBitFlags<T>(),
+		mgp::face::hasBitFlags<T>(),
 		"You should include BitFlags as Face component in your Mesh definition.");
 
 protected:

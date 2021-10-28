@@ -12,8 +12,10 @@
 
 namespace mgp::vert {
 
+class CoordinateTrigger {};
+
 template<class Scalar, int N>
-class Coordinate : virtual public Info
+class Coordinate : public CoordinateTrigger, virtual public Info
 {
 public:
 	typedef Point<Scalar, N> CoordinateType;
@@ -45,14 +47,11 @@ typedef Coordinate3<double> Coordinate3d;
  * Detector to check if a class has (inherits) Coordinate
  */
 
-template<typename T>
-using hasCoordinate_t = decltype(std::declval<T&>().coordinate());
+template <typename  T>
+using hasCoordinateT = std::is_base_of<CoordinateTrigger, T>;
 
-template <typename T>
-using hasCoordinate = typename detector<hasCoordinate_t, void, T>::type;
-
-template <typename VertexType>
-constexpr bool hasCoordinateComponent() { return vert::hasCoordinate<VertexType>::value;}
+template <typename  T>
+bool constexpr hasCoordinate() {return hasCoordinateT<T>::value;}
 
 } // namespace mgp::vert
 

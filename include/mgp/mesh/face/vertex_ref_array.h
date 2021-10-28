@@ -15,6 +15,8 @@
 
 namespace mgp::face {
 
+class VertexRefsArrayTrigger {};
+
 /**
  * @brief The VertexRefsArray class is a Component of the Mesh::Face class which will contain
  * a fixed size array of references to Mesh::Vertex.
@@ -23,7 +25,7 @@ namespace mgp::face {
  * compile time.
  */
 template<class Vertex, int N>
-class VertexRefsArray : virtual public Info
+class VertexRefsArray : public VertexRefsArrayTrigger, virtual public Info
 {
 public:
 	VertexRefsArray();
@@ -60,11 +62,11 @@ public:
  * Detector to check if a class has the method v(int)
  */
 
-template<typename T>
-using hasVertexRefsArray_t = decltype(std::declval<const T&>().v(std::declval<int>()));
+template <typename  T>
+using hasVertexRefsArrayT = std::is_base_of<VertexRefsArrayTrigger, T>;
 
-template<typename T>
-using hasVertexRefsArray = typename detector<hasVertexRefsArray_t, void, T>::type;
+template <typename  T>
+bool constexpr hasVertexRefsArray() {return hasVertexRefsArrayT<T>::value;}
 
 } // namespace mgp::face
 
