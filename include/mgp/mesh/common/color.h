@@ -6,7 +6,6 @@
 #ifndef MGP_MESH_COMMON_COLOR_H
 #define MGP_MESH_COMMON_COLOR_H
 
-#include <mgp/misc/type_traits.h>
 #include <mgp/space/color.h>
 
 #include "info.h"

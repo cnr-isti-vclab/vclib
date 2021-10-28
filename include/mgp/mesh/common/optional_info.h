@@ -6,8 +6,6 @@
 #ifndef MGP_MESH_COMMON_OPTIONAL_INFO_H
 #define MGP_MESH_COMMON_OPTIONAL_INFO_H
 
-#include <mgp/misc/type_traits.h>
-
 #include "info.h"
 
 

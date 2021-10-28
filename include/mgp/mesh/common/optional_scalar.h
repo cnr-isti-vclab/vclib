@@ -10,8 +10,11 @@
 
 namespace mgp::common {
 
+template <typename T>
+class OptionalScalarTrigger {};
+
 template<typename S, typename T>
-class OptionalScalar : public virtual OptionalInfo<T>
+class OptionalScalar : public OptionalScalarTrigger<T>, public virtual OptionalInfo<T>
 {
 private:
 	typedef OptionalInfo<T> B;
@@ -33,14 +36,14 @@ class OptionalScalard : public OptionalScalar<double, T> {};
  * Detector to check if a class has (inherits) OpionalScalar
  */
 
-template<typename T>
-using hasOptionalScalar_t = decltype(std::declval<T&>().__optional_scalar__());
-
 template <typename T>
-using hasOptionalScalar = typename detector<hasOptionalScalar_t, void, T>::type;
+using hasOptionalScalarT = std::is_base_of<OptionalScalarTrigger<T>, T>;
 
 template<typename U, typename T>
-using ReturnIfHasOptionalScalar = typename std::enable_if<hasOptionalScalar<U>::value, T>::type;
+using ReturnIfHasOptionalScalar = typename std::enable_if<hasOptionalScalarT<U>::value, T>::type;
+
+template <typename T>
+bool constexpr hasOptionalScalar() {return hasOptionalScalarT<T>::value;}
 
 } // namespace mgp::common
 

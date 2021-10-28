@@ -10,8 +10,10 @@
 
 namespace mgp::common {
 
+class ScalarTrigger {};
+
 template<typename T>
-class Scalar : public virtual Info
+class Scalar : public ScalarTrigger, public virtual Info
 {
 	typedef T ScalarType;
 
@@ -24,6 +26,16 @@ private:
 
 typedef Scalar<float>  Scalarf;
 typedef Scalar<double> Scalard;
+
+/**
+ * Detector to check if a class has (inherits) Scalar
+ */
+
+template <typename  T>
+using hasScalarT = std::is_base_of<ScalarTrigger, T>;
+
+template <typename  T>
+bool constexpr hasScalar() {return hasScalarT<T>::value;}
 
 } // namespace mgp::common
 

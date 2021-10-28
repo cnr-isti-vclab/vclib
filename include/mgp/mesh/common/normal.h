@@ -12,8 +12,10 @@
 
 namespace mgp::common {
 
+class NormalTrigger {};
+
 template<typename Scalar, int N>
-class Normal : virtual public Info
+class Normal : public NormalTrigger, virtual public Info
 {
 public:
 	typedef Point<Scalar, N> NormalType;
@@ -40,6 +42,16 @@ private:
 
 typedef Normal3<float>  Normal3f;
 typedef Normal3<double> Normal3d;
+
+/**
+ * Detector to check if a class has (inherits) Normal
+ */
+
+template <typename  T>
+using hasNormalT = std::is_base_of<NormalTrigger, T>;
+
+template <typename  T>
+bool constexpr hasNormal() {return hasNormalT<T>::value;}
 
 } // namespace mgp::common
 

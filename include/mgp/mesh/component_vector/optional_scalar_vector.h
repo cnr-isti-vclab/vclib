@@ -21,7 +21,7 @@ public:
 };
 
 template<typename T>
-class OptionalScalarVector<T, std::enable_if_t<common::hasOptionalScalar<T>::value>> :
+class OptionalScalarVector<T, std::enable_if_t<common::hasOptionalScalar<T>()>> :
 		private OptionalGenericVector<typename T::ScalarType>
 {
 	typedef typename T::ScalarType            ScalarType;

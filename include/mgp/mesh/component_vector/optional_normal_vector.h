@@ -21,7 +21,7 @@ public:
 };
 
 template<typename T>
-class OptionalNormalVector<T, std::enable_if_t<common::hasOptionalNormal<T>::value>> :
+class OptionalNormalVector<T, std::enable_if_t<common::hasOptionalNormal<T>()>> :
 		private OptionalGenericVector<typename T::NormalType>
 {
 	typedef typename T::NormalType            NormalType;

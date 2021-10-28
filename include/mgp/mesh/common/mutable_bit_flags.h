@@ -8,8 +8,6 @@
 
 #include <assert.h>
 
-#include <mgp/misc/type_traits.h>
-
 #include "info.h"
 
 namespace mgp::common {
