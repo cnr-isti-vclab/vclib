@@ -7,6 +7,9 @@
 
 namespace mgp::mesh {
 
+/**
+ * @brief Container::Container Empty constructors that created an empty container of Vertices.
+ */
 template<class T>
 Container<T, IfIsVertex<T>>::Container()
 {
@@ -36,36 +39,52 @@ template<class T>
 void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {
 	vertices.reserve(size);
-	if constexpr (common::hasOptionalInfo<VertexType>()) {
+	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		optionalComponentsVector.reserve(size);
 	}
 }
 
+/**
+ * @brief Container::enableVertexColor enable the Optional Color of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalColor Component**.
+ */
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalColor<U, void> Container<T, IfIsVertex<T>>::enableVertexColor()
+vert::ReturnIfHasOptionalColor<U, void> Container<T, IfIsVertex<T>>::enableVertexColor()
 {
 	optionalComponentsVector.enableColor(vertexNumber());
 }
 
+/**
+ * @brief Container::enableVertexMutableFlags enable the Optional Mutable Flags of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalMutableBitFlags Component**.
+ */
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalMutableBitFlags<U, void>
-Container<T, IfIsVertex<T>>::enableVertexMutableBitFlags()
+vert::ReturnIfHasOptionalMutableBitFlags<U, void>
+Container<T, IfIsVertex<T>>::enableVertexMutableFlags()
 {
 	optionalComponentsVector.enableMutableBitFlags(vertexNumber());
 }
 
+/**
+ * @brief Container::enableVertexNormal enable the Optional Normal of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalNormal Component**.
+ */
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsVertex<T>>::enableVertexNormal()
+vert::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsVertex<T>>::enableVertexNormal()
 {
 	optionalComponentsVector.enableNormal(vertexNumber());
 }
 
+/**
+ * @brief Container::enableVertexScalar enable the Optional Scalar of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalScalar Component**.
+ */
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsVertex<T>>::enableVertexScalar()
+vert::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsVertex<T>>::enableVertexScalar()
 {
 	optionalComponentsVector.enableScalar(vertexNumber());
 }
@@ -119,7 +138,7 @@ unsigned int Container<T, IfIsVertex<T>>::addVertex()
 	vertices.push_back(VertexType());
 	++vn;
 	vertices[vertices.size() - 1]._id = vertices.size() - 1;
-	if constexpr (common::hasOptionalInfo<VertexType>()) {
+	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		vertices[vertices.size() - 1].setContainerPointer(&optionalComponentsVector);
 		optionalComponentsVector.resize(vertices.size());
 	}

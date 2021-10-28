@@ -6,8 +6,9 @@
 #ifndef MGP_MESH_COMMON_OPTIONAL_INFO_H
 #define MGP_MESH_COMMON_OPTIONAL_INFO_H
 
-#include "info.h"
+#include <type_traits>
 
+#include "info.h"
 
 namespace mgp::mesh {
 

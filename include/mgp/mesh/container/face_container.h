@@ -57,11 +57,16 @@ public:
 	void reserveFaces(unsigned int size);
 
 	template<typename U = T>
-	common::ReturnIfHasOptionalColor<U, void> enableFaceColor();
+	face::ReturnIfHasOptionalColor<U, void> enableFaceColor();
+
 	template<typename U = T>
-	common::ReturnIfHasOptionalNormal<U, void> enableFaceNormal();
+	face::ReturnIfHasOptionalMutableBitFlags<U, void> enableFaceMutableFlags();
+
 	template<typename U = T>
-	common::ReturnIfHasOptionalScalar<U, void> enableFaceScalar();
+	face::ReturnIfHasOptionalNormal<U, void> enableFaceNormal();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalScalar<U, void> enableFaceScalar();
 
 	FaceIterator           faceBegin(bool jumpDeleted = true);
 	FaceIterator           faceEnd();

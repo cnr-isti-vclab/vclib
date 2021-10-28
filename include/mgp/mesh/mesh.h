@@ -7,7 +7,6 @@
 #define MGP_MESH_MESH_H
 
 #include "container/containers.h"
-#include <mgp/space/box.h>
 
 namespace mgp {
 

@@ -7,6 +7,9 @@
 
 namespace mgp::mesh {
 
+/**
+ * @brief Container::Container Empty constructors that created an empty container of Faces.
+ */
 template<class T>
 Container<T, IfIsFace<T>>::Container()
 {
@@ -36,28 +39,51 @@ template<class T>
 void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
 {
 	faces.reserve(size);
-	if constexpr (common::hasOptionalInfo<FaceType>()) {
+	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		optionalComponentsVector.reserve(size);
 	}
 }
 
+/**
+ * @brief Container::enableFaceColor enable the Optional Color of the face.
+ * This function is available **only if the Face Element has the OptionalColor Component**.
+ */
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalColor<U, void> Container<T, IfIsFace<T>>::enableFaceColor()
+face::ReturnIfHasOptionalColor<U, void> Container<T, IfIsFace<T>>::enableFaceColor()
 {
 	optionalComponentsVector.enableColor(faceNumber());
 }
 
+/**
+ * @brief Container::enableFaceMutableFlags enable the Optional Mutable Flags of the face.
+ * This function is available **only if the Face Element has the OptionalMutableFlags Component**.
+ */
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsFace<T>>::enableFaceNormal()
+face::ReturnIfHasOptionalMutableBitFlags<U, void> Container<T, IfIsFace<T>>::enableFaceMutableFlags()
+{
+	optionalComponentsVector.enableMutableBitFlags(faceNumber());
+}
+
+/**
+ * @brief Container::enableFaceNormal enable the Optional Normal of the face.
+ * This function is available **only if the Face Element has the OptionalNormal Component**.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsFace<T>>::enableFaceNormal()
 {
 	optionalComponentsVector.enableNormal(faceNumber());
 }
 
+/**
+ * @brief Container::enableFaceScalar enable the Optional Scalar of the face.
+ * This function is available **only if the Face Element has the OptionalScalar Component**.
+ */
 template<class T>
 template<class U>
-common::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsFace<T>>::enableFaceScalar()
+face::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsFace<T>>::enableFaceScalar()
 {
 	optionalComponentsVector.enableScalar(faceNumber());
 }
@@ -126,7 +152,7 @@ unsigned int Container<T, IfIsFace<T>>::addFace()
 	faces.push_back(FaceType());
 	++fn;
 	faces[faces.size() - 1]._id = faces.size() - 1;
-	if constexpr (common::hasOptionalInfo<FaceType>()) {
+	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		faces[faces.size() - 1].setContainerPointer(&optionalComponentsVector);
 		optionalComponentsVector.resize(faces.size());
 	}

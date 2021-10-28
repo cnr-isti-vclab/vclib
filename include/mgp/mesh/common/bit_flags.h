@@ -7,6 +7,7 @@
 #define MGP_MESH_COMMON_BIT_FLAGS_H
 
 #include <assert.h>
+#include <type_traits>
 
 #include "info.h"
 

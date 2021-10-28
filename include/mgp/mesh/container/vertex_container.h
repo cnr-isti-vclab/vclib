@@ -57,16 +57,16 @@ public:
 	void reserveVertices(unsigned int size);
 
 	template<typename U = T>
-	common::ReturnIfHasOptionalColor<U, void> enableVertexColor();
+	vert::ReturnIfHasOptionalColor<U, void> enableVertexColor();
 
 	template<typename U = T>
-	common::ReturnIfHasOptionalMutableBitFlags<U, void> enableVertexMutableBitFlags();
+	vert::ReturnIfHasOptionalMutableBitFlags<U, void> enableVertexMutableFlags();
 
 	template<typename U = T>
-	common::ReturnIfHasOptionalNormal<U, void> enableVertexNormal();
+	vert::ReturnIfHasOptionalNormal<U, void> enableVertexNormal();
 
 	template<typename U = T>
-	common::ReturnIfHasOptionalScalar<U, void> enableVertexScalar();
+	vert::ReturnIfHasOptionalScalar<U, void> enableVertexScalar();
 
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
 	VertexIterator           vertexEnd();
