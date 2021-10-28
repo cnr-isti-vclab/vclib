@@ -29,9 +29,6 @@ public:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace();
 
-	template<typename U = Mesh>
-	ReturnIfHasBox<U, void> updateBoundingBox();
-
 protected:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, void>

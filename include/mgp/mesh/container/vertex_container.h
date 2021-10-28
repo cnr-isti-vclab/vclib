@@ -15,6 +15,8 @@
 
 namespace mgp::mesh {
 
+class VertexContainerTriggerer {};
+
 // to shorten triggerer for Vertex class
 template<class T>
 using IfIsVertex = mgp::ifIsBaseOf<VertexTriggerer, T>;
@@ -28,7 +30,7 @@ template<class T>
  * members to the vertices, the vertex number, iterators... This class will also take care to add
  * enablers/disablers of the eventual optional components of the vertex.
  */
-class Container<T, IfIsVertex<T>>
+class Container<T, IfIsVertex<T>> : public VertexContainerTriggerer
 {
 	static_assert(
 		mgp::vert::hasBitFlags<T>(),
@@ -99,17 +101,14 @@ protected:
  * Detector to check if a class has (inherits) a VertexContainer
  */
 
-template<typename T>
-using hasVertexContainer_t = decltype(std::declval<T&>().vertexNumber());
-
-template<typename T>
-using hasVertexContainer = typename detector<hasVertexContainer_t, void, T>::type;
+template <typename  T>
+using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
 
 template<typename U, typename T>
-using ReturnIfHasVertexContainer = typename std::enable_if<hasVertexContainer<U>::value, T>::type;
+using ReturnIfHasVertexContainer = typename std::enable_if<hasVertexContainerT<U>::value, T>::type;
 
 template <typename T>
-constexpr bool hasVertices() { return mesh::hasVertexContainer<T>::value;}
+constexpr bool hasVertices() { return mesh::hasVertexContainerT<T>::value;}
 
 } // namespace mgp::mesh
 

@@ -34,19 +34,6 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 
 template<class... Args>
 template<typename U>
-ReturnIfHasBox<U, void> Mesh<Args...>::updateBoundingBox()
-{
-	using Vertex          = typename U::VertexType;
-	using VertexContainer = typename U::VertexContainer;
-
-	Mesh::Box::setNull();
-	for (const Vertex& v : VertexContainer::vertexIterator()) {
-		Mesh::Box::add(v.coordinate());
-	}
-}
-
-template<class... Args>
-template<typename U>
 mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::updateVertexReferences(
 	const typename U::VertexType* oldBase,
 	const typename U::VertexType* newBase)

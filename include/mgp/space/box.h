@@ -61,19 +61,6 @@ using Box3i = Box<Point3i>;
 using Box3f = Box<Point3f>;
 using Box3d = Box<Point3d>;
 
-/**
- * Detector to check if a class has (inherits) OptionalColor
- */
-
-template<typename T>
-using hasBox_t = decltype(std::declval<T&>().isNull());
-
-template <typename T>
-using hasBox = typename detector<hasBox_t, void, T>::type;
-
-template<typename U, typename T>
-using ReturnIfHasBox = typename std::enable_if<mgp::hasBox<U>::value, T>::type;
-
 } // namespace mgp
 
 #include "box.cpp"

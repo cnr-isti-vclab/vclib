@@ -15,6 +15,8 @@
 
 namespace mgp::mesh {
 
+class FaceContainerTriggerer {};
+
 // to shorten triggerer for Vertex class
 template<class T>
 using IfIsFace = mgp::ifIsBaseOf<FaceTriggerer, T>;
@@ -28,7 +30,7 @@ using IfIsFace = mgp::ifIsBaseOf<FaceTriggerer, T>;
  * enablers/disablers of the eventual optional components of the face.
  */
 template<class T>
-class Container<T, IfIsFace<T>>
+class Container<T, IfIsFace<T>> : public FaceContainerTriggerer
 {
 	static_assert(
 		mgp::face::hasBitFlags<T>(),
@@ -98,10 +100,7 @@ protected:
  */
 
 template<typename T>
-using hasFaceContainer_t = decltype(std::declval<T&>().faceNumber());
-
-template<typename T>
-using hasFaceContainer = typename detector<hasFaceContainer_t, void, T>::type;
+using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
 
 template<typename U, typename T>
 using ReturnIfHasFaceContainer = typename std::enable_if<hasFaceContainer<U>::value, T>::type;

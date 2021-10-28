@@ -46,8 +46,6 @@ int main()
 	m.addVertex();
 	m.addVertex();
 
-	m.updateBoundingBox();
-
 	std::cerr << m.face(0).color() << "\n";
 
 	std::cerr << "VN: " << m.vertexNumber() << "\n";
