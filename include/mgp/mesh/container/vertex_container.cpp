@@ -71,7 +71,7 @@ common::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsVertex<T>>::enableVe
 }
 
 template<class T>
-typename Container<T, mgp::ifIsBaseOf<VertexTriggerer, T>>::VertexIterator
+typename Container<T, IfIsVertex<T>>::VertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 {
 	if (jumpDeleted) {

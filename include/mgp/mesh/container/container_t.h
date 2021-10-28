@@ -8,8 +8,6 @@
 
 #include <vector>
 
-#include <mgp/misc/type_traits.h>
-
 namespace mgp::mesh {
 
 /**

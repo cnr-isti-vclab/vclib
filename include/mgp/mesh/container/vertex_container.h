@@ -19,7 +19,7 @@ class VertexContainerTriggerer {};
 
 // to shorten triggerer for Vertex class
 template<class T>
-using IfIsVertex = mgp::ifIsBaseOf<VertexTriggerer, T>;
+using IfIsVertex = std::enable_if_t<std::is_base_of<VertexTriggerer, T>::value>;
 
 template<class T>
 /**

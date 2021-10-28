@@ -6,8 +6,6 @@
 #ifndef MGP_BOX_H
 #define MGP_BOX_H
 
-#include <mgp/misc/type_traits.h>
-
 #include "point.h"
 
 namespace mgp {

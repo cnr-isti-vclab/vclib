@@ -9,8 +9,6 @@
 #include <array>
 #include <assert.h>
 
-#include <mgp/misc/type_traits.h>
-
 #include "common.h"
 
 namespace mgp::face {

@@ -19,7 +19,7 @@ class FaceContainerTriggerer {};
 
 // to shorten triggerer for Vertex class
 template<class T>
-using IfIsFace = mgp::ifIsBaseOf<FaceTriggerer, T>;
+using IfIsFace = std::enable_if_t<std::is_base_of<FaceTriggerer, T>::value>;
 
 /**
  * @brief The Face Container class, will be used when the template argument given to the Mesh is a
@@ -38,7 +38,7 @@ class Container<T, IfIsFace<T>> : public FaceContainerTriggerer
 
 protected:
 	// types:
-	typedef Container<T, IfIsFace<T>> FaceContainer;
+	using FaceContainer = Container<T, IfIsFace<T>>;
 
 public:
 	using FaceType               = T;
