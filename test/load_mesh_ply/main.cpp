@@ -12,6 +12,10 @@ int main()
 {
 	mgp::TriMesh m;
 
+	mgp::requirePerVertexCoordinates(m);
+	mgp::requireTriangleMesh(m);
+	mgp::requirePerVertexNormals(m);
+
 	mgp::io::FileMeshInfo finfo;
 	mgp::io::loadPly(m, "/home/alessandro/tmp/cube.ply", finfo);
 

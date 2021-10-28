@@ -30,7 +30,7 @@ class OptionalScalarVector<T, std::enable_if_t<common::hasOptionalScalar<T>()>> 
 public:
 	using Base::reserve;
 	using Base::resize;
-	bool              isScalarEnabled() { return Base::isEnabled(); };
+	bool              isScalarEnabled() const { return Base::isEnabled(); };
 	void              enableScalar(unsigned int size) { Base::enable(size); }
 	void              disableScalar() { Base::disable(); }
 	ScalarType&       scalar(unsigned int i) { return Base::at(i); }

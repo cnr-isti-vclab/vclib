@@ -28,7 +28,7 @@ private:
 };
 
 template<typename Scalar>
-class Normal3 : virtual public Info
+class Normal3 : public NormalTrigger, virtual public Info
 {
 public:
 	typedef Point3<Scalar> NormalType;

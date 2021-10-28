@@ -7,6 +7,7 @@
 #define MGP_MESH_TRIMESH_H
 
 #include "mesh/mesh.h"
+#include "mesh/requirements.h"
 #include "space/box.h"
 
 namespace mgp::trimesh {

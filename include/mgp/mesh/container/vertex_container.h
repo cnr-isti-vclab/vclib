@@ -64,6 +64,8 @@ public:
 
 	template<typename U = T>
 	vert::ReturnIfHasOptionalNormal<U, void> enableVertexNormal();
+	template<typename U = T>
+	vert::ReturnIfHasOptionalNormal<U, bool> isVertexNormalEnabled() const;
 
 	template<typename U = T>
 	vert::ReturnIfHasOptionalScalar<U, void> enableVertexScalar();

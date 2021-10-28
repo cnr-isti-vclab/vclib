@@ -28,7 +28,7 @@ private:
 };
 
 template<class Scalar>
-class Coordinate3 : virtual public Info
+class Coordinate3 : public CoordinateTrigger, virtual public Info
 {
 public:
 	typedef Point3<Scalar> CoordinateType;

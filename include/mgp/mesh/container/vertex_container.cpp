@@ -78,6 +78,13 @@ vert::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsVertex<T>>::enableVert
 	optionalComponentsVector.enableNormal(vertexNumber());
 }
 
+template<class T>
+template<class U>
+vert::ReturnIfHasOptionalNormal<U, bool> Container<T, IfIsVertex<T>>::isVertexNormalEnabled() const
+{
+	return optionalComponentsVector.isNormalEnabled();
+}
+
 /**
  * @brief Container::enableVertexScalar enable the Optional Scalar of the vertex.
  * This function is available **only if the Vertex Element has the OptionalScalar Component**.

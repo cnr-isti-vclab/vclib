@@ -26,7 +26,7 @@ class OptionalMutableBitFlagsVector<
 public:
 	using Base::reserve;
 	using Base::resize;
-	bool isMutableBitFlagsEnabled() { return Base::isEnabled(); };
+	bool isMutableBitFlagsEnabled() const { return Base::isEnabled(); };
 	void enableMutableBitFlags(unsigned int size) { Base::enable(size); }
 	void disableMutableBitFlags() { Base::disable(); }
 	int& flags(unsigned int i) { return Base::at(i); }

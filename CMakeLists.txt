@@ -21,6 +21,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/exception/mesh_exception.h
 	${MGP_SRC_DIR}/mesh/face.h
 	${MGP_SRC_DIR}/mesh/mesh.h
+	${MGP_SRC_DIR}/mesh/requirements.h
 	${MGP_SRC_DIR}/mesh/vertex.h
 	${MGP_SRC_DIR}/mesh/common/bit_flags.h
 	${MGP_SRC_DIR}/mesh/common/color.h
@@ -70,6 +71,8 @@ set(HEADERS
 	${MGP_SRC_DIR}/space/point/point4.h)
 
 set(SOURCES
+	${MGP_SRC_DIR}/mesh/mesh.cpp
+	${MGP_SRC_DIR}/mesh/requirements.cpp
 	${MGP_SRC_DIR}/mesh/common/bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/common/optional_mutable_bit_flags.cpp
@@ -77,7 +80,6 @@ set(SOURCES
 	${MGP_SRC_DIR}/mesh/container/vertex_container.cpp
 	${MGP_SRC_DIR}/mesh/face/triangle_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.cpp
-	${MGP_SRC_DIR}/mesh/mesh.cpp
 	${MGP_SRC_DIR}/misc/timer.cpp
 	${MGP_SRC_DIR}/misc/tokenizer.cpp
 	${MGP_SRC_DIR}/io/load_ply.cpp

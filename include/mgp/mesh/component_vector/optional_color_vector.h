@@ -30,7 +30,7 @@ class OptionalColorVector<T, std::enable_if_t<common::hasOptionalColor<T>()>> :
 public:
 	using Base::reserve;
 	using Base::resize;
-	bool             isColorEnabled() { return Base::isEnabled(); };
+	bool             isColorEnabled() const { return Base::isEnabled(); };
 	void             enableColor(unsigned int size) { Base::enable(size); }
 	void             disableColor() { Base::disable(); }
 	ColorType&       color(unsigned int i) { return Base::at(i); }

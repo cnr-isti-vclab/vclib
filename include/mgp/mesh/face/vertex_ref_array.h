@@ -26,6 +26,7 @@ template<class Vertex, int N>
 class VertexRefsArray : public VertexRefsArrayTrigger, virtual public Info
 {
 public:
+	static const int FACE_SIZE = N;
 	VertexRefsArray();
 
 	Vertex*&      v(unsigned int i);

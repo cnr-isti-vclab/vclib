@@ -30,7 +30,7 @@ class OptionalNormalVector<T, std::enable_if_t<common::hasOptionalNormal<T>()>> 
 public:
 	using Base::reserve;
 	using Base::resize;
-	bool              isNormalEnabled() { return Base::isEnabled(); };
+	bool              isNormalEnabled() const { return Base::isEnabled(); };
 	void              enableNormal(unsigned int size) { Base::enable(size); }
 	void              disableNormal() { Base::disable(); }
 	NormalType&       normal(unsigned int i) { return Base::at(i); }
