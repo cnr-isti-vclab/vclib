@@ -14,6 +14,8 @@ namespace mgp {
  * Utility templated tools that allows to detect if a given template has the definition
  * of a given member function.
  *
+ * See https://stackoverflow.com/a/30848101/5851101
+ *
  * Usage for detecting if the class 'MyClass' has the member function 'myMember(int)':
  *
  * // declare the member function that you are looking for:

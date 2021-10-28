@@ -29,13 +29,10 @@ private:
  */
 
 template<typename T>
-using hasColor_t = decltype(std::declval<T&>().color());
-
-template<typename T>
-using hasColor = typename detector<hasColor_t, void, T>::type;
+using hasColorT = std::is_base_of<Color, T>;
 
 template <typename T>
-constexpr bool hasColorComponent() { return hasColor<T>::value;}
+constexpr bool hasColor() { return hasColorT<T>::value;}
 
 } // namespace mgp::common
 

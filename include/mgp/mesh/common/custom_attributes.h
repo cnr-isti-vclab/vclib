@@ -42,11 +42,11 @@ public:
  * Detector to check if a class has (inherits) CustomAttributes
  */
 
-template<typename T>
-using hasCustomAttributes_t = decltype(std::declval<T&>().hasCustomAttribute(std::declval<const std::string&>()));
-
 template <typename T>
-using hasCustomAttributes = typename detector<hasCustomAttributes_t, void, T>::type;
+using hasCustomAttributesT = std::is_base_of<CustomAttributes<T>, T>;
+
+template <typename  T>
+bool constexpr hasCustomAttributes() {return hasCustomAttributesT<T>::value;}
 
 }
 

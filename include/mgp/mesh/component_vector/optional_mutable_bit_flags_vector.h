@@ -18,7 +18,7 @@ public:
 template<typename T>
 class OptionalMutableBitFlagsVector<
 	T,
-	std::enable_if_t<common::hasOptionalMutableBitFlags<T>::value>> :
+	std::enable_if_t<common::hasOptionalMutableBitFlags<T>()>> :
 		private OptionalGenericVector<int>
 {
 	typedef OptionalGenericVector<int> Base;

@@ -21,25 +21,20 @@ public:
 	typedef mgp::Color ColorType;
 	const mgp::Color& color() const { return B::containerPointer->color(B::id()); }
 	mgp::Color&       color() { return B::containerPointer->color(B::id()); }
-
-	void __optional_color__() {} // dummy member used just for detection of an OpionalColor object
 };
 
 /**
  * Detector to check if a class has (inherits) OptionalColor
  */
 
-template<typename T>
-using hasOptionalColor_t = decltype(std::declval<T&>().__optional_color__());
-
-template <typename T>
-using hasOptionalColor = typename detector<hasOptionalColor_t, void, T>::type;
+template <typename  T>
+using hasOptionalColorT =std::is_base_of<OptionalColor<T>, T>;
 
 template<typename U, typename T>
-using ReturnIfHasOptionalColor = typename std::enable_if<hasOptionalColor<U>::value, T>::type;
+using ReturnIfHasOptionalColor = typename std::enable_if<hasOptionalColorT<U>::value, T>::type;
 
 template <typename T>
-bool constexpr hasOptionalColorComponent() {return hasOptionalColor<T>::value;}
+bool constexpr hasOptionalColor() {return hasOptionalColorT<T>::value;}
 
 } // namespace mgp::common
 

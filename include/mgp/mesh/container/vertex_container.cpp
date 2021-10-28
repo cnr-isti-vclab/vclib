@@ -36,7 +36,7 @@ template<class T>
 void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {
 	vertices.reserve(size);
-	if constexpr (common::hasOptionalInfo<VertexType>::value) {
+	if constexpr (common::hasOptionalInfo<VertexType>()) {
 		optionalComponentsVector.reserve(size);
 	}
 }
@@ -119,7 +119,7 @@ unsigned int Container<T, IfIsVertex<T>>::addVertex()
 	vertices.push_back(VertexType());
 	++vn;
 	vertices[vertices.size() - 1]._id = vertices.size() - 1;
-	if constexpr (common::hasOptionalInfo<VertexType>::value) {
+	if constexpr (common::hasOptionalInfo<VertexType>()) {
 		vertices[vertices.size() - 1].setContainerPointer(&optionalComponentsVector);
 		optionalComponentsVector.resize(vertices.size());
 	}

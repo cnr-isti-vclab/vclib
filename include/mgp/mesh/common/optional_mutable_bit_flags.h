@@ -54,10 +54,6 @@ public:
 	void clearVisitedM() const;
 	void clearUserBitM(unsigned int bit) const;
 
-
-	void __optional_mutable_bit_flags__() {
-	} // dummy member used just for detection of an OpionalBitFlags object
-
 protected:
 	bool flagValueM(unsigned int flag) const;
 	void setFlagM(unsigned int flag) const;
@@ -75,17 +71,17 @@ protected:
 };
 
 /**
- * Detector to check if a class has (inherits) OptionalBitFlags
+ * Detector to check if a class has (inherits) OptionalMutableBitFlags
  */
 
 template<typename T>
-using hasOptionalMutableBitFlags_t = decltype(std::declval<T&>().__optional_mutable_bit_flags__());
-
-template<typename T>
-using hasOptionalMutableBitFlags = typename detector<hasOptionalMutableBitFlags_t, void, T>::type;
+using hasOptionalMutableBitFlagsT = std::is_base_of<OptionalMutableBitFlags<T>, T>;
 
 template<typename U, typename T>
-using ReturnIfHasOptionalMutableBitFlags = typename std::enable_if<hasOptionalMutableBitFlags<U>::value, T>::type;
+using ReturnIfHasOptionalMutableBitFlags = typename std::enable_if<hasOptionalMutableBitFlagsT<U>::value, T>::type;
+
+template <typename  T>
+bool constexpr hasOptionalMutableBitFlags() {return hasOptionalMutableBitFlagsT<T>::value;}
 
 } // namespace mgp::common
 

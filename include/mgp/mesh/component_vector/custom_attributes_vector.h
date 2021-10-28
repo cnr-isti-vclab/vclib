@@ -25,7 +25,7 @@ public:
 template<typename T>
 class CustomAttributesVector<
 	T,
-	std::enable_if_t<common::hasCustomAttributes<T>::value>>
+	std::enable_if_t<common::hasCustomAttributes<T>()>>
 {
 public:
 	void reserve(unsigned int size)

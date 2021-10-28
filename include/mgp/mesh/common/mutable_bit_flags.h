@@ -71,11 +71,11 @@ protected:
  * Detector to check if a class has (inherits) MutableBitFlags
  */
 
-template<typename T>
-using hasMutableBitFlags_t = decltype(std::declval<T&>().isVisistedM());
+template <typename  T>
+using hasMutableBitFlagsT = std::is_base_of<MutableBitFlags, T>;
 
-template<typename T>
-using hasMutableBitFlags = typename detector<hasMutableBitFlags_t, void, T>::type;
+template <typename  T>
+bool constexpr hasMutableBitFlags() {return hasMutableBitFlagsT<T>::value;}
 
 } // namespace mgp::common
 

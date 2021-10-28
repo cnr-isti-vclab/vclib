@@ -36,7 +36,7 @@ template<class T>
 void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
 {
 	faces.reserve(size);
-	if constexpr (common::hasOptionalInfo<FaceType>::value) {
+	if constexpr (common::hasOptionalInfo<FaceType>()) {
 		optionalComponentsVector.reserve(size);
 	}
 }
@@ -126,7 +126,7 @@ unsigned int Container<T, IfIsFace<T>>::addFace()
 	faces.push_back(FaceType());
 	++fn;
 	faces[faces.size() - 1]._id = faces.size() - 1;
-	if constexpr (common::hasOptionalInfo<FaceType>::value) {
+	if constexpr (common::hasOptionalInfo<FaceType>()) {
 		faces[faces.size() - 1].setContainerPointer(&optionalComponentsVector);
 		optionalComponentsVector.resize(faces.size());
 	}

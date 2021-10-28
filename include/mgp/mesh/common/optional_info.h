@@ -26,8 +26,6 @@ class OptionalInfo : virtual public Info
 public:
 	OptionalInfo() : Info(), containerPointer(nullptr) {}
 
-	void __optional_info__() const {} // dummy member used just for detection of an OpionalInfo object
-
 protected:
 	void setContainerPointer(mesh::ComponentsVector<T>* cp) { containerPointer = cp; }
 	mesh::ComponentsVector<T>* containerPointer;
@@ -38,10 +36,10 @@ protected:
  */
 
 template<typename T>
-using hasOptionalInfo_t = decltype(std::declval<const T&>().__optional_info__());
+using hasOptionalInfoT = std::is_base_of<OptionalInfo<T>, T>;
 
-template<typename T>
-using hasOptionalInfo = typename detector<hasOptionalInfo_t, void, T>::type;
+template <typename  T>
+bool constexpr hasOptionalInfo() {return hasOptionalInfoT<T>::value;}
 
 } // namespace mgp::common
 
