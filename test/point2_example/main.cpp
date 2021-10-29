@@ -9,8 +9,7 @@
 
 int main()
 {
-	mgp::Point2d p1;
-	p1 << 1, 0;
+	mgp::Point2d p1(1, 0);
 
 	mgp::Point2d p2(0, 1);
 

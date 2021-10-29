@@ -25,8 +25,10 @@ public:
 	Point2(const Point<S, 2>& p); // constructor from base class - will include all its constructors
 	Point2(const ScalarType& x, const ScalarType& y);
 
-	using Point<ScalarType, 2>::x;
-	using Point<ScalarType, 2>::y;
+	ScalarType x() const;
+	ScalarType y() const;
+	ScalarType& x();
+	ScalarType& y();
 };
 
 using Point2i = Point2<int>;

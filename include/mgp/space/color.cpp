@@ -444,10 +444,9 @@ inline bool Color::operator<(const Color& otherColor) const
 	return false;
 }
 
-std::ostream& operator<<(std::ostream& out, const Color& p)
+std::ostream& operator<<(std::ostream& out, const Color& c)
 {
-	Point4<int> tmp(p);
-	out << tmp;
+	out << c.p;
 	return out;
 }
 

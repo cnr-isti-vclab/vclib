@@ -11,13 +11,37 @@ template<class ScalarType>
 template<class S>
 Point2<ScalarType>::Point2(const Point<S, 2>& p)
 {
-	*this << p(0), p(1);
+	Point<ScalarType, 2>::p << p(0), p(1);
 }
 
 template<class ScalarType>
 Point2<ScalarType>::Point2(const ScalarType& x, const ScalarType& y)
 {
-	*this << x, y;
+	Point<ScalarType, 2>::p << x, y;
+}
+
+template<class ScalarType>
+ScalarType Point2<ScalarType>::x() const
+{
+	return Point<ScalarType, 2>::p.x();
+}
+
+template<class ScalarType>
+ScalarType Point2<ScalarType>::y() const
+{
+	return Point<ScalarType, 2>::p.y();
+}
+
+template<class ScalarType>
+ScalarType& Point2<ScalarType>::x()
+{
+	return Point<ScalarType, 2>::p.x();
+}
+
+template<class ScalarType>
+ScalarType& Point2<ScalarType>::y()
+{
+	return Point<ScalarType, 2>::p.y();
 }
 
 } // namespace mgp

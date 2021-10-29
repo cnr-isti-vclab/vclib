@@ -16,22 +16,21 @@ namespace mgp {
  * N scalar values.
  */
 template<class Scalar, int N>
-class Point : public Eigen::Matrix<Scalar, 1, N>
+class Point
 {
 public:
-	using ScalarType = Scalar;
-	const static int DIM = N;
+	using ScalarType      = Scalar;
+	const static int DIM  = N;
 	Point()               = default; // default empty constructor
 	Point(const Point& p) = default; // default copy constructor
 	Point(Point&& p)      = default; // default move constructor
 
 	Point& operator=(const Point& p) = default; // default copy assignment operator
-	Point& operator=(Point&& p)      = default; // default move assignment operator
+	Point& operator=(Point&& p) = default;      // default move assignment operator
 
 	template<class S>
 	Point(const Point<S, N>& p);                 // constructor from different scalar Point
 	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
-	Point(const Eigen::Matrix<Scalar, N, 1>& v); // constructor from Nx1 eigen matrix
 
 	template<class S>
 	Scalar dot(const Point<S, N>& p1) const;
@@ -39,26 +38,29 @@ public:
 	template<class S>
 	Scalar angle(const Point<S, N>& p1) const;
 
-	// eigen members
-	using Eigen::Matrix<Scalar, 1, N>::norm;
-	using Eigen::Matrix<Scalar, 1, N>::size;
-	using Eigen::Matrix<Scalar, 1, N>::setConstant;
-	using Eigen::Matrix<Scalar, 1, N>::setZero;
-	using Eigen::Matrix<Scalar, 1, N>::setOnes;
-	using Eigen::Matrix<Scalar, 1, N>::squaredNorm;
+	Scalar       norm() const;
+	Scalar       squaredNorm() const;
+	unsigned int size() const;
+
+	void setConstant(Scalar s);
+	void setZero();
+	void setOnes();
 
 	// operators
-	using Eigen::Matrix<Scalar, 1, N>::operator();
-	using Eigen::Matrix<Scalar, 1, N>::operator<<;
+	Scalar&       operator()(unsigned int i);
+	const Scalar& operator()(unsigned int i) const;
 
-	using Eigen::Matrix<Scalar, 1, N>::operator+;
-	using Eigen::Matrix<Scalar, 1, N>::operator-;
-	using Eigen::Matrix<Scalar, 1, N>::operator*;
-	using Eigen::Matrix<Scalar, 1, N>::operator/;
-	using Eigen::Matrix<Scalar, 1, N>::operator+=;
-	using Eigen::Matrix<Scalar, 1, N>::operator-=;
-	using Eigen::Matrix<Scalar, 1, N>::operator*=;
-	using Eigen::Matrix<Scalar, 1, N>::operator/=;
+	Point  operator+(const Scalar& s) const;
+	Point  operator+(const Point& p1) const;
+	Point  operator-(const Scalar& s) const;
+	Point  operator-(const Point& p1) const;
+	Point  operator*(const Scalar& s) const;
+	Scalar operator*(const Point& p1) const;
+	Point  operator/(const Scalar& s) const;
+	Point& operator+=(const Point& p1);
+	Point& operator-=(const Point& p1);
+	Point& operator*=(const Scalar& s);
+	Point& operator/=(const Scalar& s);
 
 	Scalar  operator[](size_t i) const;
 	Scalar& operator[](size_t i);
@@ -67,12 +69,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const Point<S, M>& p);
 
 protected:
-	// to enable these members just on some derived classes
-	using Eigen::Matrix<Scalar, 1, N>::x;
-	using Eigen::Matrix<Scalar, 1, N>::y;
-	using Eigen::Matrix<Scalar, 1, N>::z;
-	using Eigen::Matrix<Scalar, 1, N>::w;
-	Point<Scalar, N> cross(const Point<Scalar, N>& p1) const;
+	Eigen::Matrix<Scalar, 1, N> p;
 };
 
 template<class Scalar, int N>

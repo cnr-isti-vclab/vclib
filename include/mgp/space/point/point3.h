@@ -22,13 +22,18 @@ public:
 	Point3(const Point3& p) = default; // default copy constructor
 
 	template<class S>
-	Point3(const Point<S, 3>& p); // constructor from base class - will include all its constructors
+	Point3(const Point<S, 3>& p1); // constructor from base class - will include all its constructors
 	Point3(const ScalarType& x, const ScalarType& y, const ScalarType& z);
 
-	using Point<ScalarType, 3>::x;
-	using Point<ScalarType, 3>::y;
-	using Point<ScalarType, 3>::z;
-	using Point<ScalarType, 3>::cross;
+	ScalarType x() const;
+	ScalarType y() const;
+	ScalarType z() const;
+	ScalarType& x();
+	ScalarType& y();
+	ScalarType& z();
+
+	Point3<ScalarType> cross(const Point3<ScalarType>& p1) const;
+	//using Point<ScalarType, 3>::cross;
 };
 
 using Point3i = Point3<int>;

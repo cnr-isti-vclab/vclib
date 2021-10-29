@@ -25,10 +25,14 @@ public:
 	Point4(const Point<S, 4>& p); // constructor from base class - will include all its constructors
 	Point4(const ScalarType& x, const ScalarType& y, const ScalarType& z, const ScalarType& w);
 
-	using Point<ScalarType, 4>::x;
-	using Point<ScalarType, 4>::y;
-	using Point<ScalarType, 4>::z;
-	using Point<ScalarType, 4>::w;
+	ScalarType x() const;
+	ScalarType y() const;
+	ScalarType z() const;
+	ScalarType w() const;
+	ScalarType& x();
+	ScalarType& y();
+	ScalarType& z();
+	ScalarType& w();
 };
 
 using Point4i = Point4<int>;

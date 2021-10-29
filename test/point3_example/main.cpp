@@ -9,8 +9,7 @@
 
 int main()
 {
-	mgp::Point3d p1;
-	p1 << 1, 0, 0;
+	mgp::Point3d p1(1, 0, 0);
 
 	mgp::Point3f p2(0, 1, 0);
 
@@ -22,9 +21,9 @@ int main()
 
 	std::cout << "p1 dot p2: " << p1.dot(p2) << "\n";
 
-	mgp::Point3d p3 = p1.cross(p2);
+	//mgp::Point3d p3 = p1.cross(p2);
 
-	std::cout << "p1 cross p2: [" << p3 << "]\n";
+	//std::cout << "p1 cross p2: [" << p3 << "]\n";
 
 	mgp::Point3f pf = p1;
 
