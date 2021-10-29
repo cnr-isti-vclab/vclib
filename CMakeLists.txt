@@ -60,6 +60,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/misc/tokenizer.h
 	${MGP_SRC_DIR}/io/file_mesh_mode.h
 	${MGP_SRC_DIR}/io/load_ply.h
+	${MGP_SRC_DIR}/io/save_ply.h
 	${MGP_SRC_DIR}/io/ply/ply.h
 	${MGP_SRC_DIR}/io/ply/ply_face.h
 	${MGP_SRC_DIR}/io/ply/ply_header.h
@@ -87,6 +88,7 @@ set(SOURCES
 	${MGP_SRC_DIR}/misc/timer.cpp
 	${MGP_SRC_DIR}/misc/tokenizer.cpp
 	${MGP_SRC_DIR}/io/load_ply.cpp
+	${MGP_SRC_DIR}/io/save_ply.cpp
 	${MGP_SRC_DIR}/io/ply/ply.cpp
 	${MGP_SRC_DIR}/io/ply/ply_face.cpp
 	${MGP_SRC_DIR}/io/ply/ply_header.cpp

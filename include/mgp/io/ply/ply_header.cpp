@@ -49,6 +49,7 @@ inline PlyHeader::PlyHeader(std::ifstream &file) :
 	_format(ply::UNKNOWN),
 	isValid(false)
 {
+	clear();
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
 	if (file.is_open()){
 		std::string line;
@@ -179,17 +180,20 @@ inline uint PlyHeader::numberEdges() const
 
 inline void PlyHeader::setNumberVertices(unsigned long int nV)
 {
-	elements[v].numberElements = nV;
+	if (v >= 0)
+		elements[v].numberElements = nV;
 }
 
 inline void PlyHeader::setNumberFaces(unsigned long int nF)
 {
-	elements[f].numberElements = nF;
+	if (f >= 0)
+		elements[f].numberElements = nF;
 }
 
 inline void PlyHeader::setNumberEdges(unsigned long nE)
 {
-	elements[e].numberElements = nE;
+	if (e >= 0)
+		elements[e].numberElements = nE;
 }
 
 inline io::FileMeshInfo PlyHeader::getInfo() const

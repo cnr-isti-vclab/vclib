@@ -7,6 +7,7 @@
 
 #include <mgp/trimesh.h>
 #include <mgp/io/load_ply.h>
+#include <mgp/io/save_ply.h>
 #include <mgp/algorithms/update/flag.h>
 #include <mgp/algorithms/smooth.h>
 
@@ -18,10 +19,11 @@ int main()
 	mgp::requireTriangleMesh(m);
 	mgp::requirePerVertexNormals(m);
 
-	mgp::io::FileMeshInfo finfo;
-	mgp::io::loadPly(m, "/home/alessandro/tmp/cube.ply", finfo);
+	mgp::io::loadPly(m, "/home/alessandro/tmp/bunny.ply");
 
 	mgp::vertexCoordLaplacianSmoothing(m, 50);
+
+	mgp::io::savePly(m, "/home/alessandro/tmp/bunny_s.ply");
 
 	return 0;
 }

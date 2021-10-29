@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_IO_LOAD_PLY_H
-#define MGP_IO_LOAD_PLY_H
+#ifndef MGP_IO_SAVE_PLY_H
+#define MGP_IO_SAVE_PLY_H
 
 #include "ply/ply.h"
 #include "ply/ply_vertex.h"
@@ -16,13 +16,13 @@
 namespace mgp::io {
 
 template <typename MeshType>
-void loadPly(MeshType& m, const std::string& filename);
+void savePly(const MeshType& m, const std::string& filename);
 
 template <typename MeshType>
-void loadPly(MeshType& m, const std::string& filename, FileMeshInfo& loadedInfo);
+void savePly(const MeshType& m, const std::string& filename, FileMeshInfo& loadedInfo);
 
 }
 
-#include "load_ply.cpp"
+#include "save_ply.cpp"
 
-#endif // MGP_IO_LOAD_PLY_H
+#endif // MGP_IO_SAVE_PLY_H
