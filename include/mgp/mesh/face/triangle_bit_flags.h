@@ -72,6 +72,7 @@ public:
 	void clearEdgeOnBorder1();
 	void clearEdgeOnBorder2();
 	void clearEdgeOnBorder(unsigned int i);
+	void clearAllEdgeOnBorder();
 
 	void clearEdgeSelected0();
 	void clearEdgeSelected1();

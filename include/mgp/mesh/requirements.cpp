@@ -5,10 +5,36 @@
 
 #include "requirements.h"
 
+#include <mgp/exception/mesh_exception.h>
+
 #include "container/face_container.h"
 #include "container/vertex_container.h"
 
 namespace mgp {
+
+template<typename MeshType>
+void constexpr requireMeshVertices()
+{
+	static_assert(mesh::hasVertices<MeshType>(), "Mesh does not have a Vertex Container.");
+}
+
+template<typename MeshType>
+void constexpr requireMeshVertices(const MeshType&)
+{
+	requireMeshVertices<MeshType>();
+}
+
+template<typename MeshType>
+void constexpr requireMeshFaces()
+{
+	static_assert(mesh::hasFaces<MeshType>(), "Mesh does not have a Face Container.");
+}
+
+template<typename MeshType>
+void constexpr requireMeshFaces(const MeshType&)
+{
+	requireMeshFaces<MeshType>();
+}
 
 template<typename MeshType>
 void constexpr requireTriangleMesh()
@@ -62,7 +88,8 @@ void requirePerVertexNormals(const MeshType& m)
 			mgp::vert::hasOptionalNormal<typename MeshType::VertexType>(),
 		"Mesh has no vertex normals.");
 	if constexpr(mgp::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
-		assert(m.isVertexNormalEnabled());
+		if (!m.isVertexNormalEnabled())
+			throw mgp::MissingComponentException("Vertex Normal not enabled.");
 	}
 }
 

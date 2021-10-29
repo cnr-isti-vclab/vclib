@@ -7,6 +7,8 @@
 
 #include <mgp/trimesh.h>
 #include <mgp/io/load_ply.h>
+#include <mgp/algorithms/update/flag.h>
+#include <mgp/algorithms/smooth.h>
 
 int main()
 {
@@ -18,6 +20,8 @@ int main()
 
 	mgp::io::FileMeshInfo finfo;
 	mgp::io::loadPly(m, "/home/alessandro/tmp/cube.ply", finfo);
+
+	mgp::vertexCoordLaplacianSmoothing(m, 50);
 
 	return 0;
 }

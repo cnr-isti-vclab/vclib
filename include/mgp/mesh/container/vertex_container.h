@@ -53,6 +53,7 @@ public:
 	VertexType&       vertex(unsigned int i);
 
 	unsigned int vertexNumber() const;
+	unsigned int vertexContainerSize() const;
 
 	void reserveVertices(unsigned int size);
 

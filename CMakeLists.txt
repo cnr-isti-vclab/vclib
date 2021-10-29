@@ -18,6 +18,8 @@ set(MGP_SRC_DIR ${MGP_INCLUDE_DIR}/mgp)
 
 set(HEADERS
 	${MGP_SRC_DIR}/trimesh.h
+	${MGP_SRC_DIR}/algorithms/smooth.h
+	${MGP_SRC_DIR}/algorithms/update/flag.h
 	${MGP_SRC_DIR}/exception/mesh_exception.h
 	${MGP_SRC_DIR}/mesh/face.h
 	${MGP_SRC_DIR}/mesh/mesh.h
@@ -71,6 +73,8 @@ set(HEADERS
 	${MGP_SRC_DIR}/space/point/point4.h)
 
 set(SOURCES
+	${MGP_SRC_DIR}/algorithms/smooth.cpp
+	${MGP_SRC_DIR}/algorithms/update/flag.cpp
 	${MGP_SRC_DIR}/mesh/mesh.cpp
 	${MGP_SRC_DIR}/mesh/requirements.cpp
 	${MGP_SRC_DIR}/mesh/common/bit_flags.cpp

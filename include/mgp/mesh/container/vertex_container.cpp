@@ -36,6 +36,12 @@ unsigned int Container<T, IfIsVertex<T>>::vertexNumber() const
 }
 
 template<class T>
+unsigned int Container<T, IfIsVertex<T> >::vertexContainerSize() const
+{
+	return vertices.size();
+}
+
+template<class T>
 void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {
 	vertices.reserve(size);

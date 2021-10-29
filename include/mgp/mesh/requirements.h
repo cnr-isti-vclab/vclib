@@ -8,6 +8,16 @@
 
 namespace mgp {
 
+template<typename MeshType>
+void constexpr requireMeshVertices();
+template<typename MeshType>
+void constexpr requireMeshVertices(const MeshType&);
+
+template<typename MeshType>
+void constexpr requireMeshFaces();
+template<typename MeshType>
+void constexpr requireMeshFaces(const MeshType&);
+
 template <typename MeshType>
 void constexpr requireTriangleMesh();
 template <typename MeshType>

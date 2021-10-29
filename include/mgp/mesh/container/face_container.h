@@ -53,6 +53,7 @@ public:
 	FaceType&       face(unsigned int i);
 
 	unsigned int faceNumber() const;
+	unsigned int faceContainerSize() const;
 
 	void reserveFaces(unsigned int size);
 

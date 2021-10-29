@@ -29,6 +29,9 @@ public:
 	static const int FACE_SIZE = N;
 	VertexRefsArray();
 
+	unsigned int vertexNumber() const {return N;}
+	unsigned int sizeMod(unsigned int i) const {return i%N;}
+
 	Vertex*&      v(unsigned int i);
 	const Vertex* v(unsigned int i) const;
 

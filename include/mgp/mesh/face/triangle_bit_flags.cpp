@@ -229,6 +229,13 @@ inline void TriangleBitFlags::clearEdgeOnBorder(unsigned int i)
 	clearFlag(BORDER << i);
 }
 
+inline void TriangleBitFlags::clearAllEdgeOnBorder()
+{
+	clearEdgeOnBorder0();
+	clearEdgeOnBorder1();
+	clearEdgeOnBorder2();
+}
+
 inline void TriangleBitFlags::clearEdgeSelected0()
 {
 	clearFlag(EDGESEL0);

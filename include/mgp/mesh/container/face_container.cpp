@@ -36,6 +36,12 @@ unsigned int Container<T, IfIsFace<T>>::faceNumber() const
 }
 
 template<class T>
+unsigned int Container<T, IfIsFace<T>>::faceContainerSize() const
+{
+	return faces.size();
+}
+
+template<class T>
 void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
 {
 	faces.reserve(size);
