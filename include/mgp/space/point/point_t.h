@@ -30,7 +30,8 @@ public:
 
 	template<class S>
 	Point(const Point<S, N>& p);                 // constructor from different scalar Point
-	Point(const Eigen::PlainObjectBase<Scalar>& v); // constructor from 1xN eigen matrix
+	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
+	Point(const Eigen::Matrix<Scalar, N, 1>& v); // constructor from Nx1 eigen matrix
 
 	template<class S>
 	Scalar dot(const Point<S, N>& p1) const;
