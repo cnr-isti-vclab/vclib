@@ -16,20 +16,27 @@ namespace mgp {
  * N scalar values.
  */
 template<class Scalar, int N>
-class Point : private Eigen::Matrix<Scalar, 1, N>
+class Point : public Eigen::Matrix<Scalar, 1, N>
 {
 public:
+	using ScalarType = Scalar;
 	const static int DIM = N;
 	Point()               = default; // default empty constructor
 	Point(const Point& p) = default; // default copy constructor
+	Point(Point&& p)      = default; // default move constructor
+
+	Point& operator=(const Point& p) = default; // default copy assignment operator
+	Point& operator=(Point&& p)      = default; // default move assignment operator
 
 	template<class S>
 	Point(const Point<S, N>& p);                 // constructor from different scalar Point
-	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
-	Point(const Eigen::Matrix<Scalar, N, 1>& v); // constructor from Nx1 eigen matrix
+	Point(const Eigen::PlainObjectBase<Scalar>& v); // constructor from 1xN eigen matrix
 
 	template<class S>
 	Scalar dot(const Point<S, N>& p1) const;
+
+	template<class S>
+	Scalar angle(const Point<S, N>& p1) const;
 
 	// eigen members
 	using Eigen::Matrix<Scalar, 1, N>::norm;

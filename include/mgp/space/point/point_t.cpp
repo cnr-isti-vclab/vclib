@@ -41,6 +41,18 @@ Scalar Point<Scalar, N>::dot(const Point<S, N>& p1) const
 }
 
 template<class Scalar, int N>
+template<class S>
+Scalar Point<Scalar, N>::angle(const Point<S, N>& p1) const
+{
+	Scalar w = norm()*p1.norm();
+	if (w == 0) return -1;
+	Scalar t = ((*this)*p1)/w;
+	if (t > 1) t = 1;
+	else if ( t < -1) t = -1;
+	return (Scalar) acos(t);
+}
+
+template<class Scalar, int N>
 Scalar Point<Scalar, N>::operator[](size_t i) const
 {
 	return operator()(i);
