@@ -9,8 +9,6 @@
 #include <assert.h>
 #include <type_traits>
 
-#include "info.h"
-
 namespace mgp::common {
 
 /**
@@ -25,7 +23,7 @@ namespace mgp::common {
  * - 2: border: if the current Element is on border
  * - from 3 to 31: user bits that can have custom meanings to the user
  */
-class BitFlags : public virtual Info
+class BitFlags
 {
 public:
 	bool isDeleted() const;

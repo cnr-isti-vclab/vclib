@@ -46,9 +46,11 @@ class Vertex : public VertexTriggerer, public vert::Component<Args>...
 {
 	template<typename, typename>
 	friend class mesh::Container;
-
+public:
+	unsigned int id() const { return _id; }
 protected:
 	Vertex() {}
+	unsigned int _id = 0;
 };
 
 } // namespace mgp

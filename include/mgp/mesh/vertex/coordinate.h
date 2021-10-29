@@ -15,7 +15,7 @@ namespace mgp::vert {
 class CoordinateTrigger {};
 
 template<class Scalar, int N>
-class Coordinate : public CoordinateTrigger, virtual public Info
+class Coordinate : public CoordinateTrigger
 {
 public:
 	typedef Point<Scalar, N> CoordinateType;
@@ -28,7 +28,7 @@ private:
 };
 
 template<class Scalar>
-class Coordinate3 : public CoordinateTrigger, virtual public Info
+class Coordinate3 : public CoordinateTrigger
 {
 public:
 	typedef Point3<Scalar> CoordinateType;

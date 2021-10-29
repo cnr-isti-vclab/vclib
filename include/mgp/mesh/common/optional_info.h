@@ -8,8 +8,6 @@
 
 #include <type_traits>
 
-#include "info.h"
-
 namespace mgp::mesh {
 
 template<typename T>
@@ -20,10 +18,10 @@ class ComponentsVector;
 namespace mgp::common {
 
 template<typename T>
-class OptionalInfo : virtual public Info
+class OptionalInfo
 {
 public:
-	OptionalInfo() : Info(), containerPointer(nullptr) {}
+	OptionalInfo() : containerPointer(nullptr) {}
 
 protected:
 	void setContainerPointer(mesh::ComponentsVector<T>* cp) { containerPointer = cp; }

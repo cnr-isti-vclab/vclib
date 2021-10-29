@@ -22,8 +22,8 @@ private:
 	typedef OptionalInfo<T> B;
 public:
 	typedef Point<Scalar, N> NormalType;
-	const NormalType& normal() const { return B::containerPointer->normal(B::id()); }
-	NormalType&       normal() { return B::containerPointer->normal(B::id()); }
+	const NormalType& normal() const { return B::containerPointer->normal(((T*)this)->id()); }
+	NormalType&       normal() { return B::containerPointer->normal(((T*)this)->id()); }
 };
 
 template<typename Scalar, typename T>

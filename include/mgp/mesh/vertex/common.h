@@ -19,9 +19,6 @@
 
 namespace mgp::vert {
 
-/** Port Info class into vert namespace **/
-using Info = mgp::common::Info;
-
 /** Port OptionalInfo class into vert namespace **/
 template <typename T>
 using OptionalInfo = mgp::common::OptionalInfo<T>;

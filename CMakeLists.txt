@@ -28,7 +28,6 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/common/bit_flags.h
 	${MGP_SRC_DIR}/mesh/common/color.h
 	${MGP_SRC_DIR}/mesh/common/custom_attributes.h
-	${MGP_SRC_DIR}/mesh/common/info.h
 	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.h
 	${MGP_SRC_DIR}/mesh/common/normal.h
 	${MGP_SRC_DIR}/mesh/common/scalar.h

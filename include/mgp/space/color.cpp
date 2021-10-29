@@ -446,7 +446,7 @@ inline bool Color::operator<(const Color& otherColor) const
 
 std::ostream& operator<<(std::ostream& out, const Color& c)
 {
-	out << c.p;
+	out << c.p.cast<unsigned int>();
 	return out;
 }
 

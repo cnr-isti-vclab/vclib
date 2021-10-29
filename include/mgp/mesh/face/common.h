@@ -19,9 +19,6 @@
 
 namespace mgp::face {
 
-/** Port Info class into face namespace **/
-using Info = mgp::common::Info;
-
 /** Port OptionalInfo class into face namespace **/
 template <typename T>
 using OptionalInfo = mgp::common::OptionalInfo<T>;

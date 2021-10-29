@@ -6,14 +6,14 @@
 #ifndef MGP_MESH_COMMON_SCALAR_H
 #define MGP_MESH_COMMON_SCALAR_H
 
-#include "info.h"
+#include <type_traits>
 
 namespace mgp::common {
 
 class ScalarTrigger {};
 
 template<typename T>
-class Scalar : public ScalarTrigger, public virtual Info
+class Scalar : public ScalarTrigger
 {
 	typedef T ScalarType;
 

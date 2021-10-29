@@ -8,8 +8,6 @@
 
 #include <assert.h>
 
-#include "info.h"
-
 namespace mgp::common {
 
 /**

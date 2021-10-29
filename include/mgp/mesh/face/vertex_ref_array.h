@@ -23,7 +23,7 @@ class VertexRefsArrayTrigger {};
  * compile time.
  */
 template<class Vertex, int N>
-class VertexRefsArray : public VertexRefsArrayTrigger, virtual public Info
+class VertexRefsArray : public VertexRefsArrayTrigger
 {
 public:
 	static const int FACE_SIZE = N;

@@ -5,33 +5,28 @@
 
 #include <iostream>
 
-#include <mgp/misc/timer.h>
-#include <mgp/mesh/mesh.h>
+#include <mgp/algorithms/smooth.h>
 #include <mgp/io/load_ply.h>
 #include <mgp/io/save_ply.h>
-#include <mgp/algorithms/smooth.h>
-
+#include <mgp/mesh/mesh.h>
+#include <mgp/misc/timer.h>
 
 namespace mymesh {
 class Vertex;
 class Face;
 
-class Vertex :
-			   public mgp::Vertex<
-				   mgp::vert::BitFlags,
-				   mgp::vert::Coordinate3f,
-				   mgp::vert::Normal3f>
+class Vertex : public mgp::Vertex<mgp::vert::BitFlags, mgp::vert::Coordinate3d, mgp::vert::Normal3d>
 {
 };
 
 class Face :
-			 public mgp::Face<
-				 mgp::face::TriangleBitFlags,
-				 mgp::face::TriangleVertexRefs<Vertex>,
-				 mgp::face::Normal3f>
+		public mgp::Face<
+			mgp::face::TriangleBitFlags,
+			mgp::face::TriangleVertexRefs<Vertex>,
+			mgp::face::Normal3d>
 {
 };
-}
+} // namespace mymesh
 
 class MyMesh : public mgp::Mesh<mymesh::Vertex, mymesh::Face>
 {

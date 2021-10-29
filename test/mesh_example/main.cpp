@@ -37,16 +37,23 @@ int main()
 	m.enableFaceColor();
 
 	m.addFace();
+	m.addFace();
+	m.addFace();
+	m.addFace();
+	m.addFace();
 
 	m.face(0).setVertices({&m.vertex(0), &m.vertex(1), &m.vertex(2)});
 
-	m.face(0).color() = mgp::Color(255, 134, 98);
+	unsigned int i = 17;
+	for (mgp::TriMesh::Face& f : m.faceIterator())
+		f.color() = mgp::Color(4+2*i++, 134, 98);
 
 	m.addVertex();
 	m.addVertex();
 	m.addVertex();
 
-	std::cerr << m.face(0).color() << "\n";
+	for (const mgp::TriMesh::Face& f : m.faceIterator())
+		std::cerr << f.id() << " Color: " << f.color() << "\n";
 
 	std::cerr << "VN: " << m.vertexNumber() << "\n";
 

@@ -8,11 +8,9 @@
 
 #include <mgp/space/color.h>
 
-#include "info.h"
-
 namespace mgp::common {
 
-class Color : public virtual Info
+class Color
 {
 public:
 	typedef mgp::Color ColorType;

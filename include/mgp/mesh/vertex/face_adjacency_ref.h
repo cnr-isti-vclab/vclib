@@ -13,7 +13,7 @@
 namespace mgp::vert {
 
 template<class Face>
-class FaceAdjacencyRef : virtual public Info
+class FaceAdjacencyRef
 {
 public:
 	void addFaceAdjacency(Face* f) {refs.push_back(f);};
