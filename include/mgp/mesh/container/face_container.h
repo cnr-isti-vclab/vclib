@@ -68,6 +68,9 @@ public:
 
 	template<typename U = T>
 	face::ReturnIfHasOptionalScalar<U, void> enableFaceScalar();
+	
+	template<typename K, typename U = T>
+	face::ReturnIfHasCustomAttributes<U, void> addFaceCustomAttribute(const std::string& name);
 
 	FaceIterator           faceBegin(bool jumpDeleted = true);
 	FaceIterator           faceEnd();

@@ -70,6 +70,9 @@ public:
 
 	template<typename U = T>
 	vert::ReturnIfHasOptionalScalar<U, void> enableVertexScalar();
+	
+	template<typename K, typename U = T>
+	vert::ReturnIfHasCustomAttributes<U, void> addVertexCustomAttribute(const std::string& name);
 
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
 	VertexIterator           vertexEnd();

@@ -33,6 +33,11 @@ int main()
 	m.vertex(1).color() = mgp::Color(3, 63, 44);
 	m.vertex(2).color() = mgp::Color(3, 9, 2);
 	
+	m.addVertexCustomAttribute<char>("prova");
+	
+	for (auto& v : m.vertexIterator())
+		v.customAttribute<char>("prova") = 'a';
+	
 	m.enableFaceScalar();
 	m.enableFaceColor();
 

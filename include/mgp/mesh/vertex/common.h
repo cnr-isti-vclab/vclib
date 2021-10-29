@@ -123,6 +123,9 @@ using CustomAttributes = mgp::common::CustomAttributes<T>;
 template <typename T>
 bool constexpr hasCustomAttributes() {return mgp::common::hasCustomAttributes<T>();};
 
+template<typename U, typename T>
+using ReturnIfHasCustomAttributes = common::ReturnIfHasCustomAttributes<U, T>;
+
 } // namespace mgp::vert
 
 #endif // MGP_MESH_VERTEX_COMMON_H

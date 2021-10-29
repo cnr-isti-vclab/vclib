@@ -10,11 +10,27 @@
 
 namespace mgp::common {
 
+/**
+ * @brief The Color class represents a RGBA color that will be part of an Element
+ * (e.g. Vertex, Face, ...).
+ * 
+ * Allows to get and set an object of type mgp::Color.
+ */
 class Color
 {
 public:
 	typedef mgp::Color ColorType;
+	
+	/**
+	 * @brief get a const reference of the color of the element.
+	 * @return 
+	 */
 	const mgp::Color& color() const { return c; }
+	
+	/**
+	 * @brief get a reference pf the color of the element.
+	 * @return 
+	 */
 	mgp::Color&       color() { return c; }
 
 private:

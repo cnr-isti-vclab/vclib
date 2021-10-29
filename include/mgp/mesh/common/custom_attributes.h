@@ -14,6 +14,11 @@
 
 namespace mgp::common {
 
+/**
+ * @brief The CustomAttributes class is a container of custom attributes associated to an Element
+ * (e.g. Vertex, Face).
+ *
+ */
 template<typename T>
 class CustomAttributes : public virtual OptionalInfo<T>
 {
@@ -28,13 +33,13 @@ public:
 	template<typename AttrType>
 	const AttrType& customAttribute(const std::string& attrName) const
 	{
-		return std::any_cast<const AttrType&>(B::containerPointer->attrVector(attrName)[B::id()]);
+		return std::any_cast<const AttrType&>(B::containerPointer->template attrVector<AttrType>(attrName)[((T*)this)->id()]);
 	}
 
 	template<typename AttrType>
 	AttrType& customAttribute(const std::string& attrName)
 	{
-		return std::any_cast<AttrType&>(B::containerPointer->attrVector(attrName)[B::id()]);
+		return std::any_cast<AttrType&>(B::containerPointer->template attrVector<AttrType>(attrName)[((T*)this)->id()]);
 	}
 };
 
@@ -44,6 +49,10 @@ public:
 
 template <typename T>
 using hasCustomAttributesT = std::is_base_of<CustomAttributes<T>, T>;
+
+template<typename U, typename T>
+using ReturnIfHasCustomAttributes = typename std::enable_if<hasCustomAttributesT<U>::value, T>::type;
+
 
 template <typename  T>
 bool constexpr hasCustomAttributes() {return hasCustomAttributesT<T>::value;}

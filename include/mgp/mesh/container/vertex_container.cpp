@@ -103,6 +103,13 @@ vert::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsVertex<T>>::enableVert
 }
 
 template<class T>
+template<typename K, typename U>
+vert::ReturnIfHasCustomAttributes<U, void> Container<T, IfIsVertex<T> >::addVertexCustomAttribute(const std::string& name)
+{
+	optionalComponentsVector.template addNewAttribute<K>(name, vertices.size());
+}
+
+template<class T>
 typename Container<T, IfIsVertex<T>>::VertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 {
