@@ -78,7 +78,9 @@ bool hasPerVertexAdjacentFaces(const MeshType& m)
 	}
 	else if constexpr (
 		hasVertices<MeshType>() && mgp::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
-		return m.isVertexFaceAdjacenciesEnabled();
+		//todo
+		return false;
+		//return m.isVertexFaceAdjacenciesEnabled();
 	}
 	else {
 		return false;

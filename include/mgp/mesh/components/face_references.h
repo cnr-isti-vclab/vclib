@@ -6,50 +6,89 @@
 #ifndef MGP_MESH_COMPONENTS_FACE_REFERENCES_H
 #define MGP_MESH_COMPONENTS_FACE_REFERENCES_H
 
+#include <array>
+#include <assert.h>
 #include <type_traits>
+#include <variant>
 #include <vector>
 
 #include "../iterators/range_iterator.h"
 
 namespace mgp::components {
 
-class AdjacentFacesRefTrigger
+namespace internal {
+
+template<int M, typename T>
+using ReturnIfIsVector = typename std::enable_if<(M < 0), T>::type;
+template<int M, typename T>
+using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
+
+} // namespace internal
+
+class FaceReferencesTriggerer
 {
 };
 
-template<class Face>
-class AdjacentFacesRef : public AdjacentFacesRefTrigger
+template<class Face, int N>
+class FaceReferences : public FaceReferencesTriggerer
 {
+private:
+	// id 0 if use the array, 1 if we use the vector
+	static const int VARIANT_ID = N >= 0 ? 0 : 1;
+
+	// if we use the vector, the size of the array will be 0
+	// actually the array will never be used and will not use memory, it's just for declaration
+	static const int ARRAY_SIZE = N >= 0 ? N : 0;
+
+	// the Container type will be array or vector, depending on N value
+	using Container = typename std::conditional<
+		(N >= 0),
+		typename std::array<Face*, ARRAY_SIZE>,
+		typename std::vector<Face*>>::type;
+
 public:
-	using AdjacentFacesIterator      = typename std::vector<Face*>::iterator;
-	using ConstAdjacentFacesIterator = typename std::vector<Face*>::const_iterator;
-	using AdjacentFaceRangeIterator  = RangeIterator<std::vector<Face*>, AdjacentFacesIterator>;
-	using ConstAdjacentFaceRangeIterator =
-		ConstRangeIterator<std::vector<Face*>, ConstAdjacentFacesIterator>;
+	static const int FACE_NUMBER = N;
 
-	void         addAdjacentFace(Face* f) { refs.push_back(f); };
-	void         clearAdjacentFaces() { refs.clear(); }
-	unsigned int adjacentFacesNumber() { return refs.size(); }
-	Face*&       adjacentFace(unsigned int i) { return refs[i]; }
-	const Face*  adjacentFace(unsigned int i) const { return refs[i]; }
+	// if using array, will be the array iterator, the vector iterator otherwise
+	using FaceIterator = typename std::conditional<
+		(N >= 0),
+		typename std::array<Face*, ARRAY_SIZE>::iterator,
+		typename std::vector<Face*>::iterator>::type;
 
-	AdjacentFacesIterator      adjacentFacesBegin() { return refs.begin(); }
-	AdjacentFacesIterator      adjacentFacesEnd() { return refs.end(); }
-	ConstAdjacentFacesIterator adjacentFacesBegin() const { return refs.begin(); }
-	ConstAdjacentFacesIterator adjacentFacesEnd() const { return refs.end(); }
+	using ConstFaceIterator = typename std::conditional<
+		(N >= 0),
+		typename std::array<Face*, ARRAY_SIZE>::const_iterator,
+		typename std::vector<Face*>::const_iterator>::type;
 
-	AdjacentFaceRangeIterator adjacentFacesIterator()
-	{
-		return AdjacentFaceRangeIterator(refs, &adjacentFacesBegin, &adjacentFacesEnd);
-	}
+	using FaceRangeIterator = RangeIterator<Container, FaceIterator>;
+	using ConstFaceRangeIterator = ConstRangeIterator<Container, ConstFaceIterator>;
 
-	ConstAdjacentFaceRangeIterator adjacentFacesIterator() const
-	{
-		return ConstAdjacentFaceRangeIterator(refs, &adjacentFacesBegin, &adjacentFacesEnd);
-	}
+	FaceReferences();
+
+	unsigned int faceNumber() const;
+	unsigned int sizeMod(unsigned int i) const;
+
+	Face*&      f(unsigned int i);
+	const Face* f(unsigned int i) const;
+
+	void setFace(Face* v, unsigned int i);
+	void setFaces(const std::vector<Face*>& list);
+
+	// vector members
+
+	template<int U = N>
+	internal::ReturnIfIsVector<U, void> pushFace(Face* v);
+
+	template<int U = N>
+	internal::ReturnIfIsVector<U, void> insertFace(unsigned int i, Face* v);
+
+	template<int U = N>
+	internal::ReturnIfIsVector<U, void> eraseFace(unsigned int i);
 
 private:
-	std::vector<Face*> refs;
+	std::variant<std::array<Face*, ARRAY_SIZE>, std::vector<Face*>> refs;
+
+	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 };
 
 /**
@@ -57,14 +96,16 @@ private:
  */
 
 template<typename T>
-using hasAdjacentFacesT = std::is_base_of<AdjacentFacesRefTrigger, T>;
+using hasFaceReferencesT = std::is_base_of<FaceReferencesTriggerer, T>;
 
 template<typename T>
-bool constexpr hasAdjacentFaces()
+bool constexpr hasFaceReferences()
 {
-	return hasAdjacentFacesT<T>::value;
+	return hasFaceReferencesT<T>::value;
 }
 
 } // namespace mgp::components
+
+#include "face_references.cpp"
 
 #endif // MGP_MESH_COMPONENTS_FACE_REFERENCES_H

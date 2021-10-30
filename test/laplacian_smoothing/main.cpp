@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <mgp/algorithms/smooth.h>
+#include <mgp/algorithms/update/topology.h>
 #include <mgp/io/load_ply.h>
 #include <mgp/io/save_ply.h>
 #include <mgp/mesh/mesh.h>

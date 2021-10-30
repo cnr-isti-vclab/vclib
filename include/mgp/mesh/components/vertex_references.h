@@ -12,6 +12,8 @@
 #include <variant>
 #include <vector>
 
+#include "../iterators/range_iterator.h"
+
 namespace mgp::components {
 
 namespace internal {
@@ -23,12 +25,12 @@ using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
 
 } // namespace internal
 
-class VertexRefereferencesTriggerer
+class VertexReferencesTriggerer
 {
 };
 
 template<class Vertex, int N>
-class VertexReferences : public VertexRefereferencesTriggerer
+class VertexReferences : public VertexReferencesTriggerer
 {
 private:
 	// id 0 if use the array, 1 if we use the vector
@@ -38,8 +40,14 @@ private:
 	// actually the array will never be used and will not use memory, it's just for declaration
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
+	// the Container type will be array or vector, depending on N value
+	using Container = typename std::conditional<
+		(N >= 0),
+		typename std::array<Vertex*, ARRAY_SIZE>,
+		typename std::vector<Vertex*>>::type;
+
 public:
-	static const int FACE_SIZE = N;
+	static const int VERTEX_NUMBER = N;
 
 	// if using array, will be the array iterator, the vector iterator otherwise
 	using VertexIterator = typename std::conditional<
@@ -51,6 +59,9 @@ public:
 		(N >= 0),
 		typename std::array<Vertex*, ARRAY_SIZE>::const_iterator,
 		typename std::vector<Vertex*>::const_iterator>::type;
+
+	using VertexRangeIterator = RangeIterator<Container, VertexIterator>;
+	using ConstVertexRangeIterator = ConstRangeIterator<Container, ConstVertexIterator>;
 
 	VertexReferences();
 
@@ -100,7 +111,7 @@ public:
 };
 
 template<typename T>
-using hasVertexReferencesT = std::is_base_of<VertexRefereferencesTriggerer, T>;
+using hasVertexReferencesT = std::is_base_of<VertexReferencesTriggerer, T>;
 
 template<typename T>
 bool constexpr hasVertexReferences()

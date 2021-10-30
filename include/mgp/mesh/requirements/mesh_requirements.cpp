@@ -16,7 +16,8 @@ bool constexpr isTriangleMesh()
 		using F = typename MeshType::FaceType;
 		if constexpr (mgp::face::hasVertexReferences<F>()) {
 			using R = typename F::VertexReferences;
-			return R::FACE_SIZE == 3;
+			// todo: if -1, check manually
+			return R::VERTEX_NUMBER == 3;
 		}
 	}
 	return false;
@@ -31,12 +32,15 @@ bool constexpr isTriangleMesh(const MeshType&)
 template<typename MeshType>
 bool constexpr isQuadMesh()
 {
-	// todo when have lists
-	//if constexpr (hasPerFaceVertexReferencesArray<MeshType>()) {
-	using F = typename MeshType::FaceType;
-	using R = typename F::VertexReferences;
-	return R::FACE_SIZE == 4;
-	//}
+	if constexpr (hasFaces<MeshType>()) {
+		using F = typename MeshType::FaceType;
+		if constexpr (mgp::face::hasVertexReferences<F>()) {
+			using R = typename F::VertexReferences;
+			// todo: if -1, check manually
+			return R::VERTEX_NUMBER == 4;
+		}
+	}
+	return false;
 }
 
 template<typename MeshType>

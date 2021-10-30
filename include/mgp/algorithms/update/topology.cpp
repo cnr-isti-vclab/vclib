@@ -5,10 +5,12 @@
 
 #include "topology.h"
 
+#include <mgp/mesh/requirements.h>
+
 namespace mgp {
 
 template<typename MeshType>
-void updatePerVertexFaceAdjacencies(MeshType& m)
+void updatePerVertexAdjacentFaces(MeshType& m)
 {
 
 }

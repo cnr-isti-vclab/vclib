@@ -69,10 +69,10 @@ bool constexpr hasScalar() {return components::hasScalar<T>();};
 
 /** Port AdjacentFacesRef class into vert namespace **/
 template <typename Face>
-using AdjacentFacesRef = components::AdjacentFacesRef<Face>;
+using AdjacentFaces = components::FaceReferences<Face, -1>;
 
 template <typename T>
-bool constexpr hasAdjacentFaces() {return components::hasAdjacentFaces<T>();};
+bool constexpr hasAdjacentFaces() {return components::hasFaceReferences<T>();};
 
 } // namespace mgp::vert
 

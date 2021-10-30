@@ -11,17 +11,17 @@ namespace mgp {
 // is/has functions
 
 template<typename MeshType>
-bool constexpr hasPerFaceVertexReferencesArray();
+bool constexpr hasPerFaceVertexReferences();
 
 template<typename MeshType>
-bool constexpr hasPerFaceVertexReferencesArray(const MeshType&);
+bool constexpr hasPerFaceVertexReferences(const MeshType&);
 
 // require functions
 
 template <typename MeshType>
-void constexpr requirePerFaceVertexReferencesArray();
+void constexpr requirePerFaceVertexReferences();
 template <typename MeshType>
-void constexpr requirePerFaceVertexReferencesArray(const MeshType&);
+void constexpr requirePerFaceVertexReferences(const MeshType&);
 
 }
 
