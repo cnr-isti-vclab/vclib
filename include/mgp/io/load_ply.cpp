@@ -19,7 +19,7 @@ inline void loadPly(MeshType& m, const std::string& filename, mgp::io::FileMeshI
 {
 	std::ifstream file(filename);
 	if (!file.is_open()) {
-		return; // todo make exceptions
+		throw mgp::CannotOpenFileException(filename);
 	}
 	mgp::ply::PlyHeader header(file);
 	if (header.errorWhileLoading())

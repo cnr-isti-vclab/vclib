@@ -6,6 +6,7 @@
 #ifndef MGP_IO_LOAD_PLY_H
 #define MGP_IO_LOAD_PLY_H
 
+#include <mgp/exception/io_exception.h>
 #include "ply/ply.h"
 #include "ply/ply_vertex.h"
 #include "ply/ply_face.h"

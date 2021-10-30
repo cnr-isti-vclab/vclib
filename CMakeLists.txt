@@ -20,6 +20,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/trimesh.h
 	${MGP_SRC_DIR}/algorithms/smooth.h
 	${MGP_SRC_DIR}/algorithms/update/flag.h
+	${MGP_SRC_DIR}/exception/io_exception.h
 	${MGP_SRC_DIR}/exception/mesh_exception.h
 	${MGP_SRC_DIR}/mesh/face.h
 	${MGP_SRC_DIR}/mesh/mesh.h

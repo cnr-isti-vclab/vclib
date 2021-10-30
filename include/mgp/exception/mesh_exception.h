@@ -7,6 +7,7 @@
 #define MGP_MESH_EXCEPTION_H
 
 #include <stdexcept>
+#include <string>
 
 namespace mgp {
 
@@ -30,7 +31,7 @@ public:
 	virtual const char* what() const throw()
 	{
 		static std::string error;
-		error = std::string("Lack of Compactness Exception - ") + std::runtime_error::what();
+		error = std::string("Lack of Compactness - ") + std::runtime_error::what();
 		return error.c_str();
 	}
 };
@@ -42,7 +43,7 @@ public:
 	virtual const char* what() const throw()
 	{
 		static std::string error;
-		error = std::string("Missing Component Exception - ") + std::runtime_error::what();
+		error = std::string("Missing Component - ") + std::runtime_error::what();
 		return error.c_str();
 	}
 };

@@ -30,7 +30,7 @@ void savePly(const MeshType& m, const std::string& filename)
 	header.setNumberFaces(m.faceNumber());
 	fp.open (plyfilename);
 	if(!fp) {
-		return;
+		throw mgp::CannotOpenFileException(plyfilename);
 	}
 	fp << header.toString();
 
