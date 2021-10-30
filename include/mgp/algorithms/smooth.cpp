@@ -96,8 +96,8 @@ void vertexCoordLaplacianSmoothing(
 	bool         smoothSelected,
 	bool         cotangentWeight /*, mgp::CallBackPos *cb*/)
 {
-	mgp::requireMeshVertices(m);
-	mgp::requireMeshFaces(m);
+	mgp::requireVertices(m);
+	mgp::requireFaces(m);
 
 	using VertexType = typename MeshType::Vertex;
 	using CoordType  = typename VertexType::CoordinateType;

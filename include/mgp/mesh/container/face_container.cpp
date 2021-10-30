@@ -176,10 +176,8 @@ template<class T>
 template<class Vertex>
 void Container<T, IfIsFace<T>>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
 {
-	if constexpr (face::hasVertexRefsArray<FaceType>()) {
-		for (unsigned int i = 0; i < faces.size(); ++i) {
-			faces[i].updateVertexReferences(oldBase, newBase);
-		}
+	for (unsigned int i = 0; i < faces.size(); ++i) {
+		faces[i].updateVertexReferences(oldBase, newBase);
 	}
 }
 

@@ -15,9 +15,9 @@ int main()
 {
 	mgp::TriMesh m;
 
-	mgp::requirePerVertexCoordinates(m);
+	mgp::requirePerVertexCoordinate(m);
 	mgp::requireTriangleMesh(m);
-	mgp::requirePerVertexNormals(m);
+	mgp::requirePerVertexNormal(m);
 
 	mgp::io::loadPly(m, "/home/alessandro/tmp/bunny.ply");
 

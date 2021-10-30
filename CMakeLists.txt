@@ -54,6 +54,10 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/iterators/container_iterator.h
 	${MGP_SRC_DIR}/mesh/iterators/container_range_iterator.h
 	${MGP_SRC_DIR}/mesh/iterators/range_iterator.h
+	${MGP_SRC_DIR}/mesh/requirements/element_requirements.h
+	${MGP_SRC_DIR}/mesh/requirements/face_requirements.h
+	${MGP_SRC_DIR}/mesh/requirements/mesh_requirements.h
+	${MGP_SRC_DIR}/mesh/requirements/vertex_requirements.h
 	${MGP_SRC_DIR}/mesh/vertex/adjacent_faces_ref.h
 	${MGP_SRC_DIR}/mesh/vertex/common.h
 	${MGP_SRC_DIR}/mesh/vertex/coordinate.h
@@ -78,7 +82,6 @@ set(SOURCES
 	${MGP_SRC_DIR}/algorithms/smooth.cpp
 	${MGP_SRC_DIR}/algorithms/update/flag.cpp
 	${MGP_SRC_DIR}/mesh/mesh.cpp
-	${MGP_SRC_DIR}/mesh/requirements.cpp
 	${MGP_SRC_DIR}/mesh/common/bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/common/optional_mutable_bit_flags.cpp
@@ -86,6 +89,10 @@ set(SOURCES
 	${MGP_SRC_DIR}/mesh/container/vertex_container.cpp
 	${MGP_SRC_DIR}/mesh/face/triangle_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.cpp
+	${MGP_SRC_DIR}/mesh/requirements/element_requirements.cpp
+	${MGP_SRC_DIR}/mesh/requirements/face_requirements.cpp
+	${MGP_SRC_DIR}/mesh/requirements/mesh_requirements.cpp
+	${MGP_SRC_DIR}/mesh/requirements/vertex_requirements.cpp
 	${MGP_SRC_DIR}/misc/timer.cpp
 	${MGP_SRC_DIR}/misc/tokenizer.cpp
 	${MGP_SRC_DIR}/io/load_ply.cpp

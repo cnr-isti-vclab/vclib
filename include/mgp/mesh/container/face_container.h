@@ -35,6 +35,9 @@ class Container<T, IfIsFace<T>> : public FaceContainerTriggerer
 	static_assert(
 		mgp::face::hasBitFlags<T>(),
 		"You should include BitFlags as Face component in your Mesh definition.");
+	static_assert(
+		mgp::face::hasVertexRefsArray<T>(),
+		"You should include Vertex References (Array or List) component in your Mesh definition.");
 
 protected:
 	// types:
