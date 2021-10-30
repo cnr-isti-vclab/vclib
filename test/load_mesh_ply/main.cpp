@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include <mgp/trimesh.h>
+#include <mgp/polymesh.h>
 #include <mgp/io/load_ply.h>
 #include <mgp/io/save_ply.h>
 #include <mgp/algorithms/update/flag.h>
@@ -13,17 +13,15 @@
 
 int main()
 {
-	mgp::TriMesh m;
+	mgp::PolyMesh m;
 
-	mgp::requirePerVertexCoordinate(m);
-	mgp::requireTriangleMesh(m);
-	mgp::requirePerVertexNormal(m);
+	m.addVertex();
 
-	mgp::io::loadPly(m, "/home/alessandro/tmp/bunny.ply");
+	m.addFace();
 
-	mgp::vertexCoordLaplacianSmoothing(m, 50);
+	auto& f = m.face(0);
 
-	mgp::io::savePly(m, "/home/alessandro/tmp/bunny_s.ply");
+	f.pushVertex(&m.vertex(0));
 
 	return 0;
 }

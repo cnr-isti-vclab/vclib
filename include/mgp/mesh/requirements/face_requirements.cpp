@@ -15,7 +15,7 @@ namespace mgp {
 template<typename MeshType>
 bool constexpr hasPerFaceVertexReferencesArray()
 {
-	return hasFaces<MeshType>() && mgp::face::hasVertexRefsArray<typename MeshType::FaceType>();
+	return hasFaces<MeshType>() && mgp::face::hasVertexReferences<typename MeshType::FaceType>();
 }
 
 template<typename MeshType>

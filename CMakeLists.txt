@@ -17,6 +17,7 @@ set(MGP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(MGP_SRC_DIR ${MGP_INCLUDE_DIR}/mgp)
 
 set(HEADERS
+	${MGP_SRC_DIR}/polymesh.h
 	${MGP_SRC_DIR}/trimesh.h
 	${MGP_SRC_DIR}/algorithms/smooth.h
 	${MGP_SRC_DIR}/algorithms/update/flag.h

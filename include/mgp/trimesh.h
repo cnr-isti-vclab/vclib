@@ -3,12 +3,11 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_TRIMESH_H
-#define MGP_MESH_TRIMESH_H
+#ifndef MGP_TRIMESH_H
+#define MGP_TRIMESH_H
 
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
-#include "space/box.h"
 
 namespace mgp::trimesh {
 
@@ -52,4 +51,4 @@ public:
 
 } // namespace mgp
 
-#endif // MGP_MESH_FACE_H
+#endif // MGP_TRIMESH_H

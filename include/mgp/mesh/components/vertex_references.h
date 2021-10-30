@@ -8,43 +8,84 @@
 
 #include <array>
 #include <assert.h>
+#include <type_traits>
 #include <variant>
 #include <vector>
 
 namespace mgp::components {
 
-class VertexRefereferencesTriggerer {};
+namespace internal {
+
+template<int M, typename T>
+using ReturnIfIsVector = typename std::enable_if<(M < 0), T>::type;
+template<int M, typename T>
+using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
+
+} // namespace internal
+
+class VertexRefereferencesTriggerer
+{
+};
 
 template<class Vertex, int N>
 class VertexReferences : public VertexRefereferencesTriggerer
 {
+private:
+	// id 0 if use the array, 1 if we use the vector
+	static const int VARIANT_ID = N >= 0 ? 0 : 1;
+
+	// if we use the vector, the size of the array will be 0
+	// actually the array will never be used and will not use memory, it's just for declaration
+	static const int ARRAY_SIZE = N >= 0 ? N : 0;
+
 public:
-	static const int FACE_SIZE = N > 0 ? N : 0;
+	static const int FACE_SIZE = N;
+
+	// if using array, will be the array iterator, the vector iterator otherwise
+	using VertexIterator = typename std::conditional<
+		(N >= 0),
+		typename std::array<Vertex*, ARRAY_SIZE>::iterator,
+		typename std::vector<Vertex*>::iterator>::type;
+
+	using ConstVertexIterator = typename std::conditional<
+		(N >= 0),
+		typename std::array<Vertex*, ARRAY_SIZE>::const_iterator,
+		typename std::vector<Vertex*>::const_iterator>::type;
+
 	VertexReferences();
 
-	unsigned int vertexNumber() const {return N;}
-	unsigned int sizeMod(unsigned int i) const {return i%N;}
+	unsigned int vertexNumber() const;
+	unsigned int sizeMod(unsigned int i) const;
 
 	Vertex*&      v(unsigned int i);
 	const Vertex* v(unsigned int i) const;
 
 	void setVertex(Vertex* v, unsigned int i);
-	void setVertices(const std::vector<Vertex*> &list);
+	void setVertices(const std::vector<Vertex*>& list);
+
+	// vector members
+
+	template<int U = N>
+	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v);
+
+	template<int U = N>
+	internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, Vertex* v);
+
+	template<int U = N>
+	internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
 
 protected:
-	std::variant<std::array<Vertex*, FACE_SIZE>, std::vector<Vertex*>> refs;
-
-	// id 0 if use the array, 1 if we use the vector
-	static const int VARIANT_ID = N > 0 ? 0 : 1;
+	std::variant<std::array<Vertex*, ARRAY_SIZE>, std::vector<Vertex*>> refs;
 
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 };
 
 template<class Vertex>
-class TriangleVertexRefs : public VertexReferences<Vertex, 3>
+class TriVertexReferences : public VertexReferences<Vertex, 3>
 {
 private:
 	using B = VertexReferences<Vertex, 3>;
+
 public:
 	Vertex*&      v0() { return std::get<0>(B::refs)[0]; }
 	Vertex*&      v1() { return std::get<0>(B::refs)[1]; }
@@ -58,11 +99,14 @@ public:
 	void setV2(Vertex* v) { std::get<0>(B::refs)[2] = v; }
 };
 
-template <typename  T>
+template<typename T>
 using hasVertexReferencesT = std::is_base_of<VertexRefereferencesTriggerer, T>;
 
-template <typename  T>
-bool constexpr hasVertexReferences() {return hasVertexReferencesT<T>::value;}
+template<typename T>
+bool constexpr hasVertexReferences()
+{
+	return hasVertexReferencesT<T>::value;
+}
 
 } // namespace mgp::components
 

@@ -12,12 +12,14 @@ namespace mgp {
 template<typename MeshType>
 bool constexpr isTriangleMesh()
 {
-	// todo when have lists
-	//if constexpr (hasPerFaceVertexReferencesArray<MeshType>()) {
-	using F = typename MeshType::FaceType;
-	using R = typename F::VertexReferences;
-	return R::FACE_SIZE == 3;
-	//}
+	if constexpr (hasFaces<MeshType>()) {
+		using F = typename MeshType::FaceType;
+		if constexpr (mgp::face::hasVertexRefsArray<F>()) {
+			using R = typename F::VertexReferences;
+			return R::FACE_SIZE == 3;
+		}
+	}
+	return false;
 }
 
 template<typename MeshType>
