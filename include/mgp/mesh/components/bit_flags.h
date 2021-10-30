@@ -15,7 +15,7 @@ namespace mgp::components {
  * @brief The BitFlags class represents a collection of 32 bits that will be part of an Element
  * (e.g. Vertex, Face, ...).
  *
- * This component is mandatory into every Element of the mesh.
+ * This component (or a specialization) is mandatory into every Element of the mesh.
  *
  * The bits have the following meaning:
  * - 0: deleted: if the current Element has been deleted

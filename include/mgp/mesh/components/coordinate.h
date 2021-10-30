@@ -3,14 +3,12 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_VERTEX_COORDINATE_H
-#define MGP_MESH_VERTEX_COORDINATE_H
+#ifndef MGP_MESH_COMPONENTS_COORDINATE_H
+#define MGP_MESH_COMPONENTS_COORDINATE_H
 
 #include <mgp/space/point.h>
 
-#include "common.h"
-
-namespace mgp::vert {
+namespace mgp::components {
 
 class CoordinateTrigger {};
 
@@ -53,6 +51,6 @@ using hasCoordinateT = std::is_base_of<CoordinateTrigger, T>;
 template <typename  T>
 bool constexpr hasCoordinate() {return hasCoordinateT<T>::value;}
 
-} // namespace mgp::vert
+} // namespace mgp::components
 
-#endif // MGP_MESH_VERTEX_COORDINATE_H
+#endif // MGP_MESH_COMPONENTS_COORDINATE_H

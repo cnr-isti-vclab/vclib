@@ -8,10 +8,11 @@
 
 #include "../components/bit_flags.h"
 #include "../components/color.h"
-#include "../components_optional/custom_components.h"
 #include "../components/mutable_bit_flags.h"
 #include "../components/normal.h"
 #include "../components/scalar.h"
+#include "../components/triangle_bit_flags.h"
+#include "../components_optional/custom_components.h"
 #include "../components_optional/optional_color.h"
 #include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_normal.h"
@@ -31,6 +32,11 @@ using BitFlags = mgp::components::BitFlags;
 
 template <typename T>
 bool constexpr hasBitFlags() {return mgp::components::hasBitFlags<T>();};
+
+using TriangleBitFlags = mgp::components::TriangleBitFlags;
+
+template <typename T>
+bool constexpr hasTriangleBitFlags() {return mgp::components::hasTriangleBitFlags<T>();};
 
 /** Port OptionalMutableBitFlags class into face namespace **/
 template <typename T>

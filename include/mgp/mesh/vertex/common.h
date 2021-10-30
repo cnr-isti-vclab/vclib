@@ -8,10 +8,11 @@
 
 #include "../components/bit_flags.h"
 #include "../components/color.h"
-#include "../components_optional/custom_components.h"
+#include "../components/coordinate.h"
 #include "../components/mutable_bit_flags.h"
 #include "../components/normal.h"
 #include "../components/scalar.h"
+#include "../components_optional/custom_components.h"
 #include "../components_optional/optional_color.h"
 #include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_normal.h"
@@ -57,6 +58,19 @@ bool constexpr hasOptionalColor() {return mgp::components::hasOptionalColor<T>()
 
 template<typename U, typename T>
 using ReturnIfHasOptionalColor = components::ReturnIfHasOptionalColor<U, T>;
+
+/** Port Coordinate class into vert namespace **/
+template<class Scalar, int N>
+using Coordinate = mgp::components::Coordinate<Scalar, N>;
+
+template<class Scalar>
+using Coordinate3 = mgp::components::Coordinate3<Scalar>;
+
+using Coordinate3f = mgp::components::Coordinate3f;
+using Coordinate3d = mgp::components::Coordinate3d;
+
+template <typename T>
+bool constexpr hasCoordinate() {return mgp::components::hasCoordinate<T>();};
 
 /** Port Normal classes into vert namespace **/
 template<class Scalar, int N>

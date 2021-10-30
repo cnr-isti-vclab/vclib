@@ -7,7 +7,6 @@
 #define MGP_MESH_VERTEX_H
 
 #include "vertex/common.h"
-#include "vertex/coordinate.h"
 #include "vertex/adjacent_faces_ref.h"
 #include "vertex/optional_adjacent_faces_ref.h"
 

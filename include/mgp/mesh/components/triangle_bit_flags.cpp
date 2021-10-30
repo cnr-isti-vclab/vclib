@@ -5,7 +5,7 @@
 
 #include "triangle_bit_flags.h"
 
-namespace mgp::face {
+namespace mgp::components {
 
 /**
  * @brief  TriangleBitFlags::userBitFlag returns the value of the bit given in input. The bit is
@@ -18,7 +18,7 @@ namespace mgp::face {
 inline bool TriangleBitFlags::userBitFlag(unsigned int bit) const
 {
 	// using FIRST_USER_BIT of this class
-	return components::BitFlags::userBitFlag(bit, FIRST_USER_BIT);
+	return BitFlags::userBitFlag(bit, FIRST_USER_BIT);
 }
 
 /**
@@ -31,7 +31,7 @@ inline bool TriangleBitFlags::userBitFlag(unsigned int bit) const
 inline void TriangleBitFlags::setUserBit(unsigned int bit)
 {
 	// using FIRST_USER_BIT of this class
-	components::BitFlags::setUserBit(bit, FIRST_USER_BIT);
+	BitFlags::setUserBit(bit, FIRST_USER_BIT);
 }
 
 /**
@@ -44,7 +44,7 @@ inline void TriangleBitFlags::setUserBit(unsigned int bit)
 void TriangleBitFlags::clearUserBit(unsigned int bit)
 {
 	// using FIRST_USER_BIT of this class
-	components::BitFlags::clearUserBit(bit, FIRST_USER_BIT);
+	BitFlags::clearUserBit(bit, FIRST_USER_BIT);
 }
 
 /**
@@ -55,7 +55,7 @@ void TriangleBitFlags::clearUserBit(unsigned int bit)
  */
 inline bool TriangleBitFlags::isEdgeOnBorder0() const
 {
-	return components::BitFlags::isOnBorder();
+	return BitFlags::isOnBorder();
 }
 
 /**
@@ -147,7 +147,7 @@ inline bool TriangleBitFlags::isAnyEdgeFaux() const
 
 inline void TriangleBitFlags::setEdgeOnBorder0()
 {
-	components::BitFlags::setOnBorder();
+	BitFlags::setOnBorder();
 }
 
 inline void TriangleBitFlags::setEdgeOnBorder1()
@@ -210,7 +210,7 @@ inline void TriangleBitFlags::setEdgeFaux(unsigned int i)
 
 inline void TriangleBitFlags::clearEdgeOnBorder0()
 {
-	components::BitFlags::clearOnBorder();
+	BitFlags::clearOnBorder();
 }
 
 inline void TriangleBitFlags::clearEdgeOnBorder1()
@@ -285,4 +285,4 @@ inline void TriangleBitFlags::clearAllEdgeFaux()
 	clearEdgeFaux2();
 }
 
-} // namespace mgp::face
+} // namespace mgp::components

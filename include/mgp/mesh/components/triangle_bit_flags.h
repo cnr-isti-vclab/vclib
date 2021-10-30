@@ -3,12 +3,12 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_FACE_TRIANGLE_BIT_FLAGS_H
-#define MGP_MESH_FACE_TRIANGLE_BIT_FLAGS_H
+#ifndef MGP_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
+#define MGP_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 
-#include "../components/bit_flags.h"
+#include "bit_flags.h"
 
-namespace mgp::face {
+namespace mgp::components {
 
 /**
  * @brief The TriangleBitFlags class represents a collection of 32 bits that will be part of a
@@ -28,7 +28,7 @@ namespace mgp::face {
  * - 10: edge faux 2: if the current Triangle has his Edge with id 2 marked as faux
  * - from 11 to 31: user bits that can have custom meanings to the user
  */
-class TriangleBitFlags : public components::BitFlags
+class TriangleBitFlags : public BitFlags
 {
 public:
 	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
@@ -87,29 +87,29 @@ public:
 
 protected:
 	// hide base class constant, 8 is the number of bits used by this class
-	static const unsigned int FIRST_USER_BIT = components::BitFlags::FIRST_USER_BIT + 8;
+	static const unsigned int FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 8;
 
 	// values of the flags, used for flagValue, setFlag and clearFlag member functions
 	enum {
 		// BORDER0 is BORDER, inherited from superclass
-		BORDER1 = 1 << (components::BitFlags::FIRST_USER_BIT),
-		BORDER2 = 1 << (components::BitFlags::FIRST_USER_BIT + 1),
+		BORDER1 = 1 << (BitFlags::FIRST_USER_BIT),
+		BORDER2 = 1 << (BitFlags::FIRST_USER_BIT + 1),
 		// Edge selection
-		EDGESEL0 = 1 << (components::BitFlags::FIRST_USER_BIT + 2),
-		EDGESEL1 = 1 << (components::BitFlags::FIRST_USER_BIT + 3),
-		EDGESEL2 = 1 << (components::BitFlags::FIRST_USER_BIT + 4),
+		EDGESEL0 = 1 << (BitFlags::FIRST_USER_BIT + 2),
+		EDGESEL1 = 1 << (BitFlags::FIRST_USER_BIT + 3),
+		EDGESEL2 = 1 << (BitFlags::FIRST_USER_BIT + 4),
 		// Faux edges: when representing polygonal meshes on triangle meshes, some triangle edges
 		// can be marked as "faux", meaning that they are internal on the polygon
-		FAUX0 = 1 << (components::BitFlags::FIRST_USER_BIT + 5),
-		FAUX1 = 1 << (components::BitFlags::FIRST_USER_BIT + 6),
-		FAUX2 = 1 << (components::BitFlags::FIRST_USER_BIT + 7)
+		FAUX0 = 1 << (BitFlags::FIRST_USER_BIT + 5),
+		FAUX1 = 1 << (BitFlags::FIRST_USER_BIT + 6),
+		FAUX2 = 1 << (BitFlags::FIRST_USER_BIT + 7)
 	};
 
 private:
 	// will use these members as isOnBorder0, setOnBorder0 and clearOnBorder0
-	using components::BitFlags::isOnBorder;
-	using components::BitFlags::setOnBorder;
-	using components::BitFlags::clearOnBorder;
+	using BitFlags::isOnBorder;
+	using BitFlags::setOnBorder;
+	using BitFlags::clearOnBorder;
 };
 
 /**
@@ -122,8 +122,8 @@ using hasTriangleBitFlagsT = std::is_base_of<TriangleBitFlags, T>;
 template <typename  T>
 bool constexpr hasTriangleBitFlags() {return hasTriangleBitFlagsT<T>::value;}
 
-} // namespace mgp::face
+} // namespace mgp::components
 
 #include "triangle_bit_flags.cpp"
 
-#endif // MGP_MESH_FACE_TRIANGLE_BIT_FLAGS_H
+#endif // MGP_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
