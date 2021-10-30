@@ -21,7 +21,7 @@ class Vertex : public mgp::Vertex<mgp::vert::BitFlags, mgp::vert::Coordinate3d>
 class Face :
 		public mgp::Face<
 			mgp::face::BitFlags, // 4b
-			mgp::face::VertexRefsArray<Vertex, -1>>
+			mgp::face::VertexReferences<Vertex, -1>>
 {
 };
 

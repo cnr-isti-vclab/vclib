@@ -14,7 +14,7 @@ bool constexpr isTriangleMesh()
 {
 	if constexpr (hasFaces<MeshType>()) {
 		using F = typename MeshType::FaceType;
-		if constexpr (mgp::face::hasVertexRefsArray<F>()) {
+		if constexpr (mgp::face::hasVertexReferences<F>()) {
 			using R = typename F::VertexReferences;
 			return R::FACE_SIZE == 3;
 		}
