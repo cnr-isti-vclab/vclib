@@ -10,6 +10,8 @@
 
 #include "common.h"
 
+#include "../iterators/container_range_iterator.h"
+
 namespace mgp::vert {
 
 template<class Face>
@@ -18,6 +20,8 @@ class AdjacenctFacesRef
 public:
 	using AdjacentFacesIterator      = typename std::vector<Face*>::iterator;
 	using ConstAdjacentFacesIterator = typename std::vector<Face*>::const_iterator;
+	using AdjacentFaceRangeIterator  = RangeIterator<std::vector<Face*>, AdjacentFacesIterator>;
+	using ConstAdjacentFaceRangeIterator  = ConstRangeIterator<std::vector<Face*>, ConstAdjacentFacesIterator>;
 
 	void         addAdjacentFace(Face* f) { refs.push_back(f); };
 	void         clearAdjacentFaces() { refs.clear(); }
@@ -29,6 +33,16 @@ public:
 	AdjacentFacesIterator      adjacentFacesEnd() { return refs.end(); }
 	ConstAdjacentFacesIterator adjacentFacesBegin() const { return refs.begin(); }
 	ConstAdjacentFacesIterator adjacentFacesEnd() const { return refs.end(); }
+	
+	AdjacentFaceRangeIterator adjacentFacesIterator()
+	{
+		return AdjacentFaceRangeIterator(refs, &adjacentFacesBegin, &adjacentFacesEnd);
+	}
+	
+	ConstAdjacentFaceRangeIterator adjacentFacesIterator() const
+	{
+		return ConstAdjacentFaceRangeIterator(refs, &adjacentFacesBegin, &adjacentFacesEnd);
+	}
 
 private:
 	std::vector<Face*> refs;

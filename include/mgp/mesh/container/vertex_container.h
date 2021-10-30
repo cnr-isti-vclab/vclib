@@ -44,8 +44,8 @@ public:
 	using VertexType               = T;
 	using VertexIterator           = ContainerIterator<T>;
 	using ConstVertexIterator      = ConstContainerIterator<T>;
-	using VertexRangeIterator      = RangeIterator<VertexContainer, VertexIterator>;
-	using ConstVertexRangeIterator = ConstRangeIterator<VertexContainer, ConstVertexIterator>;
+	using VertexRangeIterator      = RangeIteratorDeletedOption<VertexContainer, VertexIterator>;
+	using ConstVertexRangeIterator = ConstRangeIteratorDeletedOption<VertexContainer, ConstVertexIterator>;
 
 	Container();
 

@@ -44,8 +44,8 @@ public:
 	using FaceType               = T;
 	using FaceIterator           = ContainerIterator<T>;
 	using ConstFaceIterator      = ConstContainerIterator<T>;
-	using FaceRangeIterator      = RangeIterator<FaceContainer, FaceIterator>;
-	using ConstFaceRangeIterator = ConstRangeIterator<FaceContainer, ConstFaceIterator>;
+	using FaceRangeIterator      = RangeIteratorDeletedOption<FaceContainer, FaceIterator>;
+	using ConstFaceRangeIterator = ConstRangeIteratorDeletedOption<FaceContainer, ConstFaceIterator>;
 
 	Container();
 

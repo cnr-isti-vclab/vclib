@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace mgp::mesh {
+namespace mgp {
 
 template<typename T>
 class ContainerIterator
@@ -112,6 +112,6 @@ public:
 	bool                  jumpDeleted; // when true, deleted Elements will be jumped
 };
 
-} // namespace mgp::mesh
+} // namespace mgp
 
 #endif // MESH_ITERATORS_CONTAINER_ITERATOR_H
