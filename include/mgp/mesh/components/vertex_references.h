@@ -8,24 +8,19 @@
 
 #include <array>
 #include <assert.h>
+#include <variant>
+#include <vector>
 
 namespace mgp::components {
 
-class VertexRefsArrayTrigger {};
+class VertexRefereferencesTriggerer {};
 
-/**
- * @brief The VertexRefsArray class is a Component of the Mesh::Face class which will contain
- * a fixed size array of references to Mesh::Vertex.
- *
- * This class is intended to be used in Meshes with Faces at most N vertices, with N known at
- * compile time.
- */
 template<class Vertex, int N>
-class VertexRefsArray : public VertexRefsArrayTrigger
+class VertexReferences : public VertexRefereferencesTriggerer
 {
 public:
-	static const int FACE_SIZE = N;
-	VertexRefsArray();
+	static const int FACE_SIZE = N > 0 ? N : 0;
+	VertexReferences();
 
 	unsigned int vertexNumber() const {return N;}
 	unsigned int sizeMod(unsigned int i) const {return i%N;}
@@ -34,39 +29,40 @@ public:
 	const Vertex* v(unsigned int i) const;
 
 	void setVertex(Vertex* v, unsigned int i);
-	void setVertices(const std::array<Vertex*, N> &list);
+	void setVertices(const std::vector<Vertex*> &list);
 
 protected:
-	std::array<Vertex*, N> refs;
+	std::variant<std::array<Vertex*, FACE_SIZE>, std::vector<Vertex*>> refs;
+
+	// id 0 if use the array, 1 if we use the vector
+	static const int VARIANT_ID = N > 0 ? 0 : 1;
 
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 };
 
 template<class Vertex>
-class TriangleVertexRefs : public VertexRefsArray<Vertex, 3>
+class TriangleVertexRefs : public VertexReferences<Vertex, 3>
 {
+private:
+	using B = VertexReferences<Vertex, 3>;
 public:
-	Vertex*&      v0() { return VertexRefsArray<Vertex, 3>::refs[0]; }
-	Vertex*&      v1() { return VertexRefsArray<Vertex, 3>::refs[1]; }
-	Vertex*&      v2() { return VertexRefsArray<Vertex, 3>::refs[2]; }
-	const Vertex* v0() const { return VertexRefsArray<Vertex, 3>::refs[0]; }
-	const Vertex* v1() const { return VertexRefsArray<Vertex, 3>::refs[1]; }
-	const Vertex* v2() const { return VertexRefsArray<Vertex, 3>::refs[2]; }
+	Vertex*&      v0() { return std::get<0>(B::refs)[0]; }
+	Vertex*&      v1() { return std::get<0>(B::refs)[1]; }
+	Vertex*&      v2() { return std::get<0>(B::refs)[2]; }
+	const Vertex* v0() const { return std::get<0>(B::refs)[0]; }
+	const Vertex* v1() const { return std::get<0>(B::refs)[1]; }
+	const Vertex* v2() const { return std::get<0>(B::refs)[2]; }
 
-	void setV0(Vertex* v) { VertexRefsArray<Vertex, 3>::refs[0] = v; }
-	void setV1(Vertex* v) { VertexRefsArray<Vertex, 3>::refs[1] = v; }
-	void setV2(Vertex* v) { VertexRefsArray<Vertex, 3>::refs[2] = v; }
+	void setV0(Vertex* v) { std::get<0>(B::refs)[0] = v; }
+	void setV1(Vertex* v) { std::get<0>(B::refs)[1] = v; }
+	void setV2(Vertex* v) { std::get<0>(B::refs)[2] = v; }
 };
 
-/**
- * Detector to check if a class has the method v(int)
- */
+template <typename  T>
+using hasVertexReferencesT = std::is_base_of<VertexRefereferencesTriggerer, T>;
 
 template <typename  T>
-using hasVertexRefsArrayT = std::is_base_of<VertexRefsArrayTrigger, T>;
-
-template <typename  T>
-bool constexpr hasVertexRefsArray() {return hasVertexRefsArrayT<T>::value;}
+bool constexpr hasVertexReferences() {return hasVertexReferencesT<T>::value;}
 
 } // namespace mgp::components
 

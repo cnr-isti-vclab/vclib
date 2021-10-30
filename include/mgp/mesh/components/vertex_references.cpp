@@ -8,33 +8,38 @@
 namespace mgp::components {
 
 template<class Vertex, int N>
-VertexRefsArray<Vertex, N>::VertexRefsArray() : refs({nullptr})
+VertexReferences<Vertex, N>::VertexReferences()
 {
+	if constexpr (N >= 0) {
+		refs = std::array<Vertex*, N>{nullptr};
+	}
+	else {
+		refs = std::vector<Vertex*>();
+	}
 }
 
 template<class Vertex, int N>
-Vertex*& VertexRefsArray<Vertex, N>::v(unsigned int i)
+Vertex*& VertexReferences<Vertex, N>::v(unsigned int i)
 {
-	assert(i < N);
-	return refs[i];
+	return std::get<VARIANT_ID>(refs)[i];
 }
 
 template<class Vertex, int N>
-const Vertex* VertexRefsArray<Vertex, N>::v(unsigned int i) const
-{
-	assert(i < N);
-	return refs[i];
-}
-
-template<class Vertex, int N>
-void VertexRefsArray<Vertex, N>::setVertex(Vertex* v, unsigned int i)
+const Vertex* VertexReferences<Vertex, N>::v(unsigned int i) const
 {
 	assert(i < N);
-	refs[i] = v;
+	return std::get<VARIANT_ID>(refs)[i];
 }
 
 template<class Vertex, int N>
-void VertexRefsArray<Vertex, N>::setVertices(const std::array<Vertex*, N>& list)
+void VertexReferences<Vertex, N>::setVertex(Vertex* v, unsigned int i)
+{
+	assert(i < N);
+	std::get<VARIANT_ID>(refs)[i] = v;
+}
+
+template<class Vertex, int N>
+void VertexReferences<Vertex, N>::setVertices(const std::vector<Vertex*>& list)
 {
 	unsigned int i = 0;
 	for (const auto& v : list) {
@@ -44,7 +49,7 @@ void VertexRefsArray<Vertex, N>::setVertices(const std::array<Vertex*, N>& list)
 }
 
 template<class Vertex, int N>
-void VertexRefsArray<Vertex, N>::updateVertexReferences(
+void VertexReferences<Vertex, N>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
 {

@@ -15,7 +15,7 @@ bool constexpr isTriangleMesh()
 	// todo when have lists
 	//if constexpr (hasPerFaceVertexReferencesArray<MeshType>()) {
 	using F = typename MeshType::FaceType;
-	using R = typename F::VertexRefsArray;
+	using R = typename F::VertexReferences;
 	return R::FACE_SIZE == 3;
 	//}
 }
@@ -32,7 +32,7 @@ bool constexpr isQuadMesh()
 	// todo when have lists
 	//if constexpr (hasPerFaceVertexReferencesArray<MeshType>()) {
 	using F = typename MeshType::FaceType;
-	using R = typename F::VertexRefsArray;
+	using R = typename F::VertexReferences;
 	return R::FACE_SIZE == 4;
 	//}
 }

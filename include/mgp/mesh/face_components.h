@@ -58,13 +58,13 @@ bool constexpr hasScalar() {return components::hasScalar<T>();};
 
 /** Port VertexRefsArray class into face namespace **/
 template<class Vertex, int N>
-using VertexRefsArray = components::VertexRefsArray<Vertex, N>;
+using VertexRefsArray = components::VertexReferences<Vertex, N>;
 
 template<class Vertex>
 using TriangleVertexRefs = components::TriangleVertexRefs<Vertex>;
 
 template <typename  T>
-bool constexpr hasVertexRefsArray() {return components::hasVertexRefsArray<T>();}
+bool constexpr hasVertexRefsArray() {return components::hasVertexReferences<T>();}
 
 } // namespace mgp::face
 
