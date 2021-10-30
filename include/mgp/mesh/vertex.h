@@ -8,7 +8,7 @@
 
 #include "vertex/common.h"
 #include "vertex/coordinate.h"
-#include "vertex/face_adjacency_ref.h"
+#include "vertex/adjacent_faces_ref.h"
 
 namespace mgp::mesh {
 

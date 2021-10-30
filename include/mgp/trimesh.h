@@ -23,7 +23,7 @@ class Vertex :
 			mgp::vert::Color,                           // 4b
 			mgp::vert::Scalard,                         // 8b
 			mgp::vert::OptionalMutableBitFlags<Vertex>, // 0b
-			mgp::vert::FaceAdjacencyRef<Face>,          // N*8b
+			mgp::vert::AdjacenctFacesRef<Face>,         // N*8b
 			mgp::vert::CustomAttributes<Vertex>>        // 0b
 {
 };
