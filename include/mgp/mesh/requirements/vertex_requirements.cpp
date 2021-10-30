@@ -69,6 +69,22 @@ bool constexpr hasPerVertexCustomComponents(const MeshType&)
 	return hasPerVertexCustomComponents<MeshType>();
 }
 
+template<typename MeshType>
+bool hasPerVertexAdjacentFaces(const MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasAdjacentFaces<typename MeshType::VertexType>()) {
+		return true;
+	}
+	else if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
+		return m.isVertexFaceAdjacenciesEnabled();
+	}
+	else {
+		return false;
+	}
+}
+
 // require functions
 
 template<typename MeshType>

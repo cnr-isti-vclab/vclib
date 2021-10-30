@@ -22,8 +22,10 @@ private:
 	typedef OptionalInfo<T> B;
 public:
 	typedef Point<Scalar, N> NormalType;
-	const NormalType& normal() const { return B::contPtr->normal(((T*)this)->id()); }
-	NormalType&       normal() { return B::contPtr->normal(((T*)this)->id()); }
+	const NormalType& normal() const { return B::contPtr->normal(thisId()); }
+	NormalType&       normal() { return B::contPtr->normal(thisId()); }
+private:
+	unsigned int thisId() const {return ((T*)this)->id();}
 };
 
 template<typename Scalar, typename T>

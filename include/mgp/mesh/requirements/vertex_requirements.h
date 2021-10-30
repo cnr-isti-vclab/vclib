@@ -28,6 +28,9 @@ bool constexpr hasPerVertexCustomComponents();
 template <typename MeshType>
 bool constexpr hasPerVertexCustomComponents(const MeshType&);
 
+template <typename MeshType>
+bool hasPerVertexFaceAdjacencies(const MeshType&);
+
 // require functions
 
 template <typename MeshType>

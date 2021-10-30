@@ -7,6 +7,7 @@
 #define MGP_MESH_COMPONENTS_VECTOR_H
 
 #include "custom_components_vector.h"
+#include "optional_adjacent_faces_ref_vector.h"
 #include "optional_color_vector.h"
 #include "optional_mutable_bit_flags_vector.h"
 #include "optional_normal_vector.h"
@@ -16,6 +17,7 @@ namespace mgp::mesh {
 
 template<typename T>
 class ComponentsVector :
+		public OptionalAdjacentFacesRefVector<T>,
 		public OptionalMutableBitFlagsVector<T>,
 		public OptionalColorVector<T>,
 		public OptionalNormalVector<T>,
@@ -25,6 +27,7 @@ class ComponentsVector :
 public:
 	void resize(unsigned int size)
 	{
+		OptionalAdjacentFacesRefVector<T>::resize(size);
 		OptionalMutableBitFlagsVector<T>::resize(size);
 		OptionalColorVector<T>::resize(size);
 		OptionalNormalVector<T>::resize(size);
@@ -33,6 +36,7 @@ public:
 	}
 	void reserve(unsigned int size)
 	{
+		OptionalAdjacentFacesRefVector<T>::resize(size);
 		OptionalMutableBitFlagsVector<T>::reserve(size);
 		OptionalColorVector<T>::reserve(size);
 		OptionalNormalVector<T>::reserve(size);

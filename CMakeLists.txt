@@ -20,6 +20,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/trimesh.h
 	${MGP_SRC_DIR}/algorithms/smooth.h
 	${MGP_SRC_DIR}/algorithms/update/flag.h
+	${MGP_SRC_DIR}/algorithms/update/topology.h
 	${MGP_SRC_DIR}/exception/io_exception.h
 	${MGP_SRC_DIR}/exception/mesh_exception.h
 	${MGP_SRC_DIR}/mesh/face.h
@@ -43,6 +44,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/component_vector/optional_color_vector.h
 	${MGP_SRC_DIR}/mesh/component_vector/components_vector.h
 	${MGP_SRC_DIR}/mesh/component_vector/custom_components_vector.h
+	${MGP_SRC_DIR}/mesh/component_vector/optional_adjacent_faces_ref_vector.h
 	${MGP_SRC_DIR}/mesh/component_vector/optional_generic_vector.h
 	${MGP_SRC_DIR}/mesh/component_vector/optional_mutable_bit_flags_vector.h
 	${MGP_SRC_DIR}/mesh/component_vector/optional_normal_vector.h
@@ -82,6 +84,7 @@ set(HEADERS
 set(SOURCES
 	${MGP_SRC_DIR}/algorithms/smooth.cpp
 	${MGP_SRC_DIR}/algorithms/update/flag.cpp
+	${MGP_SRC_DIR}/algorithms/update/topology.cpp
 	${MGP_SRC_DIR}/mesh/mesh.cpp
 	${MGP_SRC_DIR}/mesh/common/bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.cpp

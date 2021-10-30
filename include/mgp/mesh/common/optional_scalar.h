@@ -20,10 +20,10 @@ private:
 	typedef OptionalInfo<T> B;
 public:
 	typedef S ScalarType;
-	const ScalarType& scalar() const { return B::contPtr->scalar(cid()); }
-	ScalarType&       scalar() { return B::contPtr->scalar(cid()); }
+	const ScalarType& scalar() const { return B::contPtr->scalar(thisId()); }
+	ScalarType&       scalar() { return B::contPtr->scalar(thisId()); }
 private:
-	unsigned int cid() const {return ((T*)this)->id();}
+	unsigned int thisId() const {return ((T*)this)->id();}
 };
 
 template<typename T>

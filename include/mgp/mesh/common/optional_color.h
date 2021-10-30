@@ -19,8 +19,10 @@ private:
 	typedef OptionalInfo<T> B;
 public:
 	typedef mgp::Color ColorType;
-	const mgp::Color& color() const { return B::contPtr->color(((T*)this)->id()); }
-	mgp::Color&       color() { return B::contPtr->color(((T*)this)->id()); }
+	const mgp::Color& color() const { return B::contPtr->color(thisId()); }
+	mgp::Color&       color() { return B::contPtr->color(thisId()); }
+private:
+	unsigned int thisId() const {return ((T*)this)->id();}
 };
 
 /**

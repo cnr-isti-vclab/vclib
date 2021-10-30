@@ -55,16 +55,16 @@ private:
 };
 
 /**
- * Detector to check if a class has (inherits) AdjacenctFacesRef
+ * Detector to check if a class has (inherits) AdjacenctFaces
  */
 
 template<typename T>
-using hasAdjacenctFacesRefT = std::is_base_of<AdjacenctFacesRefTrigger, T>;
+using hasAdjacenctFacesT = std::is_base_of<AdjacenctFacesRefTrigger, T>;
 
 template<typename T>
-bool constexpr hasAdjacenctFacesRef()
+bool constexpr hasAdjacenctFaces()
 {
-	return hasAdjacenctFacesRefT<T>::value;
+	return hasAdjacenctFacesT<T>::value;
 }
 
 } // namespace mgp::vert
