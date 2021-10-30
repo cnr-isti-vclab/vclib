@@ -15,13 +15,13 @@
 namespace mgp::vert {
 
 template<typename T>
-class OptionalAdjacenctFacesRefTrigger
+class OptionalAdjacentFacesRefTrigger
 {
 };
 
 template<class Face, typename T>
-class OptionalAdjacenctFacesRef :
-		public OptionalAdjacenctFacesRefTrigger<T>,
+class OptionalAdjacentFacesRef :
+		public OptionalAdjacentFacesRefTrigger<T>,
 		public virtual OptionalInfo<T>
 {
 private:
@@ -76,16 +76,16 @@ private:
  */
 
 template<typename T>
-using hasOptionalAdjacenctFacesT = std::is_base_of<OptionalAdjacenctFacesRefTrigger<T>, T>;
+using hasOptionalAdjacentFacesT = std::is_base_of<OptionalAdjacentFacesRefTrigger<T>, T>;
 
 template<typename U, typename T>
-using ReturnIfHasOptionalAdjacenctFaces =
-	typename std::enable_if<hasOptionalAdjacenctFacesT<U>::value, T>::type;
+using ReturnIfHasOptionalAdjacentFaces =
+	typename std::enable_if<hasOptionalAdjacentFacesT<U>::value, T>::type;
 
 template<typename T>
-bool constexpr hasOptionalAdjacenctFaces()
+bool constexpr hasOptionalAdjacentFaces()
 {
-	return hasOptionalAdjacenctFacesT<T>::value;
+	return hasOptionalAdjacentFacesT<T>::value;
 }
 
 } // namespace mgp::vert

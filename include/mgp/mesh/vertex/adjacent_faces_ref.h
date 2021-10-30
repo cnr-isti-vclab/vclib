@@ -15,12 +15,12 @@
 
 namespace mgp::vert {
 
-class AdjacenctFacesRefTrigger
+class AdjacentFacesRefTrigger
 {
 };
 
 template<class Face>
-class AdjacenctFacesRef : public AdjacenctFacesRefTrigger
+class AdjacentFacesRef : public AdjacentFacesRefTrigger
 {
 public:
 	using AdjacentFacesIterator      = typename std::vector<Face*>::iterator;
@@ -59,12 +59,12 @@ private:
  */
 
 template<typename T>
-using hasAdjacenctFacesT = std::is_base_of<AdjacenctFacesRefTrigger, T>;
+using hasAdjacentFacesT = std::is_base_of<AdjacentFacesRefTrigger, T>;
 
 template<typename T>
-bool constexpr hasAdjacenctFaces()
+bool constexpr hasAdjacentFaces()
 {
-	return hasAdjacenctFacesT<T>::value;
+	return hasAdjacentFacesT<T>::value;
 }
 
 } // namespace mgp::vert

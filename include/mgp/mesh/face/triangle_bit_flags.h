@@ -6,7 +6,7 @@
 #ifndef MGP_MESH_FACE_TRIANGLE_BIT_FLAGS_H
 #define MGP_MESH_FACE_TRIANGLE_BIT_FLAGS_H
 
-#include "../common/bit_flags.h"
+#include "../components/bit_flags.h"
 
 namespace mgp::face {
 
