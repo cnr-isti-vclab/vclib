@@ -24,9 +24,13 @@ set(HEADERS
 	${MGP_SRC_DIR}/exception/io_exception.h
 	${MGP_SRC_DIR}/exception/mesh_exception.h
 	${MGP_SRC_DIR}/mesh/face.h
+	${MGP_SRC_DIR}/mesh/face_components.h
+	${MGP_SRC_DIR}/mesh/face_components_optional.h
 	${MGP_SRC_DIR}/mesh/mesh.h
 	${MGP_SRC_DIR}/mesh/requirements.h
 	${MGP_SRC_DIR}/mesh/vertex.h
+	${MGP_SRC_DIR}/mesh/vertex_components.h
+	${MGP_SRC_DIR}/mesh/vertex_components_optional.h
 	${MGP_SRC_DIR}/mesh/components/bit_flags.h
 	${MGP_SRC_DIR}/mesh/components/color.h
 	${MGP_SRC_DIR}/mesh/components/coordinate.h
@@ -55,7 +59,6 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/container/containers.h
 	${MGP_SRC_DIR}/mesh/container/face_container.h
 	${MGP_SRC_DIR}/mesh/container/vertex_container.h
-	${MGP_SRC_DIR}/mesh/face/common.h
 	${MGP_SRC_DIR}/mesh/iterators/container_iterator.h
 	${MGP_SRC_DIR}/mesh/iterators/container_range_iterator.h
 	${MGP_SRC_DIR}/mesh/iterators/range_iterator.h
@@ -63,7 +66,6 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/requirements/face_requirements.h
 	${MGP_SRC_DIR}/mesh/requirements/mesh_requirements.h
 	${MGP_SRC_DIR}/mesh/requirements/vertex_requirements.h
-	${MGP_SRC_DIR}/mesh/vertex/common.h
 	${MGP_SRC_DIR}/misc/timer.h
 	${MGP_SRC_DIR}/misc/tokenizer.h
 	${MGP_SRC_DIR}/io/file_mesh_mode.h

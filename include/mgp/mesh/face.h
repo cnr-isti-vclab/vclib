@@ -6,7 +6,8 @@
 #ifndef MGP_MESH_FACE_H
 #define MGP_MESH_FACE_H
 
-#include "face/common.h"
+#include "face_components.h"
+#include "face_components_optional.h"
 
 namespace mgp::mesh {
 
