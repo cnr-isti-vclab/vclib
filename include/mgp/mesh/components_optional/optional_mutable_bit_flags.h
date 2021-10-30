@@ -3,16 +3,21 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMMON_MUTABLE_BIT_FLAGS_H
-#define MGP_MESH_COMMON_MUTABLE_BIT_FLAGS_H
+#ifndef MGP_MESH_COMPONENTS_OPTIONAL_BIT_FLAGS_H
+#define MGP_MESH_COMPONENTS_OPTIONAL_BIT_FLAGS_H
 
 #include <assert.h>
 
-namespace mgp::common {
+#include "optional_info.h"
+
+namespace mgp::components {
 
 /**
- * @brief The MutableBitFlags represents a collection of 32 **mutable** bits that will be part of an
- * Element (e.g. Vertex, Face, ...).
+ * @brief The OptionalMutableBitFlags represents a collection of 32 **mutable** bits that will be
+ * part of an Element (e.g. Vertex, Face, ...).
+ *
+ * This is an Optional Component, meaning that can be enabled and/or disabled at runtime. By
+ * default, these components are disabled.
  *
  * Unlike the BitFlags component, the bits of this component are *mutable*, meaning that they can be
  * modified also in a const Elements. Therefore, the constness of this component on const Elements
@@ -30,10 +35,14 @@ namespace mgp::common {
  * - from 1 to 31: user bits that can have custom meanings to the user
  *
  * **List of incompatible components**:
- * - common::OptionalMutableBitFlags
+ * - common::MutableBitFlags
  */
-class MutableBitFlags
+template<typename T>
+class OptionalMutableBitFlags : public virtual OptionalInfo<T>
 {
+private:
+	typedef OptionalInfo<T> B;
+
 public:
 	bool isVisitedM() const;
 	bool userBitFlagM(unsigned int bit) const;
@@ -54,27 +63,33 @@ protected:
 	void setUserBitM(unsigned int bit, unsigned int firstBit) const;
 	void clearUserBitM(unsigned int bit, unsigned int firstBit) const;
 
-	mutable int mutableFlags = 0;
 	static const unsigned int FIRST_MUTABLE_USER_BIT = 1;
 
-	// values of the flags, used for flagValue, setFlag and clearFlag member functions
-	enum {
-		VISITED = 1 << 0
-	};
+	enum { VISITED = 1 << 0 };
+
+private:
+	unsigned int thisId() const { return ((T*) this)->id(); }
 };
 
 /**
- * Detector to check if a class has (inherits) MutableBitFlags
+ * Detector to check if a class has (inherits) OptionalMutableBitFlags
  */
 
-template <typename  T>
-using hasMutableBitFlagsT = std::is_base_of<MutableBitFlags, T>;
+template<typename T>
+using hasOptionalMutableBitFlagsT = std::is_base_of<OptionalMutableBitFlags<T>, T>;
 
-template <typename  T>
-bool constexpr hasMutableBitFlags() {return hasMutableBitFlagsT<T>::value;}
+template<typename U, typename T>
+using ReturnIfHasOptionalMutableBitFlags =
+	typename std::enable_if<hasOptionalMutableBitFlagsT<U>::value, T>::type;
 
-} // namespace mgp::common
+template<typename T>
+bool constexpr hasOptionalMutableBitFlags()
+{
+	return hasOptionalMutableBitFlagsT<T>::value;
+}
 
-#include "mutable_bit_flags.cpp"
+} // namespace mgp::components
 
-#endif // MGP_MESH_COMMON_MUTABLE_BIT_FLAGS_H
+#include "optional_mutable_bit_flags.cpp"
+
+#endif // MGP_MESH_COMPONENTS_OPTIONAL_BIT_FLAGS_H

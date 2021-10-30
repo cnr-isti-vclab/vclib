@@ -28,7 +28,7 @@ namespace mgp::face {
  * - 10: edge faux 2: if the current Triangle has his Edge with id 2 marked as faux
  * - from 11 to 31: user bits that can have custom meanings to the user
  */
-class TriangleBitFlags : public common::BitFlags
+class TriangleBitFlags : public components::BitFlags
 {
 public:
 	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
@@ -87,29 +87,29 @@ public:
 
 protected:
 	// hide base class constant, 8 is the number of bits used by this class
-	static const unsigned int FIRST_USER_BIT = common::BitFlags::FIRST_USER_BIT + 8;
+	static const unsigned int FIRST_USER_BIT = components::BitFlags::FIRST_USER_BIT + 8;
 
 	// values of the flags, used for flagValue, setFlag and clearFlag member functions
 	enum {
 		// BORDER0 is BORDER, inherited from superclass
-		BORDER1 = 1 << (common::BitFlags::FIRST_USER_BIT),
-		BORDER2 = 1 << (common::BitFlags::FIRST_USER_BIT + 1),
+		BORDER1 = 1 << (components::BitFlags::FIRST_USER_BIT),
+		BORDER2 = 1 << (components::BitFlags::FIRST_USER_BIT + 1),
 		// Edge selection
-		EDGESEL0 = 1 << (common::BitFlags::FIRST_USER_BIT + 2),
-		EDGESEL1 = 1 << (common::BitFlags::FIRST_USER_BIT + 3),
-		EDGESEL2 = 1 << (common::BitFlags::FIRST_USER_BIT + 4),
+		EDGESEL0 = 1 << (components::BitFlags::FIRST_USER_BIT + 2),
+		EDGESEL1 = 1 << (components::BitFlags::FIRST_USER_BIT + 3),
+		EDGESEL2 = 1 << (components::BitFlags::FIRST_USER_BIT + 4),
 		// Faux edges: when representing polygonal meshes on triangle meshes, some triangle edges
 		// can be marked as "faux", meaning that they are internal on the polygon
-		FAUX0 = 1 << (common::BitFlags::FIRST_USER_BIT + 5),
-		FAUX1 = 1 << (common::BitFlags::FIRST_USER_BIT + 6),
-		FAUX2 = 1 << (common::BitFlags::FIRST_USER_BIT + 7)
+		FAUX0 = 1 << (components::BitFlags::FIRST_USER_BIT + 5),
+		FAUX1 = 1 << (components::BitFlags::FIRST_USER_BIT + 6),
+		FAUX2 = 1 << (components::BitFlags::FIRST_USER_BIT + 7)
 	};
 
 private:
 	// will use these members as isOnBorder0, setOnBorder0 and clearOnBorder0
-	using common::BitFlags::isOnBorder;
-	using common::BitFlags::setOnBorder;
-	using common::BitFlags::clearOnBorder;
+	using components::BitFlags::isOnBorder;
+	using components::BitFlags::setOnBorder;
+	using components::BitFlags::clearOnBorder;
 };
 
 /**

@@ -1,7 +1,7 @@
 #ifndef MGP_MESH_COMPONENT_VECTOR_OPTIONAL_MUTABLE_BIT_FLAGS_VECTOR_H
 #define MGP_MESH_COMPONENT_VECTOR_OPTIONAL_MUTABLE_BIT_FLAGS_VECTOR_H
 
-#include <mgp/mesh/common/optional_mutable_bit_flags.h>
+#include <mgp/mesh/components_optional/optional_mutable_bit_flags.h>
 
 #include "optional_generic_vector.h"
 
@@ -18,7 +18,7 @@ public:
 template<typename T>
 class OptionalMutableBitFlagsVector<
 	T,
-	std::enable_if_t<common::hasOptionalMutableBitFlags<T>()>> :
+	std::enable_if_t<components::hasOptionalMutableBitFlags<T>()>> :
 		private OptionalGenericVector<int>
 {
 	typedef OptionalGenericVector<int> Base;

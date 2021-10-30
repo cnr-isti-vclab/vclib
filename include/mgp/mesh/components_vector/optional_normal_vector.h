@@ -6,7 +6,7 @@
 #ifndef MGP_MESH_COMPONENT_VECTOR_OPTIONAL_NORMAL_VECTOR_H
 #define MGP_MESH_COMPONENT_VECTOR_OPTIONAL_NORMAL_VECTOR_H
 
-#include <mgp/mesh/common/optional_normal.h>
+#include <mgp/mesh/components_optional/optional_normal.h>
 
 #include "optional_generic_vector.h"
 
@@ -21,7 +21,7 @@ public:
 };
 
 template<typename T>
-class OptionalNormalVector<T, std::enable_if_t<common::hasOptionalNormal<T>()>> :
+class OptionalNormalVector<T, std::enable_if_t<components::hasOptionalNormal<T>()>> :
 		private OptionalGenericVector<typename T::NormalType>
 {
 	typedef typename T::NormalType            NormalType;

@@ -3,35 +3,35 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMMON_COLOR_H
-#define MGP_MESH_COMMON_COLOR_H
+#ifndef MGP_MESH_COMPONENTS_COLOR_H
+#define MGP_MESH_COMPONENTS_COLOR_H
 
 #include <mgp/space/color.h>
 
-namespace mgp::common {
+namespace mgp::components {
 
 /**
  * @brief The Color class represents a RGBA color that will be part of an Element
  * (e.g. Vertex, Face, ...).
- * 
+ *
  * Allows to get and set an object of type mgp::Color.
  */
 class Color
 {
 public:
 	typedef mgp::Color ColorType;
-	
+
 	/**
 	 * @brief get a const reference of the color of the element.
-	 * @return 
+	 * @return
 	 */
 	const mgp::Color& color() const { return c; }
-	
+
 	/**
 	 * @brief get a reference pf the color of the element.
-	 * @return 
+	 * @return
 	 */
-	mgp::Color&       color() { return c; }
+	mgp::Color& color() { return c; }
 
 private:
 	mgp::Color c;
@@ -44,9 +44,12 @@ private:
 template<typename T>
 using hasColorT = std::is_base_of<Color, T>;
 
-template <typename T>
-constexpr bool hasColor() { return hasColorT<T>::value;}
+template<typename T>
+constexpr bool hasColor()
+{
+	return hasColorT<T>::value;
+}
 
-} // namespace mgp::common
+} // namespace mgp::components
 
-#endif // MGP_MESH_COMMON_COLOR_H
+#endif // MGP_MESH_COMPONENTS_COLOR_H

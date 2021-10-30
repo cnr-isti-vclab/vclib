@@ -8,7 +8,7 @@
 
 #include "container_t.h"
 
-#include "../component_vector/components_vector.h"
+#include "../components_vector/components_vector.h"
 #include "../face.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"

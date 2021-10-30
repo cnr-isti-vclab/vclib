@@ -5,7 +5,7 @@
 
 #include "bit_flags.h"
 
-namespace mgp::common {
+namespace mgp::components {
 
 /**
  * @brief BitFlags::isDeleted returns whether the Element is marked as deleted.
@@ -176,9 +176,7 @@ inline void BitFlags::clearFlag(unsigned int flag)
  * @param firstBit: first user bit available (must be < than bit)
  * @return the value of the bit
  */
-inline bool BitFlags::userBitFlag(
-	unsigned int bit,
-	unsigned int firstBit) const
+inline bool BitFlags::userBitFlag(unsigned int bit, unsigned int firstBit) const
 {
 	assert(bit >= firstBit && bit < 32);
 	unsigned int flag = 1 << bit;
@@ -223,4 +221,4 @@ inline void BitFlags::clearUserBit(unsigned int bit, unsigned int firstBit)
 	clearFlag(flag);
 }
 
-} // namespace mgp::common
+} // namespace mgp::components

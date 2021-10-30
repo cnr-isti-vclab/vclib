@@ -6,7 +6,7 @@
 #ifndef MGP_MESH_COMPONENT_VECTOR_OPTIONAL_COLOR_VECTOR_H
 #define MGP_MESH_COMPONENT_VECTOR_OPTIONAL_COLOR_VECTOR_H
 
-#include <mgp/mesh/common/optional_color.h>
+#include <mgp/mesh/components_optional/optional_color.h>
 
 #include "optional_generic_vector.h"
 
@@ -21,7 +21,7 @@ public:
 };
 
 template<typename T>
-class OptionalColorVector<T, std::enable_if_t<common::hasOptionalColor<T>()>> :
+class OptionalColorVector<T, std::enable_if_t<components::hasOptionalColor<T>()>> :
 		private OptionalGenericVector<typename T::ColorType>
 {
 	typedef typename T::ColorType            ColorType;

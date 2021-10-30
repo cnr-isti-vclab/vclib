@@ -27,28 +27,28 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/mesh.h
 	${MGP_SRC_DIR}/mesh/requirements.h
 	${MGP_SRC_DIR}/mesh/vertex.h
-	${MGP_SRC_DIR}/mesh/common/bit_flags.h
-	${MGP_SRC_DIR}/mesh/common/color.h
-	${MGP_SRC_DIR}/mesh/common/custom_components.h
-	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.h
-	${MGP_SRC_DIR}/mesh/common/normal.h
-	${MGP_SRC_DIR}/mesh/common/scalar.h
-	${MGP_SRC_DIR}/mesh/common/optional_color.h
-	${MGP_SRC_DIR}/mesh/common/optional_info.h
-	${MGP_SRC_DIR}/mesh/common/optional_mutable_bit_flags.h
-	${MGP_SRC_DIR}/mesh/common/optional_normal.h
-	${MGP_SRC_DIR}/mesh/common/optional_scalar.h
+	${MGP_SRC_DIR}/mesh/components/bit_flags.h
+	${MGP_SRC_DIR}/mesh/components/color.h
+	${MGP_SRC_DIR}/mesh/components/mutable_bit_flags.h
+	${MGP_SRC_DIR}/mesh/components/normal.h
+	${MGP_SRC_DIR}/mesh/components/scalar.h
+	${MGP_SRC_DIR}/mesh/components_optional/custom_components.h
+	${MGP_SRC_DIR}/mesh/components_optional/optional_color.h
+	${MGP_SRC_DIR}/mesh/components_optional/optional_info.h
+	${MGP_SRC_DIR}/mesh/components_optional/optional_mutable_bit_flags.h
+	${MGP_SRC_DIR}/mesh/components_optional/optional_normal.h
+	${MGP_SRC_DIR}/mesh/components_optional/optional_scalar.h
+	${MGP_SRC_DIR}/mesh/components_vector/optional_color_vector.h
+	${MGP_SRC_DIR}/mesh/components_vector/components_vector.h
+	${MGP_SRC_DIR}/mesh/components_vector/custom_components_vector.h
+	${MGP_SRC_DIR}/mesh/components_vector/optional_adjacent_faces_ref_vector.h
+	${MGP_SRC_DIR}/mesh/components_vector/optional_generic_vector.h
+	${MGP_SRC_DIR}/mesh/components_vector/optional_mutable_bit_flags_vector.h
+	${MGP_SRC_DIR}/mesh/components_vector/optional_normal_vector.h
+	${MGP_SRC_DIR}/mesh/components_vector/optional_scalar_vector.h
 	${MGP_SRC_DIR}/mesh/container/container_t.h
 	${MGP_SRC_DIR}/mesh/container/containers.h
 	${MGP_SRC_DIR}/mesh/container/face_container.h
-	${MGP_SRC_DIR}/mesh/component_vector/optional_color_vector.h
-	${MGP_SRC_DIR}/mesh/component_vector/components_vector.h
-	${MGP_SRC_DIR}/mesh/component_vector/custom_components_vector.h
-	${MGP_SRC_DIR}/mesh/component_vector/optional_adjacent_faces_ref_vector.h
-	${MGP_SRC_DIR}/mesh/component_vector/optional_generic_vector.h
-	${MGP_SRC_DIR}/mesh/component_vector/optional_mutable_bit_flags_vector.h
-	${MGP_SRC_DIR}/mesh/component_vector/optional_normal_vector.h
-	${MGP_SRC_DIR}/mesh/component_vector/optional_scalar_vector.h
 	${MGP_SRC_DIR}/mesh/container/vertex_container.h
 	${MGP_SRC_DIR}/mesh/face/common.h
 	${MGP_SRC_DIR}/mesh/face/triangle_bit_flags.h
@@ -86,9 +86,9 @@ set(SOURCES
 	${MGP_SRC_DIR}/algorithms/update/flag.cpp
 	${MGP_SRC_DIR}/algorithms/update/topology.cpp
 	${MGP_SRC_DIR}/mesh/mesh.cpp
-	${MGP_SRC_DIR}/mesh/common/bit_flags.cpp
-	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.cpp
-	${MGP_SRC_DIR}/mesh/common/optional_mutable_bit_flags.cpp
+	${MGP_SRC_DIR}/mesh/components/bit_flags.cpp
+	${MGP_SRC_DIR}/mesh/components/mutable_bit_flags.cpp
+	${MGP_SRC_DIR}/mesh/components_optional/optional_mutable_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/container/face_container.cpp
 	${MGP_SRC_DIR}/mesh/container/vertex_container.cpp
 	${MGP_SRC_DIR}/mesh/face/triangle_bit_flags.cpp

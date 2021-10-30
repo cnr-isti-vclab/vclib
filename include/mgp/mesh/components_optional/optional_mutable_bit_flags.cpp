@@ -5,7 +5,7 @@
 
 #include "optional_mutable_bit_flags.h"
 
-namespace mgp::common {
+namespace mgp::components {
 
 /**
  * @brief OptionalMutableBitFlags::isVisitedM returns whether the Element is marked as visited.

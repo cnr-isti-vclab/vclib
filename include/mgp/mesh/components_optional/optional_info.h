@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMMON_OPTIONAL_INFO_H
-#define MGP_MESH_COMMON_OPTIONAL_INFO_H
+#ifndef MGP_MESH_COMPONENTS_OPTIONAL_INFO_H
+#define MGP_MESH_COMPONENTS_OPTIONAL_INFO_H
 
 #include <type_traits>
 
@@ -15,7 +15,7 @@ class ComponentsVector;
 
 }
 
-namespace mgp::common {
+namespace mgp::components {
 
 template<typename T>
 class OptionalInfo
@@ -25,6 +25,7 @@ public:
 
 protected:
 	void setContainerPointer(mesh::ComponentsVector<T>* cp) { contPtr = cp; }
+
 	mesh::ComponentsVector<T>* contPtr;
 };
 
@@ -35,9 +36,12 @@ protected:
 template<typename T>
 using hasOptionalInfoT = std::is_base_of<OptionalInfo<T>, T>;
 
-template <typename  T>
-bool constexpr hasOptionalInfo() {return hasOptionalInfoT<T>::value;}
+template<typename T>
+bool constexpr hasOptionalInfo()
+{
+	return hasOptionalInfoT<T>::value;
+}
 
-} // namespace mgp::common
+} // namespace mgp::components
 
-#endif // MGP_MESH_COMMON_OPTIONAL_INFO_H
+#endif // MGP_MESH_COMPONENTS_OPTIONAL_INFO_H

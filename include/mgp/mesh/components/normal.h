@@ -3,14 +3,16 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMMON_NORMAL_H
-#define MGP_MESH_COMMON_NORMAL_H
+#ifndef MGP_MESH_COMPONENTS_NORMAL_H
+#define MGP_MESH_COMPONENTS_NORMAL_H
 
 #include <mgp/space/point.h>
 
-namespace mgp::common {
+namespace mgp::components {
 
-class NormalTrigger {};
+class NormalTrigger
+{
+};
 
 template<typename Scalar, int N>
 class Normal : public NormalTrigger
@@ -45,12 +47,15 @@ typedef Normal3<double> Normal3d;
  * Detector to check if a class has (inherits) Normal
  */
 
-template <typename  T>
+template<typename T>
 using hasNormalT = std::is_base_of<NormalTrigger, T>;
 
-template <typename  T>
-bool constexpr hasNormal() {return hasNormalT<T>::value;}
+template<typename T>
+bool constexpr hasNormal()
+{
+	return hasNormalT<T>::value;
+}
 
-} // namespace mgp::common
+} // namespace mgp::components
 
-#endif // MGP_MESH_COMMON_NORMAL_H
+#endif // MGP_MESH_COMPONENTS_NORMAL_H

@@ -6,125 +6,125 @@
 #ifndef MGP_MESH_VERTEX_COMMON_H
 #define MGP_MESH_VERTEX_COMMON_H
 
-#include "../common/bit_flags.h"
-#include "../common/color.h"
-#include "../common/custom_components.h"
-#include "../common/mutable_bit_flags.h"
-#include "../common/normal.h"
-#include "../common/scalar.h"
-#include "../common/optional_color.h"
-#include "../common/optional_mutable_bit_flags.h"
-#include "../common/optional_normal.h"
-#include "../common/optional_scalar.h"
+#include "../components/bit_flags.h"
+#include "../components/color.h"
+#include "../components_optional/custom_components.h"
+#include "../components/mutable_bit_flags.h"
+#include "../components/normal.h"
+#include "../components/scalar.h"
+#include "../components_optional/optional_color.h"
+#include "../components_optional/optional_mutable_bit_flags.h"
+#include "../components_optional/optional_normal.h"
+#include "../components_optional/optional_scalar.h"
 
 namespace mgp::vert {
 
 /** Port OptionalInfo class into vert namespace **/
 template <typename T>
-using OptionalInfo = mgp::common::OptionalInfo<T>;
+using OptionalInfo = mgp::components::OptionalInfo<T>;
 
 template <typename T>
-bool constexpr hasOptionalInfo() {return mgp::common::hasOptionalInfo<T>();};
+bool constexpr hasOptionalInfo() {return mgp::components::hasOptionalInfo<T>();};
 
 /** Port BitFlags class into vert namespace **/
-using BitFlags = mgp::common::BitFlags;
+using BitFlags = mgp::components::BitFlags;
 
 template <typename T>
-bool constexpr hasBitFlags() {return mgp::common::hasBitFlags<T>();};
+bool constexpr hasBitFlags() {return mgp::components::hasBitFlags<T>();};
 
 /** Port OptionalMutableBitFlags class into vert namespace **/
 template <typename T>
-using OptionalMutableBitFlags = mgp::common::OptionalMutableBitFlags<T>;
+using OptionalMutableBitFlags = mgp::components::OptionalMutableBitFlags<T>;
 
 template <typename T>
-bool constexpr hasOptionalMutableBitFlags() {return mgp::common::hasOptionalMutableBitFlags<T>();};
+bool constexpr hasOptionalMutableBitFlags() {return mgp::components::hasOptionalMutableBitFlags<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalMutableBitFlags = common::ReturnIfHasOptionalMutableBitFlags<U, T>;
+using ReturnIfHasOptionalMutableBitFlags = components::ReturnIfHasOptionalMutableBitFlags<U, T>;
 
 /** Port Color class into vert namespace **/
-using Color = mgp::common::Color;
+using Color = mgp::components::Color;
 
 template <typename T>
-bool constexpr hasColor() {return mgp::common::hasColor<T>();};
+bool constexpr hasColor() {return mgp::components::hasColor<T>();};
 
 /** Port OptionalColor class into vert namespace **/
 template <typename T>
-using OptionalColor = mgp::common::OptionalColor<T>;
+using OptionalColor = mgp::components::OptionalColor<T>;
 
 template <typename T>
-bool constexpr hasOptionalColor() {return mgp::common::hasOptionalColor<T>();};
+bool constexpr hasOptionalColor() {return mgp::components::hasOptionalColor<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalColor = common::ReturnIfHasOptionalColor<U, T>;
+using ReturnIfHasOptionalColor = components::ReturnIfHasOptionalColor<U, T>;
 
 /** Port Normal classes into vert namespace **/
 template<class Scalar, int N>
-using Normal = mgp::common::Normal<Scalar, N>;
+using Normal = mgp::components::Normal<Scalar, N>;
 
 template<class Scalar>
-using Normal3 = mgp::common::Normal3<Scalar>;
+using Normal3 = mgp::components::Normal3<Scalar>;
 
-using Normal3f = mgp::common::Normal3f;
-using Normal3d = mgp::common::Normal3d;
+using Normal3f = mgp::components::Normal3f;
+using Normal3d = mgp::components::Normal3d;
 
 template <typename T>
-bool constexpr hasNormal() {return mgp::common::hasNormal<T>();};
+bool constexpr hasNormal() {return mgp::components::hasNormal<T>();};
 
 /** Port OptionalNormal class into vert namespace **/
 template <typename Scalar, int N, typename T>
-using OptionalNormal = mgp::common::OptionalNormal<Scalar, N, T>;
+using OptionalNormal = mgp::components::OptionalNormal<Scalar, N, T>;
 
 template <typename Scalar, typename T>
-using OptionalNormal3 = mgp::common::OptionalNormal3<Scalar, T>;
+using OptionalNormal3 = mgp::components::OptionalNormal3<Scalar, T>;
 
 template <typename T>
-using OptionalNormal3f = mgp::common::OptionalNormal3f<T>;
+using OptionalNormal3f = mgp::components::OptionalNormal3f<T>;
 
 template <typename T>
-using OptionalNormal3d = mgp::common::OptionalNormal3d<T>;
+using OptionalNormal3d = mgp::components::OptionalNormal3d<T>;
 
 template <typename T>
-bool constexpr hasOptionalNormal() {return mgp::common::hasOptionalNormal<T>();};
+bool constexpr hasOptionalNormal() {return mgp::components::hasOptionalNormal<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalNormal = common::ReturnIfHasOptionalNormal<U, T>;
+using ReturnIfHasOptionalNormal = components::ReturnIfHasOptionalNormal<U, T>;
 
 /** Port Scalar class into vert namespace **/
 template<typename T>
-using Scalar = mgp::common::Scalar<T>;
+using Scalar = mgp::components::Scalar<T>;
 
-using Scalarf = mgp::common::Scalarf;
-using Scalard = mgp::common::Scalard;
+using Scalarf = mgp::components::Scalarf;
+using Scalard = mgp::components::Scalard;
 
 template <typename T>
-bool constexpr hasScalar() {return mgp::common::hasScalar<T>();};
+bool constexpr hasScalar() {return mgp::components::hasScalar<T>();};
 
 /** Port OptionalScalar class into vert namespace **/
 template <typename S, typename T>
-using OptionalScalar = mgp::common::OptionalScalar<S, T>;
+using OptionalScalar = mgp::components::OptionalScalar<S, T>;
 
 template <typename T>
-using OptionalScalarf = mgp::common::OptionalScalar<float, T>;
+using OptionalScalarf = mgp::components::OptionalScalar<float, T>;
 
 template <typename T>
-using OptionalScalard = mgp::common::OptionalScalar<double, T>;
+using OptionalScalard = mgp::components::OptionalScalar<double, T>;
 
 template <typename T>
-bool constexpr hasOptionalScalar() {return mgp::common::hasOptionalScalar<T>();};
+bool constexpr hasOptionalScalar() {return mgp::components::hasOptionalScalar<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalScalar = common::ReturnIfHasOptionalScalar<U, T>;
+using ReturnIfHasOptionalScalar = components::ReturnIfHasOptionalScalar<U, T>;
 
 /** Port CustomComponents class into vert namespace **/
 template <typename T>
-using CustomComponents = mgp::common::CustomComponents<T>;
+using CustomComponents = mgp::components::CustomComponents<T>;
 
 template <typename T>
-bool constexpr hasCustomComponents() {return mgp::common::hasCustomComponents<T>();};
+bool constexpr hasCustomComponents() {return mgp::components::hasCustomComponents<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasCustomComponents = common::ReturnIfHasCustomComponents<U, T>;
+using ReturnIfHasCustomComponents = components::ReturnIfHasCustomComponents<U, T>;
 
 } // namespace mgp::vert
 

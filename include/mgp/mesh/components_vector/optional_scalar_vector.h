@@ -6,7 +6,7 @@
 #ifndef MGP_MESH_COMPONENT_VECTOR_OPTIONAL_SCALAR_VECTOR_H
 #define MGP_MESH_COMPONENT_VECTOR_OPTIONAL_SCALAR_VECTOR_H
 
-#include <mgp/mesh/common/optional_scalar.h>
+#include <mgp/mesh/components_optional/optional_scalar.h>
 
 #include "optional_generic_vector.h"
 
@@ -21,7 +21,7 @@ public:
 };
 
 template<typename T>
-class OptionalScalarVector<T, std::enable_if_t<common::hasOptionalScalar<T>()>> :
+class OptionalScalarVector<T, std::enable_if_t<components::hasOptionalScalar<T>()>> :
 		private OptionalGenericVector<typename T::ScalarType>
 {
 	typedef typename T::ScalarType            ScalarType;

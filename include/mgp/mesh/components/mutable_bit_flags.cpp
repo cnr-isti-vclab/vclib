@@ -5,7 +5,7 @@
 
 #include "mutable_bit_flags.h"
 
-namespace mgp::common {
+namespace mgp::components {
 
 /**
  * @brief MutableBitFlags::isVisitedM returns whether the Element is marked as visited.
@@ -158,8 +158,8 @@ inline void MutableBitFlags::setUserBitM(unsigned int bit, unsigned int firstBit
 }
 
 /**
- * @brief MutableBitFlags::clearUserBitM sets to false the value of the bit given in input. The bit is
- * checked to be greater or equal than the firstBit and less than 32.
+ * @brief MutableBitFlags::clearUserBitM sets to false the value of the bit given in input. The bit
+ * is checked to be greater or equal than the firstBit and less than 32.
  *
  * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
  * different from the one of this class, and it is useful to avoid code duplication,
@@ -180,4 +180,4 @@ inline void MutableBitFlags::clearUserBitM(unsigned int bit, unsigned int firstB
 	clearFlagM(flag);
 }
 
-} // namespace mgp::common
+} // namespace mgp::components

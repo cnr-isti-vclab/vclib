@@ -8,7 +8,7 @@
 
 #include <unordered_map>
 
-#include <mgp/mesh/common/custom_components.h>
+#include <mgp/mesh/components_optional/custom_components.h>
 
 #include "optional_generic_vector.h"
 
@@ -25,7 +25,7 @@ public:
 template<typename T>
 class CustomComponentsVector<
 	T,
-	std::enable_if_t<common::hasCustomComponents<T>()>>
+	std::enable_if_t<components::hasCustomComponents<T>()>>
 {
 public:
 	void reserve(unsigned int size)

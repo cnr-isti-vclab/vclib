@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMMON_CUSTOM_COMPONENTS_H
-#define MGP_MESH_COMMON_CUSTOM_COMPONENTS_H
+#ifndef MGP_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#define MGP_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
 #include "optional_info.h"
 
@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace mgp::common {
+namespace mgp::components {
 
 /**
  * @brief The CustomComponents class is a container of custom and additionalcomponents associated
@@ -63,6 +63,6 @@ bool constexpr hasCustomComponents()
 	return hasCustomComponentsT<T>::value;
 }
 
-} // namespace mgp::common
+} // namespace mgp::components
 
-#endif // MGP_MESH_COMMON_CUSTOM_COMPONENTS_H
+#endif // MGP_MESH_COMPONENTS_CUSTOM_COMPONENTS_H

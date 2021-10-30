@@ -3,13 +3,13 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMMON_BIT_FLAGS_H
-#define MGP_MESH_COMMON_BIT_FLAGS_H
+#ifndef MGP_MESH_COMPONENTS_BIT_FLAGS_H
+#define MGP_MESH_COMPONENTS_BIT_FLAGS_H
 
 #include <assert.h>
 #include <type_traits>
 
-namespace mgp::common {
+namespace mgp::components {
 
 /**
  * @brief The BitFlags class represents a collection of 32 bits that will be part of an Element
@@ -52,7 +52,7 @@ protected:
 	void setUserBit(unsigned int bit, unsigned int firstBit);
 	void clearUserBit(unsigned int bit, unsigned int firstBit);
 
-	int flags = 0;
+	int                       flags          = 0;
 	static const unsigned int FIRST_USER_BIT = 3;
 
 	// values of the flags, used for flagValue, setFlag and clearFlag member functions
@@ -67,14 +67,17 @@ protected:
  * Detector to check if a class has (inherits) BitFlags
  */
 
-template <typename  T>
+template<typename T>
 using hasBitFlagsT = std::is_base_of<BitFlags, T>;
 
-template <typename  T>
-bool constexpr hasBitFlags() {return hasBitFlagsT<T>::value;}
+template<typename T>
+bool constexpr hasBitFlags()
+{
+	return hasBitFlagsT<T>::value;
+}
 
-} // namespace mgp::common
+} // namespace mgp::components
 
 #include "bit_flags.cpp"
 
-#endif // MGP_MESH_COMMON_BIT_FLAGS_H
+#endif // MGP_MESH_COMPONENTS_BIT_FLAGS_H

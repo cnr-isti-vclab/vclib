@@ -3,14 +3,16 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMMON_SCALAR_H
-#define MGP_MESH_COMMON_SCALAR_H
+#ifndef MGP_MESH_COMPONENTS_SCALAR_H
+#define MGP_MESH_COMPONENTS_SCALAR_H
 
 #include <type_traits>
 
-namespace mgp::common {
+namespace mgp::components {
 
-class ScalarTrigger {};
+class ScalarTrigger
+{
+};
 
 template<typename T>
 class Scalar : public ScalarTrigger
@@ -31,12 +33,15 @@ typedef Scalar<double> Scalard;
  * Detector to check if a class has (inherits) Scalar
  */
 
-template <typename  T>
+template<typename T>
 using hasScalarT = std::is_base_of<ScalarTrigger, T>;
 
-template <typename  T>
-bool constexpr hasScalar() {return hasScalarT<T>::value;}
+template<typename T>
+bool constexpr hasScalar()
+{
+	return hasScalarT<T>::value;
+}
 
-} // namespace mgp::common
+} // namespace mgp::components
 
-#endif // MGP_MESH_COMMON_SCALAR_H
+#endif // MGP_MESH_COMPONENTS_SCALAR_H
