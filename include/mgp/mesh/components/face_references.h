@@ -3,17 +3,15 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_VERTEX_ADJ_FACE_REF_H
-#define MGP_MESH_VERTEX_ADJ_FACE_REF_H
+#ifndef MGP_MESH_COMPONENTS_FACE_REFERENCES_H
+#define MGP_MESH_COMPONENTS_FACE_REFERENCES_H
 
 #include <type_traits>
 #include <vector>
 
-#include "common.h"
-
 #include "../iterators/range_iterator.h"
 
-namespace mgp::vert {
+namespace mgp::components {
 
 class AdjacentFacesRefTrigger
 {
@@ -67,6 +65,6 @@ bool constexpr hasAdjacentFaces()
 	return hasAdjacentFacesT<T>::value;
 }
 
-} // namespace mgp::vert
+} // namespace mgp::components
 
-#endif // MGP_MESH_VERTEX_ADJ_FACE_REF_H
+#endif // MGP_MESH_COMPONENTS_FACE_REFERENCES_H

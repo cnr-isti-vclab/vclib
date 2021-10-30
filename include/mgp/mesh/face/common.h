@@ -12,6 +12,7 @@
 #include "../components/normal.h"
 #include "../components/scalar.h"
 #include "../components/triangle_bit_flags.h"
+#include "../components/vertex_references.h"
 #include "../components_optional/custom_components.h"
 #include "../components_optional/optional_color.h"
 #include "../components_optional/optional_mutable_bit_flags.h"
@@ -121,6 +122,16 @@ bool constexpr hasOptionalScalar() {return mgp::components::hasOptionalScalar<T>
 
 template<typename U, typename T>
 using ReturnIfHasOptionalScalar = components::ReturnIfHasOptionalScalar<U, T>;
+
+/** Port VertexRefsArray class into face namespace **/
+template<class Vertex, int N>
+using VertexRefsArray = components::VertexRefsArray<Vertex, N>;
+
+template<class Vertex>
+using TriangleVertexRefs = components::TriangleVertexRefs<Vertex>;
+
+template <typename  T>
+bool constexpr hasVertexRefsArray() {return mgp::components::hasVertexRefsArray<T>();}
 
 /** Port CustomComponents class into face namespace **/
 template <typename T>

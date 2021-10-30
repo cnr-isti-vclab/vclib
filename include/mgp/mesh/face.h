@@ -7,7 +7,6 @@
 #define MGP_MESH_FACE_H
 
 #include "face/common.h"
-#include "face/vertex_ref_array.h"
 
 namespace mgp::mesh {
 

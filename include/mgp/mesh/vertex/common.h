@@ -9,11 +9,13 @@
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/coordinate.h"
+#include "../components/face_references.h"
 #include "../components/mutable_bit_flags.h"
 #include "../components/normal.h"
 #include "../components/scalar.h"
 #include "../components_optional/custom_components.h"
 #include "../components_optional/optional_color.h"
+#include "../components_optional/optional_face_references.h"
 #include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_normal.h"
 #include "../components_optional/optional_scalar.h"
@@ -129,6 +131,20 @@ bool constexpr hasOptionalScalar() {return mgp::components::hasOptionalScalar<T>
 
 template<typename U, typename T>
 using ReturnIfHasOptionalScalar = components::ReturnIfHasOptionalScalar<U, T>;
+
+/** Port AdjacentFacesRef class into vert namespace **/
+template <typename Face>
+using AdjacentFacesRef = components::AdjacentFacesRef<Face>;
+
+template <typename T>
+bool constexpr hasAdjacentFaces() {return mgp::components::hasAdjacentFaces<T>();};
+
+/** Port OptionalAdjacentFacesRef class into vert namespace **/
+template <typename Face, typename T>
+using OptionalAdjacentFacesRef = components::OptionalAdjacentFacesRef<Face, T>;
+
+template <typename T>
+bool constexpr hasOptionalAdjacentFaces() {return mgp::components::hasOptionalAdjacentFaces<T>();};
 
 /** Port CustomComponents class into vert namespace **/
 template <typename T>

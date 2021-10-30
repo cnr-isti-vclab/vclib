@@ -3,15 +3,13 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_FACE_VERTEX_REF_ARRAY_H
-#define MGP_MESH_FACE_VERTEX_REF_ARRAY_H
+#ifndef MGP_MESH_COMPONENTS_VERTEX_REFERENCES_H
+#define MGP_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
 #include <array>
 #include <assert.h>
 
-#include "common.h"
-
-namespace mgp::face {
+namespace mgp::components {
 
 class VertexRefsArrayTrigger {};
 
@@ -70,8 +68,8 @@ using hasVertexRefsArrayT = std::is_base_of<VertexRefsArrayTrigger, T>;
 template <typename  T>
 bool constexpr hasVertexRefsArray() {return hasVertexRefsArrayT<T>::value;}
 
-} // namespace mgp::face
+} // namespace mgp::components
 
-#include "vertex_ref_array.cpp"
+#include "vertex_references.cpp"
 
-#endif // MGP_MESH_FACE_VERTEX_REF_ARRAY_H
+#endif // MGP_MESH_COMPONENTS_VERTEX_REFERENCES_H

@@ -3,16 +3,17 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_VERTEX_OPTIONAL_ADJACENT_FACES_REF_H
-#define MGP_MESH_VERTEX_OPTIONAL_ADJACENT_FACES_REF_H
+#ifndef MGP_MESH_COMPONENTS_OPTIONAL_FACE_REFERENCES_H
+#define MGP_MESH_COMPONENTS_OPTIONAL_FACE_REFERENCES_H
 
 #include <type_traits>
 #include <vector>
 
-#include "../iterators/range_iterator.h"
-#include "common.h"
+#include "optional_info.h"
 
-namespace mgp::vert {
+#include "../iterators/range_iterator.h"
+
+namespace mgp::components {
 
 template<typename T>
 class OptionalAdjacentFacesRefTrigger
@@ -88,6 +89,6 @@ bool constexpr hasOptionalAdjacentFaces()
 	return hasOptionalAdjacentFacesT<T>::value;
 }
 
-} // namespace mgp::vert
+} // namespace mgp::components
 
-#endif // MGP_MESH_VERTEX_OPTIONAL_ADJACENT_FACES_REF_H
+#endif // MGP_MESH_COMPONENTS_OPTIONAL_FACE_REFERENCES_H

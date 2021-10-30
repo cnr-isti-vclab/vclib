@@ -6,7 +6,7 @@
 #ifndef MGP_MESH_COMPONENT_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
 #define MGP_MESH_COMPONENT_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
 
-#include <mgp/mesh/vertex/optional_adjacent_faces_ref.h>
+#include <mgp/mesh/components_optional/optional_face_references.h>
 
 #include "optional_generic_vector.h"
 

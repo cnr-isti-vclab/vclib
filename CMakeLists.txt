@@ -30,12 +30,15 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/components/bit_flags.h
 	${MGP_SRC_DIR}/mesh/components/color.h
 	${MGP_SRC_DIR}/mesh/components/coordinate.h
+	${MGP_SRC_DIR}/mesh/components/face_references.h
 	${MGP_SRC_DIR}/mesh/components/mutable_bit_flags.h
 	${MGP_SRC_DIR}/mesh/components/normal.h
 	${MGP_SRC_DIR}/mesh/components/scalar.h
+	${MGP_SRC_DIR}/mesh/components/vertex_references.h
 	${MGP_SRC_DIR}/mesh/components/triangle_bit_flags.h
 	${MGP_SRC_DIR}/mesh/components_optional/custom_components.h
 	${MGP_SRC_DIR}/mesh/components_optional/optional_color.h
+	${MGP_SRC_DIR}/mesh/components_optional/optional_face_references.h
 	${MGP_SRC_DIR}/mesh/components_optional/optional_info.h
 	${MGP_SRC_DIR}/mesh/components_optional/optional_mutable_bit_flags.h
 	${MGP_SRC_DIR}/mesh/components_optional/optional_normal.h
@@ -53,7 +56,6 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/container/face_container.h
 	${MGP_SRC_DIR}/mesh/container/vertex_container.h
 	${MGP_SRC_DIR}/mesh/face/common.h
-	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
 	${MGP_SRC_DIR}/mesh/iterators/container_iterator.h
 	${MGP_SRC_DIR}/mesh/iterators/container_range_iterator.h
 	${MGP_SRC_DIR}/mesh/iterators/range_iterator.h
@@ -61,9 +63,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/requirements/face_requirements.h
 	${MGP_SRC_DIR}/mesh/requirements/mesh_requirements.h
 	${MGP_SRC_DIR}/mesh/requirements/vertex_requirements.h
-	${MGP_SRC_DIR}/mesh/vertex/adjacent_faces_ref.h
 	${MGP_SRC_DIR}/mesh/vertex/common.h
-	${MGP_SRC_DIR}/mesh/vertex/optional_adjacent_faces_ref.h
 	${MGP_SRC_DIR}/misc/timer.h
 	${MGP_SRC_DIR}/misc/tokenizer.h
 	${MGP_SRC_DIR}/io/file_mesh_mode.h
@@ -88,11 +88,11 @@ set(SOURCES
 	${MGP_SRC_DIR}/mesh/mesh.cpp
 	${MGP_SRC_DIR}/mesh/components/bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/components/mutable_bit_flags.cpp
+	${MGP_SRC_DIR}/mesh/components/vertex_references.cpp
 	${MGP_SRC_DIR}/mesh/components/triangle_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/components_optional/optional_mutable_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/container/face_container.cpp
 	${MGP_SRC_DIR}/mesh/container/vertex_container.cpp
-	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.cpp
 	${MGP_SRC_DIR}/mesh/requirements/element_requirements.cpp
 	${MGP_SRC_DIR}/mesh/requirements/face_requirements.cpp
 	${MGP_SRC_DIR}/mesh/requirements/mesh_requirements.cpp

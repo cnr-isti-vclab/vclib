@@ -3,9 +3,9 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#include "vertex_ref_array.h"
+#include "vertex_references.h"
 
-namespace mgp::face {
+namespace mgp::components {
 
 template<class Vertex, int N>
 VertexRefsArray<Vertex, N>::VertexRefsArray() : refs({nullptr})
