@@ -3,36 +3,18 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MESH_ITERATORS_CONTAINER_RANGE_ITERATOR_H
-#define MESH_ITERATORS_CONTAINER_RANGE_ITERATOR_H
+#ifndef MGP_MESH_ITERATORS_CONTAINER_RANGE_ITERATOR_H
+#define MGP_MESH_ITERATORS_CONTAINER_RANGE_ITERATOR_H
+
+#include "range_iterator.h"
 
 namespace mgp {
 
 template<typename Container, typename Iterator>
-class RangeIterator
+class ContainerRangeIterator : public RangeIterator<Container, Iterator>
 {
 public:
-	RangeIterator(
-		Container& c,
-		Iterator (Container::*beginFunction)(bool),
-		Iterator (Container::*endFunction)(void)) :
-			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
-
-	Iterator begin() { return (c.*(beginFunction))(); }
-
-	Iterator end() { return (c.*(endFunction))(); }
-
-protected:
-	Container& c;
-	Iterator (Container::*beginFunction)(bool);
-	Iterator (Container::*endFunction)(void);
-};
-
-template<typename Container, typename Iterator>
-class RangeIteratorDeletedOption : public RangeIterator<Container, Iterator>
-{
-public:
-	RangeIteratorDeletedOption(
+	ContainerRangeIterator(
 		Container& c,
 		bool       jumpDeleted,
 		Iterator (Container::*beginFunction)(bool),
@@ -52,30 +34,10 @@ private:
 };
 
 template<typename Container, typename ConstIterator>
-class ConstRangeIterator
+class ConstContainerRangeIterator : public ConstRangeIterator<Container, ConstIterator>
 {
 public:
-	ConstRangeIterator(
-		const Container& c,
-		ConstIterator (Container::*beginFunction)(bool) const,
-		ConstIterator (Container::*endFunction)(void) const) :
-			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
-
-	ConstIterator begin() { return (c.*(beginFunction))(); }
-
-	ConstIterator end() { return (c.*(endFunction))(); }
-
-protected:
-	const Container& c;
-	ConstIterator (Container::*beginFunction)(bool) const;
-	ConstIterator (Container::*endFunction)(void) const;
-};
-
-template<typename Container, typename ConstIterator>
-class ConstRangeIteratorDeletedOption : public ConstRangeIterator<Container, ConstIterator>
-{
-public:
-	ConstRangeIteratorDeletedOption(
+	ConstContainerRangeIterator(
 		const Container& c,
 		bool             jumpDeleted,
 		ConstIterator (Container::*beginFunction)(bool) const,

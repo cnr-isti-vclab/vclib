@@ -96,9 +96,9 @@ face::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsFace<T>>::enableFaceSc
 
 template<class T>
 template<typename K, typename U>
-face::ReturnIfHasCustomAttributes<U, void> Container<T, IfIsFace<T> >::addFaceCustomAttribute(const std::string& name)
+face::ReturnIfHasCustomComponents<U, void> Container<T, IfIsFace<T> >::addFaceCustomComponent(const std::string& name)
 {
-	optionalComponentsVector.template addNewAttribute<K>(name, faces.size());
+	optionalComponentsVector.template addNewComponent<K>(name, faces.size());
 }
 
 template<class T>

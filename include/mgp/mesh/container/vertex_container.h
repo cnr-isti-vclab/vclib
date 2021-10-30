@@ -44,8 +44,8 @@ public:
 	using VertexType               = T;
 	using VertexIterator           = ContainerIterator<T>;
 	using ConstVertexIterator      = ConstContainerIterator<T>;
-	using VertexRangeIterator      = RangeIteratorDeletedOption<VertexContainer, VertexIterator>;
-	using ConstVertexRangeIterator = ConstRangeIteratorDeletedOption<VertexContainer, ConstVertexIterator>;
+	using VertexRangeIterator      = ContainerRangeIterator<VertexContainer, VertexIterator>;
+	using ConstVertexRangeIterator = ConstContainerRangeIterator<VertexContainer, ConstVertexIterator>;
 
 	Container();
 
@@ -72,7 +72,7 @@ public:
 	vert::ReturnIfHasOptionalScalar<U, void> enableVertexScalar();
 	
 	template<typename K, typename U = T>
-	vert::ReturnIfHasCustomAttributes<U, void> addVertexCustomAttribute(const std::string& name);
+	vert::ReturnIfHasCustomComponents<U, void> addVertexCustomComponent(const std::string& name);
 
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
 	VertexIterator           vertexEnd();

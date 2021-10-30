@@ -28,7 +28,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/vertex.h
 	${MGP_SRC_DIR}/mesh/common/bit_flags.h
 	${MGP_SRC_DIR}/mesh/common/color.h
-	${MGP_SRC_DIR}/mesh/common/custom_attributes.h
+	${MGP_SRC_DIR}/mesh/common/custom_components.h
 	${MGP_SRC_DIR}/mesh/common/mutable_bit_flags.h
 	${MGP_SRC_DIR}/mesh/common/normal.h
 	${MGP_SRC_DIR}/mesh/common/scalar.h
@@ -42,7 +42,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/container/face_container.h
 	${MGP_SRC_DIR}/mesh/component_vector/optional_color_vector.h
 	${MGP_SRC_DIR}/mesh/component_vector/components_vector.h
-	${MGP_SRC_DIR}/mesh/component_vector/custom_attributes_vector.h
+	${MGP_SRC_DIR}/mesh/component_vector/custom_components_vector.h
 	${MGP_SRC_DIR}/mesh/component_vector/optional_generic_vector.h
 	${MGP_SRC_DIR}/mesh/component_vector/optional_mutable_bit_flags_vector.h
 	${MGP_SRC_DIR}/mesh/component_vector/optional_normal_vector.h
@@ -53,6 +53,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/face/vertex_ref_array.h
 	${MGP_SRC_DIR}/mesh/iterators/container_iterator.h
 	${MGP_SRC_DIR}/mesh/iterators/container_range_iterator.h
+	${MGP_SRC_DIR}/mesh/iterators/range_iterator.h
 	${MGP_SRC_DIR}/mesh/vertex/adjacent_faces_ref.h
 	${MGP_SRC_DIR}/mesh/vertex/common.h
 	${MGP_SRC_DIR}/mesh/vertex/coordinate.h

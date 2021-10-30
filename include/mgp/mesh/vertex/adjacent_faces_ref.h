@@ -7,15 +7,18 @@
 #define MGP_MESH_VERTEX_FACE_ADJ_REF_H
 
 #include <vector>
+#include <type_traits>
 
 #include "common.h"
 
-#include "../iterators/container_range_iterator.h"
+#include "../iterators/range_iterator.h"
 
 namespace mgp::vert {
 
+class AdjacenctFacesRefTrigger {};
+
 template<class Face>
-class AdjacenctFacesRef
+class AdjacenctFacesRef : public AdjacenctFacesRefTrigger
 {
 public:
 	using AdjacentFacesIterator      = typename std::vector<Face*>::iterator;
@@ -47,6 +50,16 @@ public:
 private:
 	std::vector<Face*> refs;
 };
+
+/**
+ * Detector to check if a class has (inherits) AdjacenctFacesRef
+ */
+
+template <typename  T>
+using hasAdjacenctFacesRefT = std::is_base_of<AdjacenctFacesRefTrigger, T>;
+
+template <typename  T>
+bool constexpr hasAdjacenctFacesRef() {return hasAdjacenctFacesRefT<T>::value;}
 
 } // namespace mgp::vert
 

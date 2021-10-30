@@ -11,6 +11,13 @@
 namespace mgp {
 
 template<typename T>
+/**
+ * @brief The ContainerIterator class is an iterator designed to iterate along a Container of
+ * Elements (e.g. the containers of Vertices, Faces, ...) that will compose a Mesh.
+ *
+ * Since these Containers can contain deleted Elements, this iterator is designed to jump
+ * automatically deleted element, if the argument jumpDeleted of the constructor is true.
+ */
 class ContainerIterator
 {
 private:
@@ -59,6 +66,10 @@ public:
 	bool                  jumpDeleted; // when true, deleted Elements will be jumped
 };
 
+/**
+ * @brief The ConstContainerIterator class is the const alternative of the ContainerIterator, that
+ * allows to iterate over a const Container and get only const Elements.
+ */
 template<typename T>
 class ConstContainerIterator
 {

@@ -6,7 +6,7 @@
 #ifndef MGP_MESH_COMPONENTS_VECTOR_H
 #define MGP_MESH_COMPONENTS_VECTOR_H
 
-#include "custom_attributes_vector.h"
+#include "custom_components_vector.h"
 #include "optional_color_vector.h"
 #include "optional_mutable_bit_flags_vector.h"
 #include "optional_normal_vector.h"
@@ -20,7 +20,7 @@ class ComponentsVector :
 		public OptionalColorVector<T>,
 		public OptionalNormalVector<T>,
 		public OptionalScalarVector<T>,
-		public CustomAttributesVector<T>
+		public CustomComponentsVector<T>
 {
 public:
 	void resize(unsigned int size)
@@ -29,7 +29,7 @@ public:
 		OptionalColorVector<T>::resize(size);
 		OptionalNormalVector<T>::resize(size);
 		OptionalScalarVector<T>::resize(size);
-		CustomAttributesVector<T>::resize(size);
+		CustomComponentsVector<T>::resize(size);
 	}
 	void reserve(unsigned int size)
 	{
@@ -37,7 +37,7 @@ public:
 		OptionalColorVector<T>::reserve(size);
 		OptionalNormalVector<T>::reserve(size);
 		OptionalScalarVector<T>::reserve(size);
-		CustomAttributesVector<T>::reserve(size);
+		CustomComponentsVector<T>::reserve(size);
 	}
 };
 

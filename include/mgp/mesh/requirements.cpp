@@ -12,10 +12,38 @@
 
 namespace mgp {
 
+// has functions
+
+template<typename MeshType>
+bool constexpr hasVertices()
+{
+	return mgp::mesh::hasVertices<MeshType>();
+}
+
+template<typename MeshType>
+bool constexpr hasVertices(const MeshType&)
+{
+	return hasVertices<MeshType>();
+}
+
+template<typename MeshType>
+bool constexpr hasFaces()
+{
+	return mgp::mesh::hasFaces<MeshType>();
+}
+
+template<typename MeshType>
+bool constexpr hasFaces(const MeshType&)
+{
+	return hasFaces<MeshType>();
+}
+
+// require functions
+
 template<typename MeshType>
 void constexpr requireMeshVertices()
 {
-	static_assert(mesh::hasVertices<MeshType>(), "Mesh does not have a Vertex Container.");
+	static_assert(hasVertices<MeshType>(), "Mesh does not have a Vertex Container.");
 }
 
 template<typename MeshType>
@@ -27,7 +55,7 @@ void constexpr requireMeshVertices(const MeshType&)
 template<typename MeshType>
 void constexpr requireMeshFaces()
 {
-	static_assert(mesh::hasFaces<MeshType>(), "Mesh does not have a Face Container.");
+	static_assert(hasFaces<MeshType>(), "Mesh does not have a Face Container.");
 }
 
 template<typename MeshType>
@@ -89,7 +117,7 @@ void requirePerVertexNormals(const MeshType& m)
 		"Mesh has no vertex normals.");
 	if constexpr(mgp::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
 		if (!m.isVertexNormalEnabled())
-			throw mgp::MissingComponentException("Vertex Normal not enabled.");
+			throw mgp::MissingComponentException("Vertex normals not enabled.");
 	}
 }
 

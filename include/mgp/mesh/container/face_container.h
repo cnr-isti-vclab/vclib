@@ -44,8 +44,8 @@ public:
 	using FaceType               = T;
 	using FaceIterator           = ContainerIterator<T>;
 	using ConstFaceIterator      = ConstContainerIterator<T>;
-	using FaceRangeIterator      = RangeIteratorDeletedOption<FaceContainer, FaceIterator>;
-	using ConstFaceRangeIterator = ConstRangeIteratorDeletedOption<FaceContainer, ConstFaceIterator>;
+	using FaceRangeIterator      = ContainerRangeIterator<FaceContainer, FaceIterator>;
+	using ConstFaceRangeIterator = ConstContainerRangeIterator<FaceContainer, ConstFaceIterator>;
 
 	Container();
 
@@ -70,7 +70,7 @@ public:
 	face::ReturnIfHasOptionalScalar<U, void> enableFaceScalar();
 	
 	template<typename K, typename U = T>
-	face::ReturnIfHasCustomAttributes<U, void> addFaceCustomAttribute(const std::string& name);
+	face::ReturnIfHasCustomComponents<U, void> addFaceCustomComponent(const std::string& name);
 
 	FaceIterator           faceBegin(bool jumpDeleted = true);
 	FaceIterator           faceEnd();

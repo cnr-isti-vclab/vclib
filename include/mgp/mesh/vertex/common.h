@@ -8,7 +8,7 @@
 
 #include "../common/bit_flags.h"
 #include "../common/color.h"
-#include "../common/custom_attributes.h"
+#include "../common/custom_components.h"
 #include "../common/mutable_bit_flags.h"
 #include "../common/normal.h"
 #include "../common/scalar.h"
@@ -116,15 +116,15 @@ bool constexpr hasOptionalScalar() {return mgp::common::hasOptionalScalar<T>();}
 template<typename U, typename T>
 using ReturnIfHasOptionalScalar = common::ReturnIfHasOptionalScalar<U, T>;
 
-/** Port CustomAttributes class into vert namespace **/
+/** Port CustomComponents class into vert namespace **/
 template <typename T>
-using CustomAttributes = mgp::common::CustomAttributes<T>;
+using CustomComponents = mgp::common::CustomComponents<T>;
 
 template <typename T>
-bool constexpr hasCustomAttributes() {return mgp::common::hasCustomAttributes<T>();};
+bool constexpr hasCustomComponents() {return mgp::common::hasCustomComponents<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasCustomAttributes = common::ReturnIfHasCustomAttributes<U, T>;
+using ReturnIfHasCustomComponents = common::ReturnIfHasCustomComponents<U, T>;
 
 } // namespace mgp::vert
 
