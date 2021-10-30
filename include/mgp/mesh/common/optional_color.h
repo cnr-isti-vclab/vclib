@@ -19,8 +19,8 @@ private:
 	typedef OptionalInfo<T> B;
 public:
 	typedef mgp::Color ColorType;
-	const mgp::Color& color() const { return B::containerPointer->color(((T*)this)->id()); }
-	mgp::Color&       color() { return B::containerPointer->color(((T*)this)->id()); }
+	const mgp::Color& color() const { return B::contPtr->color(((T*)this)->id()); }
+	mgp::Color&       color() { return B::contPtr->color(((T*)this)->id()); }
 };
 
 /**

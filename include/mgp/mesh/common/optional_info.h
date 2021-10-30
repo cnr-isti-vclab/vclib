@@ -21,11 +21,11 @@ template<typename T>
 class OptionalInfo
 {
 public:
-	OptionalInfo() : containerPointer(nullptr) {}
+	OptionalInfo() : contPtr(nullptr) {}
 
 protected:
-	void setContainerPointer(mesh::ComponentsVector<T>* cp) { containerPointer = cp; }
-	mesh::ComponentsVector<T>* containerPointer;
+	void setContainerPointer(mesh::ComponentsVector<T>* cp) { contPtr = cp; }
+	mesh::ComponentsVector<T>* contPtr;
 };
 
 /**

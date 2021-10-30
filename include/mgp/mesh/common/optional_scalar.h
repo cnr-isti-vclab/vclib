@@ -20,10 +20,10 @@ private:
 	typedef OptionalInfo<T> B;
 public:
 	typedef S ScalarType;
-	const ScalarType& scalar() const { return B::containerPointer->scalar(((T*)this)->id()); }
-	ScalarType&       scalar() { return B::containerPointer->scalar(((T*)this)->id()); }
-	
-	void __optional_scalar__() {} // dummy member used just for detection of an OpionalScalar object
+	const ScalarType& scalar() const { return B::contPtr->scalar(cid()); }
+	ScalarType&       scalar() { return B::contPtr->scalar(cid()); }
+private:
+	unsigned int cid() const {return ((T*)this)->id();}
 };
 
 template<typename T>

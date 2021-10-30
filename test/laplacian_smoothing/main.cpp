@@ -15,15 +15,14 @@ namespace mymesh {
 class Vertex;
 class Face;
 
-class Vertex : public mgp::Vertex<mgp::vert::BitFlags, mgp::vert::Coordinate3d, mgp::vert::Normal3d>
+class Vertex : public mgp::Vertex<mgp::vert::BitFlags, mgp::vert::Coordinate3d>
 {
 };
 
 class Face :
 		public mgp::Face<
 			mgp::face::TriangleBitFlags,
-			mgp::face::TriangleVertexRefs<Vertex>,
-			mgp::face::Normal3d>
+			mgp::face::TriangleVertexRefs<Vertex>>
 {
 };
 } // namespace mymesh

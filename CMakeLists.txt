@@ -61,6 +61,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/vertex/adjacent_faces_ref.h
 	${MGP_SRC_DIR}/mesh/vertex/common.h
 	${MGP_SRC_DIR}/mesh/vertex/coordinate.h
+	${MGP_SRC_DIR}/mesh/vertex/optional_adjacent_faces_ref.h
 	${MGP_SRC_DIR}/misc/timer.h
 	${MGP_SRC_DIR}/misc/tokenizer.h
 	${MGP_SRC_DIR}/io/file_mesh_mode.h

@@ -28,21 +28,21 @@ private:
 public:
 	bool hasCustomComponent(const std::string& attrName) const
 	{
-		return B::containerPointer->componentExists(attrName);
+		return B::contPtr->componentExists(attrName);
 	}
 
 	template<typename AttrType>
 	const AttrType& customComponent(const std::string& attrName) const
 	{
 		return std::any_cast<const AttrType&>(
-			B::containerPointer->template componentVector<AttrType>(attrName)[((T*) this)->id()]);
+			B::contPtr->template componentVector<AttrType>(attrName)[((T*) this)->id()]);
 	}
 
 	template<typename AttrType>
 	AttrType& customComponent(const std::string& attrName)
 	{
 		return std::any_cast<AttrType&>(
-			B::containerPointer->template componentVector<AttrType>(attrName)[((T*) this)->id()]);
+			B::contPtr->template componentVector<AttrType>(attrName)[((T*) this)->id()]);
 	}
 };
 
