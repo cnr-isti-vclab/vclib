@@ -51,7 +51,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/components_vector/optional_color_vector.h
 	${MGP_SRC_DIR}/mesh/components_vector/components_vector.h
 	${MGP_SRC_DIR}/mesh/components_vector/custom_components_vector.h
-	${MGP_SRC_DIR}/mesh/components_vector/optional_adjacent_faces_ref_vector.h
+	${MGP_SRC_DIR}/mesh/components_vector/optional_face_references_vector.h
 	${MGP_SRC_DIR}/mesh/components_vector/optional_generic_vector.h
 	${MGP_SRC_DIR}/mesh/components_vector/optional_mutable_bit_flags_vector.h
 	${MGP_SRC_DIR}/mesh/components_vector/optional_normal_vector.h

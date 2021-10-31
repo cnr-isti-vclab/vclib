@@ -6,87 +6,59 @@
 #ifndef MGP_MESH_COMPONENTS_OPTIONAL_FACE_REFERENCES_H
 #define MGP_MESH_COMPONENTS_OPTIONAL_FACE_REFERENCES_H
 
+#include <array>
+#include <assert.h>
 #include <type_traits>
+#include <variant>
 #include <vector>
 
 #include "optional_info.h"
 
 #include "../iterators/range_iterator.h"
 
+namespace mgp::mesh {
+template <typename, typename>
+class OptionalFaceReferencesVector;
+}
+
 namespace mgp::components {
 
 template<typename T>
-class OptionalAdjacentFacesRefTrigger
+class OptionalFaceReferencesTriggerer
 {
 };
 
 template<class Face, typename T>
-class OptionalAdjacentFacesRef :
-		public OptionalAdjacentFacesRefTrigger<T>,
+class OptionalFaceReferences :
+		public OptionalFaceReferencesTriggerer<T>,
 		public virtual OptionalInfo<T>
 {
+	template <typename, typename>
+	friend class OptionalFaceReferencesVector;
 private:
 	typedef OptionalInfo<T> B;
 
 public:
-	using FaceType                   = Face;
-	using AdjacentFacesIterator      = typename std::vector<Face*>::iterator;
-	using ConstAdjacentFacesIterator = typename std::vector<Face*>::const_iterator;
-	using AdjacentFaceRangeIterator  = RangeIterator<std::vector<Face*>, AdjacentFacesIterator>;
-	using ConstAdjacentFaceRangeIterator =
-		ConstRangeIterator<std::vector<Face*>, ConstAdjacentFacesIterator>;
-
-	void         addAdjacentFace(Face* f) { B::contPtr->adjFacesRefs(thisId()).push_back(f); };
-	void         clearAdjacentFaces() { B::contPtr->adjFacesRefs(thisId()).clear(); }
-	unsigned int adjacentFacesNumber() { return B::contPtr->adjFacesRefs(thisId()).size(); }
-	Face*&       adjacentFace(unsigned int i) { return B::contPtr->adjFacesRefs(thisId())[i]; }
-	const Face* adjacentFace(unsigned int i) const { return B::contPtr->adjFacesRefs(thisId())[i]; }
-
-	AdjacentFacesIterator adjacentFacesBegin()
-	{
-		return B::contPtr->adjFacesRefs(thisId()).begin();
-	}
-	AdjacentFacesIterator adjacentFacesEnd() { return B::contPtr->adjFacesRefs(thisId()).end(); }
-	ConstAdjacentFacesIterator adjacentFacesBegin() const
-	{
-		return B::contPtr->adjFacesRefs(thisId()).begin();
-	}
-	ConstAdjacentFacesIterator adjacentFacesEnd() const
-	{
-		return B::contPtr->adjFacesRefs(thisId()).end();
-	}
-
-	AdjacentFaceRangeIterator adjacentFacesIterator()
-	{
-		return AdjacentFaceRangeIterator(
-			B::contPtr->adjFacesRefs(thisId()), &adjacentFacesBegin, &adjacentFacesEnd);
-	}
-
-	ConstAdjacentFaceRangeIterator adjacentFacesIterator() const
-	{
-		return ConstAdjacentFaceRangeIterator(
-			B::contPtr->adjFacesRefs(thisId()), &adjacentFacesBegin, &adjacentFacesEnd);
-	}
 
 private:
 	unsigned int thisId() const { return ((T*) this)->id(); }
 };
 
 /**
- * Detector to check if a class has (inherits) OptionalAdjacenctFacesRef
+ * Detector to check if a class has (inherits) OptionalOptionalFaceReferences
  */
 
 template<typename T>
-using hasOptionalAdjacentFacesT = std::is_base_of<OptionalAdjacentFacesRefTrigger<T>, T>;
+using hasOptionalFaceReferencesT = std::is_base_of<OptionalFaceReferencesTriggerer<T>, T>;
 
 template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentFaces =
-	typename std::enable_if<hasOptionalAdjacentFacesT<U>::value, T>::type;
+using ReturnIfHasOptionalFaceReferences=
+	typename std::enable_if<hasOptionalFaceReferencesT<U>::value, T>::type;
 
 template<typename T>
-bool constexpr hasOptionalAdjacentFaces()
+bool constexpr hasOptionalFaceReferences()
 {
-	return hasOptionalAdjacentFacesT<T>::value;
+	return hasOptionalFaceReferencesT<T>::value;
 }
 
 } // namespace mgp::components
