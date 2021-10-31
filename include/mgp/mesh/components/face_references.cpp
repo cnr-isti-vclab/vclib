@@ -101,6 +101,44 @@ internal::ReturnIfIsVector<U, void> FaceReferences<Face, N>::eraseFace(unsigned 
 }
 
 template<class Face, int N>
+typename FaceReferences<Face, N>::FaceIterator FaceReferences<Face, N>::faceBegin()
+{
+	return std::get<VARIANT_ID>(refs).begin();
+}
+
+template<class Face, int N>
+typename FaceReferences<Face, N>::FaceIterator FaceReferences<Face, N>::faceEnd()
+{
+	return std::get<VARIANT_ID>(refs).end();
+}
+
+template<class Face, int N>
+typename FaceReferences<Face, N>::ConstFaceIterator FaceReferences<Face, N>::faceBegin() const
+{
+	return std::get<VARIANT_ID>(refs).begin();
+}
+
+template<class Face, int N>
+typename FaceReferences<Face, N>::ConstFaceIterator FaceReferences<Face, N>::faceEnd() const
+{
+	return std::get<VARIANT_ID>(refs).end();
+}
+
+template<class Face, int N>
+typename FaceReferences<Face, N>::FaceRangeIterator FaceReferences<Face, N>::faceIterator()
+{
+	return FaceRangeIterator(
+		std::get<VARIANT_ID>(refs), &faceBegin, &faceEnd);
+}
+
+template<class Face, int N>
+typename FaceReferences<Face, N>::ConstFaceRangeIterator FaceReferences<Face, N>::faceIterator() const
+{
+	return ConstFaceRangeIterator(
+		std::get<VARIANT_ID>(refs), &faceBegin, &faceEnd);
+}
+
+template<class Face, int N>
 void FaceReferences<Face, N>::updateFaceReferences(
 	const Face* oldBase,
 	const Face* newBase)

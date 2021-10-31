@@ -49,6 +49,8 @@ private:
 public:
 	static const int VERTEX_NUMBER = N;
 
+	/** Iterator Types declaration **/
+
 	// if using array, will be the array iterator, the vector iterator otherwise
 	using VertexIterator = typename std::conditional<
 		(N >= 0),
@@ -63,7 +65,11 @@ public:
 	using VertexRangeIterator = RangeIterator<Container, VertexIterator>;
 	using ConstVertexRangeIterator = ConstRangeIterator<Container, ConstVertexIterator>;
 
+	/** Constructor **/
+
 	VertexReferences();
+
+	/** Member functions **/
 
 	unsigned int vertexNumber() const;
 	unsigned int sizeMod(unsigned int i) const;
@@ -74,7 +80,7 @@ public:
 	void setVertex(Vertex* v, unsigned int i);
 	void setVertices(const std::vector<Vertex*>& list);
 
-	// vector members
+	/** Member functions specific for vector **/
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v);
@@ -84,6 +90,15 @@ public:
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
+
+	/** Iterator Member functions **/
+
+	VertexIterator vertexBegin();
+	VertexIterator vertexEnd();
+	ConstVertexIterator vertexBegin() const;
+	ConstVertexIterator vertexEnd() const;
+	VertexRangeIterator vertexIterator();
+	ConstVertexRangeIterator vertexIterator() const;
 
 protected:
 	std::variant<std::array<Vertex*, ARRAY_SIZE>, std::vector<Vertex*>> refs;

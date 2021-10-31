@@ -49,6 +49,8 @@ private:
 public:
 	static const int FACE_NUMBER = N;
 
+	/** Iterator Types declaration **/
+
 	// if using array, will be the array iterator, the vector iterator otherwise
 	using FaceIterator = typename std::conditional<
 		(N >= 0),
@@ -63,7 +65,11 @@ public:
 	using FaceRangeIterator = RangeIterator<Container, FaceIterator>;
 	using ConstFaceRangeIterator = ConstRangeIterator<Container, ConstFaceIterator>;
 
+	/** Constructor **/
+
 	FaceReferences();
+
+	/** Member functions **/
 
 	unsigned int faceNumber() const;
 	unsigned int sizeMod(unsigned int i) const;
@@ -74,7 +80,7 @@ public:
 	void setFace(Face* v, unsigned int i);
 	void setFaces(const std::vector<Face*>& list);
 
-	// vector members
+	/** Member functions specific for vector **/
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> pushFace(Face* v);
@@ -84,6 +90,15 @@ public:
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> eraseFace(unsigned int i);
+
+	/** Iterator Member functions **/
+
+	FaceIterator faceBegin();
+	FaceIterator faceEnd();
+	ConstFaceIterator faceBegin() const;
+	ConstFaceIterator faceEnd() const;
+	FaceRangeIterator faceIterator();
+	ConstFaceRangeIterator faceIterator() const;
 
 private:
 	std::variant<std::array<Face*, ARRAY_SIZE>, std::vector<Face*>> refs;

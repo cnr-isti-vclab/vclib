@@ -101,6 +101,44 @@ internal::ReturnIfIsVector<U, void> VertexReferences<Vertex, N>::eraseVertex(uns
 }
 
 template<class Vertex, int N>
+typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexBegin()
+{
+	return std::get<VARIANT_ID>(refs).begin();
+}
+
+template<class Vertex, int N>
+typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexEnd()
+{
+	return std::get<VARIANT_ID>(refs).end();
+}
+
+template<class Vertex, int N>
+typename VertexReferences<Vertex, N>::ConstVertexIterator VertexReferences<Vertex, N>::vertexBegin() const
+{
+	return std::get<VARIANT_ID>(refs).begin();
+}
+
+template<class Vertex, int N>
+typename VertexReferences<Vertex, N>::ConstVertexIterator VertexReferences<Vertex, N>::vertexEnd() const
+{
+	return std::get<VARIANT_ID>(refs).end();
+}
+
+template<class Vertex, int N>
+typename VertexReferences<Vertex, N>::VertexRangeIterator VertexReferences<Vertex, N>::vertexIterator()
+{
+	return VertexRangeIterator(
+		std::get<VARIANT_ID>(refs), &vertexBegin, &vertexEnd);
+}
+
+template<class Vertex, int N>
+typename VertexReferences<Vertex, N>::ConstVertexRangeIterator VertexReferences<Vertex, N>::vertexIterator() const
+{
+	return ConstVertexRangeIterator(
+		std::get<VARIANT_ID>(refs), &vertexBegin, &vertexEnd);
+}
+
+template<class Vertex, int N>
 void VertexReferences<Vertex, N>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
