@@ -18,7 +18,7 @@ template<typename Scalar, int N>
 class Normal : public NormalTrigger
 {
 public:
-	typedef Point<Scalar, N> NormalType;
+	using NormalType = Point<Scalar, N>;
 
 	const Point<Scalar, N>& normal() const { return n; }
 	Point<Scalar, N>&       normal() { return n; }
@@ -31,7 +31,7 @@ template<typename Scalar>
 class Normal3 : public NormalTrigger
 {
 public:
-	typedef Point3<Scalar> NormalType;
+	using NormalType = Point3<Scalar>;
 
 	const Point3<Scalar>& normal() const { return n; }
 	Point3<Scalar>&       normal() { return n; }
@@ -40,8 +40,8 @@ private:
 	Point3<Scalar> n;
 };
 
-typedef Normal3<float>  Normal3f;
-typedef Normal3<double> Normal3d;
+using Normal3f = Normal3<float>;
+using Normal3d = Normal3<double>;
 
 /**
  * Detector to check if a class has (inherits) Normal

@@ -10,13 +10,13 @@
 
 namespace mgp::components {
 
-class CoordinateTrigger {};
+class CoordinateTriggerer {};
 
 template<class Scalar, int N>
-class Coordinate : public CoordinateTrigger
+class Coordinate : public CoordinateTriggerer
 {
 public:
-	typedef Point<Scalar, N> CoordinateType;
+	using CoordinateType =  Point<Scalar, N>;
 
 	const Point<Scalar, N>& coordinate() const { return p; }
 	Point<Scalar, N>&       coordinate() { return p; }
@@ -26,10 +26,10 @@ private:
 };
 
 template<class Scalar>
-class Coordinate3 : public CoordinateTrigger
+class Coordinate3 : public CoordinateTriggerer
 {
 public:
-	typedef Point3<Scalar> CoordinateType;
+	using CoordinateType = Point3<Scalar>;
 
 	const Point3<Scalar>& coordinate() const { return p; }
 	Point3<Scalar>&       coordinate() { return p; }
@@ -38,15 +38,15 @@ private:
 	Point3<Scalar> p;
 };
 
-typedef Coordinate3<float>  Coordinate3f;
-typedef Coordinate3<double> Coordinate3d;
+using Coordinate3f = Coordinate3<float>;
+using Coordinate3d = Coordinate3<double>;
 
 /**
  * Detector to check if a class has (inherits) Coordinate
  */
 
 template <typename  T>
-using hasCoordinateT = std::is_base_of<CoordinateTrigger, T>;
+using hasCoordinateT = std::is_base_of<CoordinateTriggerer, T>;
 
 template <typename  T>
 bool constexpr hasCoordinate() {return hasCoordinateT<T>::value;}

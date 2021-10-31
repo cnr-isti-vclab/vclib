@@ -25,6 +25,12 @@ bool constexpr isQuadMesh();
 template <typename MeshType>
 bool constexpr isQuadMesh(const MeshType&);
 
+template <typename MeshType>
+bool constexpr hasBoundingBox();
+
+template <typename MeshType>
+bool constexpr hasBoundingBox(const MeshType&);
+
 // require functions
 
 template <typename MeshType>
@@ -36,6 +42,11 @@ template <typename MeshType>
 void constexpr requireQuadMesh();
 template <typename MeshType>
 void constexpr requireQuadMesh(const MeshType&);
+
+template <typename MeshType>
+void constexpr requireBoundingBox();
+template <typename MeshType>
+void constexpr requireBoundingBox(const MeshType&);
 
 }
 

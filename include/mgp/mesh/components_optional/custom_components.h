@@ -23,7 +23,7 @@ template<typename T>
 class CustomComponents : public virtual OptionalInfo<T>
 {
 private:
-	typedef OptionalInfo<T> B;
+	using B = OptionalInfo<T>;
 
 public:
 	bool hasCustomComponent(const std::string& attrName) const

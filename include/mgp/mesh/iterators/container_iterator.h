@@ -21,14 +21,14 @@ template<typename T>
 class ContainerIterator
 {
 private:
-	typedef typename std::vector<T>::iterator VecIt;
+	using VecIt = typename std::vector<T>::iterator;
 
 public:
-	typedef ptrdiff_t                 difference_type;
-	typedef T                         value_type;
-	typedef T&                        reference;
-	typedef T*                        pointer;
-	typedef std::forward_iterator_tag iterator_category;
+	using difference_type = ptrdiff_t;
+	using value_type = T;
+	using reference = T&;
+	using pointer = T*;
+	using iterator_category = std::forward_iterator_tag;
 
 	ContainerIterator(VecIt it, const std::vector<T>& vec, bool jumpDeleted = true) :
 			it(it), vec(vec), jumpDeleted(jumpDeleted)
@@ -74,14 +74,14 @@ template<typename T>
 class ConstContainerIterator
 {
 private:
-	typedef typename std::vector<T>::const_iterator VecIt;
+	using VecIt = typename std::vector<T>::const_iterator;
 
 public:
-	typedef ptrdiff_t                 difference_type;
-	typedef T                         value_type;
-	typedef const T&                  reference;
-	typedef const T*                  pointer;
-	typedef std::forward_iterator_tag iterator_category;
+	using difference_type = ptrdiff_t;
+	using value_type = T;
+	using reference = const T&;
+	using pointer = const T*;
+	using iterator_category = std::forward_iterator_tag;
 
 	ConstContainerIterator(VecIt it, const std::vector<T>& vec, bool jumpDeleted = true) :
 			it(it), vec(vec), jumpDeleted(jumpDeleted)

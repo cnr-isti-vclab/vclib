@@ -21,7 +21,7 @@ public:
 	Tokenizer(const char* string, char separator);
 	Tokenizer(const std::string& string, char separator);
 	
-	typedef std::vector<std::string>::const_iterator iterator;
+	using iterator = std::vector<std::string>::const_iterator;
 	
 	iterator begin() const;
 	iterator end() const;

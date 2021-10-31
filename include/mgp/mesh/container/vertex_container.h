@@ -38,7 +38,7 @@ class Container<T, IfIsVertex<T>> : public VertexContainerTriggerer
 
 protected:
 	// types:
-	typedef Container<T, IfIsVertex<T>> VertexContainer;
+	using VertexContainer = Container<T, IfIsVertex<T>>;
 
 public:
 	using VertexType               = T;

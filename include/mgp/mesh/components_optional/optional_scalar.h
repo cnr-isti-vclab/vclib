@@ -19,10 +19,10 @@ template<typename S, typename T>
 class OptionalScalar : public OptionalScalarTrigger<T>, public virtual OptionalInfo<T>
 {
 private:
-	typedef OptionalInfo<T> B;
+	using B = OptionalInfo<T>;
 
 public:
-	typedef S         ScalarType;
+	using ScalarType = S;
 	const ScalarType& scalar() const { return B::contPtr->scalar(thisId()); }
 	ScalarType&       scalar() { return B::contPtr->scalar(thisId()); }
 

@@ -24,8 +24,8 @@ template<typename T>
 class OptionalNormalVector<T, std::enable_if_t<components::hasOptionalNormal<T>()>> :
 		private OptionalGenericVector<typename T::NormalType>
 {
-	typedef typename T::NormalType            NormalType;
-	typedef OptionalGenericVector<NormalType> Base;
+	using NormalType = typename T::NormalType;
+	using Base = OptionalGenericVector<NormalType>;
 
 public:
 	using Base::reserve;

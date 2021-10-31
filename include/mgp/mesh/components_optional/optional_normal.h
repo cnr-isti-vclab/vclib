@@ -21,10 +21,10 @@ template<typename Scalar, int N, typename T>
 class OptionalNormal : public OptionalNormalTrigger<T>, public virtual OptionalInfo<T>
 {
 private:
-	typedef OptionalInfo<T> B;
+	using B = OptionalInfo<T>;
 
 public:
-	typedef Point<Scalar, N> NormalType;
+	using NormalType = Point<Scalar, N>;
 	const NormalType&        normal() const { return B::contPtr->normal(thisId()); }
 	NormalType&              normal() { return B::contPtr->normal(thisId()); }
 
@@ -36,10 +36,10 @@ template<typename Scalar, typename T>
 class OptionalNormal3 : public OptionalNormal<Scalar, 3, T>
 {
 private:
-	typedef OptionalInfo<T> B;
+	using B = OptionalInfo<T>;
 
 public:
-	typedef Point3<Scalar> NormalType;
+	using NormalType = Point3<Scalar>;
 };
 
 template<typename T>

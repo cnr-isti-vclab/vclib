@@ -16,10 +16,10 @@ template<typename T>
 class OptionalColor : public virtual OptionalInfo<T>
 {
 private:
-	typedef OptionalInfo<T> B;
+	using B = OptionalInfo<T>;
 
 public:
-	typedef mgp::Color ColorType;
+	using ColorType = mgp::Color;
 	const mgp::Color&  color() const { return B::contPtr->color(thisId()); }
 	mgp::Color&        color() { return B::contPtr->color(thisId()); }
 

@@ -57,10 +57,10 @@ template <typename T>
 bool constexpr hasScalar() {return components::hasScalar<T>();};
 
 /** Port VertexRefsArray class into face namespace **/
-template<class Vertex, int N>
+template<typename Vertex, int N>
 using VertexReferences = components::VertexReferences<Vertex, N>;
 
-template<class Vertex>
+template<typename Vertex>
 using TriangleVertexRefs = components::TriVertexReferences<Vertex>;
 
 template <typename  T>

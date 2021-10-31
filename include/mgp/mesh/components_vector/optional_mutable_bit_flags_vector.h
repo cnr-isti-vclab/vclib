@@ -21,7 +21,7 @@ class OptionalMutableBitFlagsVector<
 	std::enable_if_t<components::hasOptionalMutableBitFlags<T>()>> :
 		private OptionalGenericVector<int>
 {
-	typedef OptionalGenericVector<int> Base;
+	using Base = OptionalGenericVector<int>;
 
 public:
 	using Base::reserve;

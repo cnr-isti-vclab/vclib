@@ -12,7 +12,7 @@
 
 namespace mgp {
 
-typedef QColor Color;
+using Color = QColor;
 
 } // namespace mgp
 

@@ -20,7 +20,7 @@ class Point
 {
 public:
 	using ScalarType      = Scalar;
-	const static int DIM  = N;
+	static const int DIM  = N;
 	Point()               = default; // default empty constructor
 	Point(const Point& p) = default; // default copy constructor
 	Point(Point&& p)      = default; // default move constructor

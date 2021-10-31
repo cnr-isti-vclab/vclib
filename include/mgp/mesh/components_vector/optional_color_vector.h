@@ -24,8 +24,8 @@ template<typename T>
 class OptionalColorVector<T, std::enable_if_t<components::hasOptionalColor<T>()>> :
 		private OptionalGenericVector<typename T::ColorType>
 {
-	typedef typename T::ColorType            ColorType;
-	typedef OptionalGenericVector<ColorType> Base;
+	using ColorType = typename T::ColorType;
+	using Base = OptionalGenericVector<ColorType>;
 
 public:
 	using Base::reserve;

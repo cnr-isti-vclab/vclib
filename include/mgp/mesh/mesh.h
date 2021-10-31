@@ -7,6 +7,7 @@
 #define MGP_MESH_MESH_H
 
 #include "container/containers.h"
+#include "mesh_components.h"
 
 namespace mgp {
 

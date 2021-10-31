@@ -45,7 +45,7 @@ class OptionalFaceReferences :
 	friend class OptionalFaceReferencesVector;
 
 private:
-	typedef OptionalInfo<T> B;
+	using B = OptionalInfo<T>;
 
 	// if we use the vector, the size of the array will be 0
 	// actually the array will never be used and will not use memory, it's just for declaration

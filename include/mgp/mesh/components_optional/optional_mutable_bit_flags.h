@@ -41,7 +41,7 @@ template<typename T>
 class OptionalMutableBitFlags : public virtual OptionalInfo<T>
 {
 private:
-	typedef OptionalInfo<T> B;
+	using B = OptionalInfo<T>;
 
 public:
 	bool isVisitedM() const;

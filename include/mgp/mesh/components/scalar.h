@@ -17,7 +17,7 @@ class ScalarTrigger
 template<typename T>
 class Scalar : public ScalarTrigger
 {
-	typedef T ScalarType;
+	using ScalarType = T;
 
 	const ScalarType& scalar() const { return s; }
 	ScalarType&       scalar() { return s; }
@@ -26,8 +26,8 @@ private:
 	ScalarType s;
 };
 
-typedef Scalar<float>  Scalarf;
-typedef Scalar<double> Scalard;
+using Scalarf = Scalar<float>;
+using Scalard = Scalar<double>;
 
 /**
  * Detector to check if a class has (inherits) Scalar

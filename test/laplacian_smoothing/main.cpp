@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <mgp/algorithms/smooth.h>
+#include <mgp/algorithms/update/bounding_box.h>
 #include <mgp/algorithms/update/topology.h>
 #include <mgp/io/load_ply.h>
 #include <mgp/io/save_ply.h>
@@ -29,7 +30,7 @@ class Face : public mgp::Face<mgp::face::TriangleBitFlags, mgp::face::TriangleVe
 };
 } // namespace mymesh
 
-class MyMesh : public mgp::Mesh<mymesh::Vertex, mymesh::Face>
+class MyMesh : public mgp::Mesh<mymesh::Vertex, mymesh::Face, mgp::mesh::BoundingBox3d>
 {
 public:
 	using Vertex = mymesh::Vertex;
@@ -44,6 +45,8 @@ int main()
 
 	m.enablePerVertexAdjacentFaces();
 	mgp::updatePerVertexAdjacentFaces(m);
+
+	mgp::updateBoundingBox(m);
 
 	mgp::Timer t("Laplacian Smoothing");
 	mgp::vertexCoordLaplacianSmoothing(m, 500);

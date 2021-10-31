@@ -19,7 +19,7 @@ namespace mgp::components {
 class Color
 {
 public:
-	typedef mgp::Color ColorType;
+	using ColorType = mgp::Color;
 
 	/**
 	 * @brief get a const reference of the color of the element.

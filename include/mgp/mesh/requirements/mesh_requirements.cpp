@@ -5,6 +5,8 @@
 
 #include "mesh_requirements.h"
 
+#include "../mesh.h"
+
 namespace mgp {
 
 // has functions
@@ -49,6 +51,18 @@ bool constexpr isQuadMesh(const MeshType&)
 	return isQuadMesh<MeshType>();
 }
 
+template<typename MeshType>
+bool constexpr hasBoundingBox()
+{
+	return mgp::mesh::hasBoundingBox<MeshType>();
+}
+
+template<typename MeshType>
+bool constexpr hasBoundingBox(const MeshType&)
+{
+	return hasBoundingBox<MeshType>();
+}
+
 // require functions
 
 template<typename MeshType>
@@ -73,6 +87,18 @@ template<typename MeshType>
 void constexpr requireQuadMesh(const MeshType&)
 {
 	requireQuadMesh<MeshType>();
+}
+
+template<typename MeshType>
+void constexpr requireBoundingBox()
+{
+	static_assert(hasBoundingBox<MeshType>(), "Mesh has no bounding box.");
+}
+
+template<typename MeshType>
+void constexpr requireBoundingBox(const MeshType&)
+{
+	requireBoundingBox<MeshType>();
 }
 
 }
