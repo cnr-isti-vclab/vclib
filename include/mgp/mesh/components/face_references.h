@@ -9,7 +9,6 @@
 #include <array>
 #include <assert.h>
 #include <type_traits>
-#include <variant>
 #include <vector>
 
 #include "../iterators/range_iterator.h"
@@ -33,9 +32,6 @@ template<class Face, int N>
 class FaceReferences : public FaceReferencesTriggerer
 {
 private:
-	// id 0 if use the array, 1 if we use the vector
-	static const int VARIANT_ID = N >= 0 ? 0 : 1;
-
 	// if we use the vector, the size of the array will be 0
 	// actually the array will never be used and will not use memory, it's just for declaration
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
@@ -101,7 +97,7 @@ public:
 	ConstFaceRangeIterator faceIterator() const;
 
 private:
-	std::variant<std::array<Face*, ARRAY_SIZE>, std::vector<Face*>> refs;
+	Container refs;
 
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 };

@@ -10,7 +10,7 @@ namespace mgp::components {
 template<class Vertex, int N>
 VertexReferences<Vertex, N>::VertexReferences()
 {
-	if constexpr (VARIANT_ID == 0) {
+	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
 		// There will be a static number of references.
 		refs = std::array<Vertex*, N> {nullptr};
@@ -29,7 +29,7 @@ unsigned int VertexReferences<Vertex, N>::vertexNumber() const
 		return N;
 	}
 	else {
-		return std::get<VARIANT_ID>(refs).size();
+		return refs.size();
 	}
 }
 
@@ -43,21 +43,21 @@ template<class Vertex, int N>
 Vertex*& VertexReferences<Vertex, N>::v(unsigned int i)
 {
 	assert(i < vertexNumber());
-	return std::get<VARIANT_ID>(refs)[i];
+	return refs[i];
 }
 
 template<class Vertex, int N>
 const Vertex* VertexReferences<Vertex, N>::v(unsigned int i) const
 {
 	assert(i < vertexNumber());
-	return std::get<VARIANT_ID>(refs)[i];
+	return refs[i];
 }
 
 template<class Vertex, int N>
 void VertexReferences<Vertex, N>::setVertex(Vertex* v, unsigned int i)
 {
 	assert(i < vertexNumber());
-	std::get<VARIANT_ID>(refs)[i] = v;
+	refs[i] = v;
 }
 
 template<class Vertex, int N>
@@ -72,7 +72,7 @@ void VertexReferences<Vertex, N>::setVertices(const std::vector<Vertex*>& list)
 		}
 	}
 	else {
-		std::get<VARIANT_ID>(refs) = list;
+		refs = list;
 	}
 }
 
@@ -80,7 +80,7 @@ template<class Vertex, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> VertexReferences<Vertex, N>::pushVertex(Vertex* v)
 {
-	std::get<VARIANT_ID>(refs).push_back(v);
+	refs.push_back(v);
 }
 
 template<class Vertex, int N>
@@ -89,7 +89,7 @@ internal::ReturnIfIsVector<U, void>
 VertexReferences<Vertex, N>::insertVertex(unsigned int i, Vertex* v)
 {
 	assert(i < vertexNumber());
-	std::get<VARIANT_ID>(refs).insert(std::get<VARIANT_ID>(refs).begin() + i, v);
+	refs.insert(refs.begin() + i, v);
 }
 
 template<class Vertex, int N>
@@ -97,45 +97,45 @@ template<int U>
 internal::ReturnIfIsVector<U, void> VertexReferences<Vertex, N>::eraseVertex(unsigned int i)
 {
 	assert(i < vertexNumber());
-	std::get<VARIANT_ID>(refs).erase(std::get<VARIANT_ID>(refs).begin() + i);
+	refs.erase(refs.begin() + i);
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexBegin()
 {
-	return std::get<VARIANT_ID>(refs).begin();
+	return refs.begin();
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexEnd()
 {
-	return std::get<VARIANT_ID>(refs).end();
+	return refs.end();
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexIterator VertexReferences<Vertex, N>::vertexBegin() const
 {
-	return std::get<VARIANT_ID>(refs).begin();
+	return refs.begin();
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexIterator VertexReferences<Vertex, N>::vertexEnd() const
 {
-	return std::get<VARIANT_ID>(refs).end();
+	return refs.end();
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexRangeIterator VertexReferences<Vertex, N>::vertexIterator()
 {
 	return VertexRangeIterator(
-		std::get<VARIANT_ID>(refs), &vertexBegin, &vertexEnd);
+		refs, &vertexBegin, &vertexEnd);
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexRangeIterator VertexReferences<Vertex, N>::vertexIterator() const
 {
 	return ConstVertexRangeIterator(
-		std::get<VARIANT_ID>(refs), &vertexBegin, &vertexEnd);
+		refs, &vertexBegin, &vertexEnd);
 }
 
 template<class Vertex, int N>

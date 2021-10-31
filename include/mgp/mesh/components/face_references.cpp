@@ -10,7 +10,7 @@ namespace mgp::components {
 template<class Face, int N>
 FaceReferences<Face, N>::FaceReferences()
 {
-	if constexpr (VARIANT_ID == 0) {
+	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
 		// There will be a static number of references.
 		refs = std::array<Face*, N> {nullptr};
@@ -29,7 +29,7 @@ unsigned int FaceReferences<Face, N>::faceNumber() const
 		return N;
 	}
 	else {
-		return std::get<VARIANT_ID>(refs).size();
+		return refs.size();
 	}
 }
 
@@ -43,21 +43,21 @@ template<class Face, int N>
 Face*& FaceReferences<Face, N>::f(unsigned int i)
 {
 	assert(i < vertexNumber());
-	return std::get<VARIANT_ID>(refs)[i];
+	return refs[i];
 }
 
 template<class Face, int N>
 const Face* FaceReferences<Face, N>::f(unsigned int i) const
 {
 	assert(i < vertexNumber());
-	return std::get<VARIANT_ID>(refs)[i];
+	return refs[i];
 }
 
 template<class Face, int N>
 void FaceReferences<Face, N>::setFace(Face* f, unsigned int i)
 {
 	assert(i < vertexNumber());
-	std::get<VARIANT_ID>(refs)[i] = f;
+	refs[i] = f;
 }
 
 template<class Face, int N>
@@ -72,7 +72,7 @@ void FaceReferences<Face, N>::setFaces(const std::vector<Face*>& list)
 		}
 	}
 	else {
-		std::get<VARIANT_ID>(refs) = list;
+		refs = list;
 	}
 }
 
@@ -80,7 +80,7 @@ template<class Face, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> FaceReferences<Face, N>::pushFace(Face* f)
 {
-	std::get<VARIANT_ID>(refs).push_back(f);
+	refs.push_back(f);
 }
 
 template<class Face, int N>
@@ -89,7 +89,7 @@ internal::ReturnIfIsVector<U, void>
 FaceReferences<Face, N>::insertFace(unsigned int i, Face* f)
 {
 	assert(i < vertexNumber());
-	std::get<VARIANT_ID>(refs).insert(std::get<VARIANT_ID>(refs).begin() + i, f);
+	refs.insert(refs.begin() + i, f);
 }
 
 template<class Face, int N>
@@ -97,45 +97,45 @@ template<int U>
 internal::ReturnIfIsVector<U, void> FaceReferences<Face, N>::eraseFace(unsigned int i)
 {
 	assert(i < vertexNumber());
-	std::get<VARIANT_ID>(refs).erase(std::get<VARIANT_ID>(refs).begin() + i);
+	refs.erase(refs.begin() + i);
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::FaceIterator FaceReferences<Face, N>::faceBegin()
 {
-	return std::get<VARIANT_ID>(refs).begin();
+	return refs.begin();
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::FaceIterator FaceReferences<Face, N>::faceEnd()
 {
-	return std::get<VARIANT_ID>(refs).end();
+	return refs.end();
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::ConstFaceIterator FaceReferences<Face, N>::faceBegin() const
 {
-	return std::get<VARIANT_ID>(refs).begin();
+	return refs.begin();
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::ConstFaceIterator FaceReferences<Face, N>::faceEnd() const
 {
-	return std::get<VARIANT_ID>(refs).end();
+	return refs.end();
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::FaceRangeIterator FaceReferences<Face, N>::faceIterator()
 {
 	return FaceRangeIterator(
-		std::get<VARIANT_ID>(refs), &faceBegin, &faceEnd);
+		refs, &faceBegin, &faceEnd);
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::ConstFaceRangeIterator FaceReferences<Face, N>::faceIterator() const
 {
 	return ConstFaceRangeIterator(
-		std::get<VARIANT_ID>(refs), &faceBegin, &faceEnd);
+		refs, &faceBegin, &faceEnd);
 }
 
 template<class Face, int N>

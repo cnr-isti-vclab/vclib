@@ -9,7 +9,6 @@
 #include <array>
 #include <assert.h>
 #include <type_traits>
-#include <variant>
 #include <vector>
 
 #include "../iterators/range_iterator.h"
@@ -33,9 +32,6 @@ template<class Vertex, int N>
 class VertexReferences : public VertexReferencesTriggerer
 {
 private:
-	// id 0 if use the array, 1 if we use the vector
-	static const int VARIANT_ID = N >= 0 ? 0 : 1;
-
 	// if we use the vector, the size of the array will be 0
 	// actually the array will never be used and will not use memory, it's just for declaration
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
@@ -101,7 +97,7 @@ public:
 	ConstVertexRangeIterator vertexIterator() const;
 
 protected:
-	std::variant<std::array<Vertex*, ARRAY_SIZE>, std::vector<Vertex*>> refs;
+	Container refs;
 
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 };
@@ -113,16 +109,16 @@ private:
 	using B = VertexReferences<Vertex, 3>;
 
 public:
-	Vertex*&      v0() { return std::get<0>(B::refs)[0]; }
-	Vertex*&      v1() { return std::get<0>(B::refs)[1]; }
-	Vertex*&      v2() { return std::get<0>(B::refs)[2]; }
-	const Vertex* v0() const { return std::get<0>(B::refs)[0]; }
-	const Vertex* v1() const { return std::get<0>(B::refs)[1]; }
-	const Vertex* v2() const { return std::get<0>(B::refs)[2]; }
+	Vertex*&      v0() { return B::refs[0]; }
+	Vertex*&      v1() { return B::refs[1]; }
+	Vertex*&      v2() { return B::refs[2]; }
+	const Vertex* v0() const { return B::refs[0]; }
+	const Vertex* v1() const { return B::refs[1]; }
+	const Vertex* v2() const { return B::refs[2]; }
 
-	void setV0(Vertex* v) { std::get<0>(B::refs)[0] = v; }
-	void setV1(Vertex* v) { std::get<0>(B::refs)[1] = v; }
-	void setV2(Vertex* v) { std::get<0>(B::refs)[2] = v; }
+	void setV0(Vertex* v) { B::refs[0] = v; }
+	void setV1(Vertex* v) { B::refs[1] = v; }
+	void setV2(Vertex* v) { B::refs[2] = v; }
 };
 
 template<typename T>
