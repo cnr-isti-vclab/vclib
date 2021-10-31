@@ -12,7 +12,7 @@ namespace mgp {
 template<typename MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m)
 {
-
+	mgp::requirePerVertexAdjacentFaces(m);
 }
 
 }

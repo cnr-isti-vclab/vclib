@@ -41,6 +41,18 @@ void constexpr requirePerVertexCoordinate(const MeshType&);
 template <typename MeshType>
 void requirePerVertexNormal(const MeshType& m);
 
+template <typename MeshType>
+void requirePerVertexScalar(const MeshType& m);
+
+template <typename MeshType>
+bool constexpr requirePerVertexCustomComponents();
+
+template <typename MeshType>
+bool constexpr requirePerVertexCustomComponents(const MeshType& m);
+
+template <typename MeshType>
+void requirePerVertexAdjacentFaces(const MeshType& m);
+
 }
 
 #include "vertex_requirements.cpp"

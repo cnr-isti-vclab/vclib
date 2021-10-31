@@ -77,10 +77,9 @@ bool hasPerVertexAdjacentFaces(const MeshType& m)
 		return true;
 	}
 	else if constexpr (
-		hasVertices<MeshType>() && mgp::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
-		//todo
-		return false;
-		//return m.isVertexFaceAdjacenciesEnabled();
+		hasVertices<MeshType>() &&
+		mgp::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
+		return m.isVertexFaceAdjacenciesEnabled();
 	}
 	else {
 		return false;
@@ -110,6 +109,40 @@ void requirePerVertexNormal(const MeshType& m)
 		"Mesh has no vertex normals.");
 	if (!hasPerVertexNormal(m))
 		throw mgp::MissingComponentException("Vertex normals not enabled.");
+}
+
+template<typename MeshType>
+void requirePerVertexScalar(const MeshType& m)
+{
+	static_assert(
+		mgp::vert::hasScalar<typename MeshType::VertexType>() ||
+			mgp::vert::hasOptionalScalar<typename MeshType::VertexType>(),
+		"Mesh has no vertex scalars.");
+	if (!hasPerVertexScalar(m))
+		throw mgp::MissingComponentException("Vertex scalars not enabled.");
+}
+
+template<typename MeshType>
+void constexpr requirePerVertexCustomComponents()
+{
+	static_assert(hasPerVertexCustomComponents<MeshType>(), "Mesh has no vertex custom components.");
+}
+
+template<typename MeshType>
+void constexpr requirePerVertexCustomComponents(const MeshType&)
+{
+	requirePerVertexCustomComponents<MeshType>();
+}
+
+template<typename MeshType>
+void requirePerVertexAdjacentFaces(const MeshType& m)
+{
+	static_assert(
+		mgp::vert::hasAdjacentFaces<typename MeshType::VertexType>() ||
+			mgp::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>(),
+		"Mesh has no vertex adjacent faces.");
+	if (!hasPerVertexAdjacentFaces(m))
+		throw mgp::MissingComponentException("Vertex adjacent faces not enabled.");
 }
 
 } // namespace mgp
