@@ -34,6 +34,7 @@ set(HEADERS
 	${MGP_SRC_DIR}/mesh/vertex_components_optional.h
 	${MGP_SRC_DIR}/mesh/components/bit_flags.h
 	${MGP_SRC_DIR}/mesh/components/color.h
+	${MGP_SRC_DIR}/mesh/components/component_references.h
 	${MGP_SRC_DIR}/mesh/components/coordinate.h
 	${MGP_SRC_DIR}/mesh/components/face_references.h
 	${MGP_SRC_DIR}/mesh/components/mutable_bit_flags.h
@@ -90,9 +91,8 @@ set(SOURCES
 	${MGP_SRC_DIR}/algorithms/update/topology.cpp
 	${MGP_SRC_DIR}/mesh/mesh.cpp
 	${MGP_SRC_DIR}/mesh/components/bit_flags.cpp
-	${MGP_SRC_DIR}/mesh/components/face_references.cpp
+	${MGP_SRC_DIR}/mesh/components/component_references.cpp
 	${MGP_SRC_DIR}/mesh/components/mutable_bit_flags.cpp
-	${MGP_SRC_DIR}/mesh/components/vertex_references.cpp
 	${MGP_SRC_DIR}/mesh/components/triangle_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/components_optional/optional_face_references.cpp
 	${MGP_SRC_DIR}/mesh/components_optional/optional_mutable_bit_flags.cpp

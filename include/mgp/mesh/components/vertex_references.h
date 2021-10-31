@@ -13,93 +13,80 @@
 
 #include "../iterators/range_iterator.h"
 
+#include "component_references.h"
+
 namespace mgp::components {
-
-namespace internal {
-
-template<int M, typename T>
-using ReturnIfIsVector = typename std::enable_if<(M < 0), T>::type;
-template<int M, typename T>
-using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
-
-} // namespace internal
 
 class VertexReferencesTriggerer
 {
 };
 
 template<class Vertex, int N>
-class VertexReferences : public VertexReferencesTriggerer
+class VertexReferences : protected ComponentReferences<Vertex, N>, public VertexReferencesTriggerer
 {
-private:
-	// if we use the vector, the size of the array will be 0
-	// actually the array will never be used and will not use memory, it's just for declaration
-	static const int ARRAY_SIZE = N >= 0 ? N : 0;
-
-	// the Container type will be array or vector, depending on N value
-	using Container = typename std::conditional<
-		(N >= 0),
-		typename std::array<Vertex*, ARRAY_SIZE>,
-		typename std::vector<Vertex*>>::type;
-
+	using Base = ComponentReferences<Vertex, N>;
 public:
-	static const int VERTEX_NUMBER = N;
+	static const int VERTEX_NUMBER = Base::COMPONENT_NUMBER;
 
 	/** Iterator Types declaration **/
 
-	// if using array, will be the array iterator, the vector iterator otherwise
-	using VertexIterator = typename std::conditional<
-		(N >= 0),
-		typename std::array<Vertex*, ARRAY_SIZE>::iterator,
-		typename std::vector<Vertex*>::iterator>::type;
-
-	using ConstVertexIterator = typename std::conditional<
-		(N >= 0),
-		typename std::array<Vertex*, ARRAY_SIZE>::const_iterator,
-		typename std::vector<Vertex*>::const_iterator>::type;
-
-	using VertexRangeIterator = RangeIterator<VertexReferences, VertexIterator>;
-	using ConstVertexRangeIterator = ConstRangeIterator<VertexReferences, ConstVertexIterator>;
+	using VertexIterator = typename Base::ComponentIterator;
+	using ConstVertexIterator = typename Base::ConstComponentIterator;
+	using VertexRangeIterator = typename Base::ComponentRangeIterator;
+	using ConstVertexRangeIterator = typename Base::ConstComponentRangeIterator;
 
 	/** Constructor **/
 
-	VertexReferences();
+	VertexReferences () : ComponentReferences<Vertex, N>() {}
 
 	/** Member functions **/
 
-	unsigned int vertexNumber() const;
-	unsigned int sizeMod(unsigned int i) const;
+	unsigned int vertexNumber() const { return Base::componentNumber(); }
+	using Base::sizeMod;
 
-	Vertex*&      v(unsigned int i);
-	const Vertex* v(unsigned int i) const;
+	Vertex*& v (unsigned int i){ return Base::c(i); }
+	const Vertex* v  (unsigned int i) const {return Base::c(i);}
 
-	void setVertex(Vertex* v, unsigned int i);
-	void setVertices(const std::vector<Vertex*>& list);
+	void setVertex(Vertex* v, unsigned int i) {Base::setComponent(v, i);}
+	void setVertices(const std::vector<Vertex*>& list) {Base::setComponents(list);}
 
 	/** Member functions specific for vector **/
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v);
+	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v) { Base::pushComponent(v); }
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, Vertex* v);
+	internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, Vertex* v)
+	{
+		Base::insertComponent(i, v);
+	}
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
+	internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i)
+	{
+		Base::eraseComponent(i);
+	}
+
+	template<int U = N>
+	internal::ReturnIfIsVector<U, void> clearVertices()
+	{
+		Base::clearComponents();
+	}
 
 	/** Iterator Member functions **/
 
-	VertexIterator vertexBegin();
-	VertexIterator vertexEnd();
-	ConstVertexIterator vertexBegin() const;
-	ConstVertexIterator vertexEnd() const;
-	VertexRangeIterator vertexIterator();
-	ConstVertexRangeIterator vertexIterator() const;
+	VertexIterator vertexBegin() {return Base::componentBegin();}
+	VertexIterator vertexEnd() {return Base::componentEnd();}
+	ConstVertexIterator vertexBegin() const {return Base::componentBegin();}
+	ConstVertexIterator vertexEnd() const {return Base::componentEnd();}
+	VertexRangeIterator vertexIterator() {return Base::componentIterator();}
+	ConstVertexRangeIterator vertexIterator() const {return Base::componentIterator();}
 
 protected:
-	Container vertRefs;
-
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
+	{
+		Base::updateComponentReferences(oldBase, newBase);
+	}
 };
 
 template<class Vertex>
@@ -109,16 +96,16 @@ private:
 	using B = VertexReferences<Vertex, 3>;
 
 public:
-	Vertex*&      v0() { return B::vertRefs[0]; }
-	Vertex*&      v1() { return B::vertRefs[1]; }
-	Vertex*&      v2() { return B::vertRefs[2]; }
-	const Vertex* v0() const { return B::vertRefs[0]; }
-	const Vertex* v1() const { return B::vertRefs[1]; }
-	const Vertex* v2() const { return B::vertRefs[2]; }
+	Vertex*&      v0() { return B::compRefs[0]; }
+	Vertex*&      v1() { return B::compRefs[1]; }
+	Vertex*&      v2() { return B::compRefs[2]; }
+	const Vertex* v0() const { return B::compRefs[0]; }
+	const Vertex* v1() const { return B::compRefs[1]; }
+	const Vertex* v2() const { return B::compRefs[2]; }
 
-	void setV0(Vertex* v) { B::vertRefs[0] = v; }
-	void setV1(Vertex* v) { B::vertRefs[1] = v; }
-	void setV2(Vertex* v) { B::vertRefs[2] = v; }
+	void setV0(Vertex* v) { B::compRefs[0] = v; }
+	void setV1(Vertex* v) { B::compRefs[1] = v; }
+	void setV2(Vertex* v) { B::compRefs[2] = v; }
 };
 
 template<typename T>
@@ -131,7 +118,5 @@ bool constexpr hasVertexReferences()
 }
 
 } // namespace mgp::components
-
-#include "vertex_references.cpp"
 
 #endif // MGP_MESH_COMPONENTS_VERTEX_REFERENCES_H

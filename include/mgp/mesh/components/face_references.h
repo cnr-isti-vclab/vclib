@@ -13,96 +13,81 @@
 
 #include "../iterators/range_iterator.h"
 
+#include "component_references.h"
+
 namespace mgp::components {
-
-namespace internal {
-
-template<int M, typename T>
-using ReturnIfIsVector = typename std::enable_if<(M < 0), T>::type;
-template<int M, typename T>
-using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
-
-} // namespace internal
 
 class FaceReferencesTriggerer
 {
 };
 
 template<class Face, int N>
-class FaceReferences : public FaceReferencesTriggerer
+class FaceReferences : protected ComponentReferences<Face, N>, public FaceReferencesTriggerer
 {
-private:
-	// if we use the vector, the size of the array will be 0
-	// actually the array will never be used and will not use memory, it's just for declaration
-	static const int ARRAY_SIZE = N >= 0 ? N : 0;
-
-	// the Container type will be array or vector, depending on N value
-	using Container = typename std::conditional<
-		(N >= 0),
-		typename std::array<Face*, ARRAY_SIZE>,
-		typename std::vector<Face*>>::type;
+	using Base = ComponentReferences<Face, N>;
 
 public:
-	static const int FACE_NUMBER = N;
+	static const int FACE_NUMBER = Base::COMPONENT_NUMBER;
 
 	/** Iterator Types declaration **/
 
-	// if using array, will be the array iterator, the vector iterator otherwise
-	using FaceIterator = typename std::conditional<
-		(N >= 0),
-		typename std::array<Face*, ARRAY_SIZE>::iterator,
-		typename std::vector<Face*>::iterator>::type;
-
-	using ConstFaceIterator = typename std::conditional<
-		(N >= 0),
-		typename std::array<Face*, ARRAY_SIZE>::const_iterator,
-		typename std::vector<Face*>::const_iterator>::type;
-
-	using FaceRangeIterator = RangeIterator<FaceReferences, FaceIterator>;
-	using ConstFaceRangeIterator = ConstRangeIterator<FaceReferences, ConstFaceIterator>;
+	using FaceIterator = typename Base::ComponentIterator;
+	using ConstFaceIterator = typename Base::ConstComponentIterator;
+	using FaceRangeIterator = typename Base::ComponentRangeIterator;
+	using ConstFaceRangeIterator = typename Base::ConstComponentRangeIterator;
 
 	/** Constructor **/
 
-	FaceReferences();
+	FaceReferences() : ComponentReferences<Face, N>() {}
 
 	/** Member functions **/
 
-	unsigned int faceNumber() const;
-	unsigned int sizeMod(unsigned int i) const;
+	unsigned int faceNumber() const { return Base::componentNumber(); }
+	using Base::sizeMod;
 
-	Face*&      f(unsigned int i);
-	const Face* f(unsigned int i) const;
+	Face*&      f(unsigned int i) { return Base::c(i); }
+	const Face* f(unsigned int i) const {return Base::c(i);}
 
-	void setFace(Face* f, unsigned int i);
-	void setFaces(const std::vector<Face*>& list);
+	void setFace(Face* f, unsigned int i) {Base::setComponent(f, i);}
+	void setFaces(const std::vector<Face*>& list) {Base::setComponents(list);}
 
 	/** Member functions specific for vector **/
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushFace(Face* f);
+	internal::ReturnIfIsVector<U, void> pushFace(Face* f) { Base::pushComponent(f); }
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertFace(unsigned int i, Face* f);
+	internal::ReturnIfIsVector<U, void> insertFace(unsigned int i, Face* f)
+	{
+		Base::insertComponent(i, f);
+	}
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseFace(unsigned int i);
+	internal::ReturnIfIsVector<U, void> eraseFace(unsigned int i)
+	{
+		Base::eraseComponent(i);
+	}
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearFaces();
+	internal::ReturnIfIsVector<U, void> clearFaces()
+	{
+		Base::clearComponents();
+	}
 
 	/** Iterator Member functions **/
 
-	FaceIterator faceBegin();
-	FaceIterator faceEnd();
-	ConstFaceIterator faceBegin() const;
-	ConstFaceIterator faceEnd() const;
-	FaceRangeIterator faceIterator();
-	ConstFaceRangeIterator faceIterator() const;
+	FaceIterator faceBegin() {return Base::componentBegin();}
+	FaceIterator faceEnd() {return Base::componentEnd();}
+	ConstFaceIterator faceBegin() const {return Base::componentBegin();}
+	ConstFaceIterator faceEnd() const {return Base::componentEnd();}
+	FaceRangeIterator faceIterator() {return Base::componentIterator();}
+	ConstFaceRangeIterator faceIterator() const {return Base::componentIterator();}
 
-private:
-	Container faceRefs;
-
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
+protected:
+	void updateFaceReferences(const Face* oldBase, const Face* newBase)
+	{
+		Base::updateComponentReferences(oldBase, newBase);
+	}
 };
 
 /**
@@ -119,7 +104,5 @@ bool constexpr hasFaceReferences()
 }
 
 } // namespace mgp::components
-
-#include "face_references.cpp"
 
 #endif // MGP_MESH_COMPONENTS_FACE_REFERENCES_H
