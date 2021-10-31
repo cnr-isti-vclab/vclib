@@ -78,8 +78,8 @@ template<typename U, typename T>
 using ReturnIfHasOptionalScalar = components::ReturnIfHasOptionalScalar<U, T>;
 
 /** Port OptionalAdjacentFacesRef class into vert namespace **/
-template <typename Face, typename T>
-using OptionalAdjacentFaces = components::OptionalFaceReferences<Face, T>;
+template <typename Face, int N, typename T>
+using OptionalAdjacentFaces = components::OptionalFaceReferences<Face, N, T>;
 
 template <typename T>
 bool constexpr hasOptionalAdjacentFaces() {return components::hasOptionalFaceReferences<T>();};

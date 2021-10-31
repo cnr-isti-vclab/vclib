@@ -28,7 +28,7 @@ class OptionalFaceReferencesTriggerer
 {
 };
 
-template<class Face, typename T>
+template<class Face, int N, typename T>
 class OptionalFaceReferences :
 		public OptionalFaceReferencesTriggerer<T>,
 		public virtual OptionalInfo<T>
@@ -36,7 +36,20 @@ class OptionalFaceReferences :
 	template <typename, typename>
 	friend class OptionalFaceReferencesVector;
 private:
+	// id 0 if use the array, 1 if we use the vector
+	static const int VARIANT_ID = N >= 0 ? 0 : 1;
+
+	// if we use the vector, the size of the array will be 0
+	// actually the array will never be used and will not use memory, it's just for declaration
+	static const int ARRAY_SIZE = N >= 0 ? N : 0;
+
 	typedef OptionalInfo<T> B;
+
+	// the Container type will be array or vector, depending on N value
+	using Container = typename std::conditional<
+		(N >= 0),
+		typename std::array<Face*, ARRAY_SIZE>,
+		typename std::vector<Face*>>::type;
 
 public:
 
