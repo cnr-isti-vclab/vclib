@@ -16,12 +16,48 @@ bool constexpr hasPerFaceVertexReferences();
 template<typename MeshType>
 bool constexpr hasPerFaceVertexReferences(const MeshType&);
 
+template <typename MeshType>
+bool hasPerFaceNormal(const MeshType&);
+
+template <typename MeshType>
+bool hasPerFaceColor(const MeshType&);
+
+template <typename MeshType>
+bool hasPerFaceScalar(const MeshType&);
+
+template<typename MeshType>
+bool constexpr hasPerFaceCustomComponents();
+
+template<typename MeshType>
+bool constexpr hasPerFaceCustomComponents(const MeshType&);
+
+template <typename MeshType>
+bool hasPerFaceMutableBitFlags(const MeshType&);
+
 // require functions
 
 template <typename MeshType>
 void constexpr requirePerFaceVertexReferences();
 template <typename MeshType>
 void constexpr requirePerFaceVertexReferences(const MeshType&);
+
+template <typename MeshType>
+void requirePerFaceNormal(const MeshType& m);
+
+template <typename MeshType>
+void requirePerFaceColor(const MeshType& m);
+
+template <typename MeshType>
+void requirePerFaceScalar(const MeshType& m);
+
+template <typename MeshType>
+bool constexpr requirePerFaceCustomComponents();
+
+template <typename MeshType>
+bool constexpr requirePerFaceCustomComponents(const MeshType& m);
+
+template <typename MeshType>
+void requirePerFaceMutableBitFlags(const MeshType& m);
 
 }
 

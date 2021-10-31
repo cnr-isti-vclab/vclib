@@ -56,7 +56,7 @@ using Scalard = components::Scalard;
 template <typename T>
 bool constexpr hasScalar() {return components::hasScalar<T>();};
 
-/** Port VertexRefsArray class into face namespace **/
+/** Port VertexReferences class into face namespace **/
 template<typename Vertex, int N>
 using VertexReferences = components::VertexReferences<Vertex, N>;
 
@@ -65,6 +65,12 @@ using TriangleVertexRefs = components::TriVertexReferences<Vertex>;
 
 template <typename  T>
 bool constexpr hasVertexReferences() {return components::hasVertexReferences<T>();}
+
+/** Port MutableBitFlags class into face namespace **/
+using MutableBitFlags = components::MutableBitFlags;
+
+template <typename  T>
+bool constexpr hasMutableBitFlags() {return components::hasMutableBitFlags<T>();}
 
 } // namespace mgp::face
 

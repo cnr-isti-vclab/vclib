@@ -29,8 +29,6 @@ using Color = components::Color;
 template <typename T>
 bool constexpr hasColor() {return components::hasColor<T>();};
 
-
-
 /** Port Coordinate class into vert namespace **/
 template<class Scalar, int N>
 using Coordinate = components::Coordinate<Scalar, N>;
@@ -73,6 +71,12 @@ using AdjacentFaces = components::FaceReferences<Face, -1>;
 
 template <typename T>
 bool constexpr hasAdjacentFaces() {return components::hasFaceReferences<T>();};
+
+/** Port MutableBitFlags class into face namespace **/
+using MutableBitFlags = components::MutableBitFlags;
+
+template <typename  T>
+bool constexpr hasMutableBitFlags() {return components::hasMutableBitFlags<T>();}
 
 } // namespace mgp::vert
 
