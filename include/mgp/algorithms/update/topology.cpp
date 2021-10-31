@@ -13,6 +13,18 @@ template<typename MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m)
 {
 	mgp::requirePerVertexAdjacentFaces(m);
+	using VertexType = typename MeshType::Vertex;
+	using FaceType   = typename MeshType::Face;
+
+	for (VertexType& v : m.vertexIterator()) {
+		v.clearFaces();
+	}
+
+	for (FaceType& f : m.faceIterator()) {
+		for (unsigned int i = 0; i < f.vertexNumber(); ++i) {
+			f.v(i)->pushFace(&f);
+		}
+	}
 }
 
 }

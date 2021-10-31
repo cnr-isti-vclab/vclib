@@ -16,7 +16,7 @@ namespace mymesh {
 class Vertex;
 class Face;
 
-class Vertex : public mgp::Vertex<mgp::vert::BitFlags, mgp::vert::Coordinate3d>
+class Vertex : public mgp::Vertex<mgp::vert::BitFlags, mgp::vert::Coordinate3d, mgp::vert::AdjacentFaces<Face>>
 {
 };
 
@@ -40,6 +40,8 @@ int main()
 	MyMesh m;
 
 	mgp::io::loadPly(m, "/home/alessandro/tmp/bunny.ply");
+
+	mgp::updatePerVertexAdjacentFaces(m);
 
 	mgp::Timer t("Laplacian Smoothing");
 	mgp::vertexCoordLaplacianSmoothing(m, 500);

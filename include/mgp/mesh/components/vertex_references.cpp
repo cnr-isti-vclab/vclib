@@ -127,15 +127,13 @@ typename VertexReferences<Vertex, N>::ConstVertexIterator VertexReferences<Verte
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexRangeIterator VertexReferences<Vertex, N>::vertexIterator()
 {
-	return VertexRangeIterator(
-		vertRefs, &vertexBegin, &vertexEnd);
+	return VertexRangeIterator(*this, &vertexBegin, &vertexEnd);
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexRangeIterator VertexReferences<Vertex, N>::vertexIterator() const
 {
-	return ConstVertexRangeIterator(
-		vertRefs, &vertexBegin, &vertexEnd);
+	return ConstVertexRangeIterator(*this, &vertexBegin, &vertexEnd);
 }
 
 template<class Vertex, int N>

@@ -6,12 +6,10 @@
 #ifndef MGP_MESH_ITERATORS_CONTAINER_RANGE_ITERATOR_H
 #define MGP_MESH_ITERATORS_CONTAINER_RANGE_ITERATOR_H
 
-#include "range_iterator.h"
-
 namespace mgp {
 
 template<typename Container, typename Iterator>
-class ContainerRangeIterator : public RangeIterator<Container, Iterator>
+class ContainerRangeIterator
 {
 public:
 	ContainerRangeIterator(
@@ -19,22 +17,24 @@ public:
 		bool       jumpDeleted,
 		Iterator (Container::*beginFunction)(bool),
 		Iterator (Container::*endFunction)(void)) :
-			RangeIterator<Container, Iterator>(c, beginFunction, endFunction),
+			c(c),
+			beginFunction(beginFunction),
+			endFunction(endFunction),
 			jumpDeleted(jumpDeleted) {};
 
-	Iterator begin()
-	{
-		return (
-			RangeIterator<Container, Iterator>::c.*
-			(RangeIterator<Container, Iterator>::beginFunction))(jumpDeleted);
-	}
+	Iterator begin() { return (c.*(beginFunction))(jumpDeleted); }
+
+	Iterator end() { return (c.*(endFunction))(); }
 
 private:
+	Container& c;
+	Iterator (Container::*beginFunction)(bool);
+	Iterator (Container::*endFunction)(void);
 	bool jumpDeleted;
 };
 
 template<typename Container, typename ConstIterator>
-class ConstContainerRangeIterator : public ConstRangeIterator<Container, ConstIterator>
+class ConstContainerRangeIterator
 {
 public:
 	ConstContainerRangeIterator(
@@ -42,17 +42,19 @@ public:
 		bool             jumpDeleted,
 		ConstIterator (Container::*beginFunction)(bool) const,
 		ConstIterator (Container::*endFunction)(void) const) :
-			ConstRangeIterator<Container, ConstIterator>(c, beginFunction, endFunction),
+			c(c),
+			beginFunction(beginFunction),
+			endFunction(endFunction),
 			jumpDeleted(jumpDeleted) {};
 
-	ConstIterator begin()
-	{
-		return (
-			ConstRangeIterator<Container, ConstIterator>::c.*
-			(ConstRangeIterator<Container, ConstIterator>::beginFunction))(jumpDeleted);
-	}
+	ConstIterator begin() { return (c.*(beginFunction))(jumpDeleted); }
+
+	ConstIterator end() { return (c.*(endFunction))(); }
 
 private:
+	const Container& c;
+	ConstIterator (Container::*beginFunction)(bool) const;
+	ConstIterator (Container::*endFunction)(void) const;
 	bool jumpDeleted;
 };
 

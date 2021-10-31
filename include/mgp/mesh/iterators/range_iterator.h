@@ -14,7 +14,7 @@ class RangeIterator
 public:
 	RangeIterator(
 		Container& c,
-		Iterator (Container::*beginFunction)(bool),
+		Iterator (Container::*beginFunction)(void),
 		Iterator (Container::*endFunction)(void)) :
 			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
 
@@ -24,7 +24,7 @@ public:
 
 protected:
 	Container& c;
-	Iterator (Container::*beginFunction)(bool);
+	Iterator (Container::*beginFunction)(void);
 	Iterator (Container::*endFunction)(void);
 };
 
@@ -34,7 +34,7 @@ class ConstRangeIterator
 public:
 	ConstRangeIterator(
 		const Container& c,
-		ConstIterator (Container::*beginFunction)(bool) const,
+		ConstIterator (Container::*beginFunction)(void) const,
 		ConstIterator (Container::*endFunction)(void) const) :
 			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
 
@@ -44,7 +44,7 @@ public:
 
 protected:
 	const Container& c;
-	ConstIterator (Container::*beginFunction)(bool) const;
+	ConstIterator (Container::*beginFunction)(void) const;
 	ConstIterator (Container::*endFunction)(void) const;
 };
 

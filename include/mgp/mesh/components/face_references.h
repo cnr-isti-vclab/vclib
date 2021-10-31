@@ -87,6 +87,9 @@ public:
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> eraseFace(unsigned int i);
 
+	template<int U = N>
+	internal::ReturnIfIsVector<U, void> clearFaces();
+
 	/** Iterator Member functions **/
 
 	FaceIterator faceBegin();

@@ -9,7 +9,7 @@
 namespace mgp {
 
 template <typename MeshType>
-void updatePerVertexFaceAdjacencies(MeshType& m);
+void updatePerVertexAdjacentFaces(MeshType& m);
 
 }
 

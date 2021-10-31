@@ -101,6 +101,13 @@ internal::ReturnIfIsVector<U, void> FaceReferences<Face, N>::eraseFace(unsigned 
 }
 
 template<class Face, int N>
+template<int U>
+internal::ReturnIfIsVector<U, void> FaceReferences<Face, N>::clearFaces()
+{
+	faceRefs.clear();
+}
+
+template<class Face, int N>
 typename FaceReferences<Face, N>::FaceIterator FaceReferences<Face, N>::faceBegin()
 {
 	return faceRefs.begin();

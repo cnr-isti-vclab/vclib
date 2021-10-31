@@ -101,6 +101,13 @@ internal::ReturnIfIsVector<U, void> OptionalFaceReferences<Face, N, T>::eraseFac
 }
 
 template<class Face, int N, typename T>
+template<int U>
+internal::ReturnIfIsVector<U, void> OptionalFaceReferences<Face, N, T>::clearFaces()
+{
+	B::contPtr->faceRefs(thisId()).clear();
+}
+
+template<class Face, int N, typename T>
 typename OptionalFaceReferences<Face, N, T>::FaceIterator OptionalFaceReferences<Face, N, T>::faceBegin()
 {
 	return B::contPtr->faceRefs(thisId()).begin();
