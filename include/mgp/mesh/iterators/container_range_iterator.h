@@ -16,7 +16,7 @@ public:
 		Container& c,
 		bool       jumpDeleted,
 		Iterator (Container::*beginFunction)(bool),
-		Iterator (Container::*endFunction)(void)) :
+		Iterator (Container::*endFunction)()) :
 			c(c),
 			beginFunction(beginFunction),
 			endFunction(endFunction),
@@ -29,7 +29,7 @@ public:
 private:
 	Container& c;
 	Iterator (Container::*beginFunction)(bool);
-	Iterator (Container::*endFunction)(void);
+	Iterator (Container::*endFunction)();
 	bool jumpDeleted;
 };
 
@@ -41,7 +41,7 @@ public:
 		const Container& c,
 		bool             jumpDeleted,
 		ConstIterator (Container::*beginFunction)(bool) const,
-		ConstIterator (Container::*endFunction)(void) const) :
+		ConstIterator (Container::*endFunction)() const) :
 			c(c),
 			beginFunction(beginFunction),
 			endFunction(endFunction),
@@ -54,7 +54,7 @@ public:
 private:
 	const Container& c;
 	ConstIterator (Container::*beginFunction)(bool) const;
-	ConstIterator (Container::*endFunction)(void) const;
+	ConstIterator (Container::*endFunction)() const;
 	bool jumpDeleted;
 };
 

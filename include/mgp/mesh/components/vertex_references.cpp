@@ -113,27 +113,32 @@ typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>
 }
 
 template<class Vertex, int N>
-typename VertexReferences<Vertex, N>::ConstVertexIterator VertexReferences<Vertex, N>::vertexBegin() const
+typename VertexReferences<Vertex, N>::ConstVertexIterator
+VertexReferences<Vertex, N>::vertexBegin() const
 {
 	return vertRefs.begin();
 }
 
 template<class Vertex, int N>
-typename VertexReferences<Vertex, N>::ConstVertexIterator VertexReferences<Vertex, N>::vertexEnd() const
+typename VertexReferences<Vertex, N>::ConstVertexIterator
+VertexReferences<Vertex, N>::vertexEnd() const
 {
 	return vertRefs.end();
 }
 
 template<class Vertex, int N>
-typename VertexReferences<Vertex, N>::VertexRangeIterator VertexReferences<Vertex, N>::vertexIterator()
+typename VertexReferences<Vertex, N>::VertexRangeIterator
+VertexReferences<Vertex, N>::vertexIterator()
 {
-	return VertexRangeIterator(*this, &vertexBegin, &vertexEnd);
+	return VertexRangeIterator(*this, &VertexReferences::vertexBegin, &VertexReferences::vertexEnd);
 }
 
 template<class Vertex, int N>
-typename VertexReferences<Vertex, N>::ConstVertexRangeIterator VertexReferences<Vertex, N>::vertexIterator() const
+typename VertexReferences<Vertex, N>::ConstVertexRangeIterator
+VertexReferences<Vertex, N>::vertexIterator() const
 {
-	return ConstVertexRangeIterator(*this, &vertexBegin, &vertexEnd);
+	return ConstVertexRangeIterator(
+		*this, &VertexReferences::vertexBegin, &VertexReferences::vertexEnd);
 }
 
 template<class Vertex, int N>

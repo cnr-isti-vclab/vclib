@@ -85,8 +85,7 @@ internal::ReturnIfIsVector<U, void> FaceReferences<Face, N>::pushFace(Face* f)
 
 template<class Face, int N>
 template<int U>
-internal::ReturnIfIsVector<U, void>
-FaceReferences<Face, N>::insertFace(unsigned int i, Face* f)
+internal::ReturnIfIsVector<U, void> FaceReferences<Face, N>::insertFace(unsigned int i, Face* f)
 {
 	assert(i < faceNumber());
 	faceRefs.insert(faceRefs.begin() + i, f);
@@ -134,21 +133,18 @@ typename FaceReferences<Face, N>::ConstFaceIterator FaceReferences<Face, N>::fac
 template<class Face, int N>
 typename FaceReferences<Face, N>::FaceRangeIterator FaceReferences<Face, N>::faceIterator()
 {
-	return FaceRangeIterator(
-		faceRefs, &faceBegin, &faceEnd);
+	return FaceRangeIterator(faceRefs, &FaceReferences::faceBegin, &FaceReferences::faceEnd);
 }
 
 template<class Face, int N>
-typename FaceReferences<Face, N>::ConstFaceRangeIterator FaceReferences<Face, N>::faceIterator() const
+typename FaceReferences<Face, N>::ConstFaceRangeIterator
+FaceReferences<Face, N>::faceIterator() const
 {
-	return ConstFaceRangeIterator(
-		faceRefs, &faceBegin, &faceEnd);
+	return ConstFaceRangeIterator(faceRefs, &FaceReferences::faceBegin, &FaceReferences::faceEnd);
 }
 
 template<class Face, int N>
-void FaceReferences<Face, N>::updateFaceReferences(
-	const Face* oldBase,
-	const Face* newBase)
+void FaceReferences<Face, N>::updateFaceReferences(const Face* oldBase, const Face* newBase)
 {
 	for (unsigned int j = 0; j < faceNumber(); ++j) {
 		if (f(j) != nullptr) {

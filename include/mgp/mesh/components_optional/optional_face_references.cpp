@@ -108,41 +108,51 @@ internal::ReturnIfIsVector<U, void> OptionalFaceReferences<Face, N, T>::clearFac
 }
 
 template<class Face, int N, typename T>
-typename OptionalFaceReferences<Face, N, T>::FaceIterator OptionalFaceReferences<Face, N, T>::faceBegin()
+typename OptionalFaceReferences<Face, N, T>::FaceIterator
+OptionalFaceReferences<Face, N, T>::faceBegin()
 {
 	return B::contPtr->faceRefs(thisId()).begin();
 }
 
 template<class Face, int N, typename T>
-typename OptionalFaceReferences<Face, N, T>::FaceIterator OptionalFaceReferences<Face, N, T>::faceEnd()
+typename OptionalFaceReferences<Face, N, T>::FaceIterator
+OptionalFaceReferences<Face, N, T>::faceEnd()
 {
 	return B::contPtr->faceRefs(thisId()).end();
 }
 
 template<class Face, int N, typename T>
-typename OptionalFaceReferences<Face, N, T>::ConstFaceIterator OptionalFaceReferences<Face, N, T>::faceBegin() const
+typename OptionalFaceReferences<Face, N, T>::ConstFaceIterator
+OptionalFaceReferences<Face, N, T>::faceBegin() const
 {
 	return B::contPtr->faceRefs(thisId()).begin();
 }
 
 template<class Face, int N, typename T>
-typename OptionalFaceReferences<Face, N, T>::ConstFaceIterator OptionalFaceReferences<Face, N, T>::faceEnd() const
+typename OptionalFaceReferences<Face, N, T>::ConstFaceIterator
+OptionalFaceReferences<Face, N, T>::faceEnd() const
 {
 	return B::contPtr->faceRefs(thisId()).end();
 }
 
 template<class Face, int N, typename T>
-typename OptionalFaceReferences<Face, N, T>::FaceRangeIterator OptionalFaceReferences<Face, N, T>::faceIterator()
+typename OptionalFaceReferences<Face, N, T>::FaceRangeIterator
+OptionalFaceReferences<Face, N, T>::faceIterator()
 {
 	return FaceRangeIterator(
-		B::contPtr->faceRefs(thisId()), &faceBegin, &faceEnd);
+		B::contPtr->faceRefs(thisId()),
+		&OptionalFaceReferences::faceBegin,
+		&OptionalFaceReferences::faceEnd);
 }
 
 template<class Face, int N, typename T>
-typename OptionalFaceReferences<Face, N, T>::ConstFaceRangeIterator OptionalFaceReferences<Face, N, T>::faceIterator() const
+typename OptionalFaceReferences<Face, N, T>::ConstFaceRangeIterator
+OptionalFaceReferences<Face, N, T>::faceIterator() const
 {
 	return ConstFaceRangeIterator(
-		B::contPtr->faceRefs(thisId()), &faceBegin, &faceEnd);
+		B::contPtr->faceRefs(thisId()),
+		&OptionalFaceReferences::faceBegin,
+		&OptionalFaceReferences::faceEnd);
 }
 
 template<class Face, int N, typename T>
@@ -158,4 +168,4 @@ void OptionalFaceReferences<Face, N, T>::updateFaceReferences(
 	}
 }
 
-}
+} // namespace mgp::components

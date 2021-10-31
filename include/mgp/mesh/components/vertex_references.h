@@ -58,8 +58,8 @@ public:
 		typename std::array<Vertex*, ARRAY_SIZE>::const_iterator,
 		typename std::vector<Vertex*>::const_iterator>::type;
 
-	using VertexRangeIterator = RangeIterator<Container, VertexIterator>;
-	using ConstVertexRangeIterator = ConstRangeIterator<Container, ConstVertexIterator>;
+	using VertexRangeIterator = RangeIterator<VertexReferences, VertexIterator>;
+	using ConstVertexRangeIterator = ConstRangeIterator<VertexReferences, ConstVertexIterator>;
 
 	/** Constructor **/
 

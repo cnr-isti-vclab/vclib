@@ -58,8 +58,8 @@ public:
 		typename std::array<Face*, ARRAY_SIZE>::const_iterator,
 		typename std::vector<Face*>::const_iterator>::type;
 
-	using FaceRangeIterator = RangeIterator<Container, FaceIterator>;
-	using ConstFaceRangeIterator = ConstRangeIterator<Container, ConstFaceIterator>;
+	using FaceRangeIterator = RangeIterator<FaceReferences, FaceIterator>;
+	using ConstFaceRangeIterator = ConstRangeIterator<FaceReferences, ConstFaceIterator>;
 
 	/** Constructor **/
 

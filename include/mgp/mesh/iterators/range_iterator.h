@@ -14,8 +14,8 @@ class RangeIterator
 public:
 	RangeIterator(
 		Container& c,
-		Iterator (Container::*beginFunction)(void),
-		Iterator (Container::*endFunction)(void)) :
+		Iterator (Container::*beginFunction)(),
+		Iterator (Container::*endFunction)()) :
 			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
 
 	Iterator begin() { return (c.*(beginFunction))(); }
@@ -24,8 +24,8 @@ public:
 
 protected:
 	Container& c;
-	Iterator (Container::*beginFunction)(void);
-	Iterator (Container::*endFunction)(void);
+	Iterator (Container::*beginFunction)();
+	Iterator (Container::*endFunction)();
 };
 
 template<typename Container, typename ConstIterator>
@@ -34,8 +34,8 @@ class ConstRangeIterator
 public:
 	ConstRangeIterator(
 		const Container& c,
-		ConstIterator (Container::*beginFunction)(void) const,
-		ConstIterator (Container::*endFunction)(void) const) :
+		ConstIterator (Container::*beginFunction)() const,
+		ConstIterator (Container::*endFunction)() const) :
 			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
 
 	ConstIterator begin() { return (c.*(beginFunction))(); }
@@ -44,8 +44,8 @@ public:
 
 protected:
 	const Container& c;
-	ConstIterator (Container::*beginFunction)(void) const;
-	ConstIterator (Container::*endFunction)(void) const;
+	ConstIterator (Container::*beginFunction)() const;
+	ConstIterator (Container::*endFunction)() const;
 };
 
 }

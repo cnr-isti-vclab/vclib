@@ -21,8 +21,8 @@ void updatePerVertexAdjacentFaces(MeshType& m)
 	}
 
 	for (FaceType& f : m.faceIterator()) {
-		for (unsigned int i = 0; i < f.vertexNumber(); ++i) {
-			f.v(i)->pushFace(&f);
+		for (VertexType* v : f.vertexIterator()){
+			v->pushFace(&f);
 		}
 	}
 }
