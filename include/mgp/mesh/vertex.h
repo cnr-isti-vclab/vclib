@@ -15,6 +15,10 @@ namespace mgp::mesh {
 template<typename, typename>
 class Container;
 
+// VertexOptionalContainer class declaration
+template<typename, typename>
+class VertexOptionalContainer;
+
 } // namespace mgp::mesh
 
 namespace mgp::vert {
@@ -45,6 +49,9 @@ class Vertex : public VertexTriggerer, public vert::Component<Args>...
 {
 	template<typename, typename>
 	friend class mesh::Container;
+
+	template<typename, typename>
+	friend class mesh::VertexOptionalContainer;
 public:
 	unsigned int id() const { return _id; }
 protected:

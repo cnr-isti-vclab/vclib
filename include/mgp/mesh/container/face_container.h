@@ -8,8 +8,7 @@
 
 #include "container_t.h"
 
-#include "../components_vector/components_vector.h"
-#include "../face.h"
+#include "face_optional_container.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
 
@@ -30,7 +29,8 @@ using IfIsFace = std::enable_if_t<std::is_base_of<FaceTriggerer, T>::value>;
  * enablers/disablers of the eventual optional components of the face.
  */
 template<class T>
-class Container<T, IfIsFace<T>> : public FaceContainerTriggerer
+class Container<T, IfIsFace<T>> :
+		public FaceOptionalContainer<T>, public FaceContainerTriggerer
 {
 	static_assert(
 		mgp::face::hasBitFlags<T>(),
@@ -42,6 +42,7 @@ class Container<T, IfIsFace<T>> : public FaceContainerTriggerer
 protected:
 	// types:
 	using FaceContainer = Container<T, IfIsFace<T>>;
+	using OptionalFaceContainer = FaceOptionalContainer<T>;
 
 public:
 	using FaceType               = T;
@@ -58,21 +59,6 @@ public:
 	unsigned int faceNumber() const;
 	unsigned int faceContainerSize() const;
 
-	template<typename U = T>
-	face::ReturnIfHasOptionalColor<U, void> enablePerFaceColor();
-
-	template<typename U = T>
-	face::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerFaceMutableFlags();
-
-	template<typename U = T>
-	face::ReturnIfHasOptionalNormal<U, void> enablePerFaceNormal();
-
-	template<typename U = T>
-	face::ReturnIfHasOptionalScalar<U, void> enablePerFaceScalar();
-	
-	template<typename K, typename U = T>
-	face::ReturnIfHasCustomComponents<U, void> addPerFaceCustomComponent(const std::string& name);
-
 	FaceIterator           faceBegin(bool jumpDeleted = true);
 	FaceIterator           faceEnd();
 	ConstFaceIterator      faceBegin(bool jumpDeleted = true) const;
@@ -86,12 +72,6 @@ protected:
 	 * Optional components will be contained in the optionalComponentsVector.
 	 */
 	std::vector<T> faces;
-	/**
-	 * @brief optionalComponentsVector contains all the optional components data of the face, that
-	 * will be enabled - disabled at runtime.
-	 * Each face that has at least one optional component, will store a pointer to this vector.
-	 */
-	ComponentsVector<T> optionalComponentsVector;
 
 	/**
 	 * @brief fn: the number of faces in the container. Could be different from faces.size()

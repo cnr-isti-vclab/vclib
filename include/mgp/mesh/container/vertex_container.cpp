@@ -41,78 +41,7 @@ unsigned int Container<T, IfIsVertex<T> >::vertexContainerSize() const
 	return vertices.size();
 }
 
-/**
- * @brief Container::enableVertexColor enable the Optional Color of the vertex.
- * This function is available **only if the Vertex Element has the OptionalColor Component**.
- */
-template<class T>
-template<class U>
-vert::ReturnIfHasOptionalColor<U, void> Container<T, IfIsVertex<T>>::enablePerVertexColor()
-{
-	optionalComponentsVector.enableColor(vertexNumber());
-}
 
-/**
- * @brief Container::enableVertexMutableFlags enable the Optional Mutable Flags of the vertex.
- * This function is available **only if the Vertex Element has the OptionalMutableBitFlags Component**.
- */
-template<class T>
-template<class U>
-vert::ReturnIfHasOptionalMutableBitFlags<U, void>
-Container<T, IfIsVertex<T>>::enablePerVertexMutableFlags()
-{
-	optionalComponentsVector.enableMutableBitFlags(vertexNumber());
-}
-
-/**
- * @brief Container::enableVertexNormal enable the Optional Normal of the vertex.
- * This function is available **only if the Vertex Element has the OptionalNormal Component**.
- */
-template<class T>
-template<class U>
-vert::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsVertex<T>>::enablePerVertexNormal()
-{
-	optionalComponentsVector.enableNormal(vertexNumber());
-}
-
-template<class T>
-template<class U>
-vert::ReturnIfHasOptionalNormal<U, bool> Container<T, IfIsVertex<T>>::isPerVertexNormalEnabled() const
-{
-	return optionalComponentsVector.isNormalEnabled();
-}
-
-/**
- * @brief Container::enableVertexScalar enable the Optional Scalar of the vertex.
- * This function is available **only if the Vertex Element has the OptionalScalar Component**.
- */
-template<class T>
-template<class U>
-vert::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsVertex<T>>::enablePerVertexScalar()
-{
-	optionalComponentsVector.enableScalar(vertexNumber());
-}
-
-template<class T>
-template<class U>
-vert::ReturnIfHasOptionalAdjacentFaces<U, void> Container<T, IfIsVertex<T>>::enablePerVertexAdjacentFaces()
-{
-	optionalComponentsVector.enableFaceReferences(vertexNumber());
-}
-
-template<class T>
-template<class U>
-vert::ReturnIfHasOptionalAdjacentFaces<U, bool> Container<T, IfIsVertex<T>>::isPerVertexAdjacentFacesEnabled() const
-{
-	return optionalComponentsVector.isFaceReferencesEnabled();
-}
-
-template<class T>
-template<typename K, typename U>
-vert::ReturnIfHasCustomComponents<U, void> Container<T, IfIsVertex<T> >::addPerVertexCustomComponent(const std::string& name)
-{
-	optionalComponentsVector.template addNewComponent<K>(name, vertices.size());
-}
 
 template<class T>
 typename Container<T, IfIsVertex<T>>::VertexIterator
@@ -180,8 +109,8 @@ unsigned int Container<T, IfIsVertex<T>>::addVertex()
 	++vn;
 	vertices[vertices.size() - 1]._id = vertices.size() - 1;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		vertices[vertices.size() - 1].setContainerPointer(&optionalComponentsVector);
-		optionalComponentsVector.resize(vertices.size());
+		OptionalVertexContainer::setContainerPointer(vertices[vertices.size() - 1]);
+		OptionalVertexContainer::resize(vertices.size());
 	}
 	return vertices[vertices.size() - 1]._id;
 }
@@ -191,12 +120,12 @@ void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {
 	vertices.reserve(size);
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		optionalComponentsVector.reserve(size);
+		OptionalVertexContainer::reserve(size);
 	}
 }
 
 template<class T>
-template<class Face>
+template<typename  Face>
 void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, const Face* newBase)
 {
 	if constexpr (mgp::components::hasFaceReferences<T>()) {
@@ -205,7 +134,7 @@ void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, cons
 		}
 	}
 	else if constexpr (mgp::components::hasOptionalFaceReferences<T>()){
-		if (isPerVertexAdjacentFacesEnabled()) {
+		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
 			for (VertexType& v : vertexIterator()) {
 				v.updateFaceReferences(oldBase, newBase);
 			}

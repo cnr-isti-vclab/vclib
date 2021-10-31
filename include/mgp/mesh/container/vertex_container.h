@@ -8,10 +8,9 @@
 
 #include "container_t.h"
 
-#include "../components_vector/components_vector.h"
+#include "vertex_optional_container.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
-#include "../vertex.h"
 
 namespace mgp::mesh {
 
@@ -21,7 +20,6 @@ class VertexContainerTriggerer {};
 template<class T>
 using IfIsVertex = std::enable_if_t<std::is_base_of<VertexTriggerer, T>::value>;
 
-template<class T>
 /**
  * @brief The Vertex Container class, will be used when the template argument given to the Mesh is a
  * mgp::Vertex.
@@ -30,7 +28,9 @@ template<class T>
  * members to the vertices, the vertex number, iterators... This class will also take care to add
  * enablers/disablers of the eventual optional components of the vertex.
  */
-class Container<T, IfIsVertex<T>> : public VertexContainerTriggerer
+template<class T>
+class Container<T, IfIsVertex<T>> :
+		public VertexOptionalContainer<T>, public VertexContainerTriggerer
 {
 	static_assert(
 		mgp::vert::hasBitFlags<T>(),
@@ -39,6 +39,7 @@ class Container<T, IfIsVertex<T>> : public VertexContainerTriggerer
 protected:
 	// types:
 	using VertexContainer = Container<T, IfIsVertex<T>>;
+	using OptionalVertexContainer = VertexOptionalContainer<T>;
 
 public:
 	using VertexType               = T;
@@ -55,28 +56,6 @@ public:
 	unsigned int vertexNumber() const;
 	unsigned int vertexContainerSize() const;
 
-	template<typename U = T>
-	vert::ReturnIfHasOptionalColor<U, void> enablePerVertexColor();
-
-	template<typename U = T>
-	vert::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerVertexMutableFlags();
-
-	template<typename U = T>
-	vert::ReturnIfHasOptionalNormal<U, void> enablePerVertexNormal();
-	template<typename U = T>
-	vert::ReturnIfHasOptionalNormal<U, bool> isPerVertexNormalEnabled() const;
-
-	template<typename U = T>
-	vert::ReturnIfHasOptionalScalar<U, void> enablePerVertexScalar();
-
-	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerVertexAdjacentFaces();
-	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerVertexAdjacentFacesEnabled() const;
-	
-	template<typename K, typename U = T>
-	vert::ReturnIfHasCustomComponents<U, void> addPerVertexCustomComponent(const std::string& name);
-
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
 	VertexIterator           vertexEnd();
 	ConstVertexIterator      vertexBegin(bool jumpDeleted = true) const;
@@ -90,12 +69,6 @@ protected:
 	 * components. Optional components will be contained in the optionalComponentsVector.
 	 */
 	std::vector<T> vertices;
-	/**
-	 * @brief optionalComponentsVector contains all the optional components data of the vertex, that
-	 * will be enabled - disabled at runtime.
-	 * Each vertex that has at least one optional component, will store a pointer to this vector.
-	 */
-	ComponentsVector<T> optionalComponentsVector;
 
 	/**
 	 * @brief vn: the number of vertices in the container. Could be different from vertices.size()

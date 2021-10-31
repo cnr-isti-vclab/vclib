@@ -39,13 +39,14 @@ int main()
 		v.customComponent<char>("prova") = 'a';
 	
 	m.enablePerFaceScalar();
-	m.enablePerFaceColor();
 
 	m.addFace();
 	m.addFace();
 	m.addFace();
 	m.addFace();
 	m.addFace();
+
+	m.enablePerFaceColor();
 
 	m.face(0).setVertices({&m.vertex(0), &m.vertex(1), &m.vertex(2)});
 

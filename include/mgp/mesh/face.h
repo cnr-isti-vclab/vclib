@@ -15,6 +15,10 @@ namespace mgp::mesh {
 template<typename, typename>
 class Container;
 
+// FaceOptionalContainer class declaration
+template<typename, typename>
+class FaceOptionalContainer;
+
 } // namespace mgp::mesh
 
 namespace mgp::face {
@@ -45,6 +49,9 @@ class Face : public FaceTriggerer, public face::Component<Args>...
 {
 	template<typename, typename>
 	friend class mesh::Container;
+
+	template<typename, typename>
+	friend class mesh::FaceOptionalContainer;
 public:
 	unsigned int id() const { return _id; }
 protected:
