@@ -94,6 +94,7 @@ set(SOURCES
 	${MGP_SRC_DIR}/mesh/components/mutable_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/components/vertex_references.cpp
 	${MGP_SRC_DIR}/mesh/components/triangle_bit_flags.cpp
+	${MGP_SRC_DIR}/mesh/components_optional/optional_face_references.cpp
 	${MGP_SRC_DIR}/mesh/components_optional/optional_mutable_bit_flags.cpp
 	${MGP_SRC_DIR}/mesh/container/face_container.cpp
 	${MGP_SRC_DIR}/mesh/container/vertex_container.cpp

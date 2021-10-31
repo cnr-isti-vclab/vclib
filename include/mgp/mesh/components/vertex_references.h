@@ -97,7 +97,7 @@ public:
 	ConstVertexRangeIterator vertexIterator() const;
 
 protected:
-	Container refs;
+	Container vertRefs;
 
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 };
@@ -109,16 +109,16 @@ private:
 	using B = VertexReferences<Vertex, 3>;
 
 public:
-	Vertex*&      v0() { return B::refs[0]; }
-	Vertex*&      v1() { return B::refs[1]; }
-	Vertex*&      v2() { return B::refs[2]; }
-	const Vertex* v0() const { return B::refs[0]; }
-	const Vertex* v1() const { return B::refs[1]; }
-	const Vertex* v2() const { return B::refs[2]; }
+	Vertex*&      v0() { return B::vertRefs[0]; }
+	Vertex*&      v1() { return B::vertRefs[1]; }
+	Vertex*&      v2() { return B::vertRefs[2]; }
+	const Vertex* v0() const { return B::vertRefs[0]; }
+	const Vertex* v1() const { return B::vertRefs[1]; }
+	const Vertex* v2() const { return B::vertRefs[2]; }
 
-	void setV0(Vertex* v) { B::refs[0] = v; }
-	void setV1(Vertex* v) { B::refs[1] = v; }
-	void setV2(Vertex* v) { B::refs[2] = v; }
+	void setV0(Vertex* v) { B::vertRefs[0] = v; }
+	void setV1(Vertex* v) { B::vertRefs[1] = v; }
+	void setV2(Vertex* v) { B::vertRefs[2] = v; }
 };
 
 template<typename T>

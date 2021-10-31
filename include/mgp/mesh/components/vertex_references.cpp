@@ -13,12 +13,12 @@ VertexReferences<Vertex, N>::VertexReferences()
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
 		// There will be a static number of references.
-		refs = std::array<Vertex*, N> {nullptr};
+		vertRefs = std::array<Vertex*, N> {nullptr};
 	}
 	else {
 		// I'll use the vector, because N is < 0.
 		// There will be a dynamic number of references.
-		refs = std::vector<Vertex*>();
+		vertRefs = std::vector<Vertex*>();
 	}
 }
 
@@ -29,7 +29,7 @@ unsigned int VertexReferences<Vertex, N>::vertexNumber() const
 		return N;
 	}
 	else {
-		return refs.size();
+		return vertRefs.size();
 	}
 }
 
@@ -43,21 +43,21 @@ template<class Vertex, int N>
 Vertex*& VertexReferences<Vertex, N>::v(unsigned int i)
 {
 	assert(i < vertexNumber());
-	return refs[i];
+	return vertRefs[i];
 }
 
 template<class Vertex, int N>
 const Vertex* VertexReferences<Vertex, N>::v(unsigned int i) const
 {
 	assert(i < vertexNumber());
-	return refs[i];
+	return vertRefs[i];
 }
 
 template<class Vertex, int N>
 void VertexReferences<Vertex, N>::setVertex(Vertex* v, unsigned int i)
 {
 	assert(i < vertexNumber());
-	refs[i] = v;
+	vertRefs[i] = v;
 }
 
 template<class Vertex, int N>
@@ -72,7 +72,7 @@ void VertexReferences<Vertex, N>::setVertices(const std::vector<Vertex*>& list)
 		}
 	}
 	else {
-		refs = list;
+		vertRefs = list;
 	}
 }
 
@@ -80,7 +80,7 @@ template<class Vertex, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> VertexReferences<Vertex, N>::pushVertex(Vertex* v)
 {
-	refs.push_back(v);
+	vertRefs.push_back(v);
 }
 
 template<class Vertex, int N>
@@ -89,7 +89,7 @@ internal::ReturnIfIsVector<U, void>
 VertexReferences<Vertex, N>::insertVertex(unsigned int i, Vertex* v)
 {
 	assert(i < vertexNumber());
-	refs.insert(refs.begin() + i, v);
+	vertRefs.insert(vertRefs.begin() + i, v);
 }
 
 template<class Vertex, int N>
@@ -97,45 +97,45 @@ template<int U>
 internal::ReturnIfIsVector<U, void> VertexReferences<Vertex, N>::eraseVertex(unsigned int i)
 {
 	assert(i < vertexNumber());
-	refs.erase(refs.begin() + i);
+	vertRefs.erase(vertRefs.begin() + i);
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexBegin()
 {
-	return refs.begin();
+	return vertRefs.begin();
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexEnd()
 {
-	return refs.end();
+	return vertRefs.end();
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexIterator VertexReferences<Vertex, N>::vertexBegin() const
 {
-	return refs.begin();
+	return vertRefs.begin();
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexIterator VertexReferences<Vertex, N>::vertexEnd() const
 {
-	return refs.end();
+	return vertRefs.end();
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexRangeIterator VertexReferences<Vertex, N>::vertexIterator()
 {
 	return VertexRangeIterator(
-		refs, &vertexBegin, &vertexEnd);
+		vertRefs, &vertexBegin, &vertexEnd);
 }
 
 template<class Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexRangeIterator VertexReferences<Vertex, N>::vertexIterator() const
 {
 	return ConstVertexRangeIterator(
-		refs, &vertexBegin, &vertexEnd);
+		vertRefs, &vertexBegin, &vertexEnd);
 }
 
 template<class Vertex, int N>

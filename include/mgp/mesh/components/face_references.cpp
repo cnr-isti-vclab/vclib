@@ -13,12 +13,12 @@ FaceReferences<Face, N>::FaceReferences()
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
 		// There will be a static number of references.
-		refs = std::array<Face*, N> {nullptr};
+		faceRefs = std::array<Face*, N> {nullptr};
 	}
 	else {
 		// I'll use the vector, because N is < 0.
 		// There will be a dynamic number of references.
-		refs = std::vector<Face*>();
+		faceRefs = std::vector<Face*>();
 	}
 }
 
@@ -29,7 +29,7 @@ unsigned int FaceReferences<Face, N>::faceNumber() const
 		return N;
 	}
 	else {
-		return refs.size();
+		return faceRefs.size();
 	}
 }
 
@@ -42,22 +42,22 @@ unsigned int FaceReferences<Face, N>::sizeMod(unsigned int i) const
 template<class Face, int N>
 Face*& FaceReferences<Face, N>::f(unsigned int i)
 {
-	assert(i < vertexNumber());
-	return refs[i];
+	assert(i < faceNumber());
+	return faceRefs[i];
 }
 
 template<class Face, int N>
 const Face* FaceReferences<Face, N>::f(unsigned int i) const
 {
-	assert(i < vertexNumber());
-	return refs[i];
+	assert(i < faceNumber());
+	return faceRefs[i];
 }
 
 template<class Face, int N>
 void FaceReferences<Face, N>::setFace(Face* f, unsigned int i)
 {
-	assert(i < vertexNumber());
-	refs[i] = f;
+	assert(i < faceNumber());
+	faceRefs[i] = f;
 }
 
 template<class Face, int N>
@@ -72,7 +72,7 @@ void FaceReferences<Face, N>::setFaces(const std::vector<Face*>& list)
 		}
 	}
 	else {
-		refs = list;
+		faceRefs = list;
 	}
 }
 
@@ -80,7 +80,7 @@ template<class Face, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> FaceReferences<Face, N>::pushFace(Face* f)
 {
-	refs.push_back(f);
+	faceRefs.push_back(f);
 }
 
 template<class Face, int N>
@@ -88,54 +88,54 @@ template<int U>
 internal::ReturnIfIsVector<U, void>
 FaceReferences<Face, N>::insertFace(unsigned int i, Face* f)
 {
-	assert(i < vertexNumber());
-	refs.insert(refs.begin() + i, f);
+	assert(i < faceNumber());
+	faceRefs.insert(faceRefs.begin() + i, f);
 }
 
 template<class Face, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> FaceReferences<Face, N>::eraseFace(unsigned int i)
 {
-	assert(i < vertexNumber());
-	refs.erase(refs.begin() + i);
+	assert(i < faceNumber());
+	faceRefs.erase(faceRefs.begin() + i);
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::FaceIterator FaceReferences<Face, N>::faceBegin()
 {
-	return refs.begin();
+	return faceRefs.begin();
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::FaceIterator FaceReferences<Face, N>::faceEnd()
 {
-	return refs.end();
+	return faceRefs.end();
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::ConstFaceIterator FaceReferences<Face, N>::faceBegin() const
 {
-	return refs.begin();
+	return faceRefs.begin();
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::ConstFaceIterator FaceReferences<Face, N>::faceEnd() const
 {
-	return refs.end();
+	return faceRefs.end();
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::FaceRangeIterator FaceReferences<Face, N>::faceIterator()
 {
 	return FaceRangeIterator(
-		refs, &faceBegin, &faceEnd);
+		faceRefs, &faceBegin, &faceEnd);
 }
 
 template<class Face, int N>
 typename FaceReferences<Face, N>::ConstFaceRangeIterator FaceReferences<Face, N>::faceIterator() const
 {
 	return ConstFaceRangeIterator(
-		refs, &faceBegin, &faceEnd);
+		faceRefs, &faceBegin, &faceEnd);
 }
 
 template<class Face, int N>

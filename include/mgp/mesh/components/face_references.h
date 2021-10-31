@@ -73,16 +73,16 @@ public:
 	Face*&      f(unsigned int i);
 	const Face* f(unsigned int i) const;
 
-	void setFace(Face* v, unsigned int i);
+	void setFace(Face* f, unsigned int i);
 	void setFaces(const std::vector<Face*>& list);
 
 	/** Member functions specific for vector **/
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushFace(Face* v);
+	internal::ReturnIfIsVector<U, void> pushFace(Face* f);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertFace(unsigned int i, Face* v);
+	internal::ReturnIfIsVector<U, void> insertFace(unsigned int i, Face* f);
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> eraseFace(unsigned int i);
@@ -97,7 +97,7 @@ public:
 	ConstFaceRangeIterator faceIterator() const;
 
 private:
-	Container refs;
+	Container faceRefs;
 
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 };

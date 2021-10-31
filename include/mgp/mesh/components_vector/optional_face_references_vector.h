@@ -24,31 +24,20 @@ template<typename T>
 class OptionalFaceReferencesVector<
 	T,
 	std::enable_if_t<components::hasOptionalFaceReferences<T>()>> :
-		// inherit from a generic vector of variants, that may contain:
-		// - array of FaceType* (if the number of references is fixed)
-		// - vector of FaceType* (if the number of references is dynamic)
-		// which one will be used is managed by the OptionalFaceReferences class
-		// this class is friend of OptionalFaceReferences, therefore it is allowed to use
-		// T::FaceType::ARRAY_SIZE
-		private OptionalGenericVector<std::variant<
-			std::array<typename T::FaceType*, T::FaceType::ARRAY_SIZE>,
-			std::vector<typename T::FaceType*>>>
+		private OptionalGenericVector<typename T::Container>
 {
 private:
-	using FaceType = typename T::FaceType;
 	using Base = OptionalGenericVector<std::vector<typename T::FaceType*>>;
-	using VariantContainer = std::variant<
-		std::array<typename T::FaceType*, T::FaceType::ARRAY_SIZE>,
-		std::vector<typename T::FaceType*>>;
+	using Container = typename T::Container;
 
 public:
 	using Base::reserve;
 	using Base::resize;
-	bool                    isFaceReferencesEnabled() const { return Base::isEnabled(); };
-	void                    enableFaceReferences(unsigned int size) { Base::enable(size); }
-	void                    disableFaceReferences() { Base::disable(); }
-	VariantContainer&       faceRefs(unsigned int i) { return Base::at(i); }
-	const VariantContainer& faceRefs(unsigned int i) const { return Base::at(i); }
+	bool             isFaceReferencesEnabled() const { return Base::isEnabled(); };
+	void             enableFaceReferences(unsigned int size) { Base::enable(size); }
+	void             disableFaceReferences() { Base::disable(); }
+	Container&       faceRefs(unsigned int i) { return Base::at(i); }
+	const Container& faceRefs(unsigned int i) const { return Base::at(i); }
 };
 
 } // namespace mgp::mesh
