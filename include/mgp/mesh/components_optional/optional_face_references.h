@@ -43,6 +43,7 @@ class OptionalFaceReferences :
 {
 	template <typename, typename>
 	friend class OptionalFaceReferencesVector;
+
 private:
 	typedef OptionalInfo<T> B;
 
@@ -50,13 +51,13 @@ private:
 	// actually the array will never be used and will not use memory, it's just for declaration
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
+public:
 	// the Container type will be array or vector, depending on N value
 	using Container = typename std::conditional<
 		(N >= 0),
 		typename std::array<Face*, ARRAY_SIZE>,
 		typename std::vector<Face*>>::type;
 
-public:
 	static const int FACE_NUMBER = N;
 
 	/** Iterator Types declaration **/
@@ -113,10 +114,11 @@ public:
 	FaceRangeIterator faceIterator();
 	ConstFaceRangeIterator faceIterator() const;
 
+protected:
+	void updateFaceReferences(const Face* oldBase, const Face* newBase);
+
 private:
 	unsigned int thisId() const { return ((T*) this)->id(); }
-
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 };
 
 /**

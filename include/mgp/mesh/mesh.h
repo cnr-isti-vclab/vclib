@@ -25,13 +25,24 @@ protected:
 public:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex();
+
+	template<typename U = Mesh>
+	mesh::ReturnIfHasVertexContainer<U, void> reserveVertices(unsigned int i);
+
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace();
+
+	template<typename U = Mesh>
+	mesh::ReturnIfHasFaceContainer<U, void> reserveFaces(unsigned int i);
 
 protected:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, void>
 	updateVertexReferences(const typename U::VertexType* oldBase, const typename U::VertexType* newBase);
+
+	template<typename U = Mesh>
+	mesh::ReturnIfHasFaceContainer<U, void>
+	updateFaceReferences(const typename U::FaceType* oldBase, const typename U::FaceType* newBase);
 };
 
 } // namespace mgp

@@ -16,7 +16,7 @@ int main()
 	m.addVertex();
 	m.addVertex();
 
-	m.enableVertexMutableFlags();
+	m.enablePerVertexMutableFlags();
 
 	m.vertex(0).coordinate() = mgp::Point3d(0, 0, 0);
 	m.vertex(1).coordinate() = mgp::Point3d(0, 1, 0);
@@ -33,13 +33,13 @@ int main()
 	m.vertex(1).color() = mgp::Color(3, 63, 44);
 	m.vertex(2).color() = mgp::Color(3, 9, 2);
 	
-	m.addVertexCustomComponent<char>("prova");
+	m.addPerVertexCustomComponent<char>("prova");
 	
 	for (auto& v : m.vertexIterator())
 		v.customComponent<char>("prova") = 'a';
 	
-	m.enableFaceScalar();
-	m.enableFaceColor();
+	m.enablePerFaceScalar();
+	m.enablePerFaceColor();
 
 	m.addFace();
 	m.addFace();

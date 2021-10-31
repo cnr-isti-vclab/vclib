@@ -58,22 +58,20 @@ public:
 	unsigned int faceNumber() const;
 	unsigned int faceContainerSize() const;
 
-	void reserveFaces(unsigned int size);
+	template<typename U = T>
+	face::ReturnIfHasOptionalColor<U, void> enablePerFaceColor();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalColor<U, void> enableFaceColor();
+	face::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerFaceMutableFlags();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalMutableBitFlags<U, void> enableFaceMutableFlags();
+	face::ReturnIfHasOptionalNormal<U, void> enablePerFaceNormal();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalNormal<U, void> enableFaceNormal();
-
-	template<typename U = T>
-	face::ReturnIfHasOptionalScalar<U, void> enableFaceScalar();
+	face::ReturnIfHasOptionalScalar<U, void> enablePerFaceScalar();
 	
 	template<typename K, typename U = T>
-	face::ReturnIfHasCustomComponents<U, void> addFaceCustomComponent(const std::string& name);
+	face::ReturnIfHasCustomComponents<U, void> addPerFaceCustomComponent(const std::string& name);
 
 	FaceIterator           faceBegin(bool jumpDeleted = true);
 	FaceIterator           faceEnd();
@@ -102,6 +100,7 @@ protected:
 	unsigned int fn = 0;
 
 	unsigned int addFace();
+	void reserveFaces(unsigned int size);
 
 	template<typename Vertex>
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);

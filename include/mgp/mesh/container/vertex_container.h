@@ -55,24 +55,27 @@ public:
 	unsigned int vertexNumber() const;
 	unsigned int vertexContainerSize() const;
 
-	void reserveVertices(unsigned int size);
+	template<typename U = T>
+	vert::ReturnIfHasOptionalColor<U, void> enablePerVertexColor();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalColor<U, void> enableVertexColor();
+	vert::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerVertexMutableFlags();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalMutableBitFlags<U, void> enableVertexMutableFlags();
+	vert::ReturnIfHasOptionalNormal<U, void> enablePerVertexNormal();
+	template<typename U = T>
+	vert::ReturnIfHasOptionalNormal<U, bool> isPerVertexNormalEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalNormal<U, void> enableVertexNormal();
-	template<typename U = T>
-	vert::ReturnIfHasOptionalNormal<U, bool> isVertexNormalEnabled() const;
+	vert::ReturnIfHasOptionalScalar<U, void> enablePerVertexScalar();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalScalar<U, void> enableVertexScalar();
+	vert::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerVertexAdjacentFaces();
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerVertexAdjacentFacesEnabled() const;
 	
 	template<typename K, typename U = T>
-	vert::ReturnIfHasCustomComponents<U, void> addVertexCustomComponent(const std::string& name);
+	vert::ReturnIfHasCustomComponents<U, void> addPerVertexCustomComponent(const std::string& name);
 
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
 	VertexIterator           vertexEnd();
@@ -101,6 +104,10 @@ protected:
 	unsigned int vn = 0;
 
 	unsigned int addVertex();
+	void reserveVertices(unsigned int size);
+
+	template<typename Face>
+	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 };
 
 /**

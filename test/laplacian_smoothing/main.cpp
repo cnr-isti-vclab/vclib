@@ -17,8 +17,10 @@ class Vertex;
 class Face;
 
 class Vertex :
-		public mgp::
-			Vertex<mgp::vert::BitFlags, mgp::vert::Coordinate3d, mgp::vert::AdjacentFaces<Face>>
+		public mgp::Vertex<
+			mgp::vert::BitFlags,
+			mgp::vert::Coordinate3d,
+			mgp::vert::OptionalAdjacentFaces<Face, Vertex>>
 {
 };
 
@@ -40,6 +42,7 @@ int main()
 
 	mgp::io::loadPly(m, "/home/alessandro/tmp/bunny.ply");
 
+	m.enablePerVertexAdjacentFaces();
 	mgp::updatePerVertexAdjacentFaces(m);
 
 	mgp::Timer t("Laplacian Smoothing");

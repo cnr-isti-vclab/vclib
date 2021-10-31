@@ -33,7 +33,7 @@ bool hasPerVertexNormal(const MeshType& m)
 	}
 	else if constexpr (
 		hasVertices<MeshType>() && mgp::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
-		return m.isVertexNormalEnabled();
+		return m.isPerVertexNormalEnabled();
 	}
 	else {
 		return false;
@@ -49,7 +49,7 @@ bool hasPerVertexScalar(const MeshType& m)
 	}
 	else if constexpr (
 		hasVertices<MeshType>() && mgp::vert::hasOptionalScalar<typename MeshType::VertexType>()) {
-		return m.isVertexScalarEnabled();
+		return m.isPerVertexScalarEnabled();
 	}
 	else {
 		return false;
@@ -79,7 +79,7 @@ bool hasPerVertexAdjacentFaces(const MeshType& m)
 	else if constexpr (
 		hasVertices<MeshType>() &&
 		mgp::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
-		return m.isVertexFaceAdjacenciesEnabled();
+		return m.isPerVertexAdjacentFacesEnabled();
 	}
 	else {
 		return false;

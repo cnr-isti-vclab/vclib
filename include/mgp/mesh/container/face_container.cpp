@@ -41,22 +41,13 @@ unsigned int Container<T, IfIsFace<T>>::faceContainerSize() const
 	return faces.size();
 }
 
-template<class T>
-void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
-{
-	faces.reserve(size);
-	if constexpr (face::hasOptionalInfo<FaceType>()) {
-		optionalComponentsVector.reserve(size);
-	}
-}
-
 /**
  * @brief Container::enableFaceColor enable the Optional Color of the face.
  * This function is available **only if the Face Element has the OptionalColor Component**.
  */
 template<class T>
 template<class U>
-face::ReturnIfHasOptionalColor<U, void> Container<T, IfIsFace<T>>::enableFaceColor()
+face::ReturnIfHasOptionalColor<U, void> Container<T, IfIsFace<T>>::enablePerFaceColor()
 {
 	optionalComponentsVector.enableColor(faceNumber());
 }
@@ -67,7 +58,7 @@ face::ReturnIfHasOptionalColor<U, void> Container<T, IfIsFace<T>>::enableFaceCol
  */
 template<class T>
 template<class U>
-face::ReturnIfHasOptionalMutableBitFlags<U, void> Container<T, IfIsFace<T>>::enableFaceMutableFlags()
+face::ReturnIfHasOptionalMutableBitFlags<U, void> Container<T, IfIsFace<T>>::enablePerFaceMutableFlags()
 {
 	optionalComponentsVector.enableMutableBitFlags(faceNumber());
 }
@@ -78,7 +69,7 @@ face::ReturnIfHasOptionalMutableBitFlags<U, void> Container<T, IfIsFace<T>>::ena
  */
 template<class T>
 template<class U>
-face::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsFace<T>>::enableFaceNormal()
+face::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsFace<T>>::enablePerFaceNormal()
 {
 	optionalComponentsVector.enableNormal(faceNumber());
 }
@@ -89,14 +80,14 @@ face::ReturnIfHasOptionalNormal<U, void> Container<T, IfIsFace<T>>::enableFaceNo
  */
 template<class T>
 template<class U>
-face::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsFace<T>>::enableFaceScalar()
+face::ReturnIfHasOptionalScalar<U, void> Container<T, IfIsFace<T>>::enablePerFaceScalar()
 {
 	optionalComponentsVector.enableScalar(faceNumber());
 }
 
 template<class T>
 template<typename K, typename U>
-face::ReturnIfHasCustomComponents<U, void> Container<T, IfIsFace<T> >::addFaceCustomComponent(const std::string& name)
+face::ReturnIfHasCustomComponents<U, void> Container<T, IfIsFace<T> >::addPerFaceCustomComponent(const std::string& name)
 {
 	optionalComponentsVector.template addNewComponent<K>(name, faces.size());
 }
@@ -170,6 +161,15 @@ unsigned int Container<T, IfIsFace<T>>::addFace()
 		optionalComponentsVector.resize(faces.size());
 	}
 	return faces[faces.size() - 1]._id;
+}
+
+template<class T>
+void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
+{
+	faces.reserve(size);
+	if constexpr (face::hasOptionalInfo<FaceType>()) {
+		optionalComponentsVector.reserve(size);
+	}
 }
 
 template<class T>

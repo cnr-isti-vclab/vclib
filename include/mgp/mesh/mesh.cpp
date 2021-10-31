@@ -24,12 +24,45 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex(
 
 template<class... Args>
 template<typename U>
+mesh::ReturnIfHasVertexContainer<U, void> mgp::Mesh<Args...>::reserveVertices(unsigned int i)
+{
+	using Vertex          = typename U::VertexType;
+	using VertexContainer = typename U::VertexContainer;
+
+	Vertex*      oldBase = VertexContainer::vertices.data();
+	VertexContainer::reserveVertices(i);
+	Vertex*      newBase = VertexContainer::vertices.data();
+	if (oldBase != nullptr && oldBase != newBase)
+		updateVertexReferences(oldBase, newBase);
+}
+
+template<class... Args>
+template<typename U>
 mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 {
+	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
-	unsigned int fid = FaceContainer::addFace();
+	Face*        oldBase = FaceContainer::faces.data();
+	unsigned int fid     = FaceContainer::addFace();
+	Face*        newBase = FaceContainer::faces.data();
+	if (oldBase != nullptr && oldBase != newBase)
+		updateFaceReferences(oldBase, newBase);
 	return fid;
+}
+
+template<class... Args>
+template<typename U>
+mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::reserveFaces(unsigned int i)
+{
+	using Face          = typename U::FaceType;
+	using FaceContainer = typename U::FaceContainer;
+
+	Face*      oldBase = FaceContainer::faces.data();
+	FaceContainer::reserveFaces(i);
+	Face*      newBase = FaceContainer::faces.data();
+	if (oldBase != nullptr && oldBase != newBase)
+		updateFaceReferences(oldBase, newBase);
 }
 
 template<class... Args>
@@ -42,6 +75,19 @@ mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::updateVertexReferences(
 	if constexpr (mgp::mesh::hasFaces<U>()) {
 		using FaceContainer = typename U::FaceContainer;
 		FaceContainer::updateVertexReferences(oldBase, newBase);
+	}
+}
+
+template<class... Args>
+template<typename U>
+mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferences(
+	const typename U::FaceType* oldBase,
+	const typename U::FaceType* newBase)
+{
+	// update face references in the Vertex Container, if it exists
+	if constexpr (mgp::mesh::hasVertices<U>()) {
+		using VertexContainer = typename U::VertexContainer;
+		VertexContainer::updateFaceReferences(oldBase, newBase);
 	}
 }
 

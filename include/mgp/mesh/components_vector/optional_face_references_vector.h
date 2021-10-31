@@ -27,8 +27,8 @@ class OptionalFaceReferencesVector<
 		private OptionalGenericVector<typename T::Container>
 {
 private:
-	using Base = OptionalGenericVector<std::vector<typename T::FaceType*>>;
 	using Container = typename T::Container;
+	using Base = OptionalGenericVector<Container>;
 
 public:
 	using Base::reserve;

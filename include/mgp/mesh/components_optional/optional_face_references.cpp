@@ -13,12 +13,14 @@ OptionalFaceReferences<Face, N, T>::OptionalFaceReferences()
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
 		// There will be a static number of references.
-		B::contPtr->faceRefs(thisId()) = std::array<Face*, N> {nullptr};
+		if (B::contPtr)
+			B::contPtr->faceRefs(thisId()) = std::array<Face*, N> {nullptr};
 	}
 	else {
 		// I'll use the vector, because N is < 0.
 		// There will be a dynamic number of references.
-		B::contPtr->faceRefs(thisId()) = std::vector<Face*>();
+		if (B::contPtr)
+			B::contPtr->faceRefs(thisId()) = std::vector<Face*>();
 	}
 }
 
