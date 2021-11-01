@@ -88,6 +88,11 @@ protected:
 	{
 		Base::updateComponentReferences(oldBase, newBase);
 	}
+
+	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices)
+	{
+		Base::updateComponentReferencesAfterCompact(base, newIndices);
+	}
 };
 
 /**

@@ -85,6 +85,9 @@ protected:
 
 	template<typename Face>
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
+
+	template<typename Face>
+	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 };
 
 /**

@@ -18,6 +18,7 @@ class OptionalScalarVector
 public:
 	void reserve(unsigned int) {}
 	void resize(unsigned int) {}
+	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
@@ -30,6 +31,7 @@ class OptionalScalarVector<T, std::enable_if_t<components::hasOptionalScalar<T>(
 public:
 	using Base::reserve;
 	using Base::resize;
+	using Base::compact;
 	bool              isScalarEnabled() const { return Base::isEnabled(); };
 	void              enableScalar(unsigned int size) { Base::enable(size); }
 	void              disableScalar() { Base::disable(); }

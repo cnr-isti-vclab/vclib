@@ -15,38 +15,16 @@ template<typename T>
 class OptionalGenericVector
 {
 protected:
-	bool isEnabled() const { return enabled; }
-	void enable(unsigned int size)
-	{
-		enabled = true;
-		vec.resize(size);
-	}
-	void disable()
-	{
-		enabled = false;
-		vec.clear();
-		vec.swap(std::vector<T>()); // force free memory
-	}
-	void resize(unsigned int size)
-	{
-		if (enabled)
-			vec.resize(size);
-	}
-	void reserve(unsigned int size)
-	{
-		if (enabled)
-			vec.reserve(size);
-	}
-	T& at(unsigned int i)
-	{
-		assert(enabled);
-		return vec[i];
-	}
-	const T& at(unsigned int i) const
-	{
-		assert(enabled);
-		return vec[i];
-	}
+	bool isEnabled() const;
+	void enable(unsigned int size);
+	void disable();
+
+	T& at(unsigned int i);
+	const T& at(unsigned int i) const;
+
+	void resize(unsigned int size);
+	void reserve(unsigned int size);
+	void compact(const std::vector<int>& newIndices);
 
 private:
 	bool           enabled = false;
@@ -54,5 +32,7 @@ private:
 };
 
 } // namespace mgp::internal
+
+#include "optional_generic_vector.cpp"
 
 #endif // MGP_MESH_COMPONENT_VECTOR_GENERIC_VECTOR_H

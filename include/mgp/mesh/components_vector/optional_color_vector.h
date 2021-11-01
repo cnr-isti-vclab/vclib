@@ -18,6 +18,7 @@ class OptionalColorVector
 public:
 	void resize(unsigned int) {}
 	void reserve(unsigned int) {}
+	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
@@ -30,6 +31,7 @@ class OptionalColorVector<T, std::enable_if_t<components::hasOptionalColor<T>()>
 public:
 	using Base::reserve;
 	using Base::resize;
+	using Base::compact;
 	bool             isColorEnabled() const { return Base::isEnabled(); };
 	void             enableColor(unsigned int size) { Base::enable(size); }
 	void             disableColor() { Base::disable(); }

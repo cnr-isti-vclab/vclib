@@ -87,6 +87,11 @@ protected:
 	{
 		Base::updateComponentReferences(oldBase, newBase);
 	}
+
+	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices)
+	{
+		Base::updateComponentReferencesAfterCompact(base, newIndices);
+	}
 };
 
 template<class Vertex>

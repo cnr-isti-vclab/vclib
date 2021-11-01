@@ -1,3 +1,8 @@
+/**
+ * This file is part of mgplib: https://github.com/alemuntoni/mgplib
+ * This Source Code Form is subject to the terms of the GNU GPL 3.0
+ */
+
 #ifndef MGP_MESH_COMPONENT_VECTOR_OPTIONAL_MUTABLE_BIT_FLAGS_VECTOR_H
 #define MGP_MESH_COMPONENT_VECTOR_OPTIONAL_MUTABLE_BIT_FLAGS_VECTOR_H
 
@@ -13,6 +18,7 @@ class OptionalMutableBitFlagsVector
 public:
 	void reserve(unsigned int) {}
 	void resize(unsigned int) {}
+	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
@@ -26,6 +32,7 @@ class OptionalMutableBitFlagsVector<
 public:
 	using Base::reserve;
 	using Base::resize;
+	using Base::compact;
 	bool isMutableBitFlagsEnabled() const { return Base::isEnabled(); };
 	void enableMutableBitFlags(unsigned int size) { Base::enable(size); }
 	void disableMutableBitFlags() { Base::disable(); }

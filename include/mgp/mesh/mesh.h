@@ -31,6 +31,9 @@ public:
 	mesh::ReturnIfHasVertexContainer<U, void> reserveVertices(unsigned int i);
 
 	template<typename U = Mesh>
+	mesh::ReturnIfHasVertexContainer<U, void> compactVertices();
+
+	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace();
 
 	template<typename U = Mesh>
@@ -40,6 +43,10 @@ protected:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, void>
 	updateVertexReferences(const typename U::VertexType* oldBase, const typename U::VertexType* newBase);
+
+	template<typename U = Mesh>
+	mesh::ReturnIfHasVertexContainer<U, void>
+	updateVertexReferencesAfterCompact(const typename U::VertexType* base, const std::vector<int>& newIndices);
 
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, void>

@@ -161,4 +161,22 @@ void ComponentReferences<Component, N>::updateComponentReferences(
 	}
 }
 
+template<class Component, int N>
+void ComponentReferences<Component, N>::updateComponentReferencesAfterCompact(
+	const Component* base,
+	const std::vector<int>& newIndices)
+{
+	for (unsigned int j = 0; j < componentNumber(); ++j) {
+		if (c(j) != nullptr) {
+			size_t diff = c(j) - base;
+			if (newIndices[diff] < 0){ // element has been removed
+				c(j) = nullptr;
+			}
+			else { // the new pointer will be base + newIndices[diff]
+				c(j) = base + newIndices[diff];
+			}
+		}
+	}
+}
+
 }

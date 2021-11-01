@@ -24,6 +24,7 @@ class CustomComponentsVector
 public:
 	void reserve(unsigned int) {}
 	void resize(unsigned int) {}
+	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
@@ -35,6 +36,8 @@ public:
 	void reserve(unsigned int size);
 
 	void resize(unsigned int size);
+
+	void compact(const std::vector<int>& newIndices);
 
 	template<typename AttrType>
 	void addNewComponent(const std::string& name, unsigned int size);

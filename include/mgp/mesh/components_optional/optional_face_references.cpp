@@ -170,4 +170,22 @@ void OptionalFaceReferences<Face, N, T>::updateFaceReferences(
 	}
 }
 
+template<class Face, int N, typename T>
+void OptionalFaceReferences<Face, N, T>::updateFaceReferencesAfterCompact(
+	const Face* base,
+	const std::vector<int>& newIndices)
+{
+	for (unsigned int j = 0; j < faceNumber(); ++j) {
+		if (f(j) != nullptr) {
+			size_t diff = f(j) - base;
+			if (newIndices[diff] < 0){ // element has been removed
+				f(j) = nullptr;
+			}
+			else { // the new pointer will be base + newIndices[diff]
+				f(j) = base + newIndices[diff];
+			}
+		}
+	}
+}
+
 } // namespace mgp::components

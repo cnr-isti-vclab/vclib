@@ -117,6 +117,8 @@ public:
 protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 
+	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+
 private:
 	unsigned int thisId() const { return ((T*) this)->id(); }
 };

@@ -190,25 +190,24 @@ template<class T>
 std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	std::vector<int> oldIndices;
+	std::vector<int> newIndices;
 	unsigned int k = 0;
 	for (unsigned int i = 0; i < vertices.size(); ++i){
 		if (!vertices[i].isDeleted()){
 			vertices[k] = vertices[i];
 			vertices[k]._id = k;
-			oldIndices[i] = k;
+			newIndices[i] = k;
 			k++;
 		}
 		else {
-			oldIndices[i] = -1;
+			newIndices[i] = -1;
 		}
 	}
 	vertices.resize(k);
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		// TODO:
-		// OptionalVertexContainer::compact(oldIndices);
+		OptionalVertexContainer::compact(newIndices);
 	}
-	return oldIndices;
+	return newIndices;
 }
 
 template<class T>
@@ -224,6 +223,26 @@ void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, cons
 		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
 			for (VertexType& v : vertexIterator()) {
 				v.updateFaceReferences(oldBase, newBase);
+			}
+		}
+	}
+}
+
+template<class T>
+template<class Face>
+void Container<T, IfIsVertex<T>>::updateFaceReferencesAfterCompact(
+	const Face* base,
+	const std::vector<int>& newIndices)
+{
+	if constexpr (mgp::components::hasFaceReferences<T>()) {
+		for (VertexType& v : vertexIterator()) {
+			v.updateVertexReferencesAfterCompact(base, newIndices);
+		}
+	}
+	else if constexpr (mgp::components::hasOptionalFaceReferences<T>()){
+		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
+			for (VertexType& v : vertexIterator()) {
+				v.updateVertexReferencesAfterCompact(base, newIndices);
 			}
 		}
 	}

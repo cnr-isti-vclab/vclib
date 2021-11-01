@@ -91,6 +91,9 @@ protected:
 
 	template<typename Vertex>
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+
+	template<typename Vertex>
+	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 };
 
 /**

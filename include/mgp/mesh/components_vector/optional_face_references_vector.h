@@ -18,6 +18,7 @@ class OptionalFaceReferencesVector
 public:
 	void resize(unsigned int) {}
 	void reserve(unsigned int) {}
+	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
@@ -33,6 +34,7 @@ private:
 public:
 	using Base::reserve;
 	using Base::resize;
+	using Base::compact;
 	bool             isFaceReferencesEnabled() const { return Base::isEnabled(); };
 	void             enableFaceReferences(unsigned int size) { Base::enable(size); }
 	void             disableFaceReferences() { Base::disable(); }

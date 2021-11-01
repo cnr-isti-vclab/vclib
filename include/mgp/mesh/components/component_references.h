@@ -100,6 +100,8 @@ protected:
 	Container compRefs;
 
 	void updateComponentReferences(const Component* oldBase, const Component* newBase);
+
+	void updateComponentReferencesAfterCompact(const Component* base, const std::vector<int>& newIndices);
 };
 
 } // namespace mgp::components

@@ -4,6 +4,7 @@
  */
 
 #include "custom_components_vector.h"
+#include <mgp/misc/compactness.h>
 
 namespace mgp::internal {
 
@@ -21,6 +22,14 @@ void CustomComponentsVector<T, IfHasCustomComp<T>>::resize(unsigned int size)
 	for (auto& p : map) {
 		p.second.resize(size);
 		needToInitialize.at(p.first) = true;
+	}
+}
+
+template<typename T>
+void CustomComponentsVector<T, IfHasCustomComp<T> >::compact(const std::vector<int>& newIndices)
+{
+	for (auto& p : map) {
+		mgp::compactVector(p.second, newIndices);
 	}
 }
 

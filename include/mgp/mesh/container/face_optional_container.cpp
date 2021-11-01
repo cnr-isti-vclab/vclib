@@ -180,5 +180,11 @@ void FaceOptionalContainer<T, FaceHasOptional<T>>::reserve(unsigned int size)
 	optionalComponentsVector.reserve(size);
 }
 
+template<typename T>
+void FaceOptionalContainer<T, FaceHasOptional<T> >::compact(const std::vector<int>& newIndices)
+{
+	optionalComponentsVector.compact(newIndices);
+}
+
 }
 

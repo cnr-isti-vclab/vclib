@@ -73,6 +73,7 @@ set(HEADERS
 	include/mgp/mesh/requirements/face_requirements.h
 	include/mgp/mesh/requirements/mesh_requirements.h
 	include/mgp/mesh/requirements/vertex_requirements.h
+	include/mgp/misc/compactness.h
 	include/mgp/misc/timer.h
 	include/mgp/misc/tokenizer.h
 	include/mgp/io/file_mesh_mode.h
@@ -103,6 +104,7 @@ set(SOURCES
 	include/mgp/mesh/components_optional/optional_face_references.cpp
 	include/mgp/mesh/components_optional/optional_mutable_bit_flags.cpp
 	include/mgp/mesh/components_vector/custom_components_vector.cpp
+	include/mgp/mesh/components_vector/optional_generic_vector.cpp
 	include/mgp/mesh/container/face_container.cpp
 	include/mgp/mesh/container/face_optional_container.cpp
 	include/mgp/mesh/container/vertex_container.cpp
@@ -111,6 +113,7 @@ set(SOURCES
 	include/mgp/mesh/requirements/face_requirements.cpp
 	include/mgp/mesh/requirements/mesh_requirements.cpp
 	include/mgp/mesh/requirements/vertex_requirements.cpp
+	include/mgp/misc/compactness.cpp
 	include/mgp/misc/timer.cpp
 	include/mgp/misc/tokenizer.cpp
 	include/mgp/io/load_ply.cpp

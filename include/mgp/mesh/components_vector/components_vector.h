@@ -43,6 +43,15 @@ public:
 		OptionalScalarVector<T>::reserve(size);
 		CustomComponentsVector<T>::reserve(size);
 	}
+	void compact(const std::vector<int>& newIndices)
+	{
+		OptionalFaceReferencesVector<T>::compact(newIndices);
+		OptionalMutableBitFlagsVector<T>::compact(newIndices);
+		OptionalColorVector<T>::compact(newIndices);
+		OptionalNormalVector<T>::compact(newIndices);
+		OptionalScalarVector<T>::compact(newIndices);
+		CustomComponentsVector<T>::compact(newIndices);
+	}
 };
 
 } // namespace mgp::internal

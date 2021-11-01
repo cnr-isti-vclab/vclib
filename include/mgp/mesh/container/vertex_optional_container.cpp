@@ -232,4 +232,10 @@ void VertexOptionalContainer<T, VertexHasOptional<T> >::reserve(unsigned int siz
 	optionalComponentsVector.reserve(size);
 }
 
+template<typename T>
+void VertexOptionalContainer<T, VertexHasOptional<T> >::compact(const std::vector<int>& newIndices)
+{
+	optionalComponentsVector.compact(newIndices);
+}
+
 } // namespace mgp::mesh
