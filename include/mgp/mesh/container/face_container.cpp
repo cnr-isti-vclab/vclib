@@ -173,6 +173,31 @@ unsigned int Container<T, IfIsFace<T>>::addFace()
 	return faces[faces.size() - 1]._id;
 }
 
+/**
+ * @brief Container::addFaces adds nFaces to the Face Container of the mesh.
+ *
+ * Returns the id of the first added face.
+ *
+ * @param nFaces
+ * @return the id of the first added face.
+ */
+template<class T>
+unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces)
+{
+	unsigned int baseId = faces.size();
+	faces.resize(faces.size() + nFaces);
+	if constexpr (face::hasOptionalInfo<FaceType>()) {
+		OptionalFaceContainer::resize(faces.size());
+	}
+	for (unsigned int i = baseId; i < faces.size(); ++i){
+		faces[i]._id = i;
+		if constexpr (face::hasOptionalInfo<FaceType>()) {
+			OptionalFaceContainer::setContainerPointer(faces[i]);
+		}
+	}
+	return baseId;
+}
+
 template<class T>
 void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
 {

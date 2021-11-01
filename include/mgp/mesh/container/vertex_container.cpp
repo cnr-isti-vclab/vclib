@@ -174,6 +174,31 @@ unsigned int Container<T, IfIsVertex<T>>::addVertex()
 	return vertices[vertices.size() - 1]._id;
 }
 
+/**
+ * @brief Container::addVertices adds nVertices to the Vertex Container of the mesh.
+ *
+ * Returns the id of the first added vertex.
+ *
+ * @param nVertices
+ * @return the id of the first added vertex.
+ */
+template<class T>
+unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
+{
+	unsigned int baseId = vertices.size();
+	vertices.resize(vertices.size() + nVertices);
+	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+		OptionalVertexContainer::resize(vertices.size());
+	}
+	for (unsigned int i = baseId; i < vertices.size(); ++i){
+		vertices[i]._id = i;
+		if constexpr (vert::hasOptionalInfo<VertexType>()) {
+			OptionalVertexContainer::setContainerPointer(vertices[i]);
+		}
+	}
+	return baseId;
+}
+
 template<class T>
 void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {

@@ -80,6 +80,7 @@ protected:
 	unsigned int vn = 0;
 
 	unsigned int addVertex();
+	unsigned int addVertices(unsigned int nVertices);
 	void reserveVertices(unsigned int size);
 
 	std::vector<int> compactVertices();

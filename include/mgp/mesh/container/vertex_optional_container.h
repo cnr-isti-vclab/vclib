@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef GP_MESH_CONTAINER_VERTEX_OPTIONAL_CONTAINER_H
-#define GP_MESH_CONTAINER_VERTEX_OPTIONAL_CONTAINER_H
+#ifndef MGP_MESH_CONTAINER_VERTEX_OPTIONAL_CONTAINER_H
+#define MGP_MESH_CONTAINER_VERTEX_OPTIONAL_CONTAINER_H
 
 #include "../vertex.h"
 #include "../components_optional/optional_info.h"
@@ -100,4 +100,4 @@ private:
 
 #include "vertex_optional_container.cpp"
 
-#endif // GP_MESH_CONTAINER_VERTEX_OPTIONAL_CONTAINER_H
+#endif // MGP_MESH_CONTAINER_VERTEX_OPTIONAL_CONTAINER_H

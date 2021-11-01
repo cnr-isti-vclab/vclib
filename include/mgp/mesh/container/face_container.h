@@ -86,6 +86,7 @@ protected:
 	unsigned int fn = 0;
 
 	unsigned int addFace();
+	unsigned int addFaces(unsigned int nFaces);
 	void reserveFaces(unsigned int size);
 
 	std::vector<int> compactFaces();
