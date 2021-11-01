@@ -56,6 +56,8 @@ public:
 	unsigned int vertexNumber() const;
 	unsigned int vertexContainerSize() const;
 
+	void deleteVertex(unsigned int i);
+
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
 	VertexIterator           vertexEnd();
 	ConstVertexIterator      vertexBegin(bool jumpDeleted = true) const;
@@ -78,6 +80,8 @@ protected:
 
 	unsigned int addVertex();
 	void reserveVertices(unsigned int size);
+
+	std::vector<int> compactVertices();
 
 	template<typename Face>
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);

@@ -8,54 +8,107 @@
 namespace mgp::mesh {
 
 /**
- * @brief Container::Container Empty constructors that created an empty container of Vertices.
+ * @brief Container::Container Empty constructor that creates an empty container of Vertices.
  */
 template<class T>
 Container<T, IfIsVertex<T>>::Container()
 {
 }
 
+/**
+ * @brief Container::vertex Returns a const reference of the vertex at the i-th position
+ * in the Vertex Container of the Mesh, which will be the vertex having id = i.
+ *
+ * This function does not perform any sanity check: if i is less than vertexContainerSize(), this
+ * function will return a valid Vertex reference (note that the Vertex may have been flagged as
+ * deleted).
+ *
+ * @param i: the id of the vertex that will be returned.
+ */
 template<class T>
 const typename Container<T, IfIsVertex<T>>::VertexType&
-mgp::mesh::Container<T, IfIsVertex<T>>::vertex(unsigned int i) const
+Container<T, IfIsVertex<T>>::vertex(unsigned int i) const
 {
 	return vertices[i];
 }
 
+/**
+ * @brief Container::vertex Returns a reference of the vertex at the i-th position
+ * in the Vertex Container of the Mesh, which will be the vertex having id = i.
+ *
+ * This function does not perform any sanity check: if i is less than vertexContainerSize(), this
+ * function will return a valid Vertex reference (note that the Vertex may have been flagged as
+ * deleted).
+ *
+ * @param i: the id of the vertex that will be returned.
+ */
 template<class T>
 typename Container<T, IfIsVertex<T>>::VertexType&
-mgp::mesh::Container<T, IfIsVertex<T>>::vertex(unsigned int i)
+Container<T, IfIsVertex<T>>::vertex(unsigned int i)
 {
 	return vertices[i];
 }
 
+/**
+ * @brief Container::vertexNumber Returns the number of **non-deleted** vertices contained in the
+ * Vertex container of the Mesh.
+ *
+ * If vertexNumber() != vertexContainerSize(), it means that there are some vertices that are
+ * flagged as deleted.
+ *
+ * @return the number of non-deleted vertices of the Mesh.
+ */
 template<class T>
 unsigned int Container<T, IfIsVertex<T>>::vertexNumber() const
 {
 	return vn;
 }
 
+/**
+ * @brief Container::vertexContainerSize Returns the number of vertices (also deleted) contained in
+ * the Vertex container of the Mesh.
+ *
+ * If vertexNumber() != vertexContainerSize(), it means that there are some vertices that are
+ * flagged as deleted.
+ *
+ * @return the number of all the vertices contained in the Mesh.
+ */
 template<class T>
 unsigned int Container<T, IfIsVertex<T> >::vertexContainerSize() const
 {
 	return vertices.size();
 }
 
-
+/**
+ * @brief Container::deleteVertex Marks as deleted the vertex with the given id.
+ *
+ * This member function does not perform any reallocation of the vertices: the deleted vertices
+ * will stay in the Vertex Container, but will be marked as deleted.
+ *
+ * Deleted vertices are automatically jumped by the iterators provided by the Vertex Container.
+ *
+ * @param i: the id of the vertex that will be marked as deleted.
+ */
+template<class T>
+void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
+{
+	vertices[i].setDeleted();
+	--vn;
+}
 
 template<class T>
 typename Container<T, IfIsVertex<T>>::VertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 {
+	auto it = vertices.begin();
 	if (jumpDeleted) {
-		auto it = vertices.begin();
-		while (it->isDeleted()) {
+		// if the user asked to jump the deleted vertices, and the first vertex is deleted, we need
+		// to move forward until we find the first non-deleted vertex
+		while (it != vertices.end() && it->isDeleted()) {
 			++it;
 		}
-		return VertexIterator(it, vertices, jumpDeleted);
 	}
-	else
-		return VertexIterator(vertices.begin(), vertices, jumpDeleted);
+	return VertexIterator(it, vertices, jumpDeleted);
 }
 
 template<class T>
@@ -122,6 +175,40 @@ void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		OptionalVertexContainer::reserve(size);
 	}
+}
+
+/**
+ * @brief mgp::mesh::Container::compact compacts the vertex container, keeping only the non-deleted
+ * vertices.
+ *
+ * All the ids of the vertices will be updated.
+ *
+ * @return a vector that tells, for each old id, the new id of the vertex. Will contain -1 if the
+ * vertex has been deleted.
+ */
+template<class T>
+std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
+{
+	// k will indicate the position of the ith non-deleted vertices after compacting
+	std::vector<int> oldIndices;
+	unsigned int k = 0;
+	for (unsigned int i = 0; i < vertices.size(); ++i){
+		if (!vertices[i].isDeleted()){
+			vertices[k] = vertices[i];
+			vertices[k]._id = k;
+			oldIndices[i] = k;
+			k++;
+		}
+		else {
+			oldIndices[i] = -1;
+		}
+	}
+	vertices.resize(k);
+	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+		// TODO:
+		// OptionalVertexContainer::compact(oldIndices);
+	}
+	return oldIndices;
 }
 
 template<class T>
