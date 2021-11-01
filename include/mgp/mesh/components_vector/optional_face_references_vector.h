@@ -10,7 +10,7 @@
 
 #include "optional_generic_vector.h"
 
-namespace mgp::mesh {
+namespace mgp::internal {
 
 template<typename, typename = void>
 class OptionalFaceReferencesVector
@@ -40,6 +40,6 @@ public:
 	const Container& faceRefs(unsigned int i) const { return Base::at(i); }
 };
 
-} // namespace mgp::mesh
+} // namespace mgp::internal
 
 #endif // MGP_MESH_COMPONENT_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H

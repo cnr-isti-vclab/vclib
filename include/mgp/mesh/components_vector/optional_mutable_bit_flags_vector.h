@@ -5,7 +5,7 @@
 
 #include "optional_generic_vector.h"
 
-namespace mgp::mesh {
+namespace mgp::internal {
 
 template<typename, typename = void>
 class OptionalMutableBitFlagsVector
@@ -33,6 +33,6 @@ public:
 	int& flags(unsigned int i) const { return const_cast<int&>(Base::at(i)); }
 };
 
-} // namespace mgp::mesh
+} // namespace mgp::internal
 
 #endif // MGP_MESH_COMPONENT_VECTOR_OPTIONAL_MUTABLE_BIT_FLAGS_VECTOR_H

@@ -10,7 +10,7 @@
 
 #include "optional_generic_vector.h"
 
-namespace mgp::mesh {
+namespace mgp::internal {
 
 template<typename, typename = void>
 class OptionalScalarVector
@@ -37,6 +37,6 @@ public:
 	const ScalarType& scalar(unsigned int i) const { return Base::at(i); }
 };
 
-} // namespace mgp::mesh
+} // namespace mgp::internal
 
 #endif // MGP_MESH_COMPONENT_VECTOR_OPTIONAL_SCALAR_VECTOR_H

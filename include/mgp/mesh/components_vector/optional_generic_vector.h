@@ -9,7 +9,7 @@
 #include <assert.h>
 #include <vector>
 
-namespace mgp::mesh {
+namespace mgp::internal {
 
 template<typename T>
 class OptionalGenericVector
@@ -53,6 +53,6 @@ private:
 	std::vector<T> vec;
 };
 
-} // namespace mgp::mesh
+} // namespace mgp::internal
 
 #endif // MGP_MESH_COMPONENT_VECTOR_GENERIC_VECTOR_H

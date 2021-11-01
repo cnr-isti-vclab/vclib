@@ -12,7 +12,11 @@
 
 #include "optional_generic_vector.h"
 
-namespace mgp::mesh {
+namespace mgp::internal {
+
+// to shorten triggerer for Vertex class
+template<class T>
+using IfHasCustomComp = std::enable_if_t<components::hasCustomComponents<T>()>;
 
 template<typename, typename = void>
 class CustomComponentsVector
@@ -25,75 +29,33 @@ public:
 template<typename T>
 class CustomComponentsVector<
 	T,
-	std::enable_if_t<components::hasCustomComponents<T>()>>
+	IfHasCustomComp<T>>
 {
 public:
-	void reserve(unsigned int size)
-	{
-		for (auto& p : map){
-			p.second.reserve(size);
-		}
-	}
+	void reserve(unsigned int size);
 
-	void resize(unsigned int size)
-	{
-		for (auto& p : map){
-			p.second.resize(size);
-			needToInitialize.at(p.first) = true;
-		}
-	}
+	void resize(unsigned int size);
 
 	template<typename AttrType>
-	void addNewComponent(const std::string& name, unsigned int size)
-	{
-		std::vector<std::any>& v = map[name];
-		v.resize(size, AttrType());
-		needToInitialize[name] = false;
-	}
+	void addNewComponent(const std::string& name, unsigned int size);
 
-	void assertComponentExists(const std::string& attrName) const
-	{
-		assert(map.find(attrName) != map.end());
-	};
+	void assertComponentExists(const std::string& attrName) const;;
 
-	bool componentExists(const std::string& attrName) const
-	{
-		return (map.find(attrName) != map.end());
-	};
+	bool componentExists(const std::string& attrName) const;;
 
 	template<typename AttrType>
-	const std::vector<std::any>& componentVector(const std::string& attrName) const
-	{
-		std::vector<std::any>& v = const_cast<std::vector<std::any>&>(map.at(attrName));
-		if (needToInitialize.at(attrName)){
-			for (std::any& a : v){
-				if (!a.has_value())
-					a = AttrType();
-			}
-			needToInitialize.at(attrName) = false;
-		}
-		return v;
-	}
+	const std::vector<std::any>& componentVector(const std::string& attrName) const;
 
 	template<typename AttrType>
-	std::vector<std::any>& componentVector(const std::string& attrName)
-	{
-		std::vector<std::any>& v = map.at(attrName);
-		if (needToInitialize.at(attrName)){
-			for (std::any& a : v){
-				if (!a.has_value())
-					a = AttrType();
-			}
-			needToInitialize.at(attrName) = false;
-		}
-		return v;
-	}
+	std::vector<std::any>& componentVector(const std::string& attrName);
 
 private:
 	std::unordered_map<std::string, std::vector<std::any>> map;
 	mutable std::unordered_map<std::string, bool> needToInitialize;
 };
 
-} // namespace mgp::mesh
+} // namespace mgp::internal
+
+#include "custom_components_vector.cpp"
 
 #endif // MGP_MESH_COMPONENT_VECTOR_CUSTOM_COMPONENTS_VECTOR_H

@@ -8,7 +8,7 @@
 
 #include <type_traits>
 
-namespace mgp::mesh {
+namespace mgp::internal {
 
 template<typename T>
 class ComponentsVector;
@@ -24,9 +24,9 @@ public:
 	OptionalInfo() : contPtr(nullptr) {}
 
 protected:
-	void setContainerPointer(mesh::ComponentsVector<T>* cp) { contPtr = cp; }
+	void setContainerPointer(mgp::internal::ComponentsVector<T>* cp) { contPtr = cp; }
 
-	mesh::ComponentsVector<T>* contPtr;
+	mgp::internal::ComponentsVector<T>* contPtr;
 };
 
 /**

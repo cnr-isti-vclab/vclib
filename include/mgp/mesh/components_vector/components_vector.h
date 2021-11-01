@@ -13,7 +13,7 @@
 #include "optional_normal_vector.h"
 #include "optional_scalar_vector.h"
 
-namespace mgp::mesh {
+namespace mgp::internal {
 
 template<typename T>
 class ComponentsVector :
@@ -45,6 +45,6 @@ public:
 	}
 };
 
-} // namespace mgp::mesh
+} // namespace mgp::internal
 
 #endif // MGP_MESH_CONTAINER_OPTIONAL_COMPONENTS_VECTOR_H

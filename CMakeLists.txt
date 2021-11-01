@@ -102,6 +102,7 @@ set(SOURCES
 	include/mgp/mesh/components/triangle_bit_flags.cpp
 	include/mgp/mesh/components_optional/optional_face_references.cpp
 	include/mgp/mesh/components_optional/optional_mutable_bit_flags.cpp
+	include/mgp/mesh/components_vector/custom_components_vector.cpp
 	include/mgp/mesh/container/face_container.cpp
 	include/mgp/mesh/container/face_optional_container.cpp
 	include/mgp/mesh/container/vertex_container.cpp

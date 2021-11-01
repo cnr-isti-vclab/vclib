@@ -60,7 +60,7 @@ private:
 	 * will be enabled - disabled at runtime.
 	 * Each vertex that has at least one optional component, will store a pointer to this vector.
 	 */
-	ComponentsVector<T> optionalComponentsVector;
+	internal::ComponentsVector<T> optionalComponentsVector;
 };
 
 }
