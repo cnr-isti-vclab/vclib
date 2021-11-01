@@ -79,6 +79,12 @@ unsigned int Container<T, IfIsFace<T>>::faceContainerSize() const
 	return faces.size();
 }
 
+template<class T>
+unsigned int Container<T, IfIsFace<T> >::deletedFaceNumber() const
+{
+	return faceContainerSize() - faceNumber();
+}
+
 /**
  * @brief Container::deleteFace Marks as deleted the face with the given id.
  *
@@ -189,7 +195,7 @@ template<class T>
 std::vector<int> mgp::mesh::Container<T, IfIsFace<T> >::compactFaces()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	std::vector<int> newIndices;
+	std::vector<int> newIndices(faces.size());
 	unsigned int k = 0;
 	for (unsigned int i = 0; i < faces.size(); ++i){
 		if (!faces[i].isDeleted()){

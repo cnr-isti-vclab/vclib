@@ -9,10 +9,23 @@
 
 namespace mgp {
 
+/**
+ * @brief updatePerVertexAdjacentFaces
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - AdjacentFaces
+ *   - Faces
+ *
+ * @param m
+ */
 template<typename MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m)
 {
 	mgp::requirePerVertexAdjacentFaces(m);
+	mgp::requireFaces(m);
+
 	using VertexType = typename MeshType::Vertex;
 	using FaceType   = typename MeshType::Face;
 

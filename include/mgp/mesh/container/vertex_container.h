@@ -55,6 +55,7 @@ public:
 
 	unsigned int vertexNumber() const;
 	unsigned int vertexContainerSize() const;
+	unsigned int deletedVertexNumber() const;
 
 	void deleteVertex(unsigned int i);
 

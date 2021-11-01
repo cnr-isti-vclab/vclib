@@ -9,17 +9,27 @@
 
 namespace mgp {
 
+/**
+ * @brief updateBoundingBox updates the bounding box of the mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *   - BoundingBox
+ *
+ * @param m
+ */
 template<typename MeshType>
 void updateBoundingBox(MeshType& m)
 {
+	mgp::requireVertices(m);
+	mgp::requireBoundingBox(m);
+
 	using VertexType = typename MeshType::Vertex;
 
-	mgp::requireBoundingBox(m);
-	if constexpr (hasVertices(m)) {
-		m.boundingBox().setNull();
-		for (const VertexType& v : m.vertexIterator()) {
-			m.boundingBox().add(v.coordinate());
-		}
+	m.boundingBox().setNull();
+	for (const VertexType& v : m.vertexIterator()) {
+		m.boundingBox().add(v.coordinate());
 	}
 }
 

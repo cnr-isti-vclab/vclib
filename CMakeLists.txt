@@ -19,6 +19,7 @@ set(MGP_SRC_DIR ${MGP_INCLUDE_DIR}/mgp)
 set(HEADERS
 	include/mgp/polymesh.h
 	include/mgp/trimesh.h
+	include/mgp/algorithms/clean.h
 	include/mgp/algorithms/smooth.h
 	include/mgp/algorithms/update/bounding_box.h
 	include/mgp/algorithms/update/flag.h
@@ -92,6 +93,7 @@ set(HEADERS
 	include/mgp/space/point/point4.h)
 
 set(SOURCES
+	include/mgp/algorithms/clean.cpp
 	include/mgp/algorithms/smooth.cpp
 	include/mgp/algorithms/update/bounding_box.cpp
 	include/mgp/algorithms/update/flag.cpp

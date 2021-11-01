@@ -82,6 +82,21 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::reserveFaces(unsigned int
 
 template<class... Args>
 template<typename U>
+mesh::ReturnIfHasFaceContainer<U, void> mgp::Mesh<Args...>::compactFaces()
+{
+	using Face          = typename U::FaceType;
+	using FaceContainer = typename U::FaceContainer;
+
+	Face*      oldBase = FaceContainer::faces.data();
+	std::vector<int> newIndices = FaceContainer::compactFaces();
+	Face*      newBase = FaceContainer::faces.data();
+	assert(oldBase == newBase);
+
+	updateFaceReferencesAfterCompact(oldBase, newIndices);
+}
+
+template<class... Args>
+template<typename U>
 mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::updateVertexReferences(
 	const typename U::VertexType* oldBase,
 	const typename U::VertexType* newBase)
@@ -116,6 +131,19 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferences(
 	if constexpr (mgp::mesh::hasVertices<U>()) {
 		using VertexContainer = typename U::VertexContainer;
 		VertexContainer::updateFaceReferences(oldBase, newBase);
+	}
+}
+
+template<class... Args>
+template<typename U>
+mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferencesAfterCompact(
+	const typename U::FaceType* base,
+	const std::vector<int>& newIndices)
+{
+	// update vertex references in the Face Container, if it exists
+	if constexpr (mgp::mesh::hasVertices<U>()) {
+		using VertexContainer = typename U::VertexContainer;
+		VertexContainer::updateFaceReferencesAfterCompact(base, newIndices);
 	}
 }
 

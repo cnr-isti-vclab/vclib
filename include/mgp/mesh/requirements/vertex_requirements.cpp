@@ -8,7 +8,6 @@
 #include <mgp/exception/mesh_exception.h>
 
 #include "../container/vertex_container.h"
-#include "element_requirements.h"
 
 namespace mgp {
 
@@ -123,6 +122,7 @@ bool hasPerVertexMutableBitFlags(const MeshType& m)
 template<typename MeshType>
 void constexpr requirePerVertexCoordinate()
 {
+	requireVertices<MeshType>();
 	static_assert(hasPerVertexCoordinate<MeshType>(), "Mesh has no vertex coordinates.");
 }
 
@@ -135,6 +135,7 @@ void constexpr requirePerVertexCoordinate(const MeshType&)
 template<typename MeshType>
 void requirePerVertexNormal(const MeshType& m)
 {
+	requireVertices<MeshType>();
 	static_assert(
 		mgp::vert::hasNormal<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalNormal<typename MeshType::VertexType>(),
@@ -146,6 +147,7 @@ void requirePerVertexNormal(const MeshType& m)
 template<typename MeshType>
 void requirePerVertexColor(const MeshType& m)
 {
+	requireVertices<MeshType>();
 	static_assert(
 		mgp::vert::hasColor<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalColor<typename MeshType::VertexType>(),
@@ -157,6 +159,7 @@ void requirePerVertexColor(const MeshType& m)
 template<typename MeshType>
 void requirePerVertexScalar(const MeshType& m)
 {
+	requireVertices<MeshType>();
 	static_assert(
 		mgp::vert::hasScalar<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalScalar<typename MeshType::VertexType>(),
@@ -168,6 +171,7 @@ void requirePerVertexScalar(const MeshType& m)
 template<typename MeshType>
 void constexpr requirePerVertexCustomComponents()
 {
+	requireVertices<MeshType>();
 	static_assert(hasPerVertexCustomComponents<MeshType>(), "Mesh has no vertex custom components.");
 }
 
@@ -180,6 +184,7 @@ void constexpr requirePerVertexCustomComponents(const MeshType&)
 template<typename MeshType>
 void requirePerVertexAdjacentFaces(const MeshType& m)
 {
+	requireVertices<MeshType>();
 	static_assert(
 		mgp::vert::hasAdjacentFaces<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>(),
@@ -191,6 +196,7 @@ void requirePerVertexAdjacentFaces(const MeshType& m)
 template<typename MeshType>
 void requirePerVertexMutableBitFlags(const MeshType& m)
 {
+	requireVertices<MeshType>();
 	static_assert(
 		mgp::vert::hasMutableBitFlags<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>(),

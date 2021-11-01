@@ -61,6 +61,7 @@ public:
 
 	unsigned int faceNumber() const;
 	unsigned int faceContainerSize() const;
+	unsigned int deletedFaceNumber() const;
 
 	void deleteFace(unsigned int i);
 

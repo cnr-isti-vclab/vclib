@@ -7,7 +7,6 @@
 
 #include <mgp/exception/mesh_exception.h>
 
-#include "element_requirements.h"
 #include "../container/face_container.h"
 
 namespace mgp {
@@ -105,6 +104,7 @@ bool hasPerFaceMutableBitFlags(const MeshType& m)
 template<typename MeshType>
 void constexpr requirePerFaceVertexReferencesArray()
 {
+	requireFaces<MeshType>();
 	static_assert(
 		hasPerFaceVertexReferencesArray<MeshType>,
 		"Mesh Face component has no fixed-size Vertex references.");
@@ -119,6 +119,7 @@ void constexpr requirePerFaceVertexReferencesArray(const MeshType&)
 template<typename MeshType>
 void requirePerFaceNormal(const MeshType& m)
 {
+	requireFaces<MeshType>();
 	static_assert(
 		mgp::face::hasNormal<typename MeshType::FaceType>() ||
 			mgp::face::hasOptionalNormal<typename MeshType::FaceType>(),
@@ -130,6 +131,7 @@ void requirePerFaceNormal(const MeshType& m)
 template<typename MeshType>
 void requirePerFaceColor(const MeshType& m)
 {
+	requireFaces<MeshType>();
 	static_assert(
 		mgp::face::hasColor<typename MeshType::FaceType>() ||
 			mgp::face::hasOptionalColor<typename MeshType::FaceType>(),
@@ -141,6 +143,7 @@ void requirePerFaceColor(const MeshType& m)
 template<typename MeshType>
 void requirePerFaceScalar(const MeshType& m)
 {
+	requireFaces<MeshType>();
 	static_assert(
 		mgp::face::hasScalar<typename MeshType::FaceType>() ||
 			mgp::face::hasOptionalScalar<typename MeshType::FaceType>(),
@@ -152,6 +155,7 @@ void requirePerFaceScalar(const MeshType& m)
 template<typename MeshType>
 void constexpr requirePerFaceCustomComponents()
 {
+	requireFaces<MeshType>();
 	static_assert(hasPerFaceCustomComponents<MeshType>(), "Mesh has no face custom components.");
 }
 
@@ -164,6 +168,7 @@ void constexpr requirePerFaceCustomComponents(const MeshType&)
 template<typename MeshType>
 void requirePerFaceMutableBitFlags(const MeshType& m)
 {
+	requireFaces<MeshType>();
 	static_assert(
 		mgp::face::hasMutableBitFlags<typename MeshType::FaceType>() ||
 			mgp::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>(),

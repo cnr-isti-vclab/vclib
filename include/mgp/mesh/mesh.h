@@ -39,6 +39,9 @@ public:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, void> reserveFaces(unsigned int i);
 
+	template<typename U = Mesh>
+	mesh::ReturnIfHasFaceContainer<U, void> compactFaces();
+
 protected:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, void>
@@ -51,6 +54,10 @@ protected:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, void>
 	updateFaceReferences(const typename U::FaceType* oldBase, const typename U::FaceType* newBase);
+
+	template<typename U = Mesh>
+	mesh::ReturnIfHasFaceContainer<U, void>
+	updateFaceReferencesAfterCompact(const typename U::FaceType* base, const std::vector<int>& newIndices);
 };
 
 } // namespace mgp

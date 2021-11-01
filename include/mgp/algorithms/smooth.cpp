@@ -90,6 +90,20 @@ void accumulateLaplacianInfo(
 
 } // namespace internal
 
+/**
+ * @brief vertexCoordLaplacianSmoothing the classical Laplacian smoothing. Each vertex is moved onto
+ * the average of the adjacent vertices.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *   - Faces
+ *
+ * @param m: the mesh that will be smoothed
+ * @param step
+ * @param smoothSelected
+ * @param cotangentWeight
+ */
 template<typename MeshType>
 void vertexCoordLaplacianSmoothing(
 	MeshType&    m,

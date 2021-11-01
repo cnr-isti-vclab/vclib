@@ -6,6 +6,8 @@
 #ifndef MGP_MESH_FACE_REQUIREMENTS_H
 #define MGP_MESH_FACE_REQUIREMENTS_H
 
+#include "element_requirements.h"
+
 namespace mgp {
 
 // is/has functions

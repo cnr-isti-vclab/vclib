@@ -79,6 +79,12 @@ unsigned int Container<T, IfIsVertex<T> >::vertexContainerSize() const
 	return vertices.size();
 }
 
+template<class T>
+unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::deletedVertexNumber() const
+{
+	return vertexContainerSize() - vertexNumber();
+}
+
 /**
  * @brief Container::deleteVertex Marks as deleted the vertex with the given id.
  *
@@ -190,7 +196,7 @@ template<class T>
 std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	std::vector<int> newIndices;
+	std::vector<int> newIndices(vertices.size());
 	unsigned int k = 0;
 	for (unsigned int i = 0; i < vertices.size(); ++i){
 		if (!vertices[i].isDeleted()){
@@ -236,13 +242,13 @@ void Container<T, IfIsVertex<T>>::updateFaceReferencesAfterCompact(
 {
 	if constexpr (mgp::components::hasFaceReferences<T>()) {
 		for (VertexType& v : vertexIterator()) {
-			v.updateVertexReferencesAfterCompact(base, newIndices);
+			v.updateFaceReferencesAfterCompact(base, newIndices);
 		}
 	}
 	else if constexpr (mgp::components::hasOptionalFaceReferences<T>()){
 		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
 			for (VertexType& v : vertexIterator()) {
-				v.updateVertexReferencesAfterCompact(base, newIndices);
+				v.updateFaceReferencesAfterCompact(base, newIndices);
 			}
 		}
 	}
