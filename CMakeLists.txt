@@ -37,8 +37,8 @@ set(HEADERS
 	include/mgp/mesh/components/bit_flags.h
 	include/mgp/mesh/components/bounding_box.h
 	include/mgp/mesh/components/color.h
-	include/mgp/mesh/components/component_references.h
 	include/mgp/mesh/components/coordinate.h
+	include/mgp/mesh/components/element_references.h
 	include/mgp/mesh/components/face_references.h
 	include/mgp/mesh/components/mutable_bit_flags.h
 	include/mgp/mesh/components/normal.h
@@ -98,7 +98,7 @@ set(SOURCES
 	include/mgp/algorithms/update/topology.cpp
 	include/mgp/mesh/mesh.cpp
 	include/mgp/mesh/components/bit_flags.cpp
-	include/mgp/mesh/components/component_references.cpp
+	include/mgp/mesh/components/element_references.cpp
 	include/mgp/mesh/components/mutable_bit_flags.cpp
 	include/mgp/mesh/components/triangle_bit_flags.cpp
 	include/mgp/mesh/components_optional/optional_face_references.cpp
