@@ -31,7 +31,7 @@ public:
 	face::ReturnIfHasOptionalColor<U, void> enablePerFaceColor();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerFaceMutableFlags();
+	face::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerFaceMutableBitFlags();
 
 	template<typename U = T>
 	face::ReturnIfHasOptionalNormal<U, void> enablePerFaceNormal();

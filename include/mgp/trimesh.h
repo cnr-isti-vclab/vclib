@@ -42,7 +42,10 @@ class Face :
 
 namespace mgp {
 
-class TriMesh : public mgp::Mesh<trimesh::Vertex, trimesh::Face>
+class TriMesh : public mgp::Mesh<
+		trimesh::Vertex,
+		trimesh::Face,
+		mesh::BoundingBox3d>
 {
 public:
 	using Vertex = trimesh::Vertex;

@@ -24,7 +24,7 @@ face::ReturnIfHasOptionalColor<U, void> FaceOptionalContainer<T, FaceHasOptional
  */
 template<class T>
 template<class U>
-face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceMutableFlags()
+face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceMutableBitFlags()
 {
 	optionalComponentsVector.enableMutableBitFlags(faceContainerSize());
 }

@@ -16,7 +16,7 @@ int main()
 	m.addVertex();
 	m.addVertex();
 
-	m.enablePerVertexMutableFlags();
+	m.enablePerVertexMutableBitFlags();
 
 	m.vertex(0).coordinate() = mgp::Point3d(0, 0, 0);
 	m.vertex(1).coordinate() = mgp::Point3d(0, 1, 0);

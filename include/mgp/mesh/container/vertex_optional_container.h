@@ -27,25 +27,57 @@ class VertexOptionalContainer<T, VertexHasOptional<T>>
 public:
 	virtual unsigned int vertexContainerSize() const = 0;
 
+	// Color
+	template<typename U = T>
+	vert::ReturnIfHasOptionalColor<U, bool> isPerVertexColorEnabled() const;
+
 	template<typename U = T>
 	vert::ReturnIfHasOptionalColor<U, void> enablePerVertexColor();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerVertexMutableFlags();
+	vert::ReturnIfHasOptionalColor<U, void> disablePerVertexColor();
+
+	// Mutable Bit Flags
+	template<typename U = T>
+	vert::ReturnIfHasOptionalMutableBitFlags<U, bool> isPerVertexMutableBitFlagsEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerVertexMutableBitFlags();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalMutableBitFlags<U, void> disablePerVertexMutableBitFlags();
+
+	// Normal
+	template<typename U = T>
+	vert::ReturnIfHasOptionalNormal<U, bool> isPerVertexNormalEnabled() const;
 
 	template<typename U = T>
 	vert::ReturnIfHasOptionalNormal<U, void> enablePerVertexNormal();
+
 	template<typename U = T>
-	vert::ReturnIfHasOptionalNormal<U, bool> isPerVertexNormalEnabled() const;
+	vert::ReturnIfHasOptionalNormal<U, void> disablePerVertexNormal();
+
+	// Scalar
+	template<typename U = T>
+	vert::ReturnIfHasOptionalScalar<U, bool> isPerVertexScalarEnabled() const;
 
 	template<typename U = T>
 	vert::ReturnIfHasOptionalScalar<U, void> enablePerVertexScalar();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerVertexAdjacentFaces();
+	vert::ReturnIfHasOptionalScalar<U, void> disablePerVertexScalar();
+
+	// Adjacent Faces
 	template<typename U = T>
 	vert::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerVertexAdjacentFacesEnabled() const;
 
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerVertexAdjacentFaces();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerVertexAdjacentFaces();
+
+	// Custom Components
 	template<typename K, typename U = T>
 	vert::ReturnIfHasCustomComponents<U, void> addPerVertexCustomComponent(const std::string& name);
 
