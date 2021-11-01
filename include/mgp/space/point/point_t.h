@@ -50,6 +50,10 @@ public:
 	Scalar&       operator()(unsigned int i);
 	const Scalar& operator()(unsigned int i) const;
 
+	bool operator==(const Point& p1) const;
+	bool operator!=(const Point& p1) const;
+	bool operator<(const Point& p1) const;
+
 	Point  operator+(const Scalar& s) const;
 	Point  operator+(const Point& p1) const;
 	Point  operator-(const Scalar& s) const;

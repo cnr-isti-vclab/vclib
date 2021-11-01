@@ -18,6 +18,7 @@ int main()
 	mgp::io::loadPly(m, "/home/alessandro/tmp/bunny_rem.ply");
 
 	unsigned int nv = mgp::removeUnreferencedVertices(m);
+	mgp::removeDuplicatedVertices(m);
 
 	std::cerr << "Removed Vertices: " << nv << "\n";
 

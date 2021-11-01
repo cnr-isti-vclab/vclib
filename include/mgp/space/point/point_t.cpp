@@ -64,6 +64,28 @@ Scalar& Point<Scalar, N>::operator()(unsigned int i)
 }
 
 template<class Scalar, int N>
+bool Point<Scalar, N>::operator==(const Point& p1) const
+{
+	return p == p1.p;
+}
+
+template<class Scalar, int N>
+bool Point<Scalar, N>::operator!=(const Point& p1) const
+{
+	return p != p1.p;
+}
+
+template<class Scalar, int N>
+bool Point<Scalar, N>::operator<(const Point& p1) const
+{
+	unsigned int i = 0;
+	while (p[i] == p1.p[i] && i < DIM) {
+		++i;
+	}
+	return i != DIM && p[i] < p1.p[i];
+}
+
+template<class Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator+(const Scalar& s) const
 {
 	return Point<Scalar, N>(p + s);

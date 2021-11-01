@@ -14,6 +14,9 @@ unsigned int numberUnreferencedVertices(const MeshType& m);
 template <typename MeshType>
 unsigned int removeUnreferencedVertices(MeshType& m);
 
+template <typename MeshType>
+unsigned int removeDuplicatedVertices(MeshType& m);
+
 }
 
 #include "clean.cpp"
