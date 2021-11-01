@@ -34,10 +34,13 @@ class Container<T, IfIsFace<T>> :
 {
 	static_assert(
 		mgp::face::hasBitFlags<T>(),
-		"You should include BitFlags as Face component in your Mesh definition.");
+		"You should include BitFlags (or a derived) as Face component in your Mesh definition.");
 	static_assert(
 		mgp::face::hasVertexReferences<T>(),
-		"You should include Vertex References (Array or List) component in your Mesh definition.");
+		"You should include VertexReferences (Array or List) component in your Mesh definition.");
+	static_assert (
+		!mgp::face::hasTriangleBitFlags<T>() || T::VERTEX_NUMBER == 3,
+		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
 
 protected:
 	// types:
