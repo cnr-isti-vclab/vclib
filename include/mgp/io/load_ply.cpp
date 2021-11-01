@@ -15,7 +15,7 @@ void loadPly(MeshType& m, const std::string& filename)
 }
 
 template <typename MeshType>
-inline void loadPly(MeshType& m, const std::string& filename, mgp::io::FileMeshInfo& loadedInfo)
+void loadPly(MeshType& m, const std::string& filename, mgp::io::FileMeshInfo& loadedInfo)
 {
 	std::ifstream file(filename);
 	if (!file.is_open()) {

@@ -8,6 +8,20 @@
 namespace mgp::mesh {
 
 /**
+ * @brief FaceOptionalContainer::isPerFaceColorEnabled checks if the face Optional Color is
+ * enabled. This function is available **only if the Face Element has the OptionalColor
+ * Component**.
+ * @return true if the Optional Color is enabled, false otherwise.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalColor<U, bool>
+FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceColorEnabled() const
+{
+	return optionalComponentsVector.isColorEnabled();
+}
+
+/**
  * @brief Container::enableFaceColor enable the Optional Color of the face.
  * This function is available **only if the Face Element has the OptionalColor Component**.
  */
@@ -16,6 +30,32 @@ template<class U>
 face::ReturnIfHasOptionalColor<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceColor()
 {
 	optionalComponentsVector.enableColor(faceContainerSize());
+}
+
+/**
+ * @brief Container::disableFaceColor disables the Optional Color of the face.
+ * This function is available **only if the Face Element has the OptionalColor Component**.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalColor<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceColor()
+{
+	optionalComponentsVector.disableColor();
+}
+
+/**
+ * @brief FaceOptionalContainer::isPerFaceMutableBitFlagsEnabled checks if the face Optional
+ * Mutable Bit Flags is enabled. This function is available **only if the Face Element has the
+ * OptionalMutableBitFlags Component**.
+ * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalMutableBitFlags<U, bool>
+FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceMutableBitFlagsEnabled() const
+{
+	optionalComponentsVector.isMutableBitFlagsEnabled();
 }
 
 /**
@@ -30,6 +70,33 @@ face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceOptionalContainer<T, FaceH
 }
 
 /**
+ * @brief Container::disableFaceMutableFlags disables the Optional Mutable Flags of the face.
+ * This function is available **only if the Face Element has the OptionalMutableBitFlags
+ * Component**.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalMutableBitFlags<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceMutableBitFlags()
+{
+	optionalComponentsVector.disableMutableBitFlags();
+}
+
+/**
+ * @brief FaceOptionalContainer::isPerFaceNormalEnabled checks if the face Optional Normal is
+ * enabled. This function is available **only if the Face Element has the OptionalNormal
+ * Component**.
+ * @return true if the Optional Normal is enabled, false otherwise.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalNormal<U, bool>
+FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceNormalEnabled() const
+{
+	return optionalComponentsVector.isNormalEnabled();
+}
+
+/**
  * @brief Container::enableFaceNormal enable the Optional Normal of the face.
  * This function is available **only if the Face Element has the OptionalNormal Component**.
  */
@@ -41,6 +108,31 @@ face::ReturnIfHasOptionalNormal<U, void> FaceOptionalContainer<T, FaceHasOptiona
 }
 
 /**
+ * @brief Container::disableFaceNormal disables the Optional Normal of the face.
+ * This function is available **only if the Face Element has the OptionalNormal Component**.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalNormal<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceNormal()
+{
+	optionalComponentsVector.disableNormal();
+}
+
+/**
+ * @brief FaceOptionalContainer::isPerFaceScalarEnabled checks if the face Optional Scalar is
+ * enabled. This function is available **only if the Face Element has the OptionalScalar
+ * Component**.
+ * @return true if the Optional Scalar is enabled, false otherwise.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalScalar<U, bool>
+FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceScalarEnabled() const
+{
+	return optionalComponentsVector.isScalarEnabled();
+}
+/**
  * @brief Container::enableFaceScalar enable the Optional Scalar of the face.
  * This function is available **only if the Face Element has the OptionalScalar Component**.
  */
@@ -49,6 +141,18 @@ template<class U>
 face::ReturnIfHasOptionalScalar<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceScalar()
 {
 	optionalComponentsVector.enableScalar(faceContainerSize());
+}
+
+/**
+ * @brief Container::disableFaceScalar disables the Optional Scalar of the face.
+ * This function is available **only if the Face Element has the OptionalScalar Component**.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalScalar<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceScalar()
+{
+	optionalComponentsVector.disableScalar();
 }
 
 template<class T>

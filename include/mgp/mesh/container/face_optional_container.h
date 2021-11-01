@@ -27,18 +27,47 @@ class FaceOptionalContainer<T, FaceHasOptional<T>>
 public:
 	virtual unsigned int faceContainerSize() const = 0;
 
+	// Color
+	template<typename U = T>
+	face::ReturnIfHasOptionalColor<U, bool> isPerFaceColorEnabled() const;
+
 	template<typename U = T>
 	face::ReturnIfHasOptionalColor<U, void> enablePerFaceColor();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalColor<U, void> disablePerFaceColor();
+
+	// Mutable Bit Flags
+	template<typename U = T>
+	face::ReturnIfHasOptionalMutableBitFlags<U, bool> isPerFaceMutableBitFlagsEnabled() const;
 
 	template<typename U = T>
 	face::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerFaceMutableBitFlags();
 
 	template<typename U = T>
+	face::ReturnIfHasOptionalMutableBitFlags<U, void> disablePerFaceMutableBitFlags();
+
+	// Normal
+	template<typename U = T>
+	face::ReturnIfHasOptionalNormal<U, bool> isPerFaceNormalEnabled() const;
+
+	template<typename U = T>
 	face::ReturnIfHasOptionalNormal<U, void> enablePerFaceNormal();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalNormal<U, void> disablePerFaceNormal();
+
+	// Scalar
+	template<typename U = T>
+	face::ReturnIfHasOptionalScalar<U, bool> isPerFaceScalarEnabled() const;
 
 	template<typename U = T>
 	face::ReturnIfHasOptionalScalar<U, void> enablePerFaceScalar();
 
+	template<typename U = T>
+	face::ReturnIfHasOptionalScalar<U, void> disablePerFaceScalar();
+
+	// Custom Components
 	template<typename K, typename U = T>
 	face::ReturnIfHasCustomComponents<U, void> addPerFaceCustomComponent(const std::string& name);
 

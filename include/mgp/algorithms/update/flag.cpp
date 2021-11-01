@@ -46,7 +46,7 @@ public:
 		z = nz;
 	}
 
-	inline bool operator<(const EdgeSorter& pe) const
+	bool operator<(const EdgeSorter& pe) const
 	{
 		if (v[0] < pe.v[0])
 			return true;
@@ -56,11 +56,11 @@ public:
 			return v[1] < pe.v[1];
 	}
 
-	inline bool operator==(const EdgeSorter& pe) const
+	bool operator==(const EdgeSorter& pe) const
 	{
 		return v[0] == pe.v[0] && v[1] == pe.v[1];
 	}
-	inline bool operator!=(const EdgeSorter& pe) const
+	bool operator!=(const EdgeSorter& pe) const
 	{
 		return v[0] != pe.v[0] || v[1] != pe.v[1];
 	}
