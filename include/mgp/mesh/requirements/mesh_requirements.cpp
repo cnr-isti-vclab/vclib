@@ -12,7 +12,7 @@ namespace mgp {
 // has functions
 
 template<typename MeshType>
-bool constexpr isTriangleMesh()
+bool constexpr hasTriangles()
 {
 	if constexpr (hasFaces<MeshType>()) {
 		using F = typename MeshType::FaceType;
@@ -26,13 +26,13 @@ bool constexpr isTriangleMesh()
 }
 
 template<typename MeshType>
-bool constexpr isTriangleMesh(const MeshType&)
+bool constexpr hasTriangles(const MeshType&)
 {
-	return isTriangleMesh<MeshType>();
+	return hasTriangles<MeshType>();
 }
 
 template<typename MeshType>
-bool constexpr isQuadMesh()
+bool constexpr hasQuads()
 {
 	if constexpr (hasFaces<MeshType>()) {
 		using F = typename MeshType::FaceType;
@@ -46,9 +46,9 @@ bool constexpr isQuadMesh()
 }
 
 template<typename MeshType>
-bool constexpr isQuadMesh(const MeshType&)
+bool constexpr hasQuads(const MeshType&)
 {
-	return isQuadMesh<MeshType>();
+	return hasQuads<MeshType>();
 }
 
 template<typename MeshType>
@@ -68,7 +68,7 @@ bool constexpr hasBoundingBox(const MeshType&)
 template<typename MeshType>
 void constexpr requireTriangleMesh()
 {
-	static_assert(isTriangleMesh<MeshType>(), "Mesh is not a Triangle Mesh.");
+	static_assert(hasTriangles<MeshType>(), "Mesh is not a Triangle Mesh.");
 }
 
 template<typename MeshType>
@@ -80,7 +80,7 @@ void constexpr requireTriangleMesh(const MeshType&)
 template<typename MeshType>
 void constexpr requireQuadMesh()
 {
-	static_assert(isQuadMesh<MeshType>(), "Mesh is not a Quad Mesh.");
+	static_assert(hasQuads<MeshType>(), "Mesh is not a Quad Mesh.");
 }
 
 template<typename MeshType>

@@ -19,13 +19,31 @@ template<typename MeshType>
 bool constexpr hasPerFaceVertexReferences(const MeshType&);
 
 template <typename MeshType>
-bool hasPerFaceNormal(const MeshType&);
+bool constexpr hasPerFaceNormal();
 
 template <typename MeshType>
-bool hasPerFaceColor(const MeshType&);
+bool constexpr hasPerFaceNormal(const MeshType&);
 
 template <typename MeshType>
-bool hasPerFaceScalar(const MeshType&);
+bool isPerFaceNormalEnabled(const MeshType&);
+
+template <typename MeshType>
+bool constexpr hasPerFaceColor();
+
+template <typename MeshType>
+bool constexpr hasPerFaceColor(const MeshType&);
+
+template <typename MeshType>
+bool isPerFaceColorEnabled(const MeshType&);
+
+template <typename MeshType>
+bool constexpr hasPerFaceScalar();
+
+template <typename MeshType>
+bool constexpr hasPerFaceScalar(const MeshType&);
+
+template <typename MeshType>
+bool isPerFaceScalarEnabled(const MeshType&);
 
 template<typename MeshType>
 bool constexpr hasPerFaceCustomComponents();
@@ -34,7 +52,13 @@ template<typename MeshType>
 bool constexpr hasPerFaceCustomComponents(const MeshType&);
 
 template <typename MeshType>
-bool hasPerFaceMutableBitFlags(const MeshType&);
+bool constexpr hasPerFaceMutableBitFlags();
+
+template <typename MeshType>
+bool constexpr hasPerFaceMutableBitFlags(const MeshType&);
+
+template <typename MeshType>
+bool isPerFaceMutableBitFlagsEnabled(const MeshType&);
 
 // require functions
 

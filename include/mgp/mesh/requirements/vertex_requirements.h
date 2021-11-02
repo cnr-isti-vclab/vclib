@@ -19,13 +19,31 @@ template <typename MeshType>
 bool constexpr hasPerVertexCoordinate(const MeshType&);
 
 template <typename MeshType>
-bool hasPerVertexNormal(const MeshType&);
+bool constexpr hasPerVertexNormal();
 
 template <typename MeshType>
-bool hasPerVertexColor(const MeshType&);
+bool constexpr hasPerVertexNormal(const MeshType&);
 
 template <typename MeshType>
-bool hasPerVertexScalar(const MeshType&);
+bool isPerVertexNormalEnabled(const MeshType&);
+
+template <typename MeshType>
+bool constexpr hasPerVertexColor();
+
+template <typename MeshType>
+bool constexpr hasPerVertexColor(const MeshType&);
+
+template <typename MeshType>
+bool isPerVertexColorEnabled(const MeshType&);
+
+template <typename MeshType>
+bool constexpr hasPerVertexScalar();
+
+template <typename MeshType>
+bool constexpr hasPerVertexScalar(const MeshType&);
+
+template <typename MeshType>
+bool isPerVertexScalarEnabled(const MeshType&);
 
 template <typename MeshType>
 bool constexpr hasPerVertexCustomComponents();
@@ -34,10 +52,22 @@ template <typename MeshType>
 bool constexpr hasPerVertexCustomComponents(const MeshType&);
 
 template <typename MeshType>
-bool hasPerVertexAdjacentFaces(const MeshType&);
+bool constexpr hasPerVertexAdjacentFaces();
 
 template <typename MeshType>
-bool hasPerVertexMutableBitFlags(const MeshType&);
+bool constexpr hasPerVertexAdjacentFaces(const MeshType&);
+
+template <typename MeshType>
+bool isPerVertexAdjacentFacesEnabled(const MeshType&);
+
+template<typename MeshType>
+bool constexpr hasPerVertexMutableBitFlags();
+
+template<typename MeshType>
+bool constexpr hasPerVertexMutableBitFlags(const MeshType&);
+
+template <typename MeshType>
+bool isPerVertexMutableBitFlagsEnabled(const MeshType&);
 
 // require functions
 

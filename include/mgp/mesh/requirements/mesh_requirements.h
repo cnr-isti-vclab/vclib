@@ -14,16 +14,16 @@ namespace mgp {
 // is/has functions
 
 template <typename MeshType>
-bool constexpr isTriangleMesh();
+bool constexpr hasTriangles();
 
 template <typename MeshType>
-bool constexpr isTriangleMesh(const MeshType&);
+bool constexpr hasTriangles(const MeshType&);
 
 template <typename MeshType>
-bool constexpr isQuadMesh();
+bool constexpr hasQuads();
 
 template <typename MeshType>
-bool constexpr isQuadMesh(const MeshType&);
+bool constexpr hasQuads(const MeshType&);
 
 template <typename MeshType>
 bool constexpr hasBoundingBox();

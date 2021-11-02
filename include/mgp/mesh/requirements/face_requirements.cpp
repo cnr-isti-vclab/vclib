@@ -24,7 +24,21 @@ bool constexpr hasPerFaceVertexReferencesArray(const MeshType&)
 }
 
 template<typename MeshType>
-bool hasPerFaceNormal(const MeshType& m)
+bool constexpr hasPerFaceNormal()
+{
+	return hasFaces<MeshType>() && (
+		mgp::face::hasNormal<typename MeshType::FaceType>() ||
+		mgp::face::hasOptionalNormal<typename MeshType::FaceType>());
+}
+
+template<typename MeshType>
+bool constexpr hasPerFaceNormal(const MeshType&)
+{
+	return hasPerFaceNormal<MeshType>();
+}
+
+template<typename MeshType>
+bool isPerFaceNormalEnabled(const MeshType& m)
 {
 	if constexpr (
 		hasFaces<MeshType>() && mgp::face::hasNormal<typename MeshType::FaceType>()) {
@@ -40,7 +54,21 @@ bool hasPerFaceNormal(const MeshType& m)
 }
 
 template<typename MeshType>
-bool hasPerFaceColor(const MeshType& m)
+bool constexpr hasPerFaceColor()
+{
+	return hasFaces<MeshType>() && (
+			mgp::face::hasColor<typename MeshType::FaceType>() ||
+			mgp::face::hasOptionalColor<typename MeshType::FaceType>());
+}
+
+template<typename MeshType>
+bool constexpr hasPerFaceColor(const MeshType&)
+{
+	return hasPerFaceColor<MeshType>();
+}
+
+template<typename MeshType>
+bool isPerFaceColorEnabled(const MeshType& m)
 {
 	if constexpr (
 		hasFaces<MeshType>() && mgp::face::hasColor<typename MeshType::FaceType>()) {
@@ -56,7 +84,20 @@ bool hasPerFaceColor(const MeshType& m)
 }
 
 template<typename MeshType>
-bool hasPerFaceScalar(const MeshType& m)
+bool constexpr hasPerFaceScalar()
+{
+	return hasFaces<MeshType>() && (mgp::face::hasScalar<typename MeshType::FaceType>() ||
+									mgp::face::hasOptionalScalar<typename MeshType::FaceType>());
+}
+
+template<typename MeshType>
+bool constexpr hasPerFaceScalar(const MeshType&)
+{
+	return hasPerFaceScalar<MeshType>();
+}
+
+template<typename MeshType>
+bool isPerFaceScalarEnabled(const MeshType& m)
 {
 	if constexpr (
 		hasFaces<MeshType>() && mgp::face::hasScalar<typename MeshType::FaceType>()) {
@@ -84,7 +125,21 @@ bool constexpr hasPerFaceCustomComponents(const MeshType&)
 }
 
 template<typename MeshType>
-bool hasPerFaceMutableBitFlags(const MeshType& m)
+bool constexpr hasPerFaceMutableBitFlags()
+{
+	return hasFaces<MeshType>() &&
+		   (mgp::face::hasMutableBitFlags<typename MeshType::FaceType>() ||
+			mgp::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>());
+}
+
+template<typename MeshType>
+bool constexpr hasPerFaceMutableBitFlags(const MeshType&)
+{
+	return hasPerFaceMutableBitFlags<MeshType>();
+}
+
+template<typename MeshType>
+bool isPerFaceMutableBitFlagsEnabled(const MeshType& m)
 {
 	if constexpr (
 		hasFaces<MeshType>() && mgp::face::hasMutableBitFlags<typename MeshType::FaceType>()) {
@@ -120,11 +175,8 @@ template<typename MeshType>
 void requirePerFaceNormal(const MeshType& m)
 {
 	requireFaces<MeshType>();
-	static_assert(
-		mgp::face::hasNormal<typename MeshType::FaceType>() ||
-			mgp::face::hasOptionalNormal<typename MeshType::FaceType>(),
-		"Mesh has no face normals.");
-	if (!hasPerFaceNormal(m))
+	static_assert(hasPerFaceNormal(m), "Mesh has no face normals.");
+	if (!isPerFaceNormalEnabled(m))
 		throw mgp::MissingComponentException("Face normals not enabled.");
 }
 
@@ -132,11 +184,8 @@ template<typename MeshType>
 void requirePerFaceColor(const MeshType& m)
 {
 	requireFaces<MeshType>();
-	static_assert(
-		mgp::face::hasColor<typename MeshType::FaceType>() ||
-			mgp::face::hasOptionalColor<typename MeshType::FaceType>(),
-		"Mesh has no face colors.");
-	if (!hasPerFaceColor(m))
+	static_assert(hasPerFaceColor(m), "Mesh has no face colors.");
+	if (!isPerFaceColorEnabled(m))
 		throw mgp::MissingComponentException("Face colors not enabled.");
 }
 
@@ -144,11 +193,8 @@ template<typename MeshType>
 void requirePerFaceScalar(const MeshType& m)
 {
 	requireFaces<MeshType>();
-	static_assert(
-		mgp::face::hasScalar<typename MeshType::FaceType>() ||
-			mgp::face::hasOptionalScalar<typename MeshType::FaceType>(),
-		"Mesh has no face scalars.");
-	if (!hasPerFaceScalar(m))
+	static_assert(hasPerFaceScalar(m), "Mesh has no face scalars.");
+	if (!isPerFaceScalarEnabled(m))
 		throw mgp::MissingComponentException("Face scalars not enabled.");
 }
 
@@ -169,11 +215,8 @@ template<typename MeshType>
 void requirePerFaceMutableBitFlags(const MeshType& m)
 {
 	requireFaces<MeshType>();
-	static_assert(
-		mgp::face::hasMutableBitFlags<typename MeshType::FaceType>() ||
-			mgp::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>(),
-		"Mesh has no per face mutable bit flags.");
-	if (!hasPerFaceMutableBitFlags(m))
+	static_assert( hasPerFaceMutableBitFlags(m), "Mesh has no per face mutable bit flags.");
+	if (!isPerFaceMutableBitFlagsEnabled(m))
 		throw mgp::MissingComponentException("Face mutable bit flags not enabled.");
 }
 

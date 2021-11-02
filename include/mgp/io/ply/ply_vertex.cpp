@@ -5,6 +5,7 @@
 
 #include "ply_vertex.h"
 #include <mgp/misc/tokenizer.h>
+#include <mgp/mesh/requirements.h>
 
 namespace mgp {
 namespace ply {
@@ -175,6 +176,53 @@ void saveVertices(
 					break;
 				default:
 					internal::writeProperty(file, 0, p.type, bin); break;
+			}
+		}
+		if (!bin)
+			file << std::endl;
+	}
+}
+
+template <typename MeshType>
+void saveVertices(
+	std::ofstream& file,
+	const PlyHeader& header,
+	const MeshType& mesh)
+{
+	using VertexType = typename MeshType::Vertex;
+
+	bool bin = header.format() == ply::BINARY;
+	for(const VertexType& v : mesh.vertexIterator()) {
+		const VertexType* vv = &v;
+		for (ply::Property p : header.vertexProperties()) {
+			bool hasBeenWritten = false;
+			if (p.name >= ply::x && p.name <= ply::z) {
+				if constexpr (mgp::hasPerVertexCoordinate(mesh)) {
+					int a = p.name - ply::x;
+					internal::writeProperty(file, v.coordinate()[a], p.type, bin);
+					hasBeenWritten = true;
+				}
+			}
+			if (p.name >= ply::nx && p.name <= ply::nz) {
+				if constexpr (mgp::hasPerVertexNormal(mesh)) {
+					if (mgp::isPerVertexNormalEnabled(mesh)) {
+						internal::writeProperty(file, vv->normal()[p.name - ply::nx], p.type, bin);
+						hasBeenWritten = true;
+					}
+				}
+			}
+			if (p.name >= ply::red && p.name <= ply::alpha) {
+				if constexpr (mgp::hasPerVertexColor(mesh)) {
+					if (mgp::isPerVertexColorEnabled(mesh)) {
+						internal::writeProperty(file, vv->color()[p.name - ply::red], p.type, bin);
+						hasBeenWritten = true;
+					}
+				}
+			}
+			if (!hasBeenWritten){
+				// be sure to write something if the header declares some property that is not
+				// in the mesh
+				internal::writeProperty(file, 0, p.type, bin); break;
 			}
 		}
 		if (!bin)

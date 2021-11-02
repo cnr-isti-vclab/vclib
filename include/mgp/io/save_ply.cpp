@@ -34,21 +34,13 @@ void savePly(const MeshType& m, const std::string& filename)
 	}
 	fp << header.toString();
 
-	unsigned int i = 0;
-	std::vector<double> vertices(m.vertexNumber()*3);
-	std::vector<double> normals, colors;
-	for (const VertexType& v : m.vertexIterator()){
-		vertices[i++] = v.coordinate().x();
-		vertices[i++] = v.coordinate().y();
-		vertices[i++] = v.coordinate().z();
-	}
-
-	ply::saveVertices(fp, header, vertices.data(), normals.data(), FileMeshInfo::RGB, colors.data());
+	ply::saveVertices(fp, header, m);
 
 	std::vector<unsigned int> faces(m.faceNumber()*3);
 	std::vector<unsigned int> pSize(m.faceNumber());
 
-	i = 0;
+	unsigned int i = 0;
+	std::vector<double> normals, colors;
 	for (const FaceType& f : m.faceIterator()){
 		faces[i*3+0] = f.v(0)->id();
 		faces[i*3+1] = f.v(1)->id();

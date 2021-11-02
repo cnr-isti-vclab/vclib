@@ -118,6 +118,12 @@ template<typename MeshType>
  * @brief removeDuplicateVertices marks as deleted the duplicate vertices of the mesh, by looking
  * only at their spatial positions.
  *
+ *  * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *     - Coordinate
+ *   - Faces
+ *
  * @param m
  * @return
  */
