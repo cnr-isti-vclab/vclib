@@ -4,6 +4,7 @@
  */
 
 #include "ply_face.h"
+#include <mgp/mesh/requirements.h>
 
 namespace mgp {
 namespace ply {
@@ -43,6 +44,23 @@ void saveFaceIndices(
 
 	if (meshType.isPolygonMesh())
 		startingIndex += polygonSizes[f];
+}
+
+template<typename MeshType, typename FaceType>
+void saveFaceIndices(
+	std::ofstream&  file,
+	Property        p,
+	const MeshType& m,
+	const FaceType& f,
+	bool            bin)
+{
+	using VertexType = typename MeshType::Vertex;
+
+	unsigned int fsize = f.vertexNumber();
+	internal::writeProperty(file, fsize, p.listSizeType, bin);
+	for (const VertexType* v : f.vertexIterator()){
+		internal::writeProperty(file, m.vertexIdIfCompact(v->id()), p.type, bin);
+	}
 }
 
 // load
@@ -242,49 +260,39 @@ bool loadFacesBin(
 
 } // namespace internal
 
-template<typename A, typename B, typename C, typename D>
-void saveFaces(
-	std::ofstream&              file,
-	const PlyHeader&            header,
-	const A                     faces[],
-	io::FileMeshInfo            meshMode,
-	const B                     faceNormals[],
-	io::FileMeshInfo::ColorMode colorMod,
-	const C                     faceColors[],
-	const D                     polygonSizes[])
+template<typename MeshType>
+void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh)
 {
-	bool bin           = header.format() == ply::BINARY;
-	uint colorStep     = 3;
-	uint startingIndex = 0;
-	if (colorMod == io::FileMeshInfo::RGBA)
-		colorStep = 4;
-	for (uint f = 0; f < header.numberFaces(); ++f) {
+	using FaceType = typename MeshType::Face;
+
+	bool bin = header.format() == ply::BINARY;
+	for (const FaceType& f : mesh.faceIterator()){
 		for (ply::Property p : header.faceProperties()) {
-			switch (p.name) {
-			case ply::nx: internal::writeProperty(file, faceNormals[f * 3], p.type, bin); break;
-			case ply::ny: internal::writeProperty(file, faceNormals[f * 3 + 1], p.type, bin); break;
-			case ply::nz: internal::writeProperty(file, faceNormals[f * 3 + 2], p.type, bin); break;
-			case ply::red:
-				internal::writeProperty(file, faceColors[f * colorStep], p.type, bin, true);
-				break;
-			case ply::green:
-				internal::writeProperty(file, faceColors[f * colorStep + 1], p.type, bin, true);
-				break;
-			case ply::blue:
-				internal::writeProperty(file, faceColors[f * colorStep + 2], p.type, bin, true);
-				break;
-			case ply::alpha:
-				if (colorStep == 4)
-					internal::writeProperty(file, faceColors[f * colorStep + 3], p.type, bin, true);
-				else
-					internal::writeProperty(file, (p.type < 6 ? 255 : 1), p.type, bin, true);
-				;
-				break;
-			case ply::vertex_indices:
-				internal::saveFaceIndices(
-					file, p, f, startingIndex, faces, meshMode, polygonSizes, bin);
-				break;
-			default: internal::writeProperty(file, 0, p.type, bin); break;
+			bool hasBeenWritten = false;
+			if (p.name == ply::vertex_indices){
+				internal::saveFaceIndices(file, p, mesh, f, bin);
+				hasBeenWritten = true;
+			}
+			if (p.name >= ply::nx && p.name <= ply::nz) {
+				if constexpr (mgp::hasPerFaceNormal(mesh)) {
+					if (mgp::isPerFaceNormalEnabled(mesh)) {
+						internal::writeProperty(file, f.normal()[p.name - ply::nx], p.type, bin);
+						hasBeenWritten = true;
+					}
+				}
+			}
+			if (p.name >= ply::red && p.name <= ply::alpha) {
+				if constexpr (mgp::hasPerFaceColor(mesh)) {
+					if (mgp::isPerFaceColorEnabled(mesh)) {
+						internal::writeProperty(file, f.color()[p.name - ply::red], p.type, bin);
+						hasBeenWritten = true;
+					}
+				}
+			}
+			if (!hasBeenWritten){
+				// be sure to write something if the header declares some property that is not
+				// in the mesh
+				internal::writeProperty(file, 0, p.type, bin);
 			}
 		}
 		if (!bin)

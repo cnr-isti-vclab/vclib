@@ -8,13 +8,35 @@
 namespace mgp::io {
 
 template<typename MeshType>
-void savePly(const MeshType& m, const std::string& filename)
+void savePly(const MeshType& m, const std::string& filename, bool binary)
+{
+	mgp::io::FileMeshInfo info(m);
+	savePly(m, filename, info, binary);
+}
+
+template<typename MeshType>
+void savePly(
+	const MeshType& m,
+	const std::string& filename,
+	const FileMeshInfo& info,
+	bool binary)
+{
+	ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, info);
+	header.setNumberVertices(m.vertexNumber());
+	header.setNumberFaces(m.faceNumber());
+
+	savePly(m, filename, header);
+}
+
+template <typename MeshType>
+void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeader& header)
 {
 	using VertexType = typename MeshType::Vertex;
 	using FaceType = typename MeshType::Face;
-	mgp::io::FileMeshInfo info;
 
-	bool binary = false;
+	if (!header.isValid())
+		throw std::runtime_error("Ply Header not valid.");
+
 	std::string plyfilename;
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
 	std::ofstream fp;
@@ -24,32 +46,18 @@ void savePly(const MeshType& m, const std::string& filename)
 	else
 		plyfilename = filename + ".ply";
 
-	ply::PlyHeader header;
-	header.setInfo(info, binary);
-	header.setNumberVertices(m.vertexNumber());
-	header.setNumberFaces(m.faceNumber());
 	fp.open (plyfilename);
 	if(!fp) {
 		throw mgp::CannotOpenFileException(plyfilename);
 	}
 	fp << header.toString();
 
-	ply::saveVertices(fp, header, m);
+	if (mgp::hasVertices(m))
+		ply::saveVertices(fp, header, m);
 
-	std::vector<unsigned int> faces(m.faceNumber()*3);
-	std::vector<unsigned int> pSize(m.faceNumber());
+	if (mgp::hasFaces(m))
+		ply::saveFaces(fp, header, m);
 
-	unsigned int i = 0;
-	std::vector<double> normals, colors;
-	for (const FaceType& f : m.faceIterator()){
-		faces[i*3+0] = f.v(0)->id();
-		faces[i*3+1] = f.v(1)->id();
-		faces[i*3+2] = f.v(2)->id();
-		pSize[i++] = 3;
-	}
-
-
-	ply::saveFaces(fp, header, faces.data(), info, normals.data(), FileMeshInfo::RGB, colors.data(), pSize.data());
 	fp.close();
 }
 

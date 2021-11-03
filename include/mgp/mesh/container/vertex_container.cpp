@@ -102,6 +102,33 @@ void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
 	--vn;
 }
 
+/**
+ * @brief Container::vertexIdIfCompact is an utility member functions that returns the id of
+ * an element if the container would be compact, that is the number of non-deleted elements before
+ * the vertex with the given id.
+ *
+ * Complexity: O(n), n number of vertices in the container.
+ *
+ * This function does not perform any sanity check.
+ *
+ * @param id
+ * @return
+ */
+template<class T>
+unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::vertexIdIfCompact(unsigned int id) const
+{
+	if (vertices.size() == vn)
+		return id;
+	else {
+		unsigned int cnt = 0;
+		for (unsigned int i = 0; i < id; i++){
+			if (!vertices[i].isDeleted())
+				++cnt;
+		}
+		return cnt;
+	}
+}
+
 template<class T>
 typename Container<T, IfIsVertex<T>>::VertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)

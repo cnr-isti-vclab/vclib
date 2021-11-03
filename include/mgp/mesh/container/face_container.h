@@ -65,6 +65,8 @@ public:
 
 	void deleteFace(unsigned int i);
 
+	unsigned int faceIdIfCompact(unsigned int id) const;
+
 	FaceIterator           faceBegin(bool jumpDeleted = true);
 	FaceIterator           faceEnd();
 	ConstFaceIterator      faceBegin(bool jumpDeleted = true) const;

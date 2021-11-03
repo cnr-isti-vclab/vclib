@@ -59,6 +59,8 @@ public:
 
 	void deleteVertex(unsigned int i);
 
+	unsigned int vertexIdIfCompact(unsigned int id) const;
+
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
 	VertexIterator           vertexEnd();
 	ConstVertexIterator      vertexBegin(bool jumpDeleted = true) const;

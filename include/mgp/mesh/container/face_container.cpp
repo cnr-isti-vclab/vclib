@@ -102,6 +102,33 @@ void Container<T, IfIsFace<T> >::deleteFace(unsigned int i)
 	fn--;
 }
 
+/**
+ * @brief Container::faceIdIfCompact is an utility member functions that returns the id of
+ * an element if the container would be compact, that is the number of non-deleted elements before
+ * the face with the given id.
+ *
+ * Complexity: O(n), n number of faces in the container.
+ *
+ * This function does not perform any sanity check.
+ *
+ * @param id
+ * @return
+ */
+template<class T>
+unsigned int Container<T, IfIsFace<T> >::faceIdIfCompact(unsigned int id) const
+{
+	if (faces.size() == fn)
+		return id;
+	else {
+		unsigned int cnt = 0;
+		for (unsigned int i = 0; i < id; i++){
+			if (!faces[i].isDeleted())
+				++cnt;
+		}
+		return cnt;
+	}
+}
+
 template<class T>
 typename Container<T, IfIsFace<T>>::FaceIterator
 Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted)

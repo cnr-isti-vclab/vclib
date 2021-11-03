@@ -26,6 +26,14 @@ void saveFaceIndices(
 	const D                 polygonSizes[],
 	bool                    bin);
 
+template<typename MeshType, typename FaceType>
+void saveFaceIndices(
+	std::ofstream&  file,
+	Property        p,
+	const MeshType& m,
+	const FaceType& f,
+	bool bin);
+
 template<template<typename... Args> class Container, typename A, typename D>
 bool loadFaceIndicesTxt(
 	const mgp::Tokenizer&     spaceTokenizer,
@@ -67,16 +75,8 @@ bool loadFacesBin(
 
 } // namespace internal
 
-template<typename A, typename B, typename C, typename D>
-void saveFaces(
-	std::ofstream&              file,
-	const PlyHeader&            header,
-	const A                     faces[],
-	io::FileMeshInfo            meshMode,
-	const B                     faceNormals[],
-	io::FileMeshInfo::ColorMode colorMod,
-	const C                     faceColors[],
-	const D                     polygonSizes[]);
+template<typename MeshType>
+void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh);
 
 template<typename A, typename B, typename C, typename D>
 bool loadFaces(

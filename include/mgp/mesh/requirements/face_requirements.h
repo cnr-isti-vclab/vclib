@@ -12,12 +12,6 @@ namespace mgp {
 
 // is/has functions
 
-template<typename MeshType>
-bool constexpr hasPerFaceVertexReferences();
-
-template<typename MeshType>
-bool constexpr hasPerFaceVertexReferences(const MeshType&);
-
 template <typename MeshType>
 bool constexpr hasPerFaceNormal();
 
@@ -61,11 +55,6 @@ template <typename MeshType>
 bool isPerFaceMutableBitFlagsEnabled(const MeshType&);
 
 // require functions
-
-template <typename MeshType>
-void constexpr requirePerFaceVertexReferences();
-template <typename MeshType>
-void constexpr requirePerFaceVertexReferences(const MeshType&);
 
 template <typename MeshType>
 void requirePerFaceNormal(const MeshType& m);

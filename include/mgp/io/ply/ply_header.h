@@ -20,11 +20,9 @@ class Tokenizer;
 namespace ply {
 
 /**
-  @ingroup mgpcore
  * @brief The PlyHeader class allows to manage the header of a ply file.
  *
- * Following the content of an header, a ply file can be loaded or
- * saved.
+ * Following the content of an header, a ply file can be loaded or saved.
  */
 class PlyHeader
 {
@@ -34,29 +32,41 @@ public:
 	PlyHeader(ply::Format f, const ply::Element& vElement, const ply::Element fElement, const ply::Element eElement);
 	PlyHeader(ply::Format f, const io::FileMeshInfo& info);
 	PlyHeader(std::ifstream& file);
-	void clear();
 
-	bool errorWhileLoading() const;
-	bool hasVertexAndFaceElements() const;
-	bool hasEdges() const;
+	void clear();
+	bool isValid() const;
+
 	ply::Format format() const;
-	const std::list<ply::Property>& vertexProperties() const;
-	const std::list<ply::Property>& faceProperties() const;
-	const std::list<ply::Property>& edgeProperties() const;
+
+	io::FileMeshInfo getInfo() const;
+
+	bool hasVertices() const;
+	bool hasFaces() const;
+	bool hasEdges() const;
+
 	uint numberVertices() const;
 	uint numberFaces() const;
 	uint numberEdges() const;
+
+	const std::list<ply::Property>& vertexProperties() const;
+	const std::list<ply::Property>& faceProperties() const;
+	const std::list<ply::Property>& edgeProperties() const;
+
+	bool errorWhileLoading() const;
+
 	void setNumberVertices(unsigned long int nV);
 	void setNumberFaces(unsigned long int nF);
 	void setNumberEdges(unsigned long int nE);
-	io::FileMeshInfo getInfo() const;
-	void setInfo(const io::FileMeshInfo& mode, bool binary = true);
+
+	void setInfo(const io::FileMeshInfo& info, bool binary = true);
+
 	std::string toString() const;
 
 	void addElement(const ply::Element& e);
 	void setFormat(ply::Format f);
 
 	typedef std::vector<ply::Element>::const_iterator iterator;
+
 	iterator begin() const;
 	iterator end() const;
 
@@ -72,8 +82,8 @@ private:
 
 	ply::Format _format;
 	std::vector<ply::Element> elements;
-	bool isValid;
-	long int v, f, e;
+	bool valid;
+	int v, f, e; // say which is the id in the elements vector for vertices, faces and edges
 };
 
 } //namespace mgp::ply

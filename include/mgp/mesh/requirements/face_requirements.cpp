@@ -12,18 +12,6 @@
 namespace mgp {
 
 template<typename MeshType>
-bool constexpr hasPerFaceVertexReferencesArray()
-{
-	return hasFaces<MeshType>() && mgp::face::hasVertexReferences<typename MeshType::FaceType>();
-}
-
-template<typename MeshType>
-bool constexpr hasPerFaceVertexReferencesArray(const MeshType&)
-{
-	return hasPerFaceVertexReferencesArray<MeshType>();
-}
-
-template<typename MeshType>
 bool constexpr hasPerFaceNormal()
 {
 	return hasFaces<MeshType>() && (
@@ -155,21 +143,6 @@ bool isPerFaceMutableBitFlagsEnabled(const MeshType& m)
 }
 
 // require functions
-
-template<typename MeshType>
-void constexpr requirePerFaceVertexReferencesArray()
-{
-	requireFaces<MeshType>();
-	static_assert(
-		hasPerFaceVertexReferencesArray<MeshType>,
-		"Mesh Face component has no fixed-size Vertex references.");
-}
-
-template<typename MeshType>
-void constexpr requirePerFaceVertexReferencesArray(const MeshType&)
-{
-	requirePerFaceVertexReferencesArray<MeshType>();
-}
 
 template<typename MeshType>
 void requirePerFaceNormal(const MeshType& m)

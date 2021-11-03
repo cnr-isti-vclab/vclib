@@ -45,12 +45,11 @@ FileMeshInfo::FileMeshInfo(const Mesh& m) :
 	}
 
 	if (mgp::hasFaces(m)){
+		setFaceVRefs();
 		if (mgp::hasTriangles(m))
 			setTriangleMesh();
 		if (mgp::hasQuads(m))
 			setQuadMesh();
-		if (mgp::hasPerFaceVertexReferences(m))
-			setFaceVRefs();
 		if (mgp::isPerFaceNormalEnabled(m))
 			setFaceNormals();
 		if (mgp::isPerFaceColorEnabled(m))

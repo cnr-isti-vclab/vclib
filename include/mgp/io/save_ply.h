@@ -18,10 +18,13 @@
 namespace mgp::io {
 
 template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename);
+void savePly(const MeshType& m, const std::string& filename, bool binary = true);
 
 template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, FileMeshInfo& loadedInfo);
+void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary = true);
+
+template <typename MeshType>
+void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeader& header);
 
 }
 

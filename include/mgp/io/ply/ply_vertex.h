@@ -35,14 +35,11 @@ bool loadVerticesBin(
 
 } //namespace mgp::ply::internal
 
-template <typename A, typename B, typename C>
+template <typename MeshType>
 void saveVertices(
-		std::ofstream& file,
-		const PlyHeader& header,
-		const A vertices[],
-		const B vertexNormals[],
-		io::FileMeshInfo::ColorMode colorMod ,
-		const C vertexColors[]);
+	std::ofstream& file,
+	const PlyHeader& header,
+	const MeshType& mesh);
 
 template <typename A, typename B, typename C>
 bool loadVertices(
