@@ -45,6 +45,33 @@ inline PlyHeader::PlyHeader(ply::Format f, const ply::Element &vElement, const p
 	elements.push_back(eElement);
 }
 
+PlyHeader::PlyHeader(Format format, const io::FileMeshInfo& info) :
+		_format(format), isValid(true), v(-1), f(-1), e(-1)
+{
+	unsigned int elemId = 0;
+	if(info.hasVertices()){
+		v = elemId++;
+		ply::Element vElem;
+		vElem.type = ply::VERTEX;
+		// populate vElem
+		elements.push_back(vElem);
+	}
+	if (info.hasFaces()){
+		f = elemId++;
+		ply::Element fElem;
+		fElem.type = ply::FACE;
+		// populate fElem
+		elements.push_back(fElem);
+	}
+	if (info.hasEdges()){
+		e = elemId++;
+		ply::Element eElem;
+		eElem.type = ply::EDGE;
+		// populate eElem
+		elements.push_back(eElem);
+	}
+}
+
 inline PlyHeader::PlyHeader(std::ifstream &file) :
 	_format(ply::UNKNOWN),
 	isValid(false)

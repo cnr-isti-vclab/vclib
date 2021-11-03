@@ -7,7 +7,7 @@
 #define MGP_PLY_VERTEX_H
 
 #include "ply_header.h"
-#include "../file_mesh_mode.h"
+#include "../file_mesh_info.h"
 #include <fstream>
 
 namespace mgp {

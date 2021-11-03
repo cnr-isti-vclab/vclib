@@ -10,7 +10,7 @@
 #include <string>
 #include <fstream>
 
-#include "../file_mesh_mode.h"
+#include "../file_mesh_info.h"
 #include "ply.h"
 
 namespace mgp {
@@ -32,6 +32,7 @@ public:
 	PlyHeader();
 	PlyHeader(ply::Format f, const ply::Element& vElement, const ply::Element fElement);
 	PlyHeader(ply::Format f, const ply::Element& vElement, const ply::Element fElement, const ply::Element eElement);
+	PlyHeader(ply::Format f, const io::FileMeshInfo& info);
 	PlyHeader(std::ifstream& file);
 	void clear();
 

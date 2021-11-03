@@ -77,7 +77,7 @@ set(HEADERS
 	include/mgp/misc/compactness.h
 	include/mgp/misc/timer.h
 	include/mgp/misc/tokenizer.h
-	include/mgp/io/file_mesh_mode.h
+	include/mgp/io/file_mesh_info.h
 	include/mgp/io/load_ply.h
 	include/mgp/io/save_ply.h
 	include/mgp/io/ply/ply.h
@@ -118,6 +118,7 @@ set(SOURCES
 	include/mgp/misc/compactness.cpp
 	include/mgp/misc/timer.cpp
 	include/mgp/misc/tokenizer.cpp
+	include/mgp/io/file_mesh_info.cpp
 	include/mgp/io/load_ply.cpp
 	include/mgp/io/save_ply.cpp
 	include/mgp/io/ply/ply.cpp
