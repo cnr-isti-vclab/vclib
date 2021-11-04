@@ -41,13 +41,14 @@ struct Property
 	PropertyType type;
 	bool         list;
 	PropertyType listSizeType;
-	std::string  unknownPropwertyName;
+	std::string  unknownPropertyName;  // used when a property is not recognized
 };
 struct Element
 {
 	ElementType         type;
 	std::list<Property> properties;
 	unsigned int        numberElements;
+	std::string         unknownElementType; // used when an element is not recognized
 };
 
 namespace internal {

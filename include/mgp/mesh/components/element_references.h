@@ -69,6 +69,8 @@ public:
 
 	Elem*&      element(unsigned int i);
 	const Elem* element(unsigned int i) const;
+	Elem*&      elementMod(int i);
+	const Elem* elementMod(int i) const;
 
 	void setElement(Elem* v, unsigned int i);
 	void setElements(const std::vector<Elem*>& list);

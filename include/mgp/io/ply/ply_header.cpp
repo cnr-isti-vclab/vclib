@@ -391,7 +391,7 @@ inline std::string PlyHeader::toString() const
 			}
 			s += typeToString(p.type) + " ";
 			if (p.name == unknown)
-				s += p.unknownPropwertyName + "\n";
+				s += p.unknownPropertyName + "\n";
 			else
 				s += nameToString(p.name) + "\n";
 		}
@@ -467,7 +467,7 @@ inline ply::Property PlyHeader::readProperty(const mgp::Tokenizer& lineTokenizer
 		p.type           = stringToType(type);
 		p.name           = stringToName(name);
 		if (p.name == unknown)
-			p.unknownPropwertyName = name;
+			p.unknownPropertyName = name;
 	}
 
 	return p;

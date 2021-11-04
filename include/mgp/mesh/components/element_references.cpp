@@ -54,6 +54,20 @@ const Elem* ElementReferences<Elem, N>::element(unsigned int i) const
 }
 
 template<class Elem, int N>
+Elem*& ElementReferences<Elem, N>::elementMod(int i)
+{
+	unsigned int n = elementNumber();
+	return elemRefs[(i % n + n) % n];
+}
+
+template<class Elem, int N>
+const Elem* ElementReferences<Elem, N>::elementMod(int i) const
+{
+	unsigned int n = elementNumber();
+	return elemRefs[(i % n + n) % n];
+}
+
+template<class Elem, int N>
 void ElementReferences<Elem, N>::setElement(Elem* v, unsigned int i)
 {
 	assert(i < elementNumber());
