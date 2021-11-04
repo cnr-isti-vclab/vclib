@@ -16,6 +16,7 @@ template<typename, typename = void>
 class OptionalColorVector
 {
 public:
+	void clear() {}
 	void resize(unsigned int) {}
 	void reserve(unsigned int) {}
 	void compact(const std::vector<int>&) {}
@@ -29,6 +30,7 @@ class OptionalColorVector<T, std::enable_if_t<components::hasOptionalColor<T>()>
 	using Base = OptionalGenericVector<ColorType>;
 
 public:
+	using Base::clear;
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;

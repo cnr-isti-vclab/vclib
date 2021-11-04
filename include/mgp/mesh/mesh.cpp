@@ -8,6 +8,19 @@
 namespace mgp {
 
 template<class... Args>
+void Mesh<Args...>::clear()
+{
+	if (mesh::hasVertices<Mesh<Args...>>()) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		VertexContainer::clearVertices();
+	}
+	if (mesh::hasFaces<Mesh<Args...>>()) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		FaceContainer::clearFaces();
+	}
+}
+
+template<class... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex()
 {

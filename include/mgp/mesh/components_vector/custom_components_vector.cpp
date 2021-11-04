@@ -9,6 +9,13 @@
 namespace mgp::internal {
 
 template<typename T>
+void CustomComponentsVector<T, IfHasCustomComp<T> >::clear()
+{
+	map.clear();
+	needToInitialize.clear();
+}
+
+template<typename T>
 void CustomComponentsVector<T, IfHasCustomComp<T>>::reserve(unsigned int size)
 {
 	for (auto& p : map) {

@@ -16,6 +16,7 @@ template<typename, typename = void>
 class OptionalFaceReferencesVector
 {
 public:
+	void clear() {}
 	void resize(unsigned int) {}
 	void reserve(unsigned int) {}
 	void compact(const std::vector<int>&) {}
@@ -32,6 +33,7 @@ private:
 	using Base = OptionalGenericVector<Container>;
 
 public:
+	using Base::clear;
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;

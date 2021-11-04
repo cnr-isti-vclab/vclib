@@ -22,6 +22,7 @@ protected:
 	T& at(unsigned int i);
 	const T& at(unsigned int i) const;
 
+	void clear();
 	void resize(unsigned int size);
 	void reserve(unsigned int size);
 	void compact(const std::vector<int>& newIndices);

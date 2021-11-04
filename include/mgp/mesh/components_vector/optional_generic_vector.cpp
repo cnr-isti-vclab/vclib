@@ -44,6 +44,16 @@ const T& OptionalGenericVector<T>::at(unsigned int i) const
 	return vec[i];
 }
 
+/**
+ * @brief OptionalGenericVector::clear clears the vector of the optional component,
+ * without disabling it.
+ */
+template<typename T>
+void OptionalGenericVector<T>::clear()
+{
+	vec.clear();
+}
+
 template<typename T>
 void OptionalGenericVector<T>::resize(unsigned int size)
 {

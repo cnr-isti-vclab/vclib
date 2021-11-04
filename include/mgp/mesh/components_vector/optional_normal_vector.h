@@ -16,6 +16,7 @@ template<typename, typename = void>
 class OptionalNormalVector
 {
 public:
+	void clear() {}
 	void reserve(unsigned int) {}
 	void resize(unsigned int) {}
 	void compact(const std::vector<int>&) {}
@@ -29,6 +30,7 @@ class OptionalNormalVector<T, std::enable_if_t<components::hasOptionalNormal<T>(
 	using Base = OptionalGenericVector<NormalType>;
 
 public:
+	using Base::clear;
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;

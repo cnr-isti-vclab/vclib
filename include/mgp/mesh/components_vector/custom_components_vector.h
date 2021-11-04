@@ -22,6 +22,7 @@ template<typename, typename = void>
 class CustomComponentsVector
 {
 public:
+	void clear() {}
 	void reserve(unsigned int) {}
 	void resize(unsigned int) {}
 	void compact(const std::vector<int>&) {}
@@ -33,6 +34,8 @@ class CustomComponentsVector<
 	IfHasCustomComp<T>>
 {
 public:
+	void clear();
+
 	void reserve(unsigned int size);
 
 	void resize(unsigned int size);

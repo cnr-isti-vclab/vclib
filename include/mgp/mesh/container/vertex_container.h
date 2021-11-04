@@ -81,6 +81,8 @@ protected:
 	 */
 	unsigned int vn = 0;
 
+	void clearVertices();
+
 	unsigned int addVertex();
 	unsigned int addVertices(unsigned int nVertices);
 	void reserveVertices(unsigned int size);

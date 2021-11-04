@@ -25,6 +25,15 @@ class ComponentsVector :
 		public CustomComponentsVector<T>
 {
 public:
+	void clear()
+	{
+		OptionalFaceReferencesVector<T>::clear();
+		OptionalMutableBitFlagsVector<T>::clear();
+		OptionalColorVector<T>::clear();
+		OptionalNormalVector<T>::clear();
+		OptionalScalarVector<T>::clear();
+		CustomComponentsVector<T>::clear();
+	}
 	void resize(unsigned int size)
 	{
 		OptionalFaceReferencesVector<T>::resize(size);

@@ -24,6 +24,8 @@ class Mesh : public mesh::Container<Args>...
 {
 protected:
 public:
+	void clear();
+
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex();
 

@@ -163,6 +163,12 @@ face::ReturnIfHasCustomComponents<U, void> FaceOptionalContainer<T, FaceHasOptio
 }
 
 template<typename T>
+void FaceOptionalContainer<T, FaceHasOptional<T> >::clear()
+{
+	optionalComponentsVector.clear();
+}
+
+template<typename T>
 void FaceOptionalContainer<T, FaceHasOptional<T>>::setContainerPointer(T& face)
 {
 	face.setContainerPointer(&optionalComponentsVector);

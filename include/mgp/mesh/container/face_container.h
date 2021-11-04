@@ -87,6 +87,8 @@ protected:
 	 */
 	unsigned int fn = 0;
 
+	void clearFaces();
+
 	unsigned int addFace();
 	unsigned int addFaces(unsigned int nFaces);
 	void reserveFaces(unsigned int size);

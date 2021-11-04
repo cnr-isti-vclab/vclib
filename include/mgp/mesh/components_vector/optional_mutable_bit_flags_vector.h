@@ -16,6 +16,7 @@ template<typename, typename = void>
 class OptionalMutableBitFlagsVector
 {
 public:
+	void clear() {}
 	void reserve(unsigned int) {}
 	void resize(unsigned int) {}
 	void compact(const std::vector<int>&) {}
@@ -30,6 +31,7 @@ class OptionalMutableBitFlagsVector<
 	using Base = OptionalGenericVector<int>;
 
 public:
+	using Base::clear;
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;

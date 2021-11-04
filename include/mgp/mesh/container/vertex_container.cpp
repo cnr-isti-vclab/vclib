@@ -189,6 +189,16 @@ Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted) const
 }
 
 template<class T>
+void Container<T, IfIsVertex<T> >::clearVertices()
+{
+	vertices.clear();
+	vn = 0;
+	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+		OptionalVertexContainer::clear();
+	}
+}
+
+template<class T>
 unsigned int Container<T, IfIsVertex<T>>::addVertex()
 {
 	vertices.push_back(VertexType());

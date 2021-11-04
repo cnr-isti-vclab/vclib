@@ -188,6 +188,16 @@ Container<T, IfIsFace<T>>::faceIterator(bool jumpDeleted) const
 }
 
 template<class T>
+void mgp::mesh::Container<T, IfIsFace<T> >::clearFaces()
+{
+	faces.clear();
+	fn = 0;
+	if constexpr (face::hasOptionalInfo<FaceType>()) {
+		OptionalFaceContainer::clear();
+	}
+}
+
+template<class T>
 unsigned int Container<T, IfIsFace<T>>::addFace()
 {
 	faces.push_back(FaceType());

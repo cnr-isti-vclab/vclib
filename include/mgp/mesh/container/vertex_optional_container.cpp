@@ -215,6 +215,12 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::addPerVertexCustomComponent(
 }
 
 template<typename T>
+void mgp::mesh::VertexOptionalContainer<T, VertexHasOptional<T> >::clear()
+{
+	optionalComponentsVector.clear();
+}
+
+template<typename T>
 void VertexOptionalContainer<T, VertexHasOptional<T> >::setContainerPointer(T& vertex)
 {
 	vertex.setContainerPointer(&optionalComponentsVector);
