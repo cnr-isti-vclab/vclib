@@ -44,7 +44,7 @@ int main()
 	m.addPerVertexCustomComponent<char>("prova");
 	
 	for (auto& v : m.vertexIterator())
-		v.customComponent<char>("prova") = 'a'; // set the custom component for each vertex
+		v.customProperty<char>("prova") = 'a'; // set the custom component for each vertex
 	
 	// enable per face scalar, which is optional
 	m.enablePerFaceScalar();

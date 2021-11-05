@@ -6,71 +6,71 @@
 #ifndef MGP_MESH_FACE_COMPONENTS_H
 #define MGP_MESH_FACE_COMPONENTS_H
 
-#include "components/bit_flags.h"
-#include "components/color.h"
-#include "components/mutable_bit_flags.h"
-#include "components/normal.h"
-#include "components/scalar.h"
-#include "components/triangle_bit_flags.h"
-#include "components/vertex_references.h"
+#include "properties/bit_flags.h"
+#include "properties/color.h"
+#include "properties/mutable_bit_flags.h"
+#include "properties/normal.h"
+#include "properties/scalar.h"
+#include "properties/triangle_bit_flags.h"
+#include "properties/vertex_references.h"
 
 namespace mgp::face {
 
 /** Port BitFlags class into face namespace **/
-using BitFlags = components::BitFlags;
+using BitFlags = prop::BitFlags;
 
 template <typename T>
-bool constexpr hasBitFlags() {return components::hasBitFlags<T>();};
+bool constexpr hasBitFlags() {return prop::hasBitFlags<T>();};
 
-using TriangleBitFlags = components::TriangleBitFlags;
+using TriangleBitFlags = prop::TriangleBitFlags;
 
 template <typename T>
-bool constexpr hasTriangleBitFlags() {return components::hasTriangleBitFlags<T>();};
+bool constexpr hasTriangleBitFlags() {return prop::hasTriangleBitFlags<T>();};
 
 /** Port Color class into face namespace **/
-using Color = components::Color;
+using Color = prop::Color;
 
 template <typename T>
-bool constexpr hasColor() {return components::hasColor<T>();};
+bool constexpr hasColor() {return prop::hasColor<T>();};
 
 /** Port Normal classes into face namespace **/
 template<typename Scalar, int N>
-using Normal = components::Normal<Scalar, N>;
+using Normal = prop::Normal<Scalar, N>;
 
 template<typename Scalar>
-using Normal3 = components::Normal3<Scalar>;
+using Normal3 = prop::Normal3<Scalar>;
 
-using Normal3f = components::Normal3f;
-using Normal3d = components::Normal3d;
+using Normal3f = prop::Normal3f;
+using Normal3d = prop::Normal3d;
 
 template <typename T>
-bool constexpr hasNormal() {return components::hasNormal<T>();};
+bool constexpr hasNormal() {return prop::hasNormal<T>();};
 
 /** Port Scalar class into face namespace **/
 template<typename T>
-using Scalar = components::Scalar<T>;
+using Scalar = prop::Scalar<T>;
 
-using Scalarf = components::Scalarf;
-using Scalard = components::Scalard;
+using Scalarf = prop::Scalarf;
+using Scalard = prop::Scalard;
 
 template <typename T>
-bool constexpr hasScalar() {return components::hasScalar<T>();};
+bool constexpr hasScalar() {return prop::hasScalar<T>();};
 
 /** Port VertexReferences class into face namespace **/
 template<typename Vertex, int N>
-using VertexReferences = components::VertexReferences<Vertex, N>;
+using VertexReferences = prop::VertexReferences<Vertex, N>;
 
 template<typename Vertex>
-using TriangleVertexRefs = components::TriVertexReferences<Vertex>;
+using TriangleVertexRefs = prop::TriVertexReferences<Vertex>;
 
 template <typename  T>
-bool constexpr hasVertexReferences() {return components::hasVertexReferences<T>();}
+bool constexpr hasVertexReferences() {return prop::hasVertexReferences<T>();}
 
 /** Port MutableBitFlags class into face namespace **/
-using MutableBitFlags = components::MutableBitFlags;
+using MutableBitFlags = prop::MutableBitFlags;
 
 template <typename  T>
-bool constexpr hasMutableBitFlags() {return components::hasMutableBitFlags<T>();}
+bool constexpr hasMutableBitFlags() {return prop::hasMutableBitFlags<T>();}
 
 } // namespace mgp::face
 

@@ -282,12 +282,12 @@ template<class T>
 template<typename  Face>
 void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, const Face* newBase)
 {
-	if constexpr (mgp::components::hasFaceReferences<T>()) {
+	if constexpr (mgp::vert::hasAdjacentFaces<T>()) {
 		for (VertexType& v : vertexIterator()) {
 			v.updateFaceReferences(oldBase, newBase);
 		}
 	}
-	else if constexpr (mgp::components::hasOptionalFaceReferences<T>()){
+	else if constexpr (mgp::vert::hasOptionalAdjacentFaces<T>()){
 		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
 			for (VertexType& v : vertexIterator()) {
 				v.updateFaceReferences(oldBase, newBase);
@@ -302,12 +302,12 @@ void Container<T, IfIsVertex<T>>::updateFaceReferencesAfterCompact(
 	const Face* base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr (mgp::components::hasFaceReferences<T>()) {
+	if constexpr (mgp::vert::hasAdjacentFaces<T>()) {
 		for (VertexType& v : vertexIterator()) {
 			v.updateFaceReferencesAfterCompact(base, newIndices);
 		}
 	}
-	else if constexpr (mgp::components::hasOptionalFaceReferences<T>()){
+	else if constexpr (mgp::vert::hasOptionalAdjacentFaces<T>()){
 		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
 			for (VertexType& v : vertexIterator()) {
 				v.updateFaceReferencesAfterCompact(base, newIndices);

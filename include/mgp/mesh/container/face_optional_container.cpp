@@ -10,7 +10,7 @@ namespace mgp::mesh {
 /**
  * @brief FaceOptionalContainer::isPerFaceColorEnabled checks if the face Optional Color is
  * enabled. This function is available **only if the Face Element has the OptionalColor
- * Component**.
+ * property**.
  * @return true if the Optional Color is enabled, false otherwise.
  */
 template<class T>
@@ -18,7 +18,7 @@ template<class U>
 face::ReturnIfHasOptionalColor<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceColorEnabled() const
 {
-	return optionalComponentsVector.isColorEnabled();
+	return optionalPropVector.isColorEnabled();
 }
 
 /**
@@ -29,7 +29,7 @@ template<class T>
 template<class U>
 face::ReturnIfHasOptionalColor<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceColor()
 {
-	optionalComponentsVector.enableColor(faceContainerSize());
+	optionalPropVector.enableColor(faceContainerSize());
 }
 
 /**
@@ -41,7 +41,7 @@ template<class U>
 face::ReturnIfHasOptionalColor<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceColor()
 {
-	optionalComponentsVector.disableColor();
+	optionalPropVector.disableColor();
 }
 
 /**
@@ -55,7 +55,7 @@ template<class U>
 face::ReturnIfHasOptionalMutableBitFlags<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceMutableBitFlagsEnabled() const
 {
-	optionalComponentsVector.isMutableBitFlagsEnabled();
+	optionalPropVector.isMutableBitFlagsEnabled();
 }
 
 /**
@@ -66,7 +66,7 @@ template<class T>
 template<class U>
 face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceMutableBitFlags()
 {
-	optionalComponentsVector.enableMutableBitFlags(faceContainerSize());
+	optionalPropVector.enableMutableBitFlags(faceContainerSize());
 }
 
 /**
@@ -79,7 +79,7 @@ template<class U>
 face::ReturnIfHasOptionalMutableBitFlags<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceMutableBitFlags()
 {
-	optionalComponentsVector.disableMutableBitFlags();
+	optionalPropVector.disableMutableBitFlags();
 }
 
 /**
@@ -93,7 +93,7 @@ template<class U>
 face::ReturnIfHasOptionalNormal<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceNormalEnabled() const
 {
-	return optionalComponentsVector.isNormalEnabled();
+	return optionalPropVector.isNormalEnabled();
 }
 
 /**
@@ -104,7 +104,7 @@ template<class T>
 template<class U>
 face::ReturnIfHasOptionalNormal<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceNormal()
 {
-	optionalComponentsVector.enableNormal(faceContainerSize());
+	optionalPropVector.enableNormal(faceContainerSize());
 }
 
 /**
@@ -116,7 +116,7 @@ template<class U>
 face::ReturnIfHasOptionalNormal<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceNormal()
 {
-	optionalComponentsVector.disableNormal();
+	optionalPropVector.disableNormal();
 }
 
 /**
@@ -130,7 +130,7 @@ template<class U>
 face::ReturnIfHasOptionalScalar<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceScalarEnabled() const
 {
-	return optionalComponentsVector.isScalarEnabled();
+	return optionalPropVector.isScalarEnabled();
 }
 /**
  * @brief Container::enableFaceScalar enable the Optional Scalar of the face.
@@ -140,7 +140,7 @@ template<class T>
 template<class U>
 face::ReturnIfHasOptionalScalar<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceScalar()
 {
-	optionalComponentsVector.enableScalar(faceContainerSize());
+	optionalPropVector.enableScalar(faceContainerSize());
 }
 
 /**
@@ -152,44 +152,44 @@ template<class U>
 face::ReturnIfHasOptionalScalar<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceScalar()
 {
-	optionalComponentsVector.disableScalar();
+	optionalPropVector.disableScalar();
 }
 
 template<class T>
 template<typename K, typename U>
 face::ReturnIfHasCustomComponents<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::addPerFaceCustomComponent(const std::string& name)
 {
-	optionalComponentsVector.template addNewComponent<K>(name, faceContainerSize());
+	optionalPropVector.template addNewComponent<K>(name, faceContainerSize());
 }
 
 template<typename T>
 void FaceOptionalContainer<T, FaceHasOptional<T> >::clear()
 {
-	optionalComponentsVector.clear();
+	optionalPropVector.clear();
 }
 
 template<typename T>
 void FaceOptionalContainer<T, FaceHasOptional<T>>::setContainerPointer(T& face)
 {
-	face.setContainerPointer(&optionalComponentsVector);
+	face.setContainerPointer(&optionalPropVector);
 }
 
 template<typename T>
 void FaceOptionalContainer<T, FaceHasOptional<T>>::resize(unsigned int size)
 {
-	optionalComponentsVector.resize(size);
+	optionalPropVector.resize(size);
 }
 
 template<typename T>
 void FaceOptionalContainer<T, FaceHasOptional<T>>::reserve(unsigned int size)
 {
-	optionalComponentsVector.reserve(size);
+	optionalPropVector.reserve(size);
 }
 
 template<typename T>
 void FaceOptionalContainer<T, FaceHasOptional<T> >::compact(const std::vector<int>& newIndices)
 {
-	optionalComponentsVector.compact(newIndices);
+	optionalPropVector.compact(newIndices);
 }
 
 }

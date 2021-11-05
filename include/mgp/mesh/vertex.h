@@ -24,14 +24,14 @@ class VertexOptionalContainer;
 namespace mgp::vert {
 
 /**
- * @brief The Component fallback class, will be used when the template argument given to the Vertex
+ * @brief The Property fallback class, will be used when the template argument given to the Vertex
  * is not one of the known Components.
  *
  * This class will just make the given template argument a Base of the Vertex, becoming a feature of
  * the Vertex.
  */
 template<class T>
-class Component : public T
+class Property : public T
 {
 };
 
@@ -45,7 +45,7 @@ class VertexTriggerer
 };
 
 template<class... Args>
-class Vertex : public VertexTriggerer, public vert::Component<Args>...
+class Vertex : public VertexTriggerer, public vert::Property<Args>...
 {
 	template<typename, typename>
 	friend class mesh::Container;

@@ -211,7 +211,7 @@ vert::ReturnIfHasCustomComponents<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::addPerVertexCustomComponent(
 	const std::string& name)
 {
-	optionalComponentsVector.template addNewComponent<K>(name, vertexContainerSize());
+	optionalComponentsVector.template addNewProperty<K>(name, vertexContainerSize());
 }
 
 template<typename T>

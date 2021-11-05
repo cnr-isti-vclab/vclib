@@ -7,14 +7,14 @@
 #define MGP_MESH_CONTAINER_VERTEX_OPTIONAL_CONTAINER_H
 
 #include "../vertex.h"
-#include "../components_optional/optional_info.h"
-#include "../components_vector/components_vector.h"
+#include "../properties_optional/optional_info.h"
+#include "../properties_vector/properties_vector.h"
 
 namespace mgp::mesh {
 
 // to shorten triggerer for Vertex class
 template<class T>
-using VertexHasOptional = std::enable_if_t<components::hasOptionalInfo<T>()>;
+using VertexHasOptional = std::enable_if_t<prop::hasOptionalInfo<T>()>;
 
 template<typename, typename = void>
 class VertexOptionalContainer
@@ -90,11 +90,11 @@ protected:
 
 private:
 	/**
-	 * @brief optionalComponentsVector contains all the optional components data of the vertex, that
+	 * @brief optionalComponentsVector contains all the optional prop data of the vertex, that
 	 * will be enabled - disabled at runtime.
 	 * Each vertex that has at least one optional component, will store a pointer to this vector.
 	 */
-	internal::ComponentsVector<T> optionalComponentsVector;
+	internal::PropertiesVector<T> optionalComponentsVector;
 };
 
 }

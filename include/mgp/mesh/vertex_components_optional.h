@@ -6,96 +6,96 @@
 #ifndef MGP_VERTEX_COMPONENTS_OPTIONAL_H
 #define MGP_VERTEX_COMPONENTS_OPTIONAL_H
 
-#include "components_optional/custom_components.h"
-#include "components_optional/optional_color.h"
-#include "components_optional/optional_face_references.h"
-#include "components_optional/optional_mutable_bit_flags.h"
-#include "components_optional/optional_normal.h"
-#include "components_optional/optional_scalar.h"
+#include "properties_optional/custom_properties.h"
+#include "properties_optional/optional_color.h"
+#include "properties_optional/optional_face_references.h"
+#include "properties_optional/optional_mutable_bit_flags.h"
+#include "properties_optional/optional_normal.h"
+#include "properties_optional/optional_scalar.h"
 
 namespace mgp::vert {
 
 /** Port OptionalInfo class into vert namespace **/
 template <typename T>
-using OptionalInfo = components::OptionalInfo<T>;
+using OptionalInfo = prop::OptionalInfo<T>;
 
 template <typename T>
-bool constexpr hasOptionalInfo() {return components::hasOptionalInfo<T>();};
+bool constexpr hasOptionalInfo() {return prop::hasOptionalInfo<T>();};
 
 /** Port OptionalMutableBitFlags class into vert namespace **/
 template <typename T>
-using OptionalMutableBitFlags = components::OptionalMutableBitFlags<T>;
+using OptionalMutableBitFlags = prop::OptionalMutableBitFlags<T>;
 
 template <typename T>
-bool constexpr hasOptionalMutableBitFlags() {return components::hasOptionalMutableBitFlags<T>();};
+bool constexpr hasOptionalMutableBitFlags() {return prop::hasOptionalMutableBitFlags<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalMutableBitFlags = components::ReturnIfHasOptionalMutableBitFlags<U, T>;
+using ReturnIfHasOptionalMutableBitFlags = prop::ReturnIfHasOptionalMutableBitFlags<U, T>;
 
 /** Port OptionalColor class into vert namespace **/
 template <typename T>
-using OptionalColor = components::OptionalColor<T>;
+using OptionalColor = prop::OptionalColor<T>;
 
 template <typename T>
-bool constexpr hasOptionalColor() {return components::hasOptionalColor<T>();};
+bool constexpr hasOptionalColor() {return prop::hasOptionalColor<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalColor = components::ReturnIfHasOptionalColor<U, T>;
+using ReturnIfHasOptionalColor = prop::ReturnIfHasOptionalColor<U, T>;
 
 /** Port OptionalNormal class into vert namespace **/
 template <typename Scalar, int N, typename T>
-using OptionalNormal = components::OptionalNormal<Scalar, N, T>;
+using OptionalNormal = prop::OptionalNormal<Scalar, N, T>;
 
 template <typename Scalar, typename T>
-using OptionalNormal3 = components::OptionalNormal3<Scalar, T>;
+using OptionalNormal3 = prop::OptionalNormal3<Scalar, T>;
 
 template <typename T>
-using OptionalNormal3f = components::OptionalNormal3f<T>;
+using OptionalNormal3f = prop::OptionalNormal3f<T>;
 
 template <typename T>
-using OptionalNormal3d = components::OptionalNormal3d<T>;
+using OptionalNormal3d = prop::OptionalNormal3d<T>;
 
 template <typename T>
-bool constexpr hasOptionalNormal() {return components::hasOptionalNormal<T>();};
+bool constexpr hasOptionalNormal() {return prop::hasOptionalNormal<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalNormal = components::ReturnIfHasOptionalNormal<U, T>;
+using ReturnIfHasOptionalNormal = prop::ReturnIfHasOptionalNormal<U, T>;
 
 /** Port OptionalScalar class into vert namespace **/
 template <typename S, typename T>
-using OptionalScalar = components::OptionalScalar<S, T>;
+using OptionalScalar = prop::OptionalScalar<S, T>;
 
 template <typename T>
-using OptionalScalarf = components::OptionalScalar<float, T>;
+using OptionalScalarf = prop::OptionalScalar<float, T>;
 
 template <typename T>
-using OptionalScalard = components::OptionalScalar<double, T>;
+using OptionalScalard = prop::OptionalScalar<double, T>;
 
 template <typename T>
-bool constexpr hasOptionalScalar() {return components::hasOptionalScalar<T>();};
+bool constexpr hasOptionalScalar() {return prop::hasOptionalScalar<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalScalar = components::ReturnIfHasOptionalScalar<U, T>;
+using ReturnIfHasOptionalScalar = prop::ReturnIfHasOptionalScalar<U, T>;
 
 /** Port OptionalAdjacentFacesRef class into vert namespace **/
 template <typename Face, typename T>
-using OptionalAdjacentFaces = components::OptionalFaceReferences<Face, -1, T>;
+using OptionalAdjacentFaces = prop::OptionalFaceReferences<Face, -1, T>;
 
 template <typename T>
-bool constexpr hasOptionalAdjacentFaces() {return components::hasOptionalFaceReferences<T>();};
+bool constexpr hasOptionalAdjacentFaces() {return prop::hasOptionalFaceReferences<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentFaces = components::ReturnIfHasOptionalFaceReferences<U, T>;
+using ReturnIfHasOptionalAdjacentFaces = prop::ReturnIfHasOptionalFaceReferences<U, T>;
 
 /** Port CustomComponents class into vert namespace **/
 template <typename T>
-using CustomComponents = components::CustomComponents<T>;
+using CustomComponents = prop::CustomProperties<T>;
 
 template <typename T>
-bool constexpr hasCustomComponents() {return components::hasCustomComponents<T>();};
+bool constexpr hasCustomComponents() {return prop::hasCustomProperties<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasCustomComponents = components::ReturnIfHasCustomComponents<U, T>;
+using ReturnIfHasCustomComponents = prop::ReturnIfHasCustomProperties<U, T>;
 
 }
 

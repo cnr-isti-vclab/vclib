@@ -6,77 +6,77 @@
 #ifndef MGP_MESH_VERTEX_COMPONENTS_H
 #define MGP_MESH_VERTEX_COMPONENTS_H
 
-#include "components/bit_flags.h"
-#include "components/color.h"
-#include "components/coordinate.h"
-#include "components/face_references.h"
-#include "components/mutable_bit_flags.h"
-#include "components/normal.h"
-#include "components/scalar.h"
+#include "properties/bit_flags.h"
+#include "properties/color.h"
+#include "properties/coordinate.h"
+#include "properties/face_references.h"
+#include "properties/mutable_bit_flags.h"
+#include "properties/normal.h"
+#include "properties/scalar.h"
 
 
 namespace mgp::vert {
 
 /** Port BitFlags class into vert namespace **/
-using BitFlags = components::BitFlags;
+using BitFlags = prop::BitFlags;
 
 template <typename T>
-bool constexpr hasBitFlags() {return components::hasBitFlags<T>();};
+bool constexpr hasBitFlags() {return prop::hasBitFlags<T>();};
 
 /** Port Color class into vert namespace **/
-using Color = components::Color;
+using Color = prop::Color;
 
 template <typename T>
-bool constexpr hasColor() {return components::hasColor<T>();};
+bool constexpr hasColor() {return prop::hasColor<T>();};
 
 /** Port Coordinate class into vert namespace **/
 template<class Scalar, int N>
-using Coordinate = components::Coordinate<Scalar, N>;
+using Coordinate = prop::Coordinate<Scalar, N>;
 
 template<class Scalar>
-using Coordinate3 = components::Coordinate3<Scalar>;
+using Coordinate3 = prop::Coordinate3<Scalar>;
 
-using Coordinate3f = components::Coordinate3f;
-using Coordinate3d = components::Coordinate3d;
+using Coordinate3f = prop::Coordinate3f;
+using Coordinate3d = prop::Coordinate3d;
 
 template <typename T>
-bool constexpr hasCoordinate() {return components::hasCoordinate<T>();};
+bool constexpr hasCoordinate() {return prop::hasCoordinate<T>();};
 
 /** Port Normal classes into vert namespace **/
 template<class Scalar, int N>
-using Normal = components::Normal<Scalar, N>;
+using Normal = prop::Normal<Scalar, N>;
 
 template<class Scalar>
-using Normal3 = components::Normal3<Scalar>;
+using Normal3 = prop::Normal3<Scalar>;
 
-using Normal3f = components::Normal3f;
-using Normal3d = components::Normal3d;
+using Normal3f = prop::Normal3f;
+using Normal3d = prop::Normal3d;
 
 template <typename T>
-bool constexpr hasNormal() {return components::hasNormal<T>();};
+bool constexpr hasNormal() {return prop::hasNormal<T>();};
 
 /** Port Scalar class into vert namespace **/
 template<typename T>
-using Scalar = components::Scalar<T>;
+using Scalar = prop::Scalar<T>;
 
-using Scalarf = components::Scalarf;
-using Scalard = components::Scalard;
+using Scalarf = prop::Scalarf;
+using Scalard = prop::Scalard;
 
 template <typename T>
-bool constexpr hasScalar() {return components::hasScalar<T>();};
+bool constexpr hasScalar() {return prop::hasScalar<T>();};
 
 /** Port AdjacentFacesRef class into vert namespace **/
 template <typename Face>
-using AdjacentFaces = components::FaceReferences<Face, -1>;
+using AdjacentFaces = prop::FaceReferences<Face, -1>;
 
 template <typename T>
-bool constexpr hasAdjacentFaces() {return components::hasFaceReferences<T>();};
+bool constexpr hasAdjacentFaces() {return prop::hasFaceReferences<T>();};
 
 /** Port MutableBitFlags class into face namespace **/
-using MutableBitFlags = components::MutableBitFlags;
+using MutableBitFlags = prop::MutableBitFlags;
 
 template <typename  T>
-bool constexpr hasMutableBitFlags() {return components::hasMutableBitFlags<T>();}
+bool constexpr hasMutableBitFlags() {return prop::hasMutableBitFlags<T>();}
 
 } // namespace mgp::vert
 

@@ -210,7 +210,7 @@ void requirePerVertexNormal(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexNormal(m), "Mesh has no vertex normals.");
 	if (!isPerVertexNormalEnabled(m))
-		throw mgp::MissingComponentException("Vertex normals not enabled.");
+		throw mgp::MissingPropertyException("Vertex normals not enabled.");
 }
 
 template<typename MeshType>
@@ -219,7 +219,7 @@ void requirePerVertexColor(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexColor(m), "Mesh has no vertex colors.");
 	if (!isPerVertexColorEnabled(m))
-		throw mgp::MissingComponentException("Vertex colors not enabled.");
+		throw mgp::MissingPropertyException("Vertex colors not enabled.");
 }
 
 template<typename MeshType>
@@ -228,7 +228,7 @@ void requirePerVertexScalar(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexScalar(m), "Mesh has no vertex scalars.");
 	if (!isPerVertexScalarEnabled(m))
-		throw mgp::MissingComponentException("Vertex scalars not enabled.");
+		throw mgp::MissingPropertyException("Vertex scalars not enabled.");
 }
 
 template<typename MeshType>
@@ -250,7 +250,7 @@ void requirePerVertexAdjacentFaces(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexAdjacentFaces(m), "Mesh has no vertex adjacent faces.");
 	if (!isPerVertexAdjacentFacesEnabled(m))
-		throw mgp::MissingComponentException("Vertex adjacent faces not enabled.");
+		throw mgp::MissingPropertyException("Vertex adjacent faces not enabled.");
 }
 
 template<typename MeshType>
@@ -259,7 +259,7 @@ void requirePerVertexMutableBitFlags(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexMutableBitFlags(m), "Mesh has no per vertex mutable bit flags.");
 	if (!isPerVertexMutableBitFlagsEnabled(m))
-		throw mgp::MissingComponentException("Vertex mutable bit flags not enabled.");
+		throw mgp::MissingPropertyException("Vertex mutable bit flags not enabled.");
 }
 
 } // namespace mgp
