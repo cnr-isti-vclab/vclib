@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_FACE_H
-#define MGP_MESH_FACE_H
+#ifndef MGP_MESH_ELEMENTS_FACE_H
+#define MGP_MESH_ELEMENTS_FACE_H
 
 #include "face_properties.h"
 #include "face_properties_optional.h"
@@ -61,4 +61,4 @@ protected:
 
 } // namespace mgp
 
-#endif // MGP_MESH_FACE_H
+#endif // MGP_MESH_ELEMENTS_FACE_H

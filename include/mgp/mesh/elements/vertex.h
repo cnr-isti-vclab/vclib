@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_VERTEX_H
-#define MGP_MESH_VERTEX_H
+#ifndef MGP_MESH_ELEMENTS_VERTEX_H
+#define MGP_MESH_ELEMENTS_VERTEX_H
 
 #include "vertex_properties.h"
 #include "vertex_properties_optional.h"
@@ -61,4 +61,4 @@ protected:
 
 } // namespace mgp
 
-#endif // MGP_MESH_VERTEX_H
+#endif // MGP_MESH_ELEMENTS_VERTEX_H

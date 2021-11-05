@@ -26,21 +26,21 @@ set(HEADERS
 	include/mgp/algorithms/update/topology.h
 	include/mgp/exception/io_exception.h
 	include/mgp/exception/mesh_exception.h
-	include/mgp/mesh/face.h
-	include/mgp/mesh/face_properties.h
-	include/mgp/mesh/face_properties_optional.h
 	include/mgp/mesh/mesh.h
 	include/mgp/mesh/mesh_properties.h
 	include/mgp/mesh/requirements.h
-	include/mgp/mesh/vertex.h
-	include/mgp/mesh/vertex_properties.h
-	include/mgp/mesh/vertex_properties_optional.h
 	include/mgp/mesh/container/container_t.h
 	include/mgp/mesh/container/containers.h
 	include/mgp/mesh/container/face_container.h
 	include/mgp/mesh/container/face_optional_container.h
 	include/mgp/mesh/container/vertex_container.h
 	include/mgp/mesh/container/vertex_optional_container.h
+	include/mgp/mesh/elements/face.h
+	include/mgp/mesh/elements/face_properties.h
+	include/mgp/mesh/elements/face_properties_optional.h
+	include/mgp/mesh/elements/vertex.h
+	include/mgp/mesh/elements/vertex_properties.h
+	include/mgp/mesh/elements/vertex_properties_optional.h
 	include/mgp/mesh/iterators/container_iterator.h
 	include/mgp/mesh/iterators/container_range_iterator.h
 	include/mgp/mesh/iterators/range_iterator.h

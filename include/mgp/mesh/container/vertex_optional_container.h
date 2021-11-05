@@ -6,7 +6,8 @@
 #ifndef MGP_MESH_CONTAINER_VERTEX_OPTIONAL_CONTAINER_H
 #define MGP_MESH_CONTAINER_VERTEX_OPTIONAL_CONTAINER_H
 
-#include "../vertex.h"
+#include <mgp/mesh/elements/vertex.h>
+
 #include "../properties_optional/optional_info.h"
 #include "../properties_vector/properties_vector.h"
 

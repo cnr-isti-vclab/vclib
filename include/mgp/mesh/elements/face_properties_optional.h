@@ -3,14 +3,14 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_FACE_PROPERTIES_OPTIONAL_H
-#define MGP_MESH_FACE_PROPERTIES_OPTIONAL_H
+#ifndef MGP_MESH_ELEMENTS_FACE_PROPERTIES_OPTIONAL_H
+#define MGP_MESH_ELEMENTS_FACE_PROPERTIES_OPTIONAL_H
 
-#include "properties_optional/custom_properties.h"
-#include "properties_optional/optional_color.h"
-#include "properties_optional/optional_mutable_bit_flags.h"
-#include "properties_optional/optional_normal.h"
-#include "properties_optional/optional_scalar.h"
+#include "../properties_optional/custom_properties.h"
+#include "../properties_optional/optional_color.h"
+#include "../properties_optional/optional_mutable_bit_flags.h"
+#include "../properties_optional/optional_normal.h"
+#include "../properties_optional/optional_scalar.h"
 
 namespace mgp::face {
 
@@ -88,4 +88,4 @@ using ReturnIfHasCustomProperties = prop::ReturnIfHasCustomProperties<U, T>;
 
 }
 
-#endif // MGP_MESH_FACE_PROPERTIES_OPTIONAL_H
+#endif // MGP_MESH_ELEMENTS_FACE_PROPERTIES_OPTIONAL_H

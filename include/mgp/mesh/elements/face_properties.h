@@ -3,16 +3,16 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_FACE_PROPERTIES_H
-#define MGP_MESH_FACE_PROPERTIES_H
+#ifndef MGP_MESH_ELEMENTS_FACE_PROPERTIES_H
+#define MGP_MESH_ELEMENTS_FACE_PROPERTIES_H
 
-#include "properties/bit_flags.h"
-#include "properties/color.h"
-#include "properties/mutable_bit_flags.h"
-#include "properties/normal.h"
-#include "properties/scalar.h"
-#include "properties/triangle_bit_flags.h"
-#include "properties/vertex_references.h"
+#include "../properties/bit_flags.h"
+#include "../properties/color.h"
+#include "../properties/mutable_bit_flags.h"
+#include "../properties/normal.h"
+#include "../properties/scalar.h"
+#include "../properties/triangle_bit_flags.h"
+#include "../properties/vertex_references.h"
 
 namespace mgp::face {
 
@@ -74,4 +74,4 @@ bool constexpr hasMutableBitFlags() {return prop::hasMutableBitFlags<T>();}
 
 } // namespace mgp::face
 
-#endif // MGP_MESH_FACE_PROPERTIES_H
+#endif // MGP_MESH_ELEMENTS_FACE_PROPERTIES_H

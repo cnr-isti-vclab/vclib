@@ -6,7 +6,8 @@
 #ifndef MGP_MESH_CONTAINER_FACE_OPTIONAL_CONTAINER_H
 #define MGP_MESH_CONTAINER_FACE_OPTIONAL_CONTAINER_H
 
-#include "../face.h"
+#include <mgp/mesh/elements/face.h>
+
 #include "../properties_optional/optional_info.h"
 #include "../properties_vector/properties_vector.h"
 
