@@ -27,14 +27,14 @@ class VertexReferences : protected ElementReferences<Vertex, N>, public VertexRe
 	using Base = ElementReferences<Vertex, N>;
 
 public:
-	static const int VERTEX_NUMBER = Base::COMPONENT_NUMBER;
+	static const int VERTEX_NUMBER = Base::PROPERTY_NUMBER;
 
 	/** Iterator Types declaration **/
 
-	using VertexIterator           = typename Base::ComponentIterator;
-	using ConstVertexIterator      = typename Base::ConstComponentIterator;
-	using VertexRangeIterator      = typename Base::ComponentRangeIterator;
-	using ConstVertexRangeIterator = typename Base::ConstComponentRangeIterator;
+	using VertexIterator           = typename Base::ElementIterator;
+	using ConstVertexIterator      = typename Base::ConstElementIterator;
+	using VertexRangeIterator      = typename Base::ElementRangeIterator;
+	using ConstVertexRangeIterator = typename Base::ConstElementRangeIterator;
 
 	/** Constructor **/
 

@@ -23,7 +23,7 @@ class Vertex :
 			mgp::vert::Scalard,                         // 8b
 			mgp::vert::OptionalMutableBitFlags<Vertex>, // 0b
 			mgp::vert::AdjacentFaces<Face>,             // N*8b
-			mgp::vert::CustomComponents<Vertex>>        // 0b
+			mgp::vert::CustomProperties<Vertex>>        // 0b
 {
 };
 
@@ -34,7 +34,7 @@ class Face :
 			mgp::face::Normal3d,                   // 24b
 			mgp::face::OptionalScalard<Face>,      // 0b
 			mgp::face::OptionalColor<Face>,        // 0b
-			mgp::face::CustomComponents<Face>>     // 0b
+			mgp::face::CustomProperties<Face>>     // 0b
 {
 };
 

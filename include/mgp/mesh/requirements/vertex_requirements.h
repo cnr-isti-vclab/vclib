@@ -46,10 +46,10 @@ template <typename MeshType>
 bool isPerVertexScalarEnabled(const MeshType&);
 
 template <typename MeshType>
-bool constexpr hasPerVertexCustomComponents();
+bool constexpr hasPerVertexCustomProperties();
 
 template <typename MeshType>
-bool constexpr hasPerVertexCustomComponents(const MeshType&);
+bool constexpr hasPerVertexCustomProperties(const MeshType&);
 
 template <typename MeshType>
 bool constexpr hasPerVertexAdjacentFaces();
@@ -86,10 +86,10 @@ template <typename MeshType>
 void requirePerVertexScalar(const MeshType& m);
 
 template <typename MeshType>
-bool constexpr requirePerVertexCustomComponents();
+bool constexpr requirePerVertexCustomProperties();
 
 template <typename MeshType>
-bool constexpr requirePerVertexCustomComponents(const MeshType& m);
+bool constexpr requirePerVertexCustomProperties(const MeshType& m);
 
 template <typename MeshType>
 void requirePerVertexAdjacentFaces(const MeshType& m);

@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_FACE_COMPONENTS_H
-#define MGP_MESH_FACE_COMPONENTS_H
+#ifndef MGP_MESH_FACE_PROPERTIES_H
+#define MGP_MESH_FACE_PROPERTIES_H
 
 #include "properties/bit_flags.h"
 #include "properties/color.h"
@@ -74,4 +74,4 @@ bool constexpr hasMutableBitFlags() {return prop::hasMutableBitFlags<T>();}
 
 } // namespace mgp::face
 
-#endif // MGP_MESH_FACE_COMPONENTS_H
+#endif // MGP_MESH_FACE_PROPERTIES_H

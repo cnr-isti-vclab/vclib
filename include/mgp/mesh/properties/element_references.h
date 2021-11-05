@@ -39,24 +39,24 @@ private:
 		typename std::vector<Elem*>>::type;
 
 public:
-	static const int COMPONENT_NUMBER = N;
+	static const int PROPERTY_NUMBER = N;
 
 	/** Iterator Types declaration **/
 
 	// if using array, will be the array iterator, the vector iterator otherwise
-	using ComponentIterator = typename std::conditional<
+	using ElementIterator = typename std::conditional<
 		(N >= 0),
 		typename std::array<Elem*, ARRAY_SIZE>::iterator,
 		typename std::vector<Elem*>::iterator>::type;
 
-	using ConstComponentIterator = typename std::conditional<
+	using ConstElementIterator = typename std::conditional<
 		(N >= 0),
 		typename std::array<Elem*, ARRAY_SIZE>::const_iterator,
 		typename std::vector<Elem*>::const_iterator>::type;
 
-	using ComponentRangeIterator = RangeIterator<ElementReferences, ComponentIterator>;
-	using ConstComponentRangeIterator =
-		ConstRangeIterator<ElementReferences, ConstComponentIterator>;
+	using ElementRangeIterator = RangeIterator<ElementReferences, ElementIterator>;
+	using ConstElementRangeIterator =
+		ConstRangeIterator<ElementReferences, ConstElementIterator>;
 
 	/** Constructor **/
 
@@ -91,12 +91,12 @@ public:
 
 	/** Iterator Member functions **/
 
-	ComponentIterator           elementBegin();
-	ComponentIterator           elementEnd();
-	ConstComponentIterator      elementBegin() const;
-	ConstComponentIterator      elementEnd() const;
-	ComponentRangeIterator      elementIterator();
-	ConstComponentRangeIterator elementIterator() const;
+	ElementIterator           elementBegin();
+	ElementIterator           elementEnd();
+	ConstElementIterator      elementBegin() const;
+	ConstElementIterator      elementEnd() const;
+	ElementRangeIterator      elementIterator();
+	ConstElementRangeIterator elementIterator() const;
 
 protected:
 	Container elemRefs;

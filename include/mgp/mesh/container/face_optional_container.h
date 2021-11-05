@@ -67,9 +67,9 @@ public:
 	template<typename U = T>
 	face::ReturnIfHasOptionalScalar<U, void> disablePerFaceScalar();
 
-	// Custom Components
+	// Custom Properties
 	template<typename K, typename U = T>
-	face::ReturnIfHasCustomComponents<U, void> addPerFaceCustomComponent(const std::string& name);
+	face::ReturnIfHasCustomProperties<U, void> addPerFaceCustomProperty(const std::string& name);
 
 protected:
 	void setContainerPointer(T& face);

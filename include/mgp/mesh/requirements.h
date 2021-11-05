@@ -10,7 +10,7 @@
 
 /**
  * The requirements file gives the user the possibility to check or require the existence of mesh
- * Elements or per-Element Components.
+ * Elements or per-Element Properties.
  *
  * There are three main types of functions:
  *
@@ -27,11 +27,11 @@
  *          // portion of code that use per face colors
  *       }
  *
- *     Note: this function does not check for components that may be not enabled at runtime.
+ *     Note: this function does not check for properties that may be not enabled at runtime.
  *     For runtime check look for "isSomethingEnabled".
  *
- * - isSomethingEnabled(): checks at compile time if an Element has a particular Component, and then
- *     checks at runtime if the Component is enabled. Therefore, the whole function is not a
+ * - isSomethingEnabled(): checks at compile time if an Element has a particular Property, and then
+ *     checks at runtime if the Property is enabled. Therefore, the whole function is not a
  *     constexpr.
  *
  *     For example, if you have a portion of code that does something particular in case of Vertices

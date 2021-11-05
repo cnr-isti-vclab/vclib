@@ -27,14 +27,14 @@ class FaceReferences : protected ElementReferences<Face, N>, public FaceReferenc
 	using Base = ElementReferences<Face, N>;
 
 public:
-	static const int FACE_NUMBER = Base::COMPONENT_NUMBER;
+	static const int FACE_NUMBER = Base::PROPERTY_NUMBER;
 
 	/** Iterator Types declaration **/
 
-	using FaceIterator           = typename Base::ComponentIterator;
-	using ConstFaceIterator      = typename Base::ConstComponentIterator;
-	using FaceRangeIterator      = typename Base::ComponentRangeIterator;
-	using ConstFaceRangeIterator = typename Base::ConstComponentRangeIterator;
+	using FaceIterator           = typename Base::ElementIterator;
+	using ConstFaceIterator      = typename Base::ConstElementIterator;
+	using FaceRangeIterator      = typename Base::ElementRangeIterator;
+	using ConstFaceRangeIterator = typename Base::ConstElementRangeIterator;
 
 	/** Constructor **/
 

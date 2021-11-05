@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMPONENTS_H
-#define MGP_MESH_COMPONENTS_H
+#ifndef MGP_MESH_PROPERTIES_H
+#define MGP_MESH_PROPERTIES_H
 
 #include "properties/bounding_box.h"
 
@@ -25,4 +25,4 @@ using ReturnIfHasBoundingBox = prop::ReturnIfHasBoundingBox<U, T>;
 
 }
 
-#endif // MGP_MESH_COMPONENTS_H
+#endif // MGP_MESH_PROPERTIES_H

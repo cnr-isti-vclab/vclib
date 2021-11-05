@@ -122,44 +122,44 @@ internal::ReturnIfIsVector<U, void> ElementReferences<Elem, N>::clearElements()
 }
 
 template<class Elem, int N>
-typename ElementReferences<Elem, N>::ComponentIterator ElementReferences<Elem, N>::elementBegin()
+typename ElementReferences<Elem, N>::ElementIterator ElementReferences<Elem, N>::elementBegin()
 {
 	return elemRefs.begin();
 }
 
 template<class Elem, int N>
-typename ElementReferences<Elem, N>::ComponentIterator ElementReferences<Elem, N>::elementEnd()
+typename ElementReferences<Elem, N>::ElementIterator ElementReferences<Elem, N>::elementEnd()
 {
 	return elemRefs.end();
 }
 
 template<class Elem, int N>
-typename ElementReferences<Elem, N>::ConstComponentIterator
+typename ElementReferences<Elem, N>::ConstElementIterator
 ElementReferences<Elem, N>::elementBegin() const
 {
 	return elemRefs.begin();
 }
 
 template<class Elem, int N>
-typename ElementReferences<Elem, N>::ConstComponentIterator
+typename ElementReferences<Elem, N>::ConstElementIterator
 ElementReferences<Elem, N>::elementEnd() const
 {
 	return elemRefs.end();
 }
 
 template<class Elem, int N>
-typename ElementReferences<Elem, N>::ComponentRangeIterator
+typename ElementReferences<Elem, N>::ElementRangeIterator
 ElementReferences<Elem, N>::elementIterator()
 {
-	return ComponentRangeIterator(
+	return ElementRangeIterator(
 		*this, &ElementReferences::elementBegin, &ElementReferences::elementEnd);
 }
 
 template<class Elem, int N>
-typename ElementReferences<Elem, N>::ConstComponentRangeIterator
+typename ElementReferences<Elem, N>::ConstElementRangeIterator
 ElementReferences<Elem, N>::elementIterator() const
 {
-	return ConstComponentRangeIterator(
+	return ConstElementRangeIterator(
 		*this, &ElementReferences::elementBegin, &ElementReferences::elementEnd);
 }
 

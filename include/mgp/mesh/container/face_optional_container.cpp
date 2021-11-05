@@ -23,7 +23,7 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceColorEnabled() const
 
 /**
  * @brief Container::enableFaceColor enable the Optional Color of the face.
- * This function is available **only if the Face Element has the OptionalColor Component**.
+ * This function is available **only if the Face Element has the OptionalColor Property**.
  */
 template<class T>
 template<class U>
@@ -34,7 +34,7 @@ face::ReturnIfHasOptionalColor<U, void> FaceOptionalContainer<T, FaceHasOptional
 
 /**
  * @brief Container::disableFaceColor disables the Optional Color of the face.
- * This function is available **only if the Face Element has the OptionalColor Component**.
+ * This function is available **only if the Face Element has the OptionalColor Property**.
  */
 template<class T>
 template<class U>
@@ -47,8 +47,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceColor()
 /**
  * @brief FaceOptionalContainer::isPerFaceMutableBitFlagsEnabled checks if the face Optional
  * Mutable Bit Flags is enabled. This function is available **only if the Face Element has the
- * OptionalMutableBitFlags Component**.
- * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
+ * OptionalMutableBitFlags Property**.
+ * @return true if the Optional Mutable Bit Flags property is enabled, false otherwise.
  */
 template<class T>
 template<class U>
@@ -60,7 +60,7 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceMutableBitFlagsEnabled() 
 
 /**
  * @brief Container::enableFaceMutableFlags enable the Optional Mutable Flags of the face.
- * This function is available **only if the Face Element has the OptionalMutableFlags Component**.
+ * This function is available **only if the Face Element has the OptionalMutableFlags Property**.
  */
 template<class T>
 template<class U>
@@ -72,7 +72,7 @@ face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceOptionalContainer<T, FaceH
 /**
  * @brief Container::disableFaceMutableFlags disables the Optional Mutable Flags of the face.
  * This function is available **only if the Face Element has the OptionalMutableBitFlags
- * Component**.
+ * Property**.
  */
 template<class T>
 template<class U>
@@ -85,7 +85,7 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceMutableBitFlags()
 /**
  * @brief FaceOptionalContainer::isPerFaceNormalEnabled checks if the face Optional Normal is
  * enabled. This function is available **only if the Face Element has the OptionalNormal
- * Component**.
+ * Property**.
  * @return true if the Optional Normal is enabled, false otherwise.
  */
 template<class T>
@@ -98,7 +98,7 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceNormalEnabled() const
 
 /**
  * @brief Container::enableFaceNormal enable the Optional Normal of the face.
- * This function is available **only if the Face Element has the OptionalNormal Component**.
+ * This function is available **only if the Face Element has the OptionalNormal Property**.
  */
 template<class T>
 template<class U>
@@ -109,7 +109,7 @@ face::ReturnIfHasOptionalNormal<U, void> FaceOptionalContainer<T, FaceHasOptiona
 
 /**
  * @brief Container::disableFaceNormal disables the Optional Normal of the face.
- * This function is available **only if the Face Element has the OptionalNormal Component**.
+ * This function is available **only if the Face Element has the OptionalNormal Property**.
  */
 template<class T>
 template<class U>
@@ -122,7 +122,7 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceNormal()
 /**
  * @brief FaceOptionalContainer::isPerFaceScalarEnabled checks if the face Optional Scalar is
  * enabled. This function is available **only if the Face Element has the OptionalScalar
- * Component**.
+ * Property**.
  * @return true if the Optional Scalar is enabled, false otherwise.
  */
 template<class T>
@@ -134,7 +134,7 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceScalarEnabled() const
 }
 /**
  * @brief Container::enableFaceScalar enable the Optional Scalar of the face.
- * This function is available **only if the Face Element has the OptionalScalar Component**.
+ * This function is available **only if the Face Element has the OptionalScalar Property**.
  */
 template<class T>
 template<class U>
@@ -145,7 +145,7 @@ face::ReturnIfHasOptionalScalar<U, void> FaceOptionalContainer<T, FaceHasOptiona
 
 /**
  * @brief Container::disableFaceScalar disables the Optional Scalar of the face.
- * This function is available **only if the Face Element has the OptionalScalar Component**.
+ * This function is available **only if the Face Element has the OptionalScalar Property**.
  */
 template<class T>
 template<class U>
@@ -157,9 +157,9 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceScalar()
 
 template<class T>
 template<typename K, typename U>
-face::ReturnIfHasCustomComponents<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::addPerFaceCustomComponent(const std::string& name)
+face::ReturnIfHasCustomProperties<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::addPerFaceCustomProperty(const std::string& name)
 {
-	optionalPropVector.template addNewComponent<K>(name, faceContainerSize());
+	optionalPropVector.template addNewProperty<K>(name, faceContainerSize());
 }
 
 template<typename T>

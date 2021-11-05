@@ -45,7 +45,7 @@ const T& OptionalGenericVector<T>::at(unsigned int i) const
 }
 
 /**
- * @brief OptionalGenericVector::clear clears the vector of the optional component,
+ * @brief OptionalGenericVector::clear clears the vector of the optional property,
  * without disabling it.
  */
 template<typename T>

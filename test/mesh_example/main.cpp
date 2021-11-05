@@ -24,7 +24,7 @@ int main()
 
 	// test mutable flags
 	// flags that can be modified also on const meshes, like the "visited" flag
-	m.enablePerVertexMutableBitFlags(); // mutable flags on this mesh is an optional component
+	m.enablePerVertexMutableBitFlags(); // mutable flags on this mesh is an optional property
 
 	const mgp::TriMesh::Vertex& vv = m.vertex(0);
 	vv.setVisitedM(); // vertex 0 is now visited
@@ -40,11 +40,11 @@ int main()
 	m.vertex(1).color() = mgp::Color(3, 63, 44);
 	m.vertex(2).color() = mgp::Color(3, 9, 2);
 	
-	// adding a per vertex custom component of chars, called 'prova'
-	m.addPerVertexCustomComponent<char>("prova");
+	// adding a per vertex custom property of chars, called 'prova'
+	m.addPerVertexCustomProperty<char>("prova");
 	
 	for (auto& v : m.vertexIterator())
-		v.customProperty<char>("prova") = 'a'; // set the custom component for each vertex
+		v.customProperty<char>("prova") = 'a'; // set the custom property for each vertex
 	
 	// enable per face scalar, which is optional
 	m.enablePerFaceScalar();

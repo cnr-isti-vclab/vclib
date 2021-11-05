@@ -40,10 +40,10 @@ template <typename MeshType>
 bool isPerFaceScalarEnabled(const MeshType&);
 
 template<typename MeshType>
-bool constexpr hasPerFaceCustomComponents();
+bool constexpr hasPerFaceCustomProperties();
 
 template<typename MeshType>
-bool constexpr hasPerFaceCustomComponents(const MeshType&);
+bool constexpr hasPerFaceCustomProperties(const MeshType&);
 
 template <typename MeshType>
 bool constexpr hasPerFaceMutableBitFlags();
@@ -66,10 +66,10 @@ template <typename MeshType>
 void requirePerFaceScalar(const MeshType& m);
 
 template <typename MeshType>
-bool constexpr requirePerFaceCustomComponents();
+bool constexpr requirePerFaceCustomProperties();
 
 template <typename MeshType>
-bool constexpr requirePerFaceCustomComponents(const MeshType& m);
+bool constexpr requirePerFaceCustomProperties(const MeshType& m);
 
 template <typename MeshType>
 void requirePerFaceMutableBitFlags(const MeshType& m);

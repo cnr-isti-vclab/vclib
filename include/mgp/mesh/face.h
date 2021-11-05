@@ -6,8 +6,8 @@
 #ifndef MGP_MESH_FACE_H
 #define MGP_MESH_FACE_H
 
-#include "face_components.h"
-#include "face_components_optional.h"
+#include "face_properties.h"
+#include "face_properties_optional.h"
 
 namespace mgp::mesh {
 
@@ -25,7 +25,7 @@ namespace mgp::face {
 
 /**
  * @brief The Property fallback class, will be used when the template argument given to the Face
- * is not one of the known Components.
+ * is not one of the known Properties.
  *
  * This class will just make the given template argument a Base of the Face, becoming a feature of
  * the Face.

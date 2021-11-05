@@ -26,7 +26,7 @@ using IfIsVertex = std::enable_if_t<std::is_base_of<VertexTriggerer, T>::value>;
  *
  * This class adds a container (vector) of vertices to the Mesh, making available the accessors
  * members to the vertices, the vertex number, iterators... This class will also take care to add
- * enablers/disablers of the eventual optional components of the vertex.
+ * enablers/disablers of the eventual optional properties of the vertex.
  */
 template<class T>
 class Container<T, IfIsVertex<T>> :
@@ -34,7 +34,7 @@ class Container<T, IfIsVertex<T>> :
 {
 	static_assert(
 		mgp::vert::hasBitFlags<T>(),
-		"You should include BitFlags as Vertex component in your Mesh definition.");
+		"You should include BitFlags as Vertex property in your Mesh definition.");
 
 protected:
 	// types:
@@ -71,7 +71,7 @@ public:
 protected:
 	/**
 	 * @brief vertices: the vector of vertices, where each vertex contains only its static
-	 * components. Optional components will be contained in the optionalComponentsVector.
+	 * properties. Optional properties will be contained in the optionalPropVector.
 	 */
 	std::vector<T> vertices;
 

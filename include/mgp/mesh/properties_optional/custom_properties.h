@@ -28,7 +28,7 @@ private:
 public:
 	bool hasCustomProperty(const std::string& attrName) const
 	{
-		return B::contPtr->componentExists(attrName);
+		return B::contPtr->propertyExists(attrName);
 	}
 
 	template<typename AttrType>

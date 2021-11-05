@@ -77,9 +77,9 @@ public:
 	template<typename U = T>
 	vert::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerVertexAdjacentFaces();
 
-	// Custom Components
+	// Custom Properties
 	template<typename K, typename U = T>
-	vert::ReturnIfHasCustomComponents<U, void> addPerVertexCustomComponent(const std::string& name);
+	vert::ReturnIfHasCustomProperties<U, void> addPerVertexCustomProperty(const std::string& name);
 
 protected:
 	void setContainerPointer(T& vertex);
@@ -90,11 +90,11 @@ protected:
 
 private:
 	/**
-	 * @brief optionalComponentsVector contains all the optional prop data of the vertex, that
+	 * @brief optionalPropVector contains all the optional prop data of the vertex, that
 	 * will be enabled - disabled at runtime.
-	 * Each vertex that has at least one optional component, will store a pointer to this vector.
+	 * Each vertex that has at least one optional property, will store a pointer to this vector.
 	 */
-	internal::PropertiesVector<T> optionalComponentsVector;
+	internal::PropertiesVector<T> optionalPropVector;
 };
 
 }

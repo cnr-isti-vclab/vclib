@@ -27,14 +27,14 @@ set(HEADERS
 	include/mgp/exception/io_exception.h
 	include/mgp/exception/mesh_exception.h
 	include/mgp/mesh/face.h
-	include/mgp/mesh/face_components.h
-	include/mgp/mesh/face_components_optional.h
+	include/mgp/mesh/face_properties.h
+	include/mgp/mesh/face_properties_optional.h
 	include/mgp/mesh/mesh.h
-	include/mgp/mesh/mesh_components.h
+	include/mgp/mesh/mesh_properties.h
 	include/mgp/mesh/requirements.h
 	include/mgp/mesh/vertex.h
-	include/mgp/mesh/vertex_components.h
-	include/mgp/mesh/vertex_components_optional.h
+	include/mgp/mesh/vertex_properties.h
+	include/mgp/mesh/vertex_properties_optional.h
 	include/mgp/mesh/container/container_t.h
 	include/mgp/mesh/container/containers.h
 	include/mgp/mesh/container/face_container.h

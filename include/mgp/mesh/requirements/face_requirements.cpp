@@ -101,15 +101,15 @@ bool isPerFaceScalarEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceCustomComponents()
+bool constexpr hasPerFaceCustomProperties()
 {
-	return hasFaces<MeshType>() && mgp::face::hasCustomComponents<typename MeshType::FaceType>();
+	return hasFaces<MeshType>() && mgp::face::hasCustomProperties<typename MeshType::FaceType>();
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceCustomComponents(const MeshType&)
+bool constexpr hasPerFaceCustomProperties(const MeshType&)
 {
-	return hasPerFaceCustomComponents<MeshType>();
+	return hasPerFaceCustomProperties<MeshType>();
 }
 
 template<typename MeshType>
@@ -172,16 +172,16 @@ void requirePerFaceScalar(const MeshType& m)
 }
 
 template<typename MeshType>
-void constexpr requirePerFaceCustomComponents()
+void constexpr requirePerFaceCustomProperties()
 {
 	requireFaces<MeshType>();
-	static_assert(hasPerFaceCustomComponents<MeshType>(), "Mesh has no face custom components.");
+	static_assert(hasPerFaceCustomProperties<MeshType>(), "Mesh has no face custom properties.");
 }
 
 template<typename MeshType>
-void constexpr requirePerFaceCustomComponents(const MeshType&)
+void constexpr requirePerFaceCustomProperties(const MeshType&)
 {
-	requirePerFaceCustomComponents<MeshType>();
+	requirePerFaceCustomProperties<MeshType>();
 }
 
 template<typename MeshType>

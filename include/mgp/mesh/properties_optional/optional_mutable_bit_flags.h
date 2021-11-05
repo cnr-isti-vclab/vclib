@@ -16,11 +16,11 @@ namespace mgp::prop {
  * @brief The OptionalMutableBitFlags represents a collection of 32 **mutable** bits that will be
  * part of an Element (e.g. Vertex, Face, ...).
  *
- * This is an Optional Component, meaning that can be enabled and/or disabled at runtime. By
+ * This is an Optional Property, meaning that can be enabled and/or disabled at runtime. By
  * default, these properties are disabled.
  *
- * Unlike the BitFlags component, the bits of this component are *mutable*, meaning that they can be
- * modified also in a const Elements. Therefore, the constness of this component on const Elements
+ * Unlike the BitFlags property, the bits of this property are *mutable*, meaning that they can be
+ * modified also in a const Elements. Therefore, the constness of this property on const Elements
  * should not be trusted.
  *
  * They could be useful in algorithms which should not modify the mesh (taking as argument a

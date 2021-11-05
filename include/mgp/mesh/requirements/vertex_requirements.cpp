@@ -116,16 +116,16 @@ bool isPerVertexScalarEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexCustomComponents()
+bool constexpr hasPerVertexCustomProperties()
 {
 	return hasVertices<MeshType>() &&
-		   mgp::vert::hasCustomComponents<typename MeshType::VertexType>();
+		   mgp::vert::hasCustomProperties<typename MeshType::VertexType>();
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexCustomComponents(const MeshType&)
+bool constexpr hasPerVertexCustomProperties(const MeshType&)
 {
-	return hasPerVertexCustomComponents<MeshType>();
+	return hasPerVertexCustomProperties<MeshType>();
 }
 
 template <typename MeshType>
@@ -232,16 +232,16 @@ void requirePerVertexScalar(const MeshType& m)
 }
 
 template<typename MeshType>
-void constexpr requirePerVertexCustomComponents()
+void constexpr Properties()
 {
 	requireVertices<MeshType>();
-	static_assert(hasPerVertexCustomComponents<MeshType>(), "Mesh has no vertex custom components.");
+	static_assert(hasPerVertexCustomProperties<MeshType>(), "Mesh has no vertex custom properties.");
 }
 
 template<typename MeshType>
-void constexpr requirePerVertexCustomComponents(const MeshType&)
+void constexpr Properties(const MeshType&)
 {
-	requirePerVertexCustomComponents<MeshType>();
+	requirePerVertexCustomProperties<MeshType>();
 }
 
 template<typename MeshType>

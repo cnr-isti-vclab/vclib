@@ -6,8 +6,8 @@
 #ifndef MGP_MESH_VERTEX_H
 #define MGP_MESH_VERTEX_H
 
-#include "vertex_components.h"
-#include "vertex_components_optional.h"
+#include "vertex_properties.h"
+#include "vertex_properties_optional.h"
 
 namespace mgp::mesh {
 
@@ -25,7 +25,7 @@ namespace mgp::vert {
 
 /**
  * @brief The Property fallback class, will be used when the template argument given to the Vertex
- * is not one of the known Components.
+ * is not one of the known Properties.
  *
  * This class will just make the given template argument a Base of the Vertex, becoming a feature of
  * the Vertex.
