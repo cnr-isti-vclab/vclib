@@ -43,10 +43,11 @@ public:
 	/** Member functions **/
 
 	unsigned int faceNumber() const { return Base::elementNumber(); }
-	using Base::sizeMod;
 
 	Face*&      f(unsigned int i) { return Base::element(i); }
 	const Face* f(unsigned int i) const { return Base::element(i); }
+	Face*&      fMod(int i) { return Base::elementMod(i); }
+	const Face* fMod(int i) const { return Base::elementMod(i); }
 
 	void setFace(Face* f, unsigned int i) { Base::setElement(f, i); }
 	void setFaces(const std::vector<Face*>& list) { Base::setElements(list); }

@@ -43,10 +43,11 @@ public:
 	/** Member functions **/
 
 	unsigned int vertexNumber() const { return Base::elementNumber(); }
-	using Base::sizeMod;
 
 	Vertex*&      v(unsigned int i) { return Base::element(i); }
 	const Vertex* v(unsigned int i) const { return Base::element(i); }
+	Vertex*&      vMod(int i) { return Base::elementMod(i); }
+	const Vertex* vMod(int i) const { return Base::elementMod(i); }
 
 	void setVertex(Vertex* v, unsigned int i) { Base::setElement(v, i); }
 	void setVertices(const std::vector<Vertex*>& list) { Base::setElements(list); }

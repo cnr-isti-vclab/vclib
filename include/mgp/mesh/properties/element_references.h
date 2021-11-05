@@ -65,7 +65,6 @@ public:
 	/** Member functions **/
 
 	unsigned int elementNumber() const;
-	unsigned int sizeMod(unsigned int i) const;
 
 	Elem*&      element(unsigned int i);
 	const Elem* element(unsigned int i) const;

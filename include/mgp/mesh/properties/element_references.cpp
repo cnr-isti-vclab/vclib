@@ -34,12 +34,6 @@ unsigned int ElementReferences<Elem, N>::elementNumber() const
 }
 
 template<class Elem, int N>
-unsigned int ElementReferences<Elem, N>::sizeMod(unsigned int i) const
-{
-	return i % elementNumber();
-}
-
-template<class Elem, int N>
 Elem*& ElementReferences<Elem, N>::element(unsigned int i)
 {
 	assert(i < elementNumber());
