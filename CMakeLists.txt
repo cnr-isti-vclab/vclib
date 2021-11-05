@@ -52,6 +52,7 @@ set(HEADERS
 	include/mgp/mesh/properties/face_references.h
 	include/mgp/mesh/properties/mutable_bit_flags.h
 	include/mgp/mesh/properties/normal.h
+	include/mgp/mesh/properties/polygon_bit_flags.h
 	include/mgp/mesh/properties/scalar.h
 	include/mgp/mesh/properties/vertex_references.h
 	include/mgp/mesh/properties/triangle_bit_flags.h
@@ -106,6 +107,7 @@ set(SOURCES
 	include/mgp/mesh/properties/bit_flags.cpp
 	include/mgp/mesh/properties/element_references.cpp
 	include/mgp/mesh/properties/mutable_bit_flags.cpp
+	include/mgp/mesh/properties/polygon_bit_flags.cpp
 	include/mgp/mesh/properties/triangle_bit_flags.cpp
 	include/mgp/mesh/properties_optional/optional_face_references.cpp
 	include/mgp/mesh/properties_optional/optional_mutable_bit_flags.cpp

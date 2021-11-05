@@ -52,7 +52,8 @@ protected:
 	void setUserBit(unsigned int bit, unsigned int firstBit);
 	void clearUserBit(unsigned int bit, unsigned int firstBit);
 
-	int                       flags          = 0;
+	int flags = 0;
+
 	static const unsigned int FIRST_USER_BIT = 3;
 
 	// values of the flags, used for flagValue, setFlag and clearFlag member functions

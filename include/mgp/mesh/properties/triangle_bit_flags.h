@@ -36,52 +36,25 @@ public:
 	void setUserBit(unsigned int bit);
 	void clearUserBit(unsigned int bit);
 
-	bool isEdgeOnBorder0() const;
-	bool isEdgeOnBorder1() const;
-	bool isEdgeOnBorder2() const;
 	bool isEdgeOnBorder(unsigned int i) const;
 	bool isAnyEdgeOnBorder() const;
 
-	bool isEdgeSelected0() const;
-	bool isEdgeSelected1() const;
-	bool isEdgeSelected2() const;
 	bool isEdgeSelected(unsigned int i) const;
 
-	bool isEdgeFaux0() const;
-	bool isEdgeFaux1() const;
-	bool isEdgeFaux2() const;
 	bool isEdgeFaux(unsigned int i) const;
 	bool isAnyEdgeFaux() const;
 
-	void setEdgeOnBorder0();
-	void setEdgeOnBorder1();
-	void setEdgeOnBorder2();
 	void setEdgeOnBorder(unsigned int i);
 
-	void setEdgeSelected0();
-	void setEdgeSelected1();
-	void setEdgeSelected2();
 	void setEdgeSelected(unsigned int i);
 
-	void setEdgeFaux0();
-	void setEdgeFaux1();
-	void setEdgeFaux2();
 	void setEdgeFaux(unsigned int i);
 
-	void clearEdgeOnBorder0();
-	void clearEdgeOnBorder1();
-	void clearEdgeOnBorder2();
 	void clearEdgeOnBorder(unsigned int i);
 	void clearAllEdgeOnBorder();
 
-	void clearEdgeSelected0();
-	void clearEdgeSelected1();
-	void clearEdgeSelected2();
 	void clearEdgeSelected(unsigned int i);
 
-	void clearEdgeFaux0();
-	void clearEdgeFaux1();
-	void clearEdgeFaux2();
 	void clearEdgeFaux(unsigned int i);
 	void clearAllEdgeFaux();
 

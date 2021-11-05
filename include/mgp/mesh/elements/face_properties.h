@@ -11,6 +11,7 @@
 #include "../properties/mutable_bit_flags.h"
 #include "../properties/normal.h"
 #include "../properties/scalar.h"
+#include "../properties/polygon_bit_flags.h"
 #include "../properties/triangle_bit_flags.h"
 #include "../properties/vertex_references.h"
 

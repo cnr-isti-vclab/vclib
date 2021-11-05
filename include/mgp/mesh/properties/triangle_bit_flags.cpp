@@ -48,39 +48,6 @@ void TriangleBitFlags::clearUserBit(unsigned int bit)
 }
 
 /**
- * @brief TriangleBitFlags::isEdgeOnBorder0 returns whether the Edge 0 of the Triangle is marked as
- * on border.
- *
- * @return true if the Edge 0 of the Triangle is on border, false otherwise.
- */
-inline bool TriangleBitFlags::isEdgeOnBorder0() const
-{
-	return BitFlags::isOnBorder();
-}
-
-/**
- * @brief TriangleBitFlags::isEdgeOnBorder1 returns whether the Edge 1 of the Triangle is marked as
- * on border.
- *
- * @return true if the Edge 1 of the Triangle is on border, false otherwise.
- */
-inline bool TriangleBitFlags::isEdgeOnBorder1() const
-{
-	return flagValue(BORDER1);
-}
-
-/**
- * @brief TriangleBitFlags::isEdgeOnBorder2 returns whether the Edge 2 of the Triangle is marked as
- * on border.
- *
- * @return true if the Edge 2 of the Triangle is on border, false otherwise.
- */
-inline bool TriangleBitFlags::isEdgeOnBorder2() const
-{
-	return flagValue(BORDER2);
-}
-
-/**
  * @brief TriangleBitFlags::isEdgeOnBorder returns whether the ith Edge of the Triangle is marked as
  * on border.
  *
@@ -95,43 +62,13 @@ inline bool TriangleBitFlags::isEdgeOnBorder(unsigned int i) const
 
 inline bool TriangleBitFlags::isAnyEdgeOnBorder() const
 {
-	return isEdgeOnBorder0() || isEdgeOnBorder1() || isEdgeOnBorder2();
-}
-
-inline bool TriangleBitFlags::isEdgeSelected0() const
-{
-	return flagValue(EDGESEL0);
-}
-
-inline bool TriangleBitFlags::isEdgeSelected1() const
-{
-	return flagValue(EDGESEL1);
-}
-
-inline bool TriangleBitFlags::isEdgeSelected2() const
-{
-	return flagValue(EDGESEL2);
+	return isEdgeOnBorder(0) || isEdgeOnBorder(1) || isEdgeOnBorder(2);
 }
 
 inline bool TriangleBitFlags::isEdgeSelected(unsigned int i) const
 {
 	assert(i < 3);
 	return flagValue(EDGESEL0 << i);
-}
-
-inline bool TriangleBitFlags::isEdgeFaux0() const
-{
-	return flagValue(FAUX0);
-}
-
-inline bool TriangleBitFlags::isEdgeFaux1() const
-{
-	return flagValue(FAUX1);
-}
-
-inline bool TriangleBitFlags::isEdgeFaux2() const
-{
-	return flagValue(FAUX2);
 }
 
 inline bool TriangleBitFlags::isEdgeFaux(unsigned int i) const
@@ -142,22 +79,7 @@ inline bool TriangleBitFlags::isEdgeFaux(unsigned int i) const
 
 inline bool TriangleBitFlags::isAnyEdgeFaux() const
 {
-	return isEdgeFaux0() || isEdgeFaux1() || isEdgeFaux2();
-}
-
-inline void TriangleBitFlags::setEdgeOnBorder0()
-{
-	BitFlags::setOnBorder();
-}
-
-inline void TriangleBitFlags::setEdgeOnBorder1()
-{
-	setFlag(BORDER1);
-}
-
-inline void TriangleBitFlags::setEdgeOnBorder2()
-{
-	setFlag(BORDER2);
+	return isEdgeFaux(0) || isEdgeFaux(1) || isEdgeFaux(2);
 }
 
 inline void TriangleBitFlags::setEdgeOnBorder(unsigned int i)
@@ -166,61 +88,16 @@ inline void TriangleBitFlags::setEdgeOnBorder(unsigned int i)
 	setFlag(BORDER << i);
 }
 
-inline void TriangleBitFlags::setEdgeSelected0()
-{
-	setFlag(EDGESEL0);
-}
-
-inline void TriangleBitFlags::setEdgeSelected1()
-{
-	setFlag(EDGESEL1);
-}
-
-inline void TriangleBitFlags::setEdgeSelected2()
-{
-	setFlag(EDGESEL2);
-}
-
 inline void TriangleBitFlags::setEdgeSelected(unsigned int i)
 {
 	assert(i < 3);
 	setFlag(EDGESEL0 << i);
 }
 
-inline void TriangleBitFlags::setEdgeFaux0()
-{
-	setFlag(FAUX0);
-}
-
-inline void TriangleBitFlags::setEdgeFaux1()
-{
-	setFlag(FAUX1);
-}
-
-inline void TriangleBitFlags::setEdgeFaux2()
-{
-	setFlag(FAUX2);
-}
-
 inline void TriangleBitFlags::setEdgeFaux(unsigned int i)
 {
 	assert(i < 3);
 	setFlag(FAUX0 << i);
-}
-
-inline void TriangleBitFlags::clearEdgeOnBorder0()
-{
-	BitFlags::clearOnBorder();
-}
-
-inline void TriangleBitFlags::clearEdgeOnBorder1()
-{
-	clearFlag(BORDER1);
-}
-
-inline void TriangleBitFlags::clearEdgeOnBorder2()
-{
-	clearFlag(BORDER2);
 }
 
 inline void TriangleBitFlags::clearEdgeOnBorder(unsigned int i)
@@ -231,45 +108,15 @@ inline void TriangleBitFlags::clearEdgeOnBorder(unsigned int i)
 
 inline void TriangleBitFlags::clearAllEdgeOnBorder()
 {
-	clearEdgeOnBorder0();
-	clearEdgeOnBorder1();
-	clearEdgeOnBorder2();
-}
-
-inline void TriangleBitFlags::clearEdgeSelected0()
-{
-	clearFlag(EDGESEL0);
-}
-
-inline void TriangleBitFlags::clearEdgeSelected1()
-{
-	clearFlag(EDGESEL1);
-}
-
-inline void TriangleBitFlags::clearEdgeSelected2()
-{
-	clearFlag(EDGESEL2);
+	clearEdgeOnBorder(0);
+	clearEdgeOnBorder(1);
+	clearEdgeOnBorder(2);
 }
 
 inline void TriangleBitFlags::clearEdgeSelected(unsigned int i)
 {
 	assert(i < 3);
 	clearFlag(EDGESEL0 << i);
-}
-
-inline void TriangleBitFlags::clearEdgeFaux0()
-{
-	clearFlag(FAUX0);
-}
-
-inline void TriangleBitFlags::clearEdgeFaux1()
-{
-	clearFlag(FAUX1);
-}
-
-inline void TriangleBitFlags::clearEdgeFaux2()
-{
-	clearFlag(FAUX2);
 }
 
 inline void TriangleBitFlags::clearEdgeFaux(unsigned int i)
@@ -280,9 +127,9 @@ inline void TriangleBitFlags::clearEdgeFaux(unsigned int i)
 
 inline void TriangleBitFlags::clearAllEdgeFaux()
 {
-	clearEdgeFaux0();
-	clearEdgeFaux1();
-	clearEdgeFaux2();
+	clearEdgeFaux(0);
+	clearEdgeFaux(1);
+	clearEdgeFaux(2);
 }
 
 } // namespace mgp::prop
