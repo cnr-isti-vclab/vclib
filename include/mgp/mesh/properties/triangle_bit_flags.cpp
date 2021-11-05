@@ -9,8 +9,7 @@ namespace mgp::prop {
 
 /**
  * @brief  TriangleBitFlags::userBitFlag returns the value of the bit given in input. The bit is
- * checked to be greater or equal than the first user bit available in this class (11) and less
- * than 32.
+ * checked to be less than the total number of assigned user bits, which in this class is 21.
  *
  * @param bit: the position of the bit that will be returned.
  * @return true if the required bit is enabled, false otherwise.
@@ -23,8 +22,7 @@ inline bool TriangleBitFlags::userBitFlag(unsigned int bit) const
 
 /**
  * @brief TriangleBitFlags::setUserBit sets to true the value of the bit given in input. The bit is
- * checked to be greater or equal than the first user bit available in this class (11) and less
- * than 32.
+ * checked to be less than the total number of assigned user bits, which in this class is 21.
  *
  * @param bit: the position of the bit that will be set.
  */
@@ -36,8 +34,7 @@ inline void TriangleBitFlags::setUserBit(unsigned int bit)
 
 /**
  * @brief TriangleBitFlags::clearUserBit sets to false the value of the bit given in input. The bit
- * is checked to be greater or equal than the first user bit available in this class (11) and less
- * than 32.
+ * is checked to be less than the total number of assigned user bits, which in this class is 21.
  *
  * @param bit: the position of the bit that will be reset.
  */
@@ -69,6 +66,11 @@ inline bool TriangleBitFlags::isEdgeSelected(unsigned int i) const
 {
 	assert(i < 3);
 	return flagValue(EDGESEL0 << i);
+}
+
+bool TriangleBitFlags::isAnyEdgeSelected()
+{
+	return isEdgeSelected(0) || isEdgeSelected(1) || isEdgeSelected(2);
 }
 
 inline bool TriangleBitFlags::isEdgeFaux(unsigned int i) const

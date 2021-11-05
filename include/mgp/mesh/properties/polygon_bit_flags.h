@@ -18,6 +18,21 @@ public:
 	void setUserBit(unsigned int bit);
 	void clearUserBit(unsigned int bit);
 
+	bool isEdgeOnBorder(unsigned int i) const;
+	bool isAnyEdgeOnBorder() const;
+
+	bool isEdgeSelected(unsigned int i) const;
+	bool isAnyEdgeSelected();
+
+	void setEdgeOnBorder(unsigned int i);
+
+	void setEdgeSelected(unsigned int i);
+
+	void clearEdgeOnBorder(unsigned int i);
+	void clearAllEdgeOnBorder();
+
+	void clearEdgeSelected(unsigned int i);
+
 protected:
 	// hide base class constant, 23 is the number of bits used by this class
 	static const unsigned int FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 23;

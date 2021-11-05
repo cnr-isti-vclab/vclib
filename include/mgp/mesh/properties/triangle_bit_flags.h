@@ -40,6 +40,7 @@ public:
 	bool isAnyEdgeOnBorder() const;
 
 	bool isEdgeSelected(unsigned int i) const;
+	bool isAnyEdgeSelected();
 
 	bool isEdgeFaux(unsigned int i) const;
 	bool isAnyEdgeFaux() const;

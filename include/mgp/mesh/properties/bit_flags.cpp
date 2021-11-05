@@ -38,8 +38,8 @@ inline bool BitFlags::isOnBorder() const
 }
 
 /**
- * @brief BitFlags::userBitFlag returns the value of the bit given in input. The bit is checked to
- * be greater or equal than the first user bit available in this class (3) and less than 32.
+ * @brief BitFlags::userBitFlag returns the value of the bit given in input. The bit is checked
+ * to be less than the total number of assigned user bits, which in this class is 29.
  *
  * @param bit: the position of the bit that will be returned.
  * @return true if the required bit is enabled, false otherwise.
@@ -67,7 +67,7 @@ inline void BitFlags::setOnBorder()
 
 /**
  * @brief BitFlags::setUserBit sets to true the value of the bit given in input. The bit is checked
- * to be greater or equal than the first user bit available in this class (3) and less than 32.
+ * to be less than the total number of assigned user bits, which in this class is 29.
  *
  * @param bit: the position of the bit that will be set.
  */
@@ -106,8 +106,7 @@ inline void BitFlags::clearOnBorder()
 
 /**
  * @brief BitFlags::clearUserBit sets to false the value of the bit given in input. The bit is
- * checked to be greater or equal than the first user bit available in this class (3) and less
- * than 32.
+ * checked to be less than the total number of assigned user bits, which in this class is 29.
  *
  * @param bit: the position of the bit that will be reset.
  */
@@ -165,7 +164,7 @@ inline void BitFlags::clearFlag(unsigned int flag)
 
 /**
  * @brief BitFlags::userBitFlag returns the value of the bit given in input. The bit is checked
- * to be greateror equal  than the firstBit and less than 32.
+ * to be less than the total number of assigned user bits.
  *
  * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
  * different from the one of this class, and it is useful to avoid code duplication,
@@ -178,14 +177,14 @@ inline void BitFlags::clearFlag(unsigned int flag)
  */
 inline bool BitFlags::userBitFlag(unsigned int bit, unsigned int firstBit) const
 {
-	assert(bit >= firstBit && bit < 32);
-	unsigned int flag = 1 << bit;
+	assert(bit < 32 - firstBit);
+	unsigned int flag = 1 << (firstBit + bit);
 	return flagValue(flag);
 }
 
 /**
- * @brief BitFlags::setUserBit sets to true the value of the bit given in input. The bit is checked
- * to be greater or equal than the firstBit and less than 32.
+ * @brief BitFlags::setUserBit sets to true the value of the bit given in input. he bit is checked
+ * to be less than the total number of assigned user bits.
  *
  * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
  * different from the one of this class, and it is useful to avoid code duplication,
@@ -197,14 +196,14 @@ inline bool BitFlags::userBitFlag(unsigned int bit, unsigned int firstBit) const
  */
 inline void BitFlags::setUserBit(unsigned int bit, unsigned int firstBit)
 {
-	assert(bit >= firstBit && bit < 32);
-	unsigned int flag = 1 << bit;
+	assert(bit < 32 - firstBit);
+	unsigned int flag = 1 << (firstBit + bit);
 	setFlag(flag);
 }
 
 /**
- * @brief BitFlags::clearUserBit sets to false the value of the bit given in input. The bit is
- * checked to be greater or equal than the firstBit and less than 32.
+ * @brief BitFlags::clearUserBit sets to false the value of the bit given in input. he bit is
+ * checked to be less than the total number of assigned user bits.
  *
  * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
  * different from the one of this class, and it is useful to avoid code duplication,
@@ -216,8 +215,8 @@ inline void BitFlags::setUserBit(unsigned int bit, unsigned int firstBit)
  */
 inline void BitFlags::clearUserBit(unsigned int bit, unsigned int firstBit)
 {
-	assert(bit >= firstBit && bit < 32);
-	unsigned int flag = 1 << bit;
+	assert(bit < 32 - firstBit);
+	unsigned int flag = 1 << (firstBit + bit);
 	clearFlag(flag);
 }
 

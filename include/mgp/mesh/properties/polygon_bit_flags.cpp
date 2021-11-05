@@ -9,8 +9,7 @@ namespace mgp::prop {
 
 /**
  * @brief  PolygonBitFlags::userBitFlag returns the value of the bit given in input. The bit is
- * checked to be greater or equal than the first user bit available in this class (24) and less
- * than 32.
+ * checked to be less than the total number of assigned user bits, which in this class is 8.
  *
  * @param bit: the position of the bit that will be returned.
  * @return true if the required bit is enabled, false otherwise.
@@ -23,8 +22,7 @@ inline bool PolygonBitFlags::userBitFlag(unsigned int bit) const
 
 /**
  * @brief PolygonBitFlags::setUserBit sets to true the value of the bit given in input. The bit is
- * checked to be greater or equal than the first user bit available in this class (24) and less
- * than 32.
+ * checked to be less than the total number of assigned user bits, which in this class is 8.
  *
  * @param bit: the position of the bit that will be set.
  */
@@ -36,8 +34,7 @@ inline void PolygonBitFlags::setUserBit(unsigned int bit)
 
 /**
  * @brief PolygonBitFlags::clearUserBit sets to false the value of the bit given in input. The bit
- * is checked to be greater or equal than the first user bit available in this class (24) and less
- * than 32.
+ * is checked to be less than the total number of assigned user bits, which in this class is 8.
  *
  * @param bit: the position of the bit that will be reset.
  */
@@ -45,6 +42,71 @@ inline void PolygonBitFlags::clearUserBit(unsigned int bit)
 {
 	// using FIRST_USER_BIT of this class
 	BitFlags::clearUserBit(bit, FIRST_USER_BIT);
+}
+
+/**
+ * @brief TriangleBitFlags::isEdgeOnBorder returns whether the ith Edge of the Polygon is marked as
+ * on border.
+ *
+ * @param i: id of the edge, must be < 12.
+ * @return true if the ith Edge of the Polygon is on border, false otherwise.
+ */
+inline bool PolygonBitFlags::isEdgeOnBorder(unsigned int i) const
+{
+	assert(i < 12);
+	return flagValue(BORDER << i);
+}
+
+inline bool PolygonBitFlags::isAnyEdgeOnBorder() const
+{
+	for (unsigned int i = 0; i < 12; ++i)
+		if (isEdgeOnBorder(i))
+			return true;
+	return false;
+}
+
+inline bool PolygonBitFlags::isEdgeSelected(unsigned int i) const
+{
+	assert(i < 12);
+	return flagValue(EDGESEL0 << i);
+}
+
+inline bool PolygonBitFlags::isAnyEdgeSelected()
+{
+	for (unsigned int i = 0; i < 12; ++i)
+		if (isEdgeSelected(i))
+			return true;
+	return false;
+}
+
+inline void PolygonBitFlags::setEdgeOnBorder(unsigned int i)
+{
+	assert(i < 12);
+	setFlag(BORDER << i);
+}
+
+inline void PolygonBitFlags::setEdgeSelected(unsigned int i)
+{
+	assert(i < 12);
+	setFlag(EDGESEL0 << i);
+}
+
+inline void PolygonBitFlags::clearEdgeOnBorder(unsigned int i)
+{
+	assert(i < 12);
+	clearFlag(BORDER << i);
+}
+
+inline void PolygonBitFlags::clearAllEdgeOnBorder()
+{
+	for (unsigned int i = 0; i < 12; ++i)
+		clearEdgeOnBorder(i);
+}
+
+inline void PolygonBitFlags::clearEdgeSelected(unsigned int i)
+{
+	assert(i < 12);
+	clearFlag(EDGESEL0 << i);
 }
 
 }
