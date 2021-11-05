@@ -88,6 +88,7 @@ set(HEADERS
 	include/mgp/space/box.h
 	include/mgp/space/color.h
 	include/mgp/space/point.h
+	include/mgp/space/tex_coord.h
 	include/mgp/space/point/point_t.h
 	include/mgp/space/point/point2.h
 	include/mgp/space/point/point3.h
@@ -129,6 +130,7 @@ set(SOURCES
 	include/mgp/io/ply/ply_vertex.cpp
 	include/mgp/space/box.cpp
 	include/mgp/space/color.cpp
+	include/mgp/space/tex_coord.cpp
 	include/mgp/space/point/point_t.cpp
 	include/mgp/space/point/point2.cpp
 	include/mgp/space/point/point3.cpp
