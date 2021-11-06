@@ -13,6 +13,8 @@
 
 namespace mgp::mesh {
 
+class FaceOptionalContainerTriggerer {};
+
 // to shorten triggerer for Vertex class
 template<class T>
 using FaceHasOptional = std::enable_if_t<prop::hasOptionalInfo<T>()>;
@@ -23,7 +25,7 @@ class FaceOptionalContainer
 };
 
 template<typename T>
-class FaceOptionalContainer<T, FaceHasOptional<T>>
+class FaceOptionalContainer<T, FaceHasOptional<T>> : public FaceOptionalContainerTriggerer
 {
 public:
 	virtual unsigned int faceContainerSize() const = 0;
@@ -79,7 +81,6 @@ protected:
 	void reserve(unsigned int size);
 	void compact(const std::vector<int>& newIndices);
 
-private:
 	/**
 	 * @brief optionalPropVector contains all the optional property data of the face, that
 	 * will be enabled - disabled at runtime.
@@ -87,6 +88,19 @@ private:
 	 */
 	internal::PropertiesVector<T> optionalPropVector;
 };
+
+/**
+ * Detector to check if a class has (inherits) a VertexOptionalContainer
+ */
+
+template <typename  T>
+using hasFaceOptionalContainerT = std::is_base_of<FaceOptionalContainerTriggerer, T>;
+
+template<typename U, typename T>
+using ReturnIfHasFaceOptionalContainer = typename std::enable_if<hasFaceOptionalContainerT<U>::value, T>::type;
+
+template <typename T>
+constexpr bool hasFaceOptionalContainer() { return hasFaceOptionalContainerT<T>::value;}
 
 }
 

@@ -113,7 +113,7 @@ template<typename U, typename T>
 using ReturnIfHasFaceContainer = typename std::enable_if<hasFaceContainer<U>::value, T>::type;
 
 template <typename T>
-constexpr bool hasFaces() { return mesh::hasFaceContainer<T>::value;}
+constexpr bool hasFaces() { return hasFaceContainer<T>::value;}
 
 } // namespace mgp::mesh
 

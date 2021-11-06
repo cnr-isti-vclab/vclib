@@ -13,6 +13,8 @@
 
 namespace mgp::mesh {
 
+class VertexOptionalContainerTriggerer {};
+
 // to shorten triggerer for Vertex class
 template<class T>
 using VertexHasOptional = std::enable_if_t<prop::hasOptionalInfo<T>()>;
@@ -23,7 +25,7 @@ class VertexOptionalContainer
 };
 
 template<typename T>
-class VertexOptionalContainer<T, VertexHasOptional<T>>
+class VertexOptionalContainer<T, VertexHasOptional<T>> : public VertexOptionalContainerTriggerer
 {
 public:
 	virtual unsigned int vertexContainerSize() const = 0;
@@ -99,7 +101,6 @@ protected:
 	void reserve(unsigned int size);
 	void compact(const std::vector<int>& newIndices);
 
-private:
 	/**
 	 * @brief optionalPropVector contains all the optional prop data of the vertex, that
 	 * will be enabled - disabled at runtime.
@@ -107,6 +108,19 @@ private:
 	 */
 	internal::PropertiesVector<T> optionalPropVector;
 };
+
+/**
+ * Detector to check if a class has (inherits) a VertexOptionalContainer
+ */
+
+template <typename  T>
+using hasVertexOptionalContainerT = std::is_base_of<VertexOptionalContainerTriggerer, T>;
+
+template<typename U, typename T>
+using ReturnIfHasVertexOptionalContainer = typename std::enable_if<hasVertexOptionalContainerT<U>::value, T>::type;
+
+template <typename T>
+constexpr bool hasVertexOptionalContainer() { return hasVertexOptionalContainerT<T>::value;}
 
 }
 

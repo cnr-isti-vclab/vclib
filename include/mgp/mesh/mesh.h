@@ -24,6 +24,9 @@ class Mesh : public mesh::Container<Args>...
 {
 protected:
 public:
+	Mesh() {};
+	Mesh(const Mesh& oth);
+
 	void clear();
 
 	template<typename U = Mesh>

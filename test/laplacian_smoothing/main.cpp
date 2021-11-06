@@ -46,13 +46,15 @@ int main()
 	m.enablePerVertexAdjacentFaces();
 	mgp::updatePerVertexAdjacentFaces(m);
 
-	mgp::updateBoundingBox(m);
+	MyMesh m2(m);
+
+	mgp::updateBoundingBox(m2);
 
 	mgp::Timer t("Laplacian Smoothing");
-	mgp::vertexCoordLaplacianSmoothing(m, 500);
+	mgp::vertexCoordLaplacianSmoothing(m2, 30);
 	t.stopAndPrint();
 
-	mgp::io::savePly(m, "/home/alessandro/tmp/bunny_s.ply");
+	mgp::io::savePly(m2, "/home/alessandro/tmp/bunny_s.ply");
 
 	return 0;
 }

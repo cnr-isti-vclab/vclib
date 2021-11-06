@@ -7,14 +7,76 @@
 
 namespace mgp {
 
+/**
+ * @brief Mesh::Mesh Copy constructor of the Mesh. Will create a deep copy of the given input mesh,
+ * taking care of copying everithing and then update all the references
+ * @param oth
+ */
+template<class... Args>
+Mesh<Args...>::Mesh(const Mesh& oth)
+{
+	// if has vertices
+	if constexpr (mesh::hasVertices<Mesh<Args...>>()) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+
+		// copy the vertex container and the vertex number
+		// note: references will be updated later
+		VertexContainer::vertices = oth.vertices;
+		VertexContainer::vn = oth.vn;
+
+		// if there is also the optional vertex container, I need to update, for each vertex of the
+		// new mesh, the containerPointer
+		if constexpr (mesh::hasVertexOptionalContainer<Mesh<Args...>>()) {
+			VertexContainer::optionalPropVector = oth.VertexContainer::optionalPropVector;
+			for (auto& v : VertexContainer::vertexIterator(true)){
+				VertexContainer::setContainerPointer(v);
+			}
+		}
+	}
+
+	// if has faces
+	if constexpr (mesh::hasFaces<Mesh<Args...>>()) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+
+		// copy the face container and the face number
+		// note: references will be updated later
+		FaceContainer::faces = oth.faces;
+		FaceContainer::fn = oth.fn;
+
+		// if there is also the optional face container, I need to update, for each face of the
+		// new mesh, the containerPointer
+		if constexpr (mesh::hasFaceOptionalContainer<Mesh<Args...>>()) {
+			for (auto& f : FaceContainer::faceIterator(true)){
+				FaceContainer::setContainerPointer(f);
+			}
+		}
+	}
+
+	// update references into the vertex container
+	if constexpr (mesh::hasVertices<Mesh<Args...>>()) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		// just run the same function that we use when vector is reallocated, but using
+		// as old base the base of the other vertex container data
+		updateVertexReferences(oth.vertices.data(), VertexContainer::vertices.data());
+	}
+
+	// update references into the face container
+	if constexpr (mesh::hasFaces<Mesh<Args...>>()) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		// just run the same function that we use when vector is reallocated, but using
+		// as old base the base of the other vertex container data
+		updateFaceReferences(oth.faces.data(), FaceContainer::faces.data());
+	}
+}
+
 template<class... Args>
 void Mesh<Args...>::clear()
 {
-	if (mesh::hasVertices<Mesh<Args...>>()) {
+	if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
 		VertexContainer::clearVertices();
 	}
-	if (mesh::hasFaces<Mesh<Args...>>()) {
+	if constexpr(mesh::hasFaces<Mesh<Args...>>()) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		FaceContainer::clearFaces();
 	}

@@ -107,7 +107,7 @@ template<typename U, typename T>
 using ReturnIfHasVertexContainer = typename std::enable_if<hasVertexContainerT<U>::value, T>::type;
 
 template <typename T>
-constexpr bool hasVertices() { return mesh::hasVertexContainerT<T>::value;}
+constexpr bool hasVertices() { return hasVertexContainerT<T>::value;}
 
 } // namespace mgp::mesh
 
