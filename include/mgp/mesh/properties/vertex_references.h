@@ -52,6 +52,8 @@ public:
 	void setVertex(Vertex* v, unsigned int i) { Base::setElement(v, i); }
 	void setVertices(const std::vector<Vertex*>& list) { Base::setElements(list); }
 
+	bool contains(const Vertex* v) const { return Base::contains(v); }
+
 	/** Member functions specific for vector **/
 
 	template<int U = N>

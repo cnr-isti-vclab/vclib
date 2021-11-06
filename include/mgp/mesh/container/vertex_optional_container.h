@@ -68,6 +68,16 @@ public:
 	template<typename U = T>
 	vert::ReturnIfHasOptionalScalar<U, void> disablePerVertexScalar();
 
+	// TexCoord
+	template<typename U = T>
+	vert::ReturnIfHasOptionalTexCoord<U, bool> isPerVertexTexCoordEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalTexCoord<U, void> enablePerVertexTexCoord();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalTexCoord<U, void> disablePerVertexTexCoord();
+
 	// Adjacent Faces
 	template<typename U = T>
 	vert::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerVertexAdjacentFacesEnabled() const;

@@ -12,6 +12,7 @@
 #include "../properties_optional/optional_mutable_bit_flags.h"
 #include "../properties_optional/optional_normal.h"
 #include "../properties_optional/optional_scalar.h"
+#include "../properties_optional/optional_tex_coord.h"
 
 namespace mgp::vert {
 
@@ -56,7 +57,7 @@ template <typename T>
 using OptionalNormal3d = prop::OptionalNormal3d<T>;
 
 template <typename T>
-bool constexpr hasOptionalNormal() {return prop::hasOptionalNormal<T>();};
+bool constexpr hasOptionalNormal() {return prop::hasOptionalNormal<T>();}
 
 template<typename U, typename T>
 using ReturnIfHasOptionalNormal = prop::ReturnIfHasOptionalNormal<U, T>;
@@ -72,17 +73,33 @@ template <typename T>
 using OptionalScalard = prop::OptionalScalar<double, T>;
 
 template <typename T>
-bool constexpr hasOptionalScalar() {return prop::hasOptionalScalar<T>();};
+bool constexpr hasOptionalScalar() {return prop::hasOptionalScalar<T>();}
 
 template<typename U, typename T>
 using ReturnIfHasOptionalScalar = prop::ReturnIfHasOptionalScalar<U, T>;
+
+/** Port OptionalTexCoord class into vert namespace **/
+template <typename S, typename T>
+using OptionalTexCoord = prop::OptionalTexCoord<S, T>;
+
+template <typename T>
+using OptionalTexCoordf = prop::OptionalTexCoord<float, T>;
+
+template <typename T>
+using OptionalTexCoordd = prop::OptionalTexCoord<double, T>;
+
+template <typename T>
+bool constexpr hasOptionalTexCoord() {return prop::hasOptionalTexCoord<T>();}
+
+template<typename U, typename T>
+using ReturnIfHasOptionalTexCoord = prop::ReturnIfHasOptionalTexCoord<U, T>;
 
 /** Port OptionalAdjacentFacesRef class into vert namespace **/
 template <typename Face, typename T>
 using OptionalAdjacentFaces = prop::OptionalFaceReferences<Face, -1, T>;
 
 template <typename T>
-bool constexpr hasOptionalAdjacentFaces() {return prop::hasOptionalFaceReferences<T>();};
+bool constexpr hasOptionalAdjacentFaces() {return prop::hasOptionalFaceReferences<T>();}
 
 template<typename U, typename T>
 using ReturnIfHasOptionalAdjacentFaces = prop::ReturnIfHasOptionalFaceReferences<U, T>;

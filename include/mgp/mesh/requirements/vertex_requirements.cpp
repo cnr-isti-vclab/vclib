@@ -115,6 +115,36 @@ bool isPerVertexScalarEnabled(const MeshType& m)
 	}
 }
 
+template <typename MeshType>
+bool constexpr hasPerVertexTexCoord()
+{
+	return hasVertices<MeshType>() &&
+		   (mgp::vert::hasTexCoord<typename MeshType::VertexType>() ||
+			mgp::vert::hasOptionalTexCoord<typename MeshType::VertexType>());
+}
+
+template <typename MeshType>
+bool constexpr hasPerVertexTexCoord(const MeshType&)
+{
+	return hasPerVertexTexCoord<MeshType>();
+}
+
+template<typename MeshType>
+bool isPerVertexTexCoordEnabled(const MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasTexCoord<typename MeshType::VertexType>()) {
+		return true;
+	}
+	else if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasOptionalTexCoord<typename MeshType::VertexType>()) {
+		return m.isPerVertexTexCoordEnabled();
+	}
+	else {
+		return false;
+	}
+}
+
 template<typename MeshType>
 bool constexpr hasPerVertexCustomProperties()
 {
@@ -229,6 +259,15 @@ void requirePerVertexScalar(const MeshType& m)
 	static_assert(hasPerVertexScalar(m), "Mesh has no vertex scalars.");
 	if (!isPerVertexScalarEnabled(m))
 		throw mgp::MissingPropertyException("Vertex scalars not enabled.");
+}
+
+template<typename MeshType>
+void requirePerVertexTexCoord(const MeshType& m)
+{
+	requireVertices<MeshType>();
+	static_assert(hasPerVertexTexCoord(m), "Mesh has no vertex texcoords.");
+	if (!isPerVertexTexCoordEnabled(m))
+		throw mgp::MissingPropertyException("Vertex texcoords not enabled.");
 }
 
 template<typename MeshType>

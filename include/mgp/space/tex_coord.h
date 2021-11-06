@@ -18,8 +18,14 @@ public:
 
 	ScalarType u() const;
 	ScalarType v() const;
-	void u(ScalarType s);
-	void v(ScalarType s);
+	ScalarType& u();
+	ScalarType& v();
+	void setU(ScalarType s);
+	void setV(ScalarType s);
+	void set(ScalarType u, ScalarType v);
+
+	short nTexture() const;
+	short& nTexture();
 
 private:
 	Point2<ScalarType> coord;

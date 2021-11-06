@@ -30,6 +30,10 @@ int main()
 	vv.setVisitedM(); // vertex 0 is now visited
 
 	assert(m.vertex(0).isVisitedM());
+
+	m.enablePerVertexTexCoord();
+
+	m.vertex(0).texCoord().set(0.1, 0.2);
 	
 	// setting vertex normals
 	// in this mesh vertex normaks are not optional, I don't need to enable them

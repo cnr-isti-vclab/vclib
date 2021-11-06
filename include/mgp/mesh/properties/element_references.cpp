@@ -5,6 +5,8 @@
 
 #include "element_references.h"
 
+#include <algorithm>
+
 namespace mgp::prop {
 
 template<class Elem, int N>
@@ -62,10 +64,10 @@ const Elem* ElementReferences<Elem, N>::elementMod(int i) const
 }
 
 template<class Elem, int N>
-void ElementReferences<Elem, N>::setElement(Elem* v, unsigned int i)
+void ElementReferences<Elem, N>::setElement(Elem* e, unsigned int i)
 {
 	assert(i < elementNumber());
-	elemRefs[i] = v;
+	elemRefs[i] = e;
 }
 
 template<class Elem, int N>
@@ -82,6 +84,12 @@ void ElementReferences<Elem, N>::setElements(const std::vector<Elem*>& list)
 	else {
 		elemRefs = list;
 	}
+}
+
+template<class Elem, int N>
+bool ElementReferences<Elem, N>::contains(const Elem* e) const
+{
+	return std::find(elemRefs.begin(), elemRefs.end(), e) != elemRefs.end();
 }
 
 template<class Elem, int N>

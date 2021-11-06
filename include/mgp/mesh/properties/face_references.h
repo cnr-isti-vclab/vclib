@@ -52,6 +52,8 @@ public:
 	void setFace(Face* f, unsigned int i) { Base::setElement(f, i); }
 	void setFaces(const std::vector<Face*>& list) { Base::setElements(list); }
 
+	bool contains(const Face* f) const { return Base::contains(f); }
+
 	/** Member functions specific for vector **/
 
 	template<int U = N>

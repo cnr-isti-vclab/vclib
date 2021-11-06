@@ -12,6 +12,7 @@
 #include "optional_mutable_bit_flags_vector.h"
 #include "optional_normal_vector.h"
 #include "optional_scalar_vector.h"
+#include "optional_tex_coord_vector.h"
 
 namespace mgp::internal {
 
@@ -22,6 +23,7 @@ class PropertiesVector :
 		public OptionalColorVector<T>,
 		public OptionalNormalVector<T>,
 		public OptionalScalarVector<T>,
+		public OptionalTexCoordVector<T>,
 		public CustomPropertiesVector<T>
 {
 public:
@@ -32,6 +34,7 @@ public:
 		OptionalColorVector<T>::clear();
 		OptionalNormalVector<T>::clear();
 		OptionalScalarVector<T>::clear();
+		OptionalTexCoordVector<T>::clear();
 		CustomPropertiesVector<T>::clear();
 	}
 	void resize(unsigned int size)
@@ -41,6 +44,7 @@ public:
 		OptionalColorVector<T>::resize(size);
 		OptionalNormalVector<T>::resize(size);
 		OptionalScalarVector<T>::resize(size);
+		OptionalTexCoordVector<T>::resize(size);
 		CustomPropertiesVector<T>::resize(size);
 	}
 	void reserve(unsigned int size)
@@ -50,6 +54,7 @@ public:
 		OptionalColorVector<T>::reserve(size);
 		OptionalNormalVector<T>::reserve(size);
 		OptionalScalarVector<T>::reserve(size);
+		OptionalTexCoordVector<T>::reserve(size);
 		CustomPropertiesVector<T>::reserve(size);
 	}
 	void compact(const std::vector<int>& newIndices)
@@ -59,6 +64,7 @@ public:
 		OptionalColorVector<T>::compact(newIndices);
 		OptionalNormalVector<T>::compact(newIndices);
 		OptionalScalarVector<T>::compact(newIndices);
+		OptionalTexCoordVector<T>::compact(newIndices);
 		CustomPropertiesVector<T>::compact(newIndices);
 	}
 };

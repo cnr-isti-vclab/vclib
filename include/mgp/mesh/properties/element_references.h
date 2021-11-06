@@ -24,6 +24,14 @@ using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
 
 } // namespace internal
 
+/**
+ * @brief The ElementReferences class is a generic container of references to another Element
+ * (that could be Vertex, Face...). This class is meant to be inherited and used by Properties
+ * like Vertex References, Face References: in general, a class that need to store a static or
+ * dynamic number of references of another element.
+ *
+ * Its major use is for adjacencies.
+ */
 template<class Elem, int N>
 class ElementReferences
 {
@@ -71,8 +79,10 @@ public:
 	Elem*&      elementMod(int i);
 	const Elem* elementMod(int i) const;
 
-	void setElement(Elem* v, unsigned int i);
+	void setElement(Elem* e, unsigned int i);
 	void setElements(const std::vector<Elem*>& list);
+
+	bool contains(const Elem* e) const;
 
 	/** Member functions specific for vector **/
 

@@ -55,6 +55,7 @@ set(HEADERS
 	include/mgp/mesh/properties/polygon_bit_flags.h
 	include/mgp/mesh/properties/scalar.h
 	include/mgp/mesh/properties/vertex_references.h
+	include/mgp/mesh/properties/tex_coord.h
 	include/mgp/mesh/properties/triangle_bit_flags.h
 	include/mgp/mesh/properties_optional/custom_properties.h
 	include/mgp/mesh/properties_optional/optional_color.h
@@ -63,6 +64,7 @@ set(HEADERS
 	include/mgp/mesh/properties_optional/optional_mutable_bit_flags.h
 	include/mgp/mesh/properties_optional/optional_normal.h
 	include/mgp/mesh/properties_optional/optional_scalar.h
+	include/mgp/mesh/properties_optional/optional_tex_coord.h
 	include/mgp/mesh/properties_vector/optional_color_vector.h
 	include/mgp/mesh/properties_vector/custom_properties_vector.h
 	include/mgp/mesh/properties_vector/optional_face_references_vector.h
@@ -70,6 +72,7 @@ set(HEADERS
 	include/mgp/mesh/properties_vector/optional_mutable_bit_flags_vector.h
 	include/mgp/mesh/properties_vector/optional_normal_vector.h
 	include/mgp/mesh/properties_vector/optional_scalar_vector.h
+	include/mgp/mesh/properties_vector/optional_tex_coord_vector.h
 	include/mgp/mesh/properties_vector/properties_vector.h
 	include/mgp/mesh/requirements/element_requirements.h
 	include/mgp/mesh/requirements/face_requirements.h

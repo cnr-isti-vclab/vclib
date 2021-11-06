@@ -46,6 +46,15 @@ template <typename MeshType>
 bool isPerVertexScalarEnabled(const MeshType&);
 
 template <typename MeshType>
+bool constexpr hasPerVertexTexCoord();
+
+template <typename MeshType>
+bool constexpr hasPerVertexTexCoord(const MeshType&);
+
+template <typename MeshType>
+bool isPerVertexTexCoordEnabled(const MeshType&);
+
+template <typename MeshType>
 bool constexpr hasPerVertexCustomProperties();
 
 template <typename MeshType>
@@ -84,6 +93,9 @@ void requirePerVertexColor(const MeshType& m);
 
 template <typename MeshType>
 void requirePerVertexScalar(const MeshType& m);
+
+template <typename MeshType>
+void requirePerVertexTexCoord(const MeshType& m);
 
 template <typename MeshType>
 bool constexpr requirePerVertexCustomProperties();

@@ -162,6 +162,44 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexScalar()
 }
 
 /**
+ * @brief VertexOptionalContainer::isPerVertexTexCoordEnabled checks if the vertex Optional TexCoord
+ * is enabled. This function is available **only if the Vertex Element has the OptionalTexCoord
+ * Property**.
+ * @return true if the Optional TexCoord is enabled, false otherwise.
+ */
+template<class T>
+template<class U>
+vert::ReturnIfHasOptionalTexCoord<U, bool>
+VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexTexCoordEnabled() const
+{
+	return optionalPropVector.isTexCoordEnabled();
+}
+
+/**
+ * @brief Container::enableVertexTexCoord enables the Optional TexCoord of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalTexCoord Property**.
+ */
+template<class T>
+template<class U>
+vert::ReturnIfHasOptionalTexCoord<U, void>
+VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexTexCoord()
+{
+	optionalPropVector.enableTexCoord(vertexContainerSize());
+}
+
+/**
+ * @brief Container::disableVertexTexCoord disables the Optional TexCoord of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalTexCoord Property**.
+ */
+template<class T>
+template<class U>
+vert::ReturnIfHasOptionalTexCoord<U, void>
+VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexTexCoord()
+{
+	optionalPropVector.disableTexCoord();
+}
+
+/**
  * @brief VertexOptionalContainer::isPerVertexAdjacentFacesEnabled checks if the vertex Optional
  * Adjacent Faces property is enabled. This function is available **only if the Vertex Element has
  * the OptionalAdjacentFaces Property**.

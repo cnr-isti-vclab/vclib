@@ -13,6 +13,7 @@
 #include "../properties/mutable_bit_flags.h"
 #include "../properties/normal.h"
 #include "../properties/scalar.h"
+#include "../properties/tex_coord.h"
 
 
 namespace mgp::vert {
@@ -77,6 +78,16 @@ using MutableBitFlags = prop::MutableBitFlags;
 
 template <typename  T>
 bool constexpr hasMutableBitFlags() {return prop::hasMutableBitFlags<T>();}
+
+/** Port TexCoord class into vert namespace **/
+template <typename T>
+using TexCoord = prop::TexCoord<T>;
+
+template <typename  T>
+bool constexpr hasTexCoord() {return prop::hasTexCoord<T>();}
+
+using TexCoordf = prop::TexCoordf;
+using TexCoordd = prop::TexCoordd;
 
 } // namespace mgp::vert
 
