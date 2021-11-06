@@ -101,6 +101,7 @@ protected:
 	void reserve(unsigned int size);
 	void compact(const std::vector<int>& newIndices);
 
+private:
 	/**
 	 * @brief optionalPropVector contains all the optional prop data of the vertex, that
 	 * will be enabled - disabled at runtime.

@@ -81,6 +81,7 @@ protected:
 	void reserve(unsigned int size);
 	void compact(const std::vector<int>& newIndices);
 
+private:
 	/**
 	 * @brief optionalPropVector contains all the optional property data of the face, that
 	 * will be enabled - disabled at runtime.

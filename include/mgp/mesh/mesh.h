@@ -26,6 +26,7 @@ protected:
 public:
 	Mesh() {};
 	Mesh(const Mesh& oth);
+	Mesh(Mesh&& oth);
 
 	void clear();
 
@@ -47,6 +48,13 @@ public:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, void> compactFaces();
 
+	template<class...A>
+	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);
+
+	void swap(Mesh& m2);
+
+	Mesh& operator=(Mesh oth);
+
 protected:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, void>
@@ -63,7 +71,12 @@ protected:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, void>
 	updateFaceReferencesAfterCompact(const typename U::FaceType* base, const std::vector<int>& newIndices);
+
+	void updateAllOptionalContainerReferences();
 };
+
+template<class...A>
+inline void swap(Mesh<A...>& m1, Mesh<A...>& m2);
 
 } // namespace mgp
 

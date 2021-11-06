@@ -47,7 +47,9 @@ int main()
 	mgp::updatePerVertexAdjacentFaces(m);
 	mgp::updateBoundingBox(m);
 
-	MyMesh m2(m);
+	MyMesh m2;
+
+	mgp::swap(m, m2);
 
 	mgp::updateBoundingBox(m2);
 
@@ -55,7 +57,13 @@ int main()
 	mgp::vertexCoordLaplacianSmoothing(m2, 30);
 	t.stopAndPrint();
 
+	MyMesh m3;
+	m3.addVertex();
+
+	m3 = m2;
+
 	mgp::io::savePly(m2, "/home/alessandro/tmp/bunny_s.ply");
+	mgp::io::savePly(m3, "/home/alessandro/tmp/bunny_s3.ply");
 
 	return 0;
 }

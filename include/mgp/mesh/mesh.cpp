@@ -17,25 +17,8 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		mesh::Container<Args>(
 			oth)... // call auto copy constructors for all the container elements and properties
 {
-	// if there the optional vertex container, I need to update, for each vertex of the
-	// new mesh, the containerPointer
-	if constexpr (
-		mesh::hasVertices<Mesh<Args...>>() && mesh::hasVertexOptionalContainer<Mesh<Args...>>()) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		for (auto& v : VertexContainer::vertexIterator(true)) {
-			VertexContainer::setContainerPointer(v);
-		}
-	}
-
-	// if there is the optional face container, I need to update, for each face of the
-	// new mesh, the containerPointer
-	if constexpr (
-		mesh::hasFaces<Mesh<Args...>>() && mesh::hasFaceOptionalContainer<Mesh<Args...>>()) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		for (auto& f : FaceContainer::faceIterator(true)) {
-			FaceContainer::setContainerPointer(f);
-		}
-	}
+	// update all the optional container references
+	updateAllOptionalContainerReferences();
 
 	// update references into the vertex container
 	if constexpr (mesh::hasVertices<Mesh<Args...>>()) {
@@ -55,6 +38,12 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 }
 
 template<class... Args>
+Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
+{
+	swap(oth);
+}
+
+template<class... Args>
 void Mesh<Args...>::clear()
 {
 	if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
@@ -64,6 +53,43 @@ void Mesh<Args...>::clear()
 	if constexpr(mesh::hasFaces<Mesh<Args...>>()) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		FaceContainer::clearFaces();
+	}
+}
+
+template<class... Args>
+void Mesh<Args...>::swap(Mesh& m2)
+{
+	mgp::swap(*this, m2);
+}
+
+template<class... Args>
+Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
+{
+	swap(oth);
+	return *this;
+}
+
+template<class... Args>
+void Mesh<Args...>::updateAllOptionalContainerReferences()
+{
+	// if there the optional vertex container, I need to update, for each vertex of the
+	// new mesh, the containerPointer
+	if constexpr (
+		mesh::hasVertices<Mesh<Args...>>() && mesh::hasVertexOptionalContainer<Mesh<Args...>>()) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		for (auto& v : VertexContainer::vertexIterator(true)) {
+			VertexContainer::setContainerPointer(v);
+		}
+	}
+
+	// if there is the optional face container, I need to update, for each face of the
+	// new mesh, the containerPointer
+	if constexpr (
+		mesh::hasFaces<Mesh<Args...>>() && mesh::hasFaceOptionalContainer<Mesh<Args...>>()) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		for (auto& f : FaceContainer::faceIterator(true)) {
+			FaceContainer::setContainerPointer(f);
+		}
 	}
 }
 
@@ -204,6 +230,45 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferencesAfter
 	if constexpr (mgp::mesh::hasVertices<U>()) {
 		using VertexContainer = typename U::VertexContainer;
 		VertexContainer::updateFaceReferencesAfterCompact(base, newIndices);
+	}
+}
+
+template<class...A>
+inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
+{
+	void* m1BaseV = nullptr;
+	void* m2BaseV = nullptr;
+	void* m1BaseF = nullptr;
+	void* m2BaseF = nullptr;
+
+	// save the bases of the containers before swap
+	if constexpr (mesh::hasVertices<Mesh<A...>>()) {
+		m1BaseV = m1.vertices.data();
+		m2BaseV = m2.vertices.data();
+	}
+	if constexpr (mesh::hasFaces<Mesh<A...>>()) {
+		m1BaseF = m1.faces.data();
+		m2BaseF = m2.faces.data();
+	}
+
+	// actual swap of all the containers and the properties of the mesh
+	using std::swap;
+	(swap((mgp::mesh::Container<A>&) m1, (mgp::mesh::Container<A>&) m2), ...);
+
+	// set to all the elements, the new pointer of the optional component
+	m1.updateAllOptionalContainerReferences();
+	m2.updateAllOptionalContainerReferences();
+
+	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
+	if constexpr (mesh::hasVertices<Mesh<A...>>()) {
+		using VertexType = typename Mesh<A...>::VertexType;
+		m1.updateVertexReferences((VertexType*)m2BaseV, m1.vertices.data());
+		m2.updateVertexReferences((VertexType*)m1BaseV, m2.vertices.data());
+	}
+	if constexpr (mesh::hasFaces<Mesh<A...>>()) {
+		using FaceType = typename Mesh<A...>::FaceType;
+		m1.updateFaceReferences((FaceType*)m2BaseF, m1.faces.data());
+		m2.updateFaceReferences((FaceType*)m1BaseF, m2.faces.data());
 	}
 }
 
