@@ -45,6 +45,7 @@ int main()
 
 	m.enablePerVertexAdjacentFaces();
 	mgp::updatePerVertexAdjacentFaces(m);
+	mgp::updateBoundingBox(m);
 
 	MyMesh m2(m);
 
