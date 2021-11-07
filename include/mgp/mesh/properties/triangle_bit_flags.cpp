@@ -68,7 +68,7 @@ inline bool TriangleBitFlags::isEdgeSelected(unsigned int i) const
 	return flagValue(EDGESEL0 << i);
 }
 
-bool TriangleBitFlags::isAnyEdgeSelected()
+bool TriangleBitFlags::isAnyEdgeSelected() const
 {
 	return isEdgeSelected(0) || isEdgeSelected(1) || isEdgeSelected(2);
 }
@@ -119,6 +119,13 @@ inline void TriangleBitFlags::clearEdgeSelected(unsigned int i)
 {
 	assert(i < 3);
 	clearFlag(EDGESEL0 << i);
+}
+
+inline void TriangleBitFlags::clearAllEdgeSelected()
+{
+	clearEdgeSelected(0);
+	clearEdgeSelected(1);
+	clearEdgeSelected(2);
 }
 
 inline void TriangleBitFlags::clearEdgeFaux(unsigned int i)

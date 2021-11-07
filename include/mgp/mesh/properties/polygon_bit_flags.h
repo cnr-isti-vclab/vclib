@@ -10,6 +10,32 @@
 
 namespace mgp::prop {
 
+/**
+ * @brief The PolygonBitFlags class represents a collection of 32 bits that will be part of a
+ * generic Polygonal Face of a Mesh.
+ *
+ * Polygons that use this class for Bit flags can mark as border or as selected a maximum number of
+ * 12 edges. If you need bigger polygons on your mesh, you should use the @todo BigPolygonBitFlags
+ * class.
+ *
+ * This class also provides 3 flags for faux edges. These flags are added just to make portable all
+ * the algorithms that use faux flags also for PolygonMeshes. However, these flags should be used
+ * only when the mesh is a Triangle mesh, that is when each face has vertexNumber() == 3.
+ *
+ * The bits have the follwing meaning: (first 3 bits inherited from BitFlags)
+ * - 0: deleted
+ * - 1: delected
+ * - from 2 to 13: edge border: if the current Face has is i-th edge (i in [0, 11]) on border
+ * - from 14 to 25: edge selection: if the current Face has is i-th edge (i in [0, 11]) selected
+ * - from 26 to 28: edge faux: if the current Face has is i-th edge (i in [0, 2]) marked as faux
+ * - from 29 to 31: user bits that can have custom meanings to the user
+ *
+ * This class provides 3 user bits, that can be accessed using the member functions
+ * - userBitFlag
+ * - setUserBit
+ * - clearUserBit
+ * with position in the interval [0, 2].
+ */
 class PolygonBitFlags : public BitFlags
 {
 public:
@@ -22,49 +48,39 @@ public:
 	bool isAnyEdgeOnBorder() const;
 
 	bool isEdgeSelected(unsigned int i) const;
-	bool isAnyEdgeSelected();
+	bool isAnyEdgeSelected() const;
+
+	bool isEdgeFaux(unsigned int i) const;
+	bool isAnyEdgeFaux() const;
 
 	void setEdgeOnBorder(unsigned int i);
 
 	void setEdgeSelected(unsigned int i);
 
+	void setEdgeFaux(unsigned int i);
+
 	void clearEdgeOnBorder(unsigned int i);
 	void clearAllEdgeOnBorder();
 
 	void clearEdgeSelected(unsigned int i);
+	void clearAllEdgeSelected();
+
+	void clearEdgeFaux(unsigned int i);
+	void clearAllEdgeFaux();
 
 protected:
-	// hide base class constant, 23 is the number of bits used by this class
-	static const unsigned int FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 23;
-
 	// values of the flags, used for flagValue, setFlag and clearFlag member functions
 	enum {
-		// BORDER0 is BORDER, inherited from superclass
-		BORDER1  = 1 << (BitFlags::FIRST_USER_BIT),
-		BORDER2  = 1 << (BitFlags::FIRST_USER_BIT + 1),
-		BORDER3  = 1 << (BitFlags::FIRST_USER_BIT + 2),
-		BORDER4  = 1 << (BitFlags::FIRST_USER_BIT + 3),
-		BORDER5  = 1 << (BitFlags::FIRST_USER_BIT + 4),
-		BORDER6  = 1 << (BitFlags::FIRST_USER_BIT + 5),
-		BORDER7  = 1 << (BitFlags::FIRST_USER_BIT + 6),
-		BORDER8  = 1 << (BitFlags::FIRST_USER_BIT + 7),
-		BORDER9  = 1 << (BitFlags::FIRST_USER_BIT + 8),
-		BORDER10 = 1 << (BitFlags::FIRST_USER_BIT + 9),
-		BORDER11 = 1 << (BitFlags::FIRST_USER_BIT + 10), // 12 bits for border
+		// Edge border
+		// BORDER0 is BORDER, inherited from superclass - bits [2, 13]
 		// Edge selection
-		EDGESEL0  = 1 << (BitFlags::FIRST_USER_BIT + 11),
-		EDGESEL1  = 1 << (BitFlags::FIRST_USER_BIT + 12),
-		EDGESEL2  = 1 << (BitFlags::FIRST_USER_BIT + 13),
-		EDGESEL3  = 1 << (BitFlags::FIRST_USER_BIT + 14),
-		EDGESEL4  = 1 << (BitFlags::FIRST_USER_BIT + 15),
-		EDGESEL5  = 1 << (BitFlags::FIRST_USER_BIT + 16),
-		EDGESEL6  = 1 << (BitFlags::FIRST_USER_BIT + 17),
-		EDGESEL7  = 1 << (BitFlags::FIRST_USER_BIT + 18),
-		EDGESEL8  = 1 << (BitFlags::FIRST_USER_BIT + 19),
-		EDGESEL9  = 1 << (BitFlags::FIRST_USER_BIT + 20),
-		EDGESEL10 = 1 << (BitFlags::FIRST_USER_BIT + 21),
-		EDGESEL11 = 1 << (BitFlags::FIRST_USER_BIT + 22) // 12 bits for selection
+		EDGESEL0  = 1 << (BitFlags::FIRST_USER_BIT + 11), // bits [14, 25]
+		// Faux edges, for portability with TriangleBits
+		FAUX0 = 1 << (BitFlags::FIRST_USER_BIT + 23) // bits [26, 28]
 	};
+
+	// hide base class constant, 26 is the number of bits used by this class
+	static const unsigned int FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 26; // bits [29, 31]
 
 private:
 	// will use these members as isOnBorder0, setOnBorder0 and clearOnBorder0

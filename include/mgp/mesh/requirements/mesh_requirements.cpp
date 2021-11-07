@@ -13,6 +13,18 @@ namespace mgp {
  * is/has functions *
  ********************/
 
+/**
+ * @brief hasTriangles checks *statically* (compile time) if the mesh is composed of triangles
+ * (N of Vertex References in the Face Element == 3).
+ *
+ * If the number of vertex references of the Face Element is dynamic (Polygonal Mesh), this function
+ * will return false also if all the faces of your mesh have exactly 3 Vertex references.
+ *
+ * If you need to check if a Polygonal Mesh is composed only by triangles, you should use the
+ * 'isTriangleMesh' function.
+ *
+ * @return true if the MeshType has the number of Vertex References in the Face Element = 3.
+ */
 template<typename MeshType>
 bool constexpr hasTriangles()
 {
@@ -25,6 +37,10 @@ bool constexpr hasTriangles()
 }
 
 template<typename MeshType>
+/**
+ * @brief hasTriangles
+ * @see hasTriangles()
+ */
 bool constexpr hasTriangles(const MeshType&)
 {
 	return hasTriangles<MeshType>();

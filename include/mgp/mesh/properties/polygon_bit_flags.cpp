@@ -9,7 +9,7 @@ namespace mgp::prop {
 
 /**
  * @brief  PolygonBitFlags::userBitFlag returns the value of the bit given in input. The bit is
- * checked to be less than the total number of assigned user bits, which in this class is 8.
+ * checked to be less than the total number of assigned user bits, which in this class is 3.
  *
  * @param bit: the position of the bit that will be returned.
  * @return true if the required bit is enabled, false otherwise.
@@ -22,7 +22,7 @@ inline bool PolygonBitFlags::userBitFlag(unsigned int bit) const
 
 /**
  * @brief PolygonBitFlags::setUserBit sets to true the value of the bit given in input. The bit is
- * checked to be less than the total number of assigned user bits, which in this class is 8.
+ * checked to be less than the total number of assigned user bits, which in this class is 3.
  *
  * @param bit: the position of the bit that will be set.
  */
@@ -34,7 +34,7 @@ inline void PolygonBitFlags::setUserBit(unsigned int bit)
 
 /**
  * @brief PolygonBitFlags::clearUserBit sets to false the value of the bit given in input. The bit
- * is checked to be less than the total number of assigned user bits, which in this class is 8.
+ * is checked to be less than the total number of assigned user bits, which in this class is 3.
  *
  * @param bit: the position of the bit that will be reset.
  */
@@ -71,12 +71,23 @@ inline bool PolygonBitFlags::isEdgeSelected(unsigned int i) const
 	return flagValue(EDGESEL0 << i);
 }
 
-inline bool PolygonBitFlags::isAnyEdgeSelected()
+inline bool PolygonBitFlags::isAnyEdgeSelected() const
 {
 	for (unsigned int i = 0; i < 12; ++i)
 		if (isEdgeSelected(i))
 			return true;
 	return false;
+}
+
+inline bool PolygonBitFlags::isEdgeFaux(unsigned int i) const
+{
+	assert(i < 3);
+	return flagValue(FAUX0 << i);
+}
+
+inline bool PolygonBitFlags::isAnyEdgeFaux() const
+{
+	return isEdgeFaux(0) || isEdgeFaux(1) || isEdgeFaux(2);
 }
 
 inline void PolygonBitFlags::setEdgeOnBorder(unsigned int i)
@@ -89,6 +100,12 @@ inline void PolygonBitFlags::setEdgeSelected(unsigned int i)
 {
 	assert(i < 12);
 	setFlag(EDGESEL0 << i);
+}
+
+inline void PolygonBitFlags::setEdgeFaux(unsigned int i)
+{
+	assert(i < 3);
+	setFlag(FAUX0 << i);
 }
 
 inline void PolygonBitFlags::clearEdgeOnBorder(unsigned int i)
@@ -107,6 +124,25 @@ inline void PolygonBitFlags::clearEdgeSelected(unsigned int i)
 {
 	assert(i < 12);
 	clearFlag(EDGESEL0 << i);
+}
+
+inline void PolygonBitFlags::clearAllEdgeSelected()
+{
+	for (unsigned int i = 0; i < 12; ++i)
+		clearEdgeSelected(i);
+}
+
+inline void PolygonBitFlags::clearEdgeFaux(unsigned int i)
+{
+	assert(i < 3);
+	clearFlag(FAUX0 << i);
+}
+
+inline void PolygonBitFlags::clearAllEdgeFaux()
+{
+	clearEdgeFaux(0);
+	clearEdgeFaux(1);
+	clearEdgeFaux(2);
 }
 
 }

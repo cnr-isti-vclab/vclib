@@ -12,21 +12,21 @@ namespace mgp::prop {
 
 /**
  * @brief The TriangleBitFlags class represents a collection of 32 bits that will be part of a
- * Triangle of a Mesh. For other flags inherited, please check for the more general BitFlags class.
+ * Triangle of a Mesh.
  *
  * The bits have the following meaning: (first 3 bits inherited from BitFlags)
  * - 0:  deleted: if the current Triangle has been deleted
  * - 1:  selected: if the current Triangle has been selected
- * - 2:  edge border 0: if the current Triangle has his Edge with id 0 on border
- * - 3:  edge border 1: if the current Triangle has his Edge with id 1 on border
- * - 4:  edge border 2: if the current Triangle has his Edge with id 2 on border
- * - 5:  edge selected 0: if the current Triangle has his Edge with id 0 selected
- * - 6:  edge selected 1: if the current Triangle has his Edge with id 1 selected
- * - 7:  edge selected 2: if the current Triangle has his Edge with id 2 selected
- * - 8:  edge faux 0: if the current Triangle has his Edge with id 0 marked as faux
- * - 9:  edge faux 1: if the current Triangle has his Edge with id 1 marked as faux
- * - 10: edge faux 2: if the current Triangle has his Edge with id 2 marked as faux
+ * - from 2 to 4: edge border: if the current Triangle has is i-th edge (i in [0, 2]) on border
+ * - from 5 to 7: edge selection: if the current Triangle has is i-th edge (i in [0, 2]) selected
+ * - from 8 to 10: edge faux: if the current Triangle has is i-th edge (i in [0, 2]) marked as faux
  * - from 11 to 31: user bits that can have custom meanings to the user
+ *
+ * This class provides 21 user bits, that can be accessed using the member functions
+ * - userBitFlag
+ * - setUserBit
+ * - clearUserBit
+ * with position in the interval [0, 20].
  */
 class TriangleBitFlags : public BitFlags
 {
@@ -40,7 +40,7 @@ public:
 	bool isAnyEdgeOnBorder() const;
 
 	bool isEdgeSelected(unsigned int i) const;
-	bool isAnyEdgeSelected();
+	bool isAnyEdgeSelected() const;
 
 	bool isEdgeFaux(unsigned int i) const;
 	bool isAnyEdgeFaux() const;
@@ -55,29 +55,25 @@ public:
 	void clearAllEdgeOnBorder();
 
 	void clearEdgeSelected(unsigned int i);
+	void clearAllEdgeSelected();
 
 	void clearEdgeFaux(unsigned int i);
 	void clearAllEdgeFaux();
 
 protected:
-	// hide base class constant, 8 is the number of bits used by this class
-	static const unsigned int FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 8;
-
 	// values of the flags, used for flagValue, setFlag and clearFlag member functions
 	enum {
-		// BORDER0 is BORDER, inherited from superclass
-		BORDER1 = 1 << (BitFlags::FIRST_USER_BIT),
-		BORDER2 = 1 << (BitFlags::FIRST_USER_BIT + 1),
+		// Edge border
+		// BORDER0 is BORDER, inherited from superclass  bits [2, 4]
 		// Edge selection
-		EDGESEL0 = 1 << (BitFlags::FIRST_USER_BIT + 2),
-		EDGESEL1 = 1 << (BitFlags::FIRST_USER_BIT + 3),
-		EDGESEL2 = 1 << (BitFlags::FIRST_USER_BIT + 4),
+		EDGESEL0 = 1 << (BitFlags::FIRST_USER_BIT + 2), // bits [5, 7]
 		// Faux edges: when representing polygonal meshes on triangle meshes, some triangle edges
 		// can be marked as "faux", meaning that they are internal on the polygon
-		FAUX0 = 1 << (BitFlags::FIRST_USER_BIT + 5),
-		FAUX1 = 1 << (BitFlags::FIRST_USER_BIT + 6),
-		FAUX2 = 1 << (BitFlags::FIRST_USER_BIT + 7)
+		FAUX0 = 1 << (BitFlags::FIRST_USER_BIT + 5) // bits [8, 10]
 	};
+
+	// hide base class constant, 8 is the number of bits used by this class
+	static const unsigned int FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 8; // bits [11, 31]
 
 private:
 	// will use these members as isOnBorder0, setOnBorder0 and clearOnBorder0

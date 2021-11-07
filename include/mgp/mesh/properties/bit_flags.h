@@ -23,9 +23,11 @@ namespace mgp::prop {
  * - 2: border: if the current Element is on border
  * - other: user bits that can have custom meanings to the user
  *
- * The access to the user bits is generally allowed by the userBit member functions, that accept
- * a position as parameter that is a number between 0 and the total number of resereved user bits,
- * which in this class is 29, but may be less if using a derived of this class.
+ * This class provides 29 user bits, that can be accessed using the member functions
+ * - userBitFlag
+ * - setUserBit
+ * - clearUserBit
+ * with position in the interval [0, 28].
  */
 class BitFlags
 {
