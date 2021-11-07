@@ -21,6 +21,19 @@ Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, 1, N>& v)
 	p << v;
 }
 
+/**
+ * @brief Point::isDegenerate returns true if at least one of its components is NaN or inf.
+ * @return true if the point is degenerate, false otherwise.
+ */
+template<class Scalar, int N>
+bool Point<Scalar, N>::isDegenerate() const
+{
+	for (size_t i = 0; i < p.size(); ++i)
+		if (math::isDegenerate(p(i)))
+			return true;
+	return false;
+}
+
 template<class Scalar, int N>
 Scalar Point<Scalar, N>::norm() const
 {

@@ -26,6 +26,7 @@ set(HEADERS
 	include/mgp/algorithms/update/topology.h
 	include/mgp/exception/io_exception.h
 	include/mgp/exception/mesh_exception.h
+	include/mgp/math/base.h
 	include/mgp/mesh/mesh.h
 	include/mgp/mesh/mesh_properties.h
 	include/mgp/mesh/requirements.h

@@ -9,6 +9,8 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
+#include <mgp/math/base.h>
+
 namespace mgp {
 
 /**
@@ -31,6 +33,8 @@ public:
 	template<class S>
 	Point(const Point<S, N>& p);                 // constructor from different scalar Point
 	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
+
+	bool isDegenerate() const;
 
 	template<class S>
 	Scalar dot(const Point<S, N>& p1) const;

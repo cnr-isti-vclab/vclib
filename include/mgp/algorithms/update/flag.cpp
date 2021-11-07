@@ -3,6 +3,12 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
+/**
+ * This is a refactoring of VCGLib: https://github.com/cnr-isti-vclab/vcglib/
+ * Copyright(C): Visual Computing Lab
+ * ISTI - Italian National Research Council
+ */
+
 #include "flag.h"
 
 #include <algorithm>
@@ -37,7 +43,7 @@ public:
 		assert(nz < 3);
 
 		v[0] = pf->v(nz);
-		v[1] = pf->v((nz + 1) % 3);
+		v[1] = pf->vMod(nz + 1);
 		assert(v[0] != v[1]);
 
 		if (v[0] > v[1])
@@ -104,9 +110,9 @@ void updateBorder(MeshType& m)
 
 	edgeIterator = e.begin();
 	for (FaceType& f : m.faceIterator()) { // Lo riempio con i dati delle facce
+		f.clearAllEdgeOnBorder();
 		for (int j = 0; j < f.vertexNumber(); ++j) {
 			(*edgeIterator).set(&f, j);
-			f.clearEdgeOnBorder(j);
 			++edgeIterator;
 		}
 	}
