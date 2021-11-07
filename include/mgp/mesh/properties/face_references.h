@@ -22,6 +22,13 @@ class FaceReferencesTriggerer
 };
 
 template<class Face, int N>
+/**
+ * @brief The FaceReferences class is a container of Face references. It could be used by any
+ * Element to save adjacencies information (also Face).
+ *
+ * It is a random access container having static or dynamic size, depending on the value of N (
+ * a negative number means dynamic).
+ */
 class FaceReferences : protected ElementReferences<Face, N>, public FaceReferencesTriggerer
 {
 	using Base = ElementReferences<Face, N>;

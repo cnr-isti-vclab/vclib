@@ -12,8 +12,8 @@
 namespace mgp::prop {
 
 /**
- * @brief The BitFlags class represents a collection of 32 bits that will be part of an Element
- * (e.g. Vertex, Face, ...).
+ * @brief The BitFlags property class represents a collection of 32 bits that will be part of an
+ * Element (e.g. Vertex, Face, ...).
  *
  * This Property (or a specialization) is mandatory into every Element of the mesh.
  *
@@ -21,7 +21,11 @@ namespace mgp::prop {
  * - 0: deleted: if the current Element has been deleted
  * - 1: selected: if the current Element has been selected
  * - 2: border: if the current Element is on border
- * - from 3 to 31: user bits that can have custom meanings to the user
+ * - other: user bits that can have custom meanings to the user
+ *
+ * The access to the user bits is generally allowed by the userBit member functions, that accept
+ * a position as parameter that is a number between 0 and the total number of resereved user bits,
+ * which in this class is 29, but may be less if using a derived of this class.
  */
 class BitFlags
 {

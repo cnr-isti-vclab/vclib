@@ -14,6 +14,10 @@ class BoundingBoxTriggerer
 {
 };
 
+/**
+ * @brief The BoundingBox property class represent an axis aligned bounding box. This class is
+ * usually used as a property of a Mesh.
+ */
 template<class PointType>
 class BoundingBox : public BoundingBoxTriggerer
 {
