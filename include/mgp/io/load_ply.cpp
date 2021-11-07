@@ -45,16 +45,14 @@ void loadPly(MeshType& m, const std::string& filename, mgp::io::FileMeshInfo& lo
 	std::vector<int> faceSizes(nF);
 
 	bool loadOk = true;
+	m.clear();
 	for (ply::Element el : header) {
 		switch (el.type) {
 		case ply::VERTEX:
-			loadOk = ply::loadVertices(
+			ply::loadVertices(
 				file,
 				header,
-				coords.data(),
-				vertexNormals.data(),
-				io::FileMeshInfo::RGBA,
-				vc.data());
+				m);
 			break;
 		case ply::FACE:
 			loadOk = ply::loadFaces(
@@ -75,13 +73,8 @@ void loadPly(MeshType& m, const std::string& filename, mgp::io::FileMeshInfo& lo
 	}
 	file.close();
 
-	m.reserveVertices(nV);
 	m.reserveFaces(nF);
 
-	for (unsigned int i = 0; i < nV*3; i += 3) {
-		int id                    = m.addVertex();
-		m.vertex(id).coordinate() = Point3d(coords[i], coords[i + 1], coords[i + 2]);
-	}
 	for (unsigned int i = 0; i < nF*3; i += 3) {
 		int id = m.addFace();
 		m.face(id).v0() = &m.vertex(faces[i]);

@@ -34,7 +34,10 @@ public:
 	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex();
 
 	template<typename U = Mesh>
-	mesh::ReturnIfHasVertexContainer<U, void> reserveVertices(unsigned int i);
+	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertices(unsigned int n);
+
+	template<typename U = Mesh>
+	mesh::ReturnIfHasVertexContainer<U, void> reserveVertices(unsigned int n);
 
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, void> compactVertices();
@@ -43,7 +46,10 @@ public:
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace();
 
 	template<typename U = Mesh>
-	mesh::ReturnIfHasFaceContainer<U, void> reserveFaces(unsigned int i);
+	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFaces(unsigned int n);
+
+	template<typename U = Mesh>
+	mesh::ReturnIfHasFaceContainer<U, void> reserveFaces(unsigned int n);
 
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, void> compactFaces();

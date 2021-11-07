@@ -229,6 +229,7 @@ unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 	T* oldB = vertices.data();
 	vertices.resize(vertices.size() + nVertices);
 	T* newB = vertices.data();
+	vn+=nVertices;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		OptionalVertexContainer::resize(vertices.size());
 	}

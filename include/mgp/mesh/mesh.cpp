@@ -110,13 +110,28 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex(
 
 template<class... Args>
 template<typename U>
-mesh::ReturnIfHasVertexContainer<U, void> mgp::Mesh<Args...>::reserveVertices(unsigned int i)
+mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertices(unsigned int n)
 {
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
 
 	Vertex*      oldBase = VertexContainer::vertices.data();
-	VertexContainer::reserveVertices(i);
+	unsigned int vid     = VertexContainer::addVertices(n);
+	Vertex*      newBase = VertexContainer::vertices.data();
+	if (oldBase != nullptr && oldBase != newBase)
+		updateVertexReferences(oldBase, newBase);
+	return vid;
+}
+
+template<class... Args>
+template<typename U>
+mesh::ReturnIfHasVertexContainer<U, void> mgp::Mesh<Args...>::reserveVertices(unsigned int n)
+{
+	using Vertex          = typename U::VertexType;
+	using VertexContainer = typename U::VertexContainer;
+
+	Vertex*      oldBase = VertexContainer::vertices.data();
+	VertexContainer::reserveVertices(n);
 	Vertex*      newBase = VertexContainer::vertices.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateVertexReferences(oldBase, newBase);
@@ -154,13 +169,28 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 
 template<class... Args>
 template<typename U>
-mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::reserveFaces(unsigned int i)
+mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFaces(unsigned int n)
+{
+	using Face          = typename U::FaceType;
+	using FaceContainer = typename U::FaceContainer;
+
+	Face*        oldBase = FaceContainer::faces.data();
+	unsigned int fid     = FaceContainer::addFaces(n);
+	Face*        newBase = FaceContainer::faces.data();
+	if (oldBase != nullptr && oldBase != newBase)
+		updateFaceReferences(oldBase, newBase);
+	return fid;
+}
+
+template<class... Args>
+template<typename U>
+mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::reserveFaces(unsigned int n)
 {
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
 	Face*      oldBase = FaceContainer::faces.data();
-	FaceContainer::reserveFaces(i);
+	FaceContainer::reserveFaces(n);
 	Face*      newBase = FaceContainer::faces.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);

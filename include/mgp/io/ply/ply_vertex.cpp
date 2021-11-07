@@ -12,6 +12,67 @@ namespace ply {
 
 namespace internal {
 
+template <typename MeshType>
+void loadVerticesTxt(
+	std::ifstream& file,
+	const PlyHeader& header,
+	MeshType& mesh)
+{
+	using VertexType = typename MeshType::Vertex;
+	bool error = false;
+	mgp::Tokenizer spaceTokenizer;
+	error = !internal::nextLine(file, spaceTokenizer);
+	mgp::Tokenizer::iterator token = spaceTokenizer.begin();
+	mesh.addVertices(header.numberVertices());
+	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
+		VertexType& v = mesh.vertex(vid);
+		for (ply::Property p : header.vertexProperties()) {
+			if (token == spaceTokenizer.end()){
+				error = !nextLine(file, spaceTokenizer);
+				token = spaceTokenizer.begin();
+			}
+			if (error)
+				throw std::runtime_error("Malformed file");
+			bool hasBeenRead = false;
+			if (p.name >= ply::x && p.name <= ply::z) {
+				using Scalar = typename VertexType::CoordinateType::ScalarType;
+				int a = p.name - ply::x;
+				v.coordinate()[a] = internal::readProperty<Scalar>(token, p.type);
+				hasBeenRead = true;
+			}
+			if (p.name >= ply::nx && p.name <= ply::nz) {
+				if constexpr (mgp::hasPerVertexNormal(mesh)) {
+					if (mgp::isPerVertexNormalEnabled(mesh)) {
+						using Scalar = typename VertexType::NormalType::ScalarType;
+						int a = p.name - ply::nx;
+						v.normal()[a] = internal::readProperty<Scalar>(token, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
+			if (p.name >= ply::red && p.name <= ply::alpha) {
+				if constexpr (mgp::hasPerVertexColor(mesh)) {
+					if (mgp::isPerVertexColorEnabled(mesh)) {
+						int a = p.name - ply::red;
+						v.color()[a] = internal::readProperty<unsigned char>(token, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
+			if (!hasBeenRead) {
+				if (p.list) {
+					uint s = internal::readProperty<int>(token, p.listSizeType);
+					for (uint i = 0; i < s; ++i)
+						++token;
+				}
+				else {
+					++token;
+				}
+			}
+		}
+	}
+}
+
 template <typename A, typename B, typename C>
 bool loadVerticesTxt(
 		std::ifstream& file,
@@ -174,6 +235,20 @@ void saveVertices(
 		}
 		if (!bin)
 			file << std::endl;
+	}
+}
+
+template <typename MeshType>
+void loadVertices(
+	std::ifstream& file,
+	const PlyHeader& header,
+	MeshType& m)
+{
+	if(header.format() == ply::ASCII) {
+		internal::loadVerticesTxt(file, header, m);
+	}
+	else if(header.format() == ply::BINARY) {
+		//return internal::loadVerticesBin(file, header, vertices, vertexNormals, colorMod, vertexColors);
 	}
 }
 

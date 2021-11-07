@@ -228,6 +228,7 @@ unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces
 	T* oldB = faces.data();
 	faces.resize(faces.size() + nFaces);
 	T* newB = faces.data();
+	fn += nFaces;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		OptionalFaceContainer::resize(faces.size());
 	}

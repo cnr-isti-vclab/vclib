@@ -15,6 +15,12 @@ namespace ply {
 
 namespace internal {
 
+template <typename MeshType>
+void loadVerticesTxt(
+	std::ifstream& file,
+	const PlyHeader& header,
+	MeshType& mesh);
+
 template <typename A, typename B, typename C>
 bool loadVerticesTxt(
 		std::ifstream& file,
