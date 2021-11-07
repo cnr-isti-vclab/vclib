@@ -7,6 +7,7 @@
 #define MGP_MESH_ELEMENTS_FACE_PROPERTIES_H
 
 #include "../properties/bit_flags.h"
+#include "../properties/face_references.h"
 #include "../properties/color.h"
 #include "../properties/mutable_bit_flags.h"
 #include "../properties/normal.h"
@@ -66,6 +67,13 @@ using TriangleVertexRefs = prop::TriVertexReferences<Vertex>;
 
 template <typename  T>
 bool constexpr hasVertexReferences() {return prop::hasVertexReferences<T>();}
+
+/** Port AdjacentFaces class into face namespace **/
+template<typename Face, int N>
+using AdjacentFaces = prop::FaceReferences<Face, N>;
+
+template <typename  T>
+bool constexpr hasAdjacentFaces() {return prop::hasFaceReferences<T>();}
 
 /** Port MutableBitFlags class into face namespace **/
 using MutableBitFlags = prop::MutableBitFlags;

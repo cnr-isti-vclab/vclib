@@ -14,6 +14,7 @@
 #include "../properties/normal.h"
 #include "../properties/scalar.h"
 #include "../properties/tex_coord.h"
+#include "../properties/vertex_references.h"
 
 
 namespace mgp::vert {
@@ -88,6 +89,13 @@ bool constexpr hasTexCoord() {return prop::hasTexCoord<T>();}
 
 using TexCoordf = prop::TexCoordf;
 using TexCoordd = prop::TexCoordd;
+
+/** Port AdjacentVertices class into vert namespace **/
+template <typename Vertex>
+using AdjacentVertices = prop::VertexReferences<Vertex, -1>;
+
+template <typename T>
+bool constexpr hasAdjacentVertices() {return prop::hasVertexReferences<T>();};
 
 } // namespace mgp::vert
 

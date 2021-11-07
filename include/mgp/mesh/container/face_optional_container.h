@@ -70,6 +70,16 @@ public:
 	template<typename U = T>
 	face::ReturnIfHasOptionalScalar<U, void> disablePerFaceScalar();
 
+	// AdjacentFaces
+	template<typename U = T>
+	face::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerFaceAdjacentFacesEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerFaceAdjacentFaces();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerFaceAdjacentFaces();
+
 	// Custom Properties
 	template<typename K, typename U = T>
 	face::ReturnIfHasCustomProperties<U, void> addPerFaceCustomProperty(const std::string& name);

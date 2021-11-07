@@ -200,13 +200,16 @@ void mgp::mesh::Container<T, IfIsFace<T> >::clearFaces()
 template<class T>
 unsigned int Container<T, IfIsFace<T>>::addFace()
 {
+	T* oldB = faces.data();
 	faces.push_back(FaceType());
+	T* newB = faces.data();
 	++fn;
 	faces[faces.size() - 1]._id = faces.size() - 1;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		OptionalFaceContainer::setContainerPointer(faces[faces.size() - 1]);
 		OptionalFaceContainer::resize(faces.size());
 	}
+	updateFaceReferences(oldB, newB);
 	return faces[faces.size() - 1]._id;
 }
 
@@ -222,7 +225,9 @@ template<class T>
 unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces)
 {
 	unsigned int baseId = faces.size();
+	T* oldB = faces.data();
 	faces.resize(faces.size() + nFaces);
+	T* newB = faces.data();
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		OptionalFaceContainer::resize(faces.size());
 	}
@@ -232,16 +237,20 @@ unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces
 			OptionalFaceContainer::setContainerPointer(faces[i]);
 		}
 	}
+	updateFaceReferences(oldB, newB);
 	return baseId;
 }
 
 template<class T>
 void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
 {
+	T* oldB = faces.data();
 	faces.reserve(size);
+	T* newB = faces.data();
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		OptionalFaceContainer::reserve(size);
 	}
+	updateFaceReferences(oldB, newB);
 }
 
 /**
@@ -271,10 +280,48 @@ std::vector<int> mgp::mesh::Container<T, IfIsFace<T> >::compactFaces()
 		}
 	}
 	faces.resize(k);
+	T* base = faces.data();
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		OptionalFaceContainer::compact(newIndices);
 	}
+	updateFaceReferencesAfterCompact(base, newIndices);
 	return newIndices;
+}
+
+template<class T>
+void Container<T, IfIsFace<T> >::updateFaceReferences(const T* oldBase, const T* newBase)
+{
+	if constexpr (mgp::face::hasAdjacentFaces<T>()) {
+		for (FaceType& f : faceIterator()) {
+			f.updateFaceReferences(oldBase, newBase);
+		}
+	}
+	else if constexpr(mgp::face::hasOptionalAdjacentFaces<T>()) {
+		if (OptionalFaceContainer::isPerVertexAdjacentFacesEnabled()) {
+			for (FaceType& f : faceIterator()) {
+				f.updateFaceReferences(oldBase, newBase);
+			}
+		}
+	}
+}
+
+template<class T>
+void Container<T, IfIsFace<T> >::updateFaceReferencesAfterCompact(
+	const T* base,
+	const std::vector<int>& newIndices)
+{
+	if constexpr (mgp::face::hasAdjacentFaces<T>()) {
+		for (FaceType& f : faceIterator()) {
+			f.updateFaceReferencesAfterCompact(base, newIndices);
+		}
+	}
+	else if constexpr(mgp::face::hasOptionalAdjacentFaces<T>()) {
+		if (OptionalFaceContainer::isPerFaceAdjacentFacesEnabled()) {
+			for (FaceType& f : faceIterator()) {
+				f.updateFaceReferencesAfterCompact(base, newIndices);
+			}
+		}
+	}
 }
 
 template<class T>

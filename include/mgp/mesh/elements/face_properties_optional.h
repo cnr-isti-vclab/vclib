@@ -8,6 +8,7 @@
 
 #include "../properties_optional/custom_properties.h"
 #include "../properties_optional/optional_color.h"
+#include "../properties_optional/optional_face_references.h"
 #include "../properties_optional/optional_mutable_bit_flags.h"
 #include "../properties_optional/optional_normal.h"
 #include "../properties_optional/optional_scalar.h"
@@ -75,6 +76,16 @@ bool constexpr hasOptionalScalar() {return prop::hasOptionalScalar<T>();};
 
 template<typename U, typename T>
 using ReturnIfHasOptionalScalar = prop::ReturnIfHasOptionalScalar<U, T>;
+
+/** Port OptionalAdjacentFaces class into face namespace **/
+template <typename Face, int N, typename T>
+using OptionalAdjacentFaces = prop::OptionalFaceReferences<Face, N, T>;
+
+template <typename T>
+bool constexpr hasOptionalAdjacentFaces() {return prop::hasOptionalFaceReferences<T>();};
+
+template<typename U, typename T>
+using ReturnIfHasOptionalAdjacentFaces = prop::ReturnIfHasOptionalFaceReferences<U, T>;
 
 /** Port CustomProperties class into face namespace **/
 template <typename T>

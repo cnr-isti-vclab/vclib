@@ -16,15 +16,16 @@ class Face;
 
 class Vertex :
 		public mgp::Vertex<
-			mgp::vert::BitFlags,                        // 4b
-			mgp::vert::Coordinate3d,                    // 24b
-			mgp::vert::Normal3d,                        // 24b
-			mgp::vert::Color,                           // 4b
-			mgp::vert::Scalard,                         // 8b
-			mgp::vert::OptionalMutableBitFlags<Vertex>, // 0b
-			mgp::vert::OptionalTexCoordf<Vertex>,       // 0b
-			mgp::vert::AdjacentFaces<Face>,             // N*8b
-			mgp::vert::CustomProperties<Vertex>>        // 0b
+			mgp::vert::BitFlags,                                 // 4b
+			mgp::vert::Coordinate3d,                             // 24b
+			mgp::vert::Normal3d,                                 // 24b
+			mgp::vert::Color,                                    // 4b
+			mgp::vert::Scalard,                                  // 8b
+			mgp::vert::OptionalMutableBitFlags<Vertex>,          // 0b
+			mgp::vert::OptionalTexCoordf<Vertex>,                // 0b
+			mgp::vert::OptionalAdjacentFaces<Face, Vertex>,      // 0b
+			mgp::vert::OptionalAdjacentVertices<Vertex, Vertex>, // 0b
+			mgp::vert::CustomProperties<Vertex>>                 // 0b
 {
 };
 

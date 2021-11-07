@@ -89,6 +89,10 @@ protected:
 
 	std::vector<int> compactVertices();
 
+	void updateVertexReferences(const T* oldBase, const T* newBase);
+
+	void updateVertexReferencesAfterCompact(const T* base, const std::vector<int>& newIndices);
+
 	template<typename Face>
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 

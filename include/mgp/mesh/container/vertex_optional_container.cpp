@@ -241,6 +241,46 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexAdjacentFaces(
 }
 
 /**
+ * @brief VertexOptionalContainer::isPerVertexAdjacentVerticesEnabled checks if the vertex Optional
+ * Adjacent Vertices property is enabled. This function is available **only if the Vertex Element
+ * has the OptionalAdjacentVertices Property**.
+ * @return true if the Optional Adjacent Vertices is enabled, false otherwise.
+ */
+template<class T>
+template<class U>
+vert::ReturnIfHasOptionalAdjacentVertices<U, bool>
+VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexAdjacentVerticesEnabled() const
+{
+	return optionalPropVector.isVertexReferencesEnabled();
+}
+
+/**
+ * @brief VertexOptionalContainer::enablePerVertexAdjacentVertices enables the Optional Adjacent
+ * Vertices of the vertex. This function is available **only if the Vertex Element has the
+ * OptionalAdjacentVertices Property**.
+ */
+template<class T>
+template<class U>
+vert::ReturnIfHasOptionalAdjacentVertices<U, void>
+VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexAdjacentVertices()
+{
+	optionalPropVector.enableVertexReferences(vertexContainerSize());
+}
+
+/**
+ * @brief VertexOptionalContainer::disablePerVertexAdjacentVertices disables the Optional Adjacent
+ * Vertices of the vertex. This function is available **only if the Vertex Element has the
+ * OptionalAdjacentVertices Property**.
+ */
+template<class T>
+template<class U>
+vert::ReturnIfHasOptionalAdjacentVertices<U, void>
+VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexAdjacentVertices()
+{
+	optionalPropVector.disableVertexReferences();
+}
+
+/**
  * @brief VertexOptionalContainer::addPerVertexCustomProperty
  */
 template<class T>
@@ -253,31 +293,31 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::addPerVertexCustomProperty(
 }
 
 template<typename T>
-void mgp::mesh::VertexOptionalContainer<T, VertexHasOptional<T> >::clear()
+void mgp::mesh::VertexOptionalContainer<T, VertexHasOptional<T>>::clear()
 {
 	optionalPropVector.clear();
 }
 
 template<typename T>
-void VertexOptionalContainer<T, VertexHasOptional<T> >::setContainerPointer(T& vertex)
+void VertexOptionalContainer<T, VertexHasOptional<T>>::setContainerPointer(T& vertex)
 {
 	vertex.setContainerPointer(&optionalPropVector);
 }
 
 template<typename T>
-void VertexOptionalContainer<T, VertexHasOptional<T> >::resize(unsigned int size)
+void VertexOptionalContainer<T, VertexHasOptional<T>>::resize(unsigned int size)
 {
 	optionalPropVector.resize(size);
 }
 
 template<typename T>
-void VertexOptionalContainer<T, VertexHasOptional<T> >::reserve(unsigned int size)
+void VertexOptionalContainer<T, VertexHasOptional<T>>::reserve(unsigned int size)
 {
 	optionalPropVector.reserve(size);
 }
 
 template<typename T>
-void VertexOptionalContainer<T, VertexHasOptional<T> >::compact(const std::vector<int>& newIndices)
+void VertexOptionalContainer<T, VertexHasOptional<T>>::compact(const std::vector<int>& newIndices)
 {
 	optionalPropVector.compact(newIndices);
 }

@@ -13,6 +13,7 @@
 #include "../properties_optional/optional_normal.h"
 #include "../properties_optional/optional_scalar.h"
 #include "../properties_optional/optional_tex_coord.h"
+#include "../properties_optional/optional_vertex_references.h"
 
 namespace mgp::vert {
 
@@ -103,6 +104,16 @@ bool constexpr hasOptionalAdjacentFaces() {return prop::hasOptionalFaceReference
 
 template<typename U, typename T>
 using ReturnIfHasOptionalAdjacentFaces = prop::ReturnIfHasOptionalFaceReferences<U, T>;
+
+/** Port OptionalAdjacentVertexRef class into vert namespace **/
+template <typename Vertex, typename T>
+using OptionalAdjacentVertices = prop::OptionalVertexReferences<Vertex, -1, T>;
+
+template <typename T>
+bool constexpr hasOptionalAdjacentVertices() {return prop::hasOptionalVertexReferences<T>();}
+
+template<typename U, typename T>
+using ReturnIfHasOptionalAdjacentVertices = prop::ReturnIfHasOptionalVertexReferences<U, T>;
 
 /** Port CustomProperties class into vert namespace **/
 template <typename T>

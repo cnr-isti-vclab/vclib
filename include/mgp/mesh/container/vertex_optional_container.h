@@ -90,6 +90,16 @@ public:
 	template<typename U = T>
 	vert::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerVertexAdjacentFaces();
 
+	// Adjacent Vertices
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentVertices<U, bool> isPerVertexAdjacentVerticesEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentVertices<U, void> enablePerVertexAdjacentVertices();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentVertices<U, void> disablePerVertexAdjacentVertices();
+
 	// Custom Properties
 	template<typename K, typename U = T>
 	vert::ReturnIfHasCustomProperties<U, void> addPerVertexCustomProperty(const std::string& name);

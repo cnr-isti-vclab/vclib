@@ -52,8 +52,8 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
-	// the Container type will be array or vector, depending on N value
-	using Container = typename std::conditional<
+	// the FaceRefsContainer type will be array or vector, depending on N value
+	using FaceRefsContainer = typename std::conditional<
 		(N >= 0),
 		typename std::array<Face*, ARRAY_SIZE>,
 		typename std::vector<Face*>>::type;
@@ -83,10 +83,11 @@ public:
 	/** Member functions **/
 
 	unsigned int faceNumber() const;
-	unsigned int sizeMod(unsigned int i) const;
 
 	Face*&      f(unsigned int i);
 	const Face* f(unsigned int i) const;
+	Face*&      fMod(int i);
+	const Face* fMod(int i) const;
 
 	void setFace(Face* f, unsigned int i);
 	void setFaces(const std::vector<Face*>& list);

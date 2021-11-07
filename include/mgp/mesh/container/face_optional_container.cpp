@@ -27,7 +27,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceColorEnabled() const
  */
 template<class T>
 template<class U>
-face::ReturnIfHasOptionalColor<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceColor()
+face::ReturnIfHasOptionalColor<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceColor()
 {
 	optionalPropVector.enableColor(faceContainerSize());
 }
@@ -64,7 +65,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceMutableBitFlagsEnabled() 
  */
 template<class T>
 template<class U>
-face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceMutableBitFlags()
+face::ReturnIfHasOptionalMutableBitFlags<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceMutableBitFlags()
 {
 	optionalPropVector.enableMutableBitFlags(faceContainerSize());
 }
@@ -102,7 +104,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceNormalEnabled() const
  */
 template<class T>
 template<class U>
-face::ReturnIfHasOptionalNormal<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceNormal()
+face::ReturnIfHasOptionalNormal<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceNormal()
 {
 	optionalPropVector.enableNormal(faceContainerSize());
 }
@@ -138,7 +141,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceScalarEnabled() const
  */
 template<class T>
 template<class U>
-face::ReturnIfHasOptionalScalar<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceScalar()
+face::ReturnIfHasOptionalScalar<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceScalar()
 {
 	optionalPropVector.enableScalar(faceContainerSize());
 }
@@ -155,15 +159,53 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceScalar()
 	optionalPropVector.disableScalar();
 }
 
+/**
+ * @brief FaceOptionalContainer::isPerFaceAdjacentFacesEnabled checks if the face Optional Adjacent
+ * Faces is enabled. This function is available **only if the Face Element has the
+ * OptionalAdjacentFaces Property**.
+ * @return true if the Optional AdjacentFaces is enabled, false otherwise.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalAdjacentFaces<U, bool>
+FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceAdjacentFacesEnabled() const
+{
+	return optionalPropVector.isFaceReferencesEnabled();
+}
+/**
+ * @brief Container::enableFaceAdjacentFaces enable the Optional Adjacent Faces of the face.
+ * This function is available **only if the Face Element has the OptionalAdjacentFaces Property**.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalAdjacentFaces<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceAdjacentFaces()
+{
+	optionalPropVector.enableFaceReferences(faceContainerSize());
+}
+
+/**
+ * @brief Container::disableFaceAdjacentFaces disables the Optional Adjacent Faces of the face.
+ * This function is available **only if the Face Element has the OptionalAdjacentFaces Property**.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalAdjacentFaces<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceAdjacentFaces()
+{
+	optionalPropVector.disableFaceReferences();
+}
+
 template<class T>
 template<typename K, typename U>
-face::ReturnIfHasCustomProperties<U, void> FaceOptionalContainer<T, FaceHasOptional<T>>::addPerFaceCustomProperty(const std::string& name)
+face::ReturnIfHasCustomProperties<U, void>
+FaceOptionalContainer<T, FaceHasOptional<T>>::addPerFaceCustomProperty(const std::string& name)
 {
 	optionalPropVector.template addNewProperty<K>(name, faceContainerSize());
 }
 
 template<typename T>
-void FaceOptionalContainer<T, FaceHasOptional<T> >::clear()
+void FaceOptionalContainer<T, FaceHasOptional<T>>::clear()
 {
 	optionalPropVector.clear();
 }
@@ -187,10 +229,9 @@ void FaceOptionalContainer<T, FaceHasOptional<T>>::reserve(unsigned int size)
 }
 
 template<typename T>
-void FaceOptionalContainer<T, FaceHasOptional<T> >::compact(const std::vector<int>& newIndices)
+void FaceOptionalContainer<T, FaceHasOptional<T>>::compact(const std::vector<int>& newIndices)
 {
 	optionalPropVector.compact(newIndices);
 }
 
-}
-
+} // namespace mgp::mesh

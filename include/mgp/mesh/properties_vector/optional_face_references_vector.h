@@ -26,11 +26,11 @@ template<typename T>
 class OptionalFaceReferencesVector<
 	T,
 	std::enable_if_t<prop::hasOptionalFaceReferences<T>()>> :
-		private OptionalGenericVector<typename T::Container>
+		private OptionalGenericVector<typename T::FaceRefsContainer>
 {
 private:
-	using Container = typename T::Container;
-	using Base = OptionalGenericVector<Container>;
+	using FaceRefsContainer = typename T::FaceRefsContainer;
+	using Base = OptionalGenericVector<FaceRefsContainer>;
 
 public:
 	using Base::clear;
@@ -40,8 +40,8 @@ public:
 	bool             isFaceReferencesEnabled() const { return Base::isEnabled(); };
 	void             enableFaceReferences(unsigned int size) { Base::enable(size); }
 	void             disableFaceReferences() { Base::disable(); }
-	Container&       faceRefs(unsigned int i) { return Base::at(i); }
-	const Container& faceRefs(unsigned int i) const { return Base::at(i); }
+	FaceRefsContainer&       faceRefs(unsigned int i) { return Base::at(i); }
+	const FaceRefsContainer& faceRefs(unsigned int i) const { return Base::at(i); }
 };
 
 } // namespace mgp::internal

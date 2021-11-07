@@ -36,12 +36,6 @@ unsigned int OptionalFaceReferences<Face, N, T>::faceNumber() const
 }
 
 template<class Face, int N, typename T>
-unsigned int OptionalFaceReferences<Face, N, T>::sizeMod(unsigned int i) const
-{
-	return i % faceNumber();
-}
-
-template<class Face, int N, typename T>
 Face*& OptionalFaceReferences<Face, N, T>::f(unsigned int i)
 {
 	assert(i < faceNumber());
@@ -53,6 +47,20 @@ const Face* OptionalFaceReferences<Face, N, T>::f(unsigned int i) const
 {
 	assert(i < faceNumber());
 	return B::contPtr->faceRefs(thisId())[i];
+}
+
+template<class Face, int N, typename T>
+Face*& OptionalFaceReferences<Face, N, T>::fMod(int i)
+{
+	unsigned int n = faceNumber();
+	return B::contPtr->faceRefs(thisId())[(i % n + n) % n];
+}
+
+template<class Face, int N, typename T>
+const Face* OptionalFaceReferences<Face, N, T>::fMod(int i) const
+{
+	unsigned int n = faceNumber();
+	return B::contPtr->faceRefs(thisId())[(i % n + n) % n];
 }
 
 template<class Face, int N, typename T>
@@ -182,7 +190,7 @@ void OptionalFaceReferences<Face, N, T>::updateFaceReferencesAfterCompact(
 				f(j) = nullptr;
 			}
 			else { // the new pointer will be base + newIndices[diff]
-				f(j) = base + newIndices[diff];
+				f(j) = (Face*) base + newIndices[diff];
 			}
 		}
 	}

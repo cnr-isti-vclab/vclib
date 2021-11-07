@@ -103,7 +103,7 @@ void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
 }
 
 /**
- * @brief Container::vertexIdIfCompact is an utility member functions that returns the id of
+ * @brief Container::vertexIdIfCompact is an utility member function that returns the id of
  * an element if the container would be compact, that is the number of non-deleted elements before
  * the vertex with the given id.
  *
@@ -201,13 +201,16 @@ void Container<T, IfIsVertex<T> >::clearVertices()
 template<class T>
 unsigned int Container<T, IfIsVertex<T>>::addVertex()
 {
+	T* oldB = vertices.data();
 	vertices.push_back(VertexType());
+	T* newB = vertices.data();
 	++vn;
 	vertices[vertices.size() - 1]._id = vertices.size() - 1;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		OptionalVertexContainer::setContainerPointer(vertices[vertices.size() - 1]);
 		OptionalVertexContainer::resize(vertices.size());
 	}
+	updateVertexReferences(oldB, newB);
 	return vertices[vertices.size() - 1]._id;
 }
 
@@ -223,7 +226,9 @@ template<class T>
 unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 {
 	unsigned int baseId = vertices.size();
+	T* oldB = vertices.data();
 	vertices.resize(vertices.size() + nVertices);
+	T* newB = vertices.data();
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		OptionalVertexContainer::resize(vertices.size());
 	}
@@ -233,16 +238,20 @@ unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 			OptionalVertexContainer::setContainerPointer(vertices[i]);
 		}
 	}
+	updateVertexReferences(oldB, newB);
 	return baseId;
 }
 
 template<class T>
 void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {
+	T* oldB = vertices.data();
 	vertices.reserve(size);
+	T* newB = vertices.data();
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		OptionalVertexContainer::reserve(size);
 	}
+	updateVertexReferences(oldB, newB);
 }
 
 /**
@@ -272,10 +281,48 @@ std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 		}
 	}
 	vertices.resize(k);
+	T* base = vertices.data();
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		OptionalVertexContainer::compact(newIndices);
 	}
+	updateVertexReferencesAfterCompact(base, newIndices);
 	return newIndices;
+}
+
+template<class T>
+void Container<T, IfIsVertex<T> >::updateVertexReferences(const T* oldBase, const T* newBase)
+{
+	if constexpr (mgp::vert::hasAdjacentVertices<T>()) {
+		for (VertexType& v : vertexIterator()) {
+			v.updateVertexReferences(oldBase, newBase);
+		}
+	}
+	else if constexpr(mgp::vert::hasOptionalAdjacentVertices<T>()) {
+		if (OptionalVertexContainer::isPerVertexAdjacentVerticesEnabled()) {
+			for (VertexType& v : vertexIterator()) {
+				v.updateVertexReferences(oldBase, newBase);
+			}
+		}
+	}
+}
+
+template<class T>
+void Container<T, IfIsVertex<T> >::updateVertexReferencesAfterCompact(
+	const T* base,
+	const std::vector<int>& newIndices)
+{
+	if constexpr (mgp::vert::hasAdjacentVertices<T>()) {
+		for (VertexType& v : vertexIterator()) {
+			v.updateVertexReferencesAfterCompact(base, newIndices);
+		}
+	}
+	else if constexpr (mgp::vert::hasOptionalAdjacentVertices<T>()){
+		if (OptionalVertexContainer::isPerVertexAdjacentVerticesEnabled()) {
+			for (VertexType& v : vertexIterator()) {
+				v.updateVertexReferencesAfterCompact(base, newIndices);
+			}
+		}
+	}
 }
 
 template<class T>
