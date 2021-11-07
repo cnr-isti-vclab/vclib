@@ -297,7 +297,7 @@ void Container<T, IfIsFace<T> >::updateFaceReferences(const T* oldBase, const T*
 		}
 	}
 	else if constexpr(mgp::face::hasOptionalAdjacentFaces<T>()) {
-		if (OptionalFaceContainer::isPerVertexAdjacentFacesEnabled()) {
+		if (OptionalFaceContainer::isPerFaceAdjacentFacesEnabled()) {
 			for (FaceType& f : faceIterator()) {
 				f.updateFaceReferences(oldBase, newBase);
 			}

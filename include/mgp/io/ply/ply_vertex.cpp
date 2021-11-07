@@ -146,11 +146,9 @@ void saveVertices(
 		for (ply::Property p : header.vertexProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name >= ply::x && p.name <= ply::z) {
-				if constexpr (mgp::hasPerVertexCoordinate(mesh)) {
-					int a = p.name - ply::x;
-					internal::writeProperty(file, v.coordinate()[a], p.type, bin);
-					hasBeenWritten = true;
-				}
+				int a = p.name - ply::x;
+				internal::writeProperty(file, v.coordinate()[a], p.type, bin);
+				hasBeenWritten = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
 				if constexpr (mgp::hasPerVertexNormal(mesh)) {

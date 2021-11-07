@@ -69,8 +69,11 @@ template <typename  T>
 bool constexpr hasVertexReferences() {return prop::hasVertexReferences<T>();}
 
 /** Port AdjacentFaces class into face namespace **/
-template<typename Face, int N>
-using AdjacentFaces = prop::FaceReferences<Face, N>;
+template<typename Face>
+using AdjacentFaces = prop::FaceReferences<Face, -1>;
+
+template<typename Face>
+using AdjacentTriangles = prop::FaceReferences<Face, 3>;
 
 template <typename  T>
 bool constexpr hasAdjacentFaces() {return prop::hasFaceReferences<T>();}

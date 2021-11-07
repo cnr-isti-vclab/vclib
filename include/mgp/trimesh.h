@@ -16,27 +16,29 @@ class Face;
 
 class Vertex :
 		public mgp::Vertex<
-			mgp::vert::BitFlags,                                 // 4b
-			mgp::vert::Coordinate3d,                             // 24b
-			mgp::vert::Normal3d,                                 // 24b
-			mgp::vert::Color,                                    // 4b
-			mgp::vert::Scalard,                                  // 8b
-			mgp::vert::OptionalMutableBitFlags<Vertex>,          // 0b
-			mgp::vert::OptionalTexCoordf<Vertex>,                // 0b
-			mgp::vert::OptionalAdjacentFaces<Face, Vertex>,      // 0b
-			mgp::vert::OptionalAdjacentVertices<Vertex, Vertex>, // 0b
-			mgp::vert::CustomProperties<Vertex>>                 // 0b
+			mgp::vert::BitFlags,                            // 4b
+			mgp::vert::Coordinate3d,                        // 24b
+			mgp::vert::Normal3d,                            // 24b
+			mgp::vert::Color,                               // 4b
+			mgp::vert::Scalard,                             // 8b
+			mgp::vert::OptionalMutableBitFlags<Vertex>,     // 0b
+			mgp::vert::OptionalTexCoordf<Vertex>,           // 0b
+			mgp::vert::OptionalAdjacentFaces<Face, Vertex>, // 0b
+			mgp::vert::OptionalAdjacentVertices<Vertex>,    // 0b
+			mgp::vert::CustomProperties<Vertex>>            // 0b
 {
 };
 
 class Face :
 		public mgp::Face<
-			mgp::face::TriangleBitFlags,           // 4b
-			mgp::face::TriangleVertexRefs<Vertex>, // 24b
-			mgp::face::Normal3d,                   // 24b
-			mgp::face::OptionalScalard<Face>,      // 0b
-			mgp::face::OptionalColor<Face>,        // 0b
-			mgp::face::CustomProperties<Face>>     // 0b
+			mgp::face::TriangleBitFlags,                // 4b
+			mgp::face::TriangleVertexRefs<Vertex>,      // 24b
+			mgp::face::Normal3d,                        // 24b
+			mgp::face::OptionalScalard<Face>,           // 0b
+			mgp::face::OptionalColor<Face>,             // 0b
+			mgp::face::OptionalAdjacentTriangles<Face>, // 0b
+			mgp::face::OptionalMutableBitFlags<Face>,   // 0b
+			mgp::face::CustomProperties<Face>>          // 0b
 {
 };
 

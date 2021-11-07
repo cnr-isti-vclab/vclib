@@ -8,11 +8,19 @@
 
 namespace mgp {
 
+/********************
+ * is/has functions *
+ ********************/
+
+// Mesh Vertices
+
 template<typename MeshType>
 bool constexpr hasVertices();
 
 template<typename MeshType>
 bool constexpr hasVertices(const MeshType&);
+
+// Mesh Faces
 
 template<typename MeshType>
 bool constexpr hasFaces();
@@ -20,12 +28,18 @@ bool constexpr hasFaces();
 template<typename MeshType>
 bool constexpr hasFaces(const MeshType&);
 
-// require functions
+/*********************
+ * require functions *
+ *********************/
+
+// Mesh Vertices
 
 template<typename MeshType>
 void constexpr requireVertices();
 template<typename MeshType>
 void constexpr requireVertices(const MeshType&);
+
+// Mesh Faces
 
 template<typename MeshType>
 void constexpr requireFaces();

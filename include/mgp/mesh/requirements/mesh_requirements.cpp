@@ -9,18 +9,17 @@
 
 namespace mgp {
 
-// has functions
+/********************
+ * is/has functions *
+ ********************/
 
 template<typename MeshType>
 bool constexpr hasTriangles()
 {
 	if constexpr (hasFaces<MeshType>()) {
 		using F = typename MeshType::FaceType;
-		if constexpr (mgp::face::hasVertexReferences<F>()) {
-			using R = typename F::VertexReferences;
-			// todo: if -1, check manually
-			return R::VERTEX_NUMBER == 3;
-		}
+		using R = typename F::VertexReferences;
+		return R::VERTEX_NUMBER == 3;
 	}
 	return false;
 }
@@ -32,13 +31,28 @@ bool constexpr hasTriangles(const MeshType&)
 }
 
 template<typename MeshType>
+bool isTriangleMesh(const MeshType& m)
+{
+	if constexpr (hasTriangles(m)) {
+		return true;
+	}
+	else {
+		using F = typename MeshType::FaceType;
+		for (const F& f : m.faceIterator()){
+			if (f.vertexNumber() != 3)
+				return false;
+		}
+		return true;
+	}
+}
+
+template<typename MeshType>
 bool constexpr hasQuads()
 {
 	if constexpr (hasFaces<MeshType>()) {
 		using F = typename MeshType::FaceType;
 		if constexpr (mgp::face::hasVertexReferences<F>()) {
 			using R = typename F::VertexReferences;
-			// todo: if -1, check manually
 			return R::VERTEX_NUMBER == 4;
 		}
 	}
@@ -49,6 +63,22 @@ template<typename MeshType>
 bool constexpr hasQuads(const MeshType&)
 {
 	return hasQuads<MeshType>();
+}
+
+template<typename MeshType>
+bool isQuadMesh(const MeshType& m)
+{
+	if constexpr (hasQuads(m)) {
+		return true;
+	}
+	else {
+		using F = typename MeshType::FaceType;
+		for (const F& f : m.faceIterator()){
+			if (f.vertexNumber() != 4)
+				return false;
+		}
+		return true;
+	}
 }
 
 template<typename MeshType>
@@ -63,7 +93,9 @@ bool constexpr hasBoundingBox(const MeshType&)
 	return hasBoundingBox<MeshType>();
 }
 
-// require functions
+/*********************
+ * require functions *
+ *********************/
 
 template<typename MeshType>
 void constexpr requireTriangleMesh()

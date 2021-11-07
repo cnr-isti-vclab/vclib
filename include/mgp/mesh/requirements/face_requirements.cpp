@@ -11,6 +11,10 @@
 
 namespace mgp {
 
+/********************
+ * is/has functions *
+ ********************/
+
 template<typename MeshType>
 bool constexpr hasPerFaceNormal()
 {
@@ -101,6 +105,35 @@ bool isPerFaceScalarEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
+bool constexpr hasPerFaceAdjacentFaces()
+{
+	return hasFaces<MeshType>() && (mgp::face::hasAdjacentFaces<typename MeshType::FaceType>() ||
+									mgp::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>());
+}
+
+template<typename MeshType>
+bool constexpr hasPerFaceAdjacentFaces(const MeshType&)
+{
+	return hasPerFaceAdjacentFaces<MeshType>();
+}
+
+template<typename MeshType>
+bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() && mgp::face::hasAdjacentFaces<typename MeshType::FaceType>()) {
+		return true;
+	}
+	else if constexpr (
+		hasFaces<MeshType>() && mgp::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
+		return m.isPerFaceAdjacentFacesEnabled();
+	}
+	else {
+		return false;
+	}
+}
+
+template<typename MeshType>
 bool constexpr hasPerFaceCustomProperties()
 {
 	return hasFaces<MeshType>() && mgp::face::hasCustomProperties<typename MeshType::FaceType>();
@@ -142,7 +175,9 @@ bool isPerFaceMutableBitFlagsEnabled(const MeshType& m)
 	}
 }
 
-// require functions
+/*********************
+ * require functions *
+ *********************/
 
 template<typename MeshType>
 void requirePerFaceNormal(const MeshType& m)
@@ -169,6 +204,15 @@ void requirePerFaceScalar(const MeshType& m)
 	static_assert(hasPerFaceScalar(m), "Mesh has no face scalars.");
 	if (!isPerFaceScalarEnabled(m))
 		throw mgp::MissingPropertyException("Face scalars not enabled.");
+}
+
+template<typename MeshType>
+void requirePerFaceAdjacentFaces(const MeshType& m)
+{
+	requireFaces<MeshType>();
+	static_assert(hasPerFaceAdjacentFaces(m), "Mesh has no per face adjacent faces.");
+	if (!isPerFaceAdjacentFacesEnabled(m))
+		throw mgp::MissingPropertyException("Per face adjacent faces not enabled.");
 }
 
 template<typename MeshType>

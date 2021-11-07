@@ -36,6 +36,10 @@ class Container<T, IfIsVertex<T>> :
 		mgp::vert::hasBitFlags<T>(),
 		"You should include BitFlags as Vertex property in your Mesh definition.");
 
+	static_assert(
+		mgp::vert::hasCoordinate<T>(),
+		"You should include Coordinate as Vertex property in your Mesh definition.");
+
 protected:
 	// types:
 	using VertexContainer = Container<T, IfIsVertex<T>>;

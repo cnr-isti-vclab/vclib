@@ -11,17 +11,9 @@
 
 namespace mgp {
 
-template<typename MeshType>
-bool constexpr hasPerVertexCoordinate()
-{
-	return hasVertices<MeshType>() && mgp::vert::hasCoordinate<typename MeshType::VertexType>();
-}
-
-template<typename MeshType>
-bool constexpr hasPerVertexCoordinate(const MeshType&)
-{
-	return hasPerVertexCoordinate<MeshType>();
-}
+/********************
+ * is/has functions *
+ ********************/
 
 template<typename MeshType>
 bool constexpr hasPerVertexNormal()
@@ -145,19 +137,6 @@ bool isPerVertexTexCoordEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
-bool constexpr hasPerVertexCustomProperties()
-{
-	return hasVertices<MeshType>() &&
-		   mgp::vert::hasCustomProperties<typename MeshType::VertexType>();
-}
-
-template<typename MeshType>
-bool constexpr hasPerVertexCustomProperties(const MeshType&)
-{
-	return hasPerVertexCustomProperties<MeshType>();
-}
-
 template <typename MeshType>
 bool constexpr hasPerVertexAdjacentFaces()
 {
@@ -187,6 +166,50 @@ bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 	else {
 		return false;
 	}
+}
+
+template <typename MeshType>
+bool constexpr hasPerVertexAdjacentVertices()
+{
+	return hasVertices<MeshType>() &&
+		   (mgp::vert::hasAdjacentVertices<typename MeshType::VertexType>() ||
+			mgp::vert::hasOptionalAdjacentVertices<typename MeshType::VertexType>());
+}
+
+template <typename MeshType>
+bool constexpr hasPerVertexAdjacentVertices(const MeshType&)
+{
+	return hasPerVertexAdjacentVertices<MeshType>();
+}
+
+template<typename MeshType>
+bool isPerVertexAdjacentVerticesEnabled(const MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasAdjacentVertices<typename MeshType::VertexType>()) {
+		return true;
+	}
+	else if constexpr (
+		hasVertices<MeshType>() &&
+		mgp::vert::hasOptionalAdjacentVertices<typename MeshType::VertexType>()) {
+		return m.isPerVertexAdjacentVerticesEnabled();
+	}
+	else {
+		return false;
+	}
+}
+
+template<typename MeshType>
+bool constexpr hasPerVertexCustomProperties()
+{
+	return hasVertices<MeshType>() &&
+		   mgp::vert::hasCustomProperties<typename MeshType::VertexType>();
+}
+
+template<typename MeshType>
+bool constexpr hasPerVertexCustomProperties(const MeshType&)
+{
+	return hasPerVertexCustomProperties<MeshType>();
 }
 
 template<typename MeshType>
@@ -219,20 +242,9 @@ bool isPerVertexMutableBitFlagsEnabled(const MeshType& m)
 	}
 }
 
-// require functions
-
-template<typename MeshType>
-void constexpr requirePerVertexCoordinate()
-{
-	requireVertices<MeshType>();
-	static_assert(hasPerVertexCoordinate<MeshType>(), "Mesh has no vertex coordinates.");
-}
-
-template<typename MeshType>
-void constexpr requirePerVertexCoordinate(const MeshType&)
-{
-	requirePerVertexCoordinate<MeshType>();
-}
+/*********************
+ * require functions *
+ *********************/
 
 template<typename MeshType>
 void requirePerVertexNormal(const MeshType& m)
@@ -271,25 +283,34 @@ void requirePerVertexTexCoord(const MeshType& m)
 }
 
 template<typename MeshType>
-void constexpr Properties()
-{
-	requireVertices<MeshType>();
-	static_assert(hasPerVertexCustomProperties<MeshType>(), "Mesh has no vertex custom properties.");
-}
-
-template<typename MeshType>
-void constexpr Properties(const MeshType&)
-{
-	requirePerVertexCustomProperties<MeshType>();
-}
-
-template<typename MeshType>
 void requirePerVertexAdjacentFaces(const MeshType& m)
 {
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexAdjacentFaces(m), "Mesh has no vertex adjacent faces.");
 	if (!isPerVertexAdjacentFacesEnabled(m))
 		throw mgp::MissingPropertyException("Vertex adjacent faces not enabled.");
+}
+
+template<typename MeshType>
+void requirePerVertexAdjacentVertices(const MeshType& m)
+{
+	requireVertices<MeshType>();
+	static_assert(hasPerVertexAdjacentVertices(m), "Mesh has no per vertex adjacent vertices.");
+	if (!isPerVertexAdjacentVerticesEnabled(m))
+		throw mgp::MissingPropertyException("Per vertex adjacent vertices not enabled.");
+}
+
+template<typename MeshType>
+void constexpr requirePerVertexCustomProperties()
+{
+	requireVertices<MeshType>();
+	static_assert(hasPerVertexCustomProperties<MeshType>(), "Mesh has no vertex custom properties.");
+}
+
+template<typename MeshType>
+void constexpr requirePerVertexCustomProperties(const MeshType&)
+{
+	requirePerVertexCustomProperties<MeshType>();
 }
 
 template<typename MeshType>

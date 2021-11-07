@@ -36,8 +36,7 @@ FileMeshInfo::FileMeshInfo(const Mesh& m) :
 		mode(0), type(POLYGON_MESH)
 {
 	if (mgp::hasVertices(m)){
-		if (mgp::hasPerVertexCoordinate(m))
-			setVertexCoords();
+		setVertexCoords();
 		if (mgp::isPerVertexNormalEnabled(m))
 			setVertexNormals();
 		if (mgp::isPerVertexColorEnabled(m))

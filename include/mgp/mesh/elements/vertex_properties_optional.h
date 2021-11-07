@@ -106,8 +106,8 @@ template<typename U, typename T>
 using ReturnIfHasOptionalAdjacentFaces = prop::ReturnIfHasOptionalFaceReferences<U, T>;
 
 /** Port OptionalAdjacentVertexRef class into vert namespace **/
-template <typename Vertex, typename T>
-using OptionalAdjacentVertices = prop::OptionalVertexReferences<Vertex, -1, T>;
+template <typename T>
+using OptionalAdjacentVertices = prop::OptionalVertexReferences<T, -1, T>;
 
 template <typename T>
 bool constexpr hasOptionalAdjacentVertices() {return prop::hasOptionalVertexReferences<T>();}

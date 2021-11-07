@@ -11,7 +11,11 @@
 
 namespace mgp {
 
-// is/has functions
+/********************
+ * is/has functions *
+ ********************/
+
+// Triangles
 
 template <typename MeshType>
 bool constexpr hasTriangles();
@@ -20,10 +24,20 @@ template <typename MeshType>
 bool constexpr hasTriangles(const MeshType&);
 
 template <typename MeshType>
+bool isTriangleMesh(const MeshType&);
+
+// Quads
+
+template <typename MeshType>
 bool constexpr hasQuads();
 
 template <typename MeshType>
 bool constexpr hasQuads(const MeshType&);
+
+template <typename MeshType>
+bool isQuadMesh(const MeshType&);
+
+// Bounding Box
 
 template <typename MeshType>
 bool constexpr hasBoundingBox();
@@ -31,20 +45,31 @@ bool constexpr hasBoundingBox();
 template <typename MeshType>
 bool constexpr hasBoundingBox(const MeshType&);
 
-// require functions
+/*********************
+ * require functions *
+ *********************/
+
+// Triangles
 
 template <typename MeshType>
 void constexpr requireTriangleMesh();
+
 template <typename MeshType>
 void constexpr requireTriangleMesh(const MeshType&);
 
+// Quads
+
 template <typename MeshType>
 void constexpr requireQuadMesh();
+
 template <typename MeshType>
 void constexpr requireQuadMesh(const MeshType&);
 
+// Bounding Box
+
 template <typename MeshType>
 void constexpr requireBoundingBox();
+
 template <typename MeshType>
 void constexpr requireBoundingBox(const MeshType&);
 

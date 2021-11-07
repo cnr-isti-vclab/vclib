@@ -78,8 +78,11 @@ template<typename U, typename T>
 using ReturnIfHasOptionalScalar = prop::ReturnIfHasOptionalScalar<U, T>;
 
 /** Port OptionalAdjacentFaces class into face namespace **/
-template <typename Face, int N, typename T>
-using OptionalAdjacentFaces = prop::OptionalFaceReferences<Face, N, T>;
+template <typename T>
+using OptionalAdjacentFaces = prop::OptionalFaceReferences<T, -1, T>;
+
+template <typename T>
+using OptionalAdjacentTriangles = prop::OptionalFaceReferences<T, 3, T>;
 
 template <typename T>
 bool constexpr hasOptionalAdjacentFaces() {return prop::hasOptionalFaceReferences<T>();};
