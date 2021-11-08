@@ -21,23 +21,11 @@ void loadVerticesTxt(
 	const PlyHeader& header,
 	MeshType& mesh);
 
-template <typename A, typename B, typename C>
-bool loadVerticesTxt(
-		std::ifstream& file,
-		const PlyHeader& header,
-		A vertices[],
-		B vertexNormals[],
-		io::FileMeshInfo::ColorMode colorMod ,
-		C vertexColors[]);
-
-template <typename A, typename B, typename C>
-bool loadVerticesBin(
-		std::ifstream& file,
-		const PlyHeader& header,
-		A vertices[],
-		B vertexNormals[],
-		io::FileMeshInfo::ColorMode colorMod ,
-		C vertexColors[]);
+template <typename MeshType>
+void loadVerticesBin(
+	std::ifstream& file,
+	const PlyHeader& header,
+	MeshType& mesh);
 
 } //namespace mgp::ply::internal
 
@@ -47,14 +35,11 @@ void saveVertices(
 	const PlyHeader& header,
 	const MeshType& mesh);
 
-template <typename A, typename B, typename C>
-bool loadVertices(
+template <typename MeshType>
+void loadVertices(
 		std::ifstream& file,
 		const PlyHeader& header,
-		A vertices[],
-		B vertexNormals[],
-		io::FileMeshInfo::ColorMode colorMod ,
-		C vertexColors[]);
+		MeshType& mesh);
 
 } //namespace mgp::ply
 } //namespace mgp
