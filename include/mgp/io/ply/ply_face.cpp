@@ -30,134 +30,97 @@ void saveFaceIndices(
 
 // load
 
-template <typename MeshType, typename FaceType>
-void loadFaceIndicesTxt(
-	const mgp::Tokenizer&     spaceTokenizer,
-	mgp::Tokenizer::iterator& token,
-	Property                  p,
-	MeshType& m,
-	FaceType& f)
+template<typename MeshType>
+void loadFacesTxt(
+	std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
-	assert(p.list);
-	assert(token != spaceTokenizer.end());
-	uint fSize      = internal::readProperty<uint>(token, p.listSizeType);
-	if constexpr(FaceType::VERTEX_NUMBER < 0){
-		f.resizeVertices(fSize);
-	}
-	for (uint i = 0; i < fSize; ++i) {
-		assert(token != spaceTokenizer.end());
-		int vid = internal::readProperty<size_t>(token, p.type);
-		if (vid < 0)
-			f.v(i) = nullptr;
-		else
-			f.v(i) = &m.vertex(vid);
-	}
-}
-
-template<template<typename... Args> class Container, typename A, typename D>
-bool loadFaceIndicesTxt(
-	const mgp::Tokenizer&     spaceTokenizer,
-	mgp::Tokenizer::iterator& token,
-	Property                  p,
-	uint                      f,
-	Container<A>&             faces,
-	D                         polygonSizes[])
-{
-	if (!p.list)
-		return false;
-	if (token == spaceTokenizer.end())
-		return false;
-
-	uint fSize      = internal::readProperty<uint>(token, p.listSizeType);
-	polygonSizes[f] = fSize;
-	for (uint i = 0; i < fSize; ++i) {
-		if (token == spaceTokenizer.end())
-			return false;
-		faces.push_back(internal::readProperty<A>(token, p.type));
-	}
-	return true;
-}
-
-template<typename A, typename B, typename C, typename D>
-bool loadFacesTxt(
-	std::ifstream&              file,
-	const PlyHeader&            header,
-	A&                          faces,
-	io::FileMeshInfo::MeshType& meshType,
-	B                           faceNormals[],
-	io::FileMeshInfo::ColorMode colorMod,
-	C                           faceColors[],
-	D                           polygonSizes[])
-{
+	using FaceType = typename MeshType::Face;
 	bool error     = false;
-	uint colorStep = 3;
-	if (colorMod == io::FileMeshInfo::RGBA)
-		colorStep = 4;
 	mgp::Tokenizer spaceTokenizer;
-	error                          = !internal::nextLine(file, spaceTokenizer);
+
+	error = !internal::nextLine(file, spaceTokenizer);
+
 	mgp::Tokenizer::iterator token = spaceTokenizer.begin();
-	for (uint f = 0; f < header.numberFaces(); ++f) {
+
+	mesh.reserveFaces(header.numberFaces());
+	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
+		mesh.addFace();
+		FaceType& f = mesh.face(mesh.faceNumber() -1);
 		for (ply::Property p : header.faceProperties()) {
 			if (token == spaceTokenizer.end()) {
 				error = !nextLine(file, spaceTokenizer);
 				token = spaceTokenizer.begin();
 			}
 			if (error)
-				return false;
-			switch (p.name) {
-			case ply::nx: faceNormals[f * 3] = internal::readProperty<B>(token, p.type); break;
-			case ply::ny: faceNormals[f * 3 + 1] = internal::readProperty<B>(token, p.type); break;
-			case ply::nz: faceNormals[f * 3 + 2] = internal::readProperty<B>(token, p.type); break;
-			case ply::red:
-				faceColors[f * colorStep] = internal::readProperty<C>(token, p.type, true);
-				break;
-			case ply::green:
-				faceColors[f * colorStep + 1] = internal::readProperty<C>(token, p.type, true);
-				break;
-			case ply::blue:
-				faceColors[f * colorStep + 2] = internal::readProperty<C>(token, p.type, true);
-				break;
-			case ply::alpha:
-				if (colorStep == 4) { // alpha in file that will be saved
-					faceColors[f * colorStep + 3] = internal::readProperty<C>(token, p.type, true);
+				throw std::runtime_error("Malformed file");
+			bool hasBeenRead = false;
+			if (p.name == ply::vertex_indices) {
+				uint fSize = internal::readProperty<uint>(token, p.listSizeType);
+				bool splitFace = false;
+				if constexpr(FaceType::VERTEX_NUMBER < 0){
+					f.resizeVertices(fSize);
 				}
-				else { // alpha in file that will not be saved
-					++token;
+				else if (FaceType::VERTEX_NUMBER != fSize)
+					splitFace = true;
+				if (!splitFace) {
+					for (uint i = 0; i < fSize; ++i) {
+						assert(token != spaceTokenizer.end());
+						int vid = internal::readProperty<size_t>(token, p.type);
+						if (vid < 0)
+							f.v(i) = nullptr;
+						else
+							f.v(i) = &mesh.vertex(vid);
+					}
+					hasBeenRead = true;
 				}
-				break;
-			case ply::vertex_indices:
-				error = !loadFaceIndicesTxt(spaceTokenizer, token, p, f, faces, polygonSizes);
-				break;
-			default: // reading everything else with non-recognised name
+				else { // TODO: split face and then load properly n faces
+					for (uint i = 0; i < fSize; ++i) {
+						if (i < FaceType::VERTEX_NUMBER) {
+							assert(token != spaceTokenizer.end());
+							int vid = internal::readProperty<size_t>(token, p.type);
+							if (vid < 0)
+								f.v(i) = nullptr;
+							else
+								f.v(i) = &mesh.vertex(vid);
+						}
+						else {
+							internal::readProperty<size_t>(token, p.type);
+						}
+					}
+					hasBeenRead = true;
+				}
+			}
+			if (p.name >= ply::nx && p.name <= ply::nz) {
+				if constexpr (mgp::hasPerFaceNormal(mesh)) {
+					if (mgp::isPerFaceNormalEnabled(mesh)) {
+						using Scalar = typename FaceType::NormalType::ScalarType;
+						int a = p.name - ply::nx;
+						f.normal()[a] = internal::readProperty<Scalar>(token, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
+			if (p.name >= ply::red && p.name <= ply::alpha) {
+				if constexpr (mgp::hasPerFaceColor(mesh)) {
+					if (mgp::isPerFaceColorEnabled(mesh)) {
+						int a = p.name - ply::red;
+						f.color()[a] = internal::readProperty<unsigned char>(token, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
+			if (!hasBeenRead) {
 				if (p.list) {
 					uint s = internal::readProperty<int>(token, p.listSizeType);
 					for (uint i = 0; i < s; ++i)
-						internal::readProperty<int>(token, p.type);
+						++token;
 				}
 				else {
-					internal::readProperty<int>(token, p.type);
+					++token;
 				}
 			}
-			if (error)
-				return false;
-		}
-
-		if (f == 0) { // first face
-			if (polygonSizes[f] == 3)
-				meshType = io::FileMeshInfo::TRIANGLE_MESH;
-			else if (polygonSizes[f] == 3)
-				meshType = io::FileMeshInfo::QUAD_MESH;
-			else
-				meshType = io::FileMeshInfo::POLYGON_MESH;
-		}
-		else {
-			if (meshType == io::FileMeshInfo::TRIANGLE_MESH && polygonSizes[f] != 3)
-				meshType = io::FileMeshInfo::POLYGON_MESH;
-			else if (meshType == io::FileMeshInfo::QUAD_MESH && polygonSizes[f] != 4)
-				meshType = io::FileMeshInfo::POLYGON_MESH;
 		}
 	}
-	return true;
 }
 
 template<template<typename... Args> class Container, typename A, typename D>
@@ -289,24 +252,14 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 	}
 }
 
-template<typename A, typename B, typename C, typename D>
-bool loadFaces(
-	std::ifstream&              file,
-	const PlyHeader&            header,
-	A&                          faces,
-	io::FileMeshInfo::MeshType& meshType,
-	B                           faceNormals[],
-	io::FileMeshInfo::ColorMode colorMod,
-	C                           faceColors[],
-	D                           polygonSizes[])
+template<typename MeshType>
+void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	if (header.format() == ply::ASCII) {
-		return internal::loadFacesTxt(
-			file, header, faces, meshType, faceNormals, colorMod, faceColors, polygonSizes);
+		internal::loadFacesTxt(file, header, mesh);
 	}
 	else {
-		return internal::loadFacesBin(
-			file, header, faces, meshType, faceNormals, colorMod, faceColors, polygonSizes);
+		// todo
 	}
 }
 

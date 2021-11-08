@@ -156,7 +156,7 @@ Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted) const
 {
 	if (jumpDeleted) {
 		auto it = vertices.begin();
-		while (it->isDeleted()) {
+		while (it != vertices.end() && it->isDeleted()) {
 			++it;
 		}
 		return ConstVertexIterator(it, vertices, jumpDeleted);

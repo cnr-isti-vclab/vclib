@@ -15,11 +15,7 @@ void savePly(const MeshType& m, const std::string& filename, bool binary)
 }
 
 template<typename MeshType>
-void savePly(
-	const MeshType& m,
-	const std::string& filename,
-	const FileMeshInfo& info,
-	bool binary)
+void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary)
 {
 	ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, info);
 	header.setNumberVertices(m.vertexNumber());
@@ -28,11 +24,11 @@ void savePly(
 	savePly(m, filename, header);
 }
 
-template <typename MeshType>
+template<typename MeshType>
 void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeader& header)
 {
 	using VertexType = typename MeshType::Vertex;
-	using FaceType = typename MeshType::Face;
+	using FaceType   = typename MeshType::Face;
 
 	if (!header.isValid())
 		throw std::runtime_error("Ply Header not valid.");
@@ -40,14 +36,14 @@ void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeade
 	std::string plyfilename;
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
 	std::ofstream fp;
-	size_t lastindex = filename.find_last_of(".");
+	size_t        lastindex = filename.find_last_of(".");
 	if (lastindex != filename.size())
 		plyfilename = filename;
 	else
 		plyfilename = filename + ".ply";
 
-	fp.open (plyfilename);
-	if(!fp) {
+	fp.open(plyfilename);
+	if (!fp) {
 		throw mgp::CannotOpenFileException(plyfilename);
 	}
 	fp << header.toString();
@@ -61,4 +57,4 @@ void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeade
 	fp.close();
 }
 
-}
+} // namespace mgp::io

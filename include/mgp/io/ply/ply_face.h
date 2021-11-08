@@ -23,32 +23,11 @@ void saveFaceIndices(
 	const FaceType& f,
 	bool bin);
 
-template <typename FaceType>
-void loadFaceIndicesTxt(
-	const mgp::Tokenizer&     spaceTokenizer,
-	mgp::Tokenizer::iterator& token,
-	Property                  p,
-	FaceType& f);
-
-template<template<typename... Args> class Container, typename A, typename D>
-bool loadFaceIndicesTxt(
-	const mgp::Tokenizer&     spaceTokenizer,
-	mgp::Tokenizer::iterator& token,
-	Property                  p,
-	uint                      f,
-	Container<A>&             faces,
-	D                         polygonSizes[]);
-
-template<typename A, typename B, typename C, typename D>
-bool loadFacesTxt(
+template <typename MeshType>
+void loadFacesTxt(
 	std::ifstream&              file,
 	const PlyHeader&            header,
-	A&                          faces, // container with push_back method
-	io::FileMeshInfo::MeshType& meshType,
-	B                           faceNormals[],
-	io::FileMeshInfo::ColorMode colorMod,
-	C                           faceColors[],
-	D                           polygonSizes[]);
+	MeshType& m);
 
 template<template<typename... Args> class Container, typename A, typename D>
 bool loadFaceIndicesBin(
@@ -74,16 +53,8 @@ bool loadFacesBin(
 template<typename MeshType>
 void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh);
 
-template<typename A, typename B, typename C, typename D>
-bool loadFaces(
-	std::ifstream&              file,
-	const PlyHeader&            header,
-	A&                          faces,
-	io::FileMeshInfo::MeshType& meshType,
-	B                           faceNormals[],
-	io::FileMeshInfo::ColorMode colorMod,
-	C                           faceColors[],
-	D                           polygonSizes[]);
+template<typename MeshType>
+void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
 
 } // namespace ply
 } // namespace mgp

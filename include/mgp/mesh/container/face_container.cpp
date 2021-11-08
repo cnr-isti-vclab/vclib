@@ -156,7 +156,7 @@ Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted) const
 {
 	if (jumpDeleted) {
 		auto it = faces.begin();
-		while (it->isDeleted()) {
+		while (it != faces.end() && it->isDeleted()) {
 			++it;
 		}
 		return ConstFaceIterator(it, faces, jumpDeleted);
