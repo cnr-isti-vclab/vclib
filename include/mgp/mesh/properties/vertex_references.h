@@ -57,6 +57,12 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int U = N>
+	internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n)
+	{
+		Base::resizeElements(n);
+	}
+
+	template<int U = N>
 	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v)
 	{
 		Base::pushElement(v);

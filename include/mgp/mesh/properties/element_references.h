@@ -87,6 +87,9 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int U = N>
+	internal::ReturnIfIsVector<U, void> resizeElements(unsigned int n);
+
+	template<int U = N>
 	internal::ReturnIfIsVector<U, void> pushElement(Elem* v);
 
 	template<int U = N>

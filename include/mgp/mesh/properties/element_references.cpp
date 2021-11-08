@@ -101,6 +101,13 @@ internal::ReturnIfIsVector<U, void> ElementReferences<Elem, N>::pushElement(Elem
 
 template<class Elem, int N>
 template<int U>
+internal::ReturnIfIsVector<U, void> ElementReferences<Elem, N>::resizeElements(unsigned int n)
+{
+	elemRefs.resize(n);
+}
+
+template<class Elem, int N>
+template<int U>
 internal::ReturnIfIsVector<U, void>
 ElementReferences<Elem, N>::insertElement(unsigned int i, Elem* v)
 {

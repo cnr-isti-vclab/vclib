@@ -64,6 +64,12 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int U = N>
+	internal::ReturnIfIsVector<U, void> resizeFaces(unsigned int n)
+	{
+		Base::resizeElements(n);
+	}
+
+	template<int U = N>
 	internal::ReturnIfIsVector<U, void> pushFace(Face* f)
 	{
 		Base::pushElement(f);

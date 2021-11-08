@@ -11,41 +11,6 @@ namespace ply {
 
 namespace internal {
 
-template<typename A, typename D>
-void saveFaceIndices(
-	std::ofstream&          file,
-	Property                p,
-	uint                    f,
-	uint&                   startingIndex,
-	const A                 faces[],
-	const io::FileMeshInfo& meshType,
-	const D                 polygonSizes[],
-	bool                    bin)
-{
-	assert(p.list);
-
-	uint fsize;
-	if (meshType.isTriangleMesh()) {
-		fsize         = 3;
-		startingIndex = f * 3;
-	}
-	else if (meshType.isQuadMesh()) {
-		fsize         = 4;
-		startingIndex = f * 4;
-	}
-	else {
-		fsize = polygonSizes[f];
-	}
-
-	internal::writeProperty(file, fsize, p.listSizeType, bin);
-
-	for (uint k = 0; k < fsize; ++k)
-		internal::writeProperty(file, faces[startingIndex + k], p.type, bin);
-
-	if (meshType.isPolygonMesh())
-		startingIndex += polygonSizes[f];
-}
-
 template<typename MeshType, typename FaceType>
 void saveFaceIndices(
 	std::ofstream&  file,
@@ -64,6 +29,30 @@ void saveFaceIndices(
 }
 
 // load
+
+template <typename MeshType, typename FaceType>
+void loadFaceIndicesTxt(
+	const mgp::Tokenizer&     spaceTokenizer,
+	mgp::Tokenizer::iterator& token,
+	Property                  p,
+	MeshType& m,
+	FaceType& f)
+{
+	assert(p.list);
+	assert(token != spaceTokenizer.end());
+	uint fSize      = internal::readProperty<uint>(token, p.listSizeType);
+	if constexpr(FaceType::VERTEX_NUMBER < 0){
+		f.resizeVertices(fSize);
+	}
+	for (uint i = 0; i < fSize; ++i) {
+		assert(token != spaceTokenizer.end());
+		int vid = internal::readProperty<size_t>(token, p.type);
+		if (vid < 0)
+			f.v(i) = nullptr;
+		else
+			f.v(i) = &m.vertex(vid);
+	}
+}
 
 template<template<typename... Args> class Container, typename A, typename D>
 bool loadFaceIndicesTxt(

@@ -15,17 +15,6 @@ namespace ply {
 
 namespace internal {
 
-template<typename A, typename D>
-void saveFaceIndices(
-	std::ofstream&          file,
-	Property                p,
-	uint                    f,
-	uint&                   startingIndex,
-	const A                 faces[],
-	const io::FileMeshInfo& meshType,
-	const D                 polygonSizes[],
-	bool                    bin);
-
 template<typename MeshType, typename FaceType>
 void saveFaceIndices(
 	std::ofstream&  file,
@@ -33,6 +22,13 @@ void saveFaceIndices(
 	const MeshType& m,
 	const FaceType& f,
 	bool bin);
+
+template <typename FaceType>
+void loadFaceIndicesTxt(
+	const mgp::Tokenizer&     spaceTokenizer,
+	mgp::Tokenizer::iterator& token,
+	Property                  p,
+	FaceType& f);
 
 template<template<typename... Args> class Container, typename A, typename D>
 bool loadFaceIndicesTxt(
