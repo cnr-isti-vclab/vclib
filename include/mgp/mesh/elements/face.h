@@ -21,22 +21,6 @@ class FaceOptionalContainer;
 
 } // namespace mgp::mesh
 
-namespace mgp::face {
-
-/**
- * @brief The Property fallback class, will be used when the template argument given to the Face
- * is not one of the known Properties.
- *
- * This class will just make the given template argument a Base of the Face, becoming a feature of
- * the Face.
- */
-template<class T>
-class Property : public T
-{
-};
-
-} // namespace mgp::face
-
 namespace mgp {
 
 // Dummy class used to detect the a mgp::Face regardless of its template arguments
@@ -45,7 +29,7 @@ class FaceTriggerer
 };
 
 template<class... Args>
-class Face : public FaceTriggerer, public face::Property<Args>...
+class Face : public FaceTriggerer, public Args...
 {
 	template<typename, typename>
 	friend class mesh::Container;

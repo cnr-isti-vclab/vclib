@@ -21,22 +21,6 @@ class VertexOptionalContainer;
 
 } // namespace mgp::mesh
 
-namespace mgp::vert {
-
-/**
- * @brief The Property fallback class, will be used when the template argument given to the Vertex
- * is not one of the known Properties.
- *
- * This class will just make the given template argument a Base of the Vertex, becoming a feature of
- * the Vertex.
- */
-template<class T>
-class Property : public T
-{
-};
-
-} // namespace mgp::vert
-
 namespace mgp {
 
 // Dummy class used to detect the a mgp::Vertex regardless of its template arguments
@@ -45,7 +29,7 @@ class VertexTriggerer
 };
 
 template<class... Args>
-class Vertex : public VertexTriggerer, public vert::Property<Args>...
+class Vertex : public VertexTriggerer, public Args...
 {
 	template<typename, typename>
 	friend class mesh::Container;
