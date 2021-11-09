@@ -7,35 +7,12 @@ inline FileMeshInfo::FileMeshInfo() : mode(0), type(TRIANGLE_MESH)
 {
 }
 
-inline FileMeshInfo::FileMeshInfo(
-	MeshType ft,
-	bool     vn,
-	bool     vc,
-	bool     fn,
-	bool     fc,
-	bool     e,
-	bool     ec) :
-		mode(0), type(ft)
-{
-	if (vn)
-		setVertexNormals();
-	if (vc)
-		setVertexColors();
-	if (fn)
-		setFaceNormals();
-	if (fc)
-		setFaceColors();
-	if (e)
-		setEdges();
-	if (ec)
-		setEdgeColors();
-}
-
 template<typename Mesh>
 FileMeshInfo::FileMeshInfo(const Mesh& m) :
 		mode(0), type(POLYGON_MESH)
 {
 	if (mgp::hasVertices(m)){
+		setVertices();
 		setVertexCoords();
 		if (mgp::isPerVertexNormalEnabled(m))
 			setVertexNormals();
@@ -44,6 +21,7 @@ FileMeshInfo::FileMeshInfo(const Mesh& m) :
 	}
 
 	if (mgp::hasFaces(m)){
+		setFaces();
 		setFaceVRefs();
 		if (mgp::hasTriangles(m))
 			setTriangleMesh();
@@ -73,62 +51,62 @@ inline bool FileMeshInfo::isPolygonMesh() const
 
 inline bool FileMeshInfo::hasVertices() const
 {
-	return hasVertexCoords() || hasVertexNormals() || hasVertexColors();
+	return mode[VERTICES];
 }
 
 inline bool FileMeshInfo::hasFaces() const
 {
-	return hasFaceVRefs() || hasFaceNormals() || hasFaceColors();
+	return mode[FACES];
 }
 
 inline bool FileMeshInfo::hasVertexCoords() const
 {
-	return mode & VERTEX_COORDS;
+	return mode[VERTEX_COORDS];
 }
 
 inline bool FileMeshInfo::hasVertexNormals() const
 {
-	return mode & VERTEX_NORMALS;
+	return mode[VERTEX_NORMALS];
 }
 
 inline bool FileMeshInfo::hasVertexColors() const
 {
-	return mode & VERTEX_COLORS;
+	return mode[VERTEX_COLORS];
 }
 
 bool FileMeshInfo::hasVertexScalar() const
 {
-	return mode & VERTEX_SCALAR;
+	return mode[VERTEX_SCALAR];
 }
 
 inline bool FileMeshInfo::hasFaceVRefs() const
 {
-	return mode & FACE_VREFS;
+	return mode[FACE_VREFS];
 }
 
 inline bool FileMeshInfo::hasFaceNormals() const
 {
-	return mode & FACE_NORMALS;
+	return mode[FACE_NORMALS];
 }
 
 inline bool FileMeshInfo::hasFaceColors() const
 {
-	return mode & FACE_COLORS;
+	return mode[FACE_COLORS];
 }
 
 bool FileMeshInfo::hasFaceScalar() const
 {
-	return mode & FACE_SCALAR;
+	return mode[FACE_SCALAR];
 }
 
 inline bool FileMeshInfo::hasEdges() const
 {
-	return mode & EDGES;
+	return mode[EDGES];
 }
 
 inline bool FileMeshInfo::hasEdgeColors() const
 {
-	return mode & EDGE_COLORS;
+	return mode[EDGE_COLORS];
 }
 
 inline void FileMeshInfo::setTriangleMesh()
@@ -151,59 +129,69 @@ inline void FileMeshInfo::setMeshType(MeshType t)
 	type = t;
 }
 
+inline void FileMeshInfo::setVertices()
+{
+	mode[VERTICES] = true;
+}
+
 inline void FileMeshInfo::setVertexCoords()
 {
-	mode |= VERTEX_COORDS;
+	mode[VERTEX_COORDS] = true;
 }
 
 inline void FileMeshInfo::setVertexNormals()
 {
-	mode |= VERTEX_NORMALS;
+	mode[VERTEX_NORMALS] = true;
 }
 
 inline void FileMeshInfo::setVertexColors()
 {
-	mode |= VERTEX_COLORS;
+	mode[VERTEX_COLORS] = true;
 }
 
 inline void FileMeshInfo::setVertexScalar()
 {
-	mode |= VERTEX_SCALAR;
+	mode[VERTEX_SCALAR] = true;
+}
+
+void FileMeshInfo::setFaces()
+{
+	mode[FACES] = true;
 }
 
 inline void FileMeshInfo::setFaceVRefs()
 {
-	mode |= FACE_VREFS;
+	mode[FACE_VREFS] = true;
 }
 
 inline void FileMeshInfo::setFaceNormals()
 {
-	mode |= FACE_NORMALS;
+	mode[FACE_NORMALS] = true;
 }
 
 inline void FileMeshInfo::setFaceColors()
 {
-	mode |= FACE_COLORS;
+	mode[FACE_COLORS] = true;
 }
 
 void FileMeshInfo::setFaceScalar()
 {
-	mode |= FACE_SCALAR;
+	mode[FACE_SCALAR] = true;
 }
 
 inline void FileMeshInfo::setEdges()
 {
-	mode |= EDGES;
+	mode[EDGES] = true;
 }
 
 inline void FileMeshInfo::setEdgeColors()
 {
-	mode |= EDGE_COLORS;
+	mode[EDGE_COLORS] = true;
 }
 
 inline void FileMeshInfo::reset()
 {
-	mode = 0;
+	mode.reset();
 	type = TRIANGLE_MESH;
 }
 

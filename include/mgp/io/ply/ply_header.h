@@ -84,6 +84,7 @@ private:
 	std::vector<ply::Element> elements;
 	bool valid;
 	int v, f, e; // say which is the id in the elements vector for vertices, faces and edges
+	int nextElementID = 0;
 };
 
 } //namespace mgp::ply

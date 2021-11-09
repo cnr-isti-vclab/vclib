@@ -9,6 +9,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <bitset>
 
 namespace mgp::io {
 
@@ -21,19 +22,10 @@ namespace mgp::io {
 class FileMeshInfo
 {
 public:
-	typedef enum { RGB, RGBA } ColorMode;
-
 	typedef enum { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH } MeshType;
 
 	FileMeshInfo();
-	FileMeshInfo(
-		MeshType ft,
-		bool         vn,
-		bool         vc,
-		bool         fn,
-		bool         fc,
-		bool         e  = false,
-		bool         ec = false);
+
 	template<typename Mesh>
 	FileMeshInfo(const Mesh& m);
 
@@ -57,10 +49,12 @@ public:
 	void setQuadMesh();
 	void setPolygonMesh();
 	void setMeshType(MeshType t);
+	void setVertices();
 	void setVertexCoords();
 	void setVertexNormals();
 	void setVertexColors();
 	void setVertexScalar();
+	void setFaces();
 	void setFaceVRefs();
 	void setFaceNormals();
 	void setFaceColors();
@@ -72,18 +66,21 @@ public:
 
 private:
 	typedef enum {
-		VERTEX_COORDS  = 1 << 0,
-		VERTEX_NORMALS = 1 << 1,
-		VERTEX_COLORS  = 1 << 2,
-		VERTEX_SCALAR  = 1 << 3,
-		FACE_VREFS     = 1 << 4,
-		FACE_NORMALS   = 1 << 5,
-		FACE_COLORS    = 1 << 6,
-		FACE_SCALAR    = 1 << 7,
-		EDGES          = 1 << 8,
-		EDGE_COLORS    = 1 << 9
+		VERTICES = 0,
+		VERTEX_COORDS,
+		VERTEX_NORMALS,
+		VERTEX_COLORS,
+		VERTEX_SCALAR,
+		FACES,
+		FACE_VREFS,
+		FACE_NORMALS,
+		FACE_COLORS,
+		FACE_SCALAR,
+		EDGES,
+		EDGE_COLORS,
+		NUM_MODES
 	} FMM;
-	int          mode;
+	std::bitset<NUM_MODES> mode;
 	MeshType type;
 };
 
