@@ -123,65 +123,71 @@ void loadFacesTxt(
 	}
 }
 
-template<template<typename... Args> class Container, typename A, typename D>
-bool loadFaceIndicesBin(
-	std::ifstream& file,
-	Property       p,
-	uint           f,
-	Container<A>&  faces,
-	D              polygonSizes[])
+template<typename MeshType>
+void loadFacesBin(
+	std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
-	if (!p.list)
-		return false;
-
-	uint fsize;
-	fsize           = internal::readProperty<uint>(file, p.listSizeType);
-	polygonSizes[f] = fsize;
-
-	for (uint k = 0; k < fsize; ++k)
-		faces.push_back(internal::readProperty<A>(file, p.type));
-
-	return true;
-}
-
-template<typename A, typename B, typename C, typename D>
-bool loadFacesBin(
-	std::ifstream&              file,
-	const PlyHeader&            header,
-	A&                          faces,
-	io::FileMeshInfo::MeshType& meshType,
-	B                           faceNormals[],
-	io::FileMeshInfo::ColorMode colorMod,
-	C                           faceColors[],
-	D                           polygonSizes[])
-{
-	uint colorStep = 3;
-	if (colorMod == io::FileMeshInfo::RGBA)
-		colorStep = 4;
-	for (uint f = 0; f < header.numberFaces(); ++f) {
+	using FaceType = typename MeshType::Face;
+	mesh.reserveFaces(header.numberFaces());
+	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
+		mesh.addFace();
+		FaceType& f = mesh.face(mesh.faceNumber() -1);
 		for (ply::Property p : header.faceProperties()) {
-			switch (p.name) {
-			case ply::nx: faceNormals[f * 3] = internal::readProperty<B>(file, p.type); break;
-			case ply::ny: faceNormals[f * 3 + 1] = internal::readProperty<B>(file, p.type); break;
-			case ply::nz: faceNormals[f * 3 + 2] = internal::readProperty<B>(file, p.type); break;
-			case ply::red:
-				faceColors[f * colorStep] = internal::readProperty<C>(file, p.type);
-				break;
-			case ply::green:
-				faceColors[f * colorStep + 1] = internal::readProperty<C>(file, p.type);
-				break;
-			case ply::blue:
-				faceColors[f * colorStep + 2] = internal::readProperty<C>(file, p.type);
-				break;
-			case ply::alpha:
-				if (colorStep == 4)
-					faceColors[f * colorStep + 3] = internal::readProperty<C>(file, p.type);
-				else
-					internal::readProperty<C>(file, p.type);
-				;
-				break;
-			case ply::vertex_indices: loadFaceIndicesBin(file, p, f, faces, polygonSizes); break;
-			default:
+			bool hasBeenRead = false;
+			if (p.name == ply::vertex_indices) {
+				uint fSize = internal::readProperty<uint>(file, p.listSizeType);
+				bool splitFace = false;
+				if constexpr(FaceType::VERTEX_NUMBER < 0){
+					f.resizeVertices(fSize);
+				}
+				else if (FaceType::VERTEX_NUMBER != fSize)
+					splitFace = true;
+				if (!splitFace) {
+					for (uint i = 0; i < fSize; ++i) {
+						int vid = internal::readProperty<size_t>(file, p.type);
+						if (vid < 0)
+							f.v(i) = nullptr;
+						else
+							f.v(i) = &mesh.vertex(vid);
+					}
+					hasBeenRead = true;
+				}
+				else { // TODO: split face and then load properly n faces
+					for (uint i = 0; i < fSize; ++i) {
+						if (i < FaceType::VERTEX_NUMBER) {
+							int vid = internal::readProperty<size_t>(file, p.type);
+							if (vid < 0)
+								f.v(i) = nullptr;
+							else
+								f.v(i) = &mesh.vertex(vid);
+						}
+						else {
+							internal::readProperty<size_t>(file, p.type);
+						}
+					}
+					hasBeenRead = true;
+				}
+			}
+			if (p.name >= ply::nx && p.name <= ply::nz) {
+				if constexpr (mgp::hasPerFaceNormal(mesh)) {
+					if (mgp::isPerFaceNormalEnabled(mesh)) {
+						using Scalar = typename FaceType::NormalType::ScalarType;
+						int a = p.name - ply::nx;
+						f.normal()[a] = internal::readProperty<Scalar>(file, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
+			if (p.name >= ply::red && p.name <= ply::alpha) {
+				if constexpr (mgp::hasPerFaceColor(mesh)) {
+					if (mgp::isPerFaceColorEnabled(mesh)) {
+						int a = p.name - ply::red;
+						f.color()[a] = internal::readProperty<unsigned char>(file, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
+			if (!hasBeenRead) {
 				if (p.list) {
 					uint s = internal::readProperty<int>(file, p.listSizeType);
 					for (uint i = 0; i < s; ++i)
@@ -192,22 +198,7 @@ bool loadFacesBin(
 				}
 			}
 		}
-		if (f == 0) { // modify meshType
-			if (polygonSizes[f] == 3)
-				meshType = io::FileMeshInfo::TRIANGLE_MESH;
-			else if (polygonSizes[f] == 3)
-				meshType = io::FileMeshInfo::QUAD_MESH;
-			else
-				meshType = io::FileMeshInfo::POLYGON_MESH;
-		}
-		else {
-			if (meshType == io::FileMeshInfo::TRIANGLE_MESH && polygonSizes[f] != 3)
-				meshType = io::FileMeshInfo::POLYGON_MESH;
-			else if (meshType == io::FileMeshInfo::QUAD_MESH && polygonSizes[f] != 4)
-				meshType = io::FileMeshInfo::POLYGON_MESH;
-		}
 	}
-	return true;
 }
 
 } // namespace internal
@@ -259,7 +250,7 @@ void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 		internal::loadFacesTxt(file, header, mesh);
 	}
 	else {
-		// todo
+		internal::loadFacesBin(file, header, mesh);
 	}
 }
 

@@ -29,24 +29,11 @@ void loadFacesTxt(
 	const PlyHeader&            header,
 	MeshType& m);
 
-template<template<typename... Args> class Container, typename A, typename D>
-bool loadFaceIndicesBin(
-	std::ifstream& file,
-	Property       p,
-	uint           f,
-	Container<A>&  faces,
-	D              polygonSizes[]);
-
-template<typename A, typename B, typename C, typename D>
-bool loadFacesBin(
+template <typename MeshType>
+void loadFacesBin(
 	std::ifstream&              file,
 	const PlyHeader&            header,
-	A&                          faces, // container with push_back method
-	io::FileMeshInfo::MeshType& meshType,
-	B                           faceNormals[],
-	io::FileMeshInfo::ColorMode colorMod,
-	C                           faceColors[],
-	D                           polygonSizes[]);
+	MeshType& m);
 
 } // namespace internal
 
