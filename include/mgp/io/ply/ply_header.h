@@ -75,7 +75,6 @@ private:
 	ply::Element readElement(const mgp::Tokenizer& lineTokenizer) const;
 	ply::Property readProperty(const mgp::Tokenizer& lineTokenizer) const;
 	ply::PropertyName stringToName(const std::string &name) const;
-	ply::PropertyName stringToListName(const std::string &name) const;
 	ply::PropertyType stringToType(const std::string &type) const;
 	std::string nameToString(ply::PropertyName n) const;
 	std::string typeToString(ply::PropertyType t) const;

@@ -34,13 +34,13 @@ typedef enum {
 	vertex1,
 	vertex2
 } PropertyName;
-typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE } PropertyType;
+typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, NONE } PropertyType;
 
 struct Property
 {
 	PropertyName name;
 	PropertyType type;
-	bool         list;
+	bool         list = false;
 	PropertyType listSizeType;
 	std::string  unknownPropertyName;  // used when a property is not recognized
 };

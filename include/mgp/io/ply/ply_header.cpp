@@ -147,7 +147,7 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 			case ply::green:
 			case ply::blue:
 			case ply::alpha: mod.setVertexColors(); break;
-			case ply::scalar: mod.setVertexScalar(); break;
+			case ply::scalar: mod.setVertexScalars(); break;
 			default: break;
 			}
 		}
@@ -164,7 +164,7 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 			case ply::green:
 			case ply::blue:
 			case ply::alpha: mod.setFaceColors(); break;
-			case ply::scalar: mod.setFaceScalar(); break;
+			case ply::scalar: mod.setFaceScalars(); break;
 			default: break;
 			}
 		}
@@ -260,58 +260,47 @@ inline void PlyHeader::setInfo(const io::FileMeshInfo& info, bool binary)
 		vElem.type = ply::VERTEX;
 		if (info.hasVertexCoords()) {
 			ply::Property px, py, pz;
-			px.list = false;
 			px.name = x;
-			px.type = DOUBLE;
-			py.list = false;
+			px.type = (PropertyType)info.vertexCoordsType();
 			py.name = y;
-			py.type = DOUBLE;
-			pz.list = false;
+			py.type = (PropertyType)info.vertexCoordsType();
 			pz.name = z;
-			pz.type = DOUBLE;
+			pz.type = (PropertyType)info.vertexCoordsType();
 			vElem.properties.push_back(px);
 			vElem.properties.push_back(py);
 			vElem.properties.push_back(pz);
 		}
 		if (info.hasVertexNormals()) {
 			ply::Property vnx, vny, vnz;
-			vnx.list = false;
 			vnx.name = nx;
-			vnx.type = FLOAT;
-			vny.list = false;
+			vnx.type = (PropertyType)info.vertexNormalsType();
 			vny.name = ny;
-			vny.type = FLOAT;
-			vnz.list = false;
+			vny.type = (PropertyType)info.vertexNormalsType();
 			vnz.name = nz;
-			vnz.type = FLOAT;
+			vnz.type = (PropertyType)info.vertexNormalsType();
 			vElem.properties.push_back(vnx);
 			vElem.properties.push_back(vny);
 			vElem.properties.push_back(vnz);
 		}
 		if (info.hasVertexColors()) {
 			ply::Property vcr, vcg, vcb, vca;
-			vcr.list = false;
 			vcr.name = red;
-			vcr.type = UCHAR;
-			vcg.list = false;
+			vcr.type = (PropertyType)info.vertexColorsType();
 			vcg.name = green;
-			vcg.type = UCHAR;
-			vcb.list = false;
+			vcg.type = (PropertyType)info.vertexColorsType();
 			vcb.name = blue;
-			vcb.type = UCHAR;
-			vca.list = false;
+			vcb.type = (PropertyType)info.vertexColorsType();
 			vca.name = alpha;
-			vca.type = UCHAR;
+			vca.type = (PropertyType)info.vertexColorsType();
 			vElem.properties.push_back(vcr);
 			vElem.properties.push_back(vcg);
 			vElem.properties.push_back(vcb);
 			vElem.properties.push_back(vca);
 		}
-		if (info.hasVertexScalar()) {
+		if (info.hasVertexScalars()) {
 			ply::Property vs;
-			vs.list = false;
 			vs.name = scalar;
-			vs.type = FLOAT;
+			vs.type = (PropertyType)info.vertexScalarsType();
 			vElem.properties.push_back(vs);
 		}
 		elements.push_back(vElem);
@@ -330,43 +319,35 @@ inline void PlyHeader::setInfo(const io::FileMeshInfo& info, bool binary)
 		}
 		if (info.hasFaceNormals()) {
 			ply::Property fnx, fny, fnz;
-			fnx.list = false;
 			fnx.name = nx;
-			fnx.type = FLOAT;
-			fny.list = false;
+			fnx.type = (PropertyType)info.faceNormalsType();
 			fny.name = ny;
-			fny.type = FLOAT;
-			fnz.list = false;
+			fny.type = (PropertyType)info.faceNormalsType();
 			fnz.name = nz;
-			fnz.type = FLOAT;
+			fnz.type = (PropertyType)info.faceNormalsType();
 			fElem.properties.push_back(fnx);
 			fElem.properties.push_back(fny);
 			fElem.properties.push_back(fnz);
 		}
 		if (info.hasFaceColors()) {
 			ply::Property fcr, fcg, fcb, fca;
-			fcr.list = false;
 			fcr.name = red;
-			fcr.type = UCHAR;
-			fcg.list = false;
+			fcr.type = (PropertyType)info.faceColorsType();
 			fcg.name = green;
-			fcg.type = UCHAR;
-			fcb.list = false;
+			fcg.type = (PropertyType)info.faceColorsType();
 			fcb.name = blue;
-			fcb.type = UCHAR;
-			fca.list = false;
+			fcb.type = (PropertyType)info.faceColorsType();
 			fca.name = alpha;
-			fca.type = UCHAR;
+			fca.type = (PropertyType)info.faceColorsType();
 			fElem.properties.push_back(fcr);
 			fElem.properties.push_back(fcg);
 			fElem.properties.push_back(fcb);
 			fElem.properties.push_back(fca);
 		}
-		if (info.hasFaceScalar()) {
+		if (info.hasFaceScalars()) {
 			ply::Property fs;
-			fs.list = false;
 			fs.name = scalar;
-			fs.type = FLOAT;
+			fs.type = (PropertyType)info.faceScalarsType();
 			fElem.properties.push_back(fs);
 		}
 		elements.push_back(fElem);
@@ -394,7 +375,7 @@ inline std::string PlyHeader::toString() const
 		case FACE: s += "face " + std::to_string(e.numberElements) + "\n"; break;
 		case EDGE: s += "edge " + std::to_string(e.numberElements) + "\n"; break;
 		case MATERIAL: s += "material " + std::to_string(e.numberElements) + "\n"; break;
-		case OTHER: break;
+		case OTHER: s += e.unknownElementType + " " + std::to_string(e.numberElements) + "\n"; break;
 		}
 		for (Property p : e.properties) {
 			s += "property ";
@@ -480,8 +461,10 @@ inline ply::Element PlyHeader::readElement(const Tokenizer& lineTokenizer) const
 		e.type           = ply::EDGE;
 		e.numberElements = std::stoi(*(++token));
 	}
-	else
+	else {
 		e.type = ply::OTHER;
+		e.unknownElementType = s;
+	}
 	return e;
 }
 
@@ -497,7 +480,9 @@ inline ply::Property PlyHeader::readProperty(const mgp::Tokenizer& lineTokenizer
 		std::string name     = *(++token);
 		p.listSizeType       = stringToType(typeSize);
 		p.type               = stringToType(typeData);
-		p.name               = stringToListName(name);
+		p.name               = stringToName(name);
+		if (p.name == unknown)
+			p.unknownPropertyName = name;
 	}
 	else {
 		p.list           = false;
@@ -540,12 +525,6 @@ inline ply::PropertyName PlyHeader::stringToName(const std::string& name) const
 		pn = ply::vertex1;
 	if (name == "vertex2")
 		pn = ply::vertex2;
-	return pn;
-}
-
-inline ply::PropertyName PlyHeader::stringToListName(const std::string& name) const
-{
-	ply::PropertyName pn = ply::unknown;
 	if (name == "vertex_indices")
 		pn = ply::vertex_indices;
 	return pn;
@@ -605,8 +584,8 @@ inline std::string PlyHeader::typeToString(PropertyType t) const
 	case ply::UINT: return "uint";
 	case ply::FLOAT: return "float";
 	case ply::DOUBLE: return "double";
+	case ply::NONE: return "";
 	}
-	return "";
 }
 
 } // namespace ply

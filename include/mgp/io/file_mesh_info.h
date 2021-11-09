@@ -6,6 +6,7 @@
 #ifndef MGP_IO_FILE_MESH_INFO_H
 #define MGP_IO_FILE_MESH_INFO_H
 
+#include <array>
 #include <list>
 #include <string>
 #include <vector>
@@ -24,6 +25,9 @@ class FileMeshInfo
 public:
 	typedef enum { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH } MeshType;
 
+	// Properties types, useful to set which type in binary files should be used to save a property
+	typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, UNKNOWN } PropType;
+
 	FileMeshInfo();
 
 	template<typename Mesh>
@@ -37,11 +41,11 @@ public:
 	bool hasVertexCoords() const;
 	bool hasVertexNormals() const;
 	bool hasVertexColors() const;
-	bool hasVertexScalar() const;
+	bool hasVertexScalars() const;
 	bool hasFaceVRefs() const;
 	bool hasFaceNormals() const;
 	bool hasFaceColors() const;
-	bool hasFaceScalar() const;
+	bool hasFaceScalars() const;
 	bool hasEdges() const;
 	bool hasEdgeColors() const;
 
@@ -50,22 +54,31 @@ public:
 	void setPolygonMesh();
 	void setMeshType(MeshType t);
 	void setVertices();
-	void setVertexCoords();
-	void setVertexNormals();
-	void setVertexColors();
-	void setVertexScalar();
+	void setVertexCoords(PropType t = DOUBLE);
+	void setVertexNormals(PropType t = FLOAT);
+	void setVertexColors(PropType t = CHAR);
+	void setVertexScalars(PropType t = DOUBLE);
 	void setFaces();
 	void setFaceVRefs();
-	void setFaceNormals();
-	void setFaceColors();
-	void setFaceScalar();
+	void setFaceNormals(PropType t = FLOAT);
+	void setFaceColors(PropType t = CHAR);
+	void setFaceScalars(PropType t = DOUBLE);
 	void setEdges();
-	void setEdgeColors();
+	void setEdgeColors(PropType t = CHAR);
+
+	PropType vertexCoordsType() const;
+	PropType vertexNormalsType() const;
+	PropType vertexColorsType() const;
+	PropType vertexScalarsType() const;
+	PropType faceNormalsType() const;
+	PropType faceColorsType() const;
+	PropType faceScalarsType() const;
+	PropType edgeColorsType() const;
 
 	void reset();
 
 private:
-	typedef enum {
+	enum {
 		VERTICES = 0,
 		VERTEX_COORDS,
 		VERTEX_NORMALS,
@@ -79,9 +92,13 @@ private:
 		EDGES,
 		EDGE_COLORS,
 		NUM_MODES
-	} FMM;
-	std::bitset<NUM_MODES> mode;
-	MeshType type;
+	};
+	std::bitset<NUM_MODES> mode = {false};
+	std::array<PropType, NUM_MODES> modeTypes = {UNKNOWN};
+	MeshType type = POLYGON_MESH;
+
+	template<typename T>
+	static PropType getPropType();
 };
 
 } // namespace mgp::io
