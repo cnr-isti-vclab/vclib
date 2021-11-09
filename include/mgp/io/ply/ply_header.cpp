@@ -586,6 +586,7 @@ inline std::string PlyHeader::typeToString(PropertyType t) const
 	case ply::DOUBLE: return "double";
 	case ply::NONE: return "";
 	}
+	return "";
 }
 
 } // namespace ply
