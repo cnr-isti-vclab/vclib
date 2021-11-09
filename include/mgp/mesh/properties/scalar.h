@@ -17,6 +17,7 @@ class ScalarTrigger
 template<typename T>
 class Scalar : public ScalarTrigger
 {
+public:
 	using ScalarType = T;
 
 	const ScalarType& scalar() const { return s; }

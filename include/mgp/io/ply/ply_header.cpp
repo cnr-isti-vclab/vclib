@@ -142,6 +142,7 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 		case ply::green:
 		case ply::blue:
 		case ply::alpha: mod.setVertexColors(); break;
+		case ply::scalar: mod.setVertexScalar(); break;
 		default: break;
 		}
 	}
@@ -154,6 +155,7 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 		case ply::green:
 		case ply::blue:
 		case ply::alpha: mod.setFaceColors(); break;
+		case ply::scalar: mod.setFaceScalar(); break;
 		default: break;
 		}
 	}
@@ -308,6 +310,13 @@ inline void PlyHeader::setInfo(const io::FileMeshInfo& info, bool binary)
 			vElem.properties.push_back(vcb);
 			vElem.properties.push_back(vca);
 		}
+		if (info.hasVertexScalar()) {
+			ply::Property vs;
+			vs.list = false;
+			vs.name = scalar;
+			vs.type = FLOAT;
+			vElem.properties.push_back(vs);
+		}
 		elements.push_back(vElem);
 	}
 	if (info.hasFaces()) {
@@ -355,6 +364,13 @@ inline void PlyHeader::setInfo(const io::FileMeshInfo& info, bool binary)
 			fElem.properties.push_back(fcg);
 			fElem.properties.push_back(fcb);
 			fElem.properties.push_back(fca);
+		}
+		if (info.hasFaceScalar()) {
+			ply::Property fs;
+			fs.list = false;
+			fs.name = scalar;
+			fs.type = FLOAT;
+			fElem.properties.push_back(fs);
 		}
 		elements.push_back(fElem);
 	}
@@ -496,6 +512,8 @@ inline ply::PropertyName PlyHeader::stringToName(const std::string& name) const
 		pn = ply::blue;
 	if (name == "alpha")
 		pn = ply::alpha;
+	if (name == "quality" || name == "scalar")
+		pn = ply::scalar;
 	if (name == "vertex1")
 		pn = ply::vertex1;
 	if (name == "vertex2")
@@ -546,6 +564,7 @@ inline std::string PlyHeader::nameToString(PropertyName n) const
 	case ply::green: return "green";
 	case ply::blue: return "blue";
 	case ply::alpha: return "alpha";
+	case ply::scalar: return "scalar";
 	case ply::vertex_indices: return "vertex_indices";
 	case ply::vertex1: return "vertex1";
 	case ply::vertex2: return "vertex2";

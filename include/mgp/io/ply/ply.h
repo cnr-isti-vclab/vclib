@@ -29,6 +29,7 @@ typedef enum {
 	green,
 	blue,
 	alpha,
+	scalar,
 	vertex_indices,
 	vertex1,
 	vertex2

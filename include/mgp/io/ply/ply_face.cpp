@@ -109,6 +109,15 @@ void loadFacesTxt(
 					}
 				}
 			}
+			if (p.name == ply::scalar) {
+				if constexpr (mgp::hasPerFaceScalar(mesh)) {
+					using Scalar = typename FaceType::ScalarType;
+					if (mgp::isPerFaceScalarEnabled(mesh)) {
+						f.scalar() = internal::readProperty<Scalar>(token, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
 			if (!hasBeenRead) {
 				if (p.list) {
 					uint s = internal::readProperty<int>(token, p.listSizeType);
@@ -187,6 +196,15 @@ void loadFacesBin(
 					}
 				}
 			}
+			if (p.name == ply::scalar) {
+				if constexpr (mgp::hasPerFaceScalar(mesh)) {
+					using Scalar = typename FaceType::ScalarType;
+					if (mgp::isPerFaceScalarEnabled(mesh)) {
+						f.scalar() = internal::readProperty<Scalar>(file, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
 			if (!hasBeenRead) {
 				if (p.list) {
 					uint s = internal::readProperty<int>(file, p.listSizeType);
@@ -228,6 +246,14 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 				if constexpr (mgp::hasPerFaceColor(mesh)) {
 					if (mgp::isPerFaceColorEnabled(mesh)) {
 						internal::writeProperty(file, f.color()[p.name - ply::red], p.type, bin);
+						hasBeenWritten = true;
+					}
+				}
+			}
+			if (p.name == ply::scalar) {
+				if constexpr (mgp::hasPerFaceScalar(mesh)) {
+					if (mgp::isPerFaceScalarEnabled(mesh)) {
+						internal::writeProperty(file, f.scalar(), p.type, bin);
 						hasBeenWritten = true;
 					}
 				}

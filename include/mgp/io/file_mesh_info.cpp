@@ -96,6 +96,11 @@ inline bool FileMeshInfo::hasVertexColors() const
 	return mode & VERTEX_COLORS;
 }
 
+bool FileMeshInfo::hasVertexScalar() const
+{
+	return mode & VERTEX_SCALAR;
+}
+
 inline bool FileMeshInfo::hasFaceVRefs() const
 {
 	return mode & FACE_VREFS;
@@ -109,6 +114,11 @@ inline bool FileMeshInfo::hasFaceNormals() const
 inline bool FileMeshInfo::hasFaceColors() const
 {
 	return mode & FACE_COLORS;
+}
+
+bool FileMeshInfo::hasFaceScalar() const
+{
+	return mode & FACE_SCALAR;
 }
 
 inline bool FileMeshInfo::hasEdges() const
@@ -156,6 +166,11 @@ inline void FileMeshInfo::setVertexColors()
 	mode |= VERTEX_COLORS;
 }
 
+inline void FileMeshInfo::setVertexScalar()
+{
+	mode |= VERTEX_SCALAR;
+}
+
 inline void FileMeshInfo::setFaceVRefs()
 {
 	mode |= FACE_VREFS;
@@ -169,6 +184,11 @@ inline void FileMeshInfo::setFaceNormals()
 inline void FileMeshInfo::setFaceColors()
 {
 	mode |= FACE_COLORS;
+}
+
+void FileMeshInfo::setFaceScalar()
+{
+	mode |= FACE_SCALAR;
 }
 
 inline void FileMeshInfo::setEdges()

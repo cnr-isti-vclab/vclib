@@ -45,9 +45,11 @@ public:
 	bool hasVertexCoords() const;
 	bool hasVertexNormals() const;
 	bool hasVertexColors() const;
+	bool hasVertexScalar() const;
 	bool hasFaceVRefs() const;
 	bool hasFaceNormals() const;
 	bool hasFaceColors() const;
+	bool hasFaceScalar() const;
 	bool hasEdges() const;
 	bool hasEdgeColors() const;
 
@@ -58,9 +60,11 @@ public:
 	void setVertexCoords();
 	void setVertexNormals();
 	void setVertexColors();
+	void setVertexScalar();
 	void setFaceVRefs();
 	void setFaceNormals();
 	void setFaceColors();
+	void setFaceScalar();
 	void setEdges();
 	void setEdgeColors();
 
@@ -71,11 +75,13 @@ private:
 		VERTEX_COORDS  = 1 << 0,
 		VERTEX_NORMALS = 1 << 1,
 		VERTEX_COLORS  = 1 << 2,
-		FACE_VREFS     = 1 << 3,
-		FACE_COLORS    = 1 << 4,
+		VERTEX_SCALAR  = 1 << 3,
+		FACE_VREFS     = 1 << 4,
 		FACE_NORMALS   = 1 << 5,
-		EDGES          = 1 << 6,
-		EDGE_COLORS    = 1 << 7
+		FACE_COLORS    = 1 << 6,
+		FACE_SCALAR    = 1 << 7,
+		EDGES          = 1 << 8,
+		EDGE_COLORS    = 1 << 9
 	} FMM;
 	int          mode;
 	MeshType type;
