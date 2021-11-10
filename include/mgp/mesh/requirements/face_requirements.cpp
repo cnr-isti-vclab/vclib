@@ -18,9 +18,8 @@ namespace mgp {
 template<typename MeshType>
 bool constexpr hasPerFaceNormal()
 {
-	return hasFaces<MeshType>() && (
-		mgp::face::hasNormal<typename MeshType::FaceType>() ||
-		mgp::face::hasOptionalNormal<typename MeshType::FaceType>());
+	return hasFaces<MeshType>() && (mgp::face::hasNormal<typename MeshType::FaceType>() ||
+									mgp::face::hasOptionalNormal<typename MeshType::FaceType>());
 }
 
 template<typename MeshType>
@@ -32,8 +31,7 @@ bool constexpr hasPerFaceNormal(const MeshType&)
 template<typename MeshType>
 bool isPerFaceNormalEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && mgp::face::hasNormal<typename MeshType::FaceType>()) {
+	if constexpr (hasFaces<MeshType>() && mgp::face::hasNormal<typename MeshType::FaceType>()) {
 		return true;
 	}
 	else if constexpr (
@@ -46,11 +44,19 @@ bool isPerFaceNormalEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
+void enableIfPerFaceNormalOptional(MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() && mgp::face::hasOptionalNormal<typename MeshType::FaceType>()) {
+		m.enablePerFaceNormal();
+	}
+}
+
+template<typename MeshType>
 bool constexpr hasPerFaceColor()
 {
-	return hasFaces<MeshType>() && (
-			mgp::face::hasColor<typename MeshType::FaceType>() ||
-			mgp::face::hasOptionalColor<typename MeshType::FaceType>());
+	return hasFaces<MeshType>() && (mgp::face::hasColor<typename MeshType::FaceType>() ||
+									mgp::face::hasOptionalColor<typename MeshType::FaceType>());
 }
 
 template<typename MeshType>
@@ -62,8 +68,7 @@ bool constexpr hasPerFaceColor(const MeshType&)
 template<typename MeshType>
 bool isPerFaceColorEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && mgp::face::hasColor<typename MeshType::FaceType>()) {
+	if constexpr (hasFaces<MeshType>() && mgp::face::hasColor<typename MeshType::FaceType>()) {
 		return true;
 	}
 	else if constexpr (
@@ -72,6 +77,15 @@ bool isPerFaceColorEnabled(const MeshType& m)
 	}
 	else {
 		return false;
+	}
+}
+
+template<typename MeshType>
+void enableIfPerFaceColorOptional(MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() && mgp::face::hasOptionalColor<typename MeshType::FaceType>()) {
+		m.enablePerFaceColor();
 	}
 }
 
@@ -91,8 +105,7 @@ bool constexpr hasPerFaceScalar(const MeshType&)
 template<typename MeshType>
 bool isPerFaceScalarEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && mgp::face::hasScalar<typename MeshType::FaceType>()) {
+	if constexpr (hasFaces<MeshType>() && mgp::face::hasScalar<typename MeshType::FaceType>()) {
 		return true;
 	}
 	else if constexpr (
@@ -105,10 +118,20 @@ bool isPerFaceScalarEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
+void enableIfPerFaceScalarOptional(MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() && mgp::face::hasOptionalScalar<typename MeshType::FaceType>()) {
+		m.enablePerFaceScalar();
+	}
+}
+
+template<typename MeshType>
 bool constexpr hasPerFaceAdjacentFaces()
 {
-	return hasFaces<MeshType>() && (mgp::face::hasAdjacentFaces<typename MeshType::FaceType>() ||
-									mgp::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>());
+	return hasFaces<MeshType>() &&
+		   (mgp::face::hasAdjacentFaces<typename MeshType::FaceType>() ||
+			mgp::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>());
 }
 
 template<typename MeshType>
@@ -125,11 +148,22 @@ bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 		return true;
 	}
 	else if constexpr (
-		hasFaces<MeshType>() && mgp::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
+		hasFaces<MeshType>() &&
+		mgp::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
 		return m.isPerFaceAdjacentFacesEnabled();
 	}
 	else {
 		return false;
+	}
+}
+
+template<typename MeshType>
+void enableIfPerFaceAdjacentFacesOptional(MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() &&
+		mgp::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
+		m.enablePerFaceAdjacentFaces();
 	}
 }
 
@@ -167,11 +201,22 @@ bool isPerFaceMutableBitFlagsEnabled(const MeshType& m)
 		return true;
 	}
 	else if constexpr (
-		hasFaces<MeshType>() && mgp::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
+		hasFaces<MeshType>() &&
+		mgp::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
 		return m.isPerFaceMutableBitFlagsEnabled();
 	}
 	else {
 		return false;
+	}
+}
+
+template<typename MeshType>
+void enableIfPerFaceMutableBitFlagsOptional(MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() &&
+		mgp::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
+		m.enablePerFaceMutableBitFlags();
 	}
 }
 
@@ -232,9 +277,9 @@ template<typename MeshType>
 void requirePerFaceMutableBitFlags(const MeshType& m)
 {
 	requireFaces<MeshType>();
-	static_assert( hasPerFaceMutableBitFlags(m), "Mesh has no per face mutable bit flags.");
+	static_assert(hasPerFaceMutableBitFlags(m), "Mesh has no per face mutable bit flags.");
 	if (!isPerFaceMutableBitFlagsEnabled(m))
 		throw mgp::MissingPropertyException("Face mutable bit flags not enabled.");
 }
 
-}
+} // namespace mgp

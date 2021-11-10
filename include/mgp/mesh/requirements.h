@@ -53,6 +53,9 @@
  *         std::cout << "My mesh has per vertex color!\n";
  *     }
  *
+ * - enableIfSomethingOptional(): checks at compile time if an Element has a particular Optional
+ *     property, and if true it enables it.
+ *
  * - requireSomething(): requires some feature of the mesh. Can be both constexpr or non-constexpr.
  *     In case of features that can be checked at compile time, a static assertion will be
  *     performed. For features that can be checked only at runtime, a specific exception will be

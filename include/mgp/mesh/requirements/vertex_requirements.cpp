@@ -45,6 +45,15 @@ bool isPerVertexNormalEnabled(const MeshType& m)
 	}
 }
 
+template <typename MeshType>
+void enableIfPerVertexNormalOptional(MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
+		m.enablePerVertexNormal();
+	}
+}
+
 template<typename MeshType>
 bool constexpr hasPerVertexColor()
 {
@@ -74,6 +83,15 @@ bool isPerVertexColorEnabled(const MeshType& m)
 	}
 	else {
 		return false;
+	}
+}
+
+template <typename MeshType>
+void enableIfPerVertexColorOptional(MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasOptionalColor<typename MeshType::VertexType>()) {
+		m.enablePerVertexColor();
 	}
 }
 
@@ -108,6 +126,15 @@ bool isPerVertexScalarEnabled(const MeshType& m)
 }
 
 template <typename MeshType>
+void enableIfPerVertexScalarOptional(MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasOptionalScalar<typename MeshType::VertexType>()) {
+		m.enablePerVertexScalar();
+	}
+}
+
+template <typename MeshType>
 bool constexpr hasPerVertexTexCoord()
 {
 	return hasVertices<MeshType>() &&
@@ -134,6 +161,15 @@ bool isPerVertexTexCoordEnabled(const MeshType& m)
 	}
 	else {
 		return false;
+	}
+}
+
+template <typename MeshType>
+void enableIfPerVertexTexCoordOptional(MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasOptionalTexCoord<typename MeshType::VertexType>()) {
+		m.enablePerVertexTexCoord();
 	}
 }
 
@@ -169,6 +205,16 @@ bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 }
 
 template <typename MeshType>
+void enableIfPerVertexAdjacentFacesOptional(MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() &&
+		mgp::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
+		m.enablePerVertexAdjacentFaces();
+	}
+}
+
+template <typename MeshType>
 bool constexpr hasPerVertexAdjacentVertices()
 {
 	return hasVertices<MeshType>() &&
@@ -196,6 +242,16 @@ bool isPerVertexAdjacentVerticesEnabled(const MeshType& m)
 	}
 	else {
 		return false;
+	}
+}
+
+template <typename MeshType>
+void enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() &&
+		mgp::vert::hasOptionalAdjacentVertices<typename MeshType::VertexType>()) {
+		m.enablePerVertexAdjacentVertices();
 	}
 }
 
@@ -239,6 +295,15 @@ bool isPerVertexMutableBitFlagsEnabled(const MeshType& m)
 	}
 	else {
 		return false;
+	}
+}
+
+template <typename MeshType>
+void enableIfPerVertexMutableBitFlagsOptional(MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() && mgp::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>()) {
+		m.enablePerVertexMutableBitFlags();
 	}
 }
 

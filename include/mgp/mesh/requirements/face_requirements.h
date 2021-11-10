@@ -25,6 +25,9 @@ bool constexpr hasPerFaceNormal(const MeshType&);
 template <typename MeshType>
 bool isPerFaceNormalEnabled(const MeshType&);
 
+template <typename MeshType>
+void enableIfPerFaceNormalOptional(MeshType&);
+
 // Face Color
 
 template <typename MeshType>
@@ -35,6 +38,9 @@ bool constexpr hasPerFaceColor(const MeshType&);
 
 template <typename MeshType>
 bool isPerFaceColorEnabled(const MeshType&);
+
+template <typename MeshType>
+void enableIfPerFaceColorOptional(MeshType&);
 
 // Face Scalar
 
@@ -47,6 +53,9 @@ bool constexpr hasPerFaceScalar(const MeshType&);
 template <typename MeshType>
 bool isPerFaceScalarEnabled(const MeshType&);
 
+template <typename MeshType>
+void enableIfPerFaceScalarOptional(MeshType&);
+
 // Face Adjacent Faces
 
 template <typename MeshType>
@@ -57,6 +66,9 @@ bool constexpr hasPerFaceAdjacentFaces(const MeshType&);
 
 template <typename MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType&);
+
+template <typename MeshType>
+void enableIfPerFaceAdjacentFacesOptional(MeshType&);
 
 // Face Custom Properties
 
@@ -76,6 +88,9 @@ bool constexpr hasPerFaceMutableBitFlags(const MeshType&);
 
 template <typename MeshType>
 bool isPerFaceMutableBitFlagsEnabled(const MeshType&);
+
+template <typename MeshType>
+void enableIfPerFaceMutableBitFlagsOptional(MeshType&);
 
 /*********************
  * require functions *
