@@ -138,72 +138,80 @@ inline void FileMeshInfo::setMeshType(MeshType t)
 	type = t;
 }
 
-inline void FileMeshInfo::setVertices()
+inline void FileMeshInfo::setVertices(bool b)
 {
-	mode[VERTICES] = true;
+	mode[VERTICES] = b;
 }
 
-inline void FileMeshInfo::setVertexCoords(PropType t)
+inline void FileMeshInfo::setVertexCoords(bool b, PropType t)
 {
-	mode[VERTEX_COORDS] = true;
-	modeTypes[VERTEX_COORDS] = t;
+	mode[VERTEX_COORDS] = b;
+	if (b)
+		modeTypes[VERTEX_COORDS] = t;
 }
 
-inline void FileMeshInfo::setVertexNormals(PropType t)
+inline void FileMeshInfo::setVertexNormals(bool b, PropType t)
 {
-	mode[VERTEX_NORMALS] = true;
-	modeTypes[VERTEX_NORMALS] = t;
+	mode[VERTEX_NORMALS] = b;
+	if (b)
+		modeTypes[VERTEX_NORMALS] = t;
 }
 
-inline void FileMeshInfo::setVertexColors(PropType t)
+inline void FileMeshInfo::setVertexColors(bool b, PropType t)
 {
-	mode[VERTEX_COLORS] = true;
-	modeTypes[VERTEX_COLORS] = t;
+	mode[VERTEX_COLORS] = b;
+	if (b)
+		modeTypes[VERTEX_COLORS] = t;
 }
 
-inline void FileMeshInfo::setVertexScalars(PropType t)
+inline void FileMeshInfo::setVertexScalars(bool b, PropType t)
 {
-	mode[VERTEX_SCALAR] = true;
-	modeTypes[VERTEX_SCALAR] = t;
+	mode[VERTEX_SCALAR] = b;
+	if (b)
+		modeTypes[VERTEX_SCALAR] = t;
 }
 
-inline void FileMeshInfo::setFaces()
+inline void FileMeshInfo::setFaces(bool b)
 {
-	mode[FACES] = true;
+	mode[FACES] = b;
 }
 
-inline void FileMeshInfo::setFaceVRefs()
+inline void FileMeshInfo::setFaceVRefs(bool b)
 {
-	mode[FACE_VREFS] = true;
+	mode[FACE_VREFS] = b;
 }
 
-inline void FileMeshInfo::setFaceNormals(PropType t)
+inline void FileMeshInfo::setFaceNormals(bool b, PropType t)
 {
-	mode[FACE_NORMALS] = true;
-	modeTypes[FACE_NORMALS] = t;
+	mode[FACE_NORMALS] = b;
+	if (b)
+		modeTypes[FACE_NORMALS] = t;
 }
 
-inline void FileMeshInfo::setFaceColors(PropType t)
+inline void FileMeshInfo::setFaceColors(bool b, PropType t)
 {
-	mode[FACE_COLORS] = true;
-	modeTypes[FACE_COLORS] = t;
+	mode[FACE_COLORS] = b;
+	if (b)
+		modeTypes[FACE_COLORS] = t;
 }
 
-inline void FileMeshInfo::setFaceScalars(PropType t)
+inline void FileMeshInfo::setFaceScalars(bool b, PropType t)
 {
-	mode[FACE_SCALAR] = true;
-	modeTypes[FACE_SCALAR] = t;
+	mode[FACE_SCALAR] = b;
+	if (b)
+		modeTypes[FACE_SCALAR] = t;
 }
 
-inline void FileMeshInfo::setEdges()
+inline void FileMeshInfo::setEdges(bool b)
 {
-	mode[EDGES] = true;
+	mode[EDGES] = b;
 }
 
-inline void FileMeshInfo::setEdgeColors(PropType t)
+inline void FileMeshInfo::setEdgeColors(bool b, PropType t)
 {
-	mode[EDGE_COLORS] = true;
-	modeTypes[EDGE_COLORS] = t;
+	mode[EDGE_COLORS] = b;
+	if (b)
+		modeTypes[EDGE_COLORS] = t;
 }
 
 inline FileMeshInfo::PropType FileMeshInfo::vertexCoordsType() const

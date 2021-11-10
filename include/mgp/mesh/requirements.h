@@ -44,7 +44,7 @@
  *     }
  *
  *     the first if constexpr is necessary in order to do not compile the portion of code below
- *     if the mesh has no vertex color. That will make your code work also then the input mesh will
+ *     if the mesh has no vertex color. That will make your code work also when the input mesh will
  *     not have vertex colors.
  *     If you just need to know if there is vertex color without using it, it is safe to use just
  *     the isSomethingEnabled() function, like:
@@ -53,8 +53,9 @@
  *         std::cout << "My mesh has per vertex color!\n";
  *     }
  *
- * - enableIfSomethingOptional(): checks at compile time if an Element has a particular Optional
- *     property, and if true it enables it.
+ * - enableIfSomethingOptional(): checks at compile time if an Element has a particular property,
+ *     and if the property is optional, the function will enable it. The function will return true
+ *     if the mesh has the property (also if not optional). The function is not a constexpr.
  *
  * - requireSomething(): requires some feature of the mesh. Can be both constexpr or non-constexpr.
  *     In case of features that can be checked at compile time, a static assertion will be

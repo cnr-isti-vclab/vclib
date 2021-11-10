@@ -44,11 +44,15 @@ bool isPerFaceNormalEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
-void enableIfPerFaceNormalOptional(MeshType& m)
+bool enableIfPerFaceNormalOptional(MeshType& m)
 {
 	if constexpr (
 		hasFaces<MeshType>() && mgp::face::hasOptionalNormal<typename MeshType::FaceType>()) {
 		m.enablePerFaceNormal();
+		return true;
+	}
+	else {
+		return hasPerFaceNormal(m);
 	}
 }
 
@@ -81,11 +85,15 @@ bool isPerFaceColorEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
-void enableIfPerFaceColorOptional(MeshType& m)
+bool enableIfPerFaceColorOptional(MeshType& m)
 {
 	if constexpr (
 		hasFaces<MeshType>() && mgp::face::hasOptionalColor<typename MeshType::FaceType>()) {
 		m.enablePerFaceColor();
+		return true;
+	}
+	else {
+		return hasPerFaceColor(m);
 	}
 }
 
@@ -118,11 +126,15 @@ bool isPerFaceScalarEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
-void enableIfPerFaceScalarOptional(MeshType& m)
+bool enableIfPerFaceScalarOptional(MeshType& m)
 {
 	if constexpr (
 		hasFaces<MeshType>() && mgp::face::hasOptionalScalar<typename MeshType::FaceType>()) {
 		m.enablePerFaceScalar();
+		return true;
+	}
+	else {
+		return hasPerFaceScalar(m);
 	}
 }
 
@@ -158,12 +170,16 @@ bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
-void enableIfPerFaceAdjacentFacesOptional(MeshType& m)
+bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 {
 	if constexpr (
 		hasFaces<MeshType>() &&
 		mgp::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
 		m.enablePerFaceAdjacentFaces();
+		return true;
+	}
+	else {
+		return hasPerFaceAdjacentFaces(m);
 	}
 }
 
@@ -211,12 +227,16 @@ bool isPerFaceMutableBitFlagsEnabled(const MeshType& m)
 }
 
 template<typename MeshType>
-void enableIfPerFaceMutableBitFlagsOptional(MeshType& m)
+bool enableIfPerFaceMutableBitFlagsOptional(MeshType& m)
 {
 	if constexpr (
 		hasFaces<MeshType>() &&
 		mgp::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
 		m.enablePerFaceMutableBitFlags();
+		return true;
+	}
+	else {
+		return hasPerFaceMutableBitFlags(m);
 	}
 }
 

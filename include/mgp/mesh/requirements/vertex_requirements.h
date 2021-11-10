@@ -26,7 +26,7 @@ template <typename MeshType>
 bool isPerVertexNormalEnabled(const MeshType&);
 
 template <typename MeshType>
-void enableIfPerVertexNormalOptional(MeshType&);
+bool enableIfPerVertexNormalOptional(MeshType&);
 
 // Vertex Color
 
@@ -40,7 +40,7 @@ template <typename MeshType>
 bool isPerVertexColorEnabled(const MeshType&);
 
 template <typename MeshType>
-void enableIfPerVertexColorOptional(MeshType&);
+bool enableIfPerVertexColorOptional(MeshType&);
 
 // Vertex Scalar
 
@@ -54,7 +54,7 @@ template <typename MeshType>
 bool isPerVertexScalarEnabled(const MeshType&);
 
 template <typename MeshType>
-void enableIfPerVertexScalarOptional(MeshType&);
+bool enableIfPerVertexScalarOptional(MeshType&);
 
 // Vertex TexCoord
 
@@ -68,7 +68,7 @@ template <typename MeshType>
 bool isPerVertexTexCoordEnabled(const MeshType&);
 
 template <typename MeshType>
-void enableIfPerVertexTexCoordOptional(MeshType&);
+bool enableIfPerVertexTexCoordOptional(MeshType&);
 
 // Vertex Adjacent Faces
 
@@ -82,7 +82,7 @@ template <typename MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType&);
 
 template <typename MeshType>
-void enableIfPerVertexAdjacentFacesOptional(MeshType&);
+bool enableIfPerVertexAdjacentFacesOptional(MeshType&);
 
 // Vertex Adjacent Vertices
 
@@ -96,7 +96,7 @@ template <typename MeshType>
 bool isPerVertexAdjacentVerticesEnabled(const MeshType&);
 
 template <typename MeshType>
-void enableIfPerVertexAdjacentVerticesOptional(MeshType&);
+bool enableIfPerVertexAdjacentVerticesOptional(MeshType&);
 
 // Vertex Custom Properties
 
@@ -118,7 +118,7 @@ template <typename MeshType>
 bool isPerVertexMutableBitFlagsEnabled(const MeshType&);
 
 template <typename MeshType>
-void enableIfPerVertexMutableBitFlagsOptional(MeshType&);
+bool enableIfPerVertexMutableBitFlagsOptional(MeshType&);
 
 
 /*********************
