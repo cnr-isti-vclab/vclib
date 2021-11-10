@@ -19,18 +19,16 @@ namespace internal {
  * @param info
  * @param m
  */
-template <typename MeshType>
-void enableOptionalComponents(
-	FileMeshInfo& info,
-	MeshType& m)
+template<typename MeshType>
+void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
 {
-	if (info.hasVertices()){
-		if (info.hasVertexColors()){
+	if (info.hasVertices()) {
+		if (info.hasVertexColors()) {
 			if (!mgp::enableIfPerVertexColorOptional(m)) {
 				info.setVertexColors(false);
 			}
 		}
-		if (info.hasVertexNormals()){
+		if (info.hasVertexNormals()) {
 			if (!mgp::enableIfPerVertexNormalOptional(m)) {
 				info.setVertexNormals(false);
 			}
@@ -46,8 +44,8 @@ void enableOptionalComponents(
 	}
 
 	if (info.hasFaces()) {
-		if (info.hasFaceColors()){
-			if (!mgp::enableIfPerFaceColorOptional(m)){
+		if (info.hasFaceColors()) {
+			if (!mgp::enableIfPerFaceColorOptional(m)) {
 				info.setFaceColors(false);
 			}
 		}
@@ -62,11 +60,29 @@ void enableOptionalComponents(
 			}
 		}
 	}
-	else{
+	else {
 		info.setFaces(false);
 	}
 }
 
+} // namespace internal
+
+template<typename MeshType>
+MeshType loadPly(const std::string& filename, bool enableOptionalComponents)
+{
+	FileMeshInfo loadedInfo;
+	return loadPly<MeshType>(filename, loadedInfo, enableOptionalComponents);
+}
+
+template<typename MeshType>
+MeshType loadPly(
+	const std::string&     filename,
+	mgp::io::FileMeshInfo& loadedInfo,
+	bool                   enableOptionalComponents)
+{
+	MeshType m;
+	loadPly(m, filename, loadedInfo, enableOptionalComponents);
+	return m;
 }
 
 /**

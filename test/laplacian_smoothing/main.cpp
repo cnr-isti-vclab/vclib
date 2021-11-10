@@ -39,9 +39,9 @@ public:
 
 int main()
 {
-	MyMesh m;
 
-	mgp::io::loadPly(m, "/home/alessandro/tmp/bunny.ply");
+
+	MyMesh m = mgp::io::loadPly<MyMesh>("/home/alessandro/tmp/bunny.ply");
 
 	m.enablePerVertexAdjacentFaces();
 	mgp::updatePerVertexAdjacentFaces(m);

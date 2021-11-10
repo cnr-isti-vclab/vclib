@@ -17,6 +17,12 @@
 namespace mgp::io {
 
 template <typename MeshType>
+MeshType loadPly(const std::string& filename, bool enableOptionalComponents = true);
+
+template <typename MeshType>
+MeshType loadPly(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents = true);
+
+template <typename MeshType>
 void loadPly(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
 
 template <typename MeshType>
