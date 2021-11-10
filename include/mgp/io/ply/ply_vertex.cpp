@@ -6,6 +6,7 @@
 #include "ply_vertex.h"
 #include <mgp/misc/tokenizer.h>
 #include <mgp/mesh/requirements.h>
+#include <mgp/exception/io_exception.h>
 
 namespace mgp {
 namespace ply {
@@ -32,7 +33,7 @@ void loadVerticesTxt(
 				token = spaceTokenizer.begin();
 			}
 			if (error)
-				throw std::runtime_error("Malformed file");
+				throw MalformedFileException("Unexpected end of file");
 			bool hasBeenRead = false;
 			if (p.name >= ply::x && p.name <= ply::z) {
 				using Scalar = typename VertexType::CoordinateType::ScalarType;

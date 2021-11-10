@@ -24,6 +24,19 @@ public:
 	}
 };
 
+class MalformedFileException : public std::runtime_error
+{
+public:
+	MalformedFileException(const std::string& err) : std::runtime_error(err) {}
+
+	virtual const char* what() const throw()
+	{
+		static std::string error;
+		error = std::string("Malformed File - ") + std::runtime_error::what();
+		return error.c_str();
+	}
+};
+
 } // namespace mgp
 
 #endif // MGP_IO_EXCEPTION_H

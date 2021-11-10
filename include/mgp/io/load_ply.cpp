@@ -136,7 +136,7 @@ void loadPly(
 	}
 	mgp::ply::PlyHeader header(file);
 	if (header.errorWhileLoading())
-		return; // todo make exceptions
+		throw MalformedFileException("Header not valid: " + filename);
 
 	loadedInfo = header.getInfo();
 
@@ -144,13 +144,21 @@ void loadPly(
 		internal::enableOptionalComponents(loadedInfo, m);
 
 	m.clear();
-	for (ply::Element el : header) {
-		switch (el.type) {
-		case ply::VERTEX: ply::loadVertices(file, header, m); break;
-		case ply::FACE: ply::loadFaces(file, header, m); break;
-		default: break;
+	try {
+		for (ply::Element el : header) {
+			switch (el.type) {
+			case ply::VERTEX: ply::loadVertices(file, header, m); break;
+			case ply::FACE: ply::loadFaces(file, header, m); break;
+			default: break;
+			}
 		}
 	}
+	catch(const std::runtime_error& err) {
+		m.clear();
+		file.close();
+		throw err;
+	}
+
 	file.close();
 }
 
