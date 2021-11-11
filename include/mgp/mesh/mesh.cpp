@@ -15,7 +15,7 @@ namespace mgp {
 template<class... Args>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		mesh::Container<Args>(
-			oth)... // call auto copy constructors for all the container elements and properties
+			oth)... // call auto copy constructors for all the container elements and components
 {
 	// update all the optional container references
 	updateAllOptionalContainerReferences();
@@ -281,7 +281,7 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 		m2BaseF = m2.faces.data();
 	}
 
-	// actual swap of all the containers and the properties of the mesh
+	// actual swap of all the containers and the components of the mesh
 	using std::swap;
 	(swap((mgp::mesh::Container<A>&) m1, (mgp::mesh::Container<A>&) m2), ...);
 

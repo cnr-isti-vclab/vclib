@@ -70,13 +70,13 @@ bool isPerFaceAdjacentFacesEnabled(const MeshType&);
 template <typename MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType&);
 
-// Face Custom Properties
+// Face Custom Components
 
 template<typename MeshType>
-bool constexpr hasPerFaceCustomProperties();
+bool constexpr hasPerFaceCustomComponents();
 
 template<typename MeshType>
-bool constexpr hasPerFaceCustomProperties(const MeshType&);
+bool constexpr hasPerFaceCustomComponents(const MeshType&);
 
 // Face Mutable Flags
 
@@ -116,13 +116,13 @@ void requirePerFaceScalar(const MeshType& m);
 template <typename MeshType>
 void requirePerFaceAdjacentFaces(const MeshType& m);
 
-// Face Custom Properties
+// Face Custom Components
 
 template <typename MeshType>
-bool constexpr requirePerFaceCustomProperties();
+bool constexpr requirePerFaceCustomComponents();
 
 template <typename MeshType>
-bool constexpr requirePerFaceCustomProperties(const MeshType& m);
+bool constexpr requirePerFaceCustomComponents(const MeshType& m);
 
 // Face Mutable Flags
 

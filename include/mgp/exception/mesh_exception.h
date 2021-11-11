@@ -36,14 +36,14 @@ public:
 	}
 };
 
-class MissingPropertyException : public std::runtime_error
+class MissingComponentException : public std::runtime_error
 {
 public:
-	MissingPropertyException(const std::string& err) : std::runtime_error(err) {}
+	MissingComponentException(const std::string& err) : std::runtime_error(err) {}
 	virtual const char* what() const throw()
 	{
 		static std::string error;
-		error = std::string("Missing Property - ") + std::runtime_error::what();
+		error = std::string("Missing Component - ") + std::runtime_error::what();
 		return error.c_str();
 	}
 };

@@ -98,13 +98,13 @@ bool isPerVertexAdjacentVerticesEnabled(const MeshType&);
 template <typename MeshType>
 bool enableIfPerVertexAdjacentVerticesOptional(MeshType&);
 
-// Vertex Custom Properties
+// Vertex Custom Components
 
 template <typename MeshType>
-bool constexpr hasPerVertexCustomProperties();
+bool constexpr hasPerVertexCustomComponents();
 
 template <typename MeshType>
-bool constexpr hasPerVertexCustomProperties(const MeshType&);
+bool constexpr hasPerVertexCustomComponents(const MeshType&);
 
 // Vertex Mutable Flags
 
@@ -155,13 +155,13 @@ void requirePerVertexAdjacentFaces(const MeshType& m);
 template <typename MeshType>
 void requirePerVertexAdjacentVertices(const MeshType& m);
 
-// Vertex Custom Properties
+// Vertex Custom Components
 
 template <typename MeshType>
-bool constexpr requirePerVertexCustomProperties();
+bool constexpr requirePerVertexCustomComponents();
 
 template <typename MeshType>
-bool constexpr requirePerVertexCustomProperties(const MeshType& m);
+bool constexpr requirePerVertexCustomComponents(const MeshType& m);
 
 // Vertex Mutable Flags
 

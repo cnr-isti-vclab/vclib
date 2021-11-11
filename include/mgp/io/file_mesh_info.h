@@ -17,7 +17,7 @@ namespace mgp::io {
 
 
 /**
- * @brief A simple class that allows to store which properties has been loaded or are going
+ * @brief A simple class that allows to store which components has been loaded or are going
  * to be saved on a mesh file.
  */
 class FileMeshInfo
@@ -25,7 +25,7 @@ class FileMeshInfo
 public:
 	typedef enum { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH } MeshType;
 
-	// Properties types, useful to set which type in binary files should be used to save a property
+	// Types, useful to set which type in binary files should be used to save a component
 	typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, UNKNOWN } PropType;
 
 	FileMeshInfo();

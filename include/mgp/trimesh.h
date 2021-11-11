@@ -25,7 +25,7 @@ class Vertex :
 			mgp::vert::OptionalTexCoordf<Vertex>,           // 0b
 			mgp::vert::OptionalAdjacentFaces<Face, Vertex>, // 0b
 			mgp::vert::OptionalAdjacentVertices<Vertex>,    // 0b
-			mgp::vert::CustomProperties<Vertex>>            // 0b
+			mgp::vert::CustomComponents<Vertex>>            // 0b
 {
 };
 
@@ -38,7 +38,7 @@ class Face :
 			mgp::face::OptionalColor<Face>,             // 0b
 			mgp::face::OptionalAdjacentTriangles<Face>, // 0b
 			mgp::face::OptionalMutableBitFlags<Face>,   // 0b
-			mgp::face::CustomProperties<Face>>          // 0b
+			mgp::face::CustomComponents<Face>>          // 0b
 {
 };
 

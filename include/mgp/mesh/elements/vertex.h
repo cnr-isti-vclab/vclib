@@ -6,8 +6,8 @@
 #ifndef MGP_MESH_ELEMENTS_VERTEX_H
 #define MGP_MESH_ELEMENTS_VERTEX_H
 
-#include "vertex_properties.h"
-#include "vertex_properties_optional.h"
+#include "vertex_components.h"
+#include "vertex_components_optional.h"
 
 namespace mgp::mesh {
 

@@ -10,7 +10,7 @@ namespace mgp::mesh {
 /**
  * @brief VertexOptionalContainer::isPerVertexColorEnabled checks if the vertex Optional Color is
  * enabled. This function is available **only if the Vertex Element has the OptionalColor
- * Property**.
+ * Component**.
  * @return true if the Optional Color is enabled, false otherwise.
  */
 template<class T>
@@ -23,7 +23,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexColorEnabled() cons
 
 /**
  * @brief Container::enableVertexColor enables the Optional Color of the vertex.
- * This function is available **only if the Vertex Element has the OptionalColor Property**.
+ * This function is available **only if the Vertex Element has the OptionalColor Component**.
  */
 template<class T>
 template<class U>
@@ -35,7 +35,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexColor()
 
 /**
  * @brief Container::disableVertexColor disables the Optional Color of the vertex.
- * This function is available **only if the Vertex Element has the OptionalColor Property**.
+ * This function is available **only if the Vertex Element has the OptionalColor Component**.
  */
 template<class T>
 template<class U>
@@ -48,8 +48,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexColor()
 /**
  * @brief VertexOptionalContainer::isPerVertexMutableBitFlagsEnabled checks if the vertex Optional
  * Mutable Bit Flags is enabled. This function is available **only if the Vertex Element has the
- * OptionalMutableBitFlags Property**.
- * @return true if the Optional Mutable Bit Flags property is enabled, false otherwise.
+ * OptionalMutableBitFlags Component**.
+ * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
  */
 template<class T>
 template<class U>
@@ -62,7 +62,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexMutableBitFlagsEnab
 /**
  * @brief Container::enableVertexMutableFlags enables the Optional Mutable Flags of the vertex.
  * This function is available **only if the Vertex Element has the OptionalMutableBitFlags
- * Property**.
+ * Component**.
  */
 template<class T>
 template<class U>
@@ -75,7 +75,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexMutableBitFlags
 /**
  * @brief Container::disableVertexMutableFlags disables the Optional Mutable Flags of the vertex.
  * This function is available **only if the Vertex Element has the OptionalMutableBitFlags
- * Property**.
+ * Component**.
  */
 template<class T>
 template<class U>
@@ -88,7 +88,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexMutableBitFlag
 /**
  * @brief VertexOptionalContainer::isPerVertexNormalEnabled checks if the vertex Optional Normal is
  * enabled. This function is available **only if the Vertex Element has the OptionalNormal
- * Property**.
+ * Component**.
  * @return true if the Optional Normal is enabled, false otherwise.
  */
 template<class T>
@@ -101,7 +101,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexNormalEnabled() con
 
 /**
  * @brief Container::enableVertexNormal enables the Optional Normal of the vertex.
- * This function is available **only if the Vertex Element has the OptionalNormal Property**.
+ * This function is available **only if the Vertex Element has the OptionalNormal Component**.
  */
 template<class T>
 template<class U>
@@ -113,7 +113,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexNormal()
 
 /**
  * @brief Container::disableVertexNormal disables the Optional Normal of the vertex.
- * This function is available **only if the Vertex Element has the OptionalNormal Property**.
+ * This function is available **only if the Vertex Element has the OptionalNormal Component**.
  */
 template<class T>
 template<class U>
@@ -126,7 +126,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexNormal()
 /**
  * @brief VertexOptionalContainer::isPerVertexScalarEnabled checks if the vertex Optional Scalar is
  * enabled. This function is available **only if the Vertex Element has the OptionalScalar
- * Property**.
+ * Component**.
  * @return true if the Optional Scalar is enabled, false otherwise.
  */
 template<class T>
@@ -139,7 +139,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexScalarEnabled() con
 
 /**
  * @brief Container::enableVertexScalar enables the Optional Scalar of the vertex.
- * This function is available **only if the Vertex Element has the OptionalScalar Property**.
+ * This function is available **only if the Vertex Element has the OptionalScalar Component**.
  */
 template<class T>
 template<class U>
@@ -151,7 +151,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexScalar()
 
 /**
  * @brief Container::disableVertexScalar disables the Optional Scalar of the vertex.
- * This function is available **only if the Vertex Element has the OptionalScalar Property**.
+ * This function is available **only if the Vertex Element has the OptionalScalar Component**.
  */
 template<class T>
 template<class U>
@@ -164,7 +164,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexScalar()
 /**
  * @brief VertexOptionalContainer::isPerVertexTexCoordEnabled checks if the vertex Optional TexCoord
  * is enabled. This function is available **only if the Vertex Element has the OptionalTexCoord
- * Property**.
+ * Component**.
  * @return true if the Optional TexCoord is enabled, false otherwise.
  */
 template<class T>
@@ -177,7 +177,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexTexCoordEnabled() c
 
 /**
  * @brief Container::enableVertexTexCoord enables the Optional TexCoord of the vertex.
- * This function is available **only if the Vertex Element has the OptionalTexCoord Property**.
+ * This function is available **only if the Vertex Element has the OptionalTexCoord Component**.
  */
 template<class T>
 template<class U>
@@ -189,7 +189,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexTexCoord()
 
 /**
  * @brief Container::disableVertexTexCoord disables the Optional TexCoord of the vertex.
- * This function is available **only if the Vertex Element has the OptionalTexCoord Property**.
+ * This function is available **only if the Vertex Element has the OptionalTexCoord Component**.
  */
 template<class T>
 template<class U>
@@ -201,8 +201,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexTexCoord()
 
 /**
  * @brief VertexOptionalContainer::isPerVertexAdjacentFacesEnabled checks if the vertex Optional
- * Adjacent Faces property is enabled. This function is available **only if the Vertex Element has
- * the OptionalAdjacentFaces Property**.
+ * Adjacent Faces component is enabled. This function is available **only if the Vertex Element has
+ * the OptionalAdjacentFaces Component**.
  * @return true if the Optional Adjacent Faces is enabled, false otherwise.
  */
 template<class T>
@@ -217,7 +217,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexAdjacentFacesEnable
  * @brief VertexOptionalContainer::enablePerVertexAdjacentFaces enables the Optional Adjacent Faces
  * of the vertex.
  * This function is available **only if the Vertex Element has the OptionalAdjacentFaces
- * Property**.
+ * Component**.
  */
 template<class T>
 template<class U>
@@ -230,7 +230,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexAdjacentFaces()
 /**
  * @brief VertexOptionalContainer::disablePerVertexAdjacentFaces disables the Optional Adjacent
  * Faces of the vertex. This function is available **only if the Vertex Element has the
- * OptionalAdjacentFaces Property**.
+ * OptionalAdjacentFaces Component**.
  */
 template<class T>
 template<class U>
@@ -242,8 +242,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexAdjacentFaces(
 
 /**
  * @brief VertexOptionalContainer::isPerVertexAdjacentVerticesEnabled checks if the vertex Optional
- * Adjacent Vertices property is enabled. This function is available **only if the Vertex Element
- * has the OptionalAdjacentVertices Property**.
+ * Adjacent Vertices component is enabled. This function is available **only if the Vertex Element
+ * has the OptionalAdjacentVertices Component**.
  * @return true if the Optional Adjacent Vertices is enabled, false otherwise.
  */
 template<class T>
@@ -257,7 +257,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexAdjacentVerticesEna
 /**
  * @brief VertexOptionalContainer::enablePerVertexAdjacentVertices enables the Optional Adjacent
  * Vertices of the vertex. This function is available **only if the Vertex Element has the
- * OptionalAdjacentVertices Property**.
+ * OptionalAdjacentVertices Component**.
  */
 template<class T>
 template<class U>
@@ -270,7 +270,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexAdjacentVertice
 /**
  * @brief VertexOptionalContainer::disablePerVertexAdjacentVertices disables the Optional Adjacent
  * Vertices of the vertex. This function is available **only if the Vertex Element has the
- * OptionalAdjacentVertices Property**.
+ * OptionalAdjacentVertices Component**.
  */
 template<class T>
 template<class U>
@@ -281,15 +281,15 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexAdjacentVertic
 }
 
 /**
- * @brief VertexOptionalContainer::addPerVertexCustomProperty
+ * @brief VertexOptionalContainer::addPerVertexCustomComponent
  */
 template<class T>
 template<typename K, typename U>
-vert::ReturnIfHasCustomProperties<U, void>
-VertexOptionalContainer<T, VertexHasOptional<T>>::addPerVertexCustomProperty(
+vert::ReturnIfHasCustomComponents<U, void>
+VertexOptionalContainer<T, VertexHasOptional<T>>::addPerVertexCustomComponent(
 	const std::string& name)
 {
-	optionalPropVector.template addNewProperty<K>(name, vertexContainerSize());
+	optionalPropVector.template addNewComponent<K>(name, vertexContainerSize());
 }
 
 template<typename T>

@@ -280,16 +280,16 @@ bool enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexCustomProperties()
+bool constexpr hasPerVertexCustomComponents()
 {
 	return hasVertices<MeshType>() &&
-		   mgp::vert::hasCustomProperties<typename MeshType::VertexType>();
+		   mgp::vert::hasCustomComponents<typename MeshType::VertexType>();
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexCustomProperties(const MeshType&)
+bool constexpr hasPerVertexCustomComponents(const MeshType&)
 {
-	return hasPerVertexCustomProperties<MeshType>();
+	return hasPerVertexCustomComponents<MeshType>();
 }
 
 template<typename MeshType>
@@ -345,7 +345,7 @@ void requirePerVertexNormal(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexNormal(m), "Mesh has no vertex normals.");
 	if (!isPerVertexNormalEnabled(m))
-		throw mgp::MissingPropertyException("Vertex normals not enabled.");
+		throw mgp::MissingComponentException("Vertex normals not enabled.");
 }
 
 template<typename MeshType>
@@ -354,7 +354,7 @@ void requirePerVertexColor(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexColor(m), "Mesh has no vertex colors.");
 	if (!isPerVertexColorEnabled(m))
-		throw mgp::MissingPropertyException("Vertex colors not enabled.");
+		throw mgp::MissingComponentException("Vertex colors not enabled.");
 }
 
 template<typename MeshType>
@@ -363,7 +363,7 @@ void requirePerVertexScalar(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexScalar(m), "Mesh has no vertex scalars.");
 	if (!isPerVertexScalarEnabled(m))
-		throw mgp::MissingPropertyException("Vertex scalars not enabled.");
+		throw mgp::MissingComponentException("Vertex scalars not enabled.");
 }
 
 template<typename MeshType>
@@ -372,7 +372,7 @@ void requirePerVertexTexCoord(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexTexCoord(m), "Mesh has no vertex texcoords.");
 	if (!isPerVertexTexCoordEnabled(m))
-		throw mgp::MissingPropertyException("Vertex texcoords not enabled.");
+		throw mgp::MissingComponentException("Vertex texcoords not enabled.");
 }
 
 template<typename MeshType>
@@ -381,7 +381,7 @@ void requirePerVertexAdjacentFaces(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexAdjacentFaces(m), "Mesh has no vertex adjacent faces.");
 	if (!isPerVertexAdjacentFacesEnabled(m))
-		throw mgp::MissingPropertyException("Vertex adjacent faces not enabled.");
+		throw mgp::MissingComponentException("Vertex adjacent faces not enabled.");
 }
 
 template<typename MeshType>
@@ -390,20 +390,20 @@ void requirePerVertexAdjacentVertices(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexAdjacentVertices(m), "Mesh has no per vertex adjacent vertices.");
 	if (!isPerVertexAdjacentVerticesEnabled(m))
-		throw mgp::MissingPropertyException("Per vertex adjacent vertices not enabled.");
+		throw mgp::MissingComponentException("Per vertex adjacent vertices not enabled.");
 }
 
 template<typename MeshType>
-void constexpr requirePerVertexCustomProperties()
+void constexpr requirePerVertexCustomComponents()
 {
 	requireVertices<MeshType>();
-	static_assert(hasPerVertexCustomProperties<MeshType>(), "Mesh has no vertex custom properties.");
+	static_assert(hasPerVertexCustomComponents<MeshType>(), "Mesh has no vertex custom components.");
 }
 
 template<typename MeshType>
-void constexpr requirePerVertexCustomProperties(const MeshType&)
+void constexpr requirePerVertexCustomComponents(const MeshType&)
 {
-	requirePerVertexCustomProperties<MeshType>();
+	requirePerVertexCustomComponents<MeshType>();
 }
 
 template<typename MeshType>
@@ -412,7 +412,7 @@ void requirePerVertexMutableBitFlags(const MeshType& m)
 	requireVertices<MeshType>();
 	static_assert(hasPerVertexMutableBitFlags(m), "Mesh has no per vertex mutable bit flags.");
 	if (!isPerVertexMutableBitFlagsEnabled(m))
-		throw mgp::MissingPropertyException("Vertex mutable bit flags not enabled.");
+		throw mgp::MissingComponentException("Vertex mutable bit flags not enabled.");
 }
 
 } // namespace mgp

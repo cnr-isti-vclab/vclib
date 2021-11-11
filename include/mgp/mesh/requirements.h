@@ -10,7 +10,7 @@
 
 /**
  * The requirements file gives the user the possibility to check or require the existence of mesh
- * Elements or per-Element Properties.
+ * Elements or per-Element Components.
  *
  * There are three main types of functions:
  *
@@ -27,11 +27,11 @@
  *          // portion of code that use per face colors
  *       }
  *
- *     Note: this function does not check for properties that may be not enabled at runtime.
+ *     Note: this function does not check for components that may be not enabled at runtime.
  *     For runtime check look for "isSomethingEnabled".
  *
- * - isSomethingEnabled(): checks at compile time if an Element has a particular Property, and then
- *     checks at runtime if the Property is enabled. Therefore, the whole function is not a
+ * - isSomethingEnabled(): checks at compile time if an Element has a particular Component, and then
+ *     checks at runtime if the Component is enabled. Therefore, the whole function is not a
  *     constexpr.
  *
  *     For example, if you have a portion of code that does something particular in case of Vertices
@@ -53,9 +53,9 @@
  *         std::cout << "My mesh has per vertex color!\n";
  *     }
  *
- * - enableIfSomethingOptional(): checks at compile time if an Element has a particular property,
- *     and if the property is optional, the function will enable it. The function will return true
- *     if the mesh has the property (also if not optional). The function is not a constexpr.
+ * - enableIfSomethingOptional(): checks at compile time if an Element has a particular component,
+ *     and if the component is optional, the function will enable it. The function will return true
+ *     if the mesh has the component (also if not optional). The function is not a constexpr.
  *
  * - requireSomething(): requires some feature of the mesh. Can be both constexpr or non-constexpr.
  *     In case of features that can be checked at compile time, a static assertion will be

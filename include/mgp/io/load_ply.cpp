@@ -12,8 +12,8 @@ namespace mgp::io {
 namespace internal {
 
 /**
- * @brief enableOptionalComponents enables all the properties that are in the ply header and that
- * may be enabled in the mesh. If these properties are not present in the mesh, the info file will
+ * @brief enableOptionalComponents enables all the components that are in the ply header and that
+ * may be enabled in the mesh. If these components are not present in the mesh, the info file will
  * be modified telling that a particular property cannot be saved into the mesh.
  *
  * @param info
@@ -88,12 +88,12 @@ MeshType loadPly(
 /**
  * @brief loadPly loads the given ply file and puts the content into the mesh m.
  *
- * The function will fill all the properties read into the file that can be filled into the mesh.
- * If the enableOprionalComponents argument is enabled, some eventual optional properties of the
+ * The function will fill all the components read into the file that can be filled into the mesh.
+ * If the enableOprionalComponents argument is enabled, some eventual optional components of the
  * mesh that were not enabled and that can be loaded from the file, will be enabled before loading
  * the file.
  *
- * If you need to know what elements and properties have been loaded after the loading of the file,
+ * If you need to know what elements and components have been loaded after the loading of the file,
  * please see the overload of the function with the additional 'loadedInfo' argument.
  *
  * @param m
@@ -110,12 +110,12 @@ void loadPly(MeshType& m, const std::string& filename, bool enableOptionalCompon
 /**
  * @brief loadPly loads the given ply file and puts the content into the mesh m.
  *
- * The function will fill all the properties read into the file that can be filled into the mesh.
- * If the enableOprionalComponents argument is enabled, some eventual optional properties of the
+ * The function will fill all the components read into the file that can be filled into the mesh.
+ * If the enableOprionalComponents argument is enabled, some eventual optional components of the
  * mesh that were not enabled and that can be loaded from the file, will be enabled before loading
  * the file.
  *
- * The info about what elements and properties have been loaded from the file will be stored into
+ * The info about what elements and components have been loaded from the file will be stored into
  * the loadedInfo argument.
  *
  * @param m

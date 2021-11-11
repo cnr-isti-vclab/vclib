@@ -26,7 +26,7 @@ using IfIsFace = std::enable_if_t<std::is_base_of<FaceTriggerer, T>::value>;
  *
  * This class adds a container (vector) of faces to the Mesh, making available the accessors members
  * to the faces, the face number, iterators... This class will also take care to add
- * enablers/disablers of the eventual optional properties of the face.
+ * enablers/disablers of the eventual optional components of the face.
  */
 template<class T>
 class Container<T, IfIsFace<T>> :
@@ -34,13 +34,13 @@ class Container<T, IfIsFace<T>> :
 {
 	static_assert(
 		mgp::face::hasBitFlags<T>(),
-		"You should include BitFlags (or a derived) as Face property in your Mesh definition.");
+		"You should include BitFlags (or a derived) as Face component in your Mesh definition.");
 	static_assert(
 		mgp::face::hasVertexReferences<T>(),
-		"You should include VertexReferences (Array or List) property in your Mesh definition.");
+		"You should include VertexReferences (Array or List) component in your Mesh definition.");
 	static_assert (
 		!mgp::face::hasTriangleBitFlags<T>() || T::VERTEX_NUMBER == 3,
-		"You can use TriangleBitFlags only on static sized VertexReferences properties, N == 3.");
+		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
 
 protected:
 	// types:
@@ -76,8 +76,8 @@ public:
 
 protected:
 	/**
-	 * @brief faces: the vector of faces, where each face contains only its static properties.
-	 * Optional properties will be contained in the optionalPropertiesVector.
+	 * @brief faces: the vector of faces, where each face contains only its static components.
+	 * Optional components will be contained in the optionalComponentsVector.
 	 */
 	std::vector<T> faces;
 

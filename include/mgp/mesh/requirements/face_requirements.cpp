@@ -184,15 +184,15 @@ bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceCustomProperties()
+bool constexpr hasPerFaceCustomComponents()
 {
-	return hasFaces<MeshType>() && mgp::face::hasCustomProperties<typename MeshType::FaceType>();
+	return hasFaces<MeshType>() && mgp::face::hasCustomComponents<typename MeshType::FaceType>();
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceCustomProperties(const MeshType&)
+bool constexpr hasPerFaceCustomComponents(const MeshType&)
 {
-	return hasPerFaceCustomProperties<MeshType>();
+	return hasPerFaceCustomComponents<MeshType>();
 }
 
 template<typename MeshType>
@@ -250,7 +250,7 @@ void requirePerFaceNormal(const MeshType& m)
 	requireFaces<MeshType>();
 	static_assert(hasPerFaceNormal(m), "Mesh has no face normals.");
 	if (!isPerFaceNormalEnabled(m))
-		throw mgp::MissingPropertyException("Face normals not enabled.");
+		throw mgp::MissingComponentException("Face normals not enabled.");
 }
 
 template<typename MeshType>
@@ -259,7 +259,7 @@ void requirePerFaceColor(const MeshType& m)
 	requireFaces<MeshType>();
 	static_assert(hasPerFaceColor(m), "Mesh has no face colors.");
 	if (!isPerFaceColorEnabled(m))
-		throw mgp::MissingPropertyException("Face colors not enabled.");
+		throw mgp::MissingComponentException("Face colors not enabled.");
 }
 
 template<typename MeshType>
@@ -268,7 +268,7 @@ void requirePerFaceScalar(const MeshType& m)
 	requireFaces<MeshType>();
 	static_assert(hasPerFaceScalar(m), "Mesh has no face scalars.");
 	if (!isPerFaceScalarEnabled(m))
-		throw mgp::MissingPropertyException("Face scalars not enabled.");
+		throw mgp::MissingComponentException("Face scalars not enabled.");
 }
 
 template<typename MeshType>
@@ -277,20 +277,20 @@ void requirePerFaceAdjacentFaces(const MeshType& m)
 	requireFaces<MeshType>();
 	static_assert(hasPerFaceAdjacentFaces(m), "Mesh has no per face adjacent faces.");
 	if (!isPerFaceAdjacentFacesEnabled(m))
-		throw mgp::MissingPropertyException("Per face adjacent faces not enabled.");
+		throw mgp::MissingComponentException("Per face adjacent faces not enabled.");
 }
 
 template<typename MeshType>
-void constexpr requirePerFaceCustomProperties()
+void constexpr requirePerFaceCustomComponents()
 {
 	requireFaces<MeshType>();
-	static_assert(hasPerFaceCustomProperties<MeshType>(), "Mesh has no face custom properties.");
+	static_assert(hasPerFaceCustomComponents<MeshType>(), "Mesh has no face custom components.");
 }
 
 template<typename MeshType>
-void constexpr requirePerFaceCustomProperties(const MeshType&)
+void constexpr requirePerFaceCustomComponents(const MeshType&)
 {
-	requirePerFaceCustomProperties<MeshType>();
+	requirePerFaceCustomComponents<MeshType>();
 }
 
 template<typename MeshType>
@@ -299,7 +299,7 @@ void requirePerFaceMutableBitFlags(const MeshType& m)
 	requireFaces<MeshType>();
 	static_assert(hasPerFaceMutableBitFlags(m), "Mesh has no per face mutable bit flags.");
 	if (!isPerFaceMutableBitFlagsEnabled(m))
-		throw mgp::MissingPropertyException("Face mutable bit flags not enabled.");
+		throw mgp::MissingComponentException("Face mutable bit flags not enabled.");
 }
 
 } // namespace mgp

@@ -8,8 +8,8 @@
 
 #include <mgp/mesh/elements/face.h>
 
-#include "../properties_optional/optional_info.h"
-#include "../properties_vector/properties_vector.h"
+#include "../components_optional/optional_info.h"
+#include "../components_vector/components_vector.h"
 
 namespace mgp::mesh {
 
@@ -17,7 +17,7 @@ class FaceOptionalContainerTriggerer {};
 
 // to shorten triggerer for Vertex class
 template<class T>
-using FaceHasOptional = std::enable_if_t<prop::hasOptionalInfo<T>()>;
+using FaceHasOptional = std::enable_if_t<comp::hasOptionalInfo<T>()>;
 
 template<typename, typename = void>
 class FaceOptionalContainer
@@ -80,9 +80,9 @@ public:
 	template<typename U = T>
 	face::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerFaceAdjacentFaces();
 
-	// Custom Properties
+	// Custom Components
 	template<typename K, typename U = T>
-	face::ReturnIfHasCustomProperties<U, void> addPerFaceCustomProperty(const std::string& name);
+	face::ReturnIfHasCustomComponents<U, void> addPerFaceCustomComponent(const std::string& name);
 
 protected:
 	void setContainerPointer(T& face);
@@ -93,11 +93,11 @@ protected:
 
 private:
 	/**
-	 * @brief optionalPropVector contains all the optional property data of the face, that
+	 * @brief optionalPropVector contains all the optional component data of the face, that
 	 * will be enabled - disabled at runtime.
-	 * Each face that has at least one optional property, will store a pointer to this vector.
+	 * Each face that has at least one optional component, will store a pointer to this vector.
 	 */
-	internal::PropertiesVector<T> optionalPropVector;
+	internal::ComponentsVector<T> optionalPropVector;
 };
 
 /**

@@ -28,7 +28,7 @@ set(HEADERS
 	include/mgp/exception/mesh_exception.h
 	include/mgp/math/base.h
 	include/mgp/mesh/mesh.h
-	include/mgp/mesh/mesh_properties.h
+	include/mgp/mesh/mesh_components.h
 	include/mgp/mesh/requirements.h
 	include/mgp/mesh/container/container_t.h
 	include/mgp/mesh/container/containers.h
@@ -37,46 +37,46 @@ set(HEADERS
 	include/mgp/mesh/container/vertex_container.h
 	include/mgp/mesh/container/vertex_optional_container.h
 	include/mgp/mesh/elements/face.h
-	include/mgp/mesh/elements/face_properties.h
-	include/mgp/mesh/elements/face_properties_optional.h
+	include/mgp/mesh/elements/face_components.h
+	include/mgp/mesh/elements/face_components_optional.h
 	include/mgp/mesh/elements/vertex.h
-	include/mgp/mesh/elements/vertex_properties.h
-	include/mgp/mesh/elements/vertex_properties_optional.h
+	include/mgp/mesh/elements/vertex_components.h
+	include/mgp/mesh/elements/vertex_components_optional.h
 	include/mgp/mesh/iterators/container_iterator.h
 	include/mgp/mesh/iterators/container_range_iterator.h
 	include/mgp/mesh/iterators/range_iterator.h
-	include/mgp/mesh/properties/bit_flags.h
-	include/mgp/mesh/properties/bounding_box.h
-	include/mgp/mesh/properties/color.h
-	include/mgp/mesh/properties/coordinate.h
-	include/mgp/mesh/properties/element_references.h
-	include/mgp/mesh/properties/face_references.h
-	include/mgp/mesh/properties/mutable_bit_flags.h
-	include/mgp/mesh/properties/normal.h
-	include/mgp/mesh/properties/polygon_bit_flags.h
-	include/mgp/mesh/properties/scalar.h
-	include/mgp/mesh/properties/vertex_references.h
-	include/mgp/mesh/properties/tex_coord.h
-	include/mgp/mesh/properties/triangle_bit_flags.h
-	include/mgp/mesh/properties_optional/custom_properties.h
-	include/mgp/mesh/properties_optional/optional_color.h
-	include/mgp/mesh/properties_optional/optional_face_references.h
-	include/mgp/mesh/properties_optional/optional_info.h
-	include/mgp/mesh/properties_optional/optional_mutable_bit_flags.h
-	include/mgp/mesh/properties_optional/optional_normal.h
-	include/mgp/mesh/properties_optional/optional_scalar.h
-	include/mgp/mesh/properties_optional/optional_tex_coord.h
-	include/mgp/mesh/properties_optional/optional_vertex_references.h
-	include/mgp/mesh/properties_vector/optional_color_vector.h
-	include/mgp/mesh/properties_vector/custom_properties_vector.h
-	include/mgp/mesh/properties_vector/optional_face_references_vector.h
-	include/mgp/mesh/properties_vector/optional_generic_vector.h
-	include/mgp/mesh/properties_vector/optional_mutable_bit_flags_vector.h
-	include/mgp/mesh/properties_vector/optional_normal_vector.h
-	include/mgp/mesh/properties_vector/optional_scalar_vector.h
-	include/mgp/mesh/properties_vector/optional_tex_coord_vector.h
-	include/mgp/mesh/properties_vector/optional_vertex_references_vector.h
-	include/mgp/mesh/properties_vector/properties_vector.h
+	include/mgp/mesh/components/bit_flags.h
+	include/mgp/mesh/components/bounding_box.h
+	include/mgp/mesh/components/color.h
+	include/mgp/mesh/components/coordinate.h
+	include/mgp/mesh/components/element_references.h
+	include/mgp/mesh/components/face_references.h
+	include/mgp/mesh/components/mutable_bit_flags.h
+	include/mgp/mesh/components/normal.h
+	include/mgp/mesh/components/polygon_bit_flags.h
+	include/mgp/mesh/components/scalar.h
+	include/mgp/mesh/components/vertex_references.h
+	include/mgp/mesh/components/tex_coord.h
+	include/mgp/mesh/components/triangle_bit_flags.h
+	include/mgp/mesh/components_optional/custom_components.h
+	include/mgp/mesh/components_optional/optional_color.h
+	include/mgp/mesh/components_optional/optional_face_references.h
+	include/mgp/mesh/components_optional/optional_info.h
+	include/mgp/mesh/components_optional/optional_mutable_bit_flags.h
+	include/mgp/mesh/components_optional/optional_normal.h
+	include/mgp/mesh/components_optional/optional_scalar.h
+	include/mgp/mesh/components_optional/optional_tex_coord.h
+	include/mgp/mesh/components_optional/optional_vertex_references.h
+	include/mgp/mesh/components_vector/optional_color_vector.h
+	include/mgp/mesh/components_vector/custom_components_vector.h
+	include/mgp/mesh/components_vector/optional_face_references_vector.h
+	include/mgp/mesh/components_vector/optional_generic_vector.h
+	include/mgp/mesh/components_vector/optional_mutable_bit_flags_vector.h
+	include/mgp/mesh/components_vector/optional_normal_vector.h
+	include/mgp/mesh/components_vector/optional_scalar_vector.h
+	include/mgp/mesh/components_vector/optional_tex_coord_vector.h
+	include/mgp/mesh/components_vector/optional_vertex_references_vector.h
+	include/mgp/mesh/components_vector/components_vector.h
 	include/mgp/mesh/requirements/element_requirements.h
 	include/mgp/mesh/requirements/face_requirements.h
 	include/mgp/mesh/requirements/mesh_requirements.h
@@ -111,16 +111,16 @@ set(SOURCES
 	include/mgp/mesh/container/face_optional_container.cpp
 	include/mgp/mesh/container/vertex_container.cpp
 	include/mgp/mesh/container/vertex_optional_container.cpp
-	include/mgp/mesh/properties/bit_flags.cpp
-	include/mgp/mesh/properties/element_references.cpp
-	include/mgp/mesh/properties/mutable_bit_flags.cpp
-	include/mgp/mesh/properties/polygon_bit_flags.cpp
-	include/mgp/mesh/properties/triangle_bit_flags.cpp
-	include/mgp/mesh/properties_optional/optional_face_references.cpp
-	include/mgp/mesh/properties_optional/optional_mutable_bit_flags.cpp
-	include/mgp/mesh/properties_vector/custom_properties_vector.cpp
-	include/mgp/mesh/properties_vector/optional_generic_vector.cpp
-	include/mgp/mesh/properties_optional/optional_vertex_references.cpp
+	include/mgp/mesh/components/bit_flags.cpp
+	include/mgp/mesh/components/element_references.cpp
+	include/mgp/mesh/components/mutable_bit_flags.cpp
+	include/mgp/mesh/components/polygon_bit_flags.cpp
+	include/mgp/mesh/components/triangle_bit_flags.cpp
+	include/mgp/mesh/components_optional/optional_face_references.cpp
+	include/mgp/mesh/components_optional/optional_mutable_bit_flags.cpp
+	include/mgp/mesh/components_vector/custom_components_vector.cpp
+	include/mgp/mesh/components_vector/optional_generic_vector.cpp
+	include/mgp/mesh/components_optional/optional_vertex_references.cpp
 	include/mgp/mesh/requirements/element_requirements.cpp
 	include/mgp/mesh/requirements/face_requirements.cpp
 	include/mgp/mesh/requirements/mesh_requirements.cpp

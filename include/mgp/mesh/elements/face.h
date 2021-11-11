@@ -6,8 +6,8 @@
 #ifndef MGP_MESH_ELEMENTS_FACE_H
 #define MGP_MESH_ELEMENTS_FACE_H
 
-#include "face_properties.h"
-#include "face_properties_optional.h"
+#include "face_components.h"
+#include "face_components_optional.h"
 
 namespace mgp::mesh {
 
