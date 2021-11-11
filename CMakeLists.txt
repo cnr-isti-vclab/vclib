@@ -21,6 +21,7 @@ set(HEADERS
 	include/mgp/trimesh.h
 	include/mgp/algorithms/clean.h
 	include/mgp/algorithms/smooth.h
+	include/mgp/algorithms/create/tetrahedron.h
 	include/mgp/algorithms/update/bounding_box.h
 	include/mgp/algorithms/update/flag.h
 	include/mgp/algorithms/update/topology.h
@@ -103,6 +104,7 @@ set(HEADERS
 set(SOURCES
 	include/mgp/algorithms/clean.cpp
 	include/mgp/algorithms/smooth.cpp
+	include/mgp/algorithms/create/tetrahedron.cpp
 	include/mgp/algorithms/update/bounding_box.cpp
 	include/mgp/algorithms/update/flag.cpp
 	include/mgp/algorithms/update/topology.cpp

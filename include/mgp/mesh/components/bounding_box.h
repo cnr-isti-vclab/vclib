@@ -18,7 +18,7 @@ class BoundingBoxTriggerer
  * @brief The BoundingBox component class represent an axis aligned bounding box. This class is
  * usually used as a component of a Mesh.
  */
-template<class PointType>
+template<typename  PointType>
 class BoundingBox : public BoundingBoxTriggerer
 {
 public:

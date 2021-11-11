@@ -7,6 +7,8 @@
 
 #include <mgp/trimesh.h>
 #include <mgp/io/load_ply.h>
+#include <mgp/io/save_ply.h>
+#include <mgp/algorithms/create/tetrahedron.h>
 
 int main()
 {
@@ -87,6 +89,10 @@ int main()
 	for (const mgp::TriMesh::Vertex& v : m.vertexIterator()){
 		std::cerr << "V " << v.id() << "\n";
 	}
+
+	mgp::TriMesh tet = mgp::createTetrahedron<mgp::TriMesh>();
+
+	mgp::io::savePly(tet, "/home/alessandro/tmp/tet.ply");
 
 	return 0;
 }

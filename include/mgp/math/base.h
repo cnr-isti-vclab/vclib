@@ -10,7 +10,7 @@
 
 namespace mgp::math {
 
-template <class T>
+template <typename  T>
 bool isDegenerate(T t) { return std::isinf(t) || std::isnan(t); }
 
 }
