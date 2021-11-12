@@ -77,7 +77,7 @@ public:
  *   - Vertices
  *   - Faces
  *
- * Complexity: O(#F log (#F))
+ * Complexity: O(NF log (NF))
  *
  * @param m: the mesh on which the border flags will be updated
  */

@@ -45,7 +45,7 @@ inline const std::string& Tokenizer::operator[](unsigned int i) const
 
 /**
  * @brief Tokenizer::split
- * @link https://stackoverflow.com/questions/53849/how-do-i-tokenize-a-string-in-c
+ * https://stackoverflow.com/questions/53849/how-do-i-tokenize-a-string-in-c
  */
 inline void Tokenizer::split()
 {

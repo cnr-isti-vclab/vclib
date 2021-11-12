@@ -202,8 +202,6 @@ void OptionalMutableBitFlags<T>::setUserBitM(unsigned int bit, unsigned int firs
  *
  * @param bit: position of the bit
  * @param firstBit: first user bit available (must be < than bit)
- * @param bit
- * @param firstBit
  */
 template<typename T>
 void OptionalMutableBitFlags<T>::clearUserBitM(unsigned int bit, unsigned int firstBit) const

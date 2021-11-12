@@ -170,8 +170,6 @@ inline void MutableBitFlags::setUserBitM(unsigned int bit, unsigned int firstBit
  *
  * @param bit: position of the bit
  * @param firstBit: first user bit available (must be < than bit)
- * @param bit
- * @param firstBit
  */
 inline void MutableBitFlags::clearUserBitM(unsigned int bit, unsigned int firstBit) const
 {

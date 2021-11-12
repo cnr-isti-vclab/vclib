@@ -10,7 +10,12 @@ set(CMAKE_CXX_STANDARD 17)
 ### Options
 option(MGP_BUILD_TESTS "Build MGP tests" ON)
 option(MGP_IDE "Create an utility target to show the library tree on IDEs" ON)
+option(MGP_BUILD_DOCS "Build documentation - requires doxygen and sphinx" OFF)
 
+# Add the cmake folder so the FindSphinx module is found
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+# external libraries
 add_subdirectory(external)
 
 set(MGP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -156,4 +161,8 @@ endif()
 
 if (MGP_BUILD_TESTS)
 	add_subdirectory(test)
+endif()
+
+if (MGP_BUILD_DOCS)
+	add_subdirectory(docs)
 endif()

@@ -21,7 +21,7 @@ namespace mgp {
  * of vec after the compactness. The new size of vec will be the number of non-negative elements of
  * newIndices.
  *
- * @param v
+ * @param vec
  * @param newIndices
  */
 template<typename T, typename...Args>
