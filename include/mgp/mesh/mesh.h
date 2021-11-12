@@ -26,7 +26,7 @@ class Mesh : public mesh::Container<Args>...
 	using VCoordType = typename VType::CoordType;
 
 public:
-	Mesh() {};
+	Mesh();
 	Mesh(const Mesh& oth);
 	Mesh(Mesh&& oth);
 

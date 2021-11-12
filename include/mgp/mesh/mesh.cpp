@@ -8,8 +8,17 @@
 namespace mgp {
 
 /**
- * @brief Mesh::Mesh Copy constructor of the Mesh. Will create a deep copy of the given input mesh,
+ * @brief Empty constructor, constructs an empty mesh.
+ */
+template<class... Args>
+Mesh<Args...>::Mesh()
+{
+}
+
+/**
+ * @brief Copy constructor of the Mesh. Will create a deep copy of the given input mesh,
  * taking care of copying everithing and then update all the references
+ *
  * @param oth
  */
 template<class... Args>
@@ -38,7 +47,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 }
 
 /**
- * @brief Mesh::Mesh Move constructor, moves the given mesh into this one, without any other
+ * @brief Move constructor, moves the given mesh into this one, without any other
  * resource acquisition.
  *
  * @param oth
@@ -50,7 +59,7 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 }
 
 /**
- * @brief Mesh::clear clears all the Elements contained in the mesh.
+ * @brief clears all the Elements contained in the mesh.
  */
 template<class... Args>
 void Mesh<Args...>::clear()
@@ -66,12 +75,12 @@ void Mesh<Args...>::clear()
 }
 
 /**
- * @brief mgp::Mesh::addVertex add a new vertex into the mesh, returning the id of the added vertex.
+ * @brief add a new vertex into the mesh, returning the id of the added vertex.
  * @return the id of the new vertex.
  */
 template<class... Args>
 template<typename U>
-mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex()
+mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex()
 {
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
@@ -91,14 +100,14 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex(
 }
 
 /**
- * @brief mgp::Mesh::addVertex add a new vertex with the given coordinate into the mesh, returning
+ * @brief add a new vertex with the given coordinate into the mesh, returning
  * the id of the added vertex.
  * @param p: coordinate of the new vertex.
  * @return the id of the new vertex.
  */
 template<class... Args>
 template<typename U>
-mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex(
+mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex(
 	const VCoordType& p)
 {
 	using VertexContainer = typename U::VertexContainer;
@@ -109,7 +118,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex(
 }
 
 /**
- * @brief mgp::Mesh::addVertices add an arbitrary number of n vertices, returning the id of the
+ * @brief add an arbitrary number of n vertices, returning the id of the
  * first added vertex.
  *
  * This means that, if you want to add 5 vertices and this member function returns 4, the added
@@ -120,7 +129,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex(
  */
 template<class... Args>
 template<typename U>
-mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertices(unsigned int n)
+mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertices(unsigned int n)
 {
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
@@ -142,7 +151,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertice
 }
 
 /**
- * @brief mgp::Mesh::addVertices add an arbitrary number of vertices with the given coordinates,
+ * @brief add an arbitrary number of vertices with the given coordinates,
  * returning the id of the first added vertex.
  *
  * You can call this member function like:
@@ -158,7 +167,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertice
  */
 template<class... Args>
 template<typename ...VC, typename U>
-mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertices(
+mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertices(
 	const VC&... v) // parameter pack of points
 {
 	using VertexContainer = typename U::VertexContainer;
@@ -174,7 +183,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertice
 
 template<class... Args>
 template<typename U>
-mesh::ReturnIfHasVertexContainer<U, void> mgp::Mesh<Args...>::reserveVertices(unsigned int n)
+mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::reserveVertices(unsigned int n)
 {
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
@@ -188,7 +197,7 @@ mesh::ReturnIfHasVertexContainer<U, void> mgp::Mesh<Args...>::reserveVertices(un
 
 template<class... Args>
 template<typename U>
-mesh::ReturnIfHasVertexContainer<U, void> mgp::Mesh<Args...>::compactVertices()
+mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::compactVertices()
 {
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
@@ -271,7 +280,7 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::reserveFaces(unsigned int
 
 template<class... Args>
 template<typename U>
-mesh::ReturnIfHasFaceContainer<U, void> mgp::Mesh<Args...>::compactFaces()
+mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::compactFaces()
 {
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
@@ -285,7 +294,7 @@ mesh::ReturnIfHasFaceContainer<U, void> mgp::Mesh<Args...>::compactFaces()
 }
 
 /**
- * @brief Mesh::swap
+ * @brief Swaps this mesh with m2.
  * @param m2
  */
 template<class... Args>

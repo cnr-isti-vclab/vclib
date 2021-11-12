@@ -3,5 +3,8 @@
 Docs
 ====
 
-.. doxygennamespace:: mgp
-   :project: mgplib
+.. doxygenclass:: mgp::Mesh
+   :members:
+   :undoc-members:
+   :protected-members:
+   :private-members:
