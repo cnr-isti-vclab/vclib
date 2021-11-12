@@ -16,7 +16,7 @@ template<class Scalar, int N>
 class Coordinate : public CoordinateTriggerer
 {
 public:
-	using CoordinateType =  Point<Scalar, N>;
+	using CoordType =  Point<Scalar, N>;
 
 	const Point<Scalar, N>& coordinate() const { return p; }
 	Point<Scalar, N>&       coordinate() { return p; }
@@ -29,7 +29,7 @@ template<class Scalar>
 class Coordinate3 : public CoordinateTriggerer
 {
 public:
-	using CoordinateType = Point3<Scalar>;
+	using CoordType = Point3<Scalar>;
 
 	const Point3<Scalar>& coordinate() const { return p; }
 	Point3<Scalar>&       coordinate() { return p; }

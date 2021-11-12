@@ -37,62 +37,38 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	}
 }
 
+/**
+ * @brief Mesh::Mesh Move constructor, moves the given mesh into this one, without any other
+ * resource acquisition.
+ *
+ * @param oth
+ */
 template<class... Args>
 Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 {
-	swap(oth);
+	swap(oth); //use copy ans swap idiom: this (empty) mesh is swapped with the input one
 }
 
+/**
+ * @brief Mesh::clear clears all the Elements contained in the mesh.
+ */
 template<class... Args>
 void Mesh<Args...>::clear()
 {
 	if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		VertexContainer::clearVertices();
+		VertexContainer::clearVertices(); // clear vertices, only if the mesh has vertices
 	}
 	if constexpr(mesh::hasFaces<Mesh<Args...>>()) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		FaceContainer::clearFaces();
+		FaceContainer::clearFaces(); // clear faces, only if the mesh has faces
 	}
 }
 
-template<class... Args>
-void Mesh<Args...>::swap(Mesh& m2)
-{
-	mgp::swap(*this, m2);
-}
-
-template<class... Args>
-Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
-{
-	swap(oth);
-	return *this;
-}
-
-template<class... Args>
-void Mesh<Args...>::updateAllOptionalContainerReferences()
-{
-	// if there the optional vertex container, I need to update, for each vertex of the
-	// new mesh, the containerPointer
-	if constexpr (
-		mesh::hasVertices<Mesh<Args...>>() && mesh::hasVertexOptionalContainer<Mesh<Args...>>()) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		for (auto& v : VertexContainer::vertexIterator(true)) {
-			VertexContainer::setContainerPointer(v);
-		}
-	}
-
-	// if there is the optional face container, I need to update, for each face of the
-	// new mesh, the containerPointer
-	if constexpr (
-		mesh::hasFaces<Mesh<Args...>>() && mesh::hasFaceOptionalContainer<Mesh<Args...>>()) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		for (auto& f : FaceContainer::faceIterator(true)) {
-			FaceContainer::setContainerPointer(f);
-		}
-	}
-}
-
+/**
+ * @brief mgp::Mesh::addVertex add a new vertex into the mesh, returning the id of the added vertex.
+ * @return the id of the new vertex.
+ */
 template<class... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex()
@@ -100,14 +76,48 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex(
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
 
+	// If the base pointer of the container of vertices changes, it means that all the vertex
+	// references contained in the other elements need to be updated (the ones contained in the
+	// vertex container are updated automatically)
+
 	Vertex*      oldBase = VertexContainer::vertices.data();
 	unsigned int vid     = VertexContainer::addVertex();
 	Vertex*      newBase = VertexContainer::vertices.data();
-	if (oldBase != nullptr && oldBase != newBase)
+	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
+		// change all the vertex references in the other containers
 		updateVertexReferences(oldBase, newBase);
+	}
 	return vid;
 }
 
+/**
+ * @brief mgp::Mesh::addVertex add a new vertex with the given coordinate into the mesh, returning
+ * the id of the added vertex.
+ * @param p: coordinate of the new vertex.
+ * @return the id of the new vertex.
+ */
+template<class... Args>
+template<typename U>
+mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertex(
+	const VCoordType& p)
+{
+	using VertexContainer = typename U::VertexContainer;
+
+	unsigned int vid = addVertex(); // using the previously defined addVertex function
+	VertexContainer::vertex(vid).coordinate() = p; // set the coordinate to the vertex
+	return vid;
+}
+
+/**
+ * @brief mgp::Mesh::addVertices add an arbitrary number of n vertices, returning the id of the
+ * first added vertex.
+ *
+ * This means that, if you want to add 5 vertices and this member function returns 4, the added
+ * vertices will have from id 4 to id 8 included.
+ *
+ * @param n: the number of vertices to add to the mesh.
+ * @return the id of the first added vertex.
+ */
 template<class... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertices(unsigned int n)
@@ -115,11 +125,50 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertice
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
 
+	// If the base pointer of the container of vertices changes, it means that all the vertex
+	// references contained in the other elements need to be updated (the ones contained in the
+	// vertex container are updated automatically)
+
 	Vertex*      oldBase = VertexContainer::vertices.data();
-	unsigned int vid     = VertexContainer::addVertices(n);
+	unsigned int vid     = VertexContainer::addVertices(n); // add the number of vertices
 	Vertex*      newBase = VertexContainer::vertices.data();
-	if (oldBase != nullptr && oldBase != newBase)
+
+
+	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
+		// change all the vertex references in the other containers
 		updateVertexReferences(oldBase, newBase);
+	}
+	return vid;
+}
+
+/**
+ * @brief mgp::Mesh::addVertices add an arbitrary number of vertices with the given coordinates,
+ * returning the id of the first added vertex.
+ *
+ * You can call this member function like:
+ *
+ * CoordType p0, p1, p2, p3;
+ * // init coords
+ * m.addVertices(p0, p1, p2, p3);
+ *
+ * The number of accepted Coordtype arguments is variable.
+ *
+ * @param v: list of vertices
+ * @return the id of the first added vertex.
+ */
+template<class... Args>
+template<typename ...VC, typename U>
+mesh::ReturnIfHasVertexContainer<U, unsigned int> mgp::Mesh<Args...>::addVertices(
+	const VC&... v) // parameter pack of points
+{
+	using VertexContainer = typename U::VertexContainer;
+	unsigned int vid = VertexContainer::vertexContainerSize();
+	reserveVertices(vid + sizeof...(VC)); // reserve the new number of vertices
+
+	// pack expansion: will be translated at compile time as an addVertex() call for each argument
+	// of the addVertices member function
+	(addVertex(v), ...);
+
 	return vid;
 }
 
@@ -169,6 +218,30 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 
 template<class... Args>
 template<typename U>
+mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace(
+	const std::vector<VType*>& v)
+{
+	using Face          = typename U::FaceType;
+	using FaceContainer = typename U::FaceContainer;
+
+	if constexpr (Face::VERTEX_NUMBER >= 0){
+		assert(Face::VERTEX_NUMBER == v.size());
+	}
+
+	unsigned int fid = addFace();
+
+	if constexpr (Face::VERTEX_NUMBER < 0){
+		FaceContainer::face(fid).resizeVertices(v.size());
+	}
+
+	for (unsigned int i = 0; i < v.size(); ++i)
+		FaceContainer::face(fid).v(i) = v[i];
+
+	return fid;
+}
+
+template<class... Args>
+template<typename U>
 mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFaces(unsigned int n)
 {
 	using Face          = typename U::FaceType;
@@ -210,6 +283,27 @@ mesh::ReturnIfHasFaceContainer<U, void> mgp::Mesh<Args...>::compactFaces()
 
 	updateFaceReferencesAfterCompact(oldBase, newIndices);
 }
+
+/**
+ * @brief Mesh::swap
+ * @param m2
+ */
+template<class... Args>
+void Mesh<Args...>::swap(Mesh& m2)
+{
+	mgp::swap(*this, m2);
+}
+
+template<class... Args>
+Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
+{
+	swap(oth);
+	return *this;
+}
+
+/*********************
+ * Protected Members *
+ *********************/
 
 template<class... Args>
 template<typename U>
@@ -263,9 +357,39 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferencesAfter
 	}
 }
 
+template<class... Args>
+void Mesh<Args...>::updateAllOptionalContainerReferences()
+{
+	// if there the optional vertex container, I need to update, for each vertex of the
+	// new mesh, the containerPointer
+	if constexpr (
+		mesh::hasVertices<Mesh<Args...>>() && mesh::hasVertexOptionalContainer<Mesh<Args...>>()) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		for (auto& v : VertexContainer::vertexIterator(true)) {
+			VertexContainer::setContainerPointer(v);
+		}
+	}
+
+	// if there is the optional face container, I need to update, for each face of the
+	// new mesh, the containerPointer
+	if constexpr (
+		mesh::hasFaces<Mesh<Args...>>() && mesh::hasFaceOptionalContainer<Mesh<Args...>>()) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		for (auto& f : FaceContainer::faceIterator(true)) {
+			FaceContainer::setContainerPointer(f);
+		}
+	}
+}
+
+/**
+ * @brief swap: swaps two meshes of the same type
+ * @param m1
+ * @param m2
+ */
 template<class...A>
 inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 {
+	// container bases of verts and faces for m1 and m2
 	void* m1BaseV = nullptr;
 	void* m2BaseV = nullptr;
 	void* m1BaseF = nullptr;
@@ -282,10 +406,12 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	}
 
 	// actual swap of all the containers and the components of the mesh
+	// using pack expansion: swap will be called for each of the containers (or components!) that
+	// compose the Mesh
 	using std::swap;
 	(swap((mgp::mesh::Container<A>&) m1, (mgp::mesh::Container<A>&) m2), ...);
 
-	// set to all the elements, the new pointer of the optional component
+	// set to all the elements, the new pointer of the optional containers
 	m1.updateAllOptionalContainerReferences();
 	m2.updateAllOptionalContainerReferences();
 

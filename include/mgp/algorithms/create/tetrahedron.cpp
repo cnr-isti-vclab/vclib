@@ -36,7 +36,7 @@ MeshType createTetrahedron()
 	mgp::requireVertices<MeshType>();
 	mgp::requireFaces<MeshType>();
 
-	using CoordType = typename MeshType::Vertex::CoordinateType;
+	using CoordType = typename MeshType::Vertex::CoordType;
 	return createTetrahedron<MeshType>(
 		CoordType(1, 1, 1), CoordType(-1, 1, -1), CoordType(-1, -1, 1), CoordType(1, -1, -1));
 }
@@ -71,35 +71,19 @@ MeshType createTetrahedron(
 
 	MeshType m;
 
-	m.addVertices(4);
-	m.addFaces(4);
-
 	// if the mesh is polygonal, need first to resize the faces
 	if constexpr (FaceType::VERTEX_NUMBER < 0) {
 		for (int i = 0; i < 4; ++i)
 			m.face(i).resizeVertices(3);
 	}
 
-	m.vertex(0).coordinate() = p0;
-	m.vertex(1).coordinate() = p1;
-	m.vertex(2).coordinate() = p2;
-	m.vertex(3).coordinate() = p3;
+	m.addVertices(p0, p1, p2, p3);
 
-	m.face(0).v(0) = &m.vertex(0);
-	m.face(0).v(1) = &m.vertex(1);
-	m.face(0).v(2) = &m.vertex(2);
-
-	m.face(1).v(0) = &m.vertex(0);
-	m.face(1).v(1) = &m.vertex(2);
-	m.face(1).v(2) = &m.vertex(3);
-
-	m.face(2).v(0) = &m.vertex(0);
-	m.face(2).v(1) = &m.vertex(3);
-	m.face(2).v(2) = &m.vertex(1);
-
-	m.face(3).v(0) = &m.vertex(3);
-	m.face(3).v(1) = &m.vertex(2);
-	m.face(3).v(2) = &m.vertex(1);
+	m.reserveFaces(4);
+	m.addFace({&m.vertex(0), &m.vertex(1), &m.vertex(2)});
+	m.addFace({&m.vertex(0), &m.vertex(2), &m.vertex(3)});
+	m.addFace({&m.vertex(0), &m.vertex(3), &m.vertex(1)});
+	m.addFace({&m.vertex(3), &m.vertex(2), &m.vertex(1)});
 
 	return m;
 }

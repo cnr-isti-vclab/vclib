@@ -36,7 +36,7 @@ void loadVerticesTxt(
 				throw MalformedFileException("Unexpected end of file");
 			bool hasBeenRead = false;
 			if (p.name >= ply::x && p.name <= ply::z) {
-				using Scalar = typename VertexType::CoordinateType::ScalarType;
+				using Scalar = typename VertexType::CoordType::ScalarType;
 				int a = p.name - ply::x;
 				v.coordinate()[a] = internal::readProperty<Scalar>(token, p.type);
 				hasBeenRead = true;
@@ -96,7 +96,7 @@ void loadVerticesBin(
 		for (ply::Property p : header.vertexProperties()) {
 			bool hasBeenRead = false;
 			if (p.name >= ply::x && p.name <= ply::z) {
-				using Scalar = typename VertexType::CoordinateType::ScalarType;
+				using Scalar = typename VertexType::CoordType::ScalarType;
 				int a = p.name - ply::x;
 				v.coordinate()[a] = internal::readProperty<Scalar>(file, p.type);
 				hasBeenRead = true;

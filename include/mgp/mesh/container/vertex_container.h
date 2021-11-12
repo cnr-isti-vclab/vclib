@@ -47,6 +47,7 @@ protected:
 
 public:
 	using VertexType               = T;
+	using VertexCoordType          = typename T::CoordType;
 	using VertexIterator           = ContainerIterator<T>;
 	using ConstVertexIterator      = ConstContainerIterator<T>;
 	using VertexRangeIterator      = ContainerRangeIterator<VertexContainer, VertexIterator>;

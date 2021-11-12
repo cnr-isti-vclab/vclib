@@ -121,7 +121,7 @@ void vertexCoordLaplacianSmoothing(
 	mgp::requireFaces(m);
 
 	using VertexType                                    = typename MeshType::Vertex;
-	using CoordType                                     = typename VertexType::CoordinateType;
+	using CoordType                                     = typename VertexType::CoordType;
 	internal::LaplacianInfo<CoordType>              lpz = {CoordType(0, 0, 0), 0};
 	std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize());
 

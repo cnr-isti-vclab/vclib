@@ -12,7 +12,7 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 {
 	if (mgp::hasVertices(m)){
 		setVertices();
-		setVertexCoords(getPropType<typename Mesh::VertexType::CoordinateType::ScalarType>());
+		setVertexCoords(getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
 		if constexpr (mgp::hasPerVertexNormal(m))
 			if (mgp::isPerVertexNormalEnabled(m))
 				setVertexNormals(getPropType<typename Mesh::VertexType::NormalType::ScalarType>());
