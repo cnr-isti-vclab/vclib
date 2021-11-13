@@ -32,6 +32,13 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned int n)
 {
 	VRefs::resizeVertices(n);
+	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::template WedgeTexCoords<S, N>;
+
+		TC::resizeWedgeTexCoords(n);
+	}
 }
 
 template<class... Args>
@@ -39,6 +46,13 @@ template<typename Vertex, int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(Vertex* v)
 {
 	VRefs::pushVertex(v);
+	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::template WedgeTexCoords<S, N>;
+
+		TC::pushWedgeTexCoord(TexCoord<S>());
+	}
 }
 
 template<class... Args>
@@ -46,6 +60,13 @@ template<typename Vertex, int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned int i, Vertex* v)
 {
 	VRefs::insertVertex(i, v);
+	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::template WedgeTexCoords<S, N>;
+
+		TC::insertWedgeTexCoord(i, TexCoord<S>());
+	}
 }
 
 template<class... Args>
@@ -53,6 +74,13 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned int i)
 {
 	VRefs::eraseVertex(i);
+	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::template WedgeTexCoords<S, N>;
+
+		TC::eraseWedgeTexCoord(i);
+	}
 }
 
 template<class... Args>
@@ -60,6 +88,13 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
 {
 	VRefs::clearVertices();
+	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::template WedgeTexCoords<S, N>;
+
+		TC::clearWedgeTexCoord();
+	}
 }
 
 }

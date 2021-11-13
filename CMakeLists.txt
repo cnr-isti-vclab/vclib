@@ -67,6 +67,7 @@ set(HEADERS
 	include/mgp/mesh/components/vertex_references.h
 	include/mgp/mesh/components/tex_coord.h
 	include/mgp/mesh/components/triangle_bit_flags.h
+	include/mgp/mesh/components/wedge_tex_coords.h
 	include/mgp/mesh/components_optional/custom_components.h
 	include/mgp/mesh/components_optional/optional_color.h
 	include/mgp/mesh/components_optional/optional_face_references.h

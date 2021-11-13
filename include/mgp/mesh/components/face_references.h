@@ -6,13 +6,6 @@
 #ifndef MGP_MESH_COMPONENTS_FACE_REFERENCES_H
 #define MGP_MESH_COMPONENTS_FACE_REFERENCES_H
 
-#include <array>
-#include <assert.h>
-#include <type_traits>
-#include <vector>
-
-#include "../iterators/range_iterator.h"
-
 #include "element_references.h"
 
 namespace mgp::comp {
@@ -45,7 +38,7 @@ public:
 
 	/** Constructor **/
 
-	FaceReferences() : ElementReferences<Face, N>() {}
+	FaceReferences() : Base() {}
 
 	/** Member functions **/
 

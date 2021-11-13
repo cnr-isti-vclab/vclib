@@ -15,6 +15,7 @@
 #include "../components/polygon_bit_flags.h"
 #include "../components/triangle_bit_flags.h"
 #include "../components/vertex_references.h"
+#include "../components/wedge_tex_coords.h"
 
 namespace mgp::face {
 
@@ -77,6 +78,21 @@ using AdjacentTriangles = comp::FaceReferences<Face, 3>;
 
 template <typename  T>
 bool constexpr hasAdjacentFaces() {return comp::hasFaceReferences<T>();}
+
+/** Port WedgeTexCoords class into face namespace **/
+template<typename Scalar>
+using WedgeTexCoords = comp::WedgeTexCoords<Scalar, -1>;
+
+template<typename Scalar>
+using TriangleWedgeTexCoords = comp::WedgeTexCoords<Scalar, 3>;
+
+using WedgeTexCoordf = comp::WedgeTexCoords<float, -1>;
+using WedgeTexCoordd = comp::WedgeTexCoords<double, -1>;
+using TriangleWedgeTexCoordf = TriangleWedgeTexCoords<float>;
+using TriangleWedgeTexCoordd = TriangleWedgeTexCoords<double>;
+
+template <typename  T>
+bool constexpr hasWedgeTexCoords() {return comp::hasWedgeTexCoords<T>();}
 
 /** Port MutableBitFlags class into face namespace **/
 using MutableBitFlags = comp::MutableBitFlags;
