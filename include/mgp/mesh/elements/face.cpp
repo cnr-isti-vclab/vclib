@@ -15,8 +15,9 @@ template<class... Args>
 unsigned int Face<Args...>::id() const { return _id; }
 
 /**
- * @brief Resize the number of Vertex References of the Face, taking care of updating also wedge
- * components sizes of the Face.
+ * @brief Resize the number of Vertex References of the Face, taking care of updating also the
+ * number of adjacent faces and the number of wedge components of the Face, if these components
+ * are part of the Face.
  *
  * If n is greater than the old number of vertex references, n vertex references (and relative
  * wedge components) will be added. If n is lower than the old number of vertex references, the
@@ -32,7 +33,12 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned int n)
 {
 	VRefs::resizeVertices(n);
-	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+	if constexpr (face::hasAdjacentFaces<Face>()) {
+		using T = typename Face::FaceReferences;
+
+		T::resizeFaces(n);
+	}
+	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
 		using TC = typename Face::template WedgeTexCoords<S, N>;
@@ -46,7 +52,12 @@ template<typename Vertex, int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(Vertex* v)
 {
 	VRefs::pushVertex(v);
-	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+	if constexpr (face::hasAdjacentFaces<Face>()) {
+		using T = typename Face::FaceReferences;
+
+		T::pushFace(nullptr);
+	}
+	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
 		using TC = typename Face::template WedgeTexCoords<S, N>;
@@ -60,7 +71,12 @@ template<typename Vertex, int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned int i, Vertex* v)
 {
 	VRefs::insertVertex(i, v);
-	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+	if constexpr (face::hasAdjacentFaces<Face>()) {
+		using T = typename Face::FaceReferences;
+
+		T::insertFace(i, nullptr);
+	}
+	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
 		using TC = typename Face::template WedgeTexCoords<S, N>;
@@ -74,7 +90,12 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned int i)
 {
 	VRefs::eraseVertex(i);
-	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+	if constexpr (face::hasAdjacentFaces<Face>()) {
+		using T = typename Face::FaceReferences;
+
+		T::eraseFace(i);
+	}
+	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
 		using TC = typename Face::template WedgeTexCoords<S, N>;
@@ -88,7 +109,12 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
 {
 	VRefs::clearVertices();
-	if constexpr (comp::hasWedgeTexCoords<Face>()) {
+	if constexpr (face::hasAdjacentFaces<Face>()) {
+		using T = typename Face::FaceReferences;
+
+		T::clearFaces();
+	}
+	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
 		using TC = typename Face::template WedgeTexCoords<S, N>;
