@@ -10,7 +10,9 @@ set(CMAKE_CXX_STANDARD 17)
 ### Options
 option(MGP_BUILD_TESTS "Build MGP tests" ON)
 option(MGP_IDE "Create an utility target to show the library tree on IDEs" ON)
-option(MGP_BUILD_DOCS "Build documentation - requires doxygen and sphinx" OFF)
+option(MGP_BUILD_DOCS
+	"Build documentation -
+	requires doxygen and sphinx with readthedocs theme and breathe extensions" OFF)
 
 # Add the cmake folder so the FindSphinx module is found
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
@@ -128,6 +130,7 @@ set(SOURCES
 	include/mgp/mesh/components_vector/custom_components_vector.cpp
 	include/mgp/mesh/components_vector/optional_generic_vector.cpp
 	include/mgp/mesh/components_optional/optional_vertex_references.cpp
+	include/mgp/mesh/elements/face.cpp
 	include/mgp/mesh/requirements/element_requirements.cpp
 	include/mgp/mesh/requirements/face_requirements.cpp
 	include/mgp/mesh/requirements/mesh_requirements.cpp

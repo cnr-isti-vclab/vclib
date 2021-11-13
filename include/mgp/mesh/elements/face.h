@@ -36,13 +36,36 @@ class Face : public FaceTriggerer, public Args...
 
 	template<typename, typename>
 	friend class mesh::FaceOptionalContainer;
+
+	// Vertex references component of the Face
+	using VRefs = typename Face::VertexReferences;
+	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
+
 public:
-	unsigned int id() const { return _id; }
+	unsigned int id() const;
+
+	template<int U = NV>
+	comp::internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n);
+
+	template<typename Vertex, int U = NV>
+	comp::internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v);
+
+	template<typename Vertex, int U = NV>
+	comp::internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, Vertex* v);
+
+	template<int U = NV>
+	comp::internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
+
+	template<int U = NV>
+	comp::internal::ReturnIfIsVector<U, void> clearVertices();
+
 protected:
 	Face() {}
 	unsigned int _id = 0;
 };
 
 } // namespace mgp
+
+#include "face.cpp"
 
 #endif // MGP_MESH_ELEMENTS_FACE_H

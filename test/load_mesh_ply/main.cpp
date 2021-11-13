@@ -23,5 +23,7 @@ int main()
 
 	f.pushVertex(&m.vertex(0));
 
+	f.clearVertices();
+
 	return 0;
 }
