@@ -15,6 +15,41 @@ template<class... Args>
 unsigned int Face<Args...>::id() const { return _id; }
 
 /**
+ * @brief Sets a list of Vertex references to the face. If the Face size is dynamic, will take care
+ * to update the also the number of adjacent faces and the number of wedge components, if these
+ * components are part of the Face and if the size of the Face is changed. On the contrary, if the
+ * Face size is static, the number of vertices of the list must be equal to the size of the Face.
+ *
+ * @param list
+ */
+template<class... Args>
+template<typename Vertex>
+void Face<Args...>::setVertices(const std::vector<Vertex>& list)
+{
+	VRefs::setVertices(list);
+	static const int VN = Face::VERTEX_NUMBER;
+	if constexpr(VN < 0){
+		if constexpr (face::hasAdjacentFaces<Face>()) {
+			using T = typename Face::AdjacentFaces;
+
+			T::resizeAdjFaces(list.size());
+		}
+		if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
+			using T = typename Face::OptionalAdjacentFaces;
+			if (T::adjFacesEnabled())
+				T::resizeAdjFaces(list.size());
+		}
+		if constexpr (face::hasWedgeTexCoords<Face>()) {
+			static const int N = Face::WEDGE_TEXCOORD_NUMBER;
+			using S = typename Face::WedgeTexCoordScalarType;
+			using TC = typename Face::template WedgeTexCoords<S, N>;
+
+			TC::resizeWedgeTexCoords(list.size());
+		}
+	}
+}
+
+/**
  * @brief Resize the number of Vertex References of the Face, taking care of updating also the
  * number of adjacent faces and the number of wedge components of the Face, if these components
  * are part of the Face.
