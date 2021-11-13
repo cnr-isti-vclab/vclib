@@ -59,6 +59,7 @@ set(HEADERS
 	include/mgp/mesh/components/coordinate.h
 	include/mgp/mesh/components/element_references.h
 	include/mgp/mesh/components/face_references.h
+	include/mgp/mesh/components/generic_container.h
 	include/mgp/mesh/components/mutable_bit_flags.h
 	include/mgp/mesh/components/normal.h
 	include/mgp/mesh/components/polygon_bit_flags.h
@@ -122,6 +123,7 @@ set(SOURCES
 	include/mgp/mesh/container/vertex_optional_container.cpp
 	include/mgp/mesh/components/bit_flags.cpp
 	include/mgp/mesh/components/element_references.cpp
+	include/mgp/mesh/components/generic_container.cpp
 	include/mgp/mesh/components/mutable_bit_flags.cpp
 	include/mgp/mesh/components/polygon_bit_flags.cpp
 	include/mgp/mesh/components/triangle_bit_flags.cpp

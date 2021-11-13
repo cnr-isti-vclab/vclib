@@ -34,14 +34,14 @@ class FaceReferences : protected ElementReferences<Face, N>, public FaceReferenc
 	using Base = ElementReferences<Face, N>;
 
 public:
-	static const int FACE_NUMBER = Base::COMPONENT_NUMBER;
+	static const int FACE_NUMBER = Base::CONTAINER_SIZE;
 
 	/** Iterator Types declaration **/
 
-	using FaceIterator           = typename Base::ElementIterator;
-	using ConstFaceIterator      = typename Base::ConstElementIterator;
-	using FaceRangeIterator      = typename Base::ElementRangeIterator;
-	using ConstFaceRangeIterator = typename Base::ConstElementRangeIterator;
+	using FaceIterator           = typename Base::GCIterator;
+	using ConstFaceIterator      = typename Base::ConstGCIterator;
+	using FaceRangeIterator      = typename Base::GCRangeIterator;
+	using ConstFaceRangeIterator = typename Base::ConstGCRangeIterator;
 
 	/** Constructor **/
 
@@ -49,58 +49,58 @@ public:
 
 	/** Member functions **/
 
-	unsigned int faceNumber() const { return Base::elementNumber(); }
+	unsigned int faceNumber() const { return Base::size(); }
 
-	Face*&      f(unsigned int i) { return Base::element(i); }
-	const Face* f(unsigned int i) const { return Base::element(i); }
-	Face*&      fMod(int i) { return Base::elementMod(i); }
-	const Face* fMod(int i) const { return Base::elementMod(i); }
+	Face*&      f(unsigned int i) { return Base::at(i); }
+	const Face* f(unsigned int i) const { return Base::at(i); }
+	Face*&      fMod(int i) { return Base::atMod(i); }
+	const Face* fMod(int i) const { return Base::atMod(i); }
 
-	void setFace(Face* f, unsigned int i) { Base::setElement(f, i); }
-	void setFaces(const std::vector<Face*>& list) { Base::setElements(list); }
+	void setFace(Face* f, unsigned int i) { Base::set(f, i); }
+	void setFaces(const std::vector<Face*>& list) { Base::set(list); }
 
-	bool contains(const Face* f) const { return Base::contains(f); }
+	using Base::contains;
 
 	/** Member functions specific for vector **/
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> resizeFaces(unsigned int n)
 	{
-		Base::resizeElements(n);
+		Base::resize(n);
 	}
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> pushFace(Face* f)
 	{
-		Base::pushElement(f);
+		Base::pushBack(f);
 	}
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> insertFace(unsigned int i, Face* f)
 	{
-		Base::insertElement(i, f);
+		Base::insert(i, f);
 	}
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> eraseFace(unsigned int i)
 	{
-		Base::eraseElement(i);
+		Base::erase(i);
 	}
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void> clearFaces()
 	{
-		Base::clearElements();
+		Base::clear();
 	}
 
 	/** Iterator Member functions **/
 
-	FaceIterator           faceBegin() { return Base::elementBegin(); }
-	FaceIterator           faceEnd() { return Base::elementEnd(); }
-	ConstFaceIterator      faceBegin() const { return Base::elementBegin(); }
-	ConstFaceIterator      faceEnd() const { return Base::elementEnd(); }
-	FaceRangeIterator      faceIterator() { return Base::elementIterator(); }
-	ConstFaceRangeIterator faceIterator() const { return Base::elementIterator(); }
+	FaceIterator           faceBegin() { return Base::begin(); }
+	FaceIterator           faceEnd() { return Base::end(); }
+	ConstFaceIterator      faceBegin() const { return Base::begin(); }
+	ConstFaceIterator      faceEnd() const { return Base::end(); }
+	FaceRangeIterator      faceIterator() { return Base::rangeIterator(); }
+	ConstFaceRangeIterator faceIterator() const { return Base::rangeIterator(); }
 
 protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase)
