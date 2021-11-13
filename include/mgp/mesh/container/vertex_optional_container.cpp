@@ -210,7 +210,7 @@ template<class U>
 vert::ReturnIfHasOptionalAdjacentFaces<U, bool>
 VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexAdjacentFacesEnabled() const
 {
-	return optionalPropVector.isFaceReferencesEnabled();
+	return optionalPropVector.isAdjacentFacesEnabled();
 }
 
 /**
@@ -224,7 +224,7 @@ template<class U>
 vert::ReturnIfHasOptionalAdjacentFaces<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexAdjacentFaces()
 {
-	optionalPropVector.enableFaceReferences(vertexContainerSize());
+	optionalPropVector.enableAdjacentFaces(vertexContainerSize());
 }
 
 /**
@@ -237,7 +237,7 @@ template<class U>
 vert::ReturnIfHasOptionalAdjacentFaces<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexAdjacentFaces()
 {
-	optionalPropVector.disableFaceReferences();
+	optionalPropVector.disableAdjacentFaces();
 }
 
 /**

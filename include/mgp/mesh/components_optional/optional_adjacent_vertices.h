@@ -3,8 +3,8 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMPONENTS_OPTIONAL_VERTEX_REFERENCES_H
-#define MGP_MESH_COMPONENTS_OPTIONAL_VERTEX_REFERENCES_H
+#ifndef MGP_MESH_COMPONENTS_OPTIONAL_ADJACENT_VERTICES_H
+#define MGP_MESH_COMPONENTS_OPTIONAL_ADJACENT_VERTICES_H
 
 #include <array>
 #include <assert.h>
@@ -16,7 +16,7 @@
 #include "../iterators/range_iterator.h"
 
 namespace mgp::mesh {
-template <typename, typename>
+template<typename, typename>
 class OptionalVertexReferencesVector;
 }
 
@@ -31,16 +31,16 @@ using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
 
 } // namespace internal
 
-class OptionalVertexReferencesTriggerer
+class OptionalAdjacentVerticesTriggerer
 {
 };
 
 template<class Vertex, int N, typename T>
-class OptionalVertexReferences :
-		public OptionalVertexReferencesTriggerer,
+class OptionalAdjacentVertices :
+		public OptionalAdjacentVerticesTriggerer,
 		public virtual OptionalInfo<T>
 {
-	template <typename, typename>
+	template<typename, typename>
 	friend class OptionalVertexReferencesVector;
 
 private:
@@ -51,13 +51,13 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
-	// the VertRefsContainer type will be array or vector, depending on N value
-	using VertRefsContainer = typename std::conditional<
+	// the AdjVertsContainer type will be array or vector, depending on N value
+	using AdjVertsContainer = typename std::conditional<
 		(N >= 0),
 		typename std::array<Vertex*, ARRAY_SIZE>,
 		typename std::vector<Vertex*>>::type;
 
-	static const int FACE_NUMBER = N;
+	static const int ADJ_VERTEX_NUMBER = N;
 
 	/** Iterator Types declaration **/
 
@@ -72,50 +72,53 @@ public:
 		typename std::array<Vertex*, ARRAY_SIZE>::const_iterator,
 		typename std::vector<Vertex*>::const_iterator>::type;
 
-	using VertexRangeIterator = RangeIterator<OptionalVertexReferences, VertexIterator>;
-	using ConstVertexRangeIterator = ConstRangeIterator<OptionalVertexReferences, ConstVertexIterator>;
+	using VertexRangeIterator = RangeIterator<OptionalAdjacentVertices, VertexIterator>;
+	using ConstVertexRangeIterator =
+		ConstRangeIterator<OptionalAdjacentVertices, ConstVertexIterator>;
 
 	/** Constructor **/
 
-	OptionalVertexReferences();
+	OptionalAdjacentVertices();
 
 	/** Member functions **/
 
-	unsigned int vertexNumber() const;
+	unsigned int adjVerticesNumber() const;
 
-	Vertex*&      v(unsigned int i);
-	const Vertex* v(unsigned int i) const;
-	Vertex*&      vMod(int i);
-	const Vertex* vMod(int i) const;
+	Vertex*&      adjVert(unsigned int i);
+	const Vertex* adjVert(unsigned int i) const;
+	Vertex*&      adjVertMod(int i);
+	const Vertex* adjVertMod(int i) const;
 
-	void setVertex(Vertex* f, unsigned int i);
-	void setVertexs(const std::vector<Vertex*>& list);
+	void setAdjVertex(Vertex* f, unsigned int i);
+	void setAdjVertices(const std::vector<Vertex*>& list);
+
+	bool containsAdjVertex(const Vertex* v) const;
 
 	/** Member functions specific for vector **/
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n);
+	internal::ReturnIfIsVector<U, void> resizeAdjVertices(unsigned int n);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* f);
+	internal::ReturnIfIsVector<U, void> pushAdjVertex(Vertex* f);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, Vertex* f);
+	internal::ReturnIfIsVector<U, void> insertAdjVertex(unsigned int i, Vertex* f);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
+	internal::ReturnIfIsVector<U, void> eraseAdjVertex(unsigned int i);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearVertices();
+	internal::ReturnIfIsVector<U, void> clearAdjVertices();
 
 	/** Iterator Member functions **/
 
-	VertexIterator vertexBegin();
-	VertexIterator vertexEnd();
-	ConstVertexIterator vertexBegin() const;
-	ConstVertexIterator vertexEnd() const;
-	VertexRangeIterator vertexIterator();
-	ConstVertexRangeIterator vertexIterator() const;
+	VertexIterator           adjVertexBegin();
+	VertexIterator           adjVertexEnd();
+	ConstVertexIterator      adjVertexBegin() const;
+	ConstVertexIterator      adjVertexEnd() const;
+	VertexRangeIterator      adjVertexIterator();
+	ConstVertexRangeIterator adjVertexIterator() const;
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
@@ -131,20 +134,20 @@ private:
  */
 
 template<typename T>
-using hasOptionalVertexReferencesT = std::is_base_of<OptionalVertexReferencesTriggerer, T>;
+using hasOptionalAdjacentVerticesT = std::is_base_of<OptionalAdjacentVerticesTriggerer, T>;
 
 template<typename U, typename T>
-using ReturnIfHasOptionalVertexReferences=
-	typename std::enable_if<hasOptionalVertexReferencesT<U>::value, T>::type;
+using ReturnIfHasOptionalAdjacentVertices =
+	typename std::enable_if<hasOptionalAdjacentVerticesT<U>::value, T>::type;
 
 template<typename T>
-bool constexpr hasOptionalVertexReferences()
+bool constexpr hasOptionalAdjacentVertices()
 {
-	return hasOptionalVertexReferencesT<T>::value;
+	return hasOptionalAdjacentVerticesT<T>::value;
 }
 
 } // namespace mgp::comp
 
-#include "optional_vertex_references.cpp"
+#include "optional_adjacent_vertices.cpp"
 
-#endif // MGP_MESH_COMPONENTS_OPTIONAL_VERTEX_REFERENCES_H
+#endif // MGP_MESH_COMPONENTS_OPTIONAL_ADJACENT_VERTICES_H

@@ -6,10 +6,11 @@
 #ifndef MGP_MESH_ELEMENTS_VERTEX_COMPONENTS_H
 #define MGP_MESH_ELEMENTS_VERTEX_COMPONENTS_H
 
+#include "../components/adjacent_faces.h"
+#include "../components/adjacent_vertices.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/coordinate.h"
-#include "../components/face_references.h"
 #include "../components/mutable_bit_flags.h"
 #include "../components/normal.h"
 #include "../components/scalar.h"
@@ -69,10 +70,10 @@ bool constexpr hasScalar() {return comp::hasScalar<T>();};
 
 /** Port AdjacentFacesRef class into vert namespace **/
 template <typename Face>
-using AdjacentFaces = comp::FaceReferences<Face, -1>;
+using AdjacentFaces = comp::AdjacentFaces<Face, -1>;
 
 template <typename T>
-bool constexpr hasAdjacentFaces() {return comp::hasFaceReferences<T>();};
+bool constexpr hasAdjacentFaces() {return comp::hasAdjacentFaces<T>();};
 
 /** Port MutableBitFlags class into face namespace **/
 using MutableBitFlags = comp::MutableBitFlags;
@@ -92,10 +93,10 @@ using TexCoordd = comp::TexCoordd;
 
 /** Port AdjacentVertices class into vert namespace **/
 template <typename Vertex>
-using AdjacentVertices = comp::VertexReferences<Vertex, -1>;
+using AdjacentVertices = comp::AdjacentVertices<Vertex, -1>;
 
 template <typename T>
-bool constexpr hasAdjacentVertices() {return comp::hasVertexReferences<T>();};
+bool constexpr hasAdjacentVertices() {return comp::hasAdjacentVertices<T>();};
 
 } // namespace mgp::vert
 

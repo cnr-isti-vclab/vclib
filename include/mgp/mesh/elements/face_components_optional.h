@@ -7,8 +7,8 @@
 #define MGP_MESH_ELEMENTS_FACE_COMPONENTS_OPTIONAL_H
 
 #include "../components_optional/custom_components.h"
+#include "../components_optional/optional_adjacent_faces.h"
 #include "../components_optional/optional_color.h"
-#include "../components_optional/optional_face_references.h"
 #include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_normal.h"
 #include "../components_optional/optional_scalar.h"
@@ -79,16 +79,16 @@ using ReturnIfHasOptionalScalar = comp::ReturnIfHasOptionalScalar<U, T>;
 
 /** Port OptionalAdjacentFaces class into face namespace **/
 template <typename T>
-using OptionalAdjacentFaces = comp::OptionalFaceReferences<T, -1, T>;
+using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<T, -1, T>;
 
 template <typename T>
-using OptionalAdjacentTriangles = comp::OptionalFaceReferences<T, 3, T>;
+using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<T, 3, T>;
 
 template <typename T>
-bool constexpr hasOptionalAdjacentFaces() {return comp::hasOptionalFaceReferences<T>();};
+bool constexpr hasOptionalAdjacentFaces() {return comp::hasOptionalAdjacentFaces<T>();};
 
 template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalFaceReferences<U, T>;
+using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalAdjacentFaces<U, T>;
 
 /** Port CustomComponents class into face namespace **/
 template <typename T>

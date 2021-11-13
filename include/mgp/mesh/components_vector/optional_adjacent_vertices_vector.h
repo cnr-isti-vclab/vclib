@@ -3,17 +3,17 @@
  * This Source Code Form is subject to the terms of the GNU GPL 3.0
  */
 
-#ifndef MGP_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_VERTEX_REF_VECTOR_H
-#define MGP_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_VERTEX_REF_VECTOR_H
+#ifndef MGP_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_VERTICES_VECTOR_H
+#define MGP_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_VERTICES_VECTOR_H
 
-#include <mgp/mesh/components_optional/optional_vertex_references.h>
+#include <mgp/mesh/components_optional/optional_adjacent_vertices.h>
 
 #include "optional_generic_vector.h"
 
 namespace mgp::internal {
 
 template<typename, typename = void>
-class OptionalVertexReferencesVector
+class OptionalAdjacentVerticesVector
 {
 public:
 	void clear() {}
@@ -23,14 +23,14 @@ public:
 };
 
 template<typename T>
-class OptionalVertexReferencesVector<
+class OptionalAdjacentVerticesVector<
 	T,
-	std::enable_if_t<comp::hasOptionalVertexReferences<T>()>> :
-		private OptionalGenericVector<typename T::VertRefsContainer>
+	std::enable_if_t<comp::hasOptionalAdjacentVertices<T>()>> :
+		private OptionalGenericVector<typename T::AdjVertsContainer>
 {
 private:
-	using VertRefsContainer = typename T::VertRefsContainer;
-	using Base = OptionalGenericVector<VertRefsContainer>;
+	using AdjVertsContainer = typename T::AdjVertsContainer;
+	using Base = OptionalGenericVector<AdjVertsContainer>;
 
 public:
 	using Base::clear;
@@ -40,10 +40,10 @@ public:
 	bool             isVertexReferencesEnabled() const { return Base::isEnabled(); };
 	void             enableVertexReferences(unsigned int size) { Base::enable(size); }
 	void             disableVertexReferences() { Base::disable(); }
-	VertRefsContainer&       vertRefs(unsigned int i) { return Base::at(i); }
-	const VertRefsContainer& vertRefs(unsigned int i) const { return Base::at(i); }
+	AdjVertsContainer&       adjVerts(unsigned int i) { return Base::at(i); }
+	const AdjVertsContainer& adjVerts(unsigned int i) const { return Base::at(i); }
 };
 
 } // namespace mgp::internal
 
-#endif // MGP_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_VERTEX_REF_VECTOR_H
+#endif // MGP_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_VERTICES_VECTOR_H

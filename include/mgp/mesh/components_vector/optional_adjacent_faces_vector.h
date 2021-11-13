@@ -6,14 +6,14 @@
 #ifndef MGP_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
 #define MGP_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
 
-#include <mgp/mesh/components_optional/optional_face_references.h>
+#include <mgp/mesh/components_optional/optional_adjacent_faces.h>
 
 #include "optional_generic_vector.h"
 
 namespace mgp::internal {
 
 template<typename, typename = void>
-class OptionalFaceReferencesVector
+class OptionalAdjacentFacesVector
 {
 public:
 	void clear() {}
@@ -23,25 +23,25 @@ public:
 };
 
 template<typename T>
-class OptionalFaceReferencesVector<
+class OptionalAdjacentFacesVector<
 	T,
-	std::enable_if_t<comp::hasOptionalFaceReferences<T>()>> :
-		private OptionalGenericVector<typename T::FaceRefsContainer>
+	std::enable_if_t<comp::hasOptionalAdjacentFaces<T>()>> :
+		private OptionalGenericVector<typename T::AdjFacesContainer>
 {
 private:
-	using FaceRefsContainer = typename T::FaceRefsContainer;
-	using Base = OptionalGenericVector<FaceRefsContainer>;
+	using AdjFacesContainer = typename T::AdjFacesContainer;
+	using Base = OptionalGenericVector<AdjFacesContainer>;
 
 public:
 	using Base::clear;
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;
-	bool             isFaceReferencesEnabled() const { return Base::isEnabled(); };
-	void             enableFaceReferences(unsigned int size) { Base::enable(size); }
-	void             disableFaceReferences() { Base::disable(); }
-	FaceRefsContainer&       faceRefs(unsigned int i) { return Base::at(i); }
-	const FaceRefsContainer& faceRefs(unsigned int i) const { return Base::at(i); }
+	bool             isAdjacentFacesEnabled() const { return Base::isEnabled(); };
+	void             enableAdjacentFaces(unsigned int size) { Base::enable(size); }
+	void             disableAdjacentFaces() { Base::disable(); }
+	AdjFacesContainer&       adjFaces(unsigned int i) { return Base::at(i); }
+	const AdjFacesContainer& adjFaces(unsigned int i) const { return Base::at(i); }
 };
 
 } // namespace mgp::internal

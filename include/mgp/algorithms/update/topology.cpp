@@ -36,12 +36,12 @@ void updatePerVertexAdjacentFaces(MeshType& m)
 	using FaceType   = typename MeshType::Face;
 
 	for (VertexType& v : m.vertexIterator()) {
-		v.clearFaces();
+		v.clearAdjFaces();
 	}
 
 	for (FaceType& f : m.faceIterator()) {
 		for (VertexType* v : f.vertexIterator()){
-			v->pushFace(&f);
+			v->pushAdjFace(&f);
 		}
 	}
 }

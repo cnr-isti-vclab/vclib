@@ -170,7 +170,7 @@ template<class U>
 face::ReturnIfHasOptionalAdjacentFaces<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceAdjacentFacesEnabled() const
 {
-	return optionalPropVector.isFaceReferencesEnabled();
+	return optionalPropVector.isAdjacentFacesEnabled();
 }
 
 /**
@@ -182,7 +182,7 @@ template<class U>
 face::ReturnIfHasOptionalAdjacentFaces<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceAdjacentFaces()
 {
-	optionalPropVector.enableFaceReferences(faceContainerSize());
+	optionalPropVector.enableAdjacentFaces(faceContainerSize());
 }
 
 /**
@@ -194,7 +194,7 @@ template<class U>
 face::ReturnIfHasOptionalAdjacentFaces<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceAdjacentFaces()
 {
-	optionalPropVector.disableFaceReferences();
+	optionalPropVector.disableAdjacentFaces();
 }
 
 template<class T>

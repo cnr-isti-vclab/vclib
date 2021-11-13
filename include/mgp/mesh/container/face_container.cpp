@@ -205,7 +205,7 @@ Container<T, IfIsFace<T>>::enablePerFaceAdjacentFaces()
 	static const int N = T::VERTEX_NUMBER;
 	if (N < 0) {
 		for (T& f : faceIterator()) {
-			f.resizeFaces(f.vertexNumber());
+			f.resizeAdjFaces(f.vertexNumber());
 		}
 	}
 }

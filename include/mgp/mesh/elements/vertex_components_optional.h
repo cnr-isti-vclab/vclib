@@ -7,13 +7,13 @@
 #define MGP_MESH_ELEMENTS_VERTEX_COMPONENTS_OPTIONAL_H
 
 #include "../components_optional/custom_components.h"
+#include "../components_optional/optional_adjacent_faces.h"
+#include "../components_optional/optional_adjacent_vertices.h"
 #include "../components_optional/optional_color.h"
-#include "../components_optional/optional_face_references.h"
 #include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_normal.h"
 #include "../components_optional/optional_scalar.h"
 #include "../components_optional/optional_tex_coord.h"
-#include "../components_optional/optional_vertex_references.h"
 
 namespace mgp::vert {
 
@@ -95,25 +95,25 @@ bool constexpr hasOptionalTexCoord() {return comp::hasOptionalTexCoord<T>();}
 template<typename U, typename T>
 using ReturnIfHasOptionalTexCoord = comp::ReturnIfHasOptionalTexCoord<U, T>;
 
-/** Port OptionalAdjacentFacesRef class into vert namespace **/
+/** Port OptionalAdjacentFaces class into vert namespace **/
 template <typename Face, typename T>
-using OptionalAdjacentFaces = comp::OptionalFaceReferences<Face, -1, T>;
+using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<Face, -1, T>;
 
 template <typename T>
-bool constexpr hasOptionalAdjacentFaces() {return comp::hasOptionalFaceReferences<T>();}
+bool constexpr hasOptionalAdjacentFaces() {return comp::hasOptionalAdjacentFaces<T>();}
 
 template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalFaceReferences<U, T>;
+using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalAdjacentFaces<U, T>;
 
-/** Port OptionalAdjacentVertexRef class into vert namespace **/
+/** Port OptionalAdjacentVertices class into vert namespace **/
 template <typename T>
-using OptionalAdjacentVertices = comp::OptionalVertexReferences<T, -1, T>;
+using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<T, -1, T>;
 
 template <typename T>
-bool constexpr hasOptionalAdjacentVertices() {return comp::hasOptionalVertexReferences<T>();}
+bool constexpr hasOptionalAdjacentVertices() {return comp::hasOptionalAdjacentVertices<T>();}
 
 template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentVertices = comp::ReturnIfHasOptionalVertexReferences<U, T>;
+using ReturnIfHasOptionalAdjacentVertices = comp::ReturnIfHasOptionalAdjacentVertices<U, T>;
 
 /** Port CustomComponents class into vert namespace **/
 template <typename T>

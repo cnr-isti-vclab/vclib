@@ -6,8 +6,8 @@
 #ifndef MGP_MESH_ELEMENTS_FACE_COMPONENTS_H
 #define MGP_MESH_ELEMENTS_FACE_COMPONENTS_H
 
+#include "../components/adjacent_faces.h"
 #include "../components/bit_flags.h"
-#include "../components/face_references.h"
 #include "../components/color.h"
 #include "../components/mutable_bit_flags.h"
 #include "../components/normal.h"
@@ -71,13 +71,13 @@ bool constexpr hasVertexReferences() {return comp::hasVertexReferences<T>();}
 
 /** Port AdjacentFaces class into face namespace **/
 template<typename Face>
-using AdjacentFaces = comp::FaceReferences<Face, -1>;
+using AdjacentFaces = comp::AdjacentFaces<Face, -1>;
 
 template<typename Face>
-using AdjacentTriangles = comp::FaceReferences<Face, 3>;
+using AdjacentTriangles = comp::AdjacentFaces<Face, 3>;
 
 template <typename  T>
-bool constexpr hasAdjacentFaces() {return comp::hasFaceReferences<T>();}
+bool constexpr hasAdjacentFaces() {return comp::hasAdjacentFaces<T>();}
 
 /** Port WedgeTexCoords class into face namespace **/
 template<typename Scalar>

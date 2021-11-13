@@ -34,14 +34,14 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned
 {
 	VRefs::resizeVertices(n);
 	if constexpr (face::hasAdjacentFaces<Face>()) {
-		using T = typename Face::FaceReferences;
+		using T = typename Face::AdjacentFaces;
 
-		T::resizeFaces(n);
+		T::resizeAdjFaces(n);
 	}
 	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
-		using T = typename Face::OptionalFaceReferences;
-		if (T::faceReferencesEnabled())
-			T::resizeFaces(n);
+		using T = typename Face::OptionalAdjacentFaces;
+		if (T::adjFacesEnabled())
+			T::resizeAdjFaces(n);
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
@@ -58,14 +58,14 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(Vertex* v)
 {
 	VRefs::pushVertex(v);
 	if constexpr (face::hasAdjacentFaces<Face>()) {
-		using T = typename Face::FaceReferences;
+		using T = typename Face::AdjacentFaces;
 
-		T::pushFace(nullptr);
+		T::pushAdjFace(nullptr);
 	}
 	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
-		using T = typename Face::OptionalFaceReferences;
-		if (T::faceReferencesEnabled())
-			T::pushFace(nullptr);
+		using T = typename Face::OptionalAdjacentFaces;
+		if (T::adjFacesEnabled())
+			T::pushAdjFace(nullptr);
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
@@ -82,14 +82,14 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned i
 {
 	VRefs::insertVertex(i, v);
 	if constexpr (face::hasAdjacentFaces<Face>()) {
-		using T = typename Face::FaceReferences;
+		using T = typename Face::AdjacentFaces;
 
-		T::insertFace(i, nullptr);
+		T::insertAdjFace(i, nullptr);
 	}
 	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
-		using T = typename Face::OptionalFaceReferences;
-		if (T::faceReferencesEnabled())
-			T::insertFace(i, nullptr);
+		using T = typename Face::OptionalAdjacentFaces;
+		if (T::adjFacesEnabled())
+			T::insertAdjFace(i, nullptr);
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
@@ -106,14 +106,14 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned in
 {
 	VRefs::eraseVertex(i);
 	if constexpr (face::hasAdjacentFaces<Face>()) {
-		using T = typename Face::FaceReferences;
+		using T = typename Face::AdjacentFaces;
 
-		T::eraseFace(i);
+		T::eraseAdjFace(i);
 	}
 	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
-		using T = typename Face::OptionalFaceReferences;
-		if (T::faceReferencesEnabled())
-			T::eraseFace(i);
+		using T = typename Face::OptionalAdjacentFaces;
+		if (T::adjFacesEnabled())
+			T::eraseAdjFace(i);
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
@@ -130,14 +130,14 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
 {
 	VRefs::clearVertices();
 	if constexpr (face::hasAdjacentFaces<Face>()) {
-		using T = typename Face::FaceReferences;
+		using T = typename Face::AdjacentFaces;
 
-		T::clearFaces();
+		T::clearAdjFaces();
 	}
 	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
-		using T = typename Face::OptionalFaceReferences;
-		if (T::faceReferencesEnabled())
-			T::clearFaces();
+		using T = typename Face::OptionalAdjacentFaces;
+		if (T::adjFacesEnabled())
+			T::clearAdjFaces();
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
