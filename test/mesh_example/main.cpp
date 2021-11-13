@@ -66,7 +66,7 @@ int main()
 	m.enablePerFaceColor();
 
 	// set vertices of f0
-	m.face(0).setVertices({&m.vertex(0), &m.vertex(1), &m.vertex(2)});
+	m.face(0).setVertices<mgp::trimesh::Vertex>({&m.vertex(0), &m.vertex(1), &m.vertex(2)});
 	m.face(0).scalar() = 4;
 
 	// setting some colors to all the faces of the mesh

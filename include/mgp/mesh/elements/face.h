@@ -45,7 +45,7 @@ public:
 	unsigned int id() const;
 
 	template<typename Vertex>
-	void setVertices(const std::vector<Vertex>& list);
+	void setVertices(const std::vector<Vertex*>& list);
 
 	template<int U = NV>
 	comp::internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n);

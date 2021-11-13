@@ -24,7 +24,7 @@ unsigned int Face<Args...>::id() const { return _id; }
  */
 template<class... Args>
 template<typename Vertex>
-void Face<Args...>::setVertices(const std::vector<Vertex>& list)
+void Face<Args...>::setVertices(const std::vector<Vertex*>& list)
 {
 	VRefs::setVertices(list);
 	static const int VN = Face::VERTEX_NUMBER;
