@@ -23,6 +23,8 @@ int main()
 
 	f.pushVertex(&m.vertex(0));
 
+	m.enablePerFaceAdjacentFaces();
+
 	f.clearVertices();
 
 	return 0;

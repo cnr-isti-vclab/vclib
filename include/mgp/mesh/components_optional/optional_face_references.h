@@ -31,14 +31,13 @@ using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
 
 } // namespace internal
 
-template<typename T>
 class OptionalFaceReferencesTriggerer
 {
 };
 
 template<class Face, int N, typename T>
 class OptionalFaceReferences :
-		public OptionalFaceReferencesTriggerer<T>,
+		public OptionalFaceReferencesTriggerer,
 		public virtual OptionalInfo<T>
 {
 	template <typename, typename>
@@ -95,6 +94,9 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int U = N>
+	internal::ReturnIfIsVector<U, void> resizeFaces(unsigned int n);
+
+	template<int U = N>
 	internal::ReturnIfIsVector<U, void> pushFace(Face* f);
 
 	template<int U = N>
@@ -116,6 +118,8 @@ public:
 	ConstFaceRangeIterator faceIterator() const;
 
 protected:
+	bool faceReferencesEnabled() const;
+
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
@@ -129,7 +133,7 @@ private:
  */
 
 template<typename T>
-using hasOptionalFaceReferencesT = std::is_base_of<OptionalFaceReferencesTriggerer<T>, T>;
+using hasOptionalFaceReferencesT = std::is_base_of<OptionalFaceReferencesTriggerer, T>;
 
 template<typename U, typename T>
 using ReturnIfHasOptionalFaceReferences=

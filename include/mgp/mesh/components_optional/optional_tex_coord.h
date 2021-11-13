@@ -12,13 +12,12 @@
 
 namespace mgp::comp {
 
-template<typename T>
 class OptionalTexCoordTriggerer
 {
 };
 
 template<typename Scalar, typename T>
-class OptionalTexCoord : public OptionalTexCoordTriggerer<T>, public virtual OptionalInfo<T>
+class OptionalTexCoord : public OptionalTexCoordTriggerer, public virtual OptionalInfo<T>
 {
 private:
 	using B = OptionalInfo<T>;
@@ -38,7 +37,7 @@ private:
  */
 
 template<typename T>
-using hasOptionalTexCoordT = std::is_base_of<OptionalTexCoordTriggerer<T>, T>;
+using hasOptionalTexCoordT = std::is_base_of<OptionalTexCoordTriggerer, T>;
 
 template<typename U, typename T>
 using ReturnIfHasOptionalTexCoord = typename std::enable_if<hasOptionalTexCoordT<U>::value, T>::type;

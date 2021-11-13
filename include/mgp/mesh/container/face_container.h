@@ -74,6 +74,11 @@ public:
 	FaceRangeIterator      faceIterator(bool jumpDeleted = true);
 	ConstFaceRangeIterator faceIterator(bool jumpDeleted = true) const;
 
+	// hide functions of optional container components
+	// needed to update faces sizes
+	template<typename U = T>
+	face::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerFaceAdjacentFaces();
+
 protected:
 	/**
 	 * @brief faces: the vector of faces, where each face contains only its static components.

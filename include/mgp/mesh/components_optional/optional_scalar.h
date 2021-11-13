@@ -10,13 +10,12 @@
 
 namespace mgp::comp {
 
-template<typename T>
 class OptionalScalarTrigger
 {
 };
 
 template<typename S, typename T>
-class OptionalScalar : public OptionalScalarTrigger<T>, public virtual OptionalInfo<T>
+class OptionalScalar : public OptionalScalarTrigger, public virtual OptionalInfo<T>
 {
 private:
 	using B = OptionalInfo<T>;
@@ -45,7 +44,7 @@ class OptionalScalard : public OptionalScalar<double, T>
  */
 
 template<typename T>
-using hasOptionalScalarT = std::is_base_of<OptionalScalarTrigger<T>, T>;
+using hasOptionalScalarT = std::is_base_of<OptionalScalarTrigger, T>;
 
 template<typename U, typename T>
 using ReturnIfHasOptionalScalar = typename std::enable_if<hasOptionalScalarT<U>::value, T>::type;

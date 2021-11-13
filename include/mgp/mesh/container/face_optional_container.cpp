@@ -172,6 +172,7 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceAdjacentFacesEnabled() co
 {
 	return optionalPropVector.isFaceReferencesEnabled();
 }
+
 /**
  * @brief Container::enableFaceAdjacentFaces enable the Optional Adjacent Faces of the face.
  * This function is available **only if the Face Element has the OptionalAdjacentFaces Component**.

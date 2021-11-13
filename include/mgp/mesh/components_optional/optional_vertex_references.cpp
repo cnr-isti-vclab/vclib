@@ -88,6 +88,14 @@ void OptionalVertexReferences<Vertex, N, T>::setVertexs(const std::vector<Vertex
 
 template<class Vertex, int N, typename T>
 template<int U>
+internal::ReturnIfIsVector<U, void>
+OptionalVertexReferences<Vertex, N, T>::resizeVertices(unsigned int n)
+{
+	B::contPtr->vertRefs(thisId()).resize(n);
+}
+
+template<class Vertex, int N, typename T>
+template<int U>
 internal::ReturnIfIsVector<U, void> OptionalVertexReferences<Vertex, N, T>::pushVertex(Vertex* f)
 {
 	B::contPtr->vertRefs(thisId()).push_back(f);
@@ -112,7 +120,7 @@ internal::ReturnIfIsVector<U, void> OptionalVertexReferences<Vertex, N, T>::eras
 
 template<class Vertex, int N, typename T>
 template<int U>
-internal::ReturnIfIsVector<U, void> OptionalVertexReferences<Vertex, N, T>::clearVertexs()
+internal::ReturnIfIsVector<U, void> OptionalVertexReferences<Vertex, N, T>::clearVertices()
 {
 	B::contPtr->vertRefs(thisId()).clear();
 }

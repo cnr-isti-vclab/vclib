@@ -38,6 +38,11 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned
 
 		T::resizeFaces(n);
 	}
+	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
+		using T = typename Face::OptionalFaceReferences;
+		if (T::faceReferencesEnabled())
+			T::resizeFaces(n);
+	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
@@ -56,6 +61,11 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(Vertex* v)
 		using T = typename Face::FaceReferences;
 
 		T::pushFace(nullptr);
+	}
+	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
+		using T = typename Face::OptionalFaceReferences;
+		if (T::faceReferencesEnabled())
+			T::pushFace(nullptr);
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
@@ -76,6 +86,11 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned i
 
 		T::insertFace(i, nullptr);
 	}
+	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
+		using T = typename Face::OptionalFaceReferences;
+		if (T::faceReferencesEnabled())
+			T::insertFace(i, nullptr);
+	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
@@ -95,6 +110,11 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned in
 
 		T::eraseFace(i);
 	}
+	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
+		using T = typename Face::OptionalFaceReferences;
+		if (T::faceReferencesEnabled())
+			T::eraseFace(i);
+	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
@@ -113,6 +133,11 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
 		using T = typename Face::FaceReferences;
 
 		T::clearFaces();
+	}
+	if constexpr (face::hasOptionalAdjacentFaces<Face>()) {
+		using T = typename Face::OptionalFaceReferences;
+		if (T::faceReferencesEnabled())
+			T::clearFaces();
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
 		static const int N = Face::WEDGE_TEXCOORD_NUMBER;

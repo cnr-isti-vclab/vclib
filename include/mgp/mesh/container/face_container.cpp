@@ -187,6 +187,29 @@ Container<T, IfIsFace<T>>::faceIterator(bool jumpDeleted) const
 		*this, jumpDeleted, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
 }
 
+/**
+ * @brief Container::enableFaceAdjacentFaces enable the Optional Adjacent Faces of the face.
+ * @note This function is available **only if the Face Element has the OptionalAdjacentFaces
+ * Component**.
+ *
+ * @note If the size of the Face is dynamic (N < 0), when enabled, the adjacent faces number will be
+ * the same of the vertex number for each face of the container. This is because, for Faces,
+ * Adjacent Faces number is tied to the number of vertices.
+ */
+template<class T>
+template<class U>
+face::ReturnIfHasOptionalAdjacentFaces<U, void>
+Container<T, IfIsFace<T>>::enablePerFaceAdjacentFaces()
+{
+	OptionalFaceContainer::enablePerFaceAdjacentFaces();
+	static const int N = T::VERTEX_NUMBER;
+	if (N < 0) {
+		for (T& f : faceIterator()) {
+			f.resizeFaces(f.vertexNumber());
+		}
+	}
+}
+
 template<class T>
 void mgp::mesh::Container<T, IfIsFace<T> >::clearFaces()
 {

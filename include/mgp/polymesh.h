@@ -23,7 +23,7 @@ class Face :
 			mgp::face::BitFlags, // 4b
 			mgp::face::VertexReferences<Vertex, -1>,
 			mgp::face::WedgeTexCoordf,
-			mgp::face::AdjacentFaces<Face>>
+			mgp::face::OptionalAdjacentFaces<Face>>
 {
 };
 

@@ -88,6 +88,13 @@ void OptionalFaceReferences<Face, N, T>::setFaces(const std::vector<Face*>& list
 
 template<class Face, int N, typename T>
 template<int U>
+internal::ReturnIfIsVector<U, void> OptionalFaceReferences<Face, N, T>::resizeFaces(unsigned int n)
+{
+	B::contPtr->faceRefs(thisId()).resize(n);
+}
+
+template<class Face, int N, typename T>
+template<int U>
 internal::ReturnIfIsVector<U, void> OptionalFaceReferences<Face, N, T>::pushFace(Face* f)
 {
 	B::contPtr->faceRefs(thisId()).push_back(f);
@@ -163,6 +170,12 @@ OptionalFaceReferences<Face, N, T>::faceIterator() const
 		B::contPtr->faceRefs(thisId()),
 		&OptionalFaceReferences::faceBegin,
 		&OptionalFaceReferences::faceEnd);
+}
+
+template<class Face, int N, typename T>
+bool OptionalFaceReferences<Face, N, T>::faceReferencesEnabled() const
+{
+	return B::contPtr->isFaceReferencesEnabled();
 }
 
 template<class Face, int N, typename T>

@@ -31,14 +31,13 @@ using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
 
 } // namespace internal
 
-template<typename T>
 class OptionalVertexReferencesTriggerer
 {
 };
 
 template<class Vertex, int N, typename T>
 class OptionalVertexReferences :
-		public OptionalVertexReferencesTriggerer<T>,
+		public OptionalVertexReferencesTriggerer,
 		public virtual OptionalInfo<T>
 {
 	template <typename, typename>
@@ -95,6 +94,9 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int U = N>
+	internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n);
+
+	template<int U = N>
 	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* f);
 
 	template<int U = N>
@@ -104,7 +106,7 @@ public:
 	internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearVertexs();
+	internal::ReturnIfIsVector<U, void> clearVertices();
 
 	/** Iterator Member functions **/
 
@@ -129,7 +131,7 @@ private:
  */
 
 template<typename T>
-using hasOptionalVertexReferencesT = std::is_base_of<OptionalVertexReferencesTriggerer<T>, T>;
+using hasOptionalVertexReferencesT = std::is_base_of<OptionalVertexReferencesTriggerer, T>;
 
 template<typename U, typename T>
 using ReturnIfHasOptionalVertexReferences=

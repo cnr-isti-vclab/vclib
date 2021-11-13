@@ -12,13 +12,12 @@
 
 namespace mgp::comp {
 
-template<typename T>
 class OptionalNormalTrigger
 {
 };
 
 template<typename Scalar, int N, typename T>
-class OptionalNormal : public OptionalNormalTrigger<T>, public virtual OptionalInfo<T>
+class OptionalNormal : public OptionalNormalTrigger, public virtual OptionalInfo<T>
 {
 private:
 	using B = OptionalInfo<T>;
@@ -56,7 +55,7 @@ class OptionalNormal3d : public OptionalNormal3<double, T>
  */
 
 template<typename T>
-using hasOptionalNormalT = std::is_base_of<OptionalNormalTrigger<T>, T>;
+using hasOptionalNormalT = std::is_base_of<OptionalNormalTrigger, T>;
 
 template<typename U, typename T>
 using ReturnIfHasOptionalNormal = typename std::enable_if<hasOptionalNormalT<U>::value, T>::type;
