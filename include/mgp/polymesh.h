@@ -20,9 +20,9 @@ class Vertex : public mgp::Vertex<mgp::vert::BitFlags, mgp::vert::Coordinate3d>
 
 class Face :
 		public mgp::Face<
-			mgp::face::BitFlags, // 4b
-			mgp::face::VertexReferences<Vertex, -1>,
-			mgp::face::WedgeTexCoordf,
+			mgp::face::PolygonBitFlags, // 4b
+			mgp::face::PolygonVertexRefs<Vertex>,
+			mgp::face::WedgeTexCoordsf,
 			mgp::face::OptionalAdjacentFaces<Face>>
 {
 };

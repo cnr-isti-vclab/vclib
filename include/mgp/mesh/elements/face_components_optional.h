@@ -12,6 +12,7 @@
 #include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_normal.h"
 #include "../components_optional/optional_scalar.h"
+#include "../components_optional/optional_wedge_tex_coords.h"
 
 namespace mgp::face {
 
@@ -89,6 +90,28 @@ bool constexpr hasOptionalAdjacentFaces() {return comp::hasOptionalAdjacentFaces
 
 template<typename U, typename T>
 using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalAdjacentFaces<U, T>;
+
+/** Port OptionalWedgeTexCoords class into face namespace **/
+template <typename S, typename T>
+using OptionalWedgeTexCoords = comp::OptionalWedgeTexCoords<S, -1, T>;
+
+template <typename S, typename T>
+using OptionalTriangleAdjacentTriangles = comp::OptionalWedgeTexCoords<S, 3, T>;
+
+template <typename T>
+bool constexpr hasOptionalWedgeTexCoords() {return comp::hasOptionalWedgeTexCoords<T>();};
+
+template<typename U, typename T>
+using ReturnIfHasOptionalWedgeTexCoords = comp::ReturnIfHasOptionalWedgeTexCoords<U, T>;
+
+template <typename T>
+using OptionalWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, -1, T>;
+template <typename T>
+using OptionalWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, -1, T>;
+template <typename T>
+using OptionalTriangleWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, 3, T>;
+template <typename T>
+using OptionalTriangleWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, 3, T>;
 
 /** Port CustomComponents class into face namespace **/
 template <typename T>

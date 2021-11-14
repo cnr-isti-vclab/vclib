@@ -70,6 +70,14 @@ bool isPerFaceAdjacentFacesEnabled(const MeshType&);
 template <typename MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType&);
 
+// Face Wedge TexCoords
+
+template <typename MeshType>
+bool constexpr hasPerFaceWedgeTexCoords();
+
+template <typename MeshType>
+bool constexpr hasPerFaceWedgeTexCoords(const MeshType&);
+
 // Face Custom Components
 
 template<typename MeshType>

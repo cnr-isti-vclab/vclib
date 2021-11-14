@@ -78,6 +78,7 @@ set(HEADERS
 	include/mgp/mesh/components_optional/optional_normal.h
 	include/mgp/mesh/components_optional/optional_scalar.h
 	include/mgp/mesh/components_optional/optional_tex_coord.h
+	include/mgp/mesh/components_optional/optional_wedge_tex_coords.h
 	include/mgp/mesh/components_vector/optional_color_vector.h
 	include/mgp/mesh/components_vector/custom_components_vector.h
 	include/mgp/mesh/components_vector/optional_adjacent_faces_vector.h
@@ -87,6 +88,7 @@ set(HEADERS
 	include/mgp/mesh/components_vector/optional_normal_vector.h
 	include/mgp/mesh/components_vector/optional_scalar_vector.h
 	include/mgp/mesh/components_vector/optional_tex_coord_vector.h
+	include/mgp/mesh/components_vector/optional_wedge_tex_coords_vector.h
 	include/mgp/mesh/components_vector/components_vector.h
 	include/mgp/mesh/requirements/element_requirements.h
 	include/mgp/mesh/requirements/face_requirements.h
@@ -132,6 +134,7 @@ set(SOURCES
 	include/mgp/mesh/components_optional/optional_adjacent_faces.cpp
 	include/mgp/mesh/components_optional/optional_adjacent_vertices.cpp
 	include/mgp/mesh/components_optional/optional_mutable_bit_flags.cpp
+	include/mgp/mesh/components_optional/optional_wedge_tex_coords.cpp
 	include/mgp/mesh/components_vector/custom_components_vector.cpp
 	include/mgp/mesh/components_vector/optional_generic_vector.cpp
 	include/mgp/mesh/elements/face.cpp

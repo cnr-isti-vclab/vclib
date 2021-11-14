@@ -74,7 +74,7 @@ protected:
 		// Edge border
 		// BORDER0 is BORDER, inherited from superclass - bits [2, 13]
 		// Edge selection
-		EDGESEL0  = 1 << (BitFlags::FIRST_USER_BIT + 11), // bits [14, 25]
+		EDGESEL0 = 1 << (BitFlags::FIRST_USER_BIT + 11), // bits [14, 25]
 		// Faux edges, for portability with TriangleBits
 		FAUX0 = 1 << (BitFlags::FIRST_USER_BIT + 23) // bits [26, 28]
 	};
@@ -84,12 +84,25 @@ protected:
 
 private:
 	// will use these members as isOnBorder0, setOnBorder0 and clearOnBorder0
+	using BitFlags::clearOnBorder;
 	using BitFlags::isOnBorder;
 	using BitFlags::setOnBorder;
-	using BitFlags::clearOnBorder;
 };
 
+/**
+ * Detector to check if a class has (inherits) PolygonBitFlags
+ */
+
+template<typename T>
+using hasPolygonBitFlagsT = std::is_base_of<PolygonBitFlags, T>;
+
+template<typename T>
+bool constexpr hasPolygonBitFlags()
+{
+	return hasPolygonBitFlagsT<T>::value;
 }
+
+} // namespace mgp::comp
 
 #include "polygon_bit_flags.cpp"
 

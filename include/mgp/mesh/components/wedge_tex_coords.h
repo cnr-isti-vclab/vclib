@@ -28,10 +28,10 @@ public:
 
 	/** Iterator Types declaration **/
 
-	using WedgeTexCoordIterator           = typename Base::GCIterator;
-	using ConstWedgeTexCoordIterator      = typename Base::ConstGCIterator;
-	using WedgeTexCoordRangeIterator      = typename Base::GCRangeIterator;
-	using ConstWedgeTexCoordRangeIterator = typename Base::ConstGCRangeIterator;
+	using WedgeTexCoordsIterator           = typename Base::GCIterator;
+	using ConstWedgeTexCoordsIterator      = typename Base::ConstGCIterator;
+	using WedgeTexCoordsRangeIterator      = typename Base::GCRangeIterator;
+	using ConstWedgeTexCoordsRangeIterator = typename Base::ConstGCRangeIterator;
 
 	WedgeTexCoords() : Base() {};
 
@@ -48,12 +48,12 @@ public:
 
 	/** Iterator Member functions **/
 
-	WedgeTexCoordIterator           wedgeTexCoordBegin() { return Base::begin(); }
-	WedgeTexCoordIterator           wedgeTexCoordEnd() { return Base::end(); }
-	ConstWedgeTexCoordIterator      wedgeTexCoordBegin() const { return Base::begin(); }
-	ConstWedgeTexCoordIterator      wedgeTexCoordEnd() const { return Base::end(); }
-	WedgeTexCoordRangeIterator      wedgeTexCoordIterator() { return Base::rangeIterator(); }
-	ConstWedgeTexCoordRangeIterator wedgeTexCoordIterator() const { return Base::rangeIterator(); }
+	WedgeTexCoordsIterator           wedgeTexCoordBegin() { return Base::begin(); }
+	WedgeTexCoordsIterator           wedgeTexCoordEnd() { return Base::end(); }
+	ConstWedgeTexCoordsIterator      wedgeTexCoordBegin() const { return Base::begin(); }
+	ConstWedgeTexCoordsIterator      wedgeTexCoordEnd() const { return Base::end(); }
+	WedgeTexCoordsRangeIterator      wedgeTexCoordIterator() { return Base::rangeIterator(); }
+	ConstWedgeTexCoordsRangeIterator wedgeTexCoordIterator() const { return Base::rangeIterator(); }
 
 protected:
 	using WedgeTexCoordScalarType = Scalar;

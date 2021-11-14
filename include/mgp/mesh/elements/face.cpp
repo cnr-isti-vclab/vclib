@@ -79,11 +79,16 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned
 			T::resizeAdjFaces(n);
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
-		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
-		using TC = typename Face::template WedgeTexCoords<S, N>;
+		using TC = typename Face::WedgeTexCoords;
 
 		TC::resizeWedgeTexCoords(n);
+	}
+	if constexpr (face::hasOptionalWedgeTexCoords<Face>()) {
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::OptionalWedgeTexCoords;
+		if (TC::wedgeTexCoordsEnabled())
+			TC::resizeWedgeTexCoords(n);
 	}
 }
 
@@ -103,11 +108,16 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(Vertex* v)
 			T::pushAdjFace(nullptr);
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
-		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
-		using TC = typename Face::template WedgeTexCoords<S, N>;
+		using TC = typename Face::WedgeTexCoords;
 
 		TC::pushWedgeTexCoord(TexCoord<S>());
+	}
+	if constexpr (face::hasOptionalWedgeTexCoords<Face>()) {
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::OptionalWedgeTexCoords;
+		if (TC::wedgeTexCoordsEnabled())
+			TC::pushWedgeTexCoords(TexCoord<S>());
 	}
 }
 
@@ -127,11 +137,16 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned i
 			T::insertAdjFace(i, nullptr);
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
-		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
-		using TC = typename Face::template WedgeTexCoords<S, N>;
+		using TC = typename Face::WedgeTexCoords;
 
 		TC::insertWedgeTexCoord(i, TexCoord<S>());
+	}
+	if constexpr (face::hasOptionalWedgeTexCoords<Face>()) {
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::OptionalWedgeTexCoords;
+		if (TC::wedgeTexCoordsEnabled())
+			TC::insertWedgeTexCoord(i, TexCoord<S>());
 	}
 }
 
@@ -151,11 +166,16 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned in
 			T::eraseAdjFace(i);
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
-		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
-		using TC = typename Face::template WedgeTexCoords<S, N>;
+		using TC = typename Face::WedgeTexCoords;
 
 		TC::eraseWedgeTexCoord(i);
+	}
+	if constexpr (face::hasOptionalWedgeTexCoords<Face>()) {
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::OptionalWedgeTexCoords;
+		if (TC::wedgeTexCoordsEnabled())
+			TC::eraseWedgeTexCoord(i);
 	}
 }
 
@@ -175,11 +195,16 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
 			T::clearAdjFaces();
 	}
 	if constexpr (face::hasWedgeTexCoords<Face>()) {
-		static const int N = Face::WEDGE_TEXCOORD_NUMBER;
 		using S = typename Face::WedgeTexCoordScalarType;
-		using TC = typename Face::template WedgeTexCoords<S, N>;
+		using TC = typename Face::WedgeTexCoords;
 
 		TC::clearWedgeTexCoord();
+	}
+	if constexpr (face::hasOptionalWedgeTexCoords<Face>()) {
+		using S = typename Face::WedgeTexCoordScalarType;
+		using TC = typename Face::OptionalWedgeTexCoords;
+		if (TC::wedgeTexCoordsEnabled())
+			TC::clearWedgeTexCoord();
 	}
 }
 

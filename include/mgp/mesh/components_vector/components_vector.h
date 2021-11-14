@@ -14,6 +14,7 @@
 #include "optional_normal_vector.h"
 #include "optional_scalar_vector.h"
 #include "optional_tex_coord_vector.h"
+#include "optional_wedge_tex_coords_vector.h"
 
 namespace mgp::internal {
 
@@ -26,6 +27,7 @@ class ComponentsVector :
 		public OptionalScalarVector<T>,
 		public OptionalTexCoordVector<T>,
 		public OptionalAdjacentVerticesVector<T>,
+		public OptionalWedgeTexCoordsVector<T>,
 		public CustomComponentsVector<T>
 {
 public:
@@ -38,6 +40,7 @@ public:
 		OptionalScalarVector<T>::clear();
 		OptionalTexCoordVector<T>::clear();
 		OptionalAdjacentVerticesVector<T>::clear();
+		OptionalWedgeTexCoordsVector<T>::clear();
 		CustomComponentsVector<T>::clear();
 	}
 	void resize(unsigned int size)
@@ -49,6 +52,7 @@ public:
 		OptionalScalarVector<T>::resize(size);
 		OptionalTexCoordVector<T>::resize(size);
 		OptionalAdjacentVerticesVector<T>::resize(size);
+		OptionalWedgeTexCoordsVector<T>::resize(size);
 		CustomComponentsVector<T>::resize(size);
 	}
 	void reserve(unsigned int size)
@@ -60,6 +64,7 @@ public:
 		OptionalScalarVector<T>::reserve(size);
 		OptionalTexCoordVector<T>::reserve(size);
 		OptionalAdjacentVerticesVector<T>::reserve(size);
+		OptionalWedgeTexCoordsVector<T>::reserve(size);
 		CustomComponentsVector<T>::reserve(size);
 	}
 	void compact(const std::vector<int>& newIndices)
@@ -71,6 +76,7 @@ public:
 		OptionalScalarVector<T>::compact(newIndices);
 		OptionalTexCoordVector<T>::compact(newIndices);
 		OptionalAdjacentVerticesVector<T>::compact(newIndices);
+		OptionalWedgeTexCoordsVector<T>::compact(newIndices);
 		CustomComponentsVector<T>::compact(newIndices);
 	}
 };

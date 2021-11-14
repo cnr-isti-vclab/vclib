@@ -145,4 +145,4 @@ inline void PolygonBitFlags::clearAllEdgeFaux()
 	clearEdgeFaux(2);
 }
 
-}
+} // namespace mgp::comp

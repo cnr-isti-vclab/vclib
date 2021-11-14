@@ -184,6 +184,20 @@ bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 }
 
 template<typename MeshType>
+bool constexpr hasPerFaceWedgeTexCoords()
+{
+	return hasFaces<MeshType>() &&
+		   (mgp::face::hasWedgeTexCoords<typename MeshType::FaceType>() /*||
+			mgp::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()*/);
+}
+
+template<typename MeshType>
+bool constexpr hasPerFaceWedgeTexCoords(const MeshType&)
+{
+	return hasPerFaceWedgeTexCoords<MeshType>();
+}
+
+template<typename MeshType>
 bool constexpr hasPerFaceCustomComponents()
 {
 	return hasFaces<MeshType>() && mgp::face::hasCustomComponents<typename MeshType::FaceType>();

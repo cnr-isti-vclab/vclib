@@ -30,6 +30,11 @@ using TriangleBitFlags = comp::TriangleBitFlags;
 template <typename T>
 bool constexpr hasTriangleBitFlags() {return comp::hasTriangleBitFlags<T>();};
 
+using PolygonBitFlags = comp::PolygonBitFlags;
+
+template <typename T>
+bool constexpr hasPolygonBitFlags() {return comp::hasPolygonBitFlags<T>();};
+
 /** Port Color class into face namespace **/
 using Color = comp::Color;
 
@@ -66,6 +71,9 @@ using VertexReferences = comp::VertexReferences<Vertex, N>;
 template<typename Vertex>
 using TriangleVertexRefs = comp::TriVertexReferences<Vertex>;
 
+template <typename Vertex>
+using PolygonVertexRefs =comp::VertexReferences<Vertex, -1>;
+
 template <typename  T>
 bool constexpr hasVertexReferences() {return comp::hasVertexReferences<T>();}
 
@@ -86,10 +94,10 @@ using WedgeTexCoords = comp::WedgeTexCoords<Scalar, -1>;
 template<typename Scalar>
 using TriangleWedgeTexCoords = comp::WedgeTexCoords<Scalar, 3>;
 
-using WedgeTexCoordf = comp::WedgeTexCoords<float, -1>;
-using WedgeTexCoordd = comp::WedgeTexCoords<double, -1>;
-using TriangleWedgeTexCoordf = TriangleWedgeTexCoords<float>;
-using TriangleWedgeTexCoordd = TriangleWedgeTexCoords<double>;
+using WedgeTexCoordsf = comp::WedgeTexCoords<float, -1>;
+using WedgeTexCoordsd = comp::WedgeTexCoords<double, -1>;
+using TriangleWedgeTexCoordsf = TriangleWedgeTexCoords<float>;
+using TriangleWedgeTexCoordsd = TriangleWedgeTexCoords<double>;
 
 template <typename  T>
 bool constexpr hasWedgeTexCoords() {return comp::hasWedgeTexCoords<T>();}
