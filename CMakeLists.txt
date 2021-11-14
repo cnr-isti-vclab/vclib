@@ -20,6 +20,10 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 # external libraries
 add_subdirectory(external)
 
+if (WIN32)
+	add_compile_definitions(_USE_MATH_DEFINES)
+endif()
+
 set(MGP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(MGP_SRC_DIR ${MGP_INCLUDE_DIR}/mgp)
 

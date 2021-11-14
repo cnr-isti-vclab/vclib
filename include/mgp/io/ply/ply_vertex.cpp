@@ -25,7 +25,7 @@ void loadVerticesTxt(
 	error = !internal::nextLine(file, spaceTokenizer);
 	mgp::Tokenizer::iterator token = spaceTokenizer.begin();
 	mesh.addVertices(header.numberVertices());
-	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
+	for(unsigned int vid = 0; vid < header.numberVertices(); ++vid) {
 		VertexType& v = mesh.vertex(vid);
 		for (ply::Property p : header.vertexProperties()) {
 			if (token == spaceTokenizer.end()){
@@ -42,7 +42,7 @@ void loadVerticesTxt(
 				hasBeenRead = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (mgp::hasPerVertexNormal(mesh)) {
+				if constexpr (mgp::hasPerVertexNormal<MeshType>()) {
 					if (mgp::isPerVertexNormalEnabled(mesh)) {
 						using Scalar = typename VertexType::NormalType::ScalarType;
 						int a = p.name - ply::nx;
@@ -52,7 +52,7 @@ void loadVerticesTxt(
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (mgp::hasPerVertexColor(mesh)) {
+				if constexpr (mgp::hasPerVertexColor<MeshType>()) {
 					if (mgp::isPerVertexColorEnabled(mesh)) {
 						int a = p.name - ply::red;
 						v.color()[a] = internal::readProperty<unsigned char>(token, p.type);
@@ -61,7 +61,7 @@ void loadVerticesTxt(
 				}
 			}
 			if (p.name == ply::scalar) {
-				if constexpr (mgp::hasPerVertexScalar(mesh)) {
+				if constexpr (mgp::hasPerVertexScalar<MeshType>()) {
 					using Scalar = typename VertexType::ScalarType;
 					if (mgp::isPerVertexScalarEnabled(mesh)) {
 						v.scalar() = internal::readProperty<Scalar>(token, p.type);
@@ -71,8 +71,8 @@ void loadVerticesTxt(
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					uint s = internal::readProperty<int>(token, p.listSizeType);
-					for (uint i = 0; i < s; ++i)
+					unsigned int s = internal::readProperty<int>(token, p.listSizeType);
+					for (unsigned int i = 0; i < s; ++i)
 						++token;
 				}
 				else {
@@ -91,7 +91,7 @@ void loadVerticesBin(
 {
 	using VertexType = typename MeshType::Vertex;
 	mesh.addVertices(header.numberVertices());
-	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
+	for(unsigned int vid = 0; vid < header.numberVertices(); ++vid) {
 		VertexType& v = mesh.vertex(vid);
 		for (ply::Property p : header.vertexProperties()) {
 			bool hasBeenRead = false;
@@ -102,7 +102,7 @@ void loadVerticesBin(
 				hasBeenRead = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (mgp::hasPerVertexNormal(mesh)) {
+				if constexpr (mgp::hasPerVertexNormal<MeshType>()) {
 					if (mgp::isPerVertexNormalEnabled(mesh)) {
 						using Scalar = typename VertexType::NormalType::ScalarType;
 						int a = p.name - ply::nx;
@@ -112,7 +112,7 @@ void loadVerticesBin(
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (mgp::hasPerVertexColor(mesh)) {
+				if constexpr (mgp::hasPerVertexColor<MeshType>()) {
 					if (mgp::isPerVertexColorEnabled(mesh)) {
 						int a = p.name - ply::red;
 						v.color()[a] = internal::readProperty<unsigned char>(file, p.type);
@@ -121,7 +121,7 @@ void loadVerticesBin(
 				}
 			}
 			if (p.name == ply::scalar) {
-				if constexpr (mgp::hasPerVertexScalar(mesh)) {
+				if constexpr (mgp::hasPerVertexScalar<MeshType>()) {
 					using Scalar = typename VertexType::ScalarType;
 					if (mgp::isPerVertexScalarEnabled(mesh)) {
 						v.scalar() = internal::readProperty<Scalar>(file, p.type);
@@ -131,8 +131,8 @@ void loadVerticesBin(
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					uint s = internal::readProperty<int>(file, p.listSizeType);
-					for (uint i = 0; i < s; ++i)
+					unsigned int s = internal::readProperty<int>(file, p.listSizeType);
+					for (unsigned int i = 0; i < s; ++i)
 						internal::readProperty<int>(file, p.type);
 				}
 				else {
@@ -163,7 +163,7 @@ void saveVertices(
 				hasBeenWritten = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (mgp::hasPerVertexNormal(mesh)) {
+				if constexpr (mgp::hasPerVertexNormal<MeshType>()) {
 					if (mgp::isPerVertexNormalEnabled(mesh)) {
 						internal::writeProperty(file, v.normal()[p.name - ply::nx], p.type, bin);
 						hasBeenWritten = true;
@@ -171,7 +171,7 @@ void saveVertices(
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (mgp::hasPerVertexColor(mesh)) {
+				if constexpr (mgp::hasPerVertexColor<MeshType>()) {
 					if (mgp::isPerVertexColorEnabled(mesh)) {
 						internal::writeProperty(file, v.color()[p.name - ply::red], p.type, bin);
 						hasBeenWritten = true;
@@ -179,7 +179,7 @@ void saveVertices(
 				}
 			}
 			if (p.name == ply::scalar) {
-				if constexpr (mgp::hasPerVertexScalar(mesh)) {
+				if constexpr (mgp::hasPerVertexScalar<MeshType>()) {
 					if (mgp::isPerVertexScalarEnabled(mesh)) {
 						internal::writeProperty(file, v.scalar(), p.type, bin);
 						hasBeenWritten = true;

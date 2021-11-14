@@ -20,9 +20,6 @@ template <typename MeshType>
 bool constexpr hasPerFaceNormal();
 
 template <typename MeshType>
-bool constexpr hasPerFaceNormal(const MeshType&);
-
-template <typename MeshType>
 bool isPerFaceNormalEnabled(const MeshType&);
 
 template <typename MeshType>
@@ -32,9 +29,6 @@ bool enableIfPerFaceNormalOptional(MeshType&);
 
 template <typename MeshType>
 bool constexpr hasPerFaceColor();
-
-template <typename MeshType>
-bool constexpr hasPerFaceColor(const MeshType&);
 
 template <typename MeshType>
 bool isPerFaceColorEnabled(const MeshType&);
@@ -48,9 +42,6 @@ template <typename MeshType>
 bool constexpr hasPerFaceScalar();
 
 template <typename MeshType>
-bool constexpr hasPerFaceScalar(const MeshType&);
-
-template <typename MeshType>
 bool isPerFaceScalarEnabled(const MeshType&);
 
 template <typename MeshType>
@@ -62,9 +53,6 @@ template <typename MeshType>
 bool constexpr hasPerFaceAdjacentFaces();
 
 template <typename MeshType>
-bool constexpr hasPerFaceAdjacentFaces(const MeshType&);
-
-template <typename MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType&);
 
 template <typename MeshType>
@@ -74,9 +62,6 @@ bool enableIfPerFaceAdjacentFacesOptional(MeshType&);
 
 template <typename MeshType>
 bool constexpr hasPerFaceWedgeTexCoords();
-
-template <typename MeshType>
-bool constexpr hasPerFaceWedgeTexCoords(const MeshType&);
 
 // Face Custom Components
 
@@ -90,9 +75,6 @@ bool constexpr hasPerFaceCustomComponents(const MeshType&);
 
 template <typename MeshType>
 bool constexpr hasPerFaceMutableBitFlags();
-
-template <typename MeshType>
-bool constexpr hasPerFaceMutableBitFlags(const MeshType&);
 
 template <typename MeshType>
 bool isPerFaceMutableBitFlagsEnabled(const MeshType&);
@@ -130,7 +112,7 @@ template <typename MeshType>
 bool constexpr requirePerFaceCustomComponents();
 
 template <typename MeshType>
-bool constexpr requirePerFaceCustomComponents(const MeshType& m);
+bool requirePerFaceCustomComponents(const MeshType& m);
 
 // Face Mutable Flags
 

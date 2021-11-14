@@ -24,12 +24,6 @@ bool constexpr hasPerVertexNormal()
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexNormal(const MeshType&)
-{
-	return hasPerVertexNormal<MeshType>();
-}
-
-template<typename MeshType>
 bool isPerVertexNormalEnabled(const MeshType& m)
 {
 	if constexpr (
@@ -54,7 +48,7 @@ bool enableIfPerVertexNormalOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerVertexNormal(m);
+		return hasPerVertexNormal<MeshType>();
 	}
 }
 
@@ -63,14 +57,6 @@ bool constexpr hasPerVertexColor()
 {
 	return hasVertices<MeshType>() && (
 			mgp::vert::hasColor<typename MeshType::VertexType>() ||
-			mgp::vert::hasOptionalColor<typename MeshType::VertexType>());
-}
-
-template<typename MeshType>
-bool constexpr hasPerVertexColor(const MeshType&)
-{
-	return hasVertices<MeshType>() &&
-		   (mgp::vert::hasColor<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalColor<typename MeshType::VertexType>());
 }
 
@@ -99,7 +85,7 @@ bool enableIfPerVertexColorOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerVertexColor(m);
+		return hasPerVertexColor<MeshType>();
 	}
 }
 
@@ -109,12 +95,6 @@ bool constexpr hasPerVertexScalar()
 	return hasVertices<MeshType>() &&
 		   (mgp::vert::hasScalar<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalScalar<typename MeshType::VertexType>());
-}
-
-template <typename MeshType>
-bool constexpr hasPerVertexScalar(const MeshType&)
-{
-	return hasPerVertexScalar<MeshType>();
 }
 
 template<typename MeshType>
@@ -142,7 +122,7 @@ bool enableIfPerVertexScalarOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerVertexScalar(m);
+		return hasPerVertexScalar<MeshType>();
 	}
 }
 
@@ -152,12 +132,6 @@ bool constexpr hasPerVertexTexCoord()
 	return hasVertices<MeshType>() &&
 		   (mgp::vert::hasTexCoord<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalTexCoord<typename MeshType::VertexType>());
-}
-
-template <typename MeshType>
-bool constexpr hasPerVertexTexCoord(const MeshType&)
-{
-	return hasPerVertexTexCoord<MeshType>();
 }
 
 template<typename MeshType>
@@ -185,7 +159,7 @@ bool enableIfPerVertexTexCoordOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerVertexTexCoord(m);
+		return hasPerVertexTexCoord<MeshType>();
 	}
 }
 
@@ -195,12 +169,6 @@ bool constexpr hasPerVertexAdjacentFaces()
 	return hasVertices<MeshType>() &&
 		   (mgp::vert::hasAdjacentFaces<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>());
-}
-
-template <typename MeshType>
-bool constexpr hasPerVertexAdjacentFaces(const MeshType&)
-{
-	return hasPerVertexAdjacentFaces<MeshType>();
 }
 
 template<typename MeshType>
@@ -230,7 +198,7 @@ bool enableIfPerVertexAdjacentFacesOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerVertexAdjacentFaces(m);
+		return hasPerVertexAdjacentFaces<MeshType>();
 	}
 }
 
@@ -240,12 +208,6 @@ bool constexpr hasPerVertexAdjacentVertices()
 	return hasVertices<MeshType>() &&
 		   (mgp::vert::hasAdjacentVertices<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalAdjacentVertices<typename MeshType::VertexType>());
-}
-
-template <typename MeshType>
-bool constexpr hasPerVertexAdjacentVertices(const MeshType&)
-{
-	return hasPerVertexAdjacentVertices<MeshType>();
 }
 
 template<typename MeshType>
@@ -275,7 +237,7 @@ bool enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerVertexAdjacentVertices(m);
+		return hasPerVertexAdjacentVertices<MeshType>();
 	}
 }
 
@@ -287,23 +249,11 @@ bool constexpr hasPerVertexCustomComponents()
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexCustomComponents(const MeshType&)
-{
-	return hasPerVertexCustomComponents<MeshType>();
-}
-
-template<typename MeshType>
 bool constexpr hasPerVertexMutableBitFlags()
 {
 	return hasVertices<MeshType>() &&
 		   (mgp::vert::hasMutableBitFlags<typename MeshType::VertexType>() ||
 			mgp::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>());
-}
-
-template<typename MeshType>
-bool constexpr hasPerVertexMutableBitFlags(const MeshType&)
-{
-	return hasPerVertexMutableBitFlags<MeshType>();
 }
 
 template<typename MeshType>
@@ -331,7 +281,7 @@ bool enableIfPerVertexMutableBitFlagsOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerVertexMutableBitFlags(m);
+		return hasPerVertexMutableBitFlags<MeshType>();
 	}
 }
 
@@ -343,7 +293,7 @@ template<typename MeshType>
 void requirePerVertexNormal(const MeshType& m)
 {
 	requireVertices<MeshType>();
-	static_assert(hasPerVertexNormal(m), "Mesh has no vertex normals.");
+	static_assert(hasPerVertexNormal<MeshType>(), "Mesh has no vertex normals.");
 	if (!isPerVertexNormalEnabled(m))
 		throw mgp::MissingComponentException("Vertex normals not enabled.");
 }
@@ -352,7 +302,7 @@ template<typename MeshType>
 void requirePerVertexColor(const MeshType& m)
 {
 	requireVertices<MeshType>();
-	static_assert(hasPerVertexColor(m), "Mesh has no vertex colors.");
+	static_assert(hasPerVertexColor<MeshType>(), "Mesh has no vertex colors.");
 	if (!isPerVertexColorEnabled(m))
 		throw mgp::MissingComponentException("Vertex colors not enabled.");
 }
@@ -361,7 +311,7 @@ template<typename MeshType>
 void requirePerVertexScalar(const MeshType& m)
 {
 	requireVertices<MeshType>();
-	static_assert(hasPerVertexScalar(m), "Mesh has no vertex scalars.");
+	static_assert(hasPerVertexScalar<MeshType>(), "Mesh has no vertex scalars.");
 	if (!isPerVertexScalarEnabled(m))
 		throw mgp::MissingComponentException("Vertex scalars not enabled.");
 }
@@ -370,7 +320,7 @@ template<typename MeshType>
 void requirePerVertexTexCoord(const MeshType& m)
 {
 	requireVertices<MeshType>();
-	static_assert(hasPerVertexTexCoord(m), "Mesh has no vertex texcoords.");
+	static_assert(hasPerVertexTexCoord<MeshType>(), "Mesh has no vertex texcoords.");
 	if (!isPerVertexTexCoordEnabled(m))
 		throw mgp::MissingComponentException("Vertex texcoords not enabled.");
 }
@@ -379,7 +329,7 @@ template<typename MeshType>
 void requirePerVertexAdjacentFaces(const MeshType& m)
 {
 	requireVertices<MeshType>();
-	static_assert(hasPerVertexAdjacentFaces(m), "Mesh has no vertex adjacent faces.");
+	static_assert(hasPerVertexAdjacentFaces<MeshType>(), "Mesh has no vertex adjacent faces.");
 	if (!isPerVertexAdjacentFacesEnabled(m))
 		throw mgp::MissingComponentException("Vertex adjacent faces not enabled.");
 }
@@ -388,7 +338,7 @@ template<typename MeshType>
 void requirePerVertexAdjacentVertices(const MeshType& m)
 {
 	requireVertices<MeshType>();
-	static_assert(hasPerVertexAdjacentVertices(m), "Mesh has no per vertex adjacent vertices.");
+	static_assert(hasPerVertexAdjacentVertices<MeshType>(), "Mesh has no per vertex adjacent vertices.");
 	if (!isPerVertexAdjacentVerticesEnabled(m))
 		throw mgp::MissingComponentException("Per vertex adjacent vertices not enabled.");
 }
@@ -401,7 +351,7 @@ void constexpr requirePerVertexCustomComponents()
 }
 
 template<typename MeshType>
-void constexpr requirePerVertexCustomComponents(const MeshType&)
+void requirePerVertexCustomComponents(const MeshType&)
 {
 	requirePerVertexCustomComponents<MeshType>();
 }
@@ -410,7 +360,7 @@ template<typename MeshType>
 void requirePerVertexMutableBitFlags(const MeshType& m)
 {
 	requireVertices<MeshType>();
-	static_assert(hasPerVertexMutableBitFlags(m), "Mesh has no per vertex mutable bit flags.");
+	static_assert(hasPerVertexMutableBitFlags<MeshType>(), "Mesh has no per vertex mutable bit flags.");
 	if (!isPerVertexMutableBitFlagsEnabled(m))
 		throw mgp::MissingComponentException("Vertex mutable bit flags not enabled.");
 }

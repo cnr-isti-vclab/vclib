@@ -43,7 +43,7 @@ void loadFacesTxt(
 	mgp::Tokenizer::iterator token = spaceTokenizer.begin();
 
 	mesh.reserveFaces(header.numberFaces());
-	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
+	for (unsigned int fid = 0; fid < header.numberFaces(); ++fid) {
 		mesh.addFace();
 		FaceType& f = mesh.face(mesh.faceNumber() -1);
 		for (ply::Property p : header.faceProperties()) {
@@ -55,7 +55,7 @@ void loadFacesTxt(
 				throw std::runtime_error("Malformed file");
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
-				uint fSize = internal::readProperty<uint>(token, p.listSizeType);
+				unsigned int fSize = internal::readProperty<unsigned int>(token, p.listSizeType);
 				bool splitFace = false;
 				if constexpr(FaceType::VERTEX_NUMBER < 0){
 					f.resizeVertices(fSize);
@@ -63,7 +63,7 @@ void loadFacesTxt(
 				else if (FaceType::VERTEX_NUMBER != fSize)
 					splitFace = true;
 				if (!splitFace) {
-					for (uint i = 0; i < fSize; ++i) {
+					for (unsigned int i = 0; i < fSize; ++i) {
 						assert(token != spaceTokenizer.end());
 						int vid = internal::readProperty<size_t>(token, p.type);
 						if (vid < 0)
@@ -74,7 +74,7 @@ void loadFacesTxt(
 					hasBeenRead = true;
 				}
 				else { // TODO: split face and then load properly n faces
-					for (uint i = 0; i < fSize; ++i) {
+					for (unsigned int i = 0; i < fSize; ++i) {
 						if (i < FaceType::VERTEX_NUMBER) {
 							assert(token != spaceTokenizer.end());
 							int vid = internal::readProperty<size_t>(token, p.type);
@@ -91,7 +91,7 @@ void loadFacesTxt(
 				}
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (mgp::hasPerFaceNormal(mesh)) {
+				if constexpr (mgp::hasPerFaceNormal<MeshType>()) {
 					if (mgp::isPerFaceNormalEnabled(mesh)) {
 						using Scalar = typename FaceType::NormalType::ScalarType;
 						int a = p.name - ply::nx;
@@ -101,7 +101,7 @@ void loadFacesTxt(
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (mgp::hasPerFaceColor(mesh)) {
+				if constexpr (mgp::hasPerFaceColor<MeshType>()) {
 					if (mgp::isPerFaceColorEnabled(mesh)) {
 						int a = p.name - ply::red;
 						f.color()[a] = internal::readProperty<unsigned char>(token, p.type);
@@ -110,7 +110,7 @@ void loadFacesTxt(
 				}
 			}
 			if (p.name == ply::scalar) {
-				if constexpr (mgp::hasPerFaceScalar(mesh)) {
+				if constexpr (mgp::hasPerFaceScalar<MeshType>()) {
 					using Scalar = typename FaceType::ScalarType;
 					if (mgp::isPerFaceScalarEnabled(mesh)) {
 						f.scalar() = internal::readProperty<Scalar>(token, p.type);
@@ -120,8 +120,8 @@ void loadFacesTxt(
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					uint s = internal::readProperty<int>(token, p.listSizeType);
-					for (uint i = 0; i < s; ++i)
+					unsigned int s = internal::readProperty<int>(token, p.listSizeType);
+					for (unsigned int i = 0; i < s; ++i)
 						++token;
 				}
 				else {
@@ -138,13 +138,13 @@ void loadFacesBin(
 {
 	using FaceType = typename MeshType::Face;
 	mesh.reserveFaces(header.numberFaces());
-	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
+	for (unsigned int fid = 0; fid < header.numberFaces(); ++fid) {
 		mesh.addFace();
 		FaceType& f = mesh.face(mesh.faceNumber() -1);
 		for (ply::Property p : header.faceProperties()) {
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
-				uint fSize = internal::readProperty<uint>(file, p.listSizeType);
+				unsigned int fSize = internal::readProperty<unsigned int>(file, p.listSizeType);
 				bool splitFace = false;
 				if constexpr(FaceType::VERTEX_NUMBER < 0){
 					f.resizeVertices(fSize);
@@ -152,7 +152,7 @@ void loadFacesBin(
 				else if (FaceType::VERTEX_NUMBER != fSize)
 					splitFace = true;
 				if (!splitFace) {
-					for (uint i = 0; i < fSize; ++i) {
+					for (unsigned int i = 0; i < fSize; ++i) {
 						int vid = internal::readProperty<size_t>(file, p.type);
 						if (vid < 0)
 							f.v(i) = nullptr;
@@ -162,7 +162,7 @@ void loadFacesBin(
 					hasBeenRead = true;
 				}
 				else { // TODO: split face and then load properly n faces
-					for (uint i = 0; i < fSize; ++i) {
+					for (unsigned int i = 0; i < fSize; ++i) {
 						if (i < FaceType::VERTEX_NUMBER) {
 							int vid = internal::readProperty<size_t>(file, p.type);
 							if (vid < 0)
@@ -178,7 +178,7 @@ void loadFacesBin(
 				}
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (mgp::hasPerFaceNormal(mesh)) {
+				if constexpr (mgp::hasPerFaceNormal<MeshType>()) {
 					if (mgp::isPerFaceNormalEnabled(mesh)) {
 						using Scalar = typename FaceType::NormalType::ScalarType;
 						int a = p.name - ply::nx;
@@ -188,7 +188,7 @@ void loadFacesBin(
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (mgp::hasPerFaceColor(mesh)) {
+				if constexpr (mgp::hasPerFaceColor<MeshType>()) {
 					if (mgp::isPerFaceColorEnabled(mesh)) {
 						int a = p.name - ply::red;
 						f.color()[a] = internal::readProperty<unsigned char>(file, p.type);
@@ -197,7 +197,7 @@ void loadFacesBin(
 				}
 			}
 			if (p.name == ply::scalar) {
-				if constexpr (mgp::hasPerFaceScalar(mesh)) {
+				if constexpr (mgp::hasPerFaceScalar<MeshType>()) {
 					using Scalar = typename FaceType::ScalarType;
 					if (mgp::isPerFaceScalarEnabled(mesh)) {
 						f.scalar() = internal::readProperty<Scalar>(file, p.type);
@@ -207,8 +207,8 @@ void loadFacesBin(
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					uint s = internal::readProperty<int>(file, p.listSizeType);
-					for (uint i = 0; i < s; ++i)
+					unsigned int s = internal::readProperty<int>(file, p.listSizeType);
+					for (unsigned int i = 0; i < s; ++i)
 						internal::readProperty<int>(file, p.type);
 				}
 				else {
@@ -235,7 +235,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 				hasBeenWritten = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (mgp::hasPerFaceNormal(mesh)) {
+				if constexpr (mgp::hasPerFaceNormal<MeshType>()) {
 					if (mgp::isPerFaceNormalEnabled(mesh)) {
 						internal::writeProperty(file, f.normal()[p.name - ply::nx], p.type, bin);
 						hasBeenWritten = true;
@@ -243,7 +243,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (mgp::hasPerFaceColor(mesh)) {
+				if constexpr (mgp::hasPerFaceColor<MeshType>()) {
 					if (mgp::isPerFaceColorEnabled(mesh)) {
 						internal::writeProperty(file, f.color()[p.name - ply::red], p.type, bin);
 						hasBeenWritten = true;
@@ -251,7 +251,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 				}
 			}
 			if (p.name == ply::scalar) {
-				if constexpr (mgp::hasPerFaceScalar(mesh)) {
+				if constexpr (mgp::hasPerFaceScalar<MeshType>()) {
 					if (mgp::isPerFaceScalarEnabled(mesh)) {
 						internal::writeProperty(file, f.scalar(), p.type, bin);
 						hasBeenWritten = true;

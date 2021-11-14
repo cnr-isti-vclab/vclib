@@ -18,7 +18,7 @@ template<typename MeshType>
 bool constexpr hasVertices();
 
 template<typename MeshType>
-bool constexpr hasVertices(const MeshType&);
+bool hasVertices(const MeshType&);
 
 // Mesh Faces
 
@@ -26,7 +26,7 @@ template<typename MeshType>
 bool constexpr hasFaces();
 
 template<typename MeshType>
-bool constexpr hasFaces(const MeshType&);
+bool hasFaces(const MeshType&);
 
 /*********************
  * require functions *
@@ -37,14 +37,14 @@ bool constexpr hasFaces(const MeshType&);
 template<typename MeshType>
 void constexpr requireVertices();
 template<typename MeshType>
-void constexpr requireVertices(const MeshType&);
+void requireVertices(const MeshType&);
 
 // Mesh Faces
 
 template<typename MeshType>
 void constexpr requireFaces();
 template<typename MeshType>
-void constexpr requireFaces(const MeshType&);
+void requireFaces(const MeshType&);
 
 }
 

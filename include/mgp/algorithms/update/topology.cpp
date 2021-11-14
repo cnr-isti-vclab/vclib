@@ -30,7 +30,7 @@ template<typename MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m)
 {
 	mgp::requirePerVertexAdjacentFaces(m);
-	mgp::requireFaces(m);
+	mgp::requireFaces<MeshType>();
 
 	using VertexType = typename MeshType::Vertex;
 	using FaceType   = typename MeshType::Face;

@@ -13,13 +13,13 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 	if (mgp::hasVertices(m)){
 		setVertices();
 		setVertexCoords(getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
-		if constexpr (mgp::hasPerVertexNormal(m))
+		if constexpr (mgp::hasPerVertexNormal<Mesh>())
 			if (mgp::isPerVertexNormalEnabled(m))
 				setVertexNormals(getPropType<typename Mesh::VertexType::NormalType::ScalarType>());
-		if constexpr (mgp::hasPerVertexColor(m))
+		if constexpr (mgp::hasPerVertexColor<Mesh>())
 			if (mgp::isPerVertexColorEnabled(m))
 				setVertexColors(CHAR);
-		if constexpr (mgp::hasPerVertexScalar(m))
+		if constexpr (mgp::hasPerVertexScalar<Mesh>())
 			if (mgp::isPerVertexScalarEnabled(m))
 				setVertexScalars(getPropType<typename Mesh::VertexType::ScalarType>());
 	}
@@ -31,13 +31,13 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 			setTriangleMesh();
 		if (mgp::hasQuads(m))
 			setQuadMesh();
-		if constexpr (mgp::hasPerFaceNormal(m))
+		if constexpr (mgp::hasPerFaceNormal<Mesh>())
 			if (mgp::isPerFaceNormalEnabled(m))
 				setFaceNormals(getPropType<typename Mesh::FaceType::NormalType::ScalarType>());
-		if constexpr (mgp::hasPerFaceColor(m))
+		if constexpr (mgp::hasPerFaceColor<Mesh>())
 			if (mgp::isPerFaceColorEnabled(m))
 				setFaceColors(CHAR);
-		if constexpr (mgp::hasPerFaceScalar(m))
+		if constexpr (mgp::hasPerFaceScalar<Mesh>())
 			if (mgp::isPerFaceScalarEnabled(m))
 				setVertexScalars(getPropType<typename Mesh::FaceType::ScalarType>());
 	}

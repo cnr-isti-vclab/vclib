@@ -47,7 +47,7 @@ std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m)
 	using VertexType = typename MeshType::Vertex;
 
 	std::vector<bool> referredVertices(m.vertexContainerSize(), false);
-	if constexpr (mgp::hasFaces(m)) {
+	if constexpr (mgp::hasFaces<MeshType>()) {
 		using FaceType = typename MeshType::Face;
 
 		for (const FaceType& f : m.faceIterator()) {

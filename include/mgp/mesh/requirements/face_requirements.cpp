@@ -23,12 +23,6 @@ bool constexpr hasPerFaceNormal()
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceNormal(const MeshType&)
-{
-	return hasPerFaceNormal<MeshType>();
-}
-
-template<typename MeshType>
 bool isPerFaceNormalEnabled(const MeshType& m)
 {
 	if constexpr (hasFaces<MeshType>() && mgp::face::hasNormal<typename MeshType::FaceType>()) {
@@ -52,7 +46,7 @@ bool enableIfPerFaceNormalOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerFaceNormal(m);
+		return hasPerFaceNormal<MeshType>();
 	}
 }
 
@@ -61,12 +55,6 @@ bool constexpr hasPerFaceColor()
 {
 	return hasFaces<MeshType>() && (mgp::face::hasColor<typename MeshType::FaceType>() ||
 									mgp::face::hasOptionalColor<typename MeshType::FaceType>());
-}
-
-template<typename MeshType>
-bool constexpr hasPerFaceColor(const MeshType&)
-{
-	return hasPerFaceColor<MeshType>();
 }
 
 template<typename MeshType>
@@ -93,7 +81,7 @@ bool enableIfPerFaceColorOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerFaceColor(m);
+		return hasPerFaceColor<MeshType>();
 	}
 }
 
@@ -102,12 +90,6 @@ bool constexpr hasPerFaceScalar()
 {
 	return hasFaces<MeshType>() && (mgp::face::hasScalar<typename MeshType::FaceType>() ||
 									mgp::face::hasOptionalScalar<typename MeshType::FaceType>());
-}
-
-template<typename MeshType>
-bool constexpr hasPerFaceScalar(const MeshType&)
-{
-	return hasPerFaceScalar<MeshType>();
 }
 
 template<typename MeshType>
@@ -134,7 +116,7 @@ bool enableIfPerFaceScalarOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerFaceScalar(m);
+		return hasPerFaceScalar<MeshType>();
 	}
 }
 
@@ -144,12 +126,6 @@ bool constexpr hasPerFaceAdjacentFaces()
 	return hasFaces<MeshType>() &&
 		   (mgp::face::hasAdjacentFaces<typename MeshType::FaceType>() ||
 			mgp::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>());
-}
-
-template<typename MeshType>
-bool constexpr hasPerFaceAdjacentFaces(const MeshType&)
-{
-	return hasPerFaceAdjacentFaces<MeshType>();
 }
 
 template<typename MeshType>
@@ -179,7 +155,7 @@ bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerFaceAdjacentFaces(m);
+		return hasPerFaceAdjacentFaces<MeshType>();
 	}
 }
 
@@ -187,14 +163,8 @@ template<typename MeshType>
 bool constexpr hasPerFaceWedgeTexCoords()
 {
 	return hasFaces<MeshType>() &&
-		   (mgp::face::hasWedgeTexCoords<typename MeshType::FaceType>() /*||
-			mgp::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()*/);
-}
-
-template<typename MeshType>
-bool constexpr hasPerFaceWedgeTexCoords(const MeshType&)
-{
-	return hasPerFaceWedgeTexCoords<MeshType>();
+		   (mgp::face::hasWedgeTexCoords<typename MeshType::FaceType>() ||
+			mgp::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>());
 }
 
 template<typename MeshType>
@@ -215,12 +185,6 @@ bool constexpr hasPerFaceMutableBitFlags()
 	return hasFaces<MeshType>() &&
 		   (mgp::face::hasMutableBitFlags<typename MeshType::FaceType>() ||
 			mgp::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>());
-}
-
-template<typename MeshType>
-bool constexpr hasPerFaceMutableBitFlags(const MeshType&)
-{
-	return hasPerFaceMutableBitFlags<MeshType>();
 }
 
 template<typename MeshType>
@@ -250,7 +214,7 @@ bool enableIfPerFaceMutableBitFlagsOptional(MeshType& m)
 		return true;
 	}
 	else {
-		return hasPerFaceMutableBitFlags(m);
+		return hasPerFaceMutableBitFlags<MeshType>();
 	}
 }
 
@@ -302,7 +266,7 @@ void constexpr requirePerFaceCustomComponents()
 }
 
 template<typename MeshType>
-void constexpr requirePerFaceCustomComponents(const MeshType&)
+void requirePerFaceCustomComponents(const MeshType&)
 {
 	requirePerFaceCustomComponents<MeshType>();
 }
