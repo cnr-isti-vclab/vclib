@@ -44,9 +44,9 @@ public:
 	bool hasFaces() const;
 	bool hasEdges() const;
 
-	uint numberVertices() const;
-	uint numberFaces() const;
-	uint numberEdges() const;
+	unsigned int numberVertices() const;
+	unsigned int numberFaces() const;
+	unsigned int numberEdges() const;
 
 	const std::list<ply::Property>& vertexProperties() const;
 	const std::list<ply::Property>& faceProperties() const;
