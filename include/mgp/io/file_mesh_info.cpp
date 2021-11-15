@@ -10,7 +10,7 @@ inline FileMeshInfo::FileMeshInfo()
 template<typename Mesh>
 inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 {
-	if (mgp::hasVertices(m)){
+	if (mgp::hasVertices<Mesh>()){
 		setVertices();
 		setVertexCoords(getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
 		if constexpr (mgp::hasPerVertexNormal<Mesh>())
@@ -24,13 +24,15 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 				setVertexScalars(getPropType<typename Mesh::VertexType::ScalarType>());
 	}
 
-	if (mgp::hasFaces(m)){
+	if (mgp::hasFaces<Mesh>()){
 		setFaces();
 		setFaceVRefs();
-		if (mgp::hasTriangles(m))
+		if (mgp::hasTriangles<Mesh>())
 			setTriangleMesh();
-		if (mgp::hasQuads(m))
+		else if (mgp::hasQuads<Mesh>())
 			setQuadMesh();
+		else
+			setPolygonMesh();
 		if constexpr (mgp::hasPerFaceNormal<Mesh>())
 			if (mgp::isPerFaceNormalEnabled(m))
 				setFaceNormals(getPropType<typename Mesh::FaceType::NormalType::ScalarType>());

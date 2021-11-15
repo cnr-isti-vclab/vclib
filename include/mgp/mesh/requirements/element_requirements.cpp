@@ -20,21 +20,9 @@ bool constexpr hasVertices()
 }
 
 template<typename MeshType>
-bool hasVertices(const MeshType&)
-{
-	return hasVertices<MeshType>();
-}
-
-template<typename MeshType>
 bool constexpr hasFaces()
 {
 	return mgp::mesh::hasFaces<MeshType>();
-}
-
-template<typename MeshType>
-bool hasFaces(const MeshType&)
-{
-	return hasFaces<MeshType>();
 }
 
 /*********************
@@ -48,21 +36,9 @@ void constexpr requireVertices()
 }
 
 template<typename MeshType>
-void requireVertices(const MeshType&)
-{
-	requireVertices<MeshType>();
-}
-
-template<typename MeshType>
 void constexpr requireFaces()
 {
 	static_assert(hasFaces<MeshType>(), "Mesh does not have a Face Container.");
-}
-
-template<typename MeshType>
-void requireFaces(const MeshType&)
-{
-	requireFaces<MeshType>();
 }
 
 }

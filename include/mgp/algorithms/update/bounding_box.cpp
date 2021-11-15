@@ -22,8 +22,8 @@ namespace mgp {
 template<typename MeshType>
 void updateBoundingBox(MeshType& m)
 {
-	mgp::requireVertices(m);
-	mgp::requireBoundingBox(m);
+	mgp::requireVertices<MeshType>();
+	mgp::requireBoundingBox<MeshType>();
 
 	using VertexType = typename MeshType::Vertex;
 

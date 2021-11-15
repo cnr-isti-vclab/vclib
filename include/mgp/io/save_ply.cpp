@@ -48,10 +48,10 @@ void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeade
 	}
 	fp << header.toString();
 
-	if (mgp::hasVertices(m))
+	if (mgp::hasVertices<MeshType>())
 		ply::saveVertices(fp, header, m);
 
-	if (mgp::hasFaces(m))
+	if (mgp::hasFaces<MeshType>())
 		ply::saveFaces(fp, header, m);
 
 	fp.close();

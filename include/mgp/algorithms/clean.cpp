@@ -112,7 +112,7 @@ public:
 template<typename MeshType>
 unsigned int numberUnreferencedVertices(const MeshType& m)
 {
-	mgp::requireVertices(m);
+	mgp::requireVertices<MeshType>();
 
 	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
 
@@ -138,7 +138,7 @@ unsigned int numberUnreferencedVertices(const MeshType& m)
 template<typename MeshType>
 unsigned int removeUnreferencedVertices(MeshType& m)
 {
-	mgp::requireVertices(m);
+	mgp::requireVertices<MeshType>();
 
 	using VertexType = typename MeshType::Vertex;
 
@@ -171,8 +171,8 @@ unsigned int removeUnreferencedVertices(MeshType& m)
 template<typename MeshType>
 unsigned int removeDuplicatedVertices(MeshType& m)
 {
-	mgp::requireVertices(m);
-	mgp::requireFaces(m);
+	mgp::requireVertices<MeshType>();
+	mgp::requireFaces<MeshType>();
 
 	using VertexType    = typename MeshType::Vertex;
 	using FaceType      = typename MeshType::Face;
@@ -262,7 +262,7 @@ unsigned int removeDuplicatedVertices(MeshType& m)
 template<typename MeshType>
 unsigned int removeDuplicatedFaces(MeshType& m)
 {
-	mgp::requireVertices(m);
+	mgp::requireVertices<MeshType>();
 	mgp::requireTriangleMesh(m); // TODO: remove this and adjust the function for polymeshes
 
 	using FaceType = typename MeshType::Face;

@@ -21,18 +21,12 @@ template <typename MeshType>
 bool constexpr hasTriangles();
 
 template <typename MeshType>
-bool constexpr hasTriangles(const MeshType&);
-
-template <typename MeshType>
 bool isTriangleMesh(const MeshType&);
 
 // Quads
 
 template <typename MeshType>
 bool constexpr hasQuads();
-
-template <typename MeshType>
-bool constexpr hasQuads(const MeshType&);
 
 template <typename MeshType>
 bool isQuadMesh(const MeshType&);
@@ -42,9 +36,6 @@ bool isQuadMesh(const MeshType&);
 template <typename MeshType>
 bool constexpr hasBoundingBox();
 
-template <typename MeshType>
-bool constexpr hasBoundingBox(const MeshType&);
-
 /*********************
  * require functions *
  *********************/
@@ -52,26 +43,17 @@ bool constexpr hasBoundingBox(const MeshType&);
 // Triangles
 
 template <typename MeshType>
-void constexpr requireTriangleMesh();
-
-template <typename MeshType>
-void constexpr requireTriangleMesh(const MeshType&);
+void requireTriangleMesh(const MeshType&);
 
 // Quads
 
 template <typename MeshType>
-void constexpr requireQuadMesh();
-
-template <typename MeshType>
-void constexpr requireQuadMesh(const MeshType&);
+void requireQuadMesh(const MeshType&);
 
 // Bounding Box
 
 template <typename MeshType>
 void constexpr requireBoundingBox();
-
-template <typename MeshType>
-void constexpr requireBoundingBox(const MeshType&);
 
 }
 

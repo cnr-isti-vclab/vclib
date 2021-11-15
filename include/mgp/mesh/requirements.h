@@ -14,15 +14,15 @@
  *
  * There are three main types of functions:
  *
- * - hasSomething(): this is a constexpr function that checks at compile time if the mesh has some
- *     feature. These functions should be used in "if constexpr(...)" statements, e.g.:
+ * - hasSomething<MeshType>(): this is a constexpr function that checks at compile time if the mesh
+ *     has some feature. These functions should be used in "if constexpr(...)" statements, e.g.:
  *
- *       if constexpr (mgp::hasTriangles(m))
+ *       if constexpr (mgp::hasTriangles<MyMesh>())
  *       {
  *           // portion of code that works on triangle meshes
  *       }
  *
- *       if constexpr (mgp::hasPerFaceColor(m))
+ *       if constexpr (mgp::hasPerFaceColor<MyMesh>())
  *       {
  *          // portion of code that use per face colors
  *       }
@@ -30,14 +30,14 @@
  *     Note: this function does not check for components that may be not enabled at runtime.
  *     For runtime check look for "isSomethingEnabled".
  *
- * - isSomethingEnabled(): checks at compile time if an Element has a particular Component, and then
- *     checks at runtime if the Component is enabled. Therefore, the whole function is not a
+ * - isSomethingEnabled(m): checks at compile time if an Element has a particular Component, and
+ *     then checks at runtime if the Component is enabled. Therefore, the whole function is not a
  *     constexpr.
  *
  *     For example, if you have a portion of code that does something particular in case of Vertices
  *     have Colors, you could write:
  *
- *     if constexpr (mgp::hasPerVertexColor(m)) {
+ *     if constexpr (mgp::hasPerVertexColor<MyMesh>()) {
  *         if (mgp::isPerVertexColorEnabled(m)) {
  *             // do something with vertex color
  *         }

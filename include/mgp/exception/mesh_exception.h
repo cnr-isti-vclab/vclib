@@ -61,6 +61,19 @@ public:
 	}
 };
 
+class MissingQuadRequirementException : public std::runtime_error
+{
+public:
+	MissingQuadRequirementException(const std::string& err) : std::runtime_error(err) {}
+
+	virtual const char* what() const throw()
+	{
+		static std::string error;
+		error = std::string("Missing Quad Mesh Requirement - ") + std::runtime_error::what();
+		return error.c_str();
+	}
+};
+
 class MissingPolygonalRequirementException : public std::runtime_error
 {
 public:
