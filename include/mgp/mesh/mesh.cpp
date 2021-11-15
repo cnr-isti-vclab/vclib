@@ -230,21 +230,11 @@ template<typename U>
 mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace(
 	const std::vector<VType*>& v)
 {
-	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
-
-	if constexpr (Face::VERTEX_NUMBER >= 0){
-		assert(Face::VERTEX_NUMBER == v.size());
-	}
 
 	unsigned int fid = addFace();
 
-	if constexpr (Face::VERTEX_NUMBER < 0){
-		FaceContainer::face(fid).resizeVertices(v.size());
-	}
-
-	for (unsigned int i = 0; i < v.size(); ++i)
-		FaceContainer::face(fid).v(i) = v[i];
+	FaceContainer::face(fid).setVertices(v);
 
 	return fid;
 }
@@ -369,7 +359,7 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferencesAfter
 template<class... Args>
 void Mesh<Args...>::updateAllOptionalContainerReferences()
 {
-	// if there the optional vertex container, I need to update, for each vertex of the
+	// if there is the optional vertex container, I need to update, for each vertex of the
 	// new mesh, the containerPointer
 	if constexpr (
 		mesh::hasVertices<Mesh<Args...>>() && mesh::hasVertexOptionalContainer<Mesh<Args...>>()) {

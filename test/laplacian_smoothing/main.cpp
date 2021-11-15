@@ -7,6 +7,7 @@
 
 #include <mgp/algorithms/smooth.h>
 #include <mgp/algorithms/update/bounding_box.h>
+#include <mgp/algorithms/update/normal.h>
 #include <mgp/algorithms/update/topology.h>
 #include <mgp/io/load_ply.h>
 #include <mgp/io/save_ply.h>

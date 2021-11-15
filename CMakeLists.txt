@@ -35,6 +35,7 @@ set(HEADERS
 	include/mgp/algorithms/create/tetrahedron.h
 	include/mgp/algorithms/update/bounding_box.h
 	include/mgp/algorithms/update/flag.h
+	include/mgp/algorithms/update/normal.h
 	include/mgp/algorithms/update/topology.h
 	include/mgp/exception/io_exception.h
 	include/mgp/exception/mesh_exception.h
@@ -123,6 +124,7 @@ set(SOURCES
 	include/mgp/algorithms/create/tetrahedron.cpp
 	include/mgp/algorithms/update/bounding_box.cpp
 	include/mgp/algorithms/update/flag.cpp
+	include/mgp/algorithms/update/normal.cpp
 	include/mgp/algorithms/update/topology.cpp
 	include/mgp/mesh/mesh.cpp
 	include/mgp/mesh/container/face_container.cpp

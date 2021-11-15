@@ -59,7 +59,7 @@ ScalarType& Point3<ScalarType>::z()
 template<class ScalarType>
 Point3<ScalarType> Point3<ScalarType>::cross(const Point3<ScalarType>& p1) const
 {
-	return Point<ScalarType, 3>::cross(p1.p);
+	return Point<ScalarType, 3>::p.cross(p1.p);
 }
 
 } // namespace mgp

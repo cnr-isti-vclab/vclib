@@ -50,6 +50,8 @@ public:
 	void setZero();
 	void setOnes();
 
+	void normalize();
+
 	// operators
 	Scalar&       operator()(unsigned int i);
 	const Scalar& operator()(unsigned int i) const;

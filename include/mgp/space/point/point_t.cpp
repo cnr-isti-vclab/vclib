@@ -71,6 +71,14 @@ void Point<Scalar, N>::setOnes()
 }
 
 template<class Scalar, int N>
+void Point<Scalar, N>::normalize()
+{
+	if (norm() > 0) {
+		p /= norm();
+	}
+}
+
+template<class Scalar, int N>
 Scalar& Point<Scalar, N>::operator()(unsigned int i)
 {
 	return p(i);

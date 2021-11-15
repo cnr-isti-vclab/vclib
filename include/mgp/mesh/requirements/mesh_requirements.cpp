@@ -36,11 +36,11 @@ bool constexpr hasTriangles()
 	return false;
 }
 
-template<typename MeshType>
 /**
  * @brief hasTriangles
  * @see hasTriangles()
  */
+template<typename MeshType>
 bool constexpr hasTriangles(const MeshType&)
 {
 	return hasTriangles<MeshType>();
