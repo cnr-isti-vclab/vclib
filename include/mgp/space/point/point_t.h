@@ -13,6 +13,13 @@
 
 namespace mgp {
 
+namespace internal {
+
+template<int M, typename T>
+using ReturnIfIsPoint3 = typename std::enable_if<(M == 3), T>::type;
+
+}
+
 /**
  * @brief The Point class represents an N-dimensional point containing
  * N scalar values.
@@ -41,6 +48,9 @@ public:
 
 	template<class S>
 	Scalar angle(const Point<S, N>& p1) const;
+
+	template<int U = N>
+	internal::ReturnIfIsPoint3< U, Point<Scalar, N> > cross(const Point<Scalar, N>& p1) const;
 
 	Scalar       norm() const;
 	Scalar       squaredNorm() const;

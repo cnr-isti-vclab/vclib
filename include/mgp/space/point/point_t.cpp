@@ -35,6 +35,14 @@ bool Point<Scalar, N>::isDegenerate() const
 }
 
 template<class Scalar, int N>
+template<int U>
+internal::ReturnIfIsPoint3< U, Point<Scalar, N> >
+Point<Scalar, N>::cross(const Point<Scalar, N>& p1) const
+{
+	return p.cross(p1.p);
+}
+
+template<class Scalar, int N>
 Scalar Point<Scalar, N>::norm() const
 {
 	return p.norm();

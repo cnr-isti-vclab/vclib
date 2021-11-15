@@ -26,7 +26,11 @@ class Vertex :
 {
 };
 
-class Face : public mgp::Face<mgp::face::TriangleBitFlags, mgp::face::TriangleVertexRefs<Vertex>>
+class Face :
+		public mgp::Face<
+			mgp::face::TriangleBitFlags,
+			mgp::face::TriangleVertexRefs<Vertex>,
+			mgp::face::Normal3f>
 {
 };
 } // namespace mymesh
@@ -40,13 +44,12 @@ public:
 
 int main()
 {
-
-
 	MyMesh m = mgp::io::loadPly<MyMesh>("/home/alessandro/tmp/bunny.ply");
 
 	m.enablePerVertexAdjacentFaces();
 	mgp::updatePerVertexAdjacentFaces(m);
 	mgp::updateBoundingBox(m);
+	mgp::updatePerFaceNormals(m);
 
 	MyMesh m2;
 

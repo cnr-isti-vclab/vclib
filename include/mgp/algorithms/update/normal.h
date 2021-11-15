@@ -12,13 +12,18 @@
 #ifndef MGP_ALGORITHMS_NORMAL_H
 #define MGP_ALGORITHMS_NORMAL_H
 
+#include <mgp/space/point.h>
+
 namespace mgp {
 
-template<typename Triangle>
-double triangleNormal(const Triangle& t);
+template <typename PointType>
+PointType triangleNormal(const PointType& p1, const PointType& p2, const PointType& p3);
 
-template<typename Polygon>
-double polygonNormal(const Polygon& p);
+template<typename Triangle, typename NormalType = Point3f>
+NormalType triangleNormal(const Triangle& t);
+
+template<typename Polygon, typename NormalType = Point3f>
+typename Polygon::CoordType polygonNormal(const Polygon& p);
 
 template<typename MeshType>
 void normalizePerFaceNormals(MeshType& m);
