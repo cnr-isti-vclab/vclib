@@ -18,8 +18,8 @@ class Coordinate : public CoordinateTriggerer
 public:
 	using CoordType =  Point<Scalar, N>;
 
-	const Point<Scalar, N>& coordinate() const { return p; }
-	Point<Scalar, N>&       coordinate() { return p; }
+	const Point<Scalar, N>& coord() const { return p; }
+	Point<Scalar, N>&       coord() { return p; }
 
 private:
 	Point<Scalar, N> p;
@@ -31,8 +31,8 @@ class Coordinate3 : public CoordinateTriggerer
 public:
 	using CoordType = Point3<Scalar>;
 
-	const Point3<Scalar>& coordinate() const { return p; }
-	Point3<Scalar>&       coordinate() { return p; }
+	const Point3<Scalar>& coord() const { return p; }
+	Point3<Scalar>&       coord() { return p; }
 
 private:
 	Point3<Scalar> p;

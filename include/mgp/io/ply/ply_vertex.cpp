@@ -38,7 +38,7 @@ void loadVerticesTxt(
 			if (p.name >= ply::x && p.name <= ply::z) {
 				using Scalar = typename VertexType::CoordType::ScalarType;
 				int a = p.name - ply::x;
-				v.coordinate()[a] = internal::readProperty<Scalar>(token, p.type);
+				v.coord()[a] = internal::readProperty<Scalar>(token, p.type);
 				hasBeenRead = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
@@ -98,7 +98,7 @@ void loadVerticesBin(
 			if (p.name >= ply::x && p.name <= ply::z) {
 				using Scalar = typename VertexType::CoordType::ScalarType;
 				int a = p.name - ply::x;
-				v.coordinate()[a] = internal::readProperty<Scalar>(file, p.type);
+				v.coord()[a] = internal::readProperty<Scalar>(file, p.type);
 				hasBeenRead = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
@@ -159,7 +159,7 @@ void saveVertices(
 			bool hasBeenWritten = false;
 			if (p.name >= ply::x && p.name <= ply::z) {
 				int a = p.name - ply::x;
-				internal::writeProperty(file, v.coordinate()[a], p.type, bin);
+				internal::writeProperty(file, v.coord()[a], p.type, bin);
 				hasBeenWritten = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {

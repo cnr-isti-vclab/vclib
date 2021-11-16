@@ -27,7 +27,7 @@ class VertPositionComparator
 public:
 	inline bool operator()(const VertexPointer& a, const VertexPointer& b)
 	{
-		return (a->coordinate() == b->coordinate()) ? (a < b) : (a->coordinate() < b->coordinate());
+		return (a->coord() == b->coord()) ? (a < b) : (a->coord() < b->coord());
 	}
 };
 
@@ -200,7 +200,7 @@ unsigned int removeDuplicatedVertices(MeshType& m)
 	// will compare the i-th position with the next ones while they are equal to the i-th
 	while (i < perm.size() - 1) {
 		unsigned int j = i + 1;
-		while (j < perm.size() && perm[i]->coordinate() == perm[j]->coordinate()) {
+		while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
 			// j will be deleted
 			deletedVertsMap[perm[j]] = perm[i]; // map j into i
 			m.deleteVertex(perm[j]->id());
@@ -306,7 +306,7 @@ unsigned int removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 	int count_vd = 0;
 
 	for (VertexType& v : m.vertexIterator()) {
-		if (v.coordinate().isDegenerate()) {
+		if (v.coord().isDegenerate()) {
 			count_vd++;
 			m.deleteVertex(v.id());
 		}

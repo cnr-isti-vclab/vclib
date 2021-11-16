@@ -46,16 +46,16 @@ void accumulateLaplacianInfo(
 				const VertexType& v0 = *f.v(j);
 				const VertexType& v1 = *f.vMod(j + 1);
 				const VertexType& v2 = *f.vMod(j + 2);
-				const CoordType&  p0 = v0.coordinate();
-				const CoordType&  p1 = v1.coordinate();
-				const CoordType&  p2 = v2.coordinate();
+				const CoordType&  p0 = v0.coord();
+				const CoordType&  p1 = v1.coord();
+				const CoordType&  p2 = v2.coord();
 				if (cotangentFlag) {
 					ScalarType angle = (p1 - p2).angle(p0 - p2);
 					weight           = std::tan((M_PI * 0.5) - angle);
 				}
 
-				data[v0.id()].sum += f.vMod(j + 1)->coordinate() * weight;
-				data[v1.id()].sum += f.v(j)->coordinate() * weight;
+				data[v0.id()].sum += f.vMod(j + 1)->coord() * weight;
+				data[v1.id()].sum += f.v(j)->coord() * weight;
 				data[v0.id()].cnt += weight;
 				data[v1.id()].cnt += weight;
 			}
@@ -67,8 +67,8 @@ void accumulateLaplacianInfo(
 			if (f.isEdgeOnBorder(j)) {
 				const VertexType& v0 = *f.v(j);
 				const VertexType& v1 = *f.vMod(j + 1);
-				const CoordType&  p0 = v0.coordinate();
-				const CoordType&  p1 = v1.coordinate();
+				const CoordType&  p0 = v0.coord();
+				const CoordType&  p1 = v1.coord();
 				data[v0.id()].sum    = p0;
 				data[v1.id()].sum    = p1;
 				data[v0.id()].cnt    = 1;
@@ -83,8 +83,8 @@ void accumulateLaplacianInfo(
 			if (f.isEdgeOnBorder(j)) {
 				const VertexType& v0 = *f.v(j);
 				const VertexType& v1 = *f.vMod(j + 1);
-				const CoordType&  p0 = v0.coordinate();
-				const CoordType&  p1 = v1.coordinate();
+				const CoordType&  p0 = v0.coord();
+				const CoordType&  p1 = v1.coord();
 				data[v0.id()].sum += p1;
 				data[v1.id()].sum += p0;
 				++data[v0.id()].cnt;
@@ -131,8 +131,8 @@ void vertexCoordLaplacianSmoothing(
 		for (VertexType& v : m.vertexIterator()) {
 			if (laplData[v.id()].cnt > 0) {
 				if (!smoothSelected || v.isSelected()) {
-					v.coordinate() =
-						(v.coordinate() + laplData[v.id()].sum) / (laplData[v.id()].cnt + 1);
+					v.coord() =
+						(v.coord() + laplData[v.id()].sum) / (laplData[v.id()].cnt + 1);
 				}
 			}
 		}

@@ -42,7 +42,7 @@ PointType triangleNormal(const PointType& p0, const PointType& p1, const PointTy
 template<typename Triangle, typename NormalType>
 NormalType triangleNormal(const Triangle& t)
 {
-	return triangleNormal(t.v(0)->coordinate(), t.v(1)->coordinate(), t.v(2)->coordinate());
+	return triangleNormal(t.v(0)->coord(), t.v(1)->coord(), t.v(2)->coord());
 }
 
 /**
@@ -60,7 +60,7 @@ NormalType polygonNormal(const Polygon& p)
 	NormalType sum; sum.setZero();
 	for (unsigned int i = 0; i < p.vertexNumber(); ++i){
 		sum += triangleNormal(
-			p.vMod(i)->coordinate(), p.vMod(i+1)->coordinate(), p.vMod(i+2)->coordinate());
+			p.vMod(i)->coord(), p.vMod(i+1)->coord(), p.vMod(i+2)->coord());
 	}
 	sum.normalize();
 	return sum;

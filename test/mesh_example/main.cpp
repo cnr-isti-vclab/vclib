@@ -20,9 +20,9 @@ int main()
 	m.addVertex();
 
 	// setting coordinate
-	m.vertex(0).coordinate() = mgp::Point3d(0, 0, 0);
-	m.vertex(1).coordinate() = mgp::Point3d(0, 1, 0);
-	m.vertex(2).coordinate() = mgp::Point3d(1, 0, 0);
+	m.vertex(0).coord() = mgp::Point3d(0, 0, 0);
+	m.vertex(1).coord() = mgp::Point3d(0, 1, 0);
+	m.vertex(2).coord() = mgp::Point3d(1, 0, 0);
 
 	// test mutable flags
 	// flags that can be modified also on const meshes, like the "visited" flag

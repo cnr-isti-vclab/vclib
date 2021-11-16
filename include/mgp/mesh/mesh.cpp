@@ -113,7 +113,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex(
 	using VertexContainer = typename U::VertexContainer;
 
 	unsigned int vid = addVertex(); // using the previously defined addVertex function
-	VertexContainer::vertex(vid).coordinate() = p; // set the coordinate to the vertex
+	VertexContainer::vertex(vid).coord() = p; // set the coordinate to the vertex
 	return vid;
 }
 

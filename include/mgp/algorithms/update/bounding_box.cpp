@@ -29,7 +29,7 @@ void updateBoundingBox(MeshType& m)
 
 	m.boundingBox().setNull();
 	for (const VertexType& v : m.vertexIterator()) {
-		m.boundingBox().add(v.coordinate());
+		m.boundingBox().add(v.coord());
 	}
 }
 
