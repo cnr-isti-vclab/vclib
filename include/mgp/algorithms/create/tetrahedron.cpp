@@ -80,10 +80,10 @@ MeshType createTetrahedron(
 	m.addVertices(p0, p1, p2, p3);
 
 	m.reserveFaces(4);
-	m.addFace({&m.vertex(0), &m.vertex(1), &m.vertex(2)});
-	m.addFace({&m.vertex(0), &m.vertex(2), &m.vertex(3)});
-	m.addFace({&m.vertex(0), &m.vertex(3), &m.vertex(1)});
-	m.addFace({&m.vertex(3), &m.vertex(2), &m.vertex(1)});
+	m.addFace(&m.vertex(0), &m.vertex(1), &m.vertex(2));
+	m.addFace(&m.vertex(0), &m.vertex(2), &m.vertex(3));
+	m.addFace(&m.vertex(0), &m.vertex(3), &m.vertex(1));
+	m.addFace(&m.vertex(3), &m.vertex(2), &m.vertex(1));
 
 	return m;
 }

@@ -39,22 +39,33 @@ class Face : public FaceTriggerer, public Args...
 
 	// Vertex references component of the Face
 	using VRefs = typename Face::VertexReferences;
+	using VertexType = typename VRefs::VertexType;
+
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
+	Face() {}
+
+	Face(const std::vector<VertexType*>& list);
+
+	template<typename... V>
+	Face(V... args);
+
 	unsigned int id() const;
 
-	template<typename Vertex>
-	void setVertices(const std::vector<Vertex*>& list);
+	void setVertices(const std::vector<VertexType*>& list);
+
+	template<typename... V>
+	void setVertices(V... args);
 
 	template<int U = NV>
 	comp::internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n);
 
-	template<typename Vertex, int U = NV>
-	comp::internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v);
+	template<int U = NV>
+	comp::internal::ReturnIfIsVector<U, void> pushVertex(VertexType* v);
 
-	template<typename Vertex, int U = NV>
-	comp::internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, Vertex* v);
+	template<int U = NV>
+	comp::internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, VertexType* v);
 
 	template<int U = NV>
 	comp::internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
@@ -63,7 +74,6 @@ public:
 	comp::internal::ReturnIfIsVector<U, void> clearVertices();
 
 protected:
-	Face() {}
 	unsigned int _id = 0;
 };
 

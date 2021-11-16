@@ -7,6 +7,19 @@
 
 namespace mgp {
 
+template<class... Args>
+Face<Args...>::Face(const std::vector<VertexType*>& list)
+{
+	setVertices(list);
+}
+
+template<class... Args>
+template<typename... V>
+Face<Args...>::Face(V... args)
+{
+	setVertices({args...});
+}
+
 /**
  * @brief Return the id of the face. The id of a Face is tied to its Container position in a Mesh.
  * @return the id of the face.
@@ -23,8 +36,7 @@ unsigned int Face<Args...>::id() const { return _id; }
  * @param list
  */
 template<class... Args>
-template<typename Vertex>
-void Face<Args...>::setVertices(const std::vector<Vertex*>& list)
+void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 {
 	using F = Face<Args...>;
 	
@@ -71,6 +83,13 @@ void Face<Args...>::setVertices(const std::vector<Vertex*>& list)
 				T::resizeWedgeTexCoords(list.size());
 		}
 	}
+}
+
+template<class... Args>
+template<typename... V>
+void Face<Args...>::setVertices(V... args)
+{
+	setVertices({args...});
 }
 
 /**
@@ -136,8 +155,8 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned
 }
 
 template<class... Args>
-template<typename Vertex, int U>
-comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(Vertex* v)
+template<int U>
+comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(VertexType* v)
 {
 	using F = Face<Args...>;
 	
@@ -186,8 +205,8 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(Vertex* v)
 }
 
 template<class... Args>
-template<typename Vertex, int U>
-comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned int i, Vertex* v)
+template<int U>
+comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned int i, VertexType* v)
 {
 	using F = Face<Args...>;
 	

@@ -53,6 +53,9 @@ public:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace();
 
+	template<typename U = Mesh, typename... V>
+	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace(V... args);
+
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace(const std::vector<VType*>& v);
 

@@ -20,6 +20,8 @@ class VertexReferences : protected ElementReferences<Vertex, N>, public VertexRe
 	using Base = ElementReferences<Vertex, N>;
 
 public:
+	using VertexType = Vertex;
+
 	static const int VERTEX_NUMBER = Base::CONTAINER_SIZE;
 
 	/** Iterator Types declaration **/
