@@ -42,7 +42,7 @@ void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeade
 	else
 		plyfilename = filename + ".ply";
 
-	fp.open(plyfilename);
+	fp.open(plyfilename, std::ofstream::binary); // need to set binary of windows will fail
 	if (!fp) {
 		throw mgp::CannotOpenFileException(plyfilename);
 	}

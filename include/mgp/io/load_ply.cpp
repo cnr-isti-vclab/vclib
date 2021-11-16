@@ -130,7 +130,7 @@ void loadPly(
 	mgp::io::FileMeshInfo& loadedInfo,
 	bool                   enableOptionalComponents)
 {
-	std::ifstream file(filename);
+	std::ifstream file(filename, std::ifstream::binary); // need to set binary of windows will fail
 	if (!file.is_open()) {
 		throw mgp::CannotOpenFileException(filename);
 	}
