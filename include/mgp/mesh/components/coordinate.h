@@ -12,7 +12,7 @@ namespace mgp::comp {
 
 class CoordinateTriggerer {};
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 class Coordinate : public CoordinateTriggerer
 {
 public:
@@ -25,7 +25,7 @@ private:
 	Point<Scalar, N> p;
 };
 
-template<class Scalar>
+template<typename Scalar>
 class Coordinate3 : public CoordinateTriggerer
 {
 public:

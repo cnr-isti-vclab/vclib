@@ -37,7 +37,7 @@ class OptionalWedgeTexCoordsTriggerer
 {
 };
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 class OptionalWedgeTexCoords
 {
 	template<typename, typename>

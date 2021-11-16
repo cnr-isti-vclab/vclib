@@ -24,7 +24,7 @@ using ReturnIfIsPoint3 = typename std::enable_if<(M == 3), T>::type;
  * @brief The Point class represents an N-dimensional point containing
  * N scalar values.
  */
-template<class Scalar, int N>
+template<typename Scalar, int N>
 class Point
 {
 public:
@@ -37,16 +37,16 @@ public:
 	Point& operator=(const Point& p) = default; // default copy assignment operator
 	Point& operator=(Point&& p) = default;      // default move assignment operator
 
-	template<class S>
+	template<typename S>
 	Point(const Point<S, N>& p);                 // constructor from different scalar Point
 	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
 
 	bool isDegenerate() const;
 
-	template<class S>
+	template<typename S>
 	Scalar dot(const Point<S, N>& p1) const;
 
-	template<class S>
+	template<typename S>
 	Scalar angle(const Point<S, N>& p1) const;
 
 	template<int U = N>
@@ -85,14 +85,14 @@ public:
 	Scalar  operator[](size_t i) const;
 	Scalar& operator[](size_t i);
 
-	template<class S, int M>
+	template<typename S, int M>
 	friend std::ostream& operator<<(std::ostream& out, const Point<S, M>& p);
 
 protected:
 	Eigen::Matrix<Scalar, 1, N> p;
 };
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p);
 
 } // namespace mgp

@@ -7,13 +7,13 @@
 
 namespace mgp {
 
-template<class... Args>
+template<typename... Args>
 Face<Args...>::Face(const std::vector<VertexType*>& list)
 {
 	setVertices(list);
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename... V>
 Face<Args...>::Face(V... args)
 {
@@ -24,7 +24,7 @@ Face<Args...>::Face(V... args)
  * @brief Return the id of the face. The id of a Face is tied to its Container position in a Mesh.
  * @return the id of the face.
  */
-template<class... Args>
+template<typename... Args>
 unsigned int Face<Args...>::id() const { return _id; }
 
 /**
@@ -35,7 +35,7 @@ unsigned int Face<Args...>::id() const { return _id; }
  *
  * @param list
  */
-template<class... Args>
+template<typename... Args>
 void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 {
 	using F = Face<Args...>;
@@ -85,7 +85,7 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 	}
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename... V>
 void Face<Args...>::setVertices(V... args)
 {
@@ -106,7 +106,7 @@ void Face<Args...>::setVertices(V... args)
  *
  * @param n: the new number of vertices.
  */
-template<class... Args>
+template<typename... Args>
 template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned int n)
 {
@@ -154,7 +154,7 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned
 	}
 }
 
-template<class... Args>
+template<typename... Args>
 template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(VertexType* v)
 {
@@ -204,7 +204,7 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(VertexType* 
 	}
 }
 
-template<class... Args>
+template<typename... Args>
 template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned int i, VertexType* v)
 {
@@ -254,7 +254,7 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned i
 	}
 }
 
-template<class... Args>
+template<typename... Args>
 template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned int i)
 {
@@ -302,7 +302,7 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned in
 	}
 }
 
-template<class... Args>
+template<typename... Args>
 template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
 {

@@ -14,14 +14,14 @@ namespace mgp {
  * @brief The Point3 class represents a 3-dimensional point containing 3 ScalarType values.
  * Specializes the Point class, providing some additional member functions useful for 3D points.
  */
-template<class ScalarType>
+template<typename ScalarType>
 class Point3 : public Point<ScalarType, 3>
 {
 public:
 	Point3()                = default; // default empty constructor
 	Point3(const Point3& p) = default; // default copy constructor
 
-	template<class S>
+	template<typename S>
 	Point3(const Point<S, 3>& p1); // constructor from base class - will include all its constructors
 	Point3(const ScalarType& x, const ScalarType& y, const ScalarType& z);
 

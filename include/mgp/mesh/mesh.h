@@ -19,7 +19,7 @@ namespace mgp {
  * all the functionalities that allow these containers to comunicate (e.g. an operation on the
  * vertex container that requires to update also some face information).
  */
-template<class... Args>
+template<typename... Args>
 class Mesh : public mesh::Container<Args>...
 {
 	using VType = typename Mesh::VertexType;
@@ -68,7 +68,7 @@ public:
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, void> compactFaces();
 
-	template<class...A>
+	template<typename...A>
 	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);
 
 	void swap(Mesh& m2);
@@ -95,7 +95,7 @@ protected:
 	void updateAllOptionalContainerReferences();
 };
 
-template<class...A>
+template<typename...A>
 inline void swap(Mesh<A...>& m1, Mesh<A...>& m2);
 
 } // namespace mgp

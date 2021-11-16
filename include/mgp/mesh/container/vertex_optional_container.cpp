@@ -13,8 +13,8 @@ namespace mgp::mesh {
  * Component**.
  * @return true if the Optional Color is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalColor<U, bool>
 VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexColorEnabled() const
 {
@@ -25,8 +25,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexColorEnabled() cons
  * @brief Container::enableVertexColor enables the Optional Color of the vertex.
  * This function is available **only if the Vertex Element has the OptionalColor Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalColor<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexColor()
 {
@@ -37,8 +37,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexColor()
  * @brief Container::disableVertexColor disables the Optional Color of the vertex.
  * This function is available **only if the Vertex Element has the OptionalColor Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalColor<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexColor()
 {
@@ -51,8 +51,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexColor()
  * OptionalMutableBitFlags Component**.
  * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalMutableBitFlags<U, bool>
 VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexMutableBitFlagsEnabled() const
 {
@@ -64,8 +64,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexMutableBitFlagsEnab
  * This function is available **only if the Vertex Element has the OptionalMutableBitFlags
  * Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalMutableBitFlags<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexMutableBitFlags()
 {
@@ -77,8 +77,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexMutableBitFlags
  * This function is available **only if the Vertex Element has the OptionalMutableBitFlags
  * Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalMutableBitFlags<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexMutableBitFlags()
 {
@@ -91,8 +91,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexMutableBitFlag
  * Component**.
  * @return true if the Optional Normal is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalNormal<U, bool>
 VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexNormalEnabled() const
 {
@@ -103,8 +103,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexNormalEnabled() con
  * @brief Container::enableVertexNormal enables the Optional Normal of the vertex.
  * This function is available **only if the Vertex Element has the OptionalNormal Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalNormal<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexNormal()
 {
@@ -115,8 +115,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexNormal()
  * @brief Container::disableVertexNormal disables the Optional Normal of the vertex.
  * This function is available **only if the Vertex Element has the OptionalNormal Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalNormal<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexNormal()
 {
@@ -129,8 +129,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexNormal()
  * Component**.
  * @return true if the Optional Scalar is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalScalar<U, bool>
 VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexScalarEnabled() const
 {
@@ -141,8 +141,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexScalarEnabled() con
  * @brief Container::enableVertexScalar enables the Optional Scalar of the vertex.
  * This function is available **only if the Vertex Element has the OptionalScalar Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalScalar<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexScalar()
 {
@@ -153,8 +153,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexScalar()
  * @brief Container::disableVertexScalar disables the Optional Scalar of the vertex.
  * This function is available **only if the Vertex Element has the OptionalScalar Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalScalar<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexScalar()
 {
@@ -167,8 +167,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexScalar()
  * Component**.
  * @return true if the Optional TexCoord is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalTexCoord<U, bool>
 VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexTexCoordEnabled() const
 {
@@ -179,8 +179,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexTexCoordEnabled() c
  * @brief Container::enableVertexTexCoord enables the Optional TexCoord of the vertex.
  * This function is available **only if the Vertex Element has the OptionalTexCoord Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalTexCoord<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexTexCoord()
 {
@@ -191,8 +191,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexTexCoord()
  * @brief Container::disableVertexTexCoord disables the Optional TexCoord of the vertex.
  * This function is available **only if the Vertex Element has the OptionalTexCoord Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalTexCoord<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexTexCoord()
 {
@@ -205,8 +205,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexTexCoord()
  * the OptionalAdjacentFaces Component**.
  * @return true if the Optional Adjacent Faces is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalAdjacentFaces<U, bool>
 VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexAdjacentFacesEnabled() const
 {
@@ -219,8 +219,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexAdjacentFacesEnable
  * This function is available **only if the Vertex Element has the OptionalAdjacentFaces
  * Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalAdjacentFaces<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexAdjacentFaces()
 {
@@ -232,8 +232,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexAdjacentFaces()
  * Faces of the vertex. This function is available **only if the Vertex Element has the
  * OptionalAdjacentFaces Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalAdjacentFaces<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexAdjacentFaces()
 {
@@ -246,8 +246,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexAdjacentFaces(
  * has the OptionalAdjacentVertices Component**.
  * @return true if the Optional Adjacent Vertices is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalAdjacentVertices<U, bool>
 VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexAdjacentVerticesEnabled() const
 {
@@ -259,8 +259,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::isPerVertexAdjacentVerticesEna
  * Vertices of the vertex. This function is available **only if the Vertex Element has the
  * OptionalAdjacentVertices Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalAdjacentVertices<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexAdjacentVertices()
 {
@@ -272,8 +272,8 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::enablePerVertexAdjacentVertice
  * Vertices of the vertex. This function is available **only if the Vertex Element has the
  * OptionalAdjacentVertices Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 vert::ReturnIfHasOptionalAdjacentVertices<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexAdjacentVertices()
 {
@@ -283,7 +283,7 @@ VertexOptionalContainer<T, VertexHasOptional<T>>::disablePerVertexAdjacentVertic
 /**
  * @brief VertexOptionalContainer::addPerVertexCustomComponent
  */
-template<class T>
+template<typename T>
 template<typename K, typename U>
 vert::ReturnIfHasCustomComponents<U, void>
 VertexOptionalContainer<T, VertexHasOptional<T>>::addPerVertexCustomComponent(

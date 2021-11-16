@@ -17,7 +17,7 @@ namespace mgp::mesh {
 class VertexContainerTriggerer {};
 
 // to shorten triggerer for Vertex class
-template<class T>
+template<typename T>
 using IfIsVertex = std::enable_if_t<std::is_base_of<VertexTriggerer, T>::value>;
 
 /**
@@ -28,7 +28,7 @@ using IfIsVertex = std::enable_if_t<std::is_base_of<VertexTriggerer, T>::value>;
  * members to the vertices, the vertex number, iterators... This class will also take care to add
  * enablers/disablers of the eventual optional components of the vertex.
  */
-template<class T>
+template<typename T>
 class Container<T, IfIsVertex<T>> :
 		public VertexOptionalContainer<T>, public VertexContainerTriggerer
 {

@@ -9,7 +9,7 @@
 
 namespace mgp::comp {
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 OptionalAdjacentFaces<Face, N, T>::OptionalAdjacentFaces()
 {
 	if constexpr (N >= 0) {
@@ -26,7 +26,7 @@ OptionalAdjacentFaces<Face, N, T>::OptionalAdjacentFaces()
 	}
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 unsigned int OptionalAdjacentFaces<Face, N, T>::adjFacesNumber() const
 {
 	if constexpr (N >= 0) {
@@ -37,42 +37,42 @@ unsigned int OptionalAdjacentFaces<Face, N, T>::adjFacesNumber() const
 	}
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 Face*& OptionalAdjacentFaces<Face, N, T>::adjFace(unsigned int i)
 {
 	assert(i < adjFacesNumber());
 	return B::contPtr->adjFaces(thisId())[i];
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 const Face* OptionalAdjacentFaces<Face, N, T>::adjFace(unsigned int i) const
 {
 	assert(i < adjFacesNumber());
 	return B::contPtr->adjFaces(thisId())[i];
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 Face*& OptionalAdjacentFaces<Face, N, T>::adjFaceMod(int i)
 {
 	unsigned int n = adjFacesNumber();
 	return B::contPtr->adjFaces(thisId())[(i % n + n) % n];
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 const Face* OptionalAdjacentFaces<Face, N, T>::adjFaceMod(int i) const
 {
 	unsigned int n = adjFacesNumber();
 	return B::contPtr->adjFaces(thisId())[(i % n + n) % n];
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 void OptionalAdjacentFaces<Face, N, T>::setAdjFace(Face* f, unsigned int i)
 {
 	assert(i < adjFacesNumber());
 	B::contPtr->adjFaces(thisId())[i] = f;
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 void OptionalAdjacentFaces<Face, N, T>::setAdjFaces(const std::vector<Face*>& list)
 {
 	if constexpr (N >= 0) {
@@ -88,14 +88,14 @@ void OptionalAdjacentFaces<Face, N, T>::setAdjFaces(const std::vector<Face*>& li
 	}
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 bool OptionalAdjacentFaces<Face, N, T>::containsAdjFace(const Face* f) const
 {
 	return std::find(B::contPtr->adjFaces.begin(), B::contPtr->adjFaces.end(), f) !=
 		   B::contPtr->adjFaces.end();
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalAdjacentFaces<Face, N, T>::resizeAdjFaces(unsigned int n)
@@ -103,14 +103,14 @@ OptionalAdjacentFaces<Face, N, T>::resizeAdjFaces(unsigned int n)
 	B::contPtr->adjFaces(thisId()).resize(n);
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalAdjacentFaces<Face, N, T>::pushAdjFace(Face* f)
 {
 	B::contPtr->adjFaces(thisId()).push_back(f);
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalAdjacentFaces<Face, N, T>::insertAdjFace(unsigned int i, Face* f)
@@ -119,7 +119,7 @@ OptionalAdjacentFaces<Face, N, T>::insertAdjFace(unsigned int i, Face* f)
 	B::contPtr->adjFaces(thisId()).insert(B::contPtr->adjFaces(thisId()).begin() + i, f);
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalAdjacentFaces<Face, N, T>::eraseAdjFace(unsigned int i)
 {
@@ -127,42 +127,42 @@ internal::ReturnIfIsVector<U, void> OptionalAdjacentFaces<Face, N, T>::eraseAdjF
 	B::contPtr->adjFaces(thisId()).erase(B::contPtr->adjFaces(thisId()).begin() + i);
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalAdjacentFaces<Face, N, T>::clearAdjFaces()
 {
 	B::contPtr->adjFaces(thisId()).clear();
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::AdjacentFaceIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaceBegin()
 {
 	return B::contPtr->adjFaces(thisId()).begin();
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::AdjacentFaceIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaceEnd()
 {
 	return B::contPtr->adjFaces(thisId()).end();
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::ConstAdjacentFaceIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaceBegin() const
 {
 	return B::contPtr->adjFaces(thisId()).begin();
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::ConstAdjacentFaceIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaceEnd() const
 {
 	return B::contPtr->adjFaces(thisId()).end();
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::AdjacentFaceRangeIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaceIterator()
 {
@@ -172,7 +172,7 @@ OptionalAdjacentFaces<Face, N, T>::adjFaceIterator()
 		&OptionalAdjacentFaces::faceEnd);
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::ConstAdjacentFaceRangeIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaceIterator() const
 {
@@ -182,13 +182,13 @@ OptionalAdjacentFaces<Face, N, T>::adjFaceIterator() const
 		&OptionalAdjacentFaces::faceEnd);
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 bool OptionalAdjacentFaces<Face, N, T>::adjFacesEnabled() const
 {
 	return B::contPtr->isAdjacentFacesEnabled();
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 void OptionalAdjacentFaces<Face, N, T>::updateFaceReferences(
 	const Face* oldBase,
 	const Face* newBase)
@@ -201,7 +201,7 @@ void OptionalAdjacentFaces<Face, N, T>::updateFaceReferences(
 	}
 }
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 void OptionalAdjacentFaces<Face, N, T>::updateFaceReferencesAfterCompact(
 	const Face*             base,
 	const std::vector<int>& newIndices)

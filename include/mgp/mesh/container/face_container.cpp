@@ -10,7 +10,7 @@ namespace mgp::mesh {
 /**
  * @brief Container::Container Empty constructor that creates an empty container of Faces.
  */
-template<class T>
+template<typename T>
 Container<T, IfIsFace<T>>::Container()
 {
 }
@@ -25,7 +25,7 @@ Container<T, IfIsFace<T>>::Container()
  *
  * @param i: the id of the face that will be returned.
  */
-template<class T>
+template<typename T>
 const typename Container<T, IfIsFace<T>>::FaceType&
 Container<T, IfIsFace<T>>::face(unsigned int i) const
 {
@@ -42,7 +42,7 @@ Container<T, IfIsFace<T>>::face(unsigned int i) const
  *
  * @param i: the id of the face that will be returned.
  */
-template<class T>
+template<typename T>
 typename Container<T, IfIsFace<T>>::FaceType&
 Container<T, IfIsFace<T>>::face(unsigned int i)
 {
@@ -58,7 +58,7 @@ Container<T, IfIsFace<T>>::face(unsigned int i)
  *
  * @return the number of non-deleted faces of the Mesh.
  */
-template<class T>
+template<typename T>
 unsigned int Container<T, IfIsFace<T>>::faceNumber() const
 {
 	return fn;
@@ -73,13 +73,13 @@ unsigned int Container<T, IfIsFace<T>>::faceNumber() const
  *
  * @return the number of all the faces contained in the Mesh.
  */
-template<class T>
+template<typename T>
 unsigned int Container<T, IfIsFace<T>>::faceContainerSize() const
 {
 	return faces.size();
 }
 
-template<class T>
+template<typename T>
 unsigned int Container<T, IfIsFace<T> >::deletedFaceNumber() const
 {
 	return faceContainerSize() - faceNumber();
@@ -95,7 +95,7 @@ unsigned int Container<T, IfIsFace<T> >::deletedFaceNumber() const
  *
  * @param i: the id of the face that will be marked as deleted.
  */
-template<class T>
+template<typename T>
 void Container<T, IfIsFace<T> >::deleteFace(unsigned int i)
 {
 	faces[i].setDeleted();
@@ -114,7 +114,7 @@ void Container<T, IfIsFace<T> >::deleteFace(unsigned int i)
  * @param id
  * @return
  */
-template<class T>
+template<typename T>
 unsigned int Container<T, IfIsFace<T> >::faceIdIfCompact(unsigned int id) const
 {
 	if (faces.size() == fn)
@@ -129,7 +129,7 @@ unsigned int Container<T, IfIsFace<T> >::faceIdIfCompact(unsigned int id) const
 	}
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsFace<T>>::FaceIterator
 Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted)
 {
@@ -144,13 +144,13 @@ Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted)
 	return FaceIterator(it, faces, jumpDeleted);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsFace<T>>::FaceIterator Container<T, IfIsFace<T>>::faceEnd()
 {
 	return FaceIterator(faces.end(), faces);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsFace<T>>::ConstFaceIterator
 Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted) const
 {
@@ -165,13 +165,13 @@ Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted) const
 		return ConstFaceIterator(faces.begin(), faces, jumpDeleted);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsFace<T>>::ConstFaceIterator Container<T, IfIsFace<T>>::faceEnd() const
 {
 	return ConstFaceIterator(faces.end(), faces);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsFace<T>>::FaceRangeIterator
 Container<T, IfIsFace<T>>::faceIterator(bool jumpDeleted)
 {
@@ -179,7 +179,7 @@ Container<T, IfIsFace<T>>::faceIterator(bool jumpDeleted)
 		*this, jumpDeleted, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsFace<T>>::ConstFaceRangeIterator
 Container<T, IfIsFace<T>>::faceIterator(bool jumpDeleted) const
 {
@@ -196,8 +196,8 @@ Container<T, IfIsFace<T>>::faceIterator(bool jumpDeleted) const
  * the same of the vertex number for each face of the container. This is because, for Faces,
  * Adjacent Faces number is tied to the number of vertices.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalAdjacentFaces<U, void>
 Container<T, IfIsFace<T>>::enablePerFaceAdjacentFaces()
 {
@@ -210,7 +210,7 @@ Container<T, IfIsFace<T>>::enablePerFaceAdjacentFaces()
 	}
 }
 
-template<class T>
+template<typename T>
 void mgp::mesh::Container<T, IfIsFace<T> >::clearFaces()
 {
 	faces.clear();
@@ -220,7 +220,7 @@ void mgp::mesh::Container<T, IfIsFace<T> >::clearFaces()
 	}
 }
 
-template<class T>
+template<typename T>
 unsigned int Container<T, IfIsFace<T>>::addFace()
 {
 	T* oldB = faces.data();
@@ -244,7 +244,7 @@ unsigned int Container<T, IfIsFace<T>>::addFace()
  * @param nFaces
  * @return the id of the first added face.
  */
-template<class T>
+template<typename T>
 unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces)
 {
 	unsigned int baseId = faces.size();
@@ -265,7 +265,7 @@ unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces
 	return baseId;
 }
 
-template<class T>
+template<typename T>
 void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
 {
 	T* oldB = faces.data();
@@ -286,7 +286,7 @@ void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
  * @return a vector that tells, for each old id, the new id of the vertex. Will contain -1 if the
  * vertex has been deleted.
  */
-template<class T>
+template<typename T>
 std::vector<int> mgp::mesh::Container<T, IfIsFace<T> >::compactFaces()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
@@ -312,7 +312,7 @@ std::vector<int> mgp::mesh::Container<T, IfIsFace<T> >::compactFaces()
 	return newIndices;
 }
 
-template<class T>
+template<typename T>
 void Container<T, IfIsFace<T> >::updateFaceReferences(const T* oldBase, const T* newBase)
 {
 	if constexpr (mgp::face::hasAdjacentFaces<T>()) {
@@ -329,7 +329,7 @@ void Container<T, IfIsFace<T> >::updateFaceReferences(const T* oldBase, const T*
 	}
 }
 
-template<class T>
+template<typename T>
 void Container<T, IfIsFace<T> >::updateFaceReferencesAfterCompact(
 	const T* base,
 	const std::vector<int>& newIndices)
@@ -348,8 +348,8 @@ void Container<T, IfIsFace<T> >::updateFaceReferencesAfterCompact(
 	}
 }
 
-template<class T>
-template<class Vertex>
+template<typename T>
+template<typename Vertex>
 void Container<T, IfIsFace<T>>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
 {
 	for (FaceType& f : faceIterator()) {
@@ -357,8 +357,8 @@ void Container<T, IfIsFace<T>>::updateVertexReferences(const Vertex* oldBase, co
 	}
 }
 
-template<class T>
-template<class Vertex>
+template<typename T>
+template<typename Vertex>
 void Container<T, IfIsFace<T>>::updateVertexReferencesAfterCompact(
 	const Vertex* base,
 	const std::vector<int>& newIndices)

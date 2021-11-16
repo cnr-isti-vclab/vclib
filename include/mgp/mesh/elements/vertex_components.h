@@ -33,10 +33,10 @@ template <typename T>
 bool constexpr hasColor() {return comp::hasColor<T>();};
 
 /** Port Coordinate class into vert namespace **/
-template<class Scalar, int N>
+template<typename Scalar, int N>
 using Coordinate = comp::Coordinate<Scalar, N>;
 
-template<class Scalar>
+template<typename Scalar>
 using Coordinate3 = comp::Coordinate3<Scalar>;
 
 using Coordinate3f = comp::Coordinate3f;
@@ -46,10 +46,10 @@ template <typename T>
 bool constexpr hasCoordinate() {return comp::hasCoordinate<T>();};
 
 /** Port Normal classes into vert namespace **/
-template<class Scalar, int N>
+template<typename Scalar, int N>
 using Normal = comp::Normal<Scalar, N>;
 
-template<class Scalar>
+template<typename Scalar>
 using Normal3 = comp::Normal3<Scalar>;
 
 using Normal3f = comp::Normal3f;

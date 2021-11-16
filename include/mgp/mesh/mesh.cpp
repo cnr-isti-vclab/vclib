@@ -10,7 +10,7 @@ namespace mgp {
 /**
  * @brief Empty constructor, constructs an empty mesh.
  */
-template<class... Args>
+template<typename... Args>
 Mesh<Args...>::Mesh()
 {
 }
@@ -21,7 +21,7 @@ Mesh<Args...>::Mesh()
  *
  * @param oth
  */
-template<class... Args>
+template<typename... Args>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		mesh::Container<Args>(
 			oth)... // call auto copy constructors for all the container elements and components
@@ -52,7 +52,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
  *
  * @param oth
  */
-template<class... Args>
+template<typename... Args>
 Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 {
 	swap(oth); //use copy ans swap idiom: this (empty) mesh is swapped with the input one
@@ -61,7 +61,7 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 /**
  * @brief clears all the Elements contained in the mesh.
  */
-template<class... Args>
+template<typename... Args>
 void Mesh<Args...>::clear()
 {
 	if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
@@ -78,7 +78,7 @@ void Mesh<Args...>::clear()
  * @brief add a new vertex into the mesh, returning the id of the added vertex.
  * @return the id of the new vertex.
  */
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex()
 {
@@ -105,7 +105,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex()
  * @param p: coordinate of the new vertex.
  * @return the id of the new vertex.
  */
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex(
 	const VCoordType& p)
@@ -127,7 +127,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex(
  * @param n: the number of vertices to add to the mesh.
  * @return the id of the first added vertex.
  */
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertices(unsigned int n)
 {
@@ -165,7 +165,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertices(uns
  * @param v: list of vertices
  * @return the id of the first added vertex.
  */
-template<class... Args>
+template<typename... Args>
 template<typename ...VC, typename U>
 mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertices(
 	const VC&... v) // parameter pack of points
@@ -181,7 +181,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertices(
 	return vid;
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::reserveVertices(unsigned int n)
 {
@@ -195,7 +195,7 @@ mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::reserveVertices(unsigne
 		updateVertexReferences(oldBase, newBase);
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::compactVertices()
 {
@@ -210,7 +210,7 @@ mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::compactVertices()
 	updateVertexReferencesAfterCompact(oldBase, newIndices);
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 {
@@ -225,14 +225,14 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 	return fid;
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U, typename... V>
 mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace(V... args)
 {
 	return addFace({args...});
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace(
 	const std::vector<VType*>& v)
@@ -246,7 +246,7 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace(
 	return fid;
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFaces(unsigned int n)
 {
@@ -261,7 +261,7 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFaces(unsigned
 	return fid;
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::reserveFaces(unsigned int n)
 {
@@ -275,7 +275,7 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::reserveFaces(unsigned int
 		updateFaceReferences(oldBase, newBase);
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::compactFaces()
 {
@@ -294,13 +294,13 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::compactFaces()
  * @brief Swaps this mesh with m2.
  * @param m2
  */
-template<class... Args>
+template<typename... Args>
 void Mesh<Args...>::swap(Mesh& m2)
 {
 	mgp::swap(*this, m2);
 }
 
-template<class... Args>
+template<typename... Args>
 Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
 {
 	swap(oth);
@@ -311,7 +311,7 @@ Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
  * Protected Members *
  *********************/
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::updateVertexReferences(
 	const typename U::VertexType* oldBase,
@@ -324,7 +324,7 @@ mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::updateVertexReferences(
 	}
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::updateVertexReferencesAfterCompact(
 	const typename U::VertexType* base,
@@ -337,7 +337,7 @@ mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::updateVertexReferencesA
 	}
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferences(
 	const typename U::FaceType* oldBase,
@@ -350,7 +350,7 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferences(
 	}
 }
 
-template<class... Args>
+template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferencesAfterCompact(
 	const typename U::FaceType* base,
@@ -363,7 +363,7 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::updateFaceReferencesAfter
 	}
 }
 
-template<class... Args>
+template<typename... Args>
 void Mesh<Args...>::updateAllOptionalContainerReferences()
 {
 	// if there is the optional vertex container, I need to update, for each vertex of the
@@ -392,7 +392,7 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
  * @param m1
  * @param m2
  */
-template<class...A>
+template<typename...A>
 inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 {
 	// container bases of verts and faces for m1 and m2

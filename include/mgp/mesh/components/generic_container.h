@@ -34,7 +34,7 @@ using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
  * - Element references (Vertex references, Face references, Adjacencies in general)
  * - Wedge components (Wedge TexCoords, Wedge Colors, ...)
  */
-template<class C, int N>
+template<typename C, int N>
 class GenericContainer
 {
 private:

@@ -9,7 +9,7 @@
 
 namespace mgp::comp {
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 OptionalAdjacentVertices<Vertex, N, T>::OptionalAdjacentVertices()
 {
 	if constexpr (N >= 0) {
@@ -26,7 +26,7 @@ OptionalAdjacentVertices<Vertex, N, T>::OptionalAdjacentVertices()
 	}
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 unsigned int OptionalAdjacentVertices<Vertex, N, T>::adjVerticesNumber() const
 {
 	if constexpr (N >= 0) {
@@ -37,42 +37,42 @@ unsigned int OptionalAdjacentVertices<Vertex, N, T>::adjVerticesNumber() const
 	}
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVert(unsigned int i)
 {
 	assert(i < adjVerticesNumber());
 	return B::contPtr->adjVerts(thisId())[i];
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVert(unsigned int i) const
 {
 	assert(i < adjVerticesNumber());
 	return B::contPtr->adjVerts(thisId())[i];
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertMod(int i)
 {
 	unsigned int n = adjVerticesNumber();
 	return B::contPtr->adjVerts(thisId())[(i % n + n) % n];
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertMod(int i) const
 {
 	unsigned int n = adjVerticesNumber();
 	return B::contPtr->adjVerts(thisId())[(i % n + n) % n];
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertex(Vertex* f, unsigned int i)
 {
 	assert(i < adjVerticesNumber());
 	B::contPtr->adjVerts(thisId())[i] = f;
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertices(const std::vector<Vertex*>& list)
 {
 	if constexpr (N >= 0) {
@@ -88,14 +88,14 @@ void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertices(const std::vector<Ve
 	}
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 bool OptionalAdjacentVertices<Vertex, N, T>::containsAdjVertex(const Vertex* v) const
 {
 	return std::find(B::contPtr->adjVerts.begin(), B::contPtr->adjVerts.end(), v) !=
 		   B::contPtr->adjVerts.end();
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalAdjacentVertices<Vertex, N, T>::resizeAdjVertices(unsigned int n)
@@ -103,14 +103,14 @@ OptionalAdjacentVertices<Vertex, N, T>::resizeAdjVertices(unsigned int n)
 	B::contPtr->adjVerts(thisId()).resize(n);
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalAdjacentVertices<Vertex, N, T>::pushAdjVertex(Vertex* f)
 {
 	B::contPtr->adjVerts(thisId()).push_back(f);
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalAdjacentVertices<Vertex, N, T>::insertAdjVertex(unsigned int i, Vertex* f)
@@ -119,7 +119,7 @@ OptionalAdjacentVertices<Vertex, N, T>::insertAdjVertex(unsigned int i, Vertex* 
 	B::contPtr->adjVerts(thisId()).insert(B::contPtr->adjVerts(thisId()).begin() + i, f);
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalAdjacentVertices<Vertex, N, T>::eraseAdjVertex(unsigned int i)
@@ -128,42 +128,42 @@ OptionalAdjacentVertices<Vertex, N, T>::eraseAdjVertex(unsigned int i)
 	B::contPtr->adjVerts(thisId()).erase(B::contPtr->adjVerts(thisId()).begin() + i);
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalAdjacentVertices<Vertex, N, T>::clearAdjVertices()
 {
 	B::contPtr->adjVerts(thisId()).clear();
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::VertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexBegin()
 {
 	return B::contPtr->adjVerts(thisId()).begin();
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::VertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd()
 {
 	return B::contPtr->adjVerts(thisId()).end();
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexBegin() const
 {
 	return B::contPtr->adjVerts(thisId()).begin();
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd() const
 {
 	return B::contPtr->adjVerts(thisId()).end();
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::VertexRangeIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexIterator()
 {
@@ -173,7 +173,7 @@ OptionalAdjacentVertices<Vertex, N, T>::adjVertexIterator()
 		&OptionalAdjacentVertices::vertexEnd);
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexRangeIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexIterator() const
 {
@@ -183,7 +183,7 @@ OptionalAdjacentVertices<Vertex, N, T>::adjVertexIterator() const
 		&OptionalAdjacentVertices::vertexEnd);
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
@@ -196,7 +196,7 @@ void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferences(
 	}
 }
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)

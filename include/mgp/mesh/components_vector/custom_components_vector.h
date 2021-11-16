@@ -15,7 +15,7 @@
 namespace mgp::internal {
 
 // to shorten triggerer for Vertex class
-template<class T>
+template<typename T>
 using IfHasCustomProp = std::enable_if_t<comp::hasCustomComponents<T>()>;
 
 template<typename, typename = void>

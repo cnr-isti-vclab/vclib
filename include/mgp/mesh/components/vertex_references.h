@@ -14,7 +14,7 @@ class VertexReferencesTriggerer
 {
 };
 
-template<class Vertex, int N>
+template<typename Vertex, int N>
 class VertexReferences : protected ElementReferences<Vertex, N>, public VertexReferencesTriggerer
 {
 	using Base = ElementReferences<Vertex, N>;
@@ -102,7 +102,7 @@ protected:
 	}
 };
 
-template<class Vertex>
+template<typename Vertex>
 class TriVertexReferences : public VertexReferences<Vertex, 3>
 {
 private:

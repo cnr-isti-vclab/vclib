@@ -28,7 +28,7 @@ class VertexTriggerer
 {
 };
 
-template<class... Args>
+template<typename... Args>
 class Vertex : public VertexTriggerer, public Args...
 {
 	template<typename, typename>

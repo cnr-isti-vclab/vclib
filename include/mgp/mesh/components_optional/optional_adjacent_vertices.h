@@ -35,7 +35,7 @@ class OptionalAdjacentVerticesTriggerer
 {
 };
 
-template<class Vertex, int N, typename T>
+template<typename Vertex, int N, typename T>
 class OptionalAdjacentVertices :
 		public OptionalAdjacentVerticesTriggerer,
 		public virtual OptionalInfo<T>

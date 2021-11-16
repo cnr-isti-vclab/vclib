@@ -14,7 +14,7 @@ class AdjacentVerticesTriggerer
 {
 };
 
-template<class Vertex, int N>
+template<typename Vertex, int N>
 class AdjacentVertices : protected ElementReferences<Vertex, N>, public AdjacentVerticesTriggerer
 {
 	using Base = ElementReferences<Vertex, N>;

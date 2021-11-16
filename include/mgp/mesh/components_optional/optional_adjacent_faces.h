@@ -35,7 +35,7 @@ class OptionalAdjacentFacesTriggerer
 {
 };
 
-template<class Face, int N, typename T>
+template<typename Face, int N, typename T>
 class OptionalAdjacentFaces : public OptionalAdjacentFacesTriggerer, public virtual OptionalInfo<T>
 {
 	template<typename, typename>

@@ -7,15 +7,15 @@
 
 namespace mgp {
 
-template<class Scalar, int N>
-template<class S>
+template<typename Scalar, int N>
+template<typename S>
 Point<Scalar, N>::Point(const Point<S, N>& p1)
 {
 	for (size_t i = 0; i < p.size(); ++i)
 		p(i) = p1(i);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, 1, N>& v)
 {
 	p << v;
@@ -25,7 +25,7 @@ Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, 1, N>& v)
  * @brief Point::isDegenerate returns true if at least one of its components is NaN or inf.
  * @return true if the point is degenerate, false otherwise.
  */
-template<class Scalar, int N>
+template<typename Scalar, int N>
 bool Point<Scalar, N>::isDegenerate() const
 {
 	for (size_t i = 0; i < p.size(); ++i)
@@ -34,7 +34,7 @@ bool Point<Scalar, N>::isDegenerate() const
 	return false;
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 template<int U>
 internal::ReturnIfIsPoint3< U, Point<Scalar, N> >
 Point<Scalar, N>::cross(const Point<Scalar, N>& p1) const
@@ -42,43 +42,43 @@ Point<Scalar, N>::cross(const Point<Scalar, N>& p1) const
 	return p.cross(p1.p);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Scalar Point<Scalar, N>::norm() const
 {
 	return p.norm();
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Scalar Point<Scalar, N>::squaredNorm() const
 {
 	return p.squaredNorm();
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 unsigned int Point<Scalar, N>::size() const
 {
 	return p.size();
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 void Point<Scalar, N>::setConstant(Scalar s)
 {
 	p.setConstant(s);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 void Point<Scalar, N>::setZero()
 {
 	p.setZero();
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 void Point<Scalar, N>::setOnes()
 {
 	p.setOnes();
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 void Point<Scalar, N>::normalize()
 {
 	if (norm() > 0) {
@@ -86,25 +86,25 @@ void Point<Scalar, N>::normalize()
 	}
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Scalar& Point<Scalar, N>::operator()(unsigned int i)
 {
 	return p(i);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 bool Point<Scalar, N>::operator==(const Point& p1) const
 {
 	return p == p1.p;
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 bool Point<Scalar, N>::operator!=(const Point& p1) const
 {
 	return p != p1.p;
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 bool Point<Scalar, N>::operator<(const Point& p1) const
 {
 	unsigned int i = 0;
@@ -114,84 +114,84 @@ bool Point<Scalar, N>::operator<(const Point& p1) const
 	return i != DIM && p[i] < p1.p[i];
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator+(const Scalar& s) const
 {
 	return Point<Scalar, N>(p + s);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator+(const Point<Scalar, N>& p1) const
 {
 	return Point<Scalar, N>(p + p1.p);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator-(const Scalar& s) const
 {
 	return Point<Scalar, N>(p - s);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator-(const Point<Scalar, N>& p1) const
 {
 	return Point<Scalar, N>(p - p1.p);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator*(const Scalar& s) const
 {
 	return Point<Scalar, N>(p * s);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Scalar Point<Scalar, N>::operator*(const Point<Scalar, N>& p1) const
 {
 	return dot(p1);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator/(const Scalar& s) const
 {
 	return Point<Scalar, N>(p / s);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N>& Point<Scalar, N>::operator+=(const Point<Scalar, N>& p1)
 {
 	p += p1.p;
 	return *this;
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N>& Point<Scalar, N>::operator-=(const Point<Scalar, N>& p1)
 {
 	p -= p1.p;
 	return *this;
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N>& Point<Scalar, N>::operator*=(const Scalar& s)
 {
 	p *= s;
 	return *this;
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Point<Scalar, N>& Point<Scalar, N>::operator/=(const Scalar& s)
 {
 	p /= s;
 	return *this;
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 const Scalar& Point<Scalar, N>::operator()(unsigned int i) const
 {
 	return p(i);
 }
 
-template<class Scalar, int N>
-template<class S>
+template<typename Scalar, int N>
+template<typename S>
 Scalar Point<Scalar, N>::dot(const Point<S, N>& p1) const
 {
 	if constexpr (std::is_same<Scalar, S>::value) {
@@ -203,8 +203,8 @@ Scalar Point<Scalar, N>::dot(const Point<S, N>& p1) const
 	}
 }
 
-template<class Scalar, int N>
-template<class S>
+template<typename Scalar, int N>
+template<typename S>
 Scalar Point<Scalar, N>::angle(const Point<S, N>& p1) const
 {
 	Scalar w = p.norm() * p1.p.norm();
@@ -218,19 +218,19 @@ Scalar Point<Scalar, N>::angle(const Point<S, N>& p1) const
 	return (Scalar) acos(t);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Scalar Point<Scalar, N>::operator[](size_t i) const
 {
 	return p(i);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 Scalar& Point<Scalar, N>::operator[](size_t i)
 {
 	return p(i);
 }
 
-template<class Scalar, int N>
+template<typename Scalar, int N>
 std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
 {
 	out << p1.p;

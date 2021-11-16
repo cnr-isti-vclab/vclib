@@ -14,7 +14,7 @@ class AdjacentFacesTriggerer
 {
 };
 
-template<class Face, int N>
+template<typename Face, int N>
 /**
  * @brief The AdjacentFaces class is a container of Face references. It could be used by any
  * Element to save adjacencies information (also the Face element itself).

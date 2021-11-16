@@ -17,7 +17,7 @@ namespace mgp::mesh {
 class FaceContainerTriggerer {};
 
 // to shorten triggerer for Vertex class
-template<class T>
+template<typename T>
 using IfIsFace = std::enable_if_t<std::is_base_of<FaceTriggerer, T>::value>;
 
 /**
@@ -28,7 +28,7 @@ using IfIsFace = std::enable_if_t<std::is_base_of<FaceTriggerer, T>::value>;
  * to the faces, the face number, iterators... This class will also take care to add
  * enablers/disablers of the eventual optional components of the face.
  */
-template<class T>
+template<typename T>
 class Container<T, IfIsFace<T>> :
 		public FaceOptionalContainer<T>, public FaceContainerTriggerer
 {

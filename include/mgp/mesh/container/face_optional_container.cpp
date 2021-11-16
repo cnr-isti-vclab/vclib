@@ -13,8 +13,8 @@ namespace mgp::mesh {
  * component**.
  * @return true if the Optional Color is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalColor<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceColorEnabled() const
 {
@@ -25,8 +25,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceColorEnabled() const
  * @brief Container::enableFaceColor enable the Optional Color of the face.
  * This function is available **only if the Face Element has the OptionalColor Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalColor<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceColor()
 {
@@ -37,8 +37,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceColor()
  * @brief Container::disableFaceColor disables the Optional Color of the face.
  * This function is available **only if the Face Element has the OptionalColor Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalColor<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceColor()
 {
@@ -51,8 +51,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceColor()
  * OptionalMutableBitFlags Component**.
  * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalMutableBitFlags<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceMutableBitFlagsEnabled() const
 {
@@ -63,8 +63,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceMutableBitFlagsEnabled() 
  * @brief Container::enableFaceMutableFlags enable the Optional Mutable Flags of the face.
  * This function is available **only if the Face Element has the OptionalMutableFlags Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalMutableBitFlags<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceMutableBitFlags()
 {
@@ -76,8 +76,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceMutableBitFlags()
  * This function is available **only if the Face Element has the OptionalMutableBitFlags
  * Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalMutableBitFlags<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceMutableBitFlags()
 {
@@ -90,8 +90,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceMutableBitFlags()
  * Component**.
  * @return true if the Optional Normal is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalNormal<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceNormalEnabled() const
 {
@@ -102,8 +102,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceNormalEnabled() const
  * @brief Container::enableFaceNormal enable the Optional Normal of the face.
  * This function is available **only if the Face Element has the OptionalNormal Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalNormal<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceNormal()
 {
@@ -114,8 +114,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceNormal()
  * @brief Container::disableFaceNormal disables the Optional Normal of the face.
  * This function is available **only if the Face Element has the OptionalNormal Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalNormal<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceNormal()
 {
@@ -128,8 +128,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceNormal()
  * Component**.
  * @return true if the Optional Scalar is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalScalar<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceScalarEnabled() const
 {
@@ -139,8 +139,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceScalarEnabled() const
  * @brief Container::enableFaceScalar enable the Optional Scalar of the face.
  * This function is available **only if the Face Element has the OptionalScalar Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalScalar<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceScalar()
 {
@@ -151,8 +151,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceScalar()
  * @brief Container::disableFaceScalar disables the Optional Scalar of the face.
  * This function is available **only if the Face Element has the OptionalScalar Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalScalar<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceScalar()
 {
@@ -165,8 +165,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceScalar()
  * OptionalAdjacentFaces Component**.
  * @return true if the Optional AdjacentFaces is enabled, false otherwise.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalAdjacentFaces<U, bool>
 FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceAdjacentFacesEnabled() const
 {
@@ -177,8 +177,8 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::isPerFaceAdjacentFacesEnabled() co
  * @brief Container::enableFaceAdjacentFaces enable the Optional Adjacent Faces of the face.
  * This function is available **only if the Face Element has the OptionalAdjacentFaces Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalAdjacentFaces<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceAdjacentFaces()
 {
@@ -189,15 +189,15 @@ FaceOptionalContainer<T, FaceHasOptional<T>>::enablePerFaceAdjacentFaces()
  * @brief Container::disableFaceAdjacentFaces disables the Optional Adjacent Faces of the face.
  * This function is available **only if the Face Element has the OptionalAdjacentFaces Component**.
  */
-template<class T>
-template<class U>
+template<typename T>
+template<typename U>
 face::ReturnIfHasOptionalAdjacentFaces<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::disablePerFaceAdjacentFaces()
 {
 	optionalPropVector.disableAdjacentFaces();
 }
 
-template<class T>
+template<typename T>
 template<typename K, typename U>
 face::ReturnIfHasCustomComponents<U, void>
 FaceOptionalContainer<T, FaceHasOptional<T>>::addPerFaceCustomComponent(const std::string& name)

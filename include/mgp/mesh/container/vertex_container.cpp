@@ -10,7 +10,7 @@ namespace mgp::mesh {
 /**
  * @brief Container::Container Empty constructor that creates an empty container of Vertices.
  */
-template<class T>
+template<typename T>
 Container<T, IfIsVertex<T>>::Container()
 {
 }
@@ -25,7 +25,7 @@ Container<T, IfIsVertex<T>>::Container()
  *
  * @param i: the id of the vertex that will be returned.
  */
-template<class T>
+template<typename T>
 const typename Container<T, IfIsVertex<T>>::VertexType&
 Container<T, IfIsVertex<T>>::vertex(unsigned int i) const
 {
@@ -42,7 +42,7 @@ Container<T, IfIsVertex<T>>::vertex(unsigned int i) const
  *
  * @param i: the id of the vertex that will be returned.
  */
-template<class T>
+template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexType&
 Container<T, IfIsVertex<T>>::vertex(unsigned int i)
 {
@@ -58,7 +58,7 @@ Container<T, IfIsVertex<T>>::vertex(unsigned int i)
  *
  * @return the number of non-deleted vertices of the Mesh.
  */
-template<class T>
+template<typename T>
 unsigned int Container<T, IfIsVertex<T>>::vertexNumber() const
 {
 	return vn;
@@ -73,13 +73,13 @@ unsigned int Container<T, IfIsVertex<T>>::vertexNumber() const
  *
  * @return the number of all the vertices contained in the Mesh.
  */
-template<class T>
+template<typename T>
 unsigned int Container<T, IfIsVertex<T> >::vertexContainerSize() const
 {
 	return vertices.size();
 }
 
-template<class T>
+template<typename T>
 unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::deletedVertexNumber() const
 {
 	return vertexContainerSize() - vertexNumber();
@@ -95,7 +95,7 @@ unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::deletedVertexNumber() cons
  *
  * @param i: the id of the vertex that will be marked as deleted.
  */
-template<class T>
+template<typename T>
 void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
 {
 	vertices[i].setDeleted();
@@ -114,7 +114,7 @@ void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
  * @param id
  * @return
  */
-template<class T>
+template<typename T>
 unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::vertexIdIfCompact(unsigned int id) const
 {
 	if (vertices.size() == vn)
@@ -129,7 +129,7 @@ unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::vertexIdIfCompact(unsigned
 	}
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 {
@@ -144,13 +144,13 @@ Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 	return VertexIterator(it, vertices, jumpDeleted);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexIterator Container<T, IfIsVertex<T>>::vertexEnd()
 {
 	return VertexIterator(vertices.end(), vertices);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsVertex<T>>::ConstVertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted) const
 {
@@ -165,14 +165,14 @@ Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted) const
 		return ConstVertexIterator(vertices.begin(), vertices, jumpDeleted);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsVertex<T>>::ConstVertexIterator
 Container<T, IfIsVertex<T>>::vertexEnd() const
 {
 	return ConstVertexIterator(vertices.end(), vertices);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexRangeIterator
 Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted)
 {
@@ -180,7 +180,7 @@ Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted)
 		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
 }
 
-template<class T>
+template<typename T>
 typename Container<T, IfIsVertex<T>>::ConstVertexRangeIterator
 Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted) const
 {
@@ -188,7 +188,7 @@ Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted) const
 		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
 }
 
-template<class T>
+template<typename T>
 void Container<T, IfIsVertex<T> >::clearVertices()
 {
 	vertices.clear();
@@ -198,7 +198,7 @@ void Container<T, IfIsVertex<T> >::clearVertices()
 	}
 }
 
-template<class T>
+template<typename T>
 unsigned int Container<T, IfIsVertex<T>>::addVertex()
 {
 	T* oldB = vertices.data();
@@ -222,7 +222,7 @@ unsigned int Container<T, IfIsVertex<T>>::addVertex()
  * @param nVertices
  * @return the id of the first added vertex.
  */
-template<class T>
+template<typename T>
 unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 {
 	unsigned int baseId = vertices.size();
@@ -243,7 +243,7 @@ unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 	return baseId;
 }
 
-template<class T>
+template<typename T>
 void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {
 	T* oldB = vertices.data();
@@ -264,7 +264,7 @@ void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
  * @return a vector that tells, for each old id, the new id of the vertex. Will contain -1 if the
  * vertex has been deleted.
  */
-template<class T>
+template<typename T>
 std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
@@ -290,7 +290,7 @@ std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 	return newIndices;
 }
 
-template<class T>
+template<typename T>
 void Container<T, IfIsVertex<T> >::updateVertexReferences(const T* oldBase, const T* newBase)
 {
 	if constexpr (mgp::vert::hasAdjacentVertices<T>()) {
@@ -307,7 +307,7 @@ void Container<T, IfIsVertex<T> >::updateVertexReferences(const T* oldBase, cons
 	}
 }
 
-template<class T>
+template<typename T>
 void Container<T, IfIsVertex<T> >::updateVertexReferencesAfterCompact(
 	const T* base,
 	const std::vector<int>& newIndices)
@@ -326,7 +326,7 @@ void Container<T, IfIsVertex<T> >::updateVertexReferencesAfterCompact(
 	}
 }
 
-template<class T>
+template<typename T>
 template<typename  Face>
 void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, const Face* newBase)
 {
@@ -344,8 +344,8 @@ void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, cons
 	}
 }
 
-template<class T>
-template<class Face>
+template<typename T>
+template<typename Face>
 void Container<T, IfIsVertex<T>>::updateFaceReferencesAfterCompact(
 	const Face* base,
 	const std::vector<int>& newIndices)

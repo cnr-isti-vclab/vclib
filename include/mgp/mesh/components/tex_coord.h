@@ -14,7 +14,7 @@ class TexCoordTriggerer
 {
 };
 
-template<class Scalar>
+template<typename Scalar>
 class TexCoord : public TexCoordTriggerer
 {
 public:

@@ -28,7 +28,7 @@ class FaceTriggerer
 {
 };
 
-template<class... Args>
+template<typename... Args>
 class Face : public FaceTriggerer, public Args...
 {
 	template<typename, typename>

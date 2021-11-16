@@ -9,19 +9,19 @@
 
 namespace mgp::comp {
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 OptionalWedgeTexCoords<Scalar, N, T>::OptionalWedgeTexCoords()
 {
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 mgp::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoord(unsigned int i)
 {
 	assert(i < wedgeTexCoordsNumber());
 	return B::contPtr->wedgeTexCoords(thisId())[i];
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 const mgp::TexCoord<Scalar>&
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoord(unsigned int i) const
 {
@@ -29,21 +29,21 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoord(unsigned int i) const
 	return B::contPtr->wedgeTexCoords(thisId())[i];
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 mgp::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordMod(int i)
 {
 	unsigned int n = wedgeTexCoordsNumber();
 	return B::contPtr->wedgeTexCoords(thisId())[(i % n + n) % n];
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 const mgp::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordMod(int i) const
 {
 	unsigned int n = wedgeTexCoordsNumber();
 	return B::contPtr->wedgeTexCoords(thisId())[(i % n + n) % n];
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 void OptionalWedgeTexCoords<Scalar, N, T>::setWedgeTexCoord(
 	const mgp::TexCoord<Scalar>& t,
 	unsigned int                 i)
@@ -52,7 +52,7 @@ void OptionalWedgeTexCoords<Scalar, N, T>::setWedgeTexCoord(
 	B::contPtr->wedgeTexCoords(thisId())[i] = t;
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 void OptionalWedgeTexCoords<Scalar, N, T>::setWedgeTexCoords(
 	const std::vector<mgp::TexCoord<Scalar>>& list)
 {
@@ -69,35 +69,35 @@ void OptionalWedgeTexCoords<Scalar, N, T>::setWedgeTexCoords(
 	}
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordBegin()
 {
 	return B::contPtr->wedgeTexCoords(thisId()).begin();
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordEnd()
 {
 	return B::contPtr->wedgeTexCoords(thisId()).end();
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::ConstWedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordBegin() const
 {
 	return B::contPtr->wedgeTexCoords(thisId()).begin();
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::ConstWedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordEnd() const
 {
 	return B::contPtr->wedgeTexCoords(thisId()).end();
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsRangeIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator()
 {
@@ -107,7 +107,7 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator()
 		&OptionalWedgeTexCoords::wedgeTexCoordEnd);
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::ConstWedgeTexCoordsRangeIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator() const
 {
@@ -117,13 +117,13 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator() const
 		&OptionalWedgeTexCoords::wedgeTexCoordEnd);
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 bool OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordsEnabled() const
 {
 	return B::contPtr->isWedgeTexCoordsEnabled();
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 unsigned int OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordsNumber() const
 {
 	if constexpr (N >= 0) {
@@ -134,7 +134,7 @@ unsigned int OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordsNumber() const
 	}
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalWedgeTexCoords<Scalar, N, T>::resizeWedgeTexCoords(unsigned int n)
@@ -142,7 +142,7 @@ OptionalWedgeTexCoords<Scalar, N, T>::resizeWedgeTexCoords(unsigned int n)
 	B::contPtr->wedgeTexCoords(thisId()).resize(n);
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalWedgeTexCoords<Scalar, N, T>::pushWedgeTexCoord(const mgp::TexCoord<Scalar>& t)
@@ -150,7 +150,7 @@ OptionalWedgeTexCoords<Scalar, N, T>::pushWedgeTexCoord(const mgp::TexCoord<Scal
 	B::contPtr->wedgeTexCoords(thisId()).push_back(t);
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalWedgeTexCoords<Scalar, N, T>::insertWedgeTexCoord(
 	unsigned int                 i,
@@ -161,7 +161,7 @@ internal::ReturnIfIsVector<U, void> OptionalWedgeTexCoords<Scalar, N, T>::insert
 		B::contPtr->wedgeTexCoords(thisId()).begin() + i, t);
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalWedgeTexCoords<Scalar, N, T>::eraseWedgeTexCoord(unsigned int i)
@@ -170,7 +170,7 @@ OptionalWedgeTexCoords<Scalar, N, T>::eraseWedgeTexCoord(unsigned int i)
 	B::contPtr->wedgeTexCoords(thisId()).erase(B::contPtr->wedgeTexCoords(thisId()).begin() + i);
 }
 
-template<class Scalar, int N, typename T>
+template<typename Scalar, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalWedgeTexCoords<Scalar, N, T>::clearWedgeTexCoord()
 {

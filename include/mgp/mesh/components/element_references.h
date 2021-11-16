@@ -18,7 +18,7 @@ namespace mgp::comp {
  *
  * Its major use is for adjacencies.
  */
-template<class Elem, int N>
+template<typename Elem, int N>
 class ElementReferences : protected GenericContainer<Elem*, N>
 {
 private:

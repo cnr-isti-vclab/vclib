@@ -9,7 +9,7 @@
 
 namespace mgp::comp {
 
-template<class Elem, int N>
+template<typename Elem, int N>
 ElementReferences<Elem, N>::ElementReferences() : Base()
 {
 	if constexpr (N >= 0) {
@@ -24,7 +24,7 @@ ElementReferences<Elem, N>::ElementReferences() : Base()
 	}
 }
 
-template<class Elem, int N>
+template<typename Elem, int N>
 void ElementReferences<Elem, N>::updateElementReferences(const Elem* oldBase, const Elem* newBase)
 {
 	for (unsigned int j = 0; j < Base::size(); ++j) {
@@ -35,7 +35,7 @@ void ElementReferences<Elem, N>::updateElementReferences(const Elem* oldBase, co
 	}
 }
 
-template<class Elem, int N>
+template<typename Elem, int N>
 void ElementReferences<Elem, N>::updateElementReferencesAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices)

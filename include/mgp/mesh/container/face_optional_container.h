@@ -16,7 +16,7 @@ namespace mgp::mesh {
 class FaceOptionalContainerTriggerer {};
 
 // to shorten triggerer for Vertex class
-template<class T>
+template<typename T>
 using FaceHasOptional = std::enable_if_t<comp::hasOptionalInfo<T>()>;
 
 template<typename, typename = void>

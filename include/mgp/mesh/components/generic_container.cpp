@@ -11,7 +11,7 @@ namespace mgp::comp {
  * @brief Empty constructor of the container. If the container is dynamic, is size is 0. When the
  * container is static, the size is N and its elements are initialized with their empty constructor.
  */
-template<class C, int N>
+template<typename C, int N>
 GenericContainer<C, N>::GenericContainer()
 {
 }
@@ -20,7 +20,7 @@ GenericContainer<C, N>::GenericContainer()
  * @brief Returns the size of the container, which is N if the container is static.
  * @return the size of the container.
  */
-template<class C, int N>
+template<typename C, int N>
 unsigned int GenericContainer<C, N>::size() const
 {
 	if constexpr (N >= 0) {
@@ -36,14 +36,14 @@ unsigned int GenericContainer<C, N>::size() const
  * @param i: the position of the element.
  * @return a reference of the element at position i.
  */
-template<class C, int N>
+template<typename C, int N>
 C& GenericContainer<C, N>::at(unsigned int i)
 {
 	assert(i < size());
 	return container[i];
 }
 
-template<class C, int N>
+template<typename C, int N>
 const C& GenericContainer<C, N>::at(unsigned int i) const
 {
 	assert(i < size());
@@ -59,28 +59,28 @@ const C& GenericContainer<C, N>::at(unsigned int i) const
  * @param i: the position of the element.
  * @return a reference of the element at position i % size().
  */
-template<class C, int N>
+template<typename C, int N>
 C& GenericContainer<C, N>::atMod(int i)
 {
 	unsigned int n = size();
 	return container[(i % n + n) % n];
 }
 
-template<class C, int N>
+template<typename C, int N>
 const C& GenericContainer<C, N>::atMod(int i) const
 {
 	unsigned int n = size();
 	return container[(i % n + n) % n];
 }
 
-template<class C, int N>
+template<typename C, int N>
 void GenericContainer<C, N>::set(const C& e, unsigned int i)
 {
 	assert(i < size());
 	container[i] = e;
 }
 
-template<class C, int N>
+template<typename C, int N>
 void GenericContainer<C, N>::set(const std::vector<C>& list)
 {
 	if constexpr (N >= 0) {
@@ -96,27 +96,27 @@ void GenericContainer<C, N>::set(const std::vector<C>& list)
 	}
 }
 
-template<class C, int N>
+template<typename C, int N>
 bool GenericContainer<C, N>::contains(const C& e) const
 {
 	return std::find(container.begin(), container.end(), e) != container.end();
 }
 
-template<class C, int N>
+template<typename C, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::resize(unsigned int n)
 {
 	container.resize(n);
 }
 
-template<class C, int N>
+template<typename C, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::pushBack(const C& v)
 {
 	container.push_back(v);
 }
 
-template<class C, int N>
+template<typename C, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::insert(unsigned int i, const C& v)
 {
@@ -124,7 +124,7 @@ internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::insert(unsigned int 
 	container.insert(container.begin() + i, v);
 }
 
-template<class C, int N>
+template<typename C, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::erase(unsigned int i)
 {
@@ -132,44 +132,44 @@ internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::erase(unsigned int i
 	container.erase(container.begin() + i);
 }
 
-template<class C, int N>
+template<typename C, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::clear()
 {
 	container.clear();
 }
 
-template<class C, int N>
+template<typename C, int N>
 typename GenericContainer<C, N>::GCIterator GenericContainer<C, N>::begin()
 {
 	return container.begin();
 }
 
-template<class C, int N>
+template<typename C, int N>
 typename GenericContainer<C, N>::GCIterator GenericContainer<C, N>::end()
 {
 	return container.end();
 }
 
-template<class C, int N>
+template<typename C, int N>
 typename GenericContainer<C, N>::ConstGCIterator GenericContainer<C, N>::begin() const
 {
 	return container.begin();
 }
 
-template<class C, int N>
+template<typename C, int N>
 typename GenericContainer<C, N>::ConstGCIterator GenericContainer<C, N>::end() const
 {
 	return container.end();
 }
 
-template<class C, int N>
+template<typename C, int N>
 typename GenericContainer<C, N>::GCRangeIterator GenericContainer<C, N>::rangeIterator()
 {
 	return GCRangeIterator(*this, &GenericContainer::begin, &GenericContainer::end);
 }
 
-template<class C, int N>
+template<typename C, int N>
 typename GenericContainer<C, N>::ConstGCRangeIterator GenericContainer<C, N>::rangeIterator() const
 {
 	return ConstGCRangeIterator(*this, &GenericContainer::begin, &GenericContainer::end);

@@ -21,7 +21,7 @@ namespace mgp::mesh {
  * a member string and getter and setter members, and use this class as template argument of the
  * mesh.
  */
-template<class T, typename = void>
+template<typename T, typename = void>
 class Container : public T
 {
 };

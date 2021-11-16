@@ -16,7 +16,7 @@ namespace mgp::mesh {
 class VertexOptionalContainerTriggerer {};
 
 // to shorten triggerer for Vertex class
-template<class T>
+template<typename T>
 using VertexHasOptional = std::enable_if_t<comp::hasOptionalInfo<T>()>;
 
 template<typename, typename = void>
