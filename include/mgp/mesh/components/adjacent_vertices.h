@@ -85,8 +85,8 @@ public:
 	AdjacentVertexIterator           adjVertexEnd() { return Base::end(); }
 	ConstAdjacentVertexIterator      adjVertexBegin() const { return Base::begin(); }
 	ConstAdjacentVertexIterator      adjVertexEnd() const { return Base::end(); }
-	AdjacentVertexRangeIterator      adjVertexIterator() { return Base::rangeIterator(); }
-	ConstAdjacentVertexRangeIterator adjVertexIterator() const { return Base::rangeIterator(); }
+	AdjacentVertexRangeIterator      adjVertices() { return Base::rangeIterator(); }
+	ConstAdjacentVertexRangeIterator adjVertices() const { return Base::rangeIterator(); }
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)

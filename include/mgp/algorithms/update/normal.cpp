@@ -74,7 +74,7 @@ void normalizePerFaceNormals(MeshType& m)
 
 	using FaceType = typename MeshType::Face;
 
-	for (FaceType& f : m.faceIterator()) {
+	for (FaceType& f : m.faces()) {
 		f.normal().normalize();
 	}
 }
@@ -88,12 +88,12 @@ void updatePerFaceNormals(MeshType& m, bool normalize)
 
 	using FaceType = typename MeshType::Face;
 	if constexpr (mgp::hasTriangles<MeshType>()) {
-		for (FaceType& f : m.faceIterator()) {
+		for (FaceType& f : m.faces()) {
 			f.normal() = triangleNormal(f);
 		}
 	}
 	else {
-		for (FaceType& f : m.faceIterator()) {
+		for (FaceType& f : m.faces()) {
 			f.normal() = polygonNormal(f);
 		}
 	}

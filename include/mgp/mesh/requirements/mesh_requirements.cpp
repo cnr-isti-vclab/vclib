@@ -44,7 +44,7 @@ bool isTriangleMesh(const MeshType& m)
 	}
 	else {
 		using F = typename MeshType::Face;
-		for (const F& f : m.faceIterator()){
+		for (const F& f : m.faces()){
 			if (f.vertexNumber() != 3)
 				return false;
 		}
@@ -73,7 +73,7 @@ bool isQuadMesh(const MeshType& m)
 	}
 	else {
 		using F = typename MeshType::FaceType;
-		for (const F& f : m.faceIterator()){
+		for (const F& f : m.faces()){
 			if (f.vertexNumber() != 4)
 				return false;
 		}
@@ -97,7 +97,7 @@ void requireTriangleMesh(const MeshType& m)
 	if constexpr (!hasTriangles<MeshType>()) {
 		requireFaces<MeshType>();
 		using F = typename MeshType::Face;
-		for (const F& f : m.faceIterator()){
+		for (const F& f : m.faces()){
 			if (f.vertexNumber() != 3){
 				throw MissingTriangularRequirementException("Triangle Mesh Required");
 			}
@@ -111,7 +111,7 @@ void requireQuadMesh(const MeshType& m)
 	if constexpr (!hasQuads<MeshType>()) {
 		requireFaces<MeshType>();
 		using F = typename MeshType::Face;
-		for (const F& f : m.faceIterator()){
+		for (const F& f : m.faces()){
 			if (f.vertexNumber() != 4){
 				throw MissingQuadRequirementException("Quad Mesh Required");
 			}

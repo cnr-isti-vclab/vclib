@@ -40,7 +40,7 @@ void accumulateLaplacianInfo(
 
 	ScalarType weight = 1.0f;
 
-	for (const FaceType& f : m.faceIterator()) {
+	for (const FaceType& f : m.faces()) {
 		for (int j = 0; j < f.vertexNumber(); ++j) {
 			if (!f.isEdgeOnBorder(j)) {
 				const VertexType& v0 = *f.v(j);
@@ -62,7 +62,7 @@ void accumulateLaplacianInfo(
 		}
 	}
 	// si azzaera i dati per i vertici di bordo
-	for (const FaceType& f : m.faceIterator()) {
+	for (const FaceType& f : m.faces()) {
 		for (int j = 0; j < f.vertexNumber(); ++j) {
 			if (f.isEdgeOnBorder(j)) {
 				const VertexType& v0 = *f.v(j);
@@ -78,7 +78,7 @@ void accumulateLaplacianInfo(
 	}
 
 	// se l'edge j e' di bordo si deve mediare solo con gli adiacenti
-	for (const FaceType& f : m.faceIterator()) {
+	for (const FaceType& f : m.faces()) {
 		for (int j = 0; j < f.vertexNumber(); ++j) {
 			if (f.isEdgeOnBorder(j)) {
 				const VertexType& v0 = *f.v(j);
@@ -128,7 +128,7 @@ void vertexCoordLaplacianSmoothing(
 	for (unsigned int i = 0; i < step; ++i) {
 		std::fill(laplData.begin(), laplData.end(), lpz);
 		internal::accumulateLaplacianInfo(m, laplData, cotangentWeight);
-		for (VertexType& v : m.vertexIterator()) {
+		for (VertexType& v : m.vertices()) {
 			if (laplData[v.id()].cnt > 0) {
 				if (!smoothSelected || v.isSelected()) {
 					v.coord() =

@@ -28,7 +28,7 @@ void updateBoundingBox(MeshType& m)
 	using VertexType = typename MeshType::Vertex;
 
 	m.boundingBox().setNull();
-	for (const VertexType& v : m.vertexIterator()) {
+	for (const VertexType& v : m.vertices()) {
 		m.boundingBox().add(v.coord());
 	}
 }

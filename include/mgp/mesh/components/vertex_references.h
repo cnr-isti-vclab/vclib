@@ -87,8 +87,8 @@ public:
 	VertexIterator           vertexEnd() { return Base::end(); }
 	ConstVertexIterator      vertexBegin() const { return Base::begin(); }
 	ConstVertexIterator      vertexEnd() const { return Base::end(); }
-	VertexRangeIterator      vertexIterator() { return Base::rangeIterator(); }
-	ConstVertexRangeIterator vertexIterator() const { return Base::rangeIterator(); }
+	VertexRangeIterator      vertices() { return Base::rangeIterator(); }
+	ConstVertexRangeIterator vertices() const { return Base::rangeIterator(); }
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)

@@ -19,7 +19,7 @@ Mesh<Args...>::Mesh()
  * @brief Copy constructor of the Mesh. Will create a deep copy of the given input mesh,
  * taking care of copying everithing and then update all the references
  *
- * @param oth
+ * @param oth: the mesh from which constructo this Mesh.
  */
 template<typename... Args>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
@@ -34,7 +34,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other vertex container data
-		updateVertexReferences(oth.vertices.data(), VertexContainer::vertices.data());
+		updateVertexReferences(oth.vertsVec.data(), VertexContainer::vertsVec.data());
 	}
 
 	// update references into the face container
@@ -42,7 +42,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other vertex container data
-		updateFaceReferences(oth.faces.data(), FaceContainer::faces.data());
+		updateFaceReferences(oth.facesVec.data(), FaceContainer::facesVec.data());
 	}
 }
 
@@ -50,7 +50,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
  * @brief Move constructor, moves the given mesh into this one, without any other
  * resource acquisition.
  *
- * @param oth
+ * @param oth: the mesh that will be moved into this Mesh.
  */
 template<typename... Args>
 Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
@@ -59,7 +59,7 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 }
 
 /**
- * @brief clears all the Elements contained in the mesh.
+ * @brief Clears all the Elements contained in the mesh.
  */
 template<typename... Args>
 void Mesh<Args...>::clear()
@@ -75,7 +75,13 @@ void Mesh<Args...>::clear()
 }
 
 /**
- * @brief add a new vertex into the mesh, returning the id of the added vertex.
+ * @brief Add a new vertex into the mesh, returning the id of the added vertex.
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex references contained in the Mesh.
+ *
+ * @note This function will be available only if the Mesh has the Vertex Container.
+ *
  * @return the id of the new vertex.
  */
 template<typename... Args>
@@ -89,9 +95,9 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex()
 	// references contained in the other elements need to be updated (the ones contained in the
 	// vertex container are updated automatically)
 
-	Vertex*      oldBase = VertexContainer::vertices.data();
+	Vertex*      oldBase = VertexContainer::vertsVec.data();
 	unsigned int vid     = VertexContainer::addVertex();
-	Vertex*      newBase = VertexContainer::vertices.data();
+	Vertex*      newBase = VertexContainer::vertsVec.data();
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
 		// change all the vertex references in the other containers
 		updateVertexReferences(oldBase, newBase);
@@ -100,8 +106,14 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex()
 }
 
 /**
- * @brief add a new vertex with the given coordinate into the mesh, returning
- * the id of the added vertex.
+ * @brief Add a new vertex with the given coordinate into the mesh, returning the id of the added
+ * vertex.
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex references contained in the Mesh.
+ *
+ * @note This function will be available only if the Mesh has the Vertex Container.
+ *
  * @param p: coordinate of the new vertex.
  * @return the id of the new vertex.
  */
@@ -118,11 +130,15 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex(
 }
 
 /**
- * @brief add an arbitrary number of n vertices, returning the id of the
- * first added vertex.
+ * @brief Add an arbitrary number of n vertices, returning the id of the first added vertex.
  *
  * This means that, if you want to add 5 vertices and this member function returns 4, the added
- * vertices will have from id 4 to id 8 included.
+ * vertices will have id from 4 to id 8 included.
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex references contained in the Mesh.
+ *
+ * @note This function will be available only if the Mesh has the Vertex Container.
  *
  * @param n: the number of vertices to add to the mesh.
  * @return the id of the first added vertex.
@@ -138,9 +154,9 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertices(uns
 	// references contained in the other elements need to be updated (the ones contained in the
 	// vertex container are updated automatically)
 
-	Vertex*      oldBase = VertexContainer::vertices.data();
+	Vertex*      oldBase = VertexContainer::vertsVec.data();
 	unsigned int vid     = VertexContainer::addVertices(n); // add the number of vertices
-	Vertex*      newBase = VertexContainer::vertices.data();
+	Vertex*      newBase = VertexContainer::vertsVec.data();
 
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
@@ -151,16 +167,23 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertices(uns
 }
 
 /**
- * @brief add an arbitrary number of vertices with the given coordinates,
- * returning the id of the first added vertex.
+ * @brief Add an arbitrary number of vertices with the given coordinates, returning the id of the
+ * first added vertex.
  *
  * You can call this member function like:
  *
+ * @code{.cpp}
  * CoordType p0, p1, p2, p3;
- * // init coords
+ * // init coords...
  * m.addVertices(p0, p1, p2, p3);
+ * @endcode
  *
  * The number of accepted Coordtype arguments is variable.
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex references contained in the Mesh.
+ *
+ * @note This function will be available only if the Mesh has the Vertex Container.
  *
  * @param v: list of vertices
  * @return the id of the first added vertex.
@@ -181,6 +204,23 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertices(
 	return vid;
 }
 
+/**
+ * @brief Reserve a number of vertices in the container of Vertices. This is useful when you know
+ * (or you have an idea) of how much vertices are going to add into a newly of existing mesh.
+ * Calling this function before any add_vertex() call will avoid unuseful reallocations of the
+ * container, saving execution time.
+ *
+ * The filosofy of this function is similar to the one of the
+ * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
+ * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex references contained in the Mesh.
+ *
+ * @note This function will be available only if the Mesh has the Vertex Container.
+ *
+ * @param n: the new capacity of the vertex container.
+ */
 template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::reserveVertices(unsigned int n)
@@ -188,13 +228,20 @@ mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::reserveVertices(unsigne
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
 
-	Vertex*      oldBase = VertexContainer::vertices.data();
+	Vertex*      oldBase = VertexContainer::vertsVec.data();
 	VertexContainer::reserveVertices(n);
-	Vertex*      newBase = VertexContainer::vertices.data();
+	Vertex*      newBase = VertexContainer::vertsVec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateVertexReferences(oldBase, newBase);
 }
 
+/**
+ * @brief Compacts the Vertex Container, removing all the vertices marked as deleted. Vertices ids
+ * will change assigning to each vertex id their new position in the container. The function
+ * will automatically take care of updating all the Vertex references contained in the Mesh.
+ *
+ * @note This function will be available only if the Mesh has the Vertex Container.
+ */
 template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::compactVertices()
@@ -202,9 +249,9 @@ mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::compactVertices()
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
 
-	Vertex*      oldBase = VertexContainer::vertices.data();
+	Vertex*      oldBase = VertexContainer::vertsVec.data();
 	std::vector<int> newIndices = VertexContainer::compactVertices();
-	Vertex*      newBase = VertexContainer::vertices.data();
+	Vertex*      newBase = VertexContainer::vertsVec.data();
 	assert(oldBase == newBase);
 
 	updateVertexReferencesAfterCompact(oldBase, newIndices);
@@ -217,9 +264,9 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
-	Face*        oldBase = FaceContainer::faces.data();
+	Face*        oldBase = FaceContainer::facesVec.data();
 	unsigned int fid     = FaceContainer::addFace();
-	Face*        newBase = FaceContainer::faces.data();
+	Face*        newBase = FaceContainer::facesVec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
 	return fid;
@@ -253,9 +300,9 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFaces(unsigned
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
-	Face*        oldBase = FaceContainer::faces.data();
+	Face*        oldBase = FaceContainer::facesVec.data();
 	unsigned int fid     = FaceContainer::addFaces(n);
-	Face*        newBase = FaceContainer::faces.data();
+	Face*        newBase = FaceContainer::facesVec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
 	return fid;
@@ -268,9 +315,9 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::reserveFaces(unsigned int
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
-	Face*      oldBase = FaceContainer::faces.data();
+	Face*      oldBase = FaceContainer::facesVec.data();
 	FaceContainer::reserveFaces(n);
-	Face*      newBase = FaceContainer::faces.data();
+	Face*      newBase = FaceContainer::facesVec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
 }
@@ -282,17 +329,17 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::compactFaces()
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
-	Face*      oldBase = FaceContainer::faces.data();
+	Face*      oldBase = FaceContainer::facesVec.data();
 	std::vector<int> newIndices = FaceContainer::compactFaces();
-	Face*      newBase = FaceContainer::faces.data();
+	Face*      newBase = FaceContainer::facesVec.data();
 	assert(oldBase == newBase);
 
 	updateFaceReferencesAfterCompact(oldBase, newIndices);
 }
 
 /**
- * @brief Swaps this mesh with m2.
- * @param m2
+ * @brief Swaps this mesh with the other input Mesh m2.
+ * @param m2: the Mesh to swap with this Mesh.
  */
 template<typename... Args>
 void Mesh<Args...>::swap(Mesh& m2)
@@ -371,7 +418,7 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 	if constexpr (
 		mesh::hasVertices<Mesh<Args...>>() && mesh::hasVertexOptionalContainer<Mesh<Args...>>()) {
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		for (auto& v : VertexContainer::vertexIterator(true)) {
+		for (auto& v : VertexContainer::vertices(true)) {
 			VertexContainer::setContainerPointer(v);
 		}
 	}
@@ -381,21 +428,21 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 	if constexpr (
 		mesh::hasFaces<Mesh<Args...>>() && mesh::hasFaceOptionalContainer<Mesh<Args...>>()) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		for (auto& f : FaceContainer::faceIterator(true)) {
+		for (auto& f : FaceContainer::faces(true)) {
 			FaceContainer::setContainerPointer(f);
 		}
 	}
 }
 
 /**
- * @brief swap: swaps two meshes of the same type
+ * @brief Swaps two meshes of the same type
  * @param m1
  * @param m2
  */
 template<typename...A>
 inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 {
-	// container bases of verts and faces for m1 and m2
+	// container bases of verts and facesVec for m1 and m2
 	void* m1BaseV = nullptr;
 	void* m2BaseV = nullptr;
 	void* m1BaseF = nullptr;
@@ -403,12 +450,12 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 
 	// save the bases of the containers before swap
 	if constexpr (mesh::hasVertices<Mesh<A...>>()) {
-		m1BaseV = m1.vertices.data();
-		m2BaseV = m2.vertices.data();
+		m1BaseV = m1.vertsVec.data();
+		m2BaseV = m2.vertsVec.data();
 	}
 	if constexpr (mesh::hasFaces<Mesh<A...>>()) {
-		m1BaseF = m1.faces.data();
-		m2BaseF = m2.faces.data();
+		m1BaseF = m1.facesVec.data();
+		m2BaseF = m2.facesVec.data();
 	}
 
 	// actual swap of all the containers and the components of the mesh
@@ -424,13 +471,13 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
 	if constexpr (mesh::hasVertices<Mesh<A...>>()) {
 		using VertexType = typename Mesh<A...>::VertexType;
-		m1.updateVertexReferences((VertexType*)m2BaseV, m1.vertices.data());
-		m2.updateVertexReferences((VertexType*)m1BaseV, m2.vertices.data());
+		m1.updateVertexReferences((VertexType*)m2BaseV, m1.vertsVec.data());
+		m2.updateVertexReferences((VertexType*)m1BaseV, m2.vertsVec.data());
 	}
 	if constexpr (mesh::hasFaces<Mesh<A...>>()) {
 		using FaceType = typename Mesh<A...>::FaceType;
-		m1.updateFaceReferences((FaceType*)m2BaseF, m1.faces.data());
-		m2.updateFaceReferences((FaceType*)m1BaseF, m2.faces.data());
+		m1.updateFaceReferences((FaceType*)m2BaseF, m1.facesVec.data());
+		m2.updateFaceReferences((FaceType*)m1BaseF, m2.facesVec.data());
 	}
 }
 

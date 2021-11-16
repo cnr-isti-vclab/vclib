@@ -38,7 +38,7 @@ Thumbs.db
 
 # Doxygen
 
-doxygen
+_doxygen
 
 *~
 .*sw?

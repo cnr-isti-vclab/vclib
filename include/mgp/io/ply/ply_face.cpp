@@ -23,7 +23,7 @@ void saveFaceIndices(
 
 	unsigned int fsize = f.vertexNumber();
 	internal::writeProperty(file, fsize, p.listSizeType, bin);
-	for (const VertexType* v : f.vertexIterator()){
+	for (const VertexType* v : f.vertices()){
 		internal::writeProperty(file, m.vertexIdIfCompact(v->id()), p.type, bin);
 	}
 }
@@ -227,7 +227,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 	using FaceType = typename MeshType::Face;
 
 	bool bin = header.format() == ply::BINARY;
-	for (const FaceType& f : mesh.faceIterator()){
+	for (const FaceType& f : mesh.faces()){
 		for (ply::Property p : header.faceProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name == ply::vertex_indices){

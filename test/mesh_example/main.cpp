@@ -49,7 +49,7 @@ int main()
 	// adding a per vertex custom component of chars, called 'prova'
 	m.addPerVertexCustomComponent<char>("prova");
 	
-	for (auto& v : m.vertexIterator())
+	for (auto& v : m.vertices())
 		v.customComponent<char>("prova") = 'a'; // set the custom component for each vertex
 	
 	// enable per face scalar, which is optional
@@ -71,7 +71,7 @@ int main()
 
 	// setting some colors to all the faces of the mesh
 	unsigned int i = 17;
-	for (mgp::TriMesh::Face& f : m.faceIterator()) // iterates over all the non-deleted faces of m
+	for (mgp::TriMesh::Face& f : m.faces()) // iterates over all the non-deleted faces of m
 		f.color() = mgp::Color(4+2*i++, 134, 98);
 
 	// add some other vertices
@@ -80,13 +80,13 @@ int main()
 	m.addVertex();
 
 	std::cerr << "f0 scalar: " << m.face(0).scalar() << "\n";
-	for (const mgp::TriMesh::Face& f : m.faceIterator())
+	for (const mgp::TriMesh::Face& f : m.faces())
 		std::cerr << f.id() << " Color: " << f.color() << "\n";
 
 	std::cerr << "VN: " << m.vertexNumber() << "\n";
 
 	//iterate over vertices
-	for (const mgp::TriMesh::Vertex& v : m.vertexIterator()){
+	for (const mgp::TriMesh::Vertex& v : m.vertices()){
 		std::cerr << "V " << v.id() << "\n";
 	}
 

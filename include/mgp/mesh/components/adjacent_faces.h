@@ -92,8 +92,8 @@ public:
 	AdjacentFaceIterator           adjFaceEnd() { return Base::end(); }
 	ConstAdjacentFaceIterator      adjFaceBegin() const { return Base::begin(); }
 	ConstAdjacentFaceIterator      adjFaceEnd() const { return Base::end(); }
-	AdjacentFaceRangeIterator      adjFaceIterator() { return Base::rangeIterator(); }
-	ConstAdjacentFaceRangeIterator adjFaceIterator() const { return Base::rangeIterator(); }
+	AdjacentFaceRangeIterator      adjFaces() { return Base::rangeIterator(); }
+	ConstAdjacentFaceRangeIterator adjFaces() const { return Base::rangeIterator(); }
 
 protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase)

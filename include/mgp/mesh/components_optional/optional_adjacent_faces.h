@@ -115,8 +115,8 @@ public:
 	AdjacentFaceIterator           adjFaceEnd();
 	ConstAdjacentFaceIterator      adjFaceBegin() const;
 	ConstAdjacentFaceIterator      adjFaceEnd() const;
-	AdjacentFaceRangeIterator      adjFaceIterator();
-	ConstAdjacentFaceRangeIterator adjFaceIterator() const;
+	AdjacentFaceRangeIterator      adjFaces();
+	ConstAdjacentFaceRangeIterator adjFaces() const;
 
 protected:
 	bool adjFacesEnabled() const;

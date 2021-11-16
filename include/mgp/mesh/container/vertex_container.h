@@ -70,15 +70,15 @@ public:
 	VertexIterator           vertexEnd();
 	ConstVertexIterator      vertexBegin(bool jumpDeleted = true) const;
 	ConstVertexIterator      vertexEnd() const;
-	VertexRangeIterator      vertexIterator(bool jumpDeleted = true);
-	ConstVertexRangeIterator vertexIterator(bool jumpDeleted = true) const;
+	VertexRangeIterator      vertices(bool jumpDeleted = true);
+	ConstVertexRangeIterator vertices(bool jumpDeleted = true) const;
 
 protected:
 	/**
 	 * @brief vertices: the vector of vertices, where each vertex contains only its static
 	 * components. Optional components will be contained in the optionalPropVector.
 	 */
-	std::vector<T> vertices;
+	std::vector<T> vertsVec;
 
 	/**
 	 * @brief vn: the number of vertices in the container. Could be different from vertices.size()

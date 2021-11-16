@@ -29,7 +29,7 @@ template<typename T>
 const typename Container<T, IfIsFace<T>>::FaceType&
 Container<T, IfIsFace<T>>::face(unsigned int i) const
 {
-	return faces[i];
+	return facesVec[i];
 }
 
 /**
@@ -46,7 +46,7 @@ template<typename T>
 typename Container<T, IfIsFace<T>>::FaceType&
 Container<T, IfIsFace<T>>::face(unsigned int i)
 {
-	return faces[i];
+	return facesVec[i];
 }
 
 /**
@@ -76,7 +76,7 @@ unsigned int Container<T, IfIsFace<T>>::faceNumber() const
 template<typename T>
 unsigned int Container<T, IfIsFace<T>>::faceContainerSize() const
 {
-	return faces.size();
+	return facesVec.size();
 }
 
 template<typename T>
@@ -98,7 +98,7 @@ unsigned int Container<T, IfIsFace<T> >::deletedFaceNumber() const
 template<typename T>
 void Container<T, IfIsFace<T> >::deleteFace(unsigned int i)
 {
-	faces[i].setDeleted();
+	facesVec[i].setDeleted();
 	fn--;
 }
 
@@ -117,12 +117,12 @@ void Container<T, IfIsFace<T> >::deleteFace(unsigned int i)
 template<typename T>
 unsigned int Container<T, IfIsFace<T> >::faceIdIfCompact(unsigned int id) const
 {
-	if (faces.size() == fn)
+	if (facesVec.size() == fn)
 		return id;
 	else {
 		unsigned int cnt = 0;
 		for (unsigned int i = 0; i < id; i++){
-			if (!faces[i].isDeleted())
+			if (!facesVec[i].isDeleted())
 				++cnt;
 		}
 		return cnt;
@@ -133,21 +133,21 @@ template<typename T>
 typename Container<T, IfIsFace<T>>::FaceIterator
 Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted)
 {
-	auto it = faces.begin();
+	auto it = facesVec.begin();
 	if (jumpDeleted) {
 		// if the user asked to jump the deleted faces, and the first face is deleted, we need
 		// to move forward until we find the first non-deleted face
-		while (it != faces.end() && it->isDeleted()) {
+		while (it != facesVec.end() && it->isDeleted()) {
 			++it;
 		}
 	}
-	return FaceIterator(it, faces, jumpDeleted);
+	return FaceIterator(it, facesVec, jumpDeleted);
 }
 
 template<typename T>
 typename Container<T, IfIsFace<T>>::FaceIterator Container<T, IfIsFace<T>>::faceEnd()
 {
-	return FaceIterator(faces.end(), faces);
+	return FaceIterator(facesVec.end(), facesVec);
 }
 
 template<typename T>
@@ -155,25 +155,25 @@ typename Container<T, IfIsFace<T>>::ConstFaceIterator
 Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted) const
 {
 	if (jumpDeleted) {
-		auto it = faces.begin();
-		while (it != faces.end() && it->isDeleted()) {
+		auto it = facesVec.begin();
+		while (it != facesVec.end() && it->isDeleted()) {
 			++it;
 		}
-		return ConstFaceIterator(it, faces, jumpDeleted);
+		return ConstFaceIterator(it, facesVec, jumpDeleted);
 	}
 	else
-		return ConstFaceIterator(faces.begin(), faces, jumpDeleted);
+		return ConstFaceIterator(facesVec.begin(), facesVec, jumpDeleted);
 }
 
 template<typename T>
 typename Container<T, IfIsFace<T>>::ConstFaceIterator Container<T, IfIsFace<T>>::faceEnd() const
 {
-	return ConstFaceIterator(faces.end(), faces);
+	return ConstFaceIterator(facesVec.end(), facesVec);
 }
 
 template<typename T>
 typename Container<T, IfIsFace<T>>::FaceRangeIterator
-Container<T, IfIsFace<T>>::faceIterator(bool jumpDeleted)
+Container<T, IfIsFace<T>>::faces(bool jumpDeleted)
 {
 	return FaceRangeIterator(
 		*this, jumpDeleted, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
@@ -181,7 +181,7 @@ Container<T, IfIsFace<T>>::faceIterator(bool jumpDeleted)
 
 template<typename T>
 typename Container<T, IfIsFace<T>>::ConstFaceRangeIterator
-Container<T, IfIsFace<T>>::faceIterator(bool jumpDeleted) const
+Container<T, IfIsFace<T>>::faces(bool jumpDeleted) const
 {
 	return ConstFaceRangeIterator(
 		*this, jumpDeleted, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
@@ -204,7 +204,7 @@ Container<T, IfIsFace<T>>::enablePerFaceAdjacentFaces()
 	OptionalFaceContainer::enablePerFaceAdjacentFaces();
 	static const int N = T::VERTEX_NUMBER;
 	if (N < 0) {
-		for (T& f : faceIterator()) {
+		for (T& f : faces()) {
 			f.resizeAdjFaces(f.vertexNumber());
 		}
 	}
@@ -213,7 +213,7 @@ Container<T, IfIsFace<T>>::enablePerFaceAdjacentFaces()
 template<typename T>
 void mgp::mesh::Container<T, IfIsFace<T> >::clearFaces()
 {
-	faces.clear();
+	facesVec.clear();
 	fn = 0;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		OptionalFaceContainer::clear();
@@ -223,17 +223,17 @@ void mgp::mesh::Container<T, IfIsFace<T> >::clearFaces()
 template<typename T>
 unsigned int Container<T, IfIsFace<T>>::addFace()
 {
-	T* oldB = faces.data();
-	faces.push_back(FaceType());
-	T* newB = faces.data();
+	T* oldB = facesVec.data();
+	facesVec.push_back(FaceType());
+	T* newB = facesVec.data();
 	++fn;
-	faces[faces.size() - 1]._id = faces.size() - 1;
+	facesVec[facesVec.size() - 1]._id = facesVec.size() - 1;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
-		OptionalFaceContainer::setContainerPointer(faces[faces.size() - 1]);
-		OptionalFaceContainer::resize(faces.size());
+		OptionalFaceContainer::setContainerPointer(facesVec[facesVec.size() - 1]);
+		OptionalFaceContainer::resize(facesVec.size());
 	}
 	updateFaceReferences(oldB, newB);
-	return faces[faces.size() - 1]._id;
+	return facesVec[facesVec.size() - 1]._id;
 }
 
 /**
@@ -247,18 +247,18 @@ unsigned int Container<T, IfIsFace<T>>::addFace()
 template<typename T>
 unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces)
 {
-	unsigned int baseId = faces.size();
-	T* oldB = faces.data();
-	faces.resize(faces.size() + nFaces);
-	T* newB = faces.data();
+	unsigned int baseId = facesVec.size();
+	T* oldB = facesVec.data();
+	facesVec.resize(facesVec.size() + nFaces);
+	T* newB = facesVec.data();
 	fn += nFaces;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
-		OptionalFaceContainer::resize(faces.size());
+		OptionalFaceContainer::resize(facesVec.size());
 	}
-	for (unsigned int i = baseId; i < faces.size(); ++i){
-		faces[i]._id = i;
+	for (unsigned int i = baseId; i < facesVec.size(); ++i){
+		facesVec[i]._id = i;
 		if constexpr (face::hasOptionalInfo<FaceType>()) {
-			OptionalFaceContainer::setContainerPointer(faces[i]);
+			OptionalFaceContainer::setContainerPointer(facesVec[i]);
 		}
 	}
 	updateFaceReferences(oldB, newB);
@@ -268,9 +268,9 @@ unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces
 template<typename T>
 void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
 {
-	T* oldB = faces.data();
-	faces.reserve(size);
-	T* newB = faces.data();
+	T* oldB = facesVec.data();
+	facesVec.reserve(size);
+	T* newB = facesVec.data();
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		OptionalFaceContainer::reserve(size);
 	}
@@ -290,12 +290,12 @@ template<typename T>
 std::vector<int> mgp::mesh::Container<T, IfIsFace<T> >::compactFaces()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	std::vector<int> newIndices(faces.size());
+	std::vector<int> newIndices(facesVec.size());
 	unsigned int k = 0;
-	for (unsigned int i = 0; i < faces.size(); ++i){
-		if (!faces[i].isDeleted()){
-			faces[k] = faces[i];
-			faces[k]._id = k;
+	for (unsigned int i = 0; i < facesVec.size(); ++i){
+		if (!facesVec[i].isDeleted()){
+			facesVec[k] = facesVec[i];
+			facesVec[k]._id = k;
 			newIndices[i] = k;
 			k++;
 		}
@@ -303,8 +303,8 @@ std::vector<int> mgp::mesh::Container<T, IfIsFace<T> >::compactFaces()
 			newIndices[i] = -1;
 		}
 	}
-	faces.resize(k);
-	T* base = faces.data();
+	facesVec.resize(k);
+	T* base = facesVec.data();
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		OptionalFaceContainer::compact(newIndices);
 	}
@@ -316,13 +316,13 @@ template<typename T>
 void Container<T, IfIsFace<T> >::updateFaceReferences(const T* oldBase, const T* newBase)
 {
 	if constexpr (mgp::face::hasAdjacentFaces<T>()) {
-		for (FaceType& f : faceIterator()) {
+		for (FaceType& f : faces()) {
 			f.updateFaceReferences(oldBase, newBase);
 		}
 	}
 	else if constexpr(mgp::face::hasOptionalAdjacentFaces<T>()) {
 		if (OptionalFaceContainer::isPerFaceAdjacentFacesEnabled()) {
-			for (FaceType& f : faceIterator()) {
+			for (FaceType& f : faces()) {
 				f.updateFaceReferences(oldBase, newBase);
 			}
 		}
@@ -335,13 +335,13 @@ void Container<T, IfIsFace<T> >::updateFaceReferencesAfterCompact(
 	const std::vector<int>& newIndices)
 {
 	if constexpr (mgp::face::hasAdjacentFaces<T>()) {
-		for (FaceType& f : faceIterator()) {
+		for (FaceType& f : faces()) {
 			f.updateFaceReferencesAfterCompact(base, newIndices);
 		}
 	}
 	else if constexpr(mgp::face::hasOptionalAdjacentFaces<T>()) {
 		if (OptionalFaceContainer::isPerFaceAdjacentFacesEnabled()) {
-			for (FaceType& f : faceIterator()) {
+			for (FaceType& f : faces()) {
 				f.updateFaceReferencesAfterCompact(base, newIndices);
 			}
 		}
@@ -352,7 +352,7 @@ template<typename T>
 template<typename Vertex>
 void Container<T, IfIsFace<T>>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
 {
-	for (FaceType& f : faceIterator()) {
+	for (FaceType& f : faces()) {
 		f.updateVertexReferences(oldBase, newBase);
 	}
 }
@@ -363,7 +363,7 @@ void Container<T, IfIsFace<T>>::updateVertexReferencesAfterCompact(
 	const Vertex* base,
 	const std::vector<int>& newIndices)
 {
-	for (FaceType& f : faceIterator()) {
+	for (FaceType& f : faces()) {
 		f.updateVertexReferencesAfterCompact(base, newIndices);
 	}
 }

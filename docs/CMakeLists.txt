@@ -12,7 +12,7 @@ file(
 
 #This will be the main output of our command
 set(DOXYGEN_INPUT_DIR ${MGP_INCLUDE_DIR})
-set(DOXYGEN_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/doxygen)
+set(DOXYGEN_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/_doxygen)
 set(DOXYGEN_INDEX_FILE ${CMAKE_CURRENT_SOURCE_DIR}/html/index.html)
 
 add_custom_command(

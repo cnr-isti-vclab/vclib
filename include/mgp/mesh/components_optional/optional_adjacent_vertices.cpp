@@ -165,7 +165,7 @@ OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd() const
 
 template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::VertexRangeIterator
-OptionalAdjacentVertices<Vertex, N, T>::adjVertexIterator()
+OptionalAdjacentVertices<Vertex, N, T>::adjVertices()
 {
 	return VertexRangeIterator(
 		B::contPtr->adjVerts(thisId()),
@@ -175,7 +175,7 @@ OptionalAdjacentVertices<Vertex, N, T>::adjVertexIterator()
 
 template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexRangeIterator
-OptionalAdjacentVertices<Vertex, N, T>::adjVertexIterator() const
+OptionalAdjacentVertices<Vertex, N, T>::adjVertices() const
 {
 	return ConstVertexRangeIterator(
 		B::contPtr->adjVerts(thisId()),

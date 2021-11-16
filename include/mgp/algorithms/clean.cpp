@@ -50,8 +50,8 @@ std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m)
 	if constexpr (mgp::hasFaces<MeshType>()) {
 		using FaceType = typename MeshType::Face;
 
-		for (const FaceType& f : m.faceIterator()) {
-			for (const VertexType* v : f.vertexIterator()) {
+		for (const FaceType& f : m.faces()) {
+			for (const VertexType* v : f.vertices()) {
 				referredVertices[v->id()] = true;
 			}
 		}
@@ -146,7 +146,7 @@ unsigned int removeUnreferencedVertices(MeshType& m)
 
 	// deleted vertices are automatically jumped
 	unsigned int n = 0;
-	for (const VertexType& v : m.vertexIterator()) {
+	for (const VertexType& v : m.vertices()) {
 		if (!referredVertices[v.id()]) {
 			m.deleteVertex(v.id());
 			++n;
@@ -189,7 +189,7 @@ unsigned int removeDuplicatedVertices(MeshType& m)
 
 	// put all the vertices into a vector
 	unsigned int k = 0;
-	for (VertexType& v : m.vertexIterator())
+	for (VertexType& v : m.vertices())
 		perm[k++] = &v;
 
 	// sort the vector based on the verts position
@@ -212,8 +212,8 @@ unsigned int removeDuplicatedVertices(MeshType& m)
 		i = j;
 	}
 
-	for (FaceType& f : m.faceIterator()) {
-		for (VertexPointer& v : f.vertexIterator()) {
+	for (FaceType& f : m.faces()) {
+		for (VertexPointer& v : f.vertices()) {
 			// if v is in the map of the deleted vertices, need to change its reference
 			if (deletedVertsMap.find(v) != deletedVertsMap.end()) {
 				v = deletedVertsMap[v];
@@ -268,7 +268,7 @@ unsigned int removeDuplicatedFaces(MeshType& m)
 	using FaceType = typename MeshType::Face;
 
 	std::vector<internal::SortedTriple<FaceType*>> fvec;
-	for (FaceType& f : m.faceIterator()) {
+	for (FaceType& f : m.faces()) {
 		fvec.push_back(internal::SortedTriple(f.v(0)->id(), f.v(1)->id(), f.v(2)->id(), &f));
 	}
 	std::sort(fvec.begin(), fvec.end());
@@ -305,7 +305,7 @@ unsigned int removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 
 	int count_vd = 0;
 
-	for (VertexType& v : m.vertexIterator()) {
+	for (VertexType& v : m.vertices()) {
 		if (v.coord().isDegenerate()) {
 			count_vd++;
 			m.deleteVertex(v.id());
@@ -315,9 +315,9 @@ unsigned int removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 	if constexpr (hasFaces(m)) {
 		using FaceType = typename MeshType::Face;
 		if (deleteAlsoFaces) {
-			for (FaceType& f : m.faceIterator()) {
+			for (FaceType& f : m.faces()) {
 				bool deg = false;
-				for (VertexType* v : f.vertexIterator()) {
+				for (VertexType* v : f.vertices()) {
 					if (v->isDeleted()) {
 						deg = true;
 					}

@@ -95,7 +95,7 @@ void updateBorder(MeshType& m)
 	std::vector<internal::EdgeSorter<MeshType>>                    e;
 	typename std::vector<internal::EdgeSorter<MeshType>>::iterator edgeIterator;
 
-	for (FaceType& f : m.faceIterator())
+	for (FaceType& f : m.faces())
 		f.clearAllEdgeOnBorder();
 
 	if (m.faceNumber() == 0)
@@ -103,13 +103,13 @@ void updateBorder(MeshType& m)
 
 	// FaceIterator fi;
 	int n_edges = 0;
-	for (const FaceType& f : m.faceIterator())
+	for (const FaceType& f : m.faces())
 		n_edges += f.vertexNumber();
 
 	e.resize(n_edges);
 
 	edgeIterator = e.begin();
-	for (FaceType& f : m.faceIterator()) { // Lo riempio con i dati delle facce
+	for (FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
 		f.clearAllEdgeOnBorder();
 		for (int j = 0; j < f.vertexNumber(); ++j) {
 			(*edgeIterator).set(&f, j);

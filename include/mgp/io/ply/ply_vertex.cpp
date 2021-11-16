@@ -154,7 +154,7 @@ void saveVertices(
 	using VertexType = typename MeshType::Vertex;
 
 	bool bin = header.format() == ply::BINARY;
-	for(const VertexType& v : mesh.vertexIterator()) {
+	for(const VertexType& v : mesh.vertices()) {
 		for (ply::Property p : header.vertexProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name >= ply::x && p.name <= ply::z) {

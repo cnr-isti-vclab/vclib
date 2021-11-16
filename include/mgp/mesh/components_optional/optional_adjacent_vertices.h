@@ -117,8 +117,8 @@ public:
 	VertexIterator           adjVertexEnd();
 	ConstVertexIterator      adjVertexBegin() const;
 	ConstVertexIterator      adjVertexEnd() const;
-	VertexRangeIterator      adjVertexIterator();
-	ConstVertexRangeIterator adjVertexIterator() const;
+	VertexRangeIterator      adjVertices();
+	ConstVertexRangeIterator adjVertices() const;
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);

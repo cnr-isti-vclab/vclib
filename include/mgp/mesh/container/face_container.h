@@ -71,8 +71,8 @@ public:
 	FaceIterator           faceEnd();
 	ConstFaceIterator      faceBegin(bool jumpDeleted = true) const;
 	ConstFaceIterator      faceEnd() const;
-	FaceRangeIterator      faceIterator(bool jumpDeleted = true);
-	ConstFaceRangeIterator faceIterator(bool jumpDeleted = true) const;
+	FaceRangeIterator      faces(bool jumpDeleted = true);
+	ConstFaceRangeIterator faces(bool jumpDeleted = true) const;
 
 	// hide functions of optional container components
 	// needed to update faces sizes
@@ -84,7 +84,7 @@ protected:
 	 * @brief faces: the vector of faces, where each face contains only its static components.
 	 * Optional components will be contained in the optionalComponentsVector.
 	 */
-	std::vector<T> faces;
+	std::vector<T> facesVec;
 
 	/**
 	 * @brief fn: the number of faces in the container. Could be different from faces.size()

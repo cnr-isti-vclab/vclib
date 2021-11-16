@@ -164,7 +164,7 @@ OptionalAdjacentFaces<Face, N, T>::adjFaceEnd() const
 
 template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::AdjacentFaceRangeIterator
-OptionalAdjacentFaces<Face, N, T>::adjFaceIterator()
+OptionalAdjacentFaces<Face, N, T>::adjFaces()
 {
 	return FaceRangeIterator(
 		B::contPtr->adjFaces(thisId()),
@@ -174,7 +174,7 @@ OptionalAdjacentFaces<Face, N, T>::adjFaceIterator()
 
 template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::ConstAdjacentFaceRangeIterator
-OptionalAdjacentFaces<Face, N, T>::adjFaceIterator() const
+OptionalAdjacentFaces<Face, N, T>::adjFaces() const
 {
 	return ConstFaceRangeIterator(
 		B::contPtr->adjFaces(thisId()),

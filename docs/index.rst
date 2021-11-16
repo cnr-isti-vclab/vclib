@@ -1,10 +1,14 @@
-…
+.. _index:
 
-Docs
-====
+=======
+MGP Lib
+=======
 
-.. doxygenclass:: mgp::Mesh
-   :members:
-   :undoc-members:
-   :protected-members:
-   :private-members:
+
+.. toctree::
+   :maxdepth: 1
+
+   basic_concepts
+   mesh
+   elements
+   components

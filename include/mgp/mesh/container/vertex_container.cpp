@@ -29,7 +29,7 @@ template<typename T>
 const typename Container<T, IfIsVertex<T>>::VertexType&
 Container<T, IfIsVertex<T>>::vertex(unsigned int i) const
 {
-	return vertices[i];
+	return vertsVec[i];
 }
 
 /**
@@ -46,7 +46,7 @@ template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexType&
 Container<T, IfIsVertex<T>>::vertex(unsigned int i)
 {
-	return vertices[i];
+	return vertsVec[i];
 }
 
 /**
@@ -76,7 +76,7 @@ unsigned int Container<T, IfIsVertex<T>>::vertexNumber() const
 template<typename T>
 unsigned int Container<T, IfIsVertex<T> >::vertexContainerSize() const
 {
-	return vertices.size();
+	return vertsVec.size();
 }
 
 template<typename T>
@@ -98,7 +98,7 @@ unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::deletedVertexNumber() cons
 template<typename T>
 void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
 {
-	vertices[i].setDeleted();
+	vertsVec[i].setDeleted();
 	--vn;
 }
 
@@ -117,12 +117,12 @@ void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
 template<typename T>
 unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::vertexIdIfCompact(unsigned int id) const
 {
-	if (vertices.size() == vn)
+	if (vertsVec.size() == vn)
 		return id;
 	else {
 		unsigned int cnt = 0;
 		for (unsigned int i = 0; i < id; i++){
-			if (!vertices[i].isDeleted())
+			if (!vertsVec[i].isDeleted())
 				++cnt;
 		}
 		return cnt;
@@ -133,21 +133,21 @@ template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 {
-	auto it = vertices.begin();
+	auto it = vertsVec.begin();
 	if (jumpDeleted) {
 		// if the user asked to jump the deleted vertices, and the first vertex is deleted, we need
 		// to move forward until we find the first non-deleted vertex
-		while (it != vertices.end() && it->isDeleted()) {
+		while (it != vertsVec.end() && it->isDeleted()) {
 			++it;
 		}
 	}
-	return VertexIterator(it, vertices, jumpDeleted);
+	return VertexIterator(it, vertsVec, jumpDeleted);
 }
 
 template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexIterator Container<T, IfIsVertex<T>>::vertexEnd()
 {
-	return VertexIterator(vertices.end(), vertices);
+	return VertexIterator(vertsVec.end(), vertsVec);
 }
 
 template<typename T>
@@ -155,26 +155,26 @@ typename Container<T, IfIsVertex<T>>::ConstVertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted) const
 {
 	if (jumpDeleted) {
-		auto it = vertices.begin();
-		while (it != vertices.end() && it->isDeleted()) {
+		auto it = vertsVec.begin();
+		while (it != vertsVec.end() && it->isDeleted()) {
 			++it;
 		}
-		return ConstVertexIterator(it, vertices, jumpDeleted);
+		return ConstVertexIterator(it, vertsVec, jumpDeleted);
 	}
 	else
-		return ConstVertexIterator(vertices.begin(), vertices, jumpDeleted);
+		return ConstVertexIterator(vertsVec.begin(), vertsVec, jumpDeleted);
 }
 
 template<typename T>
 typename Container<T, IfIsVertex<T>>::ConstVertexIterator
 Container<T, IfIsVertex<T>>::vertexEnd() const
 {
-	return ConstVertexIterator(vertices.end(), vertices);
+	return ConstVertexIterator(vertsVec.end(), vertsVec);
 }
 
 template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexRangeIterator
-Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted)
+Container<T, IfIsVertex<T>>::vertices(bool jumpDeleted)
 {
 	return VertexRangeIterator(
 		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
@@ -182,7 +182,7 @@ Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted)
 
 template<typename T>
 typename Container<T, IfIsVertex<T>>::ConstVertexRangeIterator
-Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted) const
+Container<T, IfIsVertex<T>>::vertices(bool jumpDeleted) const
 {
 	return ConstVertexRangeIterator(
 		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
@@ -191,7 +191,7 @@ Container<T, IfIsVertex<T>>::vertexIterator(bool jumpDeleted) const
 template<typename T>
 void Container<T, IfIsVertex<T> >::clearVertices()
 {
-	vertices.clear();
+	vertsVec.clear();
 	vn = 0;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		OptionalVertexContainer::clear();
@@ -201,17 +201,17 @@ void Container<T, IfIsVertex<T> >::clearVertices()
 template<typename T>
 unsigned int Container<T, IfIsVertex<T>>::addVertex()
 {
-	T* oldB = vertices.data();
-	vertices.push_back(VertexType());
-	T* newB = vertices.data();
+	T* oldB = vertsVec.data();
+	vertsVec.push_back(VertexType());
+	T* newB = vertsVec.data();
 	++vn;
-	vertices[vertices.size() - 1]._id = vertices.size() - 1;
+	vertsVec[vertsVec.size() - 1]._id = vertsVec.size() - 1;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		OptionalVertexContainer::setContainerPointer(vertices[vertices.size() - 1]);
-		OptionalVertexContainer::resize(vertices.size());
+		OptionalVertexContainer::setContainerPointer(vertsVec[vertsVec.size() - 1]);
+		OptionalVertexContainer::resize(vertsVec.size());
 	}
 	updateVertexReferences(oldB, newB);
-	return vertices[vertices.size() - 1]._id;
+	return vertsVec[vertsVec.size() - 1]._id;
 }
 
 /**
@@ -225,18 +225,18 @@ unsigned int Container<T, IfIsVertex<T>>::addVertex()
 template<typename T>
 unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 {
-	unsigned int baseId = vertices.size();
-	T* oldB = vertices.data();
-	vertices.resize(vertices.size() + nVertices);
-	T* newB = vertices.data();
+	unsigned int baseId = vertsVec.size();
+	T* oldB = vertsVec.data();
+	vertsVec.resize(vertsVec.size() + nVertices);
+	T* newB = vertsVec.data();
 	vn+=nVertices;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		OptionalVertexContainer::resize(vertices.size());
+		OptionalVertexContainer::resize(vertsVec.size());
 	}
-	for (unsigned int i = baseId; i < vertices.size(); ++i){
-		vertices[i]._id = i;
+	for (unsigned int i = baseId; i < vertsVec.size(); ++i){
+		vertsVec[i]._id = i;
 		if constexpr (vert::hasOptionalInfo<VertexType>()) {
-			OptionalVertexContainer::setContainerPointer(vertices[i]);
+			OptionalVertexContainer::setContainerPointer(vertsVec[i]);
 		}
 	}
 	updateVertexReferences(oldB, newB);
@@ -246,9 +246,9 @@ unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 template<typename T>
 void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {
-	T* oldB = vertices.data();
-	vertices.reserve(size);
-	T* newB = vertices.data();
+	T* oldB = vertsVec.data();
+	vertsVec.reserve(size);
+	T* newB = vertsVec.data();
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		OptionalVertexContainer::reserve(size);
 	}
@@ -268,12 +268,12 @@ template<typename T>
 std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	std::vector<int> newIndices(vertices.size());
+	std::vector<int> newIndices(vertsVec.size());
 	unsigned int k = 0;
-	for (unsigned int i = 0; i < vertices.size(); ++i){
-		if (!vertices[i].isDeleted()){
-			vertices[k] = vertices[i];
-			vertices[k]._id = k;
+	for (unsigned int i = 0; i < vertsVec.size(); ++i){
+		if (!vertsVec[i].isDeleted()){
+			vertsVec[k] = vertsVec[i];
+			vertsVec[k]._id = k;
 			newIndices[i] = k;
 			k++;
 		}
@@ -281,8 +281,8 @@ std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 			newIndices[i] = -1;
 		}
 	}
-	vertices.resize(k);
-	T* base = vertices.data();
+	vertsVec.resize(k);
+	T* base = vertsVec.data();
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		OptionalVertexContainer::compact(newIndices);
 	}
@@ -294,13 +294,13 @@ template<typename T>
 void Container<T, IfIsVertex<T> >::updateVertexReferences(const T* oldBase, const T* newBase)
 {
 	if constexpr (mgp::vert::hasAdjacentVertices<T>()) {
-		for (VertexType& v : vertexIterator()) {
+		for (VertexType& v : vertices()) {
 			v.updateVertexReferences(oldBase, newBase);
 		}
 	}
 	else if constexpr(mgp::vert::hasOptionalAdjacentVertices<T>()) {
 		if (OptionalVertexContainer::isPerVertexAdjacentVerticesEnabled()) {
-			for (VertexType& v : vertexIterator()) {
+			for (VertexType& v : vertices()) {
 				v.updateVertexReferences(oldBase, newBase);
 			}
 		}
@@ -313,13 +313,13 @@ void Container<T, IfIsVertex<T> >::updateVertexReferencesAfterCompact(
 	const std::vector<int>& newIndices)
 {
 	if constexpr (mgp::vert::hasAdjacentVertices<T>()) {
-		for (VertexType& v : vertexIterator()) {
+		for (VertexType& v : vertices()) {
 			v.updateVertexReferencesAfterCompact(base, newIndices);
 		}
 	}
 	else if constexpr (mgp::vert::hasOptionalAdjacentVertices<T>()){
 		if (OptionalVertexContainer::isPerVertexAdjacentVerticesEnabled()) {
-			for (VertexType& v : vertexIterator()) {
+			for (VertexType& v : vertices()) {
 				v.updateVertexReferencesAfterCompact(base, newIndices);
 			}
 		}
@@ -331,13 +331,13 @@ template<typename  Face>
 void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, const Face* newBase)
 {
 	if constexpr (mgp::vert::hasAdjacentFaces<T>()) {
-		for (VertexType& v : vertexIterator()) {
+		for (VertexType& v : vertices()) {
 			v.updateFaceReferences(oldBase, newBase);
 		}
 	}
 	else if constexpr (mgp::vert::hasOptionalAdjacentFaces<T>()){
 		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
-			for (VertexType& v : vertexIterator()) {
+			for (VertexType& v : vertices()) {
 				v.updateFaceReferences(oldBase, newBase);
 			}
 		}
@@ -351,13 +351,13 @@ void Container<T, IfIsVertex<T>>::updateFaceReferencesAfterCompact(
 	const std::vector<int>& newIndices)
 {
 	if constexpr (mgp::vert::hasAdjacentFaces<T>()) {
-		for (VertexType& v : vertexIterator()) {
+		for (VertexType& v : vertices()) {
 			v.updateFaceReferencesAfterCompact(base, newIndices);
 		}
 	}
 	else if constexpr (mgp::vert::hasOptionalAdjacentFaces<T>()){
 		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
-			for (VertexType& v : vertexIterator()) {
+			for (VertexType& v : vertices()) {
 				v.updateFaceReferencesAfterCompact(base, newIndices);
 			}
 		}
