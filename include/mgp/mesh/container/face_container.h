@@ -56,7 +56,6 @@ public:
 
 	Container();
 
-	unsigned int index(const FaceType& f) { return f->id(); }
 	const FaceType& face(unsigned int i) const;
 	FaceType&       face(unsigned int i);
 

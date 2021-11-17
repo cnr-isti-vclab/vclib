@@ -81,13 +81,13 @@ int main()
 
 	std::cerr << "f0 scalar: " << m.face(0).scalar() << "\n";
 	for (const mgp::TriMesh::Face& f : m.faces())
-		std::cerr << f.id() << " Color: " << f.color() << "\n";
+		std::cerr << m.index(f) << " Color: " << f.color() << "\n";
 
 	std::cerr << "VN: " << m.vertexNumber() << "\n";
 
 	//iterate over vertices
 	for (const mgp::TriMesh::Vertex& v : m.vertices()){
-		std::cerr << "V " << v.id() << "\n";
+		std::cerr << "V " << m.index(v) << "\n";
 	}
 
 	mgp::TriMesh tet = mgp::createTetrahedron<mgp::TriMesh>();
