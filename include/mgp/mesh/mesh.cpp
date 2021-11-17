@@ -120,7 +120,7 @@ mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex()
 template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::addVertex(
-	const VCoordType& p)
+	const typename Mesh::VertexType::CoordType& p)
 {
 	using VertexContainer = typename U::VertexContainer;
 
@@ -282,7 +282,7 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace(V... args
 template<typename... Args>
 template<typename U>
 mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace(
-	const std::vector<VType*>& v)
+	const std::vector<typename Mesh::VertexType*>& v)
 {
 	using FaceContainer = typename U::FaceContainer;
 

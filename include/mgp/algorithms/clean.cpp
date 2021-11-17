@@ -269,7 +269,7 @@ unsigned int removeDuplicatedFaces(MeshType& m)
 
 	std::vector<internal::SortedTriple<FaceType*>> fvec;
 	for (FaceType& f : m.faces()) {
-		fvec.push_back(internal::SortedTriple(f.v(0)->id(), f.v(1)->id(), f.v(2)->id(), &f));
+		fvec.push_back(internal::SortedTriple(f.vertex(0)->id(), f.vertex(1)->id(), f.vertex(2)->id(), &f));
 	}
 	std::sort(fvec.begin(), fvec.end());
 	unsigned int total = 0;

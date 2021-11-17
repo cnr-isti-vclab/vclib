@@ -37,10 +37,10 @@ public:
 
 	unsigned int adjVerticesNumber() const { return Base::size(); }
 
-	Vertex*&      adjVert(unsigned int i) { return Base::at(i); }
-	const Vertex* adjVert(unsigned int i) const { return Base::at(i); }
-	Vertex*&      adjVertMod(int i) { return Base::atMod(i); }
-	const Vertex* adjVertMod(int i) const { return Base::atMod(i); }
+	Vertex*&      adjVertex(unsigned int i) { return Base::at(i); }
+	const Vertex* adjVertex(unsigned int i) const { return Base::at(i); }
+	Vertex*&      adjVertexMod(int i) { return Base::atMod(i); }
+	const Vertex* adjVertexMod(int i) const { return Base::atMod(i); }
 
 	void setAdjVertex(Vertex* v, unsigned int i) { Base::set(v, i); }
 	void setAdjVertices(const std::vector<Vertex*>& list) { Base::set(list); }

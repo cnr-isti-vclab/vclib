@@ -67,9 +67,9 @@ void loadFacesTxt(
 						assert(token != spaceTokenizer.end());
 						int vid = internal::readProperty<size_t>(token, p.type);
 						if (vid < 0)
-							f.v(i) = nullptr;
+							f.vertex(i) = nullptr;
 						else
-							f.v(i) = &mesh.vertex(vid);
+							f.vertex(i) = &mesh.vertex(vid);
 					}
 					hasBeenRead = true;
 				}
@@ -79,9 +79,9 @@ void loadFacesTxt(
 							assert(token != spaceTokenizer.end());
 							int vid = internal::readProperty<size_t>(token, p.type);
 							if (vid < 0)
-								f.v(i) = nullptr;
+								f.vertex(i) = nullptr;
 							else
-								f.v(i) = &mesh.vertex(vid);
+								f.vertex(i) = &mesh.vertex(vid);
 						}
 						else {
 							internal::readProperty<size_t>(token, p.type);
@@ -155,9 +155,9 @@ void loadFacesBin(
 					for (unsigned int i = 0; i < fSize; ++i) {
 						int vid = internal::readProperty<size_t>(file, p.type);
 						if (vid < 0)
-							f.v(i) = nullptr;
+							f.vertex(i) = nullptr;
 						else
-							f.v(i) = &mesh.vertex(vid);
+							f.vertex(i) = &mesh.vertex(vid);
 					}
 					hasBeenRead = true;
 				}
@@ -166,9 +166,9 @@ void loadFacesBin(
 						if (i < FaceType::VERTEX_NUMBER) {
 							int vid = internal::readProperty<size_t>(file, p.type);
 							if (vid < 0)
-								f.v(i) = nullptr;
+								f.vertex(i) = nullptr;
 							else
-								f.v(i) = &mesh.vertex(vid);
+								f.vertex(i) = &mesh.vertex(vid);
 						}
 						else {
 							internal::readProperty<size_t>(file, p.type);

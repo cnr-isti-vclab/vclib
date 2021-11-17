@@ -38,28 +38,28 @@ unsigned int OptionalAdjacentVertices<Vertex, N, T>::adjVerticesNumber() const
 }
 
 template<typename Vertex, int N, typename T>
-Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVert(unsigned int i)
+Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertex(unsigned int i)
 {
 	assert(i < adjVerticesNumber());
 	return B::contPtr->adjVerts(thisId())[i];
 }
 
 template<typename Vertex, int N, typename T>
-const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVert(unsigned int i) const
+const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertex(unsigned int i) const
 {
 	assert(i < adjVerticesNumber());
 	return B::contPtr->adjVerts(thisId())[i];
 }
 
 template<typename Vertex, int N, typename T>
-Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertMod(int i)
+Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertexMod(int i)
 {
 	unsigned int n = adjVerticesNumber();
 	return B::contPtr->adjVerts(thisId())[(i % n + n) % n];
 }
 
 template<typename Vertex, int N, typename T>
-const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertMod(int i) const
+const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertexMod(int i) const
 {
 	unsigned int n = adjVerticesNumber();
 	return B::contPtr->adjVerts(thisId())[(i % n + n) % n];
@@ -189,9 +189,9 @@ void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferences(
 	const Vertex* newBase)
 {
 	for (unsigned int j = 0; j < adjVerticesNumber(); ++j) {
-		if (adjVert(j) != nullptr) {
-			size_t diff = adjVert(j) - oldBase;
-			adjVert(j)  = (Vertex*) newBase + diff;
+		if (adjVertex(j) != nullptr) {
+			size_t diff = adjVertex(j) - oldBase;
+			adjVertex(j)  = (Vertex*) newBase + diff;
 		}
 	}
 }
@@ -202,13 +202,13 @@ void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferencesAfterCompact(
 	const std::vector<int>& newIndices)
 {
 	for (unsigned int j = 0; j < adjVerticesNumber(); ++j) {
-		if (adjVert(j) != nullptr) {
-			size_t diff = adjVert(j) - base;
+		if (adjVertex(j) != nullptr) {
+			size_t diff = adjVertex(j) - base;
 			if (newIndices[diff] < 0) { // element has been removed
-				adjVert(j) = nullptr;
+				adjVertex(j) = nullptr;
 			}
 			else { // the new pointer will be base + newIndices[diff]
-				adjVert(j) = (Vertex*) base + newIndices[diff];
+				adjVertex(j) = (Vertex*) base + newIndices[diff];
 			}
 		}
 	}

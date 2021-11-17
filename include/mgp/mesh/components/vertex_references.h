@@ -39,10 +39,10 @@ public:
 
 	unsigned int vertexNumber() const { return Base::size(); }
 
-	Vertex*&      v(unsigned int i) { return Base::at(i); }
-	const Vertex* v(unsigned int i) const { return Base::at(i); }
-	Vertex*&      vMod(int i) { return Base::atMod(i); }
-	const Vertex* vMod(int i) const { return Base::atMod(i); }
+	Vertex*&      vertex(unsigned int i) { return Base::at(i); }
+	const Vertex* vertex(unsigned int i) const { return Base::at(i); }
+	Vertex*&      vertexMod(int i) { return Base::atMod(i); }
+	const Vertex* vertexMod(int i) const { return Base::atMod(i); }
 
 	void setVertex(Vertex* v, unsigned int i) { Base::set(v, i); }
 	void setVertices(const std::vector<Vertex*>& list) { Base::set(list); }

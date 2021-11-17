@@ -27,9 +27,6 @@ namespace mgp {
 template<typename... Args>
 class Mesh : public mesh::Container<Args>...
 {
-	using VType = typename Mesh::VertexType;
-	using VCoordType = typename VType::CoordType;
-
 public:
 	Mesh();
 	Mesh(const Mesh& oth);
@@ -41,7 +38,7 @@ public:
 	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex();
 
 	template<typename U = Mesh>
-	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex(const VCoordType& p);
+	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex(const typename Mesh::VertexType::CoordType& p);
 
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertices(unsigned int n);
@@ -62,7 +59,7 @@ public:
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace(V... args);
 
 	template<typename U = Mesh>
-	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace(const std::vector<VType*>& v);
+	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace(const std::vector<typename Mesh::VertexType*>& v);
 
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFaces(unsigned int n);

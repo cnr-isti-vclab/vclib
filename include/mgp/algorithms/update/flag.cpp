@@ -42,8 +42,8 @@ public:
 		assert(nz >= 0);
 		assert(nz < 3);
 
-		v[0] = pf->v(nz);
-		v[1] = pf->vMod(nz + 1);
+		v[0] = pf->vertex(nz);
+		v[1] = pf->vertexMod(nz + 1);
 		assert(v[0] != v[1]);
 
 		if (v[0] > v[1])

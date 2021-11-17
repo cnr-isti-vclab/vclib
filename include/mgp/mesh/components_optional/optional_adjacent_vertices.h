@@ -84,10 +84,10 @@ public:
 
 	unsigned int adjVerticesNumber() const;
 
-	Vertex*&      adjVert(unsigned int i);
-	const Vertex* adjVert(unsigned int i) const;
-	Vertex*&      adjVertMod(int i);
-	const Vertex* adjVertMod(int i) const;
+	Vertex*&      adjVertex(unsigned int i);
+	const Vertex* adjVertex(unsigned int i) const;
+	Vertex*&      adjVertexMod(int i);
+	const Vertex* adjVertexMod(int i) const;
 
 	void setAdjVertex(Vertex* f, unsigned int i);
 	void setAdjVertices(const std::vector<Vertex*>& list);

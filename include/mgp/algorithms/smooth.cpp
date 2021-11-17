@@ -43,9 +43,9 @@ void accumulateLaplacianInfo(
 	for (const FaceType& f : m.faces()) {
 		for (int j = 0; j < f.vertexNumber(); ++j) {
 			if (!f.isEdgeOnBorder(j)) {
-				const VertexType& v0 = *f.v(j);
-				const VertexType& v1 = *f.vMod(j + 1);
-				const VertexType& v2 = *f.vMod(j + 2);
+				const VertexType& v0 = *f.vertex(j);
+				const VertexType& v1 = *f.vertexMod(j + 1);
+				const VertexType& v2 = *f.vertexMod(j + 2);
 				const CoordType&  p0 = v0.coord();
 				const CoordType&  p1 = v1.coord();
 				const CoordType&  p2 = v2.coord();
@@ -54,8 +54,8 @@ void accumulateLaplacianInfo(
 					weight           = std::tan((M_PI * 0.5) - angle);
 				}
 
-				data[v0.id()].sum += f.vMod(j + 1)->coord() * weight;
-				data[v1.id()].sum += f.v(j)->coord() * weight;
+				data[v0.id()].sum += f.vertexMod(j + 1)->coord() * weight;
+				data[v1.id()].sum += f.vertex(j)->coord() * weight;
 				data[v0.id()].cnt += weight;
 				data[v1.id()].cnt += weight;
 			}
@@ -65,8 +65,8 @@ void accumulateLaplacianInfo(
 	for (const FaceType& f : m.faces()) {
 		for (int j = 0; j < f.vertexNumber(); ++j) {
 			if (f.isEdgeOnBorder(j)) {
-				const VertexType& v0 = *f.v(j);
-				const VertexType& v1 = *f.vMod(j + 1);
+				const VertexType& v0 = *f.vertex(j);
+				const VertexType& v1 = *f.vertexMod(j + 1);
 				const CoordType&  p0 = v0.coord();
 				const CoordType&  p1 = v1.coord();
 				data[v0.id()].sum    = p0;
@@ -81,8 +81,8 @@ void accumulateLaplacianInfo(
 	for (const FaceType& f : m.faces()) {
 		for (int j = 0; j < f.vertexNumber(); ++j) {
 			if (f.isEdgeOnBorder(j)) {
-				const VertexType& v0 = *f.v(j);
-				const VertexType& v1 = *f.vMod(j + 1);
+				const VertexType& v0 = *f.vertex(j);
+				const VertexType& v1 = *f.vertexMod(j + 1);
 				const CoordType&  p0 = v0.coord();
 				const CoordType&  p1 = v1.coord();
 				data[v0.id()].sum += p1;
