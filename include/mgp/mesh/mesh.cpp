@@ -74,6 +74,22 @@ void Mesh<Args...>::clear()
 	}
 }
 
+template<typename... Args>
+template<typename U>
+mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::index(const typename Mesh::VertexType& v) const
+{
+	using VertexContainer = typename U::VertexContainer;
+	return VertexContainer::index(&v);
+}
+
+template<typename... Args>
+template<typename U>
+mesh::ReturnIfHasVertexContainer<U, unsigned int> Mesh<Args...>::index(const typename Mesh::VertexType* v) const
+{
+	using VertexContainer = typename U::VertexContainer;
+	return VertexContainer::index(v);
+}
+
 /**
  * @brief Add a new vertex into the mesh, returning the id of the added vertex.
  *
@@ -255,6 +271,22 @@ mesh::ReturnIfHasVertexContainer<U, void> Mesh<Args...>::compactVertices()
 	assert(oldBase == newBase);
 
 	updateVertexReferencesAfterCompact(oldBase, newIndices);
+}
+
+template<typename... Args>
+template<typename U>
+mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::index(const typename Mesh::FaceType& f) const
+{
+	using FaceContainer = typename U::FaceContainer;
+	return FaceContainer::index(&f);
+}
+
+template<typename... Args>
+template<typename U>
+mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::index(const typename Mesh::FaceType* f) const
+{
+	using FaceContainer = typename U::FaceContainer;
+	return FaceContainer::index(f);
 }
 
 template<typename... Args>

@@ -54,10 +54,10 @@ void accumulateLaplacianInfo(
 					weight           = std::tan((M_PI * 0.5) - angle);
 				}
 
-				data[v0.id()].sum += f.vertexMod(j + 1)->coord() * weight;
-				data[v1.id()].sum += f.vertex(j)->coord() * weight;
-				data[v0.id()].cnt += weight;
-				data[v1.id()].cnt += weight;
+				data[m.index(v0)].sum += f.vertexMod(j + 1)->coord() * weight;
+				data[m.index(v1)].sum += f.vertex(j)->coord() * weight;
+				data[m.index(v0)].cnt += weight;
+				data[m.index(v1)].cnt += weight;
 			}
 		}
 	}
@@ -69,10 +69,10 @@ void accumulateLaplacianInfo(
 				const VertexType& v1 = *f.vertexMod(j + 1);
 				const CoordType&  p0 = v0.coord();
 				const CoordType&  p1 = v1.coord();
-				data[v0.id()].sum    = p0;
-				data[v1.id()].sum    = p1;
-				data[v0.id()].cnt    = 1;
-				data[v1.id()].cnt    = 1;
+				data[m.index(v0)].sum    = p0;
+				data[m.index(v1)].sum    = p1;
+				data[m.index(v0)].cnt    = 1;
+				data[m.index(v1)].cnt    = 1;
 			}
 		}
 	}
@@ -85,10 +85,10 @@ void accumulateLaplacianInfo(
 				const VertexType& v1 = *f.vertexMod(j + 1);
 				const CoordType&  p0 = v0.coord();
 				const CoordType&  p1 = v1.coord();
-				data[v0.id()].sum += p1;
-				data[v1.id()].sum += p0;
-				++data[v0.id()].cnt;
-				++data[v1.id()].cnt;
+				data[m.index(v0)].sum += p1;
+				data[m.index(v1)].sum += p0;
+				++data[m.index(v0)].cnt;
+				++data[m.index(v1)].cnt;
 			}
 		}
 	}
@@ -129,10 +129,10 @@ void vertexCoordLaplacianSmoothing(
 		std::fill(laplData.begin(), laplData.end(), lpz);
 		internal::accumulateLaplacianInfo(m, laplData, cotangentWeight);
 		for (VertexType& v : m.vertices()) {
-			if (laplData[v.id()].cnt > 0) {
+			if (laplData[m.index(v)].cnt > 0) {
 				if (!smoothSelected || v.isSelected()) {
 					v.coord() =
-						(v.coord() + laplData[v.id()].sum) / (laplData[v.id()].cnt + 1);
+						(v.coord() + laplData[m.index(v)].sum) / (laplData[m.index(v)].cnt + 1);
 				}
 			}
 		}

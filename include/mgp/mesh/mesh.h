@@ -35,15 +35,24 @@ public:
 	void clear();
 
 	template<typename U = Mesh>
+	mesh::ReturnIfHasVertexContainer<U, unsigned int>
+	index(const typename Mesh::VertexType& v) const;
+
+	template<typename U = Mesh>
+	mesh::ReturnIfHasVertexContainer<U, unsigned int>
+	index(const typename Mesh::VertexType* v) const;
+
+	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex();
 
 	template<typename U = Mesh>
-	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertex(const typename Mesh::VertexType::CoordType& p);
+	mesh::ReturnIfHasVertexContainer<U, unsigned int>
+	addVertex(const typename Mesh::VertexType::CoordType& p);
 
 	template<typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertices(unsigned int n);
 
-	template<typename ...VC, typename U = Mesh>
+	template<typename... VC, typename U = Mesh>
 	mesh::ReturnIfHasVertexContainer<U, unsigned int> addVertices(const VC&... v);
 
 	template<typename U = Mesh>
@@ -53,13 +62,22 @@ public:
 	mesh::ReturnIfHasVertexContainer<U, void> compactVertices();
 
 	template<typename U = Mesh>
+	mesh::ReturnIfHasFaceContainer<U, unsigned int>
+	index(const typename Mesh::FaceType& f) const;
+
+	template<typename U = Mesh>
+	mesh::ReturnIfHasFaceContainer<U, unsigned int>
+	index(const typename Mesh::FaceType* f) const;
+
+	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace();
 
 	template<typename U = Mesh, typename... V>
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace(V... args);
 
 	template<typename U = Mesh>
-	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFace(const std::vector<typename Mesh::VertexType*>& v);
+	mesh::ReturnIfHasFaceContainer<U, unsigned int>
+	addFace(const std::vector<typename Mesh::VertexType*>& v);
 
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, unsigned int> addFaces(unsigned int n);
@@ -71,7 +89,7 @@ public:
 	mesh::ReturnIfHasFaceContainer<U, void> compactFaces();
 
 	/// @private
-	template<typename...A>
+	template<typename... A>
 	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);
 
 	void swap(Mesh& m2);
@@ -80,25 +98,28 @@ public:
 
 protected:
 	template<typename U = Mesh>
-	mesh::ReturnIfHasVertexContainer<U, void>
-	updateVertexReferences(const typename U::VertexType* oldBase, const typename U::VertexType* newBase);
+	mesh::ReturnIfHasVertexContainer<U, void> updateVertexReferences(
+		const typename U::VertexType* oldBase,
+		const typename U::VertexType* newBase);
 
 	template<typename U = Mesh>
-	mesh::ReturnIfHasVertexContainer<U, void>
-	updateVertexReferencesAfterCompact(const typename U::VertexType* base, const std::vector<int>& newIndices);
+	mesh::ReturnIfHasVertexContainer<U, void> updateVertexReferencesAfterCompact(
+		const typename U::VertexType* base,
+		const std::vector<int>&       newIndices);
 
 	template<typename U = Mesh>
 	mesh::ReturnIfHasFaceContainer<U, void>
 	updateFaceReferences(const typename U::FaceType* oldBase, const typename U::FaceType* newBase);
 
 	template<typename U = Mesh>
-	mesh::ReturnIfHasFaceContainer<U, void>
-	updateFaceReferencesAfterCompact(const typename U::FaceType* base, const std::vector<int>& newIndices);
+	mesh::ReturnIfHasFaceContainer<U, void> updateFaceReferencesAfterCompact(
+		const typename U::FaceType* base,
+		const std::vector<int>&     newIndices);
 
 	void updateAllOptionalContainerReferences();
 };
 
-template<typename...A>
+template<typename... A>
 inline void swap(Mesh<A...>& m1, Mesh<A...>& m2);
 
 } // namespace mgp

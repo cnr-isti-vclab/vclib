@@ -211,6 +211,13 @@ Container<T, IfIsFace<T>>::enablePerFaceAdjacentFaces()
 }
 
 template<typename T>
+unsigned int Container<T, IfIsFace<T> >::index(const FaceType* f) const
+{
+	assert(!facesVec.empty() && f >= facesVec.data() && f <= &facesVec.back());
+	return f - facesVec.data();
+}
+
+template<typename T>
 void mgp::mesh::Container<T, IfIsFace<T> >::clearFaces()
 {
 	facesVec.clear();

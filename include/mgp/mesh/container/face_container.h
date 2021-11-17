@@ -56,6 +56,7 @@ public:
 
 	Container();
 
+	unsigned int index(const FaceType& f) { return f->id(); }
 	const FaceType& face(unsigned int i) const;
 	FaceType&       face(unsigned int i);
 
@@ -91,6 +92,8 @@ protected:
 	 * due to faces marked as deleted into the container.
 	 */
 	unsigned int fn = 0;
+
+	unsigned int index(const FaceType* f) const;
 
 	void clearFaces();
 

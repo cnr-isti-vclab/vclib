@@ -86,6 +86,8 @@ protected:
 	 */
 	unsigned int vn = 0;
 
+	unsigned int index(const VertexType* v) const;
+
 	void clearVertices();
 
 	unsigned int addVertex();

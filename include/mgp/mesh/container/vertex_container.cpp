@@ -199,6 +199,13 @@ void Container<T, IfIsVertex<T> >::clearVertices()
 }
 
 template<typename T>
+unsigned int Container<T, IfIsVertex<T> >::index(const VertexType* v) const
+{
+	assert(!vertsVec.empty() && v >= vertsVec.data() && v <= &vertsVec.back());
+	return v - vertsVec.data();
+}
+
+template<typename T>
 unsigned int Container<T, IfIsVertex<T>>::addVertex()
 {
 	T* oldB = vertsVec.data();
