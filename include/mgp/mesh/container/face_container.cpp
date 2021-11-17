@@ -141,7 +141,7 @@ Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted)
 			++it;
 		}
 	}
-	return FaceIterator(it, facesVec, jumpDeleted);
+	return FaceIterator(it, facesVec, jumpDeleted && facesVec.size() != fn);
 }
 
 template<typename T>
@@ -154,15 +154,15 @@ template<typename T>
 typename Container<T, IfIsFace<T>>::ConstFaceIterator
 Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted) const
 {
+	auto it = facesVec.begin();
 	if (jumpDeleted) {
-		auto it = facesVec.begin();
+		// if the user asked to jump the deleted faces, and the first face is deleted, we need
+		// to move forward until we find the first non-deleted face
 		while (it != facesVec.end() && it->isDeleted()) {
 			++it;
 		}
-		return ConstFaceIterator(it, facesVec, jumpDeleted);
 	}
-	else
-		return ConstFaceIterator(facesVec.begin(), facesVec, jumpDeleted);
+	return ConstFaceIterator(it, facesVec, jumpDeleted  && facesVec.size() != fn);
 }
 
 template<typename T>
@@ -176,7 +176,7 @@ typename Container<T, IfIsFace<T>>::FaceRangeIterator
 Container<T, IfIsFace<T>>::faces(bool jumpDeleted)
 {
 	return FaceRangeIterator(
-		*this, jumpDeleted, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
+		*this, jumpDeleted && facesVec.size() != fn, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
 }
 
 template<typename T>
@@ -184,7 +184,7 @@ typename Container<T, IfIsFace<T>>::ConstFaceRangeIterator
 Container<T, IfIsFace<T>>::faces(bool jumpDeleted) const
 {
 	return ConstFaceRangeIterator(
-		*this, jumpDeleted, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
+		*this, jumpDeleted && facesVec.size() != fn, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
 }
 
 /**

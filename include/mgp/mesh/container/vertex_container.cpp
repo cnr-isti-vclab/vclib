@@ -141,7 +141,7 @@ Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 			++it;
 		}
 	}
-	return VertexIterator(it, vertsVec, jumpDeleted);
+	return VertexIterator(it, vertsVec, jumpDeleted && vertsVec.size() != vn);
 }
 
 template<typename T>
@@ -154,15 +154,15 @@ template<typename T>
 typename Container<T, IfIsVertex<T>>::ConstVertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted) const
 {
+	auto it = vertsVec.begin();
 	if (jumpDeleted) {
-		auto it = vertsVec.begin();
+		// if the user asked to jump the deleted vertices, and the first vertex is deleted, we need
+		// to move forward until we find the first non-deleted vertex
 		while (it != vertsVec.end() && it->isDeleted()) {
 			++it;
 		}
-		return ConstVertexIterator(it, vertsVec, jumpDeleted);
 	}
-	else
-		return ConstVertexIterator(vertsVec.begin(), vertsVec, jumpDeleted);
+	return ConstVertexIterator(it, vertsVec, jumpDeleted && vertsVec.size() != vn);
 }
 
 template<typename T>
@@ -177,7 +177,7 @@ typename Container<T, IfIsVertex<T>>::VertexRangeIterator
 Container<T, IfIsVertex<T>>::vertices(bool jumpDeleted)
 {
 	return VertexRangeIterator(
-		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
+		*this, jumpDeleted && vertsVec.size() != vn, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
 }
 
 template<typename T>
