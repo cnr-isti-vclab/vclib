@@ -7,6 +7,7 @@
 #define MGP_MESH_CONTAINER_ELEMENT_CONTAINER_H
 
 #include <vector>
+#include "../components_optional/optional_info.h"
 #include "../components_vector/components_vector.h"
 
 namespace mgp::mesh {
@@ -15,7 +16,7 @@ template <typename T>
 class ElementContainer
 {
 public:
-	ElementContainer();
+	ElementContainer() {};
 
 protected:
 	std::vector<T> vec;

@@ -8,7 +8,9 @@
 
 #include "container_t.h"
 
-#include "face_optional_container.h"
+#include <mgp/mesh/elements/face.h>
+
+#include "element_container.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
 
@@ -30,7 +32,7 @@ using IfIsFace = std::enable_if_t<std::is_base_of<FaceTriggerer, T>::value>;
  */
 template<typename T>
 class Container<T, IfIsFace<T>> :
-		public FaceOptionalContainer<T>, public FaceContainerTriggerer
+		public ElementContainer<T>, public FaceContainerTriggerer
 {
 	static_assert(
 		mgp::face::hasBitFlags<T>(),
@@ -42,10 +44,11 @@ class Container<T, IfIsFace<T>> :
 		!mgp::face::hasTriangleBitFlags<T>() || T::VERTEX_NUMBER == 3,
 		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
 
+	using Base = ElementContainer<T>;
+
 protected:
 	// types:
 	using FaceContainer = Container<T, IfIsFace<T>>;
-	using OptionalFaceContainer = FaceOptionalContainer<T>;
 
 public:
 	using FaceType               = T;
@@ -74,18 +77,61 @@ public:
 	FaceRangeIterator      faces(bool jumpDeleted = true);
 	ConstFaceRangeIterator faces(bool jumpDeleted = true) const;
 
-	// hide functions of optional container components
-	// needed to update faces sizes
+	// Color
+	template<typename U = T>
+	face::ReturnIfHasOptionalColor<U, bool> isPerFaceColorEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalColor<U, void> enablePerFaceColor();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalColor<U, void> disablePerFaceColor();
+
+	// Mutable Bit Flags
+	template<typename U = T>
+	face::ReturnIfHasOptionalMutableBitFlags<U, bool> isPerFaceMutableBitFlagsEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerFaceMutableBitFlags();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalMutableBitFlags<U, void> disablePerFaceMutableBitFlags();
+
+	// Normal
+	template<typename U = T>
+	face::ReturnIfHasOptionalNormal<U, bool> isPerFaceNormalEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalNormal<U, void> enablePerFaceNormal();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalNormal<U, void> disablePerFaceNormal();
+
+	// Scalar
+	template<typename U = T>
+	face::ReturnIfHasOptionalScalar<U, bool> isPerFaceScalarEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalScalar<U, void> enablePerFaceScalar();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalScalar<U, void> disablePerFaceScalar();
+
+	// AdjacentFaces
+	template<typename U = T>
+	face::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerFaceAdjacentFacesEnabled() const;
+
 	template<typename U = T>
 	face::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerFaceAdjacentFaces();
 
-protected:
-	/**
-	 * @brief faces: the vector of faces, where each face contains only its static components.
-	 * Optional components will be contained in the optionalComponentsVector.
-	 */
-	std::vector<T> facesVec;
+	template<typename U = T>
+	face::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerFaceAdjacentFaces();
 
+	// Custom Components
+	template<typename K, typename U = T>
+	face::ReturnIfHasCustomComponents<U, void> addPerFaceCustomComponent(const std::string& name);
+
+protected:
 	/**
 	 * @brief fn: the number of faces in the container. Could be different from faces.size()
 	 * due to faces marked as deleted into the container.
@@ -99,6 +145,8 @@ protected:
 	unsigned int addFace();
 	unsigned int addFaces(unsigned int nFaces);
 	void reserveFaces(unsigned int size);
+
+	void setContainerPointer(FaceType& f);
 
 	std::vector<int> compactFaces();
 
@@ -125,6 +173,9 @@ using ReturnIfHasFaceContainer = typename std::enable_if<hasFaceContainer<U>::va
 
 template <typename T>
 constexpr bool hasFaces() { return hasFaceContainer<T>::value;}
+
+template <typename T>
+constexpr bool hasFaceOptionalContainer() { return comp::hasOptionalInfo<typename T::FaceType>();}
 
 } // namespace mgp::mesh
 

@@ -29,7 +29,7 @@ template<typename T>
 const typename Container<T, IfIsFace<T>>::FaceType&
 Container<T, IfIsFace<T>>::face(unsigned int i) const
 {
-	return facesVec[i];
+	return Base::vec[i];
 }
 
 /**
@@ -46,7 +46,7 @@ template<typename T>
 typename Container<T, IfIsFace<T>>::FaceType&
 Container<T, IfIsFace<T>>::face(unsigned int i)
 {
-	return facesVec[i];
+	return Base::vec[i];
 }
 
 /**
@@ -76,7 +76,7 @@ unsigned int Container<T, IfIsFace<T>>::faceNumber() const
 template<typename T>
 unsigned int Container<T, IfIsFace<T>>::faceContainerSize() const
 {
-	return facesVec.size();
+	return Base::vec.size();
 }
 
 template<typename T>
@@ -98,7 +98,7 @@ unsigned int Container<T, IfIsFace<T> >::deletedFaceNumber() const
 template<typename T>
 void Container<T, IfIsFace<T> >::deleteFace(unsigned int i)
 {
-	facesVec[i].setDeleted();
+	Base::vec[i].setDeleted();
 	fn--;
 }
 
@@ -117,12 +117,12 @@ void Container<T, IfIsFace<T> >::deleteFace(unsigned int i)
 template<typename T>
 unsigned int Container<T, IfIsFace<T> >::faceIdIfCompact(unsigned int id) const
 {
-	if (facesVec.size() == fn)
+	if (Base::vec.size() == fn)
 		return id;
 	else {
 		unsigned int cnt = 0;
 		for (unsigned int i = 0; i < id; i++){
-			if (!facesVec[i].isDeleted())
+			if (!Base::vec[i].isDeleted())
 				++cnt;
 		}
 		return cnt;
@@ -133,42 +133,42 @@ template<typename T>
 typename Container<T, IfIsFace<T>>::FaceIterator
 Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted)
 {
-	auto it = facesVec.begin();
+	auto it = Base::vec.begin();
 	if (jumpDeleted) {
 		// if the user asked to jump the deleted faces, and the first face is deleted, we need
 		// to move forward until we find the first non-deleted face
-		while (it != facesVec.end() && it->isDeleted()) {
+		while (it != Base::vec.end() && it->isDeleted()) {
 			++it;
 		}
 	}
-	return FaceIterator(it, facesVec, jumpDeleted && facesVec.size() != fn);
+	return FaceIterator(it, Base::vec, jumpDeleted && Base::vec.size() != fn);
 }
 
 template<typename T>
 typename Container<T, IfIsFace<T>>::FaceIterator Container<T, IfIsFace<T>>::faceEnd()
 {
-	return FaceIterator(facesVec.end(), facesVec);
+	return FaceIterator(Base::vec.end(), Base::vec);
 }
 
 template<typename T>
 typename Container<T, IfIsFace<T>>::ConstFaceIterator
 Container<T, IfIsFace<T>>::faceBegin(bool jumpDeleted) const
 {
-	auto it = facesVec.begin();
+	auto it = Base::vec.begin();
 	if (jumpDeleted) {
 		// if the user asked to jump the deleted faces, and the first face is deleted, we need
 		// to move forward until we find the first non-deleted face
-		while (it != facesVec.end() && it->isDeleted()) {
+		while (it != Base::vec.end() && it->isDeleted()) {
 			++it;
 		}
 	}
-	return ConstFaceIterator(it, facesVec, jumpDeleted  && facesVec.size() != fn);
+	return ConstFaceIterator(it, Base::vec, jumpDeleted  && Base::vec.size() != fn);
 }
 
 template<typename T>
 typename Container<T, IfIsFace<T>>::ConstFaceIterator Container<T, IfIsFace<T>>::faceEnd() const
 {
-	return ConstFaceIterator(facesVec.end(), facesVec);
+	return ConstFaceIterator(Base::vec.end(), Base::vec);
 }
 
 template<typename T>
@@ -176,7 +176,7 @@ typename Container<T, IfIsFace<T>>::FaceRangeIterator
 Container<T, IfIsFace<T>>::faces(bool jumpDeleted)
 {
 	return FaceRangeIterator(
-		*this, jumpDeleted && facesVec.size() != fn, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
+		*this, jumpDeleted && Base::vec.size() != fn, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
 }
 
 template<typename T>
@@ -184,7 +184,173 @@ typename Container<T, IfIsFace<T>>::ConstFaceRangeIterator
 Container<T, IfIsFace<T>>::faces(bool jumpDeleted) const
 {
 	return ConstFaceRangeIterator(
-		*this, jumpDeleted && facesVec.size() != fn, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
+		*this, jumpDeleted && Base::vec.size() != fn, &FaceContainer::faceBegin, &FaceContainer::faceEnd);
+}
+
+/**
+ * @brief Checks if the face Optional Color is
+ * enabled. This function is available **only if the Face Element has the OptionalColor
+ * component**.
+ * @return true if the Optional Color is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalColor<U, bool>
+Container<T, IfIsFace<T>>::isPerFaceColorEnabled() const
+{
+	return Base::optionalVec.isColorEnabled();
+}
+
+/**
+ * @brief Enables the Optional Color of the face.
+ * This function is available **only if the Face Element has the OptionalColor Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalColor<U, void>
+Container<T, IfIsFace<T>>::enablePerFaceColor()
+{
+	Base::optionalVec.enableColor(faceContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Color of the face.
+ * This function is available **only if the Face Element has the OptionalColor Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalColor<U, void>
+Container<T, IfIsFace<T>>::disablePerFaceColor()
+{
+	Base::optionalVec.disableColor();
+}
+
+/**
+ * @brief Checks if the face Optional
+ * Mutable Bit Flags is enabled. This function is available **only if the Face Element has the
+ * OptionalMutableBitFlags Component**.
+ * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalMutableBitFlags<U, bool>
+Container<T, IfIsFace<T>>::isPerFaceMutableBitFlagsEnabled() const
+{
+	Base::optionalVec.isMutableBitFlagsEnabled();
+}
+
+/**
+ * @brief Enables the Optional Mutable Flags of the face.
+ * This function is available **only if the Face Element has the OptionalMutableFlags Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalMutableBitFlags<U, void>
+Container<T, IfIsFace<T>>::enablePerFaceMutableBitFlags()
+{
+	Base::optionalVec.enableMutableBitFlags(faceContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Mutable Flags of the face.
+ * This function is available **only if the Face Element has the OptionalMutableBitFlags
+ * Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalMutableBitFlags<U, void>
+Container<T, IfIsFace<T>>::disablePerFaceMutableBitFlags()
+{
+	Base::optionalVec.disableMutableBitFlags();
+}
+
+/**
+ * @brief Checks if the face Optional Normal is
+ * enabled. This function is available **only if the Face Element has the OptionalNormal
+ * Component**.
+ * @return true if the Optional Normal is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalNormal<U, bool>
+Container<T, IfIsFace<T>>::isPerFaceNormalEnabled() const
+{
+	return Base::optionalVec.isNormalEnabled();
+}
+
+/**
+ * @brief Enables the Optional Normal of the face.
+ * This function is available **only if the Face Element has the OptionalNormal Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalNormal<U, void>
+Container<T, IfIsFace<T>>::enablePerFaceNormal()
+{
+	Base::optionalVec.enableNormal(faceContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Normal of the face.
+ * This function is available **only if the Face Element has the OptionalNormal Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalNormal<U, void>
+Container<T, IfIsFace<T>>::disablePerFaceNormal()
+{
+	Base::optionalVec.disableNormal();
+}
+
+/**
+ * @brief Checks if the face Optional Scalar is
+ * enabled. This function is available **only if the Face Element has the OptionalScalar
+ * Component**.
+ * @return true if the Optional Scalar is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalScalar<U, bool>
+Container<T, IfIsFace<T>>::isPerFaceScalarEnabled() const
+{
+	return Base::optionalVec.isScalarEnabled();
+}
+/**
+ * @brief Enables the Optional Scalar of the face.
+ * This function is available **only if the Face Element has the OptionalScalar Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalScalar<U, void>
+Container<T, IfIsFace<T>>::enablePerFaceScalar()
+{
+	Base::optionalVec.enableScalar(faceContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Scalar of the face.
+ * This function is available **only if the Face Element has the OptionalScalar Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalScalar<U, void>
+Container<T, IfIsFace<T>>::disablePerFaceScalar()
+{
+	Base::optionalVec.disableScalar();
+}
+
+/**
+ * @brief Checks if the face Optional Adjacent
+ * Faces is enabled. This function is available **only if the Face Element has the
+ * OptionalAdjacentFaces Component**.
+ * @return true if the Optional AdjacentFaces is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalAdjacentFaces<U, bool>
+Container<T, IfIsFace<T>>::isPerFaceAdjacentFacesEnabled() const
+{
+	return Base::optionalVec.isAdjacentFacesEnabled();
 }
 
 /**
@@ -201,7 +367,7 @@ template<typename U>
 face::ReturnIfHasOptionalAdjacentFaces<U, void>
 Container<T, IfIsFace<T>>::enablePerFaceAdjacentFaces()
 {
-	OptionalFaceContainer::enablePerFaceAdjacentFaces();
+	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
 	if (N < 0) {
 		for (T& f : faces()) {
@@ -210,37 +376,57 @@ Container<T, IfIsFace<T>>::enablePerFaceAdjacentFaces()
 	}
 }
 
+/**
+ * @brief Disables the Optional Adjacent Faces of the face.
+ * This function is available **only if the Face Element has the OptionalAdjacentFaces Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalAdjacentFaces<U, void>
+Container<T, IfIsFace<T>>::disablePerFaceAdjacentFaces()
+{
+	Base::optionalVec.disableAdjacentFaces();
+}
+
+template<typename T>
+template<typename K, typename U>
+face::ReturnIfHasCustomComponents<U, void>
+Container<T, IfIsFace<T>>::addPerFaceCustomComponent(const std::string& name)
+{
+	Base::optionalVec.template addNewComponent<K>(name, faceContainerSize());
+}
+
 template<typename T>
 unsigned int Container<T, IfIsFace<T> >::index(const FaceType* f) const
 {
-	assert(!facesVec.empty() && f >= facesVec.data() && f <= &facesVec.back());
-	return f - facesVec.data();
+	assert(!Base::vec.empty() && f >= Base::vec.data() && f <= &Base::vec.back());
+	return f - Base::vec.data();
 }
 
 template<typename T>
 void mgp::mesh::Container<T, IfIsFace<T> >::clearFaces()
 {
-	facesVec.clear();
+	Base::vec.clear();
 	fn = 0;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
-		OptionalFaceContainer::clear();
+		Base::optionalVec.clear();
 	}
 }
 
 template<typename T>
 unsigned int Container<T, IfIsFace<T>>::addFace()
 {
-	T* oldB = facesVec.data();
-	facesVec.push_back(FaceType());
-	T* newB = facesVec.data();
+	T* oldB = Base::vec.data();
+	Base::vec.push_back(FaceType());
+	T* newB = Base::vec.data();
 	++fn;
-	facesVec[facesVec.size() - 1]._id = facesVec.size() - 1;
+	Base::vec[Base::vec.size() - 1]._id = Base::vec.size() - 1;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
-		OptionalFaceContainer::setContainerPointer(facesVec[facesVec.size() - 1]);
-		OptionalFaceContainer::resize(facesVec.size());
+		setContainerPointer(Base::vec[Base::vec.size() - 1]);
+		Base::optionalVec.resize(Base::vec.size());
 	}
 	updateFaceReferences(oldB, newB);
-	return facesVec[facesVec.size() - 1]._id;
+	return Base::vec[Base::vec.size() - 1]._id;
 }
 
 /**
@@ -254,18 +440,18 @@ unsigned int Container<T, IfIsFace<T>>::addFace()
 template<typename T>
 unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces)
 {
-	unsigned int baseId = facesVec.size();
-	T* oldB = facesVec.data();
-	facesVec.resize(facesVec.size() + nFaces);
-	T* newB = facesVec.data();
+	unsigned int baseId = Base::vec.size();
+	T* oldB = Base::vec.data();
+	Base::vec.resize(Base::vec.size() + nFaces);
+	T* newB = Base::vec.data();
 	fn += nFaces;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
-		OptionalFaceContainer::resize(facesVec.size());
+		Base::optionalVec::resize(Base::vec.size());
 	}
-	for (unsigned int i = baseId; i < facesVec.size(); ++i){
-		facesVec[i]._id = i;
+	for (unsigned int i = baseId; i < Base::vec.size(); ++i){
+		Base::vec[i]._id = i;
 		if constexpr (face::hasOptionalInfo<FaceType>()) {
-			OptionalFaceContainer::setContainerPointer(facesVec[i]);
+			setContainerPointer(Base::vec[i]);
 		}
 	}
 	updateFaceReferences(oldB, newB);
@@ -275,13 +461,19 @@ unsigned int mgp::mesh::Container<T, IfIsFace<T> >::addFaces(unsigned int nFaces
 template<typename T>
 void Container<T, IfIsFace<T>>::reserveFaces(unsigned int size)
 {
-	T* oldB = facesVec.data();
-	facesVec.reserve(size);
-	T* newB = facesVec.data();
+	T* oldB = Base::vec.data();
+	Base::vec.reserve(size);
+	T* newB = Base::vec.data();
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
-		OptionalFaceContainer::reserve(size);
+		Base::optionalVec.reserve(size);
 	}
 	updateFaceReferences(oldB, newB);
+}
+
+template<typename T>
+void Container<T, IfIsFace<T> >::setContainerPointer(FaceType& f)
+{
+	f.setContainerPointer(&(Base::optionalVec));
 }
 
 /**
@@ -297,12 +489,12 @@ template<typename T>
 std::vector<int> mgp::mesh::Container<T, IfIsFace<T> >::compactFaces()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	std::vector<int> newIndices(facesVec.size());
+	std::vector<int> newIndices(Base::vec.size());
 	unsigned int k = 0;
-	for (unsigned int i = 0; i < facesVec.size(); ++i){
-		if (!facesVec[i].isDeleted()){
-			facesVec[k] = facesVec[i];
-			facesVec[k]._id = k;
+	for (unsigned int i = 0; i < Base::vec.size(); ++i){
+		if (!Base::vec[i].isDeleted()){
+			Base::vec[k] = Base::vec[i];
+			Base::vec[k]._id = k;
 			newIndices[i] = k;
 			k++;
 		}
@@ -310,10 +502,10 @@ std::vector<int> mgp::mesh::Container<T, IfIsFace<T> >::compactFaces()
 			newIndices[i] = -1;
 		}
 	}
-	facesVec.resize(k);
-	T* base = facesVec.data();
+	Base::vec.resize(k);
+	T* base = Base::vec.data();
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
-		OptionalFaceContainer::compact(newIndices);
+		Base::optionalVec.compact(newIndices);
 	}
 	updateFaceReferencesAfterCompact(base, newIndices);
 	return newIndices;
@@ -328,7 +520,7 @@ void Container<T, IfIsFace<T> >::updateFaceReferences(const T* oldBase, const T*
 		}
 	}
 	else if constexpr(mgp::face::hasOptionalAdjacentFaces<T>()) {
-		if (OptionalFaceContainer::isPerFaceAdjacentFacesEnabled()) {
+		if (Base::optionalVec.isAdjacentFacesEnabled()) {
 			for (FaceType& f : faces()) {
 				f.updateFaceReferences(oldBase, newBase);
 			}
@@ -347,7 +539,7 @@ void Container<T, IfIsFace<T> >::updateFaceReferencesAfterCompact(
 		}
 	}
 	else if constexpr(mgp::face::hasOptionalAdjacentFaces<T>()) {
-		if (OptionalFaceContainer::isPerFaceAdjacentFacesEnabled()) {
+		if (Base::optionalVec.isAdjacentFacesEnabled()) {
 			for (FaceType& f : faces()) {
 				f.updateFaceReferencesAfterCompact(base, newIndices);
 			}

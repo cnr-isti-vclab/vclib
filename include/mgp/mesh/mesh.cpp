@@ -42,7 +42,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other vertex container data
-		updateFaceReferences(oth.facesVec.data(), FaceContainer::facesVec.data());
+		updateFaceReferences(oth.FaceContainer::vec.data(), FaceContainer::FaceContainer::vec.data());
 	}
 }
 
@@ -296,9 +296,9 @@ mesh::ReturnIfHasFaceContainer<U, unsigned int> Mesh<Args...>::addFace()
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
-	Face*        oldBase = FaceContainer::facesVec.data();
+	Face*        oldBase = FaceContainer::vec.data();
 	unsigned int fid     = FaceContainer::addFace();
-	Face*        newBase = FaceContainer::facesVec.data();
+	Face*        newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
 	return fid;
@@ -347,9 +347,9 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::reserveFaces(unsigned int
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
-	Face*      oldBase = FaceContainer::facesVec.data();
+	Face*      oldBase = FaceContainer::vec.data();
 	FaceContainer::reserveFaces(n);
-	Face*      newBase = FaceContainer::facesVec.data();
+	Face*      newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
 }
@@ -361,9 +361,9 @@ mesh::ReturnIfHasFaceContainer<U, void> Mesh<Args...>::compactFaces()
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
-	Face*      oldBase = FaceContainer::facesVec.data();
+	Face*      oldBase = FaceContainer::vec.data();
 	std::vector<int> newIndices = FaceContainer::compactFaces();
-	Face*      newBase = FaceContainer::facesVec.data();
+	Face*      newBase = FaceContainer::vec.data();
 	assert(oldBase == newBase);
 
 	updateFaceReferencesAfterCompact(oldBase, newIndices);
@@ -486,8 +486,9 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 		m2BaseV = m2.vertsVec.data();
 	}
 	if constexpr (mesh::hasFaces<Mesh<A...>>()) {
-		m1BaseF = m1.facesVec.data();
-		m2BaseF = m2.facesVec.data();
+		using FaceContainer = typename Mesh<A...>::FaceContainer;
+		m1BaseF = m1.FaceContainer::vec.data();
+		m2BaseF = m2.FaceContainer::vec.data();
 	}
 
 	// actual swap of all the containers and the components of the mesh
@@ -508,8 +509,9 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	}
 	if constexpr (mesh::hasFaces<Mesh<A...>>()) {
 		using FaceType = typename Mesh<A...>::FaceType;
-		m1.updateFaceReferences((FaceType*)m2BaseF, m1.facesVec.data());
-		m2.updateFaceReferences((FaceType*)m1BaseF, m2.facesVec.data());
+		using FaceContainer = typename Mesh<A...>::FaceContainer;
+		m1.updateFaceReferences((FaceType*)m2BaseF, m1.FaceContainer::vec.data());
+		m2.updateFaceReferences((FaceType*)m1BaseF, m2.FaceContainer::vec.data());
 	}
 }
 
