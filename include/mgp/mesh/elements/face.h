@@ -11,13 +11,9 @@
 
 namespace mgp::mesh {
 
-// Container class declaration
-template<typename, typename>
-class Container;
-
-// FaceOptionalContainer class declaration
-template<typename, typename>
-class FaceOptionalContainer;
+// FaceContainer class declaration
+template<typename>
+class FaceContainer;
 
 } // namespace mgp::mesh
 
@@ -31,11 +27,8 @@ class FaceTriggerer
 template<typename... Args>
 class Face : public FaceTriggerer, public Args...
 {
-	template<typename, typename>
-	friend class mesh::Container;
-
-	template<typename, typename>
-	friend class mesh::FaceOptionalContainer;
+	template<typename>
+	friend class mesh::FaceContainer;
 
 	// Vertex references component of the Face
 	using VRefs = typename Face::VertexReferences;

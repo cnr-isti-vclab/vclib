@@ -36,12 +36,12 @@ class Argument : public T
 };
 
 template <typename T>
-class Argument<T, IfIsVertex<T>>
+class Argument<T, IfIsVertex<T>> : public VertexContainer<T>
 {
 };
 
 template <typename T>
-class Argument<T, IfIsFace<T>>
+class Argument<T, IfIsFace<T>> : public FaceContainer<T>
 {
 };
 

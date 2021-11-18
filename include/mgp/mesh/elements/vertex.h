@@ -11,13 +11,9 @@
 
 namespace mgp::mesh {
 
-// Container class declaration
-template<typename, typename>
-class Container;
-
-// VertexOptionalContainer class declaration
-template<typename, typename>
-class VertexOptionalContainer;
+// VertexContainr class declaration
+template<typename>
+class VertexContainer;
 
 } // namespace mgp::mesh
 
@@ -31,11 +27,9 @@ class VertexTriggerer
 template<typename... Args>
 class Vertex : public VertexTriggerer, public Args...
 {
-	template<typename, typename>
-	friend class mesh::Container;
+	template<typename>
+	friend class mesh::VertexContainer;
 
-	template<typename, typename>
-	friend class mesh::VertexOptionalContainer;
 public:
 	unsigned int id() const { return _id; }
 protected:

@@ -25,7 +25,7 @@ namespace mgp {
  * the templates that compose a specific Mesh definition.
  */
 template<typename... Args>
-class Mesh : public mesh::Container<Args>...
+class Mesh : public mesh::Argument<Args>...
 {
 public:
 	Mesh();

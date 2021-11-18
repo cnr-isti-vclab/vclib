@@ -23,7 +23,7 @@ Mesh<Args...>::Mesh()
  */
 template<typename... Args>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
-		mesh::Container<Args>(
+		mesh::Argument<Args>(
 			oth)... // call auto copy constructors for all the container elements and components
 {
 	// update all the optional container references
@@ -496,7 +496,7 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	// using pack expansion: swap will be called for each of the containers (or components!) that
 	// compose the Mesh
 	using std::swap;
-	(swap((mgp::mesh::Container<A>&) m1, (mgp::mesh::Container<A>&) m2), ...);
+	(swap((mgp::mesh::Argument<A>&) m1, (mgp::mesh::Argument<A>&) m2), ...);
 
 	// set to all the elements, the new pointer of the optional containers
 	m1.updateAllOptionalContainerReferences();

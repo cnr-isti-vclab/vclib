@@ -44,7 +44,6 @@ set(HEADERS
 	include/mgp/mesh/mesh_argument.h
 	include/mgp/mesh/mesh_components.h
 	include/mgp/mesh/requirements.h
-	include/mgp/mesh/container/container_t.h
 	include/mgp/mesh/container/containers.h
 	include/mgp/mesh/container/element_container.h
 	include/mgp/mesh/container/face_container.h

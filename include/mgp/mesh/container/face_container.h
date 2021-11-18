@@ -6,8 +6,6 @@
 #ifndef MGP_MESH_CONTAINER_FACE_CONTAINER_H
 #define MGP_MESH_CONTAINER_FACE_CONTAINER_H
 
-#include "container_t.h"
-
 #include <mgp/mesh/elements/face.h>
 
 #include "element_container.h"
@@ -18,10 +16,6 @@ namespace mgp::mesh {
 
 class FaceContainerTriggerer {};
 
-// to shorten triggerer for Face class
-template<typename T>
-using IfIsFace = std::enable_if_t<std::is_base_of<FaceTriggerer, T>::value>;
-
 /**
  * @brief The Face Container class, will be used when the template argument given to the Mesh is a
  * mgp::Face.
@@ -31,7 +25,7 @@ using IfIsFace = std::enable_if_t<std::is_base_of<FaceTriggerer, T>::value>;
  * enablers/disablers of the eventual optional components of the face.
  */
 template<typename T>
-class Container<T, IfIsFace<T>> :
+class FaceContainer :
 		public ElementContainer<T>, public FaceContainerTriggerer
 {
 	static_assert(
@@ -45,19 +39,16 @@ class Container<T, IfIsFace<T>> :
 		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
 
 	using Base = ElementContainer<T>;
-
-protected:
-	// types:
-	using FaceContainer = Container<T, IfIsFace<T>>;
+	using FaceContainerType = FaceContainer<T>;
 
 public:
 	using FaceType               = T;
 	using FaceIterator           = ContainerIterator<T>;
 	using ConstFaceIterator      = ConstContainerIterator<T>;
-	using FaceRangeIterator      = ContainerRangeIterator<FaceContainer, FaceIterator>;
-	using ConstFaceRangeIterator = ConstContainerRangeIterator<FaceContainer, ConstFaceIterator>;
+	using FaceRangeIterator      = ContainerRangeIterator<FaceContainerType, FaceIterator>;
+	using ConstFaceRangeIterator = ConstContainerRangeIterator<FaceContainerType, ConstFaceIterator>;
 
-	Container();
+	FaceContainer();
 
 	const FaceType& face(unsigned int i) const;
 	FaceType&       face(unsigned int i);

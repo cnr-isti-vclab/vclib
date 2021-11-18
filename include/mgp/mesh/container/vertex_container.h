@@ -6,8 +6,6 @@
 #ifndef MGP_MESH_CONTAINER_VERTEX_CONTAINER_H
 #define MGP_MESH_CONTAINER_VERTEX_CONTAINER_H
 
-#include "container_t.h"
-
 #include <mgp/mesh/elements/vertex.h>
 
 #include "element_container.h"
@@ -16,11 +14,9 @@
 
 namespace mgp::mesh {
 
-class VertexContainerTriggerer {};
-
-// to shorten triggerer for Vertex class
-template<typename T>
-using IfIsVertex = std::enable_if_t<std::is_base_of<VertexTriggerer, T>::value>;
+class VertexContainerTriggerer
+{
+};
 
 /**
  * @brief The Vertex Container class, will be used when the template argument given to the Mesh is a
@@ -31,8 +27,7 @@ using IfIsVertex = std::enable_if_t<std::is_base_of<VertexTriggerer, T>::value>;
  * enablers/disablers of the eventual optional components of the vertex.
  */
 template<typename T>
-class Container<T, IfIsVertex<T>> :
-		public ElementContainer<T>, public VertexContainerTriggerer
+class VertexContainer : public ElementContainer<T>, public VertexContainerTriggerer
 {
 	static_assert(
 		mgp::vert::hasBitFlags<T>(),
@@ -43,20 +38,18 @@ class Container<T, IfIsVertex<T>> :
 		"You should include Coordinate as Vertex component in your Mesh definition.");
 
 	using Base = ElementContainer<T>;
-
-protected:
-	// types:
-	using VertexContainer = Container<T, IfIsVertex<T>>;
+	using VertexContainerType = VertexContainer<T>;
 
 public:
-	using VertexType               = T;
-	using VertexCoordType          = typename T::CoordType;
-	using VertexIterator           = ContainerIterator<T>;
-	using ConstVertexIterator      = ConstContainerIterator<T>;
-	using VertexRangeIterator      = ContainerRangeIterator<VertexContainer, VertexIterator>;
-	using ConstVertexRangeIterator = ConstContainerRangeIterator<VertexContainer, ConstVertexIterator>;
+	using VertexType          = T;
+	using VertexCoordType     = typename T::CoordType;
+	using VertexIterator      = ContainerIterator<T>;
+	using ConstVertexIterator = ConstContainerIterator<T>;
+	using VertexRangeIterator = ContainerRangeIterator<VertexContainerType, VertexIterator>;
+	using ConstVertexRangeIterator =
+		ConstContainerRangeIterator<VertexContainerType, ConstVertexIterator>;
 
-	Container();
+	VertexContainer();
 
 	const VertexType& vertex(unsigned int i) const;
 	VertexType&       vertex(unsigned int i);
@@ -163,7 +156,7 @@ protected:
 
 	unsigned int addVertex();
 	unsigned int addVertices(unsigned int nVertices);
-	void reserveVertices(unsigned int size);
+	void         reserveVertices(unsigned int size);
 
 	void setContainerPointer(VertexType& v);
 
@@ -184,18 +177,23 @@ protected:
  * Detector to check if a class has (inherits) a VertexContainer
  */
 
-template <typename  T>
+template<typename T>
 using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
 
 template<typename U, typename T>
 using ReturnIfHasVertexContainer = typename std::enable_if<hasVertexContainerT<U>::value, T>::type;
 
-template <typename T>
-constexpr bool hasVertices() { return hasVertexContainerT<T>::value;}
+template<typename T>
+constexpr bool hasVertices()
+{
+	return hasVertexContainerT<T>::value;
+}
 
-template <typename T>
-constexpr bool hasVertexOptionalContainer() { return comp::hasOptionalInfo<typename T::VertexType>();}
-
+template<typename T>
+constexpr bool hasVertexOptionalContainer()
+{
+	return comp::hasOptionalInfo<typename T::VertexType>();
+}
 
 } // namespace mgp::mesh
 

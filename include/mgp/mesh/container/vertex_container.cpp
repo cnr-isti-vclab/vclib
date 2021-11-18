@@ -8,15 +8,15 @@
 namespace mgp::mesh {
 
 /**
- * @brief Container::Container Empty constructor that creates an empty container of Vertices.
+ * @brief Empty constructor that creates an empty container of Vertices.
  */
 template<typename T>
-Container<T, IfIsVertex<T>>::Container()
+VertexContainer<T>::VertexContainer()
 {
 }
 
 /**
- * @brief Container::vertex Returns a const reference of the vertex at the i-th position
+ * @brief Returns a const reference of the vertex at the i-th position
  * in the Vertex Container of the Mesh, which will be the vertex having id = i.
  *
  * This function does not perform any sanity check: if i is less than vertexContainerSize(), this
@@ -26,8 +26,8 @@ Container<T, IfIsVertex<T>>::Container()
  * @param i: the id of the vertex that will be returned.
  */
 template<typename T>
-const typename Container<T, IfIsVertex<T>>::VertexType&
-Container<T, IfIsVertex<T>>::vertex(unsigned int i) const
+const typename VertexContainer<T>::VertexType&
+VertexContainer<T>::vertex(unsigned int i) const
 {
 	return Base::vec[i];
 }
@@ -43,8 +43,8 @@ Container<T, IfIsVertex<T>>::vertex(unsigned int i) const
  * @param i: the id of the vertex that will be returned.
  */
 template<typename T>
-typename Container<T, IfIsVertex<T>>::VertexType&
-Container<T, IfIsVertex<T>>::vertex(unsigned int i)
+typename VertexContainer<T>::VertexType&
+VertexContainer<T>::vertex(unsigned int i)
 {
 	return Base::vec[i];
 }
@@ -59,7 +59,7 @@ Container<T, IfIsVertex<T>>::vertex(unsigned int i)
  * @return the number of non-deleted vertices of the Mesh.
  */
 template<typename T>
-unsigned int Container<T, IfIsVertex<T>>::vertexNumber() const
+unsigned int VertexContainer<T>::vertexNumber() const
 {
 	return vn;
 }
@@ -74,13 +74,13 @@ unsigned int Container<T, IfIsVertex<T>>::vertexNumber() const
  * @return the number of all the vertices contained in the Mesh.
  */
 template<typename T>
-unsigned int Container<T, IfIsVertex<T> >::vertexContainerSize() const
+unsigned int VertexContainer<T>::vertexContainerSize() const
 {
 	return Base::vec.size();
 }
 
 template<typename T>
-unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::deletedVertexNumber() const
+unsigned int mgp::mesh::VertexContainer<T>::deletedVertexNumber() const
 {
 	return vertexContainerSize() - vertexNumber();
 }
@@ -96,7 +96,7 @@ unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::deletedVertexNumber() cons
  * @param i: the id of the vertex that will be marked as deleted.
  */
 template<typename T>
-void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
+void VertexContainer<T>::deleteVertex(unsigned int i)
 {
 	Base::vec[i].setDeleted();
 	--vn;
@@ -115,7 +115,7 @@ void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
  * @return
  */
 template<typename T>
-unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::vertexIdIfCompact(unsigned int id) const
+unsigned int mgp::mesh::VertexContainer<T>::vertexIdIfCompact(unsigned int id) const
 {
 	if (Base::vec.size() == vn)
 		return id;
@@ -130,8 +130,8 @@ unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::vertexIdIfCompact(unsigned
 }
 
 template<typename T>
-typename Container<T, IfIsVertex<T>>::VertexIterator
-Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
+typename VertexContainer<T>::VertexIterator
+VertexContainer<T>::vertexBegin(bool jumpDeleted)
 {
 	auto it = Base::vec.begin();
 	if (jumpDeleted) {
@@ -145,14 +145,14 @@ Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 }
 
 template<typename T>
-typename Container<T, IfIsVertex<T>>::VertexIterator Container<T, IfIsVertex<T>>::vertexEnd()
+typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexEnd()
 {
 	return VertexIterator(Base::vec.end(), Base::vec);
 }
 
 template<typename T>
-typename Container<T, IfIsVertex<T>>::ConstVertexIterator
-Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted) const
+typename VertexContainer<T>::ConstVertexIterator
+VertexContainer<T>::vertexBegin(bool jumpDeleted) const
 {
 	auto it = Base::vec.begin();
 	if (jumpDeleted) {
@@ -166,23 +166,23 @@ Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted) const
 }
 
 template<typename T>
-typename Container<T, IfIsVertex<T>>::ConstVertexIterator
-Container<T, IfIsVertex<T>>::vertexEnd() const
+typename VertexContainer<T>::ConstVertexIterator
+VertexContainer<T>::vertexEnd() const
 {
 	return ConstVertexIterator(Base::vec.end(), Base::vec);
 }
 
 template<typename T>
-typename Container<T, IfIsVertex<T>>::VertexRangeIterator
-Container<T, IfIsVertex<T>>::vertices(bool jumpDeleted)
+typename VertexContainer<T>::VertexRangeIterator
+VertexContainer<T>::vertices(bool jumpDeleted)
 {
 	return VertexRangeIterator(
 		*this, jumpDeleted && Base::vec.size() != vn, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
 }
 
 template<typename T>
-typename Container<T, IfIsVertex<T>>::ConstVertexRangeIterator
-Container<T, IfIsVertex<T>>::vertices(bool jumpDeleted) const
+typename VertexContainer<T>::ConstVertexRangeIterator
+VertexContainer<T>::vertices(bool jumpDeleted) const
 {
 	return ConstVertexRangeIterator(
 		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
@@ -197,7 +197,7 @@ Container<T, IfIsVertex<T>>::vertices(bool jumpDeleted) const
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalColor<U, bool>
-Container<T, IfIsVertex<T>>::isPerVertexColorEnabled() const
+VertexContainer<T>::isPerVertexColorEnabled() const
 {
 	return Base::optionalVec.isColorEnabled();
 }
@@ -209,7 +209,7 @@ Container<T, IfIsVertex<T>>::isPerVertexColorEnabled() const
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalColor<U, void>
-Container<T, IfIsVertex<T>>::enablePerVertexColor()
+VertexContainer<T>::enablePerVertexColor()
 {
 	Base::optionalVec.enableColor(vertexContainerSize());
 }
@@ -221,7 +221,7 @@ Container<T, IfIsVertex<T>>::enablePerVertexColor()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalColor<U, void>
-Container<T, IfIsVertex<T>>::disablePerVertexColor()
+VertexContainer<T>::disablePerVertexColor()
 {
 	Base::optionalVec.disableColor();
 }
@@ -235,7 +235,7 @@ Container<T, IfIsVertex<T>>::disablePerVertexColor()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalMutableBitFlags<U, bool>
-Container<T, IfIsVertex<T>>::isPerVertexMutableBitFlagsEnabled() const
+VertexContainer<T>::isPerVertexMutableBitFlagsEnabled() const
 {
 	Base::optionalVec.isMutableBitFlagsEnabled();
 }
@@ -248,7 +248,7 @@ Container<T, IfIsVertex<T>>::isPerVertexMutableBitFlagsEnabled() const
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalMutableBitFlags<U, void>
-Container<T, IfIsVertex<T>>::enablePerVertexMutableBitFlags()
+VertexContainer<T>::enablePerVertexMutableBitFlags()
 {
 	Base::optionalVec.enableMutableBitFlags(vertexContainerSize());
 }
@@ -261,7 +261,7 @@ Container<T, IfIsVertex<T>>::enablePerVertexMutableBitFlags()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalMutableBitFlags<U, void>
-Container<T, IfIsVertex<T>>::disablePerVertexMutableBitFlags()
+VertexContainer<T>::disablePerVertexMutableBitFlags()
 {
 	Base::optionalVec.disableMutableBitFlags();
 }
@@ -275,7 +275,7 @@ Container<T, IfIsVertex<T>>::disablePerVertexMutableBitFlags()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalNormal<U, bool>
-Container<T, IfIsVertex<T>>::isPerVertexNormalEnabled() const
+VertexContainer<T>::isPerVertexNormalEnabled() const
 {
 	return Base::optionalVec.isNormalEnabled();
 }
@@ -287,7 +287,7 @@ Container<T, IfIsVertex<T>>::isPerVertexNormalEnabled() const
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalNormal<U, void>
-Container<T, IfIsVertex<T>>::enablePerVertexNormal()
+VertexContainer<T>::enablePerVertexNormal()
 {
 	Base::optionalVec.enableNormal(vertexContainerSize());
 }
@@ -299,7 +299,7 @@ Container<T, IfIsVertex<T>>::enablePerVertexNormal()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalNormal<U, void>
-Container<T, IfIsVertex<T>>::disablePerVertexNormal()
+VertexContainer<T>::disablePerVertexNormal()
 {
 	Base::optionalVec.disableNormal();
 }
@@ -313,7 +313,7 @@ Container<T, IfIsVertex<T>>::disablePerVertexNormal()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalScalar<U, bool>
-Container<T, IfIsVertex<T>>::isPerVertexScalarEnabled() const
+VertexContainer<T>::isPerVertexScalarEnabled() const
 {
 	return Base::optionalVec.isScalarEnabled();
 }
@@ -325,7 +325,7 @@ Container<T, IfIsVertex<T>>::isPerVertexScalarEnabled() const
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalScalar<U, void>
-Container<T, IfIsVertex<T>>::enablePerVertexScalar()
+VertexContainer<T>::enablePerVertexScalar()
 {
 	Base::optionalVec.enableScalar(vertexContainerSize());
 }
@@ -337,7 +337,7 @@ Container<T, IfIsVertex<T>>::enablePerVertexScalar()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalScalar<U, void>
-Container<T, IfIsVertex<T>>::disablePerVertexScalar()
+VertexContainer<T>::disablePerVertexScalar()
 {
 	Base::optionalVec.disableScalar();
 }
@@ -351,7 +351,7 @@ Container<T, IfIsVertex<T>>::disablePerVertexScalar()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalTexCoord<U, bool>
-Container<T, IfIsVertex<T>>::isPerVertexTexCoordEnabled() const
+VertexContainer<T>::isPerVertexTexCoordEnabled() const
 {
 	return Base::optionalVec.isTexCoordEnabled();
 }
@@ -363,7 +363,7 @@ Container<T, IfIsVertex<T>>::isPerVertexTexCoordEnabled() const
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalTexCoord<U, void>
-Container<T, IfIsVertex<T>>::enablePerVertexTexCoord()
+VertexContainer<T>::enablePerVertexTexCoord()
 {
 	Base::optionalVec.enableTexCoord(vertexContainerSize());
 }
@@ -375,7 +375,7 @@ Container<T, IfIsVertex<T>>::enablePerVertexTexCoord()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalTexCoord<U, void>
-Container<T, IfIsVertex<T>>::disablePerVertexTexCoord()
+VertexContainer<T>::disablePerVertexTexCoord()
 {
 	Base::optionalVec.disableTexCoord();
 }
@@ -389,7 +389,7 @@ Container<T, IfIsVertex<T>>::disablePerVertexTexCoord()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalAdjacentFaces<U, bool>
-Container<T, IfIsVertex<T>>::isPerVertexAdjacentFacesEnabled() const
+VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
 {
 	return Base::optionalVec.isAdjacentFacesEnabled();
 }
@@ -403,7 +403,7 @@ Container<T, IfIsVertex<T>>::isPerVertexAdjacentFacesEnabled() const
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalAdjacentFaces<U, void>
-Container<T, IfIsVertex<T>>::enablePerVertexAdjacentFaces()
+VertexContainer<T>::enablePerVertexAdjacentFaces()
 {
 	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
 }
@@ -416,7 +416,7 @@ Container<T, IfIsVertex<T>>::enablePerVertexAdjacentFaces()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalAdjacentFaces<U, void>
-Container<T, IfIsVertex<T>>::disablePerVertexAdjacentFaces()
+VertexContainer<T>::disablePerVertexAdjacentFaces()
 {
 	Base::optionalVec.disableAdjacentFaces();
 }
@@ -430,7 +430,7 @@ Container<T, IfIsVertex<T>>::disablePerVertexAdjacentFaces()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalAdjacentVertices<U, bool>
-Container<T, IfIsVertex<T>>::isPerVertexAdjacentVerticesEnabled() const
+VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
 {
 	return Base::optionalVec.isVertexReferencesEnabled();
 }
@@ -443,7 +443,7 @@ Container<T, IfIsVertex<T>>::isPerVertexAdjacentVerticesEnabled() const
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalAdjacentVertices<U, void>
-Container<T, IfIsVertex<T>>::enablePerVertexAdjacentVertices()
+VertexContainer<T>::enablePerVertexAdjacentVertices()
 {
 	Base::optionalVec.enableVertexReferences(vertexContainerSize());
 }
@@ -456,7 +456,7 @@ Container<T, IfIsVertex<T>>::enablePerVertexAdjacentVertices()
 template<typename T>
 template<typename U>
 vert::ReturnIfHasOptionalAdjacentVertices<U, void>
-Container<T, IfIsVertex<T>>::disablePerVertexAdjacentVertices()
+VertexContainer<T>::disablePerVertexAdjacentVertices()
 {
 	Base::optionalVec.disableVertexReferences();
 }
@@ -467,14 +467,14 @@ Container<T, IfIsVertex<T>>::disablePerVertexAdjacentVertices()
 template<typename T>
 template<typename K, typename U>
 vert::ReturnIfHasCustomComponents<U, void>
-Container<T, IfIsVertex<T>>::addPerVertexCustomComponent(
+VertexContainer<T>::addPerVertexCustomComponent(
 	const std::string& name)
 {
 	Base::optionalVec.template addNewComponent<K>(name, vertexContainerSize());
 }
 
 template<typename T>
-void Container<T, IfIsVertex<T> >::clearVertices()
+void VertexContainer<T>::clearVertices()
 {
 	Base::vec.clear();
 	vn = 0;
@@ -484,14 +484,14 @@ void Container<T, IfIsVertex<T> >::clearVertices()
 }
 
 template<typename T>
-unsigned int Container<T, IfIsVertex<T> >::index(const VertexType* v) const
+unsigned int VertexContainer<T>::index(const VertexType* v) const
 {
 	assert(!Base::vec.empty() && v >= Base::vec.data() && v <= &Base::vec.back());
 	return v - Base::vec.data();
 }
 
 template<typename T>
-unsigned int Container<T, IfIsVertex<T>>::addVertex()
+unsigned int VertexContainer<T>::addVertex()
 {
 	T* oldB = Base::vec.data();
 	Base::vec.push_back(VertexType());
@@ -515,7 +515,7 @@ unsigned int Container<T, IfIsVertex<T>>::addVertex()
  * @return the id of the first added vertex.
  */
 template<typename T>
-unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
+unsigned int VertexContainer<T>::addVertices(unsigned int nVertices)
 {
 	unsigned int baseId = Base::vec.size();
 	T* oldB = Base::vec.data();
@@ -536,7 +536,7 @@ unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 }
 
 template<typename T>
-void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
+void VertexContainer<T>::reserveVertices(unsigned int size)
 {
 	T* oldB = Base::vec.data();
 	Base::vec.reserve(size);
@@ -548,7 +548,7 @@ void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 }
 
 template<typename T>
-void mgp::mesh::Container<T, IfIsVertex<T> >::setContainerPointer(VertexType& v)
+void mgp::mesh::VertexContainer<T>::setContainerPointer(VertexType& v)
 {
 	v.setContainerPointer(&(Base::optionalVec));
 }
@@ -563,7 +563,7 @@ void mgp::mesh::Container<T, IfIsVertex<T> >::setContainerPointer(VertexType& v)
  * vertex has been deleted.
  */
 template<typename T>
-std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
+std::vector<int> mgp::mesh::VertexContainer<T>::compactVertices()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
 	std::vector<int> newIndices(Base::vec.size());
@@ -589,7 +589,7 @@ std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 }
 
 template<typename T>
-void Container<T, IfIsVertex<T> >::updateVertexReferences(const T* oldBase, const T* newBase)
+void VertexContainer<T>::updateVertexReferences(const T* oldBase, const T* newBase)
 {
 	if constexpr (mgp::vert::hasAdjacentVertices<T>()) {
 		for (VertexType& v : vertices()) {
@@ -606,7 +606,7 @@ void Container<T, IfIsVertex<T> >::updateVertexReferences(const T* oldBase, cons
 }
 
 template<typename T>
-void Container<T, IfIsVertex<T> >::updateVertexReferencesAfterCompact(
+void VertexContainer<T>::updateVertexReferencesAfterCompact(
 	const T* base,
 	const std::vector<int>& newIndices)
 {
@@ -626,7 +626,7 @@ void Container<T, IfIsVertex<T> >::updateVertexReferencesAfterCompact(
 
 template<typename T>
 template<typename  Face>
-void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, const Face* newBase)
+void VertexContainer<T>::updateFaceReferences(const Face* oldBase, const Face* newBase)
 {
 	if constexpr (mgp::vert::hasAdjacentFaces<T>()) {
 		for (VertexType& v : vertices()) {
@@ -644,7 +644,7 @@ void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, cons
 
 template<typename T>
 template<typename Face>
-void Container<T, IfIsVertex<T>>::updateFaceReferencesAfterCompact(
+void VertexContainer<T>::updateFaceReferencesAfterCompact(
 	const Face* base,
 	const std::vector<int>& newIndices)
 {
