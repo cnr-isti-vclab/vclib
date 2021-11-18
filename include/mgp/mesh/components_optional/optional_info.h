@@ -30,6 +30,13 @@ class OptionalInfo
 public:
 	OptionalInfo() {}
 
+	// copy and move semantics: nothing will be done here
+	// this instance will be updated only by the mesh, and optional data
+	// can be accessed only when an element is part of a mesh
+	OptionalInfo(const OptionalInfo<T>&) {}
+	OptionalInfo(OptionalInfo<T>&&) {}
+	OptionalInfo& operator=(const OptionalInfo<T>&) {return *this;}
+
 protected:
 	void setContainerPointer(mgp::mesh::ElementContainer<T>* cp) { contPtr = cp; }
 

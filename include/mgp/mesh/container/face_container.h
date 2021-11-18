@@ -142,6 +142,10 @@ protected:
 
 	std::vector<int> compactFaces();
 
+	void updateAfterAllocation(const T* oldBase, const T* newBase);
+
+	void updateContainerPointers();
+
 	void updateFaceReferences(const T* oldBase, const T* newBase);
 
 	void updateFaceReferencesAfterCompact(const T* base, const std::vector<int>& newIndices);

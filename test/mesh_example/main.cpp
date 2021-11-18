@@ -31,11 +31,17 @@ int main()
 	const mgp::TriMesh::Vertex& vv = m.vertex(0);
 	vv.setVisitedM(); // vertex 0 is now visited
 
+	mgp::TriMesh::Vertex myv;
+	myv.coord() = mgp::Point3d(3, 1, 2);
+
 	assert(m.vertex(0).isVisitedM());
 
 	m.enablePerVertexTexCoord();
 
+	m.vertex(1) = myv;
+
 	m.vertex(0).texCoord().set(0.1, 0.2);
+	m.vertex(1).texCoord().set(0.52, 0.35);
 	
 	// setting vertex normals
 	// in this mesh vertex normaks are not optional, I don't need to enable them

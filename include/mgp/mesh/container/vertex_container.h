@@ -163,6 +163,10 @@ protected:
 
 	std::vector<int> compactVertices();
 
+	void updateAfterAllocation(const T* oldBase, const T* newBase);
+
+	void updateContainerPointers();
+
 	void updateVertexReferences(const T* oldBase, const T* newBase);
 
 	void updateVertexReferencesAfterCompact(const T* base, const std::vector<int>& newIndices);

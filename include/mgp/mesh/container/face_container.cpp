@@ -429,7 +429,7 @@ unsigned int FaceContainer<T>::addFace()
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
-	updateFaceReferences(oldB, newB);
+	updateAfterAllocation(oldB, newB);
 	return Base::vec.size() - 1;
 }
 
@@ -458,7 +458,7 @@ unsigned int mgp::mesh::FaceContainer<T>::addFaces(unsigned int nFaces)
 			setContainerPointer(Base::vec[i]);
 		}
 	}
-	updateFaceReferences(oldB, newB);
+	updateAfterAllocation(oldB, newB);
 	return baseId;
 }
 
@@ -471,7 +471,7 @@ void FaceContainer<T>::reserveFaces(unsigned int size)
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		Base::optionalVec.reserve(size);
 	}
-	updateFaceReferences(oldB, newB);
+	updateAfterAllocation(oldB, newB);
 }
 
 template<typename T>
@@ -512,6 +512,31 @@ std::vector<int> mgp::mesh::FaceContainer<T>::compactFaces()
 	}
 	updateFaceReferencesAfterCompact(base, newIndices);
 	return newIndices;
+}
+
+template<typename T>
+void FaceContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
+{
+	if (oldBase != newBase) { // if has been reallocated
+		updateContainerPointers(); // update all container pointers
+		updateFaceReferences(oldBase, newBase);
+	}
+}
+
+/**
+ * @brief After a reallocation, it is needed always to update the container pointers of all the
+ * elements, because the assignment operator of the OptionalInfo component (which stores the pointer
+ * of the container) does not copy the container pointer for security reasons.
+ */
+template<typename T>
+void FaceContainer<T>::updateContainerPointers()
+{
+	if constexpr (face::hasOptionalInfo<FaceType>()) {
+		// all the faces must point to the right container - also the deleted ones
+		for (FaceType& f : faces(false)) {
+			setContainerPointer(f);
+		}
+	}
 }
 
 template<typename T>

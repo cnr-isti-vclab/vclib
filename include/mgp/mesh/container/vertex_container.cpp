@@ -506,7 +506,7 @@ unsigned int VertexContainer<T>::addVertex()
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
-	updateVertexReferences(oldB, newB);
+	updateAfterAllocation(oldB, newB);
 	return Base::vec.size() - 1;
 }
 
@@ -534,7 +534,7 @@ unsigned int VertexContainer<T>::addVertices(unsigned int nVertices)
 			setContainerPointer(Base::vec[i]);
 		}
 	}
-	updateVertexReferences(oldB, newB);
+	updateAfterAllocation(oldB, newB);
 	return baseId;
 }
 
@@ -547,7 +547,7 @@ void VertexContainer<T>::reserveVertices(unsigned int size)
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		Base::optionalVec.reserve(size);
 	}
-	updateVertexReferences(oldB, newB);
+	updateAfterAllocation(oldB, newB);
 }
 
 template<typename T>
@@ -588,6 +588,31 @@ std::vector<int> mgp::mesh::VertexContainer<T>::compactVertices()
 	}
 	updateVertexReferencesAfterCompact(base, newIndices);
 	return newIndices;
+}
+
+template<typename T>
+void VertexContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
+{
+	if (oldBase != newBase) {
+		updateContainerPointers();
+		updateVertexReferences(oldBase, newBase);
+	}
+}
+
+/**
+ * @brief After a reallocation, it is needed always to update the container pointers of all the
+ * elements, because the assignment operator of the OptionalInfo component (which stores the pointer
+ * of the container) does not copy the container pointer for security reasons.
+ */
+template<typename T>
+void VertexContainer<T>::updateContainerPointers()
+{
+	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+		// all the vertices must point to the right container - also the deleted ones
+		for (VertexType& v : vertices(false)) {
+			setContainerPointer(v);
+		}
+	}
 }
 
 template<typename T>
