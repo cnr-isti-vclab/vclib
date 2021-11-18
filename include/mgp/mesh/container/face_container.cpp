@@ -102,10 +102,15 @@ void FaceContainer<T>::deleteFace(unsigned int i)
 	fn--;
 }
 
+template<typename T>
+void FaceContainer<T>::deleteFace(const FaceType* f)
+{
+	deleteFace(index(f));
+}
+
 /**
- * @brief Container::faceIdIfCompact is an utility member functions that returns the id of
- * an element if the container would be compact, that is the number of non-deleted elements before
- * the face with the given id.
+ * @brief This is an utility member function that returns the index of an element if the container
+ * would be compact, that is the number of non-deleted elements before the face with the given id.
  *
  * Complexity: O(n), n number of faces in the container.
  *
@@ -115,7 +120,7 @@ void FaceContainer<T>::deleteFace(unsigned int i)
  * @return
  */
 template<typename T>
-unsigned int FaceContainer<T>::faceIdIfCompact(unsigned int id) const
+unsigned int FaceContainer<T>::faceIndexIfCompact(unsigned int id) const
 {
 	if (Base::vec.size() == fn)
 		return id;
@@ -420,13 +425,12 @@ unsigned int FaceContainer<T>::addFace()
 	Base::vec.push_back(FaceType());
 	T* newB = Base::vec.data();
 	++fn;
-	Base::vec[Base::vec.size() - 1]._id = Base::vec.size() - 1;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
 	updateFaceReferences(oldB, newB);
-	return Base::vec[Base::vec.size() - 1]._id;
+	return Base::vec.size() - 1;
 }
 
 /**
@@ -494,7 +498,6 @@ std::vector<int> mgp::mesh::FaceContainer<T>::compactFaces()
 	for (unsigned int i = 0; i < Base::vec.size(); ++i){
 		if (!Base::vec[i].isDeleted()){
 			Base::vec[k] = Base::vec[i];
-			Base::vec[k]._id = k;
 			newIndices[i] = k;
 			k++;
 		}

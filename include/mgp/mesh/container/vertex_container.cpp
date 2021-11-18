@@ -102,10 +102,15 @@ void VertexContainer<T>::deleteVertex(unsigned int i)
 	--vn;
 }
 
+template<typename T>
+void VertexContainer<T>::deleteVertex(const VertexType* v)
+{
+	deleteVertex(index(v));
+}
+
 /**
- * @brief Container::vertexIdIfCompact is an utility member function that returns the id of
- * an element if the container would be compact, that is the number of non-deleted elements before
- * the vertex with the given id.
+ * @brief This is an utility member function that returns the id of an element if the container
+ * would be compact, that is the number of non-deleted elements before the vertex with the given id.
  *
  * Complexity: O(n), n number of vertices in the container.
  *
@@ -115,7 +120,7 @@ void VertexContainer<T>::deleteVertex(unsigned int i)
  * @return
  */
 template<typename T>
-unsigned int mgp::mesh::VertexContainer<T>::vertexIdIfCompact(unsigned int id) const
+unsigned int mgp::mesh::VertexContainer<T>::vertexIndexIfCompact(unsigned int id) const
 {
 	if (Base::vec.size() == vn)
 		return id;
@@ -497,13 +502,12 @@ unsigned int VertexContainer<T>::addVertex()
 	Base::vec.push_back(VertexType());
 	T* newB = Base::vec.data();
 	++vn;
-	Base::vec[Base::vec.size() - 1]._id = Base::vec.size() - 1;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
 	updateVertexReferences(oldB, newB);
-	return Base::vec[Base::vec.size() - 1]._id;
+	return Base::vec.size() - 1;
 }
 
 /**
@@ -526,7 +530,6 @@ unsigned int VertexContainer<T>::addVertices(unsigned int nVertices)
 		Base::optionalVec.resize(Base::vec.size());
 	}
 	for (unsigned int i = baseId; i < Base::vec.size(); ++i){
-		Base::vec[i]._id = i;
 		if constexpr (vert::hasOptionalInfo<VertexType>()) {
 			setContainerPointer(Base::vec[i]);
 		}
@@ -571,7 +574,6 @@ std::vector<int> mgp::mesh::VertexContainer<T>::compactVertices()
 	for (unsigned int i = 0; i < Base::vec.size(); ++i){
 		if (!Base::vec[i].isDeleted()){
 			Base::vec[k] = Base::vec[i];
-			Base::vec[k]._id = k;
 			newIndices[i] = k;
 			k++;
 		}

@@ -58,8 +58,9 @@ public:
 	unsigned int deletedFaceNumber() const;
 
 	void deleteFace(unsigned int i);
+	void deleteFace(const FaceType* f);
 
-	unsigned int faceIdIfCompact(unsigned int id) const;
+	unsigned int faceIndexIfCompact(unsigned int id) const;
 
 	FaceIterator           faceBegin(bool jumpDeleted = true);
 	FaceIterator           faceEnd();

@@ -28,7 +28,7 @@ template<typename T>
 class OptionalInfo
 {
 public:
-	OptionalInfo() : contPtr(nullptr) {}
+	OptionalInfo() {}
 
 protected:
 	void setContainerPointer(mgp::mesh::ElementContainer<T>* cp) { contPtr = cp; }
@@ -45,14 +45,14 @@ protected:
 		return contPtr->optionalVec;
 	}
 
-//	unsigned int index(/*const T* e*/) const
-//	{
-//		assert(contPtr != nullptr);
-//		//assert(contPtr->vec.empty() && e >= contPtr->vec.data() && e <= &contPtr->vec.back());
-//		return this - contPtr->vec.data();
-//	}
+	unsigned int index(const T* e) const
+	{
+		assert(contPtr != nullptr);
+		assert(!contPtr->vec.empty() && e >= contPtr->vec.data() && e <= &contPtr->vec.back());
+		return e - contPtr->vec.data();
+	}
 
-	mgp::mesh::ElementContainer<T>* contPtr;
+	mgp::mesh::ElementContainer<T>* contPtr = nullptr;
 };
 
 /**

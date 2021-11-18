@@ -68,7 +68,7 @@ protected:
 	enum { VISITED = 1 << 0 };
 
 private:
-	unsigned int thisId() const { return ((T*) this)->id(); }
+	unsigned int thisId() const { return B::index((T*)this); }
 };
 
 /**

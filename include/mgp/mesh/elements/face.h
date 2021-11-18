@@ -44,8 +44,6 @@ public:
 	template<typename... V>
 	Face(V... args);
 
-	unsigned int id() const;
-
 	void setVertices(const std::vector<VertexType*>& list);
 
 	template<typename... V>
@@ -65,9 +63,6 @@ public:
 
 	template<int U = NV>
 	comp::internal::ReturnIfIsVector<U, void> clearVertices();
-
-protected:
-	unsigned int _id = 0;
 };
 
 } // namespace mgp

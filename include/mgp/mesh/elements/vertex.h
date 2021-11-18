@@ -31,10 +31,7 @@ class Vertex : public VertexTriggerer, public Args...
 	friend class mesh::VertexContainer;
 
 public:
-	unsigned int id() const { return _id; }
-protected:
 	Vertex() {}
-	unsigned int _id = 0;
 };
 
 } // namespace mgp

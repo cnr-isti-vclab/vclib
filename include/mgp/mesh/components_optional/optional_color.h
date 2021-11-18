@@ -24,7 +24,7 @@ public:
 	mgp::Color&        color() { return B::optCont().color(thisId()); }
 
 private:
-	unsigned int thisId() const { return ((T*) this)->id(); }
+	unsigned int thisId() const { return B::index((T*)this); }
 };
 
 /**

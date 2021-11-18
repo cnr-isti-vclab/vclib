@@ -21,13 +21,6 @@ Face<Args...>::Face(V... args)
 }
 
 /**
- * @brief Return the id of the face. The id of a Face is tied to its Container position in a Mesh.
- * @return the id of the face.
- */
-template<typename... Args>
-unsigned int Face<Args...>::id() const { return _id; }
-
-/**
  * @brief Sets a list of Vertex references to the face. If the Face size is dynamic, will take care
  * to update the also the number of adjacent faces and the number of wedge components, if these
  * components are part of the Face and if the size of the Face is changed. On the contrary, if the

@@ -52,7 +52,7 @@ std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m)
 
 		for (const FaceType& f : m.faces()) {
 			for (const VertexType* v : f.vertices()) {
-				referredVertices[v->id()] = true;
+				referredVertices[m.index(v)] = true;
 			}
 		}
 	}
@@ -147,8 +147,8 @@ unsigned int removeUnreferencedVertices(MeshType& m)
 	// deleted vertices are automatically jumped
 	unsigned int n = 0;
 	for (const VertexType& v : m.vertices()) {
-		if (!referredVertices[v.id()]) {
-			m.deleteVertex(v.id());
+		if (!referredVertices[m.index(v)]) {
+			m.deleteVertex(m.index(v));
 			++n;
 		}
 	}
@@ -203,7 +203,7 @@ unsigned int removeDuplicatedVertices(MeshType& m)
 		while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
 			// j will be deleted
 			deletedVertsMap[perm[j]] = perm[i]; // map j into i
-			m.deleteVertex(perm[j]->id());
+			m.deleteVertex(m.index(perm[j]));
 			j++;
 			deleted++;
 		}
@@ -269,14 +269,14 @@ unsigned int removeDuplicatedFaces(MeshType& m)
 
 	std::vector<internal::SortedTriple<FaceType*>> fvec;
 	for (FaceType& f : m.faces()) {
-		fvec.push_back(internal::SortedTriple(f.vertex(0)->id(), f.vertex(1)->id(), f.vertex(2)->id(), &f));
+		fvec.push_back(internal::SortedTriple(m.index(f.vertex(0)), m.index(f.vertex(1)), m.index(f.vertex(2)), &f));
 	}
 	std::sort(fvec.begin(), fvec.end());
 	unsigned int total = 0;
 	for (unsigned int i = 0; i < fvec.size() - 1; ++i) {
 		if (fvec[i] == fvec[i + 1]) {
 			total++;
-			m.deleteFace(fvec[i].fp->id());
+			m.deleteFace(fvec[i].fp);
 		}
 	}
 	return total;
@@ -308,7 +308,7 @@ unsigned int removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 	for (VertexType& v : m.vertices()) {
 		if (v.coord().isDegenerate()) {
 			count_vd++;
-			m.deleteVertex(v.id());
+			m.deleteVertex(&v);
 		}
 	}
 
@@ -323,7 +323,7 @@ unsigned int removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 					}
 				}
 				if (deg) {
-					m.deleteFace(f.id());
+					m.deleteFace(&f);
 				}
 			}
 		}

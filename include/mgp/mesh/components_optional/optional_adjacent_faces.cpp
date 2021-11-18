@@ -167,7 +167,7 @@ typename OptionalAdjacentFaces<Face, N, T>::AdjacentFaceRangeIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaces()
 {
 	return FaceRangeIterator(
-		B::optCont().adjFaces(thisId()),
+		B::optCont().adjFaces(B::indxex(this)),
 		&OptionalAdjacentFaces::faceBegin,
 		&OptionalAdjacentFaces::faceEnd);
 }
@@ -177,7 +177,7 @@ typename OptionalAdjacentFaces<Face, N, T>::ConstAdjacentFaceRangeIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaces() const
 {
 	return ConstFaceRangeIterator(
-		B::optCont().adjFaces(thisId()),
+		B::optCont().adjFaces(B::indxex(this)),
 		&OptionalAdjacentFaces::faceBegin,
 		&OptionalAdjacentFaces::faceEnd);
 }

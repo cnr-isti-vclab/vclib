@@ -35,15 +35,18 @@ public:
 	const AttrType& customComponent(const std::string& attrName) const
 	{
 		return std::any_cast<const AttrType&>(
-			B::optCont().template componentVector<AttrType>(attrName)[((T*) this)->id()]);
+			B::optCont().template componentVector<AttrType>(attrName)[thisId()]);
 	}
 
 	template<typename AttrType>
 	AttrType& customComponent(const std::string& attrName)
 	{
 		return std::any_cast<AttrType&>(
-			B::optCont().template componentVector<AttrType>(attrName)[((T*) this)->id()]);
+			B::optCont().template componentVector<AttrType>(attrName)[thisId()]);
 	}
+
+private:
+	unsigned int thisId() const { return B::index((T*)this); }
 };
 
 /**

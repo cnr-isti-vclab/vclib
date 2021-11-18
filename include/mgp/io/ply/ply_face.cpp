@@ -24,7 +24,7 @@ void saveFaceIndices(
 	unsigned int fsize = f.vertexNumber();
 	internal::writeProperty(file, fsize, p.listSizeType, bin);
 	for (const VertexType* v : f.vertices()){
-		internal::writeProperty(file, m.vertexIdIfCompact(v->id()), p.type, bin);
+		internal::writeProperty(file, m.vertexIndexIfCompact(m.index(v)), p.type, bin);
 	}
 }
 

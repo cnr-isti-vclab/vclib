@@ -73,7 +73,7 @@ We can iterate over Vertices and over Faces of the mesh:
                up = false;
        }
        if (up) {
-           std::cout << f.id() << " is above the y barycenter\n";
+           std::cout << m.index(f) << " is above the y barycenter\n";
        }
    }
 
@@ -110,4 +110,3 @@ We can create from scratch a mesh:
    // add another face but initialize vertices later:
    unsigned int fid = mesh.addFace(); // each add returns an id telling the first added element
    mesh.face(fid).setVertices(&mesh.vertex(2), &mesh.vertex(1), &mesh.vertex(3));
-

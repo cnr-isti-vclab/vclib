@@ -59,8 +59,9 @@ public:
 	unsigned int deletedVertexNumber() const;
 
 	void deleteVertex(unsigned int i);
+	void deleteVertex(const VertexType* v);
 
-	unsigned int vertexIdIfCompact(unsigned int id) const;
+	unsigned int vertexIndexIfCompact(unsigned int id) const;
 
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
 	VertexIterator           vertexEnd();
