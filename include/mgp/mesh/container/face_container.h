@@ -119,6 +119,16 @@ public:
 	template<typename U = T>
 	face::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerFaceAdjacentFaces();
 
+	// WedgeTexCoords
+	template<typename U = T>
+	face::ReturnIfHasOptionalWedgeTexCoords<U, bool> isPerFaceWedgeTexCoordsEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalWedgeTexCoords<U, void> enablePerFaceWedgeTexCoords();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalWedgeTexCoords<U, void> disablePerFaceWedgeTexCoords();
+
 	// Custom Components
 	template<typename K, typename U = T>
 	face::ReturnIfHasCustomComponents<U, void> addPerFaceCustomComponent(const std::string& name);

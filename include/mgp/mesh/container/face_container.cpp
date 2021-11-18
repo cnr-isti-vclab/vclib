@@ -393,6 +393,55 @@ FaceContainer<T>::disablePerFaceAdjacentFaces()
 	Base::optionalVec.disableAdjacentFaces();
 }
 
+/**
+ * @brief Checks if the face Optional WedgeTexCoords
+ * Faces is enabled. This function is available **only if the Face Element has the
+ * OptionalWedgeTexCoords Component**.
+ * @return true if the Optional WedgeTexCoords is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalWedgeTexCoords<U, bool>
+FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
+{
+	return Base::optionalVec.isWedgeTexCoordsEnabled();
+}
+
+/**
+ * @brief Container::enableFaceAdjacentFaces enable the Optional Wedge TexCoords of the face.
+ * @note This function is available **only if the Face Element has the OptionalWedgeTexCoords
+ * Component**.
+ *
+ * @note If the size of the Face is dynamic (N < 0), when enabled, the wedge texcoord number will be
+ * the same of the vertex number for each face of the container. This is because, for Faces,
+ * Wedge TexCoords number is tied to the number of vertices.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalWedgeTexCoords<U, void>
+FaceContainer<T>::enablePerFaceWedgeTexCoords()
+{
+	Base::optionalVec.enableWedgeTexCoords(Base::vec.size());
+	static const int N = T::VERTEX_NUMBER;
+	if (N < 0) {
+		for (T& f : faces()) {
+			f.resizeWedgeTexCoords(f.vertexNumber());
+		}
+	}
+}
+
+/**
+ * @brief Disables the Optional WedgeTex Coords of the face.
+ * This function is available **only if the Face Element has the OptionalWedgeTexCoords Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalWedgeTexCoords<U, void>
+FaceContainer<T>::disablePerFaceWedgeTexCoords()
+{
+	Base::optionalVec.disableWedgeTexCoords();
+}
+
 template<typename T>
 template<typename K, typename U>
 face::ReturnIfHasCustomComponents<U, void>
