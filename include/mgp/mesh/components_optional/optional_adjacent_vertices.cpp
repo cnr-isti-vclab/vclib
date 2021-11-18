@@ -16,13 +16,13 @@ OptionalAdjacentVertices<Vertex, N, T>::OptionalAdjacentVertices()
 		// I'll use the array, N is >= 0.
 		// There will be a static number of references.
 		if (B::contPtr)
-			B::contPtr->adjVerts(thisId()) = std::array<Vertex*, N> {nullptr};
+			B::optCont().adjVerts(thisId()) = std::array<Vertex*, N> {nullptr};
 	}
 	else {
 		// I'll use the vector, because N is < 0.
 		// There will be a dynamic number of references.
 		if (B::contPtr)
-			B::contPtr->adjVerts(thisId()) = std::vector<Vertex*>();
+			B::optCont().adjVerts(thisId()) = std::vector<Vertex*>();
 	}
 }
 
@@ -33,7 +33,7 @@ unsigned int OptionalAdjacentVertices<Vertex, N, T>::adjVerticesNumber() const
 		return N;
 	}
 	else {
-		return B::contPtr->adjVerts(thisId()).size();
+		return B::optCont().adjVerts(thisId()).size();
 	}
 }
 
@@ -41,35 +41,35 @@ template<typename Vertex, int N, typename T>
 Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertex(unsigned int i)
 {
 	assert(i < adjVerticesNumber());
-	return B::contPtr->adjVerts(thisId())[i];
+	return B::optCont().adjVerts(thisId())[i];
 }
 
 template<typename Vertex, int N, typename T>
 const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertex(unsigned int i) const
 {
 	assert(i < adjVerticesNumber());
-	return B::contPtr->adjVerts(thisId())[i];
+	return B::optCont().adjVerts(thisId())[i];
 }
 
 template<typename Vertex, int N, typename T>
 Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertexMod(int i)
 {
 	unsigned int n = adjVerticesNumber();
-	return B::contPtr->adjVerts(thisId())[(i % n + n) % n];
+	return B::optCont().adjVerts(thisId())[(i % n + n) % n];
 }
 
 template<typename Vertex, int N, typename T>
 const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertexMod(int i) const
 {
 	unsigned int n = adjVerticesNumber();
-	return B::contPtr->adjVerts(thisId())[(i % n + n) % n];
+	return B::optCont().adjVerts(thisId())[(i % n + n) % n];
 }
 
 template<typename Vertex, int N, typename T>
 void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertex(Vertex* f, unsigned int i)
 {
 	assert(i < adjVerticesNumber());
-	B::contPtr->adjVerts(thisId())[i] = f;
+	B::optCont().adjVerts(thisId())[i] = f;
 }
 
 template<typename Vertex, int N, typename T>
@@ -84,15 +84,15 @@ void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertices(const std::vector<Ve
 		}
 	}
 	else {
-		B::contPtr->adjVerts(thisId()) = list;
+		B::optCont().adjVerts(thisId()) = list;
 	}
 }
 
 template<typename Vertex, int N, typename T>
 bool OptionalAdjacentVertices<Vertex, N, T>::containsAdjVertex(const Vertex* v) const
 {
-	return std::find(B::contPtr->adjVerts.begin(), B::contPtr->adjVerts.end(), v) !=
-		   B::contPtr->adjVerts.end();
+	return std::find(B::optCont().adjVerts.begin(), B::optCont().adjVerts.end(), v) !=
+		   B::optCont().adjVerts.end();
 }
 
 template<typename Vertex, int N, typename T>
@@ -100,14 +100,14 @@ template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalAdjacentVertices<Vertex, N, T>::resizeAdjVertices(unsigned int n)
 {
-	B::contPtr->adjVerts(thisId()).resize(n);
+	B::optCont().adjVerts(thisId()).resize(n);
 }
 
 template<typename Vertex, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalAdjacentVertices<Vertex, N, T>::pushAdjVertex(Vertex* f)
 {
-	B::contPtr->adjVerts(thisId()).push_back(f);
+	B::optCont().adjVerts(thisId()).push_back(f);
 }
 
 template<typename Vertex, int N, typename T>
@@ -116,7 +116,7 @@ internal::ReturnIfIsVector<U, void>
 OptionalAdjacentVertices<Vertex, N, T>::insertAdjVertex(unsigned int i, Vertex* f)
 {
 	assert(i < adjVerticesNumber());
-	B::contPtr->adjVerts(thisId()).insert(B::contPtr->adjVerts(thisId()).begin() + i, f);
+	B::optCont().adjVerts(thisId()).insert(B::optCont().adjVerts(thisId()).begin() + i, f);
 }
 
 template<typename Vertex, int N, typename T>
@@ -125,42 +125,42 @@ internal::ReturnIfIsVector<U, void>
 OptionalAdjacentVertices<Vertex, N, T>::eraseAdjVertex(unsigned int i)
 {
 	assert(i < adjVerticesNumber());
-	B::contPtr->adjVerts(thisId()).erase(B::contPtr->adjVerts(thisId()).begin() + i);
+	B::optCont().adjVerts(thisId()).erase(B::optCont().adjVerts(thisId()).begin() + i);
 }
 
 template<typename Vertex, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalAdjacentVertices<Vertex, N, T>::clearAdjVertices()
 {
-	B::contPtr->adjVerts(thisId()).clear();
+	B::optCont().adjVerts(thisId()).clear();
 }
 
 template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::VertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexBegin()
 {
-	return B::contPtr->adjVerts(thisId()).begin();
+	return B::optCont().adjVerts(thisId()).begin();
 }
 
 template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::VertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd()
 {
-	return B::contPtr->adjVerts(thisId()).end();
+	return B::optCont().adjVerts(thisId()).end();
 }
 
 template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexBegin() const
 {
-	return B::contPtr->adjVerts(thisId()).begin();
+	return B::optCont().adjVerts(thisId()).begin();
 }
 
 template<typename Vertex, int N, typename T>
 typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd() const
 {
-	return B::contPtr->adjVerts(thisId()).end();
+	return B::optCont().adjVerts(thisId()).end();
 }
 
 template<typename Vertex, int N, typename T>
@@ -168,7 +168,7 @@ typename OptionalAdjacentVertices<Vertex, N, T>::VertexRangeIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertices()
 {
 	return VertexRangeIterator(
-		B::contPtr->adjVerts(thisId()),
+		B::optCont().adjVerts(thisId()),
 		&OptionalAdjacentVertices::vertexBegin,
 		&OptionalAdjacentVertices::vertexEnd);
 }
@@ -178,7 +178,7 @@ typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexRangeIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertices() const
 {
 	return ConstVertexRangeIterator(
-		B::contPtr->adjVerts(thisId()),
+		B::optCont().adjVerts(thisId()),
 		&OptionalAdjacentVertices::vertexBegin,
 		&OptionalAdjacentVertices::vertexEnd);
 }

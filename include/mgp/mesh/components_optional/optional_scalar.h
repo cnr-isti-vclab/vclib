@@ -22,8 +22,8 @@ private:
 
 public:
 	using ScalarType = S;
-	const ScalarType& scalar() const { return B::contPtr->scalar(thisId()); }
-	ScalarType&       scalar() { return B::contPtr->scalar(thisId()); }
+	const ScalarType& scalar() const { return B::optCont().scalar(thisId()); }
+	ScalarType&       scalar() { return B::optCont().scalar(thisId()); }
 
 private:
 	unsigned int thisId() const { return ((T*) this)->id(); }

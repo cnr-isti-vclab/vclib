@@ -25,8 +25,8 @@ private:
 public:
 	using TexCoordType = mgp::TexCoord<Scalar>;
 
-	const TexCoordType& texCoord() const { return B::contPtr->texCoord(thisId()); }
-	TexCoordType&       texCoord() { return B::contPtr->texCoord(thisId()); }
+	const TexCoordType& texCoord() const { return B::optCont().texCoord(thisId()); }
+	TexCoordType&       texCoord() { return B::optCont().texCoord(thisId()); }
 
 private:
 	unsigned int thisId() const { return ((T*) this)->id(); }

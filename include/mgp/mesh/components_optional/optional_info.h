@@ -8,9 +8,16 @@
 
 #include <type_traits>
 
-namespace mgp::internal {
+namespace mgp::mesh {
 
 template<typename T>
+class ElementContainer;
+
+}
+
+namespace mgp::internal {
+
+template <typename T>
 class ComponentsVector;
 
 }
@@ -24,9 +31,28 @@ public:
 	OptionalInfo() : contPtr(nullptr) {}
 
 protected:
-	void setContainerPointer(mgp::internal::ComponentsVector<T>* cp) { contPtr = cp; }
+	void setContainerPointer(mgp::mesh::ElementContainer<T>* cp) { contPtr = cp; }
 
-	mgp::internal::ComponentsVector<T>* contPtr;
+	mgp::internal::ComponentsVector<T>& optCont()
+	{
+		assert(contPtr != nullptr);
+		return contPtr->optionalVec;
+	}
+
+	const mgp::internal::ComponentsVector<T>& optCont() const
+	{
+		assert(contPtr != nullptr);
+		return contPtr->optionalVec;
+	}
+
+//	unsigned int index(/*const T* e*/) const
+//	{
+//		assert(contPtr != nullptr);
+//		//assert(contPtr->vec.empty() && e >= contPtr->vec.data() && e <= &contPtr->vec.back());
+//		return this - contPtr->vec.data();
+//	}
+
+	mgp::mesh::ElementContainer<T>* contPtr;
 };
 
 /**

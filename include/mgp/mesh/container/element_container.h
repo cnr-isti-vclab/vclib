@@ -15,6 +15,8 @@ namespace mgp::mesh {
 template <typename T>
 class ElementContainer
 {
+	friend class comp::OptionalInfo<T>;
+
 public:
 	ElementContainer() {};
 

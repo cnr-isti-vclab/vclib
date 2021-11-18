@@ -18,7 +18,7 @@ template<typename Scalar, int N, typename T>
 mgp::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoord(unsigned int i)
 {
 	assert(i < wedgeTexCoordsNumber());
-	return B::contPtr->wedgeTexCoords(thisId())[i];
+	return B::optCont().wedgeTexCoords(thisId())[i];
 }
 
 template<typename Scalar, int N, typename T>
@@ -26,21 +26,21 @@ const mgp::TexCoord<Scalar>&
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoord(unsigned int i) const
 {
 	assert(i < wedgeTexCoordsNumber());
-	return B::contPtr->wedgeTexCoords(thisId())[i];
+	return B::optCont().wedgeTexCoords(thisId())[i];
 }
 
 template<typename Scalar, int N, typename T>
 mgp::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordMod(int i)
 {
 	unsigned int n = wedgeTexCoordsNumber();
-	return B::contPtr->wedgeTexCoords(thisId())[(i % n + n) % n];
+	return B::optCont().wedgeTexCoords(thisId())[(i % n + n) % n];
 }
 
 template<typename Scalar, int N, typename T>
 const mgp::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordMod(int i) const
 {
 	unsigned int n = wedgeTexCoordsNumber();
-	return B::contPtr->wedgeTexCoords(thisId())[(i % n + n) % n];
+	return B::optCont().wedgeTexCoords(thisId())[(i % n + n) % n];
 }
 
 template<typename Scalar, int N, typename T>
@@ -49,7 +49,7 @@ void OptionalWedgeTexCoords<Scalar, N, T>::setWedgeTexCoord(
 	unsigned int                 i)
 {
 	assert(i < wedgeTexCoordsNumber());
-	B::contPtr->wedgeTexCoords(thisId())[i] = t;
+	B::optCont().wedgeTexCoords(thisId())[i] = t;
 }
 
 template<typename Scalar, int N, typename T>
@@ -65,7 +65,7 @@ void OptionalWedgeTexCoords<Scalar, N, T>::setWedgeTexCoords(
 		}
 	}
 	else {
-		B::contPtr->wedgeTexCoords(thisId()) = list;
+		B::optCont().wedgeTexCoords(thisId()) = list;
 	}
 }
 
@@ -73,28 +73,28 @@ template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordBegin()
 {
-	return B::contPtr->wedgeTexCoords(thisId()).begin();
+	return B::optCont().wedgeTexCoords(thisId()).begin();
 }
 
 template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordEnd()
 {
-	return B::contPtr->wedgeTexCoords(thisId()).end();
+	return B::optCont().wedgeTexCoords(thisId()).end();
 }
 
 template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::ConstWedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordBegin() const
 {
-	return B::contPtr->wedgeTexCoords(thisId()).begin();
+	return B::optCont().wedgeTexCoords(thisId()).begin();
 }
 
 template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::ConstWedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordEnd() const
 {
-	return B::contPtr->wedgeTexCoords(thisId()).end();
+	return B::optCont().wedgeTexCoords(thisId()).end();
 }
 
 template<typename Scalar, int N, typename T>
@@ -102,7 +102,7 @@ typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsRangeIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator()
 {
 	return WedgeTexCoordsRangeIterator(
-		B::contPtr->wedgeTexCoords(thisId()),
+		B::optCont().wedgeTexCoords(thisId()),
 		&OptionalWedgeTexCoords::wedgeTexCoordBegin,
 		&OptionalWedgeTexCoords::wedgeTexCoordEnd);
 }
@@ -112,7 +112,7 @@ typename OptionalWedgeTexCoords<Scalar, N, T>::ConstWedgeTexCoordsRangeIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator() const
 {
 	return ConstWedgeTexCoordsRangeIterator(
-		B::contPtr->wedgeTexCoords(thisId()),
+		B::optCont().wedgeTexCoords(thisId()),
 		&OptionalWedgeTexCoords::wedgeTexCoordBegin,
 		&OptionalWedgeTexCoords::wedgeTexCoordEnd);
 }
@@ -120,7 +120,7 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator() const
 template<typename Scalar, int N, typename T>
 bool OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordsEnabled() const
 {
-	return B::contPtr->isWedgeTexCoordsEnabled();
+	return B::optCont().isWedgeTexCoordsEnabled();
 }
 
 template<typename Scalar, int N, typename T>
@@ -130,7 +130,7 @@ unsigned int OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordsNumber() const
 		return N;
 	}
 	else {
-		return B::contPtr->wedgeTexCoords(thisId()).size();
+		return B::optCont().wedgeTexCoords(thisId()).size();
 	}
 }
 
@@ -139,7 +139,7 @@ template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalWedgeTexCoords<Scalar, N, T>::resizeWedgeTexCoords(unsigned int n)
 {
-	B::contPtr->wedgeTexCoords(thisId()).resize(n);
+	B::optCont().wedgeTexCoords(thisId()).resize(n);
 }
 
 template<typename Scalar, int N, typename T>
@@ -147,7 +147,7 @@ template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalWedgeTexCoords<Scalar, N, T>::pushWedgeTexCoord(const mgp::TexCoord<Scalar>& t)
 {
-	B::contPtr->wedgeTexCoords(thisId()).push_back(t);
+	B::optCont().wedgeTexCoords(thisId()).push_back(t);
 }
 
 template<typename Scalar, int N, typename T>
@@ -157,8 +157,8 @@ internal::ReturnIfIsVector<U, void> OptionalWedgeTexCoords<Scalar, N, T>::insert
 	const mgp::TexCoord<Scalar>& t)
 {
 	assert(i < wedgeTexCoordsNumber());
-	B::contPtr->wedgeTexCoords(thisId()).insert(
-		B::contPtr->wedgeTexCoords(thisId()).begin() + i, t);
+	B::optCont().wedgeTexCoords(thisId()).insert(
+		B::optCont().wedgeTexCoords(thisId()).begin() + i, t);
 }
 
 template<typename Scalar, int N, typename T>
@@ -167,14 +167,14 @@ internal::ReturnIfIsVector<U, void>
 OptionalWedgeTexCoords<Scalar, N, T>::eraseWedgeTexCoord(unsigned int i)
 {
 	assert(i < wedgeTexCoordsNumber());
-	B::contPtr->wedgeTexCoords(thisId()).erase(B::contPtr->wedgeTexCoords(thisId()).begin() + i);
+	B::optCont().wedgeTexCoords(thisId()).erase(B::optCont().wedgeTexCoords(thisId()).begin() + i);
 }
 
 template<typename Scalar, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void> OptionalWedgeTexCoords<Scalar, N, T>::clearWedgeTexCoord()
 {
-	B::contPtr->wedgeTexCoords(thisId()).clear();
+	B::optCont().wedgeTexCoords(thisId()).clear();
 }
 
 } // namespace mgp::comp

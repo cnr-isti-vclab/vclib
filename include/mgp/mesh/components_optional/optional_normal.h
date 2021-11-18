@@ -24,8 +24,8 @@ private:
 
 public:
 	using NormalType = Point<Scalar, N>;
-	const NormalType&        normal() const { return B::contPtr->normal(thisId()); }
-	NormalType&              normal() { return B::contPtr->normal(thisId()); }
+	const NormalType&        normal() const { return B::optCont().normal(thisId()); }
+	NormalType&              normal() { return B::optCont().normal(thisId()); }
 
 private:
 	unsigned int thisId() const { return ((T*) this)->id(); }

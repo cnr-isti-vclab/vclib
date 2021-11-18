@@ -550,7 +550,7 @@ void VertexContainer<T>::reserveVertices(unsigned int size)
 template<typename T>
 void mgp::mesh::VertexContainer<T>::setContainerPointer(VertexType& v)
 {
-	v.setContainerPointer(&(Base::optionalVec));
+	v.setContainerPointer((Base*)this);
 }
 
 /**

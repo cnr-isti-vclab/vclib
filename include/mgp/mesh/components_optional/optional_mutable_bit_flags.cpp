@@ -67,7 +67,7 @@ void OptionalMutableBitFlags<T>::setUserBitM(unsigned int bit) const
 template<typename T>
 void OptionalMutableBitFlags<T>::clearAllFlagsM() const
 {
-	int& flags = B::contPtr->flags(thisId());
+	int& flags = B::optCont().flags(thisId());
 	flags      = 0;
 }
 
@@ -108,7 +108,7 @@ void OptionalMutableBitFlags<T>::clearUserBitM(unsigned int bit) const
 template<typename T>
 bool OptionalMutableBitFlags<T>::flagValueM(unsigned int flag) const
 {
-	const int& flags = B::contPtr->flags(thisId());
+	const int& flags = B::optCont().flags(thisId());
 	return flags & flag;
 }
 
@@ -123,7 +123,7 @@ bool OptionalMutableBitFlags<T>::flagValueM(unsigned int flag) const
 template<typename T>
 void OptionalMutableBitFlags<T>::setFlagM(unsigned int flag) const
 {
-	int& flags = B::contPtr->flags(thisId());
+	int& flags = B::optCont().flags(thisId());
 	flags |= flag;
 }
 
@@ -138,7 +138,7 @@ void OptionalMutableBitFlags<T>::setFlagM(unsigned int flag) const
 template<typename T>
 void OptionalMutableBitFlags<T>::clearFlagM(unsigned int flag) const
 {
-	int& flags = B::contPtr->flags(thisId());
+	int& flags = B::optCont().flags(thisId());
 	flags &= ~flag;
 }
 

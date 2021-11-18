@@ -20,8 +20,8 @@ private:
 
 public:
 	using ColorType = mgp::Color;
-	const mgp::Color&  color() const { return B::contPtr->color(thisId()); }
-	mgp::Color&        color() { return B::contPtr->color(thisId()); }
+	const mgp::Color&  color() const { return B::optCont().color(thisId()); }
+	mgp::Color&        color() { return B::optCont().color(thisId()); }
 
 private:
 	unsigned int thisId() const { return ((T*) this)->id(); }

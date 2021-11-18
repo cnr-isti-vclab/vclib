@@ -473,7 +473,7 @@ void FaceContainer<T>::reserveFaces(unsigned int size)
 template<typename T>
 void FaceContainer<T>::setContainerPointer(FaceType& f)
 {
-	f.setContainerPointer(&(Base::optionalVec));
+	f.setContainerPointer((Base*)this);
 }
 
 /**
