@@ -18,7 +18,7 @@ namespace mgp::mesh {
 
 class FaceContainerTriggerer {};
 
-// to shorten triggerer for Vertex class
+// to shorten triggerer for Face class
 template<typename T>
 using IfIsFace = std::enable_if_t<std::is_base_of<FaceTriggerer, T>::value>;
 

@@ -41,6 +41,7 @@ set(HEADERS
 	include/mgp/exception/mesh_exception.h
 	include/mgp/math/base.h
 	include/mgp/mesh/mesh.h
+	include/mgp/mesh/mesh_argument.h
 	include/mgp/mesh/mesh_components.h
 	include/mgp/mesh/requirements.h
 	include/mgp/mesh/container/container_t.h
