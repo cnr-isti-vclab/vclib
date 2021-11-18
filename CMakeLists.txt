@@ -48,7 +48,6 @@ set(HEADERS
 	include/mgp/mesh/container/element_container.h
 	include/mgp/mesh/container/face_container.h
 	include/mgp/mesh/container/vertex_container.h
-	include/mgp/mesh/container/vertex_optional_container.h
 	include/mgp/mesh/elements/face.h
 	include/mgp/mesh/elements/face_components.h
 	include/mgp/mesh/elements/face_components_optional.h
@@ -129,7 +128,6 @@ set(SOURCES
 	include/mgp/mesh/mesh.cpp
 	include/mgp/mesh/container/face_container.cpp
 	include/mgp/mesh/container/vertex_container.cpp
-	include/mgp/mesh/container/vertex_optional_container.cpp
 	include/mgp/mesh/components/bit_flags.cpp
 	include/mgp/mesh/components/element_references.cpp
 	include/mgp/mesh/components/generic_container.cpp

@@ -37,9 +37,9 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;
-	bool             isVertexReferencesEnabled() const { return Base::isEnabled(); };
-	void             enableVertexReferences(unsigned int size) { Base::enable(size); }
-	void             disableVertexReferences() { Base::disable(); }
+	bool             isAdjacentVerticesEnabled() const { return Base::isEnabled(); };
+	void             enableAdjacentVertices(unsigned int size) { Base::enable(size); }
+	void             disableAdjacentVertices() { Base::disable(); }
 	AdjVertsContainer&       adjVerts(unsigned int i) { return Base::at(i); }
 	const AdjVertsContainer& adjVerts(unsigned int i) const { return Base::at(i); }
 };

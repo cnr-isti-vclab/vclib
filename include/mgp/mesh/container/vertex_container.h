@@ -8,7 +8,9 @@
 
 #include "container_t.h"
 
-#include "vertex_optional_container.h"
+#include <mgp/mesh/elements/vertex.h>
+
+#include "element_container.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
 
@@ -30,7 +32,7 @@ using IfIsVertex = std::enable_if_t<std::is_base_of<VertexTriggerer, T>::value>;
  */
 template<typename T>
 class Container<T, IfIsVertex<T>> :
-		public VertexOptionalContainer<T>, public VertexContainerTriggerer
+		public ElementContainer<T>, public VertexContainerTriggerer
 {
 	static_assert(
 		mgp::vert::hasBitFlags<T>(),
@@ -40,10 +42,11 @@ class Container<T, IfIsVertex<T>> :
 		mgp::vert::hasCoordinate<T>(),
 		"You should include Coordinate as Vertex component in your Mesh definition.");
 
+	using Base = ElementContainer<T>;
+
 protected:
 	// types:
 	using VertexContainer = Container<T, IfIsVertex<T>>;
-	using OptionalVertexContainer = VertexOptionalContainer<T>;
 
 public:
 	using VertexType               = T;
@@ -73,13 +76,81 @@ public:
 	VertexRangeIterator      vertices(bool jumpDeleted = true);
 	ConstVertexRangeIterator vertices(bool jumpDeleted = true) const;
 
-protected:
-	/**
-	 * @brief vertices: the vector of vertices, where each vertex contains only its static
-	 * components. Optional components will be contained in the optionalPropVector.
-	 */
-	std::vector<T> vertsVec;
+	// Color
+	template<typename U = T>
+	vert::ReturnIfHasOptionalColor<U, bool> isPerVertexColorEnabled() const;
 
+	template<typename U = T>
+	vert::ReturnIfHasOptionalColor<U, void> enablePerVertexColor();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalColor<U, void> disablePerVertexColor();
+
+	// Mutable Bit Flags
+	template<typename U = T>
+	vert::ReturnIfHasOptionalMutableBitFlags<U, bool> isPerVertexMutableBitFlagsEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerVertexMutableBitFlags();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalMutableBitFlags<U, void> disablePerVertexMutableBitFlags();
+
+	// Normal
+	template<typename U = T>
+	vert::ReturnIfHasOptionalNormal<U, bool> isPerVertexNormalEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalNormal<U, void> enablePerVertexNormal();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalNormal<U, void> disablePerVertexNormal();
+
+	// Scalar
+	template<typename U = T>
+	vert::ReturnIfHasOptionalScalar<U, bool> isPerVertexScalarEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalScalar<U, void> enablePerVertexScalar();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalScalar<U, void> disablePerVertexScalar();
+
+	// TexCoord
+	template<typename U = T>
+	vert::ReturnIfHasOptionalTexCoord<U, bool> isPerVertexTexCoordEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalTexCoord<U, void> enablePerVertexTexCoord();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalTexCoord<U, void> disablePerVertexTexCoord();
+
+	// Adjacent Faces
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerVertexAdjacentFacesEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerVertexAdjacentFaces();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerVertexAdjacentFaces();
+
+	// Adjacent Vertices
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentVertices<U, bool> isPerVertexAdjacentVerticesEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentVertices<U, void> enablePerVertexAdjacentVertices();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentVertices<U, void> disablePerVertexAdjacentVertices();
+
+	// Custom Components
+	template<typename K, typename U = T>
+	vert::ReturnIfHasCustomComponents<U, void> addPerVertexCustomComponent(const std::string& name);
+
+protected:
 	/**
 	 * @brief vn: the number of vertices in the container. Could be different from vertices.size()
 	 * due to vertices marked as deleted into the container.
@@ -93,6 +164,8 @@ protected:
 	unsigned int addVertex();
 	unsigned int addVertices(unsigned int nVertices);
 	void reserveVertices(unsigned int size);
+
+	void setContainerPointer(VertexType& v);
 
 	std::vector<int> compactVertices();
 
@@ -119,6 +192,10 @@ using ReturnIfHasVertexContainer = typename std::enable_if<hasVertexContainerT<U
 
 template <typename T>
 constexpr bool hasVertices() { return hasVertexContainerT<T>::value;}
+
+template <typename T>
+constexpr bool hasVertexOptionalContainer() { return comp::hasOptionalInfo<typename T::VertexType>();}
+
 
 } // namespace mgp::mesh
 

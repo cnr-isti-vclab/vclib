@@ -29,7 +29,7 @@ template<typename T>
 const typename Container<T, IfIsVertex<T>>::VertexType&
 Container<T, IfIsVertex<T>>::vertex(unsigned int i) const
 {
-	return vertsVec[i];
+	return Base::vec[i];
 }
 
 /**
@@ -46,7 +46,7 @@ template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexType&
 Container<T, IfIsVertex<T>>::vertex(unsigned int i)
 {
-	return vertsVec[i];
+	return Base::vec[i];
 }
 
 /**
@@ -76,7 +76,7 @@ unsigned int Container<T, IfIsVertex<T>>::vertexNumber() const
 template<typename T>
 unsigned int Container<T, IfIsVertex<T> >::vertexContainerSize() const
 {
-	return vertsVec.size();
+	return Base::vec.size();
 }
 
 template<typename T>
@@ -98,7 +98,7 @@ unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::deletedVertexNumber() cons
 template<typename T>
 void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
 {
-	vertsVec[i].setDeleted();
+	Base::vec[i].setDeleted();
 	--vn;
 }
 
@@ -117,12 +117,12 @@ void Container<T, IfIsVertex<T> >::deleteVertex(unsigned int i)
 template<typename T>
 unsigned int mgp::mesh::Container<T, IfIsVertex<T> >::vertexIdIfCompact(unsigned int id) const
 {
-	if (vertsVec.size() == vn)
+	if (Base::vec.size() == vn)
 		return id;
 	else {
 		unsigned int cnt = 0;
 		for (unsigned int i = 0; i < id; i++){
-			if (!vertsVec[i].isDeleted())
+			if (!Base::vec[i].isDeleted())
 				++cnt;
 		}
 		return cnt;
@@ -133,43 +133,43 @@ template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted)
 {
-	auto it = vertsVec.begin();
+	auto it = Base::vec.begin();
 	if (jumpDeleted) {
 		// if the user asked to jump the deleted vertices, and the first vertex is deleted, we need
 		// to move forward until we find the first non-deleted vertex
-		while (it != vertsVec.end() && it->isDeleted()) {
+		while (it != Base::vec.end() && it->isDeleted()) {
 			++it;
 		}
 	}
-	return VertexIterator(it, vertsVec, jumpDeleted && vertsVec.size() != vn);
+	return VertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vn);
 }
 
 template<typename T>
 typename Container<T, IfIsVertex<T>>::VertexIterator Container<T, IfIsVertex<T>>::vertexEnd()
 {
-	return VertexIterator(vertsVec.end(), vertsVec);
+	return VertexIterator(Base::vec.end(), Base::vec);
 }
 
 template<typename T>
 typename Container<T, IfIsVertex<T>>::ConstVertexIterator
 Container<T, IfIsVertex<T>>::vertexBegin(bool jumpDeleted) const
 {
-	auto it = vertsVec.begin();
+	auto it = Base::vec.begin();
 	if (jumpDeleted) {
 		// if the user asked to jump the deleted vertices, and the first vertex is deleted, we need
 		// to move forward until we find the first non-deleted vertex
-		while (it != vertsVec.end() && it->isDeleted()) {
+		while (it != Base::vec.end() && it->isDeleted()) {
 			++it;
 		}
 	}
-	return ConstVertexIterator(it, vertsVec, jumpDeleted && vertsVec.size() != vn);
+	return ConstVertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vn);
 }
 
 template<typename T>
 typename Container<T, IfIsVertex<T>>::ConstVertexIterator
 Container<T, IfIsVertex<T>>::vertexEnd() const
 {
-	return ConstVertexIterator(vertsVec.end(), vertsVec);
+	return ConstVertexIterator(Base::vec.end(), Base::vec);
 }
 
 template<typename T>
@@ -177,7 +177,7 @@ typename Container<T, IfIsVertex<T>>::VertexRangeIterator
 Container<T, IfIsVertex<T>>::vertices(bool jumpDeleted)
 {
 	return VertexRangeIterator(
-		*this, jumpDeleted && vertsVec.size() != vn, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
+		*this, jumpDeleted && Base::vec.size() != vn, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
 }
 
 template<typename T>
@@ -188,37 +188,322 @@ Container<T, IfIsVertex<T>>::vertices(bool jumpDeleted) const
 		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
 }
 
+/**
+ * @brief VertexOptionalContainer::isPerVertexColorEnabled checks if the vertex Optional Color is
+ * enabled. This function is available **only if the Vertex Element has the OptionalColor
+ * Component**.
+ * @return true if the Optional Color is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalColor<U, bool>
+Container<T, IfIsVertex<T>>::isPerVertexColorEnabled() const
+{
+	return Base::optionalVec.isColorEnabled();
+}
+
+/**
+ * @brief Container::enableVertexColor enables the Optional Color of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalColor Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalColor<U, void>
+Container<T, IfIsVertex<T>>::enablePerVertexColor()
+{
+	Base::optionalVec.enableColor(vertexContainerSize());
+}
+
+/**
+ * @brief Container::disableVertexColor disables the Optional Color of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalColor Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalColor<U, void>
+Container<T, IfIsVertex<T>>::disablePerVertexColor()
+{
+	Base::optionalVec.disableColor();
+}
+
+/**
+ * @brief VertexOptionalContainer::isPerVertexMutableBitFlagsEnabled checks if the vertex Optional
+ * Mutable Bit Flags is enabled. This function is available **only if the Vertex Element has the
+ * OptionalMutableBitFlags Component**.
+ * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalMutableBitFlags<U, bool>
+Container<T, IfIsVertex<T>>::isPerVertexMutableBitFlagsEnabled() const
+{
+	Base::optionalVec.isMutableBitFlagsEnabled();
+}
+
+/**
+ * @brief Container::enableVertexMutableFlags enables the Optional Mutable Flags of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalMutableBitFlags
+ * Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalMutableBitFlags<U, void>
+Container<T, IfIsVertex<T>>::enablePerVertexMutableBitFlags()
+{
+	Base::optionalVec.enableMutableBitFlags(vertexContainerSize());
+}
+
+/**
+ * @brief Container::disableVertexMutableFlags disables the Optional Mutable Flags of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalMutableBitFlags
+ * Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalMutableBitFlags<U, void>
+Container<T, IfIsVertex<T>>::disablePerVertexMutableBitFlags()
+{
+	Base::optionalVec.disableMutableBitFlags();
+}
+
+/**
+ * @brief VertexOptionalContainer::isPerVertexNormalEnabled checks if the vertex Optional Normal is
+ * enabled. This function is available **only if the Vertex Element has the OptionalNormal
+ * Component**.
+ * @return true if the Optional Normal is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalNormal<U, bool>
+Container<T, IfIsVertex<T>>::isPerVertexNormalEnabled() const
+{
+	return Base::optionalVec.isNormalEnabled();
+}
+
+/**
+ * @brief Container::enableVertexNormal enables the Optional Normal of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalNormal Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalNormal<U, void>
+Container<T, IfIsVertex<T>>::enablePerVertexNormal()
+{
+	Base::optionalVec.enableNormal(vertexContainerSize());
+}
+
+/**
+ * @brief Container::disableVertexNormal disables the Optional Normal of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalNormal Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalNormal<U, void>
+Container<T, IfIsVertex<T>>::disablePerVertexNormal()
+{
+	Base::optionalVec.disableNormal();
+}
+
+/**
+ * @brief VertexOptionalContainer::isPerVertexScalarEnabled checks if the vertex Optional Scalar is
+ * enabled. This function is available **only if the Vertex Element has the OptionalScalar
+ * Component**.
+ * @return true if the Optional Scalar is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalScalar<U, bool>
+Container<T, IfIsVertex<T>>::isPerVertexScalarEnabled() const
+{
+	return Base::optionalVec.isScalarEnabled();
+}
+
+/**
+ * @brief Container::enableVertexScalar enables the Optional Scalar of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalScalar Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalScalar<U, void>
+Container<T, IfIsVertex<T>>::enablePerVertexScalar()
+{
+	Base::optionalVec.enableScalar(vertexContainerSize());
+}
+
+/**
+ * @brief Container::disableVertexScalar disables the Optional Scalar of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalScalar Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalScalar<U, void>
+Container<T, IfIsVertex<T>>::disablePerVertexScalar()
+{
+	Base::optionalVec.disableScalar();
+}
+
+/**
+ * @brief VertexOptionalContainer::isPerVertexTexCoordEnabled checks if the vertex Optional TexCoord
+ * is enabled. This function is available **only if the Vertex Element has the OptionalTexCoord
+ * Component**.
+ * @return true if the Optional TexCoord is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalTexCoord<U, bool>
+Container<T, IfIsVertex<T>>::isPerVertexTexCoordEnabled() const
+{
+	return Base::optionalVec.isTexCoordEnabled();
+}
+
+/**
+ * @brief Container::enableVertexTexCoord enables the Optional TexCoord of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalTexCoord Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalTexCoord<U, void>
+Container<T, IfIsVertex<T>>::enablePerVertexTexCoord()
+{
+	Base::optionalVec.enableTexCoord(vertexContainerSize());
+}
+
+/**
+ * @brief Container::disableVertexTexCoord disables the Optional TexCoord of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalTexCoord Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalTexCoord<U, void>
+Container<T, IfIsVertex<T>>::disablePerVertexTexCoord()
+{
+	Base::optionalVec.disableTexCoord();
+}
+
+/**
+ * @brief VertexOptionalContainer::isPerVertexAdjacentFacesEnabled checks if the vertex Optional
+ * Adjacent Faces component is enabled. This function is available **only if the Vertex Element has
+ * the OptionalAdjacentFaces Component**.
+ * @return true if the Optional Adjacent Faces is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentFaces<U, bool>
+Container<T, IfIsVertex<T>>::isPerVertexAdjacentFacesEnabled() const
+{
+	return Base::optionalVec.isAdjacentFacesEnabled();
+}
+
+/**
+ * @brief VertexOptionalContainer::enablePerVertexAdjacentFaces enables the Optional Adjacent Faces
+ * of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalAdjacentFaces
+ * Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentFaces<U, void>
+Container<T, IfIsVertex<T>>::enablePerVertexAdjacentFaces()
+{
+	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
+}
+
+/**
+ * @brief VertexOptionalContainer::disablePerVertexAdjacentFaces disables the Optional Adjacent
+ * Faces of the vertex. This function is available **only if the Vertex Element has the
+ * OptionalAdjacentFaces Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentFaces<U, void>
+Container<T, IfIsVertex<T>>::disablePerVertexAdjacentFaces()
+{
+	Base::optionalVec.disableAdjacentFaces();
+}
+
+/**
+ * @brief VertexOptionalContainer::isPerVertexAdjacentVerticesEnabled checks if the vertex Optional
+ * Adjacent Vertices component is enabled. This function is available **only if the Vertex Element
+ * has the OptionalAdjacentVertices Component**.
+ * @return true if the Optional Adjacent Vertices is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentVertices<U, bool>
+Container<T, IfIsVertex<T>>::isPerVertexAdjacentVerticesEnabled() const
+{
+	return Base::optionalVec.isVertexReferencesEnabled();
+}
+
+/**
+ * @brief VertexOptionalContainer::enablePerVertexAdjacentVertices enables the Optional Adjacent
+ * Vertices of the vertex. This function is available **only if the Vertex Element has the
+ * OptionalAdjacentVertices Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentVertices<U, void>
+Container<T, IfIsVertex<T>>::enablePerVertexAdjacentVertices()
+{
+	Base::optionalVec.enableVertexReferences(vertexContainerSize());
+}
+
+/**
+ * @brief VertexOptionalContainer::disablePerVertexAdjacentVertices disables the Optional Adjacent
+ * Vertices of the vertex. This function is available **only if the Vertex Element has the
+ * OptionalAdjacentVertices Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentVertices<U, void>
+Container<T, IfIsVertex<T>>::disablePerVertexAdjacentVertices()
+{
+	Base::optionalVec.disableVertexReferences();
+}
+
+/**
+ * @brief VertexOptionalContainer::addPerVertexCustomComponent
+ */
+template<typename T>
+template<typename K, typename U>
+vert::ReturnIfHasCustomComponents<U, void>
+Container<T, IfIsVertex<T>>::addPerVertexCustomComponent(
+	const std::string& name)
+{
+	Base::optionalVec.template addNewComponent<K>(name, vertexContainerSize());
+}
+
 template<typename T>
 void Container<T, IfIsVertex<T> >::clearVertices()
 {
-	vertsVec.clear();
+	Base::vec.clear();
 	vn = 0;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		OptionalVertexContainer::clear();
+		Base::optionalVec.clear();
 	}
 }
 
 template<typename T>
 unsigned int Container<T, IfIsVertex<T> >::index(const VertexType* v) const
 {
-	assert(!vertsVec.empty() && v >= vertsVec.data() && v <= &vertsVec.back());
-	return v - vertsVec.data();
+	assert(!Base::vec.empty() && v >= Base::vec.data() && v <= &Base::vec.back());
+	return v - Base::vec.data();
 }
 
 template<typename T>
 unsigned int Container<T, IfIsVertex<T>>::addVertex()
 {
-	T* oldB = vertsVec.data();
-	vertsVec.push_back(VertexType());
-	T* newB = vertsVec.data();
+	T* oldB = Base::vec.data();
+	Base::vec.push_back(VertexType());
+	T* newB = Base::vec.data();
 	++vn;
-	vertsVec[vertsVec.size() - 1]._id = vertsVec.size() - 1;
+	Base::vec[Base::vec.size() - 1]._id = Base::vec.size() - 1;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		OptionalVertexContainer::setContainerPointer(vertsVec[vertsVec.size() - 1]);
-		OptionalVertexContainer::resize(vertsVec.size());
+		setContainerPointer(Base::vec[Base::vec.size() - 1]);
+		Base::optionalVec.resize(Base::vec.size());
 	}
 	updateVertexReferences(oldB, newB);
-	return vertsVec[vertsVec.size() - 1]._id;
+	return Base::vec[Base::vec.size() - 1]._id;
 }
 
 /**
@@ -232,18 +517,18 @@ unsigned int Container<T, IfIsVertex<T>>::addVertex()
 template<typename T>
 unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 {
-	unsigned int baseId = vertsVec.size();
-	T* oldB = vertsVec.data();
-	vertsVec.resize(vertsVec.size() + nVertices);
-	T* newB = vertsVec.data();
+	unsigned int baseId = Base::vec.size();
+	T* oldB = Base::vec.data();
+	Base::vec.resize(Base::vec.size() + nVertices);
+	T* newB = Base::vec.data();
 	vn+=nVertices;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		OptionalVertexContainer::resize(vertsVec.size());
+		Base::optionalVec.resize(Base::vec.size());
 	}
-	for (unsigned int i = baseId; i < vertsVec.size(); ++i){
-		vertsVec[i]._id = i;
+	for (unsigned int i = baseId; i < Base::vec.size(); ++i){
+		Base::vec[i]._id = i;
 		if constexpr (vert::hasOptionalInfo<VertexType>()) {
-			OptionalVertexContainer::setContainerPointer(vertsVec[i]);
+			setContainerPointer(Base::vec[i]);
 		}
 	}
 	updateVertexReferences(oldB, newB);
@@ -253,13 +538,19 @@ unsigned int Container<T, IfIsVertex<T> >::addVertices(unsigned int nVertices)
 template<typename T>
 void Container<T, IfIsVertex<T>>::reserveVertices(unsigned int size)
 {
-	T* oldB = vertsVec.data();
-	vertsVec.reserve(size);
-	T* newB = vertsVec.data();
+	T* oldB = Base::vec.data();
+	Base::vec.reserve(size);
+	T* newB = Base::vec.data();
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		OptionalVertexContainer::reserve(size);
+		Base::optionalVec.reserve(size);
 	}
 	updateVertexReferences(oldB, newB);
+}
+
+template<typename T>
+void mgp::mesh::Container<T, IfIsVertex<T> >::setContainerPointer(VertexType& v)
+{
+	v.setContainerPointer(&(Base::optionalVec));
 }
 
 /**
@@ -275,12 +566,12 @@ template<typename T>
 std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	std::vector<int> newIndices(vertsVec.size());
+	std::vector<int> newIndices(Base::vec.size());
 	unsigned int k = 0;
-	for (unsigned int i = 0; i < vertsVec.size(); ++i){
-		if (!vertsVec[i].isDeleted()){
-			vertsVec[k] = vertsVec[i];
-			vertsVec[k]._id = k;
+	for (unsigned int i = 0; i < Base::vec.size(); ++i){
+		if (!Base::vec[i].isDeleted()){
+			Base::vec[k] = Base::vec[i];
+			Base::vec[k]._id = k;
 			newIndices[i] = k;
 			k++;
 		}
@@ -288,10 +579,10 @@ std::vector<int> mgp::mesh::Container<T, IfIsVertex<T> >::compactVertices()
 			newIndices[i] = -1;
 		}
 	}
-	vertsVec.resize(k);
-	T* base = vertsVec.data();
+	Base::vec.resize(k);
+	T* base = Base::vec.data();
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
-		OptionalVertexContainer::compact(newIndices);
+		Base::optionalVec.compact(newIndices);
 	}
 	updateVertexReferencesAfterCompact(base, newIndices);
 	return newIndices;
@@ -306,7 +597,7 @@ void Container<T, IfIsVertex<T> >::updateVertexReferences(const T* oldBase, cons
 		}
 	}
 	else if constexpr(mgp::vert::hasOptionalAdjacentVertices<T>()) {
-		if (OptionalVertexContainer::isPerVertexAdjacentVerticesEnabled()) {
+		if (Base::optionalVec.isAdjacentVerticesEnabled()) {
 			for (VertexType& v : vertices()) {
 				v.updateVertexReferences(oldBase, newBase);
 			}
@@ -325,7 +616,7 @@ void Container<T, IfIsVertex<T> >::updateVertexReferencesAfterCompact(
 		}
 	}
 	else if constexpr (mgp::vert::hasOptionalAdjacentVertices<T>()){
-		if (OptionalVertexContainer::isPerVertexAdjacentVerticesEnabled()) {
+		if (Base::optionalVec.isAdjacentVerticesEnabled()) {
 			for (VertexType& v : vertices()) {
 				v.updateVertexReferencesAfterCompact(base, newIndices);
 			}
@@ -343,7 +634,7 @@ void Container<T, IfIsVertex<T>>::updateFaceReferences(const Face* oldBase, cons
 		}
 	}
 	else if constexpr (mgp::vert::hasOptionalAdjacentFaces<T>()){
-		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
+		if (Base::optionalVec.isAdjacentFacesEnabled()) {
 			for (VertexType& v : vertices()) {
 				v.updateFaceReferences(oldBase, newBase);
 			}
@@ -363,7 +654,7 @@ void Container<T, IfIsVertex<T>>::updateFaceReferencesAfterCompact(
 		}
 	}
 	else if constexpr (mgp::vert::hasOptionalAdjacentFaces<T>()){
-		if (OptionalVertexContainer::isPerVertexAdjacentFacesEnabled()) {
+		if (Base::optionalVec.isAdjacentFacesEnabled()) {
 			for (VertexType& v : vertices()) {
 				v.updateFaceReferencesAfterCompact(base, newIndices);
 			}
