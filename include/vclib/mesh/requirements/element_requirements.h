@@ -53,7 +53,7 @@ void constexpr requireVertices();
 template<typename MeshType>
 void constexpr requireFaces();
 
-}
+} // namespace vcl
 
 #include "element_requirements.cpp"
 

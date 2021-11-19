@@ -31,53 +31,75 @@ namespace vcl {
  * is/has functions *
  ********************/
 
-// Face Normal
+// Face Adjacent Faces
 
-template <typename MeshType>
-bool constexpr hasPerFaceNormal();
+template<typename MeshType>
+bool constexpr hasPerFaceAdjacentFaces();
 
-template <typename MeshType>
-bool isPerFaceNormalEnabled(const MeshType&);
+template<typename MeshType>
+bool isPerFaceAdjacentFacesEnabled(const MeshType&);
 
-template <typename MeshType>
-bool enableIfPerFaceNormalOptional(MeshType&);
+template<typename MeshType>
+bool enableIfPerFaceAdjacentFacesOptional(MeshType&);
 
 // Face Color
 
-template <typename MeshType>
+template<typename MeshType>
 bool constexpr hasPerFaceColor();
 
-template <typename MeshType>
+template<typename MeshType>
 bool isPerFaceColorEnabled(const MeshType&);
 
-template <typename MeshType>
+template<typename MeshType>
 bool enableIfPerFaceColorOptional(MeshType&);
+
+// Face Mark
+
+template<typename MeshType>
+bool constexpr hasPerFaceMark();
+
+template<typename MeshType>
+bool isPerFaceMarkEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerFaceMarkOptional(MeshType&);
+
+// Face Mutable Flags
+
+template<typename MeshType>
+bool constexpr hasPerFaceMutableBitFlags();
+
+template<typename MeshType>
+bool isPerFaceMutableBitFlagsEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerFaceMutableBitFlagsOptional(MeshType&);
+
+// Face Normal
+
+template<typename MeshType>
+bool constexpr hasPerFaceNormal();
+
+template<typename MeshType>
+bool isPerFaceNormalEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerFaceNormalOptional(MeshType&);
 
 // Face Scalar
 
-template <typename MeshType>
+template<typename MeshType>
 bool constexpr hasPerFaceScalar();
 
-template <typename MeshType>
+template<typename MeshType>
 bool isPerFaceScalarEnabled(const MeshType&);
 
-template <typename MeshType>
+template<typename MeshType>
 bool enableIfPerFaceScalarOptional(MeshType&);
-
-// Face Adjacent Faces
-
-template <typename MeshType>
-bool constexpr hasPerFaceAdjacentFaces();
-
-template <typename MeshType>
-bool isPerFaceAdjacentFacesEnabled(const MeshType&);
-
-template <typename MeshType>
-bool enableIfPerFaceAdjacentFacesOptional(MeshType&);
 
 // Face Wedge TexCoords
 
-template <typename MeshType>
+template<typename MeshType>
 bool constexpr hasPerFaceWedgeTexCoords();
 
 // Face Custom Components
@@ -88,55 +110,49 @@ bool constexpr hasPerFaceCustomComponents();
 template<typename MeshType>
 bool constexpr hasPerFaceCustomComponents(const MeshType&);
 
-// Face Mutable Flags
-
-template <typename MeshType>
-bool constexpr hasPerFaceMutableBitFlags();
-
-template <typename MeshType>
-bool isPerFaceMutableBitFlagsEnabled(const MeshType&);
-
-template <typename MeshType>
-bool enableIfPerFaceMutableBitFlagsOptional(MeshType&);
-
 /*********************
  * require functions *
  *********************/
 
-// Face Normal
+// Face Adjacent Faces
 
-template <typename MeshType>
-void requirePerFaceNormal(const MeshType& m);
+template<typename MeshType>
+void requirePerFaceAdjacentFaces(const MeshType& m);
 
 // Face Color
 
-template <typename MeshType>
+template<typename MeshType>
 void requirePerFaceColor(const MeshType& m);
 
-// Face Scalar
+// Face Color
 
-template <typename MeshType>
-void requirePerFaceScalar(const MeshType& m);
-
-// Face Adjacent Faces
-
-template <typename MeshType>
-void requirePerFaceAdjacentFaces(const MeshType& m);
-
-// Face Custom Components
-
-template <typename MeshType>
-bool constexpr requirePerFaceCustomComponents();
-
-template <typename MeshType>
-bool requirePerFaceCustomComponents(const MeshType& m);
+template<typename MeshType>
+void requirePerFaceMark(const MeshType& m);
 
 // Face Mutable Flags
 
-template <typename MeshType>
+template<typename MeshType>
 void requirePerFaceMutableBitFlags(const MeshType& m);
 
-}
+// Face Normal
+
+template<typename MeshType>
+void requirePerFaceNormal(const MeshType& m);
+
+// Face Scalar
+
+template<typename MeshType>
+void requirePerFaceScalar(const MeshType& m);
+
+// Face Custom Components
+
+template<typename MeshType>
+bool constexpr requirePerFaceCustomComponents();
+
+template<typename MeshType>
+bool requirePerFaceCustomComponents(const MeshType& m);
+
+} // namespace vcl
 
 #include "face_requirements.cpp"
 

@@ -58,4 +58,4 @@ void constexpr requireFaces()
 	static_assert(hasFaces<MeshType>(), "Mesh does not have a Face Container.");
 }
 
-}
+} // namespace vcl

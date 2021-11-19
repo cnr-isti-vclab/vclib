@@ -61,7 +61,7 @@ bool isTriangleMesh(const MeshType& m)
 	}
 	else {
 		using F = typename MeshType::Face;
-		for (const F& f : m.faces()){
+		for (const F& f : m.faces()) {
 			if (f.vertexNumber() != 3)
 				return false;
 		}
@@ -90,7 +90,7 @@ bool isQuadMesh(const MeshType& m)
 	}
 	else {
 		using F = typename MeshType::FaceType;
-		for (const F& f : m.faces()){
+		for (const F& f : m.faces()) {
 			if (f.vertexNumber() != 4)
 				return false;
 		}
@@ -104,6 +104,12 @@ bool constexpr hasBoundingBox()
 	return vcl::mesh::hasBoundingBox<MeshType>();
 }
 
+template<typename MeshType>
+bool constexpr hasMark()
+{
+	return vcl::mesh::hasMark<MeshType>();
+}
+
 /*********************
  * require functions *
  *********************/
@@ -114,8 +120,8 @@ void requireTriangleMesh(const MeshType& m)
 	if constexpr (!hasTriangles<MeshType>()) {
 		requireFaces<MeshType>();
 		using F = typename MeshType::Face;
-		for (const F& f : m.faces()){
-			if (f.vertexNumber() != 3){
+		for (const F& f : m.faces()) {
+			if (f.vertexNumber() != 3) {
 				throw MissingTriangularRequirementException("Triangle Mesh Required");
 			}
 		}
@@ -128,8 +134,8 @@ void requireQuadMesh(const MeshType& m)
 	if constexpr (!hasQuads<MeshType>()) {
 		requireFaces<MeshType>();
 		using F = typename MeshType::Face;
-		for (const F& f : m.faces()){
-			if (f.vertexNumber() != 4){
+		for (const F& f : m.faces()) {
+			if (f.vertexNumber() != 4) {
 				throw MissingQuadRequirementException("Quad Mesh Required");
 			}
 		}
@@ -142,4 +148,10 @@ void constexpr requireBoundingBox()
 	static_assert(hasBoundingBox<MeshType>(), "Mesh has no bounding box.");
 }
 
+template<typename MeshType>
+void constexpr requireMark()
+{
+	static_assert(hasMark<MeshType>(), "Mesh has no mark.");
 }
+
+} // namespace vcl

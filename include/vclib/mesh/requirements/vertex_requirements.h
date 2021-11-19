@@ -31,137 +31,152 @@ namespace vcl {
  * is/has functions *
  ********************/
 
-// Vertex Normal
-
-template <typename MeshType>
-bool constexpr hasPerVertexNormal();
-
-template <typename MeshType>
-bool isPerVertexNormalEnabled(const MeshType&);
-
-template <typename MeshType>
-bool enableIfPerVertexNormalOptional(MeshType&);
-
-// Vertex Color
-
-template <typename MeshType>
-bool constexpr hasPerVertexColor();
-
-template <typename MeshType>
-bool isPerVertexColorEnabled(const MeshType&);
-
-template <typename MeshType>
-bool enableIfPerVertexColorOptional(MeshType&);
-
-// Vertex Scalar
-
-template <typename MeshType>
-bool constexpr hasPerVertexScalar();
-
-template <typename MeshType>
-bool isPerVertexScalarEnabled(const MeshType&);
-
-template <typename MeshType>
-bool enableIfPerVertexScalarOptional(MeshType&);
-
-// Vertex TexCoord
-
-template <typename MeshType>
-bool constexpr hasPerVertexTexCoord();
-
-template <typename MeshType>
-bool isPerVertexTexCoordEnabled(const MeshType&);
-
-template <typename MeshType>
-bool enableIfPerVertexTexCoordOptional(MeshType&);
-
 // Vertex Adjacent Faces
 
-template <typename MeshType>
+template<typename MeshType>
 bool constexpr hasPerVertexAdjacentFaces();
 
-template <typename MeshType>
+template<typename MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType&);
 
-template <typename MeshType>
+template<typename MeshType>
 bool enableIfPerVertexAdjacentFacesOptional(MeshType&);
 
 // Vertex Adjacent Vertices
 
-template <typename MeshType>
+template<typename MeshType>
 bool constexpr hasPerVertexAdjacentVertices();
 
-template <typename MeshType>
+template<typename MeshType>
 bool isPerVertexAdjacentVerticesEnabled(const MeshType&);
 
-template <typename MeshType>
+template<typename MeshType>
 bool enableIfPerVertexAdjacentVerticesOptional(MeshType&);
 
-// Vertex Custom Components
+// Vertex Color
 
-template <typename MeshType>
-bool constexpr hasPerVertexCustomComponents();
+template<typename MeshType>
+bool constexpr hasPerVertexColor();
+
+template<typename MeshType>
+bool isPerVertexColorEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerVertexColorOptional(MeshType&);
+
+// Vertex Mark
+
+template<typename MeshType>
+bool constexpr hasPerVertexMark();
+
+template<typename MeshType>
+bool isPerVertexMarkEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerVertexMarkOptional(MeshType&);
 
 // Vertex Mutable Flags
 
 template<typename MeshType>
 bool constexpr hasPerVertexMutableBitFlags();
 
-template <typename MeshType>
+template<typename MeshType>
 bool isPerVertexMutableBitFlagsEnabled(const MeshType&);
 
-template <typename MeshType>
+template<typename MeshType>
 bool enableIfPerVertexMutableBitFlagsOptional(MeshType&);
 
+// Vertex Normal
+
+template<typename MeshType>
+bool constexpr hasPerVertexNormal();
+
+template<typename MeshType>
+bool isPerVertexNormalEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerVertexNormalOptional(MeshType&);
+
+// Vertex Scalar
+
+template<typename MeshType>
+bool constexpr hasPerVertexScalar();
+
+template<typename MeshType>
+bool isPerVertexScalarEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerVertexScalarOptional(MeshType&);
+
+// Vertex TexCoord
+
+template<typename MeshType>
+bool constexpr hasPerVertexTexCoord();
+
+template<typename MeshType>
+bool isPerVertexTexCoordEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerVertexTexCoordOptional(MeshType&);
+
+// Vertex Custom Components
+
+template<typename MeshType>
+bool constexpr hasPerVertexCustomComponents();
 
 /*********************
  * require functions *
  *********************/
 
-// Vertex Normal
-
-template <typename MeshType>
-void requirePerVertexNormal(const MeshType& m);
-
-// Vertex Color
-
-template <typename MeshType>
-void requirePerVertexColor(const MeshType& m);
-
-// Vertex Scalar
-
-template <typename MeshType>
-void requirePerVertexScalar(const MeshType& m);
-
-// Vertex TexCoord
-
-template <typename MeshType>
-void requirePerVertexTexCoord(const MeshType& m);
-
 // Vertex Adjacent Faces
 
-template <typename MeshType>
+template<typename MeshType>
 void requirePerVertexAdjacentFaces(const MeshType& m);
 
 // Vertex Adjacent Vertices
 
-template <typename MeshType>
+template<typename MeshType>
 void requirePerVertexAdjacentVertices(const MeshType& m);
 
-// Vertex Custom Components
+// Vertex Color
 
-template <typename MeshType>
-bool constexpr requirePerVertexCustomComponents();
+template<typename MeshType>
+void requirePerVertexColor(const MeshType& m);
 
-template <typename MeshType>
-bool requirePerVertexCustomComponents(const MeshType& m);
+// Vertex Mark
+
+template<typename MeshType>
+void requirePerVertexMark(const MeshType& m);
 
 // Vertex Mutable Flags
 
-template <typename MeshType>
+template<typename MeshType>
 void requirePerVertexMutableBitFlags(const MeshType& m);
 
-}
+// Vertex Normal
+
+template<typename MeshType>
+void requirePerVertexNormal(const MeshType& m);
+
+// Vertex Scalar
+
+template<typename MeshType>
+void requirePerVertexScalar(const MeshType& m);
+
+// Vertex TexCoord
+
+template<typename MeshType>
+void requirePerVertexTexCoord(const MeshType& m);
+
+// Vertex Custom Components
+
+template<typename MeshType>
+bool constexpr requirePerVertexCustomComponents();
+
+template<typename MeshType>
+bool requirePerVertexCustomComponents(const MeshType& m);
+
+} // namespace vcl
 
 #include "vertex_requirements.cpp"
 

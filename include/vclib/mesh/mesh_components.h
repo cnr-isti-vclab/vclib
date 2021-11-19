@@ -24,22 +24,35 @@
 #define VCL_MESH_COMPONENTS_H
 
 #include "components/bounding_box.h"
+#include "components/mark.h"
 
 namespace vcl::mesh {
 
 /** Port BoundingBox class into mesh namespace **/
-template <typename P>
+template<typename P>
 using BoundingBox = comp::BoundingBox<P>;
 
 using BoundingBox3f = comp::BoundingBox3f;
 using BoundingBox3d = comp::BoundingBox3d;
 
-template <typename T>
-bool constexpr hasBoundingBox() {return comp::hasBoundingBox<T>();};
+template<typename T>
+bool constexpr hasBoundingBox()
+{
+	return comp::hasBoundingBox<T>();
+};
 
 template<typename U, typename T>
 using ReturnIfHasBoundingBox = comp::ReturnIfHasBoundingBox<U, T>;
 
+/** Port Mark class into mesh namespace **/
+using Mark = comp::Mark;
+
+template<typename T>
+bool constexpr hasMark()
+{
+	return comp::hasMark<T>();
 }
+
+} // namespace vcl::mesh
 
 #endif // VCL_MESH_COMPONENTS_H

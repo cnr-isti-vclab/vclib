@@ -34,24 +34,29 @@ namespace vcl {
 
 // Triangles
 
-template <typename MeshType>
+template<typename MeshType>
 bool constexpr hasTriangles();
 
-template <typename MeshType>
+template<typename MeshType>
 bool isTriangleMesh(const MeshType&);
 
 // Quads
 
-template <typename MeshType>
+template<typename MeshType>
 bool constexpr hasQuads();
 
-template <typename MeshType>
+template<typename MeshType>
 bool isQuadMesh(const MeshType&);
 
 // Bounding Box
 
-template <typename MeshType>
+template<typename MeshType>
 bool constexpr hasBoundingBox();
+
+// Mark
+
+template<typename MeshType>
+bool constexpr hasMark();
 
 /*********************
  * require functions *
@@ -59,20 +64,25 @@ bool constexpr hasBoundingBox();
 
 // Triangles
 
-template <typename MeshType>
+template<typename MeshType>
 void requireTriangleMesh(const MeshType&);
 
 // Quads
 
-template <typename MeshType>
+template<typename MeshType>
 void requireQuadMesh(const MeshType&);
 
 // Bounding Box
 
-template <typename MeshType>
+template<typename MeshType>
 void constexpr requireBoundingBox();
 
-}
+// Mark
+
+template<typename MeshType>
+void constexpr requireMark();
+
+} // namespace vcl
 
 #include "mesh_requirements.cpp"
 
