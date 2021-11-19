@@ -1,8 +1,16 @@
-# This file is part of mgplib: https://github.com/alemuntoni/mgplib
-# This Source Code Form is subject to the terms of the GNU GPL 3.0
+#*****************************************************************************
+#* VCLib                                                             o o     *
+#* Visual and Computer Graphics Library                            o     o   *
+#*                                                                _   O  _   *
+#* Copyright(C) 2021-2022                                           \/)\/    *
+#* Visual Computing Lab                                            /\/|      *
+#* ISTI - Italian National Research Council                           |      *
+#*                                                                    \      *
+#* All rights reserved.                                                      *
+#****************************************************************************/
 
 cmake_minimum_required(VERSION 3.13)
-project(mgp-test)
+project(vclib-test)
 
 add_subdirectory(point2_example)
 add_subdirectory(point3_example)

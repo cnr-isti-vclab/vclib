@@ -1,24 +1,41 @@
-/**
- * This file is part of mgplib: https://github.com/alemuntoni/mgplib
- * This Source Code Form is subject to the terms of the GNU GPL 3.0
- */
+/*****************************************************************************
+ * VCLib                                                             o o     *
+ * Visual and Computer Graphics Library                            o     o   *
+ *                                                                 _  O  _   *
+ * Copyright(C) 2021-2022                                           \/)\/    *
+ * Visual Computing Lab                                            /\/|      *
+ * ISTI - Italian National Research Council                           |      *
+ *                                                                    \      *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the GNU General Public License as published by      *
+ * the Free Software Foundation; either version 3 of the License, or         *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * for more details.                                                         *
+ ****************************************************************************/
 
 #include <iostream>
 
-#include <mgp/algorithms/clean.h>
-#include <mgp/io/load_ply.h>
-#include <mgp/io/save_ply.h>
-#include <mgp/trimesh.h>
-#include <mgp/misc/timer.h>
+#include <vclib/algorithms/clean.h>
+#include <vclib/io/load_ply.h>
+#include <vclib/io/save_ply.h>
+#include <vclib/trimesh.h>
+#include <vclib/misc/timer.h>
 
 int main()
 {
-	mgp::TriMesh m;
+	vcl::TriMesh m;
 
-	mgp::io::loadPly(m, "/home/alessandro/tmp/bunny_rem.ply");
+	vcl::io::loadPly(m, "/home/alessandro/tmp/bunny_rem.ply");
 
-	unsigned int nv = mgp::removeUnreferencedVertices(m);
-	mgp::removeDuplicatedVertices(m);
+	unsigned int nv = vcl::removeUnreferencedVertices(m);
+	vcl::removeDuplicatedVertices(m);
 
 	std::cerr << "Removed Vertices: " << nv << "\n";
 
@@ -26,7 +43,7 @@ int main()
 	m.compactVertices();
 	m.compactFaces();
 
-	mgp::io::savePly(m, "/home/alessandro/tmp/bunny_remrem.ply");
+	vcl::io::savePly(m, "/home/alessandro/tmp/bunny_remrem.ply");
 
 	return 0;
 }

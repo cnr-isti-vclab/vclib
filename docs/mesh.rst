@@ -3,5 +3,5 @@
 The Mesh Class
 ==============
 
-.. doxygenclass:: mgp::Mesh
+.. doxygenclass:: vcl::Mesh
    :members:

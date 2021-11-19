@@ -1,2 +1,3 @@
-# mgplib
-Mesh and Geometry Processing Library
+# Visual Computing Library
+
+The Visual Computing Library

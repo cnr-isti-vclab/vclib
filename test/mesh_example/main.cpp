@@ -1,18 +1,35 @@
-/**
- * This file is part of mgplib: https://github.com/alemuntoni/mgplib
- * This Source Code Form is subject to the terms of the GNU GPL 3.0
- */
+/*****************************************************************************
+ * VCLib                                                             o o     *
+ * Visual and Computer Graphics Library                            o     o   *
+ *                                                                 _  O  _   *
+ * Copyright(C) 2021-2022                                           \/)\/    *
+ * Visual Computing Lab                                            /\/|      *
+ * ISTI - Italian National Research Council                           |      *
+ *                                                                    \      *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the GNU General Public License as published by      *
+ * the Free Software Foundation; either version 3 of the License, or         *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * for more details.                                                         *
+ ****************************************************************************/
 
 #include <iostream>
 
-#include <mgp/trimesh.h>
-#include <mgp/io/load_ply.h>
-#include <mgp/io/save_ply.h>
-#include <mgp/algorithms/create/tetrahedron.h>
+#include <vclib/trimesh.h>
+#include <vclib/io/load_ply.h>
+#include <vclib/io/save_ply.h>
+#include <vclib/algorithms/create/tetrahedron.h>
 
 int main()
 {
-	mgp::TriMesh m;
+	vcl::TriMesh m;
 
 	// adding some vertices
 	m.addVertex();
@@ -20,19 +37,19 @@ int main()
 	m.addVertex();
 
 	// setting coordinate
-	m.vertex(0).coord() = mgp::Point3d(0, 0, 0);
-	m.vertex(1).coord() = mgp::Point3d(0, 1, 0);
-	m.vertex(2).coord() = mgp::Point3d(1, 0, 0);
+	m.vertex(0).coord() = vcl::Point3d(0, 0, 0);
+	m.vertex(1).coord() = vcl::Point3d(0, 1, 0);
+	m.vertex(2).coord() = vcl::Point3d(1, 0, 0);
 
 	// test mutable flags
 	// flags that can be modified also on const meshes, like the "visited" flag
 	m.enablePerVertexMutableBitFlags(); // mutable flags on this mesh is an optional component
 
-	const mgp::TriMesh::Vertex& vv = m.vertex(0);
+	const vcl::TriMesh::Vertex& vv = m.vertex(0);
 	vv.setVisitedM(); // vertex 0 is now visited
 
-	mgp::TriMesh::Vertex myv;
-	myv.coord() = mgp::Point3d(3, 1, 2);
+	vcl::TriMesh::Vertex myv;
+	myv.coord() = vcl::Point3d(3, 1, 2);
 
 	assert(m.vertex(0).isVisitedM());
 
@@ -45,12 +62,12 @@ int main()
 	
 	// setting vertex normals
 	// in this mesh vertex normaks are not optional, I don't need to enable them
-	m.vertex(0).normal() = mgp::Point3d(1, 0, 0);
+	m.vertex(0).normal() = vcl::Point3d(1, 0, 0);
 
 	// setting vertex colors, also colors here are not optional
-	m.vertex(0).color() = mgp::Color(3, 7, 4);
-	m.vertex(1).color() = mgp::Color(3, 63, 44);
-	m.vertex(2).color() = mgp::Color(3, 9, 2);
+	m.vertex(0).color() = vcl::Color(3, 7, 4);
+	m.vertex(1).color() = vcl::Color(3, 63, 44);
+	m.vertex(2).color() = vcl::Color(3, 9, 2);
 	
 	// adding a per vertex custom component of chars, called 'prova'
 	m.addPerVertexCustomComponent<char>("prova");
@@ -77,8 +94,8 @@ int main()
 
 	// setting some colors to all the faces of the mesh
 	unsigned int i = 17;
-	for (mgp::TriMesh::Face& f : m.faces()) // iterates over all the non-deleted faces of m
-		f.color() = mgp::Color(4+2*i++, 134, 98);
+	for (vcl::TriMesh::Face& f : m.faces()) // iterates over all the non-deleted faces of m
+		f.color() = vcl::Color(4+2*i++, 134, 98);
 
 	// add some other vertices
 	m.addVertex();
@@ -86,19 +103,19 @@ int main()
 	m.addVertex();
 
 	std::cerr << "f0 scalar: " << m.face(0).scalar() << "\n";
-	for (const mgp::TriMesh::Face& f : m.faces())
+	for (const vcl::TriMesh::Face& f : m.faces())
 		std::cerr << m.index(f) << " Color: " << f.color() << "\n";
 
 	std::cerr << "VN: " << m.vertexNumber() << "\n";
 
 	//iterate over vertices
-	for (const mgp::TriMesh::Vertex& v : m.vertices()){
+	for (const vcl::TriMesh::Vertex& v : m.vertices()){
 		std::cerr << "V " << m.index(v) << "\n";
 	}
 
-	mgp::TriMesh tet = mgp::createTetrahedron<mgp::TriMesh>();
+	vcl::TriMesh tet = vcl::createTetrahedron<vcl::TriMesh>();
 
-	mgp::io::savePly(tet, "/home/alessandro/tmp/tet.ply");
+	vcl::io::savePly(tet, "/home/alessandro/tmp/tet.ply");
 
 	return 0;
 }

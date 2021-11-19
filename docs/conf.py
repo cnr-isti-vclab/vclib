@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'mgplib'
-copyright = '2021, Alessandro Muntoni'
-author = 'Alessandro Muntoni'
+project = 'vclib'
+copyright = '2021, Visual Computing Lab, ISTI - CNR'
+author = 'Visual Computing Lab, ISTI - CNR'
 
 
 # -- General configuration ---------------------------------------------------
@@ -38,7 +38,7 @@ extensions = [
 ]
 
 # Breathe Configuration
-breathe_default_project = "mgplib"
+breathe_default_project = "vclib"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

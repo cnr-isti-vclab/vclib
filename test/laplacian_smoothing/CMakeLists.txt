@@ -1,12 +1,20 @@
-# This file is part of mgplib: https://github.com/alemuntoni/mgplib
-# This Source Code Form is subject to the terms of the GNU GPL 3.0
+#*****************************************************************************
+#* VCLib                                                             o o     *
+#* Visual and Computer Graphics Library                            o     o   *
+#*                                                                _   O  _   *
+#* Copyright(C) 2021-2022                                           \/)\/    *
+#* Visual Computing Lab                                            /\/|      *
+#* ISTI - Italian National Research Council                           |      *
+#*                                                                    \      *
+#* All rights reserved.                                                      *
+#****************************************************************************/
 
 cmake_minimum_required(VERSION 3.13)
-project(mgp-laplacian-smoothing)
+project(vclib-laplacian-smoothing)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(mgp-laplacian-smoothing ${SOURCES})
+add_executable(vclib-laplacian-smoothing ${SOURCES})
 
-target_link_libraries(mgp-laplacian-smoothing PUBLIC mgp)
+target_link_libraries(vclib-laplacian-smoothing PUBLIC vclib)

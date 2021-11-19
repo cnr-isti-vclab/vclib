@@ -26,12 +26,12 @@ We can first declare a new Triangle Mesh and load a ply file:
 
 .. code-block:: cpp
 
-   #include <mgp/trimesh.h>
-   #include <mgp/io/load_ply>
+   #include <vclib/trimesh.h>
+   #include <vclib/io/load_ply>
 
-   mgp::Trimesh myTriMesh;
+   vcl::Trimesh myTriMesh;
 
-   mgp::loadPly(m, "bunny.ply");
+   vcl::loadPly(m, "bunny.ply");
 
 The TriMesh data structure has containers of Vertices and Faces, plus some other
 info like Bounding Box, Transform Matrix, ...
@@ -41,9 +41,9 @@ of the mesh after has been loaded:
 
 .. code-block:: cpp
 
-   #include <mgp/algorithms/update/bounding_box.h>
+   #include <vclib/algorithms/update/bounding_box.h>
 
-   mgp::updateBoundingBox(myTriMesh);
+   vcl::updateBoundingBox(myTriMesh);
 
    std::cout << "Min bb: " << myTriMesh.boundingBox().min() << "; "
              << "Max bb: " << myTriMesh.boundingBox().max() << "\n";
@@ -56,19 +56,19 @@ We can iterate over Vertices and over Faces of the mesh:
 
    // compute barycenter of the Mesh
 
-   mgp::Point3d bar;
+   vcl::Point3d bar;
    bar.setZero();
 
-   for (const mgp::TriMesh::Vertex& v : myTriMesh.vertices()) {
+   for (const vcl::TriMesh::Vertex& v : myTriMesh.vertices()) {
        bar += v.coord();
    }
    bar /= myTriMesh.vertexNumber();
 
    // print all the faces id with all vertices with y > barycenter.y()
 
-   for (const mgp::TriMesh::Face& f : myTriMesh.faces()) {
+   for (const vcl::TriMesh::Face& f : myTriMesh.faces()) {
        bool up = true;
-       for (const mgp::TriMesh::Vertex* v : f.vertices()) { // iterate over verts of f
+       for (const vcl::TriMesh::Vertex* v : f.vertices()) { // iterate over verts of f
            if (v->coord().y() < bar.y())
                up = false;
        }
@@ -92,14 +92,14 @@ We can create from scratch a mesh:
 
 .. code-block:: cpp
 
-   mgp::Trimesh mesh;
+   vcl::Trimesh mesh;
 
-   mesh.addVertex(mgp::Point3d(0,0,0)); // add a vertex with pos 0,0,0
+   mesh.addVertex(vcl::Point3d(0,0,0)); // add a vertex with pos 0,0,0
    mesh.addVertices(2); // add another two vertices to the mesh
-   mesh.vertex(1).coord() = mgp::Point3d(1,0,0);
-   mesh.vertex(2).coord() = mgp::Point3d(0,1,0);
+   mesh.vertex(1).coord() = vcl::Point3d(1,0,0);
+   mesh.vertex(2).coord() = vcl::Point3d(0,1,0);
 
-   mgp::Point3d p0, p1, p2, p3, p4;
+   vcl::Point3d p0, p1, p2, p3, p4;
 
    // add other 5 vertices to the mesh:
    mesh.addVertices(p0, p1, p2, p3, p4);

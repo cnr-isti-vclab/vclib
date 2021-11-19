@@ -1,8 +1,8 @@
 .. _index:
 
-=======
-MGP Lib
-=======
+========================
+Visual Computing Library
+========================
 
 
 .. toctree::
