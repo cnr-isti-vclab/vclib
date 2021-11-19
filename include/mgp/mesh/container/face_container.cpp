@@ -193,6 +193,55 @@ FaceContainer<T>::faces(bool jumpDeleted) const
 }
 
 /**
+ * @brief Checks if the face Optional Adjacent
+ * Faces is enabled. This function is available **only if the Face Element has the
+ * OptionalAdjacentFaces Component**.
+ * @return true if the Optional AdjacentFaces is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalAdjacentFaces<U, bool>
+FaceContainer<T>::isPerFaceAdjacentFacesEnabled() const
+{
+	return Base::optionalVec.isAdjacentFacesEnabled();
+}
+
+/**
+ * @brief Container::enableFaceAdjacentFaces enable the Optional Adjacent Faces of the face.
+ * @note This function is available **only if the Face Element has the OptionalAdjacentFaces
+ * Component**.
+ *
+ * @note If the size of the Face is dynamic (N < 0), when enabled, the adjacent faces number will be
+ * the same of the vertex number for each face of the container. This is because, for Faces,
+ * Adjacent Faces number is tied to the number of vertices.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalAdjacentFaces<U, void>
+FaceContainer<T>::enablePerFaceAdjacentFaces()
+{
+	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
+	static const int N = T::VERTEX_NUMBER;
+	if (N < 0) {
+		for (T& f : faces()) {
+			f.resizeAdjFaces(f.vertexNumber());
+		}
+	}
+}
+
+/**
+ * @brief Disables the Optional Adjacent Faces of the face.
+ * This function is available **only if the Face Element has the OptionalAdjacentFaces Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalAdjacentFaces<U, void>
+FaceContainer<T>::disablePerFaceAdjacentFaces()
+{
+	Base::optionalVec.disableAdjacentFaces();
+}
+
+/**
  * @brief Checks if the face Optional Color is
  * enabled. This function is available **only if the Face Element has the OptionalColor
  * component**.
@@ -228,6 +277,44 @@ face::ReturnIfHasOptionalColor<U, void>
 FaceContainer<T>::disablePerFaceColor()
 {
 	Base::optionalVec.disableColor();
+}
+
+/**
+ * @brief Checks if the face Optional Mark is
+ * enabled. This function is available **only if the Face Element has the OptionalMark
+ * component**.
+ * @return true if the Optional Mark is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalMark<U, bool>
+FaceContainer<T>::isPerFaceMarkEnabled() const
+{
+	return Base::optionalVec.isMarkEnabled();
+}
+
+/**
+ * @brief Enables the Optional Mark of the face.
+ * This function is available **only if the Face Element has the OptionalMark Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalMark<U, void>
+FaceContainer<T>::enablePerFaceMark()
+{
+	Base::optionalVec.enableMark(faceContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Mark of the face.
+ * This function is available **only if the Face Element has the OptionalMark Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalMark<U, void>
+FaceContainer<T>::disablePerFaceMark()
+{
+	Base::optionalVec.disableMark();
 }
 
 /**
@@ -342,55 +429,6 @@ face::ReturnIfHasOptionalScalar<U, void>
 FaceContainer<T>::disablePerFaceScalar()
 {
 	Base::optionalVec.disableScalar();
-}
-
-/**
- * @brief Checks if the face Optional Adjacent
- * Faces is enabled. This function is available **only if the Face Element has the
- * OptionalAdjacentFaces Component**.
- * @return true if the Optional AdjacentFaces is enabled, false otherwise.
- */
-template<typename T>
-template<typename U>
-face::ReturnIfHasOptionalAdjacentFaces<U, bool>
-FaceContainer<T>::isPerFaceAdjacentFacesEnabled() const
-{
-	return Base::optionalVec.isAdjacentFacesEnabled();
-}
-
-/**
- * @brief Container::enableFaceAdjacentFaces enable the Optional Adjacent Faces of the face.
- * @note This function is available **only if the Face Element has the OptionalAdjacentFaces
- * Component**.
- *
- * @note If the size of the Face is dynamic (N < 0), when enabled, the adjacent faces number will be
- * the same of the vertex number for each face of the container. This is because, for Faces,
- * Adjacent Faces number is tied to the number of vertices.
- */
-template<typename T>
-template<typename U>
-face::ReturnIfHasOptionalAdjacentFaces<U, void>
-FaceContainer<T>::enablePerFaceAdjacentFaces()
-{
-	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
-	static const int N = T::VERTEX_NUMBER;
-	if (N < 0) {
-		for (T& f : faces()) {
-			f.resizeAdjFaces(f.vertexNumber());
-		}
-	}
-}
-
-/**
- * @brief Disables the Optional Adjacent Faces of the face.
- * This function is available **only if the Face Element has the OptionalAdjacentFaces Component**.
- */
-template<typename T>
-template<typename U>
-face::ReturnIfHasOptionalAdjacentFaces<U, void>
-FaceContainer<T>::disablePerFaceAdjacentFaces()
-{
-	Base::optionalVec.disableAdjacentFaces();
 }
 
 /**

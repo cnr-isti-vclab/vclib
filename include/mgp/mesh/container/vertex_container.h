@@ -70,6 +70,26 @@ public:
 	VertexRangeIterator      vertices(bool jumpDeleted = true);
 	ConstVertexRangeIterator vertices(bool jumpDeleted = true) const;
 
+	// Adjacent Faces
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerVertexAdjacentFacesEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerVertexAdjacentFaces();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerVertexAdjacentFaces();
+
+	   // Adjacent Vertices
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentVertices<U, bool> isPerVertexAdjacentVerticesEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentVertices<U, void> enablePerVertexAdjacentVertices();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalAdjacentVertices<U, void> disablePerVertexAdjacentVertices();
+
 	// Color
 	template<typename U = T>
 	vert::ReturnIfHasOptionalColor<U, bool> isPerVertexColorEnabled() const;
@@ -79,6 +99,16 @@ public:
 
 	template<typename U = T>
 	vert::ReturnIfHasOptionalColor<U, void> disablePerVertexColor();
+
+	// Mark
+	template<typename U = T>
+	vert::ReturnIfHasOptionalMark<U, bool> isPerVertexMarkEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalMark<U, void> enablePerVertexMark();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalMark<U, void> disablePerVertexMark();
 
 	// Mutable Bit Flags
 	template<typename U = T>
@@ -119,26 +149,6 @@ public:
 
 	template<typename U = T>
 	vert::ReturnIfHasOptionalTexCoord<U, void> disablePerVertexTexCoord();
-
-	// Adjacent Faces
-	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerVertexAdjacentFacesEnabled() const;
-
-	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerVertexAdjacentFaces();
-
-	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerVertexAdjacentFaces();
-
-	// Adjacent Vertices
-	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentVertices<U, bool> isPerVertexAdjacentVerticesEnabled() const;
-
-	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentVertices<U, void> enablePerVertexAdjacentVertices();
-
-	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentVertices<U, void> disablePerVertexAdjacentVertices();
 
 	// Custom Components
 	template<typename K, typename U = T>

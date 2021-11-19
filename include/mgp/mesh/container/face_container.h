@@ -69,6 +69,16 @@ public:
 	FaceRangeIterator      faces(bool jumpDeleted = true);
 	ConstFaceRangeIterator faces(bool jumpDeleted = true) const;
 
+	// AdjacentFaces
+	template<typename U = T>
+	face::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerFaceAdjacentFacesEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerFaceAdjacentFaces();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerFaceAdjacentFaces();
+
 	// Color
 	template<typename U = T>
 	face::ReturnIfHasOptionalColor<U, bool> isPerFaceColorEnabled() const;
@@ -78,6 +88,16 @@ public:
 
 	template<typename U = T>
 	face::ReturnIfHasOptionalColor<U, void> disablePerFaceColor();
+
+	// Mark
+	template<typename U = T>
+	face::ReturnIfHasOptionalMark<U, bool> isPerFaceMarkEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalMark<U, void> enablePerFaceMark();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalMark<U, void> disablePerFaceMark();
 
 	// Mutable Bit Flags
 	template<typename U = T>
@@ -108,16 +128,6 @@ public:
 
 	template<typename U = T>
 	face::ReturnIfHasOptionalScalar<U, void> disablePerFaceScalar();
-
-	// AdjacentFaces
-	template<typename U = T>
-	face::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerFaceAdjacentFacesEnabled() const;
-
-	template<typename U = T>
-	face::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerFaceAdjacentFaces();
-
-	template<typename U = T>
-	face::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerFaceAdjacentFaces();
 
 	// WedgeTexCoords
 	template<typename U = T>

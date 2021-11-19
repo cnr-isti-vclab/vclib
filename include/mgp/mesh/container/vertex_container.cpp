@@ -194,6 +194,87 @@ VertexContainer<T>::vertices(bool jumpDeleted) const
 }
 
 /**
+ * @brief VertexOptionalContainer::isPerVertexAdjacentFacesEnabled checks if the vertex Optional
+ * Adjacent Faces component is enabled. This function is available **only if the Vertex Element has
+ * the OptionalAdjacentFaces Component**.
+ * @return true if the Optional Adjacent Faces is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentFaces<U, bool>
+VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
+{
+	return Base::optionalVec.isAdjacentFacesEnabled();
+}
+
+/**
+ * @brief VertexOptionalContainer::enablePerVertexAdjacentFaces enables the Optional Adjacent Faces
+ * of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalAdjacentFaces
+ * Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentFaces<U, void>
+VertexContainer<T>::enablePerVertexAdjacentFaces()
+{
+	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
+}
+
+/**
+ * @brief VertexOptionalContainer::disablePerVertexAdjacentFaces disables the Optional Adjacent
+ * Faces of the vertex. This function is available **only if the Vertex Element has the
+ * OptionalAdjacentFaces Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentFaces<U, void>
+VertexContainer<T>::disablePerVertexAdjacentFaces()
+{
+	Base::optionalVec.disableAdjacentFaces();
+}
+
+/**
+ * @brief VertexOptionalContainer::isPerVertexAdjacentVerticesEnabled checks if the vertex Optional
+ * Adjacent Vertices component is enabled. This function is available **only if the Vertex Element
+ * has the OptionalAdjacentVertices Component**.
+ * @return true if the Optional Adjacent Vertices is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentVertices<U, bool>
+VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
+{
+	return Base::optionalVec.isVertexReferencesEnabled();
+}
+
+/**
+ * @brief VertexOptionalContainer::enablePerVertexAdjacentVertices enables the Optional Adjacent
+ * Vertices of the vertex. This function is available **only if the Vertex Element has the
+ * OptionalAdjacentVertices Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentVertices<U, void>
+VertexContainer<T>::enablePerVertexAdjacentVertices()
+{
+	Base::optionalVec.enableVertexReferences(vertexContainerSize());
+}
+
+/**
+ * @brief VertexOptionalContainer::disablePerVertexAdjacentVertices disables the Optional Adjacent
+ * Vertices of the vertex. This function is available **only if the Vertex Element has the
+ * OptionalAdjacentVertices Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalAdjacentVertices<U, void>
+VertexContainer<T>::disablePerVertexAdjacentVertices()
+{
+	Base::optionalVec.disableVertexReferences();
+}
+
+/**
  * @brief VertexOptionalContainer::isPerVertexColorEnabled checks if the vertex Optional Color is
  * enabled. This function is available **only if the Vertex Element has the OptionalColor
  * Component**.
@@ -229,6 +310,44 @@ vert::ReturnIfHasOptionalColor<U, void>
 VertexContainer<T>::disablePerVertexColor()
 {
 	Base::optionalVec.disableColor();
+}
+
+/**
+ * @brief VertexOptionalContainer::isPerVertexMarkEnabled checks if the vertex Optional Mark is
+ * enabled. This function is available **only if the Vertex Element has the OptionalMark
+ * Component**.
+ * @return true if the Optional Mark is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalMark<U, bool>
+VertexContainer<T>::isPerVertexMarkEnabled() const
+{
+	return Base::optionalVec.isMarkEnabled();
+}
+
+/**
+ * @brief Container::enableVertexMark enables the Optional Mark of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalMark Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalMark<U, void>
+VertexContainer<T>::enablePerVertexMark()
+{
+	Base::optionalVec.enableMark(vertexContainerSize());
+}
+
+/**
+ * @brief Container::disableVertexMark disables the Optional Mark of the vertex.
+ * This function is available **only if the Vertex Element has the OptionalMark Component**.
+ */
+template<typename T>
+template<typename U>
+vert::ReturnIfHasOptionalMark<U, void>
+VertexContainer<T>::disablePerVertexMark()
+{
+	Base::optionalVec.disableMark();
 }
 
 /**
@@ -383,87 +502,6 @@ vert::ReturnIfHasOptionalTexCoord<U, void>
 VertexContainer<T>::disablePerVertexTexCoord()
 {
 	Base::optionalVec.disableTexCoord();
-}
-
-/**
- * @brief VertexOptionalContainer::isPerVertexAdjacentFacesEnabled checks if the vertex Optional
- * Adjacent Faces component is enabled. This function is available **only if the Vertex Element has
- * the OptionalAdjacentFaces Component**.
- * @return true if the Optional Adjacent Faces is enabled, false otherwise.
- */
-template<typename T>
-template<typename U>
-vert::ReturnIfHasOptionalAdjacentFaces<U, bool>
-VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
-{
-	return Base::optionalVec.isAdjacentFacesEnabled();
-}
-
-/**
- * @brief VertexOptionalContainer::enablePerVertexAdjacentFaces enables the Optional Adjacent Faces
- * of the vertex.
- * This function is available **only if the Vertex Element has the OptionalAdjacentFaces
- * Component**.
- */
-template<typename T>
-template<typename U>
-vert::ReturnIfHasOptionalAdjacentFaces<U, void>
-VertexContainer<T>::enablePerVertexAdjacentFaces()
-{
-	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
-}
-
-/**
- * @brief VertexOptionalContainer::disablePerVertexAdjacentFaces disables the Optional Adjacent
- * Faces of the vertex. This function is available **only if the Vertex Element has the
- * OptionalAdjacentFaces Component**.
- */
-template<typename T>
-template<typename U>
-vert::ReturnIfHasOptionalAdjacentFaces<U, void>
-VertexContainer<T>::disablePerVertexAdjacentFaces()
-{
-	Base::optionalVec.disableAdjacentFaces();
-}
-
-/**
- * @brief VertexOptionalContainer::isPerVertexAdjacentVerticesEnabled checks if the vertex Optional
- * Adjacent Vertices component is enabled. This function is available **only if the Vertex Element
- * has the OptionalAdjacentVertices Component**.
- * @return true if the Optional Adjacent Vertices is enabled, false otherwise.
- */
-template<typename T>
-template<typename U>
-vert::ReturnIfHasOptionalAdjacentVertices<U, bool>
-VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
-{
-	return Base::optionalVec.isVertexReferencesEnabled();
-}
-
-/**
- * @brief VertexOptionalContainer::enablePerVertexAdjacentVertices enables the Optional Adjacent
- * Vertices of the vertex. This function is available **only if the Vertex Element has the
- * OptionalAdjacentVertices Component**.
- */
-template<typename T>
-template<typename U>
-vert::ReturnIfHasOptionalAdjacentVertices<U, void>
-VertexContainer<T>::enablePerVertexAdjacentVertices()
-{
-	Base::optionalVec.enableVertexReferences(vertexContainerSize());
-}
-
-/**
- * @brief VertexOptionalContainer::disablePerVertexAdjacentVertices disables the Optional Adjacent
- * Vertices of the vertex. This function is available **only if the Vertex Element has the
- * OptionalAdjacentVertices Component**.
- */
-template<typename T>
-template<typename U>
-vert::ReturnIfHasOptionalAdjacentVertices<U, void>
-VertexContainer<T>::disablePerVertexAdjacentVertices()
-{
-	Base::optionalVec.disableVertexReferences();
 }
 
 /**
