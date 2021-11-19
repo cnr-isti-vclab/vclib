@@ -20,7 +20,7 @@ namespace mgp {
  * operators will be as fast as a normal increment, without any overhead for checking if the
  * iterator needs to jump elements.
  */
-template<typename T>
+template <template <typename, typename...> class Container, typename T>
 class ContainerIterator
 {
 private:
@@ -33,7 +33,7 @@ public:
 	using pointer           = T*;
 	using iterator_category = std::forward_iterator_tag;
 
-	ContainerIterator(VecIt it, const std::vector<T>& vec, bool jumpDeleted = true) :
+	ContainerIterator(VecIt it, const Container<T>& vec, bool jumpDeleted = true) :
 			it(it), vec(vec)
 	{
 		if (jumpDeleted) {
@@ -50,9 +50,9 @@ public:
 
 	pointer operator->() const { return &*it; }
 
-	bool operator==(const ContainerIterator<T>& oi) const { return it == oi.it; }
+	bool operator==(const ContainerIterator& oi) const { return it == oi.it; }
 
-	bool operator!=(const ContainerIterator<T>& oi) const { return it != oi.it; }
+	bool operator!=(const ContainerIterator& oi) const { return it != oi.it; }
 
 	ContainerIterator operator++() { return (this->*increment)(); }
 
@@ -107,14 +107,14 @@ private:
 	ContainerIterator (ContainerIterator::*postIncrement)();
 
 	VecIt                 it;  // the actual iterator
-	const std::vector<T>& vec; // needed to check for end when jumping elements
+	const Container<T>& vec; // needed to check for end when jumping elements
 };
 
 /**
  * @brief The ConstContainerIterator class is the const alternative of the ContainerIterator, that
  * allows to iterate over a const Container and get only const Elements.
  */
-template<typename T>
+template <template <typename, typename...> class Container, typename T>
 class ConstContainerIterator
 {
 private:
@@ -127,7 +127,7 @@ public:
 	using pointer           = const T*;
 	using iterator_category = std::forward_iterator_tag;
 
-	ConstContainerIterator(VecIt it, const std::vector<T>& vec, bool jumpDeleted = true) :
+	ConstContainerIterator(VecIt it, const Container<T>& vec, bool jumpDeleted = true) :
 			it(it), vec(vec)
 	{
 		if (jumpDeleted) {
@@ -139,7 +139,7 @@ public:
 			postIncrement = &ConstContainerIterator::incrementFast;
 		}
 	}
-	ConstContainerIterator(const ContainerIterator<T>& it) :
+	ConstContainerIterator(const ContainerIterator<Container, T>& it) :
 			ConstContainerIterator(it.it, it.vec, it.jumpDeleted)
 	{
 	}
@@ -148,9 +148,9 @@ public:
 
 	pointer operator->() const { return &*it; }
 
-	bool operator==(const ConstContainerIterator<T>& oi) const { return it == oi.it; }
+	bool operator==(const ConstContainerIterator& oi) const { return it == oi.it; }
 
-	bool operator!=(const ConstContainerIterator<T>& oi) const { return it != oi.it; }
+	bool operator!=(const ConstContainerIterator& oi) const { return it != oi.it; }
 
 	ConstContainerIterator operator++() { return (this->*increment)(); }
 
@@ -205,7 +205,7 @@ private:
 	ConstContainerIterator (ConstContainerIterator::*postIncrement)();
 
 	VecIt                 it;  // the actual iterator
-	const std::vector<T>& vec; // needed to check for end when jumping elements
+	const Container<T>& vec; // needed to check for end when jumping elements
 };
 
 } // namespace mgp

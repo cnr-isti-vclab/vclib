@@ -43,8 +43,8 @@ class VertexContainer : public ElementContainer<T>, public VertexContainerTrigge
 public:
 	using VertexType          = T;
 	using VertexCoordType     = typename T::CoordType;
-	using VertexIterator      = ContainerIterator<T>;
-	using ConstVertexIterator = ConstContainerIterator<T>;
+	using VertexIterator      = ContainerIterator<std::vector, T>;
+	using ConstVertexIterator = ConstContainerIterator<std::vector, T>;
 	using VertexRangeIterator = ContainerRangeIterator<VertexContainerType, VertexIterator>;
 	using ConstVertexRangeIterator =
 		ConstContainerRangeIterator<VertexContainerType, ConstVertexIterator>;

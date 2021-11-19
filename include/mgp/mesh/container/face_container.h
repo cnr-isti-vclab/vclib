@@ -43,8 +43,8 @@ class FaceContainer :
 
 public:
 	using FaceType               = T;
-	using FaceIterator           = ContainerIterator<T>;
-	using ConstFaceIterator      = ConstContainerIterator<T>;
+	using FaceIterator           = ContainerIterator<std::vector, T>;
+	using ConstFaceIterator      = ConstContainerIterator<std::vector, T>;
 	using FaceRangeIterator      = ContainerRangeIterator<FaceContainerType, FaceIterator>;
 	using ConstFaceRangeIterator = ConstContainerRangeIterator<FaceContainerType, ConstFaceIterator>;
 
