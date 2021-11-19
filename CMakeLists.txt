@@ -79,6 +79,7 @@ set(HEADERS
 	include/mgp/mesh/components_optional/optional_adjacent_vertices.h
 	include/mgp/mesh/components_optional/optional_color.h
 	include/mgp/mesh/components_optional/optional_info.h
+	include/mgp/mesh/components_optional/optional_mark.h
 	include/mgp/mesh/components_optional/optional_mutable_bit_flags.h
 	include/mgp/mesh/components_optional/optional_normal.h
 	include/mgp/mesh/components_optional/optional_scalar.h
@@ -89,6 +90,7 @@ set(HEADERS
 	include/mgp/mesh/components_vector/optional_adjacent_faces_vector.h
 	include/mgp/mesh/components_vector/optional_adjacent_vertices_vector.h
 	include/mgp/mesh/components_vector/optional_generic_vector.h
+	include/mgp/mesh/components_vector/optional_mark_vector.h
 	include/mgp/mesh/components_vector/optional_mutable_bit_flags_vector.h
 	include/mgp/mesh/components_vector/optional_normal_vector.h
 	include/mgp/mesh/components_vector/optional_scalar_vector.h
