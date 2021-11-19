@@ -65,6 +65,7 @@ set(HEADERS
 	include/mgp/mesh/components/coordinate.h
 	include/mgp/mesh/components/element_references.h
 	include/mgp/mesh/components/generic_container.h
+	include/mgp/mesh/components/mark.h
 	include/mgp/mesh/components/mutable_bit_flags.h
 	include/mgp/mesh/components/normal.h
 	include/mgp/mesh/components/polygon_bit_flags.h
