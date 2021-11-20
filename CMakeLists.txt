@@ -41,6 +41,7 @@ set(HEADERS
 	include/vclib/algorithms/clean.h
 	include/vclib/algorithms/smooth.h
 	include/vclib/algorithms/create/tetrahedron.h
+	include/vclib/algorithms/internal/edge_sorterer.h
 	include/vclib/algorithms/update/bounding_box.h
 	include/vclib/algorithms/update/flag.h
 	include/vclib/algorithms/update/normal.h
