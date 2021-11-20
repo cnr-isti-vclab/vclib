@@ -51,6 +51,7 @@ set(HEADERS
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_argument.h
 	include/vclib/mesh/mesh_components.h
+	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
 	include/vclib/mesh/container/containers.h
 	include/vclib/mesh/container/element_container.h
@@ -137,6 +138,7 @@ set(SOURCES
 	include/vclib/algorithms/update/normal.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/mesh/mesh.cpp
+	include/vclib/mesh/mesh_pos.cpp
 	include/vclib/mesh/container/face_container.cpp
 	include/vclib/mesh/container/vertex_container.cpp
 	include/vclib/mesh/components/bit_flags.cpp

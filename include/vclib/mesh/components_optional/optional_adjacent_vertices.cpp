@@ -177,28 +177,28 @@ internal::ReturnIfIsVector<U, void> OptionalAdjacentVertices<Vertex, N, T>::clea
 }
 
 template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::VertexIterator
+typename OptionalAdjacentVertices<Vertex, N, T>::AdjacentVertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexBegin()
 {
 	return B::optCont().adjVerts(thisId()).begin();
 }
 
 template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::VertexIterator
+typename OptionalAdjacentVertices<Vertex, N, T>::AdjacentVertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd()
 {
 	return B::optCont().adjVerts(thisId()).end();
 }
 
 template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexIterator
+typename OptionalAdjacentVertices<Vertex, N, T>::ConstAdjacentVertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexBegin() const
 {
 	return B::optCont().adjVerts(thisId()).begin();
 }
 
 template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexIterator
+typename OptionalAdjacentVertices<Vertex, N, T>::ConstAdjacentVertexIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd() const
 {
 	return B::optCont().adjVerts(thisId()).end();
@@ -210,8 +210,8 @@ OptionalAdjacentVertices<Vertex, N, T>::adjVertices()
 {
 	return VertexRangeIterator(
 		B::optCont().adjVerts(thisId()),
-		&OptionalAdjacentVertices::vertexBegin,
-		&OptionalAdjacentVertices::vertexEnd);
+		&OptionalAdjacentVertices::adjVertexBegin,
+		&OptionalAdjacentVertices::adjVertexEnd);
 }
 
 template<typename Vertex, int N, typename T>
@@ -220,8 +220,8 @@ OptionalAdjacentVertices<Vertex, N, T>::adjVertices() const
 {
 	return ConstVertexRangeIterator(
 		B::optCont().adjVerts(thisId()),
-		&OptionalAdjacentVertices::vertexBegin,
-		&OptionalAdjacentVertices::vertexEnd);
+		&OptionalAdjacentVertices::adjVertexBegin,
+		&OptionalAdjacentVertices::adjVertexEnd);
 }
 
 template<typename Vertex, int N, typename T>
