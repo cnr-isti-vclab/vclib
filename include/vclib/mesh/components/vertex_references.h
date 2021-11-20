@@ -64,7 +64,12 @@ public:
 	void setVertex(Vertex* v, unsigned int i) { Base::set(v, i); }
 	void setVertices(const std::vector<Vertex*>& list) { Base::set(list); }
 
-	using Base::contains;
+	bool containsVertex(const Vertex* v) const { return Base::contains(v); }
+
+	VertexIterator findVertex(const Vertex* v) { return Base::find(v); }
+	ConstVertexIterator findVertex(const Vertex* v) const { return Base::find(v); }
+
+	int indexOfVertex(const Vertex* v) const { return Base::indexOf(v); }
 
 	/** Member functions specific for vector **/
 

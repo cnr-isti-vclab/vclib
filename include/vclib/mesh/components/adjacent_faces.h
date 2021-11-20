@@ -31,7 +31,6 @@ class AdjacentFacesTriggerer
 {
 };
 
-template<typename Face, int N>
 /**
  * @brief The AdjacentFaces class is a container of Face references. It could be used by any
  * Element to save adjacencies information (also the Face element itself).
@@ -39,6 +38,7 @@ template<typename Face, int N>
  * It is a random access container having static or dynamic size, depending on the value of N (a
  * negative number means dynamic).
  */
+template<typename Face, int N>
 class AdjacentFaces : protected ElementReferences<Face, N>, public AdjacentFacesTriggerer
 {
 	using Base = ElementReferences<Face, N>;
@@ -70,6 +70,11 @@ public:
 	void setAdjFaces(const std::vector<Face*>& list) { Base::set(list); }
 
 	bool containsAdjFace(const Face* f) const { return Base::contains(f); }
+
+	AdjacentFaceIterator findAdjFace(const Face* f) { return Base::find(f); }
+	ConstAdjacentFaceIterator findAdjFace(const Face* f) const { return Base::find(f); }
+
+	int indexOfAdjFace(const Face* f) const { return Base::indexOf(f); }
 
 	/** Member functions specific for vector **/
 

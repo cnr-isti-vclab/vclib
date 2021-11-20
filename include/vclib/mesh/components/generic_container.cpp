@@ -120,6 +120,28 @@ bool GenericContainer<C, N>::contains(const C& e) const
 }
 
 template<typename C, int N>
+typename GenericContainer<C, N>::GCIterator GenericContainer<C, N>::find(const C& e)
+{
+	return std::find(container.begin(), container.end(), e);
+}
+
+template<typename C, int N>
+typename GenericContainer<C, N>::ConstGCIterator GenericContainer<C, N>::find(const C& e) const
+{
+	return std::find(container.begin(), container.end(), e);
+}
+
+template<typename C, int N>
+int GenericContainer<C, N>::indexOf(const C& e) const
+{
+	auto it = find(e);
+	if (e == end())
+		return -1;
+	else
+		return it - begin();
+}
+
+template<typename C, int N>
 template<int U>
 internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::resize(unsigned int n)
 {

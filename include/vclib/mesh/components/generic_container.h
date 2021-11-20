@@ -97,6 +97,11 @@ protected:
 
 	bool contains(const C& e) const;
 
+	GCIterator find(const C& e);
+	ConstGCIterator find(const C& e) const;
+
+	int indexOf(const C& e) const;
+
 	/** Member functions specific for vector **/
 
 	template<int U = N>

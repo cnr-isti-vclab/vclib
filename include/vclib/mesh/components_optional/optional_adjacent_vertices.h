@@ -79,19 +79,19 @@ public:
 	/** Iterator Types declaration **/
 
 	// if using array, will be the array iterator, the vector iterator otherwise
-	using VertexIterator = typename std::conditional<
+	using AdjacentVertexIterator = typename std::conditional<
 		(N >= 0),
 		typename std::array<Vertex*, ARRAY_SIZE>::iterator,
 		typename std::vector<Vertex*>::iterator>::type;
 
-	using ConstVertexIterator = typename std::conditional<
+	using ConstAdjacentVertexIterator = typename std::conditional<
 		(N >= 0),
 		typename std::array<Vertex*, ARRAY_SIZE>::const_iterator,
 		typename std::vector<Vertex*>::const_iterator>::type;
 
-	using VertexRangeIterator = RangeIterator<OptionalAdjacentVertices, VertexIterator>;
+	using VertexRangeIterator = RangeIterator<OptionalAdjacentVertices, AdjacentVertexIterator>;
 	using ConstVertexRangeIterator =
-		ConstRangeIterator<OptionalAdjacentVertices, ConstVertexIterator>;
+		ConstRangeIterator<OptionalAdjacentVertices, ConstAdjacentVertexIterator>;
 
 	/** Constructor **/
 
@@ -110,6 +110,11 @@ public:
 	void setAdjVertices(const std::vector<Vertex*>& list);
 
 	bool containsAdjVertex(const Vertex* v) const;
+
+	AdjacentVertexIterator findAdjVertex(const Vertex* v);
+	ConstAdjacentVertexIterator findAdjVertex(const Vertex* v) const;
+
+	int indexOfAdjVertex(const Vertex* v) const;
 
 	/** Member functions specific for vector **/
 
@@ -130,12 +135,12 @@ public:
 
 	/** Iterator Member functions **/
 
-	VertexIterator           adjVertexBegin();
-	VertexIterator           adjVertexEnd();
-	ConstVertexIterator      adjVertexBegin() const;
-	ConstVertexIterator      adjVertexEnd() const;
-	VertexRangeIterator      adjVertices();
-	ConstVertexRangeIterator adjVertices() const;
+	AdjacentVertexIterator      adjVertexBegin();
+	AdjacentVertexIterator      adjVertexEnd();
+	ConstAdjacentVertexIterator adjVertexBegin() const;
+	ConstAdjacentVertexIterator adjVertexEnd() const;
+	VertexRangeIterator         adjVertices();
+	ConstVertexRangeIterator    adjVertices() const;
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);

@@ -64,6 +64,11 @@ public:
 
 	bool containsAdjVertex(const Vertex* v) const { return Base::contains(v); }
 
+	AdjacentVertexIterator findAdjVertex(const Vertex* v) { return Base::find(v); }
+	ConstAdjacentVertexIterator findAdjVertex(const Vertex* v) const { return Base::find(v); }
+
+	int indexOfAdjVertex(const Vertex* v) const { return Base::indexOf(v); }
+
 	/** Member functions specific for vector **/
 
 	template<int U = N>

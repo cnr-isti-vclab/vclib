@@ -113,6 +113,30 @@ bool OptionalAdjacentFaces<Face, N, T>::containsAdjFace(const Face* f) const
 }
 
 template<typename Face, int N, typename T>
+typename OptionalAdjacentFaces<Face, N, T>::AdjacentFaceIterator
+OptionalAdjacentFaces<Face, N, T>::findAdjFace(const Face* f)
+{
+	return std::find(adjFaceBegin(), adjFaceEnd(), f);
+}
+
+template<typename Face, int N, typename T>
+typename OptionalAdjacentFaces<Face, N, T>::ConstAdjacentFaceIterator
+OptionalAdjacentFaces<Face, N, T>::findAdjFace(const Face* f) const
+{
+	return std::find(adjFaceBegin(), adjFaceEnd(), f);
+}
+
+template<typename Face, int N, typename T>
+int OptionalAdjacentFaces<Face, N, T>::indexOfAdjFace(const Face* f) const
+{
+	auto it = findAdjFace(f);
+	if (f == adjFaceEnd())
+		return -1;
+	else
+		return it - adjFaceBegin();
+}
+
+template<typename Face, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalAdjacentFaces<Face, N, T>::resizeAdjFaces(unsigned int n)

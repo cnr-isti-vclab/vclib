@@ -113,6 +113,30 @@ bool OptionalAdjacentVertices<Vertex, N, T>::containsAdjVertex(const Vertex* v) 
 }
 
 template<typename Vertex, int N, typename T>
+typename OptionalAdjacentVertices<Vertex, N, T>::AdjacentVertexIterator
+OptionalAdjacentVertices<Vertex, N, T>::findAdjVertex(const Vertex* v)
+{
+	return std::find(adjVertexBegin(), adjVertexEnd(), v);
+}
+
+template<typename Vertex, int N, typename T>
+typename OptionalAdjacentVertices<Vertex, N, T>::ConstAdjacentVertexIterator
+OptionalAdjacentVertices<Vertex, N, T>::findAdjVertex(const Vertex* v) const
+{
+	return std::find(adjVertexBegin(), adjVertexEnd(), v);
+}
+
+template<typename Vertex, int N, typename T>
+int OptionalAdjacentVertices<Vertex, N, T>::indexOfAdjVertex(const Vertex* v) const
+{
+	auto it = findAdjVertex(v);
+	if (v == adjVertexEnd())
+		return -1;
+	else
+		return it - adjVertexBegin();
+}
+
+template<typename Vertex, int N, typename T>
 template<int U>
 internal::ReturnIfIsVector<U, void>
 OptionalAdjacentVertices<Vertex, N, T>::resizeAdjVertices(unsigned int n)
