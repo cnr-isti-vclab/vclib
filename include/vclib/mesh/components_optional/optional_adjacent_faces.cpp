@@ -207,20 +207,20 @@ template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::AdjacentFaceRangeIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaces()
 {
-	return FaceRangeIterator(
-		B::optCont().adjFaces(B::indxex(this)),
-		&OptionalAdjacentFaces::faceBegin,
-		&OptionalAdjacentFaces::faceEnd);
+	return AdjacentFaceRangeIterator(
+		*this,
+		&OptionalAdjacentFaces::adjFaceBegin,
+		&OptionalAdjacentFaces::adjFaceEnd);
 }
 
 template<typename Face, int N, typename T>
 typename OptionalAdjacentFaces<Face, N, T>::ConstAdjacentFaceRangeIterator
 OptionalAdjacentFaces<Face, N, T>::adjFaces() const
 {
-	return ConstFaceRangeIterator(
-		B::optCont().adjFaces(B::indxex(this)),
-		&OptionalAdjacentFaces::faceBegin,
-		&OptionalAdjacentFaces::faceEnd);
+	return ConstAdjacentFaceRangeIterator(
+		*this,
+		&OptionalAdjacentFaces::adjFaceBegin,
+		&OptionalAdjacentFaces::adjFaceEnd);
 }
 
 template<typename Face, int N, typename T>

@@ -22,6 +22,7 @@
 
 #include "ply_face.h"
 #include <vclib/mesh/requirements.h>
+#include <vclib/exception/io_exception.h>
 
 namespace vcl {
 namespace ply {
@@ -83,8 +84,10 @@ void loadFacesTxt(
 					for (unsigned int i = 0; i < fSize; ++i) {
 						assert(token != spaceTokenizer.end());
 						int vid = internal::readProperty<size_t>(token, p.type);
-						if (vid < 0)
-							f.vertex(i) = nullptr;
+						if (vid < 0 || vid >= mesh.vertexNumber()) {
+							throw vcl::MalformedFileException(
+								"Bad vertex index for face " + std::to_string(i));
+						}
 						else
 							f.vertex(i) = &mesh.vertex(vid);
 					}

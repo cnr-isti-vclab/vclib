@@ -37,8 +37,29 @@ int main()
 	m.enablePerVertexAdjacentFaces();
 	vcl::updatePerVertexAdjacentFaces(m);
 
+	for (const vcl::TriMesh::Vertex& v : m.vertices()) {
+		std::cerr << "Adj faces to vertex " << m.index(v) << ": \n\t";
+		for (const vcl::TriMesh::Face* f : v.adjFaces()){
+			std::cerr << m.index(f) << "; ";
+		}
+		std::cerr << std::endl;
+	}
+
 	m.enablePerFaceAdjacentFaces();
 	vcl::updatePerFaceAdjacentFaces(m);
+
+	std::cerr << std::endl << std::endl;
+
+	for (const vcl::TriMesh::Face& f : m.faces()) {
+		std::cerr << "Adj faces to face " << m.index(f) << ": \n\t";
+		for (const vcl::TriMesh::Face* fadj : f.adjFaces()){
+			if (fadj != nullptr)
+				std::cerr << m.index(fadj) << "; ";
+			else
+				std::cerr << "-1; ";
+		}
+		std::cerr << std::endl;
+	}
 
 	return 0;
 }

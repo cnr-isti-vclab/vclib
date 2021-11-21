@@ -89,8 +89,8 @@ public:
 		typename std::array<Vertex*, ARRAY_SIZE>::const_iterator,
 		typename std::vector<Vertex*>::const_iterator>::type;
 
-	using VertexRangeIterator = RangeIterator<OptionalAdjacentVertices, AdjacentVertexIterator>;
-	using ConstVertexRangeIterator =
+	using AdjacentVertexRangeIterator = RangeIterator<OptionalAdjacentVertices, AdjacentVertexIterator>;
+	using ConstAdjacentVertexRangeIterator =
 		ConstRangeIterator<OptionalAdjacentVertices, ConstAdjacentVertexIterator>;
 
 	/** Constructor **/
@@ -135,12 +135,12 @@ public:
 
 	/** Iterator Member functions **/
 
-	AdjacentVertexIterator      adjVertexBegin();
-	AdjacentVertexIterator      adjVertexEnd();
-	ConstAdjacentVertexIterator adjVertexBegin() const;
-	ConstAdjacentVertexIterator adjVertexEnd() const;
-	VertexRangeIterator         adjVertices();
-	ConstVertexRangeIterator    adjVertices() const;
+	AdjacentVertexIterator           adjVertexBegin();
+	AdjacentVertexIterator           adjVertexEnd();
+	ConstAdjacentVertexIterator      adjVertexBegin() const;
+	ConstAdjacentVertexIterator      adjVertexEnd() const;
+	AdjacentVertexRangeIterator      adjVertices();
+	ConstAdjacentVertexRangeIterator adjVertices() const;
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);

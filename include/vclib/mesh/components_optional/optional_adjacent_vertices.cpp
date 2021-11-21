@@ -205,21 +205,21 @@ OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd() const
 }
 
 template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::VertexRangeIterator
+typename OptionalAdjacentVertices<Vertex, N, T>::AdjacentVertexRangeIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertices()
 {
-	return VertexRangeIterator(
-		B::optCont().adjVerts(thisId()),
+	return AdjacentVertexRangeIterator(
+		*this,
 		&OptionalAdjacentVertices::adjVertexBegin,
 		&OptionalAdjacentVertices::adjVertexEnd);
 }
 
 template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::ConstVertexRangeIterator
+typename OptionalAdjacentVertices<Vertex, N, T>::ConstAdjacentVertexRangeIterator
 OptionalAdjacentVertices<Vertex, N, T>::adjVertices() const
 {
-	return ConstVertexRangeIterator(
-		B::optCont().adjVerts(thisId()),
+	return ConstAdjacentVertexRangeIterator(
+		*this,
 		&OptionalAdjacentVertices::adjVertexBegin,
 		&OptionalAdjacentVertices::adjVertexEnd);
 }
