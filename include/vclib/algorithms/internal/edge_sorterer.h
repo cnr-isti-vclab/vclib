@@ -80,7 +80,8 @@ std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(
 	using FaceType = typename MeshType::Face;
 
 	std::vector<EdgeSorterer<MeshType>> vec;
-	int                                 n_edges = 0;
+
+	int n_edges = 0;
 	for (const FaceType& f : m.faces())
 		n_edges += f.vertexNumber();
 

@@ -22,6 +22,8 @@
 
 #include "topology.h"
 
+#include <vclib/algorithms/internal/edge_sorterer.h>
+
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -53,6 +55,56 @@ void updatePerVertexAdjacentFaces(MeshType& m)
 	for (FaceType& f : m.faces()) {
 		for (VertexType* v : f.vertices()){
 			v->pushAdjFace(&f);
+		}
+	}
+}
+
+/**
+ * @brief Updates the per face adjacent face component.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - AdjacentFaces
+ *
+ * @param m
+ */
+template<typename MeshType>
+void updatePerFaceAdjacentFaces(MeshType& m)
+{
+	vcl::requirePerFaceAdjacentFaces(m);
+
+	// vector that contains edges sorted trough unordered vertex pointers
+	// it contains clusters of "same" edges, but each one of them has its face pointer
+	// note that in case on non-manifold mesh, clusters may be of size >= 2
+	std::vector<internal::EdgeSorterer<MeshType>> vec = internal::fillAndSortEdgeVector(m);
+
+	if (vec.size() > 0) {
+
+		// in this loop, base will point to the first element of a cluster of edges
+		for (auto base = vec.begin(); base != vec.end(); /* increment of clusters into loop*/) {
+			auto first = base; // remember the first to set adj to the last
+
+			// i and j will increment together, and if i == j, i will be adj to j, but j will not be
+			// adj to i (to manage non manifold edges and make cyclic adj on the same edge)
+			auto i = base;
+			auto j = i+1;
+
+			if (*i != *j) { // case of cluster composed of one element. adj of i is nullptr
+				i->f->adjFace(i->z) = nullptr;
+			}
+			else { // at least two edges in the cluster
+				while (*i == *j && j != vec.end()) {
+					i->f->adjFace(i->z) = j->f;
+					++i;
+					++j;
+				}
+				// i now is the last element that was equal to first
+				i->f->adjFace(i->z) = first->f;
+			}
+
+			// j is the first different edge from first (or it is vec.end()!)
+			base = j;
 		}
 	}
 }

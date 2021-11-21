@@ -28,6 +28,9 @@ namespace vcl {
 template <typename MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m);
 
+template <typename MeshType>
+void updatePerFaceAdjacentFaces(MeshType& m);
+
 }
 
 #include "topology.cpp"
