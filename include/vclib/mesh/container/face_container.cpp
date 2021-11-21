@@ -239,7 +239,7 @@ FaceContainer<T>::enablePerFaceAdjacentFaces()
 {
 	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
-	if (N < 0) {
+	if constexpr (N < 0) {
 		for (T& f : faces()) {
 			f.resizeAdjFaces(f.vertexNumber());
 		}

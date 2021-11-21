@@ -42,9 +42,8 @@ public:
 
 	EdgeSorterer() {} // Nothing to do
 
-	void set(const FaceType& pf, const int nz)
+	void set(FaceType& pf, const int nz)
 	{
-		assert(pf != 0);
 		assert(nz >= 0);
 		assert(nz < 3);
 
@@ -74,7 +73,7 @@ public:
 
 template<typename MeshType>
 std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(
-	const MeshType& m,
+	MeshType& m,
 	bool includeFauxEdges = true)
 {
 	using FaceType = typename MeshType::Face;
