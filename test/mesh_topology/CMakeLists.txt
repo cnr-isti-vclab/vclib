@@ -10,11 +10,11 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.13)
-project(vclib-point3-example)
+project(vclib-mesh-topology)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-point3-example ${SOURCES})
+add_executable(vclib-mesh-topology ${SOURCES})
 
-target_link_libraries(vclib-point3-example PUBLIC vclib)
+target_link_libraries(vclib-mesh-topology PUBLIC vclib)

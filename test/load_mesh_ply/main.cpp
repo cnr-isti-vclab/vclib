@@ -30,19 +30,7 @@
 
 int main()
 {
-	vcl::PolyMesh m;
-
-	m.addVertex();
-
-	m.addFace();
-
-	auto& f = m.face(0);
-
-	f.pushVertex(&m.vertex(0));
-
-	m.enablePerFaceAdjacentFaces();
-
-	f.clearVertices();
+	//TODO
 
 	return 0;
 }

@@ -10,11 +10,11 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.13)
-project(vclib-unreferenced-vertices)
+project(vclib-mesh-basic-test)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-unreferenced-vertices ${SOURCES})
+add_executable(vclib-mesh-basic-test ${SOURCES})
 
-target_link_libraries(vclib-unreferenced-vertices PUBLIC vclib)
+target_link_libraries(vclib-mesh-basic-test PUBLIC vclib)

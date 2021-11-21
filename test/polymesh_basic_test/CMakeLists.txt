@@ -10,11 +10,11 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.13)
-project(vclib-mesh-example)
+project(vclib-polymesh-basic-test)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-mesh-example ${SOURCES})
+add_executable(vclib-polymesh-basic-test ${SOURCES})
 
-target_link_libraries(vclib-mesh-example PUBLIC vclib)
+target_link_libraries(vclib-polymesh-basic-test PUBLIC vclib)

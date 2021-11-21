@@ -22,25 +22,27 @@
 
 #include <iostream>
 
-#include <vclib/space/point.h>
+#include <vclib/polymesh.h>
+#include <vclib/io/load_ply.h>
+#include <vclib/io/save_ply.h>
+#include <vclib/algorithms/update/flag.h>
+#include <vclib/algorithms/smooth.h>
 
 int main()
 {
-	vcl::Point4d p1(1, 0, 0, 0);
+	vcl::PolyMesh m;
 
-	vcl::Point4d p2(0, 1, 0, 0);
+	m.addVertex();
 
-	std::cout << "Point p1 is [" << p1 << "].\n";
-	std::cout << "Point p2 is [" << p2 << "].\n";
+	m.addFace();
 
-	std::cout << "p1 norm is " << p1.norm() << ".\n";
-	std::cout << "p1 squared norm is " << p1.squaredNorm() << "\n";
+	auto& f = m.face(0);
 
-	std::cout << "p1 dot p2: " << p1.dot(p2) << "\n";
+	f.pushVertex(&m.vertex(0));
 
-	vcl::Point4f pf = p1;
+	m.enablePerFaceAdjacentFaces();
 
-	std::cout << "p1 converted to float: [" << pf << "]\n";
+	f.clearVertices();
 
 	return 0;
 }

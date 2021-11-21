@@ -22,21 +22,23 @@
 
 #include <iostream>
 
-#include <vclib/space/point.h>
+#include <vclib/algorithms/update/topology.h>
+#include <vclib/io/load_ply.h>
+#include <vclib/io/save_ply.h>
+#include <vclib/trimesh.h>
+#include <vclib/misc/timer.h>
 
 int main()
 {
-	vcl::Point2d p1(1, 0);
+	vcl::TriMesh m;
 
-	vcl::Point2d p2(0, 1);
+	vcl::io::loadPly(m, "/home/alessandro/tmp/cube.ply");
 
-	std::cout << "Point p1 is [" << p1 << "].\n";
-	std::cout << "Point p2 is [" << p2 << "].\n";
+	m.enablePerVertexAdjacentFaces();
+	vcl::updatePerVertexAdjacentFaces(m);
 
-	std::cout << "p1 norm is " << p1.norm() << ".\n";
-	std::cout << "p1 squared norm is " << p1.squaredNorm() << "\n";
-
-	std::cout << "p1 dot p2: " << p1.dot(p2) << "\n";
+	m.enablePerFaceAdjacentFaces();
+	vcl::updatePerFaceAdjacentFaces(m);
 
 	return 0;
 }

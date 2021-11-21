@@ -10,11 +10,11 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.13)
-project(vclib-point4-example)
+project(vclib-mesh-clean)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-point4-example ${SOURCES})
+add_executable(vclib-mesh-clean ${SOURCES})
 
-target_link_libraries(vclib-point4-example PUBLIC vclib)
+target_link_libraries(vclib-mesh-clean PUBLIC vclib)
