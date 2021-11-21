@@ -36,17 +36,13 @@ public:
 	using VertexType = typename MeshType::Vertex;
 	using FaceType   = typename MeshType::Face;
 
-	VertexType* v[2]; // Puntatore ai due vertici (Ordinati)
-	FaceType*   f;    // Puntatore alla faccia generatrice
-	int         z;    // Indice dell'edge nella faccia
+	VertexType* v[2]; // Pointer to the two (ordered) vertices of the edge
+	FaceType*   f;    // Pointer to the face of the edge
+	int         z;    // Index of the edge inside the face
 
-	EdgeSorterer() {} // Nothing to do
-
-	void set(FaceType& pf, const int nz)
+	EdgeSorterer() : v{nullptr, nullptr}, f(nullptr), z(-1) {}
+	EdgeSorterer(FaceType& pf, unsigned int nz)
 	{
-		assert(nz >= 0);
-		assert(nz < 3);
-
 		v[0] = pf.vertex(nz);
 		v[1] = pf.vertexMod(nz + 1);
 		assert(v[0] != v[1]);
@@ -86,12 +82,10 @@ std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(
 
 	vec.reserve(n_edges);
 
-	auto edgeIterator = vec.begin();
 	for (FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
 		for (int j = 0; j < f.vertexNumber(); ++j) {
 			if (includeFauxEdges || !f.isEdgeFaux(j)) {
-				(*edgeIterator).set(f, j);
-				++edgeIterator;
+				vec.push_back(EdgeSorterer<MeshType>(f, j));
 			}
 		}
 	}
