@@ -148,6 +148,7 @@ set(SOURCES
 	include/vclib/mesh/components/mutable_bit_flags.cpp
 	include/vclib/mesh/components/polygon_bit_flags.cpp
 	include/vclib/mesh/components/triangle_bit_flags.cpp
+	include/vclib/mesh/components/vertex_references.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_faces.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_vertices.cpp
 	include/vclib/mesh/components_optional/optional_mutable_bit_flags.cpp

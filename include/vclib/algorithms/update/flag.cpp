@@ -46,8 +46,8 @@ void updateBorder(MeshType& m)
 	vcl::requireVertices(m);
 	vcl::requireFaces(m);
 
-	using VertexType    = typename MeshType::Vertex;
-	using FaceType      = typename MeshType::Face;
+	using VertexType = typename MeshType::Vertex;
+	using FaceType   = typename MeshType::Face;
 
 	for (FaceType& f : m.faces())
 		f.clearAllEdgeOnBorder();
@@ -63,7 +63,7 @@ void updateBorder(MeshType& m)
 	do {
 		if (pe == e.end() || *pe != *ps) { // Trovo blocco di edge uguali
 			if (pe - ps == 1) {
-				ps->f->setEdgeOnBorder(ps->z);
+				ps->f->setEdgeOnBorder(ps->e);
 			}
 			ps = pe;
 		}

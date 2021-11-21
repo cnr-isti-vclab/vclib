@@ -25,13 +25,19 @@
 
 namespace vcl {
 
-template <typename MeshType>
+template<typename MeshType>
+void clearPerVertexAdjacentFaces(MeshType& m);
+
+template<typename MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m);
 
-template <typename MeshType>
+template<typename MeshType>
+void clearPerFaceAdjacentFaces(MeshType& m);
+
+template<typename MeshType>
 void updatePerFaceAdjacentFaces(MeshType& m);
 
-}
+} // namespace vcl
 
 #include "topology.cpp"
 

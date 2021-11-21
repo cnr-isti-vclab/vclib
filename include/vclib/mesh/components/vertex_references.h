@@ -50,78 +50,58 @@ public:
 
 	/** Constructor **/
 
-	VertexReferences() : Base() {}
+	VertexReferences();
 
 	/** Member functions **/
 
-	unsigned int vertexNumber() const { return Base::size(); }
+	unsigned int vertexNumber() const;
 
-	Vertex*&      vertex(unsigned int i) { return Base::at(i); }
-	const Vertex* vertex(unsigned int i) const { return Base::at(i); }
-	Vertex*&      vertexMod(int i) { return Base::atMod(i); }
-	const Vertex* vertexMod(int i) const { return Base::atMod(i); }
+	Vertex*&      vertex(unsigned int i);
+	const Vertex* vertex(unsigned int i) const;
+	Vertex*&      vertexMod(int i);
+	const Vertex* vertexMod(int i) const;
 
-	void setVertex(Vertex* v, unsigned int i) { Base::set(v, i); }
-	void setVertices(const std::vector<Vertex*>& list) { Base::set(list); }
+	void setVertex(Vertex* v, unsigned int i);
+	void setVertices(const std::vector<Vertex*>& list);
 
-	bool containsVertex(const Vertex* v) const { return Base::contains(v); }
+	bool containsVertex(const Vertex* v) const;
 
-	VertexIterator findVertex(const Vertex* v) { return Base::find(v); }
-	ConstVertexIterator findVertex(const Vertex* v) const { return Base::find(v); }
+	VertexIterator findVertex(const Vertex* v);
+	ConstVertexIterator findVertex(const Vertex* v) const;
 
-	int indexOfVertex(const Vertex* v) const { return Base::indexOf(v); }
+	int indexOfVertex(const Vertex* v) const;
+	int indexOfEdge(const Vertex* v1, const Vertex* v2);
 
 	/** Member functions specific for vector **/
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n)
-	{
-		Base::resize(n);
-	}
+	internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v)
-	{
-		Base::pushBack(v);
-	}
+	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, Vertex* v)
-	{
-		Base::insert(i, v);
-	}
+	internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, Vertex* v);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i)
-	{
-		Base::erase(i);
-	}
+	internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearVertices()
-	{
-		Base::clear();
-	}
+	internal::ReturnIfIsVector<U, void> clearVertices();
 
 	/** Iterator Member functions **/
 
-	VertexIterator           vertexBegin() { return Base::begin(); }
-	VertexIterator           vertexEnd() { return Base::end(); }
-	ConstVertexIterator      vertexBegin() const { return Base::begin(); }
-	ConstVertexIterator      vertexEnd() const { return Base::end(); }
-	VertexRangeIterator      vertices() { return Base::rangeIterator(); }
-	ConstVertexRangeIterator vertices() const { return Base::rangeIterator(); }
+	VertexIterator           vertexBegin();
+	VertexIterator           vertexEnd();
+	ConstVertexIterator      vertexBegin() const;
+	ConstVertexIterator      vertexEnd() const;
+	VertexRangeIterator      vertices();
+	ConstVertexRangeIterator vertices() const;
 
 protected:
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
-	{
-		Base::updateElementReferences(oldBase, newBase);
-	}
+	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices)
-	{
-		Base::updateElementReferencesAfterCompact(base, newIndices);
-	}
+	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 };
 
 template<typename Vertex>
@@ -153,5 +133,7 @@ bool constexpr hasVertexReferences()
 }
 
 } // namespace vcl::comp
+
+#include "vertex_references.cpp"
 
 #endif // VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H

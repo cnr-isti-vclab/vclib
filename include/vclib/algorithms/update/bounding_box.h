@@ -28,7 +28,7 @@ namespace vcl {
 template<typename MeshType>
 void updateBoundingBox(MeshType& m);
 
-}
+} // namespace vcl
 
 #include "bounding_box.cpp"
 

@@ -38,19 +38,19 @@ public:
 
 	VertexType* v[2]; // Pointer to the two (ordered) vertices of the edge
 	FaceType*   f;    // Pointer to the face of the edge
-	int         z;    // Index of the edge inside the face
+	int         e;    // Index of the edge inside the face
 
-	EdgeSorterer() : v{nullptr, nullptr}, f(nullptr), z(-1) {}
-	EdgeSorterer(FaceType& pf, unsigned int nz)
+	EdgeSorterer() : v {nullptr, nullptr}, f(nullptr), e(-1) {}
+	EdgeSorterer(FaceType& pf, unsigned int ne)
 	{
-		v[0] = pf.vertex(nz);
-		v[1] = pf.vertexMod(nz + 1);
+		v[0] = pf.vertex(ne);
+		v[1] = pf.vertexMod(ne + 1);
 		assert(v[0] != v[1]);
 
 		if (v[0] > v[1])
 			std::swap(v[0], v[1]);
 		f = &pf;
-		z = nz;
+		e = ne;
 	}
 
 	bool operator<(const EdgeSorterer& pe) const
@@ -68,9 +68,7 @@ public:
 };
 
 template<typename MeshType>
-std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(
-	MeshType& m,
-	bool includeFauxEdges = true)
+std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(MeshType& m, bool includeFauxEdges = true)
 {
 	using FaceType = typename MeshType::Face;
 
