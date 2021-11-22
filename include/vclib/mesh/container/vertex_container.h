@@ -97,7 +97,7 @@ public:
 	template<typename U = T>
 	vert::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerVertexAdjacentFaces();
 
-	   // Adjacent Vertices
+	// Adjacent Vertices
 	template<typename U = T>
 	vert::ReturnIfHasOptionalAdjacentVertices<U, bool> isPerVertexAdjacentVerticesEnabled() const;
 

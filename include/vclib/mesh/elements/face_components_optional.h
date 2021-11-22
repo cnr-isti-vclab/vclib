@@ -34,28 +34,27 @@
 
 namespace vcl::face {
 
-/** Port OptionalInfo class into face namespace **/
+/** Port OptionalAdjacentFaces class into face namespace **/
 template<typename T>
-using OptionalInfo = comp::OptionalInfo<T>;
+using OptionalAdjacentPolygons = comp::OptionalAdjacentFaces<T, -1, T>;
 
 template<typename T>
-bool constexpr hasOptionalInfo()
+using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<T, 3, T>;
+
+template<typename T>
+bool constexpr hasOptionalAdjacentFaces()
 {
-	return comp::hasOptionalInfo<T>();
+	return comp::hasOptionalAdjacentFaces<T>();
 }
 
-/** Port OptionalMutableBitFlags class into face namespace **/
 template<typename T>
-using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<T>;
-
-template<typename T>
-bool constexpr hasOptionalMutableBitFlags()
+bool constexpr sanityCheckOptionalAdjacentFaces()
 {
-	return comp::hasOptionalMutableBitFlags<T>();
+	return comp::sanityCheckOptionalAdjacentFaces<T>();
 }
 
 template<typename U, typename T>
-using ReturnIfHasOptionalMutableBitFlags = comp::ReturnIfHasOptionalMutableBitFlags<U, T>;
+using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalAdjacentFaces<U, T>;
 
 /** Port OptionalColor class into face namespace **/
 template<typename T>
@@ -69,6 +68,42 @@ bool constexpr hasOptionalColor()
 
 template<typename U, typename T>
 using ReturnIfHasOptionalColor = comp::ReturnIfHasOptionalColor<U, T>;
+
+/** Port OptionalInfo class into face namespace **/
+template<typename T>
+using OptionalInfo = comp::OptionalInfo<T>;
+
+template<typename T>
+bool constexpr hasOptionalInfo()
+{
+	return comp::hasOptionalInfo<T>();
+}
+
+/** Port OptionalMark class into face namespace **/
+template<typename T>
+using OptionalMark = comp::OptionalMark<T>;
+
+template<typename T>
+bool constexpr hasOptionalMark()
+{
+	return comp::hasOptionalMark<T>();
+}
+
+template<typename U, typename T>
+using ReturnIfHasOptionalMark = comp::ReturnIfHasOptionalMark<U, T>;
+
+/** Port OptionalMutableBitFlags class into face namespace **/
+template<typename T>
+using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<T>;
+
+template<typename T>
+bool constexpr hasOptionalMutableBitFlags()
+{
+	return comp::hasOptionalMutableBitFlags<T>();
+}
+
+template<typename U, typename T>
+using ReturnIfHasOptionalMutableBitFlags = comp::ReturnIfHasOptionalMutableBitFlags<U, T>;
 
 /** Port OptionalNormal class into face namespace **/
 template<typename Scalar, int N, typename T>
@@ -111,38 +146,9 @@ bool constexpr hasOptionalScalar()
 template<typename U, typename T>
 using ReturnIfHasOptionalScalar = comp::ReturnIfHasOptionalScalar<U, T>;
 
-/** Port OptionalMark class into face namespace **/
-template<typename T>
-using OptionalMark = comp::OptionalMark<T>;
-
-template<typename T>
-bool constexpr hasOptionalMark()
-{
-	return comp::hasOptionalMark<T>();
-}
-
-template<typename U, typename T>
-using ReturnIfHasOptionalMark = comp::ReturnIfHasOptionalMark<U, T>;
-
-/** Port OptionalAdjacentFaces class into face namespace **/
-template<typename T>
-using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<T, -1, T>;
-
-template<typename T>
-using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<T, 3, T>;
-
-template<typename T>
-bool constexpr hasOptionalAdjacentFaces()
-{
-	return comp::hasOptionalAdjacentFaces<T>();
-}
-
-template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalAdjacentFaces<U, T>;
-
 /** Port OptionalWedgeTexCoords class into face namespace **/
 template<typename S, typename T>
-using OptionalWedgeTexCoords = comp::OptionalWedgeTexCoords<S, -1, T>;
+using OptionalPolygonWedgeTexCoords = comp::OptionalWedgeTexCoords<S, -1, T>;
 
 template<typename S, typename T>
 using OptionalTriangleWedgeTexCoords = comp::OptionalWedgeTexCoords<S, 3, T>;
@@ -151,9 +157,9 @@ template<typename U, typename T>
 using ReturnIfHasOptionalWedgeTexCoords = comp::ReturnIfHasOptionalWedgeTexCoords<U, T>;
 
 template<typename T>
-using OptionalWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, -1, T>;
+using OptionalPolygonWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, -1, T>;
 template<typename T>
-using OptionalWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, -1, T>;
+using OptionalPolygonWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, -1, T>;
 template<typename T>
 using OptionalTriangleWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, 3, T>;
 template<typename T>
@@ -170,8 +176,6 @@ bool constexpr sanityCheckOptionalWedgeTexCoords()
 {
 	return comp::sanityCheckOptionalWedgeTexCoords<T>();
 }
-
-
 
 /** Port CustomComponents class into face namespace **/
 template<typename T>

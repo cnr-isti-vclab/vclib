@@ -142,6 +142,17 @@ bool constexpr hasAdjacentFaces()
 	return hasAdjacentFacesT<T>::value;
 }
 
+template <typename T>
+bool constexpr sanityCheckAdjacentFaces()
+{
+	if constexpr (hasAdjacentFaces<T>()) {
+		return T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
+	}
+	else {
+		return true;
+	}
+}
+
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_ADJACENT_FACES_H

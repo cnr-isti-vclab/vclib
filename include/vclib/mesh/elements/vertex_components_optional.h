@@ -35,28 +35,31 @@
 
 namespace vcl::vert {
 
-/** Port OptionalInfo class into vert namespace **/
-template<typename T>
-using OptionalInfo = comp::OptionalInfo<T>;
+/** Port OptionalAdjacentFaces class into vert namespace **/
+template<typename Face, typename T>
+using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<Face, -1, T>;
 
 template<typename T>
-bool constexpr hasOptionalInfo()
+bool constexpr hasOptionalAdjacentFaces()
 {
-	return comp::hasOptionalInfo<T>();
-}
-
-/** Port OptionalMutableBitFlags class into vert namespace **/
-template<typename T>
-using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<T>;
-
-template<typename T>
-bool constexpr hasOptionalMutableBitFlags()
-{
-	return comp::hasOptionalMutableBitFlags<T>();
+	return comp::hasOptionalAdjacentFaces<T>();
 }
 
 template<typename U, typename T>
-using ReturnIfHasOptionalMutableBitFlags = comp::ReturnIfHasOptionalMutableBitFlags<U, T>;
+using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalAdjacentFaces<U, T>;
+
+/** Port OptionalAdjacentVertices class into vert namespace **/
+template<typename T>
+using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<T, -1, T>;
+
+template<typename T>
+bool constexpr hasOptionalAdjacentVertices()
+{
+	return comp::hasOptionalAdjacentVertices<T>();
+}
+
+template<typename U, typename T>
+using ReturnIfHasOptionalAdjacentVertices = comp::ReturnIfHasOptionalAdjacentVertices<U, T>;
 
 /** Port OptionalColor class into vert namespace **/
 template<typename T>
@@ -70,6 +73,42 @@ bool constexpr hasOptionalColor()
 
 template<typename U, typename T>
 using ReturnIfHasOptionalColor = comp::ReturnIfHasOptionalColor<U, T>;
+
+/** Port OptionalInfo class into vert namespace **/
+template<typename T>
+using OptionalInfo = comp::OptionalInfo<T>;
+
+template<typename T>
+bool constexpr hasOptionalInfo()
+{
+	return comp::hasOptionalInfo<T>();
+}
+
+/** Port OptionalMark class into vert namespace **/
+template<typename T>
+using OptionalMark = comp::OptionalMark<T>;
+
+template<typename T>
+bool constexpr hasOptionalMark()
+{
+	return comp::hasOptionalMark<T>();
+}
+
+template<typename U, typename T>
+using ReturnIfHasOptionalMark = comp::ReturnIfHasOptionalMark<U, T>;
+
+/** Port OptionalMutableBitFlags class into vert namespace **/
+template<typename T>
+using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<T>;
+
+template<typename T>
+bool constexpr hasOptionalMutableBitFlags()
+{
+	return comp::hasOptionalMutableBitFlags<T>();
+}
+
+template<typename U, typename T>
+using ReturnIfHasOptionalMutableBitFlags = comp::ReturnIfHasOptionalMutableBitFlags<U, T>;
 
 /** Port OptionalNormal class into vert namespace **/
 template<typename Scalar, int N, typename T>
@@ -112,19 +151,6 @@ bool constexpr hasOptionalScalar()
 template<typename U, typename T>
 using ReturnIfHasOptionalScalar = comp::ReturnIfHasOptionalScalar<U, T>;
 
-/** Port OptionalMark class into vert namespace **/
-template<typename T>
-using OptionalMark = comp::OptionalMark<T>;
-
-template<typename T>
-bool constexpr hasOptionalMark()
-{
-	return comp::hasOptionalMark<T>();
-}
-
-template<typename U, typename T>
-using ReturnIfHasOptionalMark = comp::ReturnIfHasOptionalMark<U, T>;
-
 /** Port OptionalTexCoord class into vert namespace **/
 template<typename S, typename T>
 using OptionalTexCoord = comp::OptionalTexCoord<S, T>;
@@ -143,32 +169,6 @@ bool constexpr hasOptionalTexCoord()
 
 template<typename U, typename T>
 using ReturnIfHasOptionalTexCoord = comp::ReturnIfHasOptionalTexCoord<U, T>;
-
-/** Port OptionalAdjacentFaces class into vert namespace **/
-template<typename Face, typename T>
-using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<Face, -1, T>;
-
-template<typename T>
-bool constexpr hasOptionalAdjacentFaces()
-{
-	return comp::hasOptionalAdjacentFaces<T>();
-}
-
-template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalAdjacentFaces<U, T>;
-
-/** Port OptionalAdjacentVertices class into vert namespace **/
-template<typename T>
-using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<T, -1, T>;
-
-template<typename T>
-bool constexpr hasOptionalAdjacentVertices()
-{
-	return comp::hasOptionalAdjacentVertices<T>();
-}
-
-template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentVertices = comp::ReturnIfHasOptionalAdjacentVertices<U, T>;
 
 /** Port CustomComponents class into vert namespace **/
 template<typename T>

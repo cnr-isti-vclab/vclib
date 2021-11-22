@@ -99,6 +99,17 @@ bool constexpr hasWedgeColors()
 	return hasWedgeColorsT<T>::value;
 }
 
+template <typename T>
+bool constexpr sanityCheckWedgeColors()
+{
+	if constexpr (hasWedgeColors<T>()) {
+		return T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
+	}
+	else {
+		return true;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "wedge_colors.cpp"

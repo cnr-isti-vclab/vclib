@@ -39,8 +39,8 @@ class Face :
 		public vcl::Face<
 			vcl::face::PolygonBitFlags, // 4b
 			vcl::face::PolygonVertexRefs<Vertex>,
-			vcl::face::WedgeTexCoordsf,
-			vcl::face::OptionalAdjacentFaces<Face>>
+			vcl::face::PolygonWedgeTexCoordsf,
+			vcl::face::OptionalAdjacentPolygons<Face>>
 {
 };
 

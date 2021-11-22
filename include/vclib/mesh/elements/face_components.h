@@ -40,7 +40,7 @@ namespace vcl::face {
 
 /** Port AdjacentFaces class into face namespace **/
 template<typename Face>
-using AdjacentFaces = comp::AdjacentFaces<Face, -1>;
+using AdjacentPolygons = comp::AdjacentFaces<Face, -1>;
 
 template<typename Face>
 using AdjacentTriangles = comp::AdjacentFaces<Face, 3>;
@@ -49,6 +49,12 @@ template<typename T>
 bool constexpr hasAdjacentFaces()
 {
 	return comp::hasAdjacentFaces<T>();
+}
+
+template<typename T>
+bool constexpr sanityCheckAdjacentFaces()
+{
+	return comp::sanityCheckAdjacentFaces<T>();
 }
 
 /** Port BitFlags class into face namespace **/
@@ -151,7 +157,7 @@ bool constexpr hasVertexReferences()
 }
 
 /** Port WedgeColors class into face namespace **/
-using WedgeColors = comp::WedgeColors<-1>;
+using PolygonWedgeColors = comp::WedgeColors<-1>;
 
 using TriangleWedgeColors = comp::WedgeColors<3>;
 
@@ -161,15 +167,21 @@ bool constexpr hasWedgeColors()
 	return comp::hasWedgeColors<T>();
 }
 
+template<typename T>
+bool constexpr sanityCheckWedgeColors()
+{
+	return comp::sanityCheckWedgeColors<T>();
+}
+
 /** Port WedgeTexCoords class into face namespace **/
 template<typename Scalar>
-using WedgeTexCoords = comp::WedgeTexCoords<Scalar, -1>;
+using PolygonWedgeTexCoords = comp::WedgeTexCoords<Scalar, -1>;
 
 template<typename Scalar>
 using TriangleWedgeTexCoords = comp::WedgeTexCoords<Scalar, 3>;
 
-using WedgeTexCoordsf         = comp::WedgeTexCoords<float, -1>;
-using WedgeTexCoordsd         = comp::WedgeTexCoords<double, -1>;
+using PolygonWedgeTexCoordsf = comp::WedgeTexCoords<float, -1>;
+using PolygonWedgeTexCoordsd = comp::WedgeTexCoords<double, -1>;
 using TriangleWedgeTexCoordsf = TriangleWedgeTexCoords<float>;
 using TriangleWedgeTexCoordsd = TriangleWedgeTexCoords<double>;
 

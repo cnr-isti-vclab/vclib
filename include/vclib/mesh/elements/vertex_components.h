@@ -37,6 +37,26 @@
 
 namespace vcl::vert {
 
+/** Port AdjacentFaces class into vert namespace **/
+template<typename Face>
+using AdjacentFaces = comp::AdjacentFaces<Face, -1>;
+
+template<typename T>
+bool constexpr hasAdjacentFaces()
+{
+	return comp::hasAdjacentFaces<T>();
+}
+
+/** Port AdjacentVertices class into vert namespace **/
+template<typename Vertex>
+using AdjacentVertices = comp::AdjacentVertices<Vertex, -1>;
+
+template<typename T>
+bool constexpr hasAdjacentVertices()
+{
+	return comp::hasAdjacentVertices<T>();
+}
+
 /** Port BitFlags class into vert namespace **/
 using BitFlags = comp::BitFlags;
 
@@ -44,7 +64,7 @@ template<typename T>
 bool constexpr hasBitFlags()
 {
 	return comp::hasBitFlags<T>();
-};
+}
 
 /** Port Color class into vert namespace **/
 using Color = comp::Color;
@@ -53,7 +73,7 @@ template<typename T>
 bool constexpr hasColor()
 {
 	return comp::hasColor<T>();
-};
+}
 
 /** Port Coordinate class into vert namespace **/
 template<typename Scalar, int N>
@@ -69,7 +89,25 @@ template<typename T>
 bool constexpr hasCoordinate()
 {
 	return comp::hasCoordinate<T>();
-};
+}
+
+/** Port Mark class into vert namespace **/
+using Mark = comp::Mark;
+
+template<typename T>
+bool constexpr hasMark()
+{
+	return comp::hasMark<T>();
+}
+
+/** Port MutableBitFlags class into vert namespace **/
+using MutableBitFlags = comp::MutableBitFlags;
+
+template<typename T>
+bool constexpr hasMutableBitFlags()
+{
+	return comp::hasMutableBitFlags<T>();
+}
 
 /** Port Normal classes into vert namespace **/
 template<typename Scalar, int N>
@@ -100,34 +138,6 @@ bool constexpr hasScalar()
 	return comp::hasScalar<T>();
 }
 
-/** Port AdjacentFacesRef class into vert namespace **/
-template<typename Face>
-using AdjacentFaces = comp::AdjacentFaces<Face, -1>;
-
-template<typename T>
-bool constexpr hasAdjacentFaces()
-{
-	return comp::hasAdjacentFaces<T>();
-}
-
-/** Port Mark class into vert namespace **/
-using Mark = comp::Mark;
-
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
-
-/** Port MutableBitFlags class into vert namespace **/
-using MutableBitFlags = comp::MutableBitFlags;
-
-template<typename T>
-bool constexpr hasMutableBitFlags()
-{
-	return comp::hasMutableBitFlags<T>();
-}
-
 /** Port TexCoord class into vert namespace **/
 template<typename T>
 using TexCoord = comp::TexCoord<T>;
@@ -140,16 +150,6 @@ bool constexpr hasTexCoord()
 
 using TexCoordf = comp::TexCoordf;
 using TexCoordd = comp::TexCoordd;
-
-/** Port AdjacentVertices class into vert namespace **/
-template<typename Vertex>
-using AdjacentVertices = comp::AdjacentVertices<Vertex, -1>;
-
-template<typename T>
-bool constexpr hasAdjacentVertices()
-{
-	return comp::hasAdjacentVertices<T>();
-}
 
 } // namespace vcl::vert
 

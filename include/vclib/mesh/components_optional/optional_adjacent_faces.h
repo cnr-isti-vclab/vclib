@@ -168,6 +168,17 @@ bool constexpr hasOptionalAdjacentFaces()
 	return hasOptionalAdjacentFacesT<T>::value;
 }
 
+template <typename T>
+bool constexpr sanityCheckOptionalAdjacentFaces()
+{
+	if constexpr (hasOptionalAdjacentFaces<T>()) {
+		return T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
+	}
+	else {
+		return true;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "optional_adjacent_faces.cpp"
