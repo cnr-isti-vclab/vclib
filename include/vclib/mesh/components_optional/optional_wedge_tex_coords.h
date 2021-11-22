@@ -74,7 +74,7 @@ public:
 		typename std::array<vcl::TexCoord<Scalar>, ARRAY_SIZE>,
 		typename std::vector<vcl::TexCoord<Scalar>>>::type;
 
-	static const int ADJ_FACE_NUMBER = N;
+	static const int WEDGE_TEX_COORD_NUMBER = N;
 
 	/** Iterator Types declaration **/
 

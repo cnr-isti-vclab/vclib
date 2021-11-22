@@ -20,91 +20,87 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
-#define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
+#ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_H
+#define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
 #include "generic_container.h"
 
-#include <vclib/space/tex_coord.h>
+#include <vclib/space/color.h>
 
 namespace vcl::comp {
 
-class WedgeTexCoordsTriggerer
+class WedgeColorsTriggerer
 {
 };
 
-template<typename Scalar, int N>
-class WedgeTexCoords :
-		protected GenericContainer<vcl::TexCoord<Scalar>, N>,
-		public WedgeTexCoordsTriggerer
+template<int N>
+class WedgeColors : protected GenericContainer<vcl::Color, N>, public WedgeColorsTriggerer
 {
-	using Base = GenericContainer<vcl::TexCoord<Scalar>, N>;
+	using Base = GenericContainer<vcl::Color, N>;
 
 public:
-	static const int WEDGE_TEX_COORD_NUMBER = Base::CONTAINER_SIZE;
+	static const int WEDGE_COLOR_NUMBER = Base::CONTAINER_SIZE;
 
 	/** Iterator Types declaration **/
 
-	using WedgeTexCoordsIterator           = typename Base::GCIterator;
-	using ConstWedgeTexCoordsIterator      = typename Base::ConstGCIterator;
-	using WedgeTexCoordsRangeIterator      = typename Base::GCRangeIterator;
-	using ConstWedgeTexCoordsRangeIterator = typename Base::ConstGCRangeIterator;
+	using WedgeColorsIterator           = typename Base::GCIterator;
+	using ConstWedgeColorsIterator      = typename Base::ConstGCIterator;
+	using WedgeColorsRangeIterator      = typename Base::GCRangeIterator;
+	using ConstWedgeColorsRangeIterator = typename Base::ConstGCRangeIterator;
 
-	WedgeTexCoords();
+	WedgeColors();
 
 	/** Member functions **/
 
-	vcl::TexCoord<Scalar>&       wedgeTexCoord(unsigned int i);
-	const vcl::TexCoord<Scalar>& wedgeTexCoord(unsigned int i) const;
+	vcl::Color&       wedgeColor(unsigned int i);
+	const vcl::Color& wedgeColor(unsigned int i) const;
 
-	vcl::TexCoord<Scalar>&       wedgeTexCoordMod(int i);
-	const vcl::TexCoord<Scalar>& wedgeTexCoordMod(int i) const;
+	vcl::Color&       wedgeColorMod(int i);
+	const vcl::Color& wedgeColorMod(int i) const;
 
-	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, unsigned int i);
-	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
+	void setWedgeColor(const vcl::Color& t, unsigned int i);
+	void setWedgeColors(const std::vector<vcl::Color>& list);
 
 	/** Iterator Member functions **/
 
-	WedgeTexCoordsIterator           wedgeTexCoordBegin();
-	WedgeTexCoordsIterator           wedgeTexCoordEnd();
-	ConstWedgeTexCoordsIterator      wedgeTexCoordBegin() const;
-	ConstWedgeTexCoordsIterator      wedgeTexCoordEnd() const;
-	WedgeTexCoordsRangeIterator      wedgeTexCoordIterator();
-	ConstWedgeTexCoordsRangeIterator wedgeTexCoordIterator() const;
+	WedgeColorsIterator           wedgeColorBegin();
+	WedgeColorsIterator           wedgeColorEnd();
+	ConstWedgeColorsIterator      wedgeColorBegin() const;
+	ConstWedgeColorsIterator      wedgeColorEnd() const;
+	WedgeColorsRangeIterator      wedgeColorIterator();
+	ConstWedgeColorsRangeIterator wedgeColorIterator() const;
 
 protected:
-	using WedgeTexCoordScalarType = Scalar;
-
 	/** Member functions specific for vector **/
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeWedgeTexCoords(unsigned int n);
+	internal::ReturnIfIsVector<U, void> resizeWedgeColors(unsigned int n);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t);
+	internal::ReturnIfIsVector<U, void> pushWedgeColor(const vcl::Color& c);
 
 	template<int U = N>
 	internal::ReturnIfIsVector<U, void>
-	insertWedgeTexCoord(unsigned int i, const vcl::TexCoord<Scalar>& t);
+	insertWedgeColor(unsigned int i, const vcl::Color& c);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseWedgeTexCoord(unsigned int i);
+	internal::ReturnIfIsVector<U, void> eraseWedgeColor(unsigned int i);
 
 	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearWedgeTexCoord();
+	internal::ReturnIfIsVector<U, void> clearWedgeColor();
 };
 
 template<typename T>
-using hasWedgeTexCoordsT = std::is_base_of<WedgeTexCoordsTriggerer, T>;
+using hasWedgeColorsT = std::is_base_of<WedgeColorsTriggerer, T>;
 
 template<typename T>
-bool constexpr hasWedgeTexCoords()
+bool constexpr hasWedgeColors()
 {
-	return hasWedgeTexCoordsT<T>::value;
+	return hasWedgeColorsT<T>::value;
 }
 
 } // namespace vcl::comp
 
-#include "wedge_tex_coords.cpp"
+#include "wedge_colors.cpp"
 
-#endif // VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
+#endif // VCL_MESH_COMPONENTS_WEDGE_COLORS_H

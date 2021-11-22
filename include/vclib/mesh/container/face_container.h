@@ -50,7 +50,7 @@ class FaceContainer :
 		"You should include BitFlags (or a derived) as Face component in your Mesh definition.");
 	static_assert(
 		vcl::face::hasVertexReferences<T>(),
-		"You should include VertexReferences (Array or List) component in your Mesh definition.");
+		"You should include a VertexReferences as Face component in your Mesh definition.");
 	static_assert (
 		!vcl::face::hasTriangleBitFlags<T>() || T::VERTEX_NUMBER == 3,
 		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
