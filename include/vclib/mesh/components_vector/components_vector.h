@@ -32,6 +32,7 @@
 #include "optional_normal_vector.h"
 #include "optional_scalar_vector.h"
 #include "optional_tex_coord_vector.h"
+#include "optional_wedge_colors_vector.h"
 #include "optional_wedge_tex_coords_vector.h"
 
 namespace vcl::internal {
@@ -46,6 +47,7 @@ class ComponentsVector :
 		public OptionalNormalVector<T>,
 		public OptionalScalarVector<T>,
 		public OptionalTexCoordVector<T>,
+		public OptionalWedgeColorsVector<T>,
 		public OptionalWedgeTexCoordsVector<T>,
 		public CustomComponentsVector<T>
 {
@@ -60,6 +62,7 @@ public:
 		OptionalNormalVector<T>::clear();
 		OptionalScalarVector<T>::clear();
 		OptionalTexCoordVector<T>::clear();
+		OptionalWedgeColorsVector<T>::clear();
 		OptionalWedgeTexCoordsVector<T>::clear();
 		CustomComponentsVector<T>::clear();
 	}
@@ -73,6 +76,7 @@ public:
 		OptionalNormalVector<T>::resize(size);
 		OptionalScalarVector<T>::resize(size);
 		OptionalTexCoordVector<T>::resize(size);
+		OptionalWedgeColorsVector<T>::resize(size);
 		OptionalWedgeTexCoordsVector<T>::resize(size);
 		CustomComponentsVector<T>::resize(size);
 	}
@@ -86,6 +90,7 @@ public:
 		OptionalNormalVector<T>::reserve(size);
 		OptionalScalarVector<T>::reserve(size);
 		OptionalTexCoordVector<T>::reserve(size);
+		OptionalWedgeColorsVector<T>::reserve(size);
 		OptionalWedgeTexCoordsVector<T>::reserve(size);
 		CustomComponentsVector<T>::reserve(size);
 	}
@@ -99,6 +104,7 @@ public:
 		OptionalNormalVector<T>::compact(newIndices);
 		OptionalScalarVector<T>::compact(newIndices);
 		OptionalTexCoordVector<T>::compact(newIndices);
+		OptionalWedgeColorsVector<T>::compact(newIndices);
 		OptionalWedgeTexCoordsVector<T>::compact(newIndices);
 		CustomComponentsVector<T>::compact(newIndices);
 	}

@@ -46,10 +46,10 @@ class VertexContainerTriggerer
 template<typename T>
 class VertexContainer : public ElementContainer<T>, public VertexContainerTriggerer
 {
+	// Sanity checks for the Vertex
 	static_assert(
 		vcl::vert::hasBitFlags<T>(),
 		"You should include BitFlags as Vertex component in your Mesh definition.");
-
 	static_assert(
 		vcl::vert::hasCoordinate<T>(),
 		"You should include Coordinate as Vertex component in your Mesh definition.");

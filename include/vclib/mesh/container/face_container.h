@@ -45,6 +45,7 @@ template<typename T>
 class FaceContainer :
 		public ElementContainer<T>, public FaceContainerTriggerer
 {
+	// Sanity checks for the Face -- all components must be consistent each other
 	static_assert(
 		vcl::face::hasBitFlags<T>(),
 		"You should include BitFlags (or a derived) as Face component in your Mesh definition.");
@@ -57,6 +58,9 @@ class FaceContainer :
 	static_assert (
 		face::sanityCheckAdjacentFaces<T>() && face::sanityCheckOptionalAdjacentFaces<T>(),
 		"Size of per Face AdjacentFaces component must be the same of the VertexReferences.");
+	static_assert (
+		face::sanityCheckWedgeColors<T>() && face::sanityCheckOptionalWedgeColors<T>(),
+		"Size of per Face WedgeColors component must be the same of the VertexReferences.");
 	static_assert (
 		face::sanityCheckWedgeTexCoords<T>() && face::sanityCheckOptionalWedgeTexCoords<T>(),
 		"Size of per Face WedgeTexCoords component must be the same of the VertexReferences.");
@@ -151,6 +155,16 @@ public:
 
 	template<typename U = T>
 	face::ReturnIfHasOptionalScalar<U, void> disablePerFaceScalar();
+
+	// WedgeColors
+	template<typename U = T>
+	face::ReturnIfHasOptionalWedgeColors<U, bool> isPerFaceWedgeColorsEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalWedgeColors<U, void> enablePerFaceWedgeColors();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalWedgeColors<U, void> disablePerFaceWedgeColors();
 
 	// WedgeTexCoords
 	template<typename U = T>

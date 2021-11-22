@@ -449,6 +449,55 @@ FaceContainer<T>::disablePerFaceScalar()
 }
 
 /**
+ * @brief Checks if the face Optional WedgeColors
+ * Faces is enabled. This function is available **only if the Face Element has the
+ * OptionalWedgeColors Component**.
+ * @return true if the Optional WedgeColors is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalWedgeColors<U, bool>
+FaceContainer<T>::isPerFaceWedgeColorsEnabled() const
+{
+	return Base::optionalVec.isWedgeColorsEnabled();
+}
+
+/**
+ * @brief Enable the Optional Wedge Colors of the face.
+ * @note This function is available **only if the Face Element has the OptionalWedgeColors
+ * Component**.
+ *
+ * @note If the size of the Face is dynamic (N < 0), when enabled, the wedge colors number will be
+ * the same of the vertex number for each face of the container. This is because, for Faces,
+ * Wedge Colors number is tied to the number of vertices.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalWedgeColors<U, void>
+FaceContainer<T>::enablePerFaceWedgeColors()
+{
+	Base::optionalVec.enableWedgeColors(Base::vec.size());
+	static const int N = T::VERTEX_NUMBER;
+	if (N < 0) {
+		for (T& f : faces()) {
+			f.resizeWedgeColors(f.vertexNumber());
+		}
+	}
+}
+
+/**
+ * @brief Disables the Optional Wedge Colors of the face.
+ * This function is available **only if the Face Element has the OptionalWedgeColors Component**.
+ */
+template<typename T>
+template<typename U>
+face::ReturnIfHasOptionalWedgeColors<U, void>
+FaceContainer<T>::disablePerFaceWedgeColors()
+{
+	Base::optionalVec.disableWedgeColors();
+}
+
+/**
  * @brief Checks if the face Optional WedgeTexCoords
  * Faces is enabled. This function is available **only if the Face Element has the
  * OptionalWedgeTexCoords Component**.
@@ -463,7 +512,7 @@ FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
 }
 
 /**
- * @brief Container::enableFaceAdjacentFaces enable the Optional Wedge TexCoords of the face.
+ * @brief Enables the Optional Wedge TexCoords of the face.
  * @note This function is available **only if the Face Element has the OptionalWedgeTexCoords
  * Component**.
  *

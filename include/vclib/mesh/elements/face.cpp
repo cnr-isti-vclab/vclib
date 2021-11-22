@@ -49,7 +49,7 @@ template<typename... Args>
 void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 {
 	using F = Face<Args...>;
-	
+
 	VRefs::setVertices(list);
 
 	// Note: in this function, we cannot use:
@@ -62,33 +62,48 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 	// comp::hasAdjacentFaces<F>::value, which works.
 
 	static const int VN = F::VERTEX_NUMBER;
-	if constexpr(VN < 0){
-		//if constexpr (face::hasAdjacentFaces<F>()) {
+	if constexpr (VN < 0) {
+		// if constexpr (face::hasAdjacentFaces<F>()) {
 		if constexpr (comp::hasAdjacentFacesT<F>::value) {
 			using T = typename F::AdjacentFaces;
 
 			T::resizeAdjFaces(list.size());
 		}
 
-		//if constexpr (face::hasOptionalAdjacentFaces<F>()) {
+		// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 		if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 			using T = typename Face::OptionalAdjacentFaces;
-			
+
 			if (T::adjFacesEnabled())
 				T::resizeAdjFaces(list.size());
 		}
 
-		//if constexpr (face::hasWedgeTexCoords<F>()) {
+		// if constexpr (face::hasWedgeColors<F>()) {
+		if constexpr (comp::hasWedgeColorsT<F>::value) {
+			using T = typename F::WedgeColors;
+
+			T::resizeWedgeColors(list.size());
+		}
+
+		// if constexpr (face::hasOptionalWedgeColors<F>()) {
+		if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+			using T = typename F::OptionalWedgeColors;
+
+			if (T::wedgeColorsEnabled())
+				T::resizeWedgeColors(list.size());
+		}
+
+		// if constexpr (face::hasWedgeTexCoords<F>()) {
 		if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
 			using T = typename F::WedgeTexCoords;
 
 			T::resizeWedgeTexCoords(list.size());
 		}
 
-		//if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
+		// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 		if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 			using T = typename F::OptionalWedgeTexCoords;
-			
+
 			if (T::wedgeTexCoordsEnabled())
 				T::resizeWedgeTexCoords(list.size());
 		}
@@ -121,7 +136,7 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned int n)
 {
 	using F = Face<Args...>;
-	
+
 	VRefs::resizeVertices(n);
 
 	// Note: in this function, we cannot use:
@@ -133,32 +148,47 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
 
-	//if constexpr (face::hasAdjacentFaces<F>()) {
+	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {
 		using T = typename F::AdjacentFaces;
 
 		T::resizeAdjFaces(n);
 	}
 
-	//if constexpr (face::hasOptionalAdjacentFaces<F>()) {
+	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
-		
+
 		if (T::adjFacesEnabled())
 			T::resizeAdjFaces(n);
 	}
 
-	//if constexpr (face::hasWedgeTexCoords<F>()) {
+	// if constexpr (face::hasWedgeColors<F>()) {
+	if constexpr (comp::hasWedgeColorsT<Face>::value) {
+		using T = typename F::WedgeColors;
+
+		T::resizeWedgeColors(n);
+	}
+
+	// if constexpr (face::hasOptionalWedgeColors<F>()) {
+	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+		using T = typename F::OptionalWedgeColors;
+
+		if (T::wedgeColorsEnabled())
+			T::resizeWedgeColors(n);
+	}
+
+	// if constexpr (face::hasWedgeTexCoords<F>()) {
 	if constexpr (comp::hasWedgeTexCoordsT<Face>::value) {
 		using T = typename F::WedgeTexCoords;
 
 		T::resizeWedgeTexCoords(n);
 	}
 
-	//if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
+	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 		using T = typename F::OptionalWedgeTexCoords;
-		
+
 		if (T::wedgeTexCoordsEnabled())
 			T::resizeWedgeTexCoords(n);
 	}
@@ -169,7 +199,7 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(VertexType* v)
 {
 	using F = Face<Args...>;
-	
+
 	VRefs::pushVertex(v);
 
 	// Note: in this function, we cannot use:
@@ -181,22 +211,39 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(VertexType* 
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
 
-	//if constexpr (face::hasAdjacentFaces<F>()) {
+	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {
 		using T = typename F::AdjacentFaces;
 
 		T::pushAdjFace(nullptr);
 	}
 
-	//if constexpr (face::hasOptionalAdjacentFaces<F>()) {
+	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
-		
+
 		if (T::adjFacesEnabled())
 			T::pushAdjFace(nullptr);
 	}
 
-	//if constexpr (face::hasWedgeTexCoords<F>()) {
+	// if constexpr (face::hasWedgeColors<F>()) {
+	if constexpr (comp::hasWedgeColorsT<F>::value) {
+		using S = typename F::WedgeTexCoordScalarType;
+		using T = typename F::WedgeColors;
+
+		T::pushWedgeTexCoord(TexCoord<S>());
+	}
+
+	// if constexpr (face::hasOptionalWedgeColors<F>()) {
+	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+		using S = typename F::WedgeTexCoordScalarType;
+		using T = typename F::OptionalWedgeColors;
+
+		if (T::wedgeColorsEnabled())
+			T::pushWedgeColors(TexCoord<S>());
+	}
+
+	// if constexpr (face::hasWedgeTexCoords<F>()) {
 	if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
 		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::WedgeTexCoords;
@@ -204,11 +251,11 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(VertexType* 
 		T::pushWedgeTexCoord(TexCoord<S>());
 	}
 
-	//if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
+	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::OptionalWedgeTexCoords;
-		
+
 		if (T::wedgeTexCoordsEnabled())
 			T::pushWedgeTexCoords(TexCoord<S>());
 	}
@@ -219,7 +266,7 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned int i, VertexType* v)
 {
 	using F = Face<Args...>;
-	
+
 	VRefs::insertVertex(i, v);
 
 	// Note: in this function, we cannot use:
@@ -231,22 +278,39 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned i
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
 
-	//if constexpr (face::hasAdjacentFaces<F>()) {
+	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {
 		using T = typename F::AdjacentFaces;
 
 		T::insertAdjFace(i, nullptr);
 	}
 
-	//if constexpr (face::hasOptionalAdjacentFaces<F>()) {
+	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
-		
+
 		if (T::adjFacesEnabled())
 			T::insertAdjFace(i, nullptr);
 	}
 
-	//if constexpr (face::hasWedgeTexCoords<F>()) {
+	// if constexpr (face::hasWedgeColors<F>()) {
+	if constexpr (comp::hasWedgeColorsT<F>::value) {
+		using S = typename F::WedgeTexCoordScalarType;
+		using T = typename F::WedgeColors;
+
+		T::insertWedgeTexCoord(i, TexCoord<S>());
+	}
+
+	// if constexpr (face::hasOptionalWedgeColors<F>()) {
+	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+		using S = typename F::WedgeTexCoordScalarType;
+		using T = typename F::OptionalWedgeColors;
+
+		if (T::wedgeColorsEnabled())
+			T::insertWedgeTexCoord(i, TexCoord<S>());
+	}
+
+	// if constexpr (face::hasWedgeTexCoords<F>()) {
 	if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
 		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::WedgeTexCoords;
@@ -254,11 +318,11 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned i
 		T::insertWedgeTexCoord(i, TexCoord<S>());
 	}
 
-	//if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
+	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::OptionalWedgeTexCoords;
-		
+
 		if (T::wedgeTexCoordsEnabled())
 			T::insertWedgeTexCoord(i, TexCoord<S>());
 	}
@@ -269,7 +333,7 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned int i)
 {
 	using F = Face<Args...>;
-	
+
 	VRefs::eraseVertex(i);
 
 	// Note: in this function, we cannot use:
@@ -281,32 +345,47 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned in
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
 
-	//if constexpr (face::hasAdjacentFaces<F>()) {
+	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {
 		using T = typename F::AdjacentFaces;
 
 		T::eraseAdjFace(i);
 	}
 
-	//if constexpr (face::hasOptionalAdjacentFaces<F>()) {
+	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
-		
+
 		if (T::adjFacesEnabled())
 			T::eraseAdjFace(i);
 	}
 
-	//if constexpr (face::hasWedgeTexCoords<F>()) {
+	// if constexpr (face::hasWedgeColors<F>()) {
+	if constexpr (comp::hasWedgeColorsT<F>::value) {
+		using T = typename F::WedgeColors;
+
+		T::eraseWedgeTexCoord(i);
+	}
+
+	// if constexpr (face::hasOptionalWedgeColors<F>()) {
+	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+		using T = typename F::OptionalWedgeColors;
+
+		if (T::wedgeColorsEnabled())
+			T::eraseWedgeTexCoord(i);
+	}
+
+	// if constexpr (face::hasWedgeTexCoords<F>()) {
 	if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
 		using T = typename F::WedgeTexCoords;
 
 		T::eraseWedgeTexCoord(i);
 	}
 
-	//if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
+	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 		using T = typename F::OptionalWedgeTexCoords;
-		
+
 		if (T::wedgeTexCoordsEnabled())
 			T::eraseWedgeTexCoord(i);
 	}
@@ -317,7 +396,7 @@ template<int U>
 comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
 {
 	using F = Face<Args...>;
-	
+
 	VRefs::clearVertices();
 
 	// Note: in this function, we cannot use:
@@ -329,14 +408,14 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
 
-	//if constexpr (face::hasAdjacentFaces<F>()) {
+	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {
 		using T = typename F::AdjacentFaces;
 
 		T::clearAdjFaces();
 	}
 
-	//if constexpr (face::hasOptionalAdjacentFaces<F>()) {
+	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
 
@@ -344,21 +423,35 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
 			T::clearAdjFaces();
 	}
 
-	//if constexpr (face::hasWedgeTexCoords<F>()) {
+	// if constexpr (face::hasWedgeColors<F>()) {
+	if constexpr (comp::hasWedgeColorsT<F>::value) {
+		using T = typename F::WedgeColors;
+
+		T::clearWedgeTexCoord();
+	}
+
+	// if constexpr (face::hasOptionalWedgeColors<F>()) {
+	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+		using T = typename F::OptionalWedgeColors;
+
+		if (T::wedgeColorsEnabled())
+			T::clearWedgeTexCoord();
+	}
+
+	// if constexpr (face::hasWedgeTexCoords<F>()) {
 	if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
 		using T = typename F::WedgeTexCoords;
 
 		T::clearWedgeTexCoord();
 	}
 
-	//if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
+	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 		using T = typename F::OptionalWedgeTexCoords;
-		
+
 		if (T::wedgeTexCoordsEnabled())
 			T::clearWedgeTexCoord();
 	}
 }
 
-}
-
+} // namespace vcl
