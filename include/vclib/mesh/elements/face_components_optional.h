@@ -145,13 +145,7 @@ template<typename S, typename T>
 using OptionalWedgeTexCoords = comp::OptionalWedgeTexCoords<S, -1, T>;
 
 template<typename S, typename T>
-using OptionalTriangleAdjacentTriangles = comp::OptionalWedgeTexCoords<S, 3, T>;
-
-template<typename T>
-bool constexpr hasOptionalWedgeTexCoords()
-{
-	return comp::hasOptionalWedgeTexCoords<T>();
-}
+using OptionalTriangleWedgeTexCoords = comp::OptionalWedgeTexCoords<S, 3, T>;
 
 template<typename U, typename T>
 using ReturnIfHasOptionalWedgeTexCoords = comp::ReturnIfHasOptionalWedgeTexCoords<U, T>;
@@ -164,6 +158,20 @@ template<typename T>
 using OptionalTriangleWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, 3, T>;
 template<typename T>
 using OptionalTriangleWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, 3, T>;
+
+template<typename T>
+bool constexpr hasOptionalWedgeTexCoords()
+{
+	return comp::hasOptionalWedgeTexCoords<T>();
+}
+
+template<typename T>
+bool constexpr sanityCheckOptionalWedgeTexCoords()
+{
+	return comp::sanityCheckOptionalWedgeTexCoords<T>();
+}
+
+
 
 /** Port CustomComponents class into face namespace **/
 template<typename T>

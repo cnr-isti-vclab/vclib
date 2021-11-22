@@ -103,6 +103,17 @@ bool constexpr hasWedgeTexCoords()
 	return hasWedgeTexCoordsT<T>::value;
 }
 
+template <typename T>
+bool constexpr sanityCheckWedgeTexCoords()
+{
+	if constexpr (hasWedgeTexCoords<T>()) {
+		return T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
+	}
+	else {
+		return true;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "wedge_tex_coords.cpp"

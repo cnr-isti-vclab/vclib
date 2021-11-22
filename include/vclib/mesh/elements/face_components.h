@@ -151,6 +151,17 @@ bool constexpr hasVertexReferences()
 }
 
 /** Port WedgeColors class into face namespace **/
+using WedgeColors = comp::WedgeColors<-1>;
+
+using TriangleWedgeColors = comp::WedgeColors<3>;
+
+template<typename T>
+bool constexpr hasWedgeColors()
+{
+	return comp::hasWedgeColors<T>();
+}
+
+/** Port WedgeTexCoords class into face namespace **/
 template<typename Scalar>
 using WedgeTexCoords = comp::WedgeTexCoords<Scalar, -1>;
 
@@ -168,15 +179,10 @@ bool constexpr hasWedgeTexCoords()
 	return comp::hasWedgeTexCoords<T>();
 }
 
-/** Port WedgeColors class into face namespace **/
-using WedgeColors = comp::WedgeColors<-1>;
-
-using TriangleWedgeColors = comp::WedgeColors<3>;
-
 template<typename T>
-bool constexpr hasWedgeColors()
+bool constexpr sanityCheckWedgeTexCoords()
 {
-	return comp::hasWedgeColors<T>();
+	return comp::sanityCheckWedgeTexCoords<T>();
 }
 
 } // namespace vcl::face
