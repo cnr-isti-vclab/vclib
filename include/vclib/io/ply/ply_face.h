@@ -37,6 +37,7 @@ void saveFaceIndices(
 	std::ofstream&  file,
 	Property        p,
 	const MeshType& m,
+	const std::vector<int>& vIndices,
 	const FaceType& f,
 	bool bin);
 

@@ -79,6 +79,7 @@ public:
 	void deleteVertex(const VertexType* v);
 
 	unsigned int vertexIndexIfCompact(unsigned int id) const;
+	std::vector<int> vertexCompactIndices() const;
 
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
 	VertexIterator           vertexEnd();

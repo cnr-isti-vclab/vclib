@@ -34,6 +34,7 @@ void saveFaceIndices(
 	std::ofstream&  file,
 	Property        p,
 	const MeshType& m,
+	const std::vector<int>& vIndices,
 	const FaceType& f,
 	bool            bin)
 {
@@ -42,7 +43,7 @@ void saveFaceIndices(
 	unsigned int fsize = f.vertexNumber();
 	internal::writeProperty(file, fsize, p.listSizeType, bin);
 	for (const VertexType* v : f.vertices()){
-		internal::writeProperty(file, m.vertexIndexIfCompact(m.index(v)), p.type, bin);
+		internal::writeProperty(file, vIndices[m.index(v)], p.type, bin);
 	}
 }
 
@@ -247,11 +248,15 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 	using FaceType = typename MeshType::Face;
 
 	bool bin = header.format() == ply::BINARY;
+
+	// indices of vertices that do not consider deleted vertices
+	std::vector<int> vIndices = mesh.vertexCompactIndices();
+
 	for (const FaceType& f : mesh.faces()){
 		for (ply::Property p : header.faceProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name == ply::vertex_indices){
-				internal::saveFaceIndices(file, p, mesh, f, bin);
+				internal::saveFaceIndices(file, p, mesh, vIndices, f, bin);
 				hasBeenWritten = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {

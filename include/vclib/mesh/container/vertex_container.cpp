@@ -149,6 +149,32 @@ unsigned int vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(unsigned int id
 	}
 }
 
+/**
+ * @brief Returns a vector that tells, for each actual vertex index, the new index that the vertex
+ * would have in a compacted container. For each deleted vertex index, the value of the vector will
+ * be -1.
+ *
+ * This is useful if you need to know the indices of the vertices that they would have in a
+ * compact container, without considering the deleted ones.
+ * @return
+ */
+template<typename T>
+std::vector<int> VertexContainer<T>::vertexCompactIndices() const
+{
+	std::vector<int> newIndices(Base::vec.size());
+	unsigned int     k = 0;
+	for (unsigned int i = 0; i < Base::vec.size(); ++i) {
+		if (!Base::vec[i].isDeleted()) {
+			newIndices[i] = k;
+			k++;
+		}
+		else {
+			newIndices[i] = -1;
+		}
+	}
+	return newIndices;
+}
+
 template<typename T>
 typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexBegin(bool jumpDeleted)
 {
@@ -635,27 +661,23 @@ void vcl::mesh::VertexContainer<T>::setContainerPointer(VertexType& v)
  * @brief Compacts the vertex container, keeping only the non-deleted
  * vertices.
  *
- * All the ids of the vertices will be updated.
- *
- * @return a vector that tells, for each old id, the new id of the vertex. Will contain -1 if the
- * vertex has been deleted.
+ * @return a vector that tells, for each old vertex index, the new index of the vertex. Will contain
+ * -1 if the vertex has been deleted.
  */
 template<typename T>
 std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	std::vector<int> newIndices(Base::vec.size());
-	unsigned int     k = 0;
-	for (unsigned int i = 0; i < Base::vec.size(); ++i) {
-		if (!Base::vec[i].isDeleted()) {
-			Base::vec[k]  = Base::vec[i];
-			newIndices[i] = k;
-			k++;
-		}
-		else {
-			newIndices[i] = -1;
+	unsigned int k = 0;
+	std::vector<int> newIndices = vertexCompactIndices();
+	for (unsigned int i = 0; i < newIndices.size(); ++i) {
+		if (newIndices[i] >= 0) {
+			k = newIndices[i];
+			if (i != k)
+				Base::vec[k]  = Base::vec[i];
 		}
 	}
+	k++;
 	Base::vec.resize(k);
 	T* base = Base::vec.data();
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {

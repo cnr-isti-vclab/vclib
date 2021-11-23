@@ -88,6 +88,7 @@ public:
 	void deleteFace(const FaceType* f);
 
 	unsigned int faceIndexIfCompact(unsigned int id) const;
+	std::vector<int> faceCompactIndices() const;
 
 	FaceIterator           faceBegin(bool jumpDeleted = true);
 	FaceIterator           faceEnd();

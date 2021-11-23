@@ -149,6 +149,32 @@ unsigned int FaceContainer<T>::faceIndexIfCompact(unsigned int id) const
 	}
 }
 
+/**
+ * @brief Returns a vector that tells, for each actual face index, the new index that the face
+ * would have in a compacted container. For each deleted face index, the value of the vector will
+ * be -1.
+ *
+ * This is useful if you need to know the indices of the faces that they would have in a
+ * compact container, without considering the deleted ones.
+ * @return
+ */
+template<typename T>
+std::vector<int> FaceContainer<T>::faceCompactIndices() const
+{
+	std::vector<int> newIndices(Base::vec.size());
+	unsigned int     k = 0;
+	for (unsigned int i = 0; i < Base::vec.size(); ++i) {
+		if (!Base::vec[i].isDeleted()) {
+			newIndices[i] = k;
+			k++;
+		}
+		else {
+			newIndices[i] = -1;
+		}
+	}
+	return newIndices;
+}
+
 template<typename T>
 typename FaceContainer<T>::FaceIterator FaceContainer<T>::faceBegin(bool jumpDeleted)
 {
@@ -652,29 +678,25 @@ void FaceContainer<T>::setContainerPointer(FaceType& f)
 }
 
 /**
- * @brief compacts the vertex container, keeping only the non-deleted vertices.
+ * @brief compacts the face container, keeping only the non-deleted faces.
  *
- * All the ids of the vertices will be updated.
- *
- * @return a vector that tells, for each old id, the new id of the vertex. Will contain -1 if the
- * vertex has been deleted.
+ * @return a vector that tells, for each old face index, the new index of the face. Will contain -1
+ * if the face has been deleted.
  */
 template<typename T>
 std::vector<int> vcl::mesh::FaceContainer<T>::compactFaces()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	std::vector<int> newIndices(Base::vec.size());
-	unsigned int     k = 0;
-	for (unsigned int i = 0; i < Base::vec.size(); ++i) {
-		if (!Base::vec[i].isDeleted()) {
-			Base::vec[k]  = Base::vec[i];
-			newIndices[i] = k;
-			k++;
-		}
-		else {
-			newIndices[i] = -1;
+	unsigned int k = 0;
+	std::vector<int> newIndices = faceCompactIndices();
+	for (unsigned int i = 0; i < newIndices.size(); ++i) {
+		if (newIndices[i] >= 0) {
+			k = newIndices[i];
+			if (i != k)
+				Base::vec[k]  = Base::vec[i];
 		}
 	}
+	k++;
 	Base::vec.resize(k);
 	T* base = Base::vec.data();
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
