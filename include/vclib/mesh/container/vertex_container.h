@@ -35,8 +35,8 @@ class VertexContainerTriggerer
 {
 };
 
-/**
- * @brief The Vertex Container class, will be used when the template argument given to the Mesh is a
+/*
+ * The Vertex Container class, will be used when the template argument given to the Mesh is a
  * Vertex.
  *
  * This class adds a container (vector) of vertices to the Mesh, making available the accessors

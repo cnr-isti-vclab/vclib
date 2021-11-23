@@ -28,8 +28,8 @@
 
 namespace vcl {
 
-/**
- * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
+/*
+ * The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
  * containers of Elements (which can be vertices, faces, edges...), plus some other components.
  *
  * The Mesh class will expose all the public members of its containers, and its role is to implement

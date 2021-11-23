@@ -12,3 +12,4 @@ Visual Computing Library
    mesh
    elements
    components
+   meshes
