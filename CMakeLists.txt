@@ -54,19 +54,6 @@ set(HEADERS
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
-	include/vclib/mesh/container/containers.h
-	include/vclib/mesh/container/element_container.h
-	include/vclib/mesh/container/face_container.h
-	include/vclib/mesh/container/vertex_container.h
-	include/vclib/mesh/elements/face.h
-	include/vclib/mesh/elements/face_components.h
-	include/vclib/mesh/elements/face_components_optional.h
-	include/vclib/mesh/elements/vertex.h
-	include/vclib/mesh/elements/vertex_components.h
-	include/vclib/mesh/elements/vertex_components_optional.h
-	include/vclib/mesh/iterators/container_iterator.h
-	include/vclib/mesh/iterators/container_range_iterator.h
-	include/vclib/mesh/iterators/range_iterator.h
 	include/vclib/mesh/components/adjacent_faces.h
 	include/vclib/mesh/components/adjacent_vertices.h
 	include/vclib/mesh/components/bit_flags.h
@@ -79,6 +66,7 @@ set(HEADERS
 	include/vclib/mesh/components/mutable_bit_flags.h
 	include/vclib/mesh/components/normal.h
 	include/vclib/mesh/components/polygon_bit_flags.h
+	include/vclib/mesh/components/principal_curvature.h
 	include/vclib/mesh/components/scalar.h
 	include/vclib/mesh/components/vertex_references.h
 	include/vclib/mesh/components/tex_coord.h
@@ -110,6 +98,19 @@ set(HEADERS
 	include/vclib/mesh/components_vector/optional_wedge_colors_vector.h
 	include/vclib/mesh/components_vector/optional_wedge_tex_coords_vector.h
 	include/vclib/mesh/components_vector/components_vector.h
+	include/vclib/mesh/container/containers.h
+	include/vclib/mesh/container/element_container.h
+	include/vclib/mesh/container/face_container.h
+	include/vclib/mesh/container/vertex_container.h
+	include/vclib/mesh/elements/face.h
+	include/vclib/mesh/elements/face_components.h
+	include/vclib/mesh/elements/face_components_optional.h
+	include/vclib/mesh/elements/vertex.h
+	include/vclib/mesh/elements/vertex_components.h
+	include/vclib/mesh/elements/vertex_components_optional.h
+	include/vclib/mesh/iterators/container_iterator.h
+	include/vclib/mesh/iterators/container_range_iterator.h
+	include/vclib/mesh/iterators/range_iterator.h
 	include/vclib/mesh/requirements/element_requirements.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
@@ -127,6 +128,7 @@ set(HEADERS
 	include/vclib/space/box.h
 	include/vclib/space/color.h
 	include/vclib/space/point.h
+	include/vclib/space/principal_curvature.h
 	include/vclib/space/tex_coord.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
@@ -143,13 +145,12 @@ set(SOURCES
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_pos.cpp
-	include/vclib/mesh/container/face_container.cpp
-	include/vclib/mesh/container/vertex_container.cpp
 	include/vclib/mesh/components/bit_flags.cpp
 	include/vclib/mesh/components/element_references.cpp
 	include/vclib/mesh/components/generic_container.cpp
 	include/vclib/mesh/components/mutable_bit_flags.cpp
 	include/vclib/mesh/components/polygon_bit_flags.cpp
+	include/vclib/mesh/components/principal_curvature.cpp
 	include/vclib/mesh/components/triangle_bit_flags.cpp
 	include/vclib/mesh/components/vertex_references.cpp
 	include/vclib/mesh/components/wedge_colors.cpp
@@ -161,6 +162,8 @@ set(SOURCES
 	include/vclib/mesh/components_optional/optional_wedge_tex_coords.cpp
 	include/vclib/mesh/components_vector/custom_components_vector.cpp
 	include/vclib/mesh/components_vector/optional_generic_vector.cpp
+	include/vclib/mesh/container/face_container.cpp
+	include/vclib/mesh/container/vertex_container.cpp
 	include/vclib/mesh/elements/face.cpp
 	include/vclib/mesh/requirements/element_requirements.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
@@ -178,6 +181,7 @@ set(SOURCES
 	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
+	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/point/point2.cpp
