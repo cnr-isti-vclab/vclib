@@ -20,62 +20,27 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TRIMESH_H
-#define VCL_TRIMESH_H
+#include "transform_matrix.h"
 
-#include "mesh/mesh.h"
-#include "mesh/requirements.h"
+namespace vcl::comp {
 
-namespace vcl::trimesh {
-
-class Vertex;
-class Face;
-
-class Vertex :
-		public vcl::Vertex<
-			vcl::vert::BitFlags,                            // 4b
-			vcl::vert::Coordinate3d,                        // 24b
-			vcl::vert::Normal3d,                            // 24b
-			vcl::vert::Color,                               // 4b
-			vcl::vert::Scalard,                             // 8b
-			vcl::vert::OptionalMutableBitFlags<Vertex>,     // 0b
-			vcl::vert::OptionalTexCoordf<Vertex>,           // 0b
-			vcl::vert::OptionalAdjacentFaces<Face, Vertex>, // 0b
-			vcl::vert::OptionalAdjacentVertices<Vertex>,    // 0b
-			vcl::vert::CustomComponents<Vertex>>            // 0b
+template<typename Scalar>
+TransformMatrix<Scalar>::TransformMatrix()
 {
-};
+	tr.setIdentity();
+}
 
-class Face :
-		public vcl::Face<
-			vcl::face::TriangleBitFlags,                // 4b
-			vcl::face::TriangleVertexRefs<Vertex>,      // 24b
-			vcl::face::Normal3d,                        // 24b
-			vcl::face::OptionalScalard<Face>,           // 0b
-			vcl::face::OptionalColor<Face>,             // 0b
-			vcl::face::OptionalAdjacentTriangles<Face>, // 0b
-			vcl::face::OptionalMutableBitFlags<Face>,   // 0b
-			vcl::face::CustomComponents<Face>>          // 0b
+template<typename Scalar>
+const typename TransformMatrix<Scalar>::TransformMatrixType&
+TransformMatrix<Scalar>::transformMatrix() const
 {
-};
+	return tr;
+}
 
-} // namespace vcl::trimesh
-
-namespace vcl {
-
-class TriMesh :
-		public vcl::Mesh<
-			trimesh::Vertex,
-			trimesh::Face,
-			mesh::BoundingBox3d,
-			mesh::Mark,
-			mesh::TransformMatrixd>
+template<typename Scalar>
+typename TransformMatrix<Scalar>::TransformMatrixType& TransformMatrix<Scalar>::transformMatrix()
 {
-public:
-	using Vertex = trimesh::Vertex;
-	using Face   = trimesh::Face;
-};
+	return tr;
+}
 
-} // namespace vcl
-
-#endif // VCL_TRIMESH_H
+} // namespace vcl::comp

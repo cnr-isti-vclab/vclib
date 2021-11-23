@@ -58,6 +58,11 @@ bool constexpr hasBoundingBox();
 template<typename MeshType>
 bool constexpr hasMark();
 
+// Transform Matrix
+
+template<typename MeshType>
+bool constexpr hasTransformMatrix();
+
 /*********************
  * require functions *
  *********************/
@@ -81,6 +86,11 @@ void constexpr requireBoundingBox();
 
 template<typename MeshType>
 void constexpr requireMark();
+
+// Transform Matrix
+
+template<typename MeshType>
+void constexpr requireTransformMatrix();
 
 } // namespace vcl
 

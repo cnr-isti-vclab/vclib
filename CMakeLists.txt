@@ -70,6 +70,7 @@ set(HEADERS
 	include/vclib/mesh/components/scalar.h
 	include/vclib/mesh/components/vertex_references.h
 	include/vclib/mesh/components/tex_coord.h
+	include/vclib/mesh/components/transform_matrix.h
 	include/vclib/mesh/components/triangle_bit_flags.h
 	include/vclib/mesh/components/wedge_colors.h
 	include/vclib/mesh/components/wedge_tex_coords.h
@@ -153,6 +154,7 @@ set(SOURCES
 	include/vclib/mesh/components/mutable_bit_flags.cpp
 	include/vclib/mesh/components/polygon_bit_flags.cpp
 	include/vclib/mesh/components/principal_curvature.cpp
+	include/vclib/mesh/components/transform_matrix.cpp
 	include/vclib/mesh/components/triangle_bit_flags.cpp
 	include/vclib/mesh/components/vertex_references.cpp
 	include/vclib/mesh/components/wedge_colors.cpp

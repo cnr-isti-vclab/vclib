@@ -86,6 +86,17 @@ bool isPerFaceNormalEnabled(const MeshType&);
 template<typename MeshType>
 bool enableIfPerFaceNormalOptional(MeshType&);
 
+// Face Principal Curvature
+
+template<typename MeshType>
+bool constexpr hasPerFacePrincipalCurvature();
+
+template<typename MeshType>
+bool isPerFacePrincipalCurvatureEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerFacePrincipalCurvatureOptional(MeshType&);
+
 // Face Scalar
 
 template<typename MeshType>
@@ -97,10 +108,27 @@ bool isPerFaceScalarEnabled(const MeshType&);
 template<typename MeshType>
 bool enableIfPerFaceScalarOptional(MeshType&);
 
+// Face Wedge Colors
+
+template<typename MeshType>
+bool constexpr hasPerFaceWedgeColors();
+
+template<typename MeshType>
+bool isPerFaceWedgeColorsEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerFaceWedgeColorsOptional(MeshType&);
+
 // Face Wedge TexCoords
 
 template<typename MeshType>
 bool constexpr hasPerFaceWedgeTexCoords();
+
+template<typename MeshType>
+bool isPerFaceWedgeTexCoordsEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerFaceWedgeTexCoordsOptional(MeshType&);
 
 // Face Custom Components
 
@@ -139,10 +167,25 @@ void requirePerFaceMutableBitFlags(const MeshType& m);
 template<typename MeshType>
 void requirePerFaceNormal(const MeshType& m);
 
+// Face Principal Curvature
+
+template<typename MeshType>
+void requirePerFacePrincipalCurvature(const MeshType& m);
+
 // Face Scalar
 
 template<typename MeshType>
 void requirePerFaceScalar(const MeshType& m);
+
+// Face Wedge Colors
+
+template<typename MeshType>
+void requirePerFaceWedgeColors(const MeshType& m);
+
+// Face Wedge TexCoords
+
+template<typename MeshType>
+void requirePerFaceWedgeTexCoords(const MeshType& m);
 
 // Face Custom Components
 

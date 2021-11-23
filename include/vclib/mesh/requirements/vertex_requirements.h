@@ -97,6 +97,17 @@ bool isPerVertexNormalEnabled(const MeshType&);
 template<typename MeshType>
 bool enableIfPerVertexNormalOptional(MeshType&);
 
+// Vertex PrincipalCurvature
+
+template<typename MeshType>
+bool constexpr hasPerVertexPrincipalCurvature();
+
+template<typename MeshType>
+bool isPerVertexPrincipalCurvatureEnabled(const MeshType&);
+
+template<typename MeshType>
+bool enableIfPerVertexPrincipalCurvatureOptional(MeshType&);
+
 // Vertex Scalar
 
 template<typename MeshType>
@@ -157,6 +168,11 @@ void requirePerVertexMutableBitFlags(const MeshType& m);
 
 template<typename MeshType>
 void requirePerVertexNormal(const MeshType& m);
+
+// Vertex PrincipalCurvature
+
+template<typename MeshType>
+void requirePerVertexPrincipalCurvature(const MeshType& m);
 
 // Vertex Scalar
 

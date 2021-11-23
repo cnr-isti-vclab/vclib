@@ -259,6 +259,46 @@ bool enableIfPerVertexNormalOptional(MeshType& m)
 }
 
 template<typename MeshType>
+bool constexpr hasPerVertexPrincipalCurvature()
+{
+	return hasVertices<MeshType>() &&
+		   (vcl::vert::hasPrincipalCurvature<typename MeshType::VertexType>() ||
+			vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>());
+}
+
+template<typename MeshType>
+bool isPerVertexPrincipalCurvatureEnabled(const MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() &&
+		vcl::vert::hasPrincipalCurvature<typename MeshType::VertexType>()) {
+		return true;
+	}
+	else if constexpr (
+		hasVertices<MeshType>() &&
+		vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>()) {
+		return m.isPerVertexPrincipalCurvatureEnabled();
+	}
+	else {
+		return false;
+	}
+}
+
+template<typename MeshType>
+bool enableIfPerVertexPrincipalCurvatureOptional(MeshType& m)
+{
+	if constexpr (
+		hasVertices<MeshType>() &&
+		vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>()) {
+		m.enablePerVertexPrincipalCurvature();
+		return true;
+	}
+	else {
+		return hasPerVertexPrincipalCurvature<MeshType>();
+	}
+}
+
+template<typename MeshType>
 bool constexpr hasPerVertexScalar()
 {
 	return hasVertices<MeshType>() &&
@@ -399,6 +439,16 @@ void requirePerVertexNormal(const MeshType& m)
 	static_assert(hasPerVertexNormal<MeshType>(), "Mesh has no vertex normals.");
 	if (!isPerVertexNormalEnabled(m))
 		throw vcl::MissingComponentException("Vertex normals not enabled.");
+}
+
+template<typename MeshType>
+void requirePerVertexPrincipalCurvature(const MeshType& m)
+{
+	requireVertices<MeshType>();
+	static_assert(
+		hasPerVertexPrincipalCurvature<MeshType>(), "Mesh has no vertex principal curvature.");
+	if (!isPerVertexPrincipalCurvatureEnabled(m))
+		throw vcl::MissingComponentException("Vertex principal curvature not enabled.");
 }
 
 template<typename MeshType>

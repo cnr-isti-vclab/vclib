@@ -216,6 +216,45 @@ bool enableIfPerFaceNormalOptional(MeshType& m)
 }
 
 template<typename MeshType>
+bool constexpr hasPerFacePrincipalCurvature()
+{
+	return hasFaces<MeshType>() &&
+		   (vcl::face::hasPrincipalCurvature<typename MeshType::FaceType>() ||
+			vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>());
+}
+
+template<typename MeshType>
+bool isPerFacePrincipalCurvatureEnabled(const MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() && vcl::face::hasPrincipalCurvature<typename MeshType::FaceType>()) {
+		return true;
+	}
+	else if constexpr (
+		hasFaces<MeshType>() &&
+		vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>()) {
+		return m.isPerFacePrincipalCurvatureEnabled();
+	}
+	else {
+		return false;
+	}
+}
+
+template<typename MeshType>
+bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() &&
+		vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>()) {
+		m.enablePerFacePrincipalCurvature();
+		return true;
+	}
+	else {
+		return hasPerFacePrincipalCurvature<MeshType>();
+	}
+}
+
+template<typename MeshType>
 bool constexpr hasPerFaceScalar()
 {
 	return hasFaces<MeshType>() && (vcl::face::hasScalar<typename MeshType::FaceType>() ||
@@ -251,11 +290,79 @@ bool enableIfPerFaceScalarOptional(MeshType& m)
 }
 
 template<typename MeshType>
+bool constexpr hasPerFaceWedgeColors()
+{
+	return hasFaces<MeshType>() &&
+		   (vcl::face::hasWedgeColors<typename MeshType::FaceType>() ||
+			vcl::face::hasOptionalWedgeColors<typename MeshType::FaceType>());
+}
+
+template<typename MeshType>
+bool isPerFaceWedgeColorsEnabled(const MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() && vcl::face::hasWedgeColors<typename MeshType::FaceType>()) {
+		return true;
+	}
+	else if constexpr (
+		hasFaces<MeshType>() && vcl::face::hasOptionalWedgeColors<typename MeshType::FaceType>()) {
+		return m.isPerFaceWedgeColorsEnabled();
+	}
+	else {
+		return false;
+	}
+}
+
+template<typename MeshType>
+bool enableIfPerFaceWedgeColorsOptional(MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() && vcl::face::hasOptionalWedgeColors<typename MeshType::FaceType>()) {
+		m.enablePerFaceWedgeColors();
+		return true;
+	}
+	else {
+		return hasPerFaceWedgeColors<MeshType>();
+	}
+}
+
+template<typename MeshType>
 bool constexpr hasPerFaceWedgeTexCoords()
 {
 	return hasFaces<MeshType>() &&
 		   (vcl::face::hasWedgeTexCoords<typename MeshType::FaceType>() ||
 			vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>());
+}
+
+template<typename MeshType>
+bool isPerFaceWedgeTexCoordsEnabled(const MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() && vcl::face::hasWedgeTexCoords<typename MeshType::FaceType>()) {
+		return true;
+	}
+	else if constexpr (
+		hasFaces<MeshType>() &&
+		vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()) {
+		return m.isPerFaceWedgeTexCoordsEnabled();
+	}
+	else {
+		return false;
+	}
+}
+
+template<typename MeshType>
+bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
+{
+	if constexpr (
+		hasFaces<MeshType>() &&
+		vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()) {
+		m.enablePerFaceWedgeTexCoords();
+		return true;
+	}
+	else {
+		return hasPerFaceWedgeTexCoords<MeshType>();
+	}
 }
 
 template<typename MeshType>
@@ -320,12 +427,39 @@ void requirePerFaceNormal(const MeshType& m)
 }
 
 template<typename MeshType>
+void requirePerFacePrincipalCurvature(const MeshType& m)
+{
+	requireFaces<MeshType>();
+	static_assert(hasPerFacePrincipalCurvature<MeshType>(), "Mesh has no face principal curvature.");
+	if (!isPerFacePrincipalCurvatureEnabled(m))
+		throw vcl::MissingComponentException("Face principal curvature not enabled.");
+}
+
+template<typename MeshType>
 void requirePerFaceScalar(const MeshType& m)
 {
 	requireFaces<MeshType>();
 	static_assert(hasPerFaceScalar<MeshType>(), "Mesh has no face scalars.");
 	if (!isPerFaceScalarEnabled(m))
 		throw vcl::MissingComponentException("Face scalars not enabled.");
+}
+
+template<typename MeshType>
+void requirePerFaceWedgeColors(const MeshType& m)
+{
+	requireFaces<MeshType>();
+	static_assert(hasPerFaceWedgeColors<MeshType>(), "Mesh has no face wedge colors.");
+	if (!isPerFaceWedgeColorsEnabled(m))
+		throw vcl::MissingComponentException("Face wedge colors not enabled.");
+}
+
+template<typename MeshType>
+void requirePerFaceWedgeTexCoords(const MeshType& m)
+{
+	requireFaces<MeshType>();
+	static_assert(hasPerFaceWedgeTexCoords<MeshType>(), "Mesh has no face wedge texcoords.");
+	if (!isPerFaceWedgeTexCoordsEnabled(m))
+		throw vcl::MissingComponentException("Face wedge texcoords not enabled.");
 }
 
 template<typename MeshType>

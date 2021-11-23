@@ -110,6 +110,12 @@ bool constexpr hasMark()
 	return vcl::mesh::hasMark<MeshType>();
 }
 
+template<typename MeshType>
+bool constexpr hasTransformMatrix()
+{
+	return vcl::mesh::hasTransformMatrix<MeshType>();
+}
+
 /*********************
  * require functions *
  *********************/
@@ -122,7 +128,7 @@ void requireTriangleMesh(const MeshType& m)
 		using F = typename MeshType::Face;
 		for (const F& f : m.faces()) {
 			if (f.vertexNumber() != 3) {
-				throw MissingTriangularRequirementException("Triangle Mesh Required");
+				throw MissingTriangularRequirementException("Triangle Mesh Required.");
 			}
 		}
 	}
@@ -136,7 +142,7 @@ void requireQuadMesh(const MeshType& m)
 		using F = typename MeshType::Face;
 		for (const F& f : m.faces()) {
 			if (f.vertexNumber() != 4) {
-				throw MissingQuadRequirementException("Quad Mesh Required");
+				throw MissingQuadRequirementException("Quad Mesh Required.");
 			}
 		}
 	}
@@ -152,6 +158,12 @@ template<typename MeshType>
 void constexpr requireMark()
 {
 	static_assert(hasMark<MeshType>(), "Mesh has no mark.");
+}
+
+template<typename MeshType>
+void constexpr requireTransformMatrix()
+{
+	static_assert(hasTransformMatrix<MeshType>(), "Mesh has no transform matrix.");
 }
 
 } // namespace vcl

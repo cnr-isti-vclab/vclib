@@ -25,6 +25,7 @@
 
 #include "components/bounding_box.h"
 #include "components/mark.h"
+#include "components/transform_matrix.h"
 
 namespace vcl::mesh {
 
@@ -39,7 +40,7 @@ template<typename T>
 bool constexpr hasBoundingBox()
 {
 	return comp::hasBoundingBox<T>();
-};
+}
 
 template<typename U, typename T>
 using ReturnIfHasBoundingBox = comp::ReturnIfHasBoundingBox<U, T>;
@@ -51,6 +52,19 @@ template<typename T>
 bool constexpr hasMark()
 {
 	return comp::hasMark<T>();
+}
+
+/** Port TransformMatrix class into mesh namespace **/
+template <typename Scalar>
+using TransformMatrix = comp::TransformMatrix<Scalar>;
+
+using TransformMatrixf = comp::TransformMatrix<float>;
+using TransformMatrixd = comp::TransformMatrix<double>;
+
+template<typename T>
+bool constexpr hasTransformMatrix()
+{
+	return comp::hasTransformMatrix<T>();
 }
 
 } // namespace vcl::mesh
