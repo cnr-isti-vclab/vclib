@@ -62,4 +62,6 @@ constexpr bool hasTransformMatrix()
 
 } // namespace vcl::comp
 
+#include "transform_matrix.cpp"
+
 #endif // VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H

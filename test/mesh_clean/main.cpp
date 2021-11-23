@@ -32,18 +32,23 @@ int main()
 {
 	vcl::TriMesh m;
 
-	vcl::io::loadPly(m, "/home/alessandro/tmp/bunny_rem.ply");
+	vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/brain.ply");
 
 	unsigned int nv = vcl::removeUnreferencedVertices(m);
-	vcl::removeDuplicatedVertices(m);
 
-	std::cerr << "Removed Vertices: " << nv << "\n";
+	assert(nv == 0);
 
-	// note: without compacting, ply exporter won't work
+	std::cerr << "Removed Unreferenced Vertices: " << nv << "\n";
+
+	nv = vcl::removeDuplicatedVertices(m);
+
+	assert(nv == 453);
+
+	std::cerr << "Removed Duplicated Vertices: " << nv << "\n";
+
 	m.compactVertices();
-	m.compactFaces();
 
-	vcl::io::savePly(m, "/home/alessandro/tmp/bunny_remrem.ply");
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
 
 	return 0;
 }
