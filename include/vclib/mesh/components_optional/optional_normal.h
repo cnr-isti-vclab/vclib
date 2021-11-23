@@ -59,13 +59,11 @@ public:
 };
 
 template<typename T>
-class OptionalNormal3f : public OptionalNormal3<float, T>
-{
-};
+using OptionalNormal3f = OptionalNormal3<float, T>;
+
 template<typename T>
-class OptionalNormal3d : public OptionalNormal3<double, T>
-{
-};
+using OptionalNormal3d = OptionalNormal3<double, T>;
+
 
 /**
  * Detector to check if a class has (inherits) OpionalNormal

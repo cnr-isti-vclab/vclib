@@ -146,6 +146,16 @@ public:
 	template<typename U = T>
 	face::ReturnIfHasOptionalNormal<U, void> disablePerFaceNormal();
 
+	// PrincipalCurvature
+	template<typename U = T>
+	face::ReturnIfHasOptionalPrincipalCurvature<U, bool> isPerFacePrincipalCurvatureEnabled() const;
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalPrincipalCurvature<U, void> enablePerFacePrincipalCurvature();
+
+	template<typename U = T>
+	face::ReturnIfHasOptionalPrincipalCurvature<U, void> disablePerFacePrincipalCurvature();
+
 	// Scalar
 	template<typename U = T>
 	face::ReturnIfHasOptionalScalar<U, bool> isPerFaceScalarEnabled() const;

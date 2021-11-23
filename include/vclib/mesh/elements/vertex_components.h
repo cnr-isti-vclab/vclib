@@ -31,6 +31,7 @@
 #include "../components/mark.h"
 #include "../components/mutable_bit_flags.h"
 #include "../components/normal.h"
+#include "../components/principal_curvature.h"
 #include "../components/scalar.h"
 #include "../components/tex_coord.h"
 #include "../components/vertex_references.h"
@@ -123,6 +124,19 @@ template<typename T>
 bool constexpr hasNormal()
 {
 	return comp::hasNormal<T>();
+}
+
+/** Port PrincipalCurvature class into face namespace **/
+template<typename T>
+using PrincipalCurvature = comp::PrincipalCurvature<T>;
+
+using PrincipalCurvaturef = comp::PrincipalCurvaturef;
+using PrincipalCurvatured = comp::PrincipalCurvatured;
+
+template<typename T>
+bool constexpr hasPrincipalCurvature()
+{
+	return comp::hasPrincipalCurvature<T>();
 }
 
 /** Port Scalar class into vert namespace **/

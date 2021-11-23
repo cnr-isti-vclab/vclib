@@ -20,27 +20,46 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "principal_curvature.h"
+#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_PRINCIPAL_CURVATURE_VECTOR_H
+#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_PRINCIPAL_CURVATURE_VECTOR_H
 
-namespace vcl::comp {
+#include <vclib/mesh/components_optional/optional_principal_curvature.h>
 
-template<typename Scalar>
-PrincipalCurvature<Scalar>::PrincipalCurvature()
+#include "optional_generic_vector.h"
+
+namespace vcl::internal {
+
+template<typename, typename = void>
+class OptionalPrincipalCurvatureVector
 {
-}
+public:
+	void clear() {}
+	void reserve(unsigned int) {}
+	void resize(unsigned int) {}
+	void compact(const std::vector<int>&) {}
+};
 
-template<typename Scalar>
-const typename PrincipalCurvature<Scalar>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar>::principalCurvature() const
+template<typename T>
+class OptionalPrincipalCurvatureVector<
+	T,
+	std::enable_if_t<comp::hasOptionalPrincipalCurvature<T>()>> :
+		private OptionalGenericVector<typename T::PrincipalCurvatureType>
 {
-	return princCurv;
-}
+	using PrincipalCurvatureType = typename T::PrincipalCurvatureType;
+	using Base                   = OptionalGenericVector<PrincipalCurvatureType>;
 
-template<typename Scalar>
-typename PrincipalCurvature<Scalar>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar>::principalCurvature()
-{
-	return princCurv;
-}
+public:
+	using Base::clear;
+	using Base::compact;
+	using Base::reserve;
+	using Base::resize;
+	bool                    isPrincipalCurvatureEnabled() const { return Base::isEnabled(); };
+	void                    enablePrincipalCurvature(unsigned int size) { Base::enable(size); }
+	void                    disablePrincipalCurvature() { Base::disable(); }
+	PrincipalCurvatureType& principalCurvature(unsigned int i) { return Base::at(i); }
+	const PrincipalCurvatureType& principalCurvature(unsigned int i) const { return Base::at(i); }
+};
 
-} // namespace vcl::comp
+} // namespace vcl::internal
+
+#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_PRINCIPAL_CURVATURE_VECTOR_H

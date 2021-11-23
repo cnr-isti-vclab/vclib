@@ -20,27 +20,64 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "principal_curvature.h"
+#ifndef VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H
+#define VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H
+
+#include "optional_info.h"
+
+#include <vclib/space/principal_curvature.h>
 
 namespace vcl::comp {
 
-template<typename Scalar>
-PrincipalCurvature<Scalar>::PrincipalCurvature()
+class OptionalPrincipalCurvatureTriggerer
 {
-}
+};
 
-template<typename Scalar>
-const typename PrincipalCurvature<Scalar>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar>::principalCurvature() const
+template<typename Scalar, typename T>
+class OptionalPrincipalCurvature :
+		public OptionalPrincipalCurvatureTriggerer,
+		public virtual OptionalInfo<T>
 {
-	return princCurv;
-}
+private:
+	using B = OptionalInfo<T>;
 
-template<typename Scalar>
-typename PrincipalCurvature<Scalar>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar>::principalCurvature()
+public:
+	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
+
+	OptionalPrincipalCurvature();
+
+	const PrincipalCurvatureType& principalCurvature() const;
+	PrincipalCurvatureType&       principalCurvature();
+
+private:
+	unsigned int thisId() const;
+};
+
+template<typename T>
+using OptionalPrincipalCurvaturef = OptionalPrincipalCurvature<float, T>;
+
+template<typename T>
+using OptionalPrincipalCurvatured = OptionalPrincipalCurvature<double, T>;
+
+/**
+ * Detector to check if a class has (inherits) OptionalPrincipalCurvature
+ */
+
+template<typename T>
+using hasOptionalPrincipalCurvatureT = std::is_base_of<OptionalPrincipalCurvatureTriggerer, T>;
+
+template<typename U, typename T>
+using ReturnIfHasOptionalPrincipalCurvature =
+	typename std::enable_if<hasOptionalPrincipalCurvatureT<U>::value, T>::type;
+
+template<typename T>
+bool constexpr hasOptionalPrincipalCurvature()
 {
-	return princCurv;
+	return hasOptionalPrincipalCurvatureT<T>::value;
 }
 
 } // namespace vcl::comp
+
+#include "optional_principal_curvature.cpp"
+
+#endif // VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H

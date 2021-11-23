@@ -20,27 +20,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "principal_curvature.h"
+#include "optional_principal_curvature.h"
 
 namespace vcl::comp {
 
-template<typename Scalar>
-PrincipalCurvature<Scalar>::PrincipalCurvature()
+template<typename Scalar, typename T>
+OptionalPrincipalCurvature<Scalar, T>::OptionalPrincipalCurvature()
 {
 }
 
-template<typename Scalar>
-const typename PrincipalCurvature<Scalar>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar>::principalCurvature() const
+template<typename Scalar, typename T>
+const typename OptionalPrincipalCurvature<Scalar, T>::PrincipalCurvatureType&
+OptionalPrincipalCurvature<Scalar, T>::principalCurvature() const
 {
-	return princCurv;
+	return B::optCont().principalCurvature(thisId());
 }
 
-template<typename Scalar>
-typename PrincipalCurvature<Scalar>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar>::principalCurvature()
+template<typename Scalar, typename T>
+typename OptionalPrincipalCurvature<Scalar, T>::PrincipalCurvatureType&
+OptionalPrincipalCurvature<Scalar, T>::principalCurvature()
 {
-	return princCurv;
+	return B::optCont().principalCurvature(thisId());
+}
+
+template<typename Scalar, typename T>
+unsigned int OptionalPrincipalCurvature<Scalar, T>::thisId() const
+{
+	return B::index((T*)this);
 }
 
 } // namespace vcl::comp

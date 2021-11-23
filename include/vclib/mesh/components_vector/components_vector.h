@@ -30,6 +30,7 @@
 #include "optional_mark_vector.h"
 #include "optional_mutable_bit_flags_vector.h"
 #include "optional_normal_vector.h"
+#include "optional_principal_curvature_vector.h"
 #include "optional_scalar_vector.h"
 #include "optional_tex_coord_vector.h"
 #include "optional_wedge_colors_vector.h"
@@ -45,6 +46,7 @@ class ComponentsVector :
 		public OptionalMarkVector<T>,
 		public OptionalMutableBitFlagsVector<T>,
 		public OptionalNormalVector<T>,
+		public OptionalPrincipalCurvatureVector<T>,
 		public OptionalScalarVector<T>,
 		public OptionalTexCoordVector<T>,
 		public OptionalWedgeColorsVector<T>,
@@ -60,6 +62,7 @@ public:
 		OptionalMarkVector<T>::clear();
 		OptionalMutableBitFlagsVector<T>::clear();
 		OptionalNormalVector<T>::clear();
+		OptionalPrincipalCurvatureVector<T>::clear();
 		OptionalScalarVector<T>::clear();
 		OptionalTexCoordVector<T>::clear();
 		OptionalWedgeColorsVector<T>::clear();
@@ -74,6 +77,7 @@ public:
 		OptionalMarkVector<T>::resize(size);
 		OptionalMutableBitFlagsVector<T>::resize(size);
 		OptionalNormalVector<T>::resize(size);
+		OptionalPrincipalCurvatureVector<T>::resize(size);
 		OptionalScalarVector<T>::resize(size);
 		OptionalTexCoordVector<T>::resize(size);
 		OptionalWedgeColorsVector<T>::resize(size);
@@ -88,6 +92,7 @@ public:
 		OptionalMarkVector<T>::reserve(size);
 		OptionalMutableBitFlagsVector<T>::reserve(size);
 		OptionalNormalVector<T>::reserve(size);
+		OptionalPrincipalCurvatureVector<T>::reserve(size);
 		OptionalScalarVector<T>::reserve(size);
 		OptionalTexCoordVector<T>::reserve(size);
 		OptionalWedgeColorsVector<T>::reserve(size);
@@ -102,6 +107,7 @@ public:
 		OptionalMarkVector<T>::compact(newIndices);
 		OptionalMutableBitFlagsVector<T>::compact(newIndices);
 		OptionalNormalVector<T>::compact(newIndices);
+		OptionalPrincipalCurvatureVector<T>::compact(newIndices);
 		OptionalScalarVector<T>::compact(newIndices);
 		OptionalTexCoordVector<T>::compact(newIndices);
 		OptionalWedgeColorsVector<T>::compact(newIndices);

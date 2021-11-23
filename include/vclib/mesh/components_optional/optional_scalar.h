@@ -46,15 +46,11 @@ private:
 	unsigned int thisId() const { return B::index((T*)this); }
 };
 
-template<typename T>
-class OptionalScalarf : public OptionalScalar<float, T>
-{
-};
+template <typename T>
+using OptionalScalarf = OptionalScalar<float, T>;
 
-template<typename T>
-class OptionalScalard : public OptionalScalar<double, T>
-{
-};
+template <typename T>
+using OptionalScalard = OptionalScalar<double, T>;
 
 /**
  * Detector to check if a class has (inherits) OpionalScalar

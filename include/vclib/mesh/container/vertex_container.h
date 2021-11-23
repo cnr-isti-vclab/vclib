@@ -157,6 +157,16 @@ public:
 	template<typename U = T>
 	vert::ReturnIfHasOptionalScalar<U, void> disablePerVertexScalar();
 
+	// PrincipalCurvature
+	template<typename U = T>
+	vert::ReturnIfHasOptionalPrincipalCurvature<U, bool> isPerVertexPrincipalCurvatureEnabled() const;
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalPrincipalCurvature<U, void> enablePerVertexPrincipalCurvature();
+
+	template<typename U = T>
+	vert::ReturnIfHasOptionalPrincipalCurvature<U, void> disablePerVertexPrincipalCurvature();
+
 	// TexCoord
 	template<typename U = T>
 	vert::ReturnIfHasOptionalTexCoord<U, bool> isPerVertexTexCoordEnabled() const;

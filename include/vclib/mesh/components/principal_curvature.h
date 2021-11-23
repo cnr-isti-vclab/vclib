@@ -27,33 +27,42 @@
 
 namespace vcl::comp {
 
-class PrincipalCurvatureTriggerer {};
+class PrincipalCurvatureTriggerer
+{
+};
 
-template <typename Scalar>
-class PrincipalCurvature {
+template<typename Scalar>
+class PrincipalCurvature
+{
 public:
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
 	PrincipalCurvature();
 
 	const PrincipalCurvatureType& principalCurvature() const;
-	PrincipalCurvatureType& principalCurvature();
+	PrincipalCurvatureType&       principalCurvature();
 
 private:
 	vcl::PrincipalCurvature<Scalar> princCurv;
 };
 
+using PrincipalCurvaturef = PrincipalCurvature<float>;
+using PrincipalCurvatured = PrincipalCurvature<double>;
+
 /**
  * Detector to check if a class has (inherits) PrincipalCurvature
  */
 
-template <typename  T>
+template<typename T>
 using hasPrincipalCurvatureT = std::is_base_of<PrincipalCurvatureTriggerer, T>;
 
-template <typename  T>
-bool constexpr hasPrincipalCurvature() {return hasPrincipalCurvatureT<T>::value;}
-
+template<typename T>
+bool constexpr hasPrincipalCurvature()
+{
+	return hasPrincipalCurvatureT<T>::value;
 }
+
+} // namespace vcl::comp
 
 #include "principal_curvature.cpp"
 

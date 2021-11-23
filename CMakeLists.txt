@@ -81,6 +81,7 @@ set(HEADERS
 	include/vclib/mesh/components_optional/optional_mark.h
 	include/vclib/mesh/components_optional/optional_mutable_bit_flags.h
 	include/vclib/mesh/components_optional/optional_normal.h
+	include/vclib/mesh/components_optional/optional_principal_curvature.h
 	include/vclib/mesh/components_optional/optional_scalar.h
 	include/vclib/mesh/components_optional/optional_tex_coord.h
 	include/vclib/mesh/components_optional/optional_wedge_colors.h
@@ -93,6 +94,7 @@ set(HEADERS
 	include/vclib/mesh/components_vector/optional_mark_vector.h
 	include/vclib/mesh/components_vector/optional_mutable_bit_flags_vector.h
 	include/vclib/mesh/components_vector/optional_normal_vector.h
+	include/vclib/mesh/components_vector/optional_principal_curvature_vector.h
 	include/vclib/mesh/components_vector/optional_scalar_vector.h
 	include/vclib/mesh/components_vector/optional_tex_coord_vector.h
 	include/vclib/mesh/components_vector/optional_wedge_colors_vector.h
@@ -158,6 +160,7 @@ set(SOURCES
 	include/vclib/mesh/components_optional/optional_adjacent_faces.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_vertices.cpp
 	include/vclib/mesh/components_optional/optional_mutable_bit_flags.cpp
+	include/vclib/mesh/components_optional/optional_principal_curvature.cpp
 	include/vclib/mesh/components_optional/optional_wedge_colors.cpp
 	include/vclib/mesh/components_optional/optional_wedge_tex_coords.cpp
 	include/vclib/mesh/components_vector/custom_components_vector.cpp

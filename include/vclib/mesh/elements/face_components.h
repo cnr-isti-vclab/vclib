@@ -30,6 +30,7 @@
 #include "../components/mutable_bit_flags.h"
 #include "../components/normal.h"
 #include "../components/polygon_bit_flags.h"
+#include "../components/principal_curvature.h"
 #include "../components/scalar.h"
 #include "../components/triangle_bit_flags.h"
 #include "../components/vertex_references.h"
@@ -116,6 +117,19 @@ template<typename T>
 bool constexpr hasPolygonBitFlags()
 {
 	return comp::hasPolygonBitFlags<T>();
+}
+
+/** Port PrincipalCurvature class into face namespace **/
+template<typename T>
+using PrincipalCurvature = comp::PrincipalCurvature<T>;
+
+using PrincipalCurvaturef = comp::PrincipalCurvaturef;
+using PrincipalCurvatured = comp::PrincipalCurvatured;
+
+template<typename T>
+bool constexpr hasPrincipalCurvature()
+{
+	return comp::hasPrincipalCurvature<T>();
 }
 
 /** Port Scalar class into face namespace **/

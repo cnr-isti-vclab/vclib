@@ -29,6 +29,7 @@
 #include "../components_optional/optional_mark.h"
 #include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_normal.h"
+#include "../components_optional/optional_principal_curvature.h"
 #include "../components_optional/optional_scalar.h"
 #include "../components_optional/optional_wedge_colors.h"
 #include "../components_optional/optional_wedge_tex_coords.h"
@@ -126,6 +127,24 @@ template<typename T>
 bool constexpr hasOptionalNormal()
 {
 	return comp::hasOptionalNormal<T>();
+}
+
+/** Port OptionalPrincipalCurvature class into face namespace **/
+template<typename Scalar, typename T>
+using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<Scalar, T>;
+
+template<typename T>
+using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<T>;
+template<typename T>
+using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<T>;
+
+template<typename U, typename T>
+using ReturnIfHasOptionalPrincipalCurvature = comp::ReturnIfHasOptionalPrincipalCurvature<U, T>;
+
+template<typename T>
+bool constexpr hasOptionalPrincipalCurvature()
+{
+	return comp::hasOptionalPrincipalCurvature<T>();
 }
 
 /** Port OptionalScalar class into face namespace **/
