@@ -66,10 +66,6 @@ using OptionalPrincipalCurvatured = OptionalPrincipalCurvature<double, T>;
 template<typename T>
 using hasOptionalPrincipalCurvatureT = std::is_base_of<OptionalPrincipalCurvatureTriggerer, T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalPrincipalCurvature =
-	typename std::enable_if<hasOptionalPrincipalCurvatureT<U>::value, T>::type;
-
 template<typename T>
 bool constexpr hasOptionalPrincipalCurvature()
 {

@@ -27,15 +27,9 @@
 #include <Eigen/Geometry>
 
 #include <vclib/math/base.h>
+#include <vclib/misc/vcl_types.h>
 
 namespace vcl {
-
-namespace internal {
-
-template<int M, typename T>
-using ReturnIfIsPoint3 = typename std::enable_if<(M == 3), T>::type;
-
-}
 
 /**
  * @brief The Point class represents an N-dimensional point containing
@@ -67,7 +61,8 @@ public:
 	Scalar angle(const Point<S, N>& p1) const;
 
 	template<int U = N>
-	internal::ReturnIfIsPoint3< U, Point<Scalar, N> > cross(const Point<Scalar, N>& p1) const;
+	VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>)
+	cross(const Point<Scalar, N>& p1) const;
 
 	Scalar       norm() const;
 	Scalar       squaredNorm() const;

@@ -243,7 +243,7 @@ typename FaceContainer<T>::ConstFaceRangeIterator FaceContainer<T>::faces(bool j
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalAdjacentFaces<U, bool>
+VCL_ENABLE_IF(face::hasOptionalAdjacentFaces<U>(), bool)
 FaceContainer<T>::isPerFaceAdjacentFacesEnabled() const
 {
 	return Base::optionalVec.isAdjacentFacesEnabled();
@@ -260,7 +260,8 @@ FaceContainer<T>::isPerFaceAdjacentFacesEnabled() const
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalAdjacentFaces<U, void> FaceContainer<T>::enablePerFaceAdjacentFaces()
+VCL_ENABLE_IF(face::hasOptionalAdjacentFaces<U>(), void)
+FaceContainer<T>::enablePerFaceAdjacentFaces()
 {
 	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
@@ -277,7 +278,8 @@ face::ReturnIfHasOptionalAdjacentFaces<U, void> FaceContainer<T>::enablePerFaceA
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalAdjacentFaces<U, void> FaceContainer<T>::disablePerFaceAdjacentFaces()
+VCL_ENABLE_IF(face::hasOptionalAdjacentFaces<U>(), void)
+FaceContainer<T>::disablePerFaceAdjacentFaces()
 {
 	Base::optionalVec.disableAdjacentFaces();
 }
@@ -290,7 +292,7 @@ face::ReturnIfHasOptionalAdjacentFaces<U, void> FaceContainer<T>::disablePerFace
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalColor<U, bool> FaceContainer<T>::isPerFaceColorEnabled() const
+VCL_ENABLE_IF(face::hasOptionalColor<U>(), bool) FaceContainer<T>::isPerFaceColorEnabled() const
 {
 	return Base::optionalVec.isColorEnabled();
 }
@@ -301,7 +303,7 @@ face::ReturnIfHasOptionalColor<U, bool> FaceContainer<T>::isPerFaceColorEnabled(
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalColor<U, void> FaceContainer<T>::enablePerFaceColor()
+VCL_ENABLE_IF(face::hasOptionalColor<U>(), void) FaceContainer<T>::enablePerFaceColor()
 {
 	Base::optionalVec.enableColor(faceContainerSize());
 }
@@ -312,7 +314,7 @@ face::ReturnIfHasOptionalColor<U, void> FaceContainer<T>::enablePerFaceColor()
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalColor<U, void> FaceContainer<T>::disablePerFaceColor()
+VCL_ENABLE_IF(face::hasOptionalColor<U>(), void) FaceContainer<T>::disablePerFaceColor()
 {
 	Base::optionalVec.disableColor();
 }
@@ -325,7 +327,8 @@ face::ReturnIfHasOptionalColor<U, void> FaceContainer<T>::disablePerFaceColor()
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalMark<U, bool> FaceContainer<T>::isPerFaceMarkEnabled() const
+VCL_ENABLE_IF(face::hasOptionalMark<U>(), bool)
+FaceContainer<T>::isPerFaceMarkEnabled() const
 {
 	return Base::optionalVec.isMarkEnabled();
 }
@@ -336,7 +339,8 @@ face::ReturnIfHasOptionalMark<U, bool> FaceContainer<T>::isPerFaceMarkEnabled() 
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalMark<U, void> FaceContainer<T>::enablePerFaceMark()
+VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
+FaceContainer<T>::enablePerFaceMark()
 {
 	Base::optionalVec.enableMark(faceContainerSize());
 }
@@ -347,7 +351,8 @@ face::ReturnIfHasOptionalMark<U, void> FaceContainer<T>::enablePerFaceMark()
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalMark<U, void> FaceContainer<T>::disablePerFaceMark()
+VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
+FaceContainer<T>::disablePerFaceMark()
 {
 	Base::optionalVec.disableMark();
 }
@@ -360,7 +365,7 @@ face::ReturnIfHasOptionalMark<U, void> FaceContainer<T>::disablePerFaceMark()
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalMutableBitFlags<U, bool>
+VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), bool)
 FaceContainer<T>::isPerFaceMutableBitFlagsEnabled() const
 {
 	Base::optionalVec.isMutableBitFlagsEnabled();
@@ -372,7 +377,8 @@ FaceContainer<T>::isPerFaceMutableBitFlagsEnabled() const
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceContainer<T>::enablePerFaceMutableBitFlags()
+VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), void)
+FaceContainer<T>::enablePerFaceMutableBitFlags()
 {
 	Base::optionalVec.enableMutableBitFlags(faceContainerSize());
 }
@@ -384,7 +390,8 @@ face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceContainer<T>::enablePerFac
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceContainer<T>::disablePerFaceMutableBitFlags()
+VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), void)
+FaceContainer<T>::disablePerFaceMutableBitFlags()
 {
 	Base::optionalVec.disableMutableBitFlags();
 }
@@ -397,7 +404,8 @@ face::ReturnIfHasOptionalMutableBitFlags<U, void> FaceContainer<T>::disablePerFa
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalNormal<U, bool> FaceContainer<T>::isPerFaceNormalEnabled() const
+VCL_ENABLE_IF(face::hasOptionalNormal<U>(), bool)
+FaceContainer<T>::isPerFaceNormalEnabled() const
 {
 	return Base::optionalVec.isNormalEnabled();
 }
@@ -408,7 +416,8 @@ face::ReturnIfHasOptionalNormal<U, bool> FaceContainer<T>::isPerFaceNormalEnable
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalNormal<U, void> FaceContainer<T>::enablePerFaceNormal()
+VCL_ENABLE_IF(face::hasOptionalNormal<U>(), void)
+FaceContainer<T>::enablePerFaceNormal()
 {
 	Base::optionalVec.enableNormal(faceContainerSize());
 }
@@ -419,7 +428,8 @@ face::ReturnIfHasOptionalNormal<U, void> FaceContainer<T>::enablePerFaceNormal()
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalNormal<U, void> FaceContainer<T>::disablePerFaceNormal()
+VCL_ENABLE_IF(face::hasOptionalNormal<U>(), void)
+FaceContainer<T>::disablePerFaceNormal()
 {
 	Base::optionalVec.disableNormal();
 }
@@ -432,7 +442,7 @@ face::ReturnIfHasOptionalNormal<U, void> FaceContainer<T>::disablePerFaceNormal(
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalPrincipalCurvature<U, bool>
+VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), bool)
 FaceContainer<T>::isPerFacePrincipalCurvatureEnabled() const
 {
 	return Base::optionalVec.isPrincipalCurvatureEnabled();
@@ -444,7 +454,7 @@ FaceContainer<T>::isPerFacePrincipalCurvatureEnabled() const
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalPrincipalCurvature<U, void>
+VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), void)
 FaceContainer<T>::enablePerFacePrincipalCurvature()
 {
 	Base::optionalVec.enablePrincipalCurvature(faceContainerSize());
@@ -457,7 +467,7 @@ FaceContainer<T>::enablePerFacePrincipalCurvature()
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalPrincipalCurvature<U, void>
+VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), void)
 FaceContainer<T>::disablePerFacePrincipalCurvature()
 {
 	Base::optionalVec.disablePrincipalCurvature();
@@ -471,7 +481,8 @@ FaceContainer<T>::disablePerFacePrincipalCurvature()
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalScalar<U, bool> FaceContainer<T>::isPerFaceScalarEnabled() const
+VCL_ENABLE_IF(face::hasOptionalScalar<U>(), bool)
+FaceContainer<T>::isPerFaceScalarEnabled() const
 {
 	return Base::optionalVec.isScalarEnabled();
 }
@@ -481,7 +492,8 @@ face::ReturnIfHasOptionalScalar<U, bool> FaceContainer<T>::isPerFaceScalarEnable
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalScalar<U, void> FaceContainer<T>::enablePerFaceScalar()
+VCL_ENABLE_IF(face::hasOptionalScalar<U>(), void)
+FaceContainer<T>::enablePerFaceScalar()
 {
 	Base::optionalVec.enableScalar(faceContainerSize());
 }
@@ -492,7 +504,8 @@ face::ReturnIfHasOptionalScalar<U, void> FaceContainer<T>::enablePerFaceScalar()
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalScalar<U, void> FaceContainer<T>::disablePerFaceScalar()
+VCL_ENABLE_IF(face::hasOptionalScalar<U>(), void)
+FaceContainer<T>::disablePerFaceScalar()
 {
 	Base::optionalVec.disableScalar();
 }
@@ -505,7 +518,8 @@ face::ReturnIfHasOptionalScalar<U, void> FaceContainer<T>::disablePerFaceScalar(
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalWedgeColors<U, bool> FaceContainer<T>::isPerFaceWedgeColorsEnabled() const
+VCL_ENABLE_IF(face::hasWedgeColors<U>(), bool)
+FaceContainer<T>::isPerFaceWedgeColorsEnabled() const
 {
 	return Base::optionalVec.isWedgeColorsEnabled();
 }
@@ -521,7 +535,8 @@ face::ReturnIfHasOptionalWedgeColors<U, bool> FaceContainer<T>::isPerFaceWedgeCo
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalWedgeColors<U, void> FaceContainer<T>::enablePerFaceWedgeColors()
+VCL_ENABLE_IF(face::hasWedgeColors<U>(), void)
+FaceContainer<T>::enablePerFaceWedgeColors()
 {
 	Base::optionalVec.enableWedgeColors(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
@@ -538,7 +553,8 @@ face::ReturnIfHasOptionalWedgeColors<U, void> FaceContainer<T>::enablePerFaceWed
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalWedgeColors<U, void> FaceContainer<T>::disablePerFaceWedgeColors()
+VCL_ENABLE_IF(face::hasWedgeColors<U>(), void)
+FaceContainer<T>::disablePerFaceWedgeColors()
 {
 	Base::optionalVec.disableWedgeColors();
 }
@@ -551,7 +567,7 @@ face::ReturnIfHasOptionalWedgeColors<U, void> FaceContainer<T>::disablePerFaceWe
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalWedgeTexCoords<U, bool>
+VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), bool)
 FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
 {
 	return Base::optionalVec.isWedgeTexCoordsEnabled();
@@ -568,7 +584,8 @@ FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalWedgeTexCoords<U, void> FaceContainer<T>::enablePerFaceWedgeTexCoords()
+VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), void)
+FaceContainer<T>::enablePerFaceWedgeTexCoords()
 {
 	Base::optionalVec.enableWedgeTexCoords(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
@@ -585,14 +602,15 @@ face::ReturnIfHasOptionalWedgeTexCoords<U, void> FaceContainer<T>::enablePerFace
  */
 template<typename T>
 template<typename U>
-face::ReturnIfHasOptionalWedgeTexCoords<U, void> FaceContainer<T>::disablePerFaceWedgeTexCoords()
+VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), void)
+FaceContainer<T>::disablePerFaceWedgeTexCoords()
 {
 	Base::optionalVec.disableWedgeTexCoords();
 }
 
 template<typename T>
 template<typename K, typename U>
-face::ReturnIfHasCustomComponents<U, void>
+VCL_ENABLE_IF(face::hasCustomComponents<U>(), void)
 FaceContainer<T>::addPerFaceCustomComponent(const std::string& name)
 {
 	Base::optionalVec.template addNewComponent<K>(name, faceContainerSize());
@@ -687,13 +705,14 @@ template<typename T>
 std::vector<int> vcl::mesh::FaceContainer<T>::compactFaces()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	unsigned int k = 0;
+	unsigned int     k = 0;
+
 	std::vector<int> newIndices = faceCompactIndices();
 	for (unsigned int i = 0; i < newIndices.size(); ++i) {
 		if (newIndices[i] >= 0) {
 			k = newIndices[i];
 			if (i != k)
-				Base::vec[k]  = Base::vec[i];
+				Base::vec[k] = Base::vec[i];
 		}
 	}
 	k++;

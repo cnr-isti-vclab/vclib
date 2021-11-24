@@ -25,8 +25,9 @@
 
 #include <array>
 #include <assert.h>
-#include <type_traits>
 #include <vector>
+
+#include <vclib/misc/vcl_types.h>
 
 #include "optional_info.h"
 
@@ -40,15 +41,6 @@ class OptionalWedgeTexCoordsVector;
 }
 
 namespace vcl::comp {
-
-namespace internal {
-
-template<int M, typename T>
-using ReturnIfIsVector = typename std::enable_if<(M < 0), T>::type;
-template<int M, typename T>
-using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
-
-} // namespace internal
 
 class OptionalWedgeTexCoordsTriggerer
 {
@@ -123,21 +115,21 @@ protected:
 
 	/** Member functions specific for vector **/
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeWedgeTexCoords(unsigned int n);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resizeWedgeTexCoords(unsigned int n);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void>
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void)
 	insertWedgeTexCoord(unsigned int i, const vcl::TexCoord<Scalar>& t);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseWedgeTexCoord(unsigned int i);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) eraseWedgeTexCoord(unsigned int i);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearWedgeTexCoord();
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clearWedgeTexCoord();
 
 	/** Utility member functions **/
 
@@ -155,10 +147,6 @@ private:
 
 template<typename T>
 using hasOptionalWedgeTexCoordsT = std::is_base_of<OptionalWedgeTexCoordsTriggerer, T>;
-
-template<typename U, typename T>
-using ReturnIfHasOptionalWedgeTexCoords =
-	typename std::enable_if<hasOptionalWedgeTexCoordsT<U>::value, T>::type;
 
 template<typename T>
 bool constexpr hasOptionalWedgeTexCoords()

@@ -108,37 +108,37 @@ WedgeTexCoords<Scalar, N>::wedgeTexCoordIterator() const
 }
 
 template<typename Scalar, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> WedgeTexCoords<Scalar, N>::resizeWedgeTexCoords(unsigned int n)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) WedgeTexCoords<Scalar, N>::resizeWedgeTexCoords(unsigned int n)
 {
 	Base::resize(n);
 }
 
 template<typename Scalar, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> WedgeTexCoords<Scalar, N>::pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) WedgeTexCoords<Scalar, N>::pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t)
 {
 	Base::pushBack(t);
 }
 
 template<typename Scalar, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void>
+template<int M>
+VCL_ENABLE_IF(M < 0, void)
 WedgeTexCoords<Scalar, N>::insertWedgeTexCoord(unsigned int i, const vcl::TexCoord<Scalar>& t)
 {
 	Base::insert(i, t);
 }
 
 template<typename Scalar, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> WedgeTexCoords<Scalar, N>::eraseWedgeTexCoord(unsigned int i)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) WedgeTexCoords<Scalar, N>::eraseWedgeTexCoord(unsigned int i)
 {
 	Base::erase(i);
 }
 
 template<typename Scalar, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> WedgeTexCoords<Scalar, N>::clearWedgeTexCoord()
+template<int M>
+VCL_ENABLE_IF(M < 0, void) WedgeTexCoords<Scalar, N>::clearWedgeTexCoord()
 {
 	Base::clear();
 }

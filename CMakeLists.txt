@@ -121,6 +121,7 @@ set(HEADERS
 	include/vclib/misc/compactness.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
+	include/vclib/misc/vcl_types.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load_ply.h
 	include/vclib/io/save_ply.h

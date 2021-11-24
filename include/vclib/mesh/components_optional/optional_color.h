@@ -51,9 +51,6 @@ private:
 template<typename T>
 using hasOptionalColorT = std::is_base_of<OptionalColor<T>, T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalColor = typename std::enable_if<hasOptionalColorT<U>::value, T>::type;
-
 template<typename T>
 bool constexpr hasOptionalColor()
 {

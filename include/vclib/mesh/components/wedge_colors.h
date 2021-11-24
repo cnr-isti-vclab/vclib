@@ -73,21 +73,21 @@ public:
 protected:
 	/** Member functions specific for vector **/
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeWedgeColors(unsigned int n);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resizeWedgeColors(unsigned int n);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushWedgeColor(const vcl::Color& c);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) pushWedgeColor(const vcl::Color& c);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void>
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void)
 	insertWedgeColor(unsigned int i, const vcl::Color& c);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseWedgeColor(unsigned int i);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) eraseWedgeColor(unsigned int i);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearWedgeColor();
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clearWedgeColor();
 };
 
 template<typename T>

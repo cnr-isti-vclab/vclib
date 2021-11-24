@@ -58,9 +58,6 @@ using BoundingBox3d = BoundingBox<Point3d>;
 template<typename T>
 using hasBoundingBoxT = std::is_base_of<BoundingBoxTriggerer, T>;
 
-template<typename U, typename T>
-using ReturnIfHasBoundingBox = typename std::enable_if<hasBoundingBoxT<U>::value, T>::type;
-
 template<typename T>
 bool constexpr hasBoundingBox()
 {

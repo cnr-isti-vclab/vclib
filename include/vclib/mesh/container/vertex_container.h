@@ -25,9 +25,9 @@
 
 #include <vclib/mesh/elements/vertex.h>
 
-#include "element_container.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
+#include "element_container.h"
 
 namespace vcl::mesh {
 
@@ -54,7 +54,7 @@ class VertexContainer : public ElementContainer<T>, public VertexContainerTrigge
 		vcl::vert::hasCoordinate<T>(),
 		"You should include Coordinate as Vertex component in your Mesh definition.");
 
-	using Base = ElementContainer<T>;
+	using Base                = ElementContainer<T>;
 	using VertexContainerType = VertexContainer<T>;
 
 public:
@@ -78,7 +78,7 @@ public:
 	void deleteVertex(unsigned int i);
 	void deleteVertex(const VertexType* v);
 
-	unsigned int vertexIndexIfCompact(unsigned int id) const;
+	unsigned int     vertexIndexIfCompact(unsigned int id) const;
 	std::vector<int> vertexCompactIndices() const;
 
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
@@ -90,97 +90,125 @@ public:
 
 	// Adjacent Faces
 	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerVertexAdjacentFacesEnabled() const;
+	VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), bool)
+	isPerVertexAdjacentFacesEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerVertexAdjacentFaces();
+	VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
+	enablePerVertexAdjacentFaces();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerVertexAdjacentFaces();
+	VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
+	disablePerVertexAdjacentFaces();
 
 	// Adjacent Vertices
 	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentVertices<U, bool> isPerVertexAdjacentVerticesEnabled() const;
+	VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), bool)
+	isPerVertexAdjacentVerticesEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentVertices<U, void> enablePerVertexAdjacentVertices();
+	VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
+	enablePerVertexAdjacentVertices();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalAdjacentVertices<U, void> disablePerVertexAdjacentVertices();
+	VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
+	disablePerVertexAdjacentVertices();
 
 	// Color
 	template<typename U = T>
-	vert::ReturnIfHasOptionalColor<U, bool> isPerVertexColorEnabled() const;
+	VCL_ENABLE_IF(vert::hasOptionalColor<U>(), bool)
+	isPerVertexColorEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalColor<U, void> enablePerVertexColor();
+	VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
+	enablePerVertexColor();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalColor<U, void> disablePerVertexColor();
+	VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
+	disablePerVertexColor();
 
 	// Mark
 	template<typename U = T>
-	vert::ReturnIfHasOptionalMark<U, bool> isPerVertexMarkEnabled() const;
+	VCL_ENABLE_IF(vert::hasOptionalMark<U>(), bool)
+	isPerVertexMarkEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalMark<U, void> enablePerVertexMark();
+	VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
+	enablePerVertexMark();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalMark<U, void> disablePerVertexMark();
+	VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
+	disablePerVertexMark();
 
 	// Mutable Bit Flags
 	template<typename U = T>
-	vert::ReturnIfHasOptionalMutableBitFlags<U, bool> isPerVertexMutableBitFlagsEnabled() const;
+	VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), bool)
+	isPerVertexMutableBitFlagsEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerVertexMutableBitFlags();
+	VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), void)
+	enablePerVertexMutableBitFlags();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalMutableBitFlags<U, void> disablePerVertexMutableBitFlags();
+	VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), void)
+	disablePerVertexMutableBitFlags();
 
 	// Normal
 	template<typename U = T>
-	vert::ReturnIfHasOptionalNormal<U, bool> isPerVertexNormalEnabled() const;
+	VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), bool)
+	isPerVertexNormalEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalNormal<U, void> enablePerVertexNormal();
+	VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
+	enablePerVertexNormal();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalNormal<U, void> disablePerVertexNormal();
+	VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
+	disablePerVertexNormal();
 
 	// Scalar
 	template<typename U = T>
-	vert::ReturnIfHasOptionalScalar<U, bool> isPerVertexScalarEnabled() const;
+	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool)
+	isPerVertexScalarEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalScalar<U, void> enablePerVertexScalar();
+	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
+	enablePerVertexScalar();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalScalar<U, void> disablePerVertexScalar();
+	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
+	disablePerVertexScalar();
 
 	// PrincipalCurvature
 	template<typename U = T>
-	vert::ReturnIfHasOptionalPrincipalCurvature<U, bool> isPerVertexPrincipalCurvatureEnabled() const;
+	VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), bool)
+	isPerVertexPrincipalCurvatureEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalPrincipalCurvature<U, void> enablePerVertexPrincipalCurvature();
+	VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
+	enablePerVertexPrincipalCurvature();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalPrincipalCurvature<U, void> disablePerVertexPrincipalCurvature();
+	VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
+	disablePerVertexPrincipalCurvature();
 
 	// TexCoord
 	template<typename U = T>
-	vert::ReturnIfHasOptionalTexCoord<U, bool> isPerVertexTexCoordEnabled() const;
+	VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), bool)
+	isPerVertexTexCoordEnabled() const;
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalTexCoord<U, void> enablePerVertexTexCoord();
+	VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
+	enablePerVertexTexCoord();
 
 	template<typename U = T>
-	vert::ReturnIfHasOptionalTexCoord<U, void> disablePerVertexTexCoord();
+	VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
+	disablePerVertexTexCoord();
 
 	// Custom Components
 	template<typename K, typename U = T>
-	vert::ReturnIfHasCustomComponents<U, void> addPerVertexCustomComponent(const std::string& name);
+	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
+	addPerVertexCustomComponent(const std::string& name);
 
 protected:
 	/**
@@ -222,9 +250,6 @@ protected:
 
 template<typename T>
 using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
-
-template<typename U, typename T>
-using ReturnIfHasVertexContainer = typename std::enable_if<hasVertexContainerT<U>::value, T>::type;
 
 template<typename T>
 constexpr bool hasVertices()

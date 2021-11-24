@@ -102,37 +102,37 @@ typename WedgeColors<N>::ConstWedgeColorsRangeIterator WedgeColors<N>::wedgeColo
 }
 
 template<int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> WedgeColors<N>::resizeWedgeColors(unsigned int n)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) WedgeColors<N>::resizeWedgeColors(unsigned int n)
 {
 	Base::resize(n);
 }
 
 template<int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> WedgeColors<N>::pushWedgeColor(const vcl::Color& c)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) WedgeColors<N>::pushWedgeColor(const vcl::Color& c)
 {
 	Base::pushBack(c);
 }
 
 template<int N>
-template<int U>
-internal::ReturnIfIsVector<U, void>
+template<int M>
+VCL_ENABLE_IF(M < 0, void)
 WedgeColors<N>::insertWedgeColor(unsigned int i, const vcl::Color& c)
 {
 	Base::insert(i, c);
 }
 
 template<int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> WedgeColors<N>::eraseWedgeColor(unsigned int i)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) WedgeColors<N>::eraseWedgeColor(unsigned int i)
 {
 	Base::erase(i);
 }
 
 template<int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> WedgeColors<N>::clearWedgeColor()
+template<int M>
+VCL_ENABLE_IF(M < 0, void) WedgeColors<N>::clearWedgeColor()
 {
 	Base::clear();
 }

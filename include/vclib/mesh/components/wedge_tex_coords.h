@@ -77,21 +77,21 @@ protected:
 
 	/** Member functions specific for vector **/
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeWedgeTexCoords(unsigned int n);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resizeWedgeTexCoords(unsigned int n);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void>
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void)
 	insertWedgeTexCoord(unsigned int i, const vcl::TexCoord<Scalar>& t);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseWedgeTexCoord(unsigned int i);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) eraseWedgeTexCoord(unsigned int i);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearWedgeTexCoord();
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clearWedgeTexCoord();
 };
 
 template<typename T>

@@ -25,8 +25,9 @@
 
 #include <array>
 #include <assert.h>
-#include <type_traits>
 #include <vector>
+
+#include <vclib/misc/vcl_types.h>
 
 #include "optional_info.h"
 
@@ -38,15 +39,6 @@ class OptionalVertexReferencesVector;
 }
 
 namespace vcl::comp {
-
-namespace internal {
-
-template<int M, typename T>
-using ReturnIfIsVector = typename std::enable_if<(M < 0), T>::type;
-template<int M, typename T>
-using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
-
-} // namespace internal
 
 class OptionalAdjacentVerticesTriggerer
 {
@@ -118,20 +110,20 @@ public:
 
 	/** Member functions specific for vector **/
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeAdjVertices(unsigned int n);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(unsigned int n);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushAdjVertex(Vertex* f);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) pushAdjVertex(Vertex* f);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertAdjVertex(unsigned int i, Vertex* f);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(unsigned int i, Vertex* f);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseAdjVertex(unsigned int i);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(unsigned int i);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearAdjVertices();
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clearAdjVertices();
 
 	/** Iterator Member functions **/
 
@@ -157,10 +149,6 @@ private:
 
 template<typename T>
 using hasOptionalAdjacentVerticesT = std::is_base_of<OptionalAdjacentVerticesTriggerer, T>;
-
-template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentVertices =
-	typename std::enable_if<hasOptionalAdjacentVerticesT<U>::value, T>::type;
 
 template<typename T>
 bool constexpr hasOptionalAdjacentVertices()

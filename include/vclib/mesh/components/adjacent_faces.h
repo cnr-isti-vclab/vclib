@@ -78,32 +78,32 @@ public:
 
 	/** Member functions specific for vector **/
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeAdjFaces(unsigned int n)
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(unsigned int n)
 	{
 		Base::resize(n);
 	}
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushAdjFace(Face* f)
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) pushAdjFace(Face* f)
 	{
 		Base::pushBack(f);
 	}
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertAdjFace(unsigned int i, Face* f)
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) insertAdjFace(unsigned int i, Face* f)
 	{
 		Base::insert(i, f);
 	}
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseAdjFace(unsigned int i)
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) eraseAdjFace(unsigned int i)
 	{
 		Base::erase(i);
 	}
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearAdjFaces()
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clearAdjFaces()
 	{
 		Base::clear();
 	}

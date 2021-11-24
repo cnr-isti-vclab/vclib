@@ -74,20 +74,20 @@ public:
 
 	/** Member functions specific for vector **/
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resizeVertices(unsigned int n);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushVertex(Vertex* v);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) pushVertex(Vertex* v);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, Vertex* v);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) insertVertex(unsigned int i, Vertex* v);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) eraseVertex(unsigned int i);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearVertices();
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clearVertices();
 
 	/** Iterator Member functions **/
 

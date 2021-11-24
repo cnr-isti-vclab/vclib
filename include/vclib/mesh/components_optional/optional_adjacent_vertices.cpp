@@ -137,23 +137,23 @@ int OptionalAdjacentVertices<Vertex, N, T>::indexOfAdjVertex(const Vertex* v) co
 }
 
 template<typename Vertex, int N, typename T>
-template<int U>
-internal::ReturnIfIsVector<U, void>
+template<int M>
+VCL_ENABLE_IF(M < 0, void)
 OptionalAdjacentVertices<Vertex, N, T>::resizeAdjVertices(unsigned int n)
 {
 	B::optCont().adjVerts(thisId()).resize(n);
 }
 
 template<typename Vertex, int N, typename T>
-template<int U>
-internal::ReturnIfIsVector<U, void> OptionalAdjacentVertices<Vertex, N, T>::pushAdjVertex(Vertex* f)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) OptionalAdjacentVertices<Vertex, N, T>::pushAdjVertex(Vertex* f)
 {
 	B::optCont().adjVerts(thisId()).push_back(f);
 }
 
 template<typename Vertex, int N, typename T>
-template<int U>
-internal::ReturnIfIsVector<U, void>
+template<int M>
+VCL_ENABLE_IF(M < 0, void)
 OptionalAdjacentVertices<Vertex, N, T>::insertAdjVertex(unsigned int i, Vertex* f)
 {
 	assert(i < adjVerticesNumber());
@@ -161,8 +161,8 @@ OptionalAdjacentVertices<Vertex, N, T>::insertAdjVertex(unsigned int i, Vertex* 
 }
 
 template<typename Vertex, int N, typename T>
-template<int U>
-internal::ReturnIfIsVector<U, void>
+template<int M>
+VCL_ENABLE_IF(M < 0, void)
 OptionalAdjacentVertices<Vertex, N, T>::eraseAdjVertex(unsigned int i)
 {
 	assert(i < adjVerticesNumber());
@@ -170,8 +170,8 @@ OptionalAdjacentVertices<Vertex, N, T>::eraseAdjVertex(unsigned int i)
 }
 
 template<typename Vertex, int N, typename T>
-template<int U>
-internal::ReturnIfIsVector<U, void> OptionalAdjacentVertices<Vertex, N, T>::clearAdjVertices()
+template<int M>
+VCL_ENABLE_IF(M < 0, void) OptionalAdjacentVertices<Vertex, N, T>::clearAdjVertices()
 {
 	B::optCont().adjVerts(thisId()).clear();
 }

@@ -20,48 +20,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_TEX_COORD_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_TEX_COORD_H
+#ifndef VCL_TYPE_TRAITS_H
+#define VCL_TYPE_TRAITS_H
 
-#include <vclib/space/tex_coord.h>
-
-#include "optional_info.h"
-
-namespace vcl::comp {
-
-class OptionalTexCoordTriggerer
-{
-};
-
-template<typename Scalar, typename T>
-class OptionalTexCoord : public OptionalTexCoordTriggerer, public virtual OptionalInfo<T>
-{
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using TexCoordType = vcl::TexCoord<Scalar>;
-
-	const TexCoordType& texCoord() const { return B::optCont().texCoord(thisId()); }
-	TexCoordType&       texCoord() { return B::optCont().texCoord(thisId()); }
-
-private:
-	unsigned int thisId() const { return B::index((T*)this); }
-};
+#include <type_traits>
 
 /**
- * Detector to check if a class has (inherits) OpionalNormal
+ * Utility macro used to enable functions only when a particular static condition is true.
+ *
+ * Usage:
+ *
+ * @code{.cpp}
+ * template <int N>
+ * VCL_ENABLE_IF(N < 0, int) getSize() { ... }
+ * @endcode
+ *
+ * The first argument is the condition, the second argument is the return type of the function.
+ *
+ * When building the documentation, this syntax will be hidden and will appear just the return type.
  */
+#ifdef DOXYGEN
+#define VCL_ENABLE_IF(Test, Type1) Type1
+#else
+#define VCL_ENABLE_IF(Test, Type1) typename std::enable_if< Test, Type1 >::type
+#endif
 
-template<typename T>
-using hasOptionalTexCoordT = std::is_base_of<OptionalTexCoordTriggerer, T>;
+// used for templates given as parameters to macros
+// https://stackoverflow.com/questions/44268316/passing-a-template-type-into-a-macro
+#define VCL_COMMA ,
 
-template<typename T>
-bool constexpr hasOptionalTexCoord()
-{
-	return hasOptionalTexCoordT<T>::value;
-}
-
-} // namespace vcl::comp
-
-#endif // VCL_MESH_COMPONENTS_OPTIONAL_TEX_COORD_H
+#endif // VCL_TYPE_TRAITS_H

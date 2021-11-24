@@ -73,10 +73,6 @@ private:
 template<typename T>
 using hasCustomComponentsT = std::is_base_of<CustomComponents<T>, T>;
 
-template<typename U, typename T>
-using ReturnIfHasCustomComponents =
-	typename std::enable_if<hasCustomComponentsT<U>::value, T>::type;
-
 template<typename T>
 bool constexpr hasCustomComponents()
 {

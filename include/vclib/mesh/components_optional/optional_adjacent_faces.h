@@ -25,8 +25,9 @@
 
 #include <array>
 #include <assert.h>
-#include <type_traits>
 #include <vector>
+
+#include <vclib/misc/vcl_types.h>
 
 #include "optional_info.h"
 
@@ -38,15 +39,6 @@ class OptionalAdjacentFacesVector;
 }
 
 namespace vcl::comp {
-
-namespace internal {
-
-template<int M, typename T>
-using ReturnIfIsVector = typename std::enable_if<(M < 0), T>::type;
-template<int M, typename T>
-using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
-
-} // namespace internal
 
 class OptionalAdjacentFacesTriggerer
 {
@@ -116,20 +108,20 @@ public:
 
 	/** Member functions specific for vector **/
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeAdjFaces(unsigned int n);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(unsigned int n);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushAdjFace(Face* f);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) pushAdjFace(Face* f);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertAdjFace(unsigned int i, Face* f);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) insertAdjFace(unsigned int i, Face* f);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseAdjFace(unsigned int i);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) eraseAdjFace(unsigned int i);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearAdjFaces();
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clearAdjFaces();
 
 	/** Iterator Member functions **/
 
@@ -157,10 +149,6 @@ private:
 
 template<typename T>
 using hasOptionalAdjacentFacesT = std::is_base_of<OptionalAdjacentFacesTriggerer, T>;
-
-template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentFaces =
-	typename std::enable_if<hasOptionalAdjacentFacesT<U>::value, T>::type;
 
 template<typename T>
 bool constexpr hasOptionalAdjacentFaces()

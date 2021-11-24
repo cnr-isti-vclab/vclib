@@ -42,9 +42,6 @@ bool constexpr hasBoundingBox()
 	return comp::hasBoundingBox<T>();
 }
 
-template<typename U, typename T>
-using ReturnIfHasBoundingBox = comp::ReturnIfHasBoundingBox<U, T>;
-
 /** Port Mark class into mesh namespace **/
 using Mark = comp::Mark;
 

@@ -25,13 +25,15 @@
 
 #include <vclib/mesh/elements/face.h>
 
-#include "element_container.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
+#include "element_container.h"
 
 namespace vcl::mesh {
 
-class FaceContainerTriggerer {};
+class FaceContainerTriggerer
+{
+};
 
 /*
  * The Face Container class, will be used when the template argument given to the Mesh is a
@@ -42,8 +44,7 @@ class FaceContainerTriggerer {};
  * enablers/disablers of the eventual optional components of the face.
  */
 template<typename T>
-class FaceContainer :
-		public ElementContainer<T>, public FaceContainerTriggerer
+class FaceContainer : public ElementContainer<T>, public FaceContainerTriggerer
 {
 	// Sanity checks for the Face -- all components must be consistent each other
 	static_assert(
@@ -52,28 +53,29 @@ class FaceContainer :
 	static_assert(
 		vcl::face::hasVertexReferences<T>(),
 		"You should include a VertexReferences as Face component in your Mesh definition.");
-	static_assert (
+	static_assert(
 		!vcl::face::hasTriangleBitFlags<T>() || T::VERTEX_NUMBER == 3,
 		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
-	static_assert (
+	static_assert(
 		face::sanityCheckAdjacentFaces<T>() && face::sanityCheckOptionalAdjacentFaces<T>(),
 		"Size of per Face AdjacentFaces component must be the same of the VertexReferences.");
-	static_assert (
+	static_assert(
 		face::sanityCheckWedgeColors<T>() && face::sanityCheckOptionalWedgeColors<T>(),
 		"Size of per Face WedgeColors component must be the same of the VertexReferences.");
-	static_assert (
+	static_assert(
 		face::sanityCheckWedgeTexCoords<T>() && face::sanityCheckOptionalWedgeTexCoords<T>(),
 		"Size of per Face WedgeTexCoords component must be the same of the VertexReferences.");
 
-	using Base = ElementContainer<T>;
+	using Base              = ElementContainer<T>;
 	using FaceContainerType = FaceContainer<T>;
 
 public:
-	using FaceType               = T;
-	using FaceIterator           = ContainerIterator<std::vector, T>;
-	using ConstFaceIterator      = ConstContainerIterator<std::vector, T>;
-	using FaceRangeIterator      = ContainerRangeIterator<FaceContainerType, FaceIterator>;
-	using ConstFaceRangeIterator = ConstContainerRangeIterator<FaceContainerType, ConstFaceIterator>;
+	using FaceType          = T;
+	using FaceIterator      = ContainerIterator<std::vector, T>;
+	using ConstFaceIterator = ConstContainerIterator<std::vector, T>;
+	using FaceRangeIterator = ContainerRangeIterator<FaceContainerType, FaceIterator>;
+	using ConstFaceRangeIterator =
+		ConstContainerRangeIterator<FaceContainerType, ConstFaceIterator>;
 
 	FaceContainer();
 
@@ -87,7 +89,7 @@ public:
 	void deleteFace(unsigned int i);
 	void deleteFace(const FaceType* f);
 
-	unsigned int faceIndexIfCompact(unsigned int id) const;
+	unsigned int     faceIndexIfCompact(unsigned int id) const;
 	std::vector<int> faceCompactIndices() const;
 
 	FaceIterator           faceBegin(bool jumpDeleted = true);
@@ -99,97 +101,125 @@ public:
 
 	// AdjacentFaces
 	template<typename U = T>
-	face::ReturnIfHasOptionalAdjacentFaces<U, bool> isPerFaceAdjacentFacesEnabled() const;
+	VCL_ENABLE_IF(face::hasOptionalAdjacentFaces<U>(), bool)
+	isPerFaceAdjacentFacesEnabled() const;
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalAdjacentFaces<U, void> enablePerFaceAdjacentFaces();
+	VCL_ENABLE_IF(face::hasOptionalAdjacentFaces<U>(), void)
+	enablePerFaceAdjacentFaces();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalAdjacentFaces<U, void> disablePerFaceAdjacentFaces();
+	VCL_ENABLE_IF(face::hasOptionalAdjacentFaces<U>(), void)
+	disablePerFaceAdjacentFaces();
 
 	// Color
 	template<typename U = T>
-	face::ReturnIfHasOptionalColor<U, bool> isPerFaceColorEnabled() const;
+	VCL_ENABLE_IF(face::hasOptionalColor<U>(), bool)
+	isPerFaceColorEnabled() const;
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalColor<U, void> enablePerFaceColor();
+	VCL_ENABLE_IF(face::hasOptionalColor<U>(), void)
+	enablePerFaceColor();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalColor<U, void> disablePerFaceColor();
+	VCL_ENABLE_IF(face::hasOptionalColor<U>(), void)
+	disablePerFaceColor();
 
 	// Mark
 	template<typename U = T>
-	face::ReturnIfHasOptionalMark<U, bool> isPerFaceMarkEnabled() const;
+	VCL_ENABLE_IF(face::hasOptionalMark<U>(), bool)
+	isPerFaceMarkEnabled() const;
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalMark<U, void> enablePerFaceMark();
+	VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
+	enablePerFaceMark();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalMark<U, void> disablePerFaceMark();
+	VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
+	disablePerFaceMark();
 
 	// Mutable Bit Flags
 	template<typename U = T>
-	face::ReturnIfHasOptionalMutableBitFlags<U, bool> isPerFaceMutableBitFlagsEnabled() const;
+	VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), bool)
+	isPerFaceMutableBitFlagsEnabled() const;
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalMutableBitFlags<U, void> enablePerFaceMutableBitFlags();
+	VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), void)
+	enablePerFaceMutableBitFlags();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalMutableBitFlags<U, void> disablePerFaceMutableBitFlags();
+	VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), void)
+	disablePerFaceMutableBitFlags();
 
 	// Normal
 	template<typename U = T>
-	face::ReturnIfHasOptionalNormal<U, bool> isPerFaceNormalEnabled() const;
+	VCL_ENABLE_IF(face::hasOptionalNormal<U>(), bool)
+	isPerFaceNormalEnabled() const;
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalNormal<U, void> enablePerFaceNormal();
+	VCL_ENABLE_IF(face::hasOptionalNormal<U>(), void)
+	enablePerFaceNormal();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalNormal<U, void> disablePerFaceNormal();
+	VCL_ENABLE_IF(face::hasOptionalNormal<U>(), void)
+	disablePerFaceNormal();
 
 	// PrincipalCurvature
 	template<typename U = T>
-	face::ReturnIfHasOptionalPrincipalCurvature<U, bool> isPerFacePrincipalCurvatureEnabled() const;
+	VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), bool)
+	isPerFacePrincipalCurvatureEnabled() const;
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalPrincipalCurvature<U, void> enablePerFacePrincipalCurvature();
+	VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), void)
+	enablePerFacePrincipalCurvature();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalPrincipalCurvature<U, void> disablePerFacePrincipalCurvature();
+	VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), void)
+	disablePerFacePrincipalCurvature();
 
 	// Scalar
 	template<typename U = T>
-	face::ReturnIfHasOptionalScalar<U, bool> isPerFaceScalarEnabled() const;
+	VCL_ENABLE_IF(face::hasOptionalScalar<U>(), bool)
+	isPerFaceScalarEnabled() const;
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalScalar<U, void> enablePerFaceScalar();
+	VCL_ENABLE_IF(face::hasOptionalScalar<U>(), void)
+	enablePerFaceScalar();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalScalar<U, void> disablePerFaceScalar();
+	VCL_ENABLE_IF(face::hasOptionalScalar<U>(), void)
+	disablePerFaceScalar();
 
 	// WedgeColors
 	template<typename U = T>
-	face::ReturnIfHasOptionalWedgeColors<U, bool> isPerFaceWedgeColorsEnabled() const;
+	VCL_ENABLE_IF(face::hasWedgeColors<U>(), bool)
+	isPerFaceWedgeColorsEnabled() const;
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalWedgeColors<U, void> enablePerFaceWedgeColors();
+	VCL_ENABLE_IF(face::hasWedgeColors<U>(), void)
+	enablePerFaceWedgeColors();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalWedgeColors<U, void> disablePerFaceWedgeColors();
+	VCL_ENABLE_IF(face::hasWedgeColors<U>(), void)
+	disablePerFaceWedgeColors();
 
 	// WedgeTexCoords
 	template<typename U = T>
-	face::ReturnIfHasOptionalWedgeTexCoords<U, bool> isPerFaceWedgeTexCoordsEnabled() const;
+	VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), bool)
+	isPerFaceWedgeTexCoordsEnabled() const;
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalWedgeTexCoords<U, void> enablePerFaceWedgeTexCoords();
+	VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), void)
+	enablePerFaceWedgeTexCoords();
 
 	template<typename U = T>
-	face::ReturnIfHasOptionalWedgeTexCoords<U, void> disablePerFaceWedgeTexCoords();
+	VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), void)
+	disablePerFaceWedgeTexCoords();
 
 	// Custom Components
 	template<typename K, typename U = T>
-	face::ReturnIfHasCustomComponents<U, void> addPerFaceCustomComponent(const std::string& name);
+	VCL_ENABLE_IF(face::hasCustomComponents<U>(), void)
+	addPerFaceCustomComponent(const std::string& name);
 
 protected:
 	/**
@@ -204,7 +234,7 @@ protected:
 
 	unsigned int addFace();
 	unsigned int addFaces(unsigned int nFaces);
-	void reserveFaces(unsigned int size);
+	void         reserveFaces(unsigned int size);
 
 	void setContainerPointer(FaceType& f);
 
@@ -232,14 +262,17 @@ protected:
 template<typename T>
 using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
 
-template<typename U, typename T>
-using ReturnIfHasFaceContainer = typename std::enable_if<hasFaceContainer<U>::value, T>::type;
+template<typename T>
+constexpr bool hasFaces()
+{
+	return hasFaceContainer<T>::value;
+}
 
-template <typename T>
-constexpr bool hasFaces() { return hasFaceContainer<T>::value;}
-
-template <typename T>
-constexpr bool hasFaceOptionalContainer() { return comp::hasOptionalInfo<typename T::FaceType>();}
+template<typename T>
+constexpr bool hasFaceOptionalContainer()
+{
+	return comp::hasOptionalInfo<typename T::FaceType>();
+}
 
 } // namespace vcl::mesh
 

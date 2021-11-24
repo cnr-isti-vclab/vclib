@@ -61,9 +61,6 @@ public:
 template<typename T>
 using hasOptionalMarkT = std::is_base_of<OptionalMark<T>, T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalMark = typename std::enable_if<hasOptionalMarkT<U>::value, T>::type;
-
 template<typename T>
 bool constexpr hasOptionalMark()
 {

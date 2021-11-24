@@ -53,7 +53,7 @@ bool Point<Scalar, N>::isDegenerate() const
 
 template<typename Scalar, int N>
 template<int U>
-internal::ReturnIfIsPoint3< U, Point<Scalar, N> >
+VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>)
 Point<Scalar, N>::cross(const Point<Scalar, N>& p1) const
 {
 	return p.cross(p1.p);

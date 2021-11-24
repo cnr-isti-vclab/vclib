@@ -142,38 +142,38 @@ int GenericContainer<C, N>::indexOf(const C& e) const
 }
 
 template<typename C, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::resize(unsigned int n)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::resize(unsigned int n)
 {
 	container.resize(n);
 }
 
 template<typename C, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::pushBack(const C& v)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::pushBack(const C& v)
 {
 	container.push_back(v);
 }
 
 template<typename C, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::insert(unsigned int i, const C& v)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::insert(unsigned int i, const C& v)
 {
 	assert(i < size());
 	container.insert(container.begin() + i, v);
 }
 
 template<typename C, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::erase(unsigned int i)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::erase(unsigned int i)
 {
 	assert(i < size());
 	container.erase(container.begin() + i);
 }
 
 template<typename C, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> GenericContainer<C, N>::clear()
+template<int M>
+VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::clear()
 {
 	container.clear();
 }

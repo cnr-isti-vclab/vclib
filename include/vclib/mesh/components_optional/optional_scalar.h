@@ -59,9 +59,6 @@ using OptionalScalard = OptionalScalar<double, T>;
 template<typename T>
 using hasOptionalScalarT = std::is_base_of<OptionalScalarTrigger, T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalScalar = typename std::enable_if<hasOptionalScalarT<U>::value, T>::type;
-
 template<typename T>
 bool constexpr hasOptionalScalar()
 {

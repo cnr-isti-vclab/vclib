@@ -71,32 +71,32 @@ public:
 
 	/** Member functions specific for vector **/
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resizeAdjVertices(unsigned int n)
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(unsigned int n)
 	{
 		Base::resize(n);
 	}
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushAdjVertex(Vertex* v)
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) pushAdjVertex(Vertex* v)
 	{
 		Base::pushBack(v);
 	}
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insertAdjVertex(unsigned int i, Vertex* v)
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(unsigned int i, Vertex* v)
 	{
 		Base::insert(i, v);
 	}
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> eraseAdjVertex(unsigned int i)
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(unsigned int i)
 	{
 		Base::erase(i);
 	}
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clearAdjVertices()
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clearAdjVertices()
 	{
 		Base::clear();
 	}

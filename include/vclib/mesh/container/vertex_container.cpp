@@ -242,7 +242,7 @@ VertexContainer<T>::vertices(bool jumpDeleted) const
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalAdjacentFaces<U, bool>
+VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), bool)
 VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
 {
 	return Base::optionalVec.isAdjacentFacesEnabled();
@@ -256,7 +256,7 @@ VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalAdjacentFaces<U, void> VertexContainer<T>::enablePerVertexAdjacentFaces()
+VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void) VertexContainer<T>::enablePerVertexAdjacentFaces()
 {
 	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
 }
@@ -268,7 +268,7 @@ vert::ReturnIfHasOptionalAdjacentFaces<U, void> VertexContainer<T>::enablePerVer
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalAdjacentFaces<U, void> VertexContainer<T>::disablePerVertexAdjacentFaces()
+VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void) VertexContainer<T>::disablePerVertexAdjacentFaces()
 {
 	Base::optionalVec.disableAdjacentFaces();
 }
@@ -281,7 +281,7 @@ vert::ReturnIfHasOptionalAdjacentFaces<U, void> VertexContainer<T>::disablePerVe
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalAdjacentVertices<U, bool>
+VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), bool)
 VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
 {
 	return Base::optionalVec.isVertexReferencesEnabled();
@@ -294,7 +294,7 @@ VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalAdjacentVertices<U, void>
+VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
 VertexContainer<T>::enablePerVertexAdjacentVertices()
 {
 	Base::optionalVec.enableVertexReferences(vertexContainerSize());
@@ -307,7 +307,7 @@ VertexContainer<T>::enablePerVertexAdjacentVertices()
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalAdjacentVertices<U, void>
+VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
 VertexContainer<T>::disablePerVertexAdjacentVertices()
 {
 	Base::optionalVec.disableVertexReferences();
@@ -321,7 +321,8 @@ VertexContainer<T>::disablePerVertexAdjacentVertices()
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalColor<U, bool> VertexContainer<T>::isPerVertexColorEnabled() const
+VCL_ENABLE_IF(vert::hasOptionalColor<U>(), bool)
+VertexContainer<T>::isPerVertexColorEnabled() const
 {
 	return Base::optionalVec.isColorEnabled();
 }
@@ -332,7 +333,8 @@ vert::ReturnIfHasOptionalColor<U, bool> VertexContainer<T>::isPerVertexColorEnab
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalColor<U, void> VertexContainer<T>::enablePerVertexColor()
+VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
+VertexContainer<T>::enablePerVertexColor()
 {
 	Base::optionalVec.enableColor(vertexContainerSize());
 }
@@ -343,7 +345,8 @@ vert::ReturnIfHasOptionalColor<U, void> VertexContainer<T>::enablePerVertexColor
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalColor<U, void> VertexContainer<T>::disablePerVertexColor()
+VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
+VertexContainer<T>::disablePerVertexColor()
 {
 	Base::optionalVec.disableColor();
 }
@@ -356,7 +359,8 @@ vert::ReturnIfHasOptionalColor<U, void> VertexContainer<T>::disablePerVertexColo
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalMark<U, bool> VertexContainer<T>::isPerVertexMarkEnabled() const
+VCL_ENABLE_IF(vert::hasOptionalMark<U>(), bool)
+VertexContainer<T>::isPerVertexMarkEnabled() const
 {
 	return Base::optionalVec.isMarkEnabled();
 }
@@ -367,7 +371,8 @@ vert::ReturnIfHasOptionalMark<U, bool> VertexContainer<T>::isPerVertexMarkEnable
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalMark<U, void> VertexContainer<T>::enablePerVertexMark()
+VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
+VertexContainer<T>::enablePerVertexMark()
 {
 	Base::optionalVec.enableMark(vertexContainerSize());
 }
@@ -378,7 +383,8 @@ vert::ReturnIfHasOptionalMark<U, void> VertexContainer<T>::enablePerVertexMark()
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalMark<U, void> VertexContainer<T>::disablePerVertexMark()
+VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
+VertexContainer<T>::disablePerVertexMark()
 {
 	Base::optionalVec.disableMark();
 }
@@ -391,7 +397,7 @@ vert::ReturnIfHasOptionalMark<U, void> VertexContainer<T>::disablePerVertexMark(
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalMutableBitFlags<U, bool>
+VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), bool)
 VertexContainer<T>::isPerVertexMutableBitFlagsEnabled() const
 {
 	Base::optionalVec.isMutableBitFlagsEnabled();
@@ -404,7 +410,7 @@ VertexContainer<T>::isPerVertexMutableBitFlagsEnabled() const
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalMutableBitFlags<U, void>
+VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), void)
 VertexContainer<T>::enablePerVertexMutableBitFlags()
 {
 	Base::optionalVec.enableMutableBitFlags(vertexContainerSize());
@@ -417,7 +423,7 @@ VertexContainer<T>::enablePerVertexMutableBitFlags()
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalMutableBitFlags<U, void>
+VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), void)
 VertexContainer<T>::disablePerVertexMutableBitFlags()
 {
 	Base::optionalVec.disableMutableBitFlags();
@@ -431,7 +437,8 @@ VertexContainer<T>::disablePerVertexMutableBitFlags()
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalNormal<U, bool> VertexContainer<T>::isPerVertexNormalEnabled() const
+VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), bool)
+VertexContainer<T>::isPerVertexNormalEnabled() const
 {
 	return Base::optionalVec.isNormalEnabled();
 }
@@ -442,7 +449,8 @@ vert::ReturnIfHasOptionalNormal<U, bool> VertexContainer<T>::isPerVertexNormalEn
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalNormal<U, void> VertexContainer<T>::enablePerVertexNormal()
+VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
+VertexContainer<T>::enablePerVertexNormal()
 {
 	Base::optionalVec.enableNormal(vertexContainerSize());
 }
@@ -453,7 +461,8 @@ vert::ReturnIfHasOptionalNormal<U, void> VertexContainer<T>::enablePerVertexNorm
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalNormal<U, void> VertexContainer<T>::disablePerVertexNormal()
+VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
+VertexContainer<T>::disablePerVertexNormal()
 {
 	Base::optionalVec.disableNormal();
 }
@@ -466,7 +475,7 @@ vert::ReturnIfHasOptionalNormal<U, void> VertexContainer<T>::disablePerVertexNor
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalPrincipalCurvature<U, bool>
+VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), bool)
 VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled() const
 {
 	return Base::optionalVec.isPrincipalCurvatureEnabled();
@@ -479,7 +488,7 @@ VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled() const
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalPrincipalCurvature<U, void>
+VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
 VertexContainer<T>::enablePerVertexPrincipalCurvature()
 {
 	Base::optionalVec.enablePrincipalCurvature(vertexContainerSize());
@@ -492,7 +501,7 @@ VertexContainer<T>::enablePerVertexPrincipalCurvature()
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalPrincipalCurvature<U, void>
+VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
 VertexContainer<T>::disablePerVertexPrincipalCurvature()
 {
 	Base::optionalVec.disablePrincipalCurvature();
@@ -506,7 +515,7 @@ VertexContainer<T>::disablePerVertexPrincipalCurvature()
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalScalar<U, bool> VertexContainer<T>::isPerVertexScalarEnabled() const
+VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool) VertexContainer<T>::isPerVertexScalarEnabled() const
 {
 	return Base::optionalVec.isScalarEnabled();
 }
@@ -517,7 +526,7 @@ vert::ReturnIfHasOptionalScalar<U, bool> VertexContainer<T>::isPerVertexScalarEn
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalScalar<U, void> VertexContainer<T>::enablePerVertexScalar()
+VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void) VertexContainer<T>::enablePerVertexScalar()
 {
 	Base::optionalVec.enableScalar(vertexContainerSize());
 }
@@ -528,7 +537,7 @@ vert::ReturnIfHasOptionalScalar<U, void> VertexContainer<T>::enablePerVertexScal
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalScalar<U, void> VertexContainer<T>::disablePerVertexScalar()
+VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void) VertexContainer<T>::disablePerVertexScalar()
 {
 	Base::optionalVec.disableScalar();
 }
@@ -541,7 +550,8 @@ vert::ReturnIfHasOptionalScalar<U, void> VertexContainer<T>::disablePerVertexSca
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalTexCoord<U, bool> VertexContainer<T>::isPerVertexTexCoordEnabled() const
+VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), bool)
+VertexContainer<T>::isPerVertexTexCoordEnabled() const
 {
 	return Base::optionalVec.isTexCoordEnabled();
 }
@@ -552,7 +562,8 @@ vert::ReturnIfHasOptionalTexCoord<U, bool> VertexContainer<T>::isPerVertexTexCoo
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalTexCoord<U, void> VertexContainer<T>::enablePerVertexTexCoord()
+VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
+VertexContainer<T>::enablePerVertexTexCoord()
 {
 	Base::optionalVec.enableTexCoord(vertexContainerSize());
 }
@@ -563,7 +574,8 @@ vert::ReturnIfHasOptionalTexCoord<U, void> VertexContainer<T>::enablePerVertexTe
  */
 template<typename T>
 template<typename U>
-vert::ReturnIfHasOptionalTexCoord<U, void> VertexContainer<T>::disablePerVertexTexCoord()
+VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
+VertexContainer<T>::disablePerVertexTexCoord()
 {
 	Base::optionalVec.disableTexCoord();
 }
@@ -573,7 +585,7 @@ vert::ReturnIfHasOptionalTexCoord<U, void> VertexContainer<T>::disablePerVertexT
  */
 template<typename T>
 template<typename K, typename U>
-vert::ReturnIfHasCustomComponents<U, void>
+VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
 VertexContainer<T>::addPerVertexCustomComponent(const std::string& name)
 {
 	Base::optionalVec.template addNewComponent<K>(name, vertexContainerSize());

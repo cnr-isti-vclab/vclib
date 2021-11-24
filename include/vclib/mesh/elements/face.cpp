@@ -132,8 +132,8 @@ void Face<Args...>::setVertices(V... args)
  * @param n: the new number of vertices.
  */
 template<typename... Args>
-template<int U>
-comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned int n)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(unsigned int n)
 {
 	using F = Face<Args...>;
 
@@ -195,8 +195,8 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::resizeVertices(unsigned
 }
 
 template<typename... Args>
-template<int U>
-comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(VertexType* v)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
 {
 	using F = Face<Args...>;
 
@@ -262,8 +262,8 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::pushVertex(VertexType* 
 }
 
 template<typename... Args>
-template<int U>
-comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned int i, VertexType* v)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(unsigned int i, VertexType* v)
 {
 	using F = Face<Args...>;
 
@@ -329,8 +329,8 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::insertVertex(unsigned i
 }
 
 template<typename... Args>
-template<int U>
-comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned int i)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(unsigned int i)
 {
 	using F = Face<Args...>;
 
@@ -392,8 +392,8 @@ comp::internal::ReturnIfIsVector<U, void> Face<Args...>::eraseVertex(unsigned in
 }
 
 template<typename... Args>
-template<int U>
-comp::internal::ReturnIfIsVector<U, void> Face<Args...>::clearVertices()
+template<int M>
+VCL_ENABLE_IF(M < 0, void) Face<Args...>::clearVertices()
 {
 	using F = Face<Args...>;
 

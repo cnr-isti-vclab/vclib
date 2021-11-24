@@ -72,9 +72,6 @@ using OptionalNormal3d = OptionalNormal3<double, T>;
 template<typename T>
 using hasOptionalNormalT = std::is_base_of<OptionalNormalTrigger, T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalNormal = typename std::enable_if<hasOptionalNormalT<U>::value, T>::type;
-
 template<typename T>
 bool constexpr hasOptionalNormal()
 {

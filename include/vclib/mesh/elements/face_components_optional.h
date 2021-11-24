@@ -43,9 +43,6 @@ using OptionalAdjacentPolygons = comp::OptionalAdjacentFaces<T, -1, T>;
 template<typename T>
 using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<T, 3, T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalAdjacentFaces = comp::ReturnIfHasOptionalAdjacentFaces<U, T>;
-
 template<typename T>
 bool constexpr hasOptionalAdjacentFaces()
 {
@@ -61,9 +58,6 @@ bool constexpr sanityCheckOptionalAdjacentFaces()
 /** Port OptionalColor class into face namespace **/
 template<typename T>
 using OptionalColor = comp::OptionalColor<T>;
-
-template<typename U, typename T>
-using ReturnIfHasOptionalColor = comp::ReturnIfHasOptionalColor<U, T>;
 
 template<typename T>
 bool constexpr hasOptionalColor()
@@ -85,9 +79,6 @@ bool constexpr hasOptionalInfo()
 template<typename T>
 using OptionalMark = comp::OptionalMark<T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalMark = comp::ReturnIfHasOptionalMark<U, T>;
-
 template<typename T>
 bool constexpr hasOptionalMark()
 {
@@ -97,9 +88,6 @@ bool constexpr hasOptionalMark()
 /** Port OptionalMutableBitFlags class into face namespace **/
 template<typename T>
 using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<T>;
-
-template<typename U, typename T>
-using ReturnIfHasOptionalMutableBitFlags = comp::ReturnIfHasOptionalMutableBitFlags<U, T>;
 
 template<typename T>
 bool constexpr hasOptionalMutableBitFlags()
@@ -120,9 +108,6 @@ using OptionalNormal3f = comp::OptionalNormal3f<T>;
 template<typename T>
 using OptionalNormal3d = comp::OptionalNormal3d<T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalNormal = comp::ReturnIfHasOptionalNormal<U, T>;
-
 template<typename T>
 bool constexpr hasOptionalNormal()
 {
@@ -137,9 +122,6 @@ template<typename T>
 using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<T>;
 template<typename T>
 using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<T>;
-
-template<typename U, typename T>
-using ReturnIfHasOptionalPrincipalCurvature = comp::ReturnIfHasOptionalPrincipalCurvature<U, T>;
 
 template<typename T>
 bool constexpr hasOptionalPrincipalCurvature()
@@ -156,9 +138,6 @@ using OptionalScalarf = comp::OptionalScalar<float, T>;
 
 template<typename T>
 using OptionalScalard = comp::OptionalScalar<double, T>;
-
-template<typename U, typename T>
-using ReturnIfHasOptionalScalar = comp::ReturnIfHasOptionalScalar<U, T>;
 
 template<typename T>
 bool constexpr hasOptionalScalar()
@@ -182,9 +161,6 @@ using OptionalTriangleWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, 3, T
 template<typename T>
 using OptionalTriangleWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, 3, T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalWedgeTexCoords = comp::ReturnIfHasOptionalWedgeTexCoords<U, T>;
-
 template<typename T>
 bool constexpr hasOptionalWedgeTexCoords()
 {
@@ -204,9 +180,6 @@ using OptionalPolygonWedgeColors = comp::OptionalWedgeColors<-1, T>;
 template<typename T>
 using OptionalTriangleWedgeColors = comp::OptionalWedgeColors<3, T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalWedgeColors = comp::ReturnIfHasOptionalWedgeColors<U, T>;
-
 template<typename T>
 bool constexpr hasOptionalWedgeColors()
 {
@@ -222,9 +195,6 @@ bool constexpr sanityCheckOptionalWedgeColors()
 /** Port CustomComponents class into face namespace **/
 template<typename T>
 using CustomComponents = comp::CustomComponents<T>;
-
-template<typename U, typename T>
-using ReturnIfHasCustomComponents = comp::ReturnIfHasCustomComponents<U, T>;
 
 template<typename T>
 bool constexpr hasCustomComponents()

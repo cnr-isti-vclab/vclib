@@ -66,20 +66,20 @@ public:
 	template<typename... V>
 	void setVertices(V... args);
 
-	template<int U = NV>
-	comp::internal::ReturnIfIsVector<U, void> resizeVertices(unsigned int n);
+	template<int M = NV>
+	VCL_ENABLE_IF(M < 0, void) resizeVertices(unsigned int n);
 
-	template<int U = NV>
-	comp::internal::ReturnIfIsVector<U, void> pushVertex(VertexType* v);
+	template<int M = NV>
+	VCL_ENABLE_IF(M < 0, void) pushVertex(VertexType* v);
 
-	template<int U = NV>
-	comp::internal::ReturnIfIsVector<U, void> insertVertex(unsigned int i, VertexType* v);
+	template<int M = NV>
+	VCL_ENABLE_IF(M < 0, void) insertVertex(unsigned int i, VertexType* v);
 
-	template<int U = NV>
-	comp::internal::ReturnIfIsVector<U, void> eraseVertex(unsigned int i);
+	template<int M = NV>
+	VCL_ENABLE_IF(M < 0, void) eraseVertex(unsigned int i);
 
-	template<int U = NV>
-	comp::internal::ReturnIfIsVector<U, void> clearVertices();
+	template<int M = NV>
+	VCL_ENABLE_IF(M < 0, void) clearVertices();
 };
 
 } // namespace vcl

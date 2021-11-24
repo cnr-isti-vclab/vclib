@@ -117,37 +117,37 @@ int VertexReferences<Vertex, N>::indexOfEdge(const Vertex* v1, const Vertex* v2)
 }
 
 template<typename Vertex, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> VertexReferences<Vertex, N>::resizeVertices(unsigned int n)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::resizeVertices(unsigned int n)
 {
 	Base::resize(n);
 }
 
 template<typename Vertex, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> VertexReferences<Vertex, N>::pushVertex(Vertex* v)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::pushVertex(Vertex* v)
 {
 	Base::pushBack(v);
 }
 
 template<typename Vertex, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void>
+template<int M>
+VCL_ENABLE_IF(M < 0, void)
 VertexReferences<Vertex, N>::insertVertex(unsigned int i, Vertex* v)
 {
 	Base::insert(i, v);
 }
 
 template<typename Vertex, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> VertexReferences<Vertex, N>::eraseVertex(unsigned int i)
+template<int M>
+VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::eraseVertex(unsigned int i)
 {
 	Base::erase(i);
 }
 
 template<typename Vertex, int N>
-template<int U>
-internal::ReturnIfIsVector<U, void> VertexReferences<Vertex, N>::clearVertices()
+template<int M>
+VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::clearVertices()
 {
 	Base::clear();
 }

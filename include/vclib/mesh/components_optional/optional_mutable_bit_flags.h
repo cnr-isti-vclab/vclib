@@ -95,10 +95,6 @@ private:
 template<typename T>
 using hasOptionalMutableBitFlagsT = std::is_base_of<OptionalMutableBitFlags<T>, T>;
 
-template<typename U, typename T>
-using ReturnIfHasOptionalMutableBitFlags =
-	typename std::enable_if<hasOptionalMutableBitFlagsT<U>::value, T>::type;
-
 template<typename T>
 bool constexpr hasOptionalMutableBitFlags()
 {

@@ -26,21 +26,13 @@
 #include <algorithm>
 #include <array>
 #include <assert.h>
-#include <type_traits>
 #include <vector>
+
+#include <vclib/misc/vcl_types.h>
 
 #include "../iterators/range_iterator.h"
 
 namespace vcl::comp {
-
-namespace internal {
-
-template<int M, typename T>
-using ReturnIfIsVector = typename std::enable_if<(M < 0), T>::type;
-template<int M, typename T>
-using ReturnIfIsArray = typename std::enable_if<(M >= 0), T>::type;
-
-} // namespace internal
 
 /**
  * @brief The GenericContainer class is a generic container class of values, that could be static
@@ -104,20 +96,20 @@ protected:
 
 	/** Member functions specific for vector **/
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> resize(unsigned int n);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resize(unsigned int n);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> pushBack(const C& v);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) pushBack(const C& v);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> insert(unsigned int i, const C& v);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) insert(unsigned int i, const C& v);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> erase(unsigned int i);
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) erase(unsigned int i);
 
-	template<int U = N>
-	internal::ReturnIfIsVector<U, void> clear();
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clear();
 
 	/** Iterator Member functions **/
 
