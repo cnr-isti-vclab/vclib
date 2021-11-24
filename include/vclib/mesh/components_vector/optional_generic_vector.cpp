@@ -33,7 +33,7 @@ bool OptionalGenericVector<T>::isEnabled() const
 }
 
 template<typename T>
-void OptionalGenericVector<T>::enable(unsigned int size)
+void OptionalGenericVector<T>::enable(uint size)
 {
 	enabled = true;
 	vec.resize(size);
@@ -48,14 +48,14 @@ void OptionalGenericVector<T>::disable()
 }
 
 template<typename T>
-T& OptionalGenericVector<T>::at(unsigned int i)
+T& OptionalGenericVector<T>::at(uint i)
 {
 	assert(enabled);
 	return vec[i];
 }
 
 template<typename T>
-const T& OptionalGenericVector<T>::at(unsigned int i) const
+const T& OptionalGenericVector<T>::at(uint i) const
 {
 	assert(enabled);
 	return vec[i];
@@ -72,14 +72,14 @@ void OptionalGenericVector<T>::clear()
 }
 
 template<typename T>
-void OptionalGenericVector<T>::resize(unsigned int size)
+void OptionalGenericVector<T>::resize(uint size)
 {
 	if (enabled)
 		vec.resize(size);
 }
 
 template<typename T>
-void OptionalGenericVector<T>::reserve(unsigned int size)
+void OptionalGenericVector<T>::reserve(uint size)
 {
 	if (enabled)
 		vec.reserve(size);

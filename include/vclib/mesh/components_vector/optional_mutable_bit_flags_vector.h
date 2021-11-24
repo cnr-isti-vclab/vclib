@@ -34,8 +34,8 @@ class OptionalMutableBitFlagsVector
 {
 public:
 	void clear() {}
-	void reserve(unsigned int) {}
-	void resize(unsigned int) {}
+	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -53,10 +53,10 @@ public:
 	using Base::resize;
 	using Base::compact;
 	bool isMutableBitFlagsEnabled() const { return Base::isEnabled(); };
-	void enableMutableBitFlags(unsigned int size) { Base::enable(size); }
+	void enableMutableBitFlags(uint size) { Base::enable(size); }
 	void disableMutableBitFlags() { Base::disable(); }
-	int& flags(unsigned int i) { return Base::at(i); }
-	int& flags(unsigned int i) const { return const_cast<int&>(Base::at(i)); }
+	int& flags(uint i) { return Base::at(i); }
+	int& flags(uint i) const { return const_cast<int&>(Base::at(i)); }
 };
 
 } // namespace vcl::internal

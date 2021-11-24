@@ -44,7 +44,7 @@ ElementReferences<Elem, N>::ElementReferences() : Base()
 template<typename Elem, int N>
 void ElementReferences<Elem, N>::updateElementReferences(const Elem* oldBase, const Elem* newBase)
 {
-	for (unsigned int j = 0; j < Base::size(); ++j) {
+	for (uint j = 0; j < Base::size(); ++j) {
 		if (Base::at(j) != nullptr) {
 			size_t diff = Base::at(j) - oldBase;
 			Base::at(j)  = (Elem*) newBase + diff;
@@ -57,7 +57,7 @@ void ElementReferences<Elem, N>::updateElementReferencesAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices)
 {
-	for (unsigned int j = 0; j < Base::size(); ++j) {
+	for (uint j = 0; j < Base::size(); ++j) {
 		if (Base::at(j) != nullptr) {
 			size_t diff = Base::at(j) - base;
 			if (newIndices[diff] < 0) { // element has been removed

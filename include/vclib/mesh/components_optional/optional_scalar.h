@@ -43,7 +43,7 @@ public:
 	ScalarType&       scalar() { return B::optCont().scalar(thisId()); }
 
 private:
-	unsigned int thisId() const { return B::index((T*)this); }
+	uint thisId() const { return B::index((T*)this); }
 };
 
 template <typename T>

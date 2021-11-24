@@ -34,8 +34,8 @@ class OptionalTexCoordVector
 {
 public:
 	void clear() {}
-	void reserve(unsigned int) {}
-	void resize(unsigned int) {}
+	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -52,10 +52,10 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	bool                isTexCoordEnabled() const { return Base::isEnabled(); };
-	void                enableTexCoord(unsigned int size) { Base::enable(size); }
+	void                enableTexCoord(uint size) { Base::enable(size); }
 	void                disableTexCoord() { Base::disable(); }
-	TexCoordType&       texCoord(unsigned int i) { return Base::at(i); }
-	const TexCoordType& texCoord(unsigned int i) const { return Base::at(i); }
+	TexCoordType&       texCoord(uint i) { return Base::at(i); }
+	const TexCoordType& texCoord(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

@@ -23,12 +23,14 @@
 #ifndef VCL_ALGORITHMS_SMOOTH_H
 #define VCL_ALGORITHMS_SMOOTH_H
 
+#include <vclib/misc/vcl_types.h>
+
 namespace vcl {
 
 template<typename MeshType>
 void vertexCoordLaplacianSmoothing(
 	MeshType&    m,
-	unsigned int step,
+	uint step,
 	bool         smoothSelected  = false,
 	bool         cotangentWeight = false /*, vcl::CallBackPos *cb = 0*/);
 }

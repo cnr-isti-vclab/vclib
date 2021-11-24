@@ -44,7 +44,7 @@ OptionalAdjacentFaces<Face, N, T>::OptionalAdjacentFaces()
 }
 
 template<typename Face, int N, typename T>
-unsigned int OptionalAdjacentFaces<Face, N, T>::adjFacesNumber() const
+uint OptionalAdjacentFaces<Face, N, T>::adjFacesNumber() const
 {
 	if constexpr (N >= 0) {
 		return N;
@@ -55,14 +55,14 @@ unsigned int OptionalAdjacentFaces<Face, N, T>::adjFacesNumber() const
 }
 
 template<typename Face, int N, typename T>
-Face*& OptionalAdjacentFaces<Face, N, T>::adjFace(unsigned int i)
+Face*& OptionalAdjacentFaces<Face, N, T>::adjFace(uint i)
 {
 	assert(i < adjFacesNumber());
 	return B::optCont().adjFaces(thisId())[i];
 }
 
 template<typename Face, int N, typename T>
-const Face* OptionalAdjacentFaces<Face, N, T>::adjFace(unsigned int i) const
+const Face* OptionalAdjacentFaces<Face, N, T>::adjFace(uint i) const
 {
 	assert(i < adjFacesNumber());
 	return B::optCont().adjFaces(thisId())[i];
@@ -71,19 +71,19 @@ const Face* OptionalAdjacentFaces<Face, N, T>::adjFace(unsigned int i) const
 template<typename Face, int N, typename T>
 Face*& OptionalAdjacentFaces<Face, N, T>::adjFaceMod(int i)
 {
-	unsigned int n = adjFacesNumber();
+	uint n = adjFacesNumber();
 	return B::optCont().adjFaces(thisId())[(i % n + n) % n];
 }
 
 template<typename Face, int N, typename T>
 const Face* OptionalAdjacentFaces<Face, N, T>::adjFaceMod(int i) const
 {
-	unsigned int n = adjFacesNumber();
+	uint n = adjFacesNumber();
 	return B::optCont().adjFaces(thisId())[(i % n + n) % n];
 }
 
 template<typename Face, int N, typename T>
-void OptionalAdjacentFaces<Face, N, T>::setAdjFace(Face* f, unsigned int i)
+void OptionalAdjacentFaces<Face, N, T>::setAdjFace(Face* f, uint i)
 {
 	assert(i < adjFacesNumber());
 	B::optCont().adjFaces(thisId())[i] = f;
@@ -94,7 +94,7 @@ void OptionalAdjacentFaces<Face, N, T>::setAdjFaces(const std::vector<Face*>& li
 {
 	if constexpr (N >= 0) {
 		assert(list.size() == N);
-		unsigned int i = 0;
+		uint i = 0;
 		for (const auto& f : list) {
 			setFace(f, i);
 			++i;
@@ -139,7 +139,7 @@ int OptionalAdjacentFaces<Face, N, T>::indexOfAdjFace(const Face* f) const
 template<typename Face, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentFaces<Face, N, T>::resizeAdjFaces(unsigned int n)
+OptionalAdjacentFaces<Face, N, T>::resizeAdjFaces(uint n)
 {
 	B::optCont().adjFaces(thisId()).resize(n);
 }
@@ -154,7 +154,7 @@ VCL_ENABLE_IF(M < 0, void) OptionalAdjacentFaces<Face, N, T>::pushAdjFace(Face* 
 template<typename Face, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentFaces<Face, N, T>::insertAdjFace(unsigned int i, Face* f)
+OptionalAdjacentFaces<Face, N, T>::insertAdjFace(uint i, Face* f)
 {
 	assert(i < adjFacesNumber());
 	B::optCont().adjFaces(thisId()).insert(B::optCont().adjFaces(thisId()).begin() + i, f);
@@ -162,7 +162,7 @@ OptionalAdjacentFaces<Face, N, T>::insertAdjFace(unsigned int i, Face* f)
 
 template<typename Face, int N, typename T>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalAdjacentFaces<Face, N, T>::eraseAdjFace(unsigned int i)
+VCL_ENABLE_IF(M < 0, void) OptionalAdjacentFaces<Face, N, T>::eraseAdjFace(uint i)
 {
 	assert(i < adjFacesNumber());
 	B::optCont().adjFaces(thisId()).erase(B::optCont().adjFaces(thisId()).begin() + i);
@@ -234,7 +234,7 @@ void OptionalAdjacentFaces<Face, N, T>::updateFaceReferences(
 	const Face* oldBase,
 	const Face* newBase)
 {
-	for (unsigned int j = 0; j < adjFacesNumber(); ++j) {
+	for (uint j = 0; j < adjFacesNumber(); ++j) {
 		if (adjFace(j) != nullptr) {
 			size_t diff = adjFace(j) - oldBase;
 			adjFace(j)  = (Face*) newBase + diff;
@@ -247,7 +247,7 @@ void OptionalAdjacentFaces<Face, N, T>::updateFaceReferencesAfterCompact(
 	const Face*             base,
 	const std::vector<int>& newIndices)
 {
-	for (unsigned int j = 0; j < adjFacesNumber(); ++j) {
+	for (uint j = 0; j < adjFacesNumber(); ++j) {
 		if (adjFace(j) != nullptr) {
 			size_t diff = adjFace(j) - base;
 			if (newIndices[diff] < 0) { // element has been removed

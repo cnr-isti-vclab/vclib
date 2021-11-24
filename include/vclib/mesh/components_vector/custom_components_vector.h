@@ -40,8 +40,8 @@ class CustomComponentsVector
 {
 public:
 	void clear() {}
-	void reserve(unsigned int) {}
-	void resize(unsigned int) {}
+	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -53,14 +53,14 @@ class CustomComponentsVector<
 public:
 	void clear();
 
-	void reserve(unsigned int size);
+	void reserve(uint size);
 
-	void resize(unsigned int size);
+	void resize(uint size);
 
 	void compact(const std::vector<int>& newIndices);
 
 	template<typename AttrType>
-	void addNewComponent(const std::string& name, unsigned int size);
+	void addNewComponent(const std::string& name, uint size);
 
 	void assertComponentExists(const std::string& attrName) const;;
 

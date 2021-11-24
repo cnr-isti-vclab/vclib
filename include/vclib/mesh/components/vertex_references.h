@@ -54,14 +54,14 @@ public:
 
 	/** Member functions **/
 
-	unsigned int vertexNumber() const;
+	uint vertexNumber() const;
 
-	Vertex*&      vertex(unsigned int i);
-	const Vertex* vertex(unsigned int i) const;
+	Vertex*&      vertex(uint i);
+	const Vertex* vertex(uint i) const;
 	Vertex*&      vertexMod(int i);
 	const Vertex* vertexMod(int i) const;
 
-	void setVertex(Vertex* v, unsigned int i);
+	void setVertex(Vertex* v, uint i);
 	void setVertices(const std::vector<Vertex*>& list);
 
 	bool containsVertex(const Vertex* v) const;
@@ -75,16 +75,16 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeVertices(unsigned int n);
+	VCL_ENABLE_IF(M < 0, void) resizeVertices(uint n);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) pushVertex(Vertex* v);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertVertex(unsigned int i, Vertex* v);
+	VCL_ENABLE_IF(M < 0, void) insertVertex(uint i, Vertex* v);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseVertex(unsigned int i);
+	VCL_ENABLE_IF(M < 0, void) eraseVertex(uint i);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearVertices();

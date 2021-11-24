@@ -79,17 +79,17 @@ public:
 
 	FaceContainer();
 
-	const FaceType& face(unsigned int i) const;
-	FaceType&       face(unsigned int i);
+	const FaceType& face(uint i) const;
+	FaceType&       face(uint i);
 
-	unsigned int faceNumber() const;
-	unsigned int faceContainerSize() const;
-	unsigned int deletedFaceNumber() const;
+	uint faceNumber() const;
+	uint faceContainerSize() const;
+	uint deletedFaceNumber() const;
 
-	void deleteFace(unsigned int i);
+	void deleteFace(uint i);
 	void deleteFace(const FaceType* f);
 
-	unsigned int     faceIndexIfCompact(unsigned int id) const;
+	uint     faceIndexIfCompact(uint id) const;
 	std::vector<int> faceCompactIndices() const;
 
 	FaceIterator           faceBegin(bool jumpDeleted = true);
@@ -226,15 +226,15 @@ protected:
 	 * @brief fn: the number of faces in the container. Could be different from faces.size()
 	 * due to faces marked as deleted into the container.
 	 */
-	unsigned int fn = 0;
+	uint fn = 0;
 
-	unsigned int index(const FaceType* f) const;
+	uint index(const FaceType* f) const;
 
 	void clearFaces();
 
-	unsigned int addFace();
-	unsigned int addFaces(unsigned int nFaces);
-	void         reserveFaces(unsigned int size);
+	uint addFace();
+	uint addFaces(uint nFaces);
+	void         reserveFaces(uint size);
 
 	void setContainerPointer(FaceType& f);
 

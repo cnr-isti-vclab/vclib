@@ -124,7 +124,7 @@ void accumulateLaplacianInfo(
 template<typename MeshType>
 void vertexCoordLaplacianSmoothing(
 	MeshType&    m,
-	unsigned int step,
+	uint step,
 	bool         smoothSelected,
 	bool         cotangentWeight /*, vcl::CallBackPos *cb*/)
 {
@@ -136,7 +136,7 @@ void vertexCoordLaplacianSmoothing(
 	internal::LaplacianInfo<CoordType>              lpz = {CoordType(0, 0, 0), 0};
 	std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize());
 
-	for (unsigned int i = 0; i < step; ++i) {
+	for (uint i = 0; i < step; ++i) {
 		std::fill(laplData.begin(), laplData.end(), lpz);
 		internal::accumulateLaplacianInfo(m, laplData, cotangentWeight);
 		for (VertexType& v : m.vertices()) {

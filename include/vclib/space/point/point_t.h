@@ -66,7 +66,7 @@ public:
 
 	Scalar       norm() const;
 	Scalar       squaredNorm() const;
-	unsigned int size() const;
+	uint size() const;
 
 	void setConstant(Scalar s);
 	void setZero();
@@ -75,8 +75,8 @@ public:
 	void normalize();
 
 	// operators
-	Scalar&       operator()(unsigned int i);
-	const Scalar& operator()(unsigned int i) const;
+	Scalar&       operator()(uint i);
+	const Scalar& operator()(uint i) const;
 
 	bool operator==(const Point& p1) const;
 	bool operator!=(const Point& p1) const;

@@ -32,7 +32,7 @@ class OptionalMark : public virtual OptionalInfo<T>
 {
 private:
 	using B = OptionalInfo<T>;
-	unsigned int thisId() const { return B::index((T*)this); }
+	uint thisId() const { return B::index((T*)this); }
 
 public:
 	OptionalMark() {}

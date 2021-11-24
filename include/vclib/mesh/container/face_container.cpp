@@ -43,7 +43,7 @@ FaceContainer<T>::FaceContainer()
  * @param i: the id of the face that will be returned.
  */
 template<typename T>
-const typename FaceContainer<T>::FaceType& FaceContainer<T>::face(unsigned int i) const
+const typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i) const
 {
 	return Base::vec[i];
 }
@@ -59,7 +59,7 @@ const typename FaceContainer<T>::FaceType& FaceContainer<T>::face(unsigned int i
  * @param i: the id of the face that will be returned.
  */
 template<typename T>
-typename FaceContainer<T>::FaceType& FaceContainer<T>::face(unsigned int i)
+typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i)
 {
 	return Base::vec[i];
 }
@@ -74,7 +74,7 @@ typename FaceContainer<T>::FaceType& FaceContainer<T>::face(unsigned int i)
  * @return the number of non-deleted faces of the Mesh.
  */
 template<typename T>
-unsigned int FaceContainer<T>::faceNumber() const
+uint FaceContainer<T>::faceNumber() const
 {
 	return fn;
 }
@@ -89,13 +89,13 @@ unsigned int FaceContainer<T>::faceNumber() const
  * @return the number of all the faces contained in the Mesh.
  */
 template<typename T>
-unsigned int FaceContainer<T>::faceContainerSize() const
+uint FaceContainer<T>::faceContainerSize() const
 {
 	return Base::vec.size();
 }
 
 template<typename T>
-unsigned int FaceContainer<T>::deletedFaceNumber() const
+uint FaceContainer<T>::deletedFaceNumber() const
 {
 	return faceContainerSize() - faceNumber();
 }
@@ -111,7 +111,7 @@ unsigned int FaceContainer<T>::deletedFaceNumber() const
  * @param i: the id of the face that will be marked as deleted.
  */
 template<typename T>
-void FaceContainer<T>::deleteFace(unsigned int i)
+void FaceContainer<T>::deleteFace(uint i)
 {
 	Base::vec[i].setDeleted();
 	fn--;
@@ -135,13 +135,13 @@ void FaceContainer<T>::deleteFace(const FaceType* f)
  * @return
  */
 template<typename T>
-unsigned int FaceContainer<T>::faceIndexIfCompact(unsigned int id) const
+uint FaceContainer<T>::faceIndexIfCompact(uint id) const
 {
 	if (Base::vec.size() == fn)
 		return id;
 	else {
-		unsigned int cnt = 0;
-		for (unsigned int i = 0; i < id; i++) {
+		uint cnt = 0;
+		for (uint i = 0; i < id; i++) {
 			if (!Base::vec[i].isDeleted())
 				++cnt;
 		}
@@ -162,8 +162,8 @@ template<typename T>
 std::vector<int> FaceContainer<T>::faceCompactIndices() const
 {
 	std::vector<int> newIndices(Base::vec.size());
-	unsigned int     k = 0;
-	for (unsigned int i = 0; i < Base::vec.size(); ++i) {
+	uint     k = 0;
+	for (uint i = 0; i < Base::vec.size(); ++i) {
 		if (!Base::vec[i].isDeleted()) {
 			newIndices[i] = k;
 			k++;
@@ -617,7 +617,7 @@ FaceContainer<T>::addPerFaceCustomComponent(const std::string& name)
 }
 
 template<typename T>
-unsigned int FaceContainer<T>::index(const FaceType* f) const
+uint FaceContainer<T>::index(const FaceType* f) const
 {
 	assert(!Base::vec.empty() && f >= Base::vec.data() && f <= &Base::vec.back());
 	return f - Base::vec.data();
@@ -634,7 +634,7 @@ void vcl::mesh::FaceContainer<T>::clearFaces()
 }
 
 template<typename T>
-unsigned int FaceContainer<T>::addFace()
+uint FaceContainer<T>::addFace()
 {
 	T* oldB = Base::vec.data();
 	Base::vec.push_back(FaceType());
@@ -657,9 +657,9 @@ unsigned int FaceContainer<T>::addFace()
  * @return the id of the first added face.
  */
 template<typename T>
-unsigned int vcl::mesh::FaceContainer<T>::addFaces(unsigned int nFaces)
+uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces)
 {
-	unsigned int baseId = Base::vec.size();
+	uint baseId = Base::vec.size();
 	T*           oldB   = Base::vec.data();
 	Base::vec.resize(Base::vec.size() + nFaces);
 	T* newB = Base::vec.data();
@@ -667,7 +667,7 @@ unsigned int vcl::mesh::FaceContainer<T>::addFaces(unsigned int nFaces)
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
 		Base::optionalVec::resize(Base::vec.size());
 	}
-	for (unsigned int i = baseId; i < Base::vec.size(); ++i) {
+	for (uint i = baseId; i < Base::vec.size(); ++i) {
 		Base::vec[i]._id = i;
 		if constexpr (face::hasOptionalInfo<FaceType>()) {
 			setContainerPointer(Base::vec[i]);
@@ -678,7 +678,7 @@ unsigned int vcl::mesh::FaceContainer<T>::addFaces(unsigned int nFaces)
 }
 
 template<typename T>
-void FaceContainer<T>::reserveFaces(unsigned int size)
+void FaceContainer<T>::reserveFaces(uint size)
 {
 	T* oldB = Base::vec.data();
 	Base::vec.reserve(size);
@@ -705,10 +705,10 @@ template<typename T>
 std::vector<int> vcl::mesh::FaceContainer<T>::compactFaces()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	unsigned int     k = 0;
+	uint     k = 0;
 
 	std::vector<int> newIndices = faceCompactIndices();
-	for (unsigned int i = 0; i < newIndices.size(); ++i) {
+	for (uint i = 0; i < newIndices.size(); ++i) {
 		if (newIndices[i] >= 0) {
 			k = newIndices[i];
 			if (i != k)

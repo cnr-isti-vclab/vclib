@@ -93,7 +93,7 @@ void Mesh<Args...>::clear()
 
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasVertices<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
 Mesh<Args...>::index(const typename Mesh::VertexType& v) const
 {
 	using VertexContainer = typename U::VertexContainer;
@@ -102,7 +102,7 @@ Mesh<Args...>::index(const typename Mesh::VertexType& v) const
 
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasVertices<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
 Mesh<Args...>::index(const typename Mesh::VertexType* v) const
 {
 	using VertexContainer = typename U::VertexContainer;
@@ -121,7 +121,7 @@ Mesh<Args...>::index(const typename Mesh::VertexType* v) const
  */
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasVertices<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
 Mesh<Args...>::addVertex()
 {
 	using Vertex          = typename U::VertexType;
@@ -132,7 +132,7 @@ Mesh<Args...>::addVertex()
 	// vertex container are updated automatically)
 
 	Vertex*      oldBase = VertexContainer::vec.data();
-	unsigned int vid     = VertexContainer::addVertex();
+	uint vid     = VertexContainer::addVertex();
 	Vertex*      newBase = VertexContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
 		// change all the vertex references in the other containers
@@ -155,13 +155,13 @@ Mesh<Args...>::addVertex()
  */
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasVertices<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
 Mesh<Args...>::addVertex(
 	const typename Mesh::VertexType::CoordType& p)
 {
 	using VertexContainer = typename U::VertexContainer;
 
-	unsigned int vid = addVertex(); // using the previously defined addVertex function
+	uint vid = addVertex(); // using the previously defined addVertex function
 	VertexContainer::vertex(vid).coord() = p; // set the coordinate to the vertex
 	return vid;
 }
@@ -182,8 +182,8 @@ Mesh<Args...>::addVertex(
  */
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasVertices<U>(), unsigned int)
-Mesh<Args...>::addVertices(unsigned int n)
+VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
+Mesh<Args...>::addVertices(uint n)
 {
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
@@ -193,7 +193,7 @@ Mesh<Args...>::addVertices(unsigned int n)
 	// vertex container are updated automatically)
 
 	Vertex*      oldBase = VertexContainer::vec.data();
-	unsigned int vid     = VertexContainer::addVertices(n); // add the number of vertices
+	uint vid     = VertexContainer::addVertices(n); // add the number of vertices
 	Vertex*      newBase = VertexContainer::vec.data();
 
 
@@ -228,12 +228,12 @@ Mesh<Args...>::addVertices(unsigned int n)
  */
 template<typename... Args>
 template<typename ...VC, typename U>
-VCL_ENABLE_IF(mesh::hasVertices<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
 Mesh<Args...>::addVertices(
 	const VC&... v) // parameter pack of points
 {
 	using VertexContainer = typename U::VertexContainer;
-	unsigned int vid = VertexContainer::vertexContainerSize();
+	uint vid = VertexContainer::vertexContainerSize();
 	reserveVertices(vid + sizeof...(VC)); // reserve the new number of vertices
 
 	// pack expansion: will be translated at compile time as an addVertex() call for each argument
@@ -263,7 +263,7 @@ Mesh<Args...>::addVertices(
 template<typename... Args>
 template<typename U>
 VCL_ENABLE_IF(mesh::hasVertices<U>(), void)
-Mesh<Args...>::reserveVertices(unsigned int n)
+Mesh<Args...>::reserveVertices(uint n)
 {
 	using Vertex          = typename U::VertexType;
 	using VertexContainer = typename U::VertexContainer;
@@ -300,7 +300,7 @@ Mesh<Args...>::compactVertices()
 
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasFaces<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
 Mesh<Args...>::index(const typename Mesh::FaceType& f) const
 {
 	using FaceContainer = typename U::FaceContainer;
@@ -309,7 +309,7 @@ Mesh<Args...>::index(const typename Mesh::FaceType& f) const
 
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasFaces<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
 Mesh<Args...>::index(const typename Mesh::FaceType* f) const
 {
 	using FaceContainer = typename U::FaceContainer;
@@ -318,14 +318,14 @@ Mesh<Args...>::index(const typename Mesh::FaceType* f) const
 
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasFaces<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
 Mesh<Args...>::addFace()
 {
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
 	Face*        oldBase = FaceContainer::vec.data();
-	unsigned int fid     = FaceContainer::addFace();
+	uint fid     = FaceContainer::addFace();
 	Face*        newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
@@ -334,7 +334,7 @@ Mesh<Args...>::addFace()
 
 template<typename... Args>
 template<typename U, typename... V>
-VCL_ENABLE_IF(mesh::hasFaces<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
 Mesh<Args...>::addFace(V... args)
 {
 	return addFace({args...});
@@ -342,13 +342,13 @@ Mesh<Args...>::addFace(V... args)
 
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasFaces<U>(), unsigned int)
+VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
 Mesh<Args...>::addFace(
 	const std::vector<typename Mesh::VertexType*>& v)
 {
 	using FaceContainer = typename U::FaceContainer;
 
-	unsigned int fid = addFace();
+	uint fid = addFace();
 
 	FaceContainer::face(fid).setVertices(v);
 
@@ -357,14 +357,14 @@ Mesh<Args...>::addFace(
 
 template<typename... Args>
 template<typename U>
-VCL_ENABLE_IF(mesh::hasFaces<U>(), unsigned int)
-Mesh<Args...>::addFaces(unsigned int n)
+VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
+Mesh<Args...>::addFaces(uint n)
 {
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
 	Face*        oldBase = FaceContainer::facesVec.data();
-	unsigned int fid     = FaceContainer::addFaces(n);
+	uint fid     = FaceContainer::addFaces(n);
 	Face*        newBase = FaceContainer::facesVec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
@@ -374,7 +374,7 @@ Mesh<Args...>::addFaces(unsigned int n)
 template<typename... Args>
 template<typename U>
 VCL_ENABLE_IF(mesh::hasFaces<U>(), void)
-Mesh<Args...>::reserveFaces(unsigned int n)
+Mesh<Args...>::reserveFaces(uint n)
 {
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;

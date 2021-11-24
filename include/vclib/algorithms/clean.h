@@ -23,22 +23,24 @@
 #ifndef VCL_ALGORITHMS_CLEAN_H
 #define VCL_ALGORITHMS_CLEAN_H
 
+#include <vclib/misc/vcl_types.h>
+
 namespace vcl {
 
 template <typename MeshType>
-unsigned int numberUnreferencedVertices(const MeshType& m);
+uint numberUnreferencedVertices(const MeshType& m);
 
 template <typename MeshType>
-unsigned int removeUnreferencedVertices(MeshType& m);
+uint removeUnreferencedVertices(MeshType& m);
 
 template <typename MeshType>
-unsigned int removeDuplicatedVertices(MeshType& m);
+uint removeDuplicatedVertices(MeshType& m);
 
 template <typename MeshType>
-unsigned int removeDuplicatedFaces(MeshType& m);
+uint removeDuplicatedFaces(MeshType& m);
 
 template <typename MeshType>
-unsigned int removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
+uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
 
 }
 

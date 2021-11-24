@@ -93,7 +93,7 @@ int main()
 	m.face(0).scalar() = 4;
 
 	// setting some colors to all the faces of the mesh
-	unsigned int i = 17;
+	uint i = 17;
 	for (vcl::TriMesh::Face& f : m.faces()) // iterates over all the non-deleted faces of m
 		f.color() = vcl::Color(4+2*i++, 134, 98);
 

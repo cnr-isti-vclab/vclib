@@ -63,7 +63,7 @@ public:
 	}
 
 private:
-	unsigned int thisId() const { return B::index((T*)this); }
+	uint thisId() const { return B::index((T*)this); }
 };
 
 /**

@@ -41,7 +41,7 @@ public:
 	int         e;    // Index of the edge inside the face
 
 	EdgeSorterer() : v {nullptr, nullptr}, f(nullptr), e(-1) {}
-	EdgeSorterer(FaceType& pf, unsigned int ne)
+	EdgeSorterer(FaceType& pf, uint ne)
 	{
 		v[0] = pf.vertex(ne);
 		v[1] = pf.vertexMod(ne + 1);

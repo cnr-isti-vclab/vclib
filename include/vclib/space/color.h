@@ -63,7 +63,7 @@ public:
 	void  setGreen(uint8_t green);
 	void  setBlue(uint8_t blue);
 	void  setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
-	void  setHsv(unsigned int h, uint8_t s, uint8_t v, uint8_t alpha = 255);
+	void  setHsv(uint h, uint8_t s, uint8_t v, uint8_t alpha = 255);
 	void  setAlphaF(float alpha);
 	void  setRedF(float red);
 	void  setGreenF(float green);

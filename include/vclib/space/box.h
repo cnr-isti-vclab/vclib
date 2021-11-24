@@ -46,7 +46,7 @@ public:
 	PointType center() const;
 	PointType size() const;
 	auto volume() const;
-	auto dim(unsigned int i) const;
+	auto dim(uint i) const;
 	auto minDim() const;
 	auto maxDim() const;
 

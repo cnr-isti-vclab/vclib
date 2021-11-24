@@ -30,19 +30,19 @@ VertexReferences<Vertex, N>::VertexReferences() : Base()
 }
 
 template<typename Vertex, int N>
-unsigned int VertexReferences<Vertex, N>::vertexNumber() const
+uint VertexReferences<Vertex, N>::vertexNumber() const
 {
 	return Base::size();
 }
 
 template<typename Vertex, int N>
-Vertex*& VertexReferences<Vertex, N>::vertex(unsigned int i)
+Vertex*& VertexReferences<Vertex, N>::vertex(uint i)
 {
 	return Base::at(i);
 }
 
 template<typename Vertex, int N>
-const Vertex* VertexReferences<Vertex, N>::vertex(unsigned int i) const
+const Vertex* VertexReferences<Vertex, N>::vertex(uint i) const
 {
 	return Base::at(i);
 }
@@ -60,7 +60,7 @@ const Vertex* VertexReferences<Vertex, N>::vertexMod(int i) const
 }
 
 template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::setVertex(Vertex* v, unsigned int i)
+void VertexReferences<Vertex, N>::setVertex(Vertex* v, uint i)
 {
 	Base::set(v, i);
 }
@@ -108,7 +108,7 @@ int VertexReferences<Vertex, N>::indexOfEdge(const Vertex* v1, const Vertex* v2)
 		return vid;
 	}
 	else if (vertexMod(vid-1) == v2) {
-		unsigned int n = vertexNumber();
+		uint n = vertexNumber();
 		return ((vid-1) % n + n) % n;
 	}
 	else {
@@ -118,7 +118,7 @@ int VertexReferences<Vertex, N>::indexOfEdge(const Vertex* v1, const Vertex* v2)
 
 template<typename Vertex, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::resizeVertices(unsigned int n)
+VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::resizeVertices(uint n)
 {
 	Base::resize(n);
 }
@@ -133,14 +133,14 @@ VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::pushVertex(Vertex* v)
 template<typename Vertex, int N>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
-VertexReferences<Vertex, N>::insertVertex(unsigned int i, Vertex* v)
+VertexReferences<Vertex, N>::insertVertex(uint i, Vertex* v)
 {
 	Base::insert(i, v);
 }
 
 template<typename Vertex, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::eraseVertex(unsigned int i)
+VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::eraseVertex(uint i)
 {
 	Base::erase(i);
 }

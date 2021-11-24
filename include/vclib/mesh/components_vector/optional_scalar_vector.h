@@ -34,8 +34,8 @@ class OptionalScalarVector
 {
 public:
 	void clear() {}
-	void reserve(unsigned int) {}
-	void resize(unsigned int) {}
+	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -52,10 +52,10 @@ public:
 	using Base::resize;
 	using Base::compact;
 	bool              isScalarEnabled() const { return Base::isEnabled(); };
-	void              enableScalar(unsigned int size) { Base::enable(size); }
+	void              enableScalar(uint size) { Base::enable(size); }
 	void              disableScalar() { Base::disable(); }
-	ScalarType&       scalar(unsigned int i) { return Base::at(i); }
-	const ScalarType& scalar(unsigned int i) const { return Base::at(i); }
+	ScalarType&       scalar(uint i) { return Base::at(i); }
+	const ScalarType& scalar(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

@@ -34,8 +34,8 @@ class OptionalMarkVector
 {
 public:
 	void clear() {}
-	void resize(unsigned int) {}
-	void reserve(unsigned int) {}
+	void resize(uint) {}
+	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -51,10 +51,10 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	bool       isMarkEnabled() const { return Base::isEnabled(); };
-	void       enableMark(unsigned int size) { Base::enable(size); }
+	void       enableMark(uint size) { Base::enable(size); }
 	void       disableMark() { Base::disable(); }
-	int&       mark(unsigned int i) { return Base::at(i); }
-	const int& mark(unsigned int i) const { return Base::at(i); }
+	int&       mark(uint i) { return Base::at(i); }
+	const int& mark(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

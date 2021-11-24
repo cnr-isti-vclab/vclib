@@ -52,32 +52,32 @@ public:
 	bool isDeleted() const;
 	bool isSelected() const;
 	bool isOnBorder() const;
-	bool userBitFlag(unsigned int bit) const;
+	bool userBitFlag(uint bit) const;
 
 	void setSelected();
 	void setOnBorder();
-	void setUserBit(unsigned int bit);
+	void setUserBit(uint bit);
 
 	void clearAllFlags();
 	void clearSelected();
 	void clearOnBorder();
-	void clearUserBit(unsigned int bit);
+	void clearUserBit(uint bit);
 
 protected:
 	void setDeleted();
 	void clearDeleted();
 
-	bool flagValue(unsigned int flag) const;
-	void setFlag(unsigned int flag);
-	void clearFlag(unsigned int flag);
+	bool flagValue(uint flag) const;
+	void setFlag(uint flag);
+	void clearFlag(uint flag);
 
-	bool userBitFlag(unsigned int bit, unsigned int firstBit) const;
-	void setUserBit(unsigned int bit, unsigned int firstBit);
-	void clearUserBit(unsigned int bit, unsigned int firstBit);
+	bool userBitFlag(uint bit, uint firstBit) const;
+	void setUserBit(uint bit, uint firstBit);
+	void clearUserBit(uint bit, uint firstBit);
 
 	int flags = 0;
 
-	static const unsigned int FIRST_USER_BIT = 3;
+	static const uint FIRST_USER_BIT = 3;
 
 	// values of the flags, used for flagValue, setFlag and clearFlag member functions
 	enum {

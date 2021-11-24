@@ -69,7 +69,7 @@ public:
 		OptionalWedgeTexCoordsVector<T>::clear();
 		CustomComponentsVector<T>::clear();
 	}
-	void resize(unsigned int size)
+	void resize(uint size)
 	{
 		OptionalAdjacentFacesVector<T>::resize(size);
 		OptionalAdjacentVerticesVector<T>::resize(size);
@@ -84,7 +84,7 @@ public:
 		OptionalWedgeTexCoordsVector<T>::resize(size);
 		CustomComponentsVector<T>::resize(size);
 	}
-	void reserve(unsigned int size)
+	void reserve(uint size)
 	{
 		OptionalAdjacentFacesVector<T>::resize(size);
 		OptionalAdjacentVerticesVector<T>::reserve(size);

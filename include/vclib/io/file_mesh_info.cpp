@@ -293,7 +293,7 @@ FileMeshInfo::PropType FileMeshInfo::getPropType()
 	if constexpr (std::is_same_v<T, short>) return SHORT;
 	if constexpr (std::is_same_v<T, unsigned short>) return USHORT;
 	if constexpr (std::is_same_v<T, int>) return INT;
-	if constexpr (std::is_same_v<T, unsigned int>) return UINT;
+	if constexpr (std::is_same_v<T, uint>) return UINT;
 	if constexpr (std::is_integral_v<T>) return INT; // fallback to int
 	if constexpr (std::is_same_v<T, float>) return FLOAT;
 	if constexpr (std::is_same_v<T, double>) return DOUBLE;

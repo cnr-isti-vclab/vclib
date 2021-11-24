@@ -34,8 +34,8 @@ class OptionalAdjacentFacesVector
 {
 public:
 	void clear() {}
-	void resize(unsigned int) {}
-	void reserve(unsigned int) {}
+	void resize(uint) {}
+	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -55,10 +55,10 @@ public:
 	using Base::resize;
 	using Base::compact;
 	bool             isAdjacentFacesEnabled() const { return Base::isEnabled(); };
-	void             enableAdjacentFaces(unsigned int size) { Base::enable(size); }
+	void             enableAdjacentFaces(uint size) { Base::enable(size); }
 	void             disableAdjacentFaces() { Base::disable(); }
-	AdjFacesContainer&       adjFaces(unsigned int i) { return Base::at(i); }
-	const AdjFacesContainer& adjFaces(unsigned int i) const { return Base::at(i); }
+	AdjFacesContainer&       adjFaces(uint i) { return Base::at(i); }
+	const AdjFacesContainer& adjFaces(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

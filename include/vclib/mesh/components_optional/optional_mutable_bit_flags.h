@@ -62,30 +62,30 @@ private:
 
 public:
 	bool isVisitedM() const;
-	bool userBitFlagM(unsigned int bit) const;
+	bool userBitFlagM(uint bit) const;
 
 	void setVisitedM() const;
-	void setUserBitM(unsigned int bit) const;
+	void setUserBitM(uint bit) const;
 
 	void clearAllFlagsM() const;
 	void clearVisitedM() const;
-	void clearUserBitM(unsigned int bit) const;
+	void clearUserBitM(uint bit) const;
 
 protected:
-	bool flagValueM(unsigned int flag) const;
-	void setFlagM(unsigned int flag) const;
-	void clearFlagM(unsigned int flag) const;
+	bool flagValueM(uint flag) const;
+	void setFlagM(uint flag) const;
+	void clearFlagM(uint flag) const;
 
-	bool userBitFlagM(unsigned int bit, unsigned int firstBit) const;
-	void setUserBitM(unsigned int bit, unsigned int firstBit) const;
-	void clearUserBitM(unsigned int bit, unsigned int firstBit) const;
+	bool userBitFlagM(uint bit, uint firstBit) const;
+	void setUserBitM(uint bit, uint firstBit) const;
+	void clearUserBitM(uint bit, uint firstBit) const;
 
-	static const unsigned int FIRST_MUTABLE_USER_BIT = 1;
+	static const uint FIRST_MUTABLE_USER_BIT = 1;
 
 	enum { VISITED = 1 << 0 };
 
 private:
-	unsigned int thisId() const { return B::index((T*)this); }
+	uint thisId() const { return B::index((T*)this); }
 };
 
 /**

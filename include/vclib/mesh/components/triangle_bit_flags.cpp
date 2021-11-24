@@ -31,7 +31,7 @@ namespace vcl::comp {
  * @param bit: the position of the bit that will be returned.
  * @return true if the required bit is enabled, false otherwise.
  */
-inline bool TriangleBitFlags::userBitFlag(unsigned int bit) const
+inline bool TriangleBitFlags::userBitFlag(uint bit) const
 {
 	// using FIRST_USER_BIT of this class
 	return BitFlags::userBitFlag(bit, FIRST_USER_BIT);
@@ -43,7 +43,7 @@ inline bool TriangleBitFlags::userBitFlag(unsigned int bit) const
  *
  * @param bit: the position of the bit that will be set.
  */
-inline void TriangleBitFlags::setUserBit(unsigned int bit)
+inline void TriangleBitFlags::setUserBit(uint bit)
 {
 	// using FIRST_USER_BIT of this class
 	BitFlags::setUserBit(bit, FIRST_USER_BIT);
@@ -55,7 +55,7 @@ inline void TriangleBitFlags::setUserBit(unsigned int bit)
  *
  * @param bit: the position of the bit that will be reset.
  */
-void TriangleBitFlags::clearUserBit(unsigned int bit)
+void TriangleBitFlags::clearUserBit(uint bit)
 {
 	// using FIRST_USER_BIT of this class
 	BitFlags::clearUserBit(bit, FIRST_USER_BIT);
@@ -68,7 +68,7 @@ void TriangleBitFlags::clearUserBit(unsigned int bit)
  * @param i: id of the edge, must be < 3.
  * @return true if the ith Edge of the Triangle is on border, false otherwise.
  */
-inline bool TriangleBitFlags::isEdgeOnBorder(unsigned int i) const
+inline bool TriangleBitFlags::isEdgeOnBorder(uint i) const
 {
 	assert(i < 3);
 	return flagValue(BORDER << i);
@@ -79,7 +79,7 @@ inline bool TriangleBitFlags::isAnyEdgeOnBorder() const
 	return isEdgeOnBorder(0) || isEdgeOnBorder(1) || isEdgeOnBorder(2);
 }
 
-inline bool TriangleBitFlags::isEdgeSelected(unsigned int i) const
+inline bool TriangleBitFlags::isEdgeSelected(uint i) const
 {
 	assert(i < 3);
 	return flagValue(EDGESEL0 << i);
@@ -90,7 +90,7 @@ bool TriangleBitFlags::isAnyEdgeSelected() const
 	return isEdgeSelected(0) || isEdgeSelected(1) || isEdgeSelected(2);
 }
 
-inline bool TriangleBitFlags::isEdgeFaux(unsigned int i) const
+inline bool TriangleBitFlags::isEdgeFaux(uint i) const
 {
 	assert(i < 3);
 	return flagValue(FAUX0 << i);
@@ -101,25 +101,25 @@ inline bool TriangleBitFlags::isAnyEdgeFaux() const
 	return isEdgeFaux(0) || isEdgeFaux(1) || isEdgeFaux(2);
 }
 
-inline void TriangleBitFlags::setEdgeOnBorder(unsigned int i)
+inline void TriangleBitFlags::setEdgeOnBorder(uint i)
 {
 	assert(i < 3);
 	setFlag(BORDER << i);
 }
 
-inline void TriangleBitFlags::setEdgeSelected(unsigned int i)
+inline void TriangleBitFlags::setEdgeSelected(uint i)
 {
 	assert(i < 3);
 	setFlag(EDGESEL0 << i);
 }
 
-inline void TriangleBitFlags::setEdgeFaux(unsigned int i)
+inline void TriangleBitFlags::setEdgeFaux(uint i)
 {
 	assert(i < 3);
 	setFlag(FAUX0 << i);
 }
 
-inline void TriangleBitFlags::clearEdgeOnBorder(unsigned int i)
+inline void TriangleBitFlags::clearEdgeOnBorder(uint i)
 {
 	assert(i < 3);
 	clearFlag(BORDER << i);
@@ -132,7 +132,7 @@ inline void TriangleBitFlags::clearAllEdgeOnBorder()
 	clearEdgeOnBorder(2);
 }
 
-inline void TriangleBitFlags::clearEdgeSelected(unsigned int i)
+inline void TriangleBitFlags::clearEdgeSelected(uint i)
 {
 	assert(i < 3);
 	clearFlag(EDGESEL0 << i);
@@ -145,7 +145,7 @@ inline void TriangleBitFlags::clearAllEdgeSelected()
 	clearEdgeSelected(2);
 }
 
-inline void TriangleBitFlags::clearEdgeFaux(unsigned int i)
+inline void TriangleBitFlags::clearEdgeFaux(uint i)
 {
 	assert(i < 3);
 	clearFlag(FAUX0 << i);

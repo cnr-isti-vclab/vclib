@@ -46,7 +46,7 @@ bool OptionalMutableBitFlags<T>::isVisitedM() const
  * @return true if the required bit is enabled, false otherwise.
  */
 template<typename T>
-bool OptionalMutableBitFlags<T>::userBitFlagM(unsigned int bit) const
+bool OptionalMutableBitFlags<T>::userBitFlagM(uint bit) const
 {
 	return userBitFlagM(bit, FIRST_MUTABLE_USER_BIT);
 }
@@ -71,7 +71,7 @@ void OptionalMutableBitFlags<T>::setVisitedM() const
  * @param bit: the position of the bit that will be set.
  */
 template<typename T>
-void OptionalMutableBitFlags<T>::setUserBitM(unsigned int bit) const
+void OptionalMutableBitFlags<T>::setUserBitM(uint bit) const
 {
 	setUserBitM(bit, FIRST_MUTABLE_USER_BIT);
 }
@@ -109,7 +109,7 @@ void OptionalMutableBitFlags<T>::clearVisitedM() const
  * @param bit: the position of the bit that will be reset.
  */
 template<typename T>
-void OptionalMutableBitFlags<T>::clearUserBitM(unsigned int bit) const
+void OptionalMutableBitFlags<T>::clearUserBitM(uint bit) const
 {
 	clearUserBitM(bit, FIRST_MUTABLE_USER_BIT);
 }
@@ -123,7 +123,7 @@ void OptionalMutableBitFlags<T>::clearUserBitM(unsigned int bit) const
  * @return whether the flag is true or false.
  */
 template<typename T>
-bool OptionalMutableBitFlags<T>::flagValueM(unsigned int flag) const
+bool OptionalMutableBitFlags<T>::flagValueM(uint flag) const
 {
 	const int& flags = B::optCont().flags(thisId());
 	return flags & flag;
@@ -138,7 +138,7 @@ bool OptionalMutableBitFlags<T>::flagValueM(unsigned int flag) const
  * @param flag: value of the flag to set.
  */
 template<typename T>
-void OptionalMutableBitFlags<T>::setFlagM(unsigned int flag) const
+void OptionalMutableBitFlags<T>::setFlagM(uint flag) const
 {
 	int& flags = B::optCont().flags(thisId());
 	flags |= flag;
@@ -153,7 +153,7 @@ void OptionalMutableBitFlags<T>::setFlagM(unsigned int flag) const
  * @param flag: value of the flag to reset.
  */
 template<typename T>
-void OptionalMutableBitFlags<T>::clearFlagM(unsigned int flag) const
+void OptionalMutableBitFlags<T>::clearFlagM(uint flag) const
 {
 	int& flags = B::optCont().flags(thisId());
 	flags &= ~flag;
@@ -175,10 +175,10 @@ void OptionalMutableBitFlags<T>::clearFlagM(unsigned int flag) const
  * @return the value of the bit
  */
 template<typename T>
-bool OptionalMutableBitFlags<T>::userBitFlagM(unsigned int bit, unsigned int firstBit) const
+bool OptionalMutableBitFlags<T>::userBitFlagM(uint bit, uint firstBit) const
 {
 	assert(bit >= firstBit && bit < 32);
-	unsigned int flag = 1 << bit;
+	uint flag = 1 << bit;
 	return flagValueM(flag);
 }
 
@@ -198,10 +198,10 @@ bool OptionalMutableBitFlags<T>::userBitFlagM(unsigned int bit, unsigned int fir
  * @param firstBit: first user bit available (must be < than bit)
  */
 template<typename T>
-void OptionalMutableBitFlags<T>::setUserBitM(unsigned int bit, unsigned int firstBit) const
+void OptionalMutableBitFlags<T>::setUserBitM(uint bit, uint firstBit) const
 {
 	assert(bit >= firstBit && bit < 32);
-	unsigned int flag = 1 << bit;
+	uint flag = 1 << bit;
 	setFlagM(flag);
 }
 
@@ -221,10 +221,10 @@ void OptionalMutableBitFlags<T>::setUserBitM(unsigned int bit, unsigned int firs
  * @param firstBit: first user bit available (must be < than bit)
  */
 template<typename T>
-void OptionalMutableBitFlags<T>::clearUserBitM(unsigned int bit, unsigned int firstBit) const
+void OptionalMutableBitFlags<T>::clearUserBitM(uint bit, uint firstBit) const
 {
 	assert(bit >= firstBit && bit < 32);
-	unsigned int flag = 1 << bit;
+	uint flag = 1 << bit;
 	clearFlagM(flag);
 }
 

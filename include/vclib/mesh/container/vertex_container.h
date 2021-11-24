@@ -68,17 +68,17 @@ public:
 
 	VertexContainer();
 
-	const VertexType& vertex(unsigned int i) const;
-	VertexType&       vertex(unsigned int i);
+	const VertexType& vertex(uint i) const;
+	VertexType&       vertex(uint i);
 
-	unsigned int vertexNumber() const;
-	unsigned int vertexContainerSize() const;
-	unsigned int deletedVertexNumber() const;
+	uint vertexNumber() const;
+	uint vertexContainerSize() const;
+	uint deletedVertexNumber() const;
 
-	void deleteVertex(unsigned int i);
+	void deleteVertex(uint i);
 	void deleteVertex(const VertexType* v);
 
-	unsigned int     vertexIndexIfCompact(unsigned int id) const;
+	uint     vertexIndexIfCompact(uint id) const;
 	std::vector<int> vertexCompactIndices() const;
 
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
@@ -215,15 +215,15 @@ protected:
 	 * @brief vn: the number of vertices in the container. Could be different from vertices.size()
 	 * due to vertices marked as deleted into the container.
 	 */
-	unsigned int vn = 0;
+	uint vn = 0;
 
-	unsigned int index(const VertexType* v) const;
+	uint index(const VertexType* v) const;
 
 	void clearVertices();
 
-	unsigned int addVertex();
-	unsigned int addVertices(unsigned int nVertices);
-	void         reserveVertices(unsigned int size);
+	uint addVertex();
+	uint addVertices(uint nVertices);
+	void         reserveVertices(uint size);
 
 	void setContainerPointer(VertexType& v);
 

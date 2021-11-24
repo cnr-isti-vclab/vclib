@@ -67,16 +67,16 @@ public:
 	void setVertices(V... args);
 
 	template<int M = NV>
-	VCL_ENABLE_IF(M < 0, void) resizeVertices(unsigned int n);
+	VCL_ENABLE_IF(M < 0, void) resizeVertices(uint n);
 
 	template<int M = NV>
 	VCL_ENABLE_IF(M < 0, void) pushVertex(VertexType* v);
 
 	template<int M = NV>
-	VCL_ENABLE_IF(M < 0, void) insertVertex(unsigned int i, VertexType* v);
+	VCL_ENABLE_IF(M < 0, void) insertVertex(uint i, VertexType* v);
 
 	template<int M = NV>
-	VCL_ENABLE_IF(M < 0, void) eraseVertex(unsigned int i);
+	VCL_ENABLE_IF(M < 0, void) eraseVertex(uint i);
 
 	template<int M = NV>
 	VCL_ENABLE_IF(M < 0, void) clearVertices();

@@ -41,7 +41,7 @@ public:
 	vcl::Color&        color() { return B::optCont().color(thisId()); }
 
 private:
-	unsigned int thisId() const { return B::index((T*)this); }
+	uint thisId() const { return B::index((T*)this); }
 };
 
 /**

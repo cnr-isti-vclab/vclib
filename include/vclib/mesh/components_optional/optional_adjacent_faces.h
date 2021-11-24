@@ -89,14 +89,14 @@ public:
 
 	/** Member functions **/
 
-	unsigned int adjFacesNumber() const;
+	uint adjFacesNumber() const;
 
-	Face*&      adjFace(unsigned int i);
-	const Face* adjFace(unsigned int i) const;
+	Face*&      adjFace(uint i);
+	const Face* adjFace(uint i) const;
 	Face*&      adjFaceMod(int i);
 	const Face* adjFaceMod(int i) const;
 
-	void setAdjFace(Face* f, unsigned int i);
+	void setAdjFace(Face* f, uint i);
 	void setAdjFaces(const std::vector<Face*>& list);
 
 	bool containsAdjFace(const Face* f) const;
@@ -109,16 +109,16 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(unsigned int n);
+	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(uint n);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) pushAdjFace(Face* f);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjFace(unsigned int i, Face* f);
+	VCL_ENABLE_IF(M < 0, void) insertAdjFace(uint i, Face* f);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjFace(unsigned int i);
+	VCL_ENABLE_IF(M < 0, void) eraseAdjFace(uint i);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearAdjFaces();
@@ -140,7 +140,7 @@ protected:
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
 private:
-	unsigned int thisId() const { return B::index((T*)this); }
+	uint thisId() const { return B::index((T*)this); }
 };
 
 /**

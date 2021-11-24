@@ -204,19 +204,19 @@ inline bool PlyHeader::hasEdges() const
 	return e >= 0;
 }
 
-inline unsigned int PlyHeader::numberVertices() const
+inline uint PlyHeader::numberVertices() const
 {
 	assert(hasVertices());
 	return elements[v].numberElements;
 }
 
-inline unsigned int PlyHeader::numberFaces() const
+inline uint PlyHeader::numberFaces() const
 {
 	assert(hasFaces());
 	return elements[f].numberElements;
 }
 
-inline unsigned int PlyHeader::numberEdges() const
+inline uint PlyHeader::numberEdges() const
 {
 	assert(hasEdges());
 	return elements[e].numberElements;

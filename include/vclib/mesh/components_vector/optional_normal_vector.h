@@ -34,8 +34,8 @@ class OptionalNormalVector
 {
 public:
 	void clear() {}
-	void reserve(unsigned int) {}
-	void resize(unsigned int) {}
+	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -52,10 +52,10 @@ public:
 	using Base::resize;
 	using Base::compact;
 	bool              isNormalEnabled() const { return Base::isEnabled(); };
-	void              enableNormal(unsigned int size) { Base::enable(size); }
+	void              enableNormal(uint size) { Base::enable(size); }
 	void              disableNormal() { Base::disable(); }
-	NormalType&       normal(unsigned int i) { return Base::at(i); }
-	const NormalType& normal(unsigned int i) const { return Base::at(i); }
+	NormalType&       normal(uint i) { return Base::at(i); }
+	const NormalType& normal(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

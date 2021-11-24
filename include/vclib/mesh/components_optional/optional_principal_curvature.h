@@ -50,7 +50,7 @@ public:
 	PrincipalCurvatureType&       principalCurvature();
 
 private:
-	unsigned int thisId() const;
+	uint thisId() const;
 };
 
 template<typename T>

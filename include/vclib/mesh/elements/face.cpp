@@ -133,7 +133,7 @@ void Face<Args...>::setVertices(V... args)
  */
 template<typename... Args>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(unsigned int n)
+VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(uint n)
 {
 	using F = Face<Args...>;
 
@@ -263,7 +263,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
 
 template<typename... Args>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(unsigned int i, VertexType* v)
+VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(uint i, VertexType* v)
 {
 	using F = Face<Args...>;
 
@@ -330,7 +330,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(unsigned int i, VertexTyp
 
 template<typename... Args>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(unsigned int i)
+VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
 {
 	using F = Face<Args...>;
 

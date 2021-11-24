@@ -45,7 +45,7 @@ Box<PointType>::Box(const PointType& min, const PointType& max) : min(min), max(
 template<typename PointType>
 bool Box<PointType>::isNull() const
 {
-	for (unsigned int i = 0; i < PointType::DIM; ++i) {
+	for (uint i = 0; i < PointType::DIM; ++i) {
 		if (min[i] > max[i])
 			return true;
 	}
@@ -66,7 +66,7 @@ bool Box<PointType>::isEmpty() const
 template<typename PointType>
 bool Box<PointType>::isInside(const PointType& p) const
 {
-	for (unsigned int i = 0; i < PointType::DIM; ++i) {
+	for (uint i = 0; i < PointType::DIM; ++i) {
 		if (p[i] < min[i] || p[i] > max[i])
 			return false;
 	}
@@ -81,7 +81,7 @@ bool Box<PointType>::isInside(const PointType& p) const
 template<typename PointType>
 bool Box<PointType>::isInsideOpenBox(const PointType& p) const
 {
-	for (unsigned int i = 0; i < PointType::DIM; ++i) {
+	for (uint i = 0; i < PointType::DIM; ++i) {
 		if (p[i] < min[i] || p[i] >= max[i])
 			return false;
 	}
@@ -91,7 +91,7 @@ bool Box<PointType>::isInsideOpenBox(const PointType& p) const
 template<typename PointType>
 bool Box<PointType>::collide(const Box<PointType>& b) const
 {
-	for (unsigned int i = 0; i < PointType::DIM; ++i) {
+	for (uint i = 0; i < PointType::DIM; ++i) {
 		if (b.min[i] >= max[i] || b.max[i] <= min[i])
 			return false;
 	}
@@ -126,14 +126,14 @@ template<typename PointType>
 auto Box<PointType>::volume() const
 {
 	auto vol = max[0] - min[0];
-	for (unsigned int i = 1; i < PointType::DIM; ++i) {
+	for (uint i = 1; i < PointType::DIM; ++i) {
 		vol *= max[i] - min[i];
 	}
 	return vol;
 }
 
 template<typename PointType>
-auto Box<PointType>::dim(unsigned int i) const
+auto Box<PointType>::dim(uint i) const
 {
 	assert(i < PointType::DIM);
 	return max[i]-min[i];
@@ -143,7 +143,7 @@ template<typename PointType>
 auto Box<PointType>::minDim() const
 {
 	auto m = max[0] - min[0];
-	for (unsigned int i = 1; i < PointType::DIM; ++i) {
+	for (uint i = 1; i < PointType::DIM; ++i) {
 		if (max[i] - min[i] < m)
 			m = max[i] - min[i];
 	}
@@ -154,7 +154,7 @@ template<typename PointType>
 auto Box<PointType>::maxDim() const
 {
 	auto m = max[0] - min[0];
-	for (unsigned int i = 1; i < PointType::DIM; ++i) {
+	for (uint i = 1; i < PointType::DIM; ++i) {
 		if (max[i] - min[i] > m)
 			m = max[i] - min[i];
 	}
@@ -190,7 +190,7 @@ void Box<PointType>::add(const Box<PointType>& b)
 			*this = b;
 		}
 		else {
-			for (unsigned int i = 0; i < PointType::DIM; ++i) {
+			for (uint i = 0; i < PointType::DIM; ++i) {
 				if (min[i] > b.min[i])
 					min[i] = b.min[i];
 				if (max[i] < b.max[i])
@@ -213,7 +213,7 @@ void Box<PointType>::add(const PointType& p)
 	if (isNull())
 		*this = Box(p);
 	else {
-		for (unsigned int i = 0; i < PointType::DIM; ++i) {
+		for (uint i = 0; i < PointType::DIM; ++i) {
 			if (min[i] > p[i])
 				min[i] = p[i];
 			if (max[i] < p[i])
@@ -230,7 +230,7 @@ void Box<PointType>::add(const PointType& p)
 template<typename PointType>
 void Box<PointType>::intersect(const Box<PointType>& b)
 {
-	for (unsigned int i = 0; i < PointType::DIM; ++i) {
+	for (uint i = 0; i < PointType::DIM; ++i) {
 		if (min[i] < b.min[i])
 			min[i] = b.min[i];
 		if (max[i] > b.max[i])
@@ -260,7 +260,7 @@ void Box<PointType>::add(const PointType& p, Scalar radius)
 	if (isNull())
 		*this = Box(p);
 	else {
-		for (unsigned int i = 0; i < PointType::DIM; ++i) {
+		for (uint i = 0; i < PointType::DIM; ++i) {
 			min[i] = std::min(min[i], p[i] - radius);
 			max[i] = std::max(max[i], p[i] + radius);
 		}

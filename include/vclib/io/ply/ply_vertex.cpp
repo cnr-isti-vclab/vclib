@@ -42,7 +42,7 @@ void loadVerticesTxt(
 	error = !internal::nextLine(file, spaceTokenizer);
 	vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 	mesh.addVertices(header.numberVertices());
-	for(unsigned int vid = 0; vid < header.numberVertices(); ++vid) {
+	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
 		VertexType& v = mesh.vertex(vid);
 		for (ply::Property p : header.vertexProperties()) {
 			if (token == spaceTokenizer.end()){
@@ -88,8 +88,8 @@ void loadVerticesTxt(
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					unsigned int s = internal::readProperty<int>(token, p.listSizeType);
-					for (unsigned int i = 0; i < s; ++i)
+					uint s = internal::readProperty<int>(token, p.listSizeType);
+					for (uint i = 0; i < s; ++i)
 						++token;
 				}
 				else {
@@ -108,7 +108,7 @@ void loadVerticesBin(
 {
 	using VertexType = typename MeshType::Vertex;
 	mesh.addVertices(header.numberVertices());
-	for(unsigned int vid = 0; vid < header.numberVertices(); ++vid) {
+	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
 		VertexType& v = mesh.vertex(vid);
 		for (ply::Property p : header.vertexProperties()) {
 			bool hasBeenRead = false;
@@ -148,8 +148,8 @@ void loadVerticesBin(
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					unsigned int s = internal::readProperty<int>(file, p.listSizeType);
-					for (unsigned int i = 0; i < s; ++i)
+					uint s = internal::readProperty<int>(file, p.listSizeType);
+					for (uint i = 0; i < s; ++i)
 						internal::readProperty<int>(file, p.type);
 				}
 				else {

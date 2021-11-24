@@ -285,7 +285,7 @@ inline void Color::setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alph
  * @param[in] v
  * @param[in] alpha: default 255
  */
-inline void Color::setHsv(unsigned int h, uint8_t s, uint8_t v, uint8_t alpha)
+inline void Color::setHsv(uint h, uint8_t s, uint8_t v, uint8_t alpha)
 {
 	w() = alpha;
 	if (s == 0) {
@@ -463,7 +463,7 @@ inline bool Color::operator<(const Color& otherColor) const
 
 std::ostream& operator<<(std::ostream& out, const Color& c)
 {
-	out << c.p.cast<unsigned int>();
+	out << c.p.cast<uint>();
 	return out;
 }
 

@@ -48,7 +48,7 @@ void writeUChar(std::ofstream& file, T p, bool bin, bool isColor)
 	if (bin)
 		file.write((const char*) &tmp, 1);
 	else
-		file << (unsigned int) p << " "; // cast necessary to not print the ascii char
+		file << (uint) p << " "; // cast necessary to not print the ascii char
 }
 
 template<typename T>
@@ -92,7 +92,7 @@ void writeUInt(std::ofstream& file, T p, bool bin, bool isColor)
 {
 	if (isColor && !std::is_integral<T>::value)
 		p *= 255;
-	unsigned int tmp = p;
+	uint tmp = p;
 	if (bin)
 		file.write((const char*) &tmp, 4);
 	else
@@ -182,7 +182,7 @@ T readInt(std::ifstream& file)
 template<typename T>
 T readUInt(std::ifstream& file)
 {
-	unsigned int c;
+	uint c;
 	file.read((char*) &c, 4);
 	return (T) c;
 }

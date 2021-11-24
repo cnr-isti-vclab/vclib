@@ -81,7 +81,7 @@ class SortedTriple
 {
 public:
 	SortedTriple() {}
-	SortedTriple(unsigned int v0, unsigned int v1, unsigned int v2, FacePointer _fp)
+	SortedTriple(uint v0, uint v1, uint v2, FacePointer _fp)
 	{
 		v[0] = v0;
 		v[1] = v1;
@@ -103,7 +103,7 @@ public:
 		return false;
 	}
 
-	unsigned int v[3];
+	uint v[3];
 	FacePointer  fp;
 };
 } // namespace internal
@@ -121,13 +121,13 @@ public:
  * @return the number of unreferenced vertices.
  */
 template<typename MeshType>
-unsigned int numberUnreferencedVertices(const MeshType& m)
+uint numberUnreferencedVertices(const MeshType& m)
 {
 	vcl::requireVertices<MeshType>();
 
 	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
 
-	unsigned int nV = std::count(referredVertices.begin(), referredVertices.end(), false);
+	uint nV = std::count(referredVertices.begin(), referredVertices.end(), false);
 
 	nV -= m.deletedVertexNumber();
 
@@ -147,7 +147,7 @@ unsigned int numberUnreferencedVertices(const MeshType& m)
  * @return the number of removed vertices.
  */
 template<typename MeshType>
-unsigned int removeUnreferencedVertices(MeshType& m)
+uint removeUnreferencedVertices(MeshType& m)
 {
 	vcl::requireVertices<MeshType>();
 
@@ -156,7 +156,7 @@ unsigned int removeUnreferencedVertices(MeshType& m)
 	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
 
 	// deleted vertices are automatically jumped
-	unsigned int n = 0;
+	uint n = 0;
 	for (const VertexType& v : m.vertices()) {
 		if (!referredVertices[m.index(v)]) {
 			m.deleteVertex(m.index(v));
@@ -180,7 +180,7 @@ unsigned int removeUnreferencedVertices(MeshType& m)
  * @return
  */
 template<typename MeshType>
-unsigned int removeDuplicatedVertices(MeshType& m)
+uint removeDuplicatedVertices(MeshType& m)
 {
 	vcl::requireVertices<MeshType>();
 	vcl::requireFaces<MeshType>();
@@ -194,23 +194,23 @@ unsigned int removeDuplicatedVertices(MeshType& m)
 
 	std::map<VertexPointer, VertexPointer> deletedVertsMap;
 
-	unsigned int deleted = 0;
+	uint deleted = 0;
 
 	std::vector<VertexPointer> perm(m.vertexNumber());
 
 	// put all the vertices into a vector
-	unsigned int k = 0;
+	uint k = 0;
 	for (VertexType& v : m.vertices())
 		perm[k++] = &v;
 
 	// sort the vector based on the verts position
 	std::sort(perm.begin(), perm.end(), internal::VertPositionComparator<VertexPointer>());
 
-	unsigned int i = 0;
+	uint i = 0;
 
 	// will compare the i-th position with the next ones while they are equal to the i-th
 	while (i < perm.size() - 1) {
-		unsigned int j = i + 1;
+		uint j = i + 1;
 		while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
 			// j will be deleted
 			deletedVertsMap[perm[j]] = perm[i]; // map j into i
@@ -271,7 +271,7 @@ unsigned int removeDuplicatedVertices(MeshType& m)
  * @return
  */
 template<typename MeshType>
-unsigned int removeDuplicatedFaces(MeshType& m)
+uint removeDuplicatedFaces(MeshType& m)
 {
 	vcl::requireVertices<MeshType>();
 	vcl::requireTriangleMesh(m); // TODO: remove this and adjust the function for polymeshes
@@ -283,8 +283,8 @@ unsigned int removeDuplicatedFaces(MeshType& m)
 		fvec.push_back(internal::SortedTriple(m.index(f.vertex(0)), m.index(f.vertex(1)), m.index(f.vertex(2)), &f));
 	}
 	std::sort(fvec.begin(), fvec.end());
-	unsigned int total = 0;
-	for (unsigned int i = 0; i < fvec.size() - 1; ++i) {
+	uint total = 0;
+	for (uint i = 0; i < fvec.size() - 1; ++i) {
 		if (fvec[i] == fvec[i + 1]) {
 			total++;
 			m.deleteFace(fvec[i].fp);
@@ -310,7 +310,7 @@ unsigned int removeDuplicatedFaces(MeshType& m)
  * @return
  */
 template<typename MeshType>
-unsigned int removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
+uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 {
 	using VertexType = typename MeshType::Vertex;
 

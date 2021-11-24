@@ -45,11 +45,11 @@ template<typename T, typename...Args>
 void compactVector(std::vector<T, Args...>& vec, const std::vector<int>& newIndices)
 {
 	assert(vec.size() == newIndices.size());
-	unsigned int newSize = 0;
-	for (unsigned int i = 0; i < newIndices.size(); ++i){
+	uint newSize = 0;
+	for (uint i = 0; i < newIndices.size(); ++i){
 		if (newIndices[i] >= 0){
 			++newSize;
-			if ((unsigned int)newIndices[i] != i) {
+			if ((uint)newIndices[i] != i) {
 				//must move the element from position i to position newIndices[i]
 				vec[newIndices[i]] = std::move(vec[i]);
 			}

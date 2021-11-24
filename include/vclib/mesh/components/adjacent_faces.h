@@ -59,14 +59,14 @@ public:
 
 	/** Member functions **/
 
-	unsigned int adjFacesNumber() const { return Base::size(); }
+	uint adjFacesNumber() const { return Base::size(); }
 
-	Face*&      adjFace(unsigned int i) { return Base::at(i); }
-	const Face* adjFace(unsigned int i) const { return Base::at(i); }
+	Face*&      adjFace(uint i) { return Base::at(i); }
+	const Face* adjFace(uint i) const { return Base::at(i); }
 	Face*&      adjFaceMod(int i) { return Base::atMod(i); }
 	const Face* adjFaceMod(int i) const { return Base::atMod(i); }
 
-	void setAdjFace(Face* f, unsigned int i) { Base::set(f, i); }
+	void setAdjFace(Face* f, uint i) { Base::set(f, i); }
 	void setAdjFaces(const std::vector<Face*>& list) { Base::set(list); }
 
 	bool containsAdjFace(const Face* f) const { return Base::contains(f); }
@@ -79,7 +79,7 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(unsigned int n)
+	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(uint n)
 	{
 		Base::resize(n);
 	}
@@ -91,13 +91,13 @@ public:
 	}
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjFace(unsigned int i, Face* f)
+	VCL_ENABLE_IF(M < 0, void) insertAdjFace(uint i, Face* f)
 	{
 		Base::insert(i, f);
 	}
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjFace(unsigned int i)
+	VCL_ENABLE_IF(M < 0, void) eraseAdjFace(uint i)
 	{
 		Base::erase(i);
 	}

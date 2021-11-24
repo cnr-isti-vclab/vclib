@@ -40,7 +40,7 @@ void saveFaceIndices(
 {
 	using VertexType = typename MeshType::Vertex;
 
-	unsigned int fsize = f.vertexNumber();
+	uint fsize = f.vertexNumber();
 	internal::writeProperty(file, fsize, p.listSizeType, bin);
 	for (const VertexType* v : f.vertices()){
 		internal::writeProperty(file, vIndices[m.index(v)], p.type, bin);
@@ -62,7 +62,7 @@ void loadFacesTxt(
 	vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 
 	mesh.reserveFaces(header.numberFaces());
-	for (unsigned int fid = 0; fid < header.numberFaces(); ++fid) {
+	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
 		mesh.addFace();
 		FaceType& f = mesh.face(mesh.faceNumber() -1);
 		for (ply::Property p : header.faceProperties()) {
@@ -74,7 +74,7 @@ void loadFacesTxt(
 				throw std::runtime_error("Malformed file");
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
-				unsigned int fSize = internal::readProperty<unsigned int>(token, p.listSizeType);
+				uint fSize = internal::readProperty<uint>(token, p.listSizeType);
 				bool splitFace = false;
 				if constexpr(FaceType::VERTEX_NUMBER < 0){
 					f.resizeVertices(fSize);
@@ -82,7 +82,7 @@ void loadFacesTxt(
 				else if (FaceType::VERTEX_NUMBER != fSize)
 					splitFace = true;
 				if (!splitFace) {
-					for (unsigned int i = 0; i < fSize; ++i) {
+					for (uint i = 0; i < fSize; ++i) {
 						assert(token != spaceTokenizer.end());
 						int vid = internal::readProperty<size_t>(token, p.type);
 						if (vid < 0 || vid >= mesh.vertexNumber()) {
@@ -95,7 +95,7 @@ void loadFacesTxt(
 					hasBeenRead = true;
 				}
 				else { // TODO: split face and then load properly n faces
-					for (unsigned int i = 0; i < fSize; ++i) {
+					for (uint i = 0; i < fSize; ++i) {
 						if (i < FaceType::VERTEX_NUMBER) {
 							assert(token != spaceTokenizer.end());
 							int vid = internal::readProperty<size_t>(token, p.type);
@@ -141,8 +141,8 @@ void loadFacesTxt(
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					unsigned int s = internal::readProperty<int>(token, p.listSizeType);
-					for (unsigned int i = 0; i < s; ++i)
+					uint s = internal::readProperty<int>(token, p.listSizeType);
+					for (uint i = 0; i < s; ++i)
 						++token;
 				}
 				else {
@@ -159,13 +159,13 @@ void loadFacesBin(
 {
 	using FaceType = typename MeshType::Face;
 	mesh.reserveFaces(header.numberFaces());
-	for (unsigned int fid = 0; fid < header.numberFaces(); ++fid) {
+	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
 		mesh.addFace();
 		FaceType& f = mesh.face(mesh.faceNumber() -1);
 		for (ply::Property p : header.faceProperties()) {
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
-				unsigned int fSize = internal::readProperty<unsigned int>(file, p.listSizeType);
+				uint fSize = internal::readProperty<uint>(file, p.listSizeType);
 				bool splitFace = false;
 				if constexpr(FaceType::VERTEX_NUMBER < 0){
 					f.resizeVertices(fSize);
@@ -173,7 +173,7 @@ void loadFacesBin(
 				else if (FaceType::VERTEX_NUMBER != fSize)
 					splitFace = true;
 				if (!splitFace) {
-					for (unsigned int i = 0; i < fSize; ++i) {
+					for (uint i = 0; i < fSize; ++i) {
 						int vid = internal::readProperty<size_t>(file, p.type);
 						if (vid < 0)
 							f.vertex(i) = nullptr;
@@ -183,7 +183,7 @@ void loadFacesBin(
 					hasBeenRead = true;
 				}
 				else { // TODO: split face and then load properly n faces
-					for (unsigned int i = 0; i < fSize; ++i) {
+					for (uint i = 0; i < fSize; ++i) {
 						if (i < FaceType::VERTEX_NUMBER) {
 							int vid = internal::readProperty<size_t>(file, p.type);
 							if (vid < 0)
@@ -228,8 +228,8 @@ void loadFacesBin(
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					unsigned int s = internal::readProperty<int>(file, p.listSizeType);
-					for (unsigned int i = 0; i < s; ++i)
+					uint s = internal::readProperty<int>(file, p.listSizeType);
+					for (uint i = 0; i < s; ++i)
 						internal::readProperty<int>(file, p.type);
 				}
 				else {

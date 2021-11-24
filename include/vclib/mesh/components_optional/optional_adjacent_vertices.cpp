@@ -44,7 +44,7 @@ OptionalAdjacentVertices<Vertex, N, T>::OptionalAdjacentVertices()
 }
 
 template<typename Vertex, int N, typename T>
-unsigned int OptionalAdjacentVertices<Vertex, N, T>::adjVerticesNumber() const
+uint OptionalAdjacentVertices<Vertex, N, T>::adjVerticesNumber() const
 {
 	if constexpr (N >= 0) {
 		return N;
@@ -55,14 +55,14 @@ unsigned int OptionalAdjacentVertices<Vertex, N, T>::adjVerticesNumber() const
 }
 
 template<typename Vertex, int N, typename T>
-Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertex(unsigned int i)
+Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertex(uint i)
 {
 	assert(i < adjVerticesNumber());
 	return B::optCont().adjVerts(thisId())[i];
 }
 
 template<typename Vertex, int N, typename T>
-const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertex(unsigned int i) const
+const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertex(uint i) const
 {
 	assert(i < adjVerticesNumber());
 	return B::optCont().adjVerts(thisId())[i];
@@ -71,19 +71,19 @@ const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertex(unsigned int i) 
 template<typename Vertex, int N, typename T>
 Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertexMod(int i)
 {
-	unsigned int n = adjVerticesNumber();
+	uint n = adjVerticesNumber();
 	return B::optCont().adjVerts(thisId())[(i % n + n) % n];
 }
 
 template<typename Vertex, int N, typename T>
 const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertexMod(int i) const
 {
-	unsigned int n = adjVerticesNumber();
+	uint n = adjVerticesNumber();
 	return B::optCont().adjVerts(thisId())[(i % n + n) % n];
 }
 
 template<typename Vertex, int N, typename T>
-void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertex(Vertex* f, unsigned int i)
+void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertex(Vertex* f, uint i)
 {
 	assert(i < adjVerticesNumber());
 	B::optCont().adjVerts(thisId())[i] = f;
@@ -94,7 +94,7 @@ void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertices(const std::vector<Ve
 {
 	if constexpr (N >= 0) {
 		assert(list.size() == N);
-		unsigned int i = 0;
+		uint i = 0;
 		for (const auto& f : list) {
 			setVertex(f, i);
 			++i;
@@ -139,7 +139,7 @@ int OptionalAdjacentVertices<Vertex, N, T>::indexOfAdjVertex(const Vertex* v) co
 template<typename Vertex, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentVertices<Vertex, N, T>::resizeAdjVertices(unsigned int n)
+OptionalAdjacentVertices<Vertex, N, T>::resizeAdjVertices(uint n)
 {
 	B::optCont().adjVerts(thisId()).resize(n);
 }
@@ -154,7 +154,7 @@ VCL_ENABLE_IF(M < 0, void) OptionalAdjacentVertices<Vertex, N, T>::pushAdjVertex
 template<typename Vertex, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentVertices<Vertex, N, T>::insertAdjVertex(unsigned int i, Vertex* f)
+OptionalAdjacentVertices<Vertex, N, T>::insertAdjVertex(uint i, Vertex* f)
 {
 	assert(i < adjVerticesNumber());
 	B::optCont().adjVerts(thisId()).insert(B::optCont().adjVerts(thisId()).begin() + i, f);
@@ -163,7 +163,7 @@ OptionalAdjacentVertices<Vertex, N, T>::insertAdjVertex(unsigned int i, Vertex* 
 template<typename Vertex, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentVertices<Vertex, N, T>::eraseAdjVertex(unsigned int i)
+OptionalAdjacentVertices<Vertex, N, T>::eraseAdjVertex(uint i)
 {
 	assert(i < adjVerticesNumber());
 	B::optCont().adjVerts(thisId()).erase(B::optCont().adjVerts(thisId()).begin() + i);
@@ -229,7 +229,7 @@ void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
 {
-	for (unsigned int j = 0; j < adjVerticesNumber(); ++j) {
+	for (uint j = 0; j < adjVerticesNumber(); ++j) {
 		if (adjVertex(j) != nullptr) {
 			size_t diff = adjVertex(j) - oldBase;
 			adjVertex(j)  = (Vertex*) newBase + diff;
@@ -242,7 +242,7 @@ void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
-	for (unsigned int j = 0; j < adjVerticesNumber(); ++j) {
+	for (uint j = 0; j < adjVerticesNumber(); ++j) {
 		if (adjVertex(j) != nullptr) {
 			size_t diff = adjVertex(j) - base;
 			if (newIndices[diff] < 0) { // element has been removed

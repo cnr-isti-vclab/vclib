@@ -92,13 +92,13 @@ public:
 
 	/** Member functions **/
 
-	vcl::TexCoord<Scalar>&       wedgeTexCoord(unsigned int i);
-	const vcl::TexCoord<Scalar>& wedgeTexCoord(unsigned int i) const;
+	vcl::TexCoord<Scalar>&       wedgeTexCoord(uint i);
+	const vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) const;
 
 	vcl::TexCoord<Scalar>&       wedgeTexCoordMod(int i);
 	const vcl::TexCoord<Scalar>& wedgeTexCoordMod(int i) const;
 
-	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, unsigned int i);
+	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
 
 	/** Iterator Member functions **/
@@ -116,17 +116,17 @@ protected:
 	/** Member functions specific for vector **/
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeWedgeTexCoords(unsigned int n);
+	VCL_ENABLE_IF(M < 0, void) resizeWedgeTexCoords(uint n);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void)
-	insertWedgeTexCoord(unsigned int i, const vcl::TexCoord<Scalar>& t);
+	insertWedgeTexCoord(uint i, const vcl::TexCoord<Scalar>& t);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseWedgeTexCoord(unsigned int i);
+	VCL_ENABLE_IF(M < 0, void) eraseWedgeTexCoord(uint i);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearWedgeTexCoord();
@@ -136,9 +136,9 @@ protected:
 	bool wedgeTexCoordsEnabled() const;
 
 private:
-	unsigned int thisId() const { return B::index((T*)this); }
+	uint thisId() const { return B::index((T*)this); }
 
-	unsigned int wedgeTexCoordsNumber() const;
+	uint wedgeTexCoordsNumber() const;
 };
 
 /**

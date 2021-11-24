@@ -55,7 +55,7 @@ inline unsigned long Tokenizer::size() const
 	return (unsigned long) splitted.size();
 }
 
-inline const std::string& Tokenizer::operator[](unsigned int i) const
+inline const std::string& Tokenizer::operator[](uint i) const
 {
 	return splitted[i];
 }

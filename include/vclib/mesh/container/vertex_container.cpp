@@ -43,7 +43,7 @@ VertexContainer<T>::VertexContainer()
  * @param i: the id of the vertex that will be returned.
  */
 template<typename T>
-const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(unsigned int i) const
+const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i) const
 {
 	return Base::vec[i];
 }
@@ -59,7 +59,7 @@ const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(unsign
  * @param i: the id of the vertex that will be returned.
  */
 template<typename T>
-typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(unsigned int i)
+typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i)
 {
 	return Base::vec[i];
 }
@@ -74,7 +74,7 @@ typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(unsigned int
  * @return the number of non-deleted vertices of the Mesh.
  */
 template<typename T>
-unsigned int VertexContainer<T>::vertexNumber() const
+uint VertexContainer<T>::vertexNumber() const
 {
 	return vn;
 }
@@ -89,13 +89,13 @@ unsigned int VertexContainer<T>::vertexNumber() const
  * @return the number of all the vertices contained in the Mesh.
  */
 template<typename T>
-unsigned int VertexContainer<T>::vertexContainerSize() const
+uint VertexContainer<T>::vertexContainerSize() const
 {
 	return Base::vec.size();
 }
 
 template<typename T>
-unsigned int vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
+uint vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
 {
 	return vertexContainerSize() - vertexNumber();
 }
@@ -111,7 +111,7 @@ unsigned int vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
  * @param i: the id of the vertex that will be marked as deleted.
  */
 template<typename T>
-void VertexContainer<T>::deleteVertex(unsigned int i)
+void VertexContainer<T>::deleteVertex(uint i)
 {
 	Base::vec[i].setDeleted();
 	--vn;
@@ -135,13 +135,13 @@ void VertexContainer<T>::deleteVertex(const VertexType* v)
  * @return
  */
 template<typename T>
-unsigned int vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(unsigned int id) const
+uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint id) const
 {
 	if (Base::vec.size() == vn)
 		return id;
 	else {
-		unsigned int cnt = 0;
-		for (unsigned int i = 0; i < id; i++) {
+		uint cnt = 0;
+		for (uint i = 0; i < id; i++) {
 			if (!Base::vec[i].isDeleted())
 				++cnt;
 		}
@@ -162,8 +162,8 @@ template<typename T>
 std::vector<int> VertexContainer<T>::vertexCompactIndices() const
 {
 	std::vector<int> newIndices(Base::vec.size());
-	unsigned int     k = 0;
-	for (unsigned int i = 0; i < Base::vec.size(); ++i) {
+	uint     k = 0;
+	for (uint i = 0; i < Base::vec.size(); ++i) {
 		if (!Base::vec[i].isDeleted()) {
 			newIndices[i] = k;
 			k++;
@@ -602,14 +602,14 @@ void VertexContainer<T>::clearVertices()
 }
 
 template<typename T>
-unsigned int VertexContainer<T>::index(const VertexType* v) const
+uint VertexContainer<T>::index(const VertexType* v) const
 {
 	assert(!Base::vec.empty() && v >= Base::vec.data() && v <= &Base::vec.back());
 	return v - Base::vec.data();
 }
 
 template<typename T>
-unsigned int VertexContainer<T>::addVertex()
+uint VertexContainer<T>::addVertex()
 {
 	T* oldB = Base::vec.data();
 	Base::vec.push_back(VertexType());
@@ -632,9 +632,9 @@ unsigned int VertexContainer<T>::addVertex()
  * @return the id of the first added vertex.
  */
 template<typename T>
-unsigned int VertexContainer<T>::addVertices(unsigned int nVertices)
+uint VertexContainer<T>::addVertices(uint nVertices)
 {
-	unsigned int baseId = Base::vec.size();
+	uint baseId = Base::vec.size();
 	T*           oldB   = Base::vec.data();
 	Base::vec.resize(Base::vec.size() + nVertices);
 	T* newB = Base::vec.data();
@@ -642,7 +642,7 @@ unsigned int VertexContainer<T>::addVertices(unsigned int nVertices)
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 	}
-	for (unsigned int i = baseId; i < Base::vec.size(); ++i) {
+	for (uint i = baseId; i < Base::vec.size(); ++i) {
 		if constexpr (vert::hasOptionalInfo<VertexType>()) {
 			setContainerPointer(Base::vec[i]);
 		}
@@ -652,7 +652,7 @@ unsigned int VertexContainer<T>::addVertices(unsigned int nVertices)
 }
 
 template<typename T>
-void VertexContainer<T>::reserveVertices(unsigned int size)
+void VertexContainer<T>::reserveVertices(uint size)
 {
 	T* oldB = Base::vec.data();
 	Base::vec.reserve(size);
@@ -680,9 +680,9 @@ template<typename T>
 std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	unsigned int k = 0;
+	uint k = 0;
 	std::vector<int> newIndices = vertexCompactIndices();
-	for (unsigned int i = 0; i < newIndices.size(); ++i) {
+	for (uint i = 0; i < newIndices.size(); ++i) {
 		if (newIndices[i] >= 0) {
 			k = newIndices[i];
 			if (i != k)

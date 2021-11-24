@@ -34,8 +34,8 @@ class OptionalPrincipalCurvatureVector
 {
 public:
 	void clear() {}
-	void reserve(unsigned int) {}
-	void resize(unsigned int) {}
+	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -54,10 +54,10 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	bool                    isPrincipalCurvatureEnabled() const { return Base::isEnabled(); };
-	void                    enablePrincipalCurvature(unsigned int size) { Base::enable(size); }
+	void                    enablePrincipalCurvature(uint size) { Base::enable(size); }
 	void                    disablePrincipalCurvature() { Base::disable(); }
-	PrincipalCurvatureType& principalCurvature(unsigned int i) { return Base::at(i); }
-	const PrincipalCurvatureType& principalCurvature(unsigned int i) const { return Base::at(i); }
+	PrincipalCurvatureType& principalCurvature(uint i) { return Base::at(i); }
+	const PrincipalCurvatureType& principalCurvature(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

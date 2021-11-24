@@ -69,7 +69,7 @@ NormalType polygonNormal(const Polygon& p)
 {
 	// compute the sum of normals for each triplet of consecutive points
 	NormalType sum; sum.setZero();
-	for (unsigned int i = 0; i < p.vertexNumber(); ++i){
+	for (uint i = 0; i < p.vertexNumber(); ++i){
 		sum += triangleNormal(
 			p.vertexMod(i)->coord(), p.vertexMod(i+1)->coord(), p.vertexMod(i+2)->coord());
 	}

@@ -33,7 +33,7 @@ void CustomComponentsVector<T, IfHasCustomProp<T> >::clear()
 }
 
 template<typename T>
-void CustomComponentsVector<T, IfHasCustomProp<T>>::reserve(unsigned int size)
+void CustomComponentsVector<T, IfHasCustomProp<T>>::reserve(uint size)
 {
 	for (auto& p : map) {
 		p.second.reserve(size);
@@ -41,7 +41,7 @@ void CustomComponentsVector<T, IfHasCustomProp<T>>::reserve(unsigned int size)
 }
 
 template<typename T>
-void CustomComponentsVector<T, IfHasCustomProp<T>>::resize(unsigned int size)
+void CustomComponentsVector<T, IfHasCustomProp<T>>::resize(uint size)
 {
 	for (auto& p : map) {
 		p.second.resize(size);
@@ -61,7 +61,7 @@ template<typename T>
 template<typename AttrType>
 void CustomComponentsVector<T, IfHasCustomProp<T>>::addNewComponent(
 	const std::string& name,
-	unsigned int       size)
+	uint       size)
 {
 	std::vector<std::any>& v = map[name];
 	v.resize(size, AttrType());

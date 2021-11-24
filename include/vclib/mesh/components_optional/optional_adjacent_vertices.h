@@ -91,14 +91,14 @@ public:
 
 	/** Member functions **/
 
-	unsigned int adjVerticesNumber() const;
+	uint adjVerticesNumber() const;
 
-	Vertex*&      adjVertex(unsigned int i);
-	const Vertex* adjVertex(unsigned int i) const;
+	Vertex*&      adjVertex(uint i);
+	const Vertex* adjVertex(uint i) const;
 	Vertex*&      adjVertexMod(int i);
 	const Vertex* adjVertexMod(int i) const;
 
-	void setAdjVertex(Vertex* f, unsigned int i);
+	void setAdjVertex(Vertex* f, uint i);
 	void setAdjVertices(const std::vector<Vertex*>& list);
 
 	bool containsAdjVertex(const Vertex* v) const;
@@ -111,16 +111,16 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(unsigned int n);
+	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(uint n);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) pushAdjVertex(Vertex* f);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(unsigned int i, Vertex* f);
+	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(uint i, Vertex* f);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(unsigned int i);
+	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(uint i);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearAdjVertices();
@@ -140,7 +140,7 @@ protected:
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 private:
-	unsigned int thisId() const { return B::index((T*)this); }
+	uint thisId() const { return B::index((T*)this); }
 };
 
 /**

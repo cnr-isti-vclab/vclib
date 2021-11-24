@@ -61,7 +61,7 @@ inline bool BitFlags::isOnBorder() const
  * @param bit: the position of the bit that will be returned.
  * @return true if the required bit is enabled, false otherwise.
  */
-inline bool BitFlags::userBitFlag(unsigned int bit) const
+inline bool BitFlags::userBitFlag(uint bit) const
 {
 	return userBitFlag(bit, FIRST_USER_BIT);
 }
@@ -88,7 +88,7 @@ inline void BitFlags::setOnBorder()
  *
  * @param bit: the position of the bit that will be set.
  */
-inline void BitFlags::setUserBit(unsigned int bit)
+inline void BitFlags::setUserBit(uint bit)
 {
 	setUserBit(bit, FIRST_USER_BIT);
 }
@@ -127,7 +127,7 @@ inline void BitFlags::clearOnBorder()
  *
  * @param bit: the position of the bit that will be reset.
  */
-inline void BitFlags::clearUserBit(unsigned int bit)
+inline void BitFlags::clearUserBit(uint bit)
 {
 	clearUserBit(bit, FIRST_USER_BIT);
 }
@@ -154,7 +154,7 @@ inline void BitFlags::clearDeleted()
  * @param flag: value of the flag to return.
  * @return whether the flag is true or false.
  */
-inline bool BitFlags::flagValue(unsigned int flag) const
+inline bool BitFlags::flagValue(uint flag) const
 {
 	return flags & flag;
 }
@@ -164,7 +164,7 @@ inline bool BitFlags::flagValue(unsigned int flag) const
  *
  * @param flag: value of the flag to set.
  */
-inline void BitFlags::setFlag(unsigned int flag)
+inline void BitFlags::setFlag(uint flag)
 {
 	flags |= flag;
 }
@@ -174,7 +174,7 @@ inline void BitFlags::setFlag(unsigned int flag)
  *
  * @param flag: value of the flag to reset.
  */
-inline void BitFlags::clearFlag(unsigned int flag)
+inline void BitFlags::clearFlag(uint flag)
 {
 	flags &= ~flag;
 }
@@ -192,10 +192,10 @@ inline void BitFlags::clearFlag(unsigned int flag)
  * @param firstBit: first user bit available (must be < than bit)
  * @return the value of the bit
  */
-inline bool BitFlags::userBitFlag(unsigned int bit, unsigned int firstBit) const
+inline bool BitFlags::userBitFlag(uint bit, uint firstBit) const
 {
 	assert(bit < 32 - firstBit);
-	unsigned int flag = 1 << (firstBit + bit);
+	uint flag = 1 << (firstBit + bit);
 	return flagValue(flag);
 }
 
@@ -211,10 +211,10 @@ inline bool BitFlags::userBitFlag(unsigned int bit, unsigned int firstBit) const
  * @param bit: position of the bit
  * @param firstBit: first user bit available (must be < than bit)
  */
-inline void BitFlags::setUserBit(unsigned int bit, unsigned int firstBit)
+inline void BitFlags::setUserBit(uint bit, uint firstBit)
 {
 	assert(bit < 32 - firstBit);
-	unsigned int flag = 1 << (firstBit + bit);
+	uint flag = 1 << (firstBit + bit);
 	setFlag(flag);
 }
 
@@ -230,10 +230,10 @@ inline void BitFlags::setUserBit(unsigned int bit, unsigned int firstBit)
  * @param bit: position of the bit
  * @param firstBit: first user bit available (must be < than bit)
  */
-inline void BitFlags::clearUserBit(unsigned int bit, unsigned int firstBit)
+inline void BitFlags::clearUserBit(uint bit, uint firstBit)
 {
 	assert(bit < 32 - firstBit);
-	unsigned int flag = 1 << (firstBit + bit);
+	uint flag = 1 << (firstBit + bit);
 	clearFlag(flag);
 }
 

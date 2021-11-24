@@ -52,14 +52,14 @@ public:
 
 	/** Member functions **/
 
-	unsigned int adjVerticesNumber() const { return Base::size(); }
+	uint adjVerticesNumber() const { return Base::size(); }
 
-	Vertex*&      adjVertex(unsigned int i) { return Base::at(i); }
-	const Vertex* adjVertex(unsigned int i) const { return Base::at(i); }
+	Vertex*&      adjVertex(uint i) { return Base::at(i); }
+	const Vertex* adjVertex(uint i) const { return Base::at(i); }
 	Vertex*&      adjVertexMod(int i) { return Base::atMod(i); }
 	const Vertex* adjVertexMod(int i) const { return Base::atMod(i); }
 
-	void setAdjVertex(Vertex* v, unsigned int i) { Base::set(v, i); }
+	void setAdjVertex(Vertex* v, uint i) { Base::set(v, i); }
 	void setAdjVertices(const std::vector<Vertex*>& list) { Base::set(list); }
 
 	bool containsAdjVertex(const Vertex* v) const { return Base::contains(v); }
@@ -72,7 +72,7 @@ public:
 	/** Member functions specific for vector **/
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(unsigned int n)
+	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(uint n)
 	{
 		Base::resize(n);
 	}
@@ -84,13 +84,13 @@ public:
 	}
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(unsigned int i, Vertex* v)
+	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(uint i, Vertex* v)
 	{
 		Base::insert(i, v);
 	}
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(unsigned int i)
+	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(uint i)
 	{
 		Base::erase(i);
 	}

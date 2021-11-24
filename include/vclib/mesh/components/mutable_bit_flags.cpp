@@ -42,7 +42,7 @@ inline bool MutableBitFlags::isVisitedM() const
  * @param bit: the position of the bit that will be returned.
  * @return true if the required bit is enabled, false otherwise.
  */
-inline bool MutableBitFlags::userBitFlagM(unsigned int bit) const
+inline bool MutableBitFlags::userBitFlagM(uint bit) const
 {
 	return userBitFlagM(bit, FIRST_MUTABLE_USER_BIT);
 }
@@ -64,7 +64,7 @@ inline void MutableBitFlags::setVisitedM() const
  *
  * @param bit: the position of the bit that will be set.
  */
-inline void MutableBitFlags::setUserBitM(unsigned int bit) const
+inline void MutableBitFlags::setUserBitM(uint bit) const
 {
 	setUserBitM(bit, FIRST_MUTABLE_USER_BIT);
 }
@@ -95,7 +95,7 @@ inline void MutableBitFlags::clearVisitedM() const
  *
  * @param bit: the position of the bit that will be reset.
  */
-inline void MutableBitFlags::clearUserBitM(unsigned int bit) const
+inline void MutableBitFlags::clearUserBitM(uint bit) const
 {
 	clearUserBitM(bit, FIRST_MUTABLE_USER_BIT);
 }
@@ -106,7 +106,7 @@ inline void MutableBitFlags::clearUserBitM(unsigned int bit) const
  * @param flag: value of the flag to return.
  * @return whether the flag is true or false.
  */
-inline bool MutableBitFlags::flagValueM(unsigned int flag) const
+inline bool MutableBitFlags::flagValueM(uint flag) const
 {
 	return mutableFlags & flag;
 }
@@ -117,7 +117,7 @@ inline bool MutableBitFlags::flagValueM(unsigned int flag) const
  *
  * @param flag: value of the flag to set.
  */
-inline void MutableBitFlags::setFlagM(unsigned int flag) const
+inline void MutableBitFlags::setFlagM(uint flag) const
 {
 	mutableFlags |= flag;
 }
@@ -128,7 +128,7 @@ inline void MutableBitFlags::setFlagM(unsigned int flag) const
  *
  * @param flag: value of the flag to reset.
  */
-inline void MutableBitFlags::clearFlagM(unsigned int flag) const
+inline void MutableBitFlags::clearFlagM(uint flag) const
 {
 	mutableFlags &= ~flag;
 }
@@ -146,10 +146,10 @@ inline void MutableBitFlags::clearFlagM(unsigned int flag) const
  * @param firstBit: first user bit available (must be < than bit)
  * @return the value of the bit
  */
-inline bool MutableBitFlags::userBitFlagM(unsigned int bit, unsigned int firstBit) const
+inline bool MutableBitFlags::userBitFlagM(uint bit, uint firstBit) const
 {
 	assert(bit >= firstBit && bit < 32); (void) firstBit;
-	unsigned int flag = 1 << bit;
+	uint flag = 1 << bit;
 	return flagValueM(flag);
 }
 
@@ -167,10 +167,10 @@ inline bool MutableBitFlags::userBitFlagM(unsigned int bit, unsigned int firstBi
  * @param bit: position of the bit
  * @param firstBit: first user bit available (must be < than bit)
  */
-inline void MutableBitFlags::setUserBitM(unsigned int bit, unsigned int firstBit) const
+inline void MutableBitFlags::setUserBitM(uint bit, uint firstBit) const
 {
 	assert(bit >= firstBit && bit < 32); (void) firstBit;
-	unsigned int flag = 1 << bit;
+	uint flag = 1 << bit;
 	setFlagM(flag);
 }
 
@@ -188,10 +188,10 @@ inline void MutableBitFlags::setUserBitM(unsigned int bit, unsigned int firstBit
  * @param bit: position of the bit
  * @param firstBit: first user bit available (must be < than bit)
  */
-inline void MutableBitFlags::clearUserBitM(unsigned int bit, unsigned int firstBit) const
+inline void MutableBitFlags::clearUserBitM(uint bit, uint firstBit) const
 {
 	assert(bit >= firstBit && bit < 32); (void) firstBit;
-	unsigned int flag = 1 << bit;
+	uint flag = 1 << bit;
 	clearFlagM(flag);
 }
 

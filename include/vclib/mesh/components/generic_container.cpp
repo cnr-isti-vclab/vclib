@@ -38,7 +38,7 @@ GenericContainer<C, N>::GenericContainer()
  * @return the size of the container.
  */
 template<typename C, int N>
-unsigned int GenericContainer<C, N>::size() const
+uint GenericContainer<C, N>::size() const
 {
 	if constexpr (N >= 0) {
 		return N;
@@ -54,14 +54,14 @@ unsigned int GenericContainer<C, N>::size() const
  * @return a reference of the element at position i.
  */
 template<typename C, int N>
-C& GenericContainer<C, N>::at(unsigned int i)
+C& GenericContainer<C, N>::at(uint i)
 {
 	assert(i < size());
 	return container[i];
 }
 
 template<typename C, int N>
-const C& GenericContainer<C, N>::at(unsigned int i) const
+const C& GenericContainer<C, N>::at(uint i) const
 {
 	assert(i < size());
 	return container[i];
@@ -79,19 +79,19 @@ const C& GenericContainer<C, N>::at(unsigned int i) const
 template<typename C, int N>
 C& GenericContainer<C, N>::atMod(int i)
 {
-	unsigned int n = size();
+	uint n = size();
 	return container[(i % n + n) % n];
 }
 
 template<typename C, int N>
 const C& GenericContainer<C, N>::atMod(int i) const
 {
-	unsigned int n = size();
+	uint n = size();
 	return container[(i % n + n) % n];
 }
 
 template<typename C, int N>
-void GenericContainer<C, N>::set(const C& e, unsigned int i)
+void GenericContainer<C, N>::set(const C& e, uint i)
 {
 	assert(i < size());
 	container[i] = e;
@@ -102,7 +102,7 @@ void GenericContainer<C, N>::set(const std::vector<C>& list)
 {
 	if constexpr (N >= 0) {
 		assert(list.size() == N);
-		unsigned int i = 0;
+		uint i = 0;
 		for (const auto& v : list) {
 			set(v, i);
 			++i;
@@ -143,7 +143,7 @@ int GenericContainer<C, N>::indexOf(const C& e) const
 
 template<typename C, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::resize(unsigned int n)
+VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::resize(uint n)
 {
 	container.resize(n);
 }
@@ -157,7 +157,7 @@ VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::pushBack(const C& v)
 
 template<typename C, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::insert(unsigned int i, const C& v)
+VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::insert(uint i, const C& v)
 {
 	assert(i < size());
 	container.insert(container.begin() + i, v);
@@ -165,7 +165,7 @@ VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::insert(unsigned int i, const 
 
 template<typename C, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::erase(unsigned int i)
+VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::erase(uint i)
 {
 	assert(i < size());
 	container.erase(container.begin() + i);

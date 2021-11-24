@@ -44,7 +44,7 @@ OptionalPrincipalCurvature<Scalar, T>::principalCurvature()
 }
 
 template<typename Scalar, typename T>
-unsigned int OptionalPrincipalCurvature<Scalar, T>::thisId() const
+uint OptionalPrincipalCurvature<Scalar, T>::thisId() const
 {
 	return B::index((T*)this);
 }

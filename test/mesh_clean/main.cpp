@@ -34,7 +34,7 @@ int main()
 
 	vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/brain.ply");
 
-	unsigned int nv = vcl::removeUnreferencedVertices(m);
+	uint nv = vcl::removeUnreferencedVertices(m);
 
 	assert(nv == 0);
 

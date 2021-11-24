@@ -72,7 +72,7 @@ Scalar Point<Scalar, N>::squaredNorm() const
 }
 
 template<typename Scalar, int N>
-unsigned int Point<Scalar, N>::size() const
+uint Point<Scalar, N>::size() const
 {
 	return p.size();
 }
@@ -104,7 +104,7 @@ void Point<Scalar, N>::normalize()
 }
 
 template<typename Scalar, int N>
-Scalar& Point<Scalar, N>::operator()(unsigned int i)
+Scalar& Point<Scalar, N>::operator()(uint i)
 {
 	return p(i);
 }
@@ -124,7 +124,7 @@ bool Point<Scalar, N>::operator!=(const Point& p1) const
 template<typename Scalar, int N>
 bool Point<Scalar, N>::operator<(const Point& p1) const
 {
-	unsigned int i = 0;
+	uint i = 0;
 	while (p[i] == p1.p[i] && i < DIM) {
 		++i;
 	}
@@ -202,7 +202,7 @@ Point<Scalar, N>& Point<Scalar, N>::operator/=(const Scalar& s)
 }
 
 template<typename Scalar, int N>
-const Scalar& Point<Scalar, N>::operator()(unsigned int i) const
+const Scalar& Point<Scalar, N>::operator()(uint i) const
 {
 	return p(i);
 }

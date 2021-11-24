@@ -34,8 +34,8 @@ class OptionalColorVector
 {
 public:
 	void clear() {}
-	void resize(unsigned int) {}
-	void reserve(unsigned int) {}
+	void resize(uint) {}
+	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -52,10 +52,10 @@ public:
 	using Base::resize;
 	using Base::compact;
 	bool             isColorEnabled() const { return Base::isEnabled(); };
-	void             enableColor(unsigned int size) { Base::enable(size); }
+	void             enableColor(uint size) { Base::enable(size); }
 	void             disableColor() { Base::disable(); }
-	ColorType&       color(unsigned int i) { return Base::at(i); }
-	const ColorType& color(unsigned int i) const { return Base::at(i); }
+	ColorType&       color(uint i) { return Base::at(i); }
+	const ColorType& color(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

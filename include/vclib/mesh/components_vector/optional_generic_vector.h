@@ -33,15 +33,15 @@ class OptionalGenericVector
 {
 protected:
 	bool isEnabled() const;
-	void enable(unsigned int size);
+	void enable(uint size);
 	void disable();
 
-	T& at(unsigned int i);
-	const T& at(unsigned int i) const;
+	T& at(uint i);
+	const T& at(uint i) const;
 
 	void clear();
-	void resize(unsigned int size);
-	void reserve(unsigned int size);
+	void resize(uint size);
+	void reserve(uint size);
 	void compact(const std::vector<int>& newIndices);
 
 private:

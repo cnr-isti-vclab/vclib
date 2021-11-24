@@ -69,7 +69,7 @@ protected:
 		return contPtr->optionalVec;
 	}
 
-	unsigned int index(const T* e) const
+	uint index(const T* e) const
 	{
 		assert(contPtr != nullptr);
 		assert(!contPtr->vec.empty() && e >= contPtr->vec.data() && e <= &contPtr->vec.back());

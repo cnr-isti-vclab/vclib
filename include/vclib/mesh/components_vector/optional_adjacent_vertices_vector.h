@@ -34,8 +34,8 @@ class OptionalAdjacentVerticesVector
 {
 public:
 	void clear() {}
-	void resize(unsigned int) {}
-	void reserve(unsigned int) {}
+	void resize(uint) {}
+	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -55,10 +55,10 @@ public:
 	using Base::resize;
 	using Base::compact;
 	bool             isAdjacentVerticesEnabled() const { return Base::isEnabled(); };
-	void             enableAdjacentVertices(unsigned int size) { Base::enable(size); }
+	void             enableAdjacentVertices(uint size) { Base::enable(size); }
 	void             disableAdjacentVertices() { Base::disable(); }
-	AdjVertsContainer&       adjVerts(unsigned int i) { return Base::at(i); }
-	const AdjVertsContainer& adjVerts(unsigned int i) const { return Base::at(i); }
+	AdjVertsContainer&       adjVerts(uint i) { return Base::at(i); }
+	const AdjVertsContainer& adjVerts(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

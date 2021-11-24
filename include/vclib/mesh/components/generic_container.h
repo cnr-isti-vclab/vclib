@@ -77,14 +77,14 @@ protected:
 	using GCRangeIterator      = RangeIterator<GenericContainer, GCIterator>;
 	using ConstGCRangeIterator = ConstRangeIterator<GenericContainer, ConstGCIterator>;
 
-	unsigned int size() const;
+	uint size() const;
 
-	C&       at(unsigned int i);
-	const C& at(unsigned int i) const;
+	C&       at(uint i);
+	const C& at(uint i) const;
 	C&       atMod(int i);
 	const C& atMod(int i) const;
 
-	void set(const C& e, unsigned int i);
+	void set(const C& e, uint i);
 	void set(const std::vector<C>& list);
 
 	bool contains(const C& e) const;
@@ -97,16 +97,16 @@ protected:
 	/** Member functions specific for vector **/
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resize(unsigned int n);
+	VCL_ENABLE_IF(M < 0, void) resize(uint n);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) pushBack(const C& v);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insert(unsigned int i, const C& v);
+	VCL_ENABLE_IF(M < 0, void) insert(uint i, const C& v);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) erase(unsigned int i);
+	VCL_ENABLE_IF(M < 0, void) erase(uint i);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clear();

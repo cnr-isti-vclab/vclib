@@ -34,8 +34,8 @@ class OptionalWedgeColorsVector
 {
 public:
 	void clear() {}
-	void reserve(unsigned int) {}
-	void resize(unsigned int) {}
+	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -52,10 +52,10 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	bool                        isWedgeColorsEnabled() const { return Base::isEnabled(); };
-	void                        enableWedgeColors(unsigned int size) { Base::enable(size); }
+	void                        enableWedgeColors(uint size) { Base::enable(size); }
 	void                        disableWedgeColors() { Base::disable(); }
-	WedgeColorsContainer&       wedgeColors(unsigned int i) { return Base::at(i); }
-	const WedgeColorsContainer& wedgeColors(unsigned int i) const { return Base::at(i); }
+	WedgeColorsContainer&       wedgeColors(uint i) { return Base::at(i); }
+	const WedgeColorsContainer& wedgeColors(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

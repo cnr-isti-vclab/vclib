@@ -91,13 +91,13 @@ public:
 
 	/** Member functions **/
 
-	vcl::Color&       wedgeColor(unsigned int i);
-	const vcl::Color& wedgeColor(unsigned int i) const;
+	vcl::Color&       wedgeColor(uint i);
+	const vcl::Color& wedgeColor(uint i) const;
 
 	vcl::Color&       wedgeColorMod(int i);
 	const vcl::Color& wedgeColorMod(int i) const;
 
-	void setWedgeColor(const vcl::Color& t, unsigned int i);
+	void setWedgeColor(const vcl::Color& t, uint i);
 	void setWedgeColors(const std::vector<vcl::Color>& list);
 
 	/** Iterator Member functions **/
@@ -113,16 +113,16 @@ protected:
 	/** Member functions specific for vector **/
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeWedgeColors(unsigned int n);
+	VCL_ENABLE_IF(M < 0, void) resizeWedgeColors(uint n);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) pushWedgeColor(const vcl::Color& t);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertWedgeColor(unsigned int i, const vcl::Color& t);
+	VCL_ENABLE_IF(M < 0, void) insertWedgeColor(uint i, const vcl::Color& t);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseWedgeColor(unsigned int i);
+	VCL_ENABLE_IF(M < 0, void) eraseWedgeColor(uint i);
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearWedgeColor();
@@ -132,9 +132,9 @@ protected:
 	bool wedgeColorsEnabled() const;
 
 private:
-	unsigned int thisId() const { return B::index((T*) this); }
+	uint thisId() const { return B::index((T*) this); }
 
-	unsigned int wedgeColorsNumber() const;
+	uint wedgeColorsNumber() const;
 };
 
 /**

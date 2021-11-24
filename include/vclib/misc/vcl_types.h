@@ -49,4 +49,6 @@
 // https://stackoverflow.com/questions/44268316/passing-a-template-type-into-a-macro
 #define VCL_COMMA ,
 
+using uint = unsigned int;
+
 #endif // VCL_TYPE_TRAITS_H

@@ -34,8 +34,8 @@ class OptionalWedgeTexCoordsVector
 {
 public:
 	void clear() {}
-	void reserve(unsigned int) {}
-	void resize(unsigned int) {}
+	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
@@ -52,10 +52,10 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	bool                isWedgeTexCoordsEnabled() const { return Base::isEnabled(); };
-	void                enableWedgeTexCoords(unsigned int size) { Base::enable(size); }
+	void                enableWedgeTexCoords(uint size) { Base::enable(size); }
 	void                disableWedgeTexCoords() { Base::disable(); }
-	WedgeTexCoordsContainer&       wedgeTexCoords(unsigned int i) { return Base::at(i); }
-	const WedgeTexCoordsContainer& wedgeTexCoords(unsigned int i) const { return Base::at(i); }
+	WedgeTexCoordsContainer&       wedgeTexCoords(uint i) { return Base::at(i); }
+	const WedgeTexCoordsContainer& wedgeTexCoords(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

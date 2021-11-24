@@ -49,32 +49,32 @@ class TriangleBitFlags : public BitFlags
 {
 public:
 	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
-	bool userBitFlag(unsigned int bit) const;
-	void setUserBit(unsigned int bit);
-	void clearUserBit(unsigned int bit);
+	bool userBitFlag(uint bit) const;
+	void setUserBit(uint bit);
+	void clearUserBit(uint bit);
 
-	bool isEdgeOnBorder(unsigned int i) const;
+	bool isEdgeOnBorder(uint i) const;
 	bool isAnyEdgeOnBorder() const;
 
-	bool isEdgeSelected(unsigned int i) const;
+	bool isEdgeSelected(uint i) const;
 	bool isAnyEdgeSelected() const;
 
-	bool isEdgeFaux(unsigned int i) const;
+	bool isEdgeFaux(uint i) const;
 	bool isAnyEdgeFaux() const;
 
-	void setEdgeOnBorder(unsigned int i);
+	void setEdgeOnBorder(uint i);
 
-	void setEdgeSelected(unsigned int i);
+	void setEdgeSelected(uint i);
 
-	void setEdgeFaux(unsigned int i);
+	void setEdgeFaux(uint i);
 
-	void clearEdgeOnBorder(unsigned int i);
+	void clearEdgeOnBorder(uint i);
 	void clearAllEdgeOnBorder();
 
-	void clearEdgeSelected(unsigned int i);
+	void clearEdgeSelected(uint i);
 	void clearAllEdgeSelected();
 
-	void clearEdgeFaux(unsigned int i);
+	void clearEdgeFaux(uint i);
 	void clearAllEdgeFaux();
 
 protected:
@@ -90,7 +90,7 @@ protected:
 	};
 
 	// hide base class constant, 8 is the number of bits used by this class
-	static const unsigned int FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 8; // bits [11, 31]
+	static const uint FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 8; // bits [11, 31]
 
 private:
 	// will use these members as isOnBorder0, setOnBorder0 and clearOnBorder0
