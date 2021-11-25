@@ -162,7 +162,7 @@ template<typename T>
 std::vector<int> FaceContainer<T>::faceCompactIndices() const
 {
 	std::vector<int> newIndices(Base::vec.size());
-	uint     k = 0;
+	uint             k = 0;
 	for (uint i = 0; i < Base::vec.size(); ++i) {
 		if (!Base::vec[i].isDeleted()) {
 			newIndices[i] = k;
@@ -292,7 +292,8 @@ FaceContainer<T>::disablePerFaceAdjacentFaces()
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalColor<U>(), bool) FaceContainer<T>::isPerFaceColorEnabled() const
+VCL_ENABLE_IF(face::hasOptionalColor<U>(), bool)
+FaceContainer<T>::isPerFaceColorEnabled() const
 {
 	return Base::optionalVec.isColorEnabled();
 }
@@ -303,7 +304,8 @@ VCL_ENABLE_IF(face::hasOptionalColor<U>(), bool) FaceContainer<T>::isPerFaceColo
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalColor<U>(), void) FaceContainer<T>::enablePerFaceColor()
+VCL_ENABLE_IF(face::hasOptionalColor<U>(), void)
+FaceContainer<T>::enablePerFaceColor()
 {
 	Base::optionalVec.enableColor(faceContainerSize());
 }
@@ -314,7 +316,8 @@ VCL_ENABLE_IF(face::hasOptionalColor<U>(), void) FaceContainer<T>::enablePerFace
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalColor<U>(), void) FaceContainer<T>::disablePerFaceColor()
+VCL_ENABLE_IF(face::hasOptionalColor<U>(), void)
+FaceContainer<T>::disablePerFaceColor()
 {
 	Base::optionalVec.disableColor();
 }
@@ -660,7 +663,7 @@ template<typename T>
 uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces)
 {
 	uint baseId = Base::vec.size();
-	T*           oldB   = Base::vec.data();
+	T*   oldB   = Base::vec.data();
 	Base::vec.resize(Base::vec.size() + nFaces);
 	T* newB = Base::vec.data();
 	fn += nFaces;
@@ -705,7 +708,7 @@ template<typename T>
 std::vector<int> vcl::mesh::FaceContainer<T>::compactFaces()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	uint     k = 0;
+	uint k = 0;
 
 	std::vector<int> newIndices = faceCompactIndices();
 	for (uint i = 0; i < newIndices.size(); ++i) {

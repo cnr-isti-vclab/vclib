@@ -77,6 +77,7 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 
 /**
  * @brief Clears all the Elements contained in the mesh.
+ * @todo manage also other components
  */
 template<typename... Args>
 void Mesh<Args...>::clear()
@@ -91,6 +92,11 @@ void Mesh<Args...>::clear()
 	}
 }
 
+/**
+ * @brief Returns the index of the given vertex in the VertexContainer of the Mesh.
+ * @param v: a reference of a vertex of the Mesh.
+ * @return the index of the given vertex.
+ */
 template<typename... Args>
 template<typename U>
 VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
@@ -100,6 +106,12 @@ Mesh<Args...>::index(const typename Mesh::VertexType& v) const
 	return VertexContainer::index(&v);
 }
 
+/**
+ * @brief Returns the index of the given vertex in the VertexContainer of the Mesh.
+ * @overload uint Mesh<Args...>::index(const typename Mesh::VertexType& v) const
+ * @param v: a pointer of a vertex of the Mesh.
+ * @return the index of the given vertex.
+ */
 template<typename... Args>
 template<typename U>
 VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
@@ -110,14 +122,14 @@ Mesh<Args...>::index(const typename Mesh::VertexType* v) const
 }
 
 /**
- * @brief Add a new vertex into the mesh, returning the id of the added vertex.
+ * @brief Add a new vertex into the mesh, returning the index of the added vertex.
  *
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
  * @note This function will be available only if the Mesh has the Vertex Container.
  *
- * @return the id of the new vertex.
+ * @return the index of the new vertex.
  */
 template<typename... Args>
 template<typename U>
@@ -334,24 +346,24 @@ Mesh<Args...>::addFace()
 
 template<typename... Args>
 template<typename U, typename... V>
-VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
+VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), uint)
 Mesh<Args...>::addFace(V... args)
 {
-	return addFace({args...});
-}
-
-template<typename... Args>
-template<typename U>
-VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
-Mesh<Args...>::addFace(
-	const std::vector<typename Mesh::VertexType*>& v)
-{
+	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
 	uint fid = addFace();
+	Face& f = FaceContainer::face(fid);
 
-	FaceContainer::face(fid).setVertices(v);
+	constexpr uint n = sizeof...(args);
+	if constexpr(Face::VERTEX_NUMBER < 0){
+		f.resizeVertices(n);
+	}
+	else {
+		static_assert (n == Face::VERTEX_NUMBER, "Wrong number of vertices in Mesh::addFace.");
+	}
 
+	addFaceHelper(f, args...);
 	return fid;
 }
 
@@ -501,6 +513,58 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 			FaceContainer::setContainerPointer(f);
 		}
 	}
+}
+
+template<typename... Args>
+template<typename U>
+VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
+Mesh<Args...>::addFaceHelper(typename Mesh::FaceType& f, typename Mesh::VertexType* v)
+{
+	using FaceContainer = typename Mesh<Args...>::FaceContainer;
+
+	// base case: we need to add the last vertex
+	const std::size_t n = f.vertexNumber() - 1;
+	f.vertex(n) = v; // set the vertex
+}
+
+template<typename... Args>
+template<typename U>
+VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
+Mesh<Args...>::addFaceHelper(typename Mesh::FaceType& f, uint vid)
+{
+	using FaceContainer = typename Mesh<Args...>::FaceContainer;
+	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+
+	// base case: we need to add the last vertex
+	const std::size_t n = f.vertexNumber() - 1;
+	f.vertex(n) = &VertexContainer::vertex(vid); // set the vertex
+}
+
+template<typename... Args>
+template<typename U, typename... V>
+VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
+Mesh<Args...>::addFaceHelper(typename Mesh::FaceType& f, typename Mesh::VertexType* v, V... args)
+{
+	using FaceContainer = typename Mesh<Args...>::FaceContainer;
+
+	// position on which add the vertex
+	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+	f.vertex(n) = v; // set the vertex
+	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
+}
+
+template<typename... Args>
+template<typename U, typename... V>
+VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
+Mesh<Args...>::addFaceHelper(typename Mesh::FaceType& f, uint vid, V... args)
+{
+	using FaceContainer = typename Mesh<Args...>::FaceContainer;
+	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+
+	// position on which add the vertex
+	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+	f.vertex(n) = &VertexContainer::vertex(vid); // set the vertex
+	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
 /**

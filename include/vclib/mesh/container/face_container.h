@@ -89,7 +89,7 @@ public:
 	void deleteFace(uint i);
 	void deleteFace(const FaceType* f);
 
-	uint     faceIndexIfCompact(uint id) const;
+	uint             faceIndexIfCompact(uint id) const;
 	std::vector<int> faceCompactIndices() const;
 
 	FaceIterator           faceBegin(bool jumpDeleted = true);
@@ -234,7 +234,7 @@ protected:
 
 	uint addFace();
 	uint addFaces(uint nFaces);
-	void         reserveFaces(uint size);
+	void reserveFaces(uint size);
 
 	void setContainerPointer(FaceType& f);
 

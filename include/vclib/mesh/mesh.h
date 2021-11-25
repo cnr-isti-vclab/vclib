@@ -96,12 +96,8 @@ public:
 	addFace();
 
 	template<typename U = Mesh, typename... V>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
+	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), uint)
 	addFace(V... args);
-
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
-	addFace(const std::vector<typename Mesh::VertexType*>& v);
 
 	template<typename U = Mesh>
 	VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
@@ -147,6 +143,23 @@ protected:
 		const std::vector<int>&     newIndices);
 
 	void updateAllOptionalContainerReferences();
+
+private:
+	template<typename U = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
+	addFaceHelper(typename Mesh::FaceType& f, typename Mesh::VertexType* v);
+
+	template<typename U = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
+	addFaceHelper(typename Mesh::FaceType& f, uint vid);
+
+	template<typename U = Mesh, typename... V>
+	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
+	addFaceHelper(typename Mesh::FaceType& f, typename Mesh::VertexType* v, V... args);
+
+	template<typename U = Mesh, typename... V>
+	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
+	addFaceHelper(typename Mesh::FaceType& f, uint vid, V... args);
 };
 
 template<typename... A>
