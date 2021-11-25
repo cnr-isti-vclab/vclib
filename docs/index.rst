@@ -12,4 +12,6 @@ Visual Computing Library
    mesh
    elements
    components
+   containers
    meshes
+   tutorials

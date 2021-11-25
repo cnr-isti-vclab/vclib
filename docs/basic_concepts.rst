@@ -105,7 +105,7 @@ We can create from scratch a mesh:
    mesh.addVertices(p0, p1, p2, p3, p4);
 
    // add a face
-   mesh.addFace(&mesh.vertex(0), &mesh.vertex(1), &mesh.vertex(2));
+   mesh.addFace(0, 1, 2);
 
    // add another face but initialize vertices later:
    uint fid = mesh.addFace(); // each add returns an id telling the first added element

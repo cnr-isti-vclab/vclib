@@ -14,7 +14,7 @@ The data structure is a Mesh composed of:
    * a Mark Component
    * a Transform Matrix Component
 
-You can look for the trimesh::Vertex and the trimesh::Face pages to see how Vertices
+You can look for the :ref:`trimesh_vertex` and the :ref:`trimesh_face` pages to see how Vertices
 and Faces are defined in the TriMesh class.
 
 Listed below there are the Mesh, VertexContainer and FaceContainer member functions,
