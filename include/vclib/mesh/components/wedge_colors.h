@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
-#include "generic_container.h"
+#include "internal/generic_container.h"
 
 #include <vclib/space/color.h>
 
@@ -34,9 +34,9 @@ class WedgeColorsTriggerer
 };
 
 template<int N>
-class WedgeColors : protected GenericContainer<vcl::Color, N>, public WedgeColorsTriggerer
+class WedgeColors : protected internal::GenericContainer<vcl::Color, N>, public WedgeColorsTriggerer
 {
-	using Base = GenericContainer<vcl::Color, N>;
+	using Base = internal::GenericContainer<vcl::Color, N>;
 
 public:
 	static const int WEDGE_COLOR_NUMBER = Base::CONTAINER_SIZE;

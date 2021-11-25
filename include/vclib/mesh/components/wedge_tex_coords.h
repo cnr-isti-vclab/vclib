@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
-#include "generic_container.h"
+#include "internal/generic_container.h"
 
 #include <vclib/space/tex_coord.h>
 
@@ -35,10 +35,10 @@ class WedgeTexCoordsTriggerer
 
 template<typename Scalar, int N>
 class WedgeTexCoords :
-		protected GenericContainer<vcl::TexCoord<Scalar>, N>,
+		protected internal::GenericContainer<vcl::TexCoord<Scalar>, N>,
 		public WedgeTexCoordsTriggerer
 {
-	using Base = GenericContainer<vcl::TexCoord<Scalar>, N>;
+	using Base = internal::GenericContainer<vcl::TexCoord<Scalar>, N>;
 
 public:
 	static const int WEDGE_TEX_COORD_NUMBER = Base::CONTAINER_SIZE;

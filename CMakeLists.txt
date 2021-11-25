@@ -60,8 +60,6 @@ set(HEADERS
 	include/vclib/mesh/components/bounding_box.h
 	include/vclib/mesh/components/color.h
 	include/vclib/mesh/components/coordinate.h
-	include/vclib/mesh/components/element_references.h
-	include/vclib/mesh/components/generic_container.h
 	include/vclib/mesh/components/mark.h
 	include/vclib/mesh/components/mutable_bit_flags.h
 	include/vclib/mesh/components/normal.h
@@ -74,6 +72,8 @@ set(HEADERS
 	include/vclib/mesh/components/triangle_bit_flags.h
 	include/vclib/mesh/components/wedge_colors.h
 	include/vclib/mesh/components/wedge_tex_coords.h
+	include/vclib/mesh/components/internal/element_references.h
+	include/vclib/mesh/components/internal/generic_container.h
 	include/vclib/mesh/components_optional/custom_components.h
 	include/vclib/mesh/components_optional/optional_adjacent_faces.h
 	include/vclib/mesh/components_optional/optional_adjacent_vertices.h
@@ -150,8 +150,6 @@ set(SOURCES
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_pos.cpp
 	include/vclib/mesh/components/bit_flags.cpp
-	include/vclib/mesh/components/element_references.cpp
-	include/vclib/mesh/components/generic_container.cpp
 	include/vclib/mesh/components/mutable_bit_flags.cpp
 	include/vclib/mesh/components/polygon_bit_flags.cpp
 	include/vclib/mesh/components/principal_curvature.cpp
@@ -160,6 +158,8 @@ set(SOURCES
 	include/vclib/mesh/components/vertex_references.cpp
 	include/vclib/mesh/components/wedge_colors.cpp
 	include/vclib/mesh/components/wedge_tex_coords.cpp
+	include/vclib/mesh/components/internal/element_references.cpp
+	include/vclib/mesh/components/internal/generic_container.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_faces.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_vertices.cpp
 	include/vclib/mesh/components_optional/optional_mutable_bit_flags.cpp

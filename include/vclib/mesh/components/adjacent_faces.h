@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
-#include "element_references.h"
+#include "internal/element_references.h"
 
 namespace vcl::comp {
 
@@ -39,9 +39,9 @@ class AdjacentFacesTriggerer
  * negative number means dynamic).
  */
 template<typename Face, int N>
-class AdjacentFaces : protected ElementReferences<Face, N>, public AdjacentFacesTriggerer
+class AdjacentFaces : protected internal::ElementReferences<Face, N>, public AdjacentFacesTriggerer
 {
-	using Base = ElementReferences<Face, N>;
+	using Base = internal::ElementReferences<Face, N>;
 
 public:
 	static const int ADJ_FACE_NUMBER = Base::CONTAINER_SIZE;

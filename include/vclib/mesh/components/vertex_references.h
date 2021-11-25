@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
-#include "element_references.h"
+#include "internal/element_references.h"
 
 namespace vcl::comp {
 
@@ -32,9 +32,9 @@ class VertexReferencesTriggerer
 };
 
 template<typename Vertex, int N>
-class VertexReferences : protected ElementReferences<Vertex, N>, public VertexReferencesTriggerer
+class VertexReferences : protected internal::ElementReferences<Vertex, N>, public VertexReferencesTriggerer
 {
-	using Base = ElementReferences<Vertex, N>;
+	using Base = internal::ElementReferences<Vertex, N>;
 
 public:
 	using VertexType = Vertex;

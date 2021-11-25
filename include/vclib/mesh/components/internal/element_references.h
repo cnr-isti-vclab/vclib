@@ -20,54 +20,40 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "element_references.h"
+#ifndef VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H
+#define VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H
 
-#include <algorithm>
+#include "generic_container.h"
 
-namespace vcl::comp {
+namespace vcl::comp::internal {
 
+/**
+ * @brief The ElementReferences class is a generic container of references to another Element
+ * (that could be Vertex, Face...). This class is meant to be inherited and used by Components
+ * like Vertex References, Face References: in general, a class that need to store a static or
+ * dynamic number of references of another element.
+ *
+ * Its major use is for adjacencies.
+ */
 template<typename Elem, int N>
-ElementReferences<Elem, N>::ElementReferences() : Base()
+class ElementReferences : protected GenericContainer<Elem*, N>
 {
-	if constexpr (N >= 0) {
-		// I'll use the array, N is >= 0.
-		// There will be a static number of references.
-		Base::container = std::array<Elem*, N> {nullptr};
-	}
-	else {
-		// I'll use the vector, because N is < 0.
-		// There will be a dynamic number of references.
-		Base::container = std::vector<Elem*>();
-	}
-}
+private:
+	using Base = GenericContainer<Elem*, N>;
 
-template<typename Elem, int N>
-void ElementReferences<Elem, N>::updateElementReferences(const Elem* oldBase, const Elem* newBase)
-{
-	for (uint j = 0; j < Base::size(); ++j) {
-		if (Base::at(j) != nullptr) {
-			size_t diff = Base::at(j) - oldBase;
-			Base::at(j)  = (Elem*) newBase + diff;
-		}
-	}
-}
+public:
+	/** Constructor **/
 
-template<typename Elem, int N>
-void ElementReferences<Elem, N>::updateElementReferencesAfterCompact(
-	const Elem*             base,
-	const std::vector<int>& newIndices)
-{
-	for (uint j = 0; j < Base::size(); ++j) {
-		if (Base::at(j) != nullptr) {
-			size_t diff = Base::at(j) - base;
-			if (newIndices[diff] < 0) { // element has been removed
-				Base::at(j) = nullptr;
-			}
-			else { // the new pointer will be base + newIndices[diff]
-				Base::at(j) = (Elem*) base + newIndices[diff];
-			}
-		}
-	}
-}
+	ElementReferences();
 
-} // namespace vcl::comp
+protected:
+	void updateElementReferences(const Elem* oldBase, const Elem* newBase);
+
+	void updateElementReferencesAfterCompact(const Elem* base, const std::vector<int>& newIndices);
+};
+
+} // namespace vcl::comp::internal
+
+#include "element_references.cpp"
+
+#endif // VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H

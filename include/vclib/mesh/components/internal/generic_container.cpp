@@ -22,7 +22,7 @@
 
 #include "generic_container.h"
 
-namespace vcl::comp {
+namespace vcl::comp::internal {
 
 /**
  * @brief Empty constructor of the container. If the container is dynamic, is size is 0. When the
@@ -214,4 +214,4 @@ typename GenericContainer<C, N>::ConstGCRangeIterator GenericContainer<C, N>::ra
 	return ConstGCRangeIterator(*this, &GenericContainer::begin, &GenericContainer::end);
 }
 
-} // namespace vcl::comp
+} // namespace vcl::comp::internal

@@ -30,9 +30,9 @@
 
 #include <vclib/misc/vcl_types.h>
 
-#include "../iterators/range_iterator.h"
+#include "../../iterators/range_iterator.h"
 
-namespace vcl::comp {
+namespace vcl::comp::internal {
 
 /**
  * @brief The GenericContainer class is a generic container class of values, that could be static
@@ -123,7 +123,7 @@ protected:
 	Container container;
 };
 
-} // namespace vcl::comp
+} // namespace vcl::comp::internal
 
 #include "generic_container.cpp"
 
