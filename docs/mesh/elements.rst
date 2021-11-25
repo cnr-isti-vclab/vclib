@@ -3,7 +3,7 @@
 Elements
 ========
 
-In VCLib, Elements are data structures that will be stored into Containers inside a Mesh data structures.
+In VCLib, Elements are data structures that will be stored into Containers inside a Mesh data structure.
 Examples of Elements are vertices, faces.
 Each one of these elements can be composed of an arbitrary number of components.
 
@@ -13,4 +13,4 @@ Here are listed the Elements provided by VCLib:
    :maxdepth: 1
 
    elements/vertex
-   elements/vertex
+   elements/face

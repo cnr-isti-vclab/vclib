@@ -105,6 +105,7 @@ set(HEADERS
 	include/vclib/mesh/container/element_container.h
 	include/vclib/mesh/container/face_container.h
 	include/vclib/mesh/container/vertex_container.h
+	include/vclib/mesh/elements/edge.h
 	include/vclib/mesh/elements/face.h
 	include/vclib/mesh/elements/face_components.h
 	include/vclib/mesh/elements/face_components_optional.h

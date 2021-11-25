@@ -11,6 +11,7 @@ Visual Computing Library
    basic_concepts
    space
    meshes
+   requirements
    algorithms
    io
    exceptions
