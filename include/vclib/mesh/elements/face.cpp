@@ -126,8 +126,7 @@ void Face<Args...>::setVertices(V... args)
  * wedge components) will be added. If n is lower than the old number of vertex references, the
  * difference of vertex references (and relative wedge components) will be removed.
  *
- * @note This member function is available only if the size of the face is dynamic (-1), that is if
- * the Mesh is Polygonal.
+ * This member function is available only **if the face is polygonal (its size is dynamic, N < 0)**.
  *
  * @param n: the new number of vertices.
  */

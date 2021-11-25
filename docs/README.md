@@ -9,4 +9,4 @@ Requirements:
  - Doxygen (`sudo apt install doxygen`)
  - sphinx (`pip3 install sphinx`)
  - breathe (`pip3 install breathe`)
- - read the docs theme (`pip3 install sphinx_rtd_theme`)
+ - furo theme (`pip3 install furo`)

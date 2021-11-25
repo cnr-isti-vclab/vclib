@@ -108,7 +108,6 @@ Mesh<Args...>::index(const typename Mesh::VertexType& v) const
 
 /**
  * @brief Returns the index of the given vertex in the VertexContainer of the Mesh.
- * @overload uint Mesh<Args...>::index(const typename Mesh::VertexType& v) const
  * @param v: a pointer of a vertex of the Mesh.
  * @return the index of the given vertex.
  */
@@ -127,7 +126,7 @@ Mesh<Args...>::index(const typename Mesh::VertexType* v) const
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * @note This function will be available only if the Mesh has the Vertex Container.
+ * This function will be available only **if the Mesh has the Vertex Container**.
  *
  * @return the index of the new vertex.
  */
@@ -160,7 +159,7 @@ Mesh<Args...>::addVertex()
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * @note This function will be available only if the Mesh has the Vertex Container.
+ * This function will be available only **if the Mesh has the Vertex Container**.
  *
  * @param p: coordinate of the new vertex.
  * @return the id of the new vertex.
@@ -187,7 +186,7 @@ Mesh<Args...>::addVertex(
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * @note This function will be available only if the Mesh has the Vertex Container.
+ * This function will be available only **if the Mesh has the Vertex Container**.
  *
  * @param n: the number of vertices to add to the mesh.
  * @return the id of the first added vertex.
@@ -233,7 +232,7 @@ Mesh<Args...>::addVertices(uint n)
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * @note This function will be available only if the Mesh has the Vertex Container.
+ * This function will be available only **if the Mesh has the Vertex Container**.
  *
  * @param v: list of vertices
  * @return the id of the first added vertex.
@@ -268,7 +267,7 @@ Mesh<Args...>::addVertices(
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * @note This function will be available only if the Mesh has the Vertex Container.
+ * This function will be available only **if the Mesh has the Vertex Container**.
  *
  * @param n: the new capacity of the vertex container.
  */
@@ -292,7 +291,7 @@ Mesh<Args...>::reserveVertices(uint n)
  * will change assigning to each vertex id their new position in the container. The function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * @note This function will be available only if the Mesh has the Vertex Container.
+ * This function will be available only **if the Mesh has the Vertex Container**.
  */
 template<typename... Args>
 template<typename U>

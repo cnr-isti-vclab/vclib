@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'vclib'
+project = 'VCLib'
 copyright = '2021, Visual Computing Lab, ISTI - CNR'
 author = 'Visual Computing Lab, ISTI - CNR'
 
@@ -33,7 +33,6 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
     'readthedocs_ext.readthedocs',
-    "sphinx_rtd_theme",
     "breathe"
 ]
 
@@ -54,7 +53,12 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
+
+# Material theme options (see theme.conf for more information)
+html_theme_options = {
+
+}
 
 master_doc = 'index'
 

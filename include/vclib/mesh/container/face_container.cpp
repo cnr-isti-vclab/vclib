@@ -251,10 +251,10 @@ FaceContainer<T>::isPerFaceAdjacentFacesEnabled() const
 
 /**
  * @brief Container::enableFaceAdjacentFaces enable the Optional Adjacent Faces of the face.
- * @note This function is available **only if the Face Element has the OptionalAdjacentFaces
- * Component**.
  *
- * @note If the size of the Face is dynamic (N < 0), when enabled, the adjacent faces number will be
+ * This function is available **only if the Face Element has the OptionalAdjacentFaces Component**.
+ *
+ * If the Face is polygonal (dynamic size, N < 0), when enabled, the adjacent faces number will be
  * the same of the vertex number for each face of the container. This is because, for Faces,
  * Adjacent Faces number is tied to the number of vertices.
  */
@@ -529,10 +529,9 @@ FaceContainer<T>::isPerFaceWedgeColorsEnabled() const
 
 /**
  * @brief Enable the Optional Wedge Colors of the face.
- * @note This function is available **only if the Face Element has the OptionalWedgeColors
- * Component**.
+ * This function is available **only if the Face Element has the OptionalWedgeColors Component**.
  *
- * @note If the size of the Face is dynamic (N < 0), when enabled, the wedge colors number will be
+ * If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge colors number will be
  * the same of the vertex number for each face of the container. This is because, for Faces,
  * Wedge Colors number is tied to the number of vertices.
  */
@@ -578,10 +577,10 @@ FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
 
 /**
  * @brief Enables the Optional Wedge TexCoords of the face.
- * @note This function is available **only if the Face Element has the OptionalWedgeTexCoords
+ *  This function is available **only if the Face Element has the OptionalWedgeTexCoords
  * Component**.
  *
- * @note If the size of the Face is dynamic (N < 0), when enabled, the wedge texcoord number will be
+ * If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge texcoord number will be
  * the same of the vertex number for each face of the container. This is because, for Faces,
  * Wedge TexCoords number is tied to the number of vertices.
  */
