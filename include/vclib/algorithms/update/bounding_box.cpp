@@ -42,7 +42,7 @@ void updateBoundingBox(MeshType& m)
 	vcl::requireVertices<MeshType>();
 	vcl::requireBoundingBox<MeshType>();
 
-	using VertexType = typename MeshType::Vertex;
+	using VertexType = typename MeshType::VertexType;
 
 	m.boundingBox().setNull();
 	for (const VertexType& v : m.vertices()) {

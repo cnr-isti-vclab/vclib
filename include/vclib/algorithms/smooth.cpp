@@ -46,8 +46,8 @@ void accumulateLaplacianInfo(
 	bool                                   cotangentFlag = false)
 {
 	using ScalarType = typename CoordType::ScalarType;
-	using VertexType = typename MeshType::Vertex;
-	using FaceType   = typename MeshType::Face;
+	using VertexType = typename MeshType::VertexType;
+	using FaceType   = typename MeshType::FaceType;
 
 	ScalarType weight = 1.0f;
 
@@ -131,8 +131,9 @@ void vertexCoordLaplacianSmoothing(
 	vcl::requireVertices<MeshType>();
 	vcl::requireFaces<MeshType>();
 
-	using VertexType                                    = typename MeshType::Vertex;
-	using CoordType                                     = typename VertexType::CoordType;
+	using VertexType = typename MeshType::VertexType;
+	using CoordType  = typename VertexType::CoordType;
+
 	internal::LaplacianInfo<CoordType>              lpz = {CoordType(0, 0, 0), 0};
 	std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize());
 

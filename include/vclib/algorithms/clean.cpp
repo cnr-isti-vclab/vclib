@@ -55,11 +55,11 @@ public:
 template<typename MeshType>
 std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m)
 {
-	using VertexType = typename MeshType::Vertex;
+	using VertexType = typename MeshType::VertexType;
 
 	std::vector<bool> referredVertices(m.vertexContainerSize(), false);
 	if constexpr (vcl::hasFaces<MeshType>()) {
-		using FaceType = typename MeshType::Face;
+		using FaceType = typename MeshType::FaceType;
 
 		for (const FaceType& f : m.faces()) {
 			for (const VertexType* v : f.vertices()) {
@@ -151,7 +151,7 @@ uint removeUnreferencedVertices(MeshType& m)
 {
 	vcl::requireVertices<MeshType>();
 
-	using VertexType = typename MeshType::Vertex;
+	using VertexType = typename MeshType::VertexType;
 
 	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
 
@@ -185,9 +185,9 @@ uint removeDuplicatedVertices(MeshType& m)
 	vcl::requireVertices<MeshType>();
 	vcl::requireFaces<MeshType>();
 
-	using VertexType    = typename MeshType::Vertex;
-	using FaceType      = typename MeshType::Face;
-	using VertexPointer = typename MeshType::Vertex*;
+	using VertexType    = typename MeshType::VertexType;
+	using FaceType      = typename MeshType::FaceType;
+	using VertexPointer = typename MeshType::VertexType*;
 
 	if (m.vertexNumber() == 0)
 		return 0;
@@ -276,7 +276,7 @@ uint removeDuplicatedFaces(MeshType& m)
 	vcl::requireVertices<MeshType>();
 	vcl::requireTriangleMesh(m); // TODO: remove this and adjust the function for polymeshes
 
-	using FaceType = typename MeshType::Face;
+	using FaceType = typename MeshType::FaceType;
 
 	std::vector<internal::SortedTriple<FaceType*>> fvec;
 	for (FaceType& f : m.faces()) {
@@ -312,7 +312,7 @@ uint removeDuplicatedFaces(MeshType& m)
 template<typename MeshType>
 uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 {
-	using VertexType = typename MeshType::Vertex;
+	using VertexType = typename MeshType::VertexType;
 
 	int count_vd = 0;
 
@@ -324,7 +324,7 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 	}
 
 	if constexpr (hasFaces(m)) {
-		using FaceType = typename MeshType::Face;
+		using FaceType = typename MeshType::FaceType;
 		if (deleteAlsoFaces) {
 			for (FaceType& f : m.faces()) {
 				bool deg = false;

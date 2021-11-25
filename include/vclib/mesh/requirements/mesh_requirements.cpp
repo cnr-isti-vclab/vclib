@@ -46,7 +46,7 @@ template<typename MeshType>
 bool constexpr hasTriangles()
 {
 	if constexpr (hasFaces<MeshType>()) {
-		using F = typename MeshType::Face;
+		using F = typename MeshType::FaceType;
 		using R = typename F::VertexReferences;
 		return R::VERTEX_NUMBER == 3;
 	}
@@ -60,7 +60,7 @@ bool isTriangleMesh(const MeshType& m)
 		return true;
 	}
 	else {
-		using F = typename MeshType::Face;
+		using F = typename MeshType::FaceType;
 		for (const F& f : m.faces()) {
 			if (f.vertexNumber() != 3)
 				return false;
@@ -73,7 +73,7 @@ template<typename MeshType>
 bool constexpr hasQuads()
 {
 	if constexpr (hasFaces<MeshType>()) {
-		using F = typename MeshType::Face;
+		using F = typename MeshType::FaceType;
 		if constexpr (vcl::face::hasVertexReferences<F>()) {
 			using R = typename F::VertexReferences;
 			return R::VERTEX_NUMBER == 4;
@@ -125,7 +125,7 @@ void requireTriangleMesh(const MeshType& m)
 {
 	if constexpr (!hasTriangles<MeshType>()) {
 		requireFaces<MeshType>();
-		using F = typename MeshType::Face;
+		using F = typename MeshType::FaceType;
 		for (const F& f : m.faces()) {
 			if (f.vertexNumber() != 3) {
 				throw MissingTriangularRequirementException("Triangle Mesh Required.");
@@ -139,7 +139,7 @@ void requireQuadMesh(const MeshType& m)
 {
 	if constexpr (!hasQuads<MeshType>()) {
 		requireFaces<MeshType>();
-		using F = typename MeshType::Face;
+		using F = typename MeshType::FaceType;
 		for (const F& f : m.faces()) {
 			if (f.vertexNumber() != 4) {
 				throw MissingQuadRequirementException("Quad Mesh Required.");

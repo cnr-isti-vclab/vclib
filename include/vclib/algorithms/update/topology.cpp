@@ -46,7 +46,7 @@ void clearPerVertexAdjacentFaces(MeshType& m)
 {
 	vcl::requirePerVertexAdjacentFaces(m);
 
-	using VertexType = typename MeshType::Vertex;
+	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
 		v.clearAdjFaces();
@@ -71,8 +71,8 @@ void updatePerVertexAdjacentFaces(MeshType& m)
 
 	vcl::requireFaces<MeshType>();
 
-	using VertexType = typename MeshType::Vertex;
-	using FaceType   = typename MeshType::Face;
+	using VertexType = typename MeshType::VertexType;
+	using FaceType   = typename MeshType::FaceType;
 
 	for (VertexType& v : m.vertices()) {
 		v.clearAdjFaces();
@@ -103,7 +103,7 @@ void clearPerFaceAdjacentFaces(MeshType& m)
 {
 	vcl::requirePerFaceAdjacentFaces(m);
 
-	using FaceType = typename MeshType::Face;
+	using FaceType = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
 		for (FaceType*& adjF : f.adjFaces()) {

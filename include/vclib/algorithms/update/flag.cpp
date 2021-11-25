@@ -46,8 +46,8 @@ void updateBorder(MeshType& m)
 	vcl::requireVertices(m);
 	vcl::requireFaces(m);
 
-	using VertexType = typename MeshType::Vertex;
-	using FaceType   = typename MeshType::Face;
+	using VertexType = typename MeshType::VertexType;
+	using FaceType   = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces())
 		f.clearAllEdgeOnBorder();

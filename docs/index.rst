@@ -9,9 +9,10 @@ Visual Computing Library
    :maxdepth: 1
 
    basic_concepts
-   mesh
-   elements
-   components
-   containers
+   space
    meshes
+   algorithms
+   io
+   exceptions
    tutorials
+   mesh

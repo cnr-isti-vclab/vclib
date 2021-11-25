@@ -8,5 +8,8 @@ These Containers are then inherited by a :ref:`mesh` class that is composed of a
 
 Here is the list of Containers provided by VCLib:
 
-   * :ref:`vertex_container`
-   * :ref:`face_container`
+.. toctree::
+   :maxdepth: 1
+
+   containers/vertex_container
+   containers/face_container

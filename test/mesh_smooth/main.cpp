@@ -54,9 +54,6 @@ class Face :
 
 class MyMesh : public vcl::Mesh<mymesh::Vertex, mymesh::Face, vcl::mesh::BoundingBox3d>
 {
-public:
-	using Vertex = mymesh::Vertex;
-	using Face   = mymesh::Face;
 };
 
 int main()

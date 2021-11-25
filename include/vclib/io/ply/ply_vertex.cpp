@@ -36,7 +36,7 @@ void loadVerticesTxt(
 	const PlyHeader& header,
 	MeshType& mesh)
 {
-	using VertexType = typename MeshType::Vertex;
+	using VertexType = typename MeshType::VertexType;
 	bool error = false;
 	vcl::Tokenizer spaceTokenizer;
 	error = !internal::nextLine(file, spaceTokenizer);
@@ -106,7 +106,7 @@ void loadVerticesBin(
 	const PlyHeader& header,
 	MeshType& mesh)
 {
-	using VertexType = typename MeshType::Vertex;
+	using VertexType = typename MeshType::VertexType;
 	mesh.addVertices(header.numberVertices());
 	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
 		VertexType& v = mesh.vertex(vid);
@@ -168,7 +168,7 @@ void saveVertices(
 	const PlyHeader& header,
 	const MeshType& mesh)
 {
-	using VertexType = typename MeshType::Vertex;
+	using VertexType = typename MeshType::VertexType;
 
 	bool bin = header.format() == ply::BINARY;
 	for(const VertexType& v : mesh.vertices()) {

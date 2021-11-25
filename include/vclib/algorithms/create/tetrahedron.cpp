@@ -78,7 +78,7 @@ MeshType createTetrahedron(
 	vcl::requireVertices<MeshType>();
 	vcl::requireFaces<MeshType>();
 
-	using FaceType = typename MeshType::Face;
+	using FaceType = typename MeshType::FaceType;
 
 	MeshType m;
 

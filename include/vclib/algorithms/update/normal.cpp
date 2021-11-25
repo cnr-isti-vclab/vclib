@@ -83,7 +83,7 @@ void normalizePerFaceNormals(MeshType& m)
 	vcl::requireFaces<MeshType>();
 	vcl::requirePerFaceNormal(m);
 
-	using FaceType = typename MeshType::Face;
+	using FaceType = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
 		f.normal().normalize();
@@ -97,7 +97,7 @@ void updatePerFaceNormals(MeshType& m, bool normalize)
 	vcl::requireFaces<MeshType>();
 	vcl::requirePerFaceNormal(m);
 
-	using FaceType = typename MeshType::Face;
+	using FaceType = typename MeshType::FaceType;
 	if constexpr (vcl::hasTriangles<MeshType>()) {
 		for (FaceType& f : m.faces()) {
 			f.normal() = triangleNormal(f);

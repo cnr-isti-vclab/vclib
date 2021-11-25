@@ -38,7 +38,7 @@ void saveFaceIndices(
 	const FaceType& f,
 	bool            bin)
 {
-	using VertexType = typename MeshType::Vertex;
+	using VertexType = typename MeshType::VertexType;
 
 	uint fsize = f.vertexNumber();
 	internal::writeProperty(file, fsize, p.listSizeType, bin);
@@ -53,7 +53,7 @@ template<typename MeshType>
 void loadFacesTxt(
 	std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
-	using FaceType = typename MeshType::Face;
+	using FaceType = typename MeshType::FaceType;
 	bool error     = false;
 	vcl::Tokenizer spaceTokenizer;
 
@@ -157,7 +157,7 @@ template<typename MeshType>
 void loadFacesBin(
 	std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
-	using FaceType = typename MeshType::Face;
+	using FaceType = typename MeshType::FaceType;
 	mesh.reserveFaces(header.numberFaces());
 	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
 		mesh.addFace();
@@ -245,7 +245,7 @@ void loadFacesBin(
 template<typename MeshType>
 void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh)
 {
-	using FaceType = typename MeshType::Face;
+	using FaceType = typename MeshType::FaceType;
 
 	bool bin = header.format() == ply::BINARY;
 

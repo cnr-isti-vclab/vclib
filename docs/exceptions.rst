@@ -1,0 +1,4 @@
+.. _exceptions:
+
+VCLib Exceptons
+===============

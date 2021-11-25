@@ -33,8 +33,8 @@ template<typename MeshType>
 class EdgeSorterer
 {
 public:
-	using VertexType = typename MeshType::Vertex;
-	using FaceType   = typename MeshType::Face;
+	using VertexType = typename MeshType::VertexType;
+	using FaceType   = typename MeshType::FaceType;
 
 	VertexType* v[2]; // Pointer to the two (ordered) vertices of the edge
 	FaceType*   f;    // Pointer to the face of the edge
@@ -70,7 +70,7 @@ public:
 template<typename MeshType>
 std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(MeshType& m, bool includeFauxEdges = true)
 {
-	using FaceType = typename MeshType::Face;
+	using FaceType = typename MeshType::FaceType;
 
 	std::vector<EdgeSorterer<MeshType>> vec;
 

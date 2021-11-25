@@ -44,8 +44,8 @@ void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo&
 template<typename MeshType>
 void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeader& header)
 {
-	using VertexType = typename MeshType::Vertex;
-	using FaceType   = typename MeshType::Face;
+	using VertexType = typename MeshType::VertexType;
+	using FaceType   = typename MeshType::FaceType;
 
 	if (!header.isValid())
 		throw std::runtime_error("Ply Header not valid.");
