@@ -1,7 +1,7 @@
 .. _mesh_doc:
 
-Mesh Documentation
-==================
+Mesh
+====
 
 .. doxygenclass:: vcl::Mesh
    :members:

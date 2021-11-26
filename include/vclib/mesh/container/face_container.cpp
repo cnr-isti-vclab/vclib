@@ -236,9 +236,11 @@ typename FaceContainer<T>::ConstFaceRangeIterator FaceContainer<T>::faces(bool j
 }
 
 /**
- * @brief Checks if the face Optional Adjacent
- * Faces is enabled. This function is available **only if the Face Element has the
- * OptionalAdjacentFaces Component**.
+ * @brief Checks if the face Optional Adjacent Faces is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalAdjacentFaces
+ * Component.
+ *
  * @return true if the Optional AdjacentFaces is enabled, false otherwise.
  */
 template<typename T>
@@ -252,10 +254,11 @@ FaceContainer<T>::isPerFaceAdjacentFacesEnabled() const
 /**
  * @brief Container::enableFaceAdjacentFaces enable the Optional Adjacent Faces of the face.
  *
- * This function is available **only if the Face Element has the OptionalAdjacentFaces Component**.
+ * @note This function is available only if the Face Element has the OptionalAdjacentFaces
+ * Component.
  *
- * If the Face is polygonal (dynamic size, N < 0), when enabled, the adjacent faces number will be
- * the same of the vertex number for each face of the container. This is because, for Faces,
+ * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the adjacent faces number
+ * will be the same of the vertex number for each face of the container. This is because, for Faces,
  * Adjacent Faces number is tied to the number of vertices.
  */
 template<typename T>
@@ -274,7 +277,9 @@ FaceContainer<T>::enablePerFaceAdjacentFaces()
 
 /**
  * @brief Disables the Optional Adjacent Faces of the face.
- * This function is available **only if the Face Element has the OptionalAdjacentFaces Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalAdjacentFaces
+ * Component.
  */
 template<typename T>
 template<typename U>
@@ -285,9 +290,10 @@ FaceContainer<T>::disablePerFaceAdjacentFaces()
 }
 
 /**
- * @brief Checks if the face Optional Color is
- * enabled. This function is available **only if the Face Element has the OptionalColor
- * component**.
+ * @brief Checks if the face Optional Color is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalColor component.
+ *
  * @return true if the Optional Color is enabled, false otherwise.
  */
 template<typename T>
@@ -300,7 +306,8 @@ FaceContainer<T>::isPerFaceColorEnabled() const
 
 /**
  * @brief Enables the Optional Color of the face.
- * This function is available **only if the Face Element has the OptionalColor Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalColor Component.
  */
 template<typename T>
 template<typename U>
@@ -312,7 +319,8 @@ FaceContainer<T>::enablePerFaceColor()
 
 /**
  * @brief Disables the Optional Color of the face.
- * This function is available **only if the Face Element has the OptionalColor Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalColor Component.
  */
 template<typename T>
 template<typename U>
@@ -323,9 +331,10 @@ FaceContainer<T>::disablePerFaceColor()
 }
 
 /**
- * @brief Checks if the face Optional Mark is
- * enabled. This function is available **only if the Face Element has the OptionalMark
- * component**.
+ * @brief Checks if the face Optional Mark is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalMark component.
+ *
  * @return true if the Optional Mark is enabled, false otherwise.
  */
 template<typename T>
@@ -338,7 +347,8 @@ FaceContainer<T>::isPerFaceMarkEnabled() const
 
 /**
  * @brief Enables the Optional Mark of the face.
- * This function is available **only if the Face Element has the OptionalMark Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalMark Component.
  */
 template<typename T>
 template<typename U>
@@ -350,7 +360,8 @@ FaceContainer<T>::enablePerFaceMark()
 
 /**
  * @brief Disables the Optional Mark of the face.
- * This function is available **only if the Face Element has the OptionalMark Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalMark Component.
  */
 template<typename T>
 template<typename U>
@@ -361,9 +372,11 @@ FaceContainer<T>::disablePerFaceMark()
 }
 
 /**
- * @brief Checks if the face Optional
- * Mutable Bit Flags is enabled. This function is available **only if the Face Element has the
- * OptionalMutableBitFlags Component**.
+ * @brief Checks if the face Optional Mutable Bit Flags is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalMutableBitFlags
+ * Component.
+ *
  * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
  */
 template<typename T>
@@ -376,7 +389,8 @@ FaceContainer<T>::isPerFaceMutableBitFlagsEnabled() const
 
 /**
  * @brief Enables the Optional Mutable Flags of the face.
- * This function is available **only if the Face Element has the OptionalMutableFlags Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalMutableFlags Component.
  */
 template<typename T>
 template<typename U>
@@ -388,8 +402,9 @@ FaceContainer<T>::enablePerFaceMutableBitFlags()
 
 /**
  * @brief Disables the Optional Mutable Flags of the face.
- * This function is available **only if the Face Element has the OptionalMutableBitFlags
- * Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalMutableBitFlags
+ * Component.
  */
 template<typename T>
 template<typename U>
@@ -400,9 +415,10 @@ FaceContainer<T>::disablePerFaceMutableBitFlags()
 }
 
 /**
- * @brief Checks if the face Optional Normal is
- * enabled. This function is available **only if the Face Element has the OptionalNormal
- * Component**.
+ * @brief Checks if the face Optional Normal is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalNormal Component.
+ *
  * @return true if the Optional Normal is enabled, false otherwise.
  */
 template<typename T>
@@ -415,7 +431,8 @@ FaceContainer<T>::isPerFaceNormalEnabled() const
 
 /**
  * @brief Enables the Optional Normal of the face.
- * This function is available **only if the Face Element has the OptionalNormal Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalNormal Component.
  */
 template<typename T>
 template<typename U>
@@ -427,7 +444,8 @@ FaceContainer<T>::enablePerFaceNormal()
 
 /**
  * @brief Disables the Optional Normal of the face.
- * This function is available **only if the Face Element has the OptionalNormal Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalNormal Component.
  */
 template<typename T>
 template<typename U>
@@ -438,9 +456,11 @@ FaceContainer<T>::disablePerFaceNormal()
 }
 
 /**
- * @brief Checks if the face Optional PrincipalCurvature is
- * enabled. This function is available **only if the Face Element has the OptionalPrincipalCurvature
- * Component**.
+ * @brief Checks if the face Optional PrincipalCurvature is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalPrincipalCurvature
+ * Component.
+ *
  * @return true if the Optional PrincipalCurvature is enabled, false otherwise.
  */
 template<typename T>
@@ -452,8 +472,9 @@ FaceContainer<T>::isPerFacePrincipalCurvatureEnabled() const
 }
 /**
  * @brief Enables the Optional PrincipalCurvature of the face.
- * This function is available **only if the Face Element has the OptionalPrincipalCurvature
- * Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalPrincipalCurvature
+ * Component.
  */
 template<typename T>
 template<typename U>
@@ -465,8 +486,9 @@ FaceContainer<T>::enablePerFacePrincipalCurvature()
 
 /**
  * @brief Disables the Optional PrincipalCurvature of the face.
- * This function is available **only if the Face Element has the OptionalPrincipalCurvature
- * Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalPrincipalCurvature
+ * Component.
  */
 template<typename T>
 template<typename U>
@@ -477,9 +499,10 @@ FaceContainer<T>::disablePerFacePrincipalCurvature()
 }
 
 /**
- * @brief Checks if the face Optional Scalar is
- * enabled. This function is available **only if the Face Element has the OptionalScalar
- * Component**.
+ * @brief Checks if the face Optional Scalar is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalScalar Component.
+ *
  * @return true if the Optional Scalar is enabled, false otherwise.
  */
 template<typename T>
@@ -491,7 +514,8 @@ FaceContainer<T>::isPerFaceScalarEnabled() const
 }
 /**
  * @brief Enables the Optional Scalar of the face.
- * This function is available **only if the Face Element has the OptionalScalar Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalScalar Component.
  */
 template<typename T>
 template<typename U>
@@ -503,7 +527,8 @@ FaceContainer<T>::enablePerFaceScalar()
 
 /**
  * @brief Disables the Optional Scalar of the face.
- * This function is available **only if the Face Element has the OptionalScalar Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalScalar Component.
  */
 template<typename T>
 template<typename U>
@@ -514,9 +539,10 @@ FaceContainer<T>::disablePerFaceScalar()
 }
 
 /**
- * @brief Checks if the face Optional WedgeColors
- * Faces is enabled. This function is available **only if the Face Element has the
- * OptionalWedgeColors Component**.
+ * @brief Checks if the face Optional WedgeColors Faces is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
+ *
  * @return true if the Optional WedgeColors is enabled, false otherwise.
  */
 template<typename T>
@@ -529,10 +555,11 @@ FaceContainer<T>::isPerFaceWedgeColorsEnabled() const
 
 /**
  * @brief Enable the Optional Wedge Colors of the face.
- * This function is available **only if the Face Element has the OptionalWedgeColors Component**.
  *
- * If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge colors number will be
- * the same of the vertex number for each face of the container. This is because, for Faces,
+ * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
+ *
+ * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge colors number will
+ * be the same of the vertex number for each face of the container. This is because, for Faces,
  * Wedge Colors number is tied to the number of vertices.
  */
 template<typename T>
@@ -551,7 +578,8 @@ FaceContainer<T>::enablePerFaceWedgeColors()
 
 /**
  * @brief Disables the Optional Wedge Colors of the face.
- * This function is available **only if the Face Element has the OptionalWedgeColors Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
  */
 template<typename T>
 template<typename U>
@@ -562,9 +590,10 @@ FaceContainer<T>::disablePerFaceWedgeColors()
 }
 
 /**
- * @brief Checks if the face Optional WedgeTexCoords
- * Faces is enabled. This function is available **only if the Face Element has the
- * OptionalWedgeTexCoords Component**.
+ * @brief Checks if the face Optional WedgeTexCoords Faces is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
+ * Component.
  * @return true if the Optional WedgeTexCoords is enabled, false otherwise.
  */
 template<typename T>
@@ -577,11 +606,12 @@ FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
 
 /**
  * @brief Enables the Optional Wedge TexCoords of the face.
- *  This function is available **only if the Face Element has the OptionalWedgeTexCoords
- * Component**.
  *
- * If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge texcoord number will be
- * the same of the vertex number for each face of the container. This is because, for Faces,
+ * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
+ * Component.
+ *
+ * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge texcoord number
+ * will be the same of the vertex number for each face of the container. This is because, for Faces,
  * Wedge TexCoords number is tied to the number of vertices.
  */
 template<typename T>
@@ -600,7 +630,9 @@ FaceContainer<T>::enablePerFaceWedgeTexCoords()
 
 /**
  * @brief Disables the Optional WedgeTex Coords of the face.
- * This function is available **only if the Face Element has the OptionalWedgeTexCoords Component**.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
+ * Component.
  */
 template<typename T>
 template<typename U>
@@ -651,7 +683,7 @@ uint FaceContainer<T>::addFace()
 }
 
 /**
- * @brief Container::addFaces adds nFaces to the Face Container of the mesh.
+ * @brief Adds nFaces to the Face Container of the mesh.
  *
  * Returns the id of the first added face.
  *
@@ -698,7 +730,7 @@ void FaceContainer<T>::setContainerPointer(FaceType& f)
 }
 
 /**
- * @brief compacts the face container, keeping only the non-deleted faces.
+ * @brief Compacts the face container, keeping only the non-deleted faces.
  *
  * @return a vector that tells, for each old face index, the new index of the face. Will contain -1
  * if the face has been deleted.

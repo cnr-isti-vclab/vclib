@@ -118,6 +118,12 @@ int AdjacentFaces<Face, N>::indexOfAdjFace(const Face* f) const
 	return Base::indexOf(f);
 }
 
+/**
+ * @brief Resize the container of the adjacent faces to the given size.
+ * @note This function is available only if the container of the Adjacent Faces is has dynamic
+ * size.
+ * @param n
+ */
 template<typename Face, int N>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)

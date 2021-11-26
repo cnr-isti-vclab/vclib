@@ -20,47 +20,24 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_COLOR_H
-#define VCL_MESH_COMPONENTS_COLOR_H
-
-#include <vclib/space/color.h>
+#include "color.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The Color class represents a RGBA color that will be part of an Element
- * (e.g. Vertex, Face, ...).
- *
- * Allows to get and set an object of type Color.
+ * @brief Returns const reference of the color of the element.
  */
-class Color
+const vcl::Color& Color::color() const
 {
-public:
-	using ColorType = vcl::Color;
-
-	const vcl::Color& color() const;
-
-	vcl::Color& color();
-
-private:
-	vcl::Color c;
-};
+	return c;
+}
 
 /**
- * Detector to check if a class has (inherits) Color
+ * @brief Returns a reference pf the color of the element.
  */
-
-template<typename T>
-using hasColorT = std::is_base_of<Color, T>;
-
-template<typename T>
-constexpr bool hasColor()
+vcl::Color& Color::color()
 {
-	return hasColorT<T>::value;
+	return c;
 }
 
 } // namespace vcl::comp
-
-#include "color.cpp"
-
-#endif // VCL_MESH_COMPONENTS_COLOR_H

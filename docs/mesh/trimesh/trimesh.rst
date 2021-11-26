@@ -30,6 +30,6 @@ TriMesh Documentation Pages
 .. toctree::
    :maxdepth: 1
 
-   ../mesh/mesh_doc
-   ../mesh/containers/vertex_container
-   ../mesh/containers/face_container
+   ../mesh_doc
+   ../containers/vertex_container
+   ../containers/face_container

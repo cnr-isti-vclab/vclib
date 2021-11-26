@@ -10,10 +10,10 @@ Visual Computing Library
 
    basic_concepts
    space
-   meshes
+   mesh_documentation
    requirements
    algorithms
    io
    exceptions
+   mesh_customization
    tutorials
-   mesh

@@ -24,17 +24,38 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief Creates a Container of Adjacent Vertices, stored as Vertex Pointers.
+ * If the size of the container is static, all the values will be set to nullptr.
+ * If the size is dynamic, the number of values in the container is zero.
+ */
 template<typename Vertex, int N>
 AdjacentVertices<Vertex, N>::AdjacentVertices() : Base()
 {
 }
 
+/**
+ * @brief Returns the number of adjacent vertices of the element.
+ * @return The number of adjacent vertices of the element.
+ */
 template<typename Vertex, int N>
 uint AdjacentVertices<Vertex, N>::adjVerticesNumber() const
 {
 	return Base::size();
 }
 
+/**
+ * @brief Returns a reference of the pointer to the i-th adjacent vertex of an element.
+ *
+ * You can use this function to set the i-th adjacent vertex:
+ *
+ * @code{.cpp}
+ * e.adjVertex(2) = &m.vertex(k); // the second adj vertex of e will point to the k-th vertex of the mesh.
+ * @endcode
+ *
+ * @param i: the position of the required adjacent list in the container.
+ * @return The pointer i-th adjacent vertex of the element.
+ */
 template<typename Vertex, int N>
 Vertex*& AdjacentVertices<Vertex, N>::adjVertex(uint i)
 {

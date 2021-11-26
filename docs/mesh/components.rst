@@ -10,3 +10,6 @@ Components
    components/adjacent_vertices
    components/bit_flags
    components/bounding_box
+   components/color
+   components/coordinate
+   
