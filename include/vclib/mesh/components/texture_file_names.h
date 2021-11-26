@@ -20,60 +20,46 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
+#define VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
 
-#include "components/bounding_box.h"
-#include "components/mark.h"
-#include "components/texture_file_names.h"
-#include "components/transform_matrix.h"
+#include <string>
+#include <vector>
 
-namespace vcl::mesh {
+#include <vclib/misc/vcl_types.h>
 
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
+namespace vcl::comp {
 
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
+class TextureFileNames {
+public:
+	TextureFileNames();
+	uint textureNumber() const;
 
-template<typename T>
-bool constexpr hasBoundingBox()
-{
-	return comp::hasBoundingBox<T>();
-}
+	const std::string& texture(uint i) const;
+	std::string& texture(uint i);
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+	void clearTextures();
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+	void pushTexture(const std::string& textName);
+private:
+	std::vector<std::string> textureNames;
+};
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+/**
+ * Detector to check if a class has (inherits) TextureFileNames
+ */
 
 template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
-
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
-
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+using hasTextureFileNamesT = std::is_base_of<TextureFileNames, T>;
 
 template<typename T>
-bool constexpr hasTransformMatrix()
+constexpr bool hasTextureFileNames()
 {
-	return comp::hasTransformMatrix<T>();
+	return hasTextureFileNamesT<T>::value;
 }
 
-} // namespace vcl::mesh
+}
 
-#endif // VCL_MESH_COMPONENTS_H
+#include "texture_file_names.cpp"
+
+#endif // VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H

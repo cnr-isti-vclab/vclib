@@ -20,60 +20,38 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#include "texture_file_names.h"
 
-#include "components/bounding_box.h"
-#include "components/mark.h"
-#include "components/texture_file_names.h"
-#include "components/transform_matrix.h"
+namespace vcl::comp {
 
-namespace vcl::mesh {
-
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
-
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
-
-template<typename T>
-bool constexpr hasBoundingBox()
+TextureFileNames::TextureFileNames()
 {
-	return comp::hasBoundingBox<T>();
 }
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
-
-template<typename T>
-bool constexpr hasMark()
+uint TextureFileNames::textureNumber() const
 {
-	return comp::hasMark<T>();
+	return textureNames.size();
 }
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
-
-template<typename T>
-bool constexpr hasTextureFileNames()
+const std::string& TextureFileNames::texture(uint i) const
 {
-	return comp::hasTextureFileNames<T>();
+	return textureNames[i];
 }
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
-
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
-
-template<typename T>
-bool constexpr hasTransformMatrix()
+std::string& TextureFileNames::texture(uint i)
 {
-	return comp::hasTransformMatrix<T>();
+	return textureNames[i];
 }
 
-} // namespace vcl::mesh
+void TextureFileNames::clearTextures()
+{
+	textureNames.clear();
+}
 
-#endif // VCL_MESH_COMPONENTS_H
+void TextureFileNames::pushTexture(const std::string& textName)
+{
+	textureNames.push_back(textName);
+}
+
+}
+
