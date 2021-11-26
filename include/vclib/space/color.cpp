@@ -48,8 +48,7 @@ inline bool operator<(const QColor& c1, const QColor& c2)
 namespace vcl {
 
 /**
- * @brief Color::Color
- * Default constructor.
+ * @brief Default constructor.
  * Initializes w() black color (with alpha 255).
  */
 inline Color::Color() : Point4(0, 0, 0, 255)
@@ -57,8 +56,7 @@ inline Color::Color() : Point4(0, 0, 0, 255)
 }
 
 /**
- * @brief Color::Color
- * Color constructor.
+ * @brief Color constructor.
  * @param[in] red: red component
  * @param[in] green: green component
  * @param[in] blue: blue component
@@ -70,8 +68,7 @@ inline Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) :
 }
 
 /**
- * @brief Color::red
- * Returns the red component of this color [0-255]
+ * @brief Returns the red component of this color [0-255]
  * @return red component of this color
  */
 inline int Color::red() const
@@ -80,8 +77,7 @@ inline int Color::red() const
 }
 
 /**
- * @brief Color::green
- * Returns the green component of this color [0-255]
+ * @brief Returns the green component of this color [0-255]
  * @return green component of this color
  */
 inline int Color::green() const
@@ -90,8 +86,7 @@ inline int Color::green() const
 }
 
 /**
- * @brief Color::blue
- * Returns the blue component of this color [0-255]
+ * @brief Returns the blue component of this color [0-255]
  * @return blue component of this color
  */
 inline int Color::blue() const
@@ -100,8 +95,7 @@ inline int Color::blue() const
 }
 
 /**
- * @brief Color::alpha
- * Returns the alpha component of this color [0-255]
+ * @brief Returns the alpha component of this color [0-255]
  * @return alpha component of this color
  */
 inline int Color::alpha() const
@@ -110,8 +104,7 @@ inline int Color::alpha() const
 }
 
 /**
- * @brief Color::redF
- * Returns the float red component of this color [0-1]
+ * @brief Returns the float red component of this color [0-1]
  * @return float red component of this color
  */
 inline float Color::redF() const
@@ -120,8 +113,7 @@ inline float Color::redF() const
 }
 
 /**
- * @brief Color::greenF
- * Returns the float green component of this color [0-1]
+ * @brief Returns the float green component of this color [0-1]
  * @return float green component of this color
  */
 inline float Color::greenF() const
@@ -130,8 +122,7 @@ inline float Color::greenF() const
 }
 
 /**
- * @brief Color::blueF
- * Returns the float blue component of this color [0-1]
+ * @brief Returns the float blue component of this color [0-1]
  * @return float blue component of this color
  */
 inline float Color::blueF() const
@@ -140,8 +131,7 @@ inline float Color::blueF() const
 }
 
 /**
- * @brief Color::alphaF
- * Returns the float alpha component of this color [0-1]
+ * @brief Returns the float alpha component of this color [0-1]
  * @return float alpha component of this color
  */
 inline float Color::alphaF() const
@@ -150,8 +140,7 @@ inline float Color::alphaF() const
 }
 
 /**
- * @brief Color::hsvHue
- * Returns the hue color component of this color [0-359]
+ * @brief Returns the hue color component of this color [0-359]
  * @return hue color component of this color
  */
 inline int Color::hsvHue() const
@@ -181,8 +170,7 @@ inline int Color::hsvHue() const
 }
 
 /**
- * @brief Color::hsvSaturation
- * Returns the saturation color component of this color [0-255]
+ * @brief Returns the saturation color component of this color [0-255]
  * @return saturation color component of this color
  */
 inline int Color::hsvSaturation() const
@@ -200,8 +188,7 @@ inline int Color::hsvSaturation() const
 }
 
 /**
- * @brief Color::hsvHueF
- * Returns the float saturation color component of this color [0-1]
+ * @brief Returns the float saturation color component of this color [0-1]
  * @return float saturation color component of this color
  */
 inline float Color::hsvHueF() const
@@ -210,8 +197,7 @@ inline float Color::hsvHueF() const
 }
 
 /**
- * @brief Color::hsvSaturationF
- * Returns the float saturation color component of this color [0-1]
+ * @brief Returns the float saturation color component of this color [0-1]
  * @return float saturation color component of this color
  */
 inline float Color::hsvSaturationF() const
@@ -220,8 +206,7 @@ inline float Color::hsvSaturationF() const
 }
 
 /**
- * @brief Color::setAlpha
- * Sets the alpha of this color [0-255]
+ * @brief Sets the alpha of this color [0-255]
  * @param[in] alpha
  */
 inline void Color::setAlpha(uint8_t alpha)
@@ -230,8 +215,7 @@ inline void Color::setAlpha(uint8_t alpha)
 }
 
 /**
- * @brief Color::setRed
- * Sets the red of this color [0-255]
+ * @brief Sets the red of this color [0-255]
  * @param[in] red
  */
 inline void Color::setRed(uint8_t red)
@@ -240,8 +224,7 @@ inline void Color::setRed(uint8_t red)
 }
 
 /**
- * @brief Color::setGreen
- * Sets the green of this color [0-255]
+ * @brief Sets the green of this color [0-255]
  * @param[in] green
  */
 inline void Color::setGreen(uint8_t green)
@@ -250,8 +233,7 @@ inline void Color::setGreen(uint8_t green)
 }
 
 /**
- * @brief Color::setBlue
- * Sets the blue of this color [0-255]
+ * @brief Sets the blue of this color [0-255]
  * @param[in] blue
  */
 inline void Color::setBlue(uint8_t blue)
@@ -260,9 +242,10 @@ inline void Color::setBlue(uint8_t blue)
 }
 
 /**
- * @brief Color::setRgb
- * Sets the RGB values of this color.
+ * @brief Sets the RGB values of this color.
+ *
  * All the values must be in the range 0-255.
+ *
  * @param[in] red
  * @param[in] green
  * @param[in] blue
@@ -277,9 +260,10 @@ inline void Color::setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alph
 }
 
 /**
- * @brief Color::setHsv
- * Sets the HSV values of this color.
+ * @brief Sets the HSV values of this color.
+ *
  * All the values must be in the range 0-255.
+ *
  * @param[in] h
  * @param[in] s
  * @param[in] v
@@ -339,8 +323,7 @@ inline void Color::setHsv(uint h, uint8_t s, uint8_t v, uint8_t alpha)
 }
 
 /**
- * @brief Color::setAlphaF
- * Sets the alpha of this color [0-1]
+ * @brief Sets the alpha of this color [0-1]
  * @param[in] alpha
  */
 inline void Color::setAlphaF(float alpha)
@@ -349,8 +332,7 @@ inline void Color::setAlphaF(float alpha)
 }
 
 /**
- * @brief Color::setRedF
- * Sets the red of this color [0-1]
+ * @brief Sets the red of this color [0-1]
  * @param[in] red
  */
 inline void Color::setRedF(float red)
@@ -359,8 +341,7 @@ inline void Color::setRedF(float red)
 }
 
 /**
- * @brief Color::setGreenF
- * Sets the green of this color [0-1]
+ * @brief Sets the green of this color [0-1]
  * @param[in] green
  */
 inline void Color::setGreenF(float green)
@@ -369,8 +350,7 @@ inline void Color::setGreenF(float green)
 }
 
 /**
- * @brief Color::setBlueF
- * Sets the blue of this color [0-1]
+ * @brief Sets the blue of this color [0-1]
  * @param[in] blue
  */
 inline void Color::setBlueF(float blue)
@@ -379,13 +359,15 @@ inline void Color::setBlueF(float blue)
 }
 
 /**
- * @brief Color::setRgbF
- * Sets the RGB values of this color.
+ * @brief Sets the RGB values of this color.
+ *
  * All the values must be in the range 0-1.
- * @param[in] red
- * @param[in] green
- * @param[in] blue
- * @param[in] alpha: default 1
+ *
+ * @param[in] red: red component of the color in as a float value between 0 and 1.
+ * @param[in] green: green component of the color in as a float value between 0 and 1.
+ * @param[in] blue: blue component of the color in as a float value between 0 and 1.
+ * @param[in] alpha: : alpha component of the color in as a float value between 0 and 1, default
+ * value is 1.
  */
 inline void Color::setRgbF(float red, float green, float blue, float alpha)
 {
@@ -396,9 +378,11 @@ inline void Color::setRgbF(float red, float green, float blue, float alpha)
 }
 
 /**
- * @brief Color::setHsvF
- * Sets the HSV values of this color.
+ * @brief Sets the HSV values of this color.
+ *
  * All the values must be in the range 0-1.
+ * The color will be converted in RGBA and then stored in this color.
+ *
  * @param[in] hf
  * @param[in] sf
  * @param[in] vf
@@ -410,9 +394,9 @@ inline void Color::setHsvF(float hf, float sf, float vf, float alpha)
 }
 
 /**
- * @brief Color::operatox() ==
- * Returns true if this color has the same RGB and alpha values
+ * @brief Returns true if this color has the same RGB and alpha values
  * as otherColor; otherwise returns false.
+ *
  * @param otherColor
  * @return
  */
@@ -424,9 +408,9 @@ inline bool Color::operator==(const Color& otherColor) const
 }
 
 /**
- * @brief Color::operator !=
- * Returns false if this color has the same RGB and alpha values
- * as otherColor; otherwise returns true.
+ * @brief Returns false if this color has the same RGB and alpha values as otherColor; otherwise
+ * returns true.
+ *
  * @param otherColor
  * @return
  */
@@ -436,9 +420,9 @@ inline bool Color::operator!=(const Color& otherColor) const
 }
 
 /**
- * @brief Color::operator <
- * Returns true if this color is less than otherColor follwing
- * the RGBA order; otherwise returns false.
+ * @brief Returns true if this color is less than otherColor follwing the RGBA order; otherwise
+ * returns false.
+ *
  * @param otherColor
  * @return
  */
@@ -461,6 +445,9 @@ inline bool Color::operator<(const Color& otherColor) const
 	return false;
 }
 
+/**
+ * @brief Overload of stream operator to allow a pretty print of a vcl::Color.
+ */
 std::ostream& operator<<(std::ostream& out, const Color& c)
 {
 	out << c.p.cast<uint>();

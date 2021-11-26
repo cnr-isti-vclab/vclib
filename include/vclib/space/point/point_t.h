@@ -97,6 +97,7 @@ public:
 	Scalar  operator[](size_t i) const;
 	Scalar& operator[](size_t i);
 
+	/// @private
 	template<typename S, int M>
 	friend std::ostream& operator<<(std::ostream& out, const Point<S, M>& p);
 

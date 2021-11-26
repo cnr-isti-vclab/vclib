@@ -41,6 +41,9 @@ bool operator<(const QColor& c1, const QColor& c2);
 
 namespace vcl {
 
+/**
+ * @brief The Color class represents an RGBA color.
+ */
 class Color : public Point4<uint8_t>
 {
 public:
@@ -75,6 +78,7 @@ public:
 	bool operator!=(const Color& otherColor) const;
 	bool operator<(const Color& otherColor) const;
 
+	/// @private
 	friend std::ostream& operator<<(std::ostream& out, const Color& p);
 };
 
