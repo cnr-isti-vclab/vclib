@@ -37,6 +37,10 @@ class AdjacentFacesTriggerer
  *
  * It is a random access container having static or dynamic size, depending on the value of N (a
  * negative number means dynamic).
+ *
+ * @note If this component is part of a Face Element, the number of Adjacent Faces is tied to the
+ * Vertex Number of the Face, therefore all the members that allows to modify the number of
+ * Adjacent Faces in case of dynamic size won't be available on Face Elements.
  */
 template<typename Face, int N>
 class AdjacentFaces : protected internal::ElementReferences<Face, N>, public AdjacentFacesTriggerer
@@ -44,89 +48,70 @@ class AdjacentFaces : protected internal::ElementReferences<Face, N>, public Adj
 	using Base = internal::ElementReferences<Face, N>;
 
 public:
+	/// Static size of the container. If the container is dynamic, this value will be negative and
+	/// you should use the adjFacesNumber() member function.
 	static const int ADJ_FACE_NUMBER = Base::CONTAINER_SIZE;
 
-	/** Iterator Types declaration **/
+	/* Iterator Types declaration */
 
 	using AdjacentFaceIterator           = typename Base::GCIterator;
 	using ConstAdjacentFaceIterator      = typename Base::ConstGCIterator;
 	using AdjacentFaceRangeIterator      = typename Base::GCRangeIterator;
 	using ConstAdjacentFaceRangeIterator = typename Base::ConstGCRangeIterator;
 
-	/** Constructor **/
+	/* Constructor */
 
-	AdjacentFaces() : Base() {}
+	AdjacentFaces();
 
-	/** Member functions **/
+	/* Member functions */
 
-	uint adjFacesNumber() const { return Base::size(); }
+	uint adjFacesNumber() const;
 
-	Face*&      adjFace(uint i) { return Base::at(i); }
-	const Face* adjFace(uint i) const { return Base::at(i); }
-	Face*&      adjFaceMod(int i) { return Base::atMod(i); }
-	const Face* adjFaceMod(int i) const { return Base::atMod(i); }
+	Face*&      adjFace(uint i);
+	const Face* adjFace(uint i) const;
+	Face*&      adjFaceMod(int i);
+	const Face* adjFaceMod(int i) const;
 
-	void setAdjFace(Face* f, uint i) { Base::set(f, i); }
-	void setAdjFaces(const std::vector<Face*>& list) { Base::set(list); }
+	void setAdjFace(Face* f, uint i);
+	void setAdjFaces(const std::vector<Face*>& list);
 
-	bool containsAdjFace(const Face* f) const { return Base::contains(f); }
+	bool containsAdjFace(const Face* f) const;
 
-	AdjacentFaceIterator findAdjFace(const Face* f) { return Base::find(f); }
-	ConstAdjacentFaceIterator findAdjFace(const Face* f) const { return Base::find(f); }
+	AdjacentFaceIterator findAdjFace(const Face* f);
+	ConstAdjacentFaceIterator findAdjFace(const Face* f) const;
 
-	int indexOfAdjFace(const Face* f) const { return Base::indexOf(f); }
+	int indexOfAdjFace(const Face* f) const;
 
-	/** Member functions specific for vector **/
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(uint n)
-	{
-		Base::resize(n);
-	}
+	/* Member functions specific for vector */
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushAdjFace(Face* f)
-	{
-		Base::pushBack(f);
-	}
+	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(uint n);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjFace(uint i, Face* f)
-	{
-		Base::insert(i, f);
-	}
+	VCL_ENABLE_IF(M < 0, void) pushAdjFace(Face* f);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjFace(uint i)
-	{
-		Base::erase(i);
-	}
+	VCL_ENABLE_IF(M < 0, void) insertAdjFace(uint i, Face* f);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearAdjFaces()
-	{
-		Base::clear();
-	}
+	VCL_ENABLE_IF(M < 0, void) eraseAdjFace(uint i);
 
-	/** Iterator Member functions **/
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) clearAdjFaces();
 
-	AdjacentFaceIterator           adjFaceBegin() { return Base::begin(); }
-	AdjacentFaceIterator           adjFaceEnd() { return Base::end(); }
-	ConstAdjacentFaceIterator      adjFaceBegin() const { return Base::begin(); }
-	ConstAdjacentFaceIterator      adjFaceEnd() const { return Base::end(); }
-	AdjacentFaceRangeIterator      adjFaces() { return Base::rangeIterator(); }
-	ConstAdjacentFaceRangeIterator adjFaces() const { return Base::rangeIterator(); }
+	/* Iterator Member functions */
+
+	AdjacentFaceIterator           adjFaceBegin();
+	AdjacentFaceIterator           adjFaceEnd();
+	ConstAdjacentFaceIterator      adjFaceBegin() const;
+	ConstAdjacentFaceIterator      adjFaceEnd() const;
+	AdjacentFaceRangeIterator      adjFaces();
+	ConstAdjacentFaceRangeIterator adjFaces() const;
 
 protected:
-	void updateFaceReferences(const Face* oldBase, const Face* newBase)
-	{
-		Base::updateElementReferences(oldBase, newBase);
-	}
+	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 
-	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices)
-	{
-		Base::updateElementReferencesAfterCompact(base, newIndices);
-	}
+	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 };
 
 /**
@@ -154,5 +139,7 @@ bool constexpr sanityCheckAdjacentFaces()
 }
 
 } // namespace vcl::comp
+
+#include "adjacent_faces.cpp"
 
 #endif // VCL_MESH_COMPONENTS_ADJACENT_FACES_H

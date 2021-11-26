@@ -3,9 +3,5 @@
 Bounding Box Component
 ======================
 
-
-FaceContainer Documentation
----------------------------
-
 .. doxygenclass:: vcl::comp::BoundingBox
    :members:
