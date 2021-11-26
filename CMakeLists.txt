@@ -153,7 +153,9 @@ set(SOURCES
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_pos.cpp
 	include/vclib/mesh/components/adjacent_faces.cpp
+	include/vclib/mesh/components/adjacent_vertices.cpp
 	include/vclib/mesh/components/bit_flags.cpp
+	include/vclib/mesh/components/bounding_box.cpp
 	include/vclib/mesh/components/mutable_bit_flags.cpp
 	include/vclib/mesh/components/polygon_bit_flags.cpp
 	include/vclib/mesh/components/principal_curvature.cpp

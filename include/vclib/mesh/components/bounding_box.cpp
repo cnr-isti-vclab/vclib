@@ -20,31 +20,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPE_TRAITS_H
-#define VCL_TYPE_TRAITS_H
+#include "bounding_box.h"
 
-#include <type_traits>
+namespace vcl::comp {
 
-/**
- * Utility macro used to enable functions only when a particular static condition is true.
- *
- * Usage:
- *
- * @code{.cpp}
- * template <int N>
- * VCL_ENABLE_IF(N < 0, int) getSize() { ... }
- * @endcode
- *
- * The first argument is the condition, the second argument is the return type of the function.
- *
- * When building the documentation, this syntax will be hidden and will appear just the return type.
- */
-#define VCL_ENABLE_IF(Test, Type1) typename std::enable_if< Test, Type1 >::type
+template<typename PointType>
+const Box<PointType>& BoundingBox<PointType>::boundingBox() const
+{
+	return box;
+}
 
-// used for templates given as parameters to macros
-// https://stackoverflow.com/questions/44268316/passing-a-template-type-into-a-macro
-#define VCL_COMMA ,
+template<typename PointType>
+Box<PointType>& BoundingBox<PointType>::boundingBox()
+{
+	return box;
+}
 
-using uint = unsigned int;
-
-#endif // VCL_TYPE_TRAITS_H
+} // namespace vcl::comp

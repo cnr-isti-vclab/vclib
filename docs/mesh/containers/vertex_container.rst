@@ -9,3 +9,4 @@ VertexContainer Documentation
 
 .. doxygenclass:: vcl::mesh::VertexContainer
    :members:
+   :undoc-members:

@@ -5,3 +5,4 @@ Bounding Box Component
 
 .. doxygenclass:: vcl::comp::BoundingBox
    :members:
+   :undoc-members:

@@ -24,11 +24,12 @@ Note that containers have provide a set of member functions that are enabled onl
 have a particular Optional Component. Check in the trimesh::Vertex and the trimesh::Face pages if a
 particular component is optional and therefore if these member function are enabled into the TriMesh class.
 
-.. doxygenclass:: vcl::Mesh
-   :members:
+TriMesh Documentation Pages
+---------------------------
 
-.. doxygenclass:: vcl::mesh::VertexContainer
-   :members:
+.. toctree::
+   :maxdepth: 1
 
-.. doxygenclass:: vcl::mesh::FaceContainer
-   :members:
+   ../mesh/mesh_doc
+   ../mesh/containers/vertex_container
+   ../mesh/containers/face_container

@@ -8,4 +8,5 @@ Components
 
    components/adjacent_faces
    components/adjacent_vertices
+   components/bit_flags
    components/bounding_box

@@ -31,6 +31,9 @@ class AdjacentVerticesTriggerer
 {
 };
 
+/**
+ * @brief The AdjacentVertices class
+ */
 template<typename Vertex, int N>
 class AdjacentVertices : protected internal::ElementReferences<Vertex, N>, public AdjacentVerticesTriggerer
 {
@@ -39,87 +42,72 @@ class AdjacentVertices : protected internal::ElementReferences<Vertex, N>, publi
 public:
 	static const int ADJ_VERTEX_NUMBER = Base::CONTAINER_SIZE;
 
-	/** Iterator Types declaration **/
+	/* Iterator Types declaration */
 
 	using AdjacentVertexIterator           = typename Base::GCIterator;
 	using ConstAdjacentVertexIterator      = typename Base::ConstGCIterator;
 	using AdjacentVertexRangeIterator      = typename Base::GCRangeIterator;
 	using ConstAdjacentVertexRangeIterator = typename Base::ConstGCRangeIterator;
 
-	/** Constructor **/
+	/* Constructor */
 
-	AdjacentVertices() : Base() {}
+	AdjacentVertices();
 
-	/** Member functions **/
+	/* Member functions */
 
-	uint adjVerticesNumber() const { return Base::size(); }
+	uint adjVerticesNumber() const;
 
-	Vertex*&      adjVertex(uint i) { return Base::at(i); }
-	const Vertex* adjVertex(uint i) const { return Base::at(i); }
-	Vertex*&      adjVertexMod(int i) { return Base::atMod(i); }
-	const Vertex* adjVertexMod(int i) const { return Base::atMod(i); }
+	Vertex*&      adjVertex(uint i);
+	const Vertex* adjVertex(uint i) const;
+	Vertex*&      adjVertexMod(int i);
+	const Vertex* adjVertexMod(int i) const;
 
-	void setAdjVertex(Vertex* v, uint i) { Base::set(v, i); }
-	void setAdjVertices(const std::vector<Vertex*>& list) { Base::set(list); }
+	void setAdjVertex(Vertex* v, uint i);
+	void setAdjVertices(const std::vector<Vertex*>& list);
 
-	bool containsAdjVertex(const Vertex* v) const { return Base::contains(v); }
+	bool containsAdjVertex(const Vertex* v) const;
 
-	AdjacentVertexIterator findAdjVertex(const Vertex* v) { return Base::find(v); }
-	ConstAdjacentVertexIterator findAdjVertex(const Vertex* v) const { return Base::find(v); }
+	AdjacentVertexIterator findAdjVertex(const Vertex* v);
+	ConstAdjacentVertexIterator findAdjVertex(const Vertex* v) const;
 
-	int indexOfAdjVertex(const Vertex* v) const { return Base::indexOf(v); }
+	int indexOfAdjVertex(const Vertex* v) const;
 
-	/** Member functions specific for vector **/
+	/* Member functions specific for vector */
+
+	/**
+	 * @brief Resize the container of the adjacent vertices to the given size.
+	 * @note This function is available only if the container of the Adjacent Vertices is has dynamic
+	 * size.
+	 * @param n
+	 */
+	template<int M = N>
+	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(uint n);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(uint n)
-	{
-		Base::resize(n);
-	}
+	VCL_ENABLE_IF(M < 0, void) pushAdjVertex(Vertex* v);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushAdjVertex(Vertex* v)
-	{
-		Base::pushBack(v);
-	}
+	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(uint i, Vertex* v);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(uint i, Vertex* v)
-	{
-		Base::insert(i, v);
-	}
+	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(uint i);
 
 	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(uint i)
-	{
-		Base::erase(i);
-	}
+	VCL_ENABLE_IF(M < 0, void) clearAdjVertices();
 
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearAdjVertices()
-	{
-		Base::clear();
-	}
+	/* Iterator Member functions */
 
-	/** Iterator Member functions **/
-
-	AdjacentVertexIterator           adjVertexBegin() { return Base::begin(); }
-	AdjacentVertexIterator           adjVertexEnd() { return Base::end(); }
-	ConstAdjacentVertexIterator      adjVertexBegin() const { return Base::begin(); }
-	ConstAdjacentVertexIterator      adjVertexEnd() const { return Base::end(); }
-	AdjacentVertexRangeIterator      adjVertices() { return Base::rangeIterator(); }
-	ConstAdjacentVertexRangeIterator adjVertices() const { return Base::rangeIterator(); }
+	AdjacentVertexIterator           adjVertexBegin();
+	AdjacentVertexIterator           adjVertexEnd();
+	ConstAdjacentVertexIterator      adjVertexBegin() const;
+	ConstAdjacentVertexIterator      adjVertexEnd() const;
+	AdjacentVertexRangeIterator      adjVertices();
+	ConstAdjacentVertexRangeIterator adjVertices() const;
 
 protected:
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
-	{
-		Base::updateElementReferences(oldBase, newBase);
-	}
+	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices)
-	{
-		Base::updateElementReferencesAfterCompact(base, newIndices);
-	}
+	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 };
 
 template<typename T>
@@ -132,5 +120,7 @@ bool constexpr hasAdjacentVertices()
 }
 
 } // namespace vcl::comp
+
+#include "adjacent_vertices.cpp"
 
 #endif // VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H

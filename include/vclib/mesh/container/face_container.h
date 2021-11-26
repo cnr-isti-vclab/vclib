@@ -35,8 +35,8 @@ class FaceContainerTriggerer
 {
 };
 
-/*
- * The Face Container class, will be used when the template argument given to the Mesh is a
+/**
+ * @brief The Face Container class, will be used when the template argument given to the Mesh is a
  * Face.
  *
  * This class adds a container (vector) of faces to the Mesh, making available the accessors members

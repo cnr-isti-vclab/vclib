@@ -14,3 +14,4 @@ FaceContainer Documentation
 
 .. doxygenclass:: vcl::mesh::FaceContainer
    :members:
+   :undoc-members:

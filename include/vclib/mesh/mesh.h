@@ -28,18 +28,18 @@
 
 namespace vcl {
 
-/*
- * The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
+/**
+ * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
  * containers of Elements (which can be vertices, faces, edges...), plus some other components.
  *
- * The Mesh class will expose all the public members of its containers, and its role is to implement
- * all the functionalities that allow these containers to comunicate (e.g. an operation on the
- * vertex container that requires to update also some face information).
+ * The Mesh class will expose all the public members of its containers and is components, and its
+ * role is to implement all the functionalities that allow these containers to comunicate
+ * (e.g. an operation on the vertex container that requires to update also some face information).
  *
- * Therefore, in this class there is only the implementation of all the functions that in some way
- * need to modify the status of more than one Container of the Mesh. Other functions are inherited
- * by the Container classes of the Elements of the Mesh, or from its Components, and depend on all
- * the templates that compose a specific Mesh definition.
+ * Therefore, in this page are documented only the functions that in some way need to modify the
+ * status of more than one Container of the Mesh. Other functions are inherited by the Container
+ * classes of the Elements of the Mesh, or from its Components, and depend on all the templates
+ * that compose a specific Mesh definition.
  */
 template<typename... Args>
 class Mesh : public mesh::Argument<Args>...

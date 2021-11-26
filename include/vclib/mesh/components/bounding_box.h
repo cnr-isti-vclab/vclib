@@ -41,8 +41,8 @@ class BoundingBox : public BoundingBoxTriggerer
 public:
 	using BoundingBoxType = Box<PointType>;
 
-	const BoundingBoxType boundingBox() const { return box; }
-	BoundingBoxType&      boundingBox() { return box; }
+	const BoundingBoxType& boundingBox() const;
+	BoundingBoxType&      boundingBox();
 
 private:
 	Box<PointType> box;
@@ -65,5 +65,7 @@ bool constexpr hasBoundingBox()
 }
 
 } // namespace vcl::comp
+
+#include "bounding_box.cpp"
 
 #endif // VCL_MESH_COMPONENTS_BOUNDING_BOX_H

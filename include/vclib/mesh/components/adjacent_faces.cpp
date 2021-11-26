@@ -1,4 +1,4 @@
-/*****************************************************************************
+﻿/*****************************************************************************
  * VCLib                                                             o o     *
  * Visual Computing Library                                        o     o   *
  *                                                                 _  O  _   *
@@ -25,7 +25,7 @@
 namespace vcl::comp {
 
 /**
- * @brief Creates a Container of Adjacent Faces.
+ * @brief Creates a Container of Adjacent Faces, stored as Face Pointers.
  * If the size of the container is static, all the values will be set to nullptr.
  * If the size is dynamic, the number of values in the container is zero.
  */
@@ -34,12 +34,28 @@ AdjacentFaces<Face, N>::AdjacentFaces() : Base()
 {
 }
 
+/**
+ * @brief Returns the number of adjacent faces of the element.
+ * @return The number of adjacent faces of the element.
+ */
 template<typename Face, int N>
 uint AdjacentFaces<Face, N>::adjFacesNumber() const
 {
 	return Base::size();
 }
 
+/**
+ * @brief Returns a reference of the pointer to the i-th adjacent face of an element.
+ *
+ * You can use this function to set the i-th adjacent face:
+ *
+ * @code{.cpp}
+ * e.adjFace(2) = &m.face(k); // the second adj face of e will point to the k-th face of the mesh.
+ * @endcode
+ *
+ * @param i: the position of the required adjacent list in the container.
+ * @return The pointer i-th adjacent face of the element.
+ */
 template<typename Face, int N>
 Face*& AdjacentFaces<Face, N>::adjFace(uint i)
 {
