@@ -1,6 +1,6 @@
 /*****************************************************************************
  * VCLib                                                             o o     *
- * Visual and Computer Graphics Library                            o     o   *
+ * Visual Computing Library                                        o     o   *
  *                                                                 _  O  _   *
  * Copyright(C) 2021-2022                                           \/)\/    *
  * Visual Computing Lab                                            /\/|      *
