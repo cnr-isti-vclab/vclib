@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_FACE_H
-#define VCL_IO_PLY_FACE_H
+#ifndef VCL_IO_PLY_TRISTRIP_H
+#define VCL_IO_PLY_TRISTRIP_H
 
 #include "ply_header.h"
 #include <fstream>
@@ -30,13 +30,10 @@
 namespace vcl::ply {
 
 template<typename MeshType>
-void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh);
-
-template<typename MeshType>
-void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
+void loadTriStrips(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
 
 } // namespace vcl::ply
 
-#include "ply_face.cpp"
+#include "ply_tristrip.cpp"
 
-#endif // VCL_IO_PLY_FACE_H
+#endif // VCL_IO_PLY_TRISTRIP_H

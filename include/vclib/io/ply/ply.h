@@ -32,7 +32,7 @@
 namespace vcl::ply {
 
 typedef enum { ASCII, BINARY, UNKNOWN } Format;
-typedef enum { VERTEX, FACE, EDGE, MATERIAL, OTHER } ElementType;
+typedef enum { VERTEX, FACE, EDGE, TRISTRIP, MATERIAL, OTHER } ElementType;
 typedef enum { RGB, RGBA} ColorMode ;
 typedef enum {
 	unknown = -1,

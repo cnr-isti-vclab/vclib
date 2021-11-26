@@ -25,8 +25,7 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/exception/io_exception.h>
 
-namespace vcl {
-namespace ply {
+namespace vcl::ply {
 
 namespace internal {
 
@@ -229,4 +228,3 @@ void loadVertices(
 }
 
 } //namespace vcl::ply
-} //namespace vcl

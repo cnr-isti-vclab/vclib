@@ -166,6 +166,7 @@ void loadPly(
 			switch (el.type) {
 			case ply::VERTEX: ply::loadVertices(file, header, m); break;
 			case ply::FACE: ply::loadFaces(file, header, m); break;
+			case ply::TRISTRIP: ply::loadTriStrips(file, header, m); break;
 			default: break;
 			}
 		}

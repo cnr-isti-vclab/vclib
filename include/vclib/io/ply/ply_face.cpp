@@ -24,8 +24,7 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/exception/io_exception.h>
 
-namespace vcl {
-namespace ply {
+namespace vcl::ply {
 
 namespace internal {
 
@@ -160,8 +159,8 @@ void loadFacesBin(
 	using FaceType = typename MeshType::FaceType;
 	mesh.reserveFaces(header.numberFaces());
 	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
-		mesh.addFace();
-		FaceType& f = mesh.face(mesh.faceNumber() -1);
+		uint ffid = mesh.addFace();
+		FaceType& f = mesh.face(ffid);
 		for (ply::Property p : header.faceProperties()) {
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
@@ -305,5 +304,4 @@ void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 	}
 }
 
-} // namespace ply
 } // namespace vcl

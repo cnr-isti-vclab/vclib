@@ -45,8 +45,6 @@ class PlyHeader
 {
 public:
 	PlyHeader();
-	PlyHeader(ply::Format f, const ply::Element& vElement, const ply::Element fElement);
-	PlyHeader(ply::Format f, const ply::Element& vElement, const ply::Element fElement, const ply::Element eElement);
 	PlyHeader(ply::Format f, const io::FileMeshInfo& info);
 	PlyHeader(std::ifstream& file);
 
@@ -60,14 +58,17 @@ public:
 	bool hasVertices() const;
 	bool hasFaces() const;
 	bool hasEdges() const;
+	bool hasTriStrips() const;
 
 	uint numberVertices() const;
 	uint numberFaces() const;
 	uint numberEdges() const;
+	uint numberTriStrips() const;
 
 	const std::list<ply::Property>& vertexProperties() const;
 	const std::list<ply::Property>& faceProperties() const;
 	const std::list<ply::Property>& edgeProperties() const;
+	const std::list<ply::Property>& triStripsProperties() const;
 
 	bool errorWhileLoading() const;
 
@@ -79,7 +80,6 @@ public:
 
 	std::string toString() const;
 
-	void addElement(const ply::Element& e);
 	void setFormat(ply::Format f);
 
 	typedef std::vector<ply::Element>::const_iterator iterator;
@@ -98,8 +98,12 @@ private:
 
 	ply::Format _format;
 	std::vector<ply::Element> elements;
+
 	bool valid;
-	int v, f, e; // say which is the id in the elements vector for vertices, faces and edges
+
+	// say which is the id in the elements vector for vertices, faces, edges and triStrips
+	int vertElemPos, faceElemPos, edgeElemPos, trisElemPos;
+
 	int nextElementID = 0;
 };
 

@@ -23,43 +23,19 @@
 #ifndef VCL_PLY_VERTEX_H
 #define VCL_PLY_VERTEX_H
 
-#include "ply_header.h"
 #include "../file_mesh_info.h"
+#include "ply_header.h"
 #include <fstream>
 
-namespace vcl {
-namespace ply {
+namespace vcl::ply {
 
-namespace internal {
+template<typename MeshType>
+void saveVertices(std::ofstream& file, const PlyHeader& header, const MeshType& mesh);
 
-template <typename MeshType>
-void loadVerticesTxt(
-	std::ifstream& file,
-	const PlyHeader& header,
-	MeshType& mesh);
+template<typename MeshType>
+void loadVertices(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
 
-template <typename MeshType>
-void loadVerticesBin(
-	std::ifstream& file,
-	const PlyHeader& header,
-	MeshType& mesh);
-
-} //namespace vcl::ply::internal
-
-template <typename MeshType>
-void saveVertices(
-	std::ofstream& file,
-	const PlyHeader& header,
-	const MeshType& mesh);
-
-template <typename MeshType>
-void loadVertices(
-		std::ifstream& file,
-		const PlyHeader& header,
-		MeshType& mesh);
-
-} //namespace vcl::ply
-} //namespace vcl
+} // namespace vcl
 
 #include "ply_vertex.cpp"
 

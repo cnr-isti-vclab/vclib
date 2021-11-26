@@ -129,6 +129,7 @@ set(HEADERS
 	include/vclib/io/ply/ply.h
 	include/vclib/io/ply/ply_face.h
 	include/vclib/io/ply/ply_header.h
+	include/vclib/io/ply/ply_tristrip.h
 	include/vclib/io/ply/ply_vertex.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
@@ -185,6 +186,7 @@ set(SOURCES
 	include/vclib/io/ply/ply.cpp
 	include/vclib/io/ply/ply_face.cpp
 	include/vclib/io/ply/ply_header.cpp
+	include/vclib/io/ply/ply_tristrip.cpp
 	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp

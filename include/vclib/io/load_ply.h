@@ -27,6 +27,7 @@
 #include "ply/ply.h"
 #include "ply/ply_vertex.h"
 #include "ply/ply_face.h"
+#include "ply/ply_tristrip.h"
 
 // todo: remove this and make template
 #include <vclib/mesh/mesh.h>

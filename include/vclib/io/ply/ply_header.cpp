@@ -27,37 +27,24 @@
 namespace vcl {
 namespace ply {
 
-inline PlyHeader::PlyHeader() : _format(ply::UNKNOWN), valid(false), v(-1), f(-1), e(-1)
+inline PlyHeader::PlyHeader() :
+		_format(ply::UNKNOWN),
+		valid(false),
+		vertElemPos(-1),
+		faceElemPos(-1),
+		edgeElemPos(-1),
+		trisElemPos(-1)
 {
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
-}
-
-inline PlyHeader::PlyHeader(
-	ply::Format         f,
-	const ply::Element& vElement,
-	const ply::Element  fElement) :
-		_format(f), valid(true), v(0), f(1), e(-1)
-{
-	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
-	elements.push_back(vElement);
-	elements.push_back(fElement);
-}
-
-inline PlyHeader::PlyHeader(
-	ply::Format         f,
-	const ply::Element& vElement,
-	const ply::Element  fElement,
-	const ply::Element  eElement) :
-		_format(f), valid(true), v(0), f(1), e(2)
-{
-	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
-	elements.push_back(vElement);
-	elements.push_back(fElement);
-	elements.push_back(eElement);
 }
 
 PlyHeader::PlyHeader(Format format, const io::FileMeshInfo& info) :
-		_format(format), valid(true), v(-1), f(-1), e(-1)
+		_format(format),
+		valid(true),
+		vertElemPos(-1),
+		faceElemPos(-1),
+		edgeElemPos(-1),
+		trisElemPos(-1)
 {
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
 	setInfo(info, format == BINARY);
@@ -71,7 +58,8 @@ inline PlyHeader::PlyHeader(std::ifstream& file) : _format(ply::UNKNOWN), valid(
 		std::string line;
 		std::getline(file, line);
 		if (line.compare(0, 3, "ply") == 0) {
-			bool         error, first = true;
+			bool error;
+			bool firstElement = true;
 			std::string  headerLine;
 			ply::Element element;
 			do {
@@ -91,19 +79,25 @@ inline PlyHeader::PlyHeader(std::ifstream& file) : _format(ply::UNKNOWN), valid(
 							*token == "binary")
 							_format = ply::BINARY;
 					}
+					// I am reading a new element
 					else if (headerLine == "element") { // new type of element read
-						if (!first) {                   // last element finished, save it
+						// if it is not the first element to read, it means that the previous one
+						// needs to be saved
+						if (!firstElement) {
+							// index of each element type in the elements vector
 							if (element.type == ply::VERTEX)
-								v = (long int) elements.size();
+								vertElemPos = (long int) elements.size();
 							if (element.type == ply::FACE)
-								f = (long int) elements.size();
+								faceElemPos = (long int) elements.size();
 							if (element.type == ply::EDGE)
-								e = (long int) elements.size();
+								edgeElemPos = (long int) elements.size();
+							if (element.type == ply::TRISTRIP)
+								trisElemPos = (long int) elements.size();
 							elements.push_back(element);
 							element = ply::Element();
 						}
 						element = readElement(spaceTokenizer);
-						first   = false;
+						firstElement   = false;
 					}
 					else if (headerLine == "property") {
 						ply::Property p = readProperty(spaceTokenizer);
@@ -111,16 +105,18 @@ inline PlyHeader::PlyHeader(std::ifstream& file) : _format(ply::UNKNOWN), valid(
 					}
 					else if (headerLine == "end_header") { // save the last element
 						if (element.type == ply::VERTEX)
-							v = (long int) elements.size();
+							vertElemPos = (long int) elements.size();
 						if (element.type == ply::FACE)
-							f = (long int) elements.size();
+							faceElemPos = (long int) elements.size();
 						if (element.type == ply::EDGE)
-							e = (long int) elements.size();
+							edgeElemPos = (long int) elements.size();
+						if (element.type == ply::TRISTRIP)
+							trisElemPos = (long int) elements.size();
 						elements.push_back(element);
 					}
 				}
 			} while (!error && headerLine != "end_header");
-			valid = !error && hasVertices() && hasFaces();
+			valid = !error && hasVertices();
 		}
 	}
 }
@@ -130,9 +126,10 @@ inline void PlyHeader::clear()
 	_format = ply::UNKNOWN;
 	elements.clear();
 	valid = false;
-	v       = -1;
-	f       = -1;
-	e       = -1;
+	vertElemPos       = -1;
+	faceElemPos       = -1;
+	edgeElemPos       = -1;
+	trisElemPos       = -1;
 }
 
 bool PlyHeader::isValid() const
@@ -150,9 +147,9 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 	io::FileMeshInfo mod;
 	// x, y, z, nx, ny, nz, red, green, blue, alpha, vertex_indices
 
-	if (v >= 0) {
+	if (vertElemPos >= 0) {
 		mod.setVertices();
-		for (Property p : elements[v].properties) {
+		for (Property p : elements[vertElemPos].properties) {
 			switch (p.name) {
 			case ply::x:
 			case ply::y:
@@ -169,9 +166,26 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 			}
 		}
 	}
-	if (f >= 0) {
+	if (faceElemPos >= 0) {
 		mod.setFaces();
-		for (Property p : elements[f].properties) {
+		for (Property p : elements[faceElemPos].properties) {
+			switch (p.name) {
+			case ply::vertex_indices: mod.setFaceVRefs(); break;
+			case ply::nx:
+			case ply::ny:
+			case ply::nz: mod.setFaceNormals(); break;
+			case ply::red:
+			case ply::green:
+			case ply::blue:
+			case ply::alpha: mod.setFaceColors(); break;
+			case ply::scalar: mod.setFaceScalars(); break;
+			default: break;
+			}
+		}
+	}
+	if (trisElemPos >= 0) {
+		mod.setFaces();
+		for (Property p : elements[trisElemPos].properties) {
 			switch (p.name) {
 			case ply::vertex_indices: mod.setFaceVRefs(); break;
 			case ply::nx:
@@ -191,53 +205,70 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 
 inline bool PlyHeader::hasVertices() const
 {
-	return v >= 0;
+	return vertElemPos >= 0;
 }
 
 inline bool PlyHeader::hasFaces() const
 {
-	return f >= 0;
+	return faceElemPos >= 0;
 }
 
 inline bool PlyHeader::hasEdges() const
 {
-	return e >= 0;
+	return edgeElemPos >= 0;
+}
+
+bool PlyHeader::hasTriStrips() const
+{
+	return trisElemPos >= 0;
 }
 
 inline uint PlyHeader::numberVertices() const
 {
 	assert(hasVertices());
-	return elements[v].numberElements;
+	return elements[vertElemPos].numberElements;
 }
 
 inline uint PlyHeader::numberFaces() const
 {
 	assert(hasFaces());
-	return elements[f].numberElements;
+	return elements[faceElemPos].numberElements;
 }
 
 inline uint PlyHeader::numberEdges() const
 {
 	assert(hasEdges());
-	return elements[e].numberElements;
+	return elements[edgeElemPos].numberElements;
+}
+
+uint PlyHeader::numberTriStrips() const
+{
+	assert(hasTriStrips());
+	return elements[trisElemPos].numberElements;
 }
 
 inline const std::list<ply::Property>& PlyHeader::vertexProperties() const
 {
 	assert(hasVertices());
-	return elements[v].properties;
+	return elements[vertElemPos].properties;
 }
 
 inline const std::list<ply::Property>& PlyHeader::faceProperties() const
 {
 	assert(hasFaces());
-	return elements[f].properties;
+	return elements[faceElemPos].properties;
 }
 
 inline const std::list<Property>& PlyHeader::edgeProperties() const
 {
 	assert(hasEdges());
-	return elements[e].properties;
+	return elements[edgeElemPos].properties;
+}
+
+const std::list<Property>& PlyHeader::triStripsProperties() const
+{
+	assert(hasTriStrips());
+	return elements[trisElemPos].properties;
 }
 
 inline bool PlyHeader::errorWhileLoading() const
@@ -247,23 +278,23 @@ inline bool PlyHeader::errorWhileLoading() const
 
 inline void PlyHeader::setNumberVertices(unsigned long int nV)
 {
-	if (v < 0)
-		v = nextElementID++;
-	elements[v].numberElements = nV;
+	if (vertElemPos < 0)
+		vertElemPos = nextElementID++;
+	elements[vertElemPos].numberElements = nV;
 }
 
 inline void PlyHeader::setNumberFaces(unsigned long int nF)
 {
-	if (f < 0)
-		f = nextElementID++;
-	elements[f].numberElements = nF;
+	if (faceElemPos < 0)
+		faceElemPos = nextElementID++;
+	elements[faceElemPos].numberElements = nF;
 }
 
 inline void PlyHeader::setNumberEdges(unsigned long nE)
 {
-	if (e < 0)
-		e =nextElementID++;
-	elements[e].numberElements = nE;
+	if (edgeElemPos < 0)
+		edgeElemPos =nextElementID++;
+	elements[edgeElemPos].numberElements = nE;
 }
 
 inline void PlyHeader::setInfo(const io::FileMeshInfo& info, bool binary)
@@ -272,7 +303,7 @@ inline void PlyHeader::setInfo(const io::FileMeshInfo& info, bool binary)
 	_format             = binary ? BINARY : ASCII;
 	valid             = true;
 	if (info.hasVertices()) {
-		v = nextElementID++;
+		vertElemPos = nextElementID++;
 		ply::Element vElem;
 		vElem.type = ply::VERTEX;
 		if (info.hasVertexCoords()) {
@@ -323,7 +354,7 @@ inline void PlyHeader::setInfo(const io::FileMeshInfo& info, bool binary)
 		elements.push_back(vElem);
 	}
 	if (info.hasFaces()) {
-		f = nextElementID++;
+		faceElemPos = nextElementID++;
 		ply::Element fElem;
 		fElem.type = ply::FACE;
 		if (info.hasFaceVRefs()) {
@@ -370,7 +401,7 @@ inline void PlyHeader::setInfo(const io::FileMeshInfo& info, bool binary)
 		elements.push_back(fElem);
 	}
 	if (info.hasEdges()) {
-		e = nextElementID++;
+		edgeElemPos = nextElementID++;
 		ply::Element eElem;
 		eElem.type = ply::EDGE;
 		// ToDo: populate eElem
@@ -412,40 +443,6 @@ inline std::string PlyHeader::toString() const
 	return s;
 }
 
-inline void PlyHeader::addElement(const ply::Element& elem)
-{
-	if (elem.type == ply::VERTEX) {
-		if (v >= 0) {
-			elements[v] = elem;
-		}
-		else {
-			elements.push_back(elem);
-			v = nextElementID++;
-		}
-	}
-	else if (elem.type == ply::FACE) {
-		if (f >= 0) {
-			elements[f] = elem;
-		}
-		else {
-			elements.push_back(elem);
-			f = nextElementID++;
-		}
-	}
-	else if (elem.type == ply::EDGE) {
-		if (e >= 0) {
-			elements[e] = elem;
-		}
-		else {
-			elements.push_back(elem);
-			e = nextElementID++;
-		}
-	}
-	else {
-		elements.push_back(elem);
-	}
-}
-
 inline void PlyHeader::setFormat(ply::Format f)
 {
 	_format = f;
@@ -476,6 +473,10 @@ inline ply::Element PlyHeader::readElement(const Tokenizer& lineTokenizer) const
 	}
 	else if (s == "edge") {
 		e.type           = ply::EDGE;
+		e.numberElements = std::stoi(*(++token));
+	}
+	else if (s == "tristrips") {
+		e.type =ply::TRISTRIP;
 		e.numberElements = std::stoi(*(++token));
 	}
 	else {
