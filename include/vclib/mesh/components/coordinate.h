@@ -27,16 +27,18 @@
 
 namespace vcl::comp {
 
-class CoordinateTriggerer {};
+class CoordinateTriggerer
+{
+};
 
 template<typename Scalar, int N>
 class Coordinate : public CoordinateTriggerer
 {
 public:
-	using CoordType =  Point<Scalar, N>;
+	using CoordType = Point<Scalar, N>;
 
-	const Point<Scalar, N>& coord() const { return p; }
-	Point<Scalar, N>&       coord() { return p; }
+	const Point<Scalar, N>& coord() const;
+	Point<Scalar, N>&       coord();
 
 private:
 	Point<Scalar, N> p;
@@ -48,8 +50,8 @@ class Coordinate3 : public CoordinateTriggerer
 public:
 	using CoordType = Point3<Scalar>;
 
-	const Point3<Scalar>& coord() const { return p; }
-	Point3<Scalar>&       coord() { return p; }
+	const Point3<Scalar>& coord() const;
+	Point3<Scalar>&       coord();
 
 private:
 	Point3<Scalar> p;
@@ -62,12 +64,17 @@ using Coordinate3d = Coordinate3<double>;
  * Detector to check if a class has (inherits) Coordinate
  */
 
-template <typename  T>
+template<typename T>
 using hasCoordinateT = std::is_base_of<CoordinateTriggerer, T>;
 
-template <typename  T>
-bool constexpr hasCoordinate() {return hasCoordinateT<T>::value;}
+template<typename T>
+bool constexpr hasCoordinate()
+{
+	return hasCoordinateT<T>::value;
+}
 
 } // namespace vcl::comp
+
+#include "coordinate.cpp"
 
 #endif // VCL_MESH_COMPONENTS_COORDINATE_H

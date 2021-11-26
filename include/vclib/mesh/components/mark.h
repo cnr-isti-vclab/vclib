@@ -65,22 +65,14 @@ class Mark
 public:
 	Mark() {}
 
-	int mark() const { return m; }
-	void resetMark() { m = 0; }
+	int  mark() const;
+	void resetMark();
 
 	template<typename E>
-	bool hasSameMark(const E& e) const
-	{
-		if constexpr (std::is_pointer<E>::value) {
-			return e->mark() == m;
-		}
-		else {
-			return e.mark() == m;
-		}
-	}
+	bool hasSameMark(const E& e) const;
 
-	void incrementMark() { m++; }
-	void decrementMark() { m--; }
+	void incrementMark();
+	void decrementMark();
 
 private:
 	int m = 0;
@@ -100,5 +92,7 @@ constexpr bool hasMark()
 }
 
 } // namespace vcl::comp
+
+#include "mark.cpp"
 
 #endif // VCL_MESH_COMPONENTS_MARK_H

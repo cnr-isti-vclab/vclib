@@ -37,8 +37,8 @@ class Scalar : public ScalarTrigger
 public:
 	using ScalarType = T;
 
-	const ScalarType& scalar() const { return s; }
-	ScalarType&       scalar() { return s; }
+	const ScalarType& scalar() const;
+	ScalarType&       scalar();
 
 private:
 	ScalarType s;
@@ -61,5 +61,7 @@ bool constexpr hasScalar()
 }
 
 } // namespace vcl::comp
+
+#include "scalar.cpp"
 
 #endif // VCL_MESH_COMPONENTS_SCALAR_H

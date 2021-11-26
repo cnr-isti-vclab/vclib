@@ -157,9 +157,14 @@ set(SOURCES
 	include/vclib/mesh/components/bit_flags.cpp
 	include/vclib/mesh/components/bounding_box.cpp
 	include/vclib/mesh/components/color.cpp
+	include/vclib/mesh/components/coordinate.cpp
+	include/vclib/mesh/components/mark.cpp
 	include/vclib/mesh/components/mutable_bit_flags.cpp
+	include/vclib/mesh/components/normal.cpp
 	include/vclib/mesh/components/polygon_bit_flags.cpp
 	include/vclib/mesh/components/principal_curvature.cpp
+	include/vclib/mesh/components/scalar.cpp
+	include/vclib/mesh/components/tex_coord.cpp
 	include/vclib/mesh/components/texture_file_names.cpp
 	include/vclib/mesh/components/transform_matrix.cpp
 	include/vclib/mesh/components/triangle_bit_flags.cpp

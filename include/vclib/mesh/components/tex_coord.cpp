@@ -20,48 +20,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
-#define VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
-
-#include <string>
-#include <vector>
-
-#include <vclib/misc/vcl_types.h>
+#include "tex_coord.h"
 
 namespace vcl::comp {
 
-class TextureFileNames
+template<typename Scalar>
+const typename TexCoord<Scalar>::TexCoordType& TexCoord<Scalar>::texCoord() const
 {
-public:
-	TextureFileNames();
-	uint textureNumber() const;
+	return t;
+}
 
-	const std::string& texture(uint i) const;
-	std::string&       texture(uint i);
-
-	void clearTextures();
-
-	void pushTexture(const std::string& textName);
-
-private:
-	std::vector<std::string> textureNames;
-};
-
-/**
- * Detector to check if a class has (inherits) TextureFileNames
- */
-
-template<typename T>
-using hasTextureFileNamesT = std::is_base_of<TextureFileNames, T>;
-
-template<typename T>
-constexpr bool hasTextureFileNames()
+template<typename Scalar>
+typename TexCoord<Scalar>::TexCoordType TexCoord<Scalar>::texCoord()
 {
-	return hasTextureFileNamesT<T>::value;
+	return t;
 }
 
 } // namespace vcl::comp
-
-#include "texture_file_names.cpp"
-
-#endif // VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H

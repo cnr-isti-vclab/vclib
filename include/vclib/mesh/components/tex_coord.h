@@ -37,8 +37,8 @@ class TexCoord : public TexCoordTriggerer
 public:
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
-	const TexCoordType& texCoord() const { return t; }
-	TexCoordType        texCoord() { return t; }
+	const TexCoordType& texCoord() const;
+	TexCoordType        texCoord();
 
 private:
 	vcl::TexCoord<Scalar> t;

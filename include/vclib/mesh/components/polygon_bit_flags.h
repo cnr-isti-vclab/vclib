@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
 
+#include <vclib/misc/vcl_types.h>
+
 #include "bit_flags.h"
 
 namespace vcl::comp {

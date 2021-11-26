@@ -20,48 +20,32 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
-#define VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
-
-#include <string>
-#include <vector>
-
-#include <vclib/misc/vcl_types.h>
+#include "normal.h"
 
 namespace vcl::comp {
 
-class TextureFileNames
+template<typename Scalar, int N>
+const Point<Scalar, N>& Normal<Scalar, N>::normal() const
 {
-public:
-	TextureFileNames();
-	uint textureNumber() const;
+	return n;
+}
 
-	const std::string& texture(uint i) const;
-	std::string&       texture(uint i);
-
-	void clearTextures();
-
-	void pushTexture(const std::string& textName);
-
-private:
-	std::vector<std::string> textureNames;
-};
-
-/**
- * Detector to check if a class has (inherits) TextureFileNames
- */
-
-template<typename T>
-using hasTextureFileNamesT = std::is_base_of<TextureFileNames, T>;
-
-template<typename T>
-constexpr bool hasTextureFileNames()
+template<typename Scalar, int N>
+Point<Scalar, N>& Normal<Scalar, N>::normal()
 {
-	return hasTextureFileNamesT<T>::value;
+	return n;
+}
+
+template<typename Scalar>
+const Point3<Scalar>& Normal3<Scalar>::normal() const
+{
+	return n;
+}
+
+template<typename Scalar>
+Point3<Scalar>& Normal3<Scalar>::normal()
+{
+	return n;
 }
 
 } // namespace vcl::comp
-
-#include "texture_file_names.cpp"
-
-#endif // VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H

@@ -37,8 +37,8 @@ class Normal : public NormalTrigger
 public:
 	using NormalType = Point<Scalar, N>;
 
-	const Point<Scalar, N>& normal() const { return n; }
-	Point<Scalar, N>&       normal() { return n; }
+	const Point<Scalar, N>& normal() const;
+	Point<Scalar, N>&       normal();
 
 private:
 	Point<Scalar, N> n;
@@ -50,8 +50,8 @@ class Normal3 : public NormalTrigger
 public:
 	using NormalType = Point3<Scalar>;
 
-	const Point3<Scalar>& normal() const { return n; }
-	Point3<Scalar>&       normal() { return n; }
+	const Point3<Scalar>& normal() const;
+	Point3<Scalar>&       normal();
 
 private:
 	Point3<Scalar> n;
@@ -74,5 +74,7 @@ bool constexpr hasNormal()
 }
 
 } // namespace vcl::comp
+
+#include "normal.cpp"
 
 #endif // VCL_MESH_COMPONENTS_NORMAL_H

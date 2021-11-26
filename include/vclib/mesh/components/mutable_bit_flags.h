@@ -26,6 +26,8 @@
 #include <assert.h>
 #include <type_traits>
 
+#include <vclib/misc/vcl_types.h>
+
 namespace vcl::comp {
 
 /**

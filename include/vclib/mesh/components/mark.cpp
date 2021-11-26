@@ -20,48 +20,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
-#define VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
-
-#include <string>
-#include <vector>
-
-#include <vclib/misc/vcl_types.h>
+#include "mark.h"
 
 namespace vcl::comp {
 
-class TextureFileNames
+int Mark::mark() const
 {
-public:
-	TextureFileNames();
-	uint textureNumber() const;
+	return m;
+}
 
-	const std::string& texture(uint i) const;
-	std::string&       texture(uint i);
-
-	void clearTextures();
-
-	void pushTexture(const std::string& textName);
-
-private:
-	std::vector<std::string> textureNames;
-};
-
-/**
- * Detector to check if a class has (inherits) TextureFileNames
- */
-
-template<typename T>
-using hasTextureFileNamesT = std::is_base_of<TextureFileNames, T>;
-
-template<typename T>
-constexpr bool hasTextureFileNames()
+void Mark::resetMark()
 {
-	return hasTextureFileNamesT<T>::value;
+	m = 0;
+}
+
+template<typename E>
+bool Mark::hasSameMark(const E& e) const
+{
+	if constexpr (std::is_pointer<E>::value) {
+		return e->mark() == m;
+	}
+	else {
+		return e.mark() == m;
+	}
+}
+
+void Mark::incrementMark()
+{
+	m++;
+}
+
+void Mark::decrementMark()
+{
+	m--;
 }
 
 } // namespace vcl::comp
-
-#include "texture_file_names.cpp"
-
-#endif // VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H

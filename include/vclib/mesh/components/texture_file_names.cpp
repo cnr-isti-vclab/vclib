@@ -53,5 +53,4 @@ void TextureFileNames::pushTexture(const std::string& textName)
 	textureNames.push_back(textName);
 }
 
-}
-
+} // namespace vcl::comp
