@@ -24,3 +24,4 @@ Utility Data Structures
    :maxdepth: 1
 
    misc/tokenizer
+   misc/timer

@@ -3,19 +3,15 @@
 Basic Concepts
 ==============
 
-This is a C++17 modern and header only Mesh and Geometry Processing templated library.
-
-The goal of this library is to provide a set of tools and algorithms in a well-structured Object Oriented paradigm exploiting the powerfullness of C++17.
-
 Into the ``include`` directory, the library is structured as follows:
 
-   * algorithms: contains a set of header/source files having functions that implement various geometry processing algorithms;
-   * exception: contains all the exception classes used in this library, divided by caregories in header files;
-   * io: contains functions and data structures to manage the input/output of the data structures supported in this library;
-   * math: contains a set of headers having various math helper functions;
-   * mesh: contains all the core classes that allows to define the various Mesh data structures of this library;
-   * misc: utility functions and classes used in the rest of the library;
-   * space: classes that represent basic spatial coordinates and relatives, like Point, Box, Color, TexCoords.
+* algorithms: contains a set of header/source files having functions that implement various geometry processing algorithms;
+* exception: contains all the exception classes used in this library, divided by caregories in header files;
+* io: contains functions and data structures to manage the input/output of the data structures supported in this library;
+* math: contains a set of headers having various math helper functions;
+* mesh: contains all the core classes that allows to define the various Mesh data structures of this library;
+* misc: utility functions and classes used in the rest of the library;
+* space: classes that represent basic spatial coordinates and relatives, like Point, Box, Color, TexCoords.
 
 The library also provides a set of pre-defined Mesh data structures that can be found inside the main directory of the library, like TriMesh, PolygonMesh...
 

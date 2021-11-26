@@ -30,12 +30,20 @@ namespace vcl {
  * is/has functions *
  ********************/
 
+/**
+ * @brief Checks at compile time if MeshType has the Vertex Element.
+ * @return true if MeshType has Vertices.
+ */
 template<typename MeshType>
 bool constexpr hasVertices()
 {
 	return vcl::mesh::hasVertices<MeshType>();
 }
 
+/**
+ * @brief Checks at compile time if MeshType has the Face Element.
+ * @return true if MeshType has Faces.
+ */
 template<typename MeshType>
 bool constexpr hasFaces()
 {
