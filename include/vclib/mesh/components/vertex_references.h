@@ -41,18 +41,18 @@ public:
 
 	static const int VERTEX_NUMBER = Base::CONTAINER_SIZE;
 
-	/** Iterator Types declaration **/
+	/* Iterator Types declaration */
 
 	using VertexIterator           = typename Base::GCIterator;
 	using ConstVertexIterator      = typename Base::ConstGCIterator;
 	using VertexRangeIterator      = typename Base::GCRangeIterator;
 	using ConstVertexRangeIterator = typename Base::ConstGCRangeIterator;
 
-	/** Constructor **/
+	/* Constructor */
 
 	VertexReferences();
 
-	/** Member functions **/
+	/* Member functions */
 
 	uint vertexNumber() const;
 
@@ -72,7 +72,7 @@ public:
 	int indexOfVertex(const Vertex* v) const;
 	int indexOfEdge(const Vertex* v1, const Vertex* v2);
 
-	/** Member functions specific for vector **/
+	/* Member functions specific for vector */
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) resizeVertices(uint n);
@@ -89,7 +89,7 @@ public:
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearVertices();
 
-	/** Iterator Member functions **/
+	/* Iterator Member functions */
 
 	VertexIterator           vertexBegin();
 	VertexIterator           vertexEnd();

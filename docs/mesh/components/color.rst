@@ -1,7 +1,7 @@
 .. _color:
 
-Color
-=====
+Color Component
+===============
 
 .. doxygenclass:: vcl::comp::Color
    :members:

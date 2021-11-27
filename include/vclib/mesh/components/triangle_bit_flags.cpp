@@ -25,10 +25,10 @@
 namespace vcl::comp {
 
 /**
- * @brief  TriangleBitFlags::userBitFlag returns the value of the bit given in input. The bit is
- * checked to be less than the total number of assigned user bits, which in this class is 21.
+ * @brief Returns the value of the bit given in input. The bit is checked to be less than the
+ * total number of assigned user bits, which in this class is 21.
  *
- * @param bit: the position of the bit that will be returned.
+ * @param[in] bit: the position of the bit that will be returned.
  * @return true if the required bit is enabled, false otherwise.
  */
 inline bool TriangleBitFlags::userBitFlag(uint bit) const
@@ -55,17 +55,17 @@ inline void TriangleBitFlags::setUserBit(uint bit)
  *
  * @param bit: the position of the bit that will be reset.
  */
-void TriangleBitFlags::clearUserBit(uint bit)
+void TriangleBitFlags::unsetUserBit(uint bit)
 {
 	// using FIRST_USER_BIT of this class
-	BitFlags::clearUserBit(bit, FIRST_USER_BIT);
+	BitFlags::unsetUserBit(bit, FIRST_USER_BIT);
 }
 
 /**
  * @brief TriangleBitFlags::isEdgeOnBorder returns whether the ith Edge of the Triangle is marked as
  * on border.
  *
- * @param i: id of the edge, must be < 3.
+ * @param[in] i: id of the edge, must be < 3.
  * @return true if the ith Edge of the Triangle is on border, false otherwise.
  */
 inline bool TriangleBitFlags::isEdgeOnBorder(uint i) const
@@ -119,43 +119,43 @@ inline void TriangleBitFlags::setEdgeFaux(uint i)
 	setFlag(FAUX0 << i);
 }
 
-inline void TriangleBitFlags::clearEdgeOnBorder(uint i)
+inline void TriangleBitFlags::unsetEdgeOnBorder(uint i)
 {
 	assert(i < 3);
-	clearFlag(BORDER << i);
+	unsetFlag(BORDER << i);
 }
 
-inline void TriangleBitFlags::clearAllEdgeOnBorder()
+inline void TriangleBitFlags::unsetAllEdgesOnBorder()
 {
-	clearEdgeOnBorder(0);
-	clearEdgeOnBorder(1);
-	clearEdgeOnBorder(2);
+	unsetEdgeOnBorder(0);
+	unsetEdgeOnBorder(1);
+	unsetEdgeOnBorder(2);
 }
 
-inline void TriangleBitFlags::clearEdgeSelected(uint i)
-{
-	assert(i < 3);
-	clearFlag(EDGESEL0 << i);
-}
-
-inline void TriangleBitFlags::clearAllEdgeSelected()
-{
-	clearEdgeSelected(0);
-	clearEdgeSelected(1);
-	clearEdgeSelected(2);
-}
-
-inline void TriangleBitFlags::clearEdgeFaux(uint i)
+inline void TriangleBitFlags::unsetEdgeSelected(uint i)
 {
 	assert(i < 3);
-	clearFlag(FAUX0 << i);
+	unsetFlag(EDGESEL0 << i);
 }
 
-inline void TriangleBitFlags::clearAllEdgeFaux()
+inline void TriangleBitFlags::unsetAllEdgesSelected()
 {
-	clearEdgeFaux(0);
-	clearEdgeFaux(1);
-	clearEdgeFaux(2);
+	unsetEdgeSelected(0);
+	unsetEdgeSelected(1);
+	unsetEdgeSelected(2);
+}
+
+inline void TriangleBitFlags::unsetEdgeFaux(uint i)
+{
+	assert(i < 3);
+	unsetFlag(FAUX0 << i);
+}
+
+inline void TriangleBitFlags::unsetAllEdgeFaux()
+{
+	unsetEdgeFaux(0);
+	unsetEdgeFaux(1);
+	unsetEdgeFaux(2);
 }
 
 } // namespace vcl::comp

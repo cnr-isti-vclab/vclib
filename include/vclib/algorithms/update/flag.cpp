@@ -50,7 +50,7 @@ void updateBorder(MeshType& m)
 	using FaceType   = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces())
-		f.clearAllEdgeOnBorder();
+		f.unsetAllEdgesOnBorder();
 
 	if (m.faceNumber() == 0)
 		return;

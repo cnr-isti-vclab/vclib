@@ -68,7 +68,7 @@ public:
 
 	static const int WEDGE_COLOR_NUMBER = N;
 
-	/** Iterator Types declaration **/
+	/* Iterator Types declaration */
 
 	// if using array, will be the array iterator, the vector iterator otherwise
 	using WedgeColorsIterator = typename std::conditional<
@@ -85,11 +85,11 @@ public:
 	using ConstWedgeColorsRangeIterator =
 		ConstRangeIterator<OptionalWedgeColors, ConstWedgeColorsIterator>;
 
-	/** Constructor **/
+	/* Constructor */
 
 	OptionalWedgeColors();
 
-	/** Member functions **/
+	/* Member functions */
 
 	vcl::Color&       wedgeColor(uint i);
 	const vcl::Color& wedgeColor(uint i) const;
@@ -100,7 +100,7 @@ public:
 	void setWedgeColor(const vcl::Color& t, uint i);
 	void setWedgeColors(const std::vector<vcl::Color>& list);
 
-	/** Iterator Member functions **/
+	/* Iterator Member functions */
 
 	WedgeColorsIterator           wedgeColorBegin();
 	WedgeColorsIterator           wedgeColorEnd();
@@ -110,7 +110,7 @@ public:
 	ConstWedgeColorsRangeIterator wedgeColorIterator() const;
 
 protected:
-	/** Member functions specific for vector **/
+	/* Member functions specific for vector */
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) resizeWedgeColors(uint n);
@@ -127,7 +127,7 @@ protected:
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearWedgeColor();
 
-	/** Utility member functions **/
+	/* Utility member functions */
 
 	bool wedgeColorsEnabled() const;
 

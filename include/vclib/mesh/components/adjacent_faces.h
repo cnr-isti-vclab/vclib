@@ -38,6 +38,16 @@ class AdjacentFacesTriggerer
  * It is a random access container having static or dynamic size, depending on the value of N (a
  * negative number means dynamic).
  *
+ * The member functions of this class will be available in the instance of any Element that will
+ * contain this component.
+ *
+ * For example, if you have a Vertex Element `v` that has the AdjacentFaces component, you'll be
+ * able to access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * v.adjFacesNumber();
+ * @endcode
+ *
  * @note If this component is part of a Face Element, the number of Adjacent Faces is tied to the
  * Vertex Number of the Face, therefore all the members that allows to modify the number of
  * Adjacent Faces in case of dynamic size won't be available on Face Elements.

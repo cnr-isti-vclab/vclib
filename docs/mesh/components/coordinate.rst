@@ -1,7 +1,7 @@
 .. _coordinate:
 
-Coordinate
-==========
+Coordinate Component
+====================
 
 .. doxygenclass:: vcl::comp::Coordinate
    :members:

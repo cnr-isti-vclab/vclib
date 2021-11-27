@@ -24,12 +24,20 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief Returns the bounding box of this object.
+ * @return The bounding box of this object.
+ */
 template<typename PointType>
 const Box<PointType>& BoundingBox<PointType>::boundingBox() const
 {
 	return box;
 }
 
+/**
+ * @brief Returns the bounding box of this object.
+ * @return The bounding box of this object.
+ */
 template<typename PointType>
 Box<PointType>& BoundingBox<PointType>::boundingBox()
 {

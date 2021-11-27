@@ -74,7 +74,8 @@ protected:
 	void setUserBitM(uint bit, uint firstBit) const;
 	void clearUserBitM(uint bit, uint firstBit) const;
 
-	mutable int               mutableFlags           = 0;
+	mutable int mutableFlags = 0;
+
 	static const uint FIRST_MUTABLE_USER_BIT = 1;
 
 	// values of the flags, used for flagValue, setFlag and clearFlag member functions

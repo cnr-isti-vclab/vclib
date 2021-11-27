@@ -34,6 +34,16 @@ class BoundingBoxTriggerer
 /**
  * @brief The BoundingBox component class represent an axis aligned bounding box. This class is
  * usually used as a component of a Mesh.
+ *
+ * The member functions of this class will be available in the instance of any Element or Mesh that
+ * will contain this component.
+ *
+ * For example, if you have a Mesh `m` with the BoundingBox component, you'll be able to
+ * access to this component member functions from `m`:
+ *
+ * @code{.cpp}
+ * m.boundingBox();
+ * @endcode
  */
 template<typename  PointType>
 class BoundingBox : public BoundingBoxTriggerer

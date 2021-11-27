@@ -31,7 +31,7 @@ namespace vcl::comp {
  * @brief The TriangleBitFlags class represents a collection of 32 bits that will be part of a
  * Triangle of a Mesh.
  *
- * The bits have the following meaning: (first 3 bits inherited from BitFlags)
+ * The bits have the following meaning (first 3 bits inherited from BitFlags):
  * - 0:  deleted: if the current Triangle has been deleted
  * - 1:  selected: if the current Triangle has been selected
  * - from 2 to 4: edge border: if the current Triangle has is i-th edge (i in [0, 2]) on border
@@ -40,10 +40,21 @@ namespace vcl::comp {
  * - from 11 to 31: user bits that can have custom meanings to the user
  *
  * This class provides 21 user bits, that can be accessed using the member functions
- * - userBitFlag
- * - setUserBit
- * - clearUserBit
+ * - `userBitFlag`
+ * - `setUserBit`
+ * - `unsetUserBit`
+ *
  * with position in the interval [0, 20].
+ *
+ * The member functions of this class will be available in the instance of any Element that will
+ * contain this component.
+ *
+ * For example, if you have a Face Element `f` that has the TriangleBitFlags component, you'll be
+ * able to access to this component member functions from `f`:
+ *
+ * @code{.cpp}
+ * v.isAnyEdgeOnBorder();
+ * @endcode
  */
 class TriangleBitFlags : public BitFlags
 {
@@ -51,7 +62,7 @@ public:
 	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
 	bool userBitFlag(uint bit) const;
 	void setUserBit(uint bit);
-	void clearUserBit(uint bit);
+	void unsetUserBit(uint bit);
 
 	bool isEdgeOnBorder(uint i) const;
 	bool isAnyEdgeOnBorder() const;
@@ -68,17 +79,17 @@ public:
 
 	void setEdgeFaux(uint i);
 
-	void clearEdgeOnBorder(uint i);
-	void clearAllEdgeOnBorder();
+	void unsetEdgeOnBorder(uint i);
+	void unsetAllEdgesOnBorder();
 
-	void clearEdgeSelected(uint i);
-	void clearAllEdgeSelected();
+	void unsetEdgeSelected(uint i);
+	void unsetAllEdgesSelected();
 
-	void clearEdgeFaux(uint i);
-	void clearAllEdgeFaux();
+	void unsetEdgeFaux(uint i);
+	void unsetAllEdgeFaux();
 
 protected:
-	// values of the flags, used for flagValue, setFlag and clearFlag member functions
+	// values of the flags, used for flagValue, setFlag and unsetFlag member functions
 	enum {
 		// Edge border
 		// BORDER0 is BORDER, inherited from superclass  bits [2, 4]
@@ -93,10 +104,10 @@ protected:
 	static const uint FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 8; // bits [11, 31]
 
 private:
-	// will use these members as isOnBorder0, setOnBorder0 and clearOnBorder0
+	// will use these members as isOnBorder0, setOnBorder0 and unsetOnBorder0
 	using BitFlags::isOnBorder;
 	using BitFlags::setOnBorder;
-	using BitFlags::clearOnBorder;
+	using BitFlags::unsetOnBorder;
 };
 
 /**

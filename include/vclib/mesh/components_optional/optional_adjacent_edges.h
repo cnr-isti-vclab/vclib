@@ -50,8 +50,8 @@ class OptionalAdjacentEdges : public OptionalAdjacentEdgesTriggerer, public virt
 private:
 	using B = OptionalInfo<T>;
 
-	   // if we use the vector, the size of the array will be 0
-	   // actually the array will never be used and will not use memory, it's just for declaration
+	// if we use the vector, the size of the array will be 0
+	// actually the array will never be used and will not use memory, it's just for declaration
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
@@ -63,9 +63,9 @@ public:
 
 	static const int ADJ_EDGE_NUMBER = N;
 
-	/** Iterator Types declaration **/
+	/* Iterator Types declaration */
 
-	   // if using array, will be the array iterator, the vector iterator otherwise
+	// if using array, will be the array iterator, the vector iterator otherwise
 	using AdjacentEdgeIterator = typename std::conditional<
 		(N >= 0),
 		typename std::array<Edge*, ARRAY_SIZE>::iterator,
@@ -80,11 +80,11 @@ public:
 	using ConstAdjacentEdgeRangeIterator =
 		ConstRangeIterator<OptionalAdjacentEdges, ConstAdjacentEdgeIterator>;
 
-	/** Constructor **/
+	/* Constructor */
 
 	OptionalAdjacentEdges();
 
-	/** Member functions **/
+	/* Member functions */
 
 	uint adjEdgesNumber() const;
 
@@ -103,7 +103,7 @@ public:
 
 	int indexOfAdjEdge(const Edge* e) const;
 
-	/** Member functions specific for vector **/
+	/* Member functions specific for vector */
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) resizeAdjEdges(uint n);
@@ -120,7 +120,7 @@ public:
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearAdjEdges();
 
-	/** Iterator Member functions **/
+	/* Iterator Member functions */
 
 	AdjacentEdgeIterator           adjEdgeBegin();
 	AdjacentEdgeIterator           adjEdgeEnd();

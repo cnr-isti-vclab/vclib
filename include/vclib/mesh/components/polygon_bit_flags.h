@@ -23,8 +23,6 @@
 #ifndef VCL_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
 
-#include <vclib/misc/vcl_types.h>
-
 #include "bit_flags.h"
 
 namespace vcl::comp {
@@ -41,19 +39,30 @@ namespace vcl::comp {
  * the algorithms that use faux flags also for PolygonMeshes. However, these flags should be used
  * only when the mesh is a Triangle mesh, that is when each face has vertexNumber() == 3.
  *
- * The bits have the follwing meaning: (first 3 bits inherited from BitFlags)
- * - 0: deleted
- * - 1: delected
+ * The bits have the follwing meaning (first 3 bits inherited from BitFlags):
+ * - 0: deleted: if the current Polygon has been deleted
+ * - 1: selected: if the current Polygon has been selected
  * - from 2 to 13: edge border: if the current Face has is i-th edge (i in [0, 11]) on border
  * - from 14 to 25: edge selection: if the current Face has is i-th edge (i in [0, 11]) selected
  * - from 26 to 28: edge faux: if the current Face has is i-th edge (i in [0, 2]) marked as faux
  * - from 29 to 31: user bits that can have custom meanings to the user
  *
  * This class provides 3 user bits, that can be accessed using the member functions
- * - userBitFlag
- * - setUserBit
- * - clearUserBit
+ * - `userBitFlag`
+ * - `setUserBit`
+ * - `unsetUserBit`
+ *
  * with position in the interval [0, 2].
+ *
+ * The member functions of this class will be available in the instance of any Element that will
+ * contain this component.
+ *
+ * For example, if you have a Face Element `f` that has the PolygonBitFlags component, you'll be
+ * able to access to this component member functions from `f`:
+ *
+ * @code{.cpp}
+ * v.isAnyEdgeOnBorder();
+ * @endcode
  */
 class PolygonBitFlags : public BitFlags
 {
@@ -61,7 +70,7 @@ public:
 	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
 	bool userBitFlag(uint bit) const;
 	void setUserBit(uint bit);
-	void clearUserBit(uint bit);
+	void unsetUserBit(uint bit);
 
 	bool isEdgeOnBorder(uint i) const;
 	bool isAnyEdgeOnBorder() const;
@@ -78,17 +87,17 @@ public:
 
 	void setEdgeFaux(uint i);
 
-	void clearEdgeOnBorder(uint i);
-	void clearAllEdgeOnBorder();
+	void unsetEdgeOnBorder(uint i);
+	void unsetAllEdgesOnBorder();
 
-	void clearEdgeSelected(uint i);
-	void clearAllEdgeSelected();
+	void unsetEdgeSelected(uint i);
+	void unsetAllEdgesSelected();
 
-	void clearEdgeFaux(uint i);
-	void clearAllEdgeFaux();
+	void unsetEdgeFaux(uint i);
+	void unsetAllEdgesFaux();
 
 protected:
-	// values of the flags, used for flagValue, setFlag and clearFlag member functions
+	// values of the flags, used for flagValue, setFlag and unsetFlag member functions
 	enum {
 		// Edge border
 		// BORDER0 is BORDER, inherited from superclass - bits [2, 13]
@@ -102,8 +111,8 @@ protected:
 	static const uint FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 26; // bits [29, 31]
 
 private:
-	// will use these members as isOnBorder0, setOnBorder0 and clearOnBorder0
-	using BitFlags::clearOnBorder;
+	// will use these members as isOnBorder0, setOnBorder0 and unsetOnBorder0
+	using BitFlags::unsetOnBorder;
 	using BitFlags::isOnBorder;
 	using BitFlags::setOnBorder;
 };

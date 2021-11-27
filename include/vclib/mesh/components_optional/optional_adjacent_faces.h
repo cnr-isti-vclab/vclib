@@ -63,7 +63,7 @@ public:
 
 	static const int ADJ_FACE_NUMBER = N;
 
-	/** Iterator Types declaration **/
+	/* Iterator Types declaration */
 
 	// if using array, will be the array iterator, the vector iterator otherwise
 	using AdjacentFaceIterator = typename std::conditional<
@@ -80,11 +80,11 @@ public:
 	using ConstAdjacentFaceRangeIterator =
 		ConstRangeIterator<OptionalAdjacentFaces, ConstAdjacentFaceIterator>;
 
-	/** Constructor **/
+	/* Constructor */
 
 	OptionalAdjacentFaces();
 
-	/** Member functions **/
+	/* Member functions */
 
 	uint adjFacesNumber() const;
 
@@ -103,7 +103,7 @@ public:
 
 	int indexOfAdjFace(const Face* f) const;
 
-	/** Member functions specific for vector **/
+	/* Member functions specific for vector */
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(uint n);
@@ -120,7 +120,7 @@ public:
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearAdjFaces();
 
-	/** Iterator Member functions **/
+	/* Iterator Member functions */
 
 	AdjacentFaceIterator           adjFaceBegin();
 	AdjacentFaceIterator           adjFaceEnd();

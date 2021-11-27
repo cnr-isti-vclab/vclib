@@ -32,7 +32,22 @@ class AdjacentVerticesTriggerer
 };
 
 /**
- * @brief The AdjacentVertices class
+ * @brief The AdjacentVertices class is a container of Vertex references. It is a component that
+ * makes sense to use mostly on Vertex Elements. For Faces and Edges, see the VertexReferences
+ * component (which is similar, but has different member function names).
+ *
+ * It is a random access container having static or dynamic size, depending on the value of N (a
+ * negative number means dynamic).
+ *
+ * The member functions of this class will be available in the instance of any Element that will
+ * contain this component.
+ *
+ * For example, if you have a Vertex Element `v` that has the AdjacentVertices component, you'll be
+ * able to access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * v.adjVerticesNumber();
+ * @endcode
  */
 template<typename Vertex, int N>
 class AdjacentVertices : protected internal::ElementReferences<Vertex, N>, public AdjacentVerticesTriggerer

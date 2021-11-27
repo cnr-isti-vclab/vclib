@@ -65,7 +65,7 @@ public:
 
 	static const int ADJ_VERTEX_NUMBER = N;
 
-	/** Iterator Types declaration **/
+	/* Iterator Types declaration */
 
 	// if using array, will be the array iterator, the vector iterator otherwise
 	using AdjacentVertexIterator = typename std::conditional<
@@ -82,11 +82,11 @@ public:
 	using ConstAdjacentVertexRangeIterator =
 		ConstRangeIterator<OptionalAdjacentVertices, ConstAdjacentVertexIterator>;
 
-	/** Constructor **/
+	/* Constructor */
 
 	OptionalAdjacentVertices();
 
-	/** Member functions **/
+	/* Member functions */
 
 	uint adjVerticesNumber() const;
 
@@ -105,7 +105,7 @@ public:
 
 	int indexOfAdjVertex(const Vertex* v) const;
 
-	/** Member functions specific for vector **/
+	/* Member functions specific for vector */
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(uint n);
@@ -122,7 +122,7 @@ public:
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearAdjVertices();
 
-	/** Iterator Member functions **/
+	/* Iterator Member functions */
 
 	AdjacentVertexIterator           adjVertexBegin();
 	AdjacentVertexIterator           adjVertexEnd();

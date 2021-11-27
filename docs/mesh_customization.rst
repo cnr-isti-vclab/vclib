@@ -45,17 +45,3 @@ Now let's define our custom Point Cloud Mesh, that we are going to call ``MyPoin
 The Mesh definition will automatically recognize that ``MyVertex`` is ``vcl::Vertex``, and will
 define a :ref:`vertex_container`. The other template types are not vcl Elements, therefore are
 treated as Components, in the same way of the Vertex Components in ``MyVertex`` class.
-
-Mesh Documentation
-------------------
-
-The Mesh also provides a set of member functions that need to perform operations in multiple Containers
-or Components, and these member functions are listed in the :ref:`mesh_doc` page.
-
-.. toctree::
-   :maxdepth: 1
-
-   mesh/elements
-   mesh/components
-   mesh/containers
-   mesh/mesh_doc

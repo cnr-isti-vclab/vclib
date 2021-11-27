@@ -43,7 +43,7 @@ class WedgeTexCoords :
 public:
 	static const int WEDGE_TEX_COORD_NUMBER = Base::CONTAINER_SIZE;
 
-	/** Iterator Types declaration **/
+	/* Iterator Types declaration */
 
 	using WedgeTexCoordsIterator           = typename Base::GCIterator;
 	using ConstWedgeTexCoordsIterator      = typename Base::ConstGCIterator;
@@ -52,7 +52,7 @@ public:
 
 	WedgeTexCoords();
 
-	/** Member functions **/
+	/* Member functions */
 
 	vcl::TexCoord<Scalar>&       wedgeTexCoord(uint i);
 	const vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) const;
@@ -63,7 +63,7 @@ public:
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
 
-	/** Iterator Member functions **/
+	/* Iterator Member functions */
 
 	WedgeTexCoordsIterator           wedgeTexCoordBegin();
 	WedgeTexCoordsIterator           wedgeTexCoordEnd();
@@ -75,7 +75,7 @@ public:
 protected:
 	using WedgeTexCoordScalarType = Scalar;
 
-	/** Member functions specific for vector **/
+	/* Member functions specific for vector */
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) resizeWedgeTexCoords(uint n);

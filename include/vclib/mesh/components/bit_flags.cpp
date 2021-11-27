@@ -25,9 +25,9 @@
 namespace vcl::comp {
 
 /**
- * @brief BitFlags::isDeleted returns whether the Element is marked as deleted.
+ * @brief Returns whether this Element is marked as deleted.
  *
- * @return true if the Element is deleted, false otherwise.
+ * @return `true` if this Element is deleted, `false` otherwise.
  */
 inline bool BitFlags::isDeleted() const
 {
@@ -35,9 +35,9 @@ inline bool BitFlags::isDeleted() const
 }
 
 /**
- * @brief BitFlags::isSelected returns whether the Element is marked as selected.
+ * @brief Returns whether this Element is marked as selected.
  *
- * @return true if the Element is seleced, false otherwise.
+ * @return `true` if this Element is seleced, `false` otherwise.
  */
 inline bool BitFlags::isSelected() const
 {
@@ -45,9 +45,9 @@ inline bool BitFlags::isSelected() const
 }
 
 /**
- * @brief BitFlags::isOnBorder returns whether the Element is marked to be on border.
+ * @brief Returns whether this Element is marked to be on border.
  *
- * @return true if the Element is marked to be on border, false otherwise.
+ * @return `true` if this Element is marked to be on border, `false` otherwise.
  */
 inline bool BitFlags::isOnBorder() const
 {
@@ -55,11 +55,11 @@ inline bool BitFlags::isOnBorder() const
 }
 
 /**
- * @brief BitFlags::userBitFlag returns the value of the bit given in input. The bit is checked
+ * @brief Returns the value of the user bit of this Element given in input. The bit is checked
  * to be less than the total number of assigned user bits, which in this class is 29.
  *
- * @param bit: the position of the bit that will be returned.
- * @return true if the required bit is enabled, false otherwise.
+ * @param[in] bit: the position of the bit that will be returned.
+ * @return `true` if the required bit is enabled, `false` otherwise.
  */
 inline bool BitFlags::userBitFlag(uint bit) const
 {
@@ -67,7 +67,7 @@ inline bool BitFlags::userBitFlag(uint bit) const
 }
 
 /**
- * @brief BitFlags::setSelected marks as selected the Element.
+ * @brief Marks as selected this Element.
  */
 inline void BitFlags::setSelected()
 {
@@ -75,7 +75,7 @@ inline void BitFlags::setSelected()
 }
 
 /**
- * @brief BitFlags::setOnBorder marks as on-border the Element.
+ * @brief Marks as on-border this Element.
  */
 inline void BitFlags::setOnBorder()
 {
@@ -83,10 +83,10 @@ inline void BitFlags::setOnBorder()
 }
 
 /**
- * @brief BitFlags::setUserBit sets to true the value of the bit given in input. The bit is checked
+ * @brief Sets to `true` the value of the bit of this Element given in input. The bit is checked
  * to be less than the total number of assigned user bits, which in this class is 29.
  *
- * @param bit: the position of the bit that will be set.
+ * @param[in] bit: the position of the bit that will be set.
  */
 inline void BitFlags::setUserBit(uint bit)
 {
@@ -94,10 +94,10 @@ inline void BitFlags::setUserBit(uint bit)
 }
 
 /**
- * @brief BitFlags::clearAllFlags clear all the flags and sets them to false, **except the deleted
+ * @brief Unsets all the flags of this Element and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
  */
-inline void BitFlags::clearAllFlags()
+inline void BitFlags::unsetAllFlags()
 {
 	bool isD = isDeleted();
 	flags    = 0;
@@ -106,34 +106,34 @@ inline void BitFlags::clearAllFlags()
 }
 
 /**
- * @brief BitFlags::clearSelected marks as non-selected the Element.
+ * @brief Marks as non-selected this Element.
  */
-inline void BitFlags::clearSelected()
+inline void BitFlags::unsetSelected()
 {
-	clearFlag(SELECTED);
+	unsetFlag(SELECTED);
 }
 
 /**
- * @brief BitFlags::clearOnBorder marks as non-on-border the Element.
+ * @brief Marks as non-on-border this Element.
  */
-inline void BitFlags::clearOnBorder()
+inline void BitFlags::unsetOnBorder()
 {
-	clearFlag(BORDER);
+	unsetFlag(BORDER);
 }
 
 /**
- * @brief BitFlags::clearUserBit sets to false the value of the bit given in input. The bit is
+ * @brief Sets to `false` the value of the user bit of this Element given in input. The bit is
  * checked to be less than the total number of assigned user bits, which in this class is 29.
  *
- * @param bit: the position of the bit that will be reset.
+ * @param[in] bit: the position of the bit that will be reset.
  */
-inline void BitFlags::clearUserBit(uint bit)
+inline void BitFlags::unsetUserBit(uint bit)
 {
-	clearUserBit(bit, FIRST_USER_BIT);
+	unsetUserBit(bit, FIRST_USER_BIT);
 }
 
 /**
- * @brief BitFlags::setDeleted marks as deleted the Element.
+ * @brief Marks as deleted this Element.
  */
 inline void BitFlags::setDeleted()
 {
@@ -141,18 +141,18 @@ inline void BitFlags::setDeleted()
 }
 
 /**
- * @brief BitFlags::clearDeleted marks as non-deleted the Element.
+ * @brief Marks as non-deleted this Element.
  */
-inline void BitFlags::clearDeleted()
+inline void BitFlags::unsetDeleted()
 {
-	clearFlag(DELETED);
+	unsetFlag(DELETED);
 }
 
 /**
- * @brief BitFlags::flagValue returns the value of the given flag (value of the enum).
+ * @brief Returns the value of the given flag (value of the enum).
  *
  * @param flag: value of the flag to return.
- * @return whether the flag is true or false.
+ * @return whether the flag is `true` or `false`.
  */
 inline bool BitFlags::flagValue(uint flag) const
 {
@@ -160,9 +160,9 @@ inline bool BitFlags::flagValue(uint flag) const
 }
 
 /**
- * @brief BitFlags::setFlag sets to true the value of the given flag (value of the enum).
+ * @brief Sets to `true` the value of the given flag (value of the enum).
  *
- * @param flag: value of the flag to set.
+ * @param[in] flag: value of the flag to set.
  */
 inline void BitFlags::setFlag(uint flag)
 {
@@ -170,17 +170,17 @@ inline void BitFlags::setFlag(uint flag)
 }
 
 /**
- * @brief BitFlags::clearFlag sets to false the value of the given flag (value of the enum).
+ * @brief Sets to `false` the value of the given flag (value of the enum).
  *
- * @param flag: value of the flag to reset.
+ * @param[in] flag: value of the flag to reset.
  */
-inline void BitFlags::clearFlag(uint flag)
+inline void BitFlags::unsetFlag(uint flag)
 {
 	flags &= ~flag;
 }
 
 /**
- * @brief BitFlags::userBitFlag returns the value of the bit given in input. The bit is checked
+ * @brief Returns the value of the bit given in input. The bit is checked
  * to be less than the total number of assigned user bits.
  *
  * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
@@ -188,8 +188,8 @@ inline void BitFlags::clearFlag(uint flag)
  * In fact the value of firstBit should be exactly the first available bit that can be used as
  * custom bit by the user.
  *
- * @param bit: position of the bit
- * @param firstBit: first user bit available (must be < than bit)
+ * @param[in] bit: position of the bit
+ * @param[in] firstBit: first user bit available (must be < than bit)
  * @return the value of the bit
  */
 inline bool BitFlags::userBitFlag(uint bit, uint firstBit) const
@@ -200,16 +200,16 @@ inline bool BitFlags::userBitFlag(uint bit, uint firstBit) const
 }
 
 /**
- * @brief BitFlags::setUserBit sets to true the value of the bit given in input. he bit is checked
- * to be less than the total number of assigned user bits.
+ * @brief Sets to `true` the value of the bit given in input. The bit is
+ * checked to be less than the total number of assigned user bits.
  *
  * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
  * different from the one of this class, and it is useful to avoid code duplication,
  * In fact the value of firstBit should be exactly the first available bit that can be used as
  * custom bit by the user.
  *
- * @param bit: position of the bit
- * @param firstBit: first user bit available (must be < than bit)
+ * @param[in] bit: position of the bit
+ * @param[in] firstBit: first user bit available (must be < than bit)
  */
 inline void BitFlags::setUserBit(uint bit, uint firstBit)
 {
@@ -219,7 +219,7 @@ inline void BitFlags::setUserBit(uint bit, uint firstBit)
 }
 
 /**
- * @brief BitFlags::clearUserBit sets to false the value of the bit given in input. he bit is
+ * @brief Sets to `false` the value of the bit given in input. he bit is
  * checked to be less than the total number of assigned user bits.
  *
  * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
@@ -227,14 +227,14 @@ inline void BitFlags::setUserBit(uint bit, uint firstBit)
  * In fact the value of firstBit should be exactly the first available bit that can be used as
  * custom bit by the user.
  *
- * @param bit: position of the bit
- * @param firstBit: first user bit available (must be < than bit)
+ * @param[in] bit: position of the bit
+ * @param[in] firstBit: first user bit available (must be < than bit)
  */
-inline void BitFlags::clearUserBit(uint bit, uint firstBit)
+inline void BitFlags::unsetUserBit(uint bit, uint firstBit)
 {
 	assert(bit < 32 - firstBit);
 	uint flag = 1 << (firstBit + bit);
-	clearFlag(flag);
+	unsetFlag(flag);
 }
 
 } // namespace vcl::comp

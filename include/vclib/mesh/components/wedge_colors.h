@@ -41,7 +41,7 @@ class WedgeColors : protected internal::GenericContainer<vcl::Color, N>, public 
 public:
 	static const int WEDGE_COLOR_NUMBER = Base::CONTAINER_SIZE;
 
-	/** Iterator Types declaration **/
+	/* Iterator Types declaration */
 
 	using WedgeColorsIterator           = typename Base::GCIterator;
 	using ConstWedgeColorsIterator      = typename Base::ConstGCIterator;
@@ -50,7 +50,7 @@ public:
 
 	WedgeColors();
 
-	/** Member functions **/
+	/* Member functions */
 
 	vcl::Color&       wedgeColor(uint i);
 	const vcl::Color& wedgeColor(uint i) const;
@@ -61,7 +61,7 @@ public:
 	void setWedgeColor(const vcl::Color& t, uint i);
 	void setWedgeColors(const std::vector<vcl::Color>& list);
 
-	/** Iterator Member functions **/
+	/* Iterator Member functions */
 
 	WedgeColorsIterator           wedgeColorBegin();
 	WedgeColorsIterator           wedgeColorEnd();
@@ -71,7 +71,7 @@ public:
 	ConstWedgeColorsRangeIterator wedgeColorIterator() const;
 
 protected:
-	/** Member functions specific for vector **/
+	/* Member functions specific for vector */
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) resizeWedgeColors(uint n);

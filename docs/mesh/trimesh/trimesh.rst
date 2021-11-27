@@ -8,11 +8,11 @@ The TriMesh class is a pre-defined VCL Mesh data structure for triangle Meshes.
 
 The data structure is a Mesh composed of:
 
-   * a Vertex Container
-   * a Face Container
-   * a Bounding Box Component
-   * a Mark Component
-   * a Transform Matrix Component
+* a Vertex Container
+* a Face Container
+* a Bounding Box Component
+* a Mark Component
+* a Transform Matrix Component
 
 You can look for the :ref:`trimesh_vertex` and the :ref:`trimesh_face` pages to see how Vertices
 and Faces are defined in the TriMesh class.

@@ -40,10 +40,21 @@ namespace vcl::comp {
  * - other: user bits that can have custom meanings to the user
  *
  * This class provides 29 user bits, that can be accessed using the member functions
- * - userBitFlag
- * - setUserBit
- * - clearUserBit
+ * - `userBitFlag`
+ * - `setUserBit`
+ * - `unsetUserBit`
+ *
  * with position in the interval [0, 28].
+ *
+ * The member functions of this class will be available in the instance of any Element that will
+ * contain this component.
+ *
+ * For example, if you have a Vertex Element `v` with the BitFlags component, you'll be able to
+ * access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * v.isDeleted();
+ * @endcode
  */
 class BitFlags
 {
@@ -57,28 +68,28 @@ public:
 	void setOnBorder();
 	void setUserBit(uint bit);
 
-	void clearAllFlags();
-	void clearSelected();
-	void clearOnBorder();
-	void clearUserBit(uint bit);
+	void unsetAllFlags();
+	void unsetSelected();
+	void unsetOnBorder();
+	void unsetUserBit(uint bit);
 
 protected:
 	void setDeleted();
-	void clearDeleted();
+	void unsetDeleted();
 
 	bool flagValue(uint flag) const;
 	void setFlag(uint flag);
-	void clearFlag(uint flag);
+	void unsetFlag(uint flag);
 
 	bool userBitFlag(uint bit, uint firstBit) const;
 	void setUserBit(uint bit, uint firstBit);
-	void clearUserBit(uint bit, uint firstBit);
+	void unsetUserBit(uint bit, uint firstBit);
 
 	int flags = 0;
 
 	static const uint FIRST_USER_BIT = 3;
 
-	// values of the flags, used for flagValue, setFlag and clearFlag member functions
+	// values of the flags, used for flagValue, setFlag and unsetFlag member functions
 	enum {
 		DELETED  = 1 << 0, // bit 0
 		SELECTED = 1 << 1, // bit 1
