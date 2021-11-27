@@ -57,6 +57,9 @@ class FaceContainer : protected ElementContainer<T>, public FaceContainerTrigger
 		!vcl::face::hasTriangleBitFlags<T>() || T::VERTEX_NUMBER == 3,
 		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
 	static_assert(
+		face::sanityCheckAdjacentEdges<T>() && face::sanityCheckOptionalAdjacentEdges<T>(),
+		"Size of per Face AdjacentEdges component must be the same of the VertexReferences.");
+	static_assert(
 		face::sanityCheckAdjacentFaces<T>() && face::sanityCheckOptionalAdjacentFaces<T>(),
 		"Size of per Face AdjacentFaces component must be the same of the VertexReferences.");
 	static_assert(
@@ -98,6 +101,19 @@ public:
 	ConstFaceIterator      faceEnd() const;
 	FaceRangeIterator      faces(bool jumpDeleted = true);
 	ConstFaceRangeIterator faces(bool jumpDeleted = true) const;
+
+	// AdjacentEdges
+	template<typename U = T>
+	VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), bool)
+	isPerFaceAdjacentEdgesEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
+	enablePerFaceAdjacentEdges();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
+	disablePerFaceAdjacentEdges();
 
 	// AdjacentFaces
 	template<typename U = T>

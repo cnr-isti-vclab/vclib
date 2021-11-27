@@ -54,6 +54,7 @@ set(HEADERS
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
+	include/vclib/mesh/components/adjacent_edges.h
 	include/vclib/mesh/components/adjacent_faces.h
 	include/vclib/mesh/components/adjacent_vertices.h
 	include/vclib/mesh/components/bit_flags.h
@@ -76,6 +77,7 @@ set(HEADERS
 	include/vclib/mesh/components/internal/element_references.h
 	include/vclib/mesh/components/internal/generic_container.h
 	include/vclib/mesh/components_optional/custom_components.h
+	include/vclib/mesh/components_optional/optional_adjacent_edges.h
 	include/vclib/mesh/components_optional/optional_adjacent_faces.h
 	include/vclib/mesh/components_optional/optional_adjacent_vertices.h
 	include/vclib/mesh/components_optional/optional_color.h
@@ -90,6 +92,7 @@ set(HEADERS
 	include/vclib/mesh/components_optional/optional_wedge_tex_coords.h
 	include/vclib/mesh/components_vector/optional_color_vector.h
 	include/vclib/mesh/components_vector/custom_components_vector.h
+	include/vclib/mesh/components_vector/optional_adjacent_edges_vector.h
 	include/vclib/mesh/components_vector/optional_adjacent_faces_vector.h
 	include/vclib/mesh/components_vector/optional_adjacent_vertices_vector.h
 	include/vclib/mesh/components_vector/optional_generic_vector.h
@@ -155,6 +158,7 @@ set(SOURCES
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_pos.cpp
+	include/vclib/mesh/components/adjacent_edges.cpp
 	include/vclib/mesh/components/adjacent_faces.cpp
 	include/vclib/mesh/components/adjacent_vertices.cpp
 	include/vclib/mesh/components/bit_flags.cpp
@@ -176,6 +180,7 @@ set(SOURCES
 	include/vclib/mesh/components/wedge_tex_coords.cpp
 	include/vclib/mesh/components/internal/element_references.cpp
 	include/vclib/mesh/components/internal/generic_container.cpp
+	include/vclib/mesh/components_optional/optional_adjacent_edges.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_faces.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_vertices.cpp
 	include/vclib/mesh/components_optional/optional_mutable_bit_flags.cpp

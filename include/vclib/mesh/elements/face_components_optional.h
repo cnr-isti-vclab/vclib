@@ -24,6 +24,7 @@
 #define VCL_MESH_ELEMENTS_FACE_COMPONENTS_OPTIONAL_H
 
 #include "../components_optional/custom_components.h"
+#include "../components_optional/optional_adjacent_edges.h"
 #include "../components_optional/optional_adjacent_faces.h"
 #include "../components_optional/optional_color.h"
 #include "../components_optional/optional_mark.h"
@@ -35,6 +36,25 @@
 #include "../components_optional/optional_wedge_tex_coords.h"
 
 namespace vcl::face {
+
+/** Port OptionalAdjacentEdges class into face namespace **/
+template<typename T>
+using OptionalAdjacentPolygonEdges = comp::OptionalAdjacentEdges<T, -1, T>;
+
+template<typename T>
+using OptionalAdjacentTriangleEdges = comp::OptionalAdjacentEdges<T, 3, T>;
+
+template<typename T>
+bool constexpr hasOptionalAdjacentEdges()
+{
+	return comp::hasOptionalAdjacentEdges<T>();
+}
+
+template<typename T>
+bool constexpr sanityCheckOptionalAdjacentEdges()
+{
+	return comp::sanityCheckOptionalAdjacentEdges<T>();
+}
 
 /** Port OptionalAdjacentFaces class into face namespace **/
 template<typename T>

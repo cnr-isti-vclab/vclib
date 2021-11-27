@@ -20,34 +20,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ELEMENTS_EDGE_H
-#define VCL_MESH_ELEMENTS_EDGE_H
+#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_EDGES_REF_VECTOR_H
+#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_EDGES_REF_VECTOR_H
 
-#include "edge_components.h"
-#include "edge_components_optional.h"
+#include <vclib/mesh/components_optional/optional_adjacent_edges.h>
 
-namespace vcl::mesh {
+#include "optional_generic_vector.h"
 
-// EdgeContainer class declaration
-template<typename>
-class EdgeContainer;
+namespace vcl::internal {
 
-} // namespace vcl::mesh
-
-namespace vcl {
-
-// Dummy class used to detect a Edge regardless of its template arguments
-class EdgeTriggerer
+template<typename, typename = void>
+class OptionalAdjacentEdgesVector
 {
+public:
+	void clear() {}
+	void resize(uint) {}
+	void reserve(uint) {}
+	void compact(const std::vector<int>&) {}
 };
 
-template<typename... Args>
-class Edge : public EdgeTriggerer, public Args...
+template<typename T>
+class OptionalAdjacentEdgesVector<T, std::enable_if_t<comp::hasOptionalAdjacentEdges<T>()>> :
+		private OptionalGenericVector<typename T::AdjEdgesContainer>
 {
-	template<typename>
-	friend class mesh::EdgeContainer;
+private:
+	using AdjEdgesContainer = typename T::AdjEdgesContainer;
+	using Base              = OptionalGenericVector<AdjEdgesContainer>;
+
+public:
+	using Base::clear;
+	using Base::compact;
+	using Base::reserve;
+	using Base::resize;
+
+	bool isAdjacentEdgesEnabled() const { return Base::isEnabled(); };
+	void enableAdjacentEdges(uint size) { Base::enable(size); }
+	void disableAdjacentEdges() { Base::disable(); }
+
+	AdjEdgesContainer&       adjEdges(uint i) { return Base::at(i); }
+	const AdjEdgesContainer& adjEdges(uint i) const { return Base::at(i); }
 };
 
-} // namespace vcl
+} // namespace vcl::internal
 
-#endif // VCL_MESH_ELEMENTS_EDGE_H
+#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_EDGES_REF_VECTOR_H

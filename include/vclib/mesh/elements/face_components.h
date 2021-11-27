@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_COMPONENTS_H
 #define VCL_MESH_ELEMENTS_FACE_COMPONENTS_H
 
+#include "../components/adjacent_edges.h"
 #include "../components/adjacent_faces.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
@@ -38,6 +39,25 @@
 #include "../components/wedge_tex_coords.h"
 
 namespace vcl::face {
+
+/** Port AdjacentEdges class into face namespace **/
+template<typename Edge>
+using AdjacentPolygonEdges = comp::AdjacentEdges<Edge, -1>;
+
+template<typename Edge>
+using AdjacentTriangleEdges = comp::AdjacentEdges<Edge, 3>;
+
+template<typename T>
+bool constexpr hasAdjacentEdges()
+{
+	return comp::hasAdjacentEdges<T>();
+}
+
+template<typename T>
+bool constexpr sanityCheckAdjacentEdges()
+{
+	return comp::sanityCheckAdjacentEdges<T>();
+}
 
 /** Port AdjacentFaces class into face namespace **/
 template<typename Face>

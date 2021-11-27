@@ -40,23 +40,23 @@ public:
 };
 
 template<typename T>
-class OptionalAdjacentFacesVector<
-	T,
-	std::enable_if_t<comp::hasOptionalAdjacentFaces<T>()>> :
+class OptionalAdjacentFacesVector<T, std::enable_if_t<comp::hasOptionalAdjacentFaces<T>()>> :
 		private OptionalGenericVector<typename T::AdjFacesContainer>
 {
 private:
 	using AdjFacesContainer = typename T::AdjFacesContainer;
-	using Base = OptionalGenericVector<AdjFacesContainer>;
+	using Base              = OptionalGenericVector<AdjFacesContainer>;
 
 public:
 	using Base::clear;
+	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	using Base::compact;
-	bool             isAdjacentFacesEnabled() const { return Base::isEnabled(); };
-	void             enableAdjacentFaces(uint size) { Base::enable(size); }
-	void             disableAdjacentFaces() { Base::disable(); }
+
+	bool isAdjacentFacesEnabled() const { return Base::isEnabled(); };
+	void enableAdjacentFaces(uint size) { Base::enable(size); }
+	void disableAdjacentFaces() { Base::disable(); }
+
 	AdjFacesContainer&       adjFaces(uint i) { return Base::at(i); }
 	const AdjFacesContainer& adjFaces(uint i) const { return Base::at(i); }
 };

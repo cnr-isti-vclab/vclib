@@ -63,6 +63,21 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 
 	static const int VN = F::VERTEX_NUMBER;
 	if constexpr (VN < 0) {
+		// if constexpr (edge::hasAdjacentEdges<F>()) {
+		if constexpr (comp::hasAdjacentEdgesT<F>::value) {
+			using T = typename F::AdjacentEdges;
+
+			T::resizeAdjEdges(list.size());
+		}
+
+		// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
+		if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+			using T = typename F::OptionalAdjacentEdges;
+
+			if (T::adjEdgesEnabled())
+				T::resizeAdjEdges(list.size());
+		}
+
 		// if constexpr (face::hasAdjacentFaces<F>()) {
 		if constexpr (comp::hasAdjacentFacesT<F>::value) {
 			using T = typename F::AdjacentFaces;
@@ -72,7 +87,7 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 
 		// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 		if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
-			using T = typename Face::OptionalAdjacentFaces;
+			using T = typename F::OptionalAdjacentFaces;
 
 			if (T::adjFacesEnabled())
 				T::resizeAdjFaces(list.size());
@@ -147,6 +162,21 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(uint n)
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
 
+	// if constexpr (edge::hasAdjacentEdges<F>()) {
+	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
+		using T = typename F::AdjacentEdges;
+
+		T::resizeAdjEdges(n);
+	}
+
+	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
+	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+		using T = typename F::OptionalAdjacentEdges;
+
+		if (T::adjEdgesEnabled())
+			T::resizeAdjEdges(n);
+	}
+
 	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {
 		using T = typename F::AdjacentFaces;
@@ -209,6 +239,21 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
 	// Does not make any sense since face::hasAdjacentFaces<F>() can be called without
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
+
+	// if constexpr (edge::hasAdjacentEdges<F>()) {
+	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
+		using T = typename F::AdjacentEdges;
+
+		T::pushAdjEdge(nullptr);
+	}
+
+	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
+	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+		using T = typename F::OptionalAdjacentEdges;
+
+		if (T::adjEdgesEnabled())
+			T::pushAdjEdge(nullptr);
+	}
 
 	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {
@@ -277,6 +322,21 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(uint i, VertexType* v)
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
 
+	// if constexpr (edge::hasAdjacentEdges<F>()) {
+	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
+		using T = typename F::AdjacentEdges;
+
+		T::insertAdjEdge(i, nullptr);
+	}
+
+	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
+	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+		using T = typename F::OptionalAdjacentEdges;
+
+		if (T::adjEdgesEnabled())
+			T::insertAdjEdge(i, nullptr);
+	}
+
 	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {
 		using T = typename F::AdjacentFaces;
@@ -344,6 +404,21 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
 
+	// if constexpr (edge::hasAdjacentEdges<F>()) {
+	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
+		using T = typename F::AdjacentEdges;
+
+		T::eraseAdjEdge(i);
+	}
+
+	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
+	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+		using T = typename F::OptionalAdjacentEdges;
+
+		if (T::adjEdgesEnabled())
+			T::eraseAdjEdge(i);
+	}
+
 	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {
 		using T = typename F::AdjacentFaces;
@@ -406,6 +481,21 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::clearVertices()
 	// Does not make any sense since face::hasAdjacentFaces<F>() can be called without
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// comp::hasAdjacentFaces<F>::value, which works.
+
+	// if constexpr (edge::hasAdjacentEdges<F>()) {
+	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
+		using T = typename F::AdjacentEdges;
+
+		T::clearAdjEdges();
+	}
+
+	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
+	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+		using T = typename F::OptionalAdjacentEdges;
+
+		if (T::adjEdgesEnabled())
+			T::clearAdjEdges();
+	}
 
 	// if constexpr (face::hasAdjacentFaces<F>()) {
 	if constexpr (comp::hasAdjacentFacesT<F>::value) {

@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_H
 #define VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_H
 
+#include "../components/adjacent_edges.h"
 #include "../components/adjacent_faces.h"
 #include "../components/adjacent_vertices.h"
 #include "../components/bit_flags.h"
@@ -37,6 +38,16 @@
 #include "../components/vertex_references.h"
 
 namespace vcl::vert {
+
+/** Port AdjacentEdges class into vert namespace **/
+template<typename Edge>
+using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
+
+template<typename T>
+bool constexpr hasAdjacentEdges()
+{
+	return comp::hasAdjacentEdges<T>();
+}
 
 /** Port AdjacentFaces class into vert namespace **/
 template<typename Face>

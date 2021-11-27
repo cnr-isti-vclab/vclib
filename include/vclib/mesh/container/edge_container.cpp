@@ -332,9 +332,9 @@ void vcl::mesh::EdgeContainer<T>::clearEdges()
 {
 	Base::vec.clear();
 	en = 0;
-//	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
-//		Base::optionalVec.clear();
-//	}
+	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+		Base::optionalVec.clear();
+	}
 }
 
 template<typename T>
@@ -344,10 +344,10 @@ uint EdgeContainer<T>::addEdge()
 	Base::vec.push_back(EdgeType());
 	T* newB = Base::vec.data();
 	++en;
-//	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
-//		setContainerPointer(Base::vec[Base::vec.size() - 1]);
-//		Base::optionalVec.resize(Base::vec.size());
-//	}
+	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+		setContainerPointer(Base::vec[Base::vec.size() - 1]);
+		Base::optionalVec.resize(Base::vec.size());
+	}
 	updateAfterAllocation(oldB, newB);
 	return Base::vec.size() - 1;
 }
@@ -368,12 +368,12 @@ uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges)
 	Base::vec.resize(Base::vec.size() + nEdges);
 	T* newB = Base::vec.data();
 	en += nEdges;
-//	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
-//		Base::optionalVec.resize(Base::vec.size());
-//		for (uint i = baseId; i < Base::vec.size(); ++i) {
-//			setContainerPointer(Base::vec[i]);
-//		}
-//	}
+	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+		Base::optionalVec.resize(Base::vec.size());
+		for (uint i = baseId; i < Base::vec.size(); ++i) {
+			setContainerPointer(Base::vec[i]);
+		}
+	}
 	updateAfterAllocation(oldB, newB);
 	return baseId;
 }
@@ -384,9 +384,9 @@ void EdgeContainer<T>::reserveEdges(uint size)
 	T* oldB = Base::vec.data();
 	Base::vec.reserve(size);
 	T* newB = Base::vec.data();
-//	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
-//		Base::optionalVec.reserve(size);
-//	}
+	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+		Base::optionalVec.reserve(size);
+	}
 	updateAfterAllocation(oldB, newB);
 }
 
@@ -419,9 +419,9 @@ std::vector<int> vcl::mesh::EdgeContainer<T>::compactEdges()
 	k++;
 	Base::vec.resize(k);
 	T* base = Base::vec.data();
-//	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
-//		Base::optionalVec.compact(newIndices);
-//	}
+	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+		Base::optionalVec.compact(newIndices);
+	}
 	updateEdgeReferencesAfterCompact(base, newIndices);
 	return newIndices;
 }
@@ -443,29 +443,29 @@ void EdgeContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
 template<typename T>
 void EdgeContainer<T>::updateContainerPointers()
 {
-//	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
-//		// all the edges must point to the right container - also the deleted ones
-//		for (EdgeType& f : edges(false)) {
-//			setContainerPointer(f);
-//		}
-//	}
+	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+		// all the edges must point to the right container - also the deleted ones
+		for (EdgeType& f : edges(false)) {
+			setContainerPointer(f);
+		}
+	}
 }
 
 template<typename T>
 void EdgeContainer<T>::updateEdgeReferences(const T* oldBase, const T* newBase)
 {
-//	if constexpr (vcl::edge::hasAdjacentEdges<T>()) {
-//		for (EdgeType& f : edges()) {
-//			f.updateEdgeReferences(oldBase, newBase);
-//		}
-//	}
-//	else if constexpr (vcl::edge::hasOptionalAdjacentEdges<T>()) {
-//		if (Base::optionalVec.isAdjacentEdgesEnabled()) {
-//			for (EdgeType& f : edges()) {
-//				f.updateEdgeReferences(oldBase, newBase);
-//			}
-//		}
-//	}
+	if constexpr (vcl::edge::hasAdjacentEdges<T>()) {
+		for (EdgeType& f : edges()) {
+			f.updateEdgeReferences(oldBase, newBase);
+		}
+	}
+	else if constexpr (vcl::edge::hasOptionalAdjacentEdges<T>()) {
+		if (Base::optionalVec.isAdjacentEdgesEnabled()) {
+			for (EdgeType& f : edges()) {
+				f.updateEdgeReferences(oldBase, newBase);
+			}
+		}
+	}
 }
 
 template<typename T>
@@ -473,18 +473,18 @@ void EdgeContainer<T>::updateEdgeReferencesAfterCompact(
 	const T*                base,
 	const std::vector<int>& newIndices)
 {
-//	if constexpr (vcl::edge::hasAdjacentEdges<T>()) {
-//		for (EdgeType& f : edges()) {
-//			f.updateEdgeReferencesAfterCompact(base, newIndices);
-//		}
-//	}
-//	else if constexpr (vcl::edge::hasOptionalAdjacentEdges<T>()) {
-//		if (Base::optionalVec.isAdjacentEdgesEnabled()) {
-//			for (EdgeType& f : edges()) {
-//				f.updateEdgeReferencesAfterCompact(base, newIndices);
-//			}
-//		}
-//	}
+	if constexpr (vcl::edge::hasAdjacentEdges<T>()) {
+		for (EdgeType& f : edges()) {
+			f.updateEdgeReferencesAfterCompact(base, newIndices);
+		}
+	}
+	else if constexpr (vcl::edge::hasOptionalAdjacentEdges<T>()) {
+		if (Base::optionalVec.isAdjacentEdgesEnabled()) {
+			for (EdgeType& f : edges()) {
+				f.updateEdgeReferencesAfterCompact(base, newIndices);
+			}
+		}
+	}
 }
 
 

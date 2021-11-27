@@ -24,10 +24,7 @@
 #define VCL_MESH_COMPONENTS_OPTIONAL_ADJACENT_VERTICES_H
 
 #include <array>
-#include <assert.h>
 #include <vector>
-
-#include <vclib/misc/vcl_types.h>
 
 #include "optional_info.h"
 

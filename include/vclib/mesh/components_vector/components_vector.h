@@ -24,6 +24,7 @@
 #define VCL_MESH_COMPONENTS_VECTOR_H
 
 #include "custom_components_vector.h"
+#include "optional_adjacent_edges_vector.h"
 #include "optional_adjacent_faces_vector.h"
 #include "optional_adjacent_vertices_vector.h"
 #include "optional_color_vector.h"
@@ -40,6 +41,7 @@ namespace vcl::internal {
 
 template<typename T>
 class ComponentsVector :
+		public OptionalAdjacentEdgesVector<T>,
 		public OptionalAdjacentFacesVector<T>,
 		public OptionalAdjacentVerticesVector<T>,
 		public OptionalColorVector<T>,
@@ -56,6 +58,7 @@ class ComponentsVector :
 public:
 	void clear()
 	{
+		OptionalAdjacentEdgesVector<T>::clear();
 		OptionalAdjacentFacesVector<T>::clear();
 		OptionalAdjacentVerticesVector<T>::clear();
 		OptionalColorVector<T>::clear();
@@ -71,6 +74,7 @@ public:
 	}
 	void resize(uint size)
 	{
+		OptionalAdjacentEdgesVector<T>::resize(size);
 		OptionalAdjacentFacesVector<T>::resize(size);
 		OptionalAdjacentVerticesVector<T>::resize(size);
 		OptionalColorVector<T>::resize(size);
@@ -86,7 +90,8 @@ public:
 	}
 	void reserve(uint size)
 	{
-		OptionalAdjacentFacesVector<T>::resize(size);
+		OptionalAdjacentEdgesVector<T>::reserve(size);
+		OptionalAdjacentFacesVector<T>::reserve(size);
 		OptionalAdjacentVerticesVector<T>::reserve(size);
 		OptionalColorVector<T>::reserve(size);
 		OptionalMarkVector<T>::reserve(size);
@@ -101,6 +106,7 @@ public:
 	}
 	void compact(const std::vector<int>& newIndices)
 	{
+		OptionalAdjacentEdgesVector<T>::compact(newIndices);
 		OptionalAdjacentFacesVector<T>::compact(newIndices);
 		OptionalAdjacentVerticesVector<T>::compact(newIndices);
 		OptionalColorVector<T>::compact(newIndices);

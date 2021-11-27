@@ -316,6 +316,60 @@ typename FaceContainer<T>::ConstFaceRangeIterator FaceContainer<T>::faces(bool j
 }
 
 /**
+ * @brief Checks if the face Optional Adjacent Edges is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalAdjacentEdges
+ * Component.
+ *
+ * @return true if the Optional AdjacentEdges is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), bool)
+	FaceContainer<T>::isPerFaceAdjacentEdgesEnabled() const
+{
+	return Base::optionalVec.isAdjacentEdgesEnabled();
+}
+
+/**
+ * @brief Enable the Optional Adjacent Edges of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalAdjacentEdges
+ * Component.
+ *
+ * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the adjacent edges number
+ * will be the same of the vertex number for each face of the container. This is because, for Faces,
+ * Adjacent Edges number is tied to the number of vertices.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
+	FaceContainer<T>::enablePerFaceAdjacentEdges()
+{
+	Base::optionalVec.enableAdjacentEdges(Base::vec.size());
+	static const int N = T::VERTEX_NUMBER;
+	if constexpr (N < 0) {
+		for (T& f : faces()) {
+			f.resizeAdjEdges(f.vertexNumber());
+		}
+	}
+}
+
+/**
+ * @brief Disables the Optional Adjacent Edges of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalAdjacentEdges
+ * Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
+	FaceContainer<T>::disablePerFaceAdjacentEdges()
+{
+	Base::optionalVec.disableAdjacentEdges();
+}
+
+/**
  * @brief Checks if the face Optional Adjacent Faces is enabled.
  *
  * @note This function is available only if the Face Element has the OptionalAdjacentFaces

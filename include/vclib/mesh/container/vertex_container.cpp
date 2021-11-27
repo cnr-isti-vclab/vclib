@@ -315,6 +315,45 @@ VertexContainer<T>::vertices(bool jumpDeleted) const
 }
 
 /**
+ * @brief Checks if the vertex Optional Adjacent Edges component is enabled.
+ *
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges Component.
+ *
+ * @return true if the Optional Adjacent Edges is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), bool)
+	VertexContainer<T>::isPerVertexAdjacentEdgesEnabled() const
+{
+	return Base::optionalVec.isAdjacentEdgesEnabled();
+}
+
+/**
+ * @brief Enables the Optional Adjacent Edges of the vertex.
+ *
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void) VertexContainer<T>::enablePerVertexAdjacentEdges()
+{
+	Base::optionalVec.enableAdjacentEdges(vertexContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Adjacent Edges of the vertex.
+ *
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void) VertexContainer<T>::disablePerVertexAdjacentEdges()
+{
+	Base::optionalVec.disableAdjacentEdges();
+}
+
+/**
  * @brief Checks if the vertex Optional Adjacent Faces component is enabled.
  *
  * @note This function is available only if the Vertex Element has the OptionalAdjacentFaces Component.

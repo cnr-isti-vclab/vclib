@@ -23,4 +23,92 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
 #define VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
 
+#include "../components_optional/custom_components.h"
+#include "../components_optional/optional_adjacent_edges.h"
+#include "../components_optional/optional_adjacent_faces.h"
+#include "../components_optional/optional_color.h"
+#include "../components_optional/optional_mark.h"
+#include "../components_optional/optional_mutable_bit_flags.h"
+#include "../components_optional/optional_scalar.h"
+
+namespace vcl::edge {
+
+/** Port OptionalAdjacentEdges class into edge namespace **/
+template<typename T>
+using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<T, -1, T>;
+
+template<typename T>
+bool constexpr hasOptionalAdjacentEdges()
+{
+	return comp::hasOptionalAdjacentEdges<T>();
+}
+
+/** Port OptionalAdjacentFaces class into edge namespace **/
+template<typename Face, typename T>
+using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<Face, -1, T>;
+
+template<typename T>
+bool constexpr hasOptionalAdjacentFaces()
+{
+	return comp::hasOptionalAdjacentFaces<T>();
+}
+
+/** Port OptionalColor class into edge namespace **/
+template<typename T>
+using OptionalColor = comp::OptionalColor<T>;
+
+template<typename T>
+bool constexpr hasOptionalColor()
+{
+	return comp::hasOptionalColor<T>();
+}
+
+/** Port OptionalInfo class into edge namespace **/
+template<typename T>
+using OptionalInfo = comp::OptionalInfo<T>;
+
+template<typename T>
+bool constexpr hasOptionalInfo()
+{
+	return comp::hasOptionalInfo<T>();
+}
+
+/** Port OptionalMark class into edge namespace **/
+template<typename T>
+using OptionalMark = comp::OptionalMark<T>;
+
+template<typename T>
+bool constexpr hasOptionalMark()
+{
+	return comp::hasOptionalMark<T>();
+}
+
+/** Port OptionalMutableBitFlags class into edge namespace **/
+template<typename T>
+using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<T>;
+
+template<typename T>
+bool constexpr hasOptionalMutableBitFlags()
+{
+	return comp::hasOptionalMutableBitFlags<T>();
+}
+
+/** Port OptionalScalar class into edge namespace **/
+template<typename S, typename T>
+using OptionalScalar = comp::OptionalScalar<S, T>;
+
+template<typename T>
+using OptionalScalarf = comp::OptionalScalar<float, T>;
+
+template<typename T>
+using OptionalScalard = comp::OptionalScalar<double, T>;
+
+template<typename T>
+bool constexpr hasOptionalScalar()
+{
+	return comp::hasOptionalScalar<T>();
+}
+
+}
+
 #endif // VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
