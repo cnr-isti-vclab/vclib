@@ -109,6 +109,16 @@ bool constexpr hasOptionalScalar()
 	return comp::hasOptionalScalar<T>();
 }
 
+/** Port CustomComponents class into face namespace **/
+template<typename T>
+using CustomComponents = comp::CustomComponents<T>;
+
+template<typename T>
+bool constexpr hasCustomComponents()
+{
+	return comp::hasCustomComponents<T>();
 }
+
+} // namespace vcl::edge
 
 #endif // VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H

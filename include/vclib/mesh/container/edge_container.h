@@ -81,6 +81,89 @@ public:
 	EdgeRangeIterator      edges(bool jumpDeleted = true);
 	ConstEdgeRangeIterator edges(bool jumpDeleted = true) const;
 
+	// AdjacentEdges
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), bool)
+	isPerEdgeAdjacentEdgesEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), void)
+	enablePerEdgeAdjacentEdges();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), void)
+	disablePerEdgeAdjacentEdges();
+
+	// AdjacentFaces
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalAdjacentFaces<U>(), bool)
+	isPerEdgeAdjacentFacesEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalAdjacentFaces<U>(), void)
+	enablePerEdgeAdjacentFaces();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalAdjacentFaces<U>(), void)
+	disablePerEdgeAdjacentFaces();
+
+	// Color
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalColor<U>(), bool)
+	isPerEdgeColorEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalColor<U>(), void)
+	enablePerEdgeColor();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalColor<U>(), void)
+	disablePerEdgeColor();
+
+	// Mark
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalMark<U>(), bool)
+	isPerEdgeMarkEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
+	enablePerEdgeMark();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
+	disablePerEdgeMark();
+
+	// Mutable Bit Flags
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), bool)
+	isPerEdgeMutableBitFlagsEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), void)
+	enablePerEdgeMutableBitFlags();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), void)
+	disablePerEdgeMutableBitFlags();
+
+	// Scalar
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), bool)
+	isPerEdgeScalarEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), void)
+	enablePerEdgeScalar();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), void)
+	disablePerEdgeScalar();
+
+	// Custom Components
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
+	addPerEdgeCustomComponent(const std::string& name);
+
 protected:
 	/**
 	 * @brief en: the number of edges in the container. Could be different from the container size

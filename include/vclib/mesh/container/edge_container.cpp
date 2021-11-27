@@ -316,6 +316,286 @@ typename EdgeContainer<T>::ConstEdgeRangeIterator EdgeContainer<T>::edges(bool j
 }
 
 /**
+ * @brief Checks if the edge Optional Adjacent Edges is enabled.
+ *
+ * @note This function is available only if the Edge Element has the OptionalAdjacentEdges
+ * Component.
+ *
+ * @return true if the Optional AdjacentEdges is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), bool)
+EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled() const
+{
+	return Base::optionalVec.isAdjacentEdgesEnabled();
+}
+
+/**
+ * @brief Enable the Optional Adjacent Edges of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalAdjacentEdges
+ * Component.
+ *
+ * @note If the Edge is polygonal (dynamic size, N < 0), when enabled, the adjacent edges number
+ * will be the same of the vertex number for each edge of the container. This is because, for Edges,
+ * Adjacent Edges number is tied to the number of vertices.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), void)
+EdgeContainer<T>::enablePerEdgeAdjacentEdges()
+{
+	Base::optionalVec.enableAdjacentEdges(Base::vec.size());
+	static const int N = T::VERTEX_NUMBER;
+	if constexpr (N < 0) {
+		for (T& f : edges()) {
+			f.resizeAdjEdges(f.vertexNumber());
+		}
+	}
+}
+
+/**
+ * @brief Disables the Optional Adjacent Edges of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalAdjacentEdges
+ * Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), void)
+EdgeContainer<T>::disablePerEdgeAdjacentEdges()
+{
+	Base::optionalVec.disableAdjacentEdges();
+}
+
+/**
+ * @brief Checks if the edge Optional Adjacent Faces is enabled.
+ *
+ * @note This function is available only if the Edge Element has the OptionalAdjacentFaces
+ * Component.
+ *
+ * @return true if the Optional AdjacentFaces is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalAdjacentFaces<U>(), bool)
+EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const
+{
+	return Base::optionalVec.isAdjacentFacesEnabled();
+}
+
+/**
+ * @brief Enable the Optional Adjacent Faces of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalAdjacentFaces
+ * Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalAdjacentFaces<U>(), void)
+EdgeContainer<T>::enablePerEdgeAdjacentFaces()
+{
+	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
+}
+
+/**
+ * @brief Disables the Optional Adjacent Faces of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalAdjacentFaces
+ * Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalAdjacentFaces<U>(), void)
+EdgeContainer<T>::disablePerEdgeAdjacentFaces()
+{
+	Base::optionalVec.disableAdjacentFaces();
+}
+
+/**
+ * @brief Checks if the edge Optional Color is enabled.
+ *
+ * @note This function is available only if the Edge Element has the OptionalColor component.
+ *
+ * @return true if the Optional Color is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalColor<U>(), bool)
+EdgeContainer<T>::isPerEdgeColorEnabled() const
+{
+	return Base::optionalVec.isColorEnabled();
+}
+
+/**
+ * @brief Enables the Optional Color of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalColor Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalColor<U>(), void)
+EdgeContainer<T>::enablePerEdgeColor()
+{
+	Base::optionalVec.enableColor(edgeContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Color of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalColor Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalColor<U>(), void)
+EdgeContainer<T>::disablePerEdgeColor()
+{
+	Base::optionalVec.disableColor();
+}
+
+/**
+ * @brief Checks if the edge Optional Mark is enabled.
+ *
+ * @note This function is available only if the Edge Element has the OptionalMark component.
+ *
+ * @return true if the Optional Mark is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalMark<U>(), bool)
+EdgeContainer<T>::isPerEdgeMarkEnabled() const
+{
+	return Base::optionalVec.isMarkEnabled();
+}
+
+/**
+ * @brief Enables the Optional Mark of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalMark Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
+EdgeContainer<T>::enablePerEdgeMark()
+{
+	Base::optionalVec.enableMark(edgeContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Mark of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalMark Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
+EdgeContainer<T>::disablePerEdgeMark()
+{
+	Base::optionalVec.disableMark();
+}
+
+/**
+ * @brief Checks if the edge Optional Mutable Bit Flags is enabled.
+ *
+ * @note This function is available only if the Edge Element has the OptionalMutableBitFlags
+ * Component.
+ *
+ * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), bool)
+EdgeContainer<T>::isPerEdgeMutableBitFlagsEnabled() const
+{
+	Base::optionalVec.isMutableBitFlagsEnabled();
+}
+
+/**
+ * @brief Enables the Optional Mutable Flags of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalMutableFlags Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), void)
+EdgeContainer<T>::enablePerEdgeMutableBitFlags()
+{
+	Base::optionalVec.enableMutableBitFlags(edgeContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Mutable Flags of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalMutableBitFlags
+ * Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), void)
+EdgeContainer<T>::disablePerEdgeMutableBitFlags()
+{
+	Base::optionalVec.disableMutableBitFlags();
+}
+
+/**
+ * @brief Checks if the edge Optional Scalar is enabled.
+ *
+ * @note This function is available only if the Edge Element has the OptionalScalar Component.
+ *
+ * @return true if the Optional Scalar is enabled, false otherwise.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), bool)
+EdgeContainer<T>::isPerEdgeScalarEnabled() const
+{
+	return Base::optionalVec.isScalarEnabled();
+}
+/**
+ * @brief Enables the Optional Scalar of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalScalar Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), void)
+EdgeContainer<T>::enablePerEdgeScalar()
+{
+	Base::optionalVec.enableScalar(edgeContainerSize());
+}
+
+/**
+ * @brief Disables the Optional Scalar of the edge.
+ *
+ * @note This function is available only if the Edge Element has the OptionalScalar Component.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), void)
+EdgeContainer<T>::disablePerEdgeScalar()
+{
+	Base::optionalVec.disableScalar();
+}
+
+/**
+ * @brief Adds a custom component of type K to the Edge, having the given name.
+ *
+ * @note This function is available only if the Edge Element has the CustomComponents
+ * Component.
+ *
+ * @tparam K: the type of the custom component added to the Edge.
+ * @param[in] name: the name of the custom component added to the Edge.
+ */
+template<typename T>
+template<typename K, typename U>
+VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
+EdgeContainer<T>::addPerEdgeCustomComponent(const std::string& name)
+{
+	Base::optionalVec.template addNewComponent<K>(name, edgeContainerSize());
+}
+
+/**
  * @brief Returns the index of the given edge.
  * @param f: edge pointer.
  * @return The index of f.
