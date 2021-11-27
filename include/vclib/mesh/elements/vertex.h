@@ -46,9 +46,6 @@ class Vertex : public VertexTriggerer, public Args...
 {
 	template<typename>
 	friend class mesh::VertexContainer;
-
-public:
-	Vertex() {}
 };
 
 } // namespace vcl

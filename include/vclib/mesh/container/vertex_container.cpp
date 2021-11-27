@@ -748,9 +748,7 @@ uint VertexContainer<T>::addVertices(uint nVertices)
 	vn += nVertices;
 	if constexpr (vert::hasOptionalInfo<VertexType>()) {
 		Base::optionalVec.resize(Base::vec.size());
-	}
-	for (uint i = baseId; i < Base::vec.size(); ++i) {
-		if constexpr (vert::hasOptionalInfo<VertexType>()) {
+		for (uint i = baseId; i < Base::vec.size(); ++i) {
 			setContainerPointer(Base::vec[i]);
 		}
 	}

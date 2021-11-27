@@ -38,6 +38,17 @@ class EdgeContainerTriggerer
 template<typename T>
 class EdgeContainer : protected ElementContainer<T>, public EdgeContainerTriggerer
 {
+	// Sanity checks for the Face -- all components must be consistent each other
+//	static_assert(
+//		vcl::edge::hasBitFlags<T>(),
+//		"You should include BitFlags (or a derived) as Edge component in your Mesh definition.");
+//	static_assert(
+//		vcl::edge::hasVertexReferences<T>(),
+//		"You should include a VertexReferences as Edge component in your Mesh definition.");
+	static_assert(
+		T::VERTEX_NUMBER == 2,
+		"Edges must have 2 vertex references.");
+
 	using Base              = ElementContainer<T>;
 	using EdgeContainerType = EdgeContainer<T>;
 public:

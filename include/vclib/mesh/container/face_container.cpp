@@ -793,11 +793,8 @@ uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces)
 	T* newB = Base::vec.data();
 	fn += nFaces;
 	if constexpr (face::hasOptionalInfo<FaceType>()) {
-		Base::optionalVec::resize(Base::vec.size());
-	}
-	for (uint i = baseId; i < Base::vec.size(); ++i) {
-		Base::vec[i]._id = i;
-		if constexpr (face::hasOptionalInfo<FaceType>()) {
+		Base::optionalVec.resize(Base::vec.size());
+		for (uint i = baseId; i < Base::vec.size(); ++i) {
 			setContainerPointer(Base::vec[i]);
 		}
 	}
