@@ -35,8 +35,8 @@ AdjacentFaces<Face, N>::AdjacentFaces() : Base()
 }
 
 /**
- * @brief Returns the number of adjacent faces of the element.
- * @return The number of adjacent faces of the element.
+ * @brief Returns the number of adjacent faces of this element.
+ * @return The number of adjacent faces of this element.
  */
 template<typename Face, int N>
 uint AdjacentFaces<Face, N>::adjFacesNumber() const
@@ -45,7 +45,7 @@ uint AdjacentFaces<Face, N>::adjFacesNumber() const
 }
 
 /**
- * @brief Returns a reference of the pointer to the i-th adjacent face of an element.
+ * @brief Returns a reference of the pointer to the i-th adjacent face of this element.
  *
  * You can use this function to set the i-th adjacent face:
  *
@@ -53,8 +53,9 @@ uint AdjacentFaces<Face, N>::adjFacesNumber() const
  * e.adjFace(2) = &m.face(k); // the second adj face of e will point to the k-th face of the mesh.
  * @endcode
  *
- * @param i: the position of the required adjacent list in the container.
- * @return The pointer i-th adjacent face of the element.
+ * @param[in] i: the position of the required adjacent face in the container; the value must be
+ * between 0 and the number of adj faces.
+ * @return The pointer to the i-th adjacent face of this element.
  */
 template<typename Face, int N>
 Face*& AdjacentFaces<Face, N>::adjFace(uint i)
@@ -62,30 +63,72 @@ Face*& AdjacentFaces<Face, N>::adjFace(uint i)
 	return Base::at(i);
 }
 
+/**
+ * @brief Returns a const pointer to the i-th adjacent face of this element.
+ * @param[in] i: the position of the required adjacent face in the container; the value must be
+ * between 0 and the number of adj faces.
+ * @return The pointer to the i-th adjacent face of this element.
+ */
 template<typename Face, int N>
 const Face* AdjacentFaces<Face, N>::adjFace(uint i) const
 {
 	return Base::at(i);
 }
 
+/**
+ * @brief Returns a reference of the pointer to the i-th adjacent face of this element but using as
+ * index the module between i and the number of adjacent faces. You can use this function if you
+ * need to get the "next adjacent face after position k", without check if it is less than the
+ * number of adj faces. Works also for negative numbers:
+ *
+ * @code{.cpp}
+ * k = pos; // some position of an adjacent face
+ * auto* next = e.adjFaceMod(k+1); // the adj face next to k, that may also be at pos 0
+ * auto* last = e.adjFaceMod(-1); // the adj face in position adjFaceNumber()-1
+ * @endcode
+ *
+ * @param[in] i: the position of the required adjacent face in the container, w.r.t. the position 0;
+ * value is modularized on adjFaceNumber().
+ * @return The pointer to the required adjacent face of this element.
+ */
 template<typename Face, int N>
 Face*& AdjacentFaces<Face, N>::adjFaceMod(int i)
 {
 	return Base::atMod(i);
 }
 
+/**
+ * @brief Same of adjFaceMod, but returns a const Pointer to the adjacent face.
+ * @param[in] i: the position of the required adjacent face in the container, w.r.t. the position 0;
+ * value is modularized on adjFaceNumber().
+ * @return The pointer to the required adjacent face of this element.
+ */
 template<typename Face, int N>
 const Face* AdjacentFaces<Face, N>::adjFaceMod(int i) const
 {
 	return Base::atMod(i);
 }
 
+/**
+ * @brief Sets the i-th adjacent face of this element.
+ * @param[in] f: The pointer to the adjacent face to set to this element.
+ * @param[in] i: the position in the container on which set the adj face; the value must be
+ * between 0 and the number of adj faces.
+ */
 template<typename Face, int N>
 void AdjacentFaces<Face, N>::setAdjFace(Face* f, uint i)
 {
 	Base::set(f, i);
 }
 
+/**
+ * @brief Sets all the adjacent faces of this element.
+ *
+ * If the size of the container is static, the size of the input vector must be the same one of the
+ * container.
+ *
+ * @param[in] list: vector of adjacent faces to set.
+ */
 template<typename Face, int N>
 void AdjacentFaces<Face, N>::setAdjFaces(const std::vector<Face*>& list)
 {

@@ -33,14 +33,14 @@ FaceContainer<T>::FaceContainer()
 }
 
 /**
- * @brief Returns a const reference of the face at the i-th position
- * in the Face Container of the Mesh, which will be the face having id = i.
+ * @brief Returns a const reference of the face at the i-th position in the Face Container of the
+ * Mesh, which will be the face having index = i.
  *
  * This function does not perform any sanity check: if i is less than faceContainerSize(), this
  * function will return a valid Face reference (note that the Face may have been flagged as
  * deleted).
  *
- * @param i: the id of the face that will be returned.
+ * @param[in] i: the index of the face that will be returned.
  */
 template<typename T>
 const typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i) const
@@ -49,14 +49,14 @@ const typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i) const
 }
 
 /**
- * @brief Container::face Returns a reference of the face at the i-th position
- * in the Face Container of the Mesh, which will be the face having id = i.
+ * @brief Returns a reference of the face at the i-th position in the Face Container of the Mesh,
+ * which will be the face having index = i.
  *
  * This function does not perform any sanity check: if i is less than faceContainerSize(), this
  * function will return a valid Face reference (note that the Face may have been flagged as
  * deleted).
  *
- * @param i: the id of the face that will be returned.
+ * @param[in] i: the index of the face that will be returned.
  */
 template<typename T>
 typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i)
@@ -65,13 +65,12 @@ typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i)
 }
 
 /**
- * @brief Container::faceNumber Returns the number of **non-deleted** faces contained in the
- * Face container of the Mesh.
+ * @brief Returns the number of **non-deleted** faces contained in the Face container of the Mesh.
  *
  * If faceNumber() != faceContainerSize(), it means that there are some faces that are
  * flagged as deleted.
  *
- * @return the number of non-deleted faces of the Mesh.
+ * @return The number of non-deleted faces of the Mesh.
  */
 template<typename T>
 uint FaceContainer<T>::faceNumber() const
@@ -80,13 +79,12 @@ uint FaceContainer<T>::faceNumber() const
 }
 
 /**
- * @brief Container::faceContainerSize Returns the number of faces (also deleted) contained in
- * the Face container of the Mesh.
+ * @brief Returns the number of faces (also deleted) contained in the Face container of the Mesh.
  *
  * If faceNumber() != faceContainerSize(), it means that there are some faces that are
  * flagged as deleted.
  *
- * @return the number of all the faces contained in the Mesh.
+ * @return The number of all the faces contained in the Mesh.
  */
 template<typename T>
 uint FaceContainer<T>::faceContainerSize() const
@@ -94,6 +92,12 @@ uint FaceContainer<T>::faceContainerSize() const
 	return Base::vec.size();
 }
 
+/**
+ * @brief Returns the number of deleted faces in the Face container, that is faceContainerSize() -
+ * faceNumber().
+ *
+ * @return The number of deleted faces in the container.
+ */
 template<typename T>
 uint FaceContainer<T>::deletedFaceNumber() const
 {
@@ -101,14 +105,14 @@ uint FaceContainer<T>::deletedFaceNumber() const
 }
 
 /**
- * @brief Container::deleteFace Marks as deleted the face with the given id.
+ * @brief Marks as deleted the face with the given id.
  *
  * This member function does not perform any reallocation of the faces: the deleted faces
  * will stay in the Face Container, but will be marked as deleted.
  *
  * Deleted faces are automatically jumped by the iterators provided by the Face Container.
  *
- * @param i: the id of the face that will be marked as deleted.
+ * @param[in] i: the id of the face that will be marked as deleted.
  */
 template<typename T>
 void FaceContainer<T>::deleteFace(uint i)
@@ -117,6 +121,16 @@ void FaceContainer<T>::deleteFace(uint i)
 	fn--;
 }
 
+/**
+ * @brief Marks as deleted the given face, before asserting that the face belongs to this container.
+ *
+ * This member function does not perform any reallocation of the faces: the deleted faces
+ * will stay in the Face Container, but will be marked as deleted.
+ *
+ * Deleted faces are automatically jumped by the iterators provided by the Face Container.
+ *
+ * @param[in] f: the pointer of the face that will be marked as deleted.
+ */
 template<typename T>
 void FaceContainer<T>::deleteFace(const FaceType* f)
 {
@@ -125,24 +139,25 @@ void FaceContainer<T>::deleteFace(const FaceType* f)
 
 /**
  * @brief This is an utility member function that returns the index of an element if the container
- * would be compact, that is the number of non-deleted elements before the face with the given id.
+ * would be compact, that is the number of non-deleted elements before the face with the given
+ * index.
  *
- * Complexity: O(n), n number of faces in the container.
+ * Complexity: O(n), with n the number of faces in the container.
  *
- * This function does not perform any sanity check.
+ * This function does not perform any sanity check on the given index.
  *
- * @param id
- * @return
+ * @param[in] i: the index of a face of the container.
+ * @return The index that the face with index i would have if this container would be compact.
  */
 template<typename T>
-uint FaceContainer<T>::faceIndexIfCompact(uint id) const
+uint FaceContainer<T>::faceIndexIfCompact(uint i) const
 {
 	if (Base::vec.size() == fn)
-		return id;
+		return i;
 	else {
 		uint cnt = 0;
-		for (uint i = 0; i < id; i++) {
-			if (!Base::vec[i].isDeleted())
+		for (uint ii = 0; ii < i; ii++) {
+			if (!Base::vec[ii].isDeleted())
 				++cnt;
 		}
 		return cnt;
@@ -156,7 +171,8 @@ uint FaceContainer<T>::faceIndexIfCompact(uint id) const
  *
  * This is useful if you need to know the indices of the faces that they would have in a
  * compact container, without considering the deleted ones.
- * @return
+ *
+ * @return A vector containing, for each face index, its index if the container would be compact.
  */
 template<typename T>
 std::vector<int> FaceContainer<T>::faceCompactIndices() const
@@ -175,6 +191,15 @@ std::vector<int> FaceContainer<T>::faceCompactIndices() const
 	return newIndices;
 }
 
+/**
+ * @brief Returns an iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted faces of the container. You can change
+ * this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted faces.
+ * @return An iterator the the first face of the container.
+ */
 template<typename T>
 typename FaceContainer<T>::FaceIterator FaceContainer<T>::faceBegin(bool jumpDeleted)
 {
@@ -189,12 +214,25 @@ typename FaceContainer<T>::FaceIterator FaceContainer<T>::faceBegin(bool jumpDel
 	return FaceIterator(it, Base::vec, jumpDeleted && Base::vec.size() != fn);
 }
 
+/**
+ * @brief Returns an iterator to the end of the container.
+ * @return An iterator to the end of the container.
+ */
 template<typename T>
 typename FaceContainer<T>::FaceIterator FaceContainer<T>::faceEnd()
 {
 	return FaceIterator(Base::vec.end(), Base::vec);
 }
 
+/**
+ * @brief Returns a const iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted faces of the container. You can change
+ * this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted faces.
+ * @return A const iterator the the first face of the container.
+ */
 template<typename T>
 typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceBegin(bool jumpDeleted) const
 {
@@ -209,12 +247,35 @@ typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceBegin(bool ju
 	return ConstFaceIterator(it, Base::vec, jumpDeleted && Base::vec.size() != fn);
 }
 
+/**
+ * @brief Returns a const iterator to the end of the container.
+ * @return A const iterator to the end of the container.
+ */
 template<typename T>
 typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceEnd() const
 {
 	return ConstFaceIterator(Base::vec.end(), Base::vec);
 }
 
+/**
+ * @brief Returns a small utility object that allows to iterate over the faces of the containers,
+ * providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the faces using the C++ foreach
+ * syntax:
+ *
+ * @code{.cpp}
+ * for (Face& f : m.faces()){
+ *     // do something with this face
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over faces is automatically initialized to jump deleted faces of the
+ * container. You can change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted faces.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
 template<typename T>
 typename FaceContainer<T>::FaceRangeIterator FaceContainer<T>::faces(bool jumpDeleted)
 {
@@ -225,6 +286,25 @@ typename FaceContainer<T>::FaceRangeIterator FaceContainer<T>::faces(bool jumpDe
 		&FaceContainer::faceEnd);
 }
 
+/**
+ * @brief Returns a small utility object that allows to iterate over the faces of the containers,
+ * providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the faces using the C++ foreach
+ * syntax:
+ *
+ * @code{.cpp}
+ * for (const Face& f : m.faces()){
+ *     // do something with this face
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over faces is automatically initialized to jump deleted faces of the
+ * container. You can change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted faces.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
 template<typename T>
 typename FaceContainer<T>::ConstFaceRangeIterator FaceContainer<T>::faces(bool jumpDeleted) const
 {
@@ -252,7 +332,7 @@ FaceContainer<T>::isPerFaceAdjacentFacesEnabled() const
 }
 
 /**
- * @brief Container::enableFaceAdjacentFaces enable the Optional Adjacent Faces of the face.
+ * @brief Enable the Optional Adjacent Faces of the face.
  *
  * @note This function is available only if the Face Element has the OptionalAdjacentFaces
  * Component.
@@ -642,6 +722,15 @@ FaceContainer<T>::disablePerFaceWedgeTexCoords()
 	Base::optionalVec.disableWedgeTexCoords();
 }
 
+/**
+ * @brief Adds a custom component of type K to the Face, having the given name.
+ *
+ * @note This function is available only if the Face Element has the CustomComponents
+ * Component.
+ *
+ * @tparam K: the type of the custom component added to the Face.
+ * @param[in] name: the name of the custom component added to the Face.
+ */
 template<typename T>
 template<typename K, typename U>
 VCL_ENABLE_IF(face::hasCustomComponents<U>(), void)
@@ -650,6 +739,11 @@ FaceContainer<T>::addPerFaceCustomComponent(const std::string& name)
 	Base::optionalVec.template addNewComponent<K>(name, faceContainerSize());
 }
 
+/**
+ * @brief Returns the index of the given face.
+ * @param f: face pointer.
+ * @return The index of f.
+ */
 template<typename T>
 uint FaceContainer<T>::index(const FaceType* f) const
 {

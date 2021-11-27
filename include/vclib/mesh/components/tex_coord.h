@@ -62,4 +62,6 @@ bool constexpr hasTexCoord()
 
 } // namespace vcl::comp
 
+#include "tex_coord.cpp"
+
 #endif // VCL_MESH_COMPONENTS_TEXCOORD_H

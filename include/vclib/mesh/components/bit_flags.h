@@ -23,8 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
-#include <assert.h>
-#include <type_traits>
+#include <vclib/misc/vcl_types.h>
 
 namespace vcl::comp {
 

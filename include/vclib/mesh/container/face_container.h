@@ -44,7 +44,7 @@ class FaceContainerTriggerer
  * enablers/disablers of the eventual optional components of the face.
  */
 template<typename T>
-class FaceContainer : public ElementContainer<T>, public FaceContainerTriggerer
+class FaceContainer : protected ElementContainer<T>, public FaceContainerTriggerer
 {
 	// Sanity checks for the Face -- all components must be consistent each other
 	static_assert(
@@ -223,7 +223,7 @@ public:
 
 protected:
 	/**
-	 * @brief fn: the number of faces in the container. Could be different from faces.size()
+	 * @brief fn: the number of faces in the container. Could be different from the container size
 	 * due to faces marked as deleted into the container.
 	 */
 	uint fn = 0;

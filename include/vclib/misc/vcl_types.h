@@ -23,6 +23,7 @@
 #ifndef VCL_TYPE_TRAITS_H
 #define VCL_TYPE_TRAITS_H
 
+#include <assert.h>
 #include <type_traits>
 
 /**

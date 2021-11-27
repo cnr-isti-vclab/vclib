@@ -33,14 +33,14 @@ VertexContainer<T>::VertexContainer()
 }
 
 /**
- * @brief Returns a const reference of the vertex at the i-th position
- * in the Vertex Container of the Mesh, which will be the vertex having id = i.
+ * @brief Returns a const reference of the vertex at the i-th position in the Vertex Container of
+ * the Mesh, which will be the vertex having index = i.
  *
  * This function does not perform any sanity check: if i is less than vertexContainerSize(), this
  * function will return a valid Vertex reference (note that the Vertex may have been flagged as
  * deleted).
  *
- * @param i: the id of the vertex that will be returned.
+ * @param[in] i: the index of the vertex that will be returned.
  */
 template<typename T>
 const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i) const
@@ -49,14 +49,14 @@ const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i
 }
 
 /**
- * @brief Container::vertex Returns a reference of the vertex at the i-th position
- * in the Vertex Container of the Mesh, which will be the vertex having id = i.
+ * @brief Returns a reference of the vertex at the i-th position in the Vertex Container of the Mesh,
+ * which will be the vertex having index = i.
  *
  * This function does not perform any sanity check: if i is less than vertexContainerSize(), this
  * function will return a valid Vertex reference (note that the Vertex may have been flagged as
  * deleted).
  *
- * @param i: the id of the vertex that will be returned.
+ * @param[in] i: the index of the vertex that will be returned.
  */
 template<typename T>
 typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i)
@@ -65,13 +65,12 @@ typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i)
 }
 
 /**
- * @brief Container::vertexNumber Returns the number of **non-deleted** vertices contained in the
- * Vertex container of the Mesh.
+ * @brief Returns the number of **non-deleted** vertices contained in the Vertex container of the Mesh.
  *
  * If vertexNumber() != vertexContainerSize(), it means that there are some vertices that are
  * flagged as deleted.
  *
- * @return the number of non-deleted vertices of the Mesh.
+ * @return The number of non-deleted vertices of the Mesh.
  */
 template<typename T>
 uint VertexContainer<T>::vertexNumber() const
@@ -80,13 +79,12 @@ uint VertexContainer<T>::vertexNumber() const
 }
 
 /**
- * @brief Container::vertexContainerSize Returns the number of vertices (also deleted) contained in
- * the Vertex container of the Mesh.
+ * @brief Returns the number of vertices (also deleted) contained in the Vertex container of the Mesh.
  *
  * If vertexNumber() != vertexContainerSize(), it means that there are some vertices that are
  * flagged as deleted.
  *
- * @return the number of all the vertices contained in the Mesh.
+ * @return The number of all the vertices contained in the Mesh.
  */
 template<typename T>
 uint VertexContainer<T>::vertexContainerSize() const
@@ -94,6 +92,12 @@ uint VertexContainer<T>::vertexContainerSize() const
 	return Base::vec.size();
 }
 
+/**
+ * @brief Returns the number of deleted vertices in the Vertex container, that is vertexContainerSize() -
+ * vertexNumber().
+ *
+ * @return The number of deleted vertices in the container.
+ */
 template<typename T>
 uint vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
 {
@@ -101,14 +105,14 @@ uint vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
 }
 
 /**
- * @brief Container::deleteVertex Marks as deleted the vertex with the given id.
+ * @brief Marks as deleted the vertex with the given id.
  *
  * This member function does not perform any reallocation of the vertices: the deleted vertices
  * will stay in the Vertex Container, but will be marked as deleted.
  *
  * Deleted vertices are automatically jumped by the iterators provided by the Vertex Container.
  *
- * @param i: the id of the vertex that will be marked as deleted.
+ * @param[in] i: the id of the vertex that will be marked as deleted.
  */
 template<typename T>
 void VertexContainer<T>::deleteVertex(uint i)
@@ -117,6 +121,16 @@ void VertexContainer<T>::deleteVertex(uint i)
 	--vn;
 }
 
+/**
+ * @brief Marks as deleted the given vertex, before asserting that the vertex belongs to this container.
+ *
+ * This member function does not perform any reallocation of the vertices: the deleted vertices
+ * will stay in the Vertex Container, but will be marked as deleted.
+ *
+ * Deleted vertices are automatically jumped by the iterators provided by the Vertex Container.
+ *
+ * @param[in] v: the pointer of the vertex that will be marked as deleted.
+ */
 template<typename T>
 void VertexContainer<T>::deleteVertex(const VertexType* v)
 {
@@ -124,25 +138,26 @@ void VertexContainer<T>::deleteVertex(const VertexType* v)
 }
 
 /**
- * @brief This is an utility member function that returns the id of an element if the container
- * would be compact, that is the number of non-deleted elements before the vertex with the given id.
+ * @brief This is an utility member function that returns the index of an element if the container
+ * would be compact, that is the number of non-deleted elements before the vertex with the given
+ * index.
  *
- * Complexity: O(n), n number of vertices in the container.
+ * Complexity: O(n), with n the number of vertices in the container.
  *
- * This function does not perform any sanity check.
+ * This function does not perform any sanity check on the given index.
  *
- * @param id
- * @return
+ * @param[in] i: the index of a vertex of the container.
+ * @return The index that the vertex with index i would have if this container would be compact.
  */
 template<typename T>
-uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint id) const
+uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint i) const
 {
 	if (Base::vec.size() == vn)
-		return id;
+		return i;
 	else {
 		uint cnt = 0;
-		for (uint i = 0; i < id; i++) {
-			if (!Base::vec[i].isDeleted())
+		for (uint ii = 0; ii < i; ii++) {
+			if (!Base::vec[ii].isDeleted())
 				++cnt;
 		}
 		return cnt;
@@ -156,7 +171,8 @@ uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint id) const
  *
  * This is useful if you need to know the indices of the vertices that they would have in a
  * compact container, without considering the deleted ones.
- * @return
+ *
+ * @return A vector containing, for each vertex index, its index if the container would be compact.
  */
 template<typename T>
 std::vector<int> VertexContainer<T>::vertexCompactIndices() const
@@ -175,6 +191,15 @@ std::vector<int> VertexContainer<T>::vertexCompactIndices() const
 	return newIndices;
 }
 
+/**
+ * @brief Returns an iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted vertices of the container. You can change
+ * this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted vertices.
+ * @return An iterator the the first vertex of the container.
+ */
 template<typename T>
 typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexBegin(bool jumpDeleted)
 {
@@ -189,12 +214,25 @@ typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexBegin(bool
 	return VertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vn);
 }
 
+/**
+ * @brief Returns an iterator to the end of the container.
+ * @return An iterator to the end of the container.
+ */
 template<typename T>
 typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexEnd()
 {
 	return VertexIterator(Base::vec.end(), Base::vec);
 }
 
+/**
+ * @brief Returns a const iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted vertices of the container. You can change
+ * this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted vertices.
+ * @return A const iterator the the first vertex of the container.
+ */
 template<typename T>
 typename VertexContainer<T>::ConstVertexIterator
 VertexContainer<T>::vertexBegin(bool jumpDeleted) const
@@ -210,12 +248,35 @@ VertexContainer<T>::vertexBegin(bool jumpDeleted) const
 	return ConstVertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vn);
 }
 
+/**
+ * @brief Returns a const iterator to the end of the container.
+ * @return A const iterator to the end of the container.
+ */
 template<typename T>
 typename VertexContainer<T>::ConstVertexIterator VertexContainer<T>::vertexEnd() const
 {
 	return ConstVertexIterator(Base::vec.end(), Base::vec);
 }
 
+/**
+ * @brief Returns a small utility object that allows to iterate over the vertices of the containers,
+ * providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the vertices using the C++ foreach
+ * syntax:
+ *
+ * @code{.cpp}
+ * for (Vertex& v : m.vertices()){
+ *     // do something with this vertex
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over vertices is automatically initialized to jump deleted vertices of the
+ * container. You can change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted vertices.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
 template<typename T>
 typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bool jumpDeleted)
 {
@@ -226,6 +287,25 @@ typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bo
 		&VertexContainer::vertexEnd);
 }
 
+/**
+ * @brief Returns a small utility object that allows to iterate over the vertices of the containers,
+ * providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the vertices using the C++ foreach
+ * syntax:
+ *
+ * @code{.cpp}
+ * for (const Vertex& v : m.vertices()){
+ *     // do something with this vertex
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over vertices is automatically initialized to jump deleted vertices of the
+ * container. You can change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted vertices.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
 template<typename T>
 typename VertexContainer<T>::ConstVertexRangeIterator
 VertexContainer<T>::vertices(bool jumpDeleted) const
@@ -602,7 +682,13 @@ VertexContainer<T>::disablePerVertexTexCoord()
 }
 
 /**
- * @brief
+ * @brief Adds a custom component of type K to the Vertex, having the given name.
+ *
+ * @note This function is available only if the Vertex Element has the CustomComponents
+ * Component.
+ *
+ * @tparam K: the type of the custom component added to the Vertex.
+ * @param[in] name: the name of the custom component added to the Vertex.
  */
 template<typename T>
 template<typename K, typename U>

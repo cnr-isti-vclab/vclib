@@ -44,7 +44,7 @@ class VertexContainerTriggerer
  * enablers/disablers of the eventual optional components of the vertex.
  */
 template<typename T>
-class VertexContainer : public ElementContainer<T>, public VertexContainerTriggerer
+class VertexContainer : protected ElementContainer<T>, public VertexContainerTriggerer
 {
 	// Sanity checks for the Vertex
 	static_assert(
