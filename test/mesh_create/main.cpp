@@ -29,6 +29,10 @@
 int main()
 {
 	vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();
+
+	assert(m.vertexNumber() == 4);
+	assert(m.faceNumber() == 4);
+
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply");
 
 	return 0;
