@@ -39,138 +39,138 @@
 
 namespace vcl::vert {
 
-/** Port AdjacentEdges class into vert namespace **/
+/* Port AdjacentEdges class into vert namespace */
 template<typename Edge>
 using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasAdjacentEdges()
 {
-	return comp::hasAdjacentEdges<T>();
+	return comp::hasAdjacentEdges<VertexType>();
 }
 
-/** Port AdjacentFaces class into vert namespace **/
-template<typename Face>
-using AdjacentFaces = comp::AdjacentFaces<Face, -1>;
+/* Port AdjacentFaces class into vert namespace */
+template<typename FaceType>
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasAdjacentFaces()
 {
-	return comp::hasAdjacentFaces<T>();
+	return comp::hasAdjacentFaces<VertexType>();
 }
 
-/** Port AdjacentVertices class into vert namespace **/
-template<typename Vertex>
-using AdjacentVertices = comp::AdjacentVertices<Vertex, -1>;
+/* Port AdjacentVertices class into vert namespace */
+template<typename VertexType>
+using AdjacentVertices = comp::AdjacentVertices<VertexType, -1>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasAdjacentVertices()
 {
-	return comp::hasAdjacentVertices<T>();
+	return comp::hasAdjacentVertices<VertexType>();
 }
 
-/** Port BitFlags class into vert namespace **/
+/* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasBitFlags()
 {
-	return comp::hasBitFlags<T>();
+	return comp::hasBitFlags<VertexType>();
 }
 
-/** Port Color class into vert namespace **/
+/* Port Color class into vert namespace */
 using Color = comp::Color;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasColor()
 {
-	return comp::hasColor<T>();
+	return comp::hasColor<VertexType>();
 }
 
-/** Port Coordinate class into vert namespace **/
-template<typename Scalar, int N>
-using Coordinate = comp::Coordinate<Scalar, N>;
+/* Port Coordinate class into vert namespace */
+template<typename ScalarType, int N>
+using Coordinate = comp::Coordinate<ScalarType, N>;
 
-template<typename Scalar>
-using Coordinate3 = comp::Coordinate3<Scalar>;
+template<typename ScalarType>
+using Coordinate3 = comp::Coordinate3<ScalarType>;
 
 using Coordinate3f = comp::Coordinate3f;
 using Coordinate3d = comp::Coordinate3d;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasCoordinate()
 {
-	return comp::hasCoordinate<T>();
+	return comp::hasCoordinate<VertexType>();
 }
 
-/** Port Mark class into vert namespace **/
+/* Port Mark class into vert namespace */
 using Mark = comp::Mark;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasMark()
 {
-	return comp::hasMark<T>();
+	return comp::hasMark<VertexType>();
 }
 
-/** Port MutableBitFlags class into vert namespace **/
+/* Port MutableBitFlags class into vert namespace */
 using MutableBitFlags = comp::MutableBitFlags;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasMutableBitFlags()
 {
-	return comp::hasMutableBitFlags<T>();
+	return comp::hasMutableBitFlags<VertexType>();
 }
 
-/** Port Normal classes into vert namespace **/
-template<typename Scalar, int N>
-using Normal = comp::Normal<Scalar, N>;
+/* Port Normal classes into vert namespace */
+template<typename ScalarType, int N>
+using Normal = comp::Normal<ScalarType, N>;
 
-template<typename Scalar>
-using Normal3 = comp::Normal3<Scalar>;
+template<typename ScalarType>
+using Normal3 = comp::Normal3<ScalarType>;
 
 using Normal3f = comp::Normal3f;
 using Normal3d = comp::Normal3d;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasNormal()
 {
-	return comp::hasNormal<T>();
+	return comp::hasNormal<VertexType>();
 }
 
-/** Port PrincipalCurvature class into face namespace **/
-template<typename T>
-using PrincipalCurvature = comp::PrincipalCurvature<T>;
+/* Port PrincipalCurvature class into face namespace */
+template<typename ScalarType>
+using PrincipalCurvature = comp::PrincipalCurvature<ScalarType>;
 
 using PrincipalCurvaturef = comp::PrincipalCurvaturef;
 using PrincipalCurvatured = comp::PrincipalCurvatured;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasPrincipalCurvature()
 {
-	return comp::hasPrincipalCurvature<T>();
+	return comp::hasPrincipalCurvature<VertexType>();
 }
 
-/** Port Scalar class into vert namespace **/
-template<typename T>
-using Scalar = comp::Scalar<T>;
+/* Port Scalar class into vert namespace */
+template<typename ScalarType>
+using Scalar = comp::Scalar<ScalarType>;
 
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasScalar()
 {
-	return comp::hasScalar<T>();
+	return comp::hasScalar<VertexType>();
 }
 
-/** Port TexCoord class into vert namespace **/
-template<typename T>
-using TexCoord = comp::TexCoord<T>;
+/* Port TexCoord class into vert namespace */
+template<typename ScalarType>
+using TexCoord = comp::TexCoord<ScalarType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasTexCoord()
 {
-	return comp::hasTexCoord<T>();
+	return comp::hasTexCoord<VertexType>();
 }
 
 using TexCoordf = comp::TexCoordf;

@@ -37,189 +37,189 @@
 
 namespace vcl::face {
 
-/** Port OptionalAdjacentEdges class into face namespace **/
-template<typename T>
-using OptionalAdjacentPolygonEdges = comp::OptionalAdjacentEdges<T, -1, T>;
+/* Port OptionalAdjacentEdges class into face namespace */
+template<typename EdgeType, typename FaceType>
+using OptionalAdjacentPolygonEdges = comp::OptionalAdjacentEdges<EdgeType, -1, FaceType>;
 
-template<typename T>
-using OptionalAdjacentTriangleEdges = comp::OptionalAdjacentEdges<T, 3, T>;
+template<typename EdgeType, typename FaceType>
+using OptionalAdjacentTriangleEdges = comp::OptionalAdjacentEdges<EdgeType, 3, FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalAdjacentEdges()
 {
-	return comp::hasOptionalAdjacentEdges<T>();
+	return comp::hasOptionalAdjacentEdges<FaceType>();
 }
 
-template<typename T>
+template<typename FaceType>
 bool constexpr sanityCheckOptionalAdjacentEdges()
 {
-	return comp::sanityCheckOptionalAdjacentEdges<T>();
+	return comp::sanityCheckOptionalAdjacentEdges<FaceType>();
 }
 
-/** Port OptionalAdjacentFaces class into face namespace **/
-template<typename T>
-using OptionalAdjacentPolygons = comp::OptionalAdjacentFaces<T, -1, T>;
+/* Port OptionalAdjacentFaces class into face namespace */
+template<typename FaceType>
+using OptionalAdjacentPolygons = comp::OptionalAdjacentFaces<FaceType, -1, FaceType>;
 
-template<typename T>
-using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<T, 3, T>;
+template<typename FaceType>
+using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<FaceType, 3, FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalAdjacentFaces()
 {
-	return comp::hasOptionalAdjacentFaces<T>();
+	return comp::hasOptionalAdjacentFaces<FaceType>();
 }
 
-template<typename T>
+template<typename FaceType>
 bool constexpr sanityCheckOptionalAdjacentFaces()
 {
-	return comp::sanityCheckOptionalAdjacentFaces<T>();
+	return comp::sanityCheckOptionalAdjacentFaces<FaceType>();
 }
 
-/** Port OptionalColor class into face namespace **/
-template<typename T>
-using OptionalColor = comp::OptionalColor<T>;
+/* Port OptionalColor class into face namespace */
+template<typename FaceType>
+using OptionalColor = comp::OptionalColor<FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalColor()
 {
-	return comp::hasOptionalColor<T>();
+	return comp::hasOptionalColor<FaceType>();
 }
 
-/** Port OptionalInfo class into face namespace **/
-template<typename T>
-using OptionalInfo = comp::OptionalInfo<T>;
+/* Port OptionalInfo class into face namespace */
+template<typename FaceType>
+using OptionalInfo = comp::OptionalInfo<FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalInfo()
 {
-	return comp::hasOptionalInfo<T>();
+	return comp::hasOptionalInfo<FaceType>();
 }
 
-/** Port OptionalMark class into face namespace **/
-template<typename T>
-using OptionalMark = comp::OptionalMark<T>;
+/* Port OptionalMark class into face namespace */
+template<typename FaceType>
+using OptionalMark = comp::OptionalMark<FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalMark()
 {
-	return comp::hasOptionalMark<T>();
+	return comp::hasOptionalMark<FaceType>();
 }
 
-/** Port OptionalMutableBitFlags class into face namespace **/
-template<typename T>
-using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<T>;
+/* Port OptionalMutableBitFlags class into face namespace */
+template<typename FaceType>
+using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalMutableBitFlags()
 {
-	return comp::hasOptionalMutableBitFlags<T>();
+	return comp::hasOptionalMutableBitFlags<FaceType>();
 }
 
-/** Port OptionalNormal class into face namespace **/
-template<typename Scalar, int N, typename T>
-using OptionalNormal = comp::OptionalNormal<Scalar, N, T>;
+/* Port OptionalNormal class into face namespace */
+template<typename ScalarType, int N, typename FaceType>
+using OptionalNormal = comp::OptionalNormal<ScalarType, N, FaceType>;
 
-template<typename Scalar, typename T>
-using OptionalNormal3 = comp::OptionalNormal3<Scalar, T>;
+template<typename ScalarType, typename FaceType>
+using OptionalNormal3 = comp::OptionalNormal3<ScalarType, FaceType>;
 
-template<typename T>
-using OptionalNormal3f = comp::OptionalNormal3f<T>;
+template<typename FaceType>
+using OptionalNormal3f = comp::OptionalNormal3f<FaceType>;
 
-template<typename T>
-using OptionalNormal3d = comp::OptionalNormal3d<T>;
+template<typename FaceType>
+using OptionalNormal3d = comp::OptionalNormal3d<FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalNormal()
 {
-	return comp::hasOptionalNormal<T>();
+	return comp::hasOptionalNormal<FaceType>();
 }
 
-/** Port OptionalPrincipalCurvature class into face namespace **/
-template<typename Scalar, typename T>
-using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<Scalar, T>;
+/* Port OptionalPrincipalCurvature class into face namespace */
+template<typename ScalarType, typename FaceType>
+using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<ScalarType, FaceType>;
 
-template<typename T>
-using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<T>;
-template<typename T>
-using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<T>;
+template<typename FaceType>
+using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<FaceType>;
+template<typename FaceType>
+using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalPrincipalCurvature()
 {
-	return comp::hasOptionalPrincipalCurvature<T>();
+	return comp::hasOptionalPrincipalCurvature<FaceType>();
 }
 
-/** Port OptionalScalar class into face namespace **/
-template<typename S, typename T>
-using OptionalScalar = comp::OptionalScalar<S, T>;
+/* Port OptionalScalar class into face namespace */
+template<typename ScalarType, typename FaceType>
+using OptionalScalar = comp::OptionalScalar<ScalarType, FaceType>;
 
-template<typename T>
-using OptionalScalarf = comp::OptionalScalar<float, T>;
+template<typename FaceType>
+using OptionalScalarf = comp::OptionalScalar<float, FaceType>;
 
-template<typename T>
-using OptionalScalard = comp::OptionalScalar<double, T>;
+template<typename FaceType>
+using OptionalScalard = comp::OptionalScalar<double, FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalScalar()
 {
-	return comp::hasOptionalScalar<T>();
+	return comp::hasOptionalScalar<FaceType>();
 }
 
-/** Port OptionalWedgeTexCoords class into face namespace **/
-template<typename S, typename T>
-using OptionalPolygonWedgeTexCoords = comp::OptionalWedgeTexCoords<S, -1, T>;
+/* Port OptionalWedgeTexCoords class into face namespace */
+template<typename ScalarType, typename FaceType>
+using OptionalPolygonWedgeTexCoords = comp::OptionalWedgeTexCoords<ScalarType, -1, FaceType>;
 
-template<typename S, typename T>
-using OptionalTriangleWedgeTexCoords = comp::OptionalWedgeTexCoords<S, 3, T>;
+template<typename ScalarType, typename FaceType>
+using OptionalTriangleWedgeTexCoords = comp::OptionalWedgeTexCoords<ScalarType, 3, FaceType>;
 
-template<typename T>
-using OptionalPolygonWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, -1, T>;
-template<typename T>
-using OptionalPolygonWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, -1, T>;
-template<typename T>
-using OptionalTriangleWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, 3, T>;
-template<typename T>
-using OptionalTriangleWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, 3, T>;
+template<typename FaceType>
+using OptionalPolygonWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, -1, FaceType>;
+template<typename FaceType>
+using OptionalPolygonWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, -1, FaceType>;
+template<typename FaceType>
+using OptionalTriangleWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, 3, FaceType>;
+template<typename FaceType>
+using OptionalTriangleWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, 3, FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalWedgeTexCoords()
 {
-	return comp::hasOptionalWedgeTexCoords<T>();
+	return comp::hasOptionalWedgeTexCoords<FaceType>();
 }
 
-template<typename T>
+template<typename FaceType>
 bool constexpr sanityCheckOptionalWedgeTexCoords()
 {
-	return comp::sanityCheckOptionalWedgeTexCoords<T>();
+	return comp::sanityCheckOptionalWedgeTexCoords<FaceType>();
 }
 
-/** Port OptionalWedgeColors class into face namespace **/
-template<typename T>
-using OptionalPolygonWedgeColors = comp::OptionalWedgeColors<-1, T>;
+/* Port OptionalWedgeColors class into face namespace */
+template<typename FaceType>
+using OptionalPolygonWedgeColors = comp::OptionalWedgeColors<-1, FaceType>;
 
-template<typename T>
-using OptionalTriangleWedgeColors = comp::OptionalWedgeColors<3, T>;
+template<typename FaceType>
+using OptionalTriangleWedgeColors = comp::OptionalWedgeColors<3, FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasOptionalWedgeColors()
 {
-	return comp::hasOptionalWedgeColors<T>();
+	return comp::hasOptionalWedgeColors<FaceType>();
 }
 
-template<typename T>
+template<typename FaceType>
 bool constexpr sanityCheckOptionalWedgeColors()
 {
-	return comp::sanityCheckOptionalWedgeColors<T>();
+	return comp::sanityCheckOptionalWedgeColors<FaceType>();
 }
 
-/** Port CustomComponents class into face namespace **/
-template<typename T>
-using CustomComponents = comp::CustomComponents<T>;
+/* Port CustomComponents class into face namespace */
+template<typename FaceType>
+using CustomComponents = comp::CustomComponents<FaceType>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasCustomComponents()
 {
-	return comp::hasCustomComponents<T>();
+	return comp::hasCustomComponents<FaceType>();
 }
 
 } // namespace vcl::face

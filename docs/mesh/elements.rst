@@ -14,3 +14,4 @@ Here are listed the Elements provided by VCLib:
 
    elements/vertex
    elements/face
+   elements/edge

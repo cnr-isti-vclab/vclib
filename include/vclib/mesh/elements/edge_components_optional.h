@@ -33,9 +33,9 @@
 
 namespace vcl::edge {
 
-/** Port OptionalAdjacentEdges class into edge namespace **/
-template<typename T>
-using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<T, -1, T>;
+/* Port OptionalAdjacentEdges class into edge namespace */
+template<typename EdgeType>
+using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, EdgeType>;
 
 template<typename T>
 bool constexpr hasOptionalAdjacentEdges()
@@ -43,9 +43,9 @@ bool constexpr hasOptionalAdjacentEdges()
 	return comp::hasOptionalAdjacentEdges<T>();
 }
 
-/** Port OptionalAdjacentFaces class into edge namespace **/
-template<typename Face, typename T>
-using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<Face, -1, T>;
+/* Port OptionalAdjacentFaces class into edge namespace */
+template<typename FaceType, typename EdgeType>
+using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, EdgeType>;
 
 template<typename T>
 bool constexpr hasOptionalAdjacentFaces()
@@ -53,70 +53,70 @@ bool constexpr hasOptionalAdjacentFaces()
 	return comp::hasOptionalAdjacentFaces<T>();
 }
 
-/** Port OptionalColor class into edge namespace **/
-template<typename T>
-using OptionalColor = comp::OptionalColor<T>;
+/* Port OptionalColor class into edge namespace */
+template<typename EdgeType>
+using OptionalColor = comp::OptionalColor<EdgeType>;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasOptionalColor()
 {
-	return comp::hasOptionalColor<T>();
+	return comp::hasOptionalColor<EdgeType>();
 }
 
-/** Port OptionalInfo class into edge namespace **/
-template<typename T>
-using OptionalInfo = comp::OptionalInfo<T>;
+/* Port OptionalInfo class into edge namespace */
+template<typename EdgeType>
+using OptionalInfo = comp::OptionalInfo<EdgeType>;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasOptionalInfo()
 {
-	return comp::hasOptionalInfo<T>();
+	return comp::hasOptionalInfo<EdgeType>();
 }
 
-/** Port OptionalMark class into edge namespace **/
-template<typename T>
-using OptionalMark = comp::OptionalMark<T>;
+/* Port OptionalMark class into edge namespace */
+template<typename EdgeType>
+using OptionalMark = comp::OptionalMark<EdgeType>;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasOptionalMark()
 {
-	return comp::hasOptionalMark<T>();
+	return comp::hasOptionalMark<EdgeType>();
 }
 
-/** Port OptionalMutableBitFlags class into edge namespace **/
-template<typename T>
-using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<T>;
+/* Port OptionalMutableBitFlags class into edge namespace */
+template<typename EdgeType>
+using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<EdgeType>;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasOptionalMutableBitFlags()
 {
-	return comp::hasOptionalMutableBitFlags<T>();
+	return comp::hasOptionalMutableBitFlags<EdgeType>();
 }
 
-/** Port OptionalScalar class into edge namespace **/
-template<typename S, typename T>
-using OptionalScalar = comp::OptionalScalar<S, T>;
+/* Port OptionalScalar class into edge namespace */
+template<typename ScalarType, typename EdgeType>
+using OptionalScalar = comp::OptionalScalar<ScalarType, EdgeType>;
 
-template<typename T>
-using OptionalScalarf = comp::OptionalScalar<float, T>;
+template<typename EdgeType>
+using OptionalScalarf = comp::OptionalScalar<float, EdgeType>;
 
-template<typename T>
-using OptionalScalard = comp::OptionalScalar<double, T>;
+template<typename EdgeType>
+using OptionalScalard = comp::OptionalScalar<double, EdgeType>;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasOptionalScalar()
 {
-	return comp::hasOptionalScalar<T>();
+	return comp::hasOptionalScalar<EdgeType>();
 }
 
-/** Port CustomComponents class into face namespace **/
-template<typename T>
-using CustomComponents = comp::CustomComponents<T>;
+/* Port CustomComponents class into face namespace */
+template<typename EdgeType>
+using CustomComponents = comp::CustomComponents<EdgeType>;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasCustomComponents()
 {
-	return comp::hasCustomComponents<T>();
+	return comp::hasCustomComponents<EdgeType>();
 }
 
 } // namespace vcl::edge

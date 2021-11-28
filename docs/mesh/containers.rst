@@ -14,3 +14,4 @@ Here is the list of Containers provided by VCLib:
 
    containers/vertex_container
    containers/face_container
+   containers/edge_container

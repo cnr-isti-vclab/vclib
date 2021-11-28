@@ -37,150 +37,150 @@
 
 namespace vcl::vert {
 
-/** Port OptionalAdjacentEdges class into vert namespace **/
-template<typename Edge, typename T>
-using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<Edge, -1, T>;
+/* Port OptionalAdjacentEdges class into vert namespace */
+template<typename EdgeType, typename VertexType>
+using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalAdjacentEdges()
 {
-	return comp::hasOptionalAdjacentEdges<T>();
+	return comp::hasOptionalAdjacentEdges<VertexType>();
 }
 
-/** Port OptionalAdjacentFaces class into vert namespace **/
-template<typename Face, typename T>
-using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<Face, -1, T>;
+/* Port OptionalAdjacentFaces class into vert namespace */
+template<typename FaceType, typename VertexType>
+using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalAdjacentFaces()
 {
-	return comp::hasOptionalAdjacentFaces<T>();
+	return comp::hasOptionalAdjacentFaces<VertexType>();
 }
 
-/** Port OptionalAdjacentVertices class into vert namespace **/
-template<typename T>
-using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<T, -1, T>;
+/* Port OptionalAdjacentVertices class into vert namespace */
+template<typename VertexType>
+using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, -1, VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalAdjacentVertices()
 {
-	return comp::hasOptionalAdjacentVertices<T>();
+	return comp::hasOptionalAdjacentVertices<VertexType>();
 }
 
-/** Port OptionalColor class into vert namespace **/
-template<typename T>
-using OptionalColor = comp::OptionalColor<T>;
+/* Port OptionalColor class into vert namespace */
+template<typename VertexType>
+using OptionalColor = comp::OptionalColor<VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalColor()
 {
-	return comp::hasOptionalColor<T>();
+	return comp::hasOptionalColor<VertexType>();
 }
 
-/** Port OptionalInfo class into vert namespace **/
-template<typename T>
-using OptionalInfo = comp::OptionalInfo<T>;
+/* Port OptionalInfo class into vert namespace */
+template<typename VertexType>
+using OptionalInfo = comp::OptionalInfo<VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalInfo()
 {
-	return comp::hasOptionalInfo<T>();
+	return comp::hasOptionalInfo<VertexType>();
 }
 
-/** Port OptionalMark class into vert namespace **/
-template<typename T>
-using OptionalMark = comp::OptionalMark<T>;
+/* Port OptionalMark class into vert namespace */
+template<typename VertexType>
+using OptionalMark = comp::OptionalMark<VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalMark()
 {
-	return comp::hasOptionalMark<T>();
+	return comp::hasOptionalMark<VertexType>();
 }
 
-/** Port OptionalMutableBitFlags class into vert namespace **/
-template<typename T>
-using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<T>;
+/* Port OptionalMutableBitFlags class into vert namespace */
+template<typename VertexType>
+using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalMutableBitFlags()
 {
-	return comp::hasOptionalMutableBitFlags<T>();
+	return comp::hasOptionalMutableBitFlags<VertexType>();
 }
 
-/** Port OptionalNormal class into vert namespace **/
-template<typename Scalar, int N, typename T>
-using OptionalNormal = comp::OptionalNormal<Scalar, N, T>;
+/* Port OptionalNormal class into vert namespace */
+template<typename ScalarType, int N, typename VertexType>
+using OptionalNormal = comp::OptionalNormal<ScalarType, N, VertexType>;
 
-template<typename Scalar, typename T>
-using OptionalNormal3 = comp::OptionalNormal3<Scalar, T>;
+template<typename ScalarType, typename VertexType>
+using OptionalNormal3 = comp::OptionalNormal3<ScalarType, VertexType>;
 
-template<typename T>
-using OptionalNormal3f = comp::OptionalNormal3f<T>;
+template<typename VertexType>
+using OptionalNormal3f = comp::OptionalNormal3f<VertexType>;
 
-template<typename T>
-using OptionalNormal3d = comp::OptionalNormal3d<T>;
+template<typename VertexType>
+using OptionalNormal3d = comp::OptionalNormal3d<VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalNormal()
 {
-	return comp::hasOptionalNormal<T>();
+	return comp::hasOptionalNormal<VertexType>();
 }
 
-/** Port OptionalPrincipalCurvature class into vert namespace **/
-template<typename Scalar, typename T>
-using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<Scalar, T>;
+/* Port OptionalPrincipalCurvature class into vert namespace */
+template<typename ScalarType, typename VertexType>
+using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<ScalarType, VertexType>;
 
-template<typename T>
-using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<T>;
-template<typename T>
-using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<T>;
+template<typename VertexType>
+using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<VertexType>;
+template<typename VertexType>
+using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalPrincipalCurvature()
 {
-	return comp::hasOptionalPrincipalCurvature<T>();
+	return comp::hasOptionalPrincipalCurvature<VertexType>();
 }
 
-/** Port OptionalScalar class into vert namespace **/
-template<typename S, typename T>
-using OptionalScalar = comp::OptionalScalar<S, T>;
+/* Port OptionalScalar class into vert namespace */
+template<typename ScalarType, typename VertexType>
+using OptionalScalar = comp::OptionalScalar<ScalarType, VertexType>;
 
-template<typename T>
-using OptionalScalarf = comp::OptionalScalar<float, T>;
+template<typename VertexType>
+using OptionalScalarf = comp::OptionalScalar<float, VertexType>;
 
-template<typename T>
-using OptionalScalard = comp::OptionalScalar<double, T>;
+template<typename VertexType>
+using OptionalScalard = comp::OptionalScalar<double, VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalScalar()
 {
-	return comp::hasOptionalScalar<T>();
+	return comp::hasOptionalScalar<VertexType>();
 }
 
-/** Port OptionalTexCoord class into vert namespace **/
-template<typename S, typename T>
-using OptionalTexCoord = comp::OptionalTexCoord<S, T>;
+/* Port OptionalTexCoord class into vert namespace */
+template<typename ScalarType, typename VertexType>
+using OptionalTexCoord = comp::OptionalTexCoord<ScalarType, VertexType>;
 
-template<typename T>
-using OptionalTexCoordf = comp::OptionalTexCoord<float, T>;
+template<typename VertexType>
+using OptionalTexCoordf = comp::OptionalTexCoord<float, VertexType>;
 
-template<typename T>
-using OptionalTexCoordd = comp::OptionalTexCoord<double, T>;
+template<typename VertexType>
+using OptionalTexCoordd = comp::OptionalTexCoord<double, VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasOptionalTexCoord()
 {
-	return comp::hasOptionalTexCoord<T>();
+	return comp::hasOptionalTexCoord<VertexType>();
 }
 
-/** Port CustomComponents class into vert namespace **/
-template<typename T>
-using CustomComponents = comp::CustomComponents<T>;
+/* Port CustomComponents class into vert namespace */
+template<typename VertexType>
+using CustomComponents = comp::CustomComponents<VertexType>;
 
-template<typename T>
+template<typename VertexType>
 bool constexpr hasCustomComponents()
 {
-	return comp::hasCustomComponents<T>();
+	return comp::hasCustomComponents<VertexType>();
 }
 
 } // namespace vcl::vert

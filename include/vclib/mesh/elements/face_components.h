@@ -40,141 +40,141 @@
 
 namespace vcl::face {
 
-/** Port AdjacentEdges class into face namespace **/
-template<typename Edge>
-using AdjacentPolygonEdges = comp::AdjacentEdges<Edge, -1>;
+/* Port AdjacentEdges class into face namespace */
+template<typename EdgeType>
+using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1>;
 
-template<typename Edge>
-using AdjacentTriangleEdges = comp::AdjacentEdges<Edge, 3>;
+template<typename EdgeType>
+using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasAdjacentEdges()
 {
-	return comp::hasAdjacentEdges<T>();
+	return comp::hasAdjacentEdges<FaceType>();
 }
 
-template<typename T>
+template<typename FaceType>
 bool constexpr sanityCheckAdjacentEdges()
 {
-	return comp::sanityCheckAdjacentEdges<T>();
+	return comp::sanityCheckAdjacentEdges<FaceType>();
 }
 
-/** Port AdjacentFaces class into face namespace **/
-template<typename Face>
-using AdjacentPolygons = comp::AdjacentFaces<Face, -1>;
+/* Port AdjacentFaces class into face namespace */
+template<typename FaceType>
+using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1>;
 
-template<typename Face>
-using AdjacentTriangles = comp::AdjacentFaces<Face, 3>;
+template<typename FaceType>
+using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasAdjacentFaces()
 {
-	return comp::hasAdjacentFaces<T>();
+	return comp::hasAdjacentFaces<FaceType>();
 }
 
-template<typename T>
+template<typename FaceType>
 bool constexpr sanityCheckAdjacentFaces()
 {
-	return comp::sanityCheckAdjacentFaces<T>();
+	return comp::sanityCheckAdjacentFaces<FaceType>();
 }
 
-/** Port BitFlags class into face namespace **/
+/* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasBitFlags()
 {
-	return comp::hasBitFlags<T>();
+	return comp::hasBitFlags<FaceType>();
 }
 
-/** Port Color class into face namespace **/
+/* Port Color class into face namespace */
 using Color = comp::Color;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasColor()
 {
-	return comp::hasColor<T>();
+	return comp::hasColor<FaceType>();
 }
 
-/** Port Mark class into face namespace **/
+/* Port Mark class into face namespace */
 using Mark = comp::Mark;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasMark()
 {
-	return comp::hasMark<T>();
+	return comp::hasMark<FaceType>();
 }
 
-/** Port MutableBitFlags class into face namespace **/
+/* Port MutableBitFlags class into face namespace */
 using MutableBitFlags = comp::MutableBitFlags;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasMutableBitFlags()
 {
-	return comp::hasMutableBitFlags<T>();
+	return comp::hasMutableBitFlags<FaceType>();
 }
 
-/** Port Normal classes into face namespace **/
-template<typename Scalar, int N>
-using Normal = comp::Normal<Scalar, N>;
+/* Port Normal classes into face namespace */
+template<typename ScalarType, int N>
+using Normal = comp::Normal<ScalarType, N>;
 
-template<typename Scalar>
-using Normal3 = comp::Normal3<Scalar>;
+template<typename ScalarType>
+using Normal3 = comp::Normal3<ScalarType>;
 
 using Normal3f = comp::Normal3f;
 using Normal3d = comp::Normal3d;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasNormal()
 {
-	return comp::hasNormal<T>();
+	return comp::hasNormal<FaceType>();
 }
 
-/** Port PolygonBitFlags class into face namespace **/
+/* Port PolygonBitFlags class into face namespace */
 using PolygonBitFlags = comp::PolygonBitFlags;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasPolygonBitFlags()
 {
-	return comp::hasPolygonBitFlags<T>();
+	return comp::hasPolygonBitFlags<FaceType>();
 }
 
-/** Port PrincipalCurvature class into face namespace **/
-template<typename T>
-using PrincipalCurvature = comp::PrincipalCurvature<T>;
+/* Port PrincipalCurvature class into face namespace */
+template<typename FaceType>
+using PrincipalCurvature = comp::PrincipalCurvature<FaceType>;
 
 using PrincipalCurvaturef = comp::PrincipalCurvaturef;
 using PrincipalCurvatured = comp::PrincipalCurvatured;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasPrincipalCurvature()
 {
-	return comp::hasPrincipalCurvature<T>();
+	return comp::hasPrincipalCurvature<FaceType>();
 }
 
-/** Port Scalar class into face namespace **/
-template<typename T>
-using Scalar = comp::Scalar<T>;
+/* Port Scalar class into face namespace */
+template<typename ScalarType>
+using Scalar = comp::Scalar<ScalarType>;
 
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasScalar()
 {
-	return comp::hasScalar<T>();
+	return comp::hasScalar<FaceType>();
 }
 
-/** Port TriangleBitFlags class into face namespace **/
+/* Port TriangleBitFlags class into face namespace */
 using TriangleBitFlags = comp::TriangleBitFlags;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasTriangleBitFlags()
 {
-	return comp::hasTriangleBitFlags<T>();
+	return comp::hasTriangleBitFlags<FaceType>();
 }
 
-/** Port VertexReferences class into face namespace **/
+/* Port VertexReferences class into face namespace */
 template<typename Vertex, int N>
 using VertexReferences = comp::VertexReferences<Vertex, N>;
 
@@ -184,51 +184,51 @@ using TriangleVertexRefs = comp::TriVertexReferences<Vertex>;
 template<typename Vertex>
 using PolygonVertexRefs = comp::VertexReferences<Vertex, -1>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasVertexReferences()
 {
-	return comp::hasVertexReferences<T>();
+	return comp::hasVertexReferences<FaceType>();
 }
 
-/** Port WedgeColors class into face namespace **/
+/* Port WedgeColors class into face namespace */
 using PolygonWedgeColors = comp::WedgeColors<-1>;
 
 using TriangleWedgeColors = comp::WedgeColors<3>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasWedgeColors()
 {
-	return comp::hasWedgeColors<T>();
+	return comp::hasWedgeColors<FaceType>();
 }
 
-template<typename T>
+template<typename FaceType>
 bool constexpr sanityCheckWedgeColors()
 {
-	return comp::sanityCheckWedgeColors<T>();
+	return comp::sanityCheckWedgeColors<FaceType>();
 }
 
-/** Port WedgeTexCoords class into face namespace **/
-template<typename Scalar>
-using PolygonWedgeTexCoords = comp::WedgeTexCoords<Scalar, -1>;
+/* Port WedgeTexCoords class into face namespace */
+template<typename ScalarType>
+using PolygonWedgeTexCoords = comp::WedgeTexCoords<ScalarType, -1>;
 
-template<typename Scalar>
-using TriangleWedgeTexCoords = comp::WedgeTexCoords<Scalar, 3>;
+template<typename ScalarType>
+using TriangleWedgeTexCoords = comp::WedgeTexCoords<ScalarType, 3>;
 
 using PolygonWedgeTexCoordsf = comp::WedgeTexCoords<float, -1>;
 using PolygonWedgeTexCoordsd = comp::WedgeTexCoords<double, -1>;
 using TriangleWedgeTexCoordsf = TriangleWedgeTexCoords<float>;
 using TriangleWedgeTexCoordsd = TriangleWedgeTexCoords<double>;
 
-template<typename T>
+template<typename FaceType>
 bool constexpr hasWedgeTexCoords()
 {
-	return comp::hasWedgeTexCoords<T>();
+	return comp::hasWedgeTexCoords<FaceType>();
 }
 
-template<typename T>
+template<typename FaceType>
 bool constexpr sanityCheckWedgeTexCoords()
 {
-	return comp::sanityCheckWedgeTexCoords<T>();
+	return comp::sanityCheckWedgeTexCoords<FaceType>();
 }
 
 } // namespace vcl::face

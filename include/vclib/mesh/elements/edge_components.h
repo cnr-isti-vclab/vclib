@@ -34,83 +34,83 @@
 
 namespace vcl::edge {
 
-/** Port AdjacentEdges class into edge namespace **/
-template<typename Edge>
-using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
+/* Port AdjacentEdges class into edge namespace */
+template<typename EdgeType>
+using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasAdjacentEdges()
 {
-	return comp::hasAdjacentEdges<T>();
+	return comp::hasAdjacentEdges<EdgeType>();
 }
 
-/** Port AdjacentFaces class into edge namespace **/
-template<typename Face>
-using AdjacentFaces = comp::AdjacentFaces<Face, -1>;
+/* Port AdjacentFaces class into edge namespace */
+template<typename FaceType>
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasAdjacentFaces()
 {
-	return comp::hasAdjacentFaces<T>();
+	return comp::hasAdjacentFaces<EdgeType>();
 }
 
-/** Port BitFlags class into edge namespace **/
+/* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasBitFlags()
 {
-	return comp::hasBitFlags<T>();
+	return comp::hasBitFlags<EdgeType>();
 }
 
-/** Port Color class into edge namespace **/
+/* Port Color class into edge namespace */
 using Color = comp::Color;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasColor()
 {
-	return comp::hasColor<T>();
+	return comp::hasColor<EdgeType>();
 }
 
-/** Port Mark class into edge namespace **/
+/* Port Mark class into edge namespace */
 using Mark = comp::Mark;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasMark()
 {
-	return comp::hasMark<T>();
+	return comp::hasMark<EdgeType>();
 }
 
-/** Port MutableBitFlags class into edge namespace **/
+/* Port MutableBitFlags class into edge namespace */
 using MutableBitFlags = comp::MutableBitFlags;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasMutableBitFlags()
 {
-	return comp::hasMutableBitFlags<T>();
+	return comp::hasMutableBitFlags<EdgeType>();
 }
 
-/** Port Scalar class into edge namespace **/
-template<typename T>
-using Scalar = comp::Scalar<T>;
+/* Port Scalar class into edge namespace */
+template<typename ScalarType>
+using Scalar = comp::Scalar<ScalarType>;
 
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasScalar()
 {
-	return comp::hasScalar<T>();
+	return comp::hasScalar<EdgeType>();
 }
 
-/** Port VertexReferences class into edge namespace **/
-template<typename Vertex>
-using VertexReferences = comp::VertexReferences<Vertex, 2>;
+/* Port VertexReferences class into edge namespace */
+template<typename VertexType>
+using VertexReferences = comp::VertexReferences<VertexType, 2>;
 
-template<typename T>
+template<typename EdgeType>
 bool constexpr hasVertexReferences()
 {
-	return comp::hasVertexReferences<T>();
+	return comp::hasVertexReferences<EdgeType>();
 }
 
 } // namespace vcl::edge
