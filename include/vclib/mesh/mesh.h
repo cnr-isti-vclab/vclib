@@ -73,7 +73,7 @@ public:
 
 	template<typename... VC, typename U = Mesh>
 	VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
-	addVertices(const VC&... v);
+	addVertices(const typename Mesh::VertexType::CoordType& p, const VC&... v);
 
 	template<typename U = Mesh>
 	VCL_ENABLE_IF(mesh::hasVertices<U>(), void)

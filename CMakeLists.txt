@@ -40,6 +40,7 @@ set(HEADERS
 	include/vclib/trimesh.h
 	include/vclib/algorithms/clean.h
 	include/vclib/algorithms/smooth.h
+	include/vclib/algorithms/create/dodecahedron.h
 	include/vclib/algorithms/create/tetrahedron.h
 	include/vclib/algorithms/internal/edge_sorterer.h
 	include/vclib/algorithms/update/bounding_box.h
@@ -151,6 +152,7 @@ set(HEADERS
 set(SOURCES
 	include/vclib/algorithms/clean.cpp
 	include/vclib/algorithms/smooth.cpp
+	include/vclib/algorithms/create/dodecahedron.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
 	include/vclib/algorithms/update/flag.cpp

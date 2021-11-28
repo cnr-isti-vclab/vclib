@@ -22,9 +22,11 @@
 
 #include <iostream>
 
+#include <vclib/algorithms/create/dodecahedron.h>
 #include <vclib/algorithms/create/tetrahedron.h>
 #include <vclib/io/save_ply.h>
 #include <vclib/trimesh.h>
+#include <vclib/polymesh.h>
 
 int main()
 {
@@ -34,6 +36,12 @@ int main()
 	assert(m.faceNumber() == 4);
 
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply");
+
+	m = vcl::createDodecahedron<vcl::TriMesh>();
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/dodecahedron.ply");
+
+	vcl::PolyMesh pm = vcl::createDodecahedron<vcl::PolyMesh>();
+	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/dodecahedron_poly.ply");
 
 	return 0;
 }

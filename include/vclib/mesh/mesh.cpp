@@ -241,12 +241,13 @@ template<typename... Args>
 template<typename ...VC, typename U>
 VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
 Mesh<Args...>::addVertices(
-	const VC&... v) // parameter pack of points
+	const typename Mesh::VertexType::CoordType& p, const VC&... v) // parameter pack of points
 {
 	using VertexContainer = typename U::VertexContainer;
 	uint vid = VertexContainer::vertexContainerSize();
-	reserveVertices(vid + sizeof...(VC)); // reserve the new number of vertices
+	reserveVertices(vid + sizeof...(VC) + 1); // reserve the new number of vertices
 
+	addVertex(p);
 	// pack expansion: will be translated at compile time as an addVertex() call for each argument
 	// of the addVertices member function
 	(addVertex(v), ...);
@@ -374,9 +375,9 @@ Mesh<Args...>::addFaces(uint n)
 	using Face          = typename U::FaceType;
 	using FaceContainer = typename U::FaceContainer;
 
-	Face*        oldBase = FaceContainer::facesVec.data();
+	Face*        oldBase = FaceContainer::vec.data();
 	uint fid     = FaceContainer::addFaces(n);
-	Face*        newBase = FaceContainer::facesVec.data();
+	Face*        newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
 	return fid;

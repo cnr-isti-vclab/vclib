@@ -20,85 +20,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_REQUIREMENTS_H
-#define VCL_MESH_MESH_REQUIREMENTS_H
-
-#include "face_requirements.h"
-#include "vertex_requirements.h"
+#ifndef VCL_ALGORITHMS_CREATE_DODECAHEDRON_H
+#define VCL_ALGORITHMS_CREATE_DODECAHEDRON_H
 
 namespace vcl {
 
-/********************
- * is/has functions *
- ********************/
-
-// Triangles
-
 template<typename MeshType>
-bool constexpr hasTriangles();
+MeshType createDodecahedron();
 
-template<typename MeshType>
-bool isTriangleMesh(const MeshType&);
+}
 
-// Quads
+#include "dodecahedron.cpp"
 
-template<typename MeshType>
-bool constexpr hasQuads();
-
-template<typename MeshType>
-bool isQuadMesh(const MeshType&);
-
-// Polygons
-
-template<typename MeshType>
-bool constexpr hasPolygons();
-
-// Bounding Box
-
-template<typename MeshType>
-bool constexpr hasBoundingBox();
-
-// Mark
-
-template<typename MeshType>
-bool constexpr hasMark();
-
-// Transform Matrix
-
-template<typename MeshType>
-bool constexpr hasTransformMatrix();
-
-/*********************
- * require functions *
- *********************/
-
-// Triangles
-
-template<typename MeshType>
-void requireTriangleMesh(const MeshType&);
-
-// Quads
-
-template<typename MeshType>
-void requireQuadMesh(const MeshType&);
-
-// Bounding Box
-
-template<typename MeshType>
-void constexpr requireBoundingBox();
-
-// Mark
-
-template<typename MeshType>
-void constexpr requireMark();
-
-// Transform Matrix
-
-template<typename MeshType>
-void constexpr requireTransformMatrix();
-
-} // namespace vcl
-
-#include "mesh_requirements.cpp"
-
-#endif // VCL_MESH_MESH_REQUIREMENTS_H
+#endif // VCL_ALGORITHMS_CREATE_DODECAHEDRON_H

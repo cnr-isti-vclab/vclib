@@ -99,6 +99,19 @@ bool isQuadMesh(const MeshType& m)
 }
 
 template<typename MeshType>
+bool constexpr hasPolygons()
+{
+	if constexpr (hasFaces<MeshType>()) {
+		using F = typename MeshType::FaceType;
+		if constexpr (vcl::face::hasVertexReferences<F>()) {
+			using R = typename F::VertexReferences;
+			return R::VERTEX_NUMBER < 0;
+		}
+	}
+	return false;
+}
+
+template<typename MeshType>
 bool constexpr hasBoundingBox()
 {
 	return vcl::mesh::hasBoundingBox<MeshType>();
