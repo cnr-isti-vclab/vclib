@@ -87,11 +87,6 @@ inline bool FileMeshInfo::hasVertices() const
 	return mode[VERTICES];
 }
 
-inline bool FileMeshInfo::hasFaces() const
-{
-	return mode[FACES];
-}
-
 inline bool FileMeshInfo::hasVertexCoords() const
 {
 	return mode[VERTEX_COORDS];
@@ -110,6 +105,11 @@ inline bool FileMeshInfo::hasVertexColors() const
 inline bool FileMeshInfo::hasVertexScalars() const
 {
 	return mode[VERTEX_SCALAR];
+}
+
+inline bool FileMeshInfo::hasFaces() const
+{
+	return mode[FACES];
 }
 
 inline bool FileMeshInfo::hasFaceVRefs() const
@@ -140,6 +140,11 @@ inline bool FileMeshInfo::hasEdges() const
 inline bool FileMeshInfo::hasEdgeColors() const
 {
 	return mode[EDGE_COLORS];
+}
+
+bool FileMeshInfo::hasTextures() const
+{
+	return mode[TEXTURES];
 }
 
 inline void FileMeshInfo::setTriangleMesh()
@@ -236,6 +241,11 @@ inline void FileMeshInfo::setEdgeColors(bool b, PropType t)
 	mode[EDGE_COLORS] = b;
 	if (b)
 		modeTypes[EDGE_COLORS] = t;
+}
+
+void FileMeshInfo::setTextures(bool b)
+{
+	mode[TEXTURES] = b;
 }
 
 inline FileMeshInfo::PropType FileMeshInfo::vertexCoordsType() const

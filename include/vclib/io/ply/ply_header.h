@@ -45,7 +45,10 @@ class PlyHeader
 {
 public:
 	PlyHeader();
-	PlyHeader(ply::Format f, const io::FileMeshInfo& info);
+	PlyHeader(
+		ply::Format              f,
+		const io::FileMeshInfo&  info,
+		std::vector<std::string> textureFiles = std::vector<std::string>());
 	PlyHeader(std::ifstream& file);
 
 	void clear();
@@ -59,16 +62,19 @@ public:
 	bool hasFaces() const;
 	bool hasEdges() const;
 	bool hasTriStrips() const;
+	bool hasTextureFileNames() const;
 
 	uint numberVertices() const;
 	uint numberFaces() const;
 	uint numberEdges() const;
 	uint numberTriStrips() const;
+	uint numberTextureFileNames() const;
 
 	const std::list<ply::Property>& vertexProperties() const;
 	const std::list<ply::Property>& faceProperties() const;
 	const std::list<ply::Property>& edgeProperties() const;
 	const std::list<ply::Property>& triStripsProperties() const;
+	const std::vector<std::string>& textureFileNames() const;
 
 	bool errorWhileLoading() const;
 
@@ -76,7 +82,10 @@ public:
 	void setNumberFaces(unsigned long int nF);
 	void setNumberEdges(unsigned long int nE);
 
-	void setInfo(const io::FileMeshInfo& info, bool binary = true);
+	void setInfo(
+		const io::FileMeshInfo&  info,
+		std::vector<std::string> textureFiles = std::vector<std::string>(),
+		bool                     binary       = true);
 
 	std::string toString() const;
 
@@ -98,6 +107,7 @@ private:
 
 	ply::Format _format;
 	std::vector<ply::Element> elements;
+	std::vector<std::string> textureFiles;
 
 	bool valid;
 

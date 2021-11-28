@@ -128,6 +128,7 @@ set(HEADERS
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_requirements.h
 	include/vclib/misc/compactness.h
+	include/vclib/misc/string.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
 	include/vclib/misc/vcl_types.h
@@ -135,6 +136,7 @@ set(HEADERS
 	include/vclib/io/load_ply.h
 	include/vclib/io/save_ply.h
 	include/vclib/io/ply/ply.h
+	include/vclib/io/ply/ply_extra.h
 	include/vclib/io/ply/ply_face.h
 	include/vclib/io/ply/ply_header.h
 	include/vclib/io/ply/ply_tristrip.h
@@ -200,12 +202,14 @@ set(SOURCES
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp
 	include/vclib/misc/compactness.cpp
+	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
 	include/vclib/io/file_mesh_info.cpp
 	include/vclib/io/load_ply.cpp
 	include/vclib/io/save_ply.cpp
 	include/vclib/io/ply/ply.cpp
+	include/vclib/io/ply/ply_extra.cpp
 	include/vclib/io/ply/ply_face.cpp
 	include/vclib/io/ply/ply_header.cpp
 	include/vclib/io/ply/ply_tristrip.cpp

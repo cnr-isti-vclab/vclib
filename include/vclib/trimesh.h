@@ -69,6 +69,7 @@ class TriMesh :
 			trimesh::Face,
 			mesh::BoundingBox3d,
 			mesh::Mark,
+			mesh::TextureFileNames,
 			mesh::TransformMatrixd>
 {
 public:

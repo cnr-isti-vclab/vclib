@@ -54,17 +54,18 @@ public:
 	bool isQuadMesh() const;
 	bool isPolygonMesh() const;
 	bool hasVertices() const;
-	bool hasFaces() const;
 	bool hasVertexCoords() const;
 	bool hasVertexNormals() const;
 	bool hasVertexColors() const;
 	bool hasVertexScalars() const;
+	bool hasFaces() const;
 	bool hasFaceVRefs() const;
 	bool hasFaceNormals() const;
 	bool hasFaceColors() const;
 	bool hasFaceScalars() const;
 	bool hasEdges() const;
 	bool hasEdgeColors() const;
+	bool hasTextures() const;
 
 	void setTriangleMesh();
 	void setQuadMesh();
@@ -82,6 +83,7 @@ public:
 	void setFaceScalars(bool b = true, PropType t = DOUBLE);
 	void setEdges(bool b = true);
 	void setEdgeColors(bool b = true, PropType t = CHAR);
+	void setTextures(bool b = true);
 
 	PropType vertexCoordsType() const;
 	PropType vertexNormalsType() const;
@@ -108,6 +110,7 @@ private:
 		FACE_SCALAR,
 		EDGES,
 		EDGE_COLORS,
+		TEXTURES,
 		NUM_MODES
 	};
 	std::bitset<NUM_MODES> mode = {false};

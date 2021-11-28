@@ -170,6 +170,7 @@ void loadPly(
 			default: break;
 			}
 		}
+		ply::loadTextures(header, m);
 	}
 	catch(const std::runtime_error& err) {
 		m.clear();

@@ -20,31 +20,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_IO_PLY_EXTRA_H
+#define VCL_IO_PLY_EXTRA_H
 
-#include <vclib/trimesh.h>
-#include <vclib/io/load_ply.h>
+#include "ply_header.h"
+#include <fstream>
 
-int main()
-{
-	vcl::io::FileMeshInfo loadedInfo;
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
+namespace vcl::ply {
 
-	assert(loadedInfo.hasVertices());
-	assert(m.vertexNumber() == 18844);
-	assert(loadedInfo.hasFaces());
-	assert(loadedInfo.hasFaceVRefs());
-	assert(m.faceNumber() == 36752);
+template<typename MeshType>
+void loadTextures(const PlyHeader& header, MeshType& mesh);
 
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply", loadedInfo);
+} // namespace vcl::ply
 
-	assert(loadedInfo.hasVertices());
-	assert(m.vertexNumber() == 5051);
-	assert(loadedInfo.hasFaces());
-	assert(loadedInfo.hasFaceVRefs());
-	assert(m.faceNumber() == 9999);
-	assert(loadedInfo.hasTextures());
-	assert(m.textureNumber() == 1);
+#include "ply_extra.cpp"
 
-	return 0;
-}
+#endif // VCL_IO_PLY_EXTRA_H

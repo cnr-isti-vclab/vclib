@@ -20,31 +20,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#include "ply_extra.h"
+#include <vclib/mesh/requirements.h>
 
-#include <vclib/trimesh.h>
-#include <vclib/io/load_ply.h>
+namespace vcl::ply {
 
-int main()
+template<typename MeshType>
+void loadTextures(const PlyHeader& header, MeshType& mesh)
 {
-	vcl::io::FileMeshInfo loadedInfo;
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
+	if constexpr (vcl::hasTextureFileNames<MeshType>()) {
+		for (const std::string& str : header.textureFileNames()){
+			mesh.pushTexture(str);
+		}
+	}
+}
 
-	assert(loadedInfo.hasVertices());
-	assert(m.vertexNumber() == 18844);
-	assert(loadedInfo.hasFaces());
-	assert(loadedInfo.hasFaceVRefs());
-	assert(m.faceNumber() == 36752);
-
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply", loadedInfo);
-
-	assert(loadedInfo.hasVertices());
-	assert(m.vertexNumber() == 5051);
-	assert(loadedInfo.hasFaces());
-	assert(loadedInfo.hasFaceVRefs());
-	assert(m.faceNumber() == 9999);
-	assert(loadedInfo.hasTextures());
-	assert(m.textureNumber() == 1);
-
-	return 0;
 }

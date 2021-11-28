@@ -20,31 +20,24 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_STRING_H
+#define VCL_STRING_H
 
-#include <vclib/trimesh.h>
-#include <vclib/io/load_ply.h>
+#include <string>
 
-int main()
-{
-	vcl::io::FileMeshInfo loadedInfo;
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
+namespace vcl::str {
 
-	assert(loadedInfo.hasVertices());
-	assert(m.vertexNumber() == 18844);
-	assert(loadedInfo.hasFaces());
-	assert(loadedInfo.hasFaceVRefs());
-	assert(m.faceNumber() == 36752);
+bool containsCaseInsensitive(const std::string& input, const std::string& substr);
 
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply", loadedInfo);
+std::string::const_iterator
+findCaseInsensitive(const std::string& input, const std::string& substr);
 
-	assert(loadedInfo.hasVertices());
-	assert(m.vertexNumber() == 5051);
-	assert(loadedInfo.hasFaces());
-	assert(loadedInfo.hasFaceVRefs());
-	assert(m.faceNumber() == 9999);
-	assert(loadedInfo.hasTextures());
-	assert(m.textureNumber() == 1);
+std::string toLower(const std::string& s);
 
-	return 0;
-}
+std::string toUpper(const std::string& s);
+
+} // namespace vcl::str
+
+#include "string.cpp"
+
+#endif // VCL_STRING_H

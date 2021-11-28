@@ -22,6 +22,8 @@
 
 #include "ply_header.h"
 #include <clocale>
+
+#include <vclib/misc/string.h>
 #include <vclib/misc/tokenizer.h>
 
 namespace vcl {
@@ -38,7 +40,10 @@ inline PlyHeader::PlyHeader() :
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
 }
 
-PlyHeader::PlyHeader(Format format, const io::FileMeshInfo& info) :
+PlyHeader::PlyHeader(
+	Format                   format,
+	const io::FileMeshInfo&  info,
+	std::vector<std::string> textureFiles) :
 		_format(format),
 		valid(true),
 		vertElemPos(-1),
@@ -47,7 +52,7 @@ PlyHeader::PlyHeader(Format format, const io::FileMeshInfo& info) :
 		trisElemPos(-1)
 {
 	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
-	setInfo(info, format == BINARY);
+	setInfo(info, textureFiles, format == BINARY);
 }
 
 inline PlyHeader::PlyHeader(std::ifstream& file) : _format(ply::UNKNOWN), valid(false)
@@ -78,6 +83,17 @@ inline PlyHeader::PlyHeader(std::ifstream& file) : _format(ply::UNKNOWN), valid(
 							*token == "binary_big_endian" || *token == "binary_little_endian" ||
 							*token == "binary")
 							_format = ply::BINARY;
+					}
+					// reading a comment, may be a texture file...
+					else if (headerLine == "comment") {
+						token++;
+						if (token != spaceTokenizer.end()){
+							if (vcl::str::containsCaseInsensitive(*token, "texture")) {
+								++token;
+								if (token != spaceTokenizer.end())
+									textureFiles.push_back(*token);
+							}
+						}
 					}
 					// I am reading a new element
 					else if (headerLine == "element") { // new type of element read
@@ -200,6 +216,9 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 			}
 		}
 	}
+	if (textureFiles.size() > 0) {
+		mod.setTextures(true);
+	}
 	return mod;
 }
 
@@ -221,6 +240,11 @@ inline bool PlyHeader::hasEdges() const
 bool PlyHeader::hasTriStrips() const
 {
 	return trisElemPos >= 0;
+}
+
+bool PlyHeader::hasTextureFileNames() const
+{
+	return textureFiles.size() > 0;
 }
 
 inline uint PlyHeader::numberVertices() const
@@ -247,6 +271,11 @@ uint PlyHeader::numberTriStrips() const
 	return elements[trisElemPos].numberElements;
 }
 
+uint PlyHeader::numberTextureFileNames() const
+{
+	return textureFiles.size();
+}
+
 inline const std::list<ply::Property>& PlyHeader::vertexProperties() const
 {
 	assert(hasVertices());
@@ -269,6 +298,11 @@ const std::list<Property>& PlyHeader::triStripsProperties() const
 {
 	assert(hasTriStrips());
 	return elements[trisElemPos].properties;
+}
+
+const std::vector<std::string>& PlyHeader::textureFileNames() const
+{
+	return textureFiles;
 }
 
 inline bool PlyHeader::errorWhileLoading() const
@@ -297,11 +331,15 @@ inline void PlyHeader::setNumberEdges(unsigned long nE)
 	elements[edgeElemPos].numberElements = nE;
 }
 
-inline void PlyHeader::setInfo(const io::FileMeshInfo& info, bool binary)
+inline void PlyHeader::setInfo(
+	const io::FileMeshInfo& info,
+	std::vector<std::string> textureFileNames,
+	bool binary)
 {
 	clear();
 	_format             = binary ? BINARY : ASCII;
 	valid             = true;
+	textureFiles = textureFileNames;
 	if (info.hasVertices()) {
 		vertElemPos = nextElementID++;
 		ply::Element vElem;
