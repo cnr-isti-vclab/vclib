@@ -31,16 +31,21 @@ namespace vcl {
  ********************/
 
 /**
- * @brief hasTriangles checks *statically* (compile time) if the mesh is composed of triangles
- * (N of Vertex References in the Face Element == 3).
+ * @brief Checks *if a MeshType is composed of triangles* (N of Vertex References in
+ * the Face Element == 3).
  *
- * If the number of vertex references of the Face Element is dynamic (Polygonal Mesh), this function
- * will return false also if all the faces of your mesh have exactly 3 Vertex references.
+ * If you need to check if an instance of a MeshType contains only triangles (also if it is a
+ * polygon mesh), you should use the isTriangleMesh(m) function.
  *
- * If you need to check if a Polygonal Mesh is composed only by triangles, you should use the
- * 'isTriangleMesh' function.
+ * Usage:
  *
- * @return true if the MeshType has the number of Vertex References in the Face Element = 3.
+ * @code{.cpp}
+ * if constexpr(vcl::hasTriangles<MyMeshType>()) {
+ *    // this portion of code is compiled only when MyMeshType has triangle faces, N == 3
+ * }
+ * @endcode
+ *
+ * @return `true` if the MeshType has the number of Vertex References in the Face Element = 3.
  */
 template<typename MeshType>
 bool constexpr hasTriangles()
@@ -53,6 +58,16 @@ bool constexpr hasTriangles()
 	return false;
 }
 
+/**
+ * @brief Checks *at run time* if the mesh m is composed of triangles. If the size of the Face
+ * Vertex References is 3, this check is immediate. If it is not 3, the functions checks for each
+ * face if it has 3 vertices.
+ *
+ * Complexity: *O(n)*
+ *
+ * @param m: the mesh on which check if each face has 3 vertices.
+ * @return `true` if every face of the mesh is composed of 3 vertices.
+ */
 template<typename MeshType>
 bool isTriangleMesh(const MeshType& m)
 {
@@ -69,6 +84,23 @@ bool isTriangleMesh(const MeshType& m)
 	}
 }
 
+/**
+ * @brief Checks *if a MeshType is composed of quads* (N of Vertex References in
+ * the Face Element == 4).
+ *
+ * If you need to check if an instance of a MeshType contains only quads (also if it is a
+ * polygon mesh), you should use the isQuadMesh(m) function.
+ *
+ * Usage:
+ *
+ * @code{.cpp}
+ * if constexpr(vcl::hasQuads<MyMeshType>()) {
+ *    // this portion of code is compiled only when MyMeshType has quad faces, N == 4
+ * }
+ * @endcode
+ *
+ * @return `true` if the MeshType has the number of Vertex References in the Face Element = 4.
+ */
 template<typename MeshType>
 bool constexpr hasQuads()
 {
@@ -82,6 +114,16 @@ bool constexpr hasQuads()
 	return false;
 }
 
+/**
+ * @brief Checks *at run time* if the mesh is composed of quads. If the size of the Face Vertex
+ * References is 4, this check is immediate. If it is not 4, the functions checks for each face if
+ * it has 4 vertices.
+ *
+ * Complexity: *O(n)*
+ *
+ * @param m: the mesh on which check if each face has 4 vertices.
+ * @return `true` if every face of the mesh is composed of 4 vertices.
+ */
 template<typename MeshType>
 bool isQuadMesh(const MeshType& m)
 {
@@ -98,6 +140,20 @@ bool isQuadMesh(const MeshType& m)
 	}
 }
 
+/**
+ * @brief Checks *if a MeshType is composed of polygons* (N of Vertex References in
+ * the Face Element < 0).
+ *
+ * Usage:
+ *
+ * @code{.cpp}
+ * if constexpr(vcl::hasPolygons<MyMeshType>()) {
+ *    // this portion of code is compiled only when MyMeshType has polygon faces, N < 0
+ * }
+ * @endcode
+ *
+ * @return `true` if the MeshType has the number of Vertex References in the Face Element < 0.
+ */
 template<typename MeshType>
 bool constexpr hasPolygons()
 {
@@ -111,18 +167,72 @@ bool constexpr hasPolygons()
 	return false;
 }
 
+/**
+ * @brief Checks *if a MeshType has the BoundingBox component*.
+ *
+ * Usage:
+ * @code{.cpp}
+ * if constexpr(vcl::hasBoundingBox<MyMeshType>()) {
+ *    // this portion of code is compiled only when MyMeshType has the bounding box
+ * }
+ * @endcode
+ *
+ * @return `true` if the MeshType has the bounding box.
+ */
 template<typename MeshType>
 bool constexpr hasBoundingBox()
 {
 	return vcl::mesh::hasBoundingBox<MeshType>();
 }
 
+/**
+ * @brief Checks *if a MeshType has the Mark component*.
+ *
+ * Usage:
+ * @code{.cpp}
+ * if constexpr(vcl::hasMark<MyMeshType>()) {
+ *    // this portion of code is compiled only when MyMeshType has the mark
+ * }
+ * @endcode
+ *
+ * @return `true` if the MeshType has the mark.
+ */
 template<typename MeshType>
 bool constexpr hasMark()
 {
 	return vcl::mesh::hasMark<MeshType>();
 }
 
+/**
+ * @brief Checks *if a MeshType has the TextureFileNames component*.
+ *
+ * Usage:
+ * @code{.cpp}
+ * if constexpr(vcl::hasTextureFileNames<MyMeshType>()) {
+ *    // this portion of code is compiled only when MyMeshType has texture file names
+ * }
+ * @endcode
+ *
+ * @return `true` if the MeshType has texture file names.
+ */
+template<typename MeshType>
+bool constexpr hasTextureFileNames()
+{
+	return vcl::mesh::hasTextureFileNames<MeshType>();
+}
+
+/**
+ * @brief Checks *if a MeshType has the TransformMatrix component*.
+ *
+ * Usage:
+ * @code{.cpp}
+ * if constexpr(vcl::hasTransformMatrix<MyMeshType>()) {
+ *    // this portion of code is compiled only when MyMeshType has the transform matrix
+ * }
+ * @endcode
+ *
+ * @return `true` if the MeshType has the transform matrix.
+ */
 template<typename MeshType>
 bool constexpr hasTransformMatrix()
 {
@@ -171,6 +281,12 @@ template<typename MeshType>
 void constexpr requireMark()
 {
 	static_assert(hasMark<MeshType>(), "Mesh has no mark.");
+}
+
+template<typename MeshType>
+void constexpr requireTextureFileNames()
+{
+	static_assert(hasTextureFileNames<MeshType>(), "Mesh has no texture file names.");
 }
 
 template<typename MeshType>

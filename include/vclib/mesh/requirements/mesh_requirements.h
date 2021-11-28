@@ -63,6 +63,11 @@ bool constexpr hasBoundingBox();
 template<typename MeshType>
 bool constexpr hasMark();
 
+// Texture File Names
+
+template<typename MeshType>
+bool constexpr hasTextureFileNames();
+
 // Transform Matrix
 
 template<typename MeshType>
@@ -91,6 +96,11 @@ void constexpr requireBoundingBox();
 
 template<typename MeshType>
 void constexpr requireMark();
+
+// Texture File Names
+
+template<typename MeshType>
+void constexpr requireTextureFileNames();
 
 // Transform Matrix
 

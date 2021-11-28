@@ -138,10 +138,11 @@ MeshType polygonDodecahedron()
 
 	MeshType mesh;
 
+	const ScalarType fi = (1 + std::sqrt(5)) / 2;
 	const ScalarType s0 = 0;
-	const ScalarType s1 = 0.57735;
-	const ScalarType s2 = 0.934172;
-	const ScalarType s3 = 0.356822;
+	const ScalarType s1 = fi;
+	const ScalarType s2 = std::pow(fi, 2);
+	const ScalarType s3 = 1;
 
 	mesh.addVertices(
 		CoordType(-s1, -s1, s1),
