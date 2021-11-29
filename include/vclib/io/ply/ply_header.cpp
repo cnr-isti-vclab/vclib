@@ -195,6 +195,7 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 			case ply::blue:
 			case ply::alpha: mod.setFaceColors(); break;
 			case ply::scalar: mod.setFaceScalars(); break;
+			case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
 			default: break;
 			}
 		}
@@ -212,6 +213,7 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 			case ply::blue:
 			case ply::alpha: mod.setFaceColors(); break;
 			case ply::scalar: mod.setFaceScalars(); break;
+			case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
 			default: break;
 			}
 		}
@@ -436,6 +438,14 @@ inline void PlyHeader::setInfo(
 			fs.type = (PropertyType)info.faceScalarsType();
 			fElem.properties.push_back(fs);
 		}
+		if (info.hasFaceWedgeTexCoords()) {
+			ply::Property tc;
+			tc.list         = true;
+			tc.listSizeType = UCHAR;
+			tc.name = texcoord;
+			tc.type = (PropertyType)info.faceWedgeTexCoordsType();
+			fElem.properties.push_back(tc);
+		}
 		elements.push_back(fElem);
 	}
 	if (info.hasEdges()) {
@@ -583,6 +593,8 @@ inline ply::PropertyName PlyHeader::stringToName(const std::string& name) const
 		pn = ply::vertex2;
 	if (name == "vertex_indices")
 		pn = ply::vertex_indices;
+	if (name == "texcoord")
+		pn = ply::texcoord;
 	return pn;
 }
 
@@ -623,6 +635,7 @@ inline std::string PlyHeader::nameToString(PropertyName n) const
 	case ply::alpha: return "alpha";
 	case ply::scalar: return "scalar";
 	case ply::vertex_indices: return "vertex_indices";
+	case ply::texcoord: return "texcoord";
 	case ply::vertex1: return "vertex1";
 	case ply::vertex2: return "vertex2";
 	default: return "unknown";

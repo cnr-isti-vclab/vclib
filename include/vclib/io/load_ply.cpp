@@ -76,6 +76,11 @@ void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
 				info.setFaceScalars(false);
 			}
 		}
+		if (info.hasFaceWedgeTexCoords()) {
+			if (!vcl::enableIfPerFaceWedgeTexCoordsOptional(m)) {
+				info.setFaceWedgeTexCoords(false);
+			}
+		}
 	}
 	else {
 		info.setFaces(false);

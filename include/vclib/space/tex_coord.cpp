@@ -25,51 +25,51 @@
 
 namespace vcl {
 
-template <typename ScalarType>
-TexCoord<ScalarType>::TexCoord() : coord(0,0), n(0)
+template <typename Scalar>
+TexCoord<Scalar>::TexCoord() : coord(0,0), n(0)
 {
 }
 
-template<typename ScalarType>
-ScalarType TexCoord<ScalarType>::u() const
-{
-	return coord.x();
-}
-
-template<typename ScalarType>
-ScalarType TexCoord<ScalarType>::v() const
-{
-	return coord.y();
-}
-
-template<typename ScalarType>
-ScalarType& TexCoord<ScalarType>::u()
+template<typename Scalar>
+Scalar TexCoord<Scalar>::u() const
 {
 	return coord.x();
 }
 
-template<typename ScalarType>
-ScalarType& TexCoord<ScalarType>::v()
+template<typename Scalar>
+Scalar TexCoord<Scalar>::v() const
 {
 	return coord.y();
 }
 
-template<typename ScalarType>
-void TexCoord<ScalarType>::setU(ScalarType s)
+template<typename Scalar>
+Scalar& TexCoord<Scalar>::u()
+{
+	return coord.x();
+}
+
+template<typename Scalar>
+Scalar& TexCoord<Scalar>::v()
+{
+	return coord.y();
+}
+
+template<typename Scalar>
+void TexCoord<Scalar>::setU(Scalar s)
 {
 	assert(s >= 0 && s <= 1);
 	coord.x() = s;
 }
 
-template<typename ScalarType>
-void TexCoord<ScalarType>::setV(ScalarType s)
+template<typename Scalar>
+void TexCoord<Scalar>::setV(Scalar s)
 {
 	assert(s >= 0 && s <= 1);
 	coord.y() = s;
 }
 
-template<typename ScalarType>
-void TexCoord<ScalarType>::set(ScalarType u, ScalarType v)
+template<typename Scalar>
+void TexCoord<Scalar>::set(Scalar u, Scalar v)
 {
 	assert(u >= 0 && u <= 1);
 	assert(v >= 0 && v <= 1);
@@ -77,14 +77,14 @@ void TexCoord<ScalarType>::set(ScalarType u, ScalarType v)
 	coord.y() = v;
 }
 
-template<typename ScalarType>
-short TexCoord<ScalarType>::nTexture() const
+template<typename Scalar>
+short TexCoord<Scalar>::nTexture() const
 {
 	return n;
 }
 
-template<typename ScalarType>
-short& TexCoord<ScalarType>::nTexture()
+template<typename Scalar>
+short& TexCoord<Scalar>::nTexture()
 {
 	return n;
 }

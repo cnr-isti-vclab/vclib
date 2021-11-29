@@ -45,6 +45,7 @@ int main()
 	assert(m.faceNumber() == 9999);
 	assert(loadedInfo.hasTextures());
 	assert(m.textureNumber() == 1);
+	assert(loadedInfo.hasFaceWedgeTexCoords());
 
 	return 0;
 }

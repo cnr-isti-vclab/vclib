@@ -132,6 +132,11 @@ inline bool FileMeshInfo::hasFaceScalars() const
 	return mode[FACE_SCALAR];
 }
 
+bool FileMeshInfo::hasFaceWedgeTexCoords() const
+{
+	return mode[FACE_WEDGE_TEXCOORDS];
+}
+
 inline bool FileMeshInfo::hasEdges() const
 {
 	return mode[EDGES];
@@ -231,6 +236,13 @@ inline void FileMeshInfo::setFaceScalars(bool b, PropType t)
 		modeTypes[FACE_SCALAR] = t;
 }
 
+void FileMeshInfo::setFaceWedgeTexCoords(bool b, PropType t)
+{
+	mode[FACE_WEDGE_TEXCOORDS] = b;
+	if (b)
+		modeTypes[FACE_WEDGE_TEXCOORDS] = t;
+}
+
 inline void FileMeshInfo::setEdges(bool b)
 {
 	mode[EDGES] = b;
@@ -281,6 +293,11 @@ inline FileMeshInfo::PropType FileMeshInfo::faceColorsType() const
 inline FileMeshInfo::PropType FileMeshInfo::faceScalarsType() const
 {
 	return modeTypes[FACE_SCALAR];
+}
+
+FileMeshInfo::PropType FileMeshInfo::faceWedgeTexCoordsType() const
+{
+	return modeTypes[FACE_WEDGE_TEXCOORDS];
 }
 
 inline FileMeshInfo::PropType FileMeshInfo::edgeColorsType() const

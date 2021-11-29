@@ -48,6 +48,7 @@ typedef enum {
 	alpha,
 	scalar,
 	vertex_indices,
+	texcoord,
 	vertex1,
 	vertex2
 } PropertyName;

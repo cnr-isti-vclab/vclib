@@ -681,7 +681,7 @@ FaceContainer<T>::disablePerFaceScalar()
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(face::hasWedgeColors<U>(), bool)
+VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), bool)
 FaceContainer<T>::isPerFaceWedgeColorsEnabled() const
 {
 	return Base::optionalVec.isWedgeColorsEnabled();
@@ -698,12 +698,12 @@ FaceContainer<T>::isPerFaceWedgeColorsEnabled() const
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(face::hasWedgeColors<U>(), void)
+VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), void)
 FaceContainer<T>::enablePerFaceWedgeColors()
 {
 	Base::optionalVec.enableWedgeColors(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
-	if (N < 0) {
+	if constexpr(N < 0) {
 		for (T& f : faces()) {
 			f.resizeWedgeColors(f.vertexNumber());
 		}
@@ -717,7 +717,7 @@ FaceContainer<T>::enablePerFaceWedgeColors()
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(face::hasWedgeColors<U>(), void)
+VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), void)
 FaceContainer<T>::disablePerFaceWedgeColors()
 {
 	Base::optionalVec.disableWedgeColors();
@@ -732,7 +732,7 @@ FaceContainer<T>::disablePerFaceWedgeColors()
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), bool)
+VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), bool)
 FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
 {
 	return Base::optionalVec.isWedgeTexCoordsEnabled();
@@ -750,12 +750,12 @@ FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), void)
+VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), void)
 FaceContainer<T>::enablePerFaceWedgeTexCoords()
 {
 	Base::optionalVec.enableWedgeTexCoords(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
-	if (N < 0) {
+	if constexpr (N < 0) {
 		for (T& f : faces()) {
 			f.resizeWedgeTexCoords(f.vertexNumber());
 		}
@@ -770,7 +770,7 @@ FaceContainer<T>::enablePerFaceWedgeTexCoords()
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), void)
+VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), void)
 FaceContainer<T>::disablePerFaceWedgeTexCoords()
 {
 	Base::optionalVec.disableWedgeTexCoords();

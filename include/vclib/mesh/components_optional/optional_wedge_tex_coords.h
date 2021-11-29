@@ -47,7 +47,9 @@ class OptionalWedgeTexCoordsTriggerer
 };
 
 template<typename Scalar, int N, typename T>
-class OptionalWedgeTexCoords
+class OptionalWedgeTexCoords :
+		public OptionalWedgeTexCoordsTriggerer,
+		public virtual OptionalInfo<T>
 {
 	template<typename, typename>
 	friend class OptionalWedgeTexCoordsVector;
@@ -60,6 +62,8 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
+
 	// the AdjFacesContainer type will be array or vector, depending on N value
 	using WedgeTexCoordsContainer = typename std::conditional<
 		(N >= 0),

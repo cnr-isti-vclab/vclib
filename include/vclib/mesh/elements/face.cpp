@@ -272,19 +272,17 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
 
 	// if constexpr (face::hasWedgeColors<F>()) {
 	if constexpr (comp::hasWedgeColorsT<F>::value) {
-		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::WedgeColors;
 
-		T::pushWedgeTexCoord(TexCoord<S>());
+		T::pushWedgeTexColors(Color());
 	}
 
 	// if constexpr (face::hasOptionalWedgeColors<F>()) {
 	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
-		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::OptionalWedgeColors;
 
 		if (T::wedgeColorsEnabled())
-			T::pushWedgeColors(TexCoord<S>());
+			T::pushWedgeColors(Color());
 	}
 
 	// if constexpr (face::hasWedgeTexCoords<F>()) {
@@ -354,19 +352,17 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(uint i, VertexType* v)
 
 	// if constexpr (face::hasWedgeColors<F>()) {
 	if constexpr (comp::hasWedgeColorsT<F>::value) {
-		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::WedgeColors;
 
-		T::insertWedgeTexCoord(i, TexCoord<S>());
+		T::insertWedgeColor(i, Color());
 	}
 
 	// if constexpr (face::hasOptionalWedgeColors<F>()) {
 	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
-		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::OptionalWedgeColors;
 
 		if (T::wedgeColorsEnabled())
-			T::insertWedgeTexCoord(i, TexCoord<S>());
+			T::insertWedgeColor(i, Color());
 	}
 
 	// if constexpr (face::hasWedgeTexCoords<F>()) {
@@ -438,7 +434,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
 	if constexpr (comp::hasWedgeColorsT<F>::value) {
 		using T = typename F::WedgeColors;
 
-		T::eraseWedgeTexCoord(i);
+		T::eraseWedgeColor(i);
 	}
 
 	// if constexpr (face::hasOptionalWedgeColors<F>()) {
@@ -446,7 +442,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
 		using T = typename F::OptionalWedgeColors;
 
 		if (T::wedgeColorsEnabled())
-			T::eraseWedgeTexCoord(i);
+			T::eraseWedgeColor(i);
 	}
 
 	// if constexpr (face::hasWedgeTexCoords<F>()) {
@@ -516,7 +512,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::clearVertices()
 	if constexpr (comp::hasWedgeColorsT<F>::value) {
 		using T = typename F::WedgeColors;
 
-		T::clearWedgeTexCoord();
+		T::clearWedgeColor();
 	}
 
 	// if constexpr (face::hasOptionalWedgeColors<F>()) {
@@ -524,7 +520,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::clearVertices()
 		using T = typename F::OptionalWedgeColors;
 
 		if (T::wedgeColorsEnabled())
-			T::clearWedgeTexCoord();
+			T::clearWedgeColor();
 	}
 
 	// if constexpr (face::hasWedgeTexCoords<F>()) {

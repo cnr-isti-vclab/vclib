@@ -208,28 +208,28 @@ public:
 
 	// WedgeColors
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasWedgeColors<U>(), bool)
+	VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), bool)
 	isPerFaceWedgeColorsEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasWedgeColors<U>(), void)
+	VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), void)
 	enablePerFaceWedgeColors();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasWedgeColors<U>(), void)
+	VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), void)
 	disablePerFaceWedgeColors();
 
 	// WedgeTexCoords
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), bool)
+	VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), bool)
 	isPerFaceWedgeTexCoordsEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), void)
+	VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), void)
 	enablePerFaceWedgeTexCoords();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasWedgeTexCoords<U>(), void)
+	VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), void)
 	disablePerFaceWedgeTexCoords();
 
 	// Custom Components

@@ -63,6 +63,7 @@ public:
 	bool hasFaceNormals() const;
 	bool hasFaceColors() const;
 	bool hasFaceScalars() const;
+	bool hasFaceWedgeTexCoords() const;
 	bool hasEdges() const;
 	bool hasEdgeColors() const;
 	bool hasTextures() const;
@@ -81,6 +82,7 @@ public:
 	void setFaceNormals(bool b = true, PropType t = FLOAT);
 	void setFaceColors(bool b = true, PropType t = CHAR);
 	void setFaceScalars(bool b = true, PropType t = DOUBLE);
+	void setFaceWedgeTexCoords(bool b = true, PropType t = FLOAT);
 	void setEdges(bool b = true);
 	void setEdgeColors(bool b = true, PropType t = CHAR);
 	void setTextures(bool b = true);
@@ -92,6 +94,7 @@ public:
 	PropType faceNormalsType() const;
 	PropType faceColorsType() const;
 	PropType faceScalarsType() const;
+	PropType faceWedgeTexCoordsType() const;
 	PropType edgeColorsType() const;
 
 	void reset();
@@ -108,6 +111,7 @@ private:
 		FACE_NORMALS,
 		FACE_COLORS,
 		FACE_SCALAR,
+		FACE_WEDGE_TEXCOORDS,
 		EDGES,
 		EDGE_COLORS,
 		TEXTURES,

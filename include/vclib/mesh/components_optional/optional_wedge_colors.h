@@ -47,7 +47,9 @@ class OptionalWedgeColorsTriggerer
 };
 
 template<int N, typename T>
-class OptionalWedgeColors
+class OptionalWedgeColors :
+		public OptionalWedgeColorsTriggerer,
+		public virtual OptionalInfo<T>
 {
 	template<typename, typename>
 	friend class OptionalWedgeColorsVector;

@@ -110,6 +110,36 @@ void loadFacesTxt(
 					hasBeenRead = true;
 				}
 			}
+			if (p.name == ply::texcoord) {
+				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+						using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
+						uint uvSize = internal::readProperty<uint>(token, p.listSizeType);
+						uint fSize = uvSize/2;
+						bool splitFace = false;
+						// in case of reading texcoords before vertex indices
+						if constexpr(FaceType::VERTEX_NUMBER < 0){
+							f.resizeVertices(fSize);
+						}
+						else if (FaceType::VERTEX_NUMBER != fSize)
+							splitFace = true;
+						if (!splitFace) {
+							for (uint i = 0; i < fSize; ++i) {
+								assert(token != spaceTokenizer.end());
+								Scalar u = internal::readProperty<Scalar>(token, p.type);
+								Scalar v = internal::readProperty<Scalar>(token, p.type);
+								f.wedgeTexCoord(i).u() = u;
+								f.wedgeTexCoord(i).v() = v;
+							}
+							hasBeenRead = true;
+						}
+						else { /// @todo manage case when split polygonal face
+							throw std::runtime_error("Cannot handle this file for this mesh type.");
+						}
+
+					}
+				}
+			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
 				if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
 					if (vcl::isPerFaceNormalEnabled(mesh)) {
@@ -195,6 +225,34 @@ void loadFacesBin(
 						}
 					}
 					hasBeenRead = true;
+				}
+			}
+			if (p.name == ply::texcoord) {
+				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+						using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
+						uint uvSize = internal::readProperty<uint>(file, p.listSizeType);
+						uint fSize = uvSize/2;
+						bool splitFace = false;
+						// in case of reading texcoords before vertex indices
+						if constexpr(FaceType::VERTEX_NUMBER < 0){
+							f.resizeVertices(fSize);
+						}
+						else if (FaceType::VERTEX_NUMBER != fSize)
+							splitFace = true;
+						if (!splitFace) {
+							for (uint i = 0; i < fSize; ++i) {
+								Scalar u = internal::readProperty<Scalar>(file, p.type);
+								Scalar v = internal::readProperty<Scalar>(file, p.type);
+								f.wedgeTexCoord(i).u() = u;
+								f.wedgeTexCoord(i).v() = v;
+							}
+							hasBeenRead = true;
+						}
+						else { /// @todo manage case when split polygonal face
+							throw std::runtime_error("Cannot handle this file for this mesh type.");
+						}
+					}
 				}
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {

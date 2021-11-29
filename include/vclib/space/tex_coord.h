@@ -27,25 +27,27 @@
 
 namespace vcl {
 
-template <typename ScalarType>
+template <typename Scalar>
 class TexCoord
 {
 public:
+	using ScalarType = Scalar;
+
 	TexCoord();
 
-	ScalarType u() const;
-	ScalarType v() const;
-	ScalarType& u();
-	ScalarType& v();
-	void setU(ScalarType s);
-	void setV(ScalarType s);
-	void set(ScalarType u, ScalarType v);
+	Scalar u() const;
+	Scalar v() const;
+	Scalar& u();
+	Scalar& v();
+	void setU(Scalar s);
+	void setV(Scalar s);
+	void set(Scalar u, Scalar v);
 
 	short nTexture() const;
 	short& nTexture();
 
 private:
-	Point2<ScalarType> coord;
+	Point2<Scalar> coord;
 	short n;
 };
 

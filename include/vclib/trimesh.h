@@ -48,14 +48,15 @@ class Vertex :
 
 class Face :
 		public vcl::Face<
-			vcl::face::TriangleBitFlags,                // 4b
-			vcl::face::TriangleVertexRefs<Vertex>,      // 24b
-			vcl::face::Normal3d,                        // 24b
-			vcl::face::OptionalScalard<Face>,           // 0b
-			vcl::face::OptionalColor<Face>,             // 0b
-			vcl::face::OptionalAdjacentTriangles<Face>, // 0b
-			vcl::face::OptionalMutableBitFlags<Face>,   // 0b
-			vcl::face::CustomComponents<Face>>          // 0b
+			vcl::face::TriangleBitFlags,                      // 4b
+			vcl::face::TriangleVertexRefs<Vertex>,            // 24b
+			vcl::face::Normal3d,                              // 24b
+			vcl::face::OptionalScalard<Face>,                 // 0b
+			vcl::face::OptionalColor<Face>,                   // 0b
+			vcl::face::OptionalAdjacentTriangles<Face>,       // 0b
+			vcl::face::OptionalMutableBitFlags<Face>,         // 0b
+			vcl::face::OptionalTriangleWedgeTexCoordsf<Face>, // 0b
+			vcl::face::CustomComponents<Face>>                // 0b
 {
 };
 
