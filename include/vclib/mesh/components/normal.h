@@ -25,14 +25,12 @@
 
 #include <vclib/space/point.h>
 
+#include "detection/normal_detection.h"
+
 namespace vcl::comp {
 
-class NormalTrigger
-{
-};
-
 template<typename Scalar, int N>
-class Normal : public NormalTrigger
+class Normal : public NormalTriggerer
 {
 public:
 	using NormalType = Point<Scalar, N>;
@@ -45,7 +43,7 @@ private:
 };
 
 template<typename Scalar>
-class Normal3 : public NormalTrigger
+class Normal3 : public NormalTriggerer
 {
 public:
 	using NormalType = Point3<Scalar>;
@@ -59,19 +57,6 @@ private:
 
 using Normal3f = Normal3<float>;
 using Normal3d = Normal3<double>;
-
-/**
- * Detector to check if a class has (inherits) Normal
- */
-
-template<typename T>
-using hasNormalT = std::is_base_of<NormalTrigger, T>;
-
-template<typename T>
-bool constexpr hasNormal()
-{
-	return hasNormalT<T>::value;
-}
 
 } // namespace vcl::comp
 

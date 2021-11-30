@@ -27,11 +27,9 @@
 
 #include <vclib/space/principal_curvature.h>
 
-namespace vcl::comp {
+#include "../components/detection/principal_curvature_detection.h"
 
-class OptionalPrincipalCurvatureTriggerer
-{
-};
+namespace vcl::comp {
 
 template<typename Scalar, typename T>
 class OptionalPrincipalCurvature :
@@ -58,19 +56,6 @@ using OptionalPrincipalCurvaturef = OptionalPrincipalCurvature<float, T>;
 
 template<typename T>
 using OptionalPrincipalCurvatured = OptionalPrincipalCurvature<double, T>;
-
-/**
- * Detector to check if a class has (inherits) OptionalPrincipalCurvature
- */
-
-template<typename T>
-using hasOptionalPrincipalCurvatureT = std::is_base_of<OptionalPrincipalCurvatureTriggerer, T>;
-
-template<typename T>
-bool constexpr hasOptionalPrincipalCurvature()
-{
-	return hasOptionalPrincipalCurvatureT<T>::value;
-}
 
 } // namespace vcl::comp
 

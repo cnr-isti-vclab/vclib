@@ -28,6 +28,7 @@
 
 #include "optional_info.h"
 
+#include "../components/detection/adjacent_vertices_detection.h"
 #include "../iterators/range_iterator.h"
 
 namespace vcl::mesh {
@@ -36,10 +37,6 @@ class OptionalVertexReferencesVector;
 }
 
 namespace vcl::comp {
-
-class OptionalAdjacentVerticesTriggerer
-{
-};
 
 template<typename Vertex, int N, typename T>
 class OptionalAdjacentVertices :
@@ -139,19 +136,6 @@ protected:
 private:
 	uint thisId() const { return B::index((T*)this); }
 };
-
-/**
- * Detector to check if a class has (inherits) OptionalVertexReferences
- */
-
-template<typename T>
-using hasOptionalAdjacentVerticesT = std::is_base_of<OptionalAdjacentVerticesTriggerer, T>;
-
-template<typename T>
-bool constexpr hasOptionalAdjacentVertices()
-{
-	return hasOptionalAdjacentVerticesT<T>::value;
-}
 
 } // namespace vcl::comp
 

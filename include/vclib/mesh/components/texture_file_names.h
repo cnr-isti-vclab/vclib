@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#include <vclib/misc/vcl_types.h>
+#include "detection/tex_file_names_detection.h"
 
 namespace vcl::comp {
 
@@ -46,19 +46,6 @@ public:
 private:
 	std::vector<std::string> textureNames;
 };
-
-/**
- * Detector to check if a class has (inherits) TextureFileNames
- */
-
-template<typename T>
-using hasTextureFileNamesT = std::is_base_of<TextureFileNames, T>;
-
-template<typename T>
-constexpr bool hasTextureFileNames()
-{
-	return hasTextureFileNamesT<T>::value;
-}
 
 } // namespace vcl::comp
 

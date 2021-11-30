@@ -179,7 +179,7 @@ template<typename Vertex, int N>
 using VertexReferences = comp::VertexReferences<Vertex, N>;
 
 template<typename Vertex>
-using TriangleVertexRefs = comp::TriVertexReferences<Vertex>;
+using TriangleVertexRefs = comp::VertexReferences<Vertex, 3>;
 
 template<typename Vertex>
 using PolygonVertexRefs = comp::VertexReferences<Vertex, -1>;

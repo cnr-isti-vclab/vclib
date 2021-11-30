@@ -20,47 +20,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#ifndef VCL_MESH_COMPONENTS_MUTABLE_BIT_FLAGS_DETECTION_H
+#define VCL_MESH_COMPONENTS_MUTABLE_BIT_FLAGS_DETECTION_H
 
-#include <vclib/space/point.h>
-
-#include "../components/detection/normal_detection.h"
-#include "optional_info.h"
+#include <vclib/misc/vcl_types.h>
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename T>
-class OptionalNormal : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
-{
-private:
-	using B = OptionalInfo<T>;
+class MutableBitFlags;
+template<typename T>
+class OptionalMutableBitFlags;
 
-public:
-	using NormalType = Point<Scalar, N>;
-	const NormalType&        normal() const { return B::optCont().normal(thisId()); }
-	NormalType&              normal() { return B::optCont().normal(thisId()); }
-
-private:
-	uint thisId() const { return B::index((T*)this); }
-};
-
-template<typename Scalar, typename T>
-class OptionalNormal3 : public OptionalNormal<Scalar, 3, T>
-{
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point3<Scalar>;
-};
+/* Detector to check if a class has (inherits) MutableBitFlags */
 
 template<typename T>
-using OptionalNormal3f = OptionalNormal3<float, T>;
+using hasMutableBitFlagsT = std::is_base_of<MutableBitFlags, T>;
 
 template<typename T>
-using OptionalNormal3d = OptionalNormal3<double, T>;
+bool constexpr hasMutableBitFlags()
+{
+	return hasMutableBitFlagsT<T>::value;
+}
+
+/* Detector to check if a class has (inherits) OptionalMutableBitFlags */
+
+template<typename T>
+using hasOptionalMutableBitFlagsT = std::is_base_of<OptionalMutableBitFlags<T>, T>;
+
+template<typename T>
+bool constexpr hasOptionalMutableBitFlags()
+{
+	return hasOptionalMutableBitFlagsT<T>::value;
+}
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#endif // VCL_MESH_COMPONENTS_MUTABLE_BIT_FLAGS_DETECTION_H

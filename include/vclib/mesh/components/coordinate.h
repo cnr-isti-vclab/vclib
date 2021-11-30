@@ -23,55 +23,36 @@
 #ifndef VCL_MESH_COMPONENTS_COORDINATE_H
 #define VCL_MESH_COMPONENTS_COORDINATE_H
 
+#include "detection/coordinate_detection.h"
+
 #include <vclib/space/point.h>
 
 namespace vcl::comp {
 
-class CoordinateTriggerer
+template<typename P>
+class CoordT : public CoordinateTriggerer
 {
+public:
+	using CoordType = P;
+
+	const P& coord() const;
+	P&       coord();
+
+	template<typename VertexType>
+	void importFrom(const VertexType& v);
+
+private:
+	P p;
 };
 
 template<typename Scalar, int N>
-class Coordinate : public CoordinateTriggerer
-{
-public:
-	using CoordType = Point<Scalar, N>;
-
-	const Point<Scalar, N>& coord() const;
-	Point<Scalar, N>&       coord();
-
-private:
-	Point<Scalar, N> p;
-};
+using Coordinate = CoordT<Point<Scalar, N>>;
 
 template<typename Scalar>
-class Coordinate3 : public CoordinateTriggerer
-{
-public:
-	using CoordType = Point3<Scalar>;
-
-	const Point3<Scalar>& coord() const;
-	Point3<Scalar>&       coord();
-
-private:
-	Point3<Scalar> p;
-};
+using Coordinate3 = CoordT<Point3<Scalar>>;
 
 using Coordinate3f = Coordinate3<float>;
 using Coordinate3d = Coordinate3<double>;
-
-/**
- * Detector to check if a class has (inherits) Coordinate
- */
-
-template<typename T>
-using hasCoordinateT = std::is_base_of<CoordinateTriggerer, T>;
-
-template<typename T>
-bool constexpr hasCoordinate()
-{
-	return hasCoordinateT<T>::value;
-}
 
 } // namespace vcl::comp
 

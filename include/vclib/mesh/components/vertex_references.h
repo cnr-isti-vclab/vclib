@@ -23,13 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
+#include "detection/vertex_references_detection.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {
-
-class VertexReferencesTriggerer
-{
-};
 
 template<typename Vertex, int N>
 class VertexReferences : protected internal::ElementReferences<Vertex, N>, public VertexReferencesTriggerer
@@ -103,34 +100,6 @@ protected:
 
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 };
-
-template<typename Vertex>
-class TriVertexReferences : public VertexReferences<Vertex, 3>
-{
-private:
-	using B = VertexReferences<Vertex, 3>;
-
-public:
-	Vertex*&      v0() { return B::container[0]; }
-	Vertex*&      v1() { return B::container[1]; }
-	Vertex*&      v2() { return B::container[2]; }
-	const Vertex* v0() const { return B::container[0]; }
-	const Vertex* v1() const { return B::container[1]; }
-	const Vertex* v2() const { return B::container[2]; }
-
-	void setV0(Vertex* v) { B::container[0] = v; }
-	void setV1(Vertex* v) { B::container[1] = v; }
-	void setV2(Vertex* v) { B::container[2] = v; }
-};
-
-template<typename T>
-using hasVertexReferencesT = std::is_base_of<VertexReferencesTriggerer, T>;
-
-template<typename T>
-bool constexpr hasVertexReferences()
-{
-	return hasVertexReferencesT<T>::value;
-}
 
 } // namespace vcl::comp
 

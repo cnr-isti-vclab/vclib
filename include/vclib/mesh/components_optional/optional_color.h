@@ -25,6 +25,7 @@
 
 #include <vclib/space/color.h>
 
+#include "../components/detection/color_detection.h"
 #include "optional_info.h"
 
 namespace vcl::comp {
@@ -43,19 +44,6 @@ public:
 private:
 	uint thisId() const { return B::index((T*)this); }
 };
-
-/**
- * Detector to check if a class has (inherits) OptionalColor
- */
-
-template<typename T>
-using hasOptionalColorT = std::is_base_of<OptionalColor<T>, T>;
-
-template<typename T>
-bool constexpr hasOptionalColor()
-{
-	return hasOptionalColorT<T>::value;
-}
 
 } // namespace vcl::comp
 

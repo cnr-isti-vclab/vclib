@@ -25,6 +25,8 @@
 
 #include <vclib/space/color.h>
 
+#include "detection/color_detection.h"
+
 namespace vcl::comp {
 
 /**
@@ -45,19 +47,6 @@ public:
 private:
 	vcl::Color c;
 };
-
-/**
- * Detector to check if a class has (inherits) Color
- */
-
-template<typename T>
-using hasColorT = std::is_base_of<Color, T>;
-
-template<typename T>
-constexpr bool hasColor()
-{
-	return hasColorT<T>::value;
-}
 
 } // namespace vcl::comp
 

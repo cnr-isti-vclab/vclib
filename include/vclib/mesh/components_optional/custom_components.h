@@ -29,6 +29,8 @@
 #include <string>
 #include <vector>
 
+#include "../components/detection/custom_components_detection.h"
+
 namespace vcl::comp {
 
 /**
@@ -65,19 +67,6 @@ public:
 private:
 	uint thisId() const { return B::index((T*)this); }
 };
-
-/**
- * Detector to check if a class has (inherits) CustomComponents
- */
-
-template<typename T>
-using hasCustomComponentsT = std::is_base_of<CustomComponents<T>, T>;
-
-template<typename T>
-bool constexpr hasCustomComponents()
-{
-	return hasCustomComponentsT<T>::value;
-}
 
 } // namespace vcl::comp
 

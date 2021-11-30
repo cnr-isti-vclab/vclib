@@ -20,47 +20,50 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#ifndef VCL_MESH_COMPONENTS_BIT_FLAGS_DETECTION_H
+#define VCL_MESH_COMPONENTS_BIT_FLAGS_DETECTION_H
 
-#include <vclib/space/point.h>
-
-#include "../components/detection/normal_detection.h"
-#include "optional_info.h"
+#include <vclib/misc/vcl_types.h>
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename T>
-class OptionalNormal : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
-{
-private:
-	using B = OptionalInfo<T>;
+class BitFlags;
+class PolygonBitFlags;
+class TriangleBitFlags;
 
-public:
-	using NormalType = Point<Scalar, N>;
-	const NormalType&        normal() const { return B::optCont().normal(thisId()); }
-	NormalType&              normal() { return B::optCont().normal(thisId()); }
-
-private:
-	uint thisId() const { return B::index((T*)this); }
-};
-
-template<typename Scalar, typename T>
-class OptionalNormal3 : public OptionalNormal<Scalar, 3, T>
-{
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point3<Scalar>;
-};
+/* Detector to check if a class has (inherits) BitFlags */
 
 template<typename T>
-using OptionalNormal3f = OptionalNormal3<float, T>;
+using hasBitFlagsT = std::is_base_of<BitFlags, T>;
 
 template<typename T>
-using OptionalNormal3d = OptionalNormal3<double, T>;
+bool constexpr hasBitFlags()
+{
+	return hasBitFlagsT<T>::value;
+}
+
+/* Detector to check if a class has (inherits) PolygonBitFlags */
+
+template<typename T>
+using hasPolygonBitFlagsT = std::is_base_of<PolygonBitFlags, T>;
+
+template<typename T>
+bool constexpr hasPolygonBitFlags()
+{
+	return hasPolygonBitFlagsT<T>::value;
+}
+
+/* Detector to check if a class has (inherits) TriangleBitFlags */
+
+template<typename T>
+using hasTriangleBitFlagsT = std::is_base_of<TriangleBitFlags, T>;
+
+template<typename T>
+bool constexpr hasTriangleBitFlags()
+{
+	return hasTriangleBitFlagsT<T>::value;
+}
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#endif // VCL_MESH_COMPONENTS_BIT_FLAGS_DETECTION_H

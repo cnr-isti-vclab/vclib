@@ -24,28 +24,25 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, int N>
-const Point<Scalar, N>& Coordinate<Scalar, N>::coord() const
+template<typename Point>
+const Point& CoordT<Point>::coord() const
 {
 	return p;
 }
 
-template<typename Scalar, int N>
-Point<Scalar, N>& Coordinate<Scalar, N>::coord()
+template<typename Point>
+Point& CoordT<Point>::coord()
 {
 	return p;
 }
 
-template<typename Scalar>
-const Point3<Scalar>& Coordinate3<Scalar>::coord() const
+template<typename Point>
+template<typename VertexType>
+void CoordT<Point>::importFrom(const VertexType& v)
 {
-	return p;
-}
-
-template<typename Scalar>
-Point3<Scalar>& Coordinate3<Scalar>::coord()
-{
-	return p;
+	if constexpr (hasCoordinate<VertexType>()) {
+		p = v.coord();
+	}
 }
 
 } // namespace vcl::comp

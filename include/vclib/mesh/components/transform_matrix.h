@@ -24,13 +24,10 @@
 #define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 
 #include <Eigen/Core>
-#include <type_traits>
+
+#include "detection/transfrom_matrix_detection.h"
 
 namespace vcl::comp {
-
-class TransformMatrixTriggerer
-{
-};
 
 template<typename Scalar>
 class TransformMatrix : public TransformMatrixTriggerer
@@ -46,19 +43,6 @@ public:
 private:
 	Eigen::Matrix<Scalar, 4, 4> tr;
 };
-
-/**
- * Detector to check if a class has (inherits) TransformMatrix
- */
-
-template<typename T>
-using hasTransformMatrixT = std::is_base_of<TransformMatrixTriggerer, T>;
-
-template<typename T>
-constexpr bool hasTransformMatrix()
-{
-	return hasTransformMatrixT<T>::value;
-}
 
 } // namespace vcl::comp
 

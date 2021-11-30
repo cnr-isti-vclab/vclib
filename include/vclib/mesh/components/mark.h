@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_MARK_H
 #define VCL_MESH_COMPONENTS_MARK_H
 
-#include <type_traits>
+#include "detection/mark_detection.h"
 
 namespace vcl::comp {
 
@@ -77,19 +77,6 @@ public:
 private:
 	int m = 0;
 };
-
-/**
- * Detector to check if a class has (inherits) Mark
- */
-
-template<typename T>
-using hasMarkT = std::is_base_of<Mark, T>;
-
-template<typename T>
-constexpr bool hasMark()
-{
-	return hasMarkT<T>::value;
-}
 
 } // namespace vcl::comp
 

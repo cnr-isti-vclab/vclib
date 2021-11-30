@@ -20,47 +20,67 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_DETECTION_H
+#define VCL_MESH_COMPONENTS_ADJACENT_EDGES_DETECTION_H
 
-#include <vclib/space/point.h>
-
-#include "../components/detection/normal_detection.h"
-#include "optional_info.h"
+#include <vclib/misc/vcl_types.h>
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename T>
-class OptionalNormal : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
+/* Triggerers */
+
+class AdjacentEdgesTriggerer
 {
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point<Scalar, N>;
-	const NormalType&        normal() const { return B::optCont().normal(thisId()); }
-	NormalType&              normal() { return B::optCont().normal(thisId()); }
-
-private:
-	uint thisId() const { return B::index((T*)this); }
 };
 
-template<typename Scalar, typename T>
-class OptionalNormal3 : public OptionalNormal<Scalar, 3, T>
+class OptionalAdjacentEdgesTriggerer
 {
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point3<Scalar>;
 };
 
-template<typename T>
-using OptionalNormal3f = OptionalNormal3<float, T>;
+/* Detectors to check if a class has (inherits) AdjacenctEdges */
 
 template<typename T>
-using OptionalNormal3d = OptionalNormal3<double, T>;
+using hasAdjacentEdgesT = std::is_base_of<AdjacentEdgesTriggerer, T>;
+
+template<typename T>
+bool constexpr hasAdjacentEdges()
+{
+	return hasAdjacentEdgesT<T>::value;
+}
+
+template<typename T>
+bool constexpr sanityCheckAdjacentEdges()
+{
+	if constexpr (hasAdjacentEdges<T>()) {
+		return T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
+	}
+	else {
+		return true;
+	}
+}
+
+/* Detector to check if a class has (inherits) OptionalAdjacentEdges */
+
+template<typename T>
+using hasOptionalAdjacentEdgesT = std::is_base_of<OptionalAdjacentEdgesTriggerer, T>;
+
+template<typename T>
+bool constexpr hasOptionalAdjacentEdges()
+{
+	return hasOptionalAdjacentEdgesT<T>::value;
+}
+
+template<typename T>
+bool constexpr sanityCheckOptionalAdjacentEdges()
+{
+	if constexpr (hasOptionalAdjacentEdges<T>()) {
+		return T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
+	}
+	else {
+		return true;
+	}
+}
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#endif // VCL_MESH_COMPONENTS_ADJACENT_EDGES_DETECTION_H

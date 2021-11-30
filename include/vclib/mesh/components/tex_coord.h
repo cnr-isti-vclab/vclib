@@ -24,12 +24,9 @@
 #define VCL_MESH_COMPONENTS_TEX_COORD_H
 
 #include <vclib/space/tex_coord.h>
+#include "detection/tex_coord_detection.h"
 
 namespace vcl::comp {
-
-class TexCoordTriggerer
-{
-};
 
 template<typename Scalar>
 class TexCoord : public TexCoordTriggerer
@@ -46,19 +43,6 @@ private:
 
 using TexCoordf = TexCoord<float>;
 using TexCoordd = TexCoord<double>;
-
-/**
- * Detector to check if a class has (inherits) TexCoord
- */
-
-template<typename T>
-using hasTexCoordT = std::is_base_of<TexCoordTriggerer, T>;
-
-template<typename T>
-bool constexpr hasTexCoord()
-{
-	return hasTexCoordT<T>::value;
-}
 
 } // namespace vcl::comp
 

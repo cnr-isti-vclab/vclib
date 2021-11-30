@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
-#include <vclib/misc/vcl_types.h>
+#include "detection/bit_flags_detection.h"
 
 namespace vcl::comp {
 
@@ -96,19 +96,6 @@ protected:
 		BORDER   = 1 << 2  // bit 2
 	};
 };
-
-/**
- * Detector to check if a class has (inherits) BitFlags
- */
-
-template<typename T>
-using hasBitFlagsT = std::is_base_of<BitFlags, T>;
-
-template<typename T>
-bool constexpr hasBitFlags()
-{
-	return hasBitFlagsT<T>::value;
-}
 
 } // namespace vcl::comp
 

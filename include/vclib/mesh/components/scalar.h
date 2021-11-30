@@ -23,13 +23,9 @@
 #ifndef VCL_MESH_COMPONENTS_SCALAR_H
 #define VCL_MESH_COMPONENTS_SCALAR_H
 
-#include <type_traits>
+#include "detection/scalar_detection.h"
 
 namespace vcl::comp {
-
-class ScalarTrigger
-{
-};
 
 template<typename T>
 class Scalar : public ScalarTrigger
@@ -46,19 +42,6 @@ private:
 
 using Scalarf = Scalar<float>;
 using Scalard = Scalar<double>;
-
-/**
- * Detector to check if a class has (inherits) Scalar
- */
-
-template<typename T>
-using hasScalarT = std::is_base_of<ScalarTrigger, T>;
-
-template<typename T>
-bool constexpr hasScalar()
-{
-	return hasScalarT<T>::value;
-}
 
 } // namespace vcl::comp
 

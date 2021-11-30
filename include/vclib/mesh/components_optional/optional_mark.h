@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_OPTIONAL_MARK_H
 #define VCL_MESH_COMPONENTS_OPTIONAL_MARK_H
 
+#include "../components/detection/mark_detection.h"
 #include "optional_info.h"
 
 namespace vcl::comp {
@@ -32,11 +33,11 @@ class OptionalMark : public virtual OptionalInfo<T>
 {
 private:
 	using B = OptionalInfo<T>;
-	uint thisId() const { return B::index((T*)this); }
+	uint thisId() const { return B::index((T*) this); }
 
 public:
 	OptionalMark() {}
-	int mark() const { return B::optCont().mark(thisId()); }
+	int  mark() const { return B::optCont().mark(thisId()); }
 	void resetMark() { return B::optCont().mark(thisId()) = 0; }
 
 	template<typename E>
@@ -54,19 +55,6 @@ public:
 	void decrementMark() { B::optCont().mark(thisId())--; }
 };
 
-/**
- * Detector to check if a class has (inherits) OptionalColor
- */
-
-template<typename T>
-using hasOptionalMarkT = std::is_base_of<OptionalMark<T>, T>;
-
-template<typename T>
-bool constexpr hasOptionalMark()
-{
-	return hasOptionalMarkT<T>::value;
-}
-
-}
+} // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_OPTIONAL_MARK_H

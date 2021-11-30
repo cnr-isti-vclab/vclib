@@ -23,10 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_MUTABLE_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_MUTABLE_BIT_FLAGS_H
 
-#include <assert.h>
-#include <type_traits>
-
-#include <vclib/misc/vcl_types.h>
+#include "detection/mutable_bit_flags_detection.h"
 
 namespace vcl::comp {
 
@@ -81,19 +78,6 @@ protected:
 	// values of the flags, used for flagValue, setFlag and clearFlag member functions
 	enum { VISITED = 1 << 0 };
 };
-
-/**
- * Detector to check if a class has (inherits) MutableBitFlags
- */
-
-template<typename T>
-using hasMutableBitFlagsT = std::is_base_of<MutableBitFlags, T>;
-
-template<typename T>
-bool constexpr hasMutableBitFlags()
-{
-	return hasMutableBitFlagsT<T>::value;
-}
 
 } // namespace vcl::comp
 

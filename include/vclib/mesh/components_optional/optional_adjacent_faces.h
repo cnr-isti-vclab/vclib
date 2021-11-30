@@ -28,6 +28,7 @@
 
 #include "optional_info.h"
 
+#include "../components/detection/adjacent_faces_detection.h"
 #include "../iterators/range_iterator.h"
 
 namespace vcl::mesh {
@@ -36,10 +37,6 @@ class OptionalAdjacentFacesVector;
 }
 
 namespace vcl::comp {
-
-class OptionalAdjacentFacesTriggerer
-{
-};
 
 template<typename Face, int N, typename T>
 class OptionalAdjacentFaces : public OptionalAdjacentFacesTriggerer, public virtual OptionalInfo<T>
@@ -139,30 +136,6 @@ protected:
 private:
 	uint thisId() const { return B::index((T*)this); }
 };
-
-/**
- * Detector to check if a class has (inherits) OptionalAdjacentFaces
- */
-
-template<typename T>
-using hasOptionalAdjacentFacesT = std::is_base_of<OptionalAdjacentFacesTriggerer, T>;
-
-template<typename T>
-bool constexpr hasOptionalAdjacentFaces()
-{
-	return hasOptionalAdjacentFacesT<T>::value;
-}
-
-template <typename T>
-bool constexpr sanityCheckOptionalAdjacentFaces()
-{
-	if constexpr (hasOptionalAdjacentFaces<T>()) {
-		return T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
 
 } // namespace vcl::comp
 

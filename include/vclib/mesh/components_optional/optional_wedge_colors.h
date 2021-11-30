@@ -24,15 +24,13 @@
 #define VCL_MESH_COMPONENTS_OPTIONAL_WEDGE_COLORS_H
 
 #include <array>
-#include <assert.h>
 #include <vector>
-
-#include <vclib/misc/vcl_types.h>
 
 #include "optional_info.h"
 
 #include <vclib/space/color.h>
 
+#include "../components/detection/wedge_colors_detection.h"
 #include "../iterators/range_iterator.h"
 
 namespace vcl::mesh {
@@ -41,10 +39,6 @@ class OptionalWedgeColorsVector;
 }
 
 namespace vcl::comp {
-
-class OptionalWedgeColorsTriggerer
-{
-};
 
 template<int N, typename T>
 class OptionalWedgeColors :
@@ -138,30 +132,6 @@ private:
 
 	uint wedgeColorsNumber() const;
 };
-
-/**
- * Detector to check if a class has (inherits) OptionalWedgeColors
- */
-
-template<typename T>
-using hasOptionalWedgeColorsT = std::is_base_of<OptionalWedgeColorsTriggerer, T>;
-
-template<typename T>
-bool constexpr hasOptionalWedgeColors()
-{
-	return hasOptionalWedgeColorsT<T>::value;
-}
-
-template<typename T>
-bool constexpr sanityCheckOptionalWedgeColors()
-{
-	if constexpr (hasOptionalWedgeColors<T>()) {
-		return T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
 
 } // namespace vcl::comp
 

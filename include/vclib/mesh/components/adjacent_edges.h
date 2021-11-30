@@ -23,13 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
+#include "detection/adjacent_edges_detection.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {
-
-class AdjacentEdgesTriggerer
-{
-};
 
 /**
  * @brief The AdjacentEdges class is a container of Edge references. It could be used by any
@@ -128,30 +125,6 @@ protected:
 
 	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
 };
-
-/**
- * Detector to check if a class has (inherits) AdjacenctEdges
- */
-
-template<typename T>
-using hasAdjacentEdgesT = std::is_base_of<AdjacentEdgesTriggerer, T>;
-
-template<typename T>
-bool constexpr hasAdjacentEdges()
-{
-	return hasAdjacentEdgesT<T>::value;
-}
-
-template<typename T>
-bool constexpr sanityCheckAdjacentEdges()
-{
-	if constexpr (hasAdjacentEdges<T>()) {
-		return T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
 
 } // namespace vcl::comp
 

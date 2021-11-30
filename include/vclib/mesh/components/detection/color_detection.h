@@ -20,47 +20,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#include <vclib/misc/vcl_types.h>
 
-#include <vclib/space/point.h>
-
-#include "../components/detection/normal_detection.h"
-#include "optional_info.h"
+#ifndef VCL_MESH_COMPONENTS_COLOR_DETECTION_H
+#define VCL_MESH_COMPONENTS_COLOR_DETECTION_H
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename T>
-class OptionalNormal : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
-{
-private:
-	using B = OptionalInfo<T>;
+class Color;
+template<typename T>
+class OptionalColor;
 
-public:
-	using NormalType = Point<Scalar, N>;
-	const NormalType&        normal() const { return B::optCont().normal(thisId()); }
-	NormalType&              normal() { return B::optCont().normal(thisId()); }
-
-private:
-	uint thisId() const { return B::index((T*)this); }
-};
-
-template<typename Scalar, typename T>
-class OptionalNormal3 : public OptionalNormal<Scalar, 3, T>
-{
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point3<Scalar>;
-};
+/* Detector to check if a class has (inherits) Color */
 
 template<typename T>
-using OptionalNormal3f = OptionalNormal3<float, T>;
+using hasColorT = std::is_base_of<Color, T>;
 
 template<typename T>
-using OptionalNormal3d = OptionalNormal3<double, T>;
+constexpr bool hasColor()
+{
+	return hasColorT<T>::value;
+}
+
+/* Detector to check if a class has (inherits) OptionalColor */
+
+template<typename T>
+using hasOptionalColorT = std::is_base_of<OptionalColor<T>, T>;
+
+template<typename T>
+bool constexpr hasOptionalColor()
+{
+	return hasOptionalColorT<T>::value;
+}
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#endif // VCL_MESH_COMPONENTS_COLOR_DETECTION_H

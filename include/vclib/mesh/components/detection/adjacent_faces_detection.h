@@ -20,47 +20,67 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_DETECTION_H
+#define VCL_MESH_COMPONENTS_ADJACENT_FACES_DETECTION_H
 
-#include <vclib/space/point.h>
-
-#include "../components/detection/normal_detection.h"
-#include "optional_info.h"
+#include <vclib/misc/vcl_types.h>
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename T>
-class OptionalNormal : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
+/* Triggerers */
+
+class AdjacentFacesTriggerer
 {
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point<Scalar, N>;
-	const NormalType&        normal() const { return B::optCont().normal(thisId()); }
-	NormalType&              normal() { return B::optCont().normal(thisId()); }
-
-private:
-	uint thisId() const { return B::index((T*)this); }
 };
 
-template<typename Scalar, typename T>
-class OptionalNormal3 : public OptionalNormal<Scalar, 3, T>
+class OptionalAdjacentFacesTriggerer
 {
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point3<Scalar>;
 };
 
-template<typename T>
-using OptionalNormal3f = OptionalNormal3<float, T>;
+/* Detectors to check if a class has (inherits) AdjacenctFaces */
 
 template<typename T>
-using OptionalNormal3d = OptionalNormal3<double, T>;
+using hasAdjacentFacesT = std::is_base_of<AdjacentFacesTriggerer, T>;
+
+template<typename T>
+bool constexpr hasAdjacentFaces()
+{
+	return hasAdjacentFacesT<T>::value;
+}
+
+template<typename T>
+bool constexpr sanityCheckAdjacentFaces()
+{
+	if constexpr (hasAdjacentFaces<T>()) {
+		return T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
+	}
+	else {
+		return true;
+	}
+}
+
+/* Detectors to check if a class has (inherits) OptionalAdjacenctFaces */
+
+template<typename T>
+using hasOptionalAdjacentFacesT = std::is_base_of<OptionalAdjacentFacesTriggerer, T>;
+
+template<typename T>
+bool constexpr hasOptionalAdjacentFaces()
+{
+	return hasOptionalAdjacentFacesT<T>::value;
+}
+
+template <typename T>
+bool constexpr sanityCheckOptionalAdjacentFaces()
+{
+	if constexpr (hasOptionalAdjacentFaces<T>()) {
+		return T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
+	}
+	else {
+		return true;
+	}
+}
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#endif // VCL_MESH_COMPONENTS_ADJACENT_FACES_DETECTION_H

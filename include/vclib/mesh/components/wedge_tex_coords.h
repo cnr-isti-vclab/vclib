@@ -23,15 +23,12 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
+#include "detection/wedge_tex_coords_detection.h"
 #include "internal/generic_container.h"
 
 #include <vclib/space/tex_coord.h>
 
 namespace vcl::comp {
-
-class WedgeTexCoordsTriggerer
-{
-};
 
 template<typename Scalar, int N>
 class WedgeTexCoords :
@@ -95,26 +92,6 @@ protected:
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearWedgeTexCoord();
 };
-
-template<typename T>
-using hasWedgeTexCoordsT = std::is_base_of<WedgeTexCoordsTriggerer, T>;
-
-template<typename T>
-bool constexpr hasWedgeTexCoords()
-{
-	return hasWedgeTexCoordsT<T>::value;
-}
-
-template <typename T>
-bool constexpr sanityCheckWedgeTexCoords()
-{
-	if constexpr (hasWedgeTexCoords<T>()) {
-		return T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
 
 } // namespace vcl::comp
 

@@ -26,12 +26,9 @@
 #include <vclib/space/tex_coord.h>
 
 #include "optional_info.h"
+#include "../components/detection/tex_coord_detection.h"
 
 namespace vcl::comp {
-
-class OptionalTexCoordTriggerer
-{
-};
 
 template<typename Scalar, typename T>
 class OptionalTexCoord : public OptionalTexCoordTriggerer, public virtual OptionalInfo<T>
@@ -48,19 +45,6 @@ public:
 private:
 	uint thisId() const { return B::index((T*)this); }
 };
-
-/**
- * Detector to check if a class has (inherits) OpionalNormal
- */
-
-template<typename T>
-using hasOptionalTexCoordT = std::is_base_of<OptionalTexCoordTriggerer, T>;
-
-template<typename T>
-bool constexpr hasOptionalTexCoord()
-{
-	return hasOptionalTexCoordT<T>::value;
-}
 
 } // namespace vcl::comp
 

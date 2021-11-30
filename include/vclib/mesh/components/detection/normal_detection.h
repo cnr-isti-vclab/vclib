@@ -20,47 +20,45 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#ifndef VCL_MESH_COMPONENTS_NORMAL_DETECTION_H
+#define VCL_MESH_COMPONENTS_NORMAL_DETECTION_H
 
-#include <vclib/space/point.h>
-
-#include "../components/detection/normal_detection.h"
-#include "optional_info.h"
+#include <vclib/misc/vcl_types.h>
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename T>
-class OptionalNormal : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
+/* Triggerers */
+
+class NormalTriggerer
 {
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point<Scalar, N>;
-	const NormalType&        normal() const { return B::optCont().normal(thisId()); }
-	NormalType&              normal() { return B::optCont().normal(thisId()); }
-
-private:
-	uint thisId() const { return B::index((T*)this); }
 };
 
-template<typename Scalar, typename T>
-class OptionalNormal3 : public OptionalNormal<Scalar, 3, T>
+class OptionalNormalTriggerer
 {
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point3<Scalar>;
 };
 
-template<typename T>
-using OptionalNormal3f = OptionalNormal3<float, T>;
+/* Detector to check if a class has (inherits) Normal */
 
 template<typename T>
-using OptionalNormal3d = OptionalNormal3<double, T>;
+using hasNormalT = std::is_base_of<NormalTriggerer, T>;
+
+template<typename T>
+bool constexpr hasNormal()
+{
+	return hasNormalT<T>::value;
+}
+
+/* Detector to check if a class has (inherits) OpionalNormal */
+
+template<typename T>
+using hasOptionalNormalT = std::is_base_of<OptionalNormalTriggerer, T>;
+
+template<typename T>
+bool constexpr hasOptionalNormal()
+{
+	return hasOptionalNormalT<T>::value;
+}
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#endif // VCL_MESH_COMPONENTS_NORMAL_DETECTION_H

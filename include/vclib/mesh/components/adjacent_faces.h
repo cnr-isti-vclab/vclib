@@ -23,13 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
+#include "detection/adjacent_faces_detection.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {
-
-class AdjacentFacesTriggerer
-{
-};
 
 /**
  * @brief The AdjacentFaces class is a container of Face references. It could be used by any
@@ -123,30 +120,6 @@ protected:
 
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 };
-
-/**
- * Detector to check if a class has (inherits) AdjacenctFaces
- */
-
-template<typename T>
-using hasAdjacentFacesT = std::is_base_of<AdjacentFacesTriggerer, T>;
-
-template<typename T>
-bool constexpr hasAdjacentFaces()
-{
-	return hasAdjacentFacesT<T>::value;
-}
-
-template <typename T>
-bool constexpr sanityCheckAdjacentFaces()
-{
-	if constexpr (hasAdjacentFaces<T>()) {
-		return T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
 
 } // namespace vcl::comp
 

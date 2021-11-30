@@ -25,11 +25,9 @@
 
 #include <vclib/space/principal_curvature.h>
 
-namespace vcl::comp {
+#include "detection/principal_curvature_detection.h"
 
-class PrincipalCurvatureTriggerer
-{
-};
+namespace vcl::comp {
 
 template<typename Scalar>
 class PrincipalCurvature
@@ -48,19 +46,6 @@ private:
 
 using PrincipalCurvaturef = PrincipalCurvature<float>;
 using PrincipalCurvatured = PrincipalCurvature<double>;
-
-/**
- * Detector to check if a class has (inherits) PrincipalCurvature
- */
-
-template<typename T>
-using hasPrincipalCurvatureT = std::is_base_of<PrincipalCurvatureTriggerer, T>;
-
-template<typename T>
-bool constexpr hasPrincipalCurvature()
-{
-	return hasPrincipalCurvatureT<T>::value;
-}
 
 } // namespace vcl::comp
 

@@ -25,6 +25,7 @@
 
 #include <assert.h>
 
+#include "../components/detection/mutable_bit_flags_detection.h"
 #include "optional_info.h"
 
 namespace vcl::comp {
@@ -87,19 +88,6 @@ protected:
 private:
 	uint thisId() const { return B::index((T*)this); }
 };
-
-/**
- * Detector to check if a class has (inherits) OptionalMutableBitFlags
- */
-
-template<typename T>
-using hasOptionalMutableBitFlagsT = std::is_base_of<OptionalMutableBitFlags<T>, T>;
-
-template<typename T>
-bool constexpr hasOptionalMutableBitFlags()
-{
-	return hasOptionalMutableBitFlagsT<T>::value;
-}
 
 } // namespace vcl::comp
 

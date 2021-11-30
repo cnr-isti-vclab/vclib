@@ -28,6 +28,7 @@
 
 #include "optional_info.h"
 
+#include "../components/detection/adjacent_edges_detection.h"
 #include "../iterators/range_iterator.h"
 
 namespace vcl::mesh {
@@ -36,10 +37,6 @@ class OptionalAdjacentEdgesVector;
 }
 
 namespace vcl::comp {
-
-class OptionalAdjacentEdgesTriggerer
-{
-};
 
 template<typename Edge, int N, typename T>
 class OptionalAdjacentEdges : public OptionalAdjacentEdgesTriggerer, public virtual OptionalInfo<T>
@@ -139,30 +136,6 @@ protected:
 private:
 	uint thisId() const { return B::index((T*)this); }
 };
-
-/**
- * Detector to check if a class has (inherits) OptionalAdjacentEdges
- */
-
-template<typename T>
-using hasOptionalAdjacentEdgesT = std::is_base_of<OptionalAdjacentEdgesTriggerer, T>;
-
-template<typename T>
-bool constexpr hasOptionalAdjacentEdges()
-{
-	return hasOptionalAdjacentEdgesT<T>::value;
-}
-
-template <typename T>
-bool constexpr sanityCheckOptionalAdjacentEdges()
-{
-	if constexpr (hasOptionalAdjacentEdges<T>()) {
-		return T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
 
 } // namespace vcl::comp
 

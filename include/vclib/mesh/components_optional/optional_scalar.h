@@ -24,12 +24,9 @@
 #define VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
 
 #include "optional_info.h"
+#include "../components/detection/scalar_detection.h"
 
 namespace vcl::comp {
-
-class OptionalScalarTrigger
-{
-};
 
 template<typename S, typename T>
 class OptionalScalar : public OptionalScalarTrigger, public virtual OptionalInfo<T>
@@ -51,19 +48,6 @@ using OptionalScalarf = OptionalScalar<float, T>;
 
 template <typename T>
 using OptionalScalard = OptionalScalar<double, T>;
-
-/**
- * Detector to check if a class has (inherits) OpionalScalar
- */
-
-template<typename T>
-using hasOptionalScalarT = std::is_base_of<OptionalScalarTrigger, T>;
-
-template<typename T>
-bool constexpr hasOptionalScalar()
-{
-	return hasOptionalScalarT<T>::value;
-}
 
 } // namespace vcl::comp
 

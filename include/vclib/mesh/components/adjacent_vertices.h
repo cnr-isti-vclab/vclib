@@ -23,13 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
+#include "detection/adjacent_vertices_detection.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {
-
-class AdjacentVerticesTriggerer
-{
-};
 
 /**
  * @brief The AdjacentVertices class is a container of Vertex references. It is a component that
@@ -124,15 +121,6 @@ protected:
 
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 };
-
-template<typename T>
-using hasAdjacentVerticesT = std::is_base_of<AdjacentVerticesTriggerer, T>;
-
-template<typename T>
-bool constexpr hasAdjacentVertices()
-{
-	return hasAdjacentVerticesT<T>::value;
-}
 
 } // namespace vcl::comp
 

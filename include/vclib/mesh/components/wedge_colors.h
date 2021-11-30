@@ -23,15 +23,12 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
+#include "detection/wedge_colors_detection.h"
 #include "internal/generic_container.h"
 
 #include <vclib/space/color.h>
 
 namespace vcl::comp {
-
-class WedgeColorsTriggerer
-{
-};
 
 template<int N>
 class WedgeColors : protected internal::GenericContainer<vcl::Color, N>, public WedgeColorsTriggerer
@@ -89,26 +86,6 @@ protected:
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearWedgeColor();
 };
-
-template<typename T>
-using hasWedgeColorsT = std::is_base_of<WedgeColorsTriggerer, T>;
-
-template<typename T>
-bool constexpr hasWedgeColors()
-{
-	return hasWedgeColorsT<T>::value;
-}
-
-template <typename T>
-bool constexpr sanityCheckWedgeColors()
-{
-	if constexpr (hasWedgeColors<T>()) {
-		return T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
 
 } // namespace vcl::comp
 

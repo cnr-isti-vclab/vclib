@@ -117,19 +117,6 @@ private:
 	using BitFlags::setOnBorder;
 };
 
-/**
- * Detector to check if a class has (inherits) PolygonBitFlags
- */
-
-template<typename T>
-using hasPolygonBitFlagsT = std::is_base_of<PolygonBitFlags, T>;
-
-template<typename T>
-bool constexpr hasPolygonBitFlags()
-{
-	return hasPolygonBitFlagsT<T>::value;
-}
-
 } // namespace vcl::comp
 
 #include "polygon_bit_flags.cpp"

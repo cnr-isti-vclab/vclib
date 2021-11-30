@@ -25,11 +25,9 @@
 
 #include <vclib/space/box.h>
 
-namespace vcl::comp {
+#include "detection/bounding_box_detection.h"
 
-class BoundingBoxTriggerer
-{
-};
+namespace vcl::comp {
 
 /**
  * @brief The BoundingBox component class represent an axis aligned bounding box. This class is
@@ -60,19 +58,6 @@ private:
 
 using BoundingBox3f = BoundingBox<Point3f>;
 using BoundingBox3d = BoundingBox<Point3d>;
-
-/**
- * Detector to check if a class has (inherits) BoundingBox
- */
-
-template<typename T>
-using hasBoundingBoxT = std::is_base_of<BoundingBoxTriggerer, T>;
-
-template<typename T>
-bool constexpr hasBoundingBox()
-{
-	return hasBoundingBoxT<T>::value;
-}
 
 } // namespace vcl::comp
 

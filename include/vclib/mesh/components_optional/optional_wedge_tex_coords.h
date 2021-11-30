@@ -24,15 +24,13 @@
 #define VCL_MESH_COMPONENTS_OPTIONAL_WEDGE_TEX_COORDS_H
 
 #include <array>
-#include <assert.h>
 #include <vector>
-
-#include <vclib/misc/vcl_types.h>
 
 #include "optional_info.h"
 
 #include <vclib/space/tex_coord.h>
 
+#include "../components/detection/wedge_tex_coords_detection.h"
 #include "../iterators/range_iterator.h"
 
 namespace vcl::mesh {
@@ -41,10 +39,6 @@ class OptionalWedgeTexCoordsVector;
 }
 
 namespace vcl::comp {
-
-class OptionalWedgeTexCoordsTriggerer
-{
-};
 
 template<typename Scalar, int N, typename T>
 class OptionalWedgeTexCoords :
@@ -144,30 +138,6 @@ private:
 
 	uint wedgeTexCoordsNumber() const;
 };
-
-/**
- * Detector to check if a class has (inherits) OptionalWedgeTexCoords
- */
-
-template<typename T>
-using hasOptionalWedgeTexCoordsT = std::is_base_of<OptionalWedgeTexCoordsTriggerer, T>;
-
-template<typename T>
-bool constexpr hasOptionalWedgeTexCoords()
-{
-	return hasOptionalWedgeTexCoordsT<T>::value;
-}
-
-template <typename T>
-bool constexpr sanityCheckOptionalWedgeTexCoords()
-{
-	if constexpr (hasOptionalWedgeTexCoords<T>()) {
-		return T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
 
 } // namespace vcl::comp
 

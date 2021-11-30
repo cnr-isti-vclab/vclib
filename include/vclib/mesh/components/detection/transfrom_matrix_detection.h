@@ -20,47 +20,30 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#ifndef VCL_MESH_COMPONENTS_TRANSFROM_MATRIX_DETECTION_H
+#define VCL_MESH_COMPONENTS_TRANSFROM_MATRIX_DETECTION_H
 
-#include <vclib/space/point.h>
-
-#include "../components/detection/normal_detection.h"
-#include "optional_info.h"
+#include <vclib/misc/vcl_types.h>
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename T>
-class OptionalNormal : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
+/* Triggerers */
+
+class TransformMatrixTriggerer
 {
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point<Scalar, N>;
-	const NormalType&        normal() const { return B::optCont().normal(thisId()); }
-	NormalType&              normal() { return B::optCont().normal(thisId()); }
-
-private:
-	uint thisId() const { return B::index((T*)this); }
 };
 
-template<typename Scalar, typename T>
-class OptionalNormal3 : public OptionalNormal<Scalar, 3, T>
+/* Detector to check if a class has (inherits) TransformMatrix */
+
+template<typename T>
+using hasTransformMatrixT = std::is_base_of<TransformMatrixTriggerer, T>;
+
+template<typename T>
+constexpr bool hasTransformMatrix()
 {
-private:
-	using B = OptionalInfo<T>;
-
-public:
-	using NormalType = Point3<Scalar>;
-};
-
-template<typename T>
-using OptionalNormal3f = OptionalNormal3<float, T>;
-
-template<typename T>
-using OptionalNormal3d = OptionalNormal3<double, T>;
+	return hasTransformMatrixT<T>::value;
+}
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#endif // VCL_MESH_COMPONENTS_TRANSFROM_MATRIX_DETECTION_H

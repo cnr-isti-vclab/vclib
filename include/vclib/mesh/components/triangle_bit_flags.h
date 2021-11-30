@@ -110,16 +110,6 @@ private:
 	using BitFlags::unsetOnBorder;
 };
 
-/**
- * Detector to check if a class has (inherits) TriangleBitFlags
- */
-
-template <typename  T>
-using hasTriangleBitFlagsT = std::is_base_of<TriangleBitFlags, T>;
-
-template <typename  T>
-bool constexpr hasTriangleBitFlags() {return hasTriangleBitFlagsT<T>::value;}
-
 } // namespace vcl::comp
 
 #include "triangle_bit_flags.cpp"
