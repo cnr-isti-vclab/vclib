@@ -36,6 +36,9 @@ public:
 	const ScalarType& scalar() const;
 	ScalarType&       scalar();
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	ScalarType s;
 };

@@ -58,6 +58,9 @@ public:
 	void setWedgeColor(const vcl::Color& t, uint i);
 	void setWedgeColors(const std::vector<vcl::Color>& list);
 
+	template <typename Element>
+	void importFrom(const Element& e);
+
 	/* Iterator Member functions */
 
 	WedgeColorsIterator           wedgeColorBegin();

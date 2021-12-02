@@ -37,6 +37,9 @@ public:
 	const TexCoordType& texCoord() const;
 	TexCoordType        texCoord();
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	vcl::TexCoord<Scalar> t;
 };

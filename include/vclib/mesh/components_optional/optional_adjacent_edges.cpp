@@ -137,6 +137,12 @@ int OptionalAdjacentEdges<Edge, N, T>::indexOfAdjEdge(const Edge* e) const
 }
 
 template<typename Edge, int N, typename T>
+bool OptionalAdjacentEdges<Edge, N, T>::isAdjEdgesEnabled() const
+{
+	return B::optCont().isAdjacentEdgesEnabled();
+}
+
+template<typename Edge, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
 	OptionalAdjacentEdges<Edge, N, T>::resizeAdjEdges(uint n)
@@ -221,12 +227,6 @@ OptionalAdjacentEdges<Edge, N, T>::adjEdges() const
 		*this,
 		&OptionalAdjacentEdges::adjEdgeBegin,
 		&OptionalAdjacentEdges::adjEdgeEnd);
-}
-
-template<typename Edge, int N, typename T>
-bool OptionalAdjacentEdges<Edge, N, T>::adjEdgesEnabled() const
-{
-	return B::optCont().isAdjacentEdgesEnabled();
 }
 
 template<typename Edge, int N, typename T>

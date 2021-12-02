@@ -44,6 +44,9 @@ public:
 
 	vcl::Color& color();
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	vcl::Color c;
 };

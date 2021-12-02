@@ -117,6 +117,13 @@ int VertexReferences<Vertex, N>::indexOfEdge(const Vertex* v1, const Vertex* v2)
 }
 
 template<typename Vertex, int N>
+template<typename Element>
+void VertexReferences<Vertex, N>::importFrom(const Element& e)
+{
+	// todo
+}
+
+template<typename Vertex, int N>
 template<int M>
 VCL_ENABLE_IF(M < 0, void) VertexReferences<Vertex, N>::resizeVertices(uint n)
 {

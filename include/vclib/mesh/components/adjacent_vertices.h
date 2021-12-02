@@ -84,6 +84,9 @@ public:
 
 	int indexOfAdjVertex(const Vertex* v) const;
 
+	template <typename Element>
+	void importFrom(const Element& e);
+
 	/* Member functions specific for vector */
 
 	/**

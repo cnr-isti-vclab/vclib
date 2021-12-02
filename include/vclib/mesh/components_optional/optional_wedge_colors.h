@@ -96,6 +96,8 @@ public:
 	void setWedgeColor(const vcl::Color& t, uint i);
 	void setWedgeColors(const std::vector<vcl::Color>& list);
 
+	bool isWedgeColorsEnabled() const;
+
 	/* Iterator Member functions */
 
 	WedgeColorsIterator           wedgeColorBegin();
@@ -122,11 +124,6 @@ protected:
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearWedgeColor();
-
-	/* Utility member functions */
-
-	bool wedgeColorsEnabled() const;
-
 private:
 	uint thisId() const { return B::index((T*) this); }
 

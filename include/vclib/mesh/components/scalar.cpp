@@ -36,4 +36,15 @@ T& Scalar<T>::scalar()
 	return s;
 }
 
+template<typename T>
+template<typename Element>
+void Scalar<T>::importFrom(const Element& e)
+{
+	if constexpr (hasScalar<Element>()) {
+		if (isScalarEnabled(e)){
+			s = e.scalar();
+		}
+	}
+}
+
 } // namespace vcl::comp

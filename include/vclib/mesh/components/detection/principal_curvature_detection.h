@@ -37,26 +37,35 @@ class OptionalPrincipalCurvatureTriggerer
 {
 };
 
-/* Detector to check if a class has (inherits) PrincipalCurvature */
+/* Detector to check if a class has (inherits) PrincipalCurvature or OptionalPrincipalCurvature*/
 
 template<typename T>
 using hasPrincipalCurvatureT = std::is_base_of<PrincipalCurvatureTriggerer, T>;
 
 template<typename T>
-bool constexpr hasPrincipalCurvature()
-{
-	return hasPrincipalCurvatureT<T>::value;
-}
-
-/* Detector to check if a class has (inherits) OptionalPrincipalCurvature */
+using hasOptionalPrincipalCurvatureT = std::is_base_of<OptionalPrincipalCurvatureTriggerer, T>;
 
 template<typename T>
-using hasOptionalPrincipalCurvatureT = std::is_base_of<OptionalPrincipalCurvatureTriggerer, T>;
+bool constexpr hasPrincipalCurvature()
+{
+	return hasPrincipalCurvatureT<T>::value || hasOptionalPrincipalCurvatureT<T>::value;
+}
 
 template<typename T>
 bool constexpr hasOptionalPrincipalCurvature()
 {
 	return hasOptionalPrincipalCurvatureT<T>::value;
+}
+
+template <typename T>
+bool isPrincipalCurvatureEnabled(const T& element)
+{
+	if constexpr (hasOptionalPrincipalCurvature<T>()) {
+		return element.isPrincipalCurvatureEnabled();
+	}
+	else {
+		return hasPrincipalCurvature<T>();
+	}
 }
 
 } // namespace vcl::comp

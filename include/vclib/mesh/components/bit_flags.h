@@ -73,6 +73,9 @@ public:
 	void unsetOnBorder();
 	void unsetUserBit(uint bit);
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 protected:
 	void setDeleted();
 	void unsetDeleted();

@@ -40,4 +40,14 @@ vcl::Color& Color::color()
 	return c;
 }
 
+template<typename Element>
+void Color::importFrom(const Element& e)
+{
+	if constexpr (hasColor<Element>()) {
+		if (isColorEnabled(e)) {
+			c = e.color();
+		}
+	}
+}
+
 } // namespace vcl::comp

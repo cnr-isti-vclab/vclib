@@ -50,12 +50,6 @@ bool constexpr hasOptionalAdjacentEdges()
 	return comp::hasOptionalAdjacentEdges<FaceType>();
 }
 
-template<typename FaceType>
-bool constexpr sanityCheckOptionalAdjacentEdges()
-{
-	return comp::sanityCheckOptionalAdjacentEdges<FaceType>();
-}
-
 /* Port OptionalAdjacentFaces class into face namespace */
 template<typename FaceType>
 using OptionalAdjacentPolygons = comp::OptionalAdjacentFaces<FaceType, -1, FaceType>;
@@ -67,12 +61,6 @@ template<typename FaceType>
 bool constexpr hasOptionalAdjacentFaces()
 {
 	return comp::hasOptionalAdjacentFaces<FaceType>();
-}
-
-template<typename FaceType>
-bool constexpr sanityCheckOptionalAdjacentFaces()
-{
-	return comp::sanityCheckOptionalAdjacentFaces<FaceType>();
 }
 
 /* Port OptionalColor class into face namespace */
@@ -187,12 +175,6 @@ bool constexpr hasOptionalWedgeTexCoords()
 	return comp::hasOptionalWedgeTexCoords<FaceType>();
 }
 
-template<typename FaceType>
-bool constexpr sanityCheckOptionalWedgeTexCoords()
-{
-	return comp::sanityCheckOptionalWedgeTexCoords<FaceType>();
-}
-
 /* Port OptionalWedgeColors class into face namespace */
 template<typename FaceType>
 using OptionalPolygonWedgeColors = comp::OptionalWedgeColors<-1, FaceType>;
@@ -204,12 +186,6 @@ template<typename FaceType>
 bool constexpr hasOptionalWedgeColors()
 {
 	return comp::hasOptionalWedgeColors<FaceType>();
-}
-
-template<typename FaceType>
-bool constexpr sanityCheckOptionalWedgeColors()
-{
-	return comp::sanityCheckOptionalWedgeColors<FaceType>();
 }
 
 /* Port CustomComponents class into face namespace */

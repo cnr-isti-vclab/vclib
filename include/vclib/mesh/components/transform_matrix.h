@@ -40,6 +40,9 @@ public:
 	const TransformMatrixType& transformMatrix() const;
 	TransformMatrixType&       transformMatrix();
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	Eigen::Matrix<Scalar, 4, 4> tr;
 };

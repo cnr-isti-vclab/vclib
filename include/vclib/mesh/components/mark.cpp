@@ -55,4 +55,14 @@ void Mark::decrementMark()
 	m--;
 }
 
+template<typename Element>
+void Mark::importFrom(const Element& e)
+{
+	if constexpr (hasMark<Element>()) {
+		if (isMarkEnabled(e)) {
+			m = e.mark();
+		}
+	}
+}
+
 } // namespace vcl::comp

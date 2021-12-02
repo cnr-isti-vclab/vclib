@@ -36,4 +36,15 @@ typename TexCoord<Scalar>::TexCoordType TexCoord<Scalar>::texCoord()
 	return t;
 }
 
+template<typename Scalar>
+template<typename Element>
+void TexCoord<Scalar>::importFrom(const Element& e)
+{
+	if constexpr(hasTexCoord<Element>()) {
+		if (isTexCoordEnabled(e)){
+			t = e.texCoord();
+		}
+	}
+}
+
 } // namespace vcl::comp

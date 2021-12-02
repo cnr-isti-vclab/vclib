@@ -43,4 +43,15 @@ PrincipalCurvature<Scalar>::principalCurvature()
 	return princCurv;
 }
 
+template<typename Scalar>
+template<typename Element>
+void PrincipalCurvature<Scalar>::importFrom(const Element& e)
+{
+	if constexpr (hasPrincipalCurvature<Element>()) {
+		if (isPrincipalCurvatureEnabled(e)) {
+			princCurv = e.principalCurvature();
+		}
+	}
+}
+
 } // namespace vcl::comp

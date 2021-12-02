@@ -69,6 +69,9 @@ public:
 	int indexOfVertex(const Vertex* v) const;
 	int indexOfEdge(const Vertex* v1, const Vertex* v2);
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 	/* Member functions specific for vector */
 
 	template<int M = N>

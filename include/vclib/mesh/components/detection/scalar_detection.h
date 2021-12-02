@@ -37,26 +37,35 @@ class OptionalScalarTrigger
 {
 };
 
-/* Detector to check if a class has (inherits) Scalar */
+/* Detector to check if a class has (inherits) Scalar or OptionalScalar */
 
 template<typename T>
 using hasScalarT = std::is_base_of<ScalarTrigger, T>;
 
 template<typename T>
-bool constexpr hasScalar()
-{
-	return hasScalarT<T>::value;
-}
-
-/* Detector to check if a class has (inherits) OptionalScalar */
+using hasOptionalScalarT = std::is_base_of<OptionalScalarTrigger, T>;
 
 template<typename T>
-using hasOptionalScalarT = std::is_base_of<OptionalScalarTrigger, T>;
+bool constexpr hasScalar()
+{
+	return hasScalarT<T>::value || hasOptionalScalarT<T>::value;
+}
 
 template<typename T>
 bool constexpr hasOptionalScalar()
 {
 	return hasOptionalScalarT<T>::value;
+}
+
+template <typename T>
+bool isScalarEnabled(const T& element)
+{
+	if constexpr(hasOptionalScalar<T>()) {
+		return element.isScalarEnabled();
+	}
+	else {
+		return hasScalar<T>();
+	}
 }
 
 } // namespace vcl::comp

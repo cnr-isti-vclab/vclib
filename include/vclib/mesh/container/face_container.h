@@ -57,16 +57,16 @@ class FaceContainer : protected ElementContainer<T>, public FaceContainerTrigger
 		!vcl::face::hasTriangleBitFlags<T>() || T::VERTEX_NUMBER == 3,
 		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
 	static_assert(
-		face::sanityCheckAdjacentEdges<T>() && face::sanityCheckOptionalAdjacentEdges<T>(),
+		face::sanityCheckAdjacentEdges<T>(),
 		"Size of per Face AdjacentEdges component must be the same of the VertexReferences.");
 	static_assert(
-		face::sanityCheckAdjacentFaces<T>() && face::sanityCheckOptionalAdjacentFaces<T>(),
+		face::sanityCheckAdjacentFaces<T>(),
 		"Size of per Face AdjacentFaces component must be the same of the VertexReferences.");
 	static_assert(
-		face::sanityCheckWedgeColors<T>() && face::sanityCheckOptionalWedgeColors<T>(),
+		face::sanityCheckWedgeColors<T>(),
 		"Size of per Face WedgeColors component must be the same of the VertexReferences.");
 	static_assert(
-		face::sanityCheckWedgeTexCoords<T>() && face::sanityCheckOptionalWedgeTexCoords<T>(),
+		face::sanityCheckWedgeTexCoords<T>(),
 		"Size of per Face WedgeTexCoords component must be the same of the VertexReferences.");
 
 	using Base              = ElementContainer<T>;

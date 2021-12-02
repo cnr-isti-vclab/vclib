@@ -89,6 +89,9 @@ public:
 
 	int indexOfAdjEdge(const Edge* e) const;
 
+	template <typename Element>
+	void importFrom(const Element& e);
+
 	/* Member functions specific for vector */
 
 	template<int M = N>

@@ -38,6 +38,9 @@ public:
 	const Point<Scalar, N>& normal() const;
 	Point<Scalar, N>&       normal();
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	Point<Scalar, N> n;
 };

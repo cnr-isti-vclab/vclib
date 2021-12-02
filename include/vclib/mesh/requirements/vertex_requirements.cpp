@@ -36,21 +36,20 @@ template<typename MeshType>
 bool constexpr hasPerVertexAdjacentFaces()
 {
 	return hasVertices<MeshType>() &&
-		   (vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>() ||
-			vcl::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>());
+		   vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>();
 }
 
 template<typename MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 {
 	if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>()) {
-		return true;
-	}
-	else if constexpr (
 		hasVertices<MeshType>() &&
 		vcl::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
 		return m.isPerVertexAdjacentFacesEnabled();
+	}
+	else if constexpr (
+		hasVertices<MeshType>() && vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>()) {
+		return true;
 	}
 	else {
 		return false;

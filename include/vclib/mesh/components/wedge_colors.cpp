@@ -66,6 +66,15 @@ void WedgeColors<N>::setWedgeColors(const std::vector<vcl::Color>& list)
 }
 
 template<int N>
+template<typename Element>
+void WedgeColors<N>::importFrom(const Element&)
+{
+	if constexpr (hasWedgeColors<Element>()) {
+		// todo
+	}
+}
+
+template<int N>
 typename WedgeColors<N>::WedgeColorsIterator WedgeColors<N>::wedgeColorBegin()
 {
 	return Base::begin();

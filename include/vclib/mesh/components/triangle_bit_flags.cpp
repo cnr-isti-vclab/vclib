@@ -158,4 +158,21 @@ inline void TriangleBitFlags::unsetAllEdgeFaux()
 	unsetEdgeFaux(2);
 }
 
+template<typename Element>
+void TriangleBitFlags::importFrom(const Element& e)
+{
+	if constexpr (hasBitFlags<Element>()) {
+		unsetAllFlags();
+		if constexpr (hasPolygonBitFlags<Element>()) {
+			// todo
+		}
+		else if constexpr (hasTriangleBitFlags<Element>()) {
+			flags = e.BitFlags::flags;
+		}
+		else {
+			// todo
+		}
+	}
+}
+
 } // namespace vcl::comp

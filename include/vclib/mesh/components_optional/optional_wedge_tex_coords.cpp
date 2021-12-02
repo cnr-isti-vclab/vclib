@@ -87,6 +87,12 @@ void OptionalWedgeTexCoords<Scalar, N, T>::setWedgeTexCoords(
 }
 
 template<typename Scalar, int N, typename T>
+bool OptionalWedgeTexCoords<Scalar, N, T>::isWedgeTexCoordsEnabled() const
+{
+	return B::optCont().isWedgeTexCoordsEnabled();
+}
+
+template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordBegin()
 {
@@ -132,12 +138,6 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator() const
 		B::optCont().wedgeTexCoords(thisId()),
 		&OptionalWedgeTexCoords::wedgeTexCoordBegin,
 		&OptionalWedgeTexCoords::wedgeTexCoordEnd);
-}
-
-template<typename Scalar, int N, typename T>
-bool OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordsEnabled() const
-{
-	return B::optCont().isWedgeTexCoordsEnabled();
 }
 
 template<typename Scalar, int N, typename T>

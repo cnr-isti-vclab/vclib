@@ -62,6 +62,9 @@ public:
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
 
+	template <typename Element>
+	void importFrom(const Element& e);
+
 	/* Iterator Member functions */
 
 	WedgeTexCoordsIterator           wedgeTexCoordBegin();

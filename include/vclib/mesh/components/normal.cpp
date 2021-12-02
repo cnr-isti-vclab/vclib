@@ -36,6 +36,19 @@ Point<Scalar, N>& Normal<Scalar, N>::normal()
 	return n;
 }
 
+template<typename Scalar, int N>
+template<typename Element>
+void Normal<Scalar, N>::importFrom(const Element& e)
+{
+	if constexpr(hasNormal<Element>()) {
+		if (N == e.NormalType::DIM) {
+			if (isNormalEnabled(e)){
+				n = e.normal();
+			}
+		}
+	}
+}
+
 template<typename Scalar>
 const Point3<Scalar>& Normal3<Scalar>::normal() const
 {

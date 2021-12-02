@@ -37,32 +37,19 @@ class OptionalAdjacentFacesTriggerer
 {
 };
 
-/* Detectors to check if a class has (inherits) AdjacenctFaces */
+/* Detectors to check if a class has (inherits) AdjacenctFaces or OptionalAdjacenctFaces */
 
 template<typename T>
 using hasAdjacentFacesT = std::is_base_of<AdjacentFacesTriggerer, T>;
 
 template<typename T>
+using hasOptionalAdjacentFacesT = std::is_base_of<OptionalAdjacentFacesTriggerer, T>;
+
+template<typename T>
 bool constexpr hasAdjacentFaces()
 {
-	return hasAdjacentFacesT<T>::value;
+	return hasAdjacentFacesT<T>::value || hasOptionalAdjacentFacesT<T>::value;
 }
-
-template<typename T>
-bool constexpr sanityCheckAdjacentFaces()
-{
-	if constexpr (hasAdjacentFaces<T>()) {
-		return T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
-
-/* Detectors to check if a class has (inherits) OptionalAdjacenctFaces */
-
-template<typename T>
-using hasOptionalAdjacentFacesT = std::is_base_of<OptionalAdjacentFacesTriggerer, T>;
 
 template<typename T>
 bool constexpr hasOptionalAdjacentFaces()
@@ -71,9 +58,20 @@ bool constexpr hasOptionalAdjacentFaces()
 }
 
 template <typename T>
-bool constexpr sanityCheckOptionalAdjacentFaces()
+bool isAdjacentFacesEnabled(const T& element)
 {
-	if constexpr (hasOptionalAdjacentFaces<T>()) {
+	if constexpr(hasOptionalAdjacentFaces<T>()) {
+		return element.isAdjFacesEnabled();
+	}
+	else {
+		return hasAdjacentFaces<T>();
+	}
+}
+
+template<typename T>
+bool constexpr sanityCheckAdjacentFaces()
+{
+	if constexpr (hasAdjacentFaces<T>()) {
 		return T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
 	}
 	else {

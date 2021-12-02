@@ -66,6 +66,15 @@ void WedgeTexCoords<Scalar, N>::setWedgeTexCoords(const std::vector<vcl::TexCoor
 }
 
 template<typename Scalar, int N>
+template<typename Element>
+void WedgeTexCoords<Scalar, N>::importFrom(const Element& e)
+{
+	if constexpr (hasWedgeTexCoords<Element>()) {
+		// todo
+	}
+}
+
+template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::WedgeTexCoordsIterator
 WedgeTexCoords<Scalar, N>::wedgeTexCoordBegin()
 {

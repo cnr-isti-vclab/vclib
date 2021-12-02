@@ -100,6 +100,8 @@ public:
 
 	int indexOfAdjFace(const Face* f) const;
 
+	bool isAdjFacesEnabled() const;
+
 	/* Member functions specific for vector */
 
 	template<int M = N>
@@ -127,8 +129,6 @@ public:
 	ConstAdjacentFaceRangeIterator adjFaces() const;
 
 protected:
-	bool adjFacesEnabled() const;
-
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);

@@ -43,6 +43,9 @@ public:
 
 	void pushTexture(const std::string& textName);
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	std::vector<std::string> textureNames;
 };

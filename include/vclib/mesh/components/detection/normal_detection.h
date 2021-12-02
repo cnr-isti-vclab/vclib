@@ -37,26 +37,36 @@ class OptionalNormalTriggerer
 {
 };
 
-/* Detector to check if a class has (inherits) Normal */
+/* Detector to check if a class has (inherits) Normal or OpionalNormal*/
 
 template<typename T>
 using hasNormalT = std::is_base_of<NormalTriggerer, T>;
 
 template<typename T>
-bool constexpr hasNormal()
-{
-	return hasNormalT<T>::value;
-}
+using hasOptionalNormalT = std::is_base_of<OptionalNormalTriggerer, T>;
 
-/* Detector to check if a class has (inherits) OpionalNormal */
 
 template<typename T>
-using hasOptionalNormalT = std::is_base_of<OptionalNormalTriggerer, T>;
+bool constexpr hasNormal()
+{
+	return hasNormalT<T>::value || hasOptionalNormalT<T>::value;
+}
 
 template<typename T>
 bool constexpr hasOptionalNormal()
 {
 	return hasOptionalNormalT<T>::value;
+}
+
+template <typename T>
+bool isNormalEnabled(const T& element)
+{
+	if constexpr(hasOptionalNormal<T>()) {
+		return element.isNormalEnabled();
+	}
+	else {
+		return hasNormal<T>();
+	}
 }
 
 } // namespace vcl::comp

@@ -37,26 +37,36 @@ class OptionalAdjacentVerticesTriggerer
 {
 };
 
-/* Detectors to check if a class has (inherits) AdjacenctVertices */
+/* Detectors to check if a class has (inherits) AdjacenctVertices or OptionalAdjacenctVertices*/
 
 template<typename T>
 using hasAdjacentVerticesT = std::is_base_of<AdjacentVerticesTriggerer, T>;
 
 template<typename T>
-bool constexpr hasAdjacentVertices()
-{
-	return hasAdjacentVerticesT<T>::value;
-}
+using hasOptionalAdjacentVerticesT = std::is_base_of<OptionalAdjacentVerticesTriggerer, T>;
 
-/* Detectors to check if a class has (inherits) OptionalAdjacenctVertices */
 
 template<typename T>
-using hasOptionalAdjacentVerticesT = std::is_base_of<OptionalAdjacentVerticesTriggerer, T>;
+bool constexpr hasAdjacentVertices()
+{
+	return hasAdjacentVerticesT<T>::value || hasOptionalAdjacentVerticesT<T>::value;
+}
 
 template<typename T>
 bool constexpr hasOptionalAdjacentVertices()
 {
 	return hasOptionalAdjacentVerticesT<T>::value;
+}
+
+template <typename T>
+bool isAdjacentVerticesEnabled(const T& element)
+{
+	if constexpr (hasOptionalAdjacentVertices<T>()) {
+		return element.isAdjVerticesEnabled();
+	}
+	else {
+		return hasAdjacentVertices<T>();
+	}
 }
 
 } // namespace vcl::comp

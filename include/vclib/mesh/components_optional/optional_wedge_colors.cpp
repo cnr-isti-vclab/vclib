@@ -81,6 +81,12 @@ void OptionalWedgeColors<N, T>::setWedgeColors(const std::vector<vcl::Color>& li
 }
 
 template<int N, typename T>
+bool OptionalWedgeColors<N, T>::isWedgeColorsEnabled() const
+{
+	return B::optCont().isWedgeColorsEnabled();
+}
+
+template<int N, typename T>
 typename OptionalWedgeColors<N, T>::WedgeColorsIterator OptionalWedgeColors<N, T>::wedgeColorBegin()
 {
 	return B::optCont().wedgeColors(thisId()).begin();
@@ -124,12 +130,6 @@ OptionalWedgeColors<N, T>::wedgeColorIterator() const
 		B::optCont().wedgeColors(thisId()),
 		&OptionalWedgeColors::wedgeColorBegin,
 		&OptionalWedgeColors::wedgeColorEnd);
-}
-
-template<int N, typename T>
-bool OptionalWedgeColors<N, T>::wedgeColorsEnabled() const
-{
-	return B::optCont().isWedgeColorsEnabled();
 }
 
 template<int N, typename T>

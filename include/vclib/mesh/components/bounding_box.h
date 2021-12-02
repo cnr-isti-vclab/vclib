@@ -52,6 +52,9 @@ public:
 	const BoundingBoxType& boundingBox() const;
 	BoundingBoxType&      boundingBox();
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	Box<PointType> box;
 };

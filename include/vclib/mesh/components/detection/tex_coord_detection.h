@@ -37,26 +37,35 @@ class OptionalTexCoordTriggerer
 {
 };
 
-/* Detector to check if a class has (inherits) TexCoord */
+/* Detector to check if a class has (inherits) TexCoord or OptionalTexCoord*/
 
 template<typename T>
 using hasTexCoordT = std::is_base_of<TexCoordTriggerer, T>;
 
 template<typename T>
-bool constexpr hasTexCoord()
-{
-	return hasTexCoordT<T>::value;
-}
-
-/* Detector to check if a class has (inherits) OptionalTexCoord */
+using hasOptionalTexCoordT = std::is_base_of<OptionalTexCoordTriggerer, T>;
 
 template<typename T>
-using hasOptionalTexCoordT = std::is_base_of<OptionalTexCoordTriggerer, T>;
+bool constexpr hasTexCoord()
+{
+	return hasTexCoordT<T>::value || hasOptionalTexCoordT<T>::value;
+}
 
 template<typename T>
 bool constexpr hasOptionalTexCoord()
 {
 	return hasOptionalTexCoordT<T>::value;
+}
+
+template <typename T>
+bool isTexCoordEnabled(const T& element)
+{
+	if constexpr (hasOptionalTexCoord<T>()) {
+		return element.isTexCoordEnabled();
+	}
+	else {
+		return hasTexCoord<T>();
+	}
 }
 
 } // namespace vcl::comp

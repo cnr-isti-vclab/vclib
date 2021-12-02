@@ -37,32 +37,19 @@ class OptionalWedgeTexCoordsTriggerer
 {
 };
 
-/* Detector to check if a class has (inherits) WedgeTexCoords */
+/* Detector to check if a class has (inherits) WedgeTexCoords or OptionalWedgeTexCoords */
 
 template<typename T>
 using hasWedgeTexCoordsT = std::is_base_of<WedgeTexCoordsTriggerer, T>;
 
 template<typename T>
+using hasOptionalWedgeTexCoordsT = std::is_base_of<OptionalWedgeTexCoordsTriggerer, T>;
+
+template<typename T>
 bool constexpr hasWedgeTexCoords()
 {
-	return hasWedgeTexCoordsT<T>::value;
+	return hasWedgeTexCoordsT<T>::value || hasOptionalWedgeTexCoordsT<T>::value;
 }
-
-template<typename T>
-bool constexpr sanityCheckWedgeTexCoords()
-{
-	if constexpr (hasWedgeTexCoords<T>()) {
-		return T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
-
-/* Detector to check if a class has (inherits) OptionalWedgeTexCoords */
-
-template<typename T>
-using hasOptionalWedgeTexCoordsT = std::is_base_of<OptionalWedgeTexCoordsTriggerer, T>;
 
 template<typename T>
 bool constexpr hasOptionalWedgeTexCoords()
@@ -70,10 +57,21 @@ bool constexpr hasOptionalWedgeTexCoords()
 	return hasOptionalWedgeTexCoordsT<T>::value;
 }
 
-template<typename T>
-bool constexpr sanityCheckOptionalWedgeTexCoords()
+template <typename T>
+bool isWedgeTexCoordsEnabled(const T& element)
 {
 	if constexpr (hasOptionalWedgeTexCoords<T>()) {
+		return element.isWedgeTexCoordsEnabled();
+	}
+	else {
+		return hasWedgeTexCoords<T>();
+	}
+}
+
+template<typename T>
+bool constexpr sanityCheckWedgeTexCoords()
+{
+	if constexpr (hasWedgeTexCoords<T>()) {
 		return T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
 	}
 	else {

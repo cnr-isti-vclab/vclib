@@ -31,26 +31,35 @@ class Color;
 template<typename T>
 class OptionalColor;
 
-/* Detector to check if a class has (inherits) Color */
+/* Detector to check if a class has (inherits) Color or OptionalColor */
 
 template<typename T>
 using hasColorT = std::is_base_of<Color, T>;
 
 template<typename T>
-constexpr bool hasColor()
-{
-	return hasColorT<T>::value;
-}
-
-/* Detector to check if a class has (inherits) OptionalColor */
+using hasOptionalColorT = std::is_base_of<OptionalColor<T>, T>;
 
 template<typename T>
-using hasOptionalColorT = std::is_base_of<OptionalColor<T>, T>;
+constexpr bool hasColor()
+{
+	return hasColorT<T>::value || hasOptionalColorT<T>::value;
+}
 
 template<typename T>
 bool constexpr hasOptionalColor()
 {
 	return hasOptionalColorT<T>::value;
+}
+
+template <typename T>
+bool isColorEnabled(const T& element)
+{
+	if constexpr (hasOptionalColor<T>()) {
+		return element.isColorEnabled();
+	}
+	else {
+		return hasColor<T>();
+	}
 }
 
 } // namespace vcl::comp

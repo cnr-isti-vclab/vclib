@@ -36,21 +36,20 @@ template<typename MeshType>
 bool constexpr hasPerFaceAdjacentFaces()
 {
 	return hasFaces<MeshType>() &&
-		   (vcl::face::hasAdjacentFaces<typename MeshType::FaceType>() ||
-			vcl::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>());
+		   vcl::face::hasAdjacentFaces<typename MeshType::FaceType>();
 }
 
 template<typename MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 {
 	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasAdjacentFaces<typename MeshType::FaceType>()) {
-		return true;
-	}
-	else if constexpr (
 		hasFaces<MeshType>() &&
 		vcl::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
 		return m.isPerFaceAdjacentFacesEnabled();
+	}
+	else if constexpr (
+		hasFaces<MeshType>() && vcl::face::hasAdjacentFaces<typename MeshType::FaceType>()) {
+		return true;
 	}
 	else {
 		return false;

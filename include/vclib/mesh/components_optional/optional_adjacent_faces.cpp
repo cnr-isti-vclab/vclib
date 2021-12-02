@@ -137,6 +137,12 @@ int OptionalAdjacentFaces<Face, N, T>::indexOfAdjFace(const Face* f) const
 }
 
 template<typename Face, int N, typename T>
+bool OptionalAdjacentFaces<Face, N, T>::isAdjFacesEnabled() const
+{
+	return B::optCont().isAdjacentFacesEnabled();
+}
+
+template<typename Face, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
 OptionalAdjacentFaces<Face, N, T>::resizeAdjFaces(uint n)
@@ -221,12 +227,6 @@ OptionalAdjacentFaces<Face, N, T>::adjFaces() const
 		*this,
 		&OptionalAdjacentFaces::adjFaceBegin,
 		&OptionalAdjacentFaces::adjFaceEnd);
-}
-
-template<typename Face, int N, typename T>
-bool OptionalAdjacentFaces<Face, N, T>::adjFacesEnabled() const
-{
-	return B::optCont().isAdjacentFacesEnabled();
 }
 
 template<typename Face, int N, typename T>

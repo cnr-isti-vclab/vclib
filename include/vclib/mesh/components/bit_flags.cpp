@@ -132,6 +132,23 @@ inline void BitFlags::unsetUserBit(uint bit)
 	unsetUserBit(bit, FIRST_USER_BIT);
 }
 
+template<typename Element>
+void BitFlags::importFrom(const Element& e)
+{
+	if constexpr (hasBitFlags<Element>()) {
+		unsetAllFlags();
+		if constexpr (hasPolygonBitFlags<Element>()) {
+			// todo
+		}
+		else if constexpr (hasTriangleBitFlags<Element>()) {
+			// todo
+		}
+		else {
+			flags = e.BitFlags::flags;
+		}
+	}
+}
+
 /**
  * @brief Marks as deleted this Element.
  */

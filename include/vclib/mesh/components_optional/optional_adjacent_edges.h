@@ -100,6 +100,8 @@ public:
 
 	int indexOfAdjEdge(const Edge* e) const;
 
+	bool isAdjEdgesEnabled() const;
+
 	/* Member functions specific for vector */
 
 	template<int M = N>
@@ -127,8 +129,6 @@ public:
 	ConstAdjacentEdgeRangeIterator adjEdges() const;
 
 protected:
-	bool adjEdgesEnabled() const;
-
 	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);
 
 	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);

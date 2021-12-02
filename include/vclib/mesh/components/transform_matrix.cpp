@@ -43,4 +43,13 @@ typename TransformMatrix<Scalar>::TransformMatrixType& TransformMatrix<Scalar>::
 	return tr;
 }
 
+template<typename Scalar>
+template<typename Element>
+void TransformMatrix<Scalar>::importFrom(const Element& e)
+{
+	if constexpr(hasTransformMatrix<Element>()) {
+		tr = e.transformMatrix();
+	}
+}
+
 } // namespace vcl::comp

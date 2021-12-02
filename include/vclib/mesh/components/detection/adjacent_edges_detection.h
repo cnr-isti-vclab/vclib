@@ -37,32 +37,19 @@ class OptionalAdjacentEdgesTriggerer
 {
 };
 
-/* Detectors to check if a class has (inherits) AdjacenctEdges */
+/* Detectors to check if a class has (inherits) AdjacenctEdges or OptionalAdjacentEdges */
 
 template<typename T>
 using hasAdjacentEdgesT = std::is_base_of<AdjacentEdgesTriggerer, T>;
 
 template<typename T>
+using hasOptionalAdjacentEdgesT = std::is_base_of<OptionalAdjacentEdgesTriggerer, T>;
+
+template<typename T>
 bool constexpr hasAdjacentEdges()
 {
-	return hasAdjacentEdgesT<T>::value;
+	return hasAdjacentEdgesT<T>::value || hasOptionalAdjacentEdgesT<T>::value;
 }
-
-template<typename T>
-bool constexpr sanityCheckAdjacentEdges()
-{
-	if constexpr (hasAdjacentEdges<T>()) {
-		return T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
-
-/* Detector to check if a class has (inherits) OptionalAdjacentEdges */
-
-template<typename T>
-using hasOptionalAdjacentEdgesT = std::is_base_of<OptionalAdjacentEdgesTriggerer, T>;
 
 template<typename T>
 bool constexpr hasOptionalAdjacentEdges()
@@ -70,10 +57,21 @@ bool constexpr hasOptionalAdjacentEdges()
 	return hasOptionalAdjacentEdgesT<T>::value;
 }
 
-template<typename T>
-bool constexpr sanityCheckOptionalAdjacentEdges()
+template <typename T>
+bool isAdjacentEdgesEnabled(const T& element)
 {
 	if constexpr (hasOptionalAdjacentEdges<T>()) {
+		return element.isAdjEdgesEnabled();
+	}
+	else {
+		return hasAdjacentEdges<T>();
+	}
+}
+
+template<typename T>
+bool constexpr sanityCheckAdjacentEdges()
+{
+	if constexpr (hasAdjacentEdges<T>()) {
 		return T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
 	}
 	else {

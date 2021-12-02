@@ -37,32 +37,20 @@ class OptionalWedgeColorsTriggerer
 {
 };
 
-/* Detector to check if a class has (inherits) WedgeColors */
+/* Detector to check if a class has (inherits) WedgeColors or OptionalWedgeColors */
 
 template<typename T>
 using hasWedgeColorsT = std::is_base_of<WedgeColorsTriggerer, T>;
 
 template<typename T>
+using hasOptionalWedgeColorsT = std::is_base_of<OptionalWedgeColorsTriggerer, T>;
+
+
+template<typename T>
 bool constexpr hasWedgeColors()
 {
-	return hasWedgeColorsT<T>::value;
+	return hasWedgeColorsT<T>::value || hasOptionalWedgeColorsT<T>::value;
 }
-
-template<typename T>
-bool constexpr sanityCheckWedgeColors()
-{
-	if constexpr (hasWedgeColors<T>()) {
-		return T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
-	}
-	else {
-		return true;
-	}
-}
-
-/* Detector to check if a class has (inherits) OptionalWedgeColors */
-
-template<typename T>
-using hasOptionalWedgeColorsT = std::is_base_of<OptionalWedgeColorsTriggerer, T>;
 
 template<typename T>
 bool constexpr hasOptionalWedgeColors()
@@ -70,10 +58,21 @@ bool constexpr hasOptionalWedgeColors()
 	return hasOptionalWedgeColorsT<T>::value;
 }
 
-template<typename T>
-bool constexpr sanityCheckOptionalWedgeColors()
+template <typename T>
+bool isWedgeColorsEnabled(const T& element)
 {
-	if constexpr (hasOptionalWedgeColors<T>()) {
+	if constexpr(hasOptionalWedgeColors<T>()) {
+		return element.isWedgeColorsEnabled();
+	}
+	else {
+		return hasWedgeColors<T>();
+	}
+}
+
+template<typename T>
+bool constexpr sanityCheckWedgeColors()
+{
+	if constexpr (hasWedgeColors<T>()) {
 		return T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
 	}
 	else {

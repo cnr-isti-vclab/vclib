@@ -62,6 +62,9 @@ public:
 	void clearVisitedM() const;
 	void clearUserBitM(uint bit) const;
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 protected:
 	bool flagValueM(uint flag) const;
 	void setFlagM(uint flag) const;

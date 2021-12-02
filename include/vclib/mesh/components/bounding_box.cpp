@@ -44,4 +44,13 @@ Box<PointType>& BoundingBox<PointType>::boundingBox()
 	return box;
 }
 
+template<typename PointType>
+template<typename Element>
+void BoundingBox<PointType>::importFrom(const Element& e)
+{
+	if constexpr(hasBoundingBox<Element>()) {
+		box = e.boundingBox();
+	}
+}
+
 } // namespace vcl::comp

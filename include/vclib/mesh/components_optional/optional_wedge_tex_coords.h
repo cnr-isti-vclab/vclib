@@ -99,6 +99,8 @@ public:
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
 
+	bool isWedgeTexCoordsEnabled() const;
+
 	/** Iterator Member functions **/
 
 	WedgeTexCoordsIterator           wedgeTexCoordBegin();
@@ -128,10 +130,6 @@ protected:
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearWedgeTexCoord();
-
-	/** Utility member functions **/
-
-	bool wedgeTexCoordsEnabled() const;
 
 private:
 	uint thisId() const { return B::index((T*)this); }

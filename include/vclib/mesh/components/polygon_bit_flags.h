@@ -96,6 +96,9 @@ public:
 	void unsetEdgeFaux(uint i);
 	void unsetAllEdgesFaux();
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 protected:
 	// values of the flags, used for flagValue, setFlag and unsetFlag member functions
 	enum {

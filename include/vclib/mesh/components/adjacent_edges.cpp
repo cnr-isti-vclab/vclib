@@ -161,6 +161,15 @@ int AdjacentEdges<Edge, N>::indexOfAdjEdge(const Edge* e) const
 	return Base::indexOf(e);
 }
 
+template<typename Edge, int N>
+template<typename Element>
+void AdjacentEdges<Edge, N>::importFrom(const Element&)
+{
+	if constexpr (hasAdjacentEdges<Element>()) {
+		// todo
+	}
+}
+
 /**
  * @brief Resize the container of the adjacent edges to the given size.
  * @note This function is available only if the container of the Adjacent Edges is has dynamic

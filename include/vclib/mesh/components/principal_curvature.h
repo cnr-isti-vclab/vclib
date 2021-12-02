@@ -40,6 +40,9 @@ public:
 	const PrincipalCurvatureType& principalCurvature() const;
 	PrincipalCurvatureType&       principalCurvature();
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	vcl::PrincipalCurvature<Scalar> princCurv;
 };

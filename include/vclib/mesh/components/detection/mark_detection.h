@@ -31,26 +31,35 @@ class Mark;
 template<typename T>
 class OptionalMark;
 
-/* Detector to check if a class has (inherits) Mark */
+/* Detector to check if a class has (inherits) Mark or OptionalMark */
 
 template<typename T>
 using hasMarkT = std::is_base_of<Mark, T>;
 
 template<typename T>
-constexpr bool hasMark()
-{
-	return hasMarkT<T>::value;
-}
-
-/* Detector to check if a class has (inherits) OptionalMark */
+using hasOptionalMarkT = std::is_base_of<OptionalMark<T>, T>;
 
 template<typename T>
-using hasOptionalMarkT = std::is_base_of<OptionalMark<T>, T>;
+constexpr bool hasMark()
+{
+	return hasMarkT<T>::value || hasOptionalMarkT<T>::value;
+}
 
 template<typename T>
 bool constexpr hasOptionalMark()
 {
 	return hasOptionalMarkT<T>::value;
+}
+
+template <typename T>
+bool isMarkEnabled(const T& element)
+{
+	if constexpr (hasOptionalMark<T>()) {
+		return element.isMarkEnabled();
+	}
+	else {
+		return hasMark<T>();
+	}
 }
 
 } // namespace vcl::comp

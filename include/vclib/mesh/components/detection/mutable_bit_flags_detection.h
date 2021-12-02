@@ -31,26 +31,35 @@ class MutableBitFlags;
 template<typename T>
 class OptionalMutableBitFlags;
 
-/* Detector to check if a class has (inherits) MutableBitFlags */
+/* Detector to check if a class has (inherits) MutableBitFlags or OptionalMutableBitFlags*/
 
 template<typename T>
 using hasMutableBitFlagsT = std::is_base_of<MutableBitFlags, T>;
 
 template<typename T>
-bool constexpr hasMutableBitFlags()
-{
-	return hasMutableBitFlagsT<T>::value;
-}
-
-/* Detector to check if a class has (inherits) OptionalMutableBitFlags */
+using hasOptionalMutableBitFlagsT = std::is_base_of<OptionalMutableBitFlags<T>, T>;
 
 template<typename T>
-using hasOptionalMutableBitFlagsT = std::is_base_of<OptionalMutableBitFlags<T>, T>;
+bool constexpr hasMutableBitFlags()
+{
+	return hasMutableBitFlagsT<T>::value || hasOptionalMutableBitFlagsT<T>::value;
+}
 
 template<typename T>
 bool constexpr hasOptionalMutableBitFlags()
 {
 	return hasOptionalMutableBitFlagsT<T>::value;
+}
+
+template <typename T>
+bool isMutableBitFlagsEnabled(const T& element)
+{
+	if constexpr(hasOptionalMutableBitFlags<T>()) {
+		return element.isMutableBitFlagsEnabled();
+	}
+	else {
+		return hasMutableBitFlags<T>();
+	}
 }
 
 } // namespace vcl::comp

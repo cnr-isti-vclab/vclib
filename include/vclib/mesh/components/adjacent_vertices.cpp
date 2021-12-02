@@ -118,6 +118,15 @@ int AdjacentVertices<Vertex, N>::indexOfAdjVertex(const Vertex* v) const
 	return Base::indexOf(v);
 }
 
+template<typename Vertex, int N>
+template<typename Element>
+void AdjacentVertices<Vertex, N>::importFrom(const Element&)
+{
+	if constexpr (hasAdjacentVertices<Element>()) {
+		// todo
+	}
+}
+
 /**
  * @brief Resize the container of the adjacent vertices to the given size.
  * @note This function is available only if the container of the Adjacent Vertices is has dynamic

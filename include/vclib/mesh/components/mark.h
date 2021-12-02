@@ -74,6 +74,9 @@ public:
 	void incrementMark();
 	void decrementMark();
 
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	int m = 0;
 };

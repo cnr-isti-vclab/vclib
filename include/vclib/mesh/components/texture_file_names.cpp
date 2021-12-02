@@ -53,4 +53,12 @@ void TextureFileNames::pushTexture(const std::string& textName)
 	textureNames.push_back(textName);
 }
 
+template<typename Element>
+void TextureFileNames::importFrom(const Element& e)
+{
+	if constexpr (hasTextureFileNames<Element>()) {
+		textureNames = e.TextureFileNames::textureNames;
+	}
+}
+
 } // namespace vcl::comp

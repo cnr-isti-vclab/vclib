@@ -74,7 +74,7 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 		if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
 			using T = typename F::OptionalAdjacentEdges;
 
-			if (T::adjEdgesEnabled())
+			if (T::isAdjEdgesEnabled())
 				T::resizeAdjEdges(list.size());
 		}
 
@@ -89,7 +89,7 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 		if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 			using T = typename F::OptionalAdjacentFaces;
 
-			if (T::adjFacesEnabled())
+			if (T::isAdjFacesEnabled())
 				T::resizeAdjFaces(list.size());
 		}
 
@@ -104,7 +104,7 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 		if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
 			using T = typename F::OptionalWedgeColors;
 
-			if (T::wedgeColorsEnabled())
+			if (T::isWedgeColorsEnabled())
 				T::resizeWedgeColors(list.size());
 		}
 
@@ -119,7 +119,7 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 		if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 			using T = typename F::OptionalWedgeTexCoords;
 
-			if (T::wedgeTexCoordsEnabled())
+			if (T::isWedgeTexCoordsEnabled())
 				T::resizeWedgeTexCoords(list.size());
 		}
 	}
@@ -173,7 +173,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(uint n)
 	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
 		using T = typename F::OptionalAdjacentEdges;
 
-		if (T::adjEdgesEnabled())
+		if (T::isAdjEdgesEnabled())
 			T::resizeAdjEdges(n);
 	}
 
@@ -188,7 +188,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(uint n)
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
 
-		if (T::adjFacesEnabled())
+		if (T::isAdjFacesEnabled())
 			T::resizeAdjFaces(n);
 	}
 
@@ -203,7 +203,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(uint n)
 	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
 		using T = typename F::OptionalWedgeColors;
 
-		if (T::wedgeColorsEnabled())
+		if (T::isWedgeColorsEnabled())
 			T::resizeWedgeColors(n);
 	}
 
@@ -218,7 +218,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(uint n)
 	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 		using T = typename F::OptionalWedgeTexCoords;
 
-		if (T::wedgeTexCoordsEnabled())
+		if (T::isWedgeTexCoordsEnabled())
 			T::resizeWedgeTexCoords(n);
 	}
 }
@@ -251,7 +251,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
 	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
 		using T = typename F::OptionalAdjacentEdges;
 
-		if (T::adjEdgesEnabled())
+		if (T::isAdjEdgesEnabled())
 			T::pushAdjEdge(nullptr);
 	}
 
@@ -266,7 +266,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
 
-		if (T::adjFacesEnabled())
+		if (T::isAdjFacesEnabled())
 			T::pushAdjFace(nullptr);
 	}
 
@@ -281,7 +281,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
 	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
 		using T = typename F::OptionalWedgeColors;
 
-		if (T::wedgeColorsEnabled())
+		if (T::isWedgeColorsEnabled())
 			T::pushWedgeColors(Color());
 	}
 
@@ -298,7 +298,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
 		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::OptionalWedgeTexCoords;
 
-		if (T::wedgeTexCoordsEnabled())
+		if (T::isWedgeTexCoordsEnabled())
 			T::pushWedgeTexCoords(TexCoord<S>());
 	}
 }
@@ -331,7 +331,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(uint i, VertexType* v)
 	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
 		using T = typename F::OptionalAdjacentEdges;
 
-		if (T::adjEdgesEnabled())
+		if (T::isAdjEdgesEnabled())
 			T::insertAdjEdge(i, nullptr);
 	}
 
@@ -346,7 +346,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(uint i, VertexType* v)
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
 
-		if (T::adjFacesEnabled())
+		if (T::isAdjFacesEnabled())
 			T::insertAdjFace(i, nullptr);
 	}
 
@@ -361,7 +361,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(uint i, VertexType* v)
 	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
 		using T = typename F::OptionalWedgeColors;
 
-		if (T::wedgeColorsEnabled())
+		if (T::isWedgeColorsEnabled())
 			T::insertWedgeColor(i, Color());
 	}
 
@@ -378,7 +378,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(uint i, VertexType* v)
 		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::OptionalWedgeTexCoords;
 
-		if (T::wedgeTexCoordsEnabled())
+		if (T::isWedgeTexCoordsEnabled())
 			T::insertWedgeTexCoord(i, TexCoord<S>());
 	}
 }
@@ -411,7 +411,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
 	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
 		using T = typename F::OptionalAdjacentEdges;
 
-		if (T::adjEdgesEnabled())
+		if (T::isAdjEdgesEnabled())
 			T::eraseAdjEdge(i);
 	}
 
@@ -426,7 +426,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
 
-		if (T::adjFacesEnabled())
+		if (T::isAdjFacesEnabled())
 			T::eraseAdjFace(i);
 	}
 
@@ -441,7 +441,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
 	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
 		using T = typename F::OptionalWedgeColors;
 
-		if (T::wedgeColorsEnabled())
+		if (T::isWedgeColorsEnabled())
 			T::eraseWedgeColor(i);
 	}
 
@@ -456,7 +456,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
 	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 		using T = typename F::OptionalWedgeTexCoords;
 
-		if (T::wedgeTexCoordsEnabled())
+		if (T::isWedgeTexCoordsEnabled())
 			T::eraseWedgeTexCoord(i);
 	}
 }
@@ -489,7 +489,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::clearVertices()
 	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
 		using T = typename F::OptionalAdjacentEdges;
 
-		if (T::adjEdgesEnabled())
+		if (T::isAdjEdgesEnabled())
 			T::clearAdjEdges();
 	}
 
@@ -504,7 +504,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::clearVertices()
 	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
 		using T = typename F::OptionalAdjacentFaces;
 
-		if (T::adjFacesEnabled())
+		if (T::isAdjFacesEnabled())
 			T::clearAdjFaces();
 	}
 
@@ -519,7 +519,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::clearVertices()
 	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
 		using T = typename F::OptionalWedgeColors;
 
-		if (T::wedgeColorsEnabled())
+		if (T::isWedgeColorsEnabled())
 			T::clearWedgeColor();
 	}
 
@@ -534,7 +534,7 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::clearVertices()
 	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
 		using T = typename F::OptionalWedgeTexCoords;
 
-		if (T::wedgeTexCoordsEnabled())
+		if (T::isWedgeTexCoordsEnabled())
 			T::clearWedgeTexCoord();
 	}
 }
