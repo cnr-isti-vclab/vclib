@@ -20,40 +20,65 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
-
-#include "optional_info.h"
-#include "../components/detection/scalar_detection.h"
+#include "optional_mark.h"
 
 namespace vcl::comp {
 
-template<typename S, typename T>
-class OptionalScalar : public OptionalScalarTrigger, public virtual OptionalInfo<T>
+template<typename T>
+int OptionalMark<T>::mark() const
 {
-private:
-	using B = OptionalInfo<T>;
-	uint thisId() const { return B::index((T*)this); }
+	return B::optCont().mark(thisId());
+}
 
-public:
-	using ScalarType = S;
-	const ScalarType& scalar() const;
-	ScalarType&       scalar();
+template<typename T>
+void OptionalMark<T>::resetMark()
+{
+	return B::optCont().mark(thisId()) = 0;
+}
 
-	bool isScalarEnabled() const;
+template<typename T>
+template<typename E>
+bool OptionalMark<T>::hasSameMark(const E& e) const
+{
+	if constexpr (std::is_pointer<E>::value) {
+		if (e == nullptr) return false;
+		return e->mark() == B::optCont().mark(thisId());
+	}
+	else {
+		return e.mark() == B::optCont().mark(thisId());
+	}
+}
 
-	template <typename Element>
-	void importFrom(const Element& e);
-};
+template<typename T>
+void OptionalMark<T>::incrementMark()
+{
+	B::optCont().mark(thisId())++;
+}
 
-template <typename T>
-using OptionalScalarf = OptionalScalar<float, T>;
+template<typename T>
+void OptionalMark<T>::decrementMark()
+{
+	B::optCont().mark(thisId())--;
+}
 
-template <typename T>
-using OptionalScalard = OptionalScalar<double, T>;
+template<typename T>
+bool OptionalMark<T>::isMarkEnabled() const
+{
+	if (B::contPtr != nullptr)
+		return B::optCont().isMarkEnabled();
+	else
+		return false;
+}
+
+template<typename T>
+template<typename Element>
+void OptionalMark<T>::importFrom(const Element& e)
+{
+	if constexpr (hasMark<Element>()) {
+		if (isMarkEnabled() && isMarkEnabled(e)) {
+			B::optCont().mark(thisId()) = e.mark();
+		}
+	}
+}
 
 } // namespace vcl::comp
-
-#include "optional_scalar.cpp"
-
-#endif //  VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H

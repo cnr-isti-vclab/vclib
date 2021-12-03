@@ -35,17 +35,22 @@ class OptionalTexCoord : public OptionalTexCoordTriggerer, public virtual Option
 {
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
 public:
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
-	const TexCoordType& texCoord() const { return B::optCont().texCoord(thisId()); }
-	TexCoordType&       texCoord() { return B::optCont().texCoord(thisId()); }
+	const TexCoordType& texCoord() const;
+	TexCoordType&       texCoord();
 
-private:
-	uint thisId() const { return B::index((T*)this); }
+	bool isTexCoordEnabled() const;
+
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 } // namespace vcl::comp
+
+#include "optional_tex_coord.cpp"
 
 #endif // VCL_MESH_COMPONENTS_OPTIONAL_TEX_COORD_H

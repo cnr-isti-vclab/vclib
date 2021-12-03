@@ -139,7 +139,19 @@ int OptionalAdjacentEdges<Edge, N, T>::indexOfAdjEdge(const Edge* e) const
 template<typename Edge, int N, typename T>
 bool OptionalAdjacentEdges<Edge, N, T>::isAdjEdgesEnabled() const
 {
-	return B::optCont().isAdjacentEdgesEnabled();
+	if (B::contPtr != nullptr)
+		return B::optCont().isAdjacentEdgesEnabled();
+	else
+		return false;
+}
+
+template<typename Edge, int N, typename T>
+template<typename Element>
+void OptionalAdjacentEdges<Edge, N, T>::importFrom(const Element& e)
+{
+	if constexpr (hasAdjacentEdges<Element>()) {
+		// todo
+	}
 }
 
 template<typename Edge, int N, typename T>

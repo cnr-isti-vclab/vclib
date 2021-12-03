@@ -115,6 +115,24 @@ int OptionalAdjacentVertices<Vertex, T>::indexOfAdjVertex(const Vertex* v) const
 }
 
 template<typename Vertex, typename T>
+bool OptionalAdjacentVertices<Vertex, T>::isAdjVerticesEnabled() const
+{
+	if (B::contPtr != nullptr)
+		return B::optCont().isAdjacentVerticesEnabled();
+	else
+		return false;
+}
+
+template<typename Vertex, typename T>
+template<typename Element>
+void OptionalAdjacentVertices<Vertex, T>::importFrom(const Element&)
+{
+	if constexpr (hasAdjacentVertices<Element>()) {
+		// todo
+	}
+}
+
+template<typename Vertex, typename T>
 void OptionalAdjacentVertices<Vertex, T>::resizeAdjVertices(uint n)
 {
 	B::optCont().adjVerts(thisId()).resize(n);

@@ -50,6 +50,7 @@ class OptionalWedgeTexCoords :
 
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
 	// if we use the vector, the size of the array will be 0
 	// actually the array will never be used and will not use memory, it's just for declaration
@@ -101,6 +102,9 @@ public:
 
 	bool isWedgeTexCoordsEnabled() const;
 
+	template <typename Element>
+	void importFrom(const Element& e);
+
 	/** Iterator Member functions **/
 
 	WedgeTexCoordsIterator           wedgeTexCoordBegin();
@@ -132,8 +136,6 @@ protected:
 	VCL_ENABLE_IF(M < 0, void) clearWedgeTexCoord();
 
 private:
-	uint thisId() const { return B::index((T*)this); }
-
 	uint wedgeTexCoordsNumber() const;
 };
 

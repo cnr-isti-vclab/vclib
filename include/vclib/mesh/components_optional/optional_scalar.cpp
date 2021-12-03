@@ -20,40 +20,40 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
-
-#include "optional_info.h"
-#include "../components/detection/scalar_detection.h"
+#include "optional_scalar.h"
 
 namespace vcl::comp {
 
 template<typename S, typename T>
-class OptionalScalar : public OptionalScalarTrigger, public virtual OptionalInfo<T>
+const typename OptionalScalar<S, T>::ScalarType& OptionalScalar<S, T>::scalar() const
 {
-private:
-	using B = OptionalInfo<T>;
-	uint thisId() const { return B::index((T*)this); }
+	return B::optCont().scalar(thisId());
+}
 
-public:
-	using ScalarType = S;
-	const ScalarType& scalar() const;
-	ScalarType&       scalar();
+template<typename S, typename T>
+typename OptionalScalar<S, T>::ScalarType& OptionalScalar<S, T>::scalar()
+{
+	return B::optCont().scalar(thisId());
+}
 
-	bool isScalarEnabled() const;
+template<typename S, typename T>
+bool OptionalScalar<S, T>::isScalarEnabled() const
+{
+	if (B::contPtr != nullptr)
+		return B::optCont().isScalarEnabled();
+	else
+		return false;
+}
 
-	template <typename Element>
-	void importFrom(const Element& e);
-};
-
-template <typename T>
-using OptionalScalarf = OptionalScalar<float, T>;
-
-template <typename T>
-using OptionalScalard = OptionalScalar<double, T>;
+template<typename S, typename T>
+template<typename Element>
+void OptionalScalar<S, T>::importFrom(const Element& e)
+{
+	if constexpr (hasScalar<Element>()) {
+		if (isScalarEnabled() && isScalarEnabled(e)) {
+			scalar() = e.scalar();
+		}
+	}
+}
 
 } // namespace vcl::comp
-
-#include "optional_scalar.cpp"
-
-#endif //  VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H

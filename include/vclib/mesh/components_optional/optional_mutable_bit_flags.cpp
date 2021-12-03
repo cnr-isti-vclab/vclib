@@ -114,6 +114,26 @@ void OptionalMutableBitFlags<T>::clearUserBitM(uint bit) const
 	clearUserBitM(bit, FIRST_MUTABLE_USER_BIT);
 }
 
+template<typename T>
+bool OptionalMutableBitFlags<T>::isMutableBitFlagsEnabled() const
+{
+	if (B::contPtr != nullptr)
+		return B::optCont().isMutableBitFlagsEnabled();
+	else
+		return false;
+}
+
+template<typename T>
+template<typename Element>
+void OptionalMutableBitFlags<T>::importFrom(const Element& e)
+{
+	if constexpr (hasMutableBitFlags<Element>()) {
+		if (isMutableBitFlagsEnabled() && isMutableBitFlagsEnabled(e)) {
+			// todo
+		}
+	}
+}
+
 /**
  * @brief OptionalMutableBitFlags::flagValueM  returns the value of the given flag (value of the
  * enum).

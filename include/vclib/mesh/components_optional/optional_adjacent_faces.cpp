@@ -139,7 +139,19 @@ int OptionalAdjacentFaces<Face, N, T>::indexOfAdjFace(const Face* f) const
 template<typename Face, int N, typename T>
 bool OptionalAdjacentFaces<Face, N, T>::isAdjFacesEnabled() const
 {
-	return B::optCont().isAdjacentFacesEnabled();
+	if (B::contPtr != nullptr)
+		return B::optCont().isAdjacentFacesEnabled();
+	else
+		return false;
+}
+
+template<typename Face, int N, typename T>
+template<typename Element>
+void OptionalAdjacentFaces<Face, N, T>::importFrom(const Element& e)
+{
+	if constexpr (hasAdjacentFaces<Element>()) {
+		// todo
+	}
 }
 
 template<typename Face, int N, typename T>

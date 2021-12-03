@@ -20,40 +20,37 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
-
-#include "optional_info.h"
-#include "../components/detection/scalar_detection.h"
+#include "custom_components.h"
 
 namespace vcl::comp {
 
-template<typename S, typename T>
-class OptionalScalar : public OptionalScalarTrigger, public virtual OptionalInfo<T>
+template<typename T>
+bool CustomComponents<T>::hasCustomComponent(const std::string& attrName) const
 {
-private:
-	using B = OptionalInfo<T>;
-	uint thisId() const { return B::index((T*)this); }
+	return B::optCont().componentExists(attrName);
+}
 
-public:
-	using ScalarType = S;
-	const ScalarType& scalar() const;
-	ScalarType&       scalar();
+template<typename T>
+template<typename AttrType>
+const AttrType& CustomComponents<T>::customComponent(const std::string& attrName) const
+{
+	return std::any_cast<const AttrType&>(
+		B::optCont().template componentVector<AttrType>(attrName)[thisId()]);
+}
 
-	bool isScalarEnabled() const;
+template<typename T>
+template<typename AttrType>
+AttrType& CustomComponents<T>::customComponent(const std::string& attrName)
+{
+	return std::any_cast<AttrType&>(
+		B::optCont().template componentVector<AttrType>(attrName)[thisId()]);
+}
 
-	template <typename Element>
-	void importFrom(const Element& e);
-};
-
-template <typename T>
-using OptionalScalarf = OptionalScalar<float, T>;
-
-template <typename T>
-using OptionalScalard = OptionalScalar<double, T>;
+template<typename T>
+template<typename Element>
+void CustomComponents<T>::importFrom(const Element&)
+{
+	// todo
+}
 
 } // namespace vcl::comp
-
-#include "optional_scalar.cpp"
-
-#endif //  VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H

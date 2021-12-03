@@ -38,6 +38,7 @@ class OptionalPrincipalCurvature :
 {
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
 public:
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
@@ -47,8 +48,10 @@ public:
 	const PrincipalCurvatureType& principalCurvature() const;
 	PrincipalCurvatureType&       principalCurvature();
 
-private:
-	uint thisId() const;
+	bool isPrincipalCurvatureEnabled() const;
+
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 template<typename T>

@@ -43,31 +43,23 @@ class CustomComponents : public virtual OptionalInfo<T>
 {
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
 public:
-	bool hasCustomComponent(const std::string& attrName) const
-	{
-		return B::optCont().componentExists(attrName);
-	}
+	bool hasCustomComponent(const std::string& attrName) const;
 
 	template<typename AttrType>
-	const AttrType& customComponent(const std::string& attrName) const
-	{
-		return std::any_cast<const AttrType&>(
-			B::optCont().template componentVector<AttrType>(attrName)[thisId()]);
-	}
+	const AttrType& customComponent(const std::string& attrName) const;
 
 	template<typename AttrType>
-	AttrType& customComponent(const std::string& attrName)
-	{
-		return std::any_cast<AttrType&>(
-			B::optCont().template componentVector<AttrType>(attrName)[thisId()]);
-	}
+	AttrType& customComponent(const std::string& attrName);
 
-private:
-	uint thisId() const { return B::index((T*)this); }
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 } // namespace vcl::comp
+
+#include "custom_components.cpp"
 
 #endif // VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H

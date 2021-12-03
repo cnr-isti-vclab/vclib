@@ -35,14 +35,18 @@ class OptionalNormal : public OptionalNormalTriggerer, public virtual OptionalIn
 {
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
 public:
 	using NormalType = Point<Scalar, N>;
-	const NormalType&        normal() const { return B::optCont().normal(thisId()); }
-	NormalType&              normal() { return B::optCont().normal(thisId()); }
 
-private:
-	uint thisId() const { return B::index((T*)this); }
+	const NormalType&        normal() const;
+	NormalType&              normal();
+
+	bool isNormalEnabled() const;
+
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 template<typename Scalar, typename T>
@@ -62,5 +66,7 @@ template<typename T>
 using OptionalNormal3d = OptionalNormal3<double, T>;
 
 } // namespace vcl::comp
+
+#include "optional_normal.cpp"
 
 #endif // VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H

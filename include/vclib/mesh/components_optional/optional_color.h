@@ -35,16 +35,21 @@ class OptionalColor : public virtual OptionalInfo<T>
 {
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
 public:
 	using ColorType = vcl::Color;
-	const vcl::Color&  color() const { return B::optCont().color(thisId()); }
-	vcl::Color&        color() { return B::optCont().color(thisId()); }
+	const vcl::Color&  color() const;
+	vcl::Color&        color();
 
-private:
-	uint thisId() const { return B::index((T*)this); }
+	bool isColorEnabled() const;
+
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 } // namespace vcl::comp
+
+#include "optional_color.cpp"
 
 #endif // VCL_MESH_COMPONENTS_OPTIONAL_COLOR_H

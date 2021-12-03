@@ -44,9 +44,23 @@ OptionalPrincipalCurvature<Scalar, T>::principalCurvature()
 }
 
 template<typename Scalar, typename T>
-uint OptionalPrincipalCurvature<Scalar, T>::thisId() const
+bool OptionalPrincipalCurvature<Scalar, T>::isPrincipalCurvatureEnabled() const
 {
-	return B::index((T*)this);
+	if (B::contPtr != nullptr)
+		return B::optCont().isPrincipalCurvatureEnabled();
+	else
+		return false;
+}
+
+template<typename Scalar, typename T>
+template<typename Element>
+void OptionalPrincipalCurvature<Scalar, T>::importFrom(const Element& e)
+{
+	if constexpr (hasPrincipalCurvature<Element>()) {
+		if (isPrincipalCurvatureEnabled() && isPrincipalCurvatureEnabled(e)) {
+			principalCurvature() = e.principalCurvature();
+		}
+	}
 }
 
 } // namespace vcl::comp

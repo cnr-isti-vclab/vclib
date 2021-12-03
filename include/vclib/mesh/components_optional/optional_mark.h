@@ -36,25 +36,23 @@ private:
 	uint thisId() const { return B::index((T*) this); }
 
 public:
-	OptionalMark() {}
-	int  mark() const { return B::optCont().mark(thisId()); }
-	void resetMark() { return B::optCont().mark(thisId()) = 0; }
+	int  mark() const;
+	void resetMark();
 
 	template<typename E>
-	bool hasSameMark(const E& e) const
-	{
-		if constexpr (std::is_pointer<E>::value) {
-			return e->mark() == B::optCont().mark(thisId());
-		}
-		else {
-			return e.mark() == B::optCont().mark(thisId());
-		}
-	}
+	bool hasSameMark(const E& e) const;
 
-	void incrementMark() { B::optCont().mark(thisId())++; }
-	void decrementMark() { B::optCont().mark(thisId())--; }
+	void incrementMark();
+	void decrementMark();
+
+	bool isMarkEnabled() const;
+
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 } // namespace vcl::comp
+
+#include "optional_mark.cpp"
 
 #endif // VCL_MESH_COMPONENTS_OPTIONAL_MARK_H

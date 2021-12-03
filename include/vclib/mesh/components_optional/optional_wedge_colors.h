@@ -50,6 +50,7 @@ class OptionalWedgeColors :
 
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*) this); }
 
 	// if we use the vector, the size of the array will be 0
 	// actually the array will never be used and will not use memory, it's just for declaration
@@ -98,6 +99,9 @@ public:
 
 	bool isWedgeColorsEnabled() const;
 
+	template <typename Element>
+	void importFrom(const Element& e);
+
 	/* Iterator Member functions */
 
 	WedgeColorsIterator           wedgeColorBegin();
@@ -125,7 +129,6 @@ protected:
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearWedgeColor();
 private:
-	uint thisId() const { return B::index((T*) this); }
 
 	uint wedgeColorsNumber() const;
 };

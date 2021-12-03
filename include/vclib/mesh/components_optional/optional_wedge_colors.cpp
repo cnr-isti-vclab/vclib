@@ -87,6 +87,15 @@ bool OptionalWedgeColors<N, T>::isWedgeColorsEnabled() const
 }
 
 template<int N, typename T>
+template<typename Element>
+void OptionalWedgeColors<N, T>::importFrom(const Element& e)
+{
+	if constexpr (hasWedgeColors<Element>()) {
+		// todo
+	}
+}
+
+template<int N, typename T>
 typename OptionalWedgeColors<N, T>::WedgeColorsIterator OptionalWedgeColors<N, T>::wedgeColorBegin()
 {
 	return B::optCont().wedgeColors(thisId()).begin();

@@ -46,6 +46,7 @@ class OptionalAdjacentEdges : public OptionalAdjacentEdgesTriggerer, public virt
 
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
 	// if we use the vector, the size of the array will be 0
 	// actually the array will never be used and will not use memory, it's just for declaration
@@ -102,6 +103,9 @@ public:
 
 	bool isAdjEdgesEnabled() const;
 
+	template <typename Element>
+	void importFrom(const Element& e);
+
 	/* Member functions specific for vector */
 
 	template<int M = N>
@@ -132,9 +136,6 @@ protected:
 	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);
 
 	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
-
-private:
-	uint thisId() const { return B::index((T*)this); }
 };
 
 } // namespace vcl::comp

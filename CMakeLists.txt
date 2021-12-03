@@ -75,6 +75,25 @@ set(HEADERS
 	include/vclib/mesh/components/triangle_bit_flags.h
 	include/vclib/mesh/components/wedge_colors.h
 	include/vclib/mesh/components/wedge_tex_coords.h
+	include/vclib/mesh/components/detection/adjacent_edges_detection.h
+	include/vclib/mesh/components/detection/adjacent_faces_detection.h
+	include/vclib/mesh/components/detection/adjacent_vertices_detection.h
+	include/vclib/mesh/components/detection/bit_flags_detection.h
+	include/vclib/mesh/components/detection/bounding_box_detection.h
+	include/vclib/mesh/components/detection/color_detection.h
+	include/vclib/mesh/components/detection/coordinate_detection.h
+	include/vclib/mesh/components/detection/custom_components_detection.h
+	include/vclib/mesh/components/detection/mark_detection.h
+	include/vclib/mesh/components/detection/mutable_bit_flags_detection.h
+	include/vclib/mesh/components/detection/normal_detection.h
+	include/vclib/mesh/components/detection/principal_curvature_detection.h
+	include/vclib/mesh/components/detection/scalar_detection.h
+	include/vclib/mesh/components/detection/tex_coord_detection.h
+	include/vclib/mesh/components/detection/tex_file_names_detection.h
+	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
+	include/vclib/mesh/components/detection/vertex_references_detection.h
+	include/vclib/mesh/components/detection/wedge_colors_detection.h
+	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
 	include/vclib/mesh/components/internal/element_references.h
 	include/vclib/mesh/components/internal/generic_container.h
 	include/vclib/mesh/components_optional/custom_components.h
@@ -182,32 +201,19 @@ set(SOURCES
 	include/vclib/mesh/components/vertex_references.cpp
 	include/vclib/mesh/components/wedge_colors.cpp
 	include/vclib/mesh/components/wedge_tex_coords.cpp
-	include/vclib/mesh/components/detection/adjacent_edges_detection.h
-	include/vclib/mesh/components/detection/adjacent_faces_detection.h
-	include/vclib/mesh/components/detection/adjacent_vertices_detection.h
-	include/vclib/mesh/components/detection/bit_flags_detection.h
-	include/vclib/mesh/components/detection/bounding_box_detection.h
-	include/vclib/mesh/components/detection/color_detection.h
-	include/vclib/mesh/components/detection/coordinate_detection.h
-	include/vclib/mesh/components/detection/custom_components_detection.h
-	include/vclib/mesh/components/detection/mark_detection.h
-	include/vclib/mesh/components/detection/mutable_bit_flags_detection.h
-	include/vclib/mesh/components/detection/normal_detection.h
-	include/vclib/mesh/components/detection/principal_curvature_detection.h
-	include/vclib/mesh/components/detection/scalar_detection.h
-	include/vclib/mesh/components/detection/tex_coord_detection.h
-	include/vclib/mesh/components/detection/tex_file_names_detection.h
-	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
-	include/vclib/mesh/components/detection/vertex_references_detection.h
-	include/vclib/mesh/components/detection/wedge_colors_detection.h
-	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
 	include/vclib/mesh/components/internal/element_references.cpp
 	include/vclib/mesh/components/internal/generic_container.cpp
+	include/vclib/mesh/components_optional/custom_components.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_edges.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_faces.cpp
 	include/vclib/mesh/components_optional/optional_adjacent_vertices.cpp
+	include/vclib/mesh/components_optional/optional_color.cpp
+	include/vclib/mesh/components_optional/optional_mark.cpp
 	include/vclib/mesh/components_optional/optional_mutable_bit_flags.cpp
+	include/vclib/mesh/components_optional/optional_normal.cpp
 	include/vclib/mesh/components_optional/optional_principal_curvature.cpp
+	include/vclib/mesh/components_optional/optional_scalar.cpp
+	include/vclib/mesh/components_optional/optional_tex_coord.cpp
 	include/vclib/mesh/components_optional/optional_wedge_colors.cpp
 	include/vclib/mesh/components_optional/optional_wedge_tex_coords.cpp
 	include/vclib/mesh/components_vector/custom_components_vector.cpp

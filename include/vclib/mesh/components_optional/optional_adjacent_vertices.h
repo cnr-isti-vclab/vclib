@@ -48,6 +48,7 @@ class OptionalAdjacentVertices :
 
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
 public:
 	// the AdjVertsContainer type will be array or vector, depending on N value
@@ -86,6 +87,11 @@ public:
 
 	int indexOfAdjVertex(const Vertex* v) const;
 
+	bool isAdjVerticesEnabled() const;
+
+	template <typename Element>
+	void importFrom(const Element& e);
+
 	/* Member functions specific for vector */
 
 	void resizeAdjVertices(uint n);
@@ -107,9 +113,6 @@ protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
-
-private:
-	uint thisId() const { return B::index((T*)this); }
 };
 
 } // namespace vcl::comp

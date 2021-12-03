@@ -60,6 +60,7 @@ class OptionalMutableBitFlags : public virtual OptionalInfo<T>
 {
 private:
 	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
 public:
 	bool isVisitedM() const;
@@ -71,6 +72,11 @@ public:
 	void clearAllFlagsM() const;
 	void clearVisitedM() const;
 	void clearUserBitM(uint bit) const;
+
+	bool isMutableBitFlagsEnabled() const;
+
+	template <typename Element>
+	void importFrom(const Element& e);
 
 protected:
 	bool flagValueM(uint flag) const;
@@ -84,9 +90,6 @@ protected:
 	static const uint FIRST_MUTABLE_USER_BIT = 1;
 
 	enum { VISITED = 1 << 0 };
-
-private:
-	uint thisId() const { return B::index((T*)this); }
 };
 
 } // namespace vcl::comp
