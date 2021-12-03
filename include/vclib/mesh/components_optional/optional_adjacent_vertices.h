@@ -38,7 +38,7 @@ class OptionalVertexReferencesVector;
 
 namespace vcl::comp {
 
-template<typename Vertex, int N, typename T>
+template<typename Vertex, typename T>
 class OptionalAdjacentVertices :
 		public OptionalAdjacentVerticesTriggerer,
 		public virtual OptionalInfo<T>
@@ -49,31 +49,15 @@ class OptionalAdjacentVertices :
 private:
 	using B = OptionalInfo<T>;
 
-	// if we use the vector, the size of the array will be 0
-	// actually the array will never be used and will not use memory, it's just for declaration
-	static const int ARRAY_SIZE = N >= 0 ? N : 0;
-
 public:
 	// the AdjVertsContainer type will be array or vector, depending on N value
-	using AdjVertsContainer = typename std::conditional<
-		(N >= 0),
-		typename std::array<Vertex*, ARRAY_SIZE>,
-		typename std::vector<Vertex*>>::type;
-
-	static const int ADJ_VERTEX_NUMBER = N;
+	using AdjVertsContainer = std::vector<Vertex*>;
 
 	/* Iterator Types declaration */
 
 	// if using array, will be the array iterator, the vector iterator otherwise
-	using AdjacentVertexIterator = typename std::conditional<
-		(N >= 0),
-		typename std::array<Vertex*, ARRAY_SIZE>::iterator,
-		typename std::vector<Vertex*>::iterator>::type;
-
-	using ConstAdjacentVertexIterator = typename std::conditional<
-		(N >= 0),
-		typename std::array<Vertex*, ARRAY_SIZE>::const_iterator,
-		typename std::vector<Vertex*>::const_iterator>::type;
+	using AdjacentVertexIterator = typename std::vector<Vertex*>::iterator;
+	using ConstAdjacentVertexIterator = typename std::vector<Vertex*>::const_iterator;
 
 	using AdjacentVertexRangeIterator = RangeIterator<OptionalAdjacentVertices, AdjacentVertexIterator>;
 	using ConstAdjacentVertexRangeIterator =
@@ -104,20 +88,11 @@ public:
 
 	/* Member functions specific for vector */
 
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(uint n);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushAdjVertex(Vertex* f);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(uint i, Vertex* f);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(uint i);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearAdjVertices();
+	void resizeAdjVertices(uint n);
+	void pushAdjVertex(Vertex* f);
+	void insertAdjVertex(uint i, Vertex* f);
+	void eraseAdjVertex(uint i);
+	void clearAdjVertices();
 
 	/* Iterator Member functions */
 

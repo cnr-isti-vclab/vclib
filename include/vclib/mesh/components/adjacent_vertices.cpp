@@ -29,8 +29,8 @@ namespace vcl::comp {
  * If the size of the container is static, all the values will be set to nullptr.
  * If the size is dynamic, the number of values in the container is zero.
  */
-template<typename Vertex, int N>
-AdjacentVertices<Vertex, N>::AdjacentVertices() : Base()
+template<typename Vertex>
+AdjacentVertices<Vertex>::AdjacentVertices() : Base()
 {
 }
 
@@ -38,8 +38,8 @@ AdjacentVertices<Vertex, N>::AdjacentVertices() : Base()
  * @brief Returns the number of adjacent vertices of the element.
  * @return The number of adjacent vertices of the element.
  */
-template<typename Vertex, int N>
-uint AdjacentVertices<Vertex, N>::adjVerticesNumber() const
+template<typename Vertex>
+uint AdjacentVertices<Vertex>::adjVerticesNumber() const
 {
 	return Base::size();
 }
@@ -56,71 +56,71 @@ uint AdjacentVertices<Vertex, N>::adjVerticesNumber() const
  * @param i: the position of the required adjacent list in the container.
  * @return The pointer i-th adjacent vertex of the element.
  */
-template<typename Vertex, int N>
-Vertex*& AdjacentVertices<Vertex, N>::adjVertex(uint i)
+template<typename Vertex>
+Vertex*& AdjacentVertices<Vertex>::adjVertex(uint i)
 {
 	return Base::at(i);
 }
 
-template<typename Vertex, int N>
-const Vertex* AdjacentVertices<Vertex, N>::adjVertex(uint i) const
+template<typename Vertex>
+const Vertex* AdjacentVertices<Vertex>::adjVertex(uint i) const
 {
 	return Base::at(i);
 }
 
-template<typename Vertex, int N>
-Vertex*& AdjacentVertices<Vertex, N>::adjVertexMod(int i)
+template<typename Vertex>
+Vertex*& AdjacentVertices<Vertex>::adjVertexMod(int i)
 {
 	return Base::atMod(i);
 }
 
-template<typename Vertex, int N>
-const Vertex* AdjacentVertices<Vertex, N>::adjVertexMod(int i) const
+template<typename Vertex>
+const Vertex* AdjacentVertices<Vertex>::adjVertexMod(int i) const
 {
 	return Base::atMod(i);
 }
 
-template<typename Vertex, int N>
-void AdjacentVertices<Vertex, N>::setAdjVertex(Vertex* v, uint i)
+template<typename Vertex>
+void AdjacentVertices<Vertex>::setAdjVertex(Vertex* v, uint i)
 {
 	Base::set(v, i);
 }
 
-template<typename Vertex, int N>
-void AdjacentVertices<Vertex, N>::setAdjVertices(const std::vector<Vertex*>& list)
+template<typename Vertex>
+void AdjacentVertices<Vertex>::setAdjVertices(const std::vector<Vertex*>& list)
 {
 	Base::set(list);
 }
 
-template<typename Vertex, int N>
-bool AdjacentVertices<Vertex, N>::containsAdjVertex(const Vertex* v) const
+template<typename Vertex>
+bool AdjacentVertices<Vertex>::containsAdjVertex(const Vertex* v) const
 {
 	return Base::contains(v);
 }
 
-template<typename Vertex, int N>
-typename AdjacentVertices<Vertex, N>::AdjacentVertexIterator
-AdjacentVertices<Vertex, N>::findAdjVertex(const Vertex* v)
+template<typename Vertex>
+typename AdjacentVertices<Vertex>::AdjacentVertexIterator
+AdjacentVertices<Vertex>::findAdjVertex(const Vertex* v)
 {
 	return Base::find(v);
 }
 
-template<typename Vertex, int N>
-typename AdjacentVertices<Vertex, N>::ConstAdjacentVertexIterator
-AdjacentVertices<Vertex, N>::findAdjVertex(const Vertex* v) const
+template<typename Vertex>
+typename AdjacentVertices<Vertex>::ConstAdjacentVertexIterator
+AdjacentVertices<Vertex>::findAdjVertex(const Vertex* v) const
 {
 	return Base::find(v);
 }
 
-template<typename Vertex, int N>
-int AdjacentVertices<Vertex, N>::indexOfAdjVertex(const Vertex* v) const
+template<typename Vertex>
+int AdjacentVertices<Vertex>::indexOfAdjVertex(const Vertex* v) const
 {
 	return Base::indexOf(v);
 }
 
-template<typename Vertex, int N>
+template<typename Vertex>
 template<typename Element>
-void AdjacentVertices<Vertex, N>::importFrom(const Element&)
+void AdjacentVertices<Vertex>::importFrom(const Element&)
 {
 	if constexpr (hasAdjacentVertices<Element>()) {
 		// todo
@@ -133,97 +133,88 @@ void AdjacentVertices<Vertex, N>::importFrom(const Element&)
  * size.
  * @param n
  */
-template<typename Vertex, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) AdjacentVertices<Vertex, N>::resizeAdjVertices(uint n)
+template<typename Vertex>
+void AdjacentVertices<Vertex>::resizeAdjVertices(uint n)
 {
 	Base::resize(n);
 }
 
-template<typename Vertex, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-AdjacentVertices<Vertex, N>::pushAdjVertex(Vertex* v)
+template<typename Vertex>
+void AdjacentVertices<Vertex>::pushAdjVertex(Vertex* v)
 {
 	Base::pushBack(v);
 }
 
-template<typename Vertex, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-AdjacentVertices<Vertex, N>::insertAdjVertex(uint i, Vertex* v)
+template<typename Vertex>
+void AdjacentVertices<Vertex>::insertAdjVertex(uint i, Vertex* v)
 {
 	Base::insert(i, v);
 }
 
-template<typename Vertex, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-AdjacentVertices<Vertex, N>::eraseAdjVertex(uint i)
+template<typename Vertex>
+void AdjacentVertices<Vertex>::eraseAdjVertex(uint i)
 {
 	Base::erase(i);
 }
 
-template<typename Vertex, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-AdjacentVertices<Vertex, N>::clearAdjVertices()
+template<typename Vertex>
+void AdjacentVertices<Vertex>::clearAdjVertices()
 {
 	Base::clear();
 }
 
-template<typename Vertex, int N>
-typename AdjacentVertices<Vertex, N>::AdjacentVertexIterator
-AdjacentVertices<Vertex, N>::adjVertexBegin()
+template<typename Vertex>
+typename AdjacentVertices<Vertex>::AdjacentVertexIterator
+AdjacentVertices<Vertex>::adjVertexBegin()
 {
 	return Base::begin();
 }
 
-template<typename Vertex, int N>
-typename AdjacentVertices<Vertex, N>::AdjacentVertexIterator
-AdjacentVertices<Vertex, N>::adjVertexEnd()
+template<typename Vertex>
+typename AdjacentVertices<Vertex>::AdjacentVertexIterator
+AdjacentVertices<Vertex>::adjVertexEnd()
 {
 	return Base::end();
 }
 
-template<typename Vertex, int N>
-typename AdjacentVertices<Vertex, N>::ConstAdjacentVertexIterator
-AdjacentVertices<Vertex, N>::adjVertexBegin() const
+template<typename Vertex>
+typename AdjacentVertices<Vertex>::ConstAdjacentVertexIterator
+AdjacentVertices<Vertex>::adjVertexBegin() const
 {
 	return Base::begin();
 }
 
-template<typename Vertex, int N>
-typename AdjacentVertices<Vertex, N>::ConstAdjacentVertexIterator
-AdjacentVertices<Vertex, N>::adjVertexEnd() const
+template<typename Vertex>
+typename AdjacentVertices<Vertex>::ConstAdjacentVertexIterator
+AdjacentVertices<Vertex>::adjVertexEnd() const
 {
 	return Base::end();
 }
 
-template<typename Vertex, int N>
-typename AdjacentVertices<Vertex, N>::AdjacentVertexRangeIterator
-AdjacentVertices<Vertex, N>::adjVertices()
+template<typename Vertex>
+typename AdjacentVertices<Vertex>::AdjacentVertexRangeIterator
+AdjacentVertices<Vertex>::adjVertices()
 {
 	return Base::rangeIterator();
 }
 
-template<typename Vertex, int N>
-typename AdjacentVertices<Vertex, N>::ConstAdjacentVertexRangeIterator
-AdjacentVertices<Vertex, N>::adjVertices() const
+template<typename Vertex>
+typename AdjacentVertices<Vertex>::ConstAdjacentVertexRangeIterator
+AdjacentVertices<Vertex>::adjVertices() const
 {
 	return Base::rangeIterator();
 }
 
-template<typename Vertex, int N>
-void AdjacentVertices<Vertex, N>::updateVertexReferences(
+template<typename Vertex>
+void AdjacentVertices<Vertex>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
 {
 	Base::updateElementReferences(oldBase, newBase);
 }
 
-template<typename Vertex, int N>
-void AdjacentVertices<Vertex, N>::updateVertexReferencesAfterCompact(
+template<typename Vertex>
+void AdjacentVertices<Vertex>::updateVertexReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {

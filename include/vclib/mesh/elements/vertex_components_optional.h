@@ -59,7 +59,7 @@ bool constexpr hasOptionalAdjacentFaces()
 
 /* Port OptionalAdjacentVertices class into vert namespace */
 template<typename VertexType>
-using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, -1, VertexType>;
+using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, VertexType>;
 
 template<typename VertexType>
 bool constexpr hasOptionalAdjacentVertices()

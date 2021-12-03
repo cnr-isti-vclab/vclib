@@ -33,8 +33,7 @@ namespace vcl::comp {
  * makes sense to use mostly on Vertex Elements. For Faces and Edges, see the VertexReferences
  * component (which is similar, but has different member function names).
  *
- * It is a random access container having static or dynamic size, depending on the value of N (a
- * negative number means dynamic).
+ * It is a random access container having dynamic size.
  *
  * The member functions of this class will be available in the instance of any Element that will
  * contain this component.
@@ -46,10 +45,10 @@ namespace vcl::comp {
  * v.adjVerticesNumber();
  * @endcode
  */
-template<typename Vertex, int N>
-class AdjacentVertices : protected internal::ElementReferences<Vertex, N>, public AdjacentVerticesTriggerer
+template<typename Vertex>
+class AdjacentVertices : protected internal::ElementReferences<Vertex, -1>, public AdjacentVerticesTriggerer
 {
-	using Base = internal::ElementReferences<Vertex, N>;
+	using Base = internal::ElementReferences<Vertex, -1>;
 
 public:
 	static const int ADJ_VERTEX_NUMBER = Base::CONTAINER_SIZE;
@@ -87,28 +86,11 @@ public:
 	template <typename Element>
 	void importFrom(const Element& e);
 
-	/* Member functions specific for vector */
-
-	/**
-	 * @brief Resize the container of the adjacent vertices to the given size.
-	 * @note This function is available only if the container of the Adjacent Vertices is has dynamic
-	 * size.
-	 * @param n
-	 */
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjVertices(uint n);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushAdjVertex(Vertex* v);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjVertex(uint i, Vertex* v);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjVertex(uint i);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearAdjVertices();
+	void resizeAdjVertices(uint n);
+	void pushAdjVertex(Vertex* v);
+	void insertAdjVertex(uint i, Vertex* v);
+	void eraseAdjVertex(uint i);
+	void clearAdjVertices();
 
 	/* Iterator Member functions */
 

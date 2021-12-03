@@ -26,108 +26,86 @@
 
 namespace vcl::comp {
 
-template<typename Vertex, int N, typename T>
-OptionalAdjacentVertices<Vertex, N, T>::OptionalAdjacentVertices()
+template<typename Vertex, typename T>
+OptionalAdjacentVertices<Vertex, T>::OptionalAdjacentVertices()
 {
-	if constexpr (N >= 0) {
-		// I'll use the array, N is >= 0.
-		// There will be a static number of references.
-		if (B::contPtr)
-			B::optCont().adjVerts(thisId()) = std::array<Vertex*, N> {nullptr};
-	}
-	else {
-		// I'll use the vector, because N is < 0.
-		// There will be a dynamic number of references.
-		if (B::contPtr)
-			B::optCont().adjVerts(thisId()) = std::vector<Vertex*>();
-	}
+	// I'll use the vector, because N is < 0.
+	// There will be a dynamic number of references.
+	if (B::contPtr)
+		B::optCont().adjVerts(thisId()) = std::vector<Vertex*>();
 }
 
-template<typename Vertex, int N, typename T>
-uint OptionalAdjacentVertices<Vertex, N, T>::adjVerticesNumber() const
+template<typename Vertex, typename T>
+uint OptionalAdjacentVertices<Vertex,T>::adjVerticesNumber() const
 {
-	if constexpr (N >= 0) {
-		return N;
-	}
-	else {
-		return B::optCont().adjVerts(thisId()).size();
-	}
+	return B::optCont().adjVerts(thisId()).size();
 }
 
-template<typename Vertex, int N, typename T>
-Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertex(uint i)
+template<typename Vertex, typename T>
+Vertex*& OptionalAdjacentVertices<Vertex, T>::adjVertex(uint i)
 {
 	assert(i < adjVerticesNumber());
 	return B::optCont().adjVerts(thisId())[i];
 }
 
-template<typename Vertex, int N, typename T>
-const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertex(uint i) const
+template<typename Vertex, typename T>
+const Vertex* OptionalAdjacentVertices<Vertex, T>::adjVertex(uint i) const
 {
 	assert(i < adjVerticesNumber());
 	return B::optCont().adjVerts(thisId())[i];
 }
 
-template<typename Vertex, int N, typename T>
-Vertex*& OptionalAdjacentVertices<Vertex, N, T>::adjVertexMod(int i)
+template<typename Vertex, typename T>
+Vertex*& OptionalAdjacentVertices<Vertex, T>::adjVertexMod(int i)
 {
 	uint n = adjVerticesNumber();
 	return B::optCont().adjVerts(thisId())[(i % n + n) % n];
 }
 
-template<typename Vertex, int N, typename T>
-const Vertex* OptionalAdjacentVertices<Vertex, N, T>::adjVertexMod(int i) const
+template<typename Vertex, typename T>
+const Vertex* OptionalAdjacentVertices<Vertex, T>::adjVertexMod(int i) const
 {
 	uint n = adjVerticesNumber();
 	return B::optCont().adjVerts(thisId())[(i % n + n) % n];
 }
 
-template<typename Vertex, int N, typename T>
-void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertex(Vertex* f, uint i)
+template<typename Vertex, typename T>
+void OptionalAdjacentVertices<Vertex, T>::setAdjVertex(Vertex* f, uint i)
 {
 	assert(i < adjVerticesNumber());
 	B::optCont().adjVerts(thisId())[i] = f;
 }
 
-template<typename Vertex, int N, typename T>
-void OptionalAdjacentVertices<Vertex, N, T>::setAdjVertices(const std::vector<Vertex*>& list)
+template<typename Vertex, typename T>
+void OptionalAdjacentVertices<Vertex, T>::setAdjVertices(const std::vector<Vertex*>& list)
 {
-	if constexpr (N >= 0) {
-		assert(list.size() == N);
-		uint i = 0;
-		for (const auto& f : list) {
-			setVertex(f, i);
-			++i;
-		}
-	}
-	else {
-		B::optCont().adjVerts(thisId()) = list;
-	}
+
+	B::optCont().adjVerts(thisId()) = list;
 }
 
-template<typename Vertex, int N, typename T>
-bool OptionalAdjacentVertices<Vertex, N, T>::containsAdjVertex(const Vertex* v) const
+template<typename Vertex, typename T>
+bool OptionalAdjacentVertices<Vertex, T>::containsAdjVertex(const Vertex* v) const
 {
 	return std::find(B::optCont().adjVerts.begin(), B::optCont().adjVerts.end(), v) !=
 		   B::optCont().adjVerts.end();
 }
 
-template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::AdjacentVertexIterator
-OptionalAdjacentVertices<Vertex, N, T>::findAdjVertex(const Vertex* v)
+template<typename Vertex, typename T>
+typename OptionalAdjacentVertices<Vertex, T>::AdjacentVertexIterator
+OptionalAdjacentVertices<Vertex, T>::findAdjVertex(const Vertex* v)
 {
 	return std::find(adjVertexBegin(), adjVertexEnd(), v);
 }
 
-template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::ConstAdjacentVertexIterator
-OptionalAdjacentVertices<Vertex, N, T>::findAdjVertex(const Vertex* v) const
+template<typename Vertex, typename T>
+typename OptionalAdjacentVertices<Vertex, T>::ConstAdjacentVertexIterator
+OptionalAdjacentVertices<Vertex, T>::findAdjVertex(const Vertex* v) const
 {
 	return std::find(adjVertexBegin(), adjVertexEnd(), v);
 }
 
-template<typename Vertex, int N, typename T>
-int OptionalAdjacentVertices<Vertex, N, T>::indexOfAdjVertex(const Vertex* v) const
+template<typename Vertex, typename T>
+int OptionalAdjacentVertices<Vertex, T>::indexOfAdjVertex(const Vertex* v) const
 {
 	auto it = findAdjVertex(v);
 	if (v == adjVertexEnd())
@@ -136,77 +114,69 @@ int OptionalAdjacentVertices<Vertex, N, T>::indexOfAdjVertex(const Vertex* v) co
 		return it - adjVertexBegin();
 }
 
-template<typename Vertex, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentVertices<Vertex, N, T>::resizeAdjVertices(uint n)
+template<typename Vertex, typename T>
+void OptionalAdjacentVertices<Vertex, T>::resizeAdjVertices(uint n)
 {
 	B::optCont().adjVerts(thisId()).resize(n);
 }
 
-template<typename Vertex, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalAdjacentVertices<Vertex, N, T>::pushAdjVertex(Vertex* f)
+template<typename Vertex, typename T>
+void OptionalAdjacentVertices<Vertex, T>::pushAdjVertex(Vertex* f)
 {
 	B::optCont().adjVerts(thisId()).push_back(f);
 }
 
-template<typename Vertex, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentVertices<Vertex, N, T>::insertAdjVertex(uint i, Vertex* f)
+template<typename Vertex, typename T>
+void OptionalAdjacentVertices<Vertex, T>::insertAdjVertex(uint i, Vertex* f)
 {
 	assert(i < adjVerticesNumber());
 	B::optCont().adjVerts(thisId()).insert(B::optCont().adjVerts(thisId()).begin() + i, f);
 }
 
-template<typename Vertex, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentVertices<Vertex, N, T>::eraseAdjVertex(uint i)
+template<typename Vertex, typename T>
+void OptionalAdjacentVertices<Vertex, T>::eraseAdjVertex(uint i)
 {
 	assert(i < adjVerticesNumber());
 	B::optCont().adjVerts(thisId()).erase(B::optCont().adjVerts(thisId()).begin() + i);
 }
 
-template<typename Vertex, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalAdjacentVertices<Vertex, N, T>::clearAdjVertices()
+template<typename Vertex, typename T>
+void OptionalAdjacentVertices<Vertex, T>::clearAdjVertices()
 {
 	B::optCont().adjVerts(thisId()).clear();
 }
 
-template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::AdjacentVertexIterator
-OptionalAdjacentVertices<Vertex, N, T>::adjVertexBegin()
+template<typename Vertex, typename T>
+typename OptionalAdjacentVertices<Vertex, T>::AdjacentVertexIterator
+OptionalAdjacentVertices<Vertex, T>::adjVertexBegin()
 {
 	return B::optCont().adjVerts(thisId()).begin();
 }
 
-template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::AdjacentVertexIterator
-OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd()
+template<typename Vertex, typename T>
+typename OptionalAdjacentVertices<Vertex, T>::AdjacentVertexIterator
+OptionalAdjacentVertices<Vertex, T>::adjVertexEnd()
 {
 	return B::optCont().adjVerts(thisId()).end();
 }
 
-template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::ConstAdjacentVertexIterator
-OptionalAdjacentVertices<Vertex, N, T>::adjVertexBegin() const
+template<typename Vertex, typename T>
+typename OptionalAdjacentVertices<Vertex, T>::ConstAdjacentVertexIterator
+OptionalAdjacentVertices<Vertex, T>::adjVertexBegin() const
 {
 	return B::optCont().adjVerts(thisId()).begin();
 }
 
-template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::ConstAdjacentVertexIterator
-OptionalAdjacentVertices<Vertex, N, T>::adjVertexEnd() const
+template<typename Vertex, typename T>
+typename OptionalAdjacentVertices<Vertex, T>::ConstAdjacentVertexIterator
+OptionalAdjacentVertices<Vertex, T>::adjVertexEnd() const
 {
 	return B::optCont().adjVerts(thisId()).end();
 }
 
-template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::AdjacentVertexRangeIterator
-OptionalAdjacentVertices<Vertex, N, T>::adjVertices()
+template<typename Vertex, typename T>
+typename OptionalAdjacentVertices<Vertex, T>::AdjacentVertexRangeIterator
+OptionalAdjacentVertices<Vertex, T>::adjVertices()
 {
 	return AdjacentVertexRangeIterator(
 		*this,
@@ -214,9 +184,9 @@ OptionalAdjacentVertices<Vertex, N, T>::adjVertices()
 		&OptionalAdjacentVertices::adjVertexEnd);
 }
 
-template<typename Vertex, int N, typename T>
-typename OptionalAdjacentVertices<Vertex, N, T>::ConstAdjacentVertexRangeIterator
-OptionalAdjacentVertices<Vertex, N, T>::adjVertices() const
+template<typename Vertex, typename T>
+typename OptionalAdjacentVertices<Vertex, T>::ConstAdjacentVertexRangeIterator
+OptionalAdjacentVertices<Vertex, T>::adjVertices() const
 {
 	return ConstAdjacentVertexRangeIterator(
 		*this,
@@ -224,8 +194,8 @@ OptionalAdjacentVertices<Vertex, N, T>::adjVertices() const
 		&OptionalAdjacentVertices::adjVertexEnd);
 }
 
-template<typename Vertex, int N, typename T>
-void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferences(
+template<typename Vertex, typename T>
+void OptionalAdjacentVertices<Vertex, T>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
 {
@@ -237,8 +207,8 @@ void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferences(
 	}
 }
 
-template<typename Vertex, int N, typename T>
-void OptionalAdjacentVertices<Vertex, N, T>::updateVertexReferencesAfterCompact(
+template<typename Vertex, typename T>
+void OptionalAdjacentVertices<Vertex, T>::updateVertexReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {

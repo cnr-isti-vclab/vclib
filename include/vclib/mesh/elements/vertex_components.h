@@ -61,7 +61,7 @@ bool constexpr hasAdjacentFaces()
 
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>
-using AdjacentVertices = comp::AdjacentVertices<VertexType, -1>;
+using AdjacentVertices = comp::AdjacentVertices<VertexType>;
 
 template<typename VertexType>
 bool constexpr hasAdjacentVertices()
