@@ -275,7 +275,12 @@ constexpr bool hasVertices()
 template<typename T>
 constexpr bool hasVertexOptionalContainer()
 {
-	return comp::hasOptionalInfo<typename T::VertexType>();
+	if constexpr (hasVertices<T>()) {
+		return comp::hasOptionalInfo<typename T::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 } // namespace vcl::mesh

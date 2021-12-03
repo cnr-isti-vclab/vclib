@@ -51,65 +51,89 @@ public:
 
 	void clear();
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
-	index(const typename Mesh::VertexType& v) const;
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+	index(const typename M::VertexType& v) const;
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
-	index(const typename Mesh::VertexType* v) const;
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+	index(const typename M::VertexType* v) const;
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
 	addVertex();
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
-	addVertex(const typename Mesh::VertexType::CoordType& p);
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+	addVertex(const typename M::VertexType::CoordType& p);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
 	addVertices(uint n);
 
-	template<typename... VC, typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), uint)
-	addVertices(const typename Mesh::VertexType::CoordType& p, const VC&... v);
+	template<typename... VC, typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+	addVertices(const typename M::VertexType::CoordType& p, const VC&... v);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), void)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), void)
 	reserveVertices(uint n);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), void)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), void)
 	compactVertices();
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
-	index(const typename Mesh::FaceType& f) const;
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+	index(const typename M::FaceType& f) const;
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
-	index(const typename Mesh::FaceType* f) const;
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+	index(const typename M::FaceType* f) const;
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
 	addFace();
 
-	template<typename U = Mesh, typename... V>
-	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), uint)
+	template<typename M = Mesh, typename... V>
+	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), uint)
 	addFace(V... args);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), uint)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
 	addFaces(uint n);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), void)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
 	reserveFaces(uint n);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), void)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
 	compactFaces();
+
+	template<typename M = Mesh<Args...>>
+	VCL_ENABLE_IF(mesh::hasEdges<M>(), uint)
+	index(const typename M::EdgeType& e) const;
+
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasEdges<M>(), uint)
+	index(const typename M::EdgeType* v) const;
+
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasEdges<M>(), uint)
+	addEdge();
+
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasEdges<M>(), uint)
+	addEdges(uint n);
+
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasEdges<M>(), void)
+	reserveEdges(uint n);
+
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasEdges<M>(), void)
+	compactEdges();
 
 	/// @private
 	template<typename... A>
@@ -120,46 +144,56 @@ public:
 	Mesh& operator=(Mesh oth);
 
 protected:
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), void)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), void)
 	updateVertexReferences(
-		const typename U::VertexType* oldBase,
-		const typename U::VertexType* newBase);
+		const typename M::VertexType* oldBase,
+		const typename M::VertexType* newBase);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasVertices<U>(), void)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasVertices<M>(), void)
 	updateVertexReferencesAfterCompact(
-		const typename U::VertexType* base,
+		const typename M::VertexType* base,
 		const std::vector<int>&       newIndices);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), void)
-	updateFaceReferences(const typename U::FaceType* oldBase, const typename U::FaceType* newBase);
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
+	updateFaceReferences(const typename M::FaceType* oldBase, const typename M::FaceType* newBase);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>(), void)
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
 	updateFaceReferencesAfterCompact(
-		const typename U::FaceType* base,
+		const typename M::FaceType* base,
+		const std::vector<int>&     newIndices);
+
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasEdges<M>(), void)
+	updateEdgeReferences(const typename M::EdgeType* oldBase, const typename M::EdgeType* newBase);
+
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasEdges<M>(), void)
+	updateEdgeReferencesAfterCompact(
+		const typename M::EdgeType* base,
 		const std::vector<int>&     newIndices);
 
 	void updateAllOptionalContainerReferences();
 
 private:
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
-	addFaceHelper(typename Mesh::FaceType& f, typename Mesh::VertexType* v);
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
+	addFaceHelper(typename M::FaceType& f, typename M::VertexType* v);
 
-	template<typename U = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
-	addFaceHelper(typename Mesh::FaceType& f, uint vid);
+	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
+	addFaceHelper(typename M::FaceType& f, uint vid);
 
-	template<typename U = Mesh, typename... V>
-	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
-	addFaceHelper(typename Mesh::FaceType& f, typename Mesh::VertexType* v, V... args);
+	template<typename M = Mesh, typename... V>
+	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
+	addFaceHelper(typename M::FaceType& f, typename M::VertexType* v, V... args);
 
-	template<typename U = Mesh, typename... V>
-	VCL_ENABLE_IF(mesh::hasFaces<U>() && mesh::hasVertices<U>(), void)
-	addFaceHelper(typename Mesh::FaceType& f, uint vid, V... args);
+	template<typename M = Mesh, typename... V>
+	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
+	addFaceHelper(typename M::FaceType& f, uint vid, V... args);
 };
 
 template<typename... A>

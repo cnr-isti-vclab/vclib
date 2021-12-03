@@ -205,6 +205,30 @@ protected:
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 };
 
+/**
+ * Detector to check if a class has (inherits) a EdgeContainer
+ */
+
+template<typename T>
+using hasEdgeContainer = std::is_base_of<EdgeContainerTriggerer, T>;
+
+template<typename T>
+constexpr bool hasEdges()
+{
+	return hasEdgeContainer<T>::value;
+}
+
+template<typename T>
+constexpr bool hasEdgeOptionalContainer()
+{
+	if constexpr (hasEdges<T>()) {
+		return comp::hasOptionalInfo<typename T::EdgeType>();
+	}
+	else {
+		return false;
+	}
+}
+
 } // namespace vcl::mesh
 
 #include "edge_container.cpp"

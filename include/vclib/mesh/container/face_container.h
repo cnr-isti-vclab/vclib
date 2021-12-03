@@ -290,7 +290,12 @@ constexpr bool hasFaces()
 template<typename T>
 constexpr bool hasFaceOptionalContainer()
 {
-	return comp::hasOptionalInfo<typename T::FaceType>();
+	if constexpr (hasFaces<T>()) {
+		return comp::hasOptionalInfo<typename T::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 } // namespace vcl::mesh
