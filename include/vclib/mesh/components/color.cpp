@@ -44,7 +44,7 @@ template<typename Element>
 void Color::importFrom(const Element& e)
 {
 	if constexpr (hasColor<Element>()) {
-		if (isColorEnabled(e)) {
+		if (isColorEnabledOn(e)) {
 			c = e.color();
 		}
 	}

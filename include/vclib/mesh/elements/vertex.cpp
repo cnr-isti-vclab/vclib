@@ -20,49 +20,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "mark.h"
+#include "vertex.h"
 
-namespace vcl::comp {
+namespace vcl {
 
-int Mark::mark() const
+template<typename... Args>
+Vertex<Args...>::Vertex()
 {
-	return m;
 }
 
-void Mark::resetMark()
-{
-	m = 0;
-}
-
-template<typename E>
-bool Mark::hasSameMark(const E& e) const
-{
-	if constexpr (std::is_pointer<E>::value) {
-		return e->mark() == m;
-	}
-	else {
-		return e.mark() == m;
-	}
-}
-
-void Mark::incrementMark()
-{
-	m++;
-}
-
-void Mark::decrementMark()
-{
-	m--;
-}
-
+template<typename... Args>
 template<typename Element>
-void Mark::importFrom(const Element& e)
+void Vertex<Args...>::importFrom(const Element& v)
 {
-	if constexpr (hasMark<Element>()) {
-		if (isMarkEnabledOn(e)) {
-			m = e.mark();
-		}
-	}
+	(Args::importFrom(v), ...);
 }
 
-} // namespace vcl::comp
+} // namespace vcl

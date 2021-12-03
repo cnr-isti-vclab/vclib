@@ -37,10 +37,10 @@ Point& CoordT<Point>::coord()
 }
 
 template<typename Point>
-template<typename VertexType>
-void CoordT<Point>::importFrom(const VertexType& v)
+template<typename Element>
+void CoordT<Point>::importFrom(const Element& v)
 {
-	if constexpr (hasCoordinate<VertexType>()) {
+	if constexpr (hasCoordinate<Element>()) {
 		p = v.coord();
 	}
 }

@@ -25,6 +25,11 @@
 namespace vcl {
 
 template<typename... Args>
+Face<Args...>::Face()
+{
+}
+
+template<typename... Args>
 Face<Args...>::Face(const std::vector<VertexType*>& list)
 {
 	setVertices(list);
@@ -132,6 +137,13 @@ void Face<Args...>::setVertices(V... args)
 	setVertices({args...});
 }
 
+template<typename... Args>
+template<typename Element>
+void Face<Args...>::importFrom(const Element& f)
+{
+	(Args::importFrom(f), ...);
+}
+
 /**
  * @brief Resize the number of Vertex References of the Face, taking care of updating also the
  * number of adjacent faces and the number of wedge components of the Face, if these components
@@ -147,7 +159,8 @@ void Face<Args...>::setVertices(V... args)
  */
 template<typename... Args>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(uint n)
+VCL_ENABLE_IF(M < 0, void)
+Face<Args...>::resizeVertices(uint n)
 {
 	using F = Face<Args...>;
 
@@ -225,7 +238,8 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::resizeVertices(uint n)
 
 template<typename... Args>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
+VCL_ENABLE_IF(M < 0, void)
+Face<Args...>::pushVertex(VertexType* v)
 {
 	using F = Face<Args...>;
 
@@ -305,7 +319,8 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::pushVertex(VertexType* v)
 
 template<typename... Args>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(uint i, VertexType* v)
+VCL_ENABLE_IF(M < 0, void)
+Face<Args...>::insertVertex(uint i, VertexType* v)
 {
 	using F = Face<Args...>;
 
@@ -385,7 +400,8 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::insertVertex(uint i, VertexType* v)
 
 template<typename... Args>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
+VCL_ENABLE_IF(M < 0, void)
+Face<Args...>::eraseVertex(uint i)
 {
 	using F = Face<Args...>;
 
@@ -463,7 +479,8 @@ VCL_ENABLE_IF(M < 0, void) Face<Args...>::eraseVertex(uint i)
 
 template<typename... Args>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) Face<Args...>::clearVertices()
+VCL_ENABLE_IF(M < 0, void)
+Face<Args...>::clearVertices()
 {
 	using F = Face<Args...>;
 

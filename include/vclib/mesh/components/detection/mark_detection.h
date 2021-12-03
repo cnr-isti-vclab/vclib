@@ -52,7 +52,7 @@ bool constexpr hasOptionalMark()
 }
 
 template <typename T>
-bool isMarkEnabled(const T& element)
+bool isMarkEnabledOn(const T& element)
 {
 	if constexpr (hasOptionalMark<T>()) {
 		return element.isMarkEnabled();

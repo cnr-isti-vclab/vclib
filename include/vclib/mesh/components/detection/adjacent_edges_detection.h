@@ -58,7 +58,7 @@ bool constexpr hasOptionalAdjacentEdges()
 }
 
 template <typename T>
-bool isAdjacentEdgesEnabled(const T& element)
+bool isAdjacentEdgesEnabledOn(const T& element)
 {
 	if constexpr (hasOptionalAdjacentEdges<T>()) {
 		return element.isAdjEdgesEnabled();

@@ -58,7 +58,7 @@ bool constexpr hasOptionalScalar()
 }
 
 template <typename T>
-bool isScalarEnabled(const T& element)
+bool isScalarEnabledOn(const T& element)
 {
 	if constexpr(hasOptionalScalar<T>()) {
 		return element.isScalarEnabled();

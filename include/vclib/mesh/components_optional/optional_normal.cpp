@@ -24,21 +24,21 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename T>
-const typename OptionalNormal<Scalar, N, T>::NormalType&
-OptionalNormal<Scalar, N, T>::normal() const
+template<typename P, typename T>
+const typename OptionalNormalT<P, T>::NormalType&
+OptionalNormalT<P, T>::normal() const
 {
 	return B::optCont().normal(thisId());
 }
 
-template<typename Scalar, int N, typename T>
-typename OptionalNormal<Scalar, N, T>::NormalType& OptionalNormal<Scalar, N, T>::normal()
+template<typename P, typename T>
+typename OptionalNormalT<P, T>::NormalType& OptionalNormalT<P, T>::normal()
 {
 	return B::optCont().normal(thisId());
 }
 
-template<typename Scalar, int N, typename T>
-bool OptionalNormal<Scalar, N, T>::isNormalEnabled() const
+template<typename P, typename T>
+bool OptionalNormalT<P, T>::isNormalEnabled() const
 {
 	if (B::contPtr != nullptr)
 		return B::optCont().isNormalEnabled();
@@ -46,12 +46,12 @@ bool OptionalNormal<Scalar, N, T>::isNormalEnabled() const
 		return false;
 }
 
-template<typename Scalar, int N, typename T>
+template<typename P, typename T>
 template<typename Element>
-void OptionalNormal<Scalar, N, T>::importFrom(const Element& e)
+void OptionalNormalT<P, T>::importFrom(const Element& e)
 {
 	if constexpr (hasNormal<Element>()) {
-		if (isNormalEnabled() && isNormalEnabled(e)) {
+		if (isNormalEnabled() && isNormalEnabledOn(e)) {
 			normal() = e.normal();
 		}
 	}

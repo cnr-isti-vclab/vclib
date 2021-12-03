@@ -38,8 +38,8 @@ public:
 	const P& coord() const;
 	P&       coord();
 
-	template<typename VertexType>
-	void importFrom(const VertexType& v);
+	template<typename Element>
+	void importFrom(const Element& v);
 
 private:
 	P p;

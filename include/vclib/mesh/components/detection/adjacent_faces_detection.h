@@ -58,7 +58,7 @@ bool constexpr hasOptionalAdjacentFaces()
 }
 
 template <typename T>
-bool isAdjacentFacesEnabled(const T& element)
+bool isAdjacentFacesEnabledOn(const T& element)
 {
 	if constexpr(hasOptionalAdjacentFaces<T>()) {
 		return element.isAdjFacesEnabled();

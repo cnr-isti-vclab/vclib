@@ -59,7 +59,7 @@ bool constexpr hasOptionalNormal()
 }
 
 template <typename T>
-bool isNormalEnabled(const T& element)
+bool isNormalEnabledOn(const T& element)
 {
 	if constexpr(hasOptionalNormal<T>()) {
 		return element.isNormalEnabled();

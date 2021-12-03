@@ -27,6 +27,15 @@
 #include <vclib/io/save_ply.h>
 #include <vclib/algorithms/create/tetrahedron.h>
 
+class MyVertex :
+		public vcl::Vertex<
+			vcl::vert::BitFlags,
+			vcl::vert::Coordinate3d,
+			vcl::vert::OptionalNormal3f<MyVertex>,
+			vcl::vert::Color>
+{
+};
+
 int main()
 {
 	vcl::TriMesh m;
@@ -116,6 +125,10 @@ int main()
 	vcl::TriMesh tet = vcl::createTetrahedron<vcl::TriMesh>();
 
 	vcl::io::savePly(tet, "/home/alessandro/tmp/tet.ply");
+
+	// test import data from another vertex type
+	MyVertex vert;
+	vert.importFrom(m.vertex(0));
 
 	return 0;
 }

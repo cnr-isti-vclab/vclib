@@ -128,7 +128,7 @@ template<typename Element>
 void OptionalMutableBitFlags<T>::importFrom(const Element& e)
 {
 	if constexpr (hasMutableBitFlags<Element>()) {
-		if (isMutableBitFlagsEnabled() && isMutableBitFlagsEnabled(e)) {
+		if (isMutableBitFlagsEnabled() && isMutableBitFlagsEnabledOn(e)) {
 			// todo
 		}
 	}

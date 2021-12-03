@@ -59,7 +59,7 @@ bool constexpr hasOptionalAdjacentVertices()
 }
 
 template <typename T>
-bool isAdjacentVerticesEnabled(const T& element)
+bool isAdjacentVerticesEnabledOn(const T& element)
 {
 	if constexpr (hasOptionalAdjacentVertices<T>()) {
 		return element.isAdjVerticesEnabled();

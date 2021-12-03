@@ -41,7 +41,7 @@ template<typename Element>
 void TexCoord<Scalar>::importFrom(const Element& e)
 {
 	if constexpr(hasTexCoord<Element>()) {
-		if (isTexCoordEnabled(e)){
+		if (isTexCoordEnabledOn(e)){
 			t = e.texCoord();
 		}
 	}

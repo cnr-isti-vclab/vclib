@@ -58,7 +58,7 @@ bool constexpr hasOptionalWedgeTexCoords()
 }
 
 template <typename T>
-bool isWedgeTexCoordsEnabled(const T& element)
+bool isWedgeTexCoordsEnabledOn(const T& element)
 {
 	if constexpr (hasOptionalWedgeTexCoords<T>()) {
 		return element.isWedgeTexCoordsEnabled();

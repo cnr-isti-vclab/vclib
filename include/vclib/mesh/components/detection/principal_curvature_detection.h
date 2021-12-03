@@ -58,7 +58,7 @@ bool constexpr hasOptionalPrincipalCurvature()
 }
 
 template <typename T>
-bool isPrincipalCurvatureEnabled(const T& element)
+bool isPrincipalCurvatureEnabledOn(const T& element)
 {
 	if constexpr (hasOptionalPrincipalCurvature<T>()) {
 		return element.isPrincipalCurvatureEnabled();

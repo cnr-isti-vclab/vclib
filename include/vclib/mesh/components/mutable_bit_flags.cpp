@@ -104,7 +104,7 @@ template<typename Element>
 void MutableBitFlags::importFrom(const Element& e)
 {
 	if constexpr (hasMutableBitFlags<Element>()) {
-		if (isMutableBitFlagsEnabled(e)) {
+		if (isMutableBitFlagsEnabledOn(e)) {
 			mutableFlags = e.MutableBitFlags::mutableFlags;
 		}
 	}

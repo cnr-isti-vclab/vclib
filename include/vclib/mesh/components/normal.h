@@ -29,34 +29,27 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, int N>
-class Normal : public NormalTriggerer
+template <typename P>
+class NormalT : public NormalTriggerer
 {
 public:
-	using NormalType = Point<Scalar, N>;
+	using NormalType = P;
 
-	const Point<Scalar, N>& normal() const;
-	Point<Scalar, N>&       normal();
+	const P& normal() const;
+	P&       normal();
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 private:
-	Point<Scalar, N> n;
+	P n;
 };
+
+template<typename Scalar, int N>
+using Normal = NormalT<Point<Scalar, N>>;
 
 template<typename Scalar>
-class Normal3 : public NormalTriggerer
-{
-public:
-	using NormalType = Point3<Scalar>;
-
-	const Point3<Scalar>& normal() const;
-	Point3<Scalar>&       normal();
-
-private:
-	Point3<Scalar> n;
-};
+using Normal3 = NormalT<Point3<Scalar>>;
 
 using Normal3f = Normal3<float>;
 using Normal3d = Normal3<double>;

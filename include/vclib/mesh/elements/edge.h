@@ -46,8 +46,16 @@ class Edge : public EdgeTriggerer, public Args...
 {
 	template<typename>
 	friend class mesh::EdgeContainer;
+
+public:
+	Edge();
+
+	template<typename Element>
+	void importFrom(const Element& e);
 };
 
 } // namespace vcl
+
+#include "edge.cpp"
 
 #endif // VCL_MESH_ELEMENTS_EDGE_H

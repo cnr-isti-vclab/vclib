@@ -52,7 +52,7 @@ bool constexpr hasOptionalMutableBitFlags()
 }
 
 template <typename T>
-bool isMutableBitFlagsEnabled(const T& element)
+bool isMutableBitFlagsEnabledOn(const T& element)
 {
 	if constexpr(hasOptionalMutableBitFlags<T>()) {
 		return element.isMutableBitFlagsEnabled();

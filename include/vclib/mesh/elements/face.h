@@ -54,7 +54,7 @@ class Face : public FaceTriggerer, public Args...
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
-	Face() {}
+	Face();
 
 	Face(const std::vector<VertexType*>& list);
 
@@ -65,6 +65,9 @@ public:
 
 	template<typename... V>
 	void setVertices(V... args);
+
+	template<typename Element>
+	void importFrom(const Element& f);
 
 	template<int M = NV>
 	VCL_ENABLE_IF(M < 0, void) resizeVertices(uint n);

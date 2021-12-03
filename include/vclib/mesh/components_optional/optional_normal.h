@@ -30,15 +30,15 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename T>
-class OptionalNormal : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
+template<typename P, typename T>
+class OptionalNormalT : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
 {
 private:
 	using B = OptionalInfo<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:
-	using NormalType = Point<Scalar, N>;
+	using NormalType = P;
 
 	const NormalType&        normal() const;
 	NormalType&              normal();
@@ -49,15 +49,11 @@ public:
 	void importFrom(const Element& e);
 };
 
-template<typename Scalar, typename T>
-class OptionalNormal3 : public OptionalNormal<Scalar, 3, T>
-{
-private:
-	using B = OptionalInfo<T>;
+template <typename Scalar, int N, typename T>
+using OptionalNormal = OptionalNormalT<vcl::Point<Scalar, N>, T>;
 
-public:
-	using NormalType = Point3<Scalar>;
-};
+template <typename Scalar, typename T>
+using OptionalNormal3 = OptionalNormalT<vcl::Point3<Scalar>, T>;
 
 template<typename T>
 using OptionalNormal3f = OptionalNormal3<float, T>;

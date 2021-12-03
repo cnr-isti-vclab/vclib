@@ -20,49 +20,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "mark.h"
+#include "edge.h"
 
-namespace vcl::comp {
+namespace vcl {
 
-int Mark::mark() const
+template<typename... Args>
+Edge<Args...>::Edge()
 {
-	return m;
 }
 
-void Mark::resetMark()
-{
-	m = 0;
-}
-
-template<typename E>
-bool Mark::hasSameMark(const E& e) const
-{
-	if constexpr (std::is_pointer<E>::value) {
-		return e->mark() == m;
-	}
-	else {
-		return e.mark() == m;
-	}
-}
-
-void Mark::incrementMark()
-{
-	m++;
-}
-
-void Mark::decrementMark()
-{
-	m--;
-}
-
+template<typename... Args>
 template<typename Element>
-void Mark::importFrom(const Element& e)
+void Edge<Args...>::importFrom(const Element& e)
 {
-	if constexpr (hasMark<Element>()) {
-		if (isMarkEnabledOn(e)) {
-			m = e.mark();
-		}
-	}
+	(Args::importFrom(e), ...);
 }
 
-} // namespace vcl::comp
+} // namespace vcl

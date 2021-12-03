@@ -52,7 +52,7 @@ bool constexpr hasOptionalColor()
 }
 
 template <typename T>
-bool isColorEnabled(const T& element)
+bool isColorEnabledOn(const T& element)
 {
 	if constexpr (hasOptionalColor<T>()) {
 		return element.isColorEnabled();

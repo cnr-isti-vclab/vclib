@@ -75,7 +75,7 @@ template<typename Element>
 void OptionalMark<T>::importFrom(const Element& e)
 {
 	if constexpr (hasMark<Element>()) {
-		if (isMarkEnabled() && isMarkEnabled(e)) {
+		if (isMarkEnabled() && isMarkEnabledOn(e)) {
 			B::optCont().mark(thisId()) = e.mark();
 		}
 	}

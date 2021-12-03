@@ -59,7 +59,7 @@ bool constexpr hasOptionalWedgeColors()
 }
 
 template <typename T>
-bool isWedgeColorsEnabled(const T& element)
+bool isWedgeColorsEnabledOn(const T& element)
 {
 	if constexpr(hasOptionalWedgeColors<T>()) {
 		return element.isWedgeColorsEnabled();

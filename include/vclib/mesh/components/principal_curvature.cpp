@@ -48,7 +48,7 @@ template<typename Element>
 void PrincipalCurvature<Scalar>::importFrom(const Element& e)
 {
 	if constexpr (hasPrincipalCurvature<Element>()) {
-		if (isPrincipalCurvatureEnabled(e)) {
+		if (isPrincipalCurvatureEnabledOn(e)) {
 			princCurv = e.principalCurvature();
 		}
 	}

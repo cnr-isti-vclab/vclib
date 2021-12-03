@@ -50,7 +50,7 @@ template<typename Element>
 void OptionalColor<T>::importFrom(const Element& e)
 {
 	if constexpr (hasColor<Element>()) {
-		if (isColorEnabled() && isColorEnabled(e)) {
+		if (isColorEnabled() && isColorEnabledOn(e)) {
 			color() = e.color();
 		}
 	}

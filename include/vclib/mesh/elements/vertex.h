@@ -46,8 +46,16 @@ class Vertex : public VertexTriggerer, public Args...
 {
 	template<typename>
 	friend class mesh::VertexContainer;
+
+public:
+	Vertex();
+
+	template<typename Element>
+	void importFrom(const Element& v);
 };
 
 } // namespace vcl
+
+#include "vertex.cpp"
 
 #endif // VCL_MESH_ELEMENTS_VERTEX_H

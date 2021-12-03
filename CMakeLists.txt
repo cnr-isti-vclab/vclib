@@ -221,7 +221,9 @@ set(SOURCES
 	include/vclib/mesh/container/edge_container.cpp
 	include/vclib/mesh/container/face_container.cpp
 	include/vclib/mesh/container/vertex_container.cpp
+	include/vclib/mesh/elements/edge.cpp
 	include/vclib/mesh/elements/face.cpp
+	include/vclib/mesh/elements/vertex.cpp
 	include/vclib/mesh/requirements/element_requirements.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp

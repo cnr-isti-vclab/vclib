@@ -58,7 +58,7 @@ bool constexpr hasOptionalTexCoord()
 }
 
 template <typename T>
-bool isTexCoordEnabled(const T& element)
+bool isTexCoordEnabledOn(const T& element)
 {
 	if constexpr (hasOptionalTexCoord<T>()) {
 		return element.isTexCoordEnabled();
