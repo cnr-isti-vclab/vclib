@@ -181,19 +181,6 @@ public:
 	VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
 	disablePerVertexNormal();
 
-	// Scalar
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool)
-	isPerVertexScalarEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
-	enablePerVertexScalar();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
-	disablePerVertexScalar();
-
 	// PrincipalCurvature
 	template<typename U = T>
 	VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), bool)
@@ -206,6 +193,19 @@ public:
 	template<typename U = T>
 	VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
 	disablePerVertexPrincipalCurvature();
+
+	// Scalar
+	template<typename U = T>
+	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool)
+		isPerVertexScalarEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
+		enablePerVertexScalar();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
+		disablePerVertexScalar();
 
 	// TexCoord
 	template<typename U = T>

@@ -316,6 +316,64 @@ typename FaceContainer<T>::ConstFaceRangeIterator FaceContainer<T>::faces(bool j
 }
 
 /**
+ * @brief Enables all the optional components associated to the Face type contained in the
+ * FaceContainer.
+ */
+template<typename T>
+void FaceContainer<T>::enableAllPerFaceOptionalComponents()
+{
+	if constexpr (face::hasOptionalAdjacentEdges<T>())
+		enablePerFaceAdjacentEdges();
+	if constexpr (face::hasOptionalAdjacentFaces<T>())
+		enablePerFaceAdjacentFaces();
+	if constexpr (face::hasOptionalColor<T>())
+		enablePerFaceColor();
+	if constexpr (face::hasOptionalMark<T>())
+		enablePerFaceMark();
+	if constexpr (face::hasOptionalMutableBitFlags<T>())
+		enablePerFaceMutableBitFlags();
+	if constexpr (face::hasOptionalNormal<T>())
+		enablePerFaceNormal();
+	if constexpr (face::hasOptionalPrincipalCurvature<T>())
+		enablePerFacePrincipalCurvature();
+	if constexpr (face::hasOptionalScalar<T>())
+		enablePerFaceScalar();
+	if constexpr (face::hasOptionalWedgeColors<T>())
+		enablePerFaceWedgeColors();
+	if constexpr (face::hasOptionalWedgeTexCoords<T>())
+		enablePerFaceWedgeTexCoords();
+}
+
+/**
+ * @brief Disables all the optional components associated to the Face type contained in the
+ * FaceContainer.
+ */
+template<typename T>
+void FaceContainer<T>::disableAllPerFaceOptionalComponents()
+{
+	if constexpr (face::hasOptionalAdjacentEdges<T>())
+		disablePerFaceAdjacentEdges();
+	if constexpr (face::hasOptionalAdjacentFaces<T>())
+		disablePerFaceAdjacentFaces();
+	if constexpr (face::hasOptionalColor<T>())
+		disablePerFaceColor();
+	if constexpr (face::hasOptionalMark<T>())
+		disablePerFaceMark();
+	if constexpr (face::hasOptionalMutableBitFlags<T>())
+		disablePerFaceMutableBitFlags();
+	if constexpr (face::hasOptionalNormal<T>())
+		disablePerFaceNormal();
+	if constexpr (face::hasOptionalPrincipalCurvature<T>())
+		disablePerFacePrincipalCurvature();
+	if constexpr (face::hasOptionalScalar<T>())
+		disablePerFaceScalar();
+	if constexpr (face::hasOptionalWedgeColors<T>())
+		disablePerFaceWedgeColors();
+	if constexpr (face::hasOptionalWedgeTexCoords<T>())
+		disablePerFaceWedgeTexCoords();
+}
+
+/**
  * @brief Checks if the face Optional Adjacent Edges is enabled.
  *
  * @note This function is available only if the Face Element has the OptionalAdjacentEdges

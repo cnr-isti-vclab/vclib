@@ -102,6 +102,9 @@ public:
 	FaceRangeIterator      faces(bool jumpDeleted = true);
 	ConstFaceRangeIterator faces(bool jumpDeleted = true) const;
 
+	void enableAllPerFaceOptionalComponents();
+	void disableAllPerFaceOptionalComponents();
+
 	// AdjacentEdges
 	template<typename U = T>
 	VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), bool)

@@ -335,10 +335,10 @@ void VertexContainer<T>::enableAllPerVertexOptionalComponents()
 		enablePerVertexMutableBitFlags();
 	if constexpr (vert::hasOptionalNormal<T>())
 		enablePerVertexNormal();
-	if constexpr (vert::hasOptionalScalar<T>())
-		enablePerVertexScalar();
 	if constexpr (vert::hasOptionalPrincipalCurvature<T>())
 		enablePerVertexPrincipalCurvature();
+	if constexpr (vert::hasOptionalScalar<T>())
+		enablePerVertexScalar();
 	if constexpr (vert::hasOptionalTexCoord<T>())
 		enablePerVertexTexCoord();
 }
@@ -364,10 +364,10 @@ void VertexContainer<T>::disableAllPerVertexOptionalComponents()
 		disablePerVertexMutableBitFlags();
 	if constexpr (vert::hasOptionalNormal<T>())
 		disablePerVertexNormal();
-	if constexpr (vert::hasOptionalScalar<T>())
-		disablePerVertexScalar();
 	if constexpr (vert::hasOptionalPrincipalCurvature<T>())
 		disablePerVertexPrincipalCurvature();
+	if constexpr (vert::hasOptionalScalar<T>())
+		disablePerVertexScalar();
 	if constexpr (vert::hasOptionalTexCoord<T>())
 		disablePerVertexTexCoord();
 }
