@@ -79,6 +79,9 @@ public:
 	EdgeRangeIterator      edges(bool jumpDeleted = true);
 	ConstEdgeRangeIterator edges(bool jumpDeleted = true) const;
 
+	template<typename Mesh>
+	void importFrom(const Mesh& m);
+
 	void enableAllPerEdgeOptionalComponents();
 	void disableAllPerEdgeOptionalComponents();
 
@@ -203,6 +206,9 @@ protected:
 
 	template<typename Face>
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+
+	template<typename Mesh>
+	void importEnabledComponents(const Mesh& m);
 };
 
 /**
