@@ -135,9 +135,6 @@ bool enableIfPerFaceWedgeTexCoordsOptional(MeshType&);
 template<typename MeshType>
 bool constexpr hasPerFaceCustomComponents();
 
-template<typename MeshType>
-bool constexpr hasPerFaceCustomComponents(const MeshType&);
-
 /*********************
  * require functions *
  *********************/

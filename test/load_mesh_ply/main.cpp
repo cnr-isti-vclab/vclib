@@ -46,6 +46,7 @@ int main()
 	assert(loadedInfo.hasTextures());
 	assert(m.textureNumber() == 1);
 	assert(loadedInfo.hasFaceWedgeTexCoords());
+	assert(m.isPerFaceWedgeTexCoordsEnabled());
 
 	return 0;
 }

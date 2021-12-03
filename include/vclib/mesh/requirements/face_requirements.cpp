@@ -35,21 +35,24 @@ namespace vcl {
 template<typename MeshType>
 bool constexpr hasPerFaceAdjacentFaces()
 {
-	return hasFaces<MeshType>() &&
-		   vcl::face::hasAdjacentFaces<typename MeshType::FaceType>();
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasAdjacentFaces<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() &&
-		vcl::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
-		return m.isPerFaceAdjacentFacesEnabled();
-	}
-	else if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasAdjacentFaces<typename MeshType::FaceType>()) {
-		return true;
+	if constexpr (hasFaces<MeshType>()) {
+		if constexpr (vcl::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
+			return m.isPerFaceAdjacentFacesEnabled();
+		}
+		else {
+			return vcl::face::hasAdjacentFaces<typename MeshType::FaceType>();
+		}
 	}
 	else {
 		return false;
@@ -59,33 +62,38 @@ bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() &&
-		vcl::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
-		m.enablePerFaceAdjacentFaces();
+	if constexpr (hasPerFaceAdjacentFaces<MeshType>()) {
+		if constexpr(vcl::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
+			m.enablePerFaceAdjacentFaces();
+		}
 		return true;
 	}
 	else {
-		return hasPerFaceAdjacentFaces<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerFaceColor()
 {
-	return hasFaces<MeshType>() && (vcl::face::hasColor<typename MeshType::FaceType>() ||
-									vcl::face::hasOptionalColor<typename MeshType::FaceType>());
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasColor<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerFaceColorEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>() && vcl::face::hasColor<typename MeshType::FaceType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalColor<typename MeshType::FaceType>()) {
-		return m.isPerFaceColorEnabled();
+	if constexpr (hasFaces<MeshType>()) {
+		if constexpr (vcl::face::hasOptionalColor<typename MeshType::FaceType>()) {
+			return m.isPerFaceColorEnabled();
+		}
+		else {
+			return vcl::face::hasColor<typename MeshType::FaceType>();
+		}
 	}
 	else {
 		return false;
@@ -95,32 +103,38 @@ bool isPerFaceColorEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceColorOptional(MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalColor<typename MeshType::FaceType>()) {
-		m.enablePerFaceColor();
+	if constexpr (hasPerFaceColor<MeshType>()) {
+		if constexpr(vcl::face::hasOptionalColor<typename MeshType::FaceType>()) {
+			m.enablePerFaceColor();
+		}
 		return true;
 	}
 	else {
-		return hasPerFaceColor<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerFaceMark()
 {
-	return hasFaces<MeshType>() && (vcl::face::hasMark<typename MeshType::FaceType>() ||
-									vcl::face::hasOptionalMark<typename MeshType::FaceType>());
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasMark<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerFaceMarkEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>() && vcl::face::hasMark<typename MeshType::FaceType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalMark<typename MeshType::FaceType>()) {
-		return m.isPerFaceMarkEnabled();
+	if constexpr (hasFaces<MeshType>()) {
+		if constexpr (vcl::face::hasOptionalMark<typename MeshType::FaceType>()) {
+			return m.isPerFaceMarkEnabled();
+		}
+		else {
+			return vcl::face::hasMark<typename MeshType::FaceType>();
+		}
 	}
 	else {
 		return false;
@@ -130,35 +144,38 @@ bool isPerFaceMarkEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceMarkOptional(MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalMark<typename MeshType::FaceType>()) {
-		m.enablePerFaceMark();
+	if constexpr (hasPerFaceMark<MeshType>()) {
+		if constexpr(vcl::face::hasOptionalMark<typename MeshType::FaceType>()) {
+			m.enablePerFaceMark();
+		}
 		return true;
 	}
 	else {
-		return hasPerFaceMark<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerFaceMutableBitFlags()
 {
-	return hasFaces<MeshType>() &&
-		   (vcl::face::hasMutableBitFlags<typename MeshType::FaceType>() ||
-			vcl::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>());
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasMutableBitFlags<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerFaceMutableBitFlagsEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasMutableBitFlags<typename MeshType::FaceType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasFaces<MeshType>() &&
-		vcl::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
-		return m.isPerFaceMutableBitFlagsEnabled();
+	if constexpr (hasFaces<MeshType>()) {
+		if constexpr (vcl::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
+			return m.isPerFaceMutableBitFlagsEnabled();
+		}
+		else {
+			return vcl::face::hasMutableBitFlags<typename MeshType::FaceType>();
+		}
 	}
 	else {
 		return false;
@@ -168,33 +185,38 @@ bool isPerFaceMutableBitFlagsEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceMutableBitFlagsOptional(MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() &&
-		vcl::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
-		m.enablePerFaceMutableBitFlags();
+	if constexpr (hasPerFaceMutableBitFlags<MeshType>()) {
+		if constexpr(vcl::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
+			m.enablePerFaceMutableBitFlags();
+		}
 		return true;
 	}
 	else {
-		return hasPerFaceMutableBitFlags<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerFaceNormal()
 {
-	return hasFaces<MeshType>() && (vcl::face::hasNormal<typename MeshType::FaceType>() ||
-									vcl::face::hasOptionalNormal<typename MeshType::FaceType>());
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasNormal<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerFaceNormalEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>() && vcl::face::hasNormal<typename MeshType::FaceType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalNormal<typename MeshType::FaceType>()) {
-		return m.isPerFaceNormalEnabled();
+	if constexpr (hasFaces<MeshType>()) {
+		if constexpr (vcl::face::hasOptionalNormal<typename MeshType::FaceType>()) {
+			return m.isPerFaceNormalEnabled();
+		}
+		else {
+			return vcl::face::hasNormal<typename MeshType::FaceType>();
+		}
 	}
 	else {
 		return false;
@@ -204,35 +226,38 @@ bool isPerFaceNormalEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceNormalOptional(MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalNormal<typename MeshType::FaceType>()) {
-		m.enablePerFaceNormal();
+	if constexpr (hasPerFaceNormal<MeshType>()) {
+		if constexpr(vcl::face::hasOptionalNormal<typename MeshType::FaceType>()) {
+			m.enablePerFaceNormal();
+		}
 		return true;
 	}
 	else {
-		return hasPerFaceNormal<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerFacePrincipalCurvature()
 {
-	return hasFaces<MeshType>() &&
-		   (vcl::face::hasPrincipalCurvature<typename MeshType::FaceType>() ||
-			vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>());
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasPrincipalCurvature<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerFacePrincipalCurvatureEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasPrincipalCurvature<typename MeshType::FaceType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasFaces<MeshType>() &&
-		vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>()) {
-		return m.isPerFacePrincipalCurvatureEnabled();
+	if constexpr (hasFaces<MeshType>()) {
+		if constexpr (vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>()) {
+			return m.isPerFacePrincipalCurvatureEnabled();
+		}
+		else {
+			return vcl::face::hasPrincipalCurvature<typename MeshType::FaceType>();
+		}
 	}
 	else {
 		return false;
@@ -242,33 +267,38 @@ bool isPerFacePrincipalCurvatureEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() &&
-		vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>()) {
-		m.enablePerFacePrincipalCurvature();
+	if constexpr (hasPerFacePrincipalCurvature<MeshType>()) {
+		if constexpr(vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>()) {
+			m.enablePerFacePrincipalCurvature();
+		}
 		return true;
 	}
 	else {
-		return hasPerFacePrincipalCurvature<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerFaceScalar()
 {
-	return hasFaces<MeshType>() && (vcl::face::hasScalar<typename MeshType::FaceType>() ||
-									vcl::face::hasOptionalScalar<typename MeshType::FaceType>());
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasScalar<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerFaceScalarEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>() && vcl::face::hasScalar<typename MeshType::FaceType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalScalar<typename MeshType::FaceType>()) {
-		return m.isPerFaceScalarEnabled();
+	if constexpr (hasFaces<MeshType>()) {
+		if constexpr (vcl::face::hasOptionalScalar<typename MeshType::FaceType>()) {
+			return m.isPerFaceScalarEnabled();
+		}
+		else {
+			return vcl::face::hasScalar<typename MeshType::FaceType>();
+		}
 	}
 	else {
 		return false;
@@ -278,34 +308,38 @@ bool isPerFaceScalarEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceScalarOptional(MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalScalar<typename MeshType::FaceType>()) {
-		m.enablePerFaceScalar();
+	if constexpr (hasPerFaceScalar<MeshType>()) {
+		if constexpr(vcl::face::hasOptionalScalar<typename MeshType::FaceType>()) {
+			m.enablePerFaceScalar();
+		}
 		return true;
 	}
 	else {
-		return hasPerFaceScalar<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerFaceWedgeColors()
 {
-	return hasFaces<MeshType>() &&
-		   (vcl::face::hasWedgeColors<typename MeshType::FaceType>() ||
-			vcl::face::hasOptionalWedgeColors<typename MeshType::FaceType>());
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasWedgeColors<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerFaceWedgeColorsEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasWedgeColors<typename MeshType::FaceType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalWedgeColors<typename MeshType::FaceType>()) {
-		return m.isPerFaceWedgeColorsEnabled();
+	if constexpr (hasFaces<MeshType>()) {
+		if constexpr (vcl::face::hasOptionalWedgeColors<typename MeshType::FaceType>()) {
+			return m.isPerFaceWedgeColorsEnabled();
+		}
+		else {
+			return vcl::face::hasWedgeColors<typename MeshType::FaceType>();
+		}
 	}
 	else {
 		return false;
@@ -315,35 +349,38 @@ bool isPerFaceWedgeColorsEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceWedgeColorsOptional(MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasOptionalWedgeColors<typename MeshType::FaceType>()) {
-		m.enablePerFaceWedgeColors();
+	if constexpr (hasPerFaceWedgeColors<MeshType>()) {
+		if constexpr(vcl::face::hasOptionalWedgeColors<typename MeshType::FaceType>()) {
+			m.enablePerFaceWedgeColors();
+		}
 		return true;
 	}
 	else {
-		return hasPerFaceWedgeColors<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerFaceWedgeTexCoords()
 {
-	return hasFaces<MeshType>() &&
-		   (vcl::face::hasWedgeTexCoords<typename MeshType::FaceType>() ||
-			vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>());
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasWedgeTexCoords<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerFaceWedgeTexCoordsEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() && vcl::face::hasWedgeTexCoords<typename MeshType::FaceType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasFaces<MeshType>() &&
-		vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()) {
-		return m.isPerFaceWedgeTexCoordsEnabled();
+	if constexpr (hasFaces<MeshType>()) {
+		if constexpr (vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()) {
+			return m.isPerFaceWedgeTexCoordsEnabled();
+		}
+		else {
+			return vcl::face::hasWedgeTexCoords<typename MeshType::FaceType>();
+		}
 	}
 	else {
 		return false;
@@ -353,27 +390,26 @@ bool isPerFaceWedgeTexCoordsEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
 {
-	if constexpr (
-		hasFaces<MeshType>() &&
-		vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()) {
-		m.enablePerFaceWedgeTexCoords();
+	if constexpr (hasPerFaceWedgeTexCoords<MeshType>()) {
+		if constexpr(vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()) {
+			m.enablePerFaceWedgeTexCoords();
+		}
 		return true;
 	}
 	else {
-		return hasPerFaceWedgeTexCoords<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerFaceCustomComponents()
 {
-	return hasFaces<MeshType>() && vcl::face::hasCustomComponents<typename MeshType::FaceType>();
-}
-
-template<typename MeshType>
-bool constexpr hasPerFaceCustomComponents(const MeshType&)
-{
-	return hasPerFaceCustomComponents<MeshType>();
+	if constexpr (hasFaces<MeshType>())  {
+		return vcl::face::hasCustomComponents<typename MeshType::FaceType>();
+	}
+	else {
+		return false;
+	}
 }
 
 /*********************

@@ -932,16 +932,16 @@ void FaceContainer<T>::updateContainerPointers()
 template<typename T>
 void FaceContainer<T>::updateFaceReferences(const T* oldBase, const T* newBase)
 {
-	if constexpr (vcl::face::hasAdjacentFaces<T>()) {
-		for (FaceType& f : faces()) {
-			f.updateFaceReferences(oldBase, newBase);
-		}
-	}
-	else if constexpr (vcl::face::hasOptionalAdjacentFaces<T>()) {
+	if constexpr (vcl::face::hasOptionalAdjacentFaces<T>()) {
 		if (Base::optionalVec.isAdjacentFacesEnabled()) {
 			for (FaceType& f : faces()) {
 				f.updateFaceReferences(oldBase, newBase);
 			}
+		}
+	}
+	else if constexpr (vcl::face::hasAdjacentFaces<T>()) {
+		for (FaceType& f : faces()) {
+			f.updateFaceReferences(oldBase, newBase);
 		}
 	}
 }
@@ -951,16 +951,16 @@ void FaceContainer<T>::updateFaceReferencesAfterCompact(
 	const T*                base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr (vcl::face::hasAdjacentFaces<T>()) {
-		for (FaceType& f : faces()) {
-			f.updateFaceReferencesAfterCompact(base, newIndices);
-		}
-	}
-	else if constexpr (vcl::face::hasOptionalAdjacentFaces<T>()) {
+	if constexpr (vcl::face::hasOptionalAdjacentFaces<T>()) {
 		if (Base::optionalVec.isAdjacentFacesEnabled()) {
 			for (FaceType& f : faces()) {
 				f.updateFaceReferencesAfterCompact(base, newIndices);
 			}
+		}
+	}
+	else if constexpr (vcl::face::hasAdjacentFaces<T>()) {
+		for (FaceType& f : faces()) {
+			f.updateFaceReferencesAfterCompact(base, newIndices);
 		}
 	}
 }

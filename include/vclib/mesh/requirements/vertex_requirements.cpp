@@ -35,21 +35,24 @@ namespace vcl {
 template<typename MeshType>
 bool constexpr hasPerVertexAdjacentFaces()
 {
-	return hasVertices<MeshType>() &&
-		   vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>();
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
-		return m.isPerVertexAdjacentFacesEnabled();
-	}
-	else if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>()) {
-		return true;
+	if constexpr (hasVertices<MeshType>()) {
+		if constexpr (vcl::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
+			return m.isPerVertexAdjacentFacesEnabled();
+		}
+		else {
+			return vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>();
+		}
 	}
 	else {
 		return false;
@@ -59,37 +62,38 @@ bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexAdjacentFacesOptional(MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
-		m.enablePerVertexAdjacentFaces();
+	if constexpr (hasPerVertexAdjacentFaces<MeshType>()) {
+		if constexpr(vcl::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
+			m.enablePerVertexAdjacentFaces();
+		}
 		return true;
 	}
 	else {
-		return hasPerVertexAdjacentFaces<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerVertexAdjacentVertices()
 {
-	return hasVertices<MeshType>() &&
-		   (vcl::vert::hasAdjacentVertices<typename MeshType::VertexType>() ||
-			vcl::vert::hasOptionalAdjacentVertices<typename MeshType::VertexType>());
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasAdjacentVertices<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerVertexAdjacentVerticesEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasAdjacentVertices<typename MeshType::VertexType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalAdjacentVertices<typename MeshType::VertexType>()) {
-		return m.isPerVertexAdjacentVerticesEnabled();
+	if constexpr (hasVertices<MeshType>()) {
+		if constexpr (vcl::vert::hasOptionalAdjacentVertices<typename MeshType::VertexType>()) {
+			return m.isPerVertexAdjacentVerticesEnabled();
+		}
+		else {
+			return vcl::vert::hasAdjacentVertices<typename MeshType::VertexType>();
+		}
 	}
 	else {
 		return false;
@@ -99,34 +103,38 @@ bool isPerVertexAdjacentVerticesEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalAdjacentVertices<typename MeshType::VertexType>()) {
-		m.enablePerVertexAdjacentVertices();
+	if constexpr (hasPerVertexAdjacentVertices<MeshType>()) {
+		if constexpr(vcl::vert::hasOptionalAdjacentVertices<typename MeshType::VertexType>()) {
+			m.enablePerVertexAdjacentVertices();
+		}
 		return true;
 	}
 	else {
-		return hasPerVertexAdjacentVertices<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerVertexColor()
 {
-	return hasVertices<MeshType>() &&
-		   (vcl::vert::hasColor<typename MeshType::VertexType>() ||
-			vcl::vert::hasOptionalColor<typename MeshType::VertexType>());
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasColor<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerVertexColorEnabled(const MeshType& m)
 {
-	if constexpr (hasVertices<MeshType>() && vcl::vert::hasColor<typename MeshType::VertexType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasOptionalColor<typename MeshType::VertexType>()) {
-		return m.isPerVertexColorEnabled();
+	if constexpr (hasVertices<MeshType>()) {
+		if constexpr (vcl::vert::hasOptionalColor<typename MeshType::VertexType>()) {
+			return m.isPerVertexColorEnabled();
+		}
+		else {
+			return vcl::vert::hasColor<typename MeshType::VertexType>();
+		}
 	}
 	else {
 		return false;
@@ -136,32 +144,38 @@ bool isPerVertexColorEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexColorOptional(MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasOptionalColor<typename MeshType::VertexType>()) {
-		m.enablePerVertexColor();
+	if constexpr (hasPerVertexColor<MeshType>()) {
+		if constexpr(vcl::vert::hasOptionalColor<typename MeshType::VertexType>()) {
+			m.enablePerVertexColor();
+		}
 		return true;
 	}
 	else {
-		return hasPerVertexColor<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerVertexMark()
 {
-	return hasVertices<MeshType>() && (vcl::vert::hasMark<typename MeshType::VertexType>() ||
-									   vcl::vert::hasOptionalMark<typename MeshType::VertexType>());
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasMark<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerVertexMarkEnabled(const MeshType& m)
 {
-	if constexpr (hasVertices<MeshType>() && vcl::vert::hasMark<typename MeshType::VertexType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasOptionalMark<typename MeshType::VertexType>()) {
-		return m.isPerVertexMarkEnabled();
+	if constexpr (hasVertices<MeshType>()) {
+		if constexpr (vcl::vert::hasOptionalMark<typename MeshType::VertexType>()) {
+			return m.isPerVertexMarkEnabled();
+		}
+		else {
+			return vcl::vert::hasMark<typename MeshType::VertexType>();
+		}
 	}
 	else {
 		return false;
@@ -171,35 +185,38 @@ bool isPerVertexMarkEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexMarkOptional(MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasOptionalMark<typename MeshType::VertexType>()) {
-		m.enablePerVertexMark();
+	if constexpr (hasPerVertexMark<MeshType>()) {
+		if constexpr(vcl::vert::hasOptionalMark<typename MeshType::VertexType>()) {
+			m.enablePerVertexMark();
+		}
 		return true;
 	}
 	else {
-		return hasPerVertexMark<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerVertexMutableBitFlags()
 {
-	return hasVertices<MeshType>() &&
-		   (vcl::vert::hasMutableBitFlags<typename MeshType::VertexType>() ||
-			vcl::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>());
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasMutableBitFlags<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerVertexMutableBitFlagsEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasMutableBitFlags<typename MeshType::VertexType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>()) {
-		return m.isPerVertexMutableBitFlagsEnabled();
+	if constexpr (hasVertices<MeshType>()) {
+		if constexpr (vcl::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>()) {
+			return m.isPerVertexMutableBitFlagsEnabled();
+		}
+		else {
+			return vcl::vert::hasMutableBitFlags<typename MeshType::VertexType>();
+		}
 	}
 	else {
 		return false;
@@ -209,35 +226,38 @@ bool isPerVertexMutableBitFlagsEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexMutableBitFlagsOptional(MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>()) {
-		m.enablePerVertexMutableBitFlags();
+	if constexpr (hasPerVertexMutableBitFlags<MeshType>()) {
+		if constexpr(vcl::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>()) {
+			m.enablePerVertexMutableBitFlags();
+		}
 		return true;
 	}
 	else {
-		return hasPerVertexMutableBitFlags<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerVertexNormal()
 {
-	return hasVertices<MeshType>() &&
-		   (vcl::vert::hasNormal<typename MeshType::VertexType>() ||
-			vcl::vert::hasOptionalNormal<typename MeshType::VertexType>());
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasNormal<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerVertexNormalEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasNormal<typename MeshType::VertexType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
-		return m.isPerVertexNormalEnabled();
+	if constexpr (hasVertices<MeshType>()) {
+		if constexpr (vcl::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
+			return m.isPerVertexNormalEnabled();
+		}
+		else {
+			return vcl::vert::hasNormal<typename MeshType::VertexType>();
+		}
 	}
 	else {
 		return false;
@@ -247,36 +267,38 @@ bool isPerVertexNormalEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexNormalOptional(MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
-		m.enablePerVertexNormal();
+	if constexpr (hasPerVertexNormal<MeshType>()) {
+		if constexpr(vcl::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
+			m.enablePerVertexNormal();
+		}
 		return true;
 	}
 	else {
-		return hasPerVertexNormal<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerVertexPrincipalCurvature()
 {
-	return hasVertices<MeshType>() &&
-		   (vcl::vert::hasPrincipalCurvature<typename MeshType::VertexType>() ||
-			vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>());
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasPrincipalCurvature<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerVertexPrincipalCurvatureEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasPrincipalCurvature<typename MeshType::VertexType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>()) {
-		return m.isPerVertexPrincipalCurvatureEnabled();
+	if constexpr (hasVertices<MeshType>()) {
+		if constexpr (vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>()) {
+			return m.isPerVertexPrincipalCurvatureEnabled();
+		}
+		else {
+			return vcl::vert::hasPrincipalCurvature<typename MeshType::VertexType>();
+		}
 	}
 	else {
 		return false;
@@ -286,35 +308,38 @@ bool isPerVertexPrincipalCurvatureEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexPrincipalCurvatureOptional(MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>()) {
-		m.enablePerVertexPrincipalCurvature();
+	if constexpr (hasPerVertexPrincipalCurvature<MeshType>()) {
+		if constexpr(vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>()) {
+			m.enablePerVertexPrincipalCurvature();
+		}
 		return true;
 	}
 	else {
-		return hasPerVertexPrincipalCurvature<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerVertexScalar()
 {
-	return hasVertices<MeshType>() &&
-		   (vcl::vert::hasScalar<typename MeshType::VertexType>() ||
-			vcl::vert::hasOptionalScalar<typename MeshType::VertexType>());
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasScalar<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerVertexScalarEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasScalar<typename MeshType::VertexType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasOptionalScalar<typename MeshType::VertexType>()) {
-		return m.isPerVertexScalarEnabled();
+	if constexpr (hasVertices<MeshType>()) {
+		if constexpr (vcl::vert::hasOptionalScalar<typename MeshType::VertexType>()) {
+			return m.isPerVertexScalarEnabled();
+		}
+		else {
+			return vcl::vert::hasScalar<typename MeshType::VertexType>();
+		}
 	}
 	else {
 		return false;
@@ -324,35 +349,38 @@ bool isPerVertexScalarEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexScalarOptional(MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasOptionalScalar<typename MeshType::VertexType>()) {
-		m.enablePerVertexScalar();
+	if constexpr (hasPerVertexScalar<MeshType>()) {
+		if constexpr(vcl::vert::hasOptionalScalar<typename MeshType::VertexType>()) {
+			m.enablePerVertexScalar();
+		}
 		return true;
 	}
 	else {
-		return hasPerVertexScalar<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerVertexTexCoord()
 {
-	return hasVertices<MeshType>() &&
-		   (vcl::vert::hasTexCoord<typename MeshType::VertexType>() ||
-			vcl::vert::hasOptionalTexCoord<typename MeshType::VertexType>());
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasTexCoord<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 template<typename MeshType>
 bool isPerVertexTexCoordEnabled(const MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() && vcl::vert::hasTexCoord<typename MeshType::VertexType>()) {
-		return true;
-	}
-	else if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalTexCoord<typename MeshType::VertexType>()) {
-		return m.isPerVertexTexCoordEnabled();
+	if constexpr (hasVertices<MeshType>()) {
+		if constexpr (vcl::vert::hasOptionalTexCoord<typename MeshType::VertexType>()) {
+			return m.isPerVertexTexCoordEnabled();
+		}
+		else {
+			return vcl::vert::hasTexCoord<typename MeshType::VertexType>();
+		}
 	}
 	else {
 		return false;
@@ -362,22 +390,26 @@ bool isPerVertexTexCoordEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexTexCoordOptional(MeshType& m)
 {
-	if constexpr (
-		hasVertices<MeshType>() &&
-		vcl::vert::hasOptionalTexCoord<typename MeshType::VertexType>()) {
-		m.enablePerVertexTexCoord();
+	if constexpr (hasPerVertexTexCoord<MeshType>()) {
+		if constexpr(vcl::vert::hasOptionalTexCoord<typename MeshType::VertexType>()) {
+			m.enablePerVertexTexCoord();
+		}
 		return true;
 	}
 	else {
-		return hasPerVertexTexCoord<MeshType>();
+		return false;
 	}
 }
 
 template<typename MeshType>
 bool constexpr hasPerVertexCustomComponents()
 {
-	return hasVertices<MeshType>() &&
-		   vcl::vert::hasCustomComponents<typename MeshType::VertexType>();
+	if constexpr (hasVertices<MeshType>())  {
+		return vcl::vert::hasCustomComponents<typename MeshType::VertexType>();
+	}
+	else {
+		return false;
+	}
 }
 
 /*********************
