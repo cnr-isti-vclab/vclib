@@ -79,6 +79,9 @@ public:
 	EdgeRangeIterator      edges(bool jumpDeleted = true);
 	ConstEdgeRangeIterator edges(bool jumpDeleted = true) const;
 
+	void enableAllPerEdgeOptionalComponents();
+	void disableAllPerEdgeOptionalComponents();
+
 	// AdjacentEdges
 	template<typename U = T>
 	VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), bool)

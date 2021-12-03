@@ -316,6 +316,48 @@ typename EdgeContainer<T>::ConstEdgeRangeIterator EdgeContainer<T>::edges(bool j
 }
 
 /**
+ * @brief Enables all the optional components associated to the Edge type contained in the
+ * EdgeContainer.
+ */
+template<typename T>
+void EdgeContainer<T>::enableAllPerEdgeOptionalComponents()
+{
+	if constexpr (edge::hasOptionalAdjacentEdges<T>())
+		enablePerEdgeAdjacentEdges();
+	if constexpr (edge::hasOptionalAdjacentFaces<T>())
+		enablePerEdgeAdjacentFaces();
+	if constexpr (edge::hasOptionalColor<T>())
+		enablePerEdgeColor();
+	if constexpr (edge::hasOptionalMark<T>())
+		enablePerEdgeMark();
+	if constexpr (edge::hasOptionalMutableBitFlags<T>())
+		enablePerEdgeMutableBitFlags();
+	if constexpr (edge::hasOptionalScalar<T>())
+		enablePerEdgeScalar();
+}
+
+/**
+ * @brief Disables all the optional components associated to the Edge type contained in the
+ * EdgeContainer.
+ */
+template<typename T>
+void EdgeContainer<T>::disableAllPerEdgeOptionalComponents()
+{
+	if constexpr (edge::hasOptionalAdjacentEdges<T>())
+		disablePerEdgeAdjacentEdges();
+	if constexpr (edge::hasOptionalAdjacentFaces<T>())
+		disablePerEdgeAdjacentFaces();
+	if constexpr (edge::hasOptionalColor<T>())
+		disablePerEdgeColor();
+	if constexpr (edge::hasOptionalMark<T>())
+		disablePerEdgeMark();
+	if constexpr (edge::hasOptionalMutableBitFlags<T>())
+		disablePerEdgeMutableBitFlags();
+	if constexpr (edge::hasOptionalScalar<T>())
+		disablePerEdgeScalar();
+}
+
+/**
  * @brief Checks if the edge Optional Adjacent Edges is enabled.
  *
  * @note This function is available only if the Edge Element has the OptionalAdjacentEdges
