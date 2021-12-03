@@ -87,6 +87,9 @@ public:
 	VertexRangeIterator      vertices(bool jumpDeleted = true);
 	ConstVertexRangeIterator vertices(bool jumpDeleted = true) const;
 
+	void enableAllPerVertexOptionalComponents();
+	void disableAllPerVertexOptionalComponents();
+
 	// Adjacent Edges
 	template<typename U = T>
 	VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), bool)

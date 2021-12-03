@@ -315,6 +315,64 @@ VertexContainer<T>::vertices(bool jumpDeleted) const
 }
 
 /**
+ * @brief Enables all the optional components associated to the Vertex type contained in the
+ * VertexContainer.
+ */
+template<typename T>
+void VertexContainer<T>::enableAllPerVertexOptionalComponents()
+{
+	if constexpr (vert::hasOptionalAdjacentEdges<T>())
+		enablePerVertexAdjacentEdges();
+	if constexpr (vert::hasOptionalAdjacentFaces<T>())
+		enablePerVertexAdjacentFaces();
+	if constexpr (vert::hasOptionalAdjacentVertices<T>())
+		enablePerVertexAdjacentVertices();
+	if constexpr (vert::hasOptionalColor<T>())
+		enablePerVertexColor();
+	if constexpr (vert::hasOptionalMark<T>())
+		enablePerVertexMark();
+	if constexpr (vert::hasOptionalMutableBitFlags<T>())
+		enablePerVertexMutableBitFlags();
+	if constexpr (vert::hasOptionalNormal<T>())
+		enablePerVertexNormal();
+	if constexpr (vert::hasOptionalScalar<T>())
+		enablePerVertexScalar();
+	if constexpr (vert::hasOptionalPrincipalCurvature<T>())
+		enablePerVertexPrincipalCurvature();
+	if constexpr (vert::hasOptionalTexCoord<T>())
+		enablePerVertexTexCoord();
+}
+
+/**
+ * @brief Disables all the optional components associated to the Vertex type contained in the
+ * VertexContainer.
+ */
+template<typename T>
+void VertexContainer<T>::disableAllPerVertexOptionalComponents()
+{
+	if constexpr (vert::hasOptionalAdjacentEdges<T>())
+		disablePerVertexAdjacentEdges();
+	if constexpr (vert::hasOptionalAdjacentFaces<T>())
+		disablePerVertexAdjacentFaces();
+	if constexpr (vert::hasOptionalAdjacentVertices<T>())
+		disablePerVertexAdjacentVertices();
+	if constexpr (vert::hasOptionalColor<T>())
+		disablePerVertexColor();
+	if constexpr (vert::hasOptionalMark<T>())
+		disablePerVertexMark();
+	if constexpr (vert::hasOptionalMutableBitFlags<T>())
+		disablePerVertexMutableBitFlags();
+	if constexpr (vert::hasOptionalNormal<T>())
+		disablePerVertexNormal();
+	if constexpr (vert::hasOptionalScalar<T>())
+		disablePerVertexScalar();
+	if constexpr (vert::hasOptionalPrincipalCurvature<T>())
+		disablePerVertexPrincipalCurvature();
+	if constexpr (vert::hasOptionalTexCoord<T>())
+		disablePerVertexTexCoord();
+}
+
+/**
  * @brief Checks if the vertex Optional Adjacent Edges component is enabled.
  *
  * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges Component.
