@@ -197,15 +197,15 @@ public:
 	// Scalar
 	template<typename U = T>
 	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool)
-		isPerVertexScalarEnabled() const;
+	isPerVertexScalarEnabled() const;
 
 	template<typename U = T>
 	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
-		enablePerVertexScalar();
+	enablePerVertexScalar();
 
 	template<typename U = T>
 	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
-		disablePerVertexScalar();
+	disablePerVertexScalar();
 
 	// TexCoord
 	template<typename U = T>
@@ -257,6 +257,9 @@ protected:
 
 	template<typename Face>
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+
+	template<typename Mesh>
+	void enableOptionalComponentsOf(const Mesh& m);
 };
 
 /**

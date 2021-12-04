@@ -562,6 +562,54 @@ Mesh<Args...>::compactEdges()
 }
 
 /**
+ * @brief Enables all the OptionalComponents of this mesh according to the Components available
+ * on the OtherMeshType m.
+ *
+ * This function is useful to call before importing data from another MeshType, to be sure that
+ * all the available data contained in the MeshType mesh will be imported.
+ *
+ * This function:
+ * - disables all the optional components that are not available in m
+ * - enables all the optional components that are available in m (which can be both optional or not)
+ *
+ * Example of usage:
+ *
+ * @code{.cpp}
+ * MeshType m1;
+ * OtherMeshType m2;
+ *
+ * // do stuff
+ *
+ * m1.enableSameOptionalComponentsOf(m2); // m1 enables all the available components of m2
+ * m1.importFrom(m2); // m1 will import all the data contained in m2 that can be stored in m1
+ * @endcode
+ *
+ * @param m
+ */
+template<typename... Args>
+template<typename OtherMeshType>
+void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
+{
+	// enable all optional components of this Mesh depending on what's available in the
+	// OtherMeshType
+
+	if constexpr (vcl::mesh::hasVertices<Mesh<Args...>>()) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		VertexContainer::enableOptionalComponentsOf(m);
+	}
+
+	if constexpr (vcl::mesh::hasFaces<Mesh<Args...>>()) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		FaceContainer::enableOptionalComponentsOf(m);
+	}
+
+	if constexpr (vcl::mesh::hasEdges<Mesh<Args...>>()) {
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+		EdgeContainer::enableOptionalComponentsOf(m);
+	}
+}
+
+/**
  * @brief Swaps this mesh with the other input Mesh m2.
  * @param m2: the Mesh to swap with this Mesh.
  */

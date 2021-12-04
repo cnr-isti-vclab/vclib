@@ -135,6 +135,9 @@ public:
 	VCL_ENABLE_IF(mesh::hasEdges<M>(), void)
 	compactEdges();
 
+	template<typename OtherMeshType>
+	void enableSameOptionalComponentsOf(const OtherMeshType& m);
+
 	/// @private
 	template<typename... A>
 	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);

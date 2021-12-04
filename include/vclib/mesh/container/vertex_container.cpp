@@ -1000,4 +1000,146 @@ void VertexContainer<T>::updateFaceReferencesAfterCompact(
 	}
 }
 
+template<typename T>
+template<typename Mesh>
+void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
+{
+	// unfortunately, this function cannot be shortened in a smart way
+
+	// if edges are enabled in the other Mesh
+	if constexpr (hasVertices<Mesh>()) {
+		using VertexType = T;
+		using MVertexType = typename Mesh::VertexType;
+
+		 // disable all the optional components, we will enable them again depending on Mesh
+		disableAllPerVertexOptionalComponents();
+
+		// if this Vertex type has optional adjacent edges
+		if constexpr(vert::hasOptionalAdjacentEdges<VertexType>()) {
+			// if also the other Mesh Vertex type has optional adjacent edges
+			if constexpr (vert::hasOptionalAdjacentEdges<MVertexType>()){
+				// if they are enabled on the other Mesh, enable also here
+				if (m.isPerVertexAdjacentEdgesEnabled()){
+					enablePerVertexAdjacentEdges();
+				}
+			}
+			else {
+				// if the other Mesh has *non-optional* adjacent edges, I need to enable it on this
+				// Vert container
+				if constexpr(vert::hasAdjacentEdges<MVertexType>()) {
+					enablePerVertexAdjacentEdges();
+				}
+			}
+		}
+		if constexpr(vert::hasOptionalAdjacentFaces<VertexType>()) {
+			if constexpr (vert::hasOptionalAdjacentFaces<MVertexType>()){
+				if (m.isPerVertexAdjacentFacesEnabled()){
+					enablePerVertexAdjacentFaces();
+				}
+			}
+			else {
+				if constexpr(vert::hasAdjacentFaces<MVertexType>()) {
+					enablePerVertexAdjacentFaces();
+				}
+			}
+		}
+		if constexpr(vert::hasOptionalAdjacentVertices<VertexType>()) {
+			if constexpr (vert::hasOptionalAdjacentVertices<MVertexType>()){
+				if (m.isPerVertexAdjacentVerticesEnabled()){
+					enablePerVertexAdjacentVertices();
+				}
+			}
+			else {
+				if constexpr(vert::hasAdjacentVertices<MVertexType>()) {
+					enablePerVertexAdjacentVertices();
+				}
+			}
+		}
+		if constexpr(vert::hasOptionalColor<VertexType>()) {
+			if constexpr (vert::hasOptionalColor<MVertexType>()){
+				if (m.isPerVertexColorEnabled()){
+					enablePerVertexColor();
+				}
+			}
+			else {
+				if constexpr(vert::hasColor<MVertexType>()) {
+					enablePerVertexColor();
+				}
+			}
+		}
+		if constexpr(vert::hasOptionalMark<VertexType>()) {
+			if constexpr (vert::hasOptionalMark<MVertexType>()){
+				if (m.isPerVertexMarkEnabled()){
+					enablePerVertexMark();
+				}
+			}
+			else {
+				if constexpr(vert::hasMark<MVertexType>()) {
+					enablePerVertexMark();
+				}
+			}
+		}
+		if constexpr(vert::hasOptionalMutableBitFlags<VertexType>()) {
+			if constexpr (vert::hasOptionalMutableBitFlags<MVertexType>()){
+				if (m.isPerVertexMutableBitFlagsEnabled()){
+					enablePerVertexMutableBitFlags();
+				}
+			}
+			else {
+				if constexpr(vert::hasMutableBitFlags<MVertexType>()) {
+					enablePerVertexMutableBitFlags();
+				}
+			}
+		}
+		if constexpr(vert::hasOptionalNormal<VertexType>()) {
+			if constexpr (vert::hasOptionalNormal<MVertexType>()){
+				if (m.isPerVertexNormalEnabled()){
+					enablePerVertexNormal();
+				}
+			}
+			else {
+				if constexpr(vert::hasNormal<MVertexType>()) {
+					enablePerVertexNormal();
+				}
+			}
+		}
+		if constexpr(vert::hasOptionalPrincipalCurvature<VertexType>()) {
+			if constexpr (vert::hasOptionalPrincipalCurvature<MVertexType>()){
+				if (m.isPerVertexPrincipalCurvatureEnabled()){
+					enablePerVertexPrincipalCurvature();
+				}
+			}
+			else {
+				if constexpr(vert::hasPrincipalCurvature<MVertexType>()) {
+					enablePerVertexPrincipalCurvature();
+				}
+			}
+		}
+		if constexpr(vert::hasOptionalScalar<VertexType>()) {
+			if constexpr (vert::hasOptionalScalar<MVertexType>()){
+				if (m.isPerVertexScalarEnabled()){
+					enablePerVertexScalar();
+				}
+			}
+			else {
+				if constexpr(vert::hasScalar<MVertexType>()) {
+					enablePerVertexScalar();
+				}
+			}
+		}
+		if constexpr(vert::hasOptionalTexCoord<VertexType>()) {
+			if constexpr (vert::hasOptionalTexCoord<MVertexType>()){
+				if (m.isPerVertexTexCoordEnabled()){
+					enablePerVertexTexCoord();
+				}
+			}
+			else {
+				if constexpr(vert::hasTexCoord<MVertexType>()) {
+					enablePerVertexTexCoord();
+				}
+			}
+		}
+	}
+}
+
 } // namespace vcl::mesh

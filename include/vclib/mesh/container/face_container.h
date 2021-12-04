@@ -272,6 +272,9 @@ protected:
 
 	template<typename Vertex>
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+
+	template<typename Mesh>
+	void enableOptionalComponentsOf(const Mesh& m);
 };
 
 /**

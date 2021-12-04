@@ -315,23 +315,6 @@ typename EdgeContainer<T>::ConstEdgeRangeIterator EdgeContainer<T>::edges(bool j
 		&EdgeContainer::edgeEnd);
 }
 
-template<typename T>
-template<typename Mesh>
-void EdgeContainer<T>::importFrom(const Mesh& m)
-{
-	clearEdges();
-	if constexpr (hasEdges<Mesh>()) {
-		importEnabledComponents(m);
-		addEdges(m.numberEdges());
-		unsigned int eid = 0;
-		for (const typename Mesh::EdgeType& e : m.edges()){
-			edge(eid).importFrom(e);
-			++eid;
-		}
-		updateEdgeReferences(m.EdgeContainer::vec.data(), Base::vec.data());
-	}
-}
-
 /**
  * @brief Enables all the optional components associated to the Edge type contained in the
  * EdgeContainer.
@@ -828,7 +811,7 @@ void EdgeContainer<T>::updateEdgeReferencesAfterCompact(
 
 template<typename T>
 template<typename Mesh>
-void EdgeContainer<T>::importEnabledComponents(const Mesh& m)
+void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 {
 	// unfortunately, this function cannot be shortened in a smart way
 
@@ -917,6 +900,22 @@ void EdgeContainer<T>::importEnabledComponents(const Mesh& m)
 				}
 			}
 		}
+	}
+}
+
+template<typename T>
+template<typename Mesh>
+void EdgeContainer<T>::importFrom(const Mesh& m)
+{
+	clearEdges();
+	if constexpr (hasEdges<Mesh>()) {
+		addEdges(m.numberEdges());
+		unsigned int eid = 0;
+		for (const typename Mesh::EdgeType& e : m.edges()){
+			edge(eid).importFrom(e);
+			++eid;
+		}
+		updateEdgeReferences(m.EdgeContainer::vec.data(), Base::vec.data());
 	}
 }
 
