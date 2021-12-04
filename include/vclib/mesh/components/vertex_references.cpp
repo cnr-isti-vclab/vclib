@@ -220,14 +220,26 @@ void VertexReferences<Vertex, N>::importVertexReferencesFrom(
 	Vertex* base,
 	const ElVType* ebase)
 {
-	if constexpr(N > 0) {
-
-	}
-	else {
-		resizeVertices(e.vertexNumber());
-		for (uint i = 0; i < e.vertexNumber(); ++i){
-			if (e.vertex(i) != nullptr){
-				vertex(i) = base + (e.vertex(i) - ebase);
+	if constexpr (hasVertexReferences<Element>()) {
+		if constexpr(N > 0) {
+			if constexpr (N == Element::VERTEX_NUMBER) {
+				for (uint i = 0; i < e.vertexNumber(); ++i){
+					if (e.vertex(i) != nullptr){
+						vertex(i) = base + (e.vertex(i) - ebase);
+					}
+				}
+			}
+			else {
+				// Do not import anything in this case:
+				// impossible to import from a face of different size
+			}
+		}
+		else {
+			resizeVertices(e.vertexNumber());
+			for (uint i = 0; i < e.vertexNumber(); ++i){
+				if (e.vertex(i) != nullptr){
+					vertex(i) = base + (e.vertex(i) - ebase);
+				}
 			}
 		}
 	}
