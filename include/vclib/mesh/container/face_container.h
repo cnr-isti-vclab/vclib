@@ -27,13 +27,10 @@
 
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
+#include "containers_detection.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
-
-class FaceContainerTriggerer
-{
-};
 
 /**
  * @brief The Face Container class, will be used when the template argument given to the Mesh is a
@@ -278,31 +275,10 @@ protected:
 
 	template<typename Mesh>
 	void importFrom(const Mesh& m);
+
+	template<typename Mesh, typename Vertex>
+	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
 };
-
-/**
- * Detector to check if a class has (inherits) a FaceContainer
- */
-
-template<typename T>
-using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasFaces()
-{
-	return hasFaceContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasFaceOptionalContainer()
-{
-	if constexpr (hasFaces<T>()) {
-		return comp::hasOptionalInfo<typename T::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
 
 } // namespace vcl::mesh
 

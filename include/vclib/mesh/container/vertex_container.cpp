@@ -1154,8 +1154,6 @@ void VertexContainer<T>::importFrom(const Mesh& m)
 			vertex(vid).importFrom(v);
 			++vid;
 		}
-		if (m.vertexContainerSize() > 0)
-			updateVertexReferences((VertexType*)&m.vertex(0), Base::vec.data());
 	}
 }
 

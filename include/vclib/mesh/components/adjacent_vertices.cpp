@@ -120,10 +120,12 @@ int AdjacentVertices<Vertex>::indexOfAdjVertex(const Vertex* v) const
 
 template<typename Vertex>
 template<typename Element>
-void AdjacentVertices<Vertex>::importFrom(const Element&)
+void AdjacentVertices<Vertex>::importFrom(const Element& e)
 {
 	if constexpr (hasAdjacentVertices<Element>()) {
-		// todo
+		if (isAdjacentVerticesEnabledOn(e)) {
+			Base::container = e.Base::container;
+		}
 	}
 }
 

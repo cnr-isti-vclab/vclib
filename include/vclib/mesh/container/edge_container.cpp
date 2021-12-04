@@ -915,8 +915,6 @@ void EdgeContainer<T>::importFrom(const Mesh& m)
 			edge(eid).importFrom(e);
 			++eid;
 		}
-		if (m.edgeContainerSize() > 0)
-			updateEdgeReferences((EdgeType*)&m.edge(0), Base::vec.data());
 	}
 }
 

@@ -1197,8 +1197,17 @@ void FaceContainer<T>::importFrom(const Mesh& m)
 			face(fid).importFrom(f);
 			++fid;
 		}
-		if (m.faceContainerSize() > 0)
-			updateFaceReferences((FaceType*)&m.face(0), Base::vec.data());
+	}
+}
+
+template<typename T>
+template<typename Mesh, typename Vertex>
+void FaceContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
+{
+	if constexpr(hasVertices<Mesh>() && hasFaces<Mesh>()) {
+		for (uint i = 0; i < faceContainerSize(); ++i){
+			face(i).importVertexReferencesFrom(m.face(i), base, &m.vertex(0));
+		}
 	}
 }
 

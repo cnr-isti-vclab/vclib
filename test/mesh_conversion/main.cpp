@@ -20,58 +20,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POLYMESH_H
-#define VCL_POLYMESH_H
+#include <iostream>
 
-#include "mesh/mesh.h"
-#include "mesh/requirements.h"
+#include <vclib/io/load_ply.h>
+#include <vclib/io/save_ply.h>
+#include <vclib/trimesh.h>
+#include <vclib/polymesh.h>
 
-namespace vcl::polymesh {
-
-class Vertex;
-class Face;
-
-class Vertex :
-		public vcl::Vertex<
-			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3d,
-			vcl::vert::Normal3f,
-			vcl::vert::Color,
-			vcl::vert::Scalard,
-			vcl::vert::OptionalMutableBitFlags<Vertex>,
-			vcl::vert::OptionalTexCoordf<Vertex>,
-			vcl::vert::OptionalAdjacentFaces<Face, Vertex>,
-			vcl::vert::OptionalAdjacentVertices<Vertex>,
-			vcl::vert::OptionalPrincipalCurvatured<Vertex>,
-			vcl::vert::CustomComponents<Vertex>>
+int main()
 {
-};
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
-class Face :
-		public vcl::Face<
-			vcl::face::PolygonBitFlags, // 4b
-			vcl::face::PolygonVertexRefs<Vertex>,
-			vcl::face::Normal3f,
-			vcl::face::OptionalColor<Face>,
-			vcl::face::OptionalScalard<Face>,
-			vcl::face::OptionalAdjacentPolygons<Face>,
-			vcl::face::OptionalMutableBitFlags<Face>,
-			vcl::face::OptionalPolygonWedgeTexCoordsf<Face>,
-			vcl::face::CustomComponents<Face>>
-{
-};
+	vcl::PolyMesh pm;
 
-} // namespace vcl::polymesh
+	pm.enableSameOptionalComponentsOf(m);
+	pm.importFrom(m);
 
-namespace vcl {
+	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/bunny_converted.ply", false);
 
-class PolyMesh : public vcl::Mesh<polymesh::Vertex, polymesh::Face>
-{
-public:
-	using Vertex = polymesh::Vertex;
-	using Face   = polymesh::Face;
-};
+//	vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();
 
-} // namespace vcl
+//	assert(m.vertexNumber() == 4);
+//	assert(m.faceNumber() == 4);
 
-#endif // VCL_POLYMESH_H
+//	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply");
+
+//	m = vcl::createDodecahedron<vcl::TriMesh>();
+//	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/dodecahedron.ply");
+
+//	vcl::PolyMesh pm = vcl::createDodecahedron<vcl::PolyMesh>();
+//	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/dodecahedron_poly.ply");
+
+	return 0;
+}

@@ -27,13 +27,10 @@
 
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
+#include "containers_detection.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
-
-class EdgeContainerTriggerer
-{
-};
 
 template<typename T>
 class EdgeContainer : protected ElementContainer<T>, public EdgeContainerTriggerer
@@ -210,30 +207,6 @@ protected:
 	template<typename Mesh>
 	void importFrom(const Mesh& m);
 };
-
-/**
- * Detector to check if a class has (inherits) a EdgeContainer
- */
-
-template<typename T>
-using hasEdgeContainer = std::is_base_of<EdgeContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasEdges()
-{
-	return hasEdgeContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasEdgeOptionalContainer()
-{
-	if constexpr (hasEdges<T>()) {
-		return comp::hasOptionalInfo<typename T::EdgeType>();
-	}
-	else {
-		return false;
-	}
-}
 
 } // namespace vcl::mesh
 

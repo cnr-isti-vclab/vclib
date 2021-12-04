@@ -625,7 +625,16 @@ template<typename... Args>
 template<typename OtherMeshType>
 void Mesh<Args...>::importFrom(const OtherMeshType& m)
 {
-	(Args::importFrom(m), ...);
+	(mesh::Argument<Args>::importFrom(m), ...);
+
+	if constexpr(mesh::hasFaces<Mesh<Args...>>()) {
+		using FaceType = typename Mesh<Args...>::FaceType;
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
+			using VertexContainer = typename Mesh<Args...>::VertexContainer;
+			FaceContainer::importVertexReferencesFrom(m, VertexContainer::vec.data());
+		}
+	}
 }
 
 /**

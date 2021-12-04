@@ -126,6 +126,7 @@ set(HEADERS
 	include/vclib/mesh/components_vector/optional_wedge_tex_coords_vector.h
 	include/vclib/mesh/components_vector/components_vector.h
 	include/vclib/mesh/container/containers.h
+	include/vclib/mesh/container/containers_detection.h
 	include/vclib/mesh/container/edge_container.h
 	include/vclib/mesh/container/element_container.h
 	include/vclib/mesh/container/face_container.h

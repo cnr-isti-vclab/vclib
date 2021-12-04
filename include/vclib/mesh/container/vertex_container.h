@@ -27,13 +27,10 @@
 
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
+#include "containers_detection.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
-
-class VertexContainerTriggerer
-{
-};
 
 /**
  * @brief The Vertex Container class, will be used when the template argument given to the Mesh is a
@@ -264,30 +261,6 @@ protected:
 	template<typename Mesh>
 	void importFrom(const Mesh& m);
 };
-
-/**
- * Detector to check if a class has (inherits) a VertexContainer
- */
-
-template<typename T>
-using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasVertices()
-{
-	return hasVertexContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasVertexOptionalContainer()
-{
-	if constexpr (hasVertices<T>()) {
-		return comp::hasOptionalInfo<typename T::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
 
 } // namespace vcl::mesh
 

@@ -69,9 +69,6 @@ public:
 	int indexOfVertex(const Vertex* v) const;
 	int indexOfEdge(const Vertex* v1, const Vertex* v2);
 
-	template<typename Element>
-	void importFrom(const Element& e);
-
 	/* Member functions specific for vector */
 
 	template<int M = N>
@@ -102,6 +99,13 @@ protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+
+	template<typename Element>
+	void importFrom(const Element& e);
+
+	template<typename Element, typename ElVType>
+	void
+	importVertexReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
 };
 
 } // namespace vcl::comp
