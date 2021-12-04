@@ -260,6 +260,9 @@ protected:
 
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
+
+	template<typename Mesh>
+	void importFrom(const Mesh& m);
 };
 
 /**

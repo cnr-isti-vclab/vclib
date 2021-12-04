@@ -610,6 +610,25 @@ void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 }
 
 /**
+ * @brief Imports all the components that can be imported from another type of mesh.
+ *
+ * This function can be called from any Mesh type having all the Elements and Components that
+ * implement the member function importFrom.
+ *
+ * Note that this function does not enable optional components that are disabled.
+ * If you want to import all the possible data including also disabled components of this mesh, you
+ * should call the function enableSameOptionalComponentsOf(m) before this function.
+ *
+ * @param[in] m: the mesh from which import all the data.
+ */
+template<typename... Args>
+template<typename OtherMeshType>
+void Mesh<Args...>::importFrom(const OtherMeshType& m)
+{
+	(Args::importFrom(m), ...);
+}
+
+/**
  * @brief Swaps this mesh with the other input Mesh m2.
  * @param m2: the Mesh to swap with this Mesh.
  */

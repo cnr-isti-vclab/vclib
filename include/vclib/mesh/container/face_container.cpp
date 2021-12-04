@@ -1185,4 +1185,20 @@ void FaceContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 	}
 }
 
+template<typename T>
+template<typename Mesh>
+void FaceContainer<T>::importFrom(const Mesh& m)
+{
+	clearFaces();
+	if constexpr (hasFaces<Mesh>()) {
+		addFaces(m.numberFaces());
+		unsigned int fid = 0;
+		for (const typename Mesh::FaceType& f : m.faces()){
+			face(fid).importFrom(f);
+			++fid;
+		}
+		updateFaceReferences(m.FaceContainer::vec.data(), Base::vec.data());
+	}
+}
+
 } // namespace vcl::mesh

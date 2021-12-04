@@ -1142,4 +1142,20 @@ void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 	}
 }
 
+template<typename T>
+template<typename Mesh>
+void VertexContainer<T>::importFrom(const Mesh& m)
+{
+	clearVertices();
+	if constexpr (hasVertices<Mesh>()) {
+		addVertices(m.numberVertices());
+		unsigned int vid = 0;
+		for (const typename Mesh::VertexType& v : m.vertices()){
+			vertex(vid).importFrom(v);
+			++vid;
+		}
+		updateVertexReferences(m.VertexContainer::vec.data(), Base::vec.data());
+	}
+}
+
 } // namespace vcl::mesh
