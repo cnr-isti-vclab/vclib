@@ -313,7 +313,7 @@ Face<Args...>::pushVertex(VertexType* v)
 		using T = typename F::OptionalWedgeTexCoords;
 
 		if (T::isWedgeTexCoordsEnabled())
-			T::pushWedgeTexCoords(TexCoord<S>());
+			T::pushWedgeTexCoord(TexCoord<S>());
 	}
 }
 

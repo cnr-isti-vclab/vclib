@@ -462,7 +462,7 @@ template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), bool)
 VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
 {
-	return Base::optionalVec.isVertexReferencesEnabled();
+	return Base::optionalVec.isAdjacentVerticesEnabled();
 }
 
 /**
@@ -475,7 +475,7 @@ template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
 VertexContainer<T>::enablePerVertexAdjacentVertices()
 {
-	Base::optionalVec.enableVertexReferences(vertexContainerSize());
+	Base::optionalVec.enableAdjacentVertices(vertexContainerSize());
 }
 
 /**
@@ -488,7 +488,7 @@ template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
 VertexContainer<T>::disablePerVertexAdjacentVertices()
 {
-	Base::optionalVec.disableVertexReferences();
+	Base::optionalVec.disableAdjacentVertices();
 }
 
 /**
@@ -585,7 +585,7 @@ template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), bool)
 VertexContainer<T>::isPerVertexMutableBitFlagsEnabled() const
 {
-	Base::optionalVec.isMutableBitFlagsEnabled();
+	return Base::optionalVec.isMutableBitFlagsEnabled();
 }
 
 /**
@@ -1148,13 +1148,14 @@ void VertexContainer<T>::importFrom(const Mesh& m)
 {
 	clearVertices();
 	if constexpr (hasVertices<Mesh>()) {
-		addVertices(m.numberVertices());
+		addVertices(m.vertexContainerSize());
 		unsigned int vid = 0;
-		for (const typename Mesh::VertexType& v : m.vertices()){
+		for (const typename Mesh::VertexType& v : m.vertices(false)){
 			vertex(vid).importFrom(v);
 			++vid;
 		}
-		updateVertexReferences(m.VertexContainer::vec.data(), Base::vec.data());
+		if (m.vertexContainerSize() > 0)
+			updateVertexReferences((VertexType*)&m.vertex(0), Base::vec.data());
 	}
 }
 

@@ -25,11 +25,6 @@
 namespace vcl::comp {
 
 template<typename Scalar>
-PrincipalCurvature<Scalar>::PrincipalCurvature()
-{
-}
-
-template<typename Scalar>
 const typename PrincipalCurvature<Scalar>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar>::principalCurvature() const
 {

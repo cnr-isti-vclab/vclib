@@ -51,8 +51,6 @@ class AdjacentVertices : protected internal::ElementReferences<Vertex, -1>, publ
 	using Base = internal::ElementReferences<Vertex, -1>;
 
 public:
-	static const int ADJ_VERTEX_NUMBER = Base::CONTAINER_SIZE;
-
 	/* Iterator Types declaration */
 
 	using AdjacentVertexIterator           = typename Base::GCIterator;

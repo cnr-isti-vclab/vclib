@@ -44,7 +44,8 @@ void OptionalGenericVector<T>::disable()
 {
 	enabled = false;
 	vec.clear();
-	vec.swap(std::vector<T>()); // force free memory
+	std::vector<T> tmp;
+	vec.swap(tmp); // force free memory
 }
 
 template<typename T>

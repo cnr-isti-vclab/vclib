@@ -44,7 +44,7 @@ public:
 
 private:
 	Point3<Scalar> dir1, dir2;
-	Scalar         k1, k2;
+	Scalar         k1 = 0, k2 = 0;
 };
 
 } // namespace vcl

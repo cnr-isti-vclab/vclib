@@ -25,6 +25,11 @@
 namespace vcl {
 
 template<typename Scalar>
+PrincipalCurvature<Scalar>::PrincipalCurvature()
+{
+}
+
+template<typename Scalar>
 const Point3<Scalar>& PrincipalCurvature<Scalar>::maxDir() const
 {
 	return dir1;

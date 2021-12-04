@@ -35,8 +35,6 @@ class PrincipalCurvature
 public:
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
-	PrincipalCurvature();
-
 	const PrincipalCurvatureType& principalCurvature() const;
 	PrincipalCurvatureType&       principalCurvature();
 

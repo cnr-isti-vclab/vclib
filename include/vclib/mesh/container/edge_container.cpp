@@ -550,7 +550,7 @@ template<typename U>
 VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), bool)
 EdgeContainer<T>::isPerEdgeMutableBitFlagsEnabled() const
 {
-	Base::optionalVec.isMutableBitFlagsEnabled();
+	return Base::optionalVec.isMutableBitFlagsEnabled();
 }
 
 /**
@@ -909,13 +909,14 @@ void EdgeContainer<T>::importFrom(const Mesh& m)
 {
 	clearEdges();
 	if constexpr (hasEdges<Mesh>()) {
-		addEdges(m.numberEdges());
+		addEdges(m.edgeContainerSize());
 		unsigned int eid = 0;
-		for (const typename Mesh::EdgeType& e : m.edges()){
+		for (const typename Mesh::EdgeType& e : m.edges(false)){
 			edge(eid).importFrom(e);
 			++eid;
 		}
-		updateEdgeReferences(m.EdgeContainer::vec.data(), Base::vec.data());
+		if (m.edgeContainerSize() > 0)
+			updateEdgeReferences((EdgeType*)&m.edge(0), Base::vec.data());
 	}
 }
 

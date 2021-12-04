@@ -576,7 +576,7 @@ template<typename U>
 VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), bool)
 FaceContainer<T>::isPerFaceMutableBitFlagsEnabled() const
 {
-	Base::optionalVec.isMutableBitFlagsEnabled();
+	return Base::optionalVec.isMutableBitFlagsEnabled();
 }
 
 /**
@@ -1191,13 +1191,14 @@ void FaceContainer<T>::importFrom(const Mesh& m)
 {
 	clearFaces();
 	if constexpr (hasFaces<Mesh>()) {
-		addFaces(m.numberFaces());
+		addFaces(m.faceContainerSize());
 		unsigned int fid = 0;
-		for (const typename Mesh::FaceType& f : m.faces()){
+		for (const typename Mesh::FaceType& f : m.faces(false)){
 			face(fid).importFrom(f);
 			++fid;
 		}
-		updateFaceReferences(m.FaceContainer::vec.data(), Base::vec.data());
+		if (m.faceContainerSize() > 0)
+			updateFaceReferences((FaceType*)&m.face(0), Base::vec.data());
 	}
 }
 

@@ -26,6 +26,8 @@
 #include <assert.h>
 #include <vector>
 
+#include <vclib/misc/vcl_types.h>
+
 namespace vcl::internal {
 
 template<typename T>
