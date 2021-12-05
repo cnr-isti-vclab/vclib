@@ -100,16 +100,6 @@ inline void MutableBitFlags::clearUserBitM(uint bit) const
 	clearUserBitM(bit, FIRST_MUTABLE_USER_BIT);
 }
 
-template<typename Element>
-void MutableBitFlags::importFrom(const Element& e)
-{
-	if constexpr (hasMutableBitFlags<Element>()) {
-		if (isMutableBitFlagsEnabledOn(e)) {
-			mutableFlags = e.MutableBitFlags::mutableFlags;
-		}
-	}
-}
-
 /**
  * @brief MutableBitFlags::flagValueM returns the value of the given flag (value of the enum).
  *
@@ -203,6 +193,16 @@ inline void MutableBitFlags::clearUserBitM(uint bit, uint firstBit) const
 	assert(bit >= firstBit && bit < 32); (void) firstBit;
 	uint flag = 1 << bit;
 	clearFlagM(flag);
+}
+
+template<typename Element>
+void MutableBitFlags::importFrom(const Element& e)
+{
+	if constexpr (hasMutableBitFlags<Element>()) {
+		if (isMutableBitFlagsEnabledOn(e)) {
+			mutableFlags = e.MutableBitFlags::mutableFlags;
+		}
+	}
 }
 
 } // namespace vcl::comp

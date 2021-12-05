@@ -36,6 +36,7 @@ public:
 	const ScalarType& scalar() const;
 	ScalarType&       scalar();
 
+protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 

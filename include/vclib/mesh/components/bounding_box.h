@@ -52,6 +52,7 @@ public:
 	const BoundingBoxType& boundingBox() const;
 	BoundingBoxType&      boundingBox();
 
+protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 

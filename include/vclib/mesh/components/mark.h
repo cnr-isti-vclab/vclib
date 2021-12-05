@@ -74,6 +74,7 @@ public:
 	void incrementMark();
 	void decrementMark();
 
+protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 

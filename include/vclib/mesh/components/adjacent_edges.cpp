@@ -161,15 +161,6 @@ int AdjacentEdges<Edge, N>::indexOfAdjEdge(const Edge* e) const
 	return Base::indexOf(e);
 }
 
-template<typename Edge, int N>
-template<typename Element>
-void AdjacentEdges<Edge, N>::importFrom(const Element&)
-{
-	if constexpr (hasAdjacentEdges<Element>()) {
-		// todo
-	}
-}
-
 /**
  * @brief Resize the container of the adjacent edges to the given size.
  * @note This function is available only if the container of the Adjacent Edges is has dynamic
@@ -267,6 +258,61 @@ void AdjacentEdges<Edge, N>::updateEdgeReferencesAfterCompact(
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementReferencesAfterCompact(base, newIndices);
+}
+
+template<typename Edge, int N>
+template<typename Element>
+void AdjacentEdges<Edge, N>::importFrom(const Element&)
+{
+}
+
+template<typename Edge, int N>
+template<typename Element, typename ElEType>
+void AdjacentEdges<Edge, N>::importEdgeReferencesFrom(
+	const Element& e,
+	Edge* base,
+	const ElEType* ebase)
+{
+	if constexpr (hasAdjacentEdges<Element>()) {
+		if (isAdjacentEdgesEnabledOn(e)){
+			if constexpr(N > 0) {
+				// same static size
+				if constexpr (N == Element::ADJ_EDGE_NUMBER) {
+					importReferencesFrom(e, base, ebase);
+				}
+				// from dynamic to static, but dynamic size == static size
+				else if constexpr (Element::ADJ_EDGE_NUMBER < 0){
+					if (e.adjEdgesNumber() == N){
+						importReferencesFrom(e, base, ebase);
+					}
+				}
+				else {
+					// do not import in this case: cannot import from dynamic size != static size
+				}
+			}
+			else {
+				// from static to dynamic size: need to resize first, then import
+				resizeAdjEdges(e.adjEdgesNumber());
+				importReferencesFrom(e, base, ebase);
+			}
+		}
+	}
+}
+
+template<typename Edge, int N>
+template<typename Element, typename ElEType>
+void AdjacentEdges<Edge, N>::importReferencesFrom(
+	const Element& e,
+	Edge* base,
+	const ElEType* ebase)
+{
+	if (ebase != nullptr && base != nullptr) {
+		for (uint i = 0; i < e.adjEdgesNumber(); ++i){
+			if (e.adjEdge(i) != nullptr){
+				adjEdge(i) = base + (e.adjEdge(i) - ebase);
+			}
+		}
+	}
 }
 
 } // namespace vcl::comp

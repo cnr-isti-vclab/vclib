@@ -81,9 +81,6 @@ public:
 
 	int indexOfAdjVertex(const Vertex* v) const;
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
 	void resizeAdjVertices(uint n);
 	void pushAdjVertex(Vertex* v);
 	void insertAdjVertex(uint i, Vertex* v);
@@ -103,6 +100,9 @@ protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 } // namespace vcl::comp

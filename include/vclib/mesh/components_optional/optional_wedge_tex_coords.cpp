@@ -93,15 +93,6 @@ bool OptionalWedgeTexCoords<Scalar, N, T>::isWedgeTexCoordsEnabled() const
 }
 
 template<typename Scalar, int N, typename T>
-template<typename Element>
-void OptionalWedgeTexCoords<Scalar, N, T>::importFrom(const Element& e)
-{
-	if constexpr (hasWedgeTexCoords<Element>()) {
-		// todo
-	}
-}
-
-template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordBegin()
 {
@@ -201,6 +192,15 @@ template<int M>
 VCL_ENABLE_IF(M < 0, void) OptionalWedgeTexCoords<Scalar, N, T>::clearWedgeTexCoord()
 {
 	B::optCont().wedgeTexCoords(thisId()).clear();
+}
+
+template<typename Scalar, int N, typename T>
+template<typename Element>
+void OptionalWedgeTexCoords<Scalar, N, T>::importFrom(const Element& e)
+{
+	if constexpr (hasWedgeTexCoords<Element>()) {
+		// todo
+	}
 }
 
 } // namespace vcl::comp

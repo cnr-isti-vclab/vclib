@@ -222,24 +222,39 @@ void VertexReferences<Vertex, N>::importVertexReferencesFrom(
 {
 	if constexpr (hasVertexReferences<Element>()) {
 		if constexpr(N > 0) {
+			// same size non-polygonal faces
 			if constexpr (N == Element::VERTEX_NUMBER) {
-				for (uint i = 0; i < e.vertexNumber(); ++i){
-					if (e.vertex(i) != nullptr){
-						vertex(i) = base + (e.vertex(i) - ebase);
-					}
+				importReferencesFrom(e, base, ebase);
+			}
+			// from polygonal to fixed size, but the polygon size == the fixed face size
+			else if constexpr (Element::VERTEX_NUMBER < 0){
+				if (e.vertexNumber() == N) {
+					importReferencesFrom(e, base, ebase);
 				}
 			}
 			else {
-				// Do not import anything in this case:
-				// impossible to import from a face of different size
+				// do not import in this case: cannot import from a face of different size
 			}
 		}
 		else {
+			// from fixed to polygonal size: need to resize first, then import
 			resizeVertices(e.vertexNumber());
-			for (uint i = 0; i < e.vertexNumber(); ++i){
-				if (e.vertex(i) != nullptr){
-					vertex(i) = base + (e.vertex(i) - ebase);
-				}
+			importReferencesFrom(e, base, ebase);
+		}
+	}
+}
+
+template<typename Vertex, int N>
+template<typename Element, typename ElVType>
+void VertexReferences<Vertex, N>::importReferencesFrom(
+	const Element& e,
+	Vertex* base,
+	const ElVType* ebase)
+{
+	if (ebase != nullptr && base != nullptr) {
+		for (uint i = 0; i < e.vertexNumber(); ++i){
+			if (e.vertex(i) != nullptr){
+				vertex(i) = base + (e.vertex(i) - ebase);
 			}
 		}
 	}

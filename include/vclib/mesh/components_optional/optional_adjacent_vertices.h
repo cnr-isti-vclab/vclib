@@ -89,9 +89,6 @@ public:
 
 	bool isAdjVerticesEnabled() const;
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
 	/* Member functions specific for vector */
 
 	void resizeAdjVertices(uint n);
@@ -113,6 +110,9 @@ protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 } // namespace vcl::comp

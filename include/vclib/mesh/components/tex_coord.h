@@ -37,6 +37,7 @@ public:
 	const TexCoordType& texCoord() const;
 	TexCoordType        texCoord();
 
+protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 

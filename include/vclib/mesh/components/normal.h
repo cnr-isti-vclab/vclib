@@ -38,6 +38,7 @@ public:
 	const P& normal() const;
 	P&       normal();
 
+protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 

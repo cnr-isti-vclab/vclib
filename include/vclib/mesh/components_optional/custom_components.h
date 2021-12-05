@@ -54,6 +54,7 @@ public:
 	template<typename AttrType>
 	AttrType& customComponent(const std::string& attrName);
 
+protected:
 	template <typename Element>
 	void importFrom(const Element& e);
 };

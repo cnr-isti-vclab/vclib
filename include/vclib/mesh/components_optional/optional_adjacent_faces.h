@@ -103,9 +103,6 @@ public:
 
 	bool isAdjFacesEnabled() const;
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
 	/* Member functions specific for vector */
 
 	template<int M = N>
@@ -136,6 +133,9 @@ protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 } // namespace vcl::comp

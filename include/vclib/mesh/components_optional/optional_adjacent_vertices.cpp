@@ -124,15 +124,6 @@ bool OptionalAdjacentVertices<Vertex, T>::isAdjVerticesEnabled() const
 }
 
 template<typename Vertex, typename T>
-template<typename Element>
-void OptionalAdjacentVertices<Vertex, T>::importFrom(const Element&)
-{
-	if constexpr (hasAdjacentVertices<Element>()) {
-		// todo
-	}
-}
-
-template<typename Vertex, typename T>
 void OptionalAdjacentVertices<Vertex, T>::resizeAdjVertices(uint n)
 {
 	B::optCont().adjVerts(thisId()).resize(n);
@@ -241,6 +232,12 @@ void OptionalAdjacentVertices<Vertex, T>::updateVertexReferencesAfterCompact(
 			}
 		}
 	}
+}
+
+template<typename Vertex, typename T>
+template<typename Element>
+void OptionalAdjacentVertices<Vertex, T>::importFrom(const Element&)
+{
 }
 
 } // namespace vcl::comp

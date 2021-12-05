@@ -73,9 +73,6 @@ public:
 	void unsetOnBorder();
 	void unsetUserBit(uint bit);
 
-	template<typename Element>
-	void importFrom(const Element& e);
-
 protected:
 	void setDeleted();
 	void unsetDeleted();
@@ -87,6 +84,9 @@ protected:
 	bool userBitFlag(uint bit, uint firstBit) const;
 	void setUserBit(uint bit, uint firstBit);
 	void unsetUserBit(uint bit, uint firstBit);
+
+	template<typename Element>
+	void importFrom(const Element& e);
 
 	int flags = 0;
 

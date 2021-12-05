@@ -87,15 +87,6 @@ bool OptionalWedgeColors<N, T>::isWedgeColorsEnabled() const
 }
 
 template<int N, typename T>
-template<typename Element>
-void OptionalWedgeColors<N, T>::importFrom(const Element& e)
-{
-	if constexpr (hasWedgeColors<Element>()) {
-		// todo
-	}
-}
-
-template<int N, typename T>
 typename OptionalWedgeColors<N, T>::WedgeColorsIterator OptionalWedgeColors<N, T>::wedgeColorBegin()
 {
 	return B::optCont().wedgeColors(thisId()).begin();
@@ -188,6 +179,15 @@ template<int M>
 VCL_ENABLE_IF(M < 0, void) OptionalWedgeColors<N, T>::clearWedgeColor()
 {
 	B::optCont().wedgeColors(thisId()).clear();
+}
+
+template<int N, typename T>
+template<typename Element>
+void OptionalWedgeColors<N, T>::importFrom(const Element& e)
+{
+	if constexpr (hasWedgeColors<Element>()) {
+		// todo
+	}
 }
 
 } // namespace vcl::comp

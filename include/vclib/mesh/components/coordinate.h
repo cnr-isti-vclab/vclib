@@ -38,6 +38,7 @@ public:
 	const P& coord() const;
 	P&       coord();
 
+protected:
 	template<typename Element>
 	void importFrom(const Element& v);
 

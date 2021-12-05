@@ -102,9 +102,6 @@ public:
 
 	bool isWedgeTexCoordsEnabled() const;
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
 	/** Iterator Member functions **/
 
 	WedgeTexCoordsIterator           wedgeTexCoordBegin();
@@ -134,6 +131,9 @@ protected:
 
 	template<int M = N>
 	VCL_ENABLE_IF(M < 0, void) clearWedgeTexCoord();
+
+	template <typename Element>
+	void importFrom(const Element& e);
 
 private:
 	uint wedgeTexCoordsNumber() const;

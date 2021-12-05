@@ -103,9 +103,6 @@ public:
 
 	bool isAdjEdgesEnabled() const;
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
 	/* Member functions specific for vector */
 
 	template<int M = N>
@@ -136,6 +133,9 @@ protected:
 	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);
 
 	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
+
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
 } // namespace vcl::comp

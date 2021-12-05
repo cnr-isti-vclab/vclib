@@ -47,6 +47,7 @@ public:
 
 	bool isMarkEnabled() const;
 
+protected:
 	template <typename Element>
 	void importFrom(const Element& e);
 };

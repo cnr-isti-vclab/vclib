@@ -43,6 +43,7 @@ public:
 
 	void pushTexture(const std::string& textName);
 
+protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 

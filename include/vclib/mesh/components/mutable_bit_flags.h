@@ -62,9 +62,6 @@ public:
 	void clearVisitedM() const;
 	void clearUserBitM(uint bit) const;
 
-	template<typename Element>
-	void importFrom(const Element& e);
-
 protected:
 	bool flagValueM(uint flag) const;
 	void setFlagM(uint flag) const;
@@ -73,6 +70,9 @@ protected:
 	bool userBitFlagM(uint bit, uint firstBit) const;
 	void setUserBitM(uint bit, uint firstBit) const;
 	void clearUserBitM(uint bit, uint firstBit) const;
+
+	template<typename Element>
+	void importFrom(const Element& e);
 
 	mutable int mutableFlags = 0;
 

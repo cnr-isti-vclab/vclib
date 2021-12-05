@@ -146,15 +146,6 @@ bool OptionalAdjacentFaces<Face, N, T>::isAdjFacesEnabled() const
 }
 
 template<typename Face, int N, typename T>
-template<typename Element>
-void OptionalAdjacentFaces<Face, N, T>::importFrom(const Element& e)
-{
-	if constexpr (hasAdjacentFaces<Element>()) {
-		// todo
-	}
-}
-
-template<typename Face, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
 OptionalAdjacentFaces<Face, N, T>::resizeAdjFaces(uint n)
@@ -270,6 +261,12 @@ void OptionalAdjacentFaces<Face, N, T>::updateFaceReferencesAfterCompact(
 			}
 		}
 	}
+}
+
+template<typename Face, int N, typename T>
+template<typename Element>
+void OptionalAdjacentFaces<Face, N, T>::importFrom(const Element&)
+{
 }
 
 } // namespace vcl::comp

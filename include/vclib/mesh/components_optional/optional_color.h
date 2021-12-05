@@ -44,6 +44,7 @@ public:
 
 	bool isColorEnabled() const;
 
+protected:
 	template <typename Element>
 	void importFrom(const Element& e);
 };

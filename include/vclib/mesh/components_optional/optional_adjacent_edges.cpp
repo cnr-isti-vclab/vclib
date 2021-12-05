@@ -146,15 +146,6 @@ bool OptionalAdjacentEdges<Edge, N, T>::isAdjEdgesEnabled() const
 }
 
 template<typename Edge, int N, typename T>
-template<typename Element>
-void OptionalAdjacentEdges<Edge, N, T>::importFrom(const Element& e)
-{
-	if constexpr (hasAdjacentEdges<Element>()) {
-		// todo
-	}
-}
-
-template<typename Edge, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
 	OptionalAdjacentEdges<Edge, N, T>::resizeAdjEdges(uint n)
@@ -270,6 +261,12 @@ void OptionalAdjacentEdges<Edge, N, T>::updateEdgeReferencesAfterCompact(
 			}
 		}
 	}
+}
+
+template<typename Edge, int N, typename T>
+template<typename Element>
+void OptionalAdjacentEdges<Edge, N, T>::importFrom(const Element&)
+{
 }
 
 } // namespace vcl::comp

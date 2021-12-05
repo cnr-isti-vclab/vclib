@@ -123,17 +123,6 @@ bool OptionalMutableBitFlags<T>::isMutableBitFlagsEnabled() const
 		return false;
 }
 
-template<typename T>
-template<typename Element>
-void OptionalMutableBitFlags<T>::importFrom(const Element& e)
-{
-	if constexpr (hasMutableBitFlags<Element>()) {
-		if (isMutableBitFlagsEnabled() && isMutableBitFlagsEnabledOn(e)) {
-			// todo
-		}
-	}
-}
-
 /**
  * @brief OptionalMutableBitFlags::flagValueM  returns the value of the given flag (value of the
  * enum).
@@ -246,6 +235,17 @@ void OptionalMutableBitFlags<T>::clearUserBitM(uint bit, uint firstBit) const
 	assert(bit >= firstBit && bit < 32);
 	uint flag = 1 << bit;
 	clearFlagM(flag);
+}
+
+template<typename T>
+template<typename Element>
+void OptionalMutableBitFlags<T>::importFrom(const Element& e)
+{
+	if constexpr (hasMutableBitFlags<Element>()) {
+		if (isMutableBitFlagsEnabled() && isMutableBitFlagsEnabledOn(e)) {
+			// todo
+		}
+	}
 }
 
 } // namespace vcl::common

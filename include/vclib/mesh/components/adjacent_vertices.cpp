@@ -118,17 +118,6 @@ int AdjacentVertices<Vertex>::indexOfAdjVertex(const Vertex* v) const
 	return Base::indexOf(v);
 }
 
-template<typename Vertex>
-template<typename Element>
-void AdjacentVertices<Vertex>::importFrom(const Element& e)
-{
-	if constexpr (hasAdjacentVertices<Element>()) {
-		if (isAdjacentVerticesEnabledOn(e)) {
-			Base::container = e.Base::container;
-		}
-	}
-}
-
 /**
  * @brief Resize the container of the adjacent vertices to the given size.
  * @note This function is available only if the container of the Adjacent Vertices is has dynamic
@@ -221,6 +210,12 @@ void AdjacentVertices<Vertex>::updateVertexReferencesAfterCompact(
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementReferencesAfterCompact(base, newIndices);
+}
+
+template<typename Vertex>
+template<typename Element>
+void AdjacentVertices<Vertex>::importFrom(const Element&)
+{
 }
 
 } // namespace vcl::comp

@@ -161,15 +161,6 @@ int AdjacentFaces<Face, N>::indexOfAdjFace(const Face* f) const
 	return Base::indexOf(f);
 }
 
-template<typename Face, int N>
-template<typename Element>
-void AdjacentFaces<Face, N>::importFrom(const Element&)
-{
-	if constexpr(hasAdjacentFaces<Element>()) {
-		// todo
-	}
-}
-
 /**
  * @brief Resize the container of the adjacent faces to the given size.
  * @note This function is available only if the container of the Adjacent Faces is has dynamic
@@ -267,6 +258,12 @@ void AdjacentFaces<Face, N>::updateFaceReferencesAfterCompact(
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementReferencesAfterCompact(base, newIndices);
+}
+
+template<typename Face, int N>
+template<typename Element>
+void AdjacentFaces<Face, N>::importFrom(const Element&)
+{
 }
 
 } // namespace vcl::comp

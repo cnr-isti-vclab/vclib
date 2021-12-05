@@ -88,6 +88,7 @@ public:
 	void unsetEdgeFaux(uint i);
 	void unsetAllEdgeFaux();
 
+protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 

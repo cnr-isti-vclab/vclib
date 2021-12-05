@@ -40,6 +40,7 @@ public:
 	const TransformMatrixType& transformMatrix() const;
 	TransformMatrixType&       transformMatrix();
 
+protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
