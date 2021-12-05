@@ -269,5 +269,54 @@ void OptionalAdjacentEdges<Edge, N, T>::importFrom(const Element&)
 {
 }
 
+template<typename Edge, int N, typename T>
+template<typename Element, typename ElEType>
+void OptionalAdjacentEdges<Edge, N, T>::importEdgeReferencesFrom(
+	const Element& e,
+	Edge* base,
+	const ElEType* ebase)
+{
+	if constexpr (hasAdjacentEdges<Element>()) {
+		if (isAdjEdgesEnabled() && isAdjacentEdgesEnabledOn(e)){
+			if constexpr(N > 0) {
+				// same static size
+				if constexpr (N == Element::ADJ_EDGE_NUMBER) {
+					importReferencesFrom(e, base, ebase);
+				}
+				// from dynamic to static, but dynamic size == static size
+				else if constexpr (Element::ADJ_EDGE_NUMBER < 0){
+					if (e.adjEdgesNumber() == N){
+						importReferencesFrom(e, base, ebase);
+					}
+				}
+				else {
+					// do not import in this case: cannot import from dynamic size != static size
+				}
+			}
+			else {
+				// from static/dynamic to dynamic size: need to resize first, then import
+				resizeAdjEdges(e.adjEdgesNumber());
+				importReferencesFrom(e, base, ebase);
+			}
+		}
+	}
+}
+
+template<typename Edge, int N, typename T>
+template<typename Element, typename ElEType>
+void OptionalAdjacentEdges<Edge, N, T>::importReferencesFrom(
+	const Element& e,
+	Edge* base,
+	const ElEType* ebase)
+{
+	if (ebase != nullptr && base != nullptr) {
+		for (uint i = 0; i < e.adjEdgesNumber(); ++i){
+			if (e.adjEdge(i) != nullptr){
+				adjEdge(i) = base + (e.adjEdge(i) - ebase);
+			}
+		}
+	}
+}
+
 } // namespace vcl::comp
 

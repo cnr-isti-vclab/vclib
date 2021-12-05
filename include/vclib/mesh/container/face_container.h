@@ -278,6 +278,9 @@ protected:
 
 	template<typename Mesh, typename Vertex>
 	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
+
+	template<typename Mesh, typename Edge>
+	void importEdgeReferencesFrom(const Mesh& m, Edge* base);
 };
 
 } // namespace vcl::mesh

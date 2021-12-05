@@ -122,6 +122,15 @@ protected:
 
 	template <typename Element>
 	void importFrom(const Element& e);
+
+	template<typename Element, typename ElFType>
+	void
+	importFaceReferencesFrom(const Element& e, Face* base, const ElFType* ebase);
+
+private:
+	template<typename Element, typename ElFType>
+	void
+	importReferencesFrom(const Element& e, Face* base, const ElFType* ebase);
 };
 
 } // namespace vcl::comp

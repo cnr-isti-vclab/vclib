@@ -136,6 +136,15 @@ protected:
 
 	template <typename Element>
 	void importFrom(const Element& e);
+
+	template<typename Element, typename ElEType>
+	void
+	importEdgeReferencesFrom(const Element& e, Edge* base, const ElEType* ebase);
+
+private:
+	template<typename Element, typename ElEType>
+	void
+	importReferencesFrom(const Element& e, Edge* base, const ElEType* ebase);
 };
 
 } // namespace vcl::comp

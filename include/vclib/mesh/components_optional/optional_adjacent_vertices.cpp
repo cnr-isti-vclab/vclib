@@ -240,4 +240,36 @@ void OptionalAdjacentVertices<Vertex, T>::importFrom(const Element&)
 {
 }
 
+template<typename Vertex, typename T>
+template<typename Element, typename ElVType>
+void OptionalAdjacentVertices<Vertex, T>::importVertexReferencesFrom(
+	const Element& e,
+	Vertex* base,
+	const ElVType* ebase)
+{
+	if constexpr (hasAdjacentVertices<Element>()) {
+		if (isAdjVerticesEnabled() && isAdjacentVerticesEnabledOn(e)){
+			// from static/dynamic to dynamic size: need to resize first, then import
+			resizeAdjVertices(e.adjVerticesNumber());
+			importReferencesFrom(e, base, ebase);
+		}
+	}
+}
+
+template<typename Vertex, typename T>
+template<typename Element, typename ElVType>
+void OptionalAdjacentVertices<Vertex, T>::importReferencesFrom(
+	const Element& e,
+	Vertex* base,
+	const ElVType* ebase)
+{
+	if (ebase != nullptr && base != nullptr) {
+		for (uint i = 0; i < e.adjVerticesNumber(); ++i){
+			if (e.adjVertex(i) != nullptr){
+				adjVertex(i) = base + (e.adjVertex(i) - ebase);
+			}
+		}
+	}
+}
+
 } // namespace vcl::comp

@@ -260,6 +260,12 @@ protected:
 
 	template<typename Mesh>
 	void importFrom(const Mesh& m);
+
+	template<typename Mesh, typename Face>
+	void importFaceReferencesFrom(const Mesh& m, Face* base);
+
+	template<typename Mesh, typename Edge>
+	void importEdgeReferencesFrom(const Mesh& m, Edge* base);
 };
 
 } // namespace vcl::mesh

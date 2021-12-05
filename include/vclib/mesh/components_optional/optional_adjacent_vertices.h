@@ -113,6 +113,15 @@ protected:
 
 	template <typename Element>
 	void importFrom(const Element& e);
+
+	template<typename Element, typename ElVType>
+	void
+	importVertexReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+
+private:
+	template<typename Element, typename ElVType>
+	void
+	importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
 };
 
 } // namespace vcl::comp

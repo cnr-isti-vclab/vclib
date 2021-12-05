@@ -266,4 +266,53 @@ void AdjacentFaces<Face, N>::importFrom(const Element&)
 {
 }
 
+template<typename Face, int N>
+template<typename Element, typename ElFType>
+void AdjacentFaces<Face, N>::importFaceReferencesFrom(
+	const Element& e,
+	Face* base,
+	const ElFType* ebase)
+{
+	if constexpr (hasAdjacentFaces<Element>()) {
+		if (isAdjacentFacesEnabledOn(e)){
+			if constexpr(N > 0) {
+				// same static size
+				if constexpr (N == Element::ADJ_FACE_NUMBER) {
+					importReferencesFrom(e, base, ebase);
+				}
+				// from dynamic to static, but dynamic size == static size
+				else if constexpr (Element::ADJ_FACE_NUMBER < 0){
+					if (e.adjFacesNumber() == N){
+						importReferencesFrom(e, base, ebase);
+					}
+				}
+				else {
+					// do not import in this case: cannot import from dynamic size != static size
+				}
+			}
+			else {
+				// from static/dynamic to dynamic size: need to resize first, then import
+				resizeAdjFaces(e.adjFacesNumber());
+				importReferencesFrom(e, base, ebase);
+			}
+		}
+	}
+}
+
+template<typename Face, int N>
+template<typename Element, typename ElFType>
+void AdjacentFaces<Face, N>::importReferencesFrom(
+	const Element& e,
+	Face* base,
+	const ElFType* ebase)
+{
+	if (ebase != nullptr && base != nullptr) {
+		for (uint i = 0; i < e.adjFacesNumber(); ++i){
+			if (e.adjFace(i) != nullptr){
+				adjFace(i) = base + (e.adjFace(i) - ebase);
+			}
+		}
+	}
+}
+
 } // namespace vcl::comp

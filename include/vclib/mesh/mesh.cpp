@@ -627,12 +627,57 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 {
 	(mesh::Argument<Args>::importFrom(m), ...);
 
+	// after importing ordinary components, I need to convert the references between containers
+	// to each importElReferencesFrom member function of a container, I need to pass:
+	// - the mesh from which import the references
+	// - the base of the Element container, that is used to compute the new reference of the element
+	// note: per element E references are already updated in the element E container of the mesh
+
+	if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+
+		// import face references in the vertex container
+		if constexpr(mesh::hasFaces<Mesh<Args...>>()) {
+			using FaceContainer = typename Mesh<Args...>::FaceContainer;
+			VertexContainer::importFaceReferencesFrom(m, FaceContainer::vec.data());
+		}
+
+		// import edge references in the vertex container
+		if constexpr(mesh::hasEdges<Mesh<Args...>>()) {
+			using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+			VertexContainer::importEdgeReferencesFrom(m, EdgeContainer::vec.data());
+		}
+	}
+
 	if constexpr(mesh::hasFaces<Mesh<Args...>>()) {
-		using FaceType = typename Mesh<Args...>::FaceType;
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+
+		// import vertex references in the face container
 		if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
 			using VertexContainer = typename Mesh<Args...>::VertexContainer;
 			FaceContainer::importVertexReferencesFrom(m, VertexContainer::vec.data());
+		}
+
+		// import edge references in the face container
+		if constexpr(mesh::hasEdges<Mesh<Args...>>()) {
+			using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+			FaceContainer::importEdgeReferencesFrom(m, EdgeContainer::vec.data());
+		}
+	}
+
+	if constexpr(mesh::hasEdges<Mesh<Args...>>()) {
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+
+		// import vertex references in the edge container
+		if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
+			using VertexContainer = typename Mesh<Args...>::VertexContainer;
+			EdgeContainer::importVertexReferencesFrom(m, VertexContainer::vec.data());
+		}
+
+		// import face references in the edge container
+		if constexpr(mesh::hasEdges<Mesh<Args...>>()) {
+			using FaceContainer = typename Mesh<Args...>::FaceContainer;
+			EdgeContainer::importFaceReferencesFrom(m, FaceContainer::vec.data());
 		}
 	}
 }

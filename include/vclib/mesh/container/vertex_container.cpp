@@ -1152,7 +1152,32 @@ void VertexContainer<T>::importFrom(const Mesh& m)
 		unsigned int vid = 0;
 		for (const typename Mesh::VertexType& v : m.vertices(false)){
 			vertex(vid).importFrom(v);
+			if constexpr (vert::hasAdjacentVertices<T>()) {
+				vertex(vid).importVertexReferencesFrom(v, Base::vec.data(), &m.vertex(0));
+			}
 			++vid;
+		}
+	}
+}
+
+template<typename T>
+template<typename Mesh, typename Face>
+void VertexContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
+{
+	if constexpr(hasFaces<Mesh>() && hasVertices<Mesh>()) {
+		for (uint i = 0; i < vertexContainerSize(); ++i){
+			vertex(i).importFaceReferencesFrom(m.vertex(i), base, &m.face(0));
+		}
+	}
+}
+
+template<typename T>
+template<typename Mesh, typename Edge>
+void VertexContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
+{
+	if constexpr(hasEdges<Mesh>() && hasVertices<Mesh>()) {
+		for (uint i = 0; i < vertexContainerSize(); ++i){
+			vertex(i).importEdgeReferencesFrom(m.vertex(i), base, &m.edge(0));
 		}
 	}
 }

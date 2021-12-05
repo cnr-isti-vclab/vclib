@@ -291,7 +291,7 @@ void AdjacentEdges<Edge, N>::importEdgeReferencesFrom(
 				}
 			}
 			else {
-				// from static to dynamic size: need to resize first, then import
+				// from static/dynamic to dynamic size: need to resize first, then import
 				resizeAdjEdges(e.adjEdgesNumber());
 				importReferencesFrom(e, base, ebase);
 			}
