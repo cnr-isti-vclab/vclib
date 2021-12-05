@@ -148,6 +148,7 @@ set(HEADERS
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_requirements.h
 	include/vclib/misc/compactness.h
+	include/vclib/misc/file_info.h
 	include/vclib/misc/string.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
@@ -230,6 +231,7 @@ set(SOURCES
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp
 	include/vclib/misc/compactness.cpp
+	include/vclib/misc/file_info.cpp
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp

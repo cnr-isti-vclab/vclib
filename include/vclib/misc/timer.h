@@ -31,7 +31,11 @@
 namespace vcl {
 
 /**
- * @brief The Timer class
+ * @brief The Timer class allows to instantiate simple Timer objects that can be used everywhere.
+ *
+ * When a Timer object is create, by default the timer starts (you can change this option using the
+ * bool argument of the Timer constructor). To each timer can be associated a caption, and the
+ * printed/returned values are expressed in seconds.
  */
 class Timer
 {
@@ -47,9 +51,10 @@ public:
 	double delay() const;
 
 private:
-	std::string                                    caption;
+	std::string caption;
+	bool        isStopped;
+
 	std::chrono::high_resolution_clock::time_point begin, end;
-	bool                                           isStopped;
 };
 
 } // namespace vcl

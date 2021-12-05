@@ -24,6 +24,11 @@
 
 namespace vcl {
 
+/**
+ * @brief Creates a timer with the caption "Timer". If the given boolean is true, the timer starts.
+ *
+ * @param[in] _start: if true, the timer will start when the object is created.
+ */
 inline Timer::Timer(bool _start) : caption("Timer"), isStopped(false)
 {
 	if (_start)
@@ -31,9 +36,10 @@ inline Timer::Timer(bool _start) : caption("Timer"), isStopped(false)
 }
 
 /**
- * @brief Timer::Timer
- * @param caption
- * @param _start
+ * @brief Creates a timer with the given caption. If the given boolean is true, the timer starts.
+ *
+ * @param[in] caption: the caption of the timer.
+ * @param[in] _start: if true, the timer will start when the object is created.
  */
 inline Timer::Timer(const char* caption, bool _start) : caption(caption), isStopped(false)
 {
@@ -42,9 +48,10 @@ inline Timer::Timer(const char* caption, bool _start) : caption(caption), isStop
 }
 
 /**
- * @brief Timer::Timer
- * @param caption
- * @param _start
+ * @brief Creates a timer with the given caption. If the given boolean is true, the timer starts.
+ *
+ * @param[in] caption: the caption of the timer.
+ * @param[in] _start: if true, the timer will start when the object is created.
  */
 inline Timer::Timer(const std::string& caption, bool _start) : caption(caption), isStopped(false)
 {
@@ -53,7 +60,7 @@ inline Timer::Timer(const std::string& caption, bool _start) : caption(caption),
 }
 
 /**
- * @brief Timer::start
+ * @brief Starts the timer.
  */
 inline void Timer::start()
 {
@@ -61,7 +68,8 @@ inline void Timer::start()
 }
 
 /**
- * @brief Timer::stopAndPrint
+ * @brief Stops the timer and prints the time passed between the call of start() and this member
+ * function. Printed time is expressed in seconds.
  */
 inline void Timer::stopAndPrint()
 {
@@ -70,7 +78,7 @@ inline void Timer::stopAndPrint()
 }
 
 /**
- * @brief Timer::stop
+ * @brief Stops the timer.
  */
 inline void Timer::stop()
 {
@@ -79,7 +87,8 @@ inline void Timer::stop()
 }
 
 /**
- * @brief Timer::print
+ * @brief Prints the time passed between the call of start() and this member function. Works also if
+ * the timer is not stopped. Printed time is expressed in seconds.
  */
 inline void Timer::print() const
 {
@@ -101,8 +110,8 @@ inline void Timer::print() const
 }
 
 /**
- * @brief Timer::delay
- * @return
+ * @brief Returns the time passed between the call of start() and this member function. Works also
+ * if the timer is not stopped. Returned time is expressed in seconds.
  */
 inline double Timer::delay() const
 {

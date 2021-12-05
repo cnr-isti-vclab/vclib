@@ -108,8 +108,8 @@ public:
 	WedgeTexCoordsIterator           wedgeTexCoordEnd();
 	ConstWedgeTexCoordsIterator      wedgeTexCoordBegin() const;
 	ConstWedgeTexCoordsIterator      wedgeTexCoordEnd() const;
-	WedgeTexCoordsRangeIterator      wedgeTexCoordIterator();
-	ConstWedgeTexCoordsRangeIterator wedgeTexCoordIterator() const;
+	WedgeTexCoordsRangeIterator      wedgeTexCoords();
+	ConstWedgeTexCoordsRangeIterator wedgeTexCoords() const;
 
 protected:
 	using WedgeTexCoordScalarType = Scalar;

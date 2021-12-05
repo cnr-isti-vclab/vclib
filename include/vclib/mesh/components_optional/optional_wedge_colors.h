@@ -105,8 +105,8 @@ public:
 	WedgeColorsIterator           wedgeColorEnd();
 	ConstWedgeColorsIterator      wedgeColorBegin() const;
 	ConstWedgeColorsIterator      wedgeColorEnd() const;
-	WedgeColorsRangeIterator      wedgeColorIterator();
-	ConstWedgeColorsRangeIterator wedgeColorIterator() const;
+	WedgeColorsRangeIterator      wedgeColors();
+	ConstWedgeColorsRangeIterator wedgeColors() const;
 
 protected:
 	/* Member functions specific for vector */

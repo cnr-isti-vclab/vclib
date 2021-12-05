@@ -24,33 +24,65 @@
 
 namespace vcl::comp {
 
-TextureFileNames::TextureFileNames()
+inline TextureFileNames::TextureFileNames()
 {
 }
 
-uint TextureFileNames::textureNumber() const
+inline uint TextureFileNames::textureNumber() const
 {
 	return textureNames.size();
 }
 
-const std::string& TextureFileNames::texture(uint i) const
+inline const std::string& TextureFileNames::texture(uint i) const
 {
 	return textureNames[i];
 }
 
-std::string& TextureFileNames::texture(uint i)
+inline std::string& TextureFileNames::texture(uint i)
 {
 	return textureNames[i];
 }
 
-void TextureFileNames::clearTextures()
+inline void TextureFileNames::clearTextures()
 {
 	textureNames.clear();
 }
 
-void TextureFileNames::pushTexture(const std::string& textName)
+inline void TextureFileNames::pushTexture(const std::string& textName)
 {
 	textureNames.push_back(textName);
+}
+
+inline TextureFileNames::TextureFileNamesIterator TextureFileNames::textureBegin()
+{
+	return textureNames.begin();
+}
+
+inline TextureFileNames::TextureFileNamesIterator TextureFileNames::textureEnd()
+{
+	return textureNames.end();
+}
+
+inline TextureFileNames::ConstTextureFileNamesIterator TextureFileNames::textureBegin() const
+{
+	return textureNames.begin();
+}
+
+inline TextureFileNames::ConstTextureFileNamesIterator TextureFileNames::textureEnd() const
+{
+	return textureNames.end();
+}
+
+inline TextureFileNames::TextureFileNamesRangeIterator TextureFileNames::textures()
+{
+	return TextureFileNamesRangeIterator(
+		*this, &TextureFileNames::textureBegin, &TextureFileNames::textureEnd);
+}
+
+inline TextureFileNames::ConstTextureFileNamesRangeIterator TextureFileNames::textures() const
+{
+	return ConstTextureFileNamesRangeIterator(
+		*this, &TextureFileNames::textureBegin, &TextureFileNames::textureEnd);
 }
 
 template<typename Element>

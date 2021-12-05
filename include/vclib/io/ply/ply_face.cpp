@@ -136,7 +136,17 @@ void loadFacesTxt(
 						else { /// @todo manage case when split polygonal face
 							throw std::runtime_error("Cannot handle this file for this mesh type.");
 						}
-
+					}
+				}
+			}
+			if (p.name == ply::texnumber) {
+				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+						uint n = internal::readProperty<uint>(token, p.type);
+						for (uint i = 0; i < f.vertexNumber(); ++i){
+							f.wedgeTexCoord(i).nTexture() = n;
+						}
+						hasBeenRead = true;
 					}
 				}
 			}
@@ -255,6 +265,17 @@ void loadFacesBin(
 					}
 				}
 			}
+			if (p.name == ply::texnumber) {
+				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+						uint n = internal::readProperty<uint>(file, p.type);
+						for (uint i = 0; i < f.vertexNumber(); ++i){
+							f.wedgeTexCoord(i).nTexture() = n;
+						}
+						hasBeenRead = true;
+					}
+				}
+			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
 				if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
 					if (vcl::isPerFaceNormalEnabled(mesh)) {
@@ -336,6 +357,26 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 				if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
 					if (vcl::isPerFaceScalarEnabled(mesh)) {
 						internal::writeProperty(file, f.scalar(), p.type, bin);
+						hasBeenWritten = true;
+					}
+				}
+			}
+			if (p.name == ply::texcoord) {
+				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+						internal::writeProperty(file, f.vertexNumber()*2, p.listSizeType, bin);
+						for (const auto& tc : f.wedgeTexCoords()){
+							internal::writeProperty(file, tc.u(), p.type, bin);
+							internal::writeProperty(file, tc.v(), p.type, bin);
+						}
+						hasBeenWritten = true;
+					}
+				}
+			}
+			if (p.name == ply::texnumber) {
+				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+						internal::writeProperty(file, f.wedgeTexCoord(0).nTexture(), p.type, bin);
 						hasBeenWritten = true;
 					}
 				}

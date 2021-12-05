@@ -95,14 +95,14 @@ WedgeTexCoords<Scalar, N>::wedgeTexCoordEnd() const
 
 template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::WedgeTexCoordsRangeIterator
-WedgeTexCoords<Scalar, N>::wedgeTexCoordIterator()
+WedgeTexCoords<Scalar, N>::wedgeTexCoords()
 {
 	return Base::rangeIterator();
 }
 
 template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::ConstWedgeTexCoordsRangeIterator
-WedgeTexCoords<Scalar, N>::wedgeTexCoordIterator() const
+WedgeTexCoords<Scalar, N>::wedgeTexCoords() const
 {
 	return Base::rangeIterator();
 }

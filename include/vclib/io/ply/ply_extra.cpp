@@ -35,4 +35,14 @@ void loadTextures(const PlyHeader& header, MeshType& mesh)
 	}
 }
 
+template<typename MeshType>
+void saveTextures(PlyHeader& header, const MeshType& mesh)
+{
+	if constexpr (vcl::hasTextureFileNames<MeshType>()) {
+		for (const std::string& str : mesh.textures()){
+			header.pushTextureFileName(str);
+		}
+	}
+}
+
 }

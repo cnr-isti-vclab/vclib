@@ -63,7 +63,10 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 				setFaceColors(CHAR);
 		if constexpr (vcl::hasPerFaceScalar<Mesh>())
 			if (vcl::isPerFaceScalarEnabled(m))
-				setVertexScalars(getPropType<typename Mesh::FaceType::ScalarType>());
+				setFaceScalars(getPropType<typename Mesh::FaceType::ScalarType>());
+		if constexpr (vcl::hasPerFaceWedgeTexCoords<Mesh>())
+			if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
+				setFaceWedgeTexCoords(getPropType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
 	}
 }
 

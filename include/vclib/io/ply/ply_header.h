@@ -49,7 +49,7 @@ public:
 		ply::Format              f,
 		const io::FileMeshInfo&  info,
 		std::vector<std::string> textureFiles = std::vector<std::string>());
-	PlyHeader(std::ifstream& file);
+	PlyHeader(const std::string& filename , std::ifstream& file);
 
 	void clear();
 	bool isValid() const;
@@ -81,6 +81,7 @@ public:
 	void setNumberVertices(unsigned long int nV);
 	void setNumberFaces(unsigned long int nF);
 	void setNumberEdges(unsigned long int nE);
+	void pushTextureFileName(const std::string& tn);
 
 	void setInfo(
 		const io::FileMeshInfo&  info,

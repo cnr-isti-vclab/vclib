@@ -122,20 +122,20 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordEnd() const
 
 template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsRangeIterator
-OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator()
+OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoords()
 {
 	return WedgeTexCoordsRangeIterator(
-		B::optCont().wedgeTexCoords(thisId()),
+		*this,
 		&OptionalWedgeTexCoords::wedgeTexCoordBegin,
 		&OptionalWedgeTexCoords::wedgeTexCoordEnd);
 }
 
 template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::ConstWedgeTexCoordsRangeIterator
-OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator() const
+OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoords() const
 {
 	return ConstWedgeTexCoordsRangeIterator(
-		B::optCont().wedgeTexCoords(thisId()),
+		*this,
 		&OptionalWedgeTexCoords::wedgeTexCoordBegin,
 		&OptionalWedgeTexCoords::wedgeTexCoordEnd);
 }

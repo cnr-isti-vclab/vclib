@@ -29,27 +29,16 @@
 
 int main()
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
 
 	vcl::PolyMesh pm;
 
 	pm.enableSameOptionalComponentsOf(m);
 	pm.importFrom(m);
 
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/bunny_converted.ply", false);
+	assert(pm.isPerFaceWedgeTexCoordsEnabled());
 
-//	vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();
-
-//	assert(m.vertexNumber() == 4);
-//	assert(m.faceNumber() == 4);
-
-//	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply");
-
-//	m = vcl::createDodecahedron<vcl::TriMesh>();
-//	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/dodecahedron.ply");
-
-//	vcl::PolyMesh pm = vcl::createDodecahedron<vcl::PolyMesh>();
-//	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/dodecahedron_poly.ply");
+	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
 
 	return 0;
 }

@@ -31,6 +31,9 @@ namespace vcl::ply {
 template<typename MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh);
 
+template<typename MeshType>
+void saveTextures(PlyHeader& header, const MeshType& mesh);
+
 } // namespace vcl::ply
 
 #include "ply_extra.cpp"

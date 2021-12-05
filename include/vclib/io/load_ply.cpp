@@ -156,7 +156,7 @@ void loadPly(
 	if (!file.is_open()) {
 		throw vcl::CannotOpenFileException(filename);
 	}
-	vcl::ply::PlyHeader header(file);
+	vcl::ply::PlyHeader header(filename, file);
 	if (header.errorWhileLoading())
 		throw MalformedFileException("Header not valid: " + filename);
 

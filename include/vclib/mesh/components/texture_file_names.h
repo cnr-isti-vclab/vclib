@@ -28,11 +28,21 @@
 
 #include "detection/tex_file_names_detection.h"
 
+#include "../iterators/range_iterator.h"
+
 namespace vcl::comp {
 
 class TextureFileNames
 {
 public:
+	// iterators
+	using TextureFileNamesIterator      = std::vector<std::string>::iterator;
+	using ConstTextureFileNamesIterator = std::vector<std::string>::const_iterator;
+	using TextureFileNamesRangeIterator =
+		RangeIterator<TextureFileNames, TextureFileNamesIterator>;
+	using ConstTextureFileNamesRangeIterator =
+		ConstRangeIterator<TextureFileNames, ConstTextureFileNamesIterator>;
+
 	TextureFileNames();
 	uint textureNumber() const;
 
@@ -42,6 +52,13 @@ public:
 	void clearTextures();
 
 	void pushTexture(const std::string& textName);
+
+	TextureFileNamesIterator textureBegin();
+	TextureFileNamesIterator textureEnd();
+	ConstTextureFileNamesIterator textureBegin() const;
+	ConstTextureFileNamesIterator textureEnd() const;
+	TextureFileNamesRangeIterator textures();
+	ConstTextureFileNamesRangeIterator textures() const;
 
 protected:
 	template<typename Element>

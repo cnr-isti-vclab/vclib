@@ -90,13 +90,13 @@ typename WedgeColors<N>::ConstWedgeColorsIterator WedgeColors<N>::wedgeColorEnd(
 }
 
 template<int N>
-typename WedgeColors<N>::WedgeColorsRangeIterator WedgeColors<N>::wedgeColorIterator()
+typename WedgeColors<N>::WedgeColorsRangeIterator WedgeColors<N>::wedgeColors()
 {
 	return Base::rangeIterator();
 }
 
 template<int N>
-typename WedgeColors<N>::ConstWedgeColorsRangeIterator WedgeColors<N>::wedgeColorIterator() const
+typename WedgeColors<N>::ConstWedgeColorsRangeIterator WedgeColors<N>::wedgeColors() const
 {
 	return Base::rangeIterator();
 }

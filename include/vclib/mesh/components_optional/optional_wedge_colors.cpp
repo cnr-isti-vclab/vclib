@@ -114,20 +114,20 @@ OptionalWedgeColors<N, T>::wedgeColorEnd() const
 
 template<int N, typename T>
 typename OptionalWedgeColors<N, T>::WedgeColorsRangeIterator
-OptionalWedgeColors<N, T>::wedgeColorIterator()
+OptionalWedgeColors<N, T>::wedgeColors()
 {
 	return WedgeColorsRangeIterator(
-		B::optCont().wedgeColors(thisId()),
+		*this,
 		&OptionalWedgeColors::wedgeColorBegin,
 		&OptionalWedgeColors::wedgeColorEnd);
 }
 
 template<int N, typename T>
 typename OptionalWedgeColors<N, T>::ConstWedgeColorsRangeIterator
-OptionalWedgeColors<N, T>::wedgeColorIterator() const
+OptionalWedgeColors<N, T>::wedgeColors() const
 {
 	return ConstWedgeColorsRangeIterator(
-		B::optCont().wedgeColors(thisId()),
+		*this,
 		&OptionalWedgeColors::wedgeColorBegin,
 		&OptionalWedgeColors::wedgeColorEnd);
 }

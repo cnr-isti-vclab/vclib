@@ -37,7 +37,7 @@ void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo&
 	ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, info);
 	header.setNumberVertices(m.vertexNumber());
 	header.setNumberFaces(m.faceNumber());
-
+	ply::saveTextures(header, m);
 	savePly(m, filename, header);
 }
 

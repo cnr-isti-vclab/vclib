@@ -65,7 +65,14 @@ class Face :
 
 namespace vcl {
 
-class PolyMesh : public vcl::Mesh<polymesh::Vertex, polymesh::Face>
+class PolyMesh :
+		public vcl::Mesh<
+			polymesh::Vertex,
+			polymesh::Face,
+			mesh::BoundingBox3d,
+			mesh::Mark,
+			mesh::TextureFileNames,
+			mesh::TransformMatrixd>
 {
 public:
 	using Vertex = polymesh::Vertex;
