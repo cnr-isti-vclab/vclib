@@ -141,17 +141,6 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordIterator() const
 }
 
 template<typename Scalar, int N, typename T>
-uint OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordsNumber() const
-{
-	if constexpr (N >= 0) {
-		return N;
-	}
-	else {
-		return B::optCont().wedgeTexCoords(thisId()).size();
-	}
-}
-
-template<typename Scalar, int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void)
 OptionalWedgeTexCoords<Scalar, N, T>::resizeWedgeTexCoords(uint n)
@@ -199,7 +188,48 @@ template<typename Element>
 void OptionalWedgeTexCoords<Scalar, N, T>::importFrom(const Element& e)
 {
 	if constexpr (hasWedgeTexCoords<Element>()) {
-		// todo
+		if (isWedgeTexCoordsEnabled() && isWedgeTexCoordsEnabledOn(e)) {
+			if constexpr(N > 0) {
+				// same static size
+				if constexpr (N == Element::WEDGE_TEX_COORD_NUMBER) {
+					importWedgeTexCoordsFrom(e);
+				}
+				// from dynamic to static, but dynamic size == static size
+				else if constexpr (Element::WEDGE_TEX_COORD_NUMBER < 0){
+					if (e.vertexNumber() == N){
+						importWedgeTexCoordsFrom(e);
+					}
+				}
+				else {
+					// do not import in this case: cannot import from dynamic size != static size
+				}
+			}
+			else {
+				// from static/dynamic to dynamic size: need to resize first, then import
+				resizeWedgeTexCoords(e.vertexNumber());
+				importWedgeTexCoordsFrom(e);
+			}
+		}
+	}
+}
+
+template<typename Scalar, int N, typename T>
+template<typename Element>
+void OptionalWedgeTexCoords<Scalar, N, T>::importWedgeTexCoordsFrom(const Element& e)
+{
+	for (uint i = 0; i < e.vertexNumber(); ++i){
+		wedgeTexCoord(i) = e.wedgeTexCoord(i);
+	}
+}
+
+template<typename Scalar, int N, typename T>
+uint OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordsNumber() const
+{
+	if constexpr (N >= 0) {
+		return N;
+	}
+	else {
+		return B::optCont().wedgeTexCoords(thisId()).size();
 	}
 }
 

@@ -133,17 +133,6 @@ OptionalWedgeColors<N, T>::wedgeColorIterator() const
 }
 
 template<int N, typename T>
-uint OptionalWedgeColors<N, T>::wedgeColorsNumber() const
-{
-	if constexpr (N >= 0) {
-		return N;
-	}
-	else {
-		return B::optCont().wedgeColors(thisId()).size();
-	}
-}
-
-template<int N, typename T>
 template<int M>
 VCL_ENABLE_IF(M < 0, void) OptionalWedgeColors<N, T>::resizeWedgeColors(uint n)
 {
@@ -186,7 +175,48 @@ template<typename Element>
 void OptionalWedgeColors<N, T>::importFrom(const Element& e)
 {
 	if constexpr (hasWedgeColors<Element>()) {
-		// todo
+		if (isWedgeColorsEnabled() && isWedgeColorsEnabledOn(e)) {
+			if constexpr(N > 0) {
+				// same static size
+				if constexpr (N == Element::WEDGE_COLOR_NUMBER) {
+					importWedgeColorsFrom(e);
+				}
+				// from dynamic to static, but dynamic size == static size
+				else if constexpr (Element::WEDGE_COLOR_NUMBER < 0){
+					if (e.vertexNumber() == N){
+						importWedgeColorsFrom(e);
+					}
+				}
+				else {
+					// do not import in this case: cannot import from dynamic size != static size
+				}
+			}
+			else {
+				// from static/dynamic to dynamic size: need to resize first, then import
+				resizeWedgeColors(e.vertexNumber());
+				importWedgeColorsFrom(e);
+			}
+		}
+	}
+}
+
+template<int N, typename T>
+template<typename Element>
+void OptionalWedgeColors<N, T>::importWedgeColorsFrom(const Element& e)
+{
+	for (uint i = 0; i < e.vertexNumber(); ++i){
+		wedgeColor(i) = e.wedgeColor(i);
+	}
+}
+
+template<int N, typename T>
+uint OptionalWedgeColors<N, T>::wedgeColorsNumber() const
+{
+	if constexpr (N >= 0) {
+		return N;
+	}
+	else {
+		return B::optCont().wedgeColors(thisId()).size();
 	}
 }
 

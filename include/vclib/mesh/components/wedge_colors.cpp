@@ -139,10 +139,40 @@ VCL_ENABLE_IF(M < 0, void) WedgeColors<N>::clearWedgeColor()
 
 template<int N>
 template<typename Element>
-void WedgeColors<N>::importFrom(const Element&)
+void WedgeColors<N>::importFrom(const Element& e)
 {
 	if constexpr (hasWedgeColors<Element>()) {
-		// todo
+		if (isWedgeColorsEnabledOn(e)) {
+			if constexpr(N > 0) {
+				// same static size
+				if constexpr (N == Element::WEDGE_COLOR_NUMBER) {
+					importWedgeColorsFrom(e);
+				}
+				// from dynamic to static, but dynamic size == static size
+				else if constexpr (Element::WEDGE_COLOR_NUMBER < 0){
+					if (e.vertexNumber() == N){
+						importWedgeColorsFrom(e);
+					}
+				}
+				else {
+					// do not import in this case: cannot import from dynamic size != static size
+				}
+			}
+			else {
+				// from static/dynamic to dynamic size: need to resize first, then import
+				resizeWedgeColors(e.vertexNumber());
+				importWedgeColorsFrom(e);
+			}
+		}
+	}
+}
+
+template<int N>
+template<typename Element>
+void WedgeColors<N>::importWedgeColorsFrom(const Element& e)
+{
+	for (uint i = 0; i < e.vertexNumber(); ++i){
+		wedgeColor(i) = e.wedgeColor(i);
 	}
 }
 

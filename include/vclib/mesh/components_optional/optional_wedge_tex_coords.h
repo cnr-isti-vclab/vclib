@@ -136,6 +136,9 @@ protected:
 	void importFrom(const Element& e);
 
 private:
+	template<typename Element>
+	void importWedgeTexCoordsFrom(const Element& e);
+
 	uint wedgeTexCoordsNumber() const;
 };
 
