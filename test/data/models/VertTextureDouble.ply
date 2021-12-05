@@ -1,0 +1,27 @@
+ply
+format ascii 1.0
+comment VCGLIB generated
+comment TextureFile TextureDouble_A.png
+comment TextureFile TextureDouble_B.png
+element vertex 8
+property float x
+property float y
+property float z
+property float texture_u
+property float texture_v
+property int texnumber
+element face 4
+property list uchar int vertex_indices
+end_header
+0 0 0 0 0 0
+1 0 0 1 0 0
+1 1 0 1 1 0
+0 1 0 0 1 0
+2 0 0 0 0 1
+3 0 0 1 0 1
+3 1 0 1 1 1
+2 1 0 0 1 1
+3 0 1 2
+3 0 2 3
+3 4 5 6
+3 4 6 7

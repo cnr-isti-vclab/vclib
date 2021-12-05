@@ -236,13 +236,13 @@ Scalar Point<Scalar, N>::angle(const Point<S, N>& p1) const
 }
 
 template<typename Scalar, int N>
-Scalar Point<Scalar, N>::operator[](size_t i) const
+Scalar& Point<Scalar, N>::operator[](uint i)
 {
 	return p(i);
 }
 
 template<typename Scalar, int N>
-Scalar& Point<Scalar, N>::operator[](size_t i)
+const Scalar& Point<Scalar, N>::operator[](uint i) const
 {
 	return p(i);
 }

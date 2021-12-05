@@ -85,6 +85,24 @@ void loadVerticesTxt(
 					}
 				}
 			}
+			if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
+				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+					using Scalar = typename VertexType::TexCoordType::ScalarType;
+					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
+						int a = p.name - ply::texture_u;
+						v.texCoord()[a] = internal::readProperty<Scalar>(token, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
+			if (p.name == ply::texnumber) {
+				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
+						v.texCoord().nTexture() = internal::readProperty<uint>(token, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
 			if (!hasBeenRead) {
 				if (p.list) {
 					uint s = internal::readProperty<int>(token, p.listSizeType);
@@ -145,6 +163,24 @@ void loadVerticesBin(
 					}
 				}
 			}
+			if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
+				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+					using Scalar = typename VertexType::TexCoordType::ScalarType;
+					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
+						int a = p.name - ply::texture_u;
+						v.texCoord()[a] = internal::readProperty<Scalar>(file, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
+			if (p.name == ply::texnumber) {
+				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
+						v.texCoord().nTexture() = internal::readProperty<uint>(file, p.type);
+						hasBeenRead = true;
+					}
+				}
+			}
 			if (!hasBeenRead) {
 				if (p.list) {
 					uint s = internal::readProperty<int>(file, p.listSizeType);
@@ -198,6 +234,23 @@ void saveVertices(
 				if constexpr (vcl::hasPerVertexScalar<MeshType>()) {
 					if (vcl::isPerVertexScalarEnabled(mesh)) {
 						internal::writeProperty(file, v.scalar(), p.type, bin);
+						hasBeenWritten = true;
+					}
+				}
+			}
+			if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
+				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
+						int a = p.name - ply::texture_u;
+						internal::writeProperty(file, v.texCoord()[a], p.type, bin);
+						hasBeenWritten = true;
+					}
+				}
+			}
+			if (p.name == ply::texnumber) {
+				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
+						internal::writeProperty(file, v.texCoord().nTexture(), p.type, bin);
 						hasBeenWritten = true;
 					}
 				}

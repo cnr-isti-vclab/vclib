@@ -55,6 +55,11 @@ void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
 				info.setVertexScalars(false);
 			}
 		}
+		if (info.hasVertexTexCoords()) {
+			if (!vcl::enableIfPerVertexTexCoordOptional(m)) {
+				info.setVertexTexCoords(false);
+			}
+		}
 	}
 	else {
 		info.setVertices(false);

@@ -44,6 +44,10 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 		if constexpr (vcl::hasPerVertexScalar<Mesh>())
 			if (vcl::isPerVertexScalarEnabled(m))
 				setVertexScalars(getPropType<typename Mesh::VertexType::ScalarType>());
+		if constexpr (vcl::hasPerVertexTexCoord<Mesh>())
+			if (vcl::isPerVertexTexCoordEnabled(m))
+				setVertexTexCoords(
+					getPropType<typename Mesh::VertexType::TexCoordType::ScalarType>());
 	}
 
 	if (vcl::hasFaces<Mesh>()){
@@ -108,6 +112,11 @@ inline bool FileMeshInfo::hasVertexColors() const
 inline bool FileMeshInfo::hasVertexScalars() const
 {
 	return mode[VERTEX_SCALAR];
+}
+
+bool FileMeshInfo::hasVertexTexCoords() const
+{
+	return mode[VERTEX_TEXCOORDS];
 }
 
 inline bool FileMeshInfo::hasFaces() const
@@ -208,6 +217,13 @@ inline void FileMeshInfo::setVertexScalars(bool b, PropType t)
 		modeTypes[VERTEX_SCALAR] = t;
 }
 
+void FileMeshInfo::setVertexTexCoords(bool b, PropType t)
+{
+	mode[VERTEX_TEXCOORDS] = b;
+	if (b)
+		modeTypes[VERTEX_TEXCOORDS] = t;
+}
+
 inline void FileMeshInfo::setFaces(bool b)
 {
 	mode[FACES] = b;
@@ -281,6 +297,11 @@ inline FileMeshInfo::PropType FileMeshInfo::vertexColorsType() const
 inline FileMeshInfo::PropType FileMeshInfo::vertexScalarsType() const
 {
 	return modeTypes[VERTEX_SCALAR];
+}
+
+FileMeshInfo::PropType FileMeshInfo::vertexTexCoordsType() const
+{
+	return modeTypes[VERTEX_TEXCOORDS];
 }
 
 inline FileMeshInfo::PropType FileMeshInfo::faceNormalsType() const

@@ -47,9 +47,11 @@ typedef enum {
 	blue,
 	alpha,
 	scalar,
+	texture_u,
+	texture_v,
+	texnumber,
 	vertex_indices,
 	texcoord,
-	texnumber,
 	vertex1,
 	vertex2
 } PropertyName;

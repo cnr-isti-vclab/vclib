@@ -27,7 +27,7 @@
 
 namespace vcl {
 
-template <typename Scalar>
+template<typename Scalar>
 class TexCoord
 {
 public:
@@ -35,23 +35,29 @@ public:
 
 	TexCoord();
 
-	Scalar u() const;
-	Scalar v() const;
+	Scalar  u() const;
+	Scalar  v() const;
 	Scalar& u();
 	Scalar& v();
-	void setU(Scalar s);
-	void setV(Scalar s);
-	void set(Scalar u, Scalar v);
+	void    setU(Scalar s);
+	void    setV(Scalar s);
+	void    set(Scalar u, Scalar v);
 
-	short nTexture() const;
+	short  nTexture() const;
 	short& nTexture();
+
+	// operators
+	Scalar&       operator()(uint i);
+	const Scalar& operator()(uint i) const;
+	Scalar&       operator[](uint i);
+	const Scalar& operator[](uint i) const;
 
 private:
 	Point2<Scalar> coord;
-	short n;
+	short          n;
 };
 
-}
+} // namespace vcl
 
 #include "tex_coord.cpp"
 

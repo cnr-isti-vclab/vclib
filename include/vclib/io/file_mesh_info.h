@@ -58,6 +58,7 @@ public:
 	bool hasVertexNormals() const;
 	bool hasVertexColors() const;
 	bool hasVertexScalars() const;
+	bool hasVertexTexCoords() const;
 	bool hasFaces() const;
 	bool hasFaceVRefs() const;
 	bool hasFaceNormals() const;
@@ -77,6 +78,7 @@ public:
 	void setVertexNormals(bool b = true, PropType t = FLOAT);
 	void setVertexColors(bool b = true, PropType t = CHAR);
 	void setVertexScalars(bool b = true, PropType t = DOUBLE);
+	void setVertexTexCoords(bool b = true, PropType t = FLOAT);
 	void setFaces(bool b = true);
 	void setFaceVRefs(bool b = true);
 	void setFaceNormals(bool b = true, PropType t = FLOAT);
@@ -91,6 +93,7 @@ public:
 	PropType vertexNormalsType() const;
 	PropType vertexColorsType() const;
 	PropType vertexScalarsType() const;
+	PropType vertexTexCoordsType() const;
 	PropType faceNormalsType() const;
 	PropType faceColorsType() const;
 	PropType faceScalarsType() const;
@@ -106,6 +109,7 @@ private:
 		VERTEX_NORMALS,
 		VERTEX_COLORS,
 		VERTEX_SCALAR,
+		VERTEX_TEXCOORDS,
 		FACES,
 		FACE_VREFS,
 		FACE_NORMALS,

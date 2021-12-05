@@ -94,8 +94,8 @@ public:
 	Point& operator*=(const Scalar& s);
 	Point& operator/=(const Scalar& s);
 
-	Scalar  operator[](size_t i) const;
-	Scalar& operator[](size_t i);
+	Scalar& operator[](uint i);
+	const Scalar& operator[](uint i) const;
 
 	/// @private
 	template<typename S, int M>

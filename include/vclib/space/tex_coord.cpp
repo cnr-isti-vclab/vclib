@@ -25,8 +25,8 @@
 
 namespace vcl {
 
-template <typename Scalar>
-TexCoord<Scalar>::TexCoord() : coord(0,0), n(0)
+template<typename Scalar>
+TexCoord<Scalar>::TexCoord() : coord(0, 0), n(0)
 {
 }
 
@@ -89,4 +89,28 @@ short& TexCoord<Scalar>::nTexture()
 	return n;
 }
 
+template<typename Scalar>
+Scalar& TexCoord<Scalar>::operator()(uint i)
+{
+	return coord[i];
 }
+
+template<typename Scalar>
+const Scalar& TexCoord<Scalar>::operator()(uint i) const
+{
+	return coord[i];
+}
+
+template<typename Scalar>
+Scalar& TexCoord<Scalar>::operator[](uint i)
+{
+	return coord[i];
+}
+
+template<typename Scalar>
+const Scalar& TexCoord<Scalar>::operator[](uint i) const
+{
+	return coord[i];
+}
+
+} // namespace vcl
