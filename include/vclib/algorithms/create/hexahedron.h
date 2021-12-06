@@ -20,35 +20,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_ALGORITHMS_CREATE_HEXAHEDRON_H
+#define VCL_ALGORITHMS_CREATE_HEXAHEDRON_H
 
-#include <vclib/algorithms/create/dodecahedron.h>
-#include <vclib/algorithms/create/hexahedron.h>
-#include <vclib/algorithms/create/tetrahedron.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/trimesh.h>
-#include <vclib/polymesh.h>
+namespace vcl {
 
-int main()
-{
-	vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();
+template<typename MeshType>
+MeshType createHexahedron();
 
-	assert(m.vertexNumber() == 4);
-	assert(m.faceNumber() == 4);
+template<typename MeshType, typename CoordType>
+MeshType createHexahedron(
+	const CoordType& min,
+	const CoordType& max);
 
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply");
+template<typename MeshType, typename CoordType>
+MeshType createCube(
+	const CoordType& min,
+	double edgeLength);
 
-	m = vcl::createHexahedron<vcl::TriMesh>();
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/hexahedron.ply");
+} // namespace vcl
 
-	m = vcl::createDodecahedron<vcl::TriMesh>();
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/dodecahedron.ply");
+#include "hexahedron.cpp"
 
-	vcl::PolyMesh pm = vcl::createHexahedron<vcl::PolyMesh>();
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/hexahedron_poly.ply");
-
-	pm = vcl::createDodecahedron<vcl::PolyMesh>();
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/dodecahedron_poly.ply");
-
-	return 0;
-}
+#endif // VCL_ALGORITHMS_CREATE_HEXAHEDRON_H

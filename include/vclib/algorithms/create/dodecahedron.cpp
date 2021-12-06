@@ -166,6 +166,7 @@ MeshType polygonDodecahedron()
 		CoordType(s1, -s1, s1),
 		CoordType(-s1, -s1, -s1));
 
+	mesh.reserveFaces(12);
 	mesh.addFace(14, 11, 18, 2, 1);
 	mesh.addFace(2, 17, 7, 13, 1);
 	mesh.addFace(15, 8, 19, 4, 3);

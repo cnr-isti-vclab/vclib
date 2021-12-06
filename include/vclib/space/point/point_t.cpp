@@ -134,7 +134,7 @@ bool Point<Scalar, N>::operator<(const Point& p1) const
 template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator+(const Scalar& s) const
 {
-	return Point<Scalar, N>(p + s);
+	return Point<Scalar, N>(p.array() + s);
 }
 
 template<typename Scalar, int N>
