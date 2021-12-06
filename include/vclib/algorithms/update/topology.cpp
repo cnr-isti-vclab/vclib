@@ -54,7 +54,7 @@ void clearPerVertexAdjacentFaces(MeshType& m)
 }
 
 /**
- * @brief Updates the adjacent faces of each face of the mesh.
+ * @brief Updates the adjacent faces of each vertex of the mesh.
  *
  * Requirements:
  * - Mesh:
@@ -81,6 +81,71 @@ void updatePerVertexAdjacentFaces(MeshType& m)
 	for (FaceType& f : m.faces()) {
 		for (VertexType* v : f.vertices()) {
 			v->pushAdjFace(&f);
+		}
+	}
+}
+
+/**
+ * @brief Clears the adjacent vertices of each vertex of the mesh.
+ *
+ * Since the number of adjacent vertices per vertex is dynamic, at the end of this function each
+ * vertex will have 0 adjacent vertices.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - AdjacentVertices
+ *
+ * @param m: the mesh on which clear the per vertex adjacent vertices.
+ */
+template<typename MeshType>
+void clearPerVertexAdjacentVertices(MeshType& m)
+{
+	vcl::requirePerVertexAdjacentVertices(m);
+
+	using VertexType = typename MeshType::VertexType;
+
+	for (VertexType& v : m.vertices()) {
+		v.clearAdjVertices();
+	}
+}
+
+/**
+ * @brief Updates the adjacent vertices of each vertex of the mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - AdjacentVertices
+ *   - Faces
+ *
+ * @param m:  the mesh on which update the per vertex adjacent faces.
+ */
+template<typename MeshType>
+void updatePerVertexAdjacentVertices(MeshType& m)
+{
+	clearPerVertexAdjacentVertices(m);
+
+	vcl::requireFaces<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+
+	// vector that contains edges sorted trough unordered vertex pointers
+	// it contains clusters of "same" edges, but each one of them has its face pointer
+	// note that in case on non-manifold mesh, clusters may be of size >= 2
+	std::vector<internal::EdgeSorterer<MeshType>> vec = internal::fillAndSortEdgeVector(m);
+
+	// store the last pair of vertices
+	VertexType* v1 = nullptr;
+	VertexType* v2 = nullptr;
+	for (uint i = 0; i < vec.size(); ++i){
+		// if this pair is different from the last pair
+		if (vec[i].v[0] != v1 || vec[i].v[1] != v2) {
+			// update last pair
+			v1 = vec[i].v[0];
+			v2 = vec[i].v[1];
+			v1->pushAdjVertex(v2); // set the pair as adjacent
+			v2->pushAdjVertex(v1);
 		}
 	}
 }

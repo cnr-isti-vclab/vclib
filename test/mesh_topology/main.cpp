@@ -24,15 +24,13 @@
 
 #include <vclib/algorithms/update/topology.h>
 #include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
 #include <vclib/trimesh.h>
-#include <vclib/misc/timer.h>
 
 int main()
 {
 	vcl::TriMesh m;
 
-	vcl::io::loadPly(m, "/home/alessandro/tmp/cube.ply");
+	vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
 	m.enablePerVertexAdjacentFaces();
 	vcl::updatePerVertexAdjacentFaces(m);
@@ -45,10 +43,23 @@ int main()
 		std::cerr << std::endl;
 	}
 
-	m.enablePerFaceAdjacentFaces();
-	vcl::updatePerFaceAdjacentFaces(m);
+	std::cerr << std::endl << std::endl;
+
+	m.enablePerVertexAdjacentVertices();
+	vcl::updatePerVertexAdjacentVertices(m);
+
+	for (const vcl::TriMesh::Vertex& v : m.vertices()) {
+		std::cerr << "Adj vertices to vertex " << m.index(v) << ": \n\t";
+		for (const vcl::TriMesh::Vertex* av : v.adjVertices()){
+			std::cerr << m.index(av) << "; ";
+		}
+		std::cerr << std::endl;
+	}
 
 	std::cerr << std::endl << std::endl;
+
+	m.enablePerFaceAdjacentFaces();
+	vcl::updatePerFaceAdjacentFaces(m);
 
 	for (const vcl::TriMesh::Face& f : m.faces()) {
 		std::cerr << "Adj faces to face " << m.index(f) << ": \n\t";

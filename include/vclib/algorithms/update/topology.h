@@ -32,6 +32,12 @@ template<typename MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m);
 
 template<typename MeshType>
+void clearPerVertexAdjacentVertices(MeshType& m);
+
+template<typename MeshType>
+void updatePerVertexAdjacentVertices(MeshType& m);
+
+template<typename MeshType>
 void clearPerFaceAdjacentFaces(MeshType& m);
 
 template<typename MeshType>
