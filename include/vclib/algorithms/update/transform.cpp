@@ -35,7 +35,7 @@ void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool 
 
 	using VertexType = typename MeshType::VertexType;
 	for (VertexType& v : mesh.vertices()) {
-		v.coord() = v.coord() * matrix;
+		v.coord() *= matrix;
 	}
 	if (updateNormals) {
 		if constexpr (hasPerVertexNormal<MeshType>()) {

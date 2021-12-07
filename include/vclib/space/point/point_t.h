@@ -108,6 +108,9 @@ public:
 	Point& operator*=(const Scalar& s);
 	template<typename SM>
 	Point& operator*=(const Eigen::Matrix<SM, N, N>& m);
+	template<typename SM, int U = N>
+	VCL_ENABLE_IF(U==3, Point&)
+	operator*=(const Eigen::Matrix<SM, N+1, N+1>& m);
 
 	Point& operator/=(const Scalar& s);
 

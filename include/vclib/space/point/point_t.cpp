@@ -188,16 +188,23 @@ Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<SM, N, N>& m) c
 	return Point<Scalar, N>(p * m.template cast<Scalar>());
 }
 
+/**
+ * @brief Returns a new 3D point/vector on which has been applied an RTS 4x4 matrix.
+ */
 template<typename Scalar, int N>
 template<typename SM, int U>
 VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>)
 Point<Scalar, N>::operator*(const Eigen::Matrix<SM, N+1, N+1>& m) const
 {
-	Eigen::Matrix<SM, 3, 3> m33 = m.block(0,0,3,3);
-	Eigen::Matrix<Scalar, 1, N> pp = p * m33;
+	Eigen::Matrix<Scalar, 1, N> s;
+
+	s(0) = m(0, 0)*p(0) + m(0, 1)*p(1) + m(0, 2)*p(2) + m(0, 3);
+	s(1) = m(1, 0)*p(0) + m(1, 1)*p(1) + m(1, 2)*p(2) + m(1, 3);
+	s(2) = m(2, 0)*p(0) + m(2, 1)*p(1) + m(2, 2)*p(2) + m(2, 3);
+
 	SM w = p(0)*m(3,0) + p(1)*m(3,1) +p(2)*m(3,2) + m(3,3);
-	if (w != 0) pp = pp / w;
-	return Point<Scalar, N>(pp);
+	if (w != 0) s = s / w;
+	return Point<Scalar, N>(s);
 }
 
 template<typename Scalar, int N>
@@ -246,6 +253,19 @@ template<typename SM>
 Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<SM, N, N>& m)
 {
 	p *= m.template cast<Scalar>();
+	return *this;
+}
+
+/**
+ * @brief Applies to the given point/vector an RTS 4x4 matrix.
+ * @param m
+ */
+template<typename Scalar, int N>
+template<typename SM, int U>
+VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>&)
+Point<Scalar, N>::operator*=(const Eigen::Matrix<SM, N+1, N+1>& m)
+{
+	*this = *this * m;
 	return *this;
 }
 

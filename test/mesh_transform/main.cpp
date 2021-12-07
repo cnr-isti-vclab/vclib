@@ -44,31 +44,5 @@ int main()
 
 	vcl::io::savePly(tm, VCL_TEST_RESULTS_PATH "/rotated_bunny.ply");
 
-	m44.setZero();
-	m44(0,0) = 1;
-	m44(0,1) = 0.5;
-	m44(0,3) = 1;
-
-	m44(1,0) = 0.1;
-	m44(1,1) = 1;
-	m44(1,2) = -0.3;
-	m44(1,3) = 2;
-
-	m44(2,0) = 0.2;
-	m44(2,2) = 1;
-
-	m44(3,3) = 1;
-
-	vcl::applyTransformMatrix(m, m44);
-
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/obbrobrio.ply");
-
-//	vcl::PolyMesh pm;
-
-//	vcl::io::loadPly(pm, VCL_TEST_MODELS_PATH "/cube_poly.ply");
-
-//	std::cerr << "========= PolyMesh =========\n\n";
-
-
 	return 0;
 }
