@@ -122,7 +122,7 @@ void accumulateLaplacianInfo(
  * @param cotangentWeight
  */
 template<typename MeshType>
-void vertexCoordLaplacianSmoothing(
+void laplacianSmoothing(
 	MeshType&    m,
 	uint step,
 	bool         smoothSelected,
@@ -146,6 +146,43 @@ void vertexCoordLaplacianSmoothing(
 					v.coord() =
 						(v.coord() + laplData[m.index(v)].sum) / (laplData[m.index(v)].cnt + 1);
 				}
+			}
+		}
+	}
+}
+
+template<typename MeshType>
+void taubinSmoothing(
+	MeshType& m,
+	uint      step,
+	float     lambda,
+	float     mu,
+	bool      smoothSelected /*, vcl::CallBackPos *cb*/)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requireFaces<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+	using CoordType  = typename VertexType::CoordType;
+
+	internal::LaplacianInfo<CoordType>              lpz = {CoordType(0, 0, 0), 0};
+	std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize());
+
+	for (uint i = 0; i < step; ++i) {
+		std::fill(laplData.begin(), laplData.end(), lpz);
+		internal::accumulateLaplacianInfo(m, laplData);
+		for (VertexType& v : m.vertices()) {
+			if (!smoothSelected || v.isSelected()) {
+				CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
+				v.coord() = v.coord() + delta * lambda;
+			}
+		}
+		std::fill(laplData.begin(), laplData.end(), lpz);
+		internal::accumulateLaplacianInfo(m, laplData);
+		for (VertexType& v : m.vertices()) {
+			if (!smoothSelected || v.isSelected()) {
+				CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
+				v.coord() = v.coord() + delta * mu;
 			}
 		}
 	}

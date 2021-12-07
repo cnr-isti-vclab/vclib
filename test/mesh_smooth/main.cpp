@@ -72,7 +72,7 @@ int main()
 	vcl::updateBoundingBox(m2);
 
 	vcl::Timer t("Laplacian Smoothing");
-	vcl::vertexCoordLaplacianSmoothing(m2, 30);
+	vcl::laplacianSmoothing(m2, 30);
 	t.stopAndPrint();
 
 	MyMesh m3;

@@ -28,12 +28,21 @@
 namespace vcl {
 
 template<typename MeshType>
-void vertexCoordLaplacianSmoothing(
-	MeshType&    m,
-	uint step,
-	bool         smoothSelected  = false,
-	bool         cotangentWeight = false /*, vcl::CallBackPos *cb = 0*/);
-}
+void laplacianSmoothing(
+	MeshType& m,
+	uint      step,
+	bool      smoothSelected  = false,
+	bool      cotangentWeight = false /*, vcl::CallBackPos *cb = 0*/);
+
+template<typename MeshType>
+void taubinSmoothing(
+	MeshType& m,
+	uint      step,
+	float     lambda,
+	float     mu,
+	bool      smoothSelected  = false/*, vcl::CallBackPos *cb = 0*/);
+
+} // namespace vcl
 
 #include "smooth.cpp"
 
