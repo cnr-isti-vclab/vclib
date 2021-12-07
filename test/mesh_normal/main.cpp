@@ -25,16 +25,15 @@
 #include <vclib/algorithms/update/normal.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/trimesh.h>
+#include <vclib/polymesh.h>
 
-int main()
-{
-	vcl::TriMesh m;
-
-	vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/cube_tri.ply");
-
+template<typename MeshType>
+void updateAndPrintNormals(MeshType& m){
 	vcl::updatePerFaceNormals(m);
 
-	for (const vcl::TriMesh::Face& f : m.faces()) {
+	std::cerr << "Face Normals:\n\n";
+
+	for (const auto& f : m.faces()) {
 		std::cerr << "Face " << m.index(f) << " normal: " << f.normal() << "\n";
 		std::cerr << std::endl;
 	}
@@ -43,7 +42,20 @@ int main()
 
 	vcl::updatePerVertexNormals(m);
 
-	for (const vcl::TriMesh::Vertex& v : m.vertices()) {
+	std::cerr << "Vertex Normals:\n\n";
+
+	for (const auto& v : m.vertices()) {
+		std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+		std::cerr << std::endl;
+	}
+
+	std::cerr << std::endl << std::endl;
+
+	vcl::updatePerVertexNormalsFromFaceNormals(m);
+
+	std::cerr << "Vertex Normals from Faces:\n\n";
+
+	for (const auto& v : m.vertices()) {
 		std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
 		std::cerr << std::endl;
 	}
@@ -52,12 +64,44 @@ int main()
 
 	vcl::updatePerVertexNormalsAngleWeighted(m);
 
-	for (const vcl::TriMesh::Vertex& v : m.vertices()) {
+	std::cerr << "Vertex Normals angle weighted:\n\n";
+
+	for (const auto& v : m.vertices()) {
 		std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
 		std::cerr << std::endl;
 	}
 
 	std::cerr << std::endl << std::endl;
+
+	vcl::updatePerVertexNormalsNelsonMaxWeighted(m);
+
+	std::cerr << "Vertex Normals Nelson Max weighted:\n\n";
+
+	for (const auto& v : m.vertices()) {
+		std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+		std::cerr << std::endl;
+	}
+
+	std::cerr << std::endl << std::endl;
+}
+
+int main()
+{
+	vcl::TriMesh tm;
+
+	vcl::io::loadPly(tm, VCL_TEST_MODELS_PATH "/cube_tri.ply");
+
+	std::cerr << "========= TriMesh =========\n\n";
+
+	updateAndPrintNormals(tm);
+
+	vcl::PolyMesh pm;
+
+	vcl::io::loadPly(pm, VCL_TEST_MODELS_PATH "/cube_poly.ply");
+
+	std::cerr << "========= PolyMesh =========\n\n";
+
+	updateAndPrintNormals(pm);
 
 	return 0;
 }

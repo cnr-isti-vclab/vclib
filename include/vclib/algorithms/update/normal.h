@@ -55,7 +55,13 @@ template<typename MeshType>
 void updatePerVertexNormals(MeshType& m, bool normalize = true);
 
 template<typename MeshType>
+void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize = true);
+
+template<typename MeshType>
 void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true);
+
+template<typename MeshType>
+void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true);
 
 } // namespace vcl
 

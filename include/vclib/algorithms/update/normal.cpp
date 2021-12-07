@@ -101,6 +101,11 @@ void normalizePerFaceNormals(MeshType& m)
 	}
 }
 
+/**
+ * @brief updatePerFaceNormals
+ * @param m
+ * @param[in] normalize: if true (default), normals are normalized after computation.
+ */
 template<typename MeshType>
 void updatePerFaceNormals(MeshType& m, bool normalize)
 {
@@ -201,8 +206,8 @@ void normalizePerVertexNormals(MeshType& m)
 /**
  * @brief Computes the vertex normal as the classic area weighted average.
  *
- * This function does not need or exploit current face normals. Normals are not normalized, and
- * unreferenced vertex normals are left unchanged.
+ * This function does not need or exploit current face normals. Unreferenced vertex normals are left
+ * unchanged.
  *
  * Requirements:
  * - Mesh:
@@ -211,6 +216,7 @@ void normalizePerVertexNormals(MeshType& m)
  *   - Faces
  *
  * @param[in/out] m: the mesh on which compute the vertex normals.
+ * @param[in] normalize: if true (default), normals are normalized after computation.
  */
 template<typename MeshType>
 void updatePerVertexNormals(MeshType& m, bool normalize)
@@ -232,6 +238,40 @@ void updatePerVertexNormals(MeshType& m, bool normalize)
 }
 
 /**
+ * @brief Computes the vertex normal as the sum of the adjacent faces normals.
+ *
+ * Unreferenced vertex normals are left unchanged.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Normal
+ *   - Faces
+ *     - Normal
+ *
+ * @param[in/out] m: the mesh on which compute the vertex normals.
+ * @param[in] normalize: if true (default), normals are normalized after computation.
+ */
+template<typename MeshType>
+void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize)
+{
+	vcl::requirePerFaceNormal(m);
+
+	clearPerReferencedVertexNormals(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using FaceType   = typename MeshType::FaceType;
+
+	for (FaceType& f : m.faces()) {
+		for (VertexType* v : f.vertices()) {
+			v->normal() += f.normal();
+		}
+	}
+	if (normalize)
+		normalizePerVertexNormals(m);
+}
+
+/**
  * @brief Computes the vertex normal as an angle weighted average.
  *
  * The normal of a vertex `v` computed as a weighted sum the incident face normals.
@@ -243,8 +283,8 @@ void updatePerVertexNormals(MeshType& m, bool normalize)
  *   Journal of Graphics Tools, 1998
  * ```
  *
- * This function does not need or exploit current face normals. Normals are not normalized, and
- * unreferenced vertex normals are left unchanged.
+ * This function does not need or exploit current face normals. Unreferenced vertex normals are left
+ * unchanged.
  *
  * Requirements:
  * - Mesh:
@@ -253,6 +293,7 @@ void updatePerVertexNormals(MeshType& m, bool normalize)
  *   - Faces
  *
  * @param[in/out] m: the mesh on which compute the angle weighted vertex normals.
+ * @param[in] normalize: if true (default), normals are normalized after computation.
  */
 template<typename MeshType>
 void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
@@ -271,6 +312,57 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
 			NormalType vec2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord()).normalized();
 
 			f.vertex(i)->normal() += n * vec1.angle(vec2);
+		}
+	}
+	if (normalize)
+		normalizePerVertexNormals(m);
+}
+
+/**
+ * @brief Computes the vertex normal using the Max et al. weighting scheme.
+ *
+ * The normal of a vertex v is computed according to the formula described in:
+ *
+ * ```
+ * Max, N.,
+ *   "Weights for Computing Vertex Normals from Facet Normals",
+ *   Journal of Graphics Tools, 4(2) (1999)
+ * ```
+ *
+ * The weight for each wedge is the cross product of the two edge over the product of the square of
+ * the two edge lengths. According to the original paper it is perfect only for spherical surface,
+ * but it should perform well...
+ *
+ * This function does not need or exploit current face normals. Unreferenced vertex normals are left
+ * unchanged.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Normal
+ *   - Faces
+ *
+ * @param[in/out] m: the mesh on which compute the Max et al. weighted vertex normals.
+ * @param[in] normalize: if true (default), normals are normalized after computation.
+ */
+template<typename MeshType>
+void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
+{
+	clearPerReferencedVertexNormals(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using FaceType   = typename MeshType::FaceType;
+	using NormalType = typename VertexType::NormalType;
+	using ScalarType = typename NormalType::ScalarType;
+
+	for (FaceType& f : m.faces()) {
+		NormalType n = polygonNormal(f);
+
+		for (int i = 0; i < f.vertexNumber(); ++i) {
+			ScalarType e1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
+			ScalarType e2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
+
+			f.vertex(i)->normal() += n / (e1*e2);
 		}
 	}
 	if (normalize)
