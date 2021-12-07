@@ -20,36 +20,35 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
-#define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+#include "transform.h"
 
-#include <vclib/math/matrix.h>
+#include "normal.h"
 
-#include "detection/transfrom_matrix_detection.h"
+#include <vclib/mesh/requirements.h>
 
-namespace vcl::comp {
+namespace vcl {
 
-template<typename Scalar>
-class TransformMatrix : public TransformMatrixTriggerer
+template<typename MeshType, typename ScalarM>
+void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool updateNormals)
 {
-public:
-	using TransformMatrixType = Matrix44<Scalar>;
+	requireVertices<MeshType>();
 
-	TransformMatrix();
+	using VertexType = typename MeshType::VertexType;
+	for (VertexType& v : mesh.vertices()) {
+		v.coord() = v.coord() * matrix;
+	}
+	if (updateNormals) {
+		if constexpr (hasPerVertexNormal<MeshType>()) {
+			if (isPerVertexNormalEnabled(mesh)) {
+				multiplyPerVertexNormalsByMatrix(mesh, matrix);
+			}
+		}
+		if constexpr (hasPerFaceNormal<MeshType>()) {
+			if (isPerVertexNormalEnabled(mesh)) {
+				multiplyPerFaceNormalsByMatrix(mesh, matrix);
+			}
+		}
+	}
+}
 
-	const TransformMatrixType& transformMatrix() const;
-	TransformMatrixType&       transformMatrix();
-
-protected:
-	template<typename Element>
-	void importFrom(const Element& e);
-
-private:
-	Matrix44<Scalar> tr;
-};
-
-} // namespace vcl::comp
-
-#include "transform_matrix.cpp"
-
-#endif // VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+} // namespace vcl

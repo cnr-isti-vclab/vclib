@@ -20,36 +20,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
-#define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+#ifndef VCL_ALGORITHMS_TRANSFORM_H
+#define VCL_ALGORITHMS_TRANSFORM_H
 
 #include <vclib/math/matrix.h>
 
-#include "detection/transfrom_matrix_detection.h"
+namespace vcl {
 
-namespace vcl::comp {
+template<typename MeshType, typename ScalarM>
+void applyTransformMatrix(
+	MeshType&                mesh,
+	const Matrix44<ScalarM>& matrix,
+	bool                     updateNormals = true);
 
-template<typename Scalar>
-class TransformMatrix : public TransformMatrixTriggerer
-{
-public:
-	using TransformMatrixType = Matrix44<Scalar>;
+}
 
-	TransformMatrix();
+#include "transform.cpp"
 
-	const TransformMatrixType& transformMatrix() const;
-	TransformMatrixType&       transformMatrix();
-
-protected:
-	template<typename Element>
-	void importFrom(const Element& e);
-
-private:
-	Matrix44<Scalar> tr;
-};
-
-} // namespace vcl::comp
-
-#include "transform_matrix.cpp"
-
-#endif // VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+#endif // VCL_ALGORITHMS_TRANSFORM_H

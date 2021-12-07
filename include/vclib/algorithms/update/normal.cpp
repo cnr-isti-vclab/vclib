@@ -362,7 +362,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
 			ScalarType e1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
 			ScalarType e2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
 
-			f.vertex(i)->normal() += n / (e1*e2);
+			f.vertex(i)->normal() += n / (e1 * e2);
 		}
 	}
 	if (normalize)
@@ -385,23 +385,26 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
  */
 template<typename MeshType, typename MScalar>
 void multiplyPerFaceNormalsByMatrix(
-	MeshType&               mesh,
-	vcl::Matrix44<MScalar>& mat,
-	bool                    removeScalingFromMatrix)
+	MeshType&                     mesh,
+	const vcl::Matrix44<MScalar>& mat,
+	bool                          removeScalingFromMatrix)
 {
 	requirePerFaceNormal(mesh);
 
-	using FaceType   = typename MeshType::FaceType;
+	using FaceType = typename MeshType::FaceType;
 
-	Matrix33<MScalar> m33 = mat.block(0,0,3,3);
+	Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
 	if (removeScalingFromMatrix) {
-		MScalar scaleX = std::sqrt(m33(0,0)*m33(0,0) + m33(0,1)*m33(0,1) + m33(0,2)*m33(0,2));
-		MScalar scaleY = std::sqrt(m33(1,0)*m33(1,0) + m33(1,1)*m33(1,1) + m33(1,2)*m33(1,2));
-		MScalar scaleZ = std::sqrt(m33(2,0)*m33(2,0) + m33(2,1)*m33(2,1) + m33(2,2)*m33(2,2));
+		MScalar scaleX =
+			std::sqrt(m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) + m33(0, 2) * m33(0, 2));
+		MScalar scaleY =
+			std::sqrt(m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) + m33(1, 2) * m33(1, 2));
+		MScalar scaleZ =
+			std::sqrt(m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) + m33(2, 2) * m33(2, 2));
 		for (int i = 0; i < 3; ++i) {
-			m33(0,i) /= scaleX;
-			m33(1,i) /= scaleY;
-			m33(2,i) /= scaleZ;
+			m33(0, i) /= scaleX;
+			m33(1, i) /= scaleY;
+			m33(2, i) /= scaleZ;
 		}
 	}
 	for (FaceType& f : mesh.faces()) {
@@ -425,23 +428,26 @@ void multiplyPerFaceNormalsByMatrix(
  */
 template<typename MeshType, typename MScalar>
 void multiplyPerVertexNormalsByMatrix(
-	MeshType&               mesh,
-	vcl::Matrix44<MScalar>& mat,
-	bool                    removeScalingFromMatrix)
+	MeshType&                     mesh,
+	const vcl::Matrix44<MScalar>& mat,
+	bool                          removeScalingFromMatrix)
 {
 	requirePerVertexNormal(mesh);
 
-	using VertexType   = typename MeshType::VertexType;
+	using VertexType = typename MeshType::VertexType;
 
-	Matrix33<MScalar> m33 = mat.block(0,0,3,3);
+	Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
 	if (removeScalingFromMatrix) {
-		MScalar scaleX = std::sqrt(m33(0,0)*m33(0,0) + m33(0,1)*m33(0,1) + m33(0,2)*m33(0,2));
-		MScalar scaleY = std::sqrt(m33(1,0)*m33(1,0) + m33(1,1)*m33(1,1) + m33(1,2)*m33(1,2));
-		MScalar scaleZ = std::sqrt(m33(2,0)*m33(2,0) + m33(2,1)*m33(2,1) + m33(2,2)*m33(2,2));
+		MScalar scaleX =
+			std::sqrt(m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) + m33(0, 2) * m33(0, 2));
+		MScalar scaleY =
+			std::sqrt(m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) + m33(1, 2) * m33(1, 2));
+		MScalar scaleZ =
+			std::sqrt(m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) + m33(2, 2) * m33(2, 2));
 		for (int i = 0; i < 3; ++i) {
-			m33(0,i) /= scaleX;
-			m33(1,i) /= scaleY;
-			m33(2,i) /= scaleZ;
+			m33(0, i) /= scaleX;
+			m33(1, i) /= scaleY;
+			m33(2, i) /= scaleZ;
 		}
 	}
 	for (VertexType& v : mesh.vertices()) {

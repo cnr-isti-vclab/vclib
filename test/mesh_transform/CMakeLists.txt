@@ -10,11 +10,11 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.13)
-project(vclib-load-mesh-ply)
+project(vclib-mesh-transform)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-load-mesh-ply ${SOURCES})
+add_executable(vclib-mesh-transform ${SOURCES})
 
-target_link_libraries(vclib-load-mesh-ply PUBLIC vclib)
+target_link_libraries(vclib-mesh-transform PUBLIC vclib)

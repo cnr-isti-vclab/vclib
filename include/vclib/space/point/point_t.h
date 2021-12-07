@@ -61,7 +61,7 @@ public:
 	Scalar angle(const Point<S, N>& p1) const;
 
 	template<int U = N>
-	VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>)
+	VCL_ENABLE_IF(U==3, Point)
 	cross(const Point<Scalar, N>& p1) const;
 
 	Scalar       norm() const;
@@ -85,20 +85,30 @@ public:
 
 	Point  operator+(const Scalar& s) const;
 	Point  operator+(const Point& p1) const;
+
 	Point  operator-(const Scalar& s) const;
 	Point  operator-(const Point& p1) const;
+
 	Point  operator*(const Scalar& s) const;
 	Scalar operator*(const Point& p1) const;
 	template<typename SM>
 	Point operator*(const Eigen::Matrix<SM, N, N>& m) const;
+	template<typename SM, int U = N>
+	VCL_ENABLE_IF(U==3, Point)
+	operator*(const Eigen::Matrix<SM, N+1, N+1>& m) const;
+
 	Point  operator/(const Scalar& s) const;
+
 	Point& operator+=(const Scalar& s);
 	Point& operator+=(const Point& p1);
+
 	Point& operator-=(const Scalar& s);
 	Point& operator-=(const Point& p1);
+
 	Point& operator*=(const Scalar& s);
 	template<typename SM>
 	Point& operator*=(const Eigen::Matrix<SM, N, N>& m);
+
 	Point& operator/=(const Scalar& s);
 
 	Scalar& operator[](uint i);

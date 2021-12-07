@@ -48,6 +48,7 @@ set(HEADERS
 	include/vclib/algorithms/update/flag.h
 	include/vclib/algorithms/update/normal.h
 	include/vclib/algorithms/update/topology.h
+	include/vclib/algorithms/update/transform.h
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
 	include/vclib/math/base.h
@@ -184,6 +185,7 @@ set(SOURCES
 	include/vclib/algorithms/update/flag.cpp
 	include/vclib/algorithms/update/normal.cpp
 	include/vclib/algorithms/update/topology.cpp
+	include/vclib/algorithms/update/transform.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_pos.cpp
 	include/vclib/mesh/components/adjacent_edges.cpp

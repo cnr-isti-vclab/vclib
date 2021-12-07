@@ -66,15 +66,15 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true)
 
 template<typename MeshType, typename MScalar>
 void multiplyPerFaceNormalsByMatrix(
-	MeshType&               mesh,
-	vcl::Matrix44<MScalar>& mat,
-	bool                    removeScalingFromMatrix = true);
+	MeshType&                     mesh,
+	const vcl::Matrix44<MScalar>& mat,
+	bool                          removeScalingFromMatrix = true);
 
 template<typename MeshType, typename MScalar>
 void multiplyPerVertexNormalsByMatrix(
-	MeshType&               mesh,
-	vcl::Matrix44<MScalar>& mat,
-	bool                    removeScalingFromMatrix = true);
+	MeshType&                     mesh,
+	const vcl::Matrix44<MScalar>& mat,
+	bool                          removeScalingFromMatrix = true);
 
 } // namespace vcl
 

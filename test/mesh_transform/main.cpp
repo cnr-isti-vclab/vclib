@@ -20,36 +20,55 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
-#define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+#include <iostream>
 
-#include <vclib/math/matrix.h>
+#include <vclib/algorithms/update/transform.h>
+#include <vclib/io/load_ply.h>
+#include <vclib/io/save_ply.h>
+#include <vclib/trimesh.h>
+#include <vclib/polymesh.h>
 
-#include "detection/transfrom_matrix_detection.h"
-
-namespace vcl::comp {
-
-template<typename Scalar>
-class TransformMatrix : public TransformMatrixTriggerer
+int main()
 {
-public:
-	using TransformMatrixType = Matrix44<Scalar>;
+	vcl::TriMesh tm;
 
-	TransformMatrix();
+	vcl::io::loadPly(tm, VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
-	const TransformMatrixType& transformMatrix() const;
-	TransformMatrixType&       transformMatrix();
+	vcl::TriMesh m = tm;
 
-protected:
-	template<typename Element>
-	void importFrom(const Element& e);
+	vcl::Matrix44<double> m44;
+	m44.setZero();
+	m44.diagonal() << -1, -1, -1, 1;
 
-private:
-	Matrix44<Scalar> tr;
-};
+	vcl::applyTransformMatrix(tm, m44);
 
-} // namespace vcl::comp
+	vcl::io::savePly(tm, VCL_TEST_RESULTS_PATH "/rotated_bunny.ply");
 
-#include "transform_matrix.cpp"
+	m44.setZero();
+	m44(0,0) = 1;
+	m44(0,1) = 0.5;
+	m44(0,3) = 1;
 
-#endif // VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+	m44(1,0) = 0.1;
+	m44(1,1) = 1;
+	m44(1,2) = -0.3;
+	m44(1,3) = 2;
+
+	m44(2,0) = 0.2;
+	m44(2,2) = 1;
+
+	m44(3,3) = 1;
+
+	vcl::applyTransformMatrix(m, m44);
+
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/obbrobrio.ply");
+
+//	vcl::PolyMesh pm;
+
+//	vcl::io::loadPly(pm, VCL_TEST_MODELS_PATH "/cube_poly.ply");
+
+//	std::cerr << "========= PolyMesh =========\n\n";
+
+
+	return 0;
+}

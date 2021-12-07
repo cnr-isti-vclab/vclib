@@ -189,6 +189,18 @@ Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<SM, N, N>& m) c
 }
 
 template<typename Scalar, int N>
+template<typename SM, int U>
+VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>)
+Point<Scalar, N>::operator*(const Eigen::Matrix<SM, N+1, N+1>& m) const
+{
+	Eigen::Matrix<SM, 3, 3> m33 = m.block(0,0,3,3);
+	Eigen::Matrix<Scalar, 1, N> pp = p * m33;
+	SM w = p(0)*m(3,0) + p(1)*m(3,1) +p(2)*m(3,2) + m(3,3);
+	if (w != 0) pp = pp / w;
+	return Point<Scalar, N>(pp);
+}
+
+template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator/(const Scalar& s) const
 {
 	return Point<Scalar, N>(p / s);
