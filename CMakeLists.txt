@@ -51,6 +51,7 @@ set(HEADERS
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
 	include/vclib/math/base.h
+	include/vclib/math/matrix.h
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_argument.h
 	include/vclib/mesh/mesh_components.h

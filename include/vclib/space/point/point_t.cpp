@@ -46,7 +46,7 @@ template<typename Scalar, int N>
 bool Point<Scalar, N>::isDegenerate() const
 {
 	for (size_t i = 0; i < p.size(); ++i)
-		if (math::isDegenerate(p(i)))
+		if (isDegenerate(p(i)))
 			return true;
 	return false;
 }
@@ -182,6 +182,13 @@ Scalar Point<Scalar, N>::operator*(const Point<Scalar, N>& p1) const
 }
 
 template<typename Scalar, int N>
+template<typename SM>
+Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<SM, N, N>& m) const
+{
+	return Point<Scalar, N>(p * m.template cast<Scalar>());
+}
+
+template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator/(const Scalar& s) const
 {
 	return Point<Scalar, N>(p / s);
@@ -219,6 +226,14 @@ template<typename Scalar, int N>
 Point<Scalar, N>& Point<Scalar, N>::operator*=(const Scalar& s)
 {
 	p *= s;
+	return *this;
+}
+
+template<typename Scalar, int N>
+template<typename SM>
+Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<SM, N, N>& m)
+{
+	p *= m.template cast<Scalar>();
 	return *this;
 }
 

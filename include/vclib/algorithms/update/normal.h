@@ -23,6 +23,7 @@
 #ifndef VCL_ALGORITHMS_NORMAL_H
 #define VCL_ALGORITHMS_NORMAL_H
 
+#include <vclib/math/matrix.h>
 #include <vclib/space/point.h>
 
 namespace vcl {
@@ -62,6 +63,18 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true);
 
 template<typename MeshType>
 void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true);
+
+template<typename MeshType, typename MScalar>
+void multiplyPerFaceNormalsByMatrix(
+	MeshType&               mesh,
+	vcl::Matrix44<MScalar>& mat,
+	bool                    removeScalingFromMatrix = true);
+
+template<typename MeshType, typename MScalar>
+void multiplyPerVertexNormalsByMatrix(
+	MeshType&               mesh,
+	vcl::Matrix44<MScalar>& mat,
+	bool                    removeScalingFromMatrix = true);
 
 } // namespace vcl
 

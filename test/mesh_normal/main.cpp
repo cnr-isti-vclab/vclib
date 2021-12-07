@@ -83,6 +83,31 @@ void updateAndPrintNormals(MeshType& m){
 	}
 
 	std::cerr << std::endl << std::endl;
+
+	vcl::Matrix44<double> m44;
+	m44.setZero();
+	m44.diagonal() << -1, -1, -1, -1;
+	vcl::multiplyPerFaceNormalsByMatrix(m, m44);
+
+	std::cerr << "Multiplied Face Normals:\n\n";
+
+	for (const auto& f : m.faces()) {
+		std::cerr << "Face " << m.index(f) << " normal: " << f.normal() << "\n";
+		std::cerr << std::endl;
+	}
+
+	std::cerr << std::endl << std::endl;
+
+	vcl::multiplyPerVertexNormalsByMatrix(m, m44);
+
+	std::cerr << "Multiplied Vertex Normals:\n\n";
+
+	for (const auto& v : m.vertices()) {
+		std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+		std::cerr << std::endl;
+	}
+
+	std::cerr << std::endl << std::endl;
 }
 
 int main()

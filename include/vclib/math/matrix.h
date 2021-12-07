@@ -1,3 +1,6 @@
+#ifndef VCL_MATH_MATRIX_H
+#define VCL_MATH_MATRIX_H
+
 /*****************************************************************************
  * VCLib                                                             o o     *
  * Visual Computing Library                                        o     o   *
@@ -20,16 +23,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MATH_BASE_H
-#define VCL_MATH_BASE_H
-
-#include <cmath>
+#include <Eigen/Core>
 
 namespace vcl {
 
-template <typename  T>
-bool isDegenerate(T t) { return std::isinf(t) || std::isnan(t); }
+template<typename Scalar>
+using Matrix33 = Eigen::Matrix<Scalar, 3, 3>;
+
+template<typename Scalar>
+using Matrix44 = Eigen::Matrix<Scalar, 4, 4>;
 
 }
 
-#endif // VCL_MATH_BASE_H
+#endif // VCL_MATH_MATRIX_H

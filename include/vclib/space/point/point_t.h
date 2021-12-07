@@ -89,12 +89,16 @@ public:
 	Point  operator-(const Point& p1) const;
 	Point  operator*(const Scalar& s) const;
 	Scalar operator*(const Point& p1) const;
+	template<typename SM>
+	Point operator*(const Eigen::Matrix<SM, N, N>& m) const;
 	Point  operator/(const Scalar& s) const;
 	Point& operator+=(const Scalar& s);
 	Point& operator+=(const Point& p1);
 	Point& operator-=(const Scalar& s);
 	Point& operator-=(const Point& p1);
 	Point& operator*=(const Scalar& s);
+	template<typename SM>
+	Point& operator*=(const Eigen::Matrix<SM, N, N>& m);
 	Point& operator/=(const Scalar& s);
 
 	Scalar& operator[](uint i);
@@ -109,7 +113,7 @@ protected:
 };
 
 template<typename Scalar, int N>
-std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p);
+std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1);
 
 } // namespace vcl
 
