@@ -370,7 +370,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
 }
 
 /**
- * @brief Multiplies the Face Normals by the given RTS 4x4 Matrix.
+ * @brief Multiplies the Face Normals by the given TRS 4x4 Matrix.
  * By default, the scale component is removed from the matrix.
  *
  * Requirements:
@@ -379,7 +379,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
  *     - Normal
  *
  * @param[in/out] mesh: the mesh on which multiply the face normals.
- * @param[in] mat: the 4x4 RTS matrix that is multiplied to the normals.
+ * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
  * @param[in] removeScalingFromMatrix: if true (default), the scale component is removed from the
  * matrix.
  */
@@ -413,7 +413,7 @@ void multiplyPerFaceNormalsByMatrix(
 }
 
 /**
- * @brief Multiplies the Vertex Normals by the given RTS 4x4 Matrix.
+ * @brief Multiplies the Vertex Normals by the given TRS 4x4 Matrix.
  * By default, the scale component is removed from the matrix.
  *
  * Requirements:
@@ -422,7 +422,7 @@ void multiplyPerFaceNormalsByMatrix(
  *     - Normal
  *
  * @param[in/out] mesh: the mesh on which multiply the vertex normals.
- * @param[in] mat: the 4x4 RTS matrix that is multiplied to the normals.
+ * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
  * @param[in] removeScalingFromMatrix: if true (default), the scale component is removed from the
  * matrix.
  */

@@ -51,4 +51,34 @@ void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool 
 	}
 }
 
+template<typename MeshType, typename Scalar>
+void translate(MeshType& mesh, const Point3<Scalar>& t)
+{
+	requireVertices<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+	for (VertexType& v : mesh.vertices()) {
+		v.coord() += t;
+	}
+}
+
+template<typename MeshType, typename Scalar>
+void scale(MeshType& mesh, const Point3<Scalar>& s)
+{
+	requireVertices<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+	for (VertexType& v : mesh.vertices()) {
+		v.coord()(0) *= s(0);
+		v.coord()(1) *= s(1);
+		v.coord()(2) *= s(2);
+	}
+}
+
+template<typename MeshType, typename Scalar>
+void scale(MeshType& mesh, const Scalar& s)
+{
+	scale(mesh, Point3<Scalar>(s, s, s));
+}
+
 } // namespace vcl

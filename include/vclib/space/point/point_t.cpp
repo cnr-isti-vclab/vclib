@@ -189,7 +189,7 @@ Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<SM, N, N>& m) c
 }
 
 /**
- * @brief Returns a new 3D point/vector on which has been applied an RTS 4x4 matrix.
+ * @brief Returns a new 3D point/vector on which has been applied an TRS 4x4 matrix.
  */
 template<typename Scalar, int N>
 template<typename SM, int U>
@@ -257,7 +257,7 @@ Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<SM, N, N>& m)
 }
 
 /**
- * @brief Applies to the given point/vector an RTS 4x4 matrix.
+ * @brief Applies to the given point/vector an TRS 4x4 matrix.
  * @param m
  */
 template<typename Scalar, int N>

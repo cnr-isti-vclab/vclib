@@ -24,6 +24,7 @@
 #define VCL_ALGORITHMS_TRANSFORM_H
 
 #include <vclib/math/matrix.h>
+#include <vclib/space/point.h>
 
 namespace vcl {
 
@@ -33,7 +34,16 @@ void applyTransformMatrix(
 	const Matrix44<ScalarM>& matrix,
 	bool                     updateNormals = true);
 
-}
+template<typename MeshType, typename Scalar>
+void translate(MeshType& mesh, const Point3<Scalar>& t);
+
+template<typename MeshType, typename Scalar>
+void scale(MeshType& mesh, const Point3<Scalar>& s);
+
+template<typename MeshType, typename Scalar>
+void scale(MeshType& mesh, const Scalar& s);
+
+} // namespace vcl
 
 #include "transform.cpp"
 
