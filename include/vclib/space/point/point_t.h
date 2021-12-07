@@ -72,6 +72,7 @@ public:
 	void setZero();
 	void setOnes();
 
+	Point<Scalar, N> normalized() const;
 	void normalize();
 
 	// operators
@@ -89,7 +90,9 @@ public:
 	Point  operator*(const Scalar& s) const;
 	Scalar operator*(const Point& p1) const;
 	Point  operator/(const Scalar& s) const;
+	Point& operator+=(const Scalar& s);
 	Point& operator+=(const Point& p1);
+	Point& operator-=(const Scalar& s);
 	Point& operator-=(const Point& p1);
 	Point& operator*=(const Scalar& s);
 	Point& operator/=(const Scalar& s);

@@ -22,44 +22,42 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/create/dodecahedron.h>
-#include <vclib/algorithms/create/hexahedron.h>
-#include <vclib/algorithms/create/tetrahedron.h>
-#include <vclib/io/save_ply.h>
+#include <vclib/algorithms/update/normal.h>
+#include <vclib/io/load_ply.h>
 #include <vclib/trimesh.h>
-#include <vclib/polymesh.h>
 
 int main()
 {
-	vcl::io::FileMeshInfo info;
+	vcl::TriMesh m;
 
-	// want to save just these infos in the files, ignore the rest
-	info.setVertices();
-	info.setFaces();
-	info.setVertexCoords(true, vcl::io::FileMeshInfo::FLOAT);
-	info.setFaceVRefs();
+	vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-	vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();
+	vcl::updatePerFaceNormals(m);
 
-	assert(m.vertexNumber() == 4);
-	assert(m.faceNumber() == 4);
+	for (const vcl::TriMesh::Face& f : m.faces()) {
+		std::cerr << "Face " << m.index(f) << " normal: " << f.normal() << "\n";
+		std::cerr << std::endl;
+	}
 
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply", info);
+	std::cerr << std::endl << std::endl;
 
-	m = vcl::createHexahedron<vcl::TriMesh>();
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/hexahedron.ply", info);
+	vcl::updatePerVertexNormals(m);
 
-	m = vcl::createDodecahedron<vcl::TriMesh>();
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/dodecahedron.ply", info);
+	for (const vcl::TriMesh::Vertex& v : m.vertices()) {
+		std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+		std::cerr << std::endl;
+	}
 
-	vcl::PolyMesh pm = vcl::createHexahedron<vcl::PolyMesh>();
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/hexahedron_poly.ply", info);
+	std::cerr << std::endl << std::endl;
 
-	pm = vcl::createDodecahedron<vcl::PolyMesh>();
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/dodecahedron_poly.ply", info);
+	vcl::updatePerVertexNormalsAngleWeighted(m);
 
-	pm = vcl::createCube<vcl::PolyMesh>(vcl::Point3f(0,0,0), 4);
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/cube_poly.ply", info);
+	for (const vcl::TriMesh::Vertex& v : m.vertices()) {
+		std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+		std::cerr << std::endl;
+	}
+
+	std::cerr << std::endl << std::endl;
 
 	return 0;
 }

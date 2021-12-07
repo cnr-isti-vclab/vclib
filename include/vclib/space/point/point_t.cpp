@@ -39,7 +39,7 @@ Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, 1, N>& v)
 }
 
 /**
- * @brief Point::isDegenerate returns true if at least one of its components is NaN or inf.
+ * @brief Returns true if at least one of its components is NaN or inf.
  * @return true if the point is degenerate, false otherwise.
  */
 template<typename Scalar, int N>
@@ -51,6 +51,11 @@ bool Point<Scalar, N>::isDegenerate() const
 	return false;
 }
 
+/**
+ * @brief Returns the cross product between two points.
+ * @note This function is available only on Points having size == 3.
+ * @return The cross product between this and the other point.
+ */
 template<typename Scalar, int N>
 template<int U>
 VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>)
@@ -93,6 +98,15 @@ template<typename Scalar, int N>
 void Point<Scalar, N>::setOnes()
 {
 	p.setOnes();
+}
+
+template<typename Scalar, int N>
+Point<Scalar, N> Point<Scalar, N>::normalized() const
+{
+	if (norm() > 0) {
+		return Point<Scalar, N>(p.array() / norm());
+	}
+	return *this;
 }
 
 template<typename Scalar, int N>
@@ -146,7 +160,7 @@ Point<Scalar, N> Point<Scalar, N>::operator+(const Point<Scalar, N>& p1) const
 template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator-(const Scalar& s) const
 {
-	return Point<Scalar, N>(p - s);
+	return Point<Scalar, N>(p.array() - s);
 }
 
 template<typename Scalar, int N>
@@ -174,9 +188,23 @@ Point<Scalar, N> Point<Scalar, N>::operator/(const Scalar& s) const
 }
 
 template<typename Scalar, int N>
+Point<Scalar, N>& Point<Scalar, N>::operator+=(const Scalar& s)
+{
+	p = p.array() + s;
+	return *this;
+}
+
+template<typename Scalar, int N>
 Point<Scalar, N>& Point<Scalar, N>::operator+=(const Point<Scalar, N>& p1)
 {
 	p += p1.p;
+	return *this;
+}
+
+template<typename Scalar, int N>
+Point<Scalar, N>& Point<Scalar, N>::operator-=(const Scalar& s)
+{
+	p = p.array() - s;
 	return *this;
 }
 

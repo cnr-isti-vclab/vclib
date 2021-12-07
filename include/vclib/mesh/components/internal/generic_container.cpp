@@ -79,7 +79,7 @@ const C& GenericContainer<C, N>::at(uint i) const
 template<typename C, int N>
 C& GenericContainer<C, N>::atMod(int i)
 {
-	uint n = size();
+	int n = size(); // need to save n as int to avoid unwanted casts
 	return container[(i % n + n) % n];
 }
 
