@@ -49,8 +49,8 @@ const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i
 }
 
 /**
- * @brief Returns a reference of the vertex at the i-th position in the Vertex Container of the Mesh,
- * which will be the vertex having index = i.
+ * @brief Returns a reference of the vertex at the i-th position in the Vertex Container of the
+ * Mesh, which will be the vertex having index = i.
  *
  * This function does not perform any sanity check: if i is less than vertexContainerSize(), this
  * function will return a valid Vertex reference (note that the Vertex may have been flagged as
@@ -65,7 +65,8 @@ typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i)
 }
 
 /**
- * @brief Returns the number of **non-deleted** vertices contained in the Vertex container of the Mesh.
+ * @brief Returns the number of **non-deleted** vertices contained in the Vertex container of the
+ * Mesh.
  *
  * If vertexNumber() != vertexContainerSize(), it means that there are some vertices that are
  * flagged as deleted.
@@ -79,7 +80,8 @@ uint VertexContainer<T>::vertexNumber() const
 }
 
 /**
- * @brief Returns the number of vertices (also deleted) contained in the Vertex container of the Mesh.
+ * @brief Returns the number of vertices (also deleted) contained in the Vertex container of the
+ * Mesh.
  *
  * If vertexNumber() != vertexContainerSize(), it means that there are some vertices that are
  * flagged as deleted.
@@ -93,8 +95,8 @@ uint VertexContainer<T>::vertexContainerSize() const
 }
 
 /**
- * @brief Returns the number of deleted vertices in the Vertex container, that is vertexContainerSize() -
- * vertexNumber().
+ * @brief Returns the number of deleted vertices in the Vertex container, that is
+ * vertexContainerSize() - vertexNumber().
  *
  * @return The number of deleted vertices in the container.
  */
@@ -122,7 +124,8 @@ void VertexContainer<T>::deleteVertex(uint i)
 }
 
 /**
- * @brief Marks as deleted the given vertex, before asserting that the vertex belongs to this container.
+ * @brief Marks as deleted the given vertex, before asserting that the vertex belongs to this
+ * container.
  *
  * This member function does not perform any reallocation of the vertices: the deleted vertices
  * will stay in the Vertex Container, but will be marked as deleted.
@@ -178,7 +181,7 @@ template<typename T>
 std::vector<int> VertexContainer<T>::vertexCompactIndices() const
 {
 	std::vector<int> newIndices(Base::vec.size());
-	uint     k = 0;
+	uint             k = 0;
 	for (uint i = 0; i < Base::vec.size(); ++i) {
 		if (!Base::vec[i].isDeleted()) {
 			newIndices[i] = k;
@@ -194,10 +197,11 @@ std::vector<int> VertexContainer<T>::vertexCompactIndices() const
 /**
  * @brief Returns an iterator to the beginning of the container.
  *
- * The iterator is automatically initialized to jump deleted vertices of the container. You can change
- * this option by calling this function with jumpDeleted=false.
+ * The iterator is automatically initialized to jump deleted vertices of the container. You can
+ * change this option by calling this function with jumpDeleted=false.
  *
- * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted vertices.
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted
+ * vertices.
  * @return An iterator the the first vertex of the container.
  */
 template<typename T>
@@ -227,10 +231,11 @@ typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexEnd()
 /**
  * @brief Returns a const iterator to the beginning of the container.
  *
- * The iterator is automatically initialized to jump deleted vertices of the container. You can change
- * this option by calling this function with jumpDeleted=false.
+ * The iterator is automatically initialized to jump deleted vertices of the container. You can
+ * change this option by calling this function with jumpDeleted=false.
  *
- * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted vertices.
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted
+ * vertices.
  * @return A const iterator the the first vertex of the container.
  */
 template<typename T>
@@ -262,8 +267,8 @@ typename VertexContainer<T>::ConstVertexIterator VertexContainer<T>::vertexEnd()
  * @brief Returns a small utility object that allows to iterate over the vertices of the containers,
  * providing two member functions begin() and end().
  *
- * This member function is very useful when you want to iterate over the vertices using the C++ foreach
- * syntax:
+ * This member function is very useful when you want to iterate over the vertices using the C++
+ * foreach syntax:
  *
  * @code{.cpp}
  * for (Vertex& v : m.vertices()){
@@ -271,10 +276,11 @@ typename VertexContainer<T>::ConstVertexIterator VertexContainer<T>::vertexEnd()
  * }
  * @endcode
  *
- * The iterator used to iterate over vertices is automatically initialized to jump deleted vertices of the
- * container. You can change this option by calling this function with jumpDeleted=false.
+ * The iterator used to iterate over vertices is automatically initialized to jump deleted vertices
+ * of the container. You can change this option by calling this function with jumpDeleted=false.
  *
- * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted vertices.
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted
+ * vertices.
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<typename T>
@@ -291,8 +297,8 @@ typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bo
  * @brief Returns a small utility object that allows to iterate over the vertices of the containers,
  * providing two member functions begin() and end().
  *
- * This member function is very useful when you want to iterate over the vertices using the C++ foreach
- * syntax:
+ * This member function is very useful when you want to iterate over the vertices using the C++
+ * foreach syntax:
  *
  * @code{.cpp}
  * for (const Vertex& v : m.vertices()){
@@ -300,10 +306,11 @@ typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bo
  * }
  * @endcode
  *
- * The iterator used to iterate over vertices is automatically initialized to jump deleted vertices of the
- * container. You can change this option by calling this function with jumpDeleted=false.
+ * The iterator used to iterate over vertices is automatically initialized to jump deleted vertices
+ * of the container. You can change this option by calling this function with jumpDeleted=false.
  *
- * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted vertices.
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted
+ * vertices.
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<typename T>
@@ -375,14 +382,15 @@ void VertexContainer<T>::disableAllPerVertexOptionalComponents()
 /**
  * @brief Checks if the vertex Optional Adjacent Edges component is enabled.
  *
- * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges Component.
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges
+ * Component.
  *
  * @return true if the Optional Adjacent Edges is enabled, false otherwise.
  */
 template<typename T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), bool)
-	VertexContainer<T>::isPerVertexAdjacentEdgesEnabled() const
+VertexContainer<T>::isPerVertexAdjacentEdgesEnabled() const
 {
 	return Base::optionalVec.isAdjacentEdgesEnabled();
 }
@@ -390,11 +398,13 @@ VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), bool)
 /**
  * @brief Enables the Optional Adjacent Edges of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges Component.
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges
+ * Component.
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void) VertexContainer<T>::enablePerVertexAdjacentEdges()
+VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void)
+VertexContainer<T>::enablePerVertexAdjacentEdges()
 {
 	Base::optionalVec.enableAdjacentEdges(vertexContainerSize());
 }
@@ -402,11 +412,13 @@ VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void) VertexContainer<T>::ena
 /**
  * @brief Disables the Optional Adjacent Edges of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges Component.
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges
+ * Component.
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void) VertexContainer<T>::disablePerVertexAdjacentEdges()
+VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void)
+VertexContainer<T>::disablePerVertexAdjacentEdges()
 {
 	Base::optionalVec.disableAdjacentEdges();
 }
@@ -414,7 +426,8 @@ VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void) VertexContainer<T>::dis
 /**
  * @brief Checks if the vertex Optional Adjacent Faces component is enabled.
  *
- * @note This function is available only if the Vertex Element has the OptionalAdjacentFaces Component.
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentFaces
+ * Component.
  *
  * @return true if the Optional Adjacent Faces is enabled, false otherwise.
  */
@@ -429,11 +442,13 @@ VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
 /**
  * @brief Enables the Optional Adjacent Faces of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalAdjacentFaces Component.
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentFaces
+ * Component.
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void) VertexContainer<T>::enablePerVertexAdjacentFaces()
+VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
+VertexContainer<T>::enablePerVertexAdjacentFaces()
 {
 	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
 }
@@ -441,11 +456,13 @@ VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void) VertexContainer<T>::ena
 /**
  * @brief Disables the Optional Adjacent Faces of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalAdjacentFaces Component.
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentFaces
+ * Component.
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void) VertexContainer<T>::disablePerVertexAdjacentFaces()
+VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
+VertexContainer<T>::disablePerVertexAdjacentFaces()
 {
 	Base::optionalVec.disableAdjacentFaces();
 }
@@ -453,7 +470,8 @@ VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void) VertexContainer<T>::dis
 /**
  * @brief Checks if the vertex Optional Adjacent Vertices component is enabled.
  *
- * @note This function is available **only if the Vertex Element has the OptionalAdjacentVertices Component.
+ * @note This function is available **only if the Vertex Element has the OptionalAdjacentVertices
+ * Component.
  *
  * @return true if the Optional Adjacent Vertices is enabled, false otherwise.
  */
@@ -468,7 +486,8 @@ VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
 /**
  * @brief Enables the Optional Adjacent Vertices of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalAdjacentVertices Component.
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentVertices
+ * Component.
  */
 template<typename T>
 template<typename U>
@@ -481,7 +500,8 @@ VertexContainer<T>::enablePerVertexAdjacentVertices()
 /**
  * @brief Disables the Optional Adjacent Vertices of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalAdjacentVertices Component.
+ * @note This function is available only if the Vertex Element has the OptionalAdjacentVertices
+ * Component.
  */
 template<typename T>
 template<typename U>
@@ -576,7 +596,8 @@ VertexContainer<T>::disablePerVertexMark()
 /**
  * @brief Checks if the vertex Optional Mutable Bit Flags is enabled.
  *
- * @note This function is available only if the Vertex Element has the OptionalMutableBitFlags Component.
+ * @note This function is available only if the Vertex Element has the OptionalMutableBitFlags
+ * Component.
  *
  * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
  */
@@ -661,7 +682,8 @@ VertexContainer<T>::disablePerVertexNormal()
 /**
  * @brief Checks if the vertex Optional PrincipalCurvature is enabled.
  *
- * @note This function is available only if the Vertex Element has the OptionalPrincipalCurvature Component.
+ * @note This function is available only if the Vertex Element has the OptionalPrincipalCurvature
+ * Component.
  *
  * @return true if the Optional PrincipalCurvature is enabled, false otherwise.
  */
@@ -676,7 +698,8 @@ VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled() const
 /**
  * @brief Enables the Optional PrincipalCurvature of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalPrincipalCurvature Component.
+ * @note This function is available only if the Vertex Element has the OptionalPrincipalCurvature
+ * Component.
  */
 template<typename T>
 template<typename U>
@@ -689,7 +712,8 @@ VertexContainer<T>::enablePerVertexPrincipalCurvature()
 /**
  * @brief Disables the Optional PrincipalCurvature of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalPrincipalCurvature Component.
+ * @note This function is available only if the Vertex Element has the OptionalPrincipalCurvature
+ * Component.
  */
 template<typename T>
 template<typename U>
@@ -708,7 +732,8 @@ VertexContainer<T>::disablePerVertexPrincipalCurvature()
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool) VertexContainer<T>::isPerVertexScalarEnabled() const
+VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool)
+VertexContainer<T>::isPerVertexScalarEnabled() const
 {
 	return Base::optionalVec.isScalarEnabled();
 }
@@ -720,7 +745,8 @@ VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool) VertexContainer<T>::isPerVerte
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void) VertexContainer<T>::enablePerVertexScalar()
+VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
+VertexContainer<T>::enablePerVertexScalar()
 {
 	Base::optionalVec.enableScalar(vertexContainerSize());
 }
@@ -732,7 +758,8 @@ VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void) VertexContainer<T>::enablePerV
  */
 template<typename T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void) VertexContainer<T>::disablePerVertexScalar()
+VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
+VertexContainer<T>::disablePerVertexScalar()
 {
 	Base::optionalVec.disableScalar();
 }
@@ -778,6 +805,14 @@ VertexContainer<T>::disablePerVertexTexCoord()
 	Base::optionalVec.disableTexCoord();
 }
 
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
+VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name)
+{
+	return Base::optionalVec.componentExists(name);
+}
+
 /**
  * @brief Adds a custom component of type K to the Vertex, having the given name.
  *
@@ -793,6 +828,14 @@ VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
 VertexContainer<T>::addPerVertexCustomComponent(const std::string& name)
 {
 	Base::optionalVec.template addNewComponent<K>(name, vertexContainerSize());
+}
+
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
+VertexContainer<T>::deletePerVertexCustomComponent(const std::string& name)
+{
+	Base::optionalVec.deleteComponent(name);
 }
 
 template<typename T>
@@ -839,7 +882,7 @@ template<typename T>
 uint VertexContainer<T>::addVertices(uint nVertices)
 {
 	uint baseId = Base::vec.size();
-	T*           oldB   = Base::vec.data();
+	T*   oldB   = Base::vec.data();
 	Base::vec.resize(Base::vec.size() + nVertices);
 	T* newB = Base::vec.data();
 	vn += nVertices;
@@ -882,13 +925,13 @@ template<typename T>
 std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
 {
 	// k will indicate the position of the ith non-deleted vertices after compacting
-	uint k = 0;
+	uint             k          = 0;
 	std::vector<int> newIndices = vertexCompactIndices();
 	for (uint i = 0; i < newIndices.size(); ++i) {
 		if (newIndices[i] >= 0) {
 			k = newIndices[i];
 			if (i != k)
-				Base::vec[k]  = Base::vec[i];
+				Base::vec[k] = Base::vec[i];
 		}
 	}
 	k++;
@@ -1008,133 +1051,133 @@ void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 
 	// if edges are enabled in the other Mesh
 	if constexpr (hasVertices<Mesh>()) {
-		using VertexType = T;
+		using VertexType  = T;
 		using MVertexType = typename Mesh::VertexType;
 
-		 // disable all the optional components, we will enable them again depending on Mesh
+		// disable all the optional components, we will enable them again depending on Mesh
 		disableAllPerVertexOptionalComponents();
 
 		// if this Vertex type has optional adjacent edges
-		if constexpr(vert::hasOptionalAdjacentEdges<VertexType>()) {
+		if constexpr (vert::hasOptionalAdjacentEdges<VertexType>()) {
 			// if also the other Mesh Vertex type has optional adjacent edges
-			if constexpr (vert::hasOptionalAdjacentEdges<MVertexType>()){
+			if constexpr (vert::hasOptionalAdjacentEdges<MVertexType>()) {
 				// if they are enabled on the other Mesh, enable also here
-				if (m.isPerVertexAdjacentEdgesEnabled()){
+				if (m.isPerVertexAdjacentEdgesEnabled()) {
 					enablePerVertexAdjacentEdges();
 				}
 			}
 			else {
 				// if the other Mesh has *non-optional* adjacent edges, I need to enable it on this
 				// Vert container
-				if constexpr(vert::hasAdjacentEdges<MVertexType>()) {
+				if constexpr (vert::hasAdjacentEdges<MVertexType>()) {
 					enablePerVertexAdjacentEdges();
 				}
 			}
 		}
-		if constexpr(vert::hasOptionalAdjacentFaces<VertexType>()) {
-			if constexpr (vert::hasOptionalAdjacentFaces<MVertexType>()){
-				if (m.isPerVertexAdjacentFacesEnabled()){
+		if constexpr (vert::hasOptionalAdjacentFaces<VertexType>()) {
+			if constexpr (vert::hasOptionalAdjacentFaces<MVertexType>()) {
+				if (m.isPerVertexAdjacentFacesEnabled()) {
 					enablePerVertexAdjacentFaces();
 				}
 			}
 			else {
-				if constexpr(vert::hasAdjacentFaces<MVertexType>()) {
+				if constexpr (vert::hasAdjacentFaces<MVertexType>()) {
 					enablePerVertexAdjacentFaces();
 				}
 			}
 		}
-		if constexpr(vert::hasOptionalAdjacentVertices<VertexType>()) {
-			if constexpr (vert::hasOptionalAdjacentVertices<MVertexType>()){
-				if (m.isPerVertexAdjacentVerticesEnabled()){
+		if constexpr (vert::hasOptionalAdjacentVertices<VertexType>()) {
+			if constexpr (vert::hasOptionalAdjacentVertices<MVertexType>()) {
+				if (m.isPerVertexAdjacentVerticesEnabled()) {
 					enablePerVertexAdjacentVertices();
 				}
 			}
 			else {
-				if constexpr(vert::hasAdjacentVertices<MVertexType>()) {
+				if constexpr (vert::hasAdjacentVertices<MVertexType>()) {
 					enablePerVertexAdjacentVertices();
 				}
 			}
 		}
-		if constexpr(vert::hasOptionalColor<VertexType>()) {
-			if constexpr (vert::hasOptionalColor<MVertexType>()){
-				if (m.isPerVertexColorEnabled()){
+		if constexpr (vert::hasOptionalColor<VertexType>()) {
+			if constexpr (vert::hasOptionalColor<MVertexType>()) {
+				if (m.isPerVertexColorEnabled()) {
 					enablePerVertexColor();
 				}
 			}
 			else {
-				if constexpr(vert::hasColor<MVertexType>()) {
+				if constexpr (vert::hasColor<MVertexType>()) {
 					enablePerVertexColor();
 				}
 			}
 		}
-		if constexpr(vert::hasOptionalMark<VertexType>()) {
-			if constexpr (vert::hasOptionalMark<MVertexType>()){
-				if (m.isPerVertexMarkEnabled()){
+		if constexpr (vert::hasOptionalMark<VertexType>()) {
+			if constexpr (vert::hasOptionalMark<MVertexType>()) {
+				if (m.isPerVertexMarkEnabled()) {
 					enablePerVertexMark();
 				}
 			}
 			else {
-				if constexpr(vert::hasMark<MVertexType>()) {
+				if constexpr (vert::hasMark<MVertexType>()) {
 					enablePerVertexMark();
 				}
 			}
 		}
-		if constexpr(vert::hasOptionalMutableBitFlags<VertexType>()) {
-			if constexpr (vert::hasOptionalMutableBitFlags<MVertexType>()){
-				if (m.isPerVertexMutableBitFlagsEnabled()){
+		if constexpr (vert::hasOptionalMutableBitFlags<VertexType>()) {
+			if constexpr (vert::hasOptionalMutableBitFlags<MVertexType>()) {
+				if (m.isPerVertexMutableBitFlagsEnabled()) {
 					enablePerVertexMutableBitFlags();
 				}
 			}
 			else {
-				if constexpr(vert::hasMutableBitFlags<MVertexType>()) {
+				if constexpr (vert::hasMutableBitFlags<MVertexType>()) {
 					enablePerVertexMutableBitFlags();
 				}
 			}
 		}
-		if constexpr(vert::hasOptionalNormal<VertexType>()) {
-			if constexpr (vert::hasOptionalNormal<MVertexType>()){
-				if (m.isPerVertexNormalEnabled()){
+		if constexpr (vert::hasOptionalNormal<VertexType>()) {
+			if constexpr (vert::hasOptionalNormal<MVertexType>()) {
+				if (m.isPerVertexNormalEnabled()) {
 					enablePerVertexNormal();
 				}
 			}
 			else {
-				if constexpr(vert::hasNormal<MVertexType>()) {
+				if constexpr (vert::hasNormal<MVertexType>()) {
 					enablePerVertexNormal();
 				}
 			}
 		}
-		if constexpr(vert::hasOptionalPrincipalCurvature<VertexType>()) {
-			if constexpr (vert::hasOptionalPrincipalCurvature<MVertexType>()){
-				if (m.isPerVertexPrincipalCurvatureEnabled()){
+		if constexpr (vert::hasOptionalPrincipalCurvature<VertexType>()) {
+			if constexpr (vert::hasOptionalPrincipalCurvature<MVertexType>()) {
+				if (m.isPerVertexPrincipalCurvatureEnabled()) {
 					enablePerVertexPrincipalCurvature();
 				}
 			}
 			else {
-				if constexpr(vert::hasPrincipalCurvature<MVertexType>()) {
+				if constexpr (vert::hasPrincipalCurvature<MVertexType>()) {
 					enablePerVertexPrincipalCurvature();
 				}
 			}
 		}
-		if constexpr(vert::hasOptionalScalar<VertexType>()) {
-			if constexpr (vert::hasOptionalScalar<MVertexType>()){
-				if (m.isPerVertexScalarEnabled()){
+		if constexpr (vert::hasOptionalScalar<VertexType>()) {
+			if constexpr (vert::hasOptionalScalar<MVertexType>()) {
+				if (m.isPerVertexScalarEnabled()) {
 					enablePerVertexScalar();
 				}
 			}
 			else {
-				if constexpr(vert::hasScalar<MVertexType>()) {
+				if constexpr (vert::hasScalar<MVertexType>()) {
 					enablePerVertexScalar();
 				}
 			}
 		}
-		if constexpr(vert::hasOptionalTexCoord<VertexType>()) {
-			if constexpr (vert::hasOptionalTexCoord<MVertexType>()){
-				if (m.isPerVertexTexCoordEnabled()){
+		if constexpr (vert::hasOptionalTexCoord<VertexType>()) {
+			if constexpr (vert::hasOptionalTexCoord<MVertexType>()) {
+				if (m.isPerVertexTexCoordEnabled()) {
 					enablePerVertexTexCoord();
 				}
 			}
 			else {
-				if constexpr(vert::hasTexCoord<MVertexType>()) {
+				if constexpr (vert::hasTexCoord<MVertexType>()) {
 					enablePerVertexTexCoord();
 				}
 			}
@@ -1150,7 +1193,7 @@ void VertexContainer<T>::importFrom(const Mesh& m)
 	if constexpr (hasVertices<Mesh>()) {
 		addVertices(m.vertexContainerSize());
 		unsigned int vid = 0;
-		for (const typename Mesh::VertexType& v : m.vertices(false)){
+		for (const typename Mesh::VertexType& v : m.vertices(false)) {
 			vertex(vid).importFrom(v);
 			if constexpr (vert::hasAdjacentVertices<T>()) {
 				vertex(vid).importVertexReferencesFrom(v, Base::vec.data(), &m.vertex(0));
@@ -1164,8 +1207,8 @@ template<typename T>
 template<typename Mesh, typename Face>
 void VertexContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 {
-	if constexpr(hasFaces<Mesh>() && hasVertices<Mesh>()) {
-		for (uint i = 0; i < vertexContainerSize(); ++i){
+	if constexpr (hasFaces<Mesh>() && hasVertices<Mesh>()) {
+		for (uint i = 0; i < vertexContainerSize(); ++i) {
 			vertex(i).importFaceReferencesFrom(m.vertex(i), base, &m.face(0));
 		}
 	}
@@ -1175,8 +1218,8 @@ template<typename T>
 template<typename Mesh, typename Edge>
 void VertexContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 {
-	if constexpr(hasEdges<Mesh>() && hasVertices<Mesh>()) {
-		for (uint i = 0; i < vertexContainerSize(); ++i){
+	if constexpr (hasEdges<Mesh>() && hasVertices<Mesh>()) {
+		for (uint i = 0; i < vertexContainerSize(); ++i) {
 			vertex(i).importEdgeReferencesFrom(m.vertex(i), base, &m.edge(0));
 		}
 	}

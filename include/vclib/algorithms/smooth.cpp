@@ -172,17 +172,21 @@ void taubinSmoothing(
 		std::fill(laplData.begin(), laplData.end(), lpz);
 		internal::accumulateLaplacianInfo(m, laplData);
 		for (VertexType& v : m.vertices()) {
-			if (!smoothSelected || v.isSelected()) {
-				CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
-				v.coord() = v.coord() + delta * lambda;
+			if (laplData[m.index(v)].cnt > 0) {
+				if (!smoothSelected || v.isSelected()) {
+					CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
+					v.coord() = v.coord() + delta * lambda;
+				}
 			}
 		}
 		std::fill(laplData.begin(), laplData.end(), lpz);
 		internal::accumulateLaplacianInfo(m, laplData);
 		for (VertexType& v : m.vertices()) {
-			if (!smoothSelected || v.isSelected()) {
-				CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
-				v.coord() = v.coord() + delta * mu;
+			if (laplData[m.index(v)].cnt > 0) {
+				if (!smoothSelected || v.isSelected()) {
+					CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
+					v.coord() = v.coord() + delta * mu;
+				}
 			}
 		}
 	}

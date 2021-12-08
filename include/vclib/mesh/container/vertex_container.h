@@ -74,7 +74,7 @@ public:
 	void deleteVertex(uint i);
 	void deleteVertex(const VertexType* v);
 
-	uint     vertexIndexIfCompact(uint id) const;
+	uint             vertexIndexIfCompact(uint id) const;
 	std::vector<int> vertexCompactIndices() const;
 
 	VertexIterator           vertexBegin(bool jumpDeleted = true);
@@ -218,9 +218,17 @@ public:
 	disablePerVertexTexCoord();
 
 	// Custom Components
+	template<typename U = T>
+	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
+	hasPerVertexCustomComponent(const std::string& name);
+
 	template<typename K, typename U = T>
 	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
 	addPerVertexCustomComponent(const std::string& name);
+
+	template<typename U = T>
+	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
+	deletePerVertexCustomComponent(const std::string& name);
 
 protected:
 	/**
@@ -235,7 +243,7 @@ protected:
 
 	uint addVertex();
 	uint addVertices(uint nVertices);
-	void         reserveVertices(uint size);
+	void reserveVertices(uint size);
 
 	void setContainerPointer(VertexType& v);
 

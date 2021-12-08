@@ -20,67 +20,45 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_CUSTOM_COMPONENTS_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_CUSTOM_COMPONENTS_VECTOR_H
+#include <iostream>
 
-#include <unordered_map>
+#include <vclib/io/load_ply.h>
+#include <vclib/io/save_ply.h>
+#include <vclib/trimesh.h>
+#include <vclib/algorithms/smooth.h>
 
-#include <vclib/mesh/components_optional/custom_components.h>
-
-#include "optional_generic_vector.h"
-
-namespace vcl::internal {
-
-// to shorten triggerer for Vertex class
-template<typename T>
-using IfHasCustomProp = std::enable_if_t<comp::hasCustomComponents<T>()>;
-
-template<typename, typename = void>
-class CustomComponentsVector
+int main()
 {
-public:
-	void clear() {}
-	void reserve(uint) {}
-	void resize(uint) {}
-	void compact(const std::vector<int>&) {}
-};
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
-template<typename T>
-class CustomComponentsVector<
-	T,
-	IfHasCustomProp<T>>
-{
-public:
-	void clear();
+	m.addPerVertexCustomComponent<int>("flag");
 
-	void reserve(uint size);
+	assert(m.hasPerVertexCustomComponent("flag"));
 
-	void resize(uint size);
+	for (vcl::TriMesh::Vertex& v : m.vertices()){
+		v.customComponent<int>("flag") = -4;
+	}
 
-	void compact(const std::vector<int>& newIndices);
+	assert(m.vertex(10).customComponent<int>("flag") == -4);
 
-	template<typename AttrType>
-	void addNewComponent(const std::string& name, uint size);
+	m.deletePerVertexCustomComponent("flag");
 
-	void deleteComponent(const std::string& name);
+	assert(!m.hasPerVertexCustomComponent("flag"));
 
-	void assertComponentExists(const std::string& attrName) const;;
+	m.addPerVertexCustomComponent<vcl::Point3f>("oldCoords");
+	for (vcl::TriMesh::Vertex& v : m.vertices()) {
+		v.customComponent<vcl::Point3f>("oldCoords") = v.coord();
+	}
 
-	bool componentExists(const std::string& attrName) const;;
+	vcl::taubinSmoothing(m, 500, 0.7, -0.73);
 
-	template<typename AttrType>
-	const std::vector<std::any>& componentVector(const std::string& attrName) const;
+	double avgDist = 0;
+	for (vcl::TriMesh::Vertex& v : m.vertices()) {
+		avgDist += (v.customComponent<vcl::Point3f>("oldCoords") - v.coord()).norm();
+	}
+	avgDist /= m.vertexNumber();
 
-	template<typename AttrType>
-	std::vector<std::any>& componentVector(const std::string& attrName);
+	std::cerr << "Avg distance after taubin smoothing: " << avgDist << "\n";
 
-private:
-	std::unordered_map<std::string, std::vector<std::any>> map;
-	mutable std::unordered_map<std::string, bool> needToInitialize;
-};
-
-} // namespace vcl::internal
-
-#include "custom_components_vector.cpp"
-
-#endif // VCL_MESH_COMPONENTS_VECTOR_CUSTOM_COMPONENTS_VECTOR_H
+	return 0;
+}

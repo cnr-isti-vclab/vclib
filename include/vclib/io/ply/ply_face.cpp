@@ -139,8 +139,8 @@ template<typename MeshType, typename FaceType, typename Stream>
 void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p)
 {
 	bool              hasBeenRead = false;
-	std::vector<uint> vids; // contains the vertex ids of the actal face
-	if (p.name == ply::vertex_indices) {
+	std::vector<uint> vids; // contains the vertex ids of the actual face
+	if (p.name == ply::vertex_indices) { // loading vertex indices
 		uint fSize = internal::readProperty<uint>(file, p.listSizeType);
 		vids.resize(fSize);
 		for (uint i = 0; i < fSize; ++i) {
@@ -150,7 +150,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 		// will manage the case of loading a polygon in a triangle mesh
 		setFaceIndices(f, mesh, vids);
 	}
-	if (p.name == ply::texcoord) {
+	if (p.name == ply::texcoord) { // loading wedge texcoords
 		if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
 				using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
@@ -168,11 +168,12 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 			}
 		}
 	}
-	if (p.name == ply::texnumber) {
+	if (p.name == ply::texnumber) { // loading texture id associated to ALL the wedges
 		if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
 				uint n      = internal::readProperty<uint>(file, p.type);
 				hasBeenRead = true;
+				// in case the loaded polygon has been triangulated in the last n triangles of mesh
 				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
 					for (uint i = 0; i < mesh.face(ff).vertexNumber(); ++i) {
 						mesh.face(ff).wedgeTexCoord(i).nTexture() = n;
@@ -181,7 +182,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 			}
 		}
 	}
-	if (p.name >= ply::nx && p.name <= ply::nz) {
+	if (p.name >= ply::nx && p.name <= ply::nz) { // loading one of the normal components
 		if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
 			if (vcl::isPerFaceNormalEnabled(mesh)) {
 				using Scalar = typename FaceType::NormalType::ScalarType;
@@ -195,7 +196,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 			}
 		}
 	}
-	if (p.name >= ply::red && p.name <= ply::alpha) {
+	if (p.name >= ply::red && p.name <= ply::alpha) { // loading one of the color components
 		if constexpr (vcl::hasPerFaceColor<MeshType>()) {
 			if (vcl::isPerFaceColorEnabled(mesh)) {
 				int           a = p.name - ply::red;
@@ -208,7 +209,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 			}
 		}
 	}
-	if (p.name == ply::scalar) {
+	if (p.name == ply::scalar) { // loading the scalar component
 		if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
 			using Scalar = typename FaceType::ScalarType;
 			if (vcl::isPerFaceScalarEnabled(mesh)) {
@@ -221,6 +222,8 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 			}
 		}
 	}
+	// if nothing has been read, it means that there is some data we don't know
+	// we still need to read and discard what we read
 	if (!hasBeenRead) {
 		if (p.list) {
 			uint s = internal::readProperty<int>(file, p.listSizeType);

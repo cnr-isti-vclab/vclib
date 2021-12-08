@@ -69,6 +69,13 @@ void CustomComponentsVector<T, IfHasCustomProp<T>>::addNewComponent(
 }
 
 template<typename T>
+void CustomComponentsVector<T, IfHasCustomProp<T> >::deleteComponent(const std::string& name)
+{
+	map.erase(name);
+	needToInitialize.erase(name);
+}
+
+template<typename T>
 void CustomComponentsVector<T, IfHasCustomProp<T>>::assertComponentExists(
 	const std::string& attrName) const
 {

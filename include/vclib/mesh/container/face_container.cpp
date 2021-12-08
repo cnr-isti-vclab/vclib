@@ -384,7 +384,7 @@ void FaceContainer<T>::disableAllPerFaceOptionalComponents()
 template<typename T>
 template<typename U>
 VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), bool)
-	FaceContainer<T>::isPerFaceAdjacentEdgesEnabled() const
+FaceContainer<T>::isPerFaceAdjacentEdgesEnabled() const
 {
 	return Base::optionalVec.isAdjacentEdgesEnabled();
 }
@@ -402,7 +402,7 @@ VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), bool)
 template<typename T>
 template<typename U>
 VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
-	FaceContainer<T>::enablePerFaceAdjacentEdges()
+FaceContainer<T>::enablePerFaceAdjacentEdges()
 {
 	Base::optionalVec.enableAdjacentEdges(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
@@ -422,7 +422,7 @@ VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
 template<typename T>
 template<typename U>
 VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
-	FaceContainer<T>::disablePerFaceAdjacentEdges()
+FaceContainer<T>::disablePerFaceAdjacentEdges()
 {
 	Base::optionalVec.disableAdjacentEdges();
 }
@@ -761,7 +761,7 @@ FaceContainer<T>::enablePerFaceWedgeColors()
 {
 	Base::optionalVec.enableWedgeColors(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
-	if constexpr(N < 0) {
+	if constexpr (N < 0) {
 		for (T& f : faces()) {
 			f.resizeWedgeColors(f.vertexNumber());
 		}
@@ -1051,133 +1051,133 @@ void FaceContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 
 	// if edges are enabled in the other Mesh
 	if constexpr (hasFaces<Mesh>()) {
-		using FaceType = T;
+		using FaceType  = T;
 		using MFaceType = typename Mesh::FaceType;
 
 		// disable all the optional components, we will enable them again depending on Mesh
 		disableAllPerFaceOptionalComponents();
 
 		// if this Face type has optional adjacent edges
-		if constexpr(face::hasOptionalAdjacentEdges<FaceType>()) {
+		if constexpr (face::hasOptionalAdjacentEdges<FaceType>()) {
 			// if also the other Mesh Face type has optional adjacent edges
-			if constexpr (face::hasOptionalAdjacentEdges<MFaceType>()){
+			if constexpr (face::hasOptionalAdjacentEdges<MFaceType>()) {
 				// if they are enabled on the other Mesh, enable also here
-				if (m.isPerFaceAdjacentEdgesEnabled()){
+				if (m.isPerFaceAdjacentEdgesEnabled()) {
 					enablePerFaceAdjacentEdges();
 				}
 			}
 			else {
 				// if the other Mesh has *non-optional* adjacent edges, I need to enable it on this
 				// Face container
-				if constexpr(face::hasAdjacentEdges<MFaceType>()) {
+				if constexpr (face::hasAdjacentEdges<MFaceType>()) {
 					enablePerFaceAdjacentEdges();
 				}
 			}
 		}
-		if constexpr(face::hasOptionalAdjacentFaces<FaceType>()) {
-			if constexpr (face::hasOptionalAdjacentFaces<MFaceType>()){
-				if (m.isPerFaceAdjacentFacesEnabled()){
+		if constexpr (face::hasOptionalAdjacentFaces<FaceType>()) {
+			if constexpr (face::hasOptionalAdjacentFaces<MFaceType>()) {
+				if (m.isPerFaceAdjacentFacesEnabled()) {
 					enablePerFaceAdjacentFaces();
 				}
 			}
 			else {
-				if constexpr(face::hasAdjacentFaces<MFaceType>()) {
+				if constexpr (face::hasAdjacentFaces<MFaceType>()) {
 					enablePerFaceAdjacentFaces();
 				}
 			}
 		}
-		if constexpr(face::hasOptionalColor<FaceType>()) {
-			if constexpr (face::hasOptionalColor<MFaceType>()){
-				if (m.isPerFaceColorEnabled()){
+		if constexpr (face::hasOptionalColor<FaceType>()) {
+			if constexpr (face::hasOptionalColor<MFaceType>()) {
+				if (m.isPerFaceColorEnabled()) {
 					enablePerFaceColor();
 				}
 			}
 			else {
-				if constexpr(face::hasColor<MFaceType>()) {
+				if constexpr (face::hasColor<MFaceType>()) {
 					enablePerFaceColor();
 				}
 			}
 		}
-		if constexpr(face::hasOptionalMark<FaceType>()) {
-			if constexpr (face::hasOptionalMark<MFaceType>()){
-				if (m.isPerFaceMarkEnabled()){
+		if constexpr (face::hasOptionalMark<FaceType>()) {
+			if constexpr (face::hasOptionalMark<MFaceType>()) {
+				if (m.isPerFaceMarkEnabled()) {
 					enablePerFaceMark();
 				}
 			}
 			else {
-				if constexpr(face::hasMark<MFaceType>()) {
+				if constexpr (face::hasMark<MFaceType>()) {
 					enablePerFaceMark();
 				}
 			}
 		}
-		if constexpr(face::hasOptionalMutableBitFlags<FaceType>()) {
-			if constexpr (face::hasOptionalMutableBitFlags<MFaceType>()){
-				if (m.isPerFaceMutableBitFlagsEnabled()){
+		if constexpr (face::hasOptionalMutableBitFlags<FaceType>()) {
+			if constexpr (face::hasOptionalMutableBitFlags<MFaceType>()) {
+				if (m.isPerFaceMutableBitFlagsEnabled()) {
 					enablePerFaceMutableBitFlags();
 				}
 			}
 			else {
-				if constexpr(face::hasMutableBitFlags<MFaceType>()) {
+				if constexpr (face::hasMutableBitFlags<MFaceType>()) {
 					enablePerFaceMutableBitFlags();
 				}
 			}
 		}
-		if constexpr(face::hasOptionalNormal<FaceType>()) {
-			if constexpr (face::hasOptionalNormal<MFaceType>()){
-				if (m.isPerFaceNormalEnabled()){
+		if constexpr (face::hasOptionalNormal<FaceType>()) {
+			if constexpr (face::hasOptionalNormal<MFaceType>()) {
+				if (m.isPerFaceNormalEnabled()) {
 					enablePerFaceNormal();
 				}
 			}
 			else {
-				if constexpr(face::hasNormal<MFaceType>()) {
+				if constexpr (face::hasNormal<MFaceType>()) {
 					enablePerFaceNormal();
 				}
 			}
 		}
-		if constexpr(face::hasOptionalPrincipalCurvature<FaceType>()) {
-			if constexpr (face::hasOptionalPrincipalCurvature<MFaceType>()){
-				if (m.isPerFacePrincipalCurvatureEnabled()){
+		if constexpr (face::hasOptionalPrincipalCurvature<FaceType>()) {
+			if constexpr (face::hasOptionalPrincipalCurvature<MFaceType>()) {
+				if (m.isPerFacePrincipalCurvatureEnabled()) {
 					enablePerFacePrincipalCurvature();
 				}
 			}
 			else {
-				if constexpr(face::hasPrincipalCurvature<MFaceType>()) {
+				if constexpr (face::hasPrincipalCurvature<MFaceType>()) {
 					enablePerFacePrincipalCurvature();
 				}
 			}
 		}
-		if constexpr(face::hasOptionalScalar<FaceType>()) {
-			if constexpr (face::hasOptionalScalar<MFaceType>()){
-				if (m.isPerFaceScalarEnabled()){
+		if constexpr (face::hasOptionalScalar<FaceType>()) {
+			if constexpr (face::hasOptionalScalar<MFaceType>()) {
+				if (m.isPerFaceScalarEnabled()) {
 					enablePerFaceScalar();
 				}
 			}
 			else {
-				if constexpr(face::hasScalar<MFaceType>()) {
+				if constexpr (face::hasScalar<MFaceType>()) {
 					enablePerFaceScalar();
 				}
 			}
 		}
-		if constexpr(face::hasOptionalWedgeColors<FaceType>()) {
-			if constexpr (face::hasOptionalWedgeColors<MFaceType>()){
-				if (m.isPerFaceWedgeColorsEnabled()){
+		if constexpr (face::hasOptionalWedgeColors<FaceType>()) {
+			if constexpr (face::hasOptionalWedgeColors<MFaceType>()) {
+				if (m.isPerFaceWedgeColorsEnabled()) {
 					enablePerFaceWedgeColors();
 				}
 			}
 			else {
-				if constexpr(face::hasWedgeColors<MFaceType>()) {
+				if constexpr (face::hasWedgeColors<MFaceType>()) {
 					enablePerFaceWedgeColors();
 				}
 			}
 		}
-		if constexpr(face::hasOptionalWedgeTexCoords<FaceType>()) {
-			if constexpr (face::hasOptionalWedgeTexCoords<MFaceType>()){
-				if (m.isPerFaceWedgeTexCoordsEnabled()){
+		if constexpr (face::hasOptionalWedgeTexCoords<FaceType>()) {
+			if constexpr (face::hasOptionalWedgeTexCoords<MFaceType>()) {
+				if (m.isPerFaceWedgeTexCoordsEnabled()) {
 					enablePerFaceWedgeTexCoords();
 				}
 			}
 			else {
-				if constexpr(face::hasWedgeTexCoords<MFaceType>()) {
+				if constexpr (face::hasWedgeTexCoords<MFaceType>()) {
 					enablePerFaceWedgeTexCoords();
 				}
 			}
@@ -1193,7 +1193,7 @@ void FaceContainer<T>::importFrom(const Mesh& m)
 	if constexpr (hasFaces<Mesh>()) {
 		addFaces(m.faceContainerSize());
 		unsigned int fid = 0;
-		for (const typename Mesh::FaceType& f : m.faces(false)){
+		for (const typename Mesh::FaceType& f : m.faces(false)) {
 			face(fid).importFrom(f);
 			if constexpr (face::hasAdjacentFaces<T>()) {
 				face(fid).importFaceReferencesFrom(f, Base::vec.data(), &m.face(0));
@@ -1207,8 +1207,8 @@ template<typename T>
 template<typename Mesh, typename Vertex>
 void FaceContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
 {
-	if constexpr(hasVertices<Mesh>() && hasFaces<Mesh>()) {
-		for (uint i = 0; i < faceContainerSize(); ++i){
+	if constexpr (hasVertices<Mesh>() && hasFaces<Mesh>()) {
+		for (uint i = 0; i < faceContainerSize(); ++i) {
 			face(i).importVertexReferencesFrom(m.face(i), base, &m.vertex(0));
 		}
 	}
@@ -1218,8 +1218,8 @@ template<typename T>
 template<typename Mesh, typename Edge>
 void FaceContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 {
-	if constexpr(hasEdges<Mesh>() && hasFaces<Mesh>()) {
-		for (uint i = 0; i < faceContainerSize(); ++i){
+	if constexpr (hasEdges<Mesh>() && hasFaces<Mesh>()) {
+		for (uint i = 0; i < faceContainerSize(); ++i) {
 			face(i).importEdgeReferencesFrom(m.face(i), base, &m.edge(0));
 		}
 	}
