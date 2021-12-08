@@ -22,6 +22,7 @@
 
 #include "dodecahedron.h"
 
+#include <vclib/algorithms/polygon.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {

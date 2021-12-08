@@ -16,6 +16,9 @@ project(vclib-external)
 option(ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
 option(ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 
+# MapBox earcut
+option(ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut source" ON)
+
 find_package(Eigen3)
 
 ### Eigen
@@ -35,3 +38,18 @@ endif()
 
 add_library(vclib-external-eigen INTERFACE)
 target_include_directories(vclib-external-eigen INTERFACE ${EIGEN_INCLUDE_DIRS})
+
+### Mapbox-Earcut
+set(VCLIB_MAPBOX_EARCUT_DIR ${CMAKE_CURRENT_LIST_DIR}/earcut.hpp-2.2.3)
+
+if (ALLOW_BUNDLED_MAPBOX_EARCUT)
+	message(STATUS "- Mapbox-Eaurcut - using bundled source")
+	set(MAPBOX_EARCUT_INCLUDE_DIRS ${VCLIB_MAPBOX_EARCUT_DIR}/include)
+else()
+	message(
+		FATAL_ERROR
+		"MapBox earcut is required - ALLOW_BUNDLED_MAPBOX_EARCUT must be enabled and found.")
+endif()
+
+add_library(vclib-external-mapbox-earcut INTERFACE)
+target_include_directories(vclib-external-mapbox-earcut INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
