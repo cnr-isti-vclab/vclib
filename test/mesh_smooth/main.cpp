@@ -23,65 +23,30 @@
 #include <iostream>
 
 #include <vclib/algorithms/smooth.h>
-#include <vclib/algorithms/update/bounding_box.h>
-#include <vclib/algorithms/update/normal.h>
-#include <vclib/algorithms/update/topology.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/io/save_ply.h>
-#include <vclib/mesh/mesh.h>
+#include <vclib/trimesh.h>
 #include <vclib/misc/timer.h>
-
-namespace mymesh {
-class Vertex;
-class Face;
-
-class Vertex :
-		public vcl::Vertex<
-			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3d,
-			vcl::vert::OptionalAdjacentFaces<Face, Vertex>>
-{
-};
-
-class Face :
-		public vcl::Face<
-			vcl::face::TriangleBitFlags,
-			vcl::face::TriangleVertexRefs<Vertex>,
-			vcl::face::Normal3f>
-{
-};
-} // namespace mymesh
-
-class MyMesh : public vcl::Mesh<mymesh::Vertex, mymesh::Face, vcl::mesh::BoundingBox3d>
-{
-};
 
 int main()
 {
-	MyMesh m = vcl::io::loadPly<MyMesh>("/home/alessandro/tmp/bunny.ply");
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
-	m.enablePerVertexAdjacentFaces();
-	vcl::updatePerVertexAdjacentFaces(m);
-	vcl::updateBoundingBox(m);
-	vcl::updatePerFaceNormals(m);
+	vcl::TriMesh mSmooth(m);
 
-	MyMesh m2;
+	vcl::Timer t1("Laplacian Smoothing");
 
-	vcl::swap(m, m2);
+	vcl::laplacianSmoothing(mSmooth, 30);
+	t1.stopAndPrint();
 
-	vcl::updateBoundingBox(m2);
+	vcl::io::savePly(mSmooth, VCL_TEST_RESULTS_PATH "/bunny_lapl_smooth.ply");
 
-	vcl::Timer t("Laplacian Smoothing");
-	vcl::laplacianSmoothing(m2, 30);
-	t.stopAndPrint();
+	vcl::Timer t2("Taubin Smoothing");
 
-	MyMesh m3;
-	m3.addVertex();
+	vcl::taubinSmoothing(m, 300, 0.5, -0.53);
+	t2.stopAndPrint();
 
-	m3 = m2;
-
-	vcl::io::savePly(m2, "/home/alessandro/tmp/bunny_s.ply");
-	vcl::io::savePly(m3, "/home/alessandro/tmp/bunny_s3.ply");
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/bunny_taub_smooth.ply");
 
 	return 0;
 }
