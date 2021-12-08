@@ -49,11 +49,12 @@ class Face : public FaceTriggerer, public Args...
 
 	// Vertex references component of the Face
 	using VRefs = typename Face::VertexReferences;
-	using VertexType = typename VRefs::VertexType;
 
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
+	using VertexType = typename VRefs::VertexType;
+
 	Face();
 
 	Face(const std::vector<VertexType*>& list);

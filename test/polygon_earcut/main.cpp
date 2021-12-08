@@ -36,7 +36,7 @@ int main()
 		vcl::Point2d(0, 3),
 		vcl::Point2d(0, 0)};
 
-	std::vector<uint> tri = vcl::earCut2D(polygon);
+	std::vector<uint> tri = vcl::earCut(polygon);
 
 	std::cerr << "Triangle indices: \n";
 	for (uint i = 0; i < tri.size(); i+= 3){

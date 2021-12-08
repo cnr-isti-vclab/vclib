@@ -20,20 +20,41 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_H
-#define VCL_POINT_H
-
-#include "point/point2.h"
-#include "point/point3.h"
-#include "point/point4.h"
+#include "point.h"
 
 namespace vcl {
 
+/**
+ * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
+ * from a given vector n.
+ *
+ * @param[in] n: input vector.
+ * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
+ * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
+ */
 template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
-
+void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
+{
+	const double   LocEps = double(1e-7);
+	Point3<Scalar> up(0, 1, 0);
+	u          = n.cross(up);
+	double len = u.norm();
+	if (len < LocEps) {
+		if (std::abs(n[0]) < std::abs(n[1])) {
+			if (std::abs(n[0]) < std::abs(n[2]))
+				up = Point3<Scalar>(1, 0, 0); // x is the min
+			else
+				up = Point3<Scalar>(0, 0, 1); // z is the min
+		}
+		else {
+			if (std::abs(n[1]) < std::abs(n[2]))
+				up = Point3<Scalar>(0, 1, 0); // y is the min
+			else
+				up = Point3<Scalar>(0, 0, 1); // z is the min
+		}
+		u = n.cross(up);
+	}
+	v = n.cross(u);
 }
 
-#include "point.cpp"
-
-#endif // VCL_POINT_H
+} // namespace vcl

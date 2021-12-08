@@ -157,6 +157,7 @@ set(HEADERS
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
 	include/vclib/misc/vcl_types.h
+	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load_ply.h
 	include/vclib/io/save_ply.h
@@ -254,6 +255,7 @@ set(SOURCES
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/principal_curvature.cpp
+	include/vclib/space/point.cpp
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/point/point2.cpp

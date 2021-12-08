@@ -34,6 +34,9 @@ PointType triangleNormal(const PointType& p1, const PointType& p2, const PointTy
 template<typename Triangle, typename NormalType = Point3f>
 NormalType triangleNormal(const Triangle& t);
 
+template<typename Scalar, typename NormalType>
+NormalType polygonNormal(const std::vector<Point3<Scalar>>& p);
+
 template<typename Polygon, typename NormalType = Point3f>
 NormalType polygonNormal(const Polygon& p);
 

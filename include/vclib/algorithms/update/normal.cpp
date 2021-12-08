@@ -57,6 +57,27 @@ NormalType triangleNormal(const Triangle& t)
 }
 
 /**
+ * @brief Computes the normal of a std::vector of 3D points listed in counterclockwise order,
+ * representing a polygon.
+ *
+ * @param[in] p: input container of 3D points representing a polygon.
+ * @return The normal of p.
+ */
+template<typename Scalar, typename NormalType>
+NormalType polygonNormal(const std::vector<Point3<Scalar>>& p)
+{
+	// compute the sum of normals for each triplet of consecutive points
+	NormalType sum;
+	sum.setZero();
+	for (uint i = 0; i < p.size(); ++i) {
+		sum += triangleNormal(
+			p[i], p[(i+1)%p.size()], p[(i+2)%p.size()]);
+	}
+	sum.normalize();
+	return sum;
+}
+
+/**
  * @brief Computes the normal of a Face that is a generic polygon. Does not modify the
  * polygon. This function works also with simple triangles, but it is less efficient thant the
  * function "triangleNormal".

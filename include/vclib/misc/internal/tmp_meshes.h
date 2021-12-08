@@ -20,20 +20,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_H
-#define VCL_POINT_H
+#ifndef VCL_MISC_TMP_MESHES_H
+#define VCL_MISC_TMP_MESHES_H
 
-#include "point/point2.h"
-#include "point/point3.h"
-#include "point/point4.h"
+#include <vclib/mesh/mesh.h>
 
-namespace vcl {
+namespace vcl::internal {
 
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
+namespace tmpSimplePolyMesh {
+class Vertex;
+class Face;
 
-}
+class Vertex : public vcl::Vertex<vcl::vert::BitFlags, vcl::vert::Coordinate3d>
+{
+};
 
-#include "point.cpp"
+class Face : public vcl::Face<vcl::face::PolygonBitFlags, vcl::face::PolygonVertexRefs<Vertex>>
+{
+};
 
-#endif // VCL_POINT_H
+} // namespace tmpSimplePolyMesh
+
+class TMPSimplePolyMesh : public vcl::Mesh<tmpSimplePolyMesh::Vertex, tmpSimplePolyMesh::Face>
+{
+};
+
+} // namespace vcl::internal
+
+#endif // VCL_MISC_TMP_MESHES_H

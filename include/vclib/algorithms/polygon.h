@@ -29,7 +29,13 @@
 namespace vcl {
 
 template <template <typename,typename...> typename Container, typename Scalar>
-std::vector<uint> earCut2D(const Container<Point2<Scalar>>& polygon);
+std::vector<uint> earCut(const Container<Point2<Scalar>>& polygon);
+
+template <template <typename,typename...> typename Container, typename Scalar>
+std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon);
+
+template <typename Polygon>
+std::vector<uint> earCut(const Polygon& polygon);
 
 }
 
