@@ -24,6 +24,7 @@
 
 #include <vclib/trimesh.h>
 #include <vclib/io/load_ply.h>
+#include <vclib/io/save_ply.h>
 
 int main()
 {
@@ -47,6 +48,22 @@ int main()
 	assert(m.textureNumber() == 1);
 	assert(loadedInfo.hasFaceWedgeTexCoords());
 	assert(m.isPerFaceWedgeTexCoordsEnabled());
+
+	m =  vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
+
+	assert(loadedInfo.hasVertices());
+	assert(m.vertexNumber() == 8);
+	assert(loadedInfo.hasFaces());
+	assert(loadedInfo.hasFaceVRefs());
+	assert(m.faceNumber() == 4);
+	assert(loadedInfo.hasTextures());
+	assert(m.textureNumber() == 2);
+
+	// try to load a polygonal mesh into a trimesh
+	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply", loadedInfo);
+
+	// save again the mesh
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply");
 
 	return 0;
 }

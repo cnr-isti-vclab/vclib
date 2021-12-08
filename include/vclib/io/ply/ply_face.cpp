@@ -21,6 +21,8 @@
  ****************************************************************************/
 
 #include "ply_face.h"
+
+#include <vclib/algorithms/polygon.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/exception/io_exception.h>
 
@@ -46,7 +48,171 @@ void saveFaceIndices(
 	}
 }
 
-// load
+template<typename MeshType, typename FaceType>
+void setFaceIndices(
+	FaceType& f,
+	MeshType& m,
+	const std::vector<uint>& vids)
+{
+	bool splitFace = false;
+	// we have a polygonal mesh
+	if constexpr(FaceType::VERTEX_NUMBER < 0){
+		f.resizeVertices(vids.size()); // need to resize the face to the right number of verts
+	}
+	else if (FaceType::VERTEX_NUMBER != vids.size()) {
+		// we have faces with static sizes (triangles), but we are loading faces with number of
+		// verts > 3. Need to split the face we are loading in n faces!
+		splitFace = true;
+	}
+
+	if (!splitFace) { // classic load, no split needed
+		for (uint i = 0; i < vids.size(); ++i) {
+			if (vids[i] >= m.vertexNumber()) {
+				throw vcl::MalformedFileException(
+					"Bad vertex index for face " + std::to_string(i));
+			}
+			f.vertex(i) = &m.vertex(vids[i]);
+		}
+	}
+	else { // split needed
+		using VertexType = typename FaceType::VertexType;
+		using CoordType = typename VertexType::CoordType;
+
+		// put the vertices of the loaded polygon in a vector
+		std::vector<CoordType> pol(vids.size());
+		for (uint i = 0; i < vids.size(); ++i){
+			if (vids[i] >= m.vertexNumber()) {
+				throw vcl::MalformedFileException(
+					"Bad vertex index for face " + std::to_string(i));
+			}
+			pol[i] = m.vertex(vids[i]).coord();
+		}
+		// triangulate the polygon
+		std::vector<uint> tris = vcl::earCut(pol);
+		// set the first triangle of the loaded polygon
+		f.vertex(0) = &m.vertex(vids[tris[0]]);
+		f.vertex(1) = &m.vertex(vids[tris[1]]);
+		f.vertex(2) = &m.vertex(vids[tris[2]]);
+		// remaining triangles, need to create more faces in the mesh
+		for (uint i = 3; i < tris.size(); i+=3){
+			uint ff = m.addFace();
+			m.face(ff).vertex(0) = &m.vertex(vids[tris[i]]);
+			m.face(ff).vertex(1) = &m.vertex(vids[tris[i+1]]);
+			m.face(ff).vertex(2) = &m.vertex(vids[tris[i+2]]);
+		}
+	}
+}
+
+template<typename MeshType, typename FaceType, typename Stream>
+void loadFaceProperty(
+	Stream& file,
+	MeshType& mesh,
+	FaceType& f,
+	ply::Property p
+	)
+{
+	bool hasBeenRead = false;
+	if (p.name == ply::vertex_indices) {
+		uint fSize = internal::readProperty<uint>(file, p.listSizeType);
+		std::vector<uint> vids(fSize);
+		for (uint i = 0; i < fSize; ++i){
+			vids[i] = internal::readProperty<size_t>(file, p.type);
+		}
+		hasBeenRead = true;
+		// will manage the case of loading a polygon in a triangle mesh
+		setFaceIndices(f, mesh, vids);
+	}
+	if (p.name == ply::texcoord) {
+		if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+				using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
+				uint uvSize = internal::readProperty<uint>(file, p.listSizeType);
+				uint fSize = uvSize/2;
+				bool splitFace = false;
+				// in case of reading texcoords before vertex indices
+				if constexpr(FaceType::VERTEX_NUMBER < 0){
+					f.resizeVertices(fSize);
+				}
+				else if (FaceType::VERTEX_NUMBER != fSize)
+					splitFace = true;
+				if (!splitFace) {
+					for (uint i = 0; i < fSize; ++i) {
+						assert(token != spaceTokenizer.end());
+						Scalar u = internal::readProperty<Scalar>(file, p.type);
+						Scalar v = internal::readProperty<Scalar>(file, p.type);
+						f.wedgeTexCoord(i).u() = u;
+						f.wedgeTexCoord(i).v() = v;
+					}
+					hasBeenRead = true;
+				}
+				else { /// @todo manage case when split polygonal face
+					throw std::runtime_error("Cannot handle this file for this mesh type.");
+				}
+			}
+		}
+	}
+	if (p.name == ply::texnumber) {
+		if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+				uint n = internal::readProperty<uint>(file, p.type);
+				hasBeenRead = true;
+				for (uint i = 0; i < f.vertexNumber(); ++i){
+					f.wedgeTexCoord(i).nTexture() = n;
+				}
+			}
+		}
+	}
+	if (p.name >= ply::nx && p.name <= ply::nz) {
+		if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
+			if (vcl::isPerFaceNormalEnabled(mesh)) {
+				using Scalar = typename FaceType::NormalType::ScalarType;
+				int a = p.name - ply::nx;
+				Scalar n = internal::readProperty<Scalar>(file, p.type);
+				hasBeenRead = true;
+				// in case the loaded polygon has been triangulated in the last n triangles of mesh
+				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff){
+					mesh.face(ff).normal()[a] = n;
+				}
+			}
+		}
+	}
+	if (p.name >= ply::red && p.name <= ply::alpha) {
+		if constexpr (vcl::hasPerFaceColor<MeshType>()) {
+			if (vcl::isPerFaceColorEnabled(mesh)) {
+				int a = p.name - ply::red;
+				unsigned char c = internal::readProperty<unsigned char>(file, p.type);
+				hasBeenRead = true;
+				// in case the loaded polygon has been triangulated in the last n triangles of mesh
+				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff){
+					mesh.face(ff).color()[a] = c;
+				}
+			}
+		}
+	}
+	if (p.name == ply::scalar) {
+		if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
+			using Scalar = typename FaceType::ScalarType;
+			if (vcl::isPerFaceScalarEnabled(mesh)) {
+				Scalar s = internal::readProperty<Scalar>(file, p.type);
+				hasBeenRead = true;
+				// in case the loaded polygon has been triangulated in the last n triangles of mesh
+				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff){
+					mesh.face(ff).scalar() = s;
+				}
+			}
+		}
+	}
+	if (!hasBeenRead) {
+		if (p.list) {
+			uint s = internal::readProperty<int>(file, p.listSizeType);
+			for (uint i = 0; i < s; ++i)
+				internal::readProperty<int>(file, p.type);
+		}
+		else {
+			internal::readProperty<int>(file, p.type);
+		}
+	}
+}
 
 template<typename MeshType>
 void loadFacesTxt(
@@ -71,123 +237,7 @@ void loadFacesTxt(
 			}
 			if (error)
 				throw std::runtime_error("Malformed file");
-			bool hasBeenRead = false;
-			if (p.name == ply::vertex_indices) {
-				uint fSize = internal::readProperty<uint>(token, p.listSizeType);
-				bool splitFace = false;
-				if constexpr(FaceType::VERTEX_NUMBER < 0){
-					f.resizeVertices(fSize);
-				}
-				else if (FaceType::VERTEX_NUMBER != fSize)
-					splitFace = true;
-				if (!splitFace) {
-					for (uint i = 0; i < fSize; ++i) {
-						assert(token != spaceTokenizer.end());
-						int vid = internal::readProperty<size_t>(token, p.type);
-						if (vid < 0 || vid >= mesh.vertexNumber()) {
-							throw vcl::MalformedFileException(
-								"Bad vertex index for face " + std::to_string(i));
-						}
-						else
-							f.vertex(i) = &mesh.vertex(vid);
-					}
-					hasBeenRead = true;
-				}
-				else { // TODO: split face and then load properly n faces
-					for (uint i = 0; i < fSize; ++i) {
-						if (i < FaceType::VERTEX_NUMBER) {
-							assert(token != spaceTokenizer.end());
-							int vid = internal::readProperty<size_t>(token, p.type);
-							if (vid < 0)
-								f.vertex(i) = nullptr;
-							else
-								f.vertex(i) = &mesh.vertex(vid);
-						}
-						else {
-							internal::readProperty<size_t>(token, p.type);
-						}
-					}
-					hasBeenRead = true;
-				}
-			}
-			if (p.name == ply::texcoord) {
-				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
-					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
-						using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
-						uint uvSize = internal::readProperty<uint>(token, p.listSizeType);
-						uint fSize = uvSize/2;
-						bool splitFace = false;
-						// in case of reading texcoords before vertex indices
-						if constexpr(FaceType::VERTEX_NUMBER < 0){
-							f.resizeVertices(fSize);
-						}
-						else if (FaceType::VERTEX_NUMBER != fSize)
-							splitFace = true;
-						if (!splitFace) {
-							for (uint i = 0; i < fSize; ++i) {
-								assert(token != spaceTokenizer.end());
-								Scalar u = internal::readProperty<Scalar>(token, p.type);
-								Scalar v = internal::readProperty<Scalar>(token, p.type);
-								f.wedgeTexCoord(i).u() = u;
-								f.wedgeTexCoord(i).v() = v;
-							}
-							hasBeenRead = true;
-						}
-						else { /// @todo manage case when split polygonal face
-							throw std::runtime_error("Cannot handle this file for this mesh type.");
-						}
-					}
-				}
-			}
-			if (p.name == ply::texnumber) {
-				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
-					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
-						uint n = internal::readProperty<uint>(token, p.type);
-						for (uint i = 0; i < f.vertexNumber(); ++i){
-							f.wedgeTexCoord(i).nTexture() = n;
-						}
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
-					if (vcl::isPerFaceNormalEnabled(mesh)) {
-						using Scalar = typename FaceType::NormalType::ScalarType;
-						int a = p.name - ply::nx;
-						f.normal()[a] = internal::readProperty<Scalar>(token, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (vcl::hasPerFaceColor<MeshType>()) {
-					if (vcl::isPerFaceColorEnabled(mesh)) {
-						int a = p.name - ply::red;
-						f.color()[a] = internal::readProperty<unsigned char>(token, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name == ply::scalar) {
-				if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
-					using Scalar = typename FaceType::ScalarType;
-					if (vcl::isPerFaceScalarEnabled(mesh)) {
-						f.scalar() = internal::readProperty<Scalar>(token, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (!hasBeenRead) {
-				if (p.list) {
-					uint s = internal::readProperty<int>(token, p.listSizeType);
-					for (uint i = 0; i < s; ++i)
-						++token;
-				}
-				else {
-					++token;
-				}
-			}
+			loadFaceProperty(token, mesh, f, p);
 		}
 	}
 }
@@ -202,118 +252,7 @@ void loadFacesBin(
 		uint ffid = mesh.addFace();
 		FaceType& f = mesh.face(ffid);
 		for (ply::Property p : header.faceProperties()) {
-			bool hasBeenRead = false;
-			if (p.name == ply::vertex_indices) {
-				uint fSize = internal::readProperty<uint>(file, p.listSizeType);
-				bool splitFace = false;
-				if constexpr(FaceType::VERTEX_NUMBER < 0){
-					f.resizeVertices(fSize);
-				}
-				else if (FaceType::VERTEX_NUMBER != fSize)
-					splitFace = true;
-				if (!splitFace) {
-					for (uint i = 0; i < fSize; ++i) {
-						int vid = internal::readProperty<size_t>(file, p.type);
-						if (vid < 0)
-							f.vertex(i) = nullptr;
-						else
-							f.vertex(i) = &mesh.vertex(vid);
-					}
-					hasBeenRead = true;
-				}
-				else { // TODO: split face and then load properly n faces
-					for (uint i = 0; i < fSize; ++i) {
-						if (i < FaceType::VERTEX_NUMBER) {
-							int vid = internal::readProperty<size_t>(file, p.type);
-							if (vid < 0)
-								f.vertex(i) = nullptr;
-							else
-								f.vertex(i) = &mesh.vertex(vid);
-						}
-						else {
-							internal::readProperty<size_t>(file, p.type);
-						}
-					}
-					hasBeenRead = true;
-				}
-			}
-			if (p.name == ply::texcoord) {
-				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
-					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
-						using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
-						uint uvSize = internal::readProperty<uint>(file, p.listSizeType);
-						uint fSize = uvSize/2;
-						bool splitFace = false;
-						// in case of reading texcoords before vertex indices
-						if constexpr(FaceType::VERTEX_NUMBER < 0){
-							f.resizeVertices(fSize);
-						}
-						else if (FaceType::VERTEX_NUMBER != fSize)
-							splitFace = true;
-						if (!splitFace) {
-							for (uint i = 0; i < fSize; ++i) {
-								Scalar u = internal::readProperty<Scalar>(file, p.type);
-								Scalar v = internal::readProperty<Scalar>(file, p.type);
-								f.wedgeTexCoord(i).u() = u;
-								f.wedgeTexCoord(i).v() = v;
-							}
-							hasBeenRead = true;
-						}
-						else { /// @todo manage case when split polygonal face
-							throw std::runtime_error("Cannot handle this file for this mesh type.");
-						}
-					}
-				}
-			}
-			if (p.name == ply::texnumber) {
-				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
-					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
-						uint n = internal::readProperty<uint>(file, p.type);
-						for (uint i = 0; i < f.vertexNumber(); ++i){
-							f.wedgeTexCoord(i).nTexture() = n;
-						}
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
-					if (vcl::isPerFaceNormalEnabled(mesh)) {
-						using Scalar = typename FaceType::NormalType::ScalarType;
-						int a = p.name - ply::nx;
-						f.normal()[a] = internal::readProperty<Scalar>(file, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (vcl::hasPerFaceColor<MeshType>()) {
-					if (vcl::isPerFaceColorEnabled(mesh)) {
-						int a = p.name - ply::red;
-						f.color()[a] = internal::readProperty<unsigned char>(file, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name == ply::scalar) {
-				if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
-					using Scalar = typename FaceType::ScalarType;
-					if (vcl::isPerFaceScalarEnabled(mesh)) {
-						f.scalar() = internal::readProperty<Scalar>(file, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (!hasBeenRead) {
-				if (p.list) {
-					uint s = internal::readProperty<int>(file, p.listSizeType);
-					for (uint i = 0; i < s; ++i)
-						internal::readProperty<int>(file, p.type);
-				}
-				else {
-					internal::readProperty<int>(file, p.type);
-				}
-			}
+			loadFaceProperty(file, mesh, f, p);
 		}
 	}
 }

@@ -51,6 +51,9 @@ class FaceContainer : protected ElementContainer<T>, public FaceContainerTrigger
 		vcl::face::hasVertexReferences<T>(),
 		"You should include a VertexReferences as Face component in your Mesh definition.");
 	static_assert(
+		T::VERTEX_NUMBER < 0 || T::VERTEX_NUMBER >= 3,
+		"VertexReferences must be < 0 (polygonal) or >=3 (at least triangles) in faces.");
+	static_assert(
 		!vcl::face::hasTriangleBitFlags<T>() || T::VERTEX_NUMBER == 3,
 		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
 	static_assert(
