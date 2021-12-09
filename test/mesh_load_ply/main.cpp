@@ -61,6 +61,11 @@ int main()
 
 	// try to load a polygonal mesh into a trimesh
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply", loadedInfo);
+	for (const vcl::TriMesh::Face& f : m.faces()){
+		assert(!f.isEdgeFaux(0));
+		assert(!f.isEdgeFaux(1));
+		assert(f.isEdgeFaux(2));
+	}
 
 	// save again the mesh
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply");

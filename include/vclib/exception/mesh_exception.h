@@ -104,6 +104,19 @@ public:
 	}
 };
 
+class BadVertexIndexException : public std::runtime_error
+{
+public:
+	BadVertexIndexException(const std::string& err) : std::runtime_error(err) {}
+
+	virtual const char* what() const throw()
+	{
+		static std::string error;
+		error = std::string("Bad Vertex Index - ") + std::runtime_error::what();
+		return error.c_str();
+	}
+};
+
 } // namespace vcl
 
 #endif // VCL_MESH_EXCEPTION_H

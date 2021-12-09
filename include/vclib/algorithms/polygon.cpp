@@ -22,7 +22,11 @@
 
 #include "polygon.h"
 
+#include <set>
+
 #include <mapbox/earcut.hpp>
+#include <vclib/exception/mesh_exception.h>
+#include <vclib/misc/comparators.h>
 
 #include "update/normal.h"
 
@@ -116,6 +120,105 @@ std::vector<uint> earCut(const Polygon& polygon)
 		pol.push_back(v->coord());
 	}
 	return earCut(pol);
+}
+
+/**
+ * @brief Given a vector of indices of vertices in a mesh representing a polyon, this function adds
+ * N triangular faces to the mesh, that are the triangulation of the input polygon. Triangle edges
+ * that are internal in the polygon are marked as faux.
+ *
+ * This function assumes that the first (triangular) face has been already added to the mesh and
+ * just needs to be filled with vertex references. This is useful in some cases (e.g. when reading
+ * from file and you realize just at some point that you need to manage a polygon). In all the other
+ * cases, you should use the function that does not take a face in input, that is:
+ *
+ * @code{.cpp}
+ * uint fid = addTriangleFacesFromPolygon(mesh, polygon);
+ * @endcode
+ *
+ * @param[in/out] m: the mesh on which add the triangulation of the polygon.
+ * @param[in/out] f: the first face of the triangulation, that will be filled.
+ * @param[in] polygon: the vertex indices in the mesh representing the polygon.
+ */
+template <typename MeshType, typename FaceType, template <typename,typename...> typename Container>
+void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const Container<uint>& polygon)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requireFaces<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+	using CoordType = typename VertexType::CoordType;
+
+	// from the ids, create a polygon of coordinates
+	std::vector<CoordType> polCoords(polygon.size());
+	for (uint i = 0; i < polygon.size(); ++i) {
+		if (polygon[i] >= m.vertexContainerSize()){
+			throw BadVertexIndexException(std::to_string(polygon[i]));
+		}
+		polCoords[i] = m.vertex(polygon[i]).coord();
+	}
+
+	// compute earcut of the polygons
+	std::vector<uint> tris = earCut(polCoords);
+
+	// faux edges management: create a set of unordered edges of the polygon
+	// note: we use indices from 0 to polygon.size() because that are the output indices given by
+	// the earcut algorithm
+	std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>> unorderedEdges;
+	for (uint i = 0; i < polygon.size(); ++i)
+		unorderedEdges.insert(std::make_pair(i, (i+1) % polygon.size()));
+
+	if constexpr (FaceType::VERTEX_NUMBER < 0)
+		f.resizeVertices(3);
+
+	// set the first triangle of the loaded polygon
+	f.vertex(0) = &m.vertex(polygon[tris[0]]);
+	f.vertex(1) = &m.vertex(polygon[tris[1]]);
+	f.vertex(2) = &m.vertex(polygon[tris[2]]);
+
+	if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) == unorderedEdges.end())
+		f.setEdgeFaux(0);
+	if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) == unorderedEdges.end())
+		f.setEdgeFaux(1);
+	if (unorderedEdges.find(std::make_pair(tris[2], tris[0])) == unorderedEdges.end())
+		f.setEdgeFaux(2);
+
+	// remaining triangles, need to create more faces in the mesh
+	for (uint i = 3; i < tris.size(); i += 3) {
+		uint ff              = m.addFace();
+
+		if constexpr (FaceType::VERTEX_NUMBER < 0)
+			m.face(ff).resizeVertices(3);
+
+		m.face(ff).vertex(0) = &m.vertex(polygon[tris[i]]);
+		m.face(ff).vertex(1) = &m.vertex(polygon[tris[i + 1]]);
+		m.face(ff).vertex(2) = &m.vertex(polygon[tris[i + 2]]);
+
+		if (unorderedEdges.find(std::make_pair(tris[i], tris[i+1])) == unorderedEdges.end())
+			m.face(ff).setEdgeFaux(0);
+		if (unorderedEdges.find(std::make_pair(tris[i+1], tris[i+2])) == unorderedEdges.end())
+			m.face(ff).setEdgeFaux(1);
+		if (unorderedEdges.find(std::make_pair(tris[i+2], tris[i+0])) == unorderedEdges.end())
+			m.face(ff).setEdgeFaux(2);
+	}
+}
+
+/**
+ * @brief Given a vector of indices of vertices in a mesh representing a polyon, this function adds
+ * N triangular faces to the mesh, that are the triangulation of the input polygon. Triangle edges
+ * that are internal in the polygon are marked as faux. This function returns the index of the first
+ * added triangle.
+ *
+ * @param[in/out] m: the mesh on which add the triangulation of the polygon.
+ * @param[in] polygon: the vertex indices in the mesh representing the polygon.
+ * @return The index of the first triangle added to the mesh.
+ */
+template <typename MeshType, template <typename,typename...> typename Container>
+uint addTriangleFacesFromPolygon(MeshType& m, const Container<uint>& polygon)
+{
+	uint fid = m.addFace();
+	addTriangleFacesFromPolygon(m, m.face(fid), polygon);
+	return fid;
 }
 
 } // namespace vcl

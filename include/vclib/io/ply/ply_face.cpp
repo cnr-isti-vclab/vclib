@@ -71,30 +71,7 @@ void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 		}
 	}
 	else { // split needed
-		using VertexType = typename FaceType::VertexType;
-		using CoordType  = typename VertexType::CoordType;
-
-		// put the vertices of the loaded polygon in a vector
-		std::vector<CoordType> pol(vids.size());
-		for (uint i = 0; i < vids.size(); ++i) {
-			if (vids[i] >= m.vertexNumber()) {
-				throw vcl::MalformedFileException("Bad vertex index for face " + std::to_string(i));
-			}
-			pol[i] = m.vertex(vids[i]).coord();
-		}
-		// triangulate the polygon
-		std::vector<uint> tris = vcl::earCut(pol);
-		// set the first triangle of the loaded polygon
-		f.vertex(0) = &m.vertex(vids[tris[0]]);
-		f.vertex(1) = &m.vertex(vids[tris[1]]);
-		f.vertex(2) = &m.vertex(vids[tris[2]]);
-		// remaining triangles, need to create more faces in the mesh
-		for (uint i = 3; i < tris.size(); i += 3) {
-			uint ff              = m.addFace();
-			m.face(ff).vertex(0) = &m.vertex(vids[tris[i]]);
-			m.face(ff).vertex(1) = &m.vertex(vids[tris[i + 1]]);
-			m.face(ff).vertex(2) = &m.vertex(vids[tris[i + 2]]);
-		}
+		addTriangleFacesFromPolygon(m, f, vids);
 	}
 }
 
