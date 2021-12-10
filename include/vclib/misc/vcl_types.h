@@ -48,4 +48,20 @@
 
 using uint = unsigned int;
 
+namespace vcl {
+
+template<typename T>
+struct MakeConstPointer
+{
+	typedef T type;
+};
+
+template <typename T>
+struct MakeConstPointer<T*>
+{
+	typedef const T* type;
+};
+
+}
+
 #endif // VCL_TYPE_TRAITS_H

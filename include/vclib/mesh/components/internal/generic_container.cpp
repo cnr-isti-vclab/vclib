@@ -114,28 +114,28 @@ void GenericContainer<C, N>::set(const std::vector<C>& list)
 }
 
 template<typename C, int N>
-bool GenericContainer<C, N>::contains(const C& e) const
+bool GenericContainer<C, N>::contains(const typename MakeConstPointer<C>::type& e) const
 {
 	return std::find(container.begin(), container.end(), e) != container.end();
 }
 
 template<typename C, int N>
-typename GenericContainer<C, N>::GCIterator GenericContainer<C, N>::find(const C& e)
+typename GenericContainer<C, N>::GCIterator GenericContainer<C, N>::find(const typename MakeConstPointer<C>::type& e)
 {
 	return std::find(container.begin(), container.end(), e);
 }
 
 template<typename C, int N>
-typename GenericContainer<C, N>::ConstGCIterator GenericContainer<C, N>::find(const C& e) const
+typename GenericContainer<C, N>::ConstGCIterator GenericContainer<C, N>::find(const typename MakeConstPointer<C>::type& e) const
 {
 	return std::find(container.begin(), container.end(), e);
 }
 
 template<typename C, int N>
-int GenericContainer<C, N>::indexOf(const C& e) const
+int GenericContainer<C, N>::indexOf(const typename MakeConstPointer<C>::type &  e) const
 {
 	auto it = find(e);
-	if (e == end())
+	if (it == end())
 		return -1;
 	else
 		return it - begin();

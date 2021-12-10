@@ -45,6 +45,12 @@ uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
 template <typename MeshType>
 uint removeDegenerateFaces(MeshType& m);
 
+template <typename FaceType>
+bool isManifoldOnEdge(const FaceType& f, uint edge);
+
+template <typename MeshType>
+uint countNonManifoldVertices(const MeshType& m);
+
 }
 
 #include "clean.cpp"

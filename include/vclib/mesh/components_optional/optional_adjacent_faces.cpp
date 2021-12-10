@@ -130,7 +130,7 @@ template<typename Face, int N, typename T>
 int OptionalAdjacentFaces<Face, N, T>::indexOfAdjFace(const Face* f) const
 {
 	auto it = findAdjFace(f);
-	if (f == adjFaceEnd())
+	if (it == adjFaceEnd())
 		return -1;
 	else
 		return it - adjFaceBegin();

@@ -27,6 +27,19 @@
 
 namespace vcl::mesh {
 
+/**
+ * @brief The MeshPos class describes a "Position in a Mesh" that can be identified with a triplet
+ * of Face-Vertex-Edge, where:
+ * - the Vertex is part of the Face;
+ * - the edge is an index less than the number of vertices of the Face
+ * - The Vertex is part of the Edge in the Face.
+ *
+ * Its utility is to navigate the topology of the Mesh trough a set of well-defined operations that
+ * allow to "move" the MeshPos object.
+ *
+ * To be used, the MeshPos requires that the Mesh on which the given Face-Vertex-Edge triplet is
+ * defined, has per Face Adjacent Faces topology informtion.
+ */
 template <typename FaceType>
 class MeshPos
 {
@@ -40,23 +53,35 @@ public:
 	static bool isValid(const FaceType* f, const VertexType* v, short e);
 
 	MeshPos();
+	MeshPos(const FaceType* f, short e);
 	MeshPos(const FaceType* f, const VertexType* v, short e);
 
 	bool isValid() const;
 	bool isNull() const;
+	bool isEdgeOnBorder() const;
 
-	bool canFlipFace() const;
-
-	void flipFace();
+	bool flipFace();
 	void flipVertex();
 	void flipEdge();
+
+	void nextEdgeAdjacentToV();
+
+	uint numberOfAdjacentFacesToV() const;
+
+	bool operator==(const MeshPos& op) const;
+	bool operator!=(const MeshPos& op) const;
+	bool operator<(const MeshPos& op) const;
 
 private:
 	const FaceType* f = nullptr;
 	const VertexType* v = nullptr;
 	short e = -1;
+
+	uint countAdjacentFacesToV(bool& onBorder) const;
 };
 
 } // namespace vcl::mesh
+
+#include "mesh_pos.cpp"
 
 #endif // VCL_MESH_POS_H

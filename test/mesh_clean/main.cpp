@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include <vclib/algorithms/clean.h>
+#include <vclib/algorithms/update/topology.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/io/save_ply.h>
 #include <vclib/trimesh.h>
@@ -33,6 +34,15 @@ int main()
 	vcl::TriMesh m;
 
 	vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/brain.ply");
+
+	m.enablePerFaceAdjacentFaces();
+	vcl::updatePerFaceAdjacentFaces(m);
+
+	uint nm = vcl::countNonManifoldVertices(m);
+
+	assert(nm == 4);
+
+	std::cerr << "Non Manifold Vertices: " << nm << "\n";
 
 	uint nv = vcl::removeUnreferencedVertices(m);
 

@@ -108,7 +108,7 @@ template<typename Vertex, typename T>
 int OptionalAdjacentVertices<Vertex, T>::indexOfAdjVertex(const Vertex* v) const
 {
 	auto it = findAdjVertex(v);
-	if (v == adjVertexEnd())
+	if (it == adjVertexEnd())
 		return -1;
 	else
 		return it - adjVertexBegin();

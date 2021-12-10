@@ -87,12 +87,12 @@ protected:
 	void set(const C& e, uint i);
 	void set(const std::vector<C>& list);
 
-	bool contains(const C& e) const;
+	bool contains(const typename MakeConstPointer<C>::type& e) const;
 
-	GCIterator find(const C& e);
-	ConstGCIterator find(const C& e) const;
+	GCIterator find(const typename MakeConstPointer<C>::type& e);
+	ConstGCIterator find(const typename MakeConstPointer<C>::type& e) const;
 
-	int indexOf(const C& e) const;
+	int indexOf(const typename MakeConstPointer<C>::type& e) const;
 
 	/** Member functions specific for vector **/
 

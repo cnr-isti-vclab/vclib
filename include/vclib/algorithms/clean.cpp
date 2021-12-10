@@ -26,6 +26,7 @@
 #include <vector>
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/mesh/mesh_pos.h>
 
 namespace vcl {
 
@@ -106,6 +107,47 @@ public:
 	uint v[3];
 	FacePointer  fp;
 };
+
+template<typename MeshType>
+std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
+{
+	vcl::requirePerFaceAdjacentFaces(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using FaceType = typename MeshType::FaceType;
+
+	std::vector<bool> nonManifoldVertices(m.vertexContainerSize(), false);
+
+	std::vector<uint> TD(m.vertexContainerSize(), 0);
+	std::vector<bool> nonManifoldInc(m.vertexContainerSize(), false);
+	// First Loop, count how many faces are incident on a vertex and store it in TD,
+	// and flag how many vertices are incident on non manifold edges.
+	for (const FaceType& f : m.faces()) {
+		for (uint i = 0; i < f.vertexNumber(); ++i) {
+			TD[m.index(f.vertex(i))]++;
+			if (!isManifoldOnEdge(f, i)) {
+				nonManifoldInc[m.index(f.vertex(i))] = true;
+				nonManifoldInc[m.index(f.vertexMod(i+1))] = true;
+			}
+		}
+	}
+
+	std::vector<bool> visited(m.vertexContainerSize(), false);
+	for (const FaceType& f : m.faces()) {
+		for (uint i = 0; i < f.vertexNumber(); ++i){
+			if (!visited[m.index(f.vertex(i))]) {
+				visited[m.index(f.vertex(i))] = true;
+				mesh::MeshPos pos(&f, i);
+				uint starSize = pos.numberOfAdjacentFacesToV();
+				if (starSize != TD[m.index(f.vertex(i))])
+					nonManifoldVertices[m.index(f.vertex(i))] = true;
+				}
+		}
+	}
+
+	return nonManifoldVertices;
+}
+
 } // namespace internal
 
 /**
@@ -377,6 +419,30 @@ uint removeDegenerateFaces(MeshType& m)
 		}
 	}
 	return count;
+}
+
+template<typename FaceType>
+bool isManifoldOnEdge(const FaceType& f, uint edge)
+{
+	if (comp::isAdjacentFacesEnabledOn(f)) {
+		if (f.adjFace(edge) == nullptr) {
+			return true;
+		}
+		else {
+			return f.adjFace(edge)->indexOfAdjFace(&f) >= 0;
+		}
+	}
+	else {
+		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	}
+}
+
+
+template<typename MeshType>
+uint countNonManifoldVertices(const MeshType& m)
+{
+	std::vector<bool> nonManifoldVertices = internal::nonManifoldVerticesVectorBool(m);
+	return std::count(nonManifoldVertices.begin(), nonManifoldVertices.end(), true);
 }
 
 } // namespace vcl

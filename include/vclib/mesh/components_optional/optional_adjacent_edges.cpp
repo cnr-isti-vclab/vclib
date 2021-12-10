@@ -130,7 +130,7 @@ template<typename Edge, int N, typename T>
 int OptionalAdjacentEdges<Edge, N, T>::indexOfAdjEdge(const Edge* e) const
 {
 	auto it = findAdjEdge(e);
-	if (e == adjEdgeEnd())
+	if (it == adjEdgeEnd())
 		return -1;
 	else
 		return it - adjEdgeBegin();
