@@ -158,6 +158,56 @@ inline void TriangleBitFlags::unsetAllEdgeFaux()
 	unsetEdgeFaux(2);
 }
 
+inline void TriangleBitFlags::importFromVCGFlags(int f)
+{
+	if (f & 0x00000020)
+		setSelected();
+	if (f & 0x00000040)
+		setEdgeOnBorder(0);
+	if (f & 0x00000080)
+		setEdgeOnBorder(1);
+	if (f & 0x00000100)
+		setEdgeOnBorder(2);
+	if (f & 0x00008000)
+		setEdgeSelected(0);
+	if (f & 0x00010000)
+		setEdgeSelected(1);
+	if (f & 0x00020000)
+		setEdgeSelected(2);
+	if (f & 0x00040000)
+		setEdgeFaux(0);
+	if (f & 0x00080000)
+		setEdgeFaux(1);
+	if (f & 0x00100000)
+		setEdgeFaux(2);
+}
+
+int TriangleBitFlags::exportToVCGFlags() const
+{
+	int f = 0;
+	if (isSelected())
+		f &= 0x00000020;
+	if (isEdgeOnBorder(0))
+		f &= 0x00000040;
+	if (isEdgeOnBorder(1))
+		f &= 0x00000080;
+	if (isEdgeOnBorder(2))
+		f &= 0x00000100;
+	if (isEdgeSelected(0))
+		f &= 0x00008000;
+	if (isEdgeSelected(1))
+		f &= 0x00010000;
+	if (isEdgeSelected(2))
+		f &= 0x00020000;
+	if (isEdgeFaux(0))
+		f &= 0x00040000;
+	if (isEdgeFaux(1))
+		f &= 0x00080000;
+	if (isEdgeFaux(2))
+		f &= 0x00100000;
+	return f;
+}
+
 template<typename Element>
 void TriangleBitFlags::importFrom(const Element& e)
 {

@@ -197,47 +197,6 @@ bool enableIfPerVertexMarkOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexMutableBitFlags()
-{
-	if constexpr (hasVertices<MeshType>())  {
-		return vcl::vert::hasMutableBitFlags<typename MeshType::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
-bool isPerVertexMutableBitFlagsEnabled(const MeshType& m)
-{
-	if constexpr (hasVertices<MeshType>()) {
-		if constexpr (vcl::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>()) {
-			return m.isPerVertexMutableBitFlagsEnabled();
-		}
-		else {
-			return vcl::vert::hasMutableBitFlags<typename MeshType::VertexType>();
-		}
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
-bool enableIfPerVertexMutableBitFlagsOptional(MeshType& m)
-{
-	if constexpr (hasPerVertexMutableBitFlags<MeshType>()) {
-		if constexpr(vcl::vert::hasOptionalMutableBitFlags<typename MeshType::VertexType>()) {
-			m.enablePerVertexMutableBitFlags();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool constexpr hasPerVertexNormal()
 {
 	if constexpr (hasVertices<MeshType>())  {
@@ -451,16 +410,6 @@ void requirePerVertexMark(const MeshType& m)
 	static_assert(hasPerVertexMark<MeshType>(), "Mesh has no vertex mark.");
 	if (!isPerVertexMarkEnabled(m))
 		throw vcl::MissingComponentException("Vertex mark not enabled.");
-}
-
-template<typename MeshType>
-void requirePerVertexMutableBitFlags(const MeshType& m)
-{
-	requireVertices<MeshType>();
-	static_assert(
-		hasPerVertexMutableBitFlags<MeshType>(), "Mesh has no per vertex mutable bit flags.");
-	if (!isPerVertexMutableBitFlagsEnabled(m))
-		throw vcl::MissingComponentException("Vertex mutable bit flags not enabled.");
 }
 
 template<typename MeshType>

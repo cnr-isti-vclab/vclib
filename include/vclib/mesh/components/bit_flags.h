@@ -73,6 +73,9 @@ public:
 	void unsetOnBorder();
 	void unsetUserBit(uint bit);
 
+	void importFromVCGFlags(int f);
+	int exportToVCGFlags() const;
+
 protected:
 	void setDeleted();
 	void unsetDeleted();

@@ -28,7 +28,6 @@
 #include "../components_optional/optional_adjacent_faces.h"
 #include "../components_optional/optional_color.h"
 #include "../components_optional/optional_mark.h"
-#include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_scalar.h"
 
 namespace vcl::edge {
@@ -81,16 +80,6 @@ template<typename EdgeType>
 bool constexpr hasOptionalMark()
 {
 	return comp::hasOptionalMark<EdgeType>();
-}
-
-/* Port OptionalMutableBitFlags class into edge namespace */
-template<typename EdgeType>
-using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<EdgeType>;
-
-template<typename EdgeType>
-bool constexpr hasOptionalMutableBitFlags()
-{
-	return comp::hasOptionalMutableBitFlags<EdgeType>();
 }
 
 /* Port OptionalScalar class into edge namespace */

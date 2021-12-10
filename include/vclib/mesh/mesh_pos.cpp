@@ -27,6 +27,7 @@ namespace vcl::mesh {
 /**
  * @brief Helper function to check if a MeshPos is valid, that is if:
  * - v and f are valid vertex/face pointers, and e >= 0
+ * - the type of f has AdjacentFaces
  * - e is less than the number of vertices of f (that is the number of edges of f)
  * - v is the vertex of f in position e or (e+1)%f->numberVertices()
  *
@@ -39,6 +40,8 @@ template<typename FaceType>
 bool MeshPos<FaceType>::isValid(const FaceType* f, const VertexType* v, short e)
 {
 	if (f == nullptr || v == nullptr || e < 0)
+		return false;
+	if (!comp::isAdjacentFacesEnabledOn(*f))
 		return false;
 	return
 		e < f->vertexNumber() && (v == f->vertex(e) || v == f->vertexMod(e+1));

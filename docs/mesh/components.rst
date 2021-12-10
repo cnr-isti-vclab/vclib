@@ -23,7 +23,6 @@ Components
    components/color
    components/coordinate
    components/mark
-   components/mutable_bit_flags
    components/normal
    components/scalar
    components/tex_coord

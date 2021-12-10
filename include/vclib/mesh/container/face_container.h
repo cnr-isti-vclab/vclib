@@ -157,19 +157,6 @@ public:
 	VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
 	disablePerFaceMark();
 
-	// Mutable Bit Flags
-	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), bool)
-	isPerFaceMutableBitFlagsEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), void)
-	enablePerFaceMutableBitFlags();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), void)
-	disablePerFaceMutableBitFlags();
-
 	// Normal
 	template<typename U = T>
 	VCL_ENABLE_IF(face::hasOptionalNormal<U>(), bool)

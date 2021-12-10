@@ -38,7 +38,6 @@ class Vertex :
 			vcl::vert::Normal3f,
 			vcl::vert::Color,
 			vcl::vert::Scalard,
-			vcl::vert::OptionalMutableBitFlags<Vertex>,
 			vcl::vert::OptionalTexCoordf<Vertex>,
 			vcl::vert::OptionalAdjacentFaces<Face, Vertex>,
 			vcl::vert::OptionalAdjacentVertices<Vertex>,
@@ -55,7 +54,6 @@ class Face :
 			vcl::face::OptionalColor<Face>,
 			vcl::face::OptionalScalard<Face>,
 			vcl::face::OptionalAdjacentPolygons<Face>,
-			vcl::face::OptionalMutableBitFlags<Face>,
 			vcl::face::OptionalPolygonWedgeTexCoordsf<Face>,
 			vcl::face::CustomComponents<Face>>
 {

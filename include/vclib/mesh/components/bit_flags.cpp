@@ -132,6 +132,25 @@ inline void BitFlags::unsetUserBit(uint bit)
 	unsetUserBit(bit, FIRST_USER_BIT);
 }
 
+inline void BitFlags::importFromVCGFlags(int f)
+{
+	unsetAllFlags();
+	if (f & 0x0020)
+		setSelected();
+	if (f & 0x0100)
+		setOnBorder();
+}
+
+inline int BitFlags::exportToVCGFlags() const
+{
+	int f = 0;
+	if (isSelected())
+		f &= 0x0020;
+	if (isOnBorder())
+		f &= 0x0100;
+	return f;
+}
+
 /**
  * @brief Marks as deleted this Element.
  */

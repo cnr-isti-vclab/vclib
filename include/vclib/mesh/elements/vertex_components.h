@@ -30,7 +30,6 @@
 #include "../components/color.h"
 #include "../components/coordinate.h"
 #include "../components/mark.h"
-#include "../components/mutable_bit_flags.h"
 #include "../components/normal.h"
 #include "../components/principal_curvature.h"
 #include "../components/scalar.h"
@@ -110,15 +109,6 @@ template<typename VertexType>
 bool constexpr hasMark()
 {
 	return comp::hasMark<VertexType>();
-}
-
-/* Port MutableBitFlags class into vert namespace */
-using MutableBitFlags = comp::MutableBitFlags;
-
-template<typename VertexType>
-bool constexpr hasMutableBitFlags()
-{
-	return comp::hasMutableBitFlags<VertexType>();
 }
 
 /* Port Normal classes into vert namespace */

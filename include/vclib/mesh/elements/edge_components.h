@@ -28,7 +28,6 @@
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/mark.h"
-#include "../components/mutable_bit_flags.h"
 #include "../components/scalar.h"
 #include "../components/vertex_references.h"
 
@@ -79,15 +78,6 @@ template<typename EdgeType>
 bool constexpr hasMark()
 {
 	return comp::hasMark<EdgeType>();
-}
-
-/* Port MutableBitFlags class into edge namespace */
-using MutableBitFlags = comp::MutableBitFlags;
-
-template<typename EdgeType>
-bool constexpr hasMutableBitFlags()
-{
-	return comp::hasMutableBitFlags<EdgeType>();
 }
 
 /* Port Scalar class into edge namespace */

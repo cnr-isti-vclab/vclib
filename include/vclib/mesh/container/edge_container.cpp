@@ -330,8 +330,6 @@ void EdgeContainer<T>::enableAllPerEdgeOptionalComponents()
 		enablePerEdgeColor();
 	if constexpr (edge::hasOptionalMark<T>())
 		enablePerEdgeMark();
-	if constexpr (edge::hasOptionalMutableBitFlags<T>())
-		enablePerEdgeMutableBitFlags();
 	if constexpr (edge::hasOptionalScalar<T>())
 		enablePerEdgeScalar();
 }
@@ -351,8 +349,6 @@ void EdgeContainer<T>::disableAllPerEdgeOptionalComponents()
 		disablePerEdgeColor();
 	if constexpr (edge::hasOptionalMark<T>())
 		disablePerEdgeMark();
-	if constexpr (edge::hasOptionalMutableBitFlags<T>())
-		disablePerEdgeMutableBitFlags();
 	if constexpr (edge::hasOptionalScalar<T>())
 		disablePerEdgeScalar();
 }
@@ -535,49 +531,6 @@ VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
 EdgeContainer<T>::disablePerEdgeMark()
 {
 	Base::optionalVec.disableMark();
-}
-
-/**
- * @brief Checks if the edge Optional Mutable Bit Flags is enabled.
- *
- * @note This function is available only if the Edge Element has the OptionalMutableBitFlags
- * Component.
- *
- * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
- */
-template<typename T>
-template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), bool)
-EdgeContainer<T>::isPerEdgeMutableBitFlagsEnabled() const
-{
-	return Base::optionalVec.isMutableBitFlagsEnabled();
-}
-
-/**
- * @brief Enables the Optional Mutable Flags of the edge.
- *
- * @note This function is available only if the Edge Element has the OptionalMutableFlags Component.
- */
-template<typename T>
-template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), void)
-EdgeContainer<T>::enablePerEdgeMutableBitFlags()
-{
-	Base::optionalVec.enableMutableBitFlags(edgeContainerSize());
-}
-
-/**
- * @brief Disables the Optional Mutable Flags of the edge.
- *
- * @note This function is available only if the Edge Element has the OptionalMutableBitFlags
- * Component.
- */
-template<typename T>
-template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), void)
-EdgeContainer<T>::disablePerEdgeMutableBitFlags()
-{
-	Base::optionalVec.disableMutableBitFlags();
 }
 
 /**
@@ -873,18 +826,6 @@ void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 			else {
 				if constexpr (edge::hasMark<MEdgeType>()) {
 					enablePerEdgeMark();
-				}
-			}
-		}
-		if constexpr (edge::hasOptionalMutableBitFlags<EdgeType>()) {
-			if constexpr (edge::hasOptionalMutableBitFlags<MEdgeType>()) {
-				if (m.isPerEdgeMutableBitFlagsEnabled()) {
-					enablePerEdgeMutableBitFlags();
-				}
-			}
-			else {
-				if constexpr (edge::hasMutableBitFlags<MEdgeType>()) {
-					enablePerEdgeMutableBitFlags();
 				}
 			}
 		}

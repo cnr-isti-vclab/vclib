@@ -88,6 +88,9 @@ public:
 	void unsetEdgeFaux(uint i);
 	void unsetAllEdgeFaux();
 
+	void importFromVCGFlags(int f);
+	int exportToVCGFlags() const;
+
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);

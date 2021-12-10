@@ -50,17 +50,8 @@ int main()
 	m.vertex(1).coord() = vcl::Point3d(0, 1, 0);
 	m.vertex(2).coord() = vcl::Point3d(1, 0, 0);
 
-	// test mutable flags
-	// flags that can be modified also on const meshes, like the "visited" flag
-	m.enablePerVertexMutableBitFlags(); // mutable flags on this mesh is an optional component
-
-	const vcl::TriMesh::Vertex& vv = m.vertex(0);
-	vv.setVisitedM(); // vertex 0 is now visited
-
 	vcl::TriMesh::Vertex myv;
 	myv.coord() = vcl::Point3d(3, 1, 2);
-
-	assert(m.vertex(0).isVisitedM());
 
 	m.enablePerVertexTexCoord();
 

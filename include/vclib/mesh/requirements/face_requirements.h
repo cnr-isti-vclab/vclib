@@ -64,17 +64,6 @@ bool isPerFaceMarkEnabled(const MeshType&);
 template<typename MeshType>
 bool enableIfPerFaceMarkOptional(MeshType&);
 
-// Face Mutable Flags
-
-template<typename MeshType>
-bool constexpr hasPerFaceMutableBitFlags();
-
-template<typename MeshType>
-bool isPerFaceMutableBitFlagsEnabled(const MeshType&);
-
-template<typename MeshType>
-bool enableIfPerFaceMutableBitFlagsOptional(MeshType&);
-
 // Face Normal
 
 template<typename MeshType>
@@ -153,11 +142,6 @@ void requirePerFaceColor(const MeshType& m);
 
 template<typename MeshType>
 void requirePerFaceMark(const MeshType& m);
-
-// Face Mutable Flags
-
-template<typename MeshType>
-void requirePerFaceMutableBitFlags(const MeshType& m);
 
 // Face Normal
 

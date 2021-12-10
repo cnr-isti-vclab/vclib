@@ -338,8 +338,6 @@ void VertexContainer<T>::enableAllPerVertexOptionalComponents()
 		enablePerVertexColor();
 	if constexpr (vert::hasOptionalMark<T>())
 		enablePerVertexMark();
-	if constexpr (vert::hasOptionalMutableBitFlags<T>())
-		enablePerVertexMutableBitFlags();
 	if constexpr (vert::hasOptionalNormal<T>())
 		enablePerVertexNormal();
 	if constexpr (vert::hasOptionalPrincipalCurvature<T>())
@@ -367,8 +365,6 @@ void VertexContainer<T>::disableAllPerVertexOptionalComponents()
 		disablePerVertexColor();
 	if constexpr (vert::hasOptionalMark<T>())
 		disablePerVertexMark();
-	if constexpr (vert::hasOptionalMutableBitFlags<T>())
-		disablePerVertexMutableBitFlags();
 	if constexpr (vert::hasOptionalNormal<T>())
 		disablePerVertexNormal();
 	if constexpr (vert::hasOptionalPrincipalCurvature<T>())
@@ -591,50 +587,6 @@ VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
 VertexContainer<T>::disablePerVertexMark()
 {
 	Base::optionalVec.disableMark();
-}
-
-/**
- * @brief Checks if the vertex Optional Mutable Bit Flags is enabled.
- *
- * @note This function is available only if the Vertex Element has the OptionalMutableBitFlags
- * Component.
- *
- * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
- */
-template<typename T>
-template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), bool)
-VertexContainer<T>::isPerVertexMutableBitFlagsEnabled() const
-{
-	return Base::optionalVec.isMutableBitFlagsEnabled();
-}
-
-/**
- * @brief Enables the Optional Mutable Flags of the vertex.
- *
- * @note This function is available only if the Vertex Element has the OptionalMutableBitFlags
- * Component.
- */
-template<typename T>
-template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), void)
-VertexContainer<T>::enablePerVertexMutableBitFlags()
-{
-	Base::optionalVec.enableMutableBitFlags(vertexContainerSize());
-}
-
-/**
- * @brief Disables the Optional Mutable Flags of the vertex.
- *
- * @note This function is available only if the Vertex Element has the OptionalMutableBitFlags
- * Component.
- */
-template<typename T>
-template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), void)
-VertexContainer<T>::disablePerVertexMutableBitFlags()
-{
-	Base::optionalVec.disableMutableBitFlags();
 }
 
 /**
@@ -1119,18 +1071,6 @@ void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 			else {
 				if constexpr (vert::hasMark<MVertexType>()) {
 					enablePerVertexMark();
-				}
-			}
-		}
-		if constexpr (vert::hasOptionalMutableBitFlags<VertexType>()) {
-			if constexpr (vert::hasOptionalMutableBitFlags<MVertexType>()) {
-				if (m.isPerVertexMutableBitFlagsEnabled()) {
-					enablePerVertexMutableBitFlags();
-				}
-			}
-			else {
-				if constexpr (vert::hasMutableBitFlags<MVertexType>()) {
-					enablePerVertexMutableBitFlags();
 				}
 			}
 		}

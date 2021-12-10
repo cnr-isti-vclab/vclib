@@ -28,7 +28,6 @@
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/mark.h"
-#include "../components/mutable_bit_flags.h"
 #include "../components/normal.h"
 #include "../components/polygon_bit_flags.h"
 #include "../components/principal_curvature.h"
@@ -103,15 +102,6 @@ template<typename FaceType>
 bool constexpr hasMark()
 {
 	return comp::hasMark<FaceType>();
-}
-
-/* Port MutableBitFlags class into face namespace */
-using MutableBitFlags = comp::MutableBitFlags;
-
-template<typename FaceType>
-bool constexpr hasMutableBitFlags()
-{
-	return comp::hasMutableBitFlags<FaceType>();
 }
 
 /* Port Normal classes into face namespace */

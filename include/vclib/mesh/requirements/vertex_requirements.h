@@ -75,17 +75,6 @@ bool isPerVertexMarkEnabled(const MeshType&);
 template<typename MeshType>
 bool enableIfPerVertexMarkOptional(MeshType&);
 
-// Vertex Mutable Flags
-
-template<typename MeshType>
-bool constexpr hasPerVertexMutableBitFlags();
-
-template<typename MeshType>
-bool isPerVertexMutableBitFlagsEnabled(const MeshType&);
-
-template<typename MeshType>
-bool enableIfPerVertexMutableBitFlagsOptional(MeshType&);
-
 // Vertex Normal
 
 template<typename MeshType>
@@ -158,11 +147,6 @@ void requirePerVertexColor(const MeshType& m);
 
 template<typename MeshType>
 void requirePerVertexMark(const MeshType& m);
-
-// Vertex Mutable Flags
-
-template<typename MeshType>
-void requirePerVertexMutableBitFlags(const MeshType& m);
 
 // Vertex Normal
 

@@ -29,7 +29,6 @@
 #include "../components_optional/optional_adjacent_vertices.h"
 #include "../components_optional/optional_color.h"
 #include "../components_optional/optional_mark.h"
-#include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_normal.h"
 #include "../components_optional/optional_principal_curvature.h"
 #include "../components_optional/optional_scalar.h"
@@ -95,16 +94,6 @@ template<typename VertexType>
 bool constexpr hasOptionalMark()
 {
 	return comp::hasOptionalMark<VertexType>();
-}
-
-/* Port OptionalMutableBitFlags class into vert namespace */
-template<typename VertexType>
-using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<VertexType>;
-
-template<typename VertexType>
-bool constexpr hasOptionalMutableBitFlags()
-{
-	return comp::hasOptionalMutableBitFlags<VertexType>();
 }
 
 /* Port OptionalNormal class into vert namespace */

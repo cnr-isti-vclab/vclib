@@ -68,7 +68,6 @@ set(HEADERS
 	include/vclib/mesh/components/color.h
 	include/vclib/mesh/components/coordinate.h
 	include/vclib/mesh/components/mark.h
-	include/vclib/mesh/components/mutable_bit_flags.h
 	include/vclib/mesh/components/normal.h
 	include/vclib/mesh/components/polygon_bit_flags.h
 	include/vclib/mesh/components/principal_curvature.h
@@ -89,7 +88,6 @@ set(HEADERS
 	include/vclib/mesh/components/detection/coordinate_detection.h
 	include/vclib/mesh/components/detection/custom_components_detection.h
 	include/vclib/mesh/components/detection/mark_detection.h
-	include/vclib/mesh/components/detection/mutable_bit_flags_detection.h
 	include/vclib/mesh/components/detection/normal_detection.h
 	include/vclib/mesh/components/detection/principal_curvature_detection.h
 	include/vclib/mesh/components/detection/scalar_detection.h
@@ -108,7 +106,6 @@ set(HEADERS
 	include/vclib/mesh/components_optional/optional_color.h
 	include/vclib/mesh/components_optional/optional_info.h
 	include/vclib/mesh/components_optional/optional_mark.h
-	include/vclib/mesh/components_optional/optional_mutable_bit_flags.h
 	include/vclib/mesh/components_optional/optional_normal.h
 	include/vclib/mesh/components_optional/optional_principal_curvature.h
 	include/vclib/mesh/components_optional/optional_scalar.h
@@ -122,7 +119,6 @@ set(HEADERS
 	include/vclib/mesh/components_vector/optional_adjacent_vertices_vector.h
 	include/vclib/mesh/components_vector/optional_generic_vector.h
 	include/vclib/mesh/components_vector/optional_mark_vector.h
-	include/vclib/mesh/components_vector/optional_mutable_bit_flags_vector.h
 	include/vclib/mesh/components_vector/optional_normal_vector.h
 	include/vclib/mesh/components_vector/optional_principal_curvature_vector.h
 	include/vclib/mesh/components_vector/optional_scalar_vector.h
@@ -202,7 +198,6 @@ set(SOURCES
 	include/vclib/mesh/components/color.cpp
 	include/vclib/mesh/components/coordinate.cpp
 	include/vclib/mesh/components/mark.cpp
-	include/vclib/mesh/components/mutable_bit_flags.cpp
 	include/vclib/mesh/components/normal.cpp
 	include/vclib/mesh/components/polygon_bit_flags.cpp
 	include/vclib/mesh/components/principal_curvature.cpp
@@ -222,7 +217,6 @@ set(SOURCES
 	include/vclib/mesh/components_optional/optional_adjacent_vertices.cpp
 	include/vclib/mesh/components_optional/optional_color.cpp
 	include/vclib/mesh/components_optional/optional_mark.cpp
-	include/vclib/mesh/components_optional/optional_mutable_bit_flags.cpp
 	include/vclib/mesh/components_optional/optional_normal.cpp
 	include/vclib/mesh/components_optional/optional_principal_curvature.cpp
 	include/vclib/mesh/components_optional/optional_scalar.cpp

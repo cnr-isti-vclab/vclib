@@ -156,47 +156,6 @@ bool enableIfPerFaceMarkOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceMutableBitFlags()
-{
-	if constexpr (hasFaces<MeshType>())  {
-		return vcl::face::hasMutableBitFlags<typename MeshType::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
-bool isPerFaceMutableBitFlagsEnabled(const MeshType& m)
-{
-	if constexpr (hasFaces<MeshType>()) {
-		if constexpr (vcl::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
-			return m.isPerFaceMutableBitFlagsEnabled();
-		}
-		else {
-			return vcl::face::hasMutableBitFlags<typename MeshType::FaceType>();
-		}
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
-bool enableIfPerFaceMutableBitFlagsOptional(MeshType& m)
-{
-	if constexpr (hasPerFaceMutableBitFlags<MeshType>()) {
-		if constexpr(vcl::face::hasOptionalMutableBitFlags<typename MeshType::FaceType>()) {
-			m.enablePerFaceMutableBitFlags();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool constexpr hasPerFaceNormal()
 {
 	if constexpr (hasFaces<MeshType>())  {
@@ -441,15 +400,6 @@ void requirePerFaceMark(const MeshType& m)
 	static_assert(hasPerFaceMark<MeshType>(), "Mesh has no face mark.");
 	if (!isPerFaceMarkEnabled(m))
 		throw vcl::MissingComponentException("Face mark not enabled.");
-}
-
-template<typename MeshType>
-void requirePerFaceMutableBitFlags(const MeshType& m)
-{
-	requireFaces<MeshType>();
-	static_assert(hasPerFaceMutableBitFlags<MeshType>(), "Mesh has no per face mutable bit flags.");
-	if (!isPerFaceMutableBitFlagsEnabled(m))
-		throw vcl::MissingComponentException("Face mutable bit flags not enabled.");
 }
 
 template<typename MeshType>

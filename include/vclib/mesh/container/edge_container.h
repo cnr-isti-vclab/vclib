@@ -132,19 +132,6 @@ public:
 	VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
 	disablePerEdgeMark();
 
-	// Mutable Bit Flags
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), bool)
-	isPerEdgeMutableBitFlagsEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), void)
-	enablePerEdgeMutableBitFlags();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalMutableBitFlags<U>(), void)
-	disablePerEdgeMutableBitFlags();
-
 	// Scalar
 	template<typename U = T>
 	VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), bool)

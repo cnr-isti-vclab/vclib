@@ -96,7 +96,8 @@ public:
 	void unsetEdgeFaux(uint i);
 	void unsetAllEdgesFaux();
 
-
+	void importFromVCGFlags(int f);
+	int exportToVCGFlags() const;
 
 protected:
 	template<typename Element>

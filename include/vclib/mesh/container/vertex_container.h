@@ -152,19 +152,6 @@ public:
 	VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
 	disablePerVertexMark();
 
-	// Mutable Bit Flags
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), bool)
-	isPerVertexMutableBitFlagsEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), void)
-	enablePerVertexMutableBitFlags();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalMutableBitFlags<U>(), void)
-	disablePerVertexMutableBitFlags();
-
 	// Normal
 	template<typename U = T>
 	VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), bool)

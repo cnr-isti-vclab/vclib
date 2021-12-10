@@ -28,7 +28,6 @@
 #include "../components_optional/optional_adjacent_faces.h"
 #include "../components_optional/optional_color.h"
 #include "../components_optional/optional_mark.h"
-#include "../components_optional/optional_mutable_bit_flags.h"
 #include "../components_optional/optional_normal.h"
 #include "../components_optional/optional_principal_curvature.h"
 #include "../components_optional/optional_scalar.h"
@@ -91,16 +90,6 @@ template<typename FaceType>
 bool constexpr hasOptionalMark()
 {
 	return comp::hasOptionalMark<FaceType>();
-}
-
-/* Port OptionalMutableBitFlags class into face namespace */
-template<typename FaceType>
-using OptionalMutableBitFlags = comp::OptionalMutableBitFlags<FaceType>;
-
-template<typename FaceType>
-bool constexpr hasOptionalMutableBitFlags()
-{
-	return comp::hasOptionalMutableBitFlags<FaceType>();
 }
 
 /* Port OptionalNormal class into face namespace */

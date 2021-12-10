@@ -330,8 +330,6 @@ void FaceContainer<T>::enableAllPerFaceOptionalComponents()
 		enablePerFaceColor();
 	if constexpr (face::hasOptionalMark<T>())
 		enablePerFaceMark();
-	if constexpr (face::hasOptionalMutableBitFlags<T>())
-		enablePerFaceMutableBitFlags();
 	if constexpr (face::hasOptionalNormal<T>())
 		enablePerFaceNormal();
 	if constexpr (face::hasOptionalPrincipalCurvature<T>())
@@ -359,8 +357,6 @@ void FaceContainer<T>::disableAllPerFaceOptionalComponents()
 		disablePerFaceColor();
 	if constexpr (face::hasOptionalMark<T>())
 		disablePerFaceMark();
-	if constexpr (face::hasOptionalMutableBitFlags<T>())
-		disablePerFaceMutableBitFlags();
 	if constexpr (face::hasOptionalNormal<T>())
 		disablePerFaceNormal();
 	if constexpr (face::hasOptionalPrincipalCurvature<T>())
@@ -561,49 +557,6 @@ VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
 FaceContainer<T>::disablePerFaceMark()
 {
 	Base::optionalVec.disableMark();
-}
-
-/**
- * @brief Checks if the face Optional Mutable Bit Flags is enabled.
- *
- * @note This function is available only if the Face Element has the OptionalMutableBitFlags
- * Component.
- *
- * @return true if the Optional Mutable Bit Flags component is enabled, false otherwise.
- */
-template<typename T>
-template<typename U>
-VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), bool)
-FaceContainer<T>::isPerFaceMutableBitFlagsEnabled() const
-{
-	return Base::optionalVec.isMutableBitFlagsEnabled();
-}
-
-/**
- * @brief Enables the Optional Mutable Flags of the face.
- *
- * @note This function is available only if the Face Element has the OptionalMutableFlags Component.
- */
-template<typename T>
-template<typename U>
-VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), void)
-FaceContainer<T>::enablePerFaceMutableBitFlags()
-{
-	Base::optionalVec.enableMutableBitFlags(faceContainerSize());
-}
-
-/**
- * @brief Disables the Optional Mutable Flags of the face.
- *
- * @note This function is available only if the Face Element has the OptionalMutableBitFlags
- * Component.
- */
-template<typename T>
-template<typename U>
-VCL_ENABLE_IF(face::hasOptionalMutableBitFlags<U>(), void)
-FaceContainer<T>::disablePerFaceMutableBitFlags()
-{
-	Base::optionalVec.disableMutableBitFlags();
 }
 
 /**
@@ -1107,18 +1060,6 @@ void FaceContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 			else {
 				if constexpr (face::hasMark<MFaceType>()) {
 					enablePerFaceMark();
-				}
-			}
-		}
-		if constexpr (face::hasOptionalMutableBitFlags<FaceType>()) {
-			if constexpr (face::hasOptionalMutableBitFlags<MFaceType>()) {
-				if (m.isPerFaceMutableBitFlagsEnabled()) {
-					enablePerFaceMutableBitFlags();
-				}
-			}
-			else {
-				if constexpr (face::hasMutableBitFlags<MFaceType>()) {
-					enablePerFaceMutableBitFlags();
 				}
 			}
 		}
