@@ -42,6 +42,9 @@ uint removeDuplicatedFaces(MeshType& m);
 template <typename MeshType>
 uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
 
+template <typename MeshType>
+uint removeDegenerateFaces(MeshType& m);
+
 }
 
 #include "clean.cpp"

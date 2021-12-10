@@ -343,4 +343,40 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 	return count_vd;
 }
 
+/**
+ * @brief Removes degenerate faces are faces that are Topologically degenerate, i.e. have two or
+ * more vertex reference that link the same vertex. All degenerate faces are zero area faces BUT not
+ * all zero area faces are degenerate (e.g. a face with three differente vertex references, but two
+ * of them have the same coordinates). Therefore, if you want to remove also these kind of faces you
+ * should call `removeDuplicatedVertices(m)` first.
+ * This function does not adjust topology.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *   - Faces
+ *
+ * @param m
+ * @return
+ */
+template<typename MeshType>
+uint removeDegenerateFaces(MeshType& m)
+{
+	uint count = 0;
+	using VertexType = typename MeshType::VertexType;
+	using FaceType = typename MeshType::FaceType;
+
+	for (FaceType& f : m.faces()){
+		bool deg = false; // flag to check if a face is degenerate
+		for (uint i = 0; i < f.vertexNumber() && !deg; ++i){
+			if (f.vertex(i) == f.vertexMod(i+1)){
+				deg = true;
+				m.deleteFace(m.index(f));
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
 } // namespace vcl
