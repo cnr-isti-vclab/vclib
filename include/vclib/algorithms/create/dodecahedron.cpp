@@ -33,10 +33,9 @@ namespace internal {
 template<typename MeshType>
 MeshType polygonDodecahedron()
 {
-	using VertexType     = typename MeshType::VertexType;
-	using VertexIterator = typename MeshType::VertexIterator;
-	using CoordType      = typename VertexType::CoordType;
-	using ScalarType     = typename CoordType::ScalarType;
+	using VertexType = typename MeshType::VertexType;
+	using CoordType  = typename VertexType::CoordType;
+	using ScalarType = typename CoordType::ScalarType;
 
 	MeshType mesh;
 
@@ -88,28 +87,21 @@ MeshType polygonDodecahedron()
 template<typename MeshType>
 MeshType triangleDodecahedron()
 {
-	using VertexType     = typename MeshType::VertexType;
-	using VertexIterator = typename MeshType::VertexIterator;
-	using CoordType      = typename VertexType::CoordType;
-	using ScalarType     = typename CoordType::ScalarType;
-	using FaceType       = typename MeshType::FaceType;
-	using FaceIterator   = typename MeshType::FaceIterator;
-
 	internal::TMPSimplePolyMesh pmesh = polygonDodecahedron<internal::TMPSimplePolyMesh>();
 
 	MeshType mesh;
 	mesh.reserveVertices(pmesh.vertexNumber());
-	for (const auto& v : pmesh.vertices()){
+	for (const auto& v : pmesh.vertices()) {
 		mesh.addVertex(v.coord());
 	}
 
 	for (const auto& f : pmesh.faces()) {
 		std::vector<uint> ind = earCut(f);
-		for (uint i = 0; i < ind.size(); i+= 3){
+		for (uint i = 0; i < ind.size(); i += 3) {
 			mesh.addFace(
 				pmesh.index(f.vertex(ind[i])),
-				pmesh.index(f.vertex(ind[i+1])),
-				pmesh.index(f.vertex(ind[i+2])));
+				pmesh.index(f.vertex(ind[i + 1])),
+				pmesh.index(f.vertex(ind[i + 2])));
 		}
 	}
 

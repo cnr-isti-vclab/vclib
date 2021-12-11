@@ -113,7 +113,6 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 {
 	vcl::requirePerFaceAdjacentFaces(m);
 
-	using VertexType = typename MeshType::VertexType;
 	using FaceType = typename MeshType::FaceType;
 
 	std::vector<bool> nonManifoldVertices(m.vertexContainerSize(), false);
@@ -405,7 +404,6 @@ template<typename MeshType>
 uint removeDegenerateFaces(MeshType& m)
 {
 	uint count = 0;
-	using VertexType = typename MeshType::VertexType;
 	using FaceType = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()){

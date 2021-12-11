@@ -93,4 +93,4 @@ void OptionalGenericVector<T>::compact(const std::vector<int>& newIndices)
 		compactVector(vec, newIndices);
 }
 
-}
+} // namespace vcl::internal
