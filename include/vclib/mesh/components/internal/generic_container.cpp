@@ -86,7 +86,7 @@ C& GenericContainer<C, N>::atMod(int i)
 template<typename C, int N>
 const C& GenericContainer<C, N>::atMod(int i) const
 {
-	uint n = size();
+	int n = size(); // need to save n as int to avoid unwanted casts
 	return container[(i % n + n) % n];
 }
 
@@ -120,19 +120,21 @@ bool GenericContainer<C, N>::contains(const typename MakeConstPointer<C>::type& 
 }
 
 template<typename C, int N>
-typename GenericContainer<C, N>::GCIterator GenericContainer<C, N>::find(const typename MakeConstPointer<C>::type& e)
+typename GenericContainer<C, N>::GCIterator
+GenericContainer<C, N>::find(const typename MakeConstPointer<C>::type& e)
 {
 	return std::find(container.begin(), container.end(), e);
 }
 
 template<typename C, int N>
-typename GenericContainer<C, N>::ConstGCIterator GenericContainer<C, N>::find(const typename MakeConstPointer<C>::type& e) const
+typename GenericContainer<C, N>::ConstGCIterator
+GenericContainer<C, N>::find(const typename MakeConstPointer<C>::type& e) const
 {
 	return std::find(container.begin(), container.end(), e);
 }
 
 template<typename C, int N>
-int GenericContainer<C, N>::indexOf(const typename MakeConstPointer<C>::type &  e) const
+int GenericContainer<C, N>::indexOf(const typename MakeConstPointer<C>::type& e) const
 {
 	auto it = find(e);
 	if (it == end())
@@ -143,21 +145,24 @@ int GenericContainer<C, N>::indexOf(const typename MakeConstPointer<C>::type &  
 
 template<typename C, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::resize(uint n)
+VCL_ENABLE_IF(M < 0, void)
+GenericContainer<C, N>::resize(uint n)
 {
 	container.resize(n);
 }
 
 template<typename C, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::pushBack(const C& v)
+VCL_ENABLE_IF(M < 0, void)
+GenericContainer<C, N>::pushBack(const C& v)
 {
 	container.push_back(v);
 }
 
 template<typename C, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::insert(uint i, const C& v)
+VCL_ENABLE_IF(M < 0, void)
+GenericContainer<C, N>::insert(uint i, const C& v)
 {
 	assert(i < size());
 	container.insert(container.begin() + i, v);
@@ -165,7 +170,8 @@ VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::insert(uint i, const C& v)
 
 template<typename C, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::erase(uint i)
+VCL_ENABLE_IF(M < 0, void)
+GenericContainer<C, N>::erase(uint i)
 {
 	assert(i < size());
 	container.erase(container.begin() + i);
@@ -173,7 +179,8 @@ VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::erase(uint i)
 
 template<typename C, int N>
 template<int M>
-VCL_ENABLE_IF(M < 0, void) GenericContainer<C, N>::clear()
+VCL_ENABLE_IF(M < 0, void)
+GenericContainer<C, N>::clear()
 {
 	container.clear();
 }

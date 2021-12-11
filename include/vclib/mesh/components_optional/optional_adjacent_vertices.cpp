@@ -58,14 +58,14 @@ const Vertex* OptionalAdjacentVertices<Vertex, T>::adjVertex(uint i) const
 template<typename Vertex, typename T>
 Vertex*& OptionalAdjacentVertices<Vertex, T>::adjVertexMod(int i)
 {
-	uint n = adjVerticesNumber();
+	int n = adjVerticesNumber();
 	return B::optCont().adjVerts(thisId())[(i % n + n) % n];
 }
 
 template<typename Vertex, typename T>
 const Vertex* OptionalAdjacentVertices<Vertex, T>::adjVertexMod(int i) const
 {
-	uint n = adjVerticesNumber();
+	int n = adjVerticesNumber();
 	return B::optCont().adjVerts(thisId())[(i % n + n) % n];
 }
 

@@ -71,14 +71,14 @@ const Face* OptionalAdjacentFaces<Face, N, T>::adjFace(uint i) const
 template<typename Face, int N, typename T>
 Face*& OptionalAdjacentFaces<Face, N, T>::adjFaceMod(int i)
 {
-	uint n = adjFacesNumber();
+	int n = adjFacesNumber();
 	return B::optCont().adjFaces(thisId())[(i % n + n) % n];
 }
 
 template<typename Face, int N, typename T>
 const Face* OptionalAdjacentFaces<Face, N, T>::adjFaceMod(int i) const
 {
-	uint n = adjFacesNumber();
+	int n = adjFacesNumber();
 	return B::optCont().adjFaces(thisId())[(i % n + n) % n];
 }
 

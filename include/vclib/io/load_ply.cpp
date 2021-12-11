@@ -158,6 +158,7 @@ void loadPly(
 	bool                   enableOptionalComponents)
 {
 	std::ifstream file(filename, std::ifstream::binary); // need to set binary of windows will fail
+	file.imbue(std::locale("en_US.UTF-8"));
 	if (!file.is_open()) {
 		throw vcl::CannotOpenFileException(filename);
 	}

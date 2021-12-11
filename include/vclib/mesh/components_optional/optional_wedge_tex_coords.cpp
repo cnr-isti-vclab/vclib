@@ -49,14 +49,14 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoord(uint i) const
 template<typename Scalar, int N, typename T>
 vcl::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordMod(int i)
 {
-	uint n = wedgeTexCoordsNumber();
+	int n = wedgeTexCoordsNumber();
 	return B::optCont().wedgeTexCoords(thisId())[(i % n + n) % n];
 }
 
 template<typename Scalar, int N, typename T>
 const vcl::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordMod(int i) const
 {
-	uint n = wedgeTexCoordsNumber();
+	int n = wedgeTexCoordsNumber();
 	return B::optCont().wedgeTexCoords(thisId())[(i % n + n) % n];
 }
 

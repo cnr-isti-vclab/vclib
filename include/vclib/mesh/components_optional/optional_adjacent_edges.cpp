@@ -71,14 +71,14 @@ const Edge* OptionalAdjacentEdges<Edge, N, T>::adjEdge(uint i) const
 template<typename Edge, int N, typename T>
 Edge*& OptionalAdjacentEdges<Edge, N, T>::adjEdgeMod(int i)
 {
-	uint n = adjEdgesNumber();
+	int n = adjEdgesNumber();
 	return B::optCont().adjEdges(thisId())[(i % n + n) % n];
 }
 
 template<typename Edge, int N, typename T>
 const Edge* OptionalAdjacentEdges<Edge, N, T>::adjEdgeMod(int i) const
 {
-	uint n = adjEdgesNumber();
+	int n = adjEdgesNumber();
 	return B::optCont().adjEdges(thisId())[(i % n + n) % n];
 }
 

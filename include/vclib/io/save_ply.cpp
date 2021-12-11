@@ -48,8 +48,8 @@ void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeade
 		throw std::runtime_error("Ply Header not valid.");
 
 	std::string plyfilename;
-	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
 	std::ofstream fp;
+	fp.imbue(std::locale("en_US.UTF-8"));
 	size_t        lastindex = filename.find_last_of(".");
 	if (lastindex != filename.size())
 		plyfilename = filename;

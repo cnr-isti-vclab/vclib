@@ -46,14 +46,14 @@ const vcl::Color& OptionalWedgeColors<N, T>::wedgeColor(uint i) const
 template<int N, typename T>
 vcl::Color& OptionalWedgeColors<N, T>::wedgeColorMod(int i)
 {
-	uint n = wedgeColorsNumber();
+	int n = wedgeColorsNumber();
 	return B::optCont().wedgeColors(thisId())[(i % n + n) % n];
 }
 
 template<int N, typename T>
 const vcl::Color& OptionalWedgeColors<N, T>::wedgeColorMod(int i) const
 {
-	uint n = wedgeColorsNumber();
+	int n = wedgeColorsNumber();
 	return B::optCont().wedgeColors(thisId())[(i % n + n) % n];
 }
 
