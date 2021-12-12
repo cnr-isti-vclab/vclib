@@ -40,7 +40,7 @@
  *
  * When building the documentation, this syntax will be hidden and will appear just the return type.
  */
-#define VCL_ENABLE_IF(Test, Type1) typename std::enable_if< Test, Type1 >::type
+#define VCL_ENABLE_IF(Test, Type1) typename std::enable_if<Test, Type1>::type
 
 // used for templates given as parameters to macros
 // https://stackoverflow.com/questions/44268316/passing-a-template-type-into-a-macro
@@ -50,18 +50,46 @@ using uint = unsigned int;
 
 namespace vcl {
 
+/*
+ * Utility type that makes possible to treat const pointers in a templated class that can treat a
+ * both const and non-const pointer type.
+ */
+
 template<typename T>
 struct MakeConstPointer
 {
 	typedef T type;
 };
 
-template <typename T>
+template<typename T>
 struct MakeConstPointer<T*>
 {
 	typedef const T* type;
 };
 
+/*
+ * Full deduction for the possibility to re-use same code for const and non-const member functions
+ * https://stackoverflow.com/a/47369227/5851101
+ */
+
+template<typename T>
+constexpr T& asConst(T const& value) noexcept
+{
+	return const_cast<T&>(value);
 }
+template<typename T>
+constexpr T* asConst(T const* value) noexcept
+{
+	return const_cast<T*>(value);
+}
+template<typename T>
+constexpr T* asConst(T* value) noexcept
+{
+	return value;
+}
+template<typename T>
+void asConst(T const&&) = delete;
+
+} // namespace vcl
 
 #endif // VCL_TYPE_TRAITS_H
