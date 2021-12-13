@@ -59,10 +59,10 @@ namespace vcl {
  * @param[in] polygon: Container of 2D points forming a polygon.
  * @return A vector of indices, representing the triplets of the triangulation of the polygon.
  */
-template<template<typename, typename...> typename Container, typename Scalar>
-std::vector<uint> earCut(const Container<Point2<Scalar>>& polygon)
+template<typename Scalar>
+std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon)
 {
-	std::vector<Container<Point2<Scalar>>> poly;
+	std::vector<std::vector<Point2<Scalar>>> poly;
 	poly.push_back(polygon);
 
 	return mapbox::earcut<uint>(poly);
@@ -81,8 +81,8 @@ std::vector<uint> earCut(const Container<Point2<Scalar>>& polygon)
  * @param[in] polygon: Container of 3D points forming a polygon.
  * @return A vector of indices, representing the triplets of the triangulation of the polygon.
  */
-template<template<typename, typename...> typename Container, typename Scalar>
-std::vector<uint> earCut(const Container<Point3<Scalar>>& polygon)
+template<typename Scalar>
+std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
 {
 	Point3<Scalar> n = polygonNormal<Scalar, Point3<Scalar>>(polygon);
 	Point3<Scalar> u, v;
@@ -140,8 +140,8 @@ std::vector<uint> earCut(const Polygon& polygon)
  * @param[in/out] f: the first face of the triangulation, that will be filled.
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  */
-template <typename MeshType, typename FaceType, template <typename,typename...> typename Container>
-void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const Container<uint>& polygon)
+template <typename MeshType, typename FaceType>
+void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon)
 {
 	vcl::requireVertices<MeshType>();
 	vcl::requireFaces<MeshType>();
@@ -213,8 +213,8 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const Container<uint>
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  * @return The index of the first triangle added to the mesh.
  */
-template <typename MeshType, template <typename,typename...> typename Container>
-uint addTriangleFacesFromPolygon(MeshType& m, const Container<uint>& polygon)
+template <typename MeshType>
+uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon)
 {
 	uint fid = m.addFace();
 	addTriangleFacesFromPolygon(m, m.face(fid), polygon);

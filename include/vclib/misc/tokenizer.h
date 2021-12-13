@@ -26,6 +26,8 @@
 #include <string>
 #include <vector>
 
+#include "vcl_types.h"
+
 namespace vcl {
 
 /**

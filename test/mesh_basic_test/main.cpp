@@ -113,10 +113,6 @@ int main()
 		std::cerr << "V " << m.index(v) << "\n";
 	}
 
-	vcl::TriMesh tet = vcl::createTetrahedron<vcl::TriMesh>();
-
-	vcl::io::savePly(tet, "/home/alessandro/tmp/tet.ply");
-
 	// test import data from another vertex type
 	MyVertex vert;
 	vert.importFrom(m.vertex(0));

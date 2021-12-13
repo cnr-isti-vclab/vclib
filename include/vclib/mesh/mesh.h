@@ -187,11 +187,7 @@ protected:
 private:
 	template<typename M = Mesh>
 	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-	addFaceHelper(typename M::FaceType& f, typename M::VertexType* v);
-
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-	addFaceHelper(typename M::FaceType& f, uint vid);
+	addFaceHelper(typename M::FaceType& f);
 
 	template<typename M = Mesh, typename... V>
 	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)

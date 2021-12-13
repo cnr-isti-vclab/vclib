@@ -857,26 +857,9 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 template<typename... Args>
 template<typename M>
 VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-Mesh<Args...>::addFaceHelper(typename M::FaceType& f, typename M::VertexType* v)
+Mesh<Args...>::addFaceHelper(typename M::FaceType&)
 {
-	using FaceContainer = typename Mesh<Args...>::FaceContainer;
-
-	// base case: we need to add the last vertex
-	const std::size_t n = f.vertexNumber() - 1;
-	f.vertex(n)         = v; // set the vertex
-}
-
-template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid)
-{
-	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
-	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-
-	// base case: we need to add the last vertex
-	const std::size_t n = f.vertexNumber() - 1;
-	f.vertex(n)         = &VertexContainer::vertex(vid); // set the vertex
+	// base case: no need to add any other vertices
 }
 
 template<typename... Args>

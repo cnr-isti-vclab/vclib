@@ -28,20 +28,20 @@
 
 namespace vcl {
 
-template<template<typename, typename...> typename Container, typename Scalar>
-std::vector<uint> earCut(const Container<Point2<Scalar>>& polygon);
+template<typename Scalar>
+std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);
 
-template<template<typename, typename...> typename Container, typename Scalar>
+template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon);
 
 template<typename Polygon>
 std::vector<uint> earCut(const Polygon& polygon);
 
-template<typename MeshType, typename FaceType, template<typename, typename...> typename Container>
-void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const Container<uint>& polygon);
+template<typename MeshType, typename FaceType>
+void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon);
 
-template<typename MeshType, template<typename, typename...> typename Container>
-uint addTriangleFacesFromPolygon(MeshType& m, const Container<uint>& polygon);
+template<typename MeshType>
+uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon);
 
 } // namespace vcl
 
