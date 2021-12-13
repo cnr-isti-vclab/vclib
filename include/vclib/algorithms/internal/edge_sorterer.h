@@ -83,7 +83,7 @@ std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(MeshType& m, bool incl
 	vec.reserve(n_edges);
 
 	for (FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
-		for (int j = 0; j < f.vertexNumber(); ++j) {
+		for (uint j = 0; j < f.vertexNumber(); ++j) {
 			if (includeFauxEdges || !f.isEdgeFaux(j)) {
 				vec.push_back(EdgeSorterer<MeshType>(f, j));
 			}

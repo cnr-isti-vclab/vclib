@@ -28,7 +28,7 @@ template<typename Scalar, int N>
 template<typename S>
 Point<Scalar, N>::Point(const Point<S, N>& p1)
 {
-	for (size_t i = 0; i < p.size(); ++i)
+	for (uint i = 0; i < (uint)p.size(); ++i)
 		p(i) = p1(i);
 }
 

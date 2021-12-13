@@ -30,6 +30,10 @@ add_subdirectory(external)
 
 if (WIN32)
 	add_compile_definitions(_USE_MATH_DEFINES)
+	if (MSVC)
+		# remove possible loss of data warnings in msvc, leave the others
+		add_compile_options(/w44244 /w44267 /w44305)
+	endif()
 endif()
 
 set(VCLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)

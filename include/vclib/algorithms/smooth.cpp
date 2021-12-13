@@ -52,7 +52,7 @@ void accumulateLaplacianInfo(
 	ScalarType weight = 1.0f;
 
 	for (const FaceType& f : m.faces()) {
-		for (int j = 0; j < f.vertexNumber(); ++j) {
+		for (uint j = 0; j < f.vertexNumber(); ++j) {
 			if (!f.isEdgeOnBorder(j)) {
 				const VertexType& v0 = *f.vertex(j);
 				const VertexType& v1 = *f.vertexMod(j + 1);
@@ -74,7 +74,7 @@ void accumulateLaplacianInfo(
 	}
 	// si azzaera i dati per i vertici di bordo
 	for (const FaceType& f : m.faces()) {
-		for (int j = 0; j < f.vertexNumber(); ++j) {
+		for (uint j = 0; j < f.vertexNumber(); ++j) {
 			if (f.isEdgeOnBorder(j)) {
 				const VertexType& v0 = *f.vertex(j);
 				const VertexType& v1 = *f.vertexMod(j + 1);
@@ -90,7 +90,7 @@ void accumulateLaplacianInfo(
 
 	// se l'edge j e' di bordo si deve mediare solo con gli adiacenti
 	for (const FaceType& f : m.faces()) {
-		for (int j = 0; j < f.vertexNumber(); ++j) {
+		for (uint j = 0; j < f.vertexNumber(); ++j) {
 			if (f.isEdgeOnBorder(j)) {
 				const VertexType& v0 = *f.vertex(j);
 				const VertexType& v1 = *f.vertexMod(j + 1);

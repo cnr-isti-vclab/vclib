@@ -328,7 +328,7 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
 	for (FaceType& f : m.faces()) {
 		NormalType n = polygonNormal(f);
 
-		for (int i = 0; i < f.vertexNumber(); ++i) {
+		for (uint i = 0; i < f.vertexNumber(); ++i) {
 			NormalType vec1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord()).normalized();
 			NormalType vec2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord()).normalized();
 
@@ -379,7 +379,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
 	for (FaceType& f : m.faces()) {
 		NormalType n = polygonNormal(f);
 
-		for (int i = 0; i < f.vertexNumber(); ++i) {
+		for (uint i = 0; i < f.vertexNumber(); ++i) {
 			ScalarType e1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
 			ScalarType e2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
 

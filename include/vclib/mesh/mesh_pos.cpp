@@ -44,7 +44,7 @@ bool MeshPos<FaceType>::isValid(const FaceType* f, const VertexType* v, short e)
 	if (!comp::isAdjacentFacesEnabledOn(*f))
 		return false;
 	return
-		e < f->vertexNumber() && (v == f->vertex(e) || v == f->vertexMod(e+1));
+		(ushort)e < f->vertexNumber() && (v == f->vertex(e) || v == f->vertexMod(e+1));
 }
 
 /**

@@ -47,6 +47,7 @@
 #define VCL_COMMA ,
 
 using uint = unsigned int;
+using ushort = unsigned short;
 
 namespace vcl {
 
