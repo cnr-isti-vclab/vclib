@@ -74,4 +74,10 @@ inline std::string toUpper(const std::string& s)
 	return ret;
 }
 
+inline void removeWindowsNewLine(std::string& s)
+{
+	if (s.size() > 0 && s[s.size()-1] == '\r')
+		s = s.substr(0, s.size()-1);
+}
+
 } // namespace vcl::str

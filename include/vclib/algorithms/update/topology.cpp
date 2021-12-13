@@ -238,18 +238,19 @@ void updatePerFaceAdjacentFaces(MeshType& m)
 			// adj to i (to manage non manifold edges and make cyclic adj on the same edge)
 			auto i = base;
 			auto j = i + 1;
-
-			if (*i != *j) { // case of cluster composed of one element. adj of i is nullptr
-				i->f->adjFace(i->e) = nullptr;
-			}
-			else { // at least two edges in the cluster
-				while (*i == *j && j != vec.end()) {
-					i->f->adjFace(i->e) = j->f;
-					++i;
-					++j;
+			if (j != vec.end()) {
+				if (*i != *j) { // case of cluster composed of one element. adj of i is nullptr
+					i->f->adjFace(i->e) = nullptr;
 				}
-				// i now is the last element that was equal to first
-				i->f->adjFace(i->e) = first->f;
+				else { // at least two edges in the cluster
+					while (j != vec.end() && *i == *j) {
+						i->f->adjFace(i->e) = j->f;
+						++i;
+						++j;
+					}
+					// i now is the last element that was equal to first
+					i->f->adjFace(i->e) = first->f;
+				}
 			}
 
 			// j is the first different edge from first (or it is vec.end()!)

@@ -28,7 +28,7 @@ template<typename ScalarType>
 template<typename S>
 Point3<ScalarType>::Point3(const Point<S, 3>& p1)
 {
-	Point<ScalarType, 3>::p << p1(0), p1(1), p1(2);
+	Point<ScalarType, 3>::p << (ScalarType)p1(0), (ScalarType)p1(1), (ScalarType)p1(2);
 }
 
 template<typename ScalarType>

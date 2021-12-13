@@ -36,6 +36,8 @@ std::string toLower(const std::string& s);
 
 std::string toUpper(const std::string& s);
 
+void removeWindowsNewLine(std::string& s);
+
 } // namespace vcl::str
 
 #include "string.cpp"

@@ -22,7 +22,7 @@
 
 #include "file_info.h"
 
-namespace vcl::file_info {
+namespace vcl::fileInfo {
 
 /**
  * @brief Extracts the extension of a string that contains a filename.

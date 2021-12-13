@@ -38,7 +38,6 @@ inline PlyHeader::PlyHeader() :
 		edgeElemPos(-1),
 		trisElemPos(-1)
 {
-	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
 }
 
 PlyHeader::PlyHeader(
@@ -52,25 +51,25 @@ PlyHeader::PlyHeader(
 		edgeElemPos(-1),
 		trisElemPos(-1)
 {
-	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
 	setInfo(info, textureFiles, format == BINARY);
 }
 
 inline PlyHeader::PlyHeader(const std::string& filename, std::ifstream& file) : _format(ply::UNKNOWN), valid(false)
 {
 	clear();
-	std::setlocale(LC_NUMERIC, "en_US.UTF-8"); // makes sure "." is the decimal separator
 	if (file.is_open()) {
 		std::string line;
 		std::getline(file, line);
+		str::removeWindowsNewLine(line);
 		if (line.compare(0, 3, "ply") == 0) {
-			bool error;
+			bool error = false;
 			bool firstElement = true;
 			std::string  headerLine;
 			ply::Element element;
 			do {
 				error = !(std::getline(file, line));
 				if (!error) {
+					str::removeWindowsNewLine(line);
 					vcl::Tokenizer spaceTokenizer(line, ' ');
 					if (spaceTokenizer.begin() == spaceTokenizer.end())
 						continue;
@@ -97,7 +96,7 @@ inline PlyHeader::PlyHeader(const std::string& filename, std::ifstream& file) : 
 									if (it != textName.end()) {
 										uint pos = it-textName.begin();
 										std::string fn =
-											vcl::file_info::filenameWithoutExtension(filename);
+											vcl::fileInfo::filenameWithoutExtension(filename);
 										textName =
 											textName.substr(0, pos) +
 											fn + textName.substr(pos+6, textName.size());

@@ -25,7 +25,7 @@
 
 #include <string>
 
-namespace vcl::file_info {
+namespace vcl::fileInfo {
 
 void separateExtensionFromFilename(
 	const std::string& fullname,

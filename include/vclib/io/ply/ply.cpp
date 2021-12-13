@@ -22,6 +22,8 @@
 
 #include "ply.h"
 
+#include <vclib/misc/string.h>
+
 namespace vcl {
 namespace ply {
 
@@ -261,6 +263,7 @@ inline bool nextLine(std::ifstream& file, vcl::Tokenizer& tokenizer)
 	std::string line;
 	do {
 		bool error = !std::getline(file, line);
+		str::removeWindowsNewLine(line);
 		if (error)
 			return false;
 		tokenizer = vcl::Tokenizer(line, ' ');
