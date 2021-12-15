@@ -20,20 +20,37 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_H
-#define VCL_POINT_H
+#ifndef VCL_ARRAY3_H
+#define VCL_ARRAY3_H
 
-#include "point/point2.h"
-#include "point/point3.h"
-#include "point/point4.h"
+#include "array_bool.h"
 
 namespace vcl {
 
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
+/**
+ * @brief The Array3 class
+ * Specialization of vcl::Array class with 3 dimensions.
+ */
+template<typename T>
+class Array3D : public Array<T, 3>
+{
+public:
+	Array3D();
+	Array3D(const Array<T, 3>& a);
+	Array3D(unsigned long int sizeX, unsigned long int sizeY, unsigned long int sizeZ);
+	Array3D(
+		unsigned long int sizeX,
+		unsigned long int sizeY,
+		unsigned long int sizeZ,
+		const T&          value);
+	Array3D(vcl::NestedInitializerLists<T, 3> values);
+	unsigned long int sizeX() const;
+	unsigned long int sizeY() const;
+	unsigned long int sizeZ() const;
+};
 
 } // namespace vcl
 
-#include "point.cpp"
+#include "array3.cpp"
 
-#endif // VCL_POINT_H
+#endif // VCL_ARRAY3_H

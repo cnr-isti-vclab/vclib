@@ -30,12 +30,12 @@ namespace vcl::fileInfo {
  * @code{.cpp}
  * std::string fullname = "/usr/bin/foo.sh";
  * std::string filename, extension;
- * cg3::separateExtensionFromFilename(fullname, filename, extension);
+ * vcl::separateExtensionFromFilename(fullname, filename, extension);
  * //filename = "/usr/bin/foo"
  * //extension = ".sh"
  * @endcode
  *
- * To separate the path from the filename, see cg3::separateFilenameFromPath
+ * To separate the path from the filename, see vcl::separateFilenameFromPath
  *
  * @param fullname
  * @param rawname
@@ -65,7 +65,7 @@ inline void separateExtensionFromFilename(
  * @code{.cpp}
  * std::string fullname = "/usr/bin/foo.sh";
  * std::string path, filename;
- * cg3::separateExtensionFromFilename(fullname, path, filename);
+ * vcl::separateExtensionFromFilename(fullname, path, filename);
  * //path = "/usr/bin"
  * //filename = "foo.sh"
  * @endcode
@@ -91,12 +91,11 @@ inline void separateFilenameFromPath(
 }
 
 /**
- * @ingroup cg3core
  * @brief pathWithoutFilename
  *
  * @code{.cpp}
  * std::string fullname = "/usr/bin/foo.sh";
- * std::string path = cg3::pathWithoutFilename(fullname);
+ * std::string path = vcl::pathWithoutFilename(fullname);
  * //path = "/usr/bin/"
  * @endcode
  *
@@ -111,12 +110,11 @@ inline std::string pathWithoutFilename(const std::string& fullpath)
 }
 
 /**
- * @ingroup cg3core
  * @brief filenameWithExtension
  *
  * @code{.cpp}
  * std::string fullname = "/usr/bin/foo.sh";
- * std::string filename = cg3::filenameWithExtension(fullname);
+ * std::string filename = vcl::filenameWithExtension(fullname);
  * //filename = "foo.sh"
  * @endcode
  *
@@ -131,12 +129,11 @@ inline std::string filenameWithExtension(const std::string& fullpath)
 }
 
 /**
- * @ingroup cg3core
  * @brief filenameWithoutExtension
  *
  * @code{.cpp}
  * std::string fullname = "/usr/bin/foo.sh";
- * std::string filename = cg3::filenameWithoutExtension(fullname);
+ * std::string filename = vcl::filenameWithoutExtension(fullname);
  * //filename = "foo"
  * @endcode
  *

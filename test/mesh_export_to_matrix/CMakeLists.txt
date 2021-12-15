@@ -10,11 +10,11 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.13)
-project(vclib-mesh-export-to-eigen)
+project(vclib-mesh-export-to-matrix)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-mesh-export-to-eigen ${SOURCES})
+add_executable(vclib-mesh-export-to-matrix ${SOURCES})
 
-target_link_libraries(vclib-mesh-export-to-eigen PUBLIC vclib)
+target_link_libraries(vclib-mesh-export-to-matrix PUBLIC vclib)

@@ -156,6 +156,7 @@ set(HEADERS
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h
 	include/vclib/misc/file_info.h
+	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/string.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
@@ -170,11 +171,17 @@ set(HEADERS
 	include/vclib/io/ply/ply_header.h
 	include/vclib/io/ply/ply_tristrip.h
 	include/vclib/io/ply/ply_vertex.h
+	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
 	include/vclib/space/point.h
 	include/vclib/space/principal_curvature.h
 	include/vclib/space/tex_coord.h
+	include/vclib/space/array/array_t.h
+	include/vclib/space/array/array2.h
+	include/vclib/space/array/array3.h
+	include/vclib/space/array/array4.h
+	include/vclib/space/array/array_bool.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
@@ -243,6 +250,7 @@ set(SOURCES
 	include/vclib/mesh/requirements/vertex_requirements.cpp
 	include/vclib/misc/compactness.cpp
 	include/vclib/misc/file_info.cpp
+	include/vclib/misc/nested_initializer_lists.cpp
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
@@ -260,6 +268,10 @@ set(SOURCES
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
 	include/vclib/space/tex_coord.cpp
+	include/vclib/space/array/array_t.cpp
+	include/vclib/space/array/array2.cpp
+	include/vclib/space/array/array3.cpp
+	include/vclib/space/array/array4.cpp
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/point/point2.cpp
 	include/vclib/space/point/point3.cpp

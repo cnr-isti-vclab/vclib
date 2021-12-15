@@ -20,32 +20,73 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#include "array4.h"
 
-#include <vclib/algorithms/export_to_matrix.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/trimesh.h>
-#include <vclib/polymesh.h>
+namespace vcl {
 
-int main()
+template<typename T>
+Array4D<T>::Array4D() : Array<T, 4>()
 {
-	vcl::TriMesh tm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
-
-	Eigen::MatrixXd v = vcl::vertexMatrix<Eigen::MatrixXd>(tm);
-	Eigen::MatrixXi f = vcl::faceMatrix<Eigen::MatrixXi>(tm);
-
-	std::cerr << "Vertices:\n" << v << "\n\n";
-
-	std::cerr << "Faces:\n" << f << "\n\n";
-
-	vcl::PolyMesh pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
-
-	v = vcl::vertexMatrix<Eigen::MatrixXd>(pm);
-	f = vcl::faceMatrix<Eigen::MatrixXi>(pm);
-
-	std::cerr << "Vertices:\n" << v << "\n\n";
-
-	std::cerr << "Faces:\n" << f << "\n\n";
-
-	return 0;
 }
+
+template<typename T>
+Array4D<T>::Array4D(const Array<T, 4>& a) : Array<T, 4>(a)
+{
+}
+
+template<class T>
+inline Array4D<T>::Array4D(
+	unsigned long int sizeX,
+	unsigned long int sizeY,
+	unsigned long int sizeZ,
+	unsigned long int sizeW) :
+		Array<T, 4>(sizeX, sizeY, sizeZ, sizeW)
+{
+}
+
+template<class T>
+inline Array4D<T>::Array4D(
+	unsigned long int sizeX,
+	unsigned long int sizeY,
+	unsigned long int sizeZ,
+	unsigned long int sizeW,
+	const T&          value)
+{
+	Array<T, 4>::v.resize(sizeX * sizeY * sizeZ * sizeW, value);
+	Array<T, 4>::sizes[0] = sizeX;
+	Array<T, 4>::sizes[1] = sizeY;
+	Array<T, 4>::sizes[2] = sizeZ;
+	Array<T, 4>::sizes[3] = sizeW;
+}
+
+template<class T>
+inline Array4D<T>::Array4D(vcl::NestedInitializerLists<T, 4> values)
+{
+	Array<T, 4>::initializeNestedLists(values);
+}
+
+template<class T>
+inline unsigned long int Array4D<T>::sizeX() const
+{
+	return Array<T, 4>::sizes[0];
+}
+
+template<class T>
+inline unsigned long int Array4D<T>::sizeY() const
+{
+	return Array<T, 4>::sizes[1];
+}
+
+template<class T>
+inline unsigned long int Array4D<T>::sizeZ() const
+{
+	return Array<T, 4>::sizes[2];
+}
+
+template<class T>
+inline unsigned long int Array4D<T>::sizeW() const
+{
+	return Array<T, 4>::sizes[3];
+}
+
+} // namespace vcl

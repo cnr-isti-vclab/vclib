@@ -20,20 +20,40 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_H
-#define VCL_POINT_H
+#ifndef VCL_ARRAY2_H
+#define VCL_ARRAY2_H
 
-#include "point/point2.h"
-#include "point/point3.h"
-#include "point/point4.h"
+#include <iomanip>
+
+#include "array_bool.h"
 
 namespace vcl {
 
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
+/**
+ * @brief The Array2 class
+ * Specialization of vcl::Array class with 2 dimensions.
+ */
+template<typename T>
+class Array2 : public Array<T, 2>
+{
+public:
+	Array2();
+	Array2(const Array<T, 2>& a);
+	Array2(unsigned long int sizeX, unsigned long int sizeY);
+	Array2(unsigned long int sizeX, unsigned long int sizeY, const T& value);
+	Array2(vcl::NestedInitializerLists<T, 2> values);
+
+	unsigned long int sizeX() const;
+	unsigned long int sizeY() const;
+	unsigned long int rows() const;
+	unsigned long int cols() const;
+};
+
+template<class T>
+std::ostream& operator<<(std::ostream& inputStream, const Array2<T>& a);
 
 } // namespace vcl
 
-#include "point.cpp"
+#include "array2.cpp"
 
-#endif // VCL_POINT_H
+#endif // VCL_ARRAY2_H

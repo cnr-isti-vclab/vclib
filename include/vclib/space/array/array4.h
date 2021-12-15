@@ -20,20 +20,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_H
-#define VCL_POINT_H
+#ifndef VCL_ARRAY4_H
+#define VCL_ARRAY4_H
 
-#include "point/point2.h"
-#include "point/point3.h"
-#include "point/point4.h"
+#include "array_bool.h"
 
 namespace vcl {
 
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
+/**
+ * @brief The Array4 class
+ * Specialization of vcl::Array class with 4 dimensions.
+ */
+template<typename T>
+class Array4D : public Array<T, 4>
+{
+public:
+	Array4D();
+	Array4D(const Array<T, 4>& a);
+	Array4D(
+		unsigned long int sizeX,
+		unsigned long int sizeY,
+		unsigned long int sizeZ,
+		unsigned long int sizeW);
+	Array4D(
+		unsigned long int sizeX,
+		unsigned long int sizeY,
+		unsigned long int sizeZ,
+		unsigned long int sizeW,
+		const T&          value);
+	Array4D(vcl::NestedInitializerLists<T, 4> values);
+	unsigned long int sizeX() const;
+	unsigned long int sizeY() const;
+	unsigned long int sizeZ() const;
+	unsigned long int sizeW() const;
+};
 
 } // namespace vcl
 
-#include "point.cpp"
+#include "array4.cpp"
 
-#endif // VCL_POINT_H
+#endif // VCL_ARRAY4_H

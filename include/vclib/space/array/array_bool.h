@@ -20,20 +20,22 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_H
-#define VCL_POINT_H
+#ifndef VCL_ARRAY_BOOL_H
+#define VCL_ARRAY_BOOL_H
 
-#include "point/point2.h"
-#include "point/point3.h"
-#include "point/point4.h"
+#include "array_t.h"
 
 namespace vcl {
 
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
+/*
+ * Explicit specialization of the Array class for bool type.
+ * Necessary to avoid the std::vector<bool> optimization.
+ */
+template<size_t N>
+class Array<bool, N> : public Array<uint8_t, N>
+{
+};
 
 } // namespace vcl
 
-#include "point.cpp"
-
-#endif // VCL_POINT_H
+#endif // VCL_ARRAY_BOOL_H
