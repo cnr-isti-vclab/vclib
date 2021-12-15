@@ -79,6 +79,12 @@ MeshPos<FaceType>::MeshPos(const FaceType* f, const VertexType* v, short e) :
 }
 
 template<typename FaceType>
+const FaceType* MeshPos<FaceType>::face() const
+{
+	return f;
+}
+
+template<typename FaceType>
 /**
  * @brief Returns `true` if this MeshPos is valid.
  * @return `true` if this MeshPos is valid.
@@ -180,6 +186,19 @@ void MeshPos<FaceType>::nextEdgeAdjacentToV()
 {
 	flipEdge();
 	flipFace();
+}
+
+/**
+ * @brief Moves the MeshPos to the next edge on border that is adjacent to the current vertex of the
+ * MeshPos. Basically, cycles on the edges adjacent to the current vertex, and stops when finds a
+ * border edge.
+ */
+template<typename FaceType>
+void MeshPos<FaceType>::nextEdgeOnBorderAdjacentToV()
+{
+	do {
+		nextEdgeAdjacentToV();
+	} while (!isEdgeOnBorder());
 }
 
 /**

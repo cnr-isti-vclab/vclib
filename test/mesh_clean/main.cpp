@@ -62,5 +62,15 @@ int main()
 
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
 
+	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+
+	m.enablePerFaceAdjacentFaces();
+	vcl::updatePerFaceAdjacentFaces(m);
+	uint nHoles = vcl::numberHoles(m);
+
+	assert(nHoles == 5);
+
+	std::cerr << "Bunny number holes: " << nHoles << "\n";
+
 	return 0;
 }

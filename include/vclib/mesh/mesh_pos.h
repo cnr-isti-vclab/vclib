@@ -56,6 +56,8 @@ public:
 	MeshPos(const FaceType* f, short e);
 	MeshPos(const FaceType* f, const VertexType* v, short e);
 
+	const FaceType* face() const;
+
 	bool isValid() const;
 	bool isNull() const;
 	bool isEdgeOnBorder() const;
@@ -65,6 +67,7 @@ public:
 	void flipEdge();
 
 	void nextEdgeAdjacentToV();
+	void nextEdgeOnBorderAdjacentToV();
 
 	uint numberOfAdjacentFacesToV() const;
 

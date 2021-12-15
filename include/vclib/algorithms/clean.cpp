@@ -481,7 +481,7 @@ uint countNonManifoldVertices(const MeshType& m)
  *
  * Requirements:
  * - Mesh:
- *   - Vertices:
+ *   - Vertices
  *   - Faces
  *
  * @param[in] m: the mesh to check whether is water tight or not.
@@ -493,6 +493,51 @@ bool isWaterTight(const MeshType& m)
 	uint numEdgeBorder, numNonManifoldEdges;
 	internal::numberEdges(m, numEdgeBorder, numNonManifoldEdges);
 	return numEdgeBorder == 0 && numNonManifoldEdges == 0;
+}
+
+/**
+ * @brief Returns the number of holes of the mesh, that is the number of closed loops of border
+ * edges.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *   - Faces:
+ *     - AdjacentFaces
+ *
+ * @param[in] m: Mesh on which count the number of holes.
+ * @return The number of holes of the mesh.
+ */
+template<typename MeshType>
+uint numberHoles(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requirePerFaceAdjacentFaces(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using FaceType = typename MeshType::FaceType;
+
+	uint loopNum=0;
+
+	std::vector<bool> visitedFaces(m.faceContainerSize(), false);
+	for(const FaceType& f : m.faces()) {
+		uint e = 0;
+		for(const VertexType* v : f.vertices()) {
+			if(!visitedFaces[m.index(f)] && f.adjFace(e) == nullptr) {
+				mesh::MeshPos<FaceType> startPos(&f,e);
+				mesh::MeshPos<FaceType> curPos=startPos;
+				do {
+					curPos.nextEdgeOnBorderAdjacentToV();
+					curPos.flipVertex();
+					visitedFaces[m.index(curPos.face())] = true;
+				}
+				while(curPos!=startPos);
+				++loopNum;
+			}
+			++e;
+		}
+	}
+	return loopNum;
 }
 
 } // namespace vcl

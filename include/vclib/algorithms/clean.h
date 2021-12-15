@@ -54,6 +54,9 @@ uint countNonManifoldVertices(const MeshType& m);
 template <typename MeshType>
 bool isWaterTight(const MeshType& m);
 
+template <typename MeshType>
+uint numberHoles(const MeshType& m);
+
 }
 
 #include "clean.cpp"
