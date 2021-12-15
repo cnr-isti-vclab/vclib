@@ -31,6 +31,11 @@ namespace vcl {
  * is/has functions *
  ********************/
 
+// Vertex Compactness
+
+template<typename MeshType>
+bool isVertexContainerCompact(const MeshType&);
+
 // Vertex Adjacent Faces
 
 template<typename MeshType>
@@ -127,6 +132,11 @@ bool constexpr hasPerVertexCustomComponents();
 /*********************
  * require functions *
  *********************/
+
+// Vertex Compactness
+
+template<typename MeshType>
+void requireVertexContainerCompactness(const MeshType& m);
 
 // Vertex Adjacent Faces
 

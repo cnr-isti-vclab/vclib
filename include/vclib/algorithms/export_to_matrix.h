@@ -20,105 +20,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_REQUIREMENTS_H
-#define VCL_MESH_MESH_REQUIREMENTS_H
-
-#include "face_requirements.h"
-#include "vertex_requirements.h"
+#ifndef VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
+#define VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
 
 namespace vcl {
 
-/********************
- * is/has functions *
- ********************/
+template<typename Matrix, typename MeshType>
+Matrix vertexMatrix(const MeshType& m);
 
-// Triangles
-
-template<typename MeshType>
-bool constexpr hasTriangles();
-
-template<typename MeshType>
-bool isTriangleMesh(const MeshType&);
-
-// Quads
-
-template<typename MeshType>
-bool constexpr hasQuads();
-
-template<typename MeshType>
-bool isQuadMesh(const MeshType&);
-
-// Polygons
-
-template<typename MeshType>
-bool constexpr hasPolygons();
-
-// Mesh Compactness
-
-template<typename MeshType>
-bool isCompact(const MeshType&);
-
-// Bounding Box
-
-template<typename MeshType>
-bool constexpr hasBoundingBox();
-
-// Mark
-
-template<typename MeshType>
-bool constexpr hasMark();
-
-// Texture File Names
-
-template<typename MeshType>
-bool constexpr hasTextureFileNames();
-
-// Transform Matrix
-
-template<typename MeshType>
-bool constexpr hasTransformMatrix();
-
-/*********************
- * require functions *
- *********************/
-
-// Triangles
-
-template<typename MeshType>
-void requireTriangleMesh(const MeshType&);
-
-// Quads
-
-template<typename MeshType>
-void requireQuadMesh(const MeshType&);
-
-// Mesh Compactness
-
-template <typename MeshType>
-void requireCompactness(const MeshType&);
-
-// Bounding Box
-
-template<typename MeshType>
-void constexpr requireBoundingBox();
-
-// Mark
-
-template<typename MeshType>
-void constexpr requireMark();
-
-// Texture File Names
-
-template<typename MeshType>
-void constexpr requireTextureFileNames();
-
-// Transform Matrix
-
-template<typename MeshType>
-void constexpr requireTransformMatrix();
+template<typename Matrix, typename MeshType>
+Matrix faceMatrix(const MeshType& m);
 
 } // namespace vcl
 
-#include "mesh_requirements.cpp"
+#include "export_to_matrix.cpp"
 
-#endif // VCL_MESH_MESH_REQUIREMENTS_H
+#endif // VCL_ALGORITHMS_EXPORT_TO_MATRIX_H

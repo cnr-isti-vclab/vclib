@@ -50,6 +50,16 @@ bool constexpr hasFaces()
 	return vcl::mesh::hasFaces<MeshType>();
 }
 
+/**
+ * @brief Checks at compile time if MeshType has the Edge Element.
+ * @return true if MeshType has Edges.
+ */
+template<typename MeshType>
+bool constexpr hasEdges()
+{
+	return vcl::mesh::hasEdges<MeshType>();
+}
+
 /*********************
  * require functions *
  *********************/
@@ -64,6 +74,12 @@ template<typename MeshType>
 void constexpr requireFaces()
 {
 	static_assert(hasFaces<MeshType>(), "Mesh does not have a Face Container.");
+}
+
+template<typename MeshType>
+void constexpr requireEdges()
+{
+	static_assert(hasEdges<MeshType>(), "Mesh does not have an Edge Container.");
 }
 
 } // namespace vcl

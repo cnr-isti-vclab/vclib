@@ -174,6 +174,26 @@ bool constexpr hasPolygons()
 }
 
 /**
+ * @brief Checks if a Mesh is compact, that is if it does not contains deleted elements.
+ * @return `true` if `m` is compact, `false` otherwise.
+ */
+template<typename MeshType>
+bool isCompact(const MeshType& m)
+{
+	bool c = true;
+	if constexpr (hasVertices<MeshType>()) {
+		c = c && isVertexContainerCompact(m);
+	}
+	if constexpr (hasFaces<MeshType>()) {
+		c = c && isFaceContainerCompact(m);
+	}
+	if constexpr (hasEdges<MeshType>()) {
+		c = c && (m.edgeNumber() == m.edgeContainerSize());
+	}
+	return c;
+}
+
+/**
  * @brief Checks *if a MeshType has the BoundingBox component*.
  *
  * Usage:
@@ -275,6 +295,13 @@ void requireQuadMesh(const MeshType& m)
 			}
 		}
 	}
+}
+
+template <typename MeshType>
+void requireCompactness(const MeshType& m)
+{
+	if (!isCompact(m))
+		throw MissingCompactnessException("Mesh is not compact.");
 }
 
 template<typename MeshType>

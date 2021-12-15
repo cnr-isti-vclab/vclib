@@ -43,6 +43,7 @@ set(HEADERS
 	include/vclib/polymesh.h
 	include/vclib/trimesh.h
 	include/vclib/algorithms/clean.h
+	include/vclib/algorithms/export_to_matrix.h
 	include/vclib/algorithms/polygon.h
 	include/vclib/algorithms/smooth.h
 	include/vclib/algorithms/create/dodecahedron.h
@@ -181,6 +182,7 @@ set(HEADERS
 
 set(SOURCES
 	include/vclib/algorithms/clean.cpp
+	include/vclib/algorithms/export_to_matrix.cpp
 	include/vclib/algorithms/polygon.cpp
 	include/vclib/algorithms/smooth.cpp
 	include/vclib/algorithms/create/dodecahedron.cpp

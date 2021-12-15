@@ -32,6 +32,23 @@ namespace vcl {
  * is/has functions *
  ********************/
 
+/**
+ * @brief Returns `true` if the given mesh has its Vertex Container compact.
+ * Returns `false` if the mesh has no Vertex Container.
+ * @param[in] m: input mesh on which test if the its Vertex Container is compact.
+ * @return `true` if the Vertex Container of the mesh is compact.
+ */
+template<typename MeshType>
+bool isVertexContainerCompact(const MeshType& m)
+{
+	if constexpr (hasVertices<MeshType>()) {
+		return (m.vertexNumber() == m.vertexContainerSize());
+	}
+	else {
+		return false;
+	}
+}
+
 template<typename MeshType>
 bool constexpr hasPerVertexAdjacentFaces()
 {
@@ -374,6 +391,14 @@ bool constexpr hasPerVertexCustomComponents()
 /*********************
  * require functions *
  *********************/
+
+template<typename MeshType>
+void requireVertexContainerCompactness(const MeshType& m)
+{
+	requireVertices<MeshType>();
+	if (!isVertexContainerCompact(m))
+		throw vcl::MissingCompactnessException("Vertex Container of the Mesh is not compact.");
+}
 
 template<typename MeshType>
 void requirePerVertexAdjacentFaces(const MeshType& m)

@@ -20,51 +20,32 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ELEMENT_REQUIREMENTS_H
-#define VCL_MESH_ELEMENT_REQUIREMENTS_H
+#include <iostream>
 
-namespace vcl {
+#include <vclib/algorithms/export_to_matrix.h>
+#include <vclib/io/load_ply.h>
+#include <vclib/trimesh.h>
+#include <vclib/polymesh.h>
 
-/********************
- * is/has functions *
- ********************/
+int main()
+{
+	vcl::TriMesh tm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-// Mesh Vertices
+	Eigen::MatrixXd v = vcl::vertexMatrix<Eigen::MatrixXd>(tm);
+	Eigen::MatrixXi f = vcl::faceMatrix<Eigen::MatrixXi>(tm);
 
-template<typename MeshType>
-bool constexpr hasVertices();
+	std::cerr << "Vertices:\n" << v << "\n\n";
 
-// Mesh Faces
+	std::cerr << "Faces:\n" << f << "\n\n";
 
-template<typename MeshType>
-bool constexpr hasFaces();
+	vcl::PolyMesh pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
-// Mesh Edges
+	v = vcl::vertexMatrix<Eigen::MatrixXd>(pm);
+	f = vcl::faceMatrix<Eigen::MatrixXi>(pm);
 
-template<typename MeshType>
-bool constexpr hasEdges();
+	std::cerr << "Vertices:\n" << v << "\n\n";
 
-/*********************
- * require functions *
- *********************/
+	std::cerr << "Faces:\n" << f << "\n\n";
 
-// Mesh Vertices
-
-template<typename MeshType>
-void constexpr requireVertices();
-
-// Mesh Faces
-
-template<typename MeshType>
-void constexpr requireFaces();
-
-// Mesh Edges
-
-template<typename MeshType>
-void constexpr requireEdges();
-
-} // namespace vcl
-
-#include "element_requirements.cpp"
-
-#endif // VCL_MESH_ELEMENT_REQUIREMENTS_H
+	return 0;
+}
