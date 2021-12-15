@@ -51,6 +51,9 @@ bool isManifoldOnEdge(const FaceType& f, uint edge);
 template <typename MeshType>
 uint countNonManifoldVertices(const MeshType& m);
 
+template <typename MeshType>
+bool isWaterTight(const MeshType& m);
+
 }
 
 #include "clean.cpp"

@@ -22,7 +22,7 @@
 
 #include "flag.h"
 
-#include <vclib/algorithms/internal/edge_sorterer.h>
+#include <vclib/algorithms/internal/per_face_edge.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -55,9 +55,9 @@ void updateBorder(MeshType& m)
 	if (m.faceNumber() == 0)
 		return;
 
-	std::vector<internal::EdgeSorterer<MeshType>> e = internal::fillAndSortEdgeVector(m);
+	std::vector<internal::PerFaceEdge<MeshType>> e = internal::fillAndSortEdgeVector(m);
 
-	typename std::vector<internal::EdgeSorterer<MeshType>>::iterator pe, ps;
+	typename std::vector<internal::PerFaceEdge<MeshType>>::iterator pe, ps;
 	ps = e.begin();
 	pe = e.begin();
 	do {

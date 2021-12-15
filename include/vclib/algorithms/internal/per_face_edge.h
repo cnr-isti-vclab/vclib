@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_INTERNAL_EDGE_SORTERER_H
-#define VCL_ALGORITHMS_INTERNAL_EDGE_SORTERER_H
+#ifndef VCL_ALGORITHMS_INTERNAL_PER_FACE_EDGE_H
+#define VCL_ALGORITHMS_INTERNAL_PER_FACE_EDGE_H
 
 #include <algorithm>
 #include <assert.h>
@@ -31,8 +31,16 @@
 
 namespace vcl::internal {
 
+/*
+ * Utility class that stores, for each edge of the mesh:
+ * - the index of the edge in the face
+ * - the pointer of the face
+ * - the pointers of the vertices of the edge
+ *
+ * edges can be sorted using this class
+ */
 template<typename MeshType>
-class EdgeSorterer
+class PerFaceEdge
 {
 public:
 	using VertexType = typename MeshType::VertexType;
@@ -42,8 +50,8 @@ public:
 	FaceType*   f;    // Pointer to the face of the edge
 	int         e;    // Index of the edge inside the face
 
-	EdgeSorterer() : v {nullptr, nullptr}, f(nullptr), e(-1) {}
-	EdgeSorterer(FaceType& pf, uint ne)
+	PerFaceEdge() : v {nullptr, nullptr}, f(nullptr), e(-1) {}
+	PerFaceEdge(FaceType& pf, uint ne)
 	{
 		v[0] = pf.vertex(ne);
 		v[1] = pf.vertexMod(ne + 1);
@@ -55,7 +63,7 @@ public:
 		e = ne;
 	}
 
-	bool operator<(const EdgeSorterer& pe) const
+	bool operator<(const PerFaceEdge& pe) const
 	{
 		if (v[0] < pe.v[0])
 			return true;
@@ -65,16 +73,54 @@ public:
 			return v[1] < pe.v[1];
 	}
 
-	bool operator==(const EdgeSorterer& pe) const { return v[0] == pe.v[0] && v[1] == pe.v[1]; }
-	bool operator!=(const EdgeSorterer& pe) const { return v[0] != pe.v[0] || v[1] != pe.v[1]; }
+	bool operator==(const PerFaceEdge& pe) const { return v[0] == pe.v[0] && v[1] == pe.v[1]; }
+	bool operator!=(const PerFaceEdge& pe) const { return v[0] != pe.v[0] || v[1] != pe.v[1]; }
 };
 
 template<typename MeshType>
-std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(MeshType& m, bool includeFauxEdges = true)
+class ConstPerFaceEdge
+{
+public:
+	using VertexType = typename MeshType::VertexType;
+	using FaceType   = typename MeshType::FaceType;
+
+	const VertexType* v[2]; // Pointer to the two (ordered) vertices of the edge
+	const FaceType*   f;    // Pointer to the face of the edge
+	int               e;    // Index of the edge inside the face
+
+	ConstPerFaceEdge() : v {nullptr, nullptr}, f(nullptr), e(-1) {}
+	ConstPerFaceEdge(const FaceType& pf, uint ne)
+	{
+		v[0] = pf.vertex(ne);
+		v[1] = pf.vertexMod(ne + 1);
+		assert(v[0] != v[1]);
+
+		if (v[0] > v[1])
+			std::swap(v[0], v[1]);
+		f = &pf;
+		e = ne;
+	}
+
+	bool operator<(const ConstPerFaceEdge& pe) const
+	{
+		if (v[0] < pe.v[0])
+			return true;
+		else if (v[0] > pe.v[0])
+			return false;
+		else
+			return v[1] < pe.v[1];
+	}
+
+	bool operator==(const ConstPerFaceEdge& pe) const { return v[0] == pe.v[0] && v[1] == pe.v[1]; }
+	bool operator!=(const ConstPerFaceEdge& pe) const { return v[0] != pe.v[0] || v[1] != pe.v[1]; }
+};
+
+template<typename MeshType>
+std::vector<PerFaceEdge<MeshType>> fillAndSortEdgeVector(MeshType& m, bool includeFauxEdges = true)
 {
 	using FaceType = typename MeshType::FaceType;
 
-	std::vector<EdgeSorterer<MeshType>> vec;
+	std::vector<PerFaceEdge<MeshType>> vec;
 
 	int n_edges = 0;
 	for (const FaceType& f : m.faces())
@@ -85,7 +131,34 @@ std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(MeshType& m, bool incl
 	for (FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
 		for (uint j = 0; j < f.vertexNumber(); ++j) {
 			if (includeFauxEdges || !f.isEdgeFaux(j)) {
-				vec.push_back(EdgeSorterer<MeshType>(f, j));
+				vec.push_back(PerFaceEdge<MeshType>(f, j));
+			}
+		}
+	}
+
+	std::sort(vec.begin(), vec.end()); // Lo ordino per vertici
+
+	return vec;
+}
+
+template<typename MeshType>
+std::vector<ConstPerFaceEdge<MeshType>>
+fillAndSortEdgeVector(const MeshType& m, bool includeFauxEdges = true)
+{
+	using FaceType = typename MeshType::FaceType;
+
+	std::vector<ConstPerFaceEdge<MeshType>> vec;
+
+	int n_edges = 0;
+	for (const FaceType& f : m.faces())
+		n_edges += f.vertexNumber();
+
+	vec.reserve(n_edges);
+
+	for (const FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
+		for (uint j = 0; j < f.vertexNumber(); ++j) {
+			if (includeFauxEdges || !f.isEdgeFaux(j)) {
+				vec.push_back(ConstPerFaceEdge<MeshType>(f, j));
 			}
 		}
 	}
@@ -97,4 +170,4 @@ std::vector<EdgeSorterer<MeshType>> fillAndSortEdgeVector(MeshType& m, bool incl
 
 } // namespace vcl::internal
 
-#endif // VCL_ALGORITHMS_INTERNAL_EDGE_SORTERER_H
+#endif // VCL_ALGORITHMS_INTERNAL_PER_FACE_EDGE_H

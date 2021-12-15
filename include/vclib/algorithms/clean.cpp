@@ -28,6 +28,8 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/mesh/mesh_pos.h>
 
+#include "internal/per_face_edge.h"
+
 namespace vcl {
 
 namespace internal {
@@ -145,6 +147,32 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 	}
 
 	return nonManifoldVertices;
+}
+
+template<typename MeshType>
+uint numberEdges(const MeshType& m, uint& numBoundaryEdges, uint& numNonManifoldEdges)
+{
+	std::vector<ConstPerFaceEdge<MeshType>> edgeVec = fillAndSortEdgeVector(m);
+
+	uint numEdges = 0;
+	numBoundaryEdges = 0;
+	numNonManifoldEdges = 0;
+
+	size_t f_on_cur_edge =1;
+	for(size_t i=0;i<edgeVec.size();++i) {
+		if(( (i+1) == edgeVec.size()) ||  !(edgeVec[i] == edgeVec[i+1])) {
+			++numEdges;
+			if(f_on_cur_edge==1)
+				++numBoundaryEdges;
+			if(f_on_cur_edge>2)
+				++numNonManifoldEdges;
+			f_on_cur_edge=1;
+		}
+		else {
+			++f_on_cur_edge;
+		}
+	}
+	return numEdges;
 }
 
 } // namespace internal
@@ -441,6 +469,30 @@ uint countNonManifoldVertices(const MeshType& m)
 {
 	std::vector<bool> nonManifoldVertices = internal::nonManifoldVerticesVectorBool(m);
 	return std::count(nonManifoldVertices.begin(), nonManifoldVertices.end(), true);
+}
+
+/**
+ * @brief Returns `true` if the Mesh is water tight, that is if closed and manifold.
+ *
+ * Performs a very simple test of water tightness: checks that there are no boundary and no
+ * non-manifold edges, assuming that it is orientable.
+ * It could be debated if a closed non orientable surface is watertight or not. This function does
+ * not take into account orientability.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *   - Faces
+ *
+ * @param[in] m: the mesh to check whether is water tight or not.
+ * @return `true` if the mesh is water tight, `false` otherwise.
+ */
+template<typename MeshType>
+bool isWaterTight(const MeshType& m)
+{
+	uint numEdgeBorder, numNonManifoldEdges;
+	internal::numberEdges(m, numEdgeBorder, numNonManifoldEdges);
+	return numEdgeBorder == 0 && numNonManifoldEdges == 0;
 }
 
 } // namespace vcl

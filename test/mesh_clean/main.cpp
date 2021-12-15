@@ -31,9 +31,13 @@
 
 int main()
 {
-	vcl::TriMesh m;
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply");
 
-	vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/brain.ply");
+	bool isWaterTight = vcl::isWaterTight(m);
+
+	assert(!isWaterTight);
+
+	std::cerr << "Is Water Tight: " << isWaterTight << "\n";
 
 	m.enablePerFaceAdjacentFaces();
 	vcl::updatePerFaceAdjacentFaces(m);
