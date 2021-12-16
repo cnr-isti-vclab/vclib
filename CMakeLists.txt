@@ -51,6 +51,7 @@ set(HEADERS
 	include/vclib/algorithms/create/tetrahedron.h
 	include/vclib/algorithms/internal/per_face_edge.h
 	include/vclib/algorithms/update/bounding_box.h
+	include/vclib/algorithms/update/color.h
 	include/vclib/algorithms/update/flag.h
 	include/vclib/algorithms/update/normal.h
 	include/vclib/algorithms/update/selection.h
@@ -196,6 +197,7 @@ set(SOURCES
 	include/vclib/algorithms/create/hexahedron.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
+	include/vclib/algorithms/update/color.cpp
 	include/vclib/algorithms/update/flag.cpp
 	include/vclib/algorithms/update/normal.cpp
 	include/vclib/algorithms/update/selection.cpp

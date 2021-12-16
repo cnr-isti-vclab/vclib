@@ -22,29 +22,6 @@
 
 #include "color.h"
 
-#ifdef QT_GUI_LIB
-
-inline bool operator<(const QColor& c1, const QColor& c2)
-{
-	if (c1.red() < c2.red())
-		return true;
-	if (c1.red() > c2.red())
-		return false;
-	if (c1.green() < c2.green())
-		return true;
-	if (c1.green() > c2.green())
-		return false;
-	if (c1.blue() < c2.blue())
-		return true;
-	if (c1.blue() > c2.blue())
-		return false;
-	if (c1.alpha() < c2.alpha())
-		return true;
-	return false;
-}
-
-#else
-
 namespace vcl {
 
 /**
@@ -53,6 +30,14 @@ namespace vcl {
  */
 inline Color::Color() : Point4(0, 0, 0, 255)
 {
+}
+
+Color::Color(ColorConstant cc)
+{
+	x() = cc % 256;
+	y() = (cc >> 8) % 256;
+	z() = (cc >> 16) % 256;
+	w() = (cc >> 24) % 256;
 }
 
 /**
@@ -71,7 +56,7 @@ inline Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) :
  * @brief Returns the red component of this color [0-255]
  * @return red component of this color
  */
-inline int Color::red() const
+inline uint8_t Color::red() const
 {
 	return x();
 }
@@ -80,7 +65,7 @@ inline int Color::red() const
  * @brief Returns the green component of this color [0-255]
  * @return green component of this color
  */
-inline int Color::green() const
+inline uint8_t Color::green() const
 {
 	return y();
 }
@@ -89,7 +74,7 @@ inline int Color::green() const
  * @brief Returns the blue component of this color [0-255]
  * @return blue component of this color
  */
-inline int Color::blue() const
+inline uint8_t Color::blue() const
 {
 	return z();
 }
@@ -98,7 +83,43 @@ inline int Color::blue() const
  * @brief Returns the alpha component of this color [0-255]
  * @return alpha component of this color
  */
-inline int Color::alpha() const
+inline uint8_t Color::alpha() const
+{
+	return w();
+}
+
+/**
+ * @brief Returns the red component of this color [0-255]
+ * @return red component of this color
+ */
+inline uint8_t& Color::red()
+{
+	return x();
+}
+
+/**
+ * @brief Returns the green component of this color [0-255]
+ * @return green component of this color
+ */
+inline uint8_t& Color::green()
+{
+	return y();
+}
+
+/**
+ * @brief Returns the blue component of this color [0-255]
+ * @return blue component of this color
+ */
+inline uint8_t& Color::blue()
+{
+	return z();
+}
+
+/**
+ * @brief Returns the alpha component of this color [0-255]
+ * @return alpha component of this color
+ */
+inline uint8_t& Color::alpha()
 {
 	return w();
 }
@@ -143,7 +164,7 @@ inline float Color::alphaF() const
  * @brief Returns the hue color component of this color [0-359]
  * @return hue color component of this color
  */
-inline int Color::hsvHue() const
+inline uint8_t Color::hsvHue() const
 {
 	uint8_t rgbMin, rgbMax;
 	uint8_t h;
@@ -173,7 +194,7 @@ inline int Color::hsvHue() const
  * @brief Returns the saturation color component of this color [0-255]
  * @return saturation color component of this color
  */
-inline int Color::hsvSaturation() const
+inline uint8_t Color::hsvSaturation() const
 {
 	uint8_t rgbMin, rgbMax;
 
@@ -454,5 +475,40 @@ std::ostream& operator<<(std::ostream& out, const Color& c)
 	return out;
 }
 
+/**
+ * @brief Returns a color ramped from Red to Blue depending on the position of the given value in
+ * the given interval [min, max].
+ *
+ * If the given value is less than the minimum value of the interval, the Red color will be
+ * returned. If the given value is higher than the maximum value of the interval, the Blue color
+ * will be returned. If min and max are equal, the Grey color will be returned.
+ *
+ * This function works also if the values of the interval are swapped.
+ *
+ * @param[in] min: minimum value of the interval
+ * @param[in] max: maximum value of the interval
+ * @param[in] value: the value in the interval to ramp.
+ * @return A color between Red and Blue representing the position of value in the interval [min,
+ * max].
+ */
+inline Color colorRampRedToBlue(float min, float max, float value)
+{
+	Color c;
+	if (value < min && value < max) { // out of range - left
+		c.setHsv(0, 255, 255);
+	}
+	else if (value > min && value > max) { // out of range - right
+		c.setHsv(240, 255, 255);
+	}
+	else if (min == max) { // no range
+		c = Color::Gray;
+	}
+	else {
+		value = ((value - min) / std::abs(max - min)) * 240;
+		c.setHsv(value, 255, 255);
+	}
+	return c;
+
+}
+
 } // namespace vcl
-#endif

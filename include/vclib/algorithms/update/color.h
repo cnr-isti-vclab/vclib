@@ -20,75 +20,27 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_ALGORITHMS_COLOR_H
+#define VCL_ALGORITHMS_COLOR_H
 
-#include <vclib/algorithms/clean.h>
-#include <vclib/algorithms/update/topology.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/trimesh.h>
-#include <vclib/misc/timer.h>
+#include <vclib/space/color.h>
 
-int main()
-{
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply");
+namespace vcl {
 
-	bool isWaterTight = vcl::isWaterTight(m);
+template<typename MeshType>
+void setPerVertexColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlySelected = false);
 
-	assert(!isWaterTight);
+template<typename MeshType>
+void setPerFaceColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlySelected = false);
 
-	std::cerr << "Is Water Tight: " << isWaterTight << "\n";
+template<typename MeshType>
+void setPerVertexColorFromFaceColor(MeshType& m);
 
-	m.enablePerFaceAdjacentFaces();
-	vcl::updatePerFaceAdjacentFaces(m);
+template<typename MeshType>
+void setPerFaceColorFromVertexColor(MeshType& m);
 
-	uint nm = vcl::numberNonManifoldVertices(m);
-
-	assert(nm == 4);
-
-	std::cerr << "Non Manifold Vertices: " << nm << "\n";
-
-	uint nv = vcl::removeUnreferencedVertices(m);
-
-	assert(nv == 0);
-
-	std::cerr << "Removed Unreferenced Vertices: " << nv << "\n";
-
-	nv = vcl::removeDuplicatedVertices(m);
-
-	assert(nv == 453);
-
-	std::cerr << "Removed Duplicated Vertices: " << nv << "\n";
-
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
-
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
-
-	m.enablePerFaceAdjacentFaces();
-	vcl::updatePerFaceAdjacentFaces(m);
-	uint nHoles = vcl::numberHoles(m);
-
-	assert(nHoles == 5);
-
-	std::cerr << "Bunny number holes: " << nHoles << "\n";
-
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
-
-	m.enablePerFaceAdjacentFaces();
-	vcl::updatePerFaceAdjacentFaces(m);
-
-	std::vector<std::set<uint>> cc = vcl::connectedComponents(m);
-
-	assert(cc.size() == 2);
-
-	uint ccn = 0;
-	for (const auto& c : cc){
-		std::cerr << "Connected component " << ccn++ << "; Faces:\n";
-		for (const uint f : c){
-			std::cerr << f << "; ";
-		}
-		std::cerr << "\n";
-	}
-
-	return 0;
 }
+
+#include "color.cpp"
+
+#endif // VCL_ALGORITHMS_COLOR_H

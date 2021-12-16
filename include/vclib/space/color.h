@@ -23,20 +23,6 @@
 #ifndef VCL_COLOR_H
 #define VCL_COLOR_H
 
-#ifdef QT_GUI_LIB
-
-#include <QColor>
-
-namespace vcl {
-
-using Color = QColor;
-
-} // namespace vcl
-
-bool operator<(const QColor& c1, const QColor& c2);
-
-#else
-
 #include "point/point4.h"
 
 namespace vcl {
@@ -47,32 +33,72 @@ namespace vcl {
 class Color : public Point4<uint8_t>
 {
 public:
+	/// Constant for storing standard colors.
+	/// Each color is stored in a simple int with ARGB pattern.
+	enum ColorConstant {
+		Black = 0xff000000,
+		Gray  = 0xff808080,
+		White = 0xffffffff,
+
+		Red   = 0xff0000ff,
+		Green = 0xff00ff00,
+		Blue  = 0xffff0000,
+
+		Cyan    = 0xffffff00,
+		Yellow  = 0xff00ffff,
+		Magenta = 0xffff00ff,
+
+		LightGray  = 0xffc0c0c0,
+		LightRed   = 0xff8080ff,
+		LightGreen = 0xff80ff80,
+		LightBlue  = 0xffff8080,
+
+		DarkGray  = 0xff404040,
+		DarkRed   = 0xff000040,
+		DarkGreen = 0xff004000,
+		DarkBlue  = 0xff400000
+	};
+
 	Color();
+	Color(ColorConstant cc);
 	Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
-	int   red() const;
-	int   green() const;
-	int   blue() const;
-	int   alpha() const;
+
+	uint8_t red() const;
+	uint8_t green() const;
+	uint8_t blue() const;
+	uint8_t alpha() const;
+
+	uint8_t& red();
+	uint8_t& green();
+	uint8_t& blue();
+	uint8_t& alpha();
+
 	float redF() const;
 	float greenF() const;
 	float blueF() const;
 	float alphaF() const;
-	int   hsvHue() const;
-	int   hsvSaturation() const;
+
+	uint8_t hsvHue() const;
+	uint8_t hsvSaturation() const;
+
 	float hsvHueF() const;
 	float hsvSaturationF() const;
-	void  setAlpha(uint8_t alpha);
-	void  setRed(uint8_t red);
-	void  setGreen(uint8_t green);
-	void  setBlue(uint8_t blue);
-	void  setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
-	void  setHsv(uint h, uint8_t s, uint8_t v, uint8_t alpha = 255);
-	void  setAlphaF(float alpha);
-	void  setRedF(float red);
-	void  setGreenF(float green);
-	void  setBlueF(float blue);
-	void  setRgbF(float red, float green, float blue, float alpha = 1.0);
-	void  setHsvF(float hf, float sf, float vf, float alpha = 1.0);
+
+	void setAlpha(uint8_t alpha);
+	void setRed(uint8_t red);
+	void setGreen(uint8_t green);
+	void setBlue(uint8_t blue);
+
+	void setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+	void setHsv(uint h, uint8_t s, uint8_t v, uint8_t alpha = 255);
+
+	void setAlphaF(float alpha);
+	void setRedF(float red);
+	void setGreenF(float green);
+	void setBlueF(float blue);
+
+	void setRgbF(float red, float green, float blue, float alpha = 1.0);
+	void setHsvF(float hf, float sf, float vf, float alpha = 1.0);
 
 	bool operator==(const Color& otherColor) const;
 	bool operator!=(const Color& otherColor) const;
@@ -84,10 +110,10 @@ public:
 
 std::ostream& operator<<(std::ostream& out, const Color& p);
 
+Color colorRampRedToBlue(float min, float max, float value);
+
 } // namespace vcl
 
 #include "color.cpp"
-
-#endif
 
 #endif // VCL_COLOR_H
