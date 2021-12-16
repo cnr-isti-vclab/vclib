@@ -23,6 +23,7 @@
 #include "clean.h"
 
 #include <map>
+#include <stack>
 #include <vector>
 
 #include <vclib/mesh/requirements.h>
@@ -465,7 +466,7 @@ bool isManifoldOnEdge(const FaceType& f, uint edge)
 
 
 template<typename MeshType>
-uint countNonManifoldVertices(const MeshType& m)
+uint numberNonManifoldVertices(const MeshType& m)
 {
 	std::vector<bool> nonManifoldVertices = internal::nonManifoldVerticesVectorBool(m);
 	return std::count(nonManifoldVertices.begin(), nonManifoldVertices.end(), true);
@@ -538,6 +539,71 @@ uint numberHoles(const MeshType& m)
 		}
 	}
 	return loopNum;
+}
+
+/**
+ * @brief Computes the connected components of a Mesh based on its topology. This function returns
+ * a vector of sets, each one of these sets represents a connected component and contains the face
+ * indices of the mesh that compose it.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *   - Faces:
+ *     - AdjacentFaces
+ *
+ * @param[in] m: Mesh on which compute the connected components.
+ * @return A vector of sets representing the connected components of the mesh.
+ */
+template <typename MeshType>
+std::vector<std::set<uint>> connectedComponents(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requirePerFaceAdjacentFaces(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using FaceType = typename MeshType::FaceType;
+
+	std::vector<std::set<uint>> cc;
+
+	std::vector<bool> visitedFaces(m.faceContainerSize(), false);
+
+	std::stack<const FaceType*> sf;
+	for (const FaceType& f : m.faces()){
+		if (!visitedFaces[m.index(f)]) { // first time I see this face
+			visitedFaces[m.index(f)] = true;
+
+			// new connected component
+			cc.push_back(std::set<uint>());
+			std::set<uint>& ccf = cc[cc.size()-1];
+			ccf.insert(m.index(f));
+
+			// while the stack is empty, visit the adjacent faces of the top face of the stack
+			sf.push(&f);
+			while(!sf.empty()){
+				const FaceType* fpt = sf.top();
+				sf.pop(); // remove the top face and add it to the connected component
+				ccf.insert(m.index(fpt));
+
+				// add the adjacent faces of the current visited in the stack
+				for (uint j = 0; j < fpt->vertexNumber(); ++j){
+					const FaceType* adjf = fpt->adjFace(j);
+					// if there is an adj face and it has not been visited
+					if (adjf != nullptr && !visitedFaces[m.index(adjf)]){
+						sf.push(adjf);
+						visitedFaces[m.index(adjf)] = true;
+					}
+				}
+			}
+		}
+	}
+	return cc;
+}
+
+template <typename MeshType>
+uint numberConnectedComponents(const MeshType& m)
+{
+	return connectedComponents(m).size();
 }
 
 } // namespace vcl

@@ -72,5 +72,23 @@ int main()
 
 	std::cerr << "Bunny number holes: " << nHoles << "\n";
 
+	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
+
+	m.enablePerFaceAdjacentFaces();
+	vcl::updatePerFaceAdjacentFaces(m);
+
+	std::vector<std::set<uint>> cc = vcl::connectedComponents(m);
+
+	assert(cc.size() == 2);
+
+	uint ccn = 0;
+	for (const auto& c : cc){
+		std::cerr << "Connected component " << ccn++ << "; Faces:\n";
+		for (const uint f : c){
+			std::cerr << f << "; ";
+		}
+		std::cerr << "\n";
+	}
+
 	return 0;
 }

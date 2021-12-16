@@ -23,6 +23,9 @@
 #ifndef VCL_ALGORITHMS_CLEAN_H
 #define VCL_ALGORITHMS_CLEAN_H
 
+#include <set>
+#include <vector>
+
 #include <vclib/misc/vcl_types.h>
 
 namespace vcl {
@@ -49,13 +52,19 @@ template <typename FaceType>
 bool isManifoldOnEdge(const FaceType& f, uint edge);
 
 template <typename MeshType>
-uint countNonManifoldVertices(const MeshType& m);
+uint numberNonManifoldVertices(const MeshType& m);
 
 template <typename MeshType>
 bool isWaterTight(const MeshType& m);
 
 template <typename MeshType>
 uint numberHoles(const MeshType& m);
+
+template <typename MeshType>
+std::vector<std::set<uint>> connectedComponents(const MeshType& m);
+
+template <typename MeshType>
+uint numberConnectedComponents(const MeshType& m);
 
 }
 
