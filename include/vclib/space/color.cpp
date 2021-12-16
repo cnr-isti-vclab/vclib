@@ -32,7 +32,7 @@ inline Color::Color() : Point4(0, 0, 0, 255)
 {
 }
 
-Color::Color(ColorConstant cc)
+Color::Color(ColorARGB cc)
 {
 	x() = cc % 256;
 	y() = (cc >> 8) % 256;
@@ -469,15 +469,63 @@ inline bool Color::operator<(const Color& otherColor) const
 /**
  * @brief Overload of stream operator to allow a pretty print of a vcl::Color.
  */
-std::ostream& operator<<(std::ostream& out, const Color& c)
+inline std::ostream& operator<<(std::ostream& out, const Color& c)
 {
 	out << c.p.cast<uint>();
 	return out;
 }
 
+inline Color colorLerp(const Color& c0, const Color& c1, float value)
+{
+	Color c;
+	if (value < 0) // out of range - left
+		value = 0;
+	else if (value > 1) // out of range - right
+		value = 1;
+	for (uint i = 0; i < 4; i++)
+		c(i) = c1(i)*value + c0(i)*(1-value);
+	return c;
+}
+
+inline Color colorFromInterval(float value, Color::ColorMap cm)
+{
+	switch (cm) {
+	case Color::RedBlue:
+		return colorFromIntervalRedBlue(value);
+	case Color::Parula:
+		return colorFromIntervalParula(value);
+	default:
+		assert(0);
+		return Color::Gray;
+	}
+}
+
+inline Color colorFromInterval(float min, float max, float value, Color::ColorMap cm)
+{
+	if (min == max) { // no range
+		return Color::Gray;
+	}
+
+	value = std::abs((value - min) / (max - min));
+	return colorFromInterval(value, cm);
+}
+
+inline Color colorFromIntervalRedBlue(float value)
+{
+	Color c;
+
+	if (value < 0) // out of range - left
+		value = 0;
+	else if (value > 1) // out of range - right
+		value = 1;
+
+	c.setHsv(value * 240, 255, 255);
+	return c;
+}
+
 /**
- * @brief Returns a color ramped from Red to Blue depending on the position of the given value in
- * the given interval [min, max].
+ * @brief Returns a color in the interval from Red to Blue depending on the position of the given
+ * value in the given interval [min, max].
  *
  * If the given value is less than the minimum value of the interval, the Red color will be
  * returned. If the given value is higher than the maximum value of the interval, the Blue color
@@ -491,24 +539,55 @@ std::ostream& operator<<(std::ostream& out, const Color& c)
  * @return A color between Red and Blue representing the position of value in the interval [min,
  * max].
  */
-inline Color colorRampRedToBlue(float min, float max, float value)
+inline Color colorFromIntervalRedBlue(float min, float max, float value)
 {
 	Color c;
-	if (value < min && value < max) { // out of range - left
-		c.setHsv(0, 255, 255);
+	if (min == max) { // no range
+		return Color::Gray;
 	}
-	else if (value > min && value > max) { // out of range - right
-		c.setHsv(240, 255, 255);
-	}
-	else if (min == max) { // no range
-		c = Color::Gray;
-	}
-	else {
-		value = ((value - min) / std::abs(max - min)) * 240;
-		c.setHsv(value, 255, 255);
-	}
-	return c;
 
+	value = std::abs((value - min) / (max - min));
+	return colorFromIntervalRedBlue(value);
+}
+
+inline Color colorFromIntervalParula(float value)
+{
+	if (value < 0) // out of range - left
+		value = 0;
+	else if (value > 1) // out of range - right
+		value = 1;
+
+	static uint paruVal[9] = {
+		0xff801627,
+		0xffe16303,
+		0xffd48514,
+		0xffc6a706,
+		0xff9eb938,
+		0xff73bf92,
+		0xff56bad9,
+		0xff2ecefc,
+		0xff0afaff};
+
+	int ind = int(floor(value * 8.0f));
+	float div = (value * 8.0f - ind);
+
+	if (div < 0)
+		div = 0;
+	else if (div > 1)
+		div = 1;
+
+	return colorLerp((Color::ColorARGB) paruVal[ind], (Color::ColorARGB) paruVal[ind + 1], div);
+}
+
+inline Color colorFromIntervalParula(float min, float max, float value)
+{
+	Color c;
+	if (min == max) { // no range
+		return Color::Gray;
+	}
+
+	value = std::abs((value - min) / (max - min));
+	return colorFromIntervalParula(value);
 }
 
 } // namespace vcl

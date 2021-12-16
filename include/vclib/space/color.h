@@ -33,9 +33,9 @@ namespace vcl {
 class Color : public Point4<uint8_t>
 {
 public:
-	/// Constant for storing standard colors.
-	/// Each color is stored in a simple int with ARGB pattern.
-	enum ColorConstant {
+	/// ARGB enum with some standard colors.
+	/// Can be used to initialize a color with an ARGB integer
+	enum ColorARGB {
 		Black = 0xff000000,
 		Gray  = 0xff808080,
 		White = 0xffffffff,
@@ -59,8 +59,14 @@ public:
 		DarkBlue  = 0xff400000
 	};
 
+	/// List of Color Maps
+	enum ColorMap {
+		RedBlue,
+		Parula
+	};
+
 	Color();
-	Color(ColorConstant cc);
+	Color(ColorARGB cc);
 	Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
 
 	uint8_t red() const;
@@ -110,7 +116,16 @@ public:
 
 std::ostream& operator<<(std::ostream& out, const Color& p);
 
-Color colorRampRedToBlue(float min, float max, float value);
+Color colorLerp(const Color& c0, const Color& c1, float value);
+
+Color colorFromInterval(float value, Color::ColorMap cm);
+Color colorFromInterval(float min, float max, float value, Color::ColorMap cm);
+
+Color colorFromIntervalRedBlue(float value);
+Color colorFromIntervalRedBlue(float min, float max, float value);
+
+Color colorFromIntervalParula(float value);
+Color colorFromIntervalParula(float min, float max, float value);
 
 } // namespace vcl
 
