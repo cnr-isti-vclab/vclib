@@ -46,6 +46,7 @@ set(HEADERS
 	include/vclib/algorithms/export_to_matrix.h
 	include/vclib/algorithms/polygon.h
 	include/vclib/algorithms/smooth.h
+	include/vclib/algorithms/stat.h
 	include/vclib/algorithms/create/dodecahedron.h
 	include/vclib/algorithms/create/hexahedron.h
 	include/vclib/algorithms/create/tetrahedron.h
@@ -193,6 +194,7 @@ set(SOURCES
 	include/vclib/algorithms/export_to_matrix.cpp
 	include/vclib/algorithms/polygon.cpp
 	include/vclib/algorithms/smooth.cpp
+	include/vclib/algorithms/stat.cpp
 	include/vclib/algorithms/create/dodecahedron.cpp
 	include/vclib/algorithms/create/hexahedron.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
