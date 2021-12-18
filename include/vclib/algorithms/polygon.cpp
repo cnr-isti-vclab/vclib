@@ -26,10 +26,10 @@
 
 #include <mapbox/earcut.hpp>
 #include <vclib/exception/mesh_exception.h>
+#include <vclib/mesh/requirements.h>
 #include <vclib/misc/comparators.h>
 
-#include "update/normal.h"
-
+// structs to make working the mapbox earcut algorithm on vcl::Point2
 namespace mapbox {
 namespace util {
 
@@ -48,6 +48,214 @@ struct nth<1, vcl::Point2<Scalar>>
 } // namespace mapbox
 
 namespace vcl {
+
+/**
+ * @brief Computes the normal of the triangle composed by the points p0, p1, and p2, considering
+ * that these three points are ordered in counterclockwise order.
+ *
+ * @param[in] p0: first point of the triangle.
+ * @param[in] p1: second point of the triangle.
+ * @param[in] p2: third point of the triangle.
+ * @return The normal of the triangle composed by p0, p1 and p2.
+ */
+template<typename PointType>
+PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2)
+{
+	return (p1 - p0).cross(p2 - p0);
+}
+
+/**
+ * @brief Computes the normal of a Face that is a triangle. Does not modify the triangle.
+ * This function could accept also polygonal faces, but it will take into account only the first 3
+ * vertices of the polygon. In this case, the resulting normal could be flipped w.r.yt. the actual
+ * normal of the polygon.
+ *
+ * @param[in] t: input triangle of type Face
+ * @return The normal of t.
+ */
+template<typename Triangle, typename NormalType>
+NormalType triangleNormal(const Triangle& t)
+{
+	return triangleNormal(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
+}
+
+/**
+ * @brief Computes the barycenter of the triangle composed by the points p0, p1, and p2.
+ *
+ * @param[in] p0: first point of the triangle.
+ * @param[in] p1: second point of the triangle.
+ * @param[in] p2: third point of the triangle.
+ * @return The barycenter of the triangle composed by p0, p1 and p2.
+ */
+template <typename PointType>
+PointType triangleBarycenter(const PointType& p0, const PointType& p1, const PointType& p2)
+{
+	return (p0 + p1 + p2) / 3;
+}
+
+/**
+ * @brief Computes the barycenter of a Face that is a triangle. This function could accept also
+ * polygonal faces, but it will take into account only the first 3 vertices of the polygon. In this
+ * case, the resulting barycenter won't be accurate.
+ *
+ * @param[in] t: input triangle of type Face
+ * @return The barycenter of t.
+ */
+template<typename Triangle, typename PointType>
+PointType triangleBarycenter(const Triangle& t)
+{
+	return triangleBarycenter(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
+}
+
+/**
+ * @brief Computes the area of the triangle composed by the points p0, p1, and p2, considering
+ * that these three points are ordered in counterclockwise order.
+ *
+ * @param[in] p0: first point of the triangle.
+ * @param[in] p1: second point of the triangle.
+ * @param[in] p2: third point of the triangle.
+ * @return The area of the triangle composed by p0, p1 and p2.
+ */
+template<typename PointType>
+typename PointType::ScalarType
+triangleArea(const PointType& p0, const PointType& p1, const PointType& p2)
+{
+	return triangleNormal(p0, p1, p2).norm() / 2;
+}
+
+/**
+ * @brief Computes the area of a Face that is a triangle. This function could accept also
+ * polygonal faces, but it will take into account only the first 3 vertices of the polygon. In this
+ * case, the resulting area won't be accurate.
+ *
+ * @param[in] t: input triangle of type Face
+ * @return The area of t.
+ */
+template<typename Triangle, typename ScalarType>
+ScalarType triangleArea(const Triangle& t)
+{
+	return triangleArea(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
+}
+
+/**
+ * @brief Computes the normal of a std::vector of 3D points listed in counterclockwise order,
+ * representing a polygon.
+ *
+ * @param[in] p: input container of 3D points representing a polygon.
+ * @return The normal of p.
+ */
+template<typename Scalar, typename NormalType>
+NormalType polygonNormal(const std::vector<Point3<Scalar>>& p)
+{
+	// compute the sum of normals for each triplet of consecutive points
+	NormalType sum;
+	sum.setZero();
+	for (uint i = 0; i < p.size(); ++i) {
+		sum += triangleNormal(
+			p[i], p[(i+1)%p.size()], p[(i+2)%p.size()]);
+	}
+	sum.normalize();
+	return sum;
+}
+
+/**
+ * @brief Computes the normal of a Face that is a generic polygon. Does not modify the
+ * polygon. This function works also with simple triangles, but it is less efficient thant the
+ * function "triangleNormal".
+ *
+ * @param[in] p: input polygonal Face
+ * @return The normal of p.
+ */
+template<typename Polygon, typename NormalType>
+NormalType polygonNormal(const Polygon& p)
+{
+	// compute the sum of normals for each triplet of consecutive points
+	NormalType sum;
+	sum.setZero();
+	for (uint i = 0; i < p.vertexNumber(); ++i) {
+		sum += triangleNormal(
+			p.vertexMod(i)->coord(), p.vertexMod(i + 1)->coord(), p.vertexMod(i + 2)->coord());
+	}
+	sum.normalize();
+	return sum;
+}
+
+/**
+ * @brief Computes the barycenter of a std::vector of 3D points representing a polygon.
+ *
+ * @param[in] p: input container of 3D points representing a polygon.
+ * @return The barycenter of p.
+ */
+template<typename Scalar>
+Point3<Scalar> polygonBarycenter(const std::vector<Point3<Scalar>>& p)
+{
+	Point3<Scalar> bar;
+	bar.setZero();
+
+	for (const Point3<Scalar>& pp : p)
+		bar += pp;
+	return bar / p.size();
+}
+
+/**
+ * @brief Computes the barycenter of a Face that is a generic polygon. This function works also with
+ * simple triangles, but it is less efficient thant the function "triangleBarycenter".
+ *
+ * @param[in] p: input polygonal Face
+ * @return The barycenter of p.
+ */
+template<typename Polygon, typename PointType>
+PointType polygonBarycenter(const Polygon& p)
+{
+	PointType bar;
+	bar.setZero();
+
+	for (uint i = 0; i < p.vertexNumber(); ++i)
+		bar += p.vertex(i)->coord();
+	return bar / p.vertexNumber();
+}
+
+/**
+ * @brief Computes the area of a std::vector of 3D points listed in counterclockwise order,
+ * representing a polygon.
+ *
+ * @param[in] p: input container of 3D points representing a polygon.
+ * @return The area of p.
+ */
+template<typename Scalar>
+Scalar polygonArea(const std::vector<Point3<Scalar>>& p)
+{
+	Point3<Scalar> bar = polygonBarycenter(p);
+	Scalar area = 0;
+	for (uint i = 0; i < p.size(); ++i){
+		const Point3<Scalar>& p0 = p[i];
+		const Point3<Scalar>& p1 = p[(i+1)%p.size()];
+		area += triangleArea(p0, p1, bar);
+	}
+	return area;
+}
+
+/**
+ * @brief Computes the area of a Face that is a generic polygon. This function works also with
+ * simple triangles, but it is less efficient thant the function "triangleArea".
+ *
+ * @param[in] p: input polygonal Face
+ * @return The area of p.
+ */
+template<typename Polygon, typename ScalarType>
+ScalarType polygonArea(const Polygon& p)
+{
+	using PointType = typename Polygon::VertexType::CoordType;
+
+	PointType bar = polygonBarycenter(p);
+	ScalarType area = 0;
+	for (uint i = 0; i < p.vertexNumber(); ++i){
+		const PointType& p0 = p.vertex(i)->coord();
+		const PointType& p1 = p.vertexMod(i+1)->coord();
+		area += triangleArea(p0, p1, bar);
+	}
+	return area;
+}
 
 /**
  * @brief Computes the EarCut algorithm of a 2D polygon, that returns a triangulation of the

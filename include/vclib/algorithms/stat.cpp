@@ -22,12 +22,20 @@
 
 #include "stat.h"
 
+#include "polygon.h"
+
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
 /**
  * @brief Returns a pair containing the min and the maximum vertex scalars.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Scalar
+ *
  * @param[in] m: the input Mesh on which compute the minimum and the maximum scalars.
  * @return A `std::pair` having as first element the minimum, and as second element the maximum
  * scalar.
@@ -54,6 +62,12 @@ perVertexScalarMinMax(const MeshType& m)
 
 /**
  * @brief Returns a pair containing the min and the maximum face scalars.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - Scalar
+ *
  * @param[in] m: the input Mesh on which compute the minimum and the maximum scalars.
  * @return A `std::pair` having as first element the minimum, and as second element the maximum
  * scalar.
@@ -80,6 +94,12 @@ perFaceScalarMinMax(const MeshType& m)
 
 /**
  * @brief Returns a scalar that is the average of the vertex scalars.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Scalar
+ *
  * @param[in] m: the input Mesh on which compute the average of the scalars.
  * @return The average of the vertex scalars of the given mesh.
  */
@@ -101,6 +121,12 @@ typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType&
 
 /**
  * @brief Returns a scalar that is the average of the face scalars.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - Scalar
+ *
  * @param[in] m: the input Mesh on which compute the average of the scalars.
  * @return The average of the face scalars of the given mesh.
  */
@@ -120,6 +146,17 @@ typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m)
 	return avg / m.faceNumber();
 }
 
+/**
+ * @brief Returns the barycenter of the mesh, that is the simple average of all the vertex
+ * coordintes of the mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *
+ * @param[in] m: input mesh on which compute the barycenter.
+ * @return The barycenter of the input mesh.
+ */
 template <typename MeshType>
 typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
 {
@@ -137,6 +174,20 @@ typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
 	return bar / m.vertexNumber();
 }
 
+/**
+ * @brief Returns the barycenter of the mesh weighted on the per vertex scalar values.
+ *
+ * The output baryceter is computed as a weighted average of the vertices of the mesh, using the
+ * per Vertex Scalar values as weights.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Scalar
+ *
+ * @param[in] m: input mesh on which compute the barycenter.
+ * @return The barycenter weighted on the per vertex scalats.
+ */
 template <typename MeshType>
 typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m)
 {
@@ -155,6 +206,44 @@ typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType
 	}
 
 	return bar / weightedSum;
+}
+
+/**
+ * @brief Computes the barycenter of the surface thin-shell.
+ * E.g. it assume a 'empty' model where all the mass is located on the surface and compute the
+ * barycenter of that thinshell. Works for any polygonal model (no problem with open, nonmanifold
+ * selfintersecting models). Useful for computing the barycenter of 2D planar figures.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *   - Faces
+ *
+ * @param m
+ * @return
+ */
+template<typename MeshType>
+typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requireFaces<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+	using FaceType = typename MeshType::FaceType;
+	using CoordType = typename VertexType::CoordType;
+	using ScalarType = typename CoordType::ScalarType;
+
+	CoordType bar;
+	bar.setZero();
+	ScalarType areaSum = 0;
+
+	for (const FaceType& f : m.faces()) {
+		ScalarType area = polygonArea(f);
+		bar += polygonBarycenter(f) * area;
+		areaSum += area;
+	}
+
+	return bar / areaSum;
 }
 
 } // namespace vcl

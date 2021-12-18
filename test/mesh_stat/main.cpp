@@ -20,38 +20,25 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
+#include <iostream>
 
-#include <utility>
+#include <vclib/algorithms/stat.h>
+#include <vclib/io/load_ply.h>
+#include <vclib/io/save_ply.h>
+#include <vclib/trimesh.h>
+#include <vclib/misc/timer.h>
 
-namespace vcl {
+int main()
+{
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
-template<typename MeshType>
-std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
-perVertexScalarMinMax(const MeshType& m);
+	vcl::Point3d bar = vcl::barycenter(m);
 
-template<typename MeshType>
-std::pair<typename MeshType::FaceType::ScalarType, typename MeshType::FaceType::ScalarType>
-perFaceScalarMinMax(const MeshType& m);
+	std::cerr << "Barycenter: " << bar << "\n";
 
-template<typename MeshType>
-typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType& m);
+	bar = vcl::shellBarycenter(m);
 
-template<typename MeshType>
-typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m);
+	std::cerr << "Shell Barycenter: " << bar << "\n";
 
-template<typename MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
-
-template<typename MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
-
-template<typename MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
-
-} // namespace vcl
-
-#include "stat.cpp"
-
-#endif // VCL_ALGORITHMS_STAT_H
+	return 0;
+}

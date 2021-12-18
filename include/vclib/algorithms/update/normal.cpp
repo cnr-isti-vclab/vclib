@@ -22,82 +22,11 @@
 
 #include "normal.h"
 
+#include "../polygon.h"
+
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
-
-/**
- * @brief Computes the normal of the triangle composed by the points p0, p1, and p2, considering
- * that these three points are ordered in counterclockwise order.
- *
- * @param[in] p0: first point of the triangle.
- * @param[in] p1: second point of the triangle.
- * @param[in] p2: third point of the triangle.
- * @return The normal of the triangle composed by p0, p1 and p2.
- */
-template<typename PointType>
-PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2)
-{
-	return (p1 - p0).cross(p2 - p0);
-}
-
-/**
- * @brief Computes the normal of a Face that is a triangle. Does not modify the triangle.
- * This function could accept also polygonal faces, but it will take into account only the first 3
- * vertices of the polygon. In this case, the resulting normal could be flipped w.r.yt. the actual
- * normal of the polygon.
- *
- * @param[in] t: input triangle of type Face
- * @return The normal of t.
- */
-template<typename Triangle, typename NormalType>
-NormalType triangleNormal(const Triangle& t)
-{
-	return triangleNormal(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
-}
-
-/**
- * @brief Computes the normal of a std::vector of 3D points listed in counterclockwise order,
- * representing a polygon.
- *
- * @param[in] p: input container of 3D points representing a polygon.
- * @return The normal of p.
- */
-template<typename Scalar, typename NormalType>
-NormalType polygonNormal(const std::vector<Point3<Scalar>>& p)
-{
-	// compute the sum of normals for each triplet of consecutive points
-	NormalType sum;
-	sum.setZero();
-	for (uint i = 0; i < p.size(); ++i) {
-		sum += triangleNormal(
-			p[i], p[(i+1)%p.size()], p[(i+2)%p.size()]);
-	}
-	sum.normalize();
-	return sum;
-}
-
-/**
- * @brief Computes the normal of a Face that is a generic polygon. Does not modify the
- * polygon. This function works also with simple triangles, but it is less efficient thant the
- * function "triangleNormal".
- *
- * @param[in] p: input polygonal Face
- * @return The normal of p.
- */
-template<typename Polygon, typename NormalType>
-NormalType polygonNormal(const Polygon& p)
-{
-	// compute the sum of normals for each triplet of consecutive points
-	NormalType sum;
-	sum.setZero();
-	for (uint i = 0; i < p.vertexNumber(); ++i) {
-		sum += triangleNormal(
-			p.vertexMod(i)->coord(), p.vertexMod(i + 1)->coord(), p.vertexMod(i + 2)->coord());
-	}
-	sum.normalize();
-	return sum;
-}
 
 /**
  * @brief Normalizes the length of the face normals.
