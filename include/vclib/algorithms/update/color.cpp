@@ -24,6 +24,8 @@
 
 #include <vclib/mesh/requirements.h>
 
+#include "../stat.h"
+
 namespace vcl {
 
 namespace internal {
@@ -36,6 +38,19 @@ struct ColorAvgInfo
 
 }
 
+/**
+ * @brief Sets the color of the vertices. If the `onlySelected` flag is set to `true`, only the
+ * color of the selected vertices will be set. Otherwise, all the vertices will have the same color.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Color
+ *
+ * @param[in/out] m: the mesh on which set the vertex color.
+ * @param[in] c: the color to set to the vertices of the mesh.
+ * @param[in] onlySelected: if `true`, the color will be set just on the selected vertices.
+ */
 template<typename MeshType>
 void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
 {
@@ -50,6 +65,19 @@ void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
 	}
 }
 
+/**
+ * @brief Sets the color of the faces. If the `onlySelected` flag is set to `true`, only the
+ * color of the selected faces will be set. Otherwise, all the faces will have the same color.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - Color
+ *
+ * @param[in/out] m: the mesh on which set the face color.
+ * @param[in] c: the color to set to the faces of the mesh.
+ * @param[in] onlySelected: if `true`, the color will be set just on the selected faces.
+ */
 template<typename MeshType>
 void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
 {
@@ -102,6 +130,52 @@ void setPerFaceColorFromVertexColor(MeshType& m)
 			avg += v->color();
 		}
 		f->color() = avg / f.vertexNumber();
+	}
+}
+
+template<typename MeshType>
+void setPerVertexColorFromScalar(
+	MeshType&                                 m,
+	vcl::Color::ColorMap                      colorMap,
+	typename MeshType::VertexType::ScalarType minScalar,
+	typename MeshType::VertexType::ScalarType maxScalar)
+{
+	vcl::requirePerVertexColor(m);
+	vcl::requirePerVertexScalar(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::ScalarType;
+
+	if (minScalar == maxScalar){
+		std::pair<ScalarType, ScalarType> pair = perVertexScalarMinMax(m);
+		minScalar = pair.first;
+		maxScalar = pair.second;
+	}
+	for (VertexType& v : m.vertices()){
+		v.color() = colorFromInterval(minScalar, maxScalar, v.scalar(), colorMap);
+	}
+}
+
+template<typename MeshType>
+void setPerFaceColorFromScalar(
+	MeshType&                                 m,
+	vcl::Color::ColorMap                      colorMap,
+	typename MeshType::FaceType::ScalarType minScalar,
+	typename MeshType::FaceType::ScalarType maxScalar)
+{
+	vcl::requirePerFaceColor(m);
+	vcl::requirePerFaceScalar(m);
+
+	using FaceType = typename MeshType::FaceType;
+	using ScalarType = typename FaceType::ScalarType;
+
+	if (minScalar == maxScalar){
+		std::pair<ScalarType, ScalarType> pair = perFaceScalarMinMax(m);
+		minScalar = pair.first;
+		maxScalar = pair.second;
+	}
+	for (FaceType& f : m.faces()){
+		f.color() = colorFromInterval(minScalar, maxScalar, f.scalar(), colorMap);
 	}
 }
 

@@ -62,7 +62,8 @@ public:
 	/// List of Color Maps
 	enum ColorMap {
 		RedBlue,
-		Parula
+		Parula,
+		GreyShade
 	};
 
 	Color();
@@ -126,6 +127,9 @@ Color colorFromIntervalRedBlue(float min, float max, float value);
 
 Color colorFromIntervalParula(float value);
 Color colorFromIntervalParula(float min, float max, float value);
+
+Color colorFromIntervalGreyShade(float value);
+Color colorFromIntervalGreyShade(float min, float max, float value);
 
 } // namespace vcl
 

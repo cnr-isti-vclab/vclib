@@ -494,6 +494,8 @@ inline Color colorFromInterval(float value, Color::ColorMap cm)
 		return colorFromIntervalRedBlue(value);
 	case Color::Parula:
 		return colorFromIntervalParula(value);
+	case Color::GreyShade:
+		return colorFromIntervalGreyShade(value);
 	default:
 		assert(0);
 		return Color::Gray;
@@ -588,6 +590,26 @@ inline Color colorFromIntervalParula(float min, float max, float value)
 
 	value = std::abs((value - min) / (max - min));
 	return colorFromIntervalParula(value);
+}
+
+inline Color colorFromIntervalGreyShade(float value)
+{
+	if (value < 0) // out of range - left
+		value = 0;
+	else if (value > 1) // out of range - right
+		value = 1;
+	return Color(value * 255, value * 255, value * 255, 255);
+}
+
+inline Color colorFromIntervalGreyShade(float min, float max, float value)
+{
+	Color c;
+	if (min == max) { // no range
+		return Color::Gray;
+	}
+
+	value = std::abs((value - min) / (max - min));
+	return colorFromIntervalGreyShade(value);
 }
 
 } // namespace vcl

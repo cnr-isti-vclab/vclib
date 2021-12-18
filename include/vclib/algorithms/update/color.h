@@ -39,6 +39,19 @@ void setPerVertexColorFromFaceColor(MeshType& m);
 template<typename MeshType>
 void setPerFaceColorFromVertexColor(MeshType& m);
 
+template<typename MeshType>
+void setPerVertexColorFromScalar(
+	MeshType&                                 m,
+	vcl::Color::ColorMap                      colorMap = vcl::Color::RedBlue,
+	typename MeshType::VertexType::ScalarType minScalar = 0,
+	typename MeshType::VertexType::ScalarType maxScalar = 0);
+
+template<typename MeshType>
+void setPerFaceColorFromScalar(
+	MeshType&                                 m,
+	vcl::Color::ColorMap                      colorMap = vcl::Color::RedBlue,
+	typename MeshType::FaceType::ScalarType minScalar = 0,
+	typename MeshType::FaceType::ScalarType maxScalar = 0);
 }
 
 #include "color.cpp"
