@@ -29,6 +29,24 @@
 namespace vcl {
 
 template<typename MeshType>
+typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
+
+template<typename MeshType>
+typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
+
+template<typename MeshType>
+typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
+
+template<typename MeshType>
+double volume(const MeshType& m);
+
+template<typename MeshType>
+double surfaceArea(const MeshType& m);
+
+template<typename MeshType>
+double borderLength(const MeshType& m);
+
+template<typename MeshType>
 std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
 perVertexScalarMinMax(const MeshType& m);
 
@@ -41,18 +59,6 @@ typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType&
 
 template<typename MeshType>
 typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m);
-
-template<typename MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
-
-template<typename MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
-
-template<typename MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
-
-template<typename MeshType>
-double volume(const MeshType& m);
 
 template<typename MeshType>
 Eigen::Matrix3d covarianceMatrix(const MeshType& m);

@@ -46,5 +46,9 @@ int main()
 
 	std::cerr << "Mesh volume: " << vol << "\n";
 
+	double surf = vcl::surfaceArea(m);
+
+	std::cerr << "Surface area: " << surf << "\n";
+
 	return 0;
 }

@@ -30,6 +30,171 @@
 namespace vcl {
 
 /**
+ * @brief Returns the barycenter of the mesh, that is the simple average of all the vertex
+ * coordintes of the mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *
+ * @param[in] m: input mesh on which compute the barycenter.
+ * @return The barycenter of the input mesh.
+ */
+template <typename MeshType>
+typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+	using CoordType = typename VertexType::CoordType;
+
+	CoordType bar;
+
+	for (const VertexType& v : m.vertices()) {
+		bar += v.coord();
+	}
+
+	return bar / m.vertexNumber();
+}
+
+/**
+ * @brief Returns the barycenter of the mesh weighted on the per vertex scalar values.
+ *
+ * The output baryceter is computed as a weighted average of the vertices of the mesh, using the
+ * per Vertex Scalar values as weights.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Scalar
+ *
+ * @param[in] m: input mesh on which compute the barycenter.
+ * @return The barycenter weighted on the per vertex scalats.
+ */
+template <typename MeshType>
+typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m)
+{
+	vcl::requirePerVertexScalar(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using CoordType = typename VertexType::CoordType;
+	using ScalarType = typename VertexType::ScalarType;
+
+	CoordType bar;
+	ScalarType weightedSum = 0;
+
+	for (const VertexType& v : m.vertices()) {
+		bar += v.coord() * v.scalar();
+		weightedSum += v.scalar();
+	}
+
+	return bar / weightedSum;
+}
+
+/**
+ * @brief Computes the barycenter of the surface thin-shell.
+ * E.g. it assume a 'empty' model where all the mass is located on the surface and compute the
+ * barycenter of that thinshell. Works for any polygonal model (no problem with open, nonmanifold
+ * selfintersecting models). Useful for computing the barycenter of 2D planar figures.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *   - Faces
+ *
+ * @param m
+ * @return
+ */
+template<typename MeshType>
+typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requireFaces<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+	using FaceType = typename MeshType::FaceType;
+	using CoordType = typename VertexType::CoordType;
+	using ScalarType = typename CoordType::ScalarType;
+
+	CoordType bar;
+	bar.setZero();
+	ScalarType areaSum = 0;
+
+	for (const FaceType& f : m.faces()) {
+		ScalarType area = polygonArea(f);
+		bar += polygonBarycenter(f) * area;
+		areaSum += area;
+	}
+
+	return bar / areaSum;
+}
+
+/**
+ * @brief Computes the volume of a closed surface Mesh. Returned value is meaningful only if
+ * the input mesh is watertight.
+ *
+ * @param[in] m: closed mesh on which compute the volume.
+ * @return The volume of the given mesh.
+ */
+template<typename MeshType>
+double volume(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requireFaces<MeshType>();
+
+	internal::Inertia<MeshType> i(m);
+	return i.volume();
+}
+
+/**
+ * @brief Computes the surface area of the given Mesh, that is the sum of the areas of each face of
+ * the mesh.
+ *
+ * @param[in] m: mesh on which compute the surface area.
+ * @return The surface area of the given mesh.
+ */
+template<typename MeshType>
+double surfaceArea(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requireFaces<MeshType>();
+
+	using FaceType = typename MeshType::FaceType;
+
+	double area = 0;
+	for (const FaceType& f : m.faces()) {
+		area += polygonArea(f);
+	}
+	return area;
+}
+
+/**
+ * @brief Computes the border length of the given Mesh, that is the sum of the length of the edges
+ * that are on border in the given mesh.
+ *
+ * @param[in] m: mesh on which compute the border length.
+ * @return The border length of the given mesh.
+ */
+template<typename MeshType>
+double borderLength(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requirePerFaceAdjacentFaces(m);
+
+	using FaceType = typename MeshType::FaceType;
+
+	double l = 0;
+	for (const FaceType& f : m.faces()){
+		for (uint i = 0; i < f.vertexNumber(); ++i){
+			if (f.adjFace(i) == nullptr){
+				l += f.vertex(i)->coord().dist(f.vertexMod(i+1)->coord());
+			}
+		}
+	}
+	return l;
+}
+
+/**
  * @brief Returns a pair containing the min and the maximum vertex scalars.
  *
  * Requirements:
@@ -145,123 +310,6 @@ typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m)
 		avg += f.scalar();
 
 	return avg / m.faceNumber();
-}
-
-/**
- * @brief Returns the barycenter of the mesh, that is the simple average of all the vertex
- * coordintes of the mesh.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices
- *
- * @param[in] m: input mesh on which compute the barycenter.
- * @return The barycenter of the input mesh.
- */
-template <typename MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
-{
-	vcl::requireVertices<MeshType>();
-
-	using VertexType = typename MeshType::VertexType;
-	using CoordType = typename VertexType::CoordType;
-
-	CoordType bar;
-
-	for (const VertexType& v : m.vertices()) {
-		bar += v.coord();
-	}
-
-	return bar / m.vertexNumber();
-}
-
-/**
- * @brief Returns the barycenter of the mesh weighted on the per vertex scalar values.
- *
- * The output baryceter is computed as a weighted average of the vertices of the mesh, using the
- * per Vertex Scalar values as weights.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Scalar
- *
- * @param[in] m: input mesh on which compute the barycenter.
- * @return The barycenter weighted on the per vertex scalats.
- */
-template <typename MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m)
-{
-	vcl::requirePerVertexScalar(m);
-
-	using VertexType = typename MeshType::VertexType;
-	using CoordType = typename VertexType::CoordType;
-	using ScalarType = typename VertexType::ScalarType;
-
-	CoordType bar;
-	ScalarType weightedSum = 0;
-
-	for (const VertexType& v : m.vertices()) {
-		bar += v.coord() * v.scalar();
-		weightedSum += v.scalar();
-	}
-
-	return bar / weightedSum;
-}
-
-/**
- * @brief Computes the barycenter of the surface thin-shell.
- * E.g. it assume a 'empty' model where all the mass is located on the surface and compute the
- * barycenter of that thinshell. Works for any polygonal model (no problem with open, nonmanifold
- * selfintersecting models). Useful for computing the barycenter of 2D planar figures.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices
- *   - Faces
- *
- * @param m
- * @return
- */
-template<typename MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
-{
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
-	using VertexType = typename MeshType::VertexType;
-	using FaceType = typename MeshType::FaceType;
-	using CoordType = typename VertexType::CoordType;
-	using ScalarType = typename CoordType::ScalarType;
-
-	CoordType bar;
-	bar.setZero();
-	ScalarType areaSum = 0;
-
-	for (const FaceType& f : m.faces()) {
-		ScalarType area = polygonArea(f);
-		bar += polygonBarycenter(f) * area;
-		areaSum += area;
-	}
-
-	return bar / areaSum;
-}
-
-/**
- * @brief Computes the volume of a closed surface Mesh. Returned value is meaningful only if
- * the input mesh is watertight.
- *
- * @param[in] m: closed mesh on which compute the volume.
- * @return The volume of the given mesh.
- */
-template<typename MeshType>
-double volume(const MeshType& m)
-{
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
-	internal::Inertia<MeshType> i(m);
-	return i.volume();
 }
 
 /**
