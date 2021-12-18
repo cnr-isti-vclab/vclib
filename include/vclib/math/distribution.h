@@ -20,52 +20,57 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
+#ifndef VCL_MATH_DISTRIBUTION_H
+#define VCL_MATH_DISTRIBUTION_H
 
-#include <utility>
+#include <limits>
+#include <set>
 
-#include <vclib/math/matrix.h>
+#include <vclib/misc/vcl_types.h>
 
 namespace vcl {
 
-template<typename MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
+/**
+ * @brief The Distribution class allows to collect a set of values and then compute some statistics
+ * like average, variance, standardDeviation, and percentiles.
+ */
+template<typename Scalar>
+class Distribution
+{
+public:
+	Distribution();
 
-template<typename MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
+	void clear();
 
-template<typename MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
+	void add(Scalar v);
 
-template<typename MeshType>
-double volume(const MeshType& m);
+	Scalar min() const;
+	Scalar max() const;
+	uint   size() const;
 
-template<typename MeshType>
-double surfaceArea(const MeshType& m);
+	Scalar sum() const;
+	Scalar average() const;
+	Scalar rootMeanSquare() const;
+	Scalar variance() const;
+	Scalar standardDeviation() const;
 
-template<typename MeshType>
-double borderLength(const MeshType& m);
+	Scalar percentile(Scalar perc) const;
 
-template<typename MeshType>
-std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
-perVertexScalarMinMax(const MeshType& m);
+private:
+	std::set<Scalar> set;
 
-template<typename MeshType>
-std::pair<typename MeshType::FaceType::ScalarType, typename MeshType::FaceType::ScalarType>
-perFaceScalarMinMax(const MeshType& m);
+	Scalar minValue = std::numeric_limits<Scalar>::max();
+	Scalar maxValue = std::numeric_limits<Scalar>::lowest();
 
-template<typename MeshType>
-typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType& m);
-
-template<typename MeshType>
-typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m);
-
-template<typename MeshType>
-Matrix33<double> covarianceMatrix(const MeshType& m);
+	Scalar valSum     = 0;
+	Scalar sqrdValSum = 0;
+	Scalar valAvg     = 0;
+	Scalar sqrdValAvg = 0;
+	Scalar valRMS     = 0;
+};
 
 } // namespace vcl
 
-#include "stat.cpp"
+#include "distribution.cpp"
 
-#endif // VCL_ALGORITHMS_STAT_H
+#endif // VCL_MATH_DISTRIBUTION_H

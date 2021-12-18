@@ -321,7 +321,7 @@ typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m)
  * @return The 3x3 covariance matrix of the given mesh.
  */
 template<typename MeshType>
-Eigen::Matrix3d covarianceMatrix(const MeshType& m)
+Matrix33<double> covarianceMatrix(const MeshType& m)
 {
 	vcl::requireVertices<MeshType>();
 	vcl::requireFaces<MeshType>();
@@ -332,9 +332,9 @@ Eigen::Matrix3d covarianceMatrix(const MeshType& m)
 	using ScalarType = typename CoordType::ScalarType;
 
 	CoordType bar = shellBarycenter(m);
-	Eigen::Matrix3d C;
+	Matrix33<double> C;
 	C.setZero();
-	Eigen::Matrix3d C0;
+	Matrix33<double> C0;
 	C0.setZero();
 	C0(0,0) = C0(1,1) = 2.0;
 	C0(0,1) = C0(1,0) = 1.0;
@@ -342,8 +342,8 @@ Eigen::Matrix3d covarianceMatrix(const MeshType& m)
 	// integral of (x,y,0) in the same triangle
 	Eigen::Vector3d x;
 	x << 1/6.0,1/6.0,0;
-	Eigen::Matrix3d A; // matrix that bring the vertices to (v1-v0,v2-v0,n)
-	Eigen::Matrix3d DC;
+	Matrix33<double> A; // matrix that bring the vertices to (v1-v0,v2-v0,n)
+	Matrix33<double> DC;
 
 	for (const FaceType& f : m.faces()) {
 		const CoordType& p0 = f.vertex(0)->coord();
@@ -370,7 +370,7 @@ Eigen::Matrix3d covarianceMatrix(const MeshType& m)
 		 * where delta = v0-bary */
 		DC.setZero();
 		DC += A* C0 * A.transpose();
-		Eigen::Matrix3d tmp = (A*x) * delta.transpose();
+		Matrix33<double> tmp = (A*x) * delta.transpose();
 		DC += tmp + tmp.transpose();
 		DC += tmp;
 		tmp = delta * delta.transpose();
