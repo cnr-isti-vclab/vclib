@@ -23,6 +23,7 @@
 #ifndef VCL_ALGORITHMS_STAT_H
 #define VCL_ALGORITHMS_STAT_H
 
+#include <Eigen/Core>
 #include <utility>
 
 namespace vcl {
@@ -49,6 +50,12 @@ typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType
 
 template<typename MeshType>
 typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
+
+template<typename MeshType>
+double volume(const MeshType& m);
+
+template<typename MeshType>
+Eigen::Matrix3d covarianceMatrix(const MeshType& m);
 
 } // namespace vcl
 

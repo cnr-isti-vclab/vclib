@@ -22,6 +22,7 @@
 
 #include "stat.h"
 
+#include "internal/inertia.h"
 #include "polygon.h"
 
 #include <vclib/mesh/requirements.h>
@@ -244,6 +245,92 @@ typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
 	}
 
 	return bar / areaSum;
+}
+
+/**
+ * @brief Computes the volume of a closed surface Mesh. Returned value is meaningful only if
+ * the input mesh is watertight.
+ *
+ * @param[in] m: closed mesh on which compute the volume.
+ * @return The volume of the given mesh.
+ */
+template<typename MeshType>
+double volume(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requireFaces<MeshType>();
+
+	internal::Inertia<MeshType> i(m);
+	return i.volume();
+}
+
+/**
+ * @brief Compute covariance matrix of a mesh, i.e. the integral
+ * int_{m} { (x-b)(x-b)^T }dx
+ * where b is the barycenter and x spans over the mesh m
+ *
+ * @param m
+ * @return The 3x3 covariance matrix of the given mesh.
+ */
+template<typename MeshType>
+Eigen::Matrix3d covarianceMatrix(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requireFaces<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+	using FaceType = typename MeshType::FaceType;
+	using CoordType = typename VertexType::CoordType;
+	using ScalarType = typename CoordType::ScalarType;
+
+	CoordType bar = shellBarycenter(m);
+	Eigen::Matrix3d C;
+	C.setZero();
+	Eigen::Matrix3d C0;
+	C0.setZero();
+	C0(0,0) = C0(1,1) = 2.0;
+	C0(0,1) = C0(1,0) = 1.0;
+	C0*=1/24.0;
+	// integral of (x,y,0) in the same triangle
+	Eigen::Vector3d x;
+	x << 1/6.0,1/6.0,0;
+	Eigen::Matrix3d A; // matrix that bring the vertices to (v1-v0,v2-v0,n)
+	Eigen::Matrix3d DC;
+
+	for (const FaceType& f : m.faces()) {
+		const CoordType& p0 = f.vertex(0)->coord();
+		const CoordType& p1 = f.vertex(1)->coord();
+		const CoordType& p2 = f.vertex(2)->coord();
+		CoordType n = polygonNormal(f);
+		double da = n.norm();
+		n /= da*da;
+
+		CoordType tmpp = p1 - p0;
+		for (uint j = 0; j < 3; j++)
+			A(j, 0) = tmpp(j);
+		tmpp = p2 - p0;
+		for (uint j = 0; j < 3; j++)
+			A(j, 1) = tmpp(j);
+		for (uint j = 0; j < 3; j++)
+			A(j, 2) = n(j);
+		Eigen::Vector3d delta;
+		tmpp = p0 - bar;
+		for (uint j = 0; j < 3; j++)
+			delta(j) = tmpp(j);
+
+		/* DC is calculated as integral of (A*x+delta) * (A*x+delta)^T over the triangle,
+		 * where delta = v0-bary */
+		DC.setZero();
+		DC += A* C0 * A.transpose();
+		Eigen::Matrix3d tmp = (A*x) * delta.transpose();
+		DC += tmp + tmp.transpose();
+		DC += tmp;
+		tmp = delta * delta.transpose();
+		DC+=tmp*0.5;
+		DC*=da;	// the determinant of A is also the double area of f
+		C+=DC;
+	}
+	return C;
 }
 
 } // namespace vcl

@@ -83,11 +83,12 @@ public:
 	bool operator!=(const Point& p1) const;
 	bool operator<(const Point& p1) const;
 
-	Point  operator+(const Scalar& s) const;
-	Point  operator+(const Point& p1) const;
+	Point operator+(const Scalar& s) const;
+	Point operator+(const Point& p1) const;
 
-	Point  operator-(const Scalar& s) const;
-	Point  operator-(const Point& p1) const;
+	Point operator-() const;
+	Point operator-(const Scalar& s) const;
+	Point operator-(const Point& p1) const;
 
 	Point  operator*(const Scalar& s) const;
 	Scalar operator*(const Point& p1) const;

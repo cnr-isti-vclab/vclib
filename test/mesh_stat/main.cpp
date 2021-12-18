@@ -40,5 +40,11 @@ int main()
 
 	std::cerr << "Shell Barycenter: " << bar << "\n";
 
+	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+
+	double vol = vcl::volume(m);
+
+	std::cerr << "Mesh volume: " << vol << "\n";
+
 	return 0;
 }

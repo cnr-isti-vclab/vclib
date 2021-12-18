@@ -158,6 +158,12 @@ Point<Scalar, N> Point<Scalar, N>::operator+(const Point<Scalar, N>& p1) const
 }
 
 template<typename Scalar, int N>
+Point<Scalar, N> Point<Scalar, N>::operator-() const
+{
+	return Point<Scalar, N>(-p);
+}
+
+template<typename Scalar, int N>
 Point<Scalar, N> Point<Scalar, N>::operator-(const Scalar& s) const
 {
 	return Point<Scalar, N>(p.array() - s);
