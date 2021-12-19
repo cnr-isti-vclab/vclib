@@ -56,6 +56,7 @@ set(HEADERS
 	include/vclib/algorithms/update/color.h
 	include/vclib/algorithms/update/flag.h
 	include/vclib/algorithms/update/normal.h
+	include/vclib/algorithms/update/scalar.h
 	include/vclib/algorithms/update/selection.h
 	include/vclib/algorithms/update/topology.h
 	include/vclib/algorithms/update/transform.h
@@ -205,6 +206,7 @@ set(SOURCES
 	include/vclib/algorithms/update/color.cpp
 	include/vclib/algorithms/update/flag.cpp
 	include/vclib/algorithms/update/normal.cpp
+	include/vclib/algorithms/update/scalar.cpp
 	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
