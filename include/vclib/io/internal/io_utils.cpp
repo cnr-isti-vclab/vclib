@@ -30,7 +30,7 @@ inline std::ofstream saveFileStream(const std::string& filename, const std::stri
 {
 	std::string   actualfilename;
 	std::ofstream fp;
-	fp.imbue(std::locale("en_US.UTF-8"));
+	fp.imbue(std::locale().classic());
 	size_t lastindex = filename.find_last_of(".");
 	if (lastindex != filename.size())
 		actualfilename = filename;
