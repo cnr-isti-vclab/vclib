@@ -20,29 +20,23 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_SAVE_PLY_H
-#define VCL_IO_SAVE_PLY_H
+#include "save_off.h"
 
-#include <vclib/exception/io_exception.h>
-
-#include "ply/ply.h"
-#include "ply/ply_vertex.h"
-#include "ply/ply_face.h"
-#include "ply/ply_extra.h"
+#include "internal/io_utils.h"
 
 namespace vcl::io {
 
-template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, bool binary = true);
-
-template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary = true);
-
-template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeader& header);
-
+template<typename MeshType>
+void saveOff(const MeshType& m, const std::string& filename)
+{
+	vcl::io::FileMeshInfo info(m);
+	saveOff(m, filename, info);
 }
 
-#include "save_ply.cpp"
+template<typename MeshType>
+void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info)
+{
+	std::ofstream fp = internal::saveFileStream(filename, "off");
+}
 
-#endif // VCL_IO_SAVE_PLY_H
+} // namespace vcl::io

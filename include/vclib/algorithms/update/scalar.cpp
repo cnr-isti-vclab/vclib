@@ -30,7 +30,7 @@
 namespace vcl {
 
 /**
- * @brief Sets a constant value to the all the vertex scalars of the mesh.
+ * @brief Sets a constant value to all the vertex scalars of the mesh.
  *
  * Requirements:
  * - Mesh:
@@ -53,7 +53,7 @@ void setPerVertexScalar(MeshType& m, typename MeshType::VertexType::ScalarType s
 }
 
 /**
- * @brief Sets a constant value to the all the face scalars of the mesh.
+ * @brief Sets a constant value to all the face scalars of the mesh.
  *
  * Requirements:
  * - Mesh:
@@ -222,7 +222,7 @@ void setPerVertexScalarFromVertexValence(MeshType& m)
 }
 
 /**
- * @brief Assign to the fae scalars of the mesh the area of each face.
+ * @brief Assign to the face scalars of the mesh the area of each face.
  *
  * Requirements:
  * - Mesh:

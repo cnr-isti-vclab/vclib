@@ -169,7 +169,9 @@ set(HEADERS
 	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load_ply.h
+	include/vclib/io/save_off.h
 	include/vclib/io/save_ply.h
+	include/vclib/io/internal/io_utils.h
 	include/vclib/io/ply/ply.h
 	include/vclib/io/ply/ply_extra.h
 	include/vclib/io/ply/ply_face.h
@@ -265,8 +267,10 @@ set(SOURCES
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
 	include/vclib/io/file_mesh_info.cpp
+	include/vclib/io/save_off.cpp
 	include/vclib/io/load_ply.cpp
 	include/vclib/io/save_ply.cpp
+	include/vclib/io/internal/io_utils.cpp
 	include/vclib/io/ply/ply.cpp
 	include/vclib/io/ply/ply_extra.cpp
 	include/vclib/io/ply/ply_face.cpp

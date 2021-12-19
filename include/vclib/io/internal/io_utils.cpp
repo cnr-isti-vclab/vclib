@@ -20,29 +20,29 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_SAVE_PLY_H
-#define VCL_IO_SAVE_PLY_H
+#include "io_utils.h"
 
 #include <vclib/exception/io_exception.h>
 
-#include "ply/ply.h"
-#include "ply/ply_vertex.h"
-#include "ply/ply_face.h"
-#include "ply/ply_extra.h"
+namespace vcl::io::internal {
 
-namespace vcl::io {
+inline std::ofstream saveFileStream(const std::string& filename, const std::string& ext)
+{
+	std::string   actualfilename;
+	std::ofstream fp;
+	fp.imbue(std::locale("en_US.UTF-8"));
+	size_t lastindex = filename.find_last_of(".");
+	if (lastindex != filename.size())
+		actualfilename = filename;
+	else
+		actualfilename = filename + "." + ext;
 
-template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, bool binary = true);
+	fp.open(actualfilename, std::ofstream::binary); // need to set binary or windows will fail
+	if (!fp) {
+		throw vcl::CannotOpenFileException(actualfilename);
+	}
 
-template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary = true);
-
-template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeader& header);
-
+	return fp;
 }
 
-#include "save_ply.cpp"
-
-#endif // VCL_IO_SAVE_PLY_H
+} // namespace vcl::io::internal

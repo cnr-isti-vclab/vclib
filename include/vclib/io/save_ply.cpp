@@ -22,6 +22,8 @@
 
 #include "save_ply.h"
 
+#include "internal/io_utils.h"
+
 namespace vcl::io {
 
 template<typename MeshType>
@@ -47,19 +49,8 @@ void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeade
 	if (!header.isValid())
 		throw std::runtime_error("Ply Header not valid.");
 
-	std::string plyfilename;
-	std::ofstream fp;
-	fp.imbue(std::locale("en_US.UTF-8"));
-	size_t        lastindex = filename.find_last_of(".");
-	if (lastindex != filename.size())
-		plyfilename = filename;
-	else
-		plyfilename = filename + ".ply";
+	std::ofstream fp = internal::saveFileStream(filename, "ply");
 
-	fp.open(plyfilename, std::ofstream::binary); // need to set binary of windows will fail
-	if (!fp) {
-		throw vcl::CannotOpenFileException(plyfilename);
-	}
 	fp << header.toString();
 
 	if (vcl::hasVertices<MeshType>())
