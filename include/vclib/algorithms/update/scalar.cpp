@@ -24,6 +24,9 @@
 
 #include <vclib/mesh/requirements.h>
 
+#include "../polygon.h"
+#include "../stat.h"
+
 namespace vcl {
 
 /**
@@ -127,6 +130,68 @@ void clampPerFaceScalar(
 }
 
 /**
+ * @brief Normalizes the vertex scalars of a mesh in a given interval (default [0, 1]).
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Scalar
+ *
+ * @param[in/out] m: mesh on which normalize the vertex scalars
+ * @param[in] minS: minimum value of the normalizing interval, default 0
+ * @param[in] maxS: maximum value of the normalizing interval, default 1
+ */
+template<typename MeshType>
+void normalizePerVertexScalar(
+	MeshType&                                 m,
+	typename MeshType::VertexType::ScalarType minS,
+	typename MeshType::VertexType::ScalarType maxS)
+{
+	vcl::requirePerVertexScalar(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::ScalarType;
+
+	ScalarType range = maxS - minS;
+	std::pair<ScalarType, ScalarType> p = perVertexScalarMinMax(m);
+
+	for (VertexType& v : m.vertices()) {
+		v.scalar() = minS + range * ((v.scalar() - p.first)/(p.second-p.first));
+	}
+}
+
+/**
+ * @brief Normalizes the face scalars of a mesh in a given interval (default [0, 1]).
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - Scalar
+ *
+ * @param[in/out] m: mesh on which normalize the face scalars
+ * @param[in] minS: minimum value of the normalizing interval, default 0
+ * @param[in] maxS: maximum value of the normalizing interval, default 1
+ */
+template<typename MeshType>
+void normalizePerFaceScalar(
+	MeshType&                                 m,
+	typename MeshType::FaceType::ScalarType minS,
+	typename MeshType::FaceType::ScalarType maxS)
+{
+	vcl::requirePerFaceScalar(m);
+
+	using FaceType = typename MeshType::FaceType;
+	using ScalarType = typename FaceType::ScalarType;
+
+	ScalarType range = maxS - minS;
+	std::pair<ScalarType, ScalarType> p = perFaceScalarMinMax(m);
+
+	for (FaceType& f : m.faces()) {
+		f.scalar() = minS + range * ((f.scalar() - p.first)/(p.second-p.first));
+	}
+}
+
+/**
  * @brief Assign to the vertex scalars of the mesh the valence of each vertex, that is the number of
  * adjacent faces of the vertex.
  *
@@ -153,6 +218,27 @@ void setPerVertexScalarFromVertexValence(MeshType& m)
 		for (VertexType* v : f.vertices()) {
 			v->scalar() += 1;
 		}
+	}
+}
+
+/**
+ * @brief Assign to the fae scalars of the mesh the area of each face.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces
+ *
+ * @param[in/out] m: mesh on which set the face scalars to the face area
+ */
+template<typename MeshType>
+void setPerFaceScalarFromFaceArea(MeshType& m)
+{
+	vcl::requirePerFaceScalar(m);
+
+	using FaceType = typename MeshType::FaceType;
+
+	for (FaceType& f : m.faces()) {
+		f.scalar() = polygonArea(f);
 	}
 }
 

@@ -44,7 +44,22 @@ void clampPerFaceScalar(
 	typename MeshType::FaceType::ScalarType maxS);
 
 template<typename MeshType>
+void normalizePerVertexScalar(
+	MeshType&                                 m,
+	typename MeshType::VertexType::ScalarType minS = 0,
+	typename MeshType::VertexType::ScalarType maxS = 1);
+
+template<typename MeshType>
+void normalizePerFaceScalar(
+	MeshType&                               m,
+	typename MeshType::FaceType::ScalarType minS = 0,
+	typename MeshType::FaceType::ScalarType maxS = 1);
+
+template<typename MeshType>
 void setPerVertexScalarFromVertexValence(MeshType& m);
+
+template<typename MeshType>
+void setPerFaceScalarFromFaceArea(MeshType& m);
 
 } // namespace vcl
 
