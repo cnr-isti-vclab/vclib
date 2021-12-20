@@ -278,6 +278,7 @@ set(SOURCES
 	include/vclib/io/internal/io_read.cpp
 	include/vclib/io/internal/io_utils.cpp
 	include/vclib/io/internal/io_write.cpp
+	include/vclib/io/off/off.cpp
 	include/vclib/io/ply/ply_extra.cpp
 	include/vclib/io/ply/ply_face.cpp
 	include/vclib/io/ply/ply_header.cpp
