@@ -34,7 +34,7 @@ namespace vcl {
 
 class Tokenizer;
 
-namespace ply {
+namespace io::ply {
 
 /**
  * @brief The PlyHeader class allows to manage the header of a ply file.

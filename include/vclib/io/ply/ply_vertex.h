@@ -27,7 +27,7 @@
 #include "ply_header.h"
 #include <fstream>
 
-namespace vcl::ply {
+namespace vcl::io::ply {
 
 template<typename MeshType>
 void saveVertices(std::ofstream& file, const PlyHeader& header, const MeshType& mesh);

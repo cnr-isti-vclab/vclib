@@ -29,8 +29,7 @@
 
 #include "../internal/io_utils.h"
 
-namespace vcl {
-namespace ply {
+namespace vcl::io::ply {
 
 inline PlyHeader::PlyHeader() :
 		_format(ply::UNKNOWN),
@@ -415,7 +414,7 @@ inline void PlyHeader::setInfo(
 			tcv.name = texture_v;
 			tcv.type = (PropertyType)info.vertexTexCoordsType();
 			tcn.name = texnumber;
-			tcn.type = USHORT;
+			tcn.type = io::internal::USHORT;
 			vElem.properties.push_back(tcu);
 			vElem.properties.push_back(tcv);
 			vElem.properties.push_back(tcn);
@@ -430,8 +429,8 @@ inline void PlyHeader::setInfo(
 			ply::Property vids;
 			vids.list         = true;
 			vids.name         = vertex_indices;
-			vids.type         = UINT;
-			vids.listSizeType = UCHAR;
+			vids.type         = io::internal::UINT;
+			vids.listSizeType = io::internal::UCHAR;
 			fElem.properties.push_back(vids);
 		}
 		if (info.hasFaceNormals()) {
@@ -470,11 +469,11 @@ inline void PlyHeader::setInfo(
 		if (info.hasFaceWedgeTexCoords()) {
 			ply::Property tc, tn;
 			tc.list         = true;
-			tc.listSizeType = UCHAR;
+			tc.listSizeType = io::internal::UCHAR;
 			tc.name = texcoord;
 			tc.type = (PropertyType)info.faceWedgeTexCoordsType();
 			tn.name = texnumber;
-			tn.type = USHORT;
+			tn.type = io::internal::USHORT;
 			fElem.properties.push_back(tc);
 			fElem.properties.push_back(tn);
 		}
@@ -643,23 +642,23 @@ inline ply::PropertyName PlyHeader::stringToName(const std::string& name) const
 
 inline ply::PropertyType PlyHeader::stringToType(const std::string& type) const
 {
-	ply::PropertyType pt = ply::UCHAR;
+	ply::PropertyType pt = io::internal::UCHAR;
 	if (type == "char")
-		pt = ply::CHAR;
+		pt = io::internal::CHAR;
 	if (type == "uchar")
-		pt = ply::UCHAR;
+		pt = io::internal::UCHAR;
 	if (type == "short")
-		pt = ply::SHORT;
+		pt = io::internal::SHORT;
 	if (type == "ushort")
-		pt = ply::USHORT;
+		pt = io::internal::USHORT;
 	if (type == "int")
-		pt = ply::INT;
+		pt = io::internal::INT;
 	if (type == "uint")
-		pt = ply::UINT;
+		pt = io::internal::UINT;
 	if (type == "float")
-		pt = ply::FLOAT;
+		pt = io::internal::FLOAT;
 	if (type == "double")
-		pt = ply::DOUBLE;
+		pt = io::internal::DOUBLE;
 	return pt;
 }
 
@@ -691,18 +690,17 @@ inline std::string PlyHeader::nameToString(PropertyName n) const
 inline std::string PlyHeader::typeToString(PropertyType t) const
 {
 	switch (t) {
-	case ply::CHAR: return "char";
-	case ply::UCHAR: return "uchar";
-	case ply::SHORT: return "short";
-	case ply::USHORT: return "ushort";
-	case ply::INT: return "int";
-	case ply::UINT: return "uint";
-	case ply::FLOAT: return "float";
-	case ply::DOUBLE: return "double";
-	case ply::NONE: return "";
+	case io::internal::CHAR: return "char";
+	case io::internal::UCHAR: return "uchar";
+	case io::internal::SHORT: return "short";
+	case io::internal::USHORT: return "ushort";
+	case io::internal::INT: return "int";
+	case io::internal::UINT: return "uint";
+	case io::internal::FLOAT: return "float";
+	case io::internal::DOUBLE: return "double";
+	case io::internal::NONE: return "";
 	}
 	return "";
 }
 
-} // namespace ply
-} // namespace vcl
+} // namespace vcl::io::ply

@@ -23,6 +23,7 @@
 #include "save_off.h"
 
 #include "internal/io_utils.h"
+#include "internal/io_write.h"
 
 namespace vcl::io {
 
@@ -57,32 +58,43 @@ void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo&
 	if constexpr (vcl::hasEdges<MeshType>()) {
 		en = m.edgeNumber();
 	}
-	fp << vn << " " << fn << " " << en << "\n";
+
+	io::internal::writeInt(fp, vn, false);
+	io::internal::writeInt(fp, fn, false);
+	io::internal::writeInt(fp, en, false);
+	fp << std::endl;
 
 	// vertices
 	if constexpr (vcl::hasVertices<MeshType>()) {
 		using VertexType = typename MeshType::VertexType;
 		for (const VertexType& v : m.vertices()) {
-			fp << v.coord().x() << " " << v.coord().y() << " " << v.coord().z() << " ";
+			io::internal::writeDouble(fp, v.coord().x(), false);
+			io::internal::writeDouble(fp, v.coord().y(), false);
+			io::internal::writeDouble(fp, v.coord().z(), false);
 
 			if constexpr(vcl::hasPerVertexColor<MeshType>()) {
 				if (info.hasVertexColors() && vcl::isPerVertexColorEnabled(m)) {
-					fp << v.color().red() << " " << v.color().green() << " " << v.color().blue()
-					   << " " << v.color().alpha() << " ";
+					io::internal::writeInt(fp, v.color().red(), false);
+					io::internal::writeInt(fp, v.color().green(), false);
+					io::internal::writeInt(fp, v.color().blue(), false);
+					io::internal::writeInt(fp, v.color().alpha(), false);
 				}
 			}
 			if constexpr(vcl::hasPerVertexNormal<MeshType>()) {
 				if (info.hasVertexNormals() && vcl::isPerVertexNormalEnabled(m)) {
-					fp << v.normal().x() << " " << v.normal().y() << " " << v.normal().z() << " ";
+					io::internal::writeDouble(fp, v.normal().x(), false);
+					io::internal::writeDouble(fp, v.normal().y(), false);
+					io::internal::writeDouble(fp, v.normal().z(), false);
 				}
 			}
 			if constexpr(vcl::hasPerVertexTexCoord<MeshType>()) {
 				if (info.hasVertexTexCoords() && vcl::isPerVertexTexCoordEnabled(m)) {
-					fp << v.texCoord().u() << " " << v.texCoord().v() << " ";
+					io::internal::writeDouble(fp, v.texCoord().u(), false);
+					io::internal::writeDouble(fp, v.texCoord().v(), false);
 				}
 			}
 
-			fp << "\n";
+			fp << std::endl;
 		}
 	}
 
@@ -95,18 +107,20 @@ void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo&
 		std::vector<int> vIndices = m.vertexCompactIndices();
 
 		for (const FaceType& f : m.faces()) {
-			fp << f.vertexNumber() << " ";
+			io::internal::writeInt(fp, f.vertexNumber(), false);
 			for (const VertexType* v : f.vertices()) {
-				fp << vIndices[m.index(v)] << " ";
+				io::internal::writeInt(fp, vIndices[m.index(v)], false);
 			}
 			if constexpr(vcl::hasPerFaceColor<MeshType>()) {
 				if (info.hasFaceColors() && vcl::isPerFaceColorEnabled(m)) {
-					fp << f.color().red() << " " << f.color().green() << " " << f.color().blue()
-					   << " ";
+					io::internal::writeInt(fp, f.color().red(), false);
+					io::internal::writeInt(fp, f.color().green(), false);
+					io::internal::writeInt(fp, f.color().blue(), false);
+					io::internal::writeInt(fp, f.color().alpha(), false);
 				}
 			}
 
-			fp << "\n";
+			fp << std::endl;
 		}
 	}
 	fp.close();

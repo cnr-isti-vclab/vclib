@@ -20,20 +20,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_TRISTRIP_H
-#define VCL_IO_PLY_TRISTRIP_H
+#ifndef VCL_IO_WRITE_H
+#define VCL_IO_WRITE_H
 
-#include "ply_header.h"
-#include <fstream>
-#include <vclib/misc/tokenizer.h>
+#include "io_utils.h"
 
-namespace vcl::io::ply {
+namespace vcl::io::internal {
 
-template<typename MeshType>
-void loadTriStrips(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
+// write/bin
 
-} // namespace vcl::ply
+template<typename T>
+void writeChar(std::ofstream& file, T p, bool bin = true, bool isColor = false);
 
-#include "ply_tristrip.cpp"
+template<typename T>
+void writeUChar(std::ofstream& file, T p, bool bin = true, bool isColor = false);
 
-#endif // VCL_IO_PLY_TRISTRIP_H
+template<typename T>
+void writeShort(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+
+template<typename T>
+void writeUShort(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+
+template<typename T>
+void writeInt(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+
+template<typename T>
+void writeUInt(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+
+template<typename T>
+void writeFloat(std::ofstream& file, const T& p, bool bin = true, bool isColor = false);
+
+template<typename T>
+void writeDouble(std::ofstream& file, const T& p, bool bin = true, bool isColor = false);
+
+template<typename T>
+void writeProperty(
+	std::ofstream& file,
+	const T&       p,
+	PropertyType   type,
+	bool           bin     = true,
+	bool           isColor = false);
+
+} // namespace vcl::io::internal
+
+#include "io_write.cpp"
+
+#endif // VCL_IO_WRITE_H

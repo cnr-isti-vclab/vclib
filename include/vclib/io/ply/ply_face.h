@@ -27,7 +27,7 @@
 #include <fstream>
 #include <vclib/misc/tokenizer.h>
 
-namespace vcl::ply {
+namespace vcl::io::ply {
 
 template<typename MeshType>
 void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh);

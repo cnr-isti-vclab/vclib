@@ -22,7 +22,10 @@
 
 #include "ply_tristrip.h"
 
-namespace vcl::ply {
+#include "../internal/io_read.h"
+#include "../internal/io_write.h"
+
+namespace vcl::io::ply {
 
 namespace internal {
 
@@ -65,16 +68,16 @@ void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
 			}
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
-				uint             tSize = internal::readProperty<uint>(token, p.listSizeType);
+				uint             tSize = io::internal::readProperty<uint>(token, p.listSizeType);
 				std::vector<int> tristrip(tSize);
 				for (uint i = 0; i < tSize; ++i)
-					tristrip[i] = internal::readProperty<size_t>(token, p.type);
+					tristrip[i] = io::internal::readProperty<size_t>(token, p.type);
 				hasBeenRead = true;
 				facesFromTriStrip(m, tristrip);
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					uint s = internal::readProperty<int>(token, p.listSizeType);
+					uint s = io::internal::readProperty<int>(token, p.listSizeType);
 					for (uint i = 0; i < s; ++i)
 						++token;
 				}
@@ -93,21 +96,21 @@ void loadTriStripsBin(std::ifstream& file, const PlyHeader& header, MeshType& m)
 		for (ply::Property p : header.triStripsProperties()) {
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
-				uint             tSize = internal::readProperty<uint>(file, p.listSizeType);
+				uint             tSize = io::internal::readProperty<uint>(file, p.listSizeType);
 				std::vector<int> tristrip(tSize);
 				for (uint i = 0; i < tSize; ++i)
-					tristrip[i] = internal::readProperty<int>(file, p.type);
+					tristrip[i] = io::internal::readProperty<int>(file, p.type);
 				hasBeenRead = true;
 				facesFromTriStrip(m, tristrip);
 			}
 			if (!hasBeenRead) {
 				if (p.list) {
-					uint s = internal::readProperty<int>(file, p.listSizeType);
+					uint s = io::internal::readProperty<int>(file, p.listSizeType);
 					for (uint i = 0; i < s; ++i)
-						internal::readProperty<int>(file, p.type);
+						io::internal::readProperty<int>(file, p.type);
 				}
 				else {
-					internal::readProperty<int>(file, p.type);
+					io::internal::readProperty<int>(file, p.type);
 				}
 			}
 		}

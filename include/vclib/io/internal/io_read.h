@@ -20,20 +20,73 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_TRISTRIP_H
-#define VCL_IO_PLY_TRISTRIP_H
+#ifndef VCL_IO_READ_H
+#define VCL_IO_READ_H
 
-#include "ply_header.h"
-#include <fstream>
-#include <vclib/misc/tokenizer.h>
+#include "io_utils.h"
 
-namespace vcl::io::ply {
+namespace vcl::io::internal {
 
-template<typename MeshType>
-void loadTriStrips(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
+// read/bin
 
-} // namespace vcl::ply
+template<typename T>
+T readChar(std::ifstream& file);
 
-#include "ply_tristrip.cpp"
+template<typename T>
+T readUChar(std::ifstream& file);
 
-#endif // VCL_IO_PLY_TRISTRIP_H
+template<typename T>
+T readShort(std::ifstream& file);
+
+template<typename T>
+T readUShort(std::ifstream& file);
+
+template<typename T>
+T readInt(std::ifstream& file);
+
+template<typename T>
+T readUInt(std::ifstream& file);
+
+template<typename T>
+T readFloat(std::ifstream& file, bool isColor = false);
+
+template<typename T>
+T readDouble(std::ifstream& file, bool isColor = false);
+
+template<typename T>
+T readProperty(std::ifstream& file, PropertyType type, bool isColor = false);
+
+// read/txt
+
+template<typename T>
+T readChar(vcl::Tokenizer::iterator& token);
+
+template<typename T>
+T readUChar(vcl::Tokenizer::iterator& token);
+
+template<typename T>
+T readShort(vcl::Tokenizer::iterator& token);
+
+template<typename T>
+T readUShort(vcl::Tokenizer::iterator& token);
+
+template<typename T>
+T readInt(vcl::Tokenizer::iterator& token);
+
+template<typename T>
+T readUInt(vcl::Tokenizer::iterator& token);
+
+template<typename T>
+T readFloat(vcl::Tokenizer::iterator& token, bool isColor = false);
+
+template<typename T>
+T readDouble(vcl::Tokenizer::iterator& token, bool isColor = false);
+
+template<typename T>
+T readProperty(vcl::Tokenizer::iterator& token, PropertyType type, bool isColor = false);
+
+}
+
+#include "io_read.cpp"
+
+#endif // VCL_IO_READ_H

@@ -20,126 +20,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "ply.h"
+#include "io_read.h"
 
-#include <vclib/misc/string.h>
-
-namespace vcl {
-namespace ply {
-
-namespace internal {
-
-template<typename T>
-void writeChar(std::ofstream& file, T p, bool bin, bool isColor)
-{
-	if (isColor && !std::is_integral<T>::value)
-		p *= 255;
-	char tmp = p;
-	if (bin)
-		file.write((const char*) &tmp, 1);
-	else
-		file << (int) p << " "; // cast necessary to not print the ascii char
-}
-
-template<typename T>
-void writeUChar(std::ofstream& file, T p, bool bin, bool isColor)
-{
-	if (isColor && !std::is_integral<T>::value)
-		p *= 255;
-	unsigned char tmp = p;
-	if (bin)
-		file.write((const char*) &tmp, 1);
-	else
-		file << (uint) p << " "; // cast necessary to not print the ascii char
-}
-
-template<typename T>
-void writeShort(std::ofstream& file, T p, bool bin, bool isColor)
-{
-	if (isColor && !std::is_integral<T>::value)
-		p *= 255;
-	short tmp = p;
-	if (bin)
-		file.write((const char*) &tmp, 2);
-	else
-		file << tmp << " ";
-}
-
-template<typename T>
-void writeUShort(std::ofstream& file, T p, bool bin, bool isColor)
-{
-	if (isColor && !std::is_integral<T>::value)
-		p *= 255;
-	unsigned short tmp = p;
-	if (bin)
-		file.write((const char*) &tmp, 2);
-	else
-		file << tmp << " ";
-}
-
-template<typename T>
-void writeInt(std::ofstream& file, T p, bool bin, bool isColor)
-{
-	if (isColor && !std::is_integral<T>::value)
-		p *= 255;
-	int tmp = p;
-	if (bin)
-		file.write((const char*) &tmp, 4);
-	else
-		file << tmp << " ";
-}
-
-template<typename T>
-void writeUInt(std::ofstream& file, T p, bool bin, bool isColor)
-{
-	if (isColor && !std::is_integral<T>::value)
-		p *= 255;
-	uint tmp = p;
-	if (bin)
-		file.write((const char*) &tmp, 4);
-	else
-		file << tmp << " ";
-}
-
-template<typename T>
-void writeFloat(std::ofstream& file, const T& p, bool bin, bool isColor)
-{
-	float tmp = p;
-	if (isColor && std::is_integral<T>::value)
-		tmp /= 255;
-	if (bin)
-		file.write((const char*) &tmp, 4);
-	else
-		file << tmp << " ";
-}
-
-template<typename T>
-void writeDouble(std::ofstream& file, const T& p, bool bin, bool isColor)
-{
-	double tmp = p;
-	if (isColor && std::is_integral<T>::value)
-		tmp /= 255;
-	if (bin)
-		file.write((const char*) &tmp, 8);
-	else
-		file << tmp << " ";
-}
-
-template<typename T>
-void writeProperty(std::ofstream& file, const T& p, PropertyType type, bool bin, bool isColor)
-{
-	switch (type) {
-	case CHAR: writeChar(file, p, bin, isColor); break;
-	case UCHAR: writeUChar(file, p, bin, isColor); break;
-	case SHORT: writeShort(file, p, bin, isColor); break;
-	case USHORT: writeUShort(file, p, bin, isColor); break;
-	case INT: writeInt(file, p, bin, isColor); break;
-	case UINT: writeUInt(file, p, bin, isColor); break;
-	case FLOAT: writeFloat(file, p, bin, isColor); break;
-	case DOUBLE: writeDouble(file, p, bin, isColor); break;
-	default: assert(0);
-	}
-}
+namespace vcl::io::internal {
 
 template<typename T>
 T readChar(std::ifstream& file)
@@ -231,6 +114,64 @@ T readProperty(std::ifstream& file, PropertyType type, bool isColor)
 }
 
 template<typename T>
+T readChar(vcl::Tokenizer::iterator& token)
+{
+	return std::stoi(*token++);
+}
+
+template<typename T>
+T readUChar(vcl::Tokenizer::iterator& token)
+{
+	return std::stoi(*token++);
+}
+
+template<typename T>
+T readShort(vcl::Tokenizer::iterator& token)
+{
+	return std::stoi(*token++);
+}
+
+template<typename T>
+T readUShort(vcl::Tokenizer::iterator& token)
+{
+	return std::stoi(*token++);
+}
+
+template<typename T>
+T readInt(vcl::Tokenizer::iterator& token)
+{
+	return std::stoi(*token++);
+}
+
+template<typename T>
+T readUInt(vcl::Tokenizer::iterator& token)
+{
+	return std::stoi(*token++);
+}
+
+template<typename T>
+T readFloat(vcl::Tokenizer::iterator& token, bool isColor)
+{
+	if (isColor && std::is_integral<T>::value) {
+		return std::stod(*token++) * 255;
+	}
+	else {
+		return std::stod(*token++);
+	}
+}
+
+template<typename T>
+T readDouble(vcl::Tokenizer::iterator& token, bool isColor)
+{
+	if (isColor && std::is_integral<T>::value) {
+		return std::stod(*token++) * 255;
+	}
+	else {
+		return std::stod(*token++);
+	}
+}
+
+template<typename T>
 T readProperty(vcl::Tokenizer::iterator& token, PropertyType type, bool isColor)
 {
 	T p;
@@ -258,46 +199,4 @@ T readProperty(vcl::Tokenizer::iterator& token, PropertyType type, bool isColor)
 	return p;
 }
 
-inline bool nextLine(std::ifstream& file, vcl::Tokenizer& tokenizer)
-{
-	std::string line;
-	do {
-		bool error = !std::getline(file, line);
-		str::removeWindowsNewLine(line);
-		if (error)
-			return false;
-		tokenizer = vcl::Tokenizer(line, ' ');
-	} while (tokenizer.begin() == tokenizer.end());
-	return true;
-}
-
-template<typename T>
-T colorValue(int value)
-{
-	if (std::is_integral<T>::value)
-		return value;
-	else
-		return T(value) / 255.0;
-}
-
-template<typename T>
-T colorValue(double value)
-{
-	if (std::is_integral<T>::value)
-		return value * 255.0;
-	else
-		return value;
-}
-
-template<typename T>
-T colorValue(vcl::Tokenizer::iterator& token, PropertyType type)
-{
-	if (type < 6) // integer format
-		return colorValue<T>(std::stoi(*token++));
-	else
-		return colorValue<T>(std::stod(*token++));
-}
-
-} // namespace internal
-} // namespace ply
-} // namespace vcl
+} // namespace vcl::io::internal

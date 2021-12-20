@@ -23,7 +23,7 @@
 #include "ply_extra.h"
 #include <vclib/mesh/requirements.h>
 
-namespace vcl::ply {
+namespace vcl::io::ply {
 
 template<typename MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh)

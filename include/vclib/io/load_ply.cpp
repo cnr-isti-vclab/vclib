@@ -98,7 +98,7 @@ void loadPly(
 	bool                   enableOptionalComponents)
 {
 	std::ifstream file = internal::loadFileStream(filename);
-	vcl::ply::PlyHeader header(filename, file);
+	ply::PlyHeader header(filename, file);
 	if (header.errorWhileLoading())
 		throw MalformedFileException("Header not valid: " + filename);
 

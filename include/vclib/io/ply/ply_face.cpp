@@ -26,7 +26,10 @@
 #include <vclib/exception/io_exception.h>
 #include <vclib/mesh/requirements.h>
 
-namespace vcl::ply {
+#include "../internal/io_read.h"
+#include "../internal/io_write.h"
+
+namespace vcl::io::ply {
 
 namespace internal {
 
@@ -42,9 +45,9 @@ void saveFaceIndices(
 	using VertexType = typename MeshType::VertexType;
 
 	uint fsize = f.vertexNumber();
-	internal::writeProperty(file, fsize, p.listSizeType, bin);
+	io::internal::writeProperty(file, fsize, p.listSizeType, bin);
 	for (const VertexType* v : f.vertices()) {
-		internal::writeProperty(file, vIndices[m.index(v)], p.type, bin);
+		io::internal::writeProperty(file, vIndices[m.index(v)], p.type, bin);
 	}
 }
 
@@ -118,10 +121,10 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	bool              hasBeenRead = false;
 	std::vector<uint> vids; // contains the vertex ids of the actual face
 	if (p.name == ply::vertex_indices) { // loading vertex indices
-		uint fSize = internal::readProperty<uint>(file, p.listSizeType);
+		uint fSize = io::internal::readProperty<uint>(file, p.listSizeType);
 		vids.resize(fSize);
 		for (uint i = 0; i < fSize; ++i) {
-			vids[i] = internal::readProperty<size_t>(file, p.type);
+			vids[i] = io::internal::readProperty<size_t>(file, p.type);
 		}
 		hasBeenRead = true;
 		// will manage the case of loading a polygon in a triangle mesh
@@ -131,12 +134,12 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 		if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
 				using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
-				uint uvSize  = internal::readProperty<uint>(file, p.listSizeType);
+				uint uvSize  = io::internal::readProperty<uint>(file, p.listSizeType);
 				uint fSize   = uvSize / 2;
 				std::vector<std::pair<Scalar, Scalar>> wedges(fSize);
 				for (uint i = 0; i < fSize; ++i) {
-					Scalar u         = internal::readProperty<Scalar>(file, p.type);
-					Scalar v         = internal::readProperty<Scalar>(file, p.type);
+					Scalar u         = io::internal::readProperty<Scalar>(file, p.type);
+					Scalar v         = io::internal::readProperty<Scalar>(file, p.type);
 					wedges[i].first  = u;
 					wedges[i].second = v;
 				}
@@ -148,7 +151,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	if (p.name == ply::texnumber) { // loading texture id associated to ALL the wedges
 		if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
-				uint n      = internal::readProperty<uint>(file, p.type);
+				uint n      = io::internal::readProperty<uint>(file, p.type);
 				hasBeenRead = true;
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh
 				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
@@ -164,7 +167,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 			if (vcl::isPerFaceNormalEnabled(mesh)) {
 				using Scalar = typename FaceType::NormalType::ScalarType;
 				int    a     = p.name - ply::nx;
-				Scalar n     = internal::readProperty<Scalar>(file, p.type);
+				Scalar n     = io::internal::readProperty<Scalar>(file, p.type);
 				hasBeenRead  = true;
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh
 				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
@@ -177,7 +180,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 		if constexpr (vcl::hasPerFaceColor<MeshType>()) {
 			if (vcl::isPerFaceColorEnabled(mesh)) {
 				int           a = p.name - ply::red;
-				unsigned char c = internal::readProperty<unsigned char>(file, p.type);
+				unsigned char c = io::internal::readProperty<unsigned char>(file, p.type);
 				hasBeenRead     = true;
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh
 				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
@@ -190,7 +193,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 		if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
 			using Scalar = typename FaceType::ScalarType;
 			if (vcl::isPerFaceScalarEnabled(mesh)) {
-				Scalar s    = internal::readProperty<Scalar>(file, p.type);
+				Scalar s    = io::internal::readProperty<Scalar>(file, p.type);
 				hasBeenRead = true;
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh
 				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
@@ -203,12 +206,12 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	// we still need to read and discard what we read
 	if (!hasBeenRead) {
 		if (p.list) {
-			uint s = internal::readProperty<int>(file, p.listSizeType);
+			uint s = io::internal::readProperty<int>(file, p.listSizeType);
 			for (uint i = 0; i < s; ++i)
-				internal::readProperty<int>(file, p.type);
+				io::internal::readProperty<int>(file, p.type);
 		}
 		else {
-			internal::readProperty<int>(file, p.type);
+			io::internal::readProperty<int>(file, p.type);
 		}
 	}
 }
@@ -269,7 +272,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 			if (p.name >= ply::nx && p.name <= ply::nz) {
 				if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
 					if (vcl::isPerFaceNormalEnabled(mesh)) {
-						internal::writeProperty(file, f.normal()[p.name - ply::nx], p.type, bin);
+						io::internal::writeProperty(file, f.normal()[p.name - ply::nx], p.type, bin);
 						hasBeenWritten = true;
 					}
 				}
@@ -277,7 +280,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 			if (p.name >= ply::red && p.name <= ply::alpha) {
 				if constexpr (vcl::hasPerFaceColor<MeshType>()) {
 					if (vcl::isPerFaceColorEnabled(mesh)) {
-						internal::writeProperty(file, f.color()[p.name - ply::red], p.type, bin);
+						io::internal::writeProperty(file, f.color()[p.name - ply::red], p.type, bin);
 						hasBeenWritten = true;
 					}
 				}
@@ -285,7 +288,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 			if (p.name == ply::scalar) {
 				if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
 					if (vcl::isPerFaceScalarEnabled(mesh)) {
-						internal::writeProperty(file, f.scalar(), p.type, bin);
+						io::internal::writeProperty(file, f.scalar(), p.type, bin);
 						hasBeenWritten = true;
 					}
 				}
@@ -293,10 +296,10 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 			if (p.name == ply::texcoord) {
 				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
 					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
-						internal::writeProperty(file, f.vertexNumber() * 2, p.listSizeType, bin);
+						io::internal::writeProperty(file, f.vertexNumber() * 2, p.listSizeType, bin);
 						for (const auto& tc : f.wedgeTexCoords()) {
-							internal::writeProperty(file, tc.u(), p.type, bin);
-							internal::writeProperty(file, tc.v(), p.type, bin);
+							io::internal::writeProperty(file, tc.u(), p.type, bin);
+							io::internal::writeProperty(file, tc.v(), p.type, bin);
 						}
 						hasBeenWritten = true;
 					}
@@ -305,7 +308,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 			if (p.name == ply::texnumber) {
 				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
 					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
-						internal::writeProperty(file, f.wedgeTexCoord(0).nTexture(), p.type, bin);
+						io::internal::writeProperty(file, f.wedgeTexCoord(0).nTexture(), p.type, bin);
 						hasBeenWritten = true;
 					}
 				}
@@ -313,7 +316,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 			if (!hasBeenWritten) {
 				// be sure to write something if the header declares some property that is not
 				// in the mesh
-				internal::writeProperty(file, 0, p.type, bin);
+				io::internal::writeProperty(file, 0, p.type, bin);
 			}
 		}
 		if (!bin)
