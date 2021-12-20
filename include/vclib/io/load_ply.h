@@ -23,31 +23,30 @@
 #ifndef VCL_IO_LOAD_PLY_H
 #define VCL_IO_LOAD_PLY_H
 
-#include <vclib/exception/io_exception.h>
-#include "ply/ply.h"
-#include "ply/ply_vertex.h"
-#include "ply/ply_face.h"
-#include "ply/ply_tristrip.h"
-#include "ply/ply_extra.h"
-
-// todo: remove this and make template
-#include <vclib/mesh/mesh.h>
+#include "file_mesh_info.h"
 
 namespace vcl::io {
 
-template <typename MeshType>
+template<typename MeshType>
 MeshType loadPly(const std::string& filename, bool enableOptionalComponents = true);
 
-template <typename MeshType>
-MeshType loadPly(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents = true);
+template<typename MeshType>
+MeshType loadPly(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	bool               enableOptionalComponents = true);
 
-template <typename MeshType>
+template<typename MeshType>
 void loadPly(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
 
-template <typename MeshType>
-void loadPly(MeshType& m, const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents = true);
+template<typename MeshType>
+void loadPly(
+	MeshType&          m,
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	bool               enableOptionalComponents = true);
 
-}
+} // namespace vcl::io
 
 #include "load_ply.cpp"
 

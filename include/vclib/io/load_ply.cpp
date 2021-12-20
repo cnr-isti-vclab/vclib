@@ -24,75 +24,15 @@
 
 #include <vclib/mesh/requirements.h>
 
+#include "internal/io_utils.h"
+#include "ply/ply.h"
+#include "ply/ply_vertex.h"
+#include "ply/ply_face.h"
+#include "ply/ply_tristrip.h"
+#include "ply/ply_extra.h"
+
+
 namespace vcl::io {
-
-namespace internal {
-
-/**
- * @brief enableOptionalComponents enables all the components that are in the ply header and that
- * may be enabled in the mesh. If these components are not present in the mesh, the info file will
- * be modified telling that a particular property cannot be saved into the mesh.
- *
- * @param info
- * @param m
- */
-template<typename MeshType>
-void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
-{
-	if (info.hasVertices()) {
-		if (info.hasVertexColors()) {
-			if (!vcl::enableIfPerVertexColorOptional(m)) {
-				info.setVertexColors(false);
-			}
-		}
-		if (info.hasVertexNormals()) {
-			if (!vcl::enableIfPerVertexNormalOptional(m)) {
-				info.setVertexNormals(false);
-			}
-		}
-		if (info.hasVertexScalars()) {
-			if (!vcl::enableIfPerVertexScalarOptional(m)) {
-				info.setVertexScalars(false);
-			}
-		}
-		if (info.hasVertexTexCoords()) {
-			if (!vcl::enableIfPerVertexTexCoordOptional(m)) {
-				info.setVertexTexCoords(false);
-			}
-		}
-	}
-	else {
-		info.setVertices(false);
-	}
-
-	if (info.hasFaces()) {
-		if (info.hasFaceColors()) {
-			if (!vcl::enableIfPerFaceColorOptional(m)) {
-				info.setFaceColors(false);
-			}
-		}
-		if (info.hasFaceNormals()) {
-			if (!vcl::enableIfPerFaceNormalOptional(m)) {
-				info.setFaceNormals(false);
-			}
-		}
-		if (info.hasFaceScalars()) {
-			if (!vcl::enableIfPerFaceScalarOptional(m)) {
-				info.setFaceScalars(false);
-			}
-		}
-		if (info.hasFaceWedgeTexCoords()) {
-			if (!vcl::enableIfPerFaceWedgeTexCoordsOptional(m)) {
-				info.setFaceWedgeTexCoords(false);
-			}
-		}
-	}
-	else {
-		info.setFaces(false);
-	}
-}
-
-} // namespace internal
 
 template<typename MeshType>
 MeshType loadPly(const std::string& filename, bool enableOptionalComponents)
@@ -157,11 +97,7 @@ void loadPly(
 	vcl::io::FileMeshInfo& loadedInfo,
 	bool                   enableOptionalComponents)
 {
-	std::ifstream file(filename, std::ifstream::binary); // need to set binary of windows will fail
-	file.imbue(std::locale("en_US.UTF-8"));
-	if (!file.is_open()) {
-		throw vcl::CannotOpenFileException(filename);
-	}
+	std::ifstream file = internal::loadFileStream(filename);
 	vcl::ply::PlyHeader header(filename, file);
 	if (header.errorWhileLoading())
 		throw MalformedFileException("Header not valid: " + filename);

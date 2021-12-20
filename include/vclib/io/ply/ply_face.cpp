@@ -217,24 +217,17 @@ template<typename MeshType>
 void loadFacesTxt(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	using FaceType       = typename MeshType::FaceType;
-	bool           error = false;
-	vcl::Tokenizer spaceTokenizer;
-
-	error = !internal::nextLine(file, spaceTokenizer);
-
-	vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 
 	mesh.reserveFaces(header.numberFaces());
 	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
+		vcl::Tokenizer spaceTokenizer = vcl::io::internal::nextNonEmptyTokenizedLine(file);
+		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 		mesh.addFace();
 		FaceType& f = mesh.face(mesh.faceNumber() - 1);
 		for (ply::Property p : header.faceProperties()) {
 			if (token == spaceTokenizer.end()) {
-				error = !nextLine(file, spaceTokenizer);
-				token = spaceTokenizer.begin();
+				throw vcl::MalformedFileException("Unexpected end of line.");
 			}
-			if (error)
-				throw std::runtime_error("Malformed file");
 			loadFaceProperty(token, mesh, f, p);
 		}
 	}

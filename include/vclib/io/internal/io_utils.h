@@ -25,11 +25,22 @@
 
 #include <fstream>
 
+#include "../file_mesh_info.h"
+
+#include <vclib/misc/tokenizer.h>
+
 namespace vcl::io::internal {
 
 std::ofstream saveFileStream(const std::string& filename, const std::string& ext);
 
-}
+std::ifstream loadFileStream(const std::string& filename);
+
+template<typename MeshType>
+void enableOptionalComponents(FileMeshInfo& info, MeshType& m);
+
+vcl::Tokenizer nextNonEmptyTokenizedLine(std::ifstream& file, char separator = ' ');
+
+} // namespace vcl::io::internal
 
 #include "io_utils.cpp"
 

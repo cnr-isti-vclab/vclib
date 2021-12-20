@@ -29,6 +29,74 @@ namespace vcl::ply {
 
 namespace internal {
 
+template<typename MeshType, typename VertexType, typename Stream>
+void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Property p)
+{
+	bool hasBeenRead = false;
+	if (p.name >= ply::x && p.name <= ply::z) {
+		using Scalar = typename VertexType::CoordType::ScalarType;
+		int a = p.name - ply::x;
+		v.coord()[a] = internal::readProperty<Scalar>(file, p.type);
+		hasBeenRead = true;
+	}
+	if (p.name >= ply::nx && p.name <= ply::nz) {
+		if constexpr (vcl::hasPerVertexNormal<MeshType>()) {
+			if (vcl::isPerVertexNormalEnabled(mesh)) {
+				using Scalar = typename VertexType::NormalType::ScalarType;
+				int a = p.name - ply::nx;
+				v.normal()[a] = internal::readProperty<Scalar>(file, p.type);
+				hasBeenRead = true;
+			}
+		}
+	}
+	if (p.name >= ply::red && p.name <= ply::alpha) {
+		if constexpr (vcl::hasPerVertexColor<MeshType>()) {
+			if (vcl::isPerVertexColorEnabled(mesh)) {
+				int a = p.name - ply::red;
+				v.color()[a] = internal::readProperty<unsigned char>(file, p.type);
+				hasBeenRead = true;
+			}
+		}
+	}
+	if (p.name == ply::scalar) {
+		if constexpr (vcl::hasPerVertexScalar<MeshType>()) {
+			using Scalar = typename VertexType::ScalarType;
+			if (vcl::isPerVertexScalarEnabled(mesh)) {
+				v.scalar() = internal::readProperty<Scalar>(file, p.type);
+				hasBeenRead = true;
+			}
+		}
+	}
+	if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
+		if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+			using Scalar = typename VertexType::TexCoordType::ScalarType;
+			if (vcl::isPerVertexTexCoordEnabled(mesh)) {
+				int a = p.name - ply::texture_u;
+				v.texCoord()[a] = internal::readProperty<Scalar>(file, p.type);
+				hasBeenRead = true;
+			}
+		}
+	}
+	if (p.name == ply::texnumber) {
+		if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+			if (vcl::isPerVertexTexCoordEnabled(mesh)) {
+				v.texCoord().nTexture() = internal::readProperty<uint>(file, p.type);
+				hasBeenRead = true;
+			}
+		}
+	}
+	if (!hasBeenRead) {
+		if (p.list) {
+			uint s = internal::readProperty<int>(file, p.listSizeType);
+			for (uint i = 0; i < s; ++i)
+				internal::readProperty<int>(file, p.type);
+		}
+		else {
+			internal::readProperty<int>(file, p.type);
+		}
+	}
+}
+
 template <typename MeshType>
 void loadVerticesTxt(
 	std::ifstream& file,
@@ -36,83 +104,17 @@ void loadVerticesTxt(
 	MeshType& mesh)
 {
 	using VertexType = typename MeshType::VertexType;
-	bool error = false;
-	vcl::Tokenizer spaceTokenizer;
-	error = !internal::nextLine(file, spaceTokenizer);
-	vcl::Tokenizer::iterator token = spaceTokenizer.begin();
+
 	mesh.addVertices(header.numberVertices());
 	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
+		vcl::Tokenizer spaceTokenizer = vcl::io::internal::nextNonEmptyTokenizedLine(file);
+		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 		VertexType& v = mesh.vertex(vid);
 		for (ply::Property p : header.vertexProperties()) {
 			if (token == spaceTokenizer.end()){
-				error = !nextLine(file, spaceTokenizer);
-				token = spaceTokenizer.begin();
+				throw vcl::MalformedFileException("Unexpected end of line.");
 			}
-			if (error)
-				throw MalformedFileException("Unexpected end of file");
-			bool hasBeenRead = false;
-			if (p.name >= ply::x && p.name <= ply::z) {
-				using Scalar = typename VertexType::CoordType::ScalarType;
-				int a = p.name - ply::x;
-				v.coord()[a] = internal::readProperty<Scalar>(token, p.type);
-				hasBeenRead = true;
-			}
-			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (vcl::hasPerVertexNormal<MeshType>()) {
-					if (vcl::isPerVertexNormalEnabled(mesh)) {
-						using Scalar = typename VertexType::NormalType::ScalarType;
-						int a = p.name - ply::nx;
-						v.normal()[a] = internal::readProperty<Scalar>(token, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (vcl::hasPerVertexColor<MeshType>()) {
-					if (vcl::isPerVertexColorEnabled(mesh)) {
-						int a = p.name - ply::red;
-						v.color()[a] = internal::readProperty<unsigned char>(token, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name == ply::scalar) {
-				if constexpr (vcl::hasPerVertexScalar<MeshType>()) {
-					using Scalar = typename VertexType::ScalarType;
-					if (vcl::isPerVertexScalarEnabled(mesh)) {
-						v.scalar() = internal::readProperty<Scalar>(token, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
-				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
-					using Scalar = typename VertexType::TexCoordType::ScalarType;
-					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
-						int a = p.name - ply::texture_u;
-						v.texCoord()[a] = internal::readProperty<Scalar>(token, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name == ply::texnumber) {
-				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
-					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
-						v.texCoord().nTexture() = internal::readProperty<uint>(token, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (!hasBeenRead) {
-				if (p.list) {
-					uint s = internal::readProperty<int>(token, p.listSizeType);
-					for (uint i = 0; i < s; ++i)
-						++token;
-				}
-				else {
-					++token;
-				}
-			}
+			loadVertexProperty(token, mesh, v, p);
 		}
 	}
 }
@@ -128,69 +130,7 @@ void loadVerticesBin(
 	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
 		VertexType& v = mesh.vertex(vid);
 		for (ply::Property p : header.vertexProperties()) {
-			bool hasBeenRead = false;
-			if (p.name >= ply::x && p.name <= ply::z) {
-				using Scalar = typename VertexType::CoordType::ScalarType;
-				int a = p.name - ply::x;
-				v.coord()[a] = internal::readProperty<Scalar>(file, p.type);
-				hasBeenRead = true;
-			}
-			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (vcl::hasPerVertexNormal<MeshType>()) {
-					if (vcl::isPerVertexNormalEnabled(mesh)) {
-						using Scalar = typename VertexType::NormalType::ScalarType;
-						int a = p.name - ply::nx;
-						v.normal()[a] = internal::readProperty<Scalar>(file, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (vcl::hasPerVertexColor<MeshType>()) {
-					if (vcl::isPerVertexColorEnabled(mesh)) {
-						int a = p.name - ply::red;
-						v.color()[a] = internal::readProperty<unsigned char>(file, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name == ply::scalar) {
-				if constexpr (vcl::hasPerVertexScalar<MeshType>()) {
-					using Scalar = typename VertexType::ScalarType;
-					if (vcl::isPerVertexScalarEnabled(mesh)) {
-						v.scalar() = internal::readProperty<Scalar>(file, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
-				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
-					using Scalar = typename VertexType::TexCoordType::ScalarType;
-					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
-						int a = p.name - ply::texture_u;
-						v.texCoord()[a] = internal::readProperty<Scalar>(file, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (p.name == ply::texnumber) {
-				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
-					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
-						v.texCoord().nTexture() = internal::readProperty<uint>(file, p.type);
-						hasBeenRead = true;
-					}
-				}
-			}
-			if (!hasBeenRead) {
-				if (p.list) {
-					uint s = internal::readProperty<int>(file, p.listSizeType);
-					for (uint i = 0; i < s; ++i)
-						internal::readProperty<int>(file, p.type);
-				}
-				else {
-					internal::readProperty<int>(file, p.type);
-				}
-			}
+			loadVertexProperty(file, mesh, v, p);
 		}
 	}
 }

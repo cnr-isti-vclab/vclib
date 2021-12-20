@@ -27,6 +27,8 @@
 #include <vclib/misc/string.h>
 #include <vclib/misc/tokenizer.h>
 
+#include "../internal/io_utils.h"
+
 namespace vcl {
 namespace ply {
 
@@ -67,12 +69,9 @@ inline PlyHeader::PlyHeader(const std::string& filename, std::ifstream& file) : 
 			std::string  headerLine;
 			ply::Element element;
 			do {
-				error = !(std::getline(file, line));
+				vcl::Tokenizer spaceTokenizer = vcl::io::internal::nextNonEmptyTokenizedLine(file);
 				if (!error) {
 					str::removeWindowsNewLine(line);
-					vcl::Tokenizer spaceTokenizer(line, ' ');
-					if (spaceTokenizer.begin() == spaceTokenizer.end())
-						continue;
 					vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 					headerLine                     = *token;
 					if (headerLine == "format") {

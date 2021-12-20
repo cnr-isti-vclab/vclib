@@ -56,21 +56,13 @@ void facesFromTriStrip(MeshType& m, const std::vector<int>& tristrip)
 template<typename MeshType>
 void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
 {
-	bool           error = false;
-	vcl::Tokenizer spaceTokenizer;
-
-	error = !internal::nextLine(file, spaceTokenizer);
-
-	vcl::Tokenizer::iterator token = spaceTokenizer.begin();
-
 	for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
+		vcl::Tokenizer spaceTokenizer = vcl::io::internal::nextNonEmptyTokenizedLine(file);
+		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 		for (ply::Property p : header.triStripsProperties()) {
 			if (token == spaceTokenizer.end()) {
-				error = !nextLine(file, spaceTokenizer);
-				token = spaceTokenizer.begin();
+				throw vcl::MalformedFileException("Unexpected end of line.");
 			}
-			if (error)
-				throw std::runtime_error("Malformed file");
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
 				uint             tSize = internal::readProperty<uint>(token, p.listSizeType);
