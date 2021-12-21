@@ -30,9 +30,9 @@ inline Material::Material()
 
 inline Material::Material(const Color& c) : hasColor(true)
 {
-	Ka.x() = c.redF();
-	Ka.y() = c.greenF();
-	Ka.z() = c.blueF();
+	Kd.x() = c.redF();
+	Kd.y() = c.greenF();
+	Kd.z() = c.blueF();
 }
 
 inline Material::Material(const std::string& txtName) : map_Kd(txtName), hasTexture(true)
@@ -42,9 +42,14 @@ inline Material::Material(const std::string& txtName) : map_Kd(txtName), hasText
 inline Material::Material(const Color& c, const std::string& txtName) :
 		map_Kd(txtName), hasColor(true), hasTexture(true)
 {
-	Ka.x() = c.redF();
-	Ka.y() = c.greenF();
-	Ka.z() = c.blueF();
+	Kd.x() = c.redF();
+	Kd.y() = c.greenF();
+	Kd.z() = c.blueF();
+}
+
+inline bool Material::isEmpty() const
+{
+	return !hasColor && !hasTexture;
 }
 
 /**
@@ -56,13 +61,13 @@ inline Material::Material(const Color& c, const std::string& txtName) :
  * - if a material has no texture, is < than one that has texture
  * - if both materials have texture, order by texture name
  */
-inline bool Material::operator<(const Material& m)
+inline bool Material::operator<(const Material& m) const
 {
 	if (hasColor) {
 		if (!m.hasColor) // color > no color
 			return false;
-		if (Ka != m.Ka)
-			return Ka < m.Ka;
+		if (Kd != m.Kd)
+			return Kd < m.Kd;
 	}
 	else if (m.hasColor) { // no color < color
 		return true;
@@ -81,6 +86,22 @@ inline bool Material::operator<(const Material& m)
 	else { // no color and texture in both materials
 		return false;
 	}
+}
+
+bool Material::operator==(const Material& m) const
+{
+	return !(*this < m) && !(m < *this);
+}
+
+std::ostream& operator<<(std::ostream& out, const Material& m)
+{
+	if (m.hasColor) {
+		out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z() << std::endl;
+	}
+	if (m.hasTexture) {
+		out << "map_Kd " << m.map_Kd << std::endl;
+	}
+	return out;
 }
 
 } // namespace vcl::io::obj
