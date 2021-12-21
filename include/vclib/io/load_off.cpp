@@ -22,6 +22,7 @@
 
 #include "load_off.h"
 
+#include <vclib/algorithms/polygon.h>
 #include <vclib/exception/io_exception.h>
 #include <vclib/misc/tokenizer.h>
 
@@ -101,9 +102,74 @@ void loadOffVertices(
 	}
 }
 
-template <typename MeshType>
-void loadOffFaces(MeshType& mesh, std::ifstream& file, FileMeshInfo& loadedInfo, uint nf)
+template<typename MeshType>
+void loadOffFaces(
+	MeshType&      mesh,
+	std::ifstream& file,
+	FileMeshInfo&  loadedInfo,
+	uint           nf,
+	bool           enableOptionalComponents)
 {
+	if constexpr (hasFaces<MeshType>()) {
+		using FaceType       = typename MeshType::FaceType;
+
+		mesh.reserveFaces(nf);
+		for (uint fid = 0; fid < nf; ++fid) {
+			vcl::Tokenizer tokens = vcl::io::internal::nextNonEmptyTokenizedLine(file);
+			vcl::Tokenizer::iterator token = tokens.begin();
+			mesh.addFace();
+			FaceType& f = mesh.face(mesh.faceNumber() - 1);
+
+			// read vertex indices
+			uint fSize = io::internal::readUInt<uint>(token);
+			std::vector<uint> vids; // contains the vertex ids of the actual face
+			vids.resize(fSize);
+			for (uint i = 0; i < fSize; ++i) {
+				vids[i] = io::internal::readUInt<uint>(token);
+				bool splitFace = false;
+				// we have a polygonal mesh
+				if constexpr (FaceType::VERTEX_NUMBER < 0) {
+					f.resizeVertices(vids.size()); // need to resize to the right number of verts
+				}
+				else if (FaceType::VERTEX_NUMBER != vids.size()) {
+					// we have faces with static sizes (triangles), but we are loading faces with
+					// number of verts > 3. Need to split the face we are loading in n faces!
+					splitFace = true;
+				}
+				if (!splitFace) { // classic load, no split needed
+					for (uint i = 0; i < vids.size(); ++i) {
+						if (vids[i] >= mesh.vertexNumber()) {
+							throw vcl::MalformedFileException(
+								"Bad vertex index for face " + std::to_string(i));
+						}
+						f.vertex(i) = &mesh.vertex(vids[i]);
+					}
+				}
+				else { // split needed
+					addTriangleFacesFromPolygon(mesh, f, vids);
+				}
+			}
+
+			// read face color
+			if (token != tokens.end()) { // there are colors to read
+				if constexpr (hasPerFaceColor<MeshType>()) {
+					if (isPerFaceColorEnabled(mesh) ||
+						(enableOptionalComponents && enableIfPerFaceColorOptional(mesh))){
+						loadedInfo.setFaceColors();
+						f.color() = off::loadColor(token, tokens.size() - (token - tokens.begin()));
+						// in case the loaded polygon has been triangulated in the last n triangles
+						for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
+							mesh.face(ff).color() = f.color();
+						}
+					}
+				}
+			}
+		}
+	}
+	else { // mesh does not have face, read nf lines and throw them away
+		for (uint i = 0; i < nf; ++i)
+			vcl::io::internal::nextNonEmptyTokenizedLine(file);
+	}
 }
 
 } // namespace internal
@@ -147,7 +213,7 @@ void loadOff(
 		internal::enableOptionalComponents(loadedInfo, m);
 
 	internal::loadOffVertices(m, file, fileInfo, nVertices);
-	internal::loadOffFaces(m, file, fileInfo, nFaces);
+	internal::loadOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);
 	// internal::loadOffEdges(m, file, loadedInfo, nEdges);
 }
 

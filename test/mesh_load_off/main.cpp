@@ -33,6 +33,9 @@ int main()
 	assert(loadedInfo.hasVertices());
 	assert(m.vertexNumber() == 1872);
 	assert(loadedInfo.hasVertexColors());
+	assert(loadedInfo.hasFaces());
+	assert(m.faceNumber() == 3022);
+	assert(loadedInfo.hasFaceColors());
 
 	m = vcl::io::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/trim-star.off", loadedInfo);
 
