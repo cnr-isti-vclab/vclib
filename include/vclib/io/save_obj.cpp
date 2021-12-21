@@ -20,21 +20,46 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_SAVE_OFF_H
-#define VCL_IO_SAVE_OFF_H
+#include "save_obj.h"
 
-#include "file_mesh_info.h"
+#include <vclib/exception/io_exception.h>
+
+#include "internal/io_utils.h"
+#include "internal/io_write.h"
 
 namespace vcl::io {
 
 template<typename MeshType>
-void saveOff(const MeshType& m, const std::string& filename);
+void saveObj(const MeshType& m, const std::string& filename)
+{
+	vcl::io::FileMeshInfo info(m);
+	saveObj(m, filename, info);
+}
 
 template<typename MeshType>
-void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info);
+void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo& info)
+{
+	std::ofstream fp = internal::saveFileStream(filename, "obj");
+
+	std::ofstream mtlfp;
+	std::string mtlFileName;
+	bool useMtl =
+		(info.hasVertexColors() && vcl::isPerVertexColorEnabled(m)) ||
+		(info.hasTextures() &&
+			((vcl::isPerVertexTexCoordEnabled(m) && info.hasVertexTexCoords()) ||
+			 (vcl::isPerFaceWedgeTexCoordsEnabled(m) && info.hasFaceWedgeTexCoords()))) ||
+		(info.hasFaceColors() && vcl::isPerFaceColorEnabled(m));
+	if (useMtl) {
+		mtlfp = internal::saveFileStream(filename, "mtl");
+		mtlFileName = internal::addExtensionToFileName(filename, "mtl");
+	}
+
+
+	fp.close();
+	if (useMtl) {
+		mtlfp.close();
+	}
+}
+
 
 } // namespace vcl::io
-
-#include "save_off.cpp"
-
-#endif // VCL_IO_SAVE_OFF_H

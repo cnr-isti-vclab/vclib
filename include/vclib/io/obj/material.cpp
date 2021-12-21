@@ -20,21 +20,67 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_SAVE_OFF_H
-#define VCL_IO_SAVE_OFF_H
+#include "material.h"
 
-#include "file_mesh_info.h"
+namespace vcl::io::obj {
 
-namespace vcl::io {
+inline Material::Material()
+{
+}
 
-template<typename MeshType>
-void saveOff(const MeshType& m, const std::string& filename);
+inline Material::Material(const Color& c) : hasColor(true)
+{
+	Ka.x() = c.redF();
+	Ka.y() = c.greenF();
+	Ka.z() = c.blueF();
+}
 
-template<typename MeshType>
-void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info);
+inline Material::Material(const std::string& txtName) : map_Kd(txtName), hasTexture(true)
+{
+}
 
-} // namespace vcl::io
+inline Material::Material(const Color& c, const std::string& txtName) :
+		map_Kd(txtName), hasColor(true), hasTexture(true)
+{
+	Ka.x() = c.redF();
+	Ka.y() = c.greenF();
+	Ka.z() = c.blueF();
+}
 
-#include "save_off.cpp"
+/**
+ * @brief Operator that allows to sort materials
+ * first we sort trough color
+ * - if a material has no color, is < than one that has a color
+ * - if both materials have color, order by color: if same, check texture
+ * sort trough texture
+ * - if a material has no texture, is < than one that has texture
+ * - if both materials have texture, order by texture name
+ */
+inline bool Material::operator<(const Material& m)
+{
+	if (hasColor) {
+		if (!m.hasColor) // color > no color
+			return false;
+		if (Ka != m.Ka)
+			return Ka < m.Ka;
+	}
+	else if (m.hasColor) { // no color < color
+		return true;
+	}
+	// will arrive here only if:
+	// - this Material and m have both no color
+	// - this Material has the same color of m
+	if (hasTexture) {
+		if (!m.hasTexture) // texture > no texture
+			return false;
+		return map_Kd < m.map_Kd;
+	}
+	else if (m.hasTexture) { // no texture < texture
+		return true;
+	}
+	else { // no color and texture in both materials
+		return false;
+	}
+}
 
-#endif // VCL_IO_SAVE_OFF_H
+} // namespace vcl::io::obj

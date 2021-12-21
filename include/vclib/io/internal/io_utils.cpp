@@ -27,16 +27,28 @@
 
 namespace vcl::io::internal {
 
-inline std::ofstream saveFileStream(const std::string& filename, const std::string& ext)
+std::string addExtensionToFileName(const std::string& filename, const std::string& ext)
 {
-	std::string   actualfilename;
-	std::ofstream fp;
-	fp.imbue(std::locale().classic());
+	std::string actualfilename;
 	size_t lastindex = filename.find_last_of(".");
-	if (lastindex != filename.size())
-		actualfilename = filename;
+	if (lastindex != std::string::npos) {
+		std::string e = filename.substr(lastindex+1, filename.size());
+		if (e == ext)
+			actualfilename = filename;
+		else
+			actualfilename = filename + "." + ext;
+	}
 	else
 		actualfilename = filename + "." + ext;
+	return actualfilename;
+}
+
+inline std::ofstream saveFileStream(const std::string& filename, const std::string& ext)
+{
+	std::string actualfilename = addExtensionToFileName(filename, ext);
+
+	std::ofstream fp;
+	fp.imbue(std::locale().classic());
 
 	fp.open(actualfilename, std::ofstream::binary); // need to set binary or windows will fail
 	if (!fp) {

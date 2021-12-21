@@ -22,6 +22,8 @@
 
 #include "save_off.h"
 
+#include <vclib/exception/io_exception.h>
+
 #include "internal/io_utils.h"
 #include "internal/io_write.h"
 
@@ -38,13 +40,13 @@ template<typename MeshType>
 void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info)
 {
 	std::ofstream fp = internal::saveFileStream(filename, "off");
-	if (info.hasVertexNormals())
+	if (info.hasVertexNormals() && vcl::isPerVertexNormalEnabled(m))
 		fp << "N";
-	if (info.hasVertexColors())
+	if (info.hasVertexColors() && vcl::isPerVertexColorEnabled(m))
 		fp << "C";
-	if (info.hasVertexTexCoords())
+	if (info.hasVertexTexCoords() && vcl::isPerVertexTexCoordEnabled(m))
 		fp << "ST";
-	fp << "OFF\n";
+	fp << "OFF" << std::endl;
 
 	uint vn = 0;
 	uint fn = 0;

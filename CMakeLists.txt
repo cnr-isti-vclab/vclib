@@ -172,11 +172,13 @@ set(HEADERS
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load_off.h
 	include/vclib/io/load_ply.h
+	include/vclib/io/save_obj.h
 	include/vclib/io/save_off.h
 	include/vclib/io/save_ply.h
 	include/vclib/io/internal/io_read.h
 	include/vclib/io/internal/io_utils.h
 	include/vclib/io/internal/io_write.h
+	include/vclib/io/obj/material.h
 	include/vclib/io/off/off.h
 	include/vclib/io/ply/ply.h
 	include/vclib/io/ply/ply_extra.h
@@ -274,12 +276,14 @@ set(SOURCES
 	include/vclib/misc/tokenizer.cpp
 	include/vclib/io/file_mesh_info.cpp
 	include/vclib/io/load_off.cpp
-	include/vclib/io/save_off.cpp
 	include/vclib/io/load_ply.cpp
+	include/vclib/io/save_obj.cpp
+	include/vclib/io/save_off.cpp
 	include/vclib/io/save_ply.cpp
 	include/vclib/io/internal/io_read.cpp
 	include/vclib/io/internal/io_utils.cpp
 	include/vclib/io/internal/io_write.cpp
+	include/vclib/io/obj/material.cpp
 	include/vclib/io/off/off.cpp
 	include/vclib/io/ply/ply_extra.cpp
 	include/vclib/io/ply/ply_face.cpp

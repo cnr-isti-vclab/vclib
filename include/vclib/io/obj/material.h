@@ -20,21 +20,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_SAVE_OFF_H
-#define VCL_IO_SAVE_OFF_H
+#ifndef VCL_IO_OBJ_MATERIAL_H
+#define VCL_IO_OBJ_MATERIAL_H
 
-#include "file_mesh_info.h"
+#include <vclib/space/point.h>
+#include <vclib/space/color.h>
 
-namespace vcl::io {
+namespace vcl::io::obj {
 
-template<typename MeshType>
-void saveOff(const MeshType& m, const std::string& filename);
+struct Material
+{
+	Material();
+	Material(const vcl::Color& c);
+	Material(const std::string& txtName);
+	Material(const vcl::Color& c, const std::string& txtName);
 
-template<typename MeshType>
-void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info);
+	bool operator<(const Material& m);
 
-} // namespace vcl::io
+	Point3f Ka=Point3f(0.2f, 0.2f, 0.2f);//ambient
+	Point3f Kd=Point3f(1.0f, 1.0f, 1.0f);//diffuse
+	Point3f Ks=Point3f(1.0f, 1.0f, 1.0f);//specular
 
-#include "save_off.cpp"
+	float d;//alpha
+	float Tr=1.0f;//alpha
 
-#endif // VCL_IO_SAVE_OFF_H
+	int illum=2;//specular illumination
+	float Ns=0.f;
+
+	std::string map_Kd; //filename texture
+
+	bool hasColor = false;
+	bool hasTexture = false;
+
+
+};
+
+} // namespace vcl::io::obj
+
+#include "material.cpp"
+
+#endif // VCL_IO_OBJ_MATERIAL_H

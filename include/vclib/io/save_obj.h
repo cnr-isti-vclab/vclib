@@ -20,21 +20,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_SAVE_OFF_H
-#define VCL_IO_SAVE_OFF_H
+#ifndef VCL_IO_SAVE_OBJ_H
+#define VCL_IO_SAVE_OBJ_H
 
 #include "file_mesh_info.h"
 
 namespace vcl::io {
 
 template<typename MeshType>
-void saveOff(const MeshType& m, const std::string& filename);
+void saveObj(const MeshType& m, const std::string& filename);
 
 template<typename MeshType>
-void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info);
+void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo& info);
 
 } // namespace vcl::io
 
-#include "save_off.cpp"
+#include "save_obj.cpp"
 
-#endif // VCL_IO_SAVE_OFF_H
+#endif // VCL_IO_SAVE_OBJ_H
