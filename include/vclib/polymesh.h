@@ -72,9 +72,6 @@ class PolyMesh :
 			mesh::TextureFileNames,
 			mesh::TransformMatrixd>
 {
-public:
-	using Vertex = polymesh::Vertex;
-	using Face   = polymesh::Face;
 };
 
 } // namespace vcl

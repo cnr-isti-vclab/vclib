@@ -48,6 +48,7 @@ class EdgeContainer : protected ElementContainer<T>, public EdgeContainerTrigger
 	using EdgeContainerType = EdgeContainer<T>;
 
 public:
+	using Edge              = T;
 	using EdgeType          = T;
 	using EdgeIterator      = ContainerIterator<std::vector, T>;
 	using ConstEdgeIterator = ConstContainerIterator<std::vector, T>;

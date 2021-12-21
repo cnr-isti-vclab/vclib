@@ -20,54 +20,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TRIMESH_H
-#define VCL_TRIMESH_H
+#ifndef VCL_POINTCLOUD_H
+#define VCL_POINTCLOUD_H
 
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
-namespace vcl::trimesh {
+namespace vcl::pointcloud {
 
 class Vertex;
-class Face;
 
 class Vertex :
 		public vcl::Vertex<
-			vcl::vert::BitFlags,                            // 4b
-			vcl::vert::Coordinate3d,                        // 24b
-			vcl::vert::Normal3d,                            // 24b
-			vcl::vert::Color,                               // 4b
-			vcl::vert::Scalard,                             // 8b
-			vcl::vert::OptionalAdjacentFaces<Face, Vertex>, // 0b
-			vcl::vert::OptionalAdjacentVertices<Vertex>,    // 0b
-			vcl::vert::OptionalTexCoordf<Vertex>,           // 0b
-			vcl::vert::OptionalMark<Vertex>,                // 0b
-			vcl::vert::CustomComponents<Vertex>>            // 0b
+			vcl::vert::BitFlags,                  // 4b
+			vcl::vert::Coordinate3d,              // 24b
+			vcl::vert::Normal3d,                  // 24b
+			vcl::vert::Color,                     // 4b
+			vcl::vert::Scalard,                   // 8b
+			vcl::vert::OptionalTexCoordf<Vertex>, // 0b
+			vcl::vert::OptionalMark<Vertex>,      // 0b
+			vcl::vert::CustomComponents<Vertex>>  // 0b
 {
 };
 
-class Face :
-		public vcl::Face<
-			vcl::face::TriangleBitFlags,                      // 4b
-			vcl::face::TriangleVertexRefs<Vertex>,            // 24b
-			vcl::face::Normal3d,                              // 24b
-			vcl::face::OptionalScalard<Face>,                 // 0b
-			vcl::face::OptionalColor<Face>,                   // 0b
-			vcl::face::OptionalAdjacentTriangles<Face>,       // 0b
-			vcl::face::OptionalTriangleWedgeTexCoordsf<Face>, // 0b
-			vcl::face::OptionalMark<Face>,                    // 0b
-			vcl::face::CustomComponents<Face>>                // 0b
-{
-};
-
-} // namespace vcl::trimesh
+} // namespace vcl::pointcloud
 
 namespace vcl {
 
-class TriMesh :
+class PointCloud :
 		public vcl::Mesh<
-			trimesh::Vertex,
-			trimesh::Face,
+			pointcloud::Vertex,
 			mesh::BoundingBox3d,
 			mesh::Mark,
 			mesh::TextureFileNames,
@@ -77,4 +59,4 @@ class TriMesh :
 
 } // namespace vcl
 
-#endif // VCL_TRIMESH_H
+#endif // VCL_POINTCLOUD_H

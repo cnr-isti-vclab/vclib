@@ -55,6 +55,7 @@ class VertexContainer : protected ElementContainer<T>, public VertexContainerTri
 	using VertexContainerType = VertexContainer<T>;
 
 public:
+	using Vertex              = T;
 	using VertexType          = T;
 	using VertexIterator      = ContainerIterator<std::vector, T>;
 	using ConstVertexIterator = ConstContainerIterator<std::vector, T>;

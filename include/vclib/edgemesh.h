@@ -20,16 +20,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TRIMESH_H
-#define VCL_TRIMESH_H
+#ifndef VCL_EDGEMESH_H
+#define VCL_EDGEMESH_H
 
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
-namespace vcl::trimesh {
+namespace vcl::edgemesh {
 
 class Vertex;
-class Face;
+class Edge;
 
 class Vertex :
 		public vcl::Vertex<
@@ -38,7 +38,7 @@ class Vertex :
 			vcl::vert::Normal3d,                            // 24b
 			vcl::vert::Color,                               // 4b
 			vcl::vert::Scalard,                             // 8b
-			vcl::vert::OptionalAdjacentFaces<Face, Vertex>, // 0b
+			vcl::vert::OptionalAdjacentEdges<Edge, Vertex>, // 0b
 			vcl::vert::OptionalAdjacentVertices<Vertex>,    // 0b
 			vcl::vert::OptionalTexCoordf<Vertex>,           // 0b
 			vcl::vert::OptionalMark<Vertex>,                // 0b
@@ -46,17 +46,15 @@ class Vertex :
 {
 };
 
-class Face :
-		public vcl::Face<
-			vcl::face::TriangleBitFlags,                      // 4b
-			vcl::face::TriangleVertexRefs<Vertex>,            // 24b
-			vcl::face::Normal3d,                              // 24b
-			vcl::face::OptionalScalard<Face>,                 // 0b
-			vcl::face::OptionalColor<Face>,                   // 0b
-			vcl::face::OptionalAdjacentTriangles<Face>,       // 0b
-			vcl::face::OptionalTriangleWedgeTexCoordsf<Face>, // 0b
-			vcl::face::OptionalMark<Face>,                    // 0b
-			vcl::face::CustomComponents<Face>>                // 0b
+class Edge :
+		public vcl::Edge<
+			vcl::edge::BitFlags,                    // 4b
+			vcl::edge::VertexReferences<Vertex>,    // 24b
+			vcl::edge::OptionalScalard<Edge>,       // 0b
+			vcl::edge::OptionalColor<Edge>,         // 0b
+			vcl::edge::OptionalAdjacentEdges<Edge>, // 0b
+			vcl::edge::OptionalMark<Edge>,          // 0b
+			vcl::edge::CustomComponents<Edge>>      // 0b
 {
 };
 
@@ -64,10 +62,10 @@ class Face :
 
 namespace vcl {
 
-class TriMesh :
+class EdgeMesh :
 		public vcl::Mesh<
-			trimesh::Vertex,
-			trimesh::Face,
+			edgemesh::Vertex,
+			edgemesh::Edge,
 			mesh::BoundingBox3d,
 			mesh::Mark,
 			mesh::TextureFileNames,
@@ -77,4 +75,4 @@ class TriMesh :
 
 } // namespace vcl
 
-#endif // VCL_TRIMESH_H
+#endif // VCL_EDGEMESH_H

@@ -40,6 +40,8 @@ set(VCLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(VCLIB_SRC_DIR ${VCLIB_INCLUDE_DIR}/vclib)
 
 set(HEADERS
+	include/vclib/edgemesh.h
+	include/vclib/pointcloud.h
 	include/vclib/polymesh.h
 	include/vclib/trimesh.h
 	include/vclib/algorithms/clean.h
