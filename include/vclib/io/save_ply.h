@@ -26,22 +26,23 @@
 #include <vclib/exception/io_exception.h>
 
 #include "ply/ply.h"
-#include "ply/ply_vertex.h"
-#include "ply/ply_face.h"
 #include "ply/ply_extra.h"
+#include "ply/ply_face.h"
+#include "ply/ply_vertex.h"
 
 namespace vcl::io {
 
-template <typename MeshType>
+template<typename MeshType>
 void savePly(const MeshType& m, const std::string& filename, bool binary = true);
 
-template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary = true);
+template<typename MeshType>
+void savePly(
+	const MeshType&     m,
+	const std::string&  filename,
+	const FileMeshInfo& info,
+	bool                binary = true);
 
-template <typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeader& header);
-
-}
+} // namespace vcl::io
 
 #include "save_ply.cpp"
 

@@ -100,6 +100,8 @@ public:
 	PropType faceWedgeTexCoordsType() const;
 	PropType edgeColorsType() const;
 
+	FileMeshInfo intersect(const FileMeshInfo& i) const;
+
 	void reset();
 
 private:

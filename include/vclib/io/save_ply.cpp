@@ -36,16 +36,18 @@ void savePly(const MeshType& m, const std::string& filename, bool binary)
 template<typename MeshType>
 void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary)
 {
-	ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, info);
+	FileMeshInfo meshInfo(m);
+
+	// make sure that the given info contains only components that are actually available in the
+	// mesh. meshInfo will contain the intersection between the components that the user wants to
+	// save and the components that are available in the mesh.
+	meshInfo = info.intersect(meshInfo);
+
+	ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, meshInfo);
 	header.setNumberVertices(m.vertexNumber());
 	header.setNumberFaces(m.faceNumber());
 	ply::saveTextures(header, m);
-	savePly(m, filename, header);
-}
 
-template<typename MeshType>
-void savePly(const MeshType& m, const std::string& filename, const ply::PlyHeader& header)
-{
 	if (!header.isValid())
 		throw std::runtime_error("Ply Header not valid.");
 

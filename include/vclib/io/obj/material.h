@@ -39,6 +39,7 @@ struct Material
 
 	bool operator<(const Material& m) const;
 	bool operator==(const Material& m) const;
+	bool operator!=(const Material& m) const;
 
 	Point3f Ka=Point3f(0.2f, 0.2f, 0.2f);//ambient
 	Point3f Kd=Point3f(1.0f, 1.0f, 1.0f);//diffuse

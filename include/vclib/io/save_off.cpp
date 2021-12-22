@@ -39,12 +39,18 @@ void saveOff(const MeshType& m, const std::string& filename)
 template<typename MeshType>
 void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info)
 {
+	FileMeshInfo meshInfo(m);
+
+	// make sure that the given info contains only components that are actually available in the
+	// mesh. meshInfo will contain the intersection between the components that the user wants to
+	// save and the components that are available in the mesh.
+	meshInfo = info.intersect(meshInfo);
 	std::ofstream fp = internal::saveFileStream(filename, "off");
-	if (info.hasVertexNormals() && vcl::isPerVertexNormalEnabled(m))
+	if (meshInfo.hasVertexNormals())
 		fp << "N";
-	if (info.hasVertexColors() && vcl::isPerVertexColorEnabled(m))
+	if (meshInfo.hasVertexColors())
 		fp << "C";
-	if (info.hasVertexTexCoords() && vcl::isPerVertexTexCoordEnabled(m))
+	if (meshInfo.hasVertexTexCoords())
 		fp << "ST";
 	fp << "OFF" << std::endl;
 
@@ -75,7 +81,7 @@ void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo&
 			io::internal::writeDouble(fp, v.coord().z(), false);
 
 			if constexpr(vcl::hasPerVertexColor<MeshType>()) {
-				if (info.hasVertexColors() && vcl::isPerVertexColorEnabled(m)) {
+				if (meshInfo.hasVertexColors()) {
 					io::internal::writeInt(fp, v.color().red(), false);
 					io::internal::writeInt(fp, v.color().green(), false);
 					io::internal::writeInt(fp, v.color().blue(), false);
@@ -83,14 +89,14 @@ void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo&
 				}
 			}
 			if constexpr(vcl::hasPerVertexNormal<MeshType>()) {
-				if (info.hasVertexNormals() && vcl::isPerVertexNormalEnabled(m)) {
+				if (meshInfo.hasVertexNormals()) {
 					io::internal::writeDouble(fp, v.normal().x(), false);
 					io::internal::writeDouble(fp, v.normal().y(), false);
 					io::internal::writeDouble(fp, v.normal().z(), false);
 				}
 			}
 			if constexpr(vcl::hasPerVertexTexCoord<MeshType>()) {
-				if (info.hasVertexTexCoords() && vcl::isPerVertexTexCoordEnabled(m)) {
+				if (meshInfo.hasVertexTexCoords()) {
 					io::internal::writeDouble(fp, v.texCoord().u(), false);
 					io::internal::writeDouble(fp, v.texCoord().v(), false);
 				}
@@ -114,7 +120,7 @@ void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo&
 				io::internal::writeInt(fp, vIndices[m.index(v)], false);
 			}
 			if constexpr(vcl::hasPerFaceColor<MeshType>()) {
-				if (info.hasFaceColors() && vcl::isPerFaceColorEnabled(m)) {
+				if (meshInfo.hasFaceColors()) {
 					io::internal::writeInt(fp, f.color().red(), false);
 					io::internal::writeInt(fp, f.color().green(), false);
 					io::internal::writeInt(fp, f.color().blue(), false);

@@ -329,6 +329,21 @@ inline FileMeshInfo::PropType FileMeshInfo::edgeColorsType() const
 	return modeTypes[EDGE_COLORS];
 }
 
+FileMeshInfo FileMeshInfo::intersect(const FileMeshInfo& info) const
+{
+	FileMeshInfo res;
+	for (uint i = 0; i < NUM_MODES; ++i){
+		res.mode[i] = mode[i] & info.mode[i];
+		if (res.mode[i]){
+			res.modeTypes[i] = mode[i] ? modeTypes[i] : info.modeTypes[i];
+		}
+	}
+	if (type == info.type){
+		res.type = type;
+	}
+	return res;
+}
+
 inline void FileMeshInfo::reset()
 {
 	mode.reset();

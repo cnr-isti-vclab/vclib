@@ -35,27 +35,21 @@ namespace vcl::io {
 namespace internal {
 
 template<typename VertexType, typename MeshType>
-obj::Material materialFromVertex(const VertexType& v, const MeshType& m, const FileMeshInfo& fi)
+obj::Material materialFromVertex(const VertexType& v, const FileMeshInfo& fi)
 {
 	obj::Material mat;
-	if (fi.hasVertexColors() && vcl::isPerVertexColorEnabled(m)) {
+	if (fi.hasVertexColors()) {
 		mat.hasColor = true;
 		mat.Kd.x()   = v.color().redF();
 		mat.Kd.y()   = v.color().greenF();
 		mat.Kd.z()   = v.color().blueF();
 	}
-	if (fi.hasTextures() && vcl::hasTextureFileNames<MeshType>()) {
-		if (vcl::isPerVertexTexCoordEnabled(m) && fi.hasVertexTexCoords()) {
-			mat.hasTexture = true;
-			mat.map_Kd     = m.texture(v.texCoord().nTexture());
-		}
-	}
+	return mat;
 }
 
 template<typename VertexType, typename MeshType>
 void writeVertexMaterial(
 	const VertexType&                     v,
-	const MeshType&                       m,
 	const FileMeshInfo&                   fi,
 	obj::Material&                        lastMaterial,
 	std::map<obj::Material, std::string>& materialMap,
@@ -64,10 +58,10 @@ void writeVertexMaterial(
 {
 	static const std::string MATERIAL_PREFIX = "MATERIAL_";
 	// get the material from the vertex
-	obj::Material mat = materialFromVertex(v, m, fi);
+	obj::Material mat = materialFromVertex(v, fi);
 	if (!mat.isEmpty()) {
 		std::string mname; // name of the material of the vertex
-		auto        it = materialMap.find(m);
+		auto        it = materialMap.find(mname);
 		if (it == materialMap.end()) { // if it is a new material
 			// add the new material to the map
 			mname            = MATERIAL_PREFIX + std::to_string(materialMap.size());
@@ -99,15 +93,27 @@ void saveObj(const MeshType& m, const std::string& filename)
 template<typename MeshType>
 void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo& info)
 {
+	FileMeshInfo meshInfo(m);
+
+	// make sure that the given info contains only components that are actually available in the
+	// mesh. meshInfo will contain the intersection between the components that the user wants to
+	// save and the components that are available in the mesh.
+	meshInfo = info.intersect(meshInfo);
+
+	// if the mesh has both vertex and wedge texcords, will be save just wedges because obj does
+	// not allow to save them both. In any case, also vertex texcoords will result saved as
+	// wedge texcoords in the final file.
+	if (meshInfo.hasVertexTexCoords() && meshInfo.hasFaceWedgeTexCoords()) {
+		meshInfo.setVertexTexCoords(false);
+	}
+
 	std::ofstream fp = internal::saveFileStream(filename, "obj");
 
 	std::ofstream                        mtlfp;
 	std::map<obj::Material, std::string> materialMap;
-	bool useMtl = (info.hasVertexColors() && vcl::isPerVertexColorEnabled(m)) ||
-				  (info.hasFaceColors() && vcl::isPerFaceColorEnabled(m)) ||
-				  ((info.hasTextures() && vcl::hasTextureFileNames<MeshType>()) &&
-				   ((vcl::isPerVertexTexCoordEnabled(m) && info.hasVertexTexCoords()) ||
-					(vcl::isPerFaceWedgeTexCoordsEnabled(m) && info.hasFaceWedgeTexCoords())));
+	bool useMtl = meshInfo.hasVertexColors() || meshInfo.hasFaceColors() ||
+				  (meshInfo.hasTextures() &&
+				   (meshInfo.hasVertexTexCoords() || meshInfo.hasFaceWedgeTexCoords()));
 	if (useMtl) {
 		mtlfp                   = internal::saveFileStream(filename, "mtl");
 		std::string mtlFileName = vcl::fileInfo::filenameWithoutExtension(filename) + ".mtl";
@@ -120,7 +126,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 	using VertexType = typename MeshType::VertexType;
 	for (const VertexType& v : m.vertices()) {
 		if (useMtl) { // mtl management
-			internal::writeVertexMaterial(v, m, info, lastMaterial, materialMap, fp, mtlfp);
+			internal::writeVertexMaterial(v, meshInfo, lastMaterial, materialMap, fp, mtlfp);
 		}
 		fp << "v ";
 		internal::writeDouble(fp, v.coord().x(), false);
@@ -129,7 +135,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 		fp << std::endl;
 
 		if constexpr (hasPerVertexNormal<MeshType>()) {
-			if (isPerVertexNormalEnabled(m) && info.hasVertexNormals()) {
+			if (meshInfo.hasVertexNormals()) {
 				fp << "vn ";
 				internal::writeDouble(fp, v.normal().x(), false);
 				internal::writeDouble(fp, v.normal().y(), false);
@@ -138,7 +144,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 			}
 		}
 		if constexpr (hasPerVertexTexCoord<MeshType>()) {
-			if (isPerVertexTexCoordEnabled(m) && info.hasVertexTexCoords()) {
+			if (meshInfo.hasVertexTexCoords()) {
 				fp << "vt ";
 				internal::writeFloat(fp, v.texCoord().u(), false);
 				internal::writeFloat(fp, v.texCoord().v(), false);
@@ -149,14 +155,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 
 	// faces
 	if constexpr (vcl::hasFaces<MeshType>()) {
-		uint nvt = 1; // start id for wedge texture coords
-		if constexpr (hasPerVertexNormal<MeshType>()) {
-			if (isPerVertexNormalEnabled(m) && info.hasVertexNormals()) {
-				// if we wrote vt for vertex texcoords, the vt for wedges will start from the
-				// number of vertices (+1 because this is obj format)
-				nvt += m.vertexNumber();
-			}
-		}
+
 	}
 
 	fp.close();

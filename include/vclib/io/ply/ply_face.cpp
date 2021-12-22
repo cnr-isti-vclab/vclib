@@ -271,46 +271,36 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
 				if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
-					if (vcl::isPerFaceNormalEnabled(mesh)) {
-						io::internal::writeProperty(file, f.normal()[p.name - ply::nx], p.type, bin);
-						hasBeenWritten = true;
-					}
+					io::internal::writeProperty(file, f.normal()[p.name - ply::nx], p.type, bin);
+					hasBeenWritten = true;
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
 				if constexpr (vcl::hasPerFaceColor<MeshType>()) {
-					if (vcl::isPerFaceColorEnabled(mesh)) {
-						io::internal::writeProperty(file, f.color()[p.name - ply::red], p.type, bin);
-						hasBeenWritten = true;
-					}
+					io::internal::writeProperty(file, f.color()[p.name - ply::red], p.type, bin);
+					hasBeenWritten = true;
 				}
 			}
 			if (p.name == ply::scalar) {
 				if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
-					if (vcl::isPerFaceScalarEnabled(mesh)) {
-						io::internal::writeProperty(file, f.scalar(), p.type, bin);
-						hasBeenWritten = true;
-					}
+					io::internal::writeProperty(file, f.scalar(), p.type, bin);
+					hasBeenWritten = true;
 				}
 			}
 			if (p.name == ply::texcoord) {
 				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
-					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
-						io::internal::writeProperty(file, f.vertexNumber() * 2, p.listSizeType, bin);
-						for (const auto& tc : f.wedgeTexCoords()) {
-							io::internal::writeProperty(file, tc.u(), p.type, bin);
-							io::internal::writeProperty(file, tc.v(), p.type, bin);
-						}
-						hasBeenWritten = true;
+					io::internal::writeProperty(file, f.vertexNumber() * 2, p.listSizeType, bin);
+					for (const auto& tc : f.wedgeTexCoords()) {
+						io::internal::writeProperty(file, tc.u(), p.type, bin);
+						io::internal::writeProperty(file, tc.v(), p.type, bin);
 					}
+					hasBeenWritten = true;
 				}
 			}
 			if (p.name == ply::texnumber) {
 				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
-					if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
-						io::internal::writeProperty(file, f.wedgeTexCoord(0).nTexture(), p.type, bin);
-						hasBeenWritten = true;
-					}
+					io::internal::writeProperty(file, f.wedgeTexCoord(0).nTexture(), p.type, bin);
+					hasBeenWritten = true;
 				}
 			}
 			if (!hasBeenWritten) {

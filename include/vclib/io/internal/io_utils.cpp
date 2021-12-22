@@ -71,7 +71,11 @@ inline std::ifstream loadFileStream(const std::string& filename)
 /**
  * @brief enableOptionalComponents enables all the components that are in the file mesh info and
  * that may be enabled in the mesh. If these components are not present in the mesh, the info file
- * will be modified telling that a particular property cannot be saved into the mesh.
+ * will be modified in order to tell that a particular component cannot be saved into the mesh.
+ *
+ * This function is useful when you know what components are going to load from a file, and you want
+ * that all the components that you are going to read in the file will be saved in the mesh, if
+ * possible.
  *
  * @param info
  * @param m

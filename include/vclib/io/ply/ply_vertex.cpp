@@ -154,49 +154,38 @@ void saveVertices(
 		for (ply::Property p : header.vertexProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name >= ply::x && p.name <= ply::z) {
-				int a = p.name - ply::x;
-				io::internal::writeProperty(file, v.coord()[a], p.type, bin);
+				io::internal::writeProperty(file, v.coord()[p.name - ply::x], p.type, bin);
 				hasBeenWritten = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
 				if constexpr (vcl::hasPerVertexNormal<MeshType>()) {
-					if (vcl::isPerVertexNormalEnabled(mesh)) {
-						io::internal::writeProperty(file, v.normal()[p.name - ply::nx], p.type, bin);
-						hasBeenWritten = true;
-					}
+					io::internal::writeProperty(file, v.normal()[p.name - ply::nx], p.type, bin);
+					hasBeenWritten = true;
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
 				if constexpr (vcl::hasPerVertexColor<MeshType>()) {
-					if (vcl::isPerVertexColorEnabled(mesh)) {
-						io::internal::writeProperty(file, v.color()[p.name - ply::red], p.type, bin);
-						hasBeenWritten = true;
-					}
+					io::internal::writeProperty(file, v.color()[p.name - ply::red], p.type, bin);
+					hasBeenWritten = true;
 				}
 			}
 			if (p.name == ply::scalar) {
 				if constexpr (vcl::hasPerVertexScalar<MeshType>()) {
-					if (vcl::isPerVertexScalarEnabled(mesh)) {
-						io::internal::writeProperty(file, v.scalar(), p.type, bin);
-						hasBeenWritten = true;
-					}
+					io::internal::writeProperty(file, v.scalar(), p.type, bin);
+					hasBeenWritten = true;
 				}
 			}
 			if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
 				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
-					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
-						int a = p.name - ply::texture_u;
-						io::internal::writeProperty(file, v.texCoord()[a], p.type, bin);
-						hasBeenWritten = true;
-					}
+					const uint a = p.name - ply::texture_u;
+					io::internal::writeProperty(file, v.texCoord()[a], p.type, bin);
+					hasBeenWritten = true;
 				}
 			}
 			if (p.name == ply::texnumber) {
 				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
-					if (vcl::isPerVertexTexCoordEnabled(mesh)) {
-						io::internal::writeProperty(file, v.texCoord().nTexture(), p.type, bin);
-						hasBeenWritten = true;
-					}
+					io::internal::writeProperty(file, v.texCoord().nTexture(), p.type, bin);
+					hasBeenWritten = true;
 				}
 			}
 			if (!hasBeenWritten){

@@ -93,6 +93,11 @@ bool Material::operator==(const Material& m) const
 	return !(*this < m) && !(m < *this);
 }
 
+bool Material::operator!=(const Material& m) const
+{
+	return !(*this == m);
+}
+
 std::ostream& operator<<(std::ostream& out, const Material& m)
 {
 	if (m.hasColor) {
