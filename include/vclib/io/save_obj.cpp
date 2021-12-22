@@ -38,30 +38,62 @@ template<typename VertexType, typename MeshType>
 obj::Material materialFromVertex(const VertexType& v, const FileMeshInfo& fi)
 {
 	obj::Material mat;
-	if (fi.hasVertexColors()) {
-		mat.hasColor = true;
-		mat.Kd.x()   = v.color().redF();
-		mat.Kd.y()   = v.color().greenF();
-		mat.Kd.z()   = v.color().blueF();
+	if constexpr (hasPerVertexColor<MeshType>()) {
+		if (fi.hasVertexColors()) {
+			mat.hasColor = true;
+			mat.Kd.x()   = v.color().redF();
+			mat.Kd.y()   = v.color().greenF();
+			mat.Kd.z()   = v.color().blueF();
+		}
 	}
 	return mat;
 }
 
-template<typename VertexType, typename MeshType>
-void writeVertexMaterial(
-	const VertexType&                     v,
+template<typename FaceType, typename MeshType>
+obj::Material materialFromFace(const FaceType& f, const MeshType& m, const FileMeshInfo& fi)
+{
+	obj::Material mat;
+	if (fi.hasFaceColors()) {
+		mat.hasColor = true;
+		mat.Kd.x()   = f.color().redF();
+		mat.Kd.y()   = f.color().greenF();
+		mat.Kd.z()   = f.color().blueF();
+	}
+	if constexpr (hasPerFaceWedgeTexCoords<MeshType>()) {
+		if (fi.hasFaceWedgeTexCoords()) {
+			mat.hasTexture = true;
+			mat.map_Kd = m.texture(f.wedgeTexCoord(0).nTexture());
+		}
+	}
+	if constexpr (hasPerVertexTexCoord<MeshType>()) {
+		if (fi.hasVertexTexCoords()) {
+			mat.hasTexture = true;
+			mat.map_Kd = m.texture(f.vertex(0)->texCoord().nTexture());
+		}
+	}
+	return mat;
+}
+
+template<typename ElementType, typename MeshType>
+void writeElementMaterial(
+	const ElementType&                    e,
+	const MeshType&                       m,
 	const FileMeshInfo&                   fi,
 	obj::Material&                        lastMaterial,
 	std::map<obj::Material, std::string>& materialMap,
 	std::ofstream&                        fp,
 	std::ofstream&                        mtlfp)
 {
-	static const std::string MATERIAL_PREFIX = "MATERIAL_";
-	// get the material from the vertex
-	obj::Material mat = materialFromVertex(v, fi);
+	obj::Material mat;
+	if constexpr(std::is_same<ElementType, typename MeshType::VertexType>::value)
+		mat = materialFromVertex<typename MeshType::VertexType, MeshType>(e, fi);
+	if constexpr(hasFaces<MeshType>())
+		if constexpr(std::is_same<ElementType, typename MeshType::FaceType>::value)
+			mat = materialFromFace(e, m, fi);
 	if (!mat.isEmpty()) {
+		static const std::string MATERIAL_PREFIX = "MATERIAL_";
 		std::string mname; // name of the material of the vertex
-		auto        it = materialMap.find(mname);
+		auto        it = materialMap.find(mat);
 		if (it == materialMap.end()) { // if it is a new material
 			// add the new material to the map
 			mname            = MATERIAL_PREFIX + std::to_string(materialMap.size());
@@ -111,12 +143,13 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 
 	std::ofstream                        mtlfp;
 	std::map<obj::Material, std::string> materialMap;
+
 	bool useMtl = meshInfo.hasVertexColors() || meshInfo.hasFaceColors() ||
 				  (meshInfo.hasTextures() &&
 				   (meshInfo.hasVertexTexCoords() || meshInfo.hasFaceWedgeTexCoords()));
 	if (useMtl) {
 		mtlfp                   = internal::saveFileStream(filename, "mtl");
-		std::string mtlFileName = vcl::fileInfo::filenameWithoutExtension(filename) + ".mtl";
+		std::string mtlFileName = vcl::fileInfo::filenameWithExtension(filename) + ".mtl";
 		fp << "mtllib ./" << mtlFileName << std::endl;
 	}
 
@@ -126,7 +159,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 	using VertexType = typename MeshType::VertexType;
 	for (const VertexType& v : m.vertices()) {
 		if (useMtl) { // mtl management
-			internal::writeVertexMaterial(v, meshInfo, lastMaterial, materialMap, fp, mtlfp);
+			internal::writeElementMaterial<VertexType, MeshType>(v, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
 		}
 		fp << "v ";
 		internal::writeDouble(fp, v.coord().x(), false);
@@ -155,7 +188,49 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 
 	// faces
 	if constexpr (vcl::hasFaces<MeshType>()) {
+		using VertexType = typename MeshType::VertexType;
+		using FaceType = typename MeshType::FaceType;
 
+		// indices of vertices that do not consider deleted vertices
+		std::vector<int> vIndices = m.vertexCompactIndices();
+
+		uint wedgeTexCoord = 1;
+		for (const FaceType& f : m.faces()) {
+			if (useMtl) { // mtl management
+				internal::writeElementMaterial(f, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
+			}
+			if constexpr(hasPerFaceWedgeTexCoords<MeshType>()){
+				if (meshInfo.hasFaceWedgeTexCoords()) {
+					using WedgeTexCoordType = typename FaceType::WedgeTexCoordType;
+					for (const WedgeTexCoordType wt : f.wedgeTexCoords()){
+						fp << "vt ";
+						internal::writeFloat(fp, wt.u(), false);
+						internal::writeFloat(fp, wt.v(), false);
+						fp << std::endl;
+					}
+				}
+			}
+
+			fp << "f ";
+			for (const VertexType* v : f.vertices()) {
+				fp << vIndices[m.index(v)]+1;
+				if constexpr(hasPerVertexTexCoord<MeshType>()){
+					// we wrote texcoords along with vertices, each texcoord has the same index
+					// of its vertex
+					if (meshInfo.hasVertexTexCoords()) {
+						fp << "/" << vIndices[m.index(v)]+1 << " ";
+					}
+				}
+				if constexpr(hasPerFaceWedgeTexCoords<MeshType>()){
+					// we wrote texcoords before the face; indices are consecutive and wedge coords
+					// are the same of the number of vertices of the face
+					if (meshInfo.hasFaceWedgeTexCoords()) {
+						fp << "/" << wedgeTexCoord++ << " ";
+					}
+				}
+			}
+			fp << std::endl;
+		}
 	}
 
 	fp.close();

@@ -72,6 +72,14 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
 				setFaceWedgeTexCoords(getPropType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
 	}
+	if (vcl::hasTextureFileNames<Mesh>()) {
+		if (m.textureNumber() > 0) {
+			setTextures(true);
+		}
+		else {
+			setTextures(false);
+		}
+	}
 }
 
 inline bool FileMeshInfo::isTriangleMesh() const
