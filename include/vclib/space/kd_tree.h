@@ -23,8 +23,8 @@
 #ifndef VCL_KD_TREE_H
 #define VCL_KD_TREE_H
 
-#include <vector>
 #include <vclib/misc/vcl_types.h>
+#include <vector>
 
 namespace vcl {
 
@@ -32,31 +32,7 @@ template<typename PointType>
 class KDTree
 {
 	using Scalar = typename PointType::ScalarType;
-
-	struct Node
-	{
-		union {
-			//standard node
-			struct {
-				Scalar splitValue;
-				unsigned int firstChildId : 24;
-				unsigned int dim : 2;
-				unsigned int leaf : 1;
-			};
-			//leaf
-			struct {
-				unsigned int start;
-				unsigned short size;
-			};
-		};
-	};
-	struct QueryNode
-	{
-		QueryNode() {}
-		QueryNode(unsigned int id) : nodeId(id) {}
-		unsigned int nodeId;  // id of the next node
-		Scalar sq;            // squared distance to the next node
-	};
+	struct Node;
 
 public:
 	KDTree();
@@ -66,22 +42,69 @@ public:
 		uint                          maxDepth      = 64,
 		bool                          balanced      = false);
 
-	uint closestPointIndex(const PointType& queryPoint, Scalar& dist = dummyScalar) const;
-	PointType closestPoint(const PointType& queryPoint, Scalar& dist = dummyScalar) const;
+	uint      nearestNeighborIndex(const PointType& queryPoint, Scalar& dist = dummyScalar) const;
+	PointType nearestNeighbor(const PointType& queryPoint, Scalar& dist = dummyScalar) const;
+
+	std::vector<uint> kNearestNeighborsIndices(
+		const PointType&     queryPoint,
+		uint                 k,
+		std::vector<Scalar>& distances = dummyScalars) const;
+	std::vector<PointType> kNearestNeighbors(
+		const PointType&     queryPoint,
+		uint                 k,
+		std::vector<Scalar>& distances = dummyScalars) const;
+
+	std::vector<uint> neighborsIndicesInDistance(
+		const PointType&     queryPoint,
+		Scalar               dist,
+		std::vector<Scalar>& distances = dummyScalars) const;
+	std::vector<PointType> neighborsInDistance(
+		const PointType&     queryPoint,
+		Scalar               dist,
+		std::vector<Scalar>& distances = dummyScalars) const;
 
 private:
 	std::vector<PointType> points;
-	std::vector<uint> indices;
-	std::vector<Node> nodes;
-	uint pointsPerCell = 16; //min number of point in a leaf
-	uint maxDepth = 64; //max tree depth
-	uint depth = 0; //actual tree depth
+	std::vector<uint>      indices;
+	std::vector<Node>      nodes;
+	uint                   pointsPerCell = 16; // min number of point in a leaf
+	uint                   maxDepth      = 64; // max tree depth
+	uint                   depth         = 0;  // actual tree depth
 
 	// dummy values
-	inline static Scalar dummyScalar;
+	inline static Scalar              dummyScalar;
+	inline static std::vector<Scalar> dummyScalars;
 
 	uint createTree(uint nodeId, uint start, uint end, uint level, bool balanced);
 	uint split(uint start, uint end, uint dim, Scalar splitValue);
+
+	struct Node
+	{
+		union
+		{
+			// standard node
+			struct
+			{
+				Scalar splitValue;
+				uint   firstChildId : 24;
+				uint   dim : 2;
+				uint   leaf : 1;
+			};
+			// leaf
+			struct
+			{
+				uint           start;
+				unsigned short size;
+			};
+		};
+	};
+	struct QueryNode
+	{
+		QueryNode() {}
+		QueryNode(uint id) : nodeId(id) {}
+		uint   nodeId; // id of the next node
+		Scalar sq;     // squared distance to the next node
+	};
 };
 
 } // namespace vcl

@@ -36,9 +36,17 @@ int main()
 
 	vcl::KDTree<vcl::Point3d> tree(p);
 
-	uint pid = tree.closestPointIndex(vcl::Point3d(0.5, 0.5, 0.5));
+	uint pid = tree.nearestNeighborIndex(vcl::Point3d(0.5, 0.5, 0.5));
 
 	assert(pid == 1558);
+
+	std::vector<uint> res = tree.kNearestNeighborsIndices(vcl::Point3d(0.5, 0.5, 0.5), 5);
+
+	assert(res[0] == 1558);
+	assert(res[1] == 1613);
+	assert(res[2] == 1720);
+	assert(res[3] == 1576);
+	assert(res[4] == 163);
 
 	return 0;
 }
