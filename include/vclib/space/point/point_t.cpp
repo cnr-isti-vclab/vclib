@@ -51,17 +51,73 @@ bool Point<Scalar, N>::isDegenerate() const
 	return false;
 }
 
+template<typename Scalar, int N>
+template<typename S>
+Scalar Point<Scalar, N>::dot(const Point<S, N>& p1) const
+{
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return p.dot(p1.p);
+	}
+	else {
+		return p.dot(p1.p.template cast<Scalar>());
+	}
+}
+
+template<typename Scalar, int N>
+template<typename S>
+Scalar Point<Scalar, N>::angle(const Point<S, N>& p1) const
+{
+	Scalar w = p.norm() * p1.p.norm();
+	if (w == 0)
+		return -1;
+	Scalar t = dot(p1) / w;
+	if (t > 1)
+		t = 1;
+	else if (t < -1)
+		t = -1;
+	return (Scalar) acos(t);
+}
+
+template<typename Scalar, int N>
+template<typename S>
+Scalar Point<Scalar, N>::dist(const Point<S, N>& p1) const
+{
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return (p - p1.p).norm();
+	}
+	else {
+		return (p - p1.p.template cast<Scalar>()).norm();
+	}
+}
+
+template<typename Scalar, int N>
+template<typename S>
+Scalar Point<Scalar, N>::squaredDist(const Point<S, N>& p1) const
+{
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return (p - p1.p).squaredNorm();
+	}
+	else {
+		return (p - p1.p.template cast<Scalar>()).squaredNorm();
+	}
+}
+
 /**
  * @brief Returns the cross product between two points.
  * @note This function is available only on Points having size == 3.
  * @return The cross product between this and the other point.
  */
 template<typename Scalar, int N>
-template<int U>
+template<typename S, int U>
 VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>)
-Point<Scalar, N>::cross(const Point<Scalar, N>& p1) const
+Point<Scalar, N>::cross(const Point<S, N>& p1) const
 {
-	return p.cross(p1.p);
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return p.cross(p1.p);
+	}
+	else {
+		return p.cross(p1.p.template cast<Scalar>());
+	}
 }
 
 template<typename Scalar, int N>
@@ -125,6 +181,12 @@ const Eigen::Matrix<Scalar, 1, N>& Point<Scalar, N>::eigenVector() const
 
 template<typename Scalar, int N>
 Scalar& Point<Scalar, N>::operator()(uint i)
+{
+	return p(i);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::operator()(uint i) const
 {
 	return p(i);
 }
@@ -286,40 +348,6 @@ Point<Scalar, N>& Point<Scalar, N>::operator/=(const Scalar& s)
 {
 	p /= s;
 	return *this;
-}
-
-template<typename Scalar, int N>
-const Scalar& Point<Scalar, N>::operator()(uint i) const
-{
-	return p(i);
-}
-
-template<typename Scalar, int N>
-template<typename S>
-Scalar Point<Scalar, N>::dot(const Point<S, N>& p1) const
-{
-	if constexpr (std::is_same<Scalar, S>::value) {
-		return p.dot(p1.p);
-	}
-	else {
-		Point<Scalar, N> tmp(p1);
-		return p.dot(tmp.p);
-	}
-}
-
-template<typename Scalar, int N>
-template<typename S>
-Scalar Point<Scalar, N>::angle(const Point<S, N>& p1) const
-{
-	Scalar w = p.norm() * p1.p.norm();
-	if (w == 0)
-		return -1;
-	Scalar t = (p.dot(p1.p)) / w;
-	if (t > 1)
-		t = 1;
-	else if (t < -1)
-		t = -1;
-	return (Scalar) acos(t);
 }
 
 template<typename Scalar, int N>

@@ -101,13 +101,13 @@ bool Box<PointType>::collide(const Box<PointType>& b) const
 template<typename PointType>
 auto Box<PointType>::diagonal() const
 {
-	return (max - min).norm();
+	return min.dist(max);
 }
 
 template<typename PointType>
 auto Box<PointType>::squaredDiagonal() const
 {
-	return (max - min).squaredNorm();
+	return min.squaredDist(max);
 }
 
 template<typename PointType>

@@ -38,6 +38,9 @@ namespace vcl {
 template<typename Scalar, int N>
 class Point
 {
+	template<typename S, int M>
+	friend class Point;
+
 public:
 	using ScalarType      = Scalar;
 	static const int DIM  = N;
@@ -60,9 +63,15 @@ public:
 	template<typename S>
 	Scalar angle(const Point<S, N>& p1) const;
 
-	template<int U = N>
+	template<typename S>
+	Scalar dist(const Point<S, N>& p1) const;
+
+	template<typename S>
+	Scalar squaredDist(const Point<S, N>& p1) const;
+
+	template<typename S, int U = N>
 	VCL_ENABLE_IF(U==3, Point)
-	cross(const Point<Scalar, N>& p1) const;
+	cross(const Point<S, N>& p1) const;
 
 	Scalar norm() const;
 	Scalar squaredNorm() const;

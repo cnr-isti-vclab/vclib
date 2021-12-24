@@ -54,7 +54,7 @@ int main()
 
 	double avgDist = 0;
 	for (vcl::TriMesh::Vertex& v : m.vertices()) {
-		avgDist += (v.customComponent<vcl::Point3f>("oldCoords") - v.coord()).norm();
+		avgDist += v.coord().dist(v.customComponent<vcl::Point3f>("oldCoords"));
 	}
 	avgDist /= m.vertexNumber();
 

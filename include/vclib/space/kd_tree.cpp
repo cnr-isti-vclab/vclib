@@ -90,7 +90,7 @@ KDTree<PointType>::KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, 
  * Searchs the closest point.
  *
  * The result of the query, the closest point to the query point, is the index of the point and
- * and the squared distance from the query point.
+ * and the distance from the query point.
  */
 template<typename PointType>
 uint KDTree<PointType>::nearestNeighborIndex(const PointType& queryPoint, Scalar& dist) const
@@ -101,7 +101,7 @@ uint KDTree<PointType>::nearestNeighborIndex(const PointType& queryPoint, Scalar
 	unsigned int count   = 1;
 
 	int    minIndex = indices.size() / 2;
-	Scalar minDist  = (queryPoint - points[minIndex]).squaredNorm();
+	Scalar minDist  = queryPoint.squaredDist(points[minIndex]);
 	minIndex        = indices[minIndex];
 
 	while (count) {
@@ -113,7 +113,7 @@ uint KDTree<PointType>::nearestNeighborIndex(const PointType& queryPoint, Scalar
 				--count; // pop
 				uint end = node.start + node.size;
 				for (uint i = node.start; i < end; ++i) {
-					Scalar pointSquareDist = (queryPoint - points[i]).squaredNorm();
+					Scalar pointSquareDist = queryPoint.squaredDist(points[i]);
 					if (pointSquareDist < minDist) {
 						minDist  = pointSquareDist;
 						minIndex = indices[i];
@@ -141,7 +141,7 @@ uint KDTree<PointType>::nearestNeighborIndex(const PointType& queryPoint, Scalar
 			--count;
 		}
 	}
-	dist = minDist;
+	dist = std::sqrt(minDist);
 	return minIndex;
 }
 
@@ -187,7 +187,7 @@ std::vector<uint> KDTree<PointType>::kNearestNeighborsIndices(
 		Comparator(const PointType& qp) : qp(qp) {}
 		bool operator()(const P& p1, const P& p2)
 		{
-			if ((p1.p - qp).squaredNorm() > (p2.p - qp).squaredNorm())
+			if (qp.squaredDist(p1.p) > qp.squaredDist(p2.p))
 				return true;
 			return false;
 		}
@@ -213,7 +213,7 @@ std::vector<uint> KDTree<PointType>::kNearestNeighborsIndices(
 		// if the distance is less than the top of the max-heap, it could be one of the k-nearest
 		// neighbours
 		if (neighborQueue.size() < k ||
-			qnode.sq < (neighborQueue.top().p - queryPoint).squaredNorm()) {
+			qnode.sq < queryPoint.squaredDist(neighborQueue.top().p)) {
 			// when we arrive to a leaf
 			if (node.leaf) {
 				--count; // pop of the leaf
@@ -259,7 +259,7 @@ std::vector<uint> KDTree<PointType>::kNearestNeighborsIndices(
 	uint              i = 0;
 	while (!neighborQueue.empty() && i < k) {
 		res.push_back(neighborQueue.top().i);
-		distances.push_back((neighborQueue.top().p - queryPoint).squaredNorm());
+		distances.push_back(queryPoint.dist(neighborQueue.top().p));
 		neighborQueue.pop();
 		i++;
 	}
@@ -285,7 +285,7 @@ std::vector<PointType> KDTree<PointType>::kNearestNeighbors(
  * Performs the distance query.
  *
  * The result of the query, all the points within the distance dist form the query point, is the
- * vector of the indeces and the vector of the squared distances from the query point.
+ * vector of the indeces and the vector of the distances from the query point.
  */
 template<typename PointType>
 std::vector<uint> KDTree<PointType>::neighborsIndicesInDistance(
@@ -310,10 +310,10 @@ std::vector<uint> KDTree<PointType>::neighborsIndicesInDistance(
 				--count; // pop
 				unsigned int end = node.start + node.size;
 				for (unsigned int i = node.start; i < end; ++i) {
-					Scalar pointSquareDist = (queryPoint - points[i]).squaredNorm();
+					Scalar pointSquareDist = queryPoint.squareDist(points[i]);
 					if (pointSquareDist < squareDist) {
 						queryPoints.push_back(indices[i]);
-						distances.push_back(pointSquareDist);
+						distances.push_back(queryPoint.dist(points[i]));
 					}
 				}
 			}
