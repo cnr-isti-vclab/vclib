@@ -22,7 +22,9 @@
 
 #include "kd_tree.h"
 
+#include <numeric>
 #include <queue>
+#include <vclib/mesh/requirements.h>
 
 #include "box.h"
 
@@ -41,16 +43,47 @@ KDTree<PointType>::KDTree(
 	bool                          balanced) :
 		points(points), indices(points.size()), pointsPerCell(pointsPerCell), maxDepth(maxDepth)
 {
-	Box<PointType> b;
+	std::iota(std::begin(indices), std::end(indices), 0);
+	nodes.resize(1);
+	nodes.back().leaf = 0;
+
+	depth = createTree(0, 0, points.size(), 1, balanced);
+}
+
+/**
+ * @brief Builds the KDTree starting from the given mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *
+ * @param m
+ * @param pointsPerCell
+ * @param maxDepth
+ * @param balanced
+ */
+template<typename PointType>
+template<typename MeshType>
+KDTree<PointType>::KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, bool balanced) :
+		points(m.vertexNumber()),
+		indices(m.vertexNumber()),
+		pointsPerCell(pointsPerCell),
+		maxDepth(maxDepth)
+{
+	vcl::requireVertices<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+
 	uint           i = 0;
-	for (const PointType& p : points) {
-		b.add(p);
-		indices[i] = i;
+	for (const VertexType& v : m.vertices()) {
+		points[i] = v.coord();
+		indices[i] = m.index(v);
 		i++;
 	}
 	nodes.resize(1);
 	nodes.back().leaf = 0;
-	depth             = createTree(0, 0, points.size(), 1, balanced);
+
+	depth = createTree(0, 0, points.size(), 1, balanced);
 }
 
 /**

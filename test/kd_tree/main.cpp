@@ -30,11 +30,7 @@ int main()
 {
 	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
-	std::vector<vcl::Point3d> p;
-	for (const vcl::TriMesh::Vertex& v : m.vertices())
-		p.push_back(v.coord());
-
-	vcl::KDTree<vcl::Point3d> tree(p);
+	vcl::KDTree<vcl::Point3d> tree(m);
 
 	uint pid = tree.nearestNeighborIndex(vcl::Point3d(0.5, 0.5, 0.5));
 

@@ -41,6 +41,12 @@ public:
 		uint                          pointsPerCell = 16,
 		uint                          maxDepth      = 64,
 		bool                          balanced      = false);
+	template<typename MeshType>
+	KDTree(
+		const MeshType& m,
+		uint                          pointsPerCell = 16,
+		uint                          maxDepth      = 64,
+		bool                          balanced      = false);
 
 	uint      nearestNeighborIndex(const PointType& queryPoint, Scalar& dist = dummyScalar) const;
 	PointType nearestNeighbor(const PointType& queryPoint, Scalar& dist = dummyScalar) const;
