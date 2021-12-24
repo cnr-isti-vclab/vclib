@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_STAT_H
 #define VCL_ALGORITHMS_STAT_H
 
-#include <utility>
+#include <vector>
 
 #include <vclib/math/matrix.h>
 
@@ -61,8 +61,11 @@ typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType&
 template<typename MeshType>
 typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m);
 
+template<typename PointType>
+Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
+
 template<typename MeshType>
-Matrix33<double> covarianceMatrix(const MeshType& m);
+Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
 
 } // namespace vcl
 

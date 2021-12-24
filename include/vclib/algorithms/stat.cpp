@@ -313,6 +313,26 @@ typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m)
 }
 
 /**
+ * @brief Compute the covariance matrix of a set of points.
+ * @param pointVec
+ * @return
+ */
+template<typename PointType>
+Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
+{
+	Matrix33<double> m;
+	m.setZero();
+	PointType barycenter = polygonBarycenter(pointVec);
+
+	// compute covariance matrix
+	for (const PointType& p : pointVec){
+		auto e = (p-barycenter).eigenVector();
+		m += e.transpose()*e; // outer product
+	}
+	return m;
+}
+
+/**
  * @brief Compute covariance matrix of a mesh, i.e. the integral
  * int_{m} { (x-b)(x-b)^T }dx
  * where b is the barycenter and x spans over the mesh m
@@ -321,7 +341,7 @@ typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m)
  * @return The 3x3 covariance matrix of the given mesh.
  */
 template<typename MeshType>
-Matrix33<double> covarianceMatrix(const MeshType& m)
+Matrix33<double> covarianceMatrixOfMesh(const MeshType& m)
 {
 	vcl::requireVertices<MeshType>();
 	vcl::requireFaces<MeshType>();

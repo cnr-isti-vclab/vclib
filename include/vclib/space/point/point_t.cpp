@@ -118,6 +118,12 @@ void Point<Scalar, N>::normalize()
 }
 
 template<typename Scalar, int N>
+const Eigen::Matrix<Scalar, 1, N>& Point<Scalar, N>::eigenVector() const
+{
+	return p;
+}
+
+template<typename Scalar, int N>
 Scalar& Point<Scalar, N>::operator()(uint i)
 {
 	return p(i);

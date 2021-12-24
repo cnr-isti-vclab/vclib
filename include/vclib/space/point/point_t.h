@@ -64,16 +64,18 @@ public:
 	VCL_ENABLE_IF(U==3, Point)
 	cross(const Point<Scalar, N>& p1) const;
 
-	Scalar       norm() const;
-	Scalar       squaredNorm() const;
-	uint size() const;
+	Scalar norm() const;
+	Scalar squaredNorm() const;
+	uint   size() const;
 
 	void setConstant(Scalar s);
 	void setZero();
 	void setOnes();
 
 	Point<Scalar, N> normalized() const;
-	void normalize();
+	void             normalize();
+
+	const Eigen::Matrix<Scalar, 1, N>& eigenVector() const;
 
 	// operators
 	Scalar&       operator()(uint i);
