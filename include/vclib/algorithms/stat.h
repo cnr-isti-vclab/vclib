@@ -65,6 +65,14 @@ template<typename PointType>
 Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
 
 template<typename MeshType>
+Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
+
+template<typename PointType>
+Matrix33<double> weightedCovarianceMatrixOfPointCloud(
+	const std::vector<PointType>& pointVec,
+	const std::vector<typename PointType::ScalarType>& weigths);
+
+template<typename MeshType>
 Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
 
 } // namespace vcl

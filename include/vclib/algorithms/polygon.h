@@ -40,6 +40,12 @@ PointType triangleBarycenter(const PointType& p0, const PointType& p1, const Poi
 template<typename Triangle, typename PointType = Point3f>
 PointType triangleBarycenter(const Triangle& t);
 
+template <typename PointType>
+PointType triangleWeightedBarycenter(
+	const PointType& p0, typename PointType::ScalarType w0,
+	const PointType& p1, typename PointType::ScalarType w1,
+	const PointType& p2, typename PointType::ScalarType w2);
+
 template<typename PointType>
 typename PointType::ScalarType
 triangleArea(const PointType& p0, const PointType& p1, const PointType& p2);
@@ -58,6 +64,11 @@ PointType polygonBarycenter(const std::vector<PointType>& p);
 
 template<typename Polygon, typename PointType = Point3f>
 PointType polygonBarycenter(const Polygon& p);
+
+template<typename PointType>
+PointType polygonWeighedBarycenter(
+	const std::vector<PointType>&                      p,
+	const std::vector<typename PointType::ScalarType>& w);
 
 template<typename PointType>
 typename PointType::ScalarType polygonArea(const std::vector<PointType>& p);

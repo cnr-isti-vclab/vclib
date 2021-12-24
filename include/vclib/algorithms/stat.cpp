@@ -315,7 +315,7 @@ typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m)
 /**
  * @brief Compute the covariance matrix of a set of points.
  * @param pointVec
- * @return
+ * @return The 3x3 covariance matrix of the given set of points.
  */
 template<typename PointType>
 Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
@@ -330,6 +330,60 @@ Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& poin
 		m += e.transpose()*e; // outer product
 	}
 	return m;
+}
+
+/**
+ * @brief Compute the covariance matrix of a Point Cloud Mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *
+ * @param m
+ * @return The 3x3 covariance matrix of the given point cloud.
+ */
+template<typename MeshType>
+Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m)
+{
+	vcl::requireVertices<MeshType>();
+
+	using VertexType = typename MeshType::VertexType;
+
+	auto barycenter = vcl::barycenter(m);
+
+	Matrix33<double> mm;
+	mm.setZero();
+	// compute covariance matrix
+	for (const VertexType& v : m.vertices()){
+		auto e = (v.coord()-barycenter).eigenVector();
+		m += e.transpose()*e; // outer product
+	}
+	return m;
+}
+
+/**
+ * @brief Compute the weighted covariance matrix of a set of points.
+ * @param pointVec
+ * @param weights
+ * @return
+ */
+template<typename PointType>
+Matrix33<double> weightedCovarianceMatrixOfPointCloud(
+	const std::vector<PointType>& pointVec,
+	const std::vector<typename PointType::ScalarType>& weights)
+{
+	Matrix33<double> m;
+	m.setZero();
+	PointType barycenter = polygonWeighedBarycenter(pointVec, weights);
+
+	// compute covariance matrix
+	typename PointType::ScalarType wsum = 0;
+	for (uint i = 0; i < pointVec.size(); ++i){
+		auto e = ((pointVec[i]-barycenter)*weights[i]).eigenVector();
+		m += e.transpose()*e; // outer product
+		wsum += weights[i];
+	}
+	return m / wsum;
 }
 
 /**

@@ -108,6 +108,26 @@ PointType triangleBarycenter(const Triangle& t)
 }
 
 /**
+ * @brief Computes the weighted barycenter of the triangle composed by the points p0, p1, and p2.
+ *
+ * @param[in] p0: first point of the triangle.
+ * @param[in] w0: weight of the first point of the triangle.
+ * @param[in] p1: second point of the triangle.
+ * @param[in] w1: weight of the second point of the triangle.
+ * @param[in] p2: third point of the triangle.
+ * @param[in] w2: weight of the third point of the triangle.
+ * @return The weighted barycenter of the triangle composed by p0, p1 and p2.
+ */
+template <typename PointType>
+PointType triangleWeightedBarycenter(
+	const PointType& p0, typename PointType::ScalarType w0,
+	const PointType& p1, typename PointType::ScalarType w1,
+	const PointType& p2, typename PointType::ScalarType w2)
+{
+	return (p0 * w0 + p1 * w1 + p2 * w2) / (w0 + w1 + w2);
+}
+
+/**
  * @brief Computes the area of the triangle composed by the points p0, p1, and p2, considering
  * that these three points are ordered in counterclockwise order.
  *
@@ -181,9 +201,9 @@ NormalType polygonNormal(const Polygon& p)
 }
 
 /**
- * @brief Computes the barycenter of a std::vector of 3D points representing a polygon.
+ * @brief Computes the barycenter of a std::vector of points representing a polygon.
  *
- * @param[in] p: input container of 3D points representing a polygon.
+ * @param[in] p: input container of points representing a polygon.
  * @return The barycenter of p.
  */
 template<typename PointType>
@@ -213,6 +233,30 @@ PointType polygonBarycenter(const Polygon& p)
 	for (uint i = 0; i < p.vertexNumber(); ++i)
 		bar += p.vertex(i)->coord();
 	return bar / p.vertexNumber();
+}
+
+/**
+ * @brief Computes the weighted barycenter of a std::vector of points representing a polygon.
+ *
+ * @param[in] p: input container of points representing a polygon.
+ * @param[in] w: the weights for each point of the polygon.
+ * @return The weighted barycenter of p.
+ */
+template<typename PointType>
+PointType polygonWeighedBarycenter(
+	const std::vector<PointType>&                      p,
+	const std::vector<typename PointType::ScalarType>& w)
+{
+	PointType bar;
+	bar.setZero();
+	typename PointType::ScalarType wsum = 0;
+
+	for (uint i = 0; i < p.size(); ++i){
+		bar += p[i] * w[i];
+		wsum += w[i];
+	}
+
+	return bar / wsum;
 }
 
 /**
