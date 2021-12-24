@@ -27,6 +27,9 @@
 
 namespace vcl {
 
+template<typename Scalar>
+class KDTree;
+
 template<typename MeshType>
 void laplacianSmoothing(
 	MeshType& m,
@@ -41,6 +44,16 @@ void taubinSmoothing(
 	float     lambda,
 	float     mu,
 	bool      smoothSelected  = false/*, vcl::CallBackPos *cb = 0*/);
+
+template<typename MeshType>
+void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNum);
+
+template<typename MeshType, typename Scalar>
+void smoothPerVertexNormalsPointCloud(
+	MeshType&             m,
+	const KDTree<Scalar>& tree,
+	uint                  neighborNum,
+	uint                  iterNum);
 
 } // namespace vcl
 

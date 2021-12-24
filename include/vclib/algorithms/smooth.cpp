@@ -26,6 +26,7 @@
 #include <vector>
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/kd_tree.h>
 
 namespace vcl {
 
@@ -188,6 +189,78 @@ void taubinSmoothing(
 					v.coord() = v.coord() + delta * mu;
 				}
 			}
+		}
+	}
+}
+
+/**
+ * @brief smoothPerVertexNormalsPointCloud
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Normal
+ *
+ * @param m
+ * @param neighborNum
+ * @param iterNum
+ */
+template<typename MeshType>
+void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNum)
+{
+	vcl::requireVertices<MeshType>();
+
+	using Scalar = typename MeshType::VertexType::CoordType::ScalarType;
+	KDTree<Scalar> tree(m);
+	updatePerVertexNormalsPointCloud(m, tree, neighborNum, iterNum);
+}
+
+/**
+ * @brief smoothPerVertexNormalsPointCloud
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Normal
+ *
+ * @param m
+ * @param tree
+ * @param neighborNum
+ * @param iterNum
+ */
+template<typename MeshType, typename Scalar>
+void smoothPerVertexNormalsPointCloud(
+	MeshType&             m,
+	const KDTree<Scalar>& tree,
+	uint                  neighborNum,
+	uint                  iterNum)
+{
+	vcl::requireVertices<MeshType>();
+	vcl::requirePerVertexNormal(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using NormalType = typename VertexType::NormalType;
+
+	std::vector<NormalType> TD(m.vertexContainerSize(), NormalType(0,0,0));
+
+	for (uint ii = 0; ii < iterNum; ++ii){
+		for (const VertexType& v : m.vertices()) {
+			std::vector<Scalar> distances;
+
+			std::vector<uint>   neighbors =
+				tree.kNearestNeighborsIndices(v.coord(), neighborNum, distances);
+
+			for (uint nid : neighbors){
+				if (m.vertex(nid).normal() * v.normal() > 0) {
+					TD[m.index(v)] += m.vertex(nid).normal();
+				}
+				else {
+					TD[m.index(v)] -= m.vertex(nid).normal();
+				}
+			}
+		}
+		for (VertexType& v : m.vertices()){
+			v.normal() = TD[m.index(v)];
 		}
 	}
 }
