@@ -144,11 +144,11 @@ ScalarType triangleArea(const Triangle& t)
  * @param[in] p: input container of 3D points representing a polygon.
  * @return The normal of p.
  */
-template<typename Scalar, typename NormalType>
-NormalType polygonNormal(const std::vector<Point3<Scalar>>& p)
+template<typename PointType>
+PointType polygonNormal(const std::vector<PointType>& p)
 {
 	// compute the sum of normals for each triplet of consecutive points
-	NormalType sum;
+	PointType sum;
 	sum.setZero();
 	for (uint i = 0; i < p.size(); ++i) {
 		sum += triangleNormal(
@@ -186,13 +186,13 @@ NormalType polygonNormal(const Polygon& p)
  * @param[in] p: input container of 3D points representing a polygon.
  * @return The barycenter of p.
  */
-template<typename Scalar>
-Point3<Scalar> polygonBarycenter(const std::vector<Point3<Scalar>>& p)
+template<typename PointType>
+PointType polygonBarycenter(const std::vector<PointType>& p)
 {
-	Point3<Scalar> bar;
+	PointType bar;
 	bar.setZero();
 
-	for (const Point3<Scalar>& pp : p)
+	for (const PointType& pp : p)
 		bar += pp;
 	return bar / p.size();
 }
@@ -222,14 +222,15 @@ PointType polygonBarycenter(const Polygon& p)
  * @param[in] p: input container of 3D points representing a polygon.
  * @return The area of p.
  */
-template<typename Scalar>
-Scalar polygonArea(const std::vector<Point3<Scalar>>& p)
+template<typename PointType>
+typename PointType::Scalar polygonArea(const std::vector<PointType>& p)
 {
-	Point3<Scalar> bar = polygonBarycenter(p);
+	using Scalar = typename PointType::ScalarType;
+	PointType bar = polygonBarycenter(p);
 	Scalar area = 0;
 	for (uint i = 0; i < p.size(); ++i){
-		const Point3<Scalar>& p0 = p[i];
-		const Point3<Scalar>& p1 = p[(i+1)%p.size()];
+		const PointType& p0 = p[i];
+		const PointType& p1 = p[(i+1)%p.size()];
 		area += triangleArea(p0, p1, bar);
 	}
 	return area;
@@ -292,7 +293,7 @@ std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon)
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
 {
-	Point3<Scalar> n = polygonNormal<Scalar, Point3<Scalar>>(polygon);
+	Point3<Scalar> n = polygonNormal(polygon);
 	Point3<Scalar> u, v;
 	getOrthoBase(n, u, v);
 

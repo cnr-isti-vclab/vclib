@@ -47,20 +47,20 @@ triangleArea(const PointType& p0, const PointType& p1, const PointType& p2);
 template<typename Triangle, typename ScalarType = double>
 ScalarType triangleArea(const Triangle& t);
 
-template<typename Scalar, typename NormalType>
-NormalType polygonNormal(const std::vector<Point3<Scalar>>& p);
+template<typename PointType>
+PointType polygonNormal(const std::vector<PointType>& p);
 
 template<typename Polygon, typename NormalType = Point3f>
 NormalType polygonNormal(const Polygon& p);
 
-template<typename Scalar>
-Point3<Scalar> polygonBarycenter(const std::vector<Point3<Scalar>>& p);
+template<typename PointType>
+PointType polygonBarycenter(const std::vector<PointType>& p);
 
 template<typename Polygon, typename PointType = Point3f>
 PointType polygonBarycenter(const Polygon& p);
 
-template<typename Scalar>
-Scalar polygonArea(const std::vector<Point3<Scalar>>& p);
+template<typename PointType>
+typename PointType::ScalarType polygonArea(const std::vector<PointType>& p);
 
 template<typename Polygon, typename ScalarType = double>
 ScalarType polygonArea(const Polygon& p);
