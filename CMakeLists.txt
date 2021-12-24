@@ -190,6 +190,7 @@ set(HEADERS
 	include/vclib/space/box.h
 	include/vclib/space/color.h
 	include/vclib/space/kd_tree.h
+	include/vclib/space/plane.h
 	include/vclib/space/point.h
 	include/vclib/space/principal_curvature.h
 	include/vclib/space/tex_coord.h
@@ -294,6 +295,7 @@ set(SOURCES
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/kd_tree.cpp
+	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
 	include/vclib/space/tex_coord.cpp
