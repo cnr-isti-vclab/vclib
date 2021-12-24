@@ -20,49 +20,34 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TEX_COORD_H
-#define VCL_TEX_COORD_H
+#ifndef VCL_IO_LOAD_OBJ_H
+#define VCL_IO_LOAD_OBJ_H
 
-#include "point/point2.h"
+#include "file_mesh_info.h"
 
-namespace vcl {
+namespace vcl::io {
 
-template<typename Scalar>
-class TexCoord
-{
-public:
-	using ScalarType = Scalar;
+template<typename MeshType>
+MeshType loadObj(const std::string& filename, bool enableOptionalComponents = true);
 
-	TexCoord();
+template<typename MeshType>
+MeshType loadObj(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	bool               enableOptionalComponents = true);
 
-	Scalar  u() const;
-	Scalar  v() const;
-	Scalar& u();
-	Scalar& v();
-	void    setU(Scalar s);
-	void    setV(Scalar s);
-	void    set(Scalar u, Scalar v);
+template<typename MeshType>
+void loadObj(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
 
-	short  nTexture() const;
-	short& nTexture();
+template<typename MeshType>
+void loadObj(
+	MeshType&          m,
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	bool               enableOptionalComponents = true);
 
-	// operators
-	Scalar&       operator()(uint i);
-	const Scalar& operator()(uint i) const;
-	Scalar&       operator[](uint i);
-	const Scalar& operator[](uint i) const;
+} // namespace vcl::io
 
-private:
-	Point2<Scalar> coord;
-	short          n;
-};
+#include "load_obj.cpp"
 
-using TexCoordi = TexCoord<int>;
-using TexCoordf = TexCoord<float>;
-using TexCoordd = TexCoord<double>;
-
-} // namespace vcl
-
-#include "tex_coord.cpp"
-
-#endif // VCL_TEX_COORD_H
+#endif // VCL_IO_LOAD_OBJ_H

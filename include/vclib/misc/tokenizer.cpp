@@ -28,16 +28,16 @@ inline Tokenizer::Tokenizer() : string(""), separator('\0')
 {
 }
 
-inline Tokenizer::Tokenizer(const char* string, char separator) :
+inline Tokenizer::Tokenizer(const char* string, char separator, bool jumpEmptyTokens) :
 		string(string), separator(separator)
 {
-	split();
+	split(jumpEmptyTokens);
 }
 
-inline Tokenizer::Tokenizer(const std::string& string, char separator) :
+inline Tokenizer::Tokenizer(const std::string& string, char separator, bool jumpEmptyTokens) :
 		string(string.c_str()), separator(separator)
 {
-	split();
+	split(jumpEmptyTokens);
 }
 
 inline Tokenizer::iterator Tokenizer::begin() const
@@ -64,7 +64,7 @@ inline const std::string& Tokenizer::operator[](uint i) const
  * @brief Tokenizer::split
  * https://stackoverflow.com/questions/53849/how-do-i-tokenize-a-string-in-c
  */
-inline void Tokenizer::split()
+inline void Tokenizer::split(bool jumpEmptyTokens)
 {
 	const char* str = string;
 	splitted.clear();
@@ -75,6 +75,9 @@ inline void Tokenizer::split()
 				str++;
 			if (begin != str)
 				splitted.push_back(std::string(begin, str));
+			else if (!jumpEmptyTokens){
+				splitted.push_back(std::string());
+			}
 		} while ('\0' != *str++);
 	}
 }

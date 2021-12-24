@@ -145,9 +145,25 @@ vcl::Tokenizer nextNonEmptyTokenizedLine(std::ifstream& file, char separator)
 		if (!file) {
 			throw vcl::MalformedFileException("Unexpected end of file.");
 		}
-		str::removeWindowsNewLine(line);
-		tokenizer = vcl::Tokenizer(line, separator);
+		if (line.size() > 0) {
+			str::removeWindowsNewLine(line);
+			tokenizer = vcl::Tokenizer(line, separator);
+		}
 	} while (tokenizer.begin() == tokenizer.end());
+	return tokenizer;
+}
+
+vcl::Tokenizer nextNonEmptyTokenizedLineNoThrow(std::ifstream& file, char separator)
+{
+	std::string line;
+	vcl::Tokenizer tokenizer;
+	do {
+		std::getline(file, line);
+		if (file && line.size() > 0) {
+			str::removeWindowsNewLine(line);
+			tokenizer = vcl::Tokenizer(line, separator);
+		}
+	} while (file && tokenizer.begin() == tokenizer.end());
 	return tokenizer;
 }
 

@@ -37,8 +37,8 @@ class Tokenizer
 {
 public:
 	Tokenizer();
-	Tokenizer(const char* string, char separator);
-	Tokenizer(const std::string& string, char separator);
+	Tokenizer(const char* string, char separator, bool jumpEmptyTokens = true);
+	Tokenizer(const std::string& string, char separator, bool jumpEmptyTokens = true);
 	
 	using iterator = std::vector<std::string>::const_iterator;
 	
@@ -49,7 +49,7 @@ public:
 	const std::string& operator[](uint i) const;
 	
 private:
-	void split();
+	void split(bool jumpEmptyTokens = true);
 	const char* string;
 	char separator;
 	std::vector<std::string> splitted;

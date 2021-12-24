@@ -171,6 +171,7 @@ set(HEADERS
 	include/vclib/misc/vcl_types.h
 	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/io/file_mesh_info.h
+	include/vclib/io/load_obj.h
 	include/vclib/io/load_off.h
 	include/vclib/io/load_ply.h
 	include/vclib/io/save_obj.h
@@ -279,6 +280,7 @@ set(SOURCES
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
 	include/vclib/io/file_mesh_info.cpp
+	include/vclib/io/load_obj.cpp
 	include/vclib/io/load_off.cpp
 	include/vclib/io/load_ply.cpp
 	include/vclib/io/save_obj.cpp

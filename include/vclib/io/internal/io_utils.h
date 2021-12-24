@@ -43,6 +43,7 @@ template<typename MeshType>
 void enableOptionalComponents(FileMeshInfo& info, MeshType& m);
 
 vcl::Tokenizer nextNonEmptyTokenizedLine(std::ifstream& file, char separator = ' ');
+vcl::Tokenizer nextNonEmptyTokenizedLineNoThrow(std::ifstream& file, char separator = ' ');
 
 } // namespace vcl::io::internal
 
