@@ -25,6 +25,7 @@
 #include <map>
 
 #include <vclib/algorithms/polygon.h>
+#include <vclib/misc/file_info.h>
 
 #include "internal/io_read.h"
 #include "internal/io_utils.h"
@@ -33,6 +34,138 @@
 namespace vcl::io {
 
 namespace internal {
+
+template<typename MeshType>
+void loadMaterials(
+	std::map<std::string, obj::Material>& materialMap,
+	MeshType& mesh,
+	const std::string& mtllib)
+{
+	std::ifstream file = loadFileStream(mtllib);
+	std::string matName;
+	obj::Material mat;
+
+	do {
+		vcl::Tokenizer tokens = nextNonEmptyTokenizedLineNoThrow(file);
+		vcl::Tokenizer::iterator token;
+		std::string header = *token++;
+		if (header == "newmtl"){
+			if (!matName.empty())
+				materialMap[matName] = mat;
+			mat = obj::Material();
+		}
+		if (header == "Ka") {
+			if (tokens.size() >= 4) {
+				if (*token != "spectral" && *token != "xyz") {
+					mat.Ka.x() = readFloat<float>(token);
+					mat.Ka.y() = readFloat<float>(token);
+					mat.Ka.z() = readFloat<float>(token);
+				}
+			}
+		}
+		if (header == "Kd") {
+			if (tokens.size() >= 4) {
+				if (*token != "spectral" && *token != "xyz") {
+					mat.Kd.x() = readFloat<float>(token);
+					mat.Kd.y() = readFloat<float>(token);
+					mat.Kd.z() = readFloat<float>(token);
+					mat.hasColor = true;
+				}
+			}
+		}
+		if (header == "Ks") {
+			if (tokens.size() >= 4) {
+				if (*token != "spectral" && *token != "xyz") {
+					mat.Ks.x() = readFloat<float>(token);
+					mat.Ks.y() = readFloat<float>(token);
+					mat.Ks.z() = readFloat<float>(token);
+				}
+			}
+		}
+		if (header == "d" || header == "Tr") {
+			if ((*token)[0] == '-') token++;
+			mat.d = readFloat<float>(token);
+		}
+		if (header == "Ns") {
+			mat.Ns = readFloat<float>(token);
+		}
+		if (header == "illum") {
+			mat.illum = readFloat<int>(token);
+		}
+		if (header == "map_Kd") {
+			// need to manage args
+			while ((*token)[0] == '-') {
+				if (*token == "-o" || *token == "-s" || *token == "-t"){
+					// ignore the argument and the three values
+					++token; ++token; ++token; ++token;
+				}
+				if (*token == "-mm"){
+					// ignore the argument and the two values
+					++token; ++token; ++token;
+				}
+				if (*token == "-blendu" || *token == "-blendv" || *token == "-cc" ||
+					*token == "-clamp" || *token == "-texres") {
+					// ignore the argument and the value
+					++token; ++token;
+				}
+			}
+			mat.map_Kd = *token;
+			mat.mapId = mesh.textureNumber();
+			mat.hasTexture = true;
+			mesh.pushTexture(mat.map_Kd);
+		}
+	} while(file);
+	if (!matName.empty())
+		materialMap[matName] = mat;
+}
+
+template<typename MeshType>
+void loadVertexCoord(
+	MeshType&                    m,
+	vcl::Tokenizer::iterator&    token,
+	FileMeshInfo&                loadedInfo,
+	const vcl::Tokenizer&        tokens,
+	const obj::Material&         currentMaterial,
+	bool                         enableOptionalComponents)
+{
+	// first, need to set that I'm loading vertices
+	if (m.vertexNumber() == 0) {
+		loadedInfo.setVertices();
+		loadedInfo.setVertexCoords();
+	}
+	uint vid = m.addVertex();
+	for (uint i = 0; i < 3; ++i) {
+		m.vertex(vid).coord()[i] = internal::readDouble<double>(token);
+	}
+	if (hasPerVertexColor<MeshType>()){
+		if (vid == 0) {
+			// if the current material has a valid color, of the file stores the vertex color in the
+			// non-standard way (color values after the coordinates)
+			if (currentMaterial.hasColor || tokens.size() > 6) {
+				if (enableOptionalComponents) {
+					enableIfPerVertexColorOptional(m);
+					loadedInfo.setVertexColors();
+				}
+				else {
+					if (isPerVertexColorEnabled(m))
+						loadedInfo.setVertexColors();
+				}
+			}
+		}
+		if (loadedInfo.hasVertexColors()) {
+			// the file has the nonstandard way to store vertex colors, after the coords...
+			if (tokens.size() > 6) {
+				m.vertex(vid).color().setRedf(internal::readFloat<float>(token));
+				m.vertex(vid).color().setGreenf(internal::readFloat<float>(token));
+				m.vertex(vid).color().setBluef(internal::readFloat<float>(token));
+			}
+			else if (currentMaterial.hasColor) {
+				m.vertex(vid).color() = currentMaterial.color();
+			}
+		}
+	}
+}
+
 
 template<typename MeshType>
 void loadVertexNormal(
@@ -74,9 +207,10 @@ void loadVertexNormal(
 template<typename MeshType>
 void loadFace(
 	MeshType& m,
+	FileMeshInfo&         loadedInfo,
 	const vcl::Tokenizer& tokens,
 	const std::vector<vcl::TexCoordd>& wedgeTexCoords,
-	FileMeshInfo&         loadedInfo,
+	const obj::Material&         currentMaterial,
 	bool                  enableOptionalComponents)
 {
 	using FaceType = typename MeshType::FaceType;
@@ -114,13 +248,64 @@ void loadFace(
 		for (uint i = 0; i < vids.size(); ++i) {
 			if (vids[i] >= m.vertexNumber()) {
 				throw vcl::MalformedFileException(
-					"Bad vertex index for face " + std::to_string(i));
+					"Bad vertex index for face " + std::to_string(fid));
 			}
 			f.vertex(i) = &m.vertex(vids[i]);
+		}
+		if constexpr(hasPerFaceWedgeTexCoords<MeshType>()) {
+			// first, need to check if I can store wedge texcoords in the mesh
+			if (fid == 0) {
+				if (enableOptionalComponents) {
+					enableIfPerFaceWedgeTexCoordsOptional(m);
+					loadedInfo.setFaceWedgeTexCoords();
+				}
+				else {
+					if (isPerFaceWedgeTexCoordsEnabled(m))
+						loadedInfo.setFaceWedgeTexCoords();
+				}
+			}
+			if (loadedInfo.hasFaceWedgeTexCoords()) {
+				if (wids.size() == vids.size()) {
+					for (uint i = 0; i < wids.size(); ++i) {
+						if (wids[i] >= wedgeTexCoords.size()) {
+							throw vcl::MalformedFileException(
+								"Bad texcoord index for face " + std::to_string(fid));
+						}
+						f.wedgeTexCoord(i) = wedgeTexCoords[wids[i]];
+						if (currentMaterial.hasTexture){
+							f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
+						}
+					}
+				}
+			}
 		}
 	}
 	else { // split needed
 		addTriangleFacesFromPolygon(m, f, vids);
+	}
+
+	if (hasPerFaceColor<MeshType>()){
+		if (fid == 0) {
+			if (currentMaterial.hasColor) {
+				if (enableOptionalComponents) {
+					enableIfPerFaceColorOptional(m);
+					loadedInfo.setFaceColors();
+				}
+				else {
+					if (isPerFaceColorEnabled(m))
+						loadedInfo.setFaceColors();
+				}
+			}
+		}
+		if (loadedInfo.hasFaceColors()) {
+			if (currentMaterial.hasColor) {
+				m.face(fid).color() = currentMaterial.color();
+				// in case the loaded polygon has been triangulated in the last n triangles of mesh
+				for (uint ff = m.index(fid); ff < m.faceNumber(); ++ff) {
+					m.face(ff).color() = currentMaterial.color();
+				}
+			}
+		}
 	}
 }
 
@@ -158,6 +343,23 @@ void loadObj(
 {
 	std::ifstream file = internal::loadFileStream(filename);
 	std::map<uint, vcl::Point3d> mapNormalsCache;
+
+	std::map<std::string, obj::Material> materialMap;
+	obj::Material currentMaterial;
+
+	// some obj files do not declare the material file name with mtllib, but they assume that
+	// material file has the same name of the obj file. Therefore, we first load this file if it
+	// exists.
+
+	std::string stdmtlfile = fileInfo::pathWithoutFilename(filename) +
+							 fileInfo::filenameWithoutExtension(filename) + ".mtl";
+	try {
+		internal::loadMaterials(materialMap, m, stdmtlfile);
+	}
+	catch(vcl::CannotOpenFileException){
+		// nothing to do, this file was missing but was a fallback for some type of files...
+	}
+
 	do {
 		uint vn = 0;
 		std::vector<vcl::TexCoordd> wedgeTexCoords;
@@ -166,16 +368,20 @@ void loadObj(
 		if (file) {
 			vcl::Tokenizer::iterator token = tokens.begin();
 			std::string header = *token++;
+			if (header == "mtllib") {
+				std::string mtlfile = fileInfo::pathWithoutFilename(filename) + "/" + *token;
+				internal::loadMaterials(materialMap, m, mtlfile);
+			}
+			if (header == "usemtl") {
+				std::string matname = *token;
+				auto it = materialMap.find(matname);
+				if (it != materialMap.end()) {
+					currentMaterial = it->second;
+				}
+			}
 			if (header == "v") {
-				// first, need to set that I'm loading vertices
-				if (m.vertexNumber() == 0) {
-					loadedInfo.setVertices();
-					loadedInfo.setVertexCoords();
-				}
-				uint vid = m.addVertex();
-				for (uint i = 0; i < 3; ++i) {
-					m.vertex(vid).coord()[i] = internal::readDouble<double>(token);
-				}
+				internal::loadVertexCoord(
+					m, token, loadedInfo, tokens, currentMaterial, enableOptionalComponents);
 			}
 			if constexpr(hasPerVertexNormal<MeshType>()) {
 				if (header == "vn") {
@@ -197,7 +403,13 @@ void loadObj(
 			}
 			if constexpr (hasFaces<MeshType>()) {
 				if (header == "f") {
-					internal::loadFace(m, tokens, loadedInfo, enableOptionalComponents);
+					internal::loadFace(
+						m,
+						loadedInfo,
+						tokens,
+						wedgeTexCoords,
+						currentMaterial,
+						enableOptionalComponents);
 				}
 			}
 		}

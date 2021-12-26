@@ -54,8 +54,7 @@ inline void separateExtensionFromFilename(
 		extension = fullname.substr(lastindex, fullname.size());
 	}
 	else {
-		rawname = "";
-		extension = "";
+		rawname = fullname;
 	}
 }
 
@@ -85,8 +84,7 @@ inline void separateFilenameFromPath(
 		filename = fullpath.substr(lastindex+1, fullpath.size());
 	}
 	else {
-		path = "";
-		filename = "";
+		filename = fullpath;
 	}
 }
 

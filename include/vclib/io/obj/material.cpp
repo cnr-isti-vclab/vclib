@@ -33,6 +33,7 @@ inline Material::Material(const Color& c) : hasColor(true)
 	Kd.x() = c.redF();
 	Kd.y() = c.greenF();
 	Kd.z() = c.blueF();
+	d = c.alphaF();
 }
 
 inline Material::Material(const std::string& txtName) : map_Kd(txtName), hasTexture(true)
@@ -45,11 +46,27 @@ inline Material::Material(const Color& c, const std::string& txtName) :
 	Kd.x() = c.redF();
 	Kd.y() = c.greenF();
 	Kd.z() = c.blueF();
+	d = c.alphaF();
 }
 
 inline bool Material::isEmpty() const
 {
 	return !hasColor && !hasTexture;
+}
+
+inline Color Material::color() const
+{
+	return vcl::Color(Kd.x()*255, Kd.y()*255, Kd.z()* 255, d*255);
+}
+
+inline const std::string& Material::texture() const
+{
+	return map_Kd;
+}
+
+inline uint Material::textureId() const
+{
+	return mapId;
 }
 
 /**
@@ -68,6 +85,8 @@ inline bool Material::operator<(const Material& m) const
 			return false;
 		if (Kd != m.Kd)
 			return Kd < m.Kd;
+		if (d != m.d)
+			return d < m.d;
 	}
 	else if (m.hasColor) { // no color < color
 		return true;
@@ -102,6 +121,7 @@ std::ostream& operator<<(std::ostream& out, const Material& m)
 {
 	if (m.hasColor) {
 		out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z() << std::endl;
+		out << "d " << m.d << std::endl;
 	}
 	if (m.hasTexture) {
 		out << "map_Kd " << m.map_Kd << std::endl;

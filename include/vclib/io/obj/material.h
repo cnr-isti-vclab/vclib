@@ -23,8 +23,8 @@
 #ifndef VCL_IO_OBJ_MATERIAL_H
 #define VCL_IO_OBJ_MATERIAL_H
 
-#include <vclib/space/point.h>
 #include <vclib/space/color.h>
+#include <vclib/space/point.h>
 
 namespace vcl::io::obj {
 
@@ -37,26 +37,28 @@ struct Material
 
 	bool isEmpty() const;
 
+	vcl::Color         color() const;
+	const std::string& texture() const;
+	uint textureId() const;
+
 	bool operator<(const Material& m) const;
 	bool operator==(const Material& m) const;
 	bool operator!=(const Material& m) const;
 
-	Point3f Ka=Point3f(0.2f, 0.2f, 0.2f);//ambient
-	Point3f Kd=Point3f(1.0f, 1.0f, 1.0f);//diffuse
-	Point3f Ks=Point3f(1.0f, 1.0f, 1.0f);//specular
+	Point3f Ka = Point3f(0.2f, 0.2f, 0.2f); // ambient
+	Point3f Kd = Point3f(1.0f, 1.0f, 1.0f); // diffuse
+	Point3f Ks = Point3f(1.0f, 1.0f, 1.0f); // specular
 
-	float d;//alpha
-	float Tr=1.0f;//alpha
+	float d = 1.0f;  // alpha
 
-	int illum=2;//specular illumination
-	float Ns=0.f;
+	int   illum = 2; // specular illumination
+	float Ns    = 0.f;
 
-	std::string map_Kd; //filename texture
+	std::string map_Kd; // filename texture
+	uint        mapId;  // id of the texture in the mesh, used when loading materials
 
-	bool hasColor = false;
+	bool hasColor   = false;
 	bool hasTexture = false;
-
-
 };
 
 std::ostream& operator<<(std::ostream& out, const Material& m);
