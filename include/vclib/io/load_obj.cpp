@@ -47,72 +47,75 @@ void loadMaterials(
 
 	do {
 		vcl::Tokenizer tokens = nextNonEmptyTokenizedLineNoThrow(file);
-		vcl::Tokenizer::iterator token;
-		std::string header = *token++;
-		if (header == "newmtl"){
-			if (!matName.empty())
-				materialMap[matName] = mat;
-			mat = obj::Material();
-		}
-		if (header == "Ka") {
-			if (tokens.size() >= 4) {
-				if (*token != "spectral" && *token != "xyz") {
-					mat.Ka.x() = readFloat<float>(token);
-					mat.Ka.y() = readFloat<float>(token);
-					mat.Ka.z() = readFloat<float>(token);
+		if (file) {
+			vcl::Tokenizer::iterator token = tokens.begin();
+			std::string header = *token++;
+			if (header == "newmtl"){
+				if (!matName.empty())
+					materialMap[matName] = mat;
+				mat = obj::Material();
+				matName = *token;
+			}
+			if (header == "Ka") {
+				if (tokens.size() >= 4) {
+					if (*token != "spectral" && *token != "xyz") {
+						mat.Ka.x() = readFloat<float>(token);
+						mat.Ka.y() = readFloat<float>(token);
+						mat.Ka.z() = readFloat<float>(token);
+					}
 				}
 			}
-		}
-		if (header == "Kd") {
-			if (tokens.size() >= 4) {
-				if (*token != "spectral" && *token != "xyz") {
-					mat.Kd.x() = readFloat<float>(token);
-					mat.Kd.y() = readFloat<float>(token);
-					mat.Kd.z() = readFloat<float>(token);
-					mat.hasColor = true;
+			if (header == "Kd") {
+				if (tokens.size() >= 4) {
+					if (*token != "spectral" && *token != "xyz") {
+						mat.Kd.x() = readFloat<float>(token);
+						mat.Kd.y() = readFloat<float>(token);
+						mat.Kd.z() = readFloat<float>(token);
+						mat.hasColor = true;
+					}
 				}
 			}
-		}
-		if (header == "Ks") {
-			if (tokens.size() >= 4) {
-				if (*token != "spectral" && *token != "xyz") {
-					mat.Ks.x() = readFloat<float>(token);
-					mat.Ks.y() = readFloat<float>(token);
-					mat.Ks.z() = readFloat<float>(token);
+			if (header == "Ks") {
+				if (tokens.size() >= 4) {
+					if (*token != "spectral" && *token != "xyz") {
+						mat.Ks.x() = readFloat<float>(token);
+						mat.Ks.y() = readFloat<float>(token);
+						mat.Ks.z() = readFloat<float>(token);
+					}
 				}
 			}
-		}
-		if (header == "d" || header == "Tr") {
-			if ((*token)[0] == '-') token++;
-			mat.d = readFloat<float>(token);
-		}
-		if (header == "Ns") {
-			mat.Ns = readFloat<float>(token);
-		}
-		if (header == "illum") {
-			mat.illum = readFloat<int>(token);
-		}
-		if (header == "map_Kd") {
-			// need to manage args
-			while ((*token)[0] == '-') {
-				if (*token == "-o" || *token == "-s" || *token == "-t"){
-					// ignore the argument and the three values
-					++token; ++token; ++token; ++token;
-				}
-				if (*token == "-mm"){
-					// ignore the argument and the two values
-					++token; ++token; ++token;
-				}
-				if (*token == "-blendu" || *token == "-blendv" || *token == "-cc" ||
-					*token == "-clamp" || *token == "-texres") {
-					// ignore the argument and the value
-					++token; ++token;
-				}
+			if (header == "d" || header == "Tr") {
+				if ((*token)[0] == '-') token++;
+				mat.d = readFloat<float>(token);
 			}
-			mat.map_Kd = *token;
-			mat.mapId = mesh.textureNumber();
-			mat.hasTexture = true;
-			mesh.pushTexture(mat.map_Kd);
+			if (header == "Ns") {
+				mat.Ns = readFloat<float>(token);
+			}
+			if (header == "illum") {
+				mat.illum = readFloat<int>(token);
+			}
+			if (header == "map_Kd") {
+				// need to manage args
+				while ((*token)[0] == '-') {
+					if (*token == "-o" || *token == "-s" || *token == "-t"){
+						// ignore the argument and the three values
+						++token; ++token; ++token; ++token;
+					}
+					if (*token == "-mm"){
+						// ignore the argument and the two values
+						++token; ++token; ++token;
+					}
+					if (*token == "-blendu" || *token == "-blendv" || *token == "-cc" ||
+						*token == "-clamp" || *token == "-texres") {
+						// ignore the argument and the value
+						++token; ++token;
+					}
+				}
+				mat.map_Kd = *token;
+				mat.mapId = mesh.textureNumber();
+				mat.hasTexture = true;
+				mesh.pushTexture(mat.map_Kd);
+			}
 		}
 	} while(file);
 	if (!matName.empty())
@@ -155,9 +158,9 @@ void loadVertexCoord(
 		if (loadedInfo.hasVertexColors()) {
 			// the file has the nonstandard way to store vertex colors, after the coords...
 			if (tokens.size() > 6) {
-				m.vertex(vid).color().setRedf(internal::readFloat<float>(token));
-				m.vertex(vid).color().setGreenf(internal::readFloat<float>(token));
-				m.vertex(vid).color().setBluef(internal::readFloat<float>(token));
+				m.vertex(vid).color().setRedF(internal::readFloat<float>(token));
+				m.vertex(vid).color().setGreenF(internal::readFloat<float>(token));
+				m.vertex(vid).color().setBlueF(internal::readFloat<float>(token));
 			}
 			else if (currentMaterial.hasColor) {
 				m.vertex(vid).color() = currentMaterial.color();
@@ -220,15 +223,18 @@ void loadFace(
 
 	vcl::Tokenizer::iterator token = tokens.begin();
 	++token;
+	vids.resize(tokens.size()-1);
+	wids.reserve(tokens.size()-1);
 	for (uint i = 0; i < tokens.size()-1; ++i) {
 		vcl::Tokenizer subt(*token, '/', false);
 		auto t = subt.begin();
 		vids[i] = readUInt<uint>(t) - 1;
 		if (subt.size() > 1) {
 			if (!t->empty()) {
-				wids[i] = readUInt<uint>(t) - 1;
+				wids.push_back(readUInt<uint>(t) - 1);
 			}
 		}
+		++token;
 	}
 
 	uint fid = m.addFace();
@@ -252,33 +258,6 @@ void loadFace(
 			}
 			f.vertex(i) = &m.vertex(vids[i]);
 		}
-		if constexpr(hasPerFaceWedgeTexCoords<MeshType>()) {
-			// first, need to check if I can store wedge texcoords in the mesh
-			if (fid == 0) {
-				if (enableOptionalComponents) {
-					enableIfPerFaceWedgeTexCoordsOptional(m);
-					loadedInfo.setFaceWedgeTexCoords();
-				}
-				else {
-					if (isPerFaceWedgeTexCoordsEnabled(m))
-						loadedInfo.setFaceWedgeTexCoords();
-				}
-			}
-			if (loadedInfo.hasFaceWedgeTexCoords()) {
-				if (wids.size() == vids.size()) {
-					for (uint i = 0; i < wids.size(); ++i) {
-						if (wids[i] >= wedgeTexCoords.size()) {
-							throw vcl::MalformedFileException(
-								"Bad texcoord index for face " + std::to_string(fid));
-						}
-						f.wedgeTexCoord(i) = wedgeTexCoords[wids[i]];
-						if (currentMaterial.hasTexture){
-							f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
-						}
-					}
-				}
-			}
-		}
 	}
 	else { // split needed
 		addTriangleFacesFromPolygon(m, f, vids);
@@ -299,10 +278,65 @@ void loadFace(
 		}
 		if (loadedInfo.hasFaceColors()) {
 			if (currentMaterial.hasColor) {
-				m.face(fid).color() = currentMaterial.color();
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh
-				for (uint ff = m.index(fid); ff < m.faceNumber(); ++ff) {
+				for (uint ff = fid; ff < m.faceNumber(); ++ff) {
 					m.face(ff).color() = currentMaterial.color();
+				}
+			}
+		}
+	}
+
+	if constexpr(hasPerFaceWedgeTexCoords<MeshType>()) {
+		// first, need to check if I can store wedge texcoords in the mesh
+		if (fid == 0) {
+			if (enableOptionalComponents) {
+				enableIfPerFaceWedgeTexCoordsOptional(m);
+				loadedInfo.setFaceWedgeTexCoords();
+			}
+			else {
+				if (isPerFaceWedgeTexCoordsEnabled(m))
+					loadedInfo.setFaceWedgeTexCoords();
+			}
+		}
+		if (loadedInfo.hasFaceWedgeTexCoords()) {
+			if (wids.size() == vids.size()) {
+				if (!splitFace) { // there wasn't a triangulation of the face
+					// it is safe to assign each wedge texcoord to its position in the face
+					for (uint i = 0; i < wids.size(); ++i) {
+						if (wids[i] >= wedgeTexCoords.size()) {
+							throw vcl::MalformedFileException(
+								"Bad texcoord index for face " + std::to_string(fid));
+						}
+						f.wedgeTexCoord(i) = wedgeTexCoords[wids[i]];
+						if (currentMaterial.hasTexture){
+							f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
+						}
+					}
+				}
+				else {
+					// take read texcoords and map them in the triangulated faces
+					// for each face of the triangulation of the polygon
+					for (uint ff = fid; ff < m.faceNumber(); ++ff) {
+						FaceType& f = m.face(ff);
+						// for each vertex of the face
+						for (uint i = 0; i < f.vertexNumber(); ++i){
+							uint vid = m.index(f.vertex(i));
+							// find the position of the vertex in the vids array
+							auto it = std::find(vids.begin(), vids.end(), vid);
+							assert(it != vids.end());
+							uint pos = it - vids.begin();
+							// check that the texcoord id is valid
+							if (wids[pos] >= wedgeTexCoords.size()) {
+								throw vcl::MalformedFileException(
+									"Bad texcoord index for face " + std::to_string(fid));
+							}
+							// set the wedge texcoord in the same position of the vertex
+							f.wedgeTexCoord(i) = wedgeTexCoords[wids[pos]];
+							if (currentMaterial.hasTexture){
+								f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -343,6 +377,7 @@ void loadObj(
 {
 	std::ifstream file = internal::loadFileStream(filename);
 	std::map<uint, vcl::Point3d> mapNormalsCache;
+	std::vector<vcl::TexCoordd> wedgeTexCoords;
 
 	std::map<std::string, obj::Material> materialMap;
 	obj::Material currentMaterial;
@@ -362,14 +397,13 @@ void loadObj(
 
 	do {
 		uint vn = 0;
-		std::vector<vcl::TexCoordd> wedgeTexCoords;
 
 		vcl::Tokenizer tokens = internal::nextNonEmptyTokenizedLineNoThrow(file);
 		if (file) {
 			vcl::Tokenizer::iterator token = tokens.begin();
 			std::string header = *token++;
 			if (header == "mtllib") {
-				std::string mtlfile = fileInfo::pathWithoutFilename(filename) + "/" + *token;
+				std::string mtlfile = fileInfo::pathWithoutFilename(filename) + *token;
 				internal::loadMaterials(materialMap, m, mtlfile);
 			}
 			if (header == "usemtl") {

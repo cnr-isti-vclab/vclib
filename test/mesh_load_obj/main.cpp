@@ -20,60 +20,15 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TEX_COORD_H
-#define VCL_TEX_COORD_H
+#include <iostream>
 
-#include "point/point2.h"
+#include <vclib/trimesh.h>
+#include <vclib/io/load_obj.h>
 
-namespace vcl {
-
-template<typename Scalar>
-class TexCoord
+int main()
 {
-	template<typename S>
-	friend class TexCoord;
+	vcl::io::FileMeshInfo loadedInfo;
+	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.obj", loadedInfo);
 
-public:
-	using ScalarType = Scalar;
-
-	TexCoord();
-	TexCoord(const TexCoord& t) = default;
-	TexCoord(TexCoord&& t)      = default;
-
-	TexCoord& operator=(const TexCoord& t) = default;
-	TexCoord& operator=(TexCoord&& t)      = default;
-
-	template<typename S>
-	TexCoord(const TexCoord<S>& t);
-
-	Scalar  u() const;
-	Scalar  v() const;
-	Scalar& u();
-	Scalar& v();
-	void    setU(Scalar s);
-	void    setV(Scalar s);
-	void    set(Scalar u, Scalar v);
-
-	short  nTexture() const;
-	short& nTexture();
-
-	// operators
-	Scalar&       operator()(uint i);
-	const Scalar& operator()(uint i) const;
-	Scalar&       operator[](uint i);
-	const Scalar& operator[](uint i) const;
-
-private:
-	Point2<Scalar> coord;
-	short          n;
-};
-
-using TexCoordi = TexCoord<int>;
-using TexCoordf = TexCoord<float>;
-using TexCoordd = TexCoord<double>;
-
-} // namespace vcl
-
-#include "tex_coord.cpp"
-
-#endif // VCL_TEX_COORD_H
+	return 0;
+}

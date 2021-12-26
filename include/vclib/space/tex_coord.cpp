@@ -31,6 +31,13 @@ TexCoord<Scalar>::TexCoord() : coord(0, 0), n(0)
 }
 
 template<typename Scalar>
+template<typename S>
+TexCoord<Scalar>::TexCoord(const TexCoord<S>& t) :
+		coord(t.coord), n(t.n)
+{
+}
+
+template<typename Scalar>
 Scalar TexCoord<Scalar>::u() const
 {
 	return coord.x();
