@@ -49,8 +49,7 @@ public:
 	const std::string& operator[](uint i) const;
 	
 private:
-	void split(bool jumpEmptyTokens = true);
-	const char* string;
+	void split(const char* str, bool jumpEmptyTokens = true);
 	char separator;
 	std::vector<std::string> splitted;
 };

@@ -24,20 +24,20 @@
 
 namespace vcl {
 
-inline Tokenizer::Tokenizer() : string(""), separator('\0')
+inline Tokenizer::Tokenizer() : separator('\0')
 {
 }
 
 inline Tokenizer::Tokenizer(const char* string, char separator, bool jumpEmptyTokens) :
-		string(string), separator(separator)
+		separator(separator)
 {
-	split(jumpEmptyTokens);
+	split(string, jumpEmptyTokens);
 }
 
 inline Tokenizer::Tokenizer(const std::string& string, char separator, bool jumpEmptyTokens) :
-		string(string.c_str()), separator(separator)
+		separator(separator)
 {
-	split(jumpEmptyTokens);
+	split(string.c_str(), jumpEmptyTokens);
 }
 
 inline Tokenizer::iterator Tokenizer::begin() const
@@ -64,9 +64,8 @@ inline const std::string& Tokenizer::operator[](uint i) const
  * @brief Tokenizer::split
  * https://stackoverflow.com/questions/53849/how-do-i-tokenize-a-string-in-c
  */
-inline void Tokenizer::split(bool jumpEmptyTokens)
+inline void Tokenizer::split(const char* str, bool jumpEmptyTokens)
 {
-	const char* str = string;
 	splitted.clear();
 	if (*str != '\0') {
 		do {
