@@ -191,17 +191,18 @@ void loadVertexNormal(
 		}
 	}
 	if (loadedInfo.hasVertexNormals()) {
+		// read the normal
+		Point3d n;
+		for (uint i = 0; i < 3; ++i) {
+			n[i] = internal::readDouble<double>(token);
+		}
 		// I can store the normal in its vertex
 		if (m.vertexNumber() > vn) {
-			for (uint i = 0; i < 3; ++i) {
-				m.vertex(vn).normal()[i] = internal::readDouble<double>(token);
-			}
+			m.vertex(vn).normal() = n;
 		}
+		// read the normal and save it in the cache map, because we still don't have read the
+		// vertex corresponding to the current normal
 		else {
-			Point3d n;
-			for (uint i = 0; i < 3; ++i) {
-				n[i] = internal::readDouble<double>(token);
-			}
 			mapNormalsCache[vn] = n;
 		}
 	}
@@ -221,6 +222,7 @@ void loadFace(
 	std::vector<uint> vids;
 	std::vector<uint> wids;
 
+	// actual read - load vertex indices and texcoords indices, if present
 	vcl::Tokenizer::iterator token = tokens.begin();
 	++token;
 	vids.resize(tokens.size()-1);
@@ -237,11 +239,13 @@ void loadFace(
 		++token;
 	}
 
+	// add the face
 	uint fid = m.addFace();
 	FaceType& f = m.face(fid);
 
+	// check if we need to split the face we read into triangles
 	bool splitFace = false;
-	// we have a polygonal mesh
+	// we have a polygonal mesh, no need to split
 	if constexpr (FaceType::VERTEX_NUMBER < 0) {
 		f.resizeVertices(tokens.size()-1); // need to resize to the right number of verts
 	}
@@ -250,7 +254,9 @@ void loadFace(
 		// number of verts > 3. Need to split the face we are loading in n faces!
 		splitFace = true;
 	}
-	if (!splitFace) {
+
+	// create the face in the mesh, for now we manage only vertex indices
+	if (!splitFace) { // no need to split face case
 		for (uint i = 0; i < vids.size(); ++i) {
 			if (vids[i] >= m.vertexNumber()) {
 				throw vcl::MalformedFileException(
@@ -263,8 +269,10 @@ void loadFace(
 		addTriangleFacesFromPolygon(m, f, vids);
 	}
 
+	// color
 	if (hasPerFaceColor<MeshType>()){
-		if (fid == 0) {
+		if (fid == 0) { // if the first face, we need to check if I can store colors
+			// if the current material has no color, we assume that the file has no face color
 			if (currentMaterial.hasColor) {
 				if (enableOptionalComponents) {
 					enableIfPerFaceColorOptional(m);
@@ -286,16 +294,21 @@ void loadFace(
 		}
 	}
 
+	// wedge coords
 	if constexpr(hasPerFaceWedgeTexCoords<MeshType>()) {
 		// first, need to check if I can store wedge texcoords in the mesh
 		if (fid == 0) {
-			if (enableOptionalComponents) {
-				enableIfPerFaceWedgeTexCoordsOptional(m);
-				loadedInfo.setFaceWedgeTexCoords();
-			}
-			else {
-				if (isPerFaceWedgeTexCoordsEnabled(m))
+			// if the current face has the right number of wedge texcoords, we assume that we can
+			// load wedge texcoords
+			if (wids.size() == vids.size()) {
+				if (enableOptionalComponents) {
+					enableIfPerFaceWedgeTexCoordsOptional(m);
 					loadedInfo.setFaceWedgeTexCoords();
+				}
+				else {
+					if (isPerFaceWedgeTexCoordsEnabled(m))
+						loadedInfo.setFaceWedgeTexCoords();
+				}
 			}
 		}
 		if (loadedInfo.hasFaceWedgeTexCoords()) {
@@ -376,16 +389,20 @@ void loadObj(
 	bool               enableOptionalComponents)
 {
 	std::ifstream file = internal::loadFileStream(filename);
+	// save normals if they can't be stored directly into vertices
 	std::map<uint, vcl::Point3d> mapNormalsCache;
-	std::vector<vcl::TexCoordd> wedgeTexCoords;
+	uint vn = 0; // number of vertex normals read
+	// save array of texcoords, that are stored later (into wedges when loading faces or into
+	// vertices as a fallback)
+	std::vector<vcl::TexCoordd> texCoords;
 
+	// map of materials loaded
 	std::map<std::string, obj::Material> materialMap;
-	obj::Material currentMaterial;
+	obj::Material currentMaterial; // the current material, set by 'usemtl'
 
 	// some obj files do not declare the material file name with mtllib, but they assume that
 	// material file has the same name of the obj file. Therefore, we first load this file if it
 	// exists.
-
 	std::string stdmtlfile = fileInfo::pathWithoutFilename(filename) +
 							 fileInfo::filenameWithoutExtension(filename) + ".mtl";
 	try {
@@ -395,28 +412,29 @@ void loadObj(
 		// nothing to do, this file was missing but was a fallback for some type of files...
 	}
 
+	// cycle that reads line by line
 	do {
-		uint vn = 0;
-
 		vcl::Tokenizer tokens = internal::nextNonEmptyTokenizedLineNoThrow(file);
 		if (file) {
 			vcl::Tokenizer::iterator token = tokens.begin();
 			std::string header = *token++;
-			if (header == "mtllib") {
+			if (header == "mtllib") { // material file
 				std::string mtlfile = fileInfo::pathWithoutFilename(filename) + *token;
 				internal::loadMaterials(materialMap, m, mtlfile);
 			}
-			if (header == "usemtl") {
+			if (header == "usemtl") { // use a new material - change currentMaterial
 				std::string matname = *token;
 				auto it = materialMap.find(matname);
 				if (it != materialMap.end()) {
 					currentMaterial = it->second;
 				}
 			}
+			// read vertex (and for some non-standard obj files, also vertex color)
 			if (header == "v") {
 				internal::loadVertexCoord(
 					m, token, loadedInfo, tokens, currentMaterial, enableOptionalComponents);
 			}
+			// read vertex normal (and save in vn how many normals we read)
 			if constexpr(hasPerVertexNormal<MeshType>()) {
 				if (header == "vn") {
 					internal::loadVertexNormal(
@@ -424,6 +442,8 @@ void loadObj(
 					vn++;
 				}
 			}
+			// read texcoords and save them in the vector of texcoords, we will store them in the
+			// mesh later
 			if constexpr (
 				hasPerVertexTexCoord<MeshType>() || hasPerFaceWedgeTexCoords<MeshType>()) {
 				if (header == "vt") {
@@ -432,16 +452,23 @@ void loadObj(
 					for (uint i = 0; i < 2; ++i) {
 						tf[i] = internal::readDouble<double>(token);
 					}
-					wedgeTexCoords.push_back(tf);
+					// store also the texture id, if present in the currentMaterial
+					if (currentMaterial.hasTexture)
+						tf.nTexture() = currentMaterial.mapId;
+					texCoords.push_back(tf);
 				}
 			}
+			// read faces and manage:
+			// - color
+			// - eventual texcoords
+			// - possibility to split polygonal face into several triangles
 			if constexpr (hasFaces<MeshType>()) {
 				if (header == "f") {
 					internal::loadFace(
 						m,
 						loadedInfo,
 						tokens,
-						wedgeTexCoords,
+						texCoords,
 						currentMaterial,
 						enableOptionalComponents);
 				}
@@ -454,6 +481,28 @@ void loadObj(
 		for (const auto& p : mapNormalsCache) {
 			if (p.first < m.vertexNumber()) {
 				m.vertex(p.first).normal() = p.second;
+			}
+		}
+	}
+	if constexpr (hasPerVertexTexCoord<MeshType>()) {
+		using VertexType = typename MeshType::VertexType;
+		if (!loadedInfo.hasFaceWedgeTexCoords()) {
+			// we can set the loaded texCoords to vertices, also if they are not supported in obj
+			if (texCoords.size() == m.vertexNumber()) {
+				if (enableOptionalComponents) {
+					enableIfPerVertexTexCoordOptional(m);
+					loadedInfo.setVertexTexCoords();
+				}
+				else {
+					if (isPerVertexTexCoordEnabled(m))
+						loadedInfo.setVertexTexCoords();
+				}
+				if (loadedInfo.hasVertexTexCoords()) {
+					uint i = 0;
+					for (VertexType& v : m.vertices()) {
+						v.texCoord() = texCoords[i++];
+					}
+				}
 			}
 		}
 	}
