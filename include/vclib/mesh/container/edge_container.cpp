@@ -688,6 +688,84 @@ EdgeContainer<T>::deletePerEdgeCustomComponent(const std::string& name)
 }
 
 /**
+ * @brief Returns a vector handle to the given custom component. The handle can be used like a
+ * normal std::vector, but does not have access to the modifiers member functions (resize,
+ * push_back...). The handle contains **references** to the custom component, therefore you can
+ * modify the custom component by modifying the element of the handle vector normally. Since
+ * the handle stores references, there are no copies performed when calling this function.
+ *
+ * For example, assuming that the mesh has a edge custom component named "cc" of type int:
+ *
+ * @code{.cpp}
+ * auto handle = m.getPerEdgeCustomComponentVectorHandle<int>("cc");
+ * for (Edge& e : m.edges() {
+ *    handle[m.index(e)] = 5; // e.customComponent<int>("cc") == 5
+ *    assert(e.customComponent<int>("cc") == 5);
+ * }
+ * @endcode
+ *
+ * Using handles allows to access more efficiently to custom components rather accessing from an
+ * element object. However, note that references are binded to the container of the mesh.
+ *
+ * @note Since the handle contains references, any operation that changes the size of the container
+ * could be destructive and invalidate the references contained in the handle.
+ *
+ * @tparam K: the type of the custom component on which return the handle.
+ * @param name: name of the custom component on which return the handle.
+ */
+template<typename T>
+template<typename K, typename U>
+VCL_ENABLE_IF(
+	edge::hasCustomComponents<U>(),
+	CustomComponentVectorHandle<K>)
+	EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(const std::string& name)
+{
+	std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	CustomComponentVectorHandle<K> v(cc);
+	return v;
+}
+
+/**
+ * @brief Returns a const vector handle to the given custom component. The handle can be used like a
+ * normal std::vector, but does not have access to the modifiers member functions (resize,
+ * push_back...). The handle contains **const references** to the custom component, therefore you
+ * can access to the custom component by accessing the element of the handle vector normally. Since
+ * the handle stores references, there are no copies performed when calling this function.
+ *
+ * For example, assuming that the mesh has a edge custom component named "cc" of type int:
+ *
+ * @code{.cpp}
+ * // access to the const handle by making const the template parameter:
+ * auto handle = m.getPerEdgeCustomComponentVectorHandle<const int>("cc");
+ * int sum = 0;
+ * for (const Edge& e : m.edges() {
+ *    sum += handle[m.index(e)];
+ *    // handle[m.index(e)] = 5; // not allowed, because the handle is const
+ * }
+ * @endcode
+ *
+ * Using handles allows to access more efficiently to custom components rather accessing from an
+ * element object. However, note that references are binded to the container of the mesh.
+ *
+ * @note Since the handle contains references, any operation that changes the size of the container
+ * could be destructive and invalidate the references contained in the handle.
+ *
+ * @tparam K: the type of the custom component on which return the handle.
+ * @param name: name of the custom component on which return the handle.
+ */
+template<typename T>
+template<typename K, typename U>
+VCL_ENABLE_IF(
+	edge::hasCustomComponents<U>(),
+	ConstCustomComponentVectorHandle<K>)
+	EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(const std::string& name) const
+{
+	const std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	ConstCustomComponentVectorHandle<K> v(cc);
+	return cc;
+}
+
+/**
  * @brief Returns the index of the given edge.
  * @param f: edge pointer.
  * @return The index of f.

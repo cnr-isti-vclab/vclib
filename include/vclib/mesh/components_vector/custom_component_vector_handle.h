@@ -20,64 +20,52 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef CUSTOM_COMPONENT_VECTOR_HANDLE_H
+#define CUSTOM_COMPONENT_VECTOR_HANDLE_H
 
-#include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/trimesh.h>
-#include <vclib/algorithms/smooth.h>
+#include <any>
+#include <vector>
 
-int main()
+namespace vcl {
+
+template<typename T>
+class CustomComponentVectorHandle
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+public:
+	using iterator = typename std::vector<std::reference_wrapper<T>>::iterator;
+	using const_iterator = typename std::vector<std::reference_wrapper<T>>::const_iterator;
 
-	m.addPerVertexCustomComponent<int>("flag");
+	CustomComponentVectorHandle();
+	CustomComponentVectorHandle(std::vector<std::any>& cc);
 
-	assert(m.hasPerVertexCustomComponent("flag"));
+	T& at(uint i);
+	const T& at(uint i) const;
 
-	for (vcl::TriMesh::Vertex& v : m.vertices()){
-		v.customComponent<int>("flag") = -4;
-	}
+	T& front();
+	const T& front() const;
 
-	assert(m.vertex(10).customComponent<int>("flag") == -4);
+	T& back();
+	const T& back() const;
 
-	vcl::CustomComponentVectorHandle<int> v = m.getPerVertexCustomComponentVectorHandle<int>("flag");
+	uint size() const;
 
-	for (int& m : v){
-		m = 8;
-	}
+	T& operator[](uint i);
+	const T& operator[](uint i) const;
 
-	v.front() = 4;
+	iterator begin();
+	iterator end();
+	const_iterator begin() const;
+	const_iterator end() const;
 
-	assert(m.vertex(0).customComponent<int>("flag") == 4);
-	assert(m.vertex(9).customComponent<int>("flag") == 8);
+private:
+	std::vector<std::reference_wrapper<T>> v;
+};
 
-	m.deletePerVertexCustomComponent("flag");
+template<typename T>
+using ConstCustomComponentVectorHandle = CustomComponentVectorHandle<const T>;
 
-	assert(!m.hasPerVertexCustomComponent("flag"));
+} // namespace vcl
 
-	m.addPerVertexCustomComponent<vcl::Point3f>("oldCoords");
+#include "custom_component_vector_handle.cpp"
 
-	assert(m.hasPerVertexCustomComponent("oldCoords"));
-	assert(m.isPerVertexCustomComponentOfType<vcl::Point3f>("oldCoords"));
-	assert(!m.isPerVertexCustomComponentOfType<vcl::Point3d>("oldCoords"));
-
-	for (vcl::TriMesh::Vertex& v : m.vertices()) {
-		v.customComponent<vcl::Point3f>("oldCoords") = v.coord();
-	}
-
-	vcl::taubinSmoothing(m, 500, 0.7, -0.73);
-
-	vcl::ConstCustomComponentVectorHandle<vcl::Point3f> oldCoords =
-		m.getPerVertexCustomComponentVectorHandle<const vcl::Point3f>("oldCoords");
-
-	double avgDist = 0;
-	for (vcl::TriMesh::Vertex& v : m.vertices()) {
-		avgDist += v.coord().dist(oldCoords[m.index(v)]);
-	}
-	avgDist /= m.vertexNumber();
-
-	std::cerr << "Avg distance after taubin smoothing: " << avgDist << "\n";
-
-	return 0;
-}
+#endif // CUSTOM_COMPONENT_VECTOR_HANDLE_H

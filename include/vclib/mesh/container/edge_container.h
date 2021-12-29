@@ -25,6 +25,7 @@
 
 #include <vclib/mesh/elements/edge.h>
 
+#include "../components_vector/custom_component_vector_handle.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
 #include "containers_detection.h"
@@ -170,6 +171,14 @@ public:
 	template<typename U = T>
 	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
 	deletePerEdgeCustomComponent(const std::string& name);
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
+	getPerEdgeCustomComponentVectorHandle(const std::string& name);
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
+	getPerEdgeCustomComponentVectorHandle(const std::string& name) const;
 
 protected:
 	/**

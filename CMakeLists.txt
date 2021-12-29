@@ -126,6 +126,7 @@ set(HEADERS
 	include/vclib/mesh/components_optional/optional_wedge_colors.h
 	include/vclib/mesh/components_optional/optional_wedge_tex_coords.h
 	include/vclib/mesh/components_vector/optional_color_vector.h
+	include/vclib/mesh/components_vector/custom_component_vector_handle.h
 	include/vclib/mesh/components_vector/custom_components_vector.h
 	include/vclib/mesh/components_vector/optional_adjacent_edges_vector.h
 	include/vclib/mesh/components_vector/optional_adjacent_faces_vector.h
@@ -261,6 +262,7 @@ set(SOURCES
 	include/vclib/mesh/components_optional/optional_tex_coord.cpp
 	include/vclib/mesh/components_optional/optional_wedge_colors.cpp
 	include/vclib/mesh/components_optional/optional_wedge_tex_coords.cpp
+	include/vclib/mesh/components_vector/custom_component_vector_handle.cpp
 	include/vclib/mesh/components_vector/custom_components_vector.cpp
 	include/vclib/mesh/components_vector/optional_generic_vector.cpp
 	include/vclib/mesh/container/edge_container.cpp

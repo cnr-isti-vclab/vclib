@@ -25,6 +25,7 @@
 
 #include <vclib/mesh/elements/vertex.h>
 
+#include "../components_vector/custom_component_vector_handle.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
 #include "containers_detection.h"
@@ -62,11 +63,6 @@ public:
 	using VertexRangeIterator = ContainerRangeIterator<VertexContainerType, VertexIterator>;
 	using ConstVertexRangeIterator =
 		ConstContainerRangeIterator<VertexContainerType, ConstVertexIterator>;
-
-	template<typename CompType>
-	using CustomComponentVectorHandle = std::vector<std::reference_wrapper<CompType>>;
-	template<typename CompType>
-	using ConstCustomComponentVectorHandle = std::vector<std::reference_wrapper<const CompType>>;
 
 	VertexContainer();
 
@@ -237,11 +233,11 @@ public:
 
 	template<typename K, typename U = T>
 	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
-	customComponentVectorHandle(const std::string& name);
+	getPerVertexCustomComponentVectorHandle(const std::string& name);
 
 	template<typename K, typename U = T>
 	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
-	customComponentVectorHandle(const std::string& name) const;
+	getPerVertexCustomComponentVectorHandle(const std::string& name) const;
 
 protected:
 	/**

@@ -25,6 +25,7 @@
 
 #include <vclib/mesh/elements/face.h>
 
+#include "../components_vector/custom_component_vector_handle.h"
 #include "../iterators/container_iterator.h"
 #include "../iterators/container_range_iterator.h"
 #include "containers_detection.h"
@@ -247,6 +248,14 @@ public:
 	template<typename U = T>
 	VCL_ENABLE_IF(face::hasCustomComponents<U>(), void)
 	deletePerFaceCustomComponent(const std::string& name);
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(face::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
+	getPerFaceCustomComponentVectorHandle(const std::string& name);
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(face::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
+	getPerFaceCustomComponentVectorHandle(const std::string& name) const;
 
 protected:
 	/**
