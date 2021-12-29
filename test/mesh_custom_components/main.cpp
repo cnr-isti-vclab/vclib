@@ -41,6 +41,14 @@ int main()
 
 	assert(m.vertex(10).customComponent<int>("flag") == -4);
 
+	vcl::TriMesh::CustomComponentVectorHandle<int> v = m.customComponentVectorHandle<int>("flag");
+
+	for (int& l : v){
+		l = 8;
+	}
+
+	assert(m.vertex(9).customComponent<int>("flag") == 8);
+
 	m.deletePerVertexCustomComponent("flag");
 
 	assert(!m.hasPerVertexCustomComponent("flag"));

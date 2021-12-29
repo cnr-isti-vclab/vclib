@@ -63,6 +63,11 @@ public:
 	using ConstVertexRangeIterator =
 		ConstContainerRangeIterator<VertexContainerType, ConstVertexIterator>;
 
+	template<typename CompType>
+	using CustomComponentVectorHandle = std::vector<std::reference_wrapper<CompType>>;
+	template<typename CompType>
+	using ConstCustomComponentVectorHandle = std::vector<std::reference_wrapper<const CompType>>;
+
 	VertexContainer();
 
 	const VertexType& vertex(uint i) const;
@@ -229,6 +234,14 @@ public:
 	template<typename U = T>
 	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
 	deletePerVertexCustomComponent(const std::string& name);
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
+	customComponentVectorHandle(const std::string& name);
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
+	customComponentVectorHandle(const std::string& name) const;
 
 protected:
 	/**

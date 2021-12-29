@@ -873,6 +873,38 @@ VertexContainer<T>::deletePerVertexCustomComponent(const std::string& name)
 }
 
 template<typename T>
+template<typename K, typename U>
+VCL_ENABLE_IF(
+	vert::hasCustomComponents<U>(),
+	typename VertexContainer<T>::template CustomComponentVectorHandle<K>)
+VertexContainer<T>::customComponentVectorHandle(const std::string& name)
+{
+	std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	CustomComponentVectorHandle<K> v;
+	v.reserve(cc.size());
+	for (uint i = 0; i < cc.size(); ++i){
+		v.push_back(std::any_cast<K&>(cc[i]));
+	}
+	return v;
+}
+
+template<typename T>
+template<typename K, typename U>
+VCL_ENABLE_IF(
+	vert::hasCustomComponents<U>(),
+	typename VertexContainer<T>::template ConstCustomComponentVectorHandle<K>)
+	VertexContainer<T>::customComponentVectorHandle(const std::string& name) const
+{
+	const std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	ConstCustomComponentVectorHandle<K> v;
+	v.reserve(cc.size());
+	for (uint i = 0; i < cc.size(); ++i){
+		v[i] = std::any_cast<const K&>(cc[i]);
+	}
+	return v;
+}
+
+template<typename T>
 void VertexContainer<T>::clearVertices()
 {
 	Base::vec.clear();
