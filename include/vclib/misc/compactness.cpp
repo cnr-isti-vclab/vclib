@@ -25,7 +25,7 @@
 namespace vcl {
 
 /**
- * @brief compactVector will take care of compacting the vector vec, depending on the content of the
+ * @brief It will take care of compacting the vector vec, depending on the content of the
  * vector newIndices.
  *
  * Given the vector newIndices having the following features:

@@ -574,10 +574,90 @@ EdgeContainer<T>::disablePerEdgeScalar()
 }
 
 /**
+ * @brief Checks if edges have a custom component with the given name.
+ *
+ * This function does not take into account the type of the custom component.
+ *
+ * @note This function is available only if the Edge Element has the CustomComponents Component.
+ *
+ * @return `true` if the Edge Element has a custom component with the given name.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasCustomComponents<U>(), bool)
+EdgeContainer<T>::hasPerEdgeCustomComponent(const std::string& name) const
+{
+	return Base::optionalVec.componentExists(name);
+}
+
+/**
+ * @brief Returns a vector containing all the names of the custom components of any type associated
+ * to the Edge Element.
+ *
+ * @note This function is available only if the Edge Element has the CustomComponents Component.
+ *
+ * @return A vector of strings representing all the names of the custom components.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasCustomComponents<U>(), std::vector<std::string>)
+EdgeContainer<T>::getAllPerEdgeCustomComponentNames() const
+{
+	return Base::optionalVec.allComponentNames();
+}
+
+/**
+ * @brief Checks if the custom component of the Edge Element having the given name has the same type
+ * of the given template argument type of this function.
+ *
+ * For example, the following code checks if the component called `cc` is of type `double`:
+ * @code{.cpp}
+ * if (m.isPerEdgeCustomComponentOfType<double>("cc")) {
+ *   ...
+ * }
+ * @endcode
+ *
+ * @note This function is available only if the Edge Element has the CustomComponents Component.
+ *
+ * @tparam K: the type of the custom component to check.
+ * @param[in] name: the name of the custom component to check.
+ * @return `true` if the custom component is of the same type of the template argument.
+ */
+template<typename T>
+template<typename K, typename U>
+VCL_ENABLE_IF(edge::hasCustomComponents<U>(), bool)
+EdgeContainer<T>::isPerEdgeCustomComponentOfType(const std::string& name) const
+{
+	return Base::optionalVec.template isComponentOfType<K>(name);
+}
+
+/**
+ * @brief Returns a vector containing all the names of the custom components associated to the Edge
+ * Element having the same type of the given template argument type of this function.
+ *
+ * For example, the following code gets a vector containing all the custom components of type
+ * `double`:
+ * @code{.cpp}
+ * std::vector<std::string> cdouble = m.getPerEdgeCustomComponentNamesOfType<double>();
+ * @endcode
+ *
+ * @note This function is available only if the Edge Element has the CustomComponents Component.
+ *
+ * @tparam K: the type of the custom component names.
+ * @return A vector of strings representing the names of the custom components of a given type.
+ */
+template<typename T>
+template<typename K, typename U>
+VCL_ENABLE_IF(edge::hasCustomComponents<U>(), std::vector<std::string>)
+EdgeContainer<T>::getPerEdgeCustomComponentNamesOfType() const
+{
+	return Base::optionalVec.template allComponentNamesOfType<K>();
+}
+
+/**
  * @brief Adds a custom component of type K to the Edge, having the given name.
  *
- * @note This function is available only if the Edge Element has the CustomComponents
- * Component.
+ * @note This function is available only if the Edge Element has the CustomComponents Component.
  *
  * @tparam K: the type of the custom component added to the Edge.
  * @param[in] name: the name of the custom component added to the Edge.
@@ -588,6 +668,23 @@ VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
 EdgeContainer<T>::addPerEdgeCustomComponent(const std::string& name)
 {
 	Base::optionalVec.template addNewComponent<K>(name, edgeContainerSize());
+}
+
+/**
+ * @brief Deletes the custom component of the given name from the Edge Element.
+ *
+ * The function does nothing if the custom component does not exists.
+ *
+ * @note This function is available only if the Edge Element has the CustomComponents Component.
+ *
+ * @param[in] name: the name of the custom component that will be removed from the Edge.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
+EdgeContainer<T>::deletePerEdgeCustomComponent(const std::string& name)
+{
+	Base::optionalVec.deleteComponent(name);
 }
 
 /**

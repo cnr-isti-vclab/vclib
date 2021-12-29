@@ -25,6 +25,8 @@
 
 #include <unordered_map>
 
+#include <typeindex>
+
 #include <vclib/mesh/components_optional/custom_components.h>
 
 #include "optional_generic_vector.h"
@@ -33,7 +35,7 @@ namespace vcl::internal {
 
 // to shorten triggerer for Vertex class
 template<typename T>
-using IfHasCustomProp = std::enable_if_t<comp::hasCustomComponents<T>()>;
+using IfHasCustomComp = std::enable_if_t<comp::hasCustomComponents<T>()>;
 
 template<typename, typename = void>
 class CustomComponentsVector
@@ -48,7 +50,7 @@ public:
 template<typename T>
 class CustomComponentsVector<
 	T,
-	IfHasCustomProp<T>>
+	IfHasCustomComp<T>>
 {
 public:
 	void clear();
@@ -59,24 +61,44 @@ public:
 
 	void compact(const std::vector<int>& newIndices);
 
-	template<typename AttrType>
+	template<typename CompType>
 	void addNewComponent(const std::string& name, uint size);
 
 	void deleteComponent(const std::string& name);
 
-	void assertComponentExists(const std::string& attrName) const;;
+	void assertComponentExists(const std::string& compName) const;
 
-	bool componentExists(const std::string& attrName) const;;
+	bool componentExists(const std::string& compName) const;
 
-	template<typename AttrType>
-	const std::vector<std::any>& componentVector(const std::string& attrName) const;
+	std::vector<std::string> allComponentNames() const;
 
-	template<typename AttrType>
-	std::vector<std::any>& componentVector(const std::string& attrName);
+	template<typename CompType>
+	bool isComponentOfType(const std::string& compName) const;
+
+	template<typename CompType>
+	std::vector<std::string> allComponentNamesOfType() const;
+
+	template<typename CompType>
+	const std::vector<std::any>& componentVector(const std::string& compName) const;
+
+	template<typename CompType>
+	std::vector<std::any>& componentVector(const std::string& compName);
 
 private:
+	// the actual map containing, for each name of a custom component, the vector
+	// of values (a value for each element(vertex/face...) of the mesh)
 	std::unordered_map<std::string, std::vector<std::any>> map;
+	// map that stores if some custom components need to be initialized
+	// this happens when we resize the container of an element: we need to resize also the vectors
+	// of the custom components, but we cannot initialize them with the right type (because we don't
+	// know it in resize phase). The initialization will be made when the type is known (get of the
+	// custom component vector).
 	mutable std::unordered_map<std::string, bool> needToInitialize;
+	// types used for each custom component
+	std::unordered_map<std::string, std::type_index> componentType;
+
+	template<typename CompType>
+	void checkComponentType(const std::string& compName) const;
 };
 
 } // namespace vcl::internal

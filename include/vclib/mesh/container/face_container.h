@@ -224,9 +224,29 @@ public:
 	disablePerFaceWedgeTexCoords();
 
 	// Custom Components
+	template<typename U = T>
+	VCL_ENABLE_IF(face::hasCustomComponents<U>(), bool)
+	hasPerFaceCustomComponent(const std::string& name) const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(face::hasCustomComponents<U>(), std::vector<std::string>)
+	getAllPerFaceCustomComponentNames() const;
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(face::hasCustomComponents<U>(), bool)
+	isPerFaceCustomComponentOfType(const std::string& name) const;
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(face::hasCustomComponents<U>(), std::vector<std::string>)
+	getPerFaceCustomComponentNamesOfType() const;
+
 	template<typename K, typename U = T>
 	VCL_ENABLE_IF(face::hasCustomComponents<U>(), void)
 	addPerFaceCustomComponent(const std::string& name);
+
+	template<typename U = T>
+	VCL_ENABLE_IF(face::hasCustomComponents<U>(), void)
+	deletePerFaceCustomComponent(const std::string& name);
 
 protected:
 	/**

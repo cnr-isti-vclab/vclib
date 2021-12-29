@@ -208,7 +208,19 @@ public:
 	// Custom Components
 	template<typename U = T>
 	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
-	hasPerVertexCustomComponent(const std::string& name);
+	hasPerVertexCustomComponent(const std::string& name) const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
+	getAllPerVertexCustomComponentNames() const;
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
+	isPerVertexCustomComponentOfType(const std::string& name) const;
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
+	getPerVertexCustomComponentNamesOfType() const;
 
 	template<typename K, typename U = T>
 	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)

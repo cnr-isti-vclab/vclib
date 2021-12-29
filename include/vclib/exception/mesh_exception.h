@@ -117,6 +117,19 @@ public:
 	}
 };
 
+class BadCustomComponentTypeException : public std::runtime_error
+{
+public:
+	BadCustomComponentTypeException(const std::string& err) : std::runtime_error(err) {}
+
+	virtual const char* what() const throw()
+	{
+		static std::string error;
+		error = std::string("Bad Custom Component Type - ") + std::runtime_error::what();
+		return error.c_str();
+	}
+};
+
 } // namespace vcl
 
 #endif // VCL_MESH_EXCEPTION_H

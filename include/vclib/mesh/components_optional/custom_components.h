@@ -48,11 +48,11 @@ private:
 public:
 	bool hasCustomComponent(const std::string& attrName) const;
 
-	template<typename AttrType>
-	const AttrType& customComponent(const std::string& attrName) const;
+	template<typename CompType>
+	const CompType& customComponent(const std::string& attrName) const;
 
-	template<typename AttrType>
-	AttrType& customComponent(const std::string& attrName);
+	template<typename CompType>
+	CompType& customComponent(const std::string& attrName);
 
 protected:
 	template <typename Element>

@@ -757,12 +757,85 @@ VertexContainer<T>::disablePerVertexTexCoord()
 	Base::optionalVec.disableTexCoord();
 }
 
+/**
+ * @brief Checks if vertices have a custom component with the given name.
+ *
+ * This function does not take into account the type of the custom component.
+ *
+ * @note This function is available only if the Vertex Element has the CustomComponents Component.
+ *
+ * @return `true` if the Vertex Element has a custom component with the given name.
+ */
 template<typename T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
-VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name)
+VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name) const
 {
 	return Base::optionalVec.componentExists(name);
+}
+
+/**
+ * @brief Returns a vector containing all the names of the custom components of any type associated
+ * to the Vertex Element.
+ *
+ * @note This function is available only if the Vertex Element has the CustomComponents Component.
+ *
+ * @return A vector of strings representing all the names of the custom components.
+ */
+template<typename T>
+template<typename U>
+VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
+VertexContainer<T>::getAllPerVertexCustomComponentNames() const
+{
+	return Base::optionalVec.allComponentNames();
+}
+
+/**
+ * @brief Checks if the custom component of the Vertex Element having the given name has the same type
+ * of the given template argument type of this function.
+ *
+ * For example, the following code checks if the component called `cc` is of type `double`:
+ * @code{.cpp}
+ * if (m.isPerVertexCustomComponentOfType<double>("cc")) {
+ *   ...
+ * }
+ * @endcode
+ *
+ * @note This function is available only if the Vertex Element has the CustomComponents Component.
+ *
+ * @tparam K: the type of the custom component to check.
+ * @param[in] name: the name of the custom component to check.
+ * @return `true` if the custom component is of the same type of the template argument.
+ */
+template<typename T>
+template<typename K, typename U>
+VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
+VertexContainer<T>::isPerVertexCustomComponentOfType(const std::string& name) const
+{
+	return Base::optionalVec.template isComponentOfType<K>(name);
+}
+
+/**
+ * @brief Returns a vector containing all the names of the custom components associated to the
+ * Vertex Element having the same type of the given template argument type of this function.
+ *
+ * For example, the following code gets a vector containing all the custom components of type
+ * `double`:
+ * @code{.cpp}
+ * std::vector<std::string> cdouble = m.getPerVertexCustomComponentNamesOfType<double>();
+ * @endcode
+ *
+ * @note This function is available only if the Vertex Element has the CustomComponents Component.
+ *
+ * @tparam K: the type of the custom component names.
+ * @return A vector of strings representing the names of the custom components of a given type.
+ */
+template<typename T>
+template<typename K, typename U>
+VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
+VertexContainer<T>::getPerVertexCustomComponentNamesOfType() const
+{
+	return Base::optionalVec.template allComponentNamesOfType<K>();
 }
 
 /**
@@ -782,6 +855,15 @@ VertexContainer<T>::addPerVertexCustomComponent(const std::string& name)
 	Base::optionalVec.template addNewComponent<K>(name, vertexContainerSize());
 }
 
+/**
+ * @brief Deletes the custom component of the given name from the Vertex Element.
+ *
+ * The function does nothing if the custom component does not exists.
+ *
+ * @note This function is available only if the Vertex Element has the CustomComponents Component.
+ *
+ * @param[in] name: the name of the custom component that will be removed from the Vertex.
+ */
 template<typename T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)

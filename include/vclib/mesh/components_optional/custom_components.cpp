@@ -31,19 +31,19 @@ bool CustomComponents<T>::hasCustomComponent(const std::string& attrName) const
 }
 
 template<typename T>
-template<typename AttrType>
-const AttrType& CustomComponents<T>::customComponent(const std::string& attrName) const
+template<typename CompType>
+const CompType& CustomComponents<T>::customComponent(const std::string& attrName) const
 {
-	return std::any_cast<const AttrType&>(
-		B::optCont().template componentVector<AttrType>(attrName)[thisId()]);
+	return std::any_cast<const CompType&>(
+		B::optCont().template componentVector<CompType>(attrName)[thisId()]);
 }
 
 template<typename T>
-template<typename AttrType>
-AttrType& CustomComponents<T>::customComponent(const std::string& attrName)
+template<typename CompType>
+CompType& CustomComponents<T>::customComponent(const std::string& attrName)
 {
-	return std::any_cast<AttrType&>(
-		B::optCont().template componentVector<AttrType>(attrName)[thisId()]);
+	return std::any_cast<CompType&>(
+		B::optCont().template componentVector<CompType>(attrName)[thisId()]);
 }
 
 template<typename T>

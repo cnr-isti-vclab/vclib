@@ -147,9 +147,29 @@ public:
 	disablePerEdgeScalar();
 
 	// Custom Components
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), bool)
+	hasPerEdgeCustomComponent(const std::string& name) const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), std::vector<std::string>)
+	getAllPerEdgeCustomComponentNames() const;
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), bool)
+	isPerEdgeCustomComponentOfType(const std::string& name) const;
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), std::vector<std::string>)
+	getPerEdgeCustomComponentNamesOfType() const;
+
 	template<typename K, typename U = T>
 	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
 	addPerEdgeCustomComponent(const std::string& name);
+
+	template<typename U = T>
+	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
+	deletePerEdgeCustomComponent(const std::string& name);
 
 protected:
 	/**
