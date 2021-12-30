@@ -34,6 +34,8 @@ void loadTextures(const PlyHeader& header, MeshType& mesh);
 template<typename MeshType>
 void saveTextures(PlyHeader& header, const MeshType& mesh);
 
+void readUnknownElements(std::ifstream& file, const PlyHeader& header, Element el);
+
 } // namespace vcl::ply
 
 #include "ply_extra.cpp"

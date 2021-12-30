@@ -411,7 +411,7 @@ inline void Color::setRgbF(float red, float green, float blue, float alpha)
  */
 inline void Color::setHsvF(float hf, float sf, float vf, float alpha)
 {
-	setHsv((int) hf * 255, (int) sf * 255, (int) vf * 255, (int) alpha * 255);
+	setHsv(hf * 255, sf * 255, vf * 255, alpha * 255);
 }
 
 /**
@@ -725,25 +725,26 @@ inline Color colorFromIntervalGreyShade(float min, float max, float value)
  */
 inline std::vector<Color> colorScattering(uint n, float sat, float val)
 {
-	uint m = n;
 	std::vector<Color> scattering;
 	scattering.reserve(n);
 
-	for (uint value = 0; value < n; ++value) {
+	for (uint v = 0; v < n; ++v) {
+		uint value = v, m = n;
 		uint b = 0;
-		for (uint k=1; k<n; k<<=1) {
+
+		for (uint k = 1; k < n; k <<= 1) {
 			if (value << 1 >= m) {
 				b += k;
-				value -= (m+1) >> 1;
+				value -= (m + 1) >> 1;
 				m >>= 1;
 			}
-			else  {
-				m = (m+1)>>1;
+			else {
+				m = (m + 1) >> 1;
 			}
 		}
 
 		Color rc;
-		rc.setHsvF(float(b)/float(n),sat,val);
+		rc.setHsvF(float(b) / float(n), sat, val);
 		scattering.push_back(rc);
 	}
 	return scattering;

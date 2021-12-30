@@ -23,6 +23,8 @@
 #ifndef VCL_ALGORITHMS_COLOR_H
 #define VCL_ALGORITHMS_COLOR_H
 
+#include <set>
+
 #include <vclib/space/color.h>
 
 namespace vcl {
@@ -59,6 +61,14 @@ void setPerVertexColorFromFaceBorderFlag(
 	vcl::Color borderColor   = vcl::Color::Blue,
 	vcl::Color internalColor = vcl::Color::White,
 	vcl::Color mixColor      = vcl::Color::Cyan);
+
+template<typename MeshType>
+void setPerFaceColorFromConnectedComponents(
+	MeshType& m,
+	const std::vector<std::set<uint>>& connectedComponents);
+
+template<typename MeshType>
+void setPerFaceColorFromConnectedComponents(MeshType& m);
 
 } // namespace vcl
 

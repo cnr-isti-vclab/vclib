@@ -548,7 +548,6 @@ uint numberHoles(const MeshType& m)
  *
  * Requirements:
  * - Mesh:
- *   - Vertices
  *   - Faces:
  *     - AdjacentFaces
  *
@@ -558,10 +557,8 @@ uint numberHoles(const MeshType& m)
 template <typename MeshType>
 std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
 	vcl::requirePerFaceAdjacentFaces(m);
 
-	using VertexType = typename MeshType::VertexType;
 	using FaceType = typename MeshType::FaceType;
 
 	std::vector<std::set<uint>> cc;

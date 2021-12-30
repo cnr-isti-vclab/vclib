@@ -34,19 +34,20 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 {
 	if (vcl::hasVertices<Mesh>()){
 		setVertices();
-		setVertexCoords(getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
+		setVertexCoords(true, getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
 		if constexpr (vcl::hasPerVertexNormal<Mesh>())
 			if (vcl::isPerVertexNormalEnabled(m))
-				setVertexNormals(getPropType<typename Mesh::VertexType::NormalType::ScalarType>());
+				setVertexNormals(true, getPropType<typename Mesh::VertexType::NormalType::ScalarType>());
 		if constexpr (vcl::hasPerVertexColor<Mesh>())
 			if (vcl::isPerVertexColorEnabled(m))
-				setVertexColors(CHAR);
+				setVertexColors(true, CHAR);
 		if constexpr (vcl::hasPerVertexScalar<Mesh>())
 			if (vcl::isPerVertexScalarEnabled(m))
-				setVertexScalars(getPropType<typename Mesh::VertexType::ScalarType>());
+				setVertexScalars(true, getPropType<typename Mesh::VertexType::ScalarType>());
 		if constexpr (vcl::hasPerVertexTexCoord<Mesh>())
 			if (vcl::isPerVertexTexCoordEnabled(m))
 				setVertexTexCoords(
+					true,
 					getPropType<typename Mesh::VertexType::TexCoordType::ScalarType>());
 	}
 
@@ -61,16 +62,16 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 			setPolygonMesh();
 		if constexpr (vcl::hasPerFaceNormal<Mesh>())
 			if (vcl::isPerFaceNormalEnabled(m))
-				setFaceNormals(getPropType<typename Mesh::FaceType::NormalType::ScalarType>());
+				setFaceNormals(true, getPropType<typename Mesh::FaceType::NormalType::ScalarType>());
 		if constexpr (vcl::hasPerFaceColor<Mesh>())
 			if (vcl::isPerFaceColorEnabled(m))
-				setFaceColors(CHAR);
+				setFaceColors(true, UCHAR);
 		if constexpr (vcl::hasPerFaceScalar<Mesh>())
 			if (vcl::isPerFaceScalarEnabled(m))
-				setFaceScalars(getPropType<typename Mesh::FaceType::ScalarType>());
+				setFaceScalars(true, getPropType<typename Mesh::FaceType::ScalarType>());
 		if constexpr (vcl::hasPerFaceWedgeTexCoords<Mesh>())
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
-				setFaceWedgeTexCoords(getPropType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
+				setFaceWedgeTexCoords(true, getPropType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
 	}
 	if (vcl::hasTextureFileNames<Mesh>()) {
 		if (m.textureNumber() > 0) {

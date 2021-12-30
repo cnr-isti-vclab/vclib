@@ -564,6 +564,7 @@ inline ply::Element PlyHeader::readElement(const Tokenizer& lineTokenizer) const
 	}
 	else {
 		e.type = ply::OTHER;
+		e.numberElements = std::stoi(*(++token));
 		e.unknownElementType = s;
 	}
 	return e;

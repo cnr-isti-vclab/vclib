@@ -21,6 +21,9 @@
  ****************************************************************************/
 
 #include "ply_extra.h"
+
+#include "../internal/io_read.h"
+
 #include <vclib/mesh/requirements.h>
 
 namespace vcl::io::ply {
@@ -29,7 +32,7 @@ template<typename MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh)
 {
 	if constexpr (vcl::hasTextureFileNames<MeshType>()) {
-		for (const std::string& str : header.textureFileNames()){
+		for (const std::string& str : header.textureFileNames()) {
 			mesh.pushTexture(str);
 		}
 	}
@@ -39,10 +42,33 @@ template<typename MeshType>
 void saveTextures(PlyHeader& header, const MeshType& mesh)
 {
 	if constexpr (vcl::hasTextureFileNames<MeshType>()) {
-		for (const std::string& str : mesh.textures()){
+		for (const std::string& str : mesh.textures()) {
 			header.pushTextureFileName(str);
 		}
 	}
 }
 
+void readUnknownElements(std::ifstream& file, const PlyHeader& header, ply::Element el)
+{
+	if (header.format() == ply::ASCII) {
+		for (uint i = 0; i < el.numberElements; ++i) {
+			io::internal::nextNonEmptyTokenizedLine(file);
+		}
+	}
+	else {
+		for (uint i = 0; i < el.numberElements; ++i) {
+			for (Property p : el.properties) {
+				if (p.list) {
+					uint s = io::internal::readProperty<int>(file, p.listSizeType);
+					for (uint i = 0; i < s; ++i)
+						io::internal::readProperty<int>(file, p.type);
+				}
+				else {
+					io::internal::readProperty<int>(file, p.type);
+				}
+			}
+		}
+	}
 }
+
+} // namespace vcl::io::ply

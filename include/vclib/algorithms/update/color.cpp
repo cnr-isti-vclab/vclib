@@ -25,6 +25,7 @@
 #include <vclib/mesh/requirements.h>
 
 #include "../stat.h"
+#include "../clean.h"
 
 namespace vcl {
 
@@ -301,6 +302,59 @@ void setPerVertexColorFromFaceBorderFlag(
 			}
 		}
 	}
+}
+
+/**
+ * @brief Given an already computed vector of sets of connected components (see
+ * vcl::connectedComponents(m) in `vclib/algorithms/clean.h`), sets face colors according from
+ * connected components of the mesh. Each connected component will have a different per face color.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - Color
+ *
+ * @param[in/out] m: the mesh on which set the face colors according to its connected components.
+ * @param[in] connectedComponents: a vector of sets, each one of them containing the face ids of a
+ * connected component.
+ */
+template<typename MeshType>
+void setPerFaceColorFromConnectedComponents(
+	MeshType& m,
+	const std::vector<std::set<uint> >& connectedComponents)
+{
+	std::vector<Color> vc = colorScattering(connectedComponents.size());
+
+	uint cid = 0;
+	for (const std::set<uint>& connComp : connectedComponents) {
+		for (const uint& fid : connComp) {
+			m.face(fid).color() = vc[cid];
+		}
+		cid++;
+	}
+}
+
+/**
+ * @brief Sets face colors according from connected components of the mesh. Each connected component
+ * will have a different per face color. Since this function will need to compute connected
+ * components of the mesh, also per Face AdjacentFaces component is required.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - AdjacentFaces
+ *     - Color
+ *
+ * @param[in/out] m: the mesh on which set the face colors according to its connected components.
+ */
+template<typename MeshType>
+void setPerFaceColorFromConnectedComponents(MeshType& m)
+{
+	vcl::requirePerFaceColor(m);
+
+	std::vector<std::set<uint>> connComps = connectedComponents(m);
+
+	setPerFaceColorFromConnectedComponents(m, connComps);
 }
 
 } // namespace vcl

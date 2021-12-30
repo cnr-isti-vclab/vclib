@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include <vclib/algorithms/clean.h>
+#include <vclib/algorithms/update/color.h>
 #include <vclib/algorithms/update/topology.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/io/save_ply.h>
@@ -72,23 +73,20 @@ int main()
 
 	std::cerr << "Bunny number holes: " << nHoles << "\n";
 
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
+	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/rangemap.ply");
 
 	m.enablePerFaceAdjacentFaces();
 	vcl::updatePerFaceAdjacentFaces(m);
 
 	std::vector<std::set<uint>> cc = vcl::connectedComponents(m);
 
-	assert(cc.size() == 2);
+	assert(cc.size() == 25);
 
-	uint ccn = 0;
-	for (const auto& c : cc){
-		std::cerr << "Connected component " << ccn++ << "; Faces:\n";
-		for (const uint f : c){
-			std::cerr << f << "; ";
-		}
-		std::cerr << "\n";
-	}
+	m.enablePerFaceColor();
+
+	vcl::setPerFaceColorFromConnectedComponents(m, cc);
+
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
 
 	return 0;
 }
