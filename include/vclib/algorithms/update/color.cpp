@@ -92,6 +92,19 @@ void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
 	}
 }
 
+/**
+ * @brief Sets the vertex colors from its incident face colors, computing a plain average of the
+ * face colors.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Color
+ *   - Faces:
+ *     - Color
+ *
+ * @param[in/out] m: mesh on which transfer the face color into the vertex color.
+ */
 template<typename MeshType>
 void setPerVertexColorFromFaceColor(MeshType& m)
 {
@@ -115,6 +128,19 @@ void setPerVertexColorFromFaceColor(MeshType& m)
 	}
 }
 
+/**
+ * @brief Sets the face colors from its incident vertex colors, computing a plain average of the
+ * vertex colors.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Color
+ *   - Faces:
+ *     - Color
+ *
+ * @param[in/out] m: mesh on which transfer the vertex color into the face color.
+ */
 template<typename MeshType>
 void setPerFaceColorFromVertexColor(MeshType& m)
 {
@@ -133,6 +159,24 @@ void setPerFaceColorFromVertexColor(MeshType& m)
 	}
 }
 
+/**
+ * @brief Sets the vertex colors from the scalar values by computing a shading in the given color
+ * map (default is Red to Blue color map), in the given interval [minScalar, maxScalar].
+ *
+ * If minScalar and maxScalar are not set (or if they are equal), the range is automatically
+ * computed.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Color
+ *     - Scalar
+ *
+ * @param[in/out] m: mesh on which compute the vertex color.
+ * @param[in] colorMap: the colormap to use to color the vertices of the mesh (default: RedBlue).
+ * @param[in] minScalar: the minimum value of the range to use for coloring (default: 0).
+ * @param[in] maxScalar: the maximum value of the range to use for coloring (default: 0).
+ */
 template<typename MeshType>
 void setPerVertexColorFromScalar(
 	MeshType&                                 m,
@@ -156,6 +200,24 @@ void setPerVertexColorFromScalar(
 	}
 }
 
+/**
+ * @brief Sets the face colors from the scalar values by computing a shading in the given color
+ * map (default is Red to Blue color map), in the given interval [minScalar, maxScalar].
+ *
+ * If minScalar and maxScalar are not set (or if they are equal), the range is automatically
+ * computed.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - Color
+ *     - Scalar
+ *
+ * @param[in/out] m: mesh on which compute the face color.
+ * @param[in] colorMap: the colormap to use to color the faces of the mesh (default: RedBlue).
+ * @param[in] minScalar: the minimum value of the range to use for coloring (default: 0).
+ * @param[in] maxScalar: the maximum value of the range to use for coloring (default: 0).
+ */
 template<typename MeshType>
 void setPerFaceColorFromScalar(
 	MeshType&                                 m,
@@ -176,6 +238,68 @@ void setPerFaceColorFromScalar(
 	}
 	for (FaceType& f : m.faces()){
 		f.color() = colorFromInterval(minScalar, maxScalar, f.scalar(), colorMap);
+	}
+}
+
+/**
+ * @brief Color the vertices of the mesh that are on border, using the border flags of the faces.
+ *
+ * Before using this function, you should update the face border flags accordingly.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Color
+ *   - Faces:
+ *     - TriangleFlags/PolygonFlags
+ *
+ * @param[in/out] m: the mesh on which update the vertex color from the border face flags.
+ * @param[in] borderColor: the color of the vertices that are part of edges that are all marked as
+ * on border.
+ * @param[in] internalColor: the color of the vertices that are part of edges that are all marked as
+ * non on border.
+ * @param[in] mixColor: the color of vertices that are part of edges that are both on border and non
+ * on border.
+ */
+template<typename MeshType>
+void setPerVertexColorFromFaceBorderFlag(
+	MeshType& m,
+	Color     borderColor,
+	Color     internalColor,
+	Color     mixColor)
+{
+	vcl::requirePerVertexColor(m);
+	vcl::requireFaces<MeshType>();
+
+	using FaceType = typename MeshType::FaceType;
+
+	const vcl::Color baseColor = Color::Green;
+
+	setPerVertexColor(m, baseColor);
+
+	for (FaceType& f : m.faces()) {
+		for (uint i = 0; i < f.vertexNumber(); ++i) {
+			if (f.isEdgeOnBorder(i)) {
+				if (f.vertex(i).color() == baseColor)
+					f.vertex(i).color() = borderColor;
+				if (f.vertex(i).color() == internalColor)
+					f.vertex(i).color() = mixColor;
+				if (f.vertexMod(i+1).color() == baseColor)
+					f.vertexMod(i+1).color() = borderColor;
+				if (f.vertexMod(i+1).color() == internalColor)
+					f.vertexMod(i+1).color() = mixColor;
+			}
+			else {
+				if (f.vertex(i).color() == baseColor)
+					f.vertex(i).color() = internalColor;
+				if (f.vertex(i).color() == borderColor)
+					f.vertex(i).color() = mixColor;
+				if (f.vertexMod(i+1).color() == baseColor)
+					f.vertexMod(i+1).color() = internalColor;
+				if (f.vertexMod(i+1).color() == borderColor)
+					f.vertexMod(i+1).color() = mixColor;
+			}
+		}
 	}
 }
 
