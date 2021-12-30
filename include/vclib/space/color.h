@@ -131,6 +131,8 @@ Color colorFromIntervalParula(float min, float max, float value);
 Color colorFromIntervalGreyShade(float value);
 Color colorFromIntervalGreyShade(float min, float max, float value);
 
+std::vector<Color> colorScattering(uint n, float sat = 0.3, float val = 0.9);
+
 } // namespace vcl
 
 #include "color.cpp"

@@ -475,6 +475,18 @@ inline std::ostream& operator<<(std::ostream& out, const Color& c)
 	return out;
 }
 
+/**
+ * @brief Given an interval of colors (from `c0` to `c1`) and a value in the interval [0, 1],
+ * returns the linear interpolation color between `c0` and `c1` based on `value` in the [0, 1]
+ * interval. If `value` is out of range, it will be set to the nearest extreme of the interval.
+ *
+ * Linear interpolation is computed in the RGBA values of the two colors.
+ *
+ * @param[in] c0: minimum in the input color interval.
+ * @param[in] c1: minimum in the input color interval.
+ * @param[in] value: a float value between 0 and 1.
+ * @return The linear interpolation between `c0` and `c1`.
+ */
 inline Color colorLerp(const Color& c0, const Color& c1, float value)
 {
 	Color c;
@@ -487,6 +499,14 @@ inline Color colorLerp(const Color& c0, const Color& c1, float value)
 	return c;
 }
 
+/**
+ * @brief Given a `value` in the interval [0, 1], it returns the color in the position in the given
+ * ColorMap `cm` corresponding to the position of `value` in the interval [0, 1].
+ *
+ * @param[in] value: a float value between 0 and 1.
+ * @param[cm] cm: the colormap used to compute the color.
+ * @return The color in the position of `value` in the given colormap.
+ */
 inline Color colorFromInterval(float value, Color::ColorMap cm)
 {
 	switch (cm) {
@@ -502,6 +522,23 @@ inline Color colorFromInterval(float value, Color::ColorMap cm)
 	}
 }
 
+/**
+ * @brief Returns a color in the interval from the minimum color to the maximum color of the given
+ * colormap `cm`, depending on the position of the given value in the given interval [min, max].
+ *
+ * If the given value is less than the minimum value of the interval, the minimum color will be
+ * returned. If the given value is higher than the maximum value of the interval, the maximum color
+ * will be returned. If min and max are equal, the Grey color will be returned.
+ *
+ * This function works also if the values of the interval are swapped.
+ *
+ * @param[in] min: minimum value of the interval
+ * @param[in] max: maximum value of the interval
+ * @param[in] value: the value in the interval to ramp.
+ * @param[in] cm: the colormap on which compute the color.
+ * @return A color in the given colormap representing the position of value in the interval [min,
+ * max].
+ */
 inline Color colorFromInterval(float min, float max, float value, Color::ColorMap cm)
 {
 	if (min == max) { // no range
@@ -512,6 +549,16 @@ inline Color colorFromInterval(float min, float max, float value, Color::ColorMa
 	return colorFromInterval(value, cm);
 }
 
+/**
+ * @brief Returns a color in the interval from Red to Blue depending on the position of the given
+ * value in the interval [0, 1].
+ *
+ * If the given value is less than 0, the Red color will be returned. If the given value is higher
+ * than 1, the Blue color will be returned.
+ *
+ * @param[in] value: the value between 0 and 1 to ramp.
+ * @return A color between Red and Blue representing the position of value in the interval [0, 1].
+ */
 inline Color colorFromIntervalRedBlue(float value)
 {
 	Color c;
@@ -552,6 +599,16 @@ inline Color colorFromIntervalRedBlue(float min, float max, float value)
 	return colorFromIntervalRedBlue(value);
 }
 
+/**
+ * @brief Returns a color in the Paraula colormap depending on the position of the given
+ * value in the interval [0, 1].
+ *
+ * If the given value is less than 0, the minimum color of the colormap will be returned. If the
+ * given value is higher than 1, the maximum color in the colormap will be returned.
+ *
+ * @param[in] value: the value between 0 and 1 to ramp.
+ * @return A color in the Parula colormap representing the position of value in the interval [0, 1].
+ */
 inline Color colorFromIntervalParula(float value)
 {
 	if (value < 0) // out of range - left
@@ -581,6 +638,23 @@ inline Color colorFromIntervalParula(float value)
 	return colorLerp((Color::ColorARGB) paruVal[ind], (Color::ColorARGB) paruVal[ind + 1], div);
 }
 
+/**
+ * @brief Returns a color in the Paraula colormap depending on the position of the given
+ * value in the given interval [min, max].
+ *
+ * If the given value is less than the minimum value of the interval, the minimum color of the
+ * colormap will be returned. If the given value is higher than the maximum value of the interval,
+ * the maximum color in the colormap will be returned. If min and max are equal, the Grey color will
+ * be returned.
+ *
+ * This function works also if the values of the interval are swapped.
+ *
+ * @param[in] min: minimum value of the interval
+ * @param[in] max: maximum value of the interval
+ * @param[in] value: the value in the interval to ramp.
+ * @return A color in the Parula colormap representing the position of value in the interval [min,
+ * max].
+ */
 inline Color colorFromIntervalParula(float min, float max, float value)
 {
 	Color c;
@@ -592,6 +666,17 @@ inline Color colorFromIntervalParula(float min, float max, float value)
 	return colorFromIntervalParula(value);
 }
 
+/**
+ * @brief Returns a color in the grey shade colormap depending on the position of the given
+ * value in the interval [0, 1].
+ *
+ * If the given value is less than 0, the minimum color of the colormap will be returned. If the
+ * given value is higher than 1, the maximum color in the colormap will be returned.
+ *
+ * @param[in] value: the value between 0 and 1 to ramp.
+ * @return A color in the grey shade colormap representing the position of value in the interval [0,
+ * 1].
+ */
 inline Color colorFromIntervalGreyShade(float value)
 {
 	if (value < 0) // out of range - left
@@ -601,6 +686,23 @@ inline Color colorFromIntervalGreyShade(float value)
 	return Color(value * 255, value * 255, value * 255, 255);
 }
 
+/**
+ * @brief Returns a color in the grey shade colormap depending on the position of the given
+ * value in the given interval [min, max].
+ *
+ * If the given value is less than the minimum value of the interval, the minimum color of the
+ * colormap will be returned. If the given value is higher than the maximum value of the interval,
+ * the maximum color in the colormap will be returned. If min and max are equal, the Grey color will
+ * be returned.
+ *
+ * This function works also if the values of the interval are swapped.
+ *
+ * @param[in] min: minimum value of the interval
+ * @param[in] max: maximum value of the interval
+ * @param[in] value: the value in the interval to ramp.
+ * @return A color in the grey shade colormap representing the position of value in the interval
+ * [min, max].
+ */
 inline Color colorFromIntervalGreyShade(float min, float max, float value)
 {
 	Color c;
@@ -610,6 +712,41 @@ inline Color colorFromIntervalGreyShade(float min, float max, float value)
 
 	value = std::abs((value - min) / (max - min));
 	return colorFromIntervalGreyShade(value);
+}
+
+/**
+ * @brief Given a number `n`, returns a vector of `n` colors so that each color differs as much as
+ * possible from the previous one of the vector.
+ *
+ * @param n: the number of colors in the returned vector
+ * @param sat: the saturation in the returned colors (default 0.3)
+ * @param val: the value in the returned colors (default 0.9)
+ * @return a vector of different colors.
+ */
+inline std::vector<Color> colorScattering(uint n, float sat, float val)
+{
+	uint m = n;
+	std::vector<Color> scattering;
+	scattering.reserve(n);
+
+	for (uint value = 0; value < n; ++value) {
+		uint b = 0;
+		for (uint k=1; k<n; k<<=1) {
+			if (value << 1 >= m) {
+				b += k;
+				value -= (m+1) >> 1;
+				m >>= 1;
+			}
+			else  {
+				m = (m+1)>>1;
+			}
+		}
+
+		Color rc;
+		rc.setHsvF(float(b)/float(n),sat,val);
+		scattering.push_back(rc);
+	}
+	return scattering;
 }
 
 } // namespace vcl
