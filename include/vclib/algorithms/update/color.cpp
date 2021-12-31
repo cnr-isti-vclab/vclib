@@ -415,6 +415,11 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
  * Period is expressed in absolute terms.
  * So as period it is meaningful could be to use something in the range of 1/10 of the bbox diag.
  *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Color
+ *
  * @param m
  * @param period
  * @param offset
@@ -439,6 +444,51 @@ void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offse
 				127 + 128.0 * perlinNoise(p[1][0], p[1][1], p[1][2]),
 				127 + 128.0 * perlinNoise(p[2][0], p[2][1], p[2][2]),
 				255);
+		}
+	}
+}
+
+/**
+ * @brief Simple Perlin color mixing. `color1` and `color2` are mixed according the perlin noise
+ * function, with period and offset.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Color
+ *
+ * @param m
+ * @param period
+ * @param offset
+ * @param color1
+ * @param color2
+ * @param onSelected
+ */
+template<typename MeshType, typename PointType>
+void setPerVertexPerlinColor(
+	MeshType&      m,
+	double         period,
+	PointType      offset,
+	Color          color1,
+	Color          color2,
+	bool           onSelected)
+{
+	vcl::requirePerVertexColor(m);
+
+	using VertexType = typename MeshType::VertexType;
+
+	for (VertexType& v : m.vertices()) {
+		if (!onSelected || v.isSelected()) {
+			PointType p = v.coord() / period + offset;
+
+			double factor = (perlinNoise(p[0], p[1], p[2]) + 1.0) / 2.0;
+
+			int rr = (color1[0] * factor) + (color2[0] * (1.0 - factor));
+			int gg = (color1[1] * factor) + (color2[1] * (1.0 - factor));
+			int bb = (color1[2] * factor) + (color2[2] * (1.0 - factor));
+			int aa = (color1[3] * factor) + (color2[3] * (1.0 - factor));
+
+			v.color() = Color(rr, gg, bb, aa);
 		}
 	}
 }

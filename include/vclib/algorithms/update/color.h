@@ -80,6 +80,15 @@ void setPerVertexColorPerlinNoise(
 	PointType offset     = PointType(0, 0, 0),
 	bool      onSelected = false);
 
+template<typename MeshType, typename PointType>
+void setPerVertexPerlinColor(
+	MeshType& m,
+	double period,
+	PointType offset  = PointType(0, 0, 0),
+	Color color1 = Color::Black,
+	Color color2 = Color::White,
+	bool onSelected = false);
+
 } // namespace vcl
 
 #include "color.cpp"
