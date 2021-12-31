@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_DETECTION_H
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_DETECTION_H
 
-#include <vclib/misc/vcl_types.h>
+#include <vclib/misc/types.h>
 
 namespace vcl::comp {
 

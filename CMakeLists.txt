@@ -25,6 +25,12 @@ option(VCLIB_BUILD_DOCS
 # Add the cmake folder so the FindSphinx module is found
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+# threads and tbb, required for parallel on linux and macos
+if (UNIX)
+	find_package(Threads)
+	find_package(TBB)
+endif()
+
 # external libraries
 add_subdirectory(external)
 
@@ -167,10 +173,11 @@ set(HEADERS
 	include/vclib/misc/comparators.h
 	include/vclib/misc/file_info.h
 	include/vclib/misc/nested_initializer_lists.h
+	include/vclib/misc/parallel.h
 	include/vclib/misc/string.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
-	include/vclib/misc/vcl_types.h
+	include/vclib/misc/types.h
 	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load_obj.h
@@ -280,6 +287,7 @@ set(SOURCES
 	include/vclib/misc/compactness.cpp
 	include/vclib/misc/file_info.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
+	include/vclib/misc/parallel.cpp
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
@@ -320,6 +328,13 @@ add_library(vclib INTERFACE)
 
 target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})
 target_link_libraries(vclib INTERFACE vclib-external-eigen vclib-external-mapbox-earcut)
+
+if (UNIX)
+	if (TARGET TBB::tbb AND TARGET Threads::Threads)
+		target_link_libraries(vclib INTERFACE TBB::tbb Threads::Threads)
+		target_compile_definitions(vclib INTERFACE VCLIB_PARALLEL)
+	endif()
+endif()
 
 if (VCLIB_IDE)
 	add_custom_target(vclib_ide SOURCES ${HEADERS} ${SOURCES})

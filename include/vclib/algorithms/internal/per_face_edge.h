@@ -27,7 +27,7 @@
 #include <assert.h>
 #include <vector>
 
-#include <vclib/misc/vcl_types.h>
+#include <vclib/misc/types.h>
 
 namespace vcl::internal {
 

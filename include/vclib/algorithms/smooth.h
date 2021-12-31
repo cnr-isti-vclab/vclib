@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_SMOOTH_H
 #define VCL_ALGORITHMS_SMOOTH_H
 
-#include <vclib/misc/vcl_types.h>
+#include <vclib/misc/types.h>
 
 namespace vcl {
 

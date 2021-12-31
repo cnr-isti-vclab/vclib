@@ -20,7 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <vclib/misc/vcl_types.h>
+#include <vclib/misc/types.h>
 
 #ifndef VCL_MESH_COMPONENTS_COLOR_DETECTION_H
 #define VCL_MESH_COMPONENTS_COLOR_DETECTION_H

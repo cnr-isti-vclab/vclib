@@ -23,7 +23,7 @@
 #ifndef VCL_KD_TREE_H
 #define VCL_KD_TREE_H
 
-#include <vclib/misc/vcl_types.h>
+#include <vclib/misc/types.h>
 #include <vector>
 
 namespace vcl {

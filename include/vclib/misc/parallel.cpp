@@ -20,77 +20,59 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPE_TRAITS_H
-#define VCL_TYPE_TRAITS_H
+#include "parallel.h"
 
-#include <assert.h>
-#include <type_traits>
-
-/**
- * Utility macro used to enable functions only when a particular static condition is true.
- *
- * Usage:
- *
- * @code{.cpp}
- * template <int N>
- * VCL_ENABLE_IF(N < 0, int) getSize() { ... }
- * @endcode
- *
- * The first argument is the condition, the second argument is the return type of the function.
- *
- * When building the documentation, this syntax will be hidden and will appear just the return type.
- */
-#define VCL_ENABLE_IF(Test, Type1) typename std::enable_if<Test, Type1>::type
-
-// used for templates given as parameters to macros
-// https://stackoverflow.com/questions/44268316/passing-a-template-type-into-a-macro
-#define VCL_COMMA ,
-
-using uint = unsigned int;
-using ushort = unsigned short;
+#ifdef VCLIB_PARALLEL
+#include <execution>
+#endif
 
 namespace vcl {
 
-/*
- * Utility type that makes possible to treat const pointers in a templated class that can treat a
- * both const and non-const pointer type.
+/**
+ * @brief This function executes a parallel for over the elements iterated between `begin` and `end`
+ * iterators, if parallel requirements have been found in the system.
+ *
+ * Example of usage on a vcl::Mesh, iterating over vertices:
+ *
+ * @code{.cpp}
+ * vcl::parallelFor(m.vertices().begin(), m.vertices().end(), [&](VertexType& v) {
+ *     // make some computing on v
+ * });
+ * @endcode
+ *
+ * @param[in] begin: iterator of the first element to iterate
+ * @param[in] end: iterator of the end of the iterated container
+ * @param[in] F: lambda function that takes the iterated type as input
  */
-
-template<typename T>
-struct MakeConstPointer
+template<typename Iterator, typename Lambda>
+void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F)
 {
-	typedef T type;
-};
+#ifdef VCLIB_PARALLEL
+	std::for_each(std::execution::par_unseq, begin, end, F);
+#else
+	std::for_each(begin, end, F);
+#endif
+}
 
-template<typename T>
-struct MakeConstPointer<T*>
-{
-	typedef const T* type;
-};
-
-/*
- * Full deduction for the possibility to re-use same code for const and non-const member functions
- * https://stackoverflow.com/a/47369227/5851101
+/**
+ * @brief This function executes a parallel for over a container if parallel
+ * requirements have been found in the system.
+ *
+ * Example of usage on a vcl::Mesh, iterating over vertices:
+ *
+ * @code{.cpp}
+ * vcl::parallelFor(m.vertices(), [&](VertexType& v) {
+ *     // make some computing on v
+ * });
+ * @endcode
+ *
+ * @param[in] c: container having begin() and end() functions
+ * @param[in] F: lambda function that takes the iterated type as input
  */
-
-template<typename T>
-constexpr T& asConst(T const& value) noexcept
+template<typename Container, typename Lambda>
+void parallelFor(Container&& c, Lambda&& F)
 {
-	return const_cast<T&>(value);
+	parallelFor(c.begin(), c.end(), F);
 }
-template<typename T>
-constexpr T* asConst(T const* value) noexcept
-{
-	return const_cast<T*>(value);
-}
-template<typename T>
-constexpr T* asConst(T* value) noexcept
-{
-	return value;
-}
-template<typename T>
-void asConst(T const&&) = delete;
 
 } // namespace vcl
-
-#endif // VCL_TYPE_TRAITS_H

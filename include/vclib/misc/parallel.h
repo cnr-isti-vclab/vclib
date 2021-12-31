@@ -20,55 +20,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_DETECTION_H
-#define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_DETECTION_H
+#ifndef VCL_PARALLEL_H
+#define VCL_PARALLEL_H
 
-#include <vclib/misc/types.h>
+namespace vcl {
 
-namespace vcl::comp {
+template<typename Iterator, typename Lambda>
+void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F);
 
-/* Triggerers */
+template<typename Container, typename Lambda>
+void parallelFor(Container&& c, Lambda&& F);
 
-class AdjacentVerticesTriggerer
-{
-};
+} // namespace vcl
 
-class OptionalAdjacentVerticesTriggerer
-{
-};
+#include "parallel.cpp"
 
-/* Detectors to check if a class has (inherits) AdjacenctVertices or OptionalAdjacenctVertices*/
-
-template<typename T>
-using hasAdjacentVerticesT = std::is_base_of<AdjacentVerticesTriggerer, T>;
-
-template<typename T>
-using hasOptionalAdjacentVerticesT = std::is_base_of<OptionalAdjacentVerticesTriggerer, T>;
-
-
-template<typename T>
-bool constexpr hasAdjacentVertices()
-{
-	return hasAdjacentVerticesT<T>::value || hasOptionalAdjacentVerticesT<T>::value;
-}
-
-template<typename T>
-bool constexpr hasOptionalAdjacentVertices()
-{
-	return hasOptionalAdjacentVerticesT<T>::value;
-}
-
-template <typename T>
-bool isAdjacentVerticesEnabledOn(const T& element)
-{
-	if constexpr (hasOptionalAdjacentVertices<T>()) {
-		return element.isAdjVerticesEnabled();
-	}
-	else {
-		return hasAdjacentVertices<T>();
-	}
-}
-
-} // namespace vcl::comp
-
-#endif // VCL_MESH_COMPONENTS_ADJACENT_VERTICES_DETECTION_H
+#endif // VCL_PARALLEL_H

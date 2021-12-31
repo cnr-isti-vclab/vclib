@@ -28,7 +28,7 @@
 #include <assert.h>
 #include <vector>
 
-#include <vclib/misc/vcl_types.h>
+#include <vclib/misc/types.h>
 
 #include "../../iterators/range_iterator.h"
 

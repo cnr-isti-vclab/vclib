@@ -20,55 +20,77 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_DETECTION_H
-#define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_DETECTION_H
+#ifndef VCL_TYPES_H
+#define VCL_TYPES_H
 
-#include <vclib/misc/types.h>
+#include <assert.h>
+#include <type_traits>
 
-namespace vcl::comp {
+/**
+ * Utility macro used to enable functions only when a particular static condition is true.
+ *
+ * Usage:
+ *
+ * @code{.cpp}
+ * template <int N>
+ * VCL_ENABLE_IF(N < 0, int) getSize() { ... }
+ * @endcode
+ *
+ * The first argument is the condition, the second argument is the return type of the function.
+ *
+ * When building the documentation, this syntax will be hidden and will appear just the return type.
+ */
+#define VCL_ENABLE_IF(Test, Type1) typename std::enable_if<Test, Type1>::type
 
-/* Triggerers */
+// used for templates given as parameters to macros
+// https://stackoverflow.com/questions/44268316/passing-a-template-type-into-a-macro
+#define VCL_COMMA ,
 
-class AdjacentVerticesTriggerer
+using uint = unsigned int;
+using ushort = unsigned short;
+
+namespace vcl {
+
+/*
+ * Utility type that makes possible to treat const pointers in a templated class that can treat a
+ * both const and non-const pointer type.
+ */
+
+template<typename T>
+struct MakeConstPointer
 {
+	typedef T type;
 };
 
-class OptionalAdjacentVerticesTriggerer
+template<typename T>
+struct MakeConstPointer<T*>
 {
+	typedef const T* type;
 };
 
-/* Detectors to check if a class has (inherits) AdjacenctVertices or OptionalAdjacenctVertices*/
+/*
+ * Full deduction for the possibility to re-use same code for const and non-const member functions
+ * https://stackoverflow.com/a/47369227/5851101
+ */
 
 template<typename T>
-using hasAdjacentVerticesT = std::is_base_of<AdjacentVerticesTriggerer, T>;
-
-template<typename T>
-using hasOptionalAdjacentVerticesT = std::is_base_of<OptionalAdjacentVerticesTriggerer, T>;
-
-
-template<typename T>
-bool constexpr hasAdjacentVertices()
+constexpr T& asConst(T const& value) noexcept
 {
-	return hasAdjacentVerticesT<T>::value || hasOptionalAdjacentVerticesT<T>::value;
+	return const_cast<T&>(value);
 }
-
 template<typename T>
-bool constexpr hasOptionalAdjacentVertices()
+constexpr T* asConst(T const* value) noexcept
 {
-	return hasOptionalAdjacentVerticesT<T>::value;
+	return const_cast<T*>(value);
 }
-
-template <typename T>
-bool isAdjacentVerticesEnabledOn(const T& element)
+template<typename T>
+constexpr T* asConst(T* value) noexcept
 {
-	if constexpr (hasOptionalAdjacentVertices<T>()) {
-		return element.isAdjVerticesEnabled();
-	}
-	else {
-		return hasAdjacentVertices<T>();
-	}
+	return value;
 }
+template<typename T>
+void asConst(T const&&) = delete;
 
-} // namespace vcl::comp
+} // namespace vcl
 
-#endif // VCL_MESH_COMPONENTS_ADJACENT_VERTICES_DETECTION_H
+#endif // VCL_TYPES_H

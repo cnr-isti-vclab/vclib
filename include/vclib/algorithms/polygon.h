@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_POLYGON_H
 #define VCL_ALGORITHMS_POLYGON_H
 
-#include <vclib/misc/vcl_types.h>
+#include <vclib/misc/types.h>
 #include <vclib/space/point.h>
 
 namespace vcl {
