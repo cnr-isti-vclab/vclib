@@ -68,6 +68,7 @@ set(HEADERS
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/matrix.h
+	include/vclib/math/perlin_noise.h
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_argument.h
 	include/vclib/mesh/mesh_components.h
@@ -227,6 +228,7 @@ set(SOURCES
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
 	include/vclib/math/distribution.cpp
+	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_pos.cpp
 	include/vclib/mesh/components/adjacent_edges.cpp

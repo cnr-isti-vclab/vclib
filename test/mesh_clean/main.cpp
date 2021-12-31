@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include <vclib/algorithms/clean.h>
+#include <vclib/algorithms/update/bounding_box.h>
 #include <vclib/algorithms/update/color.h>
 #include <vclib/algorithms/update/topology.h>
 #include <vclib/io/load_ply.h>
@@ -75,6 +76,8 @@ int main()
 
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/rangemap.ply");
 
+	vcl::updateBoundingBox(m);
+
 	m.enablePerFaceAdjacentFaces();
 	vcl::updatePerFaceAdjacentFaces(m);
 
@@ -85,6 +88,10 @@ int main()
 	m.enablePerFaceColor();
 
 	vcl::setPerFaceColorFromConnectedComponents(m, cc);
+
+	double d = m.boundingBox().diagonal()/10;
+
+	vcl::setPerVertexColorPerlinNoise(m, vcl::Point3d(d, d, d));
 
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
 

@@ -40,7 +40,7 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 				setVertexNormals(true, getPropType<typename Mesh::VertexType::NormalType::ScalarType>());
 		if constexpr (vcl::hasPerVertexColor<Mesh>())
 			if (vcl::isPerVertexColorEnabled(m))
-				setVertexColors(true, CHAR);
+				setVertexColors(true, UCHAR);
 		if constexpr (vcl::hasPerVertexScalar<Mesh>())
 			if (vcl::isPerVertexScalarEnabled(m))
 				setVertexScalars(true, getPropType<typename Mesh::VertexType::ScalarType>());

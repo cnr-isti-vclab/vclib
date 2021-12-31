@@ -76,17 +76,17 @@ public:
 	void setVertices(bool b = true);
 	void setVertexCoords(bool b = true, PropType t = DOUBLE);
 	void setVertexNormals(bool b = true, PropType t = FLOAT);
-	void setVertexColors(bool b = true, PropType t = CHAR);
+	void setVertexColors(bool b = true, PropType t = UCHAR);
 	void setVertexScalars(bool b = true, PropType t = DOUBLE);
 	void setVertexTexCoords(bool b = true, PropType t = FLOAT);
 	void setFaces(bool b = true);
 	void setFaceVRefs(bool b = true);
 	void setFaceNormals(bool b = true, PropType t = FLOAT);
-	void setFaceColors(bool b = true, PropType t = CHAR);
+	void setFaceColors(bool b = true, PropType t = UCHAR);
 	void setFaceScalars(bool b = true, PropType t = DOUBLE);
 	void setFaceWedgeTexCoords(bool b = true, PropType t = FLOAT);
 	void setEdges(bool b = true);
-	void setEdgeColors(bool b = true, PropType t = CHAR);
+	void setEdgeColors(bool b = true, PropType t = UCHAR);
 	void setTextures(bool b = true);
 
 	PropType vertexCoordsType() const;

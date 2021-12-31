@@ -22,10 +22,11 @@
 
 #include "color.h"
 
+#include <vclib/math/perlin_noise.h>
 #include <vclib/mesh/requirements.h>
 
-#include "../stat.h"
 #include "../clean.h"
+#include "../stat.h"
 
 namespace vcl {
 
@@ -33,11 +34,11 @@ namespace internal {
 
 struct ColorAvgInfo
 {
-	vcl::Point4<uint> c =  vcl::Point4<uint>(0,0,0,0);
-	uint cnt = 0;
+	vcl::Point4<uint> c   = vcl::Point4<uint>(0, 0, 0, 0);
+	uint              cnt = 0;
 };
 
-}
+} // namespace internal
 
 /**
  * @brief Sets the color of the vertices. If the `onlySelected` flag is set to `true`, only the
@@ -113,18 +114,18 @@ void setPerVertexColorFromFaceColor(MeshType& m)
 	vcl::requirePerFaceColor(m);
 
 	using VertexType = typename MeshType::VertexType;
-	using FaceType = typename MeshType::FaceType;
+	using FaceType   = typename MeshType::FaceType;
 
 	std::vector<internal::ColorAvgInfo> csi(m.vertexContainerSize());
 
-	for (const FaceType& f : m.faces()){
-		for (const VertexType* v : f.vertices()){
+	for (const FaceType& f : m.faces()) {
+		for (const VertexType* v : f.vertices()) {
 			csi[m.index(v)].c += v->color();
 			csi[m.index(v)].cnt++;
 		}
 	}
 
-	for (VertexType& v : m.vertices()){
+	for (VertexType& v : m.vertices()) {
 		v.color() = csi[m.index(v)].c / csi[m.index(v)].cnt;
 	}
 }
@@ -149,11 +150,11 @@ void setPerFaceColorFromVertexColor(MeshType& m)
 	vcl::requirePerFaceColor(m);
 
 	using VertexType = typename MeshType::VertexType;
-	using FaceType = typename MeshType::FaceType;
+	using FaceType   = typename MeshType::FaceType;
 
-	for (FaceType& f : m.faces()){
-		vcl::Point4<uint> avg(0,0,0,0);
-		for (const VertexType* v : f.vertices()){
+	for (FaceType& f : m.faces()) {
+		vcl::Point4<uint> avg(0, 0, 0, 0);
+		for (const VertexType* v : f.vertices()) {
 			avg += v->color();
 		}
 		f->color() = avg / f.vertexNumber();
@@ -191,12 +192,12 @@ void setPerVertexColorFromScalar(
 	using VertexType = typename MeshType::VertexType;
 	using ScalarType = typename VertexType::ScalarType;
 
-	if (minScalar == maxScalar){
+	if (minScalar == maxScalar) {
 		std::pair<ScalarType, ScalarType> pair = perVertexScalarMinMax(m);
-		minScalar = pair.first;
-		maxScalar = pair.second;
+		minScalar                              = pair.first;
+		maxScalar                              = pair.second;
 	}
-	for (VertexType& v : m.vertices()){
+	for (VertexType& v : m.vertices()) {
 		v.color() = colorFromInterval(minScalar, maxScalar, v.scalar(), colorMap);
 	}
 }
@@ -221,23 +222,23 @@ void setPerVertexColorFromScalar(
  */
 template<typename MeshType>
 void setPerFaceColorFromScalar(
-	MeshType&                                 m,
-	vcl::Color::ColorMap                      colorMap,
+	MeshType&                               m,
+	vcl::Color::ColorMap                    colorMap,
 	typename MeshType::FaceType::ScalarType minScalar,
 	typename MeshType::FaceType::ScalarType maxScalar)
 {
 	vcl::requirePerFaceColor(m);
 	vcl::requirePerFaceScalar(m);
 
-	using FaceType = typename MeshType::FaceType;
+	using FaceType   = typename MeshType::FaceType;
 	using ScalarType = typename FaceType::ScalarType;
 
-	if (minScalar == maxScalar){
+	if (minScalar == maxScalar) {
 		std::pair<ScalarType, ScalarType> pair = perFaceScalarMinMax(m);
-		minScalar = pair.first;
-		maxScalar = pair.second;
+		minScalar                              = pair.first;
+		maxScalar                              = pair.second;
 	}
-	for (FaceType& f : m.faces()){
+	for (FaceType& f : m.faces()) {
 		f.color() = colorFromInterval(minScalar, maxScalar, f.scalar(), colorMap);
 	}
 }
@@ -285,20 +286,20 @@ void setPerVertexColorFromFaceBorderFlag(
 					f.vertex(i).color() = borderColor;
 				if (f.vertex(i).color() == internalColor)
 					f.vertex(i).color() = mixColor;
-				if (f.vertexMod(i+1).color() == baseColor)
-					f.vertexMod(i+1).color() = borderColor;
-				if (f.vertexMod(i+1).color() == internalColor)
-					f.vertexMod(i+1).color() = mixColor;
+				if (f.vertexMod(i + 1).color() == baseColor)
+					f.vertexMod(i + 1).color() = borderColor;
+				if (f.vertexMod(i + 1).color() == internalColor)
+					f.vertexMod(i + 1).color() = mixColor;
 			}
 			else {
 				if (f.vertex(i).color() == baseColor)
 					f.vertex(i).color() = internalColor;
 				if (f.vertex(i).color() == borderColor)
 					f.vertex(i).color() = mixColor;
-				if (f.vertexMod(i+1).color() == baseColor)
-					f.vertexMod(i+1).color() = internalColor;
-				if (f.vertexMod(i+1).color() == borderColor)
-					f.vertexMod(i+1).color() = mixColor;
+				if (f.vertexMod(i + 1).color() == baseColor)
+					f.vertexMod(i + 1).color() = internalColor;
+				if (f.vertexMod(i + 1).color() == borderColor)
+					f.vertexMod(i + 1).color() = mixColor;
 			}
 		}
 	}
@@ -320,8 +321,8 @@ void setPerVertexColorFromFaceBorderFlag(
  */
 template<typename MeshType>
 void setPerFaceColorFromConnectedComponents(
-	MeshType& m,
-	const std::vector<std::set<uint> >& connectedComponents)
+	MeshType&                          m,
+	const std::vector<std::set<uint>>& connectedComponents)
 {
 	std::vector<Color> vc = colorScattering(connectedComponents.size());
 
@@ -355,6 +356,91 @@ void setPerFaceColorFromConnectedComponents(MeshType& m)
 	std::vector<std::set<uint>> connComps = connectedComponents(m);
 
 	setPerFaceColorFromConnectedComponents(m, connComps);
+}
+
+/**
+ * @brief This function colors each face of the mesh using a given number of scattering colors
+ * (default number is 50). By default, colors uniformely adjacent faces having faux edges in common.
+ * This check is made only if the option `checkFauxEdges` is set to true, and if the per Face
+ * AdjacentFaces component is available in the mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - Color
+ *
+ * Optional:
+ * - Mesh:
+ *   - Faces:
+ *     - AdjacentFaces
+ *
+ * @param[in/out] m: mesh on which set the face colors.
+ * @param[in] nColors: number of colors used for the scattering (default 50).
+ * @param[in] checkFauxEdges: if true, colors uniformely adjacent faces with faux edges (default
+ * `true`).
+ */
+template<typename MeshType>
+void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
+{
+	vcl::requirePerFaceColor(m);
+
+	using FaceType = typename MeshType::FaceType;
+
+	Color baseColor = Color::Black;
+	setPerFaceColor(m, baseColor);
+
+	std::vector<Color> vc = colorScattering(nColors);
+
+	for (FaceType& f : m.faces()) {
+		if (f.color() == baseColor) {
+			f.color() = vc[m.index(f) % nColors];
+		}
+		if constexpr (hasPerFaceAdjacentFaces<MeshType>()) {
+			if (checkFauxEdges && isPerFaceAdjacentFacesEnabled(m)) {
+				for (uint i = 0; i < f.vertexNumber(); ++i) {
+					if (f.isEdgeFaux(i)) {
+						assert(f.adjFace(i) != nullptr);
+						f.adjFace(i)->color = f.color();
+					}
+				}
+			}
+		}
+	}
+}
+
+/**
+ * @brief Set the vertex color according to a perlin noise computed on the vertex coordinates.
+ *
+ * To make things weirder each color band can have its own offset and frequency.
+ * Period is expressed in absolute terms.
+ * So as period it is meaningful could be to use something in the range of 1/10 of the bbox diag.
+ *
+ * @param m
+ * @param period
+ * @param offset
+ * @param onSelected
+ */
+template<typename MeshType, typename PointType>
+void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offset, bool onSelected)
+{
+	vcl::requirePerVertexColor(m);
+
+	using VertexType = typename MeshType::VertexType;
+
+	PointType p[3];
+
+	for (VertexType& v : m.vertices()) {
+		if (!onSelected || v.isSelected()) {
+			p[0]      = (v.coord() / period[0]) + offset;
+			p[1]      = (v.coord() / period[1]) + offset;
+			p[2]      = (v.coord() / period[2]) + offset;
+			v.color() = Color(
+				127 + 128.0 * perlinNoise(p[0][0], p[0][1], p[0][2]),
+				127 + 128.0 * perlinNoise(p[1][0], p[1][1], p[1][2]),
+				127 + 128.0 * perlinNoise(p[2][0], p[2][1], p[2][2]),
+				255);
+		}
+	}
 }
 
 } // namespace vcl

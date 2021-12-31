@@ -20,19 +20,15 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MATH_BASE_H
-#define VCL_MATH_BASE_H
-
-#include <cmath>
+#ifndef VCL_MATH_PERLIN_NOISE_H
+#define VCL_MATH_PERLIN_NOISE_H
 
 namespace vcl {
 
-template<typename T>
-bool isDegenerate(T t)
-{
-	return std::isinf(t) || std::isnan(t);
-}
+double perlinNoise(double x, double y, double z);
 
 } // namespace vcl
 
-#endif // VCL_MATH_BASE_H
+#include "perlin_noise.cpp"
+
+#endif // VCL_MATH_PERLIN_NOISE_H
