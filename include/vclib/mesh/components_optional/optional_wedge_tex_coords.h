@@ -26,12 +26,13 @@
 #include <array>
 #include <vector>
 
+#include <vclib/iterators/range_iterator.h>
+
 #include "optional_info.h"
 
 #include <vclib/space/tex_coord.h>
 
 #include "../components/detection/wedge_tex_coords_detection.h"
-#include "../iterators/range_iterator.h"
 
 namespace vcl::mesh {
 template<typename, typename>

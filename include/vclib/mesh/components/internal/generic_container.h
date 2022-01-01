@@ -28,9 +28,8 @@
 #include <assert.h>
 #include <vector>
 
+#include <vclib/iterators/range_iterator.h>
 #include <vclib/misc/types.h>
-
-#include "../../iterators/range_iterator.h"
 
 namespace vcl::comp::internal {
 

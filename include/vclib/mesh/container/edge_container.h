@@ -23,11 +23,11 @@
 #ifndef VCL_MESH_CONTAINER_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINER_EDGE_CONTAINER_H
 
+#include <vclib/iterators/container_iterator.h>
+#include <vclib/iterators/container_range_iterator.h>
 #include <vclib/mesh/elements/edge.h>
 
 #include "../components_vector/custom_component_vector_handle.h"
-#include "../iterators/container_iterator.h"
-#include "../iterators/container_range_iterator.h"
 #include "containers_detection.h"
 #include "element_container.h"
 

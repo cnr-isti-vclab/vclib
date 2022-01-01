@@ -20,61 +20,51 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_CONTAINER_RANGE_ITERATOR_H
-#define VCL_MESH_ITERATORS_CONTAINER_RANGE_ITERATOR_H
+#ifndef VCL_ITERATORS_RANGE_ITERATOR_H
+#define VCL_ITERATORS_RANGE_ITERATOR_H
 
 namespace vcl {
 
 template<typename Container, typename Iterator>
-class ContainerRangeIterator
+class RangeIterator
 {
 public:
-	ContainerRangeIterator(
+	RangeIterator(
 		Container& c,
-		bool       jumpDeleted,
-		Iterator (Container::*beginFunction)(bool),
+		Iterator (Container::*beginFunction)(),
 		Iterator (Container::*endFunction)()) :
-			c(c),
-			beginFunction(beginFunction),
-			endFunction(endFunction),
-			jumpDeleted(jumpDeleted) {};
+			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
 
-	Iterator begin() { return (c.*(beginFunction))(jumpDeleted); }
+	Iterator begin() { return (c.*(beginFunction))(); }
 
 	Iterator end() { return (c.*(endFunction))(); }
 
-private:
+protected:
 	Container& c;
-	Iterator (Container::*beginFunction)(bool);
+	Iterator (Container::*beginFunction)();
 	Iterator (Container::*endFunction)();
-	bool jumpDeleted;
 };
 
 template<typename Container, typename ConstIterator>
-class ConstContainerRangeIterator
+class ConstRangeIterator
 {
 public:
-	ConstContainerRangeIterator(
+	ConstRangeIterator(
 		const Container& c,
-		bool             jumpDeleted,
-		ConstIterator (Container::*beginFunction)(bool) const,
+		ConstIterator (Container::*beginFunction)() const,
 		ConstIterator (Container::*endFunction)() const) :
-			c(c),
-			beginFunction(beginFunction),
-			endFunction(endFunction),
-			jumpDeleted(jumpDeleted) {};
+			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
 
-	ConstIterator begin() { return (c.*(beginFunction))(jumpDeleted); }
+	ConstIterator begin() { return (c.*(beginFunction))(); }
 
 	ConstIterator end() { return (c.*(endFunction))(); }
 
-private:
+protected:
 	const Container& c;
-	ConstIterator (Container::*beginFunction)(bool) const;
+	ConstIterator (Container::*beginFunction)() const;
 	ConstIterator (Container::*endFunction)() const;
-	bool jumpDeleted;
 };
 
-} // namespace vcl
+}
 
-#endif // VCL_MESH_ITERATORS_CONTAINER_RANGE_ITERATOR_H
+#endif // VCL_ITERATORS_RANGE_ITERATOR_H

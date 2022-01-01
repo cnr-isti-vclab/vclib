@@ -71,6 +71,9 @@ set(HEADERS
 	include/vclib/algorithms/update/transform.h
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
+	include/vclib/iterators/container_iterator.h
+	include/vclib/iterators/container_range_iterator.h
+	include/vclib/iterators/range_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/matrix.h
@@ -162,9 +165,6 @@ set(HEADERS
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
 	include/vclib/mesh/elements/vertex_components_optional.h
-	include/vclib/mesh/iterators/container_iterator.h
-	include/vclib/mesh/iterators/container_range_iterator.h
-	include/vclib/mesh/iterators/range_iterator.h
 	include/vclib/mesh/requirements/element_requirements.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
@@ -234,6 +234,7 @@ set(SOURCES
 	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
+	include/vclib/iterators/container_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp

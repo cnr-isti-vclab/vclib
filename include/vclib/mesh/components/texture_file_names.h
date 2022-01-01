@@ -26,9 +26,9 @@
 #include <string>
 #include <vector>
 
-#include "detection/tex_file_names_detection.h"
+#include <vclib/iterators/range_iterator.h>
 
-#include "../iterators/range_iterator.h"
+#include "detection/tex_file_names_detection.h"
 
 namespace vcl::comp {
 
