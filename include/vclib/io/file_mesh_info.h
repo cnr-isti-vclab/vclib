@@ -31,8 +31,6 @@
 
 namespace vcl::io {
 
-
-
 /**
  * @brief A simple class that allows to store which components has been loaded or are going
  * to be saved on a mesh file.

@@ -20,53 +20,35 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_EXCEPTION_H
-#define VCL_IO_EXCEPTION_H
+#include "save.h"
 
-#include <stdexcept>
-#include <string>
+namespace vcl::io {
 
-namespace vcl {
-
-class UnknownFileFormatException : public std::runtime_error
+template<typename MeshType>
+void save(const MeshType& m, const std::string& filename, bool binary)
 {
-public:
-	UnknownFileFormatException(const std::string& err) : std::runtime_error(err) {}
+	vcl::io::FileMeshInfo info(m);
+	save(m, filename, info, binary);
+}
 
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Unknown File Format - ") + std::runtime_error::what();
-		return error.c_str();
-	}
-};
-
-class CannotOpenFileException : public std::runtime_error
+template<typename MeshType>
+void save(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary)
 {
-public:
-	CannotOpenFileException(const std::string& err) : std::runtime_error(err) {}
-
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Cannot Open File - ") + std::runtime_error::what();
-		return error.c_str();
+	std::string name, ext;
+	vcl::fileInfo::separateExtensionFromFilename(filename, name, ext);
+	ext = vcl::str::toLower(ext);
+	if (ext == ".obj") {
+		saveObj(m, filename, info);
 	}
-};
-
-class MalformedFileException : public std::runtime_error
-{
-public:
-	MalformedFileException(const std::string& err) : std::runtime_error(err) {}
-
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Malformed File - ") + std::runtime_error::what();
-		return error.c_str();
+	else if (ext == ".off") {
+		saveOff(m, filename, info);
 	}
-};
+	else if (ext == ".ply") {
+		savePly(m, filename, info, binary);
+	}
+	else {
+		throw vcl::UnknownFileFormatException(ext);
+	}
+}
 
-} // namespace vcl
-
-#endif // VCL_IO_EXCEPTION_H
+} // namespace vcl::io

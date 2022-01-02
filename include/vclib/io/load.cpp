@@ -20,53 +20,54 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_EXCEPTION_H
-#define VCL_IO_EXCEPTION_H
+#include "load.h"
 
-#include <stdexcept>
-#include <string>
+namespace vcl::io {
 
-namespace vcl {
-
-class UnknownFileFormatException : public std::runtime_error
+template<typename MeshType>
+MeshType load(const std::string& filename, bool enableOptionalComponents)
 {
-public:
-	UnknownFileFormatException(const std::string& err) : std::runtime_error(err) {}
+	FileMeshInfo loadedInfo;
+	return load<MeshType>(filename, loadedInfo, enableOptionalComponents);
+}
 
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Unknown File Format - ") + std::runtime_error::what();
-		return error.c_str();
-	}
-};
-
-class CannotOpenFileException : public std::runtime_error
+template<typename MeshType>
+MeshType load(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
 {
-public:
-	CannotOpenFileException(const std::string& err) : std::runtime_error(err) {}
+	MeshType m;
+	load(m, filename, loadedInfo, enableOptionalComponents);
+	return m;
+}
 
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Cannot Open File - ") + std::runtime_error::what();
-		return error.c_str();
-	}
-};
-
-class MalformedFileException : public std::runtime_error
+template<typename MeshType>
+void load(MeshType& m, const std::string& filename, bool enableOptionalComponents)
 {
-public:
-	MalformedFileException(const std::string& err) : std::runtime_error(err) {}
+	FileMeshInfo loadedInfo;
+	load(m, filename, loadedInfo, enableOptionalComponents);
+}
 
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Malformed File - ") + std::runtime_error::what();
-		return error.c_str();
+template<typename MeshType>
+void load(
+	MeshType&          m,
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	bool               enableOptionalComponents)
+{
+	std::string name, ext;
+	vcl::fileInfo::separateExtensionFromFilename(filename, name, ext);
+	ext = vcl::str::toLower(ext);
+	if (ext == ".obj") {
+		loadObj(m, filename, loadedInfo, enableOptionalComponents);
 	}
-};
+	else if (ext == ".off") {
+		loadOff(m, filename, loadedInfo, enableOptionalComponents);
+	}
+	else if (ext == ".ply") {
+		loadPly(m, filename, loadedInfo, enableOptionalComponents);
+	}
+	else {
+		throw vcl::UnknownFileFormatException(ext);
+	}
+}
 
-} // namespace vcl
-
-#endif // VCL_IO_EXCEPTION_H
+} // namespace vcl::io

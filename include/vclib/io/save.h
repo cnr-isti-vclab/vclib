@@ -20,53 +20,27 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_EXCEPTION_H
-#define VCL_IO_EXCEPTION_H
+#ifndef VCL_IO_SAVE_H
+#define VCL_IO_SAVE_H
 
-#include <stdexcept>
-#include <string>
+#include "save_obj.h"
+#include "save_off.h"
+#include "save_ply.h"
 
-namespace vcl {
+namespace vcl::io {
 
-class UnknownFileFormatException : public std::runtime_error
-{
-public:
-	UnknownFileFormatException(const std::string& err) : std::runtime_error(err) {}
+template<typename MeshType>
+void save(const MeshType& m, const std::string& filename, bool binary = true);
 
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Unknown File Format - ") + std::runtime_error::what();
-		return error.c_str();
-	}
-};
+template<typename MeshType>
+void save(
+	const MeshType&     m,
+	const std::string&  filename,
+	const FileMeshInfo& info,
+	bool                binary = true);
 
-class CannotOpenFileException : public std::runtime_error
-{
-public:
-	CannotOpenFileException(const std::string& err) : std::runtime_error(err) {}
+} // namespace vcl::io
 
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Cannot Open File - ") + std::runtime_error::what();
-		return error.c_str();
-	}
-};
+#include "save.cpp"
 
-class MalformedFileException : public std::runtime_error
-{
-public:
-	MalformedFileException(const std::string& err) : std::runtime_error(err) {}
-
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Malformed File - ") + std::runtime_error::what();
-		return error.c_str();
-	}
-};
-
-} // namespace vcl
-
-#endif // VCL_IO_EXCEPTION_H
+#endif // VCL_IO_SAVE_H

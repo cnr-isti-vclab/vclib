@@ -71,6 +71,26 @@ set(HEADERS
 	include/vclib/algorithms/update/transform.h
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
+	include/vclib/io/file_mesh_info.h
+	include/vclib/io/load.h
+	include/vclib/io/load_obj.h
+	include/vclib/io/load_off.h
+	include/vclib/io/load_ply.h
+	include/vclib/io/save.h
+	include/vclib/io/save_obj.h
+	include/vclib/io/save_off.h
+	include/vclib/io/save_ply.h
+	include/vclib/io/internal/io_read.h
+	include/vclib/io/internal/io_utils.h
+	include/vclib/io/internal/io_write.h
+	include/vclib/io/obj/material.h
+	include/vclib/io/off/off.h
+	include/vclib/io/ply/ply.h
+	include/vclib/io/ply/ply_extra.h
+	include/vclib/io/ply/ply_face.h
+	include/vclib/io/ply/ply_header.h
+	include/vclib/io/ply/ply_tristrip.h
+	include/vclib/io/ply/ply_vertex.h
 	include/vclib/iterators/container_iterator.h
 	include/vclib/iterators/container_range_iterator.h
 	include/vclib/iterators/range_iterator.h
@@ -179,24 +199,6 @@ set(HEADERS
 	include/vclib/misc/tokenizer.h
 	include/vclib/misc/types.h
 	include/vclib/misc/internal/tmp_meshes.h
-	include/vclib/io/file_mesh_info.h
-	include/vclib/io/load_obj.h
-	include/vclib/io/load_off.h
-	include/vclib/io/load_ply.h
-	include/vclib/io/save_obj.h
-	include/vclib/io/save_off.h
-	include/vclib/io/save_ply.h
-	include/vclib/io/internal/io_read.h
-	include/vclib/io/internal/io_utils.h
-	include/vclib/io/internal/io_write.h
-	include/vclib/io/obj/material.h
-	include/vclib/io/off/off.h
-	include/vclib/io/ply/ply.h
-	include/vclib/io/ply/ply_extra.h
-	include/vclib/io/ply/ply_face.h
-	include/vclib/io/ply/ply_header.h
-	include/vclib/io/ply/ply_tristrip.h
-	include/vclib/io/ply/ply_vertex.h
 	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
@@ -234,6 +236,25 @@ set(SOURCES
 	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
+	include/vclib/io/file_mesh_info.cpp
+	include/vclib/io/load.cpp
+	include/vclib/io/load_obj.cpp
+	include/vclib/io/load_off.cpp
+	include/vclib/io/load_ply.cpp
+	include/vclib/io/save.cpp
+	include/vclib/io/save_obj.cpp
+	include/vclib/io/save_off.cpp
+	include/vclib/io/save_ply.cpp
+	include/vclib/io/internal/io_read.cpp
+	include/vclib/io/internal/io_utils.cpp
+	include/vclib/io/internal/io_write.cpp
+	include/vclib/io/obj/material.cpp
+	include/vclib/io/off/off.cpp
+	include/vclib/io/ply/ply_extra.cpp
+	include/vclib/io/ply/ply_face.cpp
+	include/vclib/io/ply/ply_header.cpp
+	include/vclib/io/ply/ply_tristrip.cpp
+	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/iterators/container_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/perlin_noise.cpp
@@ -292,23 +313,6 @@ set(SOURCES
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
-	include/vclib/io/file_mesh_info.cpp
-	include/vclib/io/load_obj.cpp
-	include/vclib/io/load_off.cpp
-	include/vclib/io/load_ply.cpp
-	include/vclib/io/save_obj.cpp
-	include/vclib/io/save_off.cpp
-	include/vclib/io/save_ply.cpp
-	include/vclib/io/internal/io_read.cpp
-	include/vclib/io/internal/io_utils.cpp
-	include/vclib/io/internal/io_write.cpp
-	include/vclib/io/obj/material.cpp
-	include/vclib/io/off/off.cpp
-	include/vclib/io/ply/ply_extra.cpp
-	include/vclib/io/ply/ply_face.cpp
-	include/vclib/io/ply/ply_header.cpp
-	include/vclib/io/ply/ply_tristrip.cpp
-	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/kd_tree.cpp
