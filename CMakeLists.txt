@@ -335,6 +335,8 @@ if (UNIX)
 		target_link_libraries(vclib INTERFACE TBB::tbb Threads::Threads)
 		target_compile_definitions(vclib INTERFACE VCLIB_PARALLEL)
 	endif()
+else() # natively supported by msvc
+	target_compile_definitions(vclib INTERFACE VCLIB_PARALLEL)
 endif()
 
 if (VCLIB_IDE)

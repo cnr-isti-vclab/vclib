@@ -28,8 +28,14 @@ namespace vcl {
 template<typename Iterator, typename Lambda>
 void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F);
 
+template<typename Iterator, typename Lambda>
+void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F);
+
 template<typename Container, typename Lambda>
 void parallelFor(Container&& c, Lambda&& F);
+
+template<typename Container, typename Lambda>
+void parallelFor(const Container& c, Lambda&& F);
 
 } // namespace vcl
 

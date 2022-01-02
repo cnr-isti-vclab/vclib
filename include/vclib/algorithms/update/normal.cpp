@@ -24,6 +24,7 @@
 
 #include "../polygon.h"
 
+#include <vclib/misc/parallel.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -65,14 +66,15 @@ void updatePerFaceNormals(MeshType& m, bool normalize)
 
 	using FaceType = typename MeshType::FaceType;
 	if constexpr (vcl::hasTriangles<MeshType>()) {
-		for (FaceType& f : m.faces()) {
+		vcl::parallelFor(m.faces(), [](FaceType& f){
 			f.normal() = triangleNormal(f);
-		}
+		});
+		
 	}
 	else {
-		for (FaceType& f : m.faces()) {
+		vcl::parallelFor(m.faces(), [](FaceType& f){
 			f.normal() = polygonNormal(f);
-		}
+		});
 	}
 	if (normalize)
 		normalizePerFaceNormals(m);
