@@ -423,7 +423,7 @@ Matrix33<double> covarianceMatrixOfMesh(const MeshType& m)
 		const CoordType& p0 = f.vertex(0)->coord();
 		const CoordType& p1 = f.vertex(1)->coord();
 		const CoordType& p2 = f.vertex(2)->coord();
-		CoordType n = polygonNormal(f);
+		CoordType n = (p1-p0).cross(p2-p0);
 		double da = n.norm();
 		n /= da*da;
 

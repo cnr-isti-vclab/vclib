@@ -32,7 +32,7 @@
 namespace vcl::internal {
 
 /*
- * Utility class that stores, for each edge of the mesh:
+ * Utility class that stores, for an edge of the mesh:
  * - the index of the edge in the face
  * - the pointer of the face
  * - the pointers of the vertices of the edge

@@ -30,9 +30,17 @@ namespace vcl {
 template<typename Scalar>
 using Matrix33 = Eigen::Matrix<Scalar, 3, 3>;
 
+using Matrix33i = Matrix33<int>;
+using Matrix33f = Matrix33<float>;
+using Matrix33d = Matrix33<double>;
+
 template<typename Scalar>
 using Matrix44 = Eigen::Matrix<Scalar, 4, 4>;
 
-}
+using Matrix44i = Matrix44<int>;
+using Matrix44f = Matrix44<float>;
+using Matrix44d = Matrix44<double>;
+
+} // namespace vcl
 
 #endif // VCL_MATH_MATRIX_H
