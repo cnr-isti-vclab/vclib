@@ -23,6 +23,9 @@
 #ifndef VCL_PARALLEL_H
 #define VCL_PARALLEL_H
 
+#include <execution>
+
+
 namespace vcl {
 
 template<typename Iterator, typename Lambda>

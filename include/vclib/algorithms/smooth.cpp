@@ -135,11 +135,10 @@ void laplacianSmoothing(
 	using VertexType = typename MeshType::VertexType;
 	using CoordType  = typename VertexType::CoordType;
 
-	internal::LaplacianInfo<CoordType>              lpz = {CoordType(0, 0, 0), 0};
-	std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize());
+	const internal::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
 
 	for (uint i = 0; i < step; ++i) {
-		std::fill(laplData.begin(), laplData.end(), lpz);
+		std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize(), lpz);
 		internal::accumulateLaplacianInfo(m, laplData, cotangentWeight);
 		for (VertexType& v : m.vertices()) {
 			if (laplData[m.index(v)].cnt > 0) {
@@ -166,11 +165,11 @@ void taubinSmoothing(
 	using VertexType = typename MeshType::VertexType;
 	using CoordType  = typename VertexType::CoordType;
 
-	internal::LaplacianInfo<CoordType>              lpz = {CoordType(0, 0, 0), 0};
-	std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize());
+	const internal::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
+
 
 	for (uint i = 0; i < step; ++i) {
-		std::fill(laplData.begin(), laplData.end(), lpz);
+		std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize(), lpz);
 		internal::accumulateLaplacianInfo(m, laplData);
 		for (VertexType& v : m.vertices()) {
 			if (laplData[m.index(v)].cnt > 0) {

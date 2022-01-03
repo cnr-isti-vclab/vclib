@@ -336,11 +336,13 @@ target_link_libraries(vclib INTERFACE vclib-external-eigen vclib-external-mapbox
 
 if (UNIX)
 	if (TARGET TBB::tbb AND TARGET Threads::Threads)
+		message(STATUS "VCLIB using parallel algorithms")
 		target_link_libraries(vclib INTERFACE TBB::tbb Threads::Threads)
-		target_compile_definitions(vclib INTERFACE VCLIB_PARALLEL)
+	else()
+		message(STATUS "VCLIB not using parallel algorithms")
 	endif()
 else() # natively supported by msvc
-	target_compile_definitions(vclib INTERFACE VCLIB_PARALLEL)
+	message(STATUS "VCLIB using parallel algorithms")
 endif()
 
 if (VCLIB_IDE)

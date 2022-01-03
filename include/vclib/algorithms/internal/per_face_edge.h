@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <assert.h>
+#include <execution>
 #include <vector>
 
 #include <vclib/misc/types.h>
@@ -135,8 +136,7 @@ std::vector<PerFaceEdge<MeshType>> fillAndSortEdgeVector(MeshType& m, bool inclu
 			}
 		}
 	}
-
-	std::sort(vec.begin(), vec.end()); // Lo ordino per vertici
+	std::sort(std::execution::par_unseq, vec.begin(), vec.end()); // Lo ordino per vertici
 
 	return vec;
 }
@@ -163,7 +163,7 @@ fillAndSortEdgeVector(const MeshType& m, bool includeFauxEdges = true)
 		}
 	}
 
-	std::sort(vec.begin(), vec.end()); // Lo ordino per vertici
+	std::sort(std::execution::par_unseq, vec.begin(), vec.end()); // Lo ordino per vertici
 
 	return vec;
 }

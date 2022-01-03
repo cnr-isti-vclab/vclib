@@ -24,6 +24,7 @@
 
 #include <numeric>
 #include <queue>
+
 #include <vclib/mesh/requirements.h>
 
 #include "box.h"

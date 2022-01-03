@@ -197,7 +197,7 @@ uint numberUnreferencedVertices(const MeshType& m)
 
 	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
 
-	uint nV = std::count(referredVertices.begin(), referredVertices.end(), false);
+	uint nV = std::count(std::execution::par_unseq, referredVertices.begin(), referredVertices.end(), false);
 
 	nV -= m.deletedVertexNumber();
 
@@ -274,7 +274,7 @@ uint removeDuplicatedVertices(MeshType& m)
 		perm[k++] = &v;
 
 	// sort the vector based on the verts position
-	std::sort(perm.begin(), perm.end(), internal::VertPositionComparator<VertexPointer>());
+	std::sort(std::execution::par_unseq, perm.begin(), perm.end(), internal::VertPositionComparator<VertexPointer>());
 
 	uint i = 0;
 
@@ -352,7 +352,7 @@ uint removeDuplicatedFaces(MeshType& m)
 	for (FaceType& f : m.faces()) {
 		fvec.push_back(internal::SortedTriple(m.index(f.vertex(0)), m.index(f.vertex(1)), m.index(f.vertex(2)), &f));
 	}
-	std::sort(fvec.begin(), fvec.end());
+	std::sort(std::execution::par_unseq, fvec.begin(), fvec.end());
 	uint total = 0;
 	for (uint i = 0; i < fvec.size() - 1; ++i) {
 		if (fvec[i] == fvec[i + 1]) {

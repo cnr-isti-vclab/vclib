@@ -60,7 +60,7 @@ std::string::const_iterator findCaseInsensitive(const std::string& input, const 
 
 inline std::string toLower(const std::string& s)
 {
-	std::string ret;
+	std::string ret(s);
 	std::transform(
 		s.begin(), s.end(), ret.begin(), [](unsigned char c) { return std::tolower(c); });
 	return ret;
@@ -68,7 +68,7 @@ inline std::string toLower(const std::string& s)
 
 inline std::string toUpper(const std::string& s)
 {
-	std::string ret;
+	std::string ret(s);
 	std::transform(
 		s.begin(), s.end(), ret.begin(), [](unsigned char c) { return std::toupper(c); });
 	return ret;

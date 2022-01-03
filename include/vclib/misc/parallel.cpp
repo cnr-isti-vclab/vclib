@@ -22,10 +22,6 @@
 
 #include "parallel.h"
 
-#ifdef VCLIB_PARALLEL
-#include <execution>
-#endif
-
 namespace vcl {
 
 /**
@@ -48,11 +44,7 @@ namespace vcl {
 template<typename Iterator, typename Lambda>
 void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F)
 {
-#ifdef VCLIB_PARALLEL
 	std::for_each(std::execution::par_unseq, begin, end, F);
-#else
-	std::for_each(begin, end, F);
-#endif
 }
 
 /**
@@ -75,11 +67,7 @@ void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F)
 template<typename Iterator, typename Lambda>
 void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F)
 {
-#ifdef VCLIB_PARALLEL
 	std::for_each(std::execution::par_unseq, begin, end, F);
-#else
-	std::for_each(begin, end, F);
-#endif
 }
 
 /**
