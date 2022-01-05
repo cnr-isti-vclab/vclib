@@ -55,7 +55,7 @@ inline void TriangleBitFlags::setUserBit(uint bit)
  *
  * @param bit: the position of the bit that will be reset.
  */
-void TriangleBitFlags::unsetUserBit(uint bit)
+inline void TriangleBitFlags::unsetUserBit(uint bit)
 {
 	// using FIRST_USER_BIT of this class
 	BitFlags::unsetUserBit(bit, FIRST_USER_BIT);
@@ -85,7 +85,7 @@ inline bool TriangleBitFlags::isEdgeSelected(uint i) const
 	return flagValue(EDGESEL0 << i);
 }
 
-bool TriangleBitFlags::isAnyEdgeSelected() const
+inline bool TriangleBitFlags::isAnyEdgeSelected() const
 {
 	return isEdgeSelected(0) || isEdgeSelected(1) || isEdgeSelected(2);
 }
@@ -182,7 +182,7 @@ inline void TriangleBitFlags::importFromVCGFlags(int f)
 		setEdgeFaux(2);
 }
 
-int TriangleBitFlags::exportToVCGFlags() const
+inline int TriangleBitFlags::exportToVCGFlags() const
 {
 	int f = 0;
 	if (isSelected())

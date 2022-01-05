@@ -25,7 +25,6 @@
 
 #include <execution>
 
-
 namespace vcl {
 
 template<typename Iterator, typename Lambda>

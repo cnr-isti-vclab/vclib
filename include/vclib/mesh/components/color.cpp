@@ -27,7 +27,7 @@ namespace vcl::comp {
 /**
  * @brief Returns const reference of the color of the element.
  */
-const vcl::Color& Color::color() const
+inline const vcl::Color& Color::color() const
 {
 	return c;
 }
@@ -35,7 +35,7 @@ const vcl::Color& Color::color() const
 /**
  * @brief Returns a reference pf the color of the element.
  */
-vcl::Color& Color::color()
+inline vcl::Color& Color::color()
 {
 	return c;
 }

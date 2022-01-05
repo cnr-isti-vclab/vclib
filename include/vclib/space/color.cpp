@@ -32,7 +32,7 @@ inline Color::Color() : Point4(0, 0, 0, 255)
 {
 }
 
-Color::Color(ColorARGB cc)
+inline Color::Color(ColorARGB cc)
 {
 	x() = cc % 256;
 	y() = (cc >> 8) % 256;

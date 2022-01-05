@@ -24,12 +24,12 @@
 
 namespace vcl::comp {
 
-int Mark::mark() const
+inline int Mark::mark() const
 {
 	return m;
 }
 
-void Mark::resetMark()
+inline void Mark::resetMark()
 {
 	m = 0;
 }
@@ -45,12 +45,12 @@ bool Mark::hasSameMark(const E& e) const
 	}
 }
 
-void Mark::incrementMark()
+inline void Mark::incrementMark()
 {
 	m++;
 }
 
-void Mark::decrementMark()
+inline void Mark::decrementMark()
 {
 	m--;
 }

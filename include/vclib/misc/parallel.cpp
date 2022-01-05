@@ -22,6 +22,8 @@
 
 #include "parallel.h"
 
+#include <algorithm>
+
 namespace vcl {
 
 /**
