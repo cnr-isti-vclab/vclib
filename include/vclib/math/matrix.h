@@ -41,6 +41,32 @@ using Matrix44i = Matrix44<int>;
 using Matrix44f = Matrix44<float>;
 using Matrix44d = Matrix44<double>;
 
+template<typename MatrixType, typename PointType, typename ScalarType>
+void setTransformMatrixRotation(
+	MatrixType&       matrix,
+	PointType         axis,
+	const ScalarType& angleRad);
+
+template<typename MatrixType, typename PointType, typename ScalarType>
+void setTransformMatrixRotationDeg(
+	MatrixType&       matrix,
+	PointType         axis,
+	const ScalarType& angleDeg);
+
+template<typename ScalarType, typename PointType>
+void setTrasformMatrixTranslation(Matrix44<ScalarType>& matrix, const PointType& translation);
+
+template<typename ScalarType, typename PointType>
+void setTrasformMatrixScale(Matrix44<ScalarType>& matrix, const PointType& scale);
+
+template<typename MatrixType, typename PointType, typename ScalarType>
+MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad);
+
+template<typename MatrixType, typename PointType, typename ScalarType>
+MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg);
+
 } // namespace vcl
+
+#include "matrix.cpp"
 
 #endif // VCL_MATH_MATRIX_H

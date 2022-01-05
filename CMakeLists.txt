@@ -257,6 +257,7 @@ set(SOURCES
 	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/iterators/container_iterator.cpp
 	include/vclib/math/distribution.cpp
+	include/vclib/math/matrix.cpp
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_pos.cpp

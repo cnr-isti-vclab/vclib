@@ -44,15 +44,15 @@ void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool 
 			}
 		}
 		if constexpr (hasPerFaceNormal<MeshType>()) {
-			if (isPerVertexNormalEnabled(mesh)) {
+			if (isPerFaceNormalEnabled(mesh)) {
 				multiplyPerFaceNormalsByMatrix(mesh, matrix);
 			}
 		}
 	}
 }
 
-template<typename MeshType, typename Scalar>
-void translate(MeshType& mesh, const Point3<Scalar>& t)
+template<typename MeshType, typename PointType>
+void translate(MeshType& mesh, const PointType& t)
 {
 	requireVertices<MeshType>();
 
@@ -62,8 +62,8 @@ void translate(MeshType& mesh, const Point3<Scalar>& t)
 	}
 }
 
-template<typename MeshType, typename Scalar>
-void scale(MeshType& mesh, const Point3<Scalar>& s)
+template<typename MeshType, typename PointType>
+void scale(MeshType& mesh, const PointType& s)
 {
 	requireVertices<MeshType>();
 
@@ -73,12 +73,6 @@ void scale(MeshType& mesh, const Point3<Scalar>& s)
 		v.coord()(1) *= s(1);
 		v.coord()(2) *= s(2);
 	}
-}
-
-template<typename MeshType, typename Scalar>
-void scale(MeshType& mesh, const Scalar& s)
-{
-	scale(mesh, Point3<Scalar>(s, s, s));
 }
 
 } // namespace vcl

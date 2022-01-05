@@ -34,14 +34,11 @@ void applyTransformMatrix(
 	const Matrix44<ScalarM>& matrix,
 	bool                     updateNormals = true);
 
-template<typename MeshType, typename Scalar>
-void translate(MeshType& mesh, const Point3<Scalar>& t);
+template<typename MeshType, typename PointType>
+void translate(MeshType& mesh, const PointType& t);
 
-template<typename MeshType, typename Scalar>
-void scale(MeshType& mesh, const Point3<Scalar>& s);
-
-template<typename MeshType, typename Scalar>
-void scale(MeshType& mesh, const Scalar& s);
+template<typename MeshType, typename PointType>
+void scale(MeshType& mesh, const PointType& s);
 
 } // namespace vcl
 

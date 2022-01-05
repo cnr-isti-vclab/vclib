@@ -218,16 +218,17 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 					// we wrote texcoords along with vertices, each texcoord has the same index
 					// of its vertex
 					if (meshInfo.hasVertexTexCoords()) {
-						fp << "/" << vIndices[m.index(v)]+1 << " ";
+						fp << "/" << vIndices[m.index(v)]+1;
 					}
 				}
 				if constexpr(hasPerFaceWedgeTexCoords<MeshType>()){
 					// we wrote texcoords before the face; indices are consecutive and wedge coords
 					// are the same of the number of vertices of the face
 					if (meshInfo.hasFaceWedgeTexCoords()) {
-						fp << "/" << wedgeTexCoord++ << " ";
+						fp << "/" << wedgeTexCoord++;
 					}
 				}
+				fp << " ";
 			}
 			fp << std::endl;
 		}

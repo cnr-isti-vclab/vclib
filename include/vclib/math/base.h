@@ -27,10 +27,22 @@
 
 namespace vcl {
 
-template<typename T>
-bool isDegenerate(T t)
+template<typename Scalar>
+bool isDegenerate(Scalar t)
 {
 	return std::isinf(t) || std::isnan(t);
+}
+
+template<typename Scalar>
+Scalar toRad(const Scalar& a)
+{
+	return M_PI*a/180.0;
+}
+
+template<typename Scalar>
+Scalar toDeg(const Scalar& a)
+{
+	return a*180.0/M_PI;
 }
 
 } // namespace vcl
