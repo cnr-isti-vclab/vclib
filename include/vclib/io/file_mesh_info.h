@@ -64,6 +64,7 @@ public:
 	bool hasFaceScalars() const;
 	bool hasFaceWedgeTexCoords() const;
 	bool hasEdges() const;
+	bool hasEdgeVRefs() const;
 	bool hasEdgeColors() const;
 	bool hasTextures() const;
 
@@ -84,6 +85,7 @@ public:
 	void setFaceScalars(bool b = true, PropType t = DOUBLE);
 	void setFaceWedgeTexCoords(bool b = true, PropType t = FLOAT);
 	void setEdges(bool b = true);
+	void setEdgeVRefs(bool b = true);
 	void setEdgeColors(bool b = true, PropType t = UCHAR);
 	void setTextures(bool b = true);
 
@@ -117,6 +119,7 @@ private:
 		FACE_SCALAR,
 		FACE_WEDGE_TEXCOORDS,
 		EDGES,
+		EDGE_VREFS,
 		EDGE_COLORS,
 		TEXTURES,
 		NUM_MODES

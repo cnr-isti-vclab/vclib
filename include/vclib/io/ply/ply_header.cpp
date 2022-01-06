@@ -483,7 +483,16 @@ inline void PlyHeader::setInfo(
 		edgeElemPos = nextElementID++;
 		ply::Element eElem;
 		eElem.type = ply::EDGE;
-		// ToDo: populate eElem
+		if (info.hasEdgeVRefs()) {
+			ply::Property v1;
+			v1.name = vertex1;
+			v1.type = io::internal::UINT;
+			eElem.properties.push_back(v1);
+			ply::Property v2;
+			v2.name = vertex2;
+			v2.type = io::internal::UINT;
+			eElem.properties.push_back(v2);
+		}
 		elements.push_back(eElem);
 	}
 }

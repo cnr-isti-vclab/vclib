@@ -26,6 +26,7 @@
 #include <vclib/exception/io_exception.h>
 
 #include "ply/ply.h"
+#include "ply/ply_edge.h"
 #include "ply/ply_extra.h"
 #include "ply/ply_face.h"
 #include "ply/ply_vertex.h"

@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_FACE_H
-#define VCL_IO_PLY_FACE_H
+#ifndef VCL_IO_PLY_EDGE_H
+#define VCL_IO_PLY_EDGE_H
 
 #include <fstream>
 #include <vclib/misc/tokenizer.h>
@@ -31,13 +31,11 @@
 namespace vcl::io::ply {
 
 template<typename MeshType>
-void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh);
+void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType mesh);
 
-template<typename MeshType>
-void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
 
 } // namespace vcl::ply
 
-#include "ply_face.cpp"
+#include "ply_edge.cpp"
 
-#endif // VCL_IO_PLY_FACE_H
+#endif // VCL_IO_PLY_EDGE_H

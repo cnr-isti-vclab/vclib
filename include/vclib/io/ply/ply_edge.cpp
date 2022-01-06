@@ -20,24 +20,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_FACE_H
-#define VCL_IO_PLY_FACE_H
+#include "ply_edge.h"
 
-#include <fstream>
-#include <vclib/misc/tokenizer.h>
-
-#include "ply_header.h"
+#include "../internal/io_write.h"
 
 namespace vcl::io::ply {
 
 template<typename MeshType>
-void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh);
+void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType mesh)
+{
+	using EdgeType = typename MeshType::EdgeType;
+	bool bin = header.format() == ply::BINARY;
 
-template<typename MeshType>
-void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
+	// indices of vertices that do not consider deleted vertices
+	std::vector<int> vIndices = mesh.vertexCompactIndices();
+
+	for (const EdgeType& e : mesh.edges()) {
+		for (ply::Property p : header.edgeProperties()) {
+			bool hasBeenWritten = false;
+			if (p.name == ply::vertex1) {
+				io::internal::writeProperty(file, vIndices[mesh.index(e.vertex(0))], p.type, bin);
+				hasBeenWritten = true;
+			}
+			if (p.name == ply::vertex2) {
+				io::internal::writeProperty(file, vIndices[mesh.index(e.vertex(1))], p.type, bin);
+				hasBeenWritten = true;
+			}
+			if (!hasBeenWritten) {
+				// be sure to write something if the header declares some property that is not
+				// in the mesh
+				io::internal::writeProperty(file, 0, p.type, bin);
+			}
+		}
+	}
+}
 
 } // namespace vcl::ply
-
-#include "ply_face.cpp"
-
-#endif // VCL_IO_PLY_FACE_H

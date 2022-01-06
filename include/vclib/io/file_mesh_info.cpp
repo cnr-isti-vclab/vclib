@@ -32,7 +32,7 @@ inline FileMeshInfo::FileMeshInfo()
 template<typename Mesh>
 inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 {
-	if (vcl::hasVertices<Mesh>()){
+	if constexpr (vcl::hasVertices<Mesh>()) {
 		setVertices();
 		setVertexCoords(true, getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
 		if constexpr (vcl::hasPerVertexNormal<Mesh>())
@@ -51,7 +51,7 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 					getPropType<typename Mesh::VertexType::TexCoordType::ScalarType>());
 	}
 
-	if (vcl::hasFaces<Mesh>()){
+	if constexpr (vcl::hasFaces<Mesh>()) {
 		setFaces();
 		setFaceVRefs();
 		if (vcl::hasTriangles<Mesh>())
@@ -73,6 +73,15 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
 				setFaceWedgeTexCoords(true, getPropType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
 	}
+
+	if constexpr (vcl::hasEdges<Mesh>()) {
+		setEdges();
+		setEdgeVRefs();
+//		if constexpr (vcl::hasPerEdgeColor<Mesh>())
+//			if (vcl::isPerEdgeColorEnabled(m))
+//				setEdgeColors(true, UCHAR);
+	}
+
 	if constexpr (vcl::hasTextureFileNames<Mesh>()) {
 		if (m.textureNumber() > 0) {
 			setTextures(true);
@@ -158,6 +167,11 @@ bool FileMeshInfo::hasFaceWedgeTexCoords() const
 inline bool FileMeshInfo::hasEdges() const
 {
 	return mode[EDGES];
+}
+
+bool FileMeshInfo::hasEdgeVRefs() const
+{
+	return mode[EDGE_VREFS];
 }
 
 inline bool FileMeshInfo::hasEdgeColors() const
@@ -271,6 +285,11 @@ void FileMeshInfo::setFaceWedgeTexCoords(bool b, PropType t)
 inline void FileMeshInfo::setEdges(bool b)
 {
 	mode[EDGES] = b;
+}
+
+void FileMeshInfo::setEdgeVRefs(bool b)
+{
+	mode[EDGE_VREFS] = b;
 }
 
 inline void FileMeshInfo::setEdgeColors(bool b, PropType t)

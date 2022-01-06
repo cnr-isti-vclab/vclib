@@ -44,8 +44,21 @@ void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo&
 	meshInfo = info.intersect(meshInfo);
 
 	ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, meshInfo);
-	header.setNumberVertices(m.vertexNumber());
-	header.setNumberFaces(m.faceNumber());
+	if constexpr (vcl::hasVertices<MeshType>()) {
+		if (header.hasVertices()) {
+			header.setNumberVertices(m.vertexNumber());
+		}
+	}
+	if constexpr (vcl::hasFaces<MeshType>()) {
+		if (header.hasFaces()) {
+			header.setNumberFaces(m.faceNumber());
+		}
+	}
+	if constexpr (vcl::hasEdges<MeshType>()) {
+		if (header.hasEdges()) {
+			header.setNumberEdges(m.edgeNumber());
+		}
+	}
 	ply::saveTextures(header, m);
 
 	if (!header.isValid())
@@ -55,11 +68,23 @@ void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo&
 
 	fp << header.toString();
 
-	if (vcl::hasVertices<MeshType>())
-		ply::saveVertices(fp, header, m);
+	if constexpr (vcl::hasVertices<MeshType>()) {
+		if (header.hasVertices()) {
+			ply::saveVertices(fp, header, m);
+		}
+	}
 
-	if (vcl::hasFaces<MeshType>())
-		ply::saveFaces(fp, header, m);
+	if constexpr (vcl::hasFaces<MeshType>()) {
+		if (header.hasFaces()) {
+			ply::saveFaces(fp, header, m);
+		}
+	}
+
+	if constexpr (vcl::hasEdges<MeshType>()) {
+		if (header.hasEdges()) {
+			ply::saveEdges(fp, header, m);
+		}
+	}
 
 	fp.close();
 }
