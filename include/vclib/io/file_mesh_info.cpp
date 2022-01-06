@@ -73,12 +73,9 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
 				setFaceWedgeTexCoords(true, getPropType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
 	}
-	if (vcl::hasTextureFileNames<Mesh>()) {
+	if constexpr (vcl::hasTextureFileNames<Mesh>()) {
 		if (m.textureNumber() > 0) {
 			setTextures(true);
-		}
-		else {
-			setTextures(false);
 		}
 	}
 }

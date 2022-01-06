@@ -1156,6 +1156,44 @@ void VertexContainer<T>::updateFaceReferencesAfterCompact(
 }
 
 template<typename T>
+template<typename Edge>
+void VertexContainer<T>::updateEdgeReferences(const Edge* oldBase, const Edge* newBase)
+{
+	if constexpr (vcl::vert::hasOptionalAdjacentEdges<T>()) {
+		if (Base::optionalVec.isAdjacentEdgesEnabled()) {
+			for (VertexType& v : vertices()) {
+				v.updateEdgeReferences(oldBase, newBase);
+			}
+		}
+	}
+	else if constexpr (vcl::vert::hasAdjacentEdges<T>()) {
+		for (VertexType& v : vertices()) {
+			v.updateEdgeReferences(oldBase, newBase);
+		}
+	}
+}
+
+template<typename T>
+template<typename Edge>
+void VertexContainer<T>::updateEdgeReferencesAfterCompact(
+	const Edge*             base,
+	const std::vector<int>& newIndices)
+{
+	if constexpr (vcl::vert::hasOptionalAdjacentEdges<T>()) {
+		if (Base::optionalVec.isAdjacentEdgesEnabled()) {
+			for (VertexType& v : vertices()) {
+				v.updateEdgeReferencesAfterCompact(base, newIndices);
+			}
+		}
+	}
+	else if constexpr (vcl::vert::hasAdjacentEdges<T>()) {
+		for (VertexType& v : vertices()) {
+			v.updateEdgeReferencesAfterCompact(base, newIndices);
+		}
+	}
+}
+
+template<typename T>
 template<typename Mesh>
 void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 {

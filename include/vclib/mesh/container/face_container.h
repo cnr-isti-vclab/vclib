@@ -290,6 +290,12 @@ protected:
 	template<typename Vertex>
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
+	template<typename Edge>
+	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);
+
+	template<typename Edge>
+	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
+
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 

@@ -938,6 +938,64 @@ void EdgeContainer<T>::updateEdgeReferencesAfterCompact(
 }
 
 template<typename T>
+template<typename Vertex>
+void EdgeContainer<T>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
+{
+	for (EdgeType& e : edges()) {
+		e.updateVertexReferences(oldBase, newBase);
+	}
+}
+
+template<typename T>
+template<typename Vertex>
+void EdgeContainer<T>::updateVertexReferencesAfterCompact(
+	const Vertex*           base,
+	const std::vector<int>& newIndices)
+{
+	for (EdgeType& e : edges()) {
+		e.updateVertexReferencesAfterCompact(base, newIndices);
+	}
+}
+
+template<typename T>
+template<typename Face>
+void EdgeContainer<T>::updateFaceReferences(const Face* oldBase, const Face* newBase)
+{
+	if constexpr (vcl::edge::hasOptionalAdjacentFaces<T>()) {
+		if (Base::optionalVec.isAdjacentFacesEnabled()) {
+			for (EdgeType& e : edges()) {
+				e.updateFaceReferences(oldBase, newBase);
+			}
+		}
+	}
+	else if constexpr (vcl::edge::hasAdjacentFaces<T>()) {
+		for (EdgeType& e : edges()) {
+			e.updateFaceReferences(oldBase, newBase);
+		}
+	}
+}
+
+template<typename T>
+template<typename Face>
+void EdgeContainer<T>::updateFaceReferencesAfterCompact(
+	const Face*             base,
+	const std::vector<int>& newIndices)
+{
+	if constexpr (vcl::edge::hasOptionalAdjacentFaces<T>()) {
+		if (Base::optionalVec.isAdjacentFacesEnabled()) {
+			for (EdgeType& e : edges()) {
+				e.updateFaceReferencesAfterCompact(base, newIndices);
+			}
+		}
+	}
+	else if constexpr (vcl::edge::hasAdjacentFaces<T>()) {
+		for (EdgeType& e : edges()) {
+			e.updateFaceReferencesAfterCompact(base, newIndices);
+		}
+	}
+}
+
+template<typename T>
 template<typename Mesh>
 void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 {
