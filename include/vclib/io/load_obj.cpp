@@ -48,6 +48,7 @@ void loadMaterials(
 	do {
 		vcl::Tokenizer tokens = nextNonEmptyTokenizedLineNoThrow(file);
 		if (file) {
+			uint nt = 0; // counter for texture images, used when mesh has no texture files
 			vcl::Tokenizer::iterator token = tokens.begin();
 			std::string header = *token++;
 			if (header == "newmtl"){
@@ -112,9 +113,14 @@ void loadMaterials(
 					}
 				}
 				mat.map_Kd = *token;
-				mat.mapId = mesh.textureNumber();
 				mat.hasTexture = true;
-				mesh.pushTexture(mat.map_Kd);
+				if constexpr (hasTextureFileNames<MeshType>()) {
+					mat.mapId = mesh.textureNumber();
+					mesh.pushTexture(mat.map_Kd);
+				}
+				else {
+					mat.mapId = nt++;
+				}
 			}
 		}
 	} while(file);
@@ -140,7 +146,7 @@ void loadVertexCoord(
 	for (uint i = 0; i < 3; ++i) {
 		m.vertex(vid).coord()[i] = internal::readDouble<double>(token);
 	}
-	if (hasPerVertexColor<MeshType>()){
+	if constexpr (hasPerVertexColor<MeshType>()){
 		if (vid == 0) {
 			// if the current material has a valid color, of the file stores the vertex color in the
 			// non-standard way (color values after the coordinates)
