@@ -20,72 +20,27 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_PLANE_H
-#define VCL_PLANE_H
+#ifndef VCL_MISC_EXCEPTION_H
+#define VCL_MISC_EXCEPTION_H
 
-#include "point/point3.h"
+#include <stdexcept>
+#include <string>
 
 namespace vcl {
 
-/**
- * @brief The Plane class represent a 2D plane in 3D space.
- *
- * This is the class for infinite planes in 3D space. A Plane is stored just as a Point3 and a
- * scalar:
- * - a direction (not necessarily normalized),
- * - an offset from the origin
- *
- * Just to be clear, given a point p on a plane it always holds:
- *    plane.direction().dot(p) == plane.offset()
- *
- * A vcl::Plane, once initialized, cannot be changed.
- */
-template<typename Scalar, bool NORM=true>
-class Plane
+class NoIntersectionException : public std::runtime_error
 {
 public:
-	using ScalarType = Scalar;
+	NoIntersectionException(const std::string& err) : std::runtime_error(err) {}
 
-	Plane();
-	template<typename S>
-	Plane(const Point3<S>& direction, S offset);
-	template<typename S>
-	Plane(const Point3<S>& p0, const Point3<S>& normal);
-	template<typename S>
-	Plane(const Point3<S>& p0, const Point3<S>& p1, const Point3<S>& p2);
-
-	const Point3<Scalar>& direction() const;
-	Scalar offset() const;
-
-	template<typename S>
-	Point3<S> projectPoint(const Point3<S>& p) const;
-
-	template<typename S>
-	Point3<S> mirrorPoint(const Point3<S>& p) const;
-
-	template<typename S>
-	Scalar dist(const Point3<S>& p) const;
-
-	template<typename PointType>
-	bool
-	segmentIntersection(PointType& intersection, const std::pair<PointType, PointType>& s) const;
-
-	template<typename PointType>
-	PointType segmentIntersection(const std::pair<PointType, PointType>& s) const;
-
-	bool operator==(const Plane& p) const;
-	bool operator!=(const Plane& p) const;
-
-private:
-	Point3<Scalar> dir;
-	Scalar off;
+	virtual const char* what() const throw()
+	{
+		static std::string error;
+		error = std::string("No Intersection - ") + std::runtime_error::what();
+		return error.c_str();
+	}
 };
-
-using Planef = Plane<float>;
-using Planed = Plane<double>;
 
 } // namespace vcl
 
-#include "plane.cpp"
-
-#endif // VCL_PLANE_H
+#endif // VCL_MISC_EXCEPTION_H

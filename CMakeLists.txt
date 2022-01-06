@@ -53,6 +53,7 @@ set(HEADERS
 	include/vclib/algorithms/clean.h
 	include/vclib/algorithms/export_to_matrix.h
 	include/vclib/algorithms/fitting.h
+	include/vclib/algorithms/intersection.h
 	include/vclib/algorithms/polygon.h
 	include/vclib/algorithms/smooth.h
 	include/vclib/algorithms/stat.h
@@ -71,6 +72,7 @@ set(HEADERS
 	include/vclib/algorithms/update/transform.h
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
+	include/vclib/exception/misc_exception.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load.h
 	include/vclib/io/load_obj.h
@@ -86,6 +88,7 @@ set(HEADERS
 	include/vclib/io/obj/material.h
 	include/vclib/io/off/off.h
 	include/vclib/io/ply/ply.h
+	include/vclib/io/ply/ply_edge.h
 	include/vclib/io/ply/ply_extra.h
 	include/vclib/io/ply/ply_face.h
 	include/vclib/io/ply/ply_header.h
@@ -221,6 +224,7 @@ set(SOURCES
 	include/vclib/algorithms/clean.cpp
 	include/vclib/algorithms/export_to_matrix.cpp
 	include/vclib/algorithms/fitting.cpp
+	include/vclib/algorithms/intersection.cpp
 	include/vclib/algorithms/polygon.cpp
 	include/vclib/algorithms/smooth.cpp
 	include/vclib/algorithms/stat.cpp
@@ -250,6 +254,7 @@ set(SOURCES
 	include/vclib/io/internal/io_write.cpp
 	include/vclib/io/obj/material.cpp
 	include/vclib/io/off/off.cpp
+	include/vclib/io/ply/ply_edge.cpp
 	include/vclib/io/ply/ply_extra.cpp
 	include/vclib/io/ply/ply_face.cpp
 	include/vclib/io/ply/ply_header.cpp
