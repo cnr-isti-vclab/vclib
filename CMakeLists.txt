@@ -106,25 +106,28 @@ set(HEADERS
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
-	include/vclib/mesh/components/adjacent_edges.h
-	include/vclib/mesh/components/adjacent_faces.h
-	include/vclib/mesh/components/adjacent_vertices.h
-	include/vclib/mesh/components/bit_flags.h
-	include/vclib/mesh/components/bounding_box.h
-	include/vclib/mesh/components/color.h
-	include/vclib/mesh/components/coordinate.h
-	include/vclib/mesh/components/mark.h
-	include/vclib/mesh/components/normal.h
-	include/vclib/mesh/components/polygon_bit_flags.h
-	include/vclib/mesh/components/principal_curvature.h
-	include/vclib/mesh/components/scalar.h
-	include/vclib/mesh/components/vertex_references.h
-	include/vclib/mesh/components/tex_coord.h
-	include/vclib/mesh/components/texture_file_names.h
-	include/vclib/mesh/components/transform_matrix.h
-	include/vclib/mesh/components/triangle_bit_flags.h
-	include/vclib/mesh/components/wedge_colors.h
-	include/vclib/mesh/components/wedge_tex_coords.h
+	include/vclib/mesh/components/vertical/optional_info.h
+	include/vclib/mesh/components/horizontal/adjacent_edges.h
+	include/vclib/mesh/components/horizontal/adjacent_faces.h
+	include/vclib/mesh/components/horizontal/adjacent_vertices.h
+	include/vclib/mesh/components/horizontal/bit_flags.h
+	include/vclib/mesh/components/horizontal/bounding_box.h
+	include/vclib/mesh/components/horizontal/color.h
+	include/vclib/mesh/components/horizontal/coordinate.h
+	include/vclib/mesh/components/horizontal/mark.h
+	include/vclib/mesh/components/horizontal/normal.h
+	include/vclib/mesh/components/horizontal/polygon_bit_flags.h
+	include/vclib/mesh/components/horizontal/principal_curvature.h
+	include/vclib/mesh/components/horizontal/scalar.h
+	include/vclib/mesh/components/horizontal/vertex_references.h
+	include/vclib/mesh/components/horizontal/tex_coord.h
+	include/vclib/mesh/components/horizontal/texture_file_names.h
+	include/vclib/mesh/components/horizontal/transform_matrix.h
+	include/vclib/mesh/components/horizontal/triangle_bit_flags.h
+	include/vclib/mesh/components/horizontal/wedge_colors.h
+	include/vclib/mesh/components/horizontal/wedge_tex_coords.h
+	include/vclib/mesh/components/horizontal/internal/element_references.h
+	include/vclib/mesh/components/horizontal/internal/generic_container.h
 	include/vclib/mesh/components/detection/adjacent_edges_detection.h
 	include/vclib/mesh/components/detection/adjacent_faces_detection.h
 	include/vclib/mesh/components/detection/adjacent_vertices_detection.h
@@ -143,36 +146,33 @@ set(HEADERS
 	include/vclib/mesh/components/detection/vertex_references_detection.h
 	include/vclib/mesh/components/detection/wedge_colors_detection.h
 	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
-	include/vclib/mesh/components/internal/element_references.h
-	include/vclib/mesh/components/internal/generic_container.h
-	include/vclib/mesh/components_optional/custom_components.h
-	include/vclib/mesh/components_optional/optional_adjacent_edges.h
-	include/vclib/mesh/components_optional/optional_adjacent_faces.h
-	include/vclib/mesh/components_optional/optional_adjacent_vertices.h
-	include/vclib/mesh/components_optional/optional_color.h
-	include/vclib/mesh/components_optional/optional_info.h
-	include/vclib/mesh/components_optional/optional_mark.h
-	include/vclib/mesh/components_optional/optional_normal.h
-	include/vclib/mesh/components_optional/optional_principal_curvature.h
-	include/vclib/mesh/components_optional/optional_scalar.h
-	include/vclib/mesh/components_optional/optional_tex_coord.h
-	include/vclib/mesh/components_optional/optional_wedge_colors.h
-	include/vclib/mesh/components_optional/optional_wedge_tex_coords.h
-	include/vclib/mesh/components_vector/optional_color_vector.h
-	include/vclib/mesh/components_vector/custom_component_vector_handle.h
-	include/vclib/mesh/components_vector/custom_components_vector.h
-	include/vclib/mesh/components_vector/optional_adjacent_edges_vector.h
-	include/vclib/mesh/components_vector/optional_adjacent_faces_vector.h
-	include/vclib/mesh/components_vector/optional_adjacent_vertices_vector.h
-	include/vclib/mesh/components_vector/optional_generic_vector.h
-	include/vclib/mesh/components_vector/optional_mark_vector.h
-	include/vclib/mesh/components_vector/optional_normal_vector.h
-	include/vclib/mesh/components_vector/optional_principal_curvature_vector.h
-	include/vclib/mesh/components_vector/optional_scalar_vector.h
-	include/vclib/mesh/components_vector/optional_tex_coord_vector.h
-	include/vclib/mesh/components_vector/optional_wedge_colors_vector.h
-	include/vclib/mesh/components_vector/optional_wedge_tex_coords_vector.h
-	include/vclib/mesh/components_vector/components_vector.h
+	include/vclib/mesh/components/vertical/persistent/custom_components.h
+	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.h
+	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.h
+	include/vclib/mesh/components/vertical/optional/optional_adjacent_vertices.h
+	include/vclib/mesh/components/vertical/optional/optional_color.h
+	include/vclib/mesh/components/vertical/optional/optional_mark.h
+	include/vclib/mesh/components/vertical/optional/optional_normal.h
+	include/vclib/mesh/components/vertical/optional/optional_principal_curvature.h
+	include/vclib/mesh/components/vertical/optional/optional_scalar.h
+	include/vclib/mesh/components/vertical/optional/optional_tex_coord.h
+	include/vclib/mesh/components/vertical/optional/optional_wedge_colors.h
+	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.h
+	include/vclib/mesh/components/vertical/vectors/optional_color_vector.h
+	include/vclib/mesh/components/vertical/vectors/custom_component_vector_handle.h
+	include/vclib/mesh/components/vertical/vectors/custom_components_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_adjacent_edges_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_adjacent_faces_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_adjacent_vertices_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_generic_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_mark_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_normal_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_principal_curvature_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_scalar_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_tex_coord_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_wedge_colors_vector.h
+	include/vclib/mesh/components/vertical/vectors/optional_wedge_tex_coords_vector.h
+	include/vclib/mesh/components/vertical/vectors/components_vector.h
 	include/vclib/mesh/container/containers.h
 	include/vclib/mesh/container/containers_detection.h
 	include/vclib/mesh/container/edge_container.h
@@ -266,42 +266,42 @@ set(SOURCES
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_pos.cpp
-	include/vclib/mesh/components/adjacent_edges.cpp
-	include/vclib/mesh/components/adjacent_faces.cpp
-	include/vclib/mesh/components/adjacent_vertices.cpp
-	include/vclib/mesh/components/bit_flags.cpp
-	include/vclib/mesh/components/bounding_box.cpp
-	include/vclib/mesh/components/color.cpp
-	include/vclib/mesh/components/coordinate.cpp
-	include/vclib/mesh/components/mark.cpp
-	include/vclib/mesh/components/normal.cpp
-	include/vclib/mesh/components/polygon_bit_flags.cpp
-	include/vclib/mesh/components/principal_curvature.cpp
-	include/vclib/mesh/components/scalar.cpp
-	include/vclib/mesh/components/tex_coord.cpp
-	include/vclib/mesh/components/texture_file_names.cpp
-	include/vclib/mesh/components/transform_matrix.cpp
-	include/vclib/mesh/components/triangle_bit_flags.cpp
-	include/vclib/mesh/components/vertex_references.cpp
-	include/vclib/mesh/components/wedge_colors.cpp
-	include/vclib/mesh/components/wedge_tex_coords.cpp
-	include/vclib/mesh/components/internal/element_references.cpp
-	include/vclib/mesh/components/internal/generic_container.cpp
-	include/vclib/mesh/components_optional/custom_components.cpp
-	include/vclib/mesh/components_optional/optional_adjacent_edges.cpp
-	include/vclib/mesh/components_optional/optional_adjacent_faces.cpp
-	include/vclib/mesh/components_optional/optional_adjacent_vertices.cpp
-	include/vclib/mesh/components_optional/optional_color.cpp
-	include/vclib/mesh/components_optional/optional_mark.cpp
-	include/vclib/mesh/components_optional/optional_normal.cpp
-	include/vclib/mesh/components_optional/optional_principal_curvature.cpp
-	include/vclib/mesh/components_optional/optional_scalar.cpp
-	include/vclib/mesh/components_optional/optional_tex_coord.cpp
-	include/vclib/mesh/components_optional/optional_wedge_colors.cpp
-	include/vclib/mesh/components_optional/optional_wedge_tex_coords.cpp
-	include/vclib/mesh/components_vector/custom_component_vector_handle.cpp
-	include/vclib/mesh/components_vector/custom_components_vector.cpp
-	include/vclib/mesh/components_vector/optional_generic_vector.cpp
+	include/vclib/mesh/components/horizontal/adjacent_edges.cpp
+	include/vclib/mesh/components/horizontal/adjacent_faces.cpp
+	include/vclib/mesh/components/horizontal/adjacent_vertices.cpp
+	include/vclib/mesh/components/horizontal/bit_flags.cpp
+	include/vclib/mesh/components/horizontal/bounding_box.cpp
+	include/vclib/mesh/components/horizontal/color.cpp
+	include/vclib/mesh/components/horizontal/coordinate.cpp
+	include/vclib/mesh/components/horizontal/mark.cpp
+	include/vclib/mesh/components/horizontal/normal.cpp
+	include/vclib/mesh/components/horizontal/polygon_bit_flags.cpp
+	include/vclib/mesh/components/horizontal/principal_curvature.cpp
+	include/vclib/mesh/components/horizontal/scalar.cpp
+	include/vclib/mesh/components/horizontal/tex_coord.cpp
+	include/vclib/mesh/components/horizontal/texture_file_names.cpp
+	include/vclib/mesh/components/horizontal/transform_matrix.cpp
+	include/vclib/mesh/components/horizontal/triangle_bit_flags.cpp
+	include/vclib/mesh/components/horizontal/vertex_references.cpp
+	include/vclib/mesh/components/horizontal/wedge_colors.cpp
+	include/vclib/mesh/components/horizontal/wedge_tex_coords.cpp
+	include/vclib/mesh/components/horizontal/internal/element_references.cpp
+	include/vclib/mesh/components/horizontal/internal/generic_container.cpp
+	include/vclib/mesh/components/vertical/persistent/custom_components.cpp
+	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.cpp
+	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.cpp
+	include/vclib/mesh/components/vertical/optional/optional_adjacent_vertices.cpp
+	include/vclib/mesh/components/vertical/optional/optional_color.cpp
+	include/vclib/mesh/components/vertical/optional/optional_mark.cpp
+	include/vclib/mesh/components/vertical/optional/optional_normal.cpp
+	include/vclib/mesh/components/vertical/optional/optional_principal_curvature.cpp
+	include/vclib/mesh/components/vertical/optional/optional_scalar.cpp
+	include/vclib/mesh/components/vertical/optional/optional_tex_coord.cpp
+	include/vclib/mesh/components/vertical/optional/optional_wedge_colors.cpp
+	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.cpp
+	include/vclib/mesh/components/vertical/vectors/custom_component_vector_handle.cpp
+	include/vclib/mesh/components/vertical/vectors/custom_components_vector.cpp
+	include/vclib/mesh/components/vertical/vectors/optional_generic_vector.cpp
 	include/vclib/mesh/container/edge_container.cpp
 	include/vclib/mesh/container/face_container.cpp
 	include/vclib/mesh/container/vertex_container.cpp

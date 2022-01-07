@@ -20,60 +20,51 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_BOUNDING_BOX_H
+#define VCL_MESH_COMPONENTS_BOUNDING_BOX_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
-#include "components/horizontal/transform_matrix.h"
+#include <vclib/space/box.h>
 
-namespace vcl::mesh {
+#include "../detection/bounding_box_detection.h"
 
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
+namespace vcl::comp {
 
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
-
-template<typename T>
-bool constexpr hasBoundingBox()
+/**
+ * @brief The BoundingBox component class represent an axis aligned bounding box. This class is
+ * usually used as a component of a Mesh.
+ *
+ * The member functions of this class will be available in the instance of any Element or Mesh that
+ * will contain this component.
+ *
+ * For example, if you have a Mesh `m` with the BoundingBox component, you'll be able to
+ * access to this component member functions from `m`:
+ *
+ * @code{.cpp}
+ * m.boundingBox();
+ * @endcode
+ */
+template<typename  PointType>
+class BoundingBox : public BoundingBoxTriggerer
 {
-	return comp::hasBoundingBox<T>();
-}
+public:
+	using BoundingBoxType = Box<PointType>;
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+	const BoundingBoxType& boundingBox() const;
+	BoundingBoxType&      boundingBox();
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+protected:
+	template<typename Element>
+	void importFrom(const Element& e);
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+private:
+	Box<PointType> box;
+};
 
-template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
+using BoundingBox3f = BoundingBox<Point3f>;
+using BoundingBox3d = BoundingBox<Point3d>;
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+} // namespace vcl::comp
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+#include "bounding_box.cpp"
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_BOUNDING_BOX_H

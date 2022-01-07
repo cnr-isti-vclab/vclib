@@ -20,60 +20,41 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
+#define VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
-#include "components/horizontal/transform_matrix.h"
+#include "../optional_info.h"
+#include "../../detection/scalar_detection.h"
 
-namespace vcl::mesh {
+namespace vcl::comp {
 
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
-
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
-
-template<typename T>
-bool constexpr hasBoundingBox()
+template<typename S, typename T>
+class OptionalScalar : public OptionalScalarTrigger, public virtual OptionalInfo<T>
 {
-	return comp::hasBoundingBox<T>();
-}
+private:
+	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+public:
+	using ScalarType = S;
+	const ScalarType& scalar() const;
+	ScalarType&       scalar();
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+	bool isScalarEnabled() const;
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+protected:
+	template <typename Element>
+	void importFrom(const Element& e);
+};
 
-template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
+template <typename T>
+using OptionalScalarf = OptionalScalar<float, T>;
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+template <typename T>
+using OptionalScalard = OptionalScalar<double, T>;
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+} // namespace vcl::comp
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
+#include "optional_scalar.cpp"
 
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_COMPONENTS_H
+#endif //  VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H

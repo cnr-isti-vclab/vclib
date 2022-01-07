@@ -23,19 +23,19 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_COMPONENTS_H
 #define VCL_MESH_ELEMENTS_FACE_COMPONENTS_H
 
-#include "../components/adjacent_edges.h"
-#include "../components/adjacent_faces.h"
-#include "../components/bit_flags.h"
-#include "../components/color.h"
-#include "../components/mark.h"
-#include "../components/normal.h"
-#include "../components/polygon_bit_flags.h"
-#include "../components/principal_curvature.h"
-#include "../components/scalar.h"
-#include "../components/triangle_bit_flags.h"
-#include "../components/vertex_references.h"
-#include "../components/wedge_colors.h"
-#include "../components/wedge_tex_coords.h"
+#include "../components/horizontal/adjacent_edges.h"
+#include "../components/horizontal/adjacent_faces.h"
+#include "../components/horizontal/bit_flags.h"
+#include "../components/horizontal/color.h"
+#include "../components/horizontal/mark.h"
+#include "../components/horizontal/normal.h"
+#include "../components/horizontal/polygon_bit_flags.h"
+#include "../components/horizontal/principal_curvature.h"
+#include "../components/horizontal/scalar.h"
+#include "../components/horizontal/triangle_bit_flags.h"
+#include "../components/horizontal/vertex_references.h"
+#include "../components/horizontal/wedge_colors.h"
+#include "../components/horizontal/wedge_tex_coords.h"
 
 namespace vcl::face {
 

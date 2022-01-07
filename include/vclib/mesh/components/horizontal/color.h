@@ -20,60 +20,40 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_COLOR_H
+#define VCL_MESH_COMPONENTS_COLOR_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
-#include "components/horizontal/transform_matrix.h"
+#include <vclib/space/color.h>
 
-namespace vcl::mesh {
+#include "../detection/color_detection.h"
 
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
+namespace vcl::comp {
 
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
-
-template<typename T>
-bool constexpr hasBoundingBox()
+/**
+ * @brief The Color class represents a RGBA color that will be part of an Element
+ * (e.g. Vertex, Face, ...).
+ *
+ * Allows to get and set an object of type Color.
+ */
+class Color
 {
-	return comp::hasBoundingBox<T>();
-}
+public:
+	using ColorType = vcl::Color;
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+	const vcl::Color& color() const;
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+	vcl::Color& color();
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+protected:
+	template<typename Element>
+	void importFrom(const Element& e);
 
-template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
+private:
+	vcl::Color c;
+};
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+} // namespace vcl::comp
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+#include "color.cpp"
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_COLOR_H

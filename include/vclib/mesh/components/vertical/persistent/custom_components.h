@@ -20,95 +20,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_DETECTION_H
-#define VCL_MESH_CONTAINERS_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
-#include <vclib/misc/types.h>
+#include "../optional_info.h"
 
-#include "../components/vertical/optional_info.h"
+#include <any>
+#include <string>
+#include <vector>
 
-namespace vcl::mesh {
+#include "../../detection/custom_components_detection.h"
 
-/* Triggerers */
+namespace vcl::comp {
 
-class EdgeContainerTriggerer
+/**
+ * @brief The CustomComponents class is a container of custom and additional components associated
+ * to an Element (e.g. Vertex, Face).
+ *
+ */
+template<typename T>
+class CustomComponents : public virtual OptionalInfo<T>
 {
+private:
+	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
+
+public:
+	bool hasCustomComponent(const std::string& attrName) const;
+
+	template<typename CompType>
+	const CompType& customComponent(const std::string& attrName) const;
+
+	template<typename CompType>
+	CompType& customComponent(const std::string& attrName);
+
+protected:
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
-class FaceContainerTriggerer
-{
-};
+} // namespace vcl::comp
 
-class VertexContainerTriggerer
-{
-};
+#include "custom_components.cpp"
 
-/* Detector to check if a class has (inherits) an EdgeContainer */
-
-template<typename T>
-using hasEdgeContainer = std::is_base_of<EdgeContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasEdges()
-{
-	return hasEdgeContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasEdgeOptionalContainer()
-{
-	if constexpr (hasEdges<T>()) {
-		return comp::hasOptionalInfo<typename T::EdgeType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a FaceContainer */
-
-template<typename T>
-using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasFaces()
-{
-	return hasFaceContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasFaceOptionalContainer()
-{
-	if constexpr (hasFaces<T>()) {
-		return comp::hasOptionalInfo<typename T::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a VertexContainer */
-
-template<typename T>
-using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasVertices()
-{
-	return hasVertexContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasVertexOptionalContainer()
-{
-	if constexpr (hasVertices<T>()) {
-		return comp::hasOptionalInfo<typename T::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_CONTAINERS_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H

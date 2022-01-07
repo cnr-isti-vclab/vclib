@@ -20,60 +20,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_NORMAL_H
+#define VCL_MESH_COMPONENTS_NORMAL_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
-#include "components/horizontal/transform_matrix.h"
+#include <vclib/space/point.h>
 
-namespace vcl::mesh {
+#include "../detection/normal_detection.h"
 
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
+namespace vcl::comp {
 
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
-
-template<typename T>
-bool constexpr hasBoundingBox()
+template <typename P>
+class NormalT : public NormalTriggerer
 {
-	return comp::hasBoundingBox<T>();
-}
+public:
+	using NormalType = P;
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+	const P& normal() const;
+	P&       normal();
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+protected:
+	template<typename Element>
+	void importFrom(const Element& e);
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+private:
+	P n;
+};
 
-template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
+template<typename Scalar, int N>
+using Normal = NormalT<Point<Scalar, N>>;
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+template<typename Scalar>
+using Normal3 = NormalT<Point3<Scalar>>;
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+using Normal3f = Normal3<float>;
+using Normal3d = Normal3<double>;
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
+} // namespace vcl::comp
 
-} // namespace vcl::mesh
+#include "normal.cpp"
 
-#endif // VCL_MESH_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_NORMAL_H

@@ -20,95 +20,50 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_DETECTION_H
-#define VCL_MESH_CONTAINERS_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
+#define VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H
 
-#include <vclib/misc/types.h>
+#include <vclib/space/point.h>
 
-#include "../components/vertical/optional_info.h"
+#include "../../detection/normal_detection.h"
+#include "../optional_info.h"
 
-namespace vcl::mesh {
+namespace vcl::comp {
 
-/* Triggerers */
-
-class EdgeContainerTriggerer
+template<typename P, typename T>
+class OptionalNormalT : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
 {
+private:
+	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
+
+public:
+	using NormalType = P;
+
+	const NormalType&        normal() const;
+	NormalType&              normal();
+
+	bool isNormalEnabled() const;
+
+protected:
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
-class FaceContainerTriggerer
-{
-};
+template <typename Scalar, int N, typename T>
+using OptionalNormal = OptionalNormalT<vcl::Point<Scalar, N>, T>;
 
-class VertexContainerTriggerer
-{
-};
-
-/* Detector to check if a class has (inherits) an EdgeContainer */
+template <typename Scalar, typename T>
+using OptionalNormal3 = OptionalNormalT<vcl::Point3<Scalar>, T>;
 
 template<typename T>
-using hasEdgeContainer = std::is_base_of<EdgeContainerTriggerer, T>;
+using OptionalNormal3f = OptionalNormal3<float, T>;
 
 template<typename T>
-constexpr bool hasEdges()
-{
-	return hasEdgeContainer<T>::value;
-}
+using OptionalNormal3d = OptionalNormal3<double, T>;
 
-template<typename T>
-constexpr bool hasEdgeOptionalContainer()
-{
-	if constexpr (hasEdges<T>()) {
-		return comp::hasOptionalInfo<typename T::EdgeType>();
-	}
-	else {
-		return false;
-	}
-}
+} // namespace vcl::comp
 
-/* Detector to check if a class has (inherits) a FaceContainer */
+#include "optional_normal.cpp"
 
-template<typename T>
-using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasFaces()
-{
-	return hasFaceContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasFaceOptionalContainer()
-{
-	if constexpr (hasFaces<T>()) {
-		return comp::hasOptionalInfo<typename T::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a VertexContainer */
-
-template<typename T>
-using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasVertices()
-{
-	return hasVertexContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasVertexOptionalContainer()
-{
-	if constexpr (hasVertices<T>()) {
-		return comp::hasOptionalInfo<typename T::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_CONTAINERS_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_OPTIONAL_NORMAL_H

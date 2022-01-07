@@ -20,60 +20,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_COORDINATE_H
+#define VCL_MESH_COMPONENTS_COORDINATE_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
-#include "components/horizontal/transform_matrix.h"
+#include "../detection/coordinate_detection.h"
 
-namespace vcl::mesh {
+#include <vclib/space/point.h>
 
-/** Port BoundingBox class into mesh namespace **/
+namespace vcl::comp {
+
 template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
-
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
-
-template<typename T>
-bool constexpr hasBoundingBox()
+class CoordT : public CoordinateTriggerer
 {
-	return comp::hasBoundingBox<T>();
-}
+public:
+	using CoordType = P;
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+	const P& coord() const;
+	P&       coord();
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+protected:
+	template<typename Element>
+	void importFrom(const Element& v);
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+private:
+	P p;
+};
 
-template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
+template<typename Scalar, int N>
+using Coordinate = CoordT<Point<Scalar, N>>;
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+template<typename Scalar>
+using Coordinate3 = CoordT<Point3<Scalar>>;
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+using Coordinate3f = Coordinate3<float>;
+using Coordinate3d = Coordinate3<double>;
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
+} // namespace vcl::comp
 
-} // namespace vcl::mesh
+#include "coordinate.cpp"
 
-#endif // VCL_MESH_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_COORDINATE_H

@@ -20,95 +20,40 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_DETECTION_H
-#define VCL_MESH_CONTAINERS_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_OPTIONAL_MARK_H
+#define VCL_MESH_COMPONENTS_OPTIONAL_MARK_H
 
-#include <vclib/misc/types.h>
+#include "../../detection/mark_detection.h"
+#include "../optional_info.h"
 
-#include "../components/vertical/optional_info.h"
+namespace vcl::comp {
 
-namespace vcl::mesh {
-
-/* Triggerers */
-
-class EdgeContainerTriggerer
+template<typename T>
+class OptionalMark : public virtual OptionalInfo<T>
 {
+private:
+	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*) this); }
+
+public:
+	int  mark() const;
+	void resetMark();
+
+	template<typename E>
+	bool hasSameMark(const E& e) const;
+
+	void incrementMark();
+	void decrementMark();
+
+	bool isMarkEnabled() const;
+
+protected:
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
-class FaceContainerTriggerer
-{
-};
+} // namespace vcl::comp
 
-class VertexContainerTriggerer
-{
-};
+#include "optional_mark.cpp"
 
-/* Detector to check if a class has (inherits) an EdgeContainer */
-
-template<typename T>
-using hasEdgeContainer = std::is_base_of<EdgeContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasEdges()
-{
-	return hasEdgeContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasEdgeOptionalContainer()
-{
-	if constexpr (hasEdges<T>()) {
-		return comp::hasOptionalInfo<typename T::EdgeType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a FaceContainer */
-
-template<typename T>
-using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasFaces()
-{
-	return hasFaceContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasFaceOptionalContainer()
-{
-	if constexpr (hasFaces<T>()) {
-		return comp::hasOptionalInfo<typename T::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a VertexContainer */
-
-template<typename T>
-using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasVertices()
-{
-	return hasVertexContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasVertexOptionalContainer()
-{
-	if constexpr (hasVertices<T>()) {
-		return comp::hasOptionalInfo<typename T::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_CONTAINERS_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_OPTIONAL_MARK_H

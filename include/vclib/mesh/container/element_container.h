@@ -24,8 +24,8 @@
 #define VCL_MESH_CONTAINER_ELEMENT_CONTAINER_H
 
 #include <vector>
-#include "../components_optional/optional_info.h"
-#include "../components_vector/components_vector.h"
+#include "../components/vertical/optional_info.h"
+#include "../components/vertical/vectors/components_vector.h"
 
 namespace vcl::mesh {
 

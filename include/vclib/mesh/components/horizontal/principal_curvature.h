@@ -20,60 +20,37 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
+#define VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
-#include "components/horizontal/transform_matrix.h"
+#include <vclib/space/principal_curvature.h>
 
-namespace vcl::mesh {
+#include "../detection/principal_curvature_detection.h"
 
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
+namespace vcl::comp {
 
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
-
-template<typename T>
-bool constexpr hasBoundingBox()
+template<typename Scalar>
+class PrincipalCurvature
 {
-	return comp::hasBoundingBox<T>();
-}
+public:
+	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+	const PrincipalCurvatureType& principalCurvature() const;
+	PrincipalCurvatureType&       principalCurvature();
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+protected:
+	template<typename Element>
+	void importFrom(const Element& e);
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+private:
+	vcl::PrincipalCurvature<Scalar> princCurv;
+};
 
-template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
+using PrincipalCurvaturef = PrincipalCurvature<float>;
+using PrincipalCurvatured = PrincipalCurvature<double>;
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+} // namespace vcl::comp
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+#include "principal_curvature.cpp"
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H

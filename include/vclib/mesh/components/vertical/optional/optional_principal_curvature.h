@@ -20,95 +20,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_DETECTION_H
-#define VCL_MESH_CONTAINERS_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H
+#define VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H
 
-#include <vclib/misc/types.h>
+#include "../optional_info.h"
 
-#include "../components/vertical/optional_info.h"
+#include <vclib/space/principal_curvature.h>
 
-namespace vcl::mesh {
+#include "../../detection/principal_curvature_detection.h"
 
-/* Triggerers */
+namespace vcl::comp {
 
-class EdgeContainerTriggerer
+template<typename Scalar, typename T>
+class OptionalPrincipalCurvature :
+		public OptionalPrincipalCurvatureTriggerer,
+		public virtual OptionalInfo<T>
 {
+private:
+	using B = OptionalInfo<T>;
+	uint thisId() const { return B::index((T*)this); }
+
+public:
+	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
+
+	OptionalPrincipalCurvature();
+
+	const PrincipalCurvatureType& principalCurvature() const;
+	PrincipalCurvatureType&       principalCurvature();
+
+	bool isPrincipalCurvatureEnabled() const;
+
+protected:
+	template <typename Element>
+	void importFrom(const Element& e);
 };
 
-class FaceContainerTriggerer
-{
-};
-
-class VertexContainerTriggerer
-{
-};
-
-/* Detector to check if a class has (inherits) an EdgeContainer */
+template<typename T>
+using OptionalPrincipalCurvaturef = OptionalPrincipalCurvature<float, T>;
 
 template<typename T>
-using hasEdgeContainer = std::is_base_of<EdgeContainerTriggerer, T>;
+using OptionalPrincipalCurvatured = OptionalPrincipalCurvature<double, T>;
 
-template<typename T>
-constexpr bool hasEdges()
-{
-	return hasEdgeContainer<T>::value;
-}
+} // namespace vcl::comp
 
-template<typename T>
-constexpr bool hasEdgeOptionalContainer()
-{
-	if constexpr (hasEdges<T>()) {
-		return comp::hasOptionalInfo<typename T::EdgeType>();
-	}
-	else {
-		return false;
-	}
-}
+#include "optional_principal_curvature.cpp"
 
-/* Detector to check if a class has (inherits) a FaceContainer */
-
-template<typename T>
-using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasFaces()
-{
-	return hasFaceContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasFaceOptionalContainer()
-{
-	if constexpr (hasFaces<T>()) {
-		return comp::hasOptionalInfo<typename T::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a VertexContainer */
-
-template<typename T>
-using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasVertices()
-{
-	return hasVertexContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasVertexOptionalContainer()
-{
-	if constexpr (hasVertices<T>()) {
-		return comp::hasOptionalInfo<typename T::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_CONTAINERS_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H

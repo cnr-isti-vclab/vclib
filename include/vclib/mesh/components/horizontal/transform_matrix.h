@@ -20,60 +20,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+#define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
-#include "components/horizontal/transform_matrix.h"
+#include <vclib/math/matrix.h>
 
-namespace vcl::mesh {
+#include "../detection/transfrom_matrix_detection.h"
 
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
+namespace vcl::comp {
 
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
-
-template<typename T>
-bool constexpr hasBoundingBox()
+template<typename Scalar>
+class TransformMatrix : public TransformMatrixTriggerer
 {
-	return comp::hasBoundingBox<T>();
-}
+public:
+	using TransformMatrixType = Matrix44<Scalar>;
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+	TransformMatrix();
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+	const TransformMatrixType& transformMatrix() const;
+	TransformMatrixType&       transformMatrix();
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+protected:
+	template<typename Element>
+	void importFrom(const Element& e);
 
-template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
+private:
+	Matrix44<Scalar> tr;
+};
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+} // namespace vcl::comp
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+#include "transform_matrix.cpp"
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H

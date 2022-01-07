@@ -27,7 +27,7 @@
 #include <vclib/iterators/container_range_iterator.h>
 #include <vclib/mesh/elements/edge.h>
 
-#include "../components_vector/custom_component_vector_handle.h"
+#include "../components/vertical/vectors/custom_component_vector_handle.h"
 #include "containers_detection.h"
 #include "element_container.h"
 

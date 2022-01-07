@@ -20,95 +20,35 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_DETECTION_H
-#define VCL_MESH_CONTAINERS_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_SCALAR_H
+#define VCL_MESH_COMPONENTS_SCALAR_H
 
-#include <vclib/misc/types.h>
+#include "../detection/scalar_detection.h"
 
-#include "../components/vertical/optional_info.h"
+namespace vcl::comp {
 
-namespace vcl::mesh {
-
-/* Triggerers */
-
-class EdgeContainerTriggerer
+template<typename T>
+class Scalar : public ScalarTrigger
 {
+public:
+	using ScalarType = T;
+
+	const ScalarType& scalar() const;
+	ScalarType&       scalar();
+
+protected:
+	template<typename Element>
+	void importFrom(const Element& e);
+
+private:
+	ScalarType s;
 };
 
-class FaceContainerTriggerer
-{
-};
+using Scalarf = Scalar<float>;
+using Scalard = Scalar<double>;
 
-class VertexContainerTriggerer
-{
-};
+} // namespace vcl::comp
 
-/* Detector to check if a class has (inherits) an EdgeContainer */
+#include "scalar.cpp"
 
-template<typename T>
-using hasEdgeContainer = std::is_base_of<EdgeContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasEdges()
-{
-	return hasEdgeContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasEdgeOptionalContainer()
-{
-	if constexpr (hasEdges<T>()) {
-		return comp::hasOptionalInfo<typename T::EdgeType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a FaceContainer */
-
-template<typename T>
-using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasFaces()
-{
-	return hasFaceContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasFaceOptionalContainer()
-{
-	if constexpr (hasFaces<T>()) {
-		return comp::hasOptionalInfo<typename T::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a VertexContainer */
-
-template<typename T>
-using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasVertices()
-{
-	return hasVertexContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasVertexOptionalContainer()
-{
-	if constexpr (hasVertices<T>()) {
-		return comp::hasOptionalInfo<typename T::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_CONTAINERS_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_SCALAR_H

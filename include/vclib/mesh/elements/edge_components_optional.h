@@ -23,12 +23,12 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
 #define VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
 
-#include "../components_optional/custom_components.h"
-#include "../components_optional/optional_adjacent_edges.h"
-#include "../components_optional/optional_adjacent_faces.h"
-#include "../components_optional/optional_color.h"
-#include "../components_optional/optional_mark.h"
-#include "../components_optional/optional_scalar.h"
+#include "../components/vertical/persistent/custom_components.h"
+#include "../components/vertical/optional/optional_adjacent_edges.h"
+#include "../components/vertical/optional/optional_adjacent_faces.h"
+#include "../components/vertical/optional/optional_color.h"
+#include "../components/vertical/optional/optional_mark.h"
+#include "../components/vertical/optional/optional_scalar.h"
 
 namespace vcl::edge {
 

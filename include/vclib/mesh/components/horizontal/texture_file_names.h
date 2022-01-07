@@ -20,60 +20,56 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
+#define VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
-#include "components/horizontal/transform_matrix.h"
+#include <string>
+#include <vector>
 
-namespace vcl::mesh {
+#include <vclib/iterators/range_iterator.h>
 
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
+#include "../detection/tex_file_names_detection.h"
 
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
+namespace vcl::comp {
 
-template<typename T>
-bool constexpr hasBoundingBox()
+class TextureFileNames
 {
-	return comp::hasBoundingBox<T>();
-}
+public:
+	// iterators
+	using TextureFileNamesIterator      = std::vector<std::string>::iterator;
+	using ConstTextureFileNamesIterator = std::vector<std::string>::const_iterator;
+	using TextureFileNamesRangeIterator =
+		RangeIterator<TextureFileNames, TextureFileNamesIterator>;
+	using ConstTextureFileNamesRangeIterator =
+		ConstRangeIterator<TextureFileNames, ConstTextureFileNamesIterator>;
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+	TextureFileNames();
+	uint textureNumber() const;
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+	const std::string& texture(uint i) const;
+	std::string&       texture(uint i);
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+	void clearTextures();
 
-template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
+	void pushTexture(const std::string& textName);
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+	TextureFileNamesIterator textureBegin();
+	TextureFileNamesIterator textureEnd();
+	ConstTextureFileNamesIterator textureBegin() const;
+	ConstTextureFileNamesIterator textureEnd() const;
+	TextureFileNamesRangeIterator textures();
+	ConstTextureFileNamesRangeIterator textures() const;
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+protected:
+	template<typename Element>
+	void importFrom(const Element& e);
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
+private:
+	std::vector<std::string> textureNames;
+};
 
-} // namespace vcl::mesh
+} // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_H
+#include "texture_file_names.cpp"
+
+#endif // VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H

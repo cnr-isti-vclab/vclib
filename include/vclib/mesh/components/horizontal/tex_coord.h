@@ -20,60 +20,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_TEX_COORD_H
+#define VCL_MESH_COMPONENTS_TEX_COORD_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
-#include "components/horizontal/transform_matrix.h"
+#include <vclib/space/tex_coord.h>
+#include "../detection/tex_coord_detection.h"
 
-namespace vcl::mesh {
+namespace vcl::comp {
 
-/** Port BoundingBox class into mesh namespace **/
-template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
-
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
-
-template<typename T>
-bool constexpr hasBoundingBox()
+template<typename Scalar>
+class TexCoord : public TexCoordTriggerer
 {
-	return comp::hasBoundingBox<T>();
-}
+public:
+	using TexCoordType = vcl::TexCoord<Scalar>;
 
-/** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+	const TexCoordType& texCoord() const;
+	TexCoordType        texCoord();
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
+protected:
+	template<typename Element>
+	void importFrom(const Element& e);
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+private:
+	vcl::TexCoord<Scalar> t;
+};
 
-template<typename T>
-bool constexpr hasTextureFileNames()
-{
-	return comp::hasTextureFileNames<T>();
-}
+using TexCoordf = TexCoord<float>;
+using TexCoordd = TexCoord<double>;
 
-/** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+} // namespace vcl::comp
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+#include "tex_coord.cpp"
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_TEXCOORD_H

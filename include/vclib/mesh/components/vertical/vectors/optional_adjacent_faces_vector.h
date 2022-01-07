@@ -20,95 +20,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_DETECTION_H
-#define VCL_MESH_CONTAINERS_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
+#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
 
-#include <vclib/misc/types.h>
+#include "../optional/optional_adjacent_faces.h"
 
-#include "../components/vertical/optional_info.h"
+#include "optional_generic_vector.h"
 
-namespace vcl::mesh {
+namespace vcl::internal {
 
-/* Triggerers */
-
-class EdgeContainerTriggerer
+template<typename, typename = void>
+class OptionalAdjacentFacesVector
 {
+public:
+	void clear() {}
+	void resize(uint) {}
+	void reserve(uint) {}
+	void compact(const std::vector<int>&) {}
 };
 
-class FaceContainerTriggerer
+template<typename T>
+class OptionalAdjacentFacesVector<T, std::enable_if_t<comp::hasOptionalAdjacentFaces<T>()>> :
+		private OptionalGenericVector<typename T::AdjFacesContainer>
 {
+private:
+	using AdjFacesContainer = typename T::AdjFacesContainer;
+	using Base              = OptionalGenericVector<AdjFacesContainer>;
+
+public:
+	using Base::clear;
+	using Base::compact;
+	using Base::reserve;
+	using Base::resize;
+
+	bool isAdjacentFacesEnabled() const { return Base::isEnabled(); };
+	void enableAdjacentFaces(uint size) { Base::enable(size); }
+	void disableAdjacentFaces() { Base::disable(); }
+
+	AdjFacesContainer&       adjFaces(uint i) { return Base::at(i); }
+	const AdjFacesContainer& adjFaces(uint i) const { return Base::at(i); }
 };
 
-class VertexContainerTriggerer
-{
-};
+} // namespace vcl::internal
 
-/* Detector to check if a class has (inherits) an EdgeContainer */
-
-template<typename T>
-using hasEdgeContainer = std::is_base_of<EdgeContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasEdges()
-{
-	return hasEdgeContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasEdgeOptionalContainer()
-{
-	if constexpr (hasEdges<T>()) {
-		return comp::hasOptionalInfo<typename T::EdgeType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a FaceContainer */
-
-template<typename T>
-using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasFaces()
-{
-	return hasFaceContainer<T>::value;
-}
-
-template<typename T>
-constexpr bool hasFaceOptionalContainer()
-{
-	if constexpr (hasFaces<T>()) {
-		return comp::hasOptionalInfo<typename T::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a VertexContainer */
-
-template<typename T>
-using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasVertices()
-{
-	return hasVertexContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasVertexOptionalContainer()
-{
-	if constexpr (hasVertices<T>()) {
-		return comp::hasOptionalInfo<typename T::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-} // namespace vcl::mesh
-
-#endif // VCL_MESH_CONTAINERS_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
