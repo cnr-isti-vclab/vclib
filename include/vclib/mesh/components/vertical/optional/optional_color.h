@@ -26,15 +26,15 @@
 #include <vclib/space/color.h>
 
 #include "../../detection/color_detection.h"
-#include "../optional_info.h"
+#include "../vertical_info.h"
 
 namespace vcl::comp {
 
 template<typename T>
-class OptionalColor : public virtual OptionalInfo<T>
+class OptionalColor : public virtual VerticalInfo<T>
 {
 private:
-	using B = OptionalInfo<T>;
+	using B = VerticalInfo<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

@@ -20,44 +20,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_WEDGE_TEX_COORDS_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_WEDGE_TEX_COORDS_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_VECTOR_H
+#define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_VECTOR_H
 
-#include "../optional/optional_wedge_tex_coords.h"
+#include "../../detection/adjacent_vertices_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalWedgeTexCoordsVector
+class AdjacentVerticesVector
 {
 public:
 	void clear() {}
-	void reserve(uint) {}
 	void resize(uint) {}
+	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
-class OptionalWedgeTexCoordsVector<T, std::enable_if_t<comp::hasOptionalWedgeTexCoords<T>()>> :
-		private OptionalGenericVector<typename T::WedgeTexCoordsContainer>
+class AdjacentVerticesVector<
+	T,
+	std::enable_if_t<comp::hasOptionalAdjacentVertices<T>()>> :
+		private GenericComponentVector<typename T::AdjVertsContainer>
 {
-	using WedgeTexCoordsContainer = typename T::WedgeTexCoordsContainer;
-	using Base                    = OptionalGenericVector<WedgeTexCoordsContainer>;
+private:
+	using AdjVertsContainer = typename T::AdjVertsContainer;
+	using Base = GenericComponentVector<AdjVertsContainer>;
 
 public:
 	using Base::clear;
-	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                isWedgeTexCoordsEnabled() const { return Base::isEnabled(); };
-	void                enableWedgeTexCoords(uint size) { Base::enable(size); }
-	void                disableWedgeTexCoords() { Base::disable(); }
-	WedgeTexCoordsContainer&       wedgeTexCoords(uint i) { return Base::at(i); }
-	const WedgeTexCoordsContainer& wedgeTexCoords(uint i) const { return Base::at(i); }
+	using Base::compact;
+	bool             isAdjacentVerticesEnabled() const { return Base::isEnabled(); };
+	void             enableAdjacentVertices(uint size) { Base::enable(size); }
+	void             disableAdjacentVertices() { Base::disable(); }
+	AdjVertsContainer&       adjVerts(uint i) { return Base::at(i); }
+	const AdjVertsContainer& adjVerts(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_WEDGE_TEX_COORDS_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_ADJACENT_VERTICES_VECTOR_H

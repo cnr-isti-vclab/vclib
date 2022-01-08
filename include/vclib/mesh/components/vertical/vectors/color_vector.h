@@ -20,44 +20,44 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_WEDGE_COLORS_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_WEDGE_COLORS_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_COLOR_VECTOR_H
+#define VCL_MESH_COMPONENTS_COLOR_VECTOR_H
 
-#include "../optional/optional_wedge_colors.h"
+#include "../../detection/color_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalWedgeColorsVector
+class ColorVector
 {
 public:
 	void clear() {}
-	void reserve(uint) {}
 	void resize(uint) {}
+	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
-class OptionalWedgeColorsVector<T, std::enable_if_t<comp::hasOptionalWedgeColors<T>()>> :
-		private OptionalGenericVector<typename T::WedgeColorsContainer>
+class ColorVector<T, std::enable_if_t<comp::hasOptionalColor<T>()>> :
+		private GenericComponentVector<typename T::ColorType>
 {
-	using WedgeColorsContainer = typename T::WedgeColorsContainer;
-	using Base                 = OptionalGenericVector<WedgeColorsContainer>;
+	using ColorType = typename T::ColorType;
+	using Base = GenericComponentVector<ColorType>;
 
 public:
 	using Base::clear;
-	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                        isWedgeColorsEnabled() const { return Base::isEnabled(); };
-	void                        enableWedgeColors(uint size) { Base::enable(size); }
-	void                        disableWedgeColors() { Base::disable(); }
-	WedgeColorsContainer&       wedgeColors(uint i) { return Base::at(i); }
-	const WedgeColorsContainer& wedgeColors(uint i) const { return Base::at(i); }
+	using Base::compact;
+	bool             isColorEnabled() const { return Base::isEnabled(); };
+	void             enableColor(uint size) { Base::enable(size); }
+	void             disableColor() { Base::disable(); }
+	ColorType&       color(uint i) { return Base::at(i); }
+	const ColorType& color(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_WEDGE_COLORS_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_COLOR_VECTOR_H

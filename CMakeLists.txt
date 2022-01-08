@@ -106,7 +106,6 @@ set(HEADERS
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
-	include/vclib/mesh/components/vertical/optional_info.h
 	include/vclib/mesh/components/horizontal/adjacent_edges.h
 	include/vclib/mesh/components/horizontal/adjacent_faces.h
 	include/vclib/mesh/components/horizontal/adjacent_vertices.h
@@ -146,7 +145,7 @@ set(HEADERS
 	include/vclib/mesh/components/detection/vertex_references_detection.h
 	include/vclib/mesh/components/detection/wedge_colors_detection.h
 	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
-	include/vclib/mesh/components/vertical/persistent/custom_components.h
+	include/vclib/mesh/components/vertical/vertical_info.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_vertices.h
@@ -158,21 +157,22 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/optional/optional_tex_coord.h
 	include/vclib/mesh/components/vertical/optional/optional_wedge_colors.h
 	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.h
-	include/vclib/mesh/components/vertical/vectors/optional_color_vector.h
+	include/vclib/mesh/components/vertical/persistent/custom_components.h
+	include/vclib/mesh/components/vertical/vectors/adjacent_edges_vector.h
+	include/vclib/mesh/components/vertical/vectors/adjacent_faces_vector.h
+	include/vclib/mesh/components/vertical/vectors/adjacent_vertices_vector.h
+	include/vclib/mesh/components/vertical/vectors/color_vector.h
 	include/vclib/mesh/components/vertical/vectors/custom_component_vector_handle.h
 	include/vclib/mesh/components/vertical/vectors/custom_components_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_adjacent_edges_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_adjacent_faces_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_adjacent_vertices_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_generic_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_mark_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_normal_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_principal_curvature_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_scalar_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_tex_coord_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_wedge_colors_vector.h
-	include/vclib/mesh/components/vertical/vectors/optional_wedge_tex_coords_vector.h
-	include/vclib/mesh/components/vertical/vectors/components_vector.h
+	include/vclib/mesh/components/vertical/vectors/generic_component_vector.h
+	include/vclib/mesh/components/vertical/vectors/mark_vector.h
+	include/vclib/mesh/components/vertical/vectors/normal_vector.h
+	include/vclib/mesh/components/vertical/vectors/principal_curvature_vector.h
+	include/vclib/mesh/components/vertical/vectors/scalar_vector.h
+	include/vclib/mesh/components/vertical/vectors/tex_coord_vector.h
+	include/vclib/mesh/components/vertical/vectors/wedge_colors_vector.h
+	include/vclib/mesh/components/vertical/vectors/wedge_tex_coords_vector.h
+	include/vclib/mesh/components/vertical/vectors/vertical_components_vector.h
 	include/vclib/mesh/container/containers.h
 	include/vclib/mesh/container/containers_detection.h
 	include/vclib/mesh/container/edge_container.h
@@ -287,7 +287,6 @@ set(SOURCES
 	include/vclib/mesh/components/horizontal/wedge_tex_coords.cpp
 	include/vclib/mesh/components/horizontal/internal/element_references.cpp
 	include/vclib/mesh/components/horizontal/internal/generic_container.cpp
-	include/vclib/mesh/components/vertical/persistent/custom_components.cpp
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.cpp
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.cpp
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_vertices.cpp
@@ -299,9 +298,10 @@ set(SOURCES
 	include/vclib/mesh/components/vertical/optional/optional_tex_coord.cpp
 	include/vclib/mesh/components/vertical/optional/optional_wedge_colors.cpp
 	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.cpp
+	include/vclib/mesh/components/vertical/persistent/custom_components.cpp
 	include/vclib/mesh/components/vertical/vectors/custom_component_vector_handle.cpp
 	include/vclib/mesh/components/vertical/vectors/custom_components_vector.cpp
-	include/vclib/mesh/components/vertical/vectors/optional_generic_vector.cpp
+	include/vclib/mesh/components/vertical/vectors/generic_component_vector.cpp
 	include/vclib/mesh/container/edge_container.cpp
 	include/vclib/mesh/container/face_container.cpp
 	include/vclib/mesh/container/vertex_container.cpp

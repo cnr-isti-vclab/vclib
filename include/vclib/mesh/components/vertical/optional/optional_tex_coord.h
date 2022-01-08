@@ -25,16 +25,16 @@
 
 #include <vclib/space/tex_coord.h>
 
-#include "../optional_info.h"
+#include "../vertical_info.h"
 #include "../../detection/tex_coord_detection.h"
 
 namespace vcl::comp {
 
 template<typename Scalar, typename T>
-class OptionalTexCoord : public OptionalTexCoordTriggerer, public virtual OptionalInfo<T>
+class OptionalTexCoord : public OptionalTexCoordTriggerer, public virtual VerticalInfo<T>
 {
 private:
-	using B = OptionalInfo<T>;
+	using B = VerticalInfo<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

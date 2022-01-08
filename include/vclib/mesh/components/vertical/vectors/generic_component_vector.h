@@ -20,47 +20,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_EDGES_REF_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_EDGES_REF_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_GENERIC_COMPONENT_VECTOR_H
+#define VCL_MESH_COMPONENTS_GENERIC_COMPONENT_VECTOR_H
 
-#include "../optional/optional_adjacent_edges.h"
+#include <assert.h>
+#include <vector>
 
-#include "optional_generic_vector.h"
+#include <vclib/misc/types.h>
 
 namespace vcl::internal {
 
-template<typename, typename = void>
-class OptionalAdjacentEdgesVector
-{
-public:
-	void clear() {}
-	void resize(uint) {}
-	void reserve(uint) {}
-	void compact(const std::vector<int>&) {}
-};
-
 template<typename T>
-class OptionalAdjacentEdgesVector<T, std::enable_if_t<comp::hasOptionalAdjacentEdges<T>()>> :
-		private OptionalGenericVector<typename T::AdjEdgesContainer>
+class GenericComponentVector
 {
+protected:
+	bool isEnabled() const;
+	void enable(uint size);
+	void disable();
+
+	T& at(uint i);
+	const T& at(uint i) const;
+
+	void clear();
+	void resize(uint size);
+	void reserve(uint size);
+	void compact(const std::vector<int>& newIndices);
+
 private:
-	using AdjEdgesContainer = typename T::AdjEdgesContainer;
-	using Base              = OptionalGenericVector<AdjEdgesContainer>;
-
-public:
-	using Base::clear;
-	using Base::compact;
-	using Base::reserve;
-	using Base::resize;
-
-	bool isAdjacentEdgesEnabled() const { return Base::isEnabled(); };
-	void enableAdjacentEdges(uint size) { Base::enable(size); }
-	void disableAdjacentEdges() { Base::disable(); }
-
-	AdjEdgesContainer&       adjEdges(uint i) { return Base::at(i); }
-	const AdjEdgesContainer& adjEdges(uint i) const { return Base::at(i); }
+	bool           enabled = false;
+	std::vector<T> vec;
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_EDGES_REF_VECTOR_H
+#include "generic_component_vector.cpp"
+
+#endif // VCL_MESH_COMPONENTS_GENERIC_COMPONENT_VECTOR_H

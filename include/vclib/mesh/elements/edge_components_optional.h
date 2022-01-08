@@ -62,16 +62,6 @@ bool constexpr hasOptionalColor()
 	return comp::hasOptionalColor<EdgeType>();
 }
 
-/* Port OptionalInfo class into edge namespace */
-template<typename EdgeType>
-using OptionalInfo = comp::OptionalInfo<EdgeType>;
-
-template<typename EdgeType>
-bool constexpr hasOptionalInfo()
-{
-	return comp::hasOptionalInfo<EdgeType>();
-}
-
 /* Port OptionalMark class into edge namespace */
 template<typename EdgeType>
 using OptionalMark = comp::OptionalMark<EdgeType>;
@@ -106,6 +96,16 @@ template<typename EdgeType>
 bool constexpr hasCustomComponents()
 {
 	return comp::hasCustomComponents<EdgeType>();
+}
+
+/* Port VerticalInfo class into edge namespace */
+template<typename EdgeType>
+using VerticalInfo = comp::VerticalInfo<EdgeType>;
+
+template<typename EdgeType>
+bool constexpr hasVerticalInfo()
+{
+	return comp::hasVerticalInfo<EdgeType>();
 }
 
 } // namespace vcl::edge

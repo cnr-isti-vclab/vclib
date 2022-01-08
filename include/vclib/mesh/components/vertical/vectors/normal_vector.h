@@ -20,47 +20,44 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_NORMAL_VECTOR_H
+#define VCL_MESH_COMPONENTS_NORMAL_VECTOR_H
 
-#include "../optional/optional_adjacent_faces.h"
+#include "../../detection/normal_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalAdjacentFacesVector
+class NormalVector
 {
 public:
 	void clear() {}
-	void resize(uint) {}
 	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
-class OptionalAdjacentFacesVector<T, std::enable_if_t<comp::hasOptionalAdjacentFaces<T>()>> :
-		private OptionalGenericVector<typename T::AdjFacesContainer>
+class NormalVector<T, std::enable_if_t<comp::hasOptionalNormal<T>()>> :
+		private GenericComponentVector<typename T::NormalType>
 {
-private:
-	using AdjFacesContainer = typename T::AdjFacesContainer;
-	using Base              = OptionalGenericVector<AdjFacesContainer>;
+	using NormalType = typename T::NormalType;
+	using Base = GenericComponentVector<NormalType>;
 
 public:
 	using Base::clear;
-	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-
-	bool isAdjacentFacesEnabled() const { return Base::isEnabled(); };
-	void enableAdjacentFaces(uint size) { Base::enable(size); }
-	void disableAdjacentFaces() { Base::disable(); }
-
-	AdjFacesContainer&       adjFaces(uint i) { return Base::at(i); }
-	const AdjFacesContainer& adjFaces(uint i) const { return Base::at(i); }
+	using Base::compact;
+	bool              isNormalEnabled() const { return Base::isEnabled(); };
+	void              enableNormal(uint size) { Base::enable(size); }
+	void              disableNormal() { Base::disable(); }
+	NormalType&       normal(uint i) { return Base::at(i); }
+	const NormalType& normal(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_FACES_REF_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_NORMAL_VECTOR_H

@@ -996,7 +996,7 @@ void vcl::mesh::FaceContainer<T>::clearFaces()
 {
 	Base::vec.clear();
 	fn = 0;
-	if constexpr (face::hasOptionalInfo<FaceType>()) {
+	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		Base::optionalVec.clear();
 	}
 }
@@ -1008,7 +1008,7 @@ uint FaceContainer<T>::addFace()
 	Base::vec.push_back(FaceType());
 	T* newB = Base::vec.data();
 	++fn;
-	if constexpr (face::hasOptionalInfo<FaceType>()) {
+	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
@@ -1032,7 +1032,7 @@ uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces)
 	Base::vec.resize(Base::vec.size() + nFaces);
 	T* newB = Base::vec.data();
 	fn += nFaces;
-	if constexpr (face::hasOptionalInfo<FaceType>()) {
+	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 		for (uint i = baseId; i < Base::vec.size(); ++i) {
 			setContainerPointer(Base::vec[i]);
@@ -1048,7 +1048,7 @@ void FaceContainer<T>::reserveFaces(uint size)
 	T* oldB = Base::vec.data();
 	Base::vec.reserve(size);
 	T* newB = Base::vec.data();
-	if constexpr (face::hasOptionalInfo<FaceType>()) {
+	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		Base::optionalVec.reserve(size);
 	}
 	updateAfterAllocation(oldB, newB);
@@ -1083,7 +1083,7 @@ std::vector<int> vcl::mesh::FaceContainer<T>::compactFaces()
 	k++;
 	Base::vec.resize(k);
 	T* base = Base::vec.data();
-	if constexpr (face::hasOptionalInfo<FaceType>()) {
+	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		Base::optionalVec.compact(newIndices);
 	}
 	updateFaceReferencesAfterCompact(base, newIndices);
@@ -1101,13 +1101,13 @@ void FaceContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
 
 /**
  * @brief After a reallocation, it is needed always to update the container pointers of all the
- * elements, because the assignment operator of the OptionalInfo component (which stores the pointer
+ * elements, because the assignment operator of the VerticalInfo component (which stores the pointer
  * of the container) does not copy the container pointer for security reasons.
  */
 template<typename T>
 void FaceContainer<T>::updateContainerPointers()
 {
-	if constexpr (face::hasOptionalInfo<FaceType>()) {
+	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		// all the faces must point to the right container - also the deleted ones
 		for (FaceType& f : faces(false)) {
 			setContainerPointer(f);

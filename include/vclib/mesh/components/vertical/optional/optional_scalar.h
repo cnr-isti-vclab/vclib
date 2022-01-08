@@ -23,16 +23,16 @@
 #ifndef VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
 #define VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
 
-#include "../optional_info.h"
+#include "../vertical_info.h"
 #include "../../detection/scalar_detection.h"
 
 namespace vcl::comp {
 
 template<typename S, typename T>
-class OptionalScalar : public OptionalScalarTrigger, public virtual OptionalInfo<T>
+class OptionalScalar : public OptionalScalarTrigger, public virtual VerticalInfo<T>
 {
 private:
-	using B = OptionalInfo<T>;
+	using B = VerticalInfo<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

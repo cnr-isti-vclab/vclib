@@ -20,27 +20,27 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 #include <vclib/misc/compactness.h>
 
 namespace vcl::internal {
 
 template<typename T>
-bool OptionalGenericVector<T>::isEnabled() const
+bool GenericComponentVector<T>::isEnabled() const
 {
 	return enabled;
 }
 
 template<typename T>
-void OptionalGenericVector<T>::enable(uint size)
+void GenericComponentVector<T>::enable(uint size)
 {
 	enabled = true;
 	vec.resize(size);
 }
 
 template<typename T>
-void OptionalGenericVector<T>::disable()
+void GenericComponentVector<T>::disable()
 {
 	enabled = false;
 	vec.clear();
@@ -49,14 +49,14 @@ void OptionalGenericVector<T>::disable()
 }
 
 template<typename T>
-T& OptionalGenericVector<T>::at(uint i)
+T& GenericComponentVector<T>::at(uint i)
 {
 	assert(enabled);
 	return vec[i];
 }
 
 template<typename T>
-const T& OptionalGenericVector<T>::at(uint i) const
+const T& GenericComponentVector<T>::at(uint i) const
 {
 	assert(enabled);
 	return vec[i];
@@ -67,27 +67,27 @@ const T& OptionalGenericVector<T>::at(uint i) const
  * without disabling it.
  */
 template<typename T>
-void OptionalGenericVector<T>::clear()
+void GenericComponentVector<T>::clear()
 {
 	vec.clear();
 }
 
 template<typename T>
-void OptionalGenericVector<T>::resize(uint size)
+void GenericComponentVector<T>::resize(uint size)
 {
 	if (enabled)
 		vec.resize(size);
 }
 
 template<typename T>
-void OptionalGenericVector<T>::reserve(uint size)
+void GenericComponentVector<T>::reserve(uint size)
 {
 	if (enabled)
 		vec.reserve(size);
 }
 
 template<typename T>
-void OptionalGenericVector<T>::compact(const std::vector<int>& newIndices)
+void GenericComponentVector<T>::compact(const std::vector<int>& newIndices)
 {
 	if (enabled)
 		compactVector(vec, newIndices);

@@ -20,39 +20,44 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_GENERIC_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_GENERIC_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_VECTOR_H
+#define VCL_MESH_COMPONENTS_WEDGE_COLORS_VECTOR_H
 
-#include <assert.h>
-#include <vector>
+#include "../../detection/wedge_colors_detection.h"
 
-#include <vclib/misc/types.h>
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename T>
-class OptionalGenericVector
+template<typename, typename = void>
+class WedgeColorsVector
 {
-protected:
-	bool isEnabled() const;
-	void enable(uint size);
-	void disable();
+public:
+	void clear() {}
+	void reserve(uint) {}
+	void resize(uint) {}
+	void compact(const std::vector<int>&) {}
+};
 
-	T& at(uint i);
-	const T& at(uint i) const;
+template<typename T>
+class WedgeColorsVector<T, std::enable_if_t<comp::hasOptionalWedgeColors<T>()>> :
+		private GenericComponentVector<typename T::WedgeColorsContainer>
+{
+	using WedgeColorsContainer = typename T::WedgeColorsContainer;
+	using Base                 = GenericComponentVector<WedgeColorsContainer>;
 
-	void clear();
-	void resize(uint size);
-	void reserve(uint size);
-	void compact(const std::vector<int>& newIndices);
-
-private:
-	bool           enabled = false;
-	std::vector<T> vec;
+public:
+	using Base::clear;
+	using Base::compact;
+	using Base::reserve;
+	using Base::resize;
+	bool                        isWedgeColorsEnabled() const { return Base::isEnabled(); };
+	void                        enableWedgeColors(uint size) { Base::enable(size); }
+	void                        disableWedgeColors() { Base::disable(); }
+	WedgeColorsContainer&       wedgeColors(uint i) { return Base::at(i); }
+	const WedgeColorsContainer& wedgeColors(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#include "optional_generic_vector.cpp"
-
-#endif // VCL_MESH_COMPONENTS_VECTOR_GENERIC_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_WEDGE_COLORS_VECTOR_H

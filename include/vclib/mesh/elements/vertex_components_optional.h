@@ -76,16 +76,6 @@ bool constexpr hasOptionalColor()
 	return comp::hasOptionalColor<VertexType>();
 }
 
-/* Port OptionalInfo class into vert namespace */
-template<typename VertexType>
-using OptionalInfo = comp::OptionalInfo<VertexType>;
-
-template<typename VertexType>
-bool constexpr hasOptionalInfo()
-{
-	return comp::hasOptionalInfo<VertexType>();
-}
-
 /* Port OptionalMark class into vert namespace */
 template<typename VertexType>
 using OptionalMark = comp::OptionalMark<VertexType>;
@@ -170,6 +160,16 @@ template<typename VertexType>
 bool constexpr hasCustomComponents()
 {
 	return comp::hasCustomComponents<VertexType>();
+}
+
+/* Port VerticalInfo class into vert namespace */
+template<typename VertexType>
+using VerticalInfo = comp::VerticalInfo<VertexType>;
+
+template<typename VertexType>
+bool constexpr hasVerticalInfo()
+{
+	return comp::hasVerticalInfo<VertexType>();
 }
 
 } // namespace vcl::vert

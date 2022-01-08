@@ -955,7 +955,7 @@ void VertexContainer<T>::clearVertices()
 {
 	Base::vec.clear();
 	vn = 0;
-	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		Base::optionalVec.clear();
 	}
 }
@@ -974,7 +974,7 @@ uint VertexContainer<T>::addVertex()
 	Base::vec.push_back(VertexType());
 	T* newB = Base::vec.data();
 	++vn;
-	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
@@ -998,7 +998,7 @@ uint VertexContainer<T>::addVertices(uint nVertices)
 	Base::vec.resize(Base::vec.size() + nVertices);
 	T* newB = Base::vec.data();
 	vn += nVertices;
-	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 		for (uint i = baseId; i < Base::vec.size(); ++i) {
 			setContainerPointer(Base::vec[i]);
@@ -1014,7 +1014,7 @@ void VertexContainer<T>::reserveVertices(uint size)
 	T* oldB = Base::vec.data();
 	Base::vec.reserve(size);
 	T* newB = Base::vec.data();
-	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		Base::optionalVec.reserve(size);
 	}
 	updateAfterAllocation(oldB, newB);
@@ -1049,7 +1049,7 @@ std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
 	k++;
 	Base::vec.resize(k);
 	T* base = Base::vec.data();
-	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		Base::optionalVec.compact(newIndices);
 	}
 	updateVertexReferencesAfterCompact(base, newIndices);
@@ -1067,13 +1067,13 @@ void VertexContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBas
 
 /**
  * @brief After a reallocation, it is needed always to update the container pointers of all the
- * elements, because the assignment operator of the OptionalInfo component (which stores the pointer
+ * elements, because the assignment operator of the VerticalInfo component (which stores the pointer
  * of the container) does not copy the container pointer for security reasons.
  */
 template<typename T>
 void VertexContainer<T>::updateContainerPointers()
 {
-	if constexpr (vert::hasOptionalInfo<VertexType>()) {
+	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		// all the vertices must point to the right container - also the deleted ones
 		for (VertexType& v : vertices(false)) {
 			setContainerPointer(v);

@@ -20,44 +20,44 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_COLOR_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_COLOR_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_VECTOR_H
+#define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_VECTOR_H
 
-#include "../optional/optional_color.h"
+#include "../../detection/wedge_tex_coords_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalColorVector
+class WedgeTexCoordsVector
 {
 public:
 	void clear() {}
-	void resize(uint) {}
 	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
-class OptionalColorVector<T, std::enable_if_t<comp::hasOptionalColor<T>()>> :
-		private OptionalGenericVector<typename T::ColorType>
+class WedgeTexCoordsVector<T, std::enable_if_t<comp::hasOptionalWedgeTexCoords<T>()>> :
+		private GenericComponentVector<typename T::WedgeTexCoordsContainer>
 {
-	using ColorType = typename T::ColorType;
-	using Base = OptionalGenericVector<ColorType>;
+	using WedgeTexCoordsContainer = typename T::WedgeTexCoordsContainer;
+	using Base                    = GenericComponentVector<WedgeTexCoordsContainer>;
 
 public:
 	using Base::clear;
+	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	using Base::compact;
-	bool             isColorEnabled() const { return Base::isEnabled(); };
-	void             enableColor(uint size) { Base::enable(size); }
-	void             disableColor() { Base::disable(); }
-	ColorType&       color(uint i) { return Base::at(i); }
-	const ColorType& color(uint i) const { return Base::at(i); }
+	bool                isWedgeTexCoordsEnabled() const { return Base::isEnabled(); };
+	void                enableWedgeTexCoords(uint size) { Base::enable(size); }
+	void                disableWedgeTexCoords() { Base::disable(); }
+	WedgeTexCoordsContainer&       wedgeTexCoords(uint i) { return Base::at(i); }
+	const WedgeTexCoordsContainer& wedgeTexCoords(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_COLOR_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_VECTOR_H

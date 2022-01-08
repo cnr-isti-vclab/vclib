@@ -26,15 +26,15 @@
 #include <vclib/space/point.h>
 
 #include "../../detection/normal_detection.h"
-#include "../optional_info.h"
+#include "../vertical_info.h"
 
 namespace vcl::comp {
 
 template<typename P, typename T>
-class OptionalNormalT : public OptionalNormalTriggerer, public virtual OptionalInfo<T>
+class OptionalNormalT : public OptionalNormalTriggerer, public virtual VerticalInfo<T>
 {
 private:
-	using B = OptionalInfo<T>;
+	using B = VerticalInfo<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

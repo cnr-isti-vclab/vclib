@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../optional_info.h"
+#include "../vertical_info.h"
 
 #include "../../detection/adjacent_vertices_detection.h"
 
@@ -42,13 +42,13 @@ namespace vcl::comp {
 template<typename Vertex, typename T>
 class OptionalAdjacentVertices :
 		public OptionalAdjacentVerticesTriggerer,
-		public virtual OptionalInfo<T>
+		public virtual VerticalInfo<T>
 {
 	template<typename, typename>
 	friend class OptionalVertexReferencesVector;
 
 private:
-	using B = OptionalInfo<T>;
+	using B = VerticalInfo<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

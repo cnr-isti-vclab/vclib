@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_CUSTOM_COMPONENTS_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_CUSTOM_COMPONENTS_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_VECTOR_H
+#define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_VECTOR_H
 
 #include <unordered_map>
 
@@ -29,7 +29,7 @@
 
 #include "../persistent/custom_components.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
@@ -105,4 +105,4 @@ private:
 
 #include "custom_components_vector.cpp"
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_CUSTOM_COMPONENTS_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_VECTOR_H

@@ -20,47 +20,44 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_VERTICES_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_VERTICES_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_TEX_COORD_VECTOR_H
+#define VCL_MESH_COMPONENTS_TEX_COORD_VECTOR_H
 
-#include "../optional/optional_adjacent_vertices.h"
+#include "../../detection/tex_coord_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalAdjacentVerticesVector
+class TexCoordVector
 {
 public:
 	void clear() {}
-	void resize(uint) {}
 	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
-class OptionalAdjacentVerticesVector<
-	T,
-	std::enable_if_t<comp::hasOptionalAdjacentVertices<T>()>> :
-		private OptionalGenericVector<typename T::AdjVertsContainer>
+class TexCoordVector<T, std::enable_if_t<comp::hasOptionalTexCoord<T>()>> :
+		private GenericComponentVector<typename T::TexCoordType>
 {
-private:
-	using AdjVertsContainer = typename T::AdjVertsContainer;
-	using Base = OptionalGenericVector<AdjVertsContainer>;
+	using TexCoordType = typename T::TexCoordType;
+	using Base         = GenericComponentVector<TexCoordType>;
 
 public:
 	using Base::clear;
+	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	using Base::compact;
-	bool             isAdjacentVerticesEnabled() const { return Base::isEnabled(); };
-	void             enableAdjacentVertices(uint size) { Base::enable(size); }
-	void             disableAdjacentVertices() { Base::disable(); }
-	AdjVertsContainer&       adjVerts(uint i) { return Base::at(i); }
-	const AdjVertsContainer& adjVerts(uint i) const { return Base::at(i); }
+	bool                isTexCoordEnabled() const { return Base::isEnabled(); };
+	void                enableTexCoord(uint size) { Base::enable(size); }
+	void                disableTexCoord() { Base::disable(); }
+	TexCoordType&       texCoord(uint i) { return Base::at(i); }
+	const TexCoordType& texCoord(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_ADJACENT_VERTICES_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_TEX_COORD_VECTOR_H

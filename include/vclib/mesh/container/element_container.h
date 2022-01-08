@@ -24,22 +24,22 @@
 #define VCL_MESH_CONTAINER_ELEMENT_CONTAINER_H
 
 #include <vector>
-#include "../components/vertical/optional_info.h"
-#include "../components/vertical/vectors/components_vector.h"
+#include "../components/vertical/vertical_info.h"
+#include "../components/vertical/vectors/vertical_components_vector.h"
 
 namespace vcl::mesh {
 
 template <typename T>
 class ElementContainer
 {
-	friend class comp::OptionalInfo<T>;
+	friend class comp::VerticalInfo<T>;
 
 public:
 	ElementContainer() {};
 
 protected:
 	std::vector<T> vec;
-	internal::ComponentsVector<T> optionalVec;
+	internal::VerticalComponentsVector<T> optionalVec;
 };
 
 }

@@ -20,44 +20,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_NORMAL_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_NORMAL_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_VECTOR_H
+#define VCL_MESH_COMPONENTS_ADJACENT_EDGES_VECTOR_H
 
-#include "../optional/optional_normal.h"
+#include "../../detection/adjacent_edges_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalNormalVector
+class AdjacentEdgesVector
 {
 public:
 	void clear() {}
-	void reserve(uint) {}
 	void resize(uint) {}
+	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
-class OptionalNormalVector<T, std::enable_if_t<comp::hasOptionalNormal<T>()>> :
-		private OptionalGenericVector<typename T::NormalType>
+class AdjacentEdgesVector<T, std::enable_if_t<comp::hasOptionalAdjacentEdges<T>()>> :
+		private GenericComponentVector<typename T::AdjEdgesContainer>
 {
-	using NormalType = typename T::NormalType;
-	using Base = OptionalGenericVector<NormalType>;
+private:
+	using AdjEdgesContainer = typename T::AdjEdgesContainer;
+	using Base              = GenericComponentVector<AdjEdgesContainer>;
 
 public:
 	using Base::clear;
+	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	using Base::compact;
-	bool              isNormalEnabled() const { return Base::isEnabled(); };
-	void              enableNormal(uint size) { Base::enable(size); }
-	void              disableNormal() { Base::disable(); }
-	NormalType&       normal(uint i) { return Base::at(i); }
-	const NormalType& normal(uint i) const { return Base::at(i); }
+
+	bool isAdjacentEdgesEnabled() const { return Base::isEnabled(); };
+	void enableAdjacentEdges(uint size) { Base::enable(size); }
+	void disableAdjacentEdges() { Base::disable(); }
+
+	AdjEdgesContainer&       adjEdges(uint i) { return Base::at(i); }
+	const AdjEdgesContainer& adjEdges(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_NORMAL_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_ADJACENT_EDGES_VECTOR_H

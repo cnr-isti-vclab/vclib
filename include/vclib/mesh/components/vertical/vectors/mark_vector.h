@@ -20,44 +20,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_SCALAR_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_SCALAR_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_MARK_VECTOR_H
+#define VCL_MESH_COMPONENTS_MARK_VECTOR_H
 
-#include "../optional/optional_scalar.h"
+#include "../../detection/mark_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalScalarVector
+class MarkVector
 {
 public:
 	void clear() {}
-	void reserve(uint) {}
 	void resize(uint) {}
+	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
-class OptionalScalarVector<T, std::enable_if_t<comp::hasOptionalScalar<T>()>> :
-		private OptionalGenericVector<typename T::ScalarType>
+class MarkVector<T, std::enable_if_t<comp::hasOptionalMark<T>()>> :
+		private GenericComponentVector<int>
 {
-	using ScalarType = typename T::ScalarType;
-	using Base = OptionalGenericVector<ScalarType>;
+	using Base = GenericComponentVector<int>;
 
 public:
 	using Base::clear;
+	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	using Base::compact;
-	bool              isScalarEnabled() const { return Base::isEnabled(); };
-	void              enableScalar(uint size) { Base::enable(size); }
-	void              disableScalar() { Base::disable(); }
-	ScalarType&       scalar(uint i) { return Base::at(i); }
-	const ScalarType& scalar(uint i) const { return Base::at(i); }
+	bool       isMarkEnabled() const { return Base::isEnabled(); };
+	void       enableMark(uint size) { Base::enable(size); }
+	void       disableMark() { Base::disable(); }
+	int&       mark(uint i) { return Base::at(i); }
+	const int& mark(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_SCALAR_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_MARK_VECTOR_H

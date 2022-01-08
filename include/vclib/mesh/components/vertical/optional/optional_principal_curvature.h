@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H
 #define VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H
 
-#include "../optional_info.h"
+#include "../vertical_info.h"
 
 #include <vclib/space/principal_curvature.h>
 
@@ -34,10 +34,10 @@ namespace vcl::comp {
 template<typename Scalar, typename T>
 class OptionalPrincipalCurvature :
 		public OptionalPrincipalCurvatureTriggerer,
-		public virtual OptionalInfo<T>
+		public virtual VerticalInfo<T>
 {
 private:
-	using B = OptionalInfo<T>;
+	using B = VerticalInfo<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

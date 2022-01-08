@@ -20,10 +20,10 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_PERSISTENT_CUSTOM_COMPONENTS_H
+#define VCL_MESH_COMPONENTS_PERSISTENT_CUSTOM_COMPONENTS_H
 
-#include "../optional_info.h"
+#include "../vertical_info.h"
 
 #include <any>
 #include <string>
@@ -39,10 +39,10 @@ namespace vcl::comp {
  *
  */
 template<typename T>
-class CustomComponents : public virtual OptionalInfo<T>
+class CustomComponents : public virtual VerticalInfo<T>
 {
 private:
-	using B = OptionalInfo<T>;
+	using B = VerticalInfo<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:
@@ -63,4 +63,4 @@ protected:
 
 #include "custom_components.cpp"
 
-#endif // VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_PERSISTENT_CUSTOM_COMPONENTS_H

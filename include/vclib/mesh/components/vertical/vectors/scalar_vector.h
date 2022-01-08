@@ -20,17 +20,17 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_TEX_COORD_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_TEX_COORD_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_SCALAR_VECTOR_H
+#define VCL_MESH_COMPONENTS_SCALAR_VECTOR_H
 
-#include "../optional/optional_tex_coord.h"
+#include "../../detection/scalar_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalTexCoordVector
+class ScalarVector
 {
 public:
 	void clear() {}
@@ -40,24 +40,24 @@ public:
 };
 
 template<typename T>
-class OptionalTexCoordVector<T, std::enable_if_t<comp::hasOptionalTexCoord<T>()>> :
-		private OptionalGenericVector<typename T::TexCoordType>
+class ScalarVector<T, std::enable_if_t<comp::hasOptionalScalar<T>()>> :
+		private GenericComponentVector<typename T::ScalarType>
 {
-	using TexCoordType = typename T::TexCoordType;
-	using Base         = OptionalGenericVector<TexCoordType>;
+	using ScalarType = typename T::ScalarType;
+	using Base = GenericComponentVector<ScalarType>;
 
 public:
 	using Base::clear;
-	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                isTexCoordEnabled() const { return Base::isEnabled(); };
-	void                enableTexCoord(uint size) { Base::enable(size); }
-	void                disableTexCoord() { Base::disable(); }
-	TexCoordType&       texCoord(uint i) { return Base::at(i); }
-	const TexCoordType& texCoord(uint i) const { return Base::at(i); }
+	using Base::compact;
+	bool              isScalarEnabled() const { return Base::isEnabled(); };
+	void              enableScalar(uint size) { Base::enable(size); }
+	void              disableScalar() { Base::disable(); }
+	ScalarType&       scalar(uint i) { return Base::at(i); }
+	const ScalarType& scalar(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_TEX_COORD_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_SCALAR_VECTOR_H

@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_OPTIONAL_INFO_H
-#define VCL_MESH_COMPONENTS_OPTIONAL_INFO_H
+#ifndef VCL_MESH_COMPONENTS_VERTICAL_INFO_H
+#define VCL_MESH_COMPONENTS_VERTICAL_INFO_H
 
 #include <vclib/misc/types.h>
 
@@ -35,24 +35,24 @@ class ElementContainer;
 namespace vcl::internal {
 
 template <typename T>
-class ComponentsVector;
+class VerticalComponentsVector;
 
 }
 
 namespace vcl::comp {
 
 template<typename T>
-class OptionalInfo
+class VerticalInfo
 {
 public:
-	OptionalInfo() {}
+	VerticalInfo() {}
 
 	// copy and move semantics: nothing will be done here
 	// this instance will be updated only by the mesh, and optional data
 	// can be accessed only when an element is part of a mesh
-	OptionalInfo(const OptionalInfo<T>&) {}
-	OptionalInfo(OptionalInfo<T>&&) {}
-	OptionalInfo& operator=(const OptionalInfo<T>&) {return *this;}
+	VerticalInfo(const VerticalInfo<T>&) {}
+	VerticalInfo(VerticalInfo<T>&&) {}
+	VerticalInfo& operator=(const VerticalInfo<T>&) {return *this;}
 
 protected:
 	// this function sets the pointer of the container of this istance of an element.
@@ -65,7 +65,7 @@ protected:
 	// stored in the ElementContainer.
 	// then, the OptionalComponent of this element will access to the desired component stored in
 	// the optionalVec.
-	vcl::internal::ComponentsVector<T>& optCont()
+	vcl::internal::VerticalComponentsVector<T>& optCont()
 	{
 		assert(contPtr != nullptr); // be sure that this element is part of an ElementContainer
 		return contPtr->optionalVec;
@@ -76,7 +76,7 @@ protected:
 	// stored in the ElementContainer.
 	// then, the OptionalComponent of this element will access to the desired component stored in
 	// the optionalVec.
-	const vcl::internal::ComponentsVector<T>& optCont() const
+	const vcl::internal::VerticalComponentsVector<T>& optCont() const
 	{
 		assert(contPtr != nullptr); // be sure that this element is part of an ElementContainer
 		return contPtr->optionalVec;
@@ -97,18 +97,18 @@ protected:
 };
 
 /**
- * Detector to check if a class has (inherits) OptionalInfo
+ * Detector to check if a class has (inherits) VerticalInfo
  */
 
 template<typename T>
-using hasOptionalInfoT = std::is_base_of<OptionalInfo<T>, T>;
+using hasVerticalInfoT = std::is_base_of<VerticalInfo<T>, T>;
 
 template<typename T>
-bool constexpr hasOptionalInfo()
+bool constexpr hasVerticalInfo()
 {
-	return hasOptionalInfoT<T>::value;
+	return hasVerticalInfoT<T>::value;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_OPTIONAL_INFO_H
+#endif // VCL_MESH_COMPONENTS_VERTICAL_INFO_H

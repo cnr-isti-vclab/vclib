@@ -20,46 +20,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_PRINCIPAL_CURVATURE_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_PRINCIPAL_CURVATURE_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_VECTOR_H
+#define VCL_MESH_COMPONENTS_ADJACENT_FACES_VECTOR_H
 
-#include "../optional/optional_principal_curvature.h"
+#include "../../detection/adjacent_faces_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalPrincipalCurvatureVector
+class AdjacentFacesVector
 {
 public:
 	void clear() {}
-	void reserve(uint) {}
 	void resize(uint) {}
+	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
-class OptionalPrincipalCurvatureVector<
-	T,
-	std::enable_if_t<comp::hasOptionalPrincipalCurvature<T>()>> :
-		private OptionalGenericVector<typename T::PrincipalCurvatureType>
+class AdjacentFacesVector<T, std::enable_if_t<comp::hasOptionalAdjacentFaces<T>()>> :
+		private GenericComponentVector<typename T::AdjFacesContainer>
 {
-	using PrincipalCurvatureType = typename T::PrincipalCurvatureType;
-	using Base                   = OptionalGenericVector<PrincipalCurvatureType>;
+private:
+	using AdjFacesContainer = typename T::AdjFacesContainer;
+	using Base              = GenericComponentVector<AdjFacesContainer>;
 
 public:
 	using Base::clear;
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                    isPrincipalCurvatureEnabled() const { return Base::isEnabled(); };
-	void                    enablePrincipalCurvature(uint size) { Base::enable(size); }
-	void                    disablePrincipalCurvature() { Base::disable(); }
-	PrincipalCurvatureType& principalCurvature(uint i) { return Base::at(i); }
-	const PrincipalCurvatureType& principalCurvature(uint i) const { return Base::at(i); }
+
+	bool isAdjacentFacesEnabled() const { return Base::isEnabled(); };
+	void enableAdjacentFaces(uint size) { Base::enable(size); }
+	void disableAdjacentFaces() { Base::disable(); }
+
+	AdjFacesContainer&       adjFaces(uint i) { return Base::at(i); }
+	const AdjFacesContainer& adjFaces(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_PRINCIPAL_CURVATURE_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_ADJACENT_FACES_VECTOR_H

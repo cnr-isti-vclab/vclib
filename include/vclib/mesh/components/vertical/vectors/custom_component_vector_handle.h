@@ -20,11 +20,13 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef CUSTOM_COMPONENT_VECTOR_HANDLE_H
-#define CUSTOM_COMPONENT_VECTOR_HANDLE_H
+#ifndef VCL_MESH_CUSTOM_COMPONENT_VECTOR_HANDLE_H
+#define VCL_MESH_CUSTOM_COMPONENT_VECTOR_HANDLE_H
 
 #include <any>
 #include <vector>
+
+#include <vclib/misc/types.h>
 
 namespace vcl {
 
@@ -68,4 +70,4 @@ using ConstCustomComponentVectorHandle = CustomComponentVectorHandle<const T>;
 
 #include "custom_component_vector_handle.cpp"
 
-#endif // CUSTOM_COMPONENT_VECTOR_HANDLE_H
+#endif // VCL_MESH_CUSTOM_COMPONENT_VECTOR_HANDLE_H

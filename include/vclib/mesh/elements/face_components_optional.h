@@ -72,16 +72,6 @@ bool constexpr hasOptionalColor()
 	return comp::hasOptionalColor<FaceType>();
 }
 
-/* Port OptionalInfo class into face namespace */
-template<typename FaceType>
-using OptionalInfo = comp::OptionalInfo<FaceType>;
-
-template<typename FaceType>
-bool constexpr hasOptionalInfo()
-{
-	return comp::hasOptionalInfo<FaceType>();
-}
-
 /* Port OptionalMark class into face namespace */
 template<typename FaceType>
 using OptionalMark = comp::OptionalMark<FaceType>;
@@ -185,6 +175,16 @@ template<typename FaceType>
 bool constexpr hasCustomComponents()
 {
 	return comp::hasCustomComponents<FaceType>();
+}
+
+/* Port VerticalInfo class into face namespace */
+template<typename FaceType>
+using VerticalInfo = comp::VerticalInfo<FaceType>;
+
+template<typename FaceType>
+bool constexpr hasVerticalInfo()
+{
+	return comp::hasVerticalInfo<FaceType>();
 }
 
 } // namespace vcl::face

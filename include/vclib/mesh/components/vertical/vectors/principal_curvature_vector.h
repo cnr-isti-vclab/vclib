@@ -20,43 +20,46 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_MARK_VECTOR_H
-#define VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_MARK_VECTOR_H
+#ifndef VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_VECTOR_H
+#define VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_VECTOR_H
 
-#include "../optional/optional_mark.h"
+#include "../../detection/principal_curvature_detection.h"
 
-#include "optional_generic_vector.h"
+#include "generic_component_vector.h"
 
 namespace vcl::internal {
 
 template<typename, typename = void>
-class OptionalMarkVector
+class PrincipalCurvatureVector
 {
 public:
 	void clear() {}
-	void resize(uint) {}
 	void reserve(uint) {}
+	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
 };
 
 template<typename T>
-class OptionalMarkVector<T, std::enable_if_t<comp::hasOptionalMark<T>()>> :
-		private OptionalGenericVector<int>
+class PrincipalCurvatureVector<
+	T,
+	std::enable_if_t<comp::hasOptionalPrincipalCurvature<T>()>> :
+		private GenericComponentVector<typename T::PrincipalCurvatureType>
 {
-	using Base = OptionalGenericVector<int>;
+	using PrincipalCurvatureType = typename T::PrincipalCurvatureType;
+	using Base                   = GenericComponentVector<PrincipalCurvatureType>;
 
 public:
 	using Base::clear;
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool       isMarkEnabled() const { return Base::isEnabled(); };
-	void       enableMark(uint size) { Base::enable(size); }
-	void       disableMark() { Base::disable(); }
-	int&       mark(uint i) { return Base::at(i); }
-	const int& mark(uint i) const { return Base::at(i); }
+	bool                    isPrincipalCurvatureEnabled() const { return Base::isEnabled(); };
+	void                    enablePrincipalCurvature(uint size) { Base::enable(size); }
+	void                    disablePrincipalCurvature() { Base::disable(); }
+	PrincipalCurvatureType& principalCurvature(uint i) { return Base::at(i); }
+	const PrincipalCurvatureType& principalCurvature(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_COMPONENTS_VECTOR_OPTIONAL_MARK_VECTOR_H
+#endif // VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_VECTOR_H

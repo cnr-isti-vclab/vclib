@@ -782,7 +782,7 @@ void vcl::mesh::EdgeContainer<T>::clearEdges()
 {
 	Base::vec.clear();
 	en = 0;
-	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		Base::optionalVec.clear();
 	}
 }
@@ -794,7 +794,7 @@ uint EdgeContainer<T>::addEdge()
 	Base::vec.push_back(EdgeType());
 	T* newB = Base::vec.data();
 	++en;
-	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
@@ -818,7 +818,7 @@ uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges)
 	Base::vec.resize(Base::vec.size() + nEdges);
 	T* newB = Base::vec.data();
 	en += nEdges;
-	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 		for (uint i = baseId; i < Base::vec.size(); ++i) {
 			setContainerPointer(Base::vec[i]);
@@ -834,7 +834,7 @@ void EdgeContainer<T>::reserveEdges(uint size)
 	T* oldB = Base::vec.data();
 	Base::vec.reserve(size);
 	T* newB = Base::vec.data();
-	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		Base::optionalVec.reserve(size);
 	}
 	updateAfterAllocation(oldB, newB);
@@ -869,7 +869,7 @@ std::vector<int> vcl::mesh::EdgeContainer<T>::compactEdges()
 	k++;
 	Base::vec.resize(k);
 	T* base = Base::vec.data();
-	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		Base::optionalVec.compact(newIndices);
 	}
 	updateEdgeReferencesAfterCompact(base, newIndices);
@@ -887,13 +887,13 @@ void EdgeContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
 
 /**
  * @brief After a reallocation, it is needed always to update the container pointers of all the
- * elements, because the assignment operator of the OptionalInfo component (which stores the pointer
+ * elements, because the assignment operator of the VerticalInfo component (which stores the pointer
  * of the container) does not copy the container pointer for security reasons.
  */
 template<typename T>
 void EdgeContainer<T>::updateContainerPointers()
 {
-	if constexpr (edge::hasOptionalInfo<EdgeType>()) {
+	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		// all the edges must point to the right container - also the deleted ones
 		for (EdgeType& f : edges(false)) {
 			setContainerPointer(f);
