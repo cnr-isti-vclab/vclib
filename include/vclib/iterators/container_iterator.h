@@ -23,6 +23,7 @@
 #ifndef VCL_ITERATORS_CONTAINER_ITERATOR_H
 #define VCL_ITERATORS_CONTAINER_ITERATOR_H
 
+#include <cstddef>
 #include <vector>
 
 namespace vcl {
