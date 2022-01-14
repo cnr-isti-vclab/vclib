@@ -23,11 +23,12 @@
 #ifndef VCL_MESH_VERTICAL_COMPONENTS_VECTOR_H
 #define VCL_MESH_VERTICAL_COMPONENTS_VECTOR_H
 
-#include "custom_components_vector.h"
+
 #include "adjacent_edges_vector.h"
 #include "adjacent_faces_vector.h"
 #include "adjacent_vertices_vector.h"
 #include "color_vector.h"
+#include "custom_components_vector.h"
 #include "mark_vector.h"
 #include "normal_vector.h"
 #include "principal_curvature_vector.h"
@@ -38,82 +39,42 @@
 
 namespace vcl::internal {
 
-template<typename T>
-class VerticalComponentsVector :
-		public AdjacentEdgesVector<T>,
-		public AdjacentFacesVector<T>,
-		public AdjacentVerticesVector<T>,
-		public ColorVector<T>,
-		public MarkVector<T>,
-		public NormalVector<T>,
-		public PrincipalCurvatureVector<T>,
-		public ScalarVector<T>,
-		public TexCoordVector<T>,
-		public WedgeColorsVector<T>,
-		public WedgeTexCoordsVector<T>,
-		public CustomComponentsVector<T>
+/**
+ * @brief Helper class that allows to call the same member function to all the bases of the
+ * class, automatically.
+ *
+ * Based from the tutorial:
+ * https://devblogs.microsoft.com/oldnewthing/20210114-00/?p=104714
+ */
+template<typename... bases>
+class VerticalComponentsAggregator : public bases...
 {
 public:
-	void clear()
-	{
-		AdjacentEdgesVector<T>::clear();
-		AdjacentFacesVector<T>::clear();
-		AdjacentVerticesVector<T>::clear();
-		ColorVector<T>::clear();
-		MarkVector<T>::clear();
-		NormalVector<T>::clear();
-		PrincipalCurvatureVector<T>::clear();
-		ScalarVector<T>::clear();
-		TexCoordVector<T>::clear();
-		WedgeColorsVector<T>::clear();
-		WedgeTexCoordsVector<T>::clear();
-		CustomComponentsVector<T>::clear();
-	}
-	void resize(uint size)
-	{
-		AdjacentEdgesVector<T>::resize(size);
-		AdjacentFacesVector<T>::resize(size);
-		AdjacentVerticesVector<T>::resize(size);
-		ColorVector<T>::resize(size);
-		MarkVector<T>::resize(size);
-		NormalVector<T>::resize(size);
-		PrincipalCurvatureVector<T>::resize(size);
-		ScalarVector<T>::resize(size);
-		TexCoordVector<T>::resize(size);
-		WedgeColorsVector<T>::resize(size);
-		WedgeTexCoordsVector<T>::resize(size);
-		CustomComponentsVector<T>::resize(size);
-	}
-	void reserve(uint size)
-	{
-		AdjacentEdgesVector<T>::reserve(size);
-		AdjacentFacesVector<T>::reserve(size);
-		AdjacentVerticesVector<T>::reserve(size);
-		ColorVector<T>::reserve(size);
-		MarkVector<T>::reserve(size);
-		NormalVector<T>::reserve(size);
-		PrincipalCurvatureVector<T>::reserve(size);
-		ScalarVector<T>::reserve(size);
-		TexCoordVector<T>::reserve(size);
-		WedgeColorsVector<T>::reserve(size);
-		WedgeTexCoordsVector<T>::reserve(size);
-		CustomComponentsVector<T>::reserve(size);
-	}
-	void compact(const std::vector<int>& newIndices)
-	{
-		AdjacentEdgesVector<T>::compact(newIndices);
-		AdjacentFacesVector<T>::compact(newIndices);
-		AdjacentVerticesVector<T>::compact(newIndices);
-		ColorVector<T>::compact(newIndices);
-		MarkVector<T>::compact(newIndices);
-		NormalVector<T>::compact(newIndices);
-		PrincipalCurvatureVector<T>::compact(newIndices);
-		ScalarVector<T>::compact(newIndices);
-		TexCoordVector<T>::compact(newIndices);
-		WedgeColorsVector<T>::compact(newIndices);
-		WedgeTexCoordsVector<T>::compact(newIndices);
-		CustomComponentsVector<T>::compact(newIndices);
-	}
+	void clear() { (bases::clear(), ...); }
+
+	void resize(uint size) { (bases::resize(size), ...); }
+
+	void reserve(uint size) { (bases::reserve(size), ...); }
+
+	void compact(const std::vector<int>& newIndices) { (bases::compact(newIndices), ...); }
+};
+
+template<typename T>
+class VerticalComponentsVector :
+		public VerticalComponentsAggregator<
+			AdjacentEdgesVector<T>,
+			AdjacentFacesVector<T>,
+			AdjacentVerticesVector<T>,
+			ColorVector<T>,
+			MarkVector<T>,
+			NormalVector<T>,
+			PrincipalCurvatureVector<T>,
+			ScalarVector<T>,
+			TexCoordVector<T>,
+			WedgeColorsVector<T>,
+			WedgeTexCoordsVector<T>,
+			CustomComponentsVector<T>>
+{
 };
 
 } // namespace vcl::internal

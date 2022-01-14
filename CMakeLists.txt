@@ -169,9 +169,9 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/vectors/principal_curvature_vector.h
 	include/vclib/mesh/components/vertical/vectors/scalar_vector.h
 	include/vclib/mesh/components/vertical/vectors/tex_coord_vector.h
+	include/vclib/mesh/components/vertical/vectors/vertical_components_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_colors_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_tex_coords_vector.h
-	include/vclib/mesh/components/vertical/vectors/vertical_components_vector.h
 	include/vclib/mesh/container/containers.h
 	include/vclib/mesh/container/containers_detection.h
 	include/vclib/mesh/container/edge_container.h
