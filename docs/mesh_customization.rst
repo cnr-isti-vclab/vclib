@@ -37,11 +37,11 @@ Now let's define our custom Point Cloud Mesh, that we are going to call ``MyPoin
 
    class MyPointCloud :
        public vcl::Mesh<
-           MyVertex,
+           vcl::mesh::VertexContainer<MyVertex>,
            vcl::mesh::BoundingBox3d,
            vcl::mesh::TransformMatrix>
    {};
 
-The Mesh definition will automatically recognize that ``MyVertex`` is ``vcl::Vertex``, and will
-define a :ref:`vertex_container`. The other template types are not vcl Elements, therefore are
-treated as Components, in the same way of the Vertex Components in ``MyVertex`` class.
+The template types of the Mesh are treated as Components, in the same way of the Vertex Components in ``MyVertex`` class.
+Therefore, the Mesh type ``MyPointCloud`` will be composed of a :ref:`vertex_container` of the previous defined ``MyVertex``
+type, plus a bounding box and a transform matrix.

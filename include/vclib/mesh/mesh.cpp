@@ -40,8 +40,7 @@ Mesh<Args...>::Mesh()
  */
 template<typename... Args>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
-		mesh::Argument<Args>(
-			oth)... // call auto copy constructors for all the container elements and components
+		Args(oth)... // call auto copy constructors for all the container elements and components
 {
 	// update all the optional container references
 	updateAllOptionalContainerReferences();
@@ -625,7 +624,7 @@ template<typename... Args>
 template<typename OtherMeshType>
 void Mesh<Args...>::importFrom(const OtherMeshType& m)
 {
-	(mesh::Argument<Args>::importFrom(m), ...);
+	(Args::importFrom(m), ...);
 
 	// after importing ordinary components, I need to convert the references between containers
 	// to each importElReferencesFrom member function of a container, I need to pass:
@@ -924,7 +923,7 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	// using pack expansion: swap will be called for each of the containers (or components!) that
 	// compose the Mesh
 	using std::swap;
-	(swap((vcl::mesh::Argument<A>&) m1, (vcl::mesh::Argument<A>&) m2), ...);
+	(swap((A&) m1, (A&) m2), ...);
 
 	// set to all the elements, the new pointer of the optional containers
 	m1.updateAllOptionalContainerReferences();

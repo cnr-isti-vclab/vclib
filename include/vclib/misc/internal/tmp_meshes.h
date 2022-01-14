@@ -41,7 +41,10 @@ class Face : public vcl::Face<vcl::face::PolygonBitFlags, vcl::face::PolygonVert
 
 } // namespace tmpSimplePolyMesh
 
-class TMPSimplePolyMesh : public vcl::Mesh<tmpSimplePolyMesh::Vertex, tmpSimplePolyMesh::Face>
+class TMPSimplePolyMesh :
+		public vcl::Mesh<
+			mesh::VertexContainer<tmpSimplePolyMesh::Vertex>,
+			mesh::FaceContainer<tmpSimplePolyMesh::Face>>
 {
 };
 

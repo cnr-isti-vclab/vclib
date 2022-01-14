@@ -102,7 +102,6 @@ set(HEADERS
 	include/vclib/math/matrix.h
 	include/vclib/math/perlin_noise.h
 	include/vclib/mesh/mesh.h
-	include/vclib/mesh/mesh_argument.h
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h

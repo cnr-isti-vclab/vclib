@@ -65,8 +65,8 @@ namespace vcl {
 
 class PolyMesh :
 		public vcl::Mesh<
-			polymesh::Vertex,
-			polymesh::Face,
+			mesh::VertexContainer<polymesh::Vertex>,
+			mesh::FaceContainer<polymesh::Face>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
 			mesh::TextureFileNames,

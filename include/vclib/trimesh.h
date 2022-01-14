@@ -66,8 +66,8 @@ namespace vcl {
 
 class TriMesh :
 		public vcl::Mesh<
-			trimesh::Vertex,
-			trimesh::Face,
+			mesh::VertexContainer<trimesh::Vertex>,
+			mesh::FaceContainer<trimesh::Face>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
 			mesh::TextureFileNames,

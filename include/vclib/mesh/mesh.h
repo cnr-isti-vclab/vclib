@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_MESH_H
 #define VCL_MESH_MESH_H
 
-#include "mesh_argument.h"
+#include "container/containers.h"
 #include "mesh_components.h"
 
 namespace vcl {
@@ -42,7 +42,7 @@ namespace vcl {
  * that compose a specific Mesh definition.
  */
 template<typename... Args>
-class Mesh : public mesh::Argument<Args>...
+class Mesh : public Args...
 {
 public:
 	Mesh();

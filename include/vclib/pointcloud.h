@@ -49,7 +49,7 @@ namespace vcl {
 
 class PointCloud :
 		public vcl::Mesh<
-			pointcloud::Vertex,
+			mesh::VertexContainer<pointcloud::Vertex>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
 			mesh::TextureFileNames,

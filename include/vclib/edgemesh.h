@@ -64,8 +64,8 @@ namespace vcl {
 
 class EdgeMesh :
 		public vcl::Mesh<
-			edgemesh::Vertex,
-			edgemesh::Edge,
+			mesh::VertexContainer<edgemesh::Vertex>,
+			mesh::EdgeContainer<edgemesh::Edge>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
 			mesh::TextureFileNames,
