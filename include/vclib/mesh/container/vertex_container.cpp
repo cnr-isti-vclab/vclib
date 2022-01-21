@@ -45,7 +45,7 @@ VertexContainer<T>::VertexContainer()
 template<typename T>
 const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i) const
 {
-	return Base::vec[i];
+	return Base::element(i);
 }
 
 /**
@@ -61,7 +61,7 @@ const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i
 template<typename T>
 typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i)
 {
-	return Base::vec[i];
+	return Base::element(i);
 }
 
 /**
@@ -76,7 +76,7 @@ typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i)
 template<typename T>
 uint VertexContainer<T>::vertexNumber() const
 {
-	return vn;
+	return Base::elementNumber();
 }
 
 /**
@@ -91,7 +91,7 @@ uint VertexContainer<T>::vertexNumber() const
 template<typename T>
 uint VertexContainer<T>::vertexContainerSize() const
 {
-	return Base::vec.size();
+	return Base::elementContainerSize();
 }
 
 /**
@@ -103,7 +103,7 @@ uint VertexContainer<T>::vertexContainerSize() const
 template<typename T>
 uint vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
 {
-	return vertexContainerSize() - vertexNumber();
+	return Base::deletedElementNumber();
 }
 
 /**
@@ -119,8 +119,7 @@ uint vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
 template<typename T>
 void VertexContainer<T>::deleteVertex(uint i)
 {
-	Base::vec[i].setDeleted();
-	--vn;
+	Base::deleteElement(i);
 }
 
 /**
@@ -137,7 +136,7 @@ void VertexContainer<T>::deleteVertex(uint i)
 template<typename T>
 void VertexContainer<T>::deleteVertex(const VertexType* v)
 {
-	deleteVertex(index(v));
+	Base::deleteElement(v);
 }
 
 /**
@@ -155,16 +154,7 @@ void VertexContainer<T>::deleteVertex(const VertexType* v)
 template<typename T>
 uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint i) const
 {
-	if (Base::vec.size() == vn)
-		return i;
-	else {
-		uint cnt = 0;
-		for (uint ii = 0; ii < i; ii++) {
-			if (!Base::vec[ii].isDeleted())
-				++cnt;
-		}
-		return cnt;
-	}
+	return Base::elementIndexIfCompact(i);
 }
 
 /**
@@ -180,18 +170,7 @@ uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint i) const
 template<typename T>
 std::vector<int> VertexContainer<T>::vertexCompactIndices() const
 {
-	std::vector<int> newIndices(Base::vec.size());
-	uint             k = 0;
-	for (uint i = 0; i < Base::vec.size(); ++i) {
-		if (!Base::vec[i].isDeleted()) {
-			newIndices[i] = k;
-			k++;
-		}
-		else {
-			newIndices[i] = -1;
-		}
-	}
-	return newIndices;
+	return Base::elementCompactIndices();
 }
 
 /**
@@ -215,7 +194,7 @@ typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexBegin(bool
 			++it;
 		}
 	}
-	return VertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vn);
+	return VertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vertexNumber());
 }
 
 /**
@@ -250,7 +229,7 @@ VertexContainer<T>::vertexBegin(bool jumpDeleted) const
 			++it;
 		}
 	}
-	return ConstVertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vn);
+	return ConstVertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vertexNumber());
 }
 
 /**
@@ -288,7 +267,7 @@ typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bo
 {
 	return VertexRangeIterator(
 		*this,
-		jumpDeleted && Base::vec.size() != vn,
+		jumpDeleted && Base::vec.size() != vertexNumber(),
 		&VertexContainer::vertexBegin,
 		&VertexContainer::vertexEnd);
 }
@@ -953,18 +932,13 @@ VCL_ENABLE_IF(
 template<typename T>
 void VertexContainer<T>::clearVertices()
 {
-	Base::vec.clear();
-	vn = 0;
-	if constexpr (vert::hasVerticalInfo<VertexType>()) {
-		Base::optionalVec.clear();
-	}
+	Base::clearElements();
 }
 
 template<typename T>
 uint VertexContainer<T>::index(const VertexType* v) const
 {
-	assert(!Base::vec.empty() && v >= Base::vec.data() && v <= &Base::vec.back());
-	return v - Base::vec.data();
+	return Base::index(v);
 }
 
 template<typename T>
@@ -973,7 +947,7 @@ uint VertexContainer<T>::addVertex()
 	T* oldB = Base::vec.data();
 	Base::vec.push_back(VertexType());
 	T* newB = Base::vec.data();
-	++vn;
+	Base::en++;
 	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
@@ -997,7 +971,7 @@ uint VertexContainer<T>::addVertices(uint nVertices)
 	T*   oldB   = Base::vec.data();
 	Base::vec.resize(Base::vec.size() + nVertices);
 	T* newB = Base::vec.data();
-	vn += nVertices;
+	Base::en += nVertices;
 	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 		for (uint i = baseId; i < Base::vec.size(); ++i) {

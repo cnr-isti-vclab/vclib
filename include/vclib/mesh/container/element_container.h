@@ -35,13 +35,36 @@ class ElementContainer
 	friend class comp::VerticalInfo<T>;
 
 public:
-	ElementContainer() {};
+	ElementContainer();
+
+	const T &element(uint i) const;
+	T &element(uint i);
+
+	uint elementNumber() const;
+	uint elementContainerSize() const;
+	uint deletedElementNumber() const;
+
+	void deleteElement(uint i);
+	void deleteElement(const T *e);
+
+	uint elementIndexIfCompact(uint i) const;
+	std::vector<int> elementCompactIndices() const;
 
 protected:
+	uint index(const T *e) const;
+	void clearElements();
+
+	/**
+	 * @brief en: the number of elements in the container. Could be different from elements.size()
+	 * due to elements marked as deleted into the container.
+	 */
+	uint en;
 	std::vector<T> vec;
 	internal::VerticalComponentsVector<T> optionalVec;
 };
 
 }
+
+#include "element_container.cpp"
 
 #endif // VCL_MESH_CONTAINER_ELEMENT_CONTAINER_H

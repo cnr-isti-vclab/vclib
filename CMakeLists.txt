@@ -302,6 +302,7 @@ set(SOURCES
 	include/vclib/mesh/components/vertical/vectors/custom_components_vector.cpp
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.cpp
 	include/vclib/mesh/container/edge_container.cpp
+	include/vclib/mesh/container/element_container.cpp
 	include/vclib/mesh/container/face_container.cpp
 	include/vclib/mesh/container/vertex_container.cpp
 	include/vclib/mesh/elements/edge.cpp

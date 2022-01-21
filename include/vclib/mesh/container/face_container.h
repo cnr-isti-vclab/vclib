@@ -262,7 +262,7 @@ protected:
 	 * @brief fn: the number of faces in the container. Could be different from the container size
 	 * due to faces marked as deleted into the container.
 	 */
-	uint fn = 0;
+	//uint fn = 0;
 
 	uint index(const FaceType* f) const;
 

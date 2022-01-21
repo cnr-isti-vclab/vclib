@@ -32,6 +32,9 @@ namespace vcl::mesh {
 template<typename>
 class EdgeContainer;
 
+template<typename>
+class ElementContainer;
+
 } // namespace vcl::mesh
 
 namespace vcl {
@@ -46,6 +49,9 @@ class Edge : public EdgeTriggerer, public Args...
 {
 	template<typename>
 	friend class mesh::EdgeContainer;
+
+	template<typename>
+	friend class mesh::ElementContainer;
 
 public:
 	Edge();

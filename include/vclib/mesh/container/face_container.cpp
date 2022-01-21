@@ -45,7 +45,7 @@ FaceContainer<T>::FaceContainer()
 template<typename T>
 const typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i) const
 {
-	return Base::vec[i];
+	return Base::element(i);
 }
 
 /**
@@ -61,7 +61,7 @@ const typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i) const
 template<typename T>
 typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i)
 {
-	return Base::vec[i];
+	return Base::element(i);
 }
 
 /**
@@ -75,7 +75,7 @@ typename FaceContainer<T>::FaceType& FaceContainer<T>::face(uint i)
 template<typename T>
 uint FaceContainer<T>::faceNumber() const
 {
-	return fn;
+	return Base::elementNumber();
 }
 
 /**
@@ -89,7 +89,7 @@ uint FaceContainer<T>::faceNumber() const
 template<typename T>
 uint FaceContainer<T>::faceContainerSize() const
 {
-	return Base::vec.size();
+	return Base::elementContainerSize();
 }
 
 /**
@@ -101,7 +101,7 @@ uint FaceContainer<T>::faceContainerSize() const
 template<typename T>
 uint FaceContainer<T>::deletedFaceNumber() const
 {
-	return faceContainerSize() - faceNumber();
+	return Base::deletedElementNumber();
 }
 
 /**
@@ -117,8 +117,7 @@ uint FaceContainer<T>::deletedFaceNumber() const
 template<typename T>
 void FaceContainer<T>::deleteFace(uint i)
 {
-	Base::vec[i].setDeleted();
-	fn--;
+	Base::deleteElement(i);
 }
 
 /**
@@ -134,7 +133,7 @@ void FaceContainer<T>::deleteFace(uint i)
 template<typename T>
 void FaceContainer<T>::deleteFace(const FaceType* f)
 {
-	deleteFace(index(f));
+	Base::deleteElement(f);
 }
 
 /**
@@ -152,16 +151,7 @@ void FaceContainer<T>::deleteFace(const FaceType* f)
 template<typename T>
 uint FaceContainer<T>::faceIndexIfCompact(uint i) const
 {
-	if (Base::vec.size() == fn)
-		return i;
-	else {
-		uint cnt = 0;
-		for (uint ii = 0; ii < i; ii++) {
-			if (!Base::vec[ii].isDeleted())
-				++cnt;
-		}
-		return cnt;
-	}
+	return Base::elementIndexIfCompact(i);
 }
 
 /**
@@ -177,18 +167,7 @@ uint FaceContainer<T>::faceIndexIfCompact(uint i) const
 template<typename T>
 std::vector<int> FaceContainer<T>::faceCompactIndices() const
 {
-	std::vector<int> newIndices(Base::vec.size());
-	uint             k = 0;
-	for (uint i = 0; i < Base::vec.size(); ++i) {
-		if (!Base::vec[i].isDeleted()) {
-			newIndices[i] = k;
-			k++;
-		}
-		else {
-			newIndices[i] = -1;
-		}
-	}
-	return newIndices;
+	return Base::elementCompactIndices();
 }
 
 /**
@@ -211,7 +190,7 @@ typename FaceContainer<T>::FaceIterator FaceContainer<T>::faceBegin(bool jumpDel
 			++it;
 		}
 	}
-	return FaceIterator(it, Base::vec, jumpDeleted && Base::vec.size() != fn);
+	return FaceIterator(it, Base::vec, jumpDeleted && Base::vec.size() != faceNumber());
 }
 
 /**
@@ -244,7 +223,7 @@ typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceBegin(bool ju
 			++it;
 		}
 	}
-	return ConstFaceIterator(it, Base::vec, jumpDeleted && Base::vec.size() != fn);
+	return ConstFaceIterator(it, Base::vec, jumpDeleted && Base::vec.size() != faceNumber());
 }
 
 /**
@@ -281,7 +260,7 @@ typename FaceContainer<T>::FaceRangeIterator FaceContainer<T>::faces(bool jumpDe
 {
 	return FaceRangeIterator(
 		*this,
-		jumpDeleted && Base::vec.size() != fn,
+		jumpDeleted && Base::vec.size() != faceNumber(),
 		&FaceContainer::faceBegin,
 		&FaceContainer::faceEnd);
 }
@@ -310,7 +289,7 @@ typename FaceContainer<T>::ConstFaceRangeIterator FaceContainer<T>::faces(bool j
 {
 	return ConstFaceRangeIterator(
 		*this,
-		jumpDeleted && Base::vec.size() != fn,
+		jumpDeleted && Base::vec.size() != faceNumber(),
 		&FaceContainer::faceBegin,
 		&FaceContainer::faceEnd);
 }
@@ -987,18 +966,13 @@ VCL_ENABLE_IF(
 template<typename T>
 uint FaceContainer<T>::index(const FaceType* f) const
 {
-	assert(!Base::vec.empty() && f >= Base::vec.data() && f <= &Base::vec.back());
-	return f - Base::vec.data();
+	return Base::index(f);
 }
 
 template<typename T>
 void vcl::mesh::FaceContainer<T>::clearFaces()
 {
-	Base::vec.clear();
-	fn = 0;
-	if constexpr (face::hasVerticalInfo<FaceType>()) {
-		Base::optionalVec.clear();
-	}
+	Base::clearElements();
 }
 
 template<typename T>
@@ -1007,7 +981,7 @@ uint FaceContainer<T>::addFace()
 	T* oldB = Base::vec.data();
 	Base::vec.push_back(FaceType());
 	T* newB = Base::vec.data();
-	++fn;
+	Base::en++;
 	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
@@ -1031,7 +1005,7 @@ uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces)
 	T*   oldB   = Base::vec.data();
 	Base::vec.resize(Base::vec.size() + nFaces);
 	T* newB = Base::vec.data();
-	fn += nFaces;
+	Base::en += nFaces;
 	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 		for (uint i = baseId; i < Base::vec.size(); ++i) {

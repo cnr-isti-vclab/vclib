@@ -32,6 +32,9 @@ namespace vcl::mesh {
 template<typename>
 class VertexContainer;
 
+template<typename>
+class ElementContainer;
+
 } // namespace vcl::mesh
 
 namespace vcl {
@@ -46,6 +49,9 @@ class Vertex : public VertexTriggerer, public Args...
 {
 	template<typename>
 	friend class mesh::VertexContainer;
+
+	template<typename>
+	friend class mesh::ElementContainer;
 
 public:
 	Vertex();

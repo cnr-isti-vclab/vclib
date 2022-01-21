@@ -240,12 +240,6 @@ public:
 	getPerVertexCustomComponentVectorHandle(const std::string& name) const;
 
 protected:
-	/**
-	 * @brief vn: the number of vertices in the container. Could be different from vertices.size()
-	 * due to vertices marked as deleted into the container.
-	 */
-	uint vn = 0;
-
 	uint index(const VertexType* v) const;
 
 	void clearVertices();

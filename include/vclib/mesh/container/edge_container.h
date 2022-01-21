@@ -181,12 +181,6 @@ public:
 	getPerEdgeCustomComponentVectorHandle(const std::string& name) const;
 
 protected:
-	/**
-	 * @brief en: the number of edges in the container. Could be different from the container size
-	 * due to edges marked as deleted into the container.
-	 */
-	uint en = 0;
-
 	uint index(const EdgeType* e) const;
 
 	void clearEdges();

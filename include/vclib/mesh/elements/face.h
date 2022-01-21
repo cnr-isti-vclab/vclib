@@ -32,6 +32,9 @@ namespace vcl::mesh {
 template<typename>
 class FaceContainer;
 
+template<typename>
+class ElementContainer;
+
 } // namespace vcl::mesh
 
 namespace vcl {
@@ -46,6 +49,9 @@ class Face : public FaceTriggerer, public Args...
 {
 	template<typename>
 	friend class mesh::FaceContainer;
+
+	template<typename>
+	friend class mesh::ElementContainer;
 
 	// Vertex references component of the Face
 	using VRefs = typename Face::VertexReferences;

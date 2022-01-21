@@ -45,7 +45,7 @@ EdgeContainer<T>::EdgeContainer()
 template<typename T>
 const typename EdgeContainer<T>::EdgeType& EdgeContainer<T>::edge(uint i) const
 {
-	return Base::vec[i];
+	return Base::element(i);
 }
 
 /**
@@ -61,7 +61,7 @@ const typename EdgeContainer<T>::EdgeType& EdgeContainer<T>::edge(uint i) const
 template<typename T>
 typename EdgeContainer<T>::EdgeType& EdgeContainer<T>::edge(uint i)
 {
-	return Base::vec[i];
+	return Base::element(i);
 }
 
 /**
@@ -75,7 +75,7 @@ typename EdgeContainer<T>::EdgeType& EdgeContainer<T>::edge(uint i)
 template<typename T>
 uint EdgeContainer<T>::edgeNumber() const
 {
-	return en;
+	return Base::elementNumber();
 }
 
 /**
@@ -89,7 +89,7 @@ uint EdgeContainer<T>::edgeNumber() const
 template<typename T>
 uint EdgeContainer<T>::edgeContainerSize() const
 {
-	return Base::vec.size();
+	return Base::elementContainerSize();
 }
 
 /**
@@ -101,7 +101,7 @@ uint EdgeContainer<T>::edgeContainerSize() const
 template<typename T>
 uint EdgeContainer<T>::deletedEdgeNumber() const
 {
-	return edgeContainerSize() - edgeNumber();
+	return Base::deletedElementNumber();
 }
 
 /**
@@ -117,8 +117,7 @@ uint EdgeContainer<T>::deletedEdgeNumber() const
 template<typename T>
 void EdgeContainer<T>::deleteEdge(uint i)
 {
-	Base::vec[i].setDeleted();
-	en--;
+	Base::deleteElement(i);
 }
 
 /**
@@ -132,9 +131,9 @@ void EdgeContainer<T>::deleteEdge(uint i)
  * @param[in] f: the pointer of the edge that will be marked as deleted.
  */
 template<typename T>
-void EdgeContainer<T>::deleteEdge(const EdgeType* f)
+void EdgeContainer<T>::deleteEdge(const EdgeType* e)
 {
-	deleteEdge(index(f));
+	Base::deleteElement(e);
 }
 
 /**
@@ -152,16 +151,7 @@ void EdgeContainer<T>::deleteEdge(const EdgeType* f)
 template<typename T>
 uint EdgeContainer<T>::edgeIndexIfCompact(uint i) const
 {
-	if (Base::vec.size() == en)
-		return i;
-	else {
-		uint cnt = 0;
-		for (uint ii = 0; ii < i; ii++) {
-			if (!Base::vec[ii].isDeleted())
-				++cnt;
-		}
-		return cnt;
-	}
+	return Base::elementIndexIfCompact(i);
 }
 
 /**
@@ -177,18 +167,7 @@ uint EdgeContainer<T>::edgeIndexIfCompact(uint i) const
 template<typename T>
 std::vector<int> EdgeContainer<T>::edgeCompactIndices() const
 {
-	std::vector<int> newIndices(Base::vec.size());
-	uint             k = 0;
-	for (uint i = 0; i < Base::vec.size(); ++i) {
-		if (!Base::vec[i].isDeleted()) {
-			newIndices[i] = k;
-			k++;
-		}
-		else {
-			newIndices[i] = -1;
-		}
-	}
-	return newIndices;
+	return Base::elementCompactIndices();
 }
 
 /**
@@ -211,7 +190,7 @@ typename EdgeContainer<T>::EdgeIterator EdgeContainer<T>::edgeBegin(bool jumpDel
 			++it;
 		}
 	}
-	return EdgeIterator(it, Base::vec, jumpDeleted && Base::vec.size() != en);
+	return EdgeIterator(it, Base::vec, jumpDeleted && Base::vec.size() != edgeNumber());
 }
 
 /**
@@ -244,7 +223,7 @@ typename EdgeContainer<T>::ConstEdgeIterator EdgeContainer<T>::edgeBegin(bool ju
 			++it;
 		}
 	}
-	return ConstEdgeIterator(it, Base::vec, jumpDeleted && Base::vec.size() != en);
+	return ConstEdgeIterator(it, Base::vec, jumpDeleted && Base::vec.size() != edgeNumber());
 }
 
 /**
@@ -281,7 +260,7 @@ typename EdgeContainer<T>::EdgeRangeIterator EdgeContainer<T>::edges(bool jumpDe
 {
 	return EdgeRangeIterator(
 		*this,
-		jumpDeleted && Base::vec.size() != en,
+		jumpDeleted && Base::vec.size() != edgeNumber(),
 		&EdgeContainer::edgeBegin,
 		&EdgeContainer::edgeEnd);
 }
@@ -310,7 +289,7 @@ typename EdgeContainer<T>::ConstEdgeRangeIterator EdgeContainer<T>::edges(bool j
 {
 	return ConstEdgeRangeIterator(
 		*this,
-		jumpDeleted && Base::vec.size() != en,
+		jumpDeleted && Base::vec.size() != edgeNumber(),
 		&EdgeContainer::edgeBegin,
 		&EdgeContainer::edgeEnd);
 }
@@ -771,20 +750,15 @@ VCL_ENABLE_IF(
  * @return The index of f.
  */
 template<typename T>
-uint EdgeContainer<T>::index(const EdgeType* f) const
+uint EdgeContainer<T>::index(const EdgeType* e) const
 {
-	assert(!Base::vec.empty() && f >= Base::vec.data() && f <= &Base::vec.back());
-	return f - Base::vec.data();
+	return Base::index(e);
 }
 
 template<typename T>
 void vcl::mesh::EdgeContainer<T>::clearEdges()
 {
-	Base::vec.clear();
-	en = 0;
-	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
-		Base::optionalVec.clear();
-	}
+	Base::clearElements();
 }
 
 template<typename T>
@@ -793,7 +767,7 @@ uint EdgeContainer<T>::addEdge()
 	T* oldB = Base::vec.data();
 	Base::vec.push_back(EdgeType());
 	T* newB = Base::vec.data();
-	++en;
+	Base::en++;
 	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
@@ -817,7 +791,7 @@ uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges)
 	T*   oldB   = Base::vec.data();
 	Base::vec.resize(Base::vec.size() + nEdges);
 	T* newB = Base::vec.data();
-	en += nEdges;
+	Base::en += nEdges;
 	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 		for (uint i = baseId; i < Base::vec.size(); ++i) {
