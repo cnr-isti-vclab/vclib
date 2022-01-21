@@ -182,15 +182,7 @@ std::vector<int> EdgeContainer<T>::edgeCompactIndices() const
 template<typename T>
 typename EdgeContainer<T>::EdgeIterator EdgeContainer<T>::edgeBegin(bool jumpDeleted)
 {
-	auto it = Base::vec.begin();
-	if (jumpDeleted) {
-		// if the user asked to jump the deleted edges, and the first edge is deleted, we need
-		// to move forward until we find the first non-deleted edge
-		while (it != Base::vec.end() && it->isDeleted()) {
-			++it;
-		}
-	}
-	return EdgeIterator(it, Base::vec, jumpDeleted && Base::vec.size() != edgeNumber());
+	return Base::elementBegin(jumpDeleted);
 }
 
 /**
@@ -200,7 +192,7 @@ typename EdgeContainer<T>::EdgeIterator EdgeContainer<T>::edgeBegin(bool jumpDel
 template<typename T>
 typename EdgeContainer<T>::EdgeIterator EdgeContainer<T>::edgeEnd()
 {
-	return EdgeIterator(Base::vec.end(), Base::vec);
+	return Base::elementEnd();
 }
 
 /**
@@ -215,15 +207,7 @@ typename EdgeContainer<T>::EdgeIterator EdgeContainer<T>::edgeEnd()
 template<typename T>
 typename EdgeContainer<T>::ConstEdgeIterator EdgeContainer<T>::edgeBegin(bool jumpDeleted) const
 {
-	auto it = Base::vec.begin();
-	if (jumpDeleted) {
-		// if the user asked to jump the deleted edges, and the first edge is deleted, we need
-		// to move forward until we find the first non-deleted edge
-		while (it != Base::vec.end() && it->isDeleted()) {
-			++it;
-		}
-	}
-	return ConstEdgeIterator(it, Base::vec, jumpDeleted && Base::vec.size() != edgeNumber());
+	return Base::elementBegin(jumpDeleted);
 }
 
 /**
@@ -233,7 +217,7 @@ typename EdgeContainer<T>::ConstEdgeIterator EdgeContainer<T>::edgeBegin(bool ju
 template<typename T>
 typename EdgeContainer<T>::ConstEdgeIterator EdgeContainer<T>::edgeEnd() const
 {
-	return ConstEdgeIterator(Base::vec.end(), Base::vec);
+	return Base::elementEnd();
 }
 
 /**
@@ -258,11 +242,7 @@ typename EdgeContainer<T>::ConstEdgeIterator EdgeContainer<T>::edgeEnd() const
 template<typename T>
 typename EdgeContainer<T>::EdgeRangeIterator EdgeContainer<T>::edges(bool jumpDeleted)
 {
-	return EdgeRangeIterator(
-		*this,
-		jumpDeleted && Base::vec.size() != edgeNumber(),
-		&EdgeContainer::edgeBegin,
-		&EdgeContainer::edgeEnd);
+	return Base::elements(jumpDeleted);
 }
 
 /**
@@ -287,11 +267,7 @@ typename EdgeContainer<T>::EdgeRangeIterator EdgeContainer<T>::edges(bool jumpDe
 template<typename T>
 typename EdgeContainer<T>::ConstEdgeRangeIterator EdgeContainer<T>::edges(bool jumpDeleted) const
 {
-	return ConstEdgeRangeIterator(
-		*this,
-		jumpDeleted && Base::vec.size() != edgeNumber(),
-		&EdgeContainer::edgeBegin,
-		&EdgeContainer::edgeEnd);
+	return Base::elements(jumpDeleted);
 }
 
 /**

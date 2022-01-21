@@ -24,6 +24,9 @@
 #define VCL_MESH_CONTAINER_ELEMENT_CONTAINER_H
 
 #include <vector>
+
+#include <vclib/iterators/container_iterator.h>
+#include <vclib/iterators/container_range_iterator.h>
 #include "../components/vertical/vertical_info.h"
 #include "../components/vertical/vectors/vertical_components_vector.h"
 
@@ -34,7 +37,15 @@ class ElementContainer
 {
 	friend class comp::VerticalInfo<T>;
 
+	using ElementContainerType = ElementContainer<T>;
+
 public:
+	using ElementIterator      = ContainerIterator<std::vector, T>;
+	using ConstElementIterator = ConstContainerIterator<std::vector, T>;
+	using ElementRangeIterator = ContainerRangeIterator<ElementContainerType, ElementIterator>;
+	using ConstElementRangeIterator =
+		ConstContainerRangeIterator<ElementContainerType, ConstElementIterator>;
+
 	ElementContainer();
 
 	const T &element(uint i) const;
@@ -49,6 +60,13 @@ public:
 
 	uint elementIndexIfCompact(uint i) const;
 	std::vector<int> elementCompactIndices() const;
+
+	ElementIterator           elementBegin(bool jumpDeleted = true);
+	ElementIterator           elementEnd();
+	ConstElementIterator      elementBegin(bool jumpDeleted = true) const;
+	ConstElementIterator      elementEnd() const;
+	ElementRangeIterator      elements(bool jumpDeleted = true);
+	ConstElementRangeIterator elements(bool jumpDeleted = true) const;
 
 protected:
 	uint index(const T *e) const;

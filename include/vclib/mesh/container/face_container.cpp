@@ -182,15 +182,7 @@ std::vector<int> FaceContainer<T>::faceCompactIndices() const
 template<typename T>
 typename FaceContainer<T>::FaceIterator FaceContainer<T>::faceBegin(bool jumpDeleted)
 {
-	auto it = Base::vec.begin();
-	if (jumpDeleted) {
-		// if the user asked to jump the deleted faces, and the first face is deleted, we need
-		// to move forward until we find the first non-deleted face
-		while (it != Base::vec.end() && it->isDeleted()) {
-			++it;
-		}
-	}
-	return FaceIterator(it, Base::vec, jumpDeleted && Base::vec.size() != faceNumber());
+	return Base::elementBegin(jumpDeleted);
 }
 
 /**
@@ -200,7 +192,7 @@ typename FaceContainer<T>::FaceIterator FaceContainer<T>::faceBegin(bool jumpDel
 template<typename T>
 typename FaceContainer<T>::FaceIterator FaceContainer<T>::faceEnd()
 {
-	return FaceIterator(Base::vec.end(), Base::vec);
+	return Base::elementEnd();
 }
 
 /**
@@ -215,15 +207,7 @@ typename FaceContainer<T>::FaceIterator FaceContainer<T>::faceEnd()
 template<typename T>
 typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceBegin(bool jumpDeleted) const
 {
-	auto it = Base::vec.begin();
-	if (jumpDeleted) {
-		// if the user asked to jump the deleted faces, and the first face is deleted, we need
-		// to move forward until we find the first non-deleted face
-		while (it != Base::vec.end() && it->isDeleted()) {
-			++it;
-		}
-	}
-	return ConstFaceIterator(it, Base::vec, jumpDeleted && Base::vec.size() != faceNumber());
+	return Base::elementBegin(jumpDeleted);
 }
 
 /**
@@ -233,7 +217,7 @@ typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceBegin(bool ju
 template<typename T>
 typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceEnd() const
 {
-	return ConstFaceIterator(Base::vec.end(), Base::vec);
+	return Base::elementEnd();
 }
 
 /**
@@ -258,11 +242,7 @@ typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceEnd() const
 template<typename T>
 typename FaceContainer<T>::FaceRangeIterator FaceContainer<T>::faces(bool jumpDeleted)
 {
-	return FaceRangeIterator(
-		*this,
-		jumpDeleted && Base::vec.size() != faceNumber(),
-		&FaceContainer::faceBegin,
-		&FaceContainer::faceEnd);
+	return Base::elements(jumpDeleted);
 }
 
 /**
@@ -287,11 +267,7 @@ typename FaceContainer<T>::FaceRangeIterator FaceContainer<T>::faces(bool jumpDe
 template<typename T>
 typename FaceContainer<T>::ConstFaceRangeIterator FaceContainer<T>::faces(bool jumpDeleted) const
 {
-	return ConstFaceRangeIterator(
-		*this,
-		jumpDeleted && Base::vec.size() != faceNumber(),
-		&FaceContainer::faceBegin,
-		&FaceContainer::faceEnd);
+	return Base::elements(jumpDeleted);
 }
 
 /**

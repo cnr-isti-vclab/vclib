@@ -194,6 +194,130 @@ std::vector<int> ElementContainer<T>::elementCompactIndices() const
 	return newIndices;
 }
 
+/**
+ * @brief Returns an iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted elements of the container. You can change
+ * this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
+ * @return An iterator the the first element of the container.
+ */
+template<typename T>
+typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted)
+{
+	auto it = vec.begin();
+	if (jumpDeleted) {
+		// if the user asked to jump the deleted elements, and the first element is deleted, we need
+		// to move forward until we find the first non-deleted element
+		while (it != vec.end() && it->isDeleted()) {
+			++it;
+		}
+	}
+	return ElementIterator(it, vec, jumpDeleted && vec.size() != en);
+}
+
+/**
+ * @brief Returns an iterator to the end of the container.
+ * @return An iterator to the end of the container.
+ */
+template<typename T>
+typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementEnd()
+{
+	return ElementIterator(vec.end(), vec);
+}
+
+/**
+ * @brief Returns a const iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted elements of the container. You can change
+ * this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
+ * @return A const iterator the the first element of the container.
+ */
+template<typename T>
+typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted) const
+{
+	auto it = vec.begin();
+	if (jumpDeleted) {
+		// if the user asked to jump the deleted elements, and the first element is deleted, we need
+		// to move forward until we find the first non-deleted element
+		while (it != vec.end() && it->isDeleted()) {
+			++it;
+		}
+	}
+	return ConstElementIterator(it, vec, jumpDeleted && vec.size() != en);
+}
+
+/**
+ * @brief Returns a const iterator to the end of the container.
+ * @return A const iterator to the end of the container.
+ */
+template<typename T>
+typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementEnd() const
+{
+	return ConstElementIterator(vec.end(), vec);
+}
+
+/**
+ * @brief Returns a small utility object that allows to iterate over the elements of the containers,
+ * providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the elements using the C++ foreach
+ * syntax:
+ *
+ * @code{.cpp}
+ * for (Element& f : m.elements()){
+ *     // do something with this element
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over elements is automatically initialized to jump deleted elements of the
+ * container. You can change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
+template<typename T>
+typename ElementContainer<T>::ElementRangeIterator ElementContainer<T>::elements(bool jumpDeleted)
+{
+	return ElementRangeIterator(
+		*this,
+		jumpDeleted && vec.size() != en,
+		&ElementContainer::elementBegin,
+		&ElementContainer::elementEnd);
+}
+
+/**
+ * @brief Returns a small utility object that allows to iterate over the elements of the containers,
+ * providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the elements using the C++ foreach
+ * syntax:
+ *
+ * @code{.cpp}
+ * for (const Element& f : m.elements()){
+ *     // do something with this element
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over elements is automatically initialized to jump deleted elements of the
+ * container. You can change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
+template<typename T>
+typename ElementContainer<T>::ConstElementRangeIterator ElementContainer<T>::elements(bool jumpDeleted) const
+{
+	return ConstElementRangeIterator(
+		*this,
+		jumpDeleted && vec.size() != en,
+		&ElementContainer::elementBegin,
+		&ElementContainer::elementEnd);
+}
+
 template<typename T>
 inline uint ElementContainer<T>::index(const T* e) const
 {

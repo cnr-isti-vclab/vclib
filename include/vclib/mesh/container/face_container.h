@@ -76,11 +76,10 @@ class FaceContainer : protected ElementContainer<T>, public FaceContainerTrigger
 public:
 	using Face              = T;
 	using FaceType          = T;
-	using FaceIterator      = ContainerIterator<std::vector, T>;
-	using ConstFaceIterator = ConstContainerIterator<std::vector, T>;
-	using FaceRangeIterator = ContainerRangeIterator<FaceContainerType, FaceIterator>;
-	using ConstFaceRangeIterator =
-		ConstContainerRangeIterator<FaceContainerType, ConstFaceIterator>;
+	using FaceIterator      = typename Base::ElementIterator;
+	using ConstFaceIterator = typename Base::ConstElementIterator;
+	using FaceRangeIterator = typename Base::ElementRangeIterator;
+	using ConstFaceRangeIterator = typename Base::ConstElementRangeIterator;
 
 	FaceContainer();
 

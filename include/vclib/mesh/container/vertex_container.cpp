@@ -186,15 +186,7 @@ std::vector<int> VertexContainer<T>::vertexCompactIndices() const
 template<typename T>
 typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexBegin(bool jumpDeleted)
 {
-	auto it = Base::vec.begin();
-	if (jumpDeleted) {
-		// if the user asked to jump the deleted vertices, and the first vertex is deleted, we need
-		// to move forward until we find the first non-deleted vertex
-		while (it != Base::vec.end() && it->isDeleted()) {
-			++it;
-		}
-	}
-	return VertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vertexNumber());
+	return Base::elementBegin(jumpDeleted);
 }
 
 /**
@@ -204,7 +196,7 @@ typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexBegin(bool
 template<typename T>
 typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexEnd()
 {
-	return VertexIterator(Base::vec.end(), Base::vec);
+	return Base::elementEnd();
 }
 
 /**
@@ -221,15 +213,7 @@ template<typename T>
 typename VertexContainer<T>::ConstVertexIterator
 VertexContainer<T>::vertexBegin(bool jumpDeleted) const
 {
-	auto it = Base::vec.begin();
-	if (jumpDeleted) {
-		// if the user asked to jump the deleted vertices, and the first vertex is deleted, we need
-		// to move forward until we find the first non-deleted vertex
-		while (it != Base::vec.end() && it->isDeleted()) {
-			++it;
-		}
-	}
-	return ConstVertexIterator(it, Base::vec, jumpDeleted && Base::vec.size() != vertexNumber());
+	return Base::elementBegin(jumpDeleted);
 }
 
 /**
@@ -239,7 +223,7 @@ VertexContainer<T>::vertexBegin(bool jumpDeleted) const
 template<typename T>
 typename VertexContainer<T>::ConstVertexIterator VertexContainer<T>::vertexEnd() const
 {
-	return ConstVertexIterator(Base::vec.end(), Base::vec);
+	return Base::elementEnd();
 }
 
 /**
@@ -265,11 +249,7 @@ typename VertexContainer<T>::ConstVertexIterator VertexContainer<T>::vertexEnd()
 template<typename T>
 typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bool jumpDeleted)
 {
-	return VertexRangeIterator(
-		*this,
-		jumpDeleted && Base::vec.size() != vertexNumber(),
-		&VertexContainer::vertexBegin,
-		&VertexContainer::vertexEnd);
+	return Base::elements(jumpDeleted);
 }
 
 /**
@@ -296,8 +276,7 @@ template<typename T>
 typename VertexContainer<T>::ConstVertexRangeIterator
 VertexContainer<T>::vertices(bool jumpDeleted) const
 {
-	return ConstVertexRangeIterator(
-		*this, jumpDeleted, &VertexContainer::vertexBegin, &VertexContainer::vertexEnd);
+	return Base::elements(jumpDeleted);
 }
 
 /**

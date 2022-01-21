@@ -58,11 +58,10 @@ class VertexContainer : protected ElementContainer<T>, public VertexContainerTri
 public:
 	using Vertex              = T;
 	using VertexType          = T;
-	using VertexIterator      = ContainerIterator<std::vector, T>;
-	using ConstVertexIterator = ConstContainerIterator<std::vector, T>;
-	using VertexRangeIterator = ContainerRangeIterator<VertexContainerType, VertexIterator>;
-	using ConstVertexRangeIterator =
-		ConstContainerRangeIterator<VertexContainerType, ConstVertexIterator>;
+	using VertexIterator      = typename Base::ElementIterator;
+	using ConstVertexIterator = typename Base::ConstElementIterator;
+	using VertexRangeIterator = typename Base::ElementRangeIterator;
+	using ConstVertexRangeIterator = typename Base::ConstElementRangeIterator;
 
 	VertexContainer();
 
