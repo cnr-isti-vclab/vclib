@@ -249,22 +249,6 @@ protected:
 
 	std::vector<int> compactVertices();
 
-	void updateVertexReferences(const T* oldBase, const T* newBase);
-
-	void updateVertexReferencesAfterCompact(const T* base, const std::vector<int>& newIndices);
-
-	template<typename Face>
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
-
-	template<typename Face>
-	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
-
-	template<typename Edge>
-	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);
-
-	template<typename Edge>
-	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
-
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 

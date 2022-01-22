@@ -91,6 +91,15 @@ protected:
 	template<typename Face>
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 
+	template<typename Face>
+	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+
+	template<typename Edge>
+	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);
+
+	template<typename Edge>
+	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
+
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.
