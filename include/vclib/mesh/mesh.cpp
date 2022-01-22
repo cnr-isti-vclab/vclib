@@ -642,6 +642,9 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 	if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
 
+		// import vertex references in the vertex container
+		VertexContainer::importVertexReferencesFrom(m);
+
 		// import face references in the vertex container
 		if constexpr(mesh::hasFaces<Mesh<Args...>>()) {
 			using FaceContainer = typename Mesh<Args...>::FaceContainer;
@@ -657,6 +660,9 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 
 	if constexpr(mesh::hasFaces<Mesh<Args...>>()) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+
+		// import face references in the face container
+		FaceContainer::importFaceReferencesFrom(m);
 
 		// import vertex references in the face container
 		if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
@@ -674,6 +680,9 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 	if constexpr(mesh::hasEdges<Mesh<Args...>>()) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 
+		// import edge references in the edge container
+		EdgeContainer::importEdgeReferencesFrom(m);
+
 		// import vertex references in the edge container
 		if constexpr(mesh::hasVertices<Mesh<Args...>>()) {
 			using VertexContainer = typename Mesh<Args...>::VertexContainer;
@@ -681,7 +690,7 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 		}
 
 		// import face references in the edge container
-		if constexpr(mesh::hasEdges<Mesh<Args...>>()) {
+		if constexpr(mesh::hasFaces<Mesh<Args...>>()) {
 			using FaceContainer = typename Mesh<Args...>::FaceContainer;
 			EdgeContainer::importFaceReferencesFrom(m, FaceContainer::vec.data());
 		}

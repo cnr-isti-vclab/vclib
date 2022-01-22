@@ -982,10 +982,18 @@ void VertexContainer<T>::importFrom(const Mesh& m)
 		unsigned int vid = 0;
 		for (const typename Mesh::VertexType& v : m.vertices(false)) {
 			vertex(vid).importFrom(v);
-			if constexpr (vert::hasAdjacentVertices<T>()) {
-				vertex(vid).importVertexReferencesFrom(v, Base::vec.data(), &m.vertex(0));
-			}
 			++vid;
+		}
+	}
+}
+
+template<typename T>
+template<typename Mesh>
+void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m)
+{
+	if constexpr (hasVertices<Mesh>()) {
+		for (uint i = 0; i < vertexContainerSize(); ++i) {
+			vertex(i).importVertexReferencesFrom(m.vertex(i), Base::vec.data(), &m.vertex(0));
 		}
 	}
 }

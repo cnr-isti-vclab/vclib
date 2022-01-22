@@ -204,6 +204,9 @@ protected:
 
 	template<typename Mesh, typename Face>
 	void importFaceReferencesFrom(const Mesh& m, Face* base);
+
+	template<typename Mesh>
+	void importEdgeReferencesFrom(const Mesh& m);
 };
 
 } // namespace vcl::mesh

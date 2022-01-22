@@ -798,9 +798,6 @@ void EdgeContainer<T>::importFrom(const Mesh& m)
 		unsigned int eid = 0;
 		for (const typename Mesh::EdgeType& e : m.edges(false)) {
 			edge(eid).importFrom(e);
-			if constexpr (edge::hasAdjacentEdges<T>()) {
-				edge(eid).importEdgeReferencesFrom(e, Base::vec.data(), &m.edge(0));
-			}
 			++eid;
 		}
 	}
@@ -823,7 +820,18 @@ void EdgeContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 {
 	if constexpr (hasFaces<Mesh>() && hasEdges<Mesh>()) {
 		for (uint i = 0; i < edgeContainerSize(); ++i) {
-			edge(i).importEdgeReferencesFrom(m.edge(i), base, &m.face(0));
+			edge(i).importFaceReferencesFrom(m.edge(i), base, &m.face(0));
+		}
+	}
+}
+
+template<typename T>
+template<typename Mesh>
+void EdgeContainer<T>::importEdgeReferencesFrom(const Mesh& m)
+{
+	if constexpr (hasEdges<Mesh>()) {
+		for (uint i = 0; i < edgeContainerSize(); ++i) {
+			edge(i).importEdgeReferencesFrom(m.edge(i), Base::vec.data(), &m.edge(0));
 		}
 	}
 }

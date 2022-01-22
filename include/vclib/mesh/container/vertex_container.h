@@ -258,6 +258,9 @@ protected:
 	template<typename Mesh>
 	void importFrom(const Mesh& m);
 
+	template<typename Mesh>
+	void importVertexReferencesFrom(const Mesh& m);
+
 	template<typename Mesh, typename Face>
 	void importFaceReferencesFrom(const Mesh& m, Face* base);
 
