@@ -992,18 +992,7 @@ std::vector<int> vcl::mesh::FaceContainer<T>::compactFaces()
 template<typename T>
 void FaceContainer<T>::updateFaceReferences(const T* oldBase, const T* newBase)
 {
-	if constexpr (vcl::face::hasOptionalAdjacentFaces<T>()) {
-		if (Base::optionalVec.isAdjacentFacesEnabled()) {
-			for (FaceType& f : faces()) {
-				f.updateFaceReferences(oldBase, newBase);
-			}
-		}
-	}
-	else if constexpr (vcl::face::hasAdjacentFaces<T>()) {
-		for (FaceType& f : faces()) {
-			f.updateFaceReferences(oldBase, newBase);
-		}
-	}
+	Base::updateFaceReferences(oldBase, newBase);
 }
 
 template<typename T>
@@ -1029,9 +1018,7 @@ template<typename T>
 template<typename Vertex>
 void FaceContainer<T>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
 {
-	for (FaceType& f : faces()) {
-		f.updateVertexReferences(oldBase, newBase);
-	}
+	Base::updateVertexReferences(oldBase, newBase);
 }
 
 template<typename T>
@@ -1040,9 +1027,7 @@ void FaceContainer<T>::updateVertexReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
-	for (FaceType& f : faces()) {
-		f.updateVertexReferencesAfterCompact(base, newIndices);
-	}
+	Base::updateVertexReferencesAfterCompact(base, newIndices);
 }
 
 template<typename T>

@@ -31,7 +31,7 @@
 namespace vcl::io::ply {
 
 template<typename MeshType>
-void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh);
+void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mesh);
 
 template<typename MeshType>
 void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh);

@@ -962,18 +962,7 @@ std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
 template<typename T>
 void VertexContainer<T>::updateVertexReferences(const T* oldBase, const T* newBase)
 {
-	if constexpr (vcl::vert::hasOptionalAdjacentVertices<T>()) {
-		if (Base::optionalVec.isAdjacentVerticesEnabled()) {
-			for (VertexType& v : vertices()) {
-				v.updateVertexReferences(oldBase, newBase);
-			}
-		}
-	}
-	else if constexpr (vcl::vert::hasAdjacentVertices<T>()) {
-		for (VertexType& v : vertices()) {
-			v.updateVertexReferences(oldBase, newBase);
-		}
-	}
+	Base::updateVertexReferences(oldBase, newBase);
 }
 
 template<typename T>
@@ -981,36 +970,14 @@ void VertexContainer<T>::updateVertexReferencesAfterCompact(
 	const T*                base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr (vcl::vert::hasOptionalAdjacentVertices<T>()) {
-		if (Base::optionalVec.isAdjacentVerticesEnabled()) {
-			for (VertexType& v : vertices()) {
-				v.updateVertexReferencesAfterCompact(base, newIndices);
-			}
-		}
-	}
-	else if constexpr (vcl::vert::hasAdjacentVertices<T>()) {
-		for (VertexType& v : vertices()) {
-			v.updateVertexReferencesAfterCompact(base, newIndices);
-		}
-	}
+	Base::updateVertexReferencesAfterCompact(base, newIndices);
 }
 
 template<typename T>
 template<typename Face>
 void VertexContainer<T>::updateFaceReferences(const Face* oldBase, const Face* newBase)
 {
-	if constexpr (vcl::vert::hasOptionalAdjacentFaces<T>()) {
-		if (Base::optionalVec.isAdjacentFacesEnabled()) {
-			for (VertexType& v : vertices()) {
-				v.updateFaceReferences(oldBase, newBase);
-			}
-		}
-	}
-	else if constexpr (vcl::vert::hasAdjacentFaces<T>()) {
-		for (VertexType& v : vertices()) {
-			v.updateFaceReferences(oldBase, newBase);
-		}
-	}
+	Base::updateFaceReferences(oldBase, newBase);
 }
 
 template<typename T>

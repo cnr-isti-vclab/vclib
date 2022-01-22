@@ -82,6 +82,15 @@ protected:
 
 	void updateContainerPointers(const T* oldBase, const T* newBase);
 
+	template<typename Vertex>
+	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+
+	template<typename Vertex>
+	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+
+	template<typename Face>
+	void updateFaceReferences(const Face* oldBase, const Face* newBase);
+
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.

@@ -31,7 +31,7 @@
 namespace vcl::io::ply {
 
 template<typename MeshType>
-void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType mesh);
+void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType& mesh);
 
 
 } // namespace vcl::ply

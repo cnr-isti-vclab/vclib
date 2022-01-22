@@ -27,7 +27,7 @@
 namespace vcl::io::ply {
 
 template<typename MeshType>
-void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType mesh)
+void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType& mesh)
 {
 	using EdgeType = typename MeshType::EdgeType;
 	bool bin = header.format() == ply::BINARY;

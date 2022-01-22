@@ -253,7 +253,7 @@ void loadFacesBin(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 } // namespace internal
 
 template<typename MeshType>
-void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType mesh)
+void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mesh)
 {
 	using FaceType = typename MeshType::FaceType;
 

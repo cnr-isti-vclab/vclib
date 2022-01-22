@@ -22,6 +22,8 @@
 
 #include "element_container.h"
 
+#include "../components/detection/vertex_references_detection.h"
+
 namespace vcl::mesh {
 
 /**
@@ -445,6 +447,72 @@ void ElementContainer<T>::updateContainerPointers(const T *oldBase, const T *new
 			for (T& f : elements(false)) {
 				setContainerPointer(f);
 			}
+		}
+	}
+}
+
+template<typename T>
+template<typename Vertex>
+void ElementContainer<T>::updateVertexReferences(const Vertex *oldBase, const Vertex *newBase)
+{
+	if constexpr(comp::hasVertexReferences<T>()) {
+		for (T& e : elements()) {
+			e.updateVertexReferences(oldBase, newBase);
+		}
+	}
+	if constexpr (comp::hasOptionalAdjacentVertices<T>()) {
+		if (optionalVec.isAdjacentVerticesEnabled()) {
+			for (T& v : elements()) {
+				v.updateVertexReferences(oldBase, newBase);
+			}
+		}
+	}
+	else if constexpr (comp::hasAdjacentVertices<T>()) {
+		for (T& v : elements()) {
+			v.updateVertexReferences(oldBase, newBase);
+		}
+	}
+}
+
+template<typename T>
+template<typename Vertex>
+void ElementContainer<T>::updateVertexReferencesAfterCompact(
+	const Vertex*           base,
+	const std::vector<int>& newIndices)
+{
+	if constexpr(comp::hasVertexReferences<T>()) {
+		for (T& e: elements()) {
+			e.updateVertexReferencesAfterCompact(base, newIndices);
+		}
+	}
+	if constexpr (comp::hasOptionalAdjacentVertices<T>()) {
+		if (optionalVec.isAdjacentVerticesEnabled()) {
+			for (T& v : elements()) {
+				v.updateVertexReferencesAfterCompact(base, newIndices);
+			}
+		}
+	}
+	else if constexpr (comp::hasAdjacentVertices<T>()) {
+		for (T& v : elements()) {
+			v.updateVertexReferencesAfterCompact(base, newIndices);
+		}
+	}
+}
+
+template<typename T>
+template<typename Face>
+void ElementContainer<T>::updateFaceReferences(const Face *oldBase, const Face *newBase)
+{
+	if constexpr (comp::hasOptionalAdjacentFaces<T>()) {
+		if (optionalVec.isAdjacentFacesEnabled()) {
+			for (T& e : elements()) {
+				e.updateFaceReferences(oldBase, newBase);
+			}
+		}
+	}
+	else if constexpr (comp::hasAdjacentFaces<T>()) {
+		for (T& e : elements()) {
+			e.updateFaceReferences(oldBase, newBase);
 		}
 	}
 }
