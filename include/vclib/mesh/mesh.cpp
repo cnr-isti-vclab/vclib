@@ -312,12 +312,15 @@ Mesh<Args...>::compactVertices()
 	using Vertex          = typename M::VertexType;
 	using VertexContainer = typename M::VertexContainer;
 
-	Vertex*          oldBase    = VertexContainer::vec.data();
-	std::vector<int> newIndices = VertexContainer::compactVertices();
-	Vertex*          newBase    = VertexContainer::vec.data();
-	assert(oldBase == newBase);
+	if (VertexContainer::vertexNumber() != VertexContainer::vertexContainerSize()) {
 
-	updateVertexReferencesAfterCompact(oldBase, newIndices);
+		Vertex*          oldBase    = VertexContainer::vec.data();
+		std::vector<int> newIndices = VertexContainer::compactVertices();
+		Vertex*          newBase    = VertexContainer::vec.data();
+		assert(oldBase == newBase);
+
+		updateVertexReferencesAfterCompact(oldBase, newIndices);
+	}
 }
 
 template<typename... Args>
@@ -416,12 +419,14 @@ Mesh<Args...>::compactFaces()
 	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
 
-	Face*            oldBase    = FaceContainer::vec.data();
-	std::vector<int> newIndices = FaceContainer::compactFaces();
-	Face*            newBase    = FaceContainer::vec.data();
-	assert(oldBase == newBase);
+	if (FaceContainer::faceNumber() != FaceContainer::faceContainerSize()) {
+		Face*            oldBase    = FaceContainer::vec.data();
+		std::vector<int> newIndices = FaceContainer::compactFaces();
+		Face*            newBase    = FaceContainer::vec.data();
+		assert(oldBase == newBase);
 
-	updateFaceReferencesAfterCompact(oldBase, newIndices);
+		updateFaceReferencesAfterCompact(oldBase, newIndices);
+	}
 }
 
 /**
@@ -552,12 +557,14 @@ Mesh<Args...>::compactEdges()
 	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
 
-	Edge*            oldBase    = EdgeContainer::vec.data();
-	std::vector<int> newIndices = EdgeContainer::compactEdges();
-	Edge*            newBase    = EdgeContainer::vec.data();
-	assert(oldBase == newBase);
+	if (EdgeContainer::edgeNumber() != EdgeContainer::edgeContainerSize()) {
+		Edge*            oldBase    = EdgeContainer::vec.data();
+		std::vector<int> newIndices = EdgeContainer::compactEdges();
+		Edge*            newBase    = EdgeContainer::vec.data();
+		assert(oldBase == newBase);
 
-	updateEdgeReferencesAfterCompact(oldBase, newIndices);
+		updateEdgeReferencesAfterCompact(oldBase, newIndices);
+	}
 }
 
 /**
@@ -709,16 +716,22 @@ Mesh<Args...>::updateVertexReferences(
 	const typename M::VertexType* oldBase,
 	const typename M::VertexType* newBase)
 {
-	// update vertex references in the Face Container, if it exists
-	if constexpr (vcl::mesh::hasFaces<M>()) {
-		using FaceContainer = typename M::FaceContainer;
-		FaceContainer::updateVertexReferences(oldBase, newBase);
-	}
+	if (oldBase != newBase) {
+		// update vertex references in Vertex Container
+		using VertexContainer = typename M::VertexContainer;
+		VertexContainer::updateVertexReferences(oldBase, newBase);
 
-	// update vertex references in the Edge Container, if it exists
-	if constexpr (vcl::mesh::hasEdges<M>()) {
-		using EdgeContainer = typename M::EdgeContainer;
-		EdgeContainer::updateVertexReferences(oldBase, newBase);
+		// update vertex references in the Face Container, if it exists
+		if constexpr (vcl::mesh::hasFaces<M>()) {
+			using FaceContainer = typename M::FaceContainer;
+			FaceContainer::updateVertexReferences(oldBase, newBase);
+		}
+
+		// update vertex references in the Edge Container, if it exists
+		if constexpr (vcl::mesh::hasEdges<M>()) {
+			using EdgeContainer = typename M::EdgeContainer;
+			EdgeContainer::updateVertexReferences(oldBase, newBase);
+		}
 	}
 }
 
@@ -729,6 +742,10 @@ Mesh<Args...>::updateVertexReferencesAfterCompact(
 	const typename M::VertexType* base,
 	const std::vector<int>&       newIndices)
 {
+	// update vertex references in Vertex Container
+	using VertexContainer = typename M::VertexContainer;
+	VertexContainer::updateVertexReferencesAfterCompact(base, newIndices);
+
 	// update vertex references in the Face Container, if it exists
 	if constexpr (vcl::mesh::hasFaces<M>()) {
 		using FaceContainer = typename M::FaceContainer;
@@ -749,16 +766,22 @@ Mesh<Args...>::updateFaceReferences(
 	const typename M::FaceType* oldBase,
 	const typename M::FaceType* newBase)
 {
-	// update face references in the Vertex Container, if it exists
-	if constexpr (vcl::mesh::hasVertices<M>()) {
-		using VertexContainer = typename M::VertexContainer;
-		VertexContainer::updateFaceReferences(oldBase, newBase);
-	}
+	if (oldBase != newBase) {
+		// update face references in Face Container
+		using FaceContainer = typename M::FaceContainer;
+		FaceContainer::updateFaceReferences(oldBase, newBase);
 
-	// update face references in the Edge Container, if it exists
-	if constexpr (vcl::mesh::hasEdges<M>()) {
-		using EdgeContainer = typename M::EdgeContainer;
-		EdgeContainer::updateFaceReferences(oldBase, newBase);
+		// update face references in the Vertex Container, if it exists
+		if constexpr (vcl::mesh::hasVertices<M>()) {
+			using VertexContainer = typename M::VertexContainer;
+			VertexContainer::updateFaceReferences(oldBase, newBase);
+		}
+
+		// update face references in the Edge Container, if it exists
+		if constexpr (vcl::mesh::hasEdges<M>()) {
+			using EdgeContainer = typename M::EdgeContainer;
+			EdgeContainer::updateFaceReferences(oldBase, newBase);
+		}
 	}
 }
 
@@ -769,6 +792,10 @@ Mesh<Args...>::updateFaceReferencesAfterCompact(
 	const typename M::FaceType* base,
 	const std::vector<int>&     newIndices)
 {
+	// update face references in Face Container
+	using FaceContainer = typename M::FaceContainer;
+	FaceContainer::updateFaceReferencesAfterCompact(base, newIndices);
+
 	// update face references in the Vertex Container, if it exists
 	if constexpr (vcl::mesh::hasVertices<M>()) {
 		using VertexContainer = typename M::VertexContainer;
@@ -789,16 +816,22 @@ Mesh<Args...>::updateEdgeReferences(
 	const typename M::EdgeType* oldBase,
 	const typename M::EdgeType* newBase)
 {
-	// update edge references in the Vertex Container, if it exists
-	if constexpr (vcl::mesh::hasVertices<M>()) {
-		using VertexContainer = typename M::VertexContainer;
-		VertexContainer::updateEdgeReferences(oldBase, newBase);
-	}
+	if (oldBase != newBase) {
+		// update edge references in Edge Container
+		using EdgeContainer = typename M::EdgeContainer;
+		EdgeContainer::updateEdgeReferences(oldBase, newBase);
 
-	// update edge references in the Face Container, if it exists
-	if constexpr (vcl::mesh::hasFaces<M>()) {
-		using FaceContainer = typename M::FaceContainer;
-		FaceContainer::updateEdgeReferences(oldBase, newBase);
+		// update edge references in the Vertex Container, if it exists
+		if constexpr (vcl::mesh::hasVertices<M>()) {
+			using VertexContainer = typename M::VertexContainer;
+			VertexContainer::updateEdgeReferences(oldBase, newBase);
+		}
+
+		// update edge references in the Face Container, if it exists
+		if constexpr (vcl::mesh::hasFaces<M>()) {
+			using FaceContainer = typename M::FaceContainer;
+			FaceContainer::updateEdgeReferences(oldBase, newBase);
+		}
 	}
 }
 
@@ -809,6 +842,10 @@ Mesh<Args...>::updateEdgeReferencesAfterCompact(
 	const typename M::EdgeType* base,
 	const std::vector<int>&     newIndices)
 {
+	// update edge references in Edge Container
+	using EdgeContainer = typename M::EdgeContainer;
+	EdgeContainer::updateEdgeReferencesAfterCompact(base, newIndices);
+
 	// update edge references in the Vertex Container, if it exists
 	if constexpr (vcl::mesh::hasVertices<M>()) {
 		using VertexContainer = typename M::VertexContainer;

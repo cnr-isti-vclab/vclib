@@ -1001,11 +1001,9 @@ std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
 	}
 	k++;
 	Base::vec.resize(k);
-	T* base = Base::vec.data();
 	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		Base::optionalVec.compact(newIndices);
 	}
-	updateVertexReferencesAfterCompact(base, newIndices);
 	return newIndices;
 }
 
@@ -1014,7 +1012,6 @@ void VertexContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBas
 {
 	if (oldBase != newBase) {
 		updateContainerPointers();
-		updateVertexReferences(oldBase, newBase);
 	}
 }
 

@@ -818,11 +818,9 @@ std::vector<int> vcl::mesh::EdgeContainer<T>::compactEdges()
 	}
 	k++;
 	Base::vec.resize(k);
-	T* base = Base::vec.data();
 	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		Base::optionalVec.compact(newIndices);
 	}
-	updateEdgeReferencesAfterCompact(base, newIndices);
 	return newIndices;
 }
 
@@ -831,7 +829,6 @@ void EdgeContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
 {
 	if (oldBase != newBase) {      // if has been reallocated
 		updateContainerPointers(); // update all container pointers
-		updateEdgeReferences(oldBase, newBase);
 	}
 }
 

@@ -1032,11 +1032,9 @@ std::vector<int> vcl::mesh::FaceContainer<T>::compactFaces()
 	}
 	k++;
 	Base::vec.resize(k);
-	T* base = Base::vec.data();
 	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		Base::optionalVec.compact(newIndices);
 	}
-	updateFaceReferencesAfterCompact(base, newIndices);
 	return newIndices;
 }
 
@@ -1045,7 +1043,6 @@ void FaceContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
 {
 	if (oldBase != newBase) {      // if has been reallocated
 		updateContainerPointers(); // update all container pointers
-		updateFaceReferences(oldBase, newBase);
 	}
 }
 
