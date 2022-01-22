@@ -376,6 +376,47 @@ uint ElementContainer<T>::addElements(uint size)
 	return baseId;
 }
 
+template<typename T>
+void ElementContainer<T>::reserveElements(uint size)
+{
+	T* oldB = vec.data();
+	vec.reserve(size);
+	T* newB = vec.data();
+	if constexpr (comp::hasVerticalInfo<T>()) {
+		optionalVec.reserve(size);
+	}
+	updateContainerPointers(oldB, newB);
+}
+
+/**
+ * @brief Compacts the element container, keeping only the non-deleted elements.
+ *
+ * @return a vector that tells, for each old element index, the new index of the element. Will
+ * contain -1 if the element has been deleted.
+ */
+template<typename T>
+std::vector<int> ElementContainer<T>::compactElements()
+{
+	std::vector<int> newIndices = elementCompactIndices();
+	if (elementNumber() != elementContainerSize()) {
+		// k will indicate the position of the ith non-deleted vertices after compacting
+		uint k = 0;
+		for (uint i = 0; i < newIndices.size(); ++i) {
+			if (newIndices[i] >= 0) {
+				k = newIndices[i];
+				if (i != k)
+					vec[k] = vec[i];
+			}
+		}
+		k++;
+		vec.resize(k);
+		if constexpr (comp::hasVerticalInfo<T>()) {
+			optionalVec.compact(newIndices);
+		}
+	}
+	return newIndices;
+}
+
 /**
  * @brief Sets this cointainer pointer to the element. Necessary to give to the element access to
  * the vertical components. This operation needs to be done after element creation in the container

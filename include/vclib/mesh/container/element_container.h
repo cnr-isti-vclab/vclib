@@ -74,6 +74,9 @@ protected:
 
 	uint addElement();
 	uint addElements(uint size);
+	void reserveElements(uint size);
+
+	std::vector<int> compactElements();
 
 	void setContainerPointer(T& element);
 

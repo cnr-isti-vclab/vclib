@@ -943,13 +943,7 @@ uint VertexContainer<T>::addVertices(uint nVertices)
 template<typename T>
 void VertexContainer<T>::reserveVertices(uint size)
 {
-	T* oldB = Base::vec.data();
-	Base::vec.reserve(size);
-	T* newB = Base::vec.data();
-	if constexpr (vert::hasVerticalInfo<VertexType>()) {
-		Base::optionalVec.reserve(size);
-	}
-	Base::updateContainerPointers(oldB, newB);
+	Base::reserveElements(size);
 }
 
 /**
@@ -962,22 +956,7 @@ void VertexContainer<T>::reserveVertices(uint size)
 template<typename T>
 std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
 {
-	// k will indicate the position of the ith non-deleted vertices after compacting
-	uint             k          = 0;
-	std::vector<int> newIndices = vertexCompactIndices();
-	for (uint i = 0; i < newIndices.size(); ++i) {
-		if (newIndices[i] >= 0) {
-			k = newIndices[i];
-			if (i != k)
-				Base::vec[k] = Base::vec[i];
-		}
-	}
-	k++;
-	Base::vec.resize(k);
-	if constexpr (vert::hasVerticalInfo<VertexType>()) {
-		Base::optionalVec.compact(newIndices);
-	}
-	return newIndices;
+	return Base::compactElements();
 }
 
 template<typename T>

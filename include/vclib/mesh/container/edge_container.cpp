@@ -760,13 +760,7 @@ uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges)
 template<typename T>
 void EdgeContainer<T>::reserveEdges(uint size)
 {
-	T* oldB = Base::vec.data();
-	Base::vec.reserve(size);
-	T* newB = Base::vec.data();
-	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
-		Base::optionalVec.reserve(size);
-	}
-	Base::updateContainerPointers(oldB, newB);
+	Base::reserveElements(size);
 }
 
 /**
@@ -778,23 +772,7 @@ void EdgeContainer<T>::reserveEdges(uint size)
 template<typename T>
 std::vector<int> vcl::mesh::EdgeContainer<T>::compactEdges()
 {
-	// k will indicate the position of the ith non-deleted vertices after compacting
-	uint k = 0;
-
-	std::vector<int> newIndices = edgeCompactIndices();
-	for (uint i = 0; i < newIndices.size(); ++i) {
-		if (newIndices[i] >= 0) {
-			k = newIndices[i];
-			if (i != k)
-				Base::vec[k] = Base::vec[i];
-		}
-	}
-	k++;
-	Base::vec.resize(k);
-	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
-		Base::optionalVec.compact(newIndices);
-	}
-	return newIndices;
+	return Base::compactElements();
 }
 
 template<typename T>
