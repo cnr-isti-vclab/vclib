@@ -923,16 +923,7 @@ uint VertexContainer<T>::index(const VertexType* v) const
 template<typename T>
 uint VertexContainer<T>::addVertex()
 {
-	T* oldB = Base::vec.data();
-	Base::vec.push_back(VertexType());
-	T* newB = Base::vec.data();
-	Base::en++;
-	if constexpr (vert::hasVerticalInfo<VertexType>()) {
-		Base::setContainerPointer(Base::vec[Base::vec.size() - 1]);
-		Base::optionalVec.resize(Base::vec.size());
-	}
-	Base::updateContainerPointers(oldB, newB);
-	return Base::vec.size() - 1;
+	return Base::addElement();
 }
 
 /**
@@ -946,19 +937,7 @@ uint VertexContainer<T>::addVertex()
 template<typename T>
 uint VertexContainer<T>::addVertices(uint nVertices)
 {
-	uint baseId = Base::vec.size();
-	T*   oldB   = Base::vec.data();
-	Base::vec.resize(Base::vec.size() + nVertices);
-	T* newB = Base::vec.data();
-	Base::en += nVertices;
-	if constexpr (vert::hasVerticalInfo<VertexType>()) {
-		Base::optionalVec.resize(Base::vec.size());
-		for (uint i = baseId; i < Base::vec.size(); ++i) {
-			Base::setContainerPointer(Base::vec[i]);
-		}
-	}
-	Base::updateContainerPointers(oldB, newB);
-	return baseId;
+	return Base::addElements(nVertices);
 }
 
 template<typename T>

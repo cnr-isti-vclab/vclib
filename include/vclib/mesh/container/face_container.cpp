@@ -954,16 +954,7 @@ void vcl::mesh::FaceContainer<T>::clearFaces()
 template<typename T>
 uint FaceContainer<T>::addFace()
 {
-	T* oldB = Base::vec.data();
-	Base::vec.push_back(FaceType());
-	T* newB = Base::vec.data();
-	Base::en++;
-	if constexpr (face::hasVerticalInfo<FaceType>()) {
-		Base::setContainerPointer(Base::vec[Base::vec.size() - 1]);
-		Base::optionalVec.resize(Base::vec.size());
-	}
-	Base::updateContainerPointers(oldB, newB);
-	return Base::vec.size() - 1;
+	return Base::addElement();
 }
 
 /**
@@ -977,19 +968,7 @@ uint FaceContainer<T>::addFace()
 template<typename T>
 uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces)
 {
-	uint baseId = Base::vec.size();
-	T*   oldB   = Base::vec.data();
-	Base::vec.resize(Base::vec.size() + nFaces);
-	T* newB = Base::vec.data();
-	Base::en += nFaces;
-	if constexpr (face::hasVerticalInfo<FaceType>()) {
-		Base::optionalVec.resize(Base::vec.size());
-		for (uint i = baseId; i < Base::vec.size(); ++i) {
-			Base::setContainerPointer(Base::vec[i]);
-		}
-	}
-	Base::updateContainerPointers(oldB, newB);
-	return baseId;
+	return Base::addElements(nFaces);
 }
 
 template<typename T>

@@ -740,16 +740,7 @@ void vcl::mesh::EdgeContainer<T>::clearEdges()
 template<typename T>
 uint EdgeContainer<T>::addEdge()
 {
-	T* oldB = Base::vec.data();
-	Base::vec.push_back(EdgeType());
-	T* newB = Base::vec.data();
-	Base::en++;
-	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
-		Base::setContainerPointer(Base::vec[Base::vec.size() - 1]);
-		Base::optionalVec.resize(Base::vec.size());
-	}
-	Base::updateContainerPointers(oldB, newB);
-	return Base::vec.size() - 1;
+	return Base::addElement();
 }
 
 /**
@@ -763,19 +754,7 @@ uint EdgeContainer<T>::addEdge()
 template<typename T>
 uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges)
 {
-	uint baseId = Base::vec.size();
-	T*   oldB   = Base::vec.data();
-	Base::vec.resize(Base::vec.size() + nEdges);
-	T* newB = Base::vec.data();
-	Base::en += nEdges;
-	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
-		Base::optionalVec.resize(Base::vec.size());
-		for (uint i = baseId; i < Base::vec.size(); ++i) {
-			Base::setContainerPointer(Base::vec[i]);
-		}
-	}
-	Base::updateContainerPointers(oldB, newB);
-	return baseId;
+	return Base::addElements(nEdges);
 }
 
 template<typename T>

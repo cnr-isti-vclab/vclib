@@ -335,6 +335,47 @@ void ElementContainer<T>::clearElements()
 	}
 }
 
+template<typename T>
+uint ElementContainer<T>::addElement()
+{
+	T* oldB = vec.data();
+	vec.push_back(T());
+	T* newB = vec.data();
+	en++;
+	if constexpr (comp::hasVerticalInfo<T>()) {
+		setContainerPointer(vec[vec.size() - 1]);
+		optionalVec.resize(vec.size());
+	}
+	updateContainerPointers(oldB, newB);
+	return vec.size() - 1;
+}
+
+/**
+ * @brief Adds size elements to the Element Container.
+ *
+ * Returns the id of the first added element.
+ *
+ * @param size
+ * @return the id of the first added element.
+ */
+template<typename T>
+uint ElementContainer<T>::addElements(uint size)
+{
+	uint baseId = vec.size();
+	T*   oldB   = vec.data();
+	vec.resize(vec.size() + size);
+	T* newB = vec.data();
+	en += size;
+	if constexpr (comp::hasVerticalInfo<T>()) {
+		optionalVec.resize(vec.size());
+		for (uint i = baseId; i < vec.size(); ++i) {
+			setContainerPointer(vec[i]);
+		}
+	}
+	updateContainerPointers(oldB, newB);
+	return baseId;
+}
+
 /**
  * @brief Sets this cointainer pointer to the element. Necessary to give to the element access to
  * the vertical components. This operation needs to be done after element creation in the container

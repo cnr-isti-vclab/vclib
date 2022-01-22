@@ -72,6 +72,9 @@ protected:
 	uint index(const T *e) const;
 	void clearElements();
 
+	uint addElement();
+	uint addElements(uint size);
+
 	void setContainerPointer(T& element);
 
 	void updateContainerPointers(const T* oldBase, const T* newBase);
