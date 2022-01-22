@@ -55,6 +55,9 @@ class VertexContainer : protected ElementContainer<T>, public VertexContainerTri
 	using Base                = ElementContainer<T>;
 	using VertexContainerType = VertexContainer<T>;
 
+	template <typename U>
+	friend class VertexContainer;
+
 public:
 	using Vertex              = T;
 	using VertexType          = T;

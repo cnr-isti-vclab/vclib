@@ -48,6 +48,9 @@ class EdgeContainer : protected ElementContainer<T>, public EdgeContainerTrigger
 	using Base              = ElementContainer<T>;
 	using EdgeContainerType = EdgeContainer<T>;
 
+	template <typename U>
+	friend class EdgeContainer;
+
 public:
 	using Edge              = T;
 	using EdgeType          = T;

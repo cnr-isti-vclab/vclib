@@ -779,81 +779,12 @@ template<typename T>
 template<typename Mesh>
 void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 {
-	// unfortunately, this function cannot be shortened in a smart way
-
 	// if edges are enabled in the other Mesh
 	if constexpr (hasEdges<Mesh>()) {
-		using EdgeType  = T;
-		using MEdgeType = typename Mesh::EdgeType;
+		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
-		// disable all the optional components, we will enable them again depending on Mesh
-		disableAllPerEdgeOptionalComponents();
-
-		// if this Edge type has optional adjacent edges
-		if constexpr (edge::hasOptionalAdjacentEdges<EdgeType>()) {
-			// if also the other Mesh Edge type has optional adjacent edges
-			if constexpr (edge::hasOptionalAdjacentEdges<MEdgeType>()) {
-				// if they are enabled on the other Mesh, enable also here
-				if (m.isPerEdgeAdjacentEdgesEnabled()) {
-					enablePerEdgeAdjacentEdges();
-				}
-			}
-			else {
-				// if the other Mesh has *non-optional* adjacent edges, I need to enable it on this
-				// Edge container
-				if constexpr (edge::hasAdjacentEdges<MEdgeType>()) {
-					enablePerEdgeAdjacentEdges();
-				}
-			}
-		}
-		if constexpr (edge::hasOptionalAdjacentFaces<EdgeType>()) {
-			if constexpr (edge::hasOptionalAdjacentFaces<MEdgeType>()) {
-				if (m.isPerEdgeAdjacentFacesEnabled()) {
-					enablePerEdgeAdjacentFaces();
-				}
-			}
-			else {
-				if constexpr (edge::hasAdjacentFaces<MEdgeType>()) {
-					enablePerEdgeAdjacentFaces();
-				}
-			}
-		}
-		if constexpr (edge::hasOptionalColor<EdgeType>()) {
-			if constexpr (edge::hasOptionalColor<MEdgeType>()) {
-				if (m.isPerEdgeColorEnabled()) {
-					enablePerEdgeColor();
-				}
-			}
-			else {
-				if constexpr (edge::hasColor<MEdgeType>()) {
-					enablePerEdgeColor();
-				}
-			}
-		}
-		if constexpr (edge::hasOptionalMark<EdgeType>()) {
-			if constexpr (edge::hasOptionalMark<MEdgeType>()) {
-				if (m.isPerEdgeMarkEnabled()) {
-					enablePerEdgeMark();
-				}
-			}
-			else {
-				if constexpr (edge::hasMark<MEdgeType>()) {
-					enablePerEdgeMark();
-				}
-			}
-		}
-		if constexpr (edge::hasOptionalScalar<EdgeType>()) {
-			if constexpr (edge::hasOptionalScalar<MEdgeType>()) {
-				if (m.isPerEdgeScalarEnabled()) {
-					enablePerEdgeScalar();
-				}
-			}
-			else {
-				if constexpr (edge::hasScalar<MEdgeType>()) {
-					enablePerEdgeScalar();
-				}
-			}
-		}
+		const MEdgeContainer& mc = dynamic_cast<const MEdgeContainer&>(m);
+		Base::enableOptionalComponentsOf(mc);
 	}
 }
 

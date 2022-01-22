@@ -575,4 +575,164 @@ void ElementContainer<T>::updateEdgeReferencesAfterCompact(
 	}
 }
 
+template<typename T>
+template<typename Container>
+void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
+{
+	// unfortunately, this function cannot be shortened in a smart way
+	using CT = typename Container::ElementType;
+
+	const uint size = elementContainerSize();
+
+	// Adjacent Edges
+
+	// if this Element of this container has optional adjacent edges
+	if constexpr (comp::hasOptionalAdjacentEdges<T>()) {
+		// if also the other Container Element type optional adjacent edges
+		if constexpr (comp::hasOptionalAdjacentEdges<CT>()) {
+			// if they are enabled on the other Mesh, enable also here
+			if (c.optionalVec.isAdjacentEdgesEnabled()) {
+				optionalVec.enableAdjacentEdges(size);
+			}
+		}
+		else {
+			// if the other Container has *non-optional* adjacent edges, I need to enable it on this
+			// container
+			if constexpr (comp::hasAdjacentEdges<CT>()) {
+				optionalVec.enableAdjacentEdges(size);
+			}
+		}
+	}
+	// Adjacent Faces
+	if constexpr (comp::hasOptionalAdjacentFaces<T>()) {
+		if constexpr (comp::hasOptionalAdjacentFaces<CT>()) {
+			if (c.optionalVec.isAdjacentFacesEnabled()) {
+				optionalVec.enableAdjacentFaces(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasAdjacentFaces<CT>()) {
+				optionalVec.enableAdjacentFaces(size);
+			}
+		}
+	}
+	// Adjacent Vertices
+	if constexpr (comp::hasOptionalAdjacentVertices<T>()) {
+		if constexpr (comp::hasOptionalAdjacentVertices<CT>()) {
+			if (c.optionalVec.isAdjacentVerticesEnabled()) {
+				optionalVec.enableAdjacentVertices(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasAdjacentVertices<CT>()) {
+				optionalVec.enableAdjacentVertices(size);
+			}
+		}
+	}
+	// Color
+	if constexpr (comp::hasOptionalColor<T>()) {
+		if constexpr (comp::hasOptionalColor<CT>()) {
+			if (c.optionalVec.isColorEnabled()) {
+				optionalVec.enableColor(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasColor<CT>()) {
+				optionalVec.enableColor(size);
+			}
+		}
+	}
+	// Mark
+	if constexpr (comp::hasOptionalMark<T>()) {
+		if constexpr (comp::hasOptionalMark<CT>()) {
+			if (c.optionalVec.isMarkEnabled()) {
+				optionalVec.enableMark(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasMark<CT>()) {
+				optionalVec.enableMark(size);
+			}
+		}
+	}
+	// Normal
+	if constexpr (comp::hasOptionalNormal<T>()) {
+		if constexpr (comp::hasOptionalNormal<CT>()) {
+			if (c.optionalVec.isNormalEnabled()) {
+				optionalVec.enableNormal(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasNormal<CT>()) {
+				optionalVec.enableNormal(size);
+			}
+		}
+	}
+	// Principal Curvature
+	if constexpr (comp::hasOptionalPrincipalCurvature<T>()) {
+		if constexpr (comp::hasOptionalPrincipalCurvature<CT>()) {
+			if (c.optionalVec.isPrincipalCurvatureEnabled()) {
+				optionalVec.enablePrincipalCurvature(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasPrincipalCurvature<CT>()) {
+				optionalVec.enablePrincipalCurvature(size);
+			}
+		}
+	}
+	// Scalar
+	if constexpr (comp::hasOptionalScalar<T>()) {
+		if constexpr (comp::hasOptionalScalar<CT>()) {
+			if (c.optionalVec.isScalarEnabled()) {
+				optionalVec.enableScalar(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasScalar<CT>()) {
+				optionalVec.enableScalar(size);
+			}
+		}
+	}
+	// TexCoord
+	if constexpr (comp::hasOptionalTexCoord<T>()) {
+		if constexpr (comp::hasOptionalTexCoord<CT>()) {
+			if (c.optionalVec.isTexCoordEnabled()) {
+				optionalVec.enableTexCoord(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasTexCoord<CT>()) {
+				optionalVec.enableTexCoord(size);
+			}
+		}
+	}
+	// Wedge Colors
+	if constexpr (comp::hasOptionalWedgeColors<T>()) {
+		if constexpr (comp::hasOptionalWedgeColors<CT>()) {
+			if (c.optionalVec.isWedgeColorsEnabled()) {
+				optionalVec.enableWedgeColors(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasWedgeColors<CT>()) {
+				optionalVec.enableWedgeColors(size);
+			}
+		}
+	}
+	// Wedge TexCoords
+	if constexpr (comp::hasOptionalWedgeTexCoords<T>()) {
+		if constexpr (comp::hasOptionalWedgeTexCoords<CT>()) {
+			if (c.optionalVec.isWedgeTexCoordsEnabled()) {
+				optionalVec.enableWedgeTexCoords(size);
+			}
+		}
+		else {
+			if constexpr (comp::hasWedgeTexCoords<CT>()) {
+				optionalVec.enableWedgeTexCoords(size);
+			}
+		}
+	}
+}
+
 } // namespace vcl::mesh

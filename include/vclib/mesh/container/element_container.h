@@ -37,9 +37,13 @@ class ElementContainer
 {
 	friend class comp::VerticalInfo<T>;
 
+	template <typename U>
+	friend class ElementContainer;
+
 	using ElementContainerType = ElementContainer<T>;
 
 public:
+	using ElementType          = T;
 	using ElementIterator      = ContainerIterator<std::vector, T>;
 	using ConstElementIterator = ConstContainerIterator<std::vector, T>;
 	using ElementRangeIterator = ContainerRangeIterator<ElementContainerType, ElementIterator>;
@@ -99,6 +103,9 @@ protected:
 
 	template<typename Edge>
 	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
+
+	template<typename Container>
+	void enableOptionalComponentsOf(const Container& c);
 
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()

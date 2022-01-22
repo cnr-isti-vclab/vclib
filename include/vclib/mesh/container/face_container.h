@@ -73,6 +73,9 @@ class FaceContainer : protected ElementContainer<T>, public FaceContainerTrigger
 	using Base              = ElementContainer<T>;
 	using FaceContainerType = FaceContainer<T>;
 
+	template <typename U>
+	friend class FaceContainer;
+
 public:
 	using Face              = T;
 	using FaceType          = T;
