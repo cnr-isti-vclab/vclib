@@ -72,6 +72,10 @@ protected:
 	uint index(const T *e) const;
 	void clearElements();
 
+	void setContainerPointer(T& element);
+
+	void updateContainerPointers(const T* oldBase, const T* newBase);
+
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.

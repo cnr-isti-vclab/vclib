@@ -928,10 +928,10 @@ uint VertexContainer<T>::addVertex()
 	T* newB = Base::vec.data();
 	Base::en++;
 	if constexpr (vert::hasVerticalInfo<VertexType>()) {
-		setContainerPointer(Base::vec[Base::vec.size() - 1]);
+		Base::setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
-	updateAfterAllocation(oldB, newB);
+	Base::updateContainerPointers(oldB, newB);
 	return Base::vec.size() - 1;
 }
 
@@ -954,10 +954,10 @@ uint VertexContainer<T>::addVertices(uint nVertices)
 	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 		for (uint i = baseId; i < Base::vec.size(); ++i) {
-			setContainerPointer(Base::vec[i]);
+			Base::setContainerPointer(Base::vec[i]);
 		}
 	}
-	updateAfterAllocation(oldB, newB);
+	Base::updateContainerPointers(oldB, newB);
 	return baseId;
 }
 
@@ -970,13 +970,7 @@ void VertexContainer<T>::reserveVertices(uint size)
 	if constexpr (vert::hasVerticalInfo<VertexType>()) {
 		Base::optionalVec.reserve(size);
 	}
-	updateAfterAllocation(oldB, newB);
-}
-
-template<typename T>
-void vcl::mesh::VertexContainer<T>::setContainerPointer(VertexType& v)
-{
-	v.setContainerPointer((Base*) this);
+	Base::updateContainerPointers(oldB, newB);
 }
 
 /**
@@ -1005,30 +999,6 @@ std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
 		Base::optionalVec.compact(newIndices);
 	}
 	return newIndices;
-}
-
-template<typename T>
-void VertexContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
-{
-	if (oldBase != newBase) {
-		updateContainerPointers();
-	}
-}
-
-/**
- * @brief After a reallocation, it is needed always to update the container pointers of all the
- * elements, because the assignment operator of the VerticalInfo component (which stores the pointer
- * of the container) does not copy the container pointer for security reasons.
- */
-template<typename T>
-void VertexContainer<T>::updateContainerPointers()
-{
-	if constexpr (vert::hasVerticalInfo<VertexType>()) {
-		// all the vertices must point to the right container - also the deleted ones
-		for (VertexType& v : vertices(false)) {
-			setContainerPointer(v);
-		}
-	}
 }
 
 template<typename T>

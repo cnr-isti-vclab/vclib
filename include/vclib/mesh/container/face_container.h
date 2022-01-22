@@ -271,13 +271,7 @@ protected:
 	uint addFaces(uint nFaces);
 	void reserveFaces(uint size);
 
-	void setContainerPointer(FaceType& f);
-
 	std::vector<int> compactFaces();
-
-	void updateAfterAllocation(const T* oldBase, const T* newBase);
-
-	void updateContainerPointers();
 
 	void updateFaceReferences(const T* oldBase, const T* newBase);
 

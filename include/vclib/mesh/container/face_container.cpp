@@ -959,10 +959,10 @@ uint FaceContainer<T>::addFace()
 	T* newB = Base::vec.data();
 	Base::en++;
 	if constexpr (face::hasVerticalInfo<FaceType>()) {
-		setContainerPointer(Base::vec[Base::vec.size() - 1]);
+		Base::setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
-	updateAfterAllocation(oldB, newB);
+	Base::updateContainerPointers(oldB, newB);
 	return Base::vec.size() - 1;
 }
 
@@ -985,10 +985,10 @@ uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces)
 	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 		for (uint i = baseId; i < Base::vec.size(); ++i) {
-			setContainerPointer(Base::vec[i]);
+			Base::setContainerPointer(Base::vec[i]);
 		}
 	}
-	updateAfterAllocation(oldB, newB);
+	Base::updateContainerPointers(oldB, newB);
 	return baseId;
 }
 
@@ -1001,13 +1001,7 @@ void FaceContainer<T>::reserveFaces(uint size)
 	if constexpr (face::hasVerticalInfo<FaceType>()) {
 		Base::optionalVec.reserve(size);
 	}
-	updateAfterAllocation(oldB, newB);
-}
-
-template<typename T>
-void FaceContainer<T>::setContainerPointer(FaceType& f)
-{
-	f.setContainerPointer((Base*) this);
+	Base::updateContainerPointers(oldB, newB);
 }
 
 /**
@@ -1036,30 +1030,6 @@ std::vector<int> vcl::mesh::FaceContainer<T>::compactFaces()
 		Base::optionalVec.compact(newIndices);
 	}
 	return newIndices;
-}
-
-template<typename T>
-void FaceContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
-{
-	if (oldBase != newBase) {      // if has been reallocated
-		updateContainerPointers(); // update all container pointers
-	}
-}
-
-/**
- * @brief After a reallocation, it is needed always to update the container pointers of all the
- * elements, because the assignment operator of the VerticalInfo component (which stores the pointer
- * of the container) does not copy the container pointer for security reasons.
- */
-template<typename T>
-void FaceContainer<T>::updateContainerPointers()
-{
-	if constexpr (face::hasVerticalInfo<FaceType>()) {
-		// all the faces must point to the right container - also the deleted ones
-		for (FaceType& f : faces(false)) {
-			setContainerPointer(f);
-		}
-	}
 }
 
 template<typename T>

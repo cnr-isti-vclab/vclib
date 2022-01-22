@@ -247,13 +247,7 @@ protected:
 	uint addVertices(uint nVertices);
 	void reserveVertices(uint size);
 
-	void setContainerPointer(VertexType& v);
-
 	std::vector<int> compactVertices();
-
-	void updateAfterAllocation(const T* oldBase, const T* newBase);
-
-	void updateContainerPointers();
 
 	void updateVertexReferences(const T* oldBase, const T* newBase);
 

@@ -745,10 +745,10 @@ uint EdgeContainer<T>::addEdge()
 	T* newB = Base::vec.data();
 	Base::en++;
 	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
-		setContainerPointer(Base::vec[Base::vec.size() - 1]);
+		Base::setContainerPointer(Base::vec[Base::vec.size() - 1]);
 		Base::optionalVec.resize(Base::vec.size());
 	}
-	updateAfterAllocation(oldB, newB);
+	Base::updateContainerPointers(oldB, newB);
 	return Base::vec.size() - 1;
 }
 
@@ -771,10 +771,10 @@ uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges)
 	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		Base::optionalVec.resize(Base::vec.size());
 		for (uint i = baseId; i < Base::vec.size(); ++i) {
-			setContainerPointer(Base::vec[i]);
+			Base::setContainerPointer(Base::vec[i]);
 		}
 	}
-	updateAfterAllocation(oldB, newB);
+	Base::updateContainerPointers(oldB, newB);
 	return baseId;
 }
 
@@ -787,13 +787,7 @@ void EdgeContainer<T>::reserveEdges(uint size)
 	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
 		Base::optionalVec.reserve(size);
 	}
-	updateAfterAllocation(oldB, newB);
-}
-
-template<typename T>
-void EdgeContainer<T>::setContainerPointer(EdgeType& f)
-{
-	f.setContainerPointer((Base*) this);
+	Base::updateContainerPointers(oldB, newB);
 }
 
 /**
@@ -822,30 +816,6 @@ std::vector<int> vcl::mesh::EdgeContainer<T>::compactEdges()
 		Base::optionalVec.compact(newIndices);
 	}
 	return newIndices;
-}
-
-template<typename T>
-void EdgeContainer<T>::updateAfterAllocation(const T* oldBase, const T* newBase)
-{
-	if (oldBase != newBase) {      // if has been reallocated
-		updateContainerPointers(); // update all container pointers
-	}
-}
-
-/**
- * @brief After a reallocation, it is needed always to update the container pointers of all the
- * elements, because the assignment operator of the VerticalInfo component (which stores the pointer
- * of the container) does not copy the container pointer for security reasons.
- */
-template<typename T>
-void EdgeContainer<T>::updateContainerPointers()
-{
-	if constexpr (edge::hasVerticalInfo<EdgeType>()) {
-		// all the edges must point to the right container - also the deleted ones
-		for (EdgeType& f : edges(false)) {
-			setContainerPointer(f);
-		}
-	}
 }
 
 template<typename T>
