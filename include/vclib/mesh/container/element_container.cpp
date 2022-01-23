@@ -752,7 +752,6 @@ template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-
 	for (uint i = 0; i < elementContainerSize(); ++i) {
 		element(i).importVertexReferencesFrom(c.element(i), base, cbase);
 	}

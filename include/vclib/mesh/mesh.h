@@ -196,6 +196,9 @@ private:
 	template<typename M = Mesh, typename... V>
 	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
 	addFaceHelper(typename M::FaceType& f, uint vid, V... args);
+
+	template<typename Cont, typename OthMesh>
+	void importReferences(const OthMesh& m);
 };
 
 template<typename... A>

@@ -28,7 +28,6 @@
 #include <vclib/iterators/container_range_iterator.h>
 #include <vclib/mesh/elements/face.h>
 
-#include "containers_detection.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
@@ -70,11 +69,11 @@ class FaceContainer : protected ElementContainer<T>, public FaceContainerTrigger
 		face::sanityCheckWedgeTexCoords<T>(),
 		"Size of per Face WedgeTexCoords component must be the same of the VertexReferences.");
 
-	using Base              = ElementContainer<T>;
-	using FaceContainerType = FaceContainer<T>;
-
 	template <typename U>
 	friend class FaceContainer;
+
+	using FaceContainerType = FaceContainer<T>;
+	using Base = ElementContainer<T>;
 
 public:
 	using Face              = T;
@@ -286,7 +285,7 @@ protected:
 	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
 
 	template<typename Mesh>
-	void importFaceReferencesFrom(const Mesh& m);
+	void importFaceReferencesFrom(const Mesh& m, T* base);
 
 	template<typename Mesh, typename Edge>
 	void importEdgeReferencesFrom(const Mesh& m, Edge* base);

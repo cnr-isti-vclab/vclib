@@ -984,13 +984,13 @@ void VertexContainer<T>::importFrom(const Mesh& m)
 
 template<typename T>
 template<typename Mesh>
-void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m)
+void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m, T* base)
 {
 	if constexpr (hasVertices<Mesh>()) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
 		Base::importVertexReferencesFrom(
-			(const MVertexContainer&) m, Base::vec.data(), &m.vertex(0));
+			(const MVertexContainer&) m, base, &m.vertex(0));
 	}
 }
 

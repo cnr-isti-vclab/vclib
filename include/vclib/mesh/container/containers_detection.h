@@ -31,6 +31,10 @@ namespace vcl::mesh {
 
 /* Triggerers */
 
+class ElementContainerTriggerer
+{
+};
+
 class EdgeContainerTriggerer
 {
 };
@@ -42,6 +46,17 @@ class FaceContainerTriggerer
 class VertexContainerTriggerer
 {
 };
+
+/* Detector to check if a class is (inherits) a Container */
+
+template<typename T>
+using isContainerT = std::is_base_of<ElementContainerTriggerer, T>;
+
+template<typename T>
+constexpr bool isContainer()
+{
+	return isContainerT<T>::value;
+}
 
 /* Detector to check if a class has (inherits) an EdgeContainer */
 

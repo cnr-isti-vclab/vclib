@@ -28,7 +28,6 @@
 #include <vclib/mesh/elements/edge.h>
 
 #include "../components/vertical/vectors/custom_component_vector_handle.h"
-#include "containers_detection.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
@@ -45,11 +44,11 @@ class EdgeContainer : protected ElementContainer<T>, public EdgeContainerTrigger
 		"You should include a VertexReferences as Edge component in your Mesh definition.");
 	static_assert(T::VERTEX_NUMBER == 2, "Edges must have 2 vertex references.");
 
-	using Base              = ElementContainer<T>;
-	using EdgeContainerType = EdgeContainer<T>;
-
 	template <typename U>
 	friend class EdgeContainer;
+
+	using EdgeContainerType = EdgeContainer<T>;
+	using Base = ElementContainer<T>;
 
 public:
 	using Edge              = T;
@@ -206,7 +205,7 @@ protected:
 	void importFaceReferencesFrom(const Mesh& m, Face* base);
 
 	template<typename Mesh>
-	void importEdgeReferencesFrom(const Mesh& m);
+	void importEdgeReferencesFrom(const Mesh& m, T* base);
 };
 
 } // namespace vcl::mesh

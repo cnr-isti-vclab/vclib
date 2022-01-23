@@ -28,7 +28,6 @@
 #include <vclib/iterators/container_range_iterator.h>
 #include <vclib/mesh/elements/vertex.h>
 
-#include "containers_detection.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
@@ -52,11 +51,11 @@ class VertexContainer : protected ElementContainer<T>, public VertexContainerTri
 		vcl::vert::hasCoordinate<T>(),
 		"You should include Coordinate as Vertex component in your Mesh definition.");
 
-	using Base                = ElementContainer<T>;
-	using VertexContainerType = VertexContainer<T>;
-
 	template <typename U>
 	friend class VertexContainer;
+
+	using VertexContainerType = VertexContainer<T>;
+	using Base                = ElementContainer<T>;
 
 public:
 	using Vertex              = T;
@@ -259,7 +258,7 @@ protected:
 	void importFrom(const Mesh& m);
 
 	template<typename Mesh>
-	void importVertexReferencesFrom(const Mesh& m);
+	void importVertexReferencesFrom(const Mesh& m, T* base);
 
 	template<typename Mesh, typename Face>
 	void importFaceReferencesFrom(const Mesh& m, Face* base);

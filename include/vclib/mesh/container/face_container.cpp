@@ -1025,12 +1025,12 @@ void FaceContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
 
 template<typename T>
 template<typename Mesh>
-void FaceContainer<T>::importFaceReferencesFrom(const Mesh& m)
+void FaceContainer<T>::importFaceReferencesFrom(const Mesh& m, T *base)
 {
 	if constexpr (hasFaces<Mesh>()) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
-		Base::importFaceReferencesFrom((const MFaceContainer&)m, Base::vec.data(), &m.face(0));
+		Base::importFaceReferencesFrom((const MFaceContainer&)m, base, &m.face(0));
 	}
 }
 

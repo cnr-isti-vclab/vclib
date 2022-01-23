@@ -29,11 +29,12 @@
 #include <vclib/iterators/container_range_iterator.h>
 #include "../components/vertical/vertical_info.h"
 #include "../components/vertical/vectors/vertical_components_vector.h"
+#include "containers_detection.h"
 
 namespace vcl::mesh {
 
 template <typename T>
-class ElementContainer
+class ElementContainer : public ElementContainerTriggerer
 {
 	friend class comp::VerticalInfo<T>;
 
@@ -72,7 +73,7 @@ public:
 	ElementRangeIterator      elements(bool jumpDeleted = true);
 	ConstElementRangeIterator elements(bool jumpDeleted = true) const;
 
-protected:
+//protected:
 	uint index(const T *e) const;
 	void clearElements();
 
