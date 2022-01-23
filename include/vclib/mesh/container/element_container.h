@@ -110,6 +110,15 @@ protected:
 	template<typename Container>
 	void importFrom(const Container& c);
 
+	template<typename Container, typename MyBase, typename CBase>
+	void importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
+
+	template<typename Container, typename MyBase, typename CBase>
+	void importFaceReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
+
+	template<typename Container, typename MyBase, typename CBase>
+	void importEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
+
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.

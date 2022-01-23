@@ -748,4 +748,32 @@ void ElementContainer<T>::importFrom(const Container &c)
 	}
 }
 
+template<typename T>
+template<typename Container, typename MyBase, typename CBase>
+void ElementContainer<T>::importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
+{
+
+	for (uint i = 0; i < elementContainerSize(); ++i) {
+		element(i).importVertexReferencesFrom(c.element(i), base, cbase);
+	}
+}
+
+template<typename T>
+template<typename Container, typename MyBase, typename CBase>
+void ElementContainer<T>::importFaceReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
+{
+	for (uint i = 0; i < elementContainerSize(); ++i) {
+		element(i).importFaceReferencesFrom(c.element(i), base, cbase);
+	}
+}
+
+template<typename T>
+template<typename Container, typename MyBase, typename CBase>
+void ElementContainer<T>::importEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
+{
+	for (uint i = 0; i < elementContainerSize(); ++i) {
+		element(i).importEdgeReferencesFrom(c.element(i), base, cbase);
+	}
+}
+
 } // namespace vcl::mesh

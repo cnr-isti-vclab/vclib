@@ -783,8 +783,7 @@ void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 	if constexpr (hasEdges<Mesh>()) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
-		const MEdgeContainer& mc = dynamic_cast<const MEdgeContainer&>(m);
-		Base::enableOptionalComponentsOf(mc);
+		Base::enableOptionalComponentsOf((const MEdgeContainer&)m);
 	}
 }
 
@@ -795,8 +794,7 @@ void EdgeContainer<T>::importFrom(const Mesh& m)
 	if constexpr (hasEdges<Mesh>()) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
-		const MEdgeContainer& mc = dynamic_cast<const MEdgeContainer&>(m);
-		Base::importFrom(mc);
+		Base::importFrom((const MEdgeContainer&)m);
 	}
 }
 
@@ -805,9 +803,9 @@ template<typename Mesh, typename Vertex>
 void EdgeContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
 {
 	if constexpr (hasVertices<Mesh>() && hasEdges<Mesh>()) {
-		for (uint i = 0; i < edgeContainerSize(); ++i) {
-			edge(i).importVertexReferencesFrom(m.edge(i), base, &m.vertex(0));
-		}
+		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
+
+		Base::importVertexReferencesFrom((const MEdgeContainer&)m, base, &m.vertex(0));
 	}
 }
 
@@ -816,9 +814,9 @@ template<typename Mesh, typename Face>
 void EdgeContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 {
 	if constexpr (hasFaces<Mesh>() && hasEdges<Mesh>()) {
-		for (uint i = 0; i < edgeContainerSize(); ++i) {
-			edge(i).importFaceReferencesFrom(m.edge(i), base, &m.face(0));
-		}
+		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
+
+		Base::importFaceReferencesFrom((const MEdgeContainer&)m, base, &m.face(0));
 	}
 }
 
@@ -827,9 +825,9 @@ template<typename Mesh>
 void EdgeContainer<T>::importEdgeReferencesFrom(const Mesh& m)
 {
 	if constexpr (hasEdges<Mesh>()) {
-		for (uint i = 0; i < edgeContainerSize(); ++i) {
-			edge(i).importEdgeReferencesFrom(m.edge(i), Base::vec.data(), &m.edge(0));
-		}
+		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
+
+		Base::importFaceReferencesFrom((const MEdgeContainer&)m, Base::vec.data(), &m.edge(0));
 	}
 }
 

@@ -997,8 +997,7 @@ void FaceContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 	if constexpr (hasFaces<Mesh>()) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
-		const MFaceContainer& mc = dynamic_cast<const MFaceContainer&>(m);
-		Base::enableOptionalComponentsOf(mc);
+		Base::enableOptionalComponentsOf((const MFaceContainer&)m);
 	}
 }
 
@@ -1009,8 +1008,7 @@ void FaceContainer<T>::importFrom(const Mesh& m)
 	if constexpr (hasFaces<Mesh>()) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
-		const MFaceContainer& mc = dynamic_cast<const MFaceContainer&>(m);
-		Base::importFrom(mc);
+		Base::importFrom((const MFaceContainer&)m);
 	}
 }
 
@@ -1019,9 +1017,9 @@ template<typename Mesh, typename Vertex>
 void FaceContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
 {
 	if constexpr (hasVertices<Mesh>() && hasFaces<Mesh>()) {
-		for (uint i = 0; i < faceContainerSize(); ++i) {
-			face(i).importVertexReferencesFrom(m.face(i), base, &m.vertex(0));
-		}
+		using MFaceContainer = typename Mesh::FaceContainer::Base;
+
+		Base::importVertexReferencesFrom((const MFaceContainer&)m, base, &m.vertex(0));
 	}
 }
 
@@ -1030,9 +1028,9 @@ template<typename Mesh>
 void FaceContainer<T>::importFaceReferencesFrom(const Mesh& m)
 {
 	if constexpr (hasFaces<Mesh>()) {
-		for (uint i = 0; i < faceContainerSize(); ++i) {
-			face(i).importFaceReferencesFrom(m.face(i), Base::vec.data(), &m.face(0));
-		}
+		using MFaceContainer = typename Mesh::FaceContainer::Base;
+
+		Base::importFaceReferencesFrom((const MFaceContainer&)m, Base::vec.data(), &m.face(0));
 	}
 }
 
@@ -1041,9 +1039,9 @@ template<typename Mesh, typename Edge>
 void FaceContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 {
 	if constexpr (hasEdges<Mesh>() && hasFaces<Mesh>()) {
-		for (uint i = 0; i < faceContainerSize(); ++i) {
-			face(i).importEdgeReferencesFrom(m.face(i), base, &m.edge(0));
-		}
+		using MFaceContainer = typename Mesh::FaceContainer::Base;
+
+		Base::importEdgeReferencesFrom((const MFaceContainer&)m, base, &m.edge(0));
 	}
 }
 

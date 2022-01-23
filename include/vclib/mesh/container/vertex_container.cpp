@@ -967,8 +967,7 @@ void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 	if constexpr (hasVertices<Mesh>()) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
-		const MVertexContainer& mc = dynamic_cast<const MVertexContainer&>(m);
-		Base::enableOptionalComponentsOf(mc);
+		Base::enableOptionalComponentsOf((const MVertexContainer&)m);
 	}
 }
 
@@ -979,8 +978,7 @@ void VertexContainer<T>::importFrom(const Mesh& m)
 	if constexpr (hasVertices<Mesh>()) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
-		const MVertexContainer& mc = dynamic_cast<const MVertexContainer&>(m);
-		Base::importFrom(mc);
+		Base::importFrom((const MVertexContainer&) m);
 	}
 }
 
@@ -989,9 +987,10 @@ template<typename Mesh>
 void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m)
 {
 	if constexpr (hasVertices<Mesh>()) {
-		for (uint i = 0; i < vertexContainerSize(); ++i) {
-			vertex(i).importVertexReferencesFrom(m.vertex(i), Base::vec.data(), &m.vertex(0));
-		}
+		using MVertexContainer = typename Mesh::VertexContainer::Base;
+
+		Base::importVertexReferencesFrom(
+			(const MVertexContainer&) m, Base::vec.data(), &m.vertex(0));
 	}
 }
 
@@ -1000,9 +999,9 @@ template<typename Mesh, typename Face>
 void VertexContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 {
 	if constexpr (hasFaces<Mesh>() && hasVertices<Mesh>()) {
-		for (uint i = 0; i < vertexContainerSize(); ++i) {
-			vertex(i).importFaceReferencesFrom(m.vertex(i), base, &m.face(0));
-		}
+		using MVertexContainer = typename Mesh::VertexContainer::Base;
+
+		Base::importFaceReferencesFrom((const MVertexContainer&) m, base, &m.face(0));
 	}
 }
 
@@ -1011,9 +1010,9 @@ template<typename Mesh, typename Edge>
 void VertexContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 {
 	if constexpr (hasEdges<Mesh>() && hasVertices<Mesh>()) {
-		for (uint i = 0; i < vertexContainerSize(); ++i) {
-			vertex(i).importEdgeReferencesFrom(m.vertex(i), base, &m.edge(0));
-		}
+		using MVertexContainer = typename Mesh::VertexContainer::Base;
+
+		Base::importEdgeReferencesFrom((const MVertexContainer&) m, base, &m.edge(0));
 	}
 }
 
