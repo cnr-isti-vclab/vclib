@@ -1006,14 +1006,11 @@ template<typename T>
 template<typename Mesh>
 void FaceContainer<T>::importFrom(const Mesh& m)
 {
-	clearFaces();
 	if constexpr (hasFaces<Mesh>()) {
-		addFaces(m.faceContainerSize());
-		unsigned int fid = 0;
-		for (const typename Mesh::FaceType& f : m.faces(false)) {
-			face(fid).importFrom(f);
-			++fid;
-		}
+		using MFaceContainer = typename Mesh::FaceContainer::Base;
+
+		const MFaceContainer& mc = dynamic_cast<const MFaceContainer&>(m);
+		Base::importFrom(mc);
 	}
 }
 

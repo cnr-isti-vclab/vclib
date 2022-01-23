@@ -976,14 +976,11 @@ template<typename T>
 template<typename Mesh>
 void VertexContainer<T>::importFrom(const Mesh& m)
 {
-	clearVertices();
 	if constexpr (hasVertices<Mesh>()) {
-		addVertices(m.vertexContainerSize());
-		unsigned int vid = 0;
-		for (const typename Mesh::VertexType& v : m.vertices(false)) {
-			vertex(vid).importFrom(v);
-			++vid;
-		}
+		using MVertexContainer = typename Mesh::VertexContainer::Base;
+
+		const MVertexContainer& mc = dynamic_cast<const MVertexContainer&>(m);
+		Base::importFrom(mc);
 	}
 }
 

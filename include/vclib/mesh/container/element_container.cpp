@@ -735,4 +735,17 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	}
 }
 
+template<typename T>
+template<typename Container>
+void ElementContainer<T>::importFrom(const Container &c)
+{
+	clearElements();
+	addElements(c.elementContainerSize());
+	unsigned int eid = 0;
+	for (const typename Container::ElementType& e : c.elements(false)) {
+		element(eid).importFrom(e);
+		++eid;
+	}
+}
+
 } // namespace vcl::mesh

@@ -792,14 +792,11 @@ template<typename T>
 template<typename Mesh>
 void EdgeContainer<T>::importFrom(const Mesh& m)
 {
-	clearEdges();
 	if constexpr (hasEdges<Mesh>()) {
-		addEdges(m.edgeContainerSize());
-		unsigned int eid = 0;
-		for (const typename Mesh::EdgeType& e : m.edges(false)) {
-			edge(eid).importFrom(e);
-			++eid;
-		}
+		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
+
+		const MEdgeContainer& mc = dynamic_cast<const MEdgeContainer&>(m);
+		Base::importFrom(mc);
 	}
 }
 

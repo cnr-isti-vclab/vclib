@@ -107,6 +107,9 @@ protected:
 	template<typename Container>
 	void enableOptionalComponentsOf(const Container& c);
 
+	template<typename Container>
+	void importFrom(const Container& c);
+
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.
