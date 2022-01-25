@@ -61,12 +61,12 @@ constexpr bool isContainer()
 /* Detector to check if a class has (inherits) an EdgeContainer */
 
 template<typename T>
-using hasEdgeContainer = std::is_base_of<EdgeContainerTriggerer, T>;
+using hasEdgeContainerT = std::is_base_of<EdgeContainerTriggerer, T>;
 
 template<typename T>
 constexpr bool hasEdges()
 {
-	return hasEdgeContainer<T>::value;
+	return hasEdgeContainerT<T>::value;
 }
 
 template<typename T>
@@ -83,12 +83,12 @@ constexpr bool hasEdgeOptionalContainer()
 /* Detector to check if a class has (inherits) a FaceContainer */
 
 template<typename T>
-using hasFaceContainer = std::is_base_of<FaceContainerTriggerer, T>;
+using hasFaceContainerT = std::is_base_of<FaceContainerTriggerer, T>;
 
 template<typename T>
 constexpr bool hasFaces()
 {
-	return hasFaceContainer<T>::value;
+	return hasFaceContainerT<T>::value;
 }
 
 template<typename T>

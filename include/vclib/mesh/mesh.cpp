@@ -880,16 +880,25 @@ template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importReferences(const OthMesh &m)
 {
 	using ThisMesh = Mesh<Args...>;
+	
+	// Note: in this function, we cannot use:
+	// if constexpr (mesh::isContainer<Cont>()) {...}
+	// if constexpr (mesh::hasVertices<TriMesh>()) {...}
+	// having at least two if constexpr in the same function causes error C2143 on MSVC
+	// this is probably an MSVC bug. Works on gcc and clang.
+	// Does not make any sense since mesh::isContainer<Cont>() can be called without
+	// any other constexpr called, and beacuase it is literally the same of calling
+	// mesh::isContainerT<Cont>::value, which works.
 
 	// if Args it is a container
-	if constexpr(mesh::isContainer<Cont>()) {
-		if constexpr (mesh::hasVertices<ThisMesh>()) {
+	if constexpr(mesh::isContainerT<Cont>::value) {
+		if constexpr (mesh::hasVertexContainerT<ThisMesh>::value) {
 			Cont::importVertexReferencesFrom(m, &this->vertex(0));
 		}
-		if constexpr (mesh::hasFaces<ThisMesh>()) {
+		if constexpr (mesh::hasFaceContainerT<ThisMesh>::value) {
 			Cont::importFaceReferencesFrom(m, &this->face(0));
 		}
-		if constexpr (mesh::hasEdges<ThisMesh>()) {
+		if constexpr (mesh::hasEdgeContainerT<ThisMesh>::value) {
 			Cont::importEdgeReferencesFrom(m, &this->edge(0));
 		}
 	}
