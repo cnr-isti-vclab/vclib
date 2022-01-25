@@ -25,6 +25,8 @@
 
 #include <execution>
 
+#include <vclib/misc/types.h>
+
 namespace vcl {
 
 template<typename Iterator, typename Lambda>

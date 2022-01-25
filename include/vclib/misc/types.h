@@ -46,6 +46,13 @@
 // https://stackoverflow.com/questions/44268316/passing-a-template-type-into-a-macro
 #define VCL_COMMA ,
 
+// clang does not support Standardization of Parallelism yet -> https://en.cppreference.com/w/cpp/compiler_support
+#ifdef __clang__
+#define VCL_PARALLEL 
+#else
+#define VCL_PARALLEL std::execution::par_unseq,
+#endif
+
 using uint = unsigned int;
 using ushort = unsigned short;
 

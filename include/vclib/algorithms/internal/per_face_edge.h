@@ -136,7 +136,7 @@ std::vector<PerFaceEdge<MeshType>> fillAndSortEdgeVector(MeshType& m, bool inclu
 			}
 		}
 	}
-	std::sort(std::execution::par_unseq, vec.begin(), vec.end()); // Lo ordino per vertici
+	std::sort(VCL_PARALLEL vec.begin(), vec.end()); // Lo ordino per vertici
 
 	return vec;
 }
@@ -163,7 +163,7 @@ fillAndSortEdgeVector(const MeshType& m, bool includeFauxEdges = true)
 		}
 	}
 
-	std::sort(std::execution::par_unseq, vec.begin(), vec.end()); // Lo ordino per vertici
+	std::sort(VCL_PARALLEL vec.begin(), vec.end()); // Lo ordino per vertici
 
 	return vec;
 }
