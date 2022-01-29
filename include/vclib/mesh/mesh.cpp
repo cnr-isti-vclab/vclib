@@ -22,6 +22,8 @@
 
 #include "mesh.h"
 
+#include <vclib/algorithms/polygon.h>
+
 namespace vcl {
 
 /**
@@ -633,6 +635,8 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 {
 	(Args::importFrom(m), ...);
 
+	manageImportTriFromPoly(m);
+
 	// after importing ordinary components, I need to convert the references between containers
 
 	(importReferences<Args>(m), ...);
@@ -875,6 +879,91 @@ Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
 	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
+/**
+ * @brief This function manages the case where we try to import into a TriMesh a PolyMesh
+ * Faces have been already imported, but without vertex references and other components that
+ * depend on the number of vertices (e.g. wedges)
+ */
+template<typename... Args>
+template<typename OthMesh>
+void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
+{
+	if constexpr(mesh::hasVertices<Mesh<Args...>>() && mesh::hasVertices<OthMesh>()) {
+		if constexpr(mesh::hasFaces<Mesh<Args...>>() && mesh::hasFaces<OthMesh>()) {
+			using VertexType = typename Mesh<Args...>::VertexType;
+			using MVertexType = typename OthMesh::VertexType;
+			using FaceType = typename Mesh<Args...>::FaceType;
+			using MFaceType = typename OthMesh::FaceType;
+
+			using VertexContainer = typename Mesh<Args...>::VertexContainer;
+			using MVertexContainer = typename OthMesh::VertexContainer;
+			using FaceContainer   = typename Mesh<Args...>::FaceContainer;
+
+			// TODO: this function should manage any Mesh::VERTEX_NUMBER < OthMesh::VERTEX_NUMBER
+			// right now, it supports only importing into triangles
+			if constexpr (
+				FaceType::VERTEX_NUMBER == 3 &&
+				(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
+
+				VertexType* base = VertexContainer::vec.data();
+				const MVertexType* mvbase = &m.vertex(0);
+
+				for (const MFaceType& mf : m.faces()) {
+					if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
+						// triangulate mf; the first triangle of the triangulation will be
+						// this->face(m.index(mf));
+						// the other triangles will be added at the end of the container
+						std::vector<uint> tris = vcl::earCut(mf);
+						FaceType& f = FaceContainer::face(m.index(mf));
+						importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
+
+						// number of other faces to add
+						uint nf = tris.size() / 3 - 1;
+						uint fid = FaceContainer::addFaces(nf);
+
+						uint i = 3; // index that cycles into tris
+						for (; fid < FaceContainer::faceContainerSize(); ++fid) {
+							FaceType& f = FaceContainer::face(fid);
+							importTriReferencesHelper(f, mf, base, mvbase, tris, i);
+							i+=3;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+template<typename... Args>
+template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
+void Mesh<Args...>::importTriReferencesHelper(
+	FaceType&                f,
+	const MFaceType&         mf,
+	VertexType*              base,
+	const MVertexType*       mvbase,
+	const std::vector<uint>& tris,
+	uint                     basetri)
+{
+	f.importFrom(mf); // import all the components from mf
+	for (uint i = basetri, j = 0; i < basetri+3; i++, j++) {
+		f.vertex(j) = base + (mf.vertex(tris[i]) - mvbase);
+
+		// wedge colors
+		if constexpr(face::hasWedgeColors<FaceType>() && face::hasWedgeColors<MFaceType>()) {
+			if (comp::isWedgeColorsEnabledOn(f) && comp::isWedgeColorsEnabledOn(mf)) {
+				f.wedgeColor(j) = mf.wedgeColor(tris[i]);
+			}
+		}
+
+		// wedge texcoords
+		if constexpr(face::hasWedgeTexCoords<FaceType>() && face::hasWedgeTexCoords<MFaceType>()) {
+			if (comp::isWedgeTexCoordsEnabledOn(f) && comp::isWedgeTexCoordsEnabledOn(mf)) {
+				f.wedgeTexCoord(j) = mf.wedgeTexCoord(tris[i]);
+			}
+		}
+	}
+}
+
 template<typename... Args>
 template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importReferences(const OthMesh &m)
@@ -890,7 +979,7 @@ void Mesh<Args...>::importReferences(const OthMesh &m)
 	// any other constexpr called, and beacuase it is literally the same of calling
 	// mesh::isContainerT<Cont>::value, which works.
 
-	// if Args it is a container
+	// if Args is a container
 	if constexpr(mesh::isContainerT<Cont>::value) {
 		if constexpr (mesh::hasVertexContainerT<ThisMesh>::value) {
 			Cont::importVertexReferencesFrom(m, &this->vertex(0));

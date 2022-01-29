@@ -26,6 +26,7 @@
 #include <vclib/io/save_ply.h>
 #include <vclib/trimesh.h>
 #include <vclib/polymesh.h>
+#include <vclib/misc/timer.h>
 
 int main()
 {
@@ -33,12 +34,24 @@ int main()
 
 	vcl::PolyMesh pm;
 
+	vcl::Timer t("import");
 	pm.enableSameOptionalComponentsOf(m);
 	pm.importFrom(m);
+	t.stopAndPrint();
 
 	assert(pm.isPerFaceWedgeTexCoordsEnabled());
 
 	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
+
+	pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+
+	m.clear();
+	m.disableAllPerFaceOptionalComponents();
+	m.disableAllPerVertexOptionalComponents();
+	m.enableSameOptionalComponentsOf(pm);
+	m.importFrom(pm);
+
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/cube_from_poly.ply", false);
 
 	return 0;
 }

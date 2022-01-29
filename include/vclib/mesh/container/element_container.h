@@ -73,7 +73,7 @@ public:
 	ElementRangeIterator      elements(bool jumpDeleted = true);
 	ConstElementRangeIterator elements(bool jumpDeleted = true) const;
 
-//protected:
+protected:
 	uint index(const T *e) const;
 	void clearElements();
 
