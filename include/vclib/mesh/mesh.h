@@ -197,20 +197,20 @@ private:
 	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
 	addFaceHelper(typename M::FaceType& f, uint vid, V... args);
 
+	template<typename Cont, typename OthMesh>
+	void importReferences(const OthMesh& m);
+
 	template<typename OthMesh>
 	void manageImportTriFromPoly(const OthMesh& m);
 
 	template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
-	void importTriReferencesHelper(
+	static void importTriReferencesHelper(
 		FaceType&                f,
 		const MFaceType&         mf,
 		VertexType*              base,
 		const MVertexType*       mvbase,
 		const std::vector<uint>& tris,
 		uint                     basetri);
-
-	template<typename Cont, typename OthMesh>
-	void importReferences(const OthMesh& m);
 };
 
 template<typename... A>

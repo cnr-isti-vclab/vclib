@@ -635,11 +635,14 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 {
 	(Args::importFrom(m), ...);
 
-	manageImportTriFromPoly(m);
-
 	// after importing ordinary components, I need to convert the references between containers
 
 	(importReferences<Args>(m), ...);
+
+	// in case of import from poly to triangle mesh, I need to manage triangulation of polygons and
+	// create additional triangle faces for each of the imported polygons
+
+	manageImportTriFromPoly(m);
 }
 
 /**
@@ -879,6 +882,35 @@ Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
 	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
+template<typename... Args>
+template<typename Cont, typename OthMesh>
+void Mesh<Args...>::importReferences(const OthMesh &m)
+{
+	using ThisMesh = Mesh<Args...>;
+	
+	// Note: in this function, we cannot use:
+	// if constexpr (mesh::isContainer<Cont>()) {...}
+	// if constexpr (mesh::hasVertices<TriMesh>()) {...}
+	// having at least two if constexpr in the same function causes error C2143 on MSVC
+	// this is probably an MSVC bug. Works on gcc and clang.
+	// Does not make any sense since mesh::isContainer<Cont>() can be called without
+	// any other constexpr called, and beacuase it is literally the same of calling
+	// mesh::isContainerT<Cont>::value, which works.
+
+	// if Args is a container
+	if constexpr(mesh::isContainerT<Cont>::value) {
+		if constexpr (mesh::hasVertexContainerT<ThisMesh>::value) {
+			Cont::importVertexReferencesFrom(m, &this->vertex(0));
+		}
+		if constexpr (mesh::hasFaceContainerT<ThisMesh>::value) {
+			Cont::importFaceReferencesFrom(m, &this->face(0));
+		}
+		if constexpr (mesh::hasEdgeContainerT<ThisMesh>::value) {
+			Cont::importEdgeReferencesFrom(m, &this->edge(0));
+		}
+	}
+}
+
 /**
  * @brief This function manages the case where we try to import into a TriMesh a PolyMesh
  * Faces have been already imported, but without vertex references and other components that
@@ -899,8 +931,18 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 			using MVertexContainer = typename OthMesh::VertexContainer;
 			using FaceContainer   = typename Mesh<Args...>::FaceContainer;
 
-			// TODO: this function should manage any Mesh::VERTEX_NUMBER < OthMesh::VERTEX_NUMBER
-			// right now, it supports only importing into triangles
+			   // if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
+			   // number of vertex references in this mesh), and this mesh does not have the same
+			   // number of vertex references of the other, it means that we don't know how to convert
+			   // these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
+			   // mesh, or convert a quad mesh into a pentagonal mesh...)
+			static_assert(
+				!(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
+				  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
+				"Cannot import from that type of Mesh. Don't know how to convert faces.");
+
+			   // we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
+			   // triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
 			if constexpr (
 				FaceType::VERTEX_NUMBER == 3 &&
 				(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
@@ -909,6 +951,9 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 				const MVertexType* mvbase = &m.vertex(0);
 
 				for (const MFaceType& mf : m.faces()) {
+					// if the current face has the same number of vertices of this faces (3), then
+					// the vertex references have been correctly imported from the import references
+					// function
 					if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
 						// triangulate mf; the first triangle of the triangulation will be
 						// this->face(m.index(mf));
@@ -917,7 +962,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 						FaceType& f = FaceContainer::face(m.index(mf));
 						importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
 
-						// number of other faces to add
+						   // number of other faces to add
 						uint nf = tris.size() / 3 - 1;
 						uint fid = FaceContainer::addFaces(nf);
 
@@ -948,47 +993,18 @@ void Mesh<Args...>::importTriReferencesHelper(
 	for (uint i = basetri, j = 0; i < basetri+3; i++, j++) {
 		f.vertex(j) = base + (mf.vertex(tris[i]) - mvbase);
 
-		// wedge colors
+		   // wedge colors
 		if constexpr(face::hasWedgeColors<FaceType>() && face::hasWedgeColors<MFaceType>()) {
 			if (comp::isWedgeColorsEnabledOn(f) && comp::isWedgeColorsEnabledOn(mf)) {
 				f.wedgeColor(j) = mf.wedgeColor(tris[i]);
 			}
 		}
 
-		// wedge texcoords
+		   // wedge texcoords
 		if constexpr(face::hasWedgeTexCoords<FaceType>() && face::hasWedgeTexCoords<MFaceType>()) {
 			if (comp::isWedgeTexCoordsEnabledOn(f) && comp::isWedgeTexCoordsEnabledOn(mf)) {
 				f.wedgeTexCoord(j) = mf.wedgeTexCoord(tris[i]);
 			}
-		}
-	}
-}
-
-template<typename... Args>
-template<typename Cont, typename OthMesh>
-void Mesh<Args...>::importReferences(const OthMesh &m)
-{
-	using ThisMesh = Mesh<Args...>;
-	
-	// Note: in this function, we cannot use:
-	// if constexpr (mesh::isContainer<Cont>()) {...}
-	// if constexpr (mesh::hasVertices<TriMesh>()) {...}
-	// having at least two if constexpr in the same function causes error C2143 on MSVC
-	// this is probably an MSVC bug. Works on gcc and clang.
-	// Does not make any sense since mesh::isContainer<Cont>() can be called without
-	// any other constexpr called, and beacuase it is literally the same of calling
-	// mesh::isContainerT<Cont>::value, which works.
-
-	// if Args is a container
-	if constexpr(mesh::isContainerT<Cont>::value) {
-		if constexpr (mesh::hasVertexContainerT<ThisMesh>::value) {
-			Cont::importVertexReferencesFrom(m, &this->vertex(0));
-		}
-		if constexpr (mesh::hasFaceContainerT<ThisMesh>::value) {
-			Cont::importFaceReferencesFrom(m, &this->face(0));
-		}
-		if constexpr (mesh::hasEdgeContainerT<ThisMesh>::value) {
-			Cont::importEdgeReferencesFrom(m, &this->edge(0));
 		}
 	}
 }
