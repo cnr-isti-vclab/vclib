@@ -33,6 +33,7 @@
 #include "../components/horizontal/normal.h"
 #include "../components/horizontal/principal_curvature.h"
 #include "../components/horizontal/scalar.h"
+#include "../components/horizontal/vertex_half_edge_reference.h"
 #include "../components/horizontal/tex_coord.h"
 
 namespace vcl::vert {
@@ -99,6 +100,16 @@ template<typename VertexType>
 bool constexpr hasCoordinate()
 {
 	return comp::hasCoordinate<VertexType>();
+}
+
+/* Port Half Edge reference into vert namespace*/
+template<typename HalfEdge>
+using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge>;
+
+template<typename VertexType>
+bool constexpr hasHalfEdgeReference()
+{
+	return comp::hasVertexHalfEdgeReference<VertexType>();
 }
 
 /* Port Mark class into vert namespace */

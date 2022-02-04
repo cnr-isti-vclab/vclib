@@ -105,6 +105,27 @@ set(HEADERS
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
+	include/vclib/mesh/components/detection/adjacent_edges_detection.h
+	include/vclib/mesh/components/detection/adjacent_faces_detection.h
+	include/vclib/mesh/components/detection/adjacent_vertices_detection.h
+	include/vclib/mesh/components/detection/bit_flags_detection.h
+	include/vclib/mesh/components/detection/bounding_box_detection.h
+	include/vclib/mesh/components/detection/color_detection.h
+	include/vclib/mesh/components/detection/coordinate_detection.h
+	include/vclib/mesh/components/detection/custom_components_detection.h
+	include/vclib/mesh/components/detection/face_half_edge_reference_detection.h
+	include/vclib/mesh/components/detection/half_edge_references_detection.h
+	include/vclib/mesh/components/detection/mark_detection.h
+	include/vclib/mesh/components/detection/normal_detection.h
+	include/vclib/mesh/components/detection/principal_curvature_detection.h
+	include/vclib/mesh/components/detection/scalar_detection.h
+	include/vclib/mesh/components/detection/tex_coord_detection.h
+	include/vclib/mesh/components/detection/tex_file_names_detection.h
+	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
+	include/vclib/mesh/components/detection/vertex_half_edge_reference_detection.h
+	include/vclib/mesh/components/detection/vertex_references_detection.h
+	include/vclib/mesh/components/detection/wedge_colors_detection.h
+	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
 	include/vclib/mesh/components/horizontal/adjacent_edges.h
 	include/vclib/mesh/components/horizontal/adjacent_faces.h
 	include/vclib/mesh/components/horizontal/adjacent_vertices.h
@@ -112,12 +133,14 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/bounding_box.h
 	include/vclib/mesh/components/horizontal/color.h
 	include/vclib/mesh/components/horizontal/coordinate.h
+	include/vclib/mesh/components/horizontal/face_half_edge_reference.h
 	include/vclib/mesh/components/horizontal/half_edge_references.h
 	include/vclib/mesh/components/horizontal/mark.h
 	include/vclib/mesh/components/horizontal/normal.h
 	include/vclib/mesh/components/horizontal/polygon_bit_flags.h
 	include/vclib/mesh/components/horizontal/principal_curvature.h
 	include/vclib/mesh/components/horizontal/scalar.h
+	include/vclib/mesh/components/horizontal/vertex_half_edge_reference.h
 	include/vclib/mesh/components/horizontal/vertex_references.h
 	include/vclib/mesh/components/horizontal/tex_coord.h
 	include/vclib/mesh/components/horizontal/texture_file_names.h
@@ -127,25 +150,6 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/wedge_tex_coords.h
 	include/vclib/mesh/components/horizontal/internal/element_references.h
 	include/vclib/mesh/components/horizontal/internal/generic_container.h
-	include/vclib/mesh/components/detection/adjacent_edges_detection.h
-	include/vclib/mesh/components/detection/adjacent_faces_detection.h
-	include/vclib/mesh/components/detection/adjacent_vertices_detection.h
-	include/vclib/mesh/components/detection/bit_flags_detection.h
-	include/vclib/mesh/components/detection/bounding_box_detection.h
-	include/vclib/mesh/components/detection/color_detection.h
-	include/vclib/mesh/components/detection/coordinate_detection.h
-	include/vclib/mesh/components/detection/custom_components_detection.h
-	include/vclib/mesh/components/detection/half_edge_references_detection.h
-	include/vclib/mesh/components/detection/mark_detection.h
-	include/vclib/mesh/components/detection/normal_detection.h
-	include/vclib/mesh/components/detection/principal_curvature_detection.h
-	include/vclib/mesh/components/detection/scalar_detection.h
-	include/vclib/mesh/components/detection/tex_coord_detection.h
-	include/vclib/mesh/components/detection/tex_file_names_detection.h
-	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
-	include/vclib/mesh/components/detection/vertex_references_detection.h
-	include/vclib/mesh/components/detection/wedge_colors_detection.h
-	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
 	include/vclib/mesh/components/vertical/vertical_info.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.h
@@ -278,6 +282,7 @@ set(SOURCES
 	include/vclib/mesh/components/horizontal/bounding_box.cpp
 	include/vclib/mesh/components/horizontal/color.cpp
 	include/vclib/mesh/components/horizontal/coordinate.cpp
+	include/vclib/mesh/components/horizontal/face_half_edge_reference.cpp
 	include/vclib/mesh/components/horizontal/half_edge_references.cpp
 	include/vclib/mesh/components/horizontal/mark.cpp
 	include/vclib/mesh/components/horizontal/normal.cpp
@@ -288,6 +293,7 @@ set(SOURCES
 	include/vclib/mesh/components/horizontal/texture_file_names.cpp
 	include/vclib/mesh/components/horizontal/transform_matrix.cpp
 	include/vclib/mesh/components/horizontal/triangle_bit_flags.cpp
+	include/vclib/mesh/components/horizontal/vertex_half_edge_reference.cpp
 	include/vclib/mesh/components/horizontal/vertex_references.cpp
 	include/vclib/mesh/components/horizontal/wedge_colors.cpp
 	include/vclib/mesh/components/horizontal/wedge_tex_coords.cpp

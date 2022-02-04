@@ -27,6 +27,7 @@
 #include "../components/horizontal/adjacent_faces.h"
 #include "../components/horizontal/bit_flags.h"
 #include "../components/horizontal/color.h"
+#include "../components/horizontal/face_half_edge_reference.h"
 #include "../components/horizontal/mark.h"
 #include "../components/horizontal/normal.h"
 #include "../components/horizontal/polygon_bit_flags.h"
@@ -93,6 +94,16 @@ template<typename FaceType>
 bool constexpr hasColor()
 {
 	return comp::hasColor<FaceType>();
+}
+
+/* Port Half Edge reference into face namespace*/
+template<typename HalfEdge>
+using HalfEdgeReference = comp::FaceHalfEdgeReference<HalfEdge>;
+
+template<typename FaceType>
+bool constexpr hasHalfEdgeReference()
+{
+	return comp::hasFaceHalfEdgeReference<FaceType>();
 }
 
 /* Port Mark class into face namespace */
