@@ -25,14 +25,14 @@
 
 #include "../components/horizontal/bit_flags.h"
 #include "../components/horizontal/color.h"
+#include "../components/horizontal/half_edge_references.h"
 #include "../components/horizontal/mark.h"
 #include "../components/horizontal/normal.h"
 #include "../components/horizontal/scalar.h"
-#include "../components/horizontal/vertex_references.h"
 
 namespace vcl::hedge {
 
-/* Port BitFlags class into edge namespace */
+/* Port BitFlags class into hedge namespace */
 using BitFlags = comp::BitFlags;
 
 template<typename EdgeType>
@@ -41,7 +41,7 @@ bool constexpr hasBitFlags()
 	return comp::hasBitFlags<EdgeType>();
 }
 
-/* Port Color class into edge namespace */
+/* Port Color class into hedge namespace */
 using Color = comp::Color;
 
 template<typename EdgeType>
@@ -50,7 +50,17 @@ bool constexpr hasColor()
 	return comp::hasColor<EdgeType>();
 }
 
-/* Port Mark class into edge namespace */
+/* Port HalfEdgeReferences class into hedge namespace */
+template<typename HalfEdgeType, typename VertexType, typename FaceType>
+using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType>;
+
+template<typename HalfEdgeType>
+bool constexpr hasHalfEdgeReferences()
+{
+	return comp::hasHalfEdgeReferences<HalfEdgeType>();
+}
+
+/* Port Mark class into hedge namespace */
 using Mark = comp::Mark;
 
 template<typename EdgeType>
@@ -59,7 +69,7 @@ bool constexpr hasMark()
 	return comp::hasMark<EdgeType>();
 }
 
-/* Port Scalar class into edge namespace */
+/* Port Scalar class into hedge namespace */
 template<typename ScalarType>
 using Scalar = comp::Scalar<ScalarType>;
 
@@ -70,16 +80,6 @@ template<typename EdgeType>
 bool constexpr hasScalar()
 {
 	return comp::hasScalar<EdgeType>();
-}
-
-/* Port VertexReferences class into edge namespace */
-template<typename VertexType>
-using VertexReferences = comp::VertexReferences<VertexType, 2>;
-
-template<typename EdgeType>
-bool constexpr hasVertexReferences()
-{
-	return comp::hasVertexReferences<EdgeType>();
 }
 
 } // namespace vcl::hedge

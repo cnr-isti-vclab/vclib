@@ -112,6 +112,7 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/bounding_box.h
 	include/vclib/mesh/components/horizontal/color.h
 	include/vclib/mesh/components/horizontal/coordinate.h
+	include/vclib/mesh/components/horizontal/half_edge_references.h
 	include/vclib/mesh/components/horizontal/mark.h
 	include/vclib/mesh/components/horizontal/normal.h
 	include/vclib/mesh/components/horizontal/polygon_bit_flags.h
@@ -134,6 +135,7 @@ set(HEADERS
 	include/vclib/mesh/components/detection/color_detection.h
 	include/vclib/mesh/components/detection/coordinate_detection.h
 	include/vclib/mesh/components/detection/custom_components_detection.h
+	include/vclib/mesh/components/detection/half_edge_references_detection.h
 	include/vclib/mesh/components/detection/mark_detection.h
 	include/vclib/mesh/components/detection/normal_detection.h
 	include/vclib/mesh/components/detection/principal_curvature_detection.h
@@ -276,6 +278,7 @@ set(SOURCES
 	include/vclib/mesh/components/horizontal/bounding_box.cpp
 	include/vclib/mesh/components/horizontal/color.cpp
 	include/vclib/mesh/components/horizontal/coordinate.cpp
+	include/vclib/mesh/components/horizontal/half_edge_references.cpp
 	include/vclib/mesh/components/horizontal/mark.cpp
 	include/vclib/mesh/components/horizontal/normal.cpp
 	include/vclib/mesh/components/horizontal/polygon_bit_flags.cpp

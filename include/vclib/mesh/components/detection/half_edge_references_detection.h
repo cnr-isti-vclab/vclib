@@ -20,36 +20,30 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
-#define VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
+#ifndef VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_DETECTION_H
+#define VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_DETECTION_H
 
-#include <vclib/iterators/container_iterator.h>
-#include <vclib/iterators/container_range_iterator.h>
-#include <vclib/mesh/elements/half_edge.h>
+#include <vclib/misc/types.h>
 
-#include "../components/vertical/vectors/custom_component_vector_handle.h"
-#include "element_container.h"
+namespace vcl::comp {
 
-namespace vcl::mesh {
+/* Triggerers */
 
-template<typename T>
-class HalfEdgeContainer : protected ElementContainer<T>, public HalfEdgeContainerTriggerer
+class HalfEdgeReferencesTriggerer
 {
-	// Sanity checks for the Edge -- all components must be consistent each other
-	static_assert(
-		vcl::hedge::hasBitFlags<T>(),
-		"You should include BitFlags (or a derived) as HalfEdge component in your Mesh "
-		"definition.");
-	static_assert(
-		vcl::hedge::hasHalfEdgeReferences<T>(),
-		"You should include a HalfEdgeReferences as HalfEdge component in your Mesh definition.");
-
-public:
-	HalfEdgeContainer();
 };
 
-} // namespace vcl::mesh
+/* Detector to check if a class has (inherits) HalfEdgeReferences */
 
-#include "half_edge_container.cpp"
+template<typename T>
+using hasHalfEdgeReferencesT = std::is_base_of<HalfEdgeReferencesTriggerer, T>;
 
-#endif // VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
+template<typename T>
+bool constexpr hasHalfEdgeReferences()
+{
+	return hasHalfEdgeReferencesT<T>::value;
+}
+
+} // namespace vcl::comp
+
+#endif // VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_DETECTION_H

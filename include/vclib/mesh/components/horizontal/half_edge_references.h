@@ -20,36 +20,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
-#define VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
+#ifndef VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
+#define VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
 
-#include <vclib/iterators/container_iterator.h>
-#include <vclib/iterators/container_range_iterator.h>
-#include <vclib/mesh/elements/half_edge.h>
+#include "../detection/half_edge_references_detection.h"
 
-#include "../components/vertical/vectors/custom_component_vector_handle.h"
-#include "element_container.h"
+namespace vcl::comp {
 
-namespace vcl::mesh {
-
-template<typename T>
-class HalfEdgeContainer : protected ElementContainer<T>, public HalfEdgeContainerTriggerer
+template<typename HalfEdge, typename Vertex, typename Face>
+class HalfEdgeReferences : public HalfEdgeReferencesTriggerer
 {
-	// Sanity checks for the Edge -- all components must be consistent each other
-	static_assert(
-		vcl::hedge::hasBitFlags<T>(),
-		"You should include BitFlags (or a derived) as HalfEdge component in your Mesh "
-		"definition.");
-	static_assert(
-		vcl::hedge::hasHalfEdgeReferences<T>(),
-		"You should include a HalfEdgeReferences as HalfEdge component in your Mesh definition.");
-
 public:
-	HalfEdgeContainer();
+	using HalfEdgeType = HalfEdge;
+
+	HalfEdgeReferences();
+
+	const HalfEdge* next() const;
+	HalfEdge*&      next();
+
+	const HalfEdge* prev() const;
+	HalfEdge*&      prev();
+
+	const HalfEdge* twin() const;
+	HalfEdge*&      twin();
+
+	const Vertex* fromVertex() const;
+	Vertex*&      fromVertex();
+
+	const Vertex* toVertex() const;
+	Vertex*&      toVertex();
+
+	const Vertex* vertex(uint i) const;
+	Vertex*&      vertex(uint i);
+
+	const Face* face() const;
+	Face*       face();
+
+private:
+	HalfEdge* n  = nullptr; // next
+	HalfEdge* p  = nullptr; // prev
+	HalfEdge* t  = nullptr; // twin
+	Vertex*   fv = nullptr; // from vertex
+	Vertex*   tv = nullptr; // to vertex
+	Face*     f  = nullptr; // face
 };
 
-} // namespace vcl::mesh
+} // namespace vcl::comp
 
-#include "half_edge_container.cpp"
+#include "half_edge_references.cpp"
 
-#endif // VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
+#endif // VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
