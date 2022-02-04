@@ -43,6 +43,10 @@ class FaceContainerTriggerer
 {
 };
 
+class HalfEdgeContainerTriggerer
+{
+};
+
 class VertexContainerTriggerer
 {
 };
@@ -96,6 +100,28 @@ constexpr bool hasFaceOptionalContainer()
 {
 	if constexpr (hasFaces<T>()) {
 		return comp::hasVerticalInfo<typename T::FaceType>();
+	}
+	else {
+		return false;
+	}
+}
+
+/* Detector to check if a class has (inherits) an HalfEdgeContainer */
+
+template<typename T>
+using hasHalfEdgeContainerT = std::is_base_of<HalfEdgeContainerTriggerer, T>;
+
+template<typename T>
+constexpr bool hasHalfEdges()
+{
+	return hasHalfEdgeContainerT<T>::value;
+}
+
+template<typename T>
+constexpr bool hasHalfEdgeOptionalContainer()
+{
+	if constexpr (hasHalfEdges<T>()) {
+		return comp::hasVerticalInfo<typename T::HalfEdgeType>();
 	}
 	else {
 		return false;

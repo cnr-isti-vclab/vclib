@@ -20,12 +20,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_CONTAINERS_H
-#define VCL_MESH_CONTAINER_CONTAINERS_H
-
-#include "edge_container.h"
-#include "face_container.h"
 #include "half_edge_container.h"
-#include "vertex_container.h"
 
-#endif // VCL_MESH_CONTAINER_CONTAINERS_H
+namespace vcl::mesh {
+
+/**
+ * @brief Empty constructor that creates an empty container of Edges.
+ */
+template<typename T>
+HalfEdgeContainer<T>::HalfEdgeContainer()
+{
+}
+
+} // namespace vcl::mesh

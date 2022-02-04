@@ -20,12 +20,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_CONTAINERS_H
-#define VCL_MESH_CONTAINER_CONTAINERS_H
+#include "half_edge.h"
 
-#include "edge_container.h"
-#include "face_container.h"
-#include "half_edge_container.h"
-#include "vertex_container.h"
+namespace vcl {
 
-#endif // VCL_MESH_CONTAINER_CONTAINERS_H
+template<typename... Args>
+HalfEdge<Args...>::HalfEdge()
+{
+}
+
+template<typename... Args>
+template<typename Element>
+void HalfEdge<Args...>::importFrom(const Element& e)
+{
+	(Args::importFrom(e), ...);
+}
+
+} // namespace vcl

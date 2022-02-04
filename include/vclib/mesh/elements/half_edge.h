@@ -20,12 +20,48 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_CONTAINERS_H
-#define VCL_MESH_CONTAINER_CONTAINERS_H
+#ifndef VCL_MESH_ELEMENTS_HALF_EDGE_H
+#define VCL_MESH_ELEMENTS_HALF_EDGE_H
 
-#include "edge_container.h"
-#include "face_container.h"
-#include "half_edge_container.h"
-#include "vertex_container.h"
+#include "half_edge_components.h"
+#include "half_edge_components_optional.h"
 
-#endif // VCL_MESH_CONTAINER_CONTAINERS_H
+namespace vcl::mesh {
+
+// EdgeContainer class declaration
+template<typename>
+class HalfEdgeContainer;
+
+template<typename>
+class ElementContainer;
+
+} // namespace vcl::mesh
+
+namespace vcl {
+
+// Dummy class used to detect a Edge regardless of its template arguments
+class HalfEdgeTriggerer
+{
+};
+
+template<typename... Args>
+class HalfEdge : public HalfEdgeTriggerer, public Args...
+{
+	template<typename>
+	friend class mesh::HalfEdgeContainer;
+
+	template<typename>
+	friend class mesh::ElementContainer;
+
+public:
+	HalfEdge();
+
+	template<typename Element>
+	void importFrom(const Element& e);
+};
+
+} // namespace vcl
+
+#include "half_edge.cpp"
+
+#endif // VCL_MESH_ELEMENTS_HALF_EDGE_H

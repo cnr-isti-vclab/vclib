@@ -20,39 +20,17 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
-#define VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
+#ifndef VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_OPTIONAL_H
+#define VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_OPTIONAL_H
 
 #include "../components/vertical/persistent/custom_components.h"
-#include "../components/vertical/optional/optional_adjacent_edges.h"
-#include "../components/vertical/optional/optional_adjacent_faces.h"
 #include "../components/vertical/optional/optional_color.h"
 #include "../components/vertical/optional/optional_mark.h"
 #include "../components/vertical/optional/optional_scalar.h"
 
-namespace vcl::edge {
+namespace vcl::hedge {
 
-/* Port OptionalAdjacentEdges class into edge namespace */
-template<typename EdgeType>
-using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, EdgeType>;
-
-template<typename T>
-bool constexpr hasOptionalAdjacentEdges()
-{
-	return comp::hasOptionalAdjacentEdges<T>();
-}
-
-/* Port OptionalAdjacentFaces class into edge namespace */
-template<typename FaceType, typename EdgeType>
-using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, EdgeType>;
-
-template<typename T>
-bool constexpr hasOptionalAdjacentFaces()
-{
-	return comp::hasOptionalAdjacentFaces<T>();
-}
-
-/* Port OptionalColor class into edge namespace */
+/* Port OptionalColor class into hedge namespace */
 template<typename EdgeType>
 using OptionalColor = comp::OptionalColor<EdgeType>;
 
@@ -62,7 +40,7 @@ bool constexpr hasOptionalColor()
 	return comp::hasOptionalColor<EdgeType>();
 }
 
-/* Port OptionalMark class into edge namespace */
+/* Port OptionalMark class into hedge namespace */
 template<typename EdgeType>
 using OptionalMark = comp::OptionalMark<EdgeType>;
 
@@ -72,7 +50,7 @@ bool constexpr hasOptionalMark()
 	return comp::hasOptionalMark<EdgeType>();
 }
 
-/* Port OptionalScalar class into edge namespace */
+/* Port OptionalScalar class into hedge namespace */
 template<typename ScalarType, typename EdgeType>
 using OptionalScalar = comp::OptionalScalar<ScalarType, EdgeType>;
 
@@ -88,7 +66,7 @@ bool constexpr hasOptionalScalar()
 	return comp::hasOptionalScalar<EdgeType>();
 }
 
-/* Port CustomComponents class into edge namespace */
+/* Port CustomComponents class into hedge namespace */
 template<typename EdgeType>
 using CustomComponents = comp::CustomComponents<EdgeType>;
 
@@ -98,7 +76,7 @@ bool constexpr hasCustomComponents()
 	return comp::hasCustomComponents<EdgeType>();
 }
 
-/* Port VerticalInfo class into edge namespace */
+/* Port VerticalInfo class into hedge namespace */
 template<typename EdgeType>
 using VerticalInfo = comp::VerticalInfo<EdgeType>;
 
@@ -108,6 +86,6 @@ bool constexpr hasVerticalInfo()
 	return comp::hasVerticalInfo<EdgeType>();
 }
 
-} // namespace vcl::edge
+} // namespace vcl::hedge
 
-#endif // VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
+#endif // VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_OPTIONAL_H

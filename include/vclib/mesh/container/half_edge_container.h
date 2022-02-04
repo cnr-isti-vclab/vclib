@@ -20,12 +20,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_CONTAINERS_H
-#define VCL_MESH_CONTAINER_CONTAINERS_H
+#ifndef VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
+#define VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
 
-#include "edge_container.h"
-#include "face_container.h"
-#include "half_edge_container.h"
-#include "vertex_container.h"
+#include <vclib/iterators/container_iterator.h>
+#include <vclib/iterators/container_range_iterator.h>
+#include <vclib/mesh/elements/half_edge.h>
 
-#endif // VCL_MESH_CONTAINER_CONTAINERS_H
+#include "../components/vertical/vectors/custom_component_vector_handle.h"
+#include "element_container.h"
+
+namespace vcl::mesh {
+
+template<typename T>
+class HalfEdgeContainer : protected ElementContainer<T>, public HalfEdgeContainerTriggerer
+{
+	// Sanity checks for the Edge -- all components must be consistent each other
+	static_assert(
+		vcl::hedge::hasBitFlags<T>(),
+		"You should include BitFlags (or a derived) as Edge component in your Mesh definition.");
+	static_assert(
+		vcl::hedge::hasVertexReferences<T>(),
+		"You should include a VertexReferences as Edge component in your Mesh definition.");
+	static_assert(T::VERTEX_NUMBER == 2, "Edges must have 2 vertex references.");
+
+public:
+	HalfEdgeContainer();
+};
+
+} // namespace vcl::mesh
+
+#include "half_edge_container.cpp"
+
+#endif // VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H

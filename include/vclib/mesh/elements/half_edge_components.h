@@ -20,12 +20,68 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_CONTAINERS_H
-#define VCL_MESH_CONTAINER_CONTAINERS_H
+#ifndef VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_H
+#define VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_H
 
-#include "edge_container.h"
-#include "face_container.h"
-#include "half_edge_container.h"
-#include "vertex_container.h"
+#include "../components/horizontal/bit_flags.h"
+#include "../components/horizontal/color.h"
+#include "../components/horizontal/mark.h"
+#include "../components/horizontal/normal.h"
+#include "../components/horizontal/scalar.h"
+#include "../components/horizontal/vertex_references.h"
 
-#endif // VCL_MESH_CONTAINER_CONTAINERS_H
+namespace vcl::hedge {
+
+/* Port BitFlags class into edge namespace */
+using BitFlags = comp::BitFlags;
+
+template<typename EdgeType>
+bool constexpr hasBitFlags()
+{
+	return comp::hasBitFlags<EdgeType>();
+}
+
+/* Port Color class into edge namespace */
+using Color = comp::Color;
+
+template<typename EdgeType>
+bool constexpr hasColor()
+{
+	return comp::hasColor<EdgeType>();
+}
+
+/* Port Mark class into edge namespace */
+using Mark = comp::Mark;
+
+template<typename EdgeType>
+bool constexpr hasMark()
+{
+	return comp::hasMark<EdgeType>();
+}
+
+/* Port Scalar class into edge namespace */
+template<typename ScalarType>
+using Scalar = comp::Scalar<ScalarType>;
+
+using Scalarf = comp::Scalarf;
+using Scalard = comp::Scalard;
+
+template<typename EdgeType>
+bool constexpr hasScalar()
+{
+	return comp::hasScalar<EdgeType>();
+}
+
+/* Port VertexReferences class into edge namespace */
+template<typename VertexType>
+using VertexReferences = comp::VertexReferences<VertexType, 2>;
+
+template<typename EdgeType>
+bool constexpr hasVertexReferences()
+{
+	return comp::hasVertexReferences<EdgeType>();
+}
+
+} // namespace vcl::hedge
+
+#endif // VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_H
