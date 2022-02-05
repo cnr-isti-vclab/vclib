@@ -73,10 +73,9 @@ int main()
 
 	f.outerHalfEdge() = &e0;
 
-	for (MyVertex* v : f.vertices()) {
+	for (const MyVertex* v : f.vertices()) {
 		std::cerr << v->coord() << "\n";
 	}
-
 
 	return 0;
 }

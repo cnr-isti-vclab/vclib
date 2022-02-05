@@ -20,39 +20,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_FACE_HE_ITERATOR_H
-#define VCL_ITERATORS_FACE_HE_ITERATOR_H
+#ifndef VCL_ITERATORS_FACE_VERTEX_ITERATOR_H
+#define VCL_ITERATORS_FACE_VERTEX_ITERATOR_H
 
-#include <iterator>
+#include "face_base_iterator.h"
 
 namespace vcl {
 
 template<typename HalfEdge>
-class FaceHEIterator
+class FaceVertexIterator : public FaceBaseIterator<HalfEdge>
 {
+	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
+	using value_type        = typename HalfEdge::VertexType;
+	using reference         = typename HalfEdge::VertexType*&;
+	using pointer           = typename HalfEdge::VertexType**;
 
-	FaceHEIterator();
-	FaceHEIterator(HalfEdge* start);
-	FaceHEIterator(HalfEdge* start, HalfEdge* end);
+	using Base::Base;
 
-	bool operator==(const FaceHEIterator& oi) const;
-	bool operator!=(const FaceHEIterator& oi) const;
+	reference operator*() const { return Base::current->fromVertex(); }
+	pointer operator->() const { return &(Base::current->fromVertex()); }
+};
 
-	FaceHEIterator operator++();
-	FaceHEIterator operator++(int);
-	FaceHEIterator operator--();
-	FaceHEIterator operator--(int);
+template<typename HalfEdge>
+class ConstFaceVertexIterator : public ConstFaceHEIterator<HalfEdge>
+{
+	using Base = ConstFaceHEIterator<HalfEdge>;
+public:
+	using value_type        = typename HalfEdge::VertexType;
+	using reference         = const typename HalfEdge::VertexType*&;
+	using pointer           = const typename HalfEdge::VertexType**;
 
-protected:
-	HalfEdge* current = nullptr;
-	HalfEdge* end = nullptr; // when the current is equal to this he, it will be set to nullptr
+	using Base::Base;
+
+	reference operator*() const { return Base::current->fromVertex(); }
+	pointer operator->() const { return &(Base::current->fromVertex()); }
 };
 
 } // namespace vcl
 
-#include "face_he_iterator.cpp"
-
-#endif // VCL_ITERATORS_FACE_HE_ITERATOR_H
+#endif // VCL_ITERATORS_FACE_VERTEX_ITERATOR_H

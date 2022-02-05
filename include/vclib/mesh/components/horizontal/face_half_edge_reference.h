@@ -25,7 +25,7 @@
 
 #include <vector>
 
-#include <vclib/iterators/half_edge/face_vertex_he_iterator.h>
+#include <vclib/iterators/half_edge/face_vertex_iterator.h>
 #include <vclib/iterators/range_iterator.h>
 
 #include "../detection/face_half_edge_reference_detection.h"
@@ -41,11 +41,14 @@ class FaceHalfEdgeReference :
 		public VertexReferencesTriggerer,
 		public AdjacentFacesTriggerer
 {
+	using Vertex = typename HalfEdge::VertexType;
 public:
 	using VertexType = typename HalfEdge::VertexType;
 
-	using VertexIterator = vcl::FaceVertexHEIterator<HalfEdge>;
+	using VertexIterator = vcl::FaceVertexIterator<HalfEdge>;
+	using ConstVertexIterator = vcl::ConstFaceVertexIterator<HalfEdge>;
 	using VertexRangeIterator = RangeIterator<FaceHalfEdgeReference, VertexIterator>;
+	using ConstVertexRangeIterator = ConstRangeIterator<FaceHalfEdgeReference, ConstVertexIterator>;
 
 	using VertexReferences = FaceHalfEdgeReference;
 	static const int VERTEX_NUMBER = -1;
@@ -61,11 +64,31 @@ public:
 	const HalfEdge* innerHalfEdge(uint i) const;
 	HalfEdge*& innerHalfEdge(uint i);
 
+	uint vertexNumber() const;
+
+	Vertex*&      vertex(uint i);
+	const Vertex* vertex(uint i) const;
+	Vertex*&      vertexMod(int i);
+	const Vertex* vertexMod(int i) const;
+
+	void setVertex(Vertex* v, uint i);
+	void setVertices(const std::vector<Vertex*>& list);
+
+	bool containsVertex(const Vertex* v) const;
+
+	VertexIterator findVertex(const Vertex* v);
+	ConstVertexIterator findVertex(const Vertex* v) const;
+
+	int indexOfVertex(const Vertex* v) const;
+
 	/* Iterator Member functions */
 
 	VertexIterator           vertexBegin();
+	ConstVertexIterator      vertexBegin() const;
 	VertexIterator           vertexEnd();
+	ConstVertexIterator      vertexEnd() const;
 	VertexRangeIterator      vertices();
+	ConstVertexRangeIterator vertices() const;
 
 private:
 	HalfEdge* ohe = nullptr; // outer half edge

@@ -20,69 +20,64 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "face_he_iterator.h"
+#ifndef VCL_ITERATORS_FACE_BASE_ITERATOR_H
+#define VCL_ITERATORS_FACE_BASE_ITERATOR_H
+
+#include <iterator>
 
 namespace vcl {
 
 template<typename HalfEdge>
-FaceHEIterator<HalfEdge>::FaceHEIterator()
+class FaceBaseIterator
 {
-}
+public:
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
+
+	FaceBaseIterator();
+	FaceBaseIterator(HalfEdge* start);
+	FaceBaseIterator(HalfEdge* start, const HalfEdge* end);
+
+	bool operator==(const FaceBaseIterator& oi) const;
+	bool operator!=(const FaceBaseIterator& oi) const;
+
+	FaceBaseIterator operator++();
+	FaceBaseIterator operator++(int);
+	FaceBaseIterator operator--();
+	FaceBaseIterator operator--(int);
+
+protected:
+	HalfEdge* current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to this he, it will be set to nullptr
+};
 
 template<typename HalfEdge>
-FaceHEIterator<HalfEdge>::FaceHEIterator(HalfEdge* start) : current(start), end(start)
+class ConstFaceHEIterator
 {
-}
+public:
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-template<typename HalfEdge>
-FaceHEIterator<HalfEdge>::FaceHEIterator(HalfEdge* start, HalfEdge* end) : current(start), end(end)
-{
-}
+	ConstFaceHEIterator();
+	ConstFaceHEIterator(const HalfEdge* start);
+	ConstFaceHEIterator(const HalfEdge* start, const HalfEdge* end);
+	ConstFaceHEIterator(const FaceBaseIterator<HalfEdge>& it);
 
-template<typename HalfEdge>
-bool FaceHEIterator<HalfEdge>::operator==(const FaceHEIterator& oi) const
-{
-	return current == oi.current;
-}
+	bool operator==(const ConstFaceHEIterator& oi) const;
+	bool operator!=(const ConstFaceHEIterator& oi) const;
 
-template<typename HalfEdge>
-bool FaceHEIterator<HalfEdge>::operator!=(const FaceHEIterator& oi) const
-{
-	return current != oi.current;
-}
+	ConstFaceHEIterator operator++();
+	ConstFaceHEIterator operator++(int);
+	ConstFaceHEIterator operator--();
+	ConstFaceHEIterator operator--(int);
 
-template<typename HalfEdge>
-FaceHEIterator<HalfEdge> FaceHEIterator<HalfEdge>::operator++()
-{
-	current = current->next();
-	if (current == end) current = nullptr;
-	return *this;
-}
-
-template<typename HalfEdge>
-FaceHEIterator<HalfEdge> FaceHEIterator<HalfEdge>::operator++(int)
-{
-	auto it = *this;
-	current = current->next();
-	if (current == end) current = nullptr;
-	return it;
-}
-
-template<typename HalfEdge>
-FaceHEIterator<HalfEdge> FaceHEIterator<HalfEdge>::operator--()
-{
-	current = current->prev();
-	if (current == end) current = nullptr;
-	return *this;
-}
-
-template<typename HalfEdge>
-FaceHEIterator<HalfEdge> FaceHEIterator<HalfEdge>::operator--(int)
-{
-	auto it = *this;
-	current = current->prev();
-	if (current == end) current = nullptr;
-	return it;
-}
+protected:
+	const HalfEdge* current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to this he, it will be set to nullptr
+};
 
 } // namespace vcl
+
+#include "face_base_iterator.cpp"
+
+#endif // VCL_ITERATORS_FACE_BASE_ITERATOR_H

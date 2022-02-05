@@ -97,8 +97,8 @@ set(HEADERS
 	include/vclib/iterators/container_iterator.h
 	include/vclib/iterators/container_range_iterator.h
 	include/vclib/iterators/range_iterator.h
-	include/vclib/iterators/half_edge/face_he_iterator.h
-	include/vclib/iterators/half_edge/face_vertex_he_iterator.h
+	include/vclib/iterators/half_edge/face_base_iterator.h
+	include/vclib/iterators/half_edge/face_vertex_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/matrix.h
@@ -272,7 +272,7 @@ set(SOURCES
 	include/vclib/io/ply/ply_tristrip.cpp
 	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/iterators/container_iterator.cpp
-	include/vclib/iterators/half_edge/face_he_iterator.cpp
+	include/vclib/iterators/half_edge/face_base_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/matrix.cpp
 	include/vclib/math/perlin_noise.cpp

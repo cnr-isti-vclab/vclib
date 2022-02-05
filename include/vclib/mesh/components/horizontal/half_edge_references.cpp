@@ -68,33 +68,33 @@ HalfEdge*& HalfEdgeReferences<HalfEdge, Vertex, Face>::twin()
 template<typename HalfEdge, typename Vertex, typename Face>
 const Vertex* HalfEdgeReferences<HalfEdge, Vertex, Face>::fromVertex() const
 {
-	return fv;
+	return v;
 }
 
 template<typename HalfEdge, typename Vertex, typename Face>
 Vertex*& HalfEdgeReferences<HalfEdge, Vertex, Face>::fromVertex()
 {
-	return fv;
+	return v;
 }
 
 template<typename HalfEdge, typename Vertex, typename Face>
 const Vertex* HalfEdgeReferences<HalfEdge, Vertex, Face>::toVertex() const
 {
-	return tv;
+	return n->fromVertex();
 }
 
 template<typename HalfEdge, typename Vertex, typename Face>
 Vertex*& HalfEdgeReferences<HalfEdge, Vertex, Face>::toVertex()
 {
-	return tv;
+	return n->fromVertex();
 }
 
 template<typename HalfEdge, typename Vertex, typename Face>
 const Vertex* HalfEdgeReferences<HalfEdge, Vertex, Face>::vertex(uint i) const
 {
 	switch(i) {
-	case 0: return fv;
-	case 1: return tv;
+	case 0: return v;
+	case 1: return toVertex();
 	default: assert(0); return nullptr;
 	}
 }
@@ -103,8 +103,8 @@ template<typename HalfEdge, typename Vertex, typename Face>
 Vertex*& HalfEdgeReferences<HalfEdge, Vertex, Face>::vertex(uint i)
 {
 	switch(i) {
-	case 0: return fv;
-	case 1: return tv;
+	case 0: return v;
+	case 1: return toVertex();
 	default: assert(0); return nullptr;
 	}
 }

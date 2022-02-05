@@ -59,12 +59,11 @@ public:
 	Face*       face();
 
 private:
-	HalfEdge* n  = nullptr; // next
-	HalfEdge* p  = nullptr; // prev
-	HalfEdge* t  = nullptr; // twin
-	Vertex*   fv = nullptr; // from vertex
-	Vertex*   tv = nullptr; // to vertex
-	Face*     f  = nullptr; // face
+	HalfEdge* n = nullptr; // next half edge
+	HalfEdge* p = nullptr; // prev half edge
+	HalfEdge* t = nullptr; // twin half edge
+	Vertex*   v = nullptr; // from vertex
+	Face*     f = nullptr; // incident face
 };
 
 } // namespace vcl::comp
