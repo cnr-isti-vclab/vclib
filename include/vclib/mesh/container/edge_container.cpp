@@ -128,7 +128,7 @@ void EdgeContainer<T>::deleteEdge(uint i)
  *
  * Deleted edges are automatically jumped by the iterators provided by the Edge Container.
  *
- * @param[in] f: the pointer of the edge that will be marked as deleted.
+ * @param[in] e: the pointer of the edge that will be marked as deleted.
  */
 template<typename T>
 void EdgeContainer<T>::deleteEdge(const EdgeType* e)

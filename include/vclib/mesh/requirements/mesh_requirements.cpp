@@ -190,6 +190,9 @@ bool isCompact(const MeshType& m)
 	if constexpr (hasEdges<MeshType>()) {
 		c = c && (m.edgeNumber() == m.edgeContainerSize());
 	}
+	if constexpr (hasHalfEdges<MeshType>()) {
+		c = c && (m.halfEdgeNumber() == m.halfEdgeContainerSize());
+	}
 	return c;
 }
 

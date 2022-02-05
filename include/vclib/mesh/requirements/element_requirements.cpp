@@ -60,6 +60,16 @@ bool constexpr hasEdges()
 	return vcl::mesh::hasEdges<MeshType>();
 }
 
+/**
+ * @brief Checks at compile time if MeshType has the HalfEdge Element.
+ * @return true if MeshType has HalfEdges.
+ */
+template<typename MeshType>
+bool constexpr hasHalfEdges()
+{
+	return vcl::mesh::hasHalfEdges<MeshType>();
+}
+
 /*********************
  * require functions *
  *********************/
@@ -80,6 +90,12 @@ template<typename MeshType>
 void constexpr requireEdges()
 {
 	static_assert(hasEdges<MeshType>(), "Mesh does not have an Edge Container.");
+}
+
+template<typename MeshType>
+void constexpr requireHalfEdges()
+{
+	static_assert(hasHalfEdges<MeshType>(), "Mesh does not have an HalfEdge Container.");
 }
 
 } // namespace vcl

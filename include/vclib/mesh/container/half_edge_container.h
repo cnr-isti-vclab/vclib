@@ -44,11 +44,31 @@ class HalfEdgeContainer : protected ElementContainer<T>, public HalfEdgeContaine
 		vcl::hedge::hasHalfEdgeReferences<T>(),
 		"You should include a HalfEdgeReferences as HalfEdge component in your Mesh definition.");
 
+	template <typename U>
+	friend class HalfEdgeContainer;
+
+	using HalfEdgeContainerType = HalfEdgeContainer<T>;
+	using Base = ElementContainer<T>;
+
 public:
-	using HalfEdge              = T;
-	using HalfEdgeType          = T;
+	using HalfEdge                   = T;
+	using HalfEdgeType               = T;
+	using HalfEdgeIterator           = typename Base::ElementIterator;
+	using ConstHalfEdgeIterator      = typename Base::ConstElementIterator;
+	using HalfEdgeRangeIterator      = typename Base::ElementRangeIterator;
+	using ConstHalfEdgeRangeIterator = typename Base::ConstElementRangeIterator;
 
 	HalfEdgeContainer();
+
+	const HalfEdgeType& halfEdge(uint i) const;
+	HalfEdgeType&       halfEdge(uint i);
+
+	uint halfEdgeNumber() const;
+	uint halfEdgeContainerSize() const;
+	uint deletedHalfEdgeNumber() const;
+
+	void deleteHalfEdge(uint i);
+	void deleteHalfEdge(const HalfEdgeType* e);
 };
 
 } // namespace vcl::mesh
