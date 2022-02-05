@@ -69,6 +69,16 @@ public:
 
 	void deleteHalfEdge(uint i);
 	void deleteHalfEdge(const HalfEdgeType* e);
+
+	uint             halfEdgeIndexIfCompact(uint id) const;
+	std::vector<int> halfEdgeCompactIndices() const;
+
+	HalfEdgeIterator           halfEdgeBegin(bool jumpDeleted = true);
+	HalfEdgeIterator           halfEdgeEnd();
+	ConstHalfEdgeIterator      halfEdgeBegin(bool jumpDeleted = true) const;
+	ConstHalfEdgeIterator      halfEdgeEnd() const;
+	HalfEdgeRangeIterator      halfEdges(bool jumpDeleted = true);
+	ConstHalfEdgeRangeIterator halfEdges(bool jumpDeleted = true) const;
 };
 
 } // namespace vcl::mesh

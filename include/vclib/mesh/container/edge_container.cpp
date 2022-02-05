@@ -228,7 +228,7 @@ typename EdgeContainer<T>::ConstEdgeIterator EdgeContainer<T>::edgeEnd() const
  * syntax:
  *
  * @code{.cpp}
- * for (Edge& f : m.edges()){
+ * for (Edge& e : m.edges()){
  *     // do something with this edge
  * }
  * @endcode
@@ -253,7 +253,7 @@ typename EdgeContainer<T>::EdgeRangeIterator EdgeContainer<T>::edges(bool jumpDe
  * syntax:
  *
  * @code{.cpp}
- * for (const Edge& f : m.edges()){
+ * for (const Edge& e : m.edges()){
  *     // do something with this edge
  * }
  * @endcode

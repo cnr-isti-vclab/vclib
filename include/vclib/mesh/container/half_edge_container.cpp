@@ -139,4 +139,149 @@ void HalfEdgeContainer<T>::deleteHalfEdge(const HalfEdgeType* e)
 	Base::deleteElement(e);
 }
 
+/**
+ * @brief This is an utility member function that returns the index of an element if the container
+ * would be compact, that is the number of non-deleted elements before the halfedge with the given
+ * index.
+ *
+ * Complexity: O(n), with n the number of halfedges in the container.
+ *
+ * This function does not perform any sanity check on the given index.
+ *
+ * @param[in] i: the index of a halfedge of the container.
+ * @return The index that the halfedge with index i would have if this container would be compact.
+ */
+template<typename T>
+uint HalfEdgeContainer<T>::halfEdgeIndexIfCompact(uint i) const
+{
+	return Base::elementIndexIfCompact(i);
+}
+
+/**
+ * @brief Returns a vector that tells, for each actual halfedge index, the new index that the
+ * halfedge would have in a compacted container. For each deleted halfedge index, the value of the
+ * vector will be -1.
+ *
+ * This is useful if you need to know the indices of the halfedges that they would have in a
+ * compact container, without considering the deleted ones.
+ *
+ * @return A vector containing, for each halfedge index, its index if the container would be
+ * compact.
+ */
+template<typename T>
+std::vector<int> HalfEdgeContainer<T>::halfEdgeCompactIndices() const
+{
+	return Base::elementCompactIndices();
+}
+
+/**
+ * @brief Returns an iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted halfedges of the container. You can
+ * change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted
+ * halfedges.
+ * @return An iterator the the first halfedge of the container.
+ */
+template<typename T>
+typename HalfEdgeContainer<T>::HalfEdgeIterator
+HalfEdgeContainer<T>::halfEdgeBegin(bool jumpDeleted)
+{
+	return Base::elementBegin(jumpDeleted);
+}
+
+/**
+ * @brief Returns an iterator to the end of the container.
+ * @return An iterator to the end of the container.
+ */
+template<typename T>
+typename HalfEdgeContainer<T>::HalfEdgeIterator HalfEdgeContainer<T>::halfEdgeEnd()
+{
+	return Base::elementEnd();
+}
+
+/**
+ * @brief Returns a const iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted halfedges of the container. You can
+ * change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted
+ * halfedges.
+ * @return A const iterator the the first halfedge of the container.
+ */
+template<typename T>
+typename HalfEdgeContainer<T>::ConstHalfEdgeIterator
+HalfEdgeContainer<T>::halfEdgeBegin(bool jumpDeleted) const
+{
+	return Base::elementBegin(jumpDeleted);
+}
+
+/**
+ * @brief Returns a const iterator to the end of the container.
+ * @return A const iterator to the end of the container.
+ */
+template<typename T>
+typename HalfEdgeContainer<T>::ConstHalfEdgeIterator HalfEdgeContainer<T>::halfEdgeEnd() const
+{
+	return Base::elementEnd();
+}
+
+/**
+ * @brief Returns a small utility object that allows to iterate over the halfedges of the
+ * containers, providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the halfedges using the C++
+ * foreach syntax:
+ *
+ * @code{.cpp}
+ * for (HalfEdge& e : m.halfEdges()){
+ *     // do something with this halfedge
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over halfedges is automatically initialized to jump deleted
+ * halfedges of the container. You can change this option by calling this function with
+ * jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted
+ * halfedges.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
+template<typename T>
+typename HalfEdgeContainer<T>::HalfEdgeRangeIterator
+HalfEdgeContainer<T>::halfEdges(bool jumpDeleted)
+{
+	return Base::elements(jumpDeleted);
+}
+
+/**
+ * @brief Returns a small utility object that allows to iterate over the halfedges of the
+ * containers, providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the halfedges using the C++
+ * foreach syntax:
+ *
+ * @code{.cpp}
+ * for (const HalfEdge& e : m.halfEdges()){
+ *     // do something with this halfedge
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over halfedges is automatically initialized to jump deleted
+ * halfedges of the container. You can change this option by calling this function with
+ * jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted
+ * halfedges.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
+template<typename T>
+typename HalfEdgeContainer<T>::ConstHalfEdgeRangeIterator
+HalfEdgeContainer<T>::halfEdges(bool jumpDeleted) const
+{
+	return Base::elements(jumpDeleted);
+}
+
 } // namespace vcl::mesh
