@@ -20,65 +20,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "face_half_edge_reference.h"
+#ifndef VCL_ITERATORS_FACE_HE_ITERATOR_H
+#define VCL_ITERATORS_FACE_HE_ITERATOR_H
 
-namespace vcl::comp {
+#include <iterator>
 
-template<typename HalfEdge>
-FaceHalfEdgeReference<HalfEdge>::FaceHalfEdgeReference()
-{
-}
+namespace vcl {
 
 template<typename HalfEdge>
-const HalfEdge *FaceHalfEdgeReference<HalfEdge>::outerHalfEdge() const
+class FaceHEIterator
 {
-	return ohe;
-}
+public:
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-template<typename HalfEdge>
-HalfEdge*& FaceHalfEdgeReference<HalfEdge>::outerHalfEdge()
-{
-	return ohe;
-}
+	FaceHEIterator();
+	FaceHEIterator(HalfEdge* start);
+	FaceHEIterator(HalfEdge* start, HalfEdge* end);
 
-template<typename HalfEdge>
-uint FaceHalfEdgeReference<HalfEdge>::numberHoles() const
-{
-	return ihe.size();
-}
+	bool operator==(const FaceHEIterator& oi) const;
+	bool operator!=(const FaceHEIterator& oi) const;
 
-template<typename HalfEdge>
-const HalfEdge* FaceHalfEdgeReference<HalfEdge>::innerHalfEdge(uint i) const
-{
-	return ihe[i];
-}
+	FaceHEIterator operator++();
+	FaceHEIterator operator++(int);
+	FaceHEIterator operator--();
+	FaceHEIterator operator--(int);
 
-template<typename HalfEdge>
-HalfEdge*& FaceHalfEdgeReference<HalfEdge>::innerHalfEdge(uint i)
-{
-	return ihe[i];
-}
+protected:
+	HalfEdge* current = nullptr;
+	HalfEdge* end = nullptr; // when the current is equal to this he, it will be set to nullptr
+};
 
-template<typename HalfEdge>
-typename FaceHalfEdgeReference<HalfEdge>::VertexIterator
-FaceHalfEdgeReference<HalfEdge>::vertexBegin()
-{
-	return VertexIterator(ohe);
-}
+} // namespace vcl
 
-template<typename HalfEdge>
-typename FaceHalfEdgeReference<HalfEdge>::VertexIterator
-FaceHalfEdgeReference<HalfEdge>::vertexEnd()
-{
-	return VertexIterator(nullptr);
-}
+#include "face_he_iterator.cpp"
 
-template<typename HalfEdge>
-typename FaceHalfEdgeReference<HalfEdge>::VertexRangeIterator
-FaceHalfEdgeReference<HalfEdge>::vertices()
-{
-	return VertexRangeIterator(
-		*this, &FaceHalfEdgeReference::vertexBegin, &FaceHalfEdgeReference::vertexEnd);
-}
-
-} // namespace vcl::comp
+#endif // VCL_ITERATORS_FACE_HE_ITERATOR_H

@@ -32,6 +32,8 @@ class HalfEdgeReferences : public HalfEdgeReferencesTriggerer
 {
 public:
 	using HalfEdgeType = HalfEdge;
+	using VertexType   = Vertex;
+	using FaceType     = Face;
 
 	HalfEdgeReferences();
 

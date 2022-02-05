@@ -20,65 +20,63 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "face_half_edge_reference.h"
+#include <iostream>
 
-namespace vcl::comp {
+#include <vclib/mesh/mesh.h>
 
-template<typename HalfEdge>
-FaceHalfEdgeReference<HalfEdge>::FaceHalfEdgeReference()
+class MyVertex;
+class MyFace;
+class MyHalfEdge;
+
+class MyVertex :
+		public vcl::Vertex<
+			vcl::vert::BitFlags,
+			vcl::vert::Coordinate3d,
+			vcl::vert::HalfEdgeReference<MyHalfEdge>>
+{};
+
+class MyHalfEdge :
+		public vcl::HalfEdge<
+			vcl::hedge::BitFlags,
+			vcl::hedge::HalfEdgeReferences<MyHalfEdge, MyVertex, MyFace>>
+{};
+
+class MyFace :
+			public vcl::Face<
+				vcl::face::BitFlags,
+				vcl::face::HalfEdgeReference<MyHalfEdge>>
+{};
+
+int main()
 {
-}
+	MyVertex v0, v1, v2;
+	MyHalfEdge e0, e1, e2;
+	MyFace f;
 
-template<typename HalfEdge>
-const HalfEdge *FaceHalfEdgeReference<HalfEdge>::outerHalfEdge() const
-{
-	return ohe;
-}
+	v0.coord() = vcl::Point3d(0,0,0);
+	v1.coord() = vcl::Point3d(1,1,1);
+	v2.coord() = vcl::Point3d(2,2,2);
 
-template<typename HalfEdge>
-HalfEdge*& FaceHalfEdgeReference<HalfEdge>::outerHalfEdge()
-{
-	return ohe;
-}
+	e0.fromVertex() = &v0;
+	e0.toVertex() = &v1;
+	e1.fromVertex() = &v1;
+	e1.toVertex() = &v2;
+	e2.fromVertex() = &v2;
+	e2.toVertex() = &v0;
 
-template<typename HalfEdge>
-uint FaceHalfEdgeReference<HalfEdge>::numberHoles() const
-{
-	return ihe.size();
-}
+	e0.next() = &e1;
+	e1.next() = &e2;
+	e2.next() = &e0;
+	e0.prev() = &e2;
+	e1.prev() = &e0;
+	e2.prev() = &e1;
 
-template<typename HalfEdge>
-const HalfEdge* FaceHalfEdgeReference<HalfEdge>::innerHalfEdge(uint i) const
-{
-	return ihe[i];
-}
+	f.outerHalfEdge() = &e0;
 
-template<typename HalfEdge>
-HalfEdge*& FaceHalfEdgeReference<HalfEdge>::innerHalfEdge(uint i)
-{
-	return ihe[i];
-}
+	for (MyVertex* v : f.vertices()) {
+		std::cerr << v->coord() << "\n";
+	}
 
-template<typename HalfEdge>
-typename FaceHalfEdgeReference<HalfEdge>::VertexIterator
-FaceHalfEdgeReference<HalfEdge>::vertexBegin()
-{
-	return VertexIterator(ohe);
-}
 
-template<typename HalfEdge>
-typename FaceHalfEdgeReference<HalfEdge>::VertexIterator
-FaceHalfEdgeReference<HalfEdge>::vertexEnd()
-{
-	return VertexIterator(nullptr);
+	return 0;
 }
-
-template<typename HalfEdge>
-typename FaceHalfEdgeReference<HalfEdge>::VertexRangeIterator
-FaceHalfEdgeReference<HalfEdge>::vertices()
-{
-	return VertexRangeIterator(
-		*this, &FaceHalfEdgeReference::vertexBegin, &FaceHalfEdgeReference::vertexEnd);
-}
-
-} // namespace vcl::comp

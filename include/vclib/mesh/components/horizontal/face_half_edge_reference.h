@@ -25,14 +25,33 @@
 
 #include <vector>
 
+#include <vclib/iterators/half_edge/face_vertex_he_iterator.h>
+#include <vclib/iterators/range_iterator.h>
+
 #include "../detection/face_half_edge_reference_detection.h"
+
+#include "../detection/adjacent_faces_detection.h"
+#include "../detection/vertex_references_detection.h"
 
 namespace vcl::comp {
 
 template<typename HalfEdge>
-class FaceHalfEdgeReference : public FaceHalfEdgeReferenceTriggerer
+class FaceHalfEdgeReference :
+		public FaceHalfEdgeReferenceTriggerer,
+		public VertexReferencesTriggerer,
+		public AdjacentFacesTriggerer
 {
 public:
+	using VertexType = typename HalfEdge::VertexType;
+
+	using VertexIterator = vcl::FaceVertexHEIterator<HalfEdge>;
+	using VertexRangeIterator = RangeIterator<FaceHalfEdgeReference, VertexIterator>;
+
+	using VertexReferences = FaceHalfEdgeReference;
+	static const int VERTEX_NUMBER = -1;
+
+	/* Constructor */
+
 	FaceHalfEdgeReference();
 
 	const HalfEdge* outerHalfEdge() const;
@@ -41,6 +60,12 @@ public:
 	uint numberHoles() const;
 	const HalfEdge* innerHalfEdge(uint i) const;
 	HalfEdge*& innerHalfEdge(uint i);
+
+	/* Iterator Member functions */
+
+	VertexIterator           vertexBegin();
+	VertexIterator           vertexEnd();
+	VertexRangeIterator      vertices();
 
 private:
 	HalfEdge* ohe = nullptr; // outer half edge

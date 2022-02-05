@@ -17,6 +17,7 @@ add_definitions(-DVCL_TEST_MODELS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data/models"
 add_definitions(-DVCL_TEST_RESULTS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data/results")
 
 add_subdirectory(kd_tree)
+add_subdirectory(dcel_basic_test)
 add_subdirectory(mesh_basic_test)
 add_subdirectory(mesh_clean)
 add_subdirectory(mesh_conversion)
