@@ -58,39 +58,47 @@ public:
 	using ConstAdjacentFaceRangeIterator =
 		ConstRangeIterator<FaceHalfEdgeReference, ConstAdjacentFaceIterator>;
 
-	using InnerHalfEdgeIterator = typename std::vector<HalfEdge*>::iterator;
+	using InnerHalfEdgeIterator      = typename std::vector<HalfEdge*>::iterator;
 	using ConstInnerHalfEdgeIterator = typename std::vector<HalfEdge*>::const_iterator;
 	using InnerHalfEdgeRangeIterator = RangeIterator<FaceHalfEdgeReference, InnerHalfEdgeIterator>;
 	using ConstInnerHalfEdgeRangeIterator =
 		RangeIterator<FaceHalfEdgeReference, ConstInnerHalfEdgeIterator>;
 
-	using HalfEdgeIterator = vcl::FaceHalfEdgeIterator<HalfEdge>;
+	using HalfEdgeIterator      = vcl::FaceHalfEdgeIterator<HalfEdge>;
 	using ConstHalfEdgeIterator = vcl::ConstFaceHalfEdgeIterator<HalfEdge>;
 	using HalfEdgeRangeIterator = RangeIterator<FaceHalfEdgeReference, HalfEdgeIterator>;
 	using ConstHalfEdgeRangeIterator =
 		ConstRangeIterator<FaceHalfEdgeReference, ConstHalfEdgeIterator>;
 
-	using VertexIterator = vcl::FaceVertexIterator<HalfEdge>;
-	using ConstVertexIterator = vcl::ConstFaceVertexIterator<HalfEdge>;
-	using VertexRangeIterator = RangeIterator<FaceHalfEdgeReference, VertexIterator>;
+	using VertexIterator           = vcl::FaceVertexIterator<HalfEdge>;
+	using ConstVertexIterator      = vcl::ConstFaceVertexIterator<HalfEdge>;
+	using VertexRangeIterator      = RangeIterator<FaceHalfEdgeReference, VertexIterator>;
 	using ConstVertexRangeIterator = ConstRangeIterator<FaceHalfEdgeReference, ConstVertexIterator>;
 
 	// Vertex references can be accessed from a face using half edge reference, therefore this
 	// component claims that it is the VertexReferences component. This is done just for
 	// compatibility between mesh types.
-	using VertexReferences = FaceHalfEdgeReference;
+	using VertexReferences         = FaceHalfEdgeReference;
 	static const int VERTEX_NUMBER = -1; // half edges support by design polygonal meshes
 
 	/* Constructor */
 
 	FaceHalfEdgeReference();
 
-	const HalfEdge* outerHalfEdge() const;
-	HalfEdge*& outerHalfEdge();
+	/* Member functions */
 
-	uint numberHoles() const;
+	const HalfEdge* outerHalfEdge() const;
+	HalfEdge*&      outerHalfEdge();
+
+	uint            numberHoles() const;
 	const HalfEdge* innerHalfEdge(uint i) const;
-	HalfEdge*& innerHalfEdge(uint i);
+	HalfEdge*&      innerHalfEdge(uint i);
+
+	void resizeInnerHalfEdges(uint n);
+	void pushInnerHalfEdge(HalfEdge* he);
+	void insertInnerHalfEdge(uint i, HalfEdge* he);
+	void eraseInnerHalfEdge(uint i);
+	void clearInnerHalfEdges();
 
 	/* VertexReferences compatibility */
 
@@ -106,11 +114,30 @@ public:
 
 	bool containsVertex(const Vertex* v) const;
 
-	VertexIterator findVertex(const Vertex* v);
+	VertexIterator      findVertex(const Vertex* v);
 	ConstVertexIterator findVertex(const Vertex* v) const;
 
 	int indexOfVertex(const Vertex* v) const;
 	int indexOfEdge(const Vertex* v1, const Vertex* v2) const;
+
+	/* AdjacentFaces compatibility */
+
+	uint adjFacesNumber() const;
+
+	Face*&      adjFace(uint i);
+	const Face* adjFace(uint i) const;
+	Face*&      adjFaceMod(int i);
+	const Face* adjFaceMod(int i) const;
+
+	void setAdjFace(Face* f, uint i);
+	void setAdjFaces(const std::vector<Face*>& list);
+
+	bool containsAdjFace(const Face* f) const;
+
+	AdjacentFaceIterator      findAdjFace(const Face* f);
+	ConstAdjacentFaceIterator findAdjFace(const Face* f) const;
+
+	int indexOfAdjFace(const Face* f) const;
 
 	/* Iterator Member functions */
 
@@ -132,6 +159,13 @@ public:
 	HalfEdgeRangeIterator      halfEdges();
 	ConstHalfEdgeRangeIterator halfEdges() const;
 
+	InnerHalfEdgeIterator           innerHalfEdgeBegin();
+	ConstInnerHalfEdgeIterator      innerHalfEdgeBegin() const;
+	InnerHalfEdgeIterator           innerHalfEdgeEnd();
+	ConstInnerHalfEdgeIterator      innerHalfEdgeEnd() const;
+	InnerHalfEdgeRangeIterator      innerHalfEdges();
+	ConstInnerHalfEdgeRangeIterator innerHalfEdges() const;
+
 	VertexIterator           vertexBegin();
 	VertexIterator           vertexBegin(HalfEdge* he);
 	ConstVertexIterator      vertexBegin() const;
@@ -142,11 +176,11 @@ public:
 	ConstVertexRangeIterator vertices() const;
 
 private:
-	HalfEdge* ohe = nullptr; // outer half edge
-	std::vector<HalfEdge*> ihe; // inner half edges, one for each hole of the face
+	HalfEdge*              ohe = nullptr; // outer half edge
+	std::vector<HalfEdge*> ihe;           // inner half edges, one for each hole of the face
 };
 
-} // vcl::comp
+} // namespace vcl::comp
 
 #include "face_half_edge_reference.cpp"
 
