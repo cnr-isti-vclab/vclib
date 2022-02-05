@@ -87,42 +87,42 @@ FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator--(int)
 }
 
 template<typename HalfEdge>
-ConstFaceHEIterator<HalfEdge>::ConstFaceHEIterator()
+ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator()
 {
 }
 
 template<typename HalfEdge>
-ConstFaceHEIterator<HalfEdge>::ConstFaceHEIterator(const HalfEdge* start) :
+ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const HalfEdge* start) :
 		current(start), end(start)
 {
 }
 
 template<typename HalfEdge>
-ConstFaceHEIterator<HalfEdge>::ConstFaceHEIterator(const HalfEdge* start, const HalfEdge* end) :
+ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end) :
 		current(start), end(end)
 {
 }
 
 template<typename HalfEdge>
-ConstFaceHEIterator<HalfEdge>::ConstFaceHEIterator(const FaceBaseIterator<HalfEdge> &it) :
+ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const FaceBaseIterator<HalfEdge> &it) :
 		current(it.current), end(it.end)
 {
 }
 
 template<typename HalfEdge>
-bool ConstFaceHEIterator<HalfEdge>::operator==(const ConstFaceHEIterator &oi) const
+bool ConstFaceBaseIterator<HalfEdge>::operator==(const ConstFaceBaseIterator &oi) const
 {
 	return current == oi.current;
 }
 
 template<typename HalfEdge>
-bool ConstFaceHEIterator<HalfEdge>::operator!=(const ConstFaceHEIterator &oi) const
+bool ConstFaceBaseIterator<HalfEdge>::operator!=(const ConstFaceBaseIterator &oi) const
 {
 	return current != oi.current;
 }
 
 template<typename HalfEdge>
-ConstFaceHEIterator<HalfEdge> ConstFaceHEIterator<HalfEdge>::operator++()
+ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator++()
 {
 	current = current->next();
 	if (current == end) current = nullptr;
@@ -130,7 +130,7 @@ ConstFaceHEIterator<HalfEdge> ConstFaceHEIterator<HalfEdge>::operator++()
 }
 
 template<typename HalfEdge>
-ConstFaceHEIterator<HalfEdge> ConstFaceHEIterator<HalfEdge>::operator++(int)
+ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator++(int)
 {
 	auto it = *this;
 	current = current->next();
@@ -139,7 +139,7 @@ ConstFaceHEIterator<HalfEdge> ConstFaceHEIterator<HalfEdge>::operator++(int)
 }
 
 template<typename HalfEdge>
-ConstFaceHEIterator<HalfEdge> ConstFaceHEIterator<HalfEdge>::operator--()
+ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator--()
 {
 	current = current->prev();
 	if (current == end) current = nullptr;
@@ -147,7 +147,7 @@ ConstFaceHEIterator<HalfEdge> ConstFaceHEIterator<HalfEdge>::operator--()
 }
 
 template<typename HalfEdge>
-ConstFaceHEIterator<HalfEdge> ConstFaceHEIterator<HalfEdge>::operator--(int)
+ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator--(int)
 {
 	auto it = *this;
 	current = current->prev();

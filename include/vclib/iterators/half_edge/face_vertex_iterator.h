@@ -32,7 +32,7 @@ class FaceVertexIterator : public FaceBaseIterator<HalfEdge>
 {
 	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = typename HalfEdge::VertexType;
+	using value_type        = typename HalfEdge::VertexType*;
 	using reference         = typename HalfEdge::VertexType*&;
 	using pointer           = typename HalfEdge::VertexType**;
 
@@ -43,11 +43,11 @@ public:
 };
 
 template<typename HalfEdge>
-class ConstFaceVertexIterator : public ConstFaceHEIterator<HalfEdge>
+class ConstFaceVertexIterator : public ConstFaceBaseIterator<HalfEdge>
 {
-	using Base = ConstFaceHEIterator<HalfEdge>;
+	using Base = ConstFaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = typename HalfEdge::VertexType;
+	using value_type        = const typename HalfEdge::VertexType*;
 	using reference         = const typename HalfEdge::VertexType*&;
 	using pointer           = const typename HalfEdge::VertexType**;
 

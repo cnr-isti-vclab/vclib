@@ -57,19 +57,16 @@ int main()
 	v1.coord() = vcl::Point3d(1,1,1);
 	v2.coord() = vcl::Point3d(2,2,2);
 
-	e0.fromVertex() = &v0;
-	e0.toVertex() = &v1;
-	e1.fromVertex() = &v1;
-	e1.toVertex() = &v2;
-	e2.fromVertex() = &v2;
-	e2.toVertex() = &v0;
-
 	e0.next() = &e1;
 	e1.next() = &e2;
 	e2.next() = &e0;
 	e0.prev() = &e2;
 	e1.prev() = &e0;
 	e2.prev() = &e1;
+
+	e0.fromVertex() = &v0;
+	e1.fromVertex() = &v1;
+	e2.fromVertex() = &v2;
 
 	f.outerHalfEdge() = &e0;
 

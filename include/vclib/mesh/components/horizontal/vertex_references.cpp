@@ -98,7 +98,7 @@ int VertexReferences<Vertex, N>::indexOfVertex(const Vertex* v) const
 }
 
 template<typename Vertex, int N>
-int VertexReferences<Vertex, N>::indexOfEdge(const Vertex* v1, const Vertex* v2)
+int VertexReferences<Vertex, N>::indexOfEdge(const Vertex* v1, const Vertex* v2) const
 {
 	int vid = indexOfVertex(v1);
 	if (vid < 0) {

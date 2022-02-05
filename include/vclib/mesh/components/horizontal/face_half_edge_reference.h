@@ -25,6 +25,7 @@
 
 #include <vector>
 
+#include <vclib/iterators/half_edge/face_half_edge_iterator.h>
 #include <vclib/iterators/half_edge/face_vertex_iterator.h>
 #include <vclib/iterators/range_iterator.h>
 
@@ -43,15 +44,25 @@ class FaceHalfEdgeReference :
 {
 	using Vertex = typename HalfEdge::VertexType;
 public:
+	using HalfEdgeType = HalfEdge;
 	using VertexType = typename HalfEdge::VertexType;
+
+	using HalfEdgeIterator = vcl::FaceHalfEdgeIterator<HalfEdge>;
+	using ConstHalfEdgeIterator = vcl::ConstFaceHalfEdgeIterator<HalfEdge>;
+	using HalfEdgeRangeIterator = RangeIterator<FaceHalfEdgeReference, HalfEdgeIterator>;
+	using ConstHalfEdgeRangeIterator =
+		ConstRangeIterator<FaceHalfEdgeReference, ConstHalfEdgeIterator>;
 
 	using VertexIterator = vcl::FaceVertexIterator<HalfEdge>;
 	using ConstVertexIterator = vcl::ConstFaceVertexIterator<HalfEdge>;
 	using VertexRangeIterator = RangeIterator<FaceHalfEdgeReference, VertexIterator>;
 	using ConstVertexRangeIterator = ConstRangeIterator<FaceHalfEdgeReference, ConstVertexIterator>;
 
+	// Vertex references can be accessed from a face using half edge reference, therefore this
+	// component claims that it is the VertexReferences component. This is done just for
+	// compatibility between mesh types.
 	using VertexReferences = FaceHalfEdgeReference;
-	static const int VERTEX_NUMBER = -1;
+	static const int VERTEX_NUMBER = -1; // half edges support by design polygonal meshes
 
 	/* Constructor */
 
@@ -80,8 +91,16 @@ public:
 	ConstVertexIterator findVertex(const Vertex* v) const;
 
 	int indexOfVertex(const Vertex* v) const;
+	int indexOfEdge(const Vertex* v1, const Vertex* v2) const;
 
 	/* Iterator Member functions */
+
+	HalfEdgeIterator           haflEdgeBegin();
+	ConstHalfEdgeIterator      halfEdgeBegin() const;
+	HalfEdgeIterator           halfEdgeEnd();
+	ConstHalfEdgeIterator      halfEdgeEnd() const;
+	HalfEdgeRangeIterator      halfEdges();
+	ConstHalfEdgeRangeIterator halfEdges() const;
 
 	VertexIterator           vertexBegin();
 	ConstVertexIterator      vertexBegin() const;

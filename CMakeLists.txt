@@ -98,6 +98,7 @@ set(HEADERS
 	include/vclib/iterators/container_range_iterator.h
 	include/vclib/iterators/range_iterator.h
 	include/vclib/iterators/half_edge/face_base_iterator.h
+	include/vclib/iterators/half_edge/face_half_edge_iterator.h
 	include/vclib/iterators/half_edge/face_vertex_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h

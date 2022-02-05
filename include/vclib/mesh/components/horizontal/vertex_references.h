@@ -67,7 +67,7 @@ public:
 	ConstVertexIterator findVertex(const Vertex* v) const;
 
 	int indexOfVertex(const Vertex* v) const;
-	int indexOfEdge(const Vertex* v1, const Vertex* v2);
+	int indexOfEdge(const Vertex* v1, const Vertex* v2) const;
 
 	/* Member functions specific for vector */
 
