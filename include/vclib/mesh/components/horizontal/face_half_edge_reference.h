@@ -25,6 +25,7 @@
 
 #include <vector>
 
+#include <vclib/iterators/half_edge/face_adj_face_iterator.h>
 #include <vclib/iterators/half_edge/face_half_edge_iterator.h>
 #include <vclib/iterators/half_edge/face_vertex_iterator.h>
 #include <vclib/iterators/range_iterator.h>
@@ -43,9 +44,25 @@ class FaceHalfEdgeReference :
 		public AdjacentFacesTriggerer
 {
 	using Vertex = typename HalfEdge::VertexType;
+	using Face   = typename HalfEdge::FaceType;
+
 public:
 	using HalfEdgeType = HalfEdge;
-	using VertexType = typename HalfEdge::VertexType;
+	using VertexType   = typename HalfEdge::VertexType;
+
+	/* Iterator Types declaration */
+
+	using AdjacentFaceIterator      = vcl::FaceAdjFaceIterator<HalfEdge>;
+	using ConstAdjacentFaceIterator = vcl::ConstFaceAdjFaceIterator<HalfEdge>;
+	using AdjacentFaceRangeIterator = RangeIterator<FaceHalfEdgeReference, AdjacentFaceIterator>;
+	using ConstAdjacentFaceRangeIterator =
+		ConstRangeIterator<FaceHalfEdgeReference, ConstAdjacentFaceIterator>;
+
+	using InnerHalfEdgeIterator = typename std::vector<HalfEdge*>::iterator;
+	using ConstInnerHalfEdgeIterator = typename std::vector<HalfEdge*>::const_iterator;
+	using InnerHalfEdgeRangeIterator = RangeIterator<FaceHalfEdgeReference, InnerHalfEdgeIterator>;
+	using ConstInnerHalfEdgeRangeIterator =
+		RangeIterator<FaceHalfEdgeReference, ConstInnerHalfEdgeIterator>;
 
 	using HalfEdgeIterator = vcl::FaceHalfEdgeIterator<HalfEdge>;
 	using ConstHalfEdgeIterator = vcl::ConstFaceHalfEdgeIterator<HalfEdge>;
@@ -75,6 +92,8 @@ public:
 	const HalfEdge* innerHalfEdge(uint i) const;
 	HalfEdge*& innerHalfEdge(uint i);
 
+	/* VertexReferences compatibility */
+
 	uint vertexNumber() const;
 
 	Vertex*&      vertex(uint i);
@@ -95,15 +114,28 @@ public:
 
 	/* Iterator Member functions */
 
+	AdjacentFaceIterator           adjFaceBegin();
+	AdjacentFaceIterator           adjFaceBegin(HalfEdge* he);
+	AdjacentFaceIterator           adjFaceEnd();
+	ConstAdjacentFaceIterator      adjFaceBegin() const;
+	ConstAdjacentFaceIterator      adjFaceBegin(const HalfEdge* he) const;
+	ConstAdjacentFaceIterator      adjFaceEnd() const;
+	AdjacentFaceRangeIterator      adjFaces();
+	ConstAdjacentFaceRangeIterator adjFaces() const;
+
 	HalfEdgeIterator           haflEdgeBegin();
+	HalfEdgeIterator           haflEdgeBegin(HalfEdge* he);
 	ConstHalfEdgeIterator      halfEdgeBegin() const;
+	ConstHalfEdgeIterator      halfEdgeBegin(const HalfEdge* he) const;
 	HalfEdgeIterator           halfEdgeEnd();
 	ConstHalfEdgeIterator      halfEdgeEnd() const;
 	HalfEdgeRangeIterator      halfEdges();
 	ConstHalfEdgeRangeIterator halfEdges() const;
 
 	VertexIterator           vertexBegin();
+	VertexIterator           vertexBegin(HalfEdge* he);
 	ConstVertexIterator      vertexBegin() const;
+	ConstVertexIterator      vertexBegin(const HalfEdge* he) const;
 	VertexIterator           vertexEnd();
 	ConstVertexIterator      vertexEnd() const;
 	VertexRangeIterator      vertices();
