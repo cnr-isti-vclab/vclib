@@ -20,33 +20,71 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_DCEL_MESH_H
+#define VCL_DCEL_MESH_H
 
-#include <vclib/algorithms/export_to_matrix.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/space/array.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/poly_mesh.h>
+#include "mesh/mesh.h"
+#include "mesh/requirements.h"
 
-int main()
+namespace vcl::dcel {
+
+class HalfEdge;
+class Vertex;
+class Face;
+
+class HalfEdge :
+		public vcl::HalfEdge<
+			vcl::hedge::BitFlags,
+			vcl::hedge::HalfEdgeReferences<HalfEdge, Vertex, Face>,
+			vcl::hedge::OptionalScalard<HalfEdge>,
+			vcl::hedge::OptionalColor<HalfEdge>,
+			vcl::hedge::OptionalMark<HalfEdge>,
+			vcl::hedge::CustomComponents<HalfEdge>>
 {
-	vcl::TriMesh tm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+};
 
-	Eigen::MatrixXd v = vcl::vertexMatrix<Eigen::MatrixXd>(tm);
-	Eigen::MatrixXi f = vcl::faceMatrix<Eigen::MatrixXi>(tm);
+class Vertex :
+		public vcl::Vertex<
+			vcl::vert::BitFlags,
+			vcl::vert::Coordinate3d,
+			vcl::vert::Normal3d,
+			vcl::vert::Color,
+			vcl::vert::Scalard,
+			vcl::vert::HalfEdgeReference<HalfEdge>,
+			vcl::vert::OptionalTexCoordf<Vertex>,
+			vcl::vert::OptionalMark<Vertex>,
+			vcl::vert::CustomComponents<Vertex>>
+{
+};
 
-	std::cerr << "Vertices:\n" << v << "\n\n";
+class Face :
+		public vcl::Face<
+			vcl::face::BitFlags,
+			vcl::face::HalfEdgeReference<HalfEdge>,
+			vcl::face::Normal3d,
+			vcl::face::OptionalScalard<Face>,
+			vcl::face::OptionalColor<Face>,
+			vcl::face::OptionalMark<Face>,
+			vcl::face::CustomComponents<Face>>
+{
+};
 
-	std::cerr << "Faces:\n" << f << "\n\n";
+} // namespace vcl::dcel
 
-	vcl::PolyMesh pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+namespace vcl {
 
-	vcl::Array2<double> va = vcl::vertexMatrix<vcl::Array2<double>>(pm);
-	vcl::Array2<int> fa = vcl::faceMatrix<vcl::Array2<int>>(pm);
+class DcelMesh :
+		public vcl::Mesh<
+			mesh::VertexContainer<dcel::Vertex>,
+			mesh::FaceContainer<dcel::Face>,
+			mesh::HalfEdgeContainer<dcel::HalfEdge>,
+			mesh::BoundingBox3d,
+			mesh::Mark,
+			mesh::TextureFileNames,
+			mesh::TransformMatrixd>
+{
+};
 
-	std::cerr << "Vertices:\n" << va << "\n\n";
+} // namespace vcl
 
-	std::cerr << "Faces:\n" << fa << "\n\n";
-
-	return 0;
-}
+#endif // VCL_DCEL_MESH_H

@@ -20,36 +20,52 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINTCLOUD_H
-#define VCL_POINTCLOUD_H
+#ifndef VCL_EDGE_MESH_H
+#define VCL_EDGE_MESH_H
 
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
-namespace vcl::pointcloud {
+namespace vcl::edgemesh {
 
 class Vertex;
+class Edge;
 
 class Vertex :
 		public vcl::Vertex<
-			vcl::vert::BitFlags,                  // 4b
-			vcl::vert::Coordinate3d,              // 24b
-			vcl::vert::Normal3d,                  // 24b
-			vcl::vert::Color,                     // 4b
-			vcl::vert::Scalard,                   // 8b
-			vcl::vert::OptionalTexCoordf<Vertex>, // 0b
-			vcl::vert::OptionalMark<Vertex>,      // 0b
-			vcl::vert::CustomComponents<Vertex>>  // 0b
+			vcl::vert::BitFlags,                            // 4b
+			vcl::vert::Coordinate3d,                        // 24b
+			vcl::vert::Normal3d,                            // 24b
+			vcl::vert::Color,                               // 4b
+			vcl::vert::Scalard,                             // 8b
+			vcl::vert::OptionalAdjacentEdges<Edge, Vertex>, // 0b
+			vcl::vert::OptionalAdjacentVertices<Vertex>,    // 0b
+			vcl::vert::OptionalTexCoordf<Vertex>,           // 0b
+			vcl::vert::OptionalMark<Vertex>,                // 0b
+			vcl::vert::CustomComponents<Vertex>>            // 0b
 {
 };
 
-} // namespace vcl::pointcloud
+class Edge :
+		public vcl::Edge<
+			vcl::edge::BitFlags,                    // 4b
+			vcl::edge::VertexReferences<Vertex>,    // 24b
+			vcl::edge::OptionalScalard<Edge>,       // 0b
+			vcl::edge::OptionalColor<Edge>,         // 0b
+			vcl::edge::OptionalAdjacentEdges<Edge>, // 0b
+			vcl::edge::OptionalMark<Edge>,          // 0b
+			vcl::edge::CustomComponents<Edge>>      // 0b
+{
+};
+
+} // namespace vcl::trimesh
 
 namespace vcl {
 
-class PointCloud :
+class EdgeMesh :
 		public vcl::Mesh<
-			mesh::VertexContainer<pointcloud::Vertex>,
+			mesh::VertexContainer<edgemesh::Vertex>,
+			mesh::EdgeContainer<edgemesh::Edge>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
 			mesh::TextureFileNames,
@@ -59,4 +75,4 @@ class PointCloud :
 
 } // namespace vcl
 
-#endif // VCL_POINTCLOUD_H
+#endif // VCL_EDGE_MESH_H

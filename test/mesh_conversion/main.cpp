@@ -24,8 +24,8 @@
 
 #include <vclib/io/load_ply.h>
 #include <vclib/io/save_ply.h>
-#include <vclib/trimesh.h>
-#include <vclib/polymesh.h>
+#include <vclib/tri_mesh.h>
+#include <vclib/poly_mesh.h>
 #include <vclib/misc/timer.h>
 
 int main()

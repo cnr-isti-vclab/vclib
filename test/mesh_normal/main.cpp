@@ -24,8 +24,8 @@
 
 #include <vclib/algorithms/update/normal.h>
 #include <vclib/io/load_ply.h>
-#include <vclib/trimesh.h>
-#include <vclib/polymesh.h>
+#include <vclib/tri_mesh.h>
+#include <vclib/poly_mesh.h>
 
 template<typename MeshType>
 void updateAndPrintNormals(MeshType& m){

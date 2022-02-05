@@ -24,7 +24,7 @@
 
 #include <vclib/algorithms/stat.h>
 #include <vclib/io/load_ply.h>
-#include <vclib/trimesh.h>
+#include <vclib/tri_mesh.h>
 
 int main()
 {

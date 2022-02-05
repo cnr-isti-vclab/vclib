@@ -22,36 +22,13 @@
 
 #include <iostream>
 
-#include <vclib/mesh/mesh.h>
-
-class MyVertex;
-class MyFace;
-class MyHalfEdge;
-
-class MyVertex :
-		public vcl::Vertex<
-			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3d,
-			vcl::vert::HalfEdgeReference<MyHalfEdge>>
-{};
-
-class MyHalfEdge :
-		public vcl::HalfEdge<
-			vcl::hedge::BitFlags,
-			vcl::hedge::HalfEdgeReferences<MyHalfEdge, MyVertex, MyFace>>
-{};
-
-class MyFace :
-			public vcl::Face<
-				vcl::face::BitFlags,
-				vcl::face::HalfEdgeReference<MyHalfEdge>>
-{};
+#include <vclib/dcel_mesh.h>
 
 int main()
 {
-	MyVertex v0, v1, v2;
-	MyHalfEdge e0, e1, e2;
-	MyFace f;
+	vcl::DcelMesh::Vertex v0, v1, v2;
+	vcl::DcelMesh::HalfEdge e0, e1, e2;
+	vcl::DcelMesh::Face f;
 
 	v0.coord() = vcl::Point3d(0,0,0);
 	v1.coord() = vcl::Point3d(1,1,1);
@@ -70,7 +47,7 @@ int main()
 
 	f.outerHalfEdge() = &e0;
 
-	for (const MyVertex* v : f.vertices()) {
+	for (const vcl::DcelMesh::Vertex* v : f.vertices()) {
 		std::cerr << v->coord() << "\n";
 	}
 

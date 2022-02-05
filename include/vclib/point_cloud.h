@@ -20,53 +20,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POLYMESH_H
-#define VCL_POLYMESH_H
+#ifndef VCL_POINT_CLOUD_H
+#define VCL_POINT_CLOUD_H
 
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
-namespace vcl::polymesh {
+namespace vcl::pointcloud {
 
 class Vertex;
-class Face;
 
 class Vertex :
 		public vcl::Vertex<
-			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3d,
-			vcl::vert::Normal3f,
-			vcl::vert::Color,
-			vcl::vert::Scalard,
-			vcl::vert::OptionalTexCoordf<Vertex>,
-			vcl::vert::OptionalAdjacentFaces<Face, Vertex>,
-			vcl::vert::OptionalAdjacentVertices<Vertex>,
-			vcl::vert::OptionalPrincipalCurvatured<Vertex>,
-			vcl::vert::CustomComponents<Vertex>>
+			vcl::vert::BitFlags,                  // 4b
+			vcl::vert::Coordinate3d,              // 24b
+			vcl::vert::Normal3d,                  // 24b
+			vcl::vert::Color,                     // 4b
+			vcl::vert::Scalard,                   // 8b
+			vcl::vert::OptionalTexCoordf<Vertex>, // 0b
+			vcl::vert::OptionalMark<Vertex>,      // 0b
+			vcl::vert::CustomComponents<Vertex>>  // 0b
 {
 };
 
-class Face :
-		public vcl::Face<
-			vcl::face::PolygonBitFlags, // 4b
-			vcl::face::PolygonVertexRefs<Vertex>,
-			vcl::face::Normal3f,
-			vcl::face::OptionalColor<Face>,
-			vcl::face::OptionalScalard<Face>,
-			vcl::face::OptionalAdjacentPolygons<Face>,
-			vcl::face::OptionalPolygonWedgeTexCoordsf<Face>,
-			vcl::face::CustomComponents<Face>>
-{
-};
-
-} // namespace vcl::polymesh
+} // namespace vcl::pointcloud
 
 namespace vcl {
 
-class PolyMesh :
+class PointCloud :
 		public vcl::Mesh<
-			mesh::VertexContainer<polymesh::Vertex>,
-			mesh::FaceContainer<polymesh::Face>,
+			mesh::VertexContainer<pointcloud::Vertex>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
 			mesh::TextureFileNames,
@@ -76,4 +59,4 @@ class PolyMesh :
 
 } // namespace vcl
 
-#endif // VCL_POLYMESH_H
+#endif // VCL_POINT_CLOUD_H

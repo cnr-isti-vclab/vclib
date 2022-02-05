@@ -46,10 +46,11 @@ set(VCLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(VCLIB_SRC_DIR ${VCLIB_INCLUDE_DIR}/vclib)
 
 set(HEADERS
-	include/vclib/edgemesh.h
-	include/vclib/pointcloud.h
-	include/vclib/polymesh.h
-	include/vclib/trimesh.h
+	include/vclib/dcel_mesh.h
+	include/vclib/edge_mesh.h
+	include/vclib/point_cloud.h
+	include/vclib/poly_mesh.h
+	include/vclib/tri_mesh.h
 	include/vclib/algorithms/clean.h
 	include/vclib/algorithms/export_to_matrix.h
 	include/vclib/algorithms/fitting.h

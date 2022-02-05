@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-#include <vclib/polymesh.h>
+#include <vclib/poly_mesh.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/io/save_ply.h>
 #include <vclib/algorithms/update/flag.h>

@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-#include <vclib/trimesh.h>
+#include <vclib/tri_mesh.h>
 #include <vclib/io/load_off.h>
 
 int main()

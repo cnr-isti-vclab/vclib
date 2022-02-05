@@ -20,54 +20,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TRIMESH_H
-#define VCL_TRIMESH_H
+#ifndef VCL_POLY_MESH_H
+#define VCL_POLY_MESH_H
 
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
-namespace vcl::trimesh {
+namespace vcl::polymesh {
 
 class Vertex;
 class Face;
 
 class Vertex :
 		public vcl::Vertex<
-			vcl::vert::BitFlags,                            // 4b
-			vcl::vert::Coordinate3d,                        // 24b
-			vcl::vert::Normal3d,                            // 24b
-			vcl::vert::Color,                               // 4b
-			vcl::vert::Scalard,                             // 8b
-			vcl::vert::OptionalAdjacentFaces<Face, Vertex>, // 0b
-			vcl::vert::OptionalAdjacentVertices<Vertex>,    // 0b
-			vcl::vert::OptionalTexCoordf<Vertex>,           // 0b
-			vcl::vert::OptionalMark<Vertex>,                // 0b
-			vcl::vert::CustomComponents<Vertex>>            // 0b
+			vcl::vert::BitFlags,
+			vcl::vert::Coordinate3d,
+			vcl::vert::Normal3f,
+			vcl::vert::Color,
+			vcl::vert::Scalard,
+			vcl::vert::OptionalTexCoordf<Vertex>,
+			vcl::vert::OptionalAdjacentFaces<Face, Vertex>,
+			vcl::vert::OptionalAdjacentVertices<Vertex>,
+			vcl::vert::OptionalPrincipalCurvatured<Vertex>,
+			vcl::vert::CustomComponents<Vertex>>
 {
 };
 
 class Face :
 		public vcl::Face<
-			vcl::face::TriangleBitFlags,                      // 4b
-			vcl::face::TriangleVertexRefs<Vertex>,            // 24b
-			vcl::face::Normal3d,                              // 24b
-			vcl::face::OptionalScalard<Face>,                 // 0b
-			vcl::face::OptionalColor<Face>,                   // 0b
-			vcl::face::OptionalAdjacentTriangles<Face>,       // 0b
-			vcl::face::OptionalTriangleWedgeTexCoordsf<Face>, // 0b
-			vcl::face::OptionalMark<Face>,                    // 0b
-			vcl::face::CustomComponents<Face>>                // 0b
+			vcl::face::PolygonBitFlags, // 4b
+			vcl::face::PolygonVertexRefs<Vertex>,
+			vcl::face::Normal3f,
+			vcl::face::OptionalColor<Face>,
+			vcl::face::OptionalScalard<Face>,
+			vcl::face::OptionalAdjacentPolygons<Face>,
+			vcl::face::OptionalPolygonWedgeTexCoordsf<Face>,
+			vcl::face::CustomComponents<Face>>
 {
 };
 
-} // namespace vcl::trimesh
+} // namespace vcl::polymesh
 
 namespace vcl {
 
-class TriMesh :
+class PolyMesh :
 		public vcl::Mesh<
-			mesh::VertexContainer<trimesh::Vertex>,
-			mesh::FaceContainer<trimesh::Face>,
+			mesh::VertexContainer<polymesh::Vertex>,
+			mesh::FaceContainer<polymesh::Face>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
 			mesh::TextureFileNames,
@@ -77,4 +76,4 @@ class TriMesh :
 
 } // namespace vcl
 
-#endif // VCL_TRIMESH_H
+#endif // VCL_POLY_MESH_H

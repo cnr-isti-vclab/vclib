@@ -45,6 +45,9 @@ class HalfEdgeContainer : protected ElementContainer<T>, public HalfEdgeContaine
 		"You should include a HalfEdgeReferences as HalfEdge component in your Mesh definition.");
 
 public:
+	using HalfEdge              = T;
+	using HalfEdgeType          = T;
+
 	HalfEdgeContainer();
 };
 

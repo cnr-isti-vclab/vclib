@@ -80,6 +80,7 @@ public:
 	// compatibility between mesh types.
 	using VertexReferences         = FaceHalfEdgeReference;
 	static const int VERTEX_NUMBER = -1; // half edges support by design polygonal meshes
+	static const int ADJ_FACE_NUMBER = -1;
 
 	/* Constructor */
 
