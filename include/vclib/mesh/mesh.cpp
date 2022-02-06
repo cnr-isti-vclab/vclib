@@ -502,7 +502,7 @@ Mesh<Args...>::addEdges(uint n)
 	// edge container are updated automatically)
 
 	Edge* oldBase = EdgeContainer::vec.data();
-	uint  eid     = EdgeContainer::addEdges(n); // add the number of vertices
+	uint  eid     = EdgeContainer::addEdges(n); // add the number of edges
 	Edge* newBase = EdgeContainer::vec.data();
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
@@ -566,6 +566,144 @@ Mesh<Args...>::compactEdges()
 		assert(oldBase == newBase);
 
 		updateEdgeReferencesAfterCompact(oldBase, newIndices);
+	}
+}
+
+/**
+ * @brief Returns the index of the given Halfedge in the HalfEdgeContainer of the Mesh.
+ * @param e: a reference of an Halfedge of the Mesh.
+ * @return the index of the given Halfedge.
+ */
+template<typename... Args>
+template<typename M>
+VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+Mesh<Args...>::index(const typename M::HalfEdgeType& e) const
+{
+	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+	return HalfEdgeContainer::index(&e);
+}
+
+/**
+ * @brief Returns the index of the given Halfedge in the HalfEdgeContainer of the Mesh.
+ * @param e: a pointer of an Halfedge of the Mesh.
+ * @return the index of the given Halfedge.
+ */
+template<typename... Args>
+template<typename M>
+VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+Mesh<Args...>::index(const typename M::HalfEdgeType* e) const
+{
+	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+	return HalfEdgeContainer::index(e);
+}
+
+template<typename... Args>
+template<typename M>
+VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+Mesh<Args...>::addHalfEdge()
+{
+	using HalfEdge          = typename M::HalfEdgeType;
+	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+
+	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
+	uint      eid     = HalfEdgeContainer::addHalfEdge();
+	HalfEdge* newBase = HalfEdgeContainer::vec.data();
+	if (oldBase != nullptr && oldBase != newBase)
+		updateHalfEdgeReferences(oldBase, newBase);
+	return eid;
+}
+
+/**
+ * @brief Add an arbitrary number of n Halfedges, returning the id of the first added Halfedge.
+ *
+ * This means that, if you want to add 5 Halfedges and this member function returns 4, the added
+ * Halfedges will have id from 4 to id 8 included.
+ *
+ * If the call of this function will cause a reallocation of the HalfEdgeContainer, the function
+ * will automatically take care of updating all the HalfEdge references contained in the Mesh.
+ *
+ * This function will be available only **if the Mesh has the HalfEdge Container**.
+ *
+ * @param n: the number of Halfedges to add to the mesh.
+ * @return the id of the first added Halfedge.
+ */
+template<typename... Args>
+template<typename M>
+VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+Mesh<Args...>::addHalfEdges(uint n)
+{
+	using HalfEdge          = typename M::HalfEdgeType;
+	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+
+	// If the base pointer of the container of Halfedges changes, it means that all the Halfedge
+	// references contained in the other elements need to be updated (the ones contained in the
+	// Halfedge container are updated automatically)
+
+	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
+	uint      eid     = HalfEdgeContainer::addHalfEdges(n); // add the number of half edges
+	HalfEdge* newBase = HalfEdgeContainer::vec.data();
+
+	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
+		// change all the half edge references in the other containers
+		updateHalfEdgeReferences(oldBase, newBase);
+	}
+	return eid;
+}
+
+/**
+ * @brief Reserve a number of Halfedges in the container of HalfEdges. This is useful when you know
+ * (or you have an idea) of how much Halfedges are going to add into a newly of existing mesh.
+ * Calling this function before any addHalfEdge() call will avoid unuseful reallocations of the
+ * container, saving execution time.
+ *
+ * The filosofy of this function is similar to the one of the
+ * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
+ * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
+ *
+ * If the call of this function will cause a reallocation of the HalfEdge container, the function
+ * will automatically take care of updating all the HalfEdge references contained in the Mesh.
+ *
+ * This function will be available only **if the Mesh has the HalfEdge Container**.
+ *
+ * @param n: the new capacity of the Halfedge container.
+ */
+template<typename... Args>
+template<typename M>
+VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+Mesh<Args...>::reserveHalfEdges(uint n)
+{
+	using HalfEdge          = typename M::HalfEdgeType;
+	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+
+	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
+	HalfEdgeContainer::reserveHalfEdges(n);
+	HalfEdge* newBase = HalfEdgeContainer::vec.data();
+	if (oldBase != nullptr && oldBase != newBase)
+		updateHalfEdgeReferences(oldBase, newBase);
+}
+
+/**
+ * @brief Compacts the HalfEdgeContainer, removing all the Halfedges marked as deleted. HalfEdges
+ * indices will change accordingly. The function will automatically take care of updating all the
+ * HalfEdge references contained in the Mesh.
+ *
+ * This function will be available only **if the Mesh has the HalfEdge Container**.
+ */
+template<typename... Args>
+template<typename M>
+VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+Mesh<Args...>::compactHalfEdges()
+{
+	using HalfEdge          = typename M::HalfEdgeType;
+	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+
+	if (HalfEdgeContainer::HalfedgeNumber() != HalfEdgeContainer::HalfedgeContainerSize()) {
+		HalfEdge*        oldBase    = HalfEdgeContainer::vec.data();
+		std::vector<int> newIndices = HalfEdgeContainer::compactHalfEdges();
+		HalfEdge*        newBase    = HalfEdgeContainer::vec.data();
+		assert(oldBase == newBase);
+
+		updateHalfEdgeReferencesAfterCompact(oldBase, newIndices);
 	}
 }
 
@@ -689,6 +827,12 @@ Mesh<Args...>::updateVertexReferences(
 			using EdgeContainer = typename M::EdgeContainer;
 			EdgeContainer::updateVertexReferences(oldBase, newBase);
 		}
+
+		// update vertex references in the HalfEdge Container, if it exists
+		if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+			using HalfEdgeContainer = typename M::HalfEdgeContainer;
+			HalfEdgeContainer::updateVertexReferences(oldBase, newBase);
+		}
 	}
 }
 
@@ -713,6 +857,12 @@ Mesh<Args...>::updateVertexReferencesAfterCompact(
 	if constexpr (vcl::mesh::hasEdges<M>()) {
 		using EdgeContainer = typename M::EdgeContainer;
 		EdgeContainer::updateVertexReferencesAfterCompact(base, newIndices);
+	}
+
+	// update vertex references in the HalfEdge Container, if it exists
+	if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+		using HalfEdgeContainer = typename M::HalfEdgeContainer;
+		HalfEdgeContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
 }
 
@@ -739,6 +889,12 @@ Mesh<Args...>::updateFaceReferences(
 			using EdgeContainer = typename M::EdgeContainer;
 			EdgeContainer::updateFaceReferences(oldBase, newBase);
 		}
+
+		// update face references in the HalfEdge Container, if it exists
+		if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+			using HalfEdgeContainer = typename M::HalfEdgeContainer;
+			HalfEdgeContainer::updateFaceReferences(oldBase, newBase);
+		}
 	}
 }
 
@@ -763,6 +919,12 @@ Mesh<Args...>::updateFaceReferencesAfterCompact(
 	if constexpr (vcl::mesh::hasEdges<M>()) {
 		using EdgeContainer = typename M::EdgeContainer;
 		EdgeContainer::updateFaceReferencesAfterCompact(base, newIndices);
+	}
+
+	// update face references in the HalfEdge Container, if it exists
+	if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+		using HalfEdgeContainer = typename M::HalfEdgeContainer;
+		HalfEdgeContainer::updateFaceReferencesAfterCompact(base, newIndices);
 	}
 }
 
@@ -813,6 +975,56 @@ Mesh<Args...>::updateEdgeReferencesAfterCompact(
 	if constexpr (vcl::mesh::hasEdges<M>()) {
 		using FaceContainer = typename M::FaceContainer;
 		FaceContainer::updateEdgeReferencesAfterCompact(base, newIndices);
+	}
+}
+
+template<typename... Args>
+template<typename M>
+VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+Mesh<Args...>::updateHalfEdgeReferences(
+	const typename M::HalfEdgeType* oldBase,
+	const typename M::HalfEdgeType* newBase)
+{
+	if (oldBase != newBase) {
+		// update Halfedge references in HalfEdge Container
+		using HalfEdgeContainer = typename M::HalfEdgeContainer;
+		HalfEdgeContainer::updateHalfEdgeReferences(oldBase, newBase);
+
+		// update Halfedge references in the Vertex Container, if it exists
+		if constexpr (vcl::mesh::hasVertices<M>()) {
+			using VertexContainer = typename M::VertexContainer;
+			VertexContainer::updateHalfEdgeReferences(oldBase, newBase);
+		}
+
+		// update Halfedge references in the Face Container, if it exists
+		if constexpr (vcl::mesh::hasFaces<M>()) {
+			using FaceContainer = typename M::FaceContainer;
+			FaceContainer::updateHalfEdgeReferences(oldBase, newBase);
+		}
+	}
+}
+
+template<typename... Args>
+template<typename M>
+VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+Mesh<Args...>::updateHalfEdgeReferencesAfterCompact(
+	const typename M::HalfEdgeType* base,
+	const std::vector<int>&         newIndices)
+{
+	// update Halfedge references in HalfEdge Container
+	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+	HalfEdgeContainer::updateHalfEdgeReferencesAfterCompact(base, newIndices);
+
+	// update Halfedge references in the Vertex Container, if it exists
+	if constexpr (vcl::mesh::hasVertices<M>()) {
+		using VertexContainer = typename M::VertexContainer;
+		VertexContainer::updateHalfEdgeReferencesAfterCompact(base, newIndices);
+	}
+
+	// update Halfedge references in the Face Container, if it exists
+	if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+		using FaceContainer = typename M::FaceContainer;
+		FaceContainer::updateHalfEdgeReferencesAfterCompact(base, newIndices);
 	}
 }
 

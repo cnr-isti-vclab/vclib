@@ -559,4 +559,50 @@ FaceHalfEdgeReference<HalfEdge>::vertices() const
 		*this, &FaceHalfEdgeReference::vertexBegin, &FaceHalfEdgeReference::vertexEnd);
 }
 
+template<typename HalfEdge>
+void FaceHalfEdgeReference<HalfEdge>::updateHalfEdgeReferences(
+	const HalfEdge* oldBase,
+	const HalfEdge* newBase)
+{
+	if (ohe != nullptr) {
+		size_t diff = ohe - oldBase;
+		ohe = newBase + diff;
+	}
+	for (uint i = 0; i < ihe.size(); ++i) {
+		if (ihe[i] != nullptr) {
+			size_t diff = ihe[i] - oldBase;
+			ihe[i] = newBase + diff;
+		}
+	}
+}
+
+template<typename HalfEdge>
+void FaceHalfEdgeReference<HalfEdge>::updateHalfEdgeReferencesAfterCompact(
+	const HalfEdge*         base,
+	const std::vector<int>& newIndices)
+{
+	if (ohe != nullptr) {
+		size_t diff = ohe - base;
+		if (newIndices[diff] < 0)
+			ohe = nullptr;
+		else
+			ohe = base + newIndices[diff];
+	}
+	for (uint i = 0; i < ihe.size(); ++i) {
+		if (ihe[i] != nullptr) {
+			size_t diff = ihe[i] - base;
+			if (newIndices[diff] < 0)
+				ihe[i] = nullptr;
+			else
+				ihe[i] = base + newIndices[diff];
+		}
+	}
+}
+
+template<typename HalfEdge>
+template<typename Element>
+void FaceHalfEdgeReference<HalfEdge>::importFrom(const Element &e)
+{
+}
+
 } // namespace vcl::comp

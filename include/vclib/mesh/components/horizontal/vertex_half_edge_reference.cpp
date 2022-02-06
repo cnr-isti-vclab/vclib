@@ -22,6 +22,8 @@
 
 #include "vertex_half_edge_reference.h"
 
+#include <cstddef>
+
 namespace vcl::comp {
 
 template<typename HalfEdge>
@@ -39,6 +41,37 @@ template<typename HalfEdge>
 HalfEdge *&VertexHalfEdgeReference<HalfEdge>::halfEdge()
 {
 	return he;
+}
+
+template<typename HalfEdge>
+void VertexHalfEdgeReference<HalfEdge>::updateHalfEdgeReferences(
+	const HalfEdge* oldBase,
+	const HalfEdge* newBase)
+{
+	if (he != nullptr) {
+		size_t diff = he - oldBase;
+		he = newBase + diff;
+	}
+}
+
+template<typename HalfEdge>
+void VertexHalfEdgeReference<HalfEdge>::updateHalfEdgeReferencesAfterCompact(
+	const HalfEdge*         base,
+	const std::vector<int>& newIndices)
+{
+	if (he != nullptr) {
+		size_t diff = he - base;
+		if (newIndices[diff] < 0)
+			he = nullptr;
+		else
+			he = base + newIndices[diff];
+	}
+}
+
+template<typename HalfEdge>
+template<typename Element>
+void VertexHalfEdgeReference<HalfEdge>::importFrom(const Element &e)
+{
 }
 
 } // namespace vcl::comp

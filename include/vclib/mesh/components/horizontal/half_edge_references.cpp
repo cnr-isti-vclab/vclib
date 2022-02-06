@@ -22,6 +22,8 @@
 
 #include "half_edge_references.h"
 
+#include <cstddef>
+
 namespace vcl::comp {
 
 template<typename HalfEdge, typename Vertex, typename Face>
@@ -119,6 +121,109 @@ template<typename HalfEdge, typename Vertex, typename Face>
 Face* HalfEdgeReferences<HalfEdge, Vertex, Face>::face()
 {
 	return f;
+}
+
+template<typename HalfEdge, typename Vertex, typename Face>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateHalfEdgeReferences(
+	const HalfEdge* oldBase,
+	const HalfEdge* newBase)
+{
+	if (n != nullptr) {
+		size_t diff = n - oldBase;
+		n = newBase + diff;
+	}
+	if (p != nullptr) {
+		size_t diff = p - oldBase;
+		p = newBase + diff;
+	}
+	if (t != nullptr) {
+		size_t diff = t - oldBase;
+		t = newBase + diff;
+	}
+}
+
+template<typename HalfEdge, typename Vertex, typename Face>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateHalfEdgeReferencesAfterCompact(
+	const HalfEdge*         base,
+	const std::vector<int>& newIndices)
+{
+	if (n != nullptr) {
+		size_t diff = n - base;
+		if (newIndices[diff] < 0)
+			n = nullptr;
+		else
+			n = base + newIndices[diff];
+	}
+	if (p != nullptr) {
+		size_t diff = p - base;
+		if (newIndices[diff] < 0)
+			p = nullptr;
+		else
+			p = base + newIndices[diff];
+	}
+	if (t != nullptr) {
+		size_t diff = t - base;
+		if (newIndices[diff] < 0)
+			t = nullptr;
+		else
+			t = base + newIndices[diff];
+	}
+}
+
+template<typename HalfEdge, typename Vertex, typename Face>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateFaceReferences(
+	const Face* oldBase,
+	const Face* newBase)
+{
+	if (f != nullptr) {
+		size_t diff = f - oldBase;
+		f = newBase + diff;
+	}
+}
+
+template<typename HalfEdge, typename Vertex, typename Face>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateFaceReferencesAfterCompact(
+	const Face*             base,
+	const std::vector<int>& newIndices)
+{
+	if (f != nullptr) {
+		size_t diff = f - base;
+		if (newIndices[diff] < 0)
+			f = nullptr;
+		else
+			f = base + newIndices[diff];
+	}
+}
+
+template<typename HalfEdge, typename Vertex, typename Face>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateVertexReferences(
+	const Vertex* oldBase,
+	const Vertex* newBase)
+{
+	if (v != nullptr) {
+		size_t diff = v - oldBase;
+		v = newBase + diff;
+	}
+}
+
+template<typename HalfEdge, typename Vertex, typename Face>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateVertexReferencesAfterCompact(
+	const Vertex*           base,
+	const std::vector<int>& newIndices)
+{
+	if (v != nullptr) {
+		size_t diff = v - base;
+		if (newIndices[diff] < 0)
+			v = nullptr;
+		else
+			v = base + newIndices[diff];
+	}
+}
+
+template<typename HalfEdge, typename Vertex, typename Face>
+template<typename Element>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::importFrom(const Element &e)
+{
 }
 
 } // namespace vcl::comp

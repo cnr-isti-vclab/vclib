@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
 #define VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
 
+#include <vector>
+
 #include "../detection/half_edge_references_detection.h"
 
 namespace vcl::comp {
@@ -57,6 +59,20 @@ public:
 
 	const Face* face() const;
 	Face*       face();
+
+protected:
+	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void
+	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+
+	void updateFaceReferences(const Face* oldBase, const Face* newBase);
+	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+
+	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+
+	template<typename Element>
+	void importFrom(const Element& e);
 
 private:
 	HalfEdge* n = nullptr; // next half edge

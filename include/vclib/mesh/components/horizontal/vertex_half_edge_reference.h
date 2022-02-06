@@ -23,6 +23,8 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
 #define VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
 
+#include <vector>
+
 #include "../detection/vertex_half_edge_reference_detection.h"
 
 namespace vcl::comp {
@@ -35,6 +37,14 @@ public:
 
 	const HalfEdge* halfEdge() const;
 	HalfEdge*& halfEdge();
+
+protected:
+	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void
+	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+
+	template<typename Element>
+	void importFrom(const Element& e);
 
 private:
 	HalfEdge* he = nullptr; // outgoing half edge

@@ -23,6 +23,9 @@
 #include "element_container.h"
 
 #include "../components/detection/vertex_references_detection.h"
+#include "../components/detection/face_half_edge_reference_detection.h"
+#include "../components/detection/half_edge_references_detection.h"
+#include "../components/detection/vertex_half_edge_reference_detection.h"
 
 namespace vcl::mesh {
 
@@ -472,6 +475,11 @@ void ElementContainer<T>::updateVertexReferences(const Vertex *oldBase, const Ve
 			v.updateVertexReferences(oldBase, newBase);
 		}
 	}
+	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+		for (T& e : elements()) {
+			e.updateVertexReferences(oldBase, newBase);
+		}
+	}
 }
 
 template<typename T>
@@ -497,6 +505,11 @@ void ElementContainer<T>::updateVertexReferencesAfterCompact(
 			v.updateVertexReferencesAfterCompact(base, newIndices);
 		}
 	}
+	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+		for (T& e : elements()) {
+			e.updateVertexReferencesAfterCompact(base, newIndices);
+		}
+	}
 }
 
 template<typename T>
@@ -511,6 +524,11 @@ void ElementContainer<T>::updateFaceReferences(const Face *oldBase, const Face *
 		}
 	}
 	else if constexpr (comp::hasAdjacentFaces<T>()) {
+		for (T& e : elements()) {
+			e.updateFaceReferences(oldBase, newBase);
+		}
+	}
+	if constexpr (comp::hasHalfEdgeReferences<T>()) {
 		for (T& e : elements()) {
 			e.updateFaceReferences(oldBase, newBase);
 		}
@@ -531,6 +549,11 @@ void ElementContainer<T>::updateFaceReferencesAfterCompact(
 		}
 	}
 	else if constexpr (comp::hasAdjacentFaces<T>()) {
+		for (T& e : elements()) {
+			e.updateFaceReferencesAfterCompact(base, newIndices);
+		}
+	}
+	if constexpr (comp::hasHalfEdgeReferences<T>()) {
 		for (T& e : elements()) {
 			e.updateFaceReferencesAfterCompact(base, newIndices);
 		}
@@ -571,6 +594,50 @@ void ElementContainer<T>::updateEdgeReferencesAfterCompact(
 	else if constexpr (comp::hasAdjacentEdges<T>()) {
 		for (T& e : elements()) {
 			e.updateEdgeReferencesAfterCompact(base, newIndices);
+		}
+	}
+}
+
+template<typename T>
+template<typename HalfEdge>
+void ElementContainer<T>::updateHalfEdgeReferences(const HalfEdge *oldBase, const HalfEdge *newBase)
+{
+	if constexpr (comp::hasFaceHalfEdgeReference<T>()) {
+		for (T& e : elements()) {
+			e.updateHalfEdgeReferences(oldBase, newBase);
+		}
+	}
+	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+		for (T& e : elements()) {
+			e.updateHalfEdgeReferences(oldBase, newBase);
+		}
+	}
+	if constexpr (comp::hasVertexHalfEdgeReference<T>()) {
+		for (T& e : elements()) {
+			e.updateHalfEdgeReferences(oldBase, newBase);
+		}
+	}
+}
+
+template<typename T>
+template<typename HalfEdge>
+void ElementContainer<T>::updateHalfEdgeReferencesAfterCompact(
+	const HalfEdge*             base,
+	const std::vector<int>& newIndices)
+{
+	if constexpr (comp::hasFaceHalfEdgeReference<T>()) {
+		for (T& e : elements()) {
+			e.updateHalfEdgeReferencesAfterCompact(base, newIndices);
+		}
+	}
+	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+		for (T& e : elements()) {
+			e.updateHalfEdgeReferencesAfterCompact(base, newIndices);
+		}
+	}
+	if constexpr (comp::hasVertexHalfEdgeReference<T>()) {
+		for (T& e : elements()) {
+			e.updateHalfEdgeReferencesAfterCompact(base, newIndices);
 		}
 	}
 }
@@ -777,6 +844,27 @@ void ElementContainer<T>::importEdgeReferencesFrom(const Container& c, MyBase* b
 	if constexpr(comp::hasAdjacentEdges<CBase>()) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importEdgeReferencesFrom(c.element(i), base, cbase);
+		}
+	}
+}
+
+template<typename T>
+template<typename Container, typename MyBase, typename CBase>
+void ElementContainer<T>::importHalfEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
+{
+	if constexpr (comp::hasFaceHalfEdgeReference<CBase>()) {
+		for (uint i = 0; i < elementContainerSize(); ++i) {
+			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
+		}
+	}
+	if constexpr (comp::hasHalfEdgeReferences<CBase>()) {
+		for (uint i = 0; i < elementContainerSize(); ++i) {
+			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
+		}
+	}
+	if constexpr (comp::hasVertexHalfEdgeReference<CBase>()) {
+		for (uint i = 0; i < elementContainerSize(); ++i) {
+			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
 		}
 	}
 }

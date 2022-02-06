@@ -151,6 +151,23 @@ public:
 	template<typename K, typename U = T>
 	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
 	getPerHalfEdgeCustomComponentVectorHandle(const std::string& name) const;
+
+protected:
+	uint index(const HalfEdgeType* e) const;
+
+	void clearHalfEdges();
+
+	uint addHalfEdge();
+	uint addHalfEdges(uint nEdges);
+	void reserveHalfEdges(uint size);
+
+	std::vector<int> compactHalfEdges();
+
+	template<typename Mesh>
+	void enableOptionalComponentsOf(const Mesh& m);
+
+	template<typename Mesh>
+	void importFrom(const Mesh& m);
 };
 
 } // namespace vcl::mesh

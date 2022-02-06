@@ -594,4 +594,64 @@ HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(const std::strin
 	return cc;
 }
 
+template<typename T>
+uint HalfEdgeContainer<T>::index(const HalfEdgeType *e) const
+{
+	return Base::index(e);
+}
+
+template<typename T>
+void HalfEdgeContainer<T>::clearHalfEdges()
+{
+	Base::clearElements();
+}
+
+template<typename T>
+uint HalfEdgeContainer<T>::addHalfEdge()
+{
+	return Base::addElement();
+}
+
+template<typename T>
+uint HalfEdgeContainer<T>::addHalfEdges(uint nEdges)
+{
+	return Base::addElements(nEdges);
+}
+
+template<typename T>
+void HalfEdgeContainer<T>::reserveHalfEdges(uint size)
+{
+	Base::reserveElements(size);
+}
+
+template<typename T>
+std::vector<int> HalfEdgeContainer<T>::compactHalfEdges()
+{
+	return Base::compactElements();
+}
+
+template<typename T>
+template<typename Mesh>
+void HalfEdgeContainer<T>::enableOptionalComponentsOf(const Mesh &m)
+{
+	// if half edges are enabled in the other Mesh
+	if constexpr (hasHalfEdges<Mesh>()) {
+		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
+
+		Base::enableOptionalComponentsOf((const MHalfEdgeContainer&)m);
+	}
+}
+
+template<typename T>
+template<typename Mesh>
+void HalfEdgeContainer<T>::importFrom(const Mesh &m)
+{
+	// if half edges are enabled in the other Mesh
+	if constexpr (hasHalfEdges<Mesh>()) {
+		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
+
+		Base::importFrom((const MHalfEdgeContainer&)m);
+	}
+}
+
 } // namespace vcl::mesh

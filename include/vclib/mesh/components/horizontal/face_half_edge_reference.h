@@ -176,6 +176,15 @@ public:
 	VertexRangeIterator      vertices();
 	ConstVertexRangeIterator vertices() const;
 
+protected:
+	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
+
+	void
+	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+
+	template<typename Element>
+	void importFrom(const Element& e);
+
 private:
 	HalfEdge*              ohe = nullptr; // outer half edge
 	std::vector<HalfEdge*> ihe;           // inner half edges, one for each hole of the face

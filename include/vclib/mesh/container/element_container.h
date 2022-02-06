@@ -105,6 +105,13 @@ protected:
 	template<typename Edge>
 	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
 
+	template<typename HalfEdge>
+	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
+
+	template<typename HalfEdge>
+	void
+	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+
 	template<typename Container>
 	void enableOptionalComponentsOf(const Container& c);
 
@@ -119,6 +126,9 @@ protected:
 
 	template<typename Container, typename MyBase, typename CBase>
 	void importEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
+
+	template<typename Container, typename MyBase, typename CBase>
+	void importHalfEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
 
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
