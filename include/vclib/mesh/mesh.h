@@ -103,6 +103,10 @@ public:
 	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), uint)
 	addFace(V... args);
 
+	template<typename M = Mesh, typename Iterator>
+	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), uint)
+	addFace(Iterator begin, Iterator end);
+
 	template<typename M = Mesh>
 	VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
 	addFaces(uint n);
@@ -237,17 +241,16 @@ protected:
 	void updateAllOptionalContainerReferences();
 
 private:
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-	addFaceHelper(typename M::FaceType& f);
+	void addFaceHelper(typename Mesh<Args...>::FaceType& f);
 
-	template<typename M = Mesh, typename... V>
-	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-	addFaceHelper(typename M::FaceType& f, typename M::VertexType* v, V... args);
+	template<typename... V>
+	void addFaceHelper(
+		typename Mesh<Args...>::FaceType&   f,
+		typename Mesh<Args...>::VertexType* v,
+		V... args);
 
-	template<typename M = Mesh, typename... V>
-	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-	addFaceHelper(typename M::FaceType& f, uint vid, V... args);
+	template<typename... V>
+	void addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid, V... args);
 
 	template<typename Cont, typename OthMesh>
 	void importReferences(const OthMesh& m);

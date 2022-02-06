@@ -371,6 +371,7 @@ Mesh<Args...>::addFace(V... args)
 	Face& f   = FaceContainer::face(fid);
 
 	constexpr uint n = sizeof...(args);
+	static_assert(n >= 3, "Faces must have at least 3 vertices");
 	if constexpr (Face::VERTEX_NUMBER < 0) {
 		if constexpr (!comp::hasFaceHalfEdgeReference<Face>()) {
 			f.resizeVertices(n);
@@ -391,6 +392,63 @@ Mesh<Args...>::addFace(V... args)
 		curr->next() = first;
 		first->prev() = curr;
 	}
+	return fid;
+}
+
+template<typename... Args>
+template<typename M, typename Iterator>
+VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), uint)
+Mesh<Args...>::addFace(Iterator begin, Iterator end)
+{
+	using Face          = typename M::FaceType;
+	using FaceContainer = typename M::FaceContainer;
+	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+
+	if (begin == end) return -1;
+
+	uint  fid = addFace();
+	Face& f   = FaceContainer::face(fid);
+
+	if constexpr (Face::VERTEX_NUMBER < 0) {
+		if constexpr (!comp::hasFaceHalfEdgeReference<Face>()) {
+			uint n = std::distance(begin, end);
+			f.resizeVertices(n);
+		}
+	}
+
+	if constexpr (comp::hasFaceHalfEdgeReference<Face>()) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		using HalfEdge          = typename HalfEdgeContainer::HalfEdgeType;
+		using Vertex = typename Mesh<Args...>::VertexType;
+		HalfEdge* first = nullptr;
+		HalfEdge* prev = nullptr;
+		HalfEdge* curr;
+		for (Iterator it = begin; it != end; ++it) {
+			Vertex* v = &VertexContainer::vertex(*it);
+			uint heid = addHalfEdge();
+			curr = &HalfEdgeContainer::halfEdge(heid);
+			curr->fromVertex() = v;
+			v->halfEdge() = curr;
+			if (prev != nullptr) {
+				prev->next() = curr;
+				curr->prev() = prev;
+			}
+			if (first == nullptr)
+				first = curr;
+			prev = curr;
+		}
+		first->prev() = curr;
+		curr->next() = first;
+		f.outerHalfEdge() = first;
+	}
+	else {
+		unsigned int i = 0;
+		for (Iterator it = begin; it != end; ++it) {
+			f.vertex(i) = &VertexContainer::vertex(*it);
+			++i;
+		}
+	}
+
 	return fid;
 }
 
@@ -1072,17 +1130,17 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 }
 
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-Mesh<Args...>::addFaceHelper(typename M::FaceType&)
+void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType&)
 {
 	// base case: no need to add any other vertices
 }
 
 template<typename... Args>
-template<typename M, typename... V>
-VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-Mesh<Args...>::addFaceHelper(typename M::FaceType& f, typename M::VertexType* v, V... args)
+template<typename... V>
+void Mesh<Args...>::addFaceHelper(
+	typename Mesh<Args...>::FaceType&   f,
+	typename Mesh<Args...>::VertexType* v,
+	V... args)
 {
 	using FaceContainer = typename Mesh<Args...>::FaceContainer;
 	using Face            = typename FaceContainer::FaceType;
@@ -1112,9 +1170,8 @@ Mesh<Args...>::addFaceHelper(typename M::FaceType& f, typename M::VertexType* v,
 }
 
 template<typename... Args>
-template<typename M, typename... V>
-VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), void)
-Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
+template<typename... V>
+void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid, V... args)
 {
 	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
