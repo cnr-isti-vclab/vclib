@@ -79,6 +79,78 @@ public:
 	ConstHalfEdgeIterator      halfEdgeEnd() const;
 	HalfEdgeRangeIterator      halfEdges(bool jumpDeleted = true);
 	ConstHalfEdgeRangeIterator halfEdges(bool jumpDeleted = true) const;
+
+	// Color
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), bool)
+	isPerHalfEdgeColorEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), void)
+	enablePerHalfEdgeColor();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), void)
+	disablePerHalfEdgeColor();
+
+	// Mark
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), bool)
+	isPerHalfEdgeMarkEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), void)
+	enablePerHalfEdgeMark();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), void)
+	disablePerHalfEdgeMark();
+
+	// Scalar
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), bool)
+	isPerHalfEdgeScalarEnabled() const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), void)
+	enablePerHalfEdgeScalar();
+
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), void)
+	disablePerHalfEdgeScalar();
+
+	// Custom Components
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), bool)
+	hasPerHalfEdgeCustomComponent(const std::string& name) const;
+
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), std::vector<std::string>)
+	getAllPerHalfEdgeCustomComponentNames() const;
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), bool)
+	isPerHalfEdgeCustomComponentOfType(const std::string& name) const;
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), std::vector<std::string>)
+	getPerHalfEdgeCustomComponentNamesOfType() const;
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), void)
+	addPerHalfEdgeCustomComponent(const std::string& name);
+
+	template<typename U = T>
+	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), void)
+	deletePerHalfEdgeCustomComponent(const std::string& name);
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
+	getPerHalfEdgeCustomComponentVectorHandle(const std::string& name);
+
+	template<typename K, typename U = T>
+	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
+	getPerHalfEdgeCustomComponentVectorHandle(const std::string& name) const;
 };
 
 } // namespace vcl::mesh
