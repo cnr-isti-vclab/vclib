@@ -226,4 +226,67 @@ void HalfEdgeReferences<HalfEdge, Vertex, Face>::importFrom(const Element &e)
 {
 }
 
+/**
+ * @brief Import the half edge references from another half edge (e), which is of a different type.
+ *
+ * @param e: the half edge from which import the half edge references
+ * @param base: the base of this container: necessary to compute the imported references
+ * @param ebase: the base of the other container of half edges, from which we import the references
+ */
+template<typename HalfEdge, typename Vertex, typename Face>
+template<typename HE, typename HEType>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::importHalfEdgeReferencesFrom(
+	const HE&     e,
+	HalfEdge*     base,
+	const HEType* ebase)
+{
+	if constexpr (hasHalfEdgeReferences<HE>()) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.next() != nullptr) { // if the other half edge has a next
+				// this next will be the base of this container plus the offset between the next of
+				// the other half edge and the base of the other container
+				n = base + (e.next() - ebase);
+			}
+			if (e.prev() != nullptr) {
+				p = base + (e.prev() - ebase);
+			}
+			if (e.twin() != nullptr) {
+				t = base + (e.twin() - ebase);
+			}
+		}
+	}
+}
+
+template<typename HalfEdge, typename Vertex, typename Face>
+template<typename HE, typename VType>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::importVertexReferencesFrom(
+	const HE&    e,
+	Vertex*      base,
+	const VType* ebase)
+{
+	if constexpr (hasHalfEdgeReferences<HE>()) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.fromVertex() != nullptr) {
+				v = base + (e.fromVertex() - ebase);
+			}
+		}
+	}
+}
+
+template<typename HalfEdge, typename Vertex, typename Face>
+template<typename HE, typename FType>
+void HalfEdgeReferences<HalfEdge, Vertex, Face>::importFaceReferencesFrom(
+	const HE&    e,
+	Face*        base,
+	const FType* ebase)
+{
+	if constexpr (hasHalfEdgeReferences<HE>()) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.face() != nullptr) {
+				f = base + (e.face() - ebase);
+			}
+		}
+	}
+}
+
 } // namespace vcl::comp

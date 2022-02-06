@@ -74,6 +74,15 @@ protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	template<typename HE, typename HEType>
+	void importHalfEdgeReferencesFrom(const HE& e, HalfEdge* base, const HEType* ebase);
+
+	template<typename HE, typename VType>
+	void importVertexReferencesFrom(const HE& e, Vertex* base, const VType* ebase);
+
+	template<typename HE, typename FType>
+	void importFaceReferencesFrom(const HE& e, Face* base, const FType* ebase);
+
 private:
 	HalfEdge* n = nullptr; // next half edge
 	HalfEdge* p = nullptr; // prev half edge

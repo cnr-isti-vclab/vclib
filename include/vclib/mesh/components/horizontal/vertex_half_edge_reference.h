@@ -46,6 +46,9 @@ protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	template<typename Vertex, typename VertHEType>
+	void importHalfEdgeReferencesFrom(const Vertex& e, HalfEdge* base, const VertHEType* ebase);
+
 private:
 	HalfEdge* he = nullptr; // outgoing half edge
 };

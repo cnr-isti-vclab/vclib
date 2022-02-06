@@ -74,4 +74,21 @@ void VertexHalfEdgeReference<HalfEdge>::importFrom(const Element &e)
 {
 }
 
+template<typename HalfEdge>
+template<typename Vertex, typename VertHEType>
+void VertexHalfEdgeReference<HalfEdge>::importHalfEdgeReferencesFrom(
+	const Vertex&  e,
+	HalfEdge*       base,
+	const VertHEType* ebase)
+{
+	if constexpr (hasVertexHalfEdgeReference<Vertex>()) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.halfEdge() != nullptr) {
+				he = base + (e.halfEdge() - ebase);
+			}
+		}
+	}
+
+}
+
 } // namespace vcl::comp

@@ -185,6 +185,9 @@ protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	template<typename Face, typename FaceHEType>
+	void importHalfEdgeReferencesFrom(const Face& e, HalfEdge* base, const FaceHEType* ebase);
+
 private:
 	HalfEdge*              ohe = nullptr; // outer half edge
 	std::vector<HalfEdge*> ihe;           // inner half edges, one for each hole of the face

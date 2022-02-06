@@ -605,4 +605,26 @@ void FaceHalfEdgeReference<HalfEdge>::importFrom(const Element &e)
 {
 }
 
+template<typename HalfEdge>
+template<typename Face, typename FaceHEType>
+void FaceHalfEdgeReference<HalfEdge>::importHalfEdgeReferencesFrom(
+	const Face&       e,
+	HalfEdge*         base,
+	const FaceHEType* ebase)
+{
+	if constexpr (hasFaceHalfEdgeReference<Face>()) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.outerHalfEdge() != nullptr) {
+				ohe = base + (e.outerHalfEdge() - ebase);
+			}
+			ihe.resize(e.numberHoles());
+			for (uint i = 0; i < ihe.size(); ++i) {
+				if (e.innerHalfEdge(i) != nullptr) {
+					ihe[i] = base + (e.innerHalfEdge(i) - ebase);
+				}
+			}
+		}
+	}
+}
+
 } // namespace vcl::comp
