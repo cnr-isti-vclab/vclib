@@ -50,7 +50,7 @@ void VertexHalfEdgeReference<HalfEdge>::updateHalfEdgeReferences(
 {
 	if (he != nullptr) {
 		size_t diff = he - oldBase;
-		he = newBase + diff;
+		he = (HalfEdge*)newBase + diff;
 	}
 }
 
@@ -64,7 +64,7 @@ void VertexHalfEdgeReference<HalfEdge>::updateHalfEdgeReferencesAfterCompact(
 		if (newIndices[diff] < 0)
 			he = nullptr;
 		else
-			he = base + newIndices[diff];
+			he = (HalfEdge*)base + newIndices[diff];
 	}
 }
 

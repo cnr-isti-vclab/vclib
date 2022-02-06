@@ -130,15 +130,15 @@ void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateHalfEdgeReferences(
 {
 	if (n != nullptr) {
 		size_t diff = n - oldBase;
-		n = newBase + diff;
+		n = (HalfEdge*)newBase + diff;
 	}
 	if (p != nullptr) {
 		size_t diff = p - oldBase;
-		p = newBase + diff;
+		p = (HalfEdge*)newBase + diff;
 	}
 	if (t != nullptr) {
 		size_t diff = t - oldBase;
-		t = newBase + diff;
+		t = (HalfEdge*)newBase + diff;
 	}
 }
 
@@ -152,21 +152,21 @@ void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateHalfEdgeReferencesAfterCo
 		if (newIndices[diff] < 0)
 			n = nullptr;
 		else
-			n = base + newIndices[diff];
+			n = (HalfEdge*)base + newIndices[diff];
 	}
 	if (p != nullptr) {
 		size_t diff = p - base;
 		if (newIndices[diff] < 0)
 			p = nullptr;
 		else
-			p = base + newIndices[diff];
+			p = (HalfEdge*)base + newIndices[diff];
 	}
 	if (t != nullptr) {
 		size_t diff = t - base;
 		if (newIndices[diff] < 0)
 			t = nullptr;
 		else
-			t = base + newIndices[diff];
+			t = (HalfEdge*)base + newIndices[diff];
 	}
 }
 
@@ -177,7 +177,7 @@ void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateFaceReferences(
 {
 	if (f != nullptr) {
 		size_t diff = f - oldBase;
-		f = newBase + diff;
+		f = (Face*)newBase + diff;
 	}
 }
 
@@ -202,7 +202,7 @@ void HalfEdgeReferences<HalfEdge, Vertex, Face>::updateVertexReferences(
 {
 	if (v != nullptr) {
 		size_t diff = v - oldBase;
-		v = newBase + diff;
+		v = (Vertex*)newBase + diff;
 	}
 }
 

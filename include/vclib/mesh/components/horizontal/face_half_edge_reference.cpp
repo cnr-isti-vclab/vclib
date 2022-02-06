@@ -566,12 +566,12 @@ void FaceHalfEdgeReference<HalfEdge>::updateHalfEdgeReferences(
 {
 	if (ohe != nullptr) {
 		size_t diff = ohe - oldBase;
-		ohe = newBase + diff;
+		ohe = (HalfEdge*)newBase + diff;
 	}
 	for (uint i = 0; i < ihe.size(); ++i) {
 		if (ihe[i] != nullptr) {
 			size_t diff = ihe[i] - oldBase;
-			ihe[i] = newBase + diff;
+			ihe[i] = (HalfEdge*)newBase + diff;
 		}
 	}
 }
@@ -586,7 +586,7 @@ void FaceHalfEdgeReference<HalfEdge>::updateHalfEdgeReferencesAfterCompact(
 		if (newIndices[diff] < 0)
 			ohe = nullptr;
 		else
-			ohe = base + newIndices[diff];
+			ohe = (HalfEdge*)base + newIndices[diff];
 	}
 	for (uint i = 0; i < ihe.size(); ++i) {
 		if (ihe[i] != nullptr) {
@@ -594,9 +594,33 @@ void FaceHalfEdgeReference<HalfEdge>::updateHalfEdgeReferencesAfterCompact(
 			if (newIndices[diff] < 0)
 				ihe[i] = nullptr;
 			else
-				ihe[i] = base + newIndices[diff];
+				ihe[i] = (HalfEdge*)base + newIndices[diff];
 		}
 	}
+}
+
+template<typename HalfEdge>
+void FaceHalfEdgeReference<HalfEdge>::updateVertexReferences(const Vertex *, const Vertex *)
+{
+}
+
+template<typename HalfEdge>
+void FaceHalfEdgeReference<HalfEdge>::updateVertexReferencesAfterCompact(
+	const Vertex*,
+	const std::vector<int>&)
+{
+}
+
+template<typename HalfEdge>
+void FaceHalfEdgeReference<HalfEdge>::updateFaceReferences(const Face*, const Face*)
+{
+}
+
+template<typename HalfEdge>
+void FaceHalfEdgeReference<HalfEdge>::updateFaceReferencesAfterCompact(
+	const Face*,
+	const std::vector<int>&)
+{
 }
 
 template<typename HalfEdge>
@@ -606,21 +630,21 @@ void FaceHalfEdgeReference<HalfEdge>::importFrom(const Element &e)
 }
 
 template<typename HalfEdge>
-template<typename Face, typename FaceHEType>
+template<typename OtherFace, typename OtherHEdge>
 void FaceHalfEdgeReference<HalfEdge>::importHalfEdgeReferencesFrom(
-	const Face&       e,
+	const OtherFace&  e,
 	HalfEdge*         base,
-	const FaceHEType* ebase)
+	const OtherHEdge* ebase)
 {
-	if constexpr (hasFaceHalfEdgeReference<Face>()) {
+	if constexpr (hasFaceHalfEdgeReference<OtherFace>()) {
 		if (base != nullptr && ebase != nullptr) {
 			if (e.outerHalfEdge() != nullptr) {
-				ohe = base + (e.outerHalfEdge() - ebase);
+				ohe = (HalfEdge*)base + (e.outerHalfEdge() - ebase);
 			}
 			ihe.resize(e.numberHoles());
 			for (uint i = 0; i < ihe.size(); ++i) {
 				if (e.innerHalfEdge(i) != nullptr) {
-					ihe[i] = base + (e.innerHalfEdge(i) - ebase);
+					ihe[i] = (HalfEdge*)base + (e.innerHalfEdge(i) - ebase);
 				}
 			}
 		}

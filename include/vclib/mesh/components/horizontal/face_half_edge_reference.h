@@ -182,11 +182,17 @@ protected:
 	void
 	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
+	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+
+	void updateFaceReferences(const Face* oldBase, const Face* newBase);
+	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+
 	template<typename Element>
 	void importFrom(const Element& e);
 
-	template<typename Face, typename FaceHEType>
-	void importHalfEdgeReferencesFrom(const Face& e, HalfEdge* base, const FaceHEType* ebase);
+	template<typename OtherFace, typename OtherHEdge>
+	void importHalfEdgeReferencesFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
 
 private:
 	HalfEdge*              ohe = nullptr; // outer half edge

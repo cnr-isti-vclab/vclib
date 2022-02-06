@@ -48,7 +48,7 @@ class ConstFaceHalfEdgeIterator : public ConstFaceBaseIterator<HalfEdge>
 	using Base = ConstFaceBaseIterator<HalfEdge>;
 public:
 	using value_type        = const HalfEdge*;
-	using reference         = const HalfEdge*&;
+	using reference         = const HalfEdge*;
 	using pointer           = const HalfEdge**;
 
 	using Base::Base;

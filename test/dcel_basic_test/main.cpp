@@ -23,33 +23,22 @@
 #include <iostream>
 
 #include <vclib/dcel_mesh.h>
+#include <vclib/algorithms/create/tetrahedron.h>
+#include <vclib/io/save.h>
 
 int main()
 {
-	vcl::DcelMesh::Vertex v0, v1, v2;
-	vcl::DcelMesh::HalfEdge e0, e1, e2;
-	vcl::DcelMesh::Face f;
+	vcl::DcelMesh m;
 
-	v0.coord() = vcl::Point3d(0,0,0);
-	v1.coord() = vcl::Point3d(1,1,1);
-	v2.coord() = vcl::Point3d(2,2,2);
+	m.addVertices(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3d(2,2,2));
+	m.addFace(0, 1, 2);
 
-	e0.next() = &e1;
-	e1.next() = &e2;
-	e2.next() = &e0;
-	e0.prev() = &e2;
-	e1.prev() = &e0;
-	e2.prev() = &e1;
-
-	e0.fromVertex() = &v0;
-	e1.fromVertex() = &v1;
-	e2.fromVertex() = &v2;
-
-	f.outerHalfEdge() = &e0;
-
-	for (const vcl::DcelMesh::Vertex* v : f.vertices()) {
+	for (const vcl::DcelMesh::Vertex* v : m.face(0).vertices()) {
 		std::cerr << v->coord() << "\n";
 	}
+
+	vcl::DcelMesh t = vcl::createTetrahedron<vcl::DcelMesh>();
+	vcl::io::save(t, VCL_TEST_RESULTS_PATH "/tet_dcel.ply");
 
 	return 0;
 }
