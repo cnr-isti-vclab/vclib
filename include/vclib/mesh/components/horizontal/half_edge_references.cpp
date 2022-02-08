@@ -118,7 +118,7 @@ const Face* HalfEdgeReferences<HalfEdge, Vertex, Face>::face() const
 }
 
 template<typename HalfEdge, typename Vertex, typename Face>
-Face* HalfEdgeReferences<HalfEdge, Vertex, Face>::face()
+Face*& HalfEdgeReferences<HalfEdge, Vertex, Face>::face()
 {
 	return f;
 }

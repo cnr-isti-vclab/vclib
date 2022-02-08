@@ -33,6 +33,7 @@ template<typename MeshType>
 void facesFromTriStrip(MeshType& m, const std::vector<int>& tristrip)
 {
 	using FaceType   = typename MeshType::FaceType;
+
 	bool firstOddPos = false;
 	for (uint k = 0; k < tristrip.size() - 2; ++k) {
 		if (tristrip[k + 2] < 0) {
@@ -46,10 +47,18 @@ void facesFromTriStrip(MeshType& m, const std::vector<int>& tristrip)
 			uint      fid = m.addFace();
 			FaceType& f   = m.face(fid);
 			if constexpr (FaceType::VERTEX_NUMBER < 0) {
-				f.resizeVertices(3);
+				if constexpr (mesh::hasHalfEdges<MeshType>()) {
+					m.addHalfEdgesToFace(3, f);
+				}
+				else {
+					f.resizeVertices(3);
+				}
 			}
-			for (uint i = 0; i < 3; ++i)
-				f.vertex(i) = &m.vertex(tristrip[k + i]);
+			uint i = 0;
+			for (auto& v : f.vertices()) {
+				v = &m.vertex(tristrip[k + i]);
+				++i;
+			}
 			if (k % 2 == 0 != firstOddPos)
 				std::swap(f.vertex(0), f.vertex(1));
 		}

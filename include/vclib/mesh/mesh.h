@@ -164,6 +164,10 @@ public:
 	addHalfEdges(uint n);
 
 	template<typename M = Mesh>
+	VCL_ENABLE_IF(mesh::hasHalfEdges<M>() && mesh::hasFaces<M>(), uint)
+	addHalfEdgesToFace(uint n, typename M::FaceType& f);
+
+	template<typename M = Mesh>
 	VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
 	reserveHalfEdges(uint n);
 

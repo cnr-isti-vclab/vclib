@@ -376,22 +376,15 @@ Mesh<Args...>::addFace(V... args)
 		if constexpr (!comp::hasFaceHalfEdgeReference<Face>()) {
 			f.resizeVertices(n);
 		}
+		else {
+			addHalfEdgesToFace(n, f);
+		}
 	}
 	else {
 		static_assert(n == Face::VERTEX_NUMBER, "Wrong number of vertices in Mesh::addFace.");
 	}
 
 	addFaceHelper(f, args...);
-	if constexpr (comp::hasFaceHalfEdgeReference<Face>()) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		using HalfEdge          = typename HalfEdgeContainer::HalfEdgeType;
-		HalfEdge* first = f.outerHalfEdge();
-		HalfEdge* curr = first;
-		while (curr->next() != nullptr)
-			curr = curr->next();
-		curr->next() = first;
-		first->prev() = curr;
-	}
 	return fid;
 }
 
@@ -718,6 +711,33 @@ Mesh<Args...>::addHalfEdges(uint n)
 		updateHalfEdgeReferences(oldBase, newBase);
 	}
 	return eid;
+}
+
+template<typename... Args>
+template<typename M>
+VCL_ENABLE_IF(mesh::hasHalfEdges<M>() && mesh::hasFaces<M>(), uint)
+Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
+{
+	using HalfEdge = typename Mesh<Args...>::HalfEdgeType;
+	using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+
+	uint first = addHalfEdges(n);
+	HalfEdge* hef =  &HalfEdgeContainer::halfEdge(first);
+	uint curr;
+	HalfEdge* prev = nullptr;
+	for (curr = first; curr < HalfEdgeContainer::halfEdgeNumber(); ++curr) {
+		HalfEdge& he = HalfEdgeContainer::halfEdge(curr);
+		he.face() = &f;
+		if (prev != nullptr) {
+			he.prev() = prev;
+			prev->next() = &he;
+		}
+		prev = &he;
+	}
+	hef->prev() = prev;
+	prev->next() = hef;
+	f.outerHalfEdge() = hef;
+	return first;
 }
 
 /**
@@ -1145,28 +1165,10 @@ void Mesh<Args...>::addFaceHelper(
 	using FaceContainer = typename Mesh<Args...>::FaceContainer;
 	using Face            = typename FaceContainer::FaceType;
 
-	if constexpr (comp::hasFaceHalfEdgeReference<Face>()) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		using HalfEdge          = typename HalfEdgeContainer::HalfEdgeType;
-		uint heid = addHalfEdge();
-		HalfEdge* he = HalfEdgeContainer::halfEdge(heid);
-		he->fromVertex() = v;
-		addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
-		he = &HalfEdgeContainer::halfEdge(heid);
-		HalfEdge* nhe = f.outerHalfEdge();
-		if (nhe != nullptr) {
-			he->next() = nhe;
-			nhe->prev() = he;
-		}
-		f.outerHalfEdge() = he;
-		v->halfEdge() = he;
-	}
-	else {
-		// position on which add the vertex
-		const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-		f.vertex(n)         = v;   // set the vertex
-		addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
-	}
+	// position on which add the vertex
+	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+	f.vertex(n)         = v;   // set the vertex
+	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
 template<typename... Args>
@@ -1177,31 +1179,10 @@ void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid,
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
 	using Face            = typename FaceContainer::FaceType;
 
-	if constexpr (comp::hasFaceHalfEdgeReference<Face>()) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		using HalfEdge          = typename HalfEdgeContainer::HalfEdgeType;
-		using Vertex = typename Mesh<Args...>::VertexType;
-		Vertex* v = &VertexContainer::vertex(vid);
-
-		uint heid = addHalfEdge();
-		HalfEdge* he = &HalfEdgeContainer::halfEdge(heid);
-		he->fromVertex() = v;
-		addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
-		he = &HalfEdgeContainer::halfEdge(heid);
-		HalfEdge* nhe = f.outerHalfEdge();
-		if (nhe != nullptr) {
-			he->next() = nhe;
-			nhe->prev() = he;
-		}
-		f.outerHalfEdge() = he;
-		v->halfEdge() = he;
-	}
-	else {
-		// position on which add the vertex
-		const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-		f.vertex(n)         = &VertexContainer::vertex(vid); // set the vertex
-		addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
-	}
+	// position on which add the vertex
+	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+	f.vertex(n)         = &VertexContainer::vertex(vid); // set the vertex
+	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
 template<typename... Args>

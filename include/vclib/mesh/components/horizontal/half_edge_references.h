@@ -58,7 +58,7 @@ public:
 	Vertex*&      vertex(uint i);
 
 	const Face* face() const;
-	Face*       face();
+	Face*&       face();
 
 protected:
 	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);

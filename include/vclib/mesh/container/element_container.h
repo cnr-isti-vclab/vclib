@@ -134,7 +134,7 @@ protected:
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.
 	 */
-	uint en;
+	uint en = 0;
 	std::vector<T> vec;
 	internal::VerticalComponentsVector<T> optionalVec;
 };

@@ -57,7 +57,12 @@ void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 	bool splitFace = false;
 	// we have a polygonal mesh
 	if constexpr (FaceType::VERTEX_NUMBER < 0) {
-		f.resizeVertices(vids.size()); // need to resize the face to the right number of verts
+		if constexpr (mesh::hasHalfEdges<MeshType>()) {
+			m.addHalfEdgesToFace(vids.size(), f);
+		}
+		else {
+			f.resizeVertices(vids.size()); // need to resize the face to the right number of verts
+		}
 	}
 	else if (FaceType::VERTEX_NUMBER != vids.size()) {
 		// we have faces with static sizes (triangles), but we are loading faces with number of
@@ -66,11 +71,13 @@ void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 	}
 
 	if (!splitFace) { // classic load, no split needed
-		for (uint i = 0; i < vids.size(); ++i) {
+		uint i = 0;
+		for (auto& v : f.vertices()) {
 			if (vids[i] >= m.vertexNumber()) {
 				throw vcl::MalformedFileException("Bad vertex index for face " + std::to_string(i));
 			}
-			f.vertex(i) = &m.vertex(vids[i]);
+			v = &m.vertex(vids[i]);
+			i++;
 		}
 	}
 	else { // split needed

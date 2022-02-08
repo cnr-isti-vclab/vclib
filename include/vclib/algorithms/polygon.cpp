@@ -421,38 +421,58 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 	for (uint i = 0; i < polygon.size(); ++i)
 		unorderedEdges.insert(std::make_pair(i, (i+1) % (uint)polygon.size()));
 
-	if constexpr (FaceType::VERTEX_NUMBER < 0)
-		f.resizeVertices(3);
+	if constexpr (FaceType::VERTEX_NUMBER < 0) {
+		if constexpr( mesh::hasHalfEdges<MeshType>()) {
+			m.addHalfEdgesToFace(3, f);
+		}
+		else {
+			f.resizeVertices(3);
+		}
+	}
 
 	// set the first triangle of the loaded polygon
-	f.vertex(0) = &m.vertex(polygon[tris[0]]);
-	f.vertex(1) = &m.vertex(polygon[tris[1]]);
-	f.vertex(2) = &m.vertex(polygon[tris[2]]);
+	uint i = 0; // from 0 to 2, vertices indices of the triangle
+	for (auto& v : f.vertices()) {
+		v = &m.vertex(polygon[tris[i]]);
+		++i;
+	}
 
-	if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) == unorderedEdges.end())
-		f.setEdgeFaux(0);
-	if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) == unorderedEdges.end())
-		f.setEdgeFaux(1);
-	if (unorderedEdges.find(std::make_pair(tris[2], tris[0])) == unorderedEdges.end())
-		f.setEdgeFaux(2);
+	if constexpr(face::hasFaceBitFlags<FaceType>()) {
+		if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) == unorderedEdges.end())
+			f.setEdgeFaux(0);
+		if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) == unorderedEdges.end())
+			f.setEdgeFaux(1);
+		if (unorderedEdges.find(std::make_pair(tris[2], tris[0])) == unorderedEdges.end())
+			f.setEdgeFaux(2);
+	}
 
 	// remaining triangles, need to create more faces in the mesh
 	for (uint i = 3; i < tris.size(); i += 3) {
 		uint ff              = m.addFace();
 
-		if constexpr (FaceType::VERTEX_NUMBER < 0)
-			m.face(ff).resizeVertices(3);
+		if constexpr (FaceType::VERTEX_NUMBER < 0) {
+			if constexpr( mesh::hasHalfEdges<MeshType>()) {
+				m.addHalfEdgesToFace(3, f);
+			}
+			else {
+				m.face(ff).resizeVertices(3);
+			}
+		}
 
-		m.face(ff).vertex(0) = &m.vertex(polygon[tris[i]]);
-		m.face(ff).vertex(1) = &m.vertex(polygon[tris[i + 1]]);
-		m.face(ff).vertex(2) = &m.vertex(polygon[tris[i + 2]]);
+		uint j = 0; // from 0 to 2, vertices indices of the triangle
+		for (auto& v : m.face(ff).vertices()) {
+			v = &m.vertex(polygon[tris[i + j]]);
+			++j;
+		}
 
-		if (unorderedEdges.find(std::make_pair(tris[i], tris[i+1])) == unorderedEdges.end())
-			m.face(ff).setEdgeFaux(0);
-		if (unorderedEdges.find(std::make_pair(tris[i+1], tris[i+2])) == unorderedEdges.end())
-			m.face(ff).setEdgeFaux(1);
-		if (unorderedEdges.find(std::make_pair(tris[i+2], tris[i+0])) == unorderedEdges.end())
-			m.face(ff).setEdgeFaux(2);
+		if constexpr(face::hasFaceBitFlags<FaceType>()) {
+			if (unorderedEdges.find(std::make_pair(tris[i], tris[i+1])) == unorderedEdges.end())
+				m.face(ff).setEdgeFaux(0);
+			if (unorderedEdges.find(std::make_pair(tris[i+1], tris[i+2])) == unorderedEdges.end())
+				m.face(ff).setEdgeFaux(1);
+			if (unorderedEdges.find(std::make_pair(tris[i+2], tris[i+0])) == unorderedEdges.end())
+				m.face(ff).setEdgeFaux(2);
+		}
 	}
 }
 

@@ -87,6 +87,12 @@ bool constexpr hasBitFlags()
 	return comp::hasBitFlags<FaceType>();
 }
 
+template<typename FaceType>
+bool constexpr hasFaceBitFlags()
+{
+	return comp::hasFaceBitFlags<FaceType>();
+}
+
 /* Port Color class into face namespace */
 using Color = comp::Color;
 

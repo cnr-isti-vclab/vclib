@@ -64,6 +64,14 @@ bool constexpr hasTriangleBitFlags()
 	return hasTriangleBitFlagsT<T>::value;
 }
 
+/* Detector to check if a class has (inherits) TriangleBitFlags or PolygonBitFlags */
+
+template<typename T>
+bool constexpr hasFaceBitFlags()
+{
+	return hasTriangleBitFlagsT<T>::value || hasPolygonBitFlagsT<T>::value;
+}
+
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_BIT_FLAGS_DETECTION_H

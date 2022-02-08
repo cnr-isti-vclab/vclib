@@ -25,6 +25,7 @@
 #include <vclib/dcel_mesh.h>
 #include <vclib/algorithms/create/tetrahedron.h>
 #include <vclib/io/save.h>
+#include "vclib/io/load.h"
 
 int main()
 {
@@ -39,6 +40,16 @@ int main()
 
 	vcl::DcelMesh t = vcl::createTetrahedron<vcl::DcelMesh>();
 	vcl::io::save(t, VCL_TEST_RESULTS_PATH "/tet_dcel.ply");
+
+	vcl::DcelMesh l = vcl::io::loadPly<vcl::DcelMesh>(VCL_TEST_DATA_PATH "/models/cube_tri.ply");
+
+	for (const vcl::DcelMesh::Face& f : l.faces()) {
+		std::cerr << "Face " << l.index(f) << ":\n\t";
+		for (const vcl::DcelMesh::Vertex* v : f.vertices()) {
+			std::cerr << l.index(v) << "; ";
+		}
+		std::cerr << "\n";
+	}
 
 	return 0;
 }
