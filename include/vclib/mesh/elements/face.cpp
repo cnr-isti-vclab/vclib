@@ -57,75 +57,55 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 
 	VRefs::setVertices(list);
 
-	// Note: in this function, we cannot use:
-	// if constexpr (face::hasAdjacentFaces<F>()) {...}
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {...}
-	// having at least two if constexpr in the same function causes error C2143 on MSVC
-	// this is probably an MSVC bug. Works on gcc and clang.
-	// Does not make any sense since face::hasAdjacentFaces<F>() can be called without
-	// any other constexpr called, and beacuase it is literally the same of calling
-	// comp::hasAdjacentFaces<F>::value, which works.
-
 	static const int VN = F::VERTEX_NUMBER;
 	if constexpr (VN < 0) {
-		// if constexpr (edge::hasAdjacentEdges<F>()) {
-		if constexpr (comp::hasAdjacentEdgesT<F>::value) {
-			using T = typename F::AdjacentEdges;
 
-			T::resizeAdjEdges(list.size());
-		}
-
-		// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
-		if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+		if constexpr (face::hasOptionalAdjacentEdges<F>()) {
 			using T = typename F::OptionalAdjacentEdges;
 
 			if (T::isAdjEdgesEnabled())
 				T::resizeAdjEdges(list.size());
 		}
+		else if constexpr (face::hasAdjacentEdges<F>()) {
+			using T = typename F::AdjacentEdges;
 
-		// if constexpr (face::hasAdjacentFaces<F>()) {
-		if constexpr (comp::hasAdjacentFacesT<F>::value) {
-			using T = typename F::AdjacentFaces;
-
-			T::resizeAdjFaces(list.size());
+			T::resizeAdjEdges(list.size());
 		}
 
-		// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
-		if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
+		if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 			using T = typename F::OptionalAdjacentFaces;
 
 			if (T::isAdjFacesEnabled())
 				T::resizeAdjFaces(list.size());
 		}
+		else if constexpr (face::hasAdjacentFaces<F>()) {
+			using T = typename F::AdjacentFaces;
 
-		// if constexpr (face::hasWedgeColors<F>()) {
-		if constexpr (comp::hasWedgeColorsT<F>::value) {
-			using T = typename F::WedgeColors;
-
-			T::resizeWedgeColors(list.size());
+			T::resizeAdjFaces(list.size());
 		}
 
-		// if constexpr (face::hasOptionalWedgeColors<F>()) {
-		if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+		if constexpr (face::hasOptionalWedgeColors<F>()) {
 			using T = typename F::OptionalWedgeColors;
 
 			if (T::isWedgeColorsEnabled())
 				T::resizeWedgeColors(list.size());
 		}
+		else if constexpr (face::hasWedgeColors<F>()) {
+			using T = typename F::WedgeColors;
 
-		// if constexpr (face::hasWedgeTexCoords<F>()) {
-		if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
-			using T = typename F::WedgeTexCoords;
-
-			T::resizeWedgeTexCoords(list.size());
+			T::resizeWedgeColors(list.size());
 		}
 
-		// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
-		if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
+		if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 			using T = typename F::OptionalWedgeTexCoords;
 
 			if (T::isWedgeTexCoordsEnabled())
 				T::resizeWedgeTexCoords(list.size());
+		}
+		else if constexpr (face::hasWedgeTexCoords<F>()) {
+			using T = typename F::WedgeTexCoords;
+
+			T::resizeWedgeTexCoords(list.size());
 		}
 	}
 }
@@ -166,73 +146,52 @@ Face<Args...>::resizeVertices(uint n)
 
 	VRefs::resizeVertices(n);
 
-	// Note: in this function, we cannot use:
-	// if constexpr (face::hasAdjacentFaces<F>()) {...}
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {...}
-	// having at least two if constexpr in the same function causes error C2143 on MSVC
-	// this is probably an MSVC bug. Works on gcc and clang.
-	// Does not make any sense since face::hasAdjacentFaces<F>() can be called without
-	// any other constexpr called, and beacuase it is literally the same of calling
-	// comp::hasAdjacentFaces<F>::value, which works.
-
-	// if constexpr (edge::hasAdjacentEdges<F>()) {
-	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
-		using T = typename F::AdjacentEdges;
-
-		T::resizeAdjEdges(n);
-	}
-
-	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
-	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentEdges<F>()) {
 		using T = typename F::OptionalAdjacentEdges;
 
 		if (T::isAdjEdgesEnabled())
 			T::resizeAdjEdges(n);
 	}
+	else if constexpr (face::hasAdjacentEdges<F>()) {
+		using T = typename F::AdjacentEdges;
 
-	// if constexpr (face::hasAdjacentFaces<F>()) {
-	if constexpr (comp::hasAdjacentFacesT<F>::value) {
-		using T = typename F::AdjacentFaces;
-
-		T::resizeAdjFaces(n);
+		T::resizeAdjEdges(n);
 	}
 
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
-	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 		using T = typename F::OptionalAdjacentFaces;
 
 		if (T::isAdjFacesEnabled())
 			T::resizeAdjFaces(n);
 	}
+	else if constexpr (face::hasAdjacentFaces<F>()) {
+		using T = typename F::AdjacentFaces;
 
-	// if constexpr (face::hasWedgeColors<F>()) {
-	if constexpr (comp::hasWedgeColorsT<Face>::value) {
-		using T = typename F::WedgeColors;
-
-		T::resizeWedgeColors(n);
+		T::resizeAdjFaces(n);
 	}
 
-	// if constexpr (face::hasOptionalWedgeColors<F>()) {
-	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeColors<F>()) {
 		using T = typename F::OptionalWedgeColors;
 
 		if (T::isWedgeColorsEnabled())
 			T::resizeWedgeColors(n);
 	}
+	else if constexpr (face::hasWedgeColors<F>()) {
+		using T = typename F::WedgeColors;
 
-	// if constexpr (face::hasWedgeTexCoords<F>()) {
-	if constexpr (comp::hasWedgeTexCoordsT<Face>::value) {
-		using T = typename F::WedgeTexCoords;
-
-		T::resizeWedgeTexCoords(n);
+		T::resizeWedgeColors(n);
 	}
 
-	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
-	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 		using T = typename F::OptionalWedgeTexCoords;
 
 		if (T::isWedgeTexCoordsEnabled())
 			T::resizeWedgeTexCoords(n);
+	}
+	else if constexpr (face::hasWedgeTexCoords<F>()) {
+		using T = typename F::WedgeTexCoords;
+
+		T::resizeWedgeTexCoords(n);
 	}
 }
 
@@ -245,75 +204,54 @@ Face<Args...>::pushVertex(VertexType* v)
 
 	VRefs::pushVertex(v);
 
-	// Note: in this function, we cannot use:
-	// if constexpr (face::hasAdjacentFaces<F>()) {...}
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {...}
-	// having at least two if constexpr in the same function causes error C2143 on MSVC
-	// this is probably an MSVC bug. Works on gcc and clang.
-	// Does not make any sense since face::hasAdjacentFaces<F>() can be called without
-	// any other constexpr called, and beacuase it is literally the same of calling
-	// comp::hasAdjacentFaces<F>::value, which works.
-
-	// if constexpr (edge::hasAdjacentEdges<F>()) {
-	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
-		using T = typename F::AdjacentEdges;
-
-		T::pushAdjEdge(nullptr);
-	}
-
-	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
-	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentEdges<F>()) {
 		using T = typename F::OptionalAdjacentEdges;
 
 		if (T::isAdjEdgesEnabled())
 			T::pushAdjEdge(nullptr);
 	}
+	else if constexpr (face::hasAdjacentEdges<F>()) {
+		using T = typename F::AdjacentEdges;
 
-	// if constexpr (face::hasAdjacentFaces<F>()) {
-	if constexpr (comp::hasAdjacentFacesT<F>::value) {
-		using T = typename F::AdjacentFaces;
-
-		T::pushAdjFace(nullptr);
+		T::pushAdjEdge(nullptr);
 	}
 
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
-	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 		using T = typename F::OptionalAdjacentFaces;
 
 		if (T::isAdjFacesEnabled())
 			T::pushAdjFace(nullptr);
 	}
+	else if constexpr (face::hasAdjacentFaces<F>()) {
+		using T = typename F::AdjacentFaces;
 
-	// if constexpr (face::hasWedgeColors<F>()) {
-	if constexpr (comp::hasWedgeColorsT<F>::value) {
-		using T = typename F::WedgeColors;
-
-		T::pushWedgeTexColors(Color());
+		T::pushAdjFace(nullptr);
 	}
 
-	// if constexpr (face::hasOptionalWedgeColors<F>()) {
-	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeColors<F>()) {
 		using T = typename F::OptionalWedgeColors;
 
 		if (T::isWedgeColorsEnabled())
 			T::pushWedgeColors(Color());
 	}
+	else if constexpr (face::hasWedgeColors<F>()) {
+		using T = typename F::WedgeColors;
 
-	// if constexpr (face::hasWedgeTexCoords<F>()) {
-	if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
-		using S = typename F::WedgeTexCoordScalarType;
-		using T = typename F::WedgeTexCoords;
-
-		T::pushWedgeTexCoord(TexCoord<S>());
+		T::pushWedgeTexColors(Color());
 	}
 
-	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
-	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::OptionalWedgeTexCoords;
 
 		if (T::isWedgeTexCoordsEnabled())
 			T::pushWedgeTexCoord(TexCoord<S>());
+	}
+	else if constexpr (face::hasWedgeTexCoords<F>()) {
+		using S = typename F::WedgeTexCoordScalarType;
+		using T = typename F::WedgeTexCoords;
+
+		T::pushWedgeTexCoord(TexCoord<S>());
 	}
 }
 
@@ -326,75 +264,54 @@ Face<Args...>::insertVertex(uint i, VertexType* v)
 
 	VRefs::insertVertex(i, v);
 
-	// Note: in this function, we cannot use:
-	// if constexpr (face::hasAdjacentFaces<F>()) {...}
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {...}
-	// having at least two if constexpr in the same function causes error C2143 on MSVC
-	// this is probably an MSVC bug. Works on gcc and clang.
-	// Does not make any sense since face::hasAdjacentFaces<F>() can be called without
-	// any other constexpr called, and beacuase it is literally the same of calling
-	// comp::hasAdjacentFaces<F>::value, which works.
-
-	// if constexpr (edge::hasAdjacentEdges<F>()) {
-	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
-		using T = typename F::AdjacentEdges;
-
-		T::insertAdjEdge(i, nullptr);
-	}
-
-	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
-	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentEdges<F>()) {
 		using T = typename F::OptionalAdjacentEdges;
 
 		if (T::isAdjEdgesEnabled())
 			T::insertAdjEdge(i, nullptr);
 	}
+	else if constexpr (face::hasAdjacentEdges<F>()) {
+		using T = typename F::AdjacentEdges;
 
-	// if constexpr (face::hasAdjacentFaces<F>()) {
-	if constexpr (comp::hasAdjacentFacesT<F>::value) {
-		using T = typename F::AdjacentFaces;
-
-		T::insertAdjFace(i, nullptr);
+		T::insertAdjEdge(i, nullptr);
 	}
 
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
-	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 		using T = typename F::OptionalAdjacentFaces;
 
 		if (T::isAdjFacesEnabled())
 			T::insertAdjFace(i, nullptr);
 	}
+	else if constexpr (face::hasAdjacentFaces<F>()) {
+		using T = typename F::AdjacentFaces;
 
-	// if constexpr (face::hasWedgeColors<F>()) {
-	if constexpr (comp::hasWedgeColorsT<F>::value) {
-		using T = typename F::WedgeColors;
-
-		T::insertWedgeColor(i, Color());
+		T::insertAdjFace(i, nullptr);
 	}
 
-	// if constexpr (face::hasOptionalWedgeColors<F>()) {
-	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeColors<F>()) {
 		using T = typename F::OptionalWedgeColors;
 
 		if (T::isWedgeColorsEnabled())
 			T::insertWedgeColor(i, Color());
 	}
+	else if constexpr (face::hasWedgeColors<F>()) {
+		using T = typename F::WedgeColors;
 
-	// if constexpr (face::hasWedgeTexCoords<F>()) {
-	if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
-		using S = typename F::WedgeTexCoordScalarType;
-		using T = typename F::WedgeTexCoords;
-
-		T::insertWedgeTexCoord(i, TexCoord<S>());
+		T::insertWedgeColor(i, Color());
 	}
 
-	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
-	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 		using S = typename F::WedgeTexCoordScalarType;
 		using T = typename F::OptionalWedgeTexCoords;
 
 		if (T::isWedgeTexCoordsEnabled())
 			T::insertWedgeTexCoord(i, TexCoord<S>());
+	}
+	else if constexpr (face::hasWedgeTexCoords<F>()) {
+		using S = typename F::WedgeTexCoordScalarType;
+		using T = typename F::WedgeTexCoords;
+
+		T::insertWedgeTexCoord(i, TexCoord<S>());
 	}
 }
 
@@ -407,73 +324,52 @@ Face<Args...>::eraseVertex(uint i)
 
 	VRefs::eraseVertex(i);
 
-	// Note: in this function, we cannot use:
-	// if constexpr (face::hasAdjacentFaces<F>()) {...}
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {...}
-	// having at least two if constexpr in the same function causes error C2143 on MSVC
-	// this is probably an MSVC bug. Works on gcc and clang.
-	// Does not make any sense since face::hasAdjacentFaces<F>() can be called without
-	// any other constexpr called, and beacuase it is literally the same of calling
-	// comp::hasAdjacentFaces<F>::value, which works.
-
-	// if constexpr (edge::hasAdjacentEdges<F>()) {
-	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
-		using T = typename F::AdjacentEdges;
-
-		T::eraseAdjEdge(i);
-	}
-
-	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
-	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentEdges<F>()) {
 		using T = typename F::OptionalAdjacentEdges;
 
 		if (T::isAdjEdgesEnabled())
 			T::eraseAdjEdge(i);
 	}
+	else if constexpr (face::hasAdjacentEdges<F>()) {
+		using T = typename F::AdjacentEdges;
 
-	// if constexpr (face::hasAdjacentFaces<F>()) {
-	if constexpr (comp::hasAdjacentFacesT<F>::value) {
-		using T = typename F::AdjacentFaces;
-
-		T::eraseAdjFace(i);
+		T::eraseAdjEdge(i);
 	}
 
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
-	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 		using T = typename F::OptionalAdjacentFaces;
 
 		if (T::isAdjFacesEnabled())
 			T::eraseAdjFace(i);
 	}
+	else if constexpr (face::hasAdjacentFaces<F>()) {
+		using T = typename F::AdjacentFaces;
 
-	// if constexpr (face::hasWedgeColors<F>()) {
-	if constexpr (comp::hasWedgeColorsT<F>::value) {
-		using T = typename F::WedgeColors;
-
-		T::eraseWedgeColor(i);
+		T::eraseAdjFace(i);
 	}
 
-	// if constexpr (face::hasOptionalWedgeColors<F>()) {
-	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeColors<F>()) {
 		using T = typename F::OptionalWedgeColors;
 
 		if (T::isWedgeColorsEnabled())
 			T::eraseWedgeColor(i);
 	}
+	else if constexpr (face::hasWedgeColors<F>()) {
+		using T = typename F::WedgeColors;
 
-	// if constexpr (face::hasWedgeTexCoords<F>()) {
-	if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
-		using T = typename F::WedgeTexCoords;
-
-		T::eraseWedgeTexCoord(i);
+		T::eraseWedgeColor(i);
 	}
 
-	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
-	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 		using T = typename F::OptionalWedgeTexCoords;
 
 		if (T::isWedgeTexCoordsEnabled())
 			T::eraseWedgeTexCoord(i);
+	}
+	else if constexpr (face::hasWedgeTexCoords<F>()) {
+		using T = typename F::WedgeTexCoords;
+
+		T::eraseWedgeTexCoord(i);
 	}
 }
 
@@ -486,73 +382,52 @@ Face<Args...>::clearVertices()
 
 	VRefs::clearVertices();
 
-	// Note: in this function, we cannot use:
-	// if constexpr (face::hasAdjacentFaces<F>()) {...}
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {...}
-	// having at least two if constexpr in the same function causes error C2143 on MSVC
-	// this is probably an MSVC bug. Works on gcc and clang.
-	// Does not make any sense since face::hasAdjacentFaces<F>() can be called without
-	// any other constexpr called, and beacuase it is literally the same of calling
-	// comp::hasAdjacentFaces<F>::value, which works.
-
-	// if constexpr (edge::hasAdjacentEdges<F>()) {
-	if constexpr (comp::hasAdjacentEdgesT<F>::value) {
-		using T = typename F::AdjacentEdges;
-
-		T::clearAdjEdges();
-	}
-
-	// if constexpr (edge::hasOptionalAdjacentEdges<F>()) {
-	if constexpr (comp::hasOptionalAdjacentEdgesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentEdges<F>()) {
 		using T = typename F::OptionalAdjacentEdges;
 
 		if (T::isAdjEdgesEnabled())
 			T::clearAdjEdges();
 	}
+	else if constexpr (face::hasAdjacentEdges<F>()) {
+		using T = typename F::AdjacentEdges;
 
-	// if constexpr (face::hasAdjacentFaces<F>()) {
-	if constexpr (comp::hasAdjacentFacesT<F>::value) {
-		using T = typename F::AdjacentFaces;
-
-		T::clearAdjFaces();
+		T::clearAdjEdges();
 	}
 
-	// if constexpr (face::hasOptionalAdjacentFaces<F>()) {
-	if constexpr (comp::hasOptionalAdjacentFacesT<F>::value) {
+	if constexpr (face::hasOptionalAdjacentFaces<F>()) {
 		using T = typename F::OptionalAdjacentFaces;
 
 		if (T::isAdjFacesEnabled())
 			T::clearAdjFaces();
 	}
+	else if constexpr (face::hasAdjacentFaces<F>()) {
+		using T = typename F::AdjacentFaces;
 
-	// if constexpr (face::hasWedgeColors<F>()) {
-	if constexpr (comp::hasWedgeColorsT<F>::value) {
-		using T = typename F::WedgeColors;
-
-		T::clearWedgeColor();
+		T::clearAdjFaces();
 	}
 
-	// if constexpr (face::hasOptionalWedgeColors<F>()) {
-	if constexpr (comp::hasOptionalWedgeColorsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeColors<F>()) {
 		using T = typename F::OptionalWedgeColors;
 
 		if (T::isWedgeColorsEnabled())
 			T::clearWedgeColor();
 	}
+	else if constexpr (face::hasWedgeColors<F>()) {
+		using T = typename F::WedgeColors;
 
-	// if constexpr (face::hasWedgeTexCoords<F>()) {
-	if constexpr (comp::hasWedgeTexCoordsT<F>::value) {
-		using T = typename F::WedgeTexCoords;
-
-		T::clearWedgeTexCoord();
+		T::clearWedgeColor();
 	}
 
-	// if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
-	if constexpr (comp::hasOptionalWedgeTexCoordsT<F>::value) {
+	if constexpr (face::hasOptionalWedgeTexCoords<F>()) {
 		using T = typename F::OptionalWedgeTexCoords;
 
 		if (T::isWedgeTexCoordsEnabled())
 			T::clearWedgeTexCoord();
+	}
+	else if constexpr (face::hasWedgeTexCoords<F>()) {
+		using T = typename F::WedgeTexCoords;
+
+		T::clearWedgeTexCoord();
 	}
 }
 
