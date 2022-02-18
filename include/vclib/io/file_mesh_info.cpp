@@ -82,7 +82,7 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 //				setEdgeColors(true, UCHAR);
 	}
 
-	if constexpr (vcl::hasTextureFileNames<Mesh>()) {
+	if constexpr (vcl::hasTexturePaths<Mesh>()) {
 		if (m.textureNumber() > 0) {
 			setTextures(true);
 		}

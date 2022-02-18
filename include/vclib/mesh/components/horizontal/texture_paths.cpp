@@ -20,76 +20,86 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "texture_file_names.h"
+#include "texture_paths.h"
 
 namespace vcl::comp {
 
-inline TextureFileNames::TextureFileNames()
+inline TexturePaths::TexturePaths()
 {
 }
 
-inline uint TextureFileNames::textureNumber() const
+inline uint TexturePaths::textureNumber() const
 {
-	return textureNames.size();
+	return texPaths.size();
 }
 
-inline const std::string& TextureFileNames::texture(uint i) const
+inline const std::string& TexturePaths::texturePath(uint i) const
 {
-	return textureNames[i];
+	return texPaths[i];
 }
 
-inline std::string& TextureFileNames::texture(uint i)
+inline std::string& TexturePaths::texturePath(uint i)
 {
-	return textureNames[i];
+	return texPaths[i];
 }
 
-inline void TextureFileNames::clearTextures()
+inline const std::string& TexturePaths::meshBasePath() const
 {
-	textureNames.clear();
+	return meshPath;
 }
 
-inline void TextureFileNames::pushTexture(const std::string& textName)
+inline std::string& TexturePaths::meshBasePath()
 {
-	textureNames.push_back(textName);
+	return meshPath;
 }
 
-inline TextureFileNames::TextureFileNamesIterator TextureFileNames::textureBegin()
+inline void TexturePaths::clearTextures()
 {
-	return textureNames.begin();
+	texPaths.clear();
 }
 
-inline TextureFileNames::TextureFileNamesIterator TextureFileNames::textureEnd()
+inline void TexturePaths::pushTexturePath(const std::string& textName)
 {
-	return textureNames.end();
+	texPaths.push_back(textName);
 }
 
-inline TextureFileNames::ConstTextureFileNamesIterator TextureFileNames::textureBegin() const
+inline TexturePaths::TextureFileNamesIterator TexturePaths::texturePathBegin()
 {
-	return textureNames.begin();
+	return texPaths.begin();
 }
 
-inline TextureFileNames::ConstTextureFileNamesIterator TextureFileNames::textureEnd() const
+inline TexturePaths::TextureFileNamesIterator TexturePaths::texturePathEnd()
 {
-	return textureNames.end();
+	return texPaths.end();
 }
 
-inline TextureFileNames::TextureFileNamesRangeIterator TextureFileNames::textures()
+inline TexturePaths::ConstTextureFileNamesIterator TexturePaths::texturePathBegin() const
+{
+	return texPaths.begin();
+}
+
+inline TexturePaths::ConstTextureFileNamesIterator TexturePaths::texturePathEnd() const
+{
+	return texPaths.end();
+}
+
+inline TexturePaths::TextureFileNamesRangeIterator TexturePaths::texturePaths()
 {
 	return TextureFileNamesRangeIterator(
-		*this, &TextureFileNames::textureBegin, &TextureFileNames::textureEnd);
+		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
 }
 
-inline TextureFileNames::ConstTextureFileNamesRangeIterator TextureFileNames::textures() const
+inline TexturePaths::ConstTextureFileNamesRangeIterator TexturePaths::texturePaths() const
 {
 	return ConstTextureFileNamesRangeIterator(
-		*this, &TextureFileNames::textureBegin, &TextureFileNames::textureEnd);
+		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
 }
 
 template<typename Element>
-void TextureFileNames::importFrom(const Element& e)
+void TexturePaths::importFrom(const Element& e)
 {
-	if constexpr (hasTextureFileNames<Element>()) {
-		textureNames = e.TextureFileNames::textureNames;
+	if constexpr (hasTexturePaths<Element>()) {
+		texPaths = e.TexturePaths::texPaths;
 	}
 }
 

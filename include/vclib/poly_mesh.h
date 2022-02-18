@@ -69,7 +69,7 @@ class PolyMesh :
 			mesh::FaceContainer<polymesh::Face>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
-			mesh::TextureFileNames,
+			mesh::TexturePaths,
 			mesh::TransformMatrixd>
 {
 };

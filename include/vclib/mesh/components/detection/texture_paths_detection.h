@@ -20,26 +20,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEX_FILE_NAMES_H
-#define VCL_MESH_COMPONENTS_TEX_FILE_NAMES_H
+#ifndef VCL_MESH_COMPONENTS_TEXTURE_PATHS_DETECTION_H
+#define VCL_MESH_COMPONENTS_TEXTURE_PATHS_DETECTION_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-class TextureFileNames;
+class TexturePaths;
 
-/* Detector to check if a class has (inherits) TextureFileNames */
-
-template<typename T>
-using hasTextureFileNamesT = std::is_base_of<TextureFileNames, T>;
+/* Detector to check if a class has (inherits) TexturePaths */
 
 template<typename T>
-constexpr bool hasTextureFileNames()
+using hasTexturePathsT = std::is_base_of<TexturePaths, T>;
+
+template<typename T>
+constexpr bool hasTexturePaths()
 {
-	return hasTextureFileNamesT<T>::value;
+	return hasTexturePathsT<T>::value;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_TEX_FILE_NAMES_H
+#endif // VCL_MESH_COMPONENTS_TEXTURE_PATHS_DETECTION_H

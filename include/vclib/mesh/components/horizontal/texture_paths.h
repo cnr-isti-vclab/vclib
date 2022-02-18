@@ -20,56 +20,59 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
-#define VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
+#ifndef VCL_MESH_COMPONENTS_TEXTURE_PATHS_H
+#define VCL_MESH_COMPONENTS_TEXTURE_PATHS_H
 
 #include <string>
 #include <vector>
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../detection/tex_file_names_detection.h"
+#include "../detection/texture_paths_detection.h"
 
 namespace vcl::comp {
 
-class TextureFileNames
+class TexturePaths
 {
 public:
 	// iterators
 	using TextureFileNamesIterator      = std::vector<std::string>::iterator;
 	using ConstTextureFileNamesIterator = std::vector<std::string>::const_iterator;
 	using TextureFileNamesRangeIterator =
-		RangeIterator<TextureFileNames, TextureFileNamesIterator>;
+		RangeIterator<TexturePaths, TextureFileNamesIterator>;
 	using ConstTextureFileNamesRangeIterator =
-		ConstRangeIterator<TextureFileNames, ConstTextureFileNamesIterator>;
+		ConstRangeIterator<TexturePaths, ConstTextureFileNamesIterator>;
 
-	TextureFileNames();
+	TexturePaths();
 	uint textureNumber() const;
 
-	const std::string& texture(uint i) const;
-	std::string&       texture(uint i);
+	const std::string& texturePath(uint i) const;
+	std::string&       texturePath(uint i);
+	const std::string& meshBasePath() const;
+	std::string&       meshBasePath();
 
 	void clearTextures();
 
-	void pushTexture(const std::string& textName);
+	void pushTexturePath(const std::string& textName);
 
-	TextureFileNamesIterator textureBegin();
-	TextureFileNamesIterator textureEnd();
-	ConstTextureFileNamesIterator textureBegin() const;
-	ConstTextureFileNamesIterator textureEnd() const;
-	TextureFileNamesRangeIterator textures();
-	ConstTextureFileNamesRangeIterator textures() const;
+	TextureFileNamesIterator texturePathBegin();
+	TextureFileNamesIterator texturePathEnd();
+	ConstTextureFileNamesIterator texturePathBegin() const;
+	ConstTextureFileNamesIterator texturePathEnd() const;
+	TextureFileNamesRangeIterator texturePaths();
+	ConstTextureFileNamesRangeIterator texturePaths() const;
 
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
 private:
-	std::vector<std::string> textureNames;
+	std::vector<std::string> texPaths;
+	std::string meshPath;
 };
 
 } // namespace vcl::comp
 
-#include "texture_file_names.cpp"
+#include "texture_paths.cpp"
 
-#endif // VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
+#endif // VCL_MESH_COMPONENTS_TEXTURE_PATHS_H

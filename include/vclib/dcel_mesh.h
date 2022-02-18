@@ -80,7 +80,7 @@ class DcelMesh :
 			mesh::HalfEdgeContainer<dcel::HalfEdge>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
-			mesh::TextureFileNames,
+			mesh::TexturePaths,
 			mesh::TransformMatrixd>
 {
 };

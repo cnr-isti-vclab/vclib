@@ -68,7 +68,7 @@ class EdgeMesh :
 			mesh::EdgeContainer<edgemesh::Edge>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
-			mesh::TextureFileNames,
+			mesh::TexturePaths,
 			mesh::TransformMatrixd>
 {
 };

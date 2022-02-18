@@ -10,6 +10,7 @@
 *.lo
 *.o
 *.obj
+!test/data/models/*.obj
 
 # Precompiled Headers
 *.gch

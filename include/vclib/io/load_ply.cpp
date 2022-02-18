@@ -108,6 +108,9 @@ void loadPly(
 		internal::enableOptionalComponents(loadedInfo, m);
 
 	m.clear();
+	if constexpr (hasTexturePaths<MeshType>()) {
+		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
+	}
 	try {
 		for (ply::Element el : header) {
 			switch (el.type) {

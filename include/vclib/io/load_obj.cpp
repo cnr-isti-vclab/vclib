@@ -114,9 +114,9 @@ void loadMaterials(
 				}
 				mat.map_Kd = *token;
 				mat.hasTexture = true;
-				if constexpr (hasTextureFileNames<MeshType>()) {
+				if constexpr (hasTexturePaths<MeshType>()) {
 					mat.mapId = mesh.textureNumber();
-					mesh.pushTexture(mat.map_Kd);
+					mesh.pushTexturePath(mat.map_Kd);
 				}
 				else {
 					mat.mapId = nt++;
@@ -416,6 +416,10 @@ void loadObj(
 	}
 	catch(vcl::CannotOpenFileException){
 		// nothing to do, this file was missing but was a fallback for some type of files...
+	}
+
+	if constexpr (hasTexturePaths<MeshType>()) {
+		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
 	}
 
 	// cycle that reads line by line

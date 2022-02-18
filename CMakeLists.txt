@@ -125,7 +125,7 @@ set(HEADERS
 	include/vclib/mesh/components/detection/principal_curvature_detection.h
 	include/vclib/mesh/components/detection/scalar_detection.h
 	include/vclib/mesh/components/detection/tex_coord_detection.h
-	include/vclib/mesh/components/detection/tex_file_names_detection.h
+	include/vclib/mesh/components/detection/texture_paths_detection.h
 	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
 	include/vclib/mesh/components/detection/vertex_half_edge_reference_detection.h
 	include/vclib/mesh/components/detection/vertex_references_detection.h
@@ -148,7 +148,7 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/vertex_half_edge_reference.h
 	include/vclib/mesh/components/horizontal/vertex_references.h
 	include/vclib/mesh/components/horizontal/tex_coord.h
-	include/vclib/mesh/components/horizontal/texture_file_names.h
+	include/vclib/mesh/components/horizontal/texture_paths.h
 	include/vclib/mesh/components/horizontal/transform_matrix.h
 	include/vclib/mesh/components/horizontal/triangle_bit_flags.h
 	include/vclib/mesh/components/horizontal/wedge_colors.h
@@ -296,7 +296,7 @@ set(SOURCES
 	include/vclib/mesh/components/horizontal/principal_curvature.cpp
 	include/vclib/mesh/components/horizontal/scalar.cpp
 	include/vclib/mesh/components/horizontal/tex_coord.cpp
-	include/vclib/mesh/components/horizontal/texture_file_names.cpp
+	include/vclib/mesh/components/horizontal/texture_paths.cpp
 	include/vclib/mesh/components/horizontal/transform_matrix.cpp
 	include/vclib/mesh/components/horizontal/triangle_bit_flags.cpp
 	include/vclib/mesh/components/horizontal/vertex_half_edge_reference.cpp
