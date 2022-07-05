@@ -118,13 +118,13 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/color.h
 	include/vclib/mesh/components/concepts/coordinate.h
 	include/vclib/mesh/components/concepts/custom_components.h
+	include/vclib/mesh/components/concepts/face_half_edge_reference.h
 	include/vclib/mesh/components/concepts/half_edge_references.h
 	include/vclib/mesh/components/concepts/mark.h
 	include/vclib/mesh/components/concepts/normal.h
 	include/vclib/mesh/components/concepts/principal_curvature.h
 	include/vclib/mesh/components/concepts/scalar.h
 	include/vclib/mesh/components/concepts/vertex_references.h
-	include/vclib/mesh/components/detection/face_half_edge_reference_detection.h
 	include/vclib/mesh/components/detection/tex_coord_detection.h
 	include/vclib/mesh/components/detection/tex_file_names_detection.h
 	include/vclib/mesh/components/detection/transfrom_matrix_detection.h

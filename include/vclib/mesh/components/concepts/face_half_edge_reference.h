@@ -20,30 +20,37 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_DETECTION_H
-#define VCL_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_FACE_HALF_EDGE_REFERENCE_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_FACE_HALF_EDGE_REFERENCE_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class FaceHalfEdgeReferenceTriggerer
+/**
+ * @brief HasFaceHalfEdgeReference concept
+ *
+ * This concept is satisfied only if a class has the following member functions:
+ * - outerHalfEdge()
+ * - numberHoles(), which returns an uint
+ * - innerHalfEdge(uint)
+ */
+template<typename T>
+concept HasFaceHalfEdgeReference = requires(T v) // requires that an object of type T has the following members
 {
+	v.outerHalfEdge();
+	{ v.numberHoles() } -> std::same_as<uint>;
+	v.innerHalfEdge(uint());
 };
 
-/* Detector to check if a class has (inherits) FaceHalfEdgeReference */
-
-template<typename T>
-using hasFaceHalfEdgeReferenceT = std::is_base_of<FaceHalfEdgeReferenceTriggerer, T>;
+/* Detector to check if a class has HasFaceHalfEdgeReference */
 
 template<typename T>
 bool constexpr hasFaceHalfEdgeReference()
 {
-	return hasFaceHalfEdgeReferenceT<T>::value;
+	return HasFaceHalfEdgeReference<T>;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_FACE_HALF_EDGE_REFERENCE_H
