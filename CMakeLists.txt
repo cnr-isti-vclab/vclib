@@ -110,11 +110,11 @@ set(HEADERS
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
+	include/vclib/mesh/components/concepts/bit_flags.h
 	include/vclib/mesh/components/concepts/color.h
 	include/vclib/mesh/components/detection/adjacent_edges_detection.h
 	include/vclib/mesh/components/detection/adjacent_faces_detection.h
 	include/vclib/mesh/components/detection/adjacent_vertices_detection.h
-	include/vclib/mesh/components/detection/bit_flags_detection.h
 	include/vclib/mesh/components/detection/bounding_box_detection.h
 	include/vclib/mesh/components/detection/coordinate_detection.h
 	include/vclib/mesh/components/detection/custom_components_detection.h
