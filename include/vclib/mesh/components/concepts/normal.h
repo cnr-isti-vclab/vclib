@@ -20,48 +20,56 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_NORMAL_DETECTION_H
-#define VCL_MESH_COMPONENTS_NORMAL_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_NORMAL_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_NORMAL_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class NormalTriggerer
+/**
+ * @brief HasNormal concept
+ *
+ * This concept is satisfied only if a class has a member function 'normal()'.
+ * No check is made on the return type.
+ */
+template<typename T>
+concept HasNormal = requires(T v) // requires that an object of type T has the following members
 {
+	v.normal();
 };
 
-class OptionalNormalTriggerer
+/**
+ * @brief HasOptionalNormal concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'normal()' which returns an int&
+ * - 'isNormalEnabled()' which returns a bool
+ */
+template<typename T>
+concept HasOptionalNormal = HasNormal<T> && requires(T v)
 {
+	{ v.isNormalEnabled() } -> std::same_as<bool>;
 };
 
-/* Detector to check if a class has (inherits) Normal or OpionalNormal*/
-
-template<typename T>
-using hasNormalT = std::is_base_of<NormalTriggerer, T>;
-
-template<typename T>
-using hasOptionalNormalT = std::is_base_of<OptionalNormalTriggerer, T>;
-
+/* Detector functions to check if a class has Normal or OptionalNormal */
 
 template<typename T>
 bool constexpr hasNormal()
 {
-	return hasNormalT<T>::value || hasOptionalNormalT<T>::value;
+	return HasNormal<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalNormal()
 {
-	return hasOptionalNormalT<T>::value;
+	return HasOptionalNormal<T>;
 }
 
 template <typename T>
 bool isNormalEnabledOn(const T& element)
 {
-	if constexpr(hasOptionalNormal<T>()) {
+	if constexpr (hasOptionalNormal<T>()) {
 		return element.isNormalEnabled();
 	}
 	else {
@@ -71,4 +79,4 @@ bool isNormalEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_NORMAL_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_NORMAL_H

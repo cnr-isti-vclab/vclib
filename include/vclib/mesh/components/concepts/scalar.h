@@ -30,7 +30,7 @@ namespace vcl::comp {
 /**
  * @brief HasScalar concept
  *
- * This concept is satisfied only if a class has a member function that 'scalar()'.
+ * This concept is satisfied only if a class has a member function 'scalar()'.
  * No check is made on the return type.
  */
 template<typename T>

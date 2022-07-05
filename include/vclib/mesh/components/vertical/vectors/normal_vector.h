@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_NORMAL_VECTOR_H
 #define VCL_MESH_COMPONENTS_NORMAL_VECTOR_H
 
-#include "../../detection/normal_detection.h"
+#include "../../concepts/normal.h"
 
 #include "generic_component_vector.h"
 
