@@ -31,7 +31,7 @@ namespace vcl::comp {
 /**
  * @brief HasCoordinate concept
  *
- * This concept is satisfied only if a class has a member function that 'coord()'.
+ * This concept is satisfied only if a class has a member function 'coord()'.
  * No check is made on the return type.
  */
 template<typename T>

@@ -25,7 +25,7 @@
 
 #include <vclib/space/box.h>
 
-#include "../detection/bounding_box_detection.h"
+#include "../concepts/bounding_box.h"
 
 namespace vcl::comp {
 
@@ -44,13 +44,13 @@ namespace vcl::comp {
  * @endcode
  */
 template<typename  PointType>
-class BoundingBox : public BoundingBoxTriggerer
+class BoundingBox
 {
 public:
 	using BoundingBoxType = Box<PointType>;
 
 	const BoundingBoxType& boundingBox() const;
-	BoundingBoxType&      boundingBox();
+	BoundingBoxType&       boundingBox();
 
 protected:
 	template<typename Element>

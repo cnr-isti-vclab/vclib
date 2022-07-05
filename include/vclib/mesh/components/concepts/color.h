@@ -31,7 +31,7 @@ namespace vcl::comp {
 /**
  * @brief HasColor concept
  *
- * This concept is satisfied only if a class has a member function that 'color()' which returns a
+ * This concept is satisfied only if a class has a member function 'color()' which returns a
  * vcl::Color&
  */
 template<typename T>

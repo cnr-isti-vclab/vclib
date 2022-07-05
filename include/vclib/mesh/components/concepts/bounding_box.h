@@ -20,30 +20,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_BOUNDING_BOX_DETECTION_H
-#define VCL_MESH_COMPONENTS_BOUNDING_BOX_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class BoundingBoxTriggerer
+/**
+ * @brief HasBoundingBox concept
+ *
+ * This concept is satisfied only if a class has a member function 'boundingBox()'.
+ * No check is made on the return type.
+ */
+template<typename T>
+concept HasBoundingBox = requires(T v) // requires that an object of type T has the following members
 {
+	v.boundingBox();
 };
 
-/* Detectors to check if a class has (inherits) BoundingBox */
-
-template<typename T>
-using hasBoundingBoxT = std::is_base_of<BoundingBoxTriggerer, T>;
+/* Detector functions to check if a class has BoundingBox */
 
 template<typename T>
 bool constexpr hasBoundingBox()
 {
-	return hasBoundingBoxT<T>::value;
+	return HasBoundingBox<T>;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_BOUNDING_BOX_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H

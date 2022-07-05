@@ -33,7 +33,7 @@ class TriangleBitFlags;
 /**
  * @brief HasBitFlags concept
  *
- * This concept is satisfied only if a class has a member function that 'isDeleted()' which returns
+ * This concept is satisfied only if a class has a member function 'isDeleted()' which returns
  * a bool
  */
 template<typename T>
