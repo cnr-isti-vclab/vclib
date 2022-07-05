@@ -22,7 +22,7 @@
 
 #include "element_container.h"
 
-#include "../components/detection/vertex_references_detection.h"
+#include "../components/concepts/vertex_references.h"
 #include "../components/detection/face_half_edge_reference_detection.h"
 #include "../components/detection/half_edge_references_detection.h"
 #include "../components/detection/vertex_half_edge_reference_detection.h"

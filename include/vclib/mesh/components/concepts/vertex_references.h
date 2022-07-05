@@ -20,30 +20,34 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VERTEX_REFERENCES_DETECTION_H
-#define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_VERTEX_REFERENCES_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_VERTEX_REFERENCES_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class VertexReferencesTriggerer
+/**
+ * @brief HasVertexReferences concept
+ *
+ * This concept is satisfied only if a class has a member function 'vertexNumber()' which returns
+ * an uint
+ */
+template<typename T>
+concept HasVertexReferences =
+	requires(T v) // requires that an object of type T has the following members
 {
+	{ v.vertexNumber() } -> std::same_as<uint>;
 };
 
-/* Detector to check if a class has (inherits) VertexReferences */
-
-template<typename T>
-using hasVertexReferencesT = std::is_base_of<VertexReferencesTriggerer, T>;
+/* Detector functions to check if a class has VertexReferences */
 
 template<typename T>
 bool constexpr hasVertexReferences()
 {
-	return hasVertexReferencesT<T>::value;
+	return HasVertexReferences<T>;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_VERTEX_REFERENCES_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_VERTEX_REFERENCES_H

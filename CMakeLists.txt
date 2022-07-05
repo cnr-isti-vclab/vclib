@@ -122,13 +122,13 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/normal.h
 	include/vclib/mesh/components/concepts/principal_curvature.h
 	include/vclib/mesh/components/concepts/scalar.h
+	include/vclib/mesh/components/concepts/vertex_references.h
 	include/vclib/mesh/components/detection/face_half_edge_reference_detection.h
 	include/vclib/mesh/components/detection/half_edge_references_detection.h
 	include/vclib/mesh/components/detection/tex_coord_detection.h
 	include/vclib/mesh/components/detection/tex_file_names_detection.h
 	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
 	include/vclib/mesh/components/detection/vertex_half_edge_reference_detection.h
-	include/vclib/mesh/components/detection/vertex_references_detection.h
 	include/vclib/mesh/components/detection/wedge_colors_detection.h
 	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
 	include/vclib/mesh/components/horizontal/adjacent_edges.h
