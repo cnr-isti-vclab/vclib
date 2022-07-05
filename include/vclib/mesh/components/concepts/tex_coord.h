@@ -20,41 +20,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEX_COORD_DETECTION_H
-#define VCL_MESH_COMPONENTS_TEX_COORD_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEX_COORD_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_TEX_COORD_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class TexCoordTriggerer
+/**
+ * @brief HasTexCoord concept
+ *
+ * This concept is satisfied only if a class has a member function that 'texCoord()'
+ */
+template<typename T>
+concept HasTexCoord = requires(T v) // requires that an object of type T has the following members
 {
+	v.texCoord();
 };
 
-class OptionalTexCoordTriggerer
+/**
+ * @brief HasOptionalTexCoord concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'texCoord()' which returns an int&
+ * - 'isTexCoordEnabled()' which returns a bool
+ */
+template<typename T>
+concept HasOptionalTexCoord = HasTexCoord<T> && requires(T v)
 {
+	{ v.isTexCoordEnabled() } -> std::same_as<bool>;
 };
 
-/* Detector to check if a class has (inherits) TexCoord or OptionalTexCoord*/
-
-template<typename T>
-using hasTexCoordT = std::is_base_of<TexCoordTriggerer, T>;
-
-template<typename T>
-using hasOptionalTexCoordT = std::is_base_of<OptionalTexCoordTriggerer, T>;
+/* Detector functions to check if a class has TexCoord or OptionalTexCoord */
 
 template<typename T>
 bool constexpr hasTexCoord()
 {
-	return hasTexCoordT<T>::value || hasOptionalTexCoordT<T>::value;
+	return HasTexCoord<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalTexCoord()
 {
-	return hasOptionalTexCoordT<T>::value;
+	return HasOptionalTexCoord<T>;
 }
 
 template <typename T>
@@ -70,4 +78,4 @@ bool isTexCoordEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_TEX_COORD_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_TEX_COORD_H

@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_TEX_COORD_VECTOR_H
 #define VCL_MESH_COMPONENTS_TEX_COORD_VECTOR_H
 
-#include "../../detection/tex_coord_detection.h"
+#include "../../concepts/tex_coord.h"
 
 #include "generic_component_vector.h"
 

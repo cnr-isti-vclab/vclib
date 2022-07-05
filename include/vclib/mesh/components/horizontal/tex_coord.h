@@ -24,18 +24,17 @@
 #define VCL_MESH_COMPONENTS_TEX_COORD_H
 
 #include <vclib/space/tex_coord.h>
-#include "../detection/tex_coord_detection.h"
 
 namespace vcl::comp {
 
 template<typename Scalar>
-class TexCoord : public TexCoordTriggerer
+class TexCoord
 {
 public:
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
 	const TexCoordType& texCoord() const;
-	TexCoordType        texCoord();
+	TexCoordType&       texCoord();
 
 protected:
 	template<typename Element>

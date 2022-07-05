@@ -124,9 +124,9 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/normal.h
 	include/vclib/mesh/components/concepts/principal_curvature.h
 	include/vclib/mesh/components/concepts/scalar.h
+	include/vclib/mesh/components/concepts/tex_coord.h
 	include/vclib/mesh/components/concepts/vertex_half_edge_reference.h
 	include/vclib/mesh/components/concepts/vertex_references.h
-	include/vclib/mesh/components/detection/tex_coord_detection.h
 	include/vclib/mesh/components/detection/tex_file_names_detection.h
 	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
 	include/vclib/mesh/components/detection/wedge_colors_detection.h

@@ -31,7 +31,7 @@ const typename TexCoord<Scalar>::TexCoordType& TexCoord<Scalar>::texCoord() cons
 }
 
 template<typename Scalar>
-typename TexCoord<Scalar>::TexCoordType TexCoord<Scalar>::texCoord()
+typename TexCoord<Scalar>::TexCoordType& TexCoord<Scalar>::texCoord()
 {
 	return t;
 }
