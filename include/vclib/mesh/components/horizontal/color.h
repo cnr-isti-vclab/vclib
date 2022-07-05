@@ -25,7 +25,7 @@
 
 #include <vclib/space/color.h>
 
-#include "../detection/color_detection.h"
+#include "../concepts/color.h"
 
 namespace vcl::comp {
 

@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_COLOR_VECTOR_H
 #define VCL_MESH_COMPONENTS_COLOR_VECTOR_H
 
-#include "../../detection/color_detection.h"
+#include "../../concepts/color.h"
 
 #include "generic_component_vector.h"
 

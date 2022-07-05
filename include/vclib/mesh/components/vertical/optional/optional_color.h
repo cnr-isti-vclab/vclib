@@ -23,9 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_OPTIONAL_COLOR_H
 #define VCL_MESH_COMPONENTS_OPTIONAL_COLOR_H
 
-#include <vclib/space/color.h>
-
-#include "../../detection/color_detection.h"
+#include "../../concepts/color.h"
 #include "../vertical_info.h"
 
 namespace vcl::comp {

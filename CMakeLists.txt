@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.13)
 project(vclib)
 
 ### Build settings
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 ### Options
 option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
@@ -110,12 +110,12 @@ set(HEADERS
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
+	include/vclib/mesh/components/concepts/color.h
 	include/vclib/mesh/components/detection/adjacent_edges_detection.h
 	include/vclib/mesh/components/detection/adjacent_faces_detection.h
 	include/vclib/mesh/components/detection/adjacent_vertices_detection.h
 	include/vclib/mesh/components/detection/bit_flags_detection.h
 	include/vclib/mesh/components/detection/bounding_box_detection.h
-	include/vclib/mesh/components/detection/color_detection.h
 	include/vclib/mesh/components/detection/coordinate_detection.h
 	include/vclib/mesh/components/detection/custom_components_detection.h
 	include/vclib/mesh/components/detection/face_half_edge_reference_detection.h

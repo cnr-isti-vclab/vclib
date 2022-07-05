@@ -20,35 +20,50 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <vclib/misc/types.h>
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_COLOR__H
+#define VCL_MESH_COMPONENTS_CONCEPTS_COLOR__H
 
-#ifndef VCL_MESH_COMPONENTS_COLOR_DETECTION_H
-#define VCL_MESH_COMPONENTS_COLOR_DETECTION_H
+#include <vclib/misc/types.h>
+#include <vclib/space/color.h>
 
 namespace vcl::comp {
 
-class Color;
+/**
+ * @brief HasColor concept
+ *
+ * Checks if a class has a member function that 'color()' which returns a vcl::Color&
+ */
 template<typename T>
-class OptionalColor;
+concept HasColor = requires(T v) // requires that an object of type T has the following members
+{
+	{ v.color() } -> std::same_as<vcl::Color&>;
+};
 
-/* Detector to check if a class has (inherits) Color or OptionalColor */
-
+/**
+ * @brief HasOptionalColor concept
+ *
+ * Checks if a class has two member functions:
+ * - 'color()' which returns a vcl::Color&
+ * - 'isColorEnabled()' which returns a bool
+ */
 template<typename T>
-using hasColorT = std::is_base_of<Color, T>;
+concept HasOptionalColor = HasColor<T> && requires(T v)
+{
+	{ v.isColorEnabled() } -> std::same_as<bool>;
+};
 
-template<typename T>
-using hasOptionalColorT = std::is_base_of<OptionalColor<T>, T>;
+/* Detector functions to check if a class has Color or OptionalColor */
 
 template<typename T>
 constexpr bool hasColor()
 {
-	return hasColorT<T>::value || hasOptionalColorT<T>::value;
+	return HasColor<T> || HasOptionalColor<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalColor()
 {
-	return hasOptionalColorT<T>::value;
+	return HasOptionalColor<T>;
 }
 
 template <typename T>
@@ -64,4 +79,4 @@ bool isColorEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_COLOR_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_COLOR__H

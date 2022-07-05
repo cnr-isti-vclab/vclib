@@ -24,6 +24,7 @@
 #define VCL_TYPES_H
 
 #include <assert.h>
+#include <concepts>
 #include <type_traits>
 
 /**
