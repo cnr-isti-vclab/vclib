@@ -31,7 +31,8 @@ namespace vcl::comp {
 /**
  * @brief HasColor concept
  *
- * Checks if a class has a member function that 'color()' which returns a vcl::Color&
+ * This concept is satisfied only if a class has a member function that 'color()' which returns a
+ * vcl::Color&
  */
 template<typename T>
 concept HasColor = requires(T v) // requires that an object of type T has the following members
@@ -42,7 +43,7 @@ concept HasColor = requires(T v) // requires that an object of type T has the fo
 /**
  * @brief HasOptionalColor concept
  *
- * Checks if a class has two member functions:
+ * This concept is satisfied only if a class has two member functions:
  * - 'color()' which returns a vcl::Color&
  * - 'isColorEnabled()' which returns a bool
  */

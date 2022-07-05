@@ -20,30 +20,34 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_COORDINATE_DETECTION_H
-#define VCL_MESH_COMPONENTS_COORDINATE_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_COORDINATE_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_COORDINATE_H
 
 #include <vclib/misc/types.h>
+#include <vclib/space/point.h>
 
 namespace vcl::comp {
 
-class CoordinateTriggerer
+/**
+ * @brief HasCoordinate concept
+ *
+ * This concept is satisfied only if a class has a member function that 'coord()'.
+ * No check is made on the return type.
+ */
+template<typename T>
+concept HasCoordinate = requires(T v) // requires that an object of type T has the following members
 {
+	v.coord();
 };
 
-/**
- * Detector to check if a class has (inherits) Coordinate
- */
-
-template<typename T>
-using hasCoordinateT = std::is_base_of<CoordinateTriggerer, T>;
+/* Detector functions to check if a class has Coordinate */
 
 template<typename T>
 bool constexpr hasCoordinate()
 {
-	return hasCoordinateT<T>::value;
+	return HasCoordinate<T>;
 }
 
-}
+} // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_COORDINATE_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_COORDINATE_H
