@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_SCALAR_VECTOR_H
 #define VCL_MESH_COMPONENTS_SCALAR_VECTOR_H
 
-#include "../../detection/scalar_detection.h"
+#include "../../concepts/scalar.h"
 
 #include "generic_component_vector.h"
 

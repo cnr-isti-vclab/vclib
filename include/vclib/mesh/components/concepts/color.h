@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CONCEPTS_COLOR__H
-#define VCL_MESH_COMPONENTS_CONCEPTS_COLOR__H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_COLOR_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_COLOR_H
 
 #include <vclib/misc/types.h>
 #include <vclib/space/color.h>
@@ -80,4 +80,4 @@ bool isColorEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_CONCEPTS_COLOR__H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_COLOR_H

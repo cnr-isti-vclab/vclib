@@ -20,47 +20,57 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_SCALAR_DETECTION_H
-#define VCL_MESH_COMPONENTS_SCALAR_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_SCALAR_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_SCALAR_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class ScalarTrigger
+/**
+ * @brief HasScalar concept
+ *
+ * This concept is satisfied only if a class has a member function that 'scalar()'.
+ * No check is made on the return type.
+ */
+template<typename T>
+concept HasScalar = requires(T v) // requires that an object of type T has the following members
 {
+	v.scalar();
 };
 
-class OptionalScalarTrigger
+/**
+ * @brief HasOptionalScalar concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'scalar()' which returns an int&
+ * - 'isScalarEnabled()' which returns a bool
+ */
+template<typename T>
+concept HasOptionalScalar = HasScalar<T> && requires(T v)
 {
+	{ v.isScalarEnabled() } -> std::same_as<bool>;
 };
 
-/* Detector to check if a class has (inherits) Scalar or OptionalScalar */
 
-template<typename T>
-using hasScalarT = std::is_base_of<ScalarTrigger, T>;
-
-template<typename T>
-using hasOptionalScalarT = std::is_base_of<OptionalScalarTrigger, T>;
+/* Detector functions to check if a class has Scalar or OptionalScalar */
 
 template<typename T>
 bool constexpr hasScalar()
 {
-	return hasScalarT<T>::value || hasOptionalScalarT<T>::value;
+	return HasScalar<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalScalar()
 {
-	return hasOptionalScalarT<T>::value;
+	return HasOptionalScalar<T>;
 }
 
 template <typename T>
 bool isScalarEnabledOn(const T& element)
 {
-	if constexpr(hasOptionalScalar<T>()) {
+	if constexpr (hasOptionalScalar<T>()) {
 		return element.isScalarEnabled();
 	}
 	else {
@@ -70,4 +80,4 @@ bool isScalarEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_SCALAR_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_SCALAR_H

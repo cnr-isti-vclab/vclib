@@ -23,12 +23,12 @@
 #ifndef VCL_MESH_COMPONENTS_SCALAR_H
 #define VCL_MESH_COMPONENTS_SCALAR_H
 
-#include "../detection/scalar_detection.h"
+#include "../concepts/scalar.h"
 
 namespace vcl::comp {
 
 template<typename T>
-class Scalar : public ScalarTrigger
+class Scalar
 {
 public:
 	using ScalarType = T;

@@ -24,12 +24,12 @@
 #define VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
 
 #include "../vertical_info.h"
-#include "../../detection/scalar_detection.h"
+#include "../../concepts/scalar.h"
 
 namespace vcl::comp {
 
 template<typename S, typename T>
-class OptionalScalar : public OptionalScalarTrigger, public virtual VerticalInfo<T>
+class OptionalScalar : public virtual VerticalInfo<T>
 {
 private:
 	using B = VerticalInfo<T>;

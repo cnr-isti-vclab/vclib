@@ -114,6 +114,7 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/color.h
 	include/vclib/mesh/components/concepts/coordinate.h
 	include/vclib/mesh/components/concepts/mark.h
+	include/vclib/mesh/components/concepts/scalar.h
 	include/vclib/mesh/components/detection/adjacent_edges_detection.h
 	include/vclib/mesh/components/detection/adjacent_faces_detection.h
 	include/vclib/mesh/components/detection/adjacent_vertices_detection.h
@@ -123,7 +124,6 @@ set(HEADERS
 	include/vclib/mesh/components/detection/half_edge_references_detection.h
 	include/vclib/mesh/components/detection/normal_detection.h
 	include/vclib/mesh/components/detection/principal_curvature_detection.h
-	include/vclib/mesh/components/detection/scalar_detection.h
 	include/vclib/mesh/components/detection/tex_coord_detection.h
 	include/vclib/mesh/components/detection/tex_file_names_detection.h
 	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
