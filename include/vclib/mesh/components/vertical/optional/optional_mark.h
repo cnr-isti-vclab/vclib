@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_OPTIONAL_MARK_H
 #define VCL_MESH_COMPONENTS_OPTIONAL_MARK_H
 
-#include "../../detection/mark_detection.h"
+#include "../../concepts/mark.h"
 #include "../vertical_info.h"
 
 namespace vcl::comp {

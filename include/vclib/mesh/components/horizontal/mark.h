@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_MARK_H
 #define VCL_MESH_COMPONENTS_MARK_H
 
-#include "../detection/mark_detection.h"
+#include "../concepts/mark.h"
 
 namespace vcl::comp {
 

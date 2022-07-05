@@ -20,35 +20,50 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_MARK_DETECTION_H
-#define VCL_MESH_COMPONENTS_MARK_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_MARK_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_MARK_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-class Mark;
+/**
+ * @brief HasMark concept
+ *
+ * This concept is satisfied only if a class has a member function that 'mark()' which returns an
+ * int&
+ */
 template<typename T>
-class OptionalMark;
+concept HasMark = requires(T v) // requires that an object of type T has the following members
+{
+	{ v.mark() } -> std::same_as<int&>;
+};
 
-/* Detector to check if a class has (inherits) Mark or OptionalMark */
-
+/**
+ * @brief HasOptionalMark concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'mark()' which returns an int&
+ * - 'isMarkEnabled()' which returns a bool
+ */
 template<typename T>
-using hasMarkT = std::is_base_of<Mark, T>;
+concept HasOptionalMark = HasMark<T> && requires(T v)
+{
+	{ v.isMarkEnabled() } -> std::same_as<bool>;
+};
 
-template<typename T>
-using hasOptionalMarkT = std::is_base_of<OptionalMark<T>, T>;
+/* Detector functions to check if a class has Mark or OptionalMark */
 
 template<typename T>
 constexpr bool hasMark()
 {
-	return hasMarkT<T>::value || hasOptionalMarkT<T>::value;
+	return HasMark<T> || HasOptionalMark<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalMark()
 {
-	return hasOptionalMarkT<T>::value;
+	return HasOptionalMark<T>;
 }
 
 template <typename T>
@@ -64,4 +79,4 @@ bool isMarkEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_MARK_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_MARK_H

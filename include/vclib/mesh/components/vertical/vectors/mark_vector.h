@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_MARK_VECTOR_H
 #define VCL_MESH_COMPONENTS_MARK_VECTOR_H
 
-#include "../../detection/mark_detection.h"
+#include "../../concepts/mark.h"
 
 #include "generic_component_vector.h"
 
