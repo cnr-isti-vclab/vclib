@@ -20,29 +20,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_DETECTION_H
-#define VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_VERTEX_HALF_EDGE_REFERENCE_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_VERTEX_HALF_EDGE_REFERENCE_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
-/* Triggerers */
 
-class VertexHalfEdgeReferenceTriggerer
+/**
+ * @brief HasVertexHalfEdgeReference concept
+ *
+ * This concept is satisfied only if a class has the following member functions:
+ * - halfEdge()
+ */
+template<typename T>
+concept HasVertexHalfEdgeReference = requires(T v) // requires that an object of type T has the following members
 {
+	v.halfEdge();
 };
 
-/* Detector to check if a class has (inherits) VertexHalfEdgeReferences */
-
-template<typename T>
-using hasVertexHalfEdgeReferenceT = std::is_base_of<VertexHalfEdgeReferenceTriggerer, T>;
+/* Detector to check if a class has VertexHalfEdgeReference */
 
 template<typename T>
 bool constexpr hasVertexHalfEdgeReference()
 {
-	return hasVertexHalfEdgeReferenceT<T>::value;
+	return HasVertexHalfEdgeReference<T>;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_VERTEX_HALF_EDGE_REFERENCE_H

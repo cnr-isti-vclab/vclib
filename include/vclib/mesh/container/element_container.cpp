@@ -25,7 +25,7 @@
 #include "../components/concepts/vertex_references.h"
 #include "../components/concepts/face_half_edge_reference.h"
 #include "../components/concepts/half_edge_references.h"
-#include "../components/detection/vertex_half_edge_reference_detection.h"
+#include "../components/concepts/vertex_half_edge_reference.h"
 
 namespace vcl::mesh {
 

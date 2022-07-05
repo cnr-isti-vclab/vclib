@@ -43,7 +43,7 @@ concept HasFaceHalfEdgeReference = requires(T v) // requires that an object of t
 	v.innerHalfEdge(uint());
 };
 
-/* Detector to check if a class has HasFaceHalfEdgeReference */
+/* Detector to check if a class has FaceHalfEdgeReference */
 
 template<typename T>
 bool constexpr hasFaceHalfEdgeReference()
