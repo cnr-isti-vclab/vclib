@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_VECTOR_H
 #define VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_VECTOR_H
 
-#include "../../detection/principal_curvature_detection.h"
+#include "../../concepts/principal_curvature.h"
 
 #include "generic_component_vector.h"
 

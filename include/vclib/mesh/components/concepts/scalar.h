@@ -43,7 +43,7 @@ concept HasScalar = requires(T v) // requires that an object of type T has the f
  * @brief HasOptionalScalar concept
  *
  * This concept is satisfied only if a class has two member functions:
- * - 'scalar()' which returns an int&
+ * - 'scalar()'
  * - 'isScalarEnabled()' which returns a bool
  */
 template<typename T>

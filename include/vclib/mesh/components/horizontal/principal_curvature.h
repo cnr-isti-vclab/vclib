@@ -25,7 +25,7 @@
 
 #include <vclib/space/principal_curvature.h>
 
-#include "../detection/principal_curvature_detection.h"
+#include "../concepts/principal_curvature.h"
 
 namespace vcl::comp {
 

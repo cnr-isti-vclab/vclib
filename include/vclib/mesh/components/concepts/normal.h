@@ -43,7 +43,7 @@ concept HasNormal = requires(T v) // requires that an object of type T has the f
  * @brief HasOptionalNormal concept
  *
  * This concept is satisfied only if a class has two member functions:
- * - 'normal()' which returns an int&
+ * - 'normal()'
  * - 'isNormalEnabled()' which returns a bool
  */
 template<typename T>

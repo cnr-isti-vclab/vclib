@@ -20,41 +20,50 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_DETECTION_H
-#define VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_PRINCIPAL_CURVATURE_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_PRINCIPAL_CURVATURE_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class PrincipalCurvatureTriggerer
+/**
+ * @brief HasPrincipalCurvature concept
+ *
+ * This concept is satisfied only if a class has a member function 'principalCurvature()'.
+ * No check is made on the return type.
+ */
+template<typename T>
+concept HasPrincipalCurvature = requires(T v) // requires that an object of type T has the following members
 {
+	v.principalCurvature();
 };
 
-class OptionalPrincipalCurvatureTriggerer
+/**
+ * @brief HasOptionalPrincipalCurvature concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'principalCurvature()'
+ * - 'isPrincipalCurvatureEnabled()' which returns a bool
+ */
+template<typename T>
+concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && requires(T v)
 {
+	{ v.isPrincipalCurvatureEnabled() } -> std::same_as<bool>;
 };
 
-/* Detector to check if a class has (inherits) PrincipalCurvature or OptionalPrincipalCurvature*/
-
-template<typename T>
-using hasPrincipalCurvatureT = std::is_base_of<PrincipalCurvatureTriggerer, T>;
-
-template<typename T>
-using hasOptionalPrincipalCurvatureT = std::is_base_of<OptionalPrincipalCurvatureTriggerer, T>;
+/* Detector functions to check if a class has PrincipalCurvature or OptionalPrincipalCurvature */
 
 template<typename T>
 bool constexpr hasPrincipalCurvature()
 {
-	return hasPrincipalCurvatureT<T>::value || hasOptionalPrincipalCurvatureT<T>::value;
+	return HasPrincipalCurvature<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalPrincipalCurvature()
 {
-	return hasOptionalPrincipalCurvatureT<T>::value;
+	return HasOptionalPrincipalCurvature<T>;
 }
 
 template <typename T>
@@ -70,4 +79,4 @@ bool isPrincipalCurvatureEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_PRINCIPAL_CURVATURE_H

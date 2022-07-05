@@ -27,13 +27,12 @@
 
 #include <vclib/space/principal_curvature.h>
 
-#include "../../detection/principal_curvature_detection.h"
+#include "../../concepts/principal_curvature.h"
 
 namespace vcl::comp {
 
 template<typename Scalar, typename T>
 class OptionalPrincipalCurvature :
-		public OptionalPrincipalCurvatureTriggerer,
 		public virtual VerticalInfo<T>
 {
 private:
