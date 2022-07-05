@@ -32,7 +32,7 @@
 
 #include "../detection/face_half_edge_reference_detection.h"
 
-#include "../detection/adjacent_faces_detection.h"
+#include "../concepts/adjacent_faces.h"
 #include "../detection/vertex_references_detection.h"
 
 namespace vcl::comp {
@@ -40,8 +40,7 @@ namespace vcl::comp {
 template<typename HalfEdge>
 class FaceHalfEdgeReference :
 		public FaceHalfEdgeReferenceTriggerer,
-		public VertexReferencesTriggerer,
-		public AdjacentFacesTriggerer
+		public VertexReferencesTriggerer
 {
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;

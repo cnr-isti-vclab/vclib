@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_VECTOR_H
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_VECTOR_H
 
-#include "../../detection/adjacent_edges_detection.h"
+#include "../../concepts/adjacent_edges.h"
 
 #include "generic_component_vector.h"
 

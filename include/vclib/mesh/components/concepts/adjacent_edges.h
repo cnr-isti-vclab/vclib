@@ -20,51 +20,60 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_DETECTION_H
-#define VCL_MESH_COMPONENTS_ADJACENT_EDGES_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_EDGES_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_EDGES_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class AdjacentEdgesTriggerer
+/**
+ * @brief HasAdjacentEdges concept
+ *
+ * This concept is satisfied only if a class has a member function 'adjEdgesNumber()' which returns
+ * an uint
+ */
+template<typename T>
+concept HasAdjacentEdges = requires(T v) // requires that an object of type T has the following members
 {
+	{ v.adjEdgesNumber() } -> std::same_as<uint>;
 };
 
-class OptionalAdjacentEdgesTriggerer
+/**
+ * @brief HasOptionalAdjacentEdges concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'adjEdgesNumber()' which returns an uint
+ * - 'isAdjEdgesEnabled()' which returns a bool
+ */
+template<typename T>
+concept HasOptionalAdjacentEdges = HasAdjacentEdges<T> && requires(T v)
 {
+	{ v.isAdjEdgesEnabled() } -> std::same_as<bool>;
 };
 
-/* Detectors to check if a class has (inherits) AdjacenctEdges or OptionalAdjacentEdges */
-
-template<typename T>
-using hasAdjacentEdgesT = std::is_base_of<AdjacentEdgesTriggerer, T>;
-
-template<typename T>
-using hasOptionalAdjacentEdgesT = std::is_base_of<OptionalAdjacentEdgesTriggerer, T>;
+/* Detector functions to check if a class has AdjacentEdges or OptionalAdjacentEdges */
 
 template<typename T>
 bool constexpr hasAdjacentEdges()
 {
-	return hasAdjacentEdgesT<T>::value || hasOptionalAdjacentEdgesT<T>::value;
+	return HasAdjacentEdges<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalAdjacentEdges()
 {
-	return hasOptionalAdjacentEdgesT<T>::value;
+	return HasOptionalAdjacentEdges<T>;
 }
 
 template <typename T>
 bool isAdjacentEdgesEnabledOn(const T& element)
 {
-	if constexpr (hasOptionalAdjacentEdges<T>()) {
+	if constexpr (HasOptionalAdjacentEdges<T>) {
 		return element.isAdjEdgesEnabled();
 	}
 	else {
-		return hasAdjacentEdges<T>();
+		return HasAdjacentEdges<T>;
 	}
 }
 
@@ -81,4 +90,4 @@ bool constexpr sanityCheckAdjacentEdges()
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_ADJACENT_EDGES_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_EDGES_H

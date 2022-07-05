@@ -20,51 +20,60 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_DETECTION_H
-#define VCL_MESH_COMPONENTS_ADJACENT_FACES_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class AdjacentFacesTriggerer
+/**
+ * @brief HasAdjacentFaces concept
+ *
+ * This concept is satisfied only if a class has a member function 'adjFacesNumber()' which returns
+ * an uint
+ */
+template<typename T>
+concept HasAdjacentFaces = requires(T v) // requires that an object of type T has the following members
 {
+	{ v.adjFacesNumber() } -> std::same_as<uint>;
 };
 
-class OptionalAdjacentFacesTriggerer
+/**
+ * @brief HasOptionalAdjacentFaces concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'adjFacesNumber()' which returns an uint
+ * - 'isAdjFacesEnabled()' which returns a bool
+ */
+template<typename T>
+concept HasOptionalAdjacentFaces = HasAdjacentFaces<T> && requires(T v)
 {
+	{ v.isAdjFacesEnabled() } -> std::same_as<bool>;
 };
 
-/* Detectors to check if a class has (inherits) AdjacenctFaces or OptionalAdjacenctFaces */
-
-template<typename T>
-using hasAdjacentFacesT = std::is_base_of<AdjacentFacesTriggerer, T>;
-
-template<typename T>
-using hasOptionalAdjacentFacesT = std::is_base_of<OptionalAdjacentFacesTriggerer, T>;
+/* Detector functions to check if a class has AdjacentFaces or OptionalAdjacentFaces */
 
 template<typename T>
 bool constexpr hasAdjacentFaces()
 {
-	return hasAdjacentFacesT<T>::value || hasOptionalAdjacentFacesT<T>::value;
+	return HasAdjacentFaces<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalAdjacentFaces()
 {
-	return hasOptionalAdjacentFacesT<T>::value;
+	return HasOptionalAdjacentFaces<T>;
 }
 
 template <typename T>
 bool isAdjacentFacesEnabledOn(const T& element)
 {
-	if constexpr(hasOptionalAdjacentFaces<T>()) {
+	if constexpr (HasOptionalAdjacentFaces<T>) {
 		return element.isAdjFacesEnabled();
 	}
 	else {
-		return hasAdjacentFaces<T>();
+		return HasAdjacentFaces<T>;
 	}
 }
 
@@ -79,6 +88,6 @@ bool constexpr sanityCheckAdjacentFaces()
 	}
 }
 
-} // namespace vcl::comp
+}
 
-#endif // VCL_MESH_COMPONENTS_ADJACENT_FACES_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H

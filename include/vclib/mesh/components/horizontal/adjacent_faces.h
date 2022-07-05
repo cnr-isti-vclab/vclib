@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
-#include "../detection/adjacent_faces_detection.h"
+#include "../concepts/adjacent_faces.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {
@@ -50,7 +50,7 @@ namespace vcl::comp {
  * Adjacent Faces in case of dynamic size won't be available on Face Elements.
  */
 template<typename Face, int N>
-class AdjacentFaces : protected internal::ElementReferences<Face, N>, public AdjacentFacesTriggerer
+class AdjacentFaces : protected internal::ElementReferences<Face, N>
 {
 	using Base = internal::ElementReferences<Face, N>;
 

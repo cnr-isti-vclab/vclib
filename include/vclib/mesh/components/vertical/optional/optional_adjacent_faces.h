@@ -30,7 +30,7 @@
 
 #include "../vertical_info.h"
 
-#include "../../detection/adjacent_faces_detection.h"
+#include "../../concepts/adjacent_faces.h"
 
 namespace vcl::mesh {
 template<typename, typename>
@@ -40,7 +40,7 @@ class OptionalAdjacentFacesVector;
 namespace vcl::comp {
 
 template<typename Face, int N, typename T>
-class OptionalAdjacentFaces : public OptionalAdjacentFacesTriggerer, public virtual VerticalInfo<T>
+class OptionalAdjacentFaces : public virtual VerticalInfo<T>
 {
 	template<typename, typename>
 	friend class OptionalAdjacentFacesVector;
@@ -54,6 +54,9 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	// possibility to access to the AdjacentFaces class, whether is optional or not.
+	using AdjacentFaces = OptionalAdjacentFaces;
+
 	// the AdjFacesContainer type will be array or vector, depending on N value
 	using AdjFacesContainer = typename std::conditional<
 		(N >= 0),

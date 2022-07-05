@@ -30,7 +30,7 @@
 
 #include "../vertical_info.h"
 
-#include "../../detection/adjacent_edges_detection.h"
+#include "../../concepts/adjacent_edges.h"
 
 namespace vcl::mesh {
 template<typename, typename>
@@ -40,7 +40,7 @@ class OptionalAdjacentEdgesVector;
 namespace vcl::comp {
 
 template<typename Edge, int N, typename T>
-class OptionalAdjacentEdges : public OptionalAdjacentEdgesTriggerer, public virtual VerticalInfo<T>
+class OptionalAdjacentEdges : public virtual VerticalInfo<T>
 {
 	template<typename, typename>
 	friend class OptionalAdjacentEdgesVector;
@@ -54,6 +54,9 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	// possibility to access to the AdjacentEdges class, whether is optional or not.
+	using AdjacentEdges = OptionalAdjacentEdges;
+
 	// the AdjEdgesContainer type will be array or vector, depending on N value
 	using AdjEdgesContainer = typename std::conditional<
 		(N >= 0),

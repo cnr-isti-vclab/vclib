@@ -58,6 +58,9 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	// possibility to access to the WedgeTexCoords class, whether is optional or not.
+	using WedgeTexCoords = OptionalWedgeTexCoords;
+
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 
 	// the AdjFacesContainer type will be array or vector, depending on N value

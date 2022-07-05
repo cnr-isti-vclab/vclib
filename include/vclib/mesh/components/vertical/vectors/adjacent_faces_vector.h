@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_VECTOR_H
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_VECTOR_H
 
-#include "../../detection/adjacent_faces_detection.h"
+#include "../../concepts/adjacent_faces.h"
 
 #include "generic_component_vector.h"
 
