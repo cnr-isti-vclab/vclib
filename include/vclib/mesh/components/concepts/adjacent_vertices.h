@@ -20,42 +20,50 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_DETECTION_H
-#define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_VERTICES_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_VERTICES_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class AdjacentVerticesTriggerer
+/**
+ * @brief HasAdjacentVertices concept
+ *
+ * This concept is satisfied only if a class has a member function 'adjVerticesNumber()' which
+ * returns an uint
+ */
+template<typename T>
+concept HasAdjacentVertices = requires(T v) // requires that an object of type T has the following members
 {
+	{ v.adjVerticesNumber() } -> std::same_as<uint>;
 };
 
-class OptionalAdjacentVerticesTriggerer
+/**
+ * @brief HasOptionalAdjacentVertices concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'adjVerticesNumber()' which returns an uint
+ * - 'isAdjVerticesEnabled()' which returns a bool
+ */
+template<typename T>
+concept HasOptionalAdjacentVertices = HasAdjacentVertices<T> && requires(T v)
 {
+	{ v.isAdjVerticesEnabled() } -> std::same_as<bool>;
 };
 
-/* Detectors to check if a class has (inherits) AdjacenctVertices or OptionalAdjacenctVertices*/
-
-template<typename T>
-using hasAdjacentVerticesT = std::is_base_of<AdjacentVerticesTriggerer, T>;
-
-template<typename T>
-using hasOptionalAdjacentVerticesT = std::is_base_of<OptionalAdjacentVerticesTriggerer, T>;
-
+/* Detector functions to check if a class has AdjacentVertices or OptionalAdjacentVertices */
 
 template<typename T>
 bool constexpr hasAdjacentVertices()
 {
-	return hasAdjacentVerticesT<T>::value || hasOptionalAdjacentVerticesT<T>::value;
+	return HasAdjacentVertices<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalAdjacentVertices()
 {
-	return hasOptionalAdjacentVerticesT<T>::value;
+	return HasOptionalAdjacentVertices<T>;
 }
 
 template <typename T>
@@ -71,4 +79,4 @@ bool isAdjacentVerticesEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_ADJACENT_VERTICES_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_VERTICES_H

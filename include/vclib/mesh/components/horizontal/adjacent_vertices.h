@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
-#include "../detection/adjacent_vertices_detection.h"
+#include "../concepts/adjacent_vertices.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {
@@ -46,7 +46,7 @@ namespace vcl::comp {
  * @endcode
  */
 template<typename Vertex>
-class AdjacentVertices : protected internal::ElementReferences<Vertex, -1>, public AdjacentVerticesTriggerer
+class AdjacentVertices : protected internal::ElementReferences<Vertex, -1>
 {
 	using Base = internal::ElementReferences<Vertex, -1>;
 

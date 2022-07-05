@@ -88,6 +88,6 @@ bool constexpr sanityCheckAdjacentFaces()
 	}
 }
 
-}
+} // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H

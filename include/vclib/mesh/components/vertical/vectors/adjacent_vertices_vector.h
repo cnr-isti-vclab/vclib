@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_VECTOR_H
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_VECTOR_H
 
-#include "../../detection/adjacent_vertices_detection.h"
+#include "../../concepts/adjacent_vertices.h"
 
 #include "generic_component_vector.h"
 

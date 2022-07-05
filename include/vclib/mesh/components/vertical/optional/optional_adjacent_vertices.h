@@ -30,7 +30,7 @@
 
 #include "../vertical_info.h"
 
-#include "../../detection/adjacent_vertices_detection.h"
+#include "../../concepts/adjacent_vertices.h"
 
 namespace vcl::mesh {
 template<typename, typename>
@@ -41,7 +41,6 @@ namespace vcl::comp {
 
 template<typename Vertex, typename T>
 class OptionalAdjacentVertices :
-		public OptionalAdjacentVerticesTriggerer,
 		public virtual VerticalInfo<T>
 {
 	template<typename, typename>
