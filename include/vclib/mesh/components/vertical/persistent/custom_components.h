@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 
-#include "../../detection/custom_components_detection.h"
+#include "../../concepts/custom_components.h"
 
 namespace vcl::comp {
 

@@ -20,27 +20,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_DETECTION_H
-#define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
+#include <string>
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
+/**
+ * @brief HasCustomComponents concept
+ *
+ * This concept is satisfied only if a class has a member function 'hasCustomComponent(string)'
+ * which returns a bool
+ */
 template<typename T>
-class CustomComponents;
-
-/* Detector to check if a class has (inherits) CustomComponents */
-
-template<typename T>
-using hasCustomComponentsT = std::is_base_of<CustomComponents<T>, T>;
+concept HasCustomComponents =
+	requires(T v) // requires that an object of type T has the following members
+{
+	{ v.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
+};
 
 template<typename T>
 bool constexpr hasCustomComponents()
 {
-	return hasCustomComponentsT<T>::value;
+	return HasCustomComponents<T>;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
