@@ -99,6 +99,34 @@ constexpr T* asConst(T* value) noexcept
 template<typename T>
 void asConst(T const&&) = delete;
 
+/*
+ * Utility class that allows to check if given class 'Derived' is derived from a
+ * specialization of a templated class.
+ *
+ * Given a class X and a templated class C<template T>, it can be used in the following way:
+ *
+ * template <typename T>
+ * using myCheck = vcl::IsDerivedFromTemplateSpecialization<X, C<T>>::type;
+ *
+ * and will return true if X derives from any specialization of C.
+ *
+ * https://stackoverflow.com/a/25846080/5851101
+ */
+template <typename Derived, typename TemplatedType>
+struct IsDerivedFromTemplateSpecialization
+{
+	using U = typename std::remove_cv<
+		typename std::remove_reference<Derived>::type
+		>::type;
+
+	static auto test(TemplatedType*) ->
+		typename std::integral_constant<bool, !std::is_same<U, TemplatedType>::value>;
+
+	static std::false_type test(void*);
+
+	using type = decltype(test(std::declval<U*>()));
+};
+
 } // namespace vcl
 
 #endif // VCL_TYPES_H
