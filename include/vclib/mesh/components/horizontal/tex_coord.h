@@ -25,6 +25,8 @@
 
 #include <vclib/space/tex_coord.h>
 
+#include "../concepts/tex_coord.h"
+
 namespace vcl::comp {
 
 template<typename Scalar>
