@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_VECTOR_H
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_VECTOR_H
 
-#include "../../detection/wedge_tex_coords_detection.h"
+#include "../../concepts/wedge_tex_coords.h"
 
 #include "generic_component_vector.h"
 

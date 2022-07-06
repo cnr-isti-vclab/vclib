@@ -20,41 +20,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_DETECTION_H
-#define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_TEX_COORDS_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_TEX_COORDS_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class WedgeTexCoordsTriggerer
+/**
+ * @brief HasWedgeTexCoords concept
+ *
+ * This concept is satisfied only if a class has a member function 'wedgeTexCoord(uint)'.
+ */
+template<typename T>
+concept HasWedgeTexCoords = requires(T v) // requires that an object of type T has the following members
 {
+	v.wedgeTexCoord(uint());
 };
 
-class OptionalWedgeTexCoordsTriggerer
+/**
+ * @brief HasOptionalWedgeColors concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'wedgeTexCoord(uint)'
+ * - 'isWedgeTexCoordsEnabled()' which returns a bool
+ */
+template<typename T>
+concept HasOptionalWedgeTexCoords = HasWedgeTexCoords<T> && requires(T v)
 {
+	{ v.isWedgeTexCoordsEnabled() } -> std::same_as<bool>;
 };
 
-/* Detector to check if a class has (inherits) WedgeTexCoords or OptionalWedgeTexCoords */
-
-template<typename T>
-using hasWedgeTexCoordsT = std::is_base_of<WedgeTexCoordsTriggerer, T>;
-
-template<typename T>
-using hasOptionalWedgeTexCoordsT = std::is_base_of<OptionalWedgeTexCoordsTriggerer, T>;
+/* Detector functions to check if a class has WedgeTexCoords or OptionalWedgeTexCoords */
 
 template<typename T>
 bool constexpr hasWedgeTexCoords()
 {
-	return hasWedgeTexCoordsT<T>::value || hasOptionalWedgeTexCoordsT<T>::value;
+	return HasWedgeTexCoords<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalWedgeTexCoords()
 {
-	return hasOptionalWedgeTexCoordsT<T>::value;
+	return HasOptionalWedgeTexCoords<T>;
 }
 
 template <typename T>
@@ -64,7 +72,7 @@ bool isWedgeTexCoordsEnabledOn(const T& element)
 		return element.isWedgeTexCoordsEnabled();
 	}
 	else {
-		return hasWedgeTexCoords<T>();
+		return HasWedgeTexCoords<T>;
 	}
 }
 
@@ -81,4 +89,4 @@ bool constexpr sanityCheckWedgeTexCoords()
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_TEX_COORDS_H

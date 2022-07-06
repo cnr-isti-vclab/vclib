@@ -32,7 +32,7 @@
 
 #include <vclib/space/tex_coord.h>
 
-#include "../../detection/wedge_tex_coords_detection.h"
+#include "../../concepts/wedge_tex_coords.h"
 
 namespace vcl::mesh {
 template<typename, typename>
@@ -43,7 +43,6 @@ namespace vcl::comp {
 
 template<typename Scalar, int N, typename T>
 class OptionalWedgeTexCoords :
-		public OptionalWedgeTexCoordsTriggerer,
 		public virtual VerticalInfo<T>
 {
 	template<typename, typename>
