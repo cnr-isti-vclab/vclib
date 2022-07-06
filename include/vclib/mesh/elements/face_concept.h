@@ -20,32 +20,32 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ELEMENTS_VERTEX_CONCEPT_H
-#define VCL_MESH_ELEMENTS_VERTEX_CONCEPT_H
+#ifndef VCL_MESH_ELEMENTS_FACE_CONCEPT_H
+#define VCL_MESH_ELEMENTS_FACE_CONCEPT_H
 
-#include "vertex_components.h"
+#include "face_components.h"
 
 namespace vcl {
 
 template<typename...>
-class Vertex;
+class Face;
 
 namespace internal {
 
-// check if a type derives from Vertex<T...>
+// check if a type derives from Face<T...>
 template<typename Derived, typename... Args>
-using IsDerivedFromVertex =
-	typename vcl::IsDerivedFromTemplateSpecialization<Derived, Vertex<Args...>>::type;
+using IsDerivedFromFace =
+	typename vcl::IsDerivedFromTemplateSpecialization<Derived, Face<Args...>>::type;
 
-// check if a type is a Vertex<T...>
+// check if a type is a Face<T...>
 template<class T>
-struct isAVertex : // Default case, no pattern match
+struct isAFace : // Default case, no pattern match
 		std::false_type
 {
 };
 
 template<class... T>
-struct isAVertex<Vertex<T...>> : // For types matching the pattern Vertex<T...>
+struct isAFace<Face<T...>> : // For types matching the pattern Face<T...>
 		std::true_type
 {
 };
@@ -53,8 +53,8 @@ struct isAVertex<Vertex<T...>> : // For types matching the pattern Vertex<T...>
 } // namespace vcl::internal
 
 template<typename T>
-concept VertexConcept = internal::IsDerivedFromVertex<T>::value || internal::isAVertex<T>::value;
+concept FaceConcept = internal::IsDerivedFromFace<T>::value || internal::isAFace<T>::value;
 
 } // namespace vcl
 
-#endif // VCL_MESH_ELEMENTS_VERTEX_CONCEPT_H
+#endif // VCL_MESH_ELEMENTS_FACE_CONCEPT_H

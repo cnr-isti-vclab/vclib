@@ -30,6 +30,8 @@
 #include <vclib/iterators/half_edge/face_vertex_iterator.h>
 #include <vclib/iterators/range_iterator.h>
 
+#include "../concepts/face_half_edge_reference.h"
+
 namespace vcl::comp {
 
 template<typename HalfEdge>
