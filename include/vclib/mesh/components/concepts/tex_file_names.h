@@ -20,26 +20,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEX_FILE_NAMES_H
-#define VCL_MESH_COMPONENTS_TEX_FILE_NAMES_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEX_FILE_NAMES_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_TEX_FILE_NAMES_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-class TextureFileNames;
-
-/* Detector to check if a class has (inherits) TextureFileNames */
-
+/**
+ * @brief HasTexFileNames concept
+ *
+ * This concept is satisfied only if a class has a member function 'textureNumber()' which returns
+ * an uint
+ */
 template<typename T>
-using hasTextureFileNamesT = std::is_base_of<TextureFileNames, T>;
-
-template<typename T>
-constexpr bool hasTextureFileNames()
+concept HasTexFileNames = requires(T v) // requires that an object of type T has the following members
 {
-	return hasTextureFileNamesT<T>::value;
+	{ v.textureNumber() } -> std::same_as<uint>;
+};
+
+/* Detector functions to check if a class has TexFileNames */
+
+template<typename T>
+constexpr bool hasTexFileNames()
+{
+	return HasTexFileNames<T>;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_TEX_FILE_NAMES_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_TEX_FILE_NAMES_H

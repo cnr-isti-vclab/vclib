@@ -71,7 +71,7 @@ bool constexpr hasMark();
 // Texture File Names
 
 template<typename MeshType>
-bool constexpr hasTextureFileNames();
+bool constexpr hasTexFileNames();
 
 // Transform Matrix
 
@@ -110,7 +110,7 @@ void constexpr requireMark();
 // Texture File Names
 
 template<typename MeshType>
-void constexpr requireTextureFileNames();
+void constexpr requireTexFileNames();
 
 // Transform Matrix
 

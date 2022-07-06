@@ -114,7 +114,7 @@ void loadMaterials(
 				}
 				mat.map_Kd = *token;
 				mat.hasTexture = true;
-				if constexpr (hasTextureFileNames<MeshType>()) {
+				if constexpr (hasTexFileNames<MeshType>()) {
 					mat.mapId = mesh.textureNumber();
 					mesh.pushTexture(mat.map_Kd);
 				}

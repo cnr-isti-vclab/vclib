@@ -233,11 +233,11 @@ bool constexpr hasMark()
 }
 
 /**
- * @brief Checks *if a MeshType has the TextureFileNames component*.
+ * @brief Checks *if a MeshType has the TexFileNames component*.
  *
  * Usage:
  * @code{.cpp}
- * if constexpr(vcl::hasTextureFileNames<MyMeshType>()) {
+ * if constexpr(vcl::hasTexFileNames<MyMeshType>()) {
  *    // this portion of code is compiled only when MyMeshType has texture file names
  * }
  * @endcode
@@ -245,9 +245,9 @@ bool constexpr hasMark()
  * @return `true` if the MeshType has texture file names.
  */
 template<typename MeshType>
-bool constexpr hasTextureFileNames()
+bool constexpr hasTexFileNames()
 {
-	return vcl::mesh::hasTextureFileNames<MeshType>();
+	return vcl::mesh::hasTexFileNames<MeshType>();
 }
 
 /**
@@ -320,9 +320,9 @@ void constexpr requireMark()
 }
 
 template<typename MeshType>
-void constexpr requireTextureFileNames()
+void constexpr requireTexFileNames()
 {
-	static_assert(hasTextureFileNames<MeshType>(), "Mesh has no texture file names.");
+	static_assert(hasTexFileNames<MeshType>(), "Mesh has no texture file names.");
 }
 
 template<typename MeshType>

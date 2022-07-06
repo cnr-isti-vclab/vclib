@@ -20,77 +20,56 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "texture_file_names.h"
+#ifndef VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
+#define VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H
+
+#include <string>
+#include <vector>
+
+#include <vclib/iterators/range_iterator.h>
+
+#include "../concepts/tex_file_names.h"
 
 namespace vcl::comp {
 
-inline TextureFileNames::TextureFileNames()
+class TexFileNames
 {
-}
+public:
+	// iterators
+	using TexFileNamesIterator      = std::vector<std::string>::iterator;
+	using ConstTexFileNamesIterator = std::vector<std::string>::const_iterator;
+	using TexFileNamesRangeIterator =
+		RangeIterator<TexFileNames, TexFileNamesIterator>;
+	using ConstTexFileNamesRangeIterator =
+		ConstRangeIterator<TexFileNames, ConstTexFileNamesIterator>;
 
-inline uint TextureFileNames::textureNumber() const
-{
-	return textureNames.size();
-}
+	TexFileNames();
+	uint textureNumber() const;
 
-inline const std::string& TextureFileNames::texture(uint i) const
-{
-	return textureNames[i];
-}
+	const std::string& texture(uint i) const;
+	std::string&       texture(uint i);
 
-inline std::string& TextureFileNames::texture(uint i)
-{
-	return textureNames[i];
-}
+	void clearTextures();
 
-inline void TextureFileNames::clearTextures()
-{
-	textureNames.clear();
-}
+	void pushTexture(const std::string& textName);
 
-inline void TextureFileNames::pushTexture(const std::string& textName)
-{
-	textureNames.push_back(textName);
-}
+	TexFileNamesIterator textureBegin();
+	TexFileNamesIterator textureEnd();
+	ConstTexFileNamesIterator textureBegin() const;
+	ConstTexFileNamesIterator textureEnd() const;
+	TexFileNamesRangeIterator textures();
+	ConstTexFileNamesRangeIterator textures() const;
 
-inline TextureFileNames::TextureFileNamesIterator TextureFileNames::textureBegin()
-{
-	return textureNames.begin();
-}
+protected:
+	template<typename Element>
+	void importFrom(const Element& e);
 
-inline TextureFileNames::TextureFileNamesIterator TextureFileNames::textureEnd()
-{
-	return textureNames.end();
-}
-
-inline TextureFileNames::ConstTextureFileNamesIterator TextureFileNames::textureBegin() const
-{
-	return textureNames.begin();
-}
-
-inline TextureFileNames::ConstTextureFileNamesIterator TextureFileNames::textureEnd() const
-{
-	return textureNames.end();
-}
-
-inline TextureFileNames::TextureFileNamesRangeIterator TextureFileNames::textures()
-{
-	return TextureFileNamesRangeIterator(
-		*this, &TextureFileNames::textureBegin, &TextureFileNames::textureEnd);
-}
-
-inline TextureFileNames::ConstTextureFileNamesRangeIterator TextureFileNames::textures() const
-{
-	return ConstTextureFileNamesRangeIterator(
-		*this, &TextureFileNames::textureBegin, &TextureFileNames::textureEnd);
-}
-
-template<typename Element>
-void TextureFileNames::importFrom(const Element& e)
-{
-	if constexpr (hasTextureFileNames<Element>()) {
-		textureNames = e.TextureFileNames::textureNames;
-	}
-}
+private:
+	std::vector<std::string> textureNames;
+};
 
 } // namespace vcl::comp
+
+#include "tex_file_names.cpp"
+
+#endif // VCL_MESH_COMPONENTS_TEXTURE_FILE_NAMES_H

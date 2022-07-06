@@ -125,9 +125,9 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/principal_curvature.h
 	include/vclib/mesh/components/concepts/scalar.h
 	include/vclib/mesh/components/concepts/tex_coord.h
+	include/vclib/mesh/components/concepts/tex_file_names.h
 	include/vclib/mesh/components/concepts/vertex_half_edge_reference.h
 	include/vclib/mesh/components/concepts/vertex_references.h
-	include/vclib/mesh/components/detection/tex_file_names_detection.h
 	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
 	include/vclib/mesh/components/detection/wedge_colors_detection.h
 	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
@@ -148,7 +148,7 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/vertex_half_edge_reference.h
 	include/vclib/mesh/components/horizontal/vertex_references.h
 	include/vclib/mesh/components/horizontal/tex_coord.h
-	include/vclib/mesh/components/horizontal/texture_file_names.h
+	include/vclib/mesh/components/horizontal/tex_file_names.h
 	include/vclib/mesh/components/horizontal/transform_matrix.h
 	include/vclib/mesh/components/horizontal/triangle_bit_flags.h
 	include/vclib/mesh/components/horizontal/wedge_colors.h
@@ -296,7 +296,7 @@ set(SOURCES
 	include/vclib/mesh/components/horizontal/principal_curvature.cpp
 	include/vclib/mesh/components/horizontal/scalar.cpp
 	include/vclib/mesh/components/horizontal/tex_coord.cpp
-	include/vclib/mesh/components/horizontal/texture_file_names.cpp
+	include/vclib/mesh/components/horizontal/tex_file_names.cpp
 	include/vclib/mesh/components/horizontal/transform_matrix.cpp
 	include/vclib/mesh/components/horizontal/triangle_bit_flags.cpp
 	include/vclib/mesh/components/horizontal/vertex_half_edge_reference.cpp

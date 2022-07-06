@@ -70,7 +70,7 @@ class TriMesh :
 			mesh::FaceContainer<trimesh::Face>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
-			mesh::TextureFileNames,
+			mesh::TexFileNames,
 			mesh::TransformMatrixd>
 {
 };

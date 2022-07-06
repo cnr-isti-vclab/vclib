@@ -25,7 +25,7 @@
 
 #include "components/horizontal/bounding_box.h"
 #include "components/horizontal/mark.h"
-#include "components/horizontal/texture_file_names.h"
+#include "components/horizontal/tex_file_names.h"
 #include "components/horizontal/transform_matrix.h"
 
 namespace vcl::mesh {
@@ -52,13 +52,13 @@ bool constexpr hasMark()
 	return comp::hasMark<T>();
 }
 
-/** Port TextureFileNames class into mesh namespace **/
-using TextureFileNames = comp::TextureFileNames;
+/** Port TexFileNames class into mesh namespace **/
+using TexFileNames = comp::TexFileNames;
 
 template<typename T>
-bool constexpr hasTextureFileNames()
+bool constexpr hasTexFileNames()
 {
-	return comp::hasTextureFileNames<T>();
+	return comp::hasTexFileNames<T>();
 }
 
 /** Port TransformMatrix class into mesh namespace **/
