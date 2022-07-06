@@ -27,7 +27,7 @@ namespace vcl::mesh {
 /**
  * @brief Empty constructor that creates an empty container of Vertices.
  */
-template<typename T>
+template<VertexConcept T>
 VertexContainer<T>::VertexContainer()
 {
 }
@@ -42,7 +42,7 @@ VertexContainer<T>::VertexContainer()
  *
  * @param[in] i: the index of the vertex that will be returned.
  */
-template<typename T>
+template<VertexConcept T>
 const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i) const
 {
 	return Base::element(i);
@@ -58,7 +58,7 @@ const typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i
  *
  * @param[in] i: the index of the vertex that will be returned.
  */
-template<typename T>
+template<VertexConcept T>
 typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i)
 {
 	return Base::element(i);
@@ -73,7 +73,7 @@ typename VertexContainer<T>::VertexType& VertexContainer<T>::vertex(uint i)
  *
  * @return The number of non-deleted vertices of the Mesh.
  */
-template<typename T>
+template<VertexConcept T>
 uint VertexContainer<T>::vertexNumber() const
 {
 	return Base::elementNumber();
@@ -88,7 +88,7 @@ uint VertexContainer<T>::vertexNumber() const
  *
  * @return The number of all the vertices contained in the Mesh.
  */
-template<typename T>
+template<VertexConcept T>
 uint VertexContainer<T>::vertexContainerSize() const
 {
 	return Base::elementContainerSize();
@@ -100,7 +100,7 @@ uint VertexContainer<T>::vertexContainerSize() const
  *
  * @return The number of deleted vertices in the container.
  */
-template<typename T>
+template<VertexConcept T>
 uint vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
 {
 	return Base::deletedElementNumber();
@@ -116,7 +116,7 @@ uint vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
  *
  * @param[in] i: the id of the vertex that will be marked as deleted.
  */
-template<typename T>
+template<VertexConcept T>
 void VertexContainer<T>::deleteVertex(uint i)
 {
 	Base::deleteElement(i);
@@ -133,7 +133,7 @@ void VertexContainer<T>::deleteVertex(uint i)
  *
  * @param[in] v: the pointer of the vertex that will be marked as deleted.
  */
-template<typename T>
+template<VertexConcept T>
 void VertexContainer<T>::deleteVertex(const VertexType* v)
 {
 	Base::deleteElement(v);
@@ -151,7 +151,7 @@ void VertexContainer<T>::deleteVertex(const VertexType* v)
  * @param[in] i: the index of a vertex of the container.
  * @return The index that the vertex with index i would have if this container would be compact.
  */
-template<typename T>
+template<VertexConcept T>
 uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint i) const
 {
 	return Base::elementIndexIfCompact(i);
@@ -167,7 +167,7 @@ uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint i) const
  *
  * @return A vector containing, for each vertex index, its index if the container would be compact.
  */
-template<typename T>
+template<VertexConcept T>
 std::vector<int> VertexContainer<T>::vertexCompactIndices() const
 {
 	return Base::elementCompactIndices();
@@ -183,7 +183,7 @@ std::vector<int> VertexContainer<T>::vertexCompactIndices() const
  * vertices.
  * @return An iterator the the first vertex of the container.
  */
-template<typename T>
+template<VertexConcept T>
 typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexBegin(bool jumpDeleted)
 {
 	return Base::elementBegin(jumpDeleted);
@@ -193,7 +193,7 @@ typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexBegin(bool
  * @brief Returns an iterator to the end of the container.
  * @return An iterator to the end of the container.
  */
-template<typename T>
+template<VertexConcept T>
 typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexEnd()
 {
 	return Base::elementEnd();
@@ -209,7 +209,7 @@ typename VertexContainer<T>::VertexIterator VertexContainer<T>::vertexEnd()
  * vertices.
  * @return A const iterator the the first vertex of the container.
  */
-template<typename T>
+template<VertexConcept T>
 typename VertexContainer<T>::ConstVertexIterator
 VertexContainer<T>::vertexBegin(bool jumpDeleted) const
 {
@@ -220,7 +220,7 @@ VertexContainer<T>::vertexBegin(bool jumpDeleted) const
  * @brief Returns a const iterator to the end of the container.
  * @return A const iterator to the end of the container.
  */
-template<typename T>
+template<VertexConcept T>
 typename VertexContainer<T>::ConstVertexIterator VertexContainer<T>::vertexEnd() const
 {
 	return Base::elementEnd();
@@ -246,7 +246,7 @@ typename VertexContainer<T>::ConstVertexIterator VertexContainer<T>::vertexEnd()
  * vertices.
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
-template<typename T>
+template<VertexConcept T>
 typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bool jumpDeleted)
 {
 	return Base::elements(jumpDeleted);
@@ -272,7 +272,7 @@ typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bo
  * vertices.
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
-template<typename T>
+template<VertexConcept T>
 typename VertexContainer<T>::ConstVertexRangeIterator
 VertexContainer<T>::vertices(bool jumpDeleted) const
 {
@@ -283,7 +283,7 @@ VertexContainer<T>::vertices(bool jumpDeleted) const
  * @brief Enables all the optional components associated to the Vertex type contained in the
  * VertexContainer.
  */
-template<typename T>
+template<VertexConcept T>
 void VertexContainer<T>::enableAllPerVertexOptionalComponents()
 {
 	if constexpr (vert::hasOptionalAdjacentEdges<T>())
@@ -310,7 +310,7 @@ void VertexContainer<T>::enableAllPerVertexOptionalComponents()
  * @brief Disables all the optional components associated to the Vertex type contained in the
  * VertexContainer.
  */
-template<typename T>
+template<VertexConcept T>
 void VertexContainer<T>::disableAllPerVertexOptionalComponents()
 {
 	if constexpr (vert::hasOptionalAdjacentEdges<T>())
@@ -341,7 +341,7 @@ void VertexContainer<T>::disableAllPerVertexOptionalComponents()
  *
  * @return true if the Optional Adjacent Edges is enabled, false otherwise.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), bool)
 VertexContainer<T>::isPerVertexAdjacentEdgesEnabled() const
@@ -355,7 +355,7 @@ VertexContainer<T>::isPerVertexAdjacentEdgesEnabled() const
  * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges
  * Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void)
 VertexContainer<T>::enablePerVertexAdjacentEdges()
@@ -369,7 +369,7 @@ VertexContainer<T>::enablePerVertexAdjacentEdges()
  * @note This function is available only if the Vertex Element has the OptionalAdjacentEdges
  * Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void)
 VertexContainer<T>::disablePerVertexAdjacentEdges()
@@ -385,7 +385,7 @@ VertexContainer<T>::disablePerVertexAdjacentEdges()
  *
  * @return true if the Optional Adjacent Faces is enabled, false otherwise.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), bool)
 VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
@@ -399,7 +399,7 @@ VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
  * @note This function is available only if the Vertex Element has the OptionalAdjacentFaces
  * Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
 VertexContainer<T>::enablePerVertexAdjacentFaces()
@@ -413,7 +413,7 @@ VertexContainer<T>::enablePerVertexAdjacentFaces()
  * @note This function is available only if the Vertex Element has the OptionalAdjacentFaces
  * Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
 VertexContainer<T>::disablePerVertexAdjacentFaces()
@@ -429,7 +429,7 @@ VertexContainer<T>::disablePerVertexAdjacentFaces()
  *
  * @return true if the Optional Adjacent Vertices is enabled, false otherwise.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), bool)
 VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
@@ -443,7 +443,7 @@ VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
  * @note This function is available only if the Vertex Element has the OptionalAdjacentVertices
  * Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
 VertexContainer<T>::enablePerVertexAdjacentVertices()
@@ -457,7 +457,7 @@ VertexContainer<T>::enablePerVertexAdjacentVertices()
  * @note This function is available only if the Vertex Element has the OptionalAdjacentVertices
  * Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
 VertexContainer<T>::disablePerVertexAdjacentVertices()
@@ -472,7 +472,7 @@ VertexContainer<T>::disablePerVertexAdjacentVertices()
  *
  * @return true if the Optional Color is enabled, false otherwise.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalColor<U>(), bool)
 VertexContainer<T>::isPerVertexColorEnabled() const
@@ -485,7 +485,7 @@ VertexContainer<T>::isPerVertexColorEnabled() const
  *
  * @note This function is available only if the Vertex Element has the OptionalColor Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
 VertexContainer<T>::enablePerVertexColor()
@@ -498,7 +498,7 @@ VertexContainer<T>::enablePerVertexColor()
  *
  * @note This function is available only if the Vertex Element has the OptionalColor Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
 VertexContainer<T>::disablePerVertexColor()
@@ -513,7 +513,7 @@ VertexContainer<T>::disablePerVertexColor()
  *
  * @return true if the Optional Mark is enabled, false otherwise.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalMark<U>(), bool)
 VertexContainer<T>::isPerVertexMarkEnabled() const
@@ -526,7 +526,7 @@ VertexContainer<T>::isPerVertexMarkEnabled() const
  *
  * @note This function is available only if the Vertex Element has the OptionalMark Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
 VertexContainer<T>::enablePerVertexMark()
@@ -539,7 +539,7 @@ VertexContainer<T>::enablePerVertexMark()
  *
  * @note This function is available only if the Vertex Element has the OptionalMark Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
 VertexContainer<T>::disablePerVertexMark()
@@ -555,7 +555,7 @@ VertexContainer<T>::disablePerVertexMark()
  *
  * @return true if the Optional Normal is enabled, false otherwise.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), bool)
 VertexContainer<T>::isPerVertexNormalEnabled() const
@@ -568,7 +568,7 @@ VertexContainer<T>::isPerVertexNormalEnabled() const
  *
  * @note This function is available only if the Vertex Element has the OptionalNormal Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
 VertexContainer<T>::enablePerVertexNormal()
@@ -581,7 +581,7 @@ VertexContainer<T>::enablePerVertexNormal()
  *
  * @note This function is available only if the Vertex Element has the OptionalNormal Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
 VertexContainer<T>::disablePerVertexNormal()
@@ -597,7 +597,7 @@ VertexContainer<T>::disablePerVertexNormal()
  *
  * @return true if the Optional PrincipalCurvature is enabled, false otherwise.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), bool)
 VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled() const
@@ -611,7 +611,7 @@ VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled() const
  * @note This function is available only if the Vertex Element has the OptionalPrincipalCurvature
  * Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
 VertexContainer<T>::enablePerVertexPrincipalCurvature()
@@ -625,7 +625,7 @@ VertexContainer<T>::enablePerVertexPrincipalCurvature()
  * @note This function is available only if the Vertex Element has the OptionalPrincipalCurvature
  * Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
 VertexContainer<T>::disablePerVertexPrincipalCurvature()
@@ -640,7 +640,7 @@ VertexContainer<T>::disablePerVertexPrincipalCurvature()
  *
  * @return true if the Optional Scalar is enabled, false otherwise.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool)
 VertexContainer<T>::isPerVertexScalarEnabled() const
@@ -653,7 +653,7 @@ VertexContainer<T>::isPerVertexScalarEnabled() const
  *
  * @note This function is available only if the Vertex Element has the OptionalScalar Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
 VertexContainer<T>::enablePerVertexScalar()
@@ -666,7 +666,7 @@ VertexContainer<T>::enablePerVertexScalar()
  *
  * @note This function is available only if the Vertex Element has the OptionalScalar Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
 VertexContainer<T>::disablePerVertexScalar()
@@ -681,7 +681,7 @@ VertexContainer<T>::disablePerVertexScalar()
  *
  * @return true if the Optional TexCoord is enabled, false otherwise.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), bool)
 VertexContainer<T>::isPerVertexTexCoordEnabled() const
@@ -694,7 +694,7 @@ VertexContainer<T>::isPerVertexTexCoordEnabled() const
  *
  * @note This function is available only if the Vertex Element has the OptionalTexCoord Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
 VertexContainer<T>::enablePerVertexTexCoord()
@@ -707,7 +707,7 @@ VertexContainer<T>::enablePerVertexTexCoord()
  *
  * @note This function is available only if the Vertex Element has the OptionalTexCoord Component.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
 VertexContainer<T>::disablePerVertexTexCoord()
@@ -724,7 +724,7 @@ VertexContainer<T>::disablePerVertexTexCoord()
  *
  * @return `true` if the Vertex Element has a custom component with the given name.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
 VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name) const
@@ -740,7 +740,7 @@ VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name) const
  *
  * @return A vector of strings representing all the names of the custom components.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
 VertexContainer<T>::getAllPerVertexCustomComponentNames() const
@@ -765,7 +765,7 @@ VertexContainer<T>::getAllPerVertexCustomComponentNames() const
  * @param[in] name: the name of the custom component to check.
  * @return `true` if the custom component is of the same type of the template argument.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
 VertexContainer<T>::isPerVertexCustomComponentOfType(const std::string& name) const
@@ -788,7 +788,7 @@ VertexContainer<T>::isPerVertexCustomComponentOfType(const std::string& name) co
  * @tparam K: the type of the custom component names.
  * @return A vector of strings representing the names of the custom components of a given type.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
 VertexContainer<T>::getPerVertexCustomComponentNamesOfType() const
@@ -805,7 +805,7 @@ VertexContainer<T>::getPerVertexCustomComponentNamesOfType() const
  * @tparam K: the type of the custom component added to the Vertex.
  * @param[in] name: the name of the custom component added to the Vertex.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
 VertexContainer<T>::addPerVertexCustomComponent(const std::string& name)
@@ -822,7 +822,7 @@ VertexContainer<T>::addPerVertexCustomComponent(const std::string& name)
  *
  * @param[in] name: the name of the custom component that will be removed from the Vertex.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename U>
 VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
 VertexContainer<T>::deletePerVertexCustomComponent(const std::string& name)
@@ -856,7 +856,7 @@ VertexContainer<T>::deletePerVertexCustomComponent(const std::string& name)
  * @tparam K: the type of the custom component on which return the handle.
  * @param name: name of the custom component on which return the handle.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(
 	vert::hasCustomComponents<U>(),
@@ -896,7 +896,7 @@ VertexContainer<T>::getPerVertexCustomComponentVectorHandle(const std::string& n
  * @tparam K: the type of the custom component on which return the handle.
  * @param name: name of the custom component on which return the handle.
  */
-template<typename T>
+template<VertexConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(
 	vert::hasCustomComponents<U>(),
@@ -908,19 +908,19 @@ VCL_ENABLE_IF(
 	return cc;
 }
 
-template<typename T>
+template<VertexConcept T>
 void VertexContainer<T>::clearVertices()
 {
 	Base::clearElements();
 }
 
-template<typename T>
+template<VertexConcept T>
 uint VertexContainer<T>::index(const VertexType* v) const
 {
 	return Base::index(v);
 }
 
-template<typename T>
+template<VertexConcept T>
 uint VertexContainer<T>::addVertex()
 {
 	return Base::addElement();
@@ -934,13 +934,13 @@ uint VertexContainer<T>::addVertex()
  * @param nVertices
  * @return the id of the first added vertex.
  */
-template<typename T>
+template<VertexConcept T>
 uint VertexContainer<T>::addVertices(uint nVertices)
 {
 	return Base::addElements(nVertices);
 }
 
-template<typename T>
+template<VertexConcept T>
 void VertexContainer<T>::reserveVertices(uint size)
 {
 	Base::reserveElements(size);
@@ -953,13 +953,13 @@ void VertexContainer<T>::reserveVertices(uint size)
  * @return a vector that tells, for each old vertex index, the new index of the vertex. Will contain
  * -1 if the vertex has been deleted.
  */
-template<typename T>
+template<VertexConcept T>
 std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
 {
 	return Base::compactElements();
 }
 
-template<typename T>
+template<VertexConcept T>
 template<typename Mesh>
 void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 {
@@ -971,7 +971,7 @@ void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 	}
 }
 
-template<typename T>
+template<VertexConcept T>
 template<typename Mesh>
 void VertexContainer<T>::importFrom(const Mesh& m)
 {
@@ -982,7 +982,7 @@ void VertexContainer<T>::importFrom(const Mesh& m)
 	}
 }
 
-template<typename T>
+template<VertexConcept T>
 template<typename Mesh>
 void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m, T* base)
 {
@@ -994,7 +994,7 @@ void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m, T* base)
 	}
 }
 
-template<typename T>
+template<VertexConcept T>
 template<typename Mesh, typename Face>
 void VertexContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 {
@@ -1005,7 +1005,7 @@ void VertexContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 	}
 }
 
-template<typename T>
+template<VertexConcept T>
 template<typename Mesh, typename Edge>
 void VertexContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 {

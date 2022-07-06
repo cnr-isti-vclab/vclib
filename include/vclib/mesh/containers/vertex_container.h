@@ -39,30 +39,24 @@ namespace vcl::mesh {
  * This class adds a container (vector) of vertices to the Mesh, making available the accessors
  * members to the vertices, the vertex number, iterators... This class will also take care to add
  * enablers/disablers of the eventual optional components of the vertex.
+ *
+ * This container can be templated on a type that satisfies the VertexConcept concept.
  */
-template<typename T>
+template<vcl::VertexConcept T>
 class VertexContainer : protected ElementContainer<T>, public VertexContainerTriggerer
 {
-	// Sanity checks for the Vertex
-	static_assert(
-		vcl::vert::hasBitFlags<T>(),
-		"You should include BitFlags as Vertex component in your Mesh definition.");
-	static_assert(
-		vcl::vert::hasCoordinate<T>(),
-		"You should include Coordinate as Vertex component in your Mesh definition.");
-
-	template <typename U>
+	template <VertexConcept U>
 	friend class VertexContainer;
 
 	using VertexContainerType = VertexContainer<T>;
 	using Base                = ElementContainer<T>;
 
 public:
-	using Vertex              = T;
-	using VertexType          = T;
-	using VertexIterator      = typename Base::ElementIterator;
-	using ConstVertexIterator = typename Base::ConstElementIterator;
-	using VertexRangeIterator = typename Base::ElementRangeIterator;
+	using Vertex                   = T;
+	using VertexType               = T;
+	using VertexIterator           = typename Base::ElementIterator;
+	using ConstVertexIterator      = typename Base::ConstElementIterator;
+	using VertexRangeIterator      = typename Base::ElementRangeIterator;
 	using ConstVertexRangeIterator = typename Base::ConstElementRangeIterator;
 
 	VertexContainer();
