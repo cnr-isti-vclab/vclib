@@ -33,19 +33,18 @@ class Edge;
 namespace internal {
 
 // check if a type derives from Edge<T...>
-template<typename Derived, typename... Args>
-using IsDerivedFromEdge =
-	typename vcl::IsDerivedFromTemplateSpecialization<Derived, Edge<Args...>>::type;
+template<typename Derived>
+using IsDerivedFromEdge = IsDerivedFromTemplateSpecialization<Derived, Edge>;
 
 // check if a type is an Edge<T...>
 template<class T>
-struct isAnEdge : // Default case, no pattern match
+struct IsAnEdge : // Default case, no pattern match
 		std::false_type
 {
 };
 
 template<class... T>
-struct isAnEdge<Edge<T...>> : // For types matching the pattern Edge<T...>
+struct IsAnEdge<Edge<T...>> : // For types matching the pattern Edge<T...>
 		std::true_type
 {
 };
@@ -53,7 +52,7 @@ struct isAnEdge<Edge<T...>> : // For types matching the pattern Edge<T...>
 } // namespace internal
 
 template<typename T>
-concept EdgeConcept = internal::IsDerivedFromEdge<T>::value || internal::isAnEdge<T>::value;
+concept EdgeConcept = internal::IsDerivedFromEdge<T>::value || internal::IsAnEdge<T>::value;
 
 } // namespace vcl
 

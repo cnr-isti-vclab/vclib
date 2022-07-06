@@ -33,19 +33,18 @@ class Face;
 namespace internal {
 
 // check if a type derives from Face<T...>
-template<typename Derived, typename... Args>
-using IsDerivedFromFace =
-	typename vcl::IsDerivedFromTemplateSpecialization<Derived, Face<Args...>>::type;
+template<typename Derived>
+using IsDerivedFromFace = IsDerivedFromTemplateSpecialization<Derived, Face>;
 
 // check if a type is a Face<T...>
 template<class T>
-struct isAFace : // Default case, no pattern match
+struct IsAFace : // Default case, no pattern match
 		std::false_type
 {
 };
 
 template<class... T>
-struct isAFace<Face<T...>> : // For types matching the pattern Face<T...>
+struct IsAFace<Face<T...>> : // For types matching the pattern Face<T...>
 		std::true_type
 {
 };
@@ -53,7 +52,7 @@ struct isAFace<Face<T...>> : // For types matching the pattern Face<T...>
 } // namespace vcl::internal
 
 template<typename T>
-concept FaceConcept = internal::IsDerivedFromFace<T>::value || internal::isAFace<T>::value;
+concept FaceConcept = internal::IsDerivedFromFace<T>::value || internal::IsAFace<T>::value;
 
 } // namespace vcl
 

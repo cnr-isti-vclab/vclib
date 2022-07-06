@@ -30,22 +30,21 @@ namespace vcl {
 template<typename...>
 class Vertex;
 
-namespace internal {
+namespace vert {
 
 // check if a type derives from Vertex<T...>
-template<typename Derived, typename... Args>
-using IsDerivedFromVertex =
-	typename vcl::IsDerivedFromTemplateSpecialization<Derived, Vertex<Args...>>::type;
+template<typename Derived>
+using IsDerivedFromVertex = IsDerivedFromTemplateSpecialization<Derived, Vertex>;
 
 // check if a type is a Vertex<T...>
 template<class T>
-struct isAVertex : // Default case, no pattern match
+struct IsAVertex : // Default case, no pattern match
 		std::false_type
 {
 };
 
 template<class... T>
-struct isAVertex<Vertex<T...>> : // For types matching the pattern Vertex<T...>
+struct IsAVertex<Vertex<T...>> : // For types matching the pattern Vertex<T...>
 		std::true_type
 {
 };
@@ -53,7 +52,7 @@ struct isAVertex<Vertex<T...>> : // For types matching the pattern Vertex<T...>
 } // namespace vcl::internal
 
 template<typename T>
-concept VertexConcept = internal::IsDerivedFromVertex<T>::value || internal::isAVertex<T>::value;
+concept VertexConcept = vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value;
 
 } // namespace vcl
 

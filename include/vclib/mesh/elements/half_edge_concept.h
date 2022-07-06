@@ -33,19 +33,18 @@ class HalfEdge;
 namespace internal {
 
 // check if a type derives from HalfEdge<T...>
-template<typename Derived, typename... Args>
-using IsDerivedFromHalfEdge =
-	typename vcl::IsDerivedFromTemplateSpecialization<Derived, HalfEdge<Args...>>::type;
+template<typename Derived>
+using IsDerivedFromHalfEdge = IsDerivedFromTemplateSpecialization<Derived, HalfEdge>;
 
 // check if a type is a HalfEdge<T...>
 template<class T>
-struct isAHalfEdge : // Default case, no pattern match
+struct IsAHalfEdge : // Default case, no pattern match
 		std::false_type
 {
 };
 
 template<class... T>
-struct isAHalfEdge<HalfEdge<T...>> : // For types matching the pattern HalfEdge<T...>
+struct IsAHalfEdge<HalfEdge<T...>> : // For types matching the pattern HalfEdge<T...>
 		std::true_type
 {
 };
@@ -53,7 +52,7 @@ struct isAHalfEdge<HalfEdge<T...>> : // For types matching the pattern HalfEdge<
 } // namespace vcl::internal
 
 template<typename T>
-concept HalfEdgeConcept = internal::IsDerivedFromHalfEdge<T>::value || internal::isAHalfEdge<T>::value;
+concept HalfEdgeConcept = internal::IsDerivedFromHalfEdge<T>::value || internal::IsAHalfEdge<T>::value;
 
 } // namespace vcl
 
