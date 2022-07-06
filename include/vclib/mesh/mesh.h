@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_MESH_H
 #define VCL_MESH_MESH_H
 
-#include "container/containers.h"
+#include "containers/containers.h"
 #include "mesh_components.h"
 
 namespace vcl {

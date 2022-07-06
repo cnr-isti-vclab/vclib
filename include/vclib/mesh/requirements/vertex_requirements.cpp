@@ -24,7 +24,7 @@
 
 #include <vclib/exception/mesh_exception.h>
 
-#include "../container/vertex_container.h"
+#include "../containers/vertex_container.h"
 
 namespace vcl {
 

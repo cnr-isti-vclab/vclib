@@ -183,13 +183,13 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/vectors/vertical_components_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_colors_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_tex_coords_vector.h
-	include/vclib/mesh/container/containers.h
-	include/vclib/mesh/container/containers_detection.h
-	include/vclib/mesh/container/edge_container.h
-	include/vclib/mesh/container/element_container.h
-	include/vclib/mesh/container/face_container.h
-	include/vclib/mesh/container/half_edge_container.h
-	include/vclib/mesh/container/vertex_container.h
+	include/vclib/mesh/containers/containers.h
+	include/vclib/mesh/containers/containers_detection.h
+	include/vclib/mesh/containers/edge_container.h
+	include/vclib/mesh/containers/element_container.h
+	include/vclib/mesh/containers/face_container.h
+	include/vclib/mesh/containers/half_edge_container.h
+	include/vclib/mesh/containers/vertex_container.h
 	include/vclib/mesh/elements/edge.h
 	include/vclib/mesh/elements/edge_components.h
 	include/vclib/mesh/elements/edge_components_optional.h
@@ -320,11 +320,11 @@ set(SOURCES
 	include/vclib/mesh/components/vertical/vectors/custom_component_vector_handle.cpp
 	include/vclib/mesh/components/vertical/vectors/custom_components_vector.cpp
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.cpp
-	include/vclib/mesh/container/edge_container.cpp
-	include/vclib/mesh/container/element_container.cpp
-	include/vclib/mesh/container/half_edge_container.cpp
-	include/vclib/mesh/container/face_container.cpp
-	include/vclib/mesh/container/vertex_container.cpp
+	include/vclib/mesh/containers/edge_container.cpp
+	include/vclib/mesh/containers/element_container.cpp
+	include/vclib/mesh/containers/half_edge_container.cpp
+	include/vclib/mesh/containers/face_container.cpp
+	include/vclib/mesh/containers/vertex_container.cpp
 	include/vclib/mesh/elements/edge.cpp
 	include/vclib/mesh/elements/face.cpp
 	include/vclib/mesh/elements/half_edge.cpp

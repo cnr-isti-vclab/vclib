@@ -24,7 +24,7 @@
 
 #include <vclib/exception/mesh_exception.h>
 
-#include "../container/face_container.h"
+#include "../containers/face_container.h"
 
 namespace vcl {
 
