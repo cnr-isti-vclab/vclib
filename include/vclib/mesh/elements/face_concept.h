@@ -30,29 +30,29 @@ namespace vcl {
 template<typename...>
 class Face;
 
-namespace internal {
+namespace face {
 
-// check if a type derives from Face<T...>
+// checks if a type derives from vcl::Face<Args...>
 template<typename Derived>
 using IsDerivedFromFace = IsDerivedFromTemplateSpecialization<Derived, Face>;
 
-// check if a type is a Face<T...>
+// checks if a type is a vcl::Face<Args...>
 template<class T>
 struct IsAFace : // Default case, no pattern match
 		std::false_type
 {
 };
 
-template<class... T>
-struct IsAFace<Face<T...>> : // For types matching the pattern Face<T...>
+template<class... Args>
+struct IsAFace<Face<Args...>> : // For types matching the pattern Face<Args...>
 		std::true_type
 {
 };
 
-} // namespace vcl::internal
+} // namespace vcl::face
 
 template<typename T>
-concept FaceConcept = internal::IsDerivedFromFace<T>::value || internal::IsAFace<T>::value;
+concept FaceConcept = face::IsDerivedFromFace<T>::value || face::IsAFace<T>::value;
 
 } // namespace vcl
 

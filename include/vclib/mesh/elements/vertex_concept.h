@@ -32,27 +32,66 @@ class Vertex;
 
 namespace vert {
 
-// check if a type derives from Vertex<T...>
+// checks if a type derives from vcl::Vertex<Args...>
 template<typename Derived>
 using IsDerivedFromVertex = IsDerivedFromTemplateSpecialization<Derived, Vertex>;
 
-// check if a type is a Vertex<T...>
+// checks if a type is a vcl::Vertex<Args...>
 template<class T>
 struct IsAVertex : // Default case, no pattern match
 		std::false_type
 {
 };
 
-template<class... T>
-struct IsAVertex<Vertex<T...>> : // For types matching the pattern Vertex<T...>
+template<class... Args> // note: here the templated types are the components of the Vertex
+struct IsAVertex<Vertex<Args...>> : // For types matching the pattern Vertex<Args...>
 		std::true_type
 {
 };
 
-} // namespace vcl::internal
-
+/* Port concepts into the vert namespace */
 template<typename T>
-concept VertexConcept = vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value;
+concept HasAdjacentEdges = comp::HasAdjacentEdges<T>;
+template<typename T>
+concept HasAdjacentFaces = comp::HasAdjacentFaces<T>;
+template<typename T>
+concept HasAdjacentVertices = comp::HasAdjacentVertices<T>;
+template<typename T>
+concept HasBitFlags = comp::HasBitFlags<T>;
+template<typename T>
+concept HasColor = comp::HasColor<T>;
+template<typename T>
+concept HasCoordinate = comp::HasCoordinate<T>;
+template<typename T>
+concept HasHalfEdgeReference = comp::HasVertexHalfEdgeReference<T>;
+template<typename T>
+concept HasMark = comp::HasMark<T>;
+template<typename T>
+concept HasNormal = comp::HasNormal<T>;
+template<typename T>
+concept HasPrincipalCurvature = comp::HasPrincipalCurvature<T>;
+template<typename T>
+concept HasScalar = comp::HasScalar<T>;
+template<typename T>
+concept HasTexCoord = comp::HasTexCoord<T>;
+
+} // namespace vcl::vert
+
+/**
+ * @brief VertexConcept is the concept that defines a Vertex class that can be given
+ * as a template of the VertexContainer class.
+ *
+ * To satisfy this concept, a class must:
+ * - be a vcl::Vertex<...> class, or derived from it
+ * - have the following components:
+ *   - BitFlags (or a derivate)   -> HasBitFlags concept
+ *   - Coordinate (or a derivate) -> HasCoordinate concept
+ */
+template<typename T>
+concept VertexConcept =
+	(vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value) &&
+	vert::HasBitFlags<T> &&
+	vert::HasCoordinate<T>;
 
 } // namespace vcl
 
