@@ -126,9 +126,9 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/scalar.h
 	include/vclib/mesh/components/concepts/tex_coord.h
 	include/vclib/mesh/components/concepts/tex_file_names.h
+	include/vclib/mesh/components/concepts/transform_matrix.h
 	include/vclib/mesh/components/concepts/vertex_half_edge_reference.h
 	include/vclib/mesh/components/concepts/vertex_references.h
-	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
 	include/vclib/mesh/components/detection/wedge_colors_detection.h
 	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
 	include/vclib/mesh/components/horizontal/adjacent_edges.h

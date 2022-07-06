@@ -20,30 +20,32 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TRANSFROM_MATRIX_DETECTION_H
-#define VCL_MESH_COMPONENTS_TRANSFROM_MATRIX_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TRANSFORM_MATRIX_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_TRANSFORM_MATRIX_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class TransformMatrixTriggerer
+/**
+ * @brief HasTransformMatrix concept
+ *
+ * This concept is satisfied only if a class has a member function 'transformMatrix()'.
+ */
+template<typename T>
+concept HasTransformMatrix = requires(T v) // requires that an object of type T has the following members
 {
+	v.transformMatrix();
 };
 
-/* Detector to check if a class has (inherits) TransformMatrix */
-
-template<typename T>
-using hasTransformMatrixT = std::is_base_of<TransformMatrixTriggerer, T>;
+/* Detector to check if a class has TransformMatrix */
 
 template<typename T>
 constexpr bool hasTransformMatrix()
 {
-	return hasTransformMatrixT<T>::value;
+	return HasTransformMatrix<T>;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_TRANSFROM_MATRIX_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_TRANSFORM_MATRIX_H
