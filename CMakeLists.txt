@@ -129,7 +129,7 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/transform_matrix.h
 	include/vclib/mesh/components/concepts/vertex_half_edge_reference.h
 	include/vclib/mesh/components/concepts/vertex_references.h
-	include/vclib/mesh/components/detection/wedge_colors_detection.h
+	include/vclib/mesh/components/concepts/wedge_colors.h
 	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
 	include/vclib/mesh/components/horizontal/adjacent_edges.h
 	include/vclib/mesh/components/horizontal/adjacent_faces.h

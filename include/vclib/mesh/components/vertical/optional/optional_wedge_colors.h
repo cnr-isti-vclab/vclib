@@ -32,7 +32,7 @@
 
 #include <vclib/space/color.h>
 
-#include "../../detection/wedge_colors_detection.h"
+#include "../../concepts/wedge_colors.h"
 
 namespace vcl::mesh {
 template<typename, typename>
@@ -43,7 +43,6 @@ namespace vcl::comp {
 
 template<int N, typename T>
 class OptionalWedgeColors :
-		public OptionalWedgeColorsTriggerer,
 		public virtual VerticalInfo<T>
 {
 	template<typename, typename>

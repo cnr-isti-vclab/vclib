@@ -20,42 +20,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_DETECTION_H
-#define VCL_MESH_COMPONENTS_WEDGE_COLORS_DETECTION_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/* Triggerers */
-
-class WedgeColorsTriggerer
+/**
+ * @brief HasWedgeColors concept
+ *
+ * This concept is satisfied only if a class has a member function 'wedgeColor(uint)'.
+ */
+template<typename T>
+concept HasWedgeColors = requires(T v) // requires that an object of type T has the following members
 {
+	v.wedgeColor(uint());
 };
 
-class OptionalWedgeColorsTriggerer
+/**
+ * @brief HasOptionalWedgeColors concept
+ *
+ * This concept is satisfied only if a class has two member functions:
+ * - 'wedgeColor(uint)'
+ * - 'isWedgeColorsEnabled()' which returns a bool
+ */
+template<typename T>
+concept HasOptionalWedgeColors = HasWedgeColors<T> && requires(T v)
 {
+	{ v.isWedgeColorsEnabled() } -> std::same_as<bool>;
 };
 
-/* Detector to check if a class has (inherits) WedgeColors or OptionalWedgeColors */
-
-template<typename T>
-using hasWedgeColorsT = std::is_base_of<WedgeColorsTriggerer, T>;
-
-template<typename T>
-using hasOptionalWedgeColorsT = std::is_base_of<OptionalWedgeColorsTriggerer, T>;
-
+/* Detector functions to check if a class has WedgeColors or OptionalWedgeColors */
 
 template<typename T>
 bool constexpr hasWedgeColors()
 {
-	return hasWedgeColorsT<T>::value || hasOptionalWedgeColorsT<T>::value;
+	return HasWedgeColors<T>;
 }
 
 template<typename T>
 bool constexpr hasOptionalWedgeColors()
 {
-	return hasOptionalWedgeColorsT<T>::value;
+	return HasOptionalWedgeColors<T>;
 }
 
 template <typename T>
@@ -65,7 +72,7 @@ bool isWedgeColorsEnabledOn(const T& element)
 		return element.isWedgeColorsEnabled();
 	}
 	else {
-		return hasWedgeColors<T>();
+		return HasWedgeColors<T>;
 	}
 }
 
@@ -82,4 +89,4 @@ bool constexpr sanityCheckWedgeColors()
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_WEDGE_COLORS_DETECTION_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H
