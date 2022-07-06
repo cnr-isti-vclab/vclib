@@ -202,6 +202,7 @@ set(HEADERS
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
 	include/vclib/mesh/elements/vertex_components_optional.h
+	include/vclib/mesh/elements/vertex_concept.h
 	include/vclib/mesh/requirements/element_requirements.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
