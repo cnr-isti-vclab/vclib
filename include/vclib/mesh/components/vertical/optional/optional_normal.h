@@ -26,12 +26,12 @@
 #include <vclib/space/point.h>
 
 #include "../../concepts/normal.h"
-#include "../optional_component.h"
+#include "../vertical_component.h"
 
 namespace vcl::comp {
 
 template<typename P, typename T>
-class OptionalNormalT : public OptionalComponent<T>
+class OptionalNormalT : public virtual VerticalComponent<T>
 {
 private:
 	using B = VerticalComponent<T>;
@@ -44,6 +44,9 @@ public:
 	NormalType&              normal();
 
 	bool isNormalEnabled() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalNormal() const {};
 
 protected:
 	template <typename Element>

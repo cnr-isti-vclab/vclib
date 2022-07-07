@@ -44,12 +44,12 @@ concept HasNormal = requires(T v) // requires that an object of type T has the f
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'normal()'
- * - 'isNormalEnabled()' which returns a bool
+ * - '__optionalNormal()'
  */
 template<typename T>
 concept HasOptionalNormal = HasNormal<T> && requires(T v)
 {
-	{ v.isNormalEnabled() } -> std::same_as<bool>;
+	{ v.__optionalNormal() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has Normal or OptionalNormal */

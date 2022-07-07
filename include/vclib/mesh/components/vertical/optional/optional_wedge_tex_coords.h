@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../optional_component.h"
+#include "../vertical_component.h"
 
 #include <vclib/space/tex_coord.h>
 
@@ -42,7 +42,7 @@ class OptionalWedgeTexCoordsVector;
 namespace vcl::comp {
 
 template<typename Scalar, int N, typename T>
-class OptionalWedgeTexCoords : public OptionalComponent<T>
+class OptionalWedgeTexCoords : public virtual VerticalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalWedgeTexCoordsVector;
@@ -112,6 +112,9 @@ public:
 	ConstWedgeTexCoordsIterator      wedgeTexCoordEnd() const;
 	WedgeTexCoordsRangeIterator      wedgeTexCoords();
 	ConstWedgeTexCoordsRangeIterator wedgeTexCoords() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalWedgeTexCoords() const {};
 
 protected:
 	using WedgeTexCoordScalarType = Scalar;

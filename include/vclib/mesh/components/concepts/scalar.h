@@ -44,12 +44,12 @@ concept HasScalar = requires(T v) // requires that an object of type T has the f
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'scalar()'
- * - 'isScalarEnabled()' which returns a bool
+ * - '__optionalScalar()'
  */
 template<typename T>
 concept HasOptionalScalar = HasScalar<T> && requires(T v)
 {
-	{ v.isScalarEnabled() } -> std::same_as<bool>;
+	{ v.__optionalScalar() } -> std::same_as<void>;
 };
 
 

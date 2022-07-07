@@ -44,12 +44,12 @@ concept HasAdjacentVertices = requires(T v) // requires that an object of type T
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'adjVerticesNumber()' which returns an uint
- * - 'isAdjVerticesEnabled()' which returns a bool
+ * - '__optionalAdjVertices()'
  */
 template<typename T>
 concept HasOptionalAdjacentVertices = HasAdjacentVertices<T> && requires(T v)
 {
-	{ v.isAdjVerticesEnabled() } -> std::same_as<bool>;
+	{ v.__optionalAdjVertices() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has AdjacentVertices or OptionalAdjacentVertices */

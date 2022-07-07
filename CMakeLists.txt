@@ -155,7 +155,6 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/wedge_tex_coords.h
 	include/vclib/mesh/components/horizontal/internal/element_references.h
 	include/vclib/mesh/components/horizontal/internal/generic_container.h
-	include/vclib/mesh/components/vertical/optional_component.h
 	include/vclib/mesh/components/vertical/vertical_component.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.h

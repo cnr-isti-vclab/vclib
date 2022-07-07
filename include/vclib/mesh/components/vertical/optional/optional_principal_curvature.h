@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H
 #define VCL_MESH_COMPONENTS_OPTIONAL_PRINCIPAL_CURVATURE_H
 
-#include "../optional_component.h"
+#include "../vertical_component.h"
 
 #include <vclib/space/principal_curvature.h>
 
@@ -32,7 +32,7 @@
 namespace vcl::comp {
 
 template<typename Scalar, typename T>
-class OptionalPrincipalCurvature : public OptionalComponent<T>
+class OptionalPrincipalCurvature : public virtual VerticalComponent<T>
 {
 private:
 	using B = VerticalComponent<T>;
@@ -47,6 +47,9 @@ public:
 	PrincipalCurvatureType&       principalCurvature();
 
 	bool isPrincipalCurvatureEnabled() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalPrincipalCurvature() const {};
 
 protected:
 	template <typename Element>

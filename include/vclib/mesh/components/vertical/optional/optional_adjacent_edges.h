@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../optional_component.h"
+#include "../vertical_component.h"
 
 #include "../../concepts/adjacent_edges.h"
 
@@ -40,7 +40,7 @@ class OptionalAdjacentEdgesVector;
 namespace vcl::comp {
 
 template<typename Edge, int N, typename T>
-class OptionalAdjacentEdges : public OptionalComponent<T>
+class OptionalAdjacentEdges : public virtual VerticalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalAdjacentEdgesVector;
@@ -132,6 +132,9 @@ public:
 	ConstAdjacentEdgeIterator      adjEdgeEnd() const;
 	AdjacentEdgeRangeIterator      adjEdges();
 	ConstAdjacentEdgeRangeIterator adjEdges() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalAdjEdges() const {};
 
 protected:
 	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);

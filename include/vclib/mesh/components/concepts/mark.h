@@ -44,12 +44,12 @@ concept HasMark = requires(T v) // requires that an object of type T has the fol
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'mark()' which returns an int&
- * - 'isMarkEnabled()' which returns a bool
+ * - '__optionalMark()'
  */
 template<typename T>
 concept HasOptionalMark = HasMark<T> && requires(T v)
 {
-	{ v.isMarkEnabled() } -> std::same_as<bool>;
+	{ v.__optionalMark() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has Mark or OptionalMark */

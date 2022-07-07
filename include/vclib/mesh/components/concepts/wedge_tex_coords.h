@@ -43,12 +43,12 @@ concept HasWedgeTexCoords = requires(T v) // requires that an object of type T h
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'wedgeTexCoord(uint)'
- * - 'isWedgeTexCoordsEnabled()' which returns a bool
+ * - '__optionalWedgeTexCoords()'
  */
 template<typename T>
 concept HasOptionalWedgeTexCoords = HasWedgeTexCoords<T> && requires(T v)
 {
-	{ v.isWedgeTexCoordsEnabled() } -> std::same_as<bool>;
+	{ v.__optionalWedgeTexCoords() } -> std::same_as<void>;
 };
 
 /**

@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../optional_component.h"
+#include "../vertical_component.h"
 
 #include <vclib/space/color.h>
 
@@ -42,7 +42,7 @@ class OptionalWedgeColorsVector;
 namespace vcl::comp {
 
 template<int N, typename T>
-class OptionalWedgeColors : public OptionalComponent<T>
+class OptionalWedgeColors : public virtual VerticalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalWedgeColorsVector;
@@ -109,6 +109,9 @@ public:
 	ConstWedgeColorsIterator      wedgeColorEnd() const;
 	WedgeColorsRangeIterator      wedgeColors();
 	ConstWedgeColorsRangeIterator wedgeColors() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalWedgeColors() const {};
 
 protected:
 	/* Member functions specific for vector */

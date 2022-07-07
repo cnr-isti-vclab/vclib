@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../optional_component.h"
+#include "../vertical_component.h"
 
 #include "../../concepts/adjacent_faces.h"
 
@@ -40,7 +40,7 @@ class OptionalAdjacentFacesVector;
 namespace vcl::comp {
 
 template<typename Face, int N, typename T>
-class OptionalAdjacentFaces : public OptionalComponent<T>
+class OptionalAdjacentFaces : public virtual VerticalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalAdjacentFacesVector;
@@ -132,6 +132,9 @@ public:
 	ConstAdjacentFaceIterator      adjFaceEnd() const;
 	AdjacentFaceRangeIterator      adjFaces();
 	ConstAdjacentFaceRangeIterator adjFaces() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalAdjFaces() const {};
 
 protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);

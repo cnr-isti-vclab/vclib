@@ -43,12 +43,12 @@ concept HasWedgeColors = requires(T v) // requires that an object of type T has 
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'wedgeColor(uint)'
- * - 'isWedgeColorsEnabled()' which returns a bool
+ * - '__optionalWedgeColors()'
  */
 template<typename T>
 concept HasOptionalWedgeColors = HasWedgeColors<T> && requires(T v)
 {
-	{ v.isWedgeColorsEnabled() } -> std::same_as<bool>;
+	{ v.__optionalWedgeColors() } -> std::same_as<void>;
 };
 
 /**

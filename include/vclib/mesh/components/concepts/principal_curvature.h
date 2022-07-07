@@ -44,12 +44,12 @@ concept HasPrincipalCurvature = requires(T v) // requires that an object of type
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'principalCurvature()'
- * - 'isPrincipalCurvatureEnabled()' which returns a bool
+ * - '__optionalPrincipalCurvature()'
  */
 template<typename T>
 concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && requires(T v)
 {
-	{ v.isPrincipalCurvatureEnabled() } -> std::same_as<bool>;
+	{ v.__optionalPrincipalCurvature() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has PrincipalCurvature or OptionalPrincipalCurvature */

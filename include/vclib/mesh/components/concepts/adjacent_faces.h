@@ -44,12 +44,12 @@ concept HasAdjacentFaces = requires(T v) // requires that an object of type T ha
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'adjFacesNumber()' which returns an uint
- * - 'isAdjFacesEnabled()' which returns a bool
+ * - '__optionalAdjFaces()'
  */
 template<typename T>
 concept HasOptionalAdjacentFaces = HasAdjacentFaces<T> && requires(T v)
 {
-	{ v.isAdjFacesEnabled() } -> std::same_as<bool>;
+	{ v.__optionalAdjFaces() } -> std::same_as<void>;
 };
 
 /**

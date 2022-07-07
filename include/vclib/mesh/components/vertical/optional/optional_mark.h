@@ -24,12 +24,12 @@
 #define VCL_MESH_COMPONENTS_OPTIONAL_MARK_H
 
 #include "../../concepts/mark.h"
-#include "../optional_component.h"
+#include "../vertical_component.h"
 
 namespace vcl::comp {
 
 template<typename T>
-class OptionalMark : public OptionalComponent<T>
+class OptionalMark : public virtual VerticalComponent<T>
 {
 private:
 	using B = VerticalComponent<T>;
@@ -46,6 +46,9 @@ public:
 	void decrementMark();
 
 	bool isMarkEnabled() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalMark() const {};
 
 protected:
 	template <typename Element>

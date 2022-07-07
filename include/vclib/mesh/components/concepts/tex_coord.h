@@ -43,12 +43,12 @@ concept HasTexCoord = requires(T v) // requires that an object of type T has the
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'texCoord()' which returns an int&
- * - 'isTexCoordEnabled()' which returns a bool
+ * - '__optionalTexCoord()'
  */
 template<typename T>
 concept HasOptionalTexCoord = HasTexCoord<T> && requires(T v)
 {
-	{ v.isTexCoordEnabled() } -> std::same_as<bool>;
+	{ v.__optionalTexCoord() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has TexCoord or OptionalTexCoord */

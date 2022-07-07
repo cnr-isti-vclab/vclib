@@ -45,12 +45,12 @@ concept HasAdjacentEdges =
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'adjEdgesNumber()' which returns an uint
- * - 'isAdjEdgesEnabled()' which returns a bool
+ * - '__optionalAdjEdges()'
  */
 template<typename T>
 concept HasOptionalAdjacentEdges = HasAdjacentEdges<T> && requires(T v)
 {
-	{ v.isAdjEdgesEnabled() } -> std::same_as<bool>;
+	{ v.__optionalAdjEdges() } -> std::same_as<void>;
 };
 
 /**

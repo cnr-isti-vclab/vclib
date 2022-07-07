@@ -24,12 +24,12 @@
 #define VCL_MESH_COMPONENTS_OPTIONAL_COLOR_H
 
 #include "../../concepts/color.h"
-#include "../optional_component.h"
+#include "../vertical_component.h"
 
 namespace vcl::comp {
 
 template<typename T>
-class OptionalColor : public OptionalComponent<T>
+class OptionalColor : public virtual VerticalComponent<T>
 {
 private:
 	using B = VerticalComponent<T>;
@@ -41,6 +41,9 @@ public:
 	vcl::Color&        color();
 
 	bool isColorEnabled() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalColor() const {};
 
 protected:
 	template <typename Element>

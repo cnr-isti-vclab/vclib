@@ -45,12 +45,12 @@ concept HasColor = requires(T v) // requires that an object of type T has the fo
  *
  * This concept is satisfied only if a class has two member functions:
  * - 'color()' which returns a vcl::Color&
- * - 'isColorEnabled()' which returns a bool
+ * - '__optionalColor()'
  */
 template<typename T>
 concept HasOptionalColor = HasColor<T> && requires(T v)
 {
-	{ v.isColorEnabled() } -> std::same_as<bool>;
+	{ v.__optionalColor() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has Color or OptionalColor */

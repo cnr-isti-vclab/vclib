@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../optional_component.h"
+#include "../vertical_component.h"
 
 #include "../../concepts/adjacent_vertices.h"
 
@@ -40,7 +40,7 @@ class OptionalVertexReferencesVector;
 namespace vcl::comp {
 
 template<typename Vertex, typename T>
-class OptionalAdjacentVertices : public OptionalComponent<T>
+class OptionalAdjacentVertices : public virtual VerticalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalVertexReferencesVector;
@@ -107,6 +107,9 @@ public:
 	ConstAdjacentVertexIterator      adjVertexEnd() const;
 	AdjacentVertexRangeIterator      adjVertices();
 	ConstAdjacentVertexRangeIterator adjVertices() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalAdjVertices() const {};
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
