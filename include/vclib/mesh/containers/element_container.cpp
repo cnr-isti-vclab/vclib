@@ -335,7 +335,7 @@ void ElementContainer<T>::clearElements()
 {
 	vec.clear();
 	en = 0;
-	if constexpr (comp::hasVerticalInfo<T>()) {
+	if constexpr (comp::hasVerticalComponent<T>()) {
 		optionalVec.clear();
 	}
 }
@@ -347,7 +347,7 @@ uint ElementContainer<T>::addElement()
 	vec.push_back(T());
 	T* newB = vec.data();
 	en++;
-	if constexpr (comp::hasVerticalInfo<T>()) {
+	if constexpr (comp::hasVerticalComponent<T>()) {
 		setContainerPointer(vec[vec.size() - 1]);
 		optionalVec.resize(vec.size());
 	}
@@ -371,7 +371,7 @@ uint ElementContainer<T>::addElements(uint size)
 	vec.resize(vec.size() + size);
 	T* newB = vec.data();
 	en += size;
-	if constexpr (comp::hasVerticalInfo<T>()) {
+	if constexpr (comp::hasVerticalComponent<T>()) {
 		optionalVec.resize(vec.size());
 		for (uint i = baseId; i < vec.size(); ++i) {
 			setContainerPointer(vec[i]);
@@ -387,7 +387,7 @@ void ElementContainer<T>::reserveElements(uint size)
 	T* oldB = vec.data();
 	vec.reserve(size);
 	T* newB = vec.data();
-	if constexpr (comp::hasVerticalInfo<T>()) {
+	if constexpr (comp::hasVerticalComponent<T>()) {
 		optionalVec.reserve(size);
 	}
 	updateContainerPointers(oldB, newB);
@@ -415,7 +415,7 @@ std::vector<int> ElementContainer<T>::compactElements()
 		}
 		k++;
 		vec.resize(k);
-		if constexpr (comp::hasVerticalInfo<T>()) {
+		if constexpr (comp::hasVerticalComponent<T>()) {
 			optionalVec.compact(newIndices);
 		}
 	}
@@ -431,20 +431,20 @@ std::vector<int> ElementContainer<T>::compactElements()
 template<typename T>
 void ElementContainer<T>::setContainerPointer(T &element)
 {
-	if constexpr (comp::hasVerticalInfo<T>()) {
+	if constexpr (comp::hasVerticalComponent<T>()) {
 		element.setContainerPointer(this);
 	}
 }
 
 /**
  * @brief After a reallocation, it is needed always to update the container pointers of all the
- * elements, because the assignment operator of the VerticalInfo component (which stores the pointer
+ * elements, because the assignment operator of the VerticalComponent (which stores the pointer
  * of the container) does not copy the container pointer for security reasons.
  */
 template<typename T>
 void ElementContainer<T>::updateContainerPointers(const T *oldBase, const T *newBase)
 {
-	if constexpr (comp::hasVerticalInfo<T>()) {
+	if constexpr (comp::hasVerticalComponent<T>()) {
 		if (oldBase != newBase) {
 			// all the faces must point to the right container - also the deleted ones
 			for (T& f : elements(false)) {

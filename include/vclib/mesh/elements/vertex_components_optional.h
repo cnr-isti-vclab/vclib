@@ -162,14 +162,14 @@ bool constexpr hasCustomComponents()
 	return comp::hasCustomComponents<VertexType>();
 }
 
-/* Port VerticalInfo class into vert namespace */
+/* Port VerticalComponent class into vert namespace */
 template<typename VertexType>
-using VerticalInfo = comp::VerticalInfo<VertexType>;
+using VerticalComponent = comp::VerticalComponent<VertexType>;
 
 template<typename VertexType>
-bool constexpr hasVerticalInfo()
+bool constexpr hasVerticalComponent()
 {
-	return comp::hasVerticalInfo<VertexType>();
+	return comp::hasVerticalComponent<VertexType>();
 }
 
 } // namespace vcl::vert

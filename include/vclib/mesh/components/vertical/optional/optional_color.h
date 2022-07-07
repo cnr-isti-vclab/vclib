@@ -24,15 +24,15 @@
 #define VCL_MESH_COMPONENTS_OPTIONAL_COLOR_H
 
 #include "../../concepts/color.h"
-#include "../vertical_info.h"
+#include "../optional_component.h"
 
 namespace vcl::comp {
 
 template<typename T>
-class OptionalColor : public virtual VerticalInfo<T>
+class OptionalColor : public OptionalComponent<T>
 {
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

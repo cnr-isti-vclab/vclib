@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../vertical_info.h"
+#include "../optional_component.h"
 
 #include "../../concepts/adjacent_faces.h"
 
@@ -40,13 +40,13 @@ class OptionalAdjacentFacesVector;
 namespace vcl::comp {
 
 template<typename Face, int N, typename T>
-class OptionalAdjacentFaces : public virtual VerticalInfo<T>
+class OptionalAdjacentFaces : public OptionalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalAdjacentFacesVector;
 
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 	// if we use the vector, the size of the array will be 0

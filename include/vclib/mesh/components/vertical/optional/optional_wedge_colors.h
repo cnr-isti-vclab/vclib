@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../vertical_info.h"
+#include "../optional_component.h"
 
 #include <vclib/space/color.h>
 
@@ -42,14 +42,13 @@ class OptionalWedgeColorsVector;
 namespace vcl::comp {
 
 template<int N, typename T>
-class OptionalWedgeColors :
-		public virtual VerticalInfo<T>
+class OptionalWedgeColors : public OptionalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalWedgeColorsVector;
 
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*) this); }
 
 	// if we use the vector, the size of the array will be 0

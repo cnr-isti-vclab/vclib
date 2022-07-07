@@ -25,7 +25,7 @@
 
 #include <vclib/misc/types.h>
 
-#include "../components/vertical/vertical_info.h"
+#include "../components/vertical/vertical_component.h"
 
 namespace vcl::mesh {
 
@@ -77,7 +77,7 @@ template<typename T>
 constexpr bool hasEdgeOptionalContainer()
 {
 	if constexpr (hasEdges<T>()) {
-		return comp::hasVerticalInfo<typename T::EdgeType>();
+		return comp::hasVerticalComponent<typename T::EdgeType>();
 	}
 	else {
 		return false;
@@ -99,7 +99,7 @@ template<typename T>
 constexpr bool hasFaceOptionalContainer()
 {
 	if constexpr (hasFaces<T>()) {
-		return comp::hasVerticalInfo<typename T::FaceType>();
+		return comp::hasVerticalComponent<typename T::FaceType>();
 	}
 	else {
 		return false;
@@ -121,7 +121,7 @@ template<typename T>
 constexpr bool hasHalfEdgeOptionalContainer()
 {
 	if constexpr (hasHalfEdges<T>()) {
-		return comp::hasVerticalInfo<typename T::HalfEdgeType>();
+		return comp::hasVerticalComponent<typename T::HalfEdgeType>();
 	}
 	else {
 		return false;
@@ -143,7 +143,7 @@ template<typename T>
 constexpr bool hasVertexOptionalContainer()
 {
 	if constexpr (hasVertices<T>()) {
-		return comp::hasVerticalInfo<typename T::VertexType>();
+		return comp::hasVerticalComponent<typename T::VertexType>();
 	}
 	else {
 		return false;

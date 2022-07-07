@@ -24,15 +24,15 @@
 #define VCL_MESH_COMPONENTS_OPTIONAL_MARK_H
 
 #include "../../concepts/mark.h"
-#include "../vertical_info.h"
+#include "../optional_component.h"
 
 namespace vcl::comp {
 
 template<typename T>
-class OptionalMark : public virtual VerticalInfo<T>
+class OptionalMark : public OptionalComponent<T>
 {
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*) this); }
 
 public:

@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../vertical_info.h"
+#include "../optional_component.h"
 
 #include "../../concepts/adjacent_vertices.h"
 
@@ -40,14 +40,13 @@ class OptionalVertexReferencesVector;
 namespace vcl::comp {
 
 template<typename Vertex, typename T>
-class OptionalAdjacentVertices :
-		public virtual VerticalInfo<T>
+class OptionalAdjacentVertices : public OptionalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalVertexReferencesVector;
 
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

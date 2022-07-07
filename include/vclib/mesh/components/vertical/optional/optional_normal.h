@@ -26,15 +26,15 @@
 #include <vclib/space/point.h>
 
 #include "../../concepts/normal.h"
-#include "../vertical_info.h"
+#include "../optional_component.h"
 
 namespace vcl::comp {
 
 template<typename P, typename T>
-class OptionalNormalT : public virtual VerticalInfo<T>
+class OptionalNormalT : public OptionalComponent<T>
 {
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

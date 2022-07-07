@@ -98,14 +98,14 @@ bool constexpr hasCustomComponents()
 	return comp::hasCustomComponents<EdgeType>();
 }
 
-/* Port VerticalInfo class into edge namespace */
+/* Port VerticalComponent class into edge namespace */
 template<typename EdgeType>
-using VerticalInfo = comp::VerticalInfo<EdgeType>;
+using VerticalComponent = comp::VerticalComponent<EdgeType>;
 
 template<typename EdgeType>
-bool constexpr hasVerticalInfo()
+bool constexpr hasVerticalComponent()
 {
-	return comp::hasVerticalInfo<EdgeType>();
+	return comp::hasVerticalComponent<EdgeType>();
 }
 
 } // namespace vcl::edge

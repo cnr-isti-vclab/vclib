@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../vertical_info.h"
+#include "../optional_component.h"
 
 #include "../../concepts/adjacent_edges.h"
 
@@ -40,13 +40,13 @@ class OptionalAdjacentEdgesVector;
 namespace vcl::comp {
 
 template<typename Edge, int N, typename T>
-class OptionalAdjacentEdges : public virtual VerticalInfo<T>
+class OptionalAdjacentEdges : public OptionalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalAdjacentEdgesVector;
 
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 	// if we use the vector, the size of the array will be 0

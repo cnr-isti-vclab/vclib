@@ -177,14 +177,14 @@ bool constexpr hasCustomComponents()
 	return comp::hasCustomComponents<FaceType>();
 }
 
-/* Port VerticalInfo class into face namespace */
+/* Port VerticalComponent class into face namespace */
 template<typename FaceType>
-using VerticalInfo = comp::VerticalInfo<FaceType>;
+using VerticalComponent = comp::VerticalComponent<FaceType>;
 
 template<typename FaceType>
-bool constexpr hasVerticalInfo()
+bool constexpr hasVerticalComponent()
 {
-	return comp::hasVerticalInfo<FaceType>();
+	return comp::hasVerticalComponent<FaceType>();
 }
 
 } // namespace vcl::face

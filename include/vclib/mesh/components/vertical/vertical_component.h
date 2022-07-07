@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VERTICAL_INFO_H
-#define VCL_MESH_COMPONENTS_VERTICAL_INFO_H
+#ifndef VCL_MESH_COMPONENTS_VERTICAL_COMPONENT_H
+#define VCL_MESH_COMPONENTS_VERTICAL_COMPONENT_H
 
 #include <vclib/misc/types.h>
 
@@ -41,18 +41,25 @@ class VerticalComponentsVector;
 
 namespace vcl::comp {
 
+/**
+ * @brief The VerticalComponent class is a class that is meant to be inherited *virtually* by all
+ * vertical components (optional or persistent).
+ *
+ * It provides a pointer to the container that actually stores the all the components of a mesh, in
+ * order to allow to access a component without storing it internally.
+ */
 template<typename T>
-class VerticalInfo
+class VerticalComponent
 {
 public:
-	VerticalInfo() {}
+	VerticalComponent() {}
 
 	// copy and move semantics: nothing will be done here
 	// this instance will be updated only by the mesh, and optional data
 	// can be accessed only when an element is part of a mesh
-	VerticalInfo(const VerticalInfo<T>&) {}
-	VerticalInfo(VerticalInfo<T>&&) {}
-	VerticalInfo& operator=(const VerticalInfo<T>&) {return *this;}
+	VerticalComponent(const VerticalComponent<T>&) {}
+	VerticalComponent(VerticalComponent<T>&&) {}
+	VerticalComponent& operator=(const VerticalComponent<T>&) {return *this;}
 
 protected:
 	// this function sets the pointer of the container of this istance of an element.
@@ -97,18 +104,18 @@ protected:
 };
 
 /**
- * Detector to check if a class has (inherits) VerticalInfo
+ * Detector to check if a class has (inherits) VerticalComponent
  */
 
 template<typename T>
-using hasVerticalInfoT = std::is_base_of<VerticalInfo<T>, T>;
+using hasVerticalComponentT = std::is_base_of<VerticalComponent<T>, T>;
 
 template<typename T>
-bool constexpr hasVerticalInfo()
+bool constexpr hasVerticalComponent()
 {
-	return hasVerticalInfoT<T>::value;
+	return hasVerticalComponentT<T>::value;
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_VERTICAL_INFO_H
+#endif // VCL_MESH_COMPONENTS_VERTICAL_COMPONENT_H

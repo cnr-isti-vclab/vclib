@@ -27,7 +27,7 @@
 
 #include <vclib/iterators/container_iterator.h>
 #include <vclib/iterators/container_range_iterator.h>
-#include "../components/vertical/vertical_info.h"
+#include "../components/vertical/vertical_component.h"
 #include "../components/vertical/vectors/vertical_components_vector.h"
 #include "containers_detection.h"
 
@@ -36,7 +36,7 @@ namespace vcl::mesh {
 template <typename T>
 class ElementContainer : public ElementContainerTriggerer
 {
-	friend class comp::VerticalInfo<T>;
+	friend class comp::VerticalComponent<T>;
 
 	template <typename U>
 	friend class ElementContainer;

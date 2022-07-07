@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../vertical_info.h"
+#include "../optional_component.h"
 
 #include <vclib/space/tex_coord.h>
 
@@ -42,14 +42,13 @@ class OptionalWedgeTexCoordsVector;
 namespace vcl::comp {
 
 template<typename Scalar, int N, typename T>
-class OptionalWedgeTexCoords :
-		public virtual VerticalInfo<T>
+class OptionalWedgeTexCoords : public OptionalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalWedgeTexCoordsVector;
 
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 	// if we use the vector, the size of the array will be 0
