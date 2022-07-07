@@ -32,19 +32,10 @@
 
 namespace vcl::mesh {
 
-template<typename T>
+template<HalfEdgeConcept T>
 class HalfEdgeContainer : protected ElementContainer<T>, public HalfEdgeContainerTriggerer
 {
-	// Sanity checks for the Edge -- all components must be consistent each other
-	static_assert(
-		vcl::hedge::hasBitFlags<T>(),
-		"You should include BitFlags (or a derived) as HalfEdge component in your Mesh "
-		"definition.");
-	static_assert(
-		vcl::hedge::hasHalfEdgeReferences<T>(),
-		"You should include a HalfEdgeReferences as HalfEdge component in your Mesh definition.");
-
-	template <typename U>
+	template <HalfEdgeConcept U>
 	friend class HalfEdgeContainer;
 
 	using HalfEdgeContainerType = HalfEdgeContainer<T>;

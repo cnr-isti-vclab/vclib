@@ -49,10 +49,36 @@ struct IsAHalfEdge<HalfEdge<Args...>> : // For types matching the pattern HalfEd
 {
 };
 
-} // namespace vcl::internal
-
+/* Port concepts into the vert namespace */
 template<typename T>
-concept HalfEdgeConcept = hedge::IsDerivedFromHalfEdge<T>::value || hedge::IsAHalfEdge<T>::value;
+concept HasBitFlags = comp::HasBitFlags<T>;
+template<typename T>
+concept HasColor = comp::HasColor<T>;
+template<typename T>
+concept HasHalfEdgeReferences = comp::HasHalfEdgeReferences<T>;
+template<typename T>
+concept HasMark = comp::HasMark<T>;
+template<typename T>
+concept HasScalar = comp::HasScalar<T>;
+
+} // namespace vcl::hedge
+
+/**
+ * @brief HalfEdgeConcept
+ *
+ * The HalfEdge concept describes how a HalfEdge element that can be used for a HalfEdgeContainer
+ * should be organized.
+ *
+ * The HalfEdge concept is satisfied for a class HE if ALL the following sentences are true:
+ * - The class HE is a vcl::HalfEdge, or derives from it;
+ * - The class HE has the BitFlags component (or a derivate);
+ * - The class HE has the HalfEdgeReferences component (or a derivate);
+ */
+template<typename T>
+concept HalfEdgeConcept =
+	hedge::IsDerivedFromHalfEdge<T>::value || hedge::IsAHalfEdge<T>::value &&
+	hedge::HasBitFlags<T> &&
+	hedge::HasHalfEdgeReferences<T>;
 
 } // namespace vcl
 

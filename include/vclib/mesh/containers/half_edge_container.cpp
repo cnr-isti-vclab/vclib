@@ -27,7 +27,7 @@ namespace vcl::mesh {
 /**
  * @brief Empty constructor that creates an empty container of HalfEdges.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 HalfEdgeContainer<T>::HalfEdgeContainer()
 {
 }
@@ -42,7 +42,7 @@ HalfEdgeContainer<T>::HalfEdgeContainer()
  *
  * @param[in] i: the index of the halfedge that will be returned.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 const typename HalfEdgeContainer<T>::HalfEdgeType& HalfEdgeContainer<T>::halfEdge(uint i) const
 {
 	return Base::element(i);
@@ -58,7 +58,7 @@ const typename HalfEdgeContainer<T>::HalfEdgeType& HalfEdgeContainer<T>::halfEdg
  *
  * @param[in] i: the index of the halfedge that will be returned.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 typename HalfEdgeContainer<T>::HalfEdgeType& HalfEdgeContainer<T>::halfEdge(uint i)
 {
 	return Base::element(i);
@@ -73,7 +73,7 @@ typename HalfEdgeContainer<T>::HalfEdgeType& HalfEdgeContainer<T>::halfEdge(uint
  *
  * @return the number of non-deleted halfedges of the Mesh.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 uint HalfEdgeContainer<T>::halfEdgeNumber() const
 {
 	return Base::elementNumber();
@@ -88,7 +88,7 @@ uint HalfEdgeContainer<T>::halfEdgeNumber() const
  *
  * @return the number of all the halfedges contained in the Mesh.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 uint HalfEdgeContainer<T>::halfEdgeContainerSize() const
 {
 	return Base::elementContainerSize();
@@ -100,7 +100,7 @@ uint HalfEdgeContainer<T>::halfEdgeContainerSize() const
  *
  * @return The number of deleted halfedges in the container.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 uint HalfEdgeContainer<T>::deletedHalfEdgeNumber() const
 {
 	return Base::deletedElementNumber();
@@ -116,7 +116,7 @@ uint HalfEdgeContainer<T>::deletedHalfEdgeNumber() const
  *
  * @param[in] i: the id of the halfedge that will be marked as deleted.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::deleteHalfEdge(uint i)
 {
 	Base::deleteElement(i);
@@ -133,7 +133,7 @@ void HalfEdgeContainer<T>::deleteHalfEdge(uint i)
  *
  * @param[in] e: the pointer of the halfedge that will be marked as deleted.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::deleteHalfEdge(const HalfEdgeType* e)
 {
 	Base::deleteElement(e);
@@ -151,7 +151,7 @@ void HalfEdgeContainer<T>::deleteHalfEdge(const HalfEdgeType* e)
  * @param[in] i: the index of a halfedge of the container.
  * @return The index that the halfedge with index i would have if this container would be compact.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 uint HalfEdgeContainer<T>::halfEdgeIndexIfCompact(uint i) const
 {
 	return Base::elementIndexIfCompact(i);
@@ -168,7 +168,7 @@ uint HalfEdgeContainer<T>::halfEdgeIndexIfCompact(uint i) const
  * @return A vector containing, for each halfedge index, its index if the container would be
  * compact.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 std::vector<int> HalfEdgeContainer<T>::halfEdgeCompactIndices() const
 {
 	return Base::elementCompactIndices();
@@ -184,7 +184,7 @@ std::vector<int> HalfEdgeContainer<T>::halfEdgeCompactIndices() const
  * halfedges.
  * @return An iterator the the first halfedge of the container.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 typename HalfEdgeContainer<T>::HalfEdgeIterator
 HalfEdgeContainer<T>::halfEdgeBegin(bool jumpDeleted)
 {
@@ -195,7 +195,7 @@ HalfEdgeContainer<T>::halfEdgeBegin(bool jumpDeleted)
  * @brief Returns an iterator to the end of the container.
  * @return An iterator to the end of the container.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 typename HalfEdgeContainer<T>::HalfEdgeIterator HalfEdgeContainer<T>::halfEdgeEnd()
 {
 	return Base::elementEnd();
@@ -211,7 +211,7 @@ typename HalfEdgeContainer<T>::HalfEdgeIterator HalfEdgeContainer<T>::halfEdgeEn
  * halfedges.
  * @return A const iterator the the first halfedge of the container.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 typename HalfEdgeContainer<T>::ConstHalfEdgeIterator
 HalfEdgeContainer<T>::halfEdgeBegin(bool jumpDeleted) const
 {
@@ -222,7 +222,7 @@ HalfEdgeContainer<T>::halfEdgeBegin(bool jumpDeleted) const
  * @brief Returns a const iterator to the end of the container.
  * @return A const iterator to the end of the container.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 typename HalfEdgeContainer<T>::ConstHalfEdgeIterator HalfEdgeContainer<T>::halfEdgeEnd() const
 {
 	return Base::elementEnd();
@@ -249,7 +249,7 @@ typename HalfEdgeContainer<T>::ConstHalfEdgeIterator HalfEdgeContainer<T>::halfE
  * halfedges.
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 typename HalfEdgeContainer<T>::HalfEdgeRangeIterator
 HalfEdgeContainer<T>::halfEdges(bool jumpDeleted)
 {
@@ -277,7 +277,7 @@ HalfEdgeContainer<T>::halfEdges(bool jumpDeleted)
  * halfedges.
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 typename HalfEdgeContainer<T>::ConstHalfEdgeRangeIterator
 HalfEdgeContainer<T>::halfEdges(bool jumpDeleted) const
 {
@@ -291,7 +291,7 @@ HalfEdgeContainer<T>::halfEdges(bool jumpDeleted) const
  *
  * @return true if the Optional Color is enabled, false otherwise.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), bool)
 HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const
@@ -304,7 +304,7 @@ HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const
  *
  * @note This function is available only if the HalfEdge Element has the OptionalColor Component.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), void)
 HalfEdgeContainer<T>::enablePerHalfEdgeColor()
@@ -317,7 +317,7 @@ HalfEdgeContainer<T>::enablePerHalfEdgeColor()
  *
  * @note This function is available only if the HalfEdge Element has the OptionalColor Component.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), void)
 HalfEdgeContainer<T>::disablePerHalfEdgeColor()
@@ -332,7 +332,7 @@ HalfEdgeContainer<T>::disablePerHalfEdgeColor()
  *
  * @return true if the Optional Mark is enabled, false otherwise.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), bool)
 HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const
@@ -345,7 +345,7 @@ HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const
  *
  * @note This function is available only if the HalfEdge Element has the OptionalMark Component.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), void)
 HalfEdgeContainer<T>::enablePerHalfEdgeMark()
@@ -358,7 +358,7 @@ HalfEdgeContainer<T>::enablePerHalfEdgeMark()
  *
  * @note This function is available only if the HalfEdge Element has the OptionalMark Component.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), void)
 HalfEdgeContainer<T>::disablePerHalfEdgeMark()
@@ -373,7 +373,7 @@ HalfEdgeContainer<T>::disablePerHalfEdgeMark()
  *
  * @return true if the Optional Scalar is enabled, false otherwise.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), bool)
 HalfEdgeContainer<T>::isPerHalfEdgeScalarEnabled() const
@@ -385,7 +385,7 @@ HalfEdgeContainer<T>::isPerHalfEdgeScalarEnabled() const
  *
  * @note This function is available only if the HalfEdge Element has the OptionalScalar Component.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), void)
 HalfEdgeContainer<T>::enablePerHalfEdgeScalar()
@@ -398,7 +398,7 @@ HalfEdgeContainer<T>::enablePerHalfEdgeScalar()
  *
  * @note This function is available only if the HalfEdge Element has the OptionalScalar Component.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), void)
 HalfEdgeContainer<T>::disablePerHalfEdgeScalar()
@@ -415,7 +415,7 @@ HalfEdgeContainer<T>::disablePerHalfEdgeScalar()
  *
  * @return `true` if the HalfEdge Element has a custom component with the given name.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), bool)
 HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(const std::string& name) const
@@ -431,7 +431,7 @@ HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(const std::string& name) con
  *
  * @return A vector of strings representing all the names of the custom components.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), std::vector<std::string>)
 HalfEdgeContainer<T>::getAllPerHalfEdgeCustomComponentNames() const
@@ -456,7 +456,7 @@ HalfEdgeContainer<T>::getAllPerHalfEdgeCustomComponentNames() const
  * @param[in] name: the name of the custom component to check.
  * @return `true` if the custom component is of the same type of the template argument.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), bool)
 HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(const std::string& name) const
@@ -479,7 +479,7 @@ HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(const std::string& name
  * @tparam K: the type of the custom component names.
  * @return A vector of strings representing the names of the custom components of a given type.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), std::vector<std::string>)
 HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentNamesOfType() const
@@ -495,7 +495,7 @@ HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentNamesOfType() const
  * @tparam K: the type of the custom component added to the HalfEdge.
  * @param[in] name: the name of the custom component added to the HalfEdge.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), void)
 HalfEdgeContainer<T>::addPerHalfEdgeCustomComponent(const std::string& name)
@@ -512,7 +512,7 @@ HalfEdgeContainer<T>::addPerHalfEdgeCustomComponent(const std::string& name)
  *
  * @param[in] name: the name of the custom component that will be removed from the HalfEdge.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename U>
 VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), void)
 HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(const std::string& name)
@@ -546,7 +546,7 @@ HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(const std::string& name)
  * @tparam K: the type of the custom component on which return the handle.
  * @param name: name of the custom component on which return the handle.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
 HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(const std::string& name)
@@ -584,7 +584,7 @@ HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(const std::strin
  * @tparam K: the type of the custom component on which return the handle.
  * @param name: name of the custom component on which return the handle.
  */
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
 HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(const std::string& name) const
@@ -594,43 +594,43 @@ HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(const std::strin
 	return cc;
 }
 
-template<typename T>
+template<HalfEdgeConcept T>
 uint HalfEdgeContainer<T>::index(const HalfEdgeType *e) const
 {
 	return Base::index(e);
 }
 
-template<typename T>
+template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::clearHalfEdges()
 {
 	Base::clearElements();
 }
 
-template<typename T>
+template<HalfEdgeConcept T>
 uint HalfEdgeContainer<T>::addHalfEdge()
 {
 	return Base::addElement();
 }
 
-template<typename T>
+template<HalfEdgeConcept T>
 uint HalfEdgeContainer<T>::addHalfEdges(uint nEdges)
 {
 	return Base::addElements(nEdges);
 }
 
-template<typename T>
+template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::reserveHalfEdges(uint size)
 {
 	Base::reserveElements(size);
 }
 
-template<typename T>
+template<HalfEdgeConcept T>
 std::vector<int> HalfEdgeContainer<T>::compactHalfEdges()
 {
 	return Base::compactElements();
 }
 
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename Mesh>
 void HalfEdgeContainer<T>::enableOptionalComponentsOf(const Mesh &m)
 {
@@ -642,7 +642,7 @@ void HalfEdgeContainer<T>::enableOptionalComponentsOf(const Mesh &m)
 	}
 }
 
-template<typename T>
+template<HalfEdgeConcept T>
 template<typename Mesh>
 void HalfEdgeContainer<T>::importFrom(const Mesh &m)
 {

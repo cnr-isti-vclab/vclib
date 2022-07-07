@@ -63,10 +63,10 @@ bool constexpr hasHalfEdgeReferences()
 /* Port Mark class into hedge namespace */
 using Mark = comp::Mark;
 
-template<typename EdgeType>
+template<typename HalfEdgeType>
 bool constexpr hasMark()
 {
-	return comp::hasMark<EdgeType>();
+	return comp::hasMark<HalfEdgeType>();
 }
 
 /* Port Scalar class into hedge namespace */
@@ -76,10 +76,10 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename EdgeType>
+template<typename HalfEdgeType>
 bool constexpr hasScalar()
 {
-	return comp::hasScalar<EdgeType>();
+	return comp::hasScalar<HalfEdgeType>();
 }
 
 } // namespace vcl::hedge
