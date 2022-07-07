@@ -58,6 +58,8 @@ public:
 	void setWedgeColor(const vcl::Color& t, uint i);
 	void setWedgeColors(const std::vector<vcl::Color>& list);
 
+	constexpr bool isWedgeColorsEnabled() const { return true; }
+
 	/* Iterator Member functions */
 
 	WedgeColorsIterator           wedgeColorBegin();

@@ -74,6 +74,8 @@ public:
 	void incrementMark();
 	void decrementMark();
 
+	constexpr bool isMarkEnabled() const { return true; }
+
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);

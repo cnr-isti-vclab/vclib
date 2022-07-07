@@ -130,119 +130,25 @@ void Face<Args...>::importFrom(const Element& f)
 
 //}
 
-template<typename... Args>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-Face<Args...>::insertVertex(uint i, VertexType* v)
-{
-	using F = Face<Args...>;
+//TODO: Clang bug. Move definition here when it will be solved
+//template<typename... Args>
+//void Face<Args...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+//{
 
-	VRefs::insertVertex(i, v);
+//}
 
-	if constexpr (comp::hasAdjacentEdges<F>()) {
-		using T = typename F::AdjacentEdges;
+//TODO: Clang bug. Move definition here when it will be solved
+//template<typename... Args>
+//void Face<Args...>::eraseVertex(uint i) requires PolygonFaceConcept<Face<Args...>>
+//{
 
-		if (T::isAdjEdgesEnabled())
-			T::insertAdjEdge(i, nullptr);
-	}
+//}
 
-	if constexpr (face::hasAdjacentFaces<F>()) {
-		using T = typename F::AdjacentFaces;
+//TODO: Clang bug. Move definition here when it will be solved
+//template<typename... Args>
+//void Face<Args...>::clearVertices() requires PolygonFaceConcept<Face<Args...>>
+//{
 
-		if (T::isAdjFacesEnabled())
-			T::insertAdjFace(i, nullptr);
-	}
-
-	if constexpr (face::hasWedgeColors<F>()) {
-		using T = typename F::WedgeColors;
-
-		if (T::isWedgeColorsEnabled())
-			T::insertWedgeColor(i, Color());
-	}
-
-	if constexpr (face::hasWedgeTexCoords<F>()) {
-		using S = typename F::WedgeTexCoordScalarType;
-		using T = typename F::WedgeTexCoords;
-
-		if (T::isWedgeTexCoordsEnabled())
-			T::insertWedgeTexCoord(i, TexCoord<S>());
-	}
-}
-
-template<typename... Args>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-Face<Args...>::eraseVertex(uint i)
-{
-	using F = Face<Args...>;
-
-	VRefs::eraseVertex(i);
-
-	if constexpr (comp::hasAdjacentEdges<F>()) {
-		using T = typename F::AdjacentEdges;
-
-		if (T::isAdjEdgesEnabled())
-			T::eraseAdjEdge(i);
-	}
-
-	if constexpr (face::hasAdjacentFaces<F>()) {
-		using T = typename F::AdjacentFaces;
-
-		if (T::isAdjFacesEnabled())
-			T::eraseAdjFace(i);
-	}
-
-	if constexpr (face::hasWedgeColors<F>()) {
-		using T = typename F::WedgeColors;
-
-		if (T::isWedgeColorsEnabled())
-			T::eraseWedgeColor(i);
-	}
-
-	if constexpr (face::hasWedgeTexCoords<F>()) {
-		using T = typename F::WedgeTexCoords;
-
-		if (T::isWedgeTexCoordsEnabled())
-			T::eraseWedgeTexCoord(i);
-	}
-}
-
-template<typename... Args>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-Face<Args...>::clearVertices()
-{
-	using F = Face<Args...>;
-
-	VRefs::clearVertices();
-
-	if constexpr (comp::hasAdjacentEdges<F>()) {
-		using T = typename F::AdjacentEdges;
-
-		if (T::isAdjEdgesEnabled())
-			T::clearAdjEdges();
-	}
-
-	if constexpr (face::hasAdjacentFaces<F>()) {
-		using T = typename F::AdjacentFaces;
-
-		if (T::isAdjFacesEnabled())
-			T::clearAdjFaces();
-	}
-
-	if constexpr (face::hasWedgeColors<F>()) {
-		using T = typename F::WedgeColors;
-
-		if (T::isWedgeColorsEnabled())
-			T::clearWedgeColor();
-	}
-
-	if constexpr (face::hasWedgeTexCoords<F>()) {
-		using T = typename F::WedgeTexCoords;
-
-		if (T::isWedgeTexCoordsEnabled())
-			T::clearWedgeTexCoord();
-	}
-}
+//}
 
 } // namespace vcl

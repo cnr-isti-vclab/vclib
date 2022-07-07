@@ -61,6 +61,8 @@ public:
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
 
+	constexpr bool isWedgeTexCoordsEnabled() const { return true; }
+
 	/* Iterator Member functions */
 
 	WedgeTexCoordsIterator           wedgeTexCoordBegin();

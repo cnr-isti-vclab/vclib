@@ -36,6 +36,8 @@ public:
 	const ScalarType& scalar() const;
 	ScalarType&       scalar();
 
+	constexpr bool isScalarEnabled() const { return true; }
+
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);

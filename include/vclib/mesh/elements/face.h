@@ -80,7 +80,7 @@ public:
 
 		VRefs::resizeVertices(n);
 
-		if constexpr (comp::HasAdjacentEdges<F>) {
+		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
 
 			if (T::isAdjEdgesEnabled())
@@ -109,6 +109,8 @@ public:
 		}
 	}
 
+	// TODO: move definition in face.cpp when Clang bug will be solved
+	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
 	{
 		using F = Face<Args...>;
@@ -145,14 +147,117 @@ public:
 		}
 	}
 
-	template<int M = NV>
-	VCL_ENABLE_IF(M < 0, void) insertVertex(uint i, VertexType* v);
+	// TODO: move definition in face.cpp when Clang bug will be solved
+	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
+	void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
+	{
+		using F = Face<Args...>;
 
-	template<int M = NV>
-	VCL_ENABLE_IF(M < 0, void) eraseVertex(uint i);
+		VRefs::insertVertex(i, v);
 
-	template<int M = NV>
-	VCL_ENABLE_IF(M < 0, void) clearVertices();
+		if constexpr (face::HasAdjacentEdges<F>) {
+			using T = typename F::AdjacentEdges;
+
+			if (T::isAdjEdgesEnabled())
+				T::insertAdjEdge(i, nullptr);
+		}
+
+		if constexpr (face::HasAdjacentFaces<F>) {
+			using T = typename F::AdjacentFaces;
+
+			if (T::isAdjFacesEnabled())
+				T::insertAdjFace(i, nullptr);
+		}
+
+		if constexpr (face::HasWedgeColors<F>) {
+			using T = typename F::WedgeColors;
+
+			if (T::isWedgeColorsEnabled())
+				T::insertWedgeColor(i, Color());
+		}
+
+		if constexpr (face::HasWedgeTexCoords<F>) {
+			using S = typename F::WedgeTexCoordScalarType;
+			using T = typename F::WedgeTexCoords;
+
+			if (T::isWedgeTexCoordsEnabled())
+				T::insertWedgeTexCoord(i, TexCoord<S>());
+		}
+	}
+
+	// TODO: move definition in face.cpp when Clang bug will be solved
+	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
+	void eraseVertex(uint i) requires PolygonFaceConcept<Face>
+	{
+		using F = Face<Args...>;
+
+		VRefs::eraseVertex(i);
+
+		if constexpr (face::HasAdjacentEdges<F>) {
+			using T = typename F::AdjacentEdges;
+
+			if (T::isAdjEdgesEnabled())
+				T::eraseAdjEdge(i);
+		}
+
+		if constexpr (face::HasAdjacentFaces<F>) {
+			using T = typename F::AdjacentFaces;
+
+			if (T::isAdjFacesEnabled())
+				T::eraseAdjFace(i);
+		}
+
+		if constexpr (face::HasWedgeColors<F>) {
+			using T = typename F::WedgeColors;
+
+			if (T::isWedgeColorsEnabled())
+				T::eraseWedgeColor(i);
+		}
+
+		if constexpr (face::HasWedgeTexCoords<F>) {
+			using T = typename F::WedgeTexCoords;
+
+			if (T::isWedgeTexCoordsEnabled())
+				T::eraseWedgeTexCoord(i);
+		}
+	}
+
+	// TODO: move definition in face.cpp when Clang bug will be solved
+	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
+	void clearVertices() requires PolygonFaceConcept<Face>
+	{
+		using F = Face<Args...>;
+
+		VRefs::clearVertices();
+
+		if constexpr (face::HasAdjacentEdges<F>) {
+			using T = typename F::AdjacentEdges;
+
+			if (T::isAdjEdgesEnabled())
+				T::clearAdjEdges();
+		}
+
+		if constexpr (face::HasAdjacentFaces<F>) {
+			using T = typename F::AdjacentFaces;
+
+			if (T::isAdjFacesEnabled())
+				T::clearAdjFaces();
+		}
+
+		if constexpr (face::HasWedgeColors<F>) {
+			using T = typename F::WedgeColors;
+
+			if (T::isWedgeColorsEnabled())
+				T::clearWedgeColor();
+		}
+
+		if constexpr (face::HasWedgeTexCoords<F>) {
+			using T = typename F::WedgeTexCoords;
+
+			if (T::isWedgeTexCoordsEnabled())
+				T::clearWedgeTexCoord();
+		}
+	}
 };
 
 } // namespace vcl

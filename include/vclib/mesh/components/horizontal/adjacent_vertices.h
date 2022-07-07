@@ -81,6 +81,8 @@ public:
 
 	int indexOfAdjVertex(const Vertex* v) const;
 
+	constexpr bool isAdjVerticesEnabled() const { return true; }
+
 	void resizeAdjVertices(uint n);
 	void pushAdjVertex(Vertex* v);
 	void insertAdjVertex(uint i, Vertex* v);

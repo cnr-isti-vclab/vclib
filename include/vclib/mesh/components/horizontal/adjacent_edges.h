@@ -89,6 +89,8 @@ public:
 
 	int indexOfAdjEdge(const Edge* e) const;
 
+	constexpr bool isAdjEdgesEnabled() const { return true; }
+
 	/* Member functions specific for vector */
 
 	template<int M = N>

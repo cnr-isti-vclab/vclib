@@ -89,6 +89,8 @@ public:
 
 	int indexOfAdjFace(const Face* f) const;
 
+	constexpr bool isAdjFacesEnabled() const { return true; }
+
 	/* Member functions specific for vector */
 
 	template<int M = N>

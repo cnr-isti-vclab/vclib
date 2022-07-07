@@ -44,6 +44,8 @@ public:
 
 	vcl::Color& color();
 
+	constexpr bool isColorEnabled() const { return true; }
+
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);

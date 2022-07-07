@@ -38,6 +38,8 @@ public:
 	const P& normal() const;
 	P&       normal();
 
+	constexpr bool isNormalEnabled() const { return true; }
+
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);

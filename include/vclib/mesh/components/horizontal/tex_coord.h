@@ -38,6 +38,8 @@ public:
 	const TexCoordType& texCoord() const;
 	TexCoordType&       texCoord();
 
+	constexpr bool isTexCoordEnabled() const { return true; }
+
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);

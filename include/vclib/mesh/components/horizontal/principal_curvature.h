@@ -38,6 +38,8 @@ public:
 	const PrincipalCurvatureType& principalCurvature() const;
 	PrincipalCurvatureType&       principalCurvature();
 
+	constexpr bool isPrincipalCurvatureEnabled() const { return true; }
+
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
