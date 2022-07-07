@@ -119,6 +119,20 @@ concept FaceConcept =
 	comp::SanityCheckWedgeColors<T> &&
 	comp::SanityCheckWedgeTexCoords<T>;
 
+/**
+ * @brief PolygonFaceConcept
+ *
+ * The PolygonFace concept describes how a Face element class should be organized to be a polygonal
+ * face with dynamic size.
+ *
+ * The PolygonFace concept is satisfied for a class F if ALL the following sentences are true:
+ * - It satisfies the FaceConcept;
+ * - The number of vertices of the VertexReferences component is -1 (dynamic size);
+ */
+template<typename T>
+concept PolygonFaceConcept =
+	T::VERTEX_NUMBER < 0 && FaceConcept<T>;
+
 } // namespace vcl
 
 #endif // VCL_MESH_ELEMENTS_FACE_CONCEPT_H

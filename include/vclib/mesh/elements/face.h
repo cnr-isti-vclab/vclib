@@ -40,13 +40,8 @@ class ElementContainer;
 
 namespace vcl {
 
-// Dummy class used to detect a Face regardless of its template arguments
-class FaceTriggerer
-{
-};
-
 template<typename... Args>
-class Face : public FaceTriggerer, public Args...
+class Face : public Args...
 {
 	template<FaceConcept>
 	friend class mesh::FaceContainer;
@@ -77,11 +72,78 @@ public:
 	template<typename Element>
 	void importFrom(const Element& f);
 
-	template<int M = NV>
-	VCL_ENABLE_IF(M < 0, void) resizeVertices(uint n);
+	// TODO: move definition in face.cpp when Clang bug will be solved
+	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
+	void resizeVertices(uint n) requires PolygonFaceConcept<Face>
+	{
+		using F = Face<Args...>;
 
-	template<int M = NV>
-	VCL_ENABLE_IF(M < 0, void) pushVertex(VertexType* v);
+		VRefs::resizeVertices(n);
+
+		if constexpr (comp::HasAdjacentEdges<F>) {
+			using T = typename F::AdjacentEdges;
+
+			if (T::isAdjEdgesEnabled())
+				T::resizeAdjEdges(n);
+		}
+
+		if constexpr (face::HasAdjacentFaces<F>) {
+			using T = typename F::AdjacentFaces;
+
+			if (T::isAdjFacesEnabled())
+				T::resizeAdjFaces(n);
+		}
+
+		if constexpr (face::HasWedgeColors<F>) {
+			using T = typename F::WedgeColors;
+
+			if (T::isWedgeColorsEnabled())
+				T::resizeWedgeColors(n);
+		}
+
+		if constexpr (face::HasWedgeTexCoords<F>) {
+			using T = typename F::WedgeTexCoords;
+
+			if (T::isWedgeTexCoordsEnabled())
+				T::resizeWedgeTexCoords(n);
+		}
+	}
+
+	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
+	{
+		using F = Face<Args...>;
+
+		VRefs::pushVertex(v);
+
+		if constexpr (face::HasAdjacentEdges<F>) {
+			using T = typename F::AdjacentEdges;
+
+			if (T::isAdjEdgesEnabled())
+				T::pushAdjEdge(nullptr);
+		}
+
+		if constexpr (face::HasAdjacentFaces<F>) {
+			using T = typename F::AdjacentFaces;
+
+			if (T::isAdjFacesEnabled())
+				T::pushAdjFace(nullptr);
+		}
+
+		if constexpr (face::HasWedgeColors<F>) {
+			using T = typename F::WedgeColors;
+
+			if (T::isWedgeColorsEnabled())
+				T::pushWedgeTexColors(Color());
+		}
+
+		if constexpr (face::HasWedgeTexCoords<F>) {
+			using S = typename F::WedgeTexCoordScalarType;
+			using T = typename F::WedgeTexCoords;
+
+			if (T::isWedgeTexCoordsEnabled())
+				T::pushWedgeTexCoord(TexCoord<S>());
+		}
+	}
 
 	template<int M = NV>
 	VCL_ENABLE_IF(M < 0, void) insertVertex(uint i, VertexType* v);

@@ -43,32 +43,6 @@ namespace vcl::mesh {
 template<FaceConcept T>
 class FaceContainer : protected ElementContainer<T>, public FaceContainerTriggerer
 {
-	// Sanity checks for the Face -- all components must be consistent each other
-	static_assert(
-		vcl::face::hasBitFlags<T>(),
-		"You should include BitFlags (or a derived) as Face component in your Mesh definition.");
-	static_assert(
-		vcl::face::hasVertexReferences<T>(),
-		"You should include a VertexReferences as Face component in your Mesh definition.");
-	static_assert(
-		T::VERTEX_NUMBER < 0 || T::VERTEX_NUMBER >= 3,
-		"VertexReferences must be < 0 (polygonal) or >=3 (at least triangles) in faces.");
-	static_assert(
-		!vcl::face::hasTriangleBitFlags<T>() || T::VERTEX_NUMBER == 3,
-		"You can use TriangleBitFlags only on static sized VertexReferences components, N == 3.");
-	static_assert(
-		face::sanityCheckAdjacentEdges<T>(),
-		"Size of per Face AdjacentEdges component must be the same of the VertexReferences.");
-	static_assert(
-		face::sanityCheckAdjacentFaces<T>(),
-		"Size of per Face AdjacentFaces component must be the same of the VertexReferences.");
-	static_assert(
-		face::sanityCheckWedgeColors<T>(),
-		"Size of per Face WedgeColors component must be the same of the VertexReferences.");
-	static_assert(
-		face::sanityCheckWedgeTexCoords<T>(),
-		"Size of per Face WedgeTexCoords component must be the same of the VertexReferences.");
-
 	template <FaceConcept U>
 	friend class FaceContainer;
 

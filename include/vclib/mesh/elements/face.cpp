@@ -116,82 +116,19 @@ void Face<Args...>::importFrom(const Element& f)
  *
  * @param n: the new number of vertices.
  */
-template<typename... Args>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-Face<Args...>::resizeVertices(uint n)
-{
-	using F = Face<Args...>;
+//TODO: Clang bug. Move definition here when it will be solved
+//template<typename... Args>
+//void Face<Args...>::resizeVertices(uint n) requires PolygonFaceConcept<Face<Args...>>
+//{
 
-	VRefs::resizeVertices(n);
+//}
 
-	if constexpr (comp::hasAdjacentEdges<F>()) {
-		using T = typename F::AdjacentEdges;
+//TODO: Clang bug. Move definition here when it will be solved
+//template<typename... Args>
+//void Face<Args...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+//{
 
-		if (T::isAdjEdgesEnabled())
-			T::resizeAdjEdges(n);
-	}
-
-	if constexpr (face::hasAdjacentFaces<F>()) {
-		using T = typename F::AdjacentFaces;
-
-		if (T::isAdjFacesEnabled())
-			T::resizeAdjFaces(n);
-	}
-
-	if constexpr (face::hasWedgeColors<F>()) {
-		using T = typename F::WedgeColors;
-
-		if (T::isWedgeColorsEnabled())
-			T::resizeWedgeColors(n);
-	}
-
-	if constexpr (face::hasWedgeTexCoords<F>()) {
-		using T = typename F::WedgeTexCoords;
-
-		if (T::isWedgeTexCoordsEnabled())
-			T::resizeWedgeTexCoords(n);
-	}
-}
-
-template<typename... Args>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-Face<Args...>::pushVertex(VertexType* v)
-{
-	using F = Face<Args...>;
-
-	VRefs::pushVertex(v);
-
-	if constexpr (comp::hasAdjacentEdges<F>()) {
-		using T = typename F::AdjacentEdges;
-
-		if (T::isAdjEdgesEnabled())
-			T::pushAdjEdge(nullptr);
-	}
-
-	if constexpr (face::hasAdjacentFaces<F>()) {
-		using T = typename F::AdjacentFaces;
-
-		if (T::isAdjFacesEnabled())
-			T::pushAdjFace(nullptr);
-	}
-
-	if constexpr (face::hasWedgeColors<F>()) {
-		using T = typename F::WedgeColors;
-
-		if (T::isWedgeColorsEnabled())
-			T::pushWedgeTexColors(Color());
-	}
-
-	if constexpr (face::hasWedgeTexCoords<F>()) {
-		using S = typename F::WedgeTexCoordScalarType;
-		using T = typename F::WedgeTexCoords;
-
-		if (T::isWedgeTexCoordsEnabled())
-			T::pushWedgeTexCoord(TexCoord<S>());
-	}
-}
+//}
 
 template<typename... Args>
 template<int M>
