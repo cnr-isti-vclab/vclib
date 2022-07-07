@@ -51,6 +51,31 @@ concept HasOptionalWedgeTexCoords = HasWedgeTexCoords<T> && requires(T v)
 	{ v.isWedgeTexCoordsEnabled() } -> std::same_as<bool>;
 };
 
+/**
+ * @brief HasRightNumberOfWedgeTexCoords concept
+ *
+ * This concept is designed to be used with Face components, where the number of wedge texcoords
+ * must be consistent w.r.t. the number of vertices of the face.
+ *
+ * This concept is satisfied only if static number of wedge texcoords is the same of the static
+ * number of vertices.
+ */
+template<typename T>
+concept HasRightNumberOfWedgeTexCoords = T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
+
+/**
+ * @brief SanityCheckWedgeTexCoords concept
+ *
+ * This concept is designed to be used with Face components, where the number of wedge texcoords
+ * must be consistent w.r.t. the number of vertices of the face.
+ *
+ * It is satisfied if:
+ * - the component does *not* have wedge texcoords;
+ * - in case it has wedge texcoords, they have the same number of vertices of the face.
+ */
+template<typename T>
+concept SanityCheckWedgeTexCoords = !HasWedgeTexCoords<T> || HasRightNumberOfWedgeTexCoords<T>;
+
 /* Detector functions to check if a class has WedgeTexCoords or OptionalWedgeTexCoords */
 
 template<typename T>

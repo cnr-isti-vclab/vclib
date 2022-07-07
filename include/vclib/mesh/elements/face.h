@@ -25,11 +25,12 @@
 
 #include "face_components.h"
 #include "face_components_optional.h"
+#include "face_concept.h"
 
 namespace vcl::mesh {
 
 // FaceContainer class declaration
-template<typename>
+template<FaceConcept>
 class FaceContainer;
 
 template<typename>
@@ -47,7 +48,7 @@ class FaceTriggerer
 template<typename... Args>
 class Face : public FaceTriggerer, public Args...
 {
-	template<typename>
+	template<FaceConcept>
 	friend class mesh::FaceContainer;
 
 	template<typename>

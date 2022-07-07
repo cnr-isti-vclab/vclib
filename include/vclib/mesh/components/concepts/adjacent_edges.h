@@ -34,7 +34,8 @@ namespace vcl::comp {
  * an uint
  */
 template<typename T>
-concept HasAdjacentEdges = requires(T v) // requires that an object of type T has the following members
+concept HasAdjacentEdges =
+	requires(T v) // requires that an object of type T has the following members
 {
 	{ v.adjEdgesNumber() } -> std::same_as<uint>;
 };
@@ -51,6 +52,31 @@ concept HasOptionalAdjacentEdges = HasAdjacentEdges<T> && requires(T v)
 {
 	{ v.isAdjEdgesEnabled() } -> std::same_as<bool>;
 };
+
+/**
+ * @brief HasRightNumberOfAdjacentEdges concept
+ *
+ * This concept is designed to be used with Face components, where the number of adjacent edges must
+ * be consistent w.r.t. the number of vertices of the face.
+ *
+ * This concept is satisfied only if static number of adjacent edges is the same of the static
+ * number of vertices.
+ */
+template<typename T>
+concept HasRightNumberOfAdjacentEdges = T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
+
+/**
+ * @brief SanityCheckAdjacentEdges concept
+ *
+ * This concept is designed to be used with Face components, where the number of adjacent edges must
+ * be consistent w.r.t. the number of vertices of the face.
+ *
+ * It is satisfied if:
+ * - the component does *not* have adjacent edges;
+ * - in case it has adjacent edges, they have the same number of vertices of the face.
+ */
+template<typename T>
+concept SanityCheckAdjacentEdges = !HasAdjacentEdges<T> || HasRightNumberOfAdjacentEdges<T>;
 
 /* Detector functions to check if a class has AdjacentEdges or OptionalAdjacentEdges */
 

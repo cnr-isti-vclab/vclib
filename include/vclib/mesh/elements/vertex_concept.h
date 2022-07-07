@@ -78,14 +78,15 @@ concept HasTexCoord = comp::HasTexCoord<T>;
 } // namespace vcl::vert
 
 /**
- * @brief VertexConcept is the concept that defines a Vertex class that can be given
- * as a template of the VertexContainer class.
+ * @brief VertexConcept
  *
- * To satisfy this concept, a class must:
- * - be a vcl::Vertex<...> class, or derived from it
- * - have the following components:
- *   - BitFlags (or a derivate)   -> HasBitFlags concept
- *   - Coordinate (or a derivate) -> HasCoordinate concept
+ * The Vertex concept describes how a Vertex element that can be used for a VertexContainer should
+ * be organized.
+ *
+ * The Vertex concept is satisfied for a class V if ALL the following sentences are true:
+ * - The class V is a vcl::Vertex, or derives from it;
+ * - The class V has the BitFlags component (or a derivate);
+ * - The class V has the Coordinate component (or a derivate);
  */
 template<typename T>
 concept VertexConcept =

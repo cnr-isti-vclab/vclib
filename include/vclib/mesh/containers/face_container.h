@@ -40,7 +40,7 @@ namespace vcl::mesh {
  * to the faces, the face number, iterators... This class will also take care to add
  * enablers/disablers of the eventual optional components of the face.
  */
-template<typename T>
+template<FaceConcept T>
 class FaceContainer : protected ElementContainer<T>, public FaceContainerTriggerer
 {
 	// Sanity checks for the Face -- all components must be consistent each other
@@ -69,7 +69,7 @@ class FaceContainer : protected ElementContainer<T>, public FaceContainerTrigger
 		face::sanityCheckWedgeTexCoords<T>(),
 		"Size of per Face WedgeTexCoords component must be the same of the VertexReferences.");
 
-	template <typename U>
+	template <FaceConcept U>
 	friend class FaceContainer;
 
 	using FaceContainerType = FaceContainer<T>;

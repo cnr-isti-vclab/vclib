@@ -52,6 +52,31 @@ concept HasOptionalAdjacentFaces = HasAdjacentFaces<T> && requires(T v)
 	{ v.isAdjFacesEnabled() } -> std::same_as<bool>;
 };
 
+/**
+ * @brief HasRightNumberOfAdjacentFaces concept
+ *
+ * This concept is designed to be used with Face components, where the number of adjacent faces must
+ * be consisted w.r.t. the number of vertices of the face.
+ *
+ * This concept is satisfied only if static number of adjacent faces is the same of the static
+ * number of vertices.
+ */
+template<typename T>
+concept HasRightNumberOfAdjacentFaces = T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
+
+/**
+ * @brief SanityCheckAdjacentFaces concept
+ *
+ * This concept is designed to be used with Face components, where the number of adjacent faces must
+ * be consistent w.r.t. the number of vertices of the face.
+ *
+ * It is satisfied if:
+ * - the component does *not* have adjacent faces;
+ * - in case it has adjacent faces, they have the same number of vertices of the face.
+ */
+template<typename T>
+concept SanityCheckAdjacentFaces = !HasAdjacentFaces<T> || HasRightNumberOfAdjacentFaces<T>;
+
 /* Detector functions to check if a class has AdjacentFaces or OptionalAdjacentFaces */
 
 template<typename T>
