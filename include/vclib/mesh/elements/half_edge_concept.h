@@ -24,6 +24,7 @@
 #define VCL_MESH_ELEMENTS_HALF_EDGE_CONCEPT_H
 
 #include "half_edge_components.h"
+#include "half_edge_components_optional.h"
 
 namespace vcl {
 
@@ -60,6 +61,8 @@ template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasScalar = comp::HasScalar<T>;
+template<typename T>
+concept HasVerticalComponent = comp::HasVerticalComponent<T>;
 
 } // namespace vcl::hedge
 

@@ -108,13 +108,8 @@ protected:
  */
 
 template<typename T>
-using hasVerticalComponentT = std::is_base_of<VerticalComponent<T>, T>;
-
-template<typename T>
-bool constexpr hasVerticalComponent()
-{
-	return hasVerticalComponentT<T>::value;
-}
+concept HasVerticalComponent =
+	std::derived_from<T, VerticalComponent<T>>;
 
 } // namespace vcl::comp
 

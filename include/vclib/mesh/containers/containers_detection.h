@@ -77,7 +77,7 @@ template<typename T>
 constexpr bool hasEdgeOptionalContainer()
 {
 	if constexpr (hasEdges<T>()) {
-		return comp::hasVerticalComponent<typename T::EdgeType>();
+		return comp::HasVerticalComponent<typename T::EdgeType>;
 	}
 	else {
 		return false;
@@ -99,7 +99,7 @@ template<typename T>
 constexpr bool hasFaceOptionalContainer()
 {
 	if constexpr (hasFaces<T>()) {
-		return comp::hasVerticalComponent<typename T::FaceType>();
+		return comp::HasVerticalComponent<typename T::FaceType>;
 	}
 	else {
 		return false;
@@ -121,7 +121,7 @@ template<typename T>
 constexpr bool hasHalfEdgeOptionalContainer()
 {
 	if constexpr (hasHalfEdges<T>()) {
-		return comp::hasVerticalComponent<typename T::HalfEdgeType>();
+		return comp::HasVerticalComponent<typename T::HalfEdgeType>;
 	}
 	else {
 		return false;
@@ -143,7 +143,7 @@ template<typename T>
 constexpr bool hasVertexOptionalContainer()
 {
 	if constexpr (hasVertices<T>()) {
-		return comp::hasVerticalComponent<typename T::VertexType>();
+		return comp::HasVerticalComponent<typename T::VertexType>;
 	}
 	else {
 		return false;

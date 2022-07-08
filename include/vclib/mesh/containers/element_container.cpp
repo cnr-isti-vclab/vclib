@@ -335,7 +335,7 @@ void ElementContainer<T>::clearElements()
 {
 	vec.clear();
 	en = 0;
-	if constexpr (comp::hasVerticalComponent<T>()) {
+	if constexpr (comp::HasVerticalComponent<T>) {
 		optionalVec.clear();
 	}
 }
@@ -347,7 +347,7 @@ uint ElementContainer<T>::addElement()
 	vec.push_back(T());
 	T* newB = vec.data();
 	en++;
-	if constexpr (comp::hasVerticalComponent<T>()) {
+	if constexpr (comp::HasVerticalComponent<T>) {
 		setContainerPointer(vec[vec.size() - 1]);
 		optionalVec.resize(vec.size());
 	}
@@ -371,7 +371,7 @@ uint ElementContainer<T>::addElements(uint size)
 	vec.resize(vec.size() + size);
 	T* newB = vec.data();
 	en += size;
-	if constexpr (comp::hasVerticalComponent<T>()) {
+	if constexpr (comp::HasVerticalComponent<T>) {
 		optionalVec.resize(vec.size());
 		for (uint i = baseId; i < vec.size(); ++i) {
 			setContainerPointer(vec[i]);
@@ -387,7 +387,7 @@ void ElementContainer<T>::reserveElements(uint size)
 	T* oldB = vec.data();
 	vec.reserve(size);
 	T* newB = vec.data();
-	if constexpr (comp::hasVerticalComponent<T>()) {
+	if constexpr (comp::HasVerticalComponent<T>) {
 		optionalVec.reserve(size);
 	}
 	updateContainerPointers(oldB, newB);
@@ -415,7 +415,7 @@ std::vector<int> ElementContainer<T>::compactElements()
 		}
 		k++;
 		vec.resize(k);
-		if constexpr (comp::hasVerticalComponent<T>()) {
+		if constexpr (comp::HasVerticalComponent<T>) {
 			optionalVec.compact(newIndices);
 		}
 	}
@@ -431,7 +431,7 @@ std::vector<int> ElementContainer<T>::compactElements()
 template<typename T>
 void ElementContainer<T>::setContainerPointer(T &element)
 {
-	if constexpr (comp::hasVerticalComponent<T>()) {
+	if constexpr (comp::HasVerticalComponent<T>) {
 		element.setContainerPointer(this);
 	}
 }
@@ -444,7 +444,7 @@ void ElementContainer<T>::setContainerPointer(T &element)
 template<typename T>
 void ElementContainer<T>::updateContainerPointers(const T *oldBase, const T *newBase)
 {
-	if constexpr (comp::hasVerticalComponent<T>()) {
+	if constexpr (comp::HasVerticalComponent<T>) {
 		if (oldBase != newBase) {
 			// all the faces must point to the right container - also the deleted ones
 			for (T& f : elements(false)) {
@@ -656,150 +656,95 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	const uint size = elementContainerSize();
 
 	// Adjacent Edges
-
 	// if this Element of this container has optional adjacent edges
-	if constexpr (comp::hasOptionalAdjacentEdges<T>()) {
-		// if also the other Container Element type optional adjacent edges and are enabled
-		if constexpr (comp::hasOptionalAdjacentEdges<CT>()) {
-			// if they are enabled on the other Mesh, enable also here
-			if (c.optionalVec.isAdjacentEdgesEnabled()) {
-				optionalVec.enableAdjacentEdges(size);
-			}
-		}
-		else {
-			// if the other Container has *non-optional* adjacent edges, I need to enable it on this
-			// container
-			if constexpr (comp::hasAdjacentEdges<CT>()) {
+	if constexpr (comp::HasOptionalAdjacentEdges<T>) {
+		// if also the other Container Element type has adjacent edges
+		if constexpr (comp::HasAdjacentEdges<CT>) {
+
+			// short circuited or: if optional, then I check if enabled; if not optional, then true
+			if (!comp::HasOptionalAdjacentEdges<CT> || c.optionalVec.isAdjacentEdgesEnabled()) {
 				optionalVec.enableAdjacentEdges(size);
 			}
 		}
 	}
 	// Adjacent Faces
-	if constexpr (comp::hasOptionalAdjacentFaces<T>()) {
-		if constexpr (comp::hasOptionalAdjacentFaces<CT>()) {
-			if (c.optionalVec.isAdjacentFacesEnabled()) {
-				optionalVec.enableAdjacentFaces(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasAdjacentFaces<CT>()) {
+	if constexpr (comp::HasOptionalAdjacentFaces<T>) {
+		if constexpr (comp::HasAdjacentFaces<CT>) {
+			if (!comp::HasOptionalAdjacentFaces<CT> || c.optionalVec.isAdjacentFacesEnabled()) {
 				optionalVec.enableAdjacentFaces(size);
 			}
 		}
 	}
 	// Adjacent Vertices
-	if constexpr (comp::hasOptionalAdjacentVertices<T>()) {
-		if constexpr (comp::hasOptionalAdjacentVertices<CT>()) {
-			if (c.optionalVec.isAdjacentVerticesEnabled()) {
-				optionalVec.enableAdjacentVertices(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasAdjacentVertices<CT>()) {
+	if constexpr (comp::HasOptionalAdjacentVertices<T>) {
+		if constexpr (comp::HasAdjacentVertices<CT>) {
+			if (!comp::HasOptionalAdjacentVertices<CT> ||
+				c.optionalVec.isAdjacentVerticesEnabled()) {
 				optionalVec.enableAdjacentVertices(size);
 			}
 		}
 	}
 	// Color
-	if constexpr (comp::hasOptionalColor<T>()) {
-		if constexpr (comp::hasOptionalColor<CT>()) {
-			if (c.optionalVec.isColorEnabled()) {
-				optionalVec.enableColor(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasColor<CT>()) {
+	if constexpr (comp::HasOptionalColor<T>) {
+		if constexpr (comp::HasColor<CT>) {
+			if (!comp::HasOptionalColor<CT> || c.optionalVec.isColorEnabled()) {
 				optionalVec.enableColor(size);
 			}
 		}
 	}
 	// Mark
-	if constexpr (comp::hasOptionalMark<T>()) {
-		if constexpr (comp::hasOptionalMark<CT>()) {
-			if (c.optionalVec.isMarkEnabled()) {
-				optionalVec.enableMark(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasMark<CT>()) {
+	if constexpr (comp::HasOptionalMark<T>) {
+		if constexpr (comp::HasMark<CT>) {
+			if (!comp::HasOptionalMark<CT> || c.optionalVec.isMarkEnabled()) {
 				optionalVec.enableMark(size);
 			}
 		}
 	}
 	// Normal
-	if constexpr (comp::hasOptionalNormal<T>()) {
-		if constexpr (comp::hasOptionalNormal<CT>()) {
-			if (c.optionalVec.isNormalEnabled()) {
-				optionalVec.enableNormal(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasNormal<CT>()) {
+	if constexpr (comp::HasOptionalNormal<T>) {
+		if constexpr (comp::HasNormal<CT>) {
+			if (!comp::HasOptionalNormal<CT> || c.optionalVec.isNormalEnabled()) {
 				optionalVec.enableNormal(size);
 			}
 		}
 	}
 	// Principal Curvature
-	if constexpr (comp::hasOptionalPrincipalCurvature<T>()) {
-		if constexpr (comp::hasOptionalPrincipalCurvature<CT>()) {
-			if (c.optionalVec.isPrincipalCurvatureEnabled()) {
-				optionalVec.enablePrincipalCurvature(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasPrincipalCurvature<CT>()) {
+	if constexpr (comp::HasOptionalPrincipalCurvature<T>) {
+		if constexpr (comp::HasPrincipalCurvature<CT>) {
+			if (!comp::HasOptionalPrincipalCurvature<CT> ||
+				c.optionalVec.isPrincipalCurvatureEnabled()) {
 				optionalVec.enablePrincipalCurvature(size);
 			}
 		}
 	}
 	// Scalar
-	if constexpr (comp::hasOptionalScalar<T>()) {
-		if constexpr (comp::hasOptionalScalar<CT>()) {
-			if (c.optionalVec.isScalarEnabled()) {
-				optionalVec.enableScalar(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasScalar<CT>()) {
+	if constexpr (comp::HasOptionalScalar<T>) {
+		if constexpr (comp::HasScalar<CT>) {
+			if (!comp::HasOptionalScalar<CT> || c.optionalVec.isScalarEnabled()) {
 				optionalVec.enableScalar(size);
 			}
 		}
 	}
 	// TexCoord
-	if constexpr (comp::hasOptionalTexCoord<T>()) {
-		if constexpr (comp::hasOptionalTexCoord<CT>()) {
-			if (c.optionalVec.isTexCoordEnabled()) {
-				optionalVec.enableTexCoord(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasTexCoord<CT>()) {
+	if constexpr (comp::HasOptionalTexCoord<T>) {
+		if constexpr (comp::HasTexCoord<CT>) {
+			if (!comp::HasOptionalTexCoord<CT> || c.optionalVec.isTexCoordEnabled()) {
 				optionalVec.enableTexCoord(size);
 			}
 		}
 	}
 	// Wedge Colors
-	if constexpr (comp::hasOptionalWedgeColors<T>()) {
-		if constexpr (comp::hasOptionalWedgeColors<CT>()) {
-			if (c.optionalVec.isWedgeColorsEnabled()) {
-				optionalVec.enableWedgeColors(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasWedgeColors<CT>()) {
+	if constexpr (comp::HasOptionalWedgeColors<T>) {
+		if constexpr (comp::HasWedgeColors<CT>) {
+			if (!comp::HasOptionalWedgeColors<CT> || c.optionalVec.isWedgeColorsEnabled()) {
 				optionalVec.enableWedgeColors(size);
 			}
 		}
 	}
 	// Wedge TexCoords
-	if constexpr (comp::hasOptionalWedgeTexCoords<T>()) {
-		if constexpr (comp::hasOptionalWedgeTexCoords<CT>()) {
-			if (c.optionalVec.isWedgeTexCoordsEnabled()) {
-				optionalVec.enableWedgeTexCoords(size);
-			}
-		}
-		else {
-			if constexpr (comp::hasWedgeTexCoords<CT>()) {
+	if constexpr (comp::HasOptionalWedgeTexCoords<T>) {
+		if constexpr (comp::HasWedgeTexCoords<CT>) {
+			if (!comp::HasOptionalWedgeTexCoords<CT> || c.optionalVec.isWedgeTexCoordsEnabled()) {
 				optionalVec.enableWedgeTexCoords(size);
 			}
 		}
@@ -823,7 +768,7 @@ template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	if constexpr (comp::hasVertexReferences<CBase>() || comp::hasAdjacentVertices<CBase>()) {
+	if constexpr (comp::HasVertexReferences<CBase> || comp::HasAdjacentVertices<CBase>) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importVertexReferencesFrom(c.element(i), base, cbase);
 		}
@@ -834,7 +779,7 @@ template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importFaceReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	if constexpr(comp::hasAdjacentFaces<CBase>()) {
+	if constexpr(comp::HasAdjacentFaces<CBase>) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importFaceReferencesFrom(c.element(i), base, cbase);
 		}
@@ -845,7 +790,7 @@ template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	if constexpr(comp::hasAdjacentEdges<CBase>()) {
+	if constexpr(comp::HasAdjacentEdges<CBase>) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importEdgeReferencesFrom(c.element(i), base, cbase);
 		}
@@ -856,17 +801,17 @@ template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importHalfEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	if constexpr (comp::hasFaceHalfEdgeReference<CBase>()) {
+	if constexpr (comp::HasFaceHalfEdgeReference<CBase>) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
 		}
 	}
-	if constexpr (comp::hasHalfEdgeReferences<CBase>()) {
+	if constexpr (comp::HasHalfEdgeReferences<CBase>) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
 		}
 	}
-	if constexpr (comp::hasVertexHalfEdgeReference<CBase>()) {
+	if constexpr (comp::HasVertexHalfEdgeReference<CBase>) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
 		}

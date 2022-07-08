@@ -102,12 +102,6 @@ bool constexpr hasCustomComponents()
 template<typename EdgeType>
 using VerticalComponent = comp::VerticalComponent<EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasVerticalComponent()
-{
-	return comp::hasVerticalComponent<EdgeType>();
-}
-
 } // namespace vcl::edge
 
 #endif // VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H

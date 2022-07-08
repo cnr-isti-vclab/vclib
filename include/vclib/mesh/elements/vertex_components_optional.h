@@ -166,12 +166,6 @@ bool constexpr hasCustomComponents()
 template<typename VertexType>
 using VerticalComponent = comp::VerticalComponent<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasVerticalComponent()
-{
-	return comp::hasVerticalComponent<VertexType>();
-}
-
 } // namespace vcl::vert
 
 #endif // VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_OPTIONAL_H

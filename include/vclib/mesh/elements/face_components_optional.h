@@ -181,12 +181,6 @@ bool constexpr hasCustomComponents()
 template<typename FaceType>
 using VerticalComponent = comp::VerticalComponent<FaceType>;
 
-template<typename FaceType>
-bool constexpr hasVerticalComponent()
-{
-	return comp::hasVerticalComponent<FaceType>();
-}
-
 } // namespace vcl::face
 
 #endif // VCL_MESH_ELEMENTS_FACE_COMPONENTS_OPTIONAL_H
