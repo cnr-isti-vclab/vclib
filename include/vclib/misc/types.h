@@ -130,7 +130,7 @@ struct IsDerivedFromImplementation
 } // namespace vcl::internal
 
 template< typename derived, template< typename ... > class base >
-using IsDerivedFromTemplateSpecialization = typename std::result_of< internal::IsDerivedFromImplementation< base >(typename std::remove_cv< derived >::type *) >::type;
+using IsDerivedFromTemplateSpecialization = typename std::invoke_result< internal::IsDerivedFromImplementation< base >, typename std::remove_cv< derived >::type * >::type;
 
 } // namespace vcl
 
