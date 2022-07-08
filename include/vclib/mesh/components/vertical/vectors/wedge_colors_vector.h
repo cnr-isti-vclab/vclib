@@ -37,6 +37,7 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isWedgeColorsEnabled() const { return false; };
 };
 
 template<typename T>
@@ -51,9 +52,11 @@ public:
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                        isWedgeColorsEnabled() const { return Base::isEnabled(); };
-	void                        enableWedgeColors(uint size) { Base::enable(size); }
-	void                        disableWedgeColors() { Base::disable(); }
+
+	bool isWedgeColorsEnabled() const { return Base::isEnabled(); };
+	void enableWedgeColors(uint size) { Base::enable(size); }
+	void disableWedgeColors() { Base::disable(); }
+
 	WedgeColorsContainer&       wedgeColors(uint i) { return Base::at(i); }
 	const WedgeColorsContainer& wedgeColors(uint i) const { return Base::at(i); }
 };

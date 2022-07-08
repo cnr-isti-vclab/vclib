@@ -37,6 +37,7 @@ public:
 	void resize(uint) {}
 	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isAdjacentEdgesEnabled() const { return false; }
 };
 
 template<typename T>

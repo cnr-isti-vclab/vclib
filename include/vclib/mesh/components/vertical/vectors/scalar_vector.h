@@ -37,6 +37,7 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isScalarEnabled() const { return false; };
 };
 
 template<typename T>
@@ -51,9 +52,11 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;
-	bool              isScalarEnabled() const { return Base::isEnabled(); };
-	void              enableScalar(uint size) { Base::enable(size); }
-	void              disableScalar() { Base::disable(); }
+
+	bool isScalarEnabled() const { return Base::isEnabled(); };
+	void enableScalar(uint size) { Base::enable(size); }
+	void disableScalar() { Base::disable(); }
+
 	ScalarType&       scalar(uint i) { return Base::at(i); }
 	const ScalarType& scalar(uint i) const { return Base::at(i); }
 };

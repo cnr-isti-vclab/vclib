@@ -37,6 +37,7 @@ public:
 	void resize(uint) {}
 	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isAdjacentVerticesEnabled() const { return false; };
 };
 
 template<typename T>
@@ -51,12 +52,14 @@ private:
 
 public:
 	using Base::clear;
+	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	using Base::compact;
-	bool             isAdjacentVerticesEnabled() const { return Base::isEnabled(); };
-	void             enableAdjacentVertices(uint size) { Base::enable(size); }
-	void             disableAdjacentVertices() { Base::disable(); }
+
+	bool isAdjacentVerticesEnabled() const { return Base::isEnabled(); };
+	void enableAdjacentVertices(uint size) { Base::enable(size); }
+	void disableAdjacentVertices() { Base::disable(); }
+
 	AdjVertsContainer&       adjVerts(uint i) { return Base::at(i); }
 	const AdjVertsContainer& adjVerts(uint i) const { return Base::at(i); }
 };

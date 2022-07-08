@@ -37,6 +37,7 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isNormalEnabled() const { return false; };
 };
 
 template<typename T>
@@ -51,9 +52,11 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;
-	bool              isNormalEnabled() const { return Base::isEnabled(); };
-	void              enableNormal(uint size) { Base::enable(size); }
-	void              disableNormal() { Base::disable(); }
+
+	bool isNormalEnabled() const { return Base::isEnabled(); };
+	void enableNormal(uint size) { Base::enable(size); }
+	void disableNormal() { Base::disable(); }
+
 	NormalType&       normal(uint i) { return Base::at(i); }
 	const NormalType& normal(uint i) const { return Base::at(i); }
 };

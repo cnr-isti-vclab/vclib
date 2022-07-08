@@ -37,6 +37,7 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isWedgeTexCoordsEnabled() const { return false; };
 };
 
 template<typename T>
@@ -51,9 +52,11 @@ public:
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                isWedgeTexCoordsEnabled() const { return Base::isEnabled(); };
-	void                enableWedgeTexCoords(uint size) { Base::enable(size); }
-	void                disableWedgeTexCoords() { Base::disable(); }
+
+	bool isWedgeTexCoordsEnabled() const { return Base::isEnabled(); };
+	void enableWedgeTexCoords(uint size) { Base::enable(size); }
+	void disableWedgeTexCoords() { Base::disable(); }
+
 	WedgeTexCoordsContainer&       wedgeTexCoords(uint i) { return Base::at(i); }
 	const WedgeTexCoordsContainer& wedgeTexCoords(uint i) const { return Base::at(i); }
 };

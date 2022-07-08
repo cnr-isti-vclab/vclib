@@ -276,7 +276,7 @@ void OptionalAdjacentEdges<Edge, N, T>::importEdgeReferencesFrom(
 	Edge* base,
 	const ElEType* ebase)
 {
-	if constexpr (hasAdjacentEdges<Element>()) {
+	if constexpr (HasAdjacentEdges<Element>) {
 		if (isAdjEdgesEnabled() && isAdjacentEdgesEnabledOn(e)){
 			if constexpr(N > 0) {
 				// same static size

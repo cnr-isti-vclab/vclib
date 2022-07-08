@@ -37,6 +37,7 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isTexCoordEnabled() const { return false; };
 };
 
 template<typename T>
@@ -51,9 +52,11 @@ public:
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                isTexCoordEnabled() const { return Base::isEnabled(); };
-	void                enableTexCoord(uint size) { Base::enable(size); }
-	void                disableTexCoord() { Base::disable(); }
+
+	bool isTexCoordEnabled() const { return Base::isEnabled(); };
+	void enableTexCoord(uint size) { Base::enable(size); }
+	void disableTexCoord() { Base::disable(); }
+
 	TexCoordType&       texCoord(uint i) { return Base::at(i); }
 	const TexCoordType& texCoord(uint i) const { return Base::at(i); }
 };

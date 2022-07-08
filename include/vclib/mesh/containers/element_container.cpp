@@ -458,24 +458,25 @@ template<typename T>
 template<typename Vertex>
 void ElementContainer<T>::updateVertexReferences(const Vertex *oldBase, const Vertex *newBase)
 {
-	if constexpr(comp::hasVertexReferences<T>()) {
+	// VertexReferences component update
+	if constexpr(comp::HasVertexReferences<T>) {
 		for (T& e : elements()) {
 			e.updateVertexReferences(oldBase, newBase);
 		}
 	}
-	if constexpr (comp::hasOptionalAdjacentVertices<T>()) {
-		if (optionalVec.isAdjacentVerticesEnabled()) {
-			for (T& v : elements()) {
-				v.updateVertexReferences(oldBase, newBase);
+
+	// AdjacentVertexReferences component update
+	if constexpr(comp::HasAdjacentVertices<T>) {
+		// short circuited or: if optional, then I check if enabled; if not optional, then true
+		if (!comp::hasOptionalAdjacentVertices<T>() || optionalVec.isAdjacentVerticesEnabled()) {
+			for (T& e : elements()) {
+				e.updateVertexReferences(oldBase, newBase);
 			}
 		}
 	}
-	else if constexpr (comp::hasAdjacentVertices<T>()) {
-		for (T& v : elements()) {
-			v.updateVertexReferences(oldBase, newBase);
-		}
-	}
-	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+
+	// HalfEdgeReferences component update
+	if constexpr (comp::HasHalfEdgeReferences<T>) {
 		for (T& e : elements()) {
 			e.updateVertexReferences(oldBase, newBase);
 		}
@@ -488,24 +489,25 @@ void ElementContainer<T>::updateVertexReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr(comp::hasVertexReferences<T>()) {
+	// VertexReferences component update
+	if constexpr(comp::HasVertexReferences<T>) {
 		for (T& e: elements()) {
 			e.updateVertexReferencesAfterCompact(base, newIndices);
 		}
 	}
-	if constexpr (comp::hasOptionalAdjacentVertices<T>()) {
-		if (optionalVec.isAdjacentVerticesEnabled()) {
+
+	// AdjacentVertexReferences component update
+	if constexpr (comp::HasAdjacentVertices<T>) {
+		// short circuited or: if optional, then I check if enabled; if not optional, then true
+		if (!comp::HasOptionalAdjacentVertices<T> || optionalVec.isAdjacentVerticesEnabled()) {
 			for (T& v : elements()) {
 				v.updateVertexReferencesAfterCompact(base, newIndices);
 			}
 		}
 	}
-	else if constexpr (comp::hasAdjacentVertices<T>()) {
-		for (T& v : elements()) {
-			v.updateVertexReferencesAfterCompact(base, newIndices);
-		}
-	}
-	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+
+	// HalfEdgeReferences component update
+	if constexpr (comp::HasHalfEdgeReferences<T>) {
 		for (T& e : elements()) {
 			e.updateVertexReferencesAfterCompact(base, newIndices);
 		}
@@ -516,19 +518,18 @@ template<typename T>
 template<typename Face>
 void ElementContainer<T>::updateFaceReferences(const Face *oldBase, const Face *newBase)
 {
-	if constexpr (comp::hasOptionalAdjacentFaces<T>()) {
-		if (optionalVec.isAdjacentFacesEnabled()) {
+	// AdjacentFaces component
+	if constexpr (comp::HasAdjacentFaces<T>) {
+		// short circuited or: if optional, then I check if enabled; if not optional, then true
+		if (!comp::HasOptionalAdjacentFaces<T> || optionalVec.isAdjacentFacesEnabled()) {
 			for (T& e : elements()) {
 				e.updateFaceReferences(oldBase, newBase);
 			}
 		}
 	}
-	else if constexpr (comp::hasAdjacentFaces<T>()) {
-		for (T& e : elements()) {
-			e.updateFaceReferences(oldBase, newBase);
-		}
-	}
-	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+
+	// HalfEdgeReferences component
+	if constexpr (comp::HasHalfEdgeReferences<T>) {
 		for (T& e : elements()) {
 			e.updateFaceReferences(oldBase, newBase);
 		}
@@ -541,18 +542,17 @@ void ElementContainer<T>::updateFaceReferencesAfterCompact(
 	const Face*             base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr (comp::hasOptionalAdjacentFaces<T>()) {
-		if (optionalVec.isAdjacentFacesEnabled()) {
+	// AdjacentFaces component
+	if constexpr (comp::HasAdjacentFaces<T>) {
+		// short circuited or: if optional, then I check if enabled; if not optional, then true
+		if (!comp::HasOptionalAdjacentFaces<T> || optionalVec.isAdjacentFacesEnabled()) {
 			for (T& e : elements()) {
 				e.updateFaceReferencesAfterCompact(base, newIndices);
 			}
 		}
 	}
-	else if constexpr (comp::hasAdjacentFaces<T>()) {
-		for (T& e : elements()) {
-			e.updateFaceReferencesAfterCompact(base, newIndices);
-		}
-	}
+
+	// HalfEdgeReferences component
 	if constexpr (comp::hasHalfEdgeReferences<T>()) {
 		for (T& e : elements()) {
 			e.updateFaceReferencesAfterCompact(base, newIndices);
@@ -564,16 +564,13 @@ template<typename T>
 template<typename Edge>
 void ElementContainer<T>::updateEdgeReferences(const Edge *oldBase, const Edge *newBase)
 {
-	if constexpr (comp::hasOptionalAdjacentEdges<T>()) {
-		if (optionalVec.isAdjacentEdgesEnabled()) {
+	// AdjacentEdges component
+	if constexpr (comp::HasAdjacentEdges<T>) {
+		// short circuited or: if optional, then I check if enabled; if not optional, then true
+		if (!comp::HasOptionalAdjacentEdges<T> || optionalVec.isAdjacentEdgesEnabled()) {
 			for (T& e : elements()) {
 				e.updateEdgeReferences(oldBase, newBase);
 			}
-		}
-	}
-	else if constexpr (comp::hasAdjacentEdges<T>()) {
-		for (T& e : elements()) {
-			e.updateEdgeReferences(oldBase, newBase);
 		}
 	}
 }
@@ -584,16 +581,13 @@ void ElementContainer<T>::updateEdgeReferencesAfterCompact(
 	const Edge*             base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr (comp::hasOptionalAdjacentEdges<T>()) {
-		if (optionalVec.isAdjacentEdgesEnabled()) {
+	// AdjacentEdges component
+	if constexpr (comp::HasAdjacentEdges<T>) {
+		// short circuited or: if optional, then I check if enabled; if not optional, then true
+		if (!comp::HasOptionalAdjacentEdges<T> || optionalVec.isAdjacentEdgesEnabled()) {
 			for (T& e : elements()) {
 				e.updateEdgeReferencesAfterCompact(base, newIndices);
 			}
-		}
-	}
-	else if constexpr (comp::hasAdjacentEdges<T>()) {
-		for (T& e : elements()) {
-			e.updateEdgeReferencesAfterCompact(base, newIndices);
 		}
 	}
 }
@@ -602,17 +596,22 @@ template<typename T>
 template<typename HalfEdge>
 void ElementContainer<T>::updateHalfEdgeReferences(const HalfEdge *oldBase, const HalfEdge *newBase)
 {
-	if constexpr (comp::hasFaceHalfEdgeReference<T>()) {
+	// FaceHalfEdgeReference component
+	if constexpr (comp::HasFaceHalfEdgeReference<T>) {
 		for (T& e : elements()) {
 			e.updateHalfEdgeReferences(oldBase, newBase);
 		}
 	}
-	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+
+	// HalfEdgeReferences component
+	if constexpr (comp::HasHalfEdgeReferences<T>) {
 		for (T& e : elements()) {
 			e.updateHalfEdgeReferences(oldBase, newBase);
 		}
 	}
-	if constexpr (comp::hasVertexHalfEdgeReference<T>()) {
+
+	// VertexHalfEdgeReference component
+	if constexpr (comp::HasVertexHalfEdgeReference<T>) {
 		for (T& e : elements()) {
 			e.updateHalfEdgeReferences(oldBase, newBase);
 		}
@@ -625,17 +624,22 @@ void ElementContainer<T>::updateHalfEdgeReferencesAfterCompact(
 	const HalfEdge*             base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr (comp::hasFaceHalfEdgeReference<T>()) {
+	// FaceHalfEdgeReference component
+	if constexpr (comp::HasFaceHalfEdgeReference<T>) {
 		for (T& e : elements()) {
 			e.updateHalfEdgeReferencesAfterCompact(base, newIndices);
 		}
 	}
-	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+
+	// HalfEdgeReferences component
+	if constexpr (comp::HasHalfEdgeReferences<T>) {
 		for (T& e : elements()) {
 			e.updateHalfEdgeReferencesAfterCompact(base, newIndices);
 		}
 	}
-	if constexpr (comp::hasVertexHalfEdgeReference<T>()) {
+
+	// VertexHalfEdgeReference component
+	if constexpr (comp::HasVertexHalfEdgeReference<T>) {
 		for (T& e : elements()) {
 			e.updateHalfEdgeReferencesAfterCompact(base, newIndices);
 		}
@@ -655,7 +659,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 
 	// if this Element of this container has optional adjacent edges
 	if constexpr (comp::hasOptionalAdjacentEdges<T>()) {
-		// if also the other Container Element type optional adjacent edges
+		// if also the other Container Element type optional adjacent edges and are enabled
 		if constexpr (comp::hasOptionalAdjacentEdges<CT>()) {
 			// if they are enabled on the other Mesh, enable also here
 			if (c.optionalVec.isAdjacentEdgesEnabled()) {
