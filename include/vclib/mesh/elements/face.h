@@ -23,8 +23,6 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_H
 #define VCL_MESH_ELEMENTS_FACE_H
 
-#include "face_components.h"
-#include "face_components_optional.h"
 #include "face_concept.h"
 
 namespace vcl::mesh {

@@ -23,8 +23,6 @@
 #ifndef VCL_MESH_ELEMENTS_HALF_EDGE_H
 #define VCL_MESH_ELEMENTS_HALF_EDGE_H
 
-#include "half_edge_components.h"
-#include "half_edge_components_optional.h"
 #include "half_edge_concept.h"
 
 namespace vcl::mesh {

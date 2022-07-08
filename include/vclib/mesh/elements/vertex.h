@@ -23,8 +23,6 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_H
 #define VCL_MESH_ELEMENTS_VERTEX_H
 
-#include "vertex_components.h"
-#include "vertex_components_optional.h"
 #include "vertex_concept.h"
 
 namespace vcl::mesh {
