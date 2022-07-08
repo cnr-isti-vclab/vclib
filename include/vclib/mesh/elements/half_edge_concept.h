@@ -56,11 +56,19 @@ concept HasBitFlags = comp::HasBitFlags<T>;
 template<typename T>
 concept HasColor = comp::HasColor<T>;
 template<typename T>
+concept HasOptionalColor = comp::HasOptionalColor<T>;
+template<typename T>
+concept HasCustomComponents = comp::HasCustomComponents<T>;
+template<typename T>
 concept HasHalfEdgeReferences = comp::HasHalfEdgeReferences<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
+concept HasOptionalMark = comp::HasOptionalMark<T>;
+template<typename T>
 concept HasScalar = comp::HasScalar<T>;
+template<typename T>
+concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>
 concept HasVerticalComponent = comp::HasVerticalComponent<T>;
 

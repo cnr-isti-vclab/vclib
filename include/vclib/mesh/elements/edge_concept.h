@@ -54,15 +54,27 @@ struct IsAnEdge<Edge<Args...>> : // For types matching the pattern Edge<Args...>
 template<typename T>
 concept HasAdjacentEdges = comp::HasAdjacentEdges<T>;
 template<typename T>
+concept HasOptionalAdjacentEdges = comp::HasOptionalAdjacentEdges<T>;
+template<typename T>
 concept HasAdjacentFaces = comp::HasAdjacentFaces<T>;
+template<typename T>
+concept HasOptionalAdjacentFaces = comp::HasOptionalAdjacentFaces<T>;
 template<typename T>
 concept HasBitFlags = comp::HasBitFlags<T>;
 template<typename T>
 concept HasColor = comp::HasColor<T>;
 template<typename T>
+concept HasOptionalColor = comp::HasOptionalColor<T>;
+template<typename T>
+concept HasCustomComponents = comp::HasCustomComponents<T>;
+template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
+concept HasOptionalMark = comp::HasOptionalMark<T>;
+template<typename T>
 concept HasScalar = comp::HasScalar<T>;
+template<typename T>
+concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>
 concept HasVertexReferences = comp::HasVertexReferences<T>;
 template<typename T>
