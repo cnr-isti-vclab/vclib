@@ -214,6 +214,8 @@ void loadOff(
 
 	internal::loadOffVertices(m, file, fileInfo, nVertices);
 	internal::loadOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);
+	if (enableOptionalComponents)
+		loadedInfo = fileInfo;
 	// internal::loadOffEdges(m, file, loadedInfo, nEdges);
 }
 
