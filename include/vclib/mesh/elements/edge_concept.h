@@ -49,10 +49,42 @@ struct IsAnEdge<Edge<Args...>> : // For types matching the pattern Edge<Args...>
 {
 };
 
+/* Port concepts into the vert namespace */
+template<typename T>
+concept HasAdjacentEdges = comp::HasAdjacentEdges<T>;
+template<typename T>
+concept HasAdjacentFaces = comp::HasAdjacentFaces<T>;
+template<typename T>
+concept HasBitFlags = comp::HasBitFlags<T>;
+template<typename T>
+concept HasColor = comp::HasColor<T>;
+template<typename T>
+concept HasMark = comp::HasMark<T>;
+template<typename T>
+concept HasScalar = comp::HasScalar<T>;
+template<typename T>
+concept HasVertexReferences = comp::HasVertexReferences<T>;
+
 } // namespace vcl::edge
 
+/**
+ * @brief EdgeConcept
+ *
+ * The Edge concept describes how a Edge element that can be used for a EdgeContainer should be
+ * organized.
+ *
+ * The Edge concept is satisfied for a class E if ALL the following sentences are true:
+ * - The class E is vcl::Edge, or derives from it;
+ * - The class E has the BitFlags component (or a derivate);
+ * - The class E has the VertexReferences component (or a derivate);
+ * - The number of vertices of the VertexReferences is 2.
+ */
 template<typename T>
-concept EdgeConcept = edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value;
+concept EdgeConcept =
+	edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value &&
+	edge::HasBitFlags<T> &&
+	edge::HasVertexReferences<T> &&
+	T::VERTEX_NUMBER == 2;
 
 } // namespace vcl
 

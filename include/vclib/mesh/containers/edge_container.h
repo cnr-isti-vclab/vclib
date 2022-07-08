@@ -32,19 +32,10 @@
 
 namespace vcl::mesh {
 
-template<typename T>
+template<EdgeConcept T>
 class EdgeContainer : protected ElementContainer<T>, public EdgeContainerTriggerer
 {
-	// Sanity checks for the Edge -- all components must be consistent each other
-	static_assert(
-		vcl::edge::hasBitFlags<T>(),
-		"You should include BitFlags (or a derived) as Edge component in your Mesh definition.");
-	static_assert(
-		vcl::edge::hasVertexReferences<T>(),
-		"You should include a VertexReferences as Edge component in your Mesh definition.");
-	static_assert(T::VERTEX_NUMBER == 2, "Edges must have 2 vertex references.");
-
-	template <typename U>
+	template <EdgeConcept U>
 	friend class EdgeContainer;
 
 	using EdgeContainerType = EdgeContainer<T>;

@@ -25,11 +25,12 @@
 
 #include "edge_components.h"
 #include "edge_components_optional.h"
+#include "edge_concept.h"
 
 namespace vcl::mesh {
 
 // EdgeContainer class declaration
-template<typename>
+template<EdgeConcept>
 class EdgeContainer;
 
 template<typename>
@@ -39,15 +40,10 @@ class ElementContainer;
 
 namespace vcl {
 
-// Dummy class used to detect a Edge regardless of its template arguments
-class EdgeTriggerer
-{
-};
-
 template<typename... Args>
-class Edge : public EdgeTriggerer, public Args...
+class Edge : public Args...
 {
-	template<typename>
+	template<EdgeConcept>
 	friend class mesh::EdgeContainer;
 
 	template<typename>
