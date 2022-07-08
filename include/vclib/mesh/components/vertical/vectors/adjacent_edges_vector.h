@@ -40,8 +40,8 @@ public:
 	bool isAdjacentEdgesEnabled() const { return false; }
 };
 
-template<typename T>
-class AdjacentEdgesVector<T, std::enable_if_t<comp::hasOptionalAdjacentEdges<T>()>> :
+template<comp::HasOptionalAdjacentEdges T>
+class AdjacentEdgesVector<T> :
 		private GenericComponentVector<typename T::AdjEdgesContainer>
 {
 private:

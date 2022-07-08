@@ -286,7 +286,7 @@ VertexContainer<T>::vertices(bool jumpDeleted) const
 template<VertexConcept T>
 void VertexContainer<T>::enableAllPerVertexOptionalComponents()
 {
-	if constexpr (vert::hasOptionalAdjacentEdges<T>())
+	if constexpr (vert::HasOptionalAdjacentEdges<T>)
 		enablePerVertexAdjacentEdges();
 	if constexpr (vert::hasOptionalAdjacentFaces<T>())
 		enablePerVertexAdjacentFaces();
@@ -313,7 +313,7 @@ void VertexContainer<T>::enableAllPerVertexOptionalComponents()
 template<VertexConcept T>
 void VertexContainer<T>::disableAllPerVertexOptionalComponents()
 {
-	if constexpr (vert::hasOptionalAdjacentEdges<T>())
+	if constexpr (vert::HasOptionalAdjacentEdges<T>)
 		disablePerVertexAdjacentEdges();
 	if constexpr (vert::hasOptionalAdjacentFaces<T>())
 		disablePerVertexAdjacentFaces();
@@ -343,7 +343,7 @@ void VertexContainer<T>::disableAllPerVertexOptionalComponents()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), bool)
+VCL_ENABLE_IF(vert::HasOptionalAdjacentEdges<U>, bool)
 VertexContainer<T>::isPerVertexAdjacentEdgesEnabled() const
 {
 	return Base::optionalVec.isAdjacentEdgesEnabled();
@@ -357,7 +357,7 @@ VertexContainer<T>::isPerVertexAdjacentEdgesEnabled() const
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalAdjacentEdges<U>, void)
 VertexContainer<T>::enablePerVertexAdjacentEdges()
 {
 	Base::optionalVec.enableAdjacentEdges(vertexContainerSize());
@@ -371,7 +371,7 @@ VertexContainer<T>::enablePerVertexAdjacentEdges()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentEdges<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalAdjacentEdges<U>, void)
 VertexContainer<T>::disablePerVertexAdjacentEdges()
 {
 	Base::optionalVec.disableAdjacentEdges();

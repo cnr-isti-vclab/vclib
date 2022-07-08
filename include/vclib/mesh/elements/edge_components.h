@@ -37,12 +37,6 @@ namespace vcl::edge {
 template<typename EdgeType>
 using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
 
-template<typename EdgeType>
-bool constexpr hasAdjacentEdges()
-{
-	return comp::hasAdjacentEdges<EdgeType>();
-}
-
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;

@@ -80,18 +80,6 @@ concept SanityCheckAdjacentEdges = !HasAdjacentEdges<T> || HasRightNumberOfAdjac
 
 /* Detector functions to check if a class has AdjacentEdges or OptionalAdjacentEdges */
 
-template<typename T>
-bool constexpr hasAdjacentEdges()
-{
-	return HasAdjacentEdges<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalAdjacentEdges()
-{
-	return HasOptionalAdjacentEdges<T>;
-}
-
 template <typename T>
 bool isAdjacentEdgesEnabledOn(const T& element)
 {
@@ -100,17 +88,6 @@ bool isAdjacentEdgesEnabledOn(const T& element)
 	}
 	else {
 		return HasAdjacentEdges<T>;
-	}
-}
-
-template<typename T>
-bool constexpr sanityCheckAdjacentEdges()
-{
-	if constexpr (hasAdjacentEdges<T>()) {
-		return T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
-	}
-	else {
-		return true;
 	}
 }
 

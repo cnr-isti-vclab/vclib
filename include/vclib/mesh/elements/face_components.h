@@ -47,18 +47,6 @@ using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1>;
 template<typename EdgeType>
 using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3>;
 
-template<typename FaceType>
-bool constexpr hasAdjacentEdges()
-{
-	return comp::hasAdjacentEdges<FaceType>();
-}
-
-template<typename FaceType>
-bool constexpr sanityCheckAdjacentEdges()
-{
-	return comp::sanityCheckAdjacentEdges<FaceType>();
-}
-
 /* Port AdjacentFaces class into face namespace */
 template<typename FaceType>
 using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1>;

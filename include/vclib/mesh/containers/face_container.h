@@ -84,15 +84,15 @@ public:
 
 	// AdjacentEdges
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), bool)
+	VCL_ENABLE_IF(face::HasOptionalAdjacentEdges<U>, bool)
 	isPerFaceAdjacentEdgesEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalAdjacentEdges<U>, void)
 	enablePerFaceAdjacentEdges();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalAdjacentEdges<U>, void)
 	disablePerFaceAdjacentEdges();
 
 	// AdjacentFaces

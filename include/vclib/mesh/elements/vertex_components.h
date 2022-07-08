@@ -42,12 +42,6 @@ namespace vcl::vert {
 template<typename Edge>
 using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
 
-template<typename VertexType>
-bool constexpr hasAdjacentEdges()
-{
-	return comp::hasAdjacentEdges<VertexType>();
-}
-
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;

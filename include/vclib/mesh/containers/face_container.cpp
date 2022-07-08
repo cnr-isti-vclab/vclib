@@ -277,7 +277,7 @@ typename FaceContainer<T>::ConstFaceRangeIterator FaceContainer<T>::faces(bool j
 template<FaceConcept T>
 void FaceContainer<T>::enableAllPerFaceOptionalComponents()
 {
-	if constexpr (face::hasOptionalAdjacentEdges<T>())
+	if constexpr (face::HasOptionalAdjacentEdges<T>)
 		enablePerFaceAdjacentEdges();
 	if constexpr (face::hasOptionalAdjacentFaces<T>())
 		enablePerFaceAdjacentFaces();
@@ -304,7 +304,7 @@ void FaceContainer<T>::enableAllPerFaceOptionalComponents()
 template<FaceConcept T>
 void FaceContainer<T>::disableAllPerFaceOptionalComponents()
 {
-	if constexpr (face::hasOptionalAdjacentEdges<T>())
+	if constexpr (face::HasOptionalAdjacentEdges<T>)
 		disablePerFaceAdjacentEdges();
 	if constexpr (face::hasOptionalAdjacentFaces<T>())
 		disablePerFaceAdjacentFaces();
@@ -334,7 +334,7 @@ void FaceContainer<T>::disableAllPerFaceOptionalComponents()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), bool)
+VCL_ENABLE_IF(face::HasOptionalAdjacentEdges<U>, bool)
 FaceContainer<T>::isPerFaceAdjacentEdgesEnabled() const
 {
 	return Base::optionalVec.isAdjacentEdgesEnabled();
@@ -352,7 +352,7 @@ FaceContainer<T>::isPerFaceAdjacentEdgesEnabled() const
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalAdjacentEdges<U>, void)
 FaceContainer<T>::enablePerFaceAdjacentEdges()
 {
 	Base::optionalVec.enableAdjacentEdges(Base::vec.size());
@@ -372,7 +372,7 @@ FaceContainer<T>::enablePerFaceAdjacentEdges()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalAdjacentEdges<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalAdjacentEdges<U>, void)
 FaceContainer<T>::disablePerFaceAdjacentEdges()
 {
 	Base::optionalVec.disableAdjacentEdges();

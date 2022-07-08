@@ -59,7 +59,7 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 
 	static const int VN = F::VERTEX_NUMBER;
 	if constexpr (VN < 0) {
-		if constexpr (comp::hasAdjacentEdges<F>()) {
+		if constexpr (comp::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
 
 			if (T::isAdjEdgesEnabled())

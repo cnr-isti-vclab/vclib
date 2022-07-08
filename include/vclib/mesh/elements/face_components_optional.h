@@ -43,12 +43,6 @@ using OptionalAdjacentPolygonEdges = comp::OptionalAdjacentEdges<EdgeType, -1, F
 template<typename EdgeType, typename FaceType>
 using OptionalAdjacentTriangleEdges = comp::OptionalAdjacentEdges<EdgeType, 3, FaceType>;
 
-template<typename FaceType>
-bool constexpr hasOptionalAdjacentEdges()
-{
-	return comp::hasOptionalAdjacentEdges<FaceType>();
-}
-
 /* Port OptionalAdjacentFaces class into face namespace */
 template<typename FaceType>
 using OptionalAdjacentPolygons = comp::OptionalAdjacentFaces<FaceType, -1, FaceType>;

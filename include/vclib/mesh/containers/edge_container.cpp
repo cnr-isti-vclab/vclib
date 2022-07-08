@@ -277,7 +277,7 @@ typename EdgeContainer<T>::ConstEdgeRangeIterator EdgeContainer<T>::edges(bool j
 template<EdgeConcept T>
 void EdgeContainer<T>::enableAllPerEdgeOptionalComponents()
 {
-	if constexpr (edge::hasOptionalAdjacentEdges<T>())
+	if constexpr (edge::HasOptionalAdjacentEdges<T>)
 		enablePerEdgeAdjacentEdges();
 	if constexpr (edge::hasOptionalAdjacentFaces<T>())
 		enablePerEdgeAdjacentFaces();
@@ -296,7 +296,7 @@ void EdgeContainer<T>::enableAllPerEdgeOptionalComponents()
 template<EdgeConcept T>
 void EdgeContainer<T>::disableAllPerEdgeOptionalComponents()
 {
-	if constexpr (edge::hasOptionalAdjacentEdges<T>())
+	if constexpr (edge::HasOptionalAdjacentEdges<T>)
 		disablePerEdgeAdjacentEdges();
 	if constexpr (edge::hasOptionalAdjacentFaces<T>())
 		disablePerEdgeAdjacentFaces();
@@ -318,7 +318,7 @@ void EdgeContainer<T>::disableAllPerEdgeOptionalComponents()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), bool)
+VCL_ENABLE_IF(edge::HasOptionalAdjacentEdges<U>, bool)
 EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled() const
 {
 	return Base::optionalVec.isAdjacentEdgesEnabled();
@@ -336,7 +336,7 @@ EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled() const
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalAdjacentEdges<U>, void)
 EdgeContainer<T>::enablePerEdgeAdjacentEdges()
 {
 	Base::optionalVec.enableAdjacentEdges(Base::vec.size());
@@ -356,7 +356,7 @@ EdgeContainer<T>::enablePerEdgeAdjacentEdges()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalAdjacentEdges<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalAdjacentEdges<U>, void)
 EdgeContainer<T>::disablePerEdgeAdjacentEdges()
 {
 	Base::optionalVec.disableAdjacentEdges();
