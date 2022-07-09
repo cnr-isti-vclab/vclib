@@ -20,106 +20,51 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_REQUIREMENTS_H
-#define VCL_MESH_MESH_REQUIREMENTS_H
+#ifndef VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H
+#define VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H
 
-#include "mesh_concepts.h"
-#include "face_requirements.h"
-#include "vertex_requirements.h"
+#include "element_concepts.h"
+#include "../mesh_concept.h"
 
 namespace vcl {
 
-/********************
- * is/has functions *
- ********************/
-
-// Triangles
+template<typename MeshType>
+concept HasTriangles =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
 
 template<typename MeshType>
-bool constexpr hasTriangles();
+concept TriangleMeshConcept = HasTriangles<MeshType>;
 
 template<typename MeshType>
-bool isTriangleMesh(const MeshType&);
-
-// Quads
-
-template<typename MeshType>
-bool constexpr hasQuads();
+concept HasQuads =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
 
 template<typename MeshType>
-bool isQuadMesh(const MeshType&);
-
-// Polygons
+concept QuadMeshConcept = HasQuads<MeshType>;
 
 template<typename MeshType>
-bool constexpr hasPolygons();
-
-// Mesh Compactness
-
-template<typename MeshType>
-bool isCompact(const MeshType&);
-
-// Bounding Box
+concept HasPolygons =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
 
 template<typename MeshType>
-bool constexpr hasBoundingBox();
-
-// Mark
+concept PolygonMeshConcept = HasPolygons<MeshType>;
 
 template<typename MeshType>
-bool constexpr hasMark();
-
-// Texture File Names
-
-template<typename MeshType>
-bool constexpr hasTexFileNames();
-
-// Transform Matrix
+concept HasBoundingBox =
+	mesh::HasBoundingBox<MeshType>;
 
 template<typename MeshType>
-bool constexpr hasTransformMatrix();
-
-/*********************
- * require functions *
- *********************/
-
-// Triangles
+concept HasMark =
+	mesh::HasMark<MeshType>;
 
 template<typename MeshType>
-void requireTriangleMesh(const MeshType&);
-
-// Quads
-
-template<typename MeshType>
-void requireQuadMesh(const MeshType&);
-
-// Mesh Compactness
-
-template <typename MeshType>
-void requireCompactness(const MeshType&);
-
-// Bounding Box
+concept HasTexFileNames =
+	mesh::HasTexFileNames<MeshType>;
 
 template<typename MeshType>
-void constexpr requireBoundingBox();
-
-// Mark
-
-template<typename MeshType>
-void constexpr requireMark();
-
-// Texture File Names
-
-template<typename MeshType>
-void constexpr requireTexFileNames();
-
-// Transform Matrix
-
-template<typename MeshType>
-void constexpr requireTransformMatrix();
+concept HasTransformMatrix =
+	mesh::HasTransformMatrix<MeshType>;
 
 } // namespace vcl
 
-#include "mesh_requirements.cpp"
-
-#endif // VCL_MESH_MESH_REQUIREMENTS_H
+#endif // VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H

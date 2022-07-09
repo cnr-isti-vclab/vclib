@@ -29,6 +29,7 @@
 #include <vclib/iterators/container_range_iterator.h>
 #include "../components/vertical/vertical_component.h"
 #include "../components/vertical/vectors/vertical_components_vector.h"
+#include "containers_concepts.h"
 #include "containers_detection.h"
 
 namespace vcl::mesh {

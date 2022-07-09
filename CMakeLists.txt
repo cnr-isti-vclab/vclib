@@ -108,6 +108,7 @@ set(HEADERS
 	include/vclib/math/perlin_noise.h
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_components.h
+	include/vclib/mesh/mesh_concept.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
 	include/vclib/mesh/components/concepts/adjacent_edges.h
@@ -207,8 +208,10 @@ set(HEADERS
 	include/vclib/mesh/elements/vertex_components.h
 	include/vclib/mesh/elements/vertex_components_optional.h
 	include/vclib/mesh/elements/vertex_concept.h
+	include/vclib/mesh/requirements/element_concepts.h
 	include/vclib/mesh/requirements/element_requirements.h
 	include/vclib/mesh/requirements/face_requirements.h
+	include/vclib/mesh/requirements/mesh_concepts.h
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_requirements.h
 	include/vclib/misc/compactness.h

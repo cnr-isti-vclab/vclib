@@ -50,7 +50,7 @@ struct IsAFace<Face<Args...>> : // For types matching the pattern Face<Args...>
 {
 };
 
-/* Port concepts into the vert namespace */
+/* Port concepts into the face namespace */
 template<typename T>
 concept HasAdjacentEdges = comp::HasAdjacentEdges<T>;
 template<typename T>

@@ -20,106 +20,25 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_REQUIREMENTS_H
-#define VCL_MESH_MESH_REQUIREMENTS_H
+#ifndef VCL_MESH_ELEMENT_CONCEPTS_H
+#define VCL_MESH_ELEMENT_CONCEPTS_H
 
-#include "mesh_concepts.h"
-#include "face_requirements.h"
-#include "vertex_requirements.h"
+#include "../containers/containers_concepts.h"
 
 namespace vcl {
 
-/********************
- * is/has functions *
- ********************/
-
-// Triangles
+template<typename MeshType>
+concept HasVertices = vcl::mesh::HasVertexContainer<MeshType>;
 
 template<typename MeshType>
-bool constexpr hasTriangles();
+concept HasFaces = vcl::mesh::HasFaceContainer<MeshType>;
 
 template<typename MeshType>
-bool isTriangleMesh(const MeshType&);
-
-// Quads
+concept HasEdges = vcl::mesh::HasEdgeContainer<MeshType>;
 
 template<typename MeshType>
-bool constexpr hasQuads();
-
-template<typename MeshType>
-bool isQuadMesh(const MeshType&);
-
-// Polygons
-
-template<typename MeshType>
-bool constexpr hasPolygons();
-
-// Mesh Compactness
-
-template<typename MeshType>
-bool isCompact(const MeshType&);
-
-// Bounding Box
-
-template<typename MeshType>
-bool constexpr hasBoundingBox();
-
-// Mark
-
-template<typename MeshType>
-bool constexpr hasMark();
-
-// Texture File Names
-
-template<typename MeshType>
-bool constexpr hasTexFileNames();
-
-// Transform Matrix
-
-template<typename MeshType>
-bool constexpr hasTransformMatrix();
-
-/*********************
- * require functions *
- *********************/
-
-// Triangles
-
-template<typename MeshType>
-void requireTriangleMesh(const MeshType&);
-
-// Quads
-
-template<typename MeshType>
-void requireQuadMesh(const MeshType&);
-
-// Mesh Compactness
-
-template <typename MeshType>
-void requireCompactness(const MeshType&);
-
-// Bounding Box
-
-template<typename MeshType>
-void constexpr requireBoundingBox();
-
-// Mark
-
-template<typename MeshType>
-void constexpr requireMark();
-
-// Texture File Names
-
-template<typename MeshType>
-void constexpr requireTexFileNames();
-
-// Transform Matrix
-
-template<typename MeshType>
-void constexpr requireTransformMatrix();
+concept HasHalfEdges = vcl::mesh::HasHalfEdgeContainer<MeshType>;
 
 } // namespace vcl
 
-#include "mesh_requirements.cpp"
-
-#endif // VCL_MESH_MESH_REQUIREMENTS_H
+#endif // VCL_MESH_ELEMENT_CONCEPTS_H
