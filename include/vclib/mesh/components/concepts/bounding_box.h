@@ -34,9 +34,9 @@ namespace vcl::comp {
  * No check is made on the return type.
  */
 template<typename T>
-concept HasBoundingBox = requires(T v) // requires that an object of type T has the following members
+concept HasBoundingBox = requires(T o)
 {
-	v.boundingBox();
+	o.boundingBox();
 };
 
 /* Detector functions to check if a class has BoundingBox */

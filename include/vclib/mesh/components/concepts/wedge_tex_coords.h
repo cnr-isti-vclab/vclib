@@ -33,9 +33,9 @@ namespace vcl::comp {
  * This concept is satisfied only if a class has a member function 'wedgeTexCoord(uint)'.
  */
 template<typename T>
-concept HasWedgeTexCoords = requires(T v) // requires that an object of type T has the following members
+concept HasWedgeTexCoords = requires(T o)
 {
-	v.wedgeTexCoord(uint());
+	o.wedgeTexCoord(uint());
 };
 
 /**
@@ -46,9 +46,9 @@ concept HasWedgeTexCoords = requires(T v) // requires that an object of type T h
  * - '__optionalWedgeTexCoords()'
  */
 template<typename T>
-concept HasOptionalWedgeTexCoords = HasWedgeTexCoords<T> && requires(T v)
+concept HasOptionalWedgeTexCoords = HasWedgeTexCoords<T> && requires(T o)
 {
-	{ v.__optionalWedgeTexCoords() } -> std::same_as<void>;
+	{ o.__optionalWedgeTexCoords() } -> std::same_as<void>;
 };
 
 /**

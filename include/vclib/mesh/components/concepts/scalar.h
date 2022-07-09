@@ -34,9 +34,9 @@ namespace vcl::comp {
  * No check is made on the return type.
  */
 template<typename T>
-concept HasScalar = requires(T v) // requires that an object of type T has the following members
+concept HasScalar = requires(T o)
 {
-	v.scalar();
+	o.scalar();
 };
 
 /**
@@ -47,9 +47,9 @@ concept HasScalar = requires(T v) // requires that an object of type T has the f
  * - '__optionalScalar()'
  */
 template<typename T>
-concept HasOptionalScalar = HasScalar<T> && requires(T v)
+concept HasOptionalScalar = HasScalar<T> && requires(T o)
 {
-	{ v.__optionalScalar() } -> std::same_as<void>;
+	{ o.__optionalScalar() } -> std::same_as<void>;
 };
 
 

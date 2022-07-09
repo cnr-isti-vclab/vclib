@@ -35,9 +35,9 @@ namespace vcl::comp {
  * No check is made on the return type.
  */
 template<typename T>
-concept HasCoordinate = requires(T v) // requires that an object of type T has the following members
+concept HasCoordinate = requires(T o)
 {
-	v.coord();
+	o.coord();
 };
 
 /* Detector functions to check if a class has Coordinate */

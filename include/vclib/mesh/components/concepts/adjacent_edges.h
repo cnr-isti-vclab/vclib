@@ -34,10 +34,9 @@ namespace vcl::comp {
  * an uint
  */
 template<typename T>
-concept HasAdjacentEdges =
-	requires(T v) // requires that an object of type T has the following members
+concept HasAdjacentEdges = requires(T o)
 {
-	{ v.adjEdgesNumber() } -> std::same_as<uint>;
+	{ o.adjEdgesNumber() } -> std::same_as<uint>;
 };
 
 /**
@@ -48,9 +47,9 @@ concept HasAdjacentEdges =
  * - '__optionalAdjEdges()'
  */
 template<typename T>
-concept HasOptionalAdjacentEdges = HasAdjacentEdges<T> && requires(T v)
+concept HasOptionalAdjacentEdges = HasAdjacentEdges<T> && requires(T o)
 {
-	{ v.__optionalAdjEdges() } -> std::same_as<void>;
+	{ o.__optionalAdjEdges() } -> std::same_as<void>;
 };
 
 /**

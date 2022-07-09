@@ -34,9 +34,9 @@ namespace vcl::comp {
  * No check is made on the return type.
  */
 template<typename T>
-concept HasPrincipalCurvature = requires(T v) // requires that an object of type T has the following members
+concept HasPrincipalCurvature = requires(T o)
 {
-	v.principalCurvature();
+	o.principalCurvature();
 };
 
 /**
@@ -47,9 +47,9 @@ concept HasPrincipalCurvature = requires(T v) // requires that an object of type
  * - '__optionalPrincipalCurvature()'
  */
 template<typename T>
-concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && requires(T v)
+concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && requires(T o)
 {
-	{ v.__optionalPrincipalCurvature() } -> std::same_as<void>;
+	{ o.__optionalPrincipalCurvature() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has PrincipalCurvature or OptionalPrincipalCurvature */

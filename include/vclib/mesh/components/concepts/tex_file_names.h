@@ -34,9 +34,9 @@ namespace vcl::comp {
  * an uint
  */
 template<typename T>
-concept HasTexFileNames = requires(T v) // requires that an object of type T has the following members
+concept HasTexFileNames = requires(T o)
 {
-	{ v.textureNumber() } -> std::same_as<uint>;
+	{ o.textureNumber() } -> std::same_as<uint>;
 };
 
 /* Detector functions to check if a class has TexFileNames */

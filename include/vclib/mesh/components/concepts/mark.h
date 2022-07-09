@@ -34,9 +34,9 @@ namespace vcl::comp {
  * int&
  */
 template<typename T>
-concept HasMark = requires(T v) // requires that an object of type T has the following members
+concept HasMark = requires(T o)
 {
-	{ v.mark() } -> std::same_as<int&>;
+	{ o.mark() } -> std::same_as<int&>;
 };
 
 /**
@@ -47,9 +47,9 @@ concept HasMark = requires(T v) // requires that an object of type T has the fol
  * - '__optionalMark()'
  */
 template<typename T>
-concept HasOptionalMark = HasMark<T> && requires(T v)
+concept HasOptionalMark = HasMark<T> && requires(T o)
 {
-	{ v.__optionalMark() } -> std::same_as<void>;
+	{ o.__optionalMark() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has Mark or OptionalMark */

@@ -139,7 +139,7 @@ protected:
 	internal::VerticalComponentsVector<T> optionalVec;
 };
 
-}
+} // namespace vcl::mesh
 
 #include "element_container.cpp"
 

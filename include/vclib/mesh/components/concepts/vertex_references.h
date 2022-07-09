@@ -34,10 +34,9 @@ namespace vcl::comp {
  * an uint
  */
 template<typename T>
-concept HasVertexReferences =
-	requires(T v) // requires that an object of type T has the following members
+concept HasVertexReferences = requires(T o)
 {
-	{ v.vertexNumber() } -> std::same_as<uint>;
+	{ o.vertexNumber() } -> std::same_as<uint>;
 };
 
 /* Detector functions to check if a class has VertexReferences */

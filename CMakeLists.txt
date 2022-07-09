@@ -184,6 +184,7 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/vectors/wedge_colors_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_tex_coords_vector.h
 	include/vclib/mesh/containers/containers.h
+	include/vclib/mesh/containers/containers_concepts.h
 	include/vclib/mesh/containers/containers_detection.h
 	include/vclib/mesh/containers/edge_container.h
 	include/vclib/mesh/containers/element_container.h

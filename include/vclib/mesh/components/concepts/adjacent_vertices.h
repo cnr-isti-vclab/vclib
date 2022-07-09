@@ -34,9 +34,9 @@ namespace vcl::comp {
  * returns an uint
  */
 template<typename T>
-concept HasAdjacentVertices = requires(T v) // requires that an object of type T has the following members
+concept HasAdjacentVertices = requires(T o)
 {
-	{ v.adjVerticesNumber() } -> std::same_as<uint>;
+	{ o.adjVerticesNumber() } -> std::same_as<uint>;
 };
 
 /**
@@ -47,9 +47,9 @@ concept HasAdjacentVertices = requires(T v) // requires that an object of type T
  * - '__optionalAdjVertices()'
  */
 template<typename T>
-concept HasOptionalAdjacentVertices = HasAdjacentVertices<T> && requires(T v)
+concept HasOptionalAdjacentVertices = HasAdjacentVertices<T> && requires(T o)
 {
-	{ v.__optionalAdjVertices() } -> std::same_as<void>;
+	{ o.__optionalAdjVertices() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has AdjacentVertices or OptionalAdjacentVertices */

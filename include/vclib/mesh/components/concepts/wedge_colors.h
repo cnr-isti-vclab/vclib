@@ -33,9 +33,9 @@ namespace vcl::comp {
  * This concept is satisfied only if a class has a member function 'wedgeColor(uint)'.
  */
 template<typename T>
-concept HasWedgeColors = requires(T v) // requires that an object of type T has the following members
+concept HasWedgeColors = requires(T o)
 {
-	v.wedgeColor(uint());
+	o.wedgeColor(uint());
 };
 
 /**
@@ -46,9 +46,9 @@ concept HasWedgeColors = requires(T v) // requires that an object of type T has 
  * - '__optionalWedgeColors()'
  */
 template<typename T>
-concept HasOptionalWedgeColors = HasWedgeColors<T> && requires(T v)
+concept HasOptionalWedgeColors = HasWedgeColors<T> && requires(T o)
 {
-	{ v.__optionalWedgeColors() } -> std::same_as<void>;
+	{ o.__optionalWedgeColors() } -> std::same_as<void>;
 };
 
 /**

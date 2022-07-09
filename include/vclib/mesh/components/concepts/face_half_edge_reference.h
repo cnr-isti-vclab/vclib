@@ -36,11 +36,11 @@ namespace vcl::comp {
  * - innerHalfEdge(uint)
  */
 template<typename T>
-concept HasFaceHalfEdgeReference = requires(T v) // requires that an object of type T has the following members
+concept HasFaceHalfEdgeReference = requires(T o)
 {
-	v.outerHalfEdge();
-	{ v.numberHoles() } -> std::same_as<uint>;
-	v.innerHalfEdge(uint());
+	o.outerHalfEdge();
+	{ o.numberHoles() } -> std::same_as<uint>;
+	o.innerHalfEdge(uint());
 };
 
 /* Detector to check if a class has FaceHalfEdgeReference */

@@ -34,9 +34,9 @@ namespace vcl::comp {
  * an uint
  */
 template<typename T>
-concept HasAdjacentFaces = requires(T v) // requires that an object of type T has the following members
+concept HasAdjacentFaces = requires(T o)
 {
-	{ v.adjFacesNumber() } -> std::same_as<uint>;
+	{ o.adjFacesNumber() } -> std::same_as<uint>;
 };
 
 /**
@@ -47,9 +47,9 @@ concept HasAdjacentFaces = requires(T v) // requires that an object of type T ha
  * - '__optionalAdjFaces()'
  */
 template<typename T>
-concept HasOptionalAdjacentFaces = HasAdjacentFaces<T> && requires(T v)
+concept HasOptionalAdjacentFaces = HasAdjacentFaces<T> && requires(T o)
 {
-	{ v.__optionalAdjFaces() } -> std::same_as<void>;
+	{ o.__optionalAdjFaces() } -> std::same_as<void>;
 };
 
 /**

@@ -20,70 +20,61 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CONCEPTS_BIT_FLAGS_H
-#define VCL_MESH_COMPONENTS_CONCEPTS_BIT_FLAGS_H
+#ifndef  VCL_MESH_CONTAINERS_CONCEPTS_H
+#define  VCL_MESH_CONTAINERS_CONCEPTS_H
 
 #include <vclib/misc/types.h>
 
-namespace vcl::comp {
+#include "../components/vertical/vertical_component.h"
 
-class PolygonBitFlags;
-class TriangleBitFlags;
+namespace vcl::mesh {
 
-/**
- * @brief HasBitFlags concept
- *
- * This concept is satisfied only if a class has a member function 'isDeleted()' which returns
- * a bool
- */
-template<typename T>
-concept HasBitFlags = requires(T o)
+template <typename T>
+concept IsElementContainer = requires(T o)
 {
-	{ o.isDeleted() } -> std::same_as<bool>;
+	o.element(uint());
 };
 
-/**
- * @brief HasBitFlags concept
- *
- * This concept is satisfied only if a class has (inherits) PolygonBitFlags
- */
-template<typename T>
-concept HasPolygonBitFlags = std::derived_from<T, PolygonBitFlags>;
-
-/**
- * @brief HasBitFlags concept
- *
- * This concept is satisfied only if a class has (inherits) TriangleBitFlags
- */
-template<typename T>
-concept HasTriangleBitFlags = std::derived_from<T, TriangleBitFlags>;
-
-/* Detector function to check if a class has BitFlags, PolygonBitFlags or TriangleBitFlags */
-
-template<typename T>
-bool constexpr hasBitFlags()
+template <typename T>
+concept HasEdgeContainer = requires(T o)
 {
-	return HasBitFlags<T>;
-}
+	o.edge(uint());
+};
 
-template<typename T>
-bool constexpr hasPolygonBitFlags()
+template <typename T>
+concept HasEdgeOptionalContainer =
+	HasEdgeContainer<T> && comp::HasVerticalComponent<typename T::EdgeType>;
+
+template <typename T>
+concept HasHalfEdgeContainer = requires(T o)
 {
-	return HasPolygonBitFlags<T>;
-}
+	o.halfEdge(uint());
+};
 
-template<typename T>
-bool constexpr hasTriangleBitFlags()
+template <typename T>
+concept HasHalfEdgeOptionalContainer =
+	HasHalfEdgeContainer<T> && comp::HasVerticalComponent<typename T::HalfEdgeType>;
+
+template <typename T>
+concept HasFaceContainer = requires(T o)
 {
-	return HasTriangleBitFlags<T>;
-}
+	o.face(uint());
+};
 
-template<typename T>
-bool constexpr hasFaceBitFlags()
+template <typename T>
+concept HasFaceOptionalContainer =
+	HasFaceContainer<T> && comp::HasVerticalComponent<typename T::FaceType>;
+
+template <typename T>
+concept HasVertexContainer = requires(T o)
 {
-	return HasPolygonBitFlags<T> || HasTriangleBitFlags<T>;
-}
+	o.vertex(uint());
+};
 
-} // namespace vcl::comp
+template <typename T>
+concept HasVertexOptionalContainer =
+	HasVertexContainer<T> && comp::HasVerticalComponent<typename T::VertexType>;
 
-#endif // VCL_MESH_COMPONENTS_CONCEPTS_BIT_FLAGS_H
+} // namespace vcl::mesh
+
+#endif //  VCL_MESH_CONTAINERS_CONCEPTS_H

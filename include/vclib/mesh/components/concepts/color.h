@@ -35,9 +35,9 @@ namespace vcl::comp {
  * vcl::Color&
  */
 template<typename T>
-concept HasColor = requires(T v) // requires that an object of type T has the following members
+concept HasColor = requires(T o)
 {
-	{ v.color() } -> std::same_as<vcl::Color&>;
+	{ o.color() } -> std::same_as<vcl::Color&>;
 };
 
 /**
@@ -48,9 +48,9 @@ concept HasColor = requires(T v) // requires that an object of type T has the fo
  * - '__optionalColor()'
  */
 template<typename T>
-concept HasOptionalColor = HasColor<T> && requires(T v)
+concept HasOptionalColor = HasColor<T> && requires(T o)
 {
-	{ v.__optionalColor() } -> std::same_as<void>;
+	{ o.__optionalColor() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has Color or OptionalColor */

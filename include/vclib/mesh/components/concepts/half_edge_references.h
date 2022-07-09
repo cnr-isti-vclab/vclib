@@ -37,11 +37,11 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasHalfEdgeReferences =
-	requires(T v) // requires that an object of type T has the following members
+	requires(T o)
 {
-	v.next();
-	v.prev();
-	v.twin();
+	o.next();
+	o.prev();
+	o.twin();
 };
 
 /* Detector to check if a class has HalfEdgeReferences */

@@ -34,9 +34,9 @@ namespace vcl::comp {
  * - halfEdge()
  */
 template<typename T>
-concept HasVertexHalfEdgeReference = requires(T v) // requires that an object of type T has the following members
+concept HasVertexHalfEdgeReference = requires(T o)
 {
-	v.halfEdge();
+	o.halfEdge();
 };
 
 /* Detector to check if a class has VertexHalfEdgeReference */

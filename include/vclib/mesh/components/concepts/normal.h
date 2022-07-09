@@ -34,9 +34,9 @@ namespace vcl::comp {
  * No check is made on the return type.
  */
 template<typename T>
-concept HasNormal = requires(T v) // requires that an object of type T has the following members
+concept HasNormal = requires(T o)
 {
-	v.normal();
+	o.normal();
 };
 
 /**
@@ -47,9 +47,9 @@ concept HasNormal = requires(T v) // requires that an object of type T has the f
  * - '__optionalNormal()'
  */
 template<typename T>
-concept HasOptionalNormal = HasNormal<T> && requires(T v)
+concept HasOptionalNormal = HasNormal<T> && requires(T o)
 {
-	{ v.__optionalNormal() } -> std::same_as<void>;
+	{ o.__optionalNormal() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has Normal or OptionalNormal */

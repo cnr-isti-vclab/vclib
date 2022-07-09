@@ -33,9 +33,9 @@ namespace vcl::comp {
  * This concept is satisfied only if a class has a member function that 'texCoord()'
  */
 template<typename T>
-concept HasTexCoord = requires(T v) // requires that an object of type T has the following members
+concept HasTexCoord = requires(T o)
 {
-	v.texCoord();
+	o.texCoord();
 };
 
 /**
@@ -46,9 +46,9 @@ concept HasTexCoord = requires(T v) // requires that an object of type T has the
  * - '__optionalTexCoord()'
  */
 template<typename T>
-concept HasOptionalTexCoord = HasTexCoord<T> && requires(T v)
+concept HasOptionalTexCoord = HasTexCoord<T> && requires(T o)
 {
-	{ v.__optionalTexCoord() } -> std::same_as<void>;
+	{ o.__optionalTexCoord() } -> std::same_as<void>;
 };
 
 /* Detector functions to check if a class has TexCoord or OptionalTexCoord */

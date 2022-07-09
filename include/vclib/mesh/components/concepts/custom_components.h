@@ -35,10 +35,9 @@ namespace vcl::comp {
  * which returns a bool
  */
 template<typename T>
-concept HasCustomComponents =
-	requires(T v) // requires that an object of type T has the following members
+concept HasCustomComponents = requires(T o)
 {
-	{ v.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
+	{ o.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
 };
 
 template<typename T>

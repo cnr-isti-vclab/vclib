@@ -33,9 +33,9 @@ namespace vcl::comp {
  * This concept is satisfied only if a class has a member function 'transformMatrix()'.
  */
 template<typename T>
-concept HasTransformMatrix = requires(T v) // requires that an object of type T has the following members
+concept HasTransformMatrix = requires(T o)
 {
-	v.transformMatrix();
+	o.transformMatrix();
 };
 
 /* Detector to check if a class has TransformMatrix */
