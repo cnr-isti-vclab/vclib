@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class WedgeColorsVector
 {
 public:
@@ -40,9 +40,8 @@ public:
 	bool isWedgeColorsEnabled() const { return false; };
 };
 
-template<typename T>
-class WedgeColorsVector<T, std::enable_if_t<comp::hasOptionalWedgeColors<T>()>> :
-		private GenericComponentVector<typename T::WedgeColorsContainer>
+template<comp::HasOptionalWedgeColors T>
+class WedgeColorsVector<T> : private GenericComponentVector<typename T::WedgeColorsContainer>
 {
 	using WedgeColorsContainer = typename T::WedgeColorsContainer;
 	using Base                 = GenericComponentVector<WedgeColorsContainer>;

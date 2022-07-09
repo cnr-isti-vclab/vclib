@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class WedgeTexCoordsVector
 {
 public:
@@ -40,9 +40,8 @@ public:
 	bool isWedgeTexCoordsEnabled() const { return false; };
 };
 
-template<typename T>
-class WedgeTexCoordsVector<T, std::enable_if_t<comp::hasOptionalWedgeTexCoords<T>()>> :
-		private GenericComponentVector<typename T::WedgeTexCoordsContainer>
+template<comp::HasOptionalWedgeTexCoords T>
+class WedgeTexCoordsVector<T> : private GenericComponentVector<typename T::WedgeTexCoordsContainer>
 {
 	using WedgeTexCoordsContainer = typename T::WedgeTexCoordsContainer;
 	using Base                    = GenericComponentVector<WedgeTexCoordsContainer>;

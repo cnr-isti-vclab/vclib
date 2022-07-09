@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class ScalarVector
 {
 public:
@@ -40,9 +40,8 @@ public:
 	bool isScalarEnabled() const { return false; };
 };
 
-template<typename T>
-class ScalarVector<T, std::enable_if_t<comp::hasOptionalScalar<T>()>> :
-		private GenericComponentVector<typename T::ScalarType>
+template<comp::HasOptionalScalar T>
+class ScalarVector<T> : private GenericComponentVector<typename T::ScalarType>
 {
 	using ScalarType = typename T::ScalarType;
 	using Base = GenericComponentVector<ScalarType>;

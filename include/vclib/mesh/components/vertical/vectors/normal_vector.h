@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class NormalVector
 {
 public:
@@ -40,9 +40,8 @@ public:
 	bool isNormalEnabled() const { return false; };
 };
 
-template<typename T>
-class NormalVector<T, std::enable_if_t<comp::hasOptionalNormal<T>()>> :
-		private GenericComponentVector<typename T::NormalType>
+template<comp::HasOptionalNormal T>
+class NormalVector<T> : private GenericComponentVector<typename T::NormalType>
 {
 	using NormalType = typename T::NormalType;
 	using Base = GenericComponentVector<NormalType>;

@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class MarkVector
 {
 public:
@@ -40,9 +40,8 @@ public:
 	bool isMarkEnabled() const { return false; };
 };
 
-template<typename T>
-class MarkVector<T, std::enable_if_t<comp::hasOptionalMark<T>()>> :
-		private GenericComponentVector<int>
+template<comp::HasOptionalMark T>
+class MarkVector<T> : private GenericComponentVector<int>
 {
 	using Base = GenericComponentVector<int>;
 

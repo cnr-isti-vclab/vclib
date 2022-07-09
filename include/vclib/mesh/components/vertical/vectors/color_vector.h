@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class ColorVector
 {
 public:
@@ -40,9 +40,8 @@ public:
 	bool isColorEnabled() const { return false; };
 };
 
-template<typename T>
-class ColorVector<T, std::enable_if_t<comp::hasOptionalColor<T>()>> :
-		private GenericComponentVector<typename T::ColorType>
+template<comp::HasOptionalColor T>
+class ColorVector<T> : private GenericComponentVector<typename T::ColorType>
 {
 	using ColorType = typename T::ColorType;
 	using Base = GenericComponentVector<ColorType>;

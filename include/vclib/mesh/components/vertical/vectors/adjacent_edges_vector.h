@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class AdjacentEdgesVector
 {
 public:
@@ -41,8 +41,7 @@ public:
 };
 
 template<comp::HasOptionalAdjacentEdges T>
-class AdjacentEdgesVector<T> :
-		private GenericComponentVector<typename T::AdjEdgesContainer>
+class AdjacentEdgesVector<T> : private GenericComponentVector<typename T::AdjEdgesContainer>
 {
 private:
 	using AdjEdgesContainer = typename T::AdjEdgesContainer;

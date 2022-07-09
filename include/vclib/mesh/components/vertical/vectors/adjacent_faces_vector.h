@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class AdjacentFacesVector
 {
 public:
@@ -40,9 +40,8 @@ public:
 	bool isAdjacentFacesEnabled() const { return false; };
 };
 
-template<typename T>
-class AdjacentFacesVector<T, std::enable_if_t<comp::hasOptionalAdjacentFaces<T>()>> :
-		private GenericComponentVector<typename T::AdjFacesContainer>
+template<comp::HasOptionalAdjacentFaces T>
+class AdjacentFacesVector<T> : private GenericComponentVector<typename T::AdjFacesContainer>
 {
 private:
 	using AdjFacesContainer = typename T::AdjFacesContainer;

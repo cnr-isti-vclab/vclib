@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class PrincipalCurvatureVector
 {
 public:
@@ -40,10 +40,8 @@ public:
 	bool isPrincipalCurvatureEnabled() const { return false; };
 };
 
-template<typename T>
-class PrincipalCurvatureVector<
-	T,
-	std::enable_if_t<comp::hasOptionalPrincipalCurvature<T>()>> :
+template<comp::HasOptionalPrincipalCurvature T>
+class PrincipalCurvatureVector<T> :
 		private GenericComponentVector<typename T::PrincipalCurvatureType>
 {
 	using PrincipalCurvatureType = typename T::PrincipalCurvatureType;

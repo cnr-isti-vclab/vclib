@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class AdjacentVerticesVector
 {
 public:
@@ -40,11 +40,8 @@ public:
 	bool isAdjacentVerticesEnabled() const { return false; };
 };
 
-template<typename T>
-class AdjacentVerticesVector<
-	T,
-	std::enable_if_t<comp::hasOptionalAdjacentVertices<T>()>> :
-		private GenericComponentVector<typename T::AdjVertsContainer>
+template<comp::HasOptionalAdjacentVertices T>
+class AdjacentVerticesVector<T> : private GenericComponentVector<typename T::AdjVertsContainer>
 {
 private:
 	using AdjVertsContainer = typename T::AdjVertsContainer;

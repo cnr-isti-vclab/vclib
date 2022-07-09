@@ -29,7 +29,7 @@
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class TexCoordVector
 {
 public:
@@ -40,9 +40,8 @@ public:
 	bool isTexCoordEnabled() const { return false; };
 };
 
-template<typename T>
-class TexCoordVector<T, std::enable_if_t<comp::hasOptionalTexCoord<T>()>> :
-		private GenericComponentVector<typename T::TexCoordType>
+template<comp::HasTexCoord T>
+class TexCoordVector<T> : private GenericComponentVector<typename T::TexCoordType>
 {
 	using TexCoordType = typename T::TexCoordType;
 	using Base         = GenericComponentVector<TexCoordType>;
