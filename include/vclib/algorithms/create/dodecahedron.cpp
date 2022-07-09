@@ -23,15 +23,19 @@
 #include "dodecahedron.h"
 
 #include <vclib/algorithms/polygon.h>
-#include <vclib/mesh/requirements.h>
 #include <vclib/misc/internal/tmp_meshes.h>
 
 namespace vcl {
 
-namespace internal {
-
-template<typename MeshType>
-MeshType polygonDodecahedron()
+/**
+ * @brief Creates and returns a Polygon Mesh containing a Dodecahedron.
+ *
+ * The returned mesh will contain 12 pentagons.
+ *
+ * @return A Mesh containing a dodecahedron.
+ */
+template<PolygonMeshConcept MeshType>
+MeshType createDodecahedron()
 {
 	using VertexType = typename MeshType::VertexType;
 	using CoordType  = typename VertexType::CoordType;
@@ -84,10 +88,18 @@ MeshType polygonDodecahedron()
 	return mesh;
 }
 
-template<typename MeshType>
-MeshType triangleDodecahedron()
+/**
+ * @brief Creates and returns a Triangle Mesh containing a triangulated Dodecahedron.
+ *
+ * If the mesh is composed of triangles, the the returned mesh is already triangulated.
+ * If the mesh is polygonal, a mesh containing 12 pentagons will be returned.
+ *
+ * @return A Mesh containing a dodecahedron.
+ */
+template<TriangleMeshConcept MeshType>
+MeshType createDodecahedron()
 {
-	internal::TMPSimplePolyMesh pmesh = polygonDodecahedron<internal::TMPSimplePolyMesh>();
+	internal::TMPSimplePolyMesh pmesh = createDodecahedron<internal::TMPSimplePolyMesh>();
 
 	MeshType mesh;
 	mesh.reserveVertices(pmesh.vertexNumber());
@@ -106,30 +118,6 @@ MeshType triangleDodecahedron()
 	}
 
 	return mesh;
-}
-
-} // namespace internal
-
-/**
- * @brief Creates and returns a Mesh containing a Dodecahedron.
- *
- * If the mesh is composed of triangles, the the returned mesh is already triangulated.
- * If the mesh is polygonal, a mesh containing 12 pentagons will be returned.
- *
- * @return A Mesh containing a dodecahedron.
- */
-template<typename MeshType>
-MeshType createDodecahedron()
-{
-	if constexpr (hasTriangles<MeshType>()) {
-		return internal::triangleDodecahedron<MeshType>();
-	}
-	else if constexpr (hasPolygons<MeshType>()) {
-		return internal::polygonDodecahedron<MeshType>();
-	}
-	else {
-		static_assert(true, "Mesh Type not supported for creating Dodecahedron.");
-	}
 }
 
 } // namespace vcl
