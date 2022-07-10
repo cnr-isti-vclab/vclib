@@ -50,12 +50,6 @@ using TransformMatrix = comp::TransformMatrix<Scalar>;
 using TransformMatrixf = comp::TransformMatrix<float>;
 using TransformMatrixd = comp::TransformMatrix<double>;
 
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
-
 } // namespace vcl::mesh
 
 #endif // VCL_MESH_COMPONENTS_H

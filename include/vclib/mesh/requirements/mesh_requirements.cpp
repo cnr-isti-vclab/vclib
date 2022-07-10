@@ -196,24 +196,6 @@ bool isCompact(const MeshType& m)
 	return c;
 }
 
-/**
- * @brief Checks *if a MeshType has the TransformMatrix component*.
- *
- * Usage:
- * @code{.cpp}
- * if constexpr(vcl::hasTransformMatrix<MyMeshType>()) {
- *    // this portion of code is compiled only when MyMeshType has the transform matrix
- * }
- * @endcode
- *
- * @return `true` if the MeshType has the transform matrix.
- */
-template<typename MeshType>
-bool constexpr hasTransformMatrix()
-{
-	return vcl::mesh::hasTransformMatrix<MeshType>();
-}
-
 /*********************
  * require functions *
  *********************/
@@ -251,18 +233,6 @@ void requireCompactness(const MeshType& m)
 {
 	if (!isCompact(m))
 		throw MissingCompactnessException("Mesh is not compact.");
-}
-
-template<typename MeshType>
-void constexpr requireTexFileNames()
-{
-	static_assert(hasTexFileNames<MeshType>(), "Mesh has no texture file names.");
-}
-
-template<typename MeshType>
-void constexpr requireTransformMatrix()
-{
-	static_assert(hasTransformMatrix<MeshType>(), "Mesh has no transform matrix.");
 }
 
 } // namespace vcl

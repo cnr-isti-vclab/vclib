@@ -38,14 +38,6 @@ concept HasTransformMatrix = requires(T o)
 	o.transformMatrix();
 };
 
-/* Detector to check if a class has TransformMatrix */
-
-template<typename T>
-constexpr bool hasTransformMatrix()
-{
-	return HasTransformMatrix<T>;
-}
-
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_TRANSFORM_MATRIX_H

@@ -59,11 +59,6 @@ bool constexpr hasPolygons();
 template<typename MeshType>
 bool isCompact(const MeshType&);
 
-// Transform Matrix
-
-template<typename MeshType>
-bool constexpr hasTransformMatrix();
-
 /*********************
  * require functions *
  *********************/
@@ -82,16 +77,6 @@ void requireQuadMesh(const MeshType&);
 
 template <typename MeshType>
 void requireCompactness(const MeshType&);
-
-// Texture File Names
-
-template<typename MeshType>
-void constexpr requireTexFileNames();
-
-// Transform Matrix
-
-template<typename MeshType>
-void constexpr requireTransformMatrix();
 
 } // namespace vcl
 
