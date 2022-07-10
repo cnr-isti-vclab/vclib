@@ -539,7 +539,7 @@ EdgeContainer<T>::disablePerEdgeScalar()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasCustomComponents<U>(), bool)
+VCL_ENABLE_IF(edge::HasCustomComponents<U>, bool)
 EdgeContainer<T>::hasPerEdgeCustomComponent(const std::string& name) const
 {
 	return Base::optionalVec.componentExists(name);
@@ -555,7 +555,7 @@ EdgeContainer<T>::hasPerEdgeCustomComponent(const std::string& name) const
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasCustomComponents<U>(), std::vector<std::string>)
+VCL_ENABLE_IF(edge::HasCustomComponents<U>, std::vector<std::string>)
 EdgeContainer<T>::getAllPerEdgeCustomComponentNames() const
 {
 	return Base::optionalVec.allComponentNames();
@@ -580,7 +580,7 @@ EdgeContainer<T>::getAllPerEdgeCustomComponentNames() const
  */
 template<EdgeConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(edge::hasCustomComponents<U>(), bool)
+VCL_ENABLE_IF(edge::HasCustomComponents<U>, bool)
 EdgeContainer<T>::isPerEdgeCustomComponentOfType(const std::string& name) const
 {
 	return Base::optionalVec.template isComponentOfType<K>(name);
@@ -603,7 +603,7 @@ EdgeContainer<T>::isPerEdgeCustomComponentOfType(const std::string& name) const
  */
 template<EdgeConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(edge::hasCustomComponents<U>(), std::vector<std::string>)
+VCL_ENABLE_IF(edge::HasCustomComponents<U>, std::vector<std::string>)
 EdgeContainer<T>::getPerEdgeCustomComponentNamesOfType() const
 {
 	return Base::optionalVec.template allComponentNamesOfType<K>();
@@ -619,7 +619,7 @@ EdgeContainer<T>::getPerEdgeCustomComponentNamesOfType() const
  */
 template<EdgeConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
+VCL_ENABLE_IF(edge::HasCustomComponents<U>, void)
 EdgeContainer<T>::addPerEdgeCustomComponent(const std::string& name)
 {
 	Base::optionalVec.template addNewComponent<K>(name, edgeContainerSize());
@@ -636,7 +636,7 @@ EdgeContainer<T>::addPerEdgeCustomComponent(const std::string& name)
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
+VCL_ENABLE_IF(edge::HasCustomComponents<U>, void)
 EdgeContainer<T>::deletePerEdgeCustomComponent(const std::string& name)
 {
 	Base::optionalVec.deleteComponent(name);
@@ -671,7 +671,7 @@ EdgeContainer<T>::deletePerEdgeCustomComponent(const std::string& name)
 template<EdgeConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(
-	edge::hasCustomComponents<U>(),
+	edge::HasCustomComponents<U>,
 	CustomComponentVectorHandle<K>)
 	EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(const std::string& name)
 {
@@ -711,7 +711,7 @@ VCL_ENABLE_IF(
 template<EdgeConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(
-	edge::hasCustomComponents<U>(),
+	edge::HasCustomComponents<U>,
 	ConstCustomComponentVectorHandle<K>)
 	EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(const std::string& name) const
 {

@@ -116,11 +116,6 @@ bool isPerVertexTexCoordEnabled(const MeshType&);
 template<typename MeshType>
 bool enableIfPerVertexTexCoordOptional(MeshType&);
 
-// Vertex Custom Components
-
-template<typename MeshType>
-bool constexpr hasPerVertexCustomComponents();
-
 /*********************
  * require functions *
  *********************/
@@ -172,14 +167,6 @@ void requirePerVertexScalar(const MeshType& m);
 
 template<typename MeshType>
 void requirePerVertexTexCoord(const MeshType& m);
-
-// Vertex Custom Components
-
-template<typename MeshType>
-bool constexpr requirePerVertexCustomComponents();
-
-template<typename MeshType>
-bool requirePerVertexCustomComponents(const MeshType& m);
 
 } // namespace vcl
 

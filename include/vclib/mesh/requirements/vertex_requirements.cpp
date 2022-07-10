@@ -344,17 +344,6 @@ bool enableIfPerVertexTexCoordOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
-bool constexpr hasPerVertexCustomComponents()
-{
-	if constexpr (hasVertices<MeshType>())  {
-		return vcl::vert::hasCustomComponents<typename MeshType::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
 /*********************
  * require functions *
  *********************/
@@ -435,20 +424,6 @@ void requirePerVertexTexCoord(const MeshType& m)
 	static_assert(hasPerVertexTexCoord<MeshType>(), "Mesh has no vertex texcoords.");
 	if (!isPerVertexTexCoordEnabled(m))
 		throw vcl::MissingComponentException("Vertex texcoords not enabled.");
-}
-
-template<typename MeshType>
-void constexpr requirePerVertexCustomComponents()
-{
-	requireVertices<MeshType>();
-	static_assert(
-		hasPerVertexCustomComponents<MeshType>(), "Mesh has no vertex custom components.");
-}
-
-template<typename MeshType>
-void requirePerVertexCustomComponents(const MeshType&)
-{
-	requirePerVertexCustomComponents<MeshType>();
 }
 
 } // namespace vcl

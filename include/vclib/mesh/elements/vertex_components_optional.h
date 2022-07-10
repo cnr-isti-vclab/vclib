@@ -132,12 +132,6 @@ bool constexpr hasOptionalTexCoord()
 template<typename VertexType>
 using CustomComponents = comp::CustomComponents<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasCustomComponents()
-{
-	return comp::hasCustomComponents<VertexType>();
-}
-
 /* Port VerticalComponent class into vert namespace */
 template<typename VertexType>
 using VerticalComponent = comp::VerticalComponent<VertexType>;

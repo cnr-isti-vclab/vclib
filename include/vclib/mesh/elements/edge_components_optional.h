@@ -74,12 +74,6 @@ bool constexpr hasOptionalScalar()
 template<typename EdgeType>
 using CustomComponents = comp::CustomComponents<EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasCustomComponents()
-{
-	return comp::hasCustomComponents<EdgeType>();
-}
-
 /* Port VerticalComponent class into edge namespace */
 template<typename EdgeType>
 using VerticalComponent = comp::VerticalComponent<EdgeType>;

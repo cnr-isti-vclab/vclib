@@ -355,17 +355,6 @@ bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
-bool constexpr hasPerFaceCustomComponents()
-{
-	if constexpr (hasFaces<MeshType>())  {
-		return vcl::face::hasCustomComponents<typename MeshType::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
 /*********************
  * require functions *
  *********************/
@@ -446,19 +435,6 @@ void requirePerFaceWedgeTexCoords(const MeshType& m)
 	static_assert(hasPerFaceWedgeTexCoords<MeshType>(), "Mesh has no face wedge texcoords.");
 	if (!isPerFaceWedgeTexCoordsEnabled(m))
 		throw vcl::MissingComponentException("Face wedge texcoords not enabled.");
-}
-
-template<typename MeshType>
-void constexpr requirePerFaceCustomComponents()
-{
-	requireFaces<MeshType>();
-	static_assert(hasPerFaceCustomComponents<MeshType>(), "Mesh has no face custom components.");
-}
-
-template<typename MeshType>
-void requirePerFaceCustomComponents(const MeshType&)
-{
-	requirePerFaceCustomComponents<MeshType>();
 }
 
 } // namespace vcl

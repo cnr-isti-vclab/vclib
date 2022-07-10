@@ -141,35 +141,35 @@ public:
 
 	// Custom Components
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), bool)
+	VCL_ENABLE_IF(edge::HasCustomComponents<U>, bool)
 	hasPerEdgeCustomComponent(const std::string& name) const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), std::vector<std::string>)
+	VCL_ENABLE_IF(edge::HasCustomComponents<U>, std::vector<std::string>)
 	getAllPerEdgeCustomComponentNames() const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), bool)
+	VCL_ENABLE_IF(edge::HasCustomComponents<U>, bool)
 	isPerEdgeCustomComponentOfType(const std::string& name) const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), std::vector<std::string>)
+	VCL_ENABLE_IF(edge::HasCustomComponents<U>, std::vector<std::string>)
 	getPerEdgeCustomComponentNamesOfType() const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
+	VCL_ENABLE_IF(edge::HasCustomComponents<U>, void)
 	addPerEdgeCustomComponent(const std::string& name);
 
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), void)
+	VCL_ENABLE_IF(edge::HasCustomComponents<U>, void)
 	deletePerEdgeCustomComponent(const std::string& name);
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
+	VCL_ENABLE_IF(edge::HasCustomComponents<U>, CustomComponentVectorHandle<K>)
 	getPerEdgeCustomComponentVectorHandle(const std::string& name);
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
+	VCL_ENABLE_IF(edge::HasCustomComponents<U>, ConstCustomComponentVectorHandle<K>)
 	getPerEdgeCustomComponentVectorHandle(const std::string& name) const;
 
 protected:

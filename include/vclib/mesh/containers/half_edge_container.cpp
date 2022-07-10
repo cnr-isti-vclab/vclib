@@ -417,7 +417,7 @@ HalfEdgeContainer<T>::disablePerHalfEdgeScalar()
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), bool)
+VCL_ENABLE_IF(hedge::HasCustomComponents<U>, bool)
 HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(const std::string& name) const
 {
 	return Base::optionalVec.componentExists(name);
@@ -433,7 +433,7 @@ HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(const std::string& name) con
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), std::vector<std::string>)
+VCL_ENABLE_IF(hedge::HasCustomComponents<U>, std::vector<std::string>)
 HalfEdgeContainer<T>::getAllPerHalfEdgeCustomComponentNames() const
 {
 	return Base::optionalVec.allComponentNames();
@@ -458,7 +458,7 @@ HalfEdgeContainer<T>::getAllPerHalfEdgeCustomComponentNames() const
  */
 template<HalfEdgeConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), bool)
+VCL_ENABLE_IF(hedge::HasCustomComponents<U>, bool)
 HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(const std::string& name) const
 {
 	return Base::optionalVec.template isComponentOfType<K>(name);
@@ -481,7 +481,7 @@ HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(const std::string& name
  */
 template<HalfEdgeConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), std::vector<std::string>)
+VCL_ENABLE_IF(hedge::HasCustomComponents<U>, std::vector<std::string>)
 HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentNamesOfType() const
 {
 	return Base::optionalVec.template allComponentNamesOfType<K>();
@@ -497,7 +497,7 @@ HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentNamesOfType() const
  */
 template<HalfEdgeConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), void)
+VCL_ENABLE_IF(hedge::HasCustomComponents<U>, void)
 HalfEdgeContainer<T>::addPerHalfEdgeCustomComponent(const std::string& name)
 {
 	Base::optionalVec.template addNewComponent<K>(name, halfEdgeContainerSize());
@@ -514,7 +514,7 @@ HalfEdgeContainer<T>::addPerHalfEdgeCustomComponent(const std::string& name)
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), void)
+VCL_ENABLE_IF(hedge::HasCustomComponents<U>, void)
 HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(const std::string& name)
 {
 	Base::optionalVec.deleteComponent(name);
@@ -548,7 +548,7 @@ HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(const std::string& name)
  */
 template<HalfEdgeConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
+VCL_ENABLE_IF(hedge::HasCustomComponents<U>, CustomComponentVectorHandle<K>)
 HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(const std::string& name)
 {
 	std::vector<std::any>&         cc = Base::optionalVec.template componentVector<K>(name);
@@ -586,7 +586,7 @@ HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(const std::strin
  */
 template<HalfEdgeConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
+VCL_ENABLE_IF(hedge::HasCustomComponents<U>, ConstCustomComponentVectorHandle<K>)
 HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(const std::string& name) const
 {
 	const std::vector<std::any>&        cc = Base::optionalVec.template componentVector<K>(name);

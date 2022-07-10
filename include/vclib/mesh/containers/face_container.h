@@ -201,35 +201,35 @@ public:
 
 	// Custom Components
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasCustomComponents<U>(), bool)
+	VCL_ENABLE_IF(face::HasCustomComponents<U>, bool)
 	hasPerFaceCustomComponent(const std::string& name) const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasCustomComponents<U>(), std::vector<std::string>)
+	VCL_ENABLE_IF(face::HasCustomComponents<U>, std::vector<std::string>)
 	getAllPerFaceCustomComponentNames() const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::hasCustomComponents<U>(), bool)
+	VCL_ENABLE_IF(face::HasCustomComponents<U>, bool)
 	isPerFaceCustomComponentOfType(const std::string& name) const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::hasCustomComponents<U>(), std::vector<std::string>)
+	VCL_ENABLE_IF(face::HasCustomComponents<U>, std::vector<std::string>)
 	getPerFaceCustomComponentNamesOfType() const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::hasCustomComponents<U>(), void)
+	VCL_ENABLE_IF(face::HasCustomComponents<U>, void)
 	addPerFaceCustomComponent(const std::string& name);
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasCustomComponents<U>(), void)
+	VCL_ENABLE_IF(face::HasCustomComponents<U>, void)
 	deletePerFaceCustomComponent(const std::string& name);
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
+	VCL_ENABLE_IF(face::HasCustomComponents<U>, CustomComponentVectorHandle<K>)
 	getPerFaceCustomComponentVectorHandle(const std::string& name);
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
+	VCL_ENABLE_IF(face::HasCustomComponents<U>, ConstCustomComponentVectorHandle<K>)
 	getPerFaceCustomComponentVectorHandle(const std::string& name) const;
 
 protected:

@@ -203,35 +203,35 @@ public:
 
 	// Custom Components
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
+	VCL_ENABLE_IF(vert::HasCustomComponents<U>, bool)
 	hasPerVertexCustomComponent(const std::string& name) const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
+	VCL_ENABLE_IF(vert::HasCustomComponents<U>, std::vector<std::string>)
 	getAllPerVertexCustomComponentNames() const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
+	VCL_ENABLE_IF(vert::HasCustomComponents<U>, bool)
 	isPerVertexCustomComponentOfType(const std::string& name) const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
+	VCL_ENABLE_IF(vert::HasCustomComponents<U>, std::vector<std::string>)
 	getPerVertexCustomComponentNamesOfType() const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
+	VCL_ENABLE_IF(vert::HasCustomComponents<U>, void)
 	addPerVertexCustomComponent(const std::string& name);
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
+	VCL_ENABLE_IF(vert::HasCustomComponents<U>, void)
 	deletePerVertexCustomComponent(const std::string& name);
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
+	VCL_ENABLE_IF(vert::HasCustomComponents<U>, CustomComponentVectorHandle<K>)
 	getPerVertexCustomComponentVectorHandle(const std::string& name);
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
+	VCL_ENABLE_IF(vert::HasCustomComponents<U>, ConstCustomComponentVectorHandle<K>)
 	getPerVertexCustomComponentVectorHandle(const std::string& name) const;
 
 protected:

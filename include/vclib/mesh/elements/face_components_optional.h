@@ -153,12 +153,6 @@ bool constexpr hasOptionalWedgeColors()
 template<typename FaceType>
 using CustomComponents = comp::CustomComponents<FaceType>;
 
-template<typename FaceType>
-bool constexpr hasCustomComponents()
-{
-	return comp::hasCustomComponents<FaceType>();
-}
-
 /* Port VerticalComponent class into face namespace */
 template<typename FaceType>
 using VerticalComponent = comp::VerticalComponent<FaceType>;

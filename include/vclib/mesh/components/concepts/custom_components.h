@@ -40,12 +40,6 @@ concept HasCustomComponents = requires(T o)
 	{ o.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
 };
 
-template<typename T>
-bool constexpr hasCustomComponents()
-{
-	return HasCustomComponents<T>;
-}
-
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H

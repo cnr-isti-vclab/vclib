@@ -112,35 +112,35 @@ public:
 
 	// Custom Components
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), bool)
+	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, bool)
 	hasPerHalfEdgeCustomComponent(const std::string& name) const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), std::vector<std::string>)
+	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, std::vector<std::string>)
 	getAllPerHalfEdgeCustomComponentNames() const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), bool)
+	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, bool)
 	isPerHalfEdgeCustomComponentOfType(const std::string& name) const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), std::vector<std::string>)
+	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, std::vector<std::string>)
 	getPerHalfEdgeCustomComponentNamesOfType() const;
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), void)
+	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, void)
 	addPerHalfEdgeCustomComponent(const std::string& name);
 
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), void)
+	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, void)
 	deletePerHalfEdgeCustomComponent(const std::string& name);
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), CustomComponentVectorHandle<K>)
+	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, CustomComponentVectorHandle<K>)
 	getPerHalfEdgeCustomComponentVectorHandle(const std::string& name);
 
 	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::hasCustomComponents<U>(), ConstCustomComponentVectorHandle<K>)
+	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, ConstCustomComponentVectorHandle<K>)
 	getPerHalfEdgeCustomComponentVectorHandle(const std::string& name) const;
 
 protected:

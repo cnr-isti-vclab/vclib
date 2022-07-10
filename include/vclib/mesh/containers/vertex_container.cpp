@@ -726,7 +726,7 @@ VertexContainer<T>::disablePerVertexTexCoord()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
+VCL_ENABLE_IF(vert::HasCustomComponents<U>, bool)
 VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name) const
 {
 	return Base::optionalVec.componentExists(name);
@@ -742,7 +742,7 @@ VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name) const
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
+VCL_ENABLE_IF(vert::HasCustomComponents<U>, std::vector<std::string>)
 VertexContainer<T>::getAllPerVertexCustomComponentNames() const
 {
 	return Base::optionalVec.allComponentNames();
@@ -767,7 +767,7 @@ VertexContainer<T>::getAllPerVertexCustomComponentNames() const
  */
 template<VertexConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(vert::hasCustomComponents<U>(), bool)
+VCL_ENABLE_IF(vert::HasCustomComponents<U>, bool)
 VertexContainer<T>::isPerVertexCustomComponentOfType(const std::string& name) const
 {
 	return Base::optionalVec.template isComponentOfType<K>(name);
@@ -790,7 +790,7 @@ VertexContainer<T>::isPerVertexCustomComponentOfType(const std::string& name) co
  */
 template<VertexConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(vert::hasCustomComponents<U>(), std::vector<std::string>)
+VCL_ENABLE_IF(vert::HasCustomComponents<U>, std::vector<std::string>)
 VertexContainer<T>::getPerVertexCustomComponentNamesOfType() const
 {
 	return Base::optionalVec.template allComponentNamesOfType<K>();
@@ -807,7 +807,7 @@ VertexContainer<T>::getPerVertexCustomComponentNamesOfType() const
  */
 template<VertexConcept T>
 template<typename K, typename U>
-VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
+VCL_ENABLE_IF(vert::HasCustomComponents<U>, void)
 VertexContainer<T>::addPerVertexCustomComponent(const std::string& name)
 {
 	Base::optionalVec.template addNewComponent<K>(name, vertexContainerSize());
@@ -824,7 +824,7 @@ VertexContainer<T>::addPerVertexCustomComponent(const std::string& name)
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasCustomComponents<U>(), void)
+VCL_ENABLE_IF(vert::HasCustomComponents<U>, void)
 VertexContainer<T>::deletePerVertexCustomComponent(const std::string& name)
 {
 	Base::optionalVec.deleteComponent(name);
@@ -859,7 +859,7 @@ VertexContainer<T>::deletePerVertexCustomComponent(const std::string& name)
 template<VertexConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(
-	vert::hasCustomComponents<U>(),
+	vert::HasCustomComponents<U>,
 	CustomComponentVectorHandle<K>)
 VertexContainer<T>::getPerVertexCustomComponentVectorHandle(const std::string& name)
 {
@@ -899,7 +899,7 @@ VertexContainer<T>::getPerVertexCustomComponentVectorHandle(const std::string& n
 template<VertexConcept T>
 template<typename K, typename U>
 VCL_ENABLE_IF(
-	vert::hasCustomComponents<U>(),
+	vert::HasCustomComponents<U>,
 	ConstCustomComponentVectorHandle<K>)
 	VertexContainer<T>::getPerVertexCustomComponentVectorHandle(const std::string& name) const
 {
