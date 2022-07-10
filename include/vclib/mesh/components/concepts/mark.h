@@ -57,11 +57,11 @@ concept HasOptionalMark = HasMark<T> && requires(T o)
 template <typename T>
 bool isMarkEnabledOn(const T& element)
 {
-	if constexpr (hasOptionalMark<T>()) {
+	if constexpr (HasOptionalMark<T>) {
 		return element.isMarkEnabled();
 	}
 	else {
-		return hasMark<T>();
+		return HasMark<T>;
 	}
 }
 

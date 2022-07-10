@@ -140,7 +140,8 @@ void requirePerFaceColor(const MeshType& m)
 // Face Color
 
 template<typename MeshType>
-void requirePerFaceMark(const MeshType& m);
+void requirePerFaceMark(const MeshType& m)
+	requires HasPerFaceMark<MeshType>;
 
 // Face Normal
 

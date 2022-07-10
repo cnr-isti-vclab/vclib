@@ -371,9 +371,8 @@ void requirePerVertexColor(const MeshType& m)
 
 template<typename MeshType>
 void requirePerVertexMark(const MeshType& m)
+	requires HasPerVertexMark<MeshType>
 {
-	requireVertices<MeshType>();
-	static_assert(hasPerVertexMark<MeshType>(), "Mesh has no vertex mark.");
 	if (!isPerVertexMarkEnabled(m))
 		throw vcl::MissingComponentException("Vertex mark not enabled.");
 }

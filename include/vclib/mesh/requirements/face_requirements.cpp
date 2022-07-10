@@ -374,9 +374,8 @@ void requirePerFaceColor(const MeshType& m)
 
 template<typename MeshType>
 void requirePerFaceMark(const MeshType& m)
+	requires HasPerFaceMark<MeshType>
 {
-	requireFaces<MeshType>();
-	static_assert(hasPerFaceMark<MeshType>(), "Mesh has no face mark.");
 	if (!isPerFaceMarkEnabled(m))
 		throw vcl::MissingComponentException("Face mark not enabled.");
 }

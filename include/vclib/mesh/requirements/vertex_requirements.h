@@ -143,7 +143,8 @@ void requirePerVertexColor(const MeshType& m)
 // Vertex Mark
 
 template<typename MeshType>
-void requirePerVertexMark(const MeshType& m);
+void requirePerVertexMark(const MeshType& m)
+	requires HasPerVertexMark<MeshType>;
 
 // Vertex Normal
 

@@ -240,7 +240,7 @@ void HalfEdgeReferences<HalfEdge, Vertex, Face>::importHalfEdgeReferencesFrom(
 	HalfEdge*     base,
 	const HEType* ebase)
 {
-	if constexpr (hasHalfEdgeReferences<HE>()) {
+	if constexpr (HasHalfEdgeReferences<HE>) {
 		if (base != nullptr && ebase != nullptr) {
 			if (e.next() != nullptr) { // if the other half edge has a next
 				// this next will be the base of this container plus the offset between the next of
@@ -264,7 +264,7 @@ void HalfEdgeReferences<HalfEdge, Vertex, Face>::importVertexReferencesFrom(
 	Vertex*      base,
 	const VType* ebase)
 {
-	if constexpr (hasHalfEdgeReferences<HE>()) {
+	if constexpr (HasHalfEdgeReferences<HE>) {
 		if (base != nullptr && ebase != nullptr) {
 			if (e.fromVertex() != nullptr) {
 				v = base + (e.fromVertex() - ebase);
@@ -280,7 +280,7 @@ void HalfEdgeReferences<HalfEdge, Vertex, Face>::importFaceReferencesFrom(
 	Face*        base,
 	const FType* ebase)
 {
-	if constexpr (hasHalfEdgeReferences<HE>()) {
+	if constexpr (HasHalfEdgeReferences<HE>) {
 		if (base != nullptr && ebase != nullptr) {
 			if (e.face() != nullptr) {
 				f = base + (e.face() - ebase);
