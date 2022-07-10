@@ -43,7 +43,7 @@ concept HasBitFlags = requires(T o)
 };
 
 /**
- * @brief HasBitFlags concept
+ * @brief HasTriangleBitFlags concept
  *
  * This concept is satisfied only if a class has (inherits) PolygonBitFlags
  */
@@ -51,38 +51,20 @@ template<typename T>
 concept HasPolygonBitFlags = std::derived_from<T, PolygonBitFlags>;
 
 /**
- * @brief HasBitFlags concept
+ * @brief HasPolygonBitFlags concept
  *
  * This concept is satisfied only if a class has (inherits) TriangleBitFlags
  */
 template<typename T>
 concept HasTriangleBitFlags = std::derived_from<T, TriangleBitFlags>;
 
-/* Detector function to check if a class has BitFlags, PolygonBitFlags or TriangleBitFlags */
-
+/**
+ * @brief HasFaceBitFlags concept
+ *
+ * This concept is satisfied only if a class has PolygonBitFlags or TriangleBitFlags
+ */
 template<typename T>
-bool constexpr hasBitFlags()
-{
-	return HasBitFlags<T>;
-}
-
-template<typename T>
-bool constexpr hasPolygonBitFlags()
-{
-	return HasPolygonBitFlags<T>;
-}
-
-template<typename T>
-bool constexpr hasTriangleBitFlags()
-{
-	return HasTriangleBitFlags<T>;
-}
-
-template<typename T>
-bool constexpr hasFaceBitFlags()
-{
-	return HasPolygonBitFlags<T> || HasTriangleBitFlags<T>;
-}
+concept HasFaceBitFlags = HasPolygonBitFlags<T> || HasTriangleBitFlags<T>;
 
 } // namespace vcl::comp
 

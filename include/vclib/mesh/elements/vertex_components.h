@@ -53,12 +53,6 @@ using AdjacentVertices = comp::AdjacentVertices<VertexType>;
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags;
 
-template<typename VertexType>
-bool constexpr hasBitFlags()
-{
-	return comp::hasBitFlags<VertexType>();
-}
-
 /* Port Color class into vert namespace */
 using Color = comp::Color;
 

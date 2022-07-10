@@ -437,7 +437,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 		++i;
 	}
 
-	if constexpr(face::hasFaceBitFlags<FaceType>()) {
+	if constexpr(face::HasFaceBitFlags<FaceType>) {
 		if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) == unorderedEdges.end())
 			f.setEdgeFaux(0);
 		if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) == unorderedEdges.end())
@@ -465,7 +465,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 			++j;
 		}
 
-		if constexpr(face::hasFaceBitFlags<FaceType>()) {
+		if constexpr(face::HasFaceBitFlags<FaceType>) {
 			if (unorderedEdges.find(std::make_pair(tris[i], tris[i+1])) == unorderedEdges.end())
 				m.face(ff).setEdgeFaux(0);
 			if (unorderedEdges.find(std::make_pair(tris[i+1], tris[i+2])) == unorderedEdges.end())

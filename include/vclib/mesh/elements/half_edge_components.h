@@ -35,12 +35,6 @@ namespace vcl::hedge {
 /* Port BitFlags class into hedge namespace */
 using BitFlags = comp::BitFlags;
 
-template<typename EdgeType>
-bool constexpr hasBitFlags()
-{
-	return comp::hasBitFlags<EdgeType>();
-}
-
 /* Port Color class into hedge namespace */
 using Color = comp::Color;
 

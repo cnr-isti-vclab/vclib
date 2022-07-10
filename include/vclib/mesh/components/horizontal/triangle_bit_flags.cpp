@@ -211,12 +211,12 @@ inline int TriangleBitFlags::exportToVCGFlags() const
 template<typename Element>
 void TriangleBitFlags::importFrom(const Element& e)
 {
-	if constexpr (hasBitFlags<Element>()) {
+	if constexpr (HasBitFlags<Element>) {
 		unsetAllFlags();
-		if constexpr (hasPolygonBitFlags<Element>()) {
+		if constexpr (HasPolygonBitFlags<Element>) {
 			// todo
 		}
-		else if constexpr (hasTriangleBitFlags<Element>()) {
+		else if constexpr (HasTriangleBitFlags<Element>) {
 			flags = e.BitFlags::flags;
 		}
 		else {

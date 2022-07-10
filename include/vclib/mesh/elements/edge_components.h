@@ -44,12 +44,6 @@ using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags;
 
-template<typename EdgeType>
-bool constexpr hasBitFlags()
-{
-	return comp::hasBitFlags<EdgeType>();
-}
-
 /* Port Color class into edge namespace */
 using Color = comp::Color;
 

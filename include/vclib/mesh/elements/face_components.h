@@ -57,18 +57,6 @@ using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3>;
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags;
 
-template<typename FaceType>
-bool constexpr hasBitFlags()
-{
-	return comp::hasBitFlags<FaceType>();
-}
-
-template<typename FaceType>
-bool constexpr hasFaceBitFlags()
-{
-	return comp::hasFaceBitFlags<FaceType>();
-}
-
 /* Port Color class into face namespace */
 using Color = comp::Color;
 
@@ -116,12 +104,6 @@ bool constexpr hasNormal()
 /* Port PolygonBitFlags class into face namespace */
 using PolygonBitFlags = comp::PolygonBitFlags;
 
-template<typename FaceType>
-bool constexpr hasPolygonBitFlags()
-{
-	return comp::hasPolygonBitFlags<FaceType>();
-}
-
 /* Port PrincipalCurvature class into face namespace */
 template<typename FaceType>
 using PrincipalCurvature = comp::PrincipalCurvature<FaceType>;
@@ -150,12 +132,6 @@ bool constexpr hasScalar()
 
 /* Port TriangleBitFlags class into face namespace */
 using TriangleBitFlags = comp::TriangleBitFlags;
-
-template<typename FaceType>
-bool constexpr hasTriangleBitFlags()
-{
-	return comp::hasTriangleBitFlags<FaceType>();
-}
 
 /* Port VertexReferences class into face namespace */
 template<typename Vertex, int N>
