@@ -39,14 +39,6 @@ concept HasTexFileNames = requires(T o)
 	{ o.textureNumber() } -> std::same_as<uint>;
 };
 
-/* Detector functions to check if a class has TexFileNames */
-
-template<typename T>
-constexpr bool hasTexFileNames()
-{
-	return HasTexFileNames<T>;
-}
-
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_TEX_FILE_NAMES_H

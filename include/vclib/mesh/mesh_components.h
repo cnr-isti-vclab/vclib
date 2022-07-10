@@ -43,12 +43,6 @@ using Mark = comp::Mark;
 /** Port TexFileNames class into mesh namespace **/
 using TexFileNames = comp::TexFileNames;
 
-template<typename T>
-bool constexpr hasTexFileNames()
-{
-	return comp::hasTexFileNames<T>();
-}
-
 /** Port TransformMatrix class into mesh namespace **/
 template <typename Scalar>
 using TransformMatrix = comp::TransformMatrix<Scalar>;

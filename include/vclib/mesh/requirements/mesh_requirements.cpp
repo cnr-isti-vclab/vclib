@@ -197,24 +197,6 @@ bool isCompact(const MeshType& m)
 }
 
 /**
- * @brief Checks *if a MeshType has the TexFileNames component*.
- *
- * Usage:
- * @code{.cpp}
- * if constexpr(vcl::hasTexFileNames<MyMeshType>()) {
- *    // this portion of code is compiled only when MyMeshType has texture file names
- * }
- * @endcode
- *
- * @return `true` if the MeshType has texture file names.
- */
-template<typename MeshType>
-bool constexpr hasTexFileNames()
-{
-	return vcl::mesh::hasTexFileNames<MeshType>();
-}
-
-/**
  * @brief Checks *if a MeshType has the TransformMatrix component*.
  *
  * Usage:

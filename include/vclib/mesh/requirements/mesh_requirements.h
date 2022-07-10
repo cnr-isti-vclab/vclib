@@ -59,11 +59,6 @@ bool constexpr hasPolygons();
 template<typename MeshType>
 bool isCompact(const MeshType&);
 
-// Texture File Names
-
-template<typename MeshType>
-bool constexpr hasTexFileNames();
-
 // Transform Matrix
 
 template<typename MeshType>

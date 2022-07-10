@@ -88,7 +88,7 @@ inline TexFileNames::ConstTexFileNamesRangeIterator TexFileNames::textures() con
 template<typename Element>
 void TexFileNames::importFrom(const Element& e)
 {
-	if constexpr (hasTexFileNames<Element>()) {
+	if constexpr (HasTexFileNames<Element>) {
 		textureNames = e.TexFileNames::textureNames;
 	}
 }

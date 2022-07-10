@@ -31,7 +31,7 @@ namespace vcl::io::ply {
 template<typename MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh)
 {
-	if constexpr (vcl::hasTexFileNames<MeshType>()) {
+	if constexpr (vcl::HasTexFileNames<MeshType>) {
 		for (const std::string& str : header.textureFileNames()) {
 			mesh.pushTexture(str);
 		}
@@ -41,7 +41,7 @@ void loadTextures(const PlyHeader& header, MeshType& mesh)
 template<typename MeshType>
 void saveTextures(PlyHeader& header, const MeshType& mesh)
 {
-	if constexpr (vcl::hasTexFileNames<MeshType>()) {
+	if constexpr (vcl::HasTexFileNames<MeshType>) {
 		for (const std::string& str : mesh.textures()) {
 			header.pushTextureFileName(str);
 		}
