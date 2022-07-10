@@ -43,14 +43,6 @@ concept HasFaceHalfEdgeReference = requires(T o)
 	o.innerHalfEdge(uint());
 };
 
-/* Detector to check if a class has FaceHalfEdgeReference */
-
-template<typename T>
-bool constexpr hasFaceHalfEdgeReference()
-{
-	return HasFaceHalfEdgeReference<T>;
-}
-
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_FACE_HALF_EDGE_REFERENCE_H

@@ -64,12 +64,6 @@ using Color = comp::Color;
 template<typename HalfEdge>
 using HalfEdgeReference = comp::FaceHalfEdgeReference<HalfEdge>;
 
-template<typename FaceType>
-bool constexpr hasHalfEdgeReference()
-{
-	return comp::hasFaceHalfEdgeReference<FaceType>();
-}
-
 /* Port Mark class into face namespace */
 using Mark = comp::Mark;
 
