@@ -76,19 +76,7 @@ concept HasRightNumberOfWedgeColors = T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
 template<typename T>
 concept SanityCheckWedgeColors = !HasWedgeColors<T> || HasRightNumberOfWedgeColors<T>;
 
-/* Detector functions to check if a class has WedgeColors or OptionalWedgeColors */
-
-template<typename T>
-bool constexpr hasWedgeColors()
-{
-	return HasWedgeColors<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalWedgeColors()
-{
-	return HasOptionalWedgeColors<T>;
-}
+/* Detector function to check if a class has WedgeColors enabled */
 
 template <typename T>
 bool isWedgeColorsEnabledOn(const T& element)
@@ -98,17 +86,6 @@ bool isWedgeColorsEnabledOn(const T& element)
 	}
 	else {
 		return HasWedgeColors<T>;
-	}
-}
-
-template<typename T>
-bool constexpr sanityCheckWedgeColors()
-{
-	if constexpr (hasWedgeColors<T>()) {
-		return T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
-	}
-	else {
-		return true;
 	}
 }
 

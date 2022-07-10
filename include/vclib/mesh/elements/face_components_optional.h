@@ -90,6 +90,13 @@ using OptionalScalarf = comp::OptionalScalar<float, FaceType>;
 template<typename FaceType>
 using OptionalScalard = comp::OptionalScalar<double, FaceType>;
 
+/* Port OptionalWedgeColors class into face namespace */
+template<typename FaceType>
+using OptionalPolygonWedgeColors = comp::OptionalWedgeColors<-1, FaceType>;
+
+template<typename FaceType>
+using OptionalTriangleWedgeColors = comp::OptionalWedgeColors<3, FaceType>;
+
 /* Port OptionalWedgeTexCoords class into face namespace */
 template<typename ScalarType, typename FaceType>
 using OptionalPolygonWedgeTexCoords = comp::OptionalWedgeTexCoords<ScalarType, -1, FaceType>;
@@ -110,19 +117,6 @@ template<typename FaceType>
 bool constexpr hasOptionalWedgeTexCoords()
 {
 	return comp::hasOptionalWedgeTexCoords<FaceType>();
-}
-
-/* Port OptionalWedgeColors class into face namespace */
-template<typename FaceType>
-using OptionalPolygonWedgeColors = comp::OptionalWedgeColors<-1, FaceType>;
-
-template<typename FaceType>
-using OptionalTriangleWedgeColors = comp::OptionalWedgeColors<3, FaceType>;
-
-template<typename FaceType>
-bool constexpr hasOptionalWedgeColors()
-{
-	return comp::hasOptionalWedgeColors<FaceType>();
 }
 
 /* Port CustomComponents class into face namespace */

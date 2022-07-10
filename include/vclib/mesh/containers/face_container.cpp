@@ -647,7 +647,7 @@ FaceContainer<T>::disablePerFaceScalar()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), bool)
+VCL_ENABLE_IF(face::HasOptionalWedgeColors<U>, bool)
 FaceContainer<T>::isPerFaceWedgeColorsEnabled() const
 {
 	return Base::optionalVec.isWedgeColorsEnabled();
@@ -664,7 +664,7 @@ FaceContainer<T>::isPerFaceWedgeColorsEnabled() const
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalWedgeColors<U>, void)
 FaceContainer<T>::enablePerFaceWedgeColors()
 {
 	Base::optionalVec.enableWedgeColors(Base::vec.size());
@@ -683,7 +683,7 @@ FaceContainer<T>::enablePerFaceWedgeColors()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalWedgeColors<U>, void)
 FaceContainer<T>::disablePerFaceWedgeColors()
 {
 	Base::optionalVec.disableWedgeColors();

@@ -112,18 +112,6 @@ using PolygonWedgeColors = comp::WedgeColors<-1>;
 
 using TriangleWedgeColors = comp::WedgeColors<3>;
 
-template<typename FaceType>
-bool constexpr hasWedgeColors()
-{
-	return comp::hasWedgeColors<FaceType>();
-}
-
-template<typename FaceType>
-bool constexpr sanityCheckWedgeColors()
-{
-	return comp::sanityCheckWedgeColors<FaceType>();
-}
-
 /* Port WedgeTexCoords class into face namespace */
 template<typename ScalarType>
 using PolygonWedgeTexCoords = comp::WedgeTexCoords<ScalarType, -1>;

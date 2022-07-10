@@ -88,9 +88,6 @@ bool enableIfPerFaceScalarOptional(MeshType&);
 // Face Wedge Colors
 
 template<typename MeshType>
-bool constexpr hasPerFaceWedgeColors();
-
-template<typename MeshType>
 bool isPerFaceWedgeColorsEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -155,7 +152,8 @@ void requirePerFaceScalar(const MeshType& m)
 // Face Wedge Colors
 
 template<typename MeshType>
-void requirePerFaceWedgeColors(const MeshType& m);
+void requirePerFaceWedgeColors(const MeshType& m)
+	requires HasPerFaceWedgeColors<MeshType>;
 
 // Face Wedge TexCoords
 

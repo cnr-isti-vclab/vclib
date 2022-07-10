@@ -1296,14 +1296,14 @@ void Mesh<Args...>::importTriReferencesHelper(
 	for (uint i = basetri, j = 0; i < basetri+3; i++, j++) {
 		f.vertex(j) = base + (mf.vertex(tris[i]) - mvbase);
 
-		   // wedge colors
-		if constexpr(face::hasWedgeColors<FaceType>() && face::hasWedgeColors<MFaceType>()) {
+		// wedge colors
+		if constexpr(face::HasWedgeColors<FaceType> && face::HasWedgeColors<MFaceType>) {
 			if (comp::isWedgeColorsEnabledOn(f) && comp::isWedgeColorsEnabledOn(mf)) {
 				f.wedgeColor(j) = mf.wedgeColor(tris[i]);
 			}
 		}
 
-		   // wedge texcoords
+		// wedge texcoords
 		if constexpr(face::hasWedgeTexCoords<FaceType>() && face::hasWedgeTexCoords<MFaceType>()) {
 			if (comp::isWedgeTexCoordsEnabledOn(f) && comp::isWedgeTexCoordsEnabledOn(mf)) {
 				f.wedgeTexCoord(j) = mf.wedgeTexCoord(tris[i]);

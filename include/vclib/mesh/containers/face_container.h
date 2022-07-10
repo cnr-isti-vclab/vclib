@@ -175,15 +175,15 @@ public:
 
 	// WedgeColors
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), bool)
+	VCL_ENABLE_IF(face::HasOptionalWedgeColors<U>, bool)
 	isPerFaceWedgeColorsEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalWedgeColors<U>, void)
 	enablePerFaceWedgeColors();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalWedgeColors<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalWedgeColors<U>, void)
 	disablePerFaceWedgeColors();
 
 	// WedgeTexCoords
