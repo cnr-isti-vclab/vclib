@@ -96,9 +96,6 @@ bool enableIfPerFaceWedgeColorsOptional(MeshType&);
 // Face Wedge TexCoords
 
 template<typename MeshType>
-bool constexpr hasPerFaceWedgeTexCoords();
-
-template<typename MeshType>
 bool isPerFaceWedgeTexCoordsEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -158,7 +155,8 @@ void requirePerFaceWedgeColors(const MeshType& m)
 // Face Wedge TexCoords
 
 template<typename MeshType>
-void requirePerFaceWedgeTexCoords(const MeshType& m);
+void requirePerFaceWedgeTexCoords(const MeshType& m)
+	requires HasPerFaceWedgeTexCoords<MeshType>;
 
 } // namespace vcl
 

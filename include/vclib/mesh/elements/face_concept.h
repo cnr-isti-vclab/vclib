@@ -100,9 +100,9 @@ concept HasWedgeColors = comp::HasWedgeColors<T>;
 template<typename T>
 concept HasOptionalWedgeColors = comp::HasOptionalWedgeColors<T>;
 template<typename T>
-concept HasWedgeTexCoords = comp::HasWedgeColors<T>;
+concept HasWedgeTexCoords = comp::HasWedgeTexCoords<T>;
 template<typename T>
-concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeColors<T>;
+concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
 
 } // namespace vcl::face
 

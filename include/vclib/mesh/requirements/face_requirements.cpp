@@ -260,25 +260,14 @@ bool enableIfPerFaceWedgeColorsOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceWedgeTexCoords()
-{
-	if constexpr (hasFaces<MeshType>())  {
-		return vcl::face::hasWedgeTexCoords<typename MeshType::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerFaceWedgeTexCoordsEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>()) {
-		if constexpr (vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()) {
+	if constexpr (HasFaces<MeshType>) {
+		if constexpr (vcl::face::HasOptionalWedgeTexCoords<typename MeshType::FaceType>) {
 			return m.isPerFaceWedgeTexCoordsEnabled();
 		}
 		else {
-			return vcl::face::hasWedgeTexCoords<typename MeshType::FaceType>();
+			return vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
 		}
 	}
 	else {
@@ -289,8 +278,8 @@ bool isPerFaceWedgeTexCoordsEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
 {
-	if constexpr (hasPerFaceWedgeTexCoords<MeshType>()) {
-		if constexpr(vcl::face::hasOptionalWedgeTexCoords<typename MeshType::FaceType>()) {
+	if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+		if constexpr(vcl::face::HasOptionalWedgeTexCoords<typename MeshType::FaceType>) {
 			m.enablePerFaceWedgeTexCoords();
 		}
 		return true;
@@ -370,9 +359,8 @@ void requirePerFaceWedgeColors(const MeshType& m)
 
 template<typename MeshType>
 void requirePerFaceWedgeTexCoords(const MeshType& m)
+	requires HasPerFaceWedgeTexCoords<MeshType>
 {
-	requireFaces<MeshType>();
-	static_assert(hasPerFaceWedgeTexCoords<MeshType>(), "Mesh has no face wedge texcoords.");
 	if (!isPerFaceWedgeTexCoordsEnabled(m))
 		throw vcl::MissingComponentException("Face wedge texcoords not enabled.");
 }

@@ -698,7 +698,7 @@ FaceContainer<T>::disablePerFaceWedgeColors()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), bool)
+VCL_ENABLE_IF(face::HasOptionalWedgeTexCoords<U>, bool)
 FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
 {
 	return Base::optionalVec.isWedgeTexCoordsEnabled();
@@ -716,7 +716,7 @@ FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled() const
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalWedgeTexCoords<U>, void)
 FaceContainer<T>::enablePerFaceWedgeTexCoords()
 {
 	Base::optionalVec.enableWedgeTexCoords(Base::vec.size());
@@ -736,7 +736,7 @@ FaceContainer<T>::enablePerFaceWedgeTexCoords()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalWedgeTexCoords<U>, void)
 FaceContainer<T>::disablePerFaceWedgeTexCoords()
 {
 	Base::optionalVec.disableWedgeTexCoords();

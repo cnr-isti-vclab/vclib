@@ -188,15 +188,15 @@ public:
 
 	// WedgeTexCoords
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), bool)
+	VCL_ENABLE_IF(face::HasOptionalWedgeTexCoords<U>, bool)
 	isPerFaceWedgeTexCoordsEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalWedgeTexCoords<U>, void)
 	enablePerFaceWedgeTexCoords();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalWedgeTexCoords<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalWedgeTexCoords<U>, void)
 	disablePerFaceWedgeTexCoords();
 
 	// Custom Components

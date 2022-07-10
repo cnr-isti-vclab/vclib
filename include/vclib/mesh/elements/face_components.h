@@ -124,18 +124,6 @@ using PolygonWedgeTexCoordsd = comp::WedgeTexCoords<double, -1>;
 using TriangleWedgeTexCoordsf = TriangleWedgeTexCoords<float>;
 using TriangleWedgeTexCoordsd = TriangleWedgeTexCoords<double>;
 
-template<typename FaceType>
-bool constexpr hasWedgeTexCoords()
-{
-	return comp::hasWedgeTexCoords<FaceType>();
-}
-
-template<typename FaceType>
-bool constexpr sanityCheckWedgeTexCoords()
-{
-	return comp::sanityCheckWedgeTexCoords<FaceType>();
-}
-
 } // namespace vcl::face
 
 #endif // VCL_MESH_ELEMENTS_FACE_COMPONENTS_H

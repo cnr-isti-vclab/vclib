@@ -187,7 +187,7 @@ template<typename Scalar, int N, typename T>
 template<typename Element>
 void OptionalWedgeTexCoords<Scalar, N, T>::importFrom(const Element& e)
 {
-	if constexpr (hasWedgeTexCoords<Element>()) {
+	if constexpr (HasWedgeTexCoords<Element>) {
 		if (isWedgeTexCoordsEnabled() && isWedgeTexCoordsEnabledOn(e)) {
 			if constexpr(N > 0) {
 				// same static size

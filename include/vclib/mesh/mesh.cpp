@@ -1304,7 +1304,7 @@ void Mesh<Args...>::importTriReferencesHelper(
 		}
 
 		// wedge texcoords
-		if constexpr(face::hasWedgeTexCoords<FaceType>() && face::hasWedgeTexCoords<MFaceType>()) {
+		if constexpr(face::HasWedgeTexCoords<FaceType> && face::HasWedgeTexCoords<MFaceType>) {
 			if (comp::isWedgeTexCoordsEnabledOn(f) && comp::isWedgeTexCoordsEnabledOn(mf)) {
 				f.wedgeTexCoord(j) = mf.wedgeTexCoord(tris[i]);
 			}

@@ -113,12 +113,6 @@ using OptionalTriangleWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, 3, F
 template<typename FaceType>
 using OptionalTriangleWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, 3, FaceType>;
 
-template<typename FaceType>
-bool constexpr hasOptionalWedgeTexCoords()
-{
-	return comp::hasOptionalWedgeTexCoords<FaceType>();
-}
-
 /* Port CustomComponents class into face namespace */
 template<typename FaceType>
 using CustomComponents = comp::CustomComponents<FaceType>;

@@ -76,39 +76,16 @@ concept HasRightNumberOfWedgeTexCoords = T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_
 template<typename T>
 concept SanityCheckWedgeTexCoords = !HasWedgeTexCoords<T> || HasRightNumberOfWedgeTexCoords<T>;
 
-/* Detector functions to check if a class has WedgeTexCoords or OptionalWedgeTexCoords */
-
-template<typename T>
-bool constexpr hasWedgeTexCoords()
-{
-	return HasWedgeTexCoords<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalWedgeTexCoords()
-{
-	return HasOptionalWedgeTexCoords<T>;
-}
+/* Detector function to check if a class has WedgeTexCoords enabled */
 
 template <typename T>
 bool isWedgeTexCoordsEnabledOn(const T& element)
 {
-	if constexpr (hasOptionalWedgeTexCoords<T>()) {
+	if constexpr (HasOptionalWedgeTexCoords<T>) {
 		return element.isWedgeTexCoordsEnabled();
 	}
 	else {
 		return HasWedgeTexCoords<T>;
-	}
-}
-
-template<typename T>
-bool constexpr sanityCheckWedgeTexCoords()
-{
-	if constexpr (hasWedgeTexCoords<T>()) {
-		return T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
-	}
-	else {
-		return true;
 	}
 }
 
