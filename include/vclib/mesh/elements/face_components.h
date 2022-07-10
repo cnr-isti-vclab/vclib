@@ -107,12 +107,6 @@ using TriangleVertexRefs = comp::VertexReferences<Vertex, 3>;
 template<typename Vertex>
 using PolygonVertexRefs = comp::VertexReferences<Vertex, -1>;
 
-template<typename FaceType>
-bool constexpr hasVertexReferences()
-{
-	return comp::hasVertexReferences<FaceType>();
-}
-
 /* Port WedgeColors class into face namespace */
 using PolygonWedgeColors = comp::WedgeColors<-1>;
 

@@ -220,7 +220,7 @@ void VertexReferences<Vertex, N>::importVertexReferencesFrom(
 	Vertex* base,
 	const ElVType* ebase)
 {
-	if constexpr (hasVertexReferences<Element>()) {
+	if constexpr (HasVertexReferences<Element>) {
 		if constexpr(N > 0) {
 			// same size non-polygonal faces
 			if constexpr (N == Element::VERTEX_NUMBER) {

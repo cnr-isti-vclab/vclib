@@ -70,12 +70,6 @@ using Coordinate3d = comp::Coordinate3d;
 template<typename HalfEdge>
 using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge>;
 
-template<typename VertexType>
-bool constexpr hasHalfEdgeReference()
-{
-	return comp::hasVertexHalfEdgeReference<VertexType>();
-}
-
 /* Port Mark class into vert namespace */
 using Mark = comp::Mark;
 

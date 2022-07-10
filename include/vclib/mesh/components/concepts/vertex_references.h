@@ -39,14 +39,6 @@ concept HasVertexReferences = requires(T o)
 	{ o.vertexNumber() } -> std::same_as<uint>;
 };
 
-/* Detector functions to check if a class has VertexReferences */
-
-template<typename T>
-bool constexpr hasVertexReferences()
-{
-	return HasVertexReferences<T>;
-}
-
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_VERTEX_REFERENCES_H

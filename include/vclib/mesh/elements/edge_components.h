@@ -61,12 +61,6 @@ using Scalard = comp::Scalard;
 template<typename VertexType>
 using VertexReferences = comp::VertexReferences<VertexType, 2>;
 
-template<typename EdgeType>
-bool constexpr hasVertexReferences()
-{
-	return comp::hasVertexReferences<EdgeType>();
-}
-
 } // namespace vcl::edge
 
 #endif // VCL_MESH_ELEMENTS_EDGE_COMPONENTS_H

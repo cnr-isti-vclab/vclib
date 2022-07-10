@@ -39,14 +39,6 @@ concept HasVertexHalfEdgeReference = requires(T o)
 	o.halfEdge();
 };
 
-/* Detector to check if a class has VertexHalfEdgeReference */
-
-template<typename T>
-bool constexpr hasVertexHalfEdgeReference()
-{
-	return HasVertexHalfEdgeReference<T>;
-}
-
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_VERTEX_HALF_EDGE_REFERENCE_H

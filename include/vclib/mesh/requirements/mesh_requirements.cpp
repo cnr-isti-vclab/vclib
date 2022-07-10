@@ -109,7 +109,7 @@ bool constexpr hasQuads()
 {
 	if constexpr (hasFaces<MeshType>()) {
 		using F = typename MeshType::FaceType;
-		if constexpr (vcl::face::hasVertexReferences<F>()) {
+		if constexpr (vcl::face::HasVertexReferences<F>) {
 			using R = typename F::VertexReferences;
 			return R::VERTEX_NUMBER == 4;
 		}
@@ -165,7 +165,7 @@ bool constexpr hasPolygons()
 {
 	if constexpr (hasFaces<MeshType>()) {
 		using F = typename MeshType::FaceType;
-		if constexpr (vcl::face::hasVertexReferences<F>()) {
+		if constexpr (vcl::face::HasVertexReferences<F>) {
 			using R = typename F::VertexReferences;
 			return R::VERTEX_NUMBER < 0;
 		}
