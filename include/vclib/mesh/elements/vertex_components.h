@@ -50,12 +50,6 @@ using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 template<typename VertexType>
 using AdjacentVertices = comp::AdjacentVertices<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasAdjacentVertices()
-{
-	return comp::hasAdjacentVertices<VertexType>();
-}
-
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags;
 

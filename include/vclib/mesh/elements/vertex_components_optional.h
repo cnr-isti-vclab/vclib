@@ -48,12 +48,6 @@ using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, VertexTy
 template<typename VertexType>
 using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalAdjacentVertices()
-{
-	return comp::hasOptionalAdjacentVertices<VertexType>();
-}
-
 /* Port OptionalColor class into vert namespace */
 template<typename VertexType>
 using OptionalColor = comp::OptionalColor<VertexType>;

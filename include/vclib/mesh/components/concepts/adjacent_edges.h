@@ -77,7 +77,7 @@ concept HasRightNumberOfAdjacentEdges = T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
 template<typename T>
 concept SanityCheckAdjacentEdges = !HasAdjacentEdges<T> || HasRightNumberOfAdjacentEdges<T>;
 
-/* Detector functions to check if a class has AdjacentEdges or OptionalAdjacentEdges */
+/* Detector function to check if a class has AdjacentEdges enabled */
 
 template <typename T>
 bool isAdjacentEdgesEnabledOn(const T& element)

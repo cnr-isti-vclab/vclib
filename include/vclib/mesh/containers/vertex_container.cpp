@@ -431,7 +431,7 @@ VertexContainer<T>::disablePerVertexAdjacentFaces()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), bool)
+VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, bool)
 VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
 {
 	return Base::optionalVec.isAdjacentVerticesEnabled();
@@ -445,7 +445,7 @@ VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, void)
 VertexContainer<T>::enablePerVertexAdjacentVertices()
 {
 	Base::optionalVec.enableAdjacentVertices(vertexContainerSize());
@@ -459,7 +459,7 @@ VertexContainer<T>::enablePerVertexAdjacentVertices()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, void)
 VertexContainer<T>::disablePerVertexAdjacentVertices()
 {
 	Base::optionalVec.disableAdjacentVertices();

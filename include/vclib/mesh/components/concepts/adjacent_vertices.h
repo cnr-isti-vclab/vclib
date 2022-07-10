@@ -52,28 +52,16 @@ concept HasOptionalAdjacentVertices = HasAdjacentVertices<T> && requires(T o)
 	{ o.__optionalAdjVertices() } -> std::same_as<void>;
 };
 
-/* Detector functions to check if a class has AdjacentVertices or OptionalAdjacentVertices */
-
-template<typename T>
-bool constexpr hasAdjacentVertices()
-{
-	return HasAdjacentVertices<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalAdjacentVertices()
-{
-	return HasOptionalAdjacentVertices<T>;
-}
+/* Detector function to check if a class has AdjacentVertices enabled */
 
 template <typename T>
 bool isAdjacentVerticesEnabledOn(const T& element)
 {
-	if constexpr (hasOptionalAdjacentVertices<T>()) {
+	if constexpr (HasOptionalAdjacentVertices<T>) {
 		return element.isAdjVerticesEnabled();
 	}
 	else {
-		return hasAdjacentVertices<T>();
+		return HasAdjacentVertices<T>;
 	}
 }
 

@@ -468,7 +468,7 @@ void ElementContainer<T>::updateVertexReferences(const Vertex *oldBase, const Ve
 	// AdjacentVertexReferences component update
 	if constexpr(comp::HasAdjacentVertices<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::hasOptionalAdjacentVertices<T>() || optionalVec.isAdjacentVerticesEnabled()) {
+		if (!comp::HasOptionalAdjacentVertices<T> || optionalVec.isAdjacentVerticesEnabled()) {
 			for (T& e : elements()) {
 				e.updateVertexReferences(oldBase, newBase);
 			}

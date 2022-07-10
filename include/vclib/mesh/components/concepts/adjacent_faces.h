@@ -77,7 +77,7 @@ concept HasRightNumberOfAdjacentFaces = T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
 template<typename T>
 concept SanityCheckAdjacentFaces = !HasAdjacentFaces<T> || HasRightNumberOfAdjacentFaces<T>;
 
-/* Detector functions to check if a class has AdjacentFaces or OptionalAdjacentFaces */
+/* Detector function to check if a class has AdjacentFaces enabled */
 
 template <typename T>
 bool isAdjacentFacesEnabledOn(const T& element)

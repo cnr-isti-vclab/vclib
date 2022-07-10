@@ -48,9 +48,6 @@ bool enableIfPerVertexAdjacentFacesOptional(MeshType&);
 // Vertex Adjacent Vertices
 
 template<typename MeshType>
-bool constexpr hasPerVertexAdjacentVertices();
-
-template<typename MeshType>
 bool isPerVertexAdjacentVerticesEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -145,7 +142,8 @@ void requirePerVertexAdjacentFaces(const MeshType& m)
 // Vertex Adjacent Vertices
 
 template<typename MeshType>
-void requirePerVertexAdjacentVertices(const MeshType& m);
+void requirePerVertexAdjacentVertices(const MeshType& m)
+	requires HasPerVertexAdjacentVertices<MeshType>;
 
 // Vertex Color
 

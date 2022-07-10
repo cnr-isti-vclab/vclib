@@ -112,15 +112,15 @@ public:
 
 	// Adjacent Vertices
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), bool)
+	VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, bool)
 	isPerVertexAdjacentVerticesEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, void)
 	enablePerVertexAdjacentVertices();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalAdjacentVertices<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, void)
 	disablePerVertexAdjacentVertices();
 
 	// Color
