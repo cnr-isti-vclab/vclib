@@ -71,12 +71,6 @@ using OptionalNormal3f = comp::OptionalNormal3f<FaceType>;
 template<typename FaceType>
 using OptionalNormal3d = comp::OptionalNormal3d<FaceType>;
 
-template<typename FaceType>
-bool constexpr hasOptionalNormal()
-{
-	return comp::hasOptionalNormal<FaceType>();
-}
-
 /* Port OptionalPrincipalCurvature class into face namespace */
 template<typename ScalarType, typename FaceType>
 using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<ScalarType, FaceType>;

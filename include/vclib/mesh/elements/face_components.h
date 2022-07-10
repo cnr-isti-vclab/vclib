@@ -77,12 +77,6 @@ using Normal3 = comp::Normal3<ScalarType>;
 using Normal3f = comp::Normal3f;
 using Normal3d = comp::Normal3d;
 
-template<typename FaceType>
-bool constexpr hasNormal()
-{
-	return comp::hasNormal<FaceType>();
-}
-
 /* Port PolygonBitFlags class into face namespace */
 using PolygonBitFlags = comp::PolygonBitFlags;
 

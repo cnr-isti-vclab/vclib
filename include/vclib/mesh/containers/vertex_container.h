@@ -151,15 +151,15 @@ public:
 
 	// Normal
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), bool)
+	VCL_ENABLE_IF(vert::HasOptionalNormal<U>, bool)
 	isPerVertexNormalEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalNormal<U>, void)
 	enablePerVertexNormal();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalNormal<U>, void)
 	disablePerVertexNormal();
 
 	// PrincipalCurvature

@@ -441,7 +441,7 @@ void loadObj(
 					m, token, loadedInfo, tokens, currentMaterial, enableOptionalComponents);
 			}
 			// read vertex normal (and save in vn how many normals we read)
-			if constexpr(hasPerVertexNormal<MeshType>()) {
+			if constexpr(HasPerVertexNormal<MeshType>) {
 				if (header == "vn") {
 					internal::loadVertexNormal(
 						m, mapNormalsCache, vn, token, loadedInfo, enableOptionalComponents);
@@ -482,7 +482,7 @@ void loadObj(
 		}
 	} while (file);
 
-	if constexpr (hasPerVertexNormal<MeshType>()) {
+	if constexpr (HasPerVertexNormal<MeshType>) {
 		// set all vertex normals that have not been stored in vertices
 		for (const auto& p : mapNormalsCache) {
 			if (p.first < m.vertexNumber()) {

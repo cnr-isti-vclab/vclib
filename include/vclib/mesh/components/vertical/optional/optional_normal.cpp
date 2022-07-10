@@ -50,7 +50,7 @@ template<typename P, typename T>
 template<typename Element>
 void OptionalNormalT<P, T>::importFrom(const Element& e)
 {
-	if constexpr (hasNormal<Element>()) {
+	if constexpr (HasNormal<Element>) {
 		if (isNormalEnabled() && isNormalEnabledOn(e)) {
 			normal() = e.normal();
 		}

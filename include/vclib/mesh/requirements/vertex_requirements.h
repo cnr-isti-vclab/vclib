@@ -72,9 +72,6 @@ bool enableIfPerVertexMarkOptional(MeshType&);
 // Vertex Normal
 
 template<typename MeshType>
-bool constexpr hasPerVertexNormal();
-
-template<typename MeshType>
 bool isPerVertexNormalEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -149,7 +146,8 @@ void requirePerVertexMark(const MeshType& m)
 // Vertex Normal
 
 template<typename MeshType>
-void requirePerVertexNormal(const MeshType& m);
+void requirePerVertexNormal(const MeshType& m)
+	requires HasPerVertexNormal<MeshType>;
 
 // Vertex PrincipalCurvature
 

@@ -52,28 +52,16 @@ concept HasOptionalNormal = HasNormal<T> && requires(T o)
 	{ o.__optionalNormal() } -> std::same_as<void>;
 };
 
-/* Detector functions to check if a class has Normal or OptionalNormal */
-
-template<typename T>
-bool constexpr hasNormal()
-{
-	return HasNormal<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalNormal()
-{
-	return HasOptionalNormal<T>;
-}
+/* Detector function to check if a class has Normal enabled */
 
 template <typename T>
 bool isNormalEnabledOn(const T& element)
 {
-	if constexpr (hasOptionalNormal<T>()) {
+	if constexpr (HasOptionalNormal<T>) {
 		return element.isNormalEnabled();
 	}
 	else {
-		return hasNormal<T>();
+		return HasNormal<T>;
 	}
 }
 

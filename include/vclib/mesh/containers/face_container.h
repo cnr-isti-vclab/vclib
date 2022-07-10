@@ -136,15 +136,15 @@ public:
 
 	// Normal
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalNormal<U>(), bool)
+	VCL_ENABLE_IF(face::HasOptionalNormal<U>, bool)
 	isPerFaceNormalEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalNormal<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalNormal<U>, void)
 	enablePerFaceNormal();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalNormal<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalNormal<U>, void)
 	disablePerFaceNormal();
 
 	// PrincipalCurvature

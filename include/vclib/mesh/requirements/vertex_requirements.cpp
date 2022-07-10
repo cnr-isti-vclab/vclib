@@ -170,25 +170,14 @@ bool enableIfPerVertexMarkOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexNormal()
-{
-	if constexpr (hasVertices<MeshType>())  {
-		return vcl::vert::hasNormal<typename MeshType::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerVertexNormalEnabled(const MeshType& m)
 {
-	if constexpr (hasVertices<MeshType>()) {
-		if constexpr (vcl::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
+	if constexpr (HasVertices<MeshType>) {
+		if constexpr (vcl::vert::HasOptionalNormal<typename MeshType::VertexType>) {
 			return m.isPerVertexNormalEnabled();
 		}
 		else {
-			return vcl::vert::hasNormal<typename MeshType::VertexType>();
+			return vcl::vert::HasNormal<typename MeshType::VertexType>;
 		}
 	}
 	else {
@@ -199,8 +188,8 @@ bool isPerVertexNormalEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexNormalOptional(MeshType& m)
 {
-	if constexpr (hasPerVertexNormal<MeshType>()) {
-		if constexpr(vcl::vert::hasOptionalNormal<typename MeshType::VertexType>()) {
+	if constexpr (HasPerVertexNormal<MeshType>) {
+		if constexpr(vcl::vert::HasOptionalNormal<typename MeshType::VertexType>) {
 			m.enablePerVertexNormal();
 		}
 		return true;
@@ -379,9 +368,8 @@ void requirePerVertexMark(const MeshType& m)
 
 template<typename MeshType>
 void requirePerVertexNormal(const MeshType& m)
+	requires HasPerVertexNormal<MeshType>
 {
-	requireVertices<MeshType>();
-	static_assert(hasPerVertexNormal<MeshType>(), "Mesh has no vertex normals.");
 	if (!isPerVertexNormalEnabled(m))
 		throw vcl::MissingComponentException("Vertex normals not enabled.");
 }

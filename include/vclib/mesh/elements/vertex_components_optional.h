@@ -69,12 +69,6 @@ using OptionalNormal3f = comp::OptionalNormal3f<VertexType>;
 template<typename VertexType>
 using OptionalNormal3d = comp::OptionalNormal3d<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalNormal()
-{
-	return comp::hasOptionalNormal<VertexType>();
-}
-
 /* Port OptionalPrincipalCurvature class into vert namespace */
 template<typename ScalarType, typename VertexType>
 using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<ScalarType, VertexType>;

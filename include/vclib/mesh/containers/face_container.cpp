@@ -523,7 +523,7 @@ FaceContainer<T>::disablePerFaceMark()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalNormal<U>(), bool)
+VCL_ENABLE_IF(face::HasOptionalNormal<U>, bool)
 FaceContainer<T>::isPerFaceNormalEnabled() const
 {
 	return Base::optionalVec.isNormalEnabled();
@@ -536,7 +536,7 @@ FaceContainer<T>::isPerFaceNormalEnabled() const
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalNormal<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalNormal<U>, void)
 FaceContainer<T>::enablePerFaceNormal()
 {
 	Base::optionalVec.enableNormal(faceContainerSize());
@@ -549,7 +549,7 @@ FaceContainer<T>::enablePerFaceNormal()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalNormal<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalNormal<U>, void)
 FaceContainer<T>::disablePerFaceNormal()
 {
 	Base::optionalVec.disableNormal();

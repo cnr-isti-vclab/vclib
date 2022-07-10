@@ -140,25 +140,14 @@ bool enableIfPerFaceMarkOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceNormal()
-{
-	if constexpr (hasFaces<MeshType>())  {
-		return vcl::face::hasNormal<typename MeshType::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerFaceNormalEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>()) {
-		if constexpr (vcl::face::hasOptionalNormal<typename MeshType::FaceType>()) {
+	if constexpr (HasFaces<MeshType>) {
+		if constexpr (vcl::face::HasOptionalNormal<typename MeshType::FaceType>) {
 			return m.isPerFaceNormalEnabled();
 		}
 		else {
-			return vcl::face::hasNormal<typename MeshType::FaceType>();
+			return vcl::face::HasNormal<typename MeshType::FaceType>;
 		}
 	}
 	else {
@@ -169,8 +158,8 @@ bool isPerFaceNormalEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceNormalOptional(MeshType& m)
 {
-	if constexpr (hasPerFaceNormal<MeshType>()) {
-		if constexpr(vcl::face::hasOptionalNormal<typename MeshType::FaceType>()) {
+	if constexpr (HasPerFaceNormal<MeshType>) {
+		if constexpr(vcl::face::HasOptionalNormal<typename MeshType::FaceType>) {
 			m.enablePerFaceNormal();
 		}
 		return true;
@@ -382,9 +371,8 @@ void requirePerFaceMark(const MeshType& m)
 
 template<typename MeshType>
 void requirePerFaceNormal(const MeshType& m)
+	requires HasPerFaceNormal<MeshType>
 {
-	requireFaces<MeshType>();
-	static_assert(hasPerFaceNormal<MeshType>(), "Mesh has no face normals.");
 	if (!isPerFaceNormalEnabled(m))
 		throw vcl::MissingComponentException("Face normals not enabled.");
 }

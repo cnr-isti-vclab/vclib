@@ -64,9 +64,6 @@ bool enableIfPerFaceMarkOptional(MeshType&);
 // Face Normal
 
 template<typename MeshType>
-bool constexpr hasPerFaceNormal();
-
-template<typename MeshType>
 bool isPerFaceNormalEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -146,7 +143,8 @@ void requirePerFaceMark(const MeshType& m)
 // Face Normal
 
 template<typename MeshType>
-void requirePerFaceNormal(const MeshType& m);
+void requirePerFaceNormal(const MeshType& m)
+	requires HasPerFaceNormal<MeshType>;
 
 // Face Principal Curvature
 

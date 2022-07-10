@@ -89,12 +89,6 @@ using Normal3 = comp::Normal3<ScalarType>;
 using Normal3f = comp::Normal3f;
 using Normal3d = comp::Normal3d;
 
-template<typename VertexType>
-bool constexpr hasNormal()
-{
-	return comp::hasNormal<VertexType>();
-}
-
 /* Port PrincipalCurvature class into face namespace */
 template<typename ScalarType>
 using PrincipalCurvature = comp::PrincipalCurvature<ScalarType>;

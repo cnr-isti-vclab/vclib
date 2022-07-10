@@ -557,7 +557,7 @@ VertexContainer<T>::disablePerVertexMark()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), bool)
+VCL_ENABLE_IF(vert::HasOptionalNormal<U>, bool)
 VertexContainer<T>::isPerVertexNormalEnabled() const
 {
 	return Base::optionalVec.isNormalEnabled();
@@ -570,7 +570,7 @@ VertexContainer<T>::isPerVertexNormalEnabled() const
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalNormal<U>, void)
 VertexContainer<T>::enablePerVertexNormal()
 {
 	Base::optionalVec.enableNormal(vertexContainerSize());
@@ -583,7 +583,7 @@ VertexContainer<T>::enablePerVertexNormal()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalNormal<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalNormal<U>, void)
 VertexContainer<T>::disablePerVertexNormal()
 {
 	Base::optionalVec.disableNormal();

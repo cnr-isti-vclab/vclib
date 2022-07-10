@@ -56,7 +56,7 @@ void loadOffVertices(
 			v.coord()[j] = io::internal::readDouble<double>(token);
 		}
 
-		if constexpr(vcl::hasPerVertexNormal<MeshType>()) {
+		if constexpr(vcl::HasPerVertexNormal<MeshType>) {
 			if (vcl::isPerVertexNormalEnabled(mesh) && fileInfo.hasVertexNormals()) {
 				// Read 3 normal coordinates
 				for (unsigned int j = 0; j < 3; j++) {
