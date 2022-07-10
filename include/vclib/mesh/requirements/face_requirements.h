@@ -40,18 +40,12 @@ bool isFaceContainerCompact(const MeshType&);
 // Face Adjacent Faces
 
 template<typename MeshType>
-bool constexpr hasPerFaceAdjacentFaces();
-
-template<typename MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType&);
 
 template<typename MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType&);
 
 // Face Color
-
-template<typename MeshType>
-bool constexpr hasPerFaceColor();
 
 template<typename MeshType>
 bool isPerFaceColorEnabled(const MeshType&);
@@ -148,7 +142,8 @@ void requirePerFaceAdjacentFaces(const MeshType& m)
 // Face Color
 
 template<typename MeshType>
-void requirePerFaceColor(const MeshType& m);
+void requirePerFaceColor(const MeshType& m)
+	requires HasPerFaceColor<MeshType>;
 
 // Face Color
 

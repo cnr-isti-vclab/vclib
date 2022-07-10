@@ -474,7 +474,7 @@ VertexContainer<T>::disablePerVertexAdjacentVertices()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalColor<U>(), bool)
+VCL_ENABLE_IF(vert::HasOptionalColor<U>, bool)
 VertexContainer<T>::isPerVertexColorEnabled() const
 {
 	return Base::optionalVec.isColorEnabled();
@@ -487,7 +487,7 @@ VertexContainer<T>::isPerVertexColorEnabled() const
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalColor<U>, void)
 VertexContainer<T>::enablePerVertexColor()
 {
 	Base::optionalVec.enableColor(vertexContainerSize());
@@ -500,7 +500,7 @@ VertexContainer<T>::enablePerVertexColor()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalColor<U>, void)
 VertexContainer<T>::disablePerVertexColor()
 {
 	Base::optionalVec.disableColor();

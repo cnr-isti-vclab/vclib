@@ -125,15 +125,15 @@ public:
 
 	// Color
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalColor<U>(), bool)
+	VCL_ENABLE_IF(vert::HasOptionalColor<U>, bool)
 	isPerVertexColorEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalColor<U>, void)
 	enablePerVertexColor();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalColor<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalColor<U>, void)
 	disablePerVertexColor();
 
 	// Mark

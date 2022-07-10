@@ -43,7 +43,7 @@ inline vcl::Color& Color::color()
 template<typename Element>
 void Color::importFrom(const Element& e)
 {
-	if constexpr (hasColor<Element>()) {
+	if constexpr (HasColor<Element>) {
 		if (isColorEnabledOn(e)) {
 			c = e.color();
 		}

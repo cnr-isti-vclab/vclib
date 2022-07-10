@@ -54,12 +54,6 @@ using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<FaceType, 3, FaceT
 template<typename FaceType>
 using OptionalColor = comp::OptionalColor<FaceType>;
 
-template<typename FaceType>
-bool constexpr hasOptionalColor()
-{
-	return comp::hasOptionalColor<FaceType>();
-}
-
 /* Port OptionalMark class into face namespace */
 template<typename FaceType>
 using OptionalMark = comp::OptionalMark<FaceType>;

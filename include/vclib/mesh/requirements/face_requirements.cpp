@@ -41,7 +41,7 @@ namespace vcl {
 template<typename MeshType>
 bool isFaceContainerCompact(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>()) {
+	if constexpr (HasFaces<MeshType>) {
 		return (m.faceNumber() == m.faceContainerSize());
 	}
 	else {
@@ -52,7 +52,7 @@ bool isFaceContainerCompact(const MeshType& m)
 template<typename MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>()) {
+	if constexpr (HasFaces<MeshType>) {
 		if constexpr (vcl::face::HasOptionalAdjacentFaces<typename MeshType::FaceType>) {
 			return m.isPerFaceAdjacentFacesEnabled();
 		}
@@ -80,25 +80,14 @@ bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceColor()
-{
-	if constexpr (hasFaces<MeshType>())  {
-		return vcl::face::hasColor<typename MeshType::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerFaceColorEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>()) {
-		if constexpr (vcl::face::hasOptionalColor<typename MeshType::FaceType>()) {
+	if constexpr (HasFaces<MeshType>) {
+		if constexpr (vcl::face::HasOptionalColor<typename MeshType::FaceType>) {
 			return m.isPerFaceColorEnabled();
 		}
 		else {
-			return vcl::face::hasColor<typename MeshType::FaceType>();
+			return vcl::face::HasColor<typename MeshType::FaceType>;
 		}
 	}
 	else {
@@ -109,8 +98,8 @@ bool isPerFaceColorEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceColorOptional(MeshType& m)
 {
-	if constexpr (hasPerFaceColor<MeshType>()) {
-		if constexpr(vcl::face::hasOptionalColor<typename MeshType::FaceType>()) {
+	if constexpr (HasPerFaceColor<MeshType>) {
+		if constexpr(vcl::face::HasOptionalColor<typename MeshType::FaceType>) {
 			m.enablePerFaceColor();
 		}
 		return true;
@@ -399,9 +388,8 @@ void requirePerFaceAdjacentFaces(const MeshType& m)
 
 template<typename MeshType>
 void requirePerFaceColor(const MeshType& m)
+	requires HasPerFaceColor<MeshType>
 {
-	requireFaces<MeshType>();
-	static_assert(hasPerFaceColor<MeshType>(), "Mesh has no face colors.");
 	if (!isPerFaceColorEnabled(m))
 		throw vcl::MissingComponentException("Face colors not enabled.");
 }

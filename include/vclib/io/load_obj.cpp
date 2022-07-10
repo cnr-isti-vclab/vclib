@@ -146,7 +146,7 @@ void loadVertexCoord(
 	for (uint i = 0; i < 3; ++i) {
 		m.vertex(vid).coord()[i] = internal::readDouble<double>(token);
 	}
-	if constexpr (hasPerVertexColor<MeshType>()){
+	if constexpr (HasPerVertexColor<MeshType>){
 		if (vid == 0) {
 			// if the current material has a valid color, of the file stores the vertex color in the
 			// non-standard way (color values after the coordinates)
@@ -276,7 +276,7 @@ void loadFace(
 	}
 
 	// color
-	if (hasPerFaceColor<MeshType>()){
+	if (HasPerFaceColor<MeshType>){
 		if (fid == 0) { // if the first face, we need to check if I can store colors
 			// if the current material has no color, we assume that the file has no face color
 			if (currentMaterial.hasColor) {
@@ -301,7 +301,7 @@ void loadFace(
 	}
 
 	// wedge coords
-	if constexpr(hasPerFaceWedgeTexCoords<MeshType>()) {
+	if constexpr(HasPerFaceWedgeTexCoords<MeshType>) {
 		// first, need to check if I can store wedge texcoords in the mesh
 		if (fid == 0) {
 			// if the current face has the right number of wedge texcoords, we assume that we can

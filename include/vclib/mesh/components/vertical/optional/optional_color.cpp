@@ -49,7 +49,7 @@ template<typename T>
 template<typename Element>
 void OptionalColor<T>::importFrom(const Element& e)
 {
-	if constexpr (hasColor<Element>()) {
+	if constexpr (HasColor<Element>) {
 		if (isColorEnabled() && isColorEnabledOn(e)) {
 			color() = e.color();
 		}

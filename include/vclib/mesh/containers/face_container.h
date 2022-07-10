@@ -110,15 +110,15 @@ public:
 
 	// Color
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalColor<U>(), bool)
+	VCL_ENABLE_IF(face::HasOptionalColor<U>, bool)
 	isPerFaceColorEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalColor<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalColor<U>, void)
 	enablePerFaceColor();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalColor<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalColor<U>, void)
 	disablePerFaceColor();
 
 	// Mark

@@ -73,7 +73,7 @@ void loadOffVertices(
 		const uint nReadComponents = token - tokens.begin();
 		const int nColorComponents = (int)tokens.size() - nReadComponents - nTexCoords;
 
-		if constexpr(vcl::hasPerVertexColor<MeshType>()) {
+		if constexpr(vcl::HasPerVertexColor<MeshType>) {
 			if (vcl::isPerVertexColorEnabled(mesh) && fileInfo.hasVertexColors()) {
 				if (nColorComponents != 1 && nColorComponents != 3 && nColorComponents != 4)
 					throw MalformedFileException("Wrong number of components in line.");
@@ -152,7 +152,7 @@ void loadOffFaces(
 
 			// read face color
 			if (token != tokens.end()) { // there are colors to read
-				if constexpr (hasPerFaceColor<MeshType>()) {
+				if constexpr (HasPerFaceColor<MeshType>) {
 					if (isPerFaceColorEnabled(mesh) ||
 						(enableOptionalComponents && enableIfPerFaceColorOptional(mesh))){
 						loadedInfo.setFaceColors();

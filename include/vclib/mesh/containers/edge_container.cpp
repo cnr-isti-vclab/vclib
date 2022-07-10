@@ -415,7 +415,7 @@ EdgeContainer<T>::disablePerEdgeAdjacentFaces()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalColor<U>(), bool)
+VCL_ENABLE_IF(edge::HasOptionalColor<U>, bool)
 EdgeContainer<T>::isPerEdgeColorEnabled() const
 {
 	return Base::optionalVec.isColorEnabled();
@@ -428,7 +428,7 @@ EdgeContainer<T>::isPerEdgeColorEnabled() const
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalColor<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalColor<U>, void)
 EdgeContainer<T>::enablePerEdgeColor()
 {
 	Base::optionalVec.enableColor(edgeContainerSize());
@@ -441,7 +441,7 @@ EdgeContainer<T>::enablePerEdgeColor()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalColor<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalColor<U>, void)
 EdgeContainer<T>::disablePerEdgeColor()
 {
 	Base::optionalVec.disableColor();

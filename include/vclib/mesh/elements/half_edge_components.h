@@ -38,12 +38,6 @@ using BitFlags = comp::BitFlags;
 /* Port Color class into hedge namespace */
 using Color = comp::Color;
 
-template<typename EdgeType>
-bool constexpr hasColor()
-{
-	return comp::hasColor<EdgeType>();
-}
-
 /* Port HalfEdgeReferences class into hedge namespace */
 template<typename HalfEdgeType, typename VertexType, typename FaceType>
 using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType>;

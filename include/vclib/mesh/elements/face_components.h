@@ -60,12 +60,6 @@ using BitFlags = comp::BitFlags;
 /* Port Color class into face namespace */
 using Color = comp::Color;
 
-template<typename FaceType>
-bool constexpr hasColor()
-{
-	return comp::hasColor<FaceType>();
-}
-
 /* Port Half Edge reference into face namespace*/
 template<typename HalfEdge>
 using HalfEdgeReference = comp::FaceHalfEdgeReference<HalfEdge>;

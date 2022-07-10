@@ -56,9 +56,6 @@ bool enableIfPerVertexAdjacentVerticesOptional(MeshType&);
 // Vertex Color
 
 template<typename MeshType>
-bool constexpr hasPerVertexColor();
-
-template<typename MeshType>
 bool isPerVertexColorEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -148,7 +145,8 @@ void requirePerVertexAdjacentVertices(const MeshType& m)
 // Vertex Color
 
 template<typename MeshType>
-void requirePerVertexColor(const MeshType& m);
+void requirePerVertexColor(const MeshType& m)
+	requires HasPerVertexColor<MeshType>;
 
 // Vertex Mark
 

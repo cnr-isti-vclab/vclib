@@ -47,12 +47,6 @@ using BitFlags = comp::BitFlags;
 /* Port Color class into edge namespace */
 using Color = comp::Color;
 
-template<typename EdgeType>
-bool constexpr hasColor()
-{
-	return comp::hasColor<EdgeType>();
-}
-
 /* Port Mark class into edge namespace */
 using Mark = comp::Mark;
 

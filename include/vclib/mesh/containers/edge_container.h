@@ -102,15 +102,15 @@ public:
 
 	// Color
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalColor<U>(), bool)
+	VCL_ENABLE_IF(edge::HasOptionalColor<U>, bool)
 	isPerEdgeColorEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalColor<U>(), void)
+	VCL_ENABLE_IF(edge::HasOptionalColor<U>, void)
 	enablePerEdgeColor();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalColor<U>(), void)
+	VCL_ENABLE_IF(edge::HasOptionalColor<U>, void)
 	disablePerEdgeColor();
 
 	// Mark

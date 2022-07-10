@@ -293,7 +293,7 @@ HalfEdgeContainer<T>::halfEdges(bool jumpDeleted) const
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), bool)
+VCL_ENABLE_IF(hedge::HasOptionalColor<U>, bool)
 HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const
 {
 	return Base::optionalVec.isColorEnabled();
@@ -306,7 +306,7 @@ HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), void)
+VCL_ENABLE_IF(hedge::HasOptionalColor<U>, void)
 HalfEdgeContainer<T>::enablePerHalfEdgeColor()
 {
 	Base::optionalVec.enableColor(halfEdgeContainerSize());
@@ -319,7 +319,7 @@ HalfEdgeContainer<T>::enablePerHalfEdgeColor()
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), void)
+VCL_ENABLE_IF(hedge::HasOptionalColor<U>, void)
 HalfEdgeContainer<T>::disablePerHalfEdgeColor()
 {
 	Base::optionalVec.disableColor();

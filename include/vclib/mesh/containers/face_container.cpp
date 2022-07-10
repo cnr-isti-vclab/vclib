@@ -441,7 +441,7 @@ FaceContainer<T>::disablePerFaceAdjacentFaces()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalColor<U>(), bool)
+VCL_ENABLE_IF(face::HasOptionalColor<U>, bool)
 FaceContainer<T>::isPerFaceColorEnabled() const
 {
 	return Base::optionalVec.isColorEnabled();
@@ -454,7 +454,7 @@ FaceContainer<T>::isPerFaceColorEnabled() const
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalColor<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalColor<U>, void)
 FaceContainer<T>::enablePerFaceColor()
 {
 	Base::optionalVec.enableColor(faceContainerSize());
@@ -467,7 +467,7 @@ FaceContainer<T>::enablePerFaceColor()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalColor<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalColor<U>, void)
 FaceContainer<T>::disablePerFaceColor()
 {
 	Base::optionalVec.disableColor();

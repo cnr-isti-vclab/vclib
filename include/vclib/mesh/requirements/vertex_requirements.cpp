@@ -110,25 +110,14 @@ bool enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexColor()
-{
-	if constexpr (hasVertices<MeshType>())  {
-		return vcl::vert::hasColor<typename MeshType::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerVertexColorEnabled(const MeshType& m)
 {
-	if constexpr (hasVertices<MeshType>()) {
-		if constexpr (vcl::vert::hasOptionalColor<typename MeshType::VertexType>()) {
+	if constexpr (HasVertices<MeshType>) {
+		if constexpr (vcl::vert::HasOptionalColor<typename MeshType::VertexType>) {
 			return m.isPerVertexColorEnabled();
 		}
 		else {
-			return vcl::vert::hasColor<typename MeshType::VertexType>();
+			return vcl::vert::HasColor<typename MeshType::VertexType>;
 		}
 	}
 	else {
@@ -139,8 +128,8 @@ bool isPerVertexColorEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexColorOptional(MeshType& m)
 {
-	if constexpr (hasPerVertexColor<MeshType>()) {
-		if constexpr(vcl::vert::hasOptionalColor<typename MeshType::VertexType>()) {
+	if constexpr (HasPerVertexColor<MeshType>) {
+		if constexpr(vcl::vert::HasOptionalColor<typename MeshType::VertexType>) {
 			m.enablePerVertexColor();
 		}
 		return true;
@@ -396,9 +385,8 @@ void requirePerVertexAdjacentVertices(const MeshType& m)
 
 template<typename MeshType>
 void requirePerVertexColor(const MeshType& m)
+	requires HasPerVertexColor<MeshType>
 {
-	requireVertices<MeshType>();
-	static_assert(hasPerVertexColor<MeshType>(), "Mesh has no vertex colors.");
 	if (!isPerVertexColorEnabled(m))
 		throw vcl::MissingComponentException("Vertex colors not enabled.");
 }

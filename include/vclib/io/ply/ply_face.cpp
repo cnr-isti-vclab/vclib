@@ -138,7 +138,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 		setFaceIndices(f, mesh, vids);
 	}
 	if (p.name == ply::texcoord) { // loading wedge texcoords
-		if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+		if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
 				using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
 				uint uvSize  = io::internal::readProperty<uint>(file, p.listSizeType);
@@ -156,7 +156,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 		}
 	}
 	if (p.name == ply::texnumber) { // loading texture id associated to ALL the wedges
-		if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+		if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
 				uint n      = io::internal::readProperty<uint>(file, p.type);
 				hasBeenRead = true;
@@ -170,7 +170,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 		}
 	}
 	if (p.name >= ply::nx && p.name <= ply::nz) { // loading one of the normal components
-		if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
+		if constexpr (vcl::HasPerFaceNormal<MeshType>) {
 			if (vcl::isPerFaceNormalEnabled(mesh)) {
 				using Scalar = typename FaceType::NormalType::ScalarType;
 				int    a     = p.name - ply::nx;
@@ -184,7 +184,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 		}
 	}
 	if (p.name >= ply::red && p.name <= ply::alpha) { // loading one of the color components
-		if constexpr (vcl::hasPerFaceColor<MeshType>()) {
+		if constexpr (vcl::HasPerFaceColor<MeshType>) {
 			if (vcl::isPerFaceColorEnabled(mesh)) {
 				int           a = p.name - ply::red;
 				unsigned char c = io::internal::readProperty<unsigned char>(file, p.type);
@@ -197,7 +197,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 		}
 	}
 	if (p.name == ply::scalar) { // loading the scalar component
-		if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
+		if constexpr (vcl::HasPerFaceScalar<MeshType>) {
 			using Scalar = typename FaceType::ScalarType;
 			if (vcl::isPerFaceScalarEnabled(mesh)) {
 				Scalar s    = io::internal::readProperty<Scalar>(file, p.type);
@@ -277,25 +277,25 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 				hasBeenWritten = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (vcl::hasPerFaceNormal<MeshType>()) {
+				if constexpr (vcl::HasPerFaceNormal<MeshType>) {
 					io::internal::writeProperty(file, f.normal()[p.name - ply::nx], p.type, bin);
 					hasBeenWritten = true;
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (vcl::hasPerFaceColor<MeshType>()) {
+				if constexpr (vcl::HasPerFaceColor<MeshType>) {
 					io::internal::writeProperty(file, f.color()[p.name - ply::red], p.type, bin);
 					hasBeenWritten = true;
 				}
 			}
 			if (p.name == ply::scalar) {
-				if constexpr (vcl::hasPerFaceScalar<MeshType>()) {
+				if constexpr (vcl::HasPerFaceScalar<MeshType>) {
 					io::internal::writeProperty(file, f.scalar(), p.type, bin);
 					hasBeenWritten = true;
 				}
 			}
 			if (p.name == ply::texcoord) {
-				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+				if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
 					io::internal::writeProperty(file, f.vertexNumber() * 2, p.listSizeType, bin);
 					for (const auto& tc : f.wedgeTexCoords()) {
 						io::internal::writeProperty(file, tc.u(), p.type, bin);
@@ -305,7 +305,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 				}
 			}
 			if (p.name == ply::texnumber) {
-				if constexpr (vcl::hasPerFaceWedgeTexCoords<MeshType>()) {
+				if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
 					io::internal::writeProperty(file, f.wedgeTexCoord(0).nTexture(), p.type, bin);
 					hasBeenWritten = true;
 				}

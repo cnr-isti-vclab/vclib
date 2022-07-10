@@ -53,28 +53,16 @@ concept HasOptionalColor = HasColor<T> && requires(T o)
 	{ o.__optionalColor() } -> std::same_as<void>;
 };
 
-/* Detector functions to check if a class has Color or OptionalColor */
-
-template<typename T>
-constexpr bool hasColor()
-{
-	return HasColor<T> || HasOptionalColor<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalColor()
-{
-	return HasOptionalColor<T>;
-}
+/* Detector function to check if a class has Color enabled */
 
 template <typename T>
 bool isColorEnabledOn(const T& element)
 {
-	if constexpr (hasOptionalColor<T>()) {
+	if constexpr (HasOptionalColor<T>) {
 		return element.isColorEnabled();
 	}
 	else {
-		return hasColor<T>();
+		return HasColor<T>;
 	}
 }
 

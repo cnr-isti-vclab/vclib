@@ -181,16 +181,16 @@ template<typename MeshType>
 bool isCompact(const MeshType& m)
 {
 	bool c = true;
-	if constexpr (hasVertices<MeshType>()) {
+	if constexpr (HasVertices<MeshType>) {
 		c = c && isVertexContainerCompact(m);
 	}
-	if constexpr (hasFaces<MeshType>()) {
+	if constexpr (HasFaces<MeshType>) {
 		c = c && isFaceContainerCompact(m);
 	}
-	if constexpr (hasEdges<MeshType>()) {
+	if constexpr (HasEdges<MeshType>) {
 		c = c && (m.edgeNumber() == m.edgeContainerSize());
 	}
-	if constexpr (hasHalfEdges<MeshType>()) {
+	if constexpr (HasHalfEdges<MeshType>) {
 		c = c && (m.halfEdgeNumber() == m.halfEdgeContainerSize());
 	}
 	return c;

@@ -52,12 +52,6 @@ using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, Vert
 template<typename VertexType>
 using OptionalColor = comp::OptionalColor<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalColor()
-{
-	return comp::hasOptionalColor<VertexType>();
-}
-
 /* Port OptionalMark class into vert namespace */
 template<typename VertexType>
 using OptionalMark = comp::OptionalMark<VertexType>;

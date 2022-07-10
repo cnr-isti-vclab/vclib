@@ -34,12 +34,6 @@ namespace vcl::hedge {
 template<typename EdgeType>
 using OptionalColor = comp::OptionalColor<EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasOptionalColor()
-{
-	return comp::hasOptionalColor<EdgeType>();
-}
-
 /* Port OptionalMark class into hedge namespace */
 template<typename EdgeType>
 using OptionalMark = comp::OptionalMark<EdgeType>;

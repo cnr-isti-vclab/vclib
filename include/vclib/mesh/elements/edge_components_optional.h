@@ -44,12 +44,6 @@ using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, EdgeType
 template<typename EdgeType>
 using OptionalColor = comp::OptionalColor<EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasOptionalColor()
-{
-	return comp::hasOptionalColor<EdgeType>();
-}
-
 /* Port OptionalMark class into edge namespace */
 template<typename EdgeType>
 using OptionalMark = comp::OptionalMark<EdgeType>;

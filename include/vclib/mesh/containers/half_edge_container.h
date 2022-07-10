@@ -73,15 +73,15 @@ public:
 
 	// Color
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), bool)
+	VCL_ENABLE_IF(hedge::HasOptionalColor<U>, bool)
 	isPerHalfEdgeColorEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), void)
+	VCL_ENABLE_IF(hedge::HasOptionalColor<U>, void)
 	enablePerHalfEdgeColor();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasOptionalColor<U>(), void)
+	VCL_ENABLE_IF(hedge::HasOptionalColor<U>, void)
 	disablePerHalfEdgeColor();
 
 	// Mark
