@@ -200,25 +200,14 @@ bool enableIfPerVertexNormalOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexPrincipalCurvature()
-{
-	if constexpr (hasVertices<MeshType>())  {
-		return vcl::vert::hasPrincipalCurvature<typename MeshType::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerVertexPrincipalCurvatureEnabled(const MeshType& m)
 {
-	if constexpr (hasVertices<MeshType>()) {
-		if constexpr (vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>()) {
+	if constexpr (HasVertices<MeshType>) {
+		if constexpr (vcl::vert::HasOptionalPrincipalCurvature<typename MeshType::VertexType>) {
 			return m.isPerVertexPrincipalCurvatureEnabled();
 		}
 		else {
-			return vcl::vert::hasPrincipalCurvature<typename MeshType::VertexType>();
+			return vcl::vert::HasPrincipalCurvature<typename MeshType::VertexType>;
 		}
 	}
 	else {
@@ -229,8 +218,8 @@ bool isPerVertexPrincipalCurvatureEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexPrincipalCurvatureOptional(MeshType& m)
 {
-	if constexpr (hasPerVertexPrincipalCurvature<MeshType>()) {
-		if constexpr(vcl::vert::hasOptionalPrincipalCurvature<typename MeshType::VertexType>()) {
+	if constexpr (HasPerVertexPrincipalCurvature<MeshType>) {
+		if constexpr(vcl::vert::HasOptionalPrincipalCurvature<typename MeshType::VertexType>) {
 			m.enablePerVertexPrincipalCurvature();
 		}
 		return true;
@@ -376,10 +365,8 @@ void requirePerVertexNormal(const MeshType& m)
 
 template<typename MeshType>
 void requirePerVertexPrincipalCurvature(const MeshType& m)
+	requires HasPerVertexPrincipalCurvature<MeshType>
 {
-	requireVertices<MeshType>();
-	static_assert(
-		hasPerVertexPrincipalCurvature<MeshType>(), "Mesh has no vertex principal curvature.");
 	if (!isPerVertexPrincipalCurvatureEnabled(m))
 		throw vcl::MissingComponentException("Vertex principal curvature not enabled.");
 }

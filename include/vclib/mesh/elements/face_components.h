@@ -87,12 +87,6 @@ using PrincipalCurvature = comp::PrincipalCurvature<FaceType>;
 using PrincipalCurvaturef = comp::PrincipalCurvaturef;
 using PrincipalCurvatured = comp::PrincipalCurvatured;
 
-template<typename FaceType>
-bool constexpr hasPrincipalCurvature()
-{
-	return comp::hasPrincipalCurvature<FaceType>();
-}
-
 /* Port Scalar class into face namespace */
 template<typename ScalarType>
 using Scalar = comp::Scalar<ScalarType>;

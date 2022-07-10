@@ -80,12 +80,6 @@ using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<FaceType>;
 template<typename FaceType>
 using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<FaceType>;
 
-template<typename FaceType>
-bool constexpr hasOptionalPrincipalCurvature()
-{
-	return comp::hasOptionalPrincipalCurvature<FaceType>();
-}
-
 /* Port OptionalScalar class into face namespace */
 template<typename ScalarType, typename FaceType>
 using OptionalScalar = comp::OptionalScalar<ScalarType, FaceType>;

@@ -96,12 +96,6 @@ using PrincipalCurvature = comp::PrincipalCurvature<ScalarType>;
 using PrincipalCurvaturef = comp::PrincipalCurvaturef;
 using PrincipalCurvatured = comp::PrincipalCurvatured;
 
-template<typename VertexType>
-bool constexpr hasPrincipalCurvature()
-{
-	return comp::hasPrincipalCurvature<VertexType>();
-}
-
 /* Port Scalar class into vert namespace */
 template<typename ScalarType>
 using Scalar = comp::Scalar<ScalarType>;

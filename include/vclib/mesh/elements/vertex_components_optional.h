@@ -78,12 +78,6 @@ using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<VertexType
 template<typename VertexType>
 using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalPrincipalCurvature()
-{
-	return comp::hasOptionalPrincipalCurvature<VertexType>();
-}
-
 /* Port OptionalScalar class into vert namespace */
 template<typename ScalarType, typename VertexType>
 using OptionalScalar = comp::OptionalScalar<ScalarType, VertexType>;

@@ -170,25 +170,14 @@ bool enableIfPerFaceNormalOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerFacePrincipalCurvature()
-{
-	if constexpr (hasFaces<MeshType>())  {
-		return vcl::face::hasPrincipalCurvature<typename MeshType::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerFacePrincipalCurvatureEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>()) {
-		if constexpr (vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>()) {
+	if constexpr (HasFaces<MeshType>) {
+		if constexpr (vcl::face::HasOptionalPrincipalCurvature<typename MeshType::FaceType>) {
 			return m.isPerFacePrincipalCurvatureEnabled();
 		}
 		else {
-			return vcl::face::hasPrincipalCurvature<typename MeshType::FaceType>();
+			return vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
 		}
 	}
 	else {
@@ -199,8 +188,8 @@ bool isPerFacePrincipalCurvatureEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
 {
-	if constexpr (hasPerFacePrincipalCurvature<MeshType>()) {
-		if constexpr(vcl::face::hasOptionalPrincipalCurvature<typename MeshType::FaceType>()) {
+	if constexpr (HasPerFacePrincipalCurvature<MeshType>) {
+		if constexpr(vcl::face::HasOptionalPrincipalCurvature<typename MeshType::FaceType>) {
 			m.enablePerFacePrincipalCurvature();
 		}
 		return true;
@@ -379,9 +368,8 @@ void requirePerFaceNormal(const MeshType& m)
 
 template<typename MeshType>
 void requirePerFacePrincipalCurvature(const MeshType& m)
+	requires HasPerFacePrincipalCurvature<MeshType>
 {
-	requireFaces<MeshType>();
-	static_assert(hasPerFacePrincipalCurvature<MeshType>(), "Mesh has no face principal curvature.");
 	if (!isPerFacePrincipalCurvatureEnabled(m))
 		throw vcl::MissingComponentException("Face principal curvature not enabled.");
 }

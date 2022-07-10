@@ -599,7 +599,7 @@ VertexContainer<T>::disablePerVertexNormal()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), bool)
+VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, bool)
 VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled() const
 {
 	return Base::optionalVec.isPrincipalCurvatureEnabled();
@@ -613,7 +613,7 @@ VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled() const
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, void)
 VertexContainer<T>::enablePerVertexPrincipalCurvature()
 {
 	Base::optionalVec.enablePrincipalCurvature(vertexContainerSize());
@@ -627,7 +627,7 @@ VertexContainer<T>::enablePerVertexPrincipalCurvature()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, void)
 VertexContainer<T>::disablePerVertexPrincipalCurvature()
 {
 	Base::optionalVec.disablePrincipalCurvature();

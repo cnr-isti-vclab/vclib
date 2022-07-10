@@ -149,15 +149,15 @@ public:
 
 	// PrincipalCurvature
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), bool)
+	VCL_ENABLE_IF(face::HasOptionalPrincipalCurvature<U>, bool)
 	isPerFacePrincipalCurvatureEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalPrincipalCurvature<U>, void)
 	enablePerFacePrincipalCurvature();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalPrincipalCurvature<U>, void)
 	disablePerFacePrincipalCurvature();
 
 	// Scalar

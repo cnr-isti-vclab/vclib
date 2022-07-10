@@ -52,28 +52,16 @@ concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && requires(T o
 	{ o.__optionalPrincipalCurvature() } -> std::same_as<void>;
 };
 
-/* Detector functions to check if a class has PrincipalCurvature or OptionalPrincipalCurvature */
-
-template<typename T>
-bool constexpr hasPrincipalCurvature()
-{
-	return HasPrincipalCurvature<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalPrincipalCurvature()
-{
-	return HasOptionalPrincipalCurvature<T>;
-}
+/* Detector function to check if a class has PrincipalCurvature enabled */
 
 template <typename T>
 bool isPrincipalCurvatureEnabledOn(const T& element)
 {
-	if constexpr (hasOptionalPrincipalCurvature<T>()) {
+	if constexpr (HasOptionalPrincipalCurvature<T>) {
 		return element.isPrincipalCurvatureEnabled();
 	}
 	else {
-		return hasPrincipalCurvature<T>();
+		return HasPrincipalCurvature<T>;
 	}
 }
 

@@ -565,7 +565,7 @@ FaceContainer<T>::disablePerFaceNormal()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), bool)
+VCL_ENABLE_IF(face::HasOptionalPrincipalCurvature<U>, bool)
 FaceContainer<T>::isPerFacePrincipalCurvatureEnabled() const
 {
 	return Base::optionalVec.isPrincipalCurvatureEnabled();
@@ -578,7 +578,7 @@ FaceContainer<T>::isPerFacePrincipalCurvatureEnabled() const
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalPrincipalCurvature<U>, void)
 FaceContainer<T>::enablePerFacePrincipalCurvature()
 {
 	Base::optionalVec.enablePrincipalCurvature(faceContainerSize());
@@ -592,7 +592,7 @@ FaceContainer<T>::enablePerFacePrincipalCurvature()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalPrincipalCurvature<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalPrincipalCurvature<U>, void)
 FaceContainer<T>::disablePerFacePrincipalCurvature()
 {
 	Base::optionalVec.disablePrincipalCurvature();

@@ -164,15 +164,15 @@ public:
 
 	// PrincipalCurvature
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), bool)
+	VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, bool)
 	isPerVertexPrincipalCurvatureEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, void)
 	enablePerVertexPrincipalCurvature();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalPrincipalCurvature<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, void)
 	disablePerVertexPrincipalCurvature();
 
 	// Scalar

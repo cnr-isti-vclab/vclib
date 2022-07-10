@@ -80,9 +80,6 @@ bool enableIfPerVertexNormalOptional(MeshType&);
 // Vertex PrincipalCurvature
 
 template<typename MeshType>
-bool constexpr hasPerVertexPrincipalCurvature();
-
-template<typename MeshType>
 bool isPerVertexPrincipalCurvatureEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -152,7 +149,8 @@ void requirePerVertexNormal(const MeshType& m)
 // Vertex PrincipalCurvature
 
 template<typename MeshType>
-void requirePerVertexPrincipalCurvature(const MeshType& m);
+void requirePerVertexPrincipalCurvature(const MeshType& m)
+	requires HasPerVertexPrincipalCurvature<MeshType>;
 
 // Vertex Scalar
 

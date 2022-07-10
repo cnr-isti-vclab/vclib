@@ -72,9 +72,6 @@ bool enableIfPerFaceNormalOptional(MeshType&);
 // Face Principal Curvature
 
 template<typename MeshType>
-bool constexpr hasPerFacePrincipalCurvature();
-
-template<typename MeshType>
 bool isPerFacePrincipalCurvatureEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -149,7 +146,8 @@ void requirePerFaceNormal(const MeshType& m)
 // Face Principal Curvature
 
 template<typename MeshType>
-void requirePerFacePrincipalCurvature(const MeshType& m);
+void requirePerFacePrincipalCurvature(const MeshType& m)
+	requires HasPerFacePrincipalCurvature<MeshType>;
 
 // Face Scalar
 
