@@ -20,56 +20,54 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CLEAN_H
-#define VCL_ALGORITHMS_CLEAN_H
+#ifndef VCL_MESH_FACE_CONCEPTS_H
+#define VCL_MESH_FACE_CONCEPTS_H
 
-#include <set>
-#include <vector>
-
-#include <vclib/mesh/requirements.h>
+#include "element_concepts.h"
+#include "../containers/face_container.h"
 
 namespace vcl {
 
-template <typename MeshType>
-uint numberUnreferencedVertices(const MeshType& m);
+template<typename MeshType>
+concept HasPerFaceAdjacentEdges =
+	HasFaces<MeshType> && vcl::face::HasAdjacentEdges<typename MeshType::FaceType>;
 
-template <typename MeshType>
-uint removeUnreferencedVertices(MeshType& m);
+template<typename MeshType>
+concept HasPerFaceAdjacentFaces =
+	HasFaces<MeshType> && vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
 
-template <typename MeshType>
-uint removeDuplicatedVertices(MeshType& m);
+template<typename MeshType>
+concept HasPerFaceColor =
+	HasFaces<MeshType> && vcl::face::HasColor<typename MeshType::FaceType>;
 
-template <typename MeshType>
-uint removeDuplicatedFaces(MeshType& m);
+template<typename MeshType>
+concept HasPerFaceMark =
+	HasFaces<MeshType> && vcl::face::HasMark<typename MeshType::FaceType>;
 
-template <typename MeshType>
-uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
+template<typename MeshType>
+concept HasPerFaceNormal =
+	HasFaces<MeshType> && vcl::face::HasNormal<typename MeshType::FaceType>;
 
-template <typename MeshType>
-uint removeDegenerateFaces(MeshType& m);
+template<typename MeshType>
+concept HasPerFacePrincipalCurvature =
+	HasFaces<MeshType> && vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
 
-template <typename FaceType>
-bool isManifoldOnEdge(const FaceType& f, uint edge);
+template<typename MeshType>
+concept HasPerFaceScalar =
+	HasFaces<MeshType> && vcl::face::HasScalar<typename MeshType::FaceType>;
 
-template <typename MeshType>
-uint numberNonManifoldVertices(const MeshType& m);
+template<typename MeshType>
+concept HasPerFaceWedgeColors =
+	HasFaces<MeshType> && vcl::face::HasWedgeColors<typename MeshType::FaceType>;
 
-template <typename MeshType>
-bool isWaterTight(const MeshType& m);
+template<typename MeshType>
+concept HasPerFaceWedgeTexCoords =
+	HasFaces<MeshType> && vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
 
-template <typename MeshType>
-uint numberHoles(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
+template<typename MeshType>
+concept HasPerFaceCustomComponents =
+	HasFaces<MeshType> && vcl::face::HasCustomComponents<typename MeshType::FaceType>;
 
-template <typename MeshType>
-std::vector<std::set<uint>> connectedComponents(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
+} // namespace vcl
 
-template <typename MeshType>
-uint numberConnectedComponents(const MeshType& m);
-
-}
-
-#include "clean.cpp"
-
-#endif // VCL_ALGORITHMS_CLEAN_H
+#endif // VCL_MESH_FACE_CONCEPTS_H

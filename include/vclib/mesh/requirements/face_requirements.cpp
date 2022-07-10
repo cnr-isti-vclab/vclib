@@ -79,8 +79,8 @@ bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 {
-	if constexpr (hasPerFaceAdjacentFaces<MeshType>()) {
-		if constexpr(vcl::face::hasOptionalAdjacentFaces<typename MeshType::FaceType>()) {
+	if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
+		if constexpr(vcl::face::HasOptionalAdjacentFaces<typename MeshType::FaceType>) {
 			m.enablePerFaceAdjacentFaces();
 		}
 		return true;

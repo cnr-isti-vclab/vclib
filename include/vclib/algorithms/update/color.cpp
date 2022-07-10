@@ -395,7 +395,7 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
 		if (f.color() == baseColor) {
 			f.color() = vc[m.index(f) % nColors];
 		}
-		if constexpr (hasPerFaceAdjacentFaces<MeshType>()) {
+		if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
 			if (checkFauxEdges && isPerFaceAdjacentFacesEnabled(m)) {
 				for (uint i = 0; i < f.vertexNumber(); ++i) {
 					if (f.isEdgeFaux(i)) {

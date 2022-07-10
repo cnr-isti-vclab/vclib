@@ -24,6 +24,7 @@
 #define VCL_MESH_FACE_REQUIREMENTS_H
 
 #include "element_requirements.h"
+#include "face_concepts.h"
 
 namespace vcl {
 
@@ -31,7 +32,7 @@ namespace vcl {
  * is/has functions *
  ********************/
 
-// Vertex Compactness
+// Face Compactness
 
 template<typename MeshType>
 bool isFaceContainerCompact(const MeshType&);

@@ -24,6 +24,7 @@
 #define VCL_MESH_VERTEX_REQUIREMENTS_H
 
 #include "element_requirements.h"
+#include "vertex_concepts.h"
 
 namespace vcl {
 

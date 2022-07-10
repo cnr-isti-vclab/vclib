@@ -26,7 +26,6 @@
 #include <stack>
 #include <vector>
 
-#include <vclib/mesh/requirements.h>
 #include <vclib/mesh/mesh_pos.h>
 
 #include "internal/per_face_edge.h"
@@ -113,8 +112,9 @@ public:
 
 template<typename MeshType>
 std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
+	requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
-	vcl::requirePerFaceAdjacentFaces(m);
+	//vcl::requirePerFaceAdjacentFaces(m);
 
 	using FaceType = typename MeshType::FaceType;
 
@@ -511,6 +511,7 @@ bool isWaterTight(const MeshType& m)
  */
 template<typename MeshType>
 uint numberHoles(const MeshType& m)
+	requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
 	vcl::requireVertices<MeshType>();
 	vcl::requirePerFaceAdjacentFaces(m);
@@ -556,6 +557,7 @@ uint numberHoles(const MeshType& m)
  */
 template <typename MeshType>
 std::vector<std::set<uint>> connectedComponents(const MeshType& m)
+	requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
 	vcl::requirePerFaceAdjacentFaces(m);
 
