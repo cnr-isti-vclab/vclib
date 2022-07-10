@@ -53,28 +53,16 @@ concept HasOptionalScalar = HasScalar<T> && requires(T o)
 };
 
 
-/* Detector functions to check if a class has Scalar or OptionalScalar */
-
-template<typename T>
-bool constexpr hasScalar()
-{
-	return HasScalar<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalScalar()
-{
-	return HasOptionalScalar<T>;
-}
+/* Detector function to check if a class has Scalar enabled */
 
 template <typename T>
 bool isScalarEnabledOn(const T& element)
 {
-	if constexpr (hasOptionalScalar<T>()) {
+	if constexpr (HasOptionalScalar<T>) {
 		return element.isScalarEnabled();
 	}
 	else {
-		return hasScalar<T>();
+		return HasScalar<T>;
 	}
 }
 

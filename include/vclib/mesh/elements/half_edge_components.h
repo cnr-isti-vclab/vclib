@@ -52,12 +52,6 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename HalfEdgeType>
-bool constexpr hasScalar()
-{
-	return comp::hasScalar<HalfEdgeType>();
-}
-
 } // namespace vcl::hedge
 
 #endif // VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_H

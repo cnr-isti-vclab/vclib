@@ -162,15 +162,15 @@ public:
 
 	// Scalar
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalScalar<U>(), bool)
+	VCL_ENABLE_IF(face::HasOptionalScalar<U>, bool)
 	isPerFaceScalarEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalScalar<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalScalar<U>, void)
 	enablePerFaceScalar();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalScalar<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalScalar<U>, void)
 	disablePerFaceScalar();
 
 	// WedgeColors

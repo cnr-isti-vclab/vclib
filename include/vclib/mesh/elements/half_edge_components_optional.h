@@ -48,12 +48,6 @@ using OptionalScalarf = comp::OptionalScalar<float, EdgeType>;
 template<typename EdgeType>
 using OptionalScalard = comp::OptionalScalar<double, EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasOptionalScalar()
-{
-	return comp::hasOptionalScalar<EdgeType>();
-}
-
 /* Port CustomComponents class into hedge namespace */
 template<typename EdgeType>
 using CustomComponents = comp::CustomComponents<EdgeType>;

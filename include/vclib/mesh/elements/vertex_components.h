@@ -103,12 +103,6 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename VertexType>
-bool constexpr hasScalar()
-{
-	return comp::hasScalar<VertexType>();
-}
-
 /* Port TexCoord class into vert namespace */
 template<typename ScalarType>
 using TexCoord = comp::TexCoord<ScalarType>;

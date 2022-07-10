@@ -80,9 +80,6 @@ bool enableIfPerFacePrincipalCurvatureOptional(MeshType&);
 // Face Scalar
 
 template<typename MeshType>
-bool constexpr hasPerFaceScalar();
-
-template<typename MeshType>
 bool isPerFaceScalarEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -152,7 +149,8 @@ void requirePerFacePrincipalCurvature(const MeshType& m)
 // Face Scalar
 
 template<typename MeshType>
-void requirePerFaceScalar(const MeshType& m);
+void requirePerFaceScalar(const MeshType& m)
+	requires HasPerFaceScalar<MeshType>;
 
 // Face Wedge Colors
 

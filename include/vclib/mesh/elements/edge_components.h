@@ -57,12 +57,6 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename EdgeType>
-bool constexpr hasScalar()
-{
-	return comp::hasScalar<EdgeType>();
-}
-
 /* Port VertexReferences class into edge namespace */
 template<typename VertexType>
 using VertexReferences = comp::VertexReferences<VertexType, 2>;

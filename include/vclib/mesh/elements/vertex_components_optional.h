@@ -88,12 +88,6 @@ using OptionalScalarf = comp::OptionalScalar<float, VertexType>;
 template<typename VertexType>
 using OptionalScalard = comp::OptionalScalar<double, VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalScalar()
-{
-	return comp::hasOptionalScalar<VertexType>();
-}
-
 /* Port OptionalTexCoord class into vert namespace */
 template<typename ScalarType, typename VertexType>
 using OptionalTexCoord = comp::OptionalTexCoord<ScalarType, VertexType>;

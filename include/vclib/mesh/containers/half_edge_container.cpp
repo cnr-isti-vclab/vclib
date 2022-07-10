@@ -375,7 +375,7 @@ HalfEdgeContainer<T>::disablePerHalfEdgeMark()
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), bool)
+VCL_ENABLE_IF(hedge::HasOptionalScalar<U>, bool)
 HalfEdgeContainer<T>::isPerHalfEdgeScalarEnabled() const
 {
 	return Base::optionalVec.isScalarEnabled();
@@ -387,7 +387,7 @@ HalfEdgeContainer<T>::isPerHalfEdgeScalarEnabled() const
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), void)
+VCL_ENABLE_IF(hedge::HasOptionalScalar<U>, void)
 HalfEdgeContainer<T>::enablePerHalfEdgeScalar()
 {
 	Base::optionalVec.enableScalar(halfEdgeContainerSize());
@@ -400,7 +400,7 @@ HalfEdgeContainer<T>::enablePerHalfEdgeScalar()
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), void)
+VCL_ENABLE_IF(hedge::HasOptionalScalar<U>, void)
 HalfEdgeContainer<T>::disablePerHalfEdgeScalar()
 {
 	Base::optionalVec.disableScalar();

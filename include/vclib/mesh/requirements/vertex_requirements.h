@@ -88,9 +88,6 @@ bool enableIfPerVertexPrincipalCurvatureOptional(MeshType&);
 // Vertex Scalar
 
 template<typename MeshType>
-bool constexpr hasPerVertexScalar();
-
-template<typename MeshType>
 bool isPerVertexScalarEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -155,7 +152,8 @@ void requirePerVertexPrincipalCurvature(const MeshType& m)
 // Vertex Scalar
 
 template<typename MeshType>
-void requirePerVertexScalar(const MeshType& m);
+void requirePerVertexScalar(const MeshType& m)
+	requires HasPerVertexScalar<MeshType>;
 
 // Vertex TexCoord
 

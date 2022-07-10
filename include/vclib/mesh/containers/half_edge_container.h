@@ -99,15 +99,15 @@ public:
 
 	// Scalar
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), bool)
+	VCL_ENABLE_IF(hedge::HasOptionalScalar<U>, bool)
 	isPerHalfEdgeScalarEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), void)
+	VCL_ENABLE_IF(hedge::HasOptionalScalar<U>, void)
 	enablePerHalfEdgeScalar();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasOptionalScalar<U>(), void)
+	VCL_ENABLE_IF(hedge::HasOptionalScalar<U>, void)
 	disablePerHalfEdgeScalar();
 
 	// Custom Components

@@ -128,15 +128,15 @@ public:
 
 	// Scalar
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), bool)
+	VCL_ENABLE_IF(edge::HasOptionalScalar<U>, bool)
 	isPerEdgeScalarEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), void)
+	VCL_ENABLE_IF(edge::HasOptionalScalar<U>, void)
 	enablePerEdgeScalar();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), void)
+	VCL_ENABLE_IF(edge::HasOptionalScalar<U>, void)
 	disablePerEdgeScalar();
 
 	// Custom Components

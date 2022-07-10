@@ -49,7 +49,7 @@ template<typename S, typename T>
 template<typename Element>
 void OptionalScalar<S, T>::importFrom(const Element& e)
 {
-	if constexpr (hasScalar<Element>()) {
+	if constexpr (HasScalar<Element>) {
 		if (isScalarEnabled() && isScalarEnabledOn(e)) {
 			scalar() = e.scalar();
 		}

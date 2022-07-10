@@ -200,25 +200,14 @@ bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceScalar()
-{
-	if constexpr (hasFaces<MeshType>())  {
-		return vcl::face::hasScalar<typename MeshType::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerFaceScalarEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>()) {
-		if constexpr (vcl::face::hasOptionalScalar<typename MeshType::FaceType>()) {
+	if constexpr (HasFaces<MeshType>) {
+		if constexpr (vcl::face::HasOptionalScalar<typename MeshType::FaceType>) {
 			return m.isPerFaceScalarEnabled();
 		}
 		else {
-			return vcl::face::hasScalar<typename MeshType::FaceType>();
+			return vcl::face::HasScalar<typename MeshType::FaceType>;
 		}
 	}
 	else {
@@ -229,8 +218,8 @@ bool isPerFaceScalarEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceScalarOptional(MeshType& m)
 {
-	if constexpr (hasPerFaceScalar<MeshType>()) {
-		if constexpr(vcl::face::hasOptionalScalar<typename MeshType::FaceType>()) {
+	if constexpr (HasPerFaceScalar<MeshType>) {
+		if constexpr(vcl::face::HasOptionalScalar<typename MeshType::FaceType>) {
 			m.enablePerFaceScalar();
 		}
 		return true;
@@ -376,9 +365,8 @@ void requirePerFacePrincipalCurvature(const MeshType& m)
 
 template<typename MeshType>
 void requirePerFaceScalar(const MeshType& m)
+	requires HasPerFaceScalar<MeshType>
 {
-	requireFaces<MeshType>();
-	static_assert(hasPerFaceScalar<MeshType>(), "Mesh has no face scalars.");
 	if (!isPerFaceScalarEnabled(m))
 		throw vcl::MissingComponentException("Face scalars not enabled.");
 }

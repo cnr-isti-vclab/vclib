@@ -177,15 +177,15 @@ public:
 
 	// Scalar
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), bool)
+	VCL_ENABLE_IF(vert::HasOptionalScalar<U>, bool)
 	isPerVertexScalarEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalScalar<U>, void)
 	enablePerVertexScalar();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalScalar<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalScalar<U>, void)
 	disablePerVertexScalar();
 
 	// TexCoord

@@ -607,7 +607,7 @@ FaceContainer<T>::disablePerFacePrincipalCurvature()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalScalar<U>(), bool)
+VCL_ENABLE_IF(face::HasOptionalScalar<U>, bool)
 FaceContainer<T>::isPerFaceScalarEnabled() const
 {
 	return Base::optionalVec.isScalarEnabled();
@@ -619,7 +619,7 @@ FaceContainer<T>::isPerFaceScalarEnabled() const
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalScalar<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalScalar<U>, void)
 FaceContainer<T>::enablePerFaceScalar()
 {
 	Base::optionalVec.enableScalar(faceContainerSize());
@@ -632,7 +632,7 @@ FaceContainer<T>::enablePerFaceScalar()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalScalar<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalScalar<U>, void)
 FaceContainer<T>::disablePerFaceScalar()
 {
 	Base::optionalVec.disableScalar();

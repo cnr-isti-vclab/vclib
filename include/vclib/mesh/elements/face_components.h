@@ -94,12 +94,6 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename FaceType>
-bool constexpr hasScalar()
-{
-	return comp::hasScalar<FaceType>();
-}
-
 /* Port TriangleBitFlags class into face namespace */
 using TriangleBitFlags = comp::TriangleBitFlags;
 

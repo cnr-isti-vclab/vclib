@@ -497,7 +497,7 @@ EdgeContainer<T>::disablePerEdgeMark()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), bool)
+VCL_ENABLE_IF(edge::HasOptionalScalar<U>, bool)
 EdgeContainer<T>::isPerEdgeScalarEnabled() const
 {
 	return Base::optionalVec.isScalarEnabled();
@@ -509,7 +509,7 @@ EdgeContainer<T>::isPerEdgeScalarEnabled() const
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalScalar<U>, void)
 EdgeContainer<T>::enablePerEdgeScalar()
 {
 	Base::optionalVec.enableScalar(edgeContainerSize());
@@ -522,7 +522,7 @@ EdgeContainer<T>::enablePerEdgeScalar()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalScalar<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalScalar<U>, void)
 EdgeContainer<T>::disablePerEdgeScalar()
 {
 	Base::optionalVec.disableScalar();

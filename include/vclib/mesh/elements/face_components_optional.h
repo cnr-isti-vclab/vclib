@@ -90,12 +90,6 @@ using OptionalScalarf = comp::OptionalScalar<float, FaceType>;
 template<typename FaceType>
 using OptionalScalard = comp::OptionalScalar<double, FaceType>;
 
-template<typename FaceType>
-bool constexpr hasOptionalScalar()
-{
-	return comp::hasOptionalScalar<FaceType>();
-}
-
 /* Port OptionalWedgeTexCoords class into face namespace */
 template<typename ScalarType, typename FaceType>
 using OptionalPolygonWedgeTexCoords = comp::OptionalWedgeTexCoords<ScalarType, -1, FaceType>;

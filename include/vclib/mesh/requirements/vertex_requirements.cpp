@@ -230,25 +230,14 @@ bool enableIfPerVertexPrincipalCurvatureOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexScalar()
-{
-	if constexpr (hasVertices<MeshType>())  {
-		return vcl::vert::hasScalar<typename MeshType::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerVertexScalarEnabled(const MeshType& m)
 {
-	if constexpr (hasVertices<MeshType>()) {
-		if constexpr (vcl::vert::hasOptionalScalar<typename MeshType::VertexType>()) {
+	if constexpr (HasVertices<MeshType>) {
+		if constexpr (vcl::vert::HasOptionalScalar<typename MeshType::VertexType>) {
 			return m.isPerVertexScalarEnabled();
 		}
 		else {
-			return vcl::vert::hasScalar<typename MeshType::VertexType>();
+			return vcl::vert::HasScalar<typename MeshType::VertexType>;
 		}
 	}
 	else {
@@ -259,8 +248,8 @@ bool isPerVertexScalarEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexScalarOptional(MeshType& m)
 {
-	if constexpr (hasPerVertexScalar<MeshType>()) {
-		if constexpr(vcl::vert::hasOptionalScalar<typename MeshType::VertexType>()) {
+	if constexpr (HasPerVertexScalar<MeshType>) {
+		if constexpr(vcl::vert::HasOptionalScalar<typename MeshType::VertexType>) {
 			m.enablePerVertexScalar();
 		}
 		return true;
@@ -373,9 +362,8 @@ void requirePerVertexPrincipalCurvature(const MeshType& m)
 
 template<typename MeshType>
 void requirePerVertexScalar(const MeshType& m)
+	requires HasPerVertexScalar<MeshType>
 {
-	requireVertices<MeshType>();
-	static_assert(hasPerVertexScalar<MeshType>(), "Mesh has no vertex scalars.");
 	if (!isPerVertexScalarEnabled(m))
 		throw vcl::MissingComponentException("Vertex scalars not enabled.");
 }
