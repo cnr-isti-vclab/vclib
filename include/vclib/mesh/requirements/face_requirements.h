@@ -142,7 +142,8 @@ void requireFaceContainerCompactness(const MeshType& m);
 // Face Adjacent Faces
 
 template<typename MeshType>
-void requirePerFaceAdjacentFaces(const MeshType& m);
+void requirePerFaceAdjacentFaces(const MeshType& m)
+	requires HasPerFaceAdjacentFaces<MeshType>;
 
 // Face Color
 

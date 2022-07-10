@@ -44,12 +44,6 @@ using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, VertexTy
 template<typename FaceType, typename VertexType>
 using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalAdjacentFaces()
-{
-	return comp::hasOptionalAdjacentFaces<VertexType>();
-}
-
 /* Port OptionalAdjacentVertices class into vert namespace */
 template<typename VertexType>
 using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, VertexType>;

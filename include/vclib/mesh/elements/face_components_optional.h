@@ -50,12 +50,6 @@ using OptionalAdjacentPolygons = comp::OptionalAdjacentFaces<FaceType, -1, FaceT
 template<typename FaceType>
 using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<FaceType, 3, FaceType>;
 
-template<typename FaceType>
-bool constexpr hasOptionalAdjacentFaces()
-{
-	return comp::hasOptionalAdjacentFaces<FaceType>();
-}
-
 /* Port OptionalColor class into face namespace */
 template<typename FaceType>
 using OptionalColor = comp::OptionalColor<FaceType>;

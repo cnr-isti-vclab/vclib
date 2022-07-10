@@ -99,15 +99,15 @@ public:
 
 	// Adjacent Faces
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), bool)
+	VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, bool)
 	isPerVertexAdjacentFacesEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, void)
 	enablePerVertexAdjacentFaces();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, void)
 	disablePerVertexAdjacentFaces();
 
 	// Adjacent Vertices

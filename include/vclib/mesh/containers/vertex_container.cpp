@@ -288,21 +288,21 @@ void VertexContainer<T>::enableAllPerVertexOptionalComponents()
 {
 	if constexpr (vert::HasOptionalAdjacentEdges<T>)
 		enablePerVertexAdjacentEdges();
-	if constexpr (vert::hasOptionalAdjacentFaces<T>())
+	if constexpr (vert::HasOptionalAdjacentFaces<T>)
 		enablePerVertexAdjacentFaces();
-	if constexpr (vert::hasOptionalAdjacentVertices<T>())
+	if constexpr (vert::HasOptionalAdjacentVertices<T>)
 		enablePerVertexAdjacentVertices();
-	if constexpr (vert::hasOptionalColor<T>())
+	if constexpr (vert::HasOptionalColor<T>)
 		enablePerVertexColor();
-	if constexpr (vert::hasOptionalMark<T>())
+	if constexpr (vert::HasOptionalMark<T>)
 		enablePerVertexMark();
-	if constexpr (vert::hasOptionalNormal<T>())
+	if constexpr (vert::HasOptionalNormal<T>)
 		enablePerVertexNormal();
-	if constexpr (vert::hasOptionalPrincipalCurvature<T>())
+	if constexpr (vert::HasOptionalPrincipalCurvature<T>)
 		enablePerVertexPrincipalCurvature();
-	if constexpr (vert::hasOptionalScalar<T>())
+	if constexpr (vert::HasOptionalScalar<T>)
 		enablePerVertexScalar();
-	if constexpr (vert::hasOptionalTexCoord<T>())
+	if constexpr (vert::HasOptionalTexCoord<T>)
 		enablePerVertexTexCoord();
 }
 
@@ -315,21 +315,21 @@ void VertexContainer<T>::disableAllPerVertexOptionalComponents()
 {
 	if constexpr (vert::HasOptionalAdjacentEdges<T>)
 		disablePerVertexAdjacentEdges();
-	if constexpr (vert::hasOptionalAdjacentFaces<T>())
+	if constexpr (vert::HasOptionalAdjacentFaces<T>)
 		disablePerVertexAdjacentFaces();
-	if constexpr (vert::hasOptionalAdjacentVertices<T>())
+	if constexpr (vert::HasOptionalAdjacentVertices<T>)
 		disablePerVertexAdjacentVertices();
-	if constexpr (vert::hasOptionalColor<T>())
+	if constexpr (vert::HasOptionalColor<T>)
 		disablePerVertexColor();
-	if constexpr (vert::hasOptionalMark<T>())
+	if constexpr (vert::HasOptionalMark<T>)
 		disablePerVertexMark();
-	if constexpr (vert::hasOptionalNormal<T>())
+	if constexpr (vert::HasOptionalNormal<T>)
 		disablePerVertexNormal();
-	if constexpr (vert::hasOptionalPrincipalCurvature<T>())
+	if constexpr (vert::HasOptionalPrincipalCurvature<T>)
 		disablePerVertexPrincipalCurvature();
-	if constexpr (vert::hasOptionalScalar<T>())
+	if constexpr (vert::HasOptionalScalar<T>)
 		disablePerVertexScalar();
-	if constexpr (vert::hasOptionalTexCoord<T>())
+	if constexpr (vert::HasOptionalTexCoord<T>)
 		disablePerVertexTexCoord();
 }
 
@@ -387,7 +387,7 @@ VertexContainer<T>::disablePerVertexAdjacentEdges()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), bool)
+VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, bool)
 VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
 {
 	return Base::optionalVec.isAdjacentFacesEnabled();
@@ -401,7 +401,7 @@ VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, void)
 VertexContainer<T>::enablePerVertexAdjacentFaces()
 {
 	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
@@ -415,7 +415,7 @@ VertexContainer<T>::enablePerVertexAdjacentFaces()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalAdjacentFaces<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, void)
 VertexContainer<T>::disablePerVertexAdjacentFaces()
 {
 	Base::optionalVec.disableAdjacentFaces();

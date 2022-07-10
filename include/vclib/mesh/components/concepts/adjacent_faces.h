@@ -79,18 +79,6 @@ concept SanityCheckAdjacentFaces = !HasAdjacentFaces<T> || HasRightNumberOfAdjac
 
 /* Detector functions to check if a class has AdjacentFaces or OptionalAdjacentFaces */
 
-template<typename T>
-bool constexpr hasAdjacentFaces()
-{
-	return HasAdjacentFaces<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalAdjacentFaces()
-{
-	return HasOptionalAdjacentFaces<T>;
-}
-
 template <typename T>
 bool isAdjacentFacesEnabledOn(const T& element)
 {
@@ -99,17 +87,6 @@ bool isAdjacentFacesEnabledOn(const T& element)
 	}
 	else {
 		return HasAdjacentFaces<T>;
-	}
-}
-
-template<typename T>
-bool constexpr sanityCheckAdjacentFaces()
-{
-	if constexpr (hasAdjacentFaces<T>()) {
-		return T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
-	}
-	else {
-		return true;
 	}
 }
 

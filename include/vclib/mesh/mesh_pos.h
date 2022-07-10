@@ -40,13 +40,9 @@ namespace vcl::mesh {
  * To be used, the MeshPos requires that the Mesh on which the given Face-Vertex-Edge triplet is
  * defined, has per Face Adjacent Faces topology informtion.
  */
-template <typename FaceType>
+template <face::HasAdjacentFaces FaceType>
 class MeshPos
 {
-	static_assert(
-		face::hasAdjacentFaces<FaceType>(),
-		"FaceType used for MeshPos has no Adjacent Faces.");
-
 public:
 	using VertexType = typename FaceType::VertexType;
 

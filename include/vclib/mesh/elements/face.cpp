@@ -66,21 +66,21 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 				T::resizeAdjEdges(list.size());
 		}
 
-		if constexpr (face::hasAdjacentFaces<F>()) {
+		if constexpr (face::HasAdjacentFaces<F>) {
 			using T = typename F::AdjacentFaces;
 
 			if (T::isAdjFacesEnabled())
 				T::resizeAdjFaces(list.size());
 		}
 
-		if constexpr (face::hasWedgeColors<F>()) {
+		if constexpr (face::HasWedgeColors<F>) {
 			using T = typename F::WedgeColors;
 
 			if (T::isWedgeColorsEnabled())
 				T::resizeWedgeColors(list.size());
 		}
 
-		if constexpr (face::hasWedgeTexCoords<F>()) {
+		if constexpr (face::HasWedgeTexCoords<F>) {
 			using T = typename F::WedgeTexCoords;
 
 			if (T::isWedgeTexCoordsEnabled())

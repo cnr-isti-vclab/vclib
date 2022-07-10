@@ -97,15 +97,15 @@ public:
 
 	// AdjacentFaces
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalAdjacentFaces<U>(), bool)
+	VCL_ENABLE_IF(face::HasOptionalAdjacentFaces<U>, bool)
 	isPerFaceAdjacentFacesEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalAdjacentFaces<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalAdjacentFaces<U>, void)
 	enablePerFaceAdjacentFaces();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalAdjacentFaces<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalAdjacentFaces<U>, void)
 	disablePerFaceAdjacentFaces();
 
 	// Color

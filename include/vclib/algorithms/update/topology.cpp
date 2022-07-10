@@ -24,8 +24,6 @@
 
 #include <vclib/algorithms/internal/per_face_edge.h>
 
-#include <vclib/mesh/requirements.h>
-
 namespace vcl {
 
 /**

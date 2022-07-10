@@ -36,7 +36,7 @@ namespace vcl::mesh {
  * @param e: an integer that represents the edge position in the face f
  * @return `true` if the triple (f,v,e) is a valid MeshPos.
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 bool MeshPos<FaceType>::isValid(const FaceType* f, const VertexType* v, short e)
 {
 	if (f == nullptr || v == nullptr || e < 0)
@@ -50,12 +50,12 @@ bool MeshPos<FaceType>::isValid(const FaceType* f, const VertexType* v, short e)
 /**
  * @brief Empty constructor that creates a null (invalid) MeshPos.
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 MeshPos<FaceType>::MeshPos()
 {
 }
 
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 MeshPos<FaceType>::MeshPos(const FaceType* f, short e) :
 		f(f), e(e)
 {
@@ -71,24 +71,24 @@ MeshPos<FaceType>::MeshPos(const FaceType* f, short e) :
  * @param[in] v: the Vertex pointer on which place the MeshPos.
  * @param[in] e: the Edge (an positive index < f.vertexNumber() on which place the MeshPos.
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 MeshPos<FaceType>::MeshPos(const FaceType* f, const VertexType* v, short e) :
 		f(f), v(v), e(e)
 {
 	assert(isValid(f, v, e));
 }
 
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 const FaceType* MeshPos<FaceType>::face() const
 {
 	return f;
 }
 
-template<typename FaceType>
 /**
  * @brief Returns `true` if this MeshPos is valid.
  * @return `true` if this MeshPos is valid.
  */
+template<face::HasAdjacentFaces FaceType>
 bool MeshPos<FaceType>::isValid() const
 {
 	return isValid(f, v, e);
@@ -99,7 +99,7 @@ bool MeshPos<FaceType>::isValid() const
  * different from calling !isValid().
  * @return `true` if this MeshPos is null.
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 bool MeshPos<FaceType>::isNull() const
 {
 	return f == nullptr || v == nullptr || e < 0;
@@ -111,7 +111,7 @@ bool MeshPos<FaceType>::isNull() const
  * this MeshPos. It does not use border flags.
  * @return `true` if the current edge in the current face is on a border.
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 bool MeshPos<FaceType>::isEdgeOnBorder() const
 {
 	return f->adjFace(e) == nullptr;
@@ -127,7 +127,7 @@ bool MeshPos<FaceType>::isEdgeOnBorder() const
  * @return `true` if the current face is changed, `false` otherwise (because the current edge is on
  * border).
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 bool MeshPos<FaceType>::flipFace()
 {
 	const FaceType* nf = f->adjFace(e);
@@ -141,11 +141,11 @@ bool MeshPos<FaceType>::flipFace()
 	}
 }
 
-template<typename FaceType>
 /**
  * @brief Moves this MeshPos to the vertex adjacent to the current vertex that shares the same face
  * and the same edge of this MeshPos.
  */
+template<face::HasAdjacentFaces FaceType>
 void MeshPos<FaceType>::flipVertex()
 {
 	if (f->vertexMod(e) == v) {
@@ -160,7 +160,7 @@ void MeshPos<FaceType>::flipVertex()
  * @brief Moves this MeshPos to the edge adjacent to the current edge that shares the same face and
  * the same vertex of this MeshPos.
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 void MeshPos<FaceType>::flipEdge()
 {
 	if (f->vertexMod(e+1) == v) {
@@ -181,7 +181,7 @@ void MeshPos<FaceType>::flipEdge()
  * Note that if a "next face" does not exists because we are on border, the MeshPos flips only the
  * current edge, staying on the same face (see the `flipFace()` function for more details).
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 void MeshPos<FaceType>::nextEdgeAdjacentToV()
 {
 	flipEdge();
@@ -193,7 +193,7 @@ void MeshPos<FaceType>::nextEdgeAdjacentToV()
  * MeshPos. Basically, cycles on the edges adjacent to the current vertex, and stops when finds a
  * border edge.
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 void MeshPos<FaceType>::nextEdgeOnBorderAdjacentToV()
 {
 	do {
@@ -207,7 +207,7 @@ void MeshPos<FaceType>::nextEdgeOnBorderAdjacentToV()
  * The only requirement is that this MeshPos is valid.
  * @return The number of adjacent Faces to the current vertex of this MeshPos.
  */
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 uint MeshPos<FaceType>::numberOfAdjacentFacesToV() const
 {
 	bool onBorder = false;
@@ -219,19 +219,19 @@ uint MeshPos<FaceType>::numberOfAdjacentFacesToV() const
 	return count;
 }
 
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 bool MeshPos<FaceType>::operator==(const MeshPos& op) const
 {
 	return f == op.f && v == op.v && e == op.e;
 }
 
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 bool MeshPos<FaceType>::operator!=(const MeshPos& op) const
 {
 	return !(*this == op);
 }
 
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 bool MeshPos<FaceType>::operator<(const MeshPos& op) const
 {
 	if (f == op.f){
@@ -245,7 +245,7 @@ bool MeshPos<FaceType>::operator<(const MeshPos& op) const
 	}
 }
 
-template<typename FaceType>
+template<face::HasAdjacentFaces FaceType>
 uint MeshPos<FaceType>::countAdjacentFacesToV(bool& onBorder) const
 {
 	uint count = 0;

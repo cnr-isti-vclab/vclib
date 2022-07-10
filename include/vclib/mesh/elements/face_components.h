@@ -54,18 +54,6 @@ using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1>;
 template<typename FaceType>
 using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3>;
 
-template<typename FaceType>
-bool constexpr hasAdjacentFaces()
-{
-	return comp::hasAdjacentFaces<FaceType>();
-}
-
-template<typename FaceType>
-bool constexpr sanityCheckAdjacentFaces()
-{
-	return comp::sanityCheckAdjacentFaces<FaceType>();
-}
-
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags;
 

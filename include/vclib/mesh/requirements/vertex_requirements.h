@@ -40,9 +40,6 @@ bool isVertexContainerCompact(const MeshType&);
 // Vertex Adjacent Faces
 
 template<typename MeshType>
-bool constexpr hasPerVertexAdjacentFaces();
-
-template<typename MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -142,7 +139,8 @@ void requireVertexContainerCompactness(const MeshType& m);
 // Vertex Adjacent Faces
 
 template<typename MeshType>
-void requirePerVertexAdjacentFaces(const MeshType& m);
+void requirePerVertexAdjacentFaces(const MeshType& m)
+	requires HasPerVertexAdjacentFaces<MeshType>;
 
 // Vertex Adjacent Vertices
 

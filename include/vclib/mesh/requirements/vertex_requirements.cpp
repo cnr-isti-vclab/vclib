@@ -50,25 +50,14 @@ bool isVertexContainerCompact(const MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexAdjacentFaces()
-{
-	if constexpr (hasVertices<MeshType>())  {
-		return vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 {
 	if constexpr (hasVertices<MeshType>()) {
-		if constexpr (vcl::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
+		if constexpr (vcl::vert::HasOptionalAdjacentFaces<typename MeshType::VertexType>) {
 			return m.isPerVertexAdjacentFacesEnabled();
 		}
 		else {
-			return vcl::vert::hasAdjacentFaces<typename MeshType::VertexType>();
+			return vcl::vert::HasAdjacentFaces<typename MeshType::VertexType>;
 		}
 	}
 	else {
@@ -79,8 +68,8 @@ bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexAdjacentFacesOptional(MeshType& m)
 {
-	if constexpr (hasPerVertexAdjacentFaces<MeshType>()) {
-		if constexpr(vcl::vert::hasOptionalAdjacentFaces<typename MeshType::VertexType>()) {
+	if constexpr (HasPerVertexAdjacentFaces<MeshType>) {
+		if constexpr(vcl::vert::HasOptionalAdjacentFaces<typename MeshType::VertexType>) {
 			m.enablePerVertexAdjacentFaces();
 		}
 		return true;
@@ -402,9 +391,8 @@ void requireVertexContainerCompactness(const MeshType& m)
 
 template<typename MeshType>
 void requirePerVertexAdjacentFaces(const MeshType& m)
+	requires HasPerVertexAdjacentFaces<MeshType>
 {
-	requireVertices<MeshType>();
-	static_assert(hasPerVertexAdjacentFaces<MeshType>(), "Mesh has no vertex adjacent faces.");
 	if (!isPerVertexAdjacentFacesEnabled(m))
 		throw vcl::MissingComponentException("Vertex adjacent faces not enabled.");
 }

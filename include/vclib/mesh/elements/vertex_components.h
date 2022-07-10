@@ -46,12 +46,6 @@ using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
-template<typename VertexType>
-bool constexpr hasAdjacentFaces()
-{
-	return comp::hasAdjacentFaces<VertexType>();
-}
-
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>
 using AdjacentVertices = comp::AdjacentVertices<VertexType>;

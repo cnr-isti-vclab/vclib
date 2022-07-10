@@ -279,13 +279,13 @@ void EdgeContainer<T>::enableAllPerEdgeOptionalComponents()
 {
 	if constexpr (edge::HasOptionalAdjacentEdges<T>)
 		enablePerEdgeAdjacentEdges();
-	if constexpr (edge::hasOptionalAdjacentFaces<T>())
+	if constexpr (edge::HasOptionalAdjacentFaces<T>)
 		enablePerEdgeAdjacentFaces();
-	if constexpr (edge::hasOptionalColor<T>())
+	if constexpr (edge::HasOptionalColor<T>)
 		enablePerEdgeColor();
-	if constexpr (edge::hasOptionalMark<T>())
+	if constexpr (edge::HasOptionalMark<T>)
 		enablePerEdgeMark();
-	if constexpr (edge::hasOptionalScalar<T>())
+	if constexpr (edge::HasOptionalScalar<T>)
 		enablePerEdgeScalar();
 }
 
@@ -298,13 +298,13 @@ void EdgeContainer<T>::disableAllPerEdgeOptionalComponents()
 {
 	if constexpr (edge::HasOptionalAdjacentEdges<T>)
 		disablePerEdgeAdjacentEdges();
-	if constexpr (edge::hasOptionalAdjacentFaces<T>())
+	if constexpr (edge::HasOptionalAdjacentFaces<T>)
 		disablePerEdgeAdjacentFaces();
-	if constexpr (edge::hasOptionalColor<T>())
+	if constexpr (edge::HasOptionalColor<T>)
 		disablePerEdgeColor();
-	if constexpr (edge::hasOptionalMark<T>())
+	if constexpr (edge::HasOptionalMark<T>)
 		disablePerEdgeMark();
-	if constexpr (edge::hasOptionalScalar<T>())
+	if constexpr (edge::HasOptionalScalar<T>)
 		disablePerEdgeScalar();
 }
 
@@ -372,7 +372,7 @@ EdgeContainer<T>::disablePerEdgeAdjacentEdges()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalAdjacentFaces<U>(), bool)
+VCL_ENABLE_IF(edge::HasOptionalAdjacentFaces<U>, bool)
 EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const
 {
 	return Base::optionalVec.isAdjacentFacesEnabled();
@@ -386,7 +386,7 @@ EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalAdjacentFaces<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalAdjacentFaces<U>, void)
 EdgeContainer<T>::enablePerEdgeAdjacentFaces()
 {
 	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
@@ -400,7 +400,7 @@ EdgeContainer<T>::enablePerEdgeAdjacentFaces()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalAdjacentFaces<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalAdjacentFaces<U>, void)
 EdgeContainer<T>::disablePerEdgeAdjacentFaces()
 {
 	Base::optionalVec.disableAdjacentFaces();

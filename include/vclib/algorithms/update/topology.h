@@ -23,6 +23,8 @@
 #ifndef VCL_ALGORITHMS_TOPOLOGY_H
 #define VCL_ALGORITHMS_TOPOLOGY_H
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl {
 
 template<typename MeshType>
