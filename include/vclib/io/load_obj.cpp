@@ -451,7 +451,7 @@ void loadObj(
 			// read texcoords and save them in the vector of texcoords, we will store them in the
 			// mesh later
 			if constexpr (
-				hasPerVertexTexCoord<MeshType>() || hasPerFaceWedgeTexCoords<MeshType>()) {
+				HasPerVertexTexCoord<MeshType> || hasPerFaceWedgeTexCoords<MeshType>()) {
 				if (header == "vt") {
 					// save the texcoord for later
 					TexCoordd tf;
@@ -490,7 +490,7 @@ void loadObj(
 			}
 		}
 	}
-	if constexpr (hasPerVertexTexCoord<MeshType>()) {
+	if constexpr (HasPerVertexTexCoord<MeshType>) {
 		using VertexType = typename MeshType::VertexType;
 		if (!loadedInfo.hasFaceWedgeTexCoords()) {
 			// we can set the loaded texCoords to vertices, also if they are not supported in obj

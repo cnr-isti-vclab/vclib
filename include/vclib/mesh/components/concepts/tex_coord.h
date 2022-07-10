@@ -51,28 +51,16 @@ concept HasOptionalTexCoord = HasTexCoord<T> && requires(T o)
 	{ o.__optionalTexCoord() } -> std::same_as<void>;
 };
 
-/* Detector functions to check if a class has TexCoord or OptionalTexCoord */
-
-template<typename T>
-bool constexpr hasTexCoord()
-{
-	return HasTexCoord<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalTexCoord()
-{
-	return HasOptionalTexCoord<T>;
-}
+/* Detector function to check if a class has TexCoord enabled */
 
 template <typename T>
 bool isTexCoordEnabledOn(const T& element)
 {
-	if constexpr (hasOptionalTexCoord<T>()) {
+	if constexpr (HasOptionalTexCoord<T>) {
 		return element.isTexCoordEnabled();
 	}
 	else {
-		return hasTexCoord<T>();
+		return HasTexCoord<T>;
 	}
 }
 

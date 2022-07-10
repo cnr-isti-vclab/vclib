@@ -260,25 +260,14 @@ bool enableIfPerVertexScalarOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexTexCoord()
-{
-	if constexpr (hasVertices<MeshType>())  {
-		return vcl::vert::hasTexCoord<typename MeshType::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerVertexTexCoordEnabled(const MeshType& m)
 {
-	if constexpr (hasVertices<MeshType>()) {
-		if constexpr (vcl::vert::hasOptionalTexCoord<typename MeshType::VertexType>()) {
+	if constexpr (HasVertices<MeshType>) {
+		if constexpr (vcl::vert::HasOptionalTexCoord<typename MeshType::VertexType>) {
 			return m.isPerVertexTexCoordEnabled();
 		}
 		else {
-			return vcl::vert::hasTexCoord<typename MeshType::VertexType>();
+			return vcl::vert::HasTexCoord<typename MeshType::VertexType>;
 		}
 	}
 	else {
@@ -289,8 +278,8 @@ bool isPerVertexTexCoordEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexTexCoordOptional(MeshType& m)
 {
-	if constexpr (hasPerVertexTexCoord<MeshType>()) {
-		if constexpr(vcl::vert::hasOptionalTexCoord<typename MeshType::VertexType>()) {
+	if constexpr (HasPerVertexTexCoord<MeshType>) {
+		if constexpr(vcl::vert::HasOptionalTexCoord<typename MeshType::VertexType>) {
 			m.enablePerVertexTexCoord();
 		}
 		return true;
@@ -370,9 +359,8 @@ void requirePerVertexScalar(const MeshType& m)
 
 template<typename MeshType>
 void requirePerVertexTexCoord(const MeshType& m)
+	requires HasPerVertexTexCoord<MeshType>
 {
-	requireVertices<MeshType>();
-	static_assert(hasPerVertexTexCoord<MeshType>(), "Mesh has no vertex texcoords.");
 	if (!isPerVertexTexCoordEnabled(m))
 		throw vcl::MissingComponentException("Vertex texcoords not enabled.");
 }

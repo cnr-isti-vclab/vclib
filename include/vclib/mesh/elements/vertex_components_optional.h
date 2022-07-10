@@ -98,12 +98,6 @@ using OptionalTexCoordf = comp::OptionalTexCoord<float, VertexType>;
 template<typename VertexType>
 using OptionalTexCoordd = comp::OptionalTexCoord<double, VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalTexCoord()
-{
-	return comp::hasOptionalTexCoord<VertexType>();
-}
-
 /* Port CustomComponents class into vert namespace */
 template<typename VertexType>
 using CustomComponents = comp::CustomComponents<VertexType>;

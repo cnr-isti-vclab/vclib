@@ -190,15 +190,15 @@ public:
 
 	// TexCoord
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), bool)
+	VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, bool)
 	isPerVertexTexCoordEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, void)
 	enablePerVertexTexCoord();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, void)
 	disablePerVertexTexCoord();
 
 	// Custom Components

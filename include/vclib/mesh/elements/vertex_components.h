@@ -107,12 +107,6 @@ using Scalard = comp::Scalard;
 template<typename ScalarType>
 using TexCoord = comp::TexCoord<ScalarType>;
 
-template<typename VertexType>
-bool constexpr hasTexCoord()
-{
-	return comp::hasTexCoord<VertexType>();
-}
-
 using TexCoordf = comp::TexCoordf;
 using TexCoordd = comp::TexCoordd;
 

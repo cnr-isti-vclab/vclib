@@ -683,7 +683,7 @@ VertexContainer<T>::disablePerVertexScalar()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), bool)
+VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, bool)
 VertexContainer<T>::isPerVertexTexCoordEnabled() const
 {
 	return Base::optionalVec.isTexCoordEnabled();
@@ -696,7 +696,7 @@ VertexContainer<T>::isPerVertexTexCoordEnabled() const
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, void)
 VertexContainer<T>::enablePerVertexTexCoord()
 {
 	Base::optionalVec.enableTexCoord(vertexContainerSize());
@@ -709,7 +709,7 @@ VertexContainer<T>::enablePerVertexTexCoord()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalTexCoord<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, void)
 VertexContainer<T>::disablePerVertexTexCoord()
 {
 	Base::optionalVec.disableTexCoord();

@@ -86,7 +86,7 @@ void loadOffVertices(
 			off::loadColor(token, nColorComponents);
 		}
 
-		if constexpr(vcl::hasPerVertexTexCoord<MeshType>()) {
+		if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
 			if (vcl::isPerVertexTexCoordEnabled(mesh) && fileInfo.hasVertexTexCoords()) {
 				// Read 2 tex coordinates
 				for (unsigned int j = 0; j < 2; j++) {

@@ -96,9 +96,6 @@ bool enableIfPerVertexScalarOptional(MeshType&);
 // Vertex TexCoord
 
 template<typename MeshType>
-bool constexpr hasPerVertexTexCoord();
-
-template<typename MeshType>
 bool isPerVertexTexCoordEnabled(const MeshType&);
 
 template<typename MeshType>
@@ -158,7 +155,8 @@ void requirePerVertexScalar(const MeshType& m)
 // Vertex TexCoord
 
 template<typename MeshType>
-void requirePerVertexTexCoord(const MeshType& m);
+void requirePerVertexTexCoord(const MeshType& m)
+	requires HasPerVertexTexCoord<MeshType>;
 
 } // namespace vcl
 
