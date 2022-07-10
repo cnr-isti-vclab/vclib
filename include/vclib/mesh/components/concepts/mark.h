@@ -52,19 +52,7 @@ concept HasOptionalMark = HasMark<T> && requires(T o)
 	{ o.__optionalMark() } -> std::same_as<void>;
 };
 
-/* Detector functions to check if a class has Mark or OptionalMark */
-
-template<typename T>
-constexpr bool hasMark()
-{
-	return HasMark<T> || HasOptionalMark<T>;
-}
-
-template<typename T>
-bool constexpr hasOptionalMark()
-{
-	return HasOptionalMark<T>;
-}
+/* Detector function to check if a class has Mark enabled */
 
 template <typename T>
 bool isMarkEnabledOn(const T& element)

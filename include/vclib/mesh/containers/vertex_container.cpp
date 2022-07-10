@@ -515,7 +515,7 @@ VertexContainer<T>::disablePerVertexColor()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalMark<U>(), bool)
+VCL_ENABLE_IF(vert::HasOptionalMark<U>, bool)
 VertexContainer<T>::isPerVertexMarkEnabled() const
 {
 	return Base::optionalVec.isMarkEnabled();
@@ -528,7 +528,7 @@ VertexContainer<T>::isPerVertexMarkEnabled() const
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalMark<U>, void)
 VertexContainer<T>::enablePerVertexMark()
 {
 	Base::optionalVec.enableMark(vertexContainerSize());
@@ -541,7 +541,7 @@ VertexContainer<T>::enablePerVertexMark()
  */
 template<VertexConcept T>
 template<typename U>
-VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
+VCL_ENABLE_IF(vert::HasOptionalMark<U>, void)
 VertexContainer<T>::disablePerVertexMark()
 {
 	Base::optionalVec.disableMark();

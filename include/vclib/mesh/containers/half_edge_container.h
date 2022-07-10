@@ -86,15 +86,15 @@ public:
 
 	// Mark
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), bool)
+	VCL_ENABLE_IF(hedge::HasOptionalMark<U>, bool)
 	isPerHalfEdgeMarkEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), void)
+	VCL_ENABLE_IF(hedge::HasOptionalMark<U>, void)
 	enablePerHalfEdgeMark();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), void)
+	VCL_ENABLE_IF(hedge::HasOptionalMark<U>, void)
 	disablePerHalfEdgeMark();
 
 	// Scalar

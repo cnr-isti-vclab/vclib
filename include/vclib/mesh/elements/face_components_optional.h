@@ -58,12 +58,6 @@ using OptionalColor = comp::OptionalColor<FaceType>;
 template<typename FaceType>
 using OptionalMark = comp::OptionalMark<FaceType>;
 
-template<typename FaceType>
-bool constexpr hasOptionalMark()
-{
-	return comp::hasOptionalMark<FaceType>();
-}
-
 /* Port OptionalNormal class into face namespace */
 template<typename ScalarType, int N, typename FaceType>
 using OptionalNormal = comp::OptionalNormal<ScalarType, N, FaceType>;

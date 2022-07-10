@@ -197,24 +197,6 @@ bool isCompact(const MeshType& m)
 }
 
 /**
- * @brief Checks *if a MeshType has the Mark component*.
- *
- * Usage:
- * @code{.cpp}
- * if constexpr(vcl::hasMark<MyMeshType>()) {
- *    // this portion of code is compiled only when MyMeshType has the mark
- * }
- * @endcode
- *
- * @return `true` if the MeshType has the mark.
- */
-template<typename MeshType>
-bool constexpr hasMark()
-{
-	return vcl::mesh::hasMark<MeshType>();
-}
-
-/**
  * @brief Checks *if a MeshType has the TexFileNames component*.
  *
  * Usage:
@@ -287,12 +269,6 @@ void requireCompactness(const MeshType& m)
 {
 	if (!isCompact(m))
 		throw MissingCompactnessException("Mesh is not compact.");
-}
-
-template<typename MeshType>
-void constexpr requireMark()
-{
-	static_assert(hasMark<MeshType>(), "Mesh has no mark.");
 }
 
 template<typename MeshType>

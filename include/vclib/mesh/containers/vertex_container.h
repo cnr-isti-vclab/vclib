@@ -138,15 +138,15 @@ public:
 
 	// Mark
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalMark<U>(), bool)
+	VCL_ENABLE_IF(vert::HasOptionalMark<U>, bool)
 	isPerVertexMarkEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalMark<U>, void)
 	enablePerVertexMark();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(vert::hasOptionalMark<U>(), void)
+	VCL_ENABLE_IF(vert::HasOptionalMark<U>, void)
 	disablePerVertexMark();
 
 	// Normal

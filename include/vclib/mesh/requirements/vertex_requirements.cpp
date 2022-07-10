@@ -140,25 +140,14 @@ bool enableIfPerVertexColorOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerVertexMark()
-{
-	if constexpr (hasVertices<MeshType>())  {
-		return vcl::vert::hasMark<typename MeshType::VertexType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerVertexMarkEnabled(const MeshType& m)
 {
-	if constexpr (hasVertices<MeshType>()) {
-		if constexpr (vcl::vert::hasOptionalMark<typename MeshType::VertexType>()) {
+	if constexpr (HasVertices<MeshType>) {
+		if constexpr (vcl::vert::HasOptionalMark<typename MeshType::VertexType>) {
 			return m.isPerVertexMarkEnabled();
 		}
 		else {
-			return vcl::vert::hasMark<typename MeshType::VertexType>();
+			return vcl::vert::HasMark<typename MeshType::VertexType>;
 		}
 	}
 	else {
@@ -169,8 +158,8 @@ bool isPerVertexMarkEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerVertexMarkOptional(MeshType& m)
 {
-	if constexpr (hasPerVertexMark<MeshType>()) {
-		if constexpr(vcl::vert::hasOptionalMark<typename MeshType::VertexType>()) {
+	if constexpr (HasPerVertexMark<MeshType>) {
+		if constexpr(vcl::vert::HasOptionalMark<typename MeshType::VertexType>) {
 			m.enablePerVertexMark();
 		}
 		return true;

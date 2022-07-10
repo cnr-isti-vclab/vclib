@@ -79,12 +79,6 @@ bool constexpr hasHalfEdgeReference()
 /* Port Mark class into vert namespace */
 using Mark = comp::Mark;
 
-template<typename VertexType>
-bool constexpr hasMark()
-{
-	return comp::hasMark<VertexType>();
-}
-
 /* Port Normal classes into vert namespace */
 template<typename ScalarType, int N>
 using Normal = comp::Normal<ScalarType, N>;

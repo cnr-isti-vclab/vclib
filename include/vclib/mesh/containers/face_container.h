@@ -123,15 +123,15 @@ public:
 
 	// Mark
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalMark<U>(), bool)
+	VCL_ENABLE_IF(face::HasOptionalMark<U>, bool)
 	isPerFaceMarkEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalMark<U>, void)
 	enablePerFaceMark();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
+	VCL_ENABLE_IF(face::HasOptionalMark<U>, void)
 	disablePerFaceMark();
 
 	// Normal

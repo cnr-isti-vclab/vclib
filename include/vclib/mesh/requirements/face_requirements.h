@@ -56,9 +56,6 @@ bool enableIfPerFaceColorOptional(MeshType&);
 // Face Mark
 
 template<typename MeshType>
-bool constexpr hasPerFaceMark();
-
-template<typename MeshType>
 bool isPerFaceMarkEnabled(const MeshType&);
 
 template<typename MeshType>

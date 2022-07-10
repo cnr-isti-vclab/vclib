@@ -64,9 +64,6 @@ bool enableIfPerVertexColorOptional(MeshType&);
 // Vertex Mark
 
 template<typename MeshType>
-bool constexpr hasPerVertexMark();
-
-template<typename MeshType>
 bool isPerVertexMarkEnabled(const MeshType&);
 
 template<typename MeshType>

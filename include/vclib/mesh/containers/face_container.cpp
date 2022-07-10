@@ -482,7 +482,7 @@ FaceContainer<T>::disablePerFaceColor()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalMark<U>(), bool)
+VCL_ENABLE_IF(face::HasOptionalMark<U>, bool)
 FaceContainer<T>::isPerFaceMarkEnabled() const
 {
 	return Base::optionalVec.isMarkEnabled();
@@ -495,7 +495,7 @@ FaceContainer<T>::isPerFaceMarkEnabled() const
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalMark<U>, void)
 FaceContainer<T>::enablePerFaceMark()
 {
 	Base::optionalVec.enableMark(faceContainerSize());
@@ -508,7 +508,7 @@ FaceContainer<T>::enablePerFaceMark()
  */
 template<FaceConcept T>
 template<typename U>
-VCL_ENABLE_IF(face::hasOptionalMark<U>(), void)
+VCL_ENABLE_IF(face::HasOptionalMark<U>, void)
 FaceContainer<T>::disablePerFaceMark()
 {
 	Base::optionalVec.disableMark();

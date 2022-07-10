@@ -56,12 +56,6 @@ using OptionalColor = comp::OptionalColor<VertexType>;
 template<typename VertexType>
 using OptionalMark = comp::OptionalMark<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalMark()
-{
-	return comp::hasOptionalMark<VertexType>();
-}
-
 /* Port OptionalNormal class into vert namespace */
 template<typename ScalarType, int N, typename VertexType>
 using OptionalNormal = comp::OptionalNormal<ScalarType, N, VertexType>;

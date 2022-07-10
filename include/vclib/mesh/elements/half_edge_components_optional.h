@@ -38,12 +38,6 @@ using OptionalColor = comp::OptionalColor<EdgeType>;
 template<typename EdgeType>
 using OptionalMark = comp::OptionalMark<EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasOptionalMark()
-{
-	return comp::hasOptionalMark<EdgeType>();
-}
-
 /* Port OptionalScalar class into hedge namespace */
 template<typename ScalarType, typename EdgeType>
 using OptionalScalar = comp::OptionalScalar<ScalarType, EdgeType>;

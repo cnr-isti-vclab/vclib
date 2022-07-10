@@ -40,12 +40,6 @@ using BoundingBox3d = comp::BoundingBox3d;
 /** Port Mark class into mesh namespace **/
 using Mark = comp::Mark;
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
-
 /** Port TexFileNames class into mesh namespace **/
 using TexFileNames = comp::TexFileNames;
 

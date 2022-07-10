@@ -456,7 +456,7 @@ EdgeContainer<T>::disablePerEdgeColor()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalMark<U>(), bool)
+VCL_ENABLE_IF(edge::HasOptionalMark<U>, bool)
 EdgeContainer<T>::isPerEdgeMarkEnabled() const
 {
 	return Base::optionalVec.isMarkEnabled();
@@ -469,7 +469,7 @@ EdgeContainer<T>::isPerEdgeMarkEnabled() const
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalMark<U>, void)
 EdgeContainer<T>::enablePerEdgeMark()
 {
 	Base::optionalVec.enableMark(edgeContainerSize());
@@ -482,7 +482,7 @@ EdgeContainer<T>::enablePerEdgeMark()
  */
 template<EdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
+VCL_ENABLE_IF(edge::HasOptionalMark<U>, void)
 EdgeContainer<T>::disablePerEdgeMark()
 {
 	Base::optionalVec.disableMark();

@@ -45,12 +45,6 @@ using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, Fa
 /* Port Mark class into hedge namespace */
 using Mark = comp::Mark;
 
-template<typename HalfEdgeType>
-bool constexpr hasMark()
-{
-	return comp::hasMark<HalfEdgeType>();
-}
-
 /* Port Scalar class into hedge namespace */
 template<typename ScalarType>
 using Scalar = comp::Scalar<ScalarType>;

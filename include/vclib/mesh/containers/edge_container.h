@@ -115,15 +115,15 @@ public:
 
 	// Mark
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalMark<U>(), bool)
+	VCL_ENABLE_IF(edge::HasOptionalMark<U>, bool)
 	isPerEdgeMarkEnabled() const;
 
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
+	VCL_ENABLE_IF(edge::HasOptionalMark<U>, void)
 	enablePerEdgeMark();
 
 	template<typename U = T>
-	VCL_ENABLE_IF(edge::hasOptionalMark<U>(), void)
+	VCL_ENABLE_IF(edge::HasOptionalMark<U>, void)
 	disablePerEdgeMark();
 
 	// Scalar

@@ -59,11 +59,6 @@ bool constexpr hasPolygons();
 template<typename MeshType>
 bool isCompact(const MeshType&);
 
-// Mark
-
-template<typename MeshType>
-bool constexpr hasMark();
-
 // Texture File Names
 
 template<typename MeshType>
@@ -92,11 +87,6 @@ void requireQuadMesh(const MeshType&);
 
 template <typename MeshType>
 void requireCompactness(const MeshType&);
-
-// Mark
-
-template<typename MeshType>
-void constexpr requireMark();
 
 // Texture File Names
 

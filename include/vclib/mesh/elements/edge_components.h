@@ -50,12 +50,6 @@ using Color = comp::Color;
 /* Port Mark class into edge namespace */
 using Mark = comp::Mark;
 
-template<typename EdgeType>
-bool constexpr hasMark()
-{
-	return comp::hasMark<EdgeType>();
-}
-
 /* Port Scalar class into edge namespace */
 template<typename ScalarType>
 using Scalar = comp::Scalar<ScalarType>;

@@ -110,25 +110,14 @@ bool enableIfPerFaceColorOptional(MeshType& m)
 }
 
 template<typename MeshType>
-bool constexpr hasPerFaceMark()
-{
-	if constexpr (hasFaces<MeshType>())  {
-		return vcl::face::hasMark<typename MeshType::FaceType>();
-	}
-	else {
-		return false;
-	}
-}
-
-template<typename MeshType>
 bool isPerFaceMarkEnabled(const MeshType& m)
 {
-	if constexpr (hasFaces<MeshType>()) {
-		if constexpr (vcl::face::hasOptionalMark<typename MeshType::FaceType>()) {
+	if constexpr (HasFaces<MeshType>) {
+		if constexpr (vcl::face::HasOptionalMark<typename MeshType::FaceType>) {
 			return m.isPerFaceMarkEnabled();
 		}
 		else {
-			return vcl::face::hasMark<typename MeshType::FaceType>();
+			return vcl::face::HasMark<typename MeshType::FaceType>;
 		}
 	}
 	else {
@@ -139,8 +128,8 @@ bool isPerFaceMarkEnabled(const MeshType& m)
 template<typename MeshType>
 bool enableIfPerFaceMarkOptional(MeshType& m)
 {
-	if constexpr (hasPerFaceMark<MeshType>()) {
-		if constexpr(vcl::face::hasOptionalMark<typename MeshType::FaceType>()) {
+	if constexpr (HasPerFaceMark<MeshType>) {
+		if constexpr(vcl::face::HasOptionalMark<typename MeshType::FaceType>) {
 			m.enablePerFaceMark();
 		}
 		return true;

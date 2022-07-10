@@ -334,7 +334,7 @@ HalfEdgeContainer<T>::disablePerHalfEdgeColor()
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), bool)
+VCL_ENABLE_IF(hedge::HasOptionalMark<U>, bool)
 HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const
 {
 	return Base::optionalVec.isMarkEnabled();
@@ -347,7 +347,7 @@ HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), void)
+VCL_ENABLE_IF(hedge::HasOptionalMark<U>, void)
 HalfEdgeContainer<T>::enablePerHalfEdgeMark()
 {
 	Base::optionalVec.enableMark(halfEdgeContainerSize());
@@ -360,7 +360,7 @@ HalfEdgeContainer<T>::enablePerHalfEdgeMark()
  */
 template<HalfEdgeConcept T>
 template<typename U>
-VCL_ENABLE_IF(hedge::hasOptionalMark<U>(), void)
+VCL_ENABLE_IF(hedge::HasOptionalMark<U>, void)
 HalfEdgeContainer<T>::disablePerHalfEdgeMark()
 {
 	Base::optionalVec.disableMark();
