@@ -48,7 +48,7 @@ template<typename PointType>
 template<typename Element>
 void BoundingBox<PointType>::importFrom(const Element& e)
 {
-	if constexpr(hasBoundingBox<Element>()) {
+	if constexpr(HasBoundingBox<Element>) {
 		box = e.boundingBox();
 	}
 }

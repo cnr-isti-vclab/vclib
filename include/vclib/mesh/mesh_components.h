@@ -37,12 +37,6 @@ using BoundingBox = comp::BoundingBox<P>;
 using BoundingBox3f = comp::BoundingBox3f;
 using BoundingBox3d = comp::BoundingBox3d;
 
-template<typename T>
-bool constexpr hasBoundingBox()
-{
-	return comp::hasBoundingBox<T>();
-}
-
 /** Port Mark class into mesh namespace **/
 using Mark = comp::Mark;
 

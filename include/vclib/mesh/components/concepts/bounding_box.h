@@ -39,14 +39,6 @@ concept HasBoundingBox = requires(T o)
 	o.boundingBox();
 };
 
-/* Detector functions to check if a class has BoundingBox */
-
-template<typename T>
-bool constexpr hasBoundingBox()
-{
-	return HasBoundingBox<T>;
-}
-
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H

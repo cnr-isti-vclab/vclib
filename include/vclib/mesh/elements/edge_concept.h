@@ -96,7 +96,7 @@ concept HasVerticalComponent = comp::HasVerticalComponent<T>;
  */
 template<typename T>
 concept EdgeConcept =
-	edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value &&
+	(edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value) &&
 	edge::HasBitFlags<T> &&
 	edge::HasVertexReferences<T> &&
 	T::VERTEX_NUMBER == 2;

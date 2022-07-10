@@ -197,24 +197,6 @@ bool isCompact(const MeshType& m)
 }
 
 /**
- * @brief Checks *if a MeshType has the BoundingBox component*.
- *
- * Usage:
- * @code{.cpp}
- * if constexpr(vcl::hasBoundingBox<MyMeshType>()) {
- *    // this portion of code is compiled only when MyMeshType has the bounding box
- * }
- * @endcode
- *
- * @return `true` if the MeshType has the bounding box.
- */
-template<typename MeshType>
-bool constexpr hasBoundingBox()
-{
-	return vcl::mesh::hasBoundingBox<MeshType>();
-}
-
-/**
  * @brief Checks *if a MeshType has the Mark component*.
  *
  * Usage:
@@ -305,12 +287,6 @@ void requireCompactness(const MeshType& m)
 {
 	if (!isCompact(m))
 		throw MissingCompactnessException("Mesh is not compact.");
-}
-
-template<typename MeshType>
-void constexpr requireBoundingBox()
-{
-	static_assert(hasBoundingBox<MeshType>(), "Mesh has no bounding box.");
 }
 
 template<typename MeshType>

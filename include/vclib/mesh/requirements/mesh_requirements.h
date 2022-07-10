@@ -59,11 +59,6 @@ bool constexpr hasPolygons();
 template<typename MeshType>
 bool isCompact(const MeshType&);
 
-// Bounding Box
-
-template<typename MeshType>
-bool constexpr hasBoundingBox();
-
 // Mark
 
 template<typename MeshType>
@@ -97,11 +92,6 @@ void requireQuadMesh(const MeshType&);
 
 template <typename MeshType>
 void requireCompactness(const MeshType&);
-
-// Bounding Box
-
-template<typename MeshType>
-void constexpr requireBoundingBox();
 
 // Mark
 
