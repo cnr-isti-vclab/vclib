@@ -44,14 +44,6 @@ concept HasHalfEdgeReferences =
 	o.twin();
 };
 
-/* Detector to check if a class has HalfEdgeReferences */
-
-template<typename T>
-bool constexpr hasHalfEdgeReferences()
-{
-	return HasHalfEdgeReferences<T>;
-}
-
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_HALF_EDGE_REFERENCES_H

@@ -42,12 +42,6 @@ using Color = comp::Color;
 template<typename HalfEdgeType, typename VertexType, typename FaceType>
 using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType>;
 
-template<typename HalfEdgeType>
-bool constexpr hasHalfEdgeReferences()
-{
-	return comp::hasHalfEdgeReferences<HalfEdgeType>();
-}
-
 /* Port Mark class into hedge namespace */
 using Mark = comp::Mark;
 

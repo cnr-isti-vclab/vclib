@@ -553,7 +553,7 @@ void ElementContainer<T>::updateFaceReferencesAfterCompact(
 	}
 
 	// HalfEdgeReferences component
-	if constexpr (comp::hasHalfEdgeReferences<T>()) {
+	if constexpr (comp::HasHalfEdgeReferences<T>) {
 		for (T& e : elements()) {
 			e.updateFaceReferencesAfterCompact(base, newIndices);
 		}
