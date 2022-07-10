@@ -40,14 +40,6 @@ concept HasCoordinate = requires(T o)
 	o.coord();
 };
 
-/* Detector functions to check if a class has Coordinate */
-
-template<typename T>
-bool constexpr hasCoordinate()
-{
-	return HasCoordinate<T>;
-}
-
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_COORDINATE_H

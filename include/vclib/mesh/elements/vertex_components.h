@@ -66,12 +66,6 @@ using Coordinate3 = comp::Coordinate3<ScalarType>;
 using Coordinate3f = comp::Coordinate3f;
 using Coordinate3d = comp::Coordinate3d;
 
-template<typename VertexType>
-bool constexpr hasCoordinate()
-{
-	return comp::hasCoordinate<VertexType>();
-}
-
 /* Port Half Edge reference into vert namespace*/
 template<typename HalfEdge>
 using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge>;
