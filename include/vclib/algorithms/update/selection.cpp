@@ -26,11 +26,9 @@
 
 namespace vcl {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clearVertexSelection(MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
@@ -38,11 +36,9 @@ void clearVertexSelection(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void clearFaceSelection(MeshType& m)
 {
-	vcl::requireFaces<MeshType>();
-
 	using FaceType = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
@@ -50,7 +46,7 @@ void clearFaceSelection(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst)
 {
 	std::vector<bool> nonManifoldVertices = internal::nonManifoldVerticesVectorBool(m);

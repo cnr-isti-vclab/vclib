@@ -28,9 +28,9 @@
 
 namespace vcl {
 
-/********************
- * is/has functions *
- ********************/
+/*************************
+ * is/enableIf functions *
+ *************************/
 
 /**
  * @brief Returns `true` if the given mesh has its Face Container compact.

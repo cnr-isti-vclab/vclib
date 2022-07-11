@@ -23,6 +23,7 @@
 #ifndef VCL_ALGORITHMS_INERTIA_H
 #define VCL_ALGORITHMS_INERTIA_H
 
+#include <vclib/mesh/requirements.h>
 #include <vclib/space/point.h>
 
 namespace vcl::internal {
@@ -47,7 +48,7 @@ namespace vcl::internal {
  * ``Fast and Accurate Computation of Polyhedral Mass Properties,''
  * journal of graphics tools, volume 1, number 2, 1996
  */
-template<class MeshType>
+template<FaceMeshConcept MeshType>
 class Inertia
 {
 	using VertexType = typename MeshType::VertexType;

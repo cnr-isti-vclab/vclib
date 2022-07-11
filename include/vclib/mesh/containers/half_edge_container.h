@@ -33,7 +33,7 @@
 namespace vcl::mesh {
 
 template<HalfEdgeConcept T>
-class HalfEdgeContainer : protected ElementContainer<T>, public HalfEdgeContainerTriggerer
+class HalfEdgeContainer : protected ElementContainer<T>
 {
 	template <HalfEdgeConcept U>
 	friend class HalfEdgeContainer;

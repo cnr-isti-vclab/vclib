@@ -148,31 +148,31 @@ public:
 	// HalfEdges
 
 	template<typename M = Mesh<Args...>>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 	index(const typename M::HalfEdgeType& e) const;
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 	index(const typename M::HalfEdgeType* v) const;
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 	addHalfEdge();
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 	addHalfEdges(uint n);
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>() && mesh::HasFaceContainer<M>, uint)
+	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M> && mesh::HasFaceContainer<M>, uint)
 	addHalfEdgesToFace(uint n, typename M::FaceType& f);
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 	reserveHalfEdges(uint n);
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 	compactHalfEdges();
 
 	template<typename OtherMeshType>
@@ -231,13 +231,13 @@ protected:
 	// HalfEdges
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 	updateHalfEdgeReferences(
 		const typename M::HalfEdgeType* oldBase,
 		const typename M::HalfEdgeType* newBase);
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 	updateHalfEdgeReferencesAfterCompact(
 		const typename M::HalfEdgeType* base,
 		const std::vector<int>&         newIndices);

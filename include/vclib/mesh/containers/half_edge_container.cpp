@@ -635,7 +635,7 @@ template<typename Mesh>
 void HalfEdgeContainer<T>::enableOptionalComponentsOf(const Mesh &m)
 {
 	// if half edges are enabled in the other Mesh
-	if constexpr (hasHalfEdges<Mesh>()) {
+	if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
 		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
 
 		Base::enableOptionalComponentsOf((const MHalfEdgeContainer&)m);
@@ -647,7 +647,7 @@ template<typename Mesh>
 void HalfEdgeContainer<T>::importFrom(const Mesh &m)
 {
 	// if half edges are enabled in the other Mesh
-	if constexpr (hasHalfEdges<Mesh>()) {
+	if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
 		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
 
 		Base::importFrom((const MHalfEdgeContainer&)m);

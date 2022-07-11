@@ -23,14 +23,14 @@
 #ifndef VCL_MESH_VERTEX_REQUIREMENTS_H
 #define VCL_MESH_VERTEX_REQUIREMENTS_H
 
-#include "element_requirements.h"
 #include "vertex_concepts.h"
+#include "mesh_concepts.h"
 
 namespace vcl {
 
-/********************
- * is/has functions *
- ********************/
+/*************************
+ * is/enableIf functions *
+ *************************/
 
 // Vertex Compactness
 

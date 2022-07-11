@@ -57,7 +57,7 @@ void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 	bool splitFace = false;
 	// we have a polygonal mesh
 	if constexpr (FaceType::VERTEX_NUMBER < 0) {
-		if constexpr (mesh::hasHalfEdges<MeshType>()) {
+		if constexpr (HasHalfEdges<MeshType>) {
 			m.addHalfEdgesToFace(vids.size(), f);
 		}
 		else {

@@ -77,7 +77,7 @@ inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 	if constexpr (vcl::HasEdges<Mesh>) {
 		setEdges();
 		setEdgeVRefs();
-//		if constexpr (vcl::hasPerEdgeColor<Mesh>())
+//		if constexpr (vcl::HasPerEdgeColor<Mesh>)
 //			if (vcl::isPerEdgeColorEnabled(m))
 //				setEdgeColors(true, UCHAR);
 	}

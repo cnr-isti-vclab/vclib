@@ -110,7 +110,7 @@ public:
 	FacePointer  fp;
 };
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 	requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
@@ -150,7 +150,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 	return nonManifoldVertices;
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 uint numberEdges(const MeshType& m, uint& numBoundaryEdges, uint& numNonManifoldEdges)
 {
 	std::vector<ConstPerFaceEdge<MeshType>> edgeVec = fillAndSortEdgeVector(m);
@@ -383,7 +383,7 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 		}
 	}
 
-	if constexpr (hasFaces(m)) {
+	if constexpr (HasFaces<MeshType>) {
 		using FaceType = typename MeshType::FaceType;
 		if (deleteAlsoFaces) {
 			for (FaceType& f : m.faces()) {

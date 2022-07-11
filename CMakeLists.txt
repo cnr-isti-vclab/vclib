@@ -187,7 +187,6 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/vectors/wedge_tex_coords_vector.h
 	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/containers_concepts.h
-	include/vclib/mesh/containers/containers_detection.h
 	include/vclib/mesh/containers/edge_container.h
 	include/vclib/mesh/containers/element_container.h
 	include/vclib/mesh/containers/face_container.h
@@ -210,7 +209,6 @@ set(HEADERS
 	include/vclib/mesh/elements/vertex_components_optional.h
 	include/vclib/mesh/elements/vertex_concept.h
 	include/vclib/mesh/requirements/element_concepts.h
-	include/vclib/mesh/requirements/element_requirements.h
 	include/vclib/mesh/requirements/face_concepts.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/mesh_concepts.h
@@ -341,7 +339,6 @@ set(SOURCES
 	include/vclib/mesh/elements/face.cpp
 	include/vclib/mesh/elements/half_edge.cpp
 	include/vclib/mesh/elements/vertex.cpp
-	include/vclib/mesh/requirements/element_requirements.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp

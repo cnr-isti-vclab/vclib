@@ -34,9 +34,9 @@ namespace vcl {
  *
  * @param m
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void updateBoundingBox(MeshType& m)
-	requires vcl::HasVertices<MeshType> && vcl::HasBoundingBox<MeshType>
+	requires vcl::HasBoundingBox<MeshType>
 {
 	using VertexType = typename MeshType::VertexType;
 

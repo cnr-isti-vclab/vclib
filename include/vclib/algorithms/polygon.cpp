@@ -400,7 +400,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 		unorderedEdges.insert(std::make_pair(i, (i+1) % (uint)polygon.size()));
 
 	if constexpr (FaceType::VERTEX_NUMBER < 0) {
-		if constexpr( mesh::hasHalfEdges<MeshType>()) {
+		if constexpr(HasHalfEdges<MeshType>) {
 			m.addHalfEdgesToFace(3, f);
 		}
 		else {
@@ -429,7 +429,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 		uint ff              = m.addFace();
 
 		if constexpr (FaceType::VERTEX_NUMBER < 0) {
-			if constexpr( mesh::hasHalfEdges<MeshType>()) {
+			if constexpr( HasHalfEdges<MeshType>) {
 				m.addHalfEdgesToFace(3, f);
 			}
 			else {

@@ -23,42 +23,44 @@
 #ifndef VCL_ALGORITHMS_SCALAR_H
 #define VCL_ALGORITHMS_SCALAR_H
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void setPerVertexScalar(MeshType& m, typename MeshType::VertexType::ScalarType s);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceScalar(MeshType& m, typename MeshType::FaceType::ScalarType s);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clampPerVertexScalar(
 	MeshType&                                 m,
 	typename MeshType::VertexType::ScalarType minS,
 	typename MeshType::VertexType::ScalarType maxS);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void clampPerFaceScalar(
 	MeshType&                               m,
 	typename MeshType::FaceType::ScalarType minS,
 	typename MeshType::FaceType::ScalarType maxS);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void normalizePerVertexScalar(
 	MeshType&                                 m,
 	typename MeshType::VertexType::ScalarType minS = 0,
 	typename MeshType::VertexType::ScalarType maxS = 1);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void normalizePerFaceScalar(
 	MeshType&                               m,
 	typename MeshType::FaceType::ScalarType minS = 0,
 	typename MeshType::FaceType::ScalarType maxS = 1);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerVertexScalarFromVertexValence(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceScalarFromFaceArea(MeshType& m);
 
 } // namespace vcl
