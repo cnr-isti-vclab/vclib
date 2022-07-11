@@ -30,42 +30,42 @@
 
 namespace vcl {
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 uint numberUnreferencedVertices(const MeshType& m);
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 uint removeUnreferencedVertices(MeshType& m);
 
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 uint removeDuplicatedVertices(MeshType& m);
 
-template <typename MeshType>
+template <TriangleMeshConcept MeshType>
 uint removeDuplicatedFaces(MeshType& m);
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
 
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m);
 
 template <typename FaceType>
 bool isManifoldOnEdge(const FaceType& f, uint edge);
 
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 uint numberNonManifoldVertices(const MeshType& m);
 
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 bool isWaterTight(const MeshType& m);
 
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 uint numberHoles(const MeshType& m)
 	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
 
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
 
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 uint numberConnectedComponents(const MeshType& m);
 
 }

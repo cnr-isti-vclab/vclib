@@ -23,21 +23,21 @@
 #ifndef VCL_ALGORITHMS_SMOOTH_H
 #define VCL_ALGORITHMS_SMOOTH_H
 
-#include <vclib/misc/types.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
 template<typename Scalar>
 class KDTree;
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void laplacianSmoothing(
 	MeshType& m,
 	uint      step,
 	bool      smoothSelected  = false,
 	bool      cotangentWeight = false /*, vcl::CallBackPos *cb = 0*/);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void taubinSmoothing(
 	MeshType& m,
 	uint      step,
@@ -45,10 +45,10 @@ void taubinSmoothing(
 	float     mu,
 	bool      smoothSelected  = false/*, vcl::CallBackPos *cb = 0*/);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNum);
 
-template<typename MeshType, typename Scalar>
+template<MeshConcept MeshType, typename Scalar>
 void smoothPerVertexNormalsPointCloud(
 	MeshType&             m,
 	const KDTree<Scalar>& tree,

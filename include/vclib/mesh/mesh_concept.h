@@ -62,11 +62,6 @@ concept HasTransformMatrix = comp::HasTransformMatrix<T>;
 
 } // namespace mesh
 
-template<typename T>
-concept MeshConcept =
-	(mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
-	mesh::HasVertexContainer<T>;
-
 } // namespace vcl
 
 #endif // VCL_MESH_CONCEPT_H

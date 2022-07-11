@@ -29,11 +29,13 @@
 
 namespace vcl::mesh {
 
-template <typename T>
-concept IsElementContainer = requires(T o)
+class ElementContainerTriggerer
 {
-	o.element(uint());
 };
+
+template<typename T>
+concept IsElementContainer =
+	std::is_base_of<ElementContainerTriggerer, T>::value;
 
 template <typename T>
 concept HasEdgeContainer = requires(T o)

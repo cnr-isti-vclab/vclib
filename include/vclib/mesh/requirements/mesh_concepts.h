@@ -33,21 +33,12 @@ concept HasTriangles =
 	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
 
 template<typename MeshType>
-concept TriangleMeshConcept = HasTriangles<MeshType>;
-
-template<typename MeshType>
 concept HasQuads =
 	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
 
 template<typename MeshType>
-concept QuadMeshConcept = HasQuads<MeshType>;
-
-template<typename MeshType>
 concept HasPolygons =
 	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
-
-template<typename MeshType>
-concept PolygonMeshConcept = HasPolygons<MeshType>;
 
 template<typename MeshType>
 concept HasBoundingBox =
@@ -64,6 +55,31 @@ concept HasTexFileNames =
 template<typename MeshType>
 concept HasTransformMatrix =
 	mesh::HasTransformMatrix<MeshType>;
+
+template<typename T>
+concept MeshConcept =
+	(mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
+	mesh::HasVertexContainer<T>;
+
+template<typename T>
+concept FaceMeshConcept =
+	MeshConcept<T> && mesh::HasFaceContainer<T>;
+
+template<typename T>
+concept TriangleMeshConcept =
+	FaceMeshConcept<T> && HasTriangles<T>;
+
+template<typename T>
+concept QuadMeshConcept =
+	FaceMeshConcept<T> && HasQuads<T>;
+
+template<typename T>
+concept PolygonMeshConcept =
+	FaceMeshConcept<T> && HasPolygons<T>;
+
+template<typename T>
+concept EdgeMeshConcept =
+	MeshConcept<T> && mesh::HasEdgeContainer<T>;
 
 } // namespace vcl
 

@@ -293,10 +293,9 @@ bool enableIfPerVertexTexCoordOptional(MeshType& m)
  * require functions *
  *********************/
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void requireVertexContainerCompactness(const MeshType& m)
 {
-	requireVertices<MeshType>();
 	if (!isVertexContainerCompact(m))
 		throw vcl::MissingCompactnessException("Vertex Container of the Mesh is not compact.");
 }

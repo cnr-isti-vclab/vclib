@@ -964,7 +964,7 @@ template<typename Mesh>
 void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 {
 	// if vertices are present in the other Mesh
-	if constexpr (hasVertices<Mesh>()) {
+	if constexpr (HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
 		Base::enableOptionalComponentsOf((const MVertexContainer&)m);
@@ -975,7 +975,7 @@ template<VertexConcept T>
 template<typename Mesh>
 void VertexContainer<T>::importFrom(const Mesh& m)
 {
-	if constexpr (hasVertices<Mesh>()) {
+	if constexpr (HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
 		Base::importFrom((const MVertexContainer&) m);
@@ -986,7 +986,7 @@ template<VertexConcept T>
 template<typename Mesh>
 void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m, T* base)
 {
-	if constexpr (hasVertices<Mesh>()) {
+	if constexpr (HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
 		Base::importVertexReferencesFrom(
@@ -998,7 +998,7 @@ template<VertexConcept T>
 template<typename Mesh, typename Face>
 void VertexContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 {
-	if constexpr (hasFaces<Mesh>() && hasVertices<Mesh>()) {
+	if constexpr (hasFaces<Mesh>() && HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
 		Base::importFaceReferencesFrom((const MVertexContainer&) m, base, &m.face(0));
@@ -1009,7 +1009,7 @@ template<VertexConcept T>
 template<typename Mesh, typename Edge>
 void VertexContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 {
-	if constexpr (hasEdges<Mesh>() && hasVertices<Mesh>()) {
+	if constexpr (HasEdgeContainer<Mesh> && HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
 		Base::importEdgeReferencesFrom((const MVertexContainer&) m, base, &m.edge(0));

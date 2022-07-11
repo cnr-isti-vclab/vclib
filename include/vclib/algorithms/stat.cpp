@@ -25,8 +25,6 @@
 #include "internal/inertia.h"
 #include "polygon.h"
 
-#include <vclib/mesh/requirements.h>
-
 namespace vcl {
 
 /**
@@ -40,11 +38,9 @@ namespace vcl {
  * @param[in] m: input mesh on which compute the barycenter.
  * @return The barycenter of the input mesh.
  */
-template <typename MeshType>
+template <MeshConcept MeshType>
 typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
 
@@ -71,7 +67,7 @@ typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
  * @param[in] m: input mesh on which compute the barycenter.
  * @return The barycenter weighted on the per vertex scalats.
  */
-template <typename MeshType>
+template <MeshConcept MeshType>
 typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m)
 {
 	vcl::requirePerVertexScalar(m);
@@ -105,12 +101,9 @@ typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType
  * @param m
  * @return
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	using FaceType = typename MeshType::FaceType;
 	using CoordType = typename VertexType::CoordType;
@@ -136,12 +129,9 @@ typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
  * @param[in] m: closed mesh on which compute the volume.
  * @return The volume of the given mesh.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 double volume(const MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	internal::Inertia<MeshType> i(m);
 	return i.volume();
 }
@@ -153,12 +143,9 @@ double volume(const MeshType& m)
  * @param[in] m: mesh on which compute the surface area.
  * @return The surface area of the given mesh.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 double surfaceArea(const MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	using FaceType = typename MeshType::FaceType;
 
 	double area = 0;
@@ -175,12 +162,9 @@ double surfaceArea(const MeshType& m)
  * @param[in] m: mesh on which compute the border length.
  * @return The border length of the given mesh.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 double borderLength(const MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requirePerFaceAdjacentFaces(m);
-
 	using FaceType = typename MeshType::FaceType;
 
 	double l = 0;
@@ -206,7 +190,7 @@ double borderLength(const MeshType& m)
  * @return A `std::pair` having as first element the minimum, and as second element the maximum
  * scalar.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
 perVertexScalarMinMax(const MeshType& m)
 {
@@ -238,7 +222,7 @@ perVertexScalarMinMax(const MeshType& m)
  * @return A `std::pair` having as first element the minimum, and as second element the maximum
  * scalar.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 std::pair<typename MeshType::FaceType::ScalarType, typename MeshType::FaceType::ScalarType>
 perFaceScalarMinMax(const MeshType& m)
 {
@@ -269,7 +253,7 @@ perFaceScalarMinMax(const MeshType& m)
  * @param[in] m: the input Mesh on which compute the average of the scalars.
  * @return The average of the vertex scalars of the given mesh.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType& m)
 {
 	vcl::requirePerVertexScalar(m);
@@ -296,7 +280,7 @@ typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType&
  * @param[in] m: the input Mesh on which compute the average of the scalars.
  * @return The average of the face scalars of the given mesh.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m)
 {
 	vcl::requirePerFaceScalar(m);
@@ -342,11 +326,9 @@ Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& poin
  * @param m
  * @return The 3x3 covariance matrix of the given point cloud.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 
 	auto barycenter = vcl::barycenter(m);
@@ -394,12 +376,9 @@ Matrix33<double> weightedCovarianceMatrixOfPointCloud(
  * @param m
  * @return The 3x3 covariance matrix of the given mesh.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 Matrix33<double> covarianceMatrixOfMesh(const MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	using FaceType = typename MeshType::FaceType;
 	using CoordType = typename VertexType::CoordType;

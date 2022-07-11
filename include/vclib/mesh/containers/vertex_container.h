@@ -43,7 +43,7 @@ namespace vcl::mesh {
  * This container can be templated on a type that satisfies the VertexConcept concept.
  */
 template<vcl::VertexConcept T>
-class VertexContainer : protected ElementContainer<T>, public VertexContainerTriggerer
+class VertexContainer : protected ElementContainer<T>
 {
 	template <VertexConcept U>
 	friend class VertexContainer;

@@ -81,7 +81,7 @@ concept SanityCheckWedgeColors = !HasWedgeColors<T> || HasRightNumberOfWedgeColo
 template <typename T>
 bool isWedgeColorsEnabledOn(const T& element)
 {
-	if constexpr(hasOptionalWedgeColors<T>()) {
+	if constexpr(HasOptionalWedgeColors<T>) {
 		return element.isWedgeColorsEnabled();
 	}
 	else {

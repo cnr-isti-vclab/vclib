@@ -107,7 +107,7 @@ bool enableIfPerVertexTexCoordOptional(MeshType&);
 
 // Vertex Compactness
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void requireVertexContainerCompactness(const MeshType& m);
 
 // Vertex Adjacent Faces

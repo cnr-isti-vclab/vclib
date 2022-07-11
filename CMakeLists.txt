@@ -107,6 +107,7 @@ set(HEADERS
 	include/vclib/math/matrix.h
 	include/vclib/math/perlin_noise.h
 	include/vclib/mesh/mesh.h
+	include/vclib/mesh/mesh_algorithms.h
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_concept.h
 	include/vclib/mesh/mesh_pos.h
@@ -290,6 +291,7 @@ set(SOURCES
 	include/vclib/math/matrix.cpp
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp
+	include/vclib/mesh/mesh_algorithms.cpp
 	include/vclib/mesh/mesh_pos.cpp
 	include/vclib/mesh/components/horizontal/adjacent_edges.cpp
 	include/vclib/mesh/components/horizontal/adjacent_faces.cpp

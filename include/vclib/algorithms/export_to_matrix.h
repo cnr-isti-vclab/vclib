@@ -23,12 +23,14 @@
 #ifndef VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
 #define VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl {
 
-template<typename Matrix, typename MeshType>
+template<typename Matrix, MeshConcept MeshType>
 Matrix vertexMatrix(const MeshType& m);
 
-template<typename Matrix, typename MeshType>
+template<typename Matrix, FaceMeshConcept MeshType>
 Matrix faceMatrix(const MeshType& m);
 
 } // namespace vcl

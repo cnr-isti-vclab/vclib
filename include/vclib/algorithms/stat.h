@@ -26,45 +26,46 @@
 #include <vector>
 
 #include <vclib/math/matrix.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 double volume(const MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 double surfaceArea(const MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 double borderLength(const MeshType& m);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
 perVertexScalarMinMax(const MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 std::pair<typename MeshType::FaceType::ScalarType, typename MeshType::FaceType::ScalarType>
 perFaceScalarMinMax(const MeshType& m);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m);
 
 template<typename PointType>
 Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
 
 template<typename PointType>
@@ -72,7 +73,7 @@ Matrix33<double> weightedCovarianceMatrixOfPointCloud(
 	const std::vector<PointType>& pointVec,
 	const std::vector<typename PointType::ScalarType>& weigths);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
 
 } // namespace vcl

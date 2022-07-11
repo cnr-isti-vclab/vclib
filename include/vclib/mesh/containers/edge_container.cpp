@@ -780,7 +780,7 @@ template<typename Mesh>
 void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 {
 	// if edges are enabled in the other Mesh
-	if constexpr (hasEdges<Mesh>()) {
+	if constexpr (HasEdgeContainer<Mesh>) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
 		Base::enableOptionalComponentsOf((const MEdgeContainer&)m);
@@ -791,7 +791,7 @@ template<EdgeConcept T>
 template<typename Mesh>
 void EdgeContainer<T>::importFrom(const Mesh& m)
 {
-	if constexpr (hasEdges<Mesh>()) {
+	if constexpr (HasEdgeContainer<Mesh>) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
 		Base::importFrom((const MEdgeContainer&)m);
@@ -802,7 +802,7 @@ template<EdgeConcept T>
 template<typename Mesh, typename Vertex>
 void EdgeContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
 {
-	if constexpr (hasVertices<Mesh>() && hasEdges<Mesh>()) {
+	if constexpr (mesh::HasVertexContainer<Mesh> && HasEdgeContainer<Mesh>) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
 		Base::importVertexReferencesFrom((const MEdgeContainer&)m, base, &m.vertex(0));
@@ -813,7 +813,7 @@ template<EdgeConcept T>
 template<typename Mesh, typename Face>
 void EdgeContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 {
-	if constexpr (hasFaces<Mesh>() && hasEdges<Mesh>()) {
+	if constexpr (hasFaces<Mesh>() && HasEdgeContainer<Mesh>) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
 		Base::importFaceReferencesFrom((const MEdgeContainer&)m, base, &m.face(0));
@@ -824,7 +824,7 @@ template<EdgeConcept T>
 template<typename Mesh>
 void EdgeContainer<T>::importEdgeReferencesFrom(const Mesh& m, T *base)
 {
-	if constexpr (hasEdges<Mesh>()) {
+	if constexpr (HasEdgeContainer<Mesh>) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
 		Base::importFaceReferencesFrom((const MEdgeContainer&)m, base, &m.edge(0));

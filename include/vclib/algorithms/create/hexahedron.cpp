@@ -22,13 +22,11 @@
 
 #include "hexahedron.h"
 
-#include <vclib/mesh/requirements.h>
-
 namespace vcl {
 
 namespace internal {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void fillHexahedronTriangles(MeshType& m)
 {
 	m.reserveFaces(12);
@@ -46,7 +44,7 @@ void fillHexahedronTriangles(MeshType& m)
 	m.addFace(1, 3, 5);
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void fillHexahedronQuads(MeshType& m)
 {
 	m.reserveFaces(6);
@@ -69,10 +67,9 @@ void fillHexahedronQuads(MeshType& m)
  *
  * @return A Mesh containing a ``[(-1, -1, -1), (1, 1, 1)]``Hexahedron .
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 MeshType createHexahedron()
 {
-	vcl::requireVertices<MeshType>();
 	using CoordType = typename MeshType::Vertex::CoordType;
 
 	return createHexahedron<MeshType>(CoordType(-1, -1, -1), CoordType(1, 1, 1));
@@ -86,10 +83,9 @@ MeshType createHexahedron()
  *
  * @return A Mesh containing a ``[min, max]``Hexahedron .
  */
-template<typename MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, typename CoordType>
 MeshType createHexahedron(const CoordType& min, const CoordType& max)
 {
-	vcl::requireVertices<MeshType>();
 	vcl::requireFaces<MeshType>();
 
 	MeshType m;
@@ -123,7 +119,7 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max)
  *
  * @return A Mesh containing a ``[min, min+edgeLength]`` Cube.
  */
-template<typename MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, typename CoordType>
 MeshType createCube(
 	const CoordType& min,
 	double edgeLength)

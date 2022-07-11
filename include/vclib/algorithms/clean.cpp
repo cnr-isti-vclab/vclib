@@ -190,11 +190,9 @@ uint numberEdges(const MeshType& m, uint& numBoundaryEdges, uint& numNonManifold
  * @param m
  * @return the number of unreferenced vertices.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 uint numberUnreferencedVertices(const MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-
 	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
 
 	uint nV = std::count(VCL_PARALLEL referredVertices.begin(), referredVertices.end(), false);
@@ -216,11 +214,9 @@ uint numberUnreferencedVertices(const MeshType& m)
  * @param m
  * @return the number of removed vertices.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 uint removeUnreferencedVertices(MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 
 	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
@@ -249,12 +245,9 @@ uint removeUnreferencedVertices(MeshType& m)
  * @param m
  * @return
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 uint removeDuplicatedVertices(MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	using VertexType    = typename MeshType::VertexType;
 	using FaceType      = typename MeshType::FaceType;
 	using VertexPointer = typename MeshType::VertexType*;
@@ -340,12 +333,9 @@ uint removeDuplicatedVertices(MeshType& m)
  * @param m
  * @return
  */
-template<typename MeshType>
+template<TriangleMeshConcept MeshType> // TODO: remove this and adjust the function for polymeshes
 uint removeDuplicatedFaces(MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireTriangleMesh(m); // TODO: remove this and adjust the function for polymeshes
-
 	using FaceType = typename MeshType::FaceType;
 
 	std::vector<internal::SortedTriple<FaceType*>> fvec;
@@ -379,7 +369,7 @@ uint removeDuplicatedFaces(MeshType& m)
  * @param deleteAlsoFaces
  * @return
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 {
 	using VertexType = typename MeshType::VertexType;
@@ -429,7 +419,7 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
  * @param m
  * @return
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m)
 {
 	uint count = 0;
@@ -465,7 +455,7 @@ bool isManifoldOnEdge(const FaceType& f, uint edge)
 }
 
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 uint numberNonManifoldVertices(const MeshType& m)
 {
 	std::vector<bool> nonManifoldVertices = internal::nonManifoldVerticesVectorBool(m);
@@ -488,7 +478,7 @@ uint numberNonManifoldVertices(const MeshType& m)
  * @param[in] m: the mesh to check whether is water tight or not.
  * @return `true` if the mesh is water tight, `false` otherwise.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isWaterTight(const MeshType& m)
 {
 	uint numEdgeBorder, numNonManifoldEdges;
@@ -509,11 +499,10 @@ bool isWaterTight(const MeshType& m)
  * @param[in] m: Mesh on which count the number of holes.
  * @return The number of holes of the mesh.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 uint numberHoles(const MeshType& m)
 	requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
-	vcl::requireVertices<MeshType>();
 	vcl::requirePerFaceAdjacentFaces(m);
 
 	using VertexType = typename MeshType::VertexType;
@@ -555,7 +544,7 @@ uint numberHoles(const MeshType& m)
  * @param[in] m: Mesh on which compute the connected components.
  * @return A vector of sets representing the connected components of the mesh.
  */
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 	requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
@@ -599,7 +588,7 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 	return cc;
 }
 
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 uint numberConnectedComponents(const MeshType& m)
 {
 	return connectedComponents(m).size();

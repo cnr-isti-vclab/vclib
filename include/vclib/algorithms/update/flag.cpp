@@ -23,7 +23,6 @@
 #include "flag.h"
 
 #include <vclib/algorithms/internal/per_face_edge.h>
-#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
@@ -40,10 +39,9 @@ namespace vcl {
  *
  * @param m: the mesh on which the border flags will be updated
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void updateBorder(MeshType& m)
 {
-	vcl::requireVertices(m);
 	vcl::requireFaces(m);
 
 	using VertexType = typename MeshType::VertexType;

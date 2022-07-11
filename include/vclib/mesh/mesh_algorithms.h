@@ -20,18 +20,24 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_FLAG_H
-#define VCL_ALGORITHMS_FLAG_H
+#ifndef VCL_MESH_ALGORITHMS_H
+#define VCL_MESH_ALGORITHMS_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/space/point.h>
 
-namespace vcl {
+namespace vcl::mesh {
 
-template<MeshConcept MeshType>
-void updateBorder(MeshType& m);
+template<typename Scalar>
+std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);
 
-}
+template<typename Scalar>
+std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon);
 
-#include "flag.cpp"
+template<typename Polygon>
+std::vector<uint> earCut(const Polygon& polygon);
 
-#endif // VCL_ALGORITHMS_FLAG_H
+} // namespace vcl::mesh
+
+#include "mesh_algorithms.cpp"
+
+#endif // VCL_MESH_ALGORITHMS_H

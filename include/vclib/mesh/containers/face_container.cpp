@@ -1016,7 +1016,7 @@ template<FaceConcept T>
 template<typename Mesh, typename Vertex>
 void FaceContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
 {
-	if constexpr (hasVertices<Mesh>() && hasFaces<Mesh>()) {
+	if constexpr (HasVertexContainer<Mesh> && hasFaces<Mesh>()) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
 		Base::importVertexReferencesFrom((const MFaceContainer&)m, base, &m.vertex(0));
@@ -1038,7 +1038,7 @@ template<FaceConcept T>
 template<typename Mesh, typename Edge>
 void FaceContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 {
-	if constexpr (hasEdges<Mesh>() && hasFaces<Mesh>()) {
+	if constexpr (HasEdgeContainer<Mesh> && hasFaces<Mesh>()) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
 		Base::importEdgeReferencesFrom((const MFaceContainer&)m, base, &m.edge(0));

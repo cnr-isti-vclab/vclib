@@ -23,12 +23,14 @@
 #ifndef VCL_ALGORITHMS_CREATE_TETRAHEDRON_H
 #define VCL_ALGORITHMS_CREATE_TETRAHEDRON_H
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 MeshType createTetrahedron();
 
-template<typename MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, typename CoordType>
 MeshType createTetrahedron(
 	const CoordType& p0,
 	const CoordType& p1,

@@ -21,7 +21,6 @@
  ****************************************************************************/
 
 #include "export_to_matrix.h"
-#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
@@ -46,11 +45,9 @@ namespace vcl {
  * @param[in] mesh: input mesh
  * @return #V*3 matrix of scalars (vertex coordinates)
  */
-template<typename Matrix, typename MeshType>
+template<typename Matrix, MeshConcept MeshType>
 Matrix vertexMatrix(const MeshType& mesh)
 {
-	vcl::requireVertices<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 
 	Matrix V(mesh.vertexNumber(), 3);
@@ -93,11 +90,9 @@ Matrix vertexMatrix(const MeshType& mesh)
  * @param[in] mesh: input mesh
  * @return #F*max(size(F))3 matrix of vertex indices
  */
-template<typename Matrix, typename MeshType>
+template<typename Matrix, FaceMeshConcept MeshType>
 Matrix faceMatrix(const MeshType& mesh)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
 	vcl::requireVertexContainerCompactness(mesh);
 
 	using VertexType = typename MeshType::VertexType;

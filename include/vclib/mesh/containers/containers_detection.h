@@ -31,14 +31,6 @@ namespace vcl::mesh {
 
 /* Triggerers */
 
-class ElementContainerTriggerer
-{
-};
-
-class EdgeContainerTriggerer
-{
-};
-
 class FaceContainerTriggerer
 {
 };
@@ -46,43 +38,6 @@ class FaceContainerTriggerer
 class HalfEdgeContainerTriggerer
 {
 };
-
-class VertexContainerTriggerer
-{
-};
-
-/* Detector to check if a class is (inherits) a Container */
-
-template<typename T>
-using isContainerT = std::is_base_of<ElementContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool isContainer()
-{
-	return isContainerT<T>::value;
-}
-
-/* Detector to check if a class has (inherits) an EdgeContainer */
-
-template<typename T>
-using hasEdgeContainerT = std::is_base_of<EdgeContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasEdges()
-{
-	return hasEdgeContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasEdgeOptionalContainer()
-{
-	if constexpr (hasEdges<T>()) {
-		return comp::HasVerticalComponent<typename T::EdgeType>;
-	}
-	else {
-		return false;
-	}
-}
 
 /* Detector to check if a class has (inherits) a FaceContainer */
 
@@ -122,28 +77,6 @@ constexpr bool hasHalfEdgeOptionalContainer()
 {
 	if constexpr (hasHalfEdges<T>()) {
 		return comp::HasVerticalComponent<typename T::HalfEdgeType>;
-	}
-	else {
-		return false;
-	}
-}
-
-/* Detector to check if a class has (inherits) a VertexContainer */
-
-template<typename T>
-using hasVertexContainerT = std::is_base_of<VertexContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasVertices()
-{
-	return hasVertexContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasVertexOptionalContainer()
-{
-	if constexpr (hasVertices<T>()) {
-		return comp::HasVerticalComponent<typename T::VertexType>;
 	}
 	else {
 		return false;

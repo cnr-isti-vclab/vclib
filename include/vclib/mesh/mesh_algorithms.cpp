@@ -20,18 +20,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_FLAG_H
-#define VCL_ALGORITHMS_FLAG_H
+#include "mesh_algorithms.h"
 
-#include <vclib/mesh/requirements.h>
+#include <mapbox/earcut.hpp>
 
-namespace vcl {
+namespace vcl::mesh {
 
-template<MeshConcept MeshType>
-void updateBorder(MeshType& m);
+template<typename Scalar>
+std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon)
+{
+	std::vector<std::vector<Point2<Scalar>>> poly;
+	poly.push_back(polygon);
 
+	return mapbox::earcut<uint>(poly);
 }
 
-#include "flag.cpp"
+template<typename Scalar>
+std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
+{
+	Point3<Scalar> n = polygonNormal(polygon);
+	Point3<Scalar> u, v;
+	getOrthoBase(n, u, v);
 
-#endif // VCL_ALGORITHMS_FLAG_H
+	std::vector<Point2<Scalar>> poly2D(polygon.size());
+	for (uint i = 0; i < polygon.size(); ++i){
+		// project i-th polygon in a 2D plane
+		poly2D[i] = Point2<Scalar>(polygon[i]*u, polygon[i]*v);
+	}
+	return mesh::earCut(poly2D);
+}
+
+template<typename Polygon>
+std::vector<uint> earCut(const Polygon& polygon)
+{
+	using VertexType = typename Polygon::VertexType;
+	using CoordType = typename VertexType::CoordType;
+
+	std::vector<CoordType> pol; pol.reserve(polygon.vertexNumber());
+	for (const VertexType* v : polygon.vertices()){
+		pol.push_back(v->coord());
+	}
+	return mesh::earCut(pol);
+}
+
+} // namespace vcl::mesh
