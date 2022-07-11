@@ -31,35 +31,9 @@ namespace vcl::mesh {
 
 /* Triggerers */
 
-class FaceContainerTriggerer
-{
-};
-
 class HalfEdgeContainerTriggerer
 {
 };
-
-/* Detector to check if a class has (inherits) a FaceContainer */
-
-template<typename T>
-using hasFaceContainerT = std::is_base_of<FaceContainerTriggerer, T>;
-
-template<typename T>
-constexpr bool hasFaces()
-{
-	return hasFaceContainerT<T>::value;
-}
-
-template<typename T>
-constexpr bool hasFaceOptionalContainer()
-{
-	if constexpr (hasFaces<T>()) {
-		return comp::HasVerticalComponent<typename T::FaceType>;
-	}
-	else {
-		return false;
-	}
-}
 
 /* Detector to check if a class has (inherits) an HalfEdgeContainer */
 

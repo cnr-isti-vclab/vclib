@@ -994,7 +994,7 @@ template<typename Mesh>
 void FaceContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 {
 	// if faces are enabled in the other Mesh
-	if constexpr (hasFaces<Mesh>()) {
+	if constexpr (HasFaceContainer<Mesh>) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
 		Base::enableOptionalComponentsOf((const MFaceContainer&)m);
@@ -1005,7 +1005,7 @@ template<FaceConcept T>
 template<typename Mesh>
 void FaceContainer<T>::importFrom(const Mesh& m)
 {
-	if constexpr (hasFaces<Mesh>()) {
+	if constexpr (HasFaceContainer<Mesh>) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
 		Base::importFrom((const MFaceContainer&)m);
@@ -1016,7 +1016,7 @@ template<FaceConcept T>
 template<typename Mesh, typename Vertex>
 void FaceContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
 {
-	if constexpr (HasVertexContainer<Mesh> && hasFaces<Mesh>()) {
+	if constexpr (HasVertexContainer<Mesh> && HasFaceContainer<Mesh>) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
 		Base::importVertexReferencesFrom((const MFaceContainer&)m, base, &m.vertex(0));
@@ -1027,7 +1027,7 @@ template<FaceConcept T>
 template<typename Mesh>
 void FaceContainer<T>::importFaceReferencesFrom(const Mesh& m, T *base)
 {
-	if constexpr (hasFaces<Mesh>()) {
+	if constexpr (HasFaceContainer<Mesh>) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
 		Base::importFaceReferencesFrom((const MFaceContainer&)m, base, &m.face(0));
@@ -1038,7 +1038,7 @@ template<FaceConcept T>
 template<typename Mesh, typename Edge>
 void FaceContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 {
-	if constexpr (HasEdgeContainer<Mesh> && hasFaces<Mesh>()) {
+	if constexpr (HasEdgeContainer<Mesh> && HasFaceContainer<Mesh>) {
 		using MFaceContainer = typename Mesh::FaceContainer::Base;
 
 		Base::importEdgeReferencesFrom((const MFaceContainer&)m, base, &m.edge(0));

@@ -35,28 +35,17 @@ namespace vcl {
 
 // Triangles
 
-template<typename MeshType>
-bool constexpr hasTriangles();
-
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isTriangleMesh(const MeshType&);
 
 // Quads
 
-template<typename MeshType>
-bool constexpr hasQuads();
-
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isQuadMesh(const MeshType&);
-
-// Polygons
-
-template<typename MeshType>
-bool constexpr hasPolygons();
 
 // Mesh Compactness
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isCompact(const MeshType&);
 
 /*********************
@@ -65,12 +54,12 @@ bool isCompact(const MeshType&);
 
 // Triangles
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requireTriangleMesh(const MeshType&);
 
 // Quads
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requireQuadMesh(const MeshType&);
 
 // Mesh Compactness

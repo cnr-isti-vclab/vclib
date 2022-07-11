@@ -88,35 +88,35 @@ public:
 	// Faces
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 	index(const typename M::FaceType& f) const;
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 	index(const typename M::FaceType* f) const;
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 	addFace();
 
 	template<typename M = Mesh, typename... V>
-	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::HasVertexContainer<M>, uint)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
 	addFace(V... args);
 
 	template<typename M = Mesh, typename Iterator>
-	VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::HasVertexContainer<M>, uint)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
 	addFace(Iterator begin, Iterator end);
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 	addFaces(uint n);
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 	reserveFaces(uint n);
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 	compactFaces();
 
 	// Edges
@@ -164,7 +164,7 @@ public:
 	addHalfEdges(uint n);
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasHalfEdges<M>() && mesh::hasFaces<M>(), uint)
+	VCL_ENABLE_IF(mesh::hasHalfEdges<M>() && mesh::HasFaceContainer<M>, uint)
 	addHalfEdgesToFace(uint n, typename M::FaceType& f);
 
 	template<typename M = Mesh>
@@ -207,11 +207,11 @@ protected:
 	// Faces
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 	updateFaceReferences(const typename M::FaceType* oldBase, const typename M::FaceType* newBase);
 
 	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
+	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 	updateFaceReferencesAfterCompact(
 		const typename M::FaceType* base,
 		const std::vector<int>&     newIndices);

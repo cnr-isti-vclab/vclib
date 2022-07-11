@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void normalizePerFaceNormals(MeshType& m);
 
 template<FaceMeshConcept MeshType>

@@ -36,10 +36,9 @@ namespace vcl {
  *
  * @param[in/out] m: the mesh on which normalize the face normals.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void normalizePerFaceNormals(MeshType& m)
 {
-	vcl::requireFaces<MeshType>();
 	vcl::requirePerFaceNormal(m);
 
 	using FaceType = typename MeshType::FaceType;
@@ -60,7 +59,7 @@ void updatePerFaceNormals(MeshType& m, bool normalize)
 	vcl::requirePerFaceNormal(m);
 
 	using FaceType = typename MeshType::FaceType;
-	if constexpr (vcl::hasTriangles<MeshType>()) {
+	if constexpr (vcl::HasTriangles<MeshType>) {
 		for (FaceType& f : m.faces()) {
 			f.normal() = triangleNormal(f);
 		}

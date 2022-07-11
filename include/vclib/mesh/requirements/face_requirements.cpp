@@ -293,15 +293,14 @@ bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
  * require functions *
  *********************/
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requireFaceContainerCompactness(const MeshType& m)
 {
-	requireFaces<MeshType>();
 	if (!isFaceContainerCompact(m))
 		throw vcl::MissingCompactnessException("Face Container of the Mesh is not compact.");
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceAdjacentFaces(const MeshType& m)
 	requires HasPerFaceAdjacentFaces<MeshType>
 {
@@ -309,7 +308,7 @@ void requirePerFaceAdjacentFaces(const MeshType& m)
 		throw vcl::MissingComponentException("Per face adjacent faces not enabled.");
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceColor(const MeshType& m)
 	requires HasPerFaceColor<MeshType>
 {
@@ -317,7 +316,7 @@ void requirePerFaceColor(const MeshType& m)
 		throw vcl::MissingComponentException("Face colors not enabled.");
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceMark(const MeshType& m)
 	requires HasPerFaceMark<MeshType>
 {
@@ -325,7 +324,7 @@ void requirePerFaceMark(const MeshType& m)
 		throw vcl::MissingComponentException("Face mark not enabled.");
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceNormal(const MeshType& m)
 	requires HasPerFaceNormal<MeshType>
 {
@@ -333,7 +332,7 @@ void requirePerFaceNormal(const MeshType& m)
 		throw vcl::MissingComponentException("Face normals not enabled.");
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFacePrincipalCurvature(const MeshType& m)
 	requires HasPerFacePrincipalCurvature<MeshType>
 {
@@ -341,7 +340,7 @@ void requirePerFacePrincipalCurvature(const MeshType& m)
 		throw vcl::MissingComponentException("Face principal curvature not enabled.");
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceScalar(const MeshType& m)
 	requires HasPerFaceScalar<MeshType>
 {
@@ -349,7 +348,7 @@ void requirePerFaceScalar(const MeshType& m)
 		throw vcl::MissingComponentException("Face scalars not enabled.");
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeColors(const MeshType& m)
 	requires HasPerFaceWedgeColors<MeshType>
 {
@@ -357,7 +356,7 @@ void requirePerFaceWedgeColors(const MeshType& m)
 		throw vcl::MissingComponentException("Face wedge colors not enabled.");
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeTexCoords(const MeshType& m)
 	requires HasPerFaceWedgeTexCoords<MeshType>
 {

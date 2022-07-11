@@ -25,6 +25,7 @@
 
 #include "element_requirements.h"
 #include "face_concepts.h"
+#include "mesh_concepts.h"
 
 namespace vcl {
 
@@ -107,54 +108,54 @@ bool enableIfPerFaceWedgeTexCoordsOptional(MeshType&);
 
 // Face Compactness
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requireFaceContainerCompactness(const MeshType& m);
 
 // Face Adjacent Faces
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceAdjacentFaces(const MeshType& m)
 	requires HasPerFaceAdjacentFaces<MeshType>;
 
 // Face Color
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceColor(const MeshType& m)
 	requires HasPerFaceColor<MeshType>;
 
 // Face Color
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceMark(const MeshType& m)
 	requires HasPerFaceMark<MeshType>;
 
 // Face Normal
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceNormal(const MeshType& m)
 	requires HasPerFaceNormal<MeshType>;
 
 // Face Principal Curvature
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFacePrincipalCurvature(const MeshType& m)
 	requires HasPerFacePrincipalCurvature<MeshType>;
 
 // Face Scalar
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceScalar(const MeshType& m)
 	requires HasPerFaceScalar<MeshType>;
 
 // Face Wedge Colors
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeColors(const MeshType& m)
 	requires HasPerFaceWedgeColors<MeshType>;
 
 // Face Wedge TexCoords
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeTexCoords(const MeshType& m)
 	requires HasPerFaceWedgeTexCoords<MeshType>;
 

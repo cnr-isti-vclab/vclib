@@ -61,7 +61,7 @@ std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m)
 	using VertexType = typename MeshType::VertexType;
 
 	std::vector<bool> referredVertices(m.vertexContainerSize(), false);
-	if constexpr (vcl::hasFaces<MeshType>()) {
+	if constexpr (vcl::HasFaces<MeshType>) {
 		using FaceType = typename MeshType::FaceType;
 
 		for (const FaceType& f : m.faces()) {

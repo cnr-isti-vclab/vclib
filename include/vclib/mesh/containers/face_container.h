@@ -41,7 +41,7 @@ namespace vcl::mesh {
  * enablers/disablers of the eventual optional components of the face.
  */
 template<FaceConcept T>
-class FaceContainer : protected ElementContainer<T>, public FaceContainerTriggerer
+class FaceContainer : protected ElementContainer<T>
 {
 	template <FaceConcept U>
 	friend class FaceContainer;

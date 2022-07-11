@@ -998,7 +998,7 @@ template<VertexConcept T>
 template<typename Mesh, typename Face>
 void VertexContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 {
-	if constexpr (hasFaces<Mesh>() && HasVertexContainer<Mesh>) {
+	if constexpr (HasFaceContainer<Mesh> && HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
 		Base::importFaceReferencesFrom((const MVertexContainer&) m, base, &m.face(0));

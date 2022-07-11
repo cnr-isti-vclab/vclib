@@ -27,7 +27,7 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType>
+template<FaceMeshConcept MeshType>
 void updateBorder(MeshType& m);
 
 }

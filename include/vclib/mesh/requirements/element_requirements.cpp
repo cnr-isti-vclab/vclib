@@ -31,16 +31,6 @@ namespace vcl {
  ********************/
 
 /**
- * @brief Checks at compile time if MeshType has the Face Element.
- * @return true if MeshType has Faces.
- */
-template<typename MeshType>
-bool constexpr hasFaces()
-{
-	return vcl::mesh::hasFaces<MeshType>();
-}
-
-/**
  * @brief Checks at compile time if MeshType has the HalfEdge Element.
  * @return true if MeshType has HalfEdges.
  */
@@ -53,12 +43,6 @@ bool constexpr hasHalfEdges()
 /*********************
  * require functions *
  *********************/
-
-template<typename MeshType>
-void constexpr requireFaces()
-{
-	static_assert(hasFaces<MeshType>(), "Mesh does not have a Face Container.");
-}
 
 template<typename MeshType>
 void constexpr requireHalfEdges()

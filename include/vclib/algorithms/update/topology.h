@@ -27,22 +27,22 @@
 
 namespace vcl {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clearPerVertexAdjacentFaces(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clearPerVertexAdjacentVertices(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexAdjacentVertices(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void clearPerFaceAdjacentFaces(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerFaceAdjacentFaces(MeshType& m);
 
 } // namespace vcl

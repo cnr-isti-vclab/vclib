@@ -29,19 +29,11 @@ namespace vcl {
  * is/has functions *
  ********************/
 
-// Mesh Faces
-
-template<typename MeshType>
-bool constexpr hasFaces();
-
 /*********************
  * require functions *
  *********************/
 
 // Mesh Faces
-
-template<typename MeshType>
-void constexpr requireFaces();
 
 } // namespace vcl
 

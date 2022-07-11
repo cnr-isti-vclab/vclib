@@ -107,7 +107,7 @@ void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo&
 	}
 
 	// faces
-	if constexpr (vcl::hasFaces<MeshType>()) {
+	if constexpr (vcl::HasFaces<MeshType>) {
 		using VertexType = typename MeshType::VertexType;
 		using FaceType = typename MeshType::FaceType;
 

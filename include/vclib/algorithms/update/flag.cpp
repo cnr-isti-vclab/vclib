@@ -39,11 +39,9 @@ namespace vcl {
  *
  * @param m: the mesh on which the border flags will be updated
  */
-template<MeshConcept MeshType>
+template<FaceMeshConcept MeshType>
 void updateBorder(MeshType& m)
 {
-	vcl::requireFaces(m);
-
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
 

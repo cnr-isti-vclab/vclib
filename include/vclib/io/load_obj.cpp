@@ -468,7 +468,7 @@ void loadObj(
 			// - color
 			// - eventual texcoords
 			// - possibility to split polygonal face into several triangles
-			if constexpr (hasFaces<MeshType>()) {
+			if constexpr (HasFaces<MeshType>) {
 				if (header == "f") {
 					internal::loadFace(
 						m,

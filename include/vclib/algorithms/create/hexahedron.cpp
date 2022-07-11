@@ -86,8 +86,6 @@ MeshType createHexahedron()
 template<FaceMeshConcept MeshType, typename CoordType>
 MeshType createHexahedron(const CoordType& min, const CoordType& max)
 {
-	vcl::requireFaces<MeshType>();
-
 	MeshType m;
 
 	// fill vertices...
@@ -102,7 +100,7 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max)
 		CoordType(max(0), max(1), max(2)));
 
 	// fill faces
-	if constexpr (hasTriangles<MeshType>()) {
+	if constexpr (HasTriangles<MeshType>) {
 		internal::fillHexahedronTriangles(m);
 	}
 	else {

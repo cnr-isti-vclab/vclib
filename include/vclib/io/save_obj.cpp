@@ -87,7 +87,7 @@ void writeElementMaterial(
 	obj::Material mat;
 	if constexpr(std::is_same<ElementType, typename MeshType::VertexType>::value)
 		mat = materialFromVertex<typename MeshType::VertexType, MeshType>(e, fi);
-	if constexpr(hasFaces<MeshType>())
+	if constexpr(HasFaces<MeshType>)
 		if constexpr(std::is_same<ElementType, typename MeshType::FaceType>::value)
 			mat = materialFromFace(e, m, fi);
 	if (!mat.isEmpty()) {
@@ -187,7 +187,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 	}
 
 	// faces
-	if constexpr (vcl::hasFaces<MeshType>()) {
+	if constexpr (vcl::HasFaces<MeshType>) {
 		using VertexType = typename MeshType::VertexType;
 		using FaceType = typename MeshType::FaceType;
 

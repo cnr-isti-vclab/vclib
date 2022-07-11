@@ -813,7 +813,7 @@ template<EdgeConcept T>
 template<typename Mesh, typename Face>
 void EdgeContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 {
-	if constexpr (hasFaces<Mesh>() && HasEdgeContainer<Mesh>) {
+	if constexpr (HasFaceContainer<Mesh> && HasEdgeContainer<Mesh>) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
 		Base::importFaceReferencesFrom((const MEdgeContainer&)m, base, &m.face(0));
