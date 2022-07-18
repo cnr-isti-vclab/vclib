@@ -69,22 +69,13 @@ public:
 	int indexOfVertex(const Vertex* v) const;
 	int indexOfEdge(const Vertex* v1, const Vertex* v2) const;
 
-	/* Member functions specific for vector */
+	/* Member functions specific for vector of references */
 
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeVertices(uint n);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushVertex(Vertex* v);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertVertex(uint i, Vertex* v);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseVertex(uint i);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearVertices();
+	void resizeVertices(uint n) requires (N < 0);
+	void pushVertex(Vertex* v) requires (N < 0);
+	void insertVertex(uint i, Vertex* v) requires (N < 0);
+	void eraseVertex(uint i) requires (N < 0);
+	void clearVertices() requires (N < 0);
 
 	/* Iterator Member functions */
 
