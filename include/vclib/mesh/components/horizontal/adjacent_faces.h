@@ -91,22 +91,13 @@ public:
 
 	constexpr bool isAdjFacesEnabled() const { return true; }
 
-	/* Member functions specific for vector */
+	/* Member functions specific for vector adjacent faces */
 
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjFaces(uint n);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushAdjFace(Face* f);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjFace(uint i, Face* f);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjFace(uint i);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearAdjFaces();
+	void resizeAdjFaces(uint n) requires (N < 0);
+	void pushAdjFace(Face* f) requires (N < 0);
+	void insertAdjFace(uint i, Face* f) requires (N < 0);
+	void eraseAdjFace(uint i) requires (N < 0);
+	void clearAdjFaces() requires (N < 0);
 
 	/* Iterator Member functions */
 

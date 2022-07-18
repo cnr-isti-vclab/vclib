@@ -168,41 +168,31 @@ int AdjacentEdges<Edge, N>::indexOfAdjEdge(const Edge* e) const
  * @param n
  */
 template<typename Edge, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-	AdjacentEdges<Edge, N>::resizeAdjEdges(uint n)
+void AdjacentEdges<Edge, N>::resizeAdjEdges(uint n) requires (N < 0)
 {
 	Base::resize(n);
 }
 
 template<typename Edge, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-	AdjacentEdges<Edge, N>::pushAdjEdge(Edge* e)
+void AdjacentEdges<Edge, N>::pushAdjEdge(Edge* e) requires (N < 0)
 {
 	Base::pushBack(e);
 }
 
 template<typename Edge, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-	AdjacentEdges<Edge, N>::insertAdjEdge(uint i, Edge* e)
+void AdjacentEdges<Edge, N>::insertAdjEdge(uint i, Edge* e) requires (N < 0)
 {
 	Base::insert(i, e);
 }
 
 template<typename Edge, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-	AdjacentEdges<Edge, N>::eraseAdjEdge(uint i)
+void AdjacentEdges<Edge, N>::eraseAdjEdge(uint i) requires (N < 0)
 {
 	Base::erase(i);
 }
 
 template<typename Edge, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-	AdjacentEdges<Edge, N>::clearAdjEdges()
+void AdjacentEdges<Edge, N>::clearAdjEdges() requires (N < 0)
 {
 	Base::clear();
 }
