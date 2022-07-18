@@ -83,17 +83,9 @@ public:
 	void disableAllPerFaceOptionalComponents();
 
 	// AdjacentEdges
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalAdjacentEdges<U>, bool)
-	isPerFaceAdjacentEdgesEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalAdjacentEdges<U>, void)
-	enablePerFaceAdjacentEdges();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalAdjacentEdges<U>, void)
-	disablePerFaceAdjacentEdges();
+	bool isPerFaceAdjacentEdgesEnabled() const requires face::HasOptionalAdjacentEdges<T>;
+	void enablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>;
+	void disablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>;
 
 	// AdjacentFaces
 	bool isPerFaceAdjacentFacesEnabled() const requires face::HasOptionalAdjacentFaces<T>;
@@ -101,95 +93,39 @@ public:
 	void disablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>;
 
 	// Color
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalColor<U>, bool)
-	isPerFaceColorEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalColor<U>, void)
-	enablePerFaceColor();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalColor<U>, void)
-	disablePerFaceColor();
+	bool isPerFaceColorEnabled() const requires face::HasOptionalColor<T>;
+	void enablePerFaceColor() requires face::HasOptionalColor<T>;
+	void disablePerFaceColor() requires face::HasOptionalColor<T>;
 
 	// Mark
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalMark<U>, bool)
-	isPerFaceMarkEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalMark<U>, void)
-	enablePerFaceMark();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalMark<U>, void)
-	disablePerFaceMark();
+	bool isPerFaceMarkEnabled() const requires face::HasOptionalMark<T>;
+	void enablePerFaceMark() requires face::HasOptionalMark<T>;
+	void disablePerFaceMark() requires face::HasOptionalMark<T>;
 
 	// Normal
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalNormal<U>, bool)
-	isPerFaceNormalEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalNormal<U>, void)
-	enablePerFaceNormal();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalNormal<U>, void)
-	disablePerFaceNormal();
+	bool isPerFaceNormalEnabled() const requires face::HasOptionalNormal<T>;
+	void enablePerFaceNormal() requires face::HasOptionalNormal<T>;
+	void disablePerFaceNormal() requires face::HasOptionalNormal<T>;
 
 	// PrincipalCurvature
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalPrincipalCurvature<U>, bool)
-	isPerFacePrincipalCurvatureEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalPrincipalCurvature<U>, void)
-	enablePerFacePrincipalCurvature();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalPrincipalCurvature<U>, void)
-	disablePerFacePrincipalCurvature();
+	bool isPerFacePrincipalCurvatureEnabled() const requires face::HasOptionalPrincipalCurvature<T>;
+	void enablePerFacePrincipalCurvature() requires face::HasOptionalPrincipalCurvature<T>;
+	void disablePerFacePrincipalCurvature() requires face::HasOptionalPrincipalCurvature<T>;
 
 	// Scalar
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalScalar<U>, bool)
-	isPerFaceScalarEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalScalar<U>, void)
-	enablePerFaceScalar();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalScalar<U>, void)
-	disablePerFaceScalar();
+	bool isPerFaceScalarEnabled() const requires face::HasOptionalScalar<T>;
+	void enablePerFaceScalar() requires face::HasOptionalScalar<T>;
+	void disablePerFaceScalar() requires face::HasOptionalScalar<T>;
 
 	// WedgeColors
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalWedgeColors<U>, bool)
-	isPerFaceWedgeColorsEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalWedgeColors<U>, void)
-	enablePerFaceWedgeColors();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalWedgeColors<U>, void)
-	disablePerFaceWedgeColors();
+	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
+	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
+	void disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
 
 	// WedgeTexCoords
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalWedgeTexCoords<U>, bool)
-	isPerFaceWedgeTexCoordsEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalWedgeTexCoords<U>, void)
-	enablePerFaceWedgeTexCoords();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalWedgeTexCoords<U>, void)
-	disablePerFaceWedgeTexCoords();
+	bool isPerFaceWedgeTexCoordsEnabled() const requires face::HasOptionalWedgeTexCoords<T>;
+	void enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
+	void disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
 
 	// Custom Components
 	template<typename U = T>
