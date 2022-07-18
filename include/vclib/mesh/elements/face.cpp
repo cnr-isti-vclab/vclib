@@ -116,39 +116,186 @@ void Face<Args...>::importFrom(const Element& f)
  *
  * @param n: the new number of vertices.
  */
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::resizeVertices(uint n) requires PolygonFaceConcept<Face<Args...>>
-//{
+template<typename... Args>
+void Face<Args...>::resizeVertices(uint n) requires PolygonFaceConcept<Face<Args...>>
+{
+	using F = Face<Args...>;
 
-//}
+	VRefs::resizeVertices(n);
 
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face<Args...>>
-//{
+	if constexpr (face::HasAdjacentEdges<F>) {
+		using T = typename F::AdjacentEdges;
 
-//}
+		if (T::isAdjEdgesEnabled())
+			T::resizeAdjEdges(n);
+	}
 
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face<Args...>>
-//{
+	if constexpr (face::HasAdjacentFaces<F>) {
+		using T = typename F::AdjacentFaces;
 
-//}
+		if (T::isAdjFacesEnabled())
+			T::resizeAdjFaces(n);
+	}
 
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::eraseVertex(uint i) requires PolygonFaceConcept<Face<Args...>>
-//{
+	if constexpr (face::HasWedgeColors<F>) {
+		using T = typename F::WedgeColors;
 
-//}
+		if (T::isWedgeColorsEnabled())
+			T::resizeWedgeColors(n);
+	}
 
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::clearVertices() requires PolygonFaceConcept<Face<Args...>>
-//{
+	if constexpr (face::HasWedgeTexCoords<F>) {
+		using T = typename F::WedgeTexCoords;
 
-//}
+		if (T::isWedgeTexCoordsEnabled())
+			T::resizeWedgeTexCoords(n);
+	}
+}
+
+template<typename... Args>
+void Face<Args...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+{
+	using F = Face<Args...>;
+
+	VRefs::pushVertex(v);
+
+	if constexpr (face::HasAdjacentEdges<F>) {
+		using T = typename F::AdjacentEdges;
+
+		if (T::isAdjEdgesEnabled())
+			T::pushAdjEdge(nullptr);
+	}
+
+	if constexpr (face::HasAdjacentFaces<F>) {
+		using T = typename F::AdjacentFaces;
+
+		if (T::isAdjFacesEnabled())
+			T::pushAdjFace(nullptr);
+	}
+
+	if constexpr (face::HasWedgeColors<F>) {
+		using T = typename F::WedgeColors;
+
+		if (T::isWedgeColorsEnabled())
+			T::pushWedgeTexColors(Color());
+	}
+
+	if constexpr (face::HasWedgeTexCoords<F>) {
+		using S = typename F::WedgeTexCoordScalarType;
+		using T = typename F::WedgeTexCoords;
+
+		if (T::isWedgeTexCoordsEnabled())
+			T::pushWedgeTexCoord(TexCoord<S>());
+	}
+}
+
+template<typename... Args>
+void Face<Args...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+{
+	using F = Face<Args...>;
+
+	VRefs::insertVertex(i, v);
+
+	if constexpr (face::HasAdjacentEdges<F>) {
+		using T = typename F::AdjacentEdges;
+
+		if (T::isAdjEdgesEnabled())
+			T::insertAdjEdge(i, nullptr);
+	}
+
+	if constexpr (face::HasAdjacentFaces<F>) {
+		using T = typename F::AdjacentFaces;
+
+		if (T::isAdjFacesEnabled())
+			T::insertAdjFace(i, nullptr);
+	}
+
+	if constexpr (face::HasWedgeColors<F>) {
+		using T = typename F::WedgeColors;
+
+		if (T::isWedgeColorsEnabled())
+			T::insertWedgeColor(i, Color());
+	}
+
+	if constexpr (face::HasWedgeTexCoords<F>) {
+		using S = typename F::WedgeTexCoordScalarType;
+		using T = typename F::WedgeTexCoords;
+
+		if (T::isWedgeTexCoordsEnabled())
+			T::insertWedgeTexCoord(i, TexCoord<S>());
+	}
+}
+
+template<typename... Args>
+void Face<Args...>::eraseVertex(uint i) requires PolygonFaceConcept<Face<Args...>>
+{
+	using F = Face<Args...>;
+
+	VRefs::eraseVertex(i);
+
+	if constexpr (face::HasAdjacentEdges<F>) {
+		using T = typename F::AdjacentEdges;
+
+		if (T::isAdjEdgesEnabled())
+			T::eraseAdjEdge(i);
+	}
+
+	if constexpr (face::HasAdjacentFaces<F>) {
+		using T = typename F::AdjacentFaces;
+
+		if (T::isAdjFacesEnabled())
+			T::eraseAdjFace(i);
+	}
+
+	if constexpr (face::HasWedgeColors<F>) {
+		using T = typename F::WedgeColors;
+
+		if (T::isWedgeColorsEnabled())
+			T::eraseWedgeColor(i);
+	}
+
+	if constexpr (face::HasWedgeTexCoords<F>) {
+		using T = typename F::WedgeTexCoords;
+
+		if (T::isWedgeTexCoordsEnabled())
+			T::eraseWedgeTexCoord(i);
+	}
+}
+
+template<typename... Args>
+void Face<Args...>::clearVertices() requires PolygonFaceConcept<Face<Args...>>
+{
+	using F = Face<Args...>;
+
+	VRefs::clearVertices();
+
+	if constexpr (face::HasAdjacentEdges<F>) {
+		using T = typename F::AdjacentEdges;
+
+		if (T::isAdjEdgesEnabled())
+			T::clearAdjEdges();
+	}
+
+	if constexpr (face::HasAdjacentFaces<F>) {
+		using T = typename F::AdjacentFaces;
+
+		if (T::isAdjFacesEnabled())
+			T::clearAdjFaces();
+	}
+
+	if constexpr (face::HasWedgeColors<F>) {
+		using T = typename F::WedgeColors;
+
+		if (T::isWedgeColorsEnabled())
+			T::clearWedgeColor();
+	}
+
+	if constexpr (face::HasWedgeTexCoords<F>) {
+		using T = typename F::WedgeTexCoords;
+
+		if (T::isWedgeTexCoordsEnabled())
+			T::clearWedgeTexCoord();
+	}
+}
 
 } // namespace vcl
