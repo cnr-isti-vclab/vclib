@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_VECTOR_H
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_VECTOR_H
 
-#include "../../detection/wedge_colors_detection.h"
+#include "../../concepts/wedge_colors.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class WedgeColorsVector
 {
 public:
@@ -37,11 +37,11 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isWedgeColorsEnabled() const { return false; };
 };
 
-template<typename T>
-class WedgeColorsVector<T, std::enable_if_t<comp::hasOptionalWedgeColors<T>()>> :
-		private GenericComponentVector<typename T::WedgeColorsContainer>
+template<comp::HasOptionalWedgeColors T>
+class WedgeColorsVector<T> : private GenericComponentVector<typename T::WedgeColorsContainer>
 {
 	using WedgeColorsContainer = typename T::WedgeColorsContainer;
 	using Base                 = GenericComponentVector<WedgeColorsContainer>;
@@ -51,9 +51,11 @@ public:
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                        isWedgeColorsEnabled() const { return Base::isEnabled(); };
-	void                        enableWedgeColors(uint size) { Base::enable(size); }
-	void                        disableWedgeColors() { Base::disable(); }
+
+	bool isWedgeColorsEnabled() const { return Base::isEnabled(); };
+	void enableWedgeColors(uint size) { Base::enable(size); }
+	void disableWedgeColors() { Base::disable(); }
+
 	WedgeColorsContainer&       wedgeColors(uint i) { return Base::at(i); }
 	const WedgeColorsContainer& wedgeColors(uint i) const { return Base::at(i); }
 };

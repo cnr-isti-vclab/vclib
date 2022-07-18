@@ -47,7 +47,7 @@ void facesFromTriStrip(MeshType& m, const std::vector<int>& tristrip)
 			uint      fid = m.addFace();
 			FaceType& f   = m.face(fid);
 			if constexpr (FaceType::VERTEX_NUMBER < 0) {
-				if constexpr (mesh::hasHalfEdges<MeshType>()) {
+				if constexpr (HasHalfEdges<MeshType>) {
 					m.addHalfEdgesToFace(3, f);
 				}
 				else {

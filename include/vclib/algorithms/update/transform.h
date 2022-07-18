@@ -24,20 +24,20 @@
 #define VCL_ALGORITHMS_TRANSFORM_H
 
 #include <vclib/math/matrix.h>
-#include <vclib/space/point.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template<typename MeshType, typename ScalarM>
+template<MeshConcept MeshType, typename ScalarM>
 void applyTransformMatrix(
 	MeshType&                mesh,
 	const Matrix44<ScalarM>& matrix,
 	bool                     updateNormals = true);
 
-template<typename MeshType, typename PointType>
+template<MeshConcept MeshType, typename PointType>
 void translate(MeshType& mesh, const PointType& t);
 
-template<typename MeshType, typename PointType>
+template<MeshConcept MeshType, typename PointType>
 void scale(MeshType& mesh, const PointType& s);
 
 } // namespace vcl

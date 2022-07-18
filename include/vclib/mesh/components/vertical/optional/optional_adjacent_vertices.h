@@ -28,9 +28,9 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../vertical_info.h"
+#include "../vertical_component.h"
 
-#include "../../detection/adjacent_vertices_detection.h"
+#include "../../concepts/adjacent_vertices.h"
 
 namespace vcl::mesh {
 template<typename, typename>
@@ -40,18 +40,19 @@ class OptionalVertexReferencesVector;
 namespace vcl::comp {
 
 template<typename Vertex, typename T>
-class OptionalAdjacentVertices :
-		public OptionalAdjacentVerticesTriggerer,
-		public virtual VerticalInfo<T>
+class OptionalAdjacentVertices : public virtual VerticalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalVertexReferencesVector;
 
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:
+	// possibility to access to the AdjacentVertices class, whether is optional or not.
+	using AdjacentVertices = OptionalAdjacentVertices;
+
 	// the AdjVertsContainer type will be array or vector, depending on N value
 	using AdjVertsContainer = std::vector<Vertex*>;
 
@@ -106,6 +107,9 @@ public:
 	ConstAdjacentVertexIterator      adjVertexEnd() const;
 	AdjacentVertexRangeIterator      adjVertices();
 	ConstAdjacentVertexRangeIterator adjVertices() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalAdjVertices() const {};
 
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);

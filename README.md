@@ -1,6 +1,6 @@
 # Visual Computing Library
 
-The Visual Computing Library is a C++17 modern, header only, multiplatform Mesh and Geometry Processing templated library.
+The Visual Computing Library is a C++20 modern, header only, multiplatform Mesh and Geometry Processing templated library.
 
 ## Install
 

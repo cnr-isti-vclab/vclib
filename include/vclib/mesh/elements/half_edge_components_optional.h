@@ -34,21 +34,9 @@ namespace vcl::hedge {
 template<typename EdgeType>
 using OptionalColor = comp::OptionalColor<EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasOptionalColor()
-{
-	return comp::hasOptionalColor<EdgeType>();
-}
-
 /* Port OptionalMark class into hedge namespace */
 template<typename EdgeType>
 using OptionalMark = comp::OptionalMark<EdgeType>;
-
-template<typename EdgeType>
-bool constexpr hasOptionalMark()
-{
-	return comp::hasOptionalMark<EdgeType>();
-}
 
 /* Port OptionalScalar class into hedge namespace */
 template<typename ScalarType, typename EdgeType>
@@ -60,31 +48,13 @@ using OptionalScalarf = comp::OptionalScalar<float, EdgeType>;
 template<typename EdgeType>
 using OptionalScalard = comp::OptionalScalar<double, EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasOptionalScalar()
-{
-	return comp::hasOptionalScalar<EdgeType>();
-}
-
 /* Port CustomComponents class into hedge namespace */
 template<typename EdgeType>
 using CustomComponents = comp::CustomComponents<EdgeType>;
 
+/* Port VerticalComponent class into hedge namespace */
 template<typename EdgeType>
-bool constexpr hasCustomComponents()
-{
-	return comp::hasCustomComponents<EdgeType>();
-}
-
-/* Port VerticalInfo class into hedge namespace */
-template<typename EdgeType>
-using VerticalInfo = comp::VerticalInfo<EdgeType>;
-
-template<typename EdgeType>
-bool constexpr hasVerticalInfo()
-{
-	return comp::hasVerticalInfo<EdgeType>();
-}
+using VerticalComponent = comp::VerticalComponent<EdgeType>;
 
 } // namespace vcl::hedge
 

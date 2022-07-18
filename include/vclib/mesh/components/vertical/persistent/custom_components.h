@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_PERSISTENT_CUSTOM_COMPONENTS_H
 #define VCL_MESH_COMPONENTS_PERSISTENT_CUSTOM_COMPONENTS_H
 
-#include "../vertical_info.h"
+#include "../vertical_component.h"
 
 #include <any>
 #include <string>
 #include <vector>
 
-#include "../../detection/custom_components_detection.h"
+#include "../../concepts/custom_components.h"
 
 namespace vcl::comp {
 
@@ -39,10 +39,10 @@ namespace vcl::comp {
  *
  */
 template<typename T>
-class CustomComponents : public virtual VerticalInfo<T>
+class CustomComponents : public virtual VerticalComponent<T>
 {
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:

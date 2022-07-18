@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_TEX_COORD_VECTOR_H
 #define VCL_MESH_COMPONENTS_TEX_COORD_VECTOR_H
 
-#include "../../detection/tex_coord_detection.h"
+#include "../../concepts/tex_coord.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class TexCoordVector
 {
 public:
@@ -37,11 +37,11 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isTexCoordEnabled() const { return false; };
 };
 
-template<typename T>
-class TexCoordVector<T, std::enable_if_t<comp::hasOptionalTexCoord<T>()>> :
-		private GenericComponentVector<typename T::TexCoordType>
+template<comp::HasTexCoord T>
+class TexCoordVector<T> : private GenericComponentVector<typename T::TexCoordType>
 {
 	using TexCoordType = typename T::TexCoordType;
 	using Base         = GenericComponentVector<TexCoordType>;
@@ -51,9 +51,11 @@ public:
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                isTexCoordEnabled() const { return Base::isEnabled(); };
-	void                enableTexCoord(uint size) { Base::enable(size); }
-	void                disableTexCoord() { Base::disable(); }
+
+	bool isTexCoordEnabled() const { return Base::isEnabled(); };
+	void enableTexCoord(uint size) { Base::enable(size); }
+	void disableTexCoord() { Base::disable(); }
+
 	TexCoordType&       texCoord(uint i) { return Base::at(i); }
 	const TexCoordType& texCoord(uint i) const { return Base::at(i); }
 };

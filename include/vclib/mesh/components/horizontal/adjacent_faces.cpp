@@ -273,7 +273,7 @@ void AdjacentFaces<Face, N>::importFaceReferencesFrom(
 	Face* base,
 	const ElFType* ebase)
 {
-	if constexpr (hasAdjacentFaces<Element>()) {
+	if constexpr (HasAdjacentFaces<Element>) {
 		if (isAdjacentFacesEnabledOn(e)){
 			if constexpr(N > 0) {
 				// same static size

@@ -31,7 +31,7 @@
 #endif
 
 #include <vclib/exception/mesh_exception.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh/mesh_algorithms.h>
 #include <vclib/misc/comparators.h>
 
 // structs to make working the mapbox earcut algorithm on vcl::Point2
@@ -320,10 +320,7 @@ ScalarType polygonArea(const Polygon& p)
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon)
 {
-	std::vector<std::vector<Point2<Scalar>>> poly;
-	poly.push_back(polygon);
-
-	return mapbox::earcut<uint>(poly);
+	return mesh::earCut(polygon);
 }
 
 /**
@@ -342,16 +339,7 @@ std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon)
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
 {
-	Point3<Scalar> n = polygonNormal(polygon);
-	Point3<Scalar> u, v;
-	getOrthoBase(n, u, v);
-
-	std::vector<Point2<Scalar>> poly2D(polygon.size());
-	for (uint i = 0; i < polygon.size(); ++i){
-		// project i-th polygon in a 2D plane
-		poly2D[i] = Point2<Scalar>(polygon[i]*u, polygon[i]*v);
-	}
-	return earCut(poly2D);
+	return mesh::earCut(polygon);
 }
 
 /**
@@ -370,14 +358,7 @@ std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
 template <typename Polygon>
 std::vector<uint> earCut(const Polygon& polygon)
 {
-	using VertexType = typename Polygon::VertexType;
-	using CoordType = typename VertexType::CoordType;
-
-	std::vector<CoordType> pol; pol.reserve(polygon.vertexNumber());
-	for (const VertexType* v : polygon.vertices()){
-		pol.push_back(v->coord());
-	}
-	return earCut(pol);
+	return mesh::earCut(polygon);
 }
 
 /**
@@ -398,12 +379,9 @@ std::vector<uint> earCut(const Polygon& polygon)
  * @param[in/out] f: the first face of the triangulation, that will be filled.
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  */
-template <typename MeshType, typename FaceType>
+template <FaceMeshConcept MeshType, typename FaceType>
 void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
 
@@ -427,7 +405,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 		unorderedEdges.insert(std::make_pair(i, (i+1) % (uint)polygon.size()));
 
 	if constexpr (FaceType::VERTEX_NUMBER < 0) {
-		if constexpr( mesh::hasHalfEdges<MeshType>()) {
+		if constexpr(HasHalfEdges<MeshType>) {
 			m.addHalfEdgesToFace(3, f);
 		}
 		else {
@@ -442,7 +420,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 		++i;
 	}
 
-	if constexpr(face::hasFaceBitFlags<FaceType>()) {
+	if constexpr(face::HasFaceBitFlags<FaceType>) {
 		if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) == unorderedEdges.end())
 			f.setEdgeFaux(0);
 		if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) == unorderedEdges.end())
@@ -456,7 +434,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 		uint ff              = m.addFace();
 
 		if constexpr (FaceType::VERTEX_NUMBER < 0) {
-			if constexpr( mesh::hasHalfEdges<MeshType>()) {
+			if constexpr( HasHalfEdges<MeshType>) {
 				m.addHalfEdgesToFace(3, f);
 			}
 			else {
@@ -470,7 +448,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 			++j;
 		}
 
-		if constexpr(face::hasFaceBitFlags<FaceType>()) {
+		if constexpr(face::HasFaceBitFlags<FaceType>) {
 			if (unorderedEdges.find(std::make_pair(tris[i], tris[i+1])) == unorderedEdges.end())
 				m.face(ff).setEdgeFaux(0);
 			if (unorderedEdges.find(std::make_pair(tris[i+1], tris[i+2])) == unorderedEdges.end())
@@ -491,7 +469,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  * @return The index of the first triangle added to the mesh.
  */
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon)
 {
 	uint fid = m.addFace();

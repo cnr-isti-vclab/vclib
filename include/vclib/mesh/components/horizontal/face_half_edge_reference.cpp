@@ -636,7 +636,7 @@ void FaceHalfEdgeReference<HalfEdge>::importHalfEdgeReferencesFrom(
 	HalfEdge*         base,
 	const OtherHEdge* ebase)
 {
-	if constexpr (hasFaceHalfEdgeReference<OtherFace>()) {
+	if constexpr (HasFaceHalfEdgeReference<OtherFace>) {
 		if (base != nullptr && ebase != nullptr) {
 			if (e.outerHalfEdge() != nullptr) {
 				ohe = (HalfEdge*)base + (e.outerHalfEdge() - ebase);

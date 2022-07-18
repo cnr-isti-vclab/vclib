@@ -23,9 +23,11 @@
 #ifndef VCL_ALGORITHMS_FLAG_H
 #define VCL_ALGORITHMS_FLAG_H
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updateBorder(MeshType& m);
 
 }

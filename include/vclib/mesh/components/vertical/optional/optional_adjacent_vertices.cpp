@@ -247,7 +247,7 @@ void OptionalAdjacentVertices<Vertex, T>::importVertexReferencesFrom(
 	Vertex* base,
 	const ElVType* ebase)
 {
-	if constexpr (hasAdjacentVertices<Element>()) {
+	if constexpr (HasAdjacentVertices<Element>) {
 		if (isAdjVerticesEnabled() && isAdjacentVerticesEnabledOn(e)){
 			// from static/dynamic to dynamic size: need to resize first, then import
 			resizeAdjVertices(e.adjVerticesNumber());

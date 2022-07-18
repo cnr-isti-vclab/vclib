@@ -23,15 +23,17 @@
 #ifndef VCL_ALGORITHMS_SELECTION_H
 #define VCL_ALGORITHMS_SELECTION_H
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clearVertexSelection(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void clearFaceSelection(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst);
 
 } // namespace vcl

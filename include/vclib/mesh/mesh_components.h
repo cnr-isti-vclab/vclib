@@ -37,29 +37,11 @@ using BoundingBox = comp::BoundingBox<P>;
 using BoundingBox3f = comp::BoundingBox3f;
 using BoundingBox3d = comp::BoundingBox3d;
 
-template<typename T>
-bool constexpr hasBoundingBox()
-{
-	return comp::hasBoundingBox<T>();
-}
-
 /** Port Mark class into mesh namespace **/
 using Mark = comp::Mark;
 
-template<typename T>
-bool constexpr hasMark()
-{
-	return comp::hasMark<T>();
-}
-
 /** Port TexturePaths class into mesh namespace **/
 using TexturePaths = comp::TexturePaths;
-
-template<typename T>
-bool constexpr hasTexturePaths()
-{
-	return comp::hasTexturePaths<T>();
-}
 
 /** Port TransformMatrix class into mesh namespace **/
 template <typename Scalar>
@@ -67,12 +49,6 @@ using TransformMatrix = comp::TransformMatrix<Scalar>;
 
 using TransformMatrixf = comp::TransformMatrix<float>;
 using TransformMatrixd = comp::TransformMatrix<double>;
-
-template<typename T>
-bool constexpr hasTransformMatrix()
-{
-	return comp::hasTransformMatrix<T>();
-}
 
 } // namespace vcl::mesh
 

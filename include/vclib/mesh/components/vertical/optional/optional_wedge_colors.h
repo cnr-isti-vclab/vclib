@@ -28,11 +28,11 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../vertical_info.h"
+#include "../vertical_component.h"
 
 #include <vclib/space/color.h>
 
-#include "../../detection/wedge_colors_detection.h"
+#include "../../concepts/wedge_colors.h"
 
 namespace vcl::mesh {
 template<typename, typename>
@@ -42,15 +42,13 @@ class OptionalWedgeColorsVector;
 namespace vcl::comp {
 
 template<int N, typename T>
-class OptionalWedgeColors :
-		public OptionalWedgeColorsTriggerer,
-		public virtual VerticalInfo<T>
+class OptionalWedgeColors : public virtual VerticalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalWedgeColorsVector;
 
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*) this); }
 
 	// if we use the vector, the size of the array will be 0
@@ -58,7 +56,10 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
-	// the AdjFacesContainer type will be array or vector, depending on N value
+	// possibility to access to the WedgeColors class, whether is optional or not.
+	using WedgeColors = OptionalWedgeColors;
+
+	// the WedgeColorsContainer type will be array or vector, depending on N value
 	using WedgeColorsContainer = typename std::conditional<
 		(N >= 0),
 		typename std::array<vcl::Color, ARRAY_SIZE>,
@@ -108,6 +109,9 @@ public:
 	ConstWedgeColorsIterator      wedgeColorEnd() const;
 	WedgeColorsRangeIterator      wedgeColors();
 	ConstWedgeColorsRangeIterator wedgeColors() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalWedgeColors() const {};
 
 protected:
 	/* Member functions specific for vector */

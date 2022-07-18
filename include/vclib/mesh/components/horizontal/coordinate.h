@@ -23,14 +23,14 @@
 #ifndef VCL_MESH_COMPONENTS_COORDINATE_H
 #define VCL_MESH_COMPONENTS_COORDINATE_H
 
-#include "../detection/coordinate_detection.h"
+#include "../concepts/coordinate.h"
 
 #include <vclib/space/point.h>
 
 namespace vcl::comp {
 
 template<typename P>
-class CoordT : public CoordinateTriggerer
+class CoordT
 {
 public:
 	using CoordType = P;

@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_VECTOR_H
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_VECTOR_H
 
-#include "../../detection/adjacent_faces_detection.h"
+#include "../../concepts/adjacent_faces.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class AdjacentFacesVector
 {
 public:
@@ -37,11 +37,11 @@ public:
 	void resize(uint) {}
 	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isAdjacentFacesEnabled() const { return false; };
 };
 
-template<typename T>
-class AdjacentFacesVector<T, std::enable_if_t<comp::hasOptionalAdjacentFaces<T>()>> :
-		private GenericComponentVector<typename T::AdjFacesContainer>
+template<comp::HasOptionalAdjacentFaces T>
+class AdjacentFacesVector<T> : private GenericComponentVector<typename T::AdjFacesContainer>
 {
 private:
 	using AdjFacesContainer = typename T::AdjFacesContainer;

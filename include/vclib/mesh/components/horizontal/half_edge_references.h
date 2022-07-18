@@ -25,12 +25,12 @@
 
 #include <vector>
 
-#include "../detection/half_edge_references_detection.h"
+#include "../concepts/half_edge_references.h"
 
 namespace vcl::comp {
 
 template<typename HalfEdge, typename Vertex, typename Face>
-class HalfEdgeReferences : public HalfEdgeReferencesTriggerer
+class HalfEdgeReferences
 {
 public:
 	using HalfEdgeType = HalfEdge;
@@ -58,7 +58,7 @@ public:
 	Vertex*&      vertex(uint i);
 
 	const Face* face() const;
-	Face*&       face();
+	Face*&      face();
 
 protected:
 	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);

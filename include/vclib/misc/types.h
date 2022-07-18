@@ -24,6 +24,7 @@
 #define VCL_TYPES_H
 
 #include <assert.h>
+#include <concepts>
 #include <type_traits>
 
 /**
@@ -97,6 +98,39 @@ constexpr T* asConst(T* value) noexcept
 }
 template<typename T>
 void asConst(T const&&) = delete;
+
+/*
+ * Utility class that allows to check if given class 'Derived' is derived from a
+ * specialization of a templated class.
+ *
+ * Given a class X and a templated class C<template T>, it can be used in the following way:
+ *
+ * using myCheck = vcl::IsDerivedFromTemplateSpecialization<X, C>::type;
+ *
+ * and will return true if X derives from any specialization of C.
+ *
+ * https://stackoverflow.com/a/25846080/5851101
+ * https://stackoverflow.com/questions/25845536/trait-to-check-if-some-specialization-of-template-class-is-base-class-of-specifi#comment40451928_25846080
+ * http://coliru.stacked-crooked.com/a/9feadc62e7594eb2
+ */
+
+namespace internal {
+
+template< template< typename ...formal > class base >
+struct IsDerivedFromImplementation
+{
+	template< typename ...actual >
+	std::true_type
+	operator () (base< actual... > *) const;
+
+	std::false_type
+	operator () (void *) const;
+};
+
+} // namespace vcl::internal
+
+template< typename derived, template< typename ... > class base >
+using IsDerivedFromTemplateSpecialization = typename std::invoke_result< internal::IsDerivedFromImplementation< base >, typename std::remove_cv< derived >::type * >::type;
 
 } // namespace vcl
 

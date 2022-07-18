@@ -23,13 +23,12 @@
 #ifndef VCL_MESH_ELEMENTS_HALF_EDGE_H
 #define VCL_MESH_ELEMENTS_HALF_EDGE_H
 
-#include "half_edge_components.h"
-#include "half_edge_components_optional.h"
+#include "half_edge_concept.h"
 
 namespace vcl::mesh {
 
 // EdgeContainer class declaration
-template<typename>
+template<HalfEdgeConcept>
 class HalfEdgeContainer;
 
 template<typename>
@@ -39,15 +38,10 @@ class ElementContainer;
 
 namespace vcl {
 
-// Dummy class used to detect a Edge regardless of its template arguments
-class HalfEdgeTriggerer
-{
-};
-
 template<typename... Args>
-class HalfEdge : public HalfEdgeTriggerer, public Args...
+class HalfEdge : public Args...
 {
-	template<typename>
+	template<HalfEdgeConcept>
 	friend class mesh::HalfEdgeContainer;
 
 	template<typename>

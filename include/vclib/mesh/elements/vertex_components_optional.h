@@ -40,51 +40,21 @@ namespace vcl::vert {
 template<typename EdgeType, typename VertexType>
 using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalAdjacentEdges()
-{
-	return comp::hasOptionalAdjacentEdges<VertexType>();
-}
-
 /* Port OptionalAdjacentFaces class into vert namespace */
 template<typename FaceType, typename VertexType>
 using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, VertexType>;
-
-template<typename VertexType>
-bool constexpr hasOptionalAdjacentFaces()
-{
-	return comp::hasOptionalAdjacentFaces<VertexType>();
-}
 
 /* Port OptionalAdjacentVertices class into vert namespace */
 template<typename VertexType>
 using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalAdjacentVertices()
-{
-	return comp::hasOptionalAdjacentVertices<VertexType>();
-}
-
 /* Port OptionalColor class into vert namespace */
 template<typename VertexType>
 using OptionalColor = comp::OptionalColor<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalColor()
-{
-	return comp::hasOptionalColor<VertexType>();
-}
-
 /* Port OptionalMark class into vert namespace */
 template<typename VertexType>
 using OptionalMark = comp::OptionalMark<VertexType>;
-
-template<typename VertexType>
-bool constexpr hasOptionalMark()
-{
-	return comp::hasOptionalMark<VertexType>();
-}
 
 /* Port OptionalNormal class into vert namespace */
 template<typename ScalarType, int N, typename VertexType>
@@ -99,12 +69,6 @@ using OptionalNormal3f = comp::OptionalNormal3f<VertexType>;
 template<typename VertexType>
 using OptionalNormal3d = comp::OptionalNormal3d<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalNormal()
-{
-	return comp::hasOptionalNormal<VertexType>();
-}
-
 /* Port OptionalPrincipalCurvature class into vert namespace */
 template<typename ScalarType, typename VertexType>
 using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<ScalarType, VertexType>;
@@ -113,12 +77,6 @@ template<typename VertexType>
 using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<VertexType>;
 template<typename VertexType>
 using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<VertexType>;
-
-template<typename VertexType>
-bool constexpr hasOptionalPrincipalCurvature()
-{
-	return comp::hasOptionalPrincipalCurvature<VertexType>();
-}
 
 /* Port OptionalScalar class into vert namespace */
 template<typename ScalarType, typename VertexType>
@@ -130,12 +88,6 @@ using OptionalScalarf = comp::OptionalScalar<float, VertexType>;
 template<typename VertexType>
 using OptionalScalard = comp::OptionalScalar<double, VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalScalar()
-{
-	return comp::hasOptionalScalar<VertexType>();
-}
-
 /* Port OptionalTexCoord class into vert namespace */
 template<typename ScalarType, typename VertexType>
 using OptionalTexCoord = comp::OptionalTexCoord<ScalarType, VertexType>;
@@ -146,31 +98,13 @@ using OptionalTexCoordf = comp::OptionalTexCoord<float, VertexType>;
 template<typename VertexType>
 using OptionalTexCoordd = comp::OptionalTexCoord<double, VertexType>;
 
-template<typename VertexType>
-bool constexpr hasOptionalTexCoord()
-{
-	return comp::hasOptionalTexCoord<VertexType>();
-}
-
 /* Port CustomComponents class into vert namespace */
 template<typename VertexType>
 using CustomComponents = comp::CustomComponents<VertexType>;
 
+/* Port VerticalComponent class into vert namespace */
 template<typename VertexType>
-bool constexpr hasCustomComponents()
-{
-	return comp::hasCustomComponents<VertexType>();
-}
-
-/* Port VerticalInfo class into vert namespace */
-template<typename VertexType>
-using VerticalInfo = comp::VerticalInfo<VertexType>;
-
-template<typename VertexType>
-bool constexpr hasVerticalInfo()
-{
-	return comp::hasVerticalInfo<VertexType>();
-}
+using VerticalComponent = comp::VerticalComponent<VertexType>;
 
 } // namespace vcl::vert
 

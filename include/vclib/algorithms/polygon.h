@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_POLYGON_H
 #define VCL_ALGORITHMS_POLYGON_H
 
-#include <vclib/misc/types.h>
+#include <vclib/mesh/requirements.h>
 #include <vclib/space/point.h>
 
 namespace vcl {
@@ -85,10 +85,10 @@ std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon);
 template<typename Polygon>
 std::vector<uint> earCut(const Polygon& polygon);
 
-template<typename MeshType, typename FaceType>
+template<FaceMeshConcept MeshType, typename FaceType>
 void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon);
 
 } // namespace vcl

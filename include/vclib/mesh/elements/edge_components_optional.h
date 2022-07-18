@@ -36,41 +36,17 @@ namespace vcl::edge {
 template<typename EdgeType>
 using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, EdgeType>;
 
-template<typename T>
-bool constexpr hasOptionalAdjacentEdges()
-{
-	return comp::hasOptionalAdjacentEdges<T>();
-}
-
 /* Port OptionalAdjacentFaces class into edge namespace */
 template<typename FaceType, typename EdgeType>
 using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, EdgeType>;
-
-template<typename T>
-bool constexpr hasOptionalAdjacentFaces()
-{
-	return comp::hasOptionalAdjacentFaces<T>();
-}
 
 /* Port OptionalColor class into edge namespace */
 template<typename EdgeType>
 using OptionalColor = comp::OptionalColor<EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasOptionalColor()
-{
-	return comp::hasOptionalColor<EdgeType>();
-}
-
 /* Port OptionalMark class into edge namespace */
 template<typename EdgeType>
 using OptionalMark = comp::OptionalMark<EdgeType>;
-
-template<typename EdgeType>
-bool constexpr hasOptionalMark()
-{
-	return comp::hasOptionalMark<EdgeType>();
-}
 
 /* Port OptionalScalar class into edge namespace */
 template<typename ScalarType, typename EdgeType>
@@ -82,31 +58,13 @@ using OptionalScalarf = comp::OptionalScalar<float, EdgeType>;
 template<typename EdgeType>
 using OptionalScalard = comp::OptionalScalar<double, EdgeType>;
 
-template<typename EdgeType>
-bool constexpr hasOptionalScalar()
-{
-	return comp::hasOptionalScalar<EdgeType>();
-}
-
 /* Port CustomComponents class into edge namespace */
 template<typename EdgeType>
 using CustomComponents = comp::CustomComponents<EdgeType>;
 
+/* Port VerticalComponent class into edge namespace */
 template<typename EdgeType>
-bool constexpr hasCustomComponents()
-{
-	return comp::hasCustomComponents<EdgeType>();
-}
-
-/* Port VerticalInfo class into edge namespace */
-template<typename EdgeType>
-using VerticalInfo = comp::VerticalInfo<EdgeType>;
-
-template<typename EdgeType>
-bool constexpr hasVerticalInfo()
-{
-	return comp::hasVerticalInfo<EdgeType>();
-}
+using VerticalComponent = comp::VerticalComponent<EdgeType>;
 
 } // namespace vcl::edge
 

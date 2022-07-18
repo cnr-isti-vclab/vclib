@@ -28,7 +28,7 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../detection/texture_paths_detection.h"
+#include "../concepts/texture_paths.h"
 
 namespace vcl::comp {
 
@@ -36,12 +36,12 @@ class TexturePaths
 {
 public:
 	// iterators
-	using TextureFileNamesIterator      = std::vector<std::string>::iterator;
-	using ConstTextureFileNamesIterator = std::vector<std::string>::const_iterator;
-	using TextureFileNamesRangeIterator =
-		RangeIterator<TexturePaths, TextureFileNamesIterator>;
-	using ConstTextureFileNamesRangeIterator =
-		ConstRangeIterator<TexturePaths, ConstTextureFileNamesIterator>;
+	using TexFileNamesIterator      = std::vector<std::string>::iterator;
+	using ConstTexFileNamesIterator = std::vector<std::string>::const_iterator;
+	using TexFileNamesRangeIterator =
+		RangeIterator<TexturePaths, TexFileNamesIterator>;
+	using ConstTexFileNamesRangeIterator =
+		ConstRangeIterator<TexturePaths, ConstTexFileNamesIterator>;
 
 	TexturePaths();
 	uint textureNumber() const;
@@ -51,16 +51,16 @@ public:
 	const std::string& meshBasePath() const;
 	std::string&       meshBasePath();
 
-	void clearTextures();
+	void clearTexturePaths();
 
 	void pushTexturePath(const std::string& textName);
 
-	TextureFileNamesIterator texturePathBegin();
-	TextureFileNamesIterator texturePathEnd();
-	ConstTextureFileNamesIterator texturePathBegin() const;
-	ConstTextureFileNamesIterator texturePathEnd() const;
-	TextureFileNamesRangeIterator texturePaths();
-	ConstTextureFileNamesRangeIterator texturePaths() const;
+	TexFileNamesIterator texturePathBegin();
+	TexFileNamesIterator texturePathEnd();
+	ConstTexFileNamesIterator texturePathBegin() const;
+	ConstTexFileNamesIterator texturePathEnd() const;
+	TexFileNamesRangeIterator texturePaths();
+	ConstTexFileNamesRangeIterator texturePaths() const;
 
 protected:
 	template<typename Element>

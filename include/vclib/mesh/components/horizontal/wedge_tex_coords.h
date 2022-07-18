@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
-#include "../detection/wedge_tex_coords_detection.h"
+#include "../concepts/wedge_tex_coords.h"
 #include "internal/generic_container.h"
 
 #include <vclib/space/tex_coord.h>
@@ -32,8 +32,7 @@ namespace vcl::comp {
 
 template<typename Scalar, int N>
 class WedgeTexCoords :
-		protected internal::GenericContainer<vcl::TexCoord<Scalar>, N>,
-		public WedgeTexCoordsTriggerer
+		protected internal::GenericContainer<vcl::TexCoord<Scalar>, N>
 {
 	using Base = internal::GenericContainer<vcl::TexCoord<Scalar>, N>;
 
@@ -61,6 +60,8 @@ public:
 
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
+
+	constexpr bool isWedgeTexCoordsEnabled() const { return true; }
 
 	/* Iterator Member functions */
 

@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
-#include "../detection/vertex_references_detection.h"
+#include "../concepts/vertex_references.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {
 
 template<typename Vertex, int N>
-class VertexReferences : protected internal::ElementReferences<Vertex, N>, public VertexReferencesTriggerer
+class VertexReferences : protected internal::ElementReferences<Vertex, N>
 {
 	using Base = internal::ElementReferences<Vertex, N>;
 

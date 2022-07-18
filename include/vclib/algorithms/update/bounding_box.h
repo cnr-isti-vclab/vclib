@@ -23,10 +23,13 @@
 #ifndef VCL_ALGORITHMS_BOUNDING_BOX_H
 #define VCL_ALGORITHMS_BOUNDING_BOX_H
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl {
 
-template<typename MeshType>
-void updateBoundingBox(MeshType& m);
+template<MeshConcept MeshType>
+void updateBoundingBox(MeshType& m)
+	requires vcl::HasBoundingBox<MeshType>;
 
 } // namespace vcl
 

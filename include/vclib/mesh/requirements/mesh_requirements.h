@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_MESH_REQUIREMENTS_H
 #define VCL_MESH_MESH_REQUIREMENTS_H
 
+#include "mesh_concepts.h"
 #include "face_requirements.h"
 #include "vertex_requirements.h"
 
@@ -34,49 +35,18 @@ namespace vcl {
 
 // Triangles
 
-template<typename MeshType>
-bool constexpr hasTriangles();
-
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isTriangleMesh(const MeshType&);
 
 // Quads
 
-template<typename MeshType>
-bool constexpr hasQuads();
-
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isQuadMesh(const MeshType&);
-
-// Polygons
-
-template<typename MeshType>
-bool constexpr hasPolygons();
 
 // Mesh Compactness
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isCompact(const MeshType&);
-
-// Bounding Box
-
-template<typename MeshType>
-bool constexpr hasBoundingBox();
-
-// Mark
-
-template<typename MeshType>
-bool constexpr hasMark();
-
-// Texture File Names
-
-template<typename MeshType>
-bool constexpr hasTexturePaths();
-
-// Transform Matrix
-
-template<typename MeshType>
-bool constexpr hasTransformMatrix();
 
 /*********************
  * require functions *
@@ -84,38 +54,18 @@ bool constexpr hasTransformMatrix();
 
 // Triangles
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requireTriangleMesh(const MeshType&);
 
 // Quads
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void requireQuadMesh(const MeshType&);
 
 // Mesh Compactness
 
 template <typename MeshType>
 void requireCompactness(const MeshType&);
-
-// Bounding Box
-
-template<typename MeshType>
-void constexpr requireBoundingBox();
-
-// Mark
-
-template<typename MeshType>
-void constexpr requireMark();
-
-// Texture File Names
-
-template<typename MeshType>
-void constexpr requireTextureFileNames();
-
-// Transform Matrix
-
-template<typename MeshType>
-void constexpr requireTransformMatrix();
 
 } // namespace vcl
 

@@ -25,62 +25,63 @@
 
 #include <set>
 
+#include <vclib/mesh/requirements.h>
 #include <vclib/space/color.h>
 
 namespace vcl {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void setPerVertexColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlySelected = false);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlySelected = false);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceColor(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorFromVertexColor(MeshType& m);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void setPerVertexColorFromScalar(
 	MeshType&                                 m,
 	vcl::Color::ColorMap                      colorMap  = vcl::Color::RedBlue,
 	typename MeshType::VertexType::ScalarType minScalar = 0,
 	typename MeshType::VertexType::ScalarType maxScalar = 0);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorFromScalar(
 	MeshType&                               m,
 	vcl::Color::ColorMap                    colorMap  = vcl::Color::RedBlue,
 	typename MeshType::FaceType::ScalarType minScalar = 0,
 	typename MeshType::FaceType::ScalarType maxScalar = 0);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceBorderFlag(
 	MeshType&  m,
 	vcl::Color borderColor   = vcl::Color::Blue,
 	vcl::Color internalColor = vcl::Color::White,
 	vcl::Color mixColor      = vcl::Color::Cyan);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorFromConnectedComponents(
 	MeshType& m,
 	const std::vector<std::set<uint>>& connectedComponents);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorFromConnectedComponents(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorScattering(MeshType& m, uint nColors = 50, bool checkFauxEdges = true);
 
-template<typename MeshType, typename PointType>
+template<MeshConcept MeshType, typename PointType>
 void setPerVertexColorPerlinNoise(
 	MeshType& m,
 	PointType period,
 	PointType offset     = PointType(0, 0, 0),
 	bool      onSelected = false);
 
-template<typename MeshType, typename PointType>
+template<MeshConcept MeshType, typename PointType>
 void setPerVertexPerlinColor(
 	MeshType& m,
 	double period,

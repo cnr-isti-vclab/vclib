@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_MARK_VECTOR_H
 #define VCL_MESH_COMPONENTS_MARK_VECTOR_H
 
-#include "../../detection/mark_detection.h"
+#include "../../concepts/mark.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class MarkVector
 {
 public:
@@ -37,11 +37,11 @@ public:
 	void resize(uint) {}
 	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isMarkEnabled() const { return false; };
 };
 
-template<typename T>
-class MarkVector<T, std::enable_if_t<comp::hasOptionalMark<T>()>> :
-		private GenericComponentVector<int>
+template<comp::HasOptionalMark T>
+class MarkVector<T> : private GenericComponentVector<int>
 {
 	using Base = GenericComponentVector<int>;
 
@@ -50,9 +50,11 @@ public:
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool       isMarkEnabled() const { return Base::isEnabled(); };
-	void       enableMark(uint size) { Base::enable(size); }
-	void       disableMark() { Base::disable(); }
+
+	bool isMarkEnabled() const { return Base::isEnabled(); };
+	void enableMark(uint size) { Base::enable(size); }
+	void disableMark() { Base::disable(); }
+
 	int&       mark(uint i) { return Base::at(i); }
 	const int& mark(uint i) const { return Base::at(i); }
 };

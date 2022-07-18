@@ -23,17 +23,19 @@
 #ifndef VCL_ALGORITHMS_CREATE_HEXAHEDRON_H
 #define VCL_ALGORITHMS_CREATE_HEXAHEDRON_H
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 MeshType createHexahedron();
 
-template<typename MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, typename CoordType>
 MeshType createHexahedron(
 	const CoordType& min,
 	const CoordType& max);
 
-template<typename MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, typename CoordType>
 MeshType createCube(
 	const CoordType& min,
 	double edgeLength);

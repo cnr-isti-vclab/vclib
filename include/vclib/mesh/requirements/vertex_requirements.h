@@ -23,13 +23,14 @@
 #ifndef VCL_MESH_VERTEX_REQUIREMENTS_H
 #define VCL_MESH_VERTEX_REQUIREMENTS_H
 
-#include "element_requirements.h"
+#include "vertex_concepts.h"
+#include "mesh_concepts.h"
 
 namespace vcl {
 
-/********************
- * is/has functions *
- ********************/
+/*************************
+ * is/enableIf functions *
+ *************************/
 
 // Vertex Compactness
 
@@ -37,9 +38,6 @@ template<typename MeshType>
 bool isVertexContainerCompact(const MeshType&);
 
 // Vertex Adjacent Faces
-
-template<typename MeshType>
-bool constexpr hasPerVertexAdjacentFaces();
 
 template<typename MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType&);
@@ -50,18 +48,12 @@ bool enableIfPerVertexAdjacentFacesOptional(MeshType&);
 // Vertex Adjacent Vertices
 
 template<typename MeshType>
-bool constexpr hasPerVertexAdjacentVertices();
-
-template<typename MeshType>
 bool isPerVertexAdjacentVerticesEnabled(const MeshType&);
 
 template<typename MeshType>
 bool enableIfPerVertexAdjacentVerticesOptional(MeshType&);
 
 // Vertex Color
-
-template<typename MeshType>
-bool constexpr hasPerVertexColor();
 
 template<typename MeshType>
 bool isPerVertexColorEnabled(const MeshType&);
@@ -72,18 +64,12 @@ bool enableIfPerVertexColorOptional(MeshType&);
 // Vertex Mark
 
 template<typename MeshType>
-bool constexpr hasPerVertexMark();
-
-template<typename MeshType>
 bool isPerVertexMarkEnabled(const MeshType&);
 
 template<typename MeshType>
 bool enableIfPerVertexMarkOptional(MeshType&);
 
 // Vertex Normal
-
-template<typename MeshType>
-bool constexpr hasPerVertexNormal();
 
 template<typename MeshType>
 bool isPerVertexNormalEnabled(const MeshType&);
@@ -94,18 +80,12 @@ bool enableIfPerVertexNormalOptional(MeshType&);
 // Vertex PrincipalCurvature
 
 template<typename MeshType>
-bool constexpr hasPerVertexPrincipalCurvature();
-
-template<typename MeshType>
 bool isPerVertexPrincipalCurvatureEnabled(const MeshType&);
 
 template<typename MeshType>
 bool enableIfPerVertexPrincipalCurvatureOptional(MeshType&);
 
 // Vertex Scalar
-
-template<typename MeshType>
-bool constexpr hasPerVertexScalar();
 
 template<typename MeshType>
 bool isPerVertexScalarEnabled(const MeshType&);
@@ -116,18 +96,10 @@ bool enableIfPerVertexScalarOptional(MeshType&);
 // Vertex TexCoord
 
 template<typename MeshType>
-bool constexpr hasPerVertexTexCoord();
-
-template<typename MeshType>
 bool isPerVertexTexCoordEnabled(const MeshType&);
 
 template<typename MeshType>
 bool enableIfPerVertexTexCoordOptional(MeshType&);
-
-// Vertex Custom Components
-
-template<typename MeshType>
-bool constexpr hasPerVertexCustomComponents();
 
 /*********************
  * require functions *
@@ -135,56 +107,56 @@ bool constexpr hasPerVertexCustomComponents();
 
 // Vertex Compactness
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void requireVertexContainerCompactness(const MeshType& m);
 
 // Vertex Adjacent Faces
 
 template<typename MeshType>
-void requirePerVertexAdjacentFaces(const MeshType& m);
+void requirePerVertexAdjacentFaces(const MeshType& m)
+	requires HasPerVertexAdjacentFaces<MeshType>;
 
 // Vertex Adjacent Vertices
 
 template<typename MeshType>
-void requirePerVertexAdjacentVertices(const MeshType& m);
+void requirePerVertexAdjacentVertices(const MeshType& m)
+	requires HasPerVertexAdjacentVertices<MeshType>;
 
 // Vertex Color
 
 template<typename MeshType>
-void requirePerVertexColor(const MeshType& m);
+void requirePerVertexColor(const MeshType& m)
+	requires HasPerVertexColor<MeshType>;
 
 // Vertex Mark
 
 template<typename MeshType>
-void requirePerVertexMark(const MeshType& m);
+void requirePerVertexMark(const MeshType& m)
+	requires HasPerVertexMark<MeshType>;
 
 // Vertex Normal
 
 template<typename MeshType>
-void requirePerVertexNormal(const MeshType& m);
+void requirePerVertexNormal(const MeshType& m)
+	requires HasPerVertexNormal<MeshType>;
 
 // Vertex PrincipalCurvature
 
 template<typename MeshType>
-void requirePerVertexPrincipalCurvature(const MeshType& m);
+void requirePerVertexPrincipalCurvature(const MeshType& m)
+	requires HasPerVertexPrincipalCurvature<MeshType>;
 
 // Vertex Scalar
 
 template<typename MeshType>
-void requirePerVertexScalar(const MeshType& m);
+void requirePerVertexScalar(const MeshType& m)
+	requires HasPerVertexScalar<MeshType>;
 
 // Vertex TexCoord
 
 template<typename MeshType>
-void requirePerVertexTexCoord(const MeshType& m);
-
-// Vertex Custom Components
-
-template<typename MeshType>
-bool constexpr requirePerVertexCustomComponents();
-
-template<typename MeshType>
-bool requirePerVertexCustomComponents(const MeshType& m);
+void requirePerVertexTexCoord(const MeshType& m)
+	requires HasPerVertexTexCoord<MeshType>;
 
 } // namespace vcl
 

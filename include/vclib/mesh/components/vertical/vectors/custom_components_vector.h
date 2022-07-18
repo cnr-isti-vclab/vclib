@@ -35,7 +35,7 @@ namespace vcl::internal {
 
 // to shorten triggerer for Vertex class
 template<typename T>
-using IfHasCustomComp = std::enable_if_t<comp::hasCustomComponents<T>()>;
+using IfHasCustomComp = std::enable_if_t<comp::HasCustomComponents<T>>;
 
 template<typename, typename = void>
 class CustomComponentsVector

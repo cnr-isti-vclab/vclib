@@ -32,57 +32,57 @@ inline FileMeshInfo::FileMeshInfo()
 template<typename Mesh>
 inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 {
-	if constexpr (vcl::hasVertices<Mesh>()) {
+	if constexpr (vcl::HasVertices<Mesh>) {
 		setVertices();
 		setVertexCoords(true, getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
-		if constexpr (vcl::hasPerVertexNormal<Mesh>())
+		if constexpr (vcl::HasPerVertexNormal<Mesh>)
 			if (vcl::isPerVertexNormalEnabled(m))
 				setVertexNormals(true, getPropType<typename Mesh::VertexType::NormalType::ScalarType>());
-		if constexpr (vcl::hasPerVertexColor<Mesh>())
+		if constexpr (vcl::HasPerVertexColor<Mesh>)
 			if (vcl::isPerVertexColorEnabled(m))
 				setVertexColors(true, UCHAR);
-		if constexpr (vcl::hasPerVertexScalar<Mesh>())
+		if constexpr (vcl::HasPerVertexScalar<Mesh>)
 			if (vcl::isPerVertexScalarEnabled(m))
 				setVertexScalars(true, getPropType<typename Mesh::VertexType::ScalarType>());
-		if constexpr (vcl::hasPerVertexTexCoord<Mesh>())
+		if constexpr (vcl::HasPerVertexTexCoord<Mesh>)
 			if (vcl::isPerVertexTexCoordEnabled(m))
 				setVertexTexCoords(
 					true,
 					getPropType<typename Mesh::VertexType::TexCoordType::ScalarType>());
 	}
 
-	if constexpr (vcl::hasFaces<Mesh>()) {
+	if constexpr (vcl::HasFaces<Mesh>) {
 		setFaces();
 		setFaceVRefs();
-		if (vcl::hasTriangles<Mesh>())
+		if (vcl::HasTriangles<Mesh>)
 			setTriangleMesh();
-		else if (vcl::hasQuads<Mesh>())
+		else if (vcl::HasQuads<Mesh>)
 			setQuadMesh();
 		else
 			setPolygonMesh();
-		if constexpr (vcl::hasPerFaceNormal<Mesh>())
+		if constexpr (vcl::HasPerFaceNormal<Mesh>)
 			if (vcl::isPerFaceNormalEnabled(m))
 				setFaceNormals(true, getPropType<typename Mesh::FaceType::NormalType::ScalarType>());
-		if constexpr (vcl::hasPerFaceColor<Mesh>())
+		if constexpr (vcl::HasPerFaceColor<Mesh>)
 			if (vcl::isPerFaceColorEnabled(m))
 				setFaceColors(true, UCHAR);
-		if constexpr (vcl::hasPerFaceScalar<Mesh>())
+		if constexpr (vcl::HasPerFaceScalar<Mesh>)
 			if (vcl::isPerFaceScalarEnabled(m))
 				setFaceScalars(true, getPropType<typename Mesh::FaceType::ScalarType>());
-		if constexpr (vcl::hasPerFaceWedgeTexCoords<Mesh>())
+		if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>)
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
 				setFaceWedgeTexCoords(true, getPropType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
 	}
 
-	if constexpr (vcl::hasEdges<Mesh>()) {
+	if constexpr (vcl::HasEdges<Mesh>) {
 		setEdges();
 		setEdgeVRefs();
-//		if constexpr (vcl::hasPerEdgeColor<Mesh>())
+//		if constexpr (vcl::HasPerEdgeColor<Mesh>)
 //			if (vcl::isPerEdgeColorEnabled(m))
 //				setEdgeColors(true, UCHAR);
 	}
 
-	if constexpr (vcl::hasTexturePaths<Mesh>()) {
+	if constexpr (vcl::HasTexturePaths<Mesh>) {
 		if (m.textureNumber() > 0) {
 			setTextures(true);
 		}

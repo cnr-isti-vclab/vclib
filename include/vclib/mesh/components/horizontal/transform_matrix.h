@@ -25,12 +25,12 @@
 
 #include <vclib/math/matrix.h>
 
-#include "../detection/transfrom_matrix_detection.h"
+#include "../concepts/transform_matrix.h"
 
 namespace vcl::comp {
 
 template<typename Scalar>
-class TransformMatrix : public TransformMatrixTriggerer
+class TransformMatrix
 {
 public:
 	using TransformMatrixType = Matrix44<Scalar>;

@@ -25,8 +25,6 @@
 #include <numeric>
 #include <queue>
 
-#include <vclib/mesh/requirements.h>
-
 #include "box.h"
 
 namespace vcl {
@@ -64,15 +62,13 @@ KDTree<PointType>::KDTree(
  * @param balanced
  */
 template<typename PointType>
-template<typename MeshType>
+template<MeshConcept MeshType>
 KDTree<PointType>::KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, bool balanced) :
 		points(m.vertexNumber()),
 		indices(m.vertexNumber()),
 		pointsPerCell(pointsPerCell),
 		maxDepth(maxDepth)
 {
-	vcl::requireVertices<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 
 	uint           i = 0;

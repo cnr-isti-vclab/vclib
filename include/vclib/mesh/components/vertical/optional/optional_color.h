@@ -23,18 +23,16 @@
 #ifndef VCL_MESH_COMPONENTS_OPTIONAL_COLOR_H
 #define VCL_MESH_COMPONENTS_OPTIONAL_COLOR_H
 
-#include <vclib/space/color.h>
-
-#include "../../detection/color_detection.h"
-#include "../vertical_info.h"
+#include "../../concepts/color.h"
+#include "../vertical_component.h"
 
 namespace vcl::comp {
 
 template<typename T>
-class OptionalColor : public virtual VerticalInfo<T>
+class OptionalColor : public virtual VerticalComponent<T>
 {
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:
@@ -43,6 +41,9 @@ public:
 	vcl::Color&        color();
 
 	bool isColorEnabled() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalColor() const {};
 
 protected:
 	template <typename Element>

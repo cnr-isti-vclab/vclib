@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_VECTOR_H
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_VECTOR_H
 
-#include "../../detection/adjacent_edges_detection.h"
+#include "../../concepts/adjacent_edges.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class AdjacentEdgesVector
 {
 public:
@@ -37,11 +37,11 @@ public:
 	void resize(uint) {}
 	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isAdjacentEdgesEnabled() const { return false; }
 };
 
-template<typename T>
-class AdjacentEdgesVector<T, std::enable_if_t<comp::hasOptionalAdjacentEdges<T>()>> :
-		private GenericComponentVector<typename T::AdjEdgesContainer>
+template<comp::HasOptionalAdjacentEdges T>
+class AdjacentEdgesVector<T> : private GenericComponentVector<typename T::AdjEdgesContainer>
 {
 private:
 	using AdjEdgesContainer = typename T::AdjEdgesContainer;

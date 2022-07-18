@@ -40,7 +40,7 @@ template<typename T>
 template<typename Element>
 void Scalar<T>::importFrom(const Element& e)
 {
-	if constexpr (hasScalar<Element>()) {
+	if constexpr (HasScalar<Element>) {
 		if (isScalarEnabledOn(e)){
 			s = e.scalar();
 		}

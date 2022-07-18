@@ -24,26 +24,22 @@
 
 #include "normal.h"
 
-#include <vclib/mesh/requirements.h>
-
 namespace vcl {
 
-template<typename MeshType, typename ScalarM>
+template<MeshConcept MeshType, typename ScalarM>
 void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool updateNormals)
 {
-	requireVertices<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	for (VertexType& v : mesh.vertices()) {
 		v.coord() *= matrix;
 	}
 	if (updateNormals) {
-		if constexpr (hasPerVertexNormal<MeshType>()) {
+		if constexpr (HasPerVertexNormal<MeshType>) {
 			if (isPerVertexNormalEnabled(mesh)) {
 				multiplyPerVertexNormalsByMatrix(mesh, matrix);
 			}
 		}
-		if constexpr (hasPerFaceNormal<MeshType>()) {
+		if constexpr (HasPerFaceNormal<MeshType>) {
 			if (isPerFaceNormalEnabled(mesh)) {
 				multiplyPerFaceNormalsByMatrix(mesh, matrix);
 			}
@@ -51,22 +47,18 @@ void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool 
 	}
 }
 
-template<typename MeshType, typename PointType>
+template<MeshConcept MeshType, typename PointType>
 void translate(MeshType& mesh, const PointType& t)
 {
-	requireVertices<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	for (VertexType& v : mesh.vertices()) {
 		v.coord() += t;
 	}
 }
 
-template<typename MeshType, typename PointType>
+template<MeshConcept MeshType, typename PointType>
 void scale(MeshType& mesh, const PointType& s)
 {
-	requireVertices<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	for (VertexType& v : mesh.vertices()) {
 		v.coord()(0) *= s(0);

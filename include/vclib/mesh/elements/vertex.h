@@ -23,13 +23,12 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_H
 #define VCL_MESH_ELEMENTS_VERTEX_H
 
-#include "vertex_components.h"
-#include "vertex_components_optional.h"
+#include "vertex_concept.h"
 
 namespace vcl::mesh {
 
 // VertexContainr class declaration
-template<typename>
+template<VertexConcept>
 class VertexContainer;
 
 template<typename>
@@ -39,15 +38,10 @@ class ElementContainer;
 
 namespace vcl {
 
-// Dummy class used to detect a Vertex regardless of its template arguments
-class VertexTriggerer
-{
-};
-
 template<typename... Args>
-class Vertex : public VertexTriggerer, public Args...
+class Vertex : public Args...
 {
-	template<typename>
+	template<VertexConcept>
 	friend class mesh::VertexContainer;
 
 	template<typename>

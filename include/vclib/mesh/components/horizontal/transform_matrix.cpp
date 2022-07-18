@@ -47,7 +47,7 @@ template<typename Scalar>
 template<typename Element>
 void TransformMatrix<Scalar>::importFrom(const Element& e)
 {
-	if constexpr(hasTransformMatrix<Element>()) {
+	if constexpr(HasTransformMatrix<Element>) {
 		tr = e.transformMatrix();
 	}
 }

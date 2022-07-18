@@ -22,7 +22,7 @@
 
 #include "mesh.h"
 
-#include <vclib/algorithms/polygon.h>
+#include "mesh_algorithms.h"
 
 namespace vcl {
 
@@ -48,7 +48,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	updateAllOptionalContainerReferences();
 
 	// update references into the vertex container
-	if constexpr (mesh::hasVertices<Mesh<Args...>>()) {
+	if constexpr (mesh::HasVertexContainer<Mesh<Args...>>) {
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other vertex container data
@@ -56,7 +56,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	}
 
 	// update references into the face container
-	if constexpr (mesh::hasFaces<Mesh<Args...>>()) {
+	if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other vertex container data
@@ -64,7 +64,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	}
 
 	// update references into the edge container
-	if constexpr (mesh::hasEdges<Mesh<Args...>>()) {
+	if constexpr (mesh::HasEdgeContainer<Mesh<Args...>>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other vertex container data
@@ -91,15 +91,15 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 template<typename... Args>
 void Mesh<Args...>::clear()
 {
-	if constexpr (mesh::hasVertices<Mesh<Args...>>()) {
+	if constexpr (mesh::HasVertexContainer<Mesh<Args...>>) {
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
 		VertexContainer::clearVertices(); // clear vertices, only if the mesh has vertices
 	}
-	if constexpr (mesh::hasFaces<Mesh<Args...>>()) {
+	if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		FaceContainer::clearFaces(); // clear faces, only if the mesh has faces
 	}
-	if constexpr (mesh::hasEdges<Mesh<Args...>>()) {
+	if constexpr (mesh::HasEdgeContainer<Mesh<Args...>>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		EdgeContainer::clearEdges(); // clear faces, only if the mesh has edges
 	}
@@ -112,7 +112,7 @@ void Mesh<Args...>::clear()
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::index(const typename M::VertexType& v) const
 {
 	using VertexContainer = typename M::VertexContainer;
@@ -126,7 +126,7 @@ Mesh<Args...>::index(const typename M::VertexType& v) const
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::index(const typename M::VertexType* v) const
 {
 	using VertexContainer = typename M::VertexContainer;
@@ -145,7 +145,7 @@ Mesh<Args...>::index(const typename M::VertexType* v) const
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::addVertex()
 {
 	using Vertex          = typename M::VertexType;
@@ -179,7 +179,7 @@ Mesh<Args...>::addVertex()
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::addVertex(const typename M::VertexType::CoordType& p)
 {
 	using VertexContainer = typename M::VertexContainer;
@@ -205,7 +205,7 @@ Mesh<Args...>::addVertex(const typename M::VertexType::CoordType& p)
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::addVertices(uint n)
 {
 	using Vertex          = typename M::VertexType;
@@ -250,7 +250,7 @@ Mesh<Args...>::addVertices(uint n)
  */
 template<typename... Args>
 template<typename... VC, typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), uint)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::addVertices(
 	const typename M::VertexType::CoordType& p,
 	const VC&... v) // parameter pack of points
@@ -286,7 +286,7 @@ Mesh<Args...>::addVertices(
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), void)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, void)
 Mesh<Args...>::reserveVertices(uint n)
 {
 	using Vertex          = typename M::VertexType;
@@ -308,7 +308,7 @@ Mesh<Args...>::reserveVertices(uint n)
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), void)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, void)
 Mesh<Args...>::compactVertices()
 {
 	using Vertex          = typename M::VertexType;
@@ -327,7 +327,7 @@ Mesh<Args...>::compactVertices()
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::index(const typename M::FaceType& f) const
 {
 	using FaceContainer = typename M::FaceContainer;
@@ -336,7 +336,7 @@ Mesh<Args...>::index(const typename M::FaceType& f) const
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::index(const typename M::FaceType* f) const
 {
 	using FaceContainer = typename M::FaceContainer;
@@ -345,7 +345,7 @@ Mesh<Args...>::index(const typename M::FaceType* f) const
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::addFace()
 {
 	using Face          = typename M::FaceType;
@@ -361,7 +361,7 @@ Mesh<Args...>::addFace()
 
 template<typename... Args>
 template<typename M, typename... V>
-VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), uint)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::addFace(V... args)
 {
 	using Face          = typename M::FaceType;
@@ -373,7 +373,7 @@ Mesh<Args...>::addFace(V... args)
 	constexpr uint n = sizeof...(args);
 	static_assert(n >= 3, "Faces must have at least 3 vertices");
 	if constexpr (Face::VERTEX_NUMBER < 0) {
-		if constexpr (!comp::hasFaceHalfEdgeReference<Face>()) {
+		if constexpr (!comp::HasFaceHalfEdgeReference<Face>) {
 			f.resizeVertices(n);
 		}
 		else {
@@ -390,7 +390,7 @@ Mesh<Args...>::addFace(V... args)
 
 template<typename... Args>
 template<typename M, typename Iterator>
-VCL_ENABLE_IF(mesh::hasFaces<M>() && mesh::hasVertices<M>(), uint)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::addFace(Iterator begin, Iterator end)
 {
 	using Face          = typename M::FaceType;
@@ -403,13 +403,13 @@ Mesh<Args...>::addFace(Iterator begin, Iterator end)
 	Face& f   = FaceContainer::face(fid);
 
 	if constexpr (Face::VERTEX_NUMBER < 0) {
-		if constexpr (!comp::hasFaceHalfEdgeReference<Face>()) {
+		if constexpr (!comp::HasFaceHalfEdgeReference<Face>) {
 			uint n = std::distance(begin, end);
 			f.resizeVertices(n);
 		}
 	}
 
-	if constexpr (comp::hasFaceHalfEdgeReference<Face>()) {
+	if constexpr (comp::HasFaceHalfEdgeReference<Face>) {
 		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
 		using HalfEdge          = typename HalfEdgeContainer::HalfEdgeType;
 		using Vertex = typename Mesh<Args...>::VertexType;
@@ -447,7 +447,7 @@ Mesh<Args...>::addFace(Iterator begin, Iterator end)
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>(), uint)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::addFaces(uint n)
 {
 	using Face          = typename M::FaceType;
@@ -463,7 +463,7 @@ Mesh<Args...>::addFaces(uint n)
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 Mesh<Args...>::reserveFaces(uint n)
 {
 	using Face          = typename M::FaceType;
@@ -478,7 +478,7 @@ Mesh<Args...>::reserveFaces(uint n)
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 Mesh<Args...>::compactFaces()
 {
 	using Face          = typename M::FaceType;
@@ -501,7 +501,7 @@ Mesh<Args...>::compactFaces()
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasEdges<M>(), uint)
+VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
 Mesh<Args...>::index(const typename M::EdgeType& e) const
 {
 	using EdgeContainer = typename M::EdgeContainer;
@@ -515,7 +515,7 @@ Mesh<Args...>::index(const typename M::EdgeType& e) const
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasEdges<M>(), uint)
+VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
 Mesh<Args...>::index(const typename M::EdgeType* e) const
 {
 	using EdgeContainer = typename M::EdgeContainer;
@@ -524,7 +524,7 @@ Mesh<Args...>::index(const typename M::EdgeType* e) const
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasEdges<M>(), uint)
+VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
 Mesh<Args...>::addEdge()
 {
 	using Edge          = typename M::EdgeType;
@@ -554,7 +554,7 @@ Mesh<Args...>::addEdge()
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasEdges<M>(), uint)
+VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
 Mesh<Args...>::addEdges(uint n)
 {
 	using Edge          = typename M::EdgeType;
@@ -594,7 +594,7 @@ Mesh<Args...>::addEdges(uint n)
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasEdges<M>(), void)
+VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
 Mesh<Args...>::reserveEdges(uint n)
 {
 	using Edge          = typename M::EdgeType;
@@ -616,7 +616,7 @@ Mesh<Args...>::reserveEdges(uint n)
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasEdges<M>(), void)
+VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
 Mesh<Args...>::compactEdges()
 {
 	using Edge          = typename M::EdgeType;
@@ -639,7 +639,7 @@ Mesh<Args...>::compactEdges()
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 Mesh<Args...>::index(const typename M::HalfEdgeType& e) const
 {
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
@@ -653,7 +653,7 @@ Mesh<Args...>::index(const typename M::HalfEdgeType& e) const
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 Mesh<Args...>::index(const typename M::HalfEdgeType* e) const
 {
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
@@ -662,7 +662,7 @@ Mesh<Args...>::index(const typename M::HalfEdgeType* e) const
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 Mesh<Args...>::addHalfEdge()
 {
 	using HalfEdge          = typename M::HalfEdgeType;
@@ -692,7 +692,7 @@ Mesh<Args...>::addHalfEdge()
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), uint)
+VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 Mesh<Args...>::addHalfEdges(uint n)
 {
 	using HalfEdge          = typename M::HalfEdgeType;
@@ -715,7 +715,7 @@ Mesh<Args...>::addHalfEdges(uint n)
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasHalfEdges<M>() && mesh::hasFaces<M>(), uint)
+VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M> && mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
 {
 	using HalfEdge = typename Mesh<Args...>::HalfEdgeType;
@@ -759,7 +759,7 @@ Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 Mesh<Args...>::reserveHalfEdges(uint n)
 {
 	using HalfEdge          = typename M::HalfEdgeType;
@@ -781,7 +781,7 @@ Mesh<Args...>::reserveHalfEdges(uint n)
  */
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 Mesh<Args...>::compactHalfEdges()
 {
 	using HalfEdge          = typename M::HalfEdgeType;
@@ -829,17 +829,17 @@ void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 	// enable all optional components of this Mesh depending on what's available in the
 	// OtherMeshType
 
-	if constexpr (vcl::mesh::hasVertices<Mesh<Args...>>()) {
+	if constexpr (vcl::mesh::HasVertexContainer<Mesh<Args...>>) {
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
 		VertexContainer::enableOptionalComponentsOf(m);
 	}
 
-	if constexpr (vcl::mesh::hasFaces<Mesh<Args...>>()) {
+	if constexpr (vcl::mesh::HasFaceContainer<Mesh<Args...>>) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		FaceContainer::enableOptionalComponentsOf(m);
 	}
 
-	if constexpr (vcl::mesh::hasEdges<Mesh<Args...>>()) {
+	if constexpr (vcl::mesh::HasEdgeContainer<Mesh<Args...>>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		EdgeContainer::enableOptionalComponentsOf(m);
 	}
@@ -896,7 +896,7 @@ Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), void)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, void)
 Mesh<Args...>::updateVertexReferences(
 	const typename M::VertexType* oldBase,
 	const typename M::VertexType* newBase)
@@ -907,19 +907,19 @@ Mesh<Args...>::updateVertexReferences(
 		VertexContainer::updateVertexReferences(oldBase, newBase);
 
 		// update vertex references in the Face Container, if it exists
-		if constexpr (vcl::mesh::hasFaces<M>()) {
+		if constexpr (mesh::HasFaceContainer<M>) {
 			using FaceContainer = typename M::FaceContainer;
 			FaceContainer::updateVertexReferences(oldBase, newBase);
 		}
 
 		// update vertex references in the Edge Container, if it exists
-		if constexpr (vcl::mesh::hasEdges<M>()) {
+		if constexpr (mesh::HasEdgeContainer<M>) {
 			using EdgeContainer = typename M::EdgeContainer;
 			EdgeContainer::updateVertexReferences(oldBase, newBase);
 		}
 
 		// update vertex references in the HalfEdge Container, if it exists
-		if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+		if constexpr (mesh::HasHalfEdgeContainer<M>) {
 			using HalfEdgeContainer = typename M::HalfEdgeContainer;
 			HalfEdgeContainer::updateVertexReferences(oldBase, newBase);
 		}
@@ -928,7 +928,7 @@ Mesh<Args...>::updateVertexReferences(
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasVertices<M>(), void)
+VCL_ENABLE_IF(mesh::HasVertexContainer<M>, void)
 Mesh<Args...>::updateVertexReferencesAfterCompact(
 	const typename M::VertexType* base,
 	const std::vector<int>&       newIndices)
@@ -938,19 +938,19 @@ Mesh<Args...>::updateVertexReferencesAfterCompact(
 	VertexContainer::updateVertexReferencesAfterCompact(base, newIndices);
 
 	// update vertex references in the Face Container, if it exists
-	if constexpr (vcl::mesh::hasFaces<M>()) {
+	if constexpr (mesh::HasFaceContainer<M>) {
 		using FaceContainer = typename M::FaceContainer;
 		FaceContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
 
 	// update vertex references in the Edge Container, if it exists
-	if constexpr (vcl::mesh::hasEdges<M>()) {
+	if constexpr (mesh::HasEdgeContainer<M>) {
 		using EdgeContainer = typename M::EdgeContainer;
 		EdgeContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
 
 	// update vertex references in the HalfEdge Container, if it exists
-	if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+	if constexpr (mesh::HasHalfEdgeContainer<M>) {
 		using HalfEdgeContainer = typename M::HalfEdgeContainer;
 		HalfEdgeContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
@@ -958,7 +958,7 @@ Mesh<Args...>::updateVertexReferencesAfterCompact(
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 Mesh<Args...>::updateFaceReferences(
 	const typename M::FaceType* oldBase,
 	const typename M::FaceType* newBase)
@@ -969,19 +969,19 @@ Mesh<Args...>::updateFaceReferences(
 		FaceContainer::updateFaceReferences(oldBase, newBase);
 
 		// update face references in the Vertex Container, if it exists
-		if constexpr (vcl::mesh::hasVertices<M>()) {
+		if constexpr (mesh::HasVertexContainer<M>) {
 			using VertexContainer = typename M::VertexContainer;
 			VertexContainer::updateFaceReferences(oldBase, newBase);
 		}
 
 		// update face references in the Edge Container, if it exists
-		if constexpr (vcl::mesh::hasEdges<M>()) {
+		if constexpr (mesh::HasEdgeContainer<M>) {
 			using EdgeContainer = typename M::EdgeContainer;
 			EdgeContainer::updateFaceReferences(oldBase, newBase);
 		}
 
 		// update face references in the HalfEdge Container, if it exists
-		if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+		if constexpr (mesh::HasHalfEdgeContainer<M>) {
 			using HalfEdgeContainer = typename M::HalfEdgeContainer;
 			HalfEdgeContainer::updateFaceReferences(oldBase, newBase);
 		}
@@ -990,7 +990,7 @@ Mesh<Args...>::updateFaceReferences(
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasFaces<M>(), void)
+VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 Mesh<Args...>::updateFaceReferencesAfterCompact(
 	const typename M::FaceType* base,
 	const std::vector<int>&     newIndices)
@@ -1000,19 +1000,19 @@ Mesh<Args...>::updateFaceReferencesAfterCompact(
 	FaceContainer::updateFaceReferencesAfterCompact(base, newIndices);
 
 	// update face references in the Vertex Container, if it exists
-	if constexpr (vcl::mesh::hasVertices<M>()) {
+	if constexpr (mesh::HasVertexContainer<M>) {
 		using VertexContainer = typename M::VertexContainer;
 		VertexContainer::updateFaceReferencesAfterCompact(base, newIndices);
 	}
 
 	// update face references in the Edge Container, if it exists
-	if constexpr (vcl::mesh::hasEdges<M>()) {
+	if constexpr (mesh::HasEdgeContainer<M>) {
 		using EdgeContainer = typename M::EdgeContainer;
 		EdgeContainer::updateFaceReferencesAfterCompact(base, newIndices);
 	}
 
 	// update face references in the HalfEdge Container, if it exists
-	if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+	if constexpr (mesh::HasHalfEdgeContainer<M>) {
 		using HalfEdgeContainer = typename M::HalfEdgeContainer;
 		HalfEdgeContainer::updateFaceReferencesAfterCompact(base, newIndices);
 	}
@@ -1020,7 +1020,7 @@ Mesh<Args...>::updateFaceReferencesAfterCompact(
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasEdges<M>(), void)
+VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
 Mesh<Args...>::updateEdgeReferences(
 	const typename M::EdgeType* oldBase,
 	const typename M::EdgeType* newBase)
@@ -1031,13 +1031,13 @@ Mesh<Args...>::updateEdgeReferences(
 		EdgeContainer::updateEdgeReferences(oldBase, newBase);
 
 		// update edge references in the Vertex Container, if it exists
-		if constexpr (vcl::mesh::hasVertices<M>()) {
+		if constexpr (mesh::HasVertexContainer<M>) {
 			using VertexContainer = typename M::VertexContainer;
 			VertexContainer::updateEdgeReferences(oldBase, newBase);
 		}
 
 		// update edge references in the Face Container, if it exists
-		if constexpr (vcl::mesh::hasFaces<M>()) {
+		if constexpr (mesh::HasFaceContainer<M>) {
 			using FaceContainer = typename M::FaceContainer;
 			FaceContainer::updateEdgeReferences(oldBase, newBase);
 		}
@@ -1046,7 +1046,7 @@ Mesh<Args...>::updateEdgeReferences(
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasEdges<M>(), void)
+VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
 Mesh<Args...>::updateEdgeReferencesAfterCompact(
 	const typename M::EdgeType* base,
 	const std::vector<int>&     newIndices)
@@ -1056,13 +1056,13 @@ Mesh<Args...>::updateEdgeReferencesAfterCompact(
 	EdgeContainer::updateEdgeReferencesAfterCompact(base, newIndices);
 
 	// update edge references in the Vertex Container, if it exists
-	if constexpr (vcl::mesh::hasVertices<M>()) {
+	if constexpr (mesh::HasVertexContainer<M>) {
 		using VertexContainer = typename M::VertexContainer;
 		VertexContainer::updateEdgeReferencesAfterCompact(base, newIndices);
 	}
 
 	// update edge references in the Face Container, if it exists
-	if constexpr (vcl::mesh::hasEdges<M>()) {
+	if constexpr (mesh::HasEdgeContainer<M>) {
 		using FaceContainer = typename M::FaceContainer;
 		FaceContainer::updateEdgeReferencesAfterCompact(base, newIndices);
 	}
@@ -1070,7 +1070,7 @@ Mesh<Args...>::updateEdgeReferencesAfterCompact(
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 Mesh<Args...>::updateHalfEdgeReferences(
 	const typename M::HalfEdgeType* oldBase,
 	const typename M::HalfEdgeType* newBase)
@@ -1081,13 +1081,13 @@ Mesh<Args...>::updateHalfEdgeReferences(
 		HalfEdgeContainer::updateHalfEdgeReferences(oldBase, newBase);
 
 		// update Halfedge references in the Vertex Container, if it exists
-		if constexpr (vcl::mesh::hasVertices<M>()) {
+		if constexpr (mesh::HasVertexContainer<M>) {
 			using VertexContainer = typename M::VertexContainer;
 			VertexContainer::updateHalfEdgeReferences(oldBase, newBase);
 		}
 
 		// update Halfedge references in the Face Container, if it exists
-		if constexpr (vcl::mesh::hasFaces<M>()) {
+		if constexpr (mesh::HasFaceContainer<M>) {
 			using FaceContainer = typename M::FaceContainer;
 			FaceContainer::updateHalfEdgeReferences(oldBase, newBase);
 		}
@@ -1096,7 +1096,7 @@ Mesh<Args...>::updateHalfEdgeReferences(
 
 template<typename... Args>
 template<typename M>
-VCL_ENABLE_IF(mesh::hasHalfEdges<M>(), void)
+VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 Mesh<Args...>::updateHalfEdgeReferencesAfterCompact(
 	const typename M::HalfEdgeType* base,
 	const std::vector<int>&         newIndices)
@@ -1106,13 +1106,13 @@ Mesh<Args...>::updateHalfEdgeReferencesAfterCompact(
 	HalfEdgeContainer::updateHalfEdgeReferencesAfterCompact(base, newIndices);
 
 	// update Halfedge references in the Vertex Container, if it exists
-	if constexpr (vcl::mesh::hasVertices<M>()) {
+	if constexpr (mesh::HasVertexContainer<M>) {
 		using VertexContainer = typename M::VertexContainer;
 		VertexContainer::updateHalfEdgeReferencesAfterCompact(base, newIndices);
 	}
 
 	// update Halfedge references in the Face Container, if it exists
-	if constexpr (vcl::mesh::hasHalfEdges<M>()) {
+	if constexpr (mesh::HasHalfEdgeContainer<M>) {
 		using FaceContainer = typename M::FaceContainer;
 		FaceContainer::updateHalfEdgeReferencesAfterCompact(base, newIndices);
 	}
@@ -1123,7 +1123,7 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 {
 	// if there is the optional vertex container, I need to update, for each vertex of the
 	// new mesh, the containerPointer
-	if constexpr (mesh::hasVertexOptionalContainer<Mesh<Args...>>()) {
+	if constexpr (mesh::HasVertexOptionalContainer<Mesh<Args...>>) {
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
 		for (auto& v : VertexContainer::vertices(true)) {
 			VertexContainer::setContainerPointer(v);
@@ -1132,7 +1132,7 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 
 	// if there is the optional face container, I need to update, for each face of the
 	// new mesh, the containerPointer
-	if constexpr (mesh::hasFaceOptionalContainer<Mesh<Args...>>()) {
+	if constexpr (mesh::HasFaceOptionalContainer<Mesh<Args...>>) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		for (auto& f : FaceContainer::faces(true)) {
 			FaceContainer::setContainerPointer(f);
@@ -1141,7 +1141,7 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 
 	// if there is the optional edge container, I need to update, for each edge of the
 	// new mesh, the containerPointer
-	if constexpr (mesh::hasEdgeOptionalContainer<Mesh<Args...>>()) {
+	if constexpr (mesh::HasEdgeOptionalContainer<Mesh<Args...>>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		for (auto& e : EdgeContainer::edges(true)) {
 			EdgeContainer::setContainerPointer(e);
@@ -1192,14 +1192,14 @@ void Mesh<Args...>::importReferences(const OthMesh &m)
 	using ThisMesh = Mesh<Args...>;
 
 	// if Args is a container
-	if constexpr(mesh::isContainer<Cont>()) {
-		if constexpr (mesh::hasVertices<ThisMesh>()) {
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		if constexpr (mesh::HasVertexContainer<ThisMesh>) {
 			Cont::importVertexReferencesFrom(m, &this->vertex(0));
 		}
-		if constexpr (mesh::hasFaces<ThisMesh>()) {
+		if constexpr (mesh::HasFaceContainer<ThisMesh>) {
 			Cont::importFaceReferencesFrom(m, &this->face(0));
 		}
-		if constexpr (mesh::hasEdges<ThisMesh>()) {
+		if constexpr (mesh::HasEdgeContainer<ThisMesh>) {
 			Cont::importEdgeReferencesFrom(m, &this->edge(0));
 		}
 		// todo half edges
@@ -1215,8 +1215,8 @@ template<typename... Args>
 template<typename OthMesh>
 void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 {
-	if constexpr(mesh::hasVertices<Mesh<Args...>>() && mesh::hasVertices<OthMesh>()) {
-		if constexpr(mesh::hasFaces<Mesh<Args...>>() && mesh::hasFaces<OthMesh>()) {
+	if constexpr(mesh::HasVertexContainer<Mesh<Args...>> && mesh::HasVertexContainer<OthMesh>) {
+		if constexpr(mesh::HasFaceContainer<Mesh<Args...>> && mesh::HasFaceContainer<OthMesh>) {
 			using VertexType = typename Mesh<Args...>::VertexType;
 			using MVertexType = typename OthMesh::VertexType;
 			using FaceType = typename Mesh<Args...>::FaceType;
@@ -1253,7 +1253,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 						// triangulate mf; the first triangle of the triangulation will be
 						// this->face(m.index(mf));
 						// the other triangles will be added at the end of the container
-						std::vector<uint> tris = vcl::earCut(mf);
+						std::vector<uint> tris = vcl::mesh::earCut(mf);
 						FaceType& f = FaceContainer::face(m.index(mf));
 						importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
 
@@ -1289,14 +1289,14 @@ void Mesh<Args...>::importTriReferencesHelper(
 		f.vertex(j) = base + (mf.vertex(tris[i]) - mvbase);
 
 		// wedge colors
-		if constexpr(face::hasWedgeColors<FaceType>() && face::hasWedgeColors<MFaceType>()) {
+		if constexpr(face::HasWedgeColors<FaceType> && face::HasWedgeColors<MFaceType>) {
 			if (comp::isWedgeColorsEnabledOn(f) && comp::isWedgeColorsEnabledOn(mf)) {
 				f.wedgeColor(j) = mf.wedgeColor(tris[i]);
 			}
 		}
 
 		// wedge texcoords
-		if constexpr(face::hasWedgeTexCoords<FaceType>() && face::hasWedgeTexCoords<MFaceType>()) {
+		if constexpr(face::HasWedgeTexCoords<FaceType> && face::HasWedgeTexCoords<MFaceType>) {
 			if (comp::isWedgeTexCoordsEnabledOn(f) && comp::isWedgeTexCoordsEnabledOn(mf)) {
 				f.wedgeTexCoord(j) = mf.wedgeTexCoord(tris[i]);
 			}
@@ -1321,22 +1321,22 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	void* m2BaseHE = nullptr;
 
 	// save the bases of the containers before swap
-	if constexpr (mesh::hasVertices<Mesh<A...>>()) {
+	if constexpr (mesh::HasVertexContainer<Mesh<A...>>) {
 		using VertexContainer = typename Mesh<A...>::VertexContainer;
 		m1BaseV               = m1.VertexContainer::vec.data();
 		m2BaseV               = m2.VertexContainer::vec.data();
 	}
-	if constexpr (mesh::hasFaces<Mesh<A...>>()) {
+	if constexpr (mesh::HasFaceContainer<Mesh<A...>>) {
 		using FaceContainer = typename Mesh<A...>::FaceContainer;
 		m1BaseF             = m1.FaceContainer::vec.data();
 		m2BaseF             = m2.FaceContainer::vec.data();
 	}
-	if constexpr (mesh::hasEdges<Mesh<A...>>()) {
+	if constexpr (mesh::HasEdgeContainer<Mesh<A...>>) {
 		using EdgeContainer = typename Mesh<A...>::EdgeContainer;
 		m1BaseE             = m1.EdgeContainer::vec.data();
 		m2BaseE             = m2.EdgeContainer::vec.data();
 	}
-	if constexpr (mesh::hasHalfEdges<Mesh<A...>>()) {
+	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
 		using HalfEdgeContainer = typename Mesh<A...>::HalfEdgeContainer;
 		m1BaseHE             = m1.HalfEdgeContainer::vec.data();
 		m2BaseHE             = m2.HalfEdgeContainer::vec.data();
@@ -1353,25 +1353,25 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	m2.updateAllOptionalContainerReferences();
 
 	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
-	if constexpr (mesh::hasVertices<Mesh<A...>>()) {
+	if constexpr (mesh::HasVertexContainer<Mesh<A...>>) {
 		using VertexType      = typename Mesh<A...>::VertexType;
 		using VertexContainer = typename Mesh<A...>::VertexContainer;
 		m1.updateVertexReferences((VertexType*) m2BaseV, m1.VertexContainer::vec.data());
 		m2.updateVertexReferences((VertexType*) m1BaseV, m2.VertexContainer::vec.data());
 	}
-	if constexpr (mesh::hasFaces<Mesh<A...>>()) {
+	if constexpr (mesh::HasFaceContainer<Mesh<A...>>) {
 		using FaceType      = typename Mesh<A...>::FaceType;
 		using FaceContainer = typename Mesh<A...>::FaceContainer;
 		m1.updateFaceReferences((FaceType*) m2BaseF, m1.FaceContainer::vec.data());
 		m2.updateFaceReferences((FaceType*) m1BaseF, m2.FaceContainer::vec.data());
 	}
-	if constexpr (mesh::hasEdges<Mesh<A...>>()) {
+	if constexpr (mesh::HasEdgeContainer<Mesh<A...>>) {
 		using EdgeType      = typename Mesh<A...>::EdgeType;
 		using EdgeContainer = typename Mesh<A...>::EdgeContainer;
 		m1.updateEdgeReferences((EdgeType*) m2BaseE, m1.EdgeContainer::vec.data());
 		m2.updateEdgeReferences((EdgeType*) m1BaseE, m2.EdgeContainer::vec.data());
 	}
-	if constexpr (mesh::hasHalfEdges<Mesh<A...>>()) {
+	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
 		using HalfEdgeType      = typename Mesh<A...>::HalfEdgeType;
 		using HalfEdgeContainer = typename Mesh<A...>::HalfEdgeContainer;
 		m1.updateHalfEdgeReferences((HalfEdgeType*) m2BaseHE, m1.HalfEdgeContainer::vec.data());

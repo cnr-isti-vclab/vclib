@@ -35,39 +35,15 @@ namespace vcl::hedge {
 /* Port BitFlags class into hedge namespace */
 using BitFlags = comp::BitFlags;
 
-template<typename EdgeType>
-bool constexpr hasBitFlags()
-{
-	return comp::hasBitFlags<EdgeType>();
-}
-
 /* Port Color class into hedge namespace */
 using Color = comp::Color;
-
-template<typename EdgeType>
-bool constexpr hasColor()
-{
-	return comp::hasColor<EdgeType>();
-}
 
 /* Port HalfEdgeReferences class into hedge namespace */
 template<typename HalfEdgeType, typename VertexType, typename FaceType>
 using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType>;
 
-template<typename HalfEdgeType>
-bool constexpr hasHalfEdgeReferences()
-{
-	return comp::hasHalfEdgeReferences<HalfEdgeType>();
-}
-
 /* Port Mark class into hedge namespace */
 using Mark = comp::Mark;
-
-template<typename EdgeType>
-bool constexpr hasMark()
-{
-	return comp::hasMark<EdgeType>();
-}
 
 /* Port Scalar class into hedge namespace */
 template<typename ScalarType>
@@ -75,12 +51,6 @@ using Scalar = comp::Scalar<ScalarType>;
 
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
-
-template<typename EdgeType>
-bool constexpr hasScalar()
-{
-	return comp::hasScalar<EdgeType>();
-}
 
 } // namespace vcl::hedge
 

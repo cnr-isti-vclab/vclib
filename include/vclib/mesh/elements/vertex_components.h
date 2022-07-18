@@ -42,49 +42,19 @@ namespace vcl::vert {
 template<typename Edge>
 using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
 
-template<typename VertexType>
-bool constexpr hasAdjacentEdges()
-{
-	return comp::hasAdjacentEdges<VertexType>();
-}
-
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
-
-template<typename VertexType>
-bool constexpr hasAdjacentFaces()
-{
-	return comp::hasAdjacentFaces<VertexType>();
-}
 
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>
 using AdjacentVertices = comp::AdjacentVertices<VertexType>;
 
-template<typename VertexType>
-bool constexpr hasAdjacentVertices()
-{
-	return comp::hasAdjacentVertices<VertexType>();
-}
-
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags;
 
-template<typename VertexType>
-bool constexpr hasBitFlags()
-{
-	return comp::hasBitFlags<VertexType>();
-}
-
 /* Port Color class into vert namespace */
 using Color = comp::Color;
-
-template<typename VertexType>
-bool constexpr hasColor()
-{
-	return comp::hasColor<VertexType>();
-}
 
 /* Port Coordinate class into vert namespace */
 template<typename ScalarType, int N>
@@ -96,30 +66,12 @@ using Coordinate3 = comp::Coordinate3<ScalarType>;
 using Coordinate3f = comp::Coordinate3f;
 using Coordinate3d = comp::Coordinate3d;
 
-template<typename VertexType>
-bool constexpr hasCoordinate()
-{
-	return comp::hasCoordinate<VertexType>();
-}
-
 /* Port Half Edge reference into vert namespace*/
 template<typename HalfEdge>
 using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge>;
 
-template<typename VertexType>
-bool constexpr hasHalfEdgeReference()
-{
-	return comp::hasVertexHalfEdgeReference<VertexType>();
-}
-
 /* Port Mark class into vert namespace */
 using Mark = comp::Mark;
-
-template<typename VertexType>
-bool constexpr hasMark()
-{
-	return comp::hasMark<VertexType>();
-}
 
 /* Port Normal classes into vert namespace */
 template<typename ScalarType, int N>
@@ -131,24 +83,12 @@ using Normal3 = comp::Normal3<ScalarType>;
 using Normal3f = comp::Normal3f;
 using Normal3d = comp::Normal3d;
 
-template<typename VertexType>
-bool constexpr hasNormal()
-{
-	return comp::hasNormal<VertexType>();
-}
-
 /* Port PrincipalCurvature class into face namespace */
 template<typename ScalarType>
 using PrincipalCurvature = comp::PrincipalCurvature<ScalarType>;
 
 using PrincipalCurvaturef = comp::PrincipalCurvaturef;
 using PrincipalCurvatured = comp::PrincipalCurvatured;
-
-template<typename VertexType>
-bool constexpr hasPrincipalCurvature()
-{
-	return comp::hasPrincipalCurvature<VertexType>();
-}
 
 /* Port Scalar class into vert namespace */
 template<typename ScalarType>
@@ -157,21 +97,9 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename VertexType>
-bool constexpr hasScalar()
-{
-	return comp::hasScalar<VertexType>();
-}
-
 /* Port TexCoord class into vert namespace */
 template<typename ScalarType>
 using TexCoord = comp::TexCoord<ScalarType>;
-
-template<typename VertexType>
-bool constexpr hasTexCoord()
-{
-	return comp::hasTexCoord<VertexType>();
-}
 
 using TexCoordf = comp::TexCoordf;
 using TexCoordd = comp::TexCoordd;

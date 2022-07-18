@@ -25,18 +25,20 @@
 
 #include <vclib/space/point.h>
 
-#include "../detection/normal_detection.h"
+#include "../concepts/normal.h"
 
 namespace vcl::comp {
 
 template <typename P>
-class NormalT : public NormalTriggerer
+class NormalT
 {
 public:
 	using NormalType = P;
 
 	const P& normal() const;
 	P&       normal();
+
+	constexpr bool isNormalEnabled() const { return true; }
 
 protected:
 	template<typename Element>

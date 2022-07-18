@@ -28,7 +28,7 @@
 
 namespace vcl::internal {
 
-template <class MeshType>
+template <FaceMeshConcept MeshType>
 Inertia<MeshType>::Inertia(const MeshType& m)
 {
 	double nx, ny, nz;
@@ -76,13 +76,13 @@ Inertia<MeshType>::Inertia(const MeshType& m)
  * Meaningful only if the mesh is watertight.
  * @return
  */
-template<class MeshType>
+template<FaceMeshConcept MeshType>
 typename Inertia<MeshType>::ScalarType Inertia<MeshType>::volume() const
 {
 	return T0;
 }
 
-template<class MeshType>
+template<FaceMeshConcept MeshType>
 Point3<typename Inertia<MeshType>::ScalarType> Inertia<MeshType>::centerOfMass() const
 {
 	Point3<ScalarType>  r;
@@ -92,7 +92,7 @@ Point3<typename Inertia<MeshType>::ScalarType> Inertia<MeshType>::centerOfMass()
 	return r;
 }
 
-template<class MeshType>
+template<FaceMeshConcept MeshType>
 template<typename Matrix33>
 Matrix33 Inertia<MeshType>::inertiaTensor() const
 {
@@ -126,7 +126,7 @@ Matrix33 Inertia<MeshType>::inertiaTensor() const
  * @param[out] eigenValues
  * @param[out] eigenVector
  */
-template<class MeshType>
+template<FaceMeshConcept MeshType>
 template<typename Matrix33>
 void Inertia<MeshType>::inertiaTensorEigen(Matrix33& eigenValues, Point3<ScalarType>& eigenVector) const
 {
@@ -141,7 +141,7 @@ void Inertia<MeshType>::inertiaTensorEigen(Matrix33& eigenValues, Point3<ScalarT
 	eigenVector = Point3<ScalarType>(c_val);
 }
 
-template<class MeshType>
+template<FaceMeshConcept MeshType>
 void Inertia<MeshType>::faceIntegrals(const FaceType& f, const vcl::Point3<ScalarType>& n)
 {
 	ScalarType w;
@@ -178,7 +178,7 @@ void Inertia<MeshType>::faceIntegrals(const FaceType& f, const vcl::Point3<Scala
  * @brief Computes various integrations over projection of the given face
  * @param f
  */
-template<class MeshType>
+template<FaceMeshConcept MeshType>
 void Inertia<MeshType>::projectionIntegrals(const FaceType& f)
 {
 	double a0, a1, da;

@@ -22,16 +22,11 @@
 
 #include "intersection.h"
 
-#include <vclib/mesh/requirements.h>
-
 namespace vcl {
 
-template<typename EdgeMesh, typename MeshType, typename PlaneType>
+template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
 void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
 	using CoordType  = typename VertexType::CoordType;
@@ -47,7 +42,7 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 		for (uint j = 0; j < f.vertexNumber(); ++j) {
 			if (qH[m.index(f.vertex(j))] == 0) {
 				ptVec.push_back(f.vertex(j)->coord());
-				if constexpr(hasPerVertexNormal<MeshType>()) {
+				if constexpr(HasPerVertexNormal<MeshType>) {
 					if (isPerVertexNormalEnabled(m)) {
 						nmVec.push_back(f.vertex(j)->normal());
 					}
@@ -62,7 +57,7 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 				std::pair<CoordType, CoordType> seg(p0, p1);
 				CoordType                       pp = pl.segmentIntersection(seg);
 				ptVec.push_back(pp);
-				if constexpr(hasPerVertexNormal<MeshType>()) {
+				if constexpr(HasPerVertexNormal<MeshType>) {
 					if (isPerVertexNormalEnabled(m)) {
 						using NormalType = typename VertexType::NormalType;
 						const NormalType& n0 = f.vertex(j)->normal();
@@ -81,7 +76,7 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 			em.vertex(v1).coord()  = ptVec[1];
 			em.edge(eid).vertex(0) = &em.vertex(v0);
 			em.edge(eid).vertex(1) = &em.vertex(v1);
-			if constexpr (hasPerVertexNormal<MeshType>() && hasPerVertexNormal<EdgeMesh>()) {
+			if constexpr (HasPerVertexNormal<MeshType> && HasPerVertexNormal<EdgeMesh>) {
 				if (isPerVertexNormalEnabled(m) && isPerVertexNormalEnabled(em)) {
 					em.vertex(v0).normal() = nmVec[0];
 					em.vertex(v1).normal() = nmVec[1];

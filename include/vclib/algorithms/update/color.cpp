@@ -23,7 +23,6 @@
 #include "color.h"
 
 #include <vclib/math/perlin_noise.h>
-#include <vclib/mesh/requirements.h>
 
 #include "../clean.h"
 #include "../stat.h"
@@ -53,7 +52,7 @@ struct ColorAvgInfo
  * @param[in] c: the color to set to the vertices of the mesh.
  * @param[in] onlySelected: if `true`, the color will be set just on the selected vertices.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
 {
 	vcl::requirePerVertexColor(m);
@@ -80,7 +79,7 @@ void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
  * @param[in] c: the color to set to the faces of the mesh.
  * @param[in] onlySelected: if `true`, the color will be set just on the selected faces.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
 {
 	vcl::requirePerFaceColor(m);
@@ -107,7 +106,7 @@ void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
  *
  * @param[in/out] m: mesh on which transfer the face color into the vertex color.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceColor(MeshType& m)
 {
 	vcl::requirePerVertexColor(m);
@@ -143,7 +142,7 @@ void setPerVertexColorFromFaceColor(MeshType& m)
  *
  * @param[in/out] m: mesh on which transfer the vertex color into the face color.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorFromVertexColor(MeshType& m)
 {
 	vcl::requirePerVertexColor(m);
@@ -179,7 +178,7 @@ void setPerFaceColorFromVertexColor(MeshType& m)
  * @param[in] minScalar: the minimum value of the range to use for coloring (default: 0).
  * @param[in] maxScalar: the maximum value of the range to use for coloring (default: 0).
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void setPerVertexColorFromScalar(
 	MeshType&                                 m,
 	vcl::Color::ColorMap                      colorMap,
@@ -220,7 +219,7 @@ void setPerVertexColorFromScalar(
  * @param[in] minScalar: the minimum value of the range to use for coloring (default: 0).
  * @param[in] maxScalar: the maximum value of the range to use for coloring (default: 0).
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorFromScalar(
 	MeshType&                               m,
 	vcl::Color::ColorMap                    colorMap,
@@ -263,7 +262,7 @@ void setPerFaceColorFromScalar(
  * @param[in] mixColor: the color of vertices that are part of edges that are both on border and non
  * on border.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceBorderFlag(
 	MeshType& m,
 	Color     borderColor,
@@ -271,7 +270,6 @@ void setPerVertexColorFromFaceBorderFlag(
 	Color     mixColor)
 {
 	vcl::requirePerVertexColor(m);
-	vcl::requireFaces<MeshType>();
 
 	using FaceType = typename MeshType::FaceType;
 
@@ -319,7 +317,7 @@ void setPerVertexColorFromFaceBorderFlag(
  * @param[in] connectedComponents: a vector of sets, each one of them containing the face ids of a
  * connected component.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorFromConnectedComponents(
 	MeshType&                          m,
 	const std::vector<std::set<uint>>& connectedComponents)
@@ -348,7 +346,7 @@ void setPerFaceColorFromConnectedComponents(
  *
  * @param[in/out] m: the mesh on which set the face colors according to its connected components.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorFromConnectedComponents(MeshType& m)
 {
 	vcl::requirePerFaceColor(m);
@@ -379,7 +377,7 @@ void setPerFaceColorFromConnectedComponents(MeshType& m)
  * @param[in] checkFauxEdges: if true, colors uniformely adjacent faces with faux edges (default
  * `true`).
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
 {
 	vcl::requirePerFaceColor(m);
@@ -395,7 +393,7 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
 		if (f.color() == baseColor) {
 			f.color() = vc[m.index(f) % nColors];
 		}
-		if constexpr (hasPerFaceAdjacentFaces<MeshType>()) {
+		if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
 			if (checkFauxEdges && isPerFaceAdjacentFacesEnabled(m)) {
 				for (uint i = 0; i < f.vertexNumber(); ++i) {
 					if (f.isEdgeFaux(i)) {
@@ -425,7 +423,7 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
  * @param offset
  * @param onSelected
  */
-template<typename MeshType, typename PointType>
+template<MeshConcept MeshType, typename PointType>
 void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offset, bool onSelected)
 {
 	vcl::requirePerVertexColor(m);
@@ -464,7 +462,7 @@ void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offse
  * @param color2
  * @param onSelected
  */
-template<typename MeshType, typename PointType>
+template<MeshConcept MeshType, typename PointType>
 void setPerVertexPerlinColor(
 	MeshType&      m,
 	double         period,

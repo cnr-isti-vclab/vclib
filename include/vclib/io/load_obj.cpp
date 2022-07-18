@@ -114,7 +114,7 @@ void loadMaterials(
 				}
 				mat.map_Kd = *token;
 				mat.hasTexture = true;
-				if constexpr (hasTexturePaths<MeshType>()) {
+				if constexpr (HasTexturePaths<MeshType>) {
 					mat.mapId = mesh.textureNumber();
 					mesh.pushTexturePath(mat.map_Kd);
 				}
@@ -146,7 +146,7 @@ void loadVertexCoord(
 	for (uint i = 0; i < 3; ++i) {
 		m.vertex(vid).coord()[i] = internal::readDouble<double>(token);
 	}
-	if constexpr (hasPerVertexColor<MeshType>()){
+	if constexpr (HasPerVertexColor<MeshType>){
 		if (vid == 0) {
 			// if the current material has a valid color, of the file stores the vertex color in the
 			// non-standard way (color values after the coordinates)
@@ -276,7 +276,7 @@ void loadFace(
 	}
 
 	// color
-	if (hasPerFaceColor<MeshType>()){
+	if (HasPerFaceColor<MeshType>){
 		if (fid == 0) { // if the first face, we need to check if I can store colors
 			// if the current material has no color, we assume that the file has no face color
 			if (currentMaterial.hasColor) {
@@ -301,7 +301,7 @@ void loadFace(
 	}
 
 	// wedge coords
-	if constexpr(hasPerFaceWedgeTexCoords<MeshType>()) {
+	if constexpr(HasPerFaceWedgeTexCoords<MeshType>) {
 		// first, need to check if I can store wedge texcoords in the mesh
 		if (fid == 0) {
 			// if the current face has the right number of wedge texcoords, we assume that we can
@@ -418,7 +418,7 @@ void loadObj(
 		// nothing to do, this file was missing but was a fallback for some type of files...
 	}
 
-	if constexpr (hasTexturePaths<MeshType>()) {
+	if constexpr (HasTexturePaths<MeshType>) {
 		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
 	}
 
@@ -445,7 +445,7 @@ void loadObj(
 					m, token, loadedInfo, tokens, currentMaterial, enableOptionalComponents);
 			}
 			// read vertex normal (and save in vn how many normals we read)
-			if constexpr(hasPerVertexNormal<MeshType>()) {
+			if constexpr(HasPerVertexNormal<MeshType>) {
 				if (header == "vn") {
 					internal::loadVertexNormal(
 						m, mapNormalsCache, vn, token, loadedInfo, enableOptionalComponents);
@@ -455,7 +455,7 @@ void loadObj(
 			// read texcoords and save them in the vector of texcoords, we will store them in the
 			// mesh later
 			if constexpr (
-				hasPerVertexTexCoord<MeshType>() || hasPerFaceWedgeTexCoords<MeshType>()) {
+				HasPerVertexTexCoord<MeshType> || HasPerFaceWedgeTexCoords<MeshType>) {
 				if (header == "vt") {
 					// save the texcoord for later
 					TexCoordd tf;
@@ -472,7 +472,7 @@ void loadObj(
 			// - color
 			// - eventual texcoords
 			// - possibility to split polygonal face into several triangles
-			if constexpr (hasFaces<MeshType>()) {
+			if constexpr (HasFaces<MeshType>) {
 				if (header == "f") {
 					internal::loadFace(
 						m,
@@ -486,7 +486,7 @@ void loadObj(
 		}
 	} while (file);
 
-	if constexpr (hasPerVertexNormal<MeshType>()) {
+	if constexpr (HasPerVertexNormal<MeshType>) {
 		// set all vertex normals that have not been stored in vertices
 		for (const auto& p : mapNormalsCache) {
 			if (p.first < m.vertexNumber()) {
@@ -494,7 +494,7 @@ void loadObj(
 			}
 		}
 	}
-	if constexpr (hasPerVertexTexCoord<MeshType>()) {
+	if constexpr (HasPerVertexTexCoord<MeshType>) {
 		using VertexType = typename MeshType::VertexType;
 		if (!loadedInfo.hasFaceWedgeTexCoords()) {
 			// we can set the loaded texCoords to vertices, also if they are not supported in obj

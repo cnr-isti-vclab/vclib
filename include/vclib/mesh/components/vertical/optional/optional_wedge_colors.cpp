@@ -174,7 +174,7 @@ template<int N, typename T>
 template<typename Element>
 void OptionalWedgeColors<N, T>::importFrom(const Element& e)
 {
-	if constexpr (hasWedgeColors<Element>()) {
+	if constexpr (HasWedgeColors<Element>) {
 		if (isWedgeColorsEnabled() && isWedgeColorsEnabledOn(e)) {
 			if constexpr(N > 0) {
 				// same static size

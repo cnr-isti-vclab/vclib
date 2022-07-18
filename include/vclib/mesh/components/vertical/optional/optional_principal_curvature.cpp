@@ -56,7 +56,7 @@ template<typename Scalar, typename T>
 template<typename Element>
 void OptionalPrincipalCurvature<Scalar, T>::importFrom(const Element& e)
 {
-	if constexpr (hasPrincipalCurvature<Element>()) {
+	if constexpr (HasPrincipalCurvature<Element>) {
 		if (isPrincipalCurvatureEnabled() && isPrincipalCurvatureEnabledOn(e)) {
 			principalCurvature() = e.principalCurvature();
 		}

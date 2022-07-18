@@ -22,8 +22,6 @@
 
 #include "tetrahedron.h"
 
-#include <vclib/mesh/requirements.h>
-
 namespace vcl {
 
 /**
@@ -41,12 +39,9 @@ namespace vcl {
  *
  * @return a Mesh containing a Tetrahedron.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 MeshType createTetrahedron()
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	using CoordType = typename MeshType::Vertex::CoordType;
 	return createTetrahedron<MeshType>(
 		CoordType(1, 1, 1), CoordType(-1, 1, -1), CoordType(-1, -1, 1), CoordType(1, -1, -1));
@@ -68,16 +63,13 @@ MeshType createTetrahedron()
  * @param p3
  * @return a Mesh containing a Tetrahedron.
  */
-template<typename MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, typename CoordType>
 MeshType createTetrahedron(
 	const CoordType& p0,
 	const CoordType& p1,
 	const CoordType& p2,
 	const CoordType& p3)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	MeshType m;
 
 	m.addVertices(p0, p1, p2, p3);

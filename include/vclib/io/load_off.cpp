@@ -56,7 +56,7 @@ void loadOffVertices(
 			v.coord()[j] = io::internal::readDouble<double>(token);
 		}
 
-		if constexpr(vcl::hasPerVertexNormal<MeshType>()) {
+		if constexpr(vcl::HasPerVertexNormal<MeshType>) {
 			if (vcl::isPerVertexNormalEnabled(mesh) && fileInfo.hasVertexNormals()) {
 				// Read 3 normal coordinates
 				for (unsigned int j = 0; j < 3; j++) {
@@ -73,7 +73,7 @@ void loadOffVertices(
 		const uint nReadComponents = token - tokens.begin();
 		const int nColorComponents = (int)tokens.size() - nReadComponents - nTexCoords;
 
-		if constexpr(vcl::hasPerVertexColor<MeshType>()) {
+		if constexpr(vcl::HasPerVertexColor<MeshType>) {
 			if (vcl::isPerVertexColorEnabled(mesh) && fileInfo.hasVertexColors()) {
 				if (nColorComponents != 1 && nColorComponents != 3 && nColorComponents != 4)
 					throw MalformedFileException("Wrong number of components in line.");
@@ -86,7 +86,7 @@ void loadOffVertices(
 			off::loadColor(token, nColorComponents);
 		}
 
-		if constexpr(vcl::hasPerVertexTexCoord<MeshType>()) {
+		if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
 			if (vcl::isPerVertexTexCoordEnabled(mesh) && fileInfo.hasVertexTexCoords()) {
 				// Read 2 tex coordinates
 				for (unsigned int j = 0; j < 2; j++) {
@@ -110,7 +110,7 @@ void loadOffFaces(
 	uint           nf,
 	bool           enableOptionalComponents)
 {
-	if constexpr (hasFaces<MeshType>()) {
+	if constexpr (HasFaces<MeshType>) {
 		using FaceType       = typename MeshType::FaceType;
 
 		mesh.reserveFaces(nf);
@@ -152,7 +152,7 @@ void loadOffFaces(
 
 			// read face color
 			if (token != tokens.end()) { // there are colors to read
-				if constexpr (hasPerFaceColor<MeshType>()) {
+				if constexpr (HasPerFaceColor<MeshType>) {
 					if (isPerFaceColorEnabled(mesh) ||
 						(enableOptionalComponents && enableIfPerFaceColorOptional(mesh))){
 						loadedInfo.setFaceColors();
@@ -214,6 +214,8 @@ void loadOff(
 
 	internal::loadOffVertices(m, file, fileInfo, nVertices);
 	internal::loadOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);
+	if (enableOptionalComponents)
+		loadedInfo = fileInfo;
 	// internal::loadOffEdges(m, file, loadedInfo, nEdges);
 }
 

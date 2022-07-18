@@ -81,7 +81,7 @@ void VertexHalfEdgeReference<HalfEdge>::importHalfEdgeReferencesFrom(
 	HalfEdge*       base,
 	const VertHEType* ebase)
 {
-	if constexpr (hasVertexHalfEdgeReference<Vertex>()) {
+	if constexpr (HasVertexHalfEdgeReference<Vertex>) {
 		if (base != nullptr && ebase != nullptr) {
 			if (e.halfEdge() != nullptr) {
 				he = base + (e.halfEdge() - ebase);

@@ -28,9 +28,9 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../vertical_info.h"
+#include "../vertical_component.h"
 
-#include "../../detection/adjacent_edges_detection.h"
+#include "../../concepts/adjacent_edges.h"
 
 namespace vcl::mesh {
 template<typename, typename>
@@ -40,13 +40,13 @@ class OptionalAdjacentEdgesVector;
 namespace vcl::comp {
 
 template<typename Edge, int N, typename T>
-class OptionalAdjacentEdges : public OptionalAdjacentEdgesTriggerer, public virtual VerticalInfo<T>
+class OptionalAdjacentEdges : public virtual VerticalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalAdjacentEdgesVector;
 
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 	// if we use the vector, the size of the array will be 0
@@ -54,6 +54,9 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	// possibility to access to the AdjacentEdges class, whether is optional or not.
+	using AdjacentEdges = OptionalAdjacentEdges;
+
 	// the AdjEdgesContainer type will be array or vector, depending on N value
 	using AdjEdgesContainer = typename std::conditional<
 		(N >= 0),
@@ -129,6 +132,9 @@ public:
 	ConstAdjacentEdgeIterator      adjEdgeEnd() const;
 	AdjacentEdgeRangeIterator      adjEdges();
 	ConstAdjacentEdgeRangeIterator adjEdges() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalAdjEdges() const {};
 
 protected:
 	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);

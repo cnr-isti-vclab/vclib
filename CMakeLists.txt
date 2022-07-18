@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.13)
 project(vclib)
 
 ### Build settings
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 ### Options
 option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
@@ -107,30 +107,32 @@ set(HEADERS
 	include/vclib/math/matrix.h
 	include/vclib/math/perlin_noise.h
 	include/vclib/mesh/mesh.h
+	include/vclib/mesh/mesh_algorithms.h
 	include/vclib/mesh/mesh_components.h
+	include/vclib/mesh/mesh_concept.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
-	include/vclib/mesh/components/detection/adjacent_edges_detection.h
-	include/vclib/mesh/components/detection/adjacent_faces_detection.h
-	include/vclib/mesh/components/detection/adjacent_vertices_detection.h
-	include/vclib/mesh/components/detection/bit_flags_detection.h
-	include/vclib/mesh/components/detection/bounding_box_detection.h
-	include/vclib/mesh/components/detection/color_detection.h
-	include/vclib/mesh/components/detection/coordinate_detection.h
-	include/vclib/mesh/components/detection/custom_components_detection.h
-	include/vclib/mesh/components/detection/face_half_edge_reference_detection.h
-	include/vclib/mesh/components/detection/half_edge_references_detection.h
-	include/vclib/mesh/components/detection/mark_detection.h
-	include/vclib/mesh/components/detection/normal_detection.h
-	include/vclib/mesh/components/detection/principal_curvature_detection.h
-	include/vclib/mesh/components/detection/scalar_detection.h
-	include/vclib/mesh/components/detection/tex_coord_detection.h
-	include/vclib/mesh/components/detection/texture_paths_detection.h
-	include/vclib/mesh/components/detection/transfrom_matrix_detection.h
-	include/vclib/mesh/components/detection/vertex_half_edge_reference_detection.h
-	include/vclib/mesh/components/detection/vertex_references_detection.h
-	include/vclib/mesh/components/detection/wedge_colors_detection.h
-	include/vclib/mesh/components/detection/wedge_tex_coords_detection.h
+	include/vclib/mesh/components/concepts/adjacent_edges.h
+	include/vclib/mesh/components/concepts/adjacent_faces.h
+	include/vclib/mesh/components/concepts/adjacent_vertices.h
+	include/vclib/mesh/components/concepts/bit_flags.h
+	include/vclib/mesh/components/concepts/bounding_box.h
+	include/vclib/mesh/components/concepts/color.h
+	include/vclib/mesh/components/concepts/coordinate.h
+	include/vclib/mesh/components/concepts/custom_components.h
+	include/vclib/mesh/components/concepts/face_half_edge_reference.h
+	include/vclib/mesh/components/concepts/half_edge_references.h
+	include/vclib/mesh/components/concepts/mark.h
+	include/vclib/mesh/components/concepts/normal.h
+	include/vclib/mesh/components/concepts/principal_curvature.h
+	include/vclib/mesh/components/concepts/scalar.h
+	include/vclib/mesh/components/concepts/tex_coord.h
+	include/vclib/mesh/components/concepts/texture_paths.h
+	include/vclib/mesh/components/concepts/transform_matrix.h
+	include/vclib/mesh/components/concepts/vertex_half_edge_reference.h
+	include/vclib/mesh/components/concepts/vertex_references.h
+	include/vclib/mesh/components/concepts/wedge_colors.h
+	include/vclib/mesh/components/concepts/wedge_tex_coords.h
 	include/vclib/mesh/components/horizontal/adjacent_edges.h
 	include/vclib/mesh/components/horizontal/adjacent_faces.h
 	include/vclib/mesh/components/horizontal/adjacent_vertices.h
@@ -155,7 +157,7 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/wedge_tex_coords.h
 	include/vclib/mesh/components/horizontal/internal/element_references.h
 	include/vclib/mesh/components/horizontal/internal/generic_container.h
-	include/vclib/mesh/components/vertical/vertical_info.h
+	include/vclib/mesh/components/vertical/vertical_component.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_vertices.h
@@ -183,28 +185,35 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/vectors/vertical_components_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_colors_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_tex_coords_vector.h
-	include/vclib/mesh/container/containers.h
-	include/vclib/mesh/container/containers_detection.h
-	include/vclib/mesh/container/edge_container.h
-	include/vclib/mesh/container/element_container.h
-	include/vclib/mesh/container/face_container.h
-	include/vclib/mesh/container/half_edge_container.h
-	include/vclib/mesh/container/vertex_container.h
+	include/vclib/mesh/containers/containers.h
+	include/vclib/mesh/containers/containers_concepts.h
+	include/vclib/mesh/containers/edge_container.h
+	include/vclib/mesh/containers/element_container.h
+	include/vclib/mesh/containers/face_container.h
+	include/vclib/mesh/containers/half_edge_container.h
+	include/vclib/mesh/containers/vertex_container.h
 	include/vclib/mesh/elements/edge.h
 	include/vclib/mesh/elements/edge_components.h
 	include/vclib/mesh/elements/edge_components_optional.h
+	include/vclib/mesh/elements/edge_concept.h
 	include/vclib/mesh/elements/face.h
 	include/vclib/mesh/elements/face_components.h
 	include/vclib/mesh/elements/face_components_optional.h
+	include/vclib/mesh/elements/face_concept.h
 	include/vclib/mesh/elements/half_edge.h
 	include/vclib/mesh/elements/half_edge_components.h
 	include/vclib/mesh/elements/half_edge_components_optional.h
+	include/vclib/mesh/elements/half_edge_concept.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
 	include/vclib/mesh/elements/vertex_components_optional.h
-	include/vclib/mesh/requirements/element_requirements.h
+	include/vclib/mesh/elements/vertex_concept.h
+	include/vclib/mesh/requirements/element_concepts.h
+	include/vclib/mesh/requirements/face_concepts.h
 	include/vclib/mesh/requirements/face_requirements.h
+	include/vclib/mesh/requirements/mesh_concepts.h
 	include/vclib/mesh/requirements/mesh_requirements.h
+	include/vclib/mesh/requirements/vertex_concepts.h
 	include/vclib/mesh/requirements/vertex_requirements.h
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h
@@ -280,6 +289,7 @@ set(SOURCES
 	include/vclib/math/matrix.cpp
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp
+	include/vclib/mesh/mesh_algorithms.cpp
 	include/vclib/mesh/mesh_pos.cpp
 	include/vclib/mesh/components/horizontal/adjacent_edges.cpp
 	include/vclib/mesh/components/horizontal/adjacent_faces.cpp
@@ -320,16 +330,15 @@ set(SOURCES
 	include/vclib/mesh/components/vertical/vectors/custom_component_vector_handle.cpp
 	include/vclib/mesh/components/vertical/vectors/custom_components_vector.cpp
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.cpp
-	include/vclib/mesh/container/edge_container.cpp
-	include/vclib/mesh/container/element_container.cpp
-	include/vclib/mesh/container/half_edge_container.cpp
-	include/vclib/mesh/container/face_container.cpp
-	include/vclib/mesh/container/vertex_container.cpp
+	include/vclib/mesh/containers/edge_container.cpp
+	include/vclib/mesh/containers/element_container.cpp
+	include/vclib/mesh/containers/half_edge_container.cpp
+	include/vclib/mesh/containers/face_container.cpp
+	include/vclib/mesh/containers/vertex_container.cpp
 	include/vclib/mesh/elements/edge.cpp
 	include/vclib/mesh/elements/face.cpp
 	include/vclib/mesh/elements/half_edge.cpp
 	include/vclib/mesh/elements/vertex.cpp
-	include/vclib/mesh/requirements/element_requirements.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp

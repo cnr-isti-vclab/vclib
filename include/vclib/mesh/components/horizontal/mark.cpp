@@ -58,7 +58,7 @@ inline void Mark::decrementMark()
 template<typename Element>
 void Mark::importFrom(const Element& e)
 {
-	if constexpr (hasMark<Element>()) {
+	if constexpr (HasMark<Element>) {
 		if (isMarkEnabledOn(e)) {
 			m = e.mark();
 		}

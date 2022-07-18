@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
-#include "../detection/adjacent_edges_detection.h"
+#include "../concepts/adjacent_edges.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {
@@ -50,7 +50,7 @@ namespace vcl::comp {
  * Adjacent Edges in case of dynamic size won't be available on Face Elements.
  */
 template<typename Edge, int N>
-class AdjacentEdges : protected internal::ElementReferences<Edge, N>, public AdjacentEdgesTriggerer
+class AdjacentEdges : protected internal::ElementReferences<Edge, N>
 {
 	using Base = internal::ElementReferences<Edge, N>;
 
@@ -88,6 +88,8 @@ public:
 	ConstAdjacentEdgeIterator findAdjEdge(const Edge* e) const;
 
 	int indexOfAdjEdge(const Edge* e) const;
+
+	constexpr bool isAdjEdgesEnabled() const { return true; }
 
 	/* Member functions specific for vector */
 

@@ -259,12 +259,12 @@ inline void BitFlags::unsetUserBit(uint bit, uint firstBit)
 template<typename Element>
 void BitFlags::importFrom(const Element& e)
 {
-	if constexpr (hasBitFlags<Element>()) {
+	if constexpr (HasBitFlags<Element>) {
 		unsetAllFlags();
-		if constexpr (hasPolygonBitFlags<Element>()) {
+		if constexpr (HasPolygonBitFlags<Element>) {
 			// todo
 		}
-		else if constexpr (hasTriangleBitFlags<Element>()) {
+		else if constexpr (HasTriangleBitFlags<Element>) {
 			// todo
 		}
 		else {

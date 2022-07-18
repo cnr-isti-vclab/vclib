@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_NORMAL_VECTOR_H
 #define VCL_MESH_COMPONENTS_NORMAL_VECTOR_H
 
-#include "../../detection/normal_detection.h"
+#include "../../concepts/normal.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class NormalVector
 {
 public:
@@ -37,11 +37,11 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isNormalEnabled() const { return false; };
 };
 
-template<typename T>
-class NormalVector<T, std::enable_if_t<comp::hasOptionalNormal<T>()>> :
-		private GenericComponentVector<typename T::NormalType>
+template<comp::HasOptionalNormal T>
+class NormalVector<T> : private GenericComponentVector<typename T::NormalType>
 {
 	using NormalType = typename T::NormalType;
 	using Base = GenericComponentVector<NormalType>;
@@ -51,9 +51,11 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;
-	bool              isNormalEnabled() const { return Base::isEnabled(); };
-	void              enableNormal(uint size) { Base::enable(size); }
-	void              disableNormal() { Base::disable(); }
+
+	bool isNormalEnabled() const { return Base::isEnabled(); };
+	void enableNormal(uint size) { Base::enable(size); }
+	void disableNormal() { Base::disable(); }
+
 	NormalType&       normal(uint i) { return Base::at(i); }
 	const NormalType& normal(uint i) const { return Base::at(i); }
 };

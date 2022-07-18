@@ -28,9 +28,9 @@
 
 #include <vclib/iterators/range_iterator.h>
 
-#include "../vertical_info.h"
+#include "../vertical_component.h"
 
-#include "../../detection/adjacent_faces_detection.h"
+#include "../../concepts/adjacent_faces.h"
 
 namespace vcl::mesh {
 template<typename, typename>
@@ -40,13 +40,13 @@ class OptionalAdjacentFacesVector;
 namespace vcl::comp {
 
 template<typename Face, int N, typename T>
-class OptionalAdjacentFaces : public OptionalAdjacentFacesTriggerer, public virtual VerticalInfo<T>
+class OptionalAdjacentFaces : public virtual VerticalComponent<T>
 {
 	template<typename, typename>
 	friend class OptionalAdjacentFacesVector;
 
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 	// if we use the vector, the size of the array will be 0
@@ -54,6 +54,9 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	// possibility to access to the AdjacentFaces class, whether is optional or not.
+	using AdjacentFaces = OptionalAdjacentFaces;
+
 	// the AdjFacesContainer type will be array or vector, depending on N value
 	using AdjFacesContainer = typename std::conditional<
 		(N >= 0),
@@ -129,6 +132,9 @@ public:
 	ConstAdjacentFaceIterator      adjFaceEnd() const;
 	AdjacentFaceRangeIterator      adjFaces();
 	ConstAdjacentFaceRangeIterator adjFaces() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalAdjFaces() const {};
 
 protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);

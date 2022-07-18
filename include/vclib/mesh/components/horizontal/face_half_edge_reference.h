@@ -30,18 +30,12 @@
 #include <vclib/iterators/half_edge/face_vertex_iterator.h>
 #include <vclib/iterators/range_iterator.h>
 
-#include "../detection/face_half_edge_reference_detection.h"
-
-#include "../detection/adjacent_faces_detection.h"
-#include "../detection/vertex_references_detection.h"
+#include "../concepts/face_half_edge_reference.h"
 
 namespace vcl::comp {
 
 template<typename HalfEdge>
-class FaceHalfEdgeReference :
-		public FaceHalfEdgeReferenceTriggerer,
-		public VertexReferencesTriggerer,
-		public AdjacentFacesTriggerer
+class FaceHalfEdgeReference
 {
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;

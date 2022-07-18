@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_VECTOR_H
 #define VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_VECTOR_H
 
-#include "../../detection/principal_curvature_detection.h"
+#include "../../concepts/principal_curvature.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class PrincipalCurvatureVector
 {
 public:
@@ -37,12 +37,11 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isPrincipalCurvatureEnabled() const { return false; };
 };
 
-template<typename T>
-class PrincipalCurvatureVector<
-	T,
-	std::enable_if_t<comp::hasOptionalPrincipalCurvature<T>()>> :
+template<comp::HasOptionalPrincipalCurvature T>
+class PrincipalCurvatureVector<T> :
 		private GenericComponentVector<typename T::PrincipalCurvatureType>
 {
 	using PrincipalCurvatureType = typename T::PrincipalCurvatureType;
@@ -53,10 +52,12 @@ public:
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                    isPrincipalCurvatureEnabled() const { return Base::isEnabled(); };
-	void                    enablePrincipalCurvature(uint size) { Base::enable(size); }
-	void                    disablePrincipalCurvature() { Base::disable(); }
-	PrincipalCurvatureType& principalCurvature(uint i) { return Base::at(i); }
+
+	bool isPrincipalCurvatureEnabled() const { return Base::isEnabled(); };
+	void enablePrincipalCurvature(uint size) { Base::enable(size); }
+	void disablePrincipalCurvature() { Base::disable(); }
+
+	PrincipalCurvatureType&       principalCurvature(uint i) { return Base::at(i); }
 	const PrincipalCurvatureType& principalCurvature(uint i) const { return Base::at(i); }
 };
 

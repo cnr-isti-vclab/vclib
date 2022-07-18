@@ -98,6 +98,9 @@ public:
 
 	void importFromVCGFlags(int f);
 	int exportToVCGFlags() const;
+	
+	// dummy member to discriminate between triangle and non-triangle bit flags
+	void __polygonBitFlags() const {};
 
 protected:
 	template<typename Element>

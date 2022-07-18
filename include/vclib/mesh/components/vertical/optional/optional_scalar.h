@@ -23,16 +23,16 @@
 #ifndef VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
 #define VCL_MESH_COMPONENTS_OPTIONAL_SCALAR_H
 
-#include "../vertical_info.h"
-#include "../../detection/scalar_detection.h"
+#include "../vertical_component.h"
+#include "../../concepts/scalar.h"
 
 namespace vcl::comp {
 
 template<typename S, typename T>
-class OptionalScalar : public OptionalScalarTrigger, public virtual VerticalInfo<T>
+class OptionalScalar : public virtual VerticalComponent<T>
 {
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:
@@ -41,6 +41,9 @@ public:
 	ScalarType&       scalar();
 
 	bool isScalarEnabled() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalScalar() const {};
 
 protected:
 	template <typename Element>

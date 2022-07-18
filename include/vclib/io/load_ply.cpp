@@ -108,7 +108,7 @@ void loadPly(
 		internal::enableOptionalComponents(loadedInfo, m);
 
 	m.clear();
-	if constexpr (hasTexturePaths<MeshType>()) {
+	if constexpr (HasTexturePaths<MeshType>) {
 		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
 	}
 	try {

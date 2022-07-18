@@ -24,10 +24,11 @@
 #define VCL_ALGORITHMS_INTERSECTION_H
 
 #include <vclib/space/plane.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template<typename EdgeMesh, typename MeshType, typename PlaneType>
+template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
 void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl);
 
 }

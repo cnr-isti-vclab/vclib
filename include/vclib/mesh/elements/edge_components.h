@@ -37,48 +37,18 @@ namespace vcl::edge {
 template<typename EdgeType>
 using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
 
-template<typename EdgeType>
-bool constexpr hasAdjacentEdges()
-{
-	return comp::hasAdjacentEdges<EdgeType>();
-}
-
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
-template<typename EdgeType>
-bool constexpr hasAdjacentFaces()
-{
-	return comp::hasAdjacentFaces<EdgeType>();
-}
-
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags;
-
-template<typename EdgeType>
-bool constexpr hasBitFlags()
-{
-	return comp::hasBitFlags<EdgeType>();
-}
 
 /* Port Color class into edge namespace */
 using Color = comp::Color;
 
-template<typename EdgeType>
-bool constexpr hasColor()
-{
-	return comp::hasColor<EdgeType>();
-}
-
 /* Port Mark class into edge namespace */
 using Mark = comp::Mark;
-
-template<typename EdgeType>
-bool constexpr hasMark()
-{
-	return comp::hasMark<EdgeType>();
-}
 
 /* Port Scalar class into edge namespace */
 template<typename ScalarType>
@@ -87,21 +57,9 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
-template<typename EdgeType>
-bool constexpr hasScalar()
-{
-	return comp::hasScalar<EdgeType>();
-}
-
 /* Port VertexReferences class into edge namespace */
 template<typename VertexType>
 using VertexReferences = comp::VertexReferences<VertexType, 2>;
-
-template<typename EdgeType>
-bool constexpr hasVertexReferences()
-{
-	return comp::hasVertexReferences<EdgeType>();
-}
 
 } // namespace vcl::edge
 

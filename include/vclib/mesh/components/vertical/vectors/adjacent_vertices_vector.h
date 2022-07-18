@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_VECTOR_H
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_VECTOR_H
 
-#include "../../detection/adjacent_vertices_detection.h"
+#include "../../concepts/adjacent_vertices.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class AdjacentVerticesVector
 {
 public:
@@ -37,13 +37,11 @@ public:
 	void resize(uint) {}
 	void reserve(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isAdjacentVerticesEnabled() const { return false; };
 };
 
-template<typename T>
-class AdjacentVerticesVector<
-	T,
-	std::enable_if_t<comp::hasOptionalAdjacentVertices<T>()>> :
-		private GenericComponentVector<typename T::AdjVertsContainer>
+template<comp::HasOptionalAdjacentVertices T>
+class AdjacentVerticesVector<T> : private GenericComponentVector<typename T::AdjVertsContainer>
 {
 private:
 	using AdjVertsContainer = typename T::AdjVertsContainer;
@@ -51,12 +49,14 @@ private:
 
 public:
 	using Base::clear;
+	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	using Base::compact;
-	bool             isAdjacentVerticesEnabled() const { return Base::isEnabled(); };
-	void             enableAdjacentVertices(uint size) { Base::enable(size); }
-	void             disableAdjacentVertices() { Base::disable(); }
+
+	bool isAdjacentVerticesEnabled() const { return Base::isEnabled(); };
+	void enableAdjacentVertices(uint size) { Base::enable(size); }
+	void disableAdjacentVertices() { Base::disable(); }
+
 	AdjVertsContainer&       adjVerts(uint i) { return Base::at(i); }
 	const AdjVertsContainer& adjVerts(uint i) const { return Base::at(i); }
 };

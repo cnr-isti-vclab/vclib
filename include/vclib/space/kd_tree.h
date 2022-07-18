@@ -23,7 +23,7 @@
 #ifndef VCL_KD_TREE_H
 #define VCL_KD_TREE_H
 
-#include <vclib/misc/types.h>
+#include <vclib/mesh/requirements.h>
 #include <vector>
 
 namespace vcl {
@@ -41,7 +41,7 @@ public:
 		uint                          pointsPerCell = 16,
 		uint                          maxDepth      = 64,
 		bool                          balanced      = false);
-	template<typename MeshType>
+	template<MeshConcept MeshType>
 	KDTree(
 		const MeshType& m,
 		uint                          pointsPerCell = 16,

@@ -40,7 +40,7 @@ template<typename Point>
 template<typename Element>
 void CoordT<Point>::importFrom(const Element& v)
 {
-	if constexpr (hasCoordinate<Element>()) {
+	if constexpr (HasCoordinate<Element>) {
 		p = v.coord();
 	}
 }

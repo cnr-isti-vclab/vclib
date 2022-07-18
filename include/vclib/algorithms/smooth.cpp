@@ -25,7 +25,6 @@
 #include <cmath>
 #include <vector>
 
-#include <vclib/mesh/requirements.h>
 #include <vclib/space/kd_tree.h>
 
 namespace vcl {
@@ -122,16 +121,13 @@ void accumulateLaplacianInfo(
  * @param smoothSelected
  * @param cotangentWeight
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void laplacianSmoothing(
 	MeshType&    m,
 	uint step,
 	bool         smoothSelected,
 	bool         cotangentWeight /*, vcl::CallBackPos *cb*/)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	using CoordType  = typename VertexType::CoordType;
 
@@ -151,7 +147,7 @@ void laplacianSmoothing(
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void taubinSmoothing(
 	MeshType& m,
 	uint      step,
@@ -159,9 +155,6 @@ void taubinSmoothing(
 	float     mu,
 	bool      smoothSelected /*, vcl::CallBackPos *cb*/)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 	using CoordType  = typename VertexType::CoordType;
 
@@ -204,11 +197,9 @@ void taubinSmoothing(
  * @param neighborNum
  * @param iterNum
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNum)
 {
-	vcl::requireVertices<MeshType>();
-
 	using Scalar = typename MeshType::VertexType::CoordType::ScalarType;
 	KDTree<Scalar> tree(m);
 	updatePerVertexNormalsPointCloud(m, tree, neighborNum, iterNum);
@@ -227,14 +218,13 @@ void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNu
  * @param neighborNum
  * @param iterNum
  */
-template<typename MeshType, typename Scalar>
+template<MeshConcept MeshType, typename Scalar>
 void smoothPerVertexNormalsPointCloud(
 	MeshType&             m,
 	const KDTree<Scalar>& tree,
 	uint                  neighborNum,
 	uint                  iterNum)
 {
-	vcl::requireVertices<MeshType>();
 	vcl::requirePerVertexNormal(m);
 
 	using VertexType = typename MeshType::VertexType;

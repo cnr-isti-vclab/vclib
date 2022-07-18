@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
-#include "../detection/wedge_colors_detection.h"
+#include "../concepts/wedge_colors.h"
 #include "internal/generic_container.h"
 
 #include <vclib/space/color.h>
@@ -31,7 +31,7 @@
 namespace vcl::comp {
 
 template<int N>
-class WedgeColors : protected internal::GenericContainer<vcl::Color, N>, public WedgeColorsTriggerer
+class WedgeColors : protected internal::GenericContainer<vcl::Color, N>
 {
 	using Base = internal::GenericContainer<vcl::Color, N>;
 
@@ -57,6 +57,8 @@ public:
 
 	void setWedgeColor(const vcl::Color& t, uint i);
 	void setWedgeColors(const std::vector<vcl::Color>& list);
+
+	constexpr bool isWedgeColorsEnabled() const { return true; }
 
 	/* Iterator Member functions */
 

@@ -28,6 +28,7 @@
 #include <execution>
 #include <vector>
 
+#include <vclib/mesh/requirements.h>
 #include <vclib/misc/types.h>
 
 namespace vcl::internal {
@@ -40,7 +41,7 @@ namespace vcl::internal {
  *
  * edges can be sorted using this class
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 class PerFaceEdge
 {
 public:
@@ -78,7 +79,7 @@ public:
 	bool operator!=(const PerFaceEdge& pe) const { return v[0] != pe.v[0] || v[1] != pe.v[1]; }
 };
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 class ConstPerFaceEdge
 {
 public:
@@ -116,7 +117,7 @@ public:
 	bool operator!=(const ConstPerFaceEdge& pe) const { return v[0] != pe.v[0] || v[1] != pe.v[1]; }
 };
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 std::vector<PerFaceEdge<MeshType>> fillAndSortEdgeVector(MeshType& m, bool includeFauxEdges = true)
 {
 	using FaceType = typename MeshType::FaceType;
@@ -141,7 +142,7 @@ std::vector<PerFaceEdge<MeshType>> fillAndSortEdgeVector(MeshType& m, bool inclu
 	return vec;
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 std::vector<ConstPerFaceEdge<MeshType>>
 fillAndSortEdgeVector(const MeshType& m, bool includeFauxEdges = true)
 {

@@ -23,12 +23,17 @@
 #ifndef VCL_ALGORITHMS_CREATE_DODECAHEDRON_H
 #define VCL_ALGORITHMS_CREATE_DODECAHEDRON_H
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl {
 
-template<typename MeshType>
+template<PolygonMeshConcept MeshType>
 MeshType createDodecahedron();
 
-}
+template<TriangleMeshConcept MeshType>
+MeshType createDodecahedron();
+
+} // namespace vcl
 
 #include "dodecahedron.cpp"
 

@@ -38,7 +38,7 @@ template<typename VertexType, typename MeshType>
 obj::Material materialFromVertex(const VertexType& v, const FileMeshInfo& fi)
 {
 	obj::Material mat;
-	if constexpr (hasPerVertexColor<MeshType>()) {
+	if constexpr (HasPerVertexColor<MeshType>) {
 		if (fi.hasVertexColors()) {
 			mat.hasColor = true;
 			mat.Kd.x()   = v.color().redF();
@@ -59,13 +59,13 @@ obj::Material materialFromFace(const FaceType& f, const MeshType& m, const FileM
 		mat.Kd.y()   = f.color().greenF();
 		mat.Kd.z()   = f.color().blueF();
 	}
-	if constexpr (hasPerFaceWedgeTexCoords<MeshType>()) {
+	if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
 		if (fi.hasFaceWedgeTexCoords()) {
 			mat.hasTexture = true;
 			mat.map_Kd = m.texture(f.wedgeTexCoord(0).nTexture());
 		}
 	}
-	if constexpr (hasPerVertexTexCoord<MeshType>()) {
+	if constexpr (HasPerVertexTexCoord<MeshType>) {
 		if (fi.hasVertexTexCoords()) {
 			mat.hasTexture = true;
 			mat.map_Kd = m.texturePath(f.vertex(0)->texCoord().nTexture());
@@ -87,7 +87,7 @@ void writeElementMaterial(
 	obj::Material mat;
 	if constexpr(std::is_same<ElementType, typename MeshType::VertexType>::value)
 		mat = materialFromVertex<typename MeshType::VertexType, MeshType>(e, fi);
-	if constexpr(hasFaces<MeshType>())
+	if constexpr(HasFaces<MeshType>)
 		if constexpr(std::is_same<ElementType, typename MeshType::FaceType>::value)
 			mat = materialFromFace(e, m, fi);
 	if (!mat.isEmpty()) {
@@ -167,7 +167,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 		internal::writeDouble(fp, v.coord().z(), false);
 		fp << std::endl;
 
-		if constexpr (hasPerVertexNormal<MeshType>()) {
+		if constexpr (HasPerVertexNormal<MeshType>) {
 			if (meshInfo.hasVertexNormals()) {
 				fp << "vn ";
 				internal::writeDouble(fp, v.normal().x(), false);
@@ -176,7 +176,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 				fp << std::endl;
 			}
 		}
-		if constexpr (hasPerVertexTexCoord<MeshType>()) {
+		if constexpr (HasPerVertexTexCoord<MeshType>) {
 			if (meshInfo.hasVertexTexCoords()) {
 				fp << "vt ";
 				internal::writeFloat(fp, v.texCoord().u(), false);
@@ -187,7 +187,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 	}
 
 	// faces
-	if constexpr (vcl::hasFaces<MeshType>()) {
+	if constexpr (vcl::HasFaces<MeshType>) {
 		using VertexType = typename MeshType::VertexType;
 		using FaceType = typename MeshType::FaceType;
 
@@ -199,7 +199,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 			if (useMtl) { // mtl management
 				internal::writeElementMaterial(f, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
 			}
-			if constexpr(hasPerFaceWedgeTexCoords<MeshType>()){
+			if constexpr(HasPerFaceWedgeTexCoords<MeshType>){
 				if (meshInfo.hasFaceWedgeTexCoords()) {
 					using WedgeTexCoordType = typename FaceType::WedgeTexCoordType;
 					for (const WedgeTexCoordType wt : f.wedgeTexCoords()){
@@ -214,14 +214,14 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 			fp << "f ";
 			for (const VertexType* v : f.vertices()) {
 				fp << vIndices[m.index(v)]+1;
-				if constexpr(hasPerVertexTexCoord<MeshType>()){
+				if constexpr(HasPerVertexTexCoord<MeshType>){
 					// we wrote texcoords along with vertices, each texcoord has the same index
 					// of its vertex
 					if (meshInfo.hasVertexTexCoords()) {
 						fp << "/" << vIndices[m.index(v)]+1;
 					}
 				}
-				if constexpr(hasPerFaceWedgeTexCoords<MeshType>()){
+				if constexpr(HasPerFaceWedgeTexCoords<MeshType>){
 					// we wrote texcoords before the face; indices are consecutive and wedge coords
 					// are the same of the number of vertices of the face
 					if (meshInfo.hasFaceWedgeTexCoords()) {

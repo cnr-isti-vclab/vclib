@@ -25,16 +25,16 @@
 
 #include <vclib/space/point.h>
 
-#include "../../detection/normal_detection.h"
-#include "../vertical_info.h"
+#include "../../concepts/normal.h"
+#include "../vertical_component.h"
 
 namespace vcl::comp {
 
 template<typename P, typename T>
-class OptionalNormalT : public OptionalNormalTriggerer, public virtual VerticalInfo<T>
+class OptionalNormalT : public virtual VerticalComponent<T>
 {
 private:
-	using B = VerticalInfo<T>;
+	using B = VerticalComponent<T>;
 	uint thisId() const { return B::index((T*)this); }
 
 public:
@@ -44,6 +44,9 @@ public:
 	NormalType&              normal();
 
 	bool isNormalEnabled() const;
+
+	// dummy member to discriminate between non-optional and optional component
+	void __optionalNormal() const {};
 
 protected:
 	template <typename Element>

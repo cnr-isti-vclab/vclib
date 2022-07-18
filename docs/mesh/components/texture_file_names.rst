@@ -3,6 +3,6 @@
 Texture File Names Component
 ============================
 
-.. doxygenclass:: vcl::comp::TextureFileNames
+.. doxygenclass:: vcl::comp::TexFileNames
    :members:
    :undoc-members:

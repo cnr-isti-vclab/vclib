@@ -22,8 +22,6 @@
 
 #include "bounding_box.h"
 
-#include <vclib/mesh/requirements.h>
-
 namespace vcl {
 
 /**
@@ -36,12 +34,10 @@ namespace vcl {
  *
  * @param m
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void updateBoundingBox(MeshType& m)
+	requires vcl::HasBoundingBox<MeshType>
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireBoundingBox<MeshType>();
-
 	using VertexType = typename MeshType::VertexType;
 
 	m.boundingBox().setNull();

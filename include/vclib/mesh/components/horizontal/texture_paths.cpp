@@ -43,17 +43,17 @@ inline std::string& TexturePaths::texturePath(uint i)
 	return texPaths[i];
 }
 
-inline const std::string& TexturePaths::meshBasePath() const
+inline const std::string &TexturePaths::meshBasePath() const
 {
 	return meshPath;
 }
 
-inline std::string& TexturePaths::meshBasePath()
+inline std::string &TexturePaths::meshBasePath()
 {
 	return meshPath;
 }
 
-inline void TexturePaths::clearTextures()
+inline void TexturePaths::clearTexturePaths()
 {
 	texPaths.clear();
 }
@@ -63,43 +63,44 @@ inline void TexturePaths::pushTexturePath(const std::string& textName)
 	texPaths.push_back(textName);
 }
 
-inline TexturePaths::TextureFileNamesIterator TexturePaths::texturePathBegin()
+inline TexturePaths::TexFileNamesIterator TexturePaths::texturePathBegin()
 {
 	return texPaths.begin();
 }
 
-inline TexturePaths::TextureFileNamesIterator TexturePaths::texturePathEnd()
+inline TexturePaths::TexFileNamesIterator TexturePaths::texturePathEnd()
 {
 	return texPaths.end();
 }
 
-inline TexturePaths::ConstTextureFileNamesIterator TexturePaths::texturePathBegin() const
+inline TexturePaths::ConstTexFileNamesIterator TexturePaths::texturePathBegin() const
 {
 	return texPaths.begin();
 }
 
-inline TexturePaths::ConstTextureFileNamesIterator TexturePaths::texturePathEnd() const
+inline TexturePaths::ConstTexFileNamesIterator TexturePaths::texturePathEnd() const
 {
 	return texPaths.end();
 }
 
-inline TexturePaths::TextureFileNamesRangeIterator TexturePaths::texturePaths()
+inline TexturePaths::TexFileNamesRangeIterator TexturePaths::texturePaths()
 {
-	return TextureFileNamesRangeIterator(
+	return TexFileNamesRangeIterator(
 		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
 }
 
-inline TexturePaths::ConstTextureFileNamesRangeIterator TexturePaths::texturePaths() const
+inline TexturePaths::ConstTexFileNamesRangeIterator TexturePaths::texturePaths() const
 {
-	return ConstTextureFileNamesRangeIterator(
+	return ConstTexFileNamesRangeIterator(
 		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
 }
 
 template<typename Element>
 void TexturePaths::importFrom(const Element& e)
 {
-	if constexpr (hasTexturePaths<Element>()) {
+	if constexpr (HasTexturePaths<Element>) {
 		texPaths = e.TexturePaths::texPaths;
+		meshPath = e.TexturePaths::meshPath;
 	}
 }
 

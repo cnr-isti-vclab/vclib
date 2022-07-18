@@ -24,8 +24,6 @@
 
 #include "../polygon.h"
 
-#include <vclib/mesh/requirements.h>
-
 namespace vcl {
 
 /**
@@ -38,10 +36,9 @@ namespace vcl {
  *
  * @param[in/out] m: the mesh on which normalize the face normals.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void normalizePerFaceNormals(MeshType& m)
 {
-	vcl::requireFaces<MeshType>();
 	vcl::requirePerFaceNormal(m);
 
 	using FaceType = typename MeshType::FaceType;
@@ -56,15 +53,13 @@ void normalizePerFaceNormals(MeshType& m)
  * @param m
  * @param[in] normalize: if true (default), normals are normalized after computation.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerFaceNormals(MeshType& m, bool normalize)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
 	vcl::requirePerFaceNormal(m);
 
 	using FaceType = typename MeshType::FaceType;
-	if constexpr (vcl::hasTriangles<MeshType>()) {
+	if constexpr (vcl::HasTriangles<MeshType>) {
 		for (FaceType& f : m.faces()) {
 			f.normal() = triangleNormal(f);
 		}
@@ -89,10 +84,9 @@ void updatePerFaceNormals(MeshType& m, bool normalize)
  *
  * @param[in/out] m: The mesh on which clear the vertex normals.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clearPerVertexNormals(MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
 	vcl::requirePerVertexNormal(m);
 
 	using VertexType = typename MeshType::VertexType;
@@ -114,11 +108,9 @@ void clearPerVertexNormals(MeshType& m)
  *
  * @param[in/out] m: The mesh on which clear the referenced vertex normals.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void clearPerReferencedVertexNormals(MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
-	vcl::requireFaces<MeshType>();
 	vcl::requirePerVertexNormal(m);
 
 	using VertexType = typename MeshType::VertexType;
@@ -141,10 +133,9 @@ void clearPerReferencedVertexNormals(MeshType& m)
  *
  * @param[in/out] m: the mesh on which normalize the vertex normals.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void normalizePerVertexNormals(MeshType& m)
 {
-	vcl::requireVertices<MeshType>();
 	vcl::requirePerVertexNormal(m);
 
 	using VertexType = typename MeshType::VertexType;
@@ -169,7 +160,7 @@ void normalizePerVertexNormals(MeshType& m)
  * @param[in/out] m: the mesh on which compute the vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after computation.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexNormals(MeshType& m, bool normalize)
 {
 	clearPerReferencedVertexNormals(m);
@@ -203,7 +194,7 @@ void updatePerVertexNormals(MeshType& m, bool normalize)
  * @param[in/out] m: the mesh on which compute the vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after computation.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize)
 {
 	vcl::requirePerFaceNormal(m);
@@ -246,7 +237,7 @@ void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize)
  * @param[in/out] m: the mesh on which compute the angle weighted vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after computation.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
 {
 	clearPerReferencedVertexNormals(m);
@@ -296,7 +287,7 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
  * @param[in/out] m: the mesh on which compute the Max et al. weighted vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after computation.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
 {
 	clearPerReferencedVertexNormals(m);
@@ -334,7 +325,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
  * @param[in] removeScalingFromMatrix: if true (default), the scale component is removed from the
  * matrix.
  */
-template<typename MeshType, typename MScalar>
+template<FaceMeshConcept MeshType, typename MScalar>
 void multiplyPerFaceNormalsByMatrix(
 	MeshType&                     mesh,
 	const vcl::Matrix44<MScalar>& mat,
@@ -377,7 +368,7 @@ void multiplyPerFaceNormalsByMatrix(
  * @param[in] removeScalingFromMatrix: if true (default), the scale component is removed from the
  * matrix.
  */
-template<typename MeshType, typename MScalar>
+template<MeshConcept MeshType, typename MScalar>
 void multiplyPerVertexNormalsByMatrix(
 	MeshType&                     mesh,
 	const vcl::Matrix44<MScalar>& mat,

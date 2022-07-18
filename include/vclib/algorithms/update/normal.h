@@ -24,44 +24,44 @@
 #define VCL_ALGORITHMS_NORMAL_H
 
 #include <vclib/math/matrix.h>
-#include <vclib/space/point.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void normalizePerFaceNormals(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerFaceNormals(MeshType& m, bool normalize = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clearPerVertexNormals(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void clearPerReferencedVertexNormals(MeshType& m);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void normalizePerVertexNormals(MeshType& m);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexNormals(MeshType& m, bool normalize = true);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize = true);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true);
 
-template<typename MeshType, typename MScalar>
+template<FaceMeshConcept MeshType, typename MScalar>
 void multiplyPerFaceNormalsByMatrix(
 	MeshType&                     mesh,
 	const vcl::Matrix44<MScalar>& mat,
 	bool                          removeScalingFromMatrix = true);
 
-template<typename MeshType, typename MScalar>
+template<MeshConcept MeshType, typename MScalar>
 void multiplyPerVertexNormalsByMatrix(
 	MeshType&                     mesh,
 	const vcl::Matrix44<MScalar>& mat,

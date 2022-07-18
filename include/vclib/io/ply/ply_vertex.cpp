@@ -44,7 +44,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 		hasBeenRead = true;
 	}
 	if (p.name >= ply::nx && p.name <= ply::nz) {
-		if constexpr (vcl::hasPerVertexNormal<MeshType>()) {
+		if constexpr (vcl::HasPerVertexNormal<MeshType>) {
 			if (vcl::isPerVertexNormalEnabled(mesh)) {
 				using Scalar = typename VertexType::NormalType::ScalarType;
 				int a = p.name - ply::nx;
@@ -54,7 +54,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 		}
 	}
 	if (p.name >= ply::red && p.name <= ply::alpha) {
-		if constexpr (vcl::hasPerVertexColor<MeshType>()) {
+		if constexpr (vcl::HasPerVertexColor<MeshType>) {
 			if (vcl::isPerVertexColorEnabled(mesh)) {
 				int a = p.name - ply::red;
 				v.color()[a] = io::internal::readProperty<unsigned char>(file, p.type);
@@ -63,7 +63,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 		}
 	}
 	if (p.name == ply::scalar) {
-		if constexpr (vcl::hasPerVertexScalar<MeshType>()) {
+		if constexpr (vcl::HasPerVertexScalar<MeshType>) {
 			using Scalar = typename VertexType::ScalarType;
 			if (vcl::isPerVertexScalarEnabled(mesh)) {
 				v.scalar() = io::internal::readProperty<Scalar>(file, p.type);
@@ -72,7 +72,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 		}
 	}
 	if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
-		if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+		if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
 			using Scalar = typename VertexType::TexCoordType::ScalarType;
 			if (vcl::isPerVertexTexCoordEnabled(mesh)) {
 				int a = p.name - ply::texture_u;
@@ -82,7 +82,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 		}
 	}
 	if (p.name == ply::texnumber) {
-		if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+		if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
 			if (vcl::isPerVertexTexCoordEnabled(mesh)) {
 				v.texCoord().nTexture() = io::internal::readProperty<uint>(file, p.type);
 				hasBeenRead = true;
@@ -158,32 +158,32 @@ void saveVertices(
 				hasBeenWritten = true;
 			}
 			if (p.name >= ply::nx && p.name <= ply::nz) {
-				if constexpr (vcl::hasPerVertexNormal<MeshType>()) {
+				if constexpr (vcl::HasPerVertexNormal<MeshType>) {
 					io::internal::writeProperty(file, v.normal()[p.name - ply::nx], p.type, bin);
 					hasBeenWritten = true;
 				}
 			}
 			if (p.name >= ply::red && p.name <= ply::alpha) {
-				if constexpr (vcl::hasPerVertexColor<MeshType>()) {
+				if constexpr (vcl::HasPerVertexColor<MeshType>) {
 					io::internal::writeProperty(file, v.color()[p.name - ply::red], p.type, bin);
 					hasBeenWritten = true;
 				}
 			}
 			if (p.name == ply::scalar) {
-				if constexpr (vcl::hasPerVertexScalar<MeshType>()) {
+				if constexpr (vcl::HasPerVertexScalar<MeshType>) {
 					io::internal::writeProperty(file, v.scalar(), p.type, bin);
 					hasBeenWritten = true;
 				}
 			}
 			if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
-				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+				if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
 					const uint a = p.name - ply::texture_u;
 					io::internal::writeProperty(file, v.texCoord()[a], p.type, bin);
 					hasBeenWritten = true;
 				}
 			}
 			if (p.name == ply::texnumber) {
-				if constexpr (vcl::hasPerVertexTexCoord<MeshType>()) {
+				if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
 					io::internal::writeProperty(file, v.texCoord().nTexture(), p.type, bin);
 					hasBeenWritten = true;
 				}

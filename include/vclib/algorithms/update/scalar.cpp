@@ -22,8 +22,6 @@
 
 #include "scalar.h"
 
-#include <vclib/mesh/requirements.h>
-
 #include "../polygon.h"
 #include "../stat.h"
 
@@ -40,7 +38,7 @@ namespace vcl {
  * @param[in/out] m: mesh on which set the vertex scalars
  * @param[in] s: scalar value to set
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void setPerVertexScalar(MeshType& m, typename MeshType::VertexType::ScalarType s)
 {
 	vcl::requirePerVertexScalar(m);
@@ -63,7 +61,7 @@ void setPerVertexScalar(MeshType& m, typename MeshType::VertexType::ScalarType s
  * @param[in/out] m: mesh on which set the face scalars
  * @param[in] s: scalar value to set
  */
-template <typename MeshType>
+template <FaceMeshConcept MeshType>
 void setPerFaceScalar(MeshType& m, typename MeshType::FaceType::ScalarType s)
 {
 	vcl::requirePerFaceScalar(m);
@@ -87,7 +85,7 @@ void setPerFaceScalar(MeshType& m, typename MeshType::FaceType::ScalarType s)
  * @param[in] minS: minimum value of the clamping interval
  * @param[in] maxS: maximum value of the clamping interval
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clampPerVertexScalar(
 	MeshType&                                 m,
 	typename MeshType::VertexType::ScalarType minS,
@@ -114,7 +112,7 @@ void clampPerVertexScalar(
  * @param[in] minS: minimum value of the clamping interval
  * @param[in] maxS: maximum value of the clamping interval
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void clampPerFaceScalar(
 	MeshType&                                 m,
 	typename MeshType::FaceType::ScalarType minS,
@@ -141,7 +139,7 @@ void clampPerFaceScalar(
  * @param[in] minS: minimum value of the normalizing interval, default 0
  * @param[in] maxS: maximum value of the normalizing interval, default 1
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void normalizePerVertexScalar(
 	MeshType&                                 m,
 	typename MeshType::VertexType::ScalarType minS,
@@ -172,7 +170,7 @@ void normalizePerVertexScalar(
  * @param[in] minS: minimum value of the normalizing interval, default 0
  * @param[in] maxS: maximum value of the normalizing interval, default 1
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void normalizePerFaceScalar(
 	MeshType&                                 m,
 	typename MeshType::FaceType::ScalarType minS,
@@ -203,11 +201,10 @@ void normalizePerFaceScalar(
  *
  * @param[in/out] m: mesh on which set the vertex scalars to the vertex valence
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerVertexScalarFromVertexValence(MeshType& m)
 {
 	vcl::requirePerVertexScalar(m);
-	vcl::requireFaces<MeshType>();
 
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
@@ -230,7 +227,7 @@ void setPerVertexScalarFromVertexValence(MeshType& m)
  *
  * @param[in/out] m: mesh on which set the face scalars to the face area
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceScalarFromFaceArea(MeshType& m)
 {
 	vcl::requirePerFaceScalar(m);

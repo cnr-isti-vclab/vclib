@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_SCALAR_VECTOR_H
 #define VCL_MESH_COMPONENTS_SCALAR_VECTOR_H
 
-#include "../../detection/scalar_detection.h"
+#include "../../concepts/scalar.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class ScalarVector
 {
 public:
@@ -37,11 +37,11 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isScalarEnabled() const { return false; };
 };
 
-template<typename T>
-class ScalarVector<T, std::enable_if_t<comp::hasOptionalScalar<T>()>> :
-		private GenericComponentVector<typename T::ScalarType>
+template<comp::HasOptionalScalar T>
+class ScalarVector<T> : private GenericComponentVector<typename T::ScalarType>
 {
 	using ScalarType = typename T::ScalarType;
 	using Base = GenericComponentVector<ScalarType>;
@@ -51,9 +51,11 @@ public:
 	using Base::reserve;
 	using Base::resize;
 	using Base::compact;
-	bool              isScalarEnabled() const { return Base::isEnabled(); };
-	void              enableScalar(uint size) { Base::enable(size); }
-	void              disableScalar() { Base::disable(); }
+
+	bool isScalarEnabled() const { return Base::isEnabled(); };
+	void enableScalar(uint size) { Base::enable(size); }
+	void disableScalar() { Base::disable(); }
+
 	ScalarType&       scalar(uint i) { return Base::at(i); }
 	const ScalarType& scalar(uint i) const { return Base::at(i); }
 };

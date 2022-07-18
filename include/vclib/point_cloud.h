@@ -52,7 +52,7 @@ class PointCloud :
 			mesh::VertexContainer<pointcloud::Vertex>,
 			mesh::BoundingBox3d,
 			mesh::Mark,
-			mesh::TextureFileNames,
+			mesh::TexFileNames,
 			mesh::TransformMatrixd>
 {
 };

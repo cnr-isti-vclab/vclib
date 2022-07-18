@@ -50,7 +50,7 @@ template<typename Scalar, typename T>
 template<typename Element>
 void OptionalTexCoord<Scalar, T>::importFrom(const Element& e)
 {
-	if constexpr (hasTexCoord<Element>()) {
+	if constexpr (HasTexCoord<Element>) {
 		if (isTexCoordEnabled() && isTexCoordEnabledOn(e)) {
 			texCoord() = e.texCoord();
 		}

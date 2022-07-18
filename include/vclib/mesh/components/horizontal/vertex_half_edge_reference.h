@@ -25,12 +25,12 @@
 
 #include <vector>
 
-#include "../detection/vertex_half_edge_reference_detection.h"
+#include "../../components/concepts/vertex_half_edge_reference.h"
 
 namespace vcl::comp {
 
 template<typename HalfEdge>
-class VertexHalfEdgeReference : public VertexHalfEdgeReferenceTriggerer
+class VertexHalfEdgeReference
 {
 public:
 	VertexHalfEdgeReference();

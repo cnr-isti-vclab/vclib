@@ -25,7 +25,7 @@
 
 #include <vclib/space/color.h>
 
-#include "../detection/color_detection.h"
+#include "../concepts/color.h"
 
 namespace vcl::comp {
 
@@ -43,6 +43,8 @@ public:
 	const vcl::Color& color() const;
 
 	vcl::Color& color();
+
+	constexpr bool isColorEnabled() const { return true; }
 
 protected:
 	template<typename Element>

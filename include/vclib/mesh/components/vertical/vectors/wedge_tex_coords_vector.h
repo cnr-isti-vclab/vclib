@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_VECTOR_H
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_VECTOR_H
 
-#include "../../detection/wedge_tex_coords_detection.h"
+#include "../../concepts/wedge_tex_coords.h"
 
 #include "generic_component_vector.h"
 
 namespace vcl::internal {
 
-template<typename, typename = void>
+template<typename>
 class WedgeTexCoordsVector
 {
 public:
@@ -37,11 +37,11 @@ public:
 	void reserve(uint) {}
 	void resize(uint) {}
 	void compact(const std::vector<int>&) {}
+	bool isWedgeTexCoordsEnabled() const { return false; };
 };
 
-template<typename T>
-class WedgeTexCoordsVector<T, std::enable_if_t<comp::hasOptionalWedgeTexCoords<T>()>> :
-		private GenericComponentVector<typename T::WedgeTexCoordsContainer>
+template<comp::HasOptionalWedgeTexCoords T>
+class WedgeTexCoordsVector<T> : private GenericComponentVector<typename T::WedgeTexCoordsContainer>
 {
 	using WedgeTexCoordsContainer = typename T::WedgeTexCoordsContainer;
 	using Base                    = GenericComponentVector<WedgeTexCoordsContainer>;
@@ -51,9 +51,11 @@ public:
 	using Base::compact;
 	using Base::reserve;
 	using Base::resize;
-	bool                isWedgeTexCoordsEnabled() const { return Base::isEnabled(); };
-	void                enableWedgeTexCoords(uint size) { Base::enable(size); }
-	void                disableWedgeTexCoords() { Base::disable(); }
+
+	bool isWedgeTexCoordsEnabled() const { return Base::isEnabled(); };
+	void enableWedgeTexCoords(uint size) { Base::enable(size); }
+	void disableWedgeTexCoords() { Base::disable(); }
+
 	WedgeTexCoordsContainer&       wedgeTexCoords(uint i) { return Base::at(i); }
 	const WedgeTexCoordsContainer& wedgeTexCoords(uint i) const { return Base::at(i); }
 };

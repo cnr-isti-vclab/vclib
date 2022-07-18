@@ -40,7 +40,7 @@ template<typename P>
 template<typename Element>
 void NormalT<P>::importFrom(const Element& e)
 {
-	if constexpr(hasNormal<Element>()) {
+	if constexpr(HasNormal<Element>) {
 		if (isNormalEnabledOn(e)){
 			n = e.normal();
 		}

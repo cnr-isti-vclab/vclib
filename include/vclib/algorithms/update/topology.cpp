@@ -24,8 +24,6 @@
 
 #include <vclib/algorithms/internal/per_face_edge.h>
 
-#include <vclib/mesh/requirements.h>
-
 namespace vcl {
 
 /**
@@ -41,7 +39,7 @@ namespace vcl {
  *
  * @param m: the mesh on which clear the per vertex adjacent faces.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clearPerVertexAdjacentFaces(MeshType& m)
 {
 	vcl::requirePerVertexAdjacentFaces(m);
@@ -64,12 +62,10 @@ void clearPerVertexAdjacentFaces(MeshType& m)
  *
  * @param m:  the mesh on which update the per vertex adjacent faces.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m)
 {
 	clearPerVertexAdjacentFaces(m);
-
-	vcl::requireFaces<MeshType>();
 
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
@@ -98,7 +94,7 @@ void updatePerVertexAdjacentFaces(MeshType& m)
  *
  * @param m: the mesh on which clear the per vertex adjacent vertices.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void clearPerVertexAdjacentVertices(MeshType& m)
 {
 	vcl::requirePerVertexAdjacentVertices(m);
@@ -121,12 +117,10 @@ void clearPerVertexAdjacentVertices(MeshType& m)
  *
  * @param m:  the mesh on which update the per vertex adjacent faces.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerVertexAdjacentVertices(MeshType& m)
 {
 	clearPerVertexAdjacentVertices(m);
-
-	vcl::requireFaces<MeshType>();
 
 	using VertexType = typename MeshType::VertexType;
 
@@ -163,7 +157,7 @@ void updatePerVertexAdjacentVertices(MeshType& m)
  *
  * @param m:  the mesh on which clear the per face adjacent faces.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void clearPerFaceAdjacentFaces(MeshType& m)
 {
 	vcl::requirePerFaceAdjacentFaces(m);
@@ -219,7 +213,7 @@ void clearPerFaceAdjacentFaces(MeshType& m)
  *
  * @param m:  the mesh on which update the per face adjacent faces.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void updatePerFaceAdjacentFaces(MeshType& m)
 {
 	vcl::requirePerFaceAdjacentFaces(m);
