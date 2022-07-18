@@ -27,8 +27,10 @@
 
 namespace vcl::comp {
 
+#ifndef __APPLE__
 class PolygonBitFlags;
 class TriangleBitFlags;
+#endif
 
 /**
  * @brief HasBitFlags concept
@@ -48,7 +50,15 @@ concept HasBitFlags = requires(T o)
  * This concept is satisfied only if a class has (inherits) PolygonBitFlags
  */
 template<typename T>
-concept HasPolygonBitFlags = std::derived_from<T, PolygonBitFlags>;
+concept HasPolygonBitFlags =
+#ifndef __APPLE__
+	std::derived_from<T, PolygonBitFlags>;
+#else
+	requires(T o)
+{
+	{ o.__polygonBitFlags() } -> std::same_as<void>;
+};
+#endif
 
 /**
  * @brief HasPolygonBitFlags concept
@@ -56,7 +66,15 @@ concept HasPolygonBitFlags = std::derived_from<T, PolygonBitFlags>;
  * This concept is satisfied only if a class has (inherits) TriangleBitFlags
  */
 template<typename T>
-concept HasTriangleBitFlags = std::derived_from<T, TriangleBitFlags>;
+concept HasTriangleBitFlags =
+#ifndef __APPLE__
+	std::derived_from<T, TriangleBitFlags>;
+#else
+	requires(T o)
+{
+	{ o.__triangleBitFlags() } -> std::same_as<void>;
+};
+#endif
 
 /**
  * @brief HasFaceBitFlags concept

@@ -109,7 +109,11 @@ protected:
 
 template<typename T>
 concept HasVerticalComponent =
+#ifndef __APPLE__
 	std::derived_from<T, VerticalComponent<T>>;
+#else
+	std::is_base_of<VerticalComponent<T>, T>::value;
+#endif
 
 } // namespace vcl::comp
 
