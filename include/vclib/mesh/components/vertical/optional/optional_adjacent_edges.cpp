@@ -146,40 +146,33 @@ bool OptionalAdjacentEdges<Edge, N, T>::isAdjEdgesEnabled() const
 }
 
 template<typename Edge, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-	OptionalAdjacentEdges<Edge, N, T>::resizeAdjEdges(uint n)
+void OptionalAdjacentEdges<Edge, N, T>::resizeAdjEdges(uint n) requires (N < 0)
 {
 	B::optCont().adjEdges(thisId()).resize(n);
 }
 
 template<typename Edge, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalAdjacentEdges<Edge, N, T>::pushAdjEdge(Edge* e)
+void OptionalAdjacentEdges<Edge, N, T>::pushAdjEdge(Edge* e) requires (N < 0)
 {
 	B::optCont().adjEdges(thisId()).push_back(e);
 }
 
 template<typename Edge, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-	OptionalAdjacentEdges<Edge, N, T>::insertAdjEdge(uint i, Edge* e)
+void OptionalAdjacentEdges<Edge, N, T>::insertAdjEdge(uint i, Edge* e) requires (N < 0)
 {
 	assert(i < adjEdgesNumber());
 	B::optCont().adjEdges(thisId()).insert(B::optCont().adjEdges(thisId()).begin() + i, e);
 }
 
 template<typename Edge, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalAdjacentEdges<Edge, N, T>::eraseAdjEdge(uint i)
+void OptionalAdjacentEdges<Edge, N, T>::eraseAdjEdge(uint i) requires (N < 0)
 {
 	assert(i < adjEdgesNumber());
 	B::optCont().adjEdges(thisId()).erase(B::optCont().adjEdges(thisId()).begin() + i);
 }
 
 template<typename Edge, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalAdjacentEdges<Edge, N, T>::clearAdjEdges()
+void OptionalAdjacentEdges<Edge, N, T>::clearAdjEdges() requires (N < 0)
 {
 	B::optCont().adjEdges(thisId()).clear();
 }

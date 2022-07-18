@@ -107,22 +107,13 @@ public:
 
 	bool isAdjEdgesEnabled() const;
 
-	/* Member functions specific for vector */
+	/* Member functions specific for vector of adjacent edges */
 
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeAdjEdges(uint n);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushAdjEdge(Edge* e);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertAdjEdge(uint i, Edge* e);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseAdjEdge(uint i);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearAdjEdges();
+	void resizeAdjEdges(uint n) requires (N < 0);
+	void pushAdjEdge(Edge* e) requires (N < 0);
+	void insertAdjEdge(uint i, Edge* e) requires (N < 0);
+	void eraseAdjEdge(uint i) requires (N < 0);
+	void clearAdjEdges() requires (N < 0);
 
 	/* Iterator Member functions */
 

@@ -141,26 +141,22 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoords() const
 }
 
 template<typename Scalar, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-OptionalWedgeTexCoords<Scalar, N, T>::resizeWedgeTexCoords(uint n)
+void OptionalWedgeTexCoords<Scalar, N, T>::resizeWedgeTexCoords(uint n) requires (N < 0)
 {
 	B::optCont().wedgeTexCoords(thisId()).resize(n);
 }
 
 template<typename Scalar, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-OptionalWedgeTexCoords<Scalar, N, T>::pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t)
+void OptionalWedgeTexCoords<Scalar, N, T>::pushWedgeTexCoord(
+	const vcl::TexCoord<Scalar>& t) requires(N < 0)
 {
 	B::optCont().wedgeTexCoords(thisId()).push_back(t);
 }
 
 template<typename Scalar, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalWedgeTexCoords<Scalar, N, T>::insertWedgeTexCoord(
+void OptionalWedgeTexCoords<Scalar, N, T>::insertWedgeTexCoord(
 	uint                 i,
-	const vcl::TexCoord<Scalar>& t)
+	const vcl::TexCoord<Scalar>& t) requires (N < 0)
 {
 	assert(i < wedgeTexCoordsNumber());
 	B::optCont().wedgeTexCoords(thisId()).insert(
@@ -168,17 +164,14 @@ VCL_ENABLE_IF(M < 0, void) OptionalWedgeTexCoords<Scalar, N, T>::insertWedgeTexC
 }
 
 template<typename Scalar, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-OptionalWedgeTexCoords<Scalar, N, T>::eraseWedgeTexCoord(uint i)
+void OptionalWedgeTexCoords<Scalar, N, T>::eraseWedgeTexCoord(uint i) requires (N < 0)
 {
 	assert(i < wedgeTexCoordsNumber());
 	B::optCont().wedgeTexCoords(thisId()).erase(B::optCont().wedgeTexCoords(thisId()).begin() + i);
 }
 
 template<typename Scalar, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalWedgeTexCoords<Scalar, N, T>::clearWedgeTexCoord()
+void OptionalWedgeTexCoords<Scalar, N, T>::clearWedgeTexCoord() requires (N < 0)
 {
 	B::optCont().wedgeTexCoords(thisId()).clear();
 }

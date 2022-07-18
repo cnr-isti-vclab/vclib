@@ -133,39 +133,33 @@ OptionalWedgeColors<N, T>::wedgeColors() const
 }
 
 template<int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalWedgeColors<N, T>::resizeWedgeColors(uint n)
+void OptionalWedgeColors<N, T>::resizeWedgeColors(uint n) requires (N < 0)
 {
 	B::optCont().wedgeColors(thisId()).resize(n);
 }
 
 template<int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalWedgeColors<N, T>::pushWedgeColor(const vcl::Color& t)
+void OptionalWedgeColors<N, T>::pushWedgeColor(const vcl::Color& t) requires (N < 0)
 {
 	B::optCont().wedgeColors(thisId()).push_back(t);
 }
 
 template<int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-OptionalWedgeColors<N, T>::insertWedgeColor(uint i, const vcl::Color& t)
+void OptionalWedgeColors<N, T>::insertWedgeColor(uint i, const vcl::Color& t) requires (N < 0)
 {
 	assert(i < wedgeColorsNumber());
 	B::optCont().wedgeColors(thisId()).insert(B::optCont().wedgeColors(thisId()).begin() + i, t);
 }
 
 template<int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalWedgeColors<N, T>::eraseWedgeColor(uint i)
+void OptionalWedgeColors<N, T>::eraseWedgeColor(uint i) requires (N < 0)
 {
 	assert(i < wedgeColorsNumber());
 	B::optCont().wedgeColors(thisId()).erase(B::optCont().wedgeColors(thisId()).begin() + i);
 }
 
 template<int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalWedgeColors<N, T>::clearWedgeColor()
+void OptionalWedgeColors<N, T>::clearWedgeColor() requires (N < 0)
 {
 	B::optCont().wedgeColors(thisId()).clear();
 }
