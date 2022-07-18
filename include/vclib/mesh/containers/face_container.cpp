@@ -387,9 +387,8 @@ FaceContainer<T>::disablePerFaceAdjacentEdges()
  * @return true if the Optional AdjacentFaces is enabled, false otherwise.
  */
 template<FaceConcept T>
-template<typename U>
-VCL_ENABLE_IF(face::HasOptionalAdjacentFaces<U>, bool)
-FaceContainer<T>::isPerFaceAdjacentFacesEnabled() const
+bool FaceContainer<T>::isPerFaceAdjacentFacesEnabled()
+	const requires face::HasOptionalAdjacentFaces<T>
 {
 	return Base::optionalVec.isAdjacentFacesEnabled();
 }
@@ -405,9 +404,7 @@ FaceContainer<T>::isPerFaceAdjacentFacesEnabled() const
  * Adjacent Faces number is tied to the number of vertices.
  */
 template<FaceConcept T>
-template<typename U>
-VCL_ENABLE_IF(face::HasOptionalAdjacentFaces<U>, void)
-FaceContainer<T>::enablePerFaceAdjacentFaces()
+void FaceContainer<T>::enablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>
 {
 	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
@@ -425,9 +422,7 @@ FaceContainer<T>::enablePerFaceAdjacentFaces()
  * Component.
  */
 template<FaceConcept T>
-template<typename U>
-VCL_ENABLE_IF(face::HasOptionalAdjacentFaces<U>, void)
-FaceContainer<T>::disablePerFaceAdjacentFaces()
+void FaceContainer<T>::disablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>
 {
 	Base::optionalVec.disableAdjacentFaces();
 }

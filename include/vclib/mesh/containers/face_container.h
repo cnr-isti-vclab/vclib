@@ -96,17 +96,9 @@ public:
 	disablePerFaceAdjacentEdges();
 
 	// AdjacentFaces
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalAdjacentFaces<U>, bool)
-	isPerFaceAdjacentFacesEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalAdjacentFaces<U>, void)
-	enablePerFaceAdjacentFaces();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasOptionalAdjacentFaces<U>, void)
-	disablePerFaceAdjacentFaces();
+	bool isPerFaceAdjacentFacesEnabled() const requires face::HasOptionalAdjacentFaces<T>;
+	void enablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>;
+	void disablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>;
 
 	// Color
 	template<typename U = T>
