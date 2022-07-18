@@ -45,7 +45,7 @@ std::string addExtensionToFileName(const std::string& filename, const std::strin
 
 inline std::ofstream saveFileStream(const std::string& filename, const std::string& ext)
 {
-	std::setlocale(LC_ALL, "C");
+	setlocale(LC_ALL, "C");
 	std::string actualfilename = addExtensionToFileName(filename, ext);
 
 	std::ofstream fp;
@@ -61,7 +61,7 @@ inline std::ofstream saveFileStream(const std::string& filename, const std::stri
 
 inline std::ifstream loadFileStream(const std::string& filename)
 {
-	std::setlocale(LC_ALL, "C");
+	setlocale(LC_ALL, "C");
 	std::ifstream fp(filename, std::ifstream::binary); // need to set binary or windows will fail
 	fp.imbue(std::locale().classic());
 	if (!fp.is_open()) {
