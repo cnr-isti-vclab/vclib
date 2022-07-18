@@ -1,4 +1,4 @@
-/*****************************************************************************
+﻿/*****************************************************************************
  * VCLib                                                             o o     *
  * Visual Computing Library                                        o     o   *
  *                                                                 _  O  _   *
@@ -1202,6 +1202,7 @@ void Mesh<Args...>::importReferences(const OthMesh &m)
 		if constexpr (mesh::HasEdgeContainer<ThisMesh>) {
 			Cont::importEdgeReferencesFrom(m, &this->edge(0));
 		}
+		// todo half edges
 	}
 }
 
@@ -1225,18 +1226,18 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 			using MVertexContainer = typename OthMesh::VertexContainer;
 			using FaceContainer   = typename Mesh<Args...>::FaceContainer;
 
-			   // if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
-			   // number of vertex references in this mesh), and this mesh does not have the same
-			   // number of vertex references of the other, it means that we don't know how to convert
-			   // these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
-			   // mesh, or convert a quad mesh into a pentagonal mesh...)
+			// if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
+			// number of vertex references in this mesh), and this mesh does not have the same
+			// number of vertex references of the other, it means that we don't know how to convert
+			// these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
+			// mesh, or convert a quad mesh into a pentagonal mesh...)
 			static_assert(
 				!(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
 				  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
 				"Cannot import from that type of Mesh. Don't know how to convert faces.");
 
-			   // we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
-			   // triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
+			// we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
+			// triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
 			if constexpr (
 				FaceType::VERTEX_NUMBER == 3 &&
 				(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
@@ -1256,7 +1257,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 						FaceType& f = FaceContainer::face(m.index(mf));
 						importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
 
-						   // number of other faces to add
+						// number of other faces to add
 						uint nf = tris.size() / 3 - 1;
 						uint fid = FaceContainer::addFaces(nf);
 
@@ -1316,6 +1317,8 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	void* m2BaseF = nullptr;
 	void* m1BaseE = nullptr;
 	void* m2BaseE = nullptr;
+	void* m1BaseHE = nullptr;
+	void* m2BaseHE = nullptr;
 
 	// save the bases of the containers before swap
 	if constexpr (mesh::HasVertexContainer<Mesh<A...>>) {
@@ -1332,6 +1335,11 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 		using EdgeContainer = typename Mesh<A...>::EdgeContainer;
 		m1BaseE             = m1.EdgeContainer::vec.data();
 		m2BaseE             = m2.EdgeContainer::vec.data();
+	}
+	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
+		using HalfEdgeContainer = typename Mesh<A...>::HalfEdgeContainer;
+		m1BaseHE             = m1.HalfEdgeContainer::vec.data();
+		m2BaseHE             = m2.HalfEdgeContainer::vec.data();
 	}
 
 	// actual swap of all the containers and the components of the mesh
@@ -1362,6 +1370,12 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 		using EdgeContainer = typename Mesh<A...>::EdgeContainer;
 		m1.updateEdgeReferences((EdgeType*) m2BaseE, m1.EdgeContainer::vec.data());
 		m2.updateEdgeReferences((EdgeType*) m1BaseE, m2.EdgeContainer::vec.data());
+	}
+	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
+		using HalfEdgeType      = typename Mesh<A...>::HalfEdgeType;
+		using HalfEdgeContainer = typename Mesh<A...>::HalfEdgeContainer;
+		m1.updateHalfEdgeReferences((HalfEdgeType*) m2BaseHE, m1.HalfEdgeContainer::vec.data());
+		m2.updateHalfEdgeReferences((HalfEdgeType*) m1BaseHE, m2.HalfEdgeContainer::vec.data());
 	}
 }
 

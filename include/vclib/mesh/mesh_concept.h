@@ -56,7 +56,7 @@ concept HasBoundingBox = comp::HasBoundingBox<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
-concept HasTexFileNames = comp::HasTexFileNames<T>;
+concept HasTexturePaths = comp::HasTexturePaths<T>;
 template<typename T>
 concept HasTransformMatrix = comp::HasTransformMatrix<T>;
 

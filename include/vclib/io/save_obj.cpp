@@ -68,7 +68,7 @@ obj::Material materialFromFace(const FaceType& f, const MeshType& m, const FileM
 	if constexpr (HasPerVertexTexCoord<MeshType>) {
 		if (fi.hasVertexTexCoords()) {
 			mat.hasTexture = true;
-			mat.map_Kd = m.texture(f.vertex(0)->texCoord().nTexture());
+			mat.map_Kd = m.texturePath(f.vertex(0)->texCoord().nTexture());
 		}
 	}
 	return mat;

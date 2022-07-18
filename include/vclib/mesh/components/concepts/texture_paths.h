@@ -20,25 +20,25 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEX_FILE_NAMES_H
-#define VCL_MESH_COMPONENTS_CONCEPTS_TEX_FILE_NAMES_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_PATHS_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_PATHS_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
 /**
- * @brief HasTexFileNames concept
+ * @brief HasTexturePaths concept
  *
  * This concept is satisfied only if a class has a member function 'textureNumber()' which returns
  * an uint
  */
 template<typename T>
-concept HasTexFileNames = requires(T o)
+concept HasTexturePaths = requires(T o)
 {
 	{ o.textureNumber() } -> std::same_as<uint>;
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_CONCEPTS_TEX_FILE_NAMES_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_PATHS_H

@@ -25,7 +25,7 @@
 
 #include "components/horizontal/bounding_box.h"
 #include "components/horizontal/mark.h"
-#include "components/horizontal/tex_file_names.h"
+#include "components/horizontal/texture_paths.h"
 #include "components/horizontal/transform_matrix.h"
 
 namespace vcl::mesh {
@@ -40,8 +40,8 @@ using BoundingBox3d = comp::BoundingBox3d;
 /** Port Mark class into mesh namespace **/
 using Mark = comp::Mark;
 
-/** Port TexFileNames class into mesh namespace **/
-using TexFileNames = comp::TexFileNames;
+/** Port TexturePaths class into mesh namespace **/
+using TexturePaths = comp::TexturePaths;
 
 /** Port TransformMatrix class into mesh namespace **/
 template <typename Scalar>

@@ -49,8 +49,8 @@ concept HasMark =
 	mesh::HasMark<MeshType>;
 
 template<typename MeshType>
-concept HasTexFileNames =
-	mesh::HasTexFileNames<MeshType>;
+concept HasTexturePaths =
+	mesh::HasTexturePaths<MeshType>;
 
 template<typename MeshType>
 concept HasTransformMatrix =
