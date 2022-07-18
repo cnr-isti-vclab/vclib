@@ -77,21 +77,11 @@ protected:
 
 	/* Member functions specific for vector */
 
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeWedgeTexCoords(uint n);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void)
-	insertWedgeTexCoord(uint i, const vcl::TexCoord<Scalar>& t);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseWedgeTexCoord(uint i);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearWedgeTexCoord();
+	void resizeWedgeTexCoords(uint n) requires (N < 0);
+	void pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t) requires (N < 0);
+	void insertWedgeTexCoord(uint i, const vcl::TexCoord<Scalar>& t) requires (N < 0);
+	void eraseWedgeTexCoord(uint i) requires (N < 0);
+	void clearWedgeTexCoord() requires (N < 0);
 
 	template <typename Element>
 	void importFrom(const Element& e);

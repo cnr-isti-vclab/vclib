@@ -102,37 +102,31 @@ typename WedgeColors<N>::ConstWedgeColorsRangeIterator WedgeColors<N>::wedgeColo
 }
 
 template<int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) WedgeColors<N>::resizeWedgeColors(uint n)
+void WedgeColors<N>::resizeWedgeColors(uint n) requires (N < 0)
 {
 	Base::resize(n);
 }
 
 template<int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) WedgeColors<N>::pushWedgeColor(const vcl::Color& c)
+void WedgeColors<N>::pushWedgeColor(const vcl::Color& c) requires (N < 0)
 {
 	Base::pushBack(c);
 }
 
 template<int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-WedgeColors<N>::insertWedgeColor(uint i, const vcl::Color& c)
+void WedgeColors<N>::insertWedgeColor(uint i, const vcl::Color& c) requires (N < 0)
 {
 	Base::insert(i, c);
 }
 
 template<int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) WedgeColors<N>::eraseWedgeColor(uint i)
+void WedgeColors<N>::eraseWedgeColor(uint i) requires (N < 0)
 {
 	Base::erase(i);
 }
 
 template<int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) WedgeColors<N>::clearWedgeColor()
+void WedgeColors<N>::clearWedgeColor() requires (N < 0)
 {
 	Base::clear();
 }
