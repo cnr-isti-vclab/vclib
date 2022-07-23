@@ -111,11 +111,9 @@ void Mesh<Args...>::clear()
  * @return the index of the given vertex.
  */
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
-Mesh<Args...>::index(const typename M::VertexType& v) const
+uint Mesh<Args...>::index(const typename Mesh::VertexType& v) const
 {
-	using VertexContainer = typename M::VertexContainer;
+	using VertexContainer = typename Mesh::VertexContainer;
 	return VertexContainer::index(&v);
 }
 
@@ -125,11 +123,9 @@ Mesh<Args...>::index(const typename M::VertexType& v) const
  * @return the index of the given vertex.
  */
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
-Mesh<Args...>::index(const typename M::VertexType* v) const
+uint Mesh<Args...>::index(const typename Mesh::VertexType* v) const
 {
-	using VertexContainer = typename M::VertexContainer;
+	using VertexContainer = typename Mesh::VertexContainer;
 	return VertexContainer::index(v);
 }
 
@@ -144,12 +140,10 @@ Mesh<Args...>::index(const typename M::VertexType* v) const
  * @return the index of the new vertex.
  */
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
-Mesh<Args...>::addVertex()
+uint Mesh<Args...>::addVertex()
 {
-	using Vertex          = typename M::VertexType;
-	using VertexContainer = typename M::VertexContainer;
+	using Vertex          = typename Mesh::VertexType;
+	using VertexContainer = typename Mesh::VertexContainer;
 
 	// If the base pointer of the container of vertices changes, it means that all the vertex
 	// references contained in the other elements need to be updated (the ones contained in the
@@ -178,11 +172,9 @@ Mesh<Args...>::addVertex()
  * @return the id of the new vertex.
  */
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
-Mesh<Args...>::addVertex(const typename M::VertexType::CoordType& p)
+uint Mesh<Args...>::addVertex(const typename Mesh::VertexType::CoordType& p)
 {
-	using VertexContainer = typename M::VertexContainer;
+	using VertexContainer = typename Mesh::VertexContainer;
 
 	uint vid = addVertex();                   // using the previously defined addVertex function
 	VertexContainer::vertex(vid).coord() = p; // set the coordinate to the vertex
@@ -204,12 +196,10 @@ Mesh<Args...>::addVertex(const typename M::VertexType::CoordType& p)
  * @return the id of the first added vertex.
  */
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
-Mesh<Args...>::addVertices(uint n)
+uint Mesh<Args...>::addVertices(uint n)
 {
-	using Vertex          = typename M::VertexType;
-	using VertexContainer = typename M::VertexContainer;
+	using Vertex          = typename Mesh::VertexType;
+	using VertexContainer = typename Mesh::VertexContainer;
 
 	// If the base pointer of the container of vertices changes, it means that all the vertex
 	// references contained in the other elements need to be updated (the ones contained in the
@@ -249,13 +239,12 @@ Mesh<Args...>::addVertices(uint n)
  * @return the id of the first added vertex.
  */
 template<typename... Args>
-template<typename... VC, typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, uint)
-Mesh<Args...>::addVertices(
-	const typename M::VertexType::CoordType& p,
+template<typename... VC>
+uint Mesh<Args...>::addVertices(
+	const typename Mesh::VertexType::CoordType& p,
 	const VC&... v) // parameter pack of points
 {
-	using VertexContainer = typename M::VertexContainer;
+	using VertexContainer = typename Mesh::VertexContainer;
 	uint vid              = VertexContainer::vertexContainerSize();
 	reserveVertices(vid + sizeof...(VC) + 1); // reserve the new number of vertices
 
@@ -285,12 +274,10 @@ Mesh<Args...>::addVertices(
  * @param n: the new capacity of the vertex container.
  */
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, void)
-Mesh<Args...>::reserveVertices(uint n)
+void Mesh<Args...>::reserveVertices(uint n)
 {
-	using Vertex          = typename M::VertexType;
-	using VertexContainer = typename M::VertexContainer;
+	using Vertex          = typename Mesh::VertexType;
+	using VertexContainer = typename Mesh::VertexContainer;
 
 	Vertex* oldBase = VertexContainer::vec.data();
 	VertexContainer::reserveVertices(n);
@@ -307,12 +294,10 @@ Mesh<Args...>::reserveVertices(uint n)
  * This function will be available only **if the Mesh has the Vertex Container**.
  */
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, void)
-Mesh<Args...>::compactVertices()
+void Mesh<Args...>::compactVertices()
 {
-	using Vertex          = typename M::VertexType;
-	using VertexContainer = typename M::VertexContainer;
+	using Vertex          = typename Mesh::VertexType;
+	using VertexContainer = typename Mesh::VertexContainer;
 
 	if (VertexContainer::vertexNumber() != VertexContainer::vertexContainerSize()) {
 
@@ -895,63 +880,59 @@ Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
  *********************/
 
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, void)
-Mesh<Args...>::updateVertexReferences(
-	const typename M::VertexType* oldBase,
-	const typename M::VertexType* newBase)
+void Mesh<Args...>::updateVertexReferences(
+	const typename Mesh::VertexType* oldBase,
+	const typename Mesh::VertexType* newBase)
 {
 	if (oldBase != newBase) {
 		// update vertex references in Vertex Container
-		using VertexContainer = typename M::VertexContainer;
+		using VertexContainer = typename Mesh::VertexContainer;
 		VertexContainer::updateVertexReferences(oldBase, newBase);
 
 		// update vertex references in the Face Container, if it exists
-		if constexpr (mesh::HasFaceContainer<M>) {
-			using FaceContainer = typename M::FaceContainer;
+		if constexpr (mesh::HasFaceContainer<Mesh>) {
+			using FaceContainer = typename Mesh::FaceContainer;
 			FaceContainer::updateVertexReferences(oldBase, newBase);
 		}
 
 		// update vertex references in the Edge Container, if it exists
-		if constexpr (mesh::HasEdgeContainer<M>) {
-			using EdgeContainer = typename M::EdgeContainer;
+		if constexpr (mesh::HasEdgeContainer<Mesh>) {
+			using EdgeContainer = typename Mesh::EdgeContainer;
 			EdgeContainer::updateVertexReferences(oldBase, newBase);
 		}
 
 		// update vertex references in the HalfEdge Container, if it exists
-		if constexpr (mesh::HasHalfEdgeContainer<M>) {
-			using HalfEdgeContainer = typename M::HalfEdgeContainer;
+		if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
+			using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
 			HalfEdgeContainer::updateVertexReferences(oldBase, newBase);
 		}
 	}
 }
 
 template<typename... Args>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasVertexContainer<M>, void)
-Mesh<Args...>::updateVertexReferencesAfterCompact(
-	const typename M::VertexType* base,
+void Mesh<Args...>::updateVertexReferencesAfterCompact(
+	const typename Mesh::VertexType* base,
 	const std::vector<int>&       newIndices)
 {
 	// update vertex references in Vertex Container
-	using VertexContainer = typename M::VertexContainer;
+	using VertexContainer = typename Mesh::VertexContainer;
 	VertexContainer::updateVertexReferencesAfterCompact(base, newIndices);
 
 	// update vertex references in the Face Container, if it exists
-	if constexpr (mesh::HasFaceContainer<M>) {
-		using FaceContainer = typename M::FaceContainer;
+	if constexpr (mesh::HasFaceContainer<Mesh>) {
+		using FaceContainer = typename Mesh::FaceContainer;
 		FaceContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
 
 	// update vertex references in the Edge Container, if it exists
-	if constexpr (mesh::HasEdgeContainer<M>) {
-		using EdgeContainer = typename M::EdgeContainer;
+	if constexpr (mesh::HasEdgeContainer<Mesh>) {
+		using EdgeContainer = typename Mesh::EdgeContainer;
 		EdgeContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
 
 	// update vertex references in the HalfEdge Container, if it exists
-	if constexpr (mesh::HasHalfEdgeContainer<M>) {
-		using HalfEdgeContainer = typename M::HalfEdgeContainer;
+	if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
+		using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
 		HalfEdgeContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
 }
