@@ -72,76 +72,49 @@ public:
 	ConstHalfEdgeRangeIterator halfEdges(bool jumpDeleted = true) const;
 
 	// Color
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasOptionalColor<U>, bool)
-	isPerHalfEdgeColorEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasOptionalColor<U>, void)
-	enablePerHalfEdgeColor();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasOptionalColor<U>, void)
-	disablePerHalfEdgeColor();
+	bool isPerHalfEdgeColorEnabled() const requires hedge::HasOptionalColor<T>;
+	void enablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>;
+	void disablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>;
 
 	// Mark
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasOptionalMark<U>, bool)
-	isPerHalfEdgeMarkEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasOptionalMark<U>, void)
-	enablePerHalfEdgeMark();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasOptionalMark<U>, void)
-	disablePerHalfEdgeMark();
+	bool isPerHalfEdgeMarkEnabled() const requires hedge::HasOptionalMark<T>;
+	void enablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>;
+	void disablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>;
 
 	// Scalar
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasOptionalScalar<U>, bool)
-	isPerHalfEdgeScalarEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasOptionalScalar<U>, void)
-	enablePerHalfEdgeScalar();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasOptionalScalar<U>, void)
-	disablePerHalfEdgeScalar();
+	bool isPerHalfEdgeScalarEnabled() const requires hedge::HasOptionalScalar<T>;
+	void enablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>;
+	void disablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>;
 
 	// Custom Components
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, bool)
-	hasPerHalfEdgeCustomComponent(const std::string& name) const;
+	bool hasPerHalfEdgeCustomComponent(
+		const std::string& name) const requires hedge::HasCustomComponents<T>;
 
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, std::vector<std::string>)
-	getAllPerHalfEdgeCustomComponentNames() const;
+	std::vector<std::string> getAllPerHalfEdgeCustomComponentNames()
+		const requires hedge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, bool)
-	isPerHalfEdgeCustomComponentOfType(const std::string& name) const;
+	template<typename K>
+	bool isPerHalfEdgeCustomComponentOfType(
+		const std::string& name) const requires hedge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, std::vector<std::string>)
-	getPerHalfEdgeCustomComponentNamesOfType() const;
+	template<typename K>
+	std::vector<std::string> getPerHalfEdgeCustomComponentNamesOfType()
+		const requires hedge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, void)
-	addPerHalfEdgeCustomComponent(const std::string& name);
+	template<typename K>
+	void addPerHalfEdgeCustomComponent(const std::string& name)
+		requires hedge::HasCustomComponents<T>;
 
-	template<typename U = T>
-	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, void)
-	deletePerHalfEdgeCustomComponent(const std::string& name);
+	void deletePerHalfEdgeCustomComponent(
+		const std::string& name) requires hedge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, CustomComponentVectorHandle<K>)
-	getPerHalfEdgeCustomComponentVectorHandle(const std::string& name);
+	template<typename K>
+	CustomComponentVectorHandle<K> getPerHalfEdgeCustomComponentVectorHandle(
+		const std::string& name) requires hedge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(hedge::HasCustomComponents<U>, ConstCustomComponentVectorHandle<K>)
-	getPerHalfEdgeCustomComponentVectorHandle(const std::string& name) const;
+	template<typename K>
+	ConstCustomComponentVectorHandle<K> getPerHalfEdgeCustomComponentVectorHandle(
+		const std::string& name) const requires hedge::HasCustomComponents<T>;
 
 protected:
 	uint index(const HalfEdgeType* e) const;
