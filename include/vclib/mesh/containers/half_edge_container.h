@@ -71,6 +71,9 @@ public:
 	HalfEdgeRangeIterator      halfEdges(bool jumpDeleted = true);
 	ConstHalfEdgeRangeIterator halfEdges(bool jumpDeleted = true) const;
 
+	void enableAllPerHalfEdgeOptionalComponents();
+	void disableAllPerHalfEdgeOptionalComponents();
+
 	// Color
 	bool isPerHalfEdgeColorEnabled() const requires hedge::HasOptionalColor<T>;
 	void enablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>;

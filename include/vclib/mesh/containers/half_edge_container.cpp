@@ -285,6 +285,36 @@ HalfEdgeContainer<T>::halfEdges(bool jumpDeleted) const
 }
 
 /**
+ * @brief Enables all the optional components associated to the Half Edge type contained in the
+ * HalfEdgeContainer.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::enableAllPerHalfEdgeOptionalComponents()
+{
+	if constexpr (hedge::HasOptionalColor<T>)
+		enablePerHalfEdgeColor();
+	if constexpr (hedge::HasOptionalMark<T>)
+		enablePerHalfEdgeMark();
+	if constexpr (hedge::HasOptionalScalar<T>)
+		enablePerHalfEdgeScalar();
+}
+
+/**
+ * @brief Disables all the optional components associated to the Half Edge type contained in the
+ * HalfEdgeContainer.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::disableAllPerHalfEdgeOptionalComponents()
+{
+	if constexpr (hedge::HasOptionalColor<T>)
+		disablePerHalfEdgeColor();
+	if constexpr (hedge::HasOptionalMark<T>)
+		disablePerHalfEdgeMark();
+	if constexpr (hedge::HasOptionalScalar<T>)
+		disablePerHalfEdgeScalar();
+}
+
+/**
  * @brief Checks if the halfedge Optional Color is enabled.
  *
  * @note This function is available only if the HalfEdge Element has the OptionalColor component.
