@@ -144,43 +144,33 @@ int GenericContainer<C, N>::indexOf(const typename MakeConstPointer<C>::type& e)
 }
 
 template<typename C, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-GenericContainer<C, N>::resize(uint n)
+void GenericContainer<C, N>::resize(uint n) requires (N < 0)
 {
 	container.resize(n);
 }
 
 template<typename C, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-GenericContainer<C, N>::pushBack(const C& v)
+void GenericContainer<C, N>::pushBack(const C& v) requires (N < 0)
 {
 	container.push_back(v);
 }
 
 template<typename C, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-GenericContainer<C, N>::insert(uint i, const C& v)
+void GenericContainer<C, N>::insert(uint i, const C& v) requires (N < 0)
 {
 	assert(i < size());
 	container.insert(container.begin() + i, v);
 }
 
 template<typename C, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-GenericContainer<C, N>::erase(uint i)
+void GenericContainer<C, N>::erase(uint i) requires (N < 0)
 {
 	assert(i < size());
 	container.erase(container.begin() + i);
 }
 
 template<typename C, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-GenericContainer<C, N>::clear()
+void GenericContainer<C, N>::clear() requires (N < 0)
 {
 	container.clear();
 }

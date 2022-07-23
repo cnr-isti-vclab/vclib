@@ -95,20 +95,11 @@ protected:
 
 	/** Member functions specific for vector **/
 
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resize(uint n);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushBack(const C& v);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insert(uint i, const C& v);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) erase(uint i);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clear();
+	void resize(uint n) requires (N < 0);
+	void pushBack(const C& v) requires (N < 0);
+	void insert(uint i, const C& v) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 	/** Iterator Member functions **/
 

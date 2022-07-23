@@ -70,23 +70,13 @@ public:
 	ConstWedgeColorsRangeIterator wedgeColors() const;
 
 protected:
-	/* Member functions specific for vector */
+	/* Member functions specific for vector of wedge colors */
 
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeWedgeColors(uint n);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushWedgeColor(const vcl::Color& c);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void)
-	insertWedgeColor(uint i, const vcl::Color& c);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseWedgeColor(uint i);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearWedgeColor();
+	void resizeWedgeColors(uint n) requires (N < 0);
+	void pushWedgeColor(const vcl::Color& c) requires (N < 0);
+	void insertWedgeColor(uint i, const vcl::Color& c) requires (N < 0);
+	void eraseWedgeColor(uint i) requires (N < 0);
+	void clearWedgeColor() requires (N < 0);
 
 	template <typename Element>
 	void importFrom(const Element& e);

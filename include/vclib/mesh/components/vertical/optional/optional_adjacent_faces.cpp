@@ -146,40 +146,33 @@ bool OptionalAdjacentFaces<Face, N, T>::isAdjFacesEnabled() const
 }
 
 template<typename Face, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentFaces<Face, N, T>::resizeAdjFaces(uint n)
+void OptionalAdjacentFaces<Face, N, T>::resizeAdjFaces(uint n) requires (N < 0)
 {
 	B::optCont().adjFaces(thisId()).resize(n);
 }
 
 template<typename Face, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalAdjacentFaces<Face, N, T>::pushAdjFace(Face* f)
+void OptionalAdjacentFaces<Face, N, T>::pushAdjFace(Face* f) requires (N < 0)
 {
 	B::optCont().adjFaces(thisId()).push_back(f);
 }
 
 template<typename Face, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-OptionalAdjacentFaces<Face, N, T>::insertAdjFace(uint i, Face* f)
+void OptionalAdjacentFaces<Face, N, T>::insertAdjFace(uint i, Face* f) requires (N < 0)
 {
 	assert(i < adjFacesNumber());
 	B::optCont().adjFaces(thisId()).insert(B::optCont().adjFaces(thisId()).begin() + i, f);
 }
 
 template<typename Face, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalAdjacentFaces<Face, N, T>::eraseAdjFace(uint i)
+void OptionalAdjacentFaces<Face, N, T>::eraseAdjFace(uint i) requires (N < 0)
 {
 	assert(i < adjFacesNumber());
 	B::optCont().adjFaces(thisId()).erase(B::optCont().adjFaces(thisId()).begin() + i);
 }
 
 template<typename Face, int N, typename T>
-template<int M>
-VCL_ENABLE_IF(M < 0, void) OptionalAdjacentFaces<Face, N, T>::clearAdjFaces()
+void OptionalAdjacentFaces<Face, N, T>::clearAdjFaces() requires (N < 0)
 {
 	B::optCont().adjFaces(thisId()).clear();
 }

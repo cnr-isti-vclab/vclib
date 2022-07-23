@@ -27,17 +27,125 @@
 
 namespace vcl {
 
-template<typename MeshType>
-concept HasVertices = vcl::mesh::HasVertexContainer<MeshType>;
+/**
+ * @brief HasVertices concepts is satisfied when at least one of its types is (or inherits from)
+ * a VertexContainer. It can be used both to check if a Mesh has vertices, or if in a list of types
+ * there is a VertexContainer.
+ *
+ * In the following example, a MyMesh type can be instatiated only if one of its template Args is a
+ * VertexContainer:
+ * @code{.cpp}
+ * template <typename... Args> requires HasVertices<Args...>
+ * class MyMesh {
+ *     // ...
+ * };
+ *
+ * // ...
+ *
+ * MyMesh<vcl::VertexContainer<MyVertex>> m1; // ok
+ * MyMesh<vcl::FaceContainer<MyFace>> m2; // not ok
+ * MyMesh<vcl::VertexContainer<MyVertex>, vcl::FaceContainer<MyFace>> m3; // ok
+ * @endcode
+ *
+ * To check if a type has (inherits from) VertexContainer:
+ * @code{.cpp}
+ * if constexpr (vcl::HasVertices<MyMeshType>) {
+ *     // ...
+ * }
+ * @endcode
+ */
+template<typename... Args>
+concept HasVertices = (vcl::mesh::HasVertexContainer<Args> || ...);
 
-template<typename MeshType>
-concept HasFaces = vcl::mesh::HasFaceContainer<MeshType>;
+/**
+ * @brief HasFaces concepts is satisfied when at least one of its types is (or inherits from)
+ * a FaceContainer. It can be used both to check if a Mesh has faces, or if in a list of types
+ * there is a FaceContainer.
+ *
+ * In the following example, a MyMesh type can be instatiated only if one of its template Args is a
+ * FaceContainer:
+ * @code{.cpp}
+ * template <typename... Args> requires HasFaces<Args...>
+ * class MyMesh {
+ *     // ...
+ * };
+ *
+ * // ...
+ *
+ * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
+ * MyMesh<vcl::FaceContainer<MyFace>> m2; // ok
+ * MyMesh<vcl::VertexContainer<MyVertex>, vcl::FaceContainer<MyFace>> m3; // ok
+ * @endcode
+ *
+ * To check if a type has (inherits from) FaceContainer:
+ * @code{.cpp}
+ * if constexpr (vcl::HasFaces<MyMeshType>) {
+ *     // ...
+ * }
+ * @endcode
+ */
+template<typename... Args>
+concept HasFaces = (vcl::mesh::HasFaceContainer<Args> || ...);
 
-template<typename MeshType>
-concept HasEdges = vcl::mesh::HasEdgeContainer<MeshType>;
+/**
+ * @brief HasEdges concepts is satisfied when at least one of its types is (or inherits from)
+ * a EdgeContainer. It can be used both to check if a Mesh has edges, or if in a list of types
+ * there is a EdgeContainer.
+ *
+ * In the following example, a MyMesh type can be instatiated only if one of its template Args is a
+ * EdgeContainer:
+ * @code{.cpp}
+ * template <typename... Args> requires HasEdges<Args...>
+ * class MyMesh {
+ *     // ...
+ * };
+ *
+ * // ...
+ *
+ * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
+ * MyMesh<vcl::EdgeContainer<MyEdge>> m2; // ok
+ * MyMesh<vcl::VertexContainer<MyVertex>, vcl::EdgeContainer<MyEdge>> m3; // ok
+ * @endcode
+ *
+ * To check if a type has (inherits from) EdgeContainer:
+ * @code{.cpp}
+ * if constexpr (vcl::HasEdges<MyMeshType>) {
+ *     // ...
+ * }
+ * @endcode
+ */
+template<typename... Args>
+concept HasEdges = (vcl::mesh::HasEdgeContainer<Args> || ...);
 
-template<typename MeshType>
-concept HasHalfEdges = vcl::mesh::HasHalfEdgeContainer<MeshType>;
+/**
+ * @brief HasHalfEdges concepts is satisfied when at least one of its types is (or inherits from)
+ * a HalfEdgeContainer. It can be used both to check if a Mesh has half edges, or if in a list of
+ * types there is a HalfEdgeContainer.
+ *
+ * In the following example, a MyMesh type can be instatiated only if one of its template Args is a
+ * HalfEdgeContainer:
+ * @code{.cpp}
+ * template <typename... Args> requires HasHalfEdges<Args...>
+ * class MyMesh {
+ *     // ...
+ * };
+ *
+ * // ...
+ *
+ * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
+ * MyMesh<vcl::HalfEdgeContainer<MyHalfEdge>> m2; // ok
+ * MyMesh<vcl::VertexContainer<MyVertex>, vcl::HalfEdgeContainer<MyHalfEdge>> m3; // ok
+ * @endcode
+ *
+ * To check if a type has (inherits from) HalfEdgeContainer:
+ * @code{.cpp}
+ * if constexpr (vcl::HasHalfEdges<MyMeshType>) {
+ *     // ...
+ * }
+ * @endcode
+ */
+template<typename... Args>
+concept HasHalfEdges = (vcl::mesh::HasHalfEdgeContainer<Args> | ...);
 
 } // namespace vcl
 

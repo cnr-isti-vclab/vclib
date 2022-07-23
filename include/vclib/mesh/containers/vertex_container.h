@@ -85,154 +85,79 @@ public:
 	void disableAllPerVertexOptionalComponents();
 
 	// Adjacent Edges
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalAdjacentEdges<U>, bool)
-	isPerVertexAdjacentEdgesEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalAdjacentEdges<U>, void)
-	enablePerVertexAdjacentEdges();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalAdjacentEdges<U>, void)
-	disablePerVertexAdjacentEdges();
+	bool isPerVertexAdjacentEdgesEnabled() const requires vert::HasOptionalAdjacentEdges<T>;
+	void enablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>;
+	void disablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>;
 
 	// Adjacent Faces
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, bool)
-	isPerVertexAdjacentFacesEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, void)
-	enablePerVertexAdjacentFaces();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, void)
-	disablePerVertexAdjacentFaces();
+	bool isPerVertexAdjacentFacesEnabled() const requires vert::HasOptionalAdjacentFaces<T>;
+	void enablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>;
+	void disablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>;
 
 	// Adjacent Vertices
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, bool)
-	isPerVertexAdjacentVerticesEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, void)
-	enablePerVertexAdjacentVertices();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, void)
-	disablePerVertexAdjacentVertices();
+	bool isPerVertexAdjacentVerticesEnabled() const requires vert::HasOptionalAdjacentVertices<T>;
+	void enablePerVertexAdjacentVertices() requires vert::HasOptionalAdjacentVertices<T>;
+	void disablePerVertexAdjacentVertices() requires vert::HasOptionalAdjacentVertices<T>;
 
 	// Color
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalColor<U>, bool)
-	isPerVertexColorEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalColor<U>, void)
-	enablePerVertexColor();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalColor<U>, void)
-	disablePerVertexColor();
+	bool isPerVertexColorEnabled() const requires vert::HasOptionalColor<T>;
+	void enablePerVertexColor() requires vert::HasOptionalColor<T>;
+	void disablePerVertexColor() requires vert::HasOptionalColor<T>;
 
 	// Mark
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalMark<U>, bool)
-	isPerVertexMarkEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalMark<U>, void)
-	enablePerVertexMark();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalMark<U>, void)
-	disablePerVertexMark();
+	bool isPerVertexMarkEnabled() const requires vert::HasOptionalMark<T>;
+	void enablePerVertexMark() requires vert::HasOptionalMark<T>;
+	void disablePerVertexMark() requires vert::HasOptionalMark<T>;
 
 	// Normal
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalNormal<U>, bool)
-	isPerVertexNormalEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalNormal<U>, void)
-	enablePerVertexNormal();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalNormal<U>, void)
-	disablePerVertexNormal();
+	bool isPerVertexNormalEnabled() const requires vert::HasOptionalNormal<T>;
+	void enablePerVertexNormal() requires vert::HasOptionalNormal<T>;
+	void disablePerVertexNormal() requires vert::HasOptionalNormal<T>;
 
 	// PrincipalCurvature
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, bool)
-	isPerVertexPrincipalCurvatureEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, void)
-	enablePerVertexPrincipalCurvature();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, void)
-	disablePerVertexPrincipalCurvature();
+	bool isPerVertexPrincipalCurvatureEnabled()
+		const requires vert::HasOptionalPrincipalCurvature<T>;
+	void enablePerVertexPrincipalCurvature() requires vert::HasOptionalPrincipalCurvature<T>;
+	void disablePerVertexPrincipalCurvature() requires vert::HasOptionalPrincipalCurvature<T>;
 
 	// Scalar
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalScalar<U>, bool)
-	isPerVertexScalarEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalScalar<U>, void)
-	enablePerVertexScalar();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalScalar<U>, void)
-	disablePerVertexScalar();
+	bool isPerVertexScalarEnabled() const requires vert::HasOptionalScalar<T>;
+	void enablePerVertexScalar() requires vert::HasOptionalScalar<T>;
+	void disablePerVertexScalar() requires vert::HasOptionalScalar<T>;
 
 	// TexCoord
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, bool)
-	isPerVertexTexCoordEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, void)
-	enablePerVertexTexCoord();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, void)
-	disablePerVertexTexCoord();
+	bool isPerVertexTexCoordEnabled() const requires vert::HasOptionalTexCoord<T>;
+	void enablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>;
+	void disablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>;
 
 	// Custom Components
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasCustomComponents<U>, bool)
-	hasPerVertexCustomComponent(const std::string& name) const;
+	bool hasPerVertexCustomComponent(const std::string& name)
+		const requires vert::HasCustomComponents<T>;
 
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasCustomComponents<U>, std::vector<std::string>)
-	getAllPerVertexCustomComponentNames() const;
+	std::vector<std::string> getAllPerVertexCustomComponentNames()
+		const requires vert::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::HasCustomComponents<U>, bool)
-	isPerVertexCustomComponentOfType(const std::string& name) const;
+	template<typename K>
+	bool isPerVertexCustomComponentOfType(
+		const std::string& name) const requires vert::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::HasCustomComponents<U>, std::vector<std::string>)
-	getPerVertexCustomComponentNamesOfType() const;
+	template<typename K>
+	std::vector<std::string> getPerVertexCustomComponentNamesOfType()
+		const requires vert::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::HasCustomComponents<U>, void)
-	addPerVertexCustomComponent(const std::string& name);
+	template<typename K>
+	void addPerVertexCustomComponent(const std::string& name) requires vert::HasCustomComponents<T>;
 
-	template<typename U = T>
-	VCL_ENABLE_IF(vert::HasCustomComponents<U>, void)
-	deletePerVertexCustomComponent(const std::string& name);
+	void deletePerVertexCustomComponent(const std::string& name)
+		requires vert::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::HasCustomComponents<U>, CustomComponentVectorHandle<K>)
-	getPerVertexCustomComponentVectorHandle(const std::string& name);
+	template<typename K>
+	CustomComponentVectorHandle<K> getPerVertexCustomComponentVectorHandle(
+		const std::string& name) requires vert::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(vert::HasCustomComponents<U>, ConstCustomComponentVectorHandle<K>)
-	getPerVertexCustomComponentVectorHandle(const std::string& name) const;
+	template<typename K>
+	ConstCustomComponentVectorHandle<K> getPerVertexCustomComponentVectorHandle(
+		const std::string& name) const requires vert::HasCustomComponents<T>;
 
 protected:
 	uint index(const VertexType* v) const;

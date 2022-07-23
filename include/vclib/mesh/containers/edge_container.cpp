@@ -317,9 +317,8 @@ void EdgeContainer<T>::disableAllPerEdgeOptionalComponents()
  * @return true if the Optional AdjacentEdges is enabled, false otherwise.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalAdjacentEdges<U>, bool)
-EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled() const
+bool EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled()
+	const requires edge::HasOptionalAdjacentEdges<T>
 {
 	return Base::optionalVec.isAdjacentEdgesEnabled();
 }
@@ -335,9 +334,7 @@ EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled() const
  * Adjacent Edges number is tied to the number of vertices.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalAdjacentEdges<U>, void)
-EdgeContainer<T>::enablePerEdgeAdjacentEdges()
+void EdgeContainer<T>::enablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 {
 	Base::optionalVec.enableAdjacentEdges(Base::vec.size());
 	static const int N = T::VERTEX_NUMBER;
@@ -355,9 +352,7 @@ EdgeContainer<T>::enablePerEdgeAdjacentEdges()
  * Component.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalAdjacentEdges<U>, void)
-EdgeContainer<T>::disablePerEdgeAdjacentEdges()
+void EdgeContainer<T>::disablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 {
 	Base::optionalVec.disableAdjacentEdges();
 }
@@ -371,9 +366,7 @@ EdgeContainer<T>::disablePerEdgeAdjacentEdges()
  * @return true if the Optional AdjacentFaces is enabled, false otherwise.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalAdjacentFaces<U>, bool)
-EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const
+bool EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const requires edge::HasOptionalAdjacentFaces<T>
 {
 	return Base::optionalVec.isAdjacentFacesEnabled();
 }
@@ -385,9 +378,7 @@ EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const
  * Component.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalAdjacentFaces<U>, void)
-EdgeContainer<T>::enablePerEdgeAdjacentFaces()
+void EdgeContainer<T>::enablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
 {
 	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
 }
@@ -399,9 +390,7 @@ EdgeContainer<T>::enablePerEdgeAdjacentFaces()
  * Component.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalAdjacentFaces<U>, void)
-EdgeContainer<T>::disablePerEdgeAdjacentFaces()
+void EdgeContainer<T>::disablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
 {
 	Base::optionalVec.disableAdjacentFaces();
 }
@@ -414,9 +403,7 @@ EdgeContainer<T>::disablePerEdgeAdjacentFaces()
  * @return true if the Optional Color is enabled, false otherwise.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalColor<U>, bool)
-EdgeContainer<T>::isPerEdgeColorEnabled() const
+bool EdgeContainer<T>::isPerEdgeColorEnabled() const requires edge::HasOptionalColor<T>
 {
 	return Base::optionalVec.isColorEnabled();
 }
@@ -427,9 +414,7 @@ EdgeContainer<T>::isPerEdgeColorEnabled() const
  * @note This function is available only if the Edge Element has the OptionalColor Component.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalColor<U>, void)
-EdgeContainer<T>::enablePerEdgeColor()
+void EdgeContainer<T>::enablePerEdgeColor() requires edge::HasOptionalColor<T>
 {
 	Base::optionalVec.enableColor(edgeContainerSize());
 }
@@ -440,9 +425,7 @@ EdgeContainer<T>::enablePerEdgeColor()
  * @note This function is available only if the Edge Element has the OptionalColor Component.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalColor<U>, void)
-EdgeContainer<T>::disablePerEdgeColor()
+void EdgeContainer<T>::disablePerEdgeColor() requires edge::HasOptionalColor<T>
 {
 	Base::optionalVec.disableColor();
 }
@@ -455,9 +438,7 @@ EdgeContainer<T>::disablePerEdgeColor()
  * @return true if the Optional Mark is enabled, false otherwise.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalMark<U>, bool)
-EdgeContainer<T>::isPerEdgeMarkEnabled() const
+bool EdgeContainer<T>::isPerEdgeMarkEnabled() const requires edge::HasOptionalMark<T>
 {
 	return Base::optionalVec.isMarkEnabled();
 }
@@ -468,9 +449,7 @@ EdgeContainer<T>::isPerEdgeMarkEnabled() const
  * @note This function is available only if the Edge Element has the OptionalMark Component.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalMark<U>, void)
-EdgeContainer<T>::enablePerEdgeMark()
+void EdgeContainer<T>::enablePerEdgeMark() requires edge::HasOptionalMark<T>
 {
 	Base::optionalVec.enableMark(edgeContainerSize());
 }
@@ -481,9 +460,7 @@ EdgeContainer<T>::enablePerEdgeMark()
  * @note This function is available only if the Edge Element has the OptionalMark Component.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalMark<U>, void)
-EdgeContainer<T>::disablePerEdgeMark()
+void EdgeContainer<T>::disablePerEdgeMark() requires edge::HasOptionalMark<T>
 {
 	Base::optionalVec.disableMark();
 }
@@ -496,9 +473,7 @@ EdgeContainer<T>::disablePerEdgeMark()
  * @return true if the Optional Scalar is enabled, false otherwise.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalScalar<U>, bool)
-EdgeContainer<T>::isPerEdgeScalarEnabled() const
+bool EdgeContainer<T>::isPerEdgeScalarEnabled() const requires edge::HasOptionalScalar<T>
 {
 	return Base::optionalVec.isScalarEnabled();
 }
@@ -508,9 +483,7 @@ EdgeContainer<T>::isPerEdgeScalarEnabled() const
  * @note This function is available only if the Edge Element has the OptionalScalar Component.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalScalar<U>, void)
-EdgeContainer<T>::enablePerEdgeScalar()
+void EdgeContainer<T>::enablePerEdgeScalar() requires edge::HasOptionalScalar<T>
 {
 	Base::optionalVec.enableScalar(edgeContainerSize());
 }
@@ -521,9 +494,7 @@ EdgeContainer<T>::enablePerEdgeScalar()
  * @note This function is available only if the Edge Element has the OptionalScalar Component.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasOptionalScalar<U>, void)
-EdgeContainer<T>::disablePerEdgeScalar()
+void EdgeContainer<T>::disablePerEdgeScalar() requires edge::HasOptionalScalar<T>
 {
 	Base::optionalVec.disableScalar();
 }
@@ -538,9 +509,8 @@ EdgeContainer<T>::disablePerEdgeScalar()
  * @return `true` if the Edge Element has a custom component with the given name.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasCustomComponents<U>, bool)
-EdgeContainer<T>::hasPerEdgeCustomComponent(const std::string& name) const
+bool EdgeContainer<T>::hasPerEdgeCustomComponent(
+	const std::string& name) const requires edge::HasCustomComponents<T>
 {
 	return Base::optionalVec.componentExists(name);
 }
@@ -554,9 +524,8 @@ EdgeContainer<T>::hasPerEdgeCustomComponent(const std::string& name) const
  * @return A vector of strings representing all the names of the custom components.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasCustomComponents<U>, std::vector<std::string>)
-EdgeContainer<T>::getAllPerEdgeCustomComponentNames() const
+std::vector<std::string> EdgeContainer<T>::getAllPerEdgeCustomComponentNames()
+	const requires edge::HasCustomComponents<T>
 {
 	return Base::optionalVec.allComponentNames();
 }
@@ -579,9 +548,9 @@ EdgeContainer<T>::getAllPerEdgeCustomComponentNames() const
  * @return `true` if the custom component is of the same type of the template argument.
  */
 template<EdgeConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(edge::HasCustomComponents<U>, bool)
-EdgeContainer<T>::isPerEdgeCustomComponentOfType(const std::string& name) const
+template<typename K>
+bool EdgeContainer<T>::isPerEdgeCustomComponentOfType(
+	const std::string& name) const requires edge::HasCustomComponents<T>
 {
 	return Base::optionalVec.template isComponentOfType<K>(name);
 }
@@ -602,9 +571,9 @@ EdgeContainer<T>::isPerEdgeCustomComponentOfType(const std::string& name) const
  * @return A vector of strings representing the names of the custom components of a given type.
  */
 template<EdgeConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(edge::HasCustomComponents<U>, std::vector<std::string>)
-EdgeContainer<T>::getPerEdgeCustomComponentNamesOfType() const
+template<typename K>
+std::vector<std::string>
+EdgeContainer<T>::getPerEdgeCustomComponentNamesOfType() const requires edge::HasCustomComponents<T>
 {
 	return Base::optionalVec.template allComponentNamesOfType<K>();
 }
@@ -618,9 +587,9 @@ EdgeContainer<T>::getPerEdgeCustomComponentNamesOfType() const
  * @param[in] name: the name of the custom component added to the Edge.
  */
 template<EdgeConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(edge::HasCustomComponents<U>, void)
-EdgeContainer<T>::addPerEdgeCustomComponent(const std::string& name)
+template<typename K>
+void EdgeContainer<T>::addPerEdgeCustomComponent(
+	const std::string& name) requires edge::HasCustomComponents<T>
 {
 	Base::optionalVec.template addNewComponent<K>(name, edgeContainerSize());
 }
@@ -635,9 +604,8 @@ EdgeContainer<T>::addPerEdgeCustomComponent(const std::string& name)
  * @param[in] name: the name of the custom component that will be removed from the Edge.
  */
 template<EdgeConcept T>
-template<typename U>
-VCL_ENABLE_IF(edge::HasCustomComponents<U>, void)
-EdgeContainer<T>::deletePerEdgeCustomComponent(const std::string& name)
+void EdgeContainer<T>::deletePerEdgeCustomComponent(
+	const std::string& name) requires edge::HasCustomComponents<T>
 {
 	Base::optionalVec.deleteComponent(name);
 }
@@ -669,11 +637,9 @@ EdgeContainer<T>::deletePerEdgeCustomComponent(const std::string& name)
  * @param name: name of the custom component on which return the handle.
  */
 template<EdgeConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(
-	edge::HasCustomComponents<U>,
-	CustomComponentVectorHandle<K>)
-	EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(const std::string& name)
+template<typename K>
+CustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(
+	const std::string& name) requires edge::HasCustomComponents<T>
 {
 	std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
 	CustomComponentVectorHandle<K> v(cc);
@@ -709,11 +675,9 @@ VCL_ENABLE_IF(
  * @param name: name of the custom component on which return the handle.
  */
 template<EdgeConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(
-	edge::HasCustomComponents<U>,
-	ConstCustomComponentVectorHandle<K>)
-	EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(const std::string& name) const
+template<typename K>
+ConstCustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(
+	const std::string& name) const requires edge::HasCustomComponents<T>
 {
 	const std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
 	ConstCustomComponentVectorHandle<K> v(cc);

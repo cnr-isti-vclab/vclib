@@ -658,7 +658,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Adjacent Edges
 	// if this Element of this container has optional adjacent edges
 	if constexpr (comp::HasOptionalAdjacentEdges<T>) {
-		// if also the other Container Element type has adjacent edges
+		// if the other Container Element type has adjacent edges
 		if constexpr (comp::HasAdjacentEdges<CT>) {
 
 			// short circuited or: if optional, then I check if enabled; if not optional, then true

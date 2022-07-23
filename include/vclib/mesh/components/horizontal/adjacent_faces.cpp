@@ -168,41 +168,31 @@ int AdjacentFaces<Face, N>::indexOfAdjFace(const Face* f) const
  * @param n
  */
 template<typename Face, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-AdjacentFaces<Face, N>::resizeAdjFaces(uint n)
+void AdjacentFaces<Face, N>::resizeAdjFaces(uint n) requires (N < 0)
 {
 	Base::resize(n);
 }
 
 template<typename Face, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-AdjacentFaces<Face, N>::pushAdjFace(Face* f)
+void AdjacentFaces<Face, N>::pushAdjFace(Face* f) requires (N < 0)
 {
 	Base::pushBack(f);
 }
 
 template<typename Face, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-AdjacentFaces<Face, N>::insertAdjFace(uint i, Face* f)
+void AdjacentFaces<Face, N>::insertAdjFace(uint i, Face* f) requires (N < 0)
 {
 	Base::insert(i, f);
 }
 
 template<typename Face, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-AdjacentFaces<Face, N>::eraseAdjFace(uint i)
+void AdjacentFaces<Face, N>::eraseAdjFace(uint i) requires (N < 0)
 {
 	Base::erase(i);
 }
 
 template<typename Face, int N>
-template<int M>
-VCL_ENABLE_IF(M < 0, void)
-AdjacentFaces<Face, N>::clearAdjFaces()
+void AdjacentFaces<Face, N>::clearAdjFaces() requires (N < 0)
 {
 	Base::clear();
 }

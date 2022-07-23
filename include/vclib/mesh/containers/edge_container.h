@@ -75,102 +75,58 @@ public:
 	void disableAllPerEdgeOptionalComponents();
 
 	// AdjacentEdges
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalAdjacentEdges<U>, bool)
-	isPerEdgeAdjacentEdgesEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalAdjacentEdges<U>, void)
-	enablePerEdgeAdjacentEdges();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalAdjacentEdges<U>, void)
-	disablePerEdgeAdjacentEdges();
+	bool isPerEdgeAdjacentEdgesEnabled() const requires edge::HasOptionalAdjacentEdges<T>;
+	void enablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>;
+	void disablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>;
 
 	// AdjacentFaces
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalAdjacentFaces<U>, bool)
-	isPerEdgeAdjacentFacesEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalAdjacentFaces<U>, void)
-	enablePerEdgeAdjacentFaces();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalAdjacentFaces<U>, void)
-	disablePerEdgeAdjacentFaces();
+	bool isPerEdgeAdjacentFacesEnabled() const requires edge::HasOptionalAdjacentFaces<T>;
+	void enablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>;
+	void disablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>;
 
 	// Color
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalColor<U>, bool)
-	isPerEdgeColorEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalColor<U>, void)
-	enablePerEdgeColor();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalColor<U>, void)
-	disablePerEdgeColor();
+	bool isPerEdgeColorEnabled() const requires edge::HasOptionalColor<T>;
+	void enablePerEdgeColor() requires edge::HasOptionalColor<T>;
+	void disablePerEdgeColor() requires edge::HasOptionalColor<T>;
 
 	// Mark
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalMark<U>, bool)
-	isPerEdgeMarkEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalMark<U>, void)
-	enablePerEdgeMark();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalMark<U>, void)
-	disablePerEdgeMark();
+	bool isPerEdgeMarkEnabled() const requires edge::HasOptionalMark<T>;
+	void enablePerEdgeMark() requires edge::HasOptionalMark<T>;
+	void disablePerEdgeMark() requires edge::HasOptionalMark<T>;
 
 	// Scalar
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalScalar<U>, bool)
-	isPerEdgeScalarEnabled() const;
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalScalar<U>, void)
-	enablePerEdgeScalar();
-
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasOptionalScalar<U>, void)
-	disablePerEdgeScalar();
+	bool isPerEdgeScalarEnabled() const requires edge::HasOptionalScalar<T>;
+	void enablePerEdgeScalar() requires edge::HasOptionalScalar<T>;
+	void disablePerEdgeScalar() requires edge::HasOptionalScalar<T>;
 
 	// Custom Components
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasCustomComponents<U>, bool)
-	hasPerEdgeCustomComponent(const std::string& name) const;
+	bool hasPerEdgeCustomComponent(
+		const std::string& name) const requires edge::HasCustomComponents<T>;
 
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasCustomComponents<U>, std::vector<std::string>)
-	getAllPerEdgeCustomComponentNames() const;
+	std::vector<std::string> getAllPerEdgeCustomComponentNames()
+		const requires edge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::HasCustomComponents<U>, bool)
-	isPerEdgeCustomComponentOfType(const std::string& name) const;
+	template<typename K>
+	bool isPerEdgeCustomComponentOfType(
+		const std::string& name) const requires edge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::HasCustomComponents<U>, std::vector<std::string>)
-	getPerEdgeCustomComponentNamesOfType() const;
+	template<typename K>
+	std::vector<std::string> getPerEdgeCustomComponentNamesOfType()
+		const requires edge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::HasCustomComponents<U>, void)
-	addPerEdgeCustomComponent(const std::string& name);
+	template<typename K>
+	void addPerEdgeCustomComponent(const std::string& name) requires edge::HasCustomComponents<T>;
 
-	template<typename U = T>
-	VCL_ENABLE_IF(edge::HasCustomComponents<U>, void)
-	deletePerEdgeCustomComponent(const std::string& name);
+	void deletePerEdgeCustomComponent(
+		const std::string& name) requires edge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::HasCustomComponents<U>, CustomComponentVectorHandle<K>)
-	getPerEdgeCustomComponentVectorHandle(const std::string& name);
+	template<typename K>
+	CustomComponentVectorHandle<K> getPerEdgeCustomComponentVectorHandle(
+		const std::string& name) requires edge::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(edge::HasCustomComponents<U>, ConstCustomComponentVectorHandle<K>)
-	getPerEdgeCustomComponentVectorHandle(const std::string& name) const;
+	template<typename K>
+	ConstCustomComponentVectorHandle<K> getPerEdgeCustomComponentVectorHandle(
+		const std::string& name) const requires edge::HasCustomComponents<T>;
 
 protected:
 	uint index(const EdgeType* e) const;

@@ -116,20 +116,11 @@ public:
 protected:
 	/* Member functions specific for vector */
 
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) resizeWedgeColors(uint n);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) pushWedgeColor(const vcl::Color& t);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) insertWedgeColor(uint i, const vcl::Color& t);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) eraseWedgeColor(uint i);
-
-	template<int M = N>
-	VCL_ENABLE_IF(M < 0, void) clearWedgeColor();
+	void resizeWedgeColors(uint n) requires (N < 0);
+	void pushWedgeColor(const vcl::Color& t) requires (N < 0);
+	void insertWedgeColor(uint i, const vcl::Color& t) requires (N < 0);
+	void eraseWedgeColor(uint i) requires (N < 0);
+	void clearWedgeColor() requires (N < 0);
 
 	template <typename Element>
 	void importFrom(const Element& e);
