@@ -109,7 +109,6 @@ set(HEADERS
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_algorithms.h
 	include/vclib/mesh/mesh_components.h
-	include/vclib/mesh/mesh_concept.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
 	include/vclib/mesh/components/concepts/adjacent_edges.h

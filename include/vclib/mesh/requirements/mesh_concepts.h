@@ -24,9 +24,47 @@
 #define VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H
 
 #include "element_concepts.h"
-#include "../mesh_concept.h"
+
+#include "../components/concepts/bounding_box.h"
+#include "../components/concepts/mark.h"
+#include "../components/concepts/texture_paths.h"
+#include "../components/concepts/transform_matrix.h"
 
 namespace vcl {
+
+template<typename...>
+class Mesh;
+
+namespace mesh {
+
+// checks if a type derives from vcl::Mesh<Args...>
+template<typename Derived>
+using IsDerivedFromMesh = IsDerivedFromTemplateSpecialization<Derived, Mesh>;
+
+// checks if a type is a vcl::Mesh<Args...>
+template<class T>
+struct IsAMesh : // Default case, no pattern match
+	std::false_type
+{
+};
+
+template<class... Args>
+struct IsAMesh<Mesh<Args...>> : // For types matching the pattern Mesh<Args...>
+	std::true_type
+{
+};
+
+/* Port concepts into the mesh namespace */
+template<typename T>
+concept HasBoundingBox = comp::HasBoundingBox<T>;
+template<typename T>
+concept HasMark = comp::HasMark<T>;
+template<typename T>
+concept HasTexturePaths = comp::HasTexturePaths<T>;
+template<typename T>
+concept HasTransformMatrix = comp::HasTransformMatrix<T>;
+
+} // namespace mesh
 
 template<typename MeshType>
 concept HasTriangles =
