@@ -704,9 +704,8 @@ void FaceContainer<T>::disablePerFaceWedgeTexCoords() requires face::HasOptional
  * @return `true` if the Face Element has a custom component with the given name.
  */
 template<FaceConcept T>
-template<typename U>
-VCL_ENABLE_IF(face::HasCustomComponents<U>, bool)
-FaceContainer<T>::hasPerFaceCustomComponent(const std::string& name) const
+bool FaceContainer<T>::hasPerFaceCustomComponent(
+	const std::string& name) const requires face::HasCustomComponents<T>
 {
 	return Base::optionalVec.componentExists(name);
 }
@@ -720,9 +719,8 @@ FaceContainer<T>::hasPerFaceCustomComponent(const std::string& name) const
  * @return A vector of strings representing all the names of the custom components.
  */
 template<FaceConcept T>
-template<typename U>
-VCL_ENABLE_IF(face::HasCustomComponents<U>, std::vector<std::string>)
-FaceContainer<T>::getAllPerFaceCustomComponentNames() const
+std::vector<std::string> FaceContainer<T>::getAllPerFaceCustomComponentNames()
+	const requires face::HasCustomComponents<T>
 {
 	return Base::optionalVec.allComponentNames();
 }
@@ -745,9 +743,9 @@ FaceContainer<T>::getAllPerFaceCustomComponentNames() const
  * @return `true` if the custom component is of the same type of the template argument.
  */
 template<FaceConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(face::HasCustomComponents<U>, bool)
-	FaceContainer<T>::isPerFaceCustomComponentOfType(const std::string& name) const
+template<typename K>
+bool FaceContainer<T>::isPerFaceCustomComponentOfType(const std::string& name) const
+	requires face::HasCustomComponents<T>
 {
 	return Base::optionalVec.template isComponentOfType<K>(name);
 }
@@ -768,9 +766,9 @@ VCL_ENABLE_IF(face::HasCustomComponents<U>, bool)
  * @return A vector of strings representing the names of the custom components of a given type.
  */
 template<FaceConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(face::HasCustomComponents<U>, std::vector<std::string>)
-	FaceContainer<T>::getPerFaceCustomComponentNamesOfType() const
+template<typename K>
+std::vector<std::string> FaceContainer<T>::getPerFaceCustomComponentNamesOfType()
+	const requires face::HasCustomComponents<T>
 {
 	return Base::optionalVec.template allComponentNamesOfType<K>();
 }
@@ -784,9 +782,9 @@ VCL_ENABLE_IF(face::HasCustomComponents<U>, std::vector<std::string>)
  * @param[in] name: the name of the custom component added to the Face.
  */
 template<FaceConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(face::HasCustomComponents<U>, void)
-FaceContainer<T>::addPerFaceCustomComponent(const std::string& name)
+template<typename K>
+void FaceContainer<T>::addPerFaceCustomComponent(
+	const std::string& name) requires face::HasCustomComponents<T>
 {
 	Base::optionalVec.template addNewComponent<K>(name, faceContainerSize());
 }
@@ -801,9 +799,8 @@ FaceContainer<T>::addPerFaceCustomComponent(const std::string& name)
  * @param[in] name: the name of the custom component that will be removed from the Face.
  */
 template<FaceConcept T>
-template<typename U>
-VCL_ENABLE_IF(face::HasCustomComponents<U>, void)
-FaceContainer<T>::deletePerFaceCustomComponent(const std::string& name)
+void FaceContainer<T>::deletePerFaceCustomComponent(
+	const std::string& name) requires face::HasCustomComponents<T>
 {
 	Base::optionalVec.deleteComponent(name);
 }
@@ -835,11 +832,9 @@ FaceContainer<T>::deletePerFaceCustomComponent(const std::string& name)
  * @param name: name of the custom component on which return the handle.
  */
 template<FaceConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(
-	face::HasCustomComponents<U>,
-	CustomComponentVectorHandle<K>)
-	FaceContainer<T>::getPerFaceCustomComponentVectorHandle(const std::string& name)
+template<typename K>
+CustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentVectorHandle(
+	const std::string& name) requires face::HasCustomComponents<T>
 {
 	std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
 	CustomComponentVectorHandle<K> v(cc);
@@ -875,11 +870,9 @@ VCL_ENABLE_IF(
  * @param name: name of the custom component on which return the handle.
  */
 template<FaceConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(
-	face::HasCustomComponents<U>,
-	ConstCustomComponentVectorHandle<K>)
-	FaceContainer<T>::getPerFaceCustomComponentVectorHandle(const std::string& name) const
+template<typename K>
+ConstCustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentVectorHandle(
+	const std::string& name) const requires face::HasCustomComponents<T>
 {
 	const std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
 	ConstCustomComponentVectorHandle<K> v(cc);

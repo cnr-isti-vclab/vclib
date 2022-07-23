@@ -128,37 +128,33 @@ public:
 	void disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
 
 	// Custom Components
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasCustomComponents<U>, bool)
-	hasPerFaceCustomComponent(const std::string& name) const;
+	bool hasPerFaceCustomComponent(
+		const std::string& name) const requires face::HasCustomComponents<T>;
 
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasCustomComponents<U>, std::vector<std::string>)
-	getAllPerFaceCustomComponentNames() const;
+	std::vector<std::string> getAllPerFaceCustomComponentNames()
+		const requires face::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::HasCustomComponents<U>, bool)
-	isPerFaceCustomComponentOfType(const std::string& name) const;
+	template<typename K>
+	bool isPerFaceCustomComponentOfType(
+		const std::string& name) const requires face::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::HasCustomComponents<U>, std::vector<std::string>)
-	getPerFaceCustomComponentNamesOfType() const;
+	template<typename K>
+	std::vector<std::string> getPerFaceCustomComponentNamesOfType()
+		const requires face::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::HasCustomComponents<U>, void)
-	addPerFaceCustomComponent(const std::string& name);
+	template<typename K>
+	void addPerFaceCustomComponent(const std::string& name) requires face::HasCustomComponents<T>;
 
-	template<typename U = T>
-	VCL_ENABLE_IF(face::HasCustomComponents<U>, void)
-	deletePerFaceCustomComponent(const std::string& name);
+	void deletePerFaceCustomComponent(
+		const std::string& name) requires face::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::HasCustomComponents<U>, CustomComponentVectorHandle<K>)
-	getPerFaceCustomComponentVectorHandle(const std::string& name);
+	template<typename K>
+	CustomComponentVectorHandle<K> getPerFaceCustomComponentVectorHandle(
+		const std::string& name) requires face::HasCustomComponents<T>;
 
-	template<typename K, typename U = T>
-	VCL_ENABLE_IF(face::HasCustomComponents<U>, ConstCustomComponentVectorHandle<K>)
-	getPerFaceCustomComponentVectorHandle(const std::string& name) const;
+	template<typename K>
+	ConstCustomComponentVectorHandle<K> getPerFaceCustomComponentVectorHandle(
+		const std::string& name) const requires face::HasCustomComponents<T>;
 
 protected:
 	/**
