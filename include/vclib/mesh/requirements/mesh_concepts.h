@@ -32,7 +32,7 @@
 
 namespace vcl {
 
-template<typename...>
+template<typename... Args> requires HasVertices<Args...>
 class Mesh;
 
 namespace mesh {
@@ -95,9 +95,7 @@ concept HasTransformMatrix =
 	mesh::HasTransformMatrix<MeshType>;
 
 template<typename T>
-concept MeshConcept =
-	(mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
-	mesh::HasVertexContainer<T>;
+concept MeshConcept = mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value;
 
 template<typename T>
 concept FaceMeshConcept =

@@ -42,7 +42,7 @@ namespace vcl {
  * classes of the Elements of the Mesh, or from its Components, and depend on all the templates
  * that compose a specific Mesh definition.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 class Mesh : public Args...
 {
 public:
@@ -162,7 +162,7 @@ public:
 	void importFrom(const OtherMeshType& m);
 
 	/// @private
-	template<typename... A>
+	template<typename... A> requires HasVertices<A...>
 	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);
 
 	void swap(Mesh& m2);
@@ -248,7 +248,7 @@ private:
 		uint                     basetri);
 };
 
-template<typename... A>
+template<typename... A> requires HasVertices<A...>
 inline void swap(Mesh<A...>& m1, Mesh<A...>& m2);
 
 } // namespace vcl

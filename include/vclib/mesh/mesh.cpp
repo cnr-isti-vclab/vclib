@@ -29,7 +29,7 @@ namespace vcl {
 /**
  * @brief Empty constructor, constructs an empty mesh.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>::Mesh()
 {
 }
@@ -40,7 +40,7 @@ Mesh<Args...>::Mesh()
  *
  * @param oth: the mesh from which constructo this Mesh.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		Args(oth)... // call auto copy constructors for all the container elements and components
 {
@@ -78,7 +78,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
  *
  * @param oth: the mesh that will be moved into this Mesh.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 {
 	swap(oth); // use copy ans swap idiom: this (empty) mesh is swapped with the input one
@@ -88,7 +88,7 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
  * @brief Clears all the Elements contained in the mesh.
  * @todo manage also other components
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::clear()
 {
 	if constexpr (mesh::HasVertexContainer<Mesh<Args...>>) {
@@ -110,7 +110,7 @@ void Mesh<Args...>::clear()
  * @param v: a reference of a vertex of the Mesh.
  * @return the index of the given vertex.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::index(const typename Mesh::VertexType& v) const
 {
 	using VertexContainer = typename Mesh::VertexContainer;
@@ -122,7 +122,7 @@ uint Mesh<Args...>::index(const typename Mesh::VertexType& v) const
  * @param v: a pointer of a vertex of the Mesh.
  * @return the index of the given vertex.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::index(const typename Mesh::VertexType* v) const
 {
 	using VertexContainer = typename Mesh::VertexContainer;
@@ -139,7 +139,7 @@ uint Mesh<Args...>::index(const typename Mesh::VertexType* v) const
  *
  * @return the index of the new vertex.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::addVertex()
 {
 	using Vertex          = typename Mesh::VertexType;
@@ -171,7 +171,7 @@ uint Mesh<Args...>::addVertex()
  * @param p: coordinate of the new vertex.
  * @return the id of the new vertex.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::addVertex(const typename Mesh::VertexType::CoordType& p)
 {
 	using VertexContainer = typename Mesh::VertexContainer;
@@ -195,7 +195,7 @@ uint Mesh<Args...>::addVertex(const typename Mesh::VertexType::CoordType& p)
  * @param n: the number of vertices to add to the mesh.
  * @return the id of the first added vertex.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::addVertices(uint n)
 {
 	using Vertex          = typename Mesh::VertexType;
@@ -238,7 +238,7 @@ uint Mesh<Args...>::addVertices(uint n)
  * @param v: list of vertices
  * @return the id of the first added vertex.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename... VC>
 uint Mesh<Args...>::addVertices(
 	const typename Mesh::VertexType::CoordType& p,
@@ -273,7 +273,7 @@ uint Mesh<Args...>::addVertices(
  *
  * @param n: the new capacity of the vertex container.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::reserveVertices(uint n)
 {
 	using Vertex          = typename Mesh::VertexType;
@@ -293,7 +293,7 @@ void Mesh<Args...>::reserveVertices(uint n)
  *
  * This function will be available only **if the Mesh has the Vertex Container**.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::compactVertices()
 {
 	using Vertex          = typename Mesh::VertexType;
@@ -310,7 +310,7 @@ void Mesh<Args...>::compactVertices()
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::index(const typename M::FaceType& f) const
@@ -319,7 +319,7 @@ Mesh<Args...>::index(const typename M::FaceType& f) const
 	return FaceContainer::index(&f);
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::index(const typename M::FaceType* f) const
@@ -328,7 +328,7 @@ Mesh<Args...>::index(const typename M::FaceType* f) const
 	return FaceContainer::index(f);
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::addFace()
@@ -344,7 +344,7 @@ Mesh<Args...>::addFace()
 	return fid;
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M, typename... V>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::addFace(V... args)
@@ -373,7 +373,7 @@ Mesh<Args...>::addFace(V... args)
 	return fid;
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M, typename Iterator>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
 Mesh<Args...>::addFace(Iterator begin, Iterator end)
@@ -430,7 +430,7 @@ Mesh<Args...>::addFace(Iterator begin, Iterator end)
 	return fid;
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::addFaces(uint n)
@@ -446,7 +446,7 @@ Mesh<Args...>::addFaces(uint n)
 	return fid;
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 Mesh<Args...>::reserveFaces(uint n)
@@ -461,7 +461,7 @@ Mesh<Args...>::reserveFaces(uint n)
 		updateFaceReferences(oldBase, newBase);
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 Mesh<Args...>::compactFaces()
@@ -484,7 +484,7 @@ Mesh<Args...>::compactFaces()
  * @param e: a reference of an edge of the Mesh.
  * @return the index of the given edge.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
 Mesh<Args...>::index(const typename M::EdgeType& e) const
@@ -498,7 +498,7 @@ Mesh<Args...>::index(const typename M::EdgeType& e) const
  * @param e: a pointer of an edge of the Mesh.
  * @return the index of the given edge.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
 Mesh<Args...>::index(const typename M::EdgeType* e) const
@@ -507,7 +507,7 @@ Mesh<Args...>::index(const typename M::EdgeType* e) const
 	return EdgeContainer::index(e);
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
 Mesh<Args...>::addEdge()
@@ -537,7 +537,7 @@ Mesh<Args...>::addEdge()
  * @param n: the number of edges to add to the mesh.
  * @return the id of the first added edge.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
 Mesh<Args...>::addEdges(uint n)
@@ -577,7 +577,7 @@ Mesh<Args...>::addEdges(uint n)
  *
  * @param n: the new capacity of the edge container.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
 Mesh<Args...>::reserveEdges(uint n)
@@ -599,7 +599,7 @@ Mesh<Args...>::reserveEdges(uint n)
  *
  * This function will be available only **if the Mesh has the Edge Container**.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
 Mesh<Args...>::compactEdges()
@@ -622,7 +622,7 @@ Mesh<Args...>::compactEdges()
  * @param e: a reference of an Halfedge of the Mesh.
  * @return the index of the given Halfedge.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 Mesh<Args...>::index(const typename M::HalfEdgeType& e) const
@@ -636,7 +636,7 @@ Mesh<Args...>::index(const typename M::HalfEdgeType& e) const
  * @param e: a pointer of an Halfedge of the Mesh.
  * @return the index of the given Halfedge.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 Mesh<Args...>::index(const typename M::HalfEdgeType* e) const
@@ -645,7 +645,7 @@ Mesh<Args...>::index(const typename M::HalfEdgeType* e) const
 	return HalfEdgeContainer::index(e);
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 Mesh<Args...>::addHalfEdge()
@@ -675,7 +675,7 @@ Mesh<Args...>::addHalfEdge()
  * @param n: the number of Halfedges to add to the mesh.
  * @return the id of the first added Halfedge.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
 Mesh<Args...>::addHalfEdges(uint n)
@@ -698,7 +698,7 @@ Mesh<Args...>::addHalfEdges(uint n)
 	return eid;
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M> && mesh::HasFaceContainer<M>, uint)
 Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
@@ -742,7 +742,7 @@ Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
  *
  * @param n: the new capacity of the Halfedge container.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 Mesh<Args...>::reserveHalfEdges(uint n)
@@ -764,7 +764,7 @@ Mesh<Args...>::reserveHalfEdges(uint n)
  *
  * This function will be available only **if the Mesh has the HalfEdge Container**.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 Mesh<Args...>::compactHalfEdges()
@@ -807,7 +807,7 @@ Mesh<Args...>::compactHalfEdges()
  *
  * @param m
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename OtherMeshType>
 void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 {
@@ -842,7 +842,7 @@ void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
  *
  * @param[in] m: the mesh from which import all the data.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename OtherMeshType>
 void Mesh<Args...>::importFrom(const OtherMeshType& m)
 {
@@ -862,13 +862,13 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
  * @brief Swaps this mesh with the other input Mesh m2.
  * @param m2: the Mesh to swap with this Mesh.
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::swap(Mesh& m2)
 {
 	vcl::swap(*this, m2);
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
 {
 	swap(oth);
@@ -879,7 +879,7 @@ Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
  * Protected Members *
  *********************/
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::updateVertexReferences(
 	const typename Mesh::VertexType* oldBase,
 	const typename Mesh::VertexType* newBase)
@@ -909,7 +909,7 @@ void Mesh<Args...>::updateVertexReferences(
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::updateVertexReferencesAfterCompact(
 	const typename Mesh::VertexType* base,
 	const std::vector<int>&       newIndices)
@@ -937,7 +937,7 @@ void Mesh<Args...>::updateVertexReferencesAfterCompact(
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 Mesh<Args...>::updateFaceReferences(
@@ -969,7 +969,7 @@ Mesh<Args...>::updateFaceReferences(
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
 Mesh<Args...>::updateFaceReferencesAfterCompact(
@@ -999,7 +999,7 @@ Mesh<Args...>::updateFaceReferencesAfterCompact(
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
 Mesh<Args...>::updateEdgeReferences(
@@ -1025,7 +1025,7 @@ Mesh<Args...>::updateEdgeReferences(
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
 Mesh<Args...>::updateEdgeReferencesAfterCompact(
@@ -1049,7 +1049,7 @@ Mesh<Args...>::updateEdgeReferencesAfterCompact(
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 Mesh<Args...>::updateHalfEdgeReferences(
@@ -1075,7 +1075,7 @@ Mesh<Args...>::updateHalfEdgeReferences(
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename M>
 VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
 Mesh<Args...>::updateHalfEdgeReferencesAfterCompact(
@@ -1099,7 +1099,7 @@ Mesh<Args...>::updateHalfEdgeReferencesAfterCompact(
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::updateAllOptionalContainerReferences()
 {
 	// if there is the optional vertex container, I need to update, for each vertex of the
@@ -1130,13 +1130,13 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType&)
 {
 	// base case: no need to add any other vertices
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename... V>
 void Mesh<Args...>::addFaceHelper(
 	typename Mesh<Args...>::FaceType&   f,
@@ -1152,7 +1152,7 @@ void Mesh<Args...>::addFaceHelper(
 	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename... V>
 void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid, V... args)
 {
@@ -1166,7 +1166,7 @@ void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid,
 	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importReferences(const OthMesh &m)
 {
@@ -1192,7 +1192,7 @@ void Mesh<Args...>::importReferences(const OthMesh &m)
  * Faces have been already imported, but without vertex references and other components that
  * depend on the number of vertices (e.g. wedges)
  */
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename OthMesh>
 void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 {
@@ -1255,7 +1255,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 	}
 }
 
-template<typename... Args>
+template<typename... Args> requires HasVertices<Args...>
 template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
 void Mesh<Args...>::importTriReferencesHelper(
 	FaceType&                f,
@@ -1288,7 +1288,7 @@ void Mesh<Args...>::importTriReferencesHelper(
 /**
  * @brief Swaps two meshes of the same type
  */
-template<typename... A>
+template<typename... A> requires HasVertices<A...>
 inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 {
 	// container bases of verts and faces, and edges Vec for m1 and m2
