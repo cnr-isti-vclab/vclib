@@ -342,9 +342,8 @@ void VertexContainer<T>::disableAllPerVertexOptionalComponents()
  * @return true if the Optional Adjacent Edges is enabled, false otherwise.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalAdjacentEdges<U>, bool)
-VertexContainer<T>::isPerVertexAdjacentEdgesEnabled() const
+bool VertexContainer<T>::isPerVertexAdjacentEdgesEnabled()
+	const requires vert::HasOptionalAdjacentEdges<T>
 {
 	return Base::optionalVec.isAdjacentEdgesEnabled();
 }
@@ -356,9 +355,7 @@ VertexContainer<T>::isPerVertexAdjacentEdgesEnabled() const
  * Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalAdjacentEdges<U>, void)
-VertexContainer<T>::enablePerVertexAdjacentEdges()
+void VertexContainer<T>::enablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>
 {
 	Base::optionalVec.enableAdjacentEdges(vertexContainerSize());
 }
@@ -370,9 +367,7 @@ VertexContainer<T>::enablePerVertexAdjacentEdges()
  * Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalAdjacentEdges<U>, void)
-VertexContainer<T>::disablePerVertexAdjacentEdges()
+void VertexContainer<T>::disablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>
 {
 	Base::optionalVec.disableAdjacentEdges();
 }
@@ -386,9 +381,7 @@ VertexContainer<T>::disablePerVertexAdjacentEdges()
  * @return true if the Optional Adjacent Faces is enabled, false otherwise.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, bool)
-VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
+bool VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const requires vert::HasOptionalAdjacentFaces<T>
 {
 	return Base::optionalVec.isAdjacentFacesEnabled();
 }
@@ -400,9 +393,7 @@ VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const
  * Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, void)
-VertexContainer<T>::enablePerVertexAdjacentFaces()
+void VertexContainer<T>::enablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
 	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
 }
@@ -414,9 +405,7 @@ VertexContainer<T>::enablePerVertexAdjacentFaces()
  * Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalAdjacentFaces<U>, void)
-VertexContainer<T>::disablePerVertexAdjacentFaces()
+void VertexContainer<T>::disablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
 	Base::optionalVec.disableAdjacentFaces();
 }
@@ -430,9 +419,8 @@ VertexContainer<T>::disablePerVertexAdjacentFaces()
  * @return true if the Optional Adjacent Vertices is enabled, false otherwise.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, bool)
-VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
+bool VertexContainer<T>::isPerVertexAdjacentVerticesEnabled()
+	const requires vert::HasOptionalAdjacentVertices<T>
 {
 	return Base::optionalVec.isAdjacentVerticesEnabled();
 }
@@ -444,9 +432,8 @@ VertexContainer<T>::isPerVertexAdjacentVerticesEnabled() const
  * Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, void)
-VertexContainer<T>::enablePerVertexAdjacentVertices()
+void VertexContainer<T>::enablePerVertexAdjacentVertices()
+	requires vert::HasOptionalAdjacentVertices<T>
 {
 	Base::optionalVec.enableAdjacentVertices(vertexContainerSize());
 }
@@ -458,9 +445,8 @@ VertexContainer<T>::enablePerVertexAdjacentVertices()
  * Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalAdjacentVertices<U>, void)
-VertexContainer<T>::disablePerVertexAdjacentVertices()
+void VertexContainer<T>::disablePerVertexAdjacentVertices()
+	requires vert::HasOptionalAdjacentVertices<T>
 {
 	Base::optionalVec.disableAdjacentVertices();
 }
@@ -473,9 +459,7 @@ VertexContainer<T>::disablePerVertexAdjacentVertices()
  * @return true if the Optional Color is enabled, false otherwise.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalColor<U>, bool)
-VertexContainer<T>::isPerVertexColorEnabled() const
+bool VertexContainer<T>::isPerVertexColorEnabled() const requires vert::HasOptionalColor<T>
 {
 	return Base::optionalVec.isColorEnabled();
 }
@@ -486,9 +470,7 @@ VertexContainer<T>::isPerVertexColorEnabled() const
  * @note This function is available only if the Vertex Element has the OptionalColor Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalColor<U>, void)
-VertexContainer<T>::enablePerVertexColor()
+void VertexContainer<T>::enablePerVertexColor() requires vert::HasOptionalColor<T>
 {
 	Base::optionalVec.enableColor(vertexContainerSize());
 }
@@ -499,9 +481,7 @@ VertexContainer<T>::enablePerVertexColor()
  * @note This function is available only if the Vertex Element has the OptionalColor Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalColor<U>, void)
-VertexContainer<T>::disablePerVertexColor()
+void VertexContainer<T>::disablePerVertexColor() requires vert::HasOptionalColor<T>
 {
 	Base::optionalVec.disableColor();
 }
@@ -514,9 +494,7 @@ VertexContainer<T>::disablePerVertexColor()
  * @return true if the Optional Mark is enabled, false otherwise.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalMark<U>, bool)
-VertexContainer<T>::isPerVertexMarkEnabled() const
+bool VertexContainer<T>::isPerVertexMarkEnabled() const requires vert::HasOptionalMark<T>
 {
 	return Base::optionalVec.isMarkEnabled();
 }
@@ -527,9 +505,7 @@ VertexContainer<T>::isPerVertexMarkEnabled() const
  * @note This function is available only if the Vertex Element has the OptionalMark Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalMark<U>, void)
-VertexContainer<T>::enablePerVertexMark()
+void VertexContainer<T>::enablePerVertexMark() requires vert::HasOptionalMark<T>
 {
 	Base::optionalVec.enableMark(vertexContainerSize());
 }
@@ -540,9 +516,7 @@ VertexContainer<T>::enablePerVertexMark()
  * @note This function is available only if the Vertex Element has the OptionalMark Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalMark<U>, void)
-VertexContainer<T>::disablePerVertexMark()
+void VertexContainer<T>::disablePerVertexMark() requires vert::HasOptionalMark<T>
 {
 	Base::optionalVec.disableMark();
 }
@@ -556,9 +530,7 @@ VertexContainer<T>::disablePerVertexMark()
  * @return true if the Optional Normal is enabled, false otherwise.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalNormal<U>, bool)
-VertexContainer<T>::isPerVertexNormalEnabled() const
+bool VertexContainer<T>::isPerVertexNormalEnabled() const requires vert::HasOptionalNormal<T>
 {
 	return Base::optionalVec.isNormalEnabled();
 }
@@ -569,9 +541,7 @@ VertexContainer<T>::isPerVertexNormalEnabled() const
  * @note This function is available only if the Vertex Element has the OptionalNormal Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalNormal<U>, void)
-VertexContainer<T>::enablePerVertexNormal()
+void VertexContainer<T>::enablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
 	Base::optionalVec.enableNormal(vertexContainerSize());
 }
@@ -582,9 +552,7 @@ VertexContainer<T>::enablePerVertexNormal()
  * @note This function is available only if the Vertex Element has the OptionalNormal Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalNormal<U>, void)
-VertexContainer<T>::disablePerVertexNormal()
+void VertexContainer<T>::disablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
 	Base::optionalVec.disableNormal();
 }
@@ -598,9 +566,8 @@ VertexContainer<T>::disablePerVertexNormal()
  * @return true if the Optional PrincipalCurvature is enabled, false otherwise.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, bool)
-VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled() const
+bool VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled()
+	const requires vert::HasOptionalPrincipalCurvature<T>
 {
 	return Base::optionalVec.isPrincipalCurvatureEnabled();
 }
@@ -612,9 +579,8 @@ VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled() const
  * Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, void)
-VertexContainer<T>::enablePerVertexPrincipalCurvature()
+void VertexContainer<T>::enablePerVertexPrincipalCurvature()
+	requires vert::HasOptionalPrincipalCurvature<T>
 {
 	Base::optionalVec.enablePrincipalCurvature(vertexContainerSize());
 }
@@ -626,9 +592,8 @@ VertexContainer<T>::enablePerVertexPrincipalCurvature()
  * Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalPrincipalCurvature<U>, void)
-VertexContainer<T>::disablePerVertexPrincipalCurvature()
+void VertexContainer<T>::disablePerVertexPrincipalCurvature()
+	requires vert::HasOptionalPrincipalCurvature<T>
 {
 	Base::optionalVec.disablePrincipalCurvature();
 }
@@ -641,9 +606,7 @@ VertexContainer<T>::disablePerVertexPrincipalCurvature()
  * @return true if the Optional Scalar is enabled, false otherwise.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalScalar<U>, bool)
-VertexContainer<T>::isPerVertexScalarEnabled() const
+bool VertexContainer<T>::isPerVertexScalarEnabled() const requires vert::HasOptionalScalar<T>
 {
 	return Base::optionalVec.isScalarEnabled();
 }
@@ -654,9 +617,7 @@ VertexContainer<T>::isPerVertexScalarEnabled() const
  * @note This function is available only if the Vertex Element has the OptionalScalar Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalScalar<U>, void)
-VertexContainer<T>::enablePerVertexScalar()
+void VertexContainer<T>::enablePerVertexScalar() requires vert::HasOptionalScalar<T>
 {
 	Base::optionalVec.enableScalar(vertexContainerSize());
 }
@@ -667,9 +628,7 @@ VertexContainer<T>::enablePerVertexScalar()
  * @note This function is available only if the Vertex Element has the OptionalScalar Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalScalar<U>, void)
-VertexContainer<T>::disablePerVertexScalar()
+void VertexContainer<T>::disablePerVertexScalar() requires vert::HasOptionalScalar<T>
 {
 	Base::optionalVec.disableScalar();
 }
@@ -682,9 +641,7 @@ VertexContainer<T>::disablePerVertexScalar()
  * @return true if the Optional TexCoord is enabled, false otherwise.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, bool)
-VertexContainer<T>::isPerVertexTexCoordEnabled() const
+bool VertexContainer<T>::isPerVertexTexCoordEnabled() const requires vert::HasOptionalTexCoord<T>
 {
 	return Base::optionalVec.isTexCoordEnabled();
 }
@@ -695,9 +652,7 @@ VertexContainer<T>::isPerVertexTexCoordEnabled() const
  * @note This function is available only if the Vertex Element has the OptionalTexCoord Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, void)
-VertexContainer<T>::enablePerVertexTexCoord()
+void VertexContainer<T>::enablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
 	Base::optionalVec.enableTexCoord(vertexContainerSize());
 }
@@ -708,9 +663,7 @@ VertexContainer<T>::enablePerVertexTexCoord()
  * @note This function is available only if the Vertex Element has the OptionalTexCoord Component.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasOptionalTexCoord<U>, void)
-VertexContainer<T>::disablePerVertexTexCoord()
+void VertexContainer<T>::disablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
 	Base::optionalVec.disableTexCoord();
 }
@@ -725,9 +678,8 @@ VertexContainer<T>::disablePerVertexTexCoord()
  * @return `true` if the Vertex Element has a custom component with the given name.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasCustomComponents<U>, bool)
-VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name) const
+bool VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name)
+	const requires vert::HasCustomComponents<T>
 {
 	return Base::optionalVec.componentExists(name);
 }
@@ -741,9 +693,8 @@ VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name) const
  * @return A vector of strings representing all the names of the custom components.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasCustomComponents<U>, std::vector<std::string>)
-VertexContainer<T>::getAllPerVertexCustomComponentNames() const
+std::vector<std::string> VertexContainer<T>::getAllPerVertexCustomComponentNames()
+	const requires vert::HasCustomComponents<T>
 {
 	return Base::optionalVec.allComponentNames();
 }
@@ -766,9 +717,9 @@ VertexContainer<T>::getAllPerVertexCustomComponentNames() const
  * @return `true` if the custom component is of the same type of the template argument.
  */
 template<VertexConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(vert::HasCustomComponents<U>, bool)
-VertexContainer<T>::isPerVertexCustomComponentOfType(const std::string& name) const
+template<typename K>
+bool VertexContainer<T>::isPerVertexCustomComponentOfType(
+	const std::string& name) const requires vert::HasCustomComponents<T>
 {
 	return Base::optionalVec.template isComponentOfType<K>(name);
 }
@@ -789,9 +740,10 @@ VertexContainer<T>::isPerVertexCustomComponentOfType(const std::string& name) co
  * @return A vector of strings representing the names of the custom components of a given type.
  */
 template<VertexConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(vert::HasCustomComponents<U>, std::vector<std::string>)
-VertexContainer<T>::getPerVertexCustomComponentNamesOfType() const
+template<typename K>
+std::vector<std::string>
+VertexContainer<T>::getPerVertexCustomComponentNamesOfType()
+	const requires vert::HasCustomComponents<T>
 {
 	return Base::optionalVec.template allComponentNamesOfType<K>();
 }
@@ -806,9 +758,9 @@ VertexContainer<T>::getPerVertexCustomComponentNamesOfType() const
  * @param[in] name: the name of the custom component added to the Vertex.
  */
 template<VertexConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(vert::HasCustomComponents<U>, void)
-VertexContainer<T>::addPerVertexCustomComponent(const std::string& name)
+template<typename K>
+void VertexContainer<T>::addPerVertexCustomComponent(
+	const std::string& name) requires vert::HasCustomComponents<T>
 {
 	Base::optionalVec.template addNewComponent<K>(name, vertexContainerSize());
 }
@@ -823,9 +775,8 @@ VertexContainer<T>::addPerVertexCustomComponent(const std::string& name)
  * @param[in] name: the name of the custom component that will be removed from the Vertex.
  */
 template<VertexConcept T>
-template<typename U>
-VCL_ENABLE_IF(vert::HasCustomComponents<U>, void)
-VertexContainer<T>::deletePerVertexCustomComponent(const std::string& name)
+void VertexContainer<T>::deletePerVertexCustomComponent(
+	const std::string& name) requires vert::HasCustomComponents<T>
 {
 	Base::optionalVec.deleteComponent(name);
 }
@@ -857,11 +808,9 @@ VertexContainer<T>::deletePerVertexCustomComponent(const std::string& name)
  * @param name: name of the custom component on which return the handle.
  */
 template<VertexConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(
-	vert::HasCustomComponents<U>,
-	CustomComponentVectorHandle<K>)
-VertexContainer<T>::getPerVertexCustomComponentVectorHandle(const std::string& name)
+template<typename K>
+CustomComponentVectorHandle<K> VertexContainer<T>::getPerVertexCustomComponentVectorHandle(
+	const std::string& name) requires vert::HasCustomComponents<T>
 {
 	std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
 	CustomComponentVectorHandle<K> v(cc);
@@ -897,11 +846,9 @@ VertexContainer<T>::getPerVertexCustomComponentVectorHandle(const std::string& n
  * @param name: name of the custom component on which return the handle.
  */
 template<VertexConcept T>
-template<typename K, typename U>
-VCL_ENABLE_IF(
-	vert::HasCustomComponents<U>,
-	ConstCustomComponentVectorHandle<K>)
-	VertexContainer<T>::getPerVertexCustomComponentVectorHandle(const std::string& name) const
+template<typename K>
+ConstCustomComponentVectorHandle<K> VertexContainer<T>::getPerVertexCustomComponentVectorHandle(
+	const std::string& name) const requires vert::HasCustomComponents<T>
 {
 	const std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
 	ConstCustomComponentVectorHandle<K> v(cc);
