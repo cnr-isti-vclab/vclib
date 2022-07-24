@@ -35,6 +35,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasWedgeTexCoords = requires(T o)
 {
+	typename T::WedgeTexCoordType;
 	o.wedgeTexCoord(uint());
 };
 

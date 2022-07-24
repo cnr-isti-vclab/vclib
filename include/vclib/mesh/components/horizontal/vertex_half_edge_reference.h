@@ -33,6 +33,8 @@ template<typename HalfEdge>
 class VertexHalfEdgeReference
 {
 public:
+	using HalfEdgeType = HalfEdge;
+
 	VertexHalfEdgeReference();
 
 	const HalfEdge* halfEdge() const;

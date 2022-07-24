@@ -40,6 +40,7 @@ concept IsElementContainer =
 template <typename T>
 concept HasEdgeContainer = requires(T o)
 {
+	typename T::EdgeType;
 	o.edge(uint());
 };
 
@@ -50,6 +51,7 @@ concept HasEdgeOptionalContainer =
 template <typename T>
 concept HasHalfEdgeContainer = requires(T o)
 {
+	typename T::HalfEdgeType;
 	o.halfEdge(uint());
 };
 
@@ -60,6 +62,7 @@ concept HasHalfEdgeOptionalContainer =
 template <typename T>
 concept HasFaceContainer = requires(T o)
 {
+	typename T::FaceType;
 	o.face(uint());
 };
 
@@ -70,6 +73,7 @@ concept HasFaceOptionalContainer =
 template <typename T>
 concept HasVertexContainer = requires(T o)
 {
+	typename T::VertexType;
 	o.vertex(uint());
 };
 

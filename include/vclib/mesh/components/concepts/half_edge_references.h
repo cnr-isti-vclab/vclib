@@ -39,6 +39,9 @@ template<typename T>
 concept HasHalfEdgeReferences =
 	requires(T o)
 {
+	typename T::HalfEdgeType;
+	typename T::VertexType;
+	typename T::FaceType;
 	o.next();
 	o.prev();
 	o.twin();

@@ -35,6 +35,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasTransformMatrix = requires(T o)
 {
+	typename T::TransformMatrixType;
 	o.transformMatrix();
 };
 
