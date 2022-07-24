@@ -108,9 +108,8 @@ Scalar Point<Scalar, N>::squaredDist(const Point<S, N>& p1) const
  * @return The cross product between this and the other point.
  */
 template<typename Scalar, int N>
-template<typename S, int U>
-VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>)
-Point<Scalar, N>::cross(const Point<S, N>& p1) const
+template<typename S>
+Point<Scalar,N> Point<Scalar, N>::cross(const Point<S, N>& p1) const requires (N == 3)
 {
 	if constexpr (std::is_same<Scalar, S>::value) {
 		return p.cross(p1.p);
@@ -266,9 +265,9 @@ Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<SM, N, N>& m) c
  * @brief Returns a new 3D point/vector on which has been applied an TRS 4x4 matrix.
  */
 template<typename Scalar, int N>
-template<typename SM, int U>
-VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>)
-Point<Scalar, N>::operator*(const Eigen::Matrix<SM, N+1, N+1>& m) const
+template<typename SM>
+Point<Scalar, N> Point<Scalar, N>::operator*(
+	const Eigen::Matrix<SM, N+1, N+1>& m) const requires (N == 3)
 {
 	Eigen::Matrix<Scalar, 1, N> s;
 
@@ -335,9 +334,9 @@ Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<SM, N, N>& m)
  * @param m
  */
 template<typename Scalar, int N>
-template<typename SM, int U>
-VCL_ENABLE_IF(U==3, Point<Scalar VCL_COMMA N>&)
-Point<Scalar, N>::operator*=(const Eigen::Matrix<SM, N+1, N+1>& m)
+template<typename SM>
+Point<Scalar,N>& Point<Scalar, N>::operator*=(
+	const Eigen::Matrix<SM, N+1, N+1>& m) requires (N == 3)
 {
 	*this = *this * m;
 	return *this;

@@ -38,6 +38,8 @@ namespace vcl::comp {
 template<typename T>
 concept HasFaceHalfEdgeReference = requires(T o)
 {
+	typename T::HalfEdgeType;
+	typename T::VertexType;
 	o.outerHalfEdge();
 	{ o.numberHoles() } -> std::same_as<uint>;
 	o.innerHalfEdge(uint());

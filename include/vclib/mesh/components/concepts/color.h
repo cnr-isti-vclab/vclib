@@ -37,6 +37,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasColor = requires(T o)
 {
+	typename T::ColorType;
 	{ o.color() } -> std::same_as<vcl::Color&>;
 };
 

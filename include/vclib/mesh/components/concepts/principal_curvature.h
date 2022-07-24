@@ -36,6 +36,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasPrincipalCurvature = requires(T o)
 {
+	typename T::PrincipalCurvatureType;
 	o.principalCurvature();
 };
 

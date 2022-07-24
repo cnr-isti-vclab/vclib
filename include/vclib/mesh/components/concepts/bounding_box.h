@@ -36,6 +36,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasBoundingBox = requires(T o)
 {
+	typename T::BoundingBoxType;
 	o.boundingBox();
 };
 

@@ -36,6 +36,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasVertexReferences = requires(T o)
 {
+	typename T::VertexType;
 	{ o.vertexNumber() } -> std::same_as<uint>;
 };
 

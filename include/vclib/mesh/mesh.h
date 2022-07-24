@@ -67,93 +67,72 @@ public:
 
 	// Faces
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-	index(const typename M::FaceType& f) const;
+	template<HasFaces M = Mesh>
+	uint index(const typename M::FaceType& f) const;
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-	index(const typename M::FaceType* f) const;
+	template<HasFaces M = Mesh>
+	uint index(const typename M::FaceType* f) const;
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-	addFace();
+	template<HasFaces M = Mesh>
+	uint addFace();
 
-	template<typename M = Mesh, typename... V>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
-	addFace(V... args);
+	template<HasFaces M = Mesh, typename... V>
+	uint addFace(V... args);
 
-	template<typename M = Mesh, typename Iterator>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
-	addFace(Iterator begin, Iterator end);
+	template<HasFaces M = Mesh, typename Iterator>
+	uint addFace(Iterator begin, Iterator end);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-	addFaces(uint n);
+	template<HasFaces M = Mesh>
+	uint addFaces(uint n);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-	reserveFaces(uint n);
+	template<HasFaces M = Mesh>
+	void reserveFaces(uint n);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-	compactFaces();
+	template<HasFaces M = Mesh>
+	void compactFaces();
 
 	// Edges
 
-	template<typename M = Mesh<Args...>>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-	index(const typename M::EdgeType& e) const;
+	template<HasEdges M = Mesh>
+	uint index(const typename M::EdgeType& e) const;
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-	index(const typename M::EdgeType* v) const;
+	template<HasEdges M = Mesh>
+	uint index(const typename M::EdgeType* v) const;
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-	addEdge();
+	template<HasEdges M = Mesh>
+	uint addEdge();
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-	addEdges(uint n);
+	template<HasEdges M = Mesh>
+	uint addEdges(uint n);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
-	reserveEdges(uint n);
+	template<HasEdges M = Mesh>
+	void reserveEdges(uint n);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
-	compactEdges();
+	template<HasEdges M = Mesh>
+	void compactEdges();
 
 	// HalfEdges
 
-	template<typename M = Mesh<Args...>>
-	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
-	index(const typename M::HalfEdgeType& e) const;
+	template<HasHalfEdges M = Mesh>
+	uint index(const typename M::HalfEdgeType& e) const;
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
-	index(const typename M::HalfEdgeType* v) const;
+	template<HasHalfEdges M = Mesh>
+	uint index(const typename M::HalfEdgeType* v) const;
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
-	addHalfEdge();
+	template<HasHalfEdges M = Mesh>
+	uint addHalfEdge();
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
-	addHalfEdges(uint n);
+	template<HasHalfEdges M = Mesh>
+	uint addHalfEdges(uint n);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M> && mesh::HasFaceContainer<M>, uint)
-	addHalfEdgesToFace(uint n, typename M::FaceType& f);
+	template<typename M = Mesh> requires HasHalfEdges<M> && HasFaces<M>
+	uint addHalfEdgesToFace(uint n, typename M::FaceType& f);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
-	reserveHalfEdges(uint n);
+	template<HasHalfEdges M = Mesh>
+	void reserveHalfEdges(uint n);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
-	compactHalfEdges();
+	template<HasHalfEdges M = Mesh>
+	void compactHalfEdges();
 
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
@@ -171,7 +150,6 @@ public:
 
 protected:
 	// Vertices
-
 	void updateVertexReferences(
 		const typename Mesh::VertexType* oldBase,
 		const typename Mesh::VertexType* newBase);
@@ -181,40 +159,35 @@ protected:
 		const std::vector<int>&       newIndices);
 
 	// Faces
+	template<HasFaces M = Mesh>
+	void updateFaceReferences(
+		const typename M::FaceType* oldBase,
+		const typename M::FaceType* newBase);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-	updateFaceReferences(const typename M::FaceType* oldBase, const typename M::FaceType* newBase);
-
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-	updateFaceReferencesAfterCompact(
+	template<HasFaces M = Mesh>
+	void updateFaceReferencesAfterCompact(
 		const typename M::FaceType* base,
 		const std::vector<int>&     newIndices);
 
 	// Edges
+	template<HasEdges M = Mesh>
+	void updateEdgeReferences(
+		const typename M::EdgeType* oldBase,
+		const typename M::EdgeType* newBase);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
-	updateEdgeReferences(const typename M::EdgeType* oldBase, const typename M::EdgeType* newBase);
-
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
-	updateEdgeReferencesAfterCompact(
+	template<HasEdges M = Mesh>
+	void updateEdgeReferencesAfterCompact(
 		const typename M::EdgeType* base,
 		const std::vector<int>&     newIndices);
 
 	// HalfEdges
-
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
-	updateHalfEdgeReferences(
+	template<HasHalfEdges M = Mesh>
+	void updateHalfEdgeReferences(
 		const typename M::HalfEdgeType* oldBase,
 		const typename M::HalfEdgeType* newBase);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
-	updateHalfEdgeReferencesAfterCompact(
+	template<HasHalfEdges M = Mesh>
+	void updateHalfEdgeReferencesAfterCompact(
 		const typename M::HalfEdgeType* base,
 		const std::vector<int>&         newIndices);
 

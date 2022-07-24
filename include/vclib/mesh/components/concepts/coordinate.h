@@ -37,6 +37,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasCoordinate = requires(T o)
 {
+	typename T::CoordType;
 	o.coord();
 };
 

@@ -35,6 +35,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasTexCoord = requires(T o)
 {
+	typename T::TexCoordType;
 	o.texCoord();
 };
 

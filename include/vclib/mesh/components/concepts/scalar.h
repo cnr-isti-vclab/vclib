@@ -36,6 +36,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasScalar = requires(T o)
 {
+	typename T::ScalarType;
 	o.scalar();
 };
 

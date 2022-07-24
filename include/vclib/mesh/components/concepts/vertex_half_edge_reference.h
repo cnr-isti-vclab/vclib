@@ -36,6 +36,7 @@ namespace vcl::comp {
 template<typename T>
 concept HasVertexHalfEdgeReference = requires(T o)
 {
+	typename T::HalfEdgeType;
 	o.halfEdge();
 };
 
