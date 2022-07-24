@@ -498,9 +498,8 @@ uint Mesh<Args...>::index(const typename M::EdgeType* e) const
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-Mesh<Args...>::addEdge()
+template<HasEdges M>
+uint Mesh<Args...>::addEdge()
 {
 	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
@@ -528,9 +527,8 @@ Mesh<Args...>::addEdge()
  * @return the id of the first added edge.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-Mesh<Args...>::addEdges(uint n)
+template<HasEdges M>
+uint Mesh<Args...>::addEdges(uint n)
 {
 	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
@@ -568,9 +566,8 @@ Mesh<Args...>::addEdges(uint n)
  * @param n: the new capacity of the edge container.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
-Mesh<Args...>::reserveEdges(uint n)
+template<HasEdges M>
+void Mesh<Args...>::reserveEdges(uint n)
 {
 	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
@@ -590,9 +587,8 @@ Mesh<Args...>::reserveEdges(uint n)
  * This function will be available only **if the Mesh has the Edge Container**.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
-Mesh<Args...>::compactEdges()
+template<HasEdges M>
+void Mesh<Args...>::compactEdges()
 {
 	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
@@ -613,9 +609,8 @@ Mesh<Args...>::compactEdges()
  * @return the index of the given Halfedge.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
-Mesh<Args...>::index(const typename M::HalfEdgeType& e) const
+template<HasHalfEdges M>
+uint Mesh<Args...>::index(const typename M::HalfEdgeType& e) const
 {
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 	return HalfEdgeContainer::index(&e);
@@ -627,18 +622,16 @@ Mesh<Args...>::index(const typename M::HalfEdgeType& e) const
  * @return the index of the given Halfedge.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
-Mesh<Args...>::index(const typename M::HalfEdgeType* e) const
+template<HasHalfEdges M>
+uint Mesh<Args...>::index(const typename M::HalfEdgeType* e) const
 {
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 	return HalfEdgeContainer::index(e);
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
-Mesh<Args...>::addHalfEdge()
+template<HasHalfEdges M>
+uint Mesh<Args...>::addHalfEdge()
 {
 	using HalfEdge          = typename M::HalfEdgeType;
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
@@ -666,9 +659,8 @@ Mesh<Args...>::addHalfEdge()
  * @return the id of the first added Halfedge.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, uint)
-Mesh<Args...>::addHalfEdges(uint n)
+template<HasHalfEdges M>
+uint Mesh<Args...>::addHalfEdges(uint n)
 {
 	using HalfEdge          = typename M::HalfEdgeType;
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
@@ -689,9 +681,8 @@ Mesh<Args...>::addHalfEdges(uint n)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M> && mesh::HasFaceContainer<M>, uint)
-Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
+template<typename M> requires HasHalfEdges<M> && HasFaces<M>
+uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
 {
 	using HalfEdge = typename Mesh<Args...>::HalfEdgeType;
 	using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
@@ -733,9 +724,8 @@ Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
  * @param n: the new capacity of the Halfedge container.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
-Mesh<Args...>::reserveHalfEdges(uint n)
+template<HasHalfEdges M>
+void Mesh<Args...>::reserveHalfEdges(uint n)
 {
 	using HalfEdge          = typename M::HalfEdgeType;
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
@@ -755,9 +745,8 @@ Mesh<Args...>::reserveHalfEdges(uint n)
  * This function will be available only **if the Mesh has the HalfEdge Container**.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
-Mesh<Args...>::compactHalfEdges()
+template<HasHalfEdges M>
+void Mesh<Args...>::compactHalfEdges()
 {
 	using HalfEdge          = typename M::HalfEdgeType;
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
@@ -928,9 +917,8 @@ void Mesh<Args...>::updateVertexReferencesAfterCompact(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-Mesh<Args...>::updateFaceReferences(
+template<HasFaces M>
+void Mesh<Args...>::updateFaceReferences(
 	const typename M::FaceType* oldBase,
 	const typename M::FaceType* newBase)
 {
@@ -960,9 +948,8 @@ Mesh<Args...>::updateFaceReferences(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-Mesh<Args...>::updateFaceReferencesAfterCompact(
+template<HasFaces M>
+void Mesh<Args...>::updateFaceReferencesAfterCompact(
 	const typename M::FaceType* base,
 	const std::vector<int>&     newIndices)
 {
@@ -990,9 +977,8 @@ Mesh<Args...>::updateFaceReferencesAfterCompact(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
-Mesh<Args...>::updateEdgeReferences(
+template<HasEdges M>
+void Mesh<Args...>::updateEdgeReferences(
 	const typename M::EdgeType* oldBase,
 	const typename M::EdgeType* newBase)
 {
@@ -1016,9 +1002,8 @@ Mesh<Args...>::updateEdgeReferences(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, void)
-Mesh<Args...>::updateEdgeReferencesAfterCompact(
+template<HasEdges M>
+void Mesh<Args...>::updateEdgeReferencesAfterCompact(
 	const typename M::EdgeType* base,
 	const std::vector<int>&     newIndices)
 {
@@ -1040,9 +1025,8 @@ Mesh<Args...>::updateEdgeReferencesAfterCompact(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
-Mesh<Args...>::updateHalfEdgeReferences(
+template<HasHalfEdges M>
+void Mesh<Args...>::updateHalfEdgeReferences(
 	const typename M::HalfEdgeType* oldBase,
 	const typename M::HalfEdgeType* newBase)
 {
@@ -1066,9 +1050,8 @@ Mesh<Args...>::updateHalfEdgeReferences(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasHalfEdgeContainer<M>, void)
-Mesh<Args...>::updateHalfEdgeReferencesAfterCompact(
+template<HasHalfEdges M>
+void Mesh<Args...>::updateHalfEdgeReferencesAfterCompact(
 	const typename M::HalfEdgeType* base,
 	const std::vector<int>&         newIndices)
 {
