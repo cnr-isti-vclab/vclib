@@ -69,9 +69,8 @@ public:
 	template<typename S>
 	Scalar squaredDist(const Point<S, N>& p1) const;
 
-	template<typename S, int U = N>
-	VCL_ENABLE_IF(U==3, Point)
-	cross(const Point<S, N>& p1) const;
+	template<typename S>
+	Point cross(const Point<S, N>& p1) const requires (N == 3);
 
 	Scalar norm() const;
 	Scalar squaredNorm() const;
@@ -105,9 +104,8 @@ public:
 	Scalar operator*(const Point& p1) const;
 	template<typename SM>
 	Point operator*(const Eigen::Matrix<SM, N, N>& m) const;
-	template<typename SM, int U = N>
-	VCL_ENABLE_IF(U==3, Point)
-	operator*(const Eigen::Matrix<SM, N+1, N+1>& m) const;
+	template<typename SM>
+	Point operator*(const Eigen::Matrix<SM, N+1, N+1>& m) const requires (N == 3);
 
 	Point  operator/(const Scalar& s) const;
 
@@ -120,9 +118,8 @@ public:
 	Point& operator*=(const Scalar& s);
 	template<typename SM>
 	Point& operator*=(const Eigen::Matrix<SM, N, N>& m);
-	template<typename SM, int U = N>
-	VCL_ENABLE_IF(U==3, Point&)
-	operator*=(const Eigen::Matrix<SM, N+1, N+1>& m);
+	template<typename SM>
+	Point& operator*=(const Eigen::Matrix<SM, N+1, N+1>& m) requires (N == 3);
 
 	Point& operator/=(const Scalar& s);
 
