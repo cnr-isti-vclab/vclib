@@ -311,27 +311,24 @@ void Mesh<Args...>::compactVertices()
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-Mesh<Args...>::index(const typename M::FaceType& f) const
+template<HasFaces M>
+uint Mesh<Args...>::index(const typename M::FaceType& f) const
 {
 	using FaceContainer = typename M::FaceContainer;
 	return FaceContainer::index(&f);
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-Mesh<Args...>::index(const typename M::FaceType* f) const
+template<HasFaces M>
+uint Mesh<Args...>::index(const typename M::FaceType* f) const
 {
 	using FaceContainer = typename M::FaceContainer;
 	return FaceContainer::index(f);
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-Mesh<Args...>::addFace()
+template<HasFaces M>
+uint Mesh<Args...>::addFace()
 {
 	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
@@ -345,9 +342,8 @@ Mesh<Args...>::addFace()
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M, typename... V>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
-Mesh<Args...>::addFace(V... args)
+template<HasFaces M, typename... V>
+uint Mesh<Args...>::addFace(V... args)
 {
 	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
@@ -374,9 +370,8 @@ Mesh<Args...>::addFace(V... args)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M, typename Iterator>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
-Mesh<Args...>::addFace(Iterator begin, Iterator end)
+template<HasFaces M, typename Iterator>
+uint Mesh<Args...>::addFace(Iterator begin, Iterator end)
 {
 	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
@@ -431,9 +426,8 @@ Mesh<Args...>::addFace(Iterator begin, Iterator end)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-Mesh<Args...>::addFaces(uint n)
+template<HasFaces M>
+uint Mesh<Args...>::addFaces(uint n)
 {
 	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
@@ -447,9 +441,8 @@ Mesh<Args...>::addFaces(uint n)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-Mesh<Args...>::reserveFaces(uint n)
+template<HasFaces M>
+void Mesh<Args...>::reserveFaces(uint n)
 {
 	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
@@ -462,9 +455,8 @@ Mesh<Args...>::reserveFaces(uint n)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-Mesh<Args...>::compactFaces()
+template<HasFaces M>
+void Mesh<Args...>::compactFaces()
 {
 	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
@@ -485,9 +477,8 @@ Mesh<Args...>::compactFaces()
  * @return the index of the given edge.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-Mesh<Args...>::index(const typename M::EdgeType& e) const
+template<HasEdges M>
+uint Mesh<Args...>::index(const typename M::EdgeType& e) const
 {
 	using EdgeContainer = typename M::EdgeContainer;
 	return EdgeContainer::index(&e);
@@ -499,9 +490,8 @@ Mesh<Args...>::index(const typename M::EdgeType& e) const
  * @return the index of the given edge.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<typename M>
-VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-Mesh<Args...>::index(const typename M::EdgeType* e) const
+template<HasEdges M>
+uint Mesh<Args...>::index(const typename M::EdgeType* e) const
 {
 	using EdgeContainer = typename M::EdgeContainer;
 	return EdgeContainer::index(e);

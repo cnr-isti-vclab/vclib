@@ -67,47 +67,37 @@ public:
 
 	// Faces
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-	index(const typename M::FaceType& f) const;
+	template<HasFaces M = Mesh>
+	uint index(const typename M::FaceType& f) const;
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-	index(const typename M::FaceType* f) const;
+	template<HasFaces M = Mesh>
+	uint index(const typename M::FaceType* f) const;
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-	addFace();
+	template<HasFaces M = Mesh>
+	uint addFace();
 
-	template<typename M = Mesh, typename... V>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
-	addFace(V... args);
+	template<HasFaces M = Mesh, typename... V>
+	uint addFace(V... args);
 
-	template<typename M = Mesh, typename Iterator>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M> && mesh::HasVertexContainer<M>, uint)
-	addFace(Iterator begin, Iterator end);
+	template<HasFaces M = Mesh, typename Iterator>
+	uint addFace(Iterator begin, Iterator end);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, uint)
-	addFaces(uint n);
+	template<HasFaces M = Mesh>
+	uint addFaces(uint n);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-	reserveFaces(uint n);
+	template<HasFaces M = Mesh>
+	void reserveFaces(uint n);
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasFaceContainer<M>, void)
-	compactFaces();
+	template<HasFaces M = Mesh>
+	void compactFaces();
 
 	// Edges
 
-	template<typename M = Mesh<Args...>>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-	index(const typename M::EdgeType& e) const;
+	template<HasEdges M = Mesh>
+	uint index(const typename M::EdgeType& e) const;
 
-	template<typename M = Mesh>
-	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
-	index(const typename M::EdgeType* v) const;
+	template<HasEdges M = Mesh>
+	uint index(const typename M::EdgeType* v) const;
 
 	template<typename M = Mesh>
 	VCL_ENABLE_IF(mesh::HasEdgeContainer<M>, uint)
