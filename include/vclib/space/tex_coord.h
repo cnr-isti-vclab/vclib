@@ -37,14 +37,9 @@ public:
 	using ScalarType = Scalar;
 
 	TexCoord();
-	TexCoord(const TexCoord& t) = default;
-	TexCoord(TexCoord&& t)      = default;
-
-	TexCoord& operator=(const TexCoord& t) = default;
-	TexCoord& operator=(TexCoord&& t)      = default;
 
 	template<typename S>
-	TexCoord(const TexCoord<S>& t);
+	TexCoord<S> cast() const;
 
 	Scalar  u() const;
 	Scalar  v() const;

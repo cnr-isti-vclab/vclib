@@ -40,8 +40,7 @@ Plane<Scalar, NORM>::Plane()
  * @param offset
  */
 template<typename Scalar, bool NORM>
-template<typename S>
-Plane<Scalar, NORM>::Plane(const Point3<S>& direction, S offset) :
+Plane<Scalar, NORM>::Plane(const Point3<Scalar>& direction, Scalar offset) :
 		dir(direction), off(offset)
 {
 	if constexpr(NORM) {
@@ -57,8 +56,7 @@ Plane<Scalar, NORM>::Plane(const Point3<S>& direction, S offset) :
  * @param normal
  */
 template<typename Scalar, bool NORM>
-template<typename S>
-Plane<Scalar, NORM>::Plane(const Point3<S>& p0, const Point3<S>& normal)
+Plane<Scalar, NORM>::Plane(const Point3<Scalar>& p0, const Point3<Scalar>& normal)
 {
 	dir = normal;
 	if constexpr(NORM) {
@@ -74,10 +72,24 @@ Plane<Scalar, NORM>::Plane(const Point3<S>& p0, const Point3<S>& normal)
  * @param p2
  */
 template<typename Scalar, bool NORM>
-template<typename S>
-Plane<Scalar, NORM>::Plane(const Point3<S>& p0, const Point3<S>& p1, const Point3<S>& p2) :
+Plane<Scalar, NORM>::Plane(
+	const Point3<Scalar>& p0,
+	const Point3<Scalar>& p1,
+	const Point3<Scalar>& p2) :
 		Plane<Scalar, NORM>(p0, (p2 - p0).cross(p1 - p0))
 {
+}
+
+template<typename Scalar, bool NORM>
+template<typename S>
+Plane<S, NORM> Plane<Scalar, NORM>::cast() const
+{
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return *this;
+	}
+	else {
+		return Plane<S, NORM>(dir.template cast<S>(), off);
+	}
 }
 
 /**
@@ -106,8 +118,7 @@ Scalar Plane<Scalar, NORM>::offset() const
  * @return
  */
 template<typename Scalar, bool NORM>
-template<typename S>
-Point3<S> Plane<Scalar, NORM>::projectPoint(const Point3<S>& p) const
+Point3<Scalar> Plane<Scalar, NORM>::projectPoint(const Point3<Scalar>& p) const
 {
 	Scalar k = p.dot(dir) - off;
 	return p - dir * k;
@@ -119,10 +130,9 @@ Point3<S> Plane<Scalar, NORM>::projectPoint(const Point3<S>& p) const
  * @return
  */
 template<typename Scalar, bool NORM>
-template<typename S>
-Point3<S> Plane<Scalar, NORM>::mirrorPoint(const Point3<S>& p) const
+Point3<Scalar> Plane<Scalar, NORM>::mirrorPoint(const Point3<Scalar>& p) const
 {
-	Point3<S> mirr=projectPoint(p);
+	Point3<Scalar> mirr=projectPoint(p);
 	mirr += mirr-p;
 	return mirr;
 }
@@ -133,8 +143,7 @@ Point3<S> Plane<Scalar, NORM>::mirrorPoint(const Point3<S>& p) const
  * @return
  */
 template<typename Scalar, bool NORM>
-template<typename S>
-Scalar Plane<Scalar, NORM>::dist(const Point3<S>& p) const
+Scalar Plane<Scalar, NORM>::dist(const Point3<Scalar>& p) const
 {
 	return dir.dot(p) - off;
 }
@@ -148,12 +157,10 @@ Scalar Plane<Scalar, NORM>::dist(const Point3<S>& p) const
  * @return `true` if the intersection exists, false otherwise.
  */
 template<typename Scalar, bool NORM>
-template<typename PointType>
 bool Plane<Scalar, NORM>::segmentIntersection(
-	PointType&                             intersection,
-	const std::pair<PointType, PointType>& s) const
+	Point3<Scalar>&                                  intersection,
+	const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const
 {
-	using ScalarType = typename PointType::ScalarType;
 	ScalarType p1_proj = s.second * dir - off;
 	ScalarType p0_proj = s.first * dir - off;
 	if ( (p1_proj>0)-(p0_proj<0))
@@ -178,10 +185,10 @@ bool Plane<Scalar, NORM>::segmentIntersection(
  * @return The point intersection between this plane and `s`.
  */
 template<typename Scalar, bool NORM>
-template<typename PointType>
-PointType Plane<Scalar, NORM>::segmentIntersection(const std::pair<PointType, PointType>& s) const
+Point3<Scalar> Plane<Scalar, NORM>::segmentIntersection(
+	const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const
 {
-	PointType res;
+	Point3<Scalar> res;
 	bool b = segmentIntersection(res, s);
 	if (!b)
 		throw vcl::NoIntersectionException("Plane and Segment");

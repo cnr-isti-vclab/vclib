@@ -84,7 +84,7 @@ void updateAndPrintNormals(MeshType& m){
 
 	std::cerr << std::endl << std::endl;
 
-	vcl::Matrix44<double> m44;
+	vcl::Matrix44<typename MeshType::FaceType::NormalType::ScalarType> m44;
 	m44.setZero();
 	m44.diagonal() << -1, -1, -1, -1;
 	vcl::multiplyPerFaceNormalsByMatrix(m, m44);

@@ -47,31 +47,25 @@ public:
 	using ScalarType = Scalar;
 
 	Plane();
+	Plane(const Point3<Scalar>& direction, Scalar offset);
+	Plane(const Point3<Scalar>& p0, const Point3<Scalar>& normal);
+	Plane(const Point3<Scalar>& p0, const Point3<Scalar>& p1, const Point3<Scalar>& p2);
+
 	template<typename S>
-	Plane(const Point3<S>& direction, S offset);
-	template<typename S>
-	Plane(const Point3<S>& p0, const Point3<S>& normal);
-	template<typename S>
-	Plane(const Point3<S>& p0, const Point3<S>& p1, const Point3<S>& p2);
+	Plane<S, NORM> cast() const;
 
 	const Point3<Scalar>& direction() const;
 	Scalar offset() const;
 
-	template<typename S>
-	Point3<S> projectPoint(const Point3<S>& p) const;
+	Point3<Scalar> projectPoint(const Point3<Scalar>& p) const;
+	Point3<Scalar> mirrorPoint(const Point3<Scalar>& p) const;
+	Scalar dist(const Point3<Scalar>& p) const;
 
-	template<typename S>
-	Point3<S> mirrorPoint(const Point3<S>& p) const;
+	bool segmentIntersection(
+		Point3<Scalar>& intersection,
+		const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const;
 
-	template<typename S>
-	Scalar dist(const Point3<S>& p) const;
-
-	template<typename PointType>
-	bool
-	segmentIntersection(PointType& intersection, const std::pair<PointType, PointType>& s) const;
-
-	template<typename PointType>
-	PointType segmentIntersection(const std::pair<PointType, PointType>& s) const;
+	Point3<Scalar> segmentIntersection(const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const;
 
 	bool operator==(const Plane& p) const;
 	bool operator!=(const Plane& p) const;

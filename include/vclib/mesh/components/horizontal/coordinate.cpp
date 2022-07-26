@@ -41,7 +41,7 @@ template<typename Element>
 void CoordT<Point>::importFrom(const Element& v)
 {
 	if constexpr (HasCoordinate<Element>) {
-		p = v.coord();
+		p = v.coord().template cast<typename CoordType::ScalarType>();
 	}
 }
 

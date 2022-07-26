@@ -61,13 +61,15 @@ void updatePerFaceNormals(MeshType& m, bool normalize)
 	using FaceType = typename MeshType::FaceType;
 	if constexpr (vcl::HasTriangles<MeshType>) {
 		for (FaceType& f : m.faces()) {
-			f.normal() = triangleNormal(f);
+			f.normal() = triangleNormal(f).
+						 template cast<typename FaceType::NormalType::ScalarType>();
 		}
 		
 	}
 	else {
 		for (FaceType& f : m.faces()) {
-			f.normal() = polygonNormal(f);
+			f.normal() = polygonNormal(f).
+						 template cast<typename FaceType::NormalType::ScalarType>();
 		}
 	}
 	if (normalize)
@@ -170,7 +172,7 @@ void updatePerVertexNormals(MeshType& m, bool normalize)
 	using NormalType = typename VertexType::NormalType;
 
 	for (FaceType& f : m.faces()) {
-		NormalType n = polygonNormal(f);
+		NormalType n = polygonNormal(f).template cast<typename NormalType::ScalarType>();
 		for (VertexType* v : f.vertices()) {
 			v->normal() += n;
 		}
@@ -245,13 +247,18 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
 	using NormalType = typename VertexType::NormalType;
+	using NScalarType = typename NormalType::ScalarType;
 
 	for (FaceType& f : m.faces()) {
-		NormalType n = polygonNormal(f);
+		NormalType n = polygonNormal(f).template cast<NScalarType>();
 
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
-			NormalType vec1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord()).normalized();
-			NormalType vec2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord()).normalized();
+			NormalType vec1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
+								  .normalized()
+								  .template cast<NScalarType>();
+			NormalType vec2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
+								  .normalized()
+								  .template cast<NScalarType>();
 
 			f.vertex(i)->normal() += n * vec1.angle(vec2);
 		}
@@ -295,14 +302,14 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
 	using NormalType = typename VertexType::NormalType;
-	using ScalarType = typename NormalType::ScalarType;
+	using NScalarType = typename NormalType::ScalarType;
 
 	for (FaceType& f : m.faces()) {
-		NormalType n = polygonNormal(f);
+		NormalType n = polygonNormal(f).template cast<NScalarType>();
 
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
-			ScalarType e1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
-			ScalarType e2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
+			NScalarType e1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
+			NScalarType e2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
 
 			f.vertex(i)->normal() += n / (e1 * e2);
 		}

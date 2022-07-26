@@ -33,6 +33,9 @@ class PrincipalCurvature
 public:
 	PrincipalCurvature();
 
+	template<typename S>
+	PrincipalCurvature<S> cast() const;
+
 	const Point3<Scalar>& maxDir() const;
 	Point3<Scalar>&       maxDir();
 	const Point3<Scalar>& minDir() const;

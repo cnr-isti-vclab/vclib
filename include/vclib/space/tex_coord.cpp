@@ -32,9 +32,17 @@ TexCoord<Scalar>::TexCoord() : coord(0, 0), n(0)
 
 template<typename Scalar>
 template<typename S>
-TexCoord<Scalar>::TexCoord(const TexCoord<S>& t) :
-		coord(t.coord), n(t.n)
+TexCoord<S> TexCoord<Scalar>::cast() const
 {
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return *this;
+	}
+	else {
+		TexCoord<S> tmp;
+		tmp.coord = coord.template cast<S>();
+		tmp.n = n;
+		return tmp;
+	}
 }
 
 template<typename Scalar>
