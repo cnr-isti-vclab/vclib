@@ -327,11 +327,10 @@ uint Mesh<Args...>::index(const typename M::FaceType* f) const
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-uint Mesh<Args...>::addFace()
+uint Mesh<Args...>::addFace() requires HasFaces<Mesh>
 {
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
+	using Face          = typename Mesh::FaceType;
+	using FaceContainer = typename Mesh::FaceContainer;
 
 	Face* oldBase = FaceContainer::vec.data();
 	uint  fid     = FaceContainer::addFace();
@@ -342,11 +341,11 @@ uint Mesh<Args...>::addFace()
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename... V>
-uint Mesh<Args...>::addFace(V... args)
+template<typename... V>
+uint Mesh<Args...>::addFace(V... args) requires HasFaces<Mesh>
 {
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
+	using Face          = typename Mesh::FaceType;
+	using FaceContainer = typename Mesh::FaceContainer;
 
 	uint  fid = addFace();
 	Face& f   = FaceContainer::face(fid);
@@ -370,11 +369,11 @@ uint Mesh<Args...>::addFace(V... args)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename Iterator>
-uint Mesh<Args...>::addFace(Iterator begin, Iterator end)
+template<typename Iterator>
+uint Mesh<Args...>::addFace(Iterator begin, Iterator end) requires HasFaces<Mesh>
 {
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
+	using Face          = typename Mesh::FaceType;
+	using FaceContainer = typename Mesh::FaceContainer;
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
 
 	if (begin == end) return -1;
@@ -426,11 +425,10 @@ uint Mesh<Args...>::addFace(Iterator begin, Iterator end)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-uint Mesh<Args...>::addFaces(uint n)
+uint Mesh<Args...>::addFaces(uint n) requires HasFaces<Mesh>
 {
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
+	using Face          = typename Mesh::FaceType;
+	using FaceContainer = typename Mesh::FaceContainer;
 
 	Face* oldBase = FaceContainer::vec.data();
 	uint  fid     = FaceContainer::addFaces(n);
@@ -441,11 +439,10 @@ uint Mesh<Args...>::addFaces(uint n)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::reserveFaces(uint n)
+void Mesh<Args...>::reserveFaces(uint n) requires HasFaces<Mesh>
 {
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
+	using Face          = typename Mesh::FaceType;
+	using FaceContainer = typename Mesh::FaceContainer;
 
 	Face* oldBase = FaceContainer::vec.data();
 	FaceContainer::reserveFaces(n);
@@ -455,11 +452,10 @@ void Mesh<Args...>::reserveFaces(uint n)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::compactFaces()
+void Mesh<Args...>::compactFaces() requires HasFaces<Mesh>
 {
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
+	using Face          = typename Mesh::FaceType;
+	using FaceContainer = typename Mesh::FaceContainer;
 
 	if (FaceContainer::faceNumber() != FaceContainer::faceContainerSize()) {
 		Face*            oldBase    = FaceContainer::vec.data();
@@ -498,11 +494,10 @@ uint Mesh<Args...>::index(const typename M::EdgeType* e) const
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-uint Mesh<Args...>::addEdge()
+uint Mesh<Args...>::addEdge() requires HasEdges<Mesh>
 {
-	using Edge          = typename M::EdgeType;
-	using EdgeContainer = typename M::EdgeContainer;
+	using Edge          = typename Mesh::EdgeType;
+	using EdgeContainer = typename Mesh::EdgeContainer;
 
 	Edge* oldBase = EdgeContainer::vec.data();
 	uint  eid     = EdgeContainer::addEdge();
@@ -527,11 +522,10 @@ uint Mesh<Args...>::addEdge()
  * @return the id of the first added edge.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-uint Mesh<Args...>::addEdges(uint n)
+uint Mesh<Args...>::addEdges(uint n) requires HasEdges<Mesh>
 {
-	using Edge          = typename M::EdgeType;
-	using EdgeContainer = typename M::EdgeContainer;
+	using Edge          = typename Mesh::EdgeType;
+	using EdgeContainer = typename Mesh::EdgeContainer;
 
 	// If the base pointer of the container of edges changes, it means that all the edge
 	// references contained in the other elements need to be updated (the ones contained in the
@@ -566,11 +560,10 @@ uint Mesh<Args...>::addEdges(uint n)
  * @param n: the new capacity of the edge container.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-void Mesh<Args...>::reserveEdges(uint n)
+void Mesh<Args...>::reserveEdges(uint n) requires HasEdges<Mesh>
 {
-	using Edge          = typename M::EdgeType;
-	using EdgeContainer = typename M::EdgeContainer;
+	using Edge          = typename Mesh::EdgeType;
+	using EdgeContainer = typename Mesh::EdgeContainer;
 
 	Edge* oldBase = EdgeContainer::vec.data();
 	EdgeContainer::reserveEdges(n);
@@ -587,11 +580,10 @@ void Mesh<Args...>::reserveEdges(uint n)
  * This function will be available only **if the Mesh has the Edge Container**.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-void Mesh<Args...>::compactEdges()
+void Mesh<Args...>::compactEdges() requires HasEdges<Mesh>
 {
-	using Edge          = typename M::EdgeType;
-	using EdgeContainer = typename M::EdgeContainer;
+	using Edge          = typename Mesh::EdgeType;
+	using EdgeContainer = typename Mesh::EdgeContainer;
 
 	if (EdgeContainer::edgeNumber() != EdgeContainer::edgeContainerSize()) {
 		Edge*            oldBase    = EdgeContainer::vec.data();
@@ -630,11 +622,10 @@ uint Mesh<Args...>::index(const typename M::HalfEdgeType* e) const
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-uint Mesh<Args...>::addHalfEdge()
+uint Mesh<Args...>::addHalfEdge() requires HasHalfEdges<Mesh>
 {
-	using HalfEdge          = typename M::HalfEdgeType;
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+	using HalfEdge          = typename Mesh::HalfEdgeType;
+	using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
 
 	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
 	uint      eid     = HalfEdgeContainer::addHalfEdge();
@@ -659,11 +650,10 @@ uint Mesh<Args...>::addHalfEdge()
  * @return the id of the first added Halfedge.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-uint Mesh<Args...>::addHalfEdges(uint n)
+uint Mesh<Args...>::addHalfEdges(uint n) requires HasHalfEdges<Mesh>
 {
-	using HalfEdge          = typename M::HalfEdgeType;
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+	using HalfEdge          = typename Mesh::HalfEdgeType;
+	using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
 
 	// If the base pointer of the container of Halfedges changes, it means that all the Halfedge
 	// references contained in the other elements need to be updated (the ones contained in the
@@ -681,8 +671,8 @@ uint Mesh<Args...>::addHalfEdges(uint n)
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename M> requires HasHalfEdges<M> && HasFaces<M>
-uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
+template<typename M> requires HasFaces<M>
+uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f) requires HasHalfEdges<Mesh>
 {
 	using HalfEdge = typename Mesh<Args...>::HalfEdgeType;
 	using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
@@ -724,11 +714,10 @@ uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
  * @param n: the new capacity of the Halfedge container.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-void Mesh<Args...>::reserveHalfEdges(uint n)
+void Mesh<Args...>::reserveHalfEdges(uint n) requires HasHalfEdges<Mesh>
 {
-	using HalfEdge          = typename M::HalfEdgeType;
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+	using HalfEdge          = typename Mesh::HalfEdgeType;
+	using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
 
 	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
 	HalfEdgeContainer::reserveHalfEdges(n);
@@ -745,11 +734,10 @@ void Mesh<Args...>::reserveHalfEdges(uint n)
  * This function will be available only **if the Mesh has the HalfEdge Container**.
  */
 template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-void Mesh<Args...>::compactHalfEdges()
+void Mesh<Args...>::compactHalfEdges() requires HasHalfEdges<Mesh>
 {
-	using HalfEdge          = typename M::HalfEdgeType;
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
+	using HalfEdge          = typename Mesh::HalfEdgeType;
+	using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
 
 	if (HalfEdgeContainer::HalfedgeNumber() != HalfEdgeContainer::HalfedgeContainerSize()) {
 		HalfEdge*        oldBase    = HalfEdgeContainer::vec.data();

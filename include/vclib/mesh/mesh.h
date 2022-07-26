@@ -73,23 +73,17 @@ public:
 	template<HasFaces M = Mesh>
 	uint index(const typename M::FaceType* f) const;
 
-	template<HasFaces M = Mesh>
-	uint addFace();
+	uint addFace() requires HasFaces<Mesh>;
 
-	template<HasFaces M = Mesh, typename... V>
-	uint addFace(V... args);
+	template<typename... V>
+	uint addFace(V... args) requires HasFaces<Mesh>;
 
-	template<HasFaces M = Mesh, typename Iterator>
-	uint addFace(Iterator begin, Iterator end);
+	template<typename Iterator>
+	uint addFace(Iterator begin, Iterator end) requires HasFaces<Mesh>;
 
-	template<HasFaces M = Mesh>
-	uint addFaces(uint n);
-
-	template<HasFaces M = Mesh>
-	void reserveFaces(uint n);
-
-	template<HasFaces M = Mesh>
-	void compactFaces();
+	uint addFaces(uint n) requires HasFaces<Mesh>;
+	void reserveFaces(uint n) requires HasFaces<Mesh>;
+	void compactFaces() requires HasFaces<Mesh>;
 
 	// Edges
 
@@ -99,17 +93,10 @@ public:
 	template<HasEdges M = Mesh>
 	uint index(const typename M::EdgeType* v) const;
 
-	template<HasEdges M = Mesh>
-	uint addEdge();
-
-	template<HasEdges M = Mesh>
-	uint addEdges(uint n);
-
-	template<HasEdges M = Mesh>
-	void reserveEdges(uint n);
-
-	template<HasEdges M = Mesh>
-	void compactEdges();
+	uint addEdge() requires HasEdges<Mesh>;
+	uint addEdges(uint n) requires HasEdges<Mesh>;
+	void reserveEdges(uint n) requires HasEdges<Mesh>;
+	void compactEdges() requires HasEdges<Mesh>;
 
 	// HalfEdges
 
@@ -119,20 +106,14 @@ public:
 	template<HasHalfEdges M = Mesh>
 	uint index(const typename M::HalfEdgeType* v) const;
 
-	template<HasHalfEdges M = Mesh>
-	uint addHalfEdge();
+	uint addHalfEdge() requires HasHalfEdges<Mesh>;
+	uint addHalfEdges(uint n) requires HasHalfEdges<Mesh>;
 
-	template<HasHalfEdges M = Mesh>
-	uint addHalfEdges(uint n);
+	template<typename M = Mesh> requires HasFaces<M>
+	uint addHalfEdgesToFace(uint n, typename M::FaceType& f) requires HasHalfEdges<Mesh>;
 
-	template<typename M = Mesh> requires HasHalfEdges<M> && HasFaces<M>
-	uint addHalfEdgesToFace(uint n, typename M::FaceType& f);
-
-	template<HasHalfEdges M = Mesh>
-	void reserveHalfEdges(uint n);
-
-	template<HasHalfEdges M = Mesh>
-	void compactHalfEdges();
+	void reserveHalfEdges(uint n) requires HasHalfEdges<Mesh>;
+	void compactHalfEdges() requires HasHalfEdges<Mesh>;
 
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
