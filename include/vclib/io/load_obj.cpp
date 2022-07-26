@@ -326,7 +326,7 @@ void loadFace(
 							throw vcl::MalformedFileException(
 								"Bad texcoord index for face " + std::to_string(fid));
 						}
-						f.wedgeTexCoord(i) = wedgeTexCoords[wids[i]];
+						f.wedgeTexCoord(i) = wedgeTexCoords[wids[i]].cast<typename FaceType::WedgeTexCoordType::ScalarType>();
 						if (currentMaterial.hasTexture){
 							f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
 						}
@@ -350,7 +350,7 @@ void loadFace(
 									"Bad texcoord index for face " + std::to_string(fid));
 							}
 							// set the wedge texcoord in the same position of the vertex
-							f.wedgeTexCoord(i) = wedgeTexCoords[wids[pos]];
+							f.wedgeTexCoord(i) = wedgeTexCoords[wids[pos]].cast<typename FaceType::WedgeTexCoordType::ScalarType>();
 							if (currentMaterial.hasTexture){
 								f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
 							}
@@ -510,7 +510,7 @@ void loadObj(
 				if (loadedInfo.hasVertexTexCoords()) {
 					uint i = 0;
 					for (VertexType& v : m.vertices()) {
-						v.texCoord() = texCoords[i++];
+						v.texCoord() = texCoords[i++].cast<typename VertexType::TexCoordType::ScalarType>();
 					}
 				}
 			}

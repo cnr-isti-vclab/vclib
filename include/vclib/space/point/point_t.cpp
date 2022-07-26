@@ -25,17 +25,21 @@
 namespace vcl {
 
 template<typename Scalar, int N>
-template<typename S>
-Point<Scalar, N>::Point(const Point<S, N>& p1)
-{
-	for (uint i = 0; i < (uint)p.size(); ++i)
-		p(i) = p1(i);
-}
-
-template<typename Scalar, int N>
 Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, 1, N>& v)
 {
 	p << v;
+}
+
+template<typename Scalar, int N>
+template<typename S>
+Point<S, N> Point<Scalar, N>::cast() const
+{
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return *this;
+	}
+	else {
+		return Point<S, N>(p.template cast<S>());
+	}
 }
 
 /**
@@ -52,20 +56,13 @@ bool Point<Scalar, N>::isDegenerate() const
 }
 
 template<typename Scalar, int N>
-template<typename S>
-Scalar Point<Scalar, N>::dot(const Point<S, N>& p1) const
+Scalar Point<Scalar, N>::dot(const Point& p1) const
 {
-	if constexpr (std::is_same<Scalar, S>::value) {
-		return p.dot(p1.p);
-	}
-	else {
-		return p.dot(p1.p.template cast<Scalar>());
-	}
+	return p.dot(p1.p);
 }
 
 template<typename Scalar, int N>
-template<typename S>
-Scalar Point<Scalar, N>::angle(const Point<S, N>& p1) const
+Scalar Point<Scalar, N>::angle(const Point& p1) const
 {
 	Scalar w = p.norm() * p1.p.norm();
 	if (w == 0)
@@ -79,27 +76,16 @@ Scalar Point<Scalar, N>::angle(const Point<S, N>& p1) const
 }
 
 template<typename Scalar, int N>
-template<typename S>
-Scalar Point<Scalar, N>::dist(const Point<S, N>& p1) const
+Scalar Point<Scalar, N>::dist(const Point& p1) const
 {
-	if constexpr (std::is_same<Scalar, S>::value) {
-		return (p - p1.p).norm();
-	}
-	else {
-		return (p - p1.p.template cast<Scalar>()).norm();
-	}
+	return (p - p1.p).norm();
 }
 
 template<typename Scalar, int N>
-template<typename S>
-Scalar Point<Scalar, N>::squaredDist(const Point<S, N>& p1) const
+Scalar Point<Scalar, N>::squaredDist(const Point& p1) const
 {
-	if constexpr (std::is_same<Scalar, S>::value) {
-		return (p - p1.p).squaredNorm();
-	}
-	else {
-		return (p - p1.p.template cast<Scalar>()).squaredNorm();
-	}
+
+	return (p - p1.p).squaredNorm();
 }
 
 /**
@@ -108,15 +94,9 @@ Scalar Point<Scalar, N>::squaredDist(const Point<S, N>& p1) const
  * @return The cross product between this and the other point.
  */
 template<typename Scalar, int N>
-template<typename S>
-Point<Scalar,N> Point<Scalar, N>::cross(const Point<S, N>& p1) const requires (N == 3)
+Point<Scalar,N> Point<Scalar, N>::cross(const Point& p1) const requires (N == 3)
 {
-	if constexpr (std::is_same<Scalar, S>::value) {
-		return p.cross(p1.p);
-	}
-	else {
-		return p.cross(p1.p.template cast<Scalar>());
-	}
+	return p.cross(p1.p);
 }
 
 template<typename Scalar, int N>
@@ -255,19 +235,17 @@ Scalar Point<Scalar, N>::operator*(const Point<Scalar, N>& p1) const
 }
 
 template<typename Scalar, int N>
-template<typename SM>
-Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<SM, N, N>& m) const
+Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<Scalar, N, N>& m) const
 {
-	return Point<Scalar, N>(p * m.template cast<Scalar>());
+	return Point<Scalar, N>(p * m);
 }
 
 /**
  * @brief Returns a new 3D point/vector on which has been applied an TRS 4x4 matrix.
  */
 template<typename Scalar, int N>
-template<typename SM>
 Point<Scalar, N> Point<Scalar, N>::operator*(
-	const Eigen::Matrix<SM, N+1, N+1>& m) const requires (N == 3)
+	const Eigen::Matrix<Scalar, N+1, N+1>& m) const requires (N == 3)
 {
 	Eigen::Matrix<Scalar, 1, N> s;
 
@@ -275,9 +253,9 @@ Point<Scalar, N> Point<Scalar, N>::operator*(
 	s(1) = m(1, 0)*p(0) + m(1, 1)*p(1) + m(1, 2)*p(2) + m(1, 3);
 	s(2) = m(2, 0)*p(0) + m(2, 1)*p(1) + m(2, 2)*p(2) + m(2, 3);
 
-	SM w = p(0)*m(3,0) + p(1)*m(3,1) +p(2)*m(3,2) + m(3,3);
+	Scalar w = p(0)*m(3,0) + p(1)*m(3,1) +p(2)*m(3,2) + m(3,3);
 	if (w != 0) s = s / w;
-	return Point<Scalar, N>(s);
+	return Point(s);
 }
 
 template<typename Scalar, int N>
@@ -322,10 +300,9 @@ Point<Scalar, N>& Point<Scalar, N>::operator*=(const Scalar& s)
 }
 
 template<typename Scalar, int N>
-template<typename SM>
-Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<SM, N, N>& m)
+Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<Scalar, N, N>& m)
 {
-	p *= m.template cast<Scalar>();
+	p *= m;
 	return *this;
 }
 
@@ -334,9 +311,8 @@ Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<SM, N, N>& m)
  * @param m
  */
 template<typename Scalar, int N>
-template<typename SM>
 Point<Scalar,N>& Point<Scalar, N>::operator*=(
-	const Eigen::Matrix<SM, N+1, N+1>& m) requires (N == 3)
+	const Eigen::Matrix<Scalar, N+1, N+1>& m) requires (N == 3)
 {
 	*this = *this * m;
 	return *this;

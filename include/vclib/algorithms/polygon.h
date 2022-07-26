@@ -31,8 +31,8 @@ namespace vcl {
 template <typename PointType>
 PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template<typename Triangle, typename NormalType = Point3f>
-NormalType triangleNormal(const Triangle& t);
+template<typename Triangle>
+typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t);
 
 template <typename PointType>
 PointType triangleBarycenter(const PointType& p0, const PointType& p1, const PointType& p2);
@@ -56,14 +56,14 @@ ScalarType triangleArea(const Triangle& t);
 template<typename PointType>
 PointType polygonNormal(const std::vector<PointType>& p);
 
-template<typename Polygon, typename NormalType = Point3f>
-NormalType polygonNormal(const Polygon& p);
+template<typename Polygon>
+typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p);
 
 template<typename PointType>
 PointType polygonBarycenter(const std::vector<PointType>& p);
 
-template<typename Polygon, typename PointType = Point3f>
-PointType polygonBarycenter(const Polygon& p);
+template<typename Polygon>
+typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p);
 
 template<typename PointType>
 PointType polygonWeighedBarycenter(

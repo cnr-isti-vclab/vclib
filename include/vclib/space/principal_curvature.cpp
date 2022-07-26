@@ -30,6 +30,23 @@ PrincipalCurvature<Scalar>::PrincipalCurvature()
 }
 
 template<typename Scalar>
+template<typename S>
+PrincipalCurvature<S> PrincipalCurvature<Scalar>::cast() const
+{
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return *this;
+	}
+	else {
+		PrincipalCurvature<S> tmp;
+		tmp.dir1 = dir1.template cast<S>();
+		tmp.dir2 = dir2.template cast<S>();
+		tmp.k1 = k1;
+		tmp.k2 = k2;
+		return tmp;
+	}
+}
+
+template<typename Scalar>
 const Point3<Scalar>& PrincipalCurvature<Scalar>::maxDir() const
 {
 	return dir1;

@@ -78,8 +78,8 @@ PointType triangleNormal(const PointType& p0, const PointType& p1, const PointTy
  * @param[in] t: input triangle of type Face
  * @return The normal of t.
  */
-template<typename Triangle, typename NormalType>
-NormalType triangleNormal(const Triangle& t)
+template<typename Triangle>
+typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t)
 {
 	return triangleNormal(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
 }
@@ -191,9 +191,10 @@ PointType polygonNormal(const std::vector<PointType>& p)
  * @param[in] p: input polygonal Face
  * @return The normal of p.
  */
-template<typename Polygon, typename NormalType>
-NormalType polygonNormal(const Polygon& p)
+template<typename Polygon>
+typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p)
 {
+	using NormalType = typename Polygon::VertexType::CoordType;
 	// compute the sum of normals for each triplet of consecutive points
 	NormalType sum;
 	sum.setZero();
@@ -229,9 +230,11 @@ PointType polygonBarycenter(const std::vector<PointType>& p)
  * @param[in] p: input polygonal Face
  * @return The barycenter of p.
  */
-template<typename Polygon, typename PointType>
-PointType polygonBarycenter(const Polygon& p)
+template<typename Polygon>
+typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p)
 {
+	using PointType = typename Polygon::VertexType::CoordType;
+
 	PointType bar;
 	bar.setZero();
 

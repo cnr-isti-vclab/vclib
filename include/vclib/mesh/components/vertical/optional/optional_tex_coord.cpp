@@ -52,7 +52,7 @@ void OptionalTexCoord<Scalar, T>::importFrom(const Element& e)
 {
 	if constexpr (HasTexCoord<Element>) {
 		if (isTexCoordEnabled() && isTexCoordEnabledOn(e)) {
-			texCoord() = e.texCoord();
+			texCoord() = e.texCoord().template cast<Scalar>();
 		}
 	}
 }

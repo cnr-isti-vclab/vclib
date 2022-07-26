@@ -44,33 +44,22 @@ class Point
 public:
 	using ScalarType      = Scalar;
 	static const int DIM  = N;
-	Point()               = default; // default empty constructor
-	Point(const Point& p) = default; // default copy constructor
-	Point(Point&& p)      = default; // default move constructor
 
-	Point& operator=(const Point& p) = default; // default copy assignment operator
-	Point& operator=(Point&& p) = default;      // default move assignment operator
+	Point() = default; // default empty constructor
+
+	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
 
 	template<typename S>
-	Point(const Point<S, N>& p);                 // constructor from different scalar Point
-	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
+	Point<S, N> cast() const;
 
 	bool isDegenerate() const;
 
-	template<typename S>
-	Scalar dot(const Point<S, N>& p1) const;
+	Scalar dot(const Point& p1) const;
+	Scalar angle(const Point& p1) const;
+	Scalar dist(const Point& p1) const;
+	Scalar squaredDist(const Point& p1) const;
 
-	template<typename S>
-	Scalar angle(const Point<S, N>& p1) const;
-
-	template<typename S>
-	Scalar dist(const Point<S, N>& p1) const;
-
-	template<typename S>
-	Scalar squaredDist(const Point<S, N>& p1) const;
-
-	template<typename S>
-	Point cross(const Point<S, N>& p1) const requires (N == 3);
+	Point cross(const Point& p1) const requires (N == 3);
 
 	Scalar norm() const;
 	Scalar squaredNorm() const;
@@ -102,10 +91,8 @@ public:
 
 	Point  operator*(const Scalar& s) const;
 	Scalar operator*(const Point& p1) const;
-	template<typename SM>
-	Point operator*(const Eigen::Matrix<SM, N, N>& m) const;
-	template<typename SM>
-	Point operator*(const Eigen::Matrix<SM, N+1, N+1>& m) const requires (N == 3);
+	Point operator*(const Eigen::Matrix<Scalar, N, N>& m) const;
+	Point operator*(const Eigen::Matrix<Scalar, N+1, N+1>& m) const requires (N == 3);
 
 	Point  operator/(const Scalar& s) const;
 
@@ -116,10 +103,8 @@ public:
 	Point& operator-=(const Point& p1);
 
 	Point& operator*=(const Scalar& s);
-	template<typename SM>
-	Point& operator*=(const Eigen::Matrix<SM, N, N>& m);
-	template<typename SM>
-	Point& operator*=(const Eigen::Matrix<SM, N+1, N+1>& m) requires (N == 3);
+	Point& operator*=(const Eigen::Matrix<Scalar, N, N>& m);
+	Point& operator*=(const Eigen::Matrix<Scalar, N+1, N+1>& m) requires (N == 3);
 
 	Point& operator/=(const Scalar& s);
 

@@ -58,7 +58,7 @@ void OptionalPrincipalCurvature<Scalar, T>::importFrom(const Element& e)
 {
 	if constexpr (HasPrincipalCurvature<Element>) {
 		if (isPrincipalCurvatureEnabled() && isPrincipalCurvatureEnabledOn(e)) {
-			principalCurvature() = e.principalCurvature();
+			principalCurvature() = e.principalCurvature().template cast<Scalar>();
 		}
 	}
 }

@@ -52,7 +52,7 @@ void OptionalNormalT<P, T>::importFrom(const Element& e)
 {
 	if constexpr (HasNormal<Element>) {
 		if (isNormalEnabled() && isNormalEnabledOn(e)) {
-			normal() = e.normal();
+			normal() = e.normal().template cast<typename NormalType::ScalarType>();
 		}
 	}
 }

@@ -174,7 +174,7 @@ template<typename Element>
 void WedgeTexCoords<Scalar, N>::importWedgeTexCoordsFrom(const Element& e)
 {
 	for (uint i = 0; i < e.vertexNumber(); ++i){
-		wedgeTexCoord(i) = e.wedgeTexCoord(i);
+		wedgeTexCoord(i) = e.wedgeTexCoord(i).template cast<Scalar>();
 	}
 }
 

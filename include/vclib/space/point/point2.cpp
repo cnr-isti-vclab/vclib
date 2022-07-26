@@ -25,10 +25,9 @@
 namespace vcl {
 
 template<typename ScalarType>
-template<typename S>
-Point2<ScalarType>::Point2(const Point<S, 2>& p)
+Point2<ScalarType>::Point2(const Point<ScalarType, 2> &p) :
+		Point<ScalarType, 2>(p)
 {
-	Point<ScalarType, 2>::p << p(0), p(1);
 }
 
 template<typename ScalarType>

@@ -35,11 +35,9 @@ template<typename ScalarType>
 class Point4 : public Point<ScalarType, 4>
 {
 public:
-	Point4()                = default; // default empty constructor
-	Point4(const Point4& p) = default; // default copy constructor
+	Point4() = default; // default empty constructor
 
-	template<typename S>
-	Point4(const Point<S, 4>& p); // constructor from base class - will include all its constructors
+	Point4(const Point<ScalarType, 4>& p1); // from base class - will include all its constructors
 	Point4(const ScalarType& x, const ScalarType& y, const ScalarType& z, const ScalarType& w);
 
 	ScalarType x() const;
