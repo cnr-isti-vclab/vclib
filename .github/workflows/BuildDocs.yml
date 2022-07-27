@@ -16,7 +16,7 @@ jobs:
           python-version: '3.10'
       - name: Install dependencies
         run: |
-          sudo apt-get install cmake
+          sudo apt-get install cmake libtbb-dev doxygen
           pip3 install sphinx breathe sphinx_rtd_theme readthedocs-sphinx-ext
       - name: Build Docs
         run: |
