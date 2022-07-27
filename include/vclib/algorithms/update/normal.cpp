@@ -34,7 +34,7 @@ namespace vcl {
  *   - Faces:
  *     - Normal
  *
- * @param[in/out] m: the mesh on which normalize the face normals.
+ * @param[in,out] m: the mesh on which normalize the face normals.
  */
 template<FaceMeshConcept MeshType>
 void normalizePerFaceNormals(MeshType& m)
@@ -84,7 +84,7 @@ void updatePerFaceNormals(MeshType& m, bool normalize)
  *   - Vertices:
  *     - Normal
  *
- * @param[in/out] m: The mesh on which clear the vertex normals.
+ * @param[in,out] m: The mesh on which clear the vertex normals.
  */
 template<MeshConcept MeshType>
 void clearPerVertexNormals(MeshType& m)
@@ -108,7 +108,7 @@ void clearPerVertexNormals(MeshType& m)
  *     - Normal
  *   - Faces
  *
- * @param[in/out] m: The mesh on which clear the referenced vertex normals.
+ * @param[in,out] m: The mesh on which clear the referenced vertex normals.
  */
 template<FaceMeshConcept MeshType>
 void clearPerReferencedVertexNormals(MeshType& m)
@@ -133,7 +133,7 @@ void clearPerReferencedVertexNormals(MeshType& m)
  *   - Vertices:
  *     - Normal
  *
- * @param[in/out] m: the mesh on which normalize the vertex normals.
+ * @param[in,out] m: the mesh on which normalize the vertex normals.
  */
 template<MeshConcept MeshType>
 void normalizePerVertexNormals(MeshType& m)
@@ -159,7 +159,7 @@ void normalizePerVertexNormals(MeshType& m)
  *     - Normal
  *   - Faces
  *
- * @param[in/out] m: the mesh on which compute the vertex normals.
+ * @param[in,out] m: the mesh on which compute the vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after computation.
  */
 template<FaceMeshConcept MeshType>
@@ -193,7 +193,7 @@ void updatePerVertexNormals(MeshType& m, bool normalize)
  *   - Faces
  *     - Normal
  *
- * @param[in/out] m: the mesh on which compute the vertex normals.
+ * @param[in,out] m: the mesh on which compute the vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after computation.
  */
 template<FaceMeshConcept MeshType>
@@ -236,7 +236,7 @@ void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize)
  *     - Normal
  *   - Faces
  *
- * @param[in/out] m: the mesh on which compute the angle weighted vertex normals.
+ * @param[in,out] m: the mesh on which compute the angle weighted vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after computation.
  */
 template<FaceMeshConcept MeshType>
@@ -291,7 +291,7 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
  *     - Normal
  *   - Faces
  *
- * @param[in/out] m: the mesh on which compute the Max et al. weighted vertex normals.
+ * @param[in,out] m: the mesh on which compute the Max et al. weighted vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after computation.
  */
 template<FaceMeshConcept MeshType>
@@ -327,7 +327,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
  *   - Faces
  *     - Normal
  *
- * @param[in/out] mesh: the mesh on which multiply the face normals.
+ * @param[in,out] mesh: the mesh on which multiply the face normals.
  * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
  * @param[in] removeScalingFromMatrix: if true (default), the scale component is removed from the
  * matrix.
@@ -370,7 +370,7 @@ void multiplyPerFaceNormalsByMatrix(
  *   - Vertices:
  *     - Normal
  *
- * @param[in/out] mesh: the mesh on which multiply the vertex normals.
+ * @param[in,out] mesh: the mesh on which multiply the vertex normals.
  * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
  * @param[in] removeScalingFromMatrix: if true (default), the scale component is removed from the
  * matrix.

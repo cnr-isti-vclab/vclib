@@ -26,7 +26,7 @@ namespace vcl {
 
 /**
  * @brief Default constructor.
- * Initializes w() black color (with alpha 255).
+ * Initializes a black color (with alpha 255).
  */
 inline Color::Color() : Point4(0, 0, 0, 255)
 {

@@ -39,7 +39,7 @@ namespace vcl {
  * \endcode
  *
  * @param[in] values: the nested initializer lists
- * @return a list of #L numbers, where every number is the maximum size of elements for every
+ * @return a list of L numbers, where every number is the maximum size of elements for every
  * dimension.
  */
 template<typename T, std::size_t L>

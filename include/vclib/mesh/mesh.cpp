@@ -235,7 +235,8 @@ uint Mesh<Args...>::addVertices(uint n)
  *
  * This function will be available only **if the Mesh has the Vertex Container**.
  *
- * @param v: list of vertices
+ * @param p: first vertex coordinate
+ * @param v: list of other vertex coordinates
  * @return the id of the first added vertex.
  */
 template<typename... Args> requires HasVertices<Args...>

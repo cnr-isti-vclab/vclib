@@ -37,7 +37,7 @@ inline Array<T, N>::Array() : v(0)
  * @brief Creates an N-Dimensional Array with the given sizes. All its elements are initialized to
  * 0.
  *
- * @param[in] s: #N sizes, one for every dimension of the array.
+ * @param[in] s: N sizes, one for every dimension of the array.
  */
 template<class T, size_t N>
 template<typename... Sizes>
@@ -95,7 +95,7 @@ constexpr unsigned long int Array<T, N>::dimensions() const
 /**
  * @brief Operator () that allows to access one element of the array. It can be used as left or
  * right value.
- * @param[in] indices: #N indices that allows to access to an element of the array.
+ * @param[in] indices: N indices that allows to access to an element of the array.
  * A number of indices not equal to N will generate a compilation error.
  * @return a reference to the element of the array.
  */
@@ -111,7 +111,7 @@ T& Array<T, N>::operator()(I... indices)
 /**
  * @brief Operator () that allows to access one element of the array. It can be used only as right
  * value.
- * @param[in] indices: #N indices that allows to access to an element of the array.
+ * @param[in] indices: N indices that allows to access to an element of the array.
  * A number of indices not equal to N will generate a compilation error.
  * @return a reference to the element of the array.
  */
@@ -254,7 +254,7 @@ void Array<T, N>::fill(const T& t)
  * of the container will be ignored. If otherwise the size of the container is less, the
  * remaining values in the array will be left as they were.
  *
- * @param[in] c: a container of the same type of the array (begin() and end() members must
+ * @param[in] container: a container of the same type of the array (begin() and end() members must
  * be provided in the container).
  */
 template<class T, size_t N>
@@ -315,7 +315,7 @@ const T& Array<T, N>::max() const
 
 /**
  * @brief Allows to resize the Array, not conserving the values of the previous array.
- * @param[in] s: #N elements representing the new sizes of the Array.
+ * @param[in] s: N elements representing the new sizes of the Array.
  */
 template<class T, size_t N>
 template<typename... Sizes>
@@ -333,7 +333,7 @@ void Array<T, N>::resize(Sizes... s)
 
 /**
  * @brief Allows to resize the Array, conserving the values of the previous array.
- * @param[in] s: #N elements representing the new sizes of the Array.
+ * @param[in] s: N elements representing the new sizes of the Array.
  */
 template<class T, size_t N>
 template<typename... Sizes>

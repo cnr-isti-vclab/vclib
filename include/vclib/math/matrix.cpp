@@ -35,6 +35,7 @@ namespace vcl {
  * The given matrix must be at least a 3x3 matrix. If the matrix is a higher than 3x3 (e.g. 4x4),
  * only the 3x3 submatrix will be set, leaving unchanged the other values.
  *
+ * @param matrix
  * @param axis
  * @param angleRad
  * @return
@@ -67,8 +68,9 @@ void setTransformMatrixRotation(
  * The given matrix must be at least a 3x3 matrix. If the matrix is a higher than 3x3 (e.g. 4x4),
  * only the 3x3 submatrix will be set, leaving unchanged the other values.
  *
+ * @param matrix
  * @param axis
- * @param angleRad
+ * @param angleDeg
  * @return
  */
 template<typename MatrixType, typename PointType, typename ScalarType>
@@ -126,7 +128,7 @@ MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
  * only the 3x3 submatrix will be set, leaving unchanged the other values.
  *
  * @param axis
- * @param angleRad
+ * @param angleDeg
  * @return
  */
 template<typename MatrixType, typename PointType, typename ScalarType>

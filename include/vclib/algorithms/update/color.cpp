@@ -48,7 +48,7 @@ struct ColorAvgInfo
  *   - Vertices:
  *     - Color
  *
- * @param[in/out] m: the mesh on which set the vertex color.
+ * @param[in,out] m: the mesh on which set the vertex color.
  * @param[in] c: the color to set to the vertices of the mesh.
  * @param[in] onlySelected: if `true`, the color will be set just on the selected vertices.
  */
@@ -75,7 +75,7 @@ void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
  *   - Faces:
  *     - Color
  *
- * @param[in/out] m: the mesh on which set the face color.
+ * @param[in,out] m: the mesh on which set the face color.
  * @param[in] c: the color to set to the faces of the mesh.
  * @param[in] onlySelected: if `true`, the color will be set just on the selected faces.
  */
@@ -104,7 +104,7 @@ void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
  *   - Faces:
  *     - Color
  *
- * @param[in/out] m: mesh on which transfer the face color into the vertex color.
+ * @param[in,out] m: mesh on which transfer the face color into the vertex color.
  */
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceColor(MeshType& m)
@@ -140,7 +140,7 @@ void setPerVertexColorFromFaceColor(MeshType& m)
  *   - Faces:
  *     - Color
  *
- * @param[in/out] m: mesh on which transfer the vertex color into the face color.
+ * @param[in,out] m: mesh on which transfer the vertex color into the face color.
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromVertexColor(MeshType& m)
@@ -173,7 +173,7 @@ void setPerFaceColorFromVertexColor(MeshType& m)
  *     - Color
  *     - Scalar
  *
- * @param[in/out] m: mesh on which compute the vertex color.
+ * @param[in,out] m: mesh on which compute the vertex color.
  * @param[in] colorMap: the colormap to use to color the vertices of the mesh (default: RedBlue).
  * @param[in] minScalar: the minimum value of the range to use for coloring (default: 0).
  * @param[in] maxScalar: the maximum value of the range to use for coloring (default: 0).
@@ -214,7 +214,7 @@ void setPerVertexColorFromScalar(
  *     - Color
  *     - Scalar
  *
- * @param[in/out] m: mesh on which compute the face color.
+ * @param[in,out] m: mesh on which compute the face color.
  * @param[in] colorMap: the colormap to use to color the faces of the mesh (default: RedBlue).
  * @param[in] minScalar: the minimum value of the range to use for coloring (default: 0).
  * @param[in] maxScalar: the maximum value of the range to use for coloring (default: 0).
@@ -254,7 +254,7 @@ void setPerFaceColorFromScalar(
  *   - Faces:
  *     - TriangleFlags/PolygonFlags
  *
- * @param[in/out] m: the mesh on which update the vertex color from the border face flags.
+ * @param[in,out] m: the mesh on which update the vertex color from the border face flags.
  * @param[in] borderColor: the color of the vertices that are part of edges that are all marked as
  * on border.
  * @param[in] internalColor: the color of the vertices that are part of edges that are all marked as
@@ -313,7 +313,7 @@ void setPerVertexColorFromFaceBorderFlag(
  *   - Faces:
  *     - Color
  *
- * @param[in/out] m: the mesh on which set the face colors according to its connected components.
+ * @param[in,out] m: the mesh on which set the face colors according to its connected components.
  * @param[in] connectedComponents: a vector of sets, each one of them containing the face ids of a
  * connected component.
  */
@@ -344,7 +344,7 @@ void setPerFaceColorFromConnectedComponents(
  *     - AdjacentFaces
  *     - Color
  *
- * @param[in/out] m: the mesh on which set the face colors according to its connected components.
+ * @param[in,out] m: the mesh on which set the face colors according to its connected components.
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromConnectedComponents(MeshType& m)
@@ -372,7 +372,7 @@ void setPerFaceColorFromConnectedComponents(MeshType& m)
  *   - Faces:
  *     - AdjacentFaces
  *
- * @param[in/out] m: mesh on which set the face colors.
+ * @param[in,out] m: mesh on which set the face colors.
  * @param[in] nColors: number of colors used for the scattering (default 50).
  * @param[in] checkFauxEdges: if true, colors uniformely adjacent faces with faux edges (default
  * `true`).

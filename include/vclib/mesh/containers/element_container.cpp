@@ -137,7 +137,7 @@ inline void ElementContainer<T>::deleteElement(uint i)
  *
  * Deleted elements are automatically jumped by the iterators provided by the Element Container.
  *
- * @param[in] f: the pointer of the element that will be marked as deleted.
+ * @param[in] e: the pointer of the element that will be marked as deleted.
  */
 template<typename T>
 inline void ElementContainer<T>::deleteElement(const T* e)
