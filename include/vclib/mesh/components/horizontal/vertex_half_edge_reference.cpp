@@ -77,8 +77,8 @@ void VertexHalfEdgeReference<HalfEdge>::importFrom(const Element &e)
 template<typename HalfEdge>
 template<typename Vertex, typename VertHEType>
 void VertexHalfEdgeReference<HalfEdge>::importHalfEdgeReferencesFrom(
-	const Vertex&  e,
-	HalfEdge*       base,
+	const Vertex&     e,
+	HalfEdge*         base,
 	const VertHEType* ebase)
 {
 	if constexpr (HasVertexHalfEdgeReference<Vertex>) {
@@ -88,7 +88,6 @@ void VertexHalfEdgeReference<HalfEdge>::importHalfEdgeReferencesFrom(
 			}
 		}
 	}
-
 }
 
 } // namespace vcl::comp

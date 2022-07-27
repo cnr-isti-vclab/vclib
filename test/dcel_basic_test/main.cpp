@@ -29,24 +29,39 @@
 
 int main()
 {
-	vcl::DcelMesh m;
+	vcl::DcelMesh m1;
+	{
+		vcl::DcelMesh m;
 
-	m.addVertices(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3d(2,2,2));
-	m.addFace(0, 1, 2);
+		m.addVertices(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3d(2,2,2));
+		m.addFace(0, 1, 2);
 
-	for (const vcl::DcelMesh::Vertex* v : m.face(0).vertices()) {
-		std::cerr << v->coord() << "\n";
+		for (const vcl::DcelMesh::Vertex* v : m.face(0).vertices()) {
+			std::cerr << v->coord() << "\n";
+		}
+
+		vcl::DcelMesh t = vcl::createTetrahedron<vcl::DcelMesh>();
+		vcl::io::save(t, VCL_TEST_RESULTS_PATH "/tet_dcel.ply");
+
+		vcl::DcelMesh l = vcl::io::loadPly<vcl::DcelMesh>(VCL_TEST_DATA_PATH "/models/cube_tri.ply");
+
+		for (const vcl::DcelMesh::Face& f : l.faces()) {
+			std::cerr << "Face " << l.index(f) << ":\n\t";
+			for (const vcl::DcelMesh::Vertex* v : f.vertices()) {
+				std::cerr << l.index(v) << "; ";
+			}
+			std::cerr << "\n";
+		}
+
+
+		m1.importFrom(l);
 	}
 
-	vcl::DcelMesh t = vcl::createTetrahedron<vcl::DcelMesh>();
-	vcl::io::save(t, VCL_TEST_RESULTS_PATH "/tet_dcel.ply");
-
-	vcl::DcelMesh l = vcl::io::loadPly<vcl::DcelMesh>(VCL_TEST_DATA_PATH "/models/cube_tri.ply");
-
-	for (const vcl::DcelMesh::Face& f : l.faces()) {
-		std::cerr << "Face " << l.index(f) << ":\n\t";
+	std::cerr << "----- Imported dcel -----\n";
+	for (const vcl::DcelMesh::Face& f : m1.faces()) {
+		std::cerr << "Face " << m1.index(f) << ":\n\t";
 		for (const vcl::DcelMesh::Vertex* v : f.vertices()) {
-			std::cerr << l.index(v) << "; ";
+			std::cerr << m1.index(v) << "; ";
 		}
 		std::cerr << "\n";
 	}

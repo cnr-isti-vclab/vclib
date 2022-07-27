@@ -828,6 +828,14 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 	(Args::importFrom(m), ...);
 
 	// after importing ordinary components, I need to convert the references between containers
+	// each container can import more than one reference type, e.g.:
+	// - VertexContainer could import vertex references (adjacent vertices), face references
+	//   (adjacent faces), and so on;
+	// - FaceContainer will always import vertex references, but could also import face references
+	//   (adjacent faces), edge references (adjacent edges)...
+	// for each container of this Mesh, I'll call the importReferences passing the container (Args)
+	// as template parameter. This parameter will be used to call all the possible import functions
+	// available (vertices, faces, edges, half edges)
 
 	(importReferences<Args>(m), ...);
 
@@ -1101,6 +1109,15 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 			EdgeContainer::setContainerPointer(e);
 		}
 	}
+
+	// if there is the optional edge container, I need to update, for each edge of the
+	// new mesh, the containerPointer
+	if constexpr (mesh::HasHalfEdgeOptionalContainer<Mesh<Args...>>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		for (auto& e : HalfEdgeContainer::halfEdges(true)) {
+			HalfEdgeContainer::setContainerPointer(e);
+		}
+	}
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -1139,24 +1156,30 @@ void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid,
 	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
+/**
+ * This function will call, for a given container of this mesh that is passed as a template
+ * parameter Cont, all the references of all the elements from the other mesh m.
+ */
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importReferences(const OthMesh &m)
 {
 	using ThisMesh = Mesh<Args...>;
 
-	// if Args is a container
+	// if Cont is a container (could be a mesh component)
 	if constexpr(mesh::IsElementContainer<Cont>) {
-		if constexpr (mesh::HasVertexContainer<ThisMesh>) {
-			Cont::importVertexReferencesFrom(m, &this->vertex(0));
-		}
+		// will call the specific importVertexReferences of the Cont container.
+		// it will take care to import the reference from tha same container type of m.
+		Cont::importVertexReferencesFrom(m, &this->vertex(0));
 		if constexpr (mesh::HasFaceContainer<ThisMesh>) {
 			Cont::importFaceReferencesFrom(m, &this->face(0));
 		}
 		if constexpr (mesh::HasEdgeContainer<ThisMesh>) {
 			Cont::importEdgeReferencesFrom(m, &this->edge(0));
 		}
-		// todo half edges
+		if constexpr (mesh::HasHalfEdgeContainer<ThisMesh>) {
+			Cont::importHalfEdgeReferencesFrom(m, &this->halfEdge(0));
+		}
 	}
 }
 
@@ -1169,58 +1192,57 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename OthMesh>
 void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 {
-	if constexpr(mesh::HasVertexContainer<Mesh<Args...>> && mesh::HasVertexContainer<OthMesh>) {
-		if constexpr(mesh::HasFaceContainer<Mesh<Args...>> && mesh::HasFaceContainer<OthMesh>) {
-			using VertexType = typename Mesh<Args...>::VertexType;
-			using MVertexType = typename OthMesh::VertexType;
-			using FaceType = typename Mesh<Args...>::FaceType;
-			using MFaceType = typename OthMesh::FaceType;
+	if constexpr(mesh::HasFaceContainer<Mesh<Args...>> && mesh::HasFaceContainer<OthMesh>) {
+		using VertexType = typename Mesh<Args...>::VertexType;
+		using MVertexType = typename OthMesh::VertexType;
+		using FaceType = typename Mesh<Args...>::FaceType;
+		using MFaceType = typename OthMesh::FaceType;
 
-			using VertexContainer = typename Mesh<Args...>::VertexContainer;
-			using MVertexContainer = typename OthMesh::VertexContainer;
-			using FaceContainer   = typename Mesh<Args...>::FaceContainer;
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		using MVertexContainer = typename OthMesh::VertexContainer;
+		using FaceContainer   = typename Mesh<Args...>::FaceContainer;
 
-			// if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
-			// number of vertex references in this mesh), and this mesh does not have the same
-			// number of vertex references of the other, it means that we don't know how to convert
-			// these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
-			// mesh, or convert a quad mesh into a pentagonal mesh...)
-			static_assert(
-				!(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
-				  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
-				"Cannot import from that type of Mesh. Don't know how to convert faces.");
+		// if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
+		// number of vertex references in this mesh), and this mesh does not have the same
+		// number of vertex references of the other, it means that we don't know how to convert
+		// these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
+		// mesh, or convert a quad mesh into a pentagonal mesh...)
+		static_assert(
+			!(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
+			  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
+			"Cannot import from that type of Mesh. Don't know how to convert faces.");
 
-			// we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
-			// triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
-			if constexpr (
-				FaceType::VERTEX_NUMBER == 3 &&
-				(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
+		// we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
+		// triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
+		if constexpr (
+			FaceType::VERTEX_NUMBER == 3 &&
+			(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
 
-				VertexType* base = VertexContainer::vec.data();
-				const MVertexType* mvbase = &m.vertex(0);
+			VertexType* base = VertexContainer::vec.data();
+			const MVertexType* mvbase = &m.vertex(0);
 
-				for (const MFaceType& mf : m.faces()) {
-					// if the current face has the same number of vertices of this faces (3), then
-					// the vertex references have been correctly imported from the import references
-					// function
-					if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
-						// triangulate mf; the first triangle of the triangulation will be
-						// this->face(m.index(mf));
-						// the other triangles will be added at the end of the container
-						std::vector<uint> tris = vcl::mesh::earCut(mf);
-						FaceType& f = FaceContainer::face(m.index(mf));
-						importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
+			for (const MFaceType& mf : m.faces()) {
+				// if the current face has the same number of vertices of this faces (3), then
+				// the vertex references have been correctly imported from the import references
+				// function. The import references function does nothing when importing from a face
+				// with at least 4 vertices
+				if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
+					// triangulate mf; the first triangle of the triangulation will be
+					// this->face(m.index(mf));
+					// the other triangles will be added at the end of the container
+					std::vector<uint> tris = vcl::mesh::earCut(mf);
+					FaceType& f = FaceContainer::face(m.index(mf));
+					importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
 
-						// number of other faces to add
-						uint nf = tris.size() / 3 - 1;
-						uint fid = FaceContainer::addFaces(nf);
+					// number of other faces to add
+					uint nf = tris.size() / 3 - 1;
+					uint fid = FaceContainer::addFaces(nf);
 
-						uint i = 3; // index that cycles into tris
-						for (; fid < FaceContainer::faceContainerSize(); ++fid) {
-							FaceType& f = FaceContainer::face(fid);
-							importTriReferencesHelper(f, mf, base, mvbase, tris, i);
-							i+=3;
-						}
+					uint i = 3; // index that cycles into tris
+					for (; fid < FaceContainer::faceContainerSize(); ++fid) {
+						FaceType& f = FaceContainer::face(fid);
+						importTriReferencesHelper(f, mf, base, mvbase, tris, i);
+						i+=3;
 					}
 				}
 			}

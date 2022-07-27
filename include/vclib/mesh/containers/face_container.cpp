@@ -990,4 +990,15 @@ void FaceContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 	}
 }
 
+template<FaceConcept T>
+template<typename Mesh, typename HalfEdge>
+void FaceContainer<T>::importHalfEdgeReferencesFrom(const Mesh &m, HalfEdge *base)
+{
+	if constexpr (HasHalfEdgeContainer<Mesh> && HasFaceContainer<Mesh>) {
+		using MFaceContainer = typename Mesh::FaceContainer::Base;
+
+		Base::importHalfEdgeReferencesFrom((const MFaceContainer&)m, base, &m.halfEdge(0));
+	}
+}
+
 } // namespace vcl::mesh

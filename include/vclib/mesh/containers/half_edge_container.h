@@ -135,6 +135,15 @@ protected:
 
 	template<typename Mesh>
 	void importFrom(const Mesh& m);
+
+	template<typename Mesh, typename Vertex>
+	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
+
+	template<typename Mesh, typename Face>
+	void importFaceReferencesFrom(const Mesh& m, Face* base);
+
+	template<typename Mesh>
+	void importHalfEdgeReferencesFrom(const Mesh& m, T* base);
 };
 
 } // namespace vcl::mesh

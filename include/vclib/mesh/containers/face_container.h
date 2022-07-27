@@ -187,6 +187,9 @@ protected:
 
 	template<typename Mesh, typename Edge>
 	void importEdgeReferencesFrom(const Mesh& m, Edge* base);
+
+	template<typename Mesh, typename HalfEdge>
+	void importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* base);
 };
 
 } // namespace vcl::mesh

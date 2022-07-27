@@ -663,4 +663,37 @@ void HalfEdgeContainer<T>::importFrom(const Mesh &m)
 	}
 }
 
+template<HalfEdgeConcept T>
+template<typename Mesh, typename Vertex>
+void HalfEdgeContainer<T>::importVertexReferencesFrom(const Mesh &m, Vertex *base)
+{
+	if constexpr (HasVertexContainer<Mesh> && HasHalfEdgeContainer<Mesh>) {
+		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
+
+		Base::importVertexReferencesFrom((const MHalfEdgeContainer&)m, base, &m.vertex(0));
+	}
+}
+
+template<HalfEdgeConcept T>
+template<typename Mesh, typename Face>
+void HalfEdgeContainer<T>::importFaceReferencesFrom(const Mesh &m, Face *base)
+{
+	if constexpr (HasFaceContainer<Mesh> && HasHalfEdgeContainer<Mesh>) {
+		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
+
+		Base::importFaceReferencesFrom((const MHalfEdgeContainer&)m, base, &m.face(0));
+	}
+}
+
+template<HalfEdgeConcept T>
+template<typename Mesh>
+void HalfEdgeContainer<T>::importHalfEdgeReferencesFrom(const Mesh &m, T *base)
+{
+	if constexpr (HasHalfEdgeContainer<Mesh>) {
+		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
+
+		Base::importHalfEdgeReferencesFrom((const MHalfEdgeContainer&) m, base, &m.halfEdge(0));
+	}
+}
+
 } // namespace vcl::mesh
