@@ -17,6 +17,7 @@ To build the documentation, the following dependencies must be installed and ava
 - doxygen (https://www.doxygen.nl/download.html#srcbin)
 - sphinx (`pip3 install sphinx`)
 - breathe (`pip3 install breathe`)
+- readthedocs (`pip3 install sphinx_rtd_theme` and `pip3 install readthedocs-sphinx-ext`)
 - furo theme (`pip3 install furo`)
 
 Once all the dependencies are satisfied and the `VCLIB_BUILD_DOCS` is enabled, you just need to build the
