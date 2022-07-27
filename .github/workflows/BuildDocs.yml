@@ -1,0 +1,29 @@
+name: BuildDocs
+
+on:
+  workflow_dispatch
+
+jobs:
+  build_docs:
+    name: Build Docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          sudo apt-get install cmake
+          pip3 install sphinx breathe sphinx_rtd_theme readthedocs-sphinx-ext
+      - name: Build Docs
+        run: |
+          cmake -DVCLIB_BUILD_DOCS=ON ..
+          make
+      - name: Upload Docs
+        uses: actions/upload-artifact@v2
+        with:
+          name: vclib_docs
+          path: docs/_build/html
