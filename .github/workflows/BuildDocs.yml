@@ -20,6 +20,8 @@ jobs:
           pip3 install sphinx breathe sphinx_rtd_theme readthedocs-sphinx-ext
       - name: Build Docs
         run: |
+          mkdir build
+          cd build
           cmake -DVCLIB_BUILD_DOCS=ON ..
           make
       - name: Upload Docs
