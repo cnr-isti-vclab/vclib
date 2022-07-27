@@ -825,15 +825,21 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename OtherMeshType>
 void Mesh<Args...>::importFrom(const OtherMeshType& m)
 {
+	// This function will first:
+	// Call, for each Container and Component of the mesh, its importFrom function.
+	// In case of containers, it first creates the same number of elements in the container,
+	// and then calls the importFrom function for each new element.
+	// References are not managed here, since they need additional parameters to be imported
+
 	(Args::importFrom(m), ...);
 
-	// after importing ordinary components, I need to convert the references between containers
+	// after importing ordinary components, we need to convert the references between containers.
 	// each container can import more than one reference type, e.g.:
 	// - VertexContainer could import vertex references (adjacent vertices), face references
 	//   (adjacent faces), and so on;
 	// - FaceContainer will always import vertex references, but could also import face references
 	//   (adjacent faces), edge references (adjacent edges)...
-	// for each container of this Mesh, I'll call the importReferences passing the container (Args)
+	// for each container of this Mesh, we'll call the importReferences passing the container (Args)
 	// as template parameter. This parameter will be used to call all the possible import functions
 	// available (vertices, faces, edges, half edges)
 
