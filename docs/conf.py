@@ -33,6 +33,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
     'readthedocs_ext.readthedocs',
+    'sphinx_rtd_theme',
     "breathe"
 ]
 
@@ -53,7 +54,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'furo'
+html_theme = 'sphinx_rtd_theme'
 
 # Material theme options (see theme.conf for more information)
 html_theme_options = {

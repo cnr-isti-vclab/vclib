@@ -11,6 +11,8 @@ in your `cmake` project. CMake will create a target called `vclib`, that you can
 
 ## Documentation
 
+You can find the documentation of the library [here](https://alemuntoni.github.io/vclib/).
+
 You can build the documentation trough CMake, by enabling the option `VCLIB_BUILD_DOCS`.
 To build the documentation, the following dependencies must be installed and available in your system:
 
@@ -18,7 +20,6 @@ To build the documentation, the following dependencies must be installed and ava
 - sphinx (`pip3 install sphinx`)
 - breathe (`pip3 install breathe`)
 - readthedocs (`pip3 install sphinx_rtd_theme` and `pip3 install readthedocs-sphinx-ext`)
-- furo theme (`pip3 install furo`)
 
 Once all the dependencies are satisfied and the `VCLIB_BUILD_DOCS` is enabled, you just need to build the
 project, and the directory `docs/_build/html` will contain the html documentation.
