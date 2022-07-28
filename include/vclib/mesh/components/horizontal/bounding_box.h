@@ -60,6 +60,8 @@ private:
 	Box<PointType> box;
 };
 
+template <typename S>
+using BoundingBox3  = BoundingBox<Point3<S>>;
 using BoundingBox3f = BoundingBox<Point3f>;
 using BoundingBox3d = BoundingBox<Point3d>;
 

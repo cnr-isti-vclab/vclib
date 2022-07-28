@@ -1281,7 +1281,9 @@ void Mesh<Args...>::importTriReferencesHelper(
 		// wedge texcoords
 		if constexpr(face::HasWedgeTexCoords<FaceType> && face::HasWedgeTexCoords<MFaceType>) {
 			if (comp::isWedgeTexCoordsEnabledOn(f) && comp::isWedgeTexCoordsEnabledOn(mf)) {
-				f.wedgeTexCoord(j) = mf.wedgeTexCoord(tris[i]);
+				f.wedgeTexCoord(j) =
+					mf.wedgeTexCoord(tris[i])
+						.template cast<typename FaceType::WedgeTexCoordType::ScalarType>();
 			}
 		}
 	}

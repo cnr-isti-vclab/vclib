@@ -34,6 +34,9 @@ namespace vcl::mesh {
 template<typename P>
 using BoundingBox = comp::BoundingBox<P>;
 
+template <typename S>
+using BoundingBox3 = comp::BoundingBox3<S>;
+
 using BoundingBox3f = comp::BoundingBox3f;
 using BoundingBox3d = comp::BoundingBox3d;
 
