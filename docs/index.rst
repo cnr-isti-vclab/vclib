@@ -8,15 +8,13 @@ This is a C++20 modern and header only Mesh and Geometry Processing templated li
 
 The goal of this library is to provide a set of tools and algorithms in a well-structured Object Oriented paradigm exploiting the powerfullness of C++20.
 
-To get started, you can either add the ``vclib/include`` directory into your ``INCLUDE_PATH`` (depending on your operative system), or
-you can add the libary path as subdirectory in your ``cmake`` project, and link the ``vclib`` target.
-
 Index
 -----
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
+   get_started
    basic_concepts
    space
    mesh_documentation
