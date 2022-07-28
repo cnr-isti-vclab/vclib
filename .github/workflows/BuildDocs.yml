@@ -16,16 +16,41 @@ jobs:
           python-version: '3.10'
       - name: Install dependencies
         run: |
-          sudo apt-get install cmake libtbb-dev doxygen
+          sudo apt-get install cmake libtbb-dev doxygen graphviz
           pip3 install sphinx breathe sphinx_rtd_theme readthedocs-sphinx-ext
       - name: Build Docs
         run: |
           mkdir build
           cd build
-          cmake -DVCLIB_BUILD_DOCS=ON ..
+          cmake -DVCLIB_BUILD_DOCS=ON -DVCLIB_BUILD_TESTS=OFF ..
           make
       - name: Upload Docs
         uses: actions/upload-artifact@v2
         with:
           name: vclib_docs
           path: docs/_build/html
+
+  upload_docs:
+    name: Upload Docs
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          name: alemuntoni/alemuntoni.github.io
+          token: ${{ secrets.PAT }}
+      - name: Delete old docs
+        run: |
+          cd static/vclib
+          rm -R *
+      - name: Download new docs
+        uses: actions/download-artifact@v2
+        with:
+          name: vclib_docs
+          path: static/vclib/
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Automatic Update VCLib docs
+          commit_user_name: alemuntoni
+          commit_user_email: ${{ secrets.EMAIL }}
+          commit_author: alemuntoni <${{ secrets.EMAIL }}>
