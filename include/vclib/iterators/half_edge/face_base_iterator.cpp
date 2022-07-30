@@ -104,12 +104,6 @@ ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const HalfEdge* start, co
 }
 
 template<typename HalfEdge>
-ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const FaceBaseIterator<HalfEdge> &it) :
-		current(it.current), end(it.end)
-{
-}
-
-template<typename HalfEdge>
 bool ConstFaceBaseIterator<HalfEdge>::operator==(const ConstFaceBaseIterator &oi) const
 {
 	return current == oi.current;

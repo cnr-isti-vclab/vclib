@@ -23,7 +23,8 @@
 #ifndef VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H
 #define VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H
 
-#include "element_concepts.h"
+#include "vertex_concepts.h"
+#include "face_concepts.h"
 
 #include "../components/concepts/bounding_box.h"
 #include "../components/concepts/mark.h"
@@ -116,6 +117,11 @@ concept PolygonMeshConcept =
 template<typename T>
 concept EdgeMeshConcept =
 	MeshConcept<T> && mesh::HasEdgeContainer<T>;
+
+template<typename T>
+concept DcelMeshConcept =
+	FaceMeshConcept<T> && HasHalfEdges<T> &&
+	HasPerVertexHalfEdgeReference<T> && HasPerFaceHalfEdgeReference<T>;
 
 } // namespace vcl
 

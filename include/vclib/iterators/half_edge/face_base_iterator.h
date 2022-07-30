@@ -61,7 +61,6 @@ public:
 	ConstFaceBaseIterator();
 	ConstFaceBaseIterator(const HalfEdge* start);
 	ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end);
-	ConstFaceBaseIterator(const FaceBaseIterator<HalfEdge>& it);
 
 	bool operator==(const ConstFaceBaseIterator& oi) const;
 	bool operator!=(const ConstFaceBaseIterator& oi) const;

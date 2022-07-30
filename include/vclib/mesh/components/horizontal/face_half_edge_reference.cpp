@@ -357,7 +357,7 @@ template<typename HalfEdge>
 typename FaceHalfEdgeReference<HalfEdge>::ConstAdjacentFaceIterator
 FaceHalfEdgeReference<HalfEdge>::adjFaceBegin() const
 {
-	return AdjacentFaceIterator(ohe);
+	return ConstAdjacentFaceIterator(ohe);
 }
 
 template<typename HalfEdge>
@@ -365,14 +365,14 @@ typename FaceHalfEdgeReference<HalfEdge>::ConstAdjacentFaceIterator
 FaceHalfEdgeReference<HalfEdge>::adjFaceBegin(const HalfEdge* he) const
 {
 	assert(he->face() == this);
-	return AdjacentFaceIterator(he);
+	return ConstAdjacentFaceIterator(he);
 }
 
 template<typename HalfEdge>
 typename FaceHalfEdgeReference<HalfEdge>::ConstAdjacentFaceIterator
 FaceHalfEdgeReference<HalfEdge>::adjFaceEnd() const
 {
-	return AdjacentFaceIterator(nullptr);
+	return ConstAdjacentFaceIterator(nullptr);
 }
 
 template<typename HalfEdge>

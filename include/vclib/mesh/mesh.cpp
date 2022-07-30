@@ -846,10 +846,38 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 
 	(importReferences<Args>(m), ...);
 
-	// in case of import from poly to triangle mesh, I need to manage triangulation of polygons and
-	// create additional triangle faces for each of the imported polygons
+	// Now I need to manage imports between different types of meshes (same type of meshes are
+	// already managed from importFrom and importReferencesFrom member functions).
+	//
+	// Generally speaking, Polygon or Dcel meshes can import from any other type of mesh.
+	// We need to take care when this mesh has static vertex references number in the face container
+	// (VERTEX_NUMBER >= 3).
+	//
+	// The follwing case don't need to be managed:
+	// - import polygon non-dcel mesh from triangle mesh
+	//
+	// I can manage the following cases:
+	// - import triangle mesh from polygon mesh (also dcel): need triangulation
+	// - import dcel from non-dcel mesh (need to add half edges into the dcel)
+	//
+	// I cannot manage the follwing cases:
+	// - import static non-triangle mesh from polygon mesh or from a mesh with different
+	//   VERTEX_NUMBER
 
-	manageImportTriFromPoly(m);
+	// if this is not a Dcel Mesh
+	if constexpr (!DcelMeshConcept<Mesh<Args...>>) {
+		// in case of import from poly (could be also dcel) to triangle mesh, I need to manage
+		// triangulation of polygons and create additional triangle faces for each of the imported
+		// polygons
+		// this function statically asserts that the import can be done.
+		manageImportTriFromPoly(m);
+	}
+	else { // if this is a dcel mesh
+		// manage import from another non-dcel mesh (no need to manage the import from another dcel)
+		if constexpr(!!DcelMeshConcept<OtherMeshType>) {
+			// todo
+		}
+	}
 }
 
 /**

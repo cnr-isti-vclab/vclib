@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include <vclib/dcel_mesh.h>
+#include <vclib/tri_mesh.h>
 #include <vclib/algorithms/create/tetrahedron.h>
 #include <vclib/io/save.h>
 #include "vclib/io/load.h"
@@ -62,6 +63,18 @@ int main()
 		std::cerr << "Face " << m1.index(f) << ":\n\t";
 		for (const vcl::DcelMesh::Vertex* v : f.vertices()) {
 			std::cerr << m1.index(v) << "; ";
+		}
+		std::cerr << "\n";
+	}
+
+	vcl::TriMesh t;
+	t.importFrom(m1);
+
+	std::cerr << "----- Imported trimesh -----\n";
+	for (const vcl::TriMesh::Face& f : t.faces()) {
+		std::cerr << "Face " << t.index(f) << ":\n\t";
+		for (const vcl::TriMesh::Vertex* v : f.vertices()) {
+			std::cerr << t.index(v) << "; ";
 		}
 		std::cerr << "\n";
 	}
