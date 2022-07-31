@@ -57,10 +57,10 @@ public:
 
 	Face();
 
-	Face(const std::vector<VertexType*>& list);
+	Face(const std::vector<VertexType*>& list); // todo add requires
 
 	template<typename... V>
-	Face(V... args);
+	Face(V... args); // todo add requires
 
 	void setVertices(const std::vector<VertexType*>& list);
 
@@ -72,7 +72,7 @@ public:
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
-	void resizeVertices(uint n) requires PolygonFaceConcept<Face>
+	void resizeVertices(uint n) requires NonDcelPolygonFaceConcept<Face>
 	{
 		using F = Face<Args...>;
 
@@ -109,7 +109,7 @@ public:
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
-	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
+	void pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
 		using F = Face<Args...>;
 
@@ -147,7 +147,7 @@ public:
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
-	void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
+	void insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
 		using F = Face<Args...>;
 
@@ -185,7 +185,7 @@ public:
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
-	void eraseVertex(uint i) requires PolygonFaceConcept<Face>
+	void eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face>
 	{
 		using F = Face<Args...>;
 
@@ -222,7 +222,7 @@ public:
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
-	void clearVertices() requires PolygonFaceConcept<Face>
+	void clearVertices() requires NonDcelPolygonFaceConcept<Face>
 	{
 		using F = Face<Args...>;
 

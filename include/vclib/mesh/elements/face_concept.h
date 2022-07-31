@@ -154,6 +154,10 @@ template<typename T>
 concept PolygonFaceConcept =
 	T::VERTEX_NUMBER < 0 && FaceConcept<T>;
 
+template<typename T>
+concept NonDcelPolygonFaceConcept =
+	T::VERTEX_NUMBER < 0 && FaceConcept<T> && !face::HasHalfEdgeReference<T>;
+
 } // namespace vcl
 
 #endif // VCL_MESH_ELEMENTS_FACE_CONCEPT_H

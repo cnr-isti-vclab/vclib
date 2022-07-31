@@ -29,26 +29,54 @@ Face<Args...>::Face()
 {
 }
 
+/**
+ * @brief Constructs a Face with the given set of vertices.
+ *
+ * Sets a list of Vertex references to the face. If the Face size is non-dcel dynamic, will
+ * take care to update the also the number of adjacent faces and the number of wedge components, if
+ * these components are part of the Face and if the size of the Face is changed. On the contrary, if
+ * the Face size is static or it belongs to a Dcel mesh, the number of vertices of the list must be
+ * equal to the size of the Face (the value returned by vertexNumber()).
+ *
+ * @note This constructor cannot be called if the Face type belongs to a Dcel mesh.
+ *
+ * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
+ *                  vertices of the face.
+ */
 template<typename... Args>
-Face<Args...>::Face(const std::vector<VertexType*>& list)
+Face<Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
 {
 	setVertices(list);
 }
 
+/**
+ * @brief Sets a list of Vertex references to the face. If the Face size is non-dcel dynamic, will
+ * take care to update the also the number of adjacent faces and the number of wedge components, if
+ * these components are part of the Face and if the size of the Face is changed. On the contrary, if
+ * the Face size is static or it belongs to a Dcel mesh, the number of arguments of this function
+ * must be equal to the size of the Face (the value returned by vertexNumber()).
+ *
+ * @note This constructor cannot be called if the Face type belongs to a Dcel mesh.
+ *
+ * @param[in] args: a variable number of vertex pointers in counterclockwise order that will be set
+ *                  as vertices of the face.
+ */
 template<typename... Args>
 template<typename... V>
-Face<Args...>::Face(V... args)
+Face<Args...>::Face(V... args) // todo add requires
 {
 	setVertices({args...});
 }
 
 /**
- * @brief Sets a list of Vertex references to the face. If the Face size is dynamic, will take care
- * to update the also the number of adjacent faces and the number of wedge components, if these
- * components are part of the Face and if the size of the Face is changed. On the contrary, if the
- * Face size is static, the number of vertices of the list must be equal to the size of the Face.
+ * @brief Sets a list of Vertex references to the face. If the Face size is non-dcel dynamic, will
+ * take care to update the also the number of adjacent faces and the number of wedge components, if
+ * these components are part of the Face and if the size of the Face is changed. On the contrary, if
+ * the Face size is static or it belongs to a Dcel mesh, the number of vertices of the list must be
+ * equal to the size of the Face (the value returned by vertexNumber()).
  *
- * @param list
+ * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
+ *                  vertices of the face.
  */
 template<typename... Args>
 void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
@@ -57,35 +85,32 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 
 	VRefs::setVertices(list);
 
-	static const int VN = F::VERTEX_NUMBER;
-	if constexpr (VN < 0) {
-		if constexpr (comp::HasAdjacentEdges<F>) {
-			using T = typename F::AdjacentEdges;
+	if constexpr (comp::HasAdjacentEdges<F> && NonDcelPolygonFaceConcept<F>) {
+		using T = typename F::AdjacentEdges;
 
-			if (T::isAdjEdgesEnabled())
-				T::resizeAdjEdges(list.size());
-		}
+		if (T::isAdjEdgesEnabled())
+			T::resizeAdjEdges(list.size());
+	}
 
-		if constexpr (face::HasAdjacentFaces<F>) {
-			using T = typename F::AdjacentFaces;
+	if constexpr (face::HasAdjacentFaces<F> && NonDcelPolygonFaceConcept<F>) {
+		using T = typename F::AdjacentFaces;
 
-			if (T::isAdjFacesEnabled())
-				T::resizeAdjFaces(list.size());
-		}
+		if (T::isAdjFacesEnabled())
+			T::resizeAdjFaces(list.size());
+	}
 
-		if constexpr (face::HasWedgeColors<F>) {
-			using T = typename F::WedgeColors;
+	if constexpr (face::HasWedgeColors<F> && NonDcelPolygonFaceConcept<F>) {
+		using T = typename F::WedgeColors;
 
-			if (T::isWedgeColorsEnabled())
-				T::resizeWedgeColors(list.size());
-		}
+		if (T::isWedgeColorsEnabled())
+			T::resizeWedgeColors(list.size());
+	}
 
-		if constexpr (face::HasWedgeTexCoords<F>) {
-			using T = typename F::WedgeTexCoords;
+	if constexpr (face::HasWedgeTexCoords<F> && NonDcelPolygonFaceConcept<F>) {
+		using T = typename F::WedgeTexCoords;
 
-			if (T::isWedgeTexCoordsEnabled())
-				T::resizeWedgeTexCoords(list.size());
-		}
+		if (T::isWedgeTexCoordsEnabled())
+			T::resizeWedgeTexCoords(list.size());
 	}
 }
 
