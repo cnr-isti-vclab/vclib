@@ -846,37 +846,40 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 
 	(importReferences<Args>(m), ...);
 
-	// Now I need to manage imports between different types of meshes (same type of meshes are
-	// already managed from importFrom and importReferencesFrom member functions).
-	//
-	// Generally speaking, Polygon or Dcel meshes can import from any other type of mesh.
-	// We need to take care when this mesh has static vertex references number in the face container
-	// (VERTEX_NUMBER >= 3).
-	//
-	// The follwing case don't need to be managed:
-	// - import polygon non-dcel mesh from triangle mesh
-	//
-	// I can manage the following cases:
-	// - import triangle mesh from polygon mesh (also dcel): need triangulation
-	// - import dcel from non-dcel mesh (need to add half edges into the dcel)
-	//
-	// I cannot manage the follwing cases:
-	// - import static non-triangle mesh from polygon mesh or from a mesh with different
-	//   VERTEX_NUMBER
+	if constexpr(mesh::HasFaceContainer<Mesh<Args...>> && mesh::HasFaceContainer<OtherMeshType>) {
+		// Now I need to manage imports between different types of meshes (same type of meshes are
+		// already managed from importFrom and importReferencesFrom member functions).
+		//
+		// Generally speaking, Polygon or Dcel meshes can import from any other type of mesh.
+		// We need to take care when this mesh has static vertex references number in the face
+		// container (VERTEX_NUMBER >= 3).
+		//
+		// The follwing case don't need to be managed:
+		// - import polygon non-dcel mesh from triangle mesh
+		//
+		// I can manage the following cases:
+		// - import triangle mesh from polygon mesh (also dcel): need triangulation
+		// - import dcel from non-dcel mesh (need to add half edges into the dcel)
+		//
+		// I cannot manage the follwing cases:
+		// - import static non-triangle mesh from polygon mesh or from a mesh with different
+		//   VERTEX_NUMBER
 
-	// if this is not a Dcel Mesh
-	if constexpr (!DcelMeshConcept<Mesh<Args...>>) {
-		// in case of import from poly (could be also dcel) to triangle mesh, I need to manage
-		// triangulation of polygons and create additional triangle faces for each of the imported
-		// polygons
-		// this function statically asserts that the import can be done.
-		manageImportTriFromPoly(m);
-	}
-	else { // if this is a dcel mesh
-		// manage import from another non-dcel mesh (no need to manage the import from another dcel)
-		if constexpr(!!DcelMeshConcept<OtherMeshType>) {
-			// todo
+		// if this is not a Dcel Mesh
+		if constexpr (!DcelMeshConcept<Mesh<Args...>>) {
+			// in case of import from poly (could be also dcel) to triangle mesh, I need to manage
+			// triangulation of polygons and create additional triangle faces for each of the imported
+			// polygons
+			// this function statically asserts that the import can be done.
+			manageImportTriFromPoly(m);
 		}
+		else { // if this is a dcel mesh
+			// manage import from another non-dcel mesh (no need to manage the import from another dcel)
+			if constexpr(!DcelMeshConcept<OtherMeshType>) {
+				manageImportDcelFromMesh(m);
+			}
+		}
+
 	}
 }
 
@@ -1227,61 +1230,98 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename OthMesh>
 void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 {
-	if constexpr(mesh::HasFaceContainer<Mesh<Args...>> && mesh::HasFaceContainer<OthMesh>) {
-		using VertexType = typename Mesh<Args...>::VertexType;
-		using MVertexType = typename OthMesh::VertexType;
-		using FaceType = typename Mesh<Args...>::FaceType;
-		using MFaceType = typename OthMesh::FaceType;
+	using VertexType = typename Mesh<Args...>::VertexType;
+	using MVertexType = typename OthMesh::VertexType;
+	using FaceType = typename Mesh<Args...>::FaceType;
+	using MFaceType = typename OthMesh::FaceType;
 
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		using MVertexContainer = typename OthMesh::VertexContainer;
-		using FaceContainer   = typename Mesh<Args...>::FaceContainer;
+	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
 
-		// if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
-		// number of vertex references in this mesh), and this mesh does not have the same
-		// number of vertex references of the other, it means that we don't know how to convert
-		// these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
-		// mesh, or convert a quad mesh into a pentagonal mesh...)
-		static_assert(
-			!(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
-			  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
-			"Cannot import from that type of Mesh. Don't know how to convert faces.");
+	// if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
+	// number of vertex references in this mesh), and this mesh does not have the same
+	// number of vertex references of the other, it means that we don't know how to convert
+	// these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
+	// mesh, or convert a quad mesh into a pentagonal mesh...)
+	static_assert(
+		!(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
+		  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
+		"Cannot import from that type of Mesh. Don't know how to convert faces.");
 
-		// we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
-		// triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
-		if constexpr (
-			FaceType::VERTEX_NUMBER == 3 &&
-			(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
+	// we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
+	// triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
+	if constexpr (
+		FaceType::VERTEX_NUMBER == 3 &&
+		(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
 
-			VertexType* base = VertexContainer::vec.data();
-			const MVertexType* mvbase = &m.vertex(0);
+		VertexType* base = VertexContainer::vec.data();
+		const MVertexType* mvbase = &m.vertex(0);
 
-			for (const MFaceType& mf : m.faces()) {
-				// if the current face has the same number of vertices of this faces (3), then
-				// the vertex references have been correctly imported from the import references
-				// function. The import references function does nothing when importing from a face
-				// with at least 4 vertices
-				if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
-					// triangulate mf; the first triangle of the triangulation will be
-					// this->face(m.index(mf));
-					// the other triangles will be added at the end of the container
-					std::vector<uint> tris = vcl::mesh::earCut(mf);
-					FaceType& f = FaceContainer::face(m.index(mf));
-					importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
+		for (const MFaceType& mf : m.faces()) {
+			// if the current face has the same number of vertices of this faces (3), then
+			// the vertex references have been correctly imported from the import references
+			// function. The import references function does nothing when importing from a face
+			// with at least 4 vertices
+			if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
+				// triangulate mf; the first triangle of the triangulation will be
+				// this->face(m.index(mf));
+				// the other triangles will be added at the end of the container
+				std::vector<uint> tris = vcl::mesh::earCut(mf);
+				FaceType& f = FaceContainer::face(m.index(mf));
+				importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
 
-					// number of other faces to add
-					uint nf = tris.size() / 3 - 1;
-					uint fid = FaceContainer::addFaces(nf);
+				// number of other faces to add
+				uint nf = tris.size() / 3 - 1;
+				uint fid = FaceContainer::addFaces(nf);
 
-					uint i = 3; // index that cycles into tris
-					for (; fid < FaceContainer::faceContainerSize(); ++fid) {
-						FaceType& f = FaceContainer::face(fid);
-						importTriReferencesHelper(f, mf, base, mvbase, tris, i);
-						i+=3;
-					}
+				uint i = 3; // index that cycles into tris
+				for (; fid < FaceContainer::faceContainerSize(); ++fid) {
+					FaceType& f = FaceContainer::face(fid);
+					importTriReferencesHelper(f, mf, base, mvbase, tris, i);
+					i+=3;
 				}
 			}
 		}
+	}
+}
+
+/**
+ * @brief This function manages the case where we try to import into a Dcel another type of Mesh.
+ * Faces have been already imported, but not vertex references (half edges still need to be created)
+ * and other components that depend on the number of vertices (e.g. adjacent faces and wedges)
+ */
+template<typename... Args> requires HasVertices<Args...>
+template<typename OthMesh>
+void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
+{
+	using VertexType = typename Mesh<Args...>::VertexType;
+	using MVertexType = typename OthMesh::VertexType;
+	using FaceType = typename Mesh<Args...>::FaceType;
+	using MFaceType = typename OthMesh::FaceType;
+
+	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+	using FaceContainer = typename Mesh<Args...>::FaceContainer;
+
+	// base and mvbase are needed to convert vertex references from other to this mesh
+	VertexType* base = VertexContainer::vec.data();
+	const MVertexType* mvbase = &m.vertex(0);
+
+	for (const MFaceType& mf : m.faces()) {
+		// f is the face with same index of mf in mesh m
+		FaceType& f = FaceContainer::face(m.index(mf));
+
+		// add mf.vertexNumber() half edges to this mesh, and all these half edges are adjacent to
+		// face f (all next and prev relations are set here, and therefore they will allow to
+		// iterate over f components)
+		addHalfEdgesToFace(mf.vertexNumber(), f);
+
+		// this can be optimized
+		// set each vertex of f computing the right reference from mesh m and face mf
+		for (uint j = 0; j < mf.vertexNumber(); ++j) {
+			f.vertex(j) = base + (mf.vertex(j) - mvbase);
+		}
+
+		// todo: adjacent faces and wedges
 	}
 }
 

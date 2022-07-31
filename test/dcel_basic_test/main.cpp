@@ -79,5 +79,17 @@ int main()
 		std::cerr << "\n";
 	}
 
+	vcl::DcelMesh m2;
+	m2.importFrom(t);
+
+	std::cerr << "----- Imported dcel -----\n";
+	for (const vcl::DcelMesh::Face& f : m2.faces()) {
+		std::cerr << "Face " << m2.index(f) << ":\n\t";
+		for (const vcl::DcelMesh::Vertex* v : f.vertices()) {
+			std::cerr << m2.index(v) << "; ";
+		}
+		std::cerr << "\n";
+	}
+
 	return 0;
 }
