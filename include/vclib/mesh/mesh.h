@@ -194,16 +194,17 @@ protected:
 	void updateAllOptionalContainerReferences();
 
 private:
-	void addFaceHelper(typename Mesh<Args...>::FaceType& f);
+	template<HasFaces M = Mesh>
+	void addFaceHelper(typename M::FaceType& f);
 
-	template<typename... V>
+	template<HasFaces M = Mesh, typename... V>
 	void addFaceHelper(
-		typename Mesh<Args...>::FaceType&   f,
+		typename M::FaceType&   f,
 		typename Mesh<Args...>::VertexType* v,
 		V... args);
 
-	template<typename... V>
-	void addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid, V... args);
+	template<HasFaces M = Mesh, typename... V>
+	void addFaceHelper(typename M::FaceType& f, uint vid, V... args);
 
 	template<typename Cont, typename OthMesh>
 	void importReferences(const OthMesh& m);

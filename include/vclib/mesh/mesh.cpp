@@ -1159,20 +1159,20 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 }
 
 template<typename... Args> requires HasVertices<Args...>
-void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType&)
+template<HasFaces M>
+void Mesh<Args...>::addFaceHelper(typename M::FaceType&)
 {
 	// base case: no need to add any other vertices
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename... V>
+template<HasFaces M, typename... V>
 void Mesh<Args...>::addFaceHelper(
-	typename Mesh<Args...>::FaceType&   f,
+	typename M::FaceType&   f,
 	typename Mesh<Args...>::VertexType* v,
 	V... args)
 {
 	using FaceContainer = typename Mesh<Args...>::FaceContainer;
-	using Face            = typename FaceContainer::FaceType;
 
 	// position on which add the vertex
 	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
@@ -1181,12 +1181,11 @@ void Mesh<Args...>::addFaceHelper(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename... V>
-void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid, V... args)
+template<HasFaces M, typename... V>
+void Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
 {
 	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-	using Face            = typename FaceContainer::FaceType;
 
 	// position on which add the vertex
 	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;

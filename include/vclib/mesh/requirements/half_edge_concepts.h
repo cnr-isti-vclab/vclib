@@ -20,58 +20,18 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_FACE_CONCEPTS_H
-#define VCL_MESH_FACE_CONCEPTS_H
+#ifndef VCL_MESH_HALF_EDGE_CONCEPTS_H
+#define VCL_MESH_HALF_EDGE_CONCEPTS_H
 
 #include "element_concepts.h"
-#include "../containers/face_container.h"
+#include "../containers/half_edge_container.h"
 
 namespace vcl {
 
 template<typename MeshType>
-concept HasPerFaceAdjacentEdges =
-	HasFaces<MeshType> && vcl::face::HasAdjacentEdges<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceAdjacentFaces =
-	HasFaces<MeshType> && vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceColor =
-	HasFaces<MeshType> && vcl::face::HasColor<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceHalfEdgeReference =
-	HasFaces<MeshType> && vcl::face::HasHalfEdgeReference<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceMark =
-	HasFaces<MeshType> && vcl::face::HasMark<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceNormal =
-	HasFaces<MeshType> && vcl::face::HasNormal<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFacePrincipalCurvature =
-	HasFaces<MeshType> && vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceScalar =
-	HasFaces<MeshType> && vcl::face::HasScalar<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceWedgeColors =
-	HasFaces<MeshType> && vcl::face::HasWedgeColors<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceWedgeTexCoords =
-	HasFaces<MeshType> && vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceCustomComponents =
-	HasFaces<MeshType> && vcl::face::HasCustomComponents<typename MeshType::FaceType>;
+concept HasPerHalfEdgeHalfEdgeReferences =
+	HasHalfEdges<MeshType> && vcl::hedge::HasHalfEdgeReferences<typename MeshType::HalfEdgeType>;
 
 } // namespace vcl
 
-#endif // VCL_MESH_FACE_CONCEPTS_H
+#endif // VCL_MESH_HALF_EDGE_CONCEPTS_H

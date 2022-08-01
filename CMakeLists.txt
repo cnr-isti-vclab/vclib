@@ -210,6 +210,7 @@ set(HEADERS
 	include/vclib/mesh/requirements/element_concepts.h
 	include/vclib/mesh/requirements/face_concepts.h
 	include/vclib/mesh/requirements/face_requirements.h
+	include/vclib/mesh/requirements/half_edge_concepts.h
 	include/vclib/mesh/requirements/mesh_concepts.h
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_concepts.h

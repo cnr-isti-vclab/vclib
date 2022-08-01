@@ -50,7 +50,7 @@ struct IsAHalfEdge<HalfEdge<Args...>> : // For types matching the pattern HalfEd
 {
 };
 
-/* Port concepts into the vert namespace */
+/* Port concepts into the hedge namespace */
 template<typename T>
 concept HasBitFlags = comp::HasBitFlags<T>;
 template<typename T>
