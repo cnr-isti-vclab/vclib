@@ -44,6 +44,22 @@ bool isPerHalfEdgeColorEnabled(const MeshType&);
 template<DcelMeshConcept MeshType>
 bool enableIfPerHalfEdgeColorOptional(MeshType&);
 
+// HalfEdge Mark
+
+template<DcelMeshConcept MeshType>
+bool isPerHalfEdgeMarkEnabled(const MeshType&);
+
+template<DcelMeshConcept MeshType>
+bool enableIfPerHalfEdgeMarkOptional(MeshType&);
+
+// HalfEdge Scalar
+
+template<DcelMeshConcept MeshType>
+bool isPerHalfEdgeScalarEnabled(const MeshType&);
+
+template<DcelMeshConcept MeshType>
+bool enableIfPerHalfEdgeScalarOptional(MeshType&);
+
 /*********************
  * require functions *
  *********************/
@@ -58,6 +74,18 @@ void requireHalfEdgeContainerCompactness(const MeshType& m);
 template<DcelMeshConcept MeshType>
 void requirePerHalfEdgeColor(const MeshType& m)
 	requires HasPerHalfEdgeColor<MeshType>;
+
+// HalfEdge Mark
+
+template<DcelMeshConcept MeshType>
+void requirePerHalfEdgeMark(const MeshType& m)
+	requires HasPerHalfEdgeMark<MeshType>;
+
+// HalfEdge Scalar
+
+template<DcelMeshConcept MeshType>
+void requirePerHalfEdgeScalar(const MeshType& m)
+	requires HasPerHalfEdgeScalar<MeshType>;
 
 } // namespace vcl
 

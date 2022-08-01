@@ -74,6 +74,56 @@ bool enableIfPerHalfEdgeColorOptional(MeshType& m)
 	}
 }
 
+template<DcelMeshConcept MeshType>
+bool isPerHalfEdgeMarkEnabled(const MeshType& m)
+{
+	if constexpr (vcl::hedge::HasOptionalMark<typename MeshType::HalfEdgeType>) {
+		return m.isPerHalfEdgeMarkEnabled();
+	}
+	else {
+		return vcl::hedge::HasMark<typename MeshType::HalfEdgeType>;
+	}
+}
+
+template<DcelMeshConcept MeshType>
+bool enableIfPerHalfEdgeMarkOptional(MeshType& m)
+{
+	if constexpr (HasPerHalfEdgeMark<MeshType>) {
+		if constexpr(vcl::hedge::HasOptionalMark<typename MeshType::HalfEdgeType>) {
+			m.enablePerHalfEdgeMark();
+		}
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+template<DcelMeshConcept MeshType>
+bool isPerHalfEdgeScalarEnabled(const MeshType& m)
+{
+	if constexpr (vcl::hedge::HasOptionalScalar<typename MeshType::HalfEdgeType>) {
+		return m.isPerHalfEdgeScalarEnabled();
+	}
+	else {
+		return vcl::hedge::HasScalar<typename MeshType::HalfEdgeType>;
+	}
+}
+
+template<DcelMeshConcept MeshType>
+bool enableIfPerHalfEdgeScalarOptional(MeshType& m)
+{
+	if constexpr (HasPerHalfEdgeScalar<MeshType>) {
+		if constexpr(vcl::hedge::HasOptionalScalar<typename MeshType::HalfEdgeType>) {
+			m.enablePerHalfEdgeScalar();
+		}
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 /*********************
  * require functions *
  *********************/
@@ -90,7 +140,23 @@ void requirePerHalfEdgeColor(const MeshType& m)
 	requires HasPerHalfEdgeColor<MeshType>
 {
 	if (!isPerHalfEdgeColorEnabled(m))
-		throw vcl::MissingComponentException("HalfEdge colors not enabled.");
+		throw vcl::MissingComponentException("HalfEdge color not enabled.");
+}
+
+template<DcelMeshConcept MeshType>
+void requirePerHalfEdgeMark(const MeshType& m)
+	requires HasPerHalfEdgeMark<MeshType>
+{
+	if (!isPerHalfEdgeMarkEnabled(m))
+		throw vcl::MissingComponentException("HalfEdge mark not enabled.");
+}
+
+template<DcelMeshConcept MeshType>
+void requirePerHalfEdgeScalar(const MeshType& m)
+	requires HasPerHalfEdgeScalar<MeshType>
+{
+	if (!isPerHalfEdgeScalarEnabled(m))
+		throw vcl::MissingComponentException("HalfEdge scalar not enabled.");
 }
 
 } // namespace vcl
