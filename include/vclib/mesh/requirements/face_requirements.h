@@ -38,66 +38,66 @@ bool isFaceContainerCompact(const MeshType&);
 
 // Face Adjacent Faces
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType&);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType&);
 
 // Face Color
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceColorEnabled(const MeshType&);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceColorOptional(MeshType&);
 
 // Face Mark
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceMarkEnabled(const MeshType&);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceMarkOptional(MeshType&);
 
 // Face Normal
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceNormalEnabled(const MeshType&);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceNormalOptional(MeshType&);
 
 // Face Principal Curvature
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFacePrincipalCurvatureEnabled(const MeshType&);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFacePrincipalCurvatureOptional(MeshType&);
 
 // Face Scalar
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceScalarEnabled(const MeshType&);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceScalarOptional(MeshType&);
 
 // Face Wedge Colors
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeColorsEnabled(const MeshType&);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeColorsOptional(MeshType&);
 
 // Face Wedge TexCoords
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeTexCoordsEnabled(const MeshType&);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeTexCoordsOptional(MeshType&);
 
 /*********************

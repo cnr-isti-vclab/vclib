@@ -43,7 +43,7 @@ bool isFaceContainerCompact(const MeshType& m)
 	return (m.faceNumber() == m.faceContainerSize());
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 {
 	if constexpr (HasFaces<MeshType>) {
@@ -59,7 +59,7 @@ bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 {
 	if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
@@ -73,7 +73,7 @@ bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceColorEnabled(const MeshType& m)
 {
 	if constexpr (HasFaces<MeshType>) {
@@ -89,7 +89,7 @@ bool isPerFaceColorEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceColorOptional(MeshType& m)
 {
 	if constexpr (HasPerFaceColor<MeshType>) {
@@ -103,7 +103,7 @@ bool enableIfPerFaceColorOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceMarkEnabled(const MeshType& m)
 {
 	if constexpr (HasFaces<MeshType>) {
@@ -119,7 +119,7 @@ bool isPerFaceMarkEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceMarkOptional(MeshType& m)
 {
 	if constexpr (HasPerFaceMark<MeshType>) {
@@ -133,7 +133,7 @@ bool enableIfPerFaceMarkOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceNormalEnabled(const MeshType& m)
 {
 	if constexpr (HasFaces<MeshType>) {
@@ -149,7 +149,7 @@ bool isPerFaceNormalEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceNormalOptional(MeshType& m)
 {
 	if constexpr (HasPerFaceNormal<MeshType>) {
@@ -163,7 +163,7 @@ bool enableIfPerFaceNormalOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFacePrincipalCurvatureEnabled(const MeshType& m)
 {
 	if constexpr (HasFaces<MeshType>) {
@@ -179,7 +179,7 @@ bool isPerFacePrincipalCurvatureEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
 {
 	if constexpr (HasPerFacePrincipalCurvature<MeshType>) {
@@ -193,7 +193,7 @@ bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceScalarEnabled(const MeshType& m)
 {
 	if constexpr (HasFaces<MeshType>) {
@@ -209,7 +209,7 @@ bool isPerFaceScalarEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceScalarOptional(MeshType& m)
 {
 	if constexpr (HasPerFaceScalar<MeshType>) {
@@ -223,7 +223,7 @@ bool enableIfPerFaceScalarOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeColorsEnabled(const MeshType& m)
 {
 	if constexpr (HasFaces<MeshType>) {
@@ -239,7 +239,7 @@ bool isPerFaceWedgeColorsEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeColorsOptional(MeshType& m)
 {
 	if constexpr (HasPerFaceWedgeColors<MeshType>) {
@@ -253,7 +253,7 @@ bool enableIfPerFaceWedgeColorsOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeTexCoordsEnabled(const MeshType& m)
 {
 	if constexpr (HasFaces<MeshType>) {
@@ -269,7 +269,7 @@ bool isPerFaceWedgeTexCoordsEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
 {
 	if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
