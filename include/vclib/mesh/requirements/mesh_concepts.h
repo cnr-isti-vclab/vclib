@@ -130,7 +130,7 @@ concept EdgeMeshConcept =
 template<typename T>
 concept DcelMeshConcept =
 	FaceMeshConcept<T> &&
-	HasPerHalfEdgeHalfEdgeReferences<T> &&
+	HasHalfEdges<T> &&
 	HasPerVertexHalfEdgeReference<T> &&
 	HasPerFaceHalfEdgeReference<T>;
 

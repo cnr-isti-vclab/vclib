@@ -23,7 +23,6 @@
 #ifndef VCL_MESH_VERTEX_REQUIREMENTS_H
 #define VCL_MESH_VERTEX_REQUIREMENTS_H
 
-#include "vertex_concepts.h"
 #include "mesh_concepts.h"
 
 namespace vcl {
@@ -34,71 +33,71 @@ namespace vcl {
 
 // Vertex Compactness
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isVertexContainerCompact(const MeshType&);
 
 // Vertex Adjacent Faces
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType&);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentFacesOptional(MeshType&);
 
 // Vertex Adjacent Vertices
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexAdjacentVerticesEnabled(const MeshType&);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentVerticesOptional(MeshType&);
 
 // Vertex Color
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexColorEnabled(const MeshType&);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexColorOptional(MeshType&);
 
 // Vertex Mark
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexMarkEnabled(const MeshType&);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexMarkOptional(MeshType&);
 
 // Vertex Normal
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexNormalEnabled(const MeshType&);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexNormalOptional(MeshType&);
 
 // Vertex PrincipalCurvature
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexPrincipalCurvatureEnabled(const MeshType&);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexPrincipalCurvatureOptional(MeshType&);
 
 // Vertex Scalar
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexScalarEnabled(const MeshType&);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexScalarOptional(MeshType&);
 
 // Vertex TexCoord
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexTexCoordEnabled(const MeshType&);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexTexCoordOptional(MeshType&);
 
 /*********************

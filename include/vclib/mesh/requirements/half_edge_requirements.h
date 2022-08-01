@@ -20,56 +20,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_REQUIREMENTS_H
-#define VCL_MESH_MESH_REQUIREMENTS_H
+#ifndef VCL_MESH_HALF_EDGE_REQUIREMENTS_H
+#define VCL_MESH_HALF_EDGE_REQUIREMENTS_H
 
 #include "mesh_concepts.h"
-#include "half_edge_requirements.h"
-#include "face_requirements.h"
-#include "vertex_requirements.h"
 
 namespace vcl {
 
-/********************
- * is/has functions *
- ********************/
+/*************************
+ * is/enableIf functions *
+ *************************/
 
-// Triangles
+// HalfEdge Compactness
 
-template<MeshConcept MeshType>
-bool isTriangleMesh(const MeshType&);
+template<DcelMeshConcept MeshType>
+bool isHalfEdgeContainerCompact(const MeshType&);
 
-// Quads
+// HalfEdge Color
 
-template<MeshConcept MeshType>
-bool isQuadMesh(const MeshType&);
+template<DcelMeshConcept MeshType>
+bool isPerHalfEdgeColorEnabled(const MeshType&);
 
-// Mesh Compactness
-
-template<MeshConcept MeshType>
-bool isCompact(const MeshType&);
+template<DcelMeshConcept MeshType>
+bool enableIfPerHalfEdgeColorOptional(MeshType&);
 
 /*********************
  * require functions *
  *********************/
 
-// Triangles
+// HalfEdge Compactness
 
-template<FaceMeshConcept MeshType>
-void requireTriangleMesh(const MeshType&);
+template<DcelMeshConcept MeshType>
+void requireHalfEdgeContainerCompactness(const MeshType& m);
 
-// Quads
+// HalfEdge Color
 
-template<FaceMeshConcept MeshType>
-void requireQuadMesh(const MeshType&);
-
-// Mesh Compactness
-
-template <MeshConcept MeshType>
-void requireCompactness(const MeshType&);
+template<DcelMeshConcept MeshType>
+void requirePerHalfEdgeColor(const MeshType& m)
+	requires HasPerHalfEdgeColor<MeshType>;
 
 } // namespace vcl
 
-#include "mesh_requirements.cpp"
+#include "half_edge_requirements.cpp"
 
-#endif // VCL_MESH_MESH_REQUIREMENTS_H
+#endif // VCL_MESH_HALF_EDGE_REQUIREMENTS_H

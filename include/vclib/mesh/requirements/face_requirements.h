@@ -23,7 +23,6 @@
 #ifndef VCL_MESH_FACE_REQUIREMENTS_H
 #define VCL_MESH_FACE_REQUIREMENTS_H
 
-#include "face_concepts.h"
 #include "mesh_concepts.h"
 
 namespace vcl {
@@ -34,7 +33,7 @@ namespace vcl {
 
 // Face Compactness
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isFaceContainerCompact(const MeshType&);
 
 // Face Adjacent Faces
@@ -122,7 +121,7 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceColor(const MeshType& m)
 	requires HasPerFaceColor<MeshType>;
 
-// Face Color
+// Face Mark
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceMark(const MeshType& m)

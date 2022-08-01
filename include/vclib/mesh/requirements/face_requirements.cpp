@@ -34,19 +34,13 @@ namespace vcl {
 
 /**
  * @brief Returns `true` if the given mesh has its Face Container compact.
- * Returns `false` if the mesh has no Face Container.
  * @param[in] m: input mesh on which test if the its Face Container is compact.
  * @return `true` if the Face Container of the mesh is compact.
  */
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 bool isFaceContainerCompact(const MeshType& m)
 {
-	if constexpr (HasFaces<MeshType>) {
-		return (m.faceNumber() == m.faceContainerSize());
-	}
-	else {
-		return false;
-	}
+	return (m.faceNumber() == m.faceContainerSize());
 }
 
 template<typename MeshType>

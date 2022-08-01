@@ -104,7 +104,7 @@ bool isCompact(const MeshType& m)
 		c = c && (m.edgeNumber() == m.edgeContainerSize());
 	}
 	if constexpr (HasHalfEdges<MeshType>) {
-		c = c && (m.halfEdgeNumber() == m.halfEdgeContainerSize());
+		c = c && isHalfEdgeContainerCompact(m);
 	}
 	return c;
 }
@@ -135,7 +135,7 @@ void requireQuadMesh(const MeshType& m)
 	}
 }
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void requireCompactness(const MeshType& m)
 {
 	if (!isCompact(m))

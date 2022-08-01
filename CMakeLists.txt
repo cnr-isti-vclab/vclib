@@ -211,6 +211,7 @@ set(HEADERS
 	include/vclib/mesh/requirements/face_concepts.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/half_edge_concepts.h
+	include/vclib/mesh/requirements/half_edge_requirements.h
 	include/vclib/mesh/requirements/mesh_concepts.h
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_concepts.h
@@ -340,6 +341,7 @@ set(SOURCES
 	include/vclib/mesh/elements/half_edge.cpp
 	include/vclib/mesh/elements/vertex.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
+	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp
 	include/vclib/misc/compactness.cpp

@@ -29,8 +29,20 @@
 namespace vcl {
 
 template<typename MeshType>
-concept HasPerHalfEdgeHalfEdgeReferences =
-	HasHalfEdges<MeshType> && vcl::hedge::HasHalfEdgeReferences<typename MeshType::HalfEdgeType>;
+concept HasPerHalfEdgeColor =
+	HasHalfEdges<MeshType> && vcl::hedge::HasColor<typename MeshType::HalfEdgeType>;
+
+template<typename MeshType>
+concept HasPerHalfCustomComponents =
+	HasHalfEdges<MeshType> && vcl::hedge::HasCustomComponents<typename MeshType::HalfEdgeType>;
+
+template<typename MeshType>
+concept HasPerHalfEdgeMark =
+	HasHalfEdges<MeshType> && vcl::hedge::HasMark<typename MeshType::HalfEdgeType>;
+
+template<typename MeshType>
+concept HasPerHalfEdgeScalar =
+	HasHalfEdges<MeshType> && vcl::hedge::HasScalar<typename MeshType::HalfEdgeType>;
 
 } // namespace vcl
 

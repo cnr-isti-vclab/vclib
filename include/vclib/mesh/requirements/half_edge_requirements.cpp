@@ -20,56 +20,77 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_REQUIREMENTS_H
-#define VCL_MESH_MESH_REQUIREMENTS_H
-
-#include "mesh_concepts.h"
-#include "half_edge_requirements.h"
-#include "face_requirements.h"
 #include "vertex_requirements.h"
+
+#include <vclib/exception/mesh_exception.h>
+
+#include "../containers/half_edge_container.h"
 
 namespace vcl {
 
-/********************
- * is/has functions *
- ********************/
+/*************************
+ * is/enableIf functions *
+ *************************/
 
-// Triangles
+/**
+ * @brief Returns `true` if the given mesh has its HalfEdge Container compact.
+ * Returns `false` if the mesh has no HalfEdge Container.
+ * @param[in] m: input mesh on which test if the its HalfEdge Container is compact.
+ * @return `true` if the HalfEdge Container of the mesh is compact.
+ */
+template<DcelMeshConcept MeshType>
+bool isHalfEdgeContainerCompact(const MeshType& m)
+{
+	if constexpr (HasHalfEdges<MeshType>) {
+		return (m.halfEdgeNumber() == m.halfEdgeContainerSize());
+	}
+	else {
+		return false;
+	}
+}
 
-template<MeshConcept MeshType>
-bool isTriangleMesh(const MeshType&);
+template<DcelMeshConcept MeshType>
+bool isPerHalfEdgeColorEnabled(const MeshType& m)
+{
+	if constexpr (vcl::hedge::HasOptionalColor<typename MeshType::HalfEdgeType>) {
+		return m.isPerHalfEdgeColorEnabled();
+	}
+	else {
+		return vcl::hedge::HasColor<typename MeshType::HalfEdgeType>;
+	}
+}
 
-// Quads
-
-template<MeshConcept MeshType>
-bool isQuadMesh(const MeshType&);
-
-// Mesh Compactness
-
-template<MeshConcept MeshType>
-bool isCompact(const MeshType&);
+template<DcelMeshConcept MeshType>
+bool enableIfPerHalfEdgeColorOptional(MeshType& m)
+{
+	if constexpr (HasPerHalfEdgeColor<MeshType>) {
+		if constexpr(vcl::hedge::HasOptionalColor<typename MeshType::HalfEdgeType>) {
+			m.enablePerHalfEdgeColor();
+		}
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 /*********************
  * require functions *
  *********************/
 
-// Triangles
+template<DcelMeshConcept MeshType>
+void requireHalfEdgeContainerCompactness(const MeshType& m)
+{
+	if (!isHalfEdgeContainerCompact(m))
+		throw vcl::MissingCompactnessException("HalfEdge Container of the Mesh is not compact.");
+}
 
-template<FaceMeshConcept MeshType>
-void requireTriangleMesh(const MeshType&);
-
-// Quads
-
-template<FaceMeshConcept MeshType>
-void requireQuadMesh(const MeshType&);
-
-// Mesh Compactness
-
-template <MeshConcept MeshType>
-void requireCompactness(const MeshType&);
+template<DcelMeshConcept MeshType>
+void requirePerHalfEdgeColor(const MeshType& m)
+	requires HasPerHalfEdgeColor<MeshType>
+{
+	if (!isPerHalfEdgeColorEnabled(m))
+		throw vcl::MissingComponentException("HalfEdge colors not enabled.");
+}
 
 } // namespace vcl
-
-#include "mesh_requirements.cpp"
-
-#endif // VCL_MESH_MESH_REQUIREMENTS_H
