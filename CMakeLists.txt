@@ -102,6 +102,7 @@ set(HEADERS
 	include/vclib/iterators/half_edge/face_base_iterator.h
 	include/vclib/iterators/half_edge/face_half_edge_iterator.h
 	include/vclib/iterators/half_edge/face_vertex_iterator.h
+	include/vclib/iterators/half_edge/face_wedge_color_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/matrix.h

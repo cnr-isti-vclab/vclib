@@ -332,6 +332,92 @@ int FaceHalfEdgeReference<HalfEdge>::indexOfAdjFace(const Face* f) const
 }
 
 template<typename HalfEdge>
+vcl::Color &FaceHalfEdgeReference<HalfEdge>::wedgeColor(uint i) requires HasColor<HalfEdge>
+{
+	uint                j  = 0;
+	WedgeColorsIterator it = wedgeColorBegin();
+	while (j < i) {
+		++it;
+		++j;
+	}
+	return *it;
+}
+
+template<typename HalfEdge>
+const vcl::Color&
+FaceHalfEdgeReference<HalfEdge>::wedgeColor(uint i) const requires HasColor<HalfEdge>
+{
+	uint                     j  = 0;
+	ConstWedgeColorsIterator it = wedgeColorBegin();
+	while (j < i) {
+		++it;
+		++j;
+	}
+	return *it;
+}
+
+template<typename HalfEdge>
+vcl::Color &FaceHalfEdgeReference<HalfEdge>::wedgeColorMod(int i) requires HasColor<HalfEdge>
+{
+	uint                j  = 0;
+	WedgeColorsIterator it = WedgeColorsIterator(ohe, nullptr); // this iterator does not have end
+	while (j < std::abs(i)) {
+		if (i > 0)
+			++it;
+		else
+			--it;
+		++j;
+	}
+	return *it;
+}
+
+template<typename HalfEdge>
+const vcl::Color&
+FaceHalfEdgeReference<HalfEdge>::wedgeColorMod(int i) const requires HasColor<HalfEdge>
+{
+	uint                j  = 0;
+	ConstWedgeColorsIterator it =
+		ConstWedgeColorsIterator(ohe, nullptr); // this iterator does not have an end
+	while (j < std::abs(i)) {
+		if (i > 0)
+			++it;
+		else
+			--it;
+		++j;
+	}
+	return *it;
+}
+
+template<typename HalfEdge>
+void FaceHalfEdgeReference<HalfEdge>::setWedgeColor(const vcl::Color& t, uint i) requires
+	HasColor<HalfEdge>
+{
+	wedgeColor(i) = t;
+}
+
+template<typename HalfEdge>
+void FaceHalfEdgeReference<HalfEdge>::setWedgeColors(
+	const std::vector<vcl::Color>& list) requires HasColor<HalfEdge>
+{
+	assert(list.size() == vertexNumber());
+	uint i = 0;
+	for (vcl::Color& c : wedgeColors()) {
+		c = list[i++];
+	}
+}
+
+template<typename HalfEdge>
+bool FaceHalfEdgeReference<HalfEdge>::isWedgeColorsEnabled() const requires HasColor<HalfEdge>
+{
+	if constexpr (HasOptionalColor<HalfEdge>) {
+		return ohe->isColorEnabled();
+	}
+	else {
+		return true;
+	}
+}
+
+template<typename HalfEdge>
 typename FaceHalfEdgeReference<HalfEdge>::AdjacentFaceIterator
 FaceHalfEdgeReference<HalfEdge>::adjFaceBegin()
 {
@@ -557,6 +643,50 @@ FaceHalfEdgeReference<HalfEdge>::vertices() const
 {
 	return ConstVertexRangeIterator(
 		*this, &FaceHalfEdgeReference::vertexBegin, &FaceHalfEdgeReference::vertexEnd);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::WedgeColorsIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeColorBegin() requires HasColor<HalfEdge>
+{
+	return WedgeColorsIterator(ohe);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::WedgeColorsIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeColorEnd() requires HasColor<HalfEdge>
+{
+	return WedgeColorsIterator(nullptr);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::ConstWedgeColorsIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeColorBegin() const requires HasColor<HalfEdge>
+{
+	return ConstWedgeColorsIterator(ohe);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::ConstWedgeColorsIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeColorEnd() const requires HasColor<HalfEdge>
+{
+	return ConstWedgeColorsIterator(nullptr);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::WedgeColorsRangeIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeColors() requires HasColor<HalfEdge>
+{
+	return WedgeColorsRangeIterator(
+		*this, &FaceHalfEdgeReference::wedgeColorBegin, &FaceHalfEdgeReference::wedgeColorEnd);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::ConstWedgeColorsRangeIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeColors() const requires HasColor<HalfEdge>
+{
+	return ConstWedgeColorsRangeIterator(
+		*this, &FaceHalfEdgeReference::wedgeColorBegin, &FaceHalfEdgeReference::wedgeColorEnd);
 }
 
 template<typename HalfEdge>

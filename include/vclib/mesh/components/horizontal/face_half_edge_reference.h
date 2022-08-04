@@ -28,9 +28,13 @@
 #include <vclib/iterators/half_edge/face_adj_face_iterator.h>
 #include <vclib/iterators/half_edge/face_half_edge_iterator.h>
 #include <vclib/iterators/half_edge/face_vertex_iterator.h>
+#include <vclib/iterators/half_edge/face_wedge_color_iterator.h>
 #include <vclib/iterators/range_iterator.h>
 
+#include <vclib/space/color.h>
+
 #include "../concepts/face_half_edge_reference.h"
+#include "../concepts/color.h"
 
 namespace vcl::comp {
 
@@ -69,12 +73,25 @@ public:
 	using VertexRangeIterator      = RangeIterator<FaceHalfEdgeReference, VertexIterator>;
 	using ConstVertexRangeIterator = ConstRangeIterator<FaceHalfEdgeReference, ConstVertexIterator>;
 
+	using WedgeColorsIterator =
+		std::conditional<HasColor<HalfEdge>, vcl::FaceWedgeColorIterator<HalfEdge>, void>;
+	using ConstWedgeColorsIterator =
+		std::conditional<HasColor<HalfEdge>, vcl::ConstFaceWedgeColorIterator<HalfEdge>, void>;
+	using WedgeColorsRangeIterator = std::conditional<
+		HasColor<HalfEdge>,
+		RangeIterator<FaceHalfEdgeReference, WedgeColorsIterator>, void>;
+	using ConstWedgeColorsRangeIterator = std::conditional<
+		HasColor<HalfEdge>,
+		ConstRangeIterator<FaceHalfEdgeReference, ConstWedgeColorsIterator>, void>;
+
 	// Vertex references can be accessed from a face using half edge reference, therefore this
 	// component claims that it is the VertexReferences component. This is done just for
 	// compatibility between mesh types.
 	using VertexReferences         = FaceHalfEdgeReference;
+
 	static const int VERTEX_NUMBER = -1; // half edges support by design polygonal meshes
 	static const int ADJ_FACE_NUMBER = -1;
+	static const int WEDGE_COLOR_NUMBER = -1;
 
 	/* Constructor */
 
@@ -134,6 +151,19 @@ public:
 
 	int indexOfAdjFace(const Face* f) const;
 
+	/* WedgeColor compatibility */
+
+	vcl::Color&       wedgeColor(uint i) requires HasColor<HalfEdge>;
+	const vcl::Color& wedgeColor(uint i) const requires HasColor<HalfEdge>;
+
+	vcl::Color&       wedgeColorMod(int i) requires HasColor<HalfEdge>;
+	const vcl::Color& wedgeColorMod(int i) const requires HasColor<HalfEdge>;
+
+	void setWedgeColor(const vcl::Color& t, uint i) requires HasColor<HalfEdge>;
+	void setWedgeColors(const std::vector<vcl::Color>& list) requires HasColor<HalfEdge>;
+
+	bool isWedgeColorsEnabled() const requires HasColor<HalfEdge>;
+
 	/* Iterator Member functions */
 
 	AdjacentFaceIterator           adjFaceBegin();
@@ -169,6 +199,13 @@ public:
 	ConstVertexIterator      vertexEnd() const;
 	VertexRangeIterator      vertices();
 	ConstVertexRangeIterator vertices() const;
+
+	WedgeColorsIterator           wedgeColorBegin() requires HasColor<HalfEdge>;
+	WedgeColorsIterator           wedgeColorEnd() requires HasColor<HalfEdge>;
+	ConstWedgeColorsIterator      wedgeColorBegin() const requires HasColor<HalfEdge>;
+	ConstWedgeColorsIterator      wedgeColorEnd() const requires HasColor<HalfEdge>;
+	WedgeColorsRangeIterator      wedgeColors() requires HasColor<HalfEdge>;
+	ConstWedgeColorsRangeIterator wedgeColors() const requires HasColor<HalfEdge>;
 
 protected:
 	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
