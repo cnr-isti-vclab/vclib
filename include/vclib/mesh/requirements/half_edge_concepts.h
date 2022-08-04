@@ -44,6 +44,11 @@ template<typename MeshType>
 concept HasPerHalfEdgeScalar =
 	HasHalfEdges<MeshType> && vcl::hedge::HasScalar<typename MeshType::HalfEdgeType>;
 
+
+template<typename MeshType>
+concept HasPerHalfEdgeTexCoord =
+	HasHalfEdges<MeshType> && vcl::hedge::HasTexCoord<typename MeshType::HalfEdgeType>;
+
 } // namespace vcl
 
 #endif // VCL_MESH_HALF_EDGE_CONCEPTS_H

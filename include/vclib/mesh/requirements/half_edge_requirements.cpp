@@ -124,6 +124,31 @@ bool enableIfPerHalfEdgeScalarOptional(MeshType& m)
 	}
 }
 
+template<DcelMeshConcept MeshType>
+bool isPerHalfEdgeTexCoordEnabled(const MeshType& m)
+{
+	if constexpr (vcl::hedge::HasOptionalTexCoord<typename MeshType::HalfEdgeType>) {
+		return m.isPerHalfEdgeTexCoordEnabled();
+	}
+	else {
+		return vcl::hedge::HasTexCoord<typename MeshType::HalfEdgeType>;
+	}
+}
+
+template<DcelMeshConcept MeshType>
+bool enableIfPerHalfEdgeTexCoordOptional(MeshType& m)
+{
+	if constexpr (HasPerHalfEdgeTexCoord<MeshType>) {
+		if constexpr(vcl::hedge::HasOptionalTexCoord<typename MeshType::HalfEdgeType>) {
+			m.enablePerHalfEdgeTexCoord();
+		}
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 /*********************
  * require functions *
  *********************/
@@ -157,6 +182,14 @@ void requirePerHalfEdgeScalar(const MeshType& m)
 {
 	if (!isPerHalfEdgeScalarEnabled(m))
 		throw vcl::MissingComponentException("HalfEdge scalar not enabled.");
+}
+
+template<DcelMeshConcept MeshType>
+void requirePerHalfEdgeTexCoord(const MeshType& m)
+	requires HasPerHalfEdgeTexCoord<MeshType>
+{
+	if (!isPerHalfEdgeTexCoordEnabled(m))
+		throw vcl::MissingComponentException("HalfEdge TexCoord not enabled.");
 }
 
 } // namespace vcl

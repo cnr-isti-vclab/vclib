@@ -60,6 +60,14 @@ bool isPerHalfEdgeScalarEnabled(const MeshType&);
 template<DcelMeshConcept MeshType>
 bool enableIfPerHalfEdgeScalarOptional(MeshType&);
 
+// HalfEdge TexCoord
+
+template<DcelMeshConcept MeshType>
+bool isPerHalfEdgeTexCoordEnabled(const MeshType&);
+
+template<DcelMeshConcept MeshType>
+bool enableIfPerHalfEdgeTexCoordOptional(MeshType&);
+
 /*********************
  * require functions *
  *********************/
@@ -86,6 +94,12 @@ void requirePerHalfEdgeMark(const MeshType& m)
 template<DcelMeshConcept MeshType>
 void requirePerHalfEdgeScalar(const MeshType& m)
 	requires HasPerHalfEdgeScalar<MeshType>;
+
+// HalfEdge TexCoord
+
+template<DcelMeshConcept MeshType>
+void requirePerHalfEdgeTexCoord(const MeshType& m)
+	requires HasPerHalfEdgeTexCoord<MeshType>;
 
 } // namespace vcl
 
