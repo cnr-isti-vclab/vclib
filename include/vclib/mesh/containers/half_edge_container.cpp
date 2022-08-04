@@ -419,6 +419,40 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeScalar() requires hedge::HasOptiona
 }
 
 /**
+ * @brief Checks if the halfedge Optional TexCoord is enabled.
+ *
+ * @note This function is available only if the HalfEdge Element has the OptionalTexCoord Component.
+ *
+ * @return true if the Optional TexCoord is enabled, false otherwise.
+ */
+template<HalfEdgeConcept T>
+bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::HasOptionalTexCoord<T>
+{
+	return Base::optionalVec.isTexCoordEnabled();
+}
+/**
+ * @brief Enables the Optional TexCoord of the halfedge.
+ *
+ * @note This function is available only if the HalfEdge Element has the OptionalTexCoord Component.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
+{
+	Base::optionalVec.enableTexCoord(halfEdgeContainerSize());
+}
+
+/**
+ * @brief Disables the Optional TexCoord of the halfedge.
+ *
+ * @note This function is available only if the HalfEdge Element has the OptionalTexCoord Component.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::disablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
+{
+	Base::optionalVec.disableTexCoord();
+}
+
+/**
  * @brief Checks if halfedges have a custom component with the given name.
  *
  * This function does not take into account the type of the custom component.

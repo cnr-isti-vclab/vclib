@@ -89,6 +89,11 @@ public:
 	void enablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>;
 	void disablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>;
 
+	// TexCoord
+	bool isPerHalfEdgeTexCoordEnabled() const requires hedge::HasOptionalTexCoord<T>;
+	void enablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>;
+	void disablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>;
+
 	// Custom Components
 	bool hasPerHalfEdgeCustomComponent(
 		const std::string& name) const requires hedge::HasCustomComponents<T>;

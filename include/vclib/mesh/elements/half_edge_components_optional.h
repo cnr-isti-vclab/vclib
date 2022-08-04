@@ -27,6 +27,7 @@
 #include "../components/vertical/optional/optional_color.h"
 #include "../components/vertical/optional/optional_mark.h"
 #include "../components/vertical/optional/optional_scalar.h"
+#include "../components/vertical/optional/optional_tex_coord.h"
 
 namespace vcl::hedge {
 
@@ -47,6 +48,16 @@ using OptionalScalarf = comp::OptionalScalar<float, EdgeType>;
 
 template<typename EdgeType>
 using OptionalScalard = comp::OptionalScalar<double, EdgeType>;
+
+/* Port OptionalTexCoord class into hedge namespace */
+template<typename ScalarType, typename VertexType>
+using OptionalTexCoord = comp::OptionalTexCoord<ScalarType, VertexType>;
+
+template<typename VertexType>
+using OptionalTexCoordf = comp::OptionalTexCoord<float, VertexType>;
+
+template<typename VertexType>
+using OptionalTexCoordd = comp::OptionalTexCoord<double, VertexType>;
 
 /* Port CustomComponents class into hedge namespace */
 template<typename EdgeType>

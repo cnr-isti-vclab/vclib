@@ -68,6 +68,10 @@ concept HasOptionalMark = comp::HasOptionalMark<T>;
 template<typename T>
 concept HasScalar = comp::HasScalar<T>;
 template<typename T>
+concept HasTexCoord = comp::HasTexCoord<T>;
+template<typename T>
+concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
+template<typename T>
 concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>
 concept HasVerticalComponent = comp::HasVerticalComponent<T>;

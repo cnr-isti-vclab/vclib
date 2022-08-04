@@ -29,6 +29,7 @@
 #include "../components/horizontal/mark.h"
 #include "../components/horizontal/normal.h"
 #include "../components/horizontal/scalar.h"
+#include "../components/horizontal/tex_coord.h"
 
 namespace vcl::hedge {
 
@@ -51,6 +52,13 @@ using Scalar = comp::Scalar<ScalarType>;
 
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
+
+/* Port TexCoord class into hedge namespace */
+template<typename ScalarType>
+using TexCoord = comp::TexCoord<ScalarType>;
+
+using TexCoordf = comp::TexCoordf;
+using TexCoordd = comp::TexCoordd;
 
 } // namespace vcl::hedge
 
