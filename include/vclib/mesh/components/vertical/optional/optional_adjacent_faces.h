@@ -127,6 +127,10 @@ public:
 	// dummy member to discriminate between non-optional and optional component
 	void __optionalAdjFaces() const {};
 
+	// dummy member to discriminate between this component and the one simulated by the
+	// FaceHalfEdgeReference component
+	void __compAdjFaces() const {};
+
 protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 

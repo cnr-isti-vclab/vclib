@@ -40,6 +40,21 @@ concept HasAdjacentFaces = requires(T o)
 };
 
 /**
+ * @brief HasAdjacentFacesComponent concept
+ *
+ * This concept is used to discriminate between the AdjacentFaces (or OptionalAdjacentFaces)
+ * component, and the FaceHalfEdgeReferences component, which using half edges allows to access
+ * to adjacent faces. This concept is intended only for internal use, useful to check that a Face
+ * does not have both AdjacentFaces and FaceHalfEdgeReferences components.
+ */
+template<typename T>
+concept HasAdjacentFacesComponent = requires(T o)
+{
+	HasAdjacentFaces<T>;
+	{ o.__compAdjFaces() } -> std::same_as<void>;
+};
+
+/**
  * @brief HasOptionalAdjacentFaces concept
  *
  * This concept is satisfied only if a class has two member functions:

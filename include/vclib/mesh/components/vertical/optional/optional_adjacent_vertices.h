@@ -111,6 +111,10 @@ public:
 	// dummy member to discriminate between non-optional and optional component
 	void __optionalAdjVertices() const {};
 
+	// dummy member to discriminate between this component and the one simulated by the
+	// VertexHalfEdgeReference component
+	void __compAdjVertices() const {};
+
 protected:
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 

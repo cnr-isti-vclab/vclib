@@ -126,13 +126,21 @@ concept EdgeMeshConcept =
  * - The HalfEdge element has HalfEdgeReferences component
  * - The Vertex Element has HalfEdgeReference component
  * - The Face Element has HalfEdgeReference component
+ * - The Vertex Element does not have AdjacentVertices component (it is simulated by half edges)
+ * - The Face Element does not have AdjacentFaces component (it is simulated by half edges)
+ * - The Face Element does not have WedgeColors component (it is simulated by half edges)
+ * - The Face Element does not have WedgeTexCoords component (it is simulated by half edges)
  */
 template<typename T>
 concept DcelMeshConcept =
 	FaceMeshConcept<T> &&
 	HasHalfEdges<T> &&
 	HasPerVertexHalfEdgeReference<T> &&
-	HasPerFaceHalfEdgeReference<T>;
+	HasPerFaceHalfEdgeReference<T> &&
+	!comp::HasAdjacentVerticesComponent<typename T::VertexType> &&
+	!comp::HasAdjacentFacesComponent<typename T::FaceType> &&
+	!comp::HasWedgeColorsComponent<typename T::FaceType> &&
+	!comp::HasWedgeTexCoordsComponent<typename T::FaceType>;
 
 /**
  * @brief The MeshConcept is satisfied when a Mesh data structure is considered valid.
@@ -141,7 +149,7 @@ concept DcelMeshConcept =
  * - the type is derived or is a vcl::Mesh
  *   - to be a vcl::Mesh, a type must contain (derive from) a vcl::VertexContainer
  * - if the mesh is a Dcel, the DcelMeshConcept must be satisfied
- * - it the mesh is not a Dcel:
+ * - if the mesh is not a Dcel:
  *   - the mesh must not have half edges and per vertex/face half edge reference.
  */
 template<typename T>

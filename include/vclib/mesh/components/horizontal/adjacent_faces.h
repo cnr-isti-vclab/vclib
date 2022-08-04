@@ -108,6 +108,10 @@ public:
 	AdjacentFaceRangeIterator      adjFaces();
 	ConstAdjacentFaceRangeIterator adjFaces() const;
 
+	// dummy member to discriminate between this component and the one simulated by the
+	// FaceHalfEdgeReference component
+	void __compAdjFaces() const {};
+
 protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 

@@ -40,6 +40,21 @@ concept HasAdjacentVertices = requires(T o)
 };
 
 /**
+ * @brief HasAdjacentVerticesComponent concept
+ *
+ * This concept is used to discriminate between the AdjacentVertices (or OptionalAdjacentVertices)
+ * component, and the VertexHalfEdgeReferences component, which using half edges allows to access
+ * to adjacent vertices. This concept is intended only for internal use, useful to check that a
+ * Vertex does not have both AdjacentVertices and VertexHalfEdgeReferences components.
+ */
+template<typename T>
+concept HasAdjacentVerticesComponent = requires(T o)
+{
+	HasAdjacentVertices<T>;
+	{ o.__compAdjVertices() } -> std::same_as<void>;
+};
+
+/**
  * @brief HasOptionalAdjacentVertices concept
  *
  * This concept is satisfied only if a class has two member functions:

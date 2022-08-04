@@ -116,6 +116,10 @@ public:
 	// dummy member to discriminate between non-optional and optional component
 	void __optionalWedgeTexCoords() const {};
 
+	// dummy member to discriminate between this component and the one simulated by the
+	// FaceHalfEdgeReference component
+	void __compWedgeTexCoords() const {};
+
 protected:
 	using WedgeTexCoordScalarType = Scalar;
 

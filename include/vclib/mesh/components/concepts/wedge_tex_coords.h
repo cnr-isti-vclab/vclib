@@ -40,6 +40,21 @@ concept HasWedgeTexCoords = requires(T o)
 };
 
 /**
+ * @brief HasWedgeTexCoordsComponent concept
+ *
+ * This concept is used to discriminate between the WedgeTexCoords (or OptionalWedgeTexCoords)
+ * component, and the FaceHalfEdgeReferences component, which using half edges allows to access
+ * to wedge tex coords. This concept is intended only for internal use, useful to check that a Face
+ * does not have both WedgeTexCoords and FaceHalfEdgeReferences components.
+ */
+template<typename T>
+concept HasWedgeTexCoordsComponent = requires(T o)
+{
+	HasWedgeTexCoords<T>;
+	{ o.__compWedgeTexCoords() } -> std::same_as<void>;
+};
+
+/**
  * @brief HasOptionalWedgeColors concept
  *
  * This concept is satisfied only if a class has two member functions:

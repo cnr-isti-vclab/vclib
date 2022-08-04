@@ -72,6 +72,10 @@ public:
 	WedgeTexCoordsRangeIterator      wedgeTexCoords();
 	ConstWedgeTexCoordsRangeIterator wedgeTexCoords() const;
 
+	// dummy member to discriminate between this component and the one simulated by the
+	// FaceHalfEdgeReference component
+	void __compWedgeTexCoords() const {};
+
 protected:
 	using WedgeTexCoordScalarType = Scalar;
 
