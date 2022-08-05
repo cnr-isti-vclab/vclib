@@ -60,6 +60,8 @@ public:
 	Scalar&       operator[](uint i);
 	const Scalar& operator[](uint i) const;
 
+	bool operator==(const TexCoord& t1) const = default;
+
 private:
 	Point2<Scalar> coord;
 	short          n;

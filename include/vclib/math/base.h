@@ -33,6 +33,12 @@ bool isDegenerate(Scalar t)
 	return std::isinf(t) || std::isnan(t);
 }
 
+template <typename Scalar>
+bool epsilonCompare(Scalar p1, Scalar p2, Scalar epsilon = std::numeric_limits<Scalar>::epsilon())
+{
+	return (std::abs(p1 - p2) <= epsilon);
+}
+
 template<typename Scalar>
 Scalar toRad(const Scalar& a)
 {

@@ -54,6 +54,8 @@ public:
 
 	bool isDegenerate() const;
 
+	bool epsilonCompare(const Point& p1, Scalar epsilon);
+
 	Scalar dot(const Point& p1) const;
 	Scalar angle(const Point& p1) const;
 	Scalar dist(const Point& p1) const;
@@ -78,9 +80,8 @@ public:
 	Scalar&       operator()(uint i);
 	const Scalar& operator()(uint i) const;
 
-	bool operator==(const Point& p1) const;
-	bool operator!=(const Point& p1) const;
-	bool operator<(const Point& p1) const;
+	bool operator==(const Point& p1) const = default;
+	auto operator<=>(const Point& p1) const;
 
 	Point operator+(const Scalar& s) const;
 	Point operator+(const Point& p1) const;

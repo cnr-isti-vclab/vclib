@@ -49,10 +49,19 @@ Point<S, N> Point<Scalar, N>::cast() const
 template<typename Scalar, int N>
 bool Point<Scalar, N>::isDegenerate() const
 {
-	for (size_t i = 0; i < p.size(); ++i)
+	for (size_t i = 0; i < DIM; ++i)
 		if (isDegenerate(p(i)))
 			return true;
 	return false;
+}
+
+template<typename Scalar, int N>
+bool Point<Scalar, N>::epsilonCompare(const Point &p1, Scalar epsilon)
+{
+	bool b = true;
+	for (size_t i = 0; i < DIM; ++i)
+		b = b && vcl::epsilonCompare(p(i), p1(i), epsilon);
+	return b;
 }
 
 template<typename Scalar, int N>
@@ -171,25 +180,13 @@ const Scalar& Point<Scalar, N>::operator()(uint i) const
 }
 
 template<typename Scalar, int N>
-bool Point<Scalar, N>::operator==(const Point& p1) const
-{
-	return p == p1.p;
-}
-
-template<typename Scalar, int N>
-bool Point<Scalar, N>::operator!=(const Point& p1) const
-{
-	return p != p1.p;
-}
-
-template<typename Scalar, int N>
-bool Point<Scalar, N>::operator<(const Point& p1) const
+auto Point<Scalar, N>::operator<=>(const Point& p1) const
 {
 	uint i = 0;
 	while (p[i] == p1.p[i] && i < DIM) {
 		++i;
 	}
-	return i != DIM && p[i] < p1.p[i];
+	return i == DIM ? p[0] <=> p1.p[0] : p[i] <=> p1.p[i];
 }
 
 template<typename Scalar, int N>
