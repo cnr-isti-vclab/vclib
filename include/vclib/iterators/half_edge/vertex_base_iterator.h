@@ -20,31 +20,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_FACE_BASE_ITERATOR_H
-#define VCL_ITERATORS_FACE_BASE_ITERATOR_H
+#ifndef VCL_ITERATORS_VERTEX_BASE_ITERATOR_H
+#define VCL_ITERATORS_VERTEX_BASE_ITERATOR_H
 
 #include <iterator>
 
 namespace vcl {
 
 template<typename HalfEdge>
-class FaceBaseIterator
+class VertexBaseIterator
 {
 public:
 	using difference_type   = ptrdiff_t;
 	using iterator_category = std::forward_iterator_tag;
 
-	FaceBaseIterator();
-	FaceBaseIterator(HalfEdge* start);
-	FaceBaseIterator(HalfEdge* start, const HalfEdge* end);
+	VertexBaseIterator();
+	VertexBaseIterator(HalfEdge* start);
+	VertexBaseIterator(HalfEdge* start, const HalfEdge* end);
 
-	bool operator==(const FaceBaseIterator& oi) const;
-	bool operator!=(const FaceBaseIterator& oi) const;
+	bool operator==(const VertexBaseIterator& oi) const;
+	bool operator!=(const VertexBaseIterator& oi) const;
 
-	FaceBaseIterator operator++();
-	FaceBaseIterator operator++(int);
-	FaceBaseIterator operator--();
-	FaceBaseIterator operator--(int);
+	VertexBaseIterator operator++();
+	VertexBaseIterator operator++(int);
+	VertexBaseIterator operator--();
+	VertexBaseIterator operator--(int);
 
 protected:
 	HalfEdge* current = nullptr;
@@ -52,23 +52,23 @@ protected:
 };
 
 template<typename HalfEdge>
-class ConstFaceBaseIterator
+class ConstVertexBaseIterator
 {
 public:
 	using difference_type   = ptrdiff_t;
 	using iterator_category = std::forward_iterator_tag;
 
-	ConstFaceBaseIterator();
-	ConstFaceBaseIterator(const HalfEdge* start);
-	ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end);
+	ConstVertexBaseIterator();
+	ConstVertexBaseIterator(const HalfEdge* start);
+	ConstVertexBaseIterator(const HalfEdge* start, const HalfEdge* end);
 
-	bool operator==(const ConstFaceBaseIterator& oi) const;
-	bool operator!=(const ConstFaceBaseIterator& oi) const;
+	bool operator==(const ConstVertexBaseIterator& oi) const;
+	bool operator!=(const ConstVertexBaseIterator& oi) const;
 
-	ConstFaceBaseIterator operator++();
-	ConstFaceBaseIterator operator++(int);
-	ConstFaceBaseIterator operator--();
-	ConstFaceBaseIterator operator--(int);
+	ConstVertexBaseIterator operator++();
+	ConstVertexBaseIterator operator++(int);
+	ConstVertexBaseIterator operator--();
+	ConstVertexBaseIterator operator--(int);
 
 protected:
 	const HalfEdge* current = nullptr;
@@ -77,6 +77,6 @@ protected:
 
 } // namespace vcl
 
-#include "face_base_iterator.cpp"
+#include "vertex_base_iterator.cpp"
 
-#endif // VCL_ITERATORS_FACE_BASE_ITERATOR_H
+#endif // VCL_ITERATORS_VERTEX_BASE_ITERATOR_H
