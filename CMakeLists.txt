@@ -104,6 +104,8 @@ set(HEADERS
 	include/vclib/iterators/half_edge/face_vertex_iterator.h
 	include/vclib/iterators/half_edge/face_wedge_color_iterator.h
 	include/vclib/iterators/half_edge/face_wedge_tex_coord_iterator.h
+	include/vclib/iterators/half_edge/vertex_adj_face_iterator.h
+	include/vclib/iterators/half_edge/vertex_adj_vertex_iterator.h
 	include/vclib/iterators/half_edge/vertex_base_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
