@@ -52,7 +52,22 @@ public:
 
 	void clear();
 
-	// Vertices
+	template<typename OtherMeshType>
+	void enableSameOptionalComponentsOf(const OtherMeshType& m);
+
+	template<typename OtherMeshType>
+	void importFrom(const OtherMeshType& m);
+
+	/// @private
+	template<typename... A> requires HasVertices<A...>
+	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);
+
+	void swap(Mesh& m2);
+
+	Mesh& operator=(Mesh oth);
+
+	/*** Vertices ***/
+
 	uint index(const typename Mesh::VertexType& v) const;
 	uint index(const typename Mesh::VertexType* v) const;
 	uint addVertex();
@@ -65,7 +80,7 @@ public:
 	void reserveVertices(uint n);
 	void compactVertices();
 
-	// Faces
+	/*** Faces ***/
 
 	template<HasFaces M = Mesh>
 	uint index(const typename M::FaceType& f) const;
@@ -91,7 +106,29 @@ public:
 	template<HasFaces M = Mesh>
 	void compactFaces();
 
-	// Edges
+	// functions that could involve other components
+
+	// WedgeColors
+	template<HasFaces M = Mesh>
+	bool isPerFaceWedgeColorsEnabled() const requires internal::OptionalWedgeColorsConcept<M>;
+
+	template<HasFaces M = Mesh>
+	void enablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>;
+
+	template<HasFaces M = Mesh>
+	void disablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>;
+
+	// WedgeTexCoords
+	template<HasFaces M = Mesh>
+	bool isPerFaceWedgeTexCoordsEnabled() const requires internal::OptionalWedgeTexCoordsConcept<M>;
+
+	template<HasFaces M = Mesh>
+	void enablePerFaceWedgeTexCoords() requires internal::OptionalWedgeTexCoordsConcept<M>;
+
+	template<HasFaces M = Mesh>
+	void disablePerFaceWedgeTexCoords() requires internal::OptionalWedgeTexCoordsConcept<M>;
+
+	/*** Edges ***/
 
 	template<HasEdges M = Mesh>
 	uint index(const typename M::EdgeType& e) const;
@@ -111,7 +148,7 @@ public:
 	template<HasEdges M = Mesh>
 	void compactEdges();
 
-	// HalfEdges
+	/*** HalfEdges ***/
 
 	template<HasHalfEdges M = Mesh>
 	uint index(const typename M::HalfEdgeType& e) const;
@@ -133,20 +170,6 @@ public:
 
 	template<HasHalfEdges M = Mesh>
 	void compactHalfEdges();
-
-	template<typename OtherMeshType>
-	void enableSameOptionalComponentsOf(const OtherMeshType& m);
-
-	template<typename OtherMeshType>
-	void importFrom(const OtherMeshType& m);
-
-	/// @private
-	template<typename... A> requires HasVertices<A...>
-	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);
-
-	void swap(Mesh& m2);
-
-	Mesh& operator=(Mesh oth);
 
 protected:
 	// Vertices

@@ -73,16 +73,12 @@ public:
 	using VertexRangeIterator      = RangeIterator<FaceHalfEdgeReference, VertexIterator>;
 	using ConstVertexRangeIterator = ConstRangeIterator<FaceHalfEdgeReference, ConstVertexIterator>;
 
-	using WedgeColorsIterator =
-		std::conditional<HasColor<HalfEdge>, vcl::FaceWedgeColorIterator<HalfEdge>, void>;
-	using ConstWedgeColorsIterator =
-		std::conditional<HasColor<HalfEdge>, vcl::ConstFaceWedgeColorIterator<HalfEdge>, void>;
-	using WedgeColorsRangeIterator = std::conditional<
-		HasColor<HalfEdge>,
-		RangeIterator<FaceHalfEdgeReference, WedgeColorsIterator>, void>;
-	using ConstWedgeColorsRangeIterator = std::conditional<
-		HasColor<HalfEdge>,
-		ConstRangeIterator<FaceHalfEdgeReference, ConstWedgeColorsIterator>, void>;
+	// these types won't be used when half edge has no colors - all member functions are disabled
+	using WedgeColorsIterator = vcl::FaceWedgeColorIterator<HalfEdge>;
+	using ConstWedgeColorsIterator = vcl::ConstFaceWedgeColorIterator<HalfEdge>;
+	using WedgeColorsRangeIterator = RangeIterator<FaceHalfEdgeReference, WedgeColorsIterator>;
+	using ConstWedgeColorsRangeIterator =
+		ConstRangeIterator<FaceHalfEdgeReference, ConstWedgeColorsIterator>;
 
 	// Vertex references can be accessed from a face using half edge reference, therefore this
 	// component claims that it is the VertexReferences component. This is done just for

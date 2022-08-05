@@ -51,14 +51,14 @@ void GenericComponentVector<T>::disable()
 template<typename T>
 T& GenericComponentVector<T>::at(uint i)
 {
-	assert(enabled);
+	assert(enabled && "You are trying to use a not-enabled component.");
 	return vec[i];
 }
 
 template<typename T>
 const T& GenericComponentVector<T>::at(uint i) const
 {
-	assert(enabled);
+	assert(enabled && "You are trying to use a not-enabled component.");
 	return vec[i];
 }
 

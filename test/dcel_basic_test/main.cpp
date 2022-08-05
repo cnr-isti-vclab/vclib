@@ -37,6 +37,19 @@ int main()
 		m.addVertices(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3d(2,2,2));
 		m.addFace(0, 1, 2);
 
+		m.enablePerFaceWedgeColors();
+		m.face(0).wedgeColor(0) = vcl::Color::Red;
+		m.face(0).wedgeColor(1) = vcl::Color::Green;
+		m.face(0).wedgeColor(2) = vcl::Color::Blue;
+
+		assert(m.face(0).wedgeColor(0) == vcl::Color::Red);
+		assert(m.face(0).wedgeColor(0) != vcl::Color::Cyan);
+		assert(m.face(0).wedgeColor(1) == vcl::Color::Green);
+		assert(m.face(0).wedgeColor(2) == vcl::Color::Blue);
+		assert(m.face(0).wedgeColor(0) == m.halfEdge(0).color());
+		assert(m.face(0).wedgeColor(1) == m.halfEdge(1).color());
+		assert(m.face(0).wedgeColor(2) == m.halfEdge(2).color());
+
 		for (const vcl::DcelMesh::Vertex* v : m.face(0).vertices()) {
 			std::cerr << v->coord() << "\n";
 		}
