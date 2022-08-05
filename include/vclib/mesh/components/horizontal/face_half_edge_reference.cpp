@@ -357,7 +357,7 @@ FaceHalfEdgeReference<HalfEdge>::wedgeColor(uint i) const requires HasColor<Half
 }
 
 template<typename HalfEdge>
-vcl::Color &FaceHalfEdgeReference<HalfEdge>::wedgeColorMod(int i) requires HasColor<HalfEdge>
+vcl::Color& FaceHalfEdgeReference<HalfEdge>::wedgeColorMod(int i) requires HasColor<HalfEdge>
 {
 	uint                j  = 0;
 	WedgeColorsIterator it = WedgeColorsIterator(ohe, nullptr); // this iterator does not have end
@@ -411,6 +411,96 @@ bool FaceHalfEdgeReference<HalfEdge>::isWedgeColorsEnabled() const requires HasC
 {
 	if constexpr (HasOptionalColor<HalfEdge>) {
 		return ohe->isColorEnabled();
+	}
+	else {
+		return true;
+	}
+}
+
+template<typename HalfEdge>
+template<HasTexCoord HE>
+typename HE::TexCoordType& FaceHalfEdgeReference<HalfEdge>::wedgeTexCoord(uint i)
+{
+	uint                   j  = 0;
+	WedgeTexCoordsIterator it = wedgeTexCoordBegin();
+	while (j < i) {
+		++it;
+		++j;
+	}
+	return *it;
+}
+
+template<typename HalfEdge>
+template<HasTexCoord HE>
+const typename HE::TexCoordType& FaceHalfEdgeReference<HalfEdge>::wedgeTexCoord(uint i) const
+{
+	uint                        j  = 0;
+	ConstWedgeTexCoordsIterator it = wedgeTexCoordBegin();
+	while (j < i) {
+		++it;
+		++j;
+	}
+	return *it;
+}
+
+template<typename HalfEdge>
+template<HasTexCoord HE>
+typename HE::TexCoordType& FaceHalfEdgeReference<HalfEdge>::wedgeTexCoordMod(int i)
+{
+	uint                   j  = 0;
+	WedgeTexCoordsIterator it =
+		WedgeTexCoordsIterator(ohe, nullptr); // this iterator does not have an end
+	while (j < std::abs(i)) {
+		if (i > 0)
+			++it;
+		else
+			--it;
+		++j;
+	}
+	return *it;
+}
+
+template<typename HalfEdge>
+template<HasTexCoord HE>
+const typename HE::TexCoordType& FaceHalfEdgeReference<HalfEdge>::wedgeTexCoordMod(int i) const
+{
+	uint                        j  = 0;
+	ConstWedgeTexCoordsIterator it =
+		ConstWedgeTexCoordsIterator(ohe, nullptr); // this iterator does not have an end
+	while (j < std::abs(i)) {
+		if (i > 0)
+			++it;
+		else
+			--it;
+		++j;
+	}
+	return *it;
+}
+
+template<typename HalfEdge>
+template<HasTexCoord HE>
+void FaceHalfEdgeReference<HalfEdge>::setWedgeTexCoord(const typename HE::TexCoordType& t, uint i)
+{
+	wedgeTexCoord(i) = t;
+}
+
+template<typename HalfEdge>
+template<HasTexCoord HE>
+void FaceHalfEdgeReference<HalfEdge>::setWedgeTexCoords(
+	const std::vector<typename HE::TexCoordType>& list)
+{
+	assert(list.size() == vertexNumber());
+	uint i = 0;
+	for (typename HE::TexCoordType& c : wedgeTexCoords()) {
+		c = list[i++];
+	}
+}
+
+template<typename HalfEdge>
+bool FaceHalfEdgeReference<HalfEdge>::isWedgeTexCoordsEnabled() const requires HasTexCoord<HalfEdge>
+{
+	if constexpr (HasOptionalTexCoord<HalfEdge>) {
+		return ohe->isTexCoordEnabled();
 	}
 	else {
 		return true;
@@ -687,6 +777,54 @@ FaceHalfEdgeReference<HalfEdge>::wedgeColors() const requires HasColor<HalfEdge>
 {
 	return ConstWedgeColorsRangeIterator(
 		*this, &FaceHalfEdgeReference::wedgeColorBegin, &FaceHalfEdgeReference::wedgeColorEnd);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::WedgeTexCoordsIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeTexCoordBegin() requires HasTexCoord<HalfEdge>
+{
+	return WedgeTexCoordsIterator(ohe);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::WedgeTexCoordsIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeTexCoordEnd() requires HasTexCoord<HalfEdge>
+{
+	return WedgeTexCoordsIterator(nullptr);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::ConstWedgeTexCoordsIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeTexCoordBegin() const requires HasTexCoord<HalfEdge>
+{
+	return ConstWedgeTexCoordsIterator(ohe);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::ConstWedgeTexCoordsIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeTexCoordEnd() const requires HasTexCoord<HalfEdge>
+{
+	return ConstWedgeTexCoordsIterator(nullptr);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::WedgeTexCoordsRangeIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeTexCoords() requires HasTexCoord<HalfEdge>
+{
+	return WedgeTexCoordsRangeIterator(
+		*this,
+		&FaceHalfEdgeReference::wedgeTexCoordBegin,
+		&FaceHalfEdgeReference::wedgeTexCoordEnd);
+}
+
+template<typename HalfEdge>
+typename FaceHalfEdgeReference<HalfEdge>::ConstWedgeTexCoordsRangeIterator
+FaceHalfEdgeReference<HalfEdge>::wedgeTexCoords() const requires HasTexCoord<HalfEdge>
+{
+	return ConstWedgeTexCoordsRangeIterator(
+		*this,
+		&FaceHalfEdgeReference::wedgeTexCoordBegin,
+		&FaceHalfEdgeReference::wedgeTexCoordEnd);
 }
 
 template<typename HalfEdge>

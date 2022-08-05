@@ -45,6 +45,7 @@ class HalfEdge :
 			vcl::hedge::OptionalScalar<Scalar, HalfEdge<Scalar>>,
 			vcl::hedge::OptionalColor<HalfEdge<Scalar>>,
 			vcl::hedge::OptionalMark<HalfEdge<Scalar>>,
+			vcl::hedge::OptionalTexCoord<Scalar, HalfEdge<Scalar>>,
 			vcl::hedge::CustomComponents<HalfEdge<Scalar>>>
 {
 };

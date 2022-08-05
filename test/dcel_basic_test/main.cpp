@@ -50,6 +50,12 @@ int main()
 		assert(m.face(0).wedgeColor(1) == m.halfEdge(1).color());
 		assert(m.face(0).wedgeColor(2) == m.halfEdge(2).color());
 
+		m.enablePerFaceWedgeTexCoords();
+		m.face(0).wedgeTexCoord(0) = vcl::TexCoordd(1, 3);
+
+		assert(m.face(0).wedgeTexCoord(0).u() == 1);
+		assert(m.face(0).wedgeTexCoord(0).v() == 3);
+
 		for (const vcl::DcelMesh::Vertex* v : m.face(0).vertices()) {
 			std::cerr << v->coord() << "\n";
 		}

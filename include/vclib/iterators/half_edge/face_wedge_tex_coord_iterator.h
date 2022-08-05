@@ -20,57 +20,57 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TEX_COORD_H
-#define VCL_TEX_COORD_H
+#ifndef VCL_ITERATORS_FACE_WEDGE_TEX_COORD_ITERATOR_H
+#define VCL_ITERATORS_FACE_WEDGE_TEX_COORD_ITERATOR_H
 
-#include "point/point2.h"
+#include "face_base_iterator.h"
+
+#include <vclib/space/tex_coord.h>
 
 namespace vcl {
 
-template<typename Scalar>
-class TexCoord
+template<typename HalfEdge>
+class FaceWedgeTexCoordIterator : public FaceBaseIterator<HalfEdge>
 {
-	template<typename S>
-	friend class TexCoord;
-
+	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using ScalarType = Scalar;
+	using value_type        = typename HalfEdge::TexCoordType;
+	using reference         = typename HalfEdge::TexCoordType&;
+	using pointer           = typename HalfEdge::TexCoordType*;
 
-	TexCoord();
-	TexCoord(const Scalar& s1, const Scalar& s2, short n = 0);
-	TexCoord(const Point2<Scalar>& p, short n = 0);
+	using Base::Base;
 
-	template<typename S>
-	TexCoord<S> cast() const;
-
-	Scalar  u() const;
-	Scalar  v() const;
-	Scalar& u();
-	Scalar& v();
-	void    setU(Scalar s);
-	void    setV(Scalar s);
-	void    set(Scalar u, Scalar v);
-
-	short  nTexture() const;
-	short& nTexture();
-
-	// operators
-	Scalar&       operator()(uint i);
-	const Scalar& operator()(uint i) const;
-	Scalar&       operator[](uint i);
-	const Scalar& operator[](uint i) const;
-
-private:
-	Point2<Scalar> coord;
-	short          n;
+	reference operator*() const
+	{
+		return Base::current->texCoord();
+	}
+	pointer operator->() const
+	{
+		return &(Base::current->texCoord());
+	}
 };
 
-using TexCoordi = TexCoord<int>;
-using TexCoordf = TexCoord<float>;
-using TexCoordd = TexCoord<double>;
+template<typename HalfEdge>
+class ConstFaceWedgeTexCoordIterator : public ConstFaceBaseIterator<HalfEdge>
+{
+	using Base = ConstFaceBaseIterator<HalfEdge>;
+public:
+	using value_type        = const typename HalfEdge::TexCoordType;
+	using reference         = const typename HalfEdge::TexCoordType&;
+	using pointer           = const typename HalfEdge::TexCoordType*;
+
+	using Base::Base;
+
+	reference operator*() const
+	{
+		return Base::current->texCoord();
+	}
+	pointer operator->() const
+	{
+		return &(Base::current->texCoord());
+	}
+};
 
 } // namespace vcl
 
-#include "tex_coord.cpp"
-
-#endif // VCL_TEX_COORD_H
+#endif // VCL_ITERATORS_FACE_WEDGE_TEX_COORD_ITERATOR_H

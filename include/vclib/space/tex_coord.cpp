@@ -31,6 +31,16 @@ TexCoord<Scalar>::TexCoord() : coord(0, 0), n(0)
 }
 
 template<typename Scalar>
+TexCoord<Scalar>::TexCoord(const Scalar &s1, const Scalar &s2, short n) : coord(s1, s2), n(n)
+{
+}
+
+template<typename Scalar>
+TexCoord<Scalar>::TexCoord(const Point2<Scalar> &p, short n) : coord(p), n(n)
+{
+}
+
+template<typename Scalar>
 template<typename S>
 TexCoord<S> TexCoord<Scalar>::cast() const
 {
