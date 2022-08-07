@@ -96,15 +96,15 @@ public:
 	Vertex*&      adjVertexMod(int i);
 	const Vertex* adjVertexMod(int i) const;
 
-	void setAdjVertex(Vertex* f, uint i);
+	void setAdjVertex(Vertex* v, uint i);
 	void setAdjVertices(const std::vector<Vertex*>& list);
 
-	bool containsAdjVertex(const Vertex* f) const;
+	bool containsAdjVertex(const Vertex* v) const;
 
-	AdjacentVertexIterator      findAdjVertex(const Vertex* f);
-	ConstAdjacentVertexIterator findAdjVertex(const Vertex* f) const;
+	AdjacentVertexIterator      findAdjVertex(const Vertex* v);
+	ConstAdjacentVertexIterator findAdjVertex(const Vertex* v) const;
 
-	int indexOfAdjVertex(const Vertex* f) const;
+	int indexOfAdjVertex(const Vertex* v) const;
 
 	constexpr bool isAdjVerticesEnabled() const { return true; }
 
