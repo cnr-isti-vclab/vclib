@@ -48,7 +48,7 @@ class ConstVertexAdjVertexIterator : public ConstVertexBaseIterator<HalfEdge>
 	using Base = ConstVertexBaseIterator<HalfEdge>;
 public:
 	using value_type        = const typename HalfEdge::VertexType*;
-	using reference         = const typename HalfEdge::VertexType*&;
+	using reference         = const typename HalfEdge::VertexType*;
 	using pointer           = const typename HalfEdge::VertexType**;
 
 	using Base::Base;

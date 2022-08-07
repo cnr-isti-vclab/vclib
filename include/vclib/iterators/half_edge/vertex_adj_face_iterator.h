@@ -48,7 +48,7 @@ class ConstVertexAdjFaceIterator : public ConstVertexBaseIterator<HalfEdge>
 	using Base = ConstVertexBaseIterator<HalfEdge>;
 public:
 	using value_type        = const typename HalfEdge::FaceType*;
-	using reference         = const typename HalfEdge::FaceType*&;
+	using reference         = const typename HalfEdge::FaceType*;
 	using pointer           = const typename HalfEdge::FaceType**;
 
 	using Base::Base;

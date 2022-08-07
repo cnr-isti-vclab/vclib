@@ -25,9 +25,9 @@
 
 #include <vector>
 
-#include <vclib/iterators/half_edge/vertex_adj_face_iterator.h>
-#include <vclib/iterators/half_edge/vertex_adj_vertex_iterator.h>
-#include <vclib/iterators/range_iterator.h>
+//#include <vclib/iterators/half_edge/vertex_adj_face_iterator.h>
+//#include <vclib/iterators/half_edge/vertex_adj_vertex_iterator.h>
+//#include <vclib/iterators/range_iterator.h>
 
 #include "../concepts/vertex_half_edge_reference.h"
 
@@ -44,18 +44,18 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentFaceIterator      = vcl::VertexAdjFaceIterator<HalfEdge>;
-	using ConstAdjacentFaceIterator = vcl::ConstVertexAdjFaceIterator<HalfEdge>;
-	using AdjacentFaceRangeIterator = RangeIterator<VertexHalfEdgeReference, AdjacentFaceIterator>;
-	using ConstAdjacentFaceRangeIterator =
-		ConstRangeIterator<VertexHalfEdgeReference, ConstAdjacentFaceIterator>;
+//	using AdjacentFaceIterator      = vcl::VertexAdjFaceIterator<HalfEdge>;
+//	using ConstAdjacentFaceIterator = vcl::ConstVertexAdjFaceIterator<HalfEdge>;
+//	using AdjacentFaceRangeIterator = RangeIterator<VertexHalfEdgeReference, AdjacentFaceIterator>;
+//	using ConstAdjacentFaceRangeIterator =
+//		ConstRangeIterator<VertexHalfEdgeReference, ConstAdjacentFaceIterator>;
 
-	using AdjacentVertexIterator      = vcl::VertexAdjVertexIterator<HalfEdge>;
-	using ConstAdjacentVertexIterator = vcl::ConstVertexAdjVertexIterator<HalfEdge>;
-	using AdjacentVertexRangeIterator =
-		RangeIterator<VertexHalfEdgeReference, AdjacentVertexIterator>;
-	using ConstAdjacentVertexRangeIterator =
-		ConstRangeIterator<VertexHalfEdgeReference, ConstAdjacentVertexIterator>;
+//	using AdjacentVertexIterator      = vcl::VertexAdjVertexIterator<HalfEdge>;
+//	using ConstAdjacentVertexIterator = vcl::ConstVertexAdjVertexIterator<HalfEdge>;
+//	using AdjacentVertexRangeIterator =
+//		RangeIterator<VertexHalfEdgeReference, AdjacentVertexIterator>;
+//	using ConstAdjacentVertexRangeIterator =
+//		ConstRangeIterator<VertexHalfEdgeReference, ConstAdjacentVertexIterator>;
 
 	/* Constructor */
 
@@ -68,66 +68,72 @@ public:
 
 	/* AdjacentFaces compatibility */
 
-	uint adjFacesNumber() const;
+//	uint adjFacesNumber() const;
 
-	Face*&      adjFace(uint i);
-	const Face* adjFace(uint i) const;
-	Face*&      adjFaceMod(int i);
-	const Face* adjFaceMod(int i) const;
+//	Face*&      adjFace(uint i);
+//	const Face* adjFace(uint i) const;
+//	Face*&      adjFaceMod(int i);
+//	const Face* adjFaceMod(int i) const;
 
-	void setAdjFace(Face* f, uint i);
-	void setAdjFaces(const std::vector<Face*>& list);
+//	void setAdjFace(Face* f, uint i);
+//	void setAdjFaces(const std::vector<Face*>& list);
 
-	bool containsAdjFace(const Face* f) const;
+//	bool containsAdjFace(const Face* f) const;
 
-	AdjacentFaceIterator      findAdjFace(const Face* f);
-	ConstAdjacentFaceIterator findAdjFace(const Face* f) const;
+//	AdjacentFaceIterator      findAdjFace(const Face* f);
+//	ConstAdjacentFaceIterator findAdjFace(const Face* f) const;
 
-	int indexOfAdjFace(const Face* f) const;
+//	int indexOfAdjFace(const Face* f) const;
 
-	constexpr bool isAdjFacesEnabled() const { return true; }
+//	constexpr bool isAdjFacesEnabled() const { return true; }
 
 	/* AdjacentVertices compatibility */
 
-	uint adjVerticesNumber() const;
+//	uint adjVerticesNumber() const;
 
-	Vertex*&      adjVertex(uint i);
-	const Vertex* adjVertex(uint i) const;
-	Vertex*&      adjVertexMod(int i);
-	const Vertex* adjVertexMod(int i) const;
+//	Vertex*&      adjVertex(uint i);
+//	const Vertex* adjVertex(uint i) const;
+//	Vertex*&      adjVertexMod(int i);
+//	const Vertex* adjVertexMod(int i) const;
 
-	void setAdjVertex(Vertex* f, uint i);
-	void setAdjVertices(const std::vector<Vertex*>& list);
+//	void setAdjVertex(Vertex* f, uint i);
+//	void setAdjVertices(const std::vector<Vertex*>& list);
 
-	bool containsAdjVertex(const Vertex* f) const;
+//	bool containsAdjVertex(const Vertex* f) const;
 
-	AdjacentVertexIterator      findAdjVertex(const Vertex* f);
-	ConstAdjacentVertexIterator findAdjVertex(const Vertex* f) const;
+//	AdjacentVertexIterator      findAdjVertex(const Vertex* f);
+//	ConstAdjacentVertexIterator findAdjVertex(const Vertex* f) const;
 
-	int indexOfAdjVertex(const Vertex* f) const;
+//	int indexOfAdjVertex(const Vertex* f) const;
 
-	constexpr bool isAdjVerticesEnabled() const { return true; }
+//	constexpr bool isAdjVerticesEnabled() const { return true; }
 
 	/* Iterator Member functions */
 
-	AdjacentFaceIterator           adjFaceBegin();
-	AdjacentFaceIterator           adjFaceEnd();
-	ConstAdjacentFaceIterator      adjFaceBegin() const;
-	ConstAdjacentFaceIterator      adjFaceEnd() const;
-	AdjacentFaceRangeIterator      adjFaces();
-	ConstAdjacentFaceRangeIterator adjFaces() const;
+//	AdjacentFaceIterator           adjFaceBegin();
+//	AdjacentFaceIterator           adjFaceEnd();
+//	ConstAdjacentFaceIterator      adjFaceBegin() const;
+//	ConstAdjacentFaceIterator      adjFaceEnd() const;
+//	AdjacentFaceRangeIterator      adjFaces();
+//	ConstAdjacentFaceRangeIterator adjFaces() const;
 
-	AdjacentVertexIterator           adjVertexBegin();
-	AdjacentVertexIterator           adjVertexEnd();
-	ConstAdjacentVertexIterator      adjVertexBegin() const;
-	ConstAdjacentVertexIterator      adjVertexEnd() const;
-	AdjacentVertexRangeIterator      adjVertices();
-	ConstAdjacentVertexRangeIterator adjVertices() const;
+//	AdjacentVertexIterator           adjVertexBegin();
+//	AdjacentVertexIterator           adjVertexEnd();
+//	ConstAdjacentVertexIterator      adjVertexBegin() const;
+//	ConstAdjacentVertexIterator      adjVertexEnd() const;
+//	AdjacentVertexRangeIterator      adjVertices();
+//	ConstAdjacentVertexRangeIterator adjVertices() const;
 
 protected:
 	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
 	void
 	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+
+//	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+//	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+
+//	void updateFaceReferences(const Face* oldBase, const Face* newBase);
+//	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
