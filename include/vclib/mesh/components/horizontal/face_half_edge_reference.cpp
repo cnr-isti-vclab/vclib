@@ -176,7 +176,7 @@ void FaceHalfEdgeReference<HalfEdge>::setVertices(const std::vector<Vertex*>& li
 template<typename HalfEdge>
 bool FaceHalfEdgeReference<HalfEdge>::containsVertex(const Vertex* v) const
 {
-	return std::find(vertexBegin(), vertexEnd(), v) != vertexEnd();
+	return findVertex(v) != vertexEnd();
 }
 
 template<typename HalfEdge>
@@ -302,7 +302,7 @@ void FaceHalfEdgeReference<HalfEdge>::setAdjFaces(const std::vector<Face*>& list
 template<typename HalfEdge>
 bool FaceHalfEdgeReference<HalfEdge>::containsAdjFace(const Face* f) const
 {
-	return std::find(adjFaceBegin(), adjFaceEnd(), f) != adjFaceEnd();
+	return findAdjFace(f) != adjFaceEnd();
 }
 
 template<typename HalfEdge>
