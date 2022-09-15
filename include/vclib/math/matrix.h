@@ -1,14 +1,11 @@
-#ifndef VCL_MATH_MATRIX_H
-#define VCL_MATH_MATRIX_H
-
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -22,6 +19,9 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
  * for more details.                                                         *
  ****************************************************************************/
+
+#ifndef VCL_MATH_MATRIX_H
+#define VCL_MATH_MATRIX_H
 
 #include <Eigen/Core>
 
