@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -29,6 +29,7 @@
 #include "../components/horizontal/mark.h"
 #include "../components/horizontal/normal.h"
 #include "../components/horizontal/scalar.h"
+#include "../components/horizontal/tex_coord.h"
 
 namespace vcl::hedge {
 
@@ -51,6 +52,13 @@ using Scalar = comp::Scalar<ScalarType>;
 
 using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
+
+/* Port TexCoord class into hedge namespace */
+template<typename ScalarType>
+using TexCoord = comp::TexCoord<ScalarType>;
+
+using TexCoordf = comp::TexCoordf;
+using TexCoordd = comp::TexCoordd;
 
 } // namespace vcl::hedge
 

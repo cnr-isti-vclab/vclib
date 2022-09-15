@@ -1,11 +1,11 @@
 #*****************************************************************************
-#* VCLib                                                             o o     *
-#* Visual Computing Library                                        o     o   *
-#*                                                                _   O  _   *
-#* Copyright(C) 2021-2022                                           \/)\/    *
-#* Visual Computing Lab                                            /\/|      *
-#* ISTI - Italian National Research Council                           |      *
-#*                                                                    \      *
+#* VCLib                                                                     *
+#* Visual Computing Library                                                  *
+#*                                                                           *
+#* Copyright(C) 2021-2022                                                    *
+#* Alessandro Muntoni                                                        *
+#* VCLab - ISTI - Italian National Research Council                          *
+#*                                                                           *
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
@@ -102,6 +102,11 @@ set(HEADERS
 	include/vclib/iterators/half_edge/face_base_iterator.h
 	include/vclib/iterators/half_edge/face_half_edge_iterator.h
 	include/vclib/iterators/half_edge/face_vertex_iterator.h
+	include/vclib/iterators/half_edge/face_wedge_color_iterator.h
+	include/vclib/iterators/half_edge/face_wedge_tex_coord_iterator.h
+	include/vclib/iterators/half_edge/vertex_adj_face_iterator.h
+	include/vclib/iterators/half_edge/vertex_adj_vertex_iterator.h
+	include/vclib/iterators/half_edge/vertex_base_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/matrix.h
@@ -210,6 +215,8 @@ set(HEADERS
 	include/vclib/mesh/requirements/element_concepts.h
 	include/vclib/mesh/requirements/face_concepts.h
 	include/vclib/mesh/requirements/face_requirements.h
+	include/vclib/mesh/requirements/half_edge_concepts.h
+	include/vclib/mesh/requirements/half_edge_requirements.h
 	include/vclib/mesh/requirements/mesh_concepts.h
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_concepts.h
@@ -284,6 +291,7 @@ set(SOURCES
 	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/iterators/container_iterator.cpp
 	include/vclib/iterators/half_edge/face_base_iterator.cpp
+	include/vclib/iterators/half_edge/vertex_base_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/matrix.cpp
 	include/vclib/math/perlin_noise.cpp
@@ -339,6 +347,7 @@ set(SOURCES
 	include/vclib/mesh/elements/half_edge.cpp
 	include/vclib/mesh/elements/vertex.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
+	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp
 	include/vclib/misc/compactness.cpp

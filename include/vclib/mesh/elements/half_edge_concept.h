@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -50,7 +50,7 @@ struct IsAHalfEdge<HalfEdge<Args...>> : // For types matching the pattern HalfEd
 {
 };
 
-/* Port concepts into the vert namespace */
+/* Port concepts into the hedge namespace */
 template<typename T>
 concept HasBitFlags = comp::HasBitFlags<T>;
 template<typename T>
@@ -67,6 +67,10 @@ template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
 template<typename T>
 concept HasScalar = comp::HasScalar<T>;
+template<typename T>
+concept HasTexCoord = comp::HasTexCoord<T>;
+template<typename T>
+concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
 template<typename T>
 concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>

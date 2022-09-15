@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -57,10 +57,10 @@ public:
 
 	Face();
 
-	Face(const std::vector<VertexType*>& list);
+	Face(const std::vector<VertexType*>& list); // todo add requires
 
 	template<typename... V>
-	Face(V... args);
+	Face(V... args); // todo add requires
 
 	void setVertices(const std::vector<VertexType*>& list);
 

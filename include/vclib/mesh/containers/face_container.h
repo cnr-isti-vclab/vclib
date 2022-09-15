@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -117,16 +117,6 @@ public:
 	void enablePerFaceScalar() requires face::HasOptionalScalar<T>;
 	void disablePerFaceScalar() requires face::HasOptionalScalar<T>;
 
-	// WedgeColors
-	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
-	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
-	void disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
-
-	// WedgeTexCoords
-	bool isPerFaceWedgeTexCoordsEnabled() const requires face::HasOptionalWedgeTexCoords<T>;
-	void enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
-	void disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
-
 	// Custom Components
 	bool hasPerFaceCustomComponent(
 		const std::string& name) const requires face::HasCustomComponents<T>;
@@ -187,6 +177,20 @@ protected:
 
 	template<typename Mesh, typename Edge>
 	void importEdgeReferencesFrom(const Mesh& m, Edge* base);
+
+	template<typename Mesh, typename HalfEdge>
+	void importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* base);
+
+	// WedgeColors
+	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
+	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
+	void disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
+
+	// WedgeTexCoords
+	bool isPerFaceWedgeTexCoordsEnabled() const requires face::HasOptionalWedgeTexCoords<T>;
+	void enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
+	void disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
+
 };
 
 } // namespace vcl::mesh

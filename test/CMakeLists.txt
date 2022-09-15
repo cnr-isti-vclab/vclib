@@ -1,13 +1,13 @@
-#*****************************************************************************
-#* VCLib                                                             o o     *
-#* Visual Computing Library                                        o     o   *
-#*                                                                _   O  _   *
-#* Copyright(C) 2021-2022                                           \/)\/    *
-#* Visual Computing Lab                                            /\/|      *
-#* ISTI - Italian National Research Council                           |      *
-#*                                                                    \      *
-#* All rights reserved.                                                      *
-#****************************************************************************/
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
 
 cmake_minimum_required(VERSION 3.13)
 project(vclib-test)
@@ -18,6 +18,7 @@ add_definitions(-DVCL_TEST_RESULTS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data/result
 
 add_subdirectory(kd_tree)
 add_subdirectory(dcel_basic_test)
+add_subdirectory(edge_mesh_basic_test)
 add_subdirectory(mesh_basic_test)
 add_subdirectory(mesh_clean)
 add_subdirectory(mesh_conversion)

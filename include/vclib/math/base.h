@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -31,6 +31,12 @@ template<typename Scalar>
 bool isDegenerate(Scalar t)
 {
 	return std::isinf(t) || std::isnan(t);
+}
+
+template <typename Scalar>
+bool epsilonCompare(Scalar p1, Scalar p2, Scalar epsilon = std::numeric_limits<Scalar>::epsilon())
+{
+	return (std::abs(p1 - p2) <= epsilon);
 }
 
 template<typename Scalar>

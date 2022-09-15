@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -137,7 +137,7 @@ inline void ElementContainer<T>::deleteElement(uint i)
  *
  * Deleted elements are automatically jumped by the iterators provided by the Element Container.
  *
- * @param[in] f: the pointer of the element that will be marked as deleted.
+ * @param[in] e: the pointer of the element that will be marked as deleted.
  */
 template<typename T>
 inline void ElementContainer<T>::deleteElement(const T* e)
@@ -764,54 +764,158 @@ void ElementContainer<T>::importFrom(const Container &c)
 	}
 }
 
+/**
+ * This member function is called when this Element container needs to import vertex references from
+ * another Container c.
+ *
+ * It is called when an import from another mesh type is performed. The import first creates all
+ * the elements in the newly created mesh using the importFrom function, and then imports references
+ * (pointers) from each element of the other mesh.
+ *
+ * For each element of this and the other container, we compute the offset between the any vertex
+ * reference contained in the other element and its base (the pointer of the vertex 0) in the other
+ * mesh, and then add this offset to the base (the pointer of the vertex 0) in this mesh.
+ *
+ * Takes the following inputs:
+ * - c: another container of the same element of this container (but with different components)
+ * - base: the pointer of the first Vertex reference of this mesh. We will use it to compute the
+ *         new vertex pointers in this container
+ * - cbase: the pointer of the first Vertex reference of the other mesh. We will use it to compute
+ *          the offset between any vertex reference contained in the other element and the base,
+ *          and the offset is then used to compute the new vertex pointer for this container
+ */
 template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	if constexpr (comp::HasVertexReferences<CBase> || comp::HasAdjacentVertices<CBase>) {
-		for (uint i = 0; i < elementContainerSize(); ++i) {
-			element(i).importVertexReferencesFrom(c.element(i), base, cbase);
+	// Dcel case: the element (face or vertex) has the illusion to have adjacence references, but
+	// it has only half edge references and the other references are into the half edge component.
+	// therefore, we don't need to import anything here - we will import in the half edge component
+	// using the importVertexReferencesFrom member function called on half edges
+	if constexpr (!comp::HasFaceHalfEdgeReference<T> && !comp::HasVertexHalfEdgeReference<T>) {
+		// if the element of this container has at least one of these components (it will have just
+		// one of these), it means that it has the importVertexReferencesFrom member function that
+		// can be called. This function takes the ith element of the other mesh, and the bases
+		// to compute the offset and then the new reference
+		if constexpr (
+			comp::HasVertexReferences<T> ||
+			comp::HasAdjacentVertices<T> ||
+			comp::HasHalfEdgeReferences<T>) {
+			for (uint i = 0; i < elementContainerSize(); ++i) {
+				element(i).importVertexReferencesFrom(c.element(i), base, cbase);
+			}
 		}
 	}
 }
 
+/**
+ * This member function is called when this Element container needs to import face references from
+ * another Container c.
+ *
+ * It is called when an import from another mesh type is performed. The import first creates all
+ * the elements in the newly created mesh using the importFrom function, and then imports references
+ * (pointers) from each element of the other mesh.
+ *
+ * For each element of this and the other container, we compute the offset between the any face
+ * reference contained in the other element and its base (the pointer of the face 0) in the other
+ * mesh, and then add this offset to the base (the pointer of the face 0) in this mesh.
+ *
+ * Takes the following inputs:
+ * - c: another container of the same element of this container (but with different components)
+ * - base: the pointer of the first Face reference of this mesh. We will use it to compute the
+ *         new face pointers in this container
+ * - cbase: the pointer of the first Face reference of the other mesh. We will use it to compute
+ *          the offset between any face reference contained in the other element and the base,
+ *          and the offset is then used to compute the new face pointer for this container
+ */
 template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importFaceReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	if constexpr(comp::HasAdjacentFaces<CBase>) {
-		for (uint i = 0; i < elementContainerSize(); ++i) {
-			element(i).importFaceReferencesFrom(c.element(i), base, cbase);
+	// Dcel case: the element (face or vertex) has the illusion to have adjacence references, but
+	// it has only half edge references and the other references are into the half edge component.
+	// therefore, we don't need to import anything here - we will import in the half edge component
+	// using the importFaceReferencesFrom member function called on half edges
+	if constexpr (!comp::HasFaceHalfEdgeReference<T> && !comp::HasVertexHalfEdgeReference<T>) {
+		// if the element of this container has at least one of these components (it will have just
+		// one of these), it means that it has the importFaceReferencesFrom member function that
+		// can be called. This function takes the ith element of the other mesh, and the bases
+		// to compute the offset and then the new reference
+		if constexpr(comp::HasAdjacentFaces<T> || comp::HasHalfEdgeReferences<T>) {
+			for (uint i = 0; i < elementContainerSize(); ++i) {
+				element(i).importFaceReferencesFrom(c.element(i), base, cbase);
+			}
 		}
 	}
 }
 
+/**
+ * This member function is called when this Element container needs to import edge references from
+ * another Container c.
+ *
+ * It is called when an import from another mesh type is performed. The import first creates all
+ * the elements in the newly created mesh using the importFrom function, and then imports references
+ * (pointers) from each element of the other mesh.
+ *
+ * For each element of this and the other container, we compute the offset between the any edge
+ * reference contained in the other element and its base (the pointer of the edge 0) in the other
+ * mesh, and then add this offset to the base (the pointer of the edge 0) in this mesh.
+ *
+ * Takes the following inputs:
+ * - c: another container of the same element of this container (but with different components)
+ * - base: the pointer of the first Edge reference of this mesh. We will use it to compute the
+ *         new edge pointers in this container
+ * - cbase: the pointer of the first Edge reference of the other mesh. We will use it to compute
+ *          the offset between any edge reference contained in the other element and the base,
+ *          and the offset is then used to compute the new edge pointer for this container
+ */
 template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	if constexpr(comp::HasAdjacentEdges<CBase>) {
+	// if the element of this container has at least one of these components (it will have just
+	// one of these), it means that it has the importEdgeReferencesFrom member function that
+	// can be called. This function takes the ith element of the other mesh, and the bases
+	// to compute the offset and then the new reference
+	if constexpr (comp::HasAdjacentEdges<T>) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importEdgeReferencesFrom(c.element(i), base, cbase);
 		}
 	}
 }
 
+/**
+ * This member function is called when this Element container needs to import half edge references
+ * from another Container c.
+ *
+ * It is called when an import from another mesh type is performed. The import first creates all
+ * the elements in the newly created mesh using the importFrom function, and then imports references
+ * (pointers) from each element of the other mesh.
+ *
+ * For each element of this and the other container, we compute the offset between the any half edge
+ * reference contained in the other element and its base (the pointer of the half edge 0) in the
+ * other mesh, and then add this offset to the base (the pointer of the half edge 0) in this mesh.
+ *
+ * Takes the following inputs:
+ * - c: another container of the same element of this container (but with different components)
+ * - base: the pointer of the first HalfEdge reference of this mesh. We will use it to compute the
+ *         new half edge pointers in this container
+ * - cbase: the pointer of the first HalfEdge reference of the other mesh. We will use it to compute
+ *          the offset between any half edge reference contained in the other element and the base,
+ *          and the offset is then used to compute the new half edge pointer for this container
+ */
 template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importHalfEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	if constexpr (comp::HasFaceHalfEdgeReference<CBase>) {
-		for (uint i = 0; i < elementContainerSize(); ++i) {
-			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
-		}
-	}
-	if constexpr (comp::HasHalfEdgeReferences<CBase>) {
-		for (uint i = 0; i < elementContainerSize(); ++i) {
-			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
-		}
-	}
-	if constexpr (comp::HasVertexHalfEdgeReference<CBase>) {
+	// if the element of this container has at least one of these components (it will have just
+	// one of these), it means that it has the importHalfEdgeReferencesFrom member function that
+	// can be called. This function takes the ith element of the other mesh, and the bases
+	// to compute the offset and then the new reference
+	if constexpr (
+		comp::HasFaceHalfEdgeReference<T> ||
+		comp::HasHalfEdgeReferences<T> ||
+		comp::HasVertexHalfEdgeReference<T>) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
 		}

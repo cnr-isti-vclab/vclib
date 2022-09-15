@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -34,15 +34,30 @@ int main()
 
 	m.addVertex();
 
+	assert(m.vertexNumber() == 1);
+
 	m.addFace();
+
+	assert(m.faceNumber() == 1);
 
 	auto& f = m.face(0);
 
+	assert(f.vertexNumber() == 0);
+
 	f.pushVertex(&m.vertex(0));
+
+	assert(f.vertexNumber() == 1);
+	assert(m.face(0).vertexNumber() == 1);
+
+	assert(&m.vertex(0) == f.vertex(0));
 
 	m.enablePerFaceAdjacentFaces();
 
+	assert(vcl::isPerFaceAdjacentFacesEnabled(m));
+
 	f.clearVertices();
+
+	assert(m.face(0).vertexNumber() == 0);
 
 	return 0;
 }

@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -936,8 +936,7 @@ void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m, T* base)
 	if constexpr (HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
-		Base::importVertexReferencesFrom(
-			(const MVertexContainer&) m, base, &m.vertex(0));
+		Base::importVertexReferencesFrom((const MVertexContainer&) m, base, &m.vertex(0));
 	}
 }
 
@@ -960,6 +959,17 @@ void VertexContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
 		Base::importEdgeReferencesFrom((const MVertexContainer&) m, base, &m.edge(0));
+	}
+}
+
+template<VertexConcept T>
+template<typename Mesh, typename HalfEdge>
+void VertexContainer<T>::importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* base)
+{
+	if constexpr (HasHalfEdgeContainer<Mesh> && HasVertexContainer<Mesh>) {
+		using MVertexContainer = typename Mesh::VertexContainer::Base;
+
+		Base::importHalfEdgeReferencesFrom((const MVertexContainer&) m, base, &m.halfEdge(0));
 	}
 }
 

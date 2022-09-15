@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -48,7 +48,7 @@ public:
 
 protected:
 	HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to this he, it will be set to nullptr
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 template<typename HalfEdge>
@@ -61,7 +61,6 @@ public:
 	ConstFaceBaseIterator();
 	ConstFaceBaseIterator(const HalfEdge* start);
 	ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end);
-	ConstFaceBaseIterator(const FaceBaseIterator<HalfEdge>& it);
 
 	bool operator==(const ConstFaceBaseIterator& oi) const;
 	bool operator!=(const ConstFaceBaseIterator& oi) const;
@@ -73,7 +72,7 @@ public:
 
 protected:
 	const HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to this he, it will be set to nullptr
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl

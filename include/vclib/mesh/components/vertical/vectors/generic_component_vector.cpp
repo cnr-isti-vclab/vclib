@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -51,14 +51,14 @@ void GenericComponentVector<T>::disable()
 template<typename T>
 T& GenericComponentVector<T>::at(uint i)
 {
-	assert(enabled);
+	assert(enabled && "You are trying to use a not-enabled component.");
 	return vec[i];
 }
 
 template<typename T>
 const T& GenericComponentVector<T>::at(uint i) const
 {
-	assert(enabled);
+	assert(enabled && "You are trying to use a not-enabled component.");
 	return vec[i];
 }
 

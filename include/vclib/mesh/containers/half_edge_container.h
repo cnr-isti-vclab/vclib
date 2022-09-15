@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -89,6 +89,11 @@ public:
 	void enablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>;
 	void disablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>;
 
+	// TexCoord
+	bool isPerHalfEdgeTexCoordEnabled() const requires hedge::HasOptionalTexCoord<T>;
+	void enablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>;
+	void disablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>;
+
 	// Custom Components
 	bool hasPerHalfEdgeCustomComponent(
 		const std::string& name) const requires hedge::HasCustomComponents<T>;
@@ -135,6 +140,15 @@ protected:
 
 	template<typename Mesh>
 	void importFrom(const Mesh& m);
+
+	template<typename Mesh, typename Vertex>
+	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
+
+	template<typename Mesh, typename Face>
+	void importFaceReferencesFrom(const Mesh& m, Face* base);
+
+	template<typename Mesh>
+	void importHalfEdgeReferencesFrom(const Mesh& m, T* base);
 };
 
 } // namespace vcl::mesh

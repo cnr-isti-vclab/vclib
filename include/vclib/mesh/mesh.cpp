@@ -1,11 +1,11 @@
-﻿/*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -103,6 +103,144 @@ void Mesh<Args...>::clear()
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		EdgeContainer::clearEdges(); // clear faces, only if the mesh has edges
 	}
+}
+
+/**
+ * @brief Enables all the OptionalComponents of this mesh according to the Components available
+ * on the OtherMeshType m.
+ *
+ * This function is useful to call before importing data from another MeshType, to be sure that
+ * all the available data contained in the MeshType mesh will be imported.
+ *
+ * This function:
+ * - disables all the optional components that are not available in m
+ * - enables all the optional components that are available in m (which can be both optional or not)
+ *
+ * Example of usage:
+ *
+ * @code{.cpp}
+ * MeshType m1;
+ * OtherMeshType m2;
+ *
+ * // do stuff
+ *
+ * m1.enableSameOptionalComponentsOf(m2); // m1 enables all the available components of m2
+ * m1.importFrom(m2); // m1 will import all the data contained in m2 that can be stored in m1
+ * @endcode
+ *
+ * @param m
+ */
+template<typename... Args> requires HasVertices<Args...>
+template<typename OtherMeshType>
+void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
+{
+	// enable all optional components of this Mesh depending on what's available in the
+	// OtherMeshType
+
+	if constexpr (vcl::mesh::HasVertexContainer<Mesh<Args...>>) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		VertexContainer::enableOptionalComponentsOf(m);
+	}
+
+	if constexpr (vcl::mesh::HasFaceContainer<Mesh<Args...>>) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		FaceContainer::enableOptionalComponentsOf(m);
+	}
+
+	if constexpr (vcl::mesh::HasEdgeContainer<Mesh<Args...>>) {
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+		EdgeContainer::enableOptionalComponentsOf(m);
+	}
+}
+
+/**
+ * @brief Imports all the components that can be imported from another type of mesh.
+ *
+ * This function can be called from any Mesh type having all the Elements and Components that
+ * implement the member function importFrom.
+ *
+ * Note that this function does not enable optional components that are disabled.
+ * If you want to import all the possible data including also disabled components of this mesh, you
+ * should call the function m1.enableSameOptionalComponentsOf(m2) before this function.
+ *
+ * @param[in] m: the mesh from which import all the data.
+ */
+template<typename... Args> requires HasVertices<Args...>
+template<typename OtherMeshType>
+void Mesh<Args...>::importFrom(const OtherMeshType& m)
+{
+	// This function will first:
+	// Call, for each Container and Component of the mesh, its importFrom function.
+	// In case of containers, it first creates the same number of elements in the container,
+	// and then calls the importFrom function for each new element.
+	// References are not managed here, since they need additional parameters to be imported
+
+	(Args::importFrom(m), ...);
+
+		 // after importing ordinary components, we need to convert the references between containers.
+		 // each container can import more than one reference type, e.g.:
+		 // - VertexContainer could import vertex references (adjacent vertices), face references
+		 //   (adjacent faces), and so on;
+		 // - FaceContainer will always import vertex references, but could also import face references
+		 //   (adjacent faces), edge references (adjacent edges)...
+		 // for each container of this Mesh, we'll call the importReferences passing the container (Args)
+		 // as template parameter. This parameter will be used to call all the possible import functions
+		 // available (vertices, faces, edges, half edges)
+
+	(importReferences<Args>(m), ...);
+
+	if constexpr(mesh::HasFaceContainer<Mesh<Args...>> && mesh::HasFaceContainer<OtherMeshType>) {
+		// Now I need to manage imports between different types of meshes (same type of meshes are
+		// already managed from importFrom and importReferencesFrom member functions).
+		//
+		// Generally speaking, Polygon or Dcel meshes can import from any other type of mesh.
+		// We need to take care when this mesh has static vertex references number in the face
+		// container (VERTEX_NUMBER >= 3).
+		//
+		// The follwing case don't need to be managed:
+		// - import polygon non-dcel mesh from triangle mesh
+		//
+		// I can manage the following cases:
+		// - import triangle mesh from polygon mesh (also dcel): need triangulation
+		// - import dcel from non-dcel mesh (need to add half edges into the dcel)
+		//
+		// I cannot manage the follwing cases:
+		// - import static non-triangle mesh from polygon mesh or from a mesh with different
+		//   VERTEX_NUMBER
+
+			 // if this is not a Dcel Mesh
+		if constexpr (!DcelMeshConcept<Mesh<Args...>>) {
+			// in case of import from poly (could be also dcel) to triangle mesh, I need to manage
+			// triangulation of polygons and create additional triangle faces for each of the imported
+			// polygons
+			// this function statically asserts that the import can be done.
+			manageImportTriFromPoly(m);
+		}
+		else { // if this is a dcel mesh
+			// manage import from another non-dcel mesh (no need to manage the import from another dcel)
+			if constexpr(!DcelMeshConcept<OtherMeshType>) {
+				manageImportDcelFromMesh(m);
+			}
+		}
+
+	}
+}
+
+/**
+ * @brief Swaps this mesh with the other input Mesh m2.
+ * @param m2: the Mesh to swap with this Mesh.
+ */
+template<typename... Args> requires HasVertices<Args...>
+void Mesh<Args...>::swap(Mesh& m2)
+{
+	vcl::swap(*this, m2);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
+{
+	swap(oth);
+	return *this;
 }
 
 /**
@@ -235,7 +373,8 @@ uint Mesh<Args...>::addVertices(uint n)
  *
  * This function will be available only **if the Mesh has the Vertex Container**.
  *
- * @param v: list of vertices
+ * @param p: first vertex coordinate
+ * @param v: list of other vertex coordinates
  * @return the id of the first added vertex.
  */
 template<typename... Args> requires HasVertices<Args...>
@@ -464,6 +603,82 @@ void Mesh<Args...>::compactFaces() requires HasFaces<Mesh>
 		assert(oldBase == newBase);
 
 		updateFaceReferencesAfterCompact(oldBase, newIndices);
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<HasFaces M>
+bool Mesh<Args...>::isPerFaceWedgeColorsEnabled() const
+	requires internal::OptionalWedgeColorsConcept<M>
+{
+	if constexpr (face::HasOptionalWedgeColors<typename M::FaceType>) {
+		return M::FaceContainer::isPerFaceWedgeColorsEnabled();
+	}
+	else { // Dcel having half edges with optional color - to be used as wedge colors
+		return M::HalfEdgeContainer::isPerHalfEdgeColorEnabled();
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<HasFaces M>
+void Mesh<Args...>::enablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>
+{
+	if constexpr (face::HasOptionalWedgeColors<typename M::FaceType>) {
+		M::FaceContainer::enablePerFaceWedgeColors();
+	}
+	else { // Dcel having half edges with optional color - to be used as wedge colors
+		return M::HalfEdgeContainer::enablePerHalfEdgeColor();
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<HasFaces M>
+void Mesh<Args...>::disablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>
+{
+	if constexpr (face::HasOptionalWedgeColors<typename M::FaceType>) {
+		M::FaceContainer::disablePerFaceWedgeColors();
+	}
+	else { // Dcel having half edges with optional color - to be used as wedge colors
+		return M::HalfEdgeContainer::disablePerHalfEdgeColor();
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<HasFaces M>
+bool Mesh<Args...>::isPerFaceWedgeTexCoordsEnabled() const
+	requires internal::OptionalWedgeTexCoordsConcept<M>
+{
+	if constexpr (face::HasOptionalWedgeTexCoords<typename M::FaceType>) {
+		return M::FaceContainer::isPerFaceWedgeTexCoordsEnabled();
+	}
+	else { // Dcel having half edges with optional tex coords - to be used as wedge tex coords
+		return M::HalfEdgeContainer::isPerHalfEdgeTexCoordEnabled();
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<HasFaces M>
+void Mesh<Args...>::enablePerFaceWedgeTexCoords()
+	requires internal::OptionalWedgeTexCoordsConcept<M>
+{
+	if constexpr (face::HasOptionalWedgeTexCoords<typename M::FaceType>) {
+		M::FaceContainer::enablePerFaceWedgeTexCoords();
+	}
+	else { // Dcel having half edges with optional tex coords - to be used as wedge tex coords
+		return M::HalfEdgeContainer::enablePerHalfEdgeTexCoord();
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<HasFaces M>
+void Mesh<Args...>::disablePerFaceWedgeTexCoords()
+	requires internal::OptionalWedgeTexCoordsConcept<M>
+{
+	if constexpr (face::HasOptionalWedgeTexCoords<typename M::FaceType>) {
+		M::FaceContainer::disablePerFaceWedgeTexCoords();
+	}
+	else { // Dcel having half edges with optional tex coords - to be used as wedge tex coords
+		return M::HalfEdgeContainer::disablePerHalfEdgeTexCoord();
 	}
 }
 
@@ -749,99 +964,6 @@ void Mesh<Args...>::compactHalfEdges() requires HasHalfEdges<Mesh>
 	}
 }
 
-/**
- * @brief Enables all the OptionalComponents of this mesh according to the Components available
- * on the OtherMeshType m.
- *
- * This function is useful to call before importing data from another MeshType, to be sure that
- * all the available data contained in the MeshType mesh will be imported.
- *
- * This function:
- * - disables all the optional components that are not available in m
- * - enables all the optional components that are available in m (which can be both optional or not)
- *
- * Example of usage:
- *
- * @code{.cpp}
- * MeshType m1;
- * OtherMeshType m2;
- *
- * // do stuff
- *
- * m1.enableSameOptionalComponentsOf(m2); // m1 enables all the available components of m2
- * m1.importFrom(m2); // m1 will import all the data contained in m2 that can be stored in m1
- * @endcode
- *
- * @param m
- */
-template<typename... Args> requires HasVertices<Args...>
-template<typename OtherMeshType>
-void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
-{
-	// enable all optional components of this Mesh depending on what's available in the
-	// OtherMeshType
-
-	if constexpr (vcl::mesh::HasVertexContainer<Mesh<Args...>>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		VertexContainer::enableOptionalComponentsOf(m);
-	}
-
-	if constexpr (vcl::mesh::HasFaceContainer<Mesh<Args...>>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		FaceContainer::enableOptionalComponentsOf(m);
-	}
-
-	if constexpr (vcl::mesh::HasEdgeContainer<Mesh<Args...>>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		EdgeContainer::enableOptionalComponentsOf(m);
-	}
-}
-
-/**
- * @brief Imports all the components that can be imported from another type of mesh.
- *
- * This function can be called from any Mesh type having all the Elements and Components that
- * implement the member function importFrom.
- *
- * Note that this function does not enable optional components that are disabled.
- * If you want to import all the possible data including also disabled components of this mesh, you
- * should call the function enableSameOptionalComponentsOf(m) before this function.
- *
- * @param[in] m: the mesh from which import all the data.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<typename OtherMeshType>
-void Mesh<Args...>::importFrom(const OtherMeshType& m)
-{
-	(Args::importFrom(m), ...);
-
-	// after importing ordinary components, I need to convert the references between containers
-
-	(importReferences<Args>(m), ...);
-
-	// in case of import from poly to triangle mesh, I need to manage triangulation of polygons and
-	// create additional triangle faces for each of the imported polygons
-
-	manageImportTriFromPoly(m);
-}
-
-/**
- * @brief Swaps this mesh with the other input Mesh m2.
- * @param m2: the Mesh to swap with this Mesh.
- */
-template<typename... Args> requires HasVertices<Args...>
-void Mesh<Args...>::swap(Mesh& m2)
-{
-	vcl::swap(*this, m2);
-}
-
-template<typename... Args> requires HasVertices<Args...>
-Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
-{
-	swap(oth);
-	return *this;
-}
-
 /*********************
  * Protected Members *
  *********************/
@@ -1089,23 +1211,32 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 			EdgeContainer::setContainerPointer(e);
 		}
 	}
+
+	// if there is the optional edge container, I need to update, for each edge of the
+	// new mesh, the containerPointer
+	if constexpr (mesh::HasHalfEdgeOptionalContainer<Mesh<Args...>>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		for (auto& e : HalfEdgeContainer::halfEdges(true)) {
+			HalfEdgeContainer::setContainerPointer(e);
+		}
+	}
 }
 
 template<typename... Args> requires HasVertices<Args...>
-void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType&)
+template<HasFaces M>
+void Mesh<Args...>::addFaceHelper(typename M::FaceType&)
 {
 	// base case: no need to add any other vertices
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename... V>
+template<HasFaces M, typename... V>
 void Mesh<Args...>::addFaceHelper(
-	typename Mesh<Args...>::FaceType&   f,
+	typename M::FaceType&   f,
 	typename Mesh<Args...>::VertexType* v,
 	V... args)
 {
 	using FaceContainer = typename Mesh<Args...>::FaceContainer;
-	using Face            = typename FaceContainer::FaceType;
 
 	// position on which add the vertex
 	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
@@ -1114,12 +1245,11 @@ void Mesh<Args...>::addFaceHelper(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename... V>
-void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid, V... args)
+template<HasFaces M, typename... V>
+void Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
 {
 	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-	using Face            = typename FaceContainer::FaceType;
 
 	// position on which add the vertex
 	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
@@ -1127,24 +1257,30 @@ void Mesh<Args...>::addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid,
 	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
+/**
+ * This function will call, for a given container of this mesh that is passed as a template
+ * parameter Cont, all the references of all the elements from the other mesh m.
+ */
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importReferences(const OthMesh &m)
 {
 	using ThisMesh = Mesh<Args...>;
 
-	// if Args is a container
+	// if Cont is a container (could be a mesh component)
 	if constexpr(mesh::IsElementContainer<Cont>) {
-		if constexpr (mesh::HasVertexContainer<ThisMesh>) {
-			Cont::importVertexReferencesFrom(m, &this->vertex(0));
-		}
+		// will call the specific importVertexReferences of the Cont container.
+		// it will take care to import the reference from tha same container type of m.
+		Cont::importVertexReferencesFrom(m, &this->vertex(0));
 		if constexpr (mesh::HasFaceContainer<ThisMesh>) {
 			Cont::importFaceReferencesFrom(m, &this->face(0));
 		}
 		if constexpr (mesh::HasEdgeContainer<ThisMesh>) {
 			Cont::importEdgeReferencesFrom(m, &this->edge(0));
 		}
-		// todo half edges
+		if constexpr (mesh::HasHalfEdgeContainer<ThisMesh>) {
+			Cont::importHalfEdgeReferencesFrom(m, &this->halfEdge(0));
+		}
 	}
 }
 
@@ -1157,62 +1293,98 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename OthMesh>
 void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 {
-	if constexpr(mesh::HasVertexContainer<Mesh<Args...>> && mesh::HasVertexContainer<OthMesh>) {
-		if constexpr(mesh::HasFaceContainer<Mesh<Args...>> && mesh::HasFaceContainer<OthMesh>) {
-			using VertexType = typename Mesh<Args...>::VertexType;
-			using MVertexType = typename OthMesh::VertexType;
-			using FaceType = typename Mesh<Args...>::FaceType;
-			using MFaceType = typename OthMesh::FaceType;
+	using VertexType = typename Mesh<Args...>::VertexType;
+	using MVertexType = typename OthMesh::VertexType;
+	using FaceType = typename Mesh<Args...>::FaceType;
+	using MFaceType = typename OthMesh::FaceType;
 
-			using VertexContainer = typename Mesh<Args...>::VertexContainer;
-			using MVertexContainer = typename OthMesh::VertexContainer;
-			using FaceContainer   = typename Mesh<Args...>::FaceContainer;
+	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
 
-			// if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
-			// number of vertex references in this mesh), and this mesh does not have the same
-			// number of vertex references of the other, it means that we don't know how to convert
-			// these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
-			// mesh, or convert a quad mesh into a pentagonal mesh...)
-			static_assert(
-				!(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
-				  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
-				"Cannot import from that type of Mesh. Don't know how to convert faces.");
+	// if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
+	// number of vertex references in this mesh), and this mesh does not have the same
+	// number of vertex references of the other, it means that we don't know how to convert
+	// these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
+	// mesh, or convert a quad mesh into a pentagonal mesh...)
+	static_assert(
+		!(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
+		  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
+		"Cannot import from that type of Mesh. Don't know how to convert faces.");
 
-			// we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
-			// triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
-			if constexpr (
-				FaceType::VERTEX_NUMBER == 3 &&
-				(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
+	// we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
+	// triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
+	if constexpr (
+		FaceType::VERTEX_NUMBER == 3 &&
+		(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
 
-				VertexType* base = VertexContainer::vec.data();
-				const MVertexType* mvbase = &m.vertex(0);
+		VertexType* base = VertexContainer::vec.data();
+		const MVertexType* mvbase = &m.vertex(0);
 
-				for (const MFaceType& mf : m.faces()) {
-					// if the current face has the same number of vertices of this faces (3), then
-					// the vertex references have been correctly imported from the import references
-					// function
-					if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
-						// triangulate mf; the first triangle of the triangulation will be
-						// this->face(m.index(mf));
-						// the other triangles will be added at the end of the container
-						std::vector<uint> tris = vcl::mesh::earCut(mf);
-						FaceType& f = FaceContainer::face(m.index(mf));
-						importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
+		for (const MFaceType& mf : m.faces()) {
+			// if the current face has the same number of vertices of this faces (3), then
+			// the vertex references have been correctly imported from the import references
+			// function. The import references function does nothing when importing from a face
+			// with at least 4 vertices
+			if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
+				// triangulate mf; the first triangle of the triangulation will be
+				// this->face(m.index(mf));
+				// the other triangles will be added at the end of the container
+				std::vector<uint> tris = vcl::mesh::earCut(mf);
+				FaceType& f = FaceContainer::face(m.index(mf));
+				importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
 
-						// number of other faces to add
-						uint nf = tris.size() / 3 - 1;
-						uint fid = FaceContainer::addFaces(nf);
+				// number of other faces to add
+				uint nf = tris.size() / 3 - 1;
+				uint fid = FaceContainer::addFaces(nf);
 
-						uint i = 3; // index that cycles into tris
-						for (; fid < FaceContainer::faceContainerSize(); ++fid) {
-							FaceType& f = FaceContainer::face(fid);
-							importTriReferencesHelper(f, mf, base, mvbase, tris, i);
-							i+=3;
-						}
-					}
+				uint i = 3; // index that cycles into tris
+				for (; fid < FaceContainer::faceContainerSize(); ++fid) {
+					FaceType& f = FaceContainer::face(fid);
+					importTriReferencesHelper(f, mf, base, mvbase, tris, i);
+					i+=3;
 				}
 			}
 		}
+	}
+}
+
+/**
+ * @brief This function manages the case where we try to import into a Dcel another type of Mesh.
+ * Faces have been already imported, but not vertex references (half edges still need to be created)
+ * and other components that depend on the number of vertices (e.g. adjacent faces and wedges)
+ */
+template<typename... Args> requires HasVertices<Args...>
+template<typename OthMesh>
+void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
+{
+	using VertexType = typename Mesh<Args...>::VertexType;
+	using MVertexType = typename OthMesh::VertexType;
+	using FaceType = typename Mesh<Args...>::FaceType;
+	using MFaceType = typename OthMesh::FaceType;
+
+	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+	using FaceContainer = typename Mesh<Args...>::FaceContainer;
+
+	// base and mvbase are needed to convert vertex references from other to this mesh
+	VertexType* base = VertexContainer::vec.data();
+	const MVertexType* mvbase = &m.vertex(0);
+
+	for (const MFaceType& mf : m.faces()) {
+		// f is the face with same index of mf in mesh m
+		FaceType& f = FaceContainer::face(m.index(mf));
+
+		// add mf.vertexNumber() half edges to this mesh, and all these half edges are adjacent to
+		// face f (all next and prev relations are set here, and therefore they will allow to
+		// iterate over f components)
+		addHalfEdgesToFace(mf.vertexNumber(), f);
+
+		// this can be optimized
+		// set each vertex of f computing the right reference from mesh m and face mf
+		for (uint j = 0; j < mf.vertexNumber(); ++j) {
+			f.vertex(j) = base + (mf.vertex(j) - mvbase);
+		}
+
+		// todo: adjacent faces and wedges
 	}
 }
 
@@ -1240,7 +1412,9 @@ void Mesh<Args...>::importTriReferencesHelper(
 		// wedge texcoords
 		if constexpr(face::HasWedgeTexCoords<FaceType> && face::HasWedgeTexCoords<MFaceType>) {
 			if (comp::isWedgeTexCoordsEnabledOn(f) && comp::isWedgeTexCoordsEnabledOn(mf)) {
-				f.wedgeTexCoord(j) = mf.wedgeTexCoord(tris[i]);
+				f.wedgeTexCoord(j) =
+					mf.wedgeTexCoord(tris[i])
+						.template cast<typename FaceType::WedgeTexCoordType::ScalarType>();
 			}
 		}
 	}

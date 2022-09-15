@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -23,7 +23,9 @@
 #ifndef VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H
 #define VCL_MESH_REQUIREMENTS_MESH_CONCEPTS_H
 
-#include "element_concepts.h"
+#include "face_concepts.h"
+#include "half_edge_concepts.h"
+#include "vertex_concepts.h"
 
 #include "../components/concepts/bounding_box.h"
 #include "../components/concepts/mark.h"
@@ -95,11 +97,11 @@ concept HasTransformMatrix =
 	mesh::HasTransformMatrix<MeshType>;
 
 template<typename T>
-concept MeshConcept = mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value;
+concept BaseMeshConcept = mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value;
 
 template<typename T>
 concept FaceMeshConcept =
-	MeshConcept<T> && mesh::HasFaceContainer<T>;
+	BaseMeshConcept<T> && mesh::HasFaceContainer<T>;
 
 template<typename T>
 concept TriangleMeshConcept =
@@ -115,7 +117,70 @@ concept PolygonMeshConcept =
 
 template<typename T>
 concept EdgeMeshConcept =
-	MeshConcept<T> && mesh::HasEdgeContainer<T>;
+	BaseMeshConcept<T> && mesh::HasEdgeContainer<T>;
+
+/**
+ * @brief The DcelMeshConcept is satisfied when:
+ * - The FaceMeshConcpt is satisfied
+ * - The Mesh has HalfEdge, Face and Vertex containers
+ * - The HalfEdge element has HalfEdgeReferences component
+ * - The Vertex Element has HalfEdgeReference component
+ * - The Face Element has HalfEdgeReference component
+ * - The Vertex Element does not have AdjacentVertices component (it is simulated by half edges)
+ * - The Face Element does not have AdjacentFaces component (it is simulated by half edges)
+ * - The Face Element does not have WedgeColors component (it is simulated by half edges)
+ * - The Face Element does not have WedgeTexCoords component (it is simulated by half edges)
+ */
+template<typename T>
+concept DcelMeshConcept =
+	FaceMeshConcept<T> &&
+	HasHalfEdges<T> &&
+	HasPerVertexHalfEdgeReference<T> &&
+	HasPerFaceHalfEdgeReference<T> &&
+	!comp::HasAdjacentVerticesComponent<typename T::VertexType> &&
+	!comp::HasAdjacentFacesComponent<typename T::FaceType> &&
+	!comp::HasWedgeColorsComponent<typename T::FaceType> &&
+	!comp::HasWedgeTexCoordsComponent<typename T::FaceType>;
+
+/**
+ * @brief The MeshConcept is satisfied when a Mesh data structure is considered valid.
+ *
+ * It is valid if:
+ * - the type is derived or is a vcl::Mesh
+ *   - to be a vcl::Mesh, a type must contain (derive from) a vcl::VertexContainer
+ * - if the mesh is a Dcel, the DcelMeshConcept must be satisfied
+ * - if the mesh is not a Dcel:
+ *   - the mesh must not have half edges and per vertex/face half edge reference.
+ */
+template<typename T>
+concept MeshConcept =
+	BaseMeshConcept<T> &&
+	(DcelMeshConcept<T> ||
+	 (!HasHalfEdges<T> && !HasPerFaceHalfEdgeReference<T> && !HasPerVertexHalfEdgeReference<T>));
+
+namespace internal {
+
+// Concept used to enable PerFaceWedgeColors member functions in Mesh class
+// they can be enabled if:
+// - they have per face optional WedgeColors, or
+// - if the mesh is a Dcel, HalfEdges have optional Color
+template <typename M>
+concept OptionalWedgeColorsConcept =
+	FaceMeshConcept<M> &&
+	(face::HasOptionalWedgeColors<typename M::FaceType> ||
+	 (HasHalfEdges<M> && hedge::HasOptionalColor<typename M::HalfEdge>));
+
+// Concept used to enable PerFaceWedgeTexCoords member functions in Mesh class
+// they can be enabled if:
+// - they have per face optional WedgeTexCoords, or
+// - if the mesh is a Dcel, HalfEdges have optional TexCoord
+template <typename M>
+concept OptionalWedgeTexCoordsConcept =
+	FaceMeshConcept<M> &&
+	(face::HasOptionalWedgeTexCoords<typename M::FaceType> ||
+	 (HasHalfEdges<M> && hedge::HasOptionalTexCoord<typename M::HalfEdge>));
+
+} // namespace vcl::internal
 
 } // namespace vcl
 

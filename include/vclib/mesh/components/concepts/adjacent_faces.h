@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -37,6 +37,21 @@ template<typename T>
 concept HasAdjacentFaces = requires(T o)
 {
 	{ o.adjFacesNumber() } -> std::same_as<uint>;
+};
+
+/**
+ * @brief HasAdjacentFacesComponent concept
+ *
+ * This concept is used to discriminate between the AdjacentFaces (or OptionalAdjacentFaces)
+ * component, and the FaceHalfEdgeReferences component, which using half edges allows to access
+ * to adjacent faces. This concept is intended only for internal use, useful to check that a Face
+ * does not have both AdjacentFaces and FaceHalfEdgeReferences components.
+ */
+template<typename T>
+concept HasAdjacentFacesComponent = requires(T o)
+{
+	HasAdjacentFaces<T>;
+	{ o.__compAdjFaces() } -> std::same_as<void>;
 };
 
 /**

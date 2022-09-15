@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -39,6 +39,10 @@ concept HasPerFaceAdjacentFaces =
 template<typename MeshType>
 concept HasPerFaceColor =
 	HasFaces<MeshType> && vcl::face::HasColor<typename MeshType::FaceType>;
+
+template<typename MeshType>
+concept HasPerFaceHalfEdgeReference =
+	HasFaces<MeshType> && vcl::face::HasHalfEdgeReference<typename MeshType::FaceType>;
 
 template<typename MeshType>
 concept HasPerFaceMark =

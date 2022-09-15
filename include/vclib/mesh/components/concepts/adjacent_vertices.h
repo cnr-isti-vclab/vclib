@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -37,6 +37,21 @@ template<typename T>
 concept HasAdjacentVertices = requires(T o)
 {
 	{ o.adjVerticesNumber() } -> std::same_as<uint>;
+};
+
+/**
+ * @brief HasAdjacentVerticesComponent concept
+ *
+ * This concept is used to discriminate between the AdjacentVertices (or OptionalAdjacentVertices)
+ * component, and the VertexHalfEdgeReferences component, which using half edges allows to access
+ * to adjacent vertices. This concept is intended only for internal use, useful to check that a
+ * Vertex does not have both AdjacentVertices and VertexHalfEdgeReferences components.
+ */
+template<typename T>
+concept HasAdjacentVerticesComponent = requires(T o)
+{
+	HasAdjacentVertices<T>;
+	{ o.__compAdjVertices() } -> std::same_as<void>;
 };
 
 /**

@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -37,6 +37,8 @@ public:
 	using ScalarType = Scalar;
 
 	TexCoord();
+	TexCoord(const Scalar& s1, const Scalar& s2, short n = 0);
+	TexCoord(const Point2<Scalar>& p, short n = 0);
 
 	template<typename S>
 	TexCoord<S> cast() const;
@@ -57,6 +59,8 @@ public:
 	const Scalar& operator()(uint i) const;
 	Scalar&       operator[](uint i);
 	const Scalar& operator[](uint i) const;
+
+	bool operator==(const TexCoord& t1) const = default;
 
 private:
 	Point2<Scalar> coord;

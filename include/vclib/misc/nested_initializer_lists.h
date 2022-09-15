@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -50,7 +50,7 @@ struct NestedInitializerListsTraits<T, 0>
 } // namespace internal
 
 /**
- * @brief The NestedInitializerLists class manages nested std::initializer_list<T> types of #L
+ * @brief The NestedInitializerLists class manages nested std::initializer_list<T> types of L
  * levels L must be known at compile time, and compilation will fail if the NestedInitializerLists
  * used does not correspond to the number of used levels.
  */

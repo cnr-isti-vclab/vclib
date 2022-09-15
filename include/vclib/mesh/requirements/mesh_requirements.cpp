@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -104,7 +104,7 @@ bool isCompact(const MeshType& m)
 		c = c && (m.edgeNumber() == m.edgeContainerSize());
 	}
 	if constexpr (HasHalfEdges<MeshType>) {
-		c = c && (m.halfEdgeNumber() == m.halfEdgeContainerSize());
+		c = c && isHalfEdgeContainerCompact(m);
 	}
 	return c;
 }
@@ -135,7 +135,7 @@ void requireQuadMesh(const MeshType& m)
 	}
 }
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void requireCompactness(const MeshType& m)
 {
 	if (!isCompact(m))

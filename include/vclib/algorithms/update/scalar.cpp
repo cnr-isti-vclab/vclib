@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -35,7 +35,7 @@ namespace vcl {
  *   - Vertices:
  *     - Scalar
  *
- * @param[in/out] m: mesh on which set the vertex scalars
+ * @param[in,out] m: mesh on which set the vertex scalars
  * @param[in] s: scalar value to set
  */
 template<MeshConcept MeshType>
@@ -58,7 +58,7 @@ void setPerVertexScalar(MeshType& m, typename MeshType::VertexType::ScalarType s
  *   - Faces:
  *     - Scalar
  *
- * @param[in/out] m: mesh on which set the face scalars
+ * @param[in,out] m: mesh on which set the face scalars
  * @param[in] s: scalar value to set
  */
 template <FaceMeshConcept MeshType>
@@ -81,7 +81,7 @@ void setPerFaceScalar(MeshType& m, typename MeshType::FaceType::ScalarType s)
  *   - Vertices:
  *     - Scalar
  *
- * @param[in/out] m: mesh on which clamp the vertex scalars
+ * @param[in,out] m: mesh on which clamp the vertex scalars
  * @param[in] minS: minimum value of the clamping interval
  * @param[in] maxS: maximum value of the clamping interval
  */
@@ -108,7 +108,7 @@ void clampPerVertexScalar(
  *   - Faces:
  *     - Scalar
  *
- * @param[in/out] m: mesh on which clamp the face scalars
+ * @param[in,out] m: mesh on which clamp the face scalars
  * @param[in] minS: minimum value of the clamping interval
  * @param[in] maxS: maximum value of the clamping interval
  */
@@ -135,7 +135,7 @@ void clampPerFaceScalar(
  *   - Vertices:
  *     - Scalar
  *
- * @param[in/out] m: mesh on which normalize the vertex scalars
+ * @param[in,out] m: mesh on which normalize the vertex scalars
  * @param[in] minS: minimum value of the normalizing interval, default 0
  * @param[in] maxS: maximum value of the normalizing interval, default 1
  */
@@ -166,7 +166,7 @@ void normalizePerVertexScalar(
  *   - Faces:
  *     - Scalar
  *
- * @param[in/out] m: mesh on which normalize the face scalars
+ * @param[in,out] m: mesh on which normalize the face scalars
  * @param[in] minS: minimum value of the normalizing interval, default 0
  * @param[in] maxS: maximum value of the normalizing interval, default 1
  */
@@ -199,7 +199,7 @@ void normalizePerFaceScalar(
  *     - Scalar
  *   - Faces
  *
- * @param[in/out] m: mesh on which set the vertex scalars to the vertex valence
+ * @param[in,out] m: mesh on which set the vertex scalars to the vertex valence
  */
 template<FaceMeshConcept MeshType>
 void setPerVertexScalarFromVertexValence(MeshType& m)
@@ -225,7 +225,7 @@ void setPerVertexScalarFromVertexValence(MeshType& m)
  * - Mesh:
  *   - Faces
  *
- * @param[in/out] m: mesh on which set the face scalars to the face area
+ * @param[in,out] m: mesh on which set the face scalars to the face area
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceScalarFromFaceArea(MeshType& m)

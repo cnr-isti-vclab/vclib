@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -28,18 +28,20 @@
 
 namespace vcl::pointcloud {
 
+template<typename Scalar>
 class Vertex;
 
+template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
-			vcl::vert::BitFlags,                  // 4b
-			vcl::vert::Coordinate3d,              // 24b
-			vcl::vert::Normal3d,                  // 24b
-			vcl::vert::Color,                     // 4b
-			vcl::vert::Scalard,                   // 8b
-			vcl::vert::OptionalTexCoordf<Vertex>, // 0b
-			vcl::vert::OptionalMark<Vertex>,      // 0b
-			vcl::vert::CustomComponents<Vertex>>  // 0b
+			vcl::vert::BitFlags,                                 // 4b
+			vcl::vert::Coordinate3<Scalar>,                      // 24b
+			vcl::vert::Normal3<Scalar>,                          // 24b
+			vcl::vert::Color,                                    // 4b
+			vcl::vert::Scalar<Scalar>,                           // 8b
+			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>, // 0b
+			vcl::vert::OptionalMark<Vertex<Scalar>>,             // 0b
+			vcl::vert::CustomComponents<Vertex<Scalar>>>         // 0b
 {
 };
 
@@ -47,15 +49,28 @@ class Vertex :
 
 namespace vcl {
 
-class PointCloud :
+template<typename ScalarType = double>
+class PointCloudT :
 		public vcl::Mesh<
-			mesh::VertexContainer<pointcloud::Vertex>,
-			mesh::BoundingBox3d,
+			mesh::VertexContainer<pointcloud::Vertex<ScalarType>>,
+			mesh::BoundingBox3<ScalarType>,
 			mesh::Mark,
-			mesh::TexFileNames,
-			mesh::TransformMatrixd>
+			mesh::TexturePaths,
+			mesh::TransformMatrix<ScalarType>>
 {
 };
+
+using PointCloudf = PointCloudT<float>;
+using PointCloud  = PointCloudT<double>;
+
+// makes sure that the PointCloud satisfies Mesh concepts
+static_assert(MeshConcept<PointCloud>, "The PointCloud is not a valid Mesh.");
+static_assert(!FaceMeshConcept<PointCloud>, "The PointCloud is a valid Mesh with Faces.");
+static_assert(!TriangleMeshConcept<PointCloud>, "The PointCloud is a static Triangle Mesh.");
+static_assert(!QuadMeshConcept<PointCloud>, "The PointCloud is a static Quad Mesh.");
+static_assert(!EdgeMeshConcept<PointCloud>, "The PointCloud is an Edge Mesh.");
+static_assert(!PolygonMeshConcept<PointCloud>, "The PointCloud is a PolygonMesh.");
+static_assert(!DcelMeshConcept<PointCloud>, "The PointCloud is a DcelMesh.");
 
 } // namespace vcl
 

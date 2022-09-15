@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -28,34 +28,39 @@
 
 namespace vcl::polymesh {
 
+template<typename Scalar>
 class Vertex;
+
+template<typename Scalar>
 class Face;
 
+template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
 			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3d,
-			vcl::vert::Normal3f,
+			vcl::vert::Coordinate3<Scalar>,
+			vcl::vert::Normal3<Scalar>,
 			vcl::vert::Color,
-			vcl::vert::Scalard,
-			vcl::vert::OptionalTexCoordf<Vertex>,
-			vcl::vert::OptionalAdjacentFaces<Face, Vertex>,
-			vcl::vert::OptionalAdjacentVertices<Vertex>,
-			vcl::vert::OptionalPrincipalCurvatured<Vertex>,
-			vcl::vert::CustomComponents<Vertex>>
+			vcl::vert::Scalar<Scalar>,
+			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
+			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
+			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
+			vcl::vert::CustomComponents<Vertex<Scalar>>>
 {
 };
 
+template<typename Scalar>
 class Face :
 		public vcl::Face<
 			vcl::face::PolygonBitFlags, // 4b
-			vcl::face::PolygonVertexRefs<Vertex>,
-			vcl::face::Normal3f,
-			vcl::face::OptionalColor<Face>,
-			vcl::face::OptionalScalard<Face>,
-			vcl::face::OptionalAdjacentPolygons<Face>,
-			vcl::face::OptionalPolygonWedgeTexCoordsf<Face>,
-			vcl::face::CustomComponents<Face>>
+			vcl::face::PolygonVertexRefs<Vertex<Scalar>>,
+			vcl::face::Normal3<Scalar>,
+			vcl::face::OptionalColor<Face<Scalar>>,
+			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,
+			vcl::face::OptionalAdjacentPolygons<Face<Scalar>>,
+			vcl::face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar>>,
+			vcl::face::CustomComponents<Face<Scalar>>>
 {
 };
 
@@ -63,16 +68,29 @@ class Face :
 
 namespace vcl {
 
-class PolyMesh :
+template<typename ScalarType = double>
+class PolyMeshT :
 		public vcl::Mesh<
-			mesh::VertexContainer<polymesh::Vertex>,
-			mesh::FaceContainer<polymesh::Face>,
-			mesh::BoundingBox3d,
+			mesh::VertexContainer<polymesh::Vertex<ScalarType>>,
+			mesh::FaceContainer<polymesh::Face<ScalarType>>,
+			mesh::BoundingBox3<ScalarType>,
 			mesh::Mark,
 			mesh::TexturePaths,
-			mesh::TransformMatrixd>
+			mesh::TransformMatrix<ScalarType>>
 {
 };
+
+using PolyMeshf = PolyMeshT<float>;
+using PolyMesh  = PolyMeshT<double>;
+
+// makes sure that the PolyMesh satisfies Mesh concepts
+static_assert(MeshConcept<PolyMesh>, "The PolyMesh is not a valid Mesh.");
+static_assert(FaceMeshConcept<PolyMesh>, "The PolyMesh is not a valid Mesh with Faces.");
+static_assert(!TriangleMeshConcept<PolyMesh>, "The PolyMesh is a static Triangle Mesh.");
+static_assert(!QuadMeshConcept<PolyMesh>, "The PolyMesh is a static Quad Mesh.");
+static_assert(!EdgeMeshConcept<PolyMesh>, "The PolyMesh is an Edge Mesh.");
+static_assert(PolygonMeshConcept<PolyMesh>, "The PolyMesh is not a valid Polygon Mesh.");
+static_assert(!DcelMeshConcept<PolyMesh>, "The PolyMesh is a Dcel Mesh.");
 
 } // namespace vcl
 

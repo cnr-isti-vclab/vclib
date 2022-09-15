@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -378,8 +378,8 @@ std::vector<uint> earCut(const Polygon& polygon)
  * uint fid = addTriangleFacesFromPolygon(mesh, polygon);
  * @endcode
  *
- * @param[in/out] m: the mesh on which add the triangulation of the polygon.
- * @param[in/out] f: the first face of the triangulation, that will be filled.
+ * @param[in,out] m: the mesh on which add the triangulation of the polygon.
+ * @param[in,out] f: the first face of the triangulation, that will be filled.
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  */
 template <FaceMeshConcept MeshType, typename FaceType>
@@ -468,7 +468,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
  * that are internal in the polygon are marked as faux. This function returns the index of the first
  * added triangle.
  *
- * @param[in/out] m: the mesh on which add the triangulation of the polygon.
+ * @param[in,out] m: the mesh on which add the triangulation of the polygon.
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  * @return The index of the first triangle added to the mesh.
  */

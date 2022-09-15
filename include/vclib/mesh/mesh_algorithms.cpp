@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -22,7 +22,11 @@
 
 #include "mesh_algorithms.h"
 
+#if __has_include(<mapbox/earcut.hpp>)
 #include <mapbox/earcut.hpp>
+#else
+#include "../../../external/earcut.hpp-2.2.3/include/mapbox/earcut.hpp"
+#endif
 
 namespace vcl::mesh {
 

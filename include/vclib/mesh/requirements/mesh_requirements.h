@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -24,6 +24,7 @@
 #define VCL_MESH_MESH_REQUIREMENTS_H
 
 #include "mesh_concepts.h"
+#include "half_edge_requirements.h"
 #include "face_requirements.h"
 #include "vertex_requirements.h"
 
@@ -64,7 +65,7 @@ void requireQuadMesh(const MeshType&);
 
 // Mesh Compactness
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void requireCompactness(const MeshType&);
 
 } // namespace vcl

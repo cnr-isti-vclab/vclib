@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -419,6 +419,40 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeScalar() requires hedge::HasOptiona
 }
 
 /**
+ * @brief Checks if the halfedge Optional TexCoord is enabled.
+ *
+ * @note This function is available only if the HalfEdge Element has the OptionalTexCoord Component.
+ *
+ * @return true if the Optional TexCoord is enabled, false otherwise.
+ */
+template<HalfEdgeConcept T>
+bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::HasOptionalTexCoord<T>
+{
+	return Base::optionalVec.isTexCoordEnabled();
+}
+/**
+ * @brief Enables the Optional TexCoord of the halfedge.
+ *
+ * @note This function is available only if the HalfEdge Element has the OptionalTexCoord Component.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
+{
+	Base::optionalVec.enableTexCoord(halfEdgeContainerSize());
+}
+
+/**
+ * @brief Disables the Optional TexCoord of the halfedge.
+ *
+ * @note This function is available only if the HalfEdge Element has the OptionalTexCoord Component.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::disablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
+{
+	Base::optionalVec.disableTexCoord();
+}
+
+/**
  * @brief Checks if halfedges have a custom component with the given name.
  *
  * This function does not take into account the type of the custom component.
@@ -660,6 +694,39 @@ void HalfEdgeContainer<T>::importFrom(const Mesh &m)
 		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
 
 		Base::importFrom((const MHalfEdgeContainer&)m);
+	}
+}
+
+template<HalfEdgeConcept T>
+template<typename Mesh, typename Vertex>
+void HalfEdgeContainer<T>::importVertexReferencesFrom(const Mesh &m, Vertex *base)
+{
+	if constexpr (HasVertexContainer<Mesh> && HasHalfEdgeContainer<Mesh>) {
+		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
+
+		Base::importVertexReferencesFrom((const MHalfEdgeContainer&)m, base, &m.vertex(0));
+	}
+}
+
+template<HalfEdgeConcept T>
+template<typename Mesh, typename Face>
+void HalfEdgeContainer<T>::importFaceReferencesFrom(const Mesh &m, Face *base)
+{
+	if constexpr (HasFaceContainer<Mesh> && HasHalfEdgeContainer<Mesh>) {
+		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
+
+		Base::importFaceReferencesFrom((const MHalfEdgeContainer&)m, base, &m.face(0));
+	}
+}
+
+template<HalfEdgeConcept T>
+template<typename Mesh>
+void HalfEdgeContainer<T>::importHalfEdgeReferencesFrom(const Mesh &m, T *base)
+{
+	if constexpr (HasHalfEdgeContainer<Mesh>) {
+		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
+
+		Base::importHalfEdgeReferencesFrom((const MHalfEdgeContainer&) m, base, &m.halfEdge(0));
 	}
 }
 

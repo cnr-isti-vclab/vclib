@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -34,22 +34,16 @@ namespace vcl {
 
 /**
  * @brief Returns `true` if the given mesh has its Vertex Container compact.
- * Returns `false` if the mesh has no Vertex Container.
  * @param[in] m: input mesh on which test if the its Vertex Container is compact.
  * @return `true` if the Vertex Container of the mesh is compact.
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isVertexContainerCompact(const MeshType& m)
 {
-	if constexpr (HasVertices<MeshType>) {
-		return (m.vertexNumber() == m.vertexContainerSize());
-	}
-	else {
-		return false;
-	}
+	return (m.vertexNumber() == m.vertexContainerSize());
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 {
 	if constexpr (HasVertices<MeshType>) {
@@ -65,7 +59,7 @@ bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentFacesOptional(MeshType& m)
 {
 	if constexpr (HasPerVertexAdjacentFaces<MeshType>) {
@@ -79,7 +73,7 @@ bool enableIfPerVertexAdjacentFacesOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexAdjacentVerticesEnabled(const MeshType& m)
 {
 	if constexpr (HasVertices<MeshType>) {
@@ -95,7 +89,7 @@ bool isPerVertexAdjacentVerticesEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
 {
 	if constexpr (HasPerVertexAdjacentVertices<MeshType>) {
@@ -109,7 +103,7 @@ bool enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexColorEnabled(const MeshType& m)
 {
 	if constexpr (HasVertices<MeshType>) {
@@ -125,7 +119,7 @@ bool isPerVertexColorEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexColorOptional(MeshType& m)
 {
 	if constexpr (HasPerVertexColor<MeshType>) {
@@ -139,7 +133,7 @@ bool enableIfPerVertexColorOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexMarkEnabled(const MeshType& m)
 {
 	if constexpr (HasVertices<MeshType>) {
@@ -155,7 +149,7 @@ bool isPerVertexMarkEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexMarkOptional(MeshType& m)
 {
 	if constexpr (HasPerVertexMark<MeshType>) {
@@ -169,7 +163,7 @@ bool enableIfPerVertexMarkOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexNormalEnabled(const MeshType& m)
 {
 	if constexpr (HasVertices<MeshType>) {
@@ -185,7 +179,7 @@ bool isPerVertexNormalEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexNormalOptional(MeshType& m)
 {
 	if constexpr (HasPerVertexNormal<MeshType>) {
@@ -199,7 +193,7 @@ bool enableIfPerVertexNormalOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexPrincipalCurvatureEnabled(const MeshType& m)
 {
 	if constexpr (HasVertices<MeshType>) {
@@ -215,7 +209,7 @@ bool isPerVertexPrincipalCurvatureEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexPrincipalCurvatureOptional(MeshType& m)
 {
 	if constexpr (HasPerVertexPrincipalCurvature<MeshType>) {
@@ -229,7 +223,7 @@ bool enableIfPerVertexPrincipalCurvatureOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexScalarEnabled(const MeshType& m)
 {
 	if constexpr (HasVertices<MeshType>) {
@@ -245,7 +239,7 @@ bool isPerVertexScalarEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexScalarOptional(MeshType& m)
 {
 	if constexpr (HasPerVertexScalar<MeshType>) {
@@ -259,7 +253,7 @@ bool enableIfPerVertexScalarOptional(MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool isPerVertexTexCoordEnabled(const MeshType& m)
 {
 	if constexpr (HasVertices<MeshType>) {
@@ -275,7 +269,7 @@ bool isPerVertexTexCoordEnabled(const MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 bool enableIfPerVertexTexCoordOptional(MeshType& m)
 {
 	if constexpr (HasPerVertexTexCoord<MeshType>) {

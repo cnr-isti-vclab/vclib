@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -52,7 +52,22 @@ public:
 
 	void clear();
 
-	// Vertices
+	template<typename OtherMeshType>
+	void enableSameOptionalComponentsOf(const OtherMeshType& m);
+
+	template<typename OtherMeshType>
+	void importFrom(const OtherMeshType& m);
+
+	/// @private
+	template<typename... A> requires HasVertices<A...>
+	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);
+
+	void swap(Mesh& m2);
+
+	Mesh& operator=(Mesh oth);
+
+	/*** Vertices ***/
+
 	uint index(const typename Mesh::VertexType& v) const;
 	uint index(const typename Mesh::VertexType* v) const;
 	uint addVertex();
@@ -65,7 +80,7 @@ public:
 	void reserveVertices(uint n);
 	void compactVertices();
 
-	// Faces
+	/*** Faces ***/
 
 	template<HasFaces M = Mesh>
 	uint index(const typename M::FaceType& f) const;
@@ -85,7 +100,29 @@ public:
 	void reserveFaces(uint n) requires HasFaces<Mesh>;
 	void compactFaces() requires HasFaces<Mesh>;
 
-	// Edges
+	// functions that could involve other components
+
+	// WedgeColors
+	template<HasFaces M = Mesh>
+	bool isPerFaceWedgeColorsEnabled() const requires internal::OptionalWedgeColorsConcept<M>;
+
+	template<HasFaces M = Mesh>
+	void enablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>;
+
+	template<HasFaces M = Mesh>
+	void disablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>;
+
+	// WedgeTexCoords
+	template<HasFaces M = Mesh>
+	bool isPerFaceWedgeTexCoordsEnabled() const requires internal::OptionalWedgeTexCoordsConcept<M>;
+
+	template<HasFaces M = Mesh>
+	void enablePerFaceWedgeTexCoords() requires internal::OptionalWedgeTexCoordsConcept<M>;
+
+	template<HasFaces M = Mesh>
+	void disablePerFaceWedgeTexCoords() requires internal::OptionalWedgeTexCoordsConcept<M>;
+
+	/*** Edges ***/
 
 	template<HasEdges M = Mesh>
 	uint index(const typename M::EdgeType& e) const;
@@ -98,7 +135,7 @@ public:
 	void reserveEdges(uint n) requires HasEdges<Mesh>;
 	void compactEdges() requires HasEdges<Mesh>;
 
-	// HalfEdges
+	/*** HalfEdges ***/
 
 	template<HasHalfEdges M = Mesh>
 	uint index(const typename M::HalfEdgeType& e) const;
@@ -114,20 +151,6 @@ public:
 
 	void reserveHalfEdges(uint n) requires HasHalfEdges<Mesh>;
 	void compactHalfEdges() requires HasHalfEdges<Mesh>;
-
-	template<typename OtherMeshType>
-	void enableSameOptionalComponentsOf(const OtherMeshType& m);
-
-	template<typename OtherMeshType>
-	void importFrom(const OtherMeshType& m);
-
-	/// @private
-	template<typename... A> requires HasVertices<A...>
-	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);
-
-	void swap(Mesh& m2);
-
-	Mesh& operator=(Mesh oth);
 
 protected:
 	// Vertices
@@ -175,22 +198,26 @@ protected:
 	void updateAllOptionalContainerReferences();
 
 private:
-	void addFaceHelper(typename Mesh<Args...>::FaceType& f);
+	template<HasFaces M = Mesh>
+	void addFaceHelper(typename M::FaceType& f);
 
-	template<typename... V>
+	template<HasFaces M = Mesh, typename... V>
 	void addFaceHelper(
-		typename Mesh<Args...>::FaceType&   f,
+		typename M::FaceType&   f,
 		typename Mesh<Args...>::VertexType* v,
 		V... args);
 
-	template<typename... V>
-	void addFaceHelper(typename Mesh<Args...>::FaceType& f, uint vid, V... args);
+	template<HasFaces M = Mesh, typename... V>
+	void addFaceHelper(typename M::FaceType& f, uint vid, V... args);
 
 	template<typename Cont, typename OthMesh>
 	void importReferences(const OthMesh& m);
 
 	template<typename OthMesh>
 	void manageImportTriFromPoly(const OthMesh& m);
+
+	template<typename OthMesh>
+	void manageImportDcelFromMesh(const OthMesh& m);
 
 	template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
 	static void importTriReferencesHelper(

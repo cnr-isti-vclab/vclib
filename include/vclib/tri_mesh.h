@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -28,35 +28,40 @@
 
 namespace vcl::trimesh {
 
+template<typename Scalar>
 class Vertex;
+
+template<typename Scalar>
 class Face;
 
+template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
-			vcl::vert::BitFlags,                            // 4b
-			vcl::vert::Coordinate3d,                        // 24b
-			vcl::vert::Normal3d,                            // 24b
-			vcl::vert::Color,                               // 4b
-			vcl::vert::Scalard,                             // 8b
-			vcl::vert::OptionalAdjacentFaces<Face, Vertex>, // 0b
-			vcl::vert::OptionalAdjacentVertices<Vertex>,    // 0b
-			vcl::vert::OptionalTexCoordf<Vertex>,           // 0b
-			vcl::vert::OptionalMark<Vertex>,                // 0b
-			vcl::vert::CustomComponents<Vertex>>            // 0b
+			vcl::vert::BitFlags,                                            // 4b
+			vcl::vert::Coordinate3<Scalar>,                                 // 12 or 24b
+			vcl::vert::Normal3<Scalar>,                                     // 12 or 24b
+			vcl::vert::Color,                                               // 4b
+			vcl::vert::Scalar<Scalar>,                                      // 4 or 8b
+			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
+			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
+			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
+			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
 {
 };
 
+template<typename Scalar>
 class Face :
 		public vcl::Face<
-			vcl::face::TriangleBitFlags,                      // 4b
-			vcl::face::TriangleVertexRefs<Vertex>,            // 24b
-			vcl::face::Normal3d,                              // 24b
-			vcl::face::OptionalScalard<Face>,                 // 0b
-			vcl::face::OptionalColor<Face>,                   // 0b
-			vcl::face::OptionalAdjacentTriangles<Face>,       // 0b
-			vcl::face::OptionalTriangleWedgeTexCoordsf<Face>, // 0b
-			vcl::face::OptionalMark<Face>,                    // 0b
-			vcl::face::CustomComponents<Face>>                // 0b
+			vcl::face::TriangleBitFlags,                                     // 4b
+			vcl::face::TriangleVertexRefs<Vertex<Scalar>>,                   // 24b
+			vcl::face::Normal3<Scalar>,                                      // 12 or 24b
+			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,                 // 0b
+			vcl::face::OptionalColor<Face<Scalar>>,                          // 0b
+			vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,              // 0b
+			vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>, // 0b
+			vcl::face::OptionalMark<Face<Scalar>>,                           // 0b
+			vcl::face::CustomComponents<Face<Scalar>>>                       // 0b
 {
 };
 
@@ -64,16 +69,29 @@ class Face :
 
 namespace vcl {
 
-class TriMesh :
+template<typename ScalarType = double>
+class TriMeshT :
 		public vcl::Mesh<
-			mesh::VertexContainer<trimesh::Vertex>,
-			mesh::FaceContainer<trimesh::Face>,
-			mesh::BoundingBox3d,
+			mesh::VertexContainer<trimesh::Vertex<ScalarType>>,
+			mesh::FaceContainer<trimesh::Face<ScalarType>>,
+			mesh::BoundingBox3<ScalarType>,
 			mesh::Mark,
 			mesh::TexturePaths,
-			mesh::TransformMatrixd>
+			mesh::TransformMatrix<ScalarType>>
 {
 };
+
+using TriMeshf = TriMeshT<float>;
+using TriMesh  = TriMeshT<double>;
+
+// makes sure that the TriMesh satisfies Mesh concepts
+static_assert(MeshConcept<TriMesh>, "The TriMesh is not a valid Mesh.");
+static_assert(FaceMeshConcept<TriMesh>, "The TriMesh is not a valid Mesh with Faces.");
+static_assert(TriangleMeshConcept<TriMesh>, "The TriMesh is not a static Triangle Mesh.");
+static_assert(!QuadMeshConcept<TriMesh>, "The TriMesh is a static Quad Mesh.");
+static_assert(!EdgeMeshConcept<TriMesh>, "The TriMesh is an Edge Mesh.");
+static_assert(!PolygonMeshConcept<TriMesh>, "The TriMesh is a valid Polygon Mesh.");
+static_assert(!DcelMeshConcept<TriMesh>, "The TriMesh is a Dcel Mesh.");
 
 } // namespace vcl
 

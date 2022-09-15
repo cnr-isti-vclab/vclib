@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -107,6 +107,10 @@ public:
 	ConstAdjacentFaceIterator      adjFaceEnd() const;
 	AdjacentFaceRangeIterator      adjFaces();
 	ConstAdjacentFaceRangeIterator adjFaces() const;
+
+	// dummy member to discriminate between this component and the one simulated by the
+	// FaceHalfEdgeReference component
+	void __compAdjFaces() const {};
 
 protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);

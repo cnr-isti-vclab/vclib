@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -33,6 +33,9 @@ namespace vcl::mesh {
 /** Port BoundingBox class into mesh namespace **/
 template<typename P>
 using BoundingBox = comp::BoundingBox<P>;
+
+template <typename S>
+using BoundingBox3 = comp::BoundingBox3<S>;
 
 using BoundingBox3f = comp::BoundingBox3f;
 using BoundingBox3d = comp::BoundingBox3d;

@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -100,12 +100,6 @@ ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const HalfEdge* start) :
 template<typename HalfEdge>
 ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end) :
 		current(start), end(end)
-{
-}
-
-template<typename HalfEdge>
-ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const FaceBaseIterator<HalfEdge> &it) :
-		current(it.current), end(it.end)
 {
 }
 

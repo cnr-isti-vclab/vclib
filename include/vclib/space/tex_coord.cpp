@@ -1,11 +1,11 @@
 /*****************************************************************************
- * VCLib                                                             o o     *
- * Visual Computing Library                                        o     o   *
- *                                                                 _  O  _   *
- * Copyright(C) 2021-2022                                           \/)\/    *
- * Visual Computing Lab                                            /\/|      *
- * ISTI - Italian National Research Council                           |      *
- *                                                                    \      *
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2022                                                    *
+ * Alessandro Muntoni                                                        *
+ * VCLab - ISTI - Italian National Research Council                          *
+ *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
@@ -27,6 +27,16 @@ namespace vcl {
 
 template<typename Scalar>
 TexCoord<Scalar>::TexCoord() : coord(0, 0), n(0)
+{
+}
+
+template<typename Scalar>
+TexCoord<Scalar>::TexCoord(const Scalar &s1, const Scalar &s2, short n) : coord(s1, s2), n(n)
+{
+}
+
+template<typename Scalar>
+TexCoord<Scalar>::TexCoord(const Point2<Scalar> &p, short n) : coord(p), n(n)
 {
 }
 
