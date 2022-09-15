@@ -2,6 +2,14 @@
 
 The Visual Computing Library is a C++20 modern, header only, multiplatform Mesh and Geometry Processing templated library.
 
+## Disclaimer
+
+I designed and developed this library mostly for personal use and to study new features of C++17 and C++20.
+Most of the features of this library are poorly tested: I maintain the library during my free time.
+
+If you appreciate this work, or you think it could be improved, let me know by opening a thread in the discussion tab!
+Looking forward for your feedback!
+
 ## Install
 
 The library is header only, therefore to install it you just need to add the vclib/include directory in your
