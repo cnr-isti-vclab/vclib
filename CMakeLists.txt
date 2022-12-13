@@ -16,6 +16,8 @@ project(vclib)
 set(CMAKE_CXX_STANDARD 20)
 
 ### Options
+option(VCLIB_USES_LIBQGLVIEWER "Use Qt5 and libQGLViewer for a small viewer" OFF)
+
 option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
 option(VCLIB_IDE "Create an utility target to show the library tree on IDEs" ON)
 option(VCLIB_BUILD_DOCS
@@ -389,6 +391,33 @@ else() # natively supported by msvc
 	message(STATUS "VCLIB using parallel algorithms")
 endif()
 
+if(VCLIB_USES_LIBQGLVIEWER)
+	find_package(OpenGL)
+	find_package(QGLViewer)
+
+	if (QGLViewer_FOUND)
+		message(STATUS "VCLIB using libQGLViewer")
+
+		target_include_directories(vclib INTERFACE ${QGLVIEWER_INCLUDE_DIR})
+		target_link_libraries(vclib
+			INTERFACE
+				${QGLVIEWER_LIBRARY}
+				OpenGL::GL
+				Qt5::Core
+				Qt5::OpenGL
+				Qt5::Widgets
+				Qt5::Xml)
+
+		list(APPEND HEADERS
+			include/vclib/ext/qglviewer/viewer.h)
+
+		list(APPEND SOURCES
+			include/vclib/ext/qglviewer/viewer.cpp)
+	else()
+		message(FATAL_ERROR "libQGLViewer not found. Unset VCLIB_USES_LIBQGLVIEWER option or install libQGLViewer in your system.")
+	endif()
+endif()
+
 if (VCLIB_IDE)
 	add_custom_target(vclib_ide SOURCES ${HEADERS} ${SOURCES})
 endif()
@@ -400,3 +429,5 @@ endif()
 if (VCLIB_BUILD_DOCS)
 	add_subdirectory(docs)
 endif()
+
+
