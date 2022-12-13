@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 	QApplication application(argc, argv);
 
 	// Instantiate the viewer.
-	Viewer viewer;
+	vcl::Viewer viewer;
 
 	viewer.setWindowTitle("simpleViewer");
 

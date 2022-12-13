@@ -22,7 +22,7 @@
 
 #include "viewer.h"
 
-using namespace std;
+namespace vcl {
 
 // Draws a spiral
 inline void Viewer::draw()
@@ -98,3 +98,5 @@ inline QString Viewer::helpString() const
 	text += "Press <b>Escape</b> to exit the viewer.";
 	return text;
 }
+
+} // namespace vcl
