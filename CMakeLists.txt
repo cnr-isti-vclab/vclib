@@ -237,6 +237,9 @@ set(HEADERS
 	include/vclib/misc/tokenizer.h
 	include/vclib/misc/types.h
 	include/vclib/misc/internal/tmp_meshes.h
+	include/vclib/render/drawable_object.h
+	include/vclib/render/mesh_render_buffers.h
+	include/vclib/render/mesh_render_settings.h
 	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
@@ -363,6 +366,8 @@ set(SOURCES
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
+	include/vclib/render/mesh_render_buffers.cpp
+	include/vclib/render/mesh_render_settings.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/kd_tree.cpp
@@ -410,7 +415,14 @@ if (VCLIB_USES_QT)
 	find_package(Qt5 COMPONENTS Core Xml OpenGL Gui Widgets QUIET)
 
 	list(APPEND HEADERS
-		include/vclib/ext/opengl/drawable_object.h)
+		include/vclib/ext/opengl2/draw_objects2.h
+		include/vclib/ext/opengl2/draw_objects3.h
+		include/vclib/ext/opengl2/drawable_mesh.h)
+
+	list(APPEND SOURCES
+		include/vclib/ext/opengl2/draw_objects2.cpp
+		include/vclib/ext/opengl2/draw_objects3.cpp
+		include/vclib/ext/opengl2/drawable_mesh.cpp)
 
 	if (Qt5_FOUND)
 		message(STATUS "VCLIB using Qt")

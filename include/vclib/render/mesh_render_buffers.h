@@ -20,45 +20,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCLIB_RENDER_MESH_RENDER_BUFFERS_H
+#define VCLIB_RENDER_MESH_RENDER_BUFFERS_H
 
-#include <QApplication>
+#include <vclib/mesh/requirements.h>
 
-#include <vclib/algorithms/update/normal.h>
-#include <vclib/algorithms/update/color.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/io/load_ply.h>
+namespace vcl {
 
-#include <vclib/ext/opengl2/drawable_mesh.h>
-#include <vclib/ext/qglviewer/viewer.h>
+template<MeshConcept MeshType>
+class MeshRenderBuffers
+{
+public:
+	MeshRenderBuffers();
+	MeshRenderBuffers(const MeshType& m);
 
-int main(int argc, char **argv) {
-	// Read command lines arguments.
-	QApplication application(argc, argv);
+	unsigned int vertexNumber() const;
+	unsigned int triangleNumber() const;
+	const vcl::Point3d& bbMin() const;
+	const vcl::Point3d& bbMax() const;
 
-	// Instantiate the viewer.
-	vcl::Viewer viewer;
+	const double* vertexBufferData() const;
+	const int* triangleBufferData() const;
+	const double* vertexNormalBufferData() const;
+	const float* vertexColorBufferData() const;
+	const double* triangleNormalBufferData() const;
+	const float* triangleColorBufferData() const;
 
-	viewer.setWindowTitle("simpleViewer");
+private:
+	uint nv = 0;
+	uint nt = 0;
+	std::vector<double> verts;
+	std::vector<int> tris;
+	std::vector<double> vNormals;
+	std::vector<float> vColors;
+	std::vector<double> tNormals;
+	std::vector<float> tColors;
+	vcl::Point3d bbmin, bbmax;
 
-	vcl::io::FileMeshInfo loadedInfo;
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
+	void fillVertices(const MeshType& m);
+	void fillTriangles(const MeshType& m);
+};
 
-	vcl::updatePerFaceNormals(m);
-	vcl::updatePerVertexNormals(m);
-	vcl::setPerVertexColor(m, vcl::Color::Gray);
+} // namespace vcl
 
-	vcl::DrawableMesh<vcl::TriMesh> dtm(m);
-	vcl::MeshRenderSettings s;
-	s.setEnableVertexColor();
-	dtm.setRenderSettings(s);
+#include "mesh_render_buffers.cpp"
 
-	viewer.pushDrawableObject(dtm);
-	viewer.fitScene();
-
-	// Make the viewer window visible on screen.
-	viewer.show();
-
-	// Run main loop.
-	return application.exec();
-}
+#endif // VCLIB_RENDER_MESH_RENDER_BUFFERS_H

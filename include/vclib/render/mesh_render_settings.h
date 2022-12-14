@@ -20,45 +20,64 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCLIB_RENDER_MESH_RENDER_SETTINGS_H
+#define VCLIB_RENDER_MESH_RENDER_SETTINGS_H
 
-#include <QApplication>
+#include <vclib/space/color.h>
 
-#include <vclib/algorithms/update/normal.h>
-#include <vclib/algorithms/update/color.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/io/load_ply.h>
+namespace vcl {
 
-#include <vclib/ext/opengl2/drawable_mesh.h>
-#include <vclib/ext/qglviewer/viewer.h>
+class MeshRenderSettings
+{
+public:
+	MeshRenderSettings();
 
-int main(int argc, char **argv) {
-	// Read command lines arguments.
-	QApplication application(argc, argv);
+	//rendering options getters
+	bool isWireframeEnabled() const;
+	bool isPointShadingEnabled() const;
+	bool isFlatShadingEnabled() const;
+	bool isSmoothShadingEnabled() const;
+	bool isBboxEnabled() const;
+	bool isFaceColorEnabled() const;
+	bool isVertexColorEnabled() const;
+	int pointWidth() const;
+	int wireframeWidth() const;
+	vcl::Color wireframeColor() const;
+	const float* wireframeColorData() const;
 
-	// Instantiate the viewer.
-	vcl::Viewer viewer;
+	// rendering options setters
+	void setWireframe(bool b);
+	void setFlatShading();
+	void setSmoothShading();
+	void setPointsShading();
+	void setWireframeColor(float r, float g, float b);
+	void setWireframeColor(const vcl::Color& c);
+	void setWireframeWidth(int width);
+	void setPointWidth(int width);
+	void setEnableVertexColor();
+	void setEnableTriangleColor();
+	void setVisibleBoundingBox(bool b);
 
-	viewer.setWindowTitle("simpleViewer");
+private:
+	enum {
+		DRAW_MESH        = 1 << 0,
+		DRAW_POINTS      = 1 << 1,
+		DRAW_FLAT        = 1 << 2,
+		DRAW_SMOOTH      = 1 << 3,
+		DRAW_WIREFRAME   = 1 << 4,
+		DRAW_FACECOLOR   = 1 << 5,
+		DRAW_VERTEXCOLOR = 1 << 6,
+		DRAW_BOUNDINGBOX = 1 << 7
+	};
 
-	vcl::io::FileMeshInfo loadedInfo;
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
+	int   drawMode;
+	int   wWidth;
+	float wColor[4];
+	int   pWidth;
+};
 
-	vcl::updatePerFaceNormals(m);
-	vcl::updatePerVertexNormals(m);
-	vcl::setPerVertexColor(m, vcl::Color::Gray);
+} // namespace vcl
 
-	vcl::DrawableMesh<vcl::TriMesh> dtm(m);
-	vcl::MeshRenderSettings s;
-	s.setEnableVertexColor();
-	dtm.setRenderSettings(s);
+#include "mesh_render_settings.cpp"
 
-	viewer.pushDrawableObject(dtm);
-	viewer.fitScene();
-
-	// Make the viewer window visible on screen.
-	viewer.show();
-
-	// Run main loop.
-	return application.exec();
-}
+#endif // VCLIB_RENDER_MESH_RENDER_SETTINGS_H

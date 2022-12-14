@@ -25,14 +25,30 @@
 
 #include <QGLViewer/qglviewer.h>
 
+#include <vclib/render/drawable_object.h>
+#include <vclib/space/box.h>
+
 namespace vcl {
 
 class Viewer : public QGLViewer
 {
+public:
+	virtual ~Viewer();
+
+	uint pushDrawableObject(const DrawableObject& obj);
+	uint pushDrawableObject(const DrawableObject* obj);
+
+	void fitScene();
+
 protected:
 	virtual void    draw();
 	virtual void    init();
 	virtual QString helpString() const;
+
+private:
+	std::vector<DrawableObject*> drawList;
+
+	vcl::Box3d fullBB() const;
 };
 
 } // namespace vcl

@@ -24,28 +24,40 @@
 
 namespace vcl {
 
-// Draws a spiral
+inline Viewer::~Viewer()
+{
+	for (DrawableObject* obj : drawList) {
+		delete obj;
+	}
+}
+
+inline uint Viewer::pushDrawableObject(const DrawableObject& obj)
+{
+	drawList.push_back(obj.clone());
+	return drawList.size();
+}
+
+inline uint Viewer::pushDrawableObject(const DrawableObject* obj)
+{
+	drawList.push_back(obj->clone());
+	return drawList.size();
+}
+
+inline void Viewer::fitScene()
+{
+	Box3d bb = fullBB();
+	Point3d sceneCenter = bb.center();
+	double sceneRadius = bb.diagonal();
+
+	setSceneCenter(qglviewer::Vec(sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
+	setSceneRadius(sceneRadius);
+	showEntireScene();
+}
+
 inline void Viewer::draw()
 {
-	const float nbSteps = 200.0;
-
-	glBegin(GL_QUAD_STRIP);
-	for (int i = 0; i < nbSteps; ++i) {
-		const float ratio = i / nbSteps;
-		const float angle = 21.0 * ratio;
-		const float c     = cos(angle);
-		const float s     = sin(angle);
-		const float r1    = 1.0 - 0.8f * ratio;
-		const float r2    = 0.8f - 0.8f * ratio;
-		const float alt   = ratio - 0.5f;
-		const float nor   = 0.5f;
-		const float up    = sqrt(1.0 - nor * nor);
-		glColor3f(1.0 - ratio, 0.2f, ratio);
-		glNormal3f(nor * c, up, nor * s);
-		glVertex3f(r1 * c, alt, r1 * s);
-		glVertex3f(r2 * c, alt + 0.05f, r2 * s);
-	}
-	glEnd();
+	for (const DrawableObject* obj : drawList)
+		obj->draw();
 }
 
 inline void Viewer::init()
@@ -97,6 +109,32 @@ inline QString Viewer::helpString() const
 		"details.<br><br>";
 	text += "Press <b>Escape</b> to exit the viewer.";
 	return text;
+}
+
+Box3d Viewer::fullBB() const
+{
+	Box3d bb(Point3d(-1,-1,-1), Point3d(1,1,1));
+	if (drawList.size() > 0) {
+		uint i = 0;
+
+		while (i < drawList.size() && !drawList[i]->isVisible())
+			i++;
+
+		if (i < drawList.size()) { //i will point to the first elagible object
+			Point3d sc = drawList[i]->sceneCenter();
+			bb.min = sc - drawList[i]->sceneRadius();
+			bb.max = sc + drawList[i]->sceneRadius();
+
+			for (i = i+1; i < drawList.size(); i++) { //rest of the list
+				Point3d sc = drawList[i]->sceneCenter();
+				Point3d tmp = sc - drawList[i]->sceneRadius();
+				bb.min = vcl::min(bb.min, tmp);
+				tmp = sc + drawList[i]->sceneRadius();
+				bb.max = vcl::max(bb.max, tmp);
+			}
+		}
+	}
+	return bb;
 }
 
 } // namespace vcl

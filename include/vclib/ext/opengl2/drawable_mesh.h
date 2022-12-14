@@ -20,61 +20,76 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "point.h"
+#ifndef VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
+#define VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+
+#include <vclib/render/drawable_object.h>
+#include <vclib/render/mesh_render_buffers.h>
+#include <vclib/render/mesh_render_settings.h>
 
 namespace vcl {
 
-template<typename PointType>
-PointType min(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::min(p1[i], p2[2]);
-	}
-	return p;
-}
+// From: https://blog.nobel-joergensen.com/2013/01/29/debugging-opengl-using-glgeterror/
+void _check_gl_error(const char *file, int line);
 
-template<typename PointType>
-PointType max(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::max(p1[i], p2[2]);
-	}
-	return p;
-}
+///
+/// Usage
+/// [... some opengl calls]
+/// glCheckError();
+///
+#define check_gl_error() _check_gl_error(__FILE__,__LINE__)
 
-/**
- * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
- * from a given vector n.
- *
- * @param[in] n: input vector.
- * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
- * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
- */
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
-{
-	const double   LocEps = double(1e-7);
-	Point3<Scalar> up(0, 1, 0);
-	u          = n.cross(up);
-	double len = u.norm();
-	if (len < LocEps) {
-		if (std::abs(n[0]) < std::abs(n[1])) {
-			if (std::abs(n[0]) < std::abs(n[2]))
-				up = Point3<Scalar>(1, 0, 0); // x is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		else {
-			if (std::abs(n[1]) < std::abs(n[2]))
-				up = Point3<Scalar>(0, 1, 0); // y is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		u = n.cross(up);
-	}
-	v = n.cross(u);
-}
 
-} // namespace vcl
+template<MeshConcept MeshType>
+class DrawableMesh : public virtual DrawableObject
+{
+public:
+	DrawableMesh();
+	DrawableMesh(const MeshType& m);
+
+	const MeshRenderSettings& renderSettings() const;
+	void setRenderSettings(const MeshRenderSettings& rs);
+
+	// DrawableObject implementation
+	void draw() const;
+	vcl::Point3d sceneCenter() const;
+	double sceneRadius() const;
+	DrawableMesh* clone() const;
+private:
+
+	void draw(
+		unsigned int   nv,
+		unsigned int   nt,
+		const double*  pCoords,
+		const int*     pTriangles,
+		const double*  pVertexNormals,
+		const float*   pVertexColors,
+		const double*  pTriangleNormals,
+		const float*   pTriangleColors,
+		const Point3d& min,
+		const Point3d& max) const;
+	void renderPass(
+		unsigned int  nv,
+		unsigned int  nt,
+		const double* coords,
+		const int*    triangles,
+		const double* vertexNormals,
+		const float*  vertexColors,
+		const double* triangleNormals,
+		const float*  triangleColors) const;
+
+	MeshRenderBuffers<MeshType> mrb;
+	MeshRenderSettings mrs;
+};
+
+} //namespace vcl
+
+#include "drawable_mesh.cpp"
+
+#endif // VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H

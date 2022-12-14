@@ -20,45 +20,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCLIB_EXT_OPENGL2_DRAW_OBJECTS2_H
+#define VCLIB_EXT_OPENGL2_DRAW_OBJECTS2_H
 
-#include <QApplication>
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
 
-#include <vclib/algorithms/update/normal.h>
-#include <vclib/algorithms/update/color.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/io/load_ply.h>
+#include <vclib/space/color.h>
+#include <vclib/space/point/point2.h>
 
-#include <vclib/ext/opengl2/drawable_mesh.h>
-#include <vclib/ext/qglviewer/viewer.h>
+namespace vcl {
 
-int main(int argc, char **argv) {
-	// Read command lines arguments.
-	QApplication application(argc, argv);
+void drawPoint2(const Point2d& p, const Color& c, int size);
 
-	// Instantiate the viewer.
-	vcl::Viewer viewer;
+void drawLine2(const Point2d& a, const Point2d& b, const Color& c, int width = 3);
 
-	viewer.setWindowTitle("simpleViewer");
+void drawTriangle2(
+	const std::array<Point2d, 3>& arr,
+	const Color&                  c,
+	int                           width = 3,
+	bool                          fill  = false);
 
-	vcl::io::FileMeshInfo loadedInfo;
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
+void drawTriangle2(
+	const Point2d& p1,
+	const Point2d& p2,
+	const Point2d& p3,
+	const Color&   c,
+	int            width = 3,
+	bool           fill  = false);
 
-	vcl::updatePerFaceNormals(m);
-	vcl::updatePerVertexNormals(m);
-	vcl::setPerVertexColor(m, vcl::Color::Gray);
+void drawQuad2(const std::array<Point2d, 4>& arr, const Color& c, int width = 3, bool fill = false);
 
-	vcl::DrawableMesh<vcl::TriMesh> dtm(m);
-	vcl::MeshRenderSettings s;
-	s.setEnableVertexColor();
-	dtm.setRenderSettings(s);
+void drawQuad2(
+	const Point2d& p1,
+	const Point2d& p2,
+	const Point2d& p3,
+	const Point2d& p4,
+	const Color&   c,
+	int            width = 3,
+	bool           fill  = false);
 
-	viewer.pushDrawableObject(dtm);
-	viewer.fitScene();
+} // namespace vcl
 
-	// Make the viewer window visible on screen.
-	viewer.show();
+#include "opengl_objects2.cpp"
 
-	// Run main loop.
-	return application.exec();
-}
+#endif // VCLIB_EXT_OPENGL2_DRAW_OBJECTS2_H
