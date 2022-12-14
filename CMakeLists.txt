@@ -401,61 +401,11 @@ else() # natively supported by msvc
 endif()
 
 if (VCLIB_USES_OPENGL)
-	find_package(OpenGL QUIET)
-
-	if (OpenGL_FOUND)
-		message(STATUS "VCLIB using OpenGL")
-		target_link_libraries(vclib INTERFACE OpenGL::GL)
-	else()
-		message(FATAL_ERROR "OpenGL not found. Unset VCLIB_USES_OPENGL option or install it in your system.")
-	endif()
+	include(cmake/vclib_opengl.cmake)
 endif()
 
 if (VCLIB_USES_QT)
-	find_package(Qt5 COMPONENTS Core Xml OpenGL Gui Widgets QUIET)
-
-	list(APPEND HEADERS
-		include/vclib/ext/opengl2/draw_objects2.h
-		include/vclib/ext/opengl2/draw_objects3.h
-		include/vclib/ext/opengl2/drawable_mesh.h)
-
-	list(APPEND SOURCES
-		include/vclib/ext/opengl2/draw_objects2.cpp
-		include/vclib/ext/opengl2/draw_objects3.cpp
-		include/vclib/ext/opengl2/drawable_mesh.cpp)
-
-	if (Qt5_FOUND)
-		message(STATUS "VCLIB using Qt")
-		target_link_libraries(vclib INTERFACE
-			Qt5::Core
-			Qt5::Widgets
-			Qt5::Xml)
-
-		if (OpenGL_FOUND)
-			target_link_libraries(vclib INTERFACE Qt5::OpenGL)
-
-			if(VCLIB_USES_LIBQGLVIEWER)
-				find_package(QGLViewer QUIET)
-
-				if (QGLViewer_FOUND)
-					message(STATUS "VCLIB using libQGLViewer")
-
-					target_include_directories(vclib INTERFACE ${QGLVIEWER_INCLUDE_DIR})
-					target_link_libraries(vclib INTERFACE ${QGLVIEWER_LIBRARY})
-
-					list(APPEND HEADERS
-						include/vclib/ext/qglviewer/viewer.h)
-
-					list(APPEND SOURCES
-						include/vclib/ext/qglviewer/viewer.cpp)
-				else()
-					message(FATAL_ERROR "libQGLViewer not found. Unset VCLIB_USES_LIBQGLVIEWER option or install it in your system.")
-				endif()
-			endif()
-		endif()
-	else()
-		message(FATAL_ERROR "Qt not found. Unset VCLIB_USES_QT option or install it in your system.")
-	endif()
+	include(cmake/vclib_qt.cmake)
 endif()
 
 if (VCLIB_IDE)
