@@ -8,6 +8,7 @@
 
 find_path(QGLVIEWER_INCLUDE_DIR qglviewer.h
 	/usr/include/QGLViewer
+	/usr/local/include/QGLViewer
 	/opt/local/include/QGLViewer
 	/usr/local/include/QGLViewer
 	/Library/Frameworks/QGLViewer.framework/Headers
@@ -17,10 +18,16 @@ find_path(QGLVIEWER_INCLUDE_DIR qglviewer.h
 	ENV QGLVIEWER_ROOT
 	ENV QGLVIEWER_ROOT_DIR)
 
+if (Qt6_FOUND)
+	set(QT_SUFFIX -qt6)
+else()
+	set(QT_SUFFIX -qt5)
+endif()
+
 find_library(QGLVIEWER_LIBRARY_RELEASE
-	NAMES qglviewer QGLViewer qglviewer-qt5 QGLViewer-qt5
+	NAMES qglviewer QGLViewer qglviewer${QT_SUFFIX} QGLViewer${QT_SUFFIX}
 	PATHS
-	    /usr/lib
+		/usr/lib
 		/usr/local/lib
 		/opt/local/lib
 		/sw/lib
@@ -33,9 +40,9 @@ find_library(QGLVIEWER_LIBRARY_RELEASE
 	PATH_SUFFIXES QGLViewer QGLViewer/release)
 
 find_library(QGLVIEWER_LIBRARY_DEBUG
-	NAMES dqglviewer dQGLViewer dqglviewer-qt5 dQGLViewer-qt5 QGLViewerd2
+	NAMES dqglviewer dQGLViewer dqglviewer${QT_SUFFIX} dQGLViewer${QT_SUFFIX} QGLViewerd2
 	PATHS
-	    /usr/lib
+		/usr/lib
 		/usr/local/lib
 		/opt/local/lib
 		/sw/lib
