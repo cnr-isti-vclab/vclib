@@ -20,61 +20,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "point.h"
+#ifndef VCLIB_RENDER_MESH_RENDER_BUFFERS_H
+#define VCLIB_RENDER_MESH_RENDER_BUFFERS_H
+
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template<typename PointType>
-PointType min(const PointType &p1, const PointType &p2)
+template<MeshConcept MeshType>
+class MeshRenderBuffers
 {
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::min(p1[i], p2[2]);
-	}
-	return p;
-}
+public:
+	MeshRenderBuffers();
+	MeshRenderBuffers(const MeshType& m);
 
-template<typename PointType>
-PointType max(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::max(p1[i], p2[2]);
-	}
-	return p;
-}
+	unsigned int vertexNumber() const;
+	unsigned int triangleNumber() const;
+	const vcl::Point3d& bbMin() const;
+	const vcl::Point3d& bbMax() const;
 
-/**
- * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
- * from a given vector n.
- *
- * @param[in] n: input vector.
- * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
- * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
- */
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
-{
-	const double   LocEps = double(1e-7);
-	Point3<Scalar> up(0, 1, 0);
-	u          = n.cross(up);
-	double len = u.norm();
-	if (len < LocEps) {
-		if (std::abs(n[0]) < std::abs(n[1])) {
-			if (std::abs(n[0]) < std::abs(n[2]))
-				up = Point3<Scalar>(1, 0, 0); // x is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		else {
-			if (std::abs(n[1]) < std::abs(n[2]))
-				up = Point3<Scalar>(0, 1, 0); // y is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		u = n.cross(up);
-	}
-	v = n.cross(u);
-}
+	const double* vertexBufferData() const;
+	const int* triangleBufferData() const;
+	const double* vertexNormalBufferData() const;
+	const float* vertexColorBufferData() const;
+	const double* triangleNormalBufferData() const;
+	const float* triangleColorBufferData() const;
+
+private:
+	uint nv = 0;
+	uint nt = 0;
+	std::vector<double> verts;
+	std::vector<int> tris;
+	std::vector<double> vNormals;
+	std::vector<float> vColors;
+	std::vector<double> tNormals;
+	std::vector<float> tColors;
+	vcl::Point3d bbmin, bbmax;
+
+	void fillVertices(const MeshType& m);
+	void fillTriangles(const MeshType& m);
+};
 
 } // namespace vcl
+
+#include "mesh_render_buffers.cpp"
+
+#endif // VCLIB_RENDER_MESH_RENDER_BUFFERS_H

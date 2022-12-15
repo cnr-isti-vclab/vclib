@@ -23,9 +23,23 @@
 #ifndef VCL_TYPES_H
 #define VCL_TYPES_H
 
+#define NOMINMAX
+
 #include <assert.h>
 #include <concepts>
 #include <type_traits>
+
+// tbb and qt conflicts: if both are linked, we need to first undef Qt's emit
+// see: https://github.com/oneapi-src/oneTBB/issues/547
+#ifndef Q_MOC_RUN
+#if defined(emit)
+#undef emit
+#include <execution>
+#define emit // restore the macro definition of "emit", as it was defined in gtmetamacros.h
+#else
+#include <execution>
+#endif // defined(emit)
+#endif // Q_MOC_RUN
 
 // clang does not support Standardization of Parallelism yet -> https://en.cppreference.com/w/cpp/compiler_support
 #ifdef __clang__

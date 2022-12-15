@@ -20,61 +20,45 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "point.h"
+#ifndef VCLIB_EXT_QGLVIEWER_VIEWER_H
+#define VCLIB_EXT_QGLVIEWER_VIEWER_H
+
+#include <QGLViewer/qglviewer.h>
+
+#include <vclib/render/drawable_object.h>
+#include <vclib/space/box.h>
 
 namespace vcl {
 
-template<typename PointType>
-PointType min(const PointType &p1, const PointType &p2)
+class Viewer : public QGLViewer
 {
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::min(p1[i], p2[2]);
-	}
-	return p;
-}
+public:
+	virtual ~Viewer();
 
-template<typename PointType>
-PointType max(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::max(p1[i], p2[2]);
-	}
-	return p;
-}
+	// draw list management
+	uint pushDrawableObject(const DrawableObject& obj);
+	uint pushDrawableObject(const DrawableObject* obj);
 
-/**
- * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
- * from a given vector n.
- *
- * @param[in] n: input vector.
- * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
- * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
- */
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
-{
-	const double   LocEps = double(1e-7);
-	Point3<Scalar> up(0, 1, 0);
-	u          = n.cross(up);
-	double len = u.norm();
-	if (len < LocEps) {
-		if (std::abs(n[0]) < std::abs(n[1])) {
-			if (std::abs(n[0]) < std::abs(n[2]))
-				up = Point3<Scalar>(1, 0, 0); // x is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		else {
-			if (std::abs(n[1]) < std::abs(n[2]))
-				up = Point3<Scalar>(0, 1, 0); // y is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		u = n.cross(up);
-	}
-	v = n.cross(u);
-}
+	DrawableObject& object(uint i);
+	const DrawableObject& object(uint i) const;
+
+	// viewer management
+	void fitScene();
+
+protected:
+	virtual void    draw();
+	virtual void    init();
+	virtual QString helpString() const;
+
+private:
+	// the viewer owns the DrawableObjects contained in this list
+	std::vector<DrawableObject*> drawList;
+
+	vcl::Box3d fullBB() const;
+};
 
 } // namespace vcl
+
+#include "viewer.cpp"
+
+#endif // VCLIB_EXT_QGLVIEWER_VIEWER_H

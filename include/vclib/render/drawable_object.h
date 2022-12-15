@@ -20,61 +20,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "point.h"
+#ifndef VCLIB_RENDER_DRAWABLE_OBJECT_H
+#define VCLIB_RENDER_DRAWABLE_OBJECT_H
+
+#include <vclib/space/point.h>
 
 namespace vcl {
 
-template<typename PointType>
-PointType min(const PointType &p1, const PointType &p2)
+class DrawableObject
 {
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::min(p1[i], p2[2]);
-	}
-	return p;
-}
+public:
+	/**< @brief Empty constructor */
+	DrawableObject() : visibility(true) {}
 
-template<typename PointType>
-PointType max(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::max(p1[i], p2[2]);
-	}
-	return p;
-}
+	virtual ~DrawableObject() {}
 
-/**
- * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
- * from a given vector n.
- *
- * @param[in] n: input vector.
- * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
- * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
- */
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
-{
-	const double   LocEps = double(1e-7);
-	Point3<Scalar> up(0, 1, 0);
-	u          = n.cross(up);
-	double len = u.norm();
-	if (len < LocEps) {
-		if (std::abs(n[0]) < std::abs(n[1])) {
-			if (std::abs(n[0]) < std::abs(n[2]))
-				up = Point3<Scalar>(1, 0, 0); // x is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		else {
-			if (std::abs(n[1]) < std::abs(n[2]))
-				up = Point3<Scalar>(0, 1, 0); // y is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		u = n.cross(up);
-	}
-	v = n.cross(u);
-}
+	/**< @brief This member function must draw the object through OpenGL calls.
+	 It will be called at every frame. */
+	virtual void draw() const = 0;
+
+	/**< @brief This member function is used to find a good camera position
+	 to render object. It must return the position of the center of the object. */
+	virtual vcl::Point3d sceneCenter() const = 0;
+
+	/**< @brief This member function is used to find a good camera position
+	 to render object. It should return the ray of the bounding sphere of the object, but also
+	 half diagonal of the bounding box of the object is a good approximation. Return
+	 -1 if the object shouldn't influence the position of the camera. */
+	virtual double sceneRadius() const = 0;
+
+	/**< @brief This member function is used to create a new copy of the DrawableObject.
+	 Each derived class must implement this member function, that returns a new dynamically
+	 allocated DrawableObject that is a copy of the current one.
+	 for more details about this paradigm, check polimorphism clone in modern c++:
+	 https://www.fluentcpp.com/2017/09/08/make-polymorphic-copy-modern-cpp/ */
+	virtual DrawableObject* clone() const = 0;
+
+	inline virtual bool isVisible() const { return visibility; }
+	inline virtual void setVisibility(bool vis) { visibility = vis; }
+
+private:
+	bool visibility;
+};
 
 } // namespace vcl
+
+#endif // VCLIB_RENDER_DRAWABLE_OBJECT_H

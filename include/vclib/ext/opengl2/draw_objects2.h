@@ -20,61 +20,57 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "point.h"
+#ifndef VCLIB_EXT_OPENGL2_DRAW_OBJECTS2_H
+#define VCLIB_EXT_OPENGL2_DRAW_OBJECTS2_H
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
+
+#include <vclib/space/color.h>
+#include <vclib/space/point/point2.h>
 
 namespace vcl {
 
-template<typename PointType>
-PointType min(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::min(p1[i], p2[2]);
-	}
-	return p;
-}
+void drawPoint2(const Point2d& p, const Color& c, int size);
 
-template<typename PointType>
-PointType max(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::max(p1[i], p2[2]);
-	}
-	return p;
-}
+void drawLine2(const Point2d& a, const Point2d& b, const Color& c, int width = 3);
 
-/**
- * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
- * from a given vector n.
- *
- * @param[in] n: input vector.
- * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
- * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
- */
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
-{
-	const double   LocEps = double(1e-7);
-	Point3<Scalar> up(0, 1, 0);
-	u          = n.cross(up);
-	double len = u.norm();
-	if (len < LocEps) {
-		if (std::abs(n[0]) < std::abs(n[1])) {
-			if (std::abs(n[0]) < std::abs(n[2]))
-				up = Point3<Scalar>(1, 0, 0); // x is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		else {
-			if (std::abs(n[1]) < std::abs(n[2]))
-				up = Point3<Scalar>(0, 1, 0); // y is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		u = n.cross(up);
-	}
-	v = n.cross(u);
-}
+void drawTriangle2(
+	const std::array<Point2d, 3>& arr,
+	const Color&                  c,
+	int                           width = 3,
+	bool                          fill  = false);
+
+void drawTriangle2(
+	const Point2d& p1,
+	const Point2d& p2,
+	const Point2d& p3,
+	const Color&   c,
+	int            width = 3,
+	bool           fill  = false);
+
+void drawQuad2(const std::array<Point2d, 4>& arr, const Color& c, int width = 3, bool fill = false);
+
+void drawQuad2(
+	const Point2d& p1,
+	const Point2d& p2,
+	const Point2d& p3,
+	const Point2d& p4,
+	const Color&   c,
+	int            width = 3,
+	bool           fill  = false);
 
 } // namespace vcl
+
+#include "opengl_objects2.cpp"
+
+#endif // VCLIB_EXT_OPENGL2_DRAW_OBJECTS2_H

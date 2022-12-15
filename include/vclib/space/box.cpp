@@ -190,12 +190,8 @@ void Box<PointType>::add(const Box<PointType>& b)
 			*this = b;
 		}
 		else {
-			for (uint i = 0; i < PointType::DIM; ++i) {
-				if (min[i] > b.min[i])
-					min[i] = b.min[i];
-				if (max[i] < b.max[i])
-					max[i] = b.max[i];
-			}
+			add(b.min());
+			add(b.max());
 		}
 	}
 }
@@ -213,12 +209,8 @@ void Box<PointType>::add(const PointType& p)
 	if (isNull())
 		*this = Box(p);
 	else {
-		for (uint i = 0; i < PointType::DIM; ++i) {
-			if (min[i] > p[i])
-				min[i] = p[i];
-			if (max[i] < p[i])
-				max[i] = p[i];
-		}
+		min = vcl::min(min, p);
+		max = vcl::max(max, p);
 	}
 }
 
@@ -258,12 +250,10 @@ template<typename Scalar>
 void Box<PointType>::add(const PointType& p, Scalar radius)
 {
 	if (isNull())
-		*this = Box(p);
+		*this = Box(p - radius, p + radius);
 	else {
-		for (uint i = 0; i < PointType::DIM; ++i) {
-			min[i] = std::min(min[i], p[i] - radius);
-			max[i] = std::max(max[i], p[i] + radius);
-		}
+		min = vcl::min(min, p - radius);
+		max = vcl::max(max, p + radius);
 	}
 }
 

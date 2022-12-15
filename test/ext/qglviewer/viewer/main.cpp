@@ -20,61 +20,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "point.h"
+#include <iostream>
 
-namespace vcl {
+#include <QApplication>
 
-template<typename PointType>
-PointType min(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::min(p1[i], p2[2]);
-	}
-	return p;
+#include <vclib/algorithms/update/normal.h>
+#include <vclib/algorithms/update/color.h>
+#include <vclib/tri_mesh.h>
+#include <vclib/io/load_ply.h>
+
+#include <vclib/ext/opengl2/drawable_mesh.h>
+#include <vclib/ext/qglviewer/viewer.h>
+
+int main(int argc, char **argv) {
+	// Read command lines arguments.
+	QApplication application(argc, argv);
+
+	// Instantiate the viewer.
+	vcl::Viewer viewer;
+
+	viewer.setWindowTitle("simpleViewer");
+
+	vcl::io::FileMeshInfo loadedInfo;
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
+
+	vcl::updatePerFaceNormals(m);
+	vcl::updatePerVertexNormals(m);
+	vcl::setPerVertexColor(m, vcl::Color::White);
+
+	vcl::MeshRenderSettings mrs;
+	mrs.setWireframe(true);
+
+	vcl::DrawableMesh<vcl::TriMesh> dtm(m, mrs);
+
+	assert(dtm.renderSettings().isWireframeEnabled());
+
+	viewer.pushDrawableObject(dtm);
+	viewer.fitScene();
+
+	// Make the viewer window visible on screen.
+	viewer.show();
+
+	// Run main loop.
+	return application.exec();
 }
-
-template<typename PointType>
-PointType max(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::max(p1[i], p2[2]);
-	}
-	return p;
-}
-
-/**
- * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
- * from a given vector n.
- *
- * @param[in] n: input vector.
- * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
- * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
- */
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
-{
-	const double   LocEps = double(1e-7);
-	Point3<Scalar> up(0, 1, 0);
-	u          = n.cross(up);
-	double len = u.norm();
-	if (len < LocEps) {
-		if (std::abs(n[0]) < std::abs(n[1])) {
-			if (std::abs(n[0]) < std::abs(n[2]))
-				up = Point3<Scalar>(1, 0, 0); // x is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		else {
-			if (std::abs(n[1]) < std::abs(n[2]))
-				up = Point3<Scalar>(0, 1, 0); // y is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		u = n.cross(up);
-	}
-	v = n.cross(u);
-}
-
-} // namespace vcl

@@ -20,61 +20,64 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "point.h"
+#ifndef VCLIB_RENDER_MESH_RENDER_SETTINGS_H
+#define VCLIB_RENDER_MESH_RENDER_SETTINGS_H
+
+#include <vclib/space/color.h>
 
 namespace vcl {
 
-template<typename PointType>
-PointType min(const PointType &p1, const PointType &p2)
+class MeshRenderSettings
 {
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::min(p1[i], p2[2]);
-	}
-	return p;
-}
+public:
+	MeshRenderSettings();
 
-template<typename PointType>
-PointType max(const PointType &p1, const PointType &p2)
-{
-	PointType p;
-	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::max(p1[i], p2[2]);
-	}
-	return p;
-}
+	//rendering options getters
+	bool isWireframeEnabled() const;
+	bool isPointShadingEnabled() const;
+	bool isFlatShadingEnabled() const;
+	bool isSmoothShadingEnabled() const;
+	bool isBboxEnabled() const;
+	bool isFaceColorEnabled() const;
+	bool isVertexColorEnabled() const;
+	int pointWidth() const;
+	int wireframeWidth() const;
+	vcl::Color wireframeColor() const;
+	const float* wireframeColorData() const;
 
-/**
- * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
- * from a given vector n.
- *
- * @param[in] n: input vector.
- * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
- * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
- */
-template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
-{
-	const double   LocEps = double(1e-7);
-	Point3<Scalar> up(0, 1, 0);
-	u          = n.cross(up);
-	double len = u.norm();
-	if (len < LocEps) {
-		if (std::abs(n[0]) < std::abs(n[1])) {
-			if (std::abs(n[0]) < std::abs(n[2]))
-				up = Point3<Scalar>(1, 0, 0); // x is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		else {
-			if (std::abs(n[1]) < std::abs(n[2]))
-				up = Point3<Scalar>(0, 1, 0); // y is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		u = n.cross(up);
-	}
-	v = n.cross(u);
-}
+	// rendering options setters
+	void setWireframe(bool b);
+	void setFlatShading();
+	void setSmoothShading();
+	void setPointsShading();
+	void setWireframeColor(float r, float g, float b);
+	void setWireframeColor(const vcl::Color& c);
+	void setWireframeWidth(int width);
+	void setPointWidth(int width);
+	void setEnableVertexColor();
+	void setEnableTriangleColor();
+	void setVisibleBoundingBox(bool b);
+
+private:
+	enum {
+		DRAW_MESH        = 1 << 0,
+		DRAW_POINTS      = 1 << 1,
+		DRAW_FLAT        = 1 << 2,
+		DRAW_SMOOTH      = 1 << 3,
+		DRAW_WIREFRAME   = 1 << 4,
+		DRAW_FACECOLOR   = 1 << 5,
+		DRAW_VERTEXCOLOR = 1 << 6,
+		DRAW_BOUNDINGBOX = 1 << 7
+	};
+
+	int   drawMode  = DRAW_SMOOTH | DRAW_VERTEXCOLOR;
+	int   wWidth    = 1;
+	float wColor[4] = {0, 0, 0, 1};
+	int   pWidth    = 3;
+};
 
 } // namespace vcl
+
+#include "mesh_render_settings.cpp"
+
+#endif // VCLIB_RENDER_MESH_RENDER_SETTINGS_H

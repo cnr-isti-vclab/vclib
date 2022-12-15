@@ -35,3 +35,7 @@ add_subdirectory(mesh_topology)
 add_subdirectory(mesh_transform)
 add_subdirectory(polygon_earcut)
 add_subdirectory(polymesh_basic_test)
+
+if (VCLIB_USES_LIBQGLVIEWER)
+	add_subdirectory(ext/qglviewer/viewer)
+endif()

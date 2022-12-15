@@ -23,8 +23,6 @@
 #ifndef VCL_PARALLEL_H
 #define VCL_PARALLEL_H
 
-#include <execution>
-
 #include <vclib/misc/types.h>
 
 namespace vcl {

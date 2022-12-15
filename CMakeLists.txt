@@ -16,6 +16,12 @@ project(vclib)
 set(CMAKE_CXX_STANDARD 20)
 
 ### Options
+option(VCLIB_USES_OPENGL "Use OpenGL for drawing VCLib classes" OFF)
+
+option(VCLIB_USES_QT "Use Qt5 for GUI elements" OFF)
+
+option(VCLIB_USES_LIBQGLVIEWER "Use Qt5 and libQGLViewer for a small viewer - requires OpenGL and Qt" OFF)
+
 option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
 option(VCLIB_IDE "Create an utility target to show the library tree on IDEs" ON)
 option(VCLIB_BUILD_DOCS
@@ -231,6 +237,9 @@ set(HEADERS
 	include/vclib/misc/tokenizer.h
 	include/vclib/misc/types.h
 	include/vclib/misc/internal/tmp_meshes.h
+	include/vclib/render/drawable_object.h
+	include/vclib/render/mesh_render_buffers.h
+	include/vclib/render/mesh_render_settings.h
 	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
@@ -357,6 +366,8 @@ set(SOURCES
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
+	include/vclib/render/mesh_render_buffers.cpp
+	include/vclib/render/mesh_render_settings.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/kd_tree.cpp
@@ -389,6 +400,14 @@ else() # natively supported by msvc
 	message(STATUS "VCLIB using parallel algorithms")
 endif()
 
+if (VCLIB_USES_OPENGL)
+	include(cmake/vclib_opengl.cmake)
+endif()
+
+if (VCLIB_USES_QT)
+	include(cmake/vclib_qt.cmake)
+endif()
+
 if (VCLIB_IDE)
 	add_custom_target(vclib_ide SOURCES ${HEADERS} ${SOURCES})
 endif()
@@ -400,3 +419,5 @@ endif()
 if (VCLIB_BUILD_DOCS)
 	add_subdirectory(docs)
 endif()
+
+

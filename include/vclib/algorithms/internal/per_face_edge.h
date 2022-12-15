@@ -25,7 +25,6 @@
 
 #include <algorithm>
 #include <assert.h>
-#include <execution>
 #include <vector>
 
 #include <vclib/mesh/requirements.h>
