@@ -23,6 +23,8 @@
 #ifndef VCL_TYPES_H
 #define VCL_TYPES_H
 
+#define NOMINMAX
+
 #include <assert.h>
 #include <concepts>
 #include <type_traits>

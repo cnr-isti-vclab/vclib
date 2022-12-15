@@ -23,6 +23,10 @@
 #ifndef VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
 #define VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else

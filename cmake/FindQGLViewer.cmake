@@ -25,6 +25,10 @@ else()
 	set(QT_SUFFIX -qt5)
 endif()
 
+if (WIN32)
+	get_filename_component(QGLVIEWER_INCLUDE_DIR ${QGLVIEWER_INCLUDE_DIR} DIRECTORY)
+endif()
+
 find_library(QGLVIEWER_LIBRARY_RELEASE
 	NAMES qglviewer QGLViewer QGLViewer2 qglviewer${QT_SUFFIX} QGLViewer${QT_SUFFIX}
 	PATHS
