@@ -173,10 +173,12 @@ public:
 
 protected:
 	// Vertices
+	template<typename M = Mesh>
 	void updateVertexReferences(
 		const typename Mesh::VertexType* oldBase,
 		const typename Mesh::VertexType* newBase);
 
+	template<typename M = Mesh>
 	void updateVertexReferencesAfterCompact(
 		const typename Mesh::VertexType* base,
 		const std::vector<int>&       newIndices);

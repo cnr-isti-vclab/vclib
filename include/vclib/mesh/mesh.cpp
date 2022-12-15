@@ -981,6 +981,7 @@ void Mesh<Args...>::compactHalfEdges()
  *********************/
 
 template<typename... Args> requires HasVertices<Args...>
+template<typename M>
 void Mesh<Args...>::updateVertexReferences(
 	const typename Mesh::VertexType* oldBase,
 	const typename Mesh::VertexType* newBase)
@@ -992,25 +993,26 @@ void Mesh<Args...>::updateVertexReferences(
 
 		// update vertex references in the Face Container, if it exists
 		if constexpr (mesh::HasFaceContainer<Mesh>) {
-			using FaceContainer = typename Mesh::FaceContainer;
+			using FaceContainer = typename M::FaceContainer; // using M because MSVC complains...
 			FaceContainer::updateVertexReferences(oldBase, newBase);
 		}
 
 		// update vertex references in the Edge Container, if it exists
 		if constexpr (mesh::HasEdgeContainer<Mesh>) {
-			using EdgeContainer = typename Mesh::EdgeContainer;
+			using EdgeContainer = typename M::EdgeContainer; // using M because MSVC complains...
 			EdgeContainer::updateVertexReferences(oldBase, newBase);
 		}
 
 		// update vertex references in the HalfEdge Container, if it exists
 		if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
-			using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
+			using HalfEdgeContainer = typename M::HalfEdgeContainer; // using M because MSVC complains...
 			HalfEdgeContainer::updateVertexReferences(oldBase, newBase);
 		}
 	}
 }
 
 template<typename... Args> requires HasVertices<Args...>
+template<typename M>
 void Mesh<Args...>::updateVertexReferencesAfterCompact(
 	const typename Mesh::VertexType* base,
 	const std::vector<int>&       newIndices)
@@ -1021,19 +1023,19 @@ void Mesh<Args...>::updateVertexReferencesAfterCompact(
 
 	// update vertex references in the Face Container, if it exists
 	if constexpr (mesh::HasFaceContainer<Mesh>) {
-		using FaceContainer = typename Mesh::FaceContainer;
+		using FaceContainer = typename M::FaceContainer; // using M because MSVC complains...
 		FaceContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
 
 	// update vertex references in the Edge Container, if it exists
 	if constexpr (mesh::HasEdgeContainer<Mesh>) {
-		using EdgeContainer = typename Mesh::EdgeContainer;
+		using EdgeContainer = typename M::EdgeContainer; // using M because MSVC complains...
 		EdgeContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
 
 	// update vertex references in the HalfEdge Container, if it exists
 	if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
-		using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
+		using HalfEdgeContainer = typename M::HalfEdgeContainer; // using M because MSVC complains...
 		HalfEdgeContainer::updateVertexReferencesAfterCompact(base, newIndices);
 	}
 }
