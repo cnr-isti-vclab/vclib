@@ -52,9 +52,12 @@ class DrawableMesh : public virtual DrawableObject
 public:
 	DrawableMesh();
 	DrawableMesh(const MeshType& m);
+	DrawableMesh(const MeshType& m, const MeshRenderSettings& mrs);
 
 	const MeshRenderSettings& renderSettings() const;
 	void setRenderSettings(const MeshRenderSettings& rs);
+
+	void updateBuffers(const MeshType& m);
 
 	// DrawableObject implementation
 	void draw() const;

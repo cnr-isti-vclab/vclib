@@ -26,12 +26,6 @@ namespace vcl {
 
 MeshRenderSettings::MeshRenderSettings()
 {
-	drawMode          = DRAW_SMOOTH | DRAW_FACECOLOR;
-	wWidth    = 1;
-	wColor[0] = (float)0.1;
-	wColor[1] = (float)0.1;
-	wColor[2] = (float)0.1;
-	pWidth = 3;
 }
 
 inline bool MeshRenderSettings::isWireframeEnabled() const

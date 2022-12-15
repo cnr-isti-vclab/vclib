@@ -70,10 +70,10 @@ private:
 		DRAW_BOUNDINGBOX = 1 << 7
 	};
 
-	int   drawMode;
-	int   wWidth;
-	float wColor[4];
-	int   pWidth;
+	int   drawMode  = DRAW_SMOOTH | DRAW_VERTEXCOLOR;
+	int   wWidth    = 1;
+	float wColor[4] = {0, 0, 0, 1};
+	int   pWidth    = 3;
 };
 
 } // namespace vcl

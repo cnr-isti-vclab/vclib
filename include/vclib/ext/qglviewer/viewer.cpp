@@ -26,11 +26,18 @@ namespace vcl {
 
 inline Viewer::~Viewer()
 {
+	// delete all the DrawableObjects
 	for (DrawableObject* obj : drawList) {
 		delete obj;
 	}
 }
 
+/**
+ * @brief Pushes the DrawableObject to the viewer. This function creates a **copy** of the given
+ * argument and inserts it into the viewer.
+ * @param obj
+ * @return
+ */
 inline uint Viewer::pushDrawableObject(const DrawableObject& obj)
 {
 	drawList.push_back(obj.clone());
@@ -39,8 +46,21 @@ inline uint Viewer::pushDrawableObject(const DrawableObject& obj)
 
 inline uint Viewer::pushDrawableObject(const DrawableObject* obj)
 {
+	if (obj == nullptr) return -1;
 	drawList.push_back(obj->clone());
 	return drawList.size();
+}
+
+DrawableObject& Viewer::object(uint i)
+{
+	assert(i < drawList.size());
+	return *drawList[i];
+}
+
+const DrawableObject& Viewer::object(uint i) const
+{
+	assert(i < drawList.size());
+	return *drawList[i];
 }
 
 inline void Viewer::fitScene()

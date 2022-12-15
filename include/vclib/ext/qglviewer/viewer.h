@@ -35,9 +35,14 @@ class Viewer : public QGLViewer
 public:
 	virtual ~Viewer();
 
+	// draw list management
 	uint pushDrawableObject(const DrawableObject& obj);
 	uint pushDrawableObject(const DrawableObject* obj);
 
+	DrawableObject& object(uint i);
+	const DrawableObject& object(uint i) const;
+
+	// viewer management
 	void fitScene();
 
 protected:
@@ -46,6 +51,7 @@ protected:
 	virtual QString helpString() const;
 
 private:
+	// the viewer owns the DrawableObjects contained in this list
 	std::vector<DrawableObject*> drawList;
 
 	vcl::Box3d fullBB() const;

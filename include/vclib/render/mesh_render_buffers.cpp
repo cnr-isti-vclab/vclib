@@ -63,36 +63,42 @@ const Point3d &MeshRenderBuffers<MeshType>::bbMax() const
 template<MeshConcept MeshType>
 const double* MeshRenderBuffers<MeshType>::vertexBufferData() const
 {
+	if (verts.empty()) return nullptr;
 	return verts.data();
 }
 
 template<MeshConcept MeshType>
 const int* MeshRenderBuffers<MeshType>::triangleBufferData() const
 {
+	if (tris.empty()) return nullptr;
 	return tris.data();
 }
 
 template<MeshConcept MeshType>
 const double* MeshRenderBuffers<MeshType>::vertexNormalBufferData() const
 {
+	if (vNormals.empty()) return nullptr;
 	return vNormals.data();
 }
 
 template<MeshConcept MeshType>
 const float* MeshRenderBuffers<MeshType>::vertexColorBufferData() const
 {
+	if (vColors.empty()) return nullptr;
 	return vColors.data();
 }
 
 template<MeshConcept MeshType>
 const double* MeshRenderBuffers<MeshType>::triangleNormalBufferData() const
 {
+	if (tNormals.empty()) return nullptr;
 	return tNormals.data();
 }
 
 template<MeshConcept MeshType>
 const float* MeshRenderBuffers<MeshType>::triangleColorBufferData() const
 {
+	if (tColors.empty()) return nullptr;
 	return tColors.data();
 }
 

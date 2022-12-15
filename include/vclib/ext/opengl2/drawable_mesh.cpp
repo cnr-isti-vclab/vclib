@@ -39,6 +39,12 @@ DrawableMesh<MeshType>::DrawableMesh(const MeshType &m) :
 }
 
 template<MeshConcept MeshType>
+DrawableMesh<MeshType>::DrawableMesh(const MeshType& m, const MeshRenderSettings& mrs) :
+		mrb(m), mrs(mrs)
+{
+}
+
+template<MeshConcept MeshType>
 const MeshRenderSettings& DrawableMesh<MeshType>::renderSettings() const
 {
 	return mrs;
@@ -48,6 +54,12 @@ template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::setRenderSettings(const MeshRenderSettings& rs)
 {
 	mrs = rs;
+}
+
+template<MeshConcept MeshType>
+void DrawableMesh<MeshType>::updateBuffers(const MeshType& m)
+{
+	mrb = MeshRenderBuffers<MeshType>(m);
 }
 
 template<MeshConcept MeshType>
@@ -231,86 +243,104 @@ void DrawableMesh<MeshType>::renderPass(
 	const double* triangleNormals,
 	const float*  triangleColors) const
 {
-	if (mrs.isPointShadingEnabled()) {
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_DOUBLE, 0, coords);
-
-		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(3, GL_FLOAT, 0, vertexColors);
-
-		glPointSize(mrs.pointWidth());
-
-		glDrawArrays(GL_POINTS, 0, nv);
-
-		glDisableClientState(GL_COLOR_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
-	}
-	else if (mrs.isSmoothShadingEnabled() || mrs.isFlatShadingEnabled()) {
-		// Old fashioned, verbose and slow rendering.
-		//
-		if (mrs.isFaceColorEnabled()) {
-			int n_tris = nt;
-			for (int tid = 0; tid < n_tris; ++tid) {
-				int tid_ptr  = 3 * tid;
-				int vid0     = triangles[tid_ptr + 0];
-				int vid1     = triangles[tid_ptr + 1];
-				int vid2     = triangles[tid_ptr + 2];
-				int vid0_ptr = 3 * vid0;
-				int vid1_ptr = 3 * vid1;
-				int vid2_ptr = 3 * vid2;
-
-				if (mrs.isSmoothShadingEnabled()) {
-					glBegin(GL_TRIANGLES);
-					glColor3fv(&(triangleColors[tid_ptr]));
-					glNormal3dv(&(vertexNormals[vid0_ptr]));
-					glVertex3dv(&(coords[vid0_ptr]));
-					glNormal3dv(&(vertexNormals[vid1_ptr]));
-					glVertex3dv(&(coords[vid1_ptr]));
-					glNormal3dv(&(vertexNormals[vid2_ptr]));
-					glVertex3dv(&(coords[vid2_ptr]));
-					glEnd();
-				}
-				else {
-					glBegin(GL_TRIANGLES);
-					glColor3fv(&(triangleColors[tid_ptr]));
-					glNormal3dv(&(triangleNormals[tid_ptr]));
-					glVertex3dv(&(coords[vid0_ptr]));
-					glNormal3dv(&(triangleNormals[tid_ptr]));
-					glVertex3dv(&(coords[vid1_ptr]));
-					glNormal3dv(&(triangleNormals[tid_ptr]));
-					glVertex3dv(&(coords[vid2_ptr]));
-					glEnd();
-				}
-			}
-		}
-		else if (mrs.isVertexColorEnabled()) {
+	if (nv > 0 && coords) {
+		if (mrs.isPointShadingEnabled()) {
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glVertexPointer(3, GL_DOUBLE, 0, coords);
 
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glNormalPointer(GL_DOUBLE, 0, vertexNormals);
+			if (vertexColors) {
+				glEnableClientState(GL_COLOR_ARRAY);
+				glColorPointer(3, GL_FLOAT, 0, vertexColors);
+			}
 
-			glEnableClientState(GL_COLOR_ARRAY);
-			glColorPointer(3, GL_FLOAT, 0, vertexColors);
+			glPointSize(mrs.pointWidth());
 
-			glDrawElements(GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);
+			glDrawArrays(GL_POINTS, 0, nv);
 
 			glDisableClientState(GL_COLOR_ARRAY);
-			glDisableClientState(GL_NORMAL_ARRAY);
 			glDisableClientState(GL_VERTEX_ARRAY);
 		}
-	}
 
-	if (mrs.isWireframeEnabled()) {
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_DOUBLE, 0, coords);
+		if (nt > 0 && triangles) {
+			if (mrs.isSmoothShadingEnabled() || mrs.isFlatShadingEnabled()) {
+				// Old fashioned, verbose and slow rendering.
+				if (mrs.isFaceColorEnabled()) {
+					int n_tris = nt;
+					for (int tid = 0; tid < n_tris; ++tid) {
+						int tid_ptr  = 3 * tid;
+						int vid0     = triangles[tid_ptr + 0];
+						int vid1     = triangles[tid_ptr + 1];
+						int vid2     = triangles[tid_ptr + 2];
+						int vid0_ptr = 3 * vid0;
+						int vid1_ptr = 3 * vid1;
+						int vid2_ptr = 3 * vid2;
 
-		glLineWidth(mrs.wireframeWidth());
-		glColor4fv(mrs.wireframeColorData());
+						if (mrs.isSmoothShadingEnabled()) {
+							glBegin(GL_TRIANGLES);
+							if (triangleColors)
+								glColor3fv(&(triangleColors[tid_ptr]));
+							if (vertexNormals)
+								glNormal3dv(&(vertexNormals[vid0_ptr]));
+							glVertex3dv(&(coords[vid0_ptr]));
+							if (vertexNormals)
+								glNormal3dv(&(vertexNormals[vid1_ptr]));
+							glVertex3dv(&(coords[vid1_ptr]));
+							if (vertexNormals)
+								glNormal3dv(&(vertexNormals[vid2_ptr]));
+							glVertex3dv(&(coords[vid2_ptr]));
+							glEnd();
+						}
+						else {
+							glBegin(GL_TRIANGLES);
+							if (triangleColors)
+								glColor3fv(&(triangleColors[tid_ptr]));
+							if (triangleNormals)
+								glNormal3dv(&(triangleNormals[tid_ptr]));
+							glVertex3dv(&(coords[vid0_ptr]));
+							if (triangleNormals)
+								glNormal3dv(&(triangleNormals[tid_ptr]));
+							glVertex3dv(&(coords[vid1_ptr]));
+							if (triangleNormals)
+								glNormal3dv(&(triangleNormals[tid_ptr]));
+							glVertex3dv(&(coords[vid2_ptr]));
+							glEnd();
+						}
+					}
+				}
+				else if (mrs.isVertexColorEnabled()) {
+					glEnableClientState(GL_VERTEX_ARRAY);
+					glVertexPointer(3, GL_DOUBLE, 0, coords);
 
-		glDrawElements(GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);
+					if (vertexNormals) {
+						glEnableClientState(GL_NORMAL_ARRAY);
+						glNormalPointer(GL_DOUBLE, 0, vertexNormals);
+					}
 
-		glDisableClientState(GL_VERTEX_ARRAY);
+					if (vertexColors) {
+						glEnableClientState(GL_COLOR_ARRAY);
+						glColorPointer(3, GL_FLOAT, 0, vertexColors);
+					}
+
+					glDrawElements(GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);
+
+					glDisableClientState(GL_COLOR_ARRAY);
+					glDisableClientState(GL_NORMAL_ARRAY);
+					glDisableClientState(GL_VERTEX_ARRAY);
+				}
+			}
+
+			if (mrs.isWireframeEnabled()) {
+				glEnableClientState(GL_VERTEX_ARRAY);
+				glVertexPointer(3, GL_DOUBLE, 0, coords);
+
+				glLineWidth(mrs.wireframeWidth());
+				glColor4fv(mrs.wireframeColorData());
+
+				glDrawElements(GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);
+
+				glDisableClientState(GL_VERTEX_ARRAY);
+			}
+		}
 	}
 }
 
