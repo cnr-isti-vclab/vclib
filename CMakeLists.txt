@@ -33,8 +33,8 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # threads and tbb, required for parallel on linux and macos
 if (UNIX)
-	find_package(Threads)
-	find_package(TBB)
+	find_package(Threads QUIET)
+	find_package(TBB QUIET)
 endif()
 
 # external libraries
