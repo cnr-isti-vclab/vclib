@@ -28,7 +28,10 @@ option(VCLIB_BUILD_DOCS
 	"Build documentation -
 	requires doxygen and sphinx with readthedocs theme and breathe extensions" OFF)
 
-# Add the cmake folder so the FindSphinx module is found
+# In case of building shared libraries, on windows we need to export all symbols
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+# Add the cmake folder for find_package scripts
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # threads and tbb, required for parallel on linux and macos
@@ -387,7 +390,7 @@ set(SOURCES
 add_library(vclib INTERFACE)
 
 target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})
-target_link_libraries(vclib INTERFACE vclib-external-eigen vclib-external-mapbox-earcut)
+target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
 if (UNIX)
 	if (TARGET TBB::tbb AND TARGET Threads::Threads)

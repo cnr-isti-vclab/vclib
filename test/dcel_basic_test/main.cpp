@@ -26,7 +26,7 @@
 #include <vclib/tri_mesh.h>
 #include <vclib/algorithms/create/tetrahedron.h>
 #include <vclib/io/save.h>
-#include "vclib/io/load.h"
+#include <vclib/io/load.h>
 
 int main()
 {

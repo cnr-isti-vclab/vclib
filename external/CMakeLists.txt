@@ -19,9 +19,16 @@ option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 # MapBox earcut
 option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut source" ON)
 
-find_package(Eigen3 QUIET)
+# Doctest
+if (VCLIB_BUILD_TESTS)
+	option(VCLIB_ALLOW_BUNDLED_DOCTEST "Allow use of bundled doctest source" ON)
+endif()
+
+set(VCLIB_EXTERNAL_LIBRARIES "")
 
 ### Eigen
+find_package(Eigen3 QUIET)
+
 set(VCLIB_EIGEN_DIR ${CMAKE_CURRENT_LIST_DIR}/eigen-3.4.0)
 
 if(VCLIB_ALLOW_SYSTEM_EIGEN AND EIGEN3_INCLUDE_DIR)
@@ -38,6 +45,7 @@ endif()
 
 add_library(vclib-external-eigen INTERFACE)
 target_include_directories(vclib-external-eigen INTERFACE ${EIGEN_INCLUDE_DIRS})
+list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-eigen)
 
 ### Mapbox-Earcut
 set(VCLIB_MAPBOX_EARCUT_DIR ${CMAKE_CURRENT_LIST_DIR}/earcut.hpp-2.2.3)
@@ -53,3 +61,24 @@ endif()
 
 add_library(vclib-external-mapbox-earcut INTERFACE)
 target_include_directories(vclib-external-mapbox-earcut INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
+list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-mapbox-earcut)
+
+### Doctest
+if (VCLIB_BUILD_TESTS)
+	set(VCLIB_DOCTEST_DIR ${CMAKE_CURRENT_LIST_DIR}/doctest-2.4.9)
+
+	if (VCLIB_ALLOW_BUNDLED_DOCTEST)
+		message(STATUS "- Doctest - using bundled source")
+		set(DOCTEST_INCLUDE_DIRS ${VCLIB_DOCTEST_DIR})
+	else()
+		message(
+			FATAL_ERROR
+			"Doctest is required to build tests - VCLIB_ALLOW_BUNDLED_DOCTEST must be enabled and found.")
+	endif()
+
+	add_library(vclib-external-doctest SHARED doctest_src.cpp)
+	target_include_directories(vclib-external-doctest PUBLIC ${DOCTEST_INCLUDE_DIRS})
+	list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-doctest)
+endif()
+
+set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)

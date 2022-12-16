@@ -9,7 +9,6 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
 project(vclib-mesh-custom-components)
 
 set(SOURCES
