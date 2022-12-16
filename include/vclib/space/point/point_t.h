@@ -23,6 +23,8 @@
 #ifndef VCL_POINT_T_H
 #define VCL_POINT_T_H
 
+#include <compare>
+
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
