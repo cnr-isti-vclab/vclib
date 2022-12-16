@@ -107,6 +107,7 @@ public:
 	void compactFaces();
 
 	// functions that could involve other components
+	// need to be here and not in the FaceContainer due to the possibility to be in a Dcel
 
 	// WedgeColors
 	template<HasFaces M = Mesh>

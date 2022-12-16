@@ -48,18 +48,16 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	updateAllOptionalContainerReferences();
 
 	// update references into the vertex container
-	if constexpr (mesh::HasVertexContainer<Mesh<Args...>>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		// just run the same function that we use when vector is reallocated, but using
-		// as old base the base of the other vertex container data
-		updateVertexReferences(oth.VertexContainer::vec.data(), VertexContainer::vec.data());
-	}
+	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+	// just run the same function that we use when vector is reallocated, but using
+	// as old base the base of the other vertex container data
+	updateVertexReferences(oth.VertexContainer::vec.data(), VertexContainer::vec.data());
 
 	// update references into the face container
 	if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		// just run the same function that we use when vector is reallocated, but using
-		// as old base the base of the other vertex container data
+		// as old base the base of the other face container data
 		updateFaceReferences(oth.FaceContainer::vec.data(), FaceContainer::vec.data());
 	}
 
@@ -67,8 +65,16 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	if constexpr (mesh::HasEdgeContainer<Mesh<Args...>>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		// just run the same function that we use when vector is reallocated, but using
-		// as old base the base of the other vertex container data
+		// as old base the base of the other edge container data
 		updateEdgeReferences(oth.EdgeContainer::vec.data(), EdgeContainer::vec.data());
+	}
+
+	// update references into the half edge container
+	if constexpr (mesh::HasHalfEdgeContainer<Mesh<Args...>>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		// just run the same function that we use when vector is reallocated, but using
+		// as old base the base of the other half edge container data
+		updateEdgeReferences(oth.HalfEdgeContainer::vec.data(), HalfEdgeContainer::vec.data());
 	}
 }
 
@@ -101,7 +107,11 @@ void Mesh<Args...>::clear()
 	}
 	if constexpr (mesh::HasEdgeContainer<Mesh<Args...>>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		EdgeContainer::clearEdges(); // clear faces, only if the mesh has edges
+		EdgeContainer::clearEdges(); // clear edges, only if the mesh has edges
+	}
+	if constexpr (mesh::HasHalfEdgeContainer<Mesh<Args...>>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		HalfEdgeContainer::clearHalfEdges(); // clear half edges, only if the mesh has half edges
 	}
 }
 
@@ -137,10 +147,8 @@ void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 	// enable all optional components of this Mesh depending on what's available in the
 	// OtherMeshType
 
-	if constexpr (vcl::mesh::HasVertexContainer<Mesh<Args...>>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		VertexContainer::enableOptionalComponentsOf(m);
-	}
+	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+	VertexContainer::enableOptionalComponentsOf(m);
 
 	if constexpr (vcl::mesh::HasFaceContainer<Mesh<Args...>>) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
@@ -150,6 +158,11 @@ void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 	if constexpr (vcl::mesh::HasEdgeContainer<Mesh<Args...>>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		EdgeContainer::enableOptionalComponentsOf(m);
+	}
+
+	if constexpr (vcl::mesh::HasHalfEdgeContainer<Mesh<Args...>>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		HalfEdgeContainer::enableOptionalComponentsOf(m);
 	}
 }
 
@@ -208,7 +221,7 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 		// - import static non-triangle mesh from polygon mesh or from a mesh with different
 		//   VERTEX_NUMBER
 
-			 // if this is not a Dcel Mesh
+		// if this is not a Dcel Mesh
 		if constexpr (!DcelMeshConcept<Mesh<Args...>>) {
 			// in case of import from poly (could be also dcel) to triangle mesh, I need to manage
 			// triangulation of polygons and create additional triangle faces for each of the imported
@@ -236,6 +249,11 @@ void Mesh<Args...>::swap(Mesh& m2)
 	vcl::swap(*this, m2);
 }
 
+/**
+ * @brief Assignment operator of the Mesh.
+ * @param oth: the Mesh from which will create a copy and assign to this Mesh
+ * @return a reference to this Mesh after the assignemnt.
+ */
 template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
 {
@@ -273,8 +291,6 @@ uint Mesh<Args...>::index(const typename Mesh::VertexType* v) const
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * This function will be available only **if the Mesh has the Vertex Container**.
- *
  * @return the index of the new vertex.
  */
 template<typename... Args> requires HasVertices<Args...>
@@ -304,8 +320,6 @@ uint Mesh<Args...>::addVertex()
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * This function will be available only **if the Mesh has the Vertex Container**.
- *
  * @param p: coordinate of the new vertex.
  * @return the id of the new vertex.
  */
@@ -327,8 +341,6 @@ uint Mesh<Args...>::addVertex(const typename Mesh::VertexType::CoordType& p)
  *
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the Vertex Container**.
  *
  * @param n: the number of vertices to add to the mesh.
  * @return the id of the first added vertex.
@@ -371,8 +383,6 @@ uint Mesh<Args...>::addVertices(uint n)
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * This function will be available only **if the Mesh has the Vertex Container**.
- *
  * @param p: first vertex coordinate
  * @param v: list of other vertex coordinates
  * @return the id of the first added vertex.
@@ -408,8 +418,6 @@ uint Mesh<Args...>::addVertices(
  * If the call of this function will cause a reallocation of the Vertex container, the function
  * will automatically take care of updating all the Vertex references contained in the Mesh.
  *
- * This function will be available only **if the Mesh has the Vertex Container**.
- *
  * @param n: the new capacity of the vertex container.
  */
 template<typename... Args> requires HasVertices<Args...>
@@ -429,8 +437,6 @@ void Mesh<Args...>::reserveVertices(uint n)
  * @brief Compacts the Vertex Container, removing all the vertices marked as deleted. Vertices
  * indices will change accordingly. The function will automatically take care of updating all the
  * Vertex references contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the Vertex Container**.
  */
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::compactVertices()
@@ -449,6 +455,14 @@ void Mesh<Args...>::compactVertices()
 	}
 }
 
+/**
+ * @brief Returns the index of the given face in the FaceContainer of the Mesh.
+ *
+ * This function will be available only **if the Mesh has the Face Container**.
+ *
+ * @param f: a reference of a face of the Mesh.
+ * @return the index of the given face.
+ */
 template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 uint Mesh<Args...>::index(const typename M::FaceType& f) const
@@ -457,6 +471,14 @@ uint Mesh<Args...>::index(const typename M::FaceType& f) const
 	return FaceContainer::index(&f);
 }
 
+/**
+ * @brief Returns the index of the given face in the FaceContainer of the Mesh.
+ *
+ * This function will be available only **if the Mesh has the Face Container**.
+ *
+ * @param f: a pointer of a face of the Mesh.
+ * @return the index of the given face.
+ */
 template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 uint Mesh<Args...>::index(const typename M::FaceType* f) const
@@ -615,10 +637,12 @@ template<HasFaces M>
 bool Mesh<Args...>::isPerFaceWedgeColorsEnabled() const
 	requires internal::OptionalWedgeColorsConcept<M>
 {
+	// if there is a WedgeColors component in the Face element
 	if constexpr (face::HasOptionalWedgeColors<typename M::FaceType>) {
-		return M::FaceContainer::isPerFaceWedgeColorsEnabled();
+		return M::FaceContainer::isPerFaceWedgeColorsEnabled(); // use the container function
 	}
-	else { // Dcel having half edges with optional color - to be used as wedge colors
+	else { // otherwise, due to the OptionalWedgeColorsConcept, we are in a Dcel
+		// Dcel having half edges with optional color - to be used as wedge colors
 		return M::HalfEdgeContainer::isPerHalfEdgeColorEnabled();
 	}
 }
@@ -627,10 +651,12 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 void Mesh<Args...>::enablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>
 {
+	// if there is a WedgeColors component in the Face element
 	if constexpr (face::HasOptionalWedgeColors<typename M::FaceType>) {
-		M::FaceContainer::enablePerFaceWedgeColors();
+		M::FaceContainer::enablePerFaceWedgeColors(); // use the container function
 	}
-	else { // Dcel having half edges with optional color - to be used as wedge colors
+	else { // otherwise, due to the OptionalWedgeColorsConcept, we are in a Dcel
+		// Dcel having half edges with optional color - to be used as wedge colors
 		return M::HalfEdgeContainer::enablePerHalfEdgeColor();
 	}
 }
@@ -639,10 +665,12 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 void Mesh<Args...>::disablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>
 {
+	// if there is a WedgeColors component in the Face element
 	if constexpr (face::HasOptionalWedgeColors<typename M::FaceType>) {
-		M::FaceContainer::disablePerFaceWedgeColors();
+		M::FaceContainer::disablePerFaceWedgeColors(); // use the container function
 	}
-	else { // Dcel having half edges with optional color - to be used as wedge colors
+	else { // otherwise, due to the OptionalWedgeColorsConcept, we are in a Dcel
+		// Dcel having half edges with optional color - to be used as wedge colors
 		return M::HalfEdgeContainer::disablePerHalfEdgeColor();
 	}
 }
@@ -652,10 +680,12 @@ template<HasFaces M>
 bool Mesh<Args...>::isPerFaceWedgeTexCoordsEnabled() const
 	requires internal::OptionalWedgeTexCoordsConcept<M>
 {
+	// if there is a WedgeTexCoords component in the Face element
 	if constexpr (face::HasOptionalWedgeTexCoords<typename M::FaceType>) {
-		return M::FaceContainer::isPerFaceWedgeTexCoordsEnabled();
+		return M::FaceContainer::isPerFaceWedgeTexCoordsEnabled(); // use the container function
 	}
-	else { // Dcel having half edges with optional tex coords - to be used as wedge tex coords
+	else { // otherwise, due to the OptionalWedgeTexCoordsConcept, we are in a Dcel
+		// Dcel having half edges with optional tex coords - to be used as wedge tex coords
 		return M::HalfEdgeContainer::isPerHalfEdgeTexCoordEnabled();
 	}
 }
@@ -665,10 +695,12 @@ template<HasFaces M>
 void Mesh<Args...>::enablePerFaceWedgeTexCoords()
 	requires internal::OptionalWedgeTexCoordsConcept<M>
 {
+	// if there is a WedgeTexCoords component in the Face element
 	if constexpr (face::HasOptionalWedgeTexCoords<typename M::FaceType>) {
-		M::FaceContainer::enablePerFaceWedgeTexCoords();
+		M::FaceContainer::enablePerFaceWedgeTexCoords(); // use the container function
 	}
-	else { // Dcel having half edges with optional tex coords - to be used as wedge tex coords
+	else { // otherwise, due to the OptionalWedgeTexCoordsConcept, we are in a Dcel
+		// Dcel having half edges with optional tex coords - to be used as wedge tex coords
 		return M::HalfEdgeContainer::enablePerHalfEdgeTexCoord();
 	}
 }
@@ -678,10 +710,12 @@ template<HasFaces M>
 void Mesh<Args...>::disablePerFaceWedgeTexCoords()
 	requires internal::OptionalWedgeTexCoordsConcept<M>
 {
+	// if there is a WedgeTexCoords component in the Face element
 	if constexpr (face::HasOptionalWedgeTexCoords<typename M::FaceType>) {
-		M::FaceContainer::disablePerFaceWedgeTexCoords();
+		M::FaceContainer::disablePerFaceWedgeTexCoords(); // use the container function
 	}
-	else { // Dcel having half edges with optional tex coords - to be used as wedge tex coords
+	else { // otherwise, due to the OptionalWedgeTexCoordsConcept, we are in a Dcel
+		// Dcel having half edges with optional tex coords - to be used as wedge tex coords
 		return M::HalfEdgeContainer::disablePerHalfEdgeTexCoord();
 	}
 }
