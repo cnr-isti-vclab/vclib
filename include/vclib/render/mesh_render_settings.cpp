@@ -28,44 +28,49 @@ MeshRenderSettings::MeshRenderSettings()
 {
 }
 
-inline bool MeshRenderSettings::isWireframeEnabled() const
+inline bool MeshRenderSettings::isVisible() const
 {
-	return drawMode & DRAW_WIREFRAME;
+	return drawMode & DRAW_MESH;
 }
 
-inline bool MeshRenderSettings::isPointShadingEnabled() const
+inline bool MeshRenderSettings::isPointCloudVisible() const
 {
 	return drawMode & DRAW_POINTS;
-}
-
-inline bool MeshRenderSettings::isFlatShadingEnabled() const
-{
-	return drawMode & DRAW_FLAT;
-}
-
-inline bool MeshRenderSettings::isSmoothShadingEnabled() const
-{
-	return drawMode & DRAW_SMOOTH;
-}
-
-inline bool MeshRenderSettings::isBboxEnabled() const
-{
-	return drawMode & DRAW_BOUNDINGBOX;
-}
-
-inline bool MeshRenderSettings::isFaceColorEnabled() const
-{
-	return drawMode & DRAW_FACECOLOR;
-}
-
-inline bool MeshRenderSettings::isVertexColorEnabled() const
-{
-	return drawMode & DRAW_VERTEXCOLOR;
 }
 
 inline int MeshRenderSettings::pointWidth() const
 {
 	return pWidth;
+}
+
+inline bool MeshRenderSettings::isSurfaceVisible() const
+{
+	return drawMode & DRAW_SURF;
+}
+
+inline bool MeshRenderSettings::isSurfaceShadingFlat() const
+{
+	return drawMode & DRAW_SURF_FLAT;
+}
+
+inline bool MeshRenderSettings::isSurfaceShadingSmooth() const
+{
+	return drawMode & DRAW_SURF_SMOOTH;
+}
+
+inline bool MeshRenderSettings::isSurfaceColorPerFace() const
+{
+	return drawMode & DRAW_SURF_COLOR_FACE;
+}
+
+inline bool MeshRenderSettings::isSurfaceColorPerVertex() const
+{
+	return drawMode & DRAW_SURF_COLOR_VERTEX;
+}
+
+inline bool MeshRenderSettings::isWireframeVisible() const
+{
+	return drawMode & DRAW_WIREFRAME;
 }
 
 inline int MeshRenderSettings::wireframeWidth() const
@@ -88,31 +93,61 @@ inline const float *MeshRenderSettings::wireframeColorData() const
 	return wColor;
 }
 
-inline void MeshRenderSettings::setWireframe(bool b)
+inline bool MeshRenderSettings::isBboxEnabled() const
+{
+	return drawMode & DRAW_BOUNDINGBOX;
+}
+
+inline void MeshRenderSettings::setVisibility(bool b)
+{
+	if (b) drawMode |=  DRAW_MESH;
+	else   drawMode &= ~DRAW_MESH;
+}
+
+inline void MeshRenderSettings::setPointCloudVisibility(bool b)
+{
+	if (b) drawMode |=  DRAW_POINTS;
+	else   drawMode &= ~DRAW_POINTS;
+}
+
+inline void MeshRenderSettings::setPointWidth(int width)
+{
+	pWidth = width;
+}
+
+inline void MeshRenderSettings::setSurfaceShadingFlat()
+{
+	drawMode |=  DRAW_SURF_FLAT;
+	drawMode &= ~DRAW_SURF_SMOOTH;
+}
+
+inline void MeshRenderSettings::setSurfaceShadingSmooth()
+{
+	drawMode |=  DRAW_SURF_SMOOTH;
+	drawMode &= ~DRAW_SURF_FLAT;
+}
+
+inline void MeshRenderSettings::setSurfaceColorPerVertex()
+{
+	drawMode |=  DRAW_SURF_COLOR_VERTEX;
+	drawMode &= ~DRAW_SURF_COLOR_FACE;
+}
+
+inline void MeshRenderSettings::setSurfaceColorPerFace()
+{
+	drawMode |=  DRAW_SURF_COLOR_FACE;
+	drawMode &= ~DRAW_SURF_COLOR_VERTEX;
+}
+
+inline void MeshRenderSettings::setWireframeVisibility(bool b)
 {
 	if (b) drawMode |=  DRAW_WIREFRAME;
 	else   drawMode &= ~DRAW_WIREFRAME;
 }
 
-inline void MeshRenderSettings::setFlatShading()
+inline void MeshRenderSettings::setWireframeWidth(int width)
 {
-	drawMode |=  DRAW_FLAT;
-	drawMode &= ~DRAW_SMOOTH;
-	drawMode &= ~DRAW_POINTS;
-}
-
-inline void MeshRenderSettings::setSmoothShading()
-{
-	drawMode |=  DRAW_SMOOTH;
-	drawMode &= ~DRAW_FLAT;
-	drawMode &= ~DRAW_POINTS;
-}
-
-inline void MeshRenderSettings::setPointsShading()
-{
-	drawMode |=  DRAW_POINTS;
-	drawMode &= ~DRAW_FLAT;
-	drawMode &= ~DRAW_SMOOTH;
+	wWidth = width;
 }
 
 inline void MeshRenderSettings::setWireframeColor(float r, float g, float b)
@@ -130,32 +165,27 @@ inline void MeshRenderSettings::setWireframeColor(const Color &c)
 	wColor[3] = c.alphaF();
 }
 
-inline void MeshRenderSettings::setWireframeWidth(int width)
-{
-	wWidth = width;
-}
-
-inline void MeshRenderSettings::setPointWidth(int width)
-{
-	pWidth = width;
-}
-
-inline void MeshRenderSettings::setEnableVertexColor()
-{
-	drawMode |=  DRAW_VERTEXCOLOR;
-	drawMode &= ~DRAW_FACECOLOR;
-}
-
-inline void MeshRenderSettings::setEnableTriangleColor()
-{
-	drawMode |=  DRAW_FACECOLOR;
-	drawMode &= ~DRAW_VERTEXCOLOR;
-}
-
-inline void MeshRenderSettings::setVisibleBoundingBox(bool b)
+inline void MeshRenderSettings::setBoundingBoxVisibility(bool b)
 {
 	if (b) drawMode |=  DRAW_BOUNDINGBOX;
 	else   drawMode &= ~DRAW_BOUNDINGBOX;
+}
+
+template<MeshConcept MeshType>
+void MeshRenderSettings::setRenderCapabilityFrom(const MeshType m)
+{
+	if constexpr (vcl::HasFaces<MeshType>) {
+
+	}
+	else {
+		drawModeCapability &= ~DRAW_SURF;
+		drawModeCapability &= ~DRAW_SURF_FLAT;
+		drawModeCapability &= ~DRAW_SURF_SMOOTH;
+		drawModeCapability &= ~DRAW_SURF_COLOR_FACE;
+		drawModeCapability &= ~DRAW_SURF_COLOR_VERTEX;
+		drawModeCapability &= ~DRAW_SURF_COLOR_MESH;
+		drawModeCapability &= ~DRAW_SURF_COLOR_USER;
+	}
 }
 
 } // namespace vcl

@@ -49,11 +49,7 @@ int main(int argc, char **argv) {
 	vcl::setPerVertexColor(m, vcl::Color::White);
 
 	vcl::MeshRenderSettings mrs;
-	mrs.setWireframe(true);
-
 	vcl::DrawableMesh<vcl::TriMesh> dtm(m, mrs);
-
-	assert(dtm.renderSettings().isWireframeEnabled());
 
 	viewer.pushDrawableObject(dtm);
 	viewer.fitScene();
