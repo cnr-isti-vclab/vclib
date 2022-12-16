@@ -1,5 +1,7 @@
 # Visual Computing Library
 
+[![BuildAndRunTests](https://github.com/alemuntoni/vclib/actions/workflows/BuildAndRunTests.yml/badge.svg)](https://github.com/alemuntoni/vclib/actions/workflows/BuildAndRunTests.yml)
+
 The Visual Computing Library is a C++20 modern, header only, multiplatform Mesh and Geometry Processing templated library.
 
 ## Disclaimer
