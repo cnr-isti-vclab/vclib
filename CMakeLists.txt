@@ -125,6 +125,7 @@ set(HEADERS
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
+	include/vclib/mesh/tri_poly_index_bimap.h
 	include/vclib/mesh/components/concepts/adjacent_edges.h
 	include/vclib/mesh/components/concepts/adjacent_faces.h
 	include/vclib/mesh/components/concepts/adjacent_vertices.h
@@ -310,6 +311,7 @@ set(SOURCES
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_algorithms.cpp
 	include/vclib/mesh/mesh_pos.cpp
+	include/vclib/mesh/tri_poly_index_bimap.cpp
 	include/vclib/mesh/components/horizontal/adjacent_edges.cpp
 	include/vclib/mesh/components/horizontal/adjacent_faces.cpp
 	include/vclib/mesh/components/horizontal/adjacent_vertices.cpp

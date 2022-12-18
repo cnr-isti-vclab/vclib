@@ -22,6 +22,8 @@
 
 #include "mesh_render_buffers.h"
 
+#include <vclib/mesh/mesh_algorithms.h>
+
 namespace vcl {
 
 template<MeshConcept MeshType>
@@ -182,42 +184,82 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 				tris[i + 0] = m.vertexIndexIfCompact(m.index(f.vertex(0)));
 				tris[i + 1] = m.vertexIndexIfCompact(m.index(f.vertex(1)));
 				tris[i + 2] = m.vertexIndexIfCompact(m.index(f.vertex(2)));
-
 				i += 3;
 			}
 		}
 		else {
-			//todo - make polygon triangulation
+			triPolyMap.reserve(m.faceNumber(), m.faceNumber());
+			tris.reserve(m.faceNumber());
+
+			nt = 0;
+			for (const auto& f : m.faces()) {
+				if (f.vertexNumber() == 3) {
+					triPolyMap.insert(nt, m.faceIndexIfCompact(m.index(f)));
+					tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(0))));
+					tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(1))));
+					tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(2))));
+					nt += 1;
+				}
+				else {
+					std::vector<uint> vind = vcl::mesh::earCut(f);
+					for (uint vi = 0; vi < vind.size(); vi+=3) {
+						triPolyMap.insert(nt + vi/3, m.faceIndexIfCompact(m.index(f)));
+						tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(vind[vi + 0]))));
+						tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(vind[vi + 1]))));
+						tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(vind[vi + 2]))));
+					}
+					nt += vind.size() / 3;
+				}
+			}
 		}
 
 		if constexpr(vcl::HasPerFaceNormal<MeshType>) {
 			if (vcl::isPerFaceNormalEnabled(m)) {
-				tNormals.resize(m.faceNumber() * 3);
+				tNormals.reserve(m.faceNumber() * 3);
 			}
 		}
 
 		if constexpr(vcl::HasPerFaceColor<MeshType>) {
 			if (vcl::isPerFaceColorEnabled(m)) {
-				tColors.resize(m.faceNumber() * 3);
+				tColors.reserve(m.faceNumber() * 3);
 			}
 		}
 
 		uint i = 0;
 		for (const auto& f : m.faces()) {
-
 			if constexpr(vcl::HasPerFaceNormal<MeshType>) {
 				if (vcl::isPerFaceNormalEnabled(m)) {
-					tNormals[i + 0] = f.normal().x();
-					tNormals[i + 1] = f.normal().y();
-					tNormals[i + 2] = f.normal().z();
+					if constexpr (vcl::HasTriangles<MeshType>) {
+						tNormals.push_back(f.normal().x());
+						tNormals.push_back(f.normal().y());
+						tNormals.push_back(f.normal().z());
+					}
+					else {
+						const uint fi = m.faceIndexIfCompact(m.index(f));
+						for (uint i = 0; i < triPolyMap.triangleNumber(fi); i++) {
+							tNormals.push_back(f.normal().x());
+							tNormals.push_back(f.normal().y());
+							tNormals.push_back(f.normal().z());
+						}
+					}
 				}
 			}
 
 			if constexpr(vcl::HasPerFaceColor<MeshType>) {
 				if (vcl::isPerFaceColorEnabled(m)) {
-					tColors[i + 0] = f.color().redF();
-					tColors[i + 1] = f.color().greenF();
-					tColors[i + 2] = f.color().blueF();
+					if constexpr (vcl::HasTriangles<MeshType>) {
+						tColors.push_back(f.color().redF());
+						tColors.push_back(f.color().greenF());
+						tColors.push_back(f.color().blueF());
+					}
+					else {
+						const uint fi = m.faceIndexIfCompact(m.index(f));
+						for (uint i = 0; i < triPolyMap.triangleNumber(fi); i++) {
+							tColors.push_back(f.color().redF());
+							tColors.push_back(f.color().greenF());
+							tColors.push_back(f.color().blueF());
+						}
+					}
 				}
 			}
 
