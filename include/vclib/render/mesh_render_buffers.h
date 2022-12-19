@@ -40,7 +40,7 @@ public:
 	const vcl::Point3d& bbMin() const;
 	const vcl::Point3d& bbMax() const;
 
-	const double* vertexBufferData() const;
+	const float* vertexBufferData() const;
 	const int* triangleBufferData() const;
 	const double* vertexNormalBufferData() const;
 	const float* vertexColorBufferData() const;
@@ -50,7 +50,7 @@ public:
 private:
 	uint nv = 0;
 	uint nt = 0;
-	std::vector<double> verts;
+	std::vector<float> verts;
 	std::vector<int> tris;
 	std::vector<double> vNormals;
 	std::vector<float> vColors;

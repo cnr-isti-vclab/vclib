@@ -63,7 +63,7 @@ const Point3d &MeshRenderBuffers<MeshType>::bbMax() const
 }
 
 template<MeshConcept MeshType>
-const double* MeshRenderBuffers<MeshType>::vertexBufferData() const
+const float* MeshRenderBuffers<MeshType>::vertexBufferData() const
 {
 	if (verts.empty()) return nullptr;
 	return verts.data();

@@ -51,6 +51,12 @@ const MeshRenderSettings& DrawableMesh<MeshType>::renderSettings() const
 }
 
 template<MeshConcept MeshType>
+MeshRenderSettings& DrawableMesh<MeshType>::renderSettings()
+{
+	return mrs;
+}
+
+template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::setRenderSettings(const MeshRenderSettings& rs)
 {
 	mrs = rs;
@@ -97,10 +103,9 @@ DrawableMesh<MeshType>* DrawableMesh<MeshType>::clone() const
 }
 
 template<MeshConcept MeshType>
-void DrawableMesh<MeshType>::draw(
-	unsigned int   nv,
+void DrawableMesh<MeshType>::draw(unsigned int   nv,
 	unsigned int   nt,
-	const double*  pCoords,
+	const float*   pCoords,
 	const int*     pTriangles,
 	const double*  pVertexNormals,
 	const float*   pVertexColors,
@@ -238,7 +243,7 @@ template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::renderPass(
 	unsigned int  nv,
 	unsigned int  nt,
-	const double* coords,
+	const float*  coords,
 	const int*    triangles,
 	const double* vertexNormals,
 	const float*  vertexColors,
@@ -248,7 +253,7 @@ void DrawableMesh<MeshType>::renderPass(
 	if (nv > 0 && coords) {
 		if (mrs.isPointCloudVisible()) {
 			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3, GL_DOUBLE, 0, coords);
+			glVertexPointer(3, GL_FLOAT, 0, coords);
 
 			if (vertexColors) {
 				glEnableClientState(GL_COLOR_ARRAY);
@@ -283,13 +288,13 @@ void DrawableMesh<MeshType>::renderPass(
 								glColor3fv(&(triangleColors[tid_ptr]));
 							if (vertexNormals)
 								glNormal3dv(&(vertexNormals[vid0_ptr]));
-							glVertex3dv(&(coords[vid0_ptr]));
+							glVertex3fv(&(coords[vid0_ptr]));
 							if (vertexNormals)
 								glNormal3dv(&(vertexNormals[vid1_ptr]));
-							glVertex3dv(&(coords[vid1_ptr]));
+							glVertex3fv(&(coords[vid1_ptr]));
 							if (vertexNormals)
 								glNormal3dv(&(vertexNormals[vid2_ptr]));
-							glVertex3dv(&(coords[vid2_ptr]));
+							glVertex3fv(&(coords[vid2_ptr]));
 							glEnd();
 						}
 						else {
@@ -298,20 +303,20 @@ void DrawableMesh<MeshType>::renderPass(
 								glColor3fv(&(triangleColors[tid_ptr]));
 							if (triangleNormals)
 								glNormal3dv(&(triangleNormals[tid_ptr]));
-							glVertex3dv(&(coords[vid0_ptr]));
+							glVertex3fv(&(coords[vid0_ptr]));
 							if (triangleNormals)
 								glNormal3dv(&(triangleNormals[tid_ptr]));
-							glVertex3dv(&(coords[vid1_ptr]));
+							glVertex3fv(&(coords[vid1_ptr]));
 							if (triangleNormals)
 								glNormal3dv(&(triangleNormals[tid_ptr]));
-							glVertex3dv(&(coords[vid2_ptr]));
+							glVertex3fv(&(coords[vid2_ptr]));
 							glEnd();
 						}
 					}
 				}
 				else if (mrs.isSurfaceColorPerVertex()) {
 					glEnableClientState(GL_VERTEX_ARRAY);
-					glVertexPointer(3, GL_DOUBLE, 0, coords);
+					glVertexPointer(3, GL_FLOAT, 0, coords);
 
 					if (vertexNormals) {
 						glEnableClientState(GL_NORMAL_ARRAY);
@@ -333,7 +338,7 @@ void DrawableMesh<MeshType>::renderPass(
 
 			if (mrs.isWireframeVisible()) {
 				glEnableClientState(GL_VERTEX_ARRAY);
-				glVertexPointer(3, GL_DOUBLE, 0, coords);
+				glVertexPointer(3, GL_FLOAT, 0, coords);
 
 				glLineWidth(mrs.wireframeWidth());
 				glColor4fv(mrs.wireframeColorData());

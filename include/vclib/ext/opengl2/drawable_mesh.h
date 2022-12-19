@@ -59,6 +59,7 @@ public:
 	DrawableMesh(const MeshType& m, const MeshRenderSettings& mrs);
 
 	const MeshRenderSettings& renderSettings() const;
+	MeshRenderSettings& renderSettings();
 	void setRenderSettings(const MeshRenderSettings& rs);
 
 	void updateBuffers(const MeshType& m);
@@ -73,7 +74,7 @@ private:
 	void draw(
 		unsigned int   nv,
 		unsigned int   nt,
-		const double*  pCoords,
+		const float*   pCoords,
 		const int*     pTriangles,
 		const double*  pVertexNormals,
 		const float*   pVertexColors,
@@ -81,10 +82,9 @@ private:
 		const float*   pTriangleColors,
 		const Point3d& min,
 		const Point3d& max) const;
-	void renderPass(
-		unsigned int  nv,
+	void renderPass(unsigned int  nv,
 		unsigned int  nt,
-		const double* coords,
+		const float*  coords,
 		const int*    triangles,
 		const double* vertexNormals,
 		const float*  vertexColors,
