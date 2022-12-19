@@ -103,13 +103,14 @@ DrawableMesh<MeshType>* DrawableMesh<MeshType>::clone() const
 }
 
 template<MeshConcept MeshType>
-void DrawableMesh<MeshType>::draw(unsigned int   nv,
-	unsigned int   nt,
+void DrawableMesh<MeshType>::draw(
+	uint           nv,
+	uint           nt,
 	const float*   pCoords,
 	const int*     pTriangles,
 	const float*   pVertexNormals,
 	const float*   pVertexColors,
-	const double*  pTriangleNormals,
+	const float*   pTriangleNormals,
 	const float*   pTriangleColors,
 	const Point3d& min,
 	const Point3d& max) const
@@ -241,14 +242,14 @@ void DrawableMesh<MeshType>::draw(unsigned int   nv,
 
 template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::renderPass(
-	unsigned int  nv,
-	unsigned int  nt,
-	const float*  coords,
-	const int*    triangles,
-	const float*  vertexNormals,
-	const float*  vertexColors,
-	const double* triangleNormals,
-	const float*  triangleColors) const
+	uint         nv,
+	uint         nt,
+	const float* coords,
+	const int*   triangles,
+	const float* vertexNormals,
+	const float* vertexColors,
+	const float* triangleNormals,
+	const float* triangleColors) const
 {
 	if (nv > 0 && coords) {
 		if (mrs.isPointCloudVisible()) {
@@ -302,13 +303,13 @@ void DrawableMesh<MeshType>::renderPass(
 							if (triangleColors)
 								glColor3fv(&(triangleColors[tid_ptr]));
 							if (triangleNormals)
-								glNormal3dv(&(triangleNormals[tid_ptr]));
+								glNormal3fv(&(triangleNormals[tid_ptr]));
 							glVertex3fv(&(coords[vid0_ptr]));
 							if (triangleNormals)
-								glNormal3dv(&(triangleNormals[tid_ptr]));
+								glNormal3fv(&(triangleNormals[tid_ptr]));
 							glVertex3fv(&(coords[vid1_ptr]));
 							if (triangleNormals)
-								glNormal3dv(&(triangleNormals[tid_ptr]));
+								glNormal3fv(&(triangleNormals[tid_ptr]));
 							glVertex3fv(&(coords[vid2_ptr]));
 							glEnd();
 						}

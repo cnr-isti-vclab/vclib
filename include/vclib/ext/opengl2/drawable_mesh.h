@@ -70,26 +70,26 @@ public:
 	double sceneRadius() const;
 	DrawableMesh* clone() const;
 private:
-
 	void draw(
-		unsigned int   nv,
-		unsigned int   nt,
+		uint           nv,
+		uint           nt,
 		const float*   pCoords,
 		const int*     pTriangles,
-		const float*  pVertexNormals,
+		const float*   pVertexNormals,
 		const float*   pVertexColors,
-		const double*  pTriangleNormals,
+		const float*   pTriangleNormals,
 		const float*   pTriangleColors,
 		const Point3d& min,
 		const Point3d& max) const;
-	void renderPass(unsigned int  nv,
-		unsigned int  nt,
-		const float*  coords,
-		const int*    triangles,
+	void renderPass(
+		uint         nv,
+		uint         nt,
+		const float* coords,
+		const int*   triangles,
 		const float* vertexNormals,
-		const float*  vertexColors,
-		const double* triangleNormals,
-		const float*  triangleColors) const;
+		const float* vertexColors,
+		const float* triangleNormals,
+		const float* triangleColors) const;
 
 	MeshRenderBuffers<MeshType> mrb;
 	MeshRenderSettings mrs;

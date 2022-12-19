@@ -35,16 +35,17 @@ public:
 	MeshRenderBuffers();
 	MeshRenderBuffers(const MeshType& m);
 
-	unsigned int vertexNumber() const;
-	unsigned int triangleNumber() const;
+	uint vertexNumber() const;
+	uint triangleNumber() const;
+
 	const vcl::Point3d& bbMin() const;
 	const vcl::Point3d& bbMax() const;
 
 	const float* vertexBufferData() const;
-	const int* triangleBufferData() const;
+	const int*   triangleBufferData() const;
 	const float* vertexNormalBufferData() const;
 	const float* vertexColorBufferData() const;
-	const double* triangleNormalBufferData() const;
+	const float* triangleNormalBufferData() const;
 	const float* triangleColorBufferData() const;
 
 private:
@@ -54,7 +55,7 @@ private:
 	std::vector<int> tris;
 	std::vector<float> vNormals;
 	std::vector<float> vColors;
-	std::vector<double> tNormals;
+	std::vector<float> tNormals;
 	std::vector<float> tColors;
 	vcl::Point3d bbmin, bbmax;
 

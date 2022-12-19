@@ -39,13 +39,13 @@ MeshRenderBuffers<MeshType>::MeshRenderBuffers(const MeshType& m)
 }
 
 template<MeshConcept MeshType>
-unsigned int MeshRenderBuffers<MeshType>::vertexNumber() const
+uint MeshRenderBuffers<MeshType>::vertexNumber() const
 {
 	return nv;
 }
 
 template<MeshConcept MeshType>
-unsigned int MeshRenderBuffers<MeshType>::triangleNumber() const
+uint MeshRenderBuffers<MeshType>::triangleNumber() const
 {
 	return nt;
 }
@@ -91,7 +91,7 @@ const float* MeshRenderBuffers<MeshType>::vertexColorBufferData() const
 }
 
 template<MeshConcept MeshType>
-const double* MeshRenderBuffers<MeshType>::triangleNormalBufferData() const
+const float* MeshRenderBuffers<MeshType>::triangleNormalBufferData() const
 {
 	if (tNormals.empty()) return nullptr;
 	return tNormals.data();
