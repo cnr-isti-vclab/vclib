@@ -107,7 +107,7 @@ void DrawableMesh<MeshType>::draw(unsigned int   nv,
 	unsigned int   nt,
 	const float*   pCoords,
 	const int*     pTriangles,
-	const double*  pVertexNormals,
+	const float*   pVertexNormals,
 	const float*   pVertexColors,
 	const double*  pTriangleNormals,
 	const float*   pTriangleColors,
@@ -245,7 +245,7 @@ void DrawableMesh<MeshType>::renderPass(
 	unsigned int  nt,
 	const float*  coords,
 	const int*    triangles,
-	const double* vertexNormals,
+	const float*  vertexNormals,
 	const float*  vertexColors,
 	const double* triangleNormals,
 	const float*  triangleColors) const
@@ -287,13 +287,13 @@ void DrawableMesh<MeshType>::renderPass(
 							if (triangleColors)
 								glColor3fv(&(triangleColors[tid_ptr]));
 							if (vertexNormals)
-								glNormal3dv(&(vertexNormals[vid0_ptr]));
+								glNormal3fv(&(vertexNormals[vid0_ptr]));
 							glVertex3fv(&(coords[vid0_ptr]));
 							if (vertexNormals)
-								glNormal3dv(&(vertexNormals[vid1_ptr]));
+								glNormal3fv(&(vertexNormals[vid1_ptr]));
 							glVertex3fv(&(coords[vid1_ptr]));
 							if (vertexNormals)
-								glNormal3dv(&(vertexNormals[vid2_ptr]));
+								glNormal3fv(&(vertexNormals[vid2_ptr]));
 							glVertex3fv(&(coords[vid2_ptr]));
 							glEnd();
 						}
@@ -320,7 +320,7 @@ void DrawableMesh<MeshType>::renderPass(
 
 					if (vertexNormals) {
 						glEnableClientState(GL_NORMAL_ARRAY);
-						glNormalPointer(GL_DOUBLE, 0, vertexNormals);
+						glNormalPointer(GL_FLOAT, 0, vertexNormals);
 					}
 
 					if (vertexColors) {

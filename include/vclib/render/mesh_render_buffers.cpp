@@ -77,7 +77,7 @@ const int* MeshRenderBuffers<MeshType>::triangleBufferData() const
 }
 
 template<MeshConcept MeshType>
-const double* MeshRenderBuffers<MeshType>::vertexNormalBufferData() const
+const float* MeshRenderBuffers<MeshType>::vertexNormalBufferData() const
 {
 	if (vNormals.empty()) return nullptr;
 	return vNormals.data();

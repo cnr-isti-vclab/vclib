@@ -42,7 +42,7 @@ public:
 
 	const float* vertexBufferData() const;
 	const int* triangleBufferData() const;
-	const double* vertexNormalBufferData() const;
+	const float* vertexNormalBufferData() const;
 	const float* vertexColorBufferData() const;
 	const double* triangleNormalBufferData() const;
 	const float* triangleColorBufferData() const;
@@ -52,7 +52,7 @@ private:
 	uint nt = 0;
 	std::vector<float> verts;
 	std::vector<int> tris;
-	std::vector<double> vNormals;
+	std::vector<float> vNormals;
 	std::vector<float> vColors;
 	std::vector<double> tNormals;
 	std::vector<float> tColors;

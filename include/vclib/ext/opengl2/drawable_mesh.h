@@ -76,7 +76,7 @@ private:
 		unsigned int   nt,
 		const float*   pCoords,
 		const int*     pTriangles,
-		const double*  pVertexNormals,
+		const float*  pVertexNormals,
 		const float*   pVertexColors,
 		const double*  pTriangleNormals,
 		const float*   pTriangleColors,
@@ -86,7 +86,7 @@ private:
 		unsigned int  nt,
 		const float*  coords,
 		const int*    triangles,
-		const double* vertexNormals,
+		const float* vertexNormals,
 		const float*  vertexColors,
 		const double* triangleNormals,
 		const float*  triangleColors) const;
