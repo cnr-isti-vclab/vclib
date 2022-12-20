@@ -9,36 +9,22 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
-project(vclib-external)
-
-# Eigen options
-option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
-option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
-
-# MapBox earcut
-option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut source" ON)
-
-# STB
-option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
-
-# Doctest
 if (VCLIB_BUILD_TESTS)
-	option(VCLIB_ALLOW_BUNDLED_DOCTEST "Allow use of bundled doctest source" ON)
+	set(VCLIB_DOCTEST_DIR ${CMAKE_CURRENT_LIST_DIR}/doctest-2.4.9)
+
+	if (VCLIB_ALLOW_BUNDLED_DOCTEST AND EXISTS ${VCLIB_DOCTEST_DIR}/doctest/doctest.h)
+		message(STATUS "- Doctest - using bundled source")
+	else()
+		message(
+			FATAL_ERROR
+			"Doctest is required to build tests - VCLIB_ALLOW_BUNDLED_DOCTEST must be enabled and found.")
+	endif()
+
+	set(DOCTEST_INCLUDE_DIRS ${VCLIB_DOCTEST_DIR})
+
+	add_library(vclib-external-doctest SHARED src/doctest_src.cpp)
+
+	target_include_directories(vclib-external-doctest PUBLIC ${DOCTEST_INCLUDE_DIRS})
+
+	list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-doctest)
 endif()
-
-set(VCLIB_EXTERNAL_LIBRARIES "")
-
-### Eigen
-include(eigen.cmake)
-
-### Mapbox-Earcut
-include(mapbox.cmake)
-
-### STB
-include(stb.cmake)
-
-### Doctest
-include(doctest.cmake)
-
-set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)

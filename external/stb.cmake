@@ -9,36 +9,18 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
-project(vclib-external)
+set(VCLIB_STB_DIR ${CMAKE_CURRENT_LIST_DIR}/stb-master)
 
-# Eigen options
-option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
-option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
+if (VCLIB_ALLOW_BUNDLED_STB AND EXISTS ${VCLIB_STB_DIR}/stb/stb_image.h)
+	message(STATUS "- STB - using bundled source")
 
-# MapBox earcut
-option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut source" ON)
 
-# STB
-option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
+	set(STB_INCLUDE_DIRS ${VCLIB_STB_DIR})
 
-# Doctest
-if (VCLIB_BUILD_TESTS)
-	option(VCLIB_ALLOW_BUNDLED_DOCTEST "Allow use of bundled doctest source" ON)
+	add_library(vclib-external-stb SHARED src/stb_src.cpp)
+
+	target_include_directories(vclib-external-stb PUBLIC ${STB_INCLUDE_DIRS})
+	target_compile_definitions(vclib-external-stb PUBLIC VCLIB_WITH_STB)
+
+	list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-stb)
 endif()
-
-set(VCLIB_EXTERNAL_LIBRARIES "")
-
-### Eigen
-include(eigen.cmake)
-
-### Mapbox-Earcut
-include(mapbox.cmake)
-
-### STB
-include(stb.cmake)
-
-### Doctest
-include(doctest.cmake)
-
-set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)

@@ -9,36 +9,20 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
-project(vclib-external)
+set(VCLIB_MAPBOX_EARCUT_DIR ${CMAKE_CURRENT_LIST_DIR}/earcut.hpp-2.2.3)
 
-# Eigen options
-option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
-option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
-
-# MapBox earcut
-option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut source" ON)
-
-# STB
-option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
-
-# Doctest
-if (VCLIB_BUILD_TESTS)
-	option(VCLIB_ALLOW_BUNDLED_DOCTEST "Allow use of bundled doctest source" ON)
+if (VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT AND EXISTS ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox/earcut.hpp)
+	message(STATUS "- Mapbox-Eaurcut - using bundled source")
+else()
+	message(
+		FATAL_ERROR
+		"MapBox earcut is required - VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT must be enabled and found.")
 endif()
 
-set(VCLIB_EXTERNAL_LIBRARIES "")
+set(MAPBOX_EARCUT_INCLUDE_DIRS ${VCLIB_MAPBOX_EARCUT_DIR}/include)
 
-### Eigen
-include(eigen.cmake)
+add_library(vclib-external-mapbox-earcut INTERFACE)
 
-### Mapbox-Earcut
-include(mapbox.cmake)
+target_include_directories(vclib-external-mapbox-earcut INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
 
-### STB
-include(stb.cmake)
-
-### Doctest
-include(doctest.cmake)
-
-set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)
+list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-mapbox-earcut)

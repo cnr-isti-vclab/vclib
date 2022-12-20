@@ -22,6 +22,7 @@ if (Qt6_FOUND)
 		Qt6::OpenGLWidgets
 		Qt6::Widgets
 		Qt6::Xml)
+	target_compile_definitions(vclib INTERFACE VCLIB_WITH_QT)
 
 	if (OpenGL_FOUND)
 		target_link_libraries(vclib INTERFACE Qt6::OpenGL)
@@ -38,6 +39,7 @@ if (Qt5_FOUND AND NOT Qt6_FOUND) # prefer Qt6
 		Qt5::Core
 		Qt5::Widgets
 		Qt5::Xml)
+	target_compile_definitions(vclib INTERFACE VCLIB_WITH_QT)
 
 	if (OpenGL_FOUND)
 		target_link_libraries(vclib INTERFACE Qt5::OpenGL)
