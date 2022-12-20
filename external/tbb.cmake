@@ -9,17 +9,20 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-set(VCLIB_STB_DIR ${CMAKE_CURRENT_LIST_DIR}/stb-master)
+if (UNIX)
+	find_package(Threads QUIET)
+	find_package(TBB QUIET)
 
-if (VCLIB_ALLOW_BUNDLED_STB AND EXISTS ${VCLIB_STB_DIR}/stb/stb_image.h)
-	message(STATUS "- STB - using bundled source")
+	if (VCLIB_ALLOW_SYSTEM_TBB)
+		if (TARGET TBB::tbb AND TARGET Threads::Threads)
+			message(STATUS "- TBB - using system-provided library")
 
-	set(STB_INCLUDE_DIRS ${VCLIB_STB_DIR})
+			add_library(vclib-external-tbb INTERFACE)
+			target_link_libraries(vclib-external-tbb INTERFACE TBB::tbb Threads::Threads)
 
-	add_library(vclib-external-stb SHARED src/stb_src.cpp)
-
-	target_include_directories(vclib-external-stb PUBLIC ${STB_INCLUDE_DIRS})
-	target_compile_definitions(vclib-external-stb PUBLIC VCLIB_WITH_STB)
-
-	list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-stb)
+			list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-tbb)
+		else()
+			message(STATUS "- TBB - not found, skipping")
+		endif()
+	endif()
 endif()

@@ -16,12 +16,6 @@ project(vclib)
 set(CMAKE_CXX_STANDARD 20)
 
 ### Options
-option(VCLIB_USES_OPENGL "Use OpenGL for drawing VCLib classes" OFF)
-
-option(VCLIB_USES_QT "Use Qt5 for GUI elements" OFF)
-
-option(VCLIB_USES_LIBQGLVIEWER "Use Qt5 and libQGLViewer for a small viewer - requires OpenGL and Qt" OFF)
-
 option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
 option(VCLIB_IDE "Create an utility target to show the library tree on IDEs" ON)
 option(VCLIB_BUILD_DOCS
@@ -34,13 +28,8 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 # Add the cmake folder for find_package scripts
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-# threads and tbb, required for parallel on linux and macos
-if (UNIX)
-	find_package(Threads QUIET)
-	find_package(TBB QUIET)
-endif()
-
 # external libraries
+message(STATUS "VCLIB: external libraries")
 add_subdirectory(external)
 
 if (WIN32)
@@ -389,28 +378,37 @@ set(SOURCES
 	include/vclib/space/point/point3.cpp
 	include/vclib/space/point/point4.cpp)
 
+# headers and sources to include only if using OpenGL
+if (vclib-external-opengl IN_LIST VCLIB_EXTERNAL_LIBRARIES)
+	list(APPEND HEADERS
+		include/vclib/ext/opengl2/draw_objects2.h
+		include/vclib/ext/opengl2/draw_objects3.h
+		include/vclib/ext/opengl2/drawable_mesh.h)
+
+	list(APPEND SOURCES
+		include/vclib/ext/opengl2/draw_objects2.cpp
+		include/vclib/ext/opengl2/draw_objects3.cpp
+		include/vclib/ext/opengl2/drawable_mesh.cpp)
+endif()
+
+# headers and sources to include only if using QGLViewer
+if (vclib-external-qglviewer IN_LIST VCLIB_EXTERNAL_LIBRARIES)
+	list(APPEND HEADERS
+		include/vclib/ext/qglviewer/viewer.h)
+
+	list(APPEND SOURCES
+		include/vclib/ext/qglviewer/viewer.cpp)
+endif()
+
 add_library(vclib INTERFACE)
 
 target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})
 target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
-if (UNIX)
-	if (TARGET TBB::tbb AND TARGET Threads::Threads)
-		message(STATUS "VCLIB using parallel algorithms")
-		target_link_libraries(vclib INTERFACE TBB::tbb Threads::Threads)
-	else()
-		message(STATUS "VCLIB not using parallel algorithms")
-	endif()
-else() # natively supported by msvc
-	message(STATUS "VCLIB using parallel algorithms")
-endif()
-
-if (VCLIB_USES_OPENGL)
-	include(cmake/vclib_opengl.cmake)
-endif()
-
-if (VCLIB_USES_QT)
-	include(cmake/vclib_qt.cmake)
+if (WIN32 OR TARGET vclib-external-tbb)
+	message(STATUS "VCLIB: using parallel algorithms")
+else()
+	message(STATUS "VCLIB: not using parallel algorithms")
 endif()
 
 if (VCLIB_IDE)
