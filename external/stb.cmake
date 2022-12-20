@@ -19,7 +19,7 @@ if (VCLIB_ALLOW_BUNDLED_STB AND EXISTS ${VCLIB_STB_DIR}/stb/stb_image.h)
 	add_library(vclib-external-stb SHARED src/stb_src.cpp)
 
 	target_include_directories(vclib-external-stb PUBLIC ${STB_INCLUDE_DIRS})
-	target_compile_definitions(vclib-external-stb PUBLIC VCLIB_WITH_STB)
+	target_compile_definitions(vclib-external-stb PUBLIC VCLIB_WITH_STB VCLIB_WITH_IMAGE_SUPPORT)
 
 	list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-stb)
 endif()

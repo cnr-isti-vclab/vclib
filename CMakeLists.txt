@@ -29,7 +29,7 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # external libraries
-message(STATUS "VCLIB: external libraries")
+message(STATUS "VCLib: external libraries")
 add_subdirectory(external)
 
 if (WIN32)
@@ -379,7 +379,7 @@ set(SOURCES
 	include/vclib/space/point/point4.cpp)
 
 # headers and sources to include only if using OpenGL
-if (vclib-external-opengl IN_LIST VCLIB_EXTERNAL_LIBRARIES)
+if (TARGET vclib-external-opengl)
 	list(APPEND HEADERS
 		include/vclib/ext/opengl2/draw_objects2.h
 		include/vclib/ext/opengl2/draw_objects3.h
@@ -392,12 +392,31 @@ if (vclib-external-opengl IN_LIST VCLIB_EXTERNAL_LIBRARIES)
 endif()
 
 # headers and sources to include only if using QGLViewer
-if (vclib-external-qglviewer IN_LIST VCLIB_EXTERNAL_LIBRARIES)
+if (TARGET vclib-external-qglviewer)
 	list(APPEND HEADERS
 		include/vclib/ext/qglviewer/viewer.h)
 
 	list(APPEND SOURCES
 		include/vclib/ext/qglviewer/viewer.cpp)
+endif()
+
+if (TARGET vclib-external-stb)
+	list(APPEND HEADERS
+		include/vclib/ext/stb/image.h)
+	list(APPEND SOURCES
+		include/vclib/ext/stb/image.cpp)
+endif()
+
+if (TARGET vclib-external-qt)
+	list(APPEND HEADERS
+		include/vclib/ext/qt/image.h)
+	list(APPEND SOURCES
+		include/vclib/ext/qt/image.cpp)
+endif()
+
+if (TARGET vclib-external-stb OR TARGET vclib-external-qt)
+	list(APPEND HEADERS
+		include/vclib/ext/image.h)
 endif()
 
 add_library(vclib INTERFACE)
@@ -406,9 +425,9 @@ target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})
 target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
 if (WIN32 OR TARGET vclib-external-tbb)
-	message(STATUS "VCLIB: using parallel algorithms")
+	message(STATUS "VCLib: using parallel algorithms")
 else()
-	message(STATUS "VCLIB: not using parallel algorithms")
+	message(STATUS "VCLib: not using parallel algorithms")
 endif()
 
 if (VCLIB_IDE)
