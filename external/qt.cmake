@@ -27,7 +27,7 @@ if (VCLIB_ALLOW_SYSTEM_QT)
 
 		add_library(vclib-external-qt INTERFACE)
 		target_compile_definitions(vclib-external-qt INTERFACE
-			VCLIB_WITH_QT VCLIB_WITH_IMAGE_SUPPORT)
+			VCLIB_WITH_QT)
 
 		# prefer Qt6
 		if (Qt6_FOUND)

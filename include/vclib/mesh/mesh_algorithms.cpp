@@ -25,6 +25,7 @@
 #if __has_include(<mapbox/earcut.hpp>)
 #include <mapbox/earcut.hpp>
 #else
+// inclusion for usage of vclib without CMake - not ideal but necessary for header only
 #include "../../../external/earcut.hpp-2.2.3/include/mapbox/earcut.hpp"
 #endif
 

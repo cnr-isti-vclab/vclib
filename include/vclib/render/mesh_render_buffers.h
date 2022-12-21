@@ -23,6 +23,7 @@
 #ifndef VCLIB_RENDER_MESH_RENDER_BUFFERS_H
 #define VCLIB_RENDER_MESH_RENDER_BUFFERS_H
 
+#include <vclib/image/image.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/mesh/tri_poly_index_bimap.h>
 
@@ -37,32 +38,38 @@ public:
 
 	uint vertexNumber() const;
 	uint triangleNumber() const;
+	uint textureNumber() const;
+	vcl::Point2i textureSize(uint ti) const;
 
 	const vcl::Point3d& bbMin() const;
 	const vcl::Point3d& bbMax() const;
 
-	const float* vertexBufferData() const;
-	const int*   triangleBufferData() const;
-	const float* vertexNormalBufferData() const;
-	const float* vertexColorBufferData() const;
-	const float* triangleNormalBufferData() const;
-	const float* triangleColorBufferData() const;
+	const float*         vertexBufferData() const;
+	const int*           triangleBufferData() const;
+	const float*         vertexNormalBufferData() const;
+	const float*         vertexColorBufferData() const;
+	const float*         triangleNormalBufferData() const;
+	const float*         triangleColorBufferData() const;
+	const unsigned char* textureBufferData(uint ti) const;
 
 private:
 	uint nv = 0;
 	uint nt = 0;
+
 	std::vector<float> verts;
-	std::vector<int> tris;
+	std::vector<int>   tris;
 	std::vector<float> vNormals;
 	std::vector<float> vColors;
 	std::vector<float> tNormals;
 	std::vector<float> tColors;
-	vcl::Point3d bbmin, bbmax;
 
+	vcl::Point3d            bbmin, bbmax;
 	mesh::TriPolyIndexBiMap triPolyMap;
+	std::vector<vcl::Image> textures;
 
 	void fillVertices(const MeshType& m);
 	void fillTriangles(const MeshType& m);
+	void fillTextures(const MeshType& m);
 };
 
 } // namespace vcl

@@ -20,81 +20,54 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "image.h"
+#ifndef VCLIB_IMAGE_IMAGE_H
+#define VCLIB_IMAGE_IMAGE_H
 
-namespace vcl::stb {
+#include <string>
 
-inline Image::Image()
+#if __has_include(<stb/stb_image.h>)
+#include <stb/stb_image.h>
+#else
+// inclusion for usage of vclib without CMake - not ideal but necessary for header-only
+#define STB_IMAGE_STATIC // make stb usable in header-only libraries
+#include "../../../external/stb-master/stb/stb_image.h"
+#endif
+
+namespace vcl {
+
+class Image
 {
-}
+public:
+	Image();
+	Image(const Image& oth);
+	Image(Image&& oth);
+	Image(const std::string& filename);
 
-inline Image::Image(const Image &oth)
-{
-	dataImage = new unsigned char[oth.sizeInBytes()];
-	std::copy(oth.dataImage, oth.dataImage + oth.sizeInBytes(), dataImage);
-}
+	~Image();
 
-Image::Image(Image &&oth)
-{
-	swap(oth);
-}
+	bool isNull() const;
 
-inline Image::Image(const std::string &filename)
-{
-	unsigned char* tmp = stbi_load(filename.c_str(), &w, &h, nullptr, 4);
-	std::size_t size = w * h * 4;
-	dataImage = new unsigned char[size];
-	std::copy(tmp, tmp + size, dataImage);
-	stbi_image_free(tmp);
-}
+	int height() const;
+	int width() const;
+	std::size_t sizeInBytes() const;
 
-inline Image::~Image()
-{
-	delete[] dataImage;
-}
+	const unsigned char* data() const;
 
-inline bool Image::isNull() const
-{
-	return dataImage == nullptr;
-}
+	/// @private
+	friend void swap(Image& i1, Image& i2);
+	void swap(Image& oth);
 
-inline int Image::height() const
-{
-	return h;
-}
+	Image& operator=(Image oth);
 
-inline int Image::width() const
-{
-	return w;
-}
+private:
+	unsigned char* dataImage = nullptr;
+	int h = 0, w = 0;
+};
 
-inline std::size_t Image::sizeInBytes() const
-{
-	return h * w * 4;
-}
+inline void swap(Image& i1, Image& i2);
 
-inline const unsigned char* Image::data() const
-{
-	return dataImage;
-}
+} // namespace vcl
 
-inline void Image::swap(Image &oth)
-{
-	stb::swap(*this, oth);
-}
+#include "image.cpp"
 
-inline Image &Image::operator=(Image oth)
-{
-	swap(oth);
-	return *this;
-}
-
-inline void swap(Image &i1, Image &i2)
-{
-	using std::swap;
-	swap(i1.dataImage, i2.dataImage);
-	swap(i1.h, i2.h);
-	swap(i1.w, i2.w);
-}
-
-} // namespace vcl::stb
+#endif // VCLIB_IMAGE_IMAGE_H

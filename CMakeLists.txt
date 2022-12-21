@@ -72,6 +72,7 @@ set(HEADERS
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
 	include/vclib/exception/misc_exception.h
+	include/vclib/image/image.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load.h
 	include/vclib/io/load_obj.h
@@ -271,6 +272,7 @@ set(SOURCES
 	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
+	include/vclib/image/image.cpp
 	include/vclib/io/file_mesh_info.cpp
 	include/vclib/io/load.cpp
 	include/vclib/io/load_obj.cpp
@@ -398,25 +400,6 @@ if (TARGET vclib-external-qglviewer)
 
 	list(APPEND SOURCES
 		include/vclib/ext/qglviewer/viewer.cpp)
-endif()
-
-if (TARGET vclib-external-stb)
-	list(APPEND HEADERS
-		include/vclib/ext/stb/image.h)
-	list(APPEND SOURCES
-		include/vclib/ext/stb/image.cpp)
-endif()
-
-if (TARGET vclib-external-qt)
-	list(APPEND HEADERS
-		include/vclib/ext/qt/image.h)
-	list(APPEND SOURCES
-		include/vclib/ext/qt/image.cpp)
-endif()
-
-if (TARGET vclib-external-stb OR TARGET vclib-external-qt)
-	list(APPEND HEADERS
-		include/vclib/ext/image.h)
 endif()
 
 add_library(vclib INTERFACE)

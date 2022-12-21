@@ -22,40 +22,81 @@
 
 #include "image.h"
 
-namespace vcl::qt {
+namespace vcl {
 
 inline Image::Image()
 {
 }
 
+inline Image::Image(const Image &oth)
+{
+	dataImage = new unsigned char[oth.sizeInBytes()];
+	std::copy(oth.dataImage, oth.dataImage + oth.sizeInBytes(), dataImage);
+}
+
+Image::Image(Image &&oth)
+{
+	swap(oth);
+}
+
 inline Image::Image(const std::string &filename)
 {
-	img = QImage(QString::fromStdString(filename)).convertToFormat(QImage::Format_RGBA8888);
+	// we need to make sure that we are using memory dynamically allocated using new
+	// stb uses malloc, therefore we first load in a temporary buffer, and then we copy the data
+	unsigned char* tmp = stbi_load(filename.c_str(), &w, &h, nullptr, 4); // force 4 channels
+	std::size_t size = w * h * 4;
+	dataImage = new unsigned char[size];
+	std::copy(tmp, tmp + size, dataImage);
+	stbi_image_free(tmp);
+}
+
+inline Image::~Image()
+{
+	delete[] dataImage;
 }
 
 inline bool Image::isNull() const
 {
-	return img.isNull();
+	return dataImage == nullptr;
 }
 
 inline int Image::height() const
 {
-	return img.height();
+	return h;
 }
 
 inline int Image::width() const
 {
-	return img.width();
+	return w;
 }
 
 inline std::size_t Image::sizeInBytes() const
 {
-	return img.sizeInBytes();
+	return h * w * 4;
 }
 
 inline const unsigned char* Image::data() const
 {
-	return img.constBits();
+	return dataImage;
 }
 
-} // namespace vcl::qt
+inline void Image::swap(Image &oth)
+{
+	vcl::swap(*this, oth);
+}
+
+inline Image &Image::operator=(Image oth)
+{
+	swap(oth);
+	return *this;
+}
+
+inline void swap(Image &i1, Image &i2)
+{
+	using std::swap;
+	swap(i1.dataImage, i2.dataImage);
+	swap(i1.h, i2.h);
+	swap(i1.w, i2.w);
+}
+
+} // namespace vcl

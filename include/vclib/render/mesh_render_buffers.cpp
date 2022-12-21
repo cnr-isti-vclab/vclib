@@ -36,6 +36,7 @@ MeshRenderBuffers<MeshType>::MeshRenderBuffers(const MeshType& m)
 {
 	fillVertices(m);
 	fillTriangles(m);
+	fillTextures(m);
 }
 
 template<MeshConcept MeshType>
@@ -48,6 +49,18 @@ template<MeshConcept MeshType>
 uint MeshRenderBuffers<MeshType>::triangleNumber() const
 {
 	return nt;
+}
+
+template<MeshConcept MeshType>
+uint MeshRenderBuffers<MeshType>::textureNumber() const
+{
+	return textures.size();
+}
+
+template<MeshConcept MeshType>
+Point2i MeshRenderBuffers<MeshType>::textureSize(uint ti) const
+{
+	return vcl::Point2i(textures[ti].width(), textures[ti].height());
 }
 
 template<MeshConcept MeshType>
@@ -102,6 +115,12 @@ const float* MeshRenderBuffers<MeshType>::triangleColorBufferData() const
 {
 	if (tColors.empty()) return nullptr;
 	return tColors.data();
+}
+
+template<MeshConcept MeshType>
+const unsigned char* MeshRenderBuffers<MeshType>::textureBufferData(uint ti) const
+{
+	return textures[ti].data();
 }
 
 template<MeshConcept MeshType>
@@ -264,6 +283,16 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 			}
 
 			i += 3;
+		}
+	}
+}
+
+template<MeshConcept MeshType>
+void MeshRenderBuffers<MeshType>::fillTextures(const MeshType &m)
+{
+	if constexpr(vcl::HasTexturePaths<MeshType>) {
+		for (uint i = 0; i < m.textureNumber(); ++i) {
+			textures.push_back(vcl::Image(m.meshBasePath() + m.texturePath(i)));
 		}
 	}
 }
