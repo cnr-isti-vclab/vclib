@@ -42,8 +42,13 @@ public:
 	bool isSurfaceVisible() const;
 	bool isSurfaceShadingFlat() const;
 	bool isSurfaceShadingSmooth() const;
+
 	bool isSurfaceColorPerFace() const;
 	bool isSurfaceColorPerVertex() const;
+	bool isSurfaceColorPerMesh() const;
+	bool isSurfaceColorUserDefined() const;
+	bool isSurfaceColorPerVertexTexcoords() const;
+	bool isSurfaceColorPerWedgeTexcoords() const;
 
 	bool isWireframeVisible() const;
 	int wireframeWidth() const;
@@ -58,20 +63,29 @@ public:
 	void setPointCloudVisibility(bool b);
 	void setPointWidth(int width);
 
+	void setSurfaceVisibility(bool b);
 	void setSurfaceShadingFlat();
 	void setSurfaceShadingSmooth();
+
 	void setSurfaceColorPerVertex();
 	void setSurfaceColorPerFace();
+	void setSurfaceColorPerMesh();
+	void setSurfaceColorUserDefined();
+	void setSurfaceColorPerVertexTexcoords();
+	void setSurfaceColorPerWedgeTexcoords();
+
+	void setSurfaceUserDefinedColor(float r, float g, float b, float a = 1);
+	void setSurfaceUserDefinedColor(const vcl::Color& c);
 
 	void setWireframeVisibility(bool b);
 	void setWireframeWidth(int width);
-	void setWireframeColor(float r, float g, float b);
+	void setWireframeColor(float r, float g, float b, float a = 1);
 	void setWireframeColor(const vcl::Color& c);
 
 	void setBoundingBoxVisibility(bool b);
 
 	template <MeshConcept MeshType>
-	void setRenderCapabilityFrom(const MeshType m);
+	void setRenderCapabilityFrom(const MeshType& m);
 
 private:
 	enum {
@@ -91,6 +105,8 @@ private:
 		DRAW_SURF_COLOR_VERTEX = 1 << 14, // use vertex color for surface
 		DRAW_SURF_COLOR_MESH   = 1 << 15, // use mesh color for surface
 		DRAW_SURF_COLOR_USER   = 1 << 16, // use user color for surface
+		DRAW_SURF_TEX_VERTEX   = 1 << 17, // use per vertex texcoords
+		DRAW_SURF_TEX_WEDGE    = 1 << 18, // use per wedge texcoords
 
 		DRAW_WIREFRAME = 1 << 20, // draw wireframe
 		DRAW_WIREFRAME_COLOR_USER = 1 << 21,
@@ -101,7 +117,7 @@ private:
 
 	// draw integers controlled using enum
 	int   drawModeCapability = ~0;
-	int   drawMode           = DRAW_MESH | DRAW_SURF_SMOOTH | DRAW_SURF_COLOR_VERTEX;
+	int   drawMode           = DRAW_MESH | DRAW_SURF | DRAW_SURF_SMOOTH | DRAW_SURF_COLOR_VERTEX;
 
 	int   pWidth             = 3;
 	float pUserColor[4]      = {1, 1, 0, 1};

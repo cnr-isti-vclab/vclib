@@ -194,7 +194,7 @@ void DrawableMesh<MeshType>::draw(
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 		}
-		else {
+		else { // no wireframe
 			if (mrs.isPointCloudVisible()) {
 				glDisable(GL_LIGHTING);
 				renderPass(
@@ -270,7 +270,7 @@ void DrawableMesh<MeshType>::renderPass(
 		}
 
 		if (nt > 0 && triangles) {
-			if (mrs.isSurfaceShadingSmooth() || mrs.isSurfaceShadingFlat()) {
+			if (mrs.isSurfaceVisible()) {
 				// Old fashioned, verbose and slow rendering.
 				if (mrs.isSurfaceColorPerFace()) {
 					int n_tris = nt;
