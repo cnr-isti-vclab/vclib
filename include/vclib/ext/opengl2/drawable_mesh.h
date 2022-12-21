@@ -56,7 +56,6 @@ class DrawableMesh : public virtual DrawableObject
 public:
 	DrawableMesh();
 	DrawableMesh(const MeshType& m);
-	DrawableMesh(const MeshType& m, const MeshRenderSettings& mrs);
 
 	const MeshRenderSettings& renderSettings() const;
 	MeshRenderSettings& renderSettings();

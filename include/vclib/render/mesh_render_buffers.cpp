@@ -22,6 +22,7 @@
 
 #include "mesh_render_buffers.h"
 
+#include <vclib/algorithms/polygon.h>
 #include <vclib/mesh/mesh_algorithms.h>
 
 namespace vcl {
@@ -232,11 +233,8 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 			}
 		}
 
-		if constexpr(vcl::HasPerFaceNormal<MeshType>) {
-			if (vcl::isPerFaceNormalEnabled(m)) {
-				tNormals.reserve(m.faceNumber() * 3);
-			}
-		}
+
+		tNormals.reserve(m.faceNumber() * 3);
 
 		if constexpr(vcl::HasPerFaceColor<MeshType>) {
 			if (vcl::isPerFaceColorEnabled(m)) {
@@ -262,6 +260,12 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 						}
 					}
 				}
+				else {
+					fillFaceNromals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
+				}
+			}
+			else {
+				fillFaceNromals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
 			}
 
 			if constexpr(vcl::HasPerFaceColor<MeshType>) {
@@ -295,6 +299,28 @@ void MeshRenderBuffers<MeshType>::fillTextures(const MeshType &m)
 			textures.push_back(vcl::Image(m.meshBasePath() + m.texturePath(i)));
 		}
 	}
+}
+
+template<MeshConcept MeshType>
+template<typename FaceType>
+void MeshRenderBuffers<MeshType>::fillFaceNromals(const FaceType &f, bool triangle, uint fi)
+{
+	using NormalType = typename FaceType::VertexType::CoordType;
+	if (triangle) {
+		NormalType n = vcl::triangleNormal(f);
+		tNormals.push_back(n.x());
+		tNormals.push_back(n.y());
+		tNormals.push_back(n.z());
+	}
+	else {
+		NormalType n = vcl::polygonNormal(f);
+		for (uint i = 0; i < triPolyMap.triangleNumber(fi); i++) {
+			tNormals.push_back(n.x());
+			tNormals.push_back(n.y());
+			tNormals.push_back(n.z());
+		}
+	}
+
 }
 
 } // namespace vcl

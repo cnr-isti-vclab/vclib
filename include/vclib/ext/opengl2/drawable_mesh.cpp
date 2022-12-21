@@ -34,13 +34,7 @@ DrawableMesh<MeshType>::DrawableMesh()
 
 template<MeshConcept MeshType>
 DrawableMesh<MeshType>::DrawableMesh(const MeshType &m) :
-		mrb(m)
-{
-}
-
-template<MeshConcept MeshType>
-DrawableMesh<MeshType>::DrawableMesh(const MeshType& m, const MeshRenderSettings& mrs) :
-		mrb(m), mrs(mrs)
+		mrb(m), mrs(m)
 {
 }
 
@@ -66,6 +60,7 @@ template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::updateBuffers(const MeshType& m)
 {
 	mrb = MeshRenderBuffers<MeshType>(m);
+	mrs.setRenderCapabilityFrom(m);
 }
 
 template<MeshConcept MeshType>

@@ -28,6 +28,7 @@
 #include "vertex_concepts.h"
 
 #include "../components/concepts/bounding_box.h"
+#include "../components/concepts/color.h"
 #include "../components/concepts/mark.h"
 #include "../components/concepts/texture_paths.h"
 #include "../components/concepts/transform_matrix.h"
@@ -60,6 +61,8 @@ struct IsAMesh<Mesh<Args...>> : // For types matching the pattern Mesh<Args...>
 template<typename T>
 concept HasBoundingBox = comp::HasBoundingBox<T>;
 template<typename T>
+concept HasColor = comp::HasColor<T>;
+template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasTexturePaths = comp::HasTexturePaths<T>;
@@ -83,6 +86,10 @@ concept HasPolygons =
 template<typename MeshType>
 concept HasBoundingBox =
 	mesh::HasBoundingBox<MeshType>;
+
+template<typename MeshType>
+concept HasColor =
+	mesh::HasColor<MeshType>;
 
 template<typename MeshType>
 concept HasMark =

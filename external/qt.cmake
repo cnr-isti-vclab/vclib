@@ -31,34 +31,29 @@ if (VCLIB_ALLOW_SYSTEM_QT)
 
 		# prefer Qt6
 		if (Qt6_FOUND)
-			target_link_libraries(vclib-external-qt INTERFACE
-				Qt6::Core
-				Qt6::OpenGLWidgets
-				Qt6::Widgets
-				Qt6::Xml)
+			target_link_libraries(vclib-external-qt INTERFACE Qt6::Core Qt6::Widgets Qt6::Xml)
 
 			if (OpenGL_FOUND)
-				target_link_libraries(vclib-external-qt INTERFACE Qt6::OpenGL)
+				target_link_libraries(vclib-external-qt INTERFACE Qt6::OpenGL Qt6::OpenGLWidgets)
 			endif()
 		endif()
 
 		if (Qt5_FOUND AND NOT Qt6_FOUND)
-			target_link_libraries(vclib-external-qt INTERFACE
-				Qt5::Core
-				Qt5::Widgets
-				Qt5::Xml)
+			target_link_libraries(vclib-external-qt INTERFACE Qt5::Core Qt5::Widgets Qt5::Xml)
 
 			if (OpenGL_FOUND)
 				target_link_libraries(vclib-external-qt INTERFACE Qt5::OpenGL)
 			endif()
 		endif()
 
+		set(CMAKE_AUTOMOC ON PARENT_SCOPE)
+		set(CMAKE_AUTORCC ON PARENT_SCOPE)
+		set(CMAKE_AUTOUIC ON PARENT_SCOPE)
+
 		list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-qt)
 	else()
 		message(STATUS "- Qt - not found, skipping")
 	endif()
-else()
-
 endif()
 
 

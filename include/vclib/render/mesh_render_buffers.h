@@ -70,6 +70,9 @@ private:
 	void fillVertices(const MeshType& m);
 	void fillTriangles(const MeshType& m);
 	void fillTextures(const MeshType& m);
+
+	template<typename FaceType>
+	void fillFaceNromals(const FaceType& f, bool triangle, uint fi);
 };
 
 } // namespace vcl

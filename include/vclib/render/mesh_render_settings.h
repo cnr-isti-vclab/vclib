@@ -28,10 +28,49 @@
 
 namespace vcl {
 
+/**
+ * @brief The MeshRenderSettings class allows an easy management of render settings of a Mesh.
+ * This class stores the rendering status of a Mesh and the rendering capability of a Mesh.
+ *
+ * Render capabilities store what can be actually rendered of a vcl::Mesh (e.g. it will be possible
+ * to render the surface of the mesh if the Mesh has Faces, or it will be possible to render per
+ * Face colors only if the Mesh has **enabled** per face colors).
+ *
+ * The render status of this class is **guaranteed to be consistent** to the render capabilities.
+ *
+ * An instance of this class must be initialized with a vcl::Mesh at first, in order to initialize
+ * the Render capabilites. Render settings won't be possible to set if this class is not first
+ * initialized using a vcl::Mesh, trough the constructor or the `setRenderCapabilityFrom()` member
+ * function.
+ *
+ * Render capabilities can be get by calling the member functions `can*()` of this class.
+ *
+ * The memeber functions `is*()` allow to get the current render status.
+ *
+ * The render status can be modified using the `set*()` member functions, that return a boolean
+ * indicating if the operation has been performed (if the capabilities allows it, the operation will
+ * be always performed).
+ */
 class MeshRenderSettings
 {
 public:
 	MeshRenderSettings();
+
+	template <MeshConcept MeshType>
+	MeshRenderSettings(const MeshType& m);
+
+	//rendering options capability of the mesh
+	bool canBeVisible() const;
+	bool canPointCloudBeVisible() const;
+	bool canSurfaceBeVisible() const;
+	bool canSurfaceBeSmooth() const;
+	bool canSurfaceBeColoredPerFace() const;
+	bool canSurfaceBeColoredPerVertex() const;
+	bool canSurfaceBeColoredPerMesh() const;
+	bool canSurfaceBeColoredPerVertexTexcoords() const;
+	bool canSurfaceBeColoredPerWedgeTexcoords() const;
+	bool canWireframeBeColoredPerMesh() const;
+	bool canBoundingBoxBeVisible() const;
 
 	//rendering options getters
 	bool isVisible() const;
@@ -58,31 +97,31 @@ public:
 	bool isBboxEnabled() const;
 
 	// rendering options setters
-	void setVisibility(bool b);
+	bool setVisibility(bool b);
 
-	void setPointCloudVisibility(bool b);
-	void setPointWidth(int width);
+	bool setPointCloudVisibility(bool b);
+	bool setPointWidth(int width);
 
-	void setSurfaceVisibility(bool b);
-	void setSurfaceShadingFlat();
-	void setSurfaceShadingSmooth();
+	bool setSurfaceVisibility(bool b);
+	bool setSurfaceShadingFlat();
+	bool setSurfaceShadingSmooth();
 
-	void setSurfaceColorPerVertex();
-	void setSurfaceColorPerFace();
-	void setSurfaceColorPerMesh();
-	void setSurfaceColorUserDefined();
-	void setSurfaceColorPerVertexTexcoords();
-	void setSurfaceColorPerWedgeTexcoords();
+	bool setSurfaceColorPerVertex();
+	bool setSurfaceColorPerFace();
+	bool setSurfaceColorPerMesh();
+	bool setSurfaceColorUserDefined();
+	bool setSurfaceColorPerVertexTexcoords();
+	bool setSurfaceColorPerWedgeTexcoords();
 
-	void setSurfaceUserDefinedColor(float r, float g, float b, float a = 1);
-	void setSurfaceUserDefinedColor(const vcl::Color& c);
+	bool setSurfaceUserDefinedColor(float r, float g, float b, float a = 1);
+	bool setSurfaceUserDefinedColor(const vcl::Color& c);
 
-	void setWireframeVisibility(bool b);
-	void setWireframeWidth(int width);
-	void setWireframeColor(float r, float g, float b, float a = 1);
-	void setWireframeColor(const vcl::Color& c);
+	bool setWireframeVisibility(bool b);
+	bool setWireframeWidth(int width);
+	bool setWireframeColor(float r, float g, float b, float a = 1);
+	bool setWireframeColor(const vcl::Color& c);
 
-	void setBoundingBoxVisibility(bool b);
+	bool setBoundingBoxVisibility(bool b);
 
 	template <MeshConcept MeshType>
 	void setRenderCapabilityFrom(const MeshType& m);
@@ -116,7 +155,7 @@ private:
 	};
 
 	// draw integers controlled using enum
-	int   drawModeCapability = ~0;
+	int   drawModeCapability = 0;
 	int   drawMode           = DRAW_MESH | DRAW_SURF | DRAW_SURF_SMOOTH | DRAW_SURF_COLOR_VERTEX;
 
 	int   pWidth             = 3;
