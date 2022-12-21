@@ -246,104 +246,115 @@ void DrawableMesh<MeshType>::renderPass(
 	const float* triangleNormals,
 	const float* triangleColors) const
 {
-	if (nv > 0 && coords) {
-		if (mrs.isPointCloudVisible()) {
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3, GL_FLOAT, 0, coords);
+	if (mrs.isPointCloudVisible()) {
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3, GL_FLOAT, 0, coords);
 
-			if (vertexColors) {
-				glEnableClientState(GL_COLOR_ARRAY);
-				glColorPointer(3, GL_FLOAT, 0, vertexColors);
-			}
-
-			glPointSize(mrs.pointWidth());
-
-			glDrawArrays(GL_POINTS, 0, nv);
-
-			glDisableClientState(GL_COLOR_ARRAY);
-			glDisableClientState(GL_VERTEX_ARRAY);
+		if (vertexColors) {
+			glEnableClientState(GL_COLOR_ARRAY);
+			glColorPointer(3, GL_FLOAT, 0, vertexColors);
 		}
 
-		if (nt > 0 && triangles) {
-			if (mrs.isSurfaceVisible()) {
-				// Old fashioned, verbose and slow rendering.
-				if (mrs.isSurfaceColorPerFace()) {
-					int n_tris = nt;
-					for (int tid = 0; tid < n_tris; ++tid) {
-						int tid_ptr  = 3 * tid;
-						int vid0     = triangles[tid_ptr + 0];
-						int vid1     = triangles[tid_ptr + 1];
-						int vid2     = triangles[tid_ptr + 2];
-						int vid0_ptr = 3 * vid0;
-						int vid1_ptr = 3 * vid1;
-						int vid2_ptr = 3 * vid2;
+		glPointSize(mrs.pointWidth());
 
-						if (mrs.isSurfaceShadingSmooth()) {
-							glBegin(GL_TRIANGLES);
-							if (triangleColors)
-								glColor3fv(&(triangleColors[tid_ptr]));
-							if (vertexNormals)
-								glNormal3fv(&(vertexNormals[vid0_ptr]));
-							glVertex3fv(&(coords[vid0_ptr]));
-							if (vertexNormals)
-								glNormal3fv(&(vertexNormals[vid1_ptr]));
-							glVertex3fv(&(coords[vid1_ptr]));
-							if (vertexNormals)
-								glNormal3fv(&(vertexNormals[vid2_ptr]));
-							glVertex3fv(&(coords[vid2_ptr]));
-							glEnd();
-						}
-						else {
-							glBegin(GL_TRIANGLES);
-							if (triangleColors)
-								glColor3fv(&(triangleColors[tid_ptr]));
-							if (triangleNormals)
-								glNormal3fv(&(triangleNormals[tid_ptr]));
-							glVertex3fv(&(coords[vid0_ptr]));
-							if (triangleNormals)
-								glNormal3fv(&(triangleNormals[tid_ptr]));
-							glVertex3fv(&(coords[vid1_ptr]));
-							if (triangleNormals)
-								glNormal3fv(&(triangleNormals[tid_ptr]));
-							glVertex3fv(&(coords[vid2_ptr]));
-							glEnd();
-						}
-					}
+		glDrawArrays(GL_POINTS, 0, nv);
+
+		glDisableClientState(GL_COLOR_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
+
+	if (mrs.isSurfaceVisible()) {
+		// Old fashioned, verbose and slow rendering.
+		if (mrs.isSurfaceColorPerFace()) {
+			int n_tris = nt;
+			for (int tid = 0; tid < n_tris; ++tid) {
+				int tid_ptr  = 3 * tid;
+				int vid0     = triangles[tid_ptr + 0];
+				int vid1     = triangles[tid_ptr + 1];
+				int vid2     = triangles[tid_ptr + 2];
+				int vid0_ptr = 3 * vid0;
+				int vid1_ptr = 3 * vid1;
+				int vid2_ptr = 3 * vid2;
+
+				if (mrs.isSurfaceShadingSmooth()) {
+					glBegin(GL_TRIANGLES);
+					glColor3fv(&(triangleColors[tid_ptr]));
+					glNormal3fv(&(vertexNormals[vid0_ptr]));
+					glVertex3fv(&(coords[vid0_ptr]));
+					glNormal3fv(&(vertexNormals[vid1_ptr]));
+					glVertex3fv(&(coords[vid1_ptr]));
+					glNormal3fv(&(vertexNormals[vid2_ptr]));
+					glVertex3fv(&(coords[vid2_ptr]));
+					glEnd();
 				}
-				else if (mrs.isSurfaceColorPerVertex()) {
-					glEnableClientState(GL_VERTEX_ARRAY);
-					glVertexPointer(3, GL_FLOAT, 0, coords);
-
-					if (vertexNormals) {
-						glEnableClientState(GL_NORMAL_ARRAY);
-						glNormalPointer(GL_FLOAT, 0, vertexNormals);
-					}
-
-					if (vertexColors) {
-						glEnableClientState(GL_COLOR_ARRAY);
-						glColorPointer(3, GL_FLOAT, 0, vertexColors);
-					}
-
-					glDrawElements(GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);
-
-					glDisableClientState(GL_COLOR_ARRAY);
-					glDisableClientState(GL_NORMAL_ARRAY);
-					glDisableClientState(GL_VERTEX_ARRAY);
+				else {
+					glBegin(GL_TRIANGLES);
+					glColor3fv(&(triangleColors[tid_ptr]));
+					glNormal3fv(&(triangleNormals[tid_ptr]));
+					glVertex3fv(&(coords[vid0_ptr]));
+					glNormal3fv(&(triangleNormals[tid_ptr]));
+					glVertex3fv(&(coords[vid1_ptr]));
+					glNormal3fv(&(triangleNormals[tid_ptr]));
+					glVertex3fv(&(coords[vid2_ptr]));
+					glEnd();
 				}
 			}
-
-			if (mrs.isWireframeVisible()) {
+		}
+		else if (mrs.isSurfaceColorPerVertex()) {
+			if (mrs.isSurfaceShadingSmooth()) {
 				glEnableClientState(GL_VERTEX_ARRAY);
 				glVertexPointer(3, GL_FLOAT, 0, coords);
 
-				glLineWidth(mrs.wireframeWidth());
-				glColor4fv(mrs.wireframeColorData());
+				glEnableClientState(GL_NORMAL_ARRAY);
+				glNormalPointer(GL_FLOAT, 0, vertexNormals);
+
+				glEnableClientState(GL_COLOR_ARRAY);
+				glColorPointer(3, GL_FLOAT, 0, vertexColors);
 
 				glDrawElements(GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);
 
+				glDisableClientState(GL_COLOR_ARRAY);
+				glDisableClientState(GL_NORMAL_ARRAY);
 				glDisableClientState(GL_VERTEX_ARRAY);
 			}
+			else {
+				glShadeModel(GL_SMOOTH);
+				int n_tris = nt;
+				for (int tid = 0; tid < n_tris; ++tid) {
+					int tid_ptr  = 3 * tid;
+					int vid0     = triangles[tid_ptr + 0];
+					int vid1     = triangles[tid_ptr + 1];
+					int vid2     = triangles[tid_ptr + 2];
+					int vid0_ptr = 3 * vid0;
+					int vid1_ptr = 3 * vid1;
+					int vid2_ptr = 3 * vid2;
+
+					glBegin(GL_TRIANGLES);
+					glColor3fv(&(vertexColors[vid0_ptr]));
+					glNormal3fv(&(triangleNormals[tid_ptr]));
+					glVertex3fv(&(coords[vid0_ptr]));
+					glColor3fv(&(vertexColors[vid1_ptr]));
+					glNormal3fv(&(triangleNormals[tid_ptr]));
+					glVertex3fv(&(coords[vid1_ptr]));
+					glColor3fv(&(vertexColors[vid2_ptr]));
+					glNormal3fv(&(triangleNormals[tid_ptr]));
+					glVertex3fv(&(coords[vid2_ptr]));
+					glEnd();
+				}
+			}
 		}
+	}
+
+	if (mrs.isWireframeVisible()) {
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3, GL_FLOAT, 0, coords);
+
+		glLineWidth(mrs.wireframeWidth());
+		glColor4fv(mrs.wireframeColorData());
+
+		glDrawElements(GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);
+
+		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 }
 
