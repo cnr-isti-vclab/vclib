@@ -67,7 +67,7 @@ inline void Viewer::fitScene()
 {
 	Box3d bb = fullBB();
 	Point3d sceneCenter = bb.center();
-	double sceneRadius = bb.diagonal();
+	double sceneRadius = bb.diagonal() / 2;
 
 	setSceneCenter(qglviewer::Vec(sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
 	setSceneRadius(sceneRadius);
@@ -82,11 +82,6 @@ inline void Viewer::draw()
 
 inline void Viewer::init()
 {
-	// Restore previous viewer state.
-	restoreStateFromFile();
-
-	// Opens help window
-	help();
 }
 
 inline QString Viewer::helpString() const

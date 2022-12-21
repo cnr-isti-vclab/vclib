@@ -127,12 +127,22 @@ const unsigned char* MeshRenderBuffers<MeshType>::textureBufferData(uint ti) con
 template<MeshConcept MeshType>
 void MeshRenderBuffers<MeshType>::fillVertices(const MeshType &m)
 {
-	constexpr bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
+	// not using Mesh's bounding box if:
+	// - it has not bounding box, or
+	// - it has bounding box, but it is null (not valid)
+	bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
+	if constexpr (vcl::HasBoundingBox<MeshType>) {
+		if (m.boundingBox().isNull()) {
+			bbToInitialize = true;
+		}
+	}
+
+	// if mesh has bounding box, I set it anyway from its bb
 	if constexpr(vcl::HasBoundingBox<MeshType>) {
 		bbmin = m.boundingBox().min;
 		bbmax = m.boundingBox().max;
 	}
-	else {
+	if (bbToInitialize) { // if I need to compute bb, I initialize to invalid numbers
 		bbmin = Point3d(
 			std::numeric_limits<double>::max(),
 			std::numeric_limits<double>::max(),
@@ -165,7 +175,7 @@ void MeshRenderBuffers<MeshType>::fillVertices(const MeshType &m)
 		verts[i + 1] = v.coord().y();
 		verts[i + 2] = v.coord().z();
 
-		if constexpr(bbToInitialize) {
+		if (bbToInitialize) {
 			bbmin = vcl::min(bbmin, v.coord());
 			bbmax = vcl::max(bbmax, v.coord());
 		}
