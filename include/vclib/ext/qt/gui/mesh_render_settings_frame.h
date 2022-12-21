@@ -20,46 +20,44 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QGLVIEWER_VIEWER_H
-#define VCLIB_EXT_QGLVIEWER_VIEWER_H
+#ifndef VCLIB_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
+#define VCLIB_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
 
-#include <QGLViewer/qglviewer.h>
+#include <QFrame>
 
-#include <vclib/render/drawable_object.h>
-#include <vclib/space/box.h>
+#include <vclib/render/mesh_render_settings.h>
 
 namespace vcl {
 
-class Viewer : public QGLViewer
+namespace Ui {
+class MeshRenderSettingsFrame;
+}
+
+class MeshRenderSettingsFrame : public QFrame
 {
+	Q_OBJECT
+
 public:
-	virtual ~Viewer();
+	explicit MeshRenderSettingsFrame(QWidget *parent = nullptr);
+	~MeshRenderSettingsFrame();
 
-	// draw list management
-	uint pushDrawableObject(const DrawableObject& obj);
-	uint pushDrawableObject(const DrawableObject* obj);
+	const MeshRenderSettings& meshRenderSettings() const;
+	void setMeshRenderSettings(const MeshRenderSettings& settings);
 
-	DrawableObject& object(uint i);
-	const DrawableObject& object(uint i) const;
+private slots:
+	void on_pointColorDialogPushButton_clicked();
 
-	// viewer management
-	void fitScene();
+	void on_surfaceColorDialogPushButton_clicked();
 
-protected:
-	virtual void    draw();
-	virtual void    init();
-	virtual QString helpString() const;
+	void on_wireframeColorPushButton_clicked();
 
 private:
-	// the viewer owns the DrawableObjects contained in this list
-	std::vector<DrawableObject*> drawList;
+	Ui::MeshRenderSettingsFrame *ui;
+	MeshRenderSettings mrs;
 
-	uint firstVisibleObject() const;
-	vcl::Box3d fullBB() const;
+	void updateGuiFromSettings();
 };
 
 } // namespace vcl
 
-#include "viewer.cpp"
-
-#endif // VCLIB_EXT_QGLVIEWER_VIEWER_H
+#endif // VCLIB_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H

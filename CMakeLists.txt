@@ -380,6 +380,15 @@ set(SOURCES
 	include/vclib/space/point/point3.cpp
 	include/vclib/space/point/point4.cpp)
 
+set(HEADERS_LIB
+	)
+
+set(SOURCES_LIB
+	)
+
+set (FORMS_LIB
+	)
+
 # headers and sources to include only if using OpenGL
 if (TARGET vclib-external-opengl)
 	list(APPEND HEADERS
@@ -391,6 +400,18 @@ if (TARGET vclib-external-opengl)
 		include/vclib/ext/opengl2/draw_objects2.cpp
 		include/vclib/ext/opengl2/draw_objects3.cpp
 		include/vclib/ext/opengl2/drawable_mesh.cpp)
+endif()
+
+# headers and sources to include only if using qt
+if (TARGET vclib-external-qt)
+	list(APPEND HEADERS_LIB
+		include/vclib/ext/qt/gui/mesh_render_settings_frame.h)
+
+	list(APPEND SOURCES_LIB
+		include/vclib/ext/qt/gui/mesh_render_settings_frame.cpp)
+
+	list(APPEND FORMS_LIB
+		include/vclib/ext/qt/gui/mesh_render_settings_frame.ui)
 endif()
 
 # headers and sources to include only if using QGLViewer
@@ -413,8 +434,17 @@ else()
 	message(STATUS "VCLib: not using parallel algorithms")
 endif()
 
+if (TARGET vclib-external-qt)
+	add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
+	target_include_directories(vclib-qt PRIVATE ${VCLIB_INCLUDE_DIR})
+	target_link_libraries(vclib-qt PRIVATE ${VCLIB_EXTERNAL_LIBRARIES})
+
+	target_link_libraries(vclib INTERFACE vclib-qt)
+endif()
+
 if (VCLIB_IDE)
-	add_custom_target(vclib_ide SOURCES ${HEADERS} ${SOURCES})
+	add_custom_target(vclib_ide SOURCES
+		${HEADERS} ${HEADERS_LIB} ${SOURCES} ${SOURCES_LIB} ${FORMS_LIB})
 endif()
 
 if (VCLIB_BUILD_TESTS)

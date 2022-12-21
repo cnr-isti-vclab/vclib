@@ -126,26 +126,36 @@ inline QString Viewer::helpString() const
 	return text;
 }
 
-Box3d Viewer::fullBB() const
+inline uint Viewer::firstVisibleObject() const
+{
+	uint i = 0;
+
+	// if the current object i is null or is not visible, check the next one
+	while (i < drawList.size() && (drawList[i] == nullptr || !drawList[i]->isVisible()))
+		i++;
+
+	return i;
+}
+
+inline Box3d Viewer::fullBB() const
 {
 	Box3d bb(Point3d(-1,-1,-1), Point3d(1,1,1));
 	if (drawList.size() > 0) {
-		uint i = 0;
+		uint i = firstVisibleObject();
 
-		while (i < drawList.size() && !drawList[i]->isVisible())
-			i++;
-
-		if (i < drawList.size()) { //i will point to the first elagible object
+		if (i < drawList.size()) {
 			Point3d sc = drawList[i]->sceneCenter();
 			bb.min = sc - drawList[i]->sceneRadius();
 			bb.max = sc + drawList[i]->sceneRadius();
 
 			for (i = i+1; i < drawList.size(); i++) { //rest of the list
-				Point3d sc = drawList[i]->sceneCenter();
-				Point3d tmp = sc - drawList[i]->sceneRadius();
-				bb.min = vcl::min(bb.min, tmp);
-				tmp = sc + drawList[i]->sceneRadius();
-				bb.max = vcl::max(bb.max, tmp);
+				if (drawList[i]) {
+					Point3d sc = drawList[i]->sceneCenter();
+					Point3d tmp = sc - drawList[i]->sceneRadius();
+					bb.min = vcl::min(bb.min, tmp);
+					tmp = sc + drawList[i]->sceneRadius();
+					bb.max = vcl::max(bb.max, tmp);
+				}
 			}
 		}
 	}
