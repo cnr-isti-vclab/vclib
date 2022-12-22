@@ -20,8 +20,10 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QGLVIEWER_VIEWER_H
-#define VCLIB_EXT_QGLVIEWER_VIEWER_H
+#ifndef VCLIB_EXT_QGLVIEWER_GL_AREA_H
+#define VCLIB_EXT_QGLVIEWER_GL_AREA_H
+
+#include <memory>
 
 #include <QGLViewer/qglviewer.h>
 
@@ -30,22 +32,24 @@
 
 namespace vcl {
 
-class Viewer : public QGLViewer
+class GLArea : public QGLViewer
 {
 public:
-	Viewer(DrawableObjectVector& vector);
+	GLArea(QWidget* parent = nullptr);
+	GLArea(std::shared_ptr<DrawableObjectVector> v, QWidget* parent = nullptr);
 
-	// viewer management
+	void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
+	std::shared_ptr<DrawableObjectVector> drawableObjectVector();
+	std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const;
+
 	void fitScene();
 
 protected:
 	virtual void    draw();
-	virtual void    init();
-	virtual QString helpString() const;
 
 private:
 	// the viewer owns the DrawableObjects contained in this list
-	DrawableObjectVector& drawList;
+	std::shared_ptr<DrawableObjectVector> drawList;
 
 	uint firstVisibleObject() const;
 	vcl::Box3d fullBB() const;
@@ -53,6 +57,6 @@ private:
 
 } // namespace vcl
 
-#include "viewer.cpp"
+#include "gl_area.cpp"
 
-#endif // VCLIB_EXT_QGLVIEWER_VIEWER_H
+#endif // VCLIB_EXT_QGLVIEWER_GL_AREA_H

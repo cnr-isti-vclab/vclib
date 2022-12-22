@@ -20,47 +20,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
-#define VCLIB_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
-
-#include <QFrame>
-
-#include <vclib/render/mesh_render_settings.h>
+#include "viewer_main_window.h"
+#include "ui_viewer_main_window.h"
 
 namespace vcl {
 
-namespace Ui {
-class MeshRenderSettingsFrame;
+ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
+		QMainWindow(parent),
+		ui(new Ui::ViewerMainWindow)
+{
+	ui->setupUi(this);
+
+	drawVector = std::make_shared<vcl::DrawableObjectVector>();
+	ui->glArea->setDrawableObjectVector(drawVector);
 }
 
-class MeshRenderSettingsFrame : public QFrame
+ViewerMainWindow::~ViewerMainWindow()
 {
-	Q_OBJECT
+	delete ui;
+}
 
-public:
-	explicit MeshRenderSettingsFrame(QWidget *parent = nullptr);
-	~MeshRenderSettingsFrame();
-
-	const MeshRenderSettings& meshRenderSettings() const;
-	void setMeshRenderSettings(const MeshRenderSettings& settings);
-
-signals:
-	void settingsUpdated();
-
-private slots:
-	void on_pointColorDialogPushButton_clicked();
-
-	void on_surfaceColorDialogPushButton_clicked();
-
-	void on_wireframeColorDialogPushButton_clicked();
-
-private:
-	Ui::MeshRenderSettingsFrame *ui;
-	MeshRenderSettings mrs;
-
-	void updateGuiFromSettings();
-};
+void ViewerMainWindow::setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v)
+{
+	drawVector = v;
+	ui->glArea->setDrawableObjectVector(v);
+	ui->glArea->fitScene();
+}
 
 } // namespace vcl
-
-#endif // VCLIB_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H

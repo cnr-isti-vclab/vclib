@@ -414,15 +414,26 @@ if (TARGET vclib-external-qt)
 
 	list(APPEND FORMS_LIB
 		include/vclib/ext/qt/gui/mesh_render_settings_frame.ui)
+
+	if (TARGET vclib-external-qglviewer)
+		list(APPEND HEADERS_LIB
+			include/vclib/ext/qglviewer/viewer_main_window.h)
+
+		list(APPEND SOURCES_LIB
+			include/vclib/ext/qglviewer/viewer_main_window.cpp)
+
+		list(APPEND FORMS_LIB
+			include/vclib/ext/qglviewer/viewer_main_window.ui)
+	endif()
 endif()
 
 # headers and sources to include only if using QGLViewer
 if (TARGET vclib-external-qglviewer)
 	list(APPEND HEADERS
-		include/vclib/ext/qglviewer/viewer.h)
+		include/vclib/ext/qglviewer/gl_area.h)
 
 	list(APPEND SOURCES
-		include/vclib/ext/qglviewer/viewer.cpp)
+		include/vclib/ext/qglviewer/gl_area.cpp)
 endif()
 
 add_library(vclib INTERFACE)

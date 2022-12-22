@@ -63,6 +63,7 @@ void MeshRenderSettingsFrame::on_pointColorDialogPushButton_clicked()
 		ui->pointColorDialogPushButton->update();
 
 		//mrs.setPointCloudUserDefinedColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+		emit settingsUpdated();
 	}
 }
 
@@ -80,10 +81,11 @@ void MeshRenderSettingsFrame::on_surfaceColorDialogPushButton_clicked()
 		ui->surfaceColorDialogPushButton->update();
 
 		//mrs.setSurfaceUserDefinedColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+		emit settingsUpdated();
 	}
 }
 
-void MeshRenderSettingsFrame::on_wireframeColorPushButton_clicked()
+void MeshRenderSettingsFrame::on_wireframeColorDialogPushButton_clicked()
 {
 	QColor color = QColorDialog::getColor();
 
@@ -96,6 +98,7 @@ void MeshRenderSettingsFrame::on_wireframeColorPushButton_clicked()
 		ui->wireframeColorDialogPushButton->update();
 
 		mrs.setWireframeColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+		emit settingsUpdated();
 	}
 }
 
