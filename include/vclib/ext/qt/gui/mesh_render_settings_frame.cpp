@@ -209,6 +209,7 @@ void MeshRenderSettingsFrame::updateGuiFromSettings()
 void MeshRenderSettingsFrame::updatePointsTabFromSettings()
 {
 	if (mrs.canPointCloudBeVisible()) {
+		ui->tabWidget->setCurrentIndex(0);
 		ui->pointsTab->setEnabled(true);
 		ui->pointVisibilityCheckBox->setEnabled(true);
 		ui->pointVisibilityCheckBox->setChecked(mrs.isPointCloudVisible());
@@ -257,6 +258,7 @@ void MeshRenderSettingsFrame::updatePointsColorComboBoxFromSettings()
 void MeshRenderSettingsFrame::updateSurfaceTabFromSettings()
 {
 	if (mrs.canSurfaceBeVisible()) {
+		ui->tabWidget->setCurrentIndex(1);
 		ui->surfaceTab->setEnabled(true);
 		ui->surfaceVisibilityCheckBox->setEnabled(true);
 		ui->surfaceVisibilityCheckBox->setChecked(mrs.isSurfaceVisible());

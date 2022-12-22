@@ -28,7 +28,7 @@
     <item row="0" column="1">
      <widget class="QFrame" name="rightArea">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -40,31 +40,35 @@
        <enum>QFrame::Plain</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
-        <widget class="vcl::MeshRenderSettingsFrame" name="renderSettingsFrame">
+        <widget class="vcl::DrawableObjectVectorFrame" name="drawVectorFrame">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+          <enum>QFrame::Plain</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="vcl::MeshRenderSettingsFrame" name="renderSettingsFrame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
          </property>
         </widget>
        </item>
@@ -96,6 +100,12 @@
    <class>vcl::MeshRenderSettingsFrame</class>
    <extends>QFrame</extends>
    <header>vclib/ext/qt/gui/mesh_render_settings_frame.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>vcl::DrawableObjectVectorFrame</class>
+   <extends>QFrame</extends>
+   <header>vclib/ext/qt/gui/drawable_object_vector_frame.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

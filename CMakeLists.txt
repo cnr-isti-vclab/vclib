@@ -409,12 +409,15 @@ endif()
 # headers and sources to include only if using qt
 if (TARGET vclib-external-qt)
 	list(APPEND HEADERS_LIB
+		include/vclib/ext/qt/gui/drawable_object_vector_frame.h
 		include/vclib/ext/qt/gui/mesh_render_settings_frame.h)
 
 	list(APPEND SOURCES_LIB
+		include/vclib/ext/qt/gui/drawable_object_vector_frame.cpp
 		include/vclib/ext/qt/gui/mesh_render_settings_frame.cpp)
 
 	list(APPEND FORMS_LIB
+		include/vclib/ext/qt/gui/drawable_object_vector_frame.ui
 		include/vclib/ext/qt/gui/mesh_render_settings_frame.ui)
 
 	if (TARGET vclib-external-qglviewer)
