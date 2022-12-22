@@ -117,54 +117,73 @@ void DrawableMesh<MeshType>::draw(
 					pTriangleColors);
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
-			if (mrs.isSurfaceShadingFlat()) {
-				glEnable(GL_LIGHTING);
-				glShadeModel(GL_FLAT);
-				glDepthRange(0.01, 1.0);
-				renderPass(
-					nv,
-					nt,
-					pCoords,
-					pTriangles,
-					pVertexNormals,
-					pVertexColors,
-					pTriangleNormals,
-					pTriangleColors);
+			if (mrs.isSurfaceVisible()) {
+				if (mrs.isSurfaceShadingFlat()) {
+					glEnable(GL_LIGHTING);
+					glShadeModel(GL_FLAT);
+					glDepthRange(0.01, 1.0);
+					renderPass(
+						nv,
+						nt,
+						pCoords,
+						pTriangles,
+						pVertexNormals,
+						pVertexColors,
+						pTriangleNormals,
+						pTriangleColors);
 
-				glDisable(GL_LIGHTING);
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				glDepthRange(0.0, 1.0);
-				glDepthFunc(GL_LEQUAL);
-				renderPass(
-					nv,
-					nt,
-					pCoords,
-					pTriangles,
-					pVertexNormals,
-					pVertexColors,
-					pTriangleNormals,
-					pTriangleColors);
-				glDepthFunc(GL_LESS);
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+					glDisable(GL_LIGHTING);
+					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+					glDepthRange(0.0, 1.0);
+					glDepthFunc(GL_LEQUAL);
+					renderPass(
+						nv,
+						nt,
+						pCoords,
+						pTriangles,
+						pVertexNormals,
+						pVertexColors,
+						pTriangleNormals,
+						pTriangleColors);
+					glDepthFunc(GL_LESS);
+					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				}
+				else if (mrs.isSurfaceShadingSmooth()) {
+					glEnable(GL_LIGHTING);
+					glShadeModel(GL_SMOOTH);
+					glDepthRange(0.01, 1.0);
+					renderPass(
+						nv,
+						nt,
+						pCoords,
+						pTriangles,
+						pVertexNormals,
+						pVertexColors,
+						pTriangleNormals,
+						pTriangleColors);
+
+					glDisable(GL_LIGHTING);
+					glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+					glDepthRange(0.0, 1.0);
+					glDepthFunc(GL_LEQUAL);
+					renderPass(
+						nv,
+						nt,
+						pCoords,
+						pTriangles,
+						pVertexNormals,
+						pVertexColors,
+						pTriangleNormals,
+						pTriangleColors);
+					glDepthFunc(GL_LESS);
+					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				}
 			}
-			else if (mrs.isSurfaceShadingSmooth()) {
-				glEnable(GL_LIGHTING);
-				glShadeModel(GL_SMOOTH);
-				glDepthRange(0.01, 1.0);
-				renderPass(
-					nv,
-					nt,
-					pCoords,
-					pTriangles,
-					pVertexNormals,
-					pVertexColors,
-					pTriangleNormals,
-					pTriangleColors);
-
+			else {
 				glDisable(GL_LIGHTING);
+				glShadeModel(GL_FLAT);
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 				glDepthRange(0.0, 1.0);
-				glDepthFunc(GL_LEQUAL);
 				renderPass(
 					nv,
 					nt,
@@ -174,7 +193,6 @@ void DrawableMesh<MeshType>::draw(
 					pVertexColors,
 					pTriangleNormals,
 					pTriangleColors);
-				glDepthFunc(GL_LESS);
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 		}
@@ -191,31 +209,33 @@ void DrawableMesh<MeshType>::draw(
 					pTriangleNormals,
 					pTriangleColors);
 			}
-			if (mrs.isSurfaceShadingFlat()) {
-				glEnable(GL_LIGHTING);
-				glShadeModel(GL_FLAT);
-				renderPass(
-					nv,
-					nt,
-					pCoords,
-					pTriangles,
-					pVertexNormals,
-					pVertexColors,
-					pTriangleNormals,
-					pTriangleColors);
-			}
-			else if (mrs.isSurfaceShadingSmooth()) {
-				glEnable(GL_LIGHTING);
-				glShadeModel(GL_SMOOTH);
-				renderPass(
-					nv,
-					nt,
-					pCoords,
-					pTriangles,
-					pVertexNormals,
-					pVertexColors,
-					pTriangleNormals,
-					pTriangleColors);
+			if (mrs.isSurfaceVisible()) {
+				if (mrs.isSurfaceShadingFlat()) {
+					glEnable(GL_LIGHTING);
+					glShadeModel(GL_FLAT);
+					renderPass(
+						nv,
+						nt,
+						pCoords,
+						pTriangles,
+						pVertexNormals,
+						pVertexColors,
+						pTriangleNormals,
+						pTriangleColors);
+				}
+				else if (mrs.isSurfaceShadingSmooth()) {
+					glEnable(GL_LIGHTING);
+					glShadeModel(GL_SMOOTH);
+					renderPass(
+						nv,
+						nt,
+						pCoords,
+						pTriangles,
+						pVertexNormals,
+						pVertexColors,
+						pTriangleNormals,
+						pTriangleColors);
+				}
 			}
 		}
 		if (mrs.isBboxEnabled()) {
