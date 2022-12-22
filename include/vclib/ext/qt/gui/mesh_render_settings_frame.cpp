@@ -79,16 +79,17 @@ void MeshRenderSettingsFrame::on_pointColorDialogPushButton_clicked()
 	QColor color = QColorDialog::getColor();
 
 	if (color.isValid()) {
-		QString s("background: #"
-				  + QString(color.red() < 16? "0" : "") + QString::number(color.red(),16)
-				  + QString(color.green() < 16? "0" : "") + QString::number(color.green(),16)
-				  + QString(color.blue() < 16? "0" : "") + QString::number(color.blue(),16) + ";");
-		ui->pointColorDialogPushButton->setStyleSheet(s);
-		ui->pointColorDialogPushButton->update();
+		setButtonBackGround(ui->pointColorDialogPushButton, color);
 
 		mrs.setPointCloudUserColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 		emit settingsUpdated();
 	}
+}
+
+void MeshRenderSettingsFrame::on_pointSizeSlider_valueChanged(int value)
+{
+	mrs.setPointWidth(value);
+	emit settingsUpdated();
 }
 
 void MeshRenderSettingsFrame::on_surfaceVisibilityCheckBox_stateChanged(int arg1)
@@ -145,12 +146,7 @@ void MeshRenderSettingsFrame::on_surfaceColorDialogPushButton_clicked()
 	QColor color = QColorDialog::getColor();
 
 	if (color.isValid()) {
-		QString s("background: #"
-				  + QString(color.red() < 16? "0" : "") + QString::number(color.red(),16)
-				  + QString(color.green() < 16? "0" : "") + QString::number(color.green(),16)
-				  + QString(color.blue() < 16? "0" : "") + QString::number(color.blue(),16) + ";");
-		ui->surfaceColorDialogPushButton->setStyleSheet(s);
-		ui->surfaceColorDialogPushButton->update();
+		setButtonBackGround(ui->surfaceColorDialogPushButton, color);
 
 		mrs.setSurfaceUserColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 		emit settingsUpdated();
@@ -180,18 +176,18 @@ void MeshRenderSettingsFrame::on_wireframeColorComboBox_currentIndexChanged(int 
 void MeshRenderSettingsFrame::on_wireframeColorDialogPushButton_clicked()
 {
 	QColor color = QColorDialog::getColor();
-
 	if (color.isValid()) {
-		QString s("background: #"
-				  + QString(color.red() < 16? "0" : "") + QString::number(color.red(),16)
-				  + QString(color.green() < 16? "0" : "") + QString::number(color.green(),16)
-				  + QString(color.blue() < 16? "0" : "") + QString::number(color.blue(),16) + ";");
-		ui->wireframeColorDialogPushButton->setStyleSheet(s);
-		ui->wireframeColorDialogPushButton->update();
+		setButtonBackGround(ui->wireframeColorDialogPushButton, color);
 
 		mrs.setWireframeUserColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 		emit settingsUpdated();
 	}
+}
+
+void MeshRenderSettingsFrame::on_wireframeSizelSlider_valueChanged(int value)
+{
+	mrs.setWireframeWidth(value);
+	emit settingsUpdated();
 }
 
 void MeshRenderSettingsFrame::updateGuiFromSettings()
@@ -218,10 +214,11 @@ void MeshRenderSettingsFrame::updatePointsTabFromSettings()
 		ui->pointVisibilityCheckBox->setChecked(mrs.isPointCloudVisible());
 
 		// todo
-		ui->pointShadingQuadRadioButton->setChecked(true);
+		ui->pointShadingPixelRadioButton->setChecked(true);
 		ui->pointShadingCircleRadioButton->setEnabled(false);
 
 		updatePointsColorComboBoxFromSettings();
+		ui->pointSizeSlider->setValue(mrs.pointWidth());
 	}
 	else {
 		ui->pointsTab->setEnabled(false);
@@ -252,6 +249,9 @@ void MeshRenderSettingsFrame::updatePointsColorComboBoxFromSettings()
 	if (mrs.isPointCloudColorPerMesh()) ui->pointColorComboBox->setCurrentIndex(P_MESH);
 	if (mrs.isPointCloudColorUserDefined()) ui->pointColorComboBox->setCurrentIndex(P_USER);
 	ui->pointUserColorFrame->setVisible(mrs.isPointCloudColorUserDefined());
+	vcl::Color vc = mrs.pointCloudUserColor();
+	QColor c(vc.red(), vc.green(), vc.blue(), vc.alpha());
+	setButtonBackGround(ui->pointColorDialogPushButton, c);
 }
 
 void MeshRenderSettingsFrame::updateSurfaceTabFromSettings()
@@ -328,6 +328,9 @@ void MeshRenderSettingsFrame::updateSurfaceColorComboBoxFromSettings()
 	if (mrs.isSurfaceColorPerWedgeTexcoords()) ui->surfaceColorComboBox->setCurrentIndex(SC_WEDG_TEX);
 	if (mrs.isSurfaceColorUserDefined()) ui->surfaceColorComboBox->setCurrentIndex(SC_USER);
 	ui->surfaceUserColorFrame->setVisible(mrs.isSurfaceColorUserDefined());
+	vcl::Color vc = mrs.surfaceUserColor();
+	QColor c(vc.red(), vc.green(), vc.blue(), vc.alpha());
+	setButtonBackGround(ui->surfaceColorDialogPushButton, c);
 }
 
 void MeshRenderSettingsFrame::updateWireframeTabFromSettings()
@@ -337,6 +340,7 @@ void MeshRenderSettingsFrame::updateWireframeTabFromSettings()
 		ui->wireframeVisibilityCheckBox->setEnabled(true);
 		ui->wireframeVisibilityCheckBox->setChecked(mrs.isWireframeVisible());
 		updateWireframeComboBoxFromSettings();
+		ui->wireframeSizelSlider->setValue(mrs.wireframeWidth());
 	}
 	else {
 		ui->wireframeTab->setEnabled(false);
@@ -358,6 +362,23 @@ void MeshRenderSettingsFrame::updateWireframeComboBoxFromSettings()
 	if (mrs.isWireframeColorPerMesh()) ui->wireframeColorComboBox->setCurrentIndex(W_MESH);
 	if (mrs.isWireframeColorUserDefined()) ui->wireframeColorComboBox->setCurrentIndex(W_USER);
 	ui->wireframeUserColorFrame->setVisible(mrs.isWireframeColorUserDefined());
+	vcl::Color vc = mrs.wireframeUserColor();
+	QColor c(vc.red(), vc.green(), vc.blue(), vc.alpha());
+	setButtonBackGround(ui->wireframeColorDialogPushButton, c);
+}
+
+void MeshRenderSettingsFrame::setButtonBackGround(QPushButton* b, const QColor& c)
+{
+	QPalette px;
+	px.setColor(QPalette::Button, c);
+	b->setPalette(px);
+	b->update();
+}
+
+QColor MeshRenderSettingsFrame::getButtonBackGround(QPushButton* b)
+{
+	QPalette px = b->palette();
+	return px.color(QPalette::Button);
 }
 
 } // namespace vcl

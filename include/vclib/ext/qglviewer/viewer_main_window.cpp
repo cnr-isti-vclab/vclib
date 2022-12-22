@@ -37,7 +37,7 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
 	ui->glArea->setDrawableObjectVector(drawVector);
 
 	connect(ui->renderSettingsFrame, SIGNAL(settingsUpdated()), this, SLOT(renderSettingsUpdated()));
-	ui->renderSettingsFrame->setVisible(false);
+	ui->rightArea->setVisible(false);
 }
 
 ViewerMainWindow::~ViewerMainWindow()
@@ -52,14 +52,14 @@ void ViewerMainWindow::setDrawableObjectVector(std::shared_ptr<vcl::DrawableObje
 		try {
 			GenericDrawableMesh& m = dynamic_cast<GenericDrawableMesh&>(drawVector->at(0));
 			ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
-			ui->renderSettingsFrame->setVisible(true);
+			ui->rightArea->setVisible(true);
 		}
 		catch(std::bad_cast exp) {
-			ui->renderSettingsFrame->setVisible(false);
+			ui->rightArea->setVisible(false);
 		}
 	}
 	else {
-		ui->renderSettingsFrame->setVisible(false);
+		ui->rightArea->setVisible(false);
 	}
 	ui->glArea->setDrawableObjectVector(v);
 	ui->glArea->fitScene();

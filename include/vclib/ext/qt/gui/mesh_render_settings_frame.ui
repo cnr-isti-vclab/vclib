@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="pointsTab">
       <attribute name="title">
@@ -68,7 +68,7 @@
           <item>
            <widget class="QPushButton" name="pointColorDialogPushButton">
             <property name="styleSheet">
-             <string notr="true">background: #FFFF00</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string/>
@@ -95,7 +95,7 @@
         </widget>
        </item>
        <item row="2" column="2">
-        <widget class="QRadioButton" name="pointShadingQuadRadioButton">
+        <widget class="QRadioButton" name="pointShadingPixelRadioButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -103,7 +103,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Quad</string>
+          <string>Pixel</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -177,6 +177,12 @@
        </item>
        <item row="5" column="1" colspan="2">
         <widget class="QSlider" name="pointSizeSlider">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -322,7 +328,7 @@
           <item>
            <widget class="QPushButton" name="surfaceColorDialogPushButton">
             <property name="styleSheet">
-             <string notr="true">background: #FFFF00</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string/>
@@ -448,7 +454,7 @@
           <item>
            <widget class="QPushButton" name="wireframeColorDialogPushButton">
             <property name="styleSheet">
-             <string notr="true">background: #000000</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string/>
@@ -460,6 +466,12 @@
        </item>
        <item row="2" column="1" colspan="2">
         <widget class="QSlider" name="wireframeSizelSlider">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>

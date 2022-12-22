@@ -152,7 +152,7 @@ private:
 		DRAW_MESH = 1 << 0, // mesh visibility
 		// points
 		DRAW_POINTS              = 1 << 1, // point visibility
-		DRAW_POINTS_SQUARE       = 1 << 2, // draw points as squares
+		DRAW_POINTS_PIXEL        = 1 << 2, // draw points as pixels
 		DRAW_POINTS_CIRCLE       = 1 << 3, // draw points as circles
 		DRAW_POINTS_COLOR_VERTEX = 1 << 4, // use vertex colors for points
 		DRAW_POINTS_COLOR_MESH   = 1 << 5, // use mesh color for points

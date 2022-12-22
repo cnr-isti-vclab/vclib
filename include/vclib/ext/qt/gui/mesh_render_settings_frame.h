@@ -27,6 +27,8 @@
 
 #include <vclib/render/mesh_render_settings.h>
 
+class QPushButton;
+
 namespace vcl {
 
 namespace Ui {
@@ -51,6 +53,7 @@ private slots:
 	void on_pointVisibilityCheckBox_stateChanged(int arg1);
 	void on_pointColorComboBox_currentIndexChanged(int index);
 	void on_pointColorDialogPushButton_clicked();
+	void on_pointSizeSlider_valueChanged(int value);
 
 	void on_surfaceVisibilityCheckBox_stateChanged(int arg1);
 	void on_surfaceShadingSmoothRadioButton_toggled(bool checked);
@@ -61,6 +64,7 @@ private slots:
 	void on_wireframeVisibilityCheckBox_stateChanged(int arg1);
 	void on_wireframeColorComboBox_currentIndexChanged(int index);
 	void on_wireframeColorDialogPushButton_clicked();
+	void on_wireframeSizelSlider_valueChanged(int value);
 
 private:
 	enum POINT_COLOR {P_VERT = 0, P_MESH, P_USER};
@@ -78,6 +82,9 @@ private:
 	void updateSurfaceColorComboBoxFromSettings();
 	void updateWireframeTabFromSettings();
 	void updateWireframeComboBoxFromSettings();
+
+	void setButtonBackGround(QPushButton* b, const QColor &c);
+	QColor getButtonBackGround(QPushButton* b);
 };
 
 } // namespace vcl

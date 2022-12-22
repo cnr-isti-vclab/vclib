@@ -717,7 +717,7 @@ void MeshRenderSettings::setRenderCapabilityFrom(const MeshType& m)
 
 		// -- Points --
 		drawModeCapability |= DRAW_POINTS;
-		drawModeCapability |= DRAW_POINTS_SQUARE;
+		drawModeCapability |= DRAW_POINTS_PIXEL;
 		drawModeCapability |= DRAW_POINTS_CIRCLE;
 		drawModeCapability |= DRAW_POINTS_COLOR_USER;
 
