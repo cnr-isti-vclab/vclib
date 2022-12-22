@@ -42,7 +42,6 @@ inline const MeshRenderSettings& GenericDrawableMesh::renderSettings() const
 inline void GenericDrawableMesh::setRenderSettings(const MeshRenderSettings& rs)
 {
 	mrs = rs;
-	updateSettingsBuffers();
 }
 
 } // namespace vcl

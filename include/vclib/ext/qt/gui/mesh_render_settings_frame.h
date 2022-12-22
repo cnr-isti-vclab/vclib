@@ -59,11 +59,13 @@ private slots:
 	void on_surfaceColorDialogPushButton_clicked();
 
 	void on_wireframeVisibilityCheckBox_stateChanged(int arg1);
+	void on_wireframeColorComboBox_currentIndexChanged(int index);
 	void on_wireframeColorDialogPushButton_clicked();
 
 private:
 	enum POINT_COLOR {P_VERT = 0, P_MESH, P_USER};
 	enum SURF_COLOR {SC_VERT = 0, SC_FACE, SC_MESH, SC_VERT_TEX, SC_WEDG_TEX, SC_USER};
+	enum WIRE_COLOR {W_MESH = 0, W_USER};
 
 	Ui::MeshRenderSettingsFrame *ui;
 	MeshRenderSettings mrs;
@@ -72,9 +74,10 @@ private:
 	void updatePointsTabFromSettings();
 	void updatePointsColorComboBoxFromSettings();
 	void updateSurfaceTabFromSettings();
-	void updateWireframeTabFromSettings();
 	void uptateSurfaceShadingRadioButtonsFromSettings();
 	void updateSurfaceColorComboBoxFromSettings();
+	void updateWireframeTabFromSettings();
+	void updateWireframeComboBoxFromSettings();
 };
 
 } // namespace vcl

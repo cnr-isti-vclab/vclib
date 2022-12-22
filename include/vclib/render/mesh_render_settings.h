@@ -82,6 +82,8 @@ public:
 	bool isPointCloudColorPerMesh() const;
 	bool isPointCloudColorUserDefined() const;
 	int pointWidth() const;
+	vcl::Color pointCloudUserColor() const;
+	const float* pointCloudUserColorData() const;
 
 	bool isSurfaceVisible() const;
 	bool isSurfaceShadingFlat() const;
@@ -93,11 +95,15 @@ public:
 	bool isSurfaceColorUserDefined() const;
 	bool isSurfaceColorPerVertexTexcoords() const;
 	bool isSurfaceColorPerWedgeTexcoords() const;
+	vcl::Color surfaceUserColor() const;
+	const float* surfaceUserColorData() const;
 
 	bool isWireframeVisible() const;
+	bool isWireframeColorPerMesh() const;
+	bool isWireframeColorUserDefined() const;
 	int wireframeWidth() const;
-	vcl::Color wireframeColor() const;
-	const float* wireframeColorData() const;
+	vcl::Color wireframeUserColor() const;
+	const float* wireframeUserColorData() const;
 
 	bool isBboxEnabled() const;
 
@@ -110,8 +116,8 @@ public:
 	bool setPointCloudColorUserDefined();
 
 	bool setPointWidth(int width);
-	bool setPointCloudUserDefinedColor(float r, float g, float b, float a = 1);
-	bool setPointCloudUserDefinedColor(const vcl::Color& c);
+	bool setPointCloudUserColor(float r, float g, float b, float a = 1);
+	bool setPointCloudUserColor(const vcl::Color& c);
 
 	bool setSurfaceVisibility(bool b);
 	bool setSurfaceShadingFlat();
@@ -124,18 +130,22 @@ public:
 	bool setSurfaceColorPerVertexTexcoords();
 	bool setSurfaceColorPerWedgeTexcoords();
 
-	bool setSurfaceUserDefinedColor(float r, float g, float b, float a = 1);
-	bool setSurfaceUserDefinedColor(const vcl::Color& c);
+	bool setSurfaceUserColor(float r, float g, float b, float a = 1);
+	bool setSurfaceUserColor(const vcl::Color& c);
 
 	bool setWireframeVisibility(bool b);
 	bool setWireframeWidth(int width);
-	bool setWireframeColor(float r, float g, float b, float a = 1);
-	bool setWireframeColor(const vcl::Color& c);
+	bool setWireframeColorPerMesh();
+	bool setWireframeColorUserDefined();
+	bool setWireframeUserColor(float r, float g, float b, float a = 1);
+	bool setWireframeUserColor(const vcl::Color& c);
 
 	bool setBoundingBoxVisibility(bool b);
 
 	template <MeshConcept MeshType>
 	void setRenderCapabilityFrom(const MeshType& m);
+
+	void setDefaultSettingsFromCapability();
 
 private:
 	enum {
@@ -167,13 +177,13 @@ private:
 
 	// draw integers controlled using enum
 	int   drawModeCapability = 0;
-	int   drawMode           = DRAW_MESH | DRAW_SURF | DRAW_SURF_SMOOTH | DRAW_SURF_COLOR_VERTEX;
+	int   drawMode           = 0;
 
 	int   pWidth             = 3;
 	float pUserColor[4]      = {1, 1, 0, 1};
 	float sUserColor[4]      = {0.8, 0.8, 0.8, 1};
 	int   wWidth             = 1;
-	float wColor[4]          = {0, 0, 0, 1};
+	float wUserColor[4]      = {0, 0, 0, 1};
 
 };
 

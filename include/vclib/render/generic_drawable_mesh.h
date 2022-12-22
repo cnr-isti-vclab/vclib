@@ -46,8 +46,6 @@ public:
 	DrawableObject* clone() const = 0;
 
 protected:
-	// method that updates **only** the buffers tied with the MeshRenderSettings
-	virtual void updateSettingsBuffers() = 0;
 	MeshRenderSettings mrs;
 };
 

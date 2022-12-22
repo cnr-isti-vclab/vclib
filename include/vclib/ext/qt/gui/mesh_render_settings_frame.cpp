@@ -86,7 +86,7 @@ void MeshRenderSettingsFrame::on_pointColorDialogPushButton_clicked()
 		ui->pointColorDialogPushButton->setStyleSheet(s);
 		ui->pointColorDialogPushButton->update();
 
-		mrs.setPointCloudUserDefinedColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+		mrs.setPointCloudUserColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 		emit settingsUpdated();
 	}
 }
@@ -152,7 +152,7 @@ void MeshRenderSettingsFrame::on_surfaceColorDialogPushButton_clicked()
 		ui->surfaceColorDialogPushButton->setStyleSheet(s);
 		ui->surfaceColorDialogPushButton->update();
 
-		//mrs.setSurfaceUserDefinedColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+		mrs.setSurfaceUserColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 		emit settingsUpdated();
 	}
 }
@@ -160,6 +160,20 @@ void MeshRenderSettingsFrame::on_surfaceColorDialogPushButton_clicked()
 void MeshRenderSettingsFrame::on_wireframeVisibilityCheckBox_stateChanged(int arg1)
 {
 	mrs.setWireframeVisibility(arg1 == Qt::Checked);
+	emit settingsUpdated();
+}
+
+void MeshRenderSettingsFrame::on_wireframeColorComboBox_currentIndexChanged(int index)
+{
+	switch(index) {
+	case W_MESH:
+		mrs.setWireframeColorPerMesh();
+		break;
+	case W_USER:
+		mrs.setWireframeColorUserDefined();
+		break;
+	}
+	ui->wireframeUserColorFrame->setVisible(index == W_USER);
 	emit settingsUpdated();
 }
 
@@ -175,7 +189,7 @@ void MeshRenderSettingsFrame::on_wireframeColorDialogPushButton_clicked()
 		ui->wireframeColorDialogPushButton->setStyleSheet(s);
 		ui->wireframeColorDialogPushButton->update();
 
-		mrs.setWireframeColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+		mrs.setWireframeUserColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 		emit settingsUpdated();
 	}
 }
@@ -254,17 +268,6 @@ void MeshRenderSettingsFrame::updateSurfaceTabFromSettings()
 	}
 }
 
-void MeshRenderSettingsFrame::updateWireframeTabFromSettings()
-{
-	if (mrs.canSurfaceBeVisible()) {
-		ui->wireframeTab->setEnabled(true);
-
-	}
-	else {
-		ui->wireframeTab->setEnabled(false);
-	}
-}
-
 void MeshRenderSettingsFrame::uptateSurfaceShadingRadioButtonsFromSettings()
 {
 	if (mrs.canSurfaceBeSmooth()) {
@@ -325,6 +328,36 @@ void MeshRenderSettingsFrame::updateSurfaceColorComboBoxFromSettings()
 	if (mrs.isSurfaceColorPerWedgeTexcoords()) ui->surfaceColorComboBox->setCurrentIndex(SC_WEDG_TEX);
 	if (mrs.isSurfaceColorUserDefined()) ui->surfaceColorComboBox->setCurrentIndex(SC_USER);
 	ui->surfaceUserColorFrame->setVisible(mrs.isSurfaceColorUserDefined());
+}
+
+void MeshRenderSettingsFrame::updateWireframeTabFromSettings()
+{
+	if (mrs.canSurfaceBeVisible()) {
+		ui->wireframeTab->setEnabled(true);
+		ui->wireframeVisibilityCheckBox->setEnabled(true);
+		ui->wireframeVisibilityCheckBox->setChecked(mrs.isWireframeVisible());
+		updateWireframeComboBoxFromSettings();
+	}
+	else {
+		ui->wireframeTab->setEnabled(false);
+	}
+}
+
+void MeshRenderSettingsFrame::updateWireframeComboBoxFromSettings()
+{
+	QStandardItemModel* model =
+		qobject_cast<QStandardItemModel *>(ui->wireframeColorComboBox->model());
+	assert(model != nullptr);
+	QStandardItem* item = model->item(W_MESH);
+	if (mrs.canWireframeBeColoredPerMesh()) {
+		item->setFlags(item->flags() | Qt::ItemIsEnabled);
+	}
+	else {
+		item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+	}
+	if (mrs.isWireframeColorPerMesh()) ui->wireframeColorComboBox->setCurrentIndex(W_MESH);
+	if (mrs.isWireframeColorUserDefined()) ui->wireframeColorComboBox->setCurrentIndex(W_USER);
+	ui->wireframeUserColorFrame->setVisible(mrs.isWireframeColorUserDefined());
 }
 
 } // namespace vcl

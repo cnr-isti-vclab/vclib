@@ -38,6 +38,7 @@ MeshRenderBuffers<MeshType>::MeshRenderBuffers(const MeshType& m)
 	fillVertices(m);
 	fillTriangles(m);
 	fillTextures(m);
+	fillMeshAttribs(m);
 }
 
 template<MeshConcept MeshType>
@@ -119,15 +120,15 @@ const float* MeshRenderBuffers<MeshType>::triangleColorBufferData() const
 }
 
 template<MeshConcept MeshType>
-const unsigned char* MeshRenderBuffers<MeshType>::textureBufferData(uint ti) const
+const float *MeshRenderBuffers<MeshType>::meshColorBufferData() const
 {
-	return textures[ti].data();
+	return mColor.data();
 }
 
 template<MeshConcept MeshType>
-void MeshRenderBuffers<MeshType>::updateSettingsBuffers(const MeshRenderSettings& /*mrs*/)
+const unsigned char* MeshRenderBuffers<MeshType>::textureBufferData(uint ti) const
 {
-
+	return textures[ti].data();
 }
 
 template<MeshConcept MeshType>
@@ -314,6 +315,17 @@ void MeshRenderBuffers<MeshType>::fillTextures(const MeshType &m)
 		for (uint i = 0; i < m.textureNumber(); ++i) {
 			textures.push_back(vcl::Image(m.meshBasePath() + m.texturePath(i)));
 		}
+	}
+}
+
+template<MeshConcept MeshType>
+void MeshRenderBuffers<MeshType>::fillMeshAttribs(const MeshType &m)
+{
+	if constexpr(vcl::HasColor<MeshType>) {
+		mColor[0] = m.color().redF();
+		mColor[1] = m.color().greenB();
+		mColor[2] = m.color().blueF();
+		mColor[3] = m.color().alphaF();
 	}
 }
 

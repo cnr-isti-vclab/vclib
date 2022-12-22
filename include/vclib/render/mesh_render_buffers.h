@@ -52,20 +52,20 @@ public:
 	const float*         vertexColorBufferData() const;
 	const float*         triangleNormalBufferData() const;
 	const float*         triangleColorBufferData() const;
+	const float*         meshColorBufferData() const;
 	const unsigned char* textureBufferData(uint ti) const;
-
-	void updateSettingsBuffers(const MeshRenderSettings& mrs);
 
 private:
 	uint nv = 0;
 	uint nt = 0;
 
-	std::vector<float> verts;
-	std::vector<int>   tris;
-	std::vector<float> vNormals;
-	std::vector<float> vColors;
-	std::vector<float> tNormals;
-	std::vector<float> tColors;
+	std::vector<float>   verts;
+	std::vector<int>     tris;
+	std::vector<float>   vNormals;
+	std::vector<float>   vColors;
+	std::vector<float>   tNormals;
+	std::vector<float>   tColors;
+	std::array<float, 4> mColor;
 
 	vcl::Point3d            bbmin, bbmax;
 	mesh::TriPolyIndexBiMap triPolyMap;
@@ -74,6 +74,7 @@ private:
 	void fillVertices(const MeshType& m);
 	void fillTriangles(const MeshType& m);
 	void fillTextures(const MeshType& m);
+	void fillMeshAttribs(const MeshType& m);
 
 	template<typename FaceType>
 	void fillFaceNromals(const FaceType& f, bool triangle, uint fi);

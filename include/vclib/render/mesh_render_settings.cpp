@@ -32,6 +32,7 @@ template<MeshConcept MeshType>
 MeshRenderSettings::MeshRenderSettings(const MeshType &m)
 {
 	setRenderCapabilityFrom(m);
+	setDefaultSettingsFromCapability();
 }
 
 inline bool MeshRenderSettings::canBeVisible() const
@@ -129,6 +130,21 @@ inline int MeshRenderSettings::pointWidth() const
 	return pWidth;
 }
 
+inline Color MeshRenderSettings::pointCloudUserColor() const
+{
+	vcl::Color c;
+	c.setRedF(pUserColor[0]);
+	c.setGreenF(pUserColor[1]);
+	c.setBlueF(pUserColor[2]);
+	c.setAlphaF(pUserColor[3]);
+	return c;
+}
+
+inline const float* MeshRenderSettings::pointCloudUserColorData() const
+{
+	return pUserColor;
+}
+
 inline bool MeshRenderSettings::isSurfaceVisible() const
 {
 	return drawMode & DRAW_SURF;
@@ -174,9 +190,34 @@ inline bool MeshRenderSettings::isSurfaceColorPerWedgeTexcoords() const
 	return drawMode & DRAW_SURF_TEX_WEDGE;
 }
 
+inline Color MeshRenderSettings::surfaceUserColor() const
+{
+	vcl::Color c;
+	c.setRedF(sUserColor[0]);
+	c.setGreenF(sUserColor[1]);
+	c.setBlueF(sUserColor[2]);
+	c.setAlphaF(sUserColor[3]);
+	return c;
+}
+
+inline const float* MeshRenderSettings::surfaceUserColorData() const
+{
+	return sUserColor;
+}
+
 inline bool MeshRenderSettings::isWireframeVisible() const
 {
 	return drawMode & DRAW_WIREFRAME;
+}
+
+inline bool MeshRenderSettings::isWireframeColorPerMesh() const
+{
+	return drawMode & DRAW_WIREFRAME_COLOR_MESH;
+}
+
+inline bool MeshRenderSettings::isWireframeColorUserDefined() const
+{
+	return drawMode & DRAW_WIREFRAME_COLOR_USER;
 }
 
 inline int MeshRenderSettings::wireframeWidth() const
@@ -184,19 +225,19 @@ inline int MeshRenderSettings::wireframeWidth() const
 	return wWidth;
 }
 
-inline Color MeshRenderSettings::wireframeColor() const
+inline Color MeshRenderSettings::wireframeUserColor() const
 {
 	vcl::Color c;
-	c.setRedF(wColor[0]);
-	c.setGreenF(wColor[1]);
-	c.setBlueF(wColor[2]);
-	c.setAlphaF(wColor[3]);
+	c.setRedF(wUserColor[0]);
+	c.setGreenF(wUserColor[1]);
+	c.setBlueF(wUserColor[2]);
+	c.setAlphaF(wUserColor[3]);
 	return c;
 }
 
-inline const float *MeshRenderSettings::wireframeColorData() const
+inline const float *MeshRenderSettings::wireframeUserColorData() const
 {
-	return wColor;
+	return wUserColor;
 }
 
 inline bool MeshRenderSettings::isBboxEnabled() const
@@ -278,7 +319,7 @@ inline bool MeshRenderSettings::setPointWidth(int width)
 	}
 }
 
-inline bool MeshRenderSettings::setPointCloudUserDefinedColor(float r, float g, float b, float a)
+inline bool MeshRenderSettings::setPointCloudUserColor(float r, float g, float b, float a)
 {
 	if (canPointCloudBeVisible()) {
 		pUserColor[0] = r;
@@ -292,7 +333,7 @@ inline bool MeshRenderSettings::setPointCloudUserDefinedColor(float r, float g, 
 	}
 }
 
-inline bool MeshRenderSettings::setPointCloudUserDefinedColor(const Color &c)
+inline bool MeshRenderSettings::setPointCloudUserColor(const Color &c)
 {
 	if (canPointCloudBeVisible()) {
 		pUserColor[0] = c.redF();
@@ -502,7 +543,7 @@ inline bool MeshRenderSettings::setSurfaceColorPerWedgeTexcoords()
 	}
 }
 
-inline bool MeshRenderSettings::setSurfaceUserDefinedColor(float r, float g, float b, float a)
+inline bool MeshRenderSettings::setSurfaceUserColor(float r, float g, float b, float a)
 {
 	if (canSurfaceBeVisible()) {
 		sUserColor[0] = r;
@@ -516,7 +557,7 @@ inline bool MeshRenderSettings::setSurfaceUserDefinedColor(float r, float g, flo
 	}
 }
 
-inline bool MeshRenderSettings::setSurfaceUserDefinedColor(const Color &c)
+inline bool MeshRenderSettings::setSurfaceUserColor(const Color &c)
 {
 	if (canSurfaceBeVisible()) {
 		sUserColor[0] = c.redF();
@@ -553,13 +594,11 @@ inline bool MeshRenderSettings::setWireframeWidth(int width)
 	}
 }
 
-inline bool MeshRenderSettings::setWireframeColor(float r, float g, float b, float a)
+inline bool MeshRenderSettings::setWireframeColorPerMesh()
 {
-	if (canSurfaceBeVisible()) {
-		wColor[0] = r;
-		wColor[1] = g;
-		wColor[2] = b;
-		wColor[3] = a;
+	if (canWireframeBeColoredPerMesh()) {
+		drawMode |=  DRAW_WIREFRAME_COLOR_MESH;
+		drawMode &= ~DRAW_WIREFRAME_COLOR_USER;
 		return true;
 	}
 	else {
@@ -567,13 +606,39 @@ inline bool MeshRenderSettings::setWireframeColor(float r, float g, float b, flo
 	}
 }
 
-inline bool MeshRenderSettings::setWireframeColor(const Color &c)
+inline bool MeshRenderSettings::setWireframeColorUserDefined()
 {
 	if (canSurfaceBeVisible()) {
-		wColor[0] = c.redF();
-		wColor[1] = c.greenF();
-		wColor[2] = c.blueF();
-		wColor[3] = c.alphaF();
+		drawMode &= ~DRAW_WIREFRAME_COLOR_MESH;
+		drawMode |=  DRAW_WIREFRAME_COLOR_USER;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+inline bool MeshRenderSettings::setWireframeUserColor(float r, float g, float b, float a)
+{
+	if (canSurfaceBeVisible()) {
+		wUserColor[0] = r;
+		wUserColor[1] = g;
+		wUserColor[2] = b;
+		wUserColor[3] = a;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+inline bool MeshRenderSettings::setWireframeUserColor(const Color &c)
+{
+	if (canSurfaceBeVisible()) {
+		wUserColor[0] = c.redF();
+		wUserColor[1] = c.greenF();
+		wUserColor[2] = c.blueF();
+		wUserColor[3] = c.alphaF();
 		return true;
 	}
 	else {
@@ -590,6 +655,55 @@ inline bool MeshRenderSettings::setBoundingBoxVisibility(bool b)
 	}
 	else {
 		return false;
+	}
+}
+
+inline void MeshRenderSettings::setDefaultSettingsFromCapability()
+{
+	drawMode = 0;
+
+	//default settings - ignored if not available
+	setPointCloudColorUserDefined();
+	setSurfaceColorUserDefined();
+	setWireframeColorUserDefined();
+
+	if (canBeVisible()) {
+		setVisibility(true);
+		if (canSurfaceBeVisible()) {
+			setSurfaceVisibility(true);
+			if (canSurfaceBeSmooth()) {
+				setSurfaceShadingSmooth();
+			}
+			else {
+				setSurfaceShadingFlat();
+			}
+			if (canSurfaceBeColoredPerVertex()) {
+				setSurfaceColorPerVertex();
+			}
+			else if (canSurfaceBeColoredPerFace()) {
+				setSurfaceColorPerFace();
+			}
+			else if (canSurfaceBeColoredPerWedgeTexcoords()) {
+				setSurfaceColorPerWedgeTexcoords();
+			}
+			else if (canSurfaceBeColoredPerVertexTexcoords()) {
+				setSurfaceColorPerVertexTexcoords();
+			}
+			else if (canSurfaceBeColoredPerMesh()) {
+				setSurfaceColorPerMesh();
+			}
+		}
+		else {
+			if (canPointCloudBeVisible()) {
+				setPointCloudVisibility(true);
+				if (canPointCloudBeColoredPerVertex()) {
+					setPointCloudColorPerVertex();
+				}
+				else if (canPointCloudBeColoredPerMesh()) {
+					setPointCloudColorPerMesh();
+				}
+			}
+		}
 	}
 }
 
