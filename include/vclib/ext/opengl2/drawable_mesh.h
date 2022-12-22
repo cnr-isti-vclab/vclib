@@ -66,7 +66,12 @@ public:
 private:
 	void renderPass() const;
 
+	void bindTextures();
+	void unbindTextures();
+
 	MeshRenderBuffers<MeshType> mrb;
+
+	std::vector<uint> textID;
 };
 
 } //namespace vcl

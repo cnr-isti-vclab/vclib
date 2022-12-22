@@ -33,17 +33,20 @@ DrawableMesh<MeshType>::DrawableMesh()
 }
 
 template<MeshConcept MeshType>
-DrawableMesh<MeshType>::DrawableMesh(const MeshType &m) :
-		GenericDrawableMesh(m), mrb(m)
+DrawableMesh<MeshType>::DrawableMesh(const MeshType &m)
 {
+	updateBuffers(m);
+	mrs.setDefaultSettingsFromCapability();
 }
 
 
 template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::updateBuffers(const MeshType& m)
 {
+	unbindTextures();
 	mrb = MeshRenderBuffers<MeshType>(m);
 	mrs.setRenderCapabilityFrom(m);
+	bindTextures();
 }
 
 template<MeshConcept MeshType>
@@ -152,6 +155,8 @@ void DrawableMesh<MeshType>::renderPass() const
 	const float* vertexColors = mrb.vertexColorBufferData();
 	const float* triangleNormals = mrb.triangleNormalBufferData();
 	const float* triangleColors = mrb.triangleColorBufferData();
+	const float* vertTexCoords = mrb.vertexTexCoordsBufferData();
+	const float* wedgTexCoords = mrb.wedgeTexCoordsBufferData();
 
 	if (mrs.isPointCloudVisible()) {
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -305,6 +310,51 @@ void DrawableMesh<MeshType>::renderPass() const
 				}
 			}
 		}
+		else if (mrs.isSurfaceColorPerVertexTexcoords()) {
+			// todo
+		}
+		else if (mrs.isSurfaceColorPerWedgeTexcoords()) {
+			glColor3f(1, 1, 1);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, textID[0]);
+			int n_tris = nt;
+			for (int tid = 0; tid < n_tris; ++tid) {
+				int tid_ptr  = 3 * tid;
+				int vid0     = triangles[tid_ptr + 0];
+				int vid1     = triangles[tid_ptr + 1];
+				int vid2     = triangles[tid_ptr + 2];
+				int vid0_ptr = 3 * vid0;
+				int vid1_ptr = 3 * vid1;
+				int vid2_ptr = 3 * vid2;
+
+				if (mrs.isSurfaceShadingSmooth()) {
+					glBegin(GL_TRIANGLES);
+					glTexCoord2f(wedgTexCoords[tid * 6 + 0], wedgTexCoords[tid * 6 + 1]);
+					glNormal3fv(&(vertexNormals[vid0_ptr]));
+					glVertex3fv(&(coords[vid0_ptr]));
+					glTexCoord2f(wedgTexCoords[tid * 6 + 2], wedgTexCoords[tid * 6 + 3]);
+					glNormal3fv(&(vertexNormals[vid1_ptr]));
+					glVertex3fv(&(coords[vid1_ptr]));
+					glTexCoord2f(wedgTexCoords[tid * 6 + 4], wedgTexCoords[tid * 6 + 5]);
+					glNormal3fv(&(vertexNormals[vid2_ptr]));
+					glVertex3fv(&(coords[vid2_ptr]));
+					glEnd();
+				}
+				else {
+					glBegin(GL_TRIANGLES);
+					glTexCoord2f(wedgTexCoords[tid * 6 + 0], wedgTexCoords[tid * 6 + 1]);
+					glNormal3fv(&(triangleNormals[tid_ptr]));
+					glVertex3fv(&(coords[vid0_ptr]));
+					glTexCoord2f(wedgTexCoords[tid * 6 + 2], wedgTexCoords[tid * 6 + 3]);
+					glNormal3fv(&(triangleNormals[tid_ptr]));
+					glVertex3fv(&(coords[vid1_ptr]));
+					glTexCoord2f(wedgTexCoords[tid * 6 + 4], wedgTexCoords[tid * 6 + 5]);
+					glNormal3fv(&(triangleNormals[tid_ptr]));
+					glVertex3fv(&(coords[vid2_ptr]));
+					glEnd();
+				}
+			}
+		}
 	}
 
 	if (mrs.isWireframeVisible()) {
@@ -323,6 +373,35 @@ void DrawableMesh<MeshType>::renderPass() const
 		glDrawElements(GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);
 
 		glDisableClientState(GL_VERTEX_ARRAY);
+	}
+}
+
+template<MeshConcept MeshType>
+void DrawableMesh<MeshType>::bindTextures()
+{
+	textID.resize(mrb.textureNumber());
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glGenTextures(mrb.textureNumber(), textID.data());
+
+	for (uint i = 0; i < mrb.textureNumber(); i++) {
+		glBindTexture(GL_TEXTURE_2D, textID[i]);
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGB, mrb.textureSize(i).x(), mrb.textureSize(i).y(), 0,
+			GL_RGBA, GL_UNSIGNED_BYTE, mrb.textureBufferData(i));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	}
+}
+
+template<MeshConcept MeshType>
+void DrawableMesh<MeshType>::unbindTextures()
+{
+	if (textID.size() > 0) {
+		glDeleteTextures(textID.size(), textID.data());
+		textID.clear();
 	}
 }
 

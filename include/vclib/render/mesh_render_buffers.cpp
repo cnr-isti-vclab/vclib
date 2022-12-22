@@ -120,6 +120,20 @@ const float* MeshRenderBuffers<MeshType>::triangleColorBufferData() const
 }
 
 template<MeshConcept MeshType>
+const float* MeshRenderBuffers<MeshType>::vertexTexCoordsBufferData() const
+{
+	if (vTexCoords.empty()) return nullptr;
+	return vTexCoords.data();
+}
+
+template<MeshConcept MeshType>
+const float *MeshRenderBuffers<MeshType>::wedgeTexCoordsBufferData() const
+{
+	if (wTexCoords.empty()) return nullptr;
+	return wTexCoords.data();
+}
+
+template<MeshConcept MeshType>
 const float *MeshRenderBuffers<MeshType>::meshColorBufferData() const
 {
 	return mColor.data();
@@ -175,12 +189,20 @@ void MeshRenderBuffers<MeshType>::fillVertices(const MeshType &m)
 		}
 	}
 
-	uint i = 0;
-	for (const auto& v : m.vertices()) {
+	if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
+		if (vcl::isPerVertexTexCoordEnabled(m)) {
+			vTexCoords.resize(m.vertexNumber() * 2);
+		}
+	}
 
-		verts[i + 0] = v.coord().x();
-		verts[i + 1] = v.coord().y();
-		verts[i + 2] = v.coord().z();
+	uint vi = 0;
+	for (const auto& v : m.vertices()) {
+		uint i = vi * 2; // use i for size 2, like texcoords
+		uint j = vi * 3; // use j for size 3, like coords and normals
+
+		verts[j + 0] = v.coord().x();
+		verts[j + 1] = v.coord().y();
+		verts[j + 2] = v.coord().z();
 
 		if (bbToInitialize) {
 			bbmin = vcl::min(bbmin, v.coord());
@@ -189,21 +211,28 @@ void MeshRenderBuffers<MeshType>::fillVertices(const MeshType &m)
 
 		if constexpr(vcl::HasPerVertexNormal<MeshType>) {
 			if (vcl::isPerVertexNormalEnabled(m)) {
-				vNormals[i + 0] = v.normal().x();
-				vNormals[i + 1] = v.normal().y();
-				vNormals[i + 2] = v.normal().z();
+				vNormals[j + 0] = v.normal().x();
+				vNormals[j + 1] = v.normal().y();
+				vNormals[j + 2] = v.normal().z();
 			}
 		}
 
 		if constexpr(vcl::HasPerVertexColor<MeshType>) {
 			if (vcl::isPerVertexColorEnabled(m)) {
-				vColors[i + 0] = v.color().redF();
-				vColors[i + 1] = v.color().greenF();
-				vColors[i + 2] = v.color().blueF();
+				vColors[j + 0] = v.color().redF();
+				vColors[j + 1] = v.color().greenF();
+				vColors[j + 2] = v.color().blueF();
 			}
 		}
 
-		i += 3;
+		if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
+			if (vcl::isPerVertexTexCoordEnabled(m)) {
+				vTexCoords[i + 0] = v.texCoord().u();
+				vTexCoords[i + 1] = v.texCoord().v();
+			}
+		}
+
+		vi++;
 	}
 }
 
@@ -259,6 +288,12 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 			}
 		}
 
+		if constexpr(vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+			if (vcl::isPerFaceWedgeTexCoordsEnabled(m)) {
+				wTexCoords.reserve(m.faceNumber() * 3 * 2);
+			}
+		}
+
 		uint i = 0;
 		for (const auto& f : m.faces()) {
 			if constexpr(vcl::HasPerFaceNormal<MeshType>) {
@@ -299,6 +334,22 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 							tColors.push_back(f.color().greenF());
 							tColors.push_back(f.color().blueF());
 						}
+					}
+				}
+			}
+
+			if constexpr(vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+				if (vcl::isPerFaceWedgeTexCoordsEnabled(m)) {
+					if constexpr (vcl::HasTriangles<MeshType>) {
+						wTexCoords.push_back(f.wedgeTexCoord(0).u());
+						wTexCoords.push_back(f.wedgeTexCoord(0).v());
+						wTexCoords.push_back(f.wedgeTexCoord(1).u());
+						wTexCoords.push_back(f.wedgeTexCoord(1).v());
+						wTexCoords.push_back(f.wedgeTexCoord(2).u());
+						wTexCoords.push_back(f.wedgeTexCoord(2).v());
+					}
+					else {
+						//todo
 					}
 				}
 			}
