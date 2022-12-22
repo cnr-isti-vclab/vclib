@@ -125,6 +125,12 @@ const unsigned char* MeshRenderBuffers<MeshType>::textureBufferData(uint ti) con
 }
 
 template<MeshConcept MeshType>
+void MeshRenderBuffers<MeshType>::updateSettingsBuffers(const MeshRenderSettings& /*mrs*/)
+{
+
+}
+
+template<MeshConcept MeshType>
 void MeshRenderBuffers<MeshType>::fillVertices(const MeshType &m)
 {
 	// not using Mesh's bounding box if:

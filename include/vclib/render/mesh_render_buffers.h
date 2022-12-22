@@ -27,6 +27,8 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/mesh/tri_poly_index_bimap.h>
 
+#include "mesh_render_settings.h"
+
 namespace vcl {
 
 template<MeshConcept MeshType>
@@ -51,6 +53,8 @@ public:
 	const float*         triangleNormalBufferData() const;
 	const float*         triangleColorBufferData() const;
 	const unsigned char* textureBufferData(uint ti) const;
+
+	void updateSettingsBuffers(const MeshRenderSettings& mrs);
 
 private:
 	uint nv = 0;

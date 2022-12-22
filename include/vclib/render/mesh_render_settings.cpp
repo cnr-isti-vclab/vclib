@@ -44,6 +44,16 @@ inline bool MeshRenderSettings::canPointCloudBeVisible() const
 	return drawModeCapability & DRAW_POINTS;
 }
 
+inline bool MeshRenderSettings::canPointCloudBeColoredPerVertex() const
+{
+	return drawModeCapability & DRAW_POINTS_COLOR_VERTEX;
+}
+
+inline bool MeshRenderSettings::canPointCloudBeColoredPerMesh() const
+{
+	return drawModeCapability & DRAW_POINTS_COLOR_MESH;
+}
+
 inline bool MeshRenderSettings::canSurfaceBeVisible() const
 {
 	return drawModeCapability & DRAW_SURF;
@@ -97,6 +107,21 @@ inline bool MeshRenderSettings::isVisible() const
 inline bool MeshRenderSettings::isPointCloudVisible() const
 {
 	return drawMode & DRAW_POINTS;
+}
+
+inline bool MeshRenderSettings::isPointCloudColorPerVertex() const
+{
+	return drawMode & DRAW_POINTS_COLOR_VERTEX;
+}
+
+inline bool MeshRenderSettings::isPointCloudColorPerMesh() const
+{
+	return drawMode & DRAW_POINTS_COLOR_MESH;
+}
+
+inline bool MeshRenderSettings::isPointCloudColorUserDefined() const
+{
+	return drawMode & DRAW_POINTS_COLOR_USER;
 }
 
 inline int MeshRenderSettings::pointWidth() const
@@ -203,10 +228,77 @@ inline bool MeshRenderSettings::setPointCloudVisibility(bool b)
 	}
 }
 
+inline bool MeshRenderSettings::setPointCloudColorPerVertex()
+{
+	if (canSurfaceBeColoredPerVertex()) {
+		drawMode |=  DRAW_POINTS_COLOR_VERTEX;
+		drawMode &= ~DRAW_POINTS_COLOR_MESH;
+		drawMode &= ~DRAW_POINTS_COLOR_USER;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+inline bool MeshRenderSettings::setPointCloudColorPerMesh()
+{
+	if (canSurfaceBeColoredPerMesh()) {
+		drawMode &= ~DRAW_POINTS_COLOR_VERTEX;
+		drawMode |=  DRAW_POINTS_COLOR_MESH;
+		drawMode &= ~DRAW_POINTS_COLOR_USER;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+inline bool MeshRenderSettings::setPointCloudColorUserDefined()
+{
+	if (canPointCloudBeVisible()) {
+		drawMode &= ~DRAW_POINTS_COLOR_VERTEX;
+		drawMode &= ~DRAW_POINTS_COLOR_MESH;
+		drawMode |=  DRAW_POINTS_COLOR_USER;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 inline bool MeshRenderSettings::setPointWidth(int width)
 {
 	if (canPointCloudBeVisible()) {
 		pWidth = width;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+inline bool MeshRenderSettings::setPointCloudUserDefinedColor(float r, float g, float b, float a)
+{
+	if (canPointCloudBeVisible()) {
+		pUserColor[0] = r;
+		pUserColor[1] = g;
+		pUserColor[2] = b;
+		pUserColor[3] = a;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+inline bool MeshRenderSettings::setPointCloudUserDefinedColor(const Color &c)
+{
+	if (canPointCloudBeVisible()) {
+		pUserColor[0] = c.redF();
+		pUserColor[1] = c.greenF();
+		pUserColor[2] = c.blueF();
+		pUserColor[3] = c.alphaF();
 		return true;
 	}
 	else {

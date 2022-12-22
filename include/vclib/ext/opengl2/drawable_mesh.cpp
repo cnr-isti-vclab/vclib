@@ -34,27 +34,10 @@ DrawableMesh<MeshType>::DrawableMesh()
 
 template<MeshConcept MeshType>
 DrawableMesh<MeshType>::DrawableMesh(const MeshType &m) :
-		mrb(m), mrs(m)
+		GenericDrawableMesh(m), mrb(m)
 {
 }
 
-template<MeshConcept MeshType>
-const MeshRenderSettings& DrawableMesh<MeshType>::renderSettings() const
-{
-	return mrs;
-}
-
-template<MeshConcept MeshType>
-MeshRenderSettings& DrawableMesh<MeshType>::renderSettings()
-{
-	return mrs;
-}
-
-template<MeshConcept MeshType>
-void DrawableMesh<MeshType>::setRenderSettings(const MeshRenderSettings& rs)
-{
-	mrs = rs;
-}
 
 template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::updateBuffers(const MeshType& m)
@@ -95,6 +78,12 @@ template<MeshConcept MeshType>
 DrawableMesh<MeshType>* DrawableMesh<MeshType>::clone() const
 {
 	return new DrawableMesh(*this);
+}
+
+template<MeshConcept MeshType>
+void DrawableMesh<MeshType>::updateSettingsBuffers()
+{
+	mrb.updateSettingsBuffers(mrs);
 }
 
 template<MeshConcept MeshType>

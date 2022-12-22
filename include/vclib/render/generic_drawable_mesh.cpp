@@ -20,78 +20,29 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
-#define VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
-#include <vclib/render/generic_drawable_mesh.h>
-#include <vclib/render/mesh_render_buffers.h>
+#include "generic_drawable_mesh.h"
 
 namespace vcl {
 
-// From: https://blog.nobel-joergensen.com/2013/01/29/debugging-opengl-using-glgeterror/
-void _check_gl_error(const char *file, int line);
-
-///
-/// Usage
-/// [... some opengl calls]
-/// glCheckError();
-///
-#define check_gl_error() _check_gl_error(__FILE__,__LINE__)
-
+inline GenericDrawableMesh::GenericDrawableMesh()
+{
+}
 
 template<MeshConcept MeshType>
-class DrawableMesh : public GenericDrawableMesh
+GenericDrawableMesh::GenericDrawableMesh(const MeshType &m) :
+		mrs(m)
 {
-public:
-	DrawableMesh();
-	DrawableMesh(const MeshType& m);
+}
 
-	void updateBuffers(const MeshType& m);
+inline const MeshRenderSettings& GenericDrawableMesh::renderSettings() const
+{
+	return mrs;
+}
 
-	// DrawableObject implementation
-	void draw() const;
-	vcl::Point3d sceneCenter() const;
-	double sceneRadius() const;
-	DrawableMesh* clone() const;
-private:
-	void updateSettingsBuffers();
+inline void GenericDrawableMesh::setRenderSettings(const MeshRenderSettings& rs)
+{
+	mrs = rs;
+	updateSettingsBuffers();
+}
 
-	void draw(
-		uint           nv,
-		uint           nt,
-		const float*   pCoords,
-		const int*     pTriangles,
-		const float*   pVertexNormals,
-		const float*   pVertexColors,
-		const float*   pTriangleNormals,
-		const float*   pTriangleColors,
-		const Point3d& min,
-		const Point3d& max) const;
-	void renderPass(
-		uint         nv,
-		uint         nt,
-		const float* coords,
-		const int*   triangles,
-		const float* vertexNormals,
-		const float* vertexColors,
-		const float* triangleNormals,
-		const float* triangleColors) const;
-
-	MeshRenderBuffers<MeshType> mrb;
-};
-
-} //namespace vcl
-
-#include "drawable_mesh.cpp"
-
-#endif // VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
+} // namespace vcl

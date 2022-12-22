@@ -38,7 +38,7 @@ class MeshRenderSettingsFrame : public QFrame
 	Q_OBJECT
 
 public:
-	explicit MeshRenderSettingsFrame(QWidget *parent = nullptr);
+	explicit MeshRenderSettingsFrame(QWidget* parent = nullptr);
 	~MeshRenderSettingsFrame();
 
 	const MeshRenderSettings& meshRenderSettings() const;
@@ -48,17 +48,33 @@ signals:
 	void settingsUpdated();
 
 private slots:
+	void on_pointVisibilityCheckBox_stateChanged(int arg1);
+	void on_pointColorComboBox_currentIndexChanged(int index);
 	void on_pointColorDialogPushButton_clicked();
 
+	void on_surfaceVisibilityCheckBox_stateChanged(int arg1);
+	void on_surfaceShadingSmoothRadioButton_toggled(bool checked);
+	void on_surfaceShadingFlatRadioButton_toggled(bool checked);
+	void on_surfaceColorComboBox_currentIndexChanged(int index);
 	void on_surfaceColorDialogPushButton_clicked();
 
+	void on_wireframeVisibilityCheckBox_stateChanged(int arg1);
 	void on_wireframeColorDialogPushButton_clicked();
 
 private:
+	enum POINT_COLOR {P_VERT = 0, P_MESH, P_USER};
+	enum SURF_COLOR {SC_VERT = 0, SC_FACE, SC_MESH, SC_VERT_TEX, SC_WEDG_TEX, SC_USER};
+
 	Ui::MeshRenderSettingsFrame *ui;
 	MeshRenderSettings mrs;
 
 	void updateGuiFromSettings();
+	void updatePointsTabFromSettings();
+	void updatePointsColorComboBoxFromSettings();
+	void updateSurfaceTabFromSettings();
+	void updateWireframeTabFromSettings();
+	void uptateSurfaceShadingRadioButtonsFromSettings();
+	void updateSurfaceColorComboBoxFromSettings();
 };
 
 } // namespace vcl

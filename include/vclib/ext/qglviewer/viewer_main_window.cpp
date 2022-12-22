@@ -23,6 +23,8 @@
 #include "viewer_main_window.h"
 #include "ui_viewer_main_window.h"
 
+#include <vclib/render/generic_drawable_mesh.h>
+
 namespace vcl {
 
 ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
@@ -33,6 +35,9 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
 
 	drawVector = std::make_shared<vcl::DrawableObjectVector>();
 	ui->glArea->setDrawableObjectVector(drawVector);
+
+	connect(ui->renderSettingsFrame, SIGNAL(settingsUpdated()), this, SLOT(renderSettingsUpdated()));
+	ui->renderSettingsFrame->setVisible(false);
 }
 
 ViewerMainWindow::~ViewerMainWindow()
@@ -43,8 +48,34 @@ ViewerMainWindow::~ViewerMainWindow()
 void ViewerMainWindow::setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v)
 {
 	drawVector = v;
+	if (drawVector->size() > 0) {
+		try {
+			GenericDrawableMesh& m = dynamic_cast<GenericDrawableMesh&>(drawVector->at(0));
+			ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
+			ui->renderSettingsFrame->setVisible(true);
+		}
+		catch(std::bad_cast exp) {
+			ui->renderSettingsFrame->setVisible(false);
+		}
+	}
+	else {
+		ui->renderSettingsFrame->setVisible(false);
+	}
 	ui->glArea->setDrawableObjectVector(v);
 	ui->glArea->fitScene();
+}
+
+/**
+ * @brief Slot called every time that the MeshRenderSettingsFrame emits 'settingsUpdated()'
+ */
+void ViewerMainWindow::renderSettingsUpdated()
+{
+	if (drawVector->size() > 0) {
+		// todo - get the selected mesh instead of the first
+		GenericDrawableMesh& m = dynamic_cast<GenericDrawableMesh&>(drawVector->at(0));
+		m.setRenderSettings(ui->renderSettingsFrame->meshRenderSettings());
+		ui->glArea->update();
+	}
 }
 
 } // namespace vcl

@@ -62,6 +62,8 @@ public:
 	//rendering options capability of the mesh
 	bool canBeVisible() const;
 	bool canPointCloudBeVisible() const;
+	bool canPointCloudBeColoredPerVertex() const;
+	bool canPointCloudBeColoredPerMesh() const;
 	bool canSurfaceBeVisible() const;
 	bool canSurfaceBeSmooth() const;
 	bool canSurfaceBeColoredPerFace() const;
@@ -76,6 +78,9 @@ public:
 	bool isVisible() const;
 
 	bool isPointCloudVisible() const;
+	bool isPointCloudColorPerVertex() const;
+	bool isPointCloudColorPerMesh() const;
+	bool isPointCloudColorUserDefined() const;
 	int pointWidth() const;
 
 	bool isSurfaceVisible() const;
@@ -100,7 +105,13 @@ public:
 	bool setVisibility(bool b);
 
 	bool setPointCloudVisibility(bool b);
+	bool setPointCloudColorPerVertex();
+	bool setPointCloudColorPerMesh();
+	bool setPointCloudColorUserDefined();
+
 	bool setPointWidth(int width);
+	bool setPointCloudUserDefinedColor(float r, float g, float b, float a = 1);
+	bool setPointCloudUserDefinedColor(const vcl::Color& c);
 
 	bool setSurfaceVisibility(bool b);
 	bool setSurfaceShadingFlat();

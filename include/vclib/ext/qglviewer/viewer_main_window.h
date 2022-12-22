@@ -43,6 +43,9 @@ public:
 
 	void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
 
+public slots:
+	void renderSettingsUpdated();
+
 private:
 	Ui::ViewerMainWindow *ui;
 	std::shared_ptr<vcl::DrawableObjectVector> drawVector;

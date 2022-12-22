@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pointsTab">
       <attribute name="title">
@@ -236,6 +236,9 @@
          <property name="text">
           <string>Smooth</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="1" column="2">
@@ -330,6 +333,9 @@
         <widget class="QCheckBox" name="surfaceVisibilityCheckBox">
          <property name="text">
           <string/>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -439,7 +445,7 @@
           <item>
            <widget class="QPushButton" name="wireframeColorDialogPushButton">
             <property name="styleSheet">
-             <string notr="true">background: #FFFF00</string>
+             <string notr="true">background: #000000</string>
             </property>
             <property name="text">
              <string/>
