@@ -232,6 +232,7 @@ set(HEADERS
 	include/vclib/misc/types.h
 	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/render/drawable_object.h
+	include/vclib/render/drawable_object_vector.h
 	include/vclib/render/mesh_render_buffers.h
 	include/vclib/render/mesh_render_settings.h
 	include/vclib/space/array.h
@@ -362,6 +363,7 @@ set(SOURCES
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
+	include/vclib/render/drawable_object_vector.cpp
 	include/vclib/render/mesh_render_buffers.cpp
 	include/vclib/render/mesh_render_settings.cpp
 	include/vclib/space/box.cpp

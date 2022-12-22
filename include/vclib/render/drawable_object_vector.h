@@ -20,39 +20,55 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QGLVIEWER_VIEWER_H
-#define VCLIB_EXT_QGLVIEWER_VIEWER_H
+#ifndef VCLIB_RENDER_DRAWABLE_OBJECT_VECTOR_H
+#define VCLIB_RENDER_DRAWABLE_OBJECT_VECTOR_H
 
-#include <QGLViewer/qglviewer.h>
-
-#include <vclib/render/drawable_object_vector.h>
-#include <vclib/space/box.h>
+#include "drawable_object.h"
 
 namespace vcl {
 
-class Viewer : public QGLViewer
+class DrawableObjectVector
 {
 public:
-	Viewer(DrawableObjectVector& vector);
+	using iterator = std::vector<DrawableObject*>::iterator;
+	using const_iterator = std::vector<DrawableObject*>::const_iterator;
 
-	// viewer management
-	void fitScene();
+	DrawableObjectVector();
+	DrawableObjectVector(const DrawableObjectVector& oth);
+	DrawableObjectVector(DrawableObjectVector&& oth);
 
-protected:
-	virtual void    draw();
-	virtual void    init();
-	virtual QString helpString() const;
+	~DrawableObjectVector();
+
+	uint pushBack(const DrawableObject& obj);
+	uint pushBack(const DrawableObject* obj);
+
+	DrawableObject& at(uint i);
+	const DrawableObject& at(uint i) const;
+
+	DrawableObject& operator[](uint i);
+	const DrawableObject& operator[](uint i) const;
+
+	std::size_t size() const;
+
+	/// @private
+	friend void swap(DrawableObjectVector& v1, DrawableObjectVector& v2);
+	void swap(DrawableObjectVector& oth);
+
+	DrawableObjectVector& operator=(DrawableObjectVector oth);
+
+	iterator begin();
+	iterator end();
+	const_iterator begin() const;
+	const_iterator end() const;
 
 private:
-	// the viewer owns the DrawableObjects contained in this list
-	DrawableObjectVector& drawList;
-
-	uint firstVisibleObject() const;
-	vcl::Box3d fullBB() const;
+	std::vector<DrawableObject*> drawVector;
 };
+
+inline void swap(DrawableObjectVector& v1, DrawableObjectVector& v2);
 
 } // namespace vcl
 
-#include "viewer.cpp"
+#include "drawable_object_vector.cpp"
 
-#endif // VCLIB_EXT_QGLVIEWER_VIEWER_H
+#endif // VCLIB_RENDER_DRAWABLE_OBJECT_VECTOR_H

@@ -24,43 +24,9 @@
 
 namespace vcl {
 
-inline Viewer::~Viewer()
+Viewer::Viewer(DrawableObjectVector &vector) :
+		drawList(vector)
 {
-	// delete all the DrawableObjects
-	for (DrawableObject* obj : drawList) {
-		delete obj;
-	}
-}
-
-/**
- * @brief Pushes the DrawableObject to the viewer. This function creates a **copy** of the given
- * argument and inserts it into the viewer.
- * @param obj
- * @return
- */
-inline uint Viewer::pushDrawableObject(const DrawableObject& obj)
-{
-	drawList.push_back(obj.clone());
-	return drawList.size();
-}
-
-inline uint Viewer::pushDrawableObject(const DrawableObject* obj)
-{
-	if (obj == nullptr) return -1;
-	drawList.push_back(obj->clone());
-	return drawList.size();
-}
-
-DrawableObject& Viewer::object(uint i)
-{
-	assert(i < drawList.size());
-	return *drawList[i];
-}
-
-const DrawableObject& Viewer::object(uint i) const
-{
-	assert(i < drawList.size());
-	return *drawList[i];
 }
 
 inline void Viewer::fitScene()
@@ -130,8 +96,8 @@ inline uint Viewer::firstVisibleObject() const
 {
 	uint i = 0;
 
-	// if the current object i is null or is not visible, check the next one
-	while (i < drawList.size() && (drawList[i] == nullptr || !drawList[i]->isVisible()))
+	// if the current object i is not visible, check the next one
+	while (i < drawList.size() && !drawList[i].isVisible())
 		i++;
 
 	return i;
@@ -144,18 +110,16 @@ inline Box3d Viewer::fullBB() const
 		uint i = firstVisibleObject();
 
 		if (i < drawList.size()) {
-			Point3d sc = drawList[i]->sceneCenter();
-			bb.min = sc - drawList[i]->sceneRadius();
-			bb.max = sc + drawList[i]->sceneRadius();
+			Point3d sc = drawList[i].sceneCenter();
+			bb.min = sc - drawList[i].sceneRadius();
+			bb.max = sc + drawList[i].sceneRadius();
 
 			for (i = i+1; i < drawList.size(); i++) { //rest of the list
-				if (drawList[i]) {
-					Point3d sc = drawList[i]->sceneCenter();
-					Point3d tmp = sc - drawList[i]->sceneRadius();
-					bb.min = vcl::min(bb.min, tmp);
-					tmp = sc + drawList[i]->sceneRadius();
-					bb.max = vcl::max(bb.max, tmp);
-				}
+				Point3d sc = drawList[i].sceneCenter();
+				Point3d tmp = sc - drawList[i].sceneRadius();
+				bb.min = vcl::min(bb.min, tmp);
+				tmp = sc + drawList[i].sceneRadius();
+				bb.max = vcl::max(bb.max, tmp);
 			}
 		}
 	}
