@@ -32,12 +32,12 @@ inline Color::Color() : Point4(0, 0, 0, 255)
 {
 }
 
-inline Color::Color(ColorARGB cc)
+inline Color::Color(ColorRGBA cc)
 {
-	x() = cc % 256;
-	y() = (cc >> 8) % 256;
-	z() = (cc >> 16) % 256;
-	w() = (cc >> 24) % 256;
+	w() = cc % 256;
+	z() = (cc >> 8) % 256;
+	y() = (cc >> 16) % 256;
+	x() = (cc >> 24) % 256;
 }
 
 /**
@@ -617,15 +617,15 @@ inline Color colorFromIntervalParula(float value)
 		value = 1;
 
 	static uint paruVal[9] = {
-		0xff801627,
-		0xffe16303,
-		0xffd48514,
-		0xffc6a706,
-		0xff9eb938,
-		0xff73bf92,
-		0xff56bad9,
-		0xff2ecefc,
-		0xff0afaff};
+		0x271680ff,
+		0x0363e1ff,
+		0x1485d4ff,
+		0x06a7c6ff,
+		0x38b99eff,
+		0x92bf73ff,
+		0xd9ba56ff,
+		0xfcce2eff,
+		0xfffa0aff};
 
 	int ind = int(floor(value * 8.0f));
 	float div = (value * 8.0f - ind);
@@ -635,7 +635,7 @@ inline Color colorFromIntervalParula(float value)
 	else if (div > 1)
 		div = 1;
 
-	return colorLerp((Color::ColorARGB) paruVal[ind], (Color::ColorARGB) paruVal[ind + 1], div);
+	return colorLerp((Color::ColorRGBA) paruVal[ind], (Color::ColorRGBA) paruVal[ind + 1], div);
 }
 
 /**

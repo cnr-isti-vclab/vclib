@@ -53,6 +53,11 @@ inline std::size_t Image::sizeInBytes() const
 	return img.rows() * img.cols() * 4;
 }
 
+inline vcl::Color Image::pixel(uint i, uint j) const
+{
+	return vcl::Color((vcl::Color::ColorRGBA)img(i,j));
+}
+
 inline const unsigned char* Image::data() const
 {
 	return (unsigned char* ) img.data();

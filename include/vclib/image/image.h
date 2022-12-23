@@ -34,6 +34,7 @@
 #endif
 
 #include <vclib/space/array.h>
+#include <vclib/space/color.h>
 
 namespace vcl {
 
@@ -48,6 +49,8 @@ public:
 	int height() const;
 	int width() const;
 	std::size_t sizeInBytes() const;
+
+	vcl::Color pixel(uint i, uint j) const;
 
 	const unsigned char* data() const;
 
