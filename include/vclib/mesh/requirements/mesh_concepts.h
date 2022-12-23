@@ -30,6 +30,7 @@
 #include "../components/concepts/bounding_box.h"
 #include "../components/concepts/color.h"
 #include "../components/concepts/mark.h"
+#include "../components/concepts/name.h"
 #include "../components/concepts/texture_paths.h"
 #include "../components/concepts/transform_matrix.h"
 
@@ -65,6 +66,8 @@ concept HasColor = comp::HasColor<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
+concept HasName = comp::HasName<T>;
+template<typename T>
 concept HasTexturePaths = comp::HasTexturePaths<T>;
 template<typename T>
 concept HasTransformMatrix = comp::HasTransformMatrix<T>;
@@ -94,6 +97,10 @@ concept HasColor =
 template<typename MeshType>
 concept HasMark =
 	mesh::HasMark<MeshType>;
+
+template<typename MeshType>
+concept HasName =
+	mesh::HasName<MeshType>;
 
 template<typename MeshType>
 concept HasTexturePaths =

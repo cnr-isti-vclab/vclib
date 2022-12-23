@@ -36,6 +36,9 @@ void setPerVertexColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlyS
 template<FaceMeshConcept MeshType>
 void setPerFaceColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlySelected = false);
 
+template<HasColor MeshType>
+void setMeshColor(MeshType& m, vcl::Color c = vcl::Color::White);
+
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceColor(MeshType& m);
 

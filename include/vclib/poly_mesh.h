@@ -74,7 +74,9 @@ class PolyMeshT :
 			mesh::VertexContainer<polymesh::Vertex<ScalarType>>,
 			mesh::FaceContainer<polymesh::Face<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
+			mesh::Color,
 			mesh::Mark,
+			mesh::Name,
 			mesh::TexturePaths,
 			mesh::TransformMatrix<ScalarType>>
 {

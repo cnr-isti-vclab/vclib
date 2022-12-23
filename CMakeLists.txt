@@ -127,6 +127,7 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/face_half_edge_reference.h
 	include/vclib/mesh/components/concepts/half_edge_references.h
 	include/vclib/mesh/components/concepts/mark.h
+	include/vclib/mesh/components/concepts/name.h
 	include/vclib/mesh/components/concepts/normal.h
 	include/vclib/mesh/components/concepts/principal_curvature.h
 	include/vclib/mesh/components/concepts/scalar.h
@@ -147,6 +148,7 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/face_half_edge_reference.h
 	include/vclib/mesh/components/horizontal/half_edge_references.h
 	include/vclib/mesh/components/horizontal/mark.h
+	include/vclib/mesh/components/horizontal/name.h
 	include/vclib/mesh/components/horizontal/normal.h
 	include/vclib/mesh/components/horizontal/polygon_bit_flags.h
 	include/vclib/mesh/components/horizontal/principal_curvature.h
@@ -315,6 +317,7 @@ set(SOURCES
 	include/vclib/mesh/components/horizontal/face_half_edge_reference.cpp
 	include/vclib/mesh/components/horizontal/half_edge_references.cpp
 	include/vclib/mesh/components/horizontal/mark.cpp
+	include/vclib/mesh/components/horizontal/name.cpp
 	include/vclib/mesh/components/horizontal/normal.cpp
 	include/vclib/mesh/components/horizontal/polygon_bit_flags.cpp
 	include/vclib/mesh/components/horizontal/principal_curvature.cpp

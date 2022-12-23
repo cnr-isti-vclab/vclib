@@ -75,7 +75,9 @@ class TriMeshT :
 			mesh::VertexContainer<trimesh::Vertex<ScalarType>>,
 			mesh::FaceContainer<trimesh::Face<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
+			mesh::Color,
 			mesh::Mark,
+			mesh::Name,
 			mesh::TexturePaths,
 			mesh::TransformMatrix<ScalarType>>
 {

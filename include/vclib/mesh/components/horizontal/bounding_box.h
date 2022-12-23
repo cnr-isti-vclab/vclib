@@ -30,7 +30,7 @@
 namespace vcl::comp {
 
 /**
- * @brief The BoundingBox component class represent an axis aligned bounding box. This class is
+ * @brief The BoundingBox component class represents an axis aligned bounding box. This class is
  * usually used as a component of a Mesh.
  *
  * The member functions of this class will be available in the instance of any Element or Mesh that

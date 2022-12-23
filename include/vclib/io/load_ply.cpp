@@ -98,6 +98,11 @@ void loadPly(
 	bool                   enableOptionalComponents)
 {
 	std::ifstream file = internal::loadFileStream(filename);
+
+	if constexpr (HasName<MeshType>) {
+		m.name() = fileInfo::filenameWithoutExtension(filename);
+	}
+
 	ply::PlyHeader header(filename, file);
 	if (header.errorWhileLoading())
 		throw MalformedFileException("Header not valid: " + filename);

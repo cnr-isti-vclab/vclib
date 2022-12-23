@@ -399,7 +399,7 @@ void MeshRenderBuffers<MeshType>::fillMeshAttribs(const MeshType &m)
 {
 	if constexpr(vcl::HasColor<MeshType>) {
 		mColor[0] = m.color().redF();
-		mColor[1] = m.color().greenB();
+		mColor[1] = m.color().greenF();
 		mColor[2] = m.color().blueF();
 		mColor[3] = m.color().alphaF();
 	}

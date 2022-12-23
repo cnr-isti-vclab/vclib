@@ -422,6 +422,10 @@ void loadObj(
 		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
 	}
 
+	if constexpr (HasName<MeshType>) {
+		m.name() = fileInfo::filenameWithoutExtension(filename);
+	}
+
 	// cycle that reads line by line
 	do {
 		vcl::Tokenizer tokens = internal::nextNonEmptyTokenizedLineNoThrow(file);

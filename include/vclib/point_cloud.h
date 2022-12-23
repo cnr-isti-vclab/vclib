@@ -55,6 +55,7 @@ class PointCloudT :
 			mesh::VertexContainer<pointcloud::Vertex<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
 			mesh::Mark,
+			mesh::Name,
 			mesh::TexturePaths,
 			mesh::TransformMatrix<ScalarType>>
 {

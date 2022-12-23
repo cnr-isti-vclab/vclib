@@ -20,63 +20,25 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
-#define VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_NAME_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_NAME_H
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
+#include <vclib/misc/types.h>
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
+namespace vcl::comp {
 
-#include <vclib/render/generic_drawable_mesh.h>
-#include <vclib/render/mesh_render_buffers.h>
-
-namespace vcl {
-
-// From: https://blog.nobel-joergensen.com/2013/01/29/debugging-opengl-using-glgeterror/
-void _check_gl_error(const char *file, int line);
-
-///
-/// Usage
-/// [... some opengl calls]
-/// glCheckError();
-///
-#define check_gl_error() _check_gl_error(__FILE__,__LINE__)
-
-
-template<MeshConcept MeshType>
-class DrawableMesh : public GenericDrawableMesh
+/**
+ * @brief HasName concept
+ *
+ * This concept is satisfied only if a class has a member function that 'name()' which returns a
+ * std::string&
+ */
+template<typename T>
+concept HasName = requires(T o)
 {
-public:
-	DrawableMesh();
-	DrawableMesh(const MeshType& m);
-
-	void updateBuffers(const MeshType& m);
-
-	// DrawableObject implementation
-	void init();
-	void draw() const;
-	vcl::Point3d center() const;
-	double radius() const;
-	DrawableMesh* clone() const;
-private:
-	void renderPass() const;
-
-	void bindTextures();
-	void unbindTextures();
-
-	MeshRenderBuffers<MeshType> mrb;
-
-	std::vector<uint> textID;
+	{ o.name() } -> std::same_as<std::string&>;
 };
 
-} //namespace vcl
+} // namespace vcl::comp
 
-#include "drawable_mesh.cpp"
-
-#endif // VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_NAME_H

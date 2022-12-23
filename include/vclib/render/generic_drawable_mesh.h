@@ -41,9 +41,11 @@ public:
 
 	// DrawableObject implementation
 	void draw() const = 0;
-	vcl::Point3d sceneCenter() const = 0;
-	double sceneRadius() const = 0;
+	vcl::Point3d center() const = 0;
+	double radius() const = 0;
 	DrawableObject* clone() const = 0;
+	inline bool isVisible() const { return mrs.isVisible(); }
+	inline void setVisibility(bool vis) { mrs.setVisibility(vis); }
 
 protected:
 	MeshRenderSettings mrs;

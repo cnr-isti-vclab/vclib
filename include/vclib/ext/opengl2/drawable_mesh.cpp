@@ -35,6 +35,9 @@ DrawableMesh<MeshType>::DrawableMesh()
 template<MeshConcept MeshType>
 DrawableMesh<MeshType>::DrawableMesh(const MeshType &m)
 {
+	if constexpr (HasName<MeshType>) {
+		name() = m.name();
+	}
 	updateBuffers(m);
 	mrs.setDefaultSettingsFromCapability();
 }
@@ -43,6 +46,9 @@ DrawableMesh<MeshType>::DrawableMesh(const MeshType &m)
 template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::updateBuffers(const MeshType& m)
 {
+	if constexpr (HasName<MeshType>) {
+		name() = m.name();
+	}
 	unbindTextures();
 	mrb = MeshRenderBuffers<MeshType>(m);
 	mrs.setRenderCapabilityFrom(m);
@@ -132,13 +138,13 @@ void DrawableMesh<MeshType>::draw() const
 }
 
 template<MeshConcept MeshType>
-Point3d DrawableMesh<MeshType>::sceneCenter() const
+Point3d DrawableMesh<MeshType>::center() const
 {
 	return (mrb.bbMin() + mrb.bbMax()) / 2;
 }
 
 template<MeshConcept MeshType>
-double DrawableMesh<MeshType>::sceneRadius() const
+double DrawableMesh<MeshType>::radius() const
 {
 	return (mrb.bbMax() - mrb.bbMin()).norm() / 2;
 }

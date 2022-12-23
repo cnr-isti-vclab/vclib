@@ -24,6 +24,7 @@
 
 #include <vclib/algorithms/polygon.h>
 #include <vclib/exception/io_exception.h>
+#include <vclib/misc/file_info.h>
 #include <vclib/misc/tokenizer.h>
 
 #include "off/off.h"
@@ -206,7 +207,13 @@ void loadOff(
 {
 	std::ifstream file = internal::loadFileStream(filename);
 	uint nVertices, nFaces, nEdges;
+
+	if constexpr (HasName<MeshType>) {
+		m.name() = fileInfo::filenameWithoutExtension(filename);
+	}
+
 	FileMeshInfo fileInfo; // data that needs to be read from the file
+
 	off::loadOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
 	loadedInfo = fileInfo; // data that will be stored in the mesh!
 	if (enableOptionalComponents)

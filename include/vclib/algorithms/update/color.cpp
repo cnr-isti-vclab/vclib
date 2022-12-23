@@ -94,6 +94,22 @@ void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
 }
 
 /**
+ * @brief Sets the color component of a mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Color
+ *
+ * @param[in,out] m: the mesh on which set the color.
+ * @param[in] c: the color to set to the mesh.
+ */
+template<HasColor MeshType>
+void setMeshColor(MeshType& m, vcl::Color c)
+{
+	m.color() = c;
+}
+
+/**
  * @brief Sets the vertex colors from its incident face colors, computing a plain average of the
  * face colors.
  *

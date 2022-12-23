@@ -92,15 +92,15 @@ inline Box3d GLArea::fullBB() const
 		uint i = firstVisibleObject();
 
 		if (i < drawList->size()) {
-			Point3d sc = drawList->at(i).sceneCenter();
-			bb.min = sc - drawList->at(i).sceneRadius();
-			bb.max = sc + drawList->at(i).sceneRadius();
+			Point3d sc = drawList->at(i).center();
+			bb.min = sc - drawList->at(i).radius();
+			bb.max = sc + drawList->at(i).radius();
 
 			for (i = i+1; i < drawList->size(); i++) { //rest of the list
-				Point3d sc = drawList->at(i).sceneCenter();
-				Point3d tmp = sc - drawList->at(i).sceneRadius();
+				Point3d sc = drawList->at(i).center();
+				Point3d tmp = sc - drawList->at(i).radius();
 				bb.min = vcl::min(bb.min, tmp);
-				tmp = sc + drawList->at(i).sceneRadius();
+				tmp = sc + drawList->at(i).radius();
 				bb.max = vcl::max(bb.max, tmp);
 			}
 		}

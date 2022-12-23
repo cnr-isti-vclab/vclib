@@ -20,63 +20,34 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
-#define VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
+#include "name.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
+namespace vcl::comp {
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
-#include <vclib/render/generic_drawable_mesh.h>
-#include <vclib/render/mesh_render_buffers.h>
-
-namespace vcl {
-
-// From: https://blog.nobel-joergensen.com/2013/01/29/debugging-opengl-using-glgeterror/
-void _check_gl_error(const char *file, int line);
-
-///
-/// Usage
-/// [... some opengl calls]
-/// glCheckError();
-///
-#define check_gl_error() _check_gl_error(__FILE__,__LINE__)
-
-
-template<MeshConcept MeshType>
-class DrawableMesh : public GenericDrawableMesh
+/**
+ * @brief Returns the name of this object.
+ * @return The name of this object.
+ */
+inline std::string& Name::name()
 {
-public:
-	DrawableMesh();
-	DrawableMesh(const MeshType& m);
+	return n;
+}
 
-	void updateBuffers(const MeshType& m);
+/**
+ * @brief Returns the name of this object.
+ * @return The name of this object.
+ */
+inline const std::string& Name::name() const
+{
+	return n;
+}
 
-	// DrawableObject implementation
-	void init();
-	void draw() const;
-	vcl::Point3d center() const;
-	double radius() const;
-	DrawableMesh* clone() const;
-private:
-	void renderPass() const;
+template<typename Element>
+void Name::importFrom(const Element &e)
+{
+	if constexpr(HasName<Element>) {
+		n = e.name();
+	}
+}
 
-	void bindTextures();
-	void unbindTextures();
-
-	MeshRenderBuffers<MeshType> mrb;
-
-	std::vector<uint> textID;
-};
-
-} //namespace vcl
-
-#include "drawable_mesh.cpp"
-
-#endif // VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
+} // namespace vcl::comp
