@@ -35,6 +35,13 @@ GLArea::GLArea(std::shared_ptr<DrawableObjectVector> v, QWidget* parent) :
 {
 }
 
+void GLArea::init()
+{
+	for (DrawableObject* d : *drawList) {
+		d->init();
+	}
+}
+
 inline void GLArea::setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
 {
 	drawList = v;

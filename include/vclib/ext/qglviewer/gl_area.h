@@ -38,6 +38,8 @@ public:
 	GLArea(QWidget* parent = nullptr);
 	GLArea(std::shared_ptr<DrawableObjectVector> v, QWidget* parent = nullptr);
 
+	void init();
+
 	void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
 	std::shared_ptr<DrawableObjectVector> drawableObjectVector();
 	std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const;

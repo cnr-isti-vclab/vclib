@@ -35,6 +35,8 @@ public:
 
 	virtual ~DrawableObject() {}
 
+	virtual void init() {};
+
 	/**< @brief This member function must draw the object through OpenGL calls.
 	 It will be called at every frame. */
 	virtual void draw() const = 0;

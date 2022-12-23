@@ -59,6 +59,7 @@ public:
 	void updateBuffers(const MeshType& m);
 
 	// DrawableObject implementation
+	void init();
 	void draw() const;
 	vcl::Point3d sceneCenter() const;
 	double sceneRadius() const;

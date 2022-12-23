@@ -50,6 +50,12 @@ void DrawableMesh<MeshType>::updateBuffers(const MeshType& m)
 }
 
 template<MeshConcept MeshType>
+void DrawableMesh<MeshType>::init()
+{
+	bindTextures();
+}
+
+template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::draw() const
 {
 	if (mrs.isVisible()) {
@@ -380,7 +386,6 @@ template<MeshConcept MeshType>
 void DrawableMesh<MeshType>::bindTextures()
 {
 	textID.resize(mrb.textureNumber());
-	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	glGenTextures(mrb.textureNumber(), textID.data());
 
