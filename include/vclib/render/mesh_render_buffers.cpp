@@ -134,6 +134,13 @@ const float *MeshRenderBuffers<MeshType>::wedgeTexCoordsBufferData() const
 }
 
 template<MeshConcept MeshType>
+const short *MeshRenderBuffers<MeshType>::wedgeTextureIDsBufferData() const
+{
+	if (wTexIds.empty()) return nullptr;
+	return wTexIds.data();
+}
+
+template<MeshConcept MeshType>
 const float *MeshRenderBuffers<MeshType>::meshColorBufferData() const
 {
 	return mColor.data();
@@ -291,6 +298,7 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 		if constexpr(vcl::HasPerFaceWedgeTexCoords<MeshType>) {
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(m)) {
 				wTexCoords.reserve(m.faceNumber() * 3 * 2);
+				wTexIds.reserve(m.faceNumber());
 			}
 		}
 
@@ -347,6 +355,7 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 						wTexCoords.push_back(f.wedgeTexCoord(1).v());
 						wTexCoords.push_back(f.wedgeTexCoord(2).u());
 						wTexCoords.push_back(f.wedgeTexCoord(2).v());
+						wTexIds.push_back(f.wedgeTexCoord(0).nTexture());
 					}
 					else {
 						//todo

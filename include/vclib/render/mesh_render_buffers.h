@@ -54,6 +54,7 @@ public:
 	const float*         triangleColorBufferData() const;
 	const float*         vertexTexCoordsBufferData() const;
 	const float*         wedgeTexCoordsBufferData() const;
+	const short*         wedgeTextureIDsBufferData() const;
 	const float*         meshColorBufferData() const;
 	const unsigned char* textureBufferData(uint ti) const;
 
@@ -69,6 +70,7 @@ private:
 	std::vector<float>   tColors;
 	std::vector<float>   vTexCoords;
 	std::vector<float>   wTexCoords;
+	std::vector<short>   wTexIds;
 	std::array<float, 4> mColor;
 
 	vcl::Point3d            bbmin, bbmax;

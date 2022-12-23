@@ -329,9 +329,10 @@ void DrawableMesh<MeshType>::renderPass() const
 				int vid0_ptr = 3 * vid0;
 				int vid1_ptr = 3 * vid1;
 				int vid2_ptr = 3 * vid2;
+				short texture = textID[mrb.wedgeTextureIDsBufferData()[tid]];
 
 				if (mrs.isSurfaceShadingSmooth()) {
-					glBindTexture(GL_TEXTURE_2D, textID[0]);
+					glBindTexture(GL_TEXTURE_2D, texture);
 					glBegin(GL_TRIANGLES);
 					glColor4f(1,1,1,1);
 					glTexCoord2f(wedgTexCoords[tid * 6 + 0], wedgTexCoords[tid * 6 + 1]);
@@ -347,7 +348,7 @@ void DrawableMesh<MeshType>::renderPass() const
 					glBindTexture(GL_TEXTURE_2D, 0);
 				}
 				else {
-					glBindTexture(GL_TEXTURE_2D, textID[0]);
+					glBindTexture(GL_TEXTURE_2D, texture);
 					glBegin(GL_TRIANGLES);
 					glColor4f(1,1,1,1);
 					glTexCoord2f(wedgTexCoords[tid * 6 + 0], wedgTexCoords[tid * 6 + 1]);
