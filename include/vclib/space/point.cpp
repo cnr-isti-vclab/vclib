@@ -29,7 +29,7 @@ PointType min(const PointType &p1, const PointType &p2)
 {
 	PointType p;
 	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::min(p1[i], p2[2]);
+		p[i] = std::min(p1[i], p2[i]);
 	}
 	return p;
 }
@@ -39,7 +39,7 @@ PointType max(const PointType &p1, const PointType &p2)
 {
 	PointType p;
 	for (size_t i = 0; i < p.DIM; i++) {
-		p[i] = std::max(p1[i], p2[2]);
+		p[i] = std::max(p1[i], p2[i]);
 	}
 	return p;
 }
