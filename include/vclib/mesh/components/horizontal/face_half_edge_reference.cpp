@@ -497,6 +497,20 @@ void FaceHalfEdgeReference<HalfEdge>::setWedgeTexCoords(
 }
 
 template<typename HalfEdge>
+template<HasTexCoord HE>
+short& FaceHalfEdgeReference<HalfEdge>::textureIndex()
+{
+	return texIndex;
+}
+
+template<typename HalfEdge>
+template<HasTexCoord HE>
+const short& FaceHalfEdgeReference<HalfEdge>::textureIndex() const
+{
+	return texIndex;
+}
+
+template<typename HalfEdge>
 bool FaceHalfEdgeReference<HalfEdge>::isWedgeTexCoordsEnabled() const requires HasTexCoord<HalfEdge>
 {
 	if constexpr (HasOptionalTexCoord<HalfEdge>) {

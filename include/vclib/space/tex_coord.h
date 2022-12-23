@@ -37,8 +37,8 @@ public:
 	using ScalarType = Scalar;
 
 	TexCoord();
-	TexCoord(const Scalar& s1, const Scalar& s2, short n = 0);
-	TexCoord(const Point2<Scalar>& p, short n = 0);
+	TexCoord(const Scalar& s1, const Scalar& s2);
+	TexCoord(const Point2<Scalar>& p);
 
 	template<typename S>
 	TexCoord<S> cast() const;
@@ -51,9 +51,6 @@ public:
 	void    setV(Scalar s);
 	void    set(Scalar u, Scalar v);
 
-	short  nTexture() const;
-	short& nTexture();
-
 	// operators
 	Scalar&       operator()(uint i);
 	const Scalar& operator()(uint i) const;
@@ -64,7 +61,6 @@ public:
 
 private:
 	Point2<Scalar> coord;
-	short          n;
 };
 
 using TexCoordi = TexCoord<int>;

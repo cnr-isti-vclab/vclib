@@ -328,7 +328,7 @@ void loadFace(
 						}
 						f.wedgeTexCoord(i) = wedgeTexCoords[wids[i]].cast<typename FaceType::WedgeTexCoordType::ScalarType>();
 						if (currentMaterial.hasTexture){
-							f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
+							f.textureIndex() = currentMaterial.mapId;
 						}
 					}
 				}
@@ -352,7 +352,7 @@ void loadFace(
 							// set the wedge texcoord in the same position of the vertex
 							f.wedgeTexCoord(i) = wedgeTexCoords[wids[pos]].cast<typename FaceType::WedgeTexCoordType::ScalarType>();
 							if (currentMaterial.hasTexture){
-								f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
+								f.textureIndex() = currentMaterial.mapId;
 							}
 						}
 					}
@@ -462,9 +462,6 @@ void loadObj(
 					for (uint i = 0; i < 2; ++i) {
 						tf[i] = internal::readDouble<double>(token);
 					}
-					// store also the texture id, if present in the currentMaterial
-					if (currentMaterial.hasTexture)
-						tf.nTexture() = currentMaterial.mapId;
 					texCoords.push_back(tf);
 				}
 			}

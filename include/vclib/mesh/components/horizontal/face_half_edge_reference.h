@@ -189,6 +189,12 @@ public:
 	template<HasTexCoord HE = HalfEdge>
 	void setWedgeTexCoords(const std::vector<typename HE::TexCoordType>& list);
 
+	template<HasTexCoord HE = HalfEdge>
+	short& textureIndex();
+
+	template<HasTexCoord HE = HalfEdge>
+	const short& textureIndex() const;
+
 	bool isWedgeTexCoordsEnabled() const requires HasTexCoord<HalfEdge>;
 
 	/* Iterator Member functions */
@@ -262,6 +268,8 @@ protected:
 private:
 	HalfEdge*              ohe = nullptr; // outer half edge
 	std::vector<HalfEdge*> ihe;           // inner half edges, one for each hole of the face
+
+	short texIndex = 0;
 };
 
 } // namespace vcl::comp

@@ -162,9 +162,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 				hasBeenRead = true;
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh
 				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
-					for (uint i = 0; i < mesh.face(ff).vertexNumber(); ++i) {
-						mesh.face(ff).wedgeTexCoord(i).nTexture() = n;
-					}
+					mesh.face(ff).textureIndex() = n;
 				}
 			}
 		}
@@ -306,7 +304,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 			}
 			if (p.name == ply::texnumber) {
 				if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-					io::internal::writeProperty(file, f.wedgeTexCoord(0).nTexture(), p.type, bin);
+					io::internal::writeProperty(file, f.textureIndex(), p.type, bin);
 					hasBeenWritten = true;
 				}
 			}

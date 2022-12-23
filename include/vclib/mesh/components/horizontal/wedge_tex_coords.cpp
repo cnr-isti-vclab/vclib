@@ -66,6 +66,18 @@ void WedgeTexCoords<Scalar, N>::setWedgeTexCoords(const std::vector<vcl::TexCoor
 }
 
 template<typename Scalar, int N>
+short& WedgeTexCoords<Scalar, N>::textureIndex()
+{
+	return texIndex;
+}
+
+template<typename Scalar, int N>
+const short& WedgeTexCoords<Scalar, N>::textureIndex() const
+{
+	return texIndex;
+}
+
+template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::WedgeTexCoordsIterator
 WedgeTexCoords<Scalar, N>::wedgeTexCoordBegin()
 {
@@ -176,6 +188,7 @@ void WedgeTexCoords<Scalar, N>::importWedgeTexCoordsFrom(const Element& e)
 	for (uint i = 0; i < e.vertexNumber(); ++i){
 		wedgeTexCoord(i) = e.wedgeTexCoord(i).template cast<Scalar>();
 	}
+	texIndex = e.textureIndex();
 }
 
 } // namespace vcl::comp

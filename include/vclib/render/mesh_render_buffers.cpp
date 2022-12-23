@@ -355,7 +355,7 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 						wTexCoords.push_back(f.wedgeTexCoord(1).v());
 						wTexCoords.push_back(f.wedgeTexCoord(2).u());
 						wTexCoords.push_back(f.wedgeTexCoord(2).v());
-						wTexIds.push_back(f.wedgeTexCoord(0).nTexture());
+						wTexIds.push_back(f.textureIndex());
 					}
 					else {
 						//todo

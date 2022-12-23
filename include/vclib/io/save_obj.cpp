@@ -62,13 +62,7 @@ obj::Material materialFromFace(const FaceType& f, const MeshType& m, const FileM
 	if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
 		if (fi.hasFaceWedgeTexCoords()) {
 			mat.hasTexture = true;
-			mat.map_Kd = m.texture(f.wedgeTexCoord(0).nTexture());
-		}
-	}
-	if constexpr (HasPerVertexTexCoord<MeshType>) {
-		if (fi.hasVertexTexCoords()) {
-			mat.hasTexture = true;
-			mat.map_Kd = m.texturePath(f.vertex(0)->texCoord().nTexture());
+			mat.map_Kd = m.texture(f.textureIndex());
 		}
 	}
 	return mat;

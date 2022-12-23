@@ -61,6 +61,9 @@ public:
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
 
+	short& textureIndex();
+	const short& textureIndex() const;
+
 	constexpr bool isWedgeTexCoordsEnabled() const { return true; }
 
 	/* Iterator Member functions */
@@ -93,6 +96,8 @@ protected:
 private:
 	template<typename Element>
 	void importWedgeTexCoordsFrom(const Element& e);
+
+	short texIndex;
 };
 
 } // namespace vcl::comp

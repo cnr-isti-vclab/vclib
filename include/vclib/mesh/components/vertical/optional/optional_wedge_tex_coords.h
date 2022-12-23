@@ -61,11 +61,15 @@ public:
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 
-	// the AdjFacesContainer type will be array or vector, depending on N value
-	using WedgeTexCoordsContainer = typename std::conditional<
-		(N >= 0),
-		typename std::array<vcl::TexCoord<Scalar>, ARRAY_SIZE>,
-		typename std::vector<vcl::TexCoord<Scalar>>>::type;
+	// the WedgeTexCoordsContainer is a pair Container - short
+	// the Container will be array or vector, depending on N value
+	// short is the index of the texture used by the current container of wedge texcoords
+	using WedgeTexCoordsContainer =
+		std::pair<
+			typename std::conditional<(N >= 0),
+				typename std::array<vcl::TexCoord<Scalar>, ARRAY_SIZE>,
+				typename std::vector<vcl::TexCoord<Scalar>>>::type,
+			short>;
 
 	static const int WEDGE_TEX_COORD_NUMBER = N;
 
@@ -101,6 +105,9 @@ public:
 
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
+
+	short& textureIndex();
+	const short& textureIndex() const;
 
 	bool isWedgeTexCoordsEnabled() const;
 

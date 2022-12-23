@@ -81,14 +81,6 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 			}
 		}
 	}
-	if (p.name == ply::texnumber) {
-		if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-			if (vcl::isPerVertexTexCoordEnabled(mesh)) {
-				v.texCoord().nTexture() = io::internal::readProperty<uint>(file, p.type);
-				hasBeenRead = true;
-			}
-		}
-	}
 	if (!hasBeenRead) {
 		if (p.list) {
 			uint s = io::internal::readProperty<int>(file, p.listSizeType);
@@ -179,12 +171,6 @@ void saveVertices(
 				if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
 					const uint a = p.name - ply::texture_u;
 					io::internal::writeProperty(file, v.texCoord()[a], p.type, bin);
-					hasBeenWritten = true;
-				}
-			}
-			if (p.name == ply::texnumber) {
-				if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-					io::internal::writeProperty(file, v.texCoord().nTexture(), p.type, bin);
 					hasBeenWritten = true;
 				}
 			}
