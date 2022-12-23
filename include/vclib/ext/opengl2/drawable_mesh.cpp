@@ -320,9 +320,6 @@ void DrawableMesh<MeshType>::renderPass() const
 			// todo
 		}
 		else if (mrs.isSurfaceColorPerWedgeTexcoords()) {
-			glColor3f(1, 1, 1);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, textID[0]);
 			int n_tris = nt;
 			for (int tid = 0; tid < n_tris; ++tid) {
 				int tid_ptr  = 3 * tid;
@@ -334,7 +331,9 @@ void DrawableMesh<MeshType>::renderPass() const
 				int vid2_ptr = 3 * vid2;
 
 				if (mrs.isSurfaceShadingSmooth()) {
+					glBindTexture(GL_TEXTURE_2D, textID[0]);
 					glBegin(GL_TRIANGLES);
+					glColor4f(1,1,1,1);
 					glTexCoord2f(wedgTexCoords[tid * 6 + 0], wedgTexCoords[tid * 6 + 1]);
 					glNormal3fv(&(vertexNormals[vid0_ptr]));
 					glVertex3fv(&(coords[vid0_ptr]));
@@ -345,9 +344,12 @@ void DrawableMesh<MeshType>::renderPass() const
 					glNormal3fv(&(vertexNormals[vid2_ptr]));
 					glVertex3fv(&(coords[vid2_ptr]));
 					glEnd();
+					glBindTexture(GL_TEXTURE_2D, 0);
 				}
 				else {
+					glBindTexture(GL_TEXTURE_2D, textID[0]);
 					glBegin(GL_TRIANGLES);
+					glColor4f(1,1,1,1);
 					glTexCoord2f(wedgTexCoords[tid * 6 + 0], wedgTexCoords[tid * 6 + 1]);
 					glNormal3fv(&(triangleNormals[tid_ptr]));
 					glVertex3fv(&(coords[vid0_ptr]));
@@ -358,6 +360,7 @@ void DrawableMesh<MeshType>::renderPass() const
 					glNormal3fv(&(triangleNormals[tid_ptr]));
 					glVertex3fv(&(coords[vid2_ptr]));
 					glEnd();
+					glBindTexture(GL_TEXTURE_2D, 0);
 				}
 			}
 		}

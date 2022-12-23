@@ -93,6 +93,9 @@ public:
 	Array(vcl::NestedInitializerLists<T, N> values);
 
 	constexpr unsigned long int dimensions() const;
+
+	bool empty() const;
+
 	template<typename... I>
 	T& operator()(I... indices);
 	template<typename... I>
@@ -101,6 +104,8 @@ public:
 	T* cArray(I... indices);
 	template<typename... I>
 	const T*              cArray(I... indices) const;
+	T* data();
+	const T* data() const;
 	std::vector<T>        stdVector();
 	const std::vector<T>& stdVector() const;
 

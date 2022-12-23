@@ -33,17 +33,15 @@
 #include "../../../external/stb-master/stb/stb_image.h"
 #endif
 
+#include <vclib/space/array.h>
+
 namespace vcl {
 
 class Image
 {
 public:
 	Image();
-	Image(const Image& oth);
-	Image(Image&& oth);
 	Image(const std::string& filename);
-
-	~Image();
 
 	bool isNull() const;
 
@@ -53,18 +51,16 @@ public:
 
 	const unsigned char* data() const;
 
-	/// @private
-	friend void swap(Image& i1, Image& i2);
-	void swap(Image& oth);
+	bool load(const std::string& filename);
 
-	Image& operator=(Image oth);
+	void mirror(bool horizontal = false, bool vertical = true);
 
 private:
 	unsigned char* dataImage = nullptr;
 	int h = 0, w = 0;
-};
 
-inline void swap(Image& i1, Image& i2);
+	vcl::Array2<uint32_t> img;
+};
 
 } // namespace vcl
 

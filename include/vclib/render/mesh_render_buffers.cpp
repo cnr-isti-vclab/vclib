@@ -364,7 +364,9 @@ void MeshRenderBuffers<MeshType>::fillTextures(const MeshType &m)
 {
 	if constexpr(vcl::HasTexturePaths<MeshType>) {
 		for (uint i = 0; i < m.textureNumber(); ++i) {
-			textures.push_back(vcl::Image(m.meshBasePath() + m.texturePath(i)));
+			vcl::Image txt(m.meshBasePath() + m.texturePath(i));
+			txt.mirror();
+			textures.push_back(txt);
 		}
 	}
 }
@@ -399,7 +401,6 @@ void MeshRenderBuffers<MeshType>::fillFaceNromals(const FaceType &f, bool triang
 			tNormals.push_back(n.z());
 		}
 	}
-
 }
 
 } // namespace vcl

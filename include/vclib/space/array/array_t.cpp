@@ -92,6 +92,12 @@ constexpr unsigned long int Array<T, N>::dimensions() const
 	return N;
 }
 
+template<class T, size_t N>
+bool Array<T, N>::empty() const
+{
+	return v.empty();
+}
+
 /**
  * @brief Operator () that allows to access one element of the array. It can be used as left or
  * right value.
@@ -216,6 +222,18 @@ const T* Array<T, N>::cArray(I... indices) const
 		ind *= sizes[i];
 	}
 	return &v[ind];
+}
+
+template<class T, size_t N>
+T* Array<T, N>::data()
+{
+	return v.data();
+}
+
+template<class T, size_t N>
+const T* Array<T, N>::data() const
+{
+	return v.data();
 }
 
 /**

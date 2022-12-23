@@ -28,75 +28,67 @@ inline Image::Image()
 {
 }
 
-inline Image::Image(const Image &oth)
-{
-	dataImage = new unsigned char[oth.sizeInBytes()];
-	std::copy(oth.dataImage, oth.dataImage + oth.sizeInBytes(), dataImage);
-}
-
-Image::Image(Image &&oth)
-{
-	swap(oth);
-}
-
 inline Image::Image(const std::string &filename)
 {
-	// we need to make sure that we are using memory dynamically allocated using new
-	// stb uses malloc, therefore we first load in a temporary buffer, and then we copy the data
-	unsigned char* tmp = stbi_load(filename.c_str(), &w, &h, nullptr, 4); // force 4 channels
-	std::size_t size = w * h * 4;
-	dataImage = new unsigned char[size];
-	std::copy(tmp, tmp + size, dataImage);
-	stbi_image_free(tmp);
-}
-
-inline Image::~Image()
-{
-	delete[] dataImage;
+	load(filename);
 }
 
 inline bool Image::isNull() const
 {
-	return dataImage == nullptr;
+	return img.empty();
 }
 
 inline int Image::height() const
 {
-	return h;
+	return img.rows();
 }
 
 inline int Image::width() const
 {
-	return w;
+	return img.cols();
 }
 
 inline std::size_t Image::sizeInBytes() const
 {
-	return h * w * 4;
+	return img.rows() * img.cols() * 4;
 }
 
 inline const unsigned char* Image::data() const
 {
-	return dataImage;
+	return (unsigned char* ) img.data();
 }
 
-inline void Image::swap(Image &oth)
+inline bool Image::load(const std::string &filename)
 {
-	vcl::swap(*this, oth);
+	int w, h;
+	// we first load the data, then we copy it into our array2d, and then we free it.
+	unsigned char* tmp = stbi_load(filename.c_str(), &w, &h, nullptr, 4); // force 4 channels
+	if (tmp) {
+		std::size_t size = w * h * 4;
+
+		img.resize(w, h);
+		std::copy(tmp, tmp + size, (unsigned char*)img.data());
+		stbi_image_free(tmp);
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
-inline Image &Image::operator=(Image oth)
+void Image::mirror(bool horizontal, bool vertical)
 {
-	swap(oth);
-	return *this;
-}
-
-inline void swap(Image &i1, Image &i2)
-{
-	using std::swap;
-	swap(i1.dataImage, i2.dataImage);
-	swap(i1.h, i2.h);
-	swap(i1.w, i2.w);
+	if (horizontal) {
+		for (uint i = 0; i < img.rows(); i++) {
+			std::reverse(img.cArray(i), img.cArray(i) + img.cols());
+		}
+	}
+	if (vertical) {
+		for (uint i = 0; i < img.rows() / 2; i++) {
+			uint mir = img.rows() - i - 1;
+			std::swap_ranges(img.cArray(i), img.cArray(i) + img.cols(), img.cArray(mir));
+		}
+	}
 }
 
 } // namespace vcl
