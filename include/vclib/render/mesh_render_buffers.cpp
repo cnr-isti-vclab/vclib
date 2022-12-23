@@ -247,6 +247,8 @@ template<MeshConcept MeshType>
 void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 {
 	if constexpr (vcl::HasFaces<MeshType>) {
+		std::vector<std::vector<uint>> vinds; // necessary for wedge attribs
+
 		if constexpr (vcl::HasTriangles<MeshType>) {
 			nt = m.faceNumber();
 
@@ -261,6 +263,7 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 			}
 		}
 		else {
+			vinds.reserve(m.faceNumber());
 			triPolyMap.reserve(m.faceNumber(), m.faceNumber());
 			tris.reserve(m.faceNumber());
 
@@ -272,6 +275,7 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 					tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(1))));
 					tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(2))));
 					nt += 1;
+					vinds.push_back({0, 1, 2});
 				}
 				else {
 					std::vector<uint> vind = vcl::mesh::earCut(f);
@@ -282,10 +286,10 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 						tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(vind[vi + 2]))));
 					}
 					nt += vind.size() / 3;
+					vinds.push_back(vind);
 				}
 			}
 		}
-
 
 		tNormals.reserve(m.faceNumber() * 3);
 
@@ -358,7 +362,17 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 						wTexIds.push_back(f.textureIndex());
 					}
 					else {
-						//todo
+						const uint fi = m.faceIndexIfCompact(m.index(f));
+						const std::vector<uint>& vind = vinds[fi]; // triangulation of f
+						for (uint vi = 0; vi < vind.size(); vi+=3) { // for each triangle of f
+							wTexCoords.push_back(f.wedgeTexCoord(vind[vi + 0]).u());
+							wTexCoords.push_back(f.wedgeTexCoord(vind[vi + 0]).v());
+							wTexCoords.push_back(f.wedgeTexCoord(vind[vi + 1]).u());
+							wTexCoords.push_back(f.wedgeTexCoord(vind[vi + 1]).v());
+							wTexCoords.push_back(f.wedgeTexCoord(vind[vi + 2]).u());
+							wTexCoords.push_back(f.wedgeTexCoord(vind[vi + 2]).v());
+							wTexIds.push_back(f.textureIndex());
+						}
 					}
 				}
 			}
