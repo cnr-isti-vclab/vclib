@@ -20,38 +20,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
-#define VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
-
-#include <QFrame>
-
-#include <vclib/render/drawable_object_vector.h>
+#include "q_clickable_label.h"
 
 namespace vcl {
 
-namespace Ui {
-class DrawableObjectVectorFrame;
+QClickableLabel::QClickableLabel(QWidget* parent, Qt::WindowFlags) : QLabel(parent)
+{
 }
 
-class DrawableObjectVectorFrame : public QFrame
+QClickableLabel::~QClickableLabel()
 {
-	Q_OBJECT
+}
 
-public:
-	explicit DrawableObjectVectorFrame(QWidget *parent = nullptr);
-	explicit DrawableObjectVectorFrame(std::shared_ptr<DrawableObjectVector> v, QWidget *parent = nullptr);
-	~DrawableObjectVectorFrame();
-
-	void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
-
-private:
-	// this frame does not normally own this drawList
-	std::shared_ptr<DrawableObjectVector> drawList;
-	Ui::DrawableObjectVectorFrame *ui;
-
-	void updateDrawableVectorWidget();
-};
+void QClickableLabel::mousePressEvent(QMouseEvent*)
+{
+	emit clicked();
+}
 
 } // namespace vcl
-
-#endif // VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H

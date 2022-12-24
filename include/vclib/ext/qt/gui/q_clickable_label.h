@@ -20,38 +20,38 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
-#define VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
+#ifndef VCLIB_EXT_QT_GUI_Q_CLICKABLE_LABEL_H
+#define VCLIB_EXT_QT_GUI_Q_CLICKABLE_LABEL_H
 
-#include <QFrame>
-
-#include <vclib/render/drawable_object_vector.h>
+#include <QLabel>
+#include <QWidget>
+#include <Qt>
 
 namespace vcl {
 
-namespace Ui {
-class DrawableObjectVectorFrame;
-}
-
-class DrawableObjectVectorFrame : public QFrame
+/**
+ * @brief The QClickableLabel class
+ *
+ * A QLabel class which can be clicked (clicked event).
+ *
+ * Usage: just Promote a QLabel to a vcl::QClickableLabel
+ *
+ * @link https://wiki.qt.io/Clickable_QLabel
+ */
+class QClickableLabel : public QLabel
 {
 	Q_OBJECT
-
 public:
-	explicit DrawableObjectVectorFrame(QWidget *parent = nullptr);
-	explicit DrawableObjectVectorFrame(std::shared_ptr<DrawableObjectVector> v, QWidget *parent = nullptr);
-	~DrawableObjectVectorFrame();
+	explicit QClickableLabel(QWidget* parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
+	~QClickableLabel();
 
-	void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
+signals:
+	void clicked();
 
-private:
-	// this frame does not normally own this drawList
-	std::shared_ptr<DrawableObjectVector> drawList;
-	Ui::DrawableObjectVectorFrame *ui;
-
-	void updateDrawableVectorWidget();
+protected:
+	void mousePressEvent(QMouseEvent* event);
 };
 
 } // namespace vcl
 
-#endif // VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
+#endif // VCLIB_EXT_QT_GUI_Q_CLICKABLE_LABEL_H

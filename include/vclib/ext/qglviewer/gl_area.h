@@ -50,7 +50,7 @@ protected:
 	virtual void    draw();
 
 private:
-	// the viewer owns the DrawableObjects contained in this list
+	// this GLArea does not normally own this drawList
 	std::shared_ptr<DrawableObjectVector> drawList;
 
 	uint firstVisibleObject() const;

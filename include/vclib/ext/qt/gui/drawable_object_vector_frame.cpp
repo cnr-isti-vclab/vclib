@@ -21,23 +21,43 @@
  ****************************************************************************/
 
 #include "drawable_object_vector_frame.h"
-#include "qcheckbox.h"
 #include "ui_drawable_object_vector_frame.h"
 
 #include <QStandardItemModel>
 
 namespace vcl {
 
-DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget *parent) :
+DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
 		QFrame(parent),
 		ui(new Ui::DrawableObjectVectorFrame)
 {
 	ui->setupUi(this);
 }
 
+DrawableObjectVectorFrame::DrawableObjectVectorFrame(
+	std::shared_ptr<DrawableObjectVector> v,
+	QWidget*                              parent) :
+		DrawableObjectVectorFrame(parent)
+{
+	drawList = v;
+	updateDrawableVectorWidget();
+
+}
+
 DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
 {
 	delete ui;
+}
+
+void DrawableObjectVectorFrame::setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
+{
+	drawList = v;
+	updateDrawableVectorWidget();
+}
+
+void DrawableObjectVectorFrame::updateDrawableVectorWidget()
+{
+
 }
 
 } // namespace vcl

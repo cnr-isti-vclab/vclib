@@ -35,6 +35,7 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
 
 	drawVector = std::make_shared<vcl::DrawableObjectVector>();
 	ui->glArea->setDrawableObjectVector(drawVector);
+	ui->drawVectorFrame->setDrawableObjectVector(drawVector);
 
 	connect(ui->renderSettingsFrame, SIGNAL(settingsUpdated()), this, SLOT(renderSettingsUpdated()));
 	ui->rightArea->setVisible(false);
@@ -62,6 +63,7 @@ void ViewerMainWindow::setDrawableObjectVector(std::shared_ptr<vcl::DrawableObje
 		ui->rightArea->setVisible(false);
 	}
 	ui->glArea->setDrawableObjectVector(v);
+	ui->drawVectorFrame->setDrawableObjectVector(drawVector);
 	ui->glArea->fitScene();
 }
 
