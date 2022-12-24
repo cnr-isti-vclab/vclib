@@ -251,6 +251,7 @@ set(HEADERS
 	include/vclib/space/array/array3.h
 	include/vclib/space/array/array4.h
 	include/vclib/space/array/array_bool.h
+	include/vclib/space/grid/grid_t.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
@@ -382,6 +383,7 @@ set(SOURCES
 	include/vclib/space/array/array2.cpp
 	include/vclib/space/array/array3.cpp
 	include/vclib/space/array/array4.cpp
+	include/vclib/space/grid/grid_t.cpp
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/point/point2.cpp
 	include/vclib/space/point/point3.cpp
