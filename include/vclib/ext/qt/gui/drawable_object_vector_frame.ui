@@ -26,6 +26,9 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
+   <item>
+    <widget class="QListWidget" name="listWidget"/>
+   </item>
   </layout>
  </widget>
  <resources/>

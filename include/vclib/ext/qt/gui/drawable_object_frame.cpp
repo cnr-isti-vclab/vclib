@@ -20,55 +20,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "drawable_object_vector_frame.h"
-#include "ui_drawable_object_vector_frame.h"
-
-#include <QStandardItemModel>
+#include "drawable_object_frame.h"
+#include "ui_drawable_object_frame.h"
 
 namespace vcl {
 
-DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
+DrawableObjectFrame::DrawableObjectFrame(DrawableObject *obj, QWidget *parent) :
 		QFrame(parent),
-		ui(new Ui::DrawableObjectVectorFrame)
+		ui(new Ui::DrawableObjectFrame),
+		obj(obj)
 {
 	ui->setupUi(this);
+	assert(obj);
+	ui->objNameLabel->setText(QString::fromStdString(obj->name()));
+	ui->visibilityCheckBox->setChecked(obj->isVisible());
 }
 
-DrawableObjectVectorFrame::DrawableObjectVectorFrame(
-	std::shared_ptr<DrawableObjectVector> v,
-	QWidget*                              parent) :
-		DrawableObjectVectorFrame(parent)
-{
-	drawList = v;
-	updateDrawableVectorWidget();
-
-}
-
-DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
+DrawableObjectFrame::~DrawableObjectFrame()
 {
 	delete ui;
 }
 
-void DrawableObjectVectorFrame::setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
-{
-	drawList = v;
-	updateDrawableVectorWidget();
-}
 
-void DrawableObjectVectorFrame::updateDrawableVectorWidget()
+void DrawableObjectFrame::on_visibilityCheckBox_stateChanged(int arg1)
 {
-	ui->listWidget->clear();
-	for (auto* d : *drawList) {
-		QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
-		DrawableObjectFrame* frame = new DrawableObjectFrame(d, ui->listWidget);
-
-		item->setSizeHint(frame->sizeHint());
-		ui->listWidget->addItem(item);
-		ui->listWidget->setItemWidget(item, frame);
-	}
-	if (drawList->size() > 0) {
-		ui->listWidget->item(0)->setSelected(true);
-	}
+	obj->setVisibility(arg1 == Qt::Checked);
 }
 
 } // namespace vcl

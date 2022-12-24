@@ -27,6 +27,8 @@
 
 #include <vclib/render/drawable_object_vector.h>
 
+#include "drawable_object_frame.h"
+
 namespace vcl {
 
 namespace Ui {

@@ -20,55 +20,35 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "drawable_object_vector_frame.h"
-#include "ui_drawable_object_vector_frame.h"
+#ifndef VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_FRAME_H
+#define VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_FRAME_H
 
-#include <QStandardItemModel>
+#include <QFrame>
+
+#include <vclib/render/drawable_object.h>
 
 namespace vcl {
 
-DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
-		QFrame(parent),
-		ui(new Ui::DrawableObjectVectorFrame)
-{
-	ui->setupUi(this);
+namespace Ui {
+class DrawableObjectFrame;
 }
 
-DrawableObjectVectorFrame::DrawableObjectVectorFrame(
-	std::shared_ptr<DrawableObjectVector> v,
-	QWidget*                              parent) :
-		DrawableObjectVectorFrame(parent)
+class DrawableObjectFrame : public QFrame
 {
-	drawList = v;
-	updateDrawableVectorWidget();
+	Q_OBJECT
 
-}
+public:
+	explicit DrawableObjectFrame(DrawableObject* obj, QWidget *parent = nullptr);
+	~DrawableObjectFrame();
 
-DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
-{
-	delete ui;
-}
+private slots:
+	void on_visibilityCheckBox_stateChanged(int arg1);
 
-void DrawableObjectVectorFrame::setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
-{
-	drawList = v;
-	updateDrawableVectorWidget();
-}
-
-void DrawableObjectVectorFrame::updateDrawableVectorWidget()
-{
-	ui->listWidget->clear();
-	for (auto* d : *drawList) {
-		QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
-		DrawableObjectFrame* frame = new DrawableObjectFrame(d, ui->listWidget);
-
-		item->setSizeHint(frame->sizeHint());
-		ui->listWidget->addItem(item);
-		ui->listWidget->setItemWidget(item, frame);
-	}
-	if (drawList->size() > 0) {
-		ui->listWidget->item(0)->setSelected(true);
-	}
-}
+private:
+	Ui::DrawableObjectFrame *ui;
+	DrawableObject* obj;
+};
 
 } // namespace vcl
+
+#endif // VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_FRAME_H

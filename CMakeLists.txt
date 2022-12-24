@@ -420,16 +420,19 @@ if (TARGET vclib-external-qt)
 
 	# sources that must be built
 	list(APPEND HEADERS_LIB
+		include/vclib/ext/qt/gui/drawable_object_frame.h
 		include/vclib/ext/qt/gui/drawable_object_vector_frame.h
 		include/vclib/ext/qt/gui/mesh_render_settings_frame.h
 		include/vclib/ext/qt/gui/q_clickable_label.h)
 
 	list(APPEND SOURCES_LIB
+		include/vclib/ext/qt/gui/drawable_object_frame.cpp
 		include/vclib/ext/qt/gui/drawable_object_vector_frame.cpp
 		include/vclib/ext/qt/gui/mesh_render_settings_frame.cpp
 		include/vclib/ext/qt/gui/q_clickable_label.cpp)
 
 	list(APPEND FORMS_LIB
+		include/vclib/ext/qt/gui/drawable_object_frame.ui
 		include/vclib/ext/qt/gui/drawable_object_vector_frame.ui
 		include/vclib/ext/qt/gui/mesh_render_settings_frame.ui)
 
