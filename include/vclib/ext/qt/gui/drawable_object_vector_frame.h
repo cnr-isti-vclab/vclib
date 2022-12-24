@@ -46,6 +46,15 @@ public:
 
 	void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
 
+	uint selectedDrawableObject() const;
+
+signals:
+	void drawableObjectVisibilityChanged();
+	void drawableObjectSelectionChanged(uint i);
+
+private slots:
+	void on_listWidget_itemSelectionChanged();
+
 private:
 	// this frame does not normally own this drawList
 	std::shared_ptr<DrawableObjectVector> drawList;

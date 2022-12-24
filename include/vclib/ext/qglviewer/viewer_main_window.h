@@ -44,6 +44,7 @@ public:
 	void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
 
 public slots:
+	void selectedDrawableObjectChanged(uint i);
 	void renderSettingsUpdated();
 
 private:

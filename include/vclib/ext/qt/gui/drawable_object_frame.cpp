@@ -45,6 +45,7 @@ DrawableObjectFrame::~DrawableObjectFrame()
 void DrawableObjectFrame::on_visibilityCheckBox_stateChanged(int arg1)
 {
 	obj->setVisibility(arg1 == Qt::Checked);
+	emit visibilityChanged();
 }
 
 } // namespace vcl

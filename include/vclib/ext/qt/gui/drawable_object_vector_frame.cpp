@@ -55,6 +55,17 @@ void DrawableObjectVectorFrame::setDrawableObjectVector(std::shared_ptr<Drawable
 	updateDrawableVectorWidget();
 }
 
+uint DrawableObjectVectorFrame::selectedDrawableObject() const
+{
+	auto item = ui->listWidget->selectedItems().first();
+	return ui->listWidget->row(item);
+}
+
+void DrawableObjectVectorFrame::on_listWidget_itemSelectionChanged()
+{
+	emit drawableObjectSelectionChanged(selectedDrawableObject());
+}
+
 void DrawableObjectVectorFrame::updateDrawableVectorWidget()
 {
 	ui->listWidget->clear();
@@ -65,6 +76,9 @@ void DrawableObjectVectorFrame::updateDrawableVectorWidget()
 		item->setSizeHint(frame->sizeHint());
 		ui->listWidget->addItem(item);
 		ui->listWidget->setItemWidget(item, frame);
+		connect(
+			frame, SIGNAL(visibilityChanged()),
+			this, SIGNAL(drawableObjectVisibilityChanged()));
 	}
 	if (drawList->size() > 0) {
 		ui->listWidget->item(0)->setSelected(true);

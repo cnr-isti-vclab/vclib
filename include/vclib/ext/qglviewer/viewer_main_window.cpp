@@ -37,7 +37,14 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
 	ui->glArea->setDrawableObjectVector(drawVector);
 	ui->drawVectorFrame->setDrawableObjectVector(drawVector);
 
-	connect(ui->renderSettingsFrame, SIGNAL(settingsUpdated()), this, SLOT(renderSettingsUpdated()));
+	connect(
+		ui->renderSettingsFrame, SIGNAL(settingsUpdated()),
+		this, SLOT(renderSettingsUpdated()));
+	connect(
+		ui->drawVectorFrame, SIGNAL(drawableObjectVisibilityChanged()),
+		ui->glArea, SLOT(update()));
+	connect(ui->drawVectorFrame, SIGNAL(drawableObjectSelectionChanged(uint)),
+			this, SLOT(selectedDrawableObjectChanged(uint)));
 	ui->rightArea->setVisible(false);
 }
 
@@ -49,6 +56,11 @@ ViewerMainWindow::~ViewerMainWindow()
 void ViewerMainWindow::setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v)
 {
 	drawVector = v;
+
+	// order here is important: drawVectorFrame must have the drawVector before the
+	// renderSettingsFrame!
+	ui->glArea->setDrawableObjectVector(drawVector);
+	ui->drawVectorFrame->setDrawableObjectVector(drawVector);
 	if (drawVector->size() > 0) {
 		try {
 			GenericDrawableMesh& m = dynamic_cast<GenericDrawableMesh&>(drawVector->at(0));
@@ -62,19 +74,33 @@ void ViewerMainWindow::setDrawableObjectVector(std::shared_ptr<vcl::DrawableObje
 	else {
 		ui->rightArea->setVisible(false);
 	}
-	ui->glArea->setDrawableObjectVector(v);
-	ui->drawVectorFrame->setDrawableObjectVector(drawVector);
 	ui->glArea->fitScene();
 }
 
+void ViewerMainWindow::selectedDrawableObjectChanged(uint i)
+{
+	try {
+		GenericDrawableMesh& m = dynamic_cast<GenericDrawableMesh&>(drawVector->at(i));
+		ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
+		ui->rightArea->setVisible(true);
+	}
+	catch(std::bad_cast exp) {
+		ui->rightArea->setVisible(false);
+	}
+}
+
 /**
- * @brief Slot called every time that the MeshRenderSettingsFrame emits 'settingsUpdated()'
+ * @brief Slot called every time that the MeshRenderSettingsFrame emits 'settingsUpdated()',
+ * that is when the user changes render settings of a GeneriDrawableMesh.
+ *
+ * We need to get the selected GeneriDrawableMesh first, and then update the settings to it.
  */
 void ViewerMainWindow::renderSettingsUpdated()
 {
+	uint i = ui->drawVectorFrame->selectedDrawableObject();
 	if (drawVector->size() > 0) {
 		// todo - get the selected mesh instead of the first
-		GenericDrawableMesh& m = dynamic_cast<GenericDrawableMesh&>(drawVector->at(0));
+		GenericDrawableMesh& m = dynamic_cast<GenericDrawableMesh&>(drawVector->at(i));
 		m.setRenderSettings(ui->renderSettingsFrame->meshRenderSettings());
 		ui->glArea->update();
 	}

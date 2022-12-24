@@ -41,6 +41,9 @@ public:
 	explicit DrawableObjectFrame(DrawableObject* obj, QWidget *parent = nullptr);
 	~DrawableObjectFrame();
 
+signals:
+	void visibilityChanged();
+
 private slots:
 	void on_visibilityCheckBox_stateChanged(int arg1);
 
