@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
-#define VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
+#ifndef VCL_EXT_OPENGL2_DRAWABLE_MESH_H
+#define VCL_EXT_OPENGL2_DRAWABLE_MESH_H
 
 #ifdef _WIN32
 #include <windows.h>
@@ -79,4 +79,4 @@ private:
 
 #include "drawable_mesh.cpp"
 
-#endif // VCLIB_EXT_OPENGL2_DRAWABLE_MESH_H
+#endif // VCL_EXT_OPENGL2_DRAWABLE_MESH_H

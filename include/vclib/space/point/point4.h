@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT4_H
-#define VCL_POINT4_H
+#ifndef VCL_SPACE_POINT_POINT4_H
+#define VCL_SPACE_POINT_POINT4_H
 
 #include "point_t.h"
 
@@ -58,4 +58,4 @@ using Point4d = Point4<double>;
 
 #include "point4.cpp"
 
-#endif // VCL_POINT4_H
+#endif // VCL_SPACE_POINT_POINT4_H

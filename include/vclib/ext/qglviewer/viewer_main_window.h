@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QGLVIEWER_VIEWER_MAIN_WINDOW_H
-#define VCLIB_EXT_QGLVIEWER_VIEWER_MAIN_WINDOW_H
+#ifndef VCL_EXT_QGLVIEWER_VIEWER_MAIN_WINDOW_H
+#define VCL_EXT_QGLVIEWER_VIEWER_MAIN_WINDOW_H
 
 #include <QMainWindow>
 
@@ -55,4 +55,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCLIB_EXT_QGLVIEWER_VIEWER_MAIN_WINDOW_H
+#endif // VCL_EXT_QGLVIEWER_VIEWER_MAIN_WINDOW_H

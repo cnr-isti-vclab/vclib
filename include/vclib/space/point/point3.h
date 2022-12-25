@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT3_H
-#define VCL_POINT3_H
+#ifndef VCL_SPACE_POINT_POINT3_H
+#define VCL_SPACE_POINT_POINT3_H
 
 #include "point_t.h"
 
@@ -56,4 +56,4 @@ using Point3d = Point3<double>;
 
 #include "point3.cpp"
 
-#endif // VCL_POINT3_H
+#endif // VCL_SPACE_POINT_POINT3_H

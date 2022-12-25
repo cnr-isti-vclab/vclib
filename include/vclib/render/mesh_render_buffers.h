@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_RENDER_MESH_RENDER_BUFFERS_H
-#define VCLIB_RENDER_MESH_RENDER_BUFFERS_H
+#ifndef VCL_RENDER_MESH_RENDER_BUFFERS_H
+#define VCL_RENDER_MESH_RENDER_BUFFERS_H
 
 #include <vclib/image/image.h>
 #include <vclib/mesh/requirements.h>
@@ -90,4 +90,4 @@ private:
 
 #include "mesh_render_buffers.cpp"
 
-#endif // VCLIB_RENDER_MESH_RENDER_BUFFERS_H
+#endif // VCL_RENDER_MESH_RENDER_BUFFERS_H

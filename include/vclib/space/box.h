@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_BOX_H
-#define VCL_BOX_H
+#ifndef VCL_SPACE_BOX_H
+#define VCL_SPACE_BOX_H
 
 #include "point.h"
 
@@ -80,4 +80,4 @@ using Box3d = Box<Point3d>;
 
 #include "box.cpp"
 
-#endif // VCL_BOX_H
+#endif // VCL_SPACE_BOX_H

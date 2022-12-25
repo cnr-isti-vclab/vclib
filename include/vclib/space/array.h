@@ -20,11 +20,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ARRAY_H
-#define VCL_ARRAY_H
+#ifndef VCL_SPACE_ARRAY_H
+#define VCL_SPACE_ARRAY_H
 
 #include "array/array2.h"
 #include "array/array3.h"
 #include "array/array4.h"
 
-#endif // VCL_ARRAY_H
+#endif // VCL_SPACE_ARRAY_H

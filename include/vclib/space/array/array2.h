@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ARRAY2_H
-#define VCL_ARRAY2_H
+#ifndef VCL_SPACE_ARRAY_ARRAY2_H
+#define VCL_SPACE_ARRAY_ARRAY2_H
 
 #include <iomanip>
 
@@ -56,4 +56,4 @@ std::ostream& operator<<(std::ostream& inputStream, const Array2<T>& a);
 
 #include "array2.cpp"
 
-#endif // VCL_ARRAY2_H
+#endif // VCL_SPACE_ARRAY_ARRAY2_H

@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ARRAY_BOOL_H
-#define VCL_ARRAY_BOOL_H
+#ifndef VCL_SPACE_ARRAY_ARRAY_BOOL_H
+#define VCL_SPACE_ARRAY_ARRAY_BOOL_H
 
 #include "array_t.h"
 
@@ -38,4 +38,4 @@ class Array<bool, N> : public Array<uint8_t, N>
 
 } // namespace vcl
 
-#endif // VCL_ARRAY_BOOL_H
+#endif // VCL_SPACE_ARRAY_ARRAY_BOOL_H

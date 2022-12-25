@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_STRING_H
-#define VCL_STRING_H
+#ifndef VCL_MISC_STRING_H
+#define VCL_MISC_STRING_H
 
 #include <string>
 
@@ -42,4 +42,4 @@ void removeWindowsNewLine(std::string& s);
 
 #include "string.cpp"
 
-#endif // VCL_STRING_H
+#endif // VCL_MISC_STRING_H

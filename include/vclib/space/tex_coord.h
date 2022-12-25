@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TEX_COORD_H
-#define VCL_TEX_COORD_H
+#ifndef VCL_SPACE_TEX_COORD_H
+#define VCL_SPACE_TEX_COORD_H
 
 #include "point/point2.h"
 
@@ -71,4 +71,4 @@ using TexCoordd = TexCoord<double>;
 
 #include "tex_coord.cpp"
 
-#endif // VCL_TEX_COORD_H
+#endif // VCL_SPACE_TEX_COORD_H

@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_COLOR_H
-#define VCL_COLOR_H
+#ifndef VCL_SPACE_COLOR_H
+#define VCL_SPACE_COLOR_H
 
 #include "point/point4.h"
 
@@ -145,4 +145,4 @@ std::vector<Color> colorScattering(uint n, float sat = 0.3, float val = 0.9);
 
 #include "color.cpp"
 
-#endif // VCL_COLOR_H
+#endif // VCL_SPACE_COLOR_H

@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCL_MISC_TYPES_H
+#define VCL_MISC_TYPES_H
 
 #define NOMINMAX
 
@@ -127,4 +127,4 @@ using IsDerivedFromTemplateSpecialization = typename std::invoke_result< interna
 
 } // namespace vcl
 
-#endif // VCL_TYPES_H
+#endif // VCL_MISC_TYPES_H

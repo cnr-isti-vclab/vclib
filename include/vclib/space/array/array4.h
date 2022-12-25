@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ARRAY4_H
-#define VCL_ARRAY4_H
+#ifndef VCL_SPACE_ARRAY_ARRAY4_H
+#define VCL_SPACE_ARRAY_ARRAY4_H
 
 #include "array_bool.h"
 
@@ -59,4 +59,4 @@ public:
 
 #include "array4.cpp"
 
-#endif // VCL_ARRAY4_H
+#endif // VCL_SPACE_ARRAY_ARRAY4_H

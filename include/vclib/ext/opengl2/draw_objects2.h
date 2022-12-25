@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_OPENGL2_DRAW_OBJECTS2_H
-#define VCLIB_EXT_OPENGL2_DRAW_OBJECTS2_H
+#ifndef VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
+#define VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
 
 #ifdef _WIN32
 #include <windows.h>
@@ -73,4 +73,4 @@ void drawQuad2(
 
 #include "opengl_objects2.cpp"
 
-#endif // VCLIB_EXT_OPENGL2_DRAW_OBJECTS2_H
+#endif // VCL_EXT_OPENGL2_DRAW_OBJECTS2_H

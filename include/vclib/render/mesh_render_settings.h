@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_RENDER_MESH_RENDER_SETTINGS_H
-#define VCLIB_RENDER_MESH_RENDER_SETTINGS_H
+#ifndef VCL_RENDER_MESH_RENDER_SETTINGS_H
+#define VCL_RENDER_MESH_RENDER_SETTINGS_H
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/color.h>
@@ -191,4 +191,4 @@ private:
 
 #include "mesh_render_settings.cpp"
 
-#endif // VCLIB_RENDER_MESH_RENDER_SETTINGS_H
+#endif // VCL_RENDER_MESH_RENDER_SETTINGS_H

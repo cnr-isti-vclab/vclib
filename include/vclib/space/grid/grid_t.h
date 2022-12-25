@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_GRID_T_H
-#define VCL_GRID_T_H
+#ifndef VCL_SPACE_GRID_GRID_T_H
+#define VCL_SPACE_GRID_GRID_T_H
 
 #include <vclib/space/box.h>
 
@@ -65,4 +65,4 @@ private:
 
 #include "grid_t.h"
 
-#endif // VCL_GRID_T_H
+#endif // VCL_SPACE_GRID_GRID_T_H

@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
-#define VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
+#ifndef VCL_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
+#define VCL_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
 
 #include <QFrame>
 
@@ -65,4 +65,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCLIB_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
+#endif // VCL_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H

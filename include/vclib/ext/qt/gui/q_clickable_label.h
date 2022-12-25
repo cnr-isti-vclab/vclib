@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QT_GUI_Q_CLICKABLE_LABEL_H
-#define VCLIB_EXT_QT_GUI_Q_CLICKABLE_LABEL_H
+#ifndef VCL_EXT_QT_GUI_Q_CLICKABLE_LABEL_H
+#define VCL_EXT_QT_GUI_Q_CLICKABLE_LABEL_H
 
 #include <QLabel>
 #include <QWidget>
@@ -54,4 +54,4 @@ protected:
 
 } // namespace vcl
 
-#endif // VCLIB_EXT_QT_GUI_Q_CLICKABLE_LABEL_H
+#endif // VCL_EXT_QT_GUI_Q_CLICKABLE_LABEL_H

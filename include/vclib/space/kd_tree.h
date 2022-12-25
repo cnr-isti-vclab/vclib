@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_KD_TREE_H
-#define VCL_KD_TREE_H
+#ifndef VCL_SPACE_KD_TREE_H
+#define VCL_SPACE_KD_TREE_H
 
 #include <vclib/mesh/requirements.h>
 #include <vector>
@@ -117,4 +117,4 @@ private:
 
 #include "kd_tree.cpp"
 
-#endif // VCL_KD_TREE_H
+#endif // VCL_SPACE_KD_TREE_H

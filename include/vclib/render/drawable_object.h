@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_RENDER_DRAWABLE_OBJECT_H
-#define VCLIB_RENDER_DRAWABLE_OBJECT_H
+#ifndef VCL_RENDER_DRAWABLE_OBJECT_H
+#define VCL_RENDER_DRAWABLE_OBJECT_H
 
 #include <vclib/space/point.h>
 
@@ -81,4 +81,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCLIB_RENDER_DRAWABLE_OBJECT_H
+#endif // VCL_RENDER_DRAWABLE_OBJECT_H

@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_H
-#define VCL_POINT_H
+#ifndef VCL_SPACE_POINT_H
+#define VCL_SPACE_POINT_H
 
 #include "point/point2.h"
 #include "point/point3.h"
@@ -42,4 +42,4 @@ void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
 
 #include "point.cpp"
 
-#endif // VCL_POINT_H
+#endif // VCL_SPACE_POINT_H

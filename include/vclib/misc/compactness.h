@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_COMPACTNESS_H
-#define VCL_COMPACTNESS_H
+#ifndef VCL_MISC_COMPACTNESS_H
+#define VCL_MISC_COMPACTNESS_H
 
 #include <vector>
 
@@ -36,4 +36,4 @@ void compactVector(std::vector<T, Args...>& vec, const std::vector<int>& newIndi
 
 #include "compactness.cpp"
 
-#endif // VCL_COMPACTNESS_H
+#endif // VCL_MISC_COMPACTNESS_H

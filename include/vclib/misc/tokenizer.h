@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TOKENIZER_H
-#define VCL_TOKENIZER_H
+#ifndef VCL_MISC_TOKENIZER_H
+#define VCL_MISC_TOKENIZER_H
 
 #include <string>
 #include <vector>
@@ -58,4 +58,4 @@ private:
 
 #include "tokenizer.cpp"
 
-#endif // VCL_TOKENIZER_H
+#endif // VCL_MISC_TOKENIZER_H

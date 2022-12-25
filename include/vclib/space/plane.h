@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_PLANE_H
-#define VCL_PLANE_H
+#ifndef VCL_SPACE_PLANE_H
+#define VCL_SPACE_PLANE_H
 
 #include "point/point3.h"
 
@@ -82,4 +82,4 @@ using Planed = Plane<double>;
 
 #include "plane.cpp"
 
-#endif // VCL_PLANE_H
+#endif // VCL_SPACE_PLANE_H

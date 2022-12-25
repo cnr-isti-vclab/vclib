@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_RENDER_GENERIC_DRAWABLE_MESH_H
-#define VCLIB_RENDER_GENERIC_DRAWABLE_MESH_H
+#ifndef VCL_RENDER_GENERIC_DRAWABLE_MESH_H
+#define VCL_RENDER_GENERIC_DRAWABLE_MESH_H
 
 #include "drawable_object.h"
 #include "mesh_render_settings.h"
@@ -55,4 +55,4 @@ protected:
 
 #include "generic_drawable_mesh.cpp"
 
-#endif // VCLIB_RENDER_GENERIC_DRAWABLE_MESH_H
+#endif // VCL_RENDER_GENERIC_DRAWABLE_MESH_H

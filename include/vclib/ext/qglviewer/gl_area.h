@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_QGLVIEWER_GL_AREA_H
-#define VCLIB_EXT_QGLVIEWER_GL_AREA_H
+#ifndef VCL_EXT_QGLVIEWER_GL_AREA_H
+#define VCL_EXT_QGLVIEWER_GL_AREA_H
 
 #include <memory>
 
@@ -61,4 +61,4 @@ private:
 
 #include "gl_area.cpp"
 
-#endif // VCLIB_EXT_QGLVIEWER_GL_AREA_H
+#endif // VCL_EXT_QGLVIEWER_GL_AREA_H

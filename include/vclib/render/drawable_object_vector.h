@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_RENDER_DRAWABLE_OBJECT_VECTOR_H
-#define VCLIB_RENDER_DRAWABLE_OBJECT_VECTOR_H
+#ifndef VCL_RENDER_DRAWABLE_OBJECT_VECTOR_H
+#define VCL_RENDER_DRAWABLE_OBJECT_VECTOR_H
 
 #include "drawable_object.h"
 
@@ -71,4 +71,4 @@ inline void swap(DrawableObjectVector& v1, DrawableObjectVector& v2);
 
 #include "drawable_object_vector.cpp"
 
-#endif // VCLIB_RENDER_DRAWABLE_OBJECT_VECTOR_H
+#endif // VCL_RENDER_DRAWABLE_OBJECT_VECTOR_H

@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_PRINCIPAL_CURVATURE_H
-#define VCL_PRINCIPAL_CURVATURE_H
+#ifndef VCL_SPACE_PRINCIPAL_CURVATURE_H
+#define VCL_SPACE_PRINCIPAL_CURVATURE_H
 
 #include "point/point3.h"
 
@@ -54,4 +54,4 @@ private:
 
 #include "principal_curvature.cpp"
 
-#endif // VCL_PRINCIPAL_CURVATURE_H
+#endif // VCL_SPACE_PRINCIPAL_CURVATURE_H

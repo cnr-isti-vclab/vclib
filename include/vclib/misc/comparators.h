@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
  
-#ifndef VCL_COMPARATORS_H
-#define VCL_COMPARATORS_H
+#ifndef VCL_MISC_COMPARATORS_H
+#define VCL_MISC_COMPARATORS_H
 
 #include <algorithm>
 #include <utility>
@@ -53,4 +53,4 @@ struct UnorderedPairComparator
 
 } // namespace vcl
 
-#endif // VCL_COMPARATORS_H
+#endif // VCL_MISC_COMPARATORS_H

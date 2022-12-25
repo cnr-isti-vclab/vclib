@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_FILE_INFO_H
-#define VCL_FILE_INFO_H
+#ifndef VCL_MISC_FILE_INFO_H
+#define VCL_MISC_FILE_INFO_H
 
 #include <string>
 
@@ -47,4 +47,4 @@ std::string filenameWithExtension(const std::string& fullpath);
 
 #include "file_info.cpp"
 
-#endif // VCL_FILE_INFO_H
+#endif // VCL_MISC_FILE_INFO_H

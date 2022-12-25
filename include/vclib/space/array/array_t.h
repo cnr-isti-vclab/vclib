@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ARRAY_T_H
-#define VCL_ARRAY_T_H
+#ifndef VCL_SPACE_ARRAY_ARRAY_T_H
+#define VCL_SPACE_ARRAY_ARRAY_T_H
 
 #include <assert.h>
 #include <vclib/misc/nested_initializer_lists.h>
@@ -145,4 +145,4 @@ protected:
 
 #include "array_t.cpp"
 
-#endif // VCL_ARRAY_T_H
+#endif // VCL_SPACE_ARRAY_ARRAY_T_H

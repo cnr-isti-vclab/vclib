@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_PARALLEL_H
-#define VCL_PARALLEL_H
+#ifndef VCL_MISC_PARALLEL_H
+#define VCL_MISC_PARALLEL_H
 
 #include <vclib/misc/types.h>
 
@@ -43,4 +43,4 @@ void parallelFor(const Container& c, Lambda&& F);
 
 #include "parallel.cpp"
 
-#endif // VCL_PARALLEL_H
+#endif // VCL_MISC_PARALLEL_H

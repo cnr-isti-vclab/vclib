@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_NESTED_INITIALIZER_LISTS_H
-#define VCL_NESTED_INITIALIZER_LISTS_H
+#ifndef VCL_MISC_NESTED_INITIALIZER_LISTS_H
+#define VCL_MISC_NESTED_INITIALIZER_LISTS_H
 
 /* @link https://zcrou.com/blog/dev/nested-initializers */
 
@@ -103,4 +103,4 @@ public:
 
 #include "nested_initializer_lists.cpp"
 
-#endif // VCL_NESTED_INITIALIZER_LISTS_H
+#endif // VCL_MISC_NESTED_INITIALIZER_LISTS_H

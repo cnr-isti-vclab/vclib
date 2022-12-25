@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_IMAGE_IMAGE_H
-#define VCLIB_IMAGE_IMAGE_H
+#ifndef VCL_IMAGE_IMAGE_H
+#define VCL_IMAGE_IMAGE_H
 
 #include <string>
 
@@ -69,4 +69,4 @@ private:
 
 #include "image.cpp"
 
-#endif // VCLIB_IMAGE_IMAGE_H
+#endif // VCL_IMAGE_IMAGE_H

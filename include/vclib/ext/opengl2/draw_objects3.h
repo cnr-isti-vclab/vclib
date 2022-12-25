@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_EXT_OPENGL2_DRAW_OBJECTS3_H
-#define VCLIB_EXT_OPENGL2_DRAW_OBJECTS3_H
+#ifndef VCL_EXT_OPENGL2_DRAW_OBJECTS3_H
+#define VCL_EXT_OPENGL2_DRAW_OBJECTS3_H
 
 #ifdef _WIN32
 #include <windows.h>
@@ -102,4 +102,4 @@ void drawBox3(
 
 #include "draw_objects3.cpp"
 
-#endif // VCLIB_EXT_OPENGL2_DRAW_OBJECTS3_H
+#endif // VCL_EXT_OPENGL2_DRAW_OBJECTS3_H

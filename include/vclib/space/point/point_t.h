@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_T_H
-#define VCL_POINT_T_H
+#ifndef VCL_SPACE_POINT_POINT_T_H
+#define VCL_SPACE_POINT_POINT_T_H
 
 #include <compare>
 
@@ -129,4 +129,4 @@ std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1);
 
 #include "point_t.cpp"
 
-#endif // VCL_POINT_T_H
+#endif // VCL_SPACE_POINT_POINT_T_H
