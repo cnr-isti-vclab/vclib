@@ -20,49 +20,18 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_GRID_T_H
-#define VCL_GRID_T_H
+#ifndef VCL_ALGORITHMS_GRID_H
+#define VCL_ALGORITHMS_GRID_H
 
-#include <vclib/space/box.h>
+#include <vclib/space/grid.h>
 
 namespace vcl {
 
-template<typename Scalar, int N>
-class Grid
-{
-public:
-	using ScalarType      = Scalar;
-	static const int DIM  = N;
-
-	Grid() = default;
-	Grid(const Point<Scalar, N>& min, const Point<Scalar, N>& max, const Point<uint, N>& size);
-
-	Point<Scalar, N> min() const;
-	Point<Scalar, N> max() const;
-
-	Scalar length(uint d) const;
-	Point<Scalar, N> lengths() const;
-
-	uint size(uint d) const;
-	Point<uint, N> size() const;
-
-	Scalar cellLength(uint d) const;
-	Point<Scalar, N> cellLengths() const;
-
-	uint cell(uint d, const Scalar& s) const;
-	Point<uint, N> cell(const Point<Scalar, N>& p) const;
-
-	Point<Scalar, N> cellLowerCorner(const Point<uint, N>& c) const;
-
-	Box<Point<Scalar, N>> cellBox(const Point<uint, N>& c) const;
-
-private:
-	Box<Point<Scalar, N>> bbox;
-	Point<uint, N>        siz;
-};
+template<typename PointType>
+vcl::Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements);
 
 } // namespace vcl
 
-#include "grid_t.h"
+#include "grid.cpp"
 
-#endif // VCL_GRID_T_H
+#endif // VCL_ALGORITHMS_GRID_H

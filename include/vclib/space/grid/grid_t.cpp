@@ -121,14 +121,14 @@ Point<Scalar, N> Grid<Scalar, N>::cellLengths() const
 }
 
 template<typename Scalar, int N>
-uint Grid<Scalar, N>::cell(uint d, const Scalar& s)
+uint Grid<Scalar, N>::cell(uint d, const Scalar& s) const
 {
 	Scalar t = s - bbox.min(d);
 	return uint(t / cellLength(d));
 }
 
 template<typename Scalar, int N>
-Point<uint, N> Grid<Scalar, N>::cell(const Point<Scalar, N>& p)
+Point<uint, N> Grid<Scalar, N>::cell(const Point<Scalar, N>& p) const
 {
 	Point<uint, N> c;
 	for (size_t i = 0; i < DIM; ++i)
@@ -137,18 +137,27 @@ Point<uint, N> Grid<Scalar, N>::cell(const Point<Scalar, N>& p)
 }
 
 template<typename Scalar, int N>
-Scalar Grid<Scalar, N>::cellLowerCorner(uint d, uint c)
-{
-	return min(d) + c * cellLength(d);
-}
-
-template<typename Scalar, int N>
-Point<Scalar, N> Grid<Scalar, N>::cellLowerCorner(const Point<uint, N>& c)
+Point<Scalar, N> Grid<Scalar, N>::cellLowerCorner(const Point<uint, N>& c) const
 {
 	Point<Scalar, N> l;
 	for (size_t i = 0; i < DIM; ++i)
-		l(i) = cellLowerCorner(i, c(i));
+		l(i) = min(i) + c(i) * cellLength(i);//cellLowerCorner(i, c(i));
 	return l;
+}
+
+template<typename Scalar, int N>
+Box<Point<Scalar, N>> Grid<Scalar, N>::cellBox(const Point<uint, N> &c) const
+{
+	Box<Point<Scalar, N>> b;
+
+	Point<Scalar, N> p;
+	for (size_t i = 0; i < DIM; ++i)
+		p(i) = (Scalar)c(i)*cellLength(i);
+	p += bbox.min;
+	b.min = p;
+	b.max = (p + cellLengths());
+
+	return b;
 }
 
 } // namespace vcl

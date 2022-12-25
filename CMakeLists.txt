@@ -52,6 +52,7 @@ set(HEADERS
 	include/vclib/algorithms/clean.h
 	include/vclib/algorithms/export_to_matrix.h
 	include/vclib/algorithms/fitting.h
+	include/vclib/algorithms/grid.h
 	include/vclib/algorithms/intersection.h
 	include/vclib/algorithms/polygon.h
 	include/vclib/algorithms/smooth.h
@@ -241,6 +242,7 @@ set(HEADERS
 	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
+	include/vclib/space/grid.h
 	include/vclib/space/kd_tree.h
 	include/vclib/space/plane.h
 	include/vclib/space/point.h
@@ -261,6 +263,7 @@ set(SOURCES
 	include/vclib/algorithms/clean.cpp
 	include/vclib/algorithms/export_to_matrix.cpp
 	include/vclib/algorithms/fitting.cpp
+	include/vclib/algorithms/grid.cpp
 	include/vclib/algorithms/intersection.cpp
 	include/vclib/algorithms/polygon.cpp
 	include/vclib/algorithms/smooth.cpp
