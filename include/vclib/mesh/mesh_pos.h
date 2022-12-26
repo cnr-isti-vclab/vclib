@@ -20,12 +20,12 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_POS_H
-#define VCL_MESH_POS_H
+#ifndef VCL_MESH_MESH_POS_H
+#define VCL_MESH_MESH_POS_H
 
 #include "elements/face.h"
 
-namespace vcl::mesh {
+namespace vcl {
 
 /**
  * @brief The MeshPos class describes a "Position in a Mesh" that can be identified with a triplet
@@ -57,13 +57,14 @@ public:
 	bool isValid() const;
 	bool isNull() const;
 	bool isEdgeOnBorder() const;
+	bool isCCWOriented() const;
 
 	bool flipFace();
 	void flipVertex();
 	void flipEdge();
 
 	void nextEdgeAdjacentToV();
-	void nextEdgeOnBorderAdjacentToV();
+	bool nextEdgeOnBorderAdjacentToV();
 
 	uint numberOfAdjacentFacesToV() const;
 
@@ -79,8 +80,8 @@ private:
 	uint countAdjacentFacesToV(bool& onBorder) const;
 };
 
-} // namespace vcl::mesh
+} // namespace vcl
 
 #include "mesh_pos.cpp"
 
-#endif // VCL_MESH_POS_H
+#endif // VCL_MESH_MESH_POS_H

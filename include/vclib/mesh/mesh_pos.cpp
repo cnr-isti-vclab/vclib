@@ -22,7 +22,7 @@
 
 #include "mesh_pos.h"
 
-namespace vcl::mesh {
+namespace vcl {
 
 /**
  * @brief Helper function to check if a MeshPos is valid, that is if:
@@ -118,6 +118,19 @@ bool MeshPos<FaceType>::isEdgeOnBorder() const
 }
 
 /**
+ * @brief Returns `true` if the current vertex of the MeshPos corresponts to the first vertex of
+ * the current edge. If this member function returns `true`, the next operations performed on the
+ * MeshPos will move in CounderClockWise order.
+ *
+ * @return
+ */
+template<face::HasAdjacentFaces FaceType>
+bool MeshPos<FaceType>::isCCWOriented() const
+{
+	return f->vertex(e) == v;
+}
+
+/**
  * @brief Moves this MeshPos to the face adjacent to the current face that shares the same vertex
  * and the same edge of this MeshPos. The function returns `true` if the current face is changed.
  * If the adjacent face does not exist because the edge of the current face is on border, the
@@ -192,13 +205,18 @@ void MeshPos<FaceType>::nextEdgeAdjacentToV()
  * @brief Moves the MeshPos to the next edge on border that is adjacent to the current vertex of the
  * MeshPos. Basically, cycles on the edges adjacent to the current vertex, and stops when finds a
  * border edge.
+ *
+ * @return `true` if it finds a border edge that is different to the current one. Return `false` if
+ * no border edge was found.
  */
 template<face::HasAdjacentFaces FaceType>
-void MeshPos<FaceType>::nextEdgeOnBorderAdjacentToV()
+bool MeshPos<FaceType>::nextEdgeOnBorderAdjacentToV()
 {
+	MeshPos<FaceType> startPos = *this;
 	do {
 		nextEdgeAdjacentToV();
-	} while (!isEdgeOnBorder());
+	} while (*this != startPos && !isEdgeOnBorder());
+	return (*this != startPos);
 }
 
 /**
@@ -265,4 +283,4 @@ uint MeshPos<FaceType>::countAdjacentFacesToV(bool& onBorder) const
 	return count;
 }
 
-} // namespace vcl::mesh
+} // namespace vcl

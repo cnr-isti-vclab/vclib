@@ -139,7 +139,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 		for (uint i = 0; i < f.vertexNumber(); ++i){
 			if (!visited[m.index(f.vertex(i))]) {
 				visited[m.index(f.vertex(i))] = true;
-				mesh::MeshPos pos(&f, i);
+				MeshPos pos(&f, i);
 				uint starSize = pos.numberOfAdjacentFacesToV();
 				if (starSize != TD[m.index(f.vertex(i))])
 					nonManifoldVertices[m.index(f.vertex(i))] = true;
@@ -515,8 +515,8 @@ uint numberHoles(const MeshType& m)
 		uint e = 0;
 		for(const VertexType* v : f.vertices()) {
 			if(!visitedFaces[m.index(f)] && f.adjFace(e) == nullptr) {
-				mesh::MeshPos<FaceType> startPos(&f,e);
-				mesh::MeshPos<FaceType> curPos=startPos;
+				MeshPos<FaceType> startPos(&f,e);
+				MeshPos<FaceType> curPos=startPos;
 				do {
 					curPos.nextEdgeOnBorderAdjacentToV();
 					curPos.flipVertex();
