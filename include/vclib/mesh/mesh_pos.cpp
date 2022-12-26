@@ -63,6 +63,16 @@ MeshPos<FaceType>::MeshPos(const FaceType* f, short e) :
 	assert(isValid(f, v, e));
 }
 
+template<face::HasAdjacentFaces FaceType>
+MeshPos<FaceType>::MeshPos(const FaceType* f, const VertexType* v) :
+		f(f), v(v)
+{
+	for (uint i = 0; i < f->vertexNumber(); i++)
+		if (f->vertex(i) == v)
+			e = i;
+	assert(isValid(f, v, e));
+}
+
 /**
  * @brief Constructor that creates a MeshPos with the given facem vertex and edge. The given triplet
  * **must describe a valid MeshPos**. The constructor asserts this condition.
@@ -82,6 +92,40 @@ template<face::HasAdjacentFaces FaceType>
 const FaceType* MeshPos<FaceType>::face() const
 {
 	return f;
+}
+
+template<face::HasAdjacentFaces FaceType>
+const typename MeshPos<FaceType>::VertexType* MeshPos<FaceType>::vertex() const
+{
+	return v;
+}
+
+template<face::HasAdjacentFaces FaceType>
+short MeshPos<FaceType>::edge() const
+{
+	return e;
+}
+
+template<face::HasAdjacentFaces FaceType>
+const FaceType* MeshPos<FaceType>::adjFace() const
+{
+	return f->adjFace(e);
+}
+
+template<face::HasAdjacentFaces FaceType>
+const typename MeshPos<FaceType>::VertexType* MeshPos<FaceType>::adjVertex() const
+{
+	MeshPos<FaceType> tmpPos = *this;
+	tmpPos.flipVertex();
+	return tmpPos.vertex();
+}
+
+template<face::HasAdjacentFaces FaceType>
+short MeshPos<FaceType>::adjEdge() const
+{
+	MeshPos<FaceType> tmpPos = *this;
+	tmpPos.flipEdge();
+	return tmpPos.edge();
 }
 
 /**

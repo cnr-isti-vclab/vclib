@@ -114,6 +114,8 @@ public:
 	Scalar& operator[](uint i);
 	const Scalar& operator[](uint i) const;
 
+	Point& operator=(const Eigen::Matrix<Scalar, 1, N>& v);
+
 	/// @private
 	template<typename S, int M>
 	friend std::ostream& operator<<(std::ostream& out, const Point<S, M>& p);

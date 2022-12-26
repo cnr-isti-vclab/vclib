@@ -50,9 +50,15 @@ public:
 
 	MeshPos();
 	MeshPos(const FaceType* f, short e);
+	MeshPos(const FaceType* f, const VertexType* v);
 	MeshPos(const FaceType* f, const VertexType* v, short e);
 
 	const FaceType* face() const;
+	const VertexType* vertex() const;
+	short edge() const;
+	const FaceType* adjFace() const;
+	const VertexType* adjVertex() const;
+	short adjEdge() const;
 
 	bool isValid() const;
 	bool isNull() const;

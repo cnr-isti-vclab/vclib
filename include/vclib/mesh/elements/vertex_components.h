@@ -83,7 +83,7 @@ using Normal3 = comp::Normal3<ScalarType>;
 using Normal3f = comp::Normal3f;
 using Normal3d = comp::Normal3d;
 
-/* Port PrincipalCurvature class into face namespace */
+/* Port PrincipalCurvature class into vert namespace */
 template<typename ScalarType>
 using PrincipalCurvature = comp::PrincipalCurvature<ScalarType>;
 

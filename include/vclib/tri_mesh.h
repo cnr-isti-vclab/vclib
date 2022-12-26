@@ -44,6 +44,7 @@ class Vertex :
 			vcl::vert::Scalar<Scalar>,                                      // 4 or 8b
 			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
 			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
 			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
 			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
 			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b

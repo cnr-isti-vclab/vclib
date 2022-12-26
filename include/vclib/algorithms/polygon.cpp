@@ -300,6 +300,10 @@ ScalarType polygonArea(const Polygon& p)
 {
 	using PointType = typename Polygon::VertexType::CoordType;
 
+	if (p.vertexNumber() == 3) {
+		return triangleArea(p);
+	}
+
 	PointType bar = polygonBarycenter(p);
 	ScalarType area = 0;
 	for (uint i = 0; i < p.vertexNumber(); ++i){

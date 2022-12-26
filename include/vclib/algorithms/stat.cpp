@@ -208,6 +208,8 @@ perVertexScalarMinMax(const MeshType& m)
 		if (v.scalar() > p.second)
 			p.second = v.scalar();
 	}
+
+	return p;
 }
 
 /**
@@ -240,6 +242,8 @@ perFaceScalarMinMax(const MeshType& m)
 		if (f.scalar() > p.second)
 			p.second = f.scalar();
 	}
+
+	return p;
 }
 
 /**

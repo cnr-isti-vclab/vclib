@@ -45,6 +45,25 @@ PointType max(const PointType &p1, const PointType &p2)
 }
 
 /**
+ * @brief OuterProduct between two points, which is p1 * p2^T
+ * The returned type is a DIM*DIM Eigen Matrix, where DIM is the number of dimensions of the two
+ * points.
+ * @param p1
+ * @param p2
+ */
+template<typename PointType>
+auto outerProduct(const PointType& p1, const PointType& p2)
+{
+	Eigen::Matrix<typename PointType::ScalarType, PointType::DIM, PointType::DIM> res;
+	for (uint i = 0; i < PointType::DIM; i++) {
+		for (uint j = 0; j < PointType::DIM; j++) {
+			res(i,j) = p1(i) * p2(j);
+		}
+	}
+	return res;
+}
+
+/**
  * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
  * from a given vector n.
  *

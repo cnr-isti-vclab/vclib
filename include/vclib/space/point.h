@@ -35,6 +35,9 @@ PointType min(const PointType& p1, const PointType& p2);
 template<typename PointType>
 PointType max(const PointType& p1, const PointType& p2);
 
+template<typename PointType>
+auto outerProduct(const PointType& p1, const PointType& p2);
+
 template<typename Scalar>
 void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
 

@@ -35,6 +35,8 @@ template<typename ScalarType>
 class Point4 : public Point<ScalarType, 4>
 {
 public:
+	using Point<ScalarType, 4>::Point;
+
 	Point4() = default; // default empty constructor
 
 	Point4(const Point<ScalarType, 4>& p1); // from base class - will include all its constructors
