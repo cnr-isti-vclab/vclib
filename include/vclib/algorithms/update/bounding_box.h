@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_BOUNDING_BOX_H
-#define VCL_ALGORITHMS_BOUNDING_BOX_H
+#ifndef VCL_ALGORITHMS_UPDATE_BOUNDING_BOX_H
+#define VCL_ALGORITHMS_UPDATE_BOUNDING_BOX_H
 
 #include <vclib/mesh/requirements.h>
 
@@ -35,4 +35,4 @@ void updateBoundingBox(MeshType& m)
 
 #include "bounding_box.cpp"
 
-#endif // VCL_ALGORITHMS_BOUNDING_BOX_H
+#endif // VCL_ALGORITHMS_UPDATE_BOUNDING_BOX_H

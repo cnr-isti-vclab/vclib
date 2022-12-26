@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_SCALAR_H
-#define VCL_ALGORITHMS_SCALAR_H
+#ifndef VCL_ALGORITHMS_UPDATE_SCALAR_H
+#define VCL_ALGORITHMS_UPDATE_SCALAR_H
 
 #include <vclib/mesh/requirements.h>
 
@@ -67,4 +67,4 @@ void setPerFaceScalarFromFaceArea(MeshType& m);
 
 #include "scalar.cpp"
 
-#endif // VCL_ALGORITHMS_SCALAR_H
+#endif // VCL_ALGORITHMS_UPDATE_SCALAR_H

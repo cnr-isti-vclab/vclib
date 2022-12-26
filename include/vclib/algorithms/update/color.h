@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_COLOR_H
-#define VCL_ALGORITHMS_COLOR_H
+#ifndef VCL_ALGORITHMS_UPDATE_COLOR_H
+#define VCL_ALGORITHMS_UPDATE_COLOR_H
 
 #include <set>
 
@@ -97,4 +97,4 @@ void setPerVertexPerlinColor(
 
 #include "color.cpp"
 
-#endif // VCL_ALGORITHMS_COLOR_H
+#endif // VCL_ALGORITHMS_UPDATE_COLOR_H

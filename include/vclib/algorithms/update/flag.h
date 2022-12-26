@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_FLAG_H
-#define VCL_ALGORITHMS_FLAG_H
+#ifndef VCL_ALGORITHMS_UPDATE_FLAG_H
+#define VCL_ALGORITHMS_UPDATE_FLAG_H
 
 #include <vclib/mesh/requirements.h>
 
@@ -34,4 +34,4 @@ void updateBorder(MeshType& m);
 
 #include "flag.cpp"
 
-#endif // VCL_ALGORITHMS_FLAG_H
+#endif // VCL_ALGORITHMS_UPDATE_FLAG_H

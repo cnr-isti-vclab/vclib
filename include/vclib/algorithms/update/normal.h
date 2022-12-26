@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_NORMAL_H
-#define VCL_ALGORITHMS_NORMAL_H
+#ifndef VCL_ALGORITHMS_UPDATE_NORMAL_H
+#define VCL_ALGORITHMS_UPDATE_NORMAL_H
 
 #include <vclib/math/matrix.h>
 #include <vclib/mesh/requirements.h>
@@ -71,4 +71,4 @@ void multiplyPerVertexNormalsByMatrix(
 
 #include "normal.cpp"
 
-#endif // VCL_ALGORITHMS_NORMAL_H
+#endif // VCL_ALGORITHMS_UPDATE_NORMAL_H

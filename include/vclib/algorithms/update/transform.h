@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_TRANSFORM_H
-#define VCL_ALGORITHMS_TRANSFORM_H
+#ifndef VCL_ALGORITHMS_UPDATE_TRANSFORM_H
+#define VCL_ALGORITHMS_UPDATE_TRANSFORM_H
 
 #include <vclib/math/matrix.h>
 #include <vclib/mesh/requirements.h>
@@ -44,4 +44,4 @@ void scale(MeshType& mesh, const PointType& s);
 
 #include "transform.cpp"
 
-#endif // VCL_ALGORITHMS_TRANSFORM_H
+#endif // VCL_ALGORITHMS_UPDATE_TRANSFORM_H

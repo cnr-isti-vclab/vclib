@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_SELECTION_H
-#define VCL_ALGORITHMS_SELECTION_H
+#ifndef VCL_ALGORITHMS_UPDATE_SELECTION_H
+#define VCL_ALGORITHMS_UPDATE_SELECTION_H
 
 #include <vclib/mesh/requirements.h>
 
@@ -40,4 +40,4 @@ void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst);
 
 #include "selection.cpp"
 
-#endif // VCL_ALGORITHMS_SELECTION_H
+#endif // VCL_ALGORITHMS_UPDATE_SELECTION_H
