@@ -20,10 +20,10 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_POS_H
-#define VCL_MESH_MESH_POS_H
+#ifndef VCL_MESH_UTILS_MESH_POS_H
+#define VCL_MESH_UTILS_MESH_POS_H
 
-#include "elements/face.h"
+#include <vclib/mesh/elements/face.h>
 
 namespace vcl {
 
@@ -90,4 +90,4 @@ private:
 
 #include "mesh_pos.cpp"
 
-#endif // VCL_MESH_MESH_POS_H
+#endif // VCL_MESH_UTILS_MESH_POS_H

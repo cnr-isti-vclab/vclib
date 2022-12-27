@@ -22,7 +22,7 @@
 
 #include "topology.h"
 
-#include <vclib/algorithms/internal/per_face_edge.h>
+#include <vclib/algorithms/sort.h>
 
 namespace vcl {
 
@@ -127,7 +127,7 @@ void updatePerVertexAdjacentVertices(MeshType& m)
 	// vector that contains edges sorted trough unordered vertex pointers
 	// it contains clusters of "same" edges, but each one of them has its face pointer
 	// note that in case on non-manifold mesh, clusters may be of size >= 2
-	std::vector<internal::PerFaceEdge<MeshType>> vec = internal::fillAndSortEdgeVector(m);
+	std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
 
 	// store the last pair of vertices
 	VertexType* v1 = nullptr;
@@ -221,7 +221,7 @@ void updatePerFaceAdjacentFaces(MeshType& m)
 	// vector that contains edges sorted trough unordered vertex pointers
 	// it contains clusters of "same" edges, but each one of them has its face pointer
 	// note that in case on non-manifold mesh, clusters may be of size >= 2
-	std::vector<internal::PerFaceEdge<MeshType>> vec = internal::fillAndSortEdgeVector(m);
+	std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
 
 	if (vec.size() > 0) {
 		// in this loop, base will point to the first element of a cluster of edges

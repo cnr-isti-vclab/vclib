@@ -26,9 +26,8 @@
 #include <stack>
 #include <vector>
 
-#include <vclib/mesh/mesh_pos.h>
-
-#include "internal/per_face_edge.h"
+#include <vclib/algorithms/sort.h>
+#include <vclib/mesh_utils/mesh_pos.h>
 
 namespace vcl {
 
@@ -153,7 +152,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 template<FaceMeshConcept MeshType>
 uint numberEdges(const MeshType& m, uint& numBoundaryEdges, uint& numNonManifoldEdges)
 {
-	std::vector<ConstPerFaceEdge<MeshType>> edgeVec = fillAndSortEdgeVector(m);
+	std::vector<ConstMeshEdgeUtil<MeshType>> edgeVec = fillAndSortMeshEdgeUtilVector(m);
 
 	uint numEdges = 0;
 	numBoundaryEdges = 0;

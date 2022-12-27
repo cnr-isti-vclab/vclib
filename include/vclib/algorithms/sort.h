@@ -20,62 +20,22 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SAMPLER_MESH_SAMPLER_H
-#define VCL_SPACE_SAMPLER_MESH_SAMPLER_H
+#ifndef VCL_ALGORITHMS_SORT_H
+#define VCL_ALGORITHMS_SORT_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh_utils/mesh_edge_util.h>
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-class MeshSampler
-{
-public:
-	using PointType  = typename MeshType::VertexType::CoordType;
-	using ScalarType = typename PointType::ScalarType;
+template<FaceMeshConcept MeshType>
+std::vector<MeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(MeshType& m, bool includeFauxEdges = true);
 
-	MeshSampler();
-
-	const MeshType& samples() const;
-
-	void clear();
-	void reserve(uint n);
-
-	void addPoint(const PointType& p);
-
-	template<VertexConcept VertexType>
-	void addVertex(const VertexType& v);
-
-	template<EdgeConcept EdgeType>
-	void addEdge(const EdgeType& e, double u, bool copyScalar = true);
-
-	template<FaceConcept FaceType>
-	void addFace(const FaceType& f, bool copyNormal = false, bool copyScalar = true);
-
-	template<FaceConcept FaceType>
-	void addFace(
-		const FaceType&                f,
-		const std::vector<ScalarType>& p,
-		bool                           copyNormal = false,
-		bool                           copyScalar = true);
-
-	template<FaceConcept FaceType>
-	void addFace(
-		const FaceType&  f,
-		const PointType& weights,
-		bool             copyNormal = false,
-		bool             copyScalar = true);
-
-private:
-
-	template<FaceConcept FaceType>
-	void copyComponents(uint vi, const FaceType&  f, bool copyNormal, bool copyScalar);
-
-	MeshType m;
-};
+template<FaceMeshConcept MeshType>
+std::vector<ConstMeshEdgeUtil<MeshType>>
+fillAndSortMeshEdgeUtilVector(const MeshType& m, bool includeFauxEdges = true);
 
 } // namespace vcl
 
-#include "mesh_sampler.cpp"
+#include "sort.cpp"
 
-#endif // VCL_SPACE_SAMPLER_MESH_SAMPLER_H
+#endif // VCL_ALGORITHMS_SORT_H

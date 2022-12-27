@@ -20,16 +20,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "inertia.h"
+#include "mesh_inertia.h"
 
-#include "../polygon.h"
+#include <vclib/algorithms/polygon.h>
 
 #include <Eigen/Eigenvalues>
 
-namespace vcl::internal {
+namespace vcl {
 
 template <FaceMeshConcept MeshType>
-Inertia<MeshType>::Inertia(const MeshType& m)
+MeshInertia<MeshType>::MeshInertia(const MeshType& m)
 {
 	double nx, ny, nz;
 
@@ -77,13 +77,13 @@ Inertia<MeshType>::Inertia(const MeshType& m)
  * @return
  */
 template<FaceMeshConcept MeshType>
-typename Inertia<MeshType>::ScalarType Inertia<MeshType>::volume() const
+typename MeshInertia<MeshType>::ScalarType MeshInertia<MeshType>::volume() const
 {
 	return T0;
 }
 
 template<FaceMeshConcept MeshType>
-Point3<typename Inertia<MeshType>::ScalarType> Inertia<MeshType>::centerOfMass() const
+Point3<typename MeshInertia<MeshType>::ScalarType> MeshInertia<MeshType>::centerOfMass() const
 {
 	Point3<ScalarType>  r;
 	r[X] = T1[X] / T0;
@@ -94,7 +94,7 @@ Point3<typename Inertia<MeshType>::ScalarType> Inertia<MeshType>::centerOfMass()
 
 template<FaceMeshConcept MeshType>
 template<typename Matrix33>
-Matrix33 Inertia<MeshType>::inertiaTensor() const
+Matrix33 MeshInertia<MeshType>::inertiaTensor() const
 {
 	Matrix33 J;
 	Point3d r;
@@ -128,7 +128,7 @@ Matrix33 Inertia<MeshType>::inertiaTensor() const
  */
 template<FaceMeshConcept MeshType>
 template<typename Matrix33>
-void Inertia<MeshType>::inertiaTensorEigen(Matrix33& eigenValues, Point3<ScalarType>& eigenVector) const
+void MeshInertia<MeshType>::inertiaTensorEigen(Matrix33& eigenValues, Point3<ScalarType>& eigenVector) const
 {
 	Eigen::Matrix3d it = inertiaTensor<Eigen::Matrix3d>();
 	Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eig(it);
@@ -142,7 +142,7 @@ void Inertia<MeshType>::inertiaTensorEigen(Matrix33& eigenValues, Point3<ScalarT
 }
 
 template<FaceMeshConcept MeshType>
-void Inertia<MeshType>::faceIntegrals(const FaceType& f, const vcl::Point3<ScalarType>& n)
+void MeshInertia<MeshType>::faceIntegrals(const FaceType& f, const vcl::Point3<ScalarType>& n)
 {
 	ScalarType w;
 	double k1, k2, k3, k4;
@@ -179,7 +179,7 @@ void Inertia<MeshType>::faceIntegrals(const FaceType& f, const vcl::Point3<Scala
  * @param f
  */
 template<FaceMeshConcept MeshType>
-void Inertia<MeshType>::projectionIntegrals(const FaceType& f)
+void MeshInertia<MeshType>::projectionIntegrals(const FaceType& f)
 {
 	double a0, a1, da;
 	double b0, b1, db;

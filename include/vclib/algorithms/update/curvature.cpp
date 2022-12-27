@@ -25,7 +25,7 @@
 #include <vclib/algorithms/update/normal.h>
 #include <vclib/algorithms/polygon.h>
 #include <vclib/math/matrix.h>
-#include <vclib/mesh/mesh_pos.h>
+#include <vclib/mesh_utils/mesh_pos.h>
 #include <vclib/space/principal_curvature.h>
 
 namespace vcl {

@@ -85,6 +85,56 @@ template<FaceConcept FaceType>
 void MeshSampler<MeshType>::addFace(const FaceType& f, bool copyNormal, bool copyScalar)
 {
 	uint vi = m.addVertex(vcl::polygonBarycenter(f));
+
+	copyComponents(vi, f, copyNormal, copyScalar);
+}
+
+template<MeshConcept MeshType>
+template<FaceConcept FaceType>
+void MeshSampler<MeshType>::addFace(
+	const FaceType&                f,
+	const std::vector<ScalarType>& weights,
+	bool                           copyNormal,
+	bool                           copyScalar)
+{
+	assert(f.vertexNumber <= weights.size());
+
+	PointType p;
+	for (uint i = 0; i < f.vertexNumber(); i++)
+		p += f.vertex(i)->coord() * weights[i];
+
+	uint vi = m.addVertex(p);
+
+	copyComponents(vi, f, copyNormal, copyScalar);
+}
+
+template<MeshConcept MeshType>
+template<FaceConcept FaceType>
+void MeshSampler<MeshType>::addFace(
+	const FaceType&  f,
+	const PointType& weights,
+	bool             copyNormal,
+	bool             copyScalar)
+{
+	static_assert(FaceType::NV == 3);
+
+	PointType p;
+	for (uint i = 0; i < 3; i++)
+		p += f.vertex(i)->coord() * weights(i);
+
+	uint vi = m.addVertex(p);
+
+	copyComponents(vi, f, copyNormal, copyScalar);
+}
+
+template<MeshConcept MeshType>
+template<FaceConcept FaceType>
+void MeshSampler<MeshType>::copyComponents(
+	uint            vi,
+	const FaceType& f,
+	bool            copyNormal,
+	bool            copyScalar)
+{
 	if constexpr (vcl::HasPerVertexNormal<MeshType> && vcl::face::HasNormal<FaceType>) {
 		if (copyNormal) {
 			if (vcl::isPerVertexNormalEnabled(m) && f.isNormalEnabled()) {

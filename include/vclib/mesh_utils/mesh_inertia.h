@@ -20,16 +20,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_INERTIA_H
-#define VCL_ALGORITHMS_INERTIA_H
+#ifndef VCL_MESH_UTILS_MESH_INERTIA_H
+#define VCL_MESH_UTILS_MESH_INERTIA_H
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/point.h>
 
-namespace vcl::internal {
+namespace vcl {
 
 /**
- * @brief The Inertia class
+ * @brief The MeshInertia class
  *
  * Methods for computing Polyhedral Mass properties (like inertia tensor, volume, etc)
 
@@ -49,14 +49,14 @@ namespace vcl::internal {
  * journal of graphics tools, volume 1, number 2, 1996
  */
 template<FaceMeshConcept MeshType>
-class Inertia
+class MeshInertia
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
 	using ScalarType = typename VertexType::ScalarType;
 
 public:
-	Inertia(const MeshType& m);
+	MeshInertia(const MeshType& m);
 
 	ScalarType         volume() const;
 	Point3<ScalarType> centerOfMass() const;
@@ -89,8 +89,8 @@ private:
 	double T0, T1[3], T2[3], TP[3];
 };
 
-} // namespace vcl::internal
+} // namespace vcl
 
-#include "inertia.cpp"
+#include "mesh_inertia.cpp"
 
-#endif // VCL_ALGORITHMS_INERTIA_H
+#endif // VCL_MESH_UTILS_MESH_INERTIA_H

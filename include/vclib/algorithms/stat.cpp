@@ -22,8 +22,7 @@
 
 #include "stat.h"
 
-#include "internal/inertia.h"
-#include "polygon.h"
+#include <vclib/mesh_utils/mesh_inertia.h>
 
 namespace vcl {
 
@@ -132,7 +131,7 @@ typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
 template<FaceMeshConcept MeshType>
 double volume(const MeshType& m)
 {
-	internal::Inertia<MeshType> i(m);
+	MeshInertia<MeshType> i(m);
 	return i.volume();
 }
 

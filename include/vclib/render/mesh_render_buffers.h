@@ -25,7 +25,7 @@
 
 #include <vclib/image/image.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/mesh/tri_poly_index_bimap.h>
+#include <vclib/mesh_utils/tri_poly_index_bimap.h>
 
 #include "mesh_render_settings.h"
 

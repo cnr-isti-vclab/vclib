@@ -56,12 +56,11 @@ set(HEADERS
 	include/vclib/algorithms/intersection.h
 	include/vclib/algorithms/polygon.h
 	include/vclib/algorithms/smooth.h
+	include/vclib/algorithms/sort.h
 	include/vclib/algorithms/stat.h
 	include/vclib/algorithms/create/dodecahedron.h
 	include/vclib/algorithms/create/hexahedron.h
 	include/vclib/algorithms/create/tetrahedron.h
-	include/vclib/algorithms/internal/inertia.h
-	include/vclib/algorithms/internal/per_face_edge.h
 	include/vclib/algorithms/update/bounding_box.h
 	include/vclib/algorithms/update/color.h
 	include/vclib/algorithms/update/curvature.h
@@ -115,9 +114,7 @@ set(HEADERS
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_algorithms.h
 	include/vclib/mesh/mesh_components.h
-	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
-	include/vclib/mesh/tri_poly_index_bimap.h
 	include/vclib/mesh/components/concepts/adjacent_edges.h
 	include/vclib/mesh/components/concepts/adjacent_faces.h
 	include/vclib/mesh/components/concepts/adjacent_vertices.h
@@ -225,6 +222,10 @@ set(HEADERS
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_concepts.h
 	include/vclib/mesh/requirements/vertex_requirements.h
+	include/vclib/mesh_utils/mesh_edge_util.h
+	include/vclib/mesh_utils/mesh_inertia.h
+	include/vclib/mesh_utils/mesh_pos.h
+	include/vclib/mesh_utils/tri_poly_index_bimap.h
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h
 	include/vclib/misc/file_info.h
@@ -272,12 +273,12 @@ set(SOURCES
 	include/vclib/algorithms/grid.cpp
 	include/vclib/algorithms/intersection.cpp
 	include/vclib/algorithms/polygon.cpp
+	include/vclib/algorithms/sort.cpp
 	include/vclib/algorithms/smooth.cpp
 	include/vclib/algorithms/stat.cpp
 	include/vclib/algorithms/create/dodecahedron.cpp
 	include/vclib/algorithms/create/hexahedron.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
-	include/vclib/algorithms/internal/inertia.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
 	include/vclib/algorithms/update/color.cpp
 	include/vclib/algorithms/update/curvature.cpp
@@ -316,8 +317,6 @@ set(SOURCES
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_algorithms.cpp
-	include/vclib/mesh/mesh_pos.cpp
-	include/vclib/mesh/tri_poly_index_bimap.cpp
 	include/vclib/mesh/components/horizontal/adjacent_edges.cpp
 	include/vclib/mesh/components/horizontal/adjacent_faces.cpp
 	include/vclib/mesh/components/horizontal/adjacent_vertices.cpp
@@ -371,6 +370,9 @@ set(SOURCES
 	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp
+	include/vclib/mesh_utils/mesh_inertia.cpp
+	include/vclib/mesh_utils/mesh_pos.cpp
+	include/vclib/mesh_utils/tri_poly_index_bimap.cpp
 	include/vclib/misc/compactness.cpp
 	include/vclib/misc/file_info.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
