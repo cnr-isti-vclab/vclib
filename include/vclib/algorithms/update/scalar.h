@@ -64,7 +64,10 @@ template<FaceMeshConcept MeshType>
 void setPerFaceScalarFromFaceArea(MeshType& m);
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromGaussianCurvatureDir(MeshType& m);
+void setPerVertexScalarFromPrincipalCurvatureGaussian(MeshType& m);
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMean(MeshType& m);
 
 } // namespace vcl
 

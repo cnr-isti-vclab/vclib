@@ -240,7 +240,7 @@ void setPerFaceScalarFromFaceArea(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromGaussianCurvatureDir(MeshType &m)
+void setPerVertexScalarFromPrincipalCurvatureGaussian(MeshType &m)
 {
 	vcl::requirePerVertexScalar(m);
 	vcl::requirePerVertexPrincipalCurvature(m);
@@ -249,6 +249,19 @@ void setPerVertexScalarFromGaussianCurvatureDir(MeshType &m)
 
 	for (VertexType& v : m.vertices()) {
 		v.scalar() = v.principalCurvature().maxValue() * v.principalCurvature().minValue();
+	}
+}
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMean(MeshType& m)
+{
+	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexPrincipalCurvature(m);
+
+	using VertexType = typename MeshType::VertexType;
+
+	for (VertexType& v : m.vertices()) {
+		v.scalar() = (v.principalCurvature().maxValue() + v.principalCurvature().minValue()) / 2;
 	}
 }
 

@@ -41,7 +41,7 @@
 
 int main(int argc, char **argv)
 {
-	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>("/home/alessandro/Repositories/Projects/vclib/test/data/models/bimba.obj");
+	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
 
 	m.enablePerVertexAdjacentFaces();
 	m.enablePerFaceAdjacentFaces();
@@ -52,10 +52,10 @@ int main(int argc, char **argv)
 
 	vcl::updatePrincipalCurvature(m);
 
-	vcl::setPerVertexScalarFromGaussianCurvatureDir(m);
+	vcl::setPerVertexScalarFromPrincipalCurvatureMean(m);
 	vcl::setPerVertexColorFromScalar(m);
 
-	vcl::io::savePly(m, "/home/alessandro/tmp/bimba_curvature.ply");
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.ply");
 
 #ifdef VCLIB_WITH_QGLVIEWER
 	QApplication application(argc, argv);
