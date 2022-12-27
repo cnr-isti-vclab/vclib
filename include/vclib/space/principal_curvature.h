@@ -31,6 +31,8 @@ template<typename Scalar>
 class PrincipalCurvature
 {
 public:
+	using ScalarType = Scalar;
+
 	PrincipalCurvature();
 
 	template<typename S>

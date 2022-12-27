@@ -69,6 +69,18 @@ void setPerVertexScalarFromPrincipalCurvatureGaussian(MeshType& m);
 template<MeshConcept MeshType>
 void setPerVertexScalarFromPrincipalCurvatureMean(MeshType& m);
 
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMinValue(MeshType& m);
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMaxValue(MeshType& m);
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureShapeIndex(MeshType& m);
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureCurvedness(MeshType& m);
+
 } // namespace vcl
 
 #include "scalar.cpp"
