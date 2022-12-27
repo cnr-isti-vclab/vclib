@@ -64,6 +64,7 @@ set(HEADERS
 	include/vclib/algorithms/internal/per_face_edge.h
 	include/vclib/algorithms/update/bounding_box.h
 	include/vclib/algorithms/update/color.h
+	include/vclib/algorithms/update/curvature.h
 	include/vclib/algorithms/update/flag.h
 	include/vclib/algorithms/update/normal.h
 	include/vclib/algorithms/update/scalar.h
@@ -274,6 +275,7 @@ set(SOURCES
 	include/vclib/algorithms/internal/inertia.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
 	include/vclib/algorithms/update/color.cpp
+	include/vclib/algorithms/update/curvature.cpp
 	include/vclib/algorithms/update/flag.cpp
 	include/vclib/algorithms/update/normal.cpp
 	include/vclib/algorithms/update/scalar.cpp
