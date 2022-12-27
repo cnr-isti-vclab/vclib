@@ -160,7 +160,7 @@ void OptionalAdjacentFaces<Face, N, T>::pushAdjFace(Face* f) requires (N < 0)
 template<typename Face, int N, typename T>
 void OptionalAdjacentFaces<Face, N, T>::insertAdjFace(uint i, Face* f) requires (N < 0)
 {
-	assert(i < adjFacesNumber());
+	assert(i < adjFacesNumber() + 1);
 	B::optCont().adjFaces(thisId()).insert(B::optCont().adjFaces(thisId()).begin() + i, f);
 }
 

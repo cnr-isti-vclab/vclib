@@ -138,7 +138,7 @@ void OptionalAdjacentVertices<Vertex, T>::pushAdjVertex(Vertex* f)
 template<typename Vertex, typename T>
 void OptionalAdjacentVertices<Vertex, T>::insertAdjVertex(uint i, Vertex* f)
 {
-	assert(i < adjVerticesNumber());
+	assert(i < adjVerticesNumber() + 1);
 	B::optCont().adjVerts(thisId()).insert(B::optCont().adjVerts(thisId()).begin() + i, f);
 }
 

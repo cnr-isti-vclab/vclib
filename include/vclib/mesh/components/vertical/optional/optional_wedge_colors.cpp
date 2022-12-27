@@ -147,7 +147,7 @@ void OptionalWedgeColors<N, T>::pushWedgeColor(const vcl::Color& t) requires (N 
 template<int N, typename T>
 void OptionalWedgeColors<N, T>::insertWedgeColor(uint i, const vcl::Color& t) requires (N < 0)
 {
-	assert(i < wedgeColorsNumber());
+	assert(i < wedgeColorsNumber() + 1);
 	B::optCont().wedgeColors(thisId()).insert(B::optCont().wedgeColors(thisId()).begin() + i, t);
 }
 

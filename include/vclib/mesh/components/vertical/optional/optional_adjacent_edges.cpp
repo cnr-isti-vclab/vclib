@@ -160,7 +160,7 @@ void OptionalAdjacentEdges<Edge, N, T>::pushAdjEdge(Edge* e) requires (N < 0)
 template<typename Edge, int N, typename T>
 void OptionalAdjacentEdges<Edge, N, T>::insertAdjEdge(uint i, Edge* e) requires (N < 0)
 {
-	assert(i < adjEdgesNumber());
+	assert(i < adjEdgesNumber() + 1);
 	B::optCont().adjEdges(thisId()).insert(B::optCont().adjEdges(thisId()).begin() + i, e);
 }
 

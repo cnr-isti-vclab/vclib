@@ -170,7 +170,7 @@ void OptionalWedgeTexCoords<Scalar, N, T>::insertWedgeTexCoord(
 	uint                 i,
 	const vcl::TexCoord<Scalar>& t) requires (N < 0)
 {
-	assert(i < wedgeTexCoordsNumber());
+	assert(i < wedgeTexCoordsNumber() + 1);
 	B::optCont().wedgeTexCoords(thisId()).first.insert(
 		B::optCont().wedgeTexCoords(thisId()).first.begin() + i, t);
 }

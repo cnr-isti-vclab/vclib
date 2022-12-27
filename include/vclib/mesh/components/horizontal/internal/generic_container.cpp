@@ -158,7 +158,7 @@ void GenericContainer<C, N>::pushBack(const C& v) requires (N < 0)
 template<typename C, int N>
 void GenericContainer<C, N>::insert(uint i, const C& v) requires (N < 0)
 {
-	assert(i < size());
+	assert(i < size() + 1);
 	container.insert(container.begin() + i, v);
 }
 
