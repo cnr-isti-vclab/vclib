@@ -248,7 +248,7 @@ void setPerVertexScalarFromGaussianCurvatureDir(MeshType &m)
 	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		v.scalar() = v.principalCurvature().maxDir() * v.principalCurvature().minDir();
+		v.scalar() = v.principalCurvature().maxValue() * v.principalCurvature().minValue();
 	}
 }
 
