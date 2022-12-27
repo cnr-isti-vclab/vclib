@@ -248,6 +248,7 @@ set(HEADERS
 	include/vclib/space/plane.h
 	include/vclib/space/point.h
 	include/vclib/space/principal_curvature.h
+	include/vclib/space/sampler.h
 	include/vclib/space/tex_coord.h
 	include/vclib/space/array/array_t.h
 	include/vclib/space/array/array2.h
@@ -258,7 +259,11 @@ set(HEADERS
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
-	include/vclib/space/point/point4.h)
+	include/vclib/space/point/point4.h
+	include/vclib/space/sampler/mesh_sampler.h
+	include/vclib/space/sampler/point_sampler.h
+	include/vclib/space/sampler/sampler_concept.h
+	include/vclib/space/sampler/vertex_index_sampler.h)
 
 set(SOURCES
 	include/vclib/algorithms/clean.cpp
@@ -392,7 +397,10 @@ set(SOURCES
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/point/point2.cpp
 	include/vclib/space/point/point3.cpp
-	include/vclib/space/point/point4.cpp)
+	include/vclib/space/point/point4.cpp
+	include/vclib/space/sampler/mesh_sampler.cpp
+	include/vclib/space/sampler/point_sampler.cpp
+	include/vclib/space/sampler/vertex_index_sampler.cpp)
 
 set(HEADERS_LIB
 	)
