@@ -75,18 +75,6 @@ concept HasTransformMatrix = comp::HasTransformMatrix<T>;
 } // namespace mesh
 
 template<typename MeshType>
-concept HasTriangles =
-	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
-
-template<typename MeshType>
-concept HasQuads =
-	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
-
-template<typename MeshType>
-concept HasPolygons =
-	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
-
-template<typename MeshType>
 concept HasBoundingBox =
 	mesh::HasBoundingBox<MeshType>;
 
@@ -111,7 +99,21 @@ concept HasTransformMatrix =
 	mesh::HasTransformMatrix<MeshType>;
 
 template<typename T>
-concept BaseMeshConcept = mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value;
+concept BaseMeshConcept =
+	(mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
+	mesh::HasVertexContainer<T>;
+
+template<typename MeshType>
+concept HasTriangles =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
+
+template<typename MeshType>
+concept HasQuads =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
+
+template<typename MeshType>
+concept HasPolygons =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
 
 template<typename T>
 concept FaceMeshConcept =
