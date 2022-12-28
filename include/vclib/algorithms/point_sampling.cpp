@@ -20,41 +20,54 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SAMPLER_POINT_SAMPLER_H
-#define VCL_SPACE_SAMPLER_POINT_SAMPLER_H
+#include "point_sampling.h"
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/algorithms/shuffle.h>
 
 namespace vcl {
 
-template<typename PointType>
-class PointSampler
+template<SamplerConcept SamplerType, MeshConcept MeshType>
+SamplerType allVerticesSampling(const MeshType &m, bool onlySelected)
 {
-public:
-	PointSampler() = default;
+	using VertexType = typename MeshType::VertexType;
 
-	const std::vector<PointType>& samples() const;
+	SamplerType sampler;
+	for (const VertexType& v : m.vertices()) {
+		if (!onlySelected || v.isSelected())
+			sampler.addVertex(v);
+	}
+	return sampler;
+}
 
-	void clear();
-	void reserve(uint n);
+/**
+ * @brief Samples the vertices in a weighted way, using the per vertex Scalar component. Each vertex
+ * has a probability of being chosen that is proportional to its scalar value.
+ *
+ * @param m
+ * @param nSamples
+ * @return
+ */
+template<SamplerConcept SamplerType, MeshConcept MeshType>
+SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples)
+{
+	vcl::requirePerVertexScalar(m);
 
-	void addPoint(const PointType& p);
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::ScalarType;
 
-	template<VertexConcept VertexType>
-	void addVertex(const VertexType& v);
+	if (nSamples > m.vertexNumber()) {
+		return allVerticesSampling<SamplerType>(m);
+	}
 
-	template<EdgeConcept EdgeType>
-	void addEdge(const EdgeType& e, double u);
+	SamplerType ps;
 
-	template<FaceConcept FaceType>
-	void addFace(const FaceType& f);
+	// todo
+	// create distribution of vertices using their scalar
+	// and use the distribution for a random generator
+	// and generate then nSamples vertices to add into ps
 
-private:
-	std::vector<PointType> samplesVec;
-};
+	return ps;
+}
 
 } // namespace vcl
 
-#include "point_sampler.cpp"
-
-#endif // VCL_SPACE_SAMPLER_POINT_SAMPLER_H

@@ -20,41 +20,22 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SAMPLER_POINT_SAMPLER_H
-#define VCL_SPACE_SAMPLER_POINT_SAMPLER_H
+#ifndef VCL_ALGORITHMS_POINT_SAMPLING_H
+#define VCL_ALGORITHMS_POINT_SAMPLING_H
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/sampler.h>
 
 namespace vcl {
 
-template<typename PointType>
-class PointSampler
-{
-public:
-	PointSampler() = default;
+template<SamplerConcept SamplerType, MeshConcept MeshType>
+SamplerType allVerticesSampling(const MeshType& m, bool onlySelected = false);
 
-	const std::vector<PointType>& samples() const;
-
-	void clear();
-	void reserve(uint n);
-
-	void addPoint(const PointType& p);
-
-	template<VertexConcept VertexType>
-	void addVertex(const VertexType& v);
-
-	template<EdgeConcept EdgeType>
-	void addEdge(const EdgeType& e, double u);
-
-	template<FaceConcept FaceType>
-	void addFace(const FaceType& f);
-
-private:
-	std::vector<PointType> samplesVec;
-};
+template<SamplerConcept SamplerType, MeshConcept MeshType>
+SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples);
 
 } // namespace vcl
 
-#include "point_sampler.cpp"
+#include "point_sampling.cpp"
 
-#endif // VCL_SPACE_SAMPLER_POINT_SAMPLER_H
+#endif // VCL_ALGORITHMS_POINT_SAMPLING_H

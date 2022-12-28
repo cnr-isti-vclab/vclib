@@ -20,41 +20,65 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SAMPLER_POINT_SAMPLER_H
-#define VCL_SPACE_SAMPLER_POINT_SAMPLER_H
+#ifndef VCL_ALGORITHMS_SHUFFLE_H
+#define VCL_ALGORITHMS_SHUFFLE_H
+
+#include <random>
 
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template<typename PointType>
-class PointSampler
-{
-public:
-	PointSampler() = default;
+template<MeshConcept MeshType>
+std::vector<typename MeshType::VertexType*>
+fillAndShuffleVertexPointerVector(MeshType& m, std::random_device& rd);
 
-	const std::vector<PointType>& samples() const;
+template<MeshConcept MeshType>
+std::vector<typename MeshType::VertexType*>
+fillAndShuffleVertexPointerVector(MeshType& m);
 
-	void clear();
-	void reserve(uint n);
+template<MeshConcept MeshType>
+std::vector<const typename MeshType::VertexType*>
+fillAndShuffleVertexPointerVector(const MeshType& m, std::random_device& rd);
 
-	void addPoint(const PointType& p);
+template<MeshConcept MeshType>
+std::vector<const typename MeshType::VertexType*>
+fillAndShuffleVertexPointerVector(const MeshType& m);
 
-	template<VertexConcept VertexType>
-	void addVertex(const VertexType& v);
+template<MeshConcept MeshType>
+std::vector<uint>
+fillAndShuffleVertexIndexVector(const MeshType& m, std::random_device& rd);
 
-	template<EdgeConcept EdgeType>
-	void addEdge(const EdgeType& e, double u);
+template<MeshConcept MeshType>
+std::vector<uint>
+fillAndShuffleVertexIndexVector(const MeshType& m);
 
-	template<FaceConcept FaceType>
-	void addFace(const FaceType& f);
+template<FaceMeshConcept MeshType>
+std::vector<typename MeshType::FaceType*>
+fillAndShuffleFacePointerVector(MeshType& m, std::random_device& rd);
 
-private:
-	std::vector<PointType> samplesVec;
-};
+template<FaceMeshConcept MeshType>
+std::vector<typename MeshType::FaceType*>
+fillAndShuffleFacePointerVector(MeshType& m);
+
+template<FaceMeshConcept MeshType>
+std::vector<const typename MeshType::FaceType*>
+fillAndShuffleFacePointerVector(const MeshType& m, std::random_device& rd);
+
+template<FaceMeshConcept MeshType>
+std::vector<const typename MeshType::FaceType*>
+fillAndShuffleFacePointerVector(const MeshType& m);
+
+template<FaceMeshConcept MeshType>
+std::vector<uint>
+fillAndShuffleFaceIndexVector(const MeshType& m, std::random_device& rd);
+
+template<FaceMeshConcept MeshType>
+std::vector<uint>
+fillAndShuffleFaceIndexVector(const MeshType& m);
 
 } // namespace vcl
 
-#include "point_sampler.cpp"
+#include "shuffle.cpp"
 
-#endif // VCL_SPACE_SAMPLER_POINT_SAMPLER_H
+#endif // VCL_ALGORITHMS_SHUFFLE_H

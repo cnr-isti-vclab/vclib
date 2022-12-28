@@ -54,7 +54,9 @@ set(HEADERS
 	include/vclib/algorithms/fitting.h
 	include/vclib/algorithms/grid.h
 	include/vclib/algorithms/intersection.h
+	include/vclib/algorithms/point_sampling.h
 	include/vclib/algorithms/polygon.h
+	include/vclib/algorithms/shuffle.h
 	include/vclib/algorithms/smooth.h
 	include/vclib/algorithms/sort.h
 	include/vclib/algorithms/stat.h
@@ -272,9 +274,11 @@ set(SOURCES
 	include/vclib/algorithms/fitting.cpp
 	include/vclib/algorithms/grid.cpp
 	include/vclib/algorithms/intersection.cpp
+	include/vclib/algorithms/point_sampling.cpp
 	include/vclib/algorithms/polygon.cpp
-	include/vclib/algorithms/sort.cpp
+	include/vclib/algorithms/shuffle.cpp
 	include/vclib/algorithms/smooth.cpp
+	include/vclib/algorithms/sort.cpp
 	include/vclib/algorithms/stat.cpp
 	include/vclib/algorithms/create/dodecahedron.cpp
 	include/vclib/algorithms/create/hexahedron.cpp
