@@ -31,14 +31,25 @@ template<typename T>
 concept SamplerConcept = requires(
 	T o,
 	const internal::TMPSimplePolyMesh& m,
-	const internal::TMPSimplePolyMesh::VertexType& v,
-	unsigned int n)
+	const internal::TMPSimplePolyMesh::VertexType& v)
 {
 	o.samples();
 
 	o.clear();
-	o.reserve(n);
+	o.reserve(uint());
 	o.addVertex(v, m);
+};
+
+template<typename T>
+concept FaceSamplerConcept = SamplerConcept<T> &&
+	requires(
+		T o,
+		const internal::TMPSimplePolyMesh& m,
+		const internal::TMPSimplePolyMesh::VertexType::CoordType& p,
+		const internal::TMPSimplePolyMesh::FaceType& f)
+{
+	o.addFace(f, m);
+	o.addFace(f, m, p);
 };
 
 } // namespace vcl

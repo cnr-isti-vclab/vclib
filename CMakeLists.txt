@@ -60,9 +60,12 @@ set(HEADERS
 	include/vclib/algorithms/smooth.h
 	include/vclib/algorithms/sort.h
 	include/vclib/algorithms/stat.h
+	include/vclib/algorithms/update.h
 	include/vclib/algorithms/create/dodecahedron.h
 	include/vclib/algorithms/create/hexahedron.h
 	include/vclib/algorithms/create/tetrahedron.h
+	include/vclib/algorithms/stat/scalar.h
+	include/vclib/algorithms/stat/selection.h
 	include/vclib/algorithms/update/bounding_box.h
 	include/vclib/algorithms/update/color.h
 	include/vclib/algorithms/update/curvature.h
@@ -283,6 +286,8 @@ set(SOURCES
 	include/vclib/algorithms/create/dodecahedron.cpp
 	include/vclib/algorithms/create/hexahedron.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
+	include/vclib/algorithms/stat/scalar.cpp
+	include/vclib/algorithms/stat/selection.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
 	include/vclib/algorithms/update/color.cpp
 	include/vclib/algorithms/update/curvature.cpp

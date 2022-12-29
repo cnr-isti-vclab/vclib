@@ -151,7 +151,7 @@ void normalizePerVertexScalar(
 	using ScalarType = typename VertexType::ScalarType;
 
 	ScalarType range = maxS - minS;
-	std::pair<ScalarType, ScalarType> p = perVertexScalarMinMax(m);
+	std::pair<ScalarType, ScalarType> p = vertexScalarMinMax(m);
 
 	for (VertexType& v : m.vertices()) {
 		v.scalar() = minS + range * ((v.scalar() - p.first)/(p.second-p.first));
@@ -182,7 +182,7 @@ void normalizePerFaceScalar(
 	using ScalarType = typename FaceType::ScalarType;
 
 	ScalarType range = maxS - minS;
-	std::pair<ScalarType, ScalarType> p = perFaceScalarMinMax(m);
+	std::pair<ScalarType, ScalarType> p = faceScalarMinMax(m);
 
 	for (FaceType& f : m.faces()) {
 		f.scalar() = minS + range * ((f.scalar() - p.first)/(p.second-p.first));

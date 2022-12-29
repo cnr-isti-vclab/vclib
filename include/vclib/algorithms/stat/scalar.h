@@ -20,52 +20,29 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
+#ifndef VCL_ALGORITHMS_STAT_SCALAR_H
+#define VCL_ALGORITHMS_STAT_SCALAR_H
 
-#include <vector>
-
-#include <vclib/math/matrix.h>
-
-#include "stat/scalar.h"
-#include "stat/selection.h"
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
 template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
+std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
+vertexScalarMinMax(const MeshType& m);
+
+template<FaceMeshConcept MeshType>
+std::pair<typename MeshType::FaceType::ScalarType, typename MeshType::FaceType::ScalarType>
+faceScalarMinMax(const MeshType& m);
 
 template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
+typename MeshType::VertexType::ScalarType vertexScalarAverage(const MeshType& m);
 
 template<FaceMeshConcept MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double volume(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double surfaceArea(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double borderLength(const MeshType& m);
-
-template<typename PointType>
-Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
-
-template<MeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
-
-template<typename PointType>
-Matrix33<double> weightedCovarianceMatrixOfPointCloud(
-	const std::vector<PointType>& pointVec,
-	const std::vector<typename PointType::ScalarType>& weigths);
-
-template<FaceMeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
+typename MeshType::FaceType::ScalarType faceScalarAverage(const MeshType& m);
 
 } // namespace vcl
 
-#include "stat.cpp"
+#include "scalar.cpp"
 
-#endif // VCL_ALGORITHMS_STAT_H
+#endif // VCL_ALGORITHMS_STAT_SCALAR_H

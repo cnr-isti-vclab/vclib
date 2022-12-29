@@ -20,52 +20,56 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
+#include <iostream>
 
-#include <vector>
+#include <vclib/algorithms/point_sampling.h>
+#include <vclib/algorithms/update.h>
 
-#include <vclib/math/matrix.h>
+#include <vclib/io/load_ply.h>
+#include <vclib/tri_mesh.h>
 
-#include "stat/scalar.h"
-#include "stat/selection.h"
+#ifdef VCLIB_WITH_QGLVIEWER
+#include <QApplication>
 
-namespace vcl {
+#include <vclib/ext/opengl2/drawable_mesh.h>
+#include <vclib/ext/qglviewer/viewer_main_window.h>
+#endif
 
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
+int main(int argc, char **argv)
+{
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+	vcl::updatePerFaceNormals(m);
+	vcl::updatePerVertexNormals(m);
+	vcl::setPerVertexColor(m, vcl::Color::LightBlue);
 
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
+	uint nSamples = 10;
 
-template<FaceMeshConcept MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
+	vcl::MeshSampler<vcl::TriMesh> s =
+		vcl::faceAreaWeightedSampling<vcl::MeshSampler<vcl::TriMesh>>(m, nSamples);
 
-template<FaceMeshConcept MeshType>
-double volume(const MeshType& m);
+	vcl::TriMesh samples = s.samples();
 
-template<FaceMeshConcept MeshType>
-double surfaceArea(const MeshType& m);
 
-template<FaceMeshConcept MeshType>
-double borderLength(const MeshType& m);
+#ifdef VCLIB_WITH_QGLVIEWER
+	QApplication application(argc, argv);
 
-template<typename PointType>
-Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
+	vcl::ViewerMainWindow viewer;
+	vcl::DrawableMesh<vcl::TriMesh> dm(m);
+	vcl::DrawableMesh<vcl::TriMesh> sm(samples);
 
-template<MeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
+	std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+	vector->pushBack(dm);
+	vector->pushBack(sm);
+	viewer.setDrawableObjectVector(vector);
 
-template<typename PointType>
-Matrix33<double> weightedCovarianceMatrixOfPointCloud(
-	const std::vector<PointType>& pointVec,
-	const std::vector<typename PointType::ScalarType>& weigths);
+	viewer.show();
 
-template<FaceMeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
+	return application.exec();
+#else
+	(void) argc; // unused
+	(void) argv;
+	return 0;
+#endif
 
-} // namespace vcl
-
-#include "stat.cpp"
-
-#endif // VCL_ALGORITHMS_STAT_H
+	return 0;
+}

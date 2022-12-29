@@ -208,7 +208,7 @@ void setPerVertexColorFromScalar(
 	using ScalarType = typename VertexType::ScalarType;
 
 	if (minScalar == maxScalar) {
-		std::pair<ScalarType, ScalarType> pair = perVertexScalarMinMax(m);
+		std::pair<ScalarType, ScalarType> pair = vertexScalarMinMax(m);
 		minScalar                              = pair.first;
 		maxScalar                              = pair.second;
 	}
@@ -249,7 +249,7 @@ void setPerFaceColorFromScalar(
 	using ScalarType = typename FaceType::ScalarType;
 
 	if (minScalar == maxScalar) {
-		std::pair<ScalarType, ScalarType> pair = perFaceScalarMinMax(m);
+		std::pair<ScalarType, ScalarType> pair = faceScalarMinMax(m);
 		minScalar                              = pair.first;
 		maxScalar                              = pair.second;
 	}

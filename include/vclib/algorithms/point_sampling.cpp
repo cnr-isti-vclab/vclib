@@ -23,6 +23,7 @@
 #include "point_sampling.h"
 
 #include <vclib/algorithms/shuffle.h>
+#include <vclib/algorithms/stat.h>
 
 namespace vcl {
 
@@ -39,11 +40,30 @@ SamplerType allVerticesSampling(const MeshType &m, bool onlySelected)
 	return sampler;
 }
 
-template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType vertexUniformSampling(const MeshType &m, uint nSamples, bool deterministic)
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType allFacesSampling(const MeshType& m, bool onlySelected)
 {
-	if (nSamples >= m.vertexNumber()) {
-		return allVerticesSampling<SamplerType>(m);
+	using FaceType = typename MeshType::FaceType;
+
+	SamplerType sampler;
+	for (const FaceType& f : m.faces()) {
+		if (!onlySelected || f.isSelected())
+			sampler.addFace(f, m);
+	}
+	return sampler;
+}
+
+template<SamplerConcept SamplerType, MeshConcept MeshType>
+SamplerType vertexUniformSampling(
+	const MeshType &m,
+	uint nSamples,
+	bool onlySelected,
+	bool deterministic)
+{
+	uint vn = onlySelected ? vcl::vertexSelectionNumber(m) : m.vertexNumber();
+
+	if (nSamples >= vn) {
+		return allVerticesSampling<SamplerType>(m, onlySelected);
 	}
 
 	SamplerType ps;
@@ -60,10 +80,49 @@ SamplerType vertexUniformSampling(const MeshType &m, uint nSamples, bool determi
 
 	while (nVisited < nSamples) {
 		uint vi = dist(gen);
-		if (vi < m.vertexContainerSize() && !m.vertex(vi).isDeleted() && !visited[vi]) {
+		if (!m.vertex(vi).isDeleted() && !visited[vi] &&
+			(!onlySelected || m.vertex(vi).isSelected())) {
 			visited[vi] = true;
 			nVisited++;
 			ps.addVertex(m.vertex(vi), m);
+		}
+	}
+
+	return ps;
+}
+
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType faceUniformSampling(
+	const MeshType& m,
+	uint            nSamples,
+	bool            onlySelected,
+	bool            deterministic)
+{
+	uint fn = onlySelected ? vcl::faceSelectionNumber(m) : m.faceNumber();
+
+	if (nSamples >= fn) {
+		return allFacesSampling<SamplerType>(m, onlySelected);
+	}
+
+	SamplerType ps;
+
+	std::uniform_int_distribution<uint> dist(0, m.faceContainerSize() - 1);
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+
+	std::vector<bool> visited(m.faceContainerSize(), false);
+	uint nVisited = 0;
+
+	while (nVisited < nSamples) {
+		uint fi = dist(gen);
+		if (!m.face(fi).isDeleted() && !visited[fi] &&
+			(!onlySelected || m.face(fi).isSelected())) {
+			visited[fi] = true;
+			nVisited++;
+			ps.addFace(m.face(fi), m);
 		}
 	}
 
@@ -116,6 +175,51 @@ SamplerType vertexWeightedSampling(
 }
 
 /**
+ * @brief Samples the barycenter faces in a weighted way, using the per face weights given as input.
+ * Each face has a probability of being chosen that is proportional to its weight.
+ *
+ * @param m
+ * @param weights: a vector of scalars having the i-th entry associated to the face having index i.
+ *                 Note: weights.size() == m.faceContainerSize().
+ * @param nSamples
+ * @return A Sampler, that is a collection of samples selected from the input mesh.
+ */
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+SamplerType faceWeightedSampling(
+	const MeshType&                m,
+	const std::vector<ScalarType>& weights,
+	uint                           nSamples,
+	bool                           deterministic)
+{
+	if (nSamples >= m.faceNumber()) {
+		return allFacesSampling<SamplerType>(m);
+	}
+
+	SamplerType ps;
+
+	std::discrete_distribution<> dist(std::begin(weights), std::end(weights));
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+
+	std::vector<bool> visited(m.faceContainerSize(), false);
+	uint nVisited = 0;
+
+	while (nVisited < nSamples) {
+		uint fi = dist(gen);
+		if (fi < m.faceContainerSize() && !m.face(fi).isDeleted() && !visited[fi]) {
+			visited[fi] = true;
+			nVisited++;
+			ps.addFace(m.face(fi), m);
+		}
+	}
+
+	return ps;
+}
+
+/**
  * @brief Samples the vertices in a weighted way, using the per vertex Scalar component. Each vertex
  * has a probability of being chosen that is proportional to its scalar value.
  *
@@ -138,6 +242,31 @@ SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples, bool 
 	}
 
 	return vertexWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
+}
+
+/**
+ * @brief Samples the faces in a weighted way, using the per face Scalar component. Each face
+ * has a probability of being chosen that is proportional to its scalar value.
+ *
+ * @param m
+ * @param nSamples
+ * @return
+ */
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType faceScalarWeightedSampling(const MeshType& m, uint nSamples, bool deterministic)
+{
+	vcl::requirePerFaceScalar(m);
+
+	using FaceType = typename MeshType::FaceType;
+	using ScalarType = typename FaceType::ScalarType;
+
+	std::vector<ScalarType> weights;
+	weights.resize(m.faceContainerSize(), 0);
+	for (const FaceType& f : m.faces()) {
+		weights[m.index(f)] = f.scalar();
+	}
+
+	return faceWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
@@ -167,6 +296,23 @@ SamplerType vertexAreaWeightedSampling(const MeshType& m, uint nSamples, bool de
 
 	// use these weights to create a sapler
 	return vertexWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
+}
+
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType faceAreaWeightedSampling(
+	const MeshType& m,
+	uint nSamples,
+	bool deterministic)
+{
+	using FaceType = typename MeshType::FaceType;
+
+	std::vector<double> weights(m.faceContainerSize());
+
+	for (const FaceType& f : m.faces()) {
+		weights[m.index(f)] =  vcl::polygonArea(f);
+	}
+
+	return faceWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
 } // namespace vcl

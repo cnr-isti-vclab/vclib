@@ -20,52 +20,34 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
-
-#include <vector>
-
-#include <vclib/math/matrix.h>
-
-#include "stat/scalar.h"
-#include "stat/selection.h"
+#include "selection.h"
 
 namespace vcl {
 
 template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
+uint vertexSelectionNumber(const MeshType &m)
+{
+	using VertexType = typename MeshType::VertexType;
 
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
+	uint cnt = 0;
+	for (const VertexType& v : m.vertices())
+		if (v.isSelected())
+			cnt++;
 
-template<FaceMeshConcept MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double volume(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double surfaceArea(const MeshType& m);
+	return cnt;
+}
 
 template<FaceMeshConcept MeshType>
-double borderLength(const MeshType& m);
+uint faceSelectionNumber(const MeshType &m)
+{
+	using FaceType = typename MeshType::FaceType;
 
-template<typename PointType>
-Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
+	uint cnt = 0;
+	for (const FaceType& f : m.faces())
+		if (f.isSelected())
+			cnt++;
 
-template<MeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
-
-template<typename PointType>
-Matrix33<double> weightedCovarianceMatrixOfPointCloud(
-	const std::vector<PointType>& pointVec,
-	const std::vector<typename PointType::ScalarType>& weigths);
-
-template<FaceMeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
+	return cnt;
+}
 
 } // namespace vcl
-
-#include "stat.cpp"
-
-#endif // VCL_ALGORITHMS_STAT_H

@@ -20,52 +20,17 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
+#ifndef VCL_ALGORITHMS_UPDATE_H
+#define VCL_ALGORITHMS_UPDATE_H
 
-#include <vector>
+#include "update/bounding_box.h"
+#include "update/color.h"
+#include "update/curvature.h"
+#include "update/flag.h"
+#include "update/normal.h"
+#include "update/scalar.h"
+#include "update/selection.h"
+#include "update/topology.h"
+#include "update/transform.h"
 
-#include <vclib/math/matrix.h>
-
-#include "stat/scalar.h"
-#include "stat/selection.h"
-
-namespace vcl {
-
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
-
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double volume(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double surfaceArea(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double borderLength(const MeshType& m);
-
-template<typename PointType>
-Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
-
-template<MeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
-
-template<typename PointType>
-Matrix33<double> weightedCovarianceMatrixOfPointCloud(
-	const std::vector<PointType>& pointVec,
-	const std::vector<typename PointType::ScalarType>& weigths);
-
-template<FaceMeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
-
-} // namespace vcl
-
-#include "stat.cpp"
-
-#endif // VCL_ALGORITHMS_STAT_H
+#endif // VCL_ALGORITHMS_UPDATE_H

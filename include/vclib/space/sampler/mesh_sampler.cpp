@@ -178,7 +178,7 @@ template<MeshConcept MeshType>
 void MeshSampler<MeshType>::setBirthElement(uint vi, const std::string& key, uint value)
 {
 	if constexpr(vcl::HasPerVertexCustomComponents<MeshType>) {
-		if (!m.template hasPerVertexCustomComponent<uint>(key)) {
+		if (!m.hasPerVertexCustomComponent(key)) {
 			m.template addPerVertexCustomComponent<uint>(key);
 		}
 		m.vertex(vi).template customComponent<uint>(key) = value;
