@@ -80,8 +80,8 @@ template<typename PointType>
 template<FaceMeshConcept MeshType>
 void PointSampler<PointType>::addFace(
 	const typename MeshType::FaceType& f,
-	const std::vector<ScalarType>&     barCoords,
-	const MeshType&)
+	const MeshType&,
+	const std::vector<ScalarType>&     barCoords)
 {
 	assert(f.vertexNumber() <= weights.size());
 
@@ -96,8 +96,8 @@ template<typename PointType>
 template<FaceMeshConcept MeshType>
 void PointSampler<PointType>::addFace(
 	const typename MeshType::FaceType& f,
-	const PointType&                   barCoords,
-	const MeshType&)
+	const MeshType&,
+	const PointType&                   barCoords)
 {
 	using FaceType = typename MeshType::FaceType;
 	static_assert(FaceType::NV == 3 || FaceType::NV == -1);

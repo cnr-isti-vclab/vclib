@@ -90,8 +90,8 @@ private:
 
 // makes sure that the MeshSampler satisfies SamplerConcept
 static_assert(
-	SamplerConcept<MeshSampler<internal::TMPSimplePolyMesh>>,
-	"MeshSampler is not a valid Sampler");
+	FaceSamplerConcept<MeshSampler<internal::TMPSimplePolyMesh>>,
+	"MeshSampler is not a valid FaceSampler");
 
 } // namespace vcl
 

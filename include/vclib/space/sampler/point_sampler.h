@@ -56,21 +56,21 @@ public:
 	template<FaceMeshConcept MeshType>
 	void addFace(
 		const typename MeshType::FaceType& f,
-		const std::vector<ScalarType>&     barCoords,
-		const MeshType&);
+		const MeshType&,
+		const std::vector<ScalarType>&     barCoords);
 
 	template<FaceMeshConcept MeshType>
 	void addFace(
 		const typename MeshType::FaceType& f,
-		const PointType&                   barCoords,
-		const MeshType&);
+		const MeshType&,
+		const PointType&                   barCoords);
 
 private:
 	std::vector<PointType> samplesVec;
 };
 
 // makes sure that the VertexIndexSampler satisfies SamplerConcept
-static_assert(SamplerConcept<PointSampler<>>, "PointSampler is not a valid Sampler");
+static_assert(FaceSamplerConcept<PointSampler<>>, "PointSampler is not a valid FaceSampler");
 
 } // namespace vcl
 
