@@ -39,6 +39,37 @@ SamplerType allVerticesSampling(const MeshType &m, bool onlySelected)
 	return sampler;
 }
 
+template<SamplerConcept SamplerType, MeshConcept MeshType>
+SamplerType vertexUniformSampling(const MeshType &m, uint nSamples, bool deterministic)
+{
+	if (nSamples >= m.vertexNumber()) {
+		return allVerticesSampling<SamplerType>(m);
+	}
+
+	SamplerType ps;
+
+	std::uniform_int_distribution<uint> dist(0, m.vertexContainerSize() - 1);
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+
+	std::vector<bool> visited(m.vertexContainerSize(), false);
+	uint nVisited = 0;
+
+	while (nVisited < nSamples) {
+		uint vi = dist(gen);
+		if (vi < m.vertexContainerSize() && !m.vertex(vi).isDeleted() && !visited[vi]) {
+			visited[vi] = true;
+			nVisited++;
+			ps.addVertex(m.vertex(vi), m);
+		}
+	}
+
+	return ps;
+}
+
 /**
  * @brief Samples the vertices in a weighted way, using the per vertex weights given as input.
  * Each vertex has a probability of being chosen that is proportional to its weight.
@@ -53,7 +84,8 @@ template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
 SamplerType vertexWeightedSampling(
 	const MeshType& m,
 	const std::vector<ScalarType>& weights,
-	uint nSamples)
+	uint nSamples,
+	bool deterministic)
 {
 	if (nSamples >= m.vertexNumber()) {
 		return allVerticesSampling<SamplerType>(m);
@@ -63,15 +95,17 @@ SamplerType vertexWeightedSampling(
 
 	std::discrete_distribution<> dist(std::begin(weights), std::end(weights));
 
-	static std::random_device rd;
+	std::random_device rd;
 	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
 
 	std::vector<bool> visited(m.vertexContainerSize(), false);
 	uint nVisited = 0;
 
 	while (nVisited < nSamples) {
 		uint vi = dist(gen);
-		if (vi < m.vertexContainerSize() && !visited[vi]) {
+		if (vi < m.vertexContainerSize() && !m.vertex(vi).isDeleted() && !visited[vi]) {
 			visited[vi] = true;
 			nVisited++;
 			ps.addVertex(m.vertex(vi), m);
@@ -90,7 +124,7 @@ SamplerType vertexWeightedSampling(
  * @return
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples)
+SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	vcl::requirePerVertexScalar(m);
 
@@ -103,11 +137,11 @@ SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples)
 		weights[m.index(v)] = v.scalar();
 	}
 
-	return vertexWeightedSampling<SamplerType>(m, weights, nSamples);
+	return vertexWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType vertexAreaWeightedSampling(const MeshType& m, uint nSamples)
+SamplerType vertexAreaWeightedSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	using VertexType = typename MeshType::VertexType;
 	using ScalarType = typename VertexType::ScalarType;
@@ -132,7 +166,7 @@ SamplerType vertexAreaWeightedSampling(const MeshType& m, uint nSamples)
 	}
 
 	// use these weights to create a sapler
-	return vertexWeightedSampling<SamplerType>(m, weights, nSamples);
+	return vertexWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
 } // namespace vcl

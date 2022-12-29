@@ -31,51 +31,26 @@ namespace vcl {
 
 template<MeshConcept MeshType>
 std::vector<typename MeshType::VertexType*>
-fillAndShuffleVertexPointerVector(MeshType& m, std::random_device& rd);
-
-template<MeshConcept MeshType>
-std::vector<typename MeshType::VertexType*>
-fillAndShuffleVertexPointerVector(MeshType& m);
+fillAndShuffleVertexPointerVector(MeshType& m, bool deterministic = false);
 
 template<MeshConcept MeshType>
 std::vector<const typename MeshType::VertexType*>
-fillAndShuffleVertexPointerVector(const MeshType& m, std::random_device& rd);
-
-template<MeshConcept MeshType>
-std::vector<const typename MeshType::VertexType*>
-fillAndShuffleVertexPointerVector(const MeshType& m);
+fillAndShuffleVertexPointerVector(const MeshType& m, bool deterministic = false);
 
 template<MeshConcept MeshType>
 std::vector<uint>
-fillAndShuffleVertexIndexVector(const MeshType& m, std::random_device& rd);
-
-template<MeshConcept MeshType>
-std::vector<uint>
-fillAndShuffleVertexIndexVector(const MeshType& m);
+fillAndShuffleVertexIndexVector(const MeshType& m, bool deterministic = false);
 
 template<FaceMeshConcept MeshType>
 std::vector<typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(MeshType& m, std::random_device& rd);
-
-template<FaceMeshConcept MeshType>
-std::vector<typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(MeshType& m);
+fillAndShuffleFacePointerVector(MeshType& m, bool deterministic = false);
 
 template<FaceMeshConcept MeshType>
 std::vector<const typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(const MeshType& m, std::random_device& rd);
+fillAndShuffleFacePointerVector(const MeshType& m, bool deterministic = false);
 
 template<FaceMeshConcept MeshType>
-std::vector<const typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-std::vector<uint>
-fillAndShuffleFaceIndexVector(const MeshType& m, std::random_device& rd);
-
-template<FaceMeshConcept MeshType>
-std::vector<uint>
-fillAndShuffleFaceIndexVector(const MeshType& m);
+std::vector<uint> fillAndShuffleFaceIndexVector(const MeshType& m, bool deterministic = false);
 
 } // namespace vcl
 

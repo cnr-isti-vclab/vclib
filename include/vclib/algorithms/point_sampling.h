@@ -31,14 +31,27 @@ namespace vcl {
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType allVerticesSampling(const MeshType& m, bool onlySelected = false);
 
+template<SamplerConcept SamplerType, MeshConcept MeshType>
+SamplerType vertexUniformSampling(const MeshType& m, uint nSamples, bool deterministic = false);
+
 template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
-SamplerType vertexWeightedSampling(const MeshType& m, const std::vector<ScalarType>& weights, uint nSamples);
+SamplerType vertexWeightedSampling(
+	const MeshType&                m,
+	const std::vector<ScalarType>& weights,
+	uint                           nSamples,
+	bool                           deterministic = false);
 
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples);
+SamplerType vertexScalarWeightedSampling(
+	const MeshType& m,
+	uint nSamples,
+	bool deterministic = false);
 
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType vertexAreaWeightedSampling(const MeshType& m, uint nSamples);
+SamplerType vertexAreaWeightedSampling(
+	const MeshType& m,
+	uint nSamples,
+	bool deterministic = false);
 
 } // namespace vcl
 

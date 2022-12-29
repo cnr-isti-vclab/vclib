@@ -36,7 +36,7 @@ namespace internal {
  * Templates M and V can be both const and non-const MeshType and VertexType
  */
 template<typename M, typename V>
-std::vector<V*> genericFASVPV(M m, std::random_device& rd)
+std::vector<V*> genericFASVPV(M m, bool deterministic)
 {
 	std::vector<V*> vec;
 	vec.reserve(m.vertexNumber());
@@ -45,8 +45,11 @@ std::vector<V*> genericFASVPV(M m, std::random_device& rd)
 		vec.push_back(&v);
 	}
 
-	std::mt19937 g(rd());
-	std::shuffle(vec.begin(),vec.end(), g);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+	std::shuffle(vec.begin(),vec.end(), gen);
 	return vec;
 }
 
@@ -56,7 +59,7 @@ std::vector<V*> genericFASVPV(M m, std::random_device& rd)
  * Templates M and F can be both const and non-const MeshType and FaceType
  */
 template<typename M, typename F>
-std::vector<F*> genericFASFPV(M m, std::random_device& rd)
+std::vector<F*> genericFASFPV(M m, bool deterministic)
 {
 	std::vector<F*> vec;
 	vec.reserve(m.faceNumber());
@@ -65,8 +68,11 @@ std::vector<F*> genericFASFPV(M m, std::random_device& rd)
 		vec.push_back(&f);
 	}
 
-	std::mt19937 g(rd());
-	std::shuffle(vec.begin(),vec.end(), g);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+	std::shuffle(vec.begin(),vec.end(), gen);
 	return vec;
 }
 
@@ -75,40 +81,25 @@ std::vector<F*> genericFASFPV(M m, std::random_device& rd)
 template<MeshConcept MeshType>
 std::vector<typename MeshType::VertexType*>fillAndShuffleVertexPointerVector(
 	MeshType& m,
-	std::random_device& rd)
+	bool deterministic)
 {
 	using VertexType = typename MeshType::VertexType;
 
-	return internal::genericFASVPV<MeshType&, VertexType>(m, rd);
-}
-
-template<MeshConcept MeshType>
-std::vector<typename MeshType::VertexType*> fillAndShuffleVertexPointerVector(MeshType& m)
-{
-	static std::random_device rd;
-	return fillAndShuffleVertexPointerVector(m, rd);
+	return internal::genericFASVPV<MeshType&, VertexType>(m, deterministic);
 }
 
 template<MeshConcept MeshType>
 std::vector<const typename MeshType::VertexType*> fillAndShuffleVertexPointerVector(
 	const MeshType& m,
-	std::random_device& rd)
+	bool deterministic)
 {
 	using VertexType = typename MeshType::VertexType;
-	return internal::genericFASVPV<const MeshType&, const VertexType>(m, rd);
-}
-
-template<MeshConcept MeshType>
-std::vector<const typename MeshType::VertexType*> fillAndShuffleVertexPointerVector(
-	const MeshType& m)
-{
-	static std::random_device rd;
-	return fillAndShuffleVertexPointerVector(m, rd);
+	return internal::genericFASVPV<const MeshType&, const VertexType>(m, deterministic);
 }
 
 template<MeshConcept MeshType>
 std::vector<uint>
-fillAndShuffleVertexIndexVector(const MeshType& m, std::random_device& rd)
+fillAndShuffleVertexIndexVector(const MeshType& m, bool deterministic)
 {
 	using VertexType = typename MeshType::VertexType;
 
@@ -119,56 +110,35 @@ fillAndShuffleVertexIndexVector(const MeshType& m, std::random_device& rd)
 		vec.push_back(m.index(v));
 	}
 
-	std::mt19937 g(rd());
-	std::shuffle(vec.begin(),vec.end(), g);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+	std::shuffle(vec.begin(),vec.end(), gen);
 	return vec;
 }
 
-template<MeshConcept MeshType>
-std::vector<uint>
-fillAndShuffleVertexIndexVector(const MeshType& m)
-{
-	static std::random_device rd;
-	return fillAndShuffleVertexIndexVector(m, rd);
-}
-
 template<FaceMeshConcept MeshType>
 std::vector<typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(MeshType& m, std::random_device& rd)
+fillAndShuffleFacePointerVector(MeshType& m, bool deterministic)
 {
 	using FaceType = typename MeshType::FaceType;
 
-	return internal::genericFASFPV<MeshType&, FaceType>(m, rd);
-}
-
-template<FaceMeshConcept MeshType>
-std::vector<typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(MeshType& m)
-{
-	static std::random_device rd;
-	return fillAndShuffleFacePointerVector(m, rd);
+	return internal::genericFASFPV<MeshType&, FaceType>(m, deterministic);
 }
 
 template<FaceMeshConcept MeshType>
 std::vector<const typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(const MeshType& m, std::random_device& rd)
+fillAndShuffleFacePointerVector(const MeshType& m, bool deterministic)
 {
 	using FaceType = typename MeshType::FaceType;
 
-	return internal::genericFASFPV<const MeshType&, const FaceType>(m, rd);
-}
-
-template<FaceMeshConcept MeshType>
-std::vector<const typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(const MeshType& m)
-{
-	static std::random_device rd;
-	return fillAndShuffleFacePointerVector(m, rd);
+	return internal::genericFASFPV<const MeshType&, const FaceType>(m, deterministic);
 }
 
 template<FaceMeshConcept MeshType>
 std::vector<uint>
-fillAndShuffleFaceIndexVector(const MeshType& m, std::random_device& rd)
+fillAndShuffleFaceIndexVector(const MeshType& m, bool deterministic)
 {
 	using FaceType = typename MeshType::FaceType;
 
@@ -179,17 +149,12 @@ fillAndShuffleFaceIndexVector(const MeshType& m, std::random_device& rd)
 		vec.push_back(m.index(f));
 	}
 
-	std::mt19937 g(rd());
-	std::shuffle(vec.begin(),vec.end(), g);
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+	std::shuffle(vec.begin(),vec.end(), gen);
 	return vec;
-}
-
-template<FaceMeshConcept MeshType>
-std::vector<uint>
-fillAndShuffleFaceIndexVector(const MeshType& m)
-{
-	static std::random_device rd;
-	return fillAndShuffleFaceIndexVector(m, rd);
 }
 
 } // namespace vcl
