@@ -23,15 +23,22 @@
 #ifndef VCL_SPACE_SAMPLER_SAMPLER_CONCEPT_H
 #define VCL_SPACE_SAMPLER_SAMPLER_CONCEPT_H
 
+#include <vclib/misc/internal/tmp_meshes.h>
+
 namespace vcl {
 
 template<typename T>
-concept SamplerConcept = requires(T o, unsigned int n)
+concept SamplerConcept = requires(
+	T o,
+	const internal::TMPSimplePolyMesh& m,
+	const internal::TMPSimplePolyMesh::VertexType& v,
+	unsigned int n)
 {
 	o.samples();
 
 	o.clear();
 	o.reserve(n);
+	o.addVertex(v, m);
 };
 
 } // namespace vcl

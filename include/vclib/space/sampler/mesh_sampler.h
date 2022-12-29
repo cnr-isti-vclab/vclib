@@ -25,6 +25,8 @@
 
 #include <vclib/mesh/requirements.h>
 
+#include "sampler_concept.h"
+
 namespace vcl {
 
 template<MeshConcept MeshType>
@@ -85,6 +87,11 @@ private:
 
 	MeshType m;
 };
+
+// makes sure that the MeshSampler satisfies SamplerConcept
+static_assert(
+	SamplerConcept<MeshSampler<internal::TMPSimplePolyMesh>>,
+	"MeshSampler is not a valid Sampler");
 
 } // namespace vcl
 

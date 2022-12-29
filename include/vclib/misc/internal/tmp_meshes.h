@@ -27,7 +27,7 @@
 
 namespace vcl::internal {
 
-namespace tmpSimplePolyMesh {
+namespace tmpMesh {
 class Vertex;
 class Face;
 
@@ -35,16 +35,27 @@ class Vertex : public vcl::Vertex<vcl::vert::BitFlags, vcl::vert::Coordinate3d>
 {
 };
 
-class Face : public vcl::Face<vcl::face::PolygonBitFlags, vcl::face::PolygonVertexRefs<Vertex>>
+class TriFace : public vcl::Face<vcl::face::TriangleBitFlags, vcl::face::TriangleVertexRefs<Vertex>>
 {
 };
 
-} // namespace tmpSimplePolyMesh
+class PolyFace : public vcl::Face<vcl::face::PolygonBitFlags, vcl::face::PolygonVertexRefs<Vertex>>
+{
+};
+
+} // namespace tmpMesh
+
+class TMPSimpleTriMesh :
+		public vcl::Mesh<
+			mesh::VertexContainer<tmpMesh::Vertex>,
+			mesh::FaceContainer<tmpMesh::TriFace>>
+{
+};
 
 class TMPSimplePolyMesh :
 		public vcl::Mesh<
-			mesh::VertexContainer<tmpSimplePolyMesh::Vertex>,
-			mesh::FaceContainer<tmpSimplePolyMesh::Face>>
+			mesh::VertexContainer<tmpMesh::Vertex>,
+			mesh::FaceContainer<tmpMesh::PolyFace>>
 {
 };
 

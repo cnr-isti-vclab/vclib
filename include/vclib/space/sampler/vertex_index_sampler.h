@@ -25,6 +25,8 @@
 
 #include <vclib/misc/types.h>
 
+#include "sampler_concept.h"
+
 namespace vcl {
 
 class VertexIndexSampler
@@ -43,6 +45,9 @@ public:
 private:
 	std::vector<uint> samplesVec;
 };
+
+// makes sure that the VertexIndexSampler satisfies SamplerConcept
+static_assert(SamplerConcept<VertexIndexSampler>, "VertexIndexSampler is not a valid Sampler");
 
 } // namespace vcl
 

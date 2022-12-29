@@ -25,9 +25,11 @@
 
 #include <vclib/mesh/requirements.h>
 
+#include "sampler_concept.h"
+
 namespace vcl {
 
-template<typename PointType>
+template<typename PointType = vcl::Point3d>
 class PointSampler
 {
 public:
@@ -66,6 +68,9 @@ public:
 private:
 	std::vector<PointType> samplesVec;
 };
+
+// makes sure that the VertexIndexSampler satisfies SamplerConcept
+static_assert(SamplerConcept<PointSampler<>>, "PointSampler is not a valid Sampler");
 
 } // namespace vcl
 
