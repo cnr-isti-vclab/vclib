@@ -39,6 +39,16 @@ SamplerType allVerticesSampling(const MeshType &m, bool onlySelected)
 	return sampler;
 }
 
+/**
+ * @brief Samples the vertices in a weighted way, using the per vertex weights given as input.
+ * Each vertex has a probability of being chosen that is proportional to its weight.
+ *
+ * @param m
+ * @param weights: a vector of scalars having the i-th entry associated to the vertex having index i.
+ *                 Note: weights.size() == m.vertexContainerSize().
+ * @param nSamples
+ * @return A Sampler, that is a collection of samples selected from the input mesh.
+ */
 template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
 SamplerType vertexWeightedSampling(
 	const MeshType& m,
@@ -61,7 +71,7 @@ SamplerType vertexWeightedSampling(
 
 	while (nVisited < nSamples) {
 		uint vi = dist(gen);
-		if (!visited[vi]) {
+		if (vi < m.vertexContainerSize() && !visited[vi]) {
 			visited[vi] = true;
 			nVisited++;
 			ps.addVertex(m.vertex(vi), m);
@@ -93,6 +103,35 @@ SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples)
 		weights[m.index(v)] = v.scalar();
 	}
 
+	return vertexWeightedSampling<SamplerType>(m, weights, nSamples);
+}
+
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType vertexAreaWeightedSampling(const MeshType& m, uint nSamples)
+{
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::ScalarType;
+	using FaceType = typename MeshType::FaceType;
+
+	std::vector<ScalarType> weights(m.vertexContainerSize(), 0);
+	std::vector<uint> cnt(m.vertexContainerSize(), 0);
+
+	// for each vertex, store in weights the adjacent faces area and their number
+	for (const FaceType& f : m.faces()) {
+		ScalarType area = vcl::polygonArea(f);
+		for (const VertexType* v : f.vertices()) {
+			weights[m.index(v)] += area;
+			cnt[m.index(v)]++;
+		}
+	}
+
+	// divide each area sum by the number of adjacent faces
+	for (uint i = 0; i < weights.size(); i++) {
+		if (cnt[i] > 0)
+			weights[i] /= cnt[i];
+	}
+
+	// use these weights to create a sapler
 	return vertexWeightedSampling<SamplerType>(m, weights, nSamples);
 }
 

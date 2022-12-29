@@ -275,7 +275,7 @@ PointType polygonWeighedBarycenter(
  * @return The area of p.
  */
 template<typename PointType>
-typename PointType::Scalar polygonArea(const std::vector<PointType>& p)
+typename PointType::ScalarType polygonArea(const std::vector<PointType>& p)
 {
 	using Scalar = typename PointType::ScalarType;
 	PointType bar = polygonBarycenter(p);

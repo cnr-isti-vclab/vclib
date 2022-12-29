@@ -37,6 +37,9 @@ SamplerType vertexWeightedSampling(const MeshType& m, const std::vector<ScalarTy
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples);
 
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType vertexAreaWeightedSampling(const MeshType& m, uint nSamples);
+
 } // namespace vcl
 
 #include "point_sampling.cpp"
