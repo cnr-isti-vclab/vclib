@@ -31,6 +31,8 @@ template<typename PointType>
 class PointSampler
 {
 public:
+	using ScalarType = typename PointType::ScalarType;
+
 	PointSampler() = default;
 
 	const std::vector<PointType>& samples() const;
@@ -40,14 +42,26 @@ public:
 
 	void addPoint(const PointType& p);
 
-	template<VertexConcept VertexType>
-	void addVertex(const VertexType& v);
+	template<MeshConcept MeshType>
+	void addVertex(const typename MeshType::VertexType& v, const MeshType&);
 
-	template<EdgeConcept EdgeType>
-	void addEdge(const EdgeType& e, double u);
+	template<EdgeMeshConcept MeshType>
+	void addEdge(const typename MeshType::EdgeType& e, const MeshType&, double u = 0.5);
 
-	template<FaceConcept FaceType>
-	void addFace(const FaceType& f);
+	template<FaceMeshConcept MeshType>
+	void addFace(const typename MeshType::FaceType& f, const MeshType&);
+
+	template<FaceMeshConcept MeshType>
+	void addFace(
+		const typename MeshType::FaceType& f,
+		const std::vector<ScalarType>&     weights,
+		const MeshType&);
+
+	template<FaceMeshConcept MeshType>
+	void addFace(
+		const typename MeshType::FaceType& f,
+		const PointType&                   weights,
+		const MeshType&);
 
 private:
 	std::vector<PointType> samplesVec;

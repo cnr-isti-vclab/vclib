@@ -51,24 +51,65 @@ void PointSampler<PointType>::addPoint(const PointType& p)
 }
 
 template<typename PointType>
-template<VertexConcept VertexType>
-void PointSampler<PointType>::addVertex(const VertexType& v)
+template<MeshConcept MeshType>
+void PointSampler<PointType>::addVertex(
+	const typename MeshType::VertexType& v,
+	const MeshType&)
 {
 	samplesVec.push_back(v.coord());
 }
 
 template<typename PointType>
-template<EdgeConcept EdgeType>
-void PointSampler<PointType>::addEdge(const EdgeType& e, double u)
+template<EdgeMeshConcept MeshType>
+void PointSampler<PointType>::addEdge(
+	const typename MeshType::EdgeType& e,
+	const MeshType&,
+	double u)
 {
 	samplesVec.push_back((e.vertex(0).coord()*(1-u)) + (e.vertex(1).coord()*u));
 }
 
 template<typename PointType>
-template<FaceConcept FaceType>
-void PointSampler<PointType>::addFace(const FaceType& f)
+template<FaceMeshConcept MeshType>
+void PointSampler<PointType>::addFace(const typename MeshType::FaceType& f, const MeshType&)
 {
 	samplesVec.push_back(vcl::polygonBarycenter(f));
+}
+
+template<typename PointType>
+template<FaceMeshConcept MeshType>
+void PointSampler<PointType>::addFace(
+	const typename MeshType::FaceType& f,
+	const std::vector<ScalarType>&     weights,
+	const MeshType&)
+{
+	assert(f.vertexNumber() <= weights.size());
+
+	PointType p;
+	for (uint i = 0; i < f.vertexNumber(); i++)
+		p += f.vertex(i)->coord() * weights[i];
+
+	samplesVec.push_back(p);
+}
+
+template<typename PointType>
+template<FaceMeshConcept MeshType>
+void PointSampler<PointType>::addFace(
+	const typename MeshType::FaceType& f,
+	const PointType&                   weights,
+	const MeshType&)
+{
+	using FaceType = typename MeshType::FaceType;
+	static_assert(FaceType::NV == 3 || FaceType::NV == -1);
+	if constexpr(FaceType::NV == -1) {
+		assert(f.vertexNumber() == 3);
+	}
+
+	PointType p;
+	for (uint i = 0; i < 3; i++)
+		p += f.vertex(i)->coord() * weights(i);
+
+	samplesVec.push_back(p);
 }
 
 } // namespace vcl

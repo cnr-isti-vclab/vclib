@@ -43,33 +43,45 @@ public:
 
 	void addPoint(const PointType& p);
 
-	template<VertexConcept VertexType>
-	void addVertex(const VertexType& v);
+	template<MeshConcept OMeshType>
+	void addVertex(const typename OMeshType::VertexType& v, const OMeshType& m);
 
-	template<EdgeConcept EdgeType>
-	void addEdge(const EdgeType& e, double u, bool copyScalar = true);
+	template<EdgeMeshConcept OMeshType>
+	void addEdge(
+		const typename OMeshType::EdgeType& e,
+		const OMeshType&,
+		double u,
+		bool   copyScalar = true);
 
-	template<FaceConcept FaceType>
-	void addFace(const FaceType& f, bool copyNormal = false, bool copyScalar = true);
-
-	template<FaceConcept FaceType>
+	template<FaceMeshConcept OMeshType>
 	void addFace(
-		const FaceType&                f,
-		const std::vector<ScalarType>& p,
-		bool                           copyNormal = false,
-		bool                           copyScalar = true);
+		const typename OMeshType::FaceType& f,
+		const OMeshType&,
+		bool copyNormal = false,
+		bool copyScalar = true);
 
-	template<FaceConcept FaceType>
+	template<FaceMeshConcept OMeshType>
 	void addFace(
-		const FaceType&  f,
-		const PointType& weights,
-		bool             copyNormal = false,
-		bool             copyScalar = true);
+		const typename OMeshType::FaceType& f,
+		const OMeshType&,
+		const std::vector<ScalarType>&      weights,
+		bool                                copyNormal = false,
+		bool                                copyScalar = true);
+
+	template<FaceMeshConcept OMeshType>
+	void addFace(
+		const typename OMeshType::FaceType&  f,
+		const OMeshType&,
+		const PointType&                     weights,
+		bool                                 copyNormal = false,
+		bool                                 copyScalar = true);
 
 private:
 
 	template<FaceConcept FaceType>
 	void copyComponents(uint vi, const FaceType&  f, bool copyNormal, bool copyScalar);
+
+	void setBirthElement(uint vi, const std::string& key, uint value);
 
 	MeshType m;
 };

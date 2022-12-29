@@ -34,9 +34,41 @@ SamplerType allVerticesSampling(const MeshType &m, bool onlySelected)
 	SamplerType sampler;
 	for (const VertexType& v : m.vertices()) {
 		if (!onlySelected || v.isSelected())
-			sampler.addVertex(v);
+			sampler.addVertex(v, m);
 	}
 	return sampler;
+}
+
+template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
+SamplerType vertexWeightedSampling(
+	const MeshType& m,
+	const std::vector<ScalarType>& weights,
+	uint nSamples)
+{
+	if (nSamples >= m.vertexNumber()) {
+		return allVerticesSampling<SamplerType>(m);
+	}
+
+	SamplerType ps;
+
+	std::discrete_distribution<> dist(std::begin(weights), std::end(weights));
+
+	static std::random_device rd;
+	std::mt19937 gen(rd());
+
+	std::vector<bool> visited(m.vertexContainerSize(), false);
+	uint nVisited = 0;
+
+	while (nVisited < nSamples) {
+		uint vi = dist(gen);
+		if (!visited[vi]) {
+			visited[vi] = true;
+			nVisited++;
+			ps.addVertex(m.vertex(vi), m);
+		}
+	}
+
+	return ps;
 }
 
 /**
@@ -55,18 +87,13 @@ SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples)
 	using VertexType = typename MeshType::VertexType;
 	using ScalarType = typename VertexType::ScalarType;
 
-	if (nSamples > m.vertexNumber()) {
-		return allVerticesSampling<SamplerType>(m);
+	std::vector<ScalarType> weights;
+	weights.resize(m.vertexContainerSize(), 0);
+	for (const VertexType& v : m.vertices()) {
+		weights[m.index(v)] = v.scalar();
 	}
 
-	SamplerType ps;
-
-	// todo
-	// create distribution of vertices using their scalar
-	// and use the distribution for a random generator
-	// and generate then nSamples vertices to add into ps
-
-	return ps;
+	return vertexWeightedSampling<SamplerType>(m, weights, nSamples);
 }
 
 } // namespace vcl

@@ -31,6 +31,9 @@ namespace vcl {
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType allVerticesSampling(const MeshType& m, bool onlySelected = false);
 
+template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
+SamplerType vertexWeightedSampling(const MeshType& m, const std::vector<ScalarType>& weights, uint nSamples);
+
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples);
 
