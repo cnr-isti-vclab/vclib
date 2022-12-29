@@ -116,6 +116,7 @@ set(HEADERS
 	include/vclib/math/distribution.h
 	include/vclib/math/matrix.h
 	include/vclib/math/perlin_noise.h
+	include/vclib/math/random.h
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_algorithms.h
 	include/vclib/mesh/mesh_components.h

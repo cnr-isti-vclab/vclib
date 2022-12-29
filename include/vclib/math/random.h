@@ -20,60 +20,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SAMPLER_POINT_SAMPLER_H
-#define VCL_SPACE_SAMPLER_POINT_SAMPLER_H
+#ifndef VCL_MATH_RANDOM_H
+#define VCL_MATH_RANDOM_H
 
-#include <vclib/mesh/requirements.h>
+#include <random>
 
-#include "sampler_concept.h"
+#include <vclib/space/point.h>
 
 namespace vcl {
 
-template<typename PointType = vcl::Point3d>
-class PointSampler
+/**
+ * @brief Generate the barycentric coords of a random point over a triangle,
+ * with a uniform distribution over the triangle.
+ * It uses the parallelogram folding trick.
+ *
+ * @param gen
+ * @return
+ */
+template<typename ScalarType>
+vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate(std::mt19937& gen)
 {
-public:
-	using ScalarType = typename PointType::ScalarType;
+	vcl::Point3<ScalarType> interp;
+	std::uniform_real_distribution<ScalarType> unif(0, 1);
 
-	PointSampler() = default;
+	interp[1] = unif(gen);
+	interp[2] = unif(gen);
+	if(interp[1] + interp[2] > 1.0) {
+		interp[1] = 1.0 - interp[1];
+		interp[2] = 1.0 - interp[2];
+	}
 
-	const std::vector<PointType>& samples() const;
+	interp[0] = 1.0 - (interp[1] + interp[2]);
+	return interp;
+}
 
-	void clear();
-	void reserve(uint n);
+template<typename ScalarType>
+vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate()
+{
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	return randomTriangleBarycentricCoordinate<ScalarType>(gen);
+}
 
-	void addPoint(const PointType& p);
-
-	template<MeshConcept MeshType>
-	void addVertex(const typename MeshType::VertexType& v, const MeshType&);
-
-	template<EdgeMeshConcept MeshType>
-	void addEdge(const typename MeshType::EdgeType& e, const MeshType&, double u = 0.5);
-
-	template<FaceMeshConcept MeshType>
-	void addFace(const typename MeshType::FaceType& f, const MeshType&);
-
-	template<FaceMeshConcept MeshType>
-	void addFace(
-		const typename MeshType::FaceType& f,
-		const std::vector<ScalarType>&     barCoords,
-		const MeshType&);
-
-	template<FaceMeshConcept MeshType>
-	void addFace(
-		const typename MeshType::FaceType& f,
-		const PointType&                   barCoords,
-		const MeshType&);
-
-private:
-	std::vector<PointType> samplesVec;
-};
-
-// makes sure that the VertexIndexSampler satisfies SamplerConcept
-static_assert(SamplerConcept<PointSampler<>>, "PointSampler is not a valid Sampler");
 
 } // namespace vcl
 
-#include "point_sampler.cpp"
-
-#endif // VCL_SPACE_SAMPLER_POINT_SAMPLER_H
+#endif // VCL_MATH_RANDOM_H

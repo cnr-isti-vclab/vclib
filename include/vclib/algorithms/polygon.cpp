@@ -132,6 +132,25 @@ PointType triangleWeightedBarycenter(
 	return (p0 * w0 + p1 * w1 + p2 * w2) / (w0 + w1 + w2);
 }
 
+template<typename PointType, typename ScalarType>
+PointType triangleBarycentricCoordinatePoint(
+	const PointType& p0,
+	const PointType& p1,
+	const PointType& p2,
+	const Point3<ScalarType> &barCoords)
+{
+	return p0 * barCoords(0) + p1 * barCoords(1) + p2 * barCoords(2);
+}
+
+template <typename Triangle, typename ScalarType>
+typename Triangle::CoordType triangleBarycentricCoordinatePoint(
+	const Triangle& t,
+	const Point3<ScalarType>& barCoords)
+{
+	return triangleBarycentricCoordinatePoint(
+		t.vertex->coord(0), t.vertex->coord(1), t.vertex->coord(2), barCoords);
+}
+
 /**
  * @brief Computes the area of the triangle composed by the points p0, p1, and p2, considering
  * that these three points are ordered in counterclockwise order.

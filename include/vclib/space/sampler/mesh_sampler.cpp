@@ -108,7 +108,7 @@ template<FaceMeshConcept OMeshType>
 void MeshSampler<MeshType>::addFace(
 	const typename OMeshType::FaceType& f,
 	const OMeshType&                    mm,
-	const std::vector<ScalarType>&      weights,
+	const std::vector<ScalarType>&      barCoords,
 	bool                                copyNormal,
 	bool                                copyScalar)
 {
@@ -116,7 +116,7 @@ void MeshSampler<MeshType>::addFace(
 
 	PointType p;
 	for (uint i = 0; i < f.vertexNumber(); i++)
-		p += f.vertex(i)->coord() * weights[i];
+		p += f.vertex(i)->coord() * barCoords[i];
 
 	uint vi = m.addVertex(p);
 
@@ -129,7 +129,7 @@ template<FaceMeshConcept OMeshType>
 void MeshSampler<MeshType>::addFace(
 	const typename OMeshType::FaceType& f,
 	const OMeshType&                    mm,
-	const PointType&                    weights,
+	const PointType&                    barCoords,
 	bool                                copyNormal,
 	bool                                copyScalar)
 {
@@ -139,9 +139,7 @@ void MeshSampler<MeshType>::addFace(
 		assert(f.vertexNumber() == 3);
 	}
 
-	PointType p;
-	for (uint i = 0; i < 3; i++)
-		p += f.vertex(i)->coord() * weights(i);
+	PointType p = triangleBarycentricCoordinatePoint(f, barCoords);
 
 	uint vi = m.addVertex(p);
 

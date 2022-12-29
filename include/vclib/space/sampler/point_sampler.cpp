@@ -80,14 +80,14 @@ template<typename PointType>
 template<FaceMeshConcept MeshType>
 void PointSampler<PointType>::addFace(
 	const typename MeshType::FaceType& f,
-	const std::vector<ScalarType>&     weights,
+	const std::vector<ScalarType>&     barCoords,
 	const MeshType&)
 {
 	assert(f.vertexNumber() <= weights.size());
 
 	PointType p;
 	for (uint i = 0; i < f.vertexNumber(); i++)
-		p += f.vertex(i)->coord() * weights[i];
+		p += f.vertex(i)->coord() * barCoords[i];
 
 	samplesVec.push_back(p);
 }
@@ -96,7 +96,7 @@ template<typename PointType>
 template<FaceMeshConcept MeshType>
 void PointSampler<PointType>::addFace(
 	const typename MeshType::FaceType& f,
-	const PointType&                   weights,
+	const PointType&                   barCoords,
 	const MeshType&)
 {
 	using FaceType = typename MeshType::FaceType;
@@ -105,9 +105,7 @@ void PointSampler<PointType>::addFace(
 		assert(f.vertexNumber() == 3);
 	}
 
-	PointType p;
-	for (uint i = 0; i < 3; i++)
-		p += f.vertex(i)->coord() * weights(i);
+	PointType p = triangleBarycentricCoordinatePoint(f, barCoords);
 
 	samplesVec.push_back(p);
 }

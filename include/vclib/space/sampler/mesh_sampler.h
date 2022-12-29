@@ -66,7 +66,7 @@ public:
 	void addFace(
 		const typename OMeshType::FaceType& f,
 		const OMeshType&,
-		const std::vector<ScalarType>&      weights,
+		const std::vector<ScalarType>&      barCoords,
 		bool                                copyNormal = false,
 		bool                                copyScalar = true);
 
@@ -74,7 +74,7 @@ public:
 	void addFace(
 		const typename OMeshType::FaceType&  f,
 		const OMeshType&,
-		const PointType&                     weights,
+		const PointType&                     barCoords,
 		bool                                 copyNormal = false,
 		bool                                 copyScalar = true);
 

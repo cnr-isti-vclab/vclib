@@ -46,6 +46,18 @@ PointType triangleWeightedBarycenter(
 	const PointType& p1, typename PointType::ScalarType w1,
 	const PointType& p2, typename PointType::ScalarType w2);
 
+template <typename PointType, typename ScalarType>
+PointType triangleBarycentricCoordinatePoint(
+	const PointType& p0,
+	const PointType& p1,
+	const PointType& p2,
+	const Point3<ScalarType> &barCoords);
+
+template <typename Triangle, typename ScalarType>
+typename Triangle::CoordType triangleBarycentricCoordinatePoint(
+	const Triangle& t,
+	const Point3<ScalarType>& barCoords);
+
 template<typename PointType>
 typename PointType::ScalarType
 triangleArea(const PointType& p0, const PointType& p1, const PointType& p2);
