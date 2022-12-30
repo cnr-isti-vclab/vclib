@@ -29,53 +29,59 @@
 namespace vcl {
 
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType allVerticesSampling(const MeshType& m, bool onlySelected = false);
+SamplerType allVerticesPointSampling(const MeshType& m, bool onlySelected = false);
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType allFacesSampling(const MeshType& m, bool onlySelected = false);
+SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected = false);
 
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType vertexUniformSampling(
+SamplerType vertexUniformPointSampling(
 	const MeshType& m,
 	uint            nSamples,
 	bool            onlySelected  = false,
 	bool            deterministic = false);
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType faceUniformSampling(
+SamplerType faceUniformPointSampling(
 	const MeshType& m,
 	uint            nSamples,
 	bool            onlySelected  = false,
 	bool            deterministic = false);
 
 template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
-SamplerType vertexWeightedSampling(
+SamplerType vertexWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
 	uint                           nSamples,
 	bool                           deterministic = false);
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
-SamplerType faceWeightedSampling(
+SamplerType faceWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
 	uint                           nSamples,
 	bool                           deterministic = false);
 
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType vertexScalarWeightedSampling(
+SamplerType vertexScalarWeightedPointSampling(
 	const MeshType& m,
 	uint nSamples,
 	bool deterministic = false);
 
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType vertexAreaWeightedSampling(
+SamplerType vertexAreaWeightedPointSampling(
 	const MeshType& m,
 	uint nSamples,
 	bool deterministic = false);
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType faceAreaWeightedSampling(
+SamplerType faceAreaWeightedPointSampling(
+	const MeshType& m,
+	uint nSamples,
+	bool deterministic = false);
+
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType stratifiedMontecarloPointSampling(
 	const MeshType& m,
 	uint nSamples,
 	bool deterministic = false);

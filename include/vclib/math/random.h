@@ -29,40 +29,24 @@
 
 namespace vcl {
 
-/**
- * @brief Generate the barycentric coords of a random point over a triangle,
- * with a uniform distribution over the triangle.
- * It uses the parallelogram folding trick.
- *
- * @param gen
- * @return
- */
-template<typename ScalarType>
-vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate(std::mt19937& gen)
-{
-	vcl::Point3<ScalarType> interp;
-	std::uniform_real_distribution<ScalarType> unif(0, 1);
+int poissonRatioOfUniformsInteger(double L, std::mt19937& gen);
 
-	interp[1] = unif(gen);
-	interp[2] = unif(gen);
-	if(interp[1] + interp[2] > 1.0) {
-		interp[1] = 1.0 - interp[1];
-		interp[2] = 1.0 - interp[2];
-	}
-
-	interp[0] = 1.0 - (interp[1] + interp[2]);
-	return interp;
-}
+int poissonRatioOfUniformsInteger(double L);
 
 template<typename ScalarType>
-vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate()
-{
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	return randomTriangleBarycentricCoordinate<ScalarType>(gen);
-}
+vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate(std::mt19937& gen);
 
+template<typename ScalarType>
+vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate();
+
+template<typename ScalarType>
+std::vector<ScalarType> randomPolygonBarycentricCoordinate(uint polySize, std::mt19937& gen);
+
+template<typename ScalarType>
+std::vector<ScalarType> randomPolygonBarycentricCoordinate(uint polySize);
 
 } // namespace vcl
+
+#include "random.cpp"
 
 #endif // VCL_MATH_RANDOM_H

@@ -31,6 +31,9 @@ MeshSampler<MeshType>::MeshSampler()
 {
 	vcl::enableIfPerVertexNormalOptional(m);
 	vcl::enableIfPerVertexScalarOptional(m);
+	if constexpr (vcl::HasName<MeshType>) {
+		m.name() = "Sampling";
+	}
 }
 
 template<MeshConcept MeshType>

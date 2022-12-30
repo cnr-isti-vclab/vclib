@@ -41,13 +41,19 @@ int main(int argc, char **argv)
 	vcl::updatePerFaceNormals(m);
 	vcl::updatePerVertexNormals(m);
 	vcl::setPerVertexColor(m, vcl::Color::LightBlue);
+	m.enablePerFaceColor();
+	vcl::setPerFaceColor(m, vcl::Color::LightBlue);
 
-	uint nSamples = 10;
+	uint nSamples = 50;
 
 	vcl::MeshSampler<vcl::TriMesh> s =
-		vcl::faceAreaWeightedSampling<vcl::MeshSampler<vcl::TriMesh>>(m, nSamples);
+		vcl::stratifiedMontecarloPointSampling<vcl::MeshSampler<vcl::TriMesh>>(m, nSamples);
 
 	vcl::TriMesh samples = s.samples();
+
+	for (const vcl::TriMesh::Vertex& v : samples.vertices()) {
+		m.face(v.customComponent<uint>("birthFace")).color() = vcl::Color::LightRed;
+	}
 
 
 #ifdef VCLIB_WITH_QGLVIEWER

@@ -48,6 +48,7 @@ concept FaceSamplerConcept = SamplerConcept<T> &&
 		const internal::TMPSimplePolyMesh::VertexType::CoordType& p,
 		const internal::TMPSimplePolyMesh::FaceType& f)
 {
+	typename T::ScalarType;
 	o.addFace(f, m);
 	o.addFace(f, m, p);
 };

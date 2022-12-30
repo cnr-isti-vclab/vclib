@@ -24,11 +24,12 @@
 
 #include <vclib/algorithms/shuffle.h>
 #include <vclib/algorithms/stat.h>
+#include <vclib/math/random.h>
 
 namespace vcl {
 
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType allVerticesSampling(const MeshType &m, bool onlySelected)
+SamplerType allVerticesPointSampling(const MeshType &m, bool onlySelected)
 {
 	using VertexType = typename MeshType::VertexType;
 
@@ -41,7 +42,7 @@ SamplerType allVerticesSampling(const MeshType &m, bool onlySelected)
 }
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType allFacesSampling(const MeshType& m, bool onlySelected)
+SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected)
 {
 	using FaceType = typename MeshType::FaceType;
 
@@ -54,7 +55,7 @@ SamplerType allFacesSampling(const MeshType& m, bool onlySelected)
 }
 
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType vertexUniformSampling(
+SamplerType vertexUniformPointSampling(
 	const MeshType &m,
 	uint nSamples,
 	bool onlySelected,
@@ -63,7 +64,7 @@ SamplerType vertexUniformSampling(
 	uint vn = onlySelected ? vcl::vertexSelectionNumber(m) : m.vertexNumber();
 
 	if (nSamples >= vn) {
-		return allVerticesSampling<SamplerType>(m, onlySelected);
+		return allVerticesPointSampling<SamplerType>(m, onlySelected);
 	}
 
 	SamplerType ps;
@@ -92,7 +93,7 @@ SamplerType vertexUniformSampling(
 }
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType faceUniformSampling(
+SamplerType faceUniformPointSampling(
 	const MeshType& m,
 	uint            nSamples,
 	bool            onlySelected,
@@ -101,7 +102,7 @@ SamplerType faceUniformSampling(
 	uint fn = onlySelected ? vcl::faceSelectionNumber(m) : m.faceNumber();
 
 	if (nSamples >= fn) {
-		return allFacesSampling<SamplerType>(m, onlySelected);
+		return allFacesPointSampling<SamplerType>(m, onlySelected);
 	}
 
 	SamplerType ps;
@@ -140,14 +141,14 @@ SamplerType faceUniformSampling(
  * @return A Sampler, that is a collection of samples selected from the input mesh.
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
-SamplerType vertexWeightedSampling(
+SamplerType vertexWeightedPointSampling(
 	const MeshType& m,
 	const std::vector<ScalarType>& weights,
 	uint nSamples,
 	bool deterministic)
 {
 	if (nSamples >= m.vertexNumber()) {
-		return allVerticesSampling<SamplerType>(m);
+		return allVerticesPointSampling<SamplerType>(m);
 	}
 
 	SamplerType ps;
@@ -185,14 +186,14 @@ SamplerType vertexWeightedSampling(
  * @return A Sampler, that is a collection of samples selected from the input mesh.
  */
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
-SamplerType faceWeightedSampling(
+SamplerType faceWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
 	uint                           nSamples,
 	bool                           deterministic)
 {
 	if (nSamples >= m.faceNumber()) {
-		return allFacesSampling<SamplerType>(m);
+		return allFacesPointSampling<SamplerType>(m);
 	}
 
 	SamplerType ps;
@@ -228,7 +229,7 @@ SamplerType faceWeightedSampling(
  * @return
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples, bool deterministic)
+SamplerType vertexScalarWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	vcl::requirePerVertexScalar(m);
 
@@ -241,7 +242,7 @@ SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples, bool 
 		weights[m.index(v)] = v.scalar();
 	}
 
-	return vertexWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
+	return vertexWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
 /**
@@ -253,7 +254,7 @@ SamplerType vertexScalarWeightedSampling(const MeshType& m, uint nSamples, bool 
  * @return
  */
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType faceScalarWeightedSampling(const MeshType& m, uint nSamples, bool deterministic)
+SamplerType faceScalarWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	vcl::requirePerFaceScalar(m);
 
@@ -266,11 +267,11 @@ SamplerType faceScalarWeightedSampling(const MeshType& m, uint nSamples, bool de
 		weights[m.index(f)] = f.scalar();
 	}
 
-	return faceWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
+	return faceWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType vertexAreaWeightedSampling(const MeshType& m, uint nSamples, bool deterministic)
+SamplerType vertexAreaWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	using VertexType = typename MeshType::VertexType;
 	using ScalarType = typename VertexType::ScalarType;
@@ -295,11 +296,11 @@ SamplerType vertexAreaWeightedSampling(const MeshType& m, uint nSamples, bool de
 	}
 
 	// use these weights to create a sapler
-	return vertexWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
+	return vertexWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType faceAreaWeightedSampling(
+SamplerType faceAreaWeightedPointSampling(
 	const MeshType& m,
 	uint nSamples,
 	bool deterministic)
@@ -312,7 +313,38 @@ SamplerType faceAreaWeightedSampling(
 		weights[m.index(f)] =  vcl::polygonArea(f);
 	}
 
-	return faceWeightedSampling<SamplerType>(m, weights, nSamples, deterministic);
+	return faceWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
+}
+
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic)
+{
+	using FaceType = typename MeshType::FaceType;
+	using ScalarType = typename SamplerType::ScalarType;
+
+	SamplerType ps;
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+
+	double area = vcl::surfaceArea(m);
+	double samplePerAreaUnit = nSamples / area;
+	// Montecarlo sampling.
+	double  floatSampleNum = 0.0;
+
+	for(const FaceType& f : m.faces()) {
+		// compute # samples in the current face (taking into account of the remainders)
+		floatSampleNum += vcl::polygonArea(f) * samplePerAreaUnit;
+		int faceSampleNum   = (int) floatSampleNum;
+		// for every sample p_i in T...
+		for(int i=0; i < faceSampleNum; i++)
+			ps.addFace(f, m, vcl::randomPolygonBarycentricCoordinate<ScalarType>(f.vertexNumber(), gen));
+		floatSampleNum -= (double) faceSampleNum;
+	}
+
+	return ps;
 }
 
 } // namespace vcl

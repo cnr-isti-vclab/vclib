@@ -327,6 +327,8 @@ set(SOURCES
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_algorithms.cpp
+	include/vclib/math/base.cpp
+	include/vclib/math/random.cpp
 	include/vclib/mesh/components/horizontal/adjacent_edges.cpp
 	include/vclib/mesh/components/horizontal/adjacent_faces.cpp
 	include/vclib/mesh/components/horizontal/adjacent_vertices.cpp
