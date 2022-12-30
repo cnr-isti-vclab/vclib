@@ -147,4 +147,44 @@ typename MeshType::FaceType::ScalarType faceScalarAverage(const MeshType& m)
 	return avg / m.faceNumber();
 }
 
+/**
+ * @brief When performing an adptive pruning for each sample we expect a varying radius to be
+ * removed.
+ * The radius is a PerVertex attribute that we compute from the current per vertex scalar component.
+ * The expected radius of the sample is computed so that it linearly maps the quality between
+ * diskradius and diskradius*variance
+ *
+ * @param m
+ * @param diskRadius
+ * @param radiusVariance
+ * @param invert
+ * @return
+ */
+template<MeshConcept MeshType>
+std::vector<typename MeshType::VertexType::ScalarType> vertexRadiusFromScalar(
+	const MeshType& m,
+	double diskRadius,
+	double radiusVariance,
+	bool invert)
+{
+	vcl::requirePerVertexScalar(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::ScalarType;
+
+	std::vector<ScalarType> radius(m.vertexContainerSize());
+	std::pair<ScalarType, ScalarType> minmax = vertexScalarMinMax(m);
+	float minRad = diskRadius;
+	float maxRad = diskRadius * radiusVariance;
+	float deltaQ = minmax.second - minmax.first;
+	float deltaRad = maxRad - minRad;
+	for (const VertexType& v : m.vertices()) {
+		radius[m.index(v)] =
+			minRad +
+			deltaRad * ((invert ? minmax.second - v.scalar() : v.scalar() - minmax.first) / deltaQ);
+	}
+
+	return radius;
+}
+
 } // namespace vcl

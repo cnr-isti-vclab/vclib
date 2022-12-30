@@ -87,6 +87,27 @@ SamplerType stratifiedMontecarloPointSampling(
 	uint nSamples,
 	bool deterministic = false);
 
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType montecarloPoissonPointSampling(
+	const MeshType& m,
+	uint nSamples,
+	bool deterministic = false);
+
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+SamplerType vertexWeightedMontecarloPointSampling(
+	const MeshType& m,
+	const std::vector<ScalarType>& weights,
+	uint nSamples,
+	double variance,
+	bool deterministic = false);
+
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType vertexScalarWeightedMontecarloPointSampling(
+	const MeshType& m,
+	uint nSamples,
+	double variance,
+	bool deterministic = false);
+
 } // namespace vcl
 
 #include "point_sampling.cpp"

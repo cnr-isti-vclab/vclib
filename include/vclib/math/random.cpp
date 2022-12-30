@@ -94,6 +94,44 @@ inline int poissonRatioOfUniformsInteger(double L)
 }
 
 /**
+ * @brief algorithm poisson random number (Knuth):
+ * init:
+ *   Let L ← e^−λ, k ← 0 and p ← 1.
+ *   do:
+ *     k ← k + 1.
+ *     Generate uniform random number u in [0,1] and let p ← p × u.
+ *   while p > L.
+ *   return k − 1.
+ * @param lambda
+ * @param gen
+ * @return
+ */
+inline int poissonRandomNumber(double lambda, std::mt19937& gen)
+{
+	if(lambda>50)
+		return poissonRatioOfUniformsInteger(lambda, gen);
+
+	std::uniform_real_distribution<double> unif(0, 1);
+
+	double L = exp(-lambda);
+	int    k = 0;
+	double p = 1.0;
+	do {
+		k = k + 1;
+		p = p * unif(gen);
+	} while (p > L);
+
+	return k - 1;
+}
+
+inline int poissonRandomNumber(double lambda)
+{
+	static std::random_device rd;
+	static std::mt19937 gen(rd());
+	return poissonRatioOfUniformsInteger(lambda, gen);
+}
+
+/**
  * @brief Generate the barycentric coords of a random point over a triangle,
  * with a uniform distribution over the triangle.
  * It uses the parallelogram folding trick.

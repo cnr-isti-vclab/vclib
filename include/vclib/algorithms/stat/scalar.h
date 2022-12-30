@@ -42,6 +42,13 @@ typename MeshType::VertexType::ScalarType vertexScalarAverage(const MeshType& m)
 template<FaceMeshConcept MeshType>
 typename MeshType::FaceType::ScalarType faceScalarAverage(const MeshType& m);
 
+template<MeshConcept MeshType>
+std::vector<typename MeshType::VertexType::ScalarType> vertexRadiusFromScalar(
+	const MeshType& m,
+	double          diskRadius,
+	double          radiusVariance,
+	bool            invert = false);
+
 } // namespace vcl
 
 #include "scalar.cpp"

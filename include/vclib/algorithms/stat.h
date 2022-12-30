@@ -65,6 +65,14 @@ Matrix33<double> weightedCovarianceMatrixOfPointCloud(
 template<FaceMeshConcept MeshType>
 Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
 
+template<MeshConcept MeshType, typename ScalarType>
+std::vector<ScalarType> vertexRadiusFromWeights(
+	const MeshType&                m,
+	const std::vector<ScalarType>& weights,
+	double                         diskRadius,
+	double                         radiusVariance,
+	bool                           invert = false);
+
 } // namespace vcl
 
 #include "stat.cpp"

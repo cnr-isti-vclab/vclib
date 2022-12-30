@@ -316,4 +316,45 @@ Matrix33<double> covarianceMatrixOfMesh(const MeshType& m)
 	return C;
 }
 
+/**
+ * @brief When performing an adptive pruning for each sample we expect a varying radius to be
+ * removed.
+ * The radius is a PerVertex attribute that we compute from the current per vertex weights given as
+ * argument. The expected radius of the sample is computed so that it linearly maps the quality
+ * between diskradius and diskradius*variance
+ *
+ * @param m
+ * @param weights
+ * @param diskRadius
+ * @param radiusVariance
+ * @param invert
+ * @return
+ */
+template<MeshConcept MeshType, typename ScalarType>
+std::vector<ScalarType> vertexRadiusFromWeights(
+	const MeshType&                m,
+	const std::vector<ScalarType>& weights,
+	double                         diskRadius,
+	double                         radiusVariance,
+	bool                           invert)
+{
+	using VertexType = typename MeshType::VertexType;
+
+	std::vector<ScalarType> radius(m.vertexContainerSize());
+	auto minmax = std::minmax_element(weights.begin(), weights.end());
+
+	float minRad = diskRadius;
+	float maxRad = diskRadius * radiusVariance;
+	float deltaQ = *minmax.second - *minmax.first;
+	float deltaRad = maxRad - minRad;
+	for (const VertexType& v : m.vertices()) {
+		ScalarType w = weights[m.index(v)];
+		radius[m.index(v)] =
+			minRad +
+			deltaRad * ((invert ? *minmax.second - w : w - *minmax.first) / deltaQ);
+	}
+
+	return radius;
+}
+
 } // namespace vcl

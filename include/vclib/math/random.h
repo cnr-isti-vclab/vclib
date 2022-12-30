@@ -34,6 +34,10 @@ int poissonRatioOfUniformsInteger(double L, std::mt19937& gen);
 
 int poissonRatioOfUniformsInteger(double L);
 
+int poissonRandomNumber(double lambda, std::mt19937& gen);
+
+int poissonRandomNumber(double lambda);
+
 template<typename ScalarType>
 vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate(std::mt19937& gen);
 

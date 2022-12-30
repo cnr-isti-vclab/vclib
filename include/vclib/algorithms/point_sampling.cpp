@@ -348,5 +348,126 @@ SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, 
 	return ps;
 }
 
+/**
+ * @brief This function compute montecarlo distribution with an approximate number of samples
+ * exploiting the poisson distribution approximation of the binomial distribution.
+ *
+ * For a given triangle t of area a_t, in a Mesh of area A,
+ * if we take n_s sample over the mesh, the number of samples that falls in t
+ * follows the poisson distribution of P(lambda ) with lambda = n_s * (a_t/A).
+ *
+ * To approximate the Binomial we use a Poisson distribution with parameter
+ * \lambda = np can be used as an approximation to B(n,p)
+ * (it works if n is sufficiently large and p is sufficiently small).
+ *
+ *
+ * @param m
+ * @param nSamples
+ * @param deterministic
+ * @return
+ */
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType montecarloPoissonPointSampling(const MeshType& m, uint nSamples, bool deterministic)
+{
+	using FaceType = typename MeshType::FaceType;
+	using ScalarType = typename SamplerType::ScalarType;
+
+	SamplerType ps;
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+
+	ScalarType area = vcl::surfaceArea(m);
+	ScalarType samplePerAreaUnit = nSamples / area;
+
+	for(const FaceType& f : m.faces()) {
+		ScalarType areaT = vcl::polygonArea(f);
+		int faceSampleNum = vcl::poissonRandomNumber(areaT * samplePerAreaUnit, gen);
+
+		// for every sample p_i in T...
+		for(int i=0; i < faceSampleNum; i++)
+			ps.addFace(f, m, vcl::randomPolygonBarycentricCoordinate<ScalarType>(f.vertexNumber(), gen));
+	}
+
+	return ps;
+}
+
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+SamplerType vertexWeightedMontecarloPointSampling(
+	const MeshType& m,
+	const std::vector<ScalarType>& weights,
+	uint nSamples,
+	double variance,
+	bool deterministic)
+{
+	using FaceType = typename MeshType::FaceType;
+
+	// lambda function to compute radius weighted area of a face
+	auto weightedArea =
+		[](const FaceType& f, const MeshType& m, const std::vector<ScalarType>& r) -> ScalarType {
+
+		ScalarType averageQ = 0;
+		for (uint i = 0; i < f.vertexNumber(); ++i)
+			averageQ += r[m.index(f.vertex(i))];
+
+		averageQ /= f.vertexNumber();
+		return averageQ * averageQ * vcl::polygonArea(f);
+	};
+
+	SamplerType ps;
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+
+	std::vector<ScalarType> radius = vcl::vertexRadiusFromWeights(m, weights, 1.0, variance, true);
+
+	ScalarType wArea = 0;
+	for(const FaceType& f : m.faces())
+		wArea += weightedArea(f, m , radius);
+
+	ScalarType samplePerAreaUnit = nSamples / wArea;
+	// Montecarlo sampling.
+	double floatSampleNum = 0.0;
+	for (const FaceType& f : m.faces()) {
+		// compute # samples in the current face (taking into account of the remainders)
+		floatSampleNum += weightedArea(f, m, radius) * samplePerAreaUnit;
+		int faceSampleNum = (int) floatSampleNum;
+
+		// for every sample p_i in T...
+		for (uint i = 0; i < faceSampleNum; i++)
+			ps.addFace(
+				f, m, vcl::randomPolygonBarycentricCoordinate<ScalarType>(f.vertexNumber(), gen));
+
+		floatSampleNum -= (double) faceSampleNum;
+	}
+
+	return ps;
+}
+
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType vertexScalarWeightedMontecarloPointSampling(
+	const MeshType& m,
+	uint nSamples,
+	double variance,
+	bool deterministic)
+{
+	vcl::requirePerVertexScalar(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::ScalarType;
+
+	std::vector<ScalarType> weights;
+	weights.resize(m.vertexContainerSize(), 0);
+	for (const VertexType& v : m.vertices()) {
+		weights[m.index(v)] = v.scalar();
+	}
+
+	return vertexWeightedMontecarloPointSampling<SamplerType>(m, weights, nSamples, variance, deterministic);
+}
+
 } // namespace vcl
 
