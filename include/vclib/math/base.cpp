@@ -23,6 +23,8 @@
 
 #include "base.h"
 
+#include <vclib/misc/types.h>
+
 namespace vcl {
 
 template<typename Scalar>
