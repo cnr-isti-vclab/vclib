@@ -86,3 +86,13 @@ ScalarType& Point4<ScalarType>::w()
 }
 
 } // namespace vcl
+
+namespace std {
+
+template<typename Scalar>
+std::size_t hash<vcl::Point4<Scalar> >::operator()(const vcl::Point4<Scalar>& id) const noexcept
+{
+	return id.hash();
+}
+
+} // namespace std

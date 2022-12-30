@@ -21,49 +21,29 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_POINT_POINT2_H
-#define VCL_SPACE_POINT_POINT2_H
+#ifndef VCL_MISC_HASH_H
+#define VCL_MISC_HASH_H
 
-#include "point_t.h"
+#include <functional>
 
 namespace vcl {
 
 /**
- * @brief The Point2 class represents a 2-dimensional point containing 2 scalar values.
- * Specializes the Point class, providing some additional member functions useful for 2D points.
+ * @brief Starting a seed, computes the hash of a series of objects.
+ *
+ * https://stackoverflow.com/a/57595105/5851101
+ *
+ * @param[in/out] seed: input seed and output hash
+ * @param v: first argument object
+ * @param rest: rest of the argument objects
  */
-template<typename ScalarType>
-class Point2 : public Point<ScalarType, 2>
+template <typename T, typename... Rest>
+void hashCombine(std::size_t& seed, const T& v, const Rest&... rest)
 {
-public:
-	using Point<ScalarType, 2>::Point;
+	seed ^= std::hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	(hashCombine(seed, rest), ...);
+}
 
-	Point2() = default; // default empty constructor
+} // endif
 
-	Point2(const Point<ScalarType, 2>& p); // from base class - will include all its constructors
-	Point2(const ScalarType& x, const ScalarType& y);
-
-	ScalarType x() const;
-	ScalarType y() const;
-	ScalarType& x();
-	ScalarType& y();
-};
-
-using Point2i = Point2<int>;
-using Point2f = Point2<float>;
-using Point2d = Point2<double>;
-
-} // namespace vcl
-
-// inject vcl::Point2 hash function in std namespace
-namespace std {
-template <typename Scalar>
-struct hash<vcl::Point2<Scalar> >
-{
-	size_t operator()(const vcl::Point2<Scalar>& id) const noexcept;
-};
-} // namespace std
-
-#include "point2.cpp"
-
-#endif // VCL_SPACE_POINT_POINT2_H
+#endif // VCL_MISC_HASH_H

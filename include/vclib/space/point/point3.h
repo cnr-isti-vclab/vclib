@@ -57,6 +57,15 @@ using Point3d = Point3<double>;
 
 } // namespace vcl
 
+// inject vcl::Point3 hash function in std namespace
+namespace std {
+template <typename Scalar>
+struct hash<vcl::Point3<Scalar> >
+{
+	size_t operator()(const vcl::Point3<Scalar>& id) const noexcept;
+};
+} // namespace std
+
 #include "point3.cpp"
 
 #endif // VCL_SPACE_POINT_POINT3_H

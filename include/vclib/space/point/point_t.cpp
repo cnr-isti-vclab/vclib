@@ -23,6 +23,8 @@
 
 #include "point_t.h"
 
+#include <vclib/misc/hash.h>
+
 namespace vcl {
 
 template<typename Scalar, int N>
@@ -166,6 +168,15 @@ template<typename Scalar, int N>
 const Eigen::Matrix<Scalar, 1, N>& Point<Scalar, N>::eigenVector() const
 {
 	return p;
+}
+
+template<typename Scalar, int N>
+std::size_t Point<Scalar, N>::hash() const
+{
+	std::size_t h = 0;
+	for (size_t i = 0; i < DIM; ++i)
+		vcl::hashCombine(h, p(i));
+	return h;
 }
 
 template<typename Scalar, int N>
@@ -350,3 +361,13 @@ std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
 }
 
 } // namespace vcl
+
+namespace std {
+
+template<typename Scalar, int N>
+std::size_t hash<vcl::Point<Scalar, N> >::operator()(const vcl::Point<Scalar, N>& id) const noexcept
+{
+	return id.hash();
+}
+
+} // namespace std

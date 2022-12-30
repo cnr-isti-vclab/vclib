@@ -59,6 +59,15 @@ using Point4d = Point4<double>;
 
 } // namespace vcl
 
+// inject vcl::Point4 hash function in std namespace
+namespace std {
+template <typename Scalar>
+struct hash<vcl::Point4<Scalar> >
+{
+	size_t operator()(const vcl::Point4<Scalar>& id) const noexcept;
+};
+} // namespace std
+
 #include "point4.cpp"
 
 #endif // VCL_SPACE_POINT_POINT4_H

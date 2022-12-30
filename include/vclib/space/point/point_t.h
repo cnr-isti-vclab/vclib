@@ -79,6 +79,8 @@ public:
 
 	const Eigen::Matrix<Scalar, 1, N>& eigenVector() const;
 
+	std::size_t hash() const;
+
 	// operators
 	Scalar&       operator()(uint i);
 	const Scalar& operator()(uint i) const;
@@ -129,6 +131,15 @@ template<typename Scalar, int N>
 std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1);
 
 } // namespace vcl
+
+// inject vcl::Point hash function in std namespace
+namespace std {
+template <typename Scalar, int N>
+struct hash<vcl::Point<Scalar, N> >
+{
+	size_t operator()(const vcl::Point<Scalar, N>& id) const noexcept;
+};
+} // namespace std
 
 #include "point_t.cpp"
 

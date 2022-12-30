@@ -235,6 +235,7 @@ set(HEADERS
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h
 	include/vclib/misc/file_info.h
+	include/vclib/misc/hash.h
 	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/parallel.h
 	include/vclib/misc/string.h

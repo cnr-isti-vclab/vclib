@@ -62,3 +62,13 @@ ScalarType& Point2<ScalarType>::y()
 }
 
 } // namespace vcl
+
+namespace std {
+
+template<typename Scalar>
+std::size_t hash<vcl::Point2<Scalar> >::operator()(const vcl::Point2<Scalar>& id) const noexcept
+{
+	return id.hash();
+}
+
+} // namespace std
