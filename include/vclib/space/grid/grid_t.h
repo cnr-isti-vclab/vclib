@@ -33,10 +33,14 @@ class Grid
 {
 public:
 	using ScalarType      = Scalar;
+	using PointType       = Point<Scalar, N>;
+	using CellCoord       = Point<uint, N>;
+	using BBoxType        = Box<PointType>;
 	static const int DIM  = N;
 
 	Grid() = default;
 	Grid(const Point<Scalar, N>& min, const Point<Scalar, N>& max, const Point<uint, N>& size);
+	Grid(const Box<Point<Scalar, N>>& bbox, const Point<uint, N>& size);
 
 	Point<Scalar, N> min() const;
 	Point<Scalar, N> max() const;
@@ -44,26 +48,26 @@ public:
 	Scalar length(uint d) const;
 	Point<Scalar, N> lengths() const;
 
-	uint size(uint d) const;
-	Point<uint, N> size() const;
+	uint cellNumber(uint d) const;
+	Point<uint, N> cellNumbers() const;
 
 	Scalar cellLength(uint d) const;
 	Point<Scalar, N> cellLengths() const;
 
 	uint cell(uint d, const Scalar& s) const;
-	Point<uint, N> cell(const Point<Scalar, N>& p) const;
+	CellCoord cell(const Point<Scalar, N>& p) const;
 
-	Point<Scalar, N> cellLowerCorner(const Point<uint, N>& c) const;
+	Point<Scalar, N> cellLowerCorner(const CellCoord& c) const;
 
-	Box<Point<Scalar, N>> cellBox(const Point<uint, N>& c) const;
+	Box<Point<Scalar, N>> cellBox(const CellCoord& c) const;
 
 private:
-	Box<Point<Scalar, N>> bbox;
-	Point<uint, N>        siz;
+	BBoxType       bbox;
+	Point<uint, N> siz;
 };
 
 } // namespace vcl
 
-#include "grid_t.h"
+#include "grid_t.cpp"
 
 #endif // VCL_SPACE_GRID_GRID_T_H

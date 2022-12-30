@@ -24,6 +24,7 @@
 #ifndef VCL_SPACE_GRID_H
 #define VCL_SPACE_GRID_H
 
-#include "grid/grid_t.h"
+#include "grid/grid2.h"
+#include "grid/grid3.h"
 
 #endif // VCL_SPACE_GRID_H

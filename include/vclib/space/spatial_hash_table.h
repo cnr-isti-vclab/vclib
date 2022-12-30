@@ -21,61 +21,62 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
+#ifndef VCL_SPACE_SPATIAL_HASH_TABLE_H
+#define VCL_SPACE_SPATIAL_HASH_TABLE_H
 
-#include <vector>
+#include "grid.h"
 
-#include <vclib/math/matrix.h>
-
-#include "stat/bounding_box.h"
-#include "stat/scalar.h"
-#include "stat/selection.h"
+#include <set>
+#include <unordered_map>
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
+template<typename GridType, typename ValueType>
+class SpatialHashTable : public GridType
+{
+public:
+	using KeyType = typename GridType::CellCoord;
+	using iterator = typename std::unordered_multimap<KeyType, ValueType>::iterator;
+	using const_iterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
 
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
+	SpatialHashTable();
 
-template<FaceMeshConcept MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
+	template<typename BoxType>
+	SpatialHashTable(const BoxType& bbox, const KeyType& size);
 
-template<FaceMeshConcept MeshType>
-double volume(const MeshType& m);
+	bool empty() const;
+	std::size_t size() const;
+	bool cellEmpty(const KeyType& k) const;
+	std::size_t cellSize(const KeyType& k) const;
 
-template<FaceMeshConcept MeshType>
-double surfaceArea(const MeshType& m);
+	std::set<KeyType> cells() const;
 
-template<FaceMeshConcept MeshType>
-double borderLength(const MeshType& m);
+	void clear();
 
-template<typename PointType>
-Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
+	void insert(const KeyType& k, const ValueType& v);
+	void insert(const ValueType& v) requires (GridType::DIM == 2);
+	void insert(const ValueType& v) requires (GridType::DIM == 3);
+	void insert(const ValueType& v);
 
-template<MeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
+	iterator begin();
+	iterator end();
+	const_iterator begin() const;
+	const_iterator end() const;
 
-template<typename PointType>
-Matrix33<double> weightedCovarianceMatrixOfPointCloud(
-	const std::vector<PointType>& pointVec,
-	const std::vector<typename PointType::ScalarType>& weigths);
+private:
+	using MapValueType = typename std::unordered_multimap<KeyType, ValueType>::value_type;
 
-template<FaceMeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
+	std::unordered_multimap<KeyType, ValueType> map;
+};
 
-template<MeshConcept MeshType, typename ScalarType>
-std::vector<ScalarType> vertexRadiusFromWeights(
-	const MeshType&                m,
-	const std::vector<ScalarType>& weights,
-	double                         diskRadius,
-	double                         radiusVariance,
-	bool                           invert = false);
+template<typename ValueType, typename ScalarType = double>
+using SpatialHashTable2 = SpatialHashTable<Grid2<ScalarType>, ValueType>;
+
+template<typename ValueType, typename ScalarType = double>
+using SpatialHashTable3 = SpatialHashTable<Grid3<ScalarType>, ValueType>;
 
 } // namespace vcl
 
-#include "stat.cpp"
+#include "spatial_hash_table.cpp"
 
-#endif // VCL_ALGORITHMS_STAT_H
+#endif // VCL_SPACE_SPATIAL_HASH_TABLE_H

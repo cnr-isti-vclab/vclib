@@ -21,61 +21,92 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
-
-#include <vector>
-
-#include <vclib/math/matrix.h>
-
-#include "stat/bounding_box.h"
-#include "stat/scalar.h"
-#include "stat/selection.h"
+#include "bounding_box.h"
 
 namespace vcl {
 
 template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
+auto boundingBox(const MeshType& m)
+{
+	using VertexType = typename MeshType::VertexType;
+	vcl::Box<typename VertexType::CoordType> b;
 
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
+	for (const VertexType& v : m.vertices()) {
+		b.add(v.coord());
+	}
 
-template<FaceMeshConcept MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
+	return b;
+}
 
-template<FaceMeshConcept MeshType>
-double volume(const MeshType& m);
+template<VertexConcept VertexType>
+auto boundingBox(const VertexType& v)
+{
+	vcl::Box<typename VertexType::CoordType> b;
+	b.add(v.coord());
+	return b;
+}
 
-template<FaceMeshConcept MeshType>
-double surfaceArea(const MeshType& m);
+template<VertexConcept VertexType>
+auto boundingBox(const VertexType* v)
+{
+	vcl::Box<typename VertexType::CoordType> b;
+	b.add(v->coord());
+	return b;
+}
 
-template<FaceMeshConcept MeshType>
-double borderLength(const MeshType& m);
+template<FaceConcept FaceType>
+auto boundingBox(const FaceType& f)
+{
+	using VertexType = typename FaceType::VertexType;
 
-template<typename PointType>
-Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
+	vcl::Box<typename VertexType::CoordType> b;
+	for (const VertexType* v : f.vertices())
+		b.add(v->coord());
+	return b;
+}
 
-template<MeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
+template<FaceConcept FaceType>
+auto boundingBox(const FaceType* f)
+{
+	using VertexType = typename FaceType::VertexType;
 
-template<typename PointType>
-Matrix33<double> weightedCovarianceMatrixOfPointCloud(
-	const std::vector<PointType>& pointVec,
-	const std::vector<typename PointType::ScalarType>& weigths);
+	vcl::Box<typename VertexType::CoordType> b;
+	for (const VertexType* v : f->vertices())
+		b.add(v->coord());
+	return b;
+}
 
-template<FaceMeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
+template<EdgeConcept EdgeType>
+auto boundingBox(const EdgeType& e)
+{
+	using VertexType = typename EdgeType::VertexType;
 
-template<MeshConcept MeshType, typename ScalarType>
-std::vector<ScalarType> vertexRadiusFromWeights(
-	const MeshType&                m,
-	const std::vector<ScalarType>& weights,
-	double                         diskRadius,
-	double                         radiusVariance,
-	bool                           invert = false);
+	vcl::Box<typename VertexType::CoordType> b;
+	for (const VertexType* v : e.vertices())
+		b.add(v->coord());
+	return b;
+}
+
+template<EdgeConcept EdgeType>
+auto boundingBox(const EdgeType* e)
+{
+	using VertexType = typename EdgeType::VertexType;
+
+	vcl::Box<typename VertexType::CoordType> b;
+	for (const VertexType* v : e->vertices())
+		b.add(v->coord());
+	return b;
+}
+
+template<typename Iterator>
+auto boundingBox(Iterator begin, Iterator end)
+{
+	vcl::Box<typename Iterator::value_type> b;
+
+	for (; begin != end; ++begin)
+		b.add(*begin);
+
+	return b;
+}
 
 } // namespace vcl
-
-#include "stat.cpp"
-
-#endif // VCL_ALGORITHMS_STAT_H

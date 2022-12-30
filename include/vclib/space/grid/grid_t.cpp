@@ -25,18 +25,18 @@
 
 namespace vcl {
 
-/**
- * @brief Returns the ith Spatial Dimension (edge legth) of the bounding box of the grid
- * @param i
- * @return
- */
 template<typename Scalar, int N>
 Grid<Scalar, N>::Grid(
 	const Point<Scalar, N>& min,
 	const Point<Scalar, N>& max,
 	const Point<uint, N>&   size) :
-		bbox(min, max),
-		siz(size)
+		bbox(min, max), siz(size)
+{
+}
+
+template<typename Scalar, int N>
+Grid<Scalar, N>::Grid(const Box<Point<Scalar, N> >& bbox, const Point<uint, N>& size) :
+		bbox(bbox), siz(size)
 {
 }
 
@@ -82,7 +82,7 @@ Point<Scalar, N> Grid<Scalar, N>::lengths() const
  * @return
  */
 template<typename Scalar, int N>
-uint Grid<Scalar, N>::size(uint d) const
+uint Grid<Scalar, N>::cellNumber(uint d) const
 {
 	return siz(d);
 }
@@ -92,7 +92,7 @@ uint Grid<Scalar, N>::size(uint d) const
  * @return
  */
 template<typename Scalar, int N>
-Point<uint, N> Grid<Scalar, N>::size() const
+Point<uint, N> Grid<Scalar, N>::cellNumbers() const
 {
 	return siz;
 }
@@ -105,7 +105,7 @@ Point<uint, N> Grid<Scalar, N>::size() const
 template<typename Scalar, int N>
 Scalar Grid<Scalar, N>::cellLength(uint d) const
 {
-	return length(d)/size(d);
+	return length(d)/cellNumber(d);
 }
 
 /**
@@ -131,14 +131,14 @@ uint Grid<Scalar, N>::cell(uint d, const Scalar& s) const
 template<typename Scalar, int N>
 Point<uint, N> Grid<Scalar, N>::cell(const Point<Scalar, N>& p) const
 {
-	Point<uint, N> c;
+	CellCoord c;
 	for (size_t i = 0; i < DIM; ++i)
 		c(i) = cell(i, p(i));
 	return c;
 }
 
 template<typename Scalar, int N>
-Point<Scalar, N> Grid<Scalar, N>::cellLowerCorner(const Point<uint, N>& c) const
+Point<Scalar, N> Grid<Scalar, N>::cellLowerCorner(const CellCoord& c) const
 {
 	Point<Scalar, N> l;
 	for (size_t i = 0; i < DIM; ++i)
@@ -147,7 +147,7 @@ Point<Scalar, N> Grid<Scalar, N>::cellLowerCorner(const Point<uint, N>& c) const
 }
 
 template<typename Scalar, int N>
-Box<Point<Scalar, N>> Grid<Scalar, N>::cellBox(const Point<uint, N> &c) const
+Box<Point<Scalar, N>> Grid<Scalar, N>::cellBox(const CellCoord& c) const
 {
 	Box<Point<Scalar, N>> b;
 

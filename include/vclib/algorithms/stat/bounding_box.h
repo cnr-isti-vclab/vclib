@@ -21,61 +21,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
+#ifndef VCL_ALGORITHMS_STAT_BOUNDING_BOX_H
+#define VCL_ALGORITHMS_STAT_BOUNDING_BOX_H
 
-#include <vector>
-
-#include <vclib/math/matrix.h>
-
-#include "stat/bounding_box.h"
-#include "stat/scalar.h"
-#include "stat/selection.h"
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
 template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
+auto boundingBox(const MeshType& m);
 
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
+template<VertexConcept VertexType>
+auto boundingBox(const VertexType& v);
 
-template<FaceMeshConcept MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
+template<VertexConcept VertexType>
+auto boundingBox(const VertexType* v);
 
-template<FaceMeshConcept MeshType>
-double volume(const MeshType& m);
+template<FaceConcept FaceType>
+auto boundingBox(const FaceType& f);
 
-template<FaceMeshConcept MeshType>
-double surfaceArea(const MeshType& m);
+template<FaceConcept FaceType>
+auto boundingBox(const FaceType* f);
 
-template<FaceMeshConcept MeshType>
-double borderLength(const MeshType& m);
+template<EdgeConcept EdgeType>
+auto boundingBox(const EdgeType& e);
 
-template<typename PointType>
-Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
+template<EdgeConcept EdgeType>
+auto boundingBox(const EdgeType* e);
 
-template<MeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
-
-template<typename PointType>
-Matrix33<double> weightedCovarianceMatrixOfPointCloud(
-	const std::vector<PointType>& pointVec,
-	const std::vector<typename PointType::ScalarType>& weigths);
-
-template<FaceMeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
-
-template<MeshConcept MeshType, typename ScalarType>
-std::vector<ScalarType> vertexRadiusFromWeights(
-	const MeshType&                m,
-	const std::vector<ScalarType>& weights,
-	double                         diskRadius,
-	double                         radiusVariance,
-	bool                           invert = false);
+template<typename Iterator>
+auto boundingBox(Iterator begin, Iterator end);
 
 } // namespace vcl
 
-#include "stat.cpp"
+#include "bounding_box.cpp"
 
-#endif // VCL_ALGORITHMS_STAT_H
+#endif // VCL_ALGORITHMS_STAT_BOUNDING_BOX_H

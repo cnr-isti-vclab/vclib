@@ -64,6 +64,7 @@ set(HEADERS
 	include/vclib/algorithms/create/dodecahedron.h
 	include/vclib/algorithms/create/hexahedron.h
 	include/vclib/algorithms/create/tetrahedron.h
+	include/vclib/algorithms/stat/bounding_box.h
 	include/vclib/algorithms/stat/scalar.h
 	include/vclib/algorithms/stat/selection.h
 	include/vclib/algorithms/update/bounding_box.h
@@ -257,6 +258,7 @@ set(HEADERS
 	include/vclib/space/point.h
 	include/vclib/space/principal_curvature.h
 	include/vclib/space/sampler.h
+	include/vclib/space/spatial_hash_table.h
 	include/vclib/space/tex_coord.h
 	include/vclib/space/array/array_t.h
 	include/vclib/space/array/array2.h
@@ -264,6 +266,8 @@ set(HEADERS
 	include/vclib/space/array/array4.h
 	include/vclib/space/array/array_bool.h
 	include/vclib/space/grid/grid_t.h
+	include/vclib/space/grid/grid2.h
+	include/vclib/space/grid/grid3.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
@@ -288,6 +292,7 @@ set(SOURCES
 	include/vclib/algorithms/create/dodecahedron.cpp
 	include/vclib/algorithms/create/hexahedron.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
+	include/vclib/algorithms/stat/bounding_box.cpp
 	include/vclib/algorithms/stat/scalar.cpp
 	include/vclib/algorithms/stat/selection.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
@@ -403,12 +408,15 @@ set(SOURCES
 	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
+	include/vclib/space/spatial_hash_table.cpp
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/array/array_t.cpp
 	include/vclib/space/array/array2.cpp
 	include/vclib/space/array/array3.cpp
 	include/vclib/space/array/array4.cpp
 	include/vclib/space/grid/grid_t.cpp
+	include/vclib/space/grid/grid2.cpp
+	include/vclib/space/grid/grid3.cpp
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/point/point2.cpp
 	include/vclib/space/point/point3.cpp
