@@ -46,7 +46,7 @@ std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
 {
 	Point3<Scalar> n = polygonNormal(polygon);
 	Point3<Scalar> u, v;
-	getOrthoBase(n, u, v);
+	orthoBase(n, u, v);
 
 	std::vector<Point2<Scalar>> poly2D(polygon.size());
 	for (uint i = 0; i < polygon.size(); ++i){

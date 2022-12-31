@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-template<typename Scalar>
+template<PointConcept PointType>
 class KDTree;
 
 template<FaceMeshConcept MeshType>
@@ -49,12 +49,12 @@ void taubinSmoothing(
 template<MeshConcept MeshType>
 void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNum);
 
-template<MeshConcept MeshType, typename Scalar>
+template<MeshConcept MeshType, PointConcept PointType>
 void smoothPerVertexNormalsPointCloud(
-	MeshType&             m,
-	const KDTree<Scalar>& tree,
-	uint                  neighborNum,
-	uint                  iterNum);
+	MeshType&                m,
+	const KDTree<PointType>& tree,
+	uint                     neighborNum,
+	uint                     iterNum);
 
 } // namespace vcl
 

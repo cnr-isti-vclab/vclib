@@ -29,7 +29,7 @@
 
 namespace vcl {
 
-template<typename PointType>
+template<PointConcept PointType>
 class KDTree
 {
 	using Scalar = typename PointType::ScalarType;

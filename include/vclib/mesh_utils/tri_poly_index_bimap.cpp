@@ -23,7 +23,7 @@
 
 #include "tri_poly_index_bimap.h"
 
-namespace vcl::mesh {
+namespace vcl {
 
 /**
  * @brief Creates an empty BiMap.
@@ -133,4 +133,4 @@ inline void TriPolyIndexBiMap::insert(uint triangleIndex, uint polygonIndex)
 		polyToTri[polygonIndex] = triangleIndex;
 }
 
-} // namespace vcl::mesh
+} // namespace vcl

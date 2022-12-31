@@ -27,31 +27,31 @@
 
 namespace vcl {
 
-template<typename PointType>
+template<PointConcept PointType>
 const std::vector<PointType>& PointSampler<PointType>::samples() const
 {
 	return samplesVec;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 void PointSampler<PointType>::clear()
 {
 	samplesVec.clear();
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 void PointSampler<PointType>::reserve(uint n)
 {
 	samplesVec.reserve(n);
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 void PointSampler<PointType>::addPoint(const PointType& p)
 {
 	samplesVec.push_back(p);
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 template<MeshConcept MeshType>
 void PointSampler<PointType>::addVertex(
 	const typename MeshType::VertexType& v,
@@ -60,7 +60,7 @@ void PointSampler<PointType>::addVertex(
 	samplesVec.push_back(v.coord());
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 template<EdgeMeshConcept MeshType>
 void PointSampler<PointType>::addEdge(
 	const typename MeshType::EdgeType& e,
@@ -70,14 +70,14 @@ void PointSampler<PointType>::addEdge(
 	samplesVec.push_back((e.vertex(0).coord()*(1-u)) + (e.vertex(1).coord()*u));
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
 void PointSampler<PointType>::addFace(const typename MeshType::FaceType& f, const MeshType&)
 {
 	samplesVec.push_back(vcl::polygonBarycenter(f));
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
 void PointSampler<PointType>::addFace(
 	const typename MeshType::FaceType& f,
@@ -93,7 +93,7 @@ void PointSampler<PointType>::addFace(
 	samplesVec.push_back(p);
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
 void PointSampler<PointType>::addFace(
 	const typename MeshType::FaceType& f,

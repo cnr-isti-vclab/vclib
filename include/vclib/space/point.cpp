@@ -25,7 +25,7 @@
 
 namespace vcl {
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType min(const PointType &p1, const PointType &p2)
 {
 	PointType p;
@@ -35,7 +35,7 @@ PointType min(const PointType &p1, const PointType &p2)
 	return p;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType max(const PointType &p1, const PointType &p2)
 {
 	PointType p;
@@ -52,7 +52,7 @@ PointType max(const PointType &p1, const PointType &p2)
  * @param p1
  * @param p2
  */
-template<typename PointType>
+template<PointConcept PointType>
 auto outerProduct(const PointType& p1, const PointType& p2)
 {
 	Eigen::Matrix<typename PointType::ScalarType, PointType::DIM, PointType::DIM> res;
@@ -73,7 +73,7 @@ auto outerProduct(const PointType& p1, const PointType& p2)
  * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
  */
 template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
+void orthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
 {
 	const double   LocEps = double(1e-7);
 	Point3<Scalar> up(0, 1, 0);

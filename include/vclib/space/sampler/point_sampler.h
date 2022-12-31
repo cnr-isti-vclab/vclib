@@ -30,7 +30,7 @@
 
 namespace vcl {
 
-template<typename PointType = vcl::Point3d>
+template<PointConcept PointType = vcl::Point3d>
 class PointSampler
 {
 public:

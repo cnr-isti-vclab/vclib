@@ -40,7 +40,7 @@ inline void VertexIndexSampler::reserve(uint n)
 	samplesVec.reserve(n);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void VertexIndexSampler::addVertex(const typename MeshType::VertexType &v, const MeshType &m)
 {
 	samplesVec.push_back(m.index(v));

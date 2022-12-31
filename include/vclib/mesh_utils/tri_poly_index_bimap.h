@@ -26,7 +26,7 @@
 
 #include <vclib/misc/types.h>
 
-namespace vcl::mesh {
+namespace vcl{
 
 /**
  * @brief The TriPolyIndexBiMap class allows to store a bidirectional mapping between a Polygon Mesh
@@ -60,7 +60,7 @@ private:
 	std::vector<uint> polyToTri;
 };
 
-} // namespace vcl::mesh
+} // namespace vcl
 
 #include "tri_poly_index_bimap.cpp"
 

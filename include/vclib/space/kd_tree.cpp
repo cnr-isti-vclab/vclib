@@ -30,12 +30,12 @@
 
 namespace vcl {
 
-template<typename PointType>
+template<PointConcept PointType>
 KDTree<PointType>::KDTree()
 {
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 KDTree<PointType>::KDTree(
 	const std::vector<PointType>& points,
 	uint                          pointsPerCell,
@@ -62,7 +62,7 @@ KDTree<PointType>::KDTree(
  * @param maxDepth
  * @param balanced
  */
-template<typename PointType>
+template<PointConcept PointType>
 template<MeshConcept MeshType>
 KDTree<PointType>::KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, bool balanced) :
 		points(m.vertexNumber()),
@@ -90,7 +90,7 @@ KDTree<PointType>::KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, 
  * The result of the query, the closest point to the query point, is the index of the point and
  * and the distance from the query point.
  */
-template<typename PointType>
+template<PointConcept PointType>
 uint KDTree<PointType>::nearestNeighborIndex(const PointType& queryPoint, Scalar& dist) const
 {
 	std::vector<QueryNode> mNodeStack(depth + 1);
@@ -143,7 +143,7 @@ uint KDTree<PointType>::nearestNeighborIndex(const PointType& queryPoint, Scalar
 	return minIndex;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType KDTree<PointType>::nearestNeighbor(const PointType& queryPoint, Scalar& dist) const
 {
 	return points[nearestNeighborIndex(queryPoint, dist)];
@@ -166,7 +166,7 @@ PointType KDTree<PointType>::nearestNeighbor(const PointType& queryPoint, Scalar
  * The result of the query, the k-nearest neighbors, are stored into a vector, and they
  * are sorted on order of neighbohood.
  */
-template<typename PointType>
+template<PointConcept PointType>
 std::vector<uint> KDTree<PointType>::kNearestNeighborsIndices(
 	const PointType&     queryPoint,
 	uint                 k,
@@ -264,7 +264,7 @@ std::vector<uint> KDTree<PointType>::kNearestNeighborsIndices(
 	return res;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 std::vector<PointType> KDTree<PointType>::kNearestNeighbors(
 	const PointType&     queryPoint,
 	uint                 k,
@@ -285,7 +285,7 @@ std::vector<PointType> KDTree<PointType>::kNearestNeighbors(
  * The result of the query, all the points within the distance dist form the query point, is the
  * vector of the indeces and the vector of the distances from the query point.
  */
-template<typename PointType>
+template<PointConcept PointType>
 std::vector<uint> KDTree<PointType>::neighborsIndicesInDistance(
 	const PointType&     queryPoint,
 	Scalar               dist,
@@ -339,7 +339,7 @@ std::vector<uint> KDTree<PointType>::neighborsIndicesInDistance(
 	return queryPoints;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 std::vector<PointType> KDTree<PointType>::neighborsInDistance(
 	const PointType&     queryPoint,
 	Scalar               dist,
@@ -372,7 +372,7 @@ std::vector<PointType> KDTree<PointType>::neighborsInDistance(
  * to prune only about 10% of the leaves, but the overhead of this pruning (ball/ABBB intersection)
  * is more expensive than the gain it provides and the memory consumption is x4 higher !
  */
-template<typename PointType>
+template<PointConcept PointType>
 uint KDTree<PointType>::createTree(uint nodeId, uint start, uint end, uint level, bool balanced)
 {
 	// select the first node
@@ -457,7 +457,7 @@ uint KDTree<PointType>::createTree(uint nodeId, uint start, uint end, uint level
  * the other with the elements greater or equal than splitValue. The elements are compared
  * using the "dim" coordinate [0 = x, 1 = y, 2 = z].
  */
-template<typename PointType>
+template<PointConcept PointType>
 uint KDTree<PointType>::split(uint start, uint end, uint dim, Scalar splitValue)
 {
 	uint l, r;

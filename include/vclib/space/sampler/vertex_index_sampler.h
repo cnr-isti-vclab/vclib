@@ -40,7 +40,7 @@ public:
 	void clear();
 	void reserve(uint n);
 
-	template<typename MeshType>
+	template<MeshConcept MeshType>
 	void addVertex(const typename MeshType::VertexType& v, const MeshType& m);
 
 private:

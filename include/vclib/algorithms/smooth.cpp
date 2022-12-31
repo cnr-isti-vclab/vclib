@@ -219,15 +219,16 @@ void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNu
  * @param neighborNum
  * @param iterNum
  */
-template<MeshConcept MeshType, typename Scalar>
+template<MeshConcept MeshType, PointConcept PointType>
 void smoothPerVertexNormalsPointCloud(
 	MeshType&             m,
-	const KDTree<Scalar>& tree,
+	const KDTree<PointType>& tree,
 	uint                  neighborNum,
 	uint                  iterNum)
 {
 	vcl::requirePerVertexNormal(m);
 
+	using Scalar     = typename PointType::ScalarType;
 	using VertexType = typename MeshType::VertexType;
 	using NormalType = typename VertexType::NormalType;
 

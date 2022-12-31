@@ -30,17 +30,17 @@
 
 namespace vcl {
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType min(const PointType& p1, const PointType& p2);
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType max(const PointType& p1, const PointType& p2);
 
-template<typename PointType>
+template<PointConcept PointType>
 auto outerProduct(const PointType& p1, const PointType& p2);
 
 template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
+void orthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
 
 } // namespace vcl
 

@@ -75,7 +75,7 @@ private:
 	std::array<float, 4> mColor;
 
 	vcl::Point3d            bbmin, bbmax;
-	mesh::TriPolyIndexBiMap triPolyMap;
+	vcl::TriPolyIndexBiMap  triPolyMap;
 	std::vector<vcl::Image> textures;
 
 	void fillVertices(const MeshType& m);
