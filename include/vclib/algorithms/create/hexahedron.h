@@ -31,12 +31,12 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 MeshType createHexahedron();
 
-template<FaceMeshConcept MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, PointConcept CoordType>
 MeshType createHexahedron(
 	const CoordType& min,
 	const CoordType& max);
 
-template<FaceMeshConcept MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, PointConcept CoordType>
 MeshType createCube(
 	const CoordType& min,
 	double edgeLength);

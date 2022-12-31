@@ -35,10 +35,10 @@ void applyTransformMatrix(
 	const Matrix44<ScalarM>& matrix,
 	bool                     updateNormals = true);
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void translate(MeshType& mesh, const PointType& t);
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void scale(MeshType& mesh, const PointType& s);
 
 } // namespace vcl

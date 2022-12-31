@@ -78,14 +78,14 @@ void setPerFaceColorFromConnectedComponents(MeshType& m);
 template<FaceMeshConcept MeshType>
 void setPerFaceColorScattering(MeshType& m, uint nColors = 50, bool checkFauxEdges = true);
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexColorPerlinNoise(
 	MeshType& m,
 	PointType period,
 	PointType offset     = PointType(0, 0, 0),
 	bool      onSelected = false);
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexPerlinColor(
 	MeshType& m,
 	double period,

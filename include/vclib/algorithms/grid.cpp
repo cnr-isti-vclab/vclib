@@ -33,7 +33,7 @@ namespace vcl {
  * @param nElements
  * @return
  */
-template<typename PointType>
+template<PointConcept PointType>
 Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements)
 {
 	using Scalar = typename PointType::ScalarType;

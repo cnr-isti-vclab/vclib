@@ -88,6 +88,8 @@ public:
 	// operators
 	Scalar&       operator()(uint i);
 	const Scalar& operator()(uint i) const;
+	Scalar& operator[](uint i);
+	const Scalar& operator[](uint i) const;
 
 	bool operator==(const Point& p1) const = default;
 	auto operator<=>(const Point& p1) const;
@@ -117,9 +119,6 @@ public:
 	Point& operator*=(const Eigen::Matrix<Scalar, N+1, N+1>& m) requires (N == 3);
 
 	Point& operator/=(const Scalar& s);
-
-	Scalar& operator[](uint i);
-	const Scalar& operator[](uint i) const;
 
 	Point& operator=(const Eigen::Matrix<Scalar, 1, N>& v);
 

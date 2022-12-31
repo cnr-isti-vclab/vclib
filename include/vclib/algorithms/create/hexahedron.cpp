@@ -84,7 +84,7 @@ MeshType createHexahedron()
  *
  * @return A Mesh containing a ``[min, max]``Hexahedron .
  */
-template<FaceMeshConcept MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, PointConcept CoordType>
 MeshType createHexahedron(const CoordType& min, const CoordType& max)
 {
 	MeshType m;
@@ -118,7 +118,7 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max)
  *
  * @return A Mesh containing a ``[min, min+edgeLength]`` Cube.
  */
-template<FaceMeshConcept MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, PointConcept CoordType>
 MeshType createCube(
 	const CoordType& min,
 	double edgeLength)

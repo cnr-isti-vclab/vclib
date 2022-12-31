@@ -195,14 +195,19 @@ Scalar& Point<Scalar, N>::operator()(uint i)
 }
 
 template<typename Scalar, int N>
-Point<Scalar, N>& Point<Scalar, N>::operator=(const Eigen::Matrix<Scalar, 1, N>& v)
+const Scalar& Point<Scalar, N>::operator()(uint i) const
 {
-	p << v;
-	return *this;
+	return p(i);
 }
 
 template<typename Scalar, int N>
-const Scalar& Point<Scalar, N>::operator()(uint i) const
+Scalar& Point<Scalar, N>::operator[](uint i)
+{
+	return p(i);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::operator[](uint i) const
 {
 	return p(i);
 }
@@ -351,15 +356,10 @@ Point<Scalar, N>& Point<Scalar, N>::operator/=(const Scalar& s)
 }
 
 template<typename Scalar, int N>
-Scalar& Point<Scalar, N>::operator[](uint i)
+Point<Scalar, N>& Point<Scalar, N>::operator=(const Eigen::Matrix<Scalar, 1, N>& v)
 {
-	return p(i);
-}
-
-template<typename Scalar, int N>
-const Scalar& Point<Scalar, N>::operator[](uint i) const
-{
-	return p(i);
+	p << v;
+	return *this;
 }
 
 template<typename Scalar, int N>

@@ -48,7 +48,7 @@ void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool 
 	}
 }
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void translate(MeshType& mesh, const PointType& t)
 {
 	using VertexType = typename MeshType::VertexType;
@@ -57,7 +57,7 @@ void translate(MeshType& mesh, const PointType& t)
 	}
 }
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void scale(MeshType& mesh, const PointType& s)
 {
 	using VertexType = typename MeshType::VertexType;

@@ -64,7 +64,7 @@ MeshType createTetrahedron()
  * @param p3
  * @return a Mesh containing a Tetrahedron.
  */
-template<FaceMeshConcept MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, PointConcept CoordType>
 MeshType createTetrahedron(
 	const CoordType& p0,
 	const CoordType& p1,

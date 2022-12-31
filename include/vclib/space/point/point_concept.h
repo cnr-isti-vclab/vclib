@@ -28,17 +28,62 @@
 
 namespace vcl {
 
+/**
+ * @brief The PointConcept concept lists all the requirements that a template T must
+ * satisfy to be treated by the VCLib as a Point of undefined dimension.
+ *
+ * Lists all the member functions and operators that a Point class must implement.
+ */
 template<typename T>
-concept PointConcept = requires(T o, T o2)
+concept PointConcept = requires(T o, const T& co)
 {
+	typename T::ScalarType;
+	o.DIM;
 	o.isDegenerate();
-	o.dot(o2);
-	o.dist(o2);
-	o.norm();
+	{ co.dot(co) } -> std::same_as<typename T::ScalarType>;
+	{ co.angle(co) } -> std::same_as<typename T::ScalarType>;
+	{ co.dist(co) } -> std::same_as<typename T::ScalarType>;
+	{ co.squaredDist(co) } -> std::same_as<typename T::ScalarType>;
+	{ co.norm() } -> std::same_as<typename T::ScalarType>;
+	{ co.squaredNorm() } -> std::same_as<typename T::ScalarType>;
+	{ co.size() } -> std::same_as<uint>;
+	o.setConstant(typename T::ScalarType());
+	o.setZero();
+	o.setOnes();
+	{ co.normalized() } -> std::convertible_to<T>;
 	o.normalize();
+	{ co.hash() } -> std::same_as<std::size_t>;
 
-	o == o2;
-	o != o2;
+	o(uint());
+	co(uint());
+	o[uint()];
+	co[uint()];
+
+	o = co;
+
+	{ co == co } -> std::same_as<bool>;
+	co <=> co;
+
+	{ co + typename T::ScalarType() } -> std::convertible_to<T>;
+	{ co + co } -> std::convertible_to<T>;
+
+	{ -co } -> std::convertible_to<T>;
+	{ co - typename T::ScalarType() } -> std::convertible_to<T>;
+	{ co - co } -> std::convertible_to<T>;
+
+	{ co * typename T::ScalarType() } -> std::convertible_to<T>;
+	{ co * co } -> std::same_as<typename T::ScalarType>;
+
+	{ co / typename T::ScalarType() } -> std::convertible_to<T>;
+
+	o += typename T::ScalarType();
+	o += co;
+
+	o -= typename T::ScalarType();
+	o -= co;
+
+	o *= typename T::ScalarType();
+	o /= typename T::ScalarType();
 };
 
 } // namespace vcl

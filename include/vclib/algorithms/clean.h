@@ -49,7 +49,7 @@ uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
 template <FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m);
 
-template <typename FaceType>
+template <FaceConcept FaceType>
 bool isManifoldOnEdge(const FaceType& f, uint edge);
 
 template <FaceMeshConcept MeshType>

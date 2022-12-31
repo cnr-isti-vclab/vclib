@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-template<typename PointType>
+template<PointConcept PointType>
 vcl::Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements);
 
 } // namespace vcl

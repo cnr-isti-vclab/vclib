@@ -438,7 +438,7 @@ uint removeDegenerateFaces(MeshType& m)
 	return count;
 }
 
-template<typename FaceType>
+template<FaceConcept FaceType>
 bool isManifoldOnEdge(const FaceType& f, uint edge)
 {
 	if (comp::isAdjacentFacesEnabledOn(f)) {

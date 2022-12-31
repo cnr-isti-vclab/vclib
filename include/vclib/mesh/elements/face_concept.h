@@ -141,6 +141,10 @@ concept FaceConcept =
 	comp::SanityCheckWedgeColors<T> &&
 	comp::SanityCheckWedgeTexCoords<T>;
 
+template<typename T>
+concept TriangleFaceConcept =
+	T::VERTEX_NUMBER == 3 && FaceConcept<T>;
+
 /**
  * @brief PolygonFaceConcept
  *

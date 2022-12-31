@@ -64,7 +64,7 @@ namespace vcl {
  * @param[in] p2: third point of the triangle.
  * @return The normal of the triangle composed by p0, p1 and p2.
  */
-template<typename PointType>
+template<PointConcept PointType>
 PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2)
 {
 	return (p1 - p0).cross(p2 - p0);
@@ -79,7 +79,7 @@ PointType triangleNormal(const PointType& p0, const PointType& p1, const PointTy
  * @param[in] t: input triangle of type Face
  * @return The normal of t.
  */
-template<typename Triangle>
+template<FaceConcept Triangle>
 typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t)
 {
 	return triangleNormal(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
@@ -93,7 +93,7 @@ typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t)
  * @param[in] p2: third point of the triangle.
  * @return The barycenter of the triangle composed by p0, p1 and p2.
  */
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleBarycenter(const PointType& p0, const PointType& p1, const PointType& p2)
 {
 	return (p0 + p1 + p2) / 3;
@@ -107,7 +107,7 @@ PointType triangleBarycenter(const PointType& p0, const PointType& p1, const Poi
  * @param[in] t: input triangle of type Face
  * @return The barycenter of t.
  */
-template<typename Triangle, typename PointType>
+template<TriangleFaceConcept Triangle, PointConcept PointType>
 PointType triangleBarycenter(const Triangle& t)
 {
 	return triangleBarycenter(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
@@ -124,7 +124,7 @@ PointType triangleBarycenter(const Triangle& t)
  * @param[in] w2: weight of the third point of the triangle.
  * @return The weighted barycenter of the triangle composed by p0, p1 and p2.
  */
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleWeightedBarycenter(
 	const PointType& p0, typename PointType::ScalarType w0,
 	const PointType& p1, typename PointType::ScalarType w1,
@@ -133,7 +133,7 @@ PointType triangleWeightedBarycenter(
 	return (p0 * w0 + p1 * w1 + p2 * w2) / (w0 + w1 + w2);
 }
 
-template<typename PointType, typename ScalarType>
+template<PointConcept PointType, typename ScalarType>
 PointType triangleBarycentricCoordinatePoint(
 	const PointType& p0,
 	const PointType& p1,

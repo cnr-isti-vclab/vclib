@@ -29,25 +29,25 @@
 
 namespace vcl {
 
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template<typename Triangle>
+template<FaceConcept Triangle>
 typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t);
 
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleBarycenter(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template<typename Triangle, typename PointType = Point3f>
+template<TriangleFaceConcept Triangle, PointConcept PointType = Point3f>
 PointType triangleBarycenter(const Triangle& t);
 
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleWeightedBarycenter(
 	const PointType& p0, typename PointType::ScalarType w0,
 	const PointType& p1, typename PointType::ScalarType w1,
 	const PointType& p2, typename PointType::ScalarType w2);
 
-template <typename PointType, typename ScalarType>
+template <PointConcept PointType, typename ScalarType>
 PointType triangleBarycentricCoordinatePoint(
 	const PointType& p0,
 	const PointType& p1,

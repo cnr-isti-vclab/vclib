@@ -440,7 +440,7 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
  * @param offset
  * @param onSelected
  */
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offset, bool onSelected)
 {
 	vcl::requirePerVertexColor(m);
@@ -479,7 +479,7 @@ void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offse
  * @param color2
  * @param onSelected
  */
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexPerlinColor(
 	MeshType&      m,
 	double         period,

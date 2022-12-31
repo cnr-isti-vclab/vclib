@@ -57,6 +57,11 @@ using Point4i = Point4<int>;
 using Point4f = Point4<float>;
 using Point4d = Point4<double>;
 
+// makes sure that Point4 classes satisfy PointConcept
+static_assert(PointConcept<Point4i>, "Point4i is not a valid Point");
+static_assert(PointConcept<Point4f>, "Point4f is not a valid Point");
+static_assert(PointConcept<Point4d>, "Point4d is not a valid Point");
+
 } // namespace vcl
 
 // inject vcl::Point4 hash function in std namespace
