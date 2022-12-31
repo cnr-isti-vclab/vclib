@@ -50,7 +50,6 @@ concept PointConcept = requires(T o, const T& co)
 	o.setConstant(typename T::ScalarType());
 	o.setZero();
 	o.setOnes();
-	{ co.normalized() } -> std::convertible_to<T>;
 	o.normalize();
 	{ co.hash() } -> std::same_as<std::size_t>;
 
@@ -64,17 +63,7 @@ concept PointConcept = requires(T o, const T& co)
 	{ co == co } -> std::same_as<bool>;
 	co <=> co;
 
-	{ co + typename T::ScalarType() } -> std::convertible_to<T>;
-	{ co + co } -> std::convertible_to<T>;
-
-	{ -co } -> std::convertible_to<T>;
-	{ co - typename T::ScalarType() } -> std::convertible_to<T>;
-	{ co - co } -> std::convertible_to<T>;
-
-	{ co * typename T::ScalarType() } -> std::convertible_to<T>;
 	{ co * co } -> std::same_as<typename T::ScalarType>;
-
-	{ co / typename T::ScalarType() } -> std::convertible_to<T>;
 
 	o += typename T::ScalarType();
 	o += co;
@@ -84,6 +73,21 @@ concept PointConcept = requires(T o, const T& co)
 
 	o *= typename T::ScalarType();
 	o /= typename T::ScalarType();
+
+	// waiting for apple to support std::convertible_to<> and other concept features...
+#ifndef __APPLE__
+	{ co.normalized() } -> std::convertible_to<T>;
+	{ co + typename T::ScalarType() } -> std::convertible_to<T>;
+	{ co + co } -> std::convertible_to<T>;
+
+	{ -co } -> std::convertible_to<T>;
+	{ co - typename T::ScalarType() } -> std::convertible_to<T>;
+	{ co - co } -> std::convertible_to<T>;
+
+	{ co * typename T::ScalarType() } -> std::convertible_to<T>;
+
+	{ co / typename T::ScalarType() } -> std::convertible_to<T>;
+#endif
 };
 
 } // namespace vcl
