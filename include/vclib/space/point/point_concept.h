@@ -21,42 +21,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_BOUNDING_BOX_H
-#define VCL_ALGORITHMS_STAT_BOUNDING_BOX_H
+#ifndef VCL_SPACE_POINT_POINT_CONCEPT_H
+#define VCL_SPACE_POINT_POINT_CONCEPT_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/misc/types.h>
 
 namespace vcl {
 
-template<PointConcept PointType>
-auto boundingBox(const PointType& p);
+template<typename T>
+concept PointConcept = requires(T o, T o2)
+{
+	o.isDegenerate();
+	o.dot(o2);
+	o.dist(o2);
+	o.norm();
+	o.normalize();
 
-template<MeshConcept MeshType>
-auto boundingBox(const MeshType& m);
-
-template<VertexConcept VertexType>
-auto boundingBox(const VertexType& v);
-
-template<VertexConcept VertexType>
-auto boundingBox(const VertexType* v);
-
-template<FaceConcept FaceType>
-auto boundingBox(const FaceType& f);
-
-template<FaceConcept FaceType>
-auto boundingBox(const FaceType* f);
-
-template<EdgeConcept EdgeType>
-auto boundingBox(const EdgeType& e);
-
-template<EdgeConcept EdgeType>
-auto boundingBox(const EdgeType* e);
-
-template<typename Iterator>
-auto boundingBox(Iterator begin, Iterator end);
+	o == o2;
+	o != o2;
+};
 
 } // namespace vcl
 
-#include "bounding_box.cpp"
-
-#endif // VCL_ALGORITHMS_STAT_BOUNDING_BOX_H
+#endif // VCL_SPACE_POINT_POINT_CONCEPT_H

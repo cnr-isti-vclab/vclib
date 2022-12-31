@@ -116,7 +116,7 @@ void MeshSampler<MeshType>::addFace(
 	bool                                copyNormal,
 	bool                                copyScalar)
 {
-	assert(f.vertexNumber() <= weights.size());
+	assert(f.vertexNumber() <= barCoords.size());
 
 	PointType p;
 	for (uint i = 0; i < f.vertexNumber(); i++)

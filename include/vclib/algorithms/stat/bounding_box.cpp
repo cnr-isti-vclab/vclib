@@ -25,6 +25,14 @@
 
 namespace vcl {
 
+template<PointConcept PointType>
+auto boundingBox(const PointType &p)
+{
+	vcl::Box<PointType> b;
+	b.add(p);
+	return b;
+}
+
 template<MeshConcept MeshType>
 auto boundingBox(const MeshType& m)
 {

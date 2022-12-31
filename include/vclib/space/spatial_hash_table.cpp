@@ -30,13 +30,22 @@ namespace vcl {
 template<typename GridType, typename ValueType>
 SpatialHashTable<GridType, ValueType>::SpatialHashTable()
 {
-
 }
 
 template<typename GridType, typename ValueType>
-bool SpatialHashTable<GridType, ValueType>::empty() const
+SpatialHashTable<GridType, ValueType>::SpatialHashTable(const GridType& grid) :
+		GridType(grid)
 {
-	return map.empty();
+}
+
+template<typename GridType, typename ValueType>
+template<typename PointType>
+SpatialHashTable<GridType, ValueType>::SpatialHashTable(
+	const PointType& min,
+	const PointType& max,
+	const KeyType&   size) :
+		GridType(min, max, size)
+{
 }
 
 template<typename GridType, typename ValueType>
@@ -44,6 +53,12 @@ template<typename BoxType>
 SpatialHashTable<GridType, ValueType>::SpatialHashTable(const BoxType& bbox, const KeyType& size) :
 		GridType(bbox, size)
 {
+}
+
+template<typename GridType, typename ValueType>
+bool SpatialHashTable<GridType, ValueType>::empty() const
+{
+	return map.empty();
 }
 
 template<typename GridType, typename ValueType>
@@ -59,19 +74,28 @@ bool SpatialHashTable<GridType, ValueType>::cellEmpty(const KeyType& k) const
 }
 
 template<typename GridType, typename ValueType>
-std::size_t SpatialHashTable<GridType, ValueType>::cellSize(const KeyType& k) const
+std::size_t SpatialHashTable<GridType, ValueType>::cellCount(const KeyType& k) const
 {
 	return map.count(k);
 }
 
 template<typename GridType, typename ValueType>
 std::set<typename SpatialHashTable<GridType, ValueType>::KeyType>
-SpatialHashTable<GridType, ValueType>::cells() const
+SpatialHashTable<GridType, ValueType>::nonEmptyCells() const
 {
 	std::set<KeyType> keys;
 	for (const auto& p : map)
 		keys.insert(p.first);
 	return keys;
+}
+
+template<typename GridType, typename ValueType>
+std::pair<
+	typename SpatialHashTable<GridType, ValueType>::const_iterator,
+	typename SpatialHashTable<GridType, ValueType>::const_iterator>
+SpatialHashTable<GridType, ValueType>::cellValues(const KeyType& k) const
+{
+	return map.equal_range(k);
 }
 
 template<typename GridType, typename ValueType>
@@ -87,58 +111,72 @@ void SpatialHashTable<GridType, ValueType>::insert(const KeyType &k, const Value
 }
 
 template<typename GridType, typename ValueType>
-void SpatialHashTable<GridType, ValueType>::insert(const ValueType& v) requires (GridType::DIM == 2)
-{
-	typename GridType::BBoxType bb = vcl::boundingBox(v);
-
-	typename GridType::CellCoord bmin = GridType::cell(bb.min);
-	typename GridType::CellCoord bmax = GridType::cell(bb.max);
-
-	for (uint i = bmin(0); i < bmax(0); ++i) {
-		for (uint j = bmin(1); j < bmax(1); ++j) {
-			insert(GridType::CellCoord(i,j), v);
-		}
-	}
-}
-
-template<typename GridType, typename ValueType>
-void SpatialHashTable<GridType, ValueType>::insert(const ValueType& v) requires (GridType::DIM == 3)
-{
-	typename GridType::BBoxType bb = vcl::boundingBox(v);
-
-	typename GridType::CellCoord bmin = GridType::cell(bb.min);
-	typename GridType::CellCoord bmax = GridType::cell(bb.max);
-
-	for (uint i = bmin(0); i < bmax(0); ++i) {
-		for (uint j = bmin(1); j < bmax(1); ++j) {
-			for (uint k = bmin(2); k < bmax(2); ++k) {
-				insert(GridType::CellCoord(i,j,k), v);
-			}
-		}
-	}
-}
-
-template<typename GridType, typename ValueType>
 void SpatialHashTable<GridType, ValueType>::insert(const ValueType& v)
 {
 	typename GridType::BBoxType bb = vcl::boundingBox(v);
 
 	typename GridType::CellCoord bmin = GridType::cell(bb.min);
 	typename GridType::CellCoord bmax = GridType::cell(bb.max);
+
+	for (const auto& cell : GridType::cells(bmin, bmax)) {
+		insert(cell, v);
+	}
 }
 
 template<typename GridType, typename ValueType>
-typename SpatialHashTable<GridType, ValueType>::iterator
-SpatialHashTable<GridType, ValueType>::begin()
+void SpatialHashTable<GridType, ValueType>::insert(const ValueType& v)
+	requires(PointConcept<ValueType>)
 {
-	return map.begin();
+	typename GridType::CellCoord cell = GridType::cell(v);
+	insert(cell, v);
 }
 
 template<typename GridType, typename ValueType>
-typename SpatialHashTable<GridType, ValueType>::iterator
-SpatialHashTable<GridType, ValueType>::end()
+bool SpatialHashTable<GridType, ValueType>::erase(const KeyType& k, const ValueType& v)
 {
-	return map.end();
+	std::pair<iterator, iterator> range = map.equal_range(k);
+	for(iterator ci = range.first; ci != range.second; ++ci) {
+		if (ci->second == v) {
+			map.erase(ci);
+			return true;
+		}
+	}
+	return false;
+}
+
+template<typename GridType, typename ValueType>
+bool SpatialHashTable<GridType, ValueType>::erase(const ValueType& v)
+{
+	typename GridType::BBoxType bb = vcl::boundingBox(v);
+
+	typename GridType::CellCoord bmin = GridType::cell(bb.min);
+	typename GridType::CellCoord bmax = GridType::cell(bb.max);
+
+	bool found = false;
+
+	for (const auto& cell : GridType::cells(bmin, bmax)) {
+		found |= erase(cell, v);
+	}
+	return found;
+}
+
+template<typename GridType, typename ValueType>
+bool SpatialHashTable<GridType, ValueType>::erase(const ValueType& v)
+	requires(PointConcept<ValueType>)
+{
+	typename GridType::CellCoord cell = GridType::cell(v);
+	return erase(cell, v);
+}
+
+template<typename GridType, typename ValueType>
+bool SpatialHashTable<GridType, ValueType>::eraseCell(const KeyType& k)
+{
+	std::pair<iterator,iterator> range = map.equal_range(k);
+	if (range != map.end()) {
+		map.erase(range.first, range.second);
+		return true;
+	}
+	return false;
 }
 
 template<typename GridType, typename ValueType>

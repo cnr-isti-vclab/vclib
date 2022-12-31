@@ -36,10 +36,15 @@ class SpatialHashTable : public GridType
 {
 public:
 	using KeyType = typename GridType::CellCoord;
-	using iterator = typename std::unordered_multimap<KeyType, ValueType>::iterator;
+
 	using const_iterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
 
 	SpatialHashTable();
+
+	SpatialHashTable(const GridType& grid);
+
+	template<typename PointType>
+	SpatialHashTable(const PointType& min, const PointType& max, const KeyType& size);
 
 	template<typename BoxType>
 	SpatialHashTable(const BoxType& bbox, const KeyType& size);
@@ -47,23 +52,28 @@ public:
 	bool empty() const;
 	std::size_t size() const;
 	bool cellEmpty(const KeyType& k) const;
-	std::size_t cellSize(const KeyType& k) const;
+	std::size_t cellCount(const KeyType& k) const;
 
-	std::set<KeyType> cells() const;
+	std::set<KeyType> nonEmptyCells() const;
+
+	std::pair<const_iterator, const_iterator> cellValues(const KeyType& k) const;
 
 	void clear();
 
 	void insert(const KeyType& k, const ValueType& v);
-	void insert(const ValueType& v) requires (GridType::DIM == 2);
-	void insert(const ValueType& v) requires (GridType::DIM == 3);
 	void insert(const ValueType& v);
+	void insert(const ValueType& v) requires (PointConcept<ValueType>);
 
-	iterator begin();
-	iterator end();
+	bool erase(const KeyType& k, const ValueType& v);
+	bool erase(const ValueType& v);
+	bool erase(const ValueType& v) requires (PointConcept<ValueType>);
+	bool eraseCell(const KeyType& k);
+
 	const_iterator begin() const;
 	const_iterator end() const;
 
 private:
+	using iterator = typename std::unordered_multimap<KeyType, ValueType>::iterator;
 	using MapValueType = typename std::unordered_multimap<KeyType, ValueType>::value_type;
 
 	std::unordered_multimap<KeyType, ValueType> map;

@@ -29,8 +29,9 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
+#include "point_concept.h"
+
 #include <vclib/math/base.h>
-#include <vclib/misc/types.h>
 
 namespace vcl {
 
@@ -49,6 +50,9 @@ public:
 	static const int DIM  = N;
 
 	Point() = default; // default empty constructor
+
+	template<typename... Scalars>
+	Point(Scalars... scalars) requires(sizeof...(scalars) == N);
 
 	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
 

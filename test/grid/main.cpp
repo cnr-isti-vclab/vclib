@@ -24,6 +24,7 @@
 #include <iostream>
 
 #include <vclib/space/grid.h>
+#include <vclib/space/spatial_hash_table.h>
 
 int main()
 {
@@ -33,6 +34,34 @@ int main()
 
 	for (const auto& c : g.cells(first, last))
 		std::cerr << c << "\n";
+
+	std::cerr << "\n";
+
+	vcl::SpatialHashTable<vcl::Grid3<double>, vcl::Point<double, 3>> sht(g);
+
+	sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
+	sht.insert(vcl::Point3d(0.02, 0.12, 0.29));
+
+	sht.insert(vcl::Point3d(0.24, 0.52, 0.29));
+
+	for (const auto& c : sht.nonEmptyCells()) {
+		std::cerr << c << "\n";
+	}
+
+	std::cerr << "Count: " << sht.cellCount(vcl::Point3<uint>(0,1,2)) << "\n";
+
+	auto p = sht.cellValues(vcl::Point3<uint>(0,1,2));
+	for (auto it = p.first; it != p.second; it++) {
+		std::cerr << it->second << "; ";
+	}
+	std::cerr << "\n";
+
+	sht.erase(vcl::Point3d(0.05, 0.15, 0.25));
+	p = sht.cellValues(vcl::Point3<uint>(0,1,2));
+	for (auto it = p.first; it != p.second; it++) {
+		std::cerr << it->second << "; ";
+	}
+	std::cerr << "\n";
 
 	return 0;
 }

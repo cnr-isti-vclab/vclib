@@ -84,7 +84,7 @@ void PointSampler<PointType>::addFace(
 	const MeshType&,
 	const std::vector<ScalarType>&     barCoords)
 {
-	assert(f.vertexNumber() <= weights.size());
+	assert(f.vertexNumber() <= barCoords.size());
 
 	PointType p;
 	for (uint i = 0; i < f.vertexNumber(); i++)

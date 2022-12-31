@@ -28,6 +28,15 @@
 namespace vcl {
 
 template<typename Scalar, int N>
+template<typename... Scalars>
+Point<Scalar, N>::Point(Scalars... scalars) requires(sizeof...(scalars) == N)
+{
+	Scalar args[N]   = {static_cast<Scalar>(scalars)...};
+	for (uint i = 0; i < N; i++)
+		p(i) = args[i];
+}
+
+template<typename Scalar, int N>
 Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, 1, N>& v)
 {
 	p << v;
@@ -202,7 +211,7 @@ template<typename Scalar, int N>
 auto Point<Scalar, N>::operator<=>(const Point& p1) const
 {
 	uint i = 0;
-	while (p[i] == p1.p[i] && i < DIM) {
+	while (i < DIM && p[i] == p1.p[i]) {
 		++i;
 	}
 	return i == DIM ? p[0] <=> p1.p[0] : p[i] <=> p1.p[i];

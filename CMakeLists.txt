@@ -270,6 +270,7 @@ set(HEADERS
 	include/vclib/space/grid/grid_t.h
 	include/vclib/space/grid/grid2.h
 	include/vclib/space/grid/grid3.h
+	include/vclib/space/point/point_concept.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
