@@ -41,7 +41,7 @@ namespace vcl {
  * @param angleRad
  * @return
  */
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotation(
 	MatrixType&       matrix,
 	PointType         axis,
@@ -74,7 +74,7 @@ void setTransformMatrixRotation(
  * @param angleDeg
  * @return
  */
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotationDeg(
 	MatrixType&       matrix,
 	PointType         axis,
@@ -83,7 +83,7 @@ void setTransformMatrixRotationDeg(
 	setTransformMatrixRotation(matrix, axis, vcl::toRad(angleDeg));
 }
 
-template<typename ScalarType, typename PointType>
+template<typename ScalarType, PointConcept PointType>
 void setTrasformMatrixTranslation(Matrix44<ScalarType>& matrix, const PointType& translation)
 {
 	matrix(0, 3) = translation[0];
@@ -91,7 +91,7 @@ void setTrasformMatrixTranslation(Matrix44<ScalarType>& matrix, const PointType&
 	matrix(2, 3) = translation[2];
 }
 
-template<typename ScalarType, typename PointType>
+template<typename ScalarType, PointConcept PointType>
 void setTrasformMatrixScale(Matrix44<ScalarType>& matrix, const PointType& scale)
 {
 	matrix(0, 0) = scale[0];
@@ -112,7 +112,7 @@ void setTrasformMatrixScale(Matrix44<ScalarType>& matrix, const PointType& scale
  * @param angleRad
  * @return
  */
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
 {
 	MatrixType matrix;
@@ -132,7 +132,7 @@ MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
  * @param angleDeg
  * @return
  */
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg)
 {
 	return rotationMatrix<MatrixType>(axis, vcl::toRad(angleDeg));

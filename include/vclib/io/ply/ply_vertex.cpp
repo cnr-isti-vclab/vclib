@@ -34,7 +34,7 @@ namespace vcl::io::ply {
 
 namespace internal {
 
-template<typename MeshType, typename VertexType, typename Stream>
+template<MeshConcept MeshType, VertexConcept VertexType, typename Stream>
 void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Property p)
 {
 	bool hasBeenRead = false;
@@ -94,7 +94,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	}
 }
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void loadVerticesTxt(
 	std::ifstream& file,
 	const PlyHeader& header,
@@ -116,7 +116,7 @@ void loadVerticesTxt(
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadVerticesBin(
 	std::ifstream& file,
 	const PlyHeader& header,
@@ -134,7 +134,7 @@ void loadVerticesBin(
 
 } //namespace vcl::ply::internal
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void saveVertices(
 	std::ofstream& file,
 	const PlyHeader& header,
@@ -186,7 +186,7 @@ void saveVertices(
 	}
 }
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void loadVertices(
 	std::ifstream& file,
 	const PlyHeader& header,

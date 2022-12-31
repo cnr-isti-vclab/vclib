@@ -34,7 +34,7 @@ namespace vcl::io {
 
 namespace internal {
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void loadOffVertices(
 	MeshType& mesh,
 	std::ifstream& file,
@@ -104,7 +104,7 @@ void loadOffVertices(
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadOffFaces(
 	MeshType&      mesh,
 	std::ifstream& file,
@@ -176,14 +176,14 @@ void loadOffFaces(
 
 } // namespace internal
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadOff(const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	return loadOff<MeshType>(filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType
 loadOff(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
 {
@@ -192,14 +192,14 @@ loadOff(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOption
 	return m;
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadOff(MeshType& m, const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	loadOff(m, filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadOff(
 	MeshType&          m,
 	const std::string& filename,

@@ -29,10 +29,10 @@
 
 namespace vcl::io::ply {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveTextures(PlyHeader& header, const MeshType& mesh);
 
 void readUnknownElements(std::ifstream& file, const PlyHeader& header, Element el);

@@ -26,6 +26,8 @@
 
 #include <Eigen/Core>
 
+#include <vclib/space/point.h>
+
 namespace vcl {
 
 template<typename Scalar>
@@ -42,28 +44,28 @@ using Matrix44i = Matrix44<int>;
 using Matrix44f = Matrix44<float>;
 using Matrix44d = Matrix44<double>;
 
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotation(
 	MatrixType&       matrix,
 	PointType         axis,
 	const ScalarType& angleRad);
 
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotationDeg(
 	MatrixType&       matrix,
 	PointType         axis,
 	const ScalarType& angleDeg);
 
-template<typename ScalarType, typename PointType>
+template<typename ScalarType, PointConcept PointType>
 void setTrasformMatrixTranslation(Matrix44<ScalarType>& matrix, const PointType& translation);
 
-template<typename ScalarType, typename PointType>
+template<typename ScalarType, PointConcept PointType>
 void setTrasformMatrixScale(Matrix44<ScalarType>& matrix, const PointType& scale);
 
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad);
 
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg);
 
 } // namespace vcl

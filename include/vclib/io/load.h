@@ -30,17 +30,17 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType load(const std::string& filename, bool enableOptionalComponents = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType
 load(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void load(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void load(
 	MeshType&          m,
 	const std::string& filename,

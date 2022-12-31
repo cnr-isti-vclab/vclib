@@ -31,7 +31,7 @@
 
 namespace vcl::io::ply {
 
-template<typename MeshType>
+template<EdgeMeshConcept MeshType>
 void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType& mesh);
 
 

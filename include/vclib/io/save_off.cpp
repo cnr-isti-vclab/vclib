@@ -30,14 +30,14 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveOff(const MeshType& m, const std::string& filename)
 {
 	vcl::io::FileMeshInfo info(m);
 	saveOff(m, filename, info);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info)
 {
 	FileMeshInfo meshInfo(m);

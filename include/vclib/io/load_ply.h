@@ -28,19 +28,19 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadPly(const std::string& filename, bool enableOptionalComponents = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadPly(
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
 	bool               enableOptionalComponents = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadPly(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadPly(
 	MeshType&          m,
 	const std::string& filename,

@@ -30,7 +30,7 @@
 
 namespace vcl::comp {
 
-template <typename P>
+template <PointConcept P>
 class NormalT
 {
 public:

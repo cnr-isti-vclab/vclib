@@ -34,7 +34,7 @@ namespace vcl::io::ply {
 
 namespace internal {
 
-template<typename MeshType, typename FaceType>
+template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void saveFaceIndices(
 	std::ofstream&          file,
 	Property                p,
@@ -52,7 +52,7 @@ void saveFaceIndices(
 	}
 }
 
-template<typename MeshType, typename FaceType>
+template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 {
 	bool splitFace = false;
@@ -86,7 +86,7 @@ void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 	}
 }
 
-template<typename MeshType, typename FaceType, typename Scalar>
+template<FaceMeshConcept MeshType, FaceConcept FaceType, typename Scalar>
 void setFaceWedgeTexCoords(
 	FaceType&                                     f,
 	MeshType&                                     m,
@@ -123,7 +123,7 @@ void setFaceWedgeTexCoords(
 	}
 }
 
-template<typename MeshType, typename FaceType, typename Stream>
+template<FaceMeshConcept MeshType, FaceConcept FaceType, typename Stream>
 void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p)
 {
 	bool              hasBeenRead = false;
@@ -222,7 +222,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadFacesTxt(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	using FaceType       = typename MeshType::FaceType;
@@ -242,7 +242,7 @@ void loadFacesTxt(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadFacesBin(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	using FaceType = typename MeshType::FaceType;
@@ -258,7 +258,7 @@ void loadFacesBin(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 
 } // namespace internal
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mesh)
 {
 	using FaceType = typename MeshType::FaceType;
@@ -320,7 +320,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	if (header.format() == ply::ASCII) {

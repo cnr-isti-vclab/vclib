@@ -27,23 +27,23 @@
 
 namespace vcl {
 
-template<typename PointType>
+template<PointConcept PointType>
 Box<PointType>::Box()
 {
 	setNull();
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 Box<PointType>::Box(const PointType& p) : min(p), max(p)
 {
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 Box<PointType>::Box(const PointType& min, const PointType& max) : min(min), max(max)
 {
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 bool Box<PointType>::isNull() const
 {
 	for (uint i = 0; i < PointType::DIM; ++i) {
@@ -53,7 +53,7 @@ bool Box<PointType>::isNull() const
 	return false;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 bool Box<PointType>::isEmpty() const
 {
 	return min == max;
@@ -64,7 +64,7 @@ bool Box<PointType>::isEmpty() const
  * @param p
  * @return true if p is inside the box, bounds included; e.g. p in [min, max].
  */
-template<typename PointType>
+template<PointConcept PointType>
 bool Box<PointType>::isInside(const PointType& p) const
 {
 	for (uint i = 0; i < PointType::DIM; ++i) {
@@ -79,7 +79,7 @@ bool Box<PointType>::isInside(const PointType& p) const
  * @param p: the point to check if is inside the curren box.
  * @return true if p is inside the open box (max bound excluded); e.g. p in [min, max).
  */
-template<typename PointType>
+template<PointConcept PointType>
 bool Box<PointType>::isInsideOpenBox(const PointType& p) const
 {
 	for (uint i = 0; i < PointType::DIM; ++i) {
@@ -89,7 +89,7 @@ bool Box<PointType>::isInsideOpenBox(const PointType& p) const
 	return true;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 bool Box<PointType>::collide(const Box<PointType>& b) const
 {
 	for (uint i = 0; i < PointType::DIM; ++i) {
@@ -99,31 +99,31 @@ bool Box<PointType>::collide(const Box<PointType>& b) const
 	return true;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 auto Box<PointType>::diagonal() const
 {
 	return min.dist(max);
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 auto Box<PointType>::squaredDiagonal() const
 {
 	return min.squaredDist(max);
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType Box<PointType>::center() const
 {
 	return (max + min) / 2;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType Box<PointType>::size() const
 {
 	return max - min;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 auto Box<PointType>::volume() const
 {
 	auto vol = max[0] - min[0];
@@ -133,14 +133,14 @@ auto Box<PointType>::volume() const
 	return vol;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 auto Box<PointType>::dim(uint i) const
 {
 	assert(i < PointType::DIM);
 	return max[i]-min[i];
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 auto Box<PointType>::minDim() const
 {
 	auto m = max[0] - min[0];
@@ -151,7 +151,7 @@ auto Box<PointType>::minDim() const
 	return m;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 auto Box<PointType>::maxDim() const
 {
 	auto m = max[0] - min[0];
@@ -168,7 +168,7 @@ auto Box<PointType>::maxDim() const
  *
  * This member function sets all the min values to 1 and the max values to -1.
  */
-template<typename PointType>
+template<PointConcept PointType>
 void Box<PointType>::setNull()
 {
 	min.setConstant(1);
@@ -182,7 +182,7 @@ void Box<PointType>::setNull()
  * If this box was null, the current box will have the same values of b.
  * @param b: the box to add to the current box.
  */
-template<typename PointType>
+template<PointConcept PointType>
 void Box<PointType>::add(const Box<PointType>& b)
 {
 	// Adding a null box should do nothing
@@ -197,7 +197,7 @@ void Box<PointType>::add(const Box<PointType>& b)
 	}
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 /**
  * @brief Box::add adds the given point to the current box, expanding this box in order that will
  * contain also the p values.
@@ -220,7 +220,7 @@ void Box<PointType>::add(const PointType& p)
  * given box b
  * @param b
  */
-template<typename PointType>
+template<PointConcept PointType>
 void Box<PointType>::intersect(const Box<PointType>& b)
 {
 	for (uint i = 0; i < PointType::DIM; ++i) {
@@ -239,14 +239,14 @@ void Box<PointType>::intersect(const Box<PointType>& b)
  * @brief Translates the box by summing the values of p
  * @param p
  */
-template<typename PointType>
+template<PointConcept PointType>
 void Box<PointType>::translate(const PointType& p)
 {
 	min += p;
 	max += p;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 template<typename Scalar>
 void Box<PointType>::add(const PointType& p, Scalar radius)
 {

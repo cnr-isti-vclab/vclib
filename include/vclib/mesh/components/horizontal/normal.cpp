@@ -25,19 +25,19 @@
 
 namespace vcl::comp {
 
-template<typename P>
+template<PointConcept P>
 const P& NormalT<P>::normal() const
 {
 	return n;
 }
 
-template<typename P>
+template<PointConcept P>
 P& NormalT<P>::normal()
 {
 	return n;
 }
 
-template<typename P>
+template<PointConcept P>
 template<typename Element>
 void NormalT<P>::importFrom(const Element& e)
 {

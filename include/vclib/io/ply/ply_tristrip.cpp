@@ -30,7 +30,7 @@ namespace vcl::io::ply {
 
 namespace internal {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void facesFromTriStrip(MeshType& m, const std::vector<int>& tristrip)
 {
 	using FaceType   = typename MeshType::FaceType;
@@ -66,7 +66,7 @@ void facesFromTriStrip(MeshType& m, const std::vector<int>& tristrip)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
 {
 	for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
@@ -99,7 +99,7 @@ void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadTriStripsBin(std::ifstream& file, const PlyHeader& header, MeshType& m)
 {
 	for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
@@ -129,7 +129,7 @@ void loadTriStripsBin(std::ifstream& file, const PlyHeader& header, MeshType& m)
 
 } // namespace internal
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadTriStrips(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	if (header.format() == ply::ASCII) {

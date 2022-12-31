@@ -183,7 +183,7 @@ double borderLength(const MeshType& m)
  * @param pointVec
  * @return The 3x3 covariance matrix of the given set of points.
  */
-template<typename PointType>
+template<PointConcept PointType>
 Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
 {
 	Matrix33<double> m;
@@ -231,7 +231,7 @@ Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m)
  * @param weights
  * @return
  */
-template<typename PointType>
+template<PointConcept PointType>
 Matrix33<double> weightedCovarianceMatrixOfPointCloud(
 	const std::vector<PointType>& pointVec,
 	const std::vector<typename PointType::ScalarType>& weights)

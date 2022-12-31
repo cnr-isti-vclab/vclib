@@ -36,7 +36,7 @@ namespace vcl::io {
 
 namespace internal {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadMaterials(
 	std::map<std::string, obj::Material>& materialMap,
 	MeshType& mesh,
@@ -129,7 +129,7 @@ void loadMaterials(
 		materialMap[matName] = mat;
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadVertexCoord(
 	MeshType&                    m,
 	vcl::Tokenizer::iterator&    token,
@@ -177,7 +177,7 @@ void loadVertexCoord(
 }
 
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadVertexNormal(
 	MeshType&                    m,
 	std::map<uint, vcl::Point3d> mapNormalsCache,
@@ -215,7 +215,7 @@ void loadVertexNormal(
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadFace(
 	MeshType& m,
 	FileMeshInfo&         loadedInfo,
@@ -365,14 +365,14 @@ void loadFace(
 
 } // namespace internal
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadObj(const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	return loadObj<MeshType>(filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType
 loadObj(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
 {
@@ -381,14 +381,14 @@ loadObj(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOption
 	return m;
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadObj(MeshType& m, const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	loadObj(m, filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadObj(
 	MeshType&          m,
 	const std::string& filename,

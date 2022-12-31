@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-template<typename PointType>
+template<PointConcept PointType>
 class Box
 {
 public:

@@ -30,6 +30,8 @@
 #include <vector>
 #include <bitset>
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl::io {
 
 /**
@@ -46,7 +48,7 @@ public:
 
 	FileMeshInfo();
 
-	template<typename Mesh>
+	template<MeshConcept Mesh>
 	FileMeshInfo(const Mesh& m);
 
 	bool isTriangleMesh() const;

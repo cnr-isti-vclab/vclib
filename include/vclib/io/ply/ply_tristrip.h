@@ -30,7 +30,7 @@
 
 namespace vcl::io::ply {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadTriStrips(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
 
 } // namespace vcl::ply

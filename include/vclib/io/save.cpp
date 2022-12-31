@@ -25,14 +25,14 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void save(const MeshType& m, const std::string& filename, bool binary)
 {
 	vcl::io::FileMeshInfo info(m);
 	save(m, filename, info, binary);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void save(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary)
 {
 	std::string name, ext;

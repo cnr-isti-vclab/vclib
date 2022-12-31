@@ -30,10 +30,10 @@
 
 namespace vcl::io::ply {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveVertices(std::ofstream& file, const PlyHeader& header, const MeshType& mesh);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadVertices(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
 
 } // namespace vcl

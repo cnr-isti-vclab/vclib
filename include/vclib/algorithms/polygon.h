@@ -59,31 +59,31 @@ typename Triangle::CoordType triangleBarycentricCoordinatePoint(
 	const Triangle& t,
 	const Point3<ScalarType>& barCoords);
 
-template<typename PointType>
+template<PointConcept PointType>
 typename PointType::ScalarType
 triangleArea(const PointType& p0, const PointType& p1, const PointType& p2);
 
 template<typename Triangle, typename ScalarType = double>
 ScalarType triangleArea(const Triangle& t);
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonNormal(const std::vector<PointType>& p);
 
 template<typename Polygon>
 typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p);
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonBarycenter(const std::vector<PointType>& p);
 
 template<typename Polygon>
 typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p);
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonWeighedBarycenter(
 	const std::vector<PointType>&                      p,
 	const std::vector<typename PointType::ScalarType>& w);
 
-template<typename PointType>
+template<PointConcept PointType>
 typename PointType::ScalarType polygonArea(const std::vector<PointType>& p);
 
 template<typename Polygon, typename ScalarType = double>

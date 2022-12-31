@@ -31,10 +31,10 @@
 
 namespace vcl::io::ply {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mesh);
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
 
 } // namespace vcl::ply

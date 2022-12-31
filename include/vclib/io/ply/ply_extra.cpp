@@ -29,7 +29,7 @@
 
 namespace vcl::io::ply {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh)
 {
 	if constexpr (vcl::HasTexturePaths<MeshType>) {
@@ -39,7 +39,7 @@ void loadTextures(const PlyHeader& header, MeshType& mesh)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveTextures(PlyHeader& header, const MeshType& mesh)
 {
 	if constexpr (vcl::HasTexturePaths<MeshType>) {

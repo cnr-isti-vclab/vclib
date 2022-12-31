@@ -30,10 +30,10 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void save(const MeshType& m, const std::string& filename, bool binary = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void save(
 	const MeshType&     m,
 	const std::string&  filename,

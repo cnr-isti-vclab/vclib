@@ -44,7 +44,7 @@ namespace vcl::comp {
  * m.boundingBox();
  * @endcode
  */
-template<typename  PointType>
+template<PointConcept PointType>
 class BoundingBox
 {
 public:

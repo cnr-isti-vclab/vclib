@@ -161,7 +161,7 @@ typename Triangle::CoordType triangleBarycentricCoordinatePoint(
  * @param[in] p2: third point of the triangle.
  * @return The area of the triangle composed by p0, p1 and p2.
  */
-template<typename PointType>
+template<PointConcept PointType>
 typename PointType::ScalarType
 triangleArea(const PointType& p0, const PointType& p1, const PointType& p2)
 {
@@ -189,7 +189,7 @@ ScalarType triangleArea(const Triangle& t)
  * @param[in] p: input container of 3D points representing a polygon.
  * @return The normal of p.
  */
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonNormal(const std::vector<PointType>& p)
 {
 	// compute the sum of normals for each triplet of consecutive points
@@ -232,7 +232,7 @@ typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p)
  * @param[in] p: input container of points representing a polygon.
  * @return The barycenter of p.
  */
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonBarycenter(const std::vector<PointType>& p)
 {
 	PointType bar;
@@ -270,7 +270,7 @@ typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p)
  * @param[in] w: the weights for each point of the polygon.
  * @return The weighted barycenter of p.
  */
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonWeighedBarycenter(
 	const std::vector<PointType>&                      p,
 	const std::vector<typename PointType::ScalarType>& w)
@@ -294,7 +294,7 @@ PointType polygonWeighedBarycenter(
  * @param[in] p: input container of 3D points representing a polygon.
  * @return The area of p.
  */
-template<typename PointType>
+template<PointConcept PointType>
 typename PointType::ScalarType polygonArea(const std::vector<PointType>& p)
 {
 	using Scalar = typename PointType::ScalarType;

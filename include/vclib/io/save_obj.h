@@ -28,10 +28,10 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveObj(const MeshType& m, const std::string& filename);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo& info);
 
 } // namespace vcl::io

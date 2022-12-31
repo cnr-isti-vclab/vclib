@@ -35,14 +35,14 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadPly(const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	return loadPly<MeshType>(filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadPly(
 	const std::string&     filename,
 	vcl::io::FileMeshInfo& loadedInfo,
@@ -68,7 +68,7 @@ MeshType loadPly(
  * @param filename
  * @param enableOptionalComponents
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadPly(MeshType& m, const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
@@ -91,7 +91,7 @@ void loadPly(MeshType& m, const std::string& filename, bool enableOptionalCompon
  * @param loadedInfo
  * @param enableOptionalComponents
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadPly(
 	MeshType&              m,
 	const std::string&     filename,
@@ -99,10 +99,6 @@ void loadPly(
 	bool                   enableOptionalComponents)
 {
 	std::ifstream file = internal::loadFileStream(filename);
-
-	if constexpr (HasName<MeshType>) {
-		m.name() = fileInfo::filenameWithoutExtension(filename);
-	}
 
 	ply::PlyHeader header(filename, file);
 	if (header.errorWhileLoading())
@@ -114,6 +110,9 @@ void loadPly(
 		internal::enableOptionalComponents(loadedInfo, m);
 
 	m.clear();
+	if constexpr (HasName<MeshType>) {
+		m.name() = fileInfo::filenameWithoutExtension(filename);
+	}
 	if constexpr (HasTexturePaths<MeshType>) {
 		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
 	}

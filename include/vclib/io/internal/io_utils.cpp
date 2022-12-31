@@ -83,7 +83,7 @@ inline std::ifstream loadFileStream(const std::string& filename)
  * @param info
  * @param m
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
 {
 	if (info.hasVertices()) {

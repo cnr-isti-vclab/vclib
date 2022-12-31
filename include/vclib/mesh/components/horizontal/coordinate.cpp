@@ -25,19 +25,19 @@
 
 namespace vcl::comp {
 
-template<typename Point>
+template<PointConcept Point>
 const Point& CoordT<Point>::coord() const
 {
 	return p;
 }
 
-template<typename Point>
+template<PointConcept Point>
 Point& CoordT<Point>::coord()
 {
 	return p;
 }
 
-template<typename Point>
+template<PointConcept Point>
 template<typename Element>
 void CoordT<Point>::importFrom(const Element& v)
 {
