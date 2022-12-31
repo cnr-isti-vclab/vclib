@@ -31,7 +31,8 @@ namespace vcl {
 template<typename Scalar>
 class Grid2 : public Grid<Scalar, 2>
 {
-
+public:
+	using Grid<Scalar, 2>::Grid;
 };
 
 } // namespace vcl

@@ -21,64 +21,74 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_GRID_T_H
-#define VCL_SPACE_GRID_GRID_T_H
-
-#include <vclib/iterators/grid/cell_iterator.h>
-#include <vclib/iterators/grid/cell_range_iterator.h>
-#include <vclib/space/box.h>
+#include "cell_iterator.h"
 
 namespace vcl {
 
-template<typename Scalar, int N>
-class Grid
+template<int N>
+CellIterator<N>::CellIterator()
 {
-public:
-	static const int DIM  = N;
-	using ScalarType      = Scalar;
-	using PointType       = Point<Scalar, N>;
-	using CellCoord       = Point<uint, N>;
-	using BBoxType        = Box<PointType>;
+	it.setConstant(-1);
+	first = end = it;
+}
 
-	using CellIterator = vcl::CellIterator<N>;
-	using CellRangeIterator = vcl::CellRangeIterator<Grid<Scalar, N>, CellIterator>;
+template<int N>
+CellIterator<N>::CellIterator(const vcl::Point<uint, N>& end) :
+		it(end), first(end), end(end)
+{
+}
 
-	Grid() = default;
-	Grid(const Point<Scalar, N>& min, const Point<Scalar, N>& max, const Point<uint, N>& size);
-	Grid(const Box<Point<Scalar, N>>& bbox, const Point<uint, N>& size);
+template<int N>
+CellIterator<N>::CellIterator(const vcl::Point<uint, N> &first, const vcl::Point<uint, N> &end):
+		it(first), first(first), end(end)
+{
+}
 
-	Point<Scalar, N> min() const;
-	Point<Scalar, N> max() const;
+template<int N>
+typename CellIterator<N>::reference CellIterator<N>::operator*() const
+{
+	return it;
+}
 
-	Scalar length(uint d) const;
-	Point<Scalar, N> lengths() const;
+template<int N>
+typename CellIterator<N>::pointer CellIterator<N>::operator->() const
+{
+	return &it;
+}
 
-	uint cellNumber(uint d) const;
-	Point<uint, N> cellNumbers() const;
+template<int N>
+bool CellIterator<N>::operator==(const CellIterator& oi) const
+{
+	return (it == oi.it);
+}
 
-	Scalar cellLength(uint d) const;
-	Point<Scalar, N> cellLengths() const;
+template<int N>
+bool CellIterator<N>::operator!=(const CellIterator &oi) const
+{
+	return (it != oi.it);
+}
 
-	uint cell(uint d, const Scalar& s) const;
-	CellCoord cell(const Point<Scalar, N>& p) const;
+template<int N>
+CellIterator<N> CellIterator<N>::operator++()
+{
+	uint d = N-1;
+	while (d != -1 && it(d) == end(d) - 1) {
+		it(d) = first(d);
+		d--;
+	}
+	if (d != -1)
+		it(d)++;
+	else
+		it.setConstant(-1);
+	return it;
+}
 
-	Point<Scalar, N> cellLowerCorner(const CellCoord& c) const;
-
-	Box<Point<Scalar, N>> cellBox(const CellCoord& c) const;
-
-	CellIterator cellBegin() const;
-	CellIterator cellBegin(const CellCoord& first, const CellCoord& last) const;
-	CellIterator cellEnd() const;
-	CellRangeIterator cells() const;
-	CellRangeIterator cells(const CellCoord& first, const CellCoord& last) const;
-
-private:
-	BBoxType       bbox;
-	Point<uint, N> siz;
-};
+template<int N>
+CellIterator<N> CellIterator<N>::operator++(int)
+{
+	CellIterator<N> oit = it;
+	++(*this);
+	return oit;
+}
 
 } // namespace vcl
-
-#include "grid_t.cpp"
-
-#endif // VCL_SPACE_GRID_GRID_T_H

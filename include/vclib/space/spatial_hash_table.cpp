@@ -125,8 +125,6 @@ void SpatialHashTable<GridType, ValueType>::insert(const ValueType& v)
 
 	typename GridType::CellCoord bmin = GridType::cell(bb.min);
 	typename GridType::CellCoord bmax = GridType::cell(bb.max);
-
-	// todo
 }
 
 template<typename GridType, typename ValueType>

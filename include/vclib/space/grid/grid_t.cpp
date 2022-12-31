@@ -161,4 +161,44 @@ Box<Point<Scalar, N>> Grid<Scalar, N>::cellBox(const CellCoord& c) const
 	return b;
 }
 
+template<typename Scalar, int N>
+typename Grid<Scalar, N>::CellIterator Grid<Scalar, N>::cellBegin() const
+{
+	return CellIterator(CellCoord(), siz);
+}
+
+template<typename Scalar, int N>
+typename Grid<Scalar, N>::CellIterator
+Grid<Scalar, N>::cellBegin(const CellCoord& first, const CellCoord& last) const
+{
+	return CellIterator(first, last + 1);
+}
+
+template<typename Scalar, int N>
+typename Grid<Scalar, N>::CellIterator Grid<Scalar, N>::cellEnd() const
+{
+	return CellIterator();
+}
+
+template<typename Scalar, int N>
+typename Grid<Scalar, N>::CellRangeIterator Grid<Scalar, N>::cells() const
+{
+	return CellRangeIterator(
+		*this,
+		&Grid<Scalar, N>::cellBegin,
+		&Grid<Scalar, N>::cellEnd);
+}
+
+template<typename Scalar, int N>
+typename Grid<Scalar, N>::CellRangeIterator
+Grid<Scalar, N>::cells(const CellCoord& first, const CellCoord& last) const
+{
+	return CellRangeIterator(
+		*this,
+		&Grid<Scalar, N>::cellBegin,
+		&Grid<Scalar, N>::cellEnd,
+		first,
+		last);
+}
+
 } // namespace vcl

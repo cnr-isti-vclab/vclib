@@ -21,64 +21,18 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_GRID_T_H
-#define VCL_SPACE_GRID_GRID_T_H
+#include <iostream>
 
-#include <vclib/iterators/grid/cell_iterator.h>
-#include <vclib/iterators/grid/cell_range_iterator.h>
-#include <vclib/space/box.h>
+#include <vclib/space/grid.h>
 
-namespace vcl {
-
-template<typename Scalar, int N>
-class Grid
+int main()
 {
-public:
-	static const int DIM  = N;
-	using ScalarType      = Scalar;
-	using PointType       = Point<Scalar, N>;
-	using CellCoord       = Point<uint, N>;
-	using BBoxType        = Box<PointType>;
+	vcl::Grid3<double> g(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3<uint>(10, 10, 10));
 
-	using CellIterator = vcl::CellIterator<N>;
-	using CellRangeIterator = vcl::CellRangeIterator<Grid<Scalar, N>, CellIterator>;
+	vcl::Point3<uint> first(2,2,2), last(5, 4, 7);
 
-	Grid() = default;
-	Grid(const Point<Scalar, N>& min, const Point<Scalar, N>& max, const Point<uint, N>& size);
-	Grid(const Box<Point<Scalar, N>>& bbox, const Point<uint, N>& size);
+	for (const auto& c : g.cells(first, last))
+		std::cerr << c << "\n";
 
-	Point<Scalar, N> min() const;
-	Point<Scalar, N> max() const;
-
-	Scalar length(uint d) const;
-	Point<Scalar, N> lengths() const;
-
-	uint cellNumber(uint d) const;
-	Point<uint, N> cellNumbers() const;
-
-	Scalar cellLength(uint d) const;
-	Point<Scalar, N> cellLengths() const;
-
-	uint cell(uint d, const Scalar& s) const;
-	CellCoord cell(const Point<Scalar, N>& p) const;
-
-	Point<Scalar, N> cellLowerCorner(const CellCoord& c) const;
-
-	Box<Point<Scalar, N>> cellBox(const CellCoord& c) const;
-
-	CellIterator cellBegin() const;
-	CellIterator cellBegin(const CellCoord& first, const CellCoord& last) const;
-	CellIterator cellEnd() const;
-	CellRangeIterator cells() const;
-	CellRangeIterator cells(const CellCoord& first, const CellCoord& last) const;
-
-private:
-	BBoxType       bbox;
-	Point<uint, N> siz;
-};
-
-} // namespace vcl
-
-#include "grid_t.cpp"
-
-#endif // VCL_SPACE_GRID_GRID_T_H
+	return 0;
+}
