@@ -21,50 +21,12 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_ALGORITHMS_CREATE_H
+#define VCL_ALGORITHMS_CREATE_H
 
-#include <vclib/algorithms/create.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/poly_mesh.h>
+#include "create/dodecahedron.h"
+#include "create/hexahedron.h"
+#include "create/sphere.h"
+#include "create/tetrahedron.h"
 
-int main()
-{
-	vcl::io::FileMeshInfo info;
-
-	// want to save just these infos in the files, ignore the rest
-	info.setVertices();
-	info.setFaces();
-	info.setVertexCoords(true, vcl::io::FileMeshInfo::FLOAT);
-	info.setFaceVRefs();
-
-	vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();
-
-	assert(m.vertexNumber() == 4);
-	assert(m.faceNumber() == 4);
-
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply", info);
-
-	m = vcl::createHexahedron<vcl::TriMesh>();
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/hexahedron.ply", info);
-
-	m = vcl::createDodecahedron<vcl::TriMesh>();
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/dodecahedron.ply", info);
-
-	vcl::PolyMesh pm = vcl::createHexahedron<vcl::PolyMesh>();
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/hexahedron_poly.ply", info);
-
-	pm = vcl::createDodecahedron<vcl::PolyMesh>();
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/dodecahedron_poly.ply", info);
-
-	pm = vcl::createCube<vcl::PolyMesh>(vcl::Point3d(0,0,0), 4);
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/cube_poly.ply", info);
-
-	m = vcl::createSphereSpherifiedCube<vcl::TriMesh>({vcl::Point3d(), 1.0}, 50);
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/sphere_tri.ply");
-
-	pm = vcl::createSphereSpherifiedCube<vcl::PolyMesh>({vcl::Point3d(), 1.0}, 50);
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/sphere_poly.ply");
-
-	return 0;
-}
+#endif // VCL_ALGORITHMS_CREATE_H

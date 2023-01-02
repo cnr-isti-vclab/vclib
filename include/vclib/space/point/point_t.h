@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -69,6 +69,8 @@ public:
 	Scalar squaredDist(const Point& p1) const;
 
 	Point cross(const Point& p1) const requires (N == 3);
+	Point mul(const Point& p1) const;
+	Point div(const Point& p1) const;
 
 	Scalar norm() const;
 	Scalar squaredNorm() const;

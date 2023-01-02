@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -118,6 +118,24 @@ template<typename Scalar, int N>
 Point<Scalar,N> Point<Scalar, N>::cross(const Point& p1) const requires (N == 3)
 {
 	return p.cross(p1.p);
+}
+
+template<typename Scalar, int N>
+Point<Scalar, N> Point<Scalar, N>::mul(const Point& p1) const
+{
+	Point<Scalar, N> tmp;
+	for (size_t i = 0; i < DIM; ++i)
+		tmp[i] = p[i] * p1.p[i];
+	return tmp;
+}
+
+template<typename Scalar, int N>
+Point<Scalar, N> Point<Scalar, N>::div(const Point& p1) const
+{
+	Point<Scalar, N> tmp;
+	for (size_t i = 0; i < DIM; ++i)
+		tmp[i] = p[i] / p1.p[i];
+	return tmp;
 }
 
 template<typename Scalar, int N>

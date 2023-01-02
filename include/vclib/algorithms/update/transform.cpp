@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -65,6 +65,15 @@ void scale(MeshType& mesh, const PointType& s)
 		v.coord()(0) *= s(0);
 		v.coord()(1) *= s(1);
 		v.coord()(2) *= s(2);
+	}
+}
+
+template<MeshConcept MeshType, typename Scalar>
+void scale(MeshType& mesh, const Scalar& s)
+{
+	using VertexType = typename MeshType::VertexType;
+	for (VertexType& v : mesh.vertices()) {
+		v.coord() *= s;
 	}
 }
 
