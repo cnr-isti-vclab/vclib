@@ -21,54 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_SPACE_SPHERE_H
+#define VCL_SPACE_SPHERE_H
 
-#include <vclib/space/grid.h>
-#include <vclib/space/spatial_hash_table.h>
+#include "box.h"
 
-int main()
+namespace vcl {
+
+template<typename Scalar>
+class Sphere
 {
-	vcl::Grid3<double> g(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3<uint>(10, 10, 10));
+public:
+	using ScalarType = Scalar;
 
-	vcl::Point3<uint> first(2,2,2), last(5, 4, 7);
+	Sphere();
+	Sphere(const vcl::Point3<Scalar>& center, Scalar radius);
 
-	for (const auto& c : g.cells(first, last))
-		std::cerr << c << "\n";
+	const Point3<Scalar>& center() const;
+	Point3<Scalar>& center();
 
-	std::cerr << "\n";
+	const Scalar& radius() const;
+	Scalar& radius();
 
-	vcl::SpatialHashTable<vcl::Grid3<double>, vcl::Point<double, 3>> sht(g);
+	Scalar diameter() const;
+	Scalar circumference() const;
+	Scalar surfaceArea() const;
+	Scalar volume() const;
 
-	sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
-	sht.insert(vcl::Point3d(0.02, 0.12, 0.29));
+	bool isInside(const vcl::Point3<Scalar>& p) const;
+	bool intersects(const Box3<Scalar>& b) const;
 
-	sht.insert(vcl::Point3d(0.24, 0.52, 0.29));
+private:
+	vcl::Point3<Scalar> c;
+	Scalar r;
+};
 
-	for (const auto& c : sht.nonEmptyCells()) {
-		std::cerr << c << "\n";
-	}
+} // namespace vcl
 
-	std::cerr << "Count: " << sht.countInCell(vcl::Point3<uint>(0,1,2)) << "\n";
+#include "sphere.cpp"
 
-	auto p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto it = p.first; it != p.second; it++) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n";
-
-	sht.erase(vcl::Point3d(0.05, 0.15, 0.25));
-	p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto it = p.first; it != p.second; it++) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n\n";
-
-	auto set  = sht.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.1});
-
-	for (auto it : set) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n\n";
-
-	return 0;
-}
+#endif // VCL_SPACE_SPHERE_H

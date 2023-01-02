@@ -21,54 +21,91 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#include "sphere.h"
 
-#include <vclib/space/grid.h>
-#include <vclib/space/spatial_hash_table.h>
+namespace vcl {
 
-int main()
+template<typename Scalar>
+Sphere<Scalar>::Sphere()
 {
-	vcl::Grid3<double> g(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3<uint>(10, 10, 10));
 
-	vcl::Point3<uint> first(2,2,2), last(5, 4, 7);
-
-	for (const auto& c : g.cells(first, last))
-		std::cerr << c << "\n";
-
-	std::cerr << "\n";
-
-	vcl::SpatialHashTable<vcl::Grid3<double>, vcl::Point<double, 3>> sht(g);
-
-	sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
-	sht.insert(vcl::Point3d(0.02, 0.12, 0.29));
-
-	sht.insert(vcl::Point3d(0.24, 0.52, 0.29));
-
-	for (const auto& c : sht.nonEmptyCells()) {
-		std::cerr << c << "\n";
-	}
-
-	std::cerr << "Count: " << sht.countInCell(vcl::Point3<uint>(0,1,2)) << "\n";
-
-	auto p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto it = p.first; it != p.second; it++) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n";
-
-	sht.erase(vcl::Point3d(0.05, 0.15, 0.25));
-	p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto it = p.first; it != p.second; it++) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n\n";
-
-	auto set  = sht.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.1});
-
-	for (auto it : set) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n\n";
-
-	return 0;
 }
+
+template<typename Scalar>
+Sphere<Scalar>::Sphere(const vcl::Point3<Scalar> &center, Scalar radius) :
+		c(center), r(radius)
+{
+}
+
+template<typename Scalar>
+const Point3<Scalar> &Sphere<Scalar>::center() const
+{
+	return c;
+}
+
+template<typename Scalar>
+Point3<Scalar> &Sphere<Scalar>::center()
+{
+	return c;
+}
+
+template<typename Scalar>
+const Scalar &Sphere<Scalar>::radius() const
+{
+	return r;
+}
+
+template<typename Scalar>
+Scalar &Sphere<Scalar>::radius()
+{
+	return r;
+}
+
+template<typename Scalar>
+Scalar Sphere<Scalar>::diameter() const
+{
+	return 2 * r;
+}
+
+template<typename Scalar>
+Scalar Sphere<Scalar>::circumference() const
+{
+	return 2 * M_PI * r;
+}
+
+template<typename Scalar>
+Scalar Sphere<Scalar>::surfaceArea() const
+{
+	return 4 * M_PI * std::pow(r, 2);
+}
+
+template<typename Scalar>
+Scalar Sphere<Scalar>::volume() const
+{
+	return (4.0 / 3) * M_PI * std::pow(r, 3);
+}
+
+template<typename Scalar>
+bool Sphere<Scalar>::isInside(const vcl::Point3<Scalar>& p) const
+{
+	return c.dist(p) <= r;
+}
+
+template<typename Scalar>
+bool Sphere<Scalar>::intersects(const Box3<Scalar>& b) const
+{
+	Scalar dmin = 0;
+	for(uint i = 0; i < 3; i++) {
+		if(c[i] < b.min[i])
+			dmin += std::sqrt(c[i] - b.min[i]);
+		else
+			if(c[i] > b.max[i] )
+				dmin += std::sqrt(c[i] - b.max[i]);
+	}
+	if(dmin <= std::pow(r, 2))
+		return true;
+	else
+		return false;
+}
+
+} // namespace vcl

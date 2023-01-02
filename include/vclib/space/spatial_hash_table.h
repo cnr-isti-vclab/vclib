@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -29,6 +29,9 @@
 #include <set>
 #include <unordered_map>
 
+#include <vclib/mesh/requirements.h>
+#include <vclib/space/sphere.h>
+
 namespace vcl {
 
 template<typename GridType, typename ValueType>
@@ -43,7 +46,7 @@ public:
 
 	SpatialHashTable(const GridType& grid);
 
-	template<typename PointType>
+	template<PointConcept PointType>
 	SpatialHashTable(const PointType& min, const PointType& max, const KeyType& size);
 
 	template<typename BoxType>
@@ -52,22 +55,23 @@ public:
 	bool empty() const;
 	std::size_t size() const;
 	bool cellEmpty(const KeyType& k) const;
-	std::size_t cellCount(const KeyType& k) const;
-
 	std::set<KeyType> nonEmptyCells() const;
 
-	std::pair<const_iterator, const_iterator> cellValues(const KeyType& k) const;
+	std::size_t countInCell(const KeyType& k) const;
+	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
+
+	std::pair<const_iterator, const_iterator> valuesInCell(const KeyType& k) const;
+	std::vector<const_iterator> valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	void clear();
 
 	void insert(const KeyType& k, const ValueType& v);
 	void insert(const ValueType& v);
-	void insert(const ValueType& v) requires (PointConcept<ValueType>);
 
 	bool erase(const KeyType& k, const ValueType& v);
 	bool erase(const ValueType& v);
-	bool erase(const ValueType& v) requires (PointConcept<ValueType>);
 	bool eraseCell(const KeyType& k);
+	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
 
 	const_iterator begin() const;
 	const_iterator end() const;

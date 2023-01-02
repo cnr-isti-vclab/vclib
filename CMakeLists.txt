@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2022                                                    *
+#* Copyright(C) 2021-2023                                                    *
 #* Alessandro Muntoni                                                        *
 #* VCLab - ISTI - Italian National Research Council                          *
 #*                                                                           *
@@ -261,6 +261,7 @@ set(HEADERS
 	include/vclib/space/principal_curvature.h
 	include/vclib/space/sampler.h
 	include/vclib/space/spatial_hash_table.h
+	include/vclib/space/sphere.h
 	include/vclib/space/tex_coord.h
 	include/vclib/space/array/array_t.h
 	include/vclib/space/array/array2.h
@@ -413,6 +414,7 @@ set(SOURCES
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
 	include/vclib/space/spatial_hash_table.cpp
+	include/vclib/space/sphere.cpp
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/array/array_t.cpp
 	include/vclib/space/array/array2.cpp
