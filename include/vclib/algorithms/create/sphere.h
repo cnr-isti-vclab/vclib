@@ -48,7 +48,7 @@ struct CreateSphereArgs {
 	CreateSphereMode mode      = UV;
 	uint             parallels = 10; // used for mode = UV
 	uint             meridians = 20; // used for mode = UV
-	uint             divisions = 20; // used for mode = NORMALIZED_CUBE or SPHERIFIED_CUBE
+	uint             divisions = 20; // used for mode = NORMALIZED_CUBE, SPHERIFIED_CUBE, ICOSAHEDRON
 };
 
 template<FaceMeshConcept MeshType, typename ScalarType = double>
@@ -59,6 +59,9 @@ MeshType createSphereNormalizedCube(const Sphere<ScalarType>& sp, uint divisions
 
 template<FaceMeshConcept MeshType, typename ScalarType = double>
 MeshType createSphereSpherifiedCube(const Sphere<ScalarType>& sp, uint divisions);
+
+template<FaceMeshConcept MeshType, typename ScalarType = double>
+MeshType createSphereIcosahedron(const Sphere<ScalarType>& sp, uint divisions);
 
 template<FaceMeshConcept MeshType, typename ScalarType = double>
 MeshType createSphere(

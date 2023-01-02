@@ -45,6 +45,9 @@ int main()
 
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply", info);
 
+	m = vcl::createIcosahedron<vcl::TriMesh>(true);
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/icosahedron.ply", info);
+
 	m = vcl::createHexahedron<vcl::TriMesh>();
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/hexahedron.ply", info);
 
@@ -65,6 +68,9 @@ int main()
 
 	pm = vcl::createSphereSpherifiedCube<vcl::PolyMesh>({vcl::Point3d(), 1.0}, 50);
 	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/sphere_poly.ply");
+
+	m = vcl::createSphereIcosahedron<vcl::TriMesh>({vcl::Point3d(), 1.0}, 5);
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/sphere_ico.ply");
 
 	return 0;
 }

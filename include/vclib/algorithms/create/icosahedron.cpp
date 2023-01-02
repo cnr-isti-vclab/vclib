@@ -21,13 +21,62 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CREATE_H
-#define VCL_ALGORITHMS_CREATE_H
+#include "icosahedron.h"
 
-#include "create/dodecahedron.h"
-#include "create/hexahedron.h"
-#include "create/icosahedron.h"
-#include "create/sphere.h"
-#include "create/tetrahedron.h"
+namespace vcl {
 
-#endif // VCL_ALGORITHMS_CREATE_H
+template<FaceMeshConcept MeshType>
+MeshType createIcosahedron(bool normalizeVertices)
+{
+	using VertexType = typename MeshType::VertexType;
+	using CoordType = typename VertexType::CoordType;
+
+	MeshType mesh;
+
+	const double t = (1.0 + std::sqrt(5.0)) / 2.0;
+
+	// Vertices
+	mesh.addVertex(CoordType(-1.0,  t, 0.0));
+	mesh.addVertex(CoordType( 1.0,  t, 0.0));
+	mesh.addVertex(CoordType(-1.0, -t, 0.0));
+	mesh.addVertex(CoordType( 1.0, -t, 0.0));
+	mesh.addVertex(CoordType(0.0, -1.0,  t));
+	mesh.addVertex(CoordType(0.0,  1.0,  t));
+	mesh.addVertex(CoordType(0.0, -1.0, -t));
+	mesh.addVertex(CoordType(0.0,  1.0, -t));
+	mesh.addVertex(CoordType( t, 0.0, -1.0));
+	mesh.addVertex(CoordType( t, 0.0,  1.0));
+	mesh.addVertex(CoordType(-t, 0.0, -1.0));
+	mesh.addVertex(CoordType(-t, 0.0,  1.0));
+
+	if (normalizeVertices) {
+		for (VertexType& v : mesh.vertices())
+			v.coord().normalize();
+	}
+
+	// Faces
+	mesh.addFace(0, 11, 5);
+	mesh.addFace(0, 5, 1);
+	mesh.addFace(0, 1, 7);
+	mesh.addFace(0, 7, 10);
+	mesh.addFace(0, 10, 11);
+	mesh.addFace(1, 5, 9);
+	mesh.addFace(5, 11, 4);
+	mesh.addFace(11, 10, 2);
+	mesh.addFace(10, 7, 6);
+	mesh.addFace(7, 1, 8);
+	mesh.addFace(3, 9, 4);
+	mesh.addFace(3, 4, 2);
+	mesh.addFace(3, 2, 6);
+	mesh.addFace(3, 6, 8);
+	mesh.addFace(3, 8, 9);
+	mesh.addFace(4, 9, 5);
+	mesh.addFace(2, 4, 11);
+	mesh.addFace(6, 2, 10);
+	mesh.addFace(8, 6, 7);
+	mesh.addFace(9, 8, 1);
+
+	return mesh;
+}
+
+} // namespace vcl

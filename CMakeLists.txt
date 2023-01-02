@@ -64,6 +64,7 @@ set(HEADERS
 	include/vclib/algorithms/update.h
 	include/vclib/algorithms/create/dodecahedron.h
 	include/vclib/algorithms/create/hexahedron.h
+	include/vclib/algorithms/create/icosahedron.h
 	include/vclib/algorithms/create/sphere.h
 	include/vclib/algorithms/create/tetrahedron.h
 	include/vclib/algorithms/stat/bounding_box.h
@@ -297,6 +298,7 @@ set(SOURCES
 	include/vclib/algorithms/stat.cpp
 	include/vclib/algorithms/create/dodecahedron.cpp
 	include/vclib/algorithms/create/hexahedron.cpp
+	include/vclib/algorithms/create/icosahedron.cpp
 	include/vclib/algorithms/create/sphere.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
 	include/vclib/algorithms/stat/bounding_box.cpp

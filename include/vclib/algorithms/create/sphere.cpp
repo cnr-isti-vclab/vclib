@@ -23,6 +23,9 @@
 
 #include "sphere.h"
 
+#include "icosahedron.h"
+
+#include <vclib/algorithms/clean.h>
 #include <vclib/algorithms/update.h>
 
 namespace vcl {
@@ -248,6 +251,49 @@ MeshType createSphereSpherifiedCube(const Sphere<ScalarType>& sp, uint divisions
 	return mesh;
 }
 
+template<FaceMeshConcept MeshType, typename ScalarType>
+MeshType createSphereIcosahedron(const Sphere<ScalarType>& sp, uint divisions)
+{
+	using VertexType = typename MeshType::VertexType;
+	using CoordType = typename VertexType::CoordType;
+	using FaceType = typename MeshType::FaceType;
+
+	MeshType mesh = vcl::createIcosahedron<MeshType>(true);
+
+	for (uint d = 0; d < divisions; d++) {
+
+		uint nf = mesh.faceNumber();
+		for (uint f = 0; f < nf; f++) {
+			FaceType& f0 = mesh.face(f);
+			VertexType& v0 = *f0.vertex(0);
+			VertexType& v1 = *f0.vertex(1);
+			VertexType& v2 = *f0.vertex(2);
+			uint v1id = mesh.index(v1);
+			uint v2id = mesh.index(v2);
+
+			CoordType pa = (v0.coord() + v1.coord()); pa.normalize();
+			CoordType pb = (v1.coord() + v2.coord()); pb.normalize();
+			CoordType pc = (v2.coord() + v0.coord()); pc.normalize();
+			uint vaid = mesh.addVertex(pa);
+			uint vbid = mesh.addVertex(pb);
+			uint vcid = mesh.addVertex(pc);
+
+			f0.vertex(1) = &mesh.vertex(vaid);
+			f0.vertex(2) = &mesh.vertex(vcid);
+			mesh.addFace(vaid, v1id, vbid);
+			mesh.addFace(vcid, vbid, v2id);
+			mesh.addFace(vaid, vbid, vcid);
+		}
+	}
+
+	vcl::removeDuplicatedVertices(mesh);
+
+	vcl::scale(mesh, sp.radius());
+	vcl::translate(mesh, sp.center());
+
+	return mesh;
+}
+
 /**
  * @brief Creates a Sphere Mesh centered in `center` point and having radius `radius`, using
  * the generation method given in the argument args.mode (see https://github.com/caosdoar/spheres
@@ -272,6 +318,7 @@ MeshType createSphere(const Sphere<ScalarType>& sp, const CreateSphereArgs& args
 		m = createSphereSpherifiedCube<MeshType>(sp, args.divisions);
 		break;
 	case CreateSphereArgs::ICOSAHEDRON:
+		m = createSphereIcosahedron<MeshType>(sp, args.divisions);
 		break;
 	}
 

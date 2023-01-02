@@ -21,13 +21,18 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CREATE_H
-#define VCL_ALGORITHMS_CREATE_H
+#ifndef VCL_ALGORITHMS_CREATE_ICOSAHEDRON_H
+#define VCL_ALGORITHMS_CREATE_ICOSAHEDRON_H
 
-#include "create/dodecahedron.h"
-#include "create/hexahedron.h"
-#include "create/icosahedron.h"
-#include "create/sphere.h"
-#include "create/tetrahedron.h"
+#include <vclib/mesh/requirements.h>
 
-#endif // VCL_ALGORITHMS_CREATE_H
+namespace vcl {
+
+template<FaceMeshConcept MeshType>
+MeshType createIcosahedron(bool normalizeVertices = false);
+
+} // namespace vcl
+
+#include "icosahedron.cpp"
+
+#endif // VCL_ALGORITHMS_CREATE_ICOSAHEDRON_H
