@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -29,10 +29,17 @@
 namespace vcl::comp {
 
 /**
- * @brief HasAdjacentEdges concept
+ * @brief HasAdjacentEdges concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to
+ * an AdjacentEdges component of a given element.
  *
- * This concept is satisfied only if a class provides the types and member functions specified in
- * this concept.
+ * Note that this concept does not discriminate between the Horizontal AdjacentEdges component and
+ * the vertical OptionalAdjacentEdges component, therefore it does not guarantee that a template
+ * Element type that satisfies this concept provides AdjacentEdges component at runtime (it is
+ * guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that AdjacentEdges is available at runtime, you need to call the member
+ * function `isAdjEdgesEnabled()`.
  */
 template<typename T>
 concept HasAdjacentEdges = requires(
@@ -41,13 +48,13 @@ concept HasAdjacentEdges = requires(
 	typename T::AdjacentEdgeType e,
 	std::vector<typename T::AdjacentEdgeType*> v)
 {
+	T::ADJ_EDGE_NUMBER;
 	typename T::AdjacentEdgeType;
 	typename T::AdjacentEdgeIterator;
 	typename T::ConstAdjacentEdgeIterator;
 	typename T::AdjacentEdgeRangeIterator;
 	typename T::ConstAdjacentEdgeRangeIterator;
 
-	T::ADJ_EDGE_NUMBER;
 	{ o.adjEdgesNumber() } -> std::same_as<uint>;
 	{ o.adjEdge(uint()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
 	{ co.adjEdge(uint()) } -> std::same_as<const typename T::AdjacentEdgeType*>;
@@ -56,14 +63,25 @@ concept HasAdjacentEdges = requires(
 	{ o.setAdjEdge(&e, uint()) } -> std::same_as<void>;
 	{ o.setAdjEdges(v) } -> std::same_as<void>;
 	{ co.containsAdjEdge(&e) } -> std::same_as<bool>;
+
+	{ o.findAdjEdge(&e) } -> std::same_as<typename T::AdjacentEdgeIterator>;
+	{ co.findAdjEdge(&e) } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
+	{ co.indexOfAdjEdge(&e) } -> std::same_as<int>;
+	{ co.isAdjEdgesEnabled() } -> std::same_as<bool>;
+
+	{ o.adjEdgeBegin() } -> std::same_as<typename T::AdjacentEdgeIterator>;
+	{ o.adjEdgeEnd() } -> std::same_as<typename T::AdjacentEdgeIterator>;
+	{ co.adjEdgeBegin() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
+	{ co.adjEdgeEnd() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
+	{ o.adjEdges() } -> std::same_as<typename T::AdjacentEdgeRangeIterator>;
+	{ co.adjEdges() } -> std::same_as<typename T::ConstAdjacentEdgeRangeIterator>;
 };
 
 /**
  * @brief HasOptionalAdjacentEdges concept
  *
- * This concept is satisfied only if a class has two member functions:
- * - 'adjEdgesNumber()' which returns an uint
- * - '__optionalAdjEdges()'
+ * This concept is satisfied only if a class satisfies the HasAdjacentEdges concept and has
+ * the additional member function '__optionalAdjEdges()'
  */
 template<typename T>
 concept HasOptionalAdjacentEdges = HasAdjacentEdges<T> && requires(T o)
