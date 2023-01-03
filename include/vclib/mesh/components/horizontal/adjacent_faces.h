@@ -56,11 +56,11 @@ class AdjacentFaces : protected internal::ElementReferences<Face, N>
 	using Base = internal::ElementReferences<Face, N>;
 
 public:
-	using AdjacentFaceType = Face;
-
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjFacesNumber() member function.
 	static const int ADJ_FACE_NUMBER = Base::CONTAINER_SIZE;
+
+	using AdjacentFaceType = Face;
 
 	/* Iterator Types declaration */
 

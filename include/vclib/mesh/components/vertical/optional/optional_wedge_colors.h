@@ -57,10 +57,10 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	static const int WEDGE_COLOR_NUMBER = N;
+
 	// possibility to access to the WedgeColors class, whether is optional or not.
 	using WedgeColors = OptionalWedgeColors;
-
-	static const int WEDGE_COLOR_NUMBER = N;
 
 	/* Iterator Types declaration */
 

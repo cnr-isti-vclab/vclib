@@ -55,12 +55,12 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	static const int ADJ_FACE_NUMBER = N;
+
 	using AdjacentFaceType = Face;
 
 	// possibility to access to the AdjacentFaces class, whether is optional or not.
 	using AdjacentFaces = OptionalAdjacentFaces;
-
-	static const int ADJ_FACE_NUMBER = N;
 
 	/* Iterator Types declaration */
 

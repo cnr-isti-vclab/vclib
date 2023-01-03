@@ -38,9 +38,9 @@ class WedgeTexCoords :
 	using Base = internal::GenericContainer<vcl::TexCoord<Scalar>, N>;
 
 public:
-	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
-
 	static const int WEDGE_TEX_COORD_NUMBER = Base::CONTAINER_SIZE;
+
+	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 
 	/* Iterator Types declaration */
 

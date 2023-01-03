@@ -57,12 +57,12 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
-	// possibility to access to the WedgeTexCoords class, whether is optional or not.
-	using WedgeTexCoords = OptionalWedgeTexCoords;
+	static const int WEDGE_TEX_COORD_NUMBER = N;
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 
-	static const int WEDGE_TEX_COORD_NUMBER = N;
+	// possibility to access to the WedgeTexCoords class, whether is optional or not.
+	using WedgeTexCoords = OptionalWedgeTexCoords;
 
 	/** Iterator Types declaration **/
 

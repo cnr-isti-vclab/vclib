@@ -55,12 +55,12 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	static const int ADJ_EDGE_NUMBER = N;
+
 	using AdjacentEdgeType = Edge;
 
 	// possibility to access to the AdjacentEdges class, whether is optional or not.
 	using AdjacentEdges = OptionalAdjacentEdges;
-
-	static const int ADJ_EDGE_NUMBER = N;
 
 	/* Iterator Types declaration */
 
