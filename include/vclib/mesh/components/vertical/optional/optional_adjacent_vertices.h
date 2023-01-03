@@ -51,11 +51,10 @@ private:
 	uint thisId() const { return B::index((T*)this); }
 
 public:
+	using AdjacentVertexType = Vertex;
+
 	// possibility to access to the AdjacentVertices class, whether is optional or not.
 	using AdjacentVertices = OptionalAdjacentVertices;
-
-	// the AdjVertsContainer type will be array or vector, depending on N value
-	using AdjVertsContainer = std::vector<Vertex*>;
 
 	/* Iterator Types declaration */
 

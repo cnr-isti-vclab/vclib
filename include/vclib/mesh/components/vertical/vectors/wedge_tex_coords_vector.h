@@ -30,6 +30,17 @@
 
 namespace vcl::internal {
 
+// the WedgeTexCoordsContainer is a pair Container - short
+// the Container will be array or vector, depending on N value
+// short is the index of the texture used by the current container of wedge texcoords
+template<typename TCT, int N>
+using WedgeTexCoordsContainer =
+	std::pair<
+		typename std::conditional<(N >= 0),
+				typename std::array<TCT, N >= 0 ? N : 0>,
+				typename std::vector<TCT>>::type,
+		short>;
+
 template<typename>
 class WedgeTexCoordsVector
 {
@@ -42,10 +53,13 @@ public:
 };
 
 template<comp::HasOptionalWedgeTexCoords T>
-class WedgeTexCoordsVector<T> : private GenericComponentVector<typename T::WedgeTexCoordsContainer>
+class WedgeTexCoordsVector<T> :
+		private GenericComponentVector<
+			WedgeTexCoordsContainer<
+				typename T::WedgeTexCoordType, T::WEDGE_TEX_COORD_NUMBER>>
 {
-	using WedgeTexCoordsContainer = typename T::WedgeTexCoordsContainer;
-	using Base                    = GenericComponentVector<WedgeTexCoordsContainer>;
+	using Container = WedgeTexCoordsContainer<typename T::WedgeTexCoordType, T::WEDGE_TEX_COORD_NUMBER>;
+	using Base      = GenericComponentVector<Container>;
 
 public:
 	using Base::clear;
@@ -57,8 +71,8 @@ public:
 	void enableWedgeTexCoords(uint size) { Base::enable(size); }
 	void disableWedgeTexCoords() { Base::disable(); }
 
-	WedgeTexCoordsContainer&       wedgeTexCoords(uint i) { return Base::at(i); }
-	const WedgeTexCoordsContainer& wedgeTexCoords(uint i) const { return Base::at(i); }
+	Container&       wedgeTexCoords(uint i) { return Base::at(i); }
+	const Container& wedgeTexCoords(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

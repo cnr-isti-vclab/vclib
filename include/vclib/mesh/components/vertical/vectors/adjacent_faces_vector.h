@@ -30,6 +30,13 @@
 
 namespace vcl::internal {
 
+// the AdjFacesContainer type will be array or vector, depending on N value
+template<typename F, int N>
+using AdjFacesContainer = typename std::conditional<
+	(N >= 0),
+	typename std::array<F*, N >= 0 ? N : 0>,
+	typename std::vector<F*>>::type;
+
 template<typename>
 class AdjacentFacesVector
 {
@@ -42,11 +49,13 @@ public:
 };
 
 template<comp::HasOptionalAdjacentFaces T>
-class AdjacentFacesVector<T> : private GenericComponentVector<typename T::AdjFacesContainer>
+class AdjacentFacesVector<T> :
+		private GenericComponentVector<
+			AdjFacesContainer<typename T::AdjacentFaceType, T::ADJ_FACE_NUMBER>>
 {
 private:
-	using AdjFacesContainer = typename T::AdjFacesContainer;
-	using Base              = GenericComponentVector<AdjFacesContainer>;
+	using Container = AdjFacesContainer<typename T::AdjacentFaceType, T::ADJ_FACE_NUMBER>;
+	using Base      = GenericComponentVector<Container>;
 
 public:
 	using Base::clear;
@@ -58,8 +67,8 @@ public:
 	void enableAdjacentFaces(uint size) { Base::enable(size); }
 	void disableAdjacentFaces() { Base::disable(); }
 
-	AdjFacesContainer&       adjFaces(uint i) { return Base::at(i); }
-	const AdjFacesContainer& adjFaces(uint i) const { return Base::at(i); }
+	Container&       adjFaces(uint i) { return Base::at(i); }
+	const Container& adjFaces(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

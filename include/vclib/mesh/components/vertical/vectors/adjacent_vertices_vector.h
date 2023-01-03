@@ -42,10 +42,12 @@ public:
 };
 
 template<comp::HasOptionalAdjacentVertices T>
-class AdjacentVerticesVector<T> : private GenericComponentVector<typename T::AdjVertsContainer>
+class AdjacentVerticesVector<T> :
+		private GenericComponentVector<
+			std::vector<typename T::AdjacentVertexType*>>
 {
 private:
-	using AdjVertsContainer = typename T::AdjVertsContainer;
+	using AdjVertsContainer = std::vector<typename T::AdjacentVertexType*>;
 	using Base = GenericComponentVector<AdjVertsContainer>;
 
 public:

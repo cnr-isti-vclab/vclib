@@ -55,14 +55,10 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	using AdjacentEdgeType = Edge;
+
 	// possibility to access to the AdjacentEdges class, whether is optional or not.
 	using AdjacentEdges = OptionalAdjacentEdges;
-
-	// the AdjEdgesContainer type will be array or vector, depending on N value
-	using AdjEdgesContainer = typename std::conditional<
-		(N >= 0),
-		typename std::array<Edge*, ARRAY_SIZE>,
-		typename std::vector<Edge*>>::type;
 
 	static const int ADJ_EDGE_NUMBER = N;
 

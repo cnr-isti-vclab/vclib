@@ -62,16 +62,6 @@ public:
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 
-	// the WedgeTexCoordsContainer is a pair Container - short
-	// the Container will be array or vector, depending on N value
-	// short is the index of the texture used by the current container of wedge texcoords
-	using WedgeTexCoordsContainer =
-		std::pair<
-			typename std::conditional<(N >= 0),
-				typename std::array<vcl::TexCoord<Scalar>, ARRAY_SIZE>,
-				typename std::vector<vcl::TexCoord<Scalar>>>::type,
-			short>;
-
 	static const int WEDGE_TEX_COORD_NUMBER = N;
 
 	/** Iterator Types declaration **/

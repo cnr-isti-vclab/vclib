@@ -56,6 +56,7 @@ class AdjacentEdges : protected internal::ElementReferences<Edge, N>
 	using Base = internal::ElementReferences<Edge, N>;
 
 public:
+	using AdjacentEdgeType = Edge;
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjEdgesNumber() member function.
 	static const int ADJ_EDGE_NUMBER = Base::CONTAINER_SIZE;

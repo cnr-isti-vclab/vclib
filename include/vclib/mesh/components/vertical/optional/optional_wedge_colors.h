@@ -60,12 +60,6 @@ public:
 	// possibility to access to the WedgeColors class, whether is optional or not.
 	using WedgeColors = OptionalWedgeColors;
 
-	// the WedgeColorsContainer type will be array or vector, depending on N value
-	using WedgeColorsContainer = typename std::conditional<
-		(N >= 0),
-		typename std::array<vcl::Color, ARRAY_SIZE>,
-		typename std::vector<vcl::Color>>::type;
-
 	static const int WEDGE_COLOR_NUMBER = N;
 
 	/* Iterator Types declaration */

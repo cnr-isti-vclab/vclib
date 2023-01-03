@@ -52,6 +52,8 @@ class AdjacentVertices : protected internal::ElementReferences<Vertex, -1>
 	using Base = internal::ElementReferences<Vertex, -1>;
 
 public:
+	using AdjacentVertexType = Vertex;
+
 	/* Iterator Types declaration */
 
 	using AdjacentVertexIterator           = typename Base::GCIterator;

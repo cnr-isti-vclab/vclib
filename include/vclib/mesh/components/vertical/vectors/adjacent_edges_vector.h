@@ -30,6 +30,13 @@
 
 namespace vcl::internal {
 
+// the AdjEdgesContainer type will be array or vector, depending on N value
+template<typename E, int N>
+using AdjEdgesContainer = typename std::conditional<
+	(N >= 0),
+	typename std::array<E*, N >= 0 ? N : 0>,
+	typename std::vector<E*>>::type;
+
 template<typename>
 class AdjacentEdgesVector
 {
@@ -42,11 +49,16 @@ public:
 };
 
 template<comp::HasOptionalAdjacentEdges T>
-class AdjacentEdgesVector<T> : private GenericComponentVector<typename T::AdjEdgesContainer>
+class AdjacentEdgesVector<T> :
+		private GenericComponentVector<
+			AdjEdgesContainer<typename T::AdjacentEdgeType, T::ADJ_EDGE_NUMBER>>
 {
 private:
-	using AdjEdgesContainer = typename T::AdjEdgesContainer;
-	using Base              = GenericComponentVector<AdjEdgesContainer>;
+	// the base class is a GenericComponentVector of Array/Vectors of Edge pointers
+	// each Array/Vector of the GenericComponentVector is the list of the Edges adjacent to T,
+	// which is the current elemeent
+	using Container = AdjEdgesContainer<typename T::AdjacentEdgeType, T::ADJ_EDGE_NUMBER>;
+	using Base      = GenericComponentVector<Container>;
 
 public:
 	using Base::clear;
@@ -58,8 +70,8 @@ public:
 	void enableAdjacentEdges(uint size) { Base::enable(size); }
 	void disableAdjacentEdges() { Base::disable(); }
 
-	AdjEdgesContainer&       adjEdges(uint i) { return Base::at(i); }
-	const AdjEdgesContainer& adjEdges(uint i) const { return Base::at(i); }
+	Container&       adjEdges(uint i) { return Base::at(i); }
+	const Container& adjEdges(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

@@ -31,13 +31,31 @@ namespace vcl::comp {
 /**
  * @brief HasAdjacentEdges concept
  *
- * This concept is satisfied only if a class has a member function 'adjEdgesNumber()' which returns
- * an uint
+ * This concept is satisfied only if a class provides the types and member functions specified in
+ * this concept.
  */
 template<typename T>
-concept HasAdjacentEdges = requires(T o)
+concept HasAdjacentEdges = requires(
+	T o,
+	const T& co,
+	typename T::AdjacentEdgeType e,
+	std::vector<typename T::AdjacentEdgeType*> v)
 {
+	typename T::AdjacentEdgeType;
+	typename T::AdjacentEdgeIterator;
+	typename T::ConstAdjacentEdgeIterator;
+	typename T::AdjacentEdgeRangeIterator;
+	typename T::ConstAdjacentEdgeRangeIterator;
+
+	T::ADJ_EDGE_NUMBER;
 	{ o.adjEdgesNumber() } -> std::same_as<uint>;
+	{ o.adjEdge(uint()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
+	{ co.adjEdge(uint()) } -> std::same_as<const typename T::AdjacentEdgeType*>;
+	{ o.adjEdgeMod(int()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
+	{ co.adjEdgeMod(int()) } -> std::same_as<const typename T::AdjacentEdgeType*>;
+	{ o.setAdjEdge(&e, uint()) } -> std::same_as<void>;
+	{ o.setAdjEdges(v) } -> std::same_as<void>;
+	{ co.containsAdjEdge(&e) } -> std::same_as<bool>;
 };
 
 /**
