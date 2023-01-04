@@ -78,10 +78,9 @@ concept HasAdjacentEdges = requires(
 };
 
 /**
- * @brief HasOptionalAdjacentEdges concept
- *
- * This concept is satisfied only if a class satisfies the HasAdjacentEdges concept and has
- * the additional member function '__optionalAdjEdges()'
+ * @brief HasOptionalAdjacentEdges concept is satisfied only if a class satisfies the
+ * HasAdjacentEdges concept and has the additional member function '__optionalAdjEdges()', which is
+ * the discriminator between the non-optional and optional component.
  */
 template<typename T>
 concept HasOptionalAdjacentEdges = HasAdjacentEdges<T> && requires(T o)
@@ -108,7 +107,7 @@ concept HasRightNumberOfAdjacentEdges = T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
  * be consistent w.r.t. the number of vertices of the face.
  *
  * It is satisfied if:
- * - the component does *not* have adjacent edges;
+ * - the component does *not* have adjacent edges, or
  * - in case it has adjacent edges, they have the same number of vertices of the face.
  */
 template<typename T>

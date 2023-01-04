@@ -29,24 +29,59 @@
 namespace vcl::comp {
 
 /**
- * @brief HasAdjacentVertices concept
+ * @brief HasAdjacentVertices concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to
+ * an AdjacentVertices component of a given element.
  *
- * This concept is satisfied only if a class has a member function 'adjVerticesNumber()' which
- * returns an uint
+ * Note that this concept does not discriminate between the Horizontal AdjacentVertices component and
+ * the vertical OptionalAdjacentVertices component, therefore it does not guarantee that a template
+ * Element type that satisfies this concept provides AdjacentVertices component at runtime (it is
+ * guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that AdjacentVertices is available at runtime, you need to call the member
+ * function `isAdjVerticesEnabled()`.
  */
 template<typename T>
-concept HasAdjacentVertices = requires(T o)
+concept HasAdjacentVertices = requires(
+	T o,
+	const T& co,
+	typename T::AdjacentVertexType v,
+	std::vector<typename T::AdjacentVertexType*> vec)
 {
+	typename T::AdjacentVertexType;
+	typename T::AdjacentVertexIterator;
+	typename T::ConstAdjacentVertexIterator;
+	typename T::AdjacentVertexRangeIterator;
+	typename T::ConstAdjacentVertexRangeIterator;
+
 	{ o.adjVerticesNumber() } -> std::same_as<uint>;
+	{ o.adjVertex(uint()) } -> std::same_as<typename T::AdjacentVertexType*&>;
+	{ co.adjVertex(uint()) } -> std::same_as<const typename T::AdjacentVertexType*>;
+	{ o.adjVertexMod(int()) } -> std::same_as<typename T::AdjacentVertexType*&>;
+	{ co.adjVertexMod(int()) } -> std::same_as<const typename T::AdjacentVertexType*>;
+	{ o.setAdjVertex(&v, uint()) } -> std::same_as<void>;
+	{ o.setAdjVertices(vec) } -> std::same_as<void>;
+	{ co.containsAdjVertex(&v) } -> std::same_as<bool>;
+
+	{ o.findAdjVertex(&v) } -> std::same_as<typename T::AdjacentVertexIterator>;
+	{ co.findAdjVertex(&v) } -> std::same_as<typename T::ConstAdjacentVertexIterator>;
+	{ co.indexOfAdjVertex(&v) } -> std::same_as<int>;
+	{ co.isAdjVerticesEnabled() } -> std::same_as<bool>;
+
+	{ o.adjVertexBegin() } -> std::same_as<typename T::AdjacentVertexIterator>;
+	{ o.adjVertexEnd() } -> std::same_as<typename T::AdjacentVertexIterator>;
+	{ co.adjVertexBegin() } -> std::same_as<typename T::ConstAdjacentVertexIterator>;
+	{ co.adjVertexEnd() } -> std::same_as<typename T::ConstAdjacentVertexIterator>;
+	{ o.adjVertices() } -> std::same_as<typename T::AdjacentVertexRangeIterator>;
+	{ co.adjVertices() } -> std::same_as<typename T::ConstAdjacentVertexRangeIterator>;
 };
 
 /**
- * @brief HasAdjacentVerticesComponent concept
- *
- * This concept is used to discriminate between the AdjacentVertices (or OptionalAdjacentVertices)
- * component, and the VertexHalfEdgeReferences component, which using half edges allows to access
- * to adjacent vertices. This concept is intended only for internal use, useful to check that a
- * Vertex does not have both AdjacentVertices and VertexHalfEdgeReferences components.
+ * @brief HasAdjacentVerticesComponent concept is used to discriminate between the AdjacentVertices
+ * (or OptionalAdjacentVertices) component, and the VertexHalfEdgeReferences component, which using
+ * half edges allows to access to adjacent vertices. This concept is intended only for internal use,
+ * useful to check that a Vertex does not have both AdjacentVertices and VertexHalfEdgeReferences
+ * components.
  */
 template<typename T>
 concept HasAdjacentVerticesComponent = requires(T o)
@@ -56,11 +91,9 @@ concept HasAdjacentVerticesComponent = requires(T o)
 };
 
 /**
- * @brief HasOptionalAdjacentVertices concept
- *
- * This concept is satisfied only if a class has two member functions:
- * - 'adjVerticesNumber()' which returns an uint
- * - '__optionalAdjVertices()'
+ * @brief HasOptionalAdjacentVertices concept is satisfied only if a class satisfies the
+ * HasAdjacentVertices concept and has the additional member function '__optionalAdjVertices()',
+ * which is the discriminator between the non-optional and optional component.
  */
 template<typename T>
 concept HasOptionalAdjacentVertices = HasAdjacentVertices<T> && requires(T o)

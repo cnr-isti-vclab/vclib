@@ -29,24 +29,60 @@
 namespace vcl::comp {
 
 /**
- * @brief HasAdjacentFaces concept
+ * @brief HasAdjacentFaces concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to
+ * an AdjacentFaces component of a given element.
  *
- * This concept is satisfied only if a class has a member function 'adjFacesNumber()' which returns
- * an uint
+ * Note that this concept does not discriminate between the Horizontal AdjacentFaces component and
+ * the vertical OptionalAdjacentFaces component, therefore it does not guarantee that a template
+ * Element type that satisfies this concept provides AdjacentFaces component at runtime (it is
+ * guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that AdjacentFaces is available at runtime, you need to call the member
+ * function `isAdjFacesEnabled()`.
  */
 template<typename T>
-concept HasAdjacentFaces = requires(T o)
+concept HasAdjacentFaces = requires(
+	T o,
+	const T& co,
+	typename T::AdjacentFaceType f,
+	std::vector<typename T::AdjacentFaceType*> v)
 {
+	T::ADJ_FACE_NUMBER;
+	typename T::AdjacentFaceType;
+	typename T::AdjacentFaceIterator;
+	typename T::ConstAdjacentFaceIterator;
+	typename T::AdjacentFaceRangeIterator;
+	typename T::ConstAdjacentFaceRangeIterator;
+
 	{ o.adjFacesNumber() } -> std::same_as<uint>;
+	{ o.adjFace(uint()) } -> std::same_as<typename T::AdjacentFaceType*&>;
+	{ co.adjFace(uint()) } -> std::same_as<const typename T::AdjacentFaceType*>;
+	{ o.adjFaceMod(int()) } -> std::same_as<typename T::AdjacentFaceType*&>;
+	{ co.adjFaceMod(int()) } -> std::same_as<const typename T::AdjacentFaceType*>;
+	{ o.setAdjFace(&f, uint()) } -> std::same_as<void>;
+	{ o.setAdjFaces(v) } -> std::same_as<void>;
+	{ co.containsAdjFace(&f) } -> std::same_as<bool>;
+
+	{ o.findAdjFace(&f) } -> std::same_as<typename T::AdjacentFaceIterator>;
+	{ co.findAdjFace(&f) } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
+	{ co.indexOfAdjFace(&f) } -> std::same_as<int>;
+	{ co.isAdjFacesEnabled() } -> std::same_as<bool>;
+
+	{ o.adjFaceBegin() } -> std::same_as<typename T::AdjacentFaceIterator>;
+	{ o.adjFaceEnd() } -> std::same_as<typename T::AdjacentFaceIterator>;
+	{ co.adjFaceBegin() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
+	{ co.adjFaceEnd() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
+	{ o.adjFaces() } -> std::same_as<typename T::AdjacentFaceRangeIterator>;
+	{ co.adjFaces() } -> std::same_as<typename T::ConstAdjacentFaceRangeIterator>;
 };
 
 /**
- * @brief HasAdjacentFacesComponent concept
- *
- * This concept is used to discriminate between the AdjacentFaces (or OptionalAdjacentFaces)
- * component, and the FaceHalfEdgeReferences component, which using half edges allows to access
- * to adjacent faces. This concept is intended only for internal use, useful to check that a Face
- * does not have both AdjacentFaces and FaceHalfEdgeReferences components.
+ * @brief HasAdjacentFacesComponent concept is used to discriminate between the AdjacentFaces (or
+ * OptionalAdjacentFaces) component, and the FaceHalfEdgeReferences component, which using half
+ * edges in a Dcel Mesh data structure, allows to access to adjacent faces. This concept is intended
+ * only for internal use, useful to check that a Face does not have both AdjacentFaces and
+ * FaceHalfEdgeReferences components.
  */
 template<typename T>
 concept HasAdjacentFacesComponent = requires(T o)
@@ -56,11 +92,9 @@ concept HasAdjacentFacesComponent = requires(T o)
 };
 
 /**
- * @brief HasOptionalAdjacentFaces concept
- *
- * This concept is satisfied only if a class has two member functions:
- * - 'adjFacesNumber()' which returns an uint
- * - '__optionalAdjFaces()'
+ * @brief HasOptionalAdjacentFaces concept is satisfied only if a class satisfies the
+ * HasAdjacentFaces concept and has the additional member function '__optionalAdjFaces()', which is
+ * the discriminator between the non-optional and optional component.
  */
 template<typename T>
 concept HasOptionalAdjacentFaces = HasAdjacentFaces<T> && requires(T o)

@@ -69,6 +69,7 @@ public:
 	 * for more details about this paradigm, check polimorphism clone in modern c++:
 	 * https://www.fluentcpp.com/2017/09/08/make-polymorphic-copy-modern-cpp/
 	 */
+	[[nodiscard("You should assign and manage the pointer to the newly created object")]]
 	virtual DrawableObject* clone() const = 0;
 
 	virtual bool isVisible() const = 0;
