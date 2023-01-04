@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -29,23 +29,33 @@
 namespace vcl::comp {
 
 /**
- * @brief HasTexCoord concept
+ * @brief HasTexCoord concept is satisfied only if a Element class provides the types and member
+ * functions specified in this concept. These types and member functions allow to access to a
+ * TexCoord component of a given element.
  *
- * This concept is satisfied only if a class has a member function that 'texCoord()'
+ * Note that this concept does not discriminate between the Horizontal TexCoord component
+ * and the vertical OptionalTexCoord component, therefore it does not guarantee that a
+ * template Element type that satisfies this concept provides TexCoord component at runtime
+ * (it is guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that TexCoord is available at runtime, you need to call the member
+ * function `isTexCoordEnabled()`.
  */
 template<typename T>
-concept HasTexCoord = requires(T o)
+concept HasTexCoord = requires(
+	T o,
+	const T& co)
 {
 	typename T::TexCoordType;
-	o.texCoord();
+	{ o.texCoord() } -> std::same_as<typename T::TexCoordType&>;
+	{ co.texCoord() } -> std::same_as<const typename T::TexCoordType&>;
+	{ co.isTexCoordEnabled() } -> std::same_as<bool>;
 };
 
 /**
- * @brief HasOptionalTexCoord concept
- *
- * This concept is satisfied only if a class has two member functions:
- * - 'texCoord()' which returns an int&
- * - '__optionalTexCoord()'
+ * @brief HasOptionalTexCoord concept is satisfied only if a class satisfis the HasTexCoord concept
+ * and has the additional member function '__optionalTexCoord()', which is the discriminator between
+ * the non-optional and optional component.
  */
 template<typename T>
 concept HasOptionalTexCoord = HasTexCoord<T> && requires(T o)

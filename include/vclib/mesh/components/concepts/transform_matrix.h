@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -29,15 +29,18 @@
 namespace vcl::comp {
 
 /**
- * @brief HasTransformMatrix concept
- *
- * This concept is satisfied only if a class has a member function 'transformMatrix()'.
+ * @brief HasTransformMatrix concept is satisfied only if a Element or Mesh class provides the
+ * member functions specified in this concept. These member functions allows to access to a
+ * TransformMatrix component of a given element/mesh.
  */
 template<typename T>
-concept HasTransformMatrix = requires(T o)
+concept HasTransformMatrix = requires(
+	T o,
+	const T& co)
 {
 	typename T::TransformMatrixType;
-	o.transformMatrix();
+	{ co.transformMatrix() } -> std::same_as<const typename T::TransformMatrixType&>;
+	{ o.transformMatrix() } -> std::same_as<typename T::TransformMatrixType&>;
 };
 
 } // namespace vcl::comp
