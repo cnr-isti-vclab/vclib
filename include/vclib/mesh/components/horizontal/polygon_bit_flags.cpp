@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -86,6 +86,11 @@ inline bool PolygonBitFlags::isAnyEdgeOnBorder() const
 		if (isEdgeOnBorder(i))
 			return true;
 	return false;
+}
+
+inline bool PolygonBitFlags::isOnBorder() const
+{
+	return isAnyEdgeOnBorder();
 }
 
 /**
