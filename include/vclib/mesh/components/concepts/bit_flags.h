@@ -28,12 +28,6 @@
 
 namespace vcl::comp {
 
-#ifndef __APPLE__
-class BitFlags;
-class PolygonBitFlags;
-class TriangleBitFlags;
-#endif
-
 /**
  * @brief HasBitFlags concept is satisfied only if a Element class provides the member functions
  * specified in this concept. These member functions allows to access to a BitFlag component of a
