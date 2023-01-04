@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -30,15 +30,19 @@
 namespace vcl::comp {
 
 /**
- * @brief HasCustomComponents concept
- *
- * This concept is satisfied only if a class has a member function 'hasCustomComponent(string)'
- * which returns a bool
+ * @brief HasCustomComponents concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to a
+ * CustomComponents component of a given element.
  */
 template<typename T>
-concept HasCustomComponents = requires(T o)
+concept HasCustomComponents = requires(
+	T o,
+	const T& co,
+	std::string s)
 {
 	{ o.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
+	{ o.template customComponent<int>(s) } -> std::same_as<int&>;
+	{ co.template customComponent<int>(s) } -> std::same_as<const int&>;
 };
 
 } // namespace vcl::comp

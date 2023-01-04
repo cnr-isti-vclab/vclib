@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -30,16 +30,18 @@
 namespace vcl::comp {
 
 /**
- * @brief HasCoordinate concept
- *
- * This concept is satisfied only if a class has a member function 'coord()'.
- * No check is made on the return type.
+ * @brief HasCoordinate concept is satisfied only if a Element class provides the types and member
+ * functions specified in this concept. These types and member functions allow to access to a
+ * Coordinate component of a given element.
  */
 template<typename T>
-concept HasCoordinate = requires(T o)
+concept HasCoordinate = requires(
+	T o,
+	const T& co)
 {
 	typename T::CoordType;
-	o.coord();
+	{ o.coord() } -> std::same_as<typename T::CoordType&>;
+	{ co.coord() } -> std::same_as<const typename T::CoordType&>;
 };
 
 } // namespace vcl::comp

@@ -30,9 +30,9 @@
 namespace vcl::comp {
 
 /**
- * @brief HasColor concept is satisfied only if a Element class provides the types and member
+ * @brief HasColor concept is satisfied only if a Element/Mesh class provides the types and member
  * functions specified in this concept. These types and member functions allow to access to a
- * Color component of a given element.
+ * Color component of a given element/mesh.
  *
  * Note that this concept does not discriminate between the Horizontal Color component
  * and the vertical OptionalColor component, therefore it does not guarantee that a
@@ -54,7 +54,7 @@ concept HasColor = requires(
 };
 
 /**
- * @brief HasOptionalColor concept is satisfied only if a class satisfis the HasColoe concept and
+ * @brief HasOptionalColor concept is satisfied only if a class satisfis the HasColor concept and
  * has the additional member function '__optionalColor()', which is the discriminator between the
  * non-optional and optional component.
  */
