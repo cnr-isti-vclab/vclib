@@ -27,8 +27,6 @@
 #include "../concepts/wedge_colors.h"
 #include "internal/generic_container.h"
 
-#include <vclib/space/color.h>
-
 namespace vcl::comp {
 
 template<int N>

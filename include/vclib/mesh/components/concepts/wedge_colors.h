@@ -25,6 +25,7 @@
 #define VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H
 
 #include <vclib/misc/types.h>
+#include <vclib/space/color.h>
 
 namespace vcl::comp {
 
@@ -34,18 +35,39 @@ namespace vcl::comp {
  * This concept is satisfied only if a class has a member function 'wedgeColor(uint)'.
  */
 template<typename T>
-concept HasWedgeColors = requires(T o)
+concept HasWedgeColors = requires(
+	T o,
+	const T& co,
+	vcl::Color c,
+	std::vector<vcl::Color> v)
 {
-	o.wedgeColor(uint());
+	T::WEDGE_COLOR_NUMBER;
+	typename T::WedgeColorsIterator;
+	typename T::ConstWedgeColorsIterator;
+	typename T::WedgeColorsRangeIterator;
+	typename T::ConstWedgeColorsRangeIterator;
+
+	{ o.wedgeColor(uint()) } -> std::same_as<vcl::Color&>;
+	{ co.wedgeColor(uint()) } -> std::same_as<const vcl::Color&>;
+	{ o.wedgeColorMod(int()) } -> std::same_as<vcl::Color&>;
+	{ co.wedgeColorMod(int()) } -> std::same_as<const vcl::Color&>;
+	{ o.setWedgeColor(c, uint()) } -> std::same_as<void>;
+	{ o.setWedgeColors(v) } -> std::same_as<void>;
+	{ co.isWedgeColorsEnabled() } -> std::same_as<bool>;
+
+	{ o.wedgeColorBegin() } -> std::same_as<typename T::WedgeColorsIterator>;
+	{ o.wedgeColorEnd() } -> std::same_as<typename T::WedgeColorsIterator>;
+	{ co.wedgeColorBegin() } -> std::same_as<typename T::ConstWedgeColorsIterator>;
+	{ co.wedgeColorEnd() } -> std::same_as<typename T::ConstWedgeColorsIterator>;
+	{ o.wedgeColors() } -> std::same_as<typename T::WedgeColorsRangeIterator>;
+	{ co.wedgeColors() } -> std::same_as<typename T::ConstWedgeColorsRangeIterator>;
 };
 
 /**
- * @brief HasWedgeColorsComponent concept
- *
- * This concept is used to discriminate between the WedgeColors (or OptionalWedgeColors)
- * component, and the FaceHalfEdgeReferences component, which using half edges allows to access
- * to wedge colors. This concept is intended only for internal use, useful to check that a Face does
- * not have both WedgeColors and FaceHalfEdgeReferences components.
+ * @brief HasWedgeColorsComponent concept is used to discriminate between the WedgeColors (or
+ * OptionalWedgeColors) component, and the FaceHalfEdgeReferences component, which using half edges
+ * allows to access to wedge colors. This concept is intended only for internal use, useful to check
+ * that a Face does not have both WedgeColors and FaceHalfEdgeReferences components.
  */
 template<typename T>
 concept HasWedgeColorsComponent = requires(T o)
@@ -55,11 +77,9 @@ concept HasWedgeColorsComponent = requires(T o)
 };
 
 /**
- * @brief HasOptionalWedgeColors concept
- *
- * This concept is satisfied only if a class has two member functions:
- * - 'wedgeColor(uint)'
- * - '__optionalWedgeColors()'
+ * @brief HasOptionalWedgeColors concept is satisfied only if a class satisfies the
+ * HasWedgeColors concept and has the additional member function '__optionalWedgeColors()', which is
+ * the discriminator between the non-optional and optional component.
  */
 template<typename T>
 concept HasOptionalWedgeColors = HasWedgeColors<T> && requires(T o)
