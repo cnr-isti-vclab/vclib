@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -95,9 +95,10 @@ public:
 	// compatibility between mesh types.
 	using VertexReferences         = FaceHalfEdgeReference;
 
-	static const int VERTEX_NUMBER = -1; // half edges support by design polygonal meshes
-	static const int ADJ_FACE_NUMBER = -1;
-	static const int WEDGE_COLOR_NUMBER = -1;
+	static const int VERTEX_NUMBER          = -1; // half edges support by design polygonal meshes
+	static const int ADJ_FACE_NUMBER        = -1;
+	static const int WEDGE_COLOR_NUMBER     = -1;
+	static const int WEDGE_TEX_COORD_NUMBER = -1;
 
 	/* Constructor */
 

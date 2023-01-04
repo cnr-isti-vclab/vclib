@@ -30,9 +30,17 @@
 namespace vcl::comp {
 
 /**
- * @brief HasWedgeColors concept
+ * @brief HasWedgeColors concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to
+ * an WedgeColors component of a given element.
  *
- * This concept is satisfied only if a class has a member function 'wedgeColor(uint)'.
+ * Note that this concept does not discriminate between the Horizontal WedgeColors component and
+ * the vertical OptionalWedgeColors component, therefore it does not guarantee that a template
+ * Element type that satisfies this concept provides WedgeColors component at runtime (it is
+ * guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that WedgeColors is available at runtime, you need to call the member
+ * function `isWedgeColorsEnabled()`.
  */
 template<typename T>
 concept HasWedgeColors = requires(
