@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -25,14 +25,15 @@
 #define VCL_ALGORITHMS_CREATE_DODECAHEDRON_H
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/logger.h>
 
 namespace vcl {
 
-template<PolygonMeshConcept MeshType>
-MeshType createDodecahedron();
+template<PolygonMeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType createDodecahedron(LogType& log = nullLogger);
 
-template<TriangleMeshConcept MeshType>
-MeshType createDodecahedron();
+template<TriangleMeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType createDodecahedron(LogType& log = nullLogger);
 
 } // namespace vcl
 

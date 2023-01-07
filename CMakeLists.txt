@@ -242,6 +242,7 @@ set(HEADERS
 	include/vclib/misc/comparators.h
 	include/vclib/misc/file_info.h
 	include/vclib/misc/hash.h
+	include/vclib/misc/logger.h
 	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/parallel.h
 	include/vclib/misc/string.h
@@ -403,6 +404,7 @@ set(SOURCES
 	include/vclib/mesh_utils/tri_poly_index_bimap.cpp
 	include/vclib/misc/compactness.cpp
 	include/vclib/misc/file_info.cpp
+	include/vclib/misc/logger.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
 	include/vclib/misc/parallel.cpp
 	include/vclib/misc/string.cpp

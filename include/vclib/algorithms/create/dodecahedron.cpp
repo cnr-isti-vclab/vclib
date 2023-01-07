@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -35,8 +35,8 @@ namespace vcl {
  *
  * @return A Mesh containing a dodecahedron.
  */
-template<PolygonMeshConcept MeshType>
-MeshType createDodecahedron()
+template<PolygonMeshConcept MeshType, LoggerConcept LogType>
+MeshType createDodecahedron(LogType& log)
 {
 	using VertexType = typename MeshType::VertexType;
 	using CoordType  = typename VertexType::CoordType;
@@ -49,6 +49,10 @@ MeshType createDodecahedron()
 	const ScalarType s1 = fi;
 	const ScalarType s2 = std::pow(fi, 2);
 	const ScalarType s3 = 1;
+
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(0, "Adding vertices to PolyMesh...");
+	}
 
 	mesh.addVertices(
 		CoordType(-s1, -s1, s1),
@@ -72,6 +76,11 @@ MeshType createDodecahedron()
 		CoordType(s1, -s1, s1),
 		CoordType(-s1, -s1, -s1));
 
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(50, "Vertices added to PolyMesh.");
+		log.log(50, "Adding faces to PolyMesh...");
+	}
+
 	mesh.reserveFaces(12);
 	mesh.addFace(14, 11, 18, 2, 1);
 	mesh.addFace(2, 17, 7, 13, 1);
@@ -86,6 +95,10 @@ MeshType createDodecahedron()
 	mesh.addFace(16, 12, 11, 14, 5);
 	mesh.addFace(18, 11, 12, 0, 10);
 
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(100, "Faces added to PolyMesh.");
+	}
+
 	return mesh;
 }
 
@@ -97,15 +110,29 @@ MeshType createDodecahedron()
  *
  * @return A Mesh containing a dodecahedron.
  */
-template<TriangleMeshConcept MeshType>
-MeshType createDodecahedron()
+template<TriangleMeshConcept MeshType, LoggerConcept LogType>
+MeshType createDodecahedron(LogType& log)
 {
-	internal::TMPSimplePolyMesh pmesh = createDodecahedron<internal::TMPSimplePolyMesh>();
+	if constexpr (isLoggerValid<LogType>()) {
+		log.startCurrentAction(0, 75, "Create Polygonal Dodecahedron.");
+	}
+
+	internal::TMPSimplePolyMesh pmesh = createDodecahedron<internal::TMPSimplePolyMesh>(log);
+
+	if constexpr (isLoggerValid<LogType>()) {
+		log.endCurrentAction("Create Polygonal Dodecahedron.");
+		log.log(75, "Copying vertices into TriMesh...");
+	}
 
 	MeshType mesh;
 	mesh.reserveVertices(pmesh.vertexNumber());
 	for (const auto& v : pmesh.vertices()) {
 		mesh.addVertex(v.coord());
+	}
+
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(80, "Vertices copied into TriMesh.");
+		log.log(80, "Triangularize and copy Faces into TriMesh...");
 	}
 
 	for (const auto& f : pmesh.faces()) {
@@ -116,6 +143,10 @@ MeshType createDodecahedron()
 				pmesh.index(f.vertex(ind[i + 1])),
 				pmesh.index(f.vertex(ind[i + 2])));
 		}
+	}
+
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(100, "Faces triangularized and copied into TriMesh.");
 	}
 
 	return mesh;

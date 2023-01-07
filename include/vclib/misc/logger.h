@@ -21,57 +21,76 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#ifndef VCL_MISC_LOGGER_H
+#define VCL_MISC_LOGGER_H
+
+#include "types.h"
+
+#include <cmath>
 #include <iostream>
+#include <stack>
 
-#include <vclib/algorithms/create.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/poly_mesh.h>
+namespace vcl {
 
-int main()
+class NullLogger {
+};
+
+static NullLogger nullLogger;
+
+template <typename T>
+concept LoggerConcept =
+	std::is_same<T, NullLogger>::value || requires(T o, std::string msg)
 {
-	vcl::io::FileMeshInfo info;
+	typename T::LogLevel;
+	{ o.reset() } -> std::same_as<void>;
+	{ o.startCurrentAction(double(), double(), msg) } -> std::same_as<void>;
+	{ o.endCurrentAction(msg) } -> std::same_as<void>;
+	{ o.percentage() } -> std::same_as<double>;
+	{ o.log(msg) } -> std::same_as<void>;
 
-	// want to save just these infos in the files, ignore the rest
-	info.setVertices();
-	info.setFaces();
-	info.setVertexCoords(true, vcl::io::FileMeshInfo::FLOAT);
-	info.setFaceVRefs();
+};
 
-	vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();
-
-	assert(m.vertexNumber() == 4);
-	assert(m.faceNumber() == 4);
-
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply", info);
-
-	m = vcl::createIcosahedron<vcl::TriMesh>(true);
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/icosahedron.ply", info);
-
-	m = vcl::createHexahedron<vcl::TriMesh>();
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/hexahedron.ply", info);
-
-	vcl::Logger log;
-	m = vcl::createDodecahedron<vcl::TriMesh>(log);
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/dodecahedron.ply", info);
-
-	vcl::PolyMesh pm = vcl::createHexahedron<vcl::PolyMesh>();
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/hexahedron_poly.ply", info);
-
-	pm = vcl::createDodecahedron<vcl::PolyMesh>();
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/dodecahedron_poly.ply", info);
-
-	pm = vcl::createCube<vcl::PolyMesh>(vcl::Point3d(0,0,0), 4);
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/cube_poly.ply", info);
-
-	m = vcl::createSphereSpherifiedCube<vcl::TriMesh>({vcl::Point3d(), 1.0}, 50);
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/sphere_tri.ply");
-
-	pm = vcl::createSphereSpherifiedCube<vcl::PolyMesh>({vcl::Point3d(), 1.0}, 50);
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/sphere_poly.ply");
-
-	m = vcl::createSphereIcosahedron<vcl::TriMesh>({vcl::Point3d(), 1.0}, 5);
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/sphere_ico.ply");
-
-	return 0;
+template <typename T>
+constexpr bool isLoggerValid()
+{
+	return !std::is_same_v<T, NullLogger> && LoggerConcept<T>;
 }
+
+class Logger
+{
+public:
+	enum LogLevel { ERROR, WARNING, PROGRESS, DEBUG };
+
+	Logger();
+
+	void reset();
+
+	void startCurrentAction(double fromPerc, double toPerc, const std::string& action);
+	void endCurrentAction(const std::string &action);
+
+	double percentage() const;
+
+	void log(const std::string& msg);
+	void log(LogLevel lvl, const std::string& msg);
+	void log(uint perc, const std::string& msg);
+	void log(uint perc, LogLevel lvl, const std::string& msg);
+
+
+private:
+	std::ostream& o = std::cout;
+	std::ostream& e = std::cerr;
+	uint percPrecision = 2;
+
+	std::stack<std::pair<double, double>> stack;
+	double progress;
+	double step;
+
+	void updateStep();
+	void setLocalPerc(uint perc);
+};
+
+} // namespace vcl
+
+#include "logger.cpp"
+
+#endif // VCL_MISC_LOGGER_H
