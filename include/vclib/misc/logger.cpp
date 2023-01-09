@@ -22,6 +22,7 @@
  ****************************************************************************/
 
 #include "logger.h"
+#include <iomanip>
 
 namespace vcl {
 
@@ -29,6 +30,16 @@ inline Logger::Logger()
 {
 	stack.push({0, 100});
 	updateStep();
+}
+
+inline void Logger::enableIndentation()
+{
+	indent = true;
+}
+
+inline void Logger::disableIndentation()
+{
+	indent = false;
 }
 
 inline void Logger::reset()
@@ -39,7 +50,17 @@ inline void Logger::reset()
 	updateStep();
 }
 
-inline void Logger::startCurrentAction(double fromPerc, double toPerc, const std::string &action)
+inline void Logger::setPrintTimer(bool b)
+{
+	printTimer = b;
+}
+
+inline void Logger::startTimer()
+{
+	timer.start();
+}
+
+inline void Logger::startNewTask(double fromPerc, double toPerc, const std::string& action)
 {
 	assert(fromPerc >= 0);
 	assert(toPerc <= 100);
@@ -50,14 +71,20 @@ inline void Logger::startCurrentAction(double fromPerc, double toPerc, const std
 	stack.push(newP);
 	updateStep();
 
-	o << "[" << percentage() <<  "% ] Start " << action << std::endl;
+	printPercentage(o);
+	o << " Start " + action;
+	printElapsedTime(o, 7 + action.size());
+	o << std::endl;
 }
 
-inline void Logger::endCurrentAction(const std::string& action)
+inline void Logger::endTask(const std::string& action)
 {
 	progress = stack.top().second;
 	if (stack.size() > 1) {
-		o << "[" << percentage() <<  "% ] End " << action << std::endl;
+		printPercentage(o);
+		o << " End " + action;
+		printElapsedTime(o, 5 + action.size());
+		o << std::endl;
 		stack.pop();
 		updateStep();
 	}
@@ -70,37 +97,70 @@ inline double Logger::percentage() const
 	return c / k;
 }
 
-inline void Logger::log(const std::string &msg)
+inline std::string Logger::percentageString() const
+{
+	std::string s;
+	double k = std::pow(10, percPrecision);
+	uint c = progress * k;
+	uint n = c / k;
+	uint d = c % (uint)k;
+	while (d != 0 && d % 10 == 0)
+		d /= 10;
+
+	s += std::to_string(n);
+	if (percPrecision > 0 && d != 0) {
+		s += "." + std::to_string(d);
+	}
+	return s;
+}
+
+inline void Logger::log(const std::string& msg)
 {
 	log(101, PROGRESS, msg);
 }
 
-inline void Logger::log(LogLevel lvl, const std::string &msg)
+inline void Logger::log(LogLevel lvl, const std::string& msg)
 {
 	log(101, lvl, msg);
 }
 
-inline void Logger::log(uint perc, const std::string &msg)
+inline void Logger::log(uint perc, const std::string& msg)
 {
 	log(perc, PROGRESS, msg);
 }
 
-inline void Logger::log(uint perc, LogLevel lvl, const std::string &msg)
+inline void Logger::log(uint perc, LogLevel lvl, const std::string& msg)
 {
 	if (perc >= 0 && perc <= 100)
 		setLocalPerc(perc);
 	switch (lvl) {
 	case ERROR:
-		e << "[" << percentage() <<"% ] ERROR: " << msg << std::endl;
+		printPercentage(e);
+		printIndentation(e);
+		e << " ERROR: " + msg;
+		printElapsedTime(e, 8 + msg.size());
+		e << std::endl;
 		break;
 	case WARNING:
-		e << "[" << percentage() <<"% ] WARNING: " << msg << std::endl;
+		printPercentage(e);
+		printIndentation(e);
+		e << " WARNING: " + msg;
+		printElapsedTime(e, 10 + msg.size());
+		e << std::endl;
 		break;
 	case PROGRESS:
-		o << "[" << percentage() <<"% ] " << msg << std::endl;
+		printPercentage(o);
+		printIndentation(o);
+		o << " " + msg;
+		printElapsedTime(o, 1 + msg.size());
+		o << std::endl;
 		break;
 	case DEBUG:
-		o << "[" << percentage() <<"% ] " << msg << std::endl;
+		printPercentage(o);
+		printIndentation(o);
+		o << " (debug) " + msg;
+		printElapsedTime(o, 9 + msg.size());
+		o << std::endl;
 		break;
 	}
 }
@@ -114,6 +174,45 @@ inline void Logger::setLocalPerc(uint perc)
 {
 	assert(perc >= 0 && perc <= 100);
 	progress = step * perc;
+}
+
+inline void Logger::printElapsedTime(std::ostream& o, uint msgSize) const
+{
+	if (printTimer) {
+		uint indentSize = 0;
+		if (indent) {
+			indentSize = (stack.size()-1)*2;
+		}
+		uint i = msgSize + percentageString().size() + 4 + percPrecision + indentSize;
+		while (i < 80 - 12) {
+			o << " ";
+			i++;
+		}
+
+		o << "[ " << timer.delay() << "s]";
+	}
+}
+
+inline void Logger::printPercentage(std::ostream& o) const
+{
+	std::string s = percentageString();
+
+	o << "[";
+	uint i = s.size();
+	while (i < 4 + percPrecision) {
+		o << " ";
+		i++;
+	}
+	o << s << "%]";
+}
+
+inline void Logger::printIndentation(std::ostream& o) const
+{
+	if (indent) {
+		uint n = stack.size() - 1;
+		for (uint i = 0; i < n; i++)
+			o << "  ";
+	}
 }
 
 } // namespace vcl

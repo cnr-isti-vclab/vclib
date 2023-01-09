@@ -24,10 +24,12 @@
 #ifndef VCL_MISC_LOGGER_H
 #define VCL_MISC_LOGGER_H
 
+#include "timer.h"
 #include "types.h"
 
 #include <cmath>
 #include <iostream>
+#include <sstream>
 #include <stack>
 
 namespace vcl {
@@ -43,8 +45,8 @@ concept LoggerConcept =
 {
 	typename T::LogLevel;
 	{ o.reset() } -> std::same_as<void>;
-	{ o.startCurrentAction(double(), double(), msg) } -> std::same_as<void>;
-	{ o.endCurrentAction(msg) } -> std::same_as<void>;
+	{ o.startNewTask(double(), double(), msg) } -> std::same_as<void>;
+	{ o.endTask(msg) } -> std::same_as<void>;
 	{ o.percentage() } -> std::same_as<double>;
 	{ o.log(msg) } -> std::same_as<void>;
 
@@ -63,12 +65,19 @@ public:
 
 	Logger();
 
+	void enableIndentation();
+	void disableIndentation();
+
 	void reset();
 
-	void startCurrentAction(double fromPerc, double toPerc, const std::string& action);
-	void endCurrentAction(const std::string &action);
+	void setPrintTimer(bool b);
+	void startTimer();
+
+	void startNewTask(double fromPerc, double toPerc, const std::string& action);
+	void endTask(const std::string& action);
 
 	double percentage() const;
+	std::string percentageString() const;
 
 	void log(const std::string& msg);
 	void log(LogLevel lvl, const std::string& msg);
@@ -79,14 +88,22 @@ public:
 private:
 	std::ostream& o = std::cout;
 	std::ostream& e = std::cerr;
-	uint percPrecision = 2;
+	uint percPrecision = 1;
 
 	std::stack<std::pair<double, double>> stack;
 	double progress;
 	double step;
+	bool indent = true;
+
+	vcl::Timer timer;
+	bool printTimer = false;
 
 	void updateStep();
 	void setLocalPerc(uint perc);
+
+	void printElapsedTime(std::ostream& o, uint msgSize) const;
+	void printPercentage(std::ostream& o) const;
+	void printIndentation(std::ostream& o) const;
 };
 
 } // namespace vcl

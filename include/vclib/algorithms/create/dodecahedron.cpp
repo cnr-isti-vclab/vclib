@@ -114,13 +114,13 @@ template<TriangleMeshConcept MeshType, LoggerConcept LogType>
 MeshType createDodecahedron(LogType& log)
 {
 	if constexpr (isLoggerValid<LogType>()) {
-		log.startCurrentAction(0, 75, "Create Polygonal Dodecahedron.");
+		log.startNewTask(0, 75, "Create Polygonal Dodecahedron.");
 	}
 
 	internal::TMPSimplePolyMesh pmesh = createDodecahedron<internal::TMPSimplePolyMesh>(log);
 
 	if constexpr (isLoggerValid<LogType>()) {
-		log.endCurrentAction("Create Polygonal Dodecahedron.");
+		log.endTask("Create Polygonal Dodecahedron.");
 		log.log(75, "Copying vertices into TriMesh...");
 	}
 
