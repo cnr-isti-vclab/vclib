@@ -70,6 +70,7 @@ public:
 
 	void reset();
 
+	void setMaxLineWidth(uint w);
 	void setPrintTimer(bool b);
 	void startTimer();
 
@@ -77,13 +78,11 @@ public:
 	void endTask(const std::string& action);
 
 	double percentage() const;
-	std::string percentageString() const;
 
 	void log(const std::string& msg);
 	void log(LogLevel lvl, const std::string& msg);
 	void log(uint perc, const std::string& msg);
 	void log(uint perc, LogLevel lvl, const std::string& msg);
-
 
 private:
 	std::ostream& o = std::cout;
@@ -93,7 +92,10 @@ private:
 	std::stack<std::pair<double, double>> stack;
 	double progress;
 	double step;
+
 	bool indent = true;
+	uint lineW = 80;
+	const uint TIMER_SIZE = 12;
 
 	vcl::Timer timer;
 	bool printTimer = false;
@@ -101,9 +103,10 @@ private:
 	void updateStep();
 	void setLocalPerc(uint perc);
 
-	void printElapsedTime(std::ostream& o, uint msgSize) const;
-	void printPercentage(std::ostream& o) const;
-	void printIndentation(std::ostream& o) const;
+	uint printPercentage(std::ostream& o) const;
+	uint printIndentation(std::ostream& o) const;
+	void printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n);
+	void printElapsedTime(std::ostream& o) const;
 };
 
 } // namespace vcl

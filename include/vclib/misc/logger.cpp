@@ -50,6 +50,11 @@ inline void Logger::reset()
 	updateStep();
 }
 
+inline void Logger::setMaxLineWidth(uint w)
+{
+	lineW = w;
+}
+
 inline void Logger::setPrintTimer(bool b)
 {
 	printTimer = b;
@@ -62,6 +67,12 @@ inline void Logger::startTimer()
 
 inline void Logger::startNewTask(double fromPerc, double toPerc, const std::string& action)
 {
+	uint s = printPercentage(o);
+	s += printIndentation(o);
+	printMessage(o, action, 4, s);
+	printElapsedTime(o);
+	o << std::endl;
+
 	assert(fromPerc >= 0);
 	assert(toPerc <= 100);
 	std::pair<double, double> newP;
@@ -70,23 +81,20 @@ inline void Logger::startNewTask(double fromPerc, double toPerc, const std::stri
 	progress = newP.first;
 	stack.push(newP);
 	updateStep();
-
-	printPercentage(o);
-	o << " Start " + action;
-	printElapsedTime(o, 7 + action.size());
-	o << std::endl;
 }
 
 inline void Logger::endTask(const std::string& action)
 {
 	progress = stack.top().second;
 	if (stack.size() > 1) {
-		printPercentage(o);
-		o << " End " + action;
-		printElapsedTime(o, 5 + action.size());
-		o << std::endl;
 		stack.pop();
 		updateStep();
+
+		uint s = printPercentage(o);
+		s += printIndentation(o);
+		printMessage(o, action, 5, s);
+		printElapsedTime(o);
+		o << std::endl;
 	}
 }
 
@@ -95,23 +103,6 @@ inline double Logger::percentage() const
 	double k = std::pow(10, percPrecision);
 	uint c = progress * k;
 	return c / k;
-}
-
-inline std::string Logger::percentageString() const
-{
-	std::string s;
-	double k = std::pow(10, percPrecision);
-	uint c = progress * k;
-	uint n = c / k;
-	uint d = c % (uint)k;
-	while (d != 0 && d % 10 == 0)
-		d /= 10;
-
-	s += std::to_string(n);
-	if (percPrecision > 0 && d != 0) {
-		s += "." + std::to_string(d);
-	}
-	return s;
 }
 
 inline void Logger::log(const std::string& msg)
@@ -131,35 +122,24 @@ inline void Logger::log(uint perc, const std::string& msg)
 
 inline void Logger::log(uint perc, LogLevel lvl, const std::string& msg)
 {
+	uint s = 0;
 	if (perc >= 0 && perc <= 100)
 		setLocalPerc(perc);
 	switch (lvl) {
 	case ERROR:
-		printPercentage(e);
-		printIndentation(e);
-		e << " ERROR: " + msg;
-		printElapsedTime(e, 8 + msg.size());
-		e << std::endl;
-		break;
 	case WARNING:
-		printPercentage(e);
-		printIndentation(e);
-		e << " WARNING: " + msg;
-		printElapsedTime(e, 10 + msg.size());
+		s += printPercentage(e);
+		s += printIndentation(e);
+		printMessage(e, msg, lvl, s);
+		printElapsedTime(e);
 		e << std::endl;
 		break;
 	case PROGRESS:
-		printPercentage(o);
-		printIndentation(o);
-		o << " " + msg;
-		printElapsedTime(o, 1 + msg.size());
-		o << std::endl;
-		break;
 	case DEBUG:
-		printPercentage(o);
-		printIndentation(o);
-		o << " (debug) " + msg;
-		printElapsedTime(o, 9 + msg.size());
+		s += printPercentage(o);
+		s += printIndentation(o);
+		printMessage(o, msg, lvl, s);
+		printElapsedTime(o);
 		o << std::endl;
 		break;
 	}
@@ -176,42 +156,68 @@ inline void Logger::setLocalPerc(uint perc)
 	progress = step * perc;
 }
 
-inline void Logger::printElapsedTime(std::ostream& o, uint msgSize) const
+inline uint Logger::printPercentage(std::ostream& o) const
 {
-	if (printTimer) {
-		uint indentSize = 0;
-		if (indent) {
-			indentSize = (stack.size()-1)*2;
-		}
-		uint i = msgSize + percentageString().size() + 4 + percPrecision + indentSize;
-		while (i < 80 - 12) {
-			o << " ";
-			i++;
-		}
-
-		o << "[ " << timer.delay() << "s]";
-	}
-}
-
-inline void Logger::printPercentage(std::ostream& o) const
-{
-	std::string s = percentageString();
+	uint size = 3;
+	if (percPrecision > 0 )
+		size += 1 + percPrecision;
 
 	o << "[";
-	uint i = s.size();
-	while (i < 4 + percPrecision) {
-		o << " ";
-		i++;
-	}
-	o << s << "%]";
+	o << std::right << std::setw(size) << percentage() << "%]";
+	return size + 3;
 }
 
-inline void Logger::printIndentation(std::ostream& o) const
+inline uint Logger::printIndentation(std::ostream& o) const
 {
+	uint s = 0;
 	if (indent) {
 		uint n = stack.size() - 1;
-		for (uint i = 0; i < n; i++)
+		for (uint i = 0; i < n; i++) {
 			o << "  ";
+			s += 2;
+		}
+	}
+	return s;
+}
+
+inline void Logger::printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n)
+{
+	uint maxMsgSize = lineW - n;
+	if (printTimer)
+		maxMsgSize -= TIMER_SIZE;
+	switch (lvl) {
+	case ERROR:
+		maxMsgSize -= 8;
+		o << " ERROR: ";
+		break;
+	case WARNING:
+		maxMsgSize -= 10;
+		o << " WARNING: ";
+		break;
+	case PROGRESS:
+		maxMsgSize -= 1;
+		o << " ";
+		break;
+	case DEBUG:
+		maxMsgSize -= 9;
+		o << " (debug) ";
+		break;
+	case 4:
+		maxMsgSize -= 7;
+		o << " Start ";
+		break;
+	case 5:
+		maxMsgSize -= 5;
+		o << " End ";
+		break;
+	}
+	o << std::setw(maxMsgSize) << std::left << msg;
+}
+
+inline void Logger::printElapsedTime(std::ostream& o) const
+{
+	if (printTimer) {
+		o << "[" << std::setw(TIMER_SIZE - 3) << std::right << timer.delay() << "s]";
 	}
 }
 
