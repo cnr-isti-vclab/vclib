@@ -26,23 +26,27 @@
 
 namespace vcl {
 
-inline Logger::Logger()
+template<typename Stream>
+Logger<Stream>::Logger()
 {
 	stack.push({0, 100});
 	updateStep();
 }
 
-inline void Logger::enableIndentation()
+template<typename Stream>
+void Logger<Stream>::enableIndentation()
 {
 	indent = true;
 }
 
-inline void Logger::disableIndentation()
+template<typename Stream>
+void Logger<Stream>::disableIndentation()
 {
 	indent = false;
 }
 
-inline void Logger::reset()
+template<typename Stream>
+void Logger<Stream>::reset()
 {
 	while (!stack.empty())
 		stack.pop();
@@ -50,28 +54,28 @@ inline void Logger::reset()
 	updateStep();
 }
 
-inline void Logger::setMaxLineWidth(uint w)
+template<typename Stream>
+void Logger<Stream>::setMaxLineWidth(uint w)
 {
 	lineW = w;
 }
 
-inline void Logger::setPrintTimer(bool b)
+template<typename Stream>
+void Logger<Stream>::setPrintTimer(bool b)
 {
 	printTimer = b;
 }
 
-inline void Logger::startTimer()
+template<typename Stream>
+void Logger<Stream>::startTimer()
 {
 	timer.start();
 }
 
-inline void Logger::startNewTask(double fromPerc, double toPerc, const std::string& action)
+template<typename Stream>
+void Logger<Stream>::startNewTask(double fromPerc, double toPerc, const std::string& action)
 {
-	uint s = printPercentage(o);
-	s += printIndentation(o);
-	printMessage(o, action, 4, s);
-	printElapsedTime(o);
-	o << std::endl;
+	printLine(action, START);
 
 	assert(fromPerc >= 0);
 	assert(toPerc <= 100);
@@ -83,80 +87,87 @@ inline void Logger::startNewTask(double fromPerc, double toPerc, const std::stri
 	updateStep();
 }
 
-inline void Logger::endTask(const std::string& action)
+template<typename Stream>
+void Logger<Stream>::endTask(const std::string& action)
 {
 	progress = stack.top().second;
 	if (stack.size() > 1) {
 		stack.pop();
 		updateStep();
 
-		uint s = printPercentage(o);
-		s += printIndentation(o);
-		printMessage(o, action, 5, s);
-		printElapsedTime(o);
-		o << std::endl;
+		printLine(action, END);
 	}
 }
 
-inline double Logger::percentage() const
+template<typename Stream>
+double Logger<Stream>::percentage() const
 {
 	double k = std::pow(10, percPrecision);
 	uint c = progress * k;
 	return c / k;
 }
 
-inline void Logger::log(const std::string& msg)
+template<typename Stream>
+void Logger<Stream>::setPercentage(uint newPerc)
+{
+	assert(newPerc >= 0 && newPerc <= 100);
+	progress = step * newPerc;
+}
+
+template<typename Stream>
+void Logger<Stream>::log(const std::string& msg)
 {
 	log(101, PROGRESS, msg);
 }
 
-inline void Logger::log(LogLevel lvl, const std::string& msg)
+template<typename Stream>
+void Logger<Stream>::log(LogLevel lvl, const std::string& msg)
 {
 	log(101, lvl, msg);
 }
 
-inline void Logger::log(uint perc, const std::string& msg)
+template<typename Stream>
+void Logger<Stream>::log(uint perc, const std::string& msg)
 {
 	log(perc, PROGRESS, msg);
 }
 
-inline void Logger::log(uint perc, LogLevel lvl, const std::string& msg)
+template<typename Stream>
+void Logger<Stream>::log(uint perc, LogLevel lvl, const std::string& msg)
 {
-	uint s = 0;
 	if (perc >= 0 && perc <= 100)
-		setLocalPerc(perc);
-	switch (lvl) {
-	case ERROR:
-	case WARNING:
-		s += printPercentage(e);
-		s += printIndentation(e);
-		printMessage(e, msg, lvl, s);
-		printElapsedTime(e);
-		e << std::endl;
-		break;
-	case PROGRESS:
-	case DEBUG:
-		s += printPercentage(o);
-		s += printIndentation(o);
-		printMessage(o, msg, lvl, s);
-		printElapsedTime(o);
-		o << std::endl;
-		break;
-	}
+		setPercentage(perc);
+
+	printLine(msg, lvl);
 }
 
-inline void Logger::updateStep()
+template<typename Stream>
+void Logger<Stream>::updateStep()
 {
 	step = (stack.top().second - stack.top().first) / 100;
 }
 
-inline void Logger::setLocalPerc(uint perc)
+template<typename Stream>
+void Logger<Stream>::printLine(const std::string& msg, uint lvl)
 {
-	assert(perc >= 0 && perc <= 100);
-	progress = step * perc;
+	LogLevel l = PROGRESS;
+	if (lvl < DEBUG){
+		l = (LogLevel) lvl;
+	}
+	std::ostream* stream = levelStream(l);
+
+	if (stream) {
+		uint s = 0;
+		s = printPercentage(*stream);
+		s += printIndentation(*stream);
+		printMessage(*stream, msg, lvl, s);
+		printElapsedTime(*stream);
+		*stream << std::endl;
+	}
 }
 
-inline uint Logger::printPercentage(std::ostream& o) const
+template<typename Stream>
+uint Logger<Stream>::printPercentage(std::ostream& o) const
 {
 	uint size = 3;
 	if (percPrecision > 0 )
@@ -167,7 +178,8 @@ inline uint Logger::printPercentage(std::ostream& o) const
 	return size + 3;
 }
 
-inline uint Logger::printIndentation(std::ostream& o) const
+template<typename Stream>
+uint Logger<Stream>::printIndentation(std::ostream& o) const
 {
 	uint s = 0;
 	if (indent) {
@@ -180,7 +192,8 @@ inline uint Logger::printIndentation(std::ostream& o) const
 	return s;
 }
 
-inline void Logger::printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n)
+template<typename Stream>
+void Logger<Stream>::printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n)
 {
 	uint maxMsgSize = lineW - n;
 	if (printTimer)
@@ -202,11 +215,11 @@ inline void Logger::printMessage(std::ostream& o, const std::string& msg, uint l
 		maxMsgSize -= 9;
 		o << " (debug) ";
 		break;
-	case 4:
+	case START:
 		maxMsgSize -= 7;
 		o << " Start ";
 		break;
-	case 5:
+	case END:
 		maxMsgSize -= 5;
 		o << " End ";
 		break;
@@ -214,7 +227,8 @@ inline void Logger::printMessage(std::ostream& o, const std::string& msg, uint l
 	o << std::setw(maxMsgSize) << std::left << msg;
 }
 
-inline void Logger::printElapsedTime(std::ostream& o) const
+template<typename Stream>
+void Logger<Stream>::printElapsedTime(std::ostream& o) const
 {
 	if (printTimer) {
 		o << "[" << std::setw(TIMER_SIZE - 3) << std::right << timer.delay() << "s]";

@@ -250,6 +250,9 @@ set(HEADERS
 	include/vclib/misc/tokenizer.h
 	include/vclib/misc/types.h
 	include/vclib/misc/internal/tmp_meshes.h
+	include/vclib/misc/logger/console_logger.h
+	include/vclib/misc/logger/logger.h
+	include/vclib/misc/logger/logger_concept.h
 	include/vclib/render/drawable_object.h
 	include/vclib/render/drawable_object_vector.h
 	include/vclib/render/generic_drawable_mesh.h
@@ -404,12 +407,13 @@ set(SOURCES
 	include/vclib/mesh_utils/tri_poly_index_bimap.cpp
 	include/vclib/misc/compactness.cpp
 	include/vclib/misc/file_info.cpp
-	include/vclib/misc/logger.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
 	include/vclib/misc/parallel.cpp
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
+	include/vclib/misc/logger/console_logger.cpp
+	include/vclib/misc/logger/logger.cpp
 	include/vclib/render/drawable_object_vector.cpp
 	include/vclib/render/generic_drawable_mesh.cpp
 	include/vclib/render/mesh_render_buffers.cpp

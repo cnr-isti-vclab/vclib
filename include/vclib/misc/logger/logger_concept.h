@@ -21,10 +21,37 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_LOGGER_H
-#define VCL_MISC_LOGGER_H
+#ifndef VCL_MISC_LOGGER_LOGGER_CONCEPT_H
+#define VCL_MISC_LOGGER_LOGGER_CONCEPT_H
 
-#include "logger/console_logger.h"
-#include "logger/logger_concept.h"
+#include "../types.h"
 
-#endif // VCL_MISC_LOGGER_H
+namespace vcl {
+
+class NullLogger {
+};
+
+static NullLogger nullLogger;
+
+template <typename T>
+concept LoggerConcept =
+	std::is_same<T, NullLogger>::value || requires(T o, std::string msg)
+{
+	typename T::LogLevel;
+	{ o.reset() } -> std::same_as<void>;
+	{ o.startNewTask(double(), double(), msg) } -> std::same_as<void>;
+	{ o.endTask(msg) } -> std::same_as<void>;
+	{ o.percentage() } -> std::same_as<double>;
+	{ o.log(msg) } -> std::same_as<void>;
+
+};
+
+template <typename T>
+constexpr bool isLoggerValid()
+{
+	return !std::is_same_v<T, NullLogger> && LoggerConcept<T>;
+}
+
+} // nameaspace vcl
+
+#endif // VCL_MISC_LOGGER_LOGGER_CONCEPT_H

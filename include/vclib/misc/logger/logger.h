@@ -21,10 +21,80 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_LOGGER_H
-#define VCL_MISC_LOGGER_H
+#ifndef VCL_MISC_LOGGER_LOGGER_H
+#define VCL_MISC_LOGGER_LOGGER_H
 
-#include "logger/console_logger.h"
-#include "logger/logger_concept.h"
+#include "../timer.h"
+#include "../types.h"
 
-#endif // VCL_MISC_LOGGER_H
+#include <cmath>
+#include <iostream>
+#include <sstream>
+#include <stack>
+
+namespace vcl {
+
+template<typename Stream>
+class Logger
+{
+public:
+	enum LogLevel { ERROR = 0, WARNING, PROGRESS, DEBUG };
+
+	Logger();
+
+	void enableIndentation();
+	void disableIndentation();
+
+	void reset();
+
+	void setMaxLineWidth(uint w);
+	void setPrintTimer(bool b);
+	void startTimer();
+
+	void startNewTask(double fromPerc, double toPerc, const std::string& action);
+	void endTask(const std::string& action);
+
+	double percentage() const;
+	virtual void setPercentage(uint newPerc);
+
+	void log(const std::string& msg);
+	void log(LogLevel lvl, const std::string& msg);
+	void log(uint perc, const std::string& msg);
+	void log(uint perc, LogLevel lvl, const std::string& msg);
+
+protected:
+	// you should override this member function if you want to use a different stream that are not
+	// std::cout and std::cerr
+	virtual Stream* levelStream(LogLevel lvl) = 0;
+
+private:
+	enum InternalLogLevel { START = DEBUG + 1, END };
+
+	uint percPrecision = 0;
+
+	std::stack<std::pair<double, double>> stack;
+	double progress;
+	double step;
+
+	bool indent = true;
+	uint lineW = 80;
+	const uint TIMER_SIZE = 12;
+
+	vcl::Timer timer;
+	bool printTimer = false;
+
+	void updateStep();
+
+	void printLine(const std::string& msg, uint lvl);
+
+	uint printPercentage(std::ostream& o) const;
+	uint printIndentation(std::ostream& o) const;
+	void printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n);
+	void printElapsedTime(std::ostream& o) const;
+};
+
+} // namespace vcl
+
+#include "logger.cpp"
+
+#endif // VCL_MISC_LOGGER_LOGGER_H

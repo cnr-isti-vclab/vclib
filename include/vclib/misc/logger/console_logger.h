@@ -21,10 +21,35 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_LOGGER_H
-#define VCL_MISC_LOGGER_H
+#ifndef VCL_MISC_LOGGER_CONSOLE_LOGGER_H
+#define VCL_MISC_LOGGER_CONSOLE_LOGGER_H
 
-#include "logger/console_logger.h"
-#include "logger/logger_concept.h"
+#include "logger.h"
 
-#endif // VCL_MISC_LOGGER_H
+namespace vcl {
+
+class ConsoleLogger : public Logger<std::ostream>
+{
+public:
+	ConsoleLogger() = default;
+	ConsoleLogger(
+		std::ostream& errStream,
+		std::ostream& warnStream,
+		std::ostream& progStream,
+		std::ostream& debugStream);
+
+protected:
+	std::ostream* levelStream(LogLevel lvl);
+
+private:
+	std::ostream& errStream = std::cerr;
+	std::ostream& warnStream = std::cout;
+	std::ostream& progStream = std::cout;
+	std::ostream& debugStream = std::cerr;
+};
+
+} // namespace vcl
+
+#include "console_logger.cpp"
+
+#endif // VCL_MISC_LOGGER_CONSOLE_LOGGER_H

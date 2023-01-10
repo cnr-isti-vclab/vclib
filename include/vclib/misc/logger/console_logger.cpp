@@ -21,10 +21,35 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_LOGGER_H
-#define VCL_MISC_LOGGER_H
+#include "console_logger.h"
 
-#include "logger/console_logger.h"
-#include "logger/logger_concept.h"
+namespace vcl {
 
-#endif // VCL_MISC_LOGGER_H
+inline ConsoleLogger::ConsoleLogger(
+	std::ostream& errStream,
+	std::ostream& warnStream,
+	std::ostream& progStream,
+	std::ostream& debugStream) :
+		errStream(errStream),
+		warnStream(warnStream),
+		progStream(progStream),
+		debugStream(debugStream)
+{
+}
+
+inline std::ostream* ConsoleLogger::levelStream(LogLevel lvl)
+{
+	switch (lvl) {
+	case ERROR:
+		return &errStream;
+	case WARNING:
+		return &warnStream;
+	case PROGRESS:
+		return &progStream;
+	case DEBUG:
+		return &debugStream;
+	}
+	return nullptr;
+}
+
+} // namespace vcl
