@@ -110,8 +110,9 @@ double Logger<Stream>::percentage() const
 template<typename Stream>
 void Logger<Stream>::setPercentage(uint newPerc)
 {
-	assert(newPerc >= 0 && newPerc <= 100);
-	progress = step * newPerc;
+	if(newPerc >= 0 && newPerc <= 100) {
+		progress = step * newPerc;
+	}
 }
 
 template<typename Stream>

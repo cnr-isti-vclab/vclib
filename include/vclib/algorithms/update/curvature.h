@@ -25,6 +25,7 @@
 #define VCL_ALGORITHMS_UPDATE_CURVATURE_H
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/logger.h>
 
 namespace vcl {
 
@@ -32,13 +33,19 @@ typedef enum {
 	VCL_PRINCIPAL_CURVATURE_TAUBIN95
 } VCLibPrincipalCurvatureAlgorithm;
 
-template <HasPerVertexPrincipalCurvature MeshType>
-void updatePrincipalCurvatureTaubin95(MeshType& m);
+template <HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType = NullLogger>
+void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger);
 
-template<HasPerVertexPrincipalCurvature MeshType>
+template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvature(
 	MeshType&                        m,
-	VCLibPrincipalCurvatureAlgorithm alg = VCL_PRINCIPAL_CURVATURE_TAUBIN95);
+	LogType& log = nullLogger);
+
+template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType = NullLogger>
+void updatePrincipalCurvature(
+	MeshType&                        m,
+	VCLibPrincipalCurvatureAlgorithm alg = VCL_PRINCIPAL_CURVATURE_TAUBIN95,
+	LogType& log = nullLogger);
 
 } // namespace vcl
 

@@ -42,6 +42,9 @@
 
 int main(int argc, char **argv)
 {
+	vcl::ConsoleLogger log;
+	log.setPrintTimer(true);
+
 	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
 
 	m.enablePerVertexAdjacentFaces();
@@ -51,7 +54,8 @@ int main(int argc, char **argv)
 	vcl::updatePerFaceAdjacentFaces(m);
 	vcl::updatePerVertexAdjacentFaces(m);
 
-	vcl::updatePrincipalCurvature(m);
+	log.startTimer();
+	vcl::updatePrincipalCurvature(m, log);
 
 	vcl::setPerVertexScalarFromPrincipalCurvatureMean(m);
 	vcl::setPerVertexColorFromScalar(m);

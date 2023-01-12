@@ -31,8 +31,8 @@
 
 namespace vcl {
 
-template<HasPerVertexPrincipalCurvature MeshType>
-void updatePrincipalCurvatureTaubin95(MeshType& m)
+template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType>
+void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 {
 	vcl::requirePerVertexPrincipalCurvature(m);
 	vcl::requirePerVertexAdjacentFaces(m);
@@ -51,8 +51,20 @@ void updatePrincipalCurvatureTaubin95(MeshType& m)
 		bool isBorder;
 	};
 
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(0, "Updating per vertex normals...");
+	}
+
 	vcl::updatePerVertexNormalsAngleWeighted(m);
 	vcl::normalizePerVertexNormals(m);
+
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(5, "Computing per vertex curvature...");
+	}
+
+	uint logPerc = 5;
+	const uint logPercStep = 5;
+	uint logVertStep = m.vertexNumber() / ((95 / logPercStep) - 1);
 
 	for (VertexType& v : m.vertices()) {
 		std::vector<ScalarType> weights;
@@ -199,17 +211,37 @@ void updatePrincipalCurvatureTaubin95(MeshType& m)
 		v.principalCurvature().minDir()   = principalDir2;
 		v.principalCurvature().maxValue() = principalCurv1;
 		v.principalCurvature().minValue() = principalCurv2;
+
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			uint n = m.index(v);
+			if (n % logVertStep == 0) {
+				logPerc += logPercStep;
+				log.setPercentage(logPerc);
+			}
+		}
+	}
+
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(100, "Per vertex curvature computed.");
 	}
 }
 
-template<HasPerVertexPrincipalCurvature MeshType>
-void updatePrincipalCurvature(MeshType& m, VCLibPrincipalCurvatureAlgorithm alg)
+template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType>
+void updatePrincipalCurvature(MeshType& m, LogType& log)
+{
+	vcl::requirePerVertexPrincipalCurvature(m);
+
+	updatePrincipalCurvatureTaubin95(m, log);
+}
+
+template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType>
+void updatePrincipalCurvature(MeshType& m, VCLibPrincipalCurvatureAlgorithm alg, LogType& log)
 {
 	vcl::requirePerVertexPrincipalCurvature(m);
 
 	switch (alg) {
 	case VCL_PRINCIPAL_CURVATURE_TAUBIN95:
-		updatePrincipalCurvatureTaubin95(m);
+		updatePrincipalCurvatureTaubin95(m, log);
 		break;
 	}
 }

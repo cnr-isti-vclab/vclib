@@ -35,15 +35,33 @@ static NullLogger nullLogger;
 
 template <typename T>
 concept LoggerConcept =
-	std::is_same<T, NullLogger>::value || requires(T o, std::string msg)
+	std::is_same<T, NullLogger>::value || requires(
+		T o,
+		const T& co,
+		std::string msg,
+		typename T::LogLevel lvl)
 {
 	typename T::LogLevel;
+
+	{ o.enableIndentation() } -> std::same_as<void>;
+	{ o.disableIndentation() } -> std::same_as<void>;
+
 	{ o.reset() } -> std::same_as<void>;
+
+	{ o.setMaxLineWidth(uint()) } -> std::same_as<void>;
+	{ o.setPrintTimer(bool()) } -> std::same_as<void>;
+	{ o.startTimer() } -> std::same_as<void>;
+
 	{ o.startNewTask(double(), double(), msg) } -> std::same_as<void>;
 	{ o.endTask(msg) } -> std::same_as<void>;
-	{ o.percentage() } -> std::same_as<double>;
-	{ o.log(msg) } -> std::same_as<void>;
 
+	{ co.percentage() } -> std::same_as<double>;
+	{ o.setPercentage(uint()) } -> std::same_as<void>;
+
+	{ o.log(msg) } -> std::same_as<void>;
+	{ o.log(lvl, msg) } -> std::same_as<void>;
+	{ o.log(uint(), msg) } -> std::same_as<void>;
+	{ o.log(uint(), lvl, msg) } -> std::same_as<void>;
 };
 
 template <typename T>
