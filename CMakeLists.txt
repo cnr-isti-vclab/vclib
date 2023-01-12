@@ -53,7 +53,6 @@ set(HEADERS
 	include/vclib/algorithms/create.h
 	include/vclib/algorithms/export_to_matrix.h
 	include/vclib/algorithms/fitting.h
-	include/vclib/algorithms/grid.h
 	include/vclib/algorithms/intersection.h
 	include/vclib/algorithms/point_sampling.h
 	include/vclib/algorithms/polygon.h
@@ -261,13 +260,12 @@ set(HEADERS
 	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
-	include/vclib/space/grid.h
 	include/vclib/space/kd_tree.h
 	include/vclib/space/plane.h
 	include/vclib/space/point.h
 	include/vclib/space/principal_curvature.h
 	include/vclib/space/sampler.h
-	include/vclib/space/spatial_hash_table.h
+	include/vclib/space/spatial_data_structures.h
 	include/vclib/space/sphere.h
 	include/vclib/space/tex_coord.h
 	include/vclib/space/array/array_t.h
@@ -275,9 +273,12 @@ set(HEADERS
 	include/vclib/space/array/array3.h
 	include/vclib/space/array/array4.h
 	include/vclib/space/array/array_bool.h
-	include/vclib/space/grid/grid_t.h
-	include/vclib/space/grid/grid2.h
-	include/vclib/space/grid/grid3.h
+	include/vclib/space/spatial_data_structures/grid.h
+	include/vclib/space/spatial_data_structures/hash_table_grid.h
+	include/vclib/space/spatial_data_structures/static_grid.h
+	include/vclib/space/spatial_data_structures/grid/grid_t.h
+	include/vclib/space/spatial_data_structures/grid/grid2.h
+	include/vclib/space/spatial_data_structures/grid/grid3.h
 	include/vclib/space/point/point_concept.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
@@ -292,7 +293,6 @@ set(SOURCES
 	include/vclib/algorithms/clean.cpp
 	include/vclib/algorithms/export_to_matrix.cpp
 	include/vclib/algorithms/fitting.cpp
-	include/vclib/algorithms/grid.cpp
 	include/vclib/algorithms/intersection.cpp
 	include/vclib/algorithms/point_sampling.cpp
 	include/vclib/algorithms/polygon.cpp
@@ -424,16 +424,16 @@ set(SOURCES
 	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
-	include/vclib/space/spatial_hash_table.cpp
 	include/vclib/space/sphere.cpp
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/array/array_t.cpp
 	include/vclib/space/array/array2.cpp
 	include/vclib/space/array/array3.cpp
 	include/vclib/space/array/array4.cpp
-	include/vclib/space/grid/grid_t.cpp
-	include/vclib/space/grid/grid2.cpp
-	include/vclib/space/grid/grid3.cpp
+	include/vclib/space/spatial_data_structures/grid.cpp
+	include/vclib/space/spatial_data_structures/hash_table_grid.cpp
+	include/vclib/space/spatial_data_structures/static_grid.cpp
+	include/vclib/space/spatial_data_structures/grid/grid_t.cpp
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/point/point2.cpp
 	include/vclib/space/point/point3.cpp

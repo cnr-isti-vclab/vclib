@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,8 +21,41 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "grid2.h"
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_STATIC_GRID_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_STATIC_GRID_H
+
+#include <vector>
+
+#include "grid.h"
+
+#include <vclib/algorithms/stat/bounding_box.h>
+#include <vclib/misc/comparators.h>
 
 namespace vcl {
 
+template<typename GridType, typename ValueType>
+class StaticGrid : public GridType
+{
+public:
+	StaticGrid();
+
+	template<typename ObjIterator>
+	StaticGrid(ObjIterator begin, ObjIterator end);
+
+
+private:
+	std::vector<std::pair<uint, ValueType>> values;
+
+	std::vector<uint> grid;
+
+	template<typename ObjIterator>
+	void insertElements(ObjIterator begin, ObjIterator end);
+
+	void insertNode(typename GridType::CellCoord& cell, const ValueType& v);
+};
+
 } // namespace vcl
+
+#include "static_grid.cpp"
+
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_STATIC_GRID_H

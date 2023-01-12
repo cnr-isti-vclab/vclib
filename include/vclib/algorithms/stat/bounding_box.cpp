@@ -112,7 +112,7 @@ auto boundingBox(Iterator begin, Iterator end)
 	vcl::Box<typename Iterator::value_type> b;
 
 	for (; begin != end; ++begin)
-		b.add(*begin);
+		b.add(boundingBox(*begin));
 
 	return b;
 }

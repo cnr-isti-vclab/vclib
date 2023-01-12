@@ -21,26 +21,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "spatial_hash_table.h"
+#include "hash_table_grid.h"
 
 #include <vclib/algorithms/stat/bounding_box.h>
 
 namespace vcl {
 
 template<typename GridType, typename ValueType>
-SpatialHashTable<GridType, ValueType>::SpatialHashTable()
+HashTableGrid<GridType, ValueType>::HashTableGrid()
 {
 }
 
 template<typename GridType, typename ValueType>
-SpatialHashTable<GridType, ValueType>::SpatialHashTable(const GridType& grid) :
+HashTableGrid<GridType, ValueType>::HashTableGrid(const GridType& grid) :
 		GridType(grid)
 {
 }
 
 template<typename GridType, typename ValueType>
 template<PointConcept PointType>
-SpatialHashTable<GridType, ValueType>::SpatialHashTable(
+HashTableGrid<GridType, ValueType>::HashTableGrid(
 	const PointType& min,
 	const PointType& max,
 	const KeyType&   size) :
@@ -50,32 +50,32 @@ SpatialHashTable<GridType, ValueType>::SpatialHashTable(
 
 template<typename GridType, typename ValueType>
 template<typename BoxType>
-SpatialHashTable<GridType, ValueType>::SpatialHashTable(const BoxType& bbox, const KeyType& size) :
+HashTableGrid<GridType, ValueType>::HashTableGrid(const BoxType& bbox, const KeyType& size) :
 		GridType(bbox, size)
 {
 }
 
 template<typename GridType, typename ValueType>
-bool SpatialHashTable<GridType, ValueType>::empty() const
+bool HashTableGrid<GridType, ValueType>::empty() const
 {
 	return map.empty();
 }
 
 template<typename GridType, typename ValueType>
-std::size_t SpatialHashTable<GridType, ValueType>::size() const
+std::size_t HashTableGrid<GridType, ValueType>::size() const
 {
 	return map.size();
 }
 
 template<typename GridType, typename ValueType>
-bool SpatialHashTable<GridType, ValueType>::cellEmpty(const KeyType& k) const
+bool HashTableGrid<GridType, ValueType>::cellEmpty(const KeyType& k) const
 {
 	return map.find(k) == map.end();
 }
 
 template<typename GridType, typename ValueType>
-std::set<typename SpatialHashTable<GridType, ValueType>::KeyType>
-SpatialHashTable<GridType, ValueType>::nonEmptyCells() const
+std::set<typename HashTableGrid<GridType, ValueType>::KeyType>
+HashTableGrid<GridType, ValueType>::nonEmptyCells() const
 {
 	std::set<KeyType> keys;
 	for (const auto& p : map)
@@ -84,13 +84,13 @@ SpatialHashTable<GridType, ValueType>::nonEmptyCells() const
 }
 
 template<typename GridType, typename ValueType>
-std::size_t SpatialHashTable<GridType, ValueType>::countInCell(const KeyType& k) const
+std::size_t HashTableGrid<GridType, ValueType>::countInCell(const KeyType& k) const
 {
 	return map.count(k);
 }
 
 template<typename GridType, typename ValueType>
-uint SpatialHashTable<GridType, ValueType>::countInSphere(
+uint HashTableGrid<GridType, ValueType>::countInSphere(
 	const Sphere<typename GridType::ScalarType>& s) const
 {
 	return valuesInSphere(s).size();
@@ -98,22 +98,22 @@ uint SpatialHashTable<GridType, ValueType>::countInSphere(
 
 template<typename GridType, typename ValueType>
 std::pair<
-	typename SpatialHashTable<GridType, ValueType>::const_iterator,
-	typename SpatialHashTable<GridType, ValueType>::const_iterator>
-SpatialHashTable<GridType, ValueType>::valuesInCell(const KeyType& k) const
+	typename HashTableGrid<GridType, ValueType>::const_iterator,
+	typename HashTableGrid<GridType, ValueType>::const_iterator>
+HashTableGrid<GridType, ValueType>::valuesInCell(const KeyType& k) const
 {
 	return map.equal_range(k);
 }
 
 template<typename GridType, typename ValueType>
-std::vector<typename SpatialHashTable<GridType, ValueType>::const_iterator>
-SpatialHashTable<GridType, ValueType>::valuesInSphere(
+std::vector<typename HashTableGrid<GridType, ValueType>::const_iterator>
+HashTableGrid<GridType, ValueType>::valuesInSphere(
 	const vcl::Sphere<typename GridType::ScalarType>& s) const
 {
 	// ValueType having removed the pointer, if present
 	using VT = typename std::remove_pointer<ValueType>::type;
 
-	std::vector<typename SpatialHashTable<GridType, ValueType>::const_iterator> set;
+	std::vector<typename HashTableGrid<GridType, ValueType>::const_iterator> set;
 
 	// interval of cells containing the sphere
 	KeyType first = GridType::cell(s.center() - s.radius());
@@ -149,22 +149,28 @@ SpatialHashTable<GridType, ValueType>::valuesInSphere(
 }
 
 template<typename GridType, typename ValueType>
-void SpatialHashTable<GridType, ValueType>::clear()
+void HashTableGrid<GridType, ValueType>::clear()
 {
 	map.clear();
 }
 
 template<typename GridType, typename ValueType>
-void SpatialHashTable<GridType, ValueType>::insert(const KeyType &k, const ValueType &v)
+void HashTableGrid<GridType, ValueType>::insert(const KeyType &k, const ValueType &v)
 {
 	map.insert(MapValueType(k, v));
 }
 
 template<typename GridType, typename ValueType>
-void SpatialHashTable<GridType, ValueType>::insert(const ValueType& v)
+void HashTableGrid<GridType, ValueType>::insert(const ValueType& v)
 {
+	// ValueType could be anything. We need to understand first if it is a pointer or not,
+	// and then insert the value only if it is not nullptr
+
+	// VT is:
+	// - ValueType if ValueType is not a pointer
+	// - The Type pointed by ValueType, if ValueType is a pointer
 	using VT = typename std::remove_pointer<ValueType>::type;
-	const VT* vv = nullptr;
+	const VT* vv = nullptr; // vv is a pointer to VT
 	if constexpr(std::is_pointer<ValueType>::value) {
 		vv = v;
 	}
@@ -172,16 +178,16 @@ void SpatialHashTable<GridType, ValueType>::insert(const ValueType& v)
 		vv = &v;
 	}
 
-	if (vv) {
-		if constexpr (PointConcept<VT>) {
+	if (vv) { // vv is a pointer (ValueType or ValueType* if ValueType is not a pointer)
+		if constexpr (PointConcept<VT>) { // if the ValueType was a Point (or Point*)
 			typename GridType::CellCoord cell = GridType::cell(*vv);
 			insert(cell, v);
 		}
-		else if constexpr (VertexConcept<VT>) {
+		else if constexpr (VertexConcept<VT>) { // if the ValueType was a Vertex (or Vertex*)
 			typename GridType::CellCoord cell = GridType::cell(vv->coord());
 			insert(cell, v);
 		}
-		else {
+		else { // else, call the boundingBox function
 			typename GridType::BBoxType bb = vcl::boundingBox(*vv);
 
 			typename GridType::CellCoord bmin = GridType::cell(bb.min);
@@ -195,7 +201,7 @@ void SpatialHashTable<GridType, ValueType>::insert(const ValueType& v)
 }
 
 template<typename GridType, typename ValueType>
-bool SpatialHashTable<GridType, ValueType>::erase(const KeyType& k, const ValueType& v)
+bool HashTableGrid<GridType, ValueType>::erase(const KeyType& k, const ValueType& v)
 {
 	std::pair<iterator, iterator> range = map.equal_range(k);
 	for(iterator ci = range.first; ci != range.second; ++ci) {
@@ -208,7 +214,7 @@ bool SpatialHashTable<GridType, ValueType>::erase(const KeyType& k, const ValueT
 }
 
 template<typename GridType, typename ValueType>
-bool SpatialHashTable<GridType, ValueType>::erase(const ValueType& v)
+bool HashTableGrid<GridType, ValueType>::erase(const ValueType& v)
 {
 	using VT = typename std::remove_pointer<ValueType>::type;
 	const VT* vv = nullptr;
@@ -246,7 +252,7 @@ bool SpatialHashTable<GridType, ValueType>::erase(const ValueType& v)
 }
 
 template<typename GridType, typename ValueType>
-bool SpatialHashTable<GridType, ValueType>::eraseCell(const KeyType& k)
+bool HashTableGrid<GridType, ValueType>::eraseCell(const KeyType& k)
 {
 	std::pair<iterator,iterator> range = map.equal_range(k);
 	if (range != map.end()) {
@@ -257,7 +263,7 @@ bool SpatialHashTable<GridType, ValueType>::eraseCell(const KeyType& k)
 }
 
 template<typename GridType, typename ValueType>
-void SpatialHashTable<GridType, ValueType>::eraseInSphere(
+void HashTableGrid<GridType, ValueType>::eraseInSphere(
 	const Sphere<typename GridType::ScalarType>& s)
 {
 	std::vector<iterator> toDel = valuesInSphere(s);
@@ -266,15 +272,15 @@ void SpatialHashTable<GridType, ValueType>::eraseInSphere(
 }
 
 template<typename GridType, typename ValueType>
-typename SpatialHashTable<GridType, ValueType>::const_iterator
-SpatialHashTable<GridType, ValueType>::begin() const
+typename HashTableGrid<GridType, ValueType>::const_iterator
+HashTableGrid<GridType, ValueType>::begin() const
 {
 	return map.begin();
 }
 
 template<typename GridType, typename ValueType>
-typename SpatialHashTable<GridType, ValueType>::const_iterator
-SpatialHashTable<GridType, ValueType>::end() const
+typename HashTableGrid<GridType, ValueType>::const_iterator
+HashTableGrid<GridType, ValueType>::end() const
 {
 	return map.end();
 }

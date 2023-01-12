@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -199,6 +199,37 @@ Grid<Scalar, N>::cells(const CellCoord& first, const CellCoord& last) const
 		&Grid<Scalar, N>::cellEnd,
 		first,
 		last);
+}
+
+template<typename Scalar, int N>
+uint Grid<Scalar, N>::indexOfCell(const CellCoord& c) const
+{
+	unsigned long int ind = c[0];
+	assert(indices[0] < sizes[0]);
+	for (unsigned int i = 1; i < N; i++) {
+		assert(c[i] < sizes[i]);
+		ind *= siz[i];
+		ind += c[i];
+	}
+	return ind;
+}
+
+template<typename Scalar, int N>
+typename Grid<Scalar, N>::CellCoord Grid<Scalar, N>::cellOfIndex(uint index) const
+{
+	typename Grid<Scalar, N>::CellCoord c;
+	for (long int i = N - 1; i >= 0; i--) {
+		c[i] = index % siz[i];
+		index /= siz[i];
+	}
+	return c;
+}
+
+template<typename Scalar, int N>
+void Grid<Scalar, N>::set(const Box<Point<Scalar, N> >& box, const Point<uint, N>& size)
+{
+	bbox = box;
+	siz = size;
 }
 
 } // namespace vcl

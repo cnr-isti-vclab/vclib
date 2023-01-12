@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,22 +21,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_GRID2_H
-#define VCL_SPACE_GRID_GRID2_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_H
 
-#include "grid_t.h"
+#include "grid/grid2.h"
+#include "grid/grid3.h"
 
 namespace vcl {
 
-template<typename Scalar>
-class Grid2 : public Grid<Scalar, 2>
-{
-public:
-	using Grid<Scalar, 2>::Grid;
-};
+template<PointConcept PointType>
+vcl::Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements);
 
 } // namespace vcl
 
-#include "grid2.cpp"
+#include "grid.cpp"
 
-#endif // VCL_SPACE_GRID_GRID2_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_H

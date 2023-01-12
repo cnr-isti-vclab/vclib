@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_HASH_TABLE_H
-#define VCL_SPACE_SPATIAL_HASH_TABLE_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_HASH_TABLE_GRID_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_HASH_TABLE_GRID_H
 
 #include "grid.h"
 
@@ -35,22 +35,22 @@
 namespace vcl {
 
 template<typename GridType, typename ValueType>
-class SpatialHashTable : public GridType
+class HashTableGrid : public GridType
 {
 public:
 	using KeyType = typename GridType::CellCoord;
 
 	using const_iterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
 
-	SpatialHashTable();
+	HashTableGrid();
 
-	SpatialHashTable(const GridType& grid);
+	HashTableGrid(const GridType& grid);
 
 	template<PointConcept PointType>
-	SpatialHashTable(const PointType& min, const PointType& max, const KeyType& size);
+	HashTableGrid(const PointType& min, const PointType& max, const KeyType& size);
 
 	template<typename BoxType>
-	SpatialHashTable(const BoxType& bbox, const KeyType& size);
+	HashTableGrid(const BoxType& bbox, const KeyType& size);
 
 	bool empty() const;
 	std::size_t size() const;
@@ -84,13 +84,13 @@ private:
 };
 
 template<typename ValueType, typename ScalarType = double>
-using SpatialHashTable2 = SpatialHashTable<Grid2<ScalarType>, ValueType>;
+using SpatialHashTable2 = HashTableGrid<Grid2<ScalarType>, ValueType>;
 
 template<typename ValueType, typename ScalarType = double>
-using SpatialHashTable3 = SpatialHashTable<Grid3<ScalarType>, ValueType>;
+using SpatialHashTable3 = HashTableGrid<Grid3<ScalarType>, ValueType>;
 
 } // namespace vcl
 
-#include "spatial_hash_table.cpp"
+#include "hash_table_grid.cpp"
 
-#endif // VCL_SPACE_SPATIAL_HASH_TABLE_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_HASH_TABLE_GRID_H

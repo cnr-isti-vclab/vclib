@@ -52,6 +52,15 @@ struct UnorderedPairComparator
 	}
 };
 
+template<typename Pair>
+struct FirstElementPairComparator
+{
+	bool operator()(const Pair& p1, const Pair& p2) const
+	{
+		return p1.first < p2.first;
+	}
+};
+
 } // namespace vcl
 
 #endif // VCL_MISC_COMPARATORS_H

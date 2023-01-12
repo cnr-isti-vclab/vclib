@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -39,13 +39,15 @@ Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElement
 	using Scalar = typename PointType::ScalarType;
 
 	static const int DIM = PointType::DIM;
-	Point<uint, PointType::DIM> sizes;
 
 	const uint   mincells = 1;                   // Numero minimo di celle
 	const Scalar GFactor  = 1;                   // GridEntry = NumElem*GFactor
 	const Scalar diag     = lengths.norm();      // Diagonale del box
 	const Scalar eps      = diag * 1e-4;         // Fattore di tolleranza
 	const uint   ncell    = nElements * GFactor; // Calcolo numero di voxel
+
+	Point<uint, PointType::DIM> sizes;
+	sizes.setConstant(mincells);
 
 	bool sanityCheckLengths = true;
 	uint lessEpsDimNumber = 0;

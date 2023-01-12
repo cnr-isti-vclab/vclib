@@ -23,8 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/space/grid.h>
-#include <vclib/space/spatial_hash_table.h>
+#include <vclib/space/spatial_data_structures.h>
 
 int main()
 {
@@ -37,7 +36,7 @@ int main()
 
 	std::cerr << "\n";
 
-	vcl::SpatialHashTable<vcl::Grid3<double>, vcl::Point<double, 3>> sht(g);
+	vcl::HashTableGrid<vcl::Grid3<double>, vcl::Point<double, 3>> sht(g);
 
 	sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
 	sht.insert(vcl::Point3d(0.02, 0.12, 0.29));

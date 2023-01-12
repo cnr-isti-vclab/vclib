@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,64 +21,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_GRID_T_H
-#define VCL_SPACE_GRID_GRID_T_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID3_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID3_H
 
-#include <vclib/iterators/grid/cell_iterator.h>
-#include <vclib/iterators/grid/cell_range_iterator.h>
-#include <vclib/space/box.h>
+#include "grid_t.h"
 
 namespace vcl {
 
-template<typename Scalar, int N>
-class Grid
+template<typename Scalar>
+class Grid3 : public Grid<Scalar, 3>
 {
 public:
-	static const int DIM  = N;
-	using ScalarType      = Scalar;
-	using PointType       = Point<Scalar, N>;
-	using CellCoord       = Point<uint, N>;
-	using BBoxType        = Box<PointType>;
-
-	using CellIterator = vcl::CellIterator<N>;
-	using CellRangeIterator = vcl::CellRangeIterator<Grid<Scalar, N>, CellIterator>;
-
-	Grid() = default;
-	Grid(const Point<Scalar, N>& min, const Point<Scalar, N>& max, const Point<uint, N>& size);
-	Grid(const Box<Point<Scalar, N>>& bbox, const Point<uint, N>& size);
-
-	Point<Scalar, N> min() const;
-	Point<Scalar, N> max() const;
-
-	Scalar length(uint d) const;
-	Point<Scalar, N> lengths() const;
-
-	uint cellNumber(uint d) const;
-	Point<uint, N> cellNumbers() const;
-
-	Scalar cellLength(uint d) const;
-	Point<Scalar, N> cellLengths() const;
-
-	uint cell(uint d, const Scalar& s) const;
-	CellCoord cell(const Point<Scalar, N>& p) const;
-
-	Point<Scalar, N> cellLowerCorner(const CellCoord& c) const;
-
-	Box<Point<Scalar, N>> cellBox(const CellCoord& c) const;
-
-	CellIterator cellBegin() const;
-	CellIterator cellBegin(const CellCoord& first, const CellCoord& last) const;
-	CellIterator cellEnd() const;
-	CellRangeIterator cells() const;
-	CellRangeIterator cells(const CellCoord& first, const CellCoord& last) const;
-
-private:
-	BBoxType       bbox;
-	Point<uint, N> siz;
+	using Grid<Scalar, 3>::Grid;
 };
 
 } // namespace vcl
 
-#include "grid_t.cpp"
-
-#endif // VCL_SPACE_GRID_GRID_T_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID3_H
