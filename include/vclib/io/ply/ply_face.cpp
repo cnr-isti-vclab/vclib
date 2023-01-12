@@ -233,7 +233,7 @@ void loadFacesTxt(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 		mesh.addFace();
 		FaceType& f = mesh.face(mesh.faceNumber() - 1);
-		for (ply::Property p : header.faceProperties()) {
+		for (const ply::Property& p : header.faceProperties()) {
 			if (token == spaceTokenizer.end()) {
 				throw vcl::MalformedFileException("Unexpected end of line.");
 			}
@@ -250,7 +250,7 @@ void loadFacesBin(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
 		uint      ffid = mesh.addFace();
 		FaceType& f    = mesh.face(ffid);
-		for (ply::Property p : header.faceProperties()) {
+		for (const ply::Property& p : header.faceProperties()) {
 			loadFaceProperty(file, mesh, f, p);
 		}
 	}
@@ -269,7 +269,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 	std::vector<int> vIndices = mesh.vertexCompactIndices();
 
 	for (const FaceType& f : mesh.faces()) {
-		for (ply::Property p : header.faceProperties()) {
+		for (const ply::Property& p : header.faceProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name == ply::vertex_indices) {
 				internal::saveFaceIndices(file, p, mesh, vIndices, f, bin);

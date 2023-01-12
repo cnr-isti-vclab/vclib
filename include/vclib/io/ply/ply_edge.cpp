@@ -37,7 +37,7 @@ void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 	std::vector<int> vIndices = mesh.vertexCompactIndices();
 
 	for (const EdgeType& e : mesh.edges()) {
-		for (ply::Property p : header.edgeProperties()) {
+		for (const ply::Property& p : header.edgeProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name == ply::vertex1) {
 				io::internal::writeProperty(file, vIndices[mesh.index(e.vertex(0))], p.type, bin);

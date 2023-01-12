@@ -117,7 +117,7 @@ void loadPly(
 		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
 	}
 	try {
-		for (ply::Element el : header) {
+		for (const ply::Element& el : header) {
 			switch (el.type) {
 			case ply::VERTEX: ply::loadVertices(file, header, m); break;
 			case ply::FACE: ply::loadFaces(file, header, m); break;

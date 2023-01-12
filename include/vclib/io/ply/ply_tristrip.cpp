@@ -72,7 +72,7 @@ void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
 	for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
 		vcl::Tokenizer spaceTokenizer = vcl::io::internal::nextNonEmptyTokenizedLine(file);
 		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
-		for (ply::Property p : header.triStripsProperties()) {
+		for (const ply::Property& p : header.triStripsProperties()) {
 			if (token == spaceTokenizer.end()) {
 				throw vcl::MalformedFileException("Unexpected end of line.");
 			}
@@ -103,7 +103,7 @@ template<FaceMeshConcept MeshType>
 void loadTriStripsBin(std::ifstream& file, const PlyHeader& header, MeshType& m)
 {
 	for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
-		for (ply::Property p : header.triStripsProperties()) {
+		for (const ply::Property& p : header.triStripsProperties()) {
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
 				uint             tSize = io::internal::readProperty<uint>(file, p.listSizeType);

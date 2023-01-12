@@ -950,8 +950,10 @@ uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
 		}
 		prev = &he;
 	}
-	hef->prev() = prev;
-	prev->next() = hef;
+	if (prev != nullptr) {
+		hef->prev() = prev;
+		prev->next() = hef;
+	}
 	f.outerHalfEdge() = hef;
 	return first;
 }

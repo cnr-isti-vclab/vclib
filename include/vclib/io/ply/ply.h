@@ -73,7 +73,7 @@ struct Element
 {
 	ElementType         type;
 	std::list<Property> properties;
-	uint        numberElements;
+	uint                numberElements;
 	std::string         unknownElementType; // used when an element is not recognized
 };
 

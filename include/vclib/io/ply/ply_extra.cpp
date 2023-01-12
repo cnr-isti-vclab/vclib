@@ -58,7 +58,7 @@ void readUnknownElements(std::ifstream& file, const PlyHeader& header, ply::Elem
 	}
 	else {
 		for (uint i = 0; i < el.numberElements; ++i) {
-			for (Property p : el.properties) {
+			for (const Property& p : el.properties) {
 				if (p.list) {
 					uint s = io::internal::readProperty<int>(file, p.listSizeType);
 					for (uint i = 0; i < s; ++i)

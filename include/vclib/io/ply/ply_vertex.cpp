@@ -107,7 +107,7 @@ void loadVerticesTxt(
 		vcl::Tokenizer spaceTokenizer = io::internal::nextNonEmptyTokenizedLine(file);
 		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 		VertexType& v = mesh.vertex(vid);
-		for (ply::Property p : header.vertexProperties()) {
+		for (const ply::Property& p : header.vertexProperties()) {
 			if (token == spaceTokenizer.end()){
 				throw vcl::MalformedFileException("Unexpected end of line.");
 			}
@@ -126,7 +126,7 @@ void loadVerticesBin(
 	mesh.addVertices(header.numberVertices());
 	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
 		VertexType& v = mesh.vertex(vid);
-		for (ply::Property p : header.vertexProperties()) {
+		for (const ply::Property& p : header.vertexProperties()) {
 			loadVertexProperty(file, mesh, v, p);
 		}
 	}
@@ -144,7 +144,7 @@ void saveVertices(
 
 	bool bin = header.format() == ply::BINARY;
 	for(const VertexType& v : mesh.vertices()) {
-		for (ply::Property p : header.vertexProperties()) {
+		for (const ply::Property& p : header.vertexProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name >= ply::x && p.name <= ply::z) {
 				io::internal::writeProperty(file, v.coord()[p.name - ply::x], p.type, bin);
