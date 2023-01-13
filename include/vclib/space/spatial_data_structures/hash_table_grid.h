@@ -29,7 +29,9 @@
 #include <set>
 #include <unordered_map>
 
+//#include <vclib/iterators/grid/hash_table_grid_iterator.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/markable_vector.h>
 #include <vclib/space/sphere.h>
 
 namespace vcl {
@@ -40,17 +42,18 @@ class HashTableGrid : public GridType
 public:
 	using KeyType = typename GridType::CellCoord;
 
-	using const_iterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
+	//using Iterator = HashTableGridIterator<KeyType, ValueType>;
+	//using const_iterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
 
 	HashTableGrid();
 
 	HashTableGrid(const GridType& grid);
 
 	template<PointConcept PointType>
-	HashTableGrid(const PointType& min, const PointType& max, const KeyType& size);
+	HashTableGrid(const PointType& min, const PointType& max, const KeyType& sizes);
 
 	template<typename BoxType>
-	HashTableGrid(const BoxType& bbox, const KeyType& size);
+	HashTableGrid(const BoxType& bbox, const KeyType& sizes);
 
 	bool empty() const;
 	std::size_t size() const;
@@ -58,30 +61,34 @@ public:
 	std::set<KeyType> nonEmptyCells() const;
 
 	std::size_t countInCell(const KeyType& k) const;
-	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
+	//uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
-	std::pair<const_iterator, const_iterator> valuesInCell(const KeyType& k) const;
-	std::vector<const_iterator> valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
+	std::vector<std::reference_wrapper<const ValueType>> valuesInCell(const KeyType& k) const;
+	//std::vector<const_iterator> valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	void clear();
 
-	void insert(const ValueType& v);
+	bool insert(const ValueType& v);
 
-	bool erase(const KeyType& k, const ValueType& v);
 	bool erase(const ValueType& v);
 	bool eraseCell(const KeyType& k);
-	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
+	//void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
 
-	const_iterator begin() const;
-	const_iterator end() const;
+	//const_iterator begin() const;
+	//const_iterator end() const;
 
 private:
-	using iterator = typename std::unordered_multimap<KeyType, ValueType>::iterator;
-	using MapValueType = typename std::unordered_multimap<KeyType, ValueType>::value_type;
+	using iterator = typename std::unordered_multimap<KeyType, uint>::iterator;
+	using MapValueType = typename std::unordered_multimap<KeyType, uint>::value_type;
 
-	std::unordered_multimap<KeyType, ValueType> map;
+	vcl::MarkableVector<ValueType> values;
+	std::size_t valuesNumber = 0; // actual number of values accessible by the map, could differ
+								  // from values.size()
 
-	void insert(const KeyType& k, const ValueType& v);
+	std::unordered_multimap<KeyType, uint> map;
+
+	bool insert(const KeyType& k, const ValueType& v, uint vid);
+	std::pair<bool, uint> erase(const KeyType& k, const ValueType& v);
 };
 
 template<typename ValueType, typename ScalarType = double>

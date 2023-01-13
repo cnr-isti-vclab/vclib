@@ -39,9 +39,12 @@ int main()
 	vcl::HashTableGrid<vcl::Grid3<double>, vcl::Point<double, 3>> sht(g);
 
 	sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
+	sht.insert(vcl::Point3d(0.05, 0.15, 0.25)); // duplicate won't be inserted
 	sht.insert(vcl::Point3d(0.02, 0.12, 0.29));
 
 	sht.insert(vcl::Point3d(0.24, 0.52, 0.29));
+
+	std::cerr << "Number values in hashtable: " << sht.size() << "\n";
 
 	for (const auto& c : sht.nonEmptyCells()) {
 		std::cerr << c << "\n";
@@ -50,24 +53,24 @@ int main()
 	std::cerr << "Count: " << sht.countInCell(vcl::Point3<uint>(0,1,2)) << "\n";
 
 	auto p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto it = p.first; it != p.second; it++) {
-		std::cerr << it->second << "; ";
+	for (auto& it : p) {
+		std::cerr << it.get() << "; ";
 	}
 	std::cerr << "\n";
 
 	sht.erase(vcl::Point3d(0.05, 0.15, 0.25));
 	p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto it = p.first; it != p.second; it++) {
-		std::cerr << it->second << "; ";
+	for (auto& it : p) {
+		std::cerr << it.get() << "; ";
 	}
 	std::cerr << "\n\n";
 
-	auto set  = sht.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.1});
+	//auto set  = sht.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.1});
 
-	for (auto it : set) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n\n";
+//	for (auto it : set) {
+//		std::cerr << it->second << "; ";
+//	}
+//	std::cerr << "\n\n";
 
 	return 0;
 }
