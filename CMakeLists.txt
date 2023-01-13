@@ -108,6 +108,7 @@ set(HEADERS
 	include/vclib/iterators/range_iterator.h
 	include/vclib/iterators/grid/cell_iterator.h
 	include/vclib/iterators/grid/cell_range_iterator.h
+	include/vclib/iterators/grid/hash_table_grid_iterator.h
 	include/vclib/iterators/half_edge/face_adj_face_iterator.h
 	include/vclib/iterators/half_edge/face_base_iterator.h
 	include/vclib/iterators/half_edge/face_half_edge_iterator.h
@@ -341,6 +342,7 @@ set(SOURCES
 	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/iterators/container_iterator.cpp
 	include/vclib/iterators/grid/cell_iterator.cpp
+	include/vclib/iterators/grid/hash_table_grid_iterator.cpp
 	include/vclib/iterators/half_edge/face_base_iterator.cpp
 	include/vclib/iterators/half_edge/vertex_base_iterator.cpp
 	include/vclib/math/distribution.cpp

@@ -113,7 +113,7 @@ HashTableGrid<GridType, ValueType>::valuesInSphere(
 	// ValueType having removed the pointer, if present
 	using VT = typename std::remove_pointer<ValueType>::type;
 
-	std::vector<typename HashTableGrid<GridType, ValueType>::const_iterator> set;
+	std::vector<typename HashTableGrid<GridType, ValueType>::const_iterator> resVec;
 
 	// interval of cells containing the sphere
 	KeyType first = GridType::cell(s.center() - s.radius());
@@ -142,10 +142,10 @@ HashTableGrid<GridType, ValueType>::valuesInSphere(
 			}
 
 			if (test)
-				set.push_back(it);
+				resVec.push_back(it);
 		}
 	}
-	return set;
+	return resVec;
 }
 
 template<typename GridType, typename ValueType>
