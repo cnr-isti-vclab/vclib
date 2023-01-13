@@ -242,6 +242,7 @@ set(HEADERS
 	include/vclib/misc/file_info.h
 	include/vclib/misc/hash.h
 	include/vclib/misc/logger.h
+	include/vclib/misc/markable_vector.h
 	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/parallel.h
 	include/vclib/misc/string.h
@@ -260,7 +261,6 @@ set(HEADERS
 	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
-	include/vclib/space/kd_tree.h
 	include/vclib/space/plane.h
 	include/vclib/space/point.h
 	include/vclib/space/principal_curvature.h
@@ -275,6 +275,7 @@ set(HEADERS
 	include/vclib/space/array/array_bool.h
 	include/vclib/space/spatial_data_structures/grid.h
 	include/vclib/space/spatial_data_structures/hash_table_grid.h
+	include/vclib/space/spatial_data_structures/kd_tree.h
 	include/vclib/space/spatial_data_structures/static_grid.h
 	include/vclib/space/spatial_data_structures/grid/grid_t.h
 	include/vclib/space/spatial_data_structures/grid/grid2.h
@@ -407,6 +408,7 @@ set(SOURCES
 	include/vclib/mesh_utils/tri_poly_index_bimap.cpp
 	include/vclib/misc/compactness.cpp
 	include/vclib/misc/file_info.cpp
+	include/vclib/misc/markable_vector.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
 	include/vclib/misc/parallel.cpp
 	include/vclib/misc/string.cpp
@@ -420,7 +422,6 @@ set(SOURCES
 	include/vclib/render/mesh_render_settings.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
-	include/vclib/space/kd_tree.cpp
 	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
@@ -432,6 +433,7 @@ set(SOURCES
 	include/vclib/space/array/array4.cpp
 	include/vclib/space/spatial_data_structures/grid.cpp
 	include/vclib/space/spatial_data_structures/hash_table_grid.cpp
+	include/vclib/space/spatial_data_structures/kd_tree.cpp
 	include/vclib/space/spatial_data_structures/static_grid.cpp
 	include/vclib/space/spatial_data_structures/grid/grid_t.cpp
 	include/vclib/space/point/point_t.cpp

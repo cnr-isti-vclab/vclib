@@ -155,12 +155,6 @@ void HashTableGrid<GridType, ValueType>::clear()
 }
 
 template<typename GridType, typename ValueType>
-void HashTableGrid<GridType, ValueType>::insert(const KeyType &k, const ValueType &v)
-{
-	map.insert(MapValueType(k, v));
-}
-
-template<typename GridType, typename ValueType>
 void HashTableGrid<GridType, ValueType>::insert(const ValueType& v)
 {
 	// ValueType could be anything. We need to understand first if it is a pointer or not,
@@ -283,6 +277,12 @@ typename HashTableGrid<GridType, ValueType>::const_iterator
 HashTableGrid<GridType, ValueType>::end() const
 {
 	return map.end();
+}
+
+template<typename GridType, typename ValueType>
+void HashTableGrid<GridType, ValueType>::insert(const KeyType &k, const ValueType &v)
+{
+	map.insert(MapValueType(k, v));
 }
 
 } // namespace vcl

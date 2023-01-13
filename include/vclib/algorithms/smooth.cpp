@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -26,7 +26,7 @@
 #include <cmath>
 #include <vector>
 
-#include <vclib/space/kd_tree.h>
+#include <vclib/space/spatial_data_structures/kd_tree.h>
 
 namespace vcl {
 

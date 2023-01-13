@@ -21,26 +21,74 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_MISC_MARKABLE_VECTOR_H
+#define VCL_MISC_MARKABLE_VECTOR_H
 
-#include <vclib/tri_mesh.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/space/spatial_data_structures.h>
+#include "types.h"
 
-#include <doctest/doctest.h>
+namespace vcl {
 
-std::vector<uint> getKNearestNeighbors(const vcl::Point3d& p, uint k, std::string mesh = "bone.ply")
+template<typename ValueType>
+class MarkableVector
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/" + mesh);
+public:
+	using Iterator = typename std::vector<ValueType>::iterator;
+	using ConstIterator = typename std::vector<ValueType>::iterator;
+	using ReverseIterator = typename std::vector<ValueType>::reverse_iterator;
+	using ConstReverseIterator = typename std::vector<ValueType>::const_reverse_iterator;
 
-	vcl::KDTree<vcl::Point3d> tree(m);
+	MarkableVector();
 
-	return tree.kNearestNeighborsIndices(p, k);
-}
+	MarkableVector(std::size_t size);
+	MarkableVector(std::size_t size, const ValueType& defaultValue);
 
-static const vcl::Point3d p(0.5, 0.5, 0.5);
+	template<typename ValueIterator>
+	MarkableVector(ValueIterator begin, ValueIterator end);
 
-TEST_CASE("testing nearest neighbours to [0.5, 0.5, 0.5] in bone.ply") {
-	CHECK(getKNearestNeighbors(p, 1)[0] == 1558);
-	CHECK(getKNearestNeighbors(p, 5) == std::vector<uint>{1558, 1613, 1720, 1576, 163});
-}
+	bool empty() const;
+	std::size_t size() const;
+
+	void clear();
+	void reserve(std::size_t size);
+	std::size_t capacity() const;
+	void resize(std::size_t size);
+	void resize(std::size_t size, const ValueType& defaultValue);
+
+	void insert(uint p, const ValueType& v);
+	void erase(uint p);
+	void pushBack(const ValueType& v);
+	void popBack();
+
+	bool isMarked(uint i) const;
+	void mark(uint i) const;
+	void unMarkAll() const;
+
+	ValueType* data();
+	const ValueType* data() const;
+
+	ValueType& at(uint i);
+	const ValueType& at(uint i) const;
+	ValueType& operator[](uint i);
+	const ValueType& operator[](uint i) const;
+
+	ValueType& front();
+	const ValueType& front() const;
+	ValueType& back();
+	const ValueType& back() const;
+
+	Iterator begin();
+	ConstIterator begin() const;
+	Iterator end();
+	ConstIterator end() const;
+
+private:
+	std::vector<ValueType> vector;
+	mutable std::vector<uint> marks;
+	mutable uint m = 1;
+};
+
+} // namespace vcl
+
+#include "markable_vector.cpp"
+
+#endif // VCL_MISC_MARKABLE_VECTOR_H

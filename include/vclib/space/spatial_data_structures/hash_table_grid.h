@@ -65,7 +65,6 @@ public:
 
 	void clear();
 
-	void insert(const KeyType& k, const ValueType& v);
 	void insert(const ValueType& v);
 
 	bool erase(const KeyType& k, const ValueType& v);
@@ -81,6 +80,8 @@ private:
 	using MapValueType = typename std::unordered_multimap<KeyType, ValueType>::value_type;
 
 	std::unordered_multimap<KeyType, ValueType> map;
+
+	void insert(const KeyType& k, const ValueType& v);
 };
 
 template<typename ValueType, typename ScalarType = double>
