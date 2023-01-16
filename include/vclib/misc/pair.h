@@ -21,63 +21,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "hash_table_grid_iterator.h"
+#ifndef VCL_MISC_PAIR_H
+#define VCL_MISC_PAIR_H
+
+#include <vclib/misc/types.h>
 
 namespace vcl {
 
-template<typename KeyType, typename ValueType>
-HashTableGridIterator<KeyType, ValueType>::HashTableGridIterator()
+template<typename T1, typename T2>
+class RefPair
 {
-}
+public:
+	RefPair(T1& f, T2& s) : first(f), second(s) {}
+	T1& first;
+	T2& second;
+};
 
-template<typename KeyType, typename ValueType>
-HashTableGridIterator<KeyType, ValueType>::HashTableGridIterator(
-	MapIt                                 it,
-	const vcl::MarkableVector<ValueType>& vec) :
-		mapIt(it),
-		vec(&vec)
+template<typename T1, typename T2>
+class KeyValueRefPair : public RefPair<T1, T2>
 {
-}
-
-template<typename KeyType, typename ValueType>
-typename HashTableGridIterator<KeyType, ValueType>::value_type
-HashTableGridIterator<KeyType, ValueType>::operator *() const
-{
-	return KeyValueRefPair<const KeyType, const ValueType>(mapIt->first, (*vec)[mapIt->second]);
-}
-
-template<typename KeyType, typename ValueType>
-typename HashTableGridIterator<KeyType, ValueType>::ArrowHelper
-HashTableGridIterator<KeyType, ValueType>::operator->() const
-{
-	return **this;
-}
-
-template<typename KeyType, typename ValueType>
-bool HashTableGridIterator<KeyType, ValueType>::operator==(const HashTableGridIterator& oi) const
-{
-	return mapIt == oi.mapIt;
-}
-
-template<typename KeyType, typename ValueType>
-bool HashTableGridIterator<KeyType, ValueType>::operator!=(const HashTableGridIterator& oi) const
-{
-	return mapIt != oi.mapIt;
-}
-
-template<typename KeyType, typename ValueType>
-HashTableGridIterator<KeyType, ValueType> HashTableGridIterator<KeyType, ValueType>::operator++()
-{
-	++mapIt;
-	return *this;
-}
-
-template<typename KeyType, typename ValueType>
-HashTableGridIterator<KeyType, ValueType> HashTableGridIterator<KeyType, ValueType>::operator++(int)
-{
-	HashTableGridIterator old = *this;
-	++mapIt;
-	return old;
-}
+public:
+	KeyValueRefPair(T1& f, T2& s) : RefPair<T1, T2>(f, s) {}
+	T1& key = RefPair<T1, T2>::first;
+	T2& value = RefPair<T1, T2>::second;
+};
 
 } // namespace vcl
+
+#endif // VCL_MISC_PAIR_H

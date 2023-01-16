@@ -89,69 +89,70 @@ std::size_t HashTableGrid<GridType, ValueType>::countInCell(const KeyType& k) co
 	return map.count(k);
 }
 
-//template<typename GridType, typename ValueType>
-//uint HashTableGrid<GridType, ValueType>::countInSphere(
-//	const Sphere<typename GridType::ScalarType>& s) const
-//{
-//	return valuesInSphere(s).size();
-//}
+template<typename GridType, typename ValueType>
+uint HashTableGrid<GridType, ValueType>::countInSphere(
+	const Sphere<typename GridType::ScalarType>& s) const
+{
+	return valuesInSphere(s).size();
+}
 
 template<typename GridType, typename ValueType>
-std::vector<std::reference_wrapper<const ValueType>>
+std::pair<
+	typename HashTableGrid<GridType, ValueType>::Iterator,
+	typename HashTableGrid<GridType, ValueType>::Iterator>
 HashTableGrid<GridType, ValueType>::valuesInCell(const KeyType& k) const
 {
 	auto p = map.equal_range(k);
-	std::vector<std::reference_wrapper<const ValueType>> res;
-	res.reserve(std::distance(p.first, p.second));
-
-	for(auto it = p.first; it != p.second; ++it)
-		res.push_back(std::cref(values[it->second]));
-
-	return res;
+	return std::make_pair(Iterator(p.first, values), Iterator(p.second, values));
 }
 
-//template<typename GridType, typename ValueType>
-//std::vector<typename HashTableGrid<GridType, ValueType>::const_iterator>
-//HashTableGrid<GridType, ValueType>::valuesInSphere(
-//	const vcl::Sphere<typename GridType::ScalarType>& s) const
-//{
-//	// ValueType having removed the pointer, if present
-//	using VT = typename std::remove_pointer<ValueType>::type;
+template<typename GridType, typename ValueType>
+std::vector<typename HashTableGrid<GridType, ValueType>::Iterator>
+HashTableGrid<GridType, ValueType>::valuesInSphere(
+	const vcl::Sphere<typename GridType::ScalarType>& s) const
+{
+	// ValueType having removed the pointer, if present
+	using VT = typename std::remove_pointer<ValueType>::type;
 
-//	std::vector<typename HashTableGrid<GridType, ValueType>::const_iterator> resVec;
+	std::vector<typename HashTableGrid<GridType, ValueType>::Iterator> resVec;
 
-//	// interval of cells containing the sphere
-//	KeyType first = GridType::cell(s.center() - s.radius());
-//	KeyType last = GridType::cell(s.center() + s.radius());
+	// interval of cells containing the sphere
+	KeyType first = GridType::cell(s.center() - s.radius());
+	KeyType last = GridType::cell(s.center() + s.radius());
 
-//	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
-//		const auto& p = valuesInCell(c);
-//		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-//			const VT* vv = nullptr; // vv will point to the current value
-//			if constexpr(std::is_pointer<ValueType>::value) {
-//				vv = it->second;
-//			}
-//			else {
-//				vv = &(it->second);
-//			}
+	values.unMarkAll();
 
-//			bool test = false;
-//			if constexpr(PointConcept<VT>) { // check if the point value is inside the sphere
-//				test = vv && s.isInside(*vv);
-//			}
-//			else if constexpr(VertexConcept<VT>) { // check if the vertex coord is inside the sphere
-//				test = vv && s.isInside(vv->coord());
-//			}
-//			else { // check if the bbox of the value intersects the sphere
-//				test = vv && s.intersects(vcl::boundingBox(*vv));
-//			}
+	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
+		const auto& p = valuesInCell(c);
+		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
+			const VT* vv = nullptr; // vv will point to the current value
+			if constexpr(std::is_pointer<ValueType>::value) {
+				vv = it->value;
+			}
+			else {
+				vv = &(it->value);
+			}
 
-//			if (test)
-//				resVec.push_back(it);
-//		}
-//	}
-//	return resVec;
-//}
+			bool test = false;
+			if constexpr(PointConcept<VT>) { // check if the point value is inside the sphere
+				test = vv && s.isInside(*vv);
+			}
+			else if constexpr(VertexConcept<VT>) { // check if the vertex coord is inside the sphere
+				test = vv && s.isInside(vv->coord());
+			}
+			else { // check if the bbox of the value intersects the sphere
+				if (!values.isMarked(it.mapIt->second)) {
+					test = vv && s.intersects(vcl::boundingBox(*vv));
+					values.mark(it.mapIt->second);
+				}
+			}
+
+			if (test)
+				resVec.push_back(it);
+		}
+	}
+	return resVec;
+}
 
 template<typename GridType, typename ValueType>
 void HashTableGrid<GridType, ValueType>::clear()
@@ -277,28 +278,28 @@ bool HashTableGrid<GridType, ValueType>::eraseCell(const KeyType& k)
 	return false;
 }
 
-//template<typename GridType, typename ValueType>
-//void HashTableGrid<GridType, ValueType>::eraseInSphere(
-//	const Sphere<typename GridType::ScalarType>& s)
-//{
-//	std::vector<iterator> toDel = valuesInSphere(s);
-//	for (auto& it : toDel)
-//		map.erase(it);
-//}
+template<typename GridType, typename ValueType>
+void HashTableGrid<GridType, ValueType>::eraseInSphere(
+	const Sphere<typename GridType::ScalarType>& s)
+{
+	std::vector<Iterator> toDel = valuesInSphere(s);
+	for (auto& it : toDel)
+		map.erase(it.mapIt);
+}
 
-//template<typename GridType, typename ValueType>
-//typename HashTableGrid<GridType, ValueType>::const_iterator
-//HashTableGrid<GridType, ValueType>::begin() const
-//{
-//	return map.begin();
-//}
+template<typename GridType, typename ValueType>
+typename HashTableGrid<GridType, ValueType>::Iterator
+HashTableGrid<GridType, ValueType>::begin() const
+{
+	return Iterator(map.begin(), values);
+}
 
-//template<typename GridType, typename ValueType>
-//typename HashTableGrid<GridType, ValueType>::const_iterator
-//HashTableGrid<GridType, ValueType>::end() const
-//{
-//	return map.end();
-//}
+template<typename GridType, typename ValueType>
+typename HashTableGrid<GridType, ValueType>::Iterator
+HashTableGrid<GridType, ValueType>::end() const
+{
+	return Iterator(map.end(), values);
+}
 
 template<typename GridType, typename ValueType>
 bool HashTableGrid<GridType, ValueType>::insert(const KeyType &k, const ValueType& v, uint vid)

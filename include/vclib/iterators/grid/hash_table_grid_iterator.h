@@ -27,28 +27,41 @@
 #include <unordered_map>
 
 #include <vclib/misc/markable_vector.h>
+#include <vclib/misc/pair.h>
 #include <vclib/space/point.h>
 
 namespace vcl {
 
+template<typename GridType, typename ValueType>
+class HashTableGrid;
+
 template<typename KeyType, typename ValueType>
 class HashTableGridIterator
 {
+	template<typename GridType, typename VT>
+	friend class HashTableGrid;
+
 private:
-	using MapIt = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
+	using MapIt = typename std::unordered_multimap<KeyType, uint>::const_iterator;
 
 public:
-	using T =
-		std::pair<std::reference_wrapper<const KeyType>, std::reference_wrapper<const ValueType>>;
+	using T = KeyValueRefPair<const KeyType, const ValueType>;
 	using value_type = T;
-	using reference         = T&;
-	using pointer           = T*;
+
+	class ArrowHelper
+	{
+		T value;
+
+	public:
+		ArrowHelper(T value) : value(value) {}
+		const T* operator->() const { return &value; }
+	};
 
 	HashTableGridIterator();
 	HashTableGridIterator(MapIt it, const vcl::MarkableVector<ValueType>& vec);
 
-	reference operator*() const;
-	pointer   operator->() const;
+	value_type  operator*() const;
+	ArrowHelper operator->() const;
 
 	bool operator==(const HashTableGridIterator& oi) const;
 	bool operator!=(const HashTableGridIterator& oi) const;
@@ -57,7 +70,7 @@ public:
 	HashTableGridIterator operator++(int);
 
 private:
-	MapIt it;
+	MapIt mapIt;
 	const vcl::MarkableVector<ValueType>* vec = nullptr;
 };
 

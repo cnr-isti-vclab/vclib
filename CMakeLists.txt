@@ -245,6 +245,7 @@ set(HEADERS
 	include/vclib/misc/logger.h
 	include/vclib/misc/markable_vector.h
 	include/vclib/misc/nested_initializer_lists.h
+	include/vclib/misc/pair.h
 	include/vclib/misc/parallel.h
 	include/vclib/misc/string.h
 	include/vclib/misc/timer.h

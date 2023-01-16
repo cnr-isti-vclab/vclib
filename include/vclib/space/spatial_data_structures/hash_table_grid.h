@@ -29,7 +29,7 @@
 #include <set>
 #include <unordered_map>
 
-//#include <vclib/iterators/grid/hash_table_grid_iterator.h>
+#include <vclib/iterators/grid/hash_table_grid_iterator.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/markable_vector.h>
 #include <vclib/space/sphere.h>
@@ -42,8 +42,7 @@ class HashTableGrid : public GridType
 public:
 	using KeyType = typename GridType::CellCoord;
 
-	//using Iterator = HashTableGridIterator<KeyType, ValueType>;
-	//using const_iterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
+	using Iterator = HashTableGridIterator<KeyType, ValueType>;
 
 	HashTableGrid();
 
@@ -61,10 +60,10 @@ public:
 	std::set<KeyType> nonEmptyCells() const;
 
 	std::size_t countInCell(const KeyType& k) const;
-	//uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
+	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
-	std::vector<std::reference_wrapper<const ValueType>> valuesInCell(const KeyType& k) const;
-	//std::vector<const_iterator> valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
+	std::pair<Iterator, Iterator> valuesInCell(const KeyType& k) const;
+	std::vector<Iterator> valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	void clear();
 
@@ -72,10 +71,10 @@ public:
 
 	bool erase(const ValueType& v);
 	bool eraseCell(const KeyType& k);
-	//void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
+	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
 
-	//const_iterator begin() const;
-	//const_iterator end() const;
+	Iterator begin() const;
+	Iterator end() const;
 
 private:
 	using iterator = typename std::unordered_multimap<KeyType, uint>::iterator;

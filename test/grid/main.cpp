@@ -50,27 +50,42 @@ int main()
 		std::cerr << c << "\n";
 	}
 
+	std::cerr << "Values in HashTableGrid: \n";
+
+	for (const auto& p : sht) {
+		std::cerr << p.key << ": " << p.value << "\n";
+	}
+
 	std::cerr << "Count: " << sht.countInCell(vcl::Point3<uint>(0,1,2)) << "\n";
 
 	auto p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto& it : p) {
-		std::cerr << it.get() << "; ";
+	for (auto& it = p.first; it != p.second; ++it) {
+		std::cerr << it->value << "; ";
 	}
 	std::cerr << "\n";
 
-	sht.erase(vcl::Point3d(0.05, 0.15, 0.25));
-	p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto& it : p) {
-		std::cerr << it.get() << "; ";
+//	sht.erase(vcl::Point3d(0.05, 0.15, 0.25));
+//	p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
+//	for (auto& it = p.first; it != p.second; ++it) {
+//		std::cerr << it->second.get() << "; ";
+//	}
+//	std::cerr << "\n\n";
+
+	auto set  = sht.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.1});
+
+	std::cerr << "Values in sphere: \n";
+	for (auto it : set) {
+		std::cerr << it->value << "; ";
 	}
 	std::cerr << "\n\n";
 
-	//auto set  = sht.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.1});
+	sht.eraseInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.1});
 
-//	for (auto it : set) {
-//		std::cerr << it->second << "; ";
-//	}
-//	std::cerr << "\n\n";
+	std::cerr << "Values in HashTableGrid: \n";
+
+	for (const auto& p : sht) {
+		std::cerr << p.key << ": " << p.value << "\n";
+	}
 
 	return 0;
 }
