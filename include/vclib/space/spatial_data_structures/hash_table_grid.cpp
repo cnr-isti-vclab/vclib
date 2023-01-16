@@ -27,20 +27,36 @@
 
 namespace vcl {
 
-template<typename GridType, typename ValueType>
-HashTableGrid<GridType, ValueType>::HashTableGrid()
+/**
+ * @brief Empty constructor, creates an usable HashTableGrid, since the Grid on which construct
+ * the has table is not initialized.
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid()
 {
 }
 
-template<typename GridType, typename ValueType>
-HashTableGrid<GridType, ValueType>::HashTableGrid(const GridType& grid) :
+/**
+ * @brief Creates a HashTableGrid that allows to store ValueType values on the given grid.
+ * @param grid
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(const GridType& grid) :
 		GridType(grid)
 {
 }
 
-template<typename GridType, typename ValueType>
+/**
+ * @brief Creates a HashTableGrid that allows to store ValueType values on a Grid having `min` as
+ * minimum coordinte of the Grid, `max` as maximum coordinate of the grid, and the number of cells
+ * per dimension given by `sizes`.
+ * @param min
+ * @param max
+ * @param sizes
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
 template<PointConcept PointType>
-HashTableGrid<GridType, ValueType>::HashTableGrid(
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
 	const PointType& min,
 	const PointType& max,
 	const KeyType&   sizes) :
@@ -48,16 +64,35 @@ HashTableGrid<GridType, ValueType>::HashTableGrid(
 {
 }
 
-template<typename GridType, typename ValueType>
+/**
+ * @brief Creates a HashTableGrid that allows to store ValueType values on a Grid bounded by `bbox`,
+ * and having the number of cells per dimension given by `sizes`.
+ * @param bbox
+ * @param sizes
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
 template<typename BoxType>
-HashTableGrid<GridType, ValueType>::HashTableGrid(const BoxType& bbox, const KeyType& sizes) :
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
+	const BoxType& bbox,
+	const KeyType& sizes) :
 		GridType(bbox, sizes)
 {
 }
 
-template<typename GridType, typename ValueType>
+/**
+ * @brief Creates an HashTableGrid that contains all the elements that can be iterated from `begin`
+ * to `end`.
+ *
+ * The bounding box and the sizes of the Grid are automatically computed.
+ * Bounding box is computed starting from the bounding box of all the iterated elements, and then
+ * inflated. The number of cells per dimension is computed using the `vcl::bestGridSize` function.
+ *
+ * @param begin
+ * @param end
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
 template<typename ObjIterator>
-HashTableGrid<GridType, ValueType>::HashTableGrid(ObjIterator begin, ObjIterator end)
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(ObjIterator begin, ObjIterator end)
 {
 	using ScalarType = typename GridType::ScalarType;
 	using BBoxType = typename GridType::BBoxType;
@@ -80,27 +115,35 @@ HashTableGrid<GridType, ValueType>::HashTableGrid(ObjIterator begin, ObjIterator
 	}
 }
 
-template<typename GridType, typename ValueType>
-bool HashTableGrid<GridType, ValueType>::empty() const
+/**
+ * @brief Returns true if the HashTableGrid is empty (no elements in it).
+ * @return
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::empty() const
 {
 	return map.empty();
 }
 
-template<typename GridType, typename ValueType>
-std::size_t HashTableGrid<GridType, ValueType>::size() const
-{
-	return valuesNumber;
-}
-
-template<typename GridType, typename ValueType>
-bool HashTableGrid<GridType, ValueType>::cellEmpty(const KeyType& k) const
+/**
+ * @brief Returns true if the given cell coordinate does not contain elements in it.
+ * @param k
+ * @return
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::cellEmpty(const KeyType& k) const
 {
 	return map.find(k) == map.end();
 }
 
-template<typename GridType, typename ValueType>
-std::set<typename HashTableGrid<GridType, ValueType>::KeyType>
-HashTableGrid<GridType, ValueType>::nonEmptyCells() const
+/**
+ * @brief Returns an std::set containing the cell coordinates of all the cells that contain at least
+ * one element.
+ * @return
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+std::set<typename HashTableGrid<GridType, ValueType, AllowDuplicates>::KeyType>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::nonEmptyCells() const
 {
 	std::set<KeyType> keys;
 	for (const auto& p : map)
@@ -108,38 +151,43 @@ HashTableGrid<GridType, ValueType>::nonEmptyCells() const
 	return keys;
 }
 
-template<typename GridType, typename ValueType>
-std::size_t HashTableGrid<GridType, ValueType>::countInCell(const KeyType& k) const
+/**
+ * @brief Returns the number of elements contained in the given cell.
+ * @param k
+ * @return
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+std::size_t HashTableGrid<GridType, ValueType, AllowDuplicates>::countInCell(const KeyType& k) const
 {
 	return map.count(k);
 }
 
-template<typename GridType, typename ValueType>
-uint HashTableGrid<GridType, ValueType>::countInSphere(
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+uint HashTableGrid<GridType, ValueType, AllowDuplicates>::countInSphere(
 	const Sphere<typename GridType::ScalarType>& s) const
 {
 	return valuesInSphere(s).size();
 }
 
-template<typename GridType, typename ValueType>
+template<typename GridType, typename ValueType, bool AllowDuplicates>
 std::pair<
-	typename HashTableGrid<GridType, ValueType>::Iterator,
-	typename HashTableGrid<GridType, ValueType>::Iterator>
-HashTableGrid<GridType, ValueType>::valuesInCell(const KeyType& k) const
+	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator,
+	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::valuesInCell(const KeyType& k) const
 {
 	auto p = map.equal_range(k);
 	return std::make_pair(Iterator(p.first), Iterator(p.second));
 }
 
-template<typename GridType, typename ValueType>
-std::vector<typename HashTableGrid<GridType, ValueType>::Iterator>
-HashTableGrid<GridType, ValueType>::valuesInSphere(
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+std::vector<typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::valuesInSphere(
 	const vcl::Sphere<typename GridType::ScalarType>& s) const
 {
 	// ValueType having removed the pointer, if present
 	using VT = typename std::remove_pointer<ValueType>::type;
 
-	std::vector<typename HashTableGrid<GridType, ValueType>::Iterator> resVec;
+	std::vector<typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator> resVec;
 
 	// interval of cells containing the sphere
 	KeyType first = GridType::cell(s.center() - s.radius());
@@ -179,14 +227,24 @@ HashTableGrid<GridType, ValueType>::valuesInSphere(
 	return resVec;
 }
 
-template<typename GridType, typename ValueType>
-void HashTableGrid<GridType, ValueType>::clear()
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+void HashTableGrid<GridType, ValueType, AllowDuplicates>::clear()
 {
 	map.clear();
 }
 
-template<typename GridType, typename ValueType>
-bool HashTableGrid<GridType, ValueType>::insert(const ValueType& v)
+/**
+ * @brief Inserts the given element in the HashTableGrid.
+ *
+ * If the ValueType is Puntual (a Point or a Vertex), the element will be inserted in just one
+ * cell of the grid. If the element is a spatial object having a bounding box with min != max, the
+ * element will be stored in all the cells where its bounding box lies.
+ *
+ * @param v
+ * @return
+ */
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(const ValueType& v)
 {
 	// ValueType could be anything. We need to understand first if it is a pointer or not,
 	// and then insert the value only if it is not nullptr
@@ -203,20 +261,14 @@ bool HashTableGrid<GridType, ValueType>::insert(const ValueType& v)
 		vv = &v;
 	}
 
-	if (vv) { // vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
+	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
 		if constexpr (PointConcept<VT>) { // if the ValueType was a Point (or Point*)
 			typename GridType::CellCoord cell = GridType::cell(*vv);
-			if (insert(cell, v)) {
-				valuesNumber++;
-				return true;
-			}
+			return insert(cell, v);
 		}
 		else if constexpr (VertexConcept<VT>) { // if the ValueType was a Vertex (or Vertex*)
 			typename GridType::CellCoord cell = GridType::cell(vv->coord());
-			if (insert(cell, v)) {
-				valuesNumber++;
-				return true;
-			}
+			return insert(cell, v);
 		}
 		else { // else, call the boundingBox function
 			typename GridType::BBoxType bb = vcl::boundingBox(*vv);
@@ -228,10 +280,7 @@ bool HashTableGrid<GridType, ValueType>::insert(const ValueType& v)
 			for (const auto& cell : GridType::cells(bmin, bmax)) {
 				ins |= insert(cell, v);
 			}
-			if (ins) {
-				valuesNumber++;
-				return true;
-			}
+			return ins;
 		}
 	}
 	return false;
@@ -244,9 +293,9 @@ bool HashTableGrid<GridType, ValueType>::insert(const ValueType& v)
  * @param end
  * @return
  */
-template<typename GridType, typename ValueType>
+template<typename GridType, typename ValueType, bool AllowDuplicates>
 template<typename ObjIterator>
-uint HashTableGrid<GridType, ValueType>::insert(ObjIterator begin, ObjIterator end)
+uint HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(ObjIterator begin, ObjIterator end)
 {
 	uint cnt = 0;
 	for (ObjIterator it = begin; it != end; ++it)
@@ -255,8 +304,8 @@ uint HashTableGrid<GridType, ValueType>::insert(ObjIterator begin, ObjIterator e
 	return cnt;
 }
 
-template<typename GridType, typename ValueType>
-bool HashTableGrid<GridType, ValueType>::erase(const ValueType& v)
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::erase(const ValueType& v)
 {
 	using VT = typename std::remove_pointer<ValueType>::type;
 	const VT* vv = nullptr;
@@ -270,17 +319,11 @@ bool HashTableGrid<GridType, ValueType>::erase(const ValueType& v)
 	if (vv) {
 		if constexpr (PointConcept<VT>) {
 			typename GridType::CellCoord cell = GridType::cell(*vv);
-			auto p = erase(cell, v);
-			if (p.first)
-				valuesNumber--;
-			return p.first;
+			return erase(cell, v);
 		}
 		else if constexpr (VertexConcept<VT>) {
 			typename GridType::CellCoord cell = GridType::cell(vv->coord());
-			auto p = erase(cell, v);
-			if (p.first)
-				valuesNumber--;
-			return p.first;
+			return erase(cell, v);
 		}
 		else {
 			typename GridType::BBoxType bb = vcl::boundingBox(*vv);
@@ -288,25 +331,18 @@ bool HashTableGrid<GridType, ValueType>::erase(const ValueType& v)
 			typename GridType::CellCoord bmin = GridType::cell(bb.min);
 			typename GridType::CellCoord bmax = GridType::cell(bb.max);
 
-			auto found = std::make_pair(false, 0);
-
+			bool found = false;
 			for (const auto& cell : GridType::cells(bmin, bmax)) {
-				auto p = erase(cell, v);
-				if (p.first) {
-					assert(!found.first || found.second == p.second);
-					found = p;
-				}
+				found |= erase(cell, v);
 			}
-			if (found.first)
-				valuesNumber--;
-			return found.first;
+			return found;
 		}
 	}
 	return false;
 }
 
-template<typename GridType, typename ValueType>
-bool HashTableGrid<GridType, ValueType>::eraseCell(const KeyType& k)
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseCell(const KeyType& k)
 {
 	std::pair<MapIterator,MapIterator> range = map.equal_range(k);
 	if (range != map.end()) {
@@ -316,8 +352,8 @@ bool HashTableGrid<GridType, ValueType>::eraseCell(const KeyType& k)
 	return false;
 }
 
-template<typename GridType, typename ValueType>
-void HashTableGrid<GridType, ValueType>::eraseInSphere(
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+void HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInSphere(
 	const Sphere<typename GridType::ScalarType>& s)
 {
 	std::vector<Iterator> toDel = valuesInSphere(s);
@@ -325,64 +361,77 @@ void HashTableGrid<GridType, ValueType>::eraseInSphere(
 		map.erase(it.mapIt);
 }
 
-template<typename GridType, typename ValueType>
-typename HashTableGrid<GridType, ValueType>::Iterator
-HashTableGrid<GridType, ValueType>::begin() const
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator
+HashTableGrid<GridType, ValueType, AllowDuplicates>::begin() const
 {
 	return Iterator(map.begin());
 }
 
-template<typename GridType, typename ValueType>
-typename HashTableGrid<GridType, ValueType>::Iterator
-HashTableGrid<GridType, ValueType>::end() const
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator
+HashTableGrid<GridType, ValueType, AllowDuplicates>::end() const
 {
 	return Iterator(map.end());
 }
 
-template<typename GridType, typename ValueType>
-bool HashTableGrid<GridType, ValueType>::insert(const KeyType &k, const ValueType& v)
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(
+	const KeyType&   k,
+	const ValueType& v)
 {
-	auto range = map.equal_range(k);
-	bool found = false;
-	for(MapIterator ci = range.first; ci != range.second && !found; ++ci) {
-		if (ci->second == v) {
-			found = true;
-		}
-	}
-	if (!found)
+	if constexpr (AllowDuplicates) {
 		map.insert(MapValueType(k, Markable<ValueType>(v)));
-	return !found;
+		return true;
+	}
+	else {
+		auto range = map.equal_range(k);
+		bool found = false;
+		for(MapIterator ci = range.first; ci != range.second && !found; ++ci) {
+			if (ci->second == v) {
+				found = true;
+			}
+		}
+		if (!found)
+			map.insert(MapValueType(k, Markable<ValueType>(v)));
+		return !found;
+	}
 }
 
-template<typename GridType, typename ValueType>
-std::pair<bool, uint> HashTableGrid<GridType, ValueType>::erase(
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::erase(
 	const KeyType& k,
 	const ValueType& v)
 {
+	bool found = false;
+
 	std::pair<MapIterator, MapIterator> range = map.equal_range(k);
 	for(MapIterator ci = range.first; ci != range.second; ++ci) {
 		if (ci->second == v) {
+			found = true;
 			map.erase(ci);
-			return std::make_pair(true, ci->second);
+			if constexpr (!AllowDuplicates) {
+				return true;
+			}
 		}
 	}
-	return std::make_pair(false, 0);
+	return found;
 }
 
-template<typename GridType, typename ValueType>
-bool HashTableGrid<GridType, ValueType>::isMarked(MapIterator it) const
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::isMarked(MapIterator it) const
 {
 	return it->second.mark() == m;
 }
 
-template<typename GridType, typename ValueType>
-void HashTableGrid<GridType, ValueType>::mark(MapIterator it) const
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+void HashTableGrid<GridType, ValueType, AllowDuplicates>::mark(MapIterator it) const
 {
 	it->second.mark() = m;
 }
 
-template<typename GridType, typename ValueType>
-void HashTableGrid<GridType, ValueType>::unMarkAll() const
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+void HashTableGrid<GridType, ValueType, AllowDuplicates>::unMarkAll() const
 {
 	m++;
 }

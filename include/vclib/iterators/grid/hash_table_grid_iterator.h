@@ -32,13 +32,13 @@
 
 namespace vcl {
 
-template<typename GridType, typename ValueType>
+template<typename GridType, typename ValueType, bool AllowDuplicates>
 class HashTableGrid;
 
 template<typename KeyType, typename ValueType>
 class HashTableGridIterator
 {
-	template<typename GridType, typename VT>
+	template<typename GridType, typename VT, bool AD>
 	friend class HashTableGrid;
 
 private:

@@ -78,14 +78,18 @@ Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElement
 		// at least one lenght is less than epsilon
 		else {
 			for (uint i = 0; i < DIM; i++) {
-				if (isLessEps[i]) {
+				if (isLessEps[i]) { // the ith dimension is less than epsilon
 					sizes(i) = 1;
 				}
 				else {
+					// compute the product between all the dimensions that are not i and not less
+					// than epsilon
 					Scalar product = 1;
 					for (uint j = 0; j < DIM; j++)
 						if (j != i && !isLessEps[j])
 							product *= lengths(j);
+
+					// ith dimension size
 					sizes(i) =
 						std::pow((ncell * lengths(i) / product), (1.0 / greaterEpsDimNumber));
 				}
@@ -93,7 +97,7 @@ Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElement
 		}
 
 		for (uint i = 0; i < DIM; i++)
-			sizes(i) = std::max(sizes(i),1);
+			sizes(i) = std::max(sizes(i), 1);
 	}
 
 	return sizes;

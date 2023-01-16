@@ -38,16 +38,15 @@ namespace vcl {
 
 /**
  * @brief The HashTableGrid class stores N-Dimensional spatial elements (that could be anything on
- * which it can be computed a bounding box) in a regular grid, using a Hash Table having the Cell
- * Grid coordinate as key type.
+ * which it can be computed a N-dimensional bounding box) in a regular grid, using a Hash Table
+ * having the Cell Grid coordinate as key type.
  *
  * This Grid allows to perform insertion, deletions and queries in a time that depends only on the
  * number of elements contained in the involved cell(s) during the operation.
- *
- * The Grid Cells on which elements are placed in the data structure is not controlled by the user,
- * but is automatically computed using the bounding box of the elements.
+ * The user can permit the insertion of duplicate values by setting to true the AllowDuplicates
+ * template parameter.
  */
-template<typename GridType, typename ValueType>
+template<typename GridType, typename ValueType, bool AllowDuplicates = false>
 class HashTableGrid : public GridType
 {
 public:
@@ -69,7 +68,6 @@ public:
 	HashTableGrid(ObjIterator begin, ObjIterator end);
 
 	bool empty() const;
-	std::size_t size() const;
 	bool cellEmpty(const KeyType& k) const;
 	std::set<KeyType> nonEmptyCells() const;
 
@@ -98,25 +96,22 @@ private:
 	using MapIterator  = typename MapType::iterator;
 	using MapValueType = typename MapType::value_type;
 
-	std::size_t valuesNumber = 0; // actual number of values accessible by the map, could differ
-								  // from values.size()
-
 	mutable uint m = 1;
 	MapType map;
 
 	bool insert(const KeyType& k, const ValueType& v);
-	std::pair<bool, uint> erase(const KeyType& k, const ValueType& v);
+	bool erase(const KeyType& k, const ValueType& v);
 
 	bool isMarked(MapIterator it) const;
 	void mark(MapIterator it) const;
 	void unMarkAll() const;
 };
 
-template<typename ValueType, typename ScalarType = typename ValueType::ScalarType>
-using HashTableGrid2 = HashTableGrid<Grid2<ScalarType>, ValueType>;
+template<typename ValueType, bool AD = false, typename ScalarType = typename ValueType::ScalarType>
+using HashTableGrid2 = HashTableGrid<Grid2<ScalarType>, ValueType, AD>;
 
-template<typename ValueType, typename ScalarType = typename ValueType::ScalarType>
-using HashTableGrid3 = HashTableGrid<Grid3<ScalarType>, ValueType>;
+template<typename ValueType, bool AD = false, typename ScalarType = typename ValueType::ScalarType>
+using HashTableGrid3 = HashTableGrid<Grid3<ScalarType>, ValueType, AD>;
 
 } // namespace vcl
 
