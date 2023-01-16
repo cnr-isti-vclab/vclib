@@ -94,17 +94,22 @@ public:
 	Iterator end() const;
 
 private:
-	using iterator = typename std::unordered_multimap<KeyType, uint>::iterator;
-	using MapValueType = typename std::unordered_multimap<KeyType, uint>::value_type;
+	using MapType      = typename std::unordered_multimap<KeyType, vcl::Markable<ValueType>>;
+	using MapIterator  = typename MapType::iterator;
+	using MapValueType = typename MapType::value_type;
 
-	vcl::MarkableVector<ValueType> values;
 	std::size_t valuesNumber = 0; // actual number of values accessible by the map, could differ
 								  // from values.size()
 
-	std::unordered_multimap<KeyType, uint> map;
+	mutable uint m = 1;
+	MapType map;
 
-	bool insert(const KeyType& k, const ValueType& v, uint vid);
+	bool insert(const KeyType& k, const ValueType& v);
 	std::pair<bool, uint> erase(const KeyType& k, const ValueType& v);
+
+	bool isMarked(MapIterator it) const;
+	void mark(MapIterator it) const;
+	void unMarkAll() const;
 };
 
 template<typename ValueType, typename ScalarType = typename ValueType::ScalarType>

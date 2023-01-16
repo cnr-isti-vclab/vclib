@@ -37,11 +37,12 @@ class Markable : public Type
 {
 public:
 	using Type::Type;
+	Markable(const Type& t) : Type(t) {}
 
-	uint& mark() { return m; }
-	uint mark() const { return m; }
+	uint& mark() const { return m; }
+
 private:
-	uint m;
+	mutable uint m = 0;
 };
 
 } // namespace vcl

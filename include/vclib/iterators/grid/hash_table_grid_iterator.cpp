@@ -31,11 +31,8 @@ HashTableGridIterator<KeyType, ValueType>::HashTableGridIterator()
 }
 
 template<typename KeyType, typename ValueType>
-HashTableGridIterator<KeyType, ValueType>::HashTableGridIterator(
-	MapIt                                 it,
-	const vcl::MarkableVector<ValueType>& vec) :
-		mapIt(it),
-		vec(&vec)
+HashTableGridIterator<KeyType, ValueType>::HashTableGridIterator(MapIt it) :
+		mapIt(it)
 {
 }
 
@@ -43,7 +40,7 @@ template<typename KeyType, typename ValueType>
 typename HashTableGridIterator<KeyType, ValueType>::value_type
 HashTableGridIterator<KeyType, ValueType>::operator *() const
 {
-	return KeyValueRefPair<const KeyType, const ValueType>(mapIt->first, (*vec)[mapIt->second]);
+	return KeyValueRefPair<const KeyType, const ValueType>(mapIt->first, mapIt->second);
 }
 
 template<typename KeyType, typename ValueType>

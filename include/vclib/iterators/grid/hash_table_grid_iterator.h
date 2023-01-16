@@ -42,7 +42,7 @@ class HashTableGridIterator
 	friend class HashTableGrid;
 
 private:
-	using MapIt = typename std::unordered_multimap<KeyType, uint>::const_iterator;
+	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>>::const_iterator;
 
 public:
 	using T = KeyValueRefPair<const KeyType, const ValueType>;
@@ -58,7 +58,7 @@ public:
 	};
 
 	HashTableGridIterator();
-	HashTableGridIterator(MapIt it, const vcl::MarkableVector<ValueType>& vec);
+	HashTableGridIterator(MapIt it);
 
 	value_type  operator*() const;
 	ArrowHelper operator->() const;
@@ -71,7 +71,6 @@ public:
 
 private:
 	MapIt mapIt;
-	const vcl::MarkableVector<ValueType>* vec = nullptr;
 };
 
 } // namespace vcl

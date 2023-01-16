@@ -83,13 +83,13 @@ HashTableGrid<GridType, ValueType>::HashTableGrid(ObjIterator begin, ObjIterator
 template<typename GridType, typename ValueType>
 bool HashTableGrid<GridType, ValueType>::empty() const
 {
-	return values.empty();
+	return map.empty();
 }
 
 template<typename GridType, typename ValueType>
 std::size_t HashTableGrid<GridType, ValueType>::size() const
 {
-	return values.size();
+	return valuesNumber;
 }
 
 template<typename GridType, typename ValueType>
@@ -128,7 +128,7 @@ std::pair<
 HashTableGrid<GridType, ValueType>::valuesInCell(const KeyType& k) const
 {
 	auto p = map.equal_range(k);
-	return std::make_pair(Iterator(p.first, values), Iterator(p.second, values));
+	return std::make_pair(Iterator(p.first), Iterator(p.second));
 }
 
 template<typename GridType, typename ValueType>
@@ -145,7 +145,7 @@ HashTableGrid<GridType, ValueType>::valuesInSphere(
 	KeyType first = GridType::cell(s.center() - s.radius());
 	KeyType last = GridType::cell(s.center() + s.radius());
 
-	values.unMarkAll();
+	unMarkAll();
 
 	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
 		const auto& p = valuesInCell(c);
@@ -166,9 +166,9 @@ HashTableGrid<GridType, ValueType>::valuesInSphere(
 				test = vv && s.isInside(vv->coord());
 			}
 			else { // check if the bbox of the value intersects the sphere
-				if (!values.isMarked(it.mapIt->second)) {
+				if (!isMarked(it.mapIt)) {
 					test = vv && s.intersects(vcl::boundingBox(*vv));
-					values.mark(it.mapIt->second);
+					mark(it.mapIt);
 				}
 			}
 
@@ -204,20 +204,16 @@ bool HashTableGrid<GridType, ValueType>::insert(const ValueType& v)
 	}
 
 	if (vv) { // vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
-		uint vid = values.size();
-
 		if constexpr (PointConcept<VT>) { // if the ValueType was a Point (or Point*)
 			typename GridType::CellCoord cell = GridType::cell(*vv);
-			if (insert(cell, v, vid)) {
-				values.pushBack(v);
+			if (insert(cell, v)) {
 				valuesNumber++;
 				return true;
 			}
 		}
 		else if constexpr (VertexConcept<VT>) { // if the ValueType was a Vertex (or Vertex*)
 			typename GridType::CellCoord cell = GridType::cell(vv->coord());
-			if (insert(cell, v, vid)) {
-				values.pushBack(v);
+			if (insert(cell, v)) {
 				valuesNumber++;
 				return true;
 			}
@@ -230,10 +226,9 @@ bool HashTableGrid<GridType, ValueType>::insert(const ValueType& v)
 
 			bool ins = false;
 			for (const auto& cell : GridType::cells(bmin, bmax)) {
-				ins |= insert(cell, v, vid);
+				ins |= insert(cell, v);
 			}
 			if (ins) {
-				values.pushBack(v);
 				valuesNumber++;
 				return true;
 			}
@@ -313,7 +308,7 @@ bool HashTableGrid<GridType, ValueType>::erase(const ValueType& v)
 template<typename GridType, typename ValueType>
 bool HashTableGrid<GridType, ValueType>::eraseCell(const KeyType& k)
 {
-	std::pair<iterator,iterator> range = map.equal_range(k);
+	std::pair<MapIterator,MapIterator> range = map.equal_range(k);
 	if (range != map.end()) {
 		map.erase(range.first, range.second);
 		return true;
@@ -334,28 +329,28 @@ template<typename GridType, typename ValueType>
 typename HashTableGrid<GridType, ValueType>::Iterator
 HashTableGrid<GridType, ValueType>::begin() const
 {
-	return Iterator(map.begin(), values);
+	return Iterator(map.begin());
 }
 
 template<typename GridType, typename ValueType>
 typename HashTableGrid<GridType, ValueType>::Iterator
 HashTableGrid<GridType, ValueType>::end() const
 {
-	return Iterator(map.end(), values);
+	return Iterator(map.end());
 }
 
 template<typename GridType, typename ValueType>
-bool HashTableGrid<GridType, ValueType>::insert(const KeyType &k, const ValueType& v, uint vid)
+bool HashTableGrid<GridType, ValueType>::insert(const KeyType &k, const ValueType& v)
 {
 	auto range = map.equal_range(k);
 	bool found = false;
-	for(iterator ci = range.first; ci != range.second && !found; ++ci) {
-		if (values[ci->second] == v) {
+	for(MapIterator ci = range.first; ci != range.second && !found; ++ci) {
+		if (ci->second == v) {
 			found = true;
 		}
 	}
 	if (!found)
-		map.insert(MapValueType(k, vid));
+		map.insert(MapValueType(k, Markable<ValueType>(v)));
 	return !found;
 }
 
@@ -364,14 +359,32 @@ std::pair<bool, uint> HashTableGrid<GridType, ValueType>::erase(
 	const KeyType& k,
 	const ValueType& v)
 {
-	std::pair<iterator, iterator> range = map.equal_range(k);
-	for(iterator ci = range.first; ci != range.second; ++ci) {
-		if (values[ci->second] == v) {
+	std::pair<MapIterator, MapIterator> range = map.equal_range(k);
+	for(MapIterator ci = range.first; ci != range.second; ++ci) {
+		if (ci->second == v) {
 			map.erase(ci);
 			return std::make_pair(true, ci->second);
 		}
 	}
 	return std::make_pair(false, 0);
+}
+
+template<typename GridType, typename ValueType>
+bool HashTableGrid<GridType, ValueType>::isMarked(MapIterator it) const
+{
+	return it->second.mark() == m;
+}
+
+template<typename GridType, typename ValueType>
+void HashTableGrid<GridType, ValueType>::mark(MapIterator it) const
+{
+	it->second.mark() = m;
+}
+
+template<typename GridType, typename ValueType>
+void HashTableGrid<GridType, ValueType>::unMarkAll() const
+{
+	m++;
 }
 
 } // namespace vcl
