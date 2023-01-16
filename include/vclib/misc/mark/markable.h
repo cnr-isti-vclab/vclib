@@ -21,61 +21,29 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_GRID_HASH_TABLE_GRID_ITERATOR_H
-#define VCL_ITERATORS_GRID_HASH_TABLE_GRID_ITERATOR_H
+#ifndef VCL_MISC_MARK_MARKABLE_H
+#define VCL_MISC_MARK_MARKABLE_H
 
-#include <unordered_map>
-
-#include <vclib/misc/mark.h>
-#include <vclib/misc/pair.h>
-#include <vclib/space/point.h>
+#include <vclib/misc/types.h>
 
 namespace vcl {
 
-template<typename GridType, typename ValueType>
-class HashTableGrid;
-
-template<typename KeyType, typename ValueType>
-class HashTableGridIterator
+/**
+ * @brief The Markable class is a simple wrapper that makes a Type "Markable", that is
+ * just adding an unsigned int that can be accessed using the mark() member function.
+ */
+template<typename Type>
+class Markable : public Type
 {
-	template<typename GridType, typename VT>
-	friend class HashTableGrid;
-
-private:
-	using MapIt = typename std::unordered_multimap<KeyType, uint>::const_iterator;
-
 public:
-	using T = KeyValueRefPair<const KeyType, const ValueType>;
-	using value_type = T;
+	using Type::Type;
 
-	class ArrowHelper
-	{
-		T value;
-
-	public:
-		ArrowHelper(T value) : value(value) {}
-		const T* operator->() const { return &value; }
-	};
-
-	HashTableGridIterator();
-	HashTableGridIterator(MapIt it, const vcl::MarkableVector<ValueType>& vec);
-
-	value_type  operator*() const;
-	ArrowHelper operator->() const;
-
-	bool operator==(const HashTableGridIterator& oi) const;
-	bool operator!=(const HashTableGridIterator& oi) const;
-
-	HashTableGridIterator operator++();
-	HashTableGridIterator operator++(int);
-
+	uint& mark() { return m; }
+	uint mark() const { return m; }
 private:
-	MapIt mapIt;
-	const vcl::MarkableVector<ValueType>* vec = nullptr;
+	uint m;
 };
 
 } // namespace vcl
 
-#include "hash_table_grid_iterator.cpp"
-
-#endif // VCL_ITERATORS_GRID_HASH_TABLE_GRID_ITERATOR_H
+#endif // VCL_MISC_MARK_MARKABLE_H

@@ -21,12 +21,12 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_MARKABLE_VECTOR_H
-#define VCL_MISC_MARKABLE_VECTOR_H
-
-#include "types.h"
+#ifndef VCL_MISC_MARK_MARKABLE_VECTOR_H
+#define VCL_MISC_MARK_MARKABLE_VECTOR_H
 
 #include <vector>
+
+#include <vclib/misc/types.h>
 
 namespace vcl {
 
@@ -93,4 +93,4 @@ private:
 
 #include "markable_vector.cpp"
 
-#endif // VCL_MISC_MARKABLE_VECTOR_H
+#endif // VCL_MISC_MARK_MARKABLE_VECTOR_H

@@ -31,7 +31,7 @@
 
 #include <vclib/iterators/grid/hash_table_grid_iterator.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/misc/markable_vector.h>
+#include <vclib/misc/mark.h>
 #include <vclib/space/sphere.h>
 
 namespace vcl {

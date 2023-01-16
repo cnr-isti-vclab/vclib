@@ -21,61 +21,10 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_GRID_HASH_TABLE_GRID_ITERATOR_H
-#define VCL_ITERATORS_GRID_HASH_TABLE_GRID_ITERATOR_H
+#ifndef VCL_MISC_MARK_H
+#define VCL_MISC_MARK_H
 
-#include <unordered_map>
+#include "mark/markable.h"
+#include "mark/markable_vector.h"
 
-#include <vclib/misc/mark.h>
-#include <vclib/misc/pair.h>
-#include <vclib/space/point.h>
-
-namespace vcl {
-
-template<typename GridType, typename ValueType>
-class HashTableGrid;
-
-template<typename KeyType, typename ValueType>
-class HashTableGridIterator
-{
-	template<typename GridType, typename VT>
-	friend class HashTableGrid;
-
-private:
-	using MapIt = typename std::unordered_multimap<KeyType, uint>::const_iterator;
-
-public:
-	using T = KeyValueRefPair<const KeyType, const ValueType>;
-	using value_type = T;
-
-	class ArrowHelper
-	{
-		T value;
-
-	public:
-		ArrowHelper(T value) : value(value) {}
-		const T* operator->() const { return &value; }
-	};
-
-	HashTableGridIterator();
-	HashTableGridIterator(MapIt it, const vcl::MarkableVector<ValueType>& vec);
-
-	value_type  operator*() const;
-	ArrowHelper operator->() const;
-
-	bool operator==(const HashTableGridIterator& oi) const;
-	bool operator!=(const HashTableGridIterator& oi) const;
-
-	HashTableGridIterator operator++();
-	HashTableGridIterator operator++(int);
-
-private:
-	MapIt mapIt;
-	const vcl::MarkableVector<ValueType>* vec = nullptr;
-};
-
-} // namespace vcl
-
-#include "hash_table_grid_iterator.cpp"
-
-#endif // VCL_ITERATORS_GRID_HASH_TABLE_GRID_ITERATOR_H
+#endif // VCL_MISC_MARK_H
