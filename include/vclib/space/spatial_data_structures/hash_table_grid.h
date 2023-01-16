@@ -36,6 +36,17 @@
 
 namespace vcl {
 
+/**
+ * @brief The HashTableGrid class stores N-Dimensional spatial elements (that could be anything on
+ * which it can be computed a bounding box) in a regular grid, using a Hash Table having the Cell
+ * Grid coordinate as key type.
+ *
+ * This Grid allows to perform insertion, deletions and queries in a time that depends only on the
+ * number of elements contained in the involved cell(s) during the operation.
+ *
+ * The Grid Cells on which elements are placed in the data structure is not controlled by the user,
+ * but is automatically computed using the bounding box of the elements.
+ */
 template<typename GridType, typename ValueType>
 class HashTableGrid : public GridType
 {
@@ -54,6 +65,9 @@ public:
 	template<typename BoxType>
 	HashTableGrid(const BoxType& bbox, const KeyType& sizes);
 
+	template<typename ObjIterator>
+	HashTableGrid(ObjIterator begin, ObjIterator end);
+
 	bool empty() const;
 	std::size_t size() const;
 	bool cellEmpty(const KeyType& k) const;
@@ -68,6 +82,9 @@ public:
 	void clear();
 
 	bool insert(const ValueType& v);
+
+	template<typename ObjIterator>
+	uint insert(ObjIterator begin, ObjIterator end);
 
 	bool erase(const ValueType& v);
 	bool eraseCell(const KeyType& k);
@@ -90,11 +107,11 @@ private:
 	std::pair<bool, uint> erase(const KeyType& k, const ValueType& v);
 };
 
-template<typename ValueType, typename ScalarType = double>
-using SpatialHashTable2 = HashTableGrid<Grid2<ScalarType>, ValueType>;
+template<typename ValueType, typename ScalarType = typename ValueType::ScalarType>
+using HashTableGrid2 = HashTableGrid<Grid2<ScalarType>, ValueType>;
 
-template<typename ValueType, typename ScalarType = double>
-using SpatialHashTable3 = HashTableGrid<Grid3<ScalarType>, ValueType>;
+template<typename ValueType, typename ScalarType = typename ValueType::ScalarType>
+using HashTableGrid3 = HashTableGrid<Grid3<ScalarType>, ValueType>;
 
 } // namespace vcl
 

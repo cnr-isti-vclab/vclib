@@ -26,6 +26,8 @@
 
 #include "types.h"
 
+#include <vector>
+
 namespace vcl {
 
 template<typename ValueType>

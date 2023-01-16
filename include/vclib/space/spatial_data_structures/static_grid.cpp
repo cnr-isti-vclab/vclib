@@ -35,7 +35,6 @@ template<typename ObjIterator>
 StaticGrid<GridType, ValueType>::StaticGrid(ObjIterator begin, ObjIterator end)
 {
 	using ScalarType = typename GridType::ScalarType;
-	using PointType = typename GridType::PointType;
 	using BBoxType = typename GridType::BBoxType;
 	using CellCoord = typename GridType::CellCoord;
 

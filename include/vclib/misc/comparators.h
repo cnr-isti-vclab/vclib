@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -52,6 +52,11 @@ struct UnorderedPairComparator
 	}
 };
 
+/**
+ * @brief The FirstElementPairComparator struct is an utility comparator that allow to sort
+ * std::pair (or any type that has a sortable member called 'first') using only its first element.
+ * The second element of the Pair type is ignored and won't be considered by the comparator.
+ */
 template<typename Pair>
 struct FirstElementPairComparator
 {

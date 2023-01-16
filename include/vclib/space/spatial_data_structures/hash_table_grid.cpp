@@ -56,6 +56,31 @@ HashTableGrid<GridType, ValueType>::HashTableGrid(const BoxType& bbox, const Key
 }
 
 template<typename GridType, typename ValueType>
+template<typename ObjIterator>
+HashTableGrid<GridType, ValueType>::HashTableGrid(ObjIterator begin, ObjIterator end)
+{
+	using ScalarType = typename GridType::ScalarType;
+	using BBoxType = typename GridType::BBoxType;
+	using CellCoord = typename GridType::CellCoord;
+
+	BBoxType bbox = boundingBox(begin, end);
+	uint nElements = std::distance(begin, end);
+
+	if (nElements > 0) {
+		// inflated bb
+		ScalarType infl = bbox.diagonal()/nElements;
+		bbox.min -= infl;
+		bbox.max += infl;
+
+		CellCoord sizes = bestGridSize(bbox.size(), nElements);
+
+		GridType::set(bbox, sizes);
+
+		insert(begin, end);
+	}
+}
+
+template<typename GridType, typename ValueType>
 bool HashTableGrid<GridType, ValueType>::empty() const
 {
 	return values.empty();
@@ -215,6 +240,24 @@ bool HashTableGrid<GridType, ValueType>::insert(const ValueType& v)
 		}
 	}
 	return false;
+}
+
+/**
+ * @brief Inserts all the elements from `begin` to `end`. The type referenced by the iterator must
+ * be the ValueType of the HashTableGrid.
+ * @param begin
+ * @param end
+ * @return
+ */
+template<typename GridType, typename ValueType>
+template<typename ObjIterator>
+uint HashTableGrid<GridType, ValueType>::insert(ObjIterator begin, ObjIterator end)
+{
+	uint cnt = 0;
+	for (ObjIterator it = begin; it != end; ++it)
+		if (insert(*it))
+			cnt++;
+	return cnt;
 }
 
 template<typename GridType, typename ValueType>
