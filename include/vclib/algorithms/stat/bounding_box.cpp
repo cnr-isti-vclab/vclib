@@ -109,7 +109,10 @@ auto boundingBox(const EdgeType* e)
 template<typename Iterator>
 auto boundingBox(Iterator begin, Iterator end)
 {
-	vcl::Box<typename Iterator::value_type> b;
+	if (begin == end)
+		return boundingBox(typename Iterator::value_type());
+
+	auto b = boundingBox(*begin);
 
 	for (; begin != end; ++begin)
 		b.add(boundingBox(*begin));

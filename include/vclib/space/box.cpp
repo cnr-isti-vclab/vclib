@@ -44,6 +44,13 @@ Box<PointType>::Box(const PointType& min, const PointType& max) : min(min), max(
 }
 
 template<PointConcept PointType>
+template<typename P>
+Box<PointType>::Box(const Box<P>& ob) :
+		min(ob.min), max(ob.max)
+{
+}
+
+template<PointConcept PointType>
 bool Box<PointType>::isNull() const
 {
 	for (uint i = 0; i < PointType::DIM; ++i) {
@@ -191,8 +198,8 @@ void Box<PointType>::add(const Box<PointType>& b)
 			*this = b;
 		}
 		else {
-			add(b.min());
-			add(b.max());
+			add(b.min);
+			add(b.max);
 		}
 	}
 }

@@ -97,7 +97,7 @@ Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElement
 		}
 
 		for (uint i = 0; i < DIM; i++)
-			sizes(i) = std::max(sizes(i), 1);
+			sizes(i) = std::max(sizes(i), (uint)1);
 	}
 
 	return sizes;

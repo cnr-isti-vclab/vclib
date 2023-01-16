@@ -36,6 +36,9 @@ public:
 	Box(const PointType& p);
 	Box(const PointType& min, const PointType& max);
 
+	template<typename P>
+	Box(const Box<P>& ob);
+
 	bool isNull() const;
 	bool isEmpty() const;
 
