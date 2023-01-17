@@ -41,6 +41,7 @@ template<typename Type>
 class Markable
 {
 public:
+	Markable() {}
 	Markable(const Type& t) : t(t) {}
 
 	uint&       mark() const { return m; }
@@ -50,6 +51,23 @@ public:
 private:
 	mutable uint m = 0;
 	Type t;
+};
+
+// template specialization for references, store internally a reference_wrapper in order to allow
+// usage in stl containers
+template<typename Type>
+class Markable<Type&>
+{
+public:
+	Markable(Type& t) : t(t) {}
+
+	uint&       mark() const { return m; }
+	Type&       get() { return t.get(); }
+	const Type& get() const { return t.get(); }
+
+private:
+	mutable uint m = 0;
+	std::reference_wrapper<Type> t;
 };
 
 } // namespace vcl

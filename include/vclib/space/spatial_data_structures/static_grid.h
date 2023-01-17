@@ -30,6 +30,7 @@
 
 #include <vclib/algorithms/stat/bounding_box.h>
 #include <vclib/misc/comparators.h>
+#include <vclib/misc/mark.h>
 
 namespace vcl {
 
@@ -44,7 +45,7 @@ public:
 
 
 private:
-	std::vector<std::pair<uint, ValueType>> values;
+	std::vector<std::pair<uint, vcl::Markable<ValueType>>> values;
 
 	std::vector<uint> grid;
 
@@ -53,6 +54,12 @@ private:
 
 	void insertNode(typename GridType::CellCoord& cell, const ValueType& v);
 };
+
+template<typename ValueType, bool AD = true, typename ScalarType = double>
+using StaticGrid2 = StaticGrid<Grid2<ScalarType>, ValueType>;
+
+template<typename ValueType, bool AD = true, typename ScalarType = double>
+using StaticGrid3 = StaticGrid<Grid3<ScalarType>, ValueType>;
 
 } // namespace vcl
 

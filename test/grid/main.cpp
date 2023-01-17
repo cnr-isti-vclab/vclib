@@ -105,5 +105,7 @@ int main()
 		std::cerr << p.key << ": " << m.index(p.value) << "\n";
 	}
 
+	vcl::StaticGrid3<vcl::TriMesh::Face&> sg(m.faceBegin(), m.faceEnd());
+
 	return 0;
 }

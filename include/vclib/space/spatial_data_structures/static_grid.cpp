@@ -59,10 +59,11 @@ template<typename GridType, typename ValueType>
 template<typename ObjIterator>
 void StaticGrid<GridType, ValueType>::insertElements(ObjIterator begin, ObjIterator end)
 {
-	using VT = typename std::remove_pointer<ValueType>::type;
+	using TMPVT = typename std::remove_pointer<ValueType>::type;
+	using VT = typename std::remove_reference<TMPVT>::type;
 
 	uint totCellNumber = 1;
-	for (uint i = 0; i < GridType::N; ++i) {
+	for (uint i = 0; i < GridType::DIM; ++i) {
 		totCellNumber *= GridType::cellNumber(i);
 	}
 
@@ -90,14 +91,15 @@ void StaticGrid<GridType, ValueType>::insertElements(ObjIterator begin, ObjItera
 				typename GridType::CellCoord bmin = GridType::cell(bb.min);
 				typename GridType::CellCoord bmax = GridType::cell(bb.max);
 
-				for (const auto& cell : GridType::cells(bmin, bmax)) {
+				for (auto cell : GridType::cells(bmin, bmax)) {
 					insertNode(cell, *it);
 				}
 			}
 		}
 	}
 
-	values.push_back({totCellNumber, ValueType()}); // sentinel
+
+	values.push_back({totCellNumber, vcl::Markable<ValueType>(*begin)}); // sentinel
 
 	grid.resize(totCellNumber);
 
@@ -105,7 +107,7 @@ void StaticGrid<GridType, ValueType>::insertElements(ObjIterator begin, ObjItera
 	std::sort(
 		values.begin(),
 		values.end(),
-		FirstElementPairComparator<std::pair<uint, ValueType>>());
+		FirstElementPairComparator<std::pair<uint,  vcl::Markable<ValueType>>>());
 
 	uint vi = 0; // values[vi].first points to the next non empty cell in the grid
 
@@ -131,7 +133,7 @@ template<typename GridType, typename ValueType>
 void StaticGrid<GridType, ValueType>::insertNode(typename GridType::CellCoord& cell, const ValueType& v)
 {
 	uint cellIndex = GridType::indexOfCell(cell);
-	values.push_back({cellIndex}, v);
+	values.push_back(std::make_pair(cellIndex, vcl::Markable<ValueType>(v)));
 }
 
 } // namespace vcl
