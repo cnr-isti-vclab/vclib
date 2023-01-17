@@ -24,6 +24,7 @@
 #ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_STATIC_GRID_H
 #define VCL_SPACE_SPATIAL_DATA_STRUCTURES_STATIC_GRID_H
 
+#include <set>
 #include <vector>
 
 #include "grid.h"
@@ -38,21 +39,36 @@ template<typename GridType, typename ValueType>
 class StaticGrid : public GridType
 {
 public:
+	using KeyType = typename GridType::CellCoord;
+
 	StaticGrid();
 
 	template<typename ObjIterator>
 	StaticGrid(ObjIterator begin, ObjIterator end);
 
+	void build();
+
+	bool empty() const;
+	bool cellEmpty(const KeyType& k) const;
+	std::set<KeyType> nonEmptyCells() const;
+
+	std::size_t countInCell(const KeyType& k) const;
 
 private:
+	static const FirstElementPairComparator<std::pair<uint,  vcl::Markable<ValueType>>> comparator;
+
+	// each value is stored as a pair: [cell index of the grid - value]
+	// when the grid is built, this vector is sorted by the cell indices
 	std::vector<std::pair<uint, vcl::Markable<ValueType>>> values;
 
+	// for each cell of the grid, we store the index (in the values vector ) of the first ValueType
+	// object contained in the cell, or values.size() if the cell is empty
 	std::vector<uint> grid;
 
 	template<typename ObjIterator>
 	void insertElements(ObjIterator begin, ObjIterator end);
 
-	void insertNode(typename GridType::CellCoord& cell, const ValueType& v);
+	void insert(typename GridType::CellCoord& cell, const ValueType& v);
 };
 
 template<typename ValueType, bool AD = true, typename ScalarType = double>

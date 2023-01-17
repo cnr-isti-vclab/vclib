@@ -214,9 +214,9 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::valuesInSphere(
 				test = vv && s.isInside(vv->coord());
 			}
 			else { // check if the bbox of the value intersects the sphere
-				if (!isMarked(it.mapIt)) {
+				if (!isMarked(it.mapIt.second)) {
 					test = vv && s.intersects(vcl::boundingBox(*vv));
-					mark(it.mapIt);
+					mark(it.mapIt.second);
 				}
 			}
 
@@ -292,7 +292,7 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(const ValueType
  * be the ValueType of the HashTableGrid.
  * @param begin
  * @param end
- * @return
+ * @return The number of inserted elements.
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 template<typename ObjIterator>
@@ -435,15 +435,15 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::erase(
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
-bool HashTableGrid<GridType, ValueType, AllowDuplicates>::isMarked(MapIterator it) const
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::isMarked(const vcl::Markable<ValueType>& v) const
 {
-	return it->second.mark() == m;
+	return v.mark() == m;
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
-void HashTableGrid<GridType, ValueType, AllowDuplicates>::mark(MapIterator it) const
+void HashTableGrid<GridType, ValueType, AllowDuplicates>::mark(const vcl::Markable<ValueType>& v) const
 {
-	it->second.mark() = m;
+	v.mark() = m;
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>

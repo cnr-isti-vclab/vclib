@@ -111,8 +111,8 @@ private:
 	bool insert(const KeyType& k, const ValueType& v);
 	bool erase(const KeyType& k, const ValueType& v);
 
-	bool isMarked(MapIterator it) const;
-	void mark(MapIterator it) const;
+	bool isMarked(const vcl::Markable<ValueType>& v) const;
+	void mark(const vcl::Markable<ValueType>& it) const;
 	void unMarkAll() const;
 };
 

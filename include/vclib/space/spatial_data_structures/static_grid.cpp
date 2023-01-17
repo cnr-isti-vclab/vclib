@@ -31,6 +31,78 @@ StaticGrid<GridType, ValueType>::StaticGrid()
 }
 
 template<typename GridType, typename ValueType>
+void StaticGrid<GridType, ValueType>::build()
+{
+	uint totCellNumber = 1;
+	for (uint i = 0; i < GridType::DIM; ++i) {
+		totCellNumber *= GridType::cellNumber(i);
+	}
+
+	grid.resize(totCellNumber);
+
+	std::sort(values.begin(), values.end(), comparator);
+
+	uint vi = 0; // values[vi].first points to the next non empty cell in the grid
+
+	for (uint ci = 0; ci < grid.size(); ++ci) { // for each cell
+		if (vi < values.size() && values[vi].first == ci) // values[vi] is in the cell ci
+			grid[ci] = vi;
+		else { // there are no values in this grid cell
+			grid[ci] = values.size(); // set the sentinel value
+		}
+
+		// move vi to the next non-empty cell
+		// skip all the values that are in the current cell ci
+		// won't increment vi if the values[vi].first is not equal to ci
+		while (vi < values.size() && values[vi].first == ci) {
+			vi++;
+		}
+	}
+}
+
+template<typename GridType, typename ValueType>
+bool StaticGrid<GridType, ValueType>::empty() const
+{
+	return values.empty();
+}
+
+template<typename GridType, typename ValueType>
+bool StaticGrid<GridType, ValueType>::cellEmpty(const KeyType& k) const
+{
+	uint ind = GridType::indexOfCell(k);
+	return grid[ind] == values.size();
+}
+
+template<typename GridType, typename ValueType>
+std::set<typename StaticGrid<GridType, ValueType>::KeyType>
+StaticGrid<GridType, ValueType>::nonEmptyCells() const
+{
+	std::set<KeyType> keys;
+	uint actualInd = values.size();
+	for (uint i = 0; i < values.size(); ++i) {
+		if (values[i].first != actualInd) {
+			actualInd = values[i].first;
+			keys.insert(GridType::cellOfIndex(actualInd));
+		}
+	}
+	return keys;
+}
+
+template<typename GridType, typename ValueType>
+std::size_t StaticGrid<GridType, ValueType>::countInCell(const KeyType& k) const
+{
+	uint ind = GridType::indexOfCell(k);
+	uint i = grid[ind];
+	uint cnt = 0;
+
+	while(i < values.size() && values[i].first == ind) {
+		i++;
+		cnt++;
+	}
+	return cnt;
+}
+
+template<typename GridType, typename ValueType>
 template<typename ObjIterator>
 StaticGrid<GridType, ValueType>::StaticGrid(ObjIterator begin, ObjIterator end)
 {
@@ -62,11 +134,6 @@ void StaticGrid<GridType, ValueType>::insertElements(ObjIterator begin, ObjItera
 	using TMPVT = typename std::remove_pointer<ValueType>::type;
 	using VT = typename std::remove_reference<TMPVT>::type;
 
-	uint totCellNumber = 1;
-	for (uint i = 0; i < GridType::DIM; ++i) {
-		totCellNumber *= GridType::cellNumber(i);
-	}
-
 	for (ObjIterator it = begin; it != end; ++it) {
 		const VT* vv = nullptr;
 		if constexpr(std::is_pointer<ValueType>::value) {
@@ -79,11 +146,11 @@ void StaticGrid<GridType, ValueType>::insertElements(ObjIterator begin, ObjItera
 		if (vv) {
 			if constexpr (PointConcept<VT>) {
 				typename GridType::CellCoord cell = GridType::cell(*vv);
-				insertNode(cell, *it);
+				insert(cell, *it);
 			}
 			else if constexpr (VertexConcept<VT>) {
 				typename GridType::CellCoord cell = GridType::cell(vv->coord());
-				insertNode(cell, *it);
+				insert(cell, *it);
 			}
 			else {
 				typename GridType::BBoxType bb = vcl::boundingBox(*vv);
@@ -92,45 +159,19 @@ void StaticGrid<GridType, ValueType>::insertElements(ObjIterator begin, ObjItera
 				typename GridType::CellCoord bmax = GridType::cell(bb.max);
 
 				for (auto cell : GridType::cells(bmin, bmax)) {
-					insertNode(cell, *it);
+					insert(cell, *it);
 				}
 			}
 		}
 	}
 
-
-	values.push_back({totCellNumber, vcl::Markable<ValueType>(*begin)}); // sentinel
-
-	grid.resize(totCellNumber);
-
-
-	std::sort(
-		values.begin(),
-		values.end(),
-		FirstElementPairComparator<std::pair<uint,  vcl::Markable<ValueType>>>());
-
-	uint vi = 0; // values[vi].first points to the next non empty cell in the grid
-
-	// for each cell
-	for (uint ci = 0; ci < grid.size(); ++ci) {
-		if (values[vi].first == ci) // values[vi] is in the cell ci
-			grid[ci] = vi;
-		else { // there are no values in this grid cell
-			grid[ci] = values.size() - 1; // set the sentinel value
-		}
-
-		// move vi to the next non-empty cell
-		// skip all the values that are in the current cell ci
-		while (ci == values[vi].first) {
-			vi++;
-		}
-	}
-
-	values.pop_back(); // remove sentinel
+	build();
 }
 
 template<typename GridType, typename ValueType>
-void StaticGrid<GridType, ValueType>::insertNode(typename GridType::CellCoord& cell, const ValueType& v)
+void StaticGrid<GridType, ValueType>::insert(
+	typename GridType::CellCoord& cell,
+	const ValueType&              v)
 {
 	uint cellIndex = GridType::indexOfCell(cell);
 	values.push_back(std::make_pair(cellIndex, vcl::Markable<ValueType>(v)));
