@@ -42,7 +42,7 @@ class HashTableGridIterator
 	friend class HashTableGrid;
 
 private:
-	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>>::const_iterator;
+	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>>::iterator;
 
 public:
 	using T = KeyValueRefPair<const KeyType, const ValueType>;
@@ -68,6 +68,44 @@ public:
 
 	HashTableGridIterator operator++();
 	HashTableGridIterator operator++(int);
+
+private:
+	MapIt mapIt;
+};
+
+template<typename KeyType, typename ValueType>
+class ConstHashTableGridIterator
+{
+	template<typename GridType, typename VT, bool AD>
+	friend class HashTableGrid;
+
+private:
+	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>>::const_iterator;
+
+public:
+	using T = KeyValueRefPair<const KeyType, const ValueType>;
+	using value_type = T;
+
+	class ArrowHelper
+	{
+		T value;
+
+	public:
+		ArrowHelper(T value) : value(value) {}
+		const T* operator->() const { return &value; }
+	};
+
+	ConstHashTableGridIterator();
+	ConstHashTableGridIterator(MapIt it);
+
+	value_type  operator*() const;
+	ArrowHelper operator->() const;
+
+	bool operator==(const ConstHashTableGridIterator& oi) const;
+	bool operator!=(const ConstHashTableGridIterator& oi) const;
+
+	ConstHashTableGridIterator operator++();
+	ConstHashTableGridIterator operator++(int);
 
 private:
 	MapIt mapIt;

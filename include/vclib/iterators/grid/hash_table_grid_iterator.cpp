@@ -77,4 +77,56 @@ HashTableGridIterator<KeyType, ValueType> HashTableGridIterator<KeyType, ValueTy
 	return old;
 }
 
+template<typename KeyType, typename ValueType>
+ConstHashTableGridIterator<KeyType, ValueType>::ConstHashTableGridIterator()
+{
+}
+
+template<typename KeyType, typename ValueType>
+ConstHashTableGridIterator<KeyType, ValueType>::ConstHashTableGridIterator(MapIt it) :
+		mapIt(it)
+{
+}
+
+template<typename KeyType, typename ValueType>
+typename ConstHashTableGridIterator<KeyType, ValueType>::value_type
+ConstHashTableGridIterator<KeyType, ValueType>::operator *() const
+{
+	return KeyValueRefPair<const KeyType, const ValueType>(mapIt->first, mapIt->second.get());
+}
+
+template<typename KeyType, typename ValueType>
+typename ConstHashTableGridIterator<KeyType, ValueType>::ArrowHelper
+ConstHashTableGridIterator<KeyType, ValueType>::operator->() const
+{
+	return **this;
+}
+
+template<typename KeyType, typename ValueType>
+bool ConstHashTableGridIterator<KeyType, ValueType>::operator==(const ConstHashTableGridIterator& oi) const
+{
+	return mapIt == oi.mapIt;
+}
+
+template<typename KeyType, typename ValueType>
+bool ConstHashTableGridIterator<KeyType, ValueType>::operator!=(const ConstHashTableGridIterator& oi) const
+{
+	return mapIt != oi.mapIt;
+}
+
+template<typename KeyType, typename ValueType>
+ConstHashTableGridIterator<KeyType, ValueType> ConstHashTableGridIterator<KeyType, ValueType>::operator++()
+{
+	++mapIt;
+	return *this;
+}
+
+template<typename KeyType, typename ValueType>
+ConstHashTableGridIterator<KeyType, ValueType> ConstHashTableGridIterator<KeyType, ValueType>::operator++(int)
+{
+	ConstHashTableGridIterator old = *this;
+	++mapIt;
+	return old;
+}
+
 } // namespace vcl

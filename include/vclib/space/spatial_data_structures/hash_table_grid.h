@@ -42,9 +42,10 @@ namespace vcl {
  * having the Cell Grid coordinate as key type.
  *
  * This Grid allows to perform insertion, deletions and queries in a time that depends only on the
- * number of elements contained in the involved cell(s) during the operation.
- * The user can permit the insertion of duplicate values by setting to true the AllowDuplicates
- * template parameter.
+ * number of elements contained in the involved cell(s) during the operation. The total overhead of
+ * managing this data structure is the same of managing an std::unordered_multimap.
+ * The user can allow or disallow the insertion of duplicate values by setting the boolean
+ * AllowDuplicates template parameter, that is defaulted to `true`.
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates = true>
 class HashTableGrid : public GridType
@@ -58,6 +59,7 @@ public:
 	using KeyType = typename GridType::CellCoord;
 
 	using Iterator = HashTableGridIterator<KeyType, ValueType>;
+	using ConstIterator = ConstHashTableGridIterator<KeyType, ValueType>;
 
 	HashTableGrid();
 
@@ -79,8 +81,8 @@ public:
 	std::size_t countInCell(const KeyType& k) const;
 	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
-	std::pair<Iterator, Iterator> valuesInCell(const KeyType& k) const;
-	std::vector<Iterator> valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
+	std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const;
+	std::vector<ConstIterator> valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	void clear();
 
@@ -93,8 +95,10 @@ public:
 	bool eraseCell(const KeyType& k);
 	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
 
-	Iterator begin() const;
-	Iterator end() const;
+	Iterator begin();
+	ConstIterator begin() const;
+	Iterator end();
+	ConstIterator end() const;
 
 private:
 	using MapType      = typename std::unordered_multimap<KeyType, vcl::Markable<ValueType>>;

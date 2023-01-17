@@ -171,23 +171,23 @@ uint HashTableGrid<GridType, ValueType, AllowDuplicates>::countInSphere(
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 std::pair<
-	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator,
-	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator>
+	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator,
+	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator>
 HashTableGrid<GridType, ValueType, AllowDuplicates>::valuesInCell(const KeyType& k) const
 {
 	auto p = map.equal_range(k);
-	return std::make_pair(Iterator(p.first), Iterator(p.second));
+	return std::make_pair(ConstIterator(p.first), ConstIterator(p.second));
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
-std::vector<typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator>
+std::vector<typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator>
 HashTableGrid<GridType, ValueType, AllowDuplicates>::valuesInSphere(
 	const vcl::Sphere<typename GridType::ScalarType>& s) const
 {
 	// ValueType having removed the pointer, if present
 	using VT = typename std::remove_pointer<ValueType>::type;
 
-	std::vector<typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator> resVec;
+	std::vector<typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator> resVec;
 
 	// interval of cells containing the sphere
 	KeyType first = GridType::cell(s.center() - s.radius());
@@ -308,7 +308,8 @@ uint HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(ObjIterator beg
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 bool HashTableGrid<GridType, ValueType, AllowDuplicates>::erase(const ValueType& v)
 {
-	using VT = typename std::remove_pointer<ValueType>::type;
+	using TMPVT = typename std::remove_pointer<ValueType>::type;
+	using VT = typename std::remove_reference<TMPVT>::type;
 	const VT* vv = nullptr;
 	if constexpr(std::is_pointer<ValueType>::value) {
 		vv = v;
@@ -357,23 +358,37 @@ template<typename GridType, typename ValueType, bool AllowDuplicates>
 void HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInSphere(
 	const Sphere<typename GridType::ScalarType>& s)
 {
-	std::vector<Iterator> toDel = valuesInSphere(s);
+	std::vector<ConstIterator> toDel = valuesInSphere(s);
 	for (auto& it : toDel)
 		map.erase(it.mapIt);
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator
-HashTableGrid<GridType, ValueType, AllowDuplicates>::begin() const
+HashTableGrid<GridType, ValueType, AllowDuplicates>::begin()
 {
 	return Iterator(map.begin());
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
+typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator
+HashTableGrid<GridType, ValueType, AllowDuplicates>::begin() const
+{
+	return ConstIterator(map.begin());
+}
+
+template<typename GridType, typename ValueType, bool AllowDuplicates>
 typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator
-HashTableGrid<GridType, ValueType, AllowDuplicates>::end() const
+HashTableGrid<GridType, ValueType, AllowDuplicates>::end()
 {
 	return Iterator(map.end());
+}
+
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator
+HashTableGrid<GridType, ValueType, AllowDuplicates>::end() const
+{
+	return ConstIterator(map.end());
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
