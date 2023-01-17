@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,63 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_FACE_BASE_ITERATOR_H
-#define VCL_ITERATORS_FACE_BASE_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
+#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
 
-#include <iterator>
+#include "face_base_iterator.h"
 
 namespace vcl {
 
 template<typename HalfEdge>
-class FaceBaseIterator
+class FaceHalfEdgeIterator : public FaceBaseIterator<HalfEdge>
 {
+	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
+	using value_type        = HalfEdge;
+	using reference         = HalfEdge*&;
+	using pointer           = HalfEdge**;
 
-	FaceBaseIterator();
-	FaceBaseIterator(HalfEdge* start);
-	FaceBaseIterator(HalfEdge* start, const HalfEdge* end);
+	using Base::Base;
 
-	bool operator==(const FaceBaseIterator& oi) const;
-	bool operator!=(const FaceBaseIterator& oi) const;
-
-	FaceBaseIterator operator++();
-	FaceBaseIterator operator++(int);
-	FaceBaseIterator operator--();
-	FaceBaseIterator operator--(int);
-
-protected:
-	HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
+	reference operator*() const { return Base::current; }
+	pointer operator->() const { return &(Base::current); }
 };
 
 template<typename HalfEdge>
-class ConstFaceBaseIterator
+class ConstFaceHalfEdgeIterator : public ConstFaceBaseIterator<HalfEdge>
 {
+	using Base = ConstFaceBaseIterator<HalfEdge>;
 public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
+	using value_type        = const HalfEdge*;
+	using reference         = const HalfEdge*;
+	using pointer           = const HalfEdge**;
 
-	ConstFaceBaseIterator();
-	ConstFaceBaseIterator(const HalfEdge* start);
-	ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end);
+	using Base::Base;
 
-	bool operator==(const ConstFaceBaseIterator& oi) const;
-	bool operator!=(const ConstFaceBaseIterator& oi) const;
-
-	ConstFaceBaseIterator operator++();
-	ConstFaceBaseIterator operator++(int);
-	ConstFaceBaseIterator operator--();
-	ConstFaceBaseIterator operator--(int);
-
-protected:
-	const HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
+	reference operator*() const { return Base::current; }
+	pointer operator->() const { return &(Base::current); }
 };
 
 } // namespace vcl
 
-#include "face_base_iterator.cpp"
-
-#endif // VCL_ITERATORS_FACE_BASE_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H

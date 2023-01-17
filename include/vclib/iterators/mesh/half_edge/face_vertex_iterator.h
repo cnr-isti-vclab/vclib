@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,57 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_FACE_WEDGE_TEX_COORD_ITERATOR_H
-#define VCL_ITERATORS_FACE_WEDGE_TEX_COORD_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_VERTEX_ITERATOR_H
+#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_VERTEX_ITERATOR_H
 
 #include "face_base_iterator.h"
-
-#include <vclib/space/tex_coord.h>
 
 namespace vcl {
 
 template<typename HalfEdge>
-class FaceWedgeTexCoordIterator : public FaceBaseIterator<HalfEdge>
+class FaceVertexIterator : public FaceBaseIterator<HalfEdge>
 {
 	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = typename HalfEdge::TexCoordType;
-	using reference         = typename HalfEdge::TexCoordType&;
-	using pointer           = typename HalfEdge::TexCoordType*;
+	using value_type        = typename HalfEdge::VertexType*;
+	using reference         = typename HalfEdge::VertexType*&;
+	using pointer           = typename HalfEdge::VertexType**;
 
 	using Base::Base;
 
-	reference operator*() const
-	{
-		return Base::current->texCoord();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->texCoord());
-	}
+	reference operator*() const { return Base::current->fromVertex(); }
+	pointer operator->() const { return &(Base::current->fromVertex()); }
 };
 
 template<typename HalfEdge>
-class ConstFaceWedgeTexCoordIterator : public ConstFaceBaseIterator<HalfEdge>
+class ConstFaceVertexIterator : public ConstFaceBaseIterator<HalfEdge>
 {
 	using Base = ConstFaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = const typename HalfEdge::TexCoordType;
-	using reference         = const typename HalfEdge::TexCoordType&;
-	using pointer           = const typename HalfEdge::TexCoordType*;
+	using value_type        = const typename HalfEdge::VertexType*;
+	using reference         = const typename HalfEdge::VertexType*;
+	using pointer           = const typename HalfEdge::VertexType**;
 
 	using Base::Base;
 
-	reference operator*() const
-	{
-		return Base::current->texCoord();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->texCoord());
-	}
+	reference operator*() const { return Base::current->fromVertex(); }
+	pointer operator->() const { return &(Base::current->fromVertex()); }
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_FACE_WEDGE_TEX_COORD_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_VERTEX_ITERATOR_H

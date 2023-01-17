@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,59 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_FACE_ADJ_FACE_ITERATOR_H
-#define VCL_ITERATORS_FACE_ADJ_FACE_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_VERTEX_ITERATOR_H
+#define VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_VERTEX_ITERATOR_H
 
-#include "face_base_iterator.h"
+#include "vertex_base_iterator.h"
 
 namespace vcl {
 
 template<typename HalfEdge>
-class FaceAdjFaceIterator : public FaceBaseIterator<HalfEdge>
+class VertexAdjVertexIterator : public VertexBaseIterator<HalfEdge>
 {
-	using Base = FaceBaseIterator<HalfEdge>;
+	using Base = VertexBaseIterator<HalfEdge>;
 public:
-	using value_type        = typename HalfEdge::FaceType*;
-	using reference         = typename HalfEdge::FaceType*&;
-	using pointer           = typename HalfEdge::FaceType**;
+	using value_type        = typename HalfEdge::VertexType*;
+	using reference         = typename HalfEdge::VertexType*&;
+	using pointer           = typename HalfEdge::VertexType**;
 
 	using Base::Base;
 
-	reference operator*() const
-	{
-		if (Base::current->twin() == nullptr) return nullptr;
-		return Base::current->twin()->face();
-	}
-	pointer operator->() const
-	{
-		if (Base::current->twin() == nullptr) return nullptr;
-		return &(Base::current->twin()->face());
-	}
+	reference operator*() const { return Base::current->toVertex(); }
+	pointer operator->() const { return &(Base::current->toVertex()); }
 };
 
 template<typename HalfEdge>
-class ConstFaceAdjFaceIterator : public ConstFaceBaseIterator<HalfEdge>
+class ConstVertexAdjVertexIterator : public ConstVertexBaseIterator<HalfEdge>
 {
-	using Base = ConstFaceBaseIterator<HalfEdge>;
+	using Base = ConstVertexBaseIterator<HalfEdge>;
 public:
-	using value_type        = const typename HalfEdge::FaceType*;
-	using reference         = const typename HalfEdge::FaceType*;
-	using pointer           = const typename HalfEdge::FaceType**;
+	using value_type        = const typename HalfEdge::VertexType*;
+	using reference         = const typename HalfEdge::VertexType*;
+	using pointer           = const typename HalfEdge::VertexType**;
 
 	using Base::Base;
 
-	reference operator*() const
-	{
-		if (Base::current->twin() == nullptr) return nullptr;
-		return Base::current->twin()->face();
-	}
-	pointer operator->() const
-	{
-		if (Base::current->twin() == nullptr) return nullptr;
-		return &(Base::current->twin()->face());
-	}
+	reference operator*() const { return Base::current->toVertex(); }
+	pointer operator->() const { return &(Base::current->toVertex()); }
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_FACE_ADJ_FACE_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_VERTEX_ITERATOR_H

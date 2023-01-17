@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_CONTAINER_ITERATOR_H
-#define VCL_ITERATORS_CONTAINER_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_CONTAINER_ITERATOR_H
+#define VCL_ITERATORS_MESH_CONTAINER_ITERATOR_H
 
 #include <cstddef>
 #include <vector>
@@ -43,7 +43,7 @@ template<template<typename, typename...> class Container, typename T>
 class ContainerIterator
 {
 private:
-	using VecIt = typename std::vector<T>::iterator;
+	using ContIt = typename Container<T>::iterator;
 
 public:
 	using difference_type   = ptrdiff_t;
@@ -53,7 +53,7 @@ public:
 	using iterator_category = std::forward_iterator_tag;
 
 	ContainerIterator();
-	ContainerIterator(VecIt it, const Container<T>& vec, bool jumpDeleted = true);
+	ContainerIterator(ContIt it, const Container<T>& vec, bool jumpDeleted = true);
 
 	reference operator*() const;
 	pointer   operator->() const;
@@ -75,7 +75,7 @@ private:
 	// pointer to post increment function, assigned in the constructor
 	ContainerIterator (ContainerIterator::*postIncrement)();
 
-	VecIt               it;  // the actual iterator
+	ContIt              it;  // the actual iterator
 	const Container<T>* vec = nullptr; // needed to check for end when jumping elements
 };
 
@@ -87,7 +87,7 @@ template<template<typename, typename...> class Container, typename T>
 class ConstContainerIterator
 {
 private:
-	using VecIt = typename std::vector<T>::const_iterator;
+	using ContIt = typename Container<T>::const_iterator;
 
 public:
 	using difference_type   = ptrdiff_t;
@@ -97,7 +97,7 @@ public:
 	using iterator_category = std::forward_iterator_tag;
 
 	ConstContainerIterator();
-	ConstContainerIterator(VecIt it, const Container<T>& vec, bool jumpDeleted = true);
+	ConstContainerIterator(ContIt it, const Container<T>& vec, bool jumpDeleted = true);
 	ConstContainerIterator(const ContainerIterator<Container, T>& it);
 
 	reference operator*() const;
@@ -120,7 +120,7 @@ private:
 	// pointer to post increment function, assigned in the constructor
 	ConstContainerIterator (ConstContainerIterator::*postIncrement)();
 
-	VecIt               it;  // the actual iterator
+	ContIt              it;  // the actual iterator
 	const Container<T>* vec = nullptr; // needed to check for end when jumping elements
 };
 
@@ -128,4 +128,4 @@ private:
 
 #include "container_iterator.cpp"
 
-#endif // VCL_ITERATORS_CONTAINER_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_CONTAINER_ITERATOR_H

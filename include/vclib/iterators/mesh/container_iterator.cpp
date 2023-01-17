@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -38,7 +38,7 @@ ContainerIterator<Container, T>::ContainerIterator()
 
 template<template<typename, typename...> class Container, typename T>
 ContainerIterator<Container, T>::ContainerIterator(
-	VecIt               it,
+	ContIt               it,
 	const Container<T>& vec,
 	bool                jumpDeleted) :
 		it(it), vec(&vec)
@@ -150,7 +150,7 @@ ConstContainerIterator<Container, T>::ConstContainerIterator()
 
 template<template<typename, typename...> class Container, typename T>
 ConstContainerIterator<Container, T>::ConstContainerIterator(
-	VecIt               it,
+	ContIt               it,
 	const Container<T>& vec,
 	bool                jumpDeleted) :
 		it(it), vec(&vec)

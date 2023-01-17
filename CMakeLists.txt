@@ -103,21 +103,21 @@ set(HEADERS
 	include/vclib/io/ply/ply_header.h
 	include/vclib/io/ply/ply_tristrip.h
 	include/vclib/io/ply/ply_vertex.h
-	include/vclib/iterators/container_iterator.h
-	include/vclib/iterators/container_range_iterator.h
 	include/vclib/iterators/range_iterator.h
 	include/vclib/iterators/grid/cell_iterator.h
 	include/vclib/iterators/grid/cell_range_iterator.h
 	include/vclib/iterators/grid/hash_table_grid_iterator.h
-	include/vclib/iterators/half_edge/face_adj_face_iterator.h
-	include/vclib/iterators/half_edge/face_base_iterator.h
-	include/vclib/iterators/half_edge/face_half_edge_iterator.h
-	include/vclib/iterators/half_edge/face_vertex_iterator.h
-	include/vclib/iterators/half_edge/face_wedge_color_iterator.h
-	include/vclib/iterators/half_edge/face_wedge_tex_coord_iterator.h
-	include/vclib/iterators/half_edge/vertex_adj_face_iterator.h
-	include/vclib/iterators/half_edge/vertex_adj_vertex_iterator.h
-	include/vclib/iterators/half_edge/vertex_base_iterator.h
+	include/vclib/iterators/mesh/container_iterator.h
+	include/vclib/iterators/mesh/container_range_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_base_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_half_edge_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_vertex_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_wedge_color_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_wedge_tex_coord_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_base_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/matrix.h
@@ -343,11 +343,11 @@ set(SOURCES
 	include/vclib/io/ply/ply_header.cpp
 	include/vclib/io/ply/ply_tristrip.cpp
 	include/vclib/io/ply/ply_vertex.cpp
-	include/vclib/iterators/container_iterator.cpp
 	include/vclib/iterators/grid/cell_iterator.cpp
 	include/vclib/iterators/grid/hash_table_grid_iterator.cpp
-	include/vclib/iterators/half_edge/face_base_iterator.cpp
-	include/vclib/iterators/half_edge/vertex_base_iterator.cpp
+	include/vclib/iterators/mesh/container_iterator.cpp
+	include/vclib/iterators/mesh/half_edge/face_base_iterator.cpp
+	include/vclib/iterators/mesh/half_edge/vertex_base_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/matrix.cpp
 	include/vclib/math/perlin_noise.cpp

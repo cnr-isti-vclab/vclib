@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,146 +21,131 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "vertex_base_iterator.h"
+#include "face_base_iterator.h"
 
 namespace vcl {
 
 template<typename HalfEdge>
-VertexBaseIterator<HalfEdge>::VertexBaseIterator()
+FaceBaseIterator<HalfEdge>::FaceBaseIterator()
 {
 }
 
 template<typename HalfEdge>
-VertexBaseIterator<HalfEdge>::VertexBaseIterator(HalfEdge* start) : current(start), end(start)
+FaceBaseIterator<HalfEdge>::FaceBaseIterator(HalfEdge* start) : current(start), end(start)
 {
 }
 
 template<typename HalfEdge>
-VertexBaseIterator<HalfEdge>::VertexBaseIterator(HalfEdge* start, const HalfEdge* end) :
+FaceBaseIterator<HalfEdge>::FaceBaseIterator(HalfEdge* start, const HalfEdge* end) :
 		current(start), end(end)
 {
 }
 
 template<typename HalfEdge>
-bool VertexBaseIterator<HalfEdge>::operator==(const VertexBaseIterator &oi) const
+bool FaceBaseIterator<HalfEdge>::operator==(const FaceBaseIterator& oi) const
 {
 	return current == oi.current;
 }
 
 template<typename HalfEdge>
-bool VertexBaseIterator<HalfEdge>::operator!=(const VertexBaseIterator &oi) const
+bool FaceBaseIterator<HalfEdge>::operator!=(const FaceBaseIterator& oi) const
 {
 	return current != oi.current;
 }
 
 template<typename HalfEdge>
-VertexBaseIterator<HalfEdge> VertexBaseIterator<HalfEdge>::operator++()
+FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator++()
 {
-	current = current->prev();
-	current = current->twin();
+	current = current->next();
 	if (current == end) current = nullptr;
 	return *this;
 }
 
 template<typename HalfEdge>
-VertexBaseIterator<HalfEdge> VertexBaseIterator<HalfEdge>::operator++(int)
+FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator++(int)
 {
 	auto it = *this;
-	current = current->prev();
-	current = current->twin();
+	current = current->next();
 	if (current == end) current = nullptr;
 	return it;
 }
 
 template<typename HalfEdge>
-VertexBaseIterator<HalfEdge> VertexBaseIterator<HalfEdge>::operator--()
+FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator--()
 {
-	current = current->twin();
-	if (current != nullptr)
-		current = current->next();
+	current = current->prev();
 	if (current == end) current = nullptr;
 	return *this;
 }
 
 template<typename HalfEdge>
-VertexBaseIterator<HalfEdge> VertexBaseIterator<HalfEdge>::operator--(int)
+FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator--(int)
 {
 	auto it = *this;
-	current = current->twin();
-	if (current != nullptr)
-		current = current->next();
+	current = current->prev();
 	if (current == end) current = nullptr;
 	return it;
 }
 
 template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge>::ConstVertexBaseIterator()
+ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator()
 {
-
 }
 
 template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge>::ConstVertexBaseIterator(const HalfEdge *start) :
+ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const HalfEdge* start) :
 		current(start), end(start)
 {
 }
 
 template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge>::ConstVertexBaseIterator(
-	const HalfEdge* start,
-	const HalfEdge* end) :
+ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end) :
 		current(start), end(end)
 {
 }
 
 template<typename HalfEdge>
-bool ConstVertexBaseIterator<HalfEdge>::operator==(const ConstVertexBaseIterator &oi) const
+bool ConstFaceBaseIterator<HalfEdge>::operator==(const ConstFaceBaseIterator &oi) const
 {
 	return current == oi.current;
 }
 
 template<typename HalfEdge>
-bool ConstVertexBaseIterator<HalfEdge>::operator!=(const ConstVertexBaseIterator &oi) const
+bool ConstFaceBaseIterator<HalfEdge>::operator!=(const ConstFaceBaseIterator &oi) const
 {
 	return current != oi.current;
 }
 
 template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge> ConstVertexBaseIterator<HalfEdge>::operator++()
+ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator++()
 {
-	current = current->prev();
-	current = current->twin();
+	current = current->next();
 	if (current == end) current = nullptr;
 	return *this;
 }
 
 template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge> ConstVertexBaseIterator<HalfEdge>::operator++(int)
+ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator++(int)
 {
 	auto it = *this;
-	current = current->prev();
-	current = current->twin();
+	current = current->next();
 	if (current == end) current = nullptr;
 	return it;
 }
 
 template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge> ConstVertexBaseIterator<HalfEdge>::operator--()
+ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator--()
 {
-	current = current->twin();
-	if (current != nullptr)
-		current = current->next();
+	current = current->prev();
 	if (current == end) current = nullptr;
 	return *this;
 }
 
 template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge> ConstVertexBaseIterator<HalfEdge>::operator--(int)
+ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator--(int)
 {
 	auto it = *this;
-	current = current->twin();
-	if (current != nullptr)
-		current = current->next();
+	current = current->prev();
 	if (current == end) current = nullptr;
 	return it;
 }

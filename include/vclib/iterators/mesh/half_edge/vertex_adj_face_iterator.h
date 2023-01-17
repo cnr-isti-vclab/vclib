@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,43 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_VERTEX_ADJ_VERTEX_ITERATOR_H
-#define VCL_ITERATORS_VERTEX_ADJ_VERTEX_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
+#define VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
 
 #include "vertex_base_iterator.h"
 
 namespace vcl {
 
 template<typename HalfEdge>
-class VertexAdjVertexIterator : public VertexBaseIterator<HalfEdge>
+class VertexAdjFaceIterator : public VertexBaseIterator<HalfEdge>
 {
 	using Base = VertexBaseIterator<HalfEdge>;
 public:
-	using value_type        = typename HalfEdge::VertexType*;
-	using reference         = typename HalfEdge::VertexType*&;
-	using pointer           = typename HalfEdge::VertexType**;
+	using value_type        = typename HalfEdge::FaceType*;
+	using reference         = typename HalfEdge::FaceType*&;
+	using pointer           = typename HalfEdge::FaceType**;
 
 	using Base::Base;
 
-	reference operator*() const { return Base::current->toVertex(); }
-	pointer operator->() const { return &(Base::current->toVertex()); }
+	reference operator*() const { return Base::current->face(); }
+	pointer operator->() const { return &(Base::current->face()); }
 };
 
 template<typename HalfEdge>
-class ConstVertexAdjVertexIterator : public ConstVertexBaseIterator<HalfEdge>
+class ConstVertexAdjFaceIterator : public ConstVertexBaseIterator<HalfEdge>
 {
 	using Base = ConstVertexBaseIterator<HalfEdge>;
 public:
-	using value_type        = const typename HalfEdge::VertexType*;
-	using reference         = const typename HalfEdge::VertexType*;
-	using pointer           = const typename HalfEdge::VertexType**;
+	using value_type        = const typename HalfEdge::FaceType*;
+	using reference         = const typename HalfEdge::FaceType*;
+	using pointer           = const typename HalfEdge::FaceType**;
 
 	using Base::Base;
 
-	reference operator*() const { return Base::current->toVertex(); }
-	pointer operator->() const { return &(Base::current->toVertex()); }
+	reference operator*() const { return Base::current->face(); }
+	pointer operator->() const { return &(Base::current->face()); }
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_VERTEX_ADJ_VERTEX_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H

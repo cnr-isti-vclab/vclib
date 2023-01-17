@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_CONTAINER_RANGE_ITERATOR_H
-#define VCL_ITERATORS_CONTAINER_RANGE_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_CONTAINER_RANGE_ITERATOR_H
+#define VCL_ITERATORS_MESH_CONTAINER_RANGE_ITERATOR_H
 
 namespace vcl {
 
@@ -78,4 +78,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_CONTAINER_RANGE_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_CONTAINER_RANGE_ITERATOR_H
