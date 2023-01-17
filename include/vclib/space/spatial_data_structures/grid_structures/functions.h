@@ -21,64 +21,30 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_STATIC_GRID_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_STATIC_GRID_H
-
-#include <set>
-#include <vector>
-
-#include "grid.h"
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_FUNCTIONS_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_FUNCTIONS_H
 
 #include <vclib/algorithms/stat/bounding_box.h>
-#include <vclib/misc/comparators.h>
-#include <vclib/misc/mark.h>
+#include <vclib/misc/types.h>
+#include <vclib/mesh/requirements.h>
 
-namespace vcl {
+namespace vcl::grid {
 
-template<typename GridType, typename ValueType>
-class StaticGrid : public GridType
-{
-public:
-	using KeyType = typename GridType::CellCoord;
+// The functions in this file must be declared as friend of the Grid Structure class that
+// wants to use them, since they use private members of the Grid Structure.
+//
+// private member functions are, given a GridStructure g:
+// - g.insert(const KeyType&, const ValueType&)
+// - g.erase(const KeyType&, const ValueType&)
+// - g.isMarked(const vcl::Markable<ValueType>&)
+// - g.mark(const vcl::Markable<ValueType>&)
+// - g.unMarkAll()
 
-	StaticGrid();
+template<typename GridStructure, typename ValueType>
+bool insert(GridStructure& g, const ValueType& v);
 
-	template<typename ObjIterator>
-	StaticGrid(ObjIterator begin, ObjIterator end);
+} // namespace vcl::grid
 
-	void build();
+#include "functions.cpp"
 
-	bool empty() const;
-	bool cellEmpty(const KeyType& k) const;
-	std::set<KeyType> nonEmptyCells() const;
-
-	std::size_t countInCell(const KeyType& k) const;
-
-private:
-	static const FirstElementPairComparator<std::pair<uint,  vcl::Markable<ValueType>>> comparator;
-
-	// each value is stored as a pair: [cell index of the grid - value]
-	// when the grid is built, this vector is sorted by the cell indices
-	std::vector<std::pair<uint, vcl::Markable<ValueType>>> values;
-
-	// for each cell of the grid, we store the index (in the values vector ) of the first ValueType
-	// object contained in the cell, or values.size() if the cell is empty
-	std::vector<uint> grid;
-
-	template<typename ObjIterator>
-	void insertElements(ObjIterator begin, ObjIterator end);
-
-	void insert(typename GridType::CellCoord& cell, const ValueType& v);
-};
-
-template<typename ValueType, bool AD = true, typename ScalarType = double>
-using StaticGrid2 = StaticGrid<Grid2<ScalarType>, ValueType>;
-
-template<typename ValueType, bool AD = true, typename ScalarType = double>
-using StaticGrid3 = StaticGrid<Grid3<ScalarType>, ValueType>;
-
-} // namespace vcl
-
-#include "static_grid.cpp"
-
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_STATIC_GRID_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_FUNCTIONS_H

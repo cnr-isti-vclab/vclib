@@ -21,10 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_HASH_TABLE_GRID_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_HASH_TABLE_GRID_H
-
-#include "grid.h"
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_HASH_TABLE_GRID_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_HASH_TABLE_GRID_H
 
 #include <set>
 #include <unordered_map>
@@ -32,7 +30,10 @@
 #include <vclib/iterators/grid/hash_table_grid_iterator.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/mark.h>
+#include <vclib/space/spatial_data_structures/grid.h>
 #include <vclib/space/sphere.h>
+
+#include "functions.h"
 
 namespace vcl {
 
@@ -50,6 +51,9 @@ namespace vcl {
 template<typename GridType, typename ValueType, bool AllowDuplicates = true>
 class HashTableGrid : public GridType
 {
+	template<typename GT, typename VT>
+	friend bool grid::insert(GT&, const VT&);
+
 public:
 	static_assert(
 		AllowDuplicates || std::equality_comparable<ValueType>,
@@ -126,4 +130,4 @@ using HashTableGrid3 = HashTableGrid<Grid3<ScalarType>, ValueType, AD>;
 
 #include "hash_table_grid.cpp"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_HASH_TABLE_GRID_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_HASH_TABLE_GRID_H

@@ -21,11 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_H
+#include "functions.h"
 
-#include "spatial_data_structures/kd_tree.h"
-#include "spatial_data_structures/grid_structures/hash_table_grid.h"
-#include "spatial_data_structures/grid_structures/static_grid.h"
+namespace vcl::grid {
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_H
+template<typename GridStructure, typename ValueType>
+bool insert(GridStructure& g, const ValueType& v)
+{
+	// ValueType could be anything. We need to understand first if it is a pointer or not,
+	// and then insert the value only if it is not nullptr
+
+	// VT is:
+	// - ValueType if ValueType is not a pointer
+	// - The Type pointed by ValueType, if ValueType is a pointer
+	using TMPVT = typename std::remove_pointer<ValueType>::type;
+	using VT = typename std::remove_reference<TMPVT>::type;
+	const VT* vv = nullptr; // vv is a pointer to VT
+	if constexpr(std::is_pointer<ValueType>::value) {
+		vv = v;
+	}
+	else {
+		vv = &v;
+	}
+
+	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
+		if constexpr (PointConcept<VT>) { // if the ValueType was a Point (or Point*)
+			typename GridStructure::CellCoord cell = g.cell(*vv);
+			return g.insert(cell, v);
+		}
+		else if constexpr (VertexConcept<VT>) { // if the ValueType was a Vertex (or Vertex*)
+			typename GridStructure::CellCoord cell = g.cell(vv->coord());
+			return g.insert(cell, v);
+		}
+		else { // else, call the boundingBox function
+			typename GridStructure::BBoxType bb = vcl::boundingBox(*vv);
+
+			typename GridStructure::CellCoord bmin = g.cell(bb.min);
+			typename GridStructure::CellCoord bmax = g.cell(bb.max);
+
+			bool ins = false;
+			for (const auto& cell : g.cells(bmin, bmax)) {
+				ins |= g.insert(cell, v);
+			}
+			return ins;
+		}
+	}
+	return false;
+}
+
+
+} // namespace vcl::grid

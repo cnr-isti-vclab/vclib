@@ -279,12 +279,13 @@ set(HEADERS
 	include/vclib/space/array/array4.h
 	include/vclib/space/array/array_bool.h
 	include/vclib/space/spatial_data_structures/grid.h
-	include/vclib/space/spatial_data_structures/hash_table_grid.h
 	include/vclib/space/spatial_data_structures/kd_tree.h
-	include/vclib/space/spatial_data_structures/static_grid.h
 	include/vclib/space/spatial_data_structures/grid/grid_t.h
 	include/vclib/space/spatial_data_structures/grid/grid2.h
 	include/vclib/space/spatial_data_structures/grid/grid3.h
+	include/vclib/space/spatial_data_structures/grid_structures/functions.h
+	include/vclib/space/spatial_data_structures/grid_structures/hash_table_grid.h
+	include/vclib/space/spatial_data_structures/grid_structures/static_grid.h
 	include/vclib/space/point/point_concept.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
@@ -438,10 +439,11 @@ set(SOURCES
 	include/vclib/space/array/array3.cpp
 	include/vclib/space/array/array4.cpp
 	include/vclib/space/spatial_data_structures/grid.cpp
-	include/vclib/space/spatial_data_structures/hash_table_grid.cpp
 	include/vclib/space/spatial_data_structures/kd_tree.cpp
-	include/vclib/space/spatial_data_structures/static_grid.cpp
 	include/vclib/space/spatial_data_structures/grid/grid_t.cpp
+	include/vclib/space/spatial_data_structures/grid_structures/functions.cpp
+	include/vclib/space/spatial_data_structures/grid_structures/hash_table_grid.cpp
+	include/vclib/space/spatial_data_structures/grid_structures/static_grid.cpp
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/point/point2.cpp
 	include/vclib/space/point/point3.cpp

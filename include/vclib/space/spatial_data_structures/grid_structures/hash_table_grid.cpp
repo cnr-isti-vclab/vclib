@@ -246,45 +246,7 @@ void HashTableGrid<GridType, ValueType, AllowDuplicates>::clear()
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(const ValueType& v)
 {
-	// ValueType could be anything. We need to understand first if it is a pointer or not,
-	// and then insert the value only if it is not nullptr
-
-	// VT is:
-	// - ValueType if ValueType is not a pointer
-	// - The Type pointed by ValueType, if ValueType is a pointer
-	using TMPVT = typename std::remove_pointer<ValueType>::type;
-	using VT = typename std::remove_reference<TMPVT>::type;
-	const VT* vv = nullptr; // vv is a pointer to VT
-	if constexpr(std::is_pointer<ValueType>::value) {
-		vv = v;
-	}
-	else {
-		vv = &v;
-	}
-
-	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
-		if constexpr (PointConcept<VT>) { // if the ValueType was a Point (or Point*)
-			typename GridType::CellCoord cell = GridType::cell(*vv);
-			return insert(cell, v);
-		}
-		else if constexpr (VertexConcept<VT>) { // if the ValueType was a Vertex (or Vertex*)
-			typename GridType::CellCoord cell = GridType::cell(vv->coord());
-			return insert(cell, v);
-		}
-		else { // else, call the boundingBox function
-			typename GridType::BBoxType bb = vcl::boundingBox(*vv);
-
-			typename GridType::CellCoord bmin = GridType::cell(bb.min);
-			typename GridType::CellCoord bmax = GridType::cell(bb.max);
-
-			bool ins = false;
-			for (const auto& cell : GridType::cells(bmin, bmax)) {
-				ins |= insert(cell, v);
-			}
-			return ins;
-		}
-	}
-	return false;
+	return grid::insert(*this, v);
 }
 
 /**
