@@ -37,6 +37,8 @@ namespace vcl {
 template<typename GridType, typename ValueType>
 class StaticGrid : public GridType
 {
+	using PairComparator = FirstElementPairComparator<std::pair<uint,  vcl::Markable<ValueType>>>;
+
 public:
 	using KeyType = typename GridType::CellCoord;
 
@@ -54,7 +56,7 @@ public:
 	std::size_t countInCell(const KeyType& k) const;
 
 private:
-	const FirstElementPairComparator<std::pair<uint,  vcl::Markable<ValueType>>> comparator;
+	const PairComparator comparator = PairComparator();
 
 	// each value is stored as a pair: [cell index of the grid - value]
 	// when the grid is built, this vector is sorted by the cell indices
