@@ -46,10 +46,15 @@ namespace vcl {
  * The user can permit the insertion of duplicate values by setting to true the AllowDuplicates
  * template parameter.
  */
-template<typename GridType, typename ValueType, bool AllowDuplicates = false>
+template<typename GridType, typename ValueType, bool AllowDuplicates = true>
 class HashTableGrid : public GridType
 {
 public:
+	static_assert(
+		AllowDuplicates || std::equality_comparable<ValueType>,
+		"Not allowing duplicates in a Spatial Data Structures means that ValueType must implement "
+		"operator==.");
+
 	using KeyType = typename GridType::CellCoord;
 
 	using Iterator = HashTableGridIterator<KeyType, ValueType>;
@@ -107,10 +112,10 @@ private:
 	void unMarkAll() const;
 };
 
-template<typename ValueType, bool AD = false, typename ScalarType = typename ValueType::ScalarType>
+template<typename ValueType, bool AD = true, typename ScalarType = double>
 using HashTableGrid2 = HashTableGrid<Grid2<ScalarType>, ValueType, AD>;
 
-template<typename ValueType, bool AD = false, typename ScalarType = typename ValueType::ScalarType>
+template<typename ValueType, bool AD = true, typename ScalarType = double>
 using HashTableGrid3 = HashTableGrid<Grid3<ScalarType>, ValueType, AD>;
 
 } // namespace vcl

@@ -205,9 +205,9 @@ template<typename Scalar, int N>
 uint Grid<Scalar, N>::indexOfCell(const CellCoord& c) const
 {
 	unsigned long int ind = c[0];
-	assert(indices[0] < sizes[0]);
+	assert(c[0] < siz[0]);
 	for (unsigned int i = 1; i < N; i++) {
-		assert(c[i] < sizes[i]);
+		assert(c[i] < siz[i]);
 		ind *= siz[i];
 		ind += c[i];
 	}

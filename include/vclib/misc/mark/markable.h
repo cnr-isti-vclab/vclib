@@ -31,18 +31,25 @@ namespace vcl {
 /**
  * @brief The Markable class is a simple wrapper that makes a Type "Markable", that is
  * just adding an unsigned int that can be accessed using the mark() member function.
+ *
+ * To access to the wrapped value, you can use the `get()` member function.
  */
+
+// we use wrapping instead of inheritance since it is forbidden to inherit from non-class types
+// (e.g. pointers, integers, floats...).
 template<typename Type>
-class Markable : public Type
+class Markable
 {
 public:
-	using Type::Type;
-	Markable(const Type& t) : Type(t) {}
+	Markable(const Type& t) : t(t) {}
 
-	uint& mark() const { return m; }
+	uint&       mark() const { return m; }
+	Type&       get() { return t; }
+	const Type& get() const { return t; }
 
 private:
 	mutable uint m = 0;
+	Type t;
 };
 
 } // namespace vcl

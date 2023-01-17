@@ -25,6 +25,11 @@
 
 #include <vclib/space/spatial_data_structures.h>
 
+#include <vclib/tri_mesh.h>
+#include <vclib/algorithms/create.h>
+
+#include <vclib/iterators/pointer_iterator.h>
+
 int main()
 {
 	vcl::Grid3<double> g(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3<uint>(10, 10, 10));
@@ -36,7 +41,7 @@ int main()
 
 	std::cerr << "\n";
 
-	vcl::HashTableGrid3<vcl::Point<double, 3>> sht(g);
+	vcl::HashTableGrid3<vcl::Point<double, 3>, false> sht(g);
 
 	sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
 	sht.insert(vcl::Point3d(0.05, 0.15, 0.25)); // duplicate won't be inserted
@@ -84,6 +89,20 @@ int main()
 
 	for (const auto& p : sht) {
 		std::cerr << p.key << ": " << p.value << "\n";
+	}
+
+	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
+
+//	vcl::HashTableGrid3<vcl::TriMesh::Vertex*> fsht(
+//		vcl::PointerIterator<vcl::TriMesh::VertexIterator>(m.vertexBegin()),
+//		vcl::PointerIterator<vcl::TriMesh::VertexIterator>(m.vertexEnd()));
+
+	vcl::HashTableGrid3<vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd());
+
+	std::cerr << "Values in HashTableGrid: \n";
+
+	for (const auto& p : fsht) {
+		std::cerr << p.key << ": " << m.index(p.value) << "\n";
 	}
 
 	return 0;

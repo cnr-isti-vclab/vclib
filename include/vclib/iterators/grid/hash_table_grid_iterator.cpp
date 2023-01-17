@@ -40,7 +40,7 @@ template<typename KeyType, typename ValueType>
 typename HashTableGridIterator<KeyType, ValueType>::value_type
 HashTableGridIterator<KeyType, ValueType>::operator *() const
 {
-	return KeyValueRefPair<const KeyType, const ValueType>(mapIt->first, mapIt->second);
+	return KeyValueRefPair<const KeyType, const ValueType>(mapIt->first, mapIt->second.get());
 }
 
 template<typename KeyType, typename ValueType>

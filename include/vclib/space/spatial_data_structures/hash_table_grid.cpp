@@ -252,7 +252,8 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(const ValueType
 	// VT is:
 	// - ValueType if ValueType is not a pointer
 	// - The Type pointed by ValueType, if ValueType is a pointer
-	using VT = typename std::remove_pointer<ValueType>::type;
+	using TMPVT = typename std::remove_pointer<ValueType>::type;
+	using VT = typename std::remove_reference<TMPVT>::type;
 	const VT* vv = nullptr; // vv is a pointer to VT
 	if constexpr(std::is_pointer<ValueType>::value) {
 		vv = v;
@@ -388,7 +389,7 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(
 		auto range = map.equal_range(k);
 		bool found = false;
 		for(MapIterator ci = range.first; ci != range.second && !found; ++ci) {
-			if (ci->second == v) {
+			if (ci->second.get() == v) {
 				found = true;
 			}
 		}
@@ -407,7 +408,7 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::erase(
 
 	std::pair<MapIterator, MapIterator> range = map.equal_range(k);
 	for(MapIterator ci = range.first; ci != range.second; ++ci) {
-		if (ci->second == v) {
+		if (ci->second.get() == v) {
 			found = true;
 			map.erase(ci);
 			if constexpr (!AllowDuplicates) {
