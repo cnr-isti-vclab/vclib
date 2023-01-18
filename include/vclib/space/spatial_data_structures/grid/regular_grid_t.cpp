@@ -158,6 +158,8 @@ Point<Scalar, N> RegularGrid<Scalar, N>::cellLengths() const
 template<typename Scalar, int N>
 uint RegularGrid<Scalar, N>::cell(uint d, const Scalar& s) const
 {
+	if (s < bbox.min(d)) return 0;
+	if (s > bbox.max(d)) return cellLength(d) - 1;
 	Scalar t = s - bbox.min(d);
 	return uint(t / cellLength(d));
 }

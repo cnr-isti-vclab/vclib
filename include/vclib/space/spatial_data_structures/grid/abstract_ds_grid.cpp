@@ -28,15 +28,62 @@ namespace vcl {
 template<typename GridType, typename ValueType, typename DerivedGrid>
 bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::cellEmpty(const KeyType& k) const
 {
-	auto p = static_cast<DerivedGrid*>(this)->valuesInCell(k);
+	auto p = static_cast<const DerivedGrid*>(this)->valuesInCell(k);
 	return p.first == p.second;
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 std::size_t AbstractDSGrid<GridType, ValueType, DerivedGrid>::countInCell(const KeyType& k) const
 {
-	auto p = static_cast<DerivedGrid*>(this)->valuesInCell(k);
+	auto p = static_cast<const DerivedGrid*>(this)->valuesInCell(k);
 	return std::distance(p.first, p.second);
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
+	const Sphere<typename GridType::ScalarType>& s) const
+{
+	// ValueType having removed the pointer, if present
+	using VT = typename std::remove_pointer<ValueType>::type;
+
+	std::vector<typename DerivedGrid::ConstIterator> resVec;
+
+	// interval of cells containing the sphere
+	KeyType first = GridType::cell(s.center() - s.radius());
+	KeyType last = GridType::cell(s.center() + s.radius());
+
+	unMarkAll();
+
+	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
+		const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
+		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
+			const VT* vv = nullptr; // vv will point to the current value
+			if constexpr(std::is_pointer<ValueType>::value) {
+				vv = it->value;
+			}
+			else {
+				vv = &(it->value);
+			}
+
+			bool test = false;
+			if constexpr(PointConcept<VT>) { // check if the point value is inside the sphere
+				test = vv && s.isInside(*vv);
+			}
+			else if constexpr(VertexConcept<VT>) { // check if the vertex coord is inside the sphere
+				test = vv && s.isInside(vv->coord());
+			}
+			else { // check if the bbox of the value intersects the sphere
+				if (!isMarked(it.mapIt.second)) {
+					test = vv && s.intersects(vcl::boundingBox(*vv));
+					mark(it.mapIt.second);
+				}
+			}
+
+			if (test)
+				resVec.push_back(it);
+		}
+	}
+	return resVec;
 }
 
 /**
@@ -197,6 +244,26 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(ObjIterator beg
 
 		GridType::set(bbox, sizes);
 	}
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::isMarked(
+	const vcl::Markable<ValueType>& v) const
+{
+	return v.mark() == m;
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+void AbstractDSGrid<GridType, ValueType, DerivedGrid>::mark(
+	const vcl::Markable<ValueType>& v) const
+{
+	v.mark() = m;
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+void AbstractDSGrid<GridType, ValueType, DerivedGrid>::unMarkAll() const
+{
+	m++;
 }
 
 } // namespace vcl

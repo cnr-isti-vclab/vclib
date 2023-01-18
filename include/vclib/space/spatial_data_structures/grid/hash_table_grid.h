@@ -29,9 +29,7 @@
 
 #include <vclib/iterators/grid/hash_table_grid_iterator.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/misc/mark.h>
 #include <vclib/space/spatial_data_structures/grid.h>
-#include <vclib/space/sphere.h>
 
 #include "abstract_ds_grid.h"
 
@@ -81,7 +79,6 @@ public:
 	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const;
-	std::vector<ConstIterator> valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	void clear();
 
@@ -104,10 +101,6 @@ private:
 
 	bool insertInCell(const KeyType& k, const ValueType& v);
 	bool erase(const KeyType& k, const ValueType& v);
-
-	bool isMarked(const vcl::Markable<ValueType>& v) const;
-	void mark(const vcl::Markable<ValueType>& it) const;
-	void unMarkAll() const;
 };
 
 template<typename ValueType, bool AD = true, typename ScalarType = double>

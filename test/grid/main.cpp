@@ -105,6 +105,22 @@ int main()
 		std::cerr << p.key << ": " << p.value << "\n";
 	}
 
+	std::cerr << "Values in cell 0, 1, 2: \n";
+
+	auto pp = sg.valuesInCell(vcl::Point3<uint>(0,1,2));
+	for (auto& it = pp.first; it != pp.second; ++it) {
+		std::cerr << it->value << "; ";
+	}
+	std::cerr << "\n";
+
+	auto sset  = sg.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
+
+	std::cerr << "Values in sphere: \n";
+	for (auto it : sset) {
+		std::cerr << it->value << "; ";
+	}
+	std::cerr << "\n\n";
+
 	std::cerr << "\n==================================\n\n";
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();

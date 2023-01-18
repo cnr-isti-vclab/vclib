@@ -24,9 +24,10 @@
 #ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ABSTRACT_DS_GRID_H
 #define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ABSTRACT_DS_GRID_H
 
+#include <vclib/algorithms/stat/bounding_box.h>
 #include <vclib/mesh/requirements.h>
-
-#include "functions.h"
+#include <vclib/misc/mark.h>
+#include <vclib/space/sphere.h>
 
 namespace vcl {
 
@@ -88,6 +89,8 @@ public:
 	bool cellEmpty(const KeyType& k) const;
 	std::size_t countInCell(const KeyType& k) const;
 
+	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
+
 	bool insert(const ValueType& v);
 
 	template<typename ObjIterator>
@@ -107,6 +110,13 @@ protected:
 	// this constructor **does not insert elements**.
 	template<typename ObjIterator>
 	AbstractDSGrid(ObjIterator begin, ObjIterator end);
+
+private:
+	mutable uint m = 1;
+
+	bool isMarked(const vcl::Markable<ValueType>& v) const;
+	void mark(const vcl::Markable<ValueType>& v) const;
+	void unMarkAll() const;
 };
 
 } // namespace vcl

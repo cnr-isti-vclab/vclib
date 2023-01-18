@@ -122,54 +122,6 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::valuesInCell(const KeyType&
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
-std::vector<typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator>
-HashTableGrid<GridType, ValueType, AllowDuplicates>::valuesInSphere(
-	const vcl::Sphere<typename GridType::ScalarType>& s) const
-{
-	// ValueType having removed the pointer, if present
-	using VT = typename std::remove_pointer<ValueType>::type;
-
-	std::vector<typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator> resVec;
-
-	// interval of cells containing the sphere
-	KeyType first = GridType::cell(s.center() - s.radius());
-	KeyType last = GridType::cell(s.center() + s.radius());
-
-	unMarkAll();
-
-	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
-		const auto& p = valuesInCell(c);
-		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-			const VT* vv = nullptr; // vv will point to the current value
-			if constexpr(std::is_pointer<ValueType>::value) {
-				vv = it->value;
-			}
-			else {
-				vv = &(it->value);
-			}
-
-			bool test = false;
-			if constexpr(PointConcept<VT>) { // check if the point value is inside the sphere
-				test = vv && s.isInside(*vv);
-			}
-			else if constexpr(VertexConcept<VT>) { // check if the vertex coord is inside the sphere
-				test = vv && s.isInside(vv->coord());
-			}
-			else { // check if the bbox of the value intersects the sphere
-				if (!isMarked(it.mapIt.second)) {
-					test = vv && s.intersects(vcl::boundingBox(*vv));
-					mark(it.mapIt.second);
-				}
-			}
-
-			if (test)
-				resVec.push_back(it);
-		}
-	}
-	return resVec;
-}
-
-template<typename GridType, typename ValueType, bool AllowDuplicates>
 void HashTableGrid<GridType, ValueType, AllowDuplicates>::clear()
 {
 	map.clear();
@@ -228,7 +180,7 @@ template<typename GridType, typename ValueType, bool AllowDuplicates>
 void HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInSphere(
 	const Sphere<typename GridType::ScalarType>& s)
 {
-	std::vector<ConstIterator> toDel = valuesInSphere(s);
+	std::vector<ConstIterator> toDel = AbstractGrid::valuesInSphere(s);
 	for (auto& it : toDel)
 		map.erase(it.mapIt);
 }
@@ -302,24 +254,6 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::erase(
 		}
 	}
 	return found;
-}
-
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-bool HashTableGrid<GridType, ValueType, AllowDuplicates>::isMarked(const vcl::Markable<ValueType>& v) const
-{
-	return v.mark() == m;
-}
-
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-void HashTableGrid<GridType, ValueType, AllowDuplicates>::mark(const vcl::Markable<ValueType>& v) const
-{
-	v.mark() = m;
-}
-
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-void HashTableGrid<GridType, ValueType, AllowDuplicates>::unMarkAll() const
-{
-	m++;
 }
 
 } // namespace vcl
