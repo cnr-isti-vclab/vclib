@@ -98,6 +98,40 @@ Point<uint, N> RegularGrid<Scalar, N>::cellNumbers() const
 }
 
 /**
+ * @brief Return an unique index that can be associated to the given cell coordinate.
+ * @param c
+ * @return
+ */
+template<typename Scalar, int N>
+uint RegularGrid<Scalar, N>::indexOfCell(const CellCoord& c) const
+{
+	unsigned long int ind = c[0];
+	assert(c[0] < siz[0]);
+	for (unsigned int i = 1; i < N; i++) {
+		assert(c[i] < siz[i]);
+		ind *= siz[i];
+		ind += c[i];
+	}
+	return ind;
+}
+
+/**
+ * @brief Returns the cell coordinate associated to the given unique index.
+ * @param index
+ * @return
+ */
+template<typename Scalar, int N>
+typename RegularGrid<Scalar, N>::CellCoord RegularGrid<Scalar, N>::cellOfIndex(uint index) const
+{
+	typename RegularGrid<Scalar, N>::CellCoord c;
+	for (long int i = N - 1; i >= 0; i--) {
+		c[i] = index % siz[i];
+		index /= siz[i];
+	}
+	return c;
+}
+
+/**
  * @brief Returns the length of a cell of the grid in the d-th dimension
  * @param i
  * @return
@@ -199,30 +233,6 @@ RegularGrid<Scalar, N>::cells(const CellCoord& first, const CellCoord& last) con
 		&RegularGrid<Scalar, N>::cellEnd,
 		first,
 		last);
-}
-
-template<typename Scalar, int N>
-uint RegularGrid<Scalar, N>::indexOfCell(const CellCoord& c) const
-{
-	unsigned long int ind = c[0];
-	assert(c[0] < siz[0]);
-	for (unsigned int i = 1; i < N; i++) {
-		assert(c[i] < siz[i]);
-		ind *= siz[i];
-		ind += c[i];
-	}
-	return ind;
-}
-
-template<typename Scalar, int N>
-typename RegularGrid<Scalar, N>::CellCoord RegularGrid<Scalar, N>::cellOfIndex(uint index) const
-{
-	typename RegularGrid<Scalar, N>::CellCoord c;
-	for (long int i = N - 1; i >= 0; i--) {
-		c[i] = index % siz[i];
-		index /= siz[i];
-	}
-	return c;
 }
 
 template<typename Scalar, int N>

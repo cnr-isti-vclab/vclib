@@ -34,6 +34,7 @@ template<typename Scalar, int N>
 class RegularGrid
 {
 public:
+	static_assert(N > 0, "Number of dimensions of the regular grid must be > 1.");
 	static const int DIM  = N;
 	using ScalarType      = Scalar;
 	using PointType       = Point<Scalar, N>;
@@ -56,6 +57,9 @@ public:
 	uint cellNumber(uint d) const;
 	Point<uint, N> cellNumbers() const;
 
+	uint indexOfCell(const CellCoord& c) const;
+	CellCoord cellOfIndex(uint i) const;
+
 	Scalar cellLength(uint d) const;
 	Point<Scalar, N> cellLengths() const;
 
@@ -73,8 +77,6 @@ public:
 	CellRangeIterator cells(const CellCoord& first, const CellCoord& last) const;
 
 protected:
-	uint indexOfCell(const CellCoord& c) const;
-	CellCoord cellOfIndex(uint i) const;
 	void set(const Box<Point<Scalar, N>>& box, const Point<uint, N>& size);
 
 private:

@@ -107,5 +107,11 @@ int main()
 
 	vcl::StaticGrid3<vcl::TriMesh::Face&> sg(m.faceBegin(), m.faceEnd());
 
+	std::cerr << "Values in Static Grid : \n";
+
+	for (const auto& p : sg) {
+		std::cerr << p.key << ": " << m.index(p.value) << "\n";
+	}
+
 	return 0;
 }

@@ -21,10 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_GRID_HASH_TABLE_GRID_ITERATOR_H
-#define VCL_ITERATORS_GRID_HASH_TABLE_GRID_ITERATOR_H
-
-#include <unordered_map>
+#ifndef VCL_ITERATORS_GRID_STATIC_GRID_ITERATOR_H
+#define VCL_ITERATORS_GRID_STATIC_GRID_ITERATOR_H
 
 #include <vclib/misc/mark.h>
 #include <vclib/misc/pair.h>
@@ -32,20 +30,13 @@
 
 namespace vcl {
 
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-class HashTableGrid;
-
-template<typename KeyType, typename ValueType>
-class HashTableGridIterator
+template<typename KeyType, typename ValueType, typename GridType>
+class StaticGridIterator
 {
-	template<typename GridType, typename VT, bool AD>
-	friend class HashTableGrid;
-
-private:
-	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>>::iterator;
+	using VecIt = typename std::vector<std::pair<uint, vcl::Markable<ValueType>>>::iterator;
 
 public:
-	using T = KeyRefValueRefPair<const KeyType, ValueType>;
+	using T = KeyValueRefPair<KeyType, ValueType>;
 	using value_type = T;
 
 	class ArrowHelper
@@ -57,33 +48,30 @@ public:
 		const T* operator->() const { return &value; }
 	};
 
-	HashTableGridIterator();
-	HashTableGridIterator(MapIt it);
+	StaticGridIterator();
+	StaticGridIterator(VecIt it, const GridType& g);
 
 	value_type  operator*() const;
 	ArrowHelper operator->() const;
 
-	bool operator==(const HashTableGridIterator& oi) const;
-	bool operator!=(const HashTableGridIterator& oi) const;
+	bool operator==(const StaticGridIterator& oi) const;
+	bool operator!=(const StaticGridIterator& oi) const;
 
-	HashTableGridIterator operator++();
-	HashTableGridIterator operator++(int);
+	StaticGridIterator operator++();
+	StaticGridIterator operator++(int);
 
 private:
-	MapIt mapIt;
+	VecIt vecIt;
+	const GridType* g = nullptr;
 };
 
-template<typename KeyType, typename ValueType>
-class ConstHashTableGridIterator
+template<typename KeyType, typename ValueType, typename GridType>
+class ConstStaticGridIterator
 {
-	template<typename GridType, typename VT, bool AD>
-	friend class HashTableGrid;
-
-private:
-	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>>::const_iterator;
+	using VecIt = typename std::vector<std::pair<uint, vcl::Markable<ValueType>>>::const_iterator;
 
 public:
-	using T = KeyRefValueRefPair<const KeyType, const ValueType>;
+	using T = KeyValueRefPair<KeyType, const ValueType>;
 	using value_type = T;
 
 	class ArrowHelper
@@ -95,24 +83,25 @@ public:
 		const T* operator->() const { return &value; }
 	};
 
-	ConstHashTableGridIterator();
-	ConstHashTableGridIterator(MapIt it);
+	ConstStaticGridIterator();
+	ConstStaticGridIterator(VecIt it, const GridType& g);
 
 	value_type  operator*() const;
 	ArrowHelper operator->() const;
 
-	bool operator==(const ConstHashTableGridIterator& oi) const;
-	bool operator!=(const ConstHashTableGridIterator& oi) const;
+	bool operator==(const ConstStaticGridIterator& oi) const;
+	bool operator!=(const ConstStaticGridIterator& oi) const;
 
-	ConstHashTableGridIterator operator++();
-	ConstHashTableGridIterator operator++(int);
+	ConstStaticGridIterator operator++();
+	ConstStaticGridIterator operator++(int);
 
 private:
-	MapIt mapIt;
+	VecIt vecIt;
+	const GridType* g = nullptr;
 };
 
 } // namespace vcl
 
-#include "hash_table_grid_iterator.cpp"
+#include "static_grid_iterator.cpp"
 
-#endif // VCL_ITERATORS_GRID_HASH_TABLE_GRID_ITERATOR_H
+#endif // VCL_ITERATORS_GRID_STATIC_GRID_ITERATOR_H

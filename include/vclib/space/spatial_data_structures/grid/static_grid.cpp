@@ -118,6 +118,31 @@ std::size_t StaticGrid<GridType, ValueType>::countInCell(const KeyType& k) const
 }
 
 template<typename GridType, typename ValueType>
+typename StaticGrid<GridType, ValueType>::Iterator StaticGrid<GridType, ValueType>::begin()
+{
+	return Iterator(values.begin(), (const GridType&)*this);
+}
+
+template<typename GridType, typename ValueType>
+typename StaticGrid<GridType, ValueType>::ConstIterator
+StaticGrid<GridType, ValueType>::begin() const
+{
+	return ConstIterator(values.begin(), (const GridType&)*this);
+}
+
+template<typename GridType, typename ValueType>
+typename StaticGrid<GridType, ValueType>::Iterator StaticGrid<GridType, ValueType>::end()
+{
+	return Iterator(values.end(), (const GridType&)*this);
+}
+
+template<typename GridType, typename ValueType>
+typename StaticGrid<GridType, ValueType>::ConstIterator StaticGrid<GridType, ValueType>::end() const
+{
+	return ConstIterator(values.end(), (const GridType&)*this);
+}
+
+template<typename GridType, typename ValueType>
 bool StaticGrid<GridType, ValueType>::insertInCell(const KeyType& cell, const ValueType& v)
 {
 	uint cellIndex = GridType::indexOfCell(cell);

@@ -28,6 +28,7 @@
 #include <vector>
 
 #include <vclib/algorithms/stat/bounding_box.h>
+#include <vclib/iterators/grid/static_grid_iterator.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/misc/mark.h>
 #include <vclib/space/spatial_data_structures/grid.h>
@@ -47,6 +48,9 @@ class StaticGrid : public AbstractDSGrid<GridType, ValueType, StaticGrid<GridTyp
 public:
 	using KeyType = typename AbstractGrid::KeyType;
 
+	using Iterator = StaticGridIterator<KeyType, ValueType, GridType>;
+	using ConstIterator = ConstStaticGridIterator<KeyType, ValueType, GridType>;
+
 	StaticGrid();
 	StaticGrid(const GridType& g);
 
@@ -60,6 +64,11 @@ public:
 	std::set<KeyType> nonEmptyCells() const;
 
 	std::size_t countInCell(const KeyType& k) const;
+
+	Iterator begin();
+	ConstIterator begin() const;
+	Iterator end();
+	ConstIterator end() const;
 
 private:
 	const PairComparator comparator = PairComparator();
