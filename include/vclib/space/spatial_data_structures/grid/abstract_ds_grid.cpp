@@ -25,6 +25,20 @@
 
 namespace vcl {
 
+template<typename GridType, typename ValueType, typename DerivedGrid>
+bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::cellEmpty(const KeyType& k) const
+{
+	auto p = static_cast<DerivedGrid*>(this)->valuesInCell(k);
+	return p.first == p.second;
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+std::size_t AbstractDSGrid<GridType, ValueType, DerivedGrid>::countInCell(const KeyType& k) const
+{
+	auto p = static_cast<DerivedGrid*>(this)->valuesInCell(k);
+	return std::distance(p.first, p.second);
+}
+
 /**
  * @brief Inserts the given element in the AbstractDSGrid.
  *
