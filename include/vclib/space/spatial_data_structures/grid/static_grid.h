@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_STATIC_GRID_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_STATIC_GRID_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STATIC_GRID_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STATIC_GRID_H
 
 #include <set>
 #include <vector>
@@ -73,13 +73,13 @@ private:
 };
 
 template<typename ValueType, bool AD = true, typename ScalarType = double>
-using StaticGrid2 = StaticGrid<Grid2<ScalarType>, ValueType>;
+using StaticGrid2 = StaticGrid<RegularGrid2<ScalarType>, ValueType>;
 
 template<typename ValueType, bool AD = true, typename ScalarType = double>
-using StaticGrid3 = StaticGrid<Grid3<ScalarType>, ValueType>;
+using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
 
 } // namespace vcl
 
 #include "static_grid.cpp"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_STATIC_GRID_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STATIC_GRID_H

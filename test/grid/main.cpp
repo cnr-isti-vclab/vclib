@@ -32,7 +32,7 @@
 
 int main()
 {
-	vcl::Grid3<double> g(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3<uint>(10, 10, 10));
+	vcl::RegularGrid3<double> g(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3<uint>(10, 10, 10));
 
 	vcl::Point3<uint> first(2,2,2), last(5, 4, 7);
 

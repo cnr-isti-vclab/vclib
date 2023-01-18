@@ -24,8 +24,8 @@
 #ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_H
 #define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_H
 
-#include "grid/grid2.h"
-#include "grid/grid3.h"
+#include "grid/regular_grid2.h"
+#include "grid/regular_grid3.h"
 
 namespace vcl {
 

@@ -21,20 +21,30 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID2_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID2_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_FUNCTIONS_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_FUNCTIONS_H
 
-#include "grid_t.h"
+#include <vclib/algorithms/stat/bounding_box.h>
+#include <vclib/misc/types.h>
+#include <vclib/mesh/requirements.h>
 
-namespace vcl {
+namespace vcl::grid {
 
-template<typename Scalar>
-class Grid2 : public Grid<Scalar, 2>
-{
-public:
-	using Grid<Scalar, 2>::Grid;
-};
+// The functions in this file must be declared as friend of the Grid Structure class that
+// wants to use them, since they use private members of the Grid Structure.
+//
+// private member functions are, given a GridStructure g:
+// - g.insert(const KeyType&, const ValueType&)
+// - g.erase(const KeyType&, const ValueType&)
+// - g.isMarked(const vcl::Markable<ValueType>&)
+// - g.mark(const vcl::Markable<ValueType>&)
+// - g.unMarkAll()
 
-} // namespace vcl
+template<typename GridStructure, typename ValueType>
+bool insert(GridStructure& g, const ValueType& v);
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID2_H
+} // namespace vcl::grid
+
+#include "functions.cpp"
+
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_FUNCTIONS_H

@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID_T_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID_T_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID_T_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID_T_H
 
 #include <vclib/iterators/grid/cell_iterator.h>
 #include <vclib/iterators/grid/cell_range_iterator.h>
@@ -31,7 +31,7 @@
 namespace vcl {
 
 template<typename Scalar, int N>
-class Grid
+class RegularGrid
 {
 public:
 	static const int DIM  = N;
@@ -41,11 +41,11 @@ public:
 	using BBoxType        = Box<PointType>;
 
 	using CellIterator = vcl::CellIterator<N>;
-	using CellRangeIterator = vcl::CellRangeIterator<Grid<Scalar, N>, CellIterator>;
+	using CellRangeIterator = vcl::CellRangeIterator<RegularGrid<Scalar, N>, CellIterator>;
 
-	Grid() = default;
-	Grid(const Point<Scalar, N>& min, const Point<Scalar, N>& max, const Point<uint, N>& size);
-	Grid(const Box<Point<Scalar, N>>& bbox, const Point<uint, N>& size);
+	RegularGrid() = default;
+	RegularGrid(const Point<Scalar, N>& min, const Point<Scalar, N>& max, const Point<uint, N>& size);
+	RegularGrid(const Box<Point<Scalar, N>>& bbox, const Point<uint, N>& size);
 
 	Point<Scalar, N> min() const;
 	Point<Scalar, N> max() const;
@@ -84,6 +84,6 @@ private:
 
 } // namespace vcl
 
-#include "grid_t.cpp"
+#include "regular_grid_t.cpp"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID_T_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID_T_H

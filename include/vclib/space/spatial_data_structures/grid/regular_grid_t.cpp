@@ -21,12 +21,12 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "grid_t.h"
+#include "regular_grid_t.h"
 
 namespace vcl {
 
 template<typename Scalar, int N>
-Grid<Scalar, N>::Grid(
+RegularGrid<Scalar, N>::RegularGrid(
 	const Point<Scalar, N>& min,
 	const Point<Scalar, N>& max,
 	const Point<uint, N>&   size) :
@@ -35,19 +35,19 @@ Grid<Scalar, N>::Grid(
 }
 
 template<typename Scalar, int N>
-Grid<Scalar, N>::Grid(const Box<Point<Scalar, N> >& bbox, const Point<uint, N>& size) :
+RegularGrid<Scalar, N>::RegularGrid(const Box<Point<Scalar, N> >& bbox, const Point<uint, N>& size) :
 		bbox(bbox), siz(size)
 {
 }
 
 template<typename Scalar, int N>
-Point<Scalar, N> Grid<Scalar, N>::min() const
+Point<Scalar, N> RegularGrid<Scalar, N>::min() const
 {
 	return bbox.min;
 }
 
 template<typename Scalar, int N>
-Point<Scalar, N> Grid<Scalar, N>::max() const
+Point<Scalar, N> RegularGrid<Scalar, N>::max() const
 {
 	return bbox.max;
 }
@@ -58,7 +58,7 @@ Point<Scalar, N> Grid<Scalar, N>::max() const
  * @return
  */
 template<typename Scalar, int N>
-Scalar Grid<Scalar, N>::length(uint d) const
+Scalar RegularGrid<Scalar, N>::length(uint d) const
 {
 	return bbox.dim(d);
 }
@@ -68,7 +68,7 @@ Scalar Grid<Scalar, N>::length(uint d) const
  * @return
  */
 template<typename Scalar, int N>
-Point<Scalar, N> Grid<Scalar, N>::lengths() const
+Point<Scalar, N> RegularGrid<Scalar, N>::lengths() const
 {
 	Point<Scalar, N> p;
 	for (size_t i = 0; i < DIM; ++i)
@@ -82,7 +82,7 @@ Point<Scalar, N> Grid<Scalar, N>::lengths() const
  * @return
  */
 template<typename Scalar, int N>
-uint Grid<Scalar, N>::cellNumber(uint d) const
+uint RegularGrid<Scalar, N>::cellNumber(uint d) const
 {
 	return siz(d);
 }
@@ -92,7 +92,7 @@ uint Grid<Scalar, N>::cellNumber(uint d) const
  * @return
  */
 template<typename Scalar, int N>
-Point<uint, N> Grid<Scalar, N>::cellNumbers() const
+Point<uint, N> RegularGrid<Scalar, N>::cellNumbers() const
 {
 	return siz;
 }
@@ -103,7 +103,7 @@ Point<uint, N> Grid<Scalar, N>::cellNumbers() const
  * @return
  */
 template<typename Scalar, int N>
-Scalar Grid<Scalar, N>::cellLength(uint d) const
+Scalar RegularGrid<Scalar, N>::cellLength(uint d) const
 {
 	return length(d)/cellNumber(d);
 }
@@ -113,7 +113,7 @@ Scalar Grid<Scalar, N>::cellLength(uint d) const
  * @return
  */
 template<typename Scalar, int N>
-Point<Scalar, N> Grid<Scalar, N>::cellLengths() const
+Point<Scalar, N> RegularGrid<Scalar, N>::cellLengths() const
 {
 	Point<Scalar, N> p;
 	for (size_t i = 0; i < DIM; ++i)
@@ -122,14 +122,14 @@ Point<Scalar, N> Grid<Scalar, N>::cellLengths() const
 }
 
 template<typename Scalar, int N>
-uint Grid<Scalar, N>::cell(uint d, const Scalar& s) const
+uint RegularGrid<Scalar, N>::cell(uint d, const Scalar& s) const
 {
 	Scalar t = s - bbox.min(d);
 	return uint(t / cellLength(d));
 }
 
 template<typename Scalar, int N>
-Point<uint, N> Grid<Scalar, N>::cell(const Point<Scalar, N>& p) const
+Point<uint, N> RegularGrid<Scalar, N>::cell(const Point<Scalar, N>& p) const
 {
 	CellCoord c;
 	for (size_t i = 0; i < DIM; ++i)
@@ -138,7 +138,7 @@ Point<uint, N> Grid<Scalar, N>::cell(const Point<Scalar, N>& p) const
 }
 
 template<typename Scalar, int N>
-Point<Scalar, N> Grid<Scalar, N>::cellLowerCorner(const CellCoord& c) const
+Point<Scalar, N> RegularGrid<Scalar, N>::cellLowerCorner(const CellCoord& c) const
 {
 	Point<Scalar, N> l;
 	for (size_t i = 0; i < DIM; ++i)
@@ -147,7 +147,7 @@ Point<Scalar, N> Grid<Scalar, N>::cellLowerCorner(const CellCoord& c) const
 }
 
 template<typename Scalar, int N>
-Box<Point<Scalar, N>> Grid<Scalar, N>::cellBox(const CellCoord& c) const
+Box<Point<Scalar, N>> RegularGrid<Scalar, N>::cellBox(const CellCoord& c) const
 {
 	Box<Point<Scalar, N>> b;
 
@@ -162,47 +162,47 @@ Box<Point<Scalar, N>> Grid<Scalar, N>::cellBox(const CellCoord& c) const
 }
 
 template<typename Scalar, int N>
-typename Grid<Scalar, N>::CellIterator Grid<Scalar, N>::cellBegin() const
+typename RegularGrid<Scalar, N>::CellIterator RegularGrid<Scalar, N>::cellBegin() const
 {
 	return CellIterator(CellCoord(), siz);
 }
 
 template<typename Scalar, int N>
-typename Grid<Scalar, N>::CellIterator
-Grid<Scalar, N>::cellBegin(const CellCoord& first, const CellCoord& last) const
+typename RegularGrid<Scalar, N>::CellIterator
+RegularGrid<Scalar, N>::cellBegin(const CellCoord& first, const CellCoord& last) const
 {
 	return CellIterator(first, last + 1);
 }
 
 template<typename Scalar, int N>
-typename Grid<Scalar, N>::CellIterator Grid<Scalar, N>::cellEnd() const
+typename RegularGrid<Scalar, N>::CellIterator RegularGrid<Scalar, N>::cellEnd() const
 {
 	return CellIterator();
 }
 
 template<typename Scalar, int N>
-typename Grid<Scalar, N>::CellRangeIterator Grid<Scalar, N>::cells() const
+typename RegularGrid<Scalar, N>::CellRangeIterator RegularGrid<Scalar, N>::cells() const
 {
 	return CellRangeIterator(
 		*this,
-		&Grid<Scalar, N>::cellBegin,
-		&Grid<Scalar, N>::cellEnd);
+		&RegularGrid<Scalar, N>::cellBegin,
+		&RegularGrid<Scalar, N>::cellEnd);
 }
 
 template<typename Scalar, int N>
-typename Grid<Scalar, N>::CellRangeIterator
-Grid<Scalar, N>::cells(const CellCoord& first, const CellCoord& last) const
+typename RegularGrid<Scalar, N>::CellRangeIterator
+RegularGrid<Scalar, N>::cells(const CellCoord& first, const CellCoord& last) const
 {
 	return CellRangeIterator(
 		*this,
-		&Grid<Scalar, N>::cellBegin,
-		&Grid<Scalar, N>::cellEnd,
+		&RegularGrid<Scalar, N>::cellBegin,
+		&RegularGrid<Scalar, N>::cellEnd,
 		first,
 		last);
 }
 
 template<typename Scalar, int N>
-uint Grid<Scalar, N>::indexOfCell(const CellCoord& c) const
+uint RegularGrid<Scalar, N>::indexOfCell(const CellCoord& c) const
 {
 	unsigned long int ind = c[0];
 	assert(c[0] < siz[0]);
@@ -215,9 +215,9 @@ uint Grid<Scalar, N>::indexOfCell(const CellCoord& c) const
 }
 
 template<typename Scalar, int N>
-typename Grid<Scalar, N>::CellCoord Grid<Scalar, N>::cellOfIndex(uint index) const
+typename RegularGrid<Scalar, N>::CellCoord RegularGrid<Scalar, N>::cellOfIndex(uint index) const
 {
-	typename Grid<Scalar, N>::CellCoord c;
+	typename RegularGrid<Scalar, N>::CellCoord c;
 	for (long int i = N - 1; i >= 0; i--) {
 		c[i] = index % siz[i];
 		index /= siz[i];
@@ -226,7 +226,7 @@ typename Grid<Scalar, N>::CellCoord Grid<Scalar, N>::cellOfIndex(uint index) con
 }
 
 template<typename Scalar, int N>
-void Grid<Scalar, N>::set(const Box<Point<Scalar, N> >& box, const Point<uint, N>& size)
+void RegularGrid<Scalar, N>::set(const Box<Point<Scalar, N> >& box, const Point<uint, N>& size)
 {
 	bbox = box;
 	siz = size;

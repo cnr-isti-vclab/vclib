@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_HASH_TABLE_GRID_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_HASH_TABLE_GRID_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_HASH_TABLE_GRID_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_HASH_TABLE_GRID_H
 
 #include <set>
 #include <unordered_map>
@@ -121,13 +121,13 @@ private:
 };
 
 template<typename ValueType, bool AD = true, typename ScalarType = double>
-using HashTableGrid2 = HashTableGrid<Grid2<ScalarType>, ValueType, AD>;
+using HashTableGrid2 = HashTableGrid<RegularGrid2<ScalarType>, ValueType, AD>;
 
 template<typename ValueType, bool AD = true, typename ScalarType = double>
-using HashTableGrid3 = HashTableGrid<Grid3<ScalarType>, ValueType, AD>;
+using HashTableGrid3 = HashTableGrid<RegularGrid3<ScalarType>, ValueType, AD>;
 
 } // namespace vcl
 
 #include "hash_table_grid.cpp"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STRUCTURES_HASH_TABLE_GRID_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_HASH_TABLE_GRID_H

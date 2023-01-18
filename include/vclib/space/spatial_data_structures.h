@@ -25,7 +25,7 @@
 #define VCL_SPACE_SPATIAL_DATA_STRUCTURES_H
 
 #include "spatial_data_structures/kd_tree.h"
-#include "spatial_data_structures/grid_structures/hash_table_grid.h"
-#include "spatial_data_structures/grid_structures/static_grid.h"
+#include "spatial_data_structures/grid/hash_table_grid.h"
+#include "spatial_data_structures/grid/static_grid.h"
 
 #endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_H

@@ -21,20 +21,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID3_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID3_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID2_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID2_H
 
-#include "grid_t.h"
+#include "regular_grid_t.h"
 
 namespace vcl {
 
 template<typename Scalar>
-class Grid3 : public Grid<Scalar, 3>
+class RegularGrid2 : public RegularGrid<Scalar, 2>
 {
 public:
-	using Grid<Scalar, 3>::Grid;
+	using RegularGrid<Scalar, 2>::RegularGrid;
 };
 
 } // namespace vcl
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_GRID3_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID2_H
