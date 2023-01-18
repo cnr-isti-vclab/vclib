@@ -28,58 +28,6 @@
 namespace vcl {
 
 /**
- * @brief Empty constructor, creates an usable HashTableGrid, since the Grid on which construct
- * the has table is not initialized.
- */
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid()
-{
-}
-
-/**
- * @brief Creates a HashTableGrid that allows to store ValueType values on the given grid.
- * @param grid
- */
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(const GridType& grid) :
-		GridType(grid)
-{
-}
-
-/**
- * @brief Creates a HashTableGrid that allows to store ValueType values on a Grid having `min` as
- * minimum coordinte of the Grid, `max` as maximum coordinate of the grid, and the number of cells
- * per dimension given by `sizes`.
- * @param min
- * @param max
- * @param sizes
- */
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-template<PointConcept PointType>
-HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
-	const PointType& min,
-	const PointType& max,
-	const KeyType&   sizes) :
-		GridType(min, max, sizes)
-{
-}
-
-/**
- * @brief Creates a HashTableGrid that allows to store ValueType values on a Grid bounded by `bbox`,
- * and having the number of cells per dimension given by `sizes`.
- * @param bbox
- * @param sizes
- */
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-template<typename BoxType>
-HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
-	const BoxType& bbox,
-	const KeyType& sizes) :
-		GridType(bbox, sizes)
-{
-}
-
-/**
  * @brief Creates an HashTableGrid that contains all the elements that can be iterated from `begin`
  * to `end`.
  *
@@ -92,27 +40,21 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 template<typename ObjIterator>
-HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(ObjIterator begin, ObjIterator end)
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(ObjIterator begin, ObjIterator end) :
+		AbstractGrid(begin, end)
 {
-	using ScalarType = typename GridType::ScalarType;
-	using BBoxType = typename GridType::BBoxType;
-	using CellCoord = typename GridType::CellCoord;
+	AbstractGrid::insert(begin, end);
+}
 
-	BBoxType bbox = boundingBox(begin, end);
-	uint nElements = std::distance(begin, end);
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid()
+{
+}
 
-	if (nElements > 0) {
-		// inflated bb
-		ScalarType infl = bbox.diagonal()/nElements;
-		bbox.min -= infl;
-		bbox.max += infl;
-
-		CellCoord sizes = bestGridSize(bbox.size(), nElements);
-
-		GridType::set(bbox, sizes);
-
-		insert(begin, end);
-	}
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(const GridType& g) :
+		AbstractGrid(g)
+{
 }
 
 /**
@@ -233,40 +175,6 @@ void HashTableGrid<GridType, ValueType, AllowDuplicates>::clear()
 	map.clear();
 }
 
-/**
- * @brief Inserts the given element in the HashTableGrid.
- *
- * If the ValueType is Puntual (a Point or a Vertex), the element will be inserted in just one
- * cell of the grid. If the element is a spatial object having a bounding box with min != max, the
- * element will be stored in all the cells where its bounding box lies.
- *
- * @param v
- * @return
- */
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(const ValueType& v)
-{
-	return grid::insert(*this, v);
-}
-
-/**
- * @brief Inserts all the elements from `begin` to `end`. The type referenced by the iterator must
- * be the ValueType of the HashTableGrid.
- * @param begin
- * @param end
- * @return The number of inserted elements.
- */
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-template<typename ObjIterator>
-uint HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(ObjIterator begin, ObjIterator end)
-{
-	uint cnt = 0;
-	for (ObjIterator it = begin; it != end; ++it)
-		if (insert(*it))
-			cnt++;
-	return cnt;
-}
-
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 bool HashTableGrid<GridType, ValueType, AllowDuplicates>::erase(const ValueType& v)
 {
@@ -354,7 +262,7 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::end() const
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
-bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insert(
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insertInCell(
 	const KeyType&   k,
 	const ValueType& v)
 {

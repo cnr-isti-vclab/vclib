@@ -33,7 +33,7 @@
 #include <vclib/space/spatial_data_structures/grid.h>
 #include <vclib/space/sphere.h>
 
-#include "functions.h"
+#include "abstract_ds_grid.h"
 
 namespace vcl {
 
@@ -49,10 +49,12 @@ namespace vcl {
  * AllowDuplicates template parameter, that is defaulted to `true`.
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates = true>
-class HashTableGrid : public GridType
+class HashTableGrid : public AbstractDSGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>
 {
-	template<typename GT, typename VT>
-	friend bool grid::insert(GT&, const VT&);
+	using AbstractGrid =
+		AbstractDSGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>;
+
+	friend AbstractGrid;
 
 public:
 	static_assert(
@@ -60,20 +62,13 @@ public:
 		"Not allowing duplicates in a Spatial Data Structures means that ValueType must implement "
 		"operator==.");
 
-	using KeyType = typename GridType::CellCoord;
+	using KeyType = typename AbstractGrid::KeyType;
 
 	using Iterator = HashTableGridIterator<KeyType, ValueType>;
 	using ConstIterator = ConstHashTableGridIterator<KeyType, ValueType>;
 
 	HashTableGrid();
-
-	HashTableGrid(const GridType& grid);
-
-	template<PointConcept PointType>
-	HashTableGrid(const PointType& min, const PointType& max, const KeyType& sizes);
-
-	template<typename BoxType>
-	HashTableGrid(const BoxType& bbox, const KeyType& sizes);
+	HashTableGrid(const GridType& g);
 
 	template<typename ObjIterator>
 	HashTableGrid(ObjIterator begin, ObjIterator end);
@@ -89,11 +84,6 @@ public:
 	std::vector<ConstIterator> valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	void clear();
-
-	bool insert(const ValueType& v);
-
-	template<typename ObjIterator>
-	uint insert(ObjIterator begin, ObjIterator end);
 
 	bool erase(const ValueType& v);
 	bool eraseCell(const KeyType& k);
@@ -112,7 +102,7 @@ private:
 	mutable uint m = 1;
 	MapType map;
 
-	bool insert(const KeyType& k, const ValueType& v);
+	bool insertInCell(const KeyType& k, const ValueType& v);
 	bool erase(const KeyType& k, const ValueType& v);
 
 	bool isMarked(const vcl::Markable<ValueType>& v) const;

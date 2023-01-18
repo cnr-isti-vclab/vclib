@@ -40,9 +40,6 @@ namespace vcl::grid {
 // - g.mark(const vcl::Markable<ValueType>&)
 // - g.unMarkAll()
 
-template<typename GridStructure, typename ValueType>
-bool insert(GridStructure& g, const ValueType& v);
-
 } // namespace vcl::grid
 
 #include "functions.cpp"

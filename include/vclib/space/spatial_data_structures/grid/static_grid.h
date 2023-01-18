@@ -32,17 +32,23 @@
 #include <vclib/misc/mark.h>
 #include <vclib/space/spatial_data_structures/grid.h>
 
+#include "abstract_ds_grid.h"
+
 namespace vcl {
 
 template<typename GridType, typename ValueType>
-class StaticGrid : public GridType
+class StaticGrid : public AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>
 {
+	using AbstractGrid = AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
 	using PairComparator = FirstElementPairComparator<std::pair<uint,  vcl::Markable<ValueType>>>;
 
+	friend AbstractGrid;
+
 public:
-	using KeyType = typename GridType::CellCoord;
+	using KeyType = typename AbstractGrid::KeyType;
 
 	StaticGrid();
+	StaticGrid(const GridType& g);
 
 	template<typename ObjIterator>
 	StaticGrid(ObjIterator begin, ObjIterator end);
@@ -66,10 +72,7 @@ private:
 	// object contained in the cell, or values.size() if the cell is empty
 	std::vector<uint> grid;
 
-	template<typename ObjIterator>
-	void insertElements(ObjIterator begin, ObjIterator end);
-
-	void insert(typename GridType::CellCoord& cell, const ValueType& v);
+	bool insertInCell(const KeyType& cell, const ValueType& v);
 };
 
 template<typename ValueType, bool AD = true, typename ScalarType = double>

@@ -31,6 +31,21 @@ StaticGrid<GridType, ValueType>::StaticGrid()
 }
 
 template<typename GridType, typename ValueType>
+StaticGrid<GridType, ValueType>::StaticGrid(const GridType& g) :
+		AbstractGrid(g)
+{
+}
+
+template<typename GridType, typename ValueType>
+template<typename ObjIterator>
+StaticGrid<GridType, ValueType>::StaticGrid(ObjIterator begin, ObjIterator end) :
+		AbstractGrid(begin, end)
+{
+	AbstractGrid::insert(begin, end);
+	build();
+}
+
+template<typename GridType, typename ValueType>
 void StaticGrid<GridType, ValueType>::build()
 {
 	uint totCellNumber = 1;
@@ -103,78 +118,11 @@ std::size_t StaticGrid<GridType, ValueType>::countInCell(const KeyType& k) const
 }
 
 template<typename GridType, typename ValueType>
-template<typename ObjIterator>
-StaticGrid<GridType, ValueType>::StaticGrid(ObjIterator begin, ObjIterator end)
-{
-	using ScalarType = typename GridType::ScalarType;
-	using BBoxType = typename GridType::BBoxType;
-	using CellCoord = typename GridType::CellCoord;
-
-	BBoxType bbox = boundingBox(begin, end);
-	uint nElements = std::distance(begin, end);
-
-	if (nElements > 0) {
-		// inflated bb
-		ScalarType infl = bbox.diagonal()/nElements;
-		bbox.min -= infl;
-		bbox.max += infl;
-
-		CellCoord sizes = bestGridSize(bbox.size(), nElements);
-
-		GridType::set(bbox, sizes);
-
-		insertElements(begin, end);
-	}
-}
-
-template<typename GridType, typename ValueType>
-template<typename ObjIterator>
-void StaticGrid<GridType, ValueType>::insertElements(ObjIterator begin, ObjIterator end)
-{
-	using TMPVT = typename std::remove_pointer<ValueType>::type;
-	using VT = typename std::remove_reference<TMPVT>::type;
-
-	for (ObjIterator it = begin; it != end; ++it) {
-		const VT* vv = nullptr;
-		if constexpr(std::is_pointer<ValueType>::value) {
-			if (*it != nullptr)
-				vv = (*it);
-		}
-		else {
-			vv = &(*it);
-		}
-		if (vv) {
-			if constexpr (PointConcept<VT>) {
-				typename GridType::CellCoord cell = GridType::cell(*vv);
-				insert(cell, *it);
-			}
-			else if constexpr (VertexConcept<VT>) {
-				typename GridType::CellCoord cell = GridType::cell(vv->coord());
-				insert(cell, *it);
-			}
-			else {
-				typename GridType::BBoxType bb = vcl::boundingBox(*vv);
-
-				typename GridType::CellCoord bmin = GridType::cell(bb.min);
-				typename GridType::CellCoord bmax = GridType::cell(bb.max);
-
-				for (auto cell : GridType::cells(bmin, bmax)) {
-					insert(cell, *it);
-				}
-			}
-		}
-	}
-
-	build();
-}
-
-template<typename GridType, typename ValueType>
-void StaticGrid<GridType, ValueType>::insert(
-	typename GridType::CellCoord& cell,
-	const ValueType&              v)
+bool StaticGrid<GridType, ValueType>::insertInCell(const KeyType& cell, const ValueType& v)
 {
 	uint cellIndex = GridType::indexOfCell(cell);
 	values.push_back(std::make_pair(cellIndex, vcl::Markable<ValueType>(v)));
+	return true;
 }
 
 } // namespace vcl
