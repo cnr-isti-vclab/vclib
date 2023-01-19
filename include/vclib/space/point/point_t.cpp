@@ -43,6 +43,54 @@ Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, 1, N>& v)
 }
 
 template<typename Scalar, int N>
+Scalar& Point<Scalar, N>::x() requires (N >= 1)
+{
+	return p(0);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::x() const requires (N >= 1)
+{
+	return p(0);
+}
+
+template<typename Scalar, int N>
+Scalar& Point<Scalar, N>::y() requires (N >= 2)
+{
+	return p(1);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::y() const requires (N >= 2)
+{
+	return p(1);
+}
+
+template<typename Scalar, int N>
+Scalar& Point<Scalar, N>::z() requires (N >= 3)
+{
+	return p(2);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::z() const requires (N >= 3)
+{
+	return p(2);
+}
+
+template<typename Scalar, int N>
+Scalar& Point<Scalar, N>::w() requires (N >= 4)
+{
+	return p(3);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::w() const requires (N >= 4)
+{
+	return p(3);
+}
+
+template<typename Scalar, int N>
 template<typename S>
 Point<S, N> Point<Scalar, N>::cast() const
 {

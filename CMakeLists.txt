@@ -447,9 +447,6 @@ set(SOURCES
 	include/vclib/space/spatial_data_structures/grid/regular_grid_t.cpp
 	include/vclib/space/spatial_data_structures/grid/static_grid.cpp
 	include/vclib/space/point/point_t.cpp
-	include/vclib/space/point/point2.cpp
-	include/vclib/space/point/point3.cpp
-	include/vclib/space/point/point4.cpp
 	include/vclib/space/sampler/mesh_sampler.cpp
 	include/vclib/space/sampler/point_sampler.cpp
 	include/vclib/space/sampler/vertex_index_sampler.cpp)

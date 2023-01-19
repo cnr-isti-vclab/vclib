@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -29,7 +29,7 @@ namespace vcl {
  * @brief Default constructor.
  * Initializes a black color (with alpha 255).
  */
-inline Color::Color() : Point4(0, 0, 0, 255)
+inline Color::Color() : Point(0, 0, 0, 255)
 {
 }
 
@@ -49,7 +49,7 @@ inline Color::Color(ColorRGBA cc)
  * @param[in] alpha: alpha component (default 255)
  */
 inline Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) :
-		Point4(red, green, blue, alpha)
+		Point(red, green, blue, alpha)
 {
 }
 

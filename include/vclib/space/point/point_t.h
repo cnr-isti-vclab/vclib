@@ -56,6 +56,15 @@ public:
 
 	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
 
+	ScalarType& x() requires (N >= 1);
+	const ScalarType& x() const requires (N >= 1);
+	ScalarType& y() requires (N >= 2);
+	const ScalarType& y() const requires (N >= 2);
+	ScalarType& z() requires (N >= 3);
+	const ScalarType& z() const requires (N >= 3);
+	ScalarType& w() requires (N >= 4);
+	const ScalarType& w() const requires (N >= 4);
+
 	template<typename S>
 	Point<S, N> cast() const;
 

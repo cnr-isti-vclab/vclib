@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -32,22 +32,8 @@ namespace vcl {
  * @brief The Point2 class represents a 2-dimensional point containing 2 scalar values.
  * Specializes the Point class, providing some additional member functions useful for 2D points.
  */
-template<typename ScalarType>
-class Point2 : public Point<ScalarType, 2>
-{
-public:
-	using Point<ScalarType, 2>::Point;
-
-	Point2() = default; // default empty constructor
-
-	Point2(const Point<ScalarType, 2>& p); // from base class - will include all its constructors
-	Point2(const ScalarType& x, const ScalarType& y);
-
-	ScalarType x() const;
-	ScalarType y() const;
-	ScalarType& x();
-	ScalarType& y();
-};
+template<typename Scalar>
+using Point2 = Point<Scalar, 2>;
 
 using Point2i = Point2<int>;
 using Point2f = Point2<float>;
@@ -59,16 +45,5 @@ static_assert(PointConcept<Point2f>, "Point2f is not a valid Point");
 static_assert(PointConcept<Point2d>, "Point2d is not a valid Point");
 
 } // namespace vcl
-
-// inject vcl::Point2 hash function in std namespace
-namespace std {
-template <typename Scalar>
-struct hash<vcl::Point2<Scalar> >
-{
-	size_t operator()(const vcl::Point2<Scalar>& id) const noexcept;
-};
-} // namespace std
-
-#include "point2.cpp"
 
 #endif // VCL_SPACE_POINT_POINT2_H
