@@ -59,6 +59,8 @@ namespace vcl {
 // - implements the following member functions:
 //   - std::pair<Iterator, Iterator> valuesInCell(const KeyType) -> returns a pair of begin-end
 //     iterators that will allow to cycle over the elements contained in a cell.
+//     this function must be overloaded both in const and non-const versions, returning proper
+//     const or non-const iterators.
 //   - bool insertInCell(const KeyType&, const ValueType&) -> inserts the element in a Grid Cell
 //     the returned type tells if the element has been inserted (in some implementations, insertion
 //     could not happen, e.g. when duplicates are not allowed).
@@ -97,14 +99,24 @@ namespace vcl {
 template<typename GridType, typename ValueType, typename DerivedGrid>
 class AbstractDSGrid : public GridType
 {
+	// ValueType could be anything. We need to understand if it is a pointer or not, in order to
+	// make proper optimized operations. Therefore, we declare VT, that is used internally in this
+	// class.
+	// VT is ValueType without pointers or references:
+	using TMPVT = typename std::remove_pointer<ValueType>::type;
+	using VT = typename std::remove_reference<TMPVT>::type;
+
 public:
 	using KeyType = typename GridType::CellCoord;
 
 	bool cellEmpty(const KeyType& k) const;
+
 	std::size_t countInCell(const KeyType& k) const;
 	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	// vector of iterators - return type must be auto here (we still don't know the iterator type)
+	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s);
+	// vector of const iterators - return type must be auto also here
 	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	bool insert(const ValueType& v);
@@ -137,6 +149,11 @@ private:
 	bool isMarked(const vcl::Markable<ValueType>& v) const;
 	void mark(const vcl::Markable<ValueType>& v) const;
 	void unMarkAll() const;
+
+	template<typename Iterator>
+	bool valueIsInSpehere(Iterator it, const Sphere<typename GridType::ScalarType>& s) const;
+
+	static const VT* getCleanValueTypePointer(const ValueType& v);
 };
 
 } // namespace vcl

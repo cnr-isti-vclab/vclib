@@ -125,7 +125,7 @@ int main()
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
 
-	vcl::HashTableGrid3<vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd());
+	vcl::HashTableGrid3<const vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd());
 
 	std::cerr << "Values in HashTableGrid: \n";
 

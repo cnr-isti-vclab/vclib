@@ -106,6 +106,16 @@ std::size_t HashTableGrid<GridType, ValueType, AllowDuplicates>::countInCell(con
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 std::pair<
+	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator,
+	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::valuesInCell(const KeyType& k)
+{
+	auto p = map.equal_range(k);
+	return std::make_pair(Iterator(p.first), Iterator(p.second));
+}
+
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+std::pair<
 	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator,
 	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator>
 HashTableGrid<GridType, ValueType, AllowDuplicates>::valuesInCell(const KeyType& k) const
@@ -135,7 +145,7 @@ template<typename GridType, typename ValueType, bool AllowDuplicates>
 void HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInSphere(
 	const Sphere<typename GridType::ScalarType>& s)
 {
-	std::vector<ConstIterator> toDel = AbstractGrid::valuesInSphere(s);
+	std::vector<Iterator> toDel = AbstractGrid::valuesInSphere(s);
 	for (auto& it : toDel)
 		map.erase(it.mapIt);
 }

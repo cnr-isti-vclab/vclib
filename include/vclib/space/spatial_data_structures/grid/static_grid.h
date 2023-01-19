@@ -65,6 +65,7 @@ public:
 
 	std::size_t countInCell(const KeyType& k) const;
 
+	std::pair<Iterator, Iterator> valuesInCell(const KeyType& k);
 	std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const;
 
 	Iterator begin();

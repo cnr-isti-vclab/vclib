@@ -48,12 +48,31 @@ uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::countInSphere(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
+	const Sphere<typename GridType::ScalarType>& s)
+{
+	std::vector<typename DerivedGrid::Iterator> resVec;
+
+	// interval of cells containing the sphere
+	KeyType first = GridType::cell(s.center() - s.radius());
+	KeyType last = GridType::cell(s.center() + s.radius());
+
+	unMarkAll();
+
+	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
+		// p is a pair of iterators
+		const auto& p = static_cast<DerivedGrid*>(this)->valuesInCell(c);
+		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
+			if (valueIsInSpehere(it, s))
+				resVec.push_back(it);
+		}
+	}
+	return resVec;
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 	const Sphere<typename GridType::ScalarType>& s) const
 {
-	// VT is ValueType having removed reference and pointer, if present
-	using TMPVT = typename std::remove_pointer<ValueType>::type;
-	using VT = typename std::remove_reference<TMPVT>::type;
-
 	std::vector<typename DerivedGrid::ConstIterator> resVec;
 
 	// interval of cells containing the sphere
@@ -66,29 +85,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 		// p is a pair of iterators
 		const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-			const VT* vv = nullptr; // vv will point to the current value
-			if constexpr(std::is_pointer<ValueType>::value) {
-				vv = it->second;
-			}
-			else {
-				vv = &(it->second);
-			}
-
-			bool test = false;
-			if constexpr(PointConcept<VT>) { // check if the point value is inside the sphere
-				test = vv && s.isInside(*vv);
-			}
-			else if constexpr(VertexConcept<VT>) { // check if the vertex coord is inside the sphere
-				test = vv && s.isInside(vv->coord());
-			}
-			else { // check if the bbox of the value intersects the sphere
-				if (!isMarked(it.markableValue())) {
-					test = vv && s.intersects(vcl::boundingBox(*vv));
-					mark(it.markableValue());
-				}
-			}
-
-			if (test)
+			if (valueIsInSpehere(it, s))
 				resVec.push_back(it);
 		}
 	}
@@ -108,21 +105,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 template<typename GridType, typename ValueType, typename DerivedGrid>
 bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v)
 {
-	// ValueType could be anything. We need to understand first if it is a pointer or not,
-	// and then insert the value only if it is not nullptr
-
-	// VT is:
-	// - ValueType if ValueType is not a pointer
-	// - The Type pointed by ValueType, if ValueType is a pointer
-	using TMPVT = typename std::remove_pointer<ValueType>::type;
-	using VT = typename std::remove_reference<TMPVT>::type;
-	const VT* vv = nullptr; // vv is a pointer to VT
-	if constexpr(std::is_pointer<ValueType>::value) {
-		vv = v;
-	}
-	else {
-		vv = &v;
-	}
+	auto vv = getCleanValueTypePointer(v);
 
 	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
 		if constexpr (PointConcept<VT>) { // if the ValueType was a Point (or Point*)
@@ -170,21 +153,7 @@ uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin,
 template<typename GridType, typename ValueType, typename DerivedGrid>
 bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::erase(const ValueType& v)
 {
-	// ValueType could be anything. We need to understand first if it is a pointer or not,
-	// and then insert the value only if it is not nullptr
-
-	// VT is:
-	// - ValueType if ValueType is not a pointer
-	// - The Type pointed by ValueType, if ValueType is a pointer
-	using TMPVT = typename std::remove_pointer<ValueType>::type;
-	using VT = typename std::remove_reference<TMPVT>::type;
-	const VT* vv = nullptr;
-	if constexpr(std::is_pointer<ValueType>::value) {
-		vv = v;
-	}
-	else {
-		vv = &v;
-	}
+	auto vv = getCleanValueTypePointer(v);
 
 	if (vv) {
 		if constexpr (PointConcept<VT>) {
@@ -338,6 +307,66 @@ template<typename GridType, typename ValueType, typename DerivedGrid>
 void AbstractDSGrid<GridType, ValueType, DerivedGrid>::unMarkAll() const
 {
 	m++;
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename Iterator>
+bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
+	Iterator it,
+	const Sphere<typename GridType::ScalarType>& s) const
+{
+	auto vv = getCleanValueTypePointer(it->second);
+
+	bool test = false;
+	if constexpr(PointConcept<VT>) { // check if the point value is inside the sphere
+		test = vv && s.isInside(*vv);
+	}
+	else if constexpr(VertexConcept<VT>) { // check if the vertex coord is inside the sphere
+		test = vv && s.isInside(vv->coord());
+	}
+	else { // check if the bbox of the value intersects the sphere
+		if (!isMarked(it.markableValue())) {
+			test = vv && s.intersects(vcl::boundingBox(*vv));
+			mark(it.markableValue());
+		}
+	}
+	return test;
+}
+
+/**
+ * @brief This function returns a clean pointer (VT*) to the given valuetype.
+ * It is just an utility function used to avoid code duplication. It allows equal treatment of
+ * ValueType variable, whether that v is a pointer or not.
+ *
+ * Example: you have a ValueType v, and you want to compute its bounding box, but you don't know if
+ * ValueType is a pointer or not.
+ * Instead of doing:
+ * if constexpr(std::is_pointer<ValueType>::value) {
+ *     if (vv) vcl::boundingBox(*v);
+ * }
+ * else{
+ *     vcl::boundingBox(v);
+ * }
+ *
+ * you can do:
+ * const VT* vv = getCleanValueTypePointer(v);
+ * if (vv) vcl::boundingBox(*vv);
+ *
+ * @param v
+ */
+template<typename GridType, typename ValueType, typename DerivedGrid>
+const typename AbstractDSGrid<GridType, ValueType, DerivedGrid>::VT*
+AbstractDSGrid<GridType, ValueType, DerivedGrid>::getCleanValueTypePointer(const ValueType& v)
+{
+	const VT* vv = nullptr; // vv is a pointer to VT
+	if constexpr(std::is_pointer<ValueType>::value) {
+		vv = v;
+	}
+	else {
+		vv = &v;
+	}
+
+	return vv;
 }
 
 } // namespace vcl

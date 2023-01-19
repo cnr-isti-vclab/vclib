@@ -119,6 +119,29 @@ std::size_t StaticGrid<GridType, ValueType>::countInCell(const KeyType& k) const
 
 template<typename GridType, typename ValueType>
 std::pair<
+	typename StaticGrid<GridType, ValueType>::Iterator,
+	typename StaticGrid<GridType, ValueType>::Iterator>
+StaticGrid<GridType, ValueType>::valuesInCell(const KeyType& k)
+{
+	uint ind = GridType::indexOfCell(k);
+	uint i = grid[ind];
+	if (i < values.size()) {
+		std::pair<Iterator, Iterator> p;
+		p.first = Iterator(values.begin() + i, (const GridType&)*this);
+		while(i < values.size() && values[i].first == ind) {
+			i++;
+		}
+		auto it = i < values.size() ? values.begin() + i : values.end();
+		p.second = Iterator(it, (const GridType&)*this);
+		return p;
+	}
+	else {
+		return std::make_pair(end(), end());
+	}
+}
+
+template<typename GridType, typename ValueType>
+std::pair<
 	typename StaticGrid<GridType, ValueType>::ConstIterator,
 	typename StaticGrid<GridType, ValueType>::ConstIterator>
 StaticGrid<GridType, ValueType>::valuesInCell(const KeyType& k) const
