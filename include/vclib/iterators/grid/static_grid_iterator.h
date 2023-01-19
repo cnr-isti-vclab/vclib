@@ -51,6 +51,9 @@ public:
 	StaticGridIterator();
 	StaticGridIterator(VecIt it, const GridType& g);
 
+	const Markable<ValueType>& markableValue() const;
+	Markable<ValueType>& markableValue();
+
 	value_type  operator*() const;
 	ArrowHelper operator->() const;
 
@@ -85,6 +88,8 @@ public:
 
 	ConstStaticGridIterator();
 	ConstStaticGridIterator(VecIt it, const GridType& g);
+
+	const Markable<ValueType>& markableValue() const;
 
 	value_type  operator*() const;
 	ArrowHelper operator->() const;

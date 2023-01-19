@@ -131,7 +131,7 @@ StaticGrid<GridType, ValueType>::valuesInCell(const KeyType& k) const
 		while(i < values.size() && values[i].first == ind) {
 			i++;
 		}
-		auto it = i < values.size()? values.begin() + i : values.end();
+		auto it = i < values.size() ? values.begin() + i : values.end();
 		p.second = ConstIterator(it, (const GridType&)*this);
 		return p;
 	}

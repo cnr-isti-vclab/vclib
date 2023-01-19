@@ -55,13 +55,27 @@ namespace vcl {
 // - declares the AbstractDSGrid class as friend (if one of the following member functions is
 //   protected/private);
 // - implements iterators Iterator and ConstIterator that iterate over pairs of
-//   <KeyType, vcl::Markable<ValueType>>
+//   <KeyType, ValueType> (see below for more details)
 // - implements the following member functions:
 //   - std::pair<Iterator, Iterator> valuesInCell(const KeyType) -> returns a pair of begin-end
-//     iterators that will allow to cycle over the elements contained in a cell
+//     iterators that will allow to cycle over the elements contained in a cell.
 //   - bool insertInCell(const KeyType&, const ValueType&) -> inserts the element in a Grid Cell
+//     the returned type tells if the element has been inserted (in some implementations, insertion
+//     could not happen, e.g. when duplicates are not allowed).
 //   - bool eraseInCell(const KeyType&, const ValueType&) -> erases the element from a Grid Cell
+//     the returned type tells if the element has been erased from the given cell.
 //   -
+//
+// Iterators of your class must:
+// - Iterate over pairs of <KeyType, ValueType&>:
+//   - operator*() returns a pair having first member that is the key, and second member that is a
+//     reference to the value
+//   - operator->() return a pointer to the same pair
+// - operator+() and operator+(int), that moves the iterator in the same cell if there are more
+//   values in it
+// - a markableValue() member function that returns a vcl::Markable<ValueType>&.
+//   - this member function should be private. In that case, make sure to declare the AbstractDSGrid
+//     as friend in your Iteratro class
 //
 // You can reimplement in your derived class all the member functions implemented in this class that
 // may take advantage of a speedup depending on the internal storage.
@@ -88,13 +102,19 @@ public:
 
 	bool cellEmpty(const KeyType& k) const;
 	std::size_t countInCell(const KeyType& k) const;
+	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
+	// vector of iterators - return type must be auto here (we still don't know the iterator type)
 	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	bool insert(const ValueType& v);
 
 	template<typename ObjIterator>
 	uint insert(ObjIterator begin, ObjIterator end);
+
+	bool erase(const ValueType& v);
+	bool eraseAllInCell(const KeyType& k);
+	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
 
 protected:
 	AbstractDSGrid();
@@ -112,7 +132,7 @@ protected:
 	AbstractDSGrid(ObjIterator begin, ObjIterator end);
 
 private:
-	mutable uint m = 1;
+	mutable uint m = 1; // mark of the data structure
 
 	bool isMarked(const vcl::Markable<ValueType>& v) const;
 	void mark(const vcl::Markable<ValueType>& v) const;

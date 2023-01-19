@@ -109,7 +109,7 @@ int main()
 
 	auto pp = sg.valuesInCell(vcl::Point3<uint>(0,1,2));
 	for (auto& it = pp.first; it != pp.second; ++it) {
-		std::cerr << it->value << "; ";
+		std::cerr << it->second << "; ";
 	}
 	std::cerr << "\n";
 
@@ -117,7 +117,7 @@ int main()
 
 	std::cerr << "Values in sphere: \n";
 	for (auto it : sset) {
-		std::cerr << it->value << "; ";
+		std::cerr << it->second << "; ";
 	}
 	std::cerr << "\n\n";
 
@@ -133,14 +133,30 @@ int main()
 		std::cerr << p.key << ": " << m.index(p.value) << "\n";
 	}
 
+	std::cerr << "\nValues in Sphere: \n";
+
+	auto sv  = fsht.valuesInSphere({vcl::Point3d(-1, -1, -1), 0.5});
+
+	for (const auto& p : sv) {
+		std::cerr << p->key << ": " << m.index(p->value) << "\n";
+	}
+
 	std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<vcl::TriMesh::Face&> fsg(m.faceBegin(), m.faceEnd());
+	vcl::StaticGrid3<const vcl::TriMesh::Face&> fsg(m.faceBegin(), m.faceEnd());
 
 	std::cerr << "Values in Static Grid : \n";
 
 	for (const auto& p : fsg) {
 		std::cerr << p.key << ": " << m.index(p.value) << "\n";
+	}
+
+	std::cerr << "\nValues in Sphere: \n";
+
+	auto fsv  = fsg.valuesInSphere({vcl::Point3d(-1, -1, -1), 0.5});
+
+	for (const auto& p : fsv) {
+		std::cerr << p->first << ": " << m.index(p->second) << "\n";
 	}
 
 	return 0;

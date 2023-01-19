@@ -60,6 +60,9 @@ public:
 	HashTableGridIterator();
 	HashTableGridIterator(MapIt it);
 
+	const Markable<ValueType>& markableValue() const;
+	Markable<ValueType>& markableValue();
+
 	value_type  operator*() const;
 	ArrowHelper operator->() const;
 
@@ -97,6 +100,8 @@ public:
 
 	ConstHashTableGridIterator();
 	ConstHashTableGridIterator(MapIt it);
+
+	const Markable<ValueType>& markableValue() const;
 
 	value_type  operator*() const;
 	ArrowHelper operator->() const;

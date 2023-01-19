@@ -68,7 +68,7 @@ template<typename T1, typename T2>
 class KeyValueRefPair : public SecondRefPair<T1, T2>
 {
 public:
-	KeyValueRefPair(T1& f, T2& s) : SecondRefPair<T1, T2>(f, s) {}
+	KeyValueRefPair(const T1& f, T2& s) : SecondRefPair<T1, T2>(f, s) {}
 	T1& key = SecondRefPair<T1, T2>::first; // alias
 	T2& value = SecondRefPair<T1, T2>::second; // alias
 };

@@ -105,13 +105,6 @@ std::size_t HashTableGrid<GridType, ValueType, AllowDuplicates>::countInCell(con
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
-uint HashTableGrid<GridType, ValueType, AllowDuplicates>::countInSphere(
-	const Sphere<typename GridType::ScalarType>& s) const
-{
-	return valuesInSphere(s).size();
-}
-
-template<typename GridType, typename ValueType, bool AllowDuplicates>
 std::pair<
 	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator,
 	typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator>
@@ -128,45 +121,7 @@ void HashTableGrid<GridType, ValueType, AllowDuplicates>::clear()
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
-bool HashTableGrid<GridType, ValueType, AllowDuplicates>::erase(const ValueType& v)
-{
-	using TMPVT = typename std::remove_pointer<ValueType>::type;
-	using VT = typename std::remove_reference<TMPVT>::type;
-	const VT* vv = nullptr;
-	if constexpr(std::is_pointer<ValueType>::value) {
-		vv = v;
-	}
-	else {
-		vv = &v;
-	}
-
-	if (vv) {
-		if constexpr (PointConcept<VT>) {
-			typename GridType::CellCoord cell = GridType::cell(*vv);
-			return erase(cell, v);
-		}
-		else if constexpr (VertexConcept<VT>) {
-			typename GridType::CellCoord cell = GridType::cell(vv->coord());
-			return erase(cell, v);
-		}
-		else {
-			typename GridType::BBoxType bb = vcl::boundingBox(*vv);
-
-			typename GridType::CellCoord bmin = GridType::cell(bb.min);
-			typename GridType::CellCoord bmax = GridType::cell(bb.max);
-
-			bool found = false;
-			for (const auto& cell : GridType::cells(bmin, bmax)) {
-				found |= erase(cell, v);
-			}
-			return found;
-		}
-	}
-	return false;
-}
-
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-bool HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseCell(const KeyType& k)
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseAllInCell(const KeyType& k)
 {
 	std::pair<MapIterator,MapIterator> range = map.equal_range(k);
 	if (range != map.end()) {
@@ -237,7 +192,7 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insertInCell(
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
-bool HashTableGrid<GridType, ValueType, AllowDuplicates>::erase(
+bool HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInCell(
 	const KeyType& k,
 	const ValueType& v)
 {

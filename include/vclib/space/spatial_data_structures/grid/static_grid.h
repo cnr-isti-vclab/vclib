@@ -83,7 +83,13 @@ private:
 	// object contained in the cell, or values.size() if the cell is empty
 	std::vector<uint> grid;
 
+	// not available member functions
+	using AbstractGrid::erase;
+	using AbstractGrid::eraseAllInCell;
+	using AbstractGrid::eraseInSphere;
+
 	bool insertInCell(const KeyType& cell, const ValueType& v);
+	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
 };
 
 template<typename ValueType, bool AD = true, typename ScalarType = double>

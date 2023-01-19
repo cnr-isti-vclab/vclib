@@ -76,14 +76,12 @@ public:
 	std::set<KeyType> nonEmptyCells() const;
 
 	std::size_t countInCell(const KeyType& k) const;
-	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const;
 
 	void clear();
 
-	bool erase(const ValueType& v);
-	bool eraseCell(const KeyType& k);
+	bool eraseAllInCell(const KeyType& k);
 	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
 
 	Iterator begin();
@@ -100,7 +98,7 @@ private:
 	MapType map;
 
 	bool insertInCell(const KeyType& k, const ValueType& v);
-	bool erase(const KeyType& k, const ValueType& v);
+	bool eraseInCell(const KeyType& k, const ValueType& v);
 };
 
 template<typename ValueType, bool AD = true, typename ScalarType = double>
