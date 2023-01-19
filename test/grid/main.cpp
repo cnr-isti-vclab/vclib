@@ -125,21 +125,14 @@ int main()
 	std::cerr << "\n==================================\n\n";
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
-	vcl::Box3d b(vcl::Point3d(-1,-1,-1), vcl::Point3d(-0.1,-0.1,-0.1));
 
-	for (const vcl::TriMesh::Face& f : m.faces()) {
-		std::cerr << m.index(f) << " intersects? " << vcl::faceBoxIntersect(f, b) << "\n";
-	}
+	std::function<bool(const vcl::Box3d&, const vcl::TriMesh::Face&)> intersects =
+		[](const vcl::Box3d& bb, const  vcl::TriMesh::Face& v)
+	{
+		return vcl::faceBoxIntersect(v, bb);
+	};
 
-//	using BBox = typename vcl::HashTableGrid3<const vcl::TriMesh::Face&>::BBoxType;
-
-//	std::function<bool(const BBox&, const vcl::TriMesh::Face&)> intersects =
-//		[](const BBox& bb, const  vcl::TriMesh::Face& v)
-//	{
-//		return vcl::faceBoxIntersect(v, bb);
-//	};
-
-	vcl::HashTableGrid3<const vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd()/*, intersects*/);
+	vcl::HashTableGrid3<const vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd(), intersects);
 
 	std::cerr << "Values in HashTableGrid: \n";
 
@@ -157,7 +150,7 @@ int main()
 
 	std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<vcl::TriMesh::Face&> fsg(m.faceBegin(), m.faceEnd());
+	vcl::StaticGrid3<const vcl::TriMesh::Face&> fsg(m.faceBegin(), m.faceEnd(), intersects);
 
 	std::cerr << "Values in Static Grid : \n";
 

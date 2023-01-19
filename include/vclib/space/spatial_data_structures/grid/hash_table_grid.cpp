@@ -49,9 +49,9 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(ObjIterator b
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 template<typename ObjIterator>
 HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
-	ObjIterator begin,
-	ObjIterator end,
-	std::function<bool(const typename GridType::BBoxType&, const ValueType&)>& intersects) :
+	ObjIterator             begin,
+	ObjIterator             end,
+	const IsInCellFunction& intersects) :
 		AbstractGrid(begin, end)
 {
 	AbstractGrid::insert(begin, end, intersects);

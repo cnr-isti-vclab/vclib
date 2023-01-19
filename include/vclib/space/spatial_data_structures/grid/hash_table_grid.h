@@ -61,6 +61,7 @@ public:
 		"operator==.");
 
 	using KeyType = typename AbstractGrid::KeyType;
+	using IsInCellFunction = typename AbstractGrid::IsInCellFunction;
 
 	using Iterator = HashTableGridIterator<KeyType, ValueType>;
 	using ConstIterator = ConstHashTableGridIterator<KeyType, ValueType>;
@@ -70,11 +71,9 @@ public:
 
 	template<typename ObjIterator>
 	HashTableGrid(ObjIterator begin, ObjIterator end);
+
 	template<typename ObjIterator>
-	HashTableGrid(
-		ObjIterator                                                                begin,
-		ObjIterator                                                                end,
-		std::function<bool(const typename GridType::BBoxType&, const ValueType&)>& intersects);
+	HashTableGrid(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects);
 
 	bool empty() const;
 	bool cellEmpty(const KeyType& k) const;

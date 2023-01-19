@@ -135,8 +135,8 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(
-	const ValueType&                                                           v,
-	std::function<bool(const typename GridType::BBoxType&, const ValueType&)>& intersects)
+	const ValueType&        v,
+	const IsInCellFunction& intersects)
 {
 	auto vv = getCleanValueTypePointer(v);
 
@@ -192,9 +192,9 @@ uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin,
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename ObjIterator>
 uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(
-	ObjIterator begin,
-	ObjIterator end,
-	std::function<bool(const typename GridType::BBoxType&, const ValueType&)>& intersects)
+	ObjIterator             begin,
+	ObjIterator             end,
+	const IsInCellFunction& intersects)
 {
 	uint cnt = 0;
 	for (ObjIterator it = begin; it != end; ++it)

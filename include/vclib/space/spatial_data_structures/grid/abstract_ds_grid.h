@@ -107,6 +107,7 @@ class AbstractDSGrid : public GridType
 	using VT = typename std::remove_reference<TMPVT>::type;
 
 public:
+	using IsInCellFunction = std::function<bool(const typename GridType::BBoxType&, const ValueType&)>;
 	using KeyType = typename GridType::CellCoord;
 
 	bool cellEmpty(const KeyType& k) const;
@@ -120,18 +121,13 @@ public:
 	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	bool insert(const ValueType& v);
-	bool insert(
-		const ValueType&                                                           v,
-		std::function<bool(const typename GridType::BBoxType&, const ValueType&)>& intersects);
+	bool insert(const ValueType& v, const IsInCellFunction& intersects);
 
 	template<typename ObjIterator>
 	uint insert(ObjIterator begin, ObjIterator end);
 
 	template<typename ObjIterator>
-	uint insert(
-		ObjIterator                                                                begin,
-		ObjIterator                                                                end,
-		std::function<bool(const typename GridType::BBoxType&, const ValueType&)>& intersects);
+	uint insert(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects);
 
 	bool erase(const ValueType& v);
 	bool eraseAllInCell(const KeyType& k);

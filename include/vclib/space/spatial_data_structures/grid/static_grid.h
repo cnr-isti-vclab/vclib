@@ -47,6 +47,7 @@ class StaticGrid : public AbstractDSGrid<GridType, ValueType, StaticGrid<GridTyp
 
 public:
 	using KeyType = typename AbstractGrid::KeyType;
+	using IsInCellFunction = typename AbstractGrid::IsInCellFunction;
 
 	using Iterator = StaticGridIterator<KeyType, ValueType, GridType>;
 	using ConstIterator = ConstStaticGridIterator<KeyType, ValueType, GridType>;
@@ -56,6 +57,12 @@ public:
 
 	template<typename ObjIterator>
 	StaticGrid(ObjIterator begin, ObjIterator end);
+
+	template<typename ObjIterator>
+	StaticGrid(
+		ObjIterator                                                                begin,
+		ObjIterator                                                                end,
+		const IsInCellFunction& intersects);
 
 	void build();
 

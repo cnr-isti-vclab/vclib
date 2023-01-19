@@ -46,6 +46,18 @@ StaticGrid<GridType, ValueType>::StaticGrid(ObjIterator begin, ObjIterator end) 
 }
 
 template<typename GridType, typename ValueType>
+template<typename ObjIterator>
+StaticGrid<GridType, ValueType>::StaticGrid(
+	ObjIterator             begin,
+	ObjIterator             end,
+	const IsInCellFunction& intersects) :
+		AbstractGrid(begin, end)
+{
+	AbstractGrid::insert(begin, end, intersects);
+	build();
+}
+
+template<typename GridType, typename ValueType>
 void StaticGrid<GridType, ValueType>::build()
 {
 	uint totCellNumber = 1;
