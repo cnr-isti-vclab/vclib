@@ -382,8 +382,8 @@ std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
  * @param[in] polygon: A (polygonal) face of a vcl::Mesh.
  * @return A vector of indices, representing the triplets of the triangulation of the polygon.
  */
-template <typename Polygon>
-std::vector<uint> earCut(const Polygon& polygon)
+template <FaceConcept Face>
+std::vector<uint> earCut(const Face& polygon)
 {
 	return mesh::earCut(polygon);
 }

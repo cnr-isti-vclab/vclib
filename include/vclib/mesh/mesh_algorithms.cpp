@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -56,10 +56,10 @@ std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
 	return mesh::earCut(poly2D);
 }
 
-template<typename Polygon>
-std::vector<uint> earCut(const Polygon& polygon)
+template<typename Face>
+std::vector<uint> earCut(const Face& polygon)
 {
-	using VertexType = typename Polygon::VertexType;
+	using VertexType = typename Face::VertexType;
 	using CoordType = typename VertexType::CoordType;
 
 	std::vector<CoordType> pol; pol.reserve(polygon.vertexNumber());

@@ -95,8 +95,8 @@ std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon);
 
-template<typename Polygon>
-std::vector<uint> earCut(const Polygon& polygon);
+template<FaceConcept Face>
+std::vector<uint> earCut(const Face& polygon);
 
 template<FaceMeshConcept MeshType, typename FaceType>
 void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon);

@@ -120,9 +120,18 @@ public:
 	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	bool insert(const ValueType& v);
+	bool insert(
+		const ValueType&                                                           v,
+		std::function<bool(const typename GridType::BBoxType&, const ValueType&)>& intersects);
 
 	template<typename ObjIterator>
 	uint insert(ObjIterator begin, ObjIterator end);
+
+	template<typename ObjIterator>
+	uint insert(
+		ObjIterator                                                                begin,
+		ObjIterator                                                                end,
+		std::function<bool(const typename GridType::BBoxType&, const ValueType&)>& intersects);
 
 	bool erase(const ValueType& v);
 	bool eraseAllInCell(const KeyType& k);

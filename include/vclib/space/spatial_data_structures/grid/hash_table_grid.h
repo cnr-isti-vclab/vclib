@@ -70,6 +70,11 @@ public:
 
 	template<typename ObjIterator>
 	HashTableGrid(ObjIterator begin, ObjIterator end);
+	template<typename ObjIterator>
+	HashTableGrid(
+		ObjIterator                                                                begin,
+		ObjIterator                                                                end,
+		std::function<bool(const typename GridType::BBoxType&, const ValueType&)>& intersects);
 
 	bool empty() const;
 	bool cellEmpty(const KeyType& k) const;

@@ -27,6 +27,7 @@
 
 #include <vclib/tri_mesh.h>
 #include <vclib/algorithms/create.h>
+#include <vclib/algorithms/intersection.h>
 
 #include <vclib/iterators/pointer_iterator.h>
 
@@ -124,8 +125,21 @@ int main()
 	std::cerr << "\n==================================\n\n";
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
+	vcl::Box3d b(vcl::Point3d(-1,-1,-1), vcl::Point3d(-0.1,-0.1,-0.1));
 
-	vcl::HashTableGrid3<const vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd());
+	for (const vcl::TriMesh::Face& f : m.faces()) {
+		std::cerr << m.index(f) << " intersects? " << vcl::faceBoxIntersect(f, b) << "\n";
+	}
+
+//	using BBox = typename vcl::HashTableGrid3<const vcl::TriMesh::Face&>::BBoxType;
+
+//	std::function<bool(const BBox&, const vcl::TriMesh::Face&)> intersects =
+//		[](const BBox& bb, const  vcl::TriMesh::Face& v)
+//	{
+//		return vcl::faceBoxIntersect(v, bb);
+//	};
+
+	vcl::HashTableGrid3<const vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd()/*, intersects*/);
 
 	std::cerr << "Values in HashTableGrid: \n";
 

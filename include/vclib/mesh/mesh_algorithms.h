@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -34,8 +34,8 @@ std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon);
 
-template<typename Polygon>
-std::vector<uint> earCut(const Polygon& polygon);
+template<typename Face>
+std::vector<uint> earCut(const Face& polygon);
 
 } // namespace vcl::mesh
 

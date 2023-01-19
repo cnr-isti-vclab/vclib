@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -28,13 +28,15 @@
 
 namespace vcl {
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 class Box
 {
 public:
+	using PointType = PointT;
+
 	Box();
-	Box(const PointType& p);
-	Box(const PointType& min, const PointType& max);
+	Box(const PointT& p);
+	Box(const PointT& min, const PointT& max);
 
 	template<typename P>
 	Box(const Box<P>& ob);
@@ -42,13 +44,13 @@ public:
 	bool isNull() const;
 	bool isEmpty() const;
 
-	bool isInside(const PointType& p) const;
-	bool isInsideOpenBox(const PointType& p) const;
-	bool collide(const Box<PointType>& b) const;
+	bool isInside(const PointT& p) const;
+	bool isInsideOpenBox(const PointT& p) const;
+	bool collide(const Box<PointT>& b) const;
 	auto diagonal() const;
 	auto squaredDiagonal() const;
-	PointType center() const;
-	PointType size() const;
+	PointT center() const;
+	PointT size() const;
 	auto volume() const;
 	auto dim(uint i) const;
 	auto minDim() const;
@@ -56,16 +58,16 @@ public:
 
 	void setNull();
 
-	void add(const Box<PointType>& b);
-	void add(const PointType& p);
+	void add(const Box<PointT>& b);
+	void add(const PointT& p);
 	template<typename Scalar>
-	void add(const PointType& p, Scalar radius);
+	void add(const PointT& p, Scalar radius);
 
-	void intersect(const Box<PointType>& p);
-	void translate(const PointType& p);
+	void intersect(const Box<PointT>& p);
+	void translate(const PointT& p);
 
-	PointType min;
-	PointType max;
+	PointT min;
+	PointT max;
 };
 
 template <typename S>
