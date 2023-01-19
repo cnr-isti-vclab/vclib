@@ -56,7 +56,7 @@ typename StaticGridIterator<KeyType, ValueType, GridType>::value_type
 StaticGridIterator<KeyType, ValueType, GridType>::operator*() const
 {
 	KeyType cell = g->cellOfIndex(vecIt->first);
-	return KeyValueRefPair<KeyType, ValueType>(cell, vecIt->second.get());
+	return value_type(cell, vecIt->second.get());
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
@@ -122,7 +122,7 @@ typename ConstStaticGridIterator<KeyType, ValueType, GridType>::value_type
 ConstStaticGridIterator<KeyType, ValueType, GridType>::operator*() const
 {
 	KeyType cell = g->cellOfIndex(vecIt->first);
-	return KeyValueRefPair<KeyType, const ValueType>(cell, vecIt->second.get());
+	return value_type(cell, vecIt->second.get());
 }
 
 template<typename KeyType, typename ValueType, typename GridType>

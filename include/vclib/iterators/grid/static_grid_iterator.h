@@ -74,7 +74,7 @@ class ConstStaticGridIterator
 	using VecIt = typename std::vector<std::pair<uint, vcl::Markable<ValueType>>>::const_iterator;
 
 public:
-	using T = KeyValueRefPair<KeyType, const ValueType>;
+	using T = KeyValueRefPair<KeyType, const typename std::remove_reference<ValueType>::type>;
 	using value_type = T;
 
 	class ArrowHelper

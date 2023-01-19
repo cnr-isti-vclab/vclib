@@ -86,7 +86,8 @@ private:
 	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>>::const_iterator;
 
 public:
-	using T = KeyRefValueRefPair<const KeyType, const ValueType>;
+	using T =
+		KeyRefValueRefPair<const KeyType, const typename std::remove_reference<ValueType>::type>;
 	using value_type = T;
 
 	class ArrowHelper

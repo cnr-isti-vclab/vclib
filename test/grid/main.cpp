@@ -125,11 +125,11 @@ int main()
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
 
-	vcl::HashTableGrid3<const vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd());
+	vcl::HashTableGrid3<vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd());
 
 	std::cerr << "Values in HashTableGrid: \n";
 
-	for (const auto& p : fsht) {
+	for (auto p : fsht) {
 		std::cerr << p.key << ": " << m.index(p.value) << "\n";
 	}
 
@@ -143,7 +143,7 @@ int main()
 
 	std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<const vcl::TriMesh::Face&> fsg(m.faceBegin(), m.faceEnd());
+	vcl::StaticGrid3<vcl::TriMesh::Face&> fsg(m.faceBegin(), m.faceEnd());
 
 	std::cerr << "Values in Static Grid : \n";
 
