@@ -56,13 +56,7 @@ public:
 	StaticGrid(const GridType& g);
 
 	template<typename ObjIterator>
-	StaticGrid(ObjIterator begin, ObjIterator end);
-
-	template<typename ObjIterator>
-	StaticGrid(
-		ObjIterator                                                                begin,
-		ObjIterator                                                                end,
-		const IsInCellFunction& intersects);
+	StaticGrid(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects = nullptr);
 
 	void build();
 

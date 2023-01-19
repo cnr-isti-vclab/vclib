@@ -70,10 +70,7 @@ public:
 	HashTableGrid(const GridType& g);
 
 	template<typename ObjIterator>
-	HashTableGrid(ObjIterator begin, ObjIterator end);
-
-	template<typename ObjIterator>
-	HashTableGrid(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects);
+	HashTableGrid(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects = nullptr);
 
 	bool empty() const;
 	bool cellEmpty(const KeyType& k) const;

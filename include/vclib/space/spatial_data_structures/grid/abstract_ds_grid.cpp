@@ -108,60 +108,45 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v
 	auto vv = getCleanValueTypePointer(v);
 
 	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
-		if constexpr (PointConcept<VT>) { // if the ValueType was a Point (or Point*)
+		if constexpr (PointConcept<VT>) { // if the ValueType is a Point (or Point*)
 			typename GridType::CellCoord cell = GridType::cell(*vv);
-			return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-		}
-		else if constexpr (VertexConcept<VT>) { // if the ValueType was a Vertex (or Vertex*)
-			typename GridType::CellCoord cell = GridType::cell(vv->coord());
-			return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-		}
-		else { // else, call the boundingBox function
-			//return insert(v, intersects);
-			typename GridType::BBoxType bb = vcl::boundingBox(*vv);
-
-			typename GridType::CellCoord bmin = GridType::cell(bb.min);
-			typename GridType::CellCoord bmax = GridType::cell(bb.max);
-
-			bool ins = false;
-			for (const auto& cell : GridType::cells(bmin, bmax)) {
-				ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-			}
-			return ins;
-		}
-	}
-	return false;
-}
-
-template<typename GridType, typename ValueType, typename DerivedGrid>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(
-	const ValueType&        v,
-	const IsInCellFunction& intersects)
-{
-	auto vv = getCleanValueTypePointer(v);
-
-	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
-		if constexpr (PointConcept<VT>) { // if the ValueType was a Point (or Point*)
-			typename GridType::CellCoord cell = GridType::cell(*vv);
-			if (intersects(GridType::cellBox(cell), v)) {
-				return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-			}
-		}
-		else if constexpr (VertexConcept<VT>) { // if the ValueType was a Vertex (or Vertex*)
-			typename GridType::CellCoord cell = GridType::cell(vv->coord());
-			if (intersects(GridType::cellBox(cell), v)) {
-				return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-			}
-		}
-		else { // else, call the boundingBox function
-			typename GridType::BBoxType bb = vcl::boundingBox(*vv);
-
-			typename GridType::CellCoord bmin = GridType::cell(bb.min);
-			typename GridType::CellCoord bmax = GridType::cell(bb.max);
-
-			bool ins = false;
-			for (const auto& cell : GridType::cells(bmin, bmax)) {
+			if (intersects) { // custom intersection function between cell and value
 				if (intersects(GridType::cellBox(cell), v)) {
+					return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+				}
+			}
+			else {
+				return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+			}
+		}
+		else if constexpr (VertexConcept<VT>) { // if the ValueType was a Vertex (or Vertex*)
+			typename GridType::CellCoord cell = GridType::cell(vv->coord());
+			if (intersects) { // custom intersection function between cell and value
+				if (intersects(GridType::cellBox(cell), v)) {
+					return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+				}
+			}
+			else {
+				return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+			}
+		}
+		else { // else, call the boundingBox function
+			typename GridType::BBoxType bb = vcl::boundingBox(*vv); //bbox of value
+
+			typename GridType::CellCoord bmin = GridType::cell(bb.min); // first cell where insert
+			typename GridType::CellCoord bmax = GridType::cell(bb.max); // last cell where insert
+
+			bool ins = false;
+
+			if (intersects) { // custom intersection function between cell and value
+				for (const auto& cell : GridType::cells(bmin, bmax)) {
+					if (intersects(GridType::cellBox(cell), v)) {
+						ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+					}
+				}
+			}
+			else {
+				for (const auto& cell : GridType::cells(bmin, bmax)) {
 					ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
 				}
 			}
@@ -185,20 +170,6 @@ uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin,
 	uint cnt = 0;
 	for (ObjIterator it = begin; it != end; ++it)
 		if (insert(*it))
-			cnt++;
-	return cnt;
-}
-
-template<typename GridType, typename ValueType, typename DerivedGrid>
-template<typename ObjIterator>
-uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(
-	ObjIterator             begin,
-	ObjIterator             end,
-	const IsInCellFunction& intersects)
-{
-	uint cnt = 0;
-	for (ObjIterator it = begin; it != end; ++it)
-		if (insert(*it, intersects))
 			cnt++;
 	return cnt;
 }
@@ -267,8 +238,10 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid()
  * @param grid
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
-AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(const GridType& grid) :
-		GridType(grid)
+AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
+	const GridType&  grid,
+	IsInCellFunction intersects) :
+		GridType(grid), intersects(intersects)
 {
 }
 
@@ -285,8 +258,9 @@ template<PointConcept PointType>
 AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 	const PointType& min,
 	const PointType& max,
-	const KeyType&   sizes) :
-		GridType(min, max, sizes)
+	const KeyType&   sizes,
+	IsInCellFunction intersects) :
+		GridType(min, max, sizes), intersects(intersects)
 {
 }
 
@@ -300,8 +274,9 @@ template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename BoxType>
 AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 	const BoxType& bbox,
-	const KeyType& sizes) :
-		GridType(bbox, sizes)
+	const KeyType& sizes,
+	IsInCellFunction intersects) :
+		GridType(bbox, sizes), intersects(intersects)
 {
 }
 
@@ -321,7 +296,11 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename ObjIterator>
-AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(ObjIterator begin, ObjIterator end)
+AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
+	ObjIterator      begin,
+	ObjIterator      end,
+	IsInCellFunction intersects) :
+		intersects(intersects)
 {
 	using ScalarType = typename GridType::ScalarType;
 	using BBoxType = typename GridType::BBoxType;
@@ -332,7 +311,7 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(ObjIterator beg
 
 	if (nElements > 0) {
 		// inflated bb
-		ScalarType infl = bbox.diagonal()/nElements;
+		ScalarType infl = bbox.diagonal() / nElements;
 		bbox.min -= infl;
 		bbox.max += infl;
 

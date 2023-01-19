@@ -27,6 +27,17 @@
 
 namespace vcl {
 
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid()
+{
+}
+
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(const GridType& g) :
+		AbstractGrid(g)
+{
+}
+
 /**
  * @brief Creates an HashTableGrid that contains all the elements that can be iterated from `begin`
  * to `end`.
@@ -40,32 +51,13 @@ namespace vcl {
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 template<typename ObjIterator>
-HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(ObjIterator begin, ObjIterator end) :
-		AbstractGrid(begin, end)
-{
-	AbstractGrid::insert(begin, end);
-}
-
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-template<typename ObjIterator>
 HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
 	ObjIterator             begin,
 	ObjIterator             end,
 	const IsInCellFunction& intersects) :
-		AbstractGrid(begin, end)
+		AbstractGrid(begin, end, intersects)
 {
-	AbstractGrid::insert(begin, end, intersects);
-}
-
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid()
-{
-}
-
-template<typename GridType, typename ValueType, bool AllowDuplicates>
-HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(const GridType& g) :
-		AbstractGrid(g)
-{
+	AbstractGrid::insert(begin, end);
 }
 
 /**

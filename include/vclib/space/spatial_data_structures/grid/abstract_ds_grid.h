@@ -107,8 +107,9 @@ class AbstractDSGrid : public GridType
 	using VT = typename std::remove_reference<TMPVT>::type;
 
 public:
-	using IsInCellFunction = std::function<bool(const typename GridType::BBoxType&, const ValueType&)>;
 	using KeyType = typename GridType::CellCoord;
+	using IsInCellFunction =
+		std::function<bool(const typename GridType::BBoxType&, const ValueType&)>;
 
 	bool cellEmpty(const KeyType& k) const;
 
@@ -121,13 +122,9 @@ public:
 	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	bool insert(const ValueType& v);
-	bool insert(const ValueType& v, const IsInCellFunction& intersects);
 
 	template<typename ObjIterator>
 	uint insert(ObjIterator begin, ObjIterator end);
-
-	template<typename ObjIterator>
-	uint insert(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects);
 
 	bool erase(const ValueType& v);
 	bool eraseAllInCell(const KeyType& k);
@@ -136,17 +133,28 @@ public:
 protected:
 	AbstractDSGrid();
 
-	AbstractDSGrid(const GridType& grid);
+	AbstractDSGrid(const GridType& grid, IsInCellFunction intersects = nullptr);
 
 	template<PointConcept PointType>
-	AbstractDSGrid(const PointType& min, const PointType& max, const KeyType& sizes);
+	AbstractDSGrid(
+		const PointType& min,
+		const PointType& max,
+		const KeyType&   sizes,
+		IsInCellFunction intersects = nullptr);
 
 	template<typename BoxType>
-	AbstractDSGrid(const BoxType& bbox, const KeyType& sizes);
+	AbstractDSGrid(
+		const BoxType&   bbox,
+		const KeyType&   sizes,
+		IsInCellFunction intersects = nullptr);
 
 	// this constructor **does not insert elements**.
 	template<typename ObjIterator>
-	AbstractDSGrid(ObjIterator begin, ObjIterator end);
+	AbstractDSGrid(ObjIterator begin, ObjIterator end, IsInCellFunction intersects = nullptr);
+
+	// custom function that checks if a value intersects with a cell (a box)
+	// if not initialized, bounding box of value will be used to check if it is in cell
+	IsInCellFunction intersects;
 
 private:
 	mutable uint m = 1; // mark of the data structure

@@ -38,22 +38,13 @@ StaticGrid<GridType, ValueType>::StaticGrid(const GridType& g) :
 
 template<typename GridType, typename ValueType>
 template<typename ObjIterator>
-StaticGrid<GridType, ValueType>::StaticGrid(ObjIterator begin, ObjIterator end) :
-		AbstractGrid(begin, end)
-{
-	AbstractGrid::insert(begin, end);
-	build();
-}
-
-template<typename GridType, typename ValueType>
-template<typename ObjIterator>
 StaticGrid<GridType, ValueType>::StaticGrid(
 	ObjIterator             begin,
 	ObjIterator             end,
 	const IsInCellFunction& intersects) :
-		AbstractGrid(begin, end)
+		AbstractGrid(begin, end, intersects)
 {
-	AbstractGrid::insert(begin, end, intersects);
+	AbstractGrid::insert(begin, end);
 	build();
 }
 
