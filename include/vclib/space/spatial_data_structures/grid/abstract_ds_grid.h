@@ -109,6 +109,10 @@ public:
 	using IsInCellFunction =
 		std::function<bool(const typename GridType::BBoxType&, const ValueType&)>;
 
+	template<typename QueryValueType>
+	using QueryDistFunction =
+		std::function<typename GridType::ScalarType(const QueryValueType&, const ValueType&)>;
+
 	bool cellEmpty(const KeyType& k) const;
 
 	std::size_t countInCell(const KeyType& k) const;
@@ -132,6 +136,12 @@ public:
 	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
+
+	// closest queries
+	template<typename QueryValueType>
+	auto closestValue(
+		const QueryValueType& qv,
+		QueryDistFunction<QueryValueType> distFunction) const;
 
 protected:
 	AbstractDSGrid();
@@ -160,6 +170,8 @@ protected:
 	IsInCellFunction intersects;
 
 private:
+	using Boxi = vcl::Box<Point<int, GridType::DIM>>;
+
 	mutable uint m = 1; // mark of the data structure
 
 	bool isMarked(const vcl::Markable<ValueType>& v) const;
@@ -168,6 +180,14 @@ private:
 
 	template<typename Iterator>
 	bool valueIsInSpehere(Iterator it, const Sphere<typename GridType::ScalarType>& s) const;
+
+	template<typename QueryValueType>
+	auto closestInCells(
+		const QueryValueType&             qv,
+		const typename GridType::ScalarType& maxDist,
+		const Boxi&                       interval,
+		QueryDistFunction<QueryValueType> distFunction,
+		const Boxi&                       ignore = Boxi()) const;
 
 	template<typename T>
 	static auto getCleanValueTypePointer(const T& v);

@@ -189,13 +189,13 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 {
 	std::vector<typename DerivedGrid::ConstIterator> resVec;
 
-		   // interval of cells containing the sphere
+	// interval of cells containing the sphere
 	KeyType first = GridType::cell(s.center() - s.radius());
 	KeyType last = GridType::cell(s.center() + s.radius());
 
 	unMarkAll();
 
-	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
+	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the interval
 		// p is a pair of iterators
 		const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
@@ -214,6 +214,73 @@ void AbstractDSGrid<GridType, ValueType, DerivedGrid>::eraseInSphere(
 	auto toDel = valuesInSphere(s);
 	for (auto& it : toDel)
 		eraseInCell(it->first, it->second);
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename QueryValueType>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
+	const QueryValueType& qv,
+	QueryDistFunction<QueryValueType> distFunction) const
+{
+	using ScalarType = typename GridType::ScalarType;
+	using PointType = typename GridType::PointType;
+	using ResType = typename DerivedGrid::ConstIterator;
+
+	using QVT = RemoveRefAndPointer<QueryValueType>;
+	const QVT* qvv = getCleanValueTypePointer(qv);
+	ResType result = static_cast<DerivedGrid*>(this)->end();
+
+	if (qvv) {
+		ScalarType cellDiag = GridType::cellBox().diagonal();
+
+		ScalarType centerDist = cellDiag;
+		PointType center = vcl::boundingBox(*qvv).center();
+
+		// we first look just on the cells where the query value lies
+		// here, we will store also the looking interval where we need to look
+		Boxi currentIntervalBox;
+
+		typename GridType::BBoxType bb = vcl::boundingBox(*qvv); //bbox of query value
+		currentIntervalBox.add(GridType::cell(bb.min)); // first cell where look for closest
+		currentIntervalBox.add(GridType::cell(bb.max)); // last cell where look for closest
+
+		unMarkAll();
+
+		// looking just on cells where query lies
+		result = closestInCells(qv, cellDiag, currentIntervalBox, distFunction);
+
+		// we have found (maybe) the closest value contained in the cell(s) where the query value
+		// lies (if the cells were empty, we did not found nothing).
+		// we now have to expand the search on adjacent cells starting from the center of the
+		// query value and expanding until we find a value
+
+		// now we start with the actual search, including all the cells in the actual interval
+
+		if (result != static_cast<DerivedGrid*>(this)->end()) {
+			centerDist = distFunction(qv, result->second);
+		}
+
+		bool end = false;
+
+		do {
+			Boxi lastIntervalBox = currentIntervalBox;
+			currentIntervalBox.add(GridType::cell(center - centerDist));
+			currentIntervalBox.add(GridType::cell(center + centerDist));
+
+			ResType winner =
+				closestInCells(qv, centerDist, currentIntervalBox, distFunction, lastIntervalBox);
+
+			if (winner != static_cast<DerivedGrid*>(this)->end()) {
+				result = winner;
+			}
+
+			centerDist += cellDiag;
+			end = result != static_cast<DerivedGrid*>(this)->end();
+			end |= (center - centerDist < GridType::min() && center + centerDist > GridType::max());
+		} while (!end);
+	}
+
+	return result;
 }
 
 /**
@@ -332,6 +399,11 @@ void AbstractDSGrid<GridType, ValueType, DerivedGrid>::unMarkAll() const
 	m++;
 }
 
+/**
+ * This function is meant to be called by another function of the AbstractGrid.
+ * Check if the current iterated value is inside a sphere
+ * Sets and checks for marks, but does not unMark before execution.
+ */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename Iterator>
 bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
@@ -356,6 +428,44 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
 		}
 	}
 	return test;
+}
+
+/**
+ * This function is meant to be called by another function of the AbstractGrid.
+ * Returns the closest Value (if any) to the given query value contained in the given interval of
+ * cells. Sets and checks for marks, but does not unMark before execution.
+ */
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename QueryValueType>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestInCells(
+	const QueryValueType&             qv,
+	const typename GridType::ScalarType& maxDist,
+	const Boxi&                       interval,
+	QueryDistFunction<QueryValueType> distFunction,
+	const Boxi&                       ignore) const
+{
+	using ResType = typename DerivedGrid::ConstIterator;
+	ResType res = static_cast<DerivedGrid*>(this)->end();
+	typename GridType::ScalarType dist = maxDist;
+
+	// for each cell in the interval
+	for (const KeyType& c : GridType::cells(interval.min, interval.max)) {
+		if (!ignore.isInsideOpenBox(c)) {
+			// p is a pair of iterators
+			const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
+			for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
+				if (!isMarked(it.markableValue())) {
+					mark(it.markableValue());
+					auto tmp = distFunction(qv, it->second);
+					if (tmp < dist) {
+						dist = tmp;
+						res = it;
+					}
+				}
+			}
+		}
+	}
+	return res;
 }
 
 /**
