@@ -68,7 +68,7 @@ public:
 
 	Point<Scalar, N> cellLowerCorner(const CellCoord& c) const;
 
-	Box<Point<Scalar, N>> cellBox(const CellCoord& c) const;
+	BBoxType cellBox(const CellCoord& c) const;
 
 	CellIterator cellBegin() const;
 	CellIterator cellBegin(const CellCoord& first, const CellCoord& last) const;

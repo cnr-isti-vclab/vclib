@@ -66,7 +66,7 @@ namespace vcl {
 //     could not happen, e.g. when duplicates are not allowed).
 //   - bool eraseInCell(const KeyType&, const ValueType&) -> erases the element from a Grid Cell
 //     the returned type tells if the element has been erased from the given cell.
-//   -
+//   - Iterator end() -> classic member function that returns the end iterator
 //
 // Iterators of your class must:
 // - Iterate over pairs of <KeyType, ValueType&>:
@@ -99,12 +99,10 @@ namespace vcl {
 template<typename GridType, typename ValueType, typename DerivedGrid>
 class AbstractDSGrid : public GridType
 {
-	// ValueType could be anything. We need to understand if it is a pointer or not, in order to
-	// make proper optimized operations. Therefore, we declare VT, that is used internally in this
-	// class.
-	// VT is ValueType without pointers or references:
-	using TMPVT = typename std::remove_pointer<ValueType>::type;
-	using VT = typename std::remove_reference<TMPVT>::type;
+	// ValueType could be anything. We need to understand if it is a pointer, a reference or not, in
+	// order to make proper optimized operations. Therefore, we declare VT, that is used internally
+	// in this class. VT is ValueType without pointers or references:
+	using VT = RemoveRefAndPointer<ValueType>;
 
 public:
 	using KeyType = typename GridType::CellCoord;
@@ -114,6 +112,18 @@ public:
 	bool cellEmpty(const KeyType& k) const;
 
 	std::size_t countInCell(const KeyType& k) const;
+
+	// insert
+	bool insert(const ValueType& v);
+
+	template<typename ObjIterator>
+	uint insert(ObjIterator begin, ObjIterator end);
+
+	// erase
+	bool erase(const ValueType& v);
+	bool eraseAllInCell(const KeyType& k);
+
+	// sphere operations
 	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	// vector of iterators - return type must be auto here (we still don't know the iterator type)
@@ -121,13 +131,6 @@ public:
 	// vector of const iterators - return type must be auto also here
 	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
-	bool insert(const ValueType& v);
-
-	template<typename ObjIterator>
-	uint insert(ObjIterator begin, ObjIterator end);
-
-	bool erase(const ValueType& v);
-	bool eraseAllInCell(const KeyType& k);
 	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
 
 protected:
@@ -166,7 +169,8 @@ private:
 	template<typename Iterator>
 	bool valueIsInSpehere(Iterator it, const Sphere<typename GridType::ScalarType>& s) const;
 
-	static const VT* getCleanValueTypePointer(const ValueType& v);
+	template<typename T>
+	static auto getCleanValueTypePointer(const T& v);
 };
 
 } // namespace vcl

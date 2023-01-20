@@ -183,9 +183,9 @@ Point<Scalar, N> RegularGrid<Scalar, N>::cellLowerCorner(const CellCoord& c) con
 }
 
 template<typename Scalar, int N>
-Box<Point<Scalar, N>> RegularGrid<Scalar, N>::cellBox(const CellCoord& c) const
+typename RegularGrid<Scalar, N>::BBoxType RegularGrid<Scalar, N>::cellBox(const CellCoord& c) const
 {
-	Box<Point<Scalar, N>> b;
+	BBoxType b;
 
 	Point<Scalar, N> p;
 	for (size_t i = 0; i < DIM; ++i)

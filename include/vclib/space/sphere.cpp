@@ -91,6 +91,14 @@ bool Sphere<Scalar>::isInside(const vcl::Point3<Scalar>& p) const
 	return c.dist(p) <= r;
 }
 
+/**
+ * @brief Checks if a sphere intersects with a Box.
+ *
+ * https://stackoverflow.com/a/4579192/5851101
+ *
+ * @param b
+ * @return
+ */
 template<typename Scalar>
 bool Sphere<Scalar>::intersects(const Box3<Scalar>& b) const
 {

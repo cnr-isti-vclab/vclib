@@ -55,6 +55,13 @@ using ushort = unsigned short;
 namespace vcl {
 
 /*
+ * Utility to get clean type from an input type that could have a reference or a pointer.
+ */
+template<typename T>
+using RemoveRefAndPointer =
+	typename std::remove_pointer<typename std::remove_reference<T>::type>::type;
+
+/*
  * Utility type that makes possible to treat const pointers in a templated class that can treat a
  * both const and non-const pointer type.
  */

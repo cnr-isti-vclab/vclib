@@ -39,6 +39,120 @@ std::size_t AbstractDSGrid<GridType, ValueType, DerivedGrid>::countInCell(const 
 	return std::distance(p.first, p.second);
 }
 
+/**
+ * @brief Inserts the given element in the AbstractDSGrid.
+ *
+ * If the ValueType is Puntual (a Point or a Vertex), the element will be inserted in just one
+ * cell of the grid. If the element is a spatial object having a bounding box with min != max, the
+ * element will be stored in all the cells where its bounding box lies.
+ *
+ * @param v
+ * @return
+ */
+template<typename GridType, typename ValueType, typename DerivedGrid>
+bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v)
+{
+	const VT* vv = getCleanValueTypePointer(v);
+
+	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
+		KeyType bmin, bmax; // first and last cell where insert (could be the same)
+
+		// if ValueType is Point, Point*, Vertex, Vertex*
+		if constexpr(PointConcept<VT> || VertexConcept<VT>) {
+			typename GridType::PointType p;
+			if constexpr(PointConcept<VT>)
+				p = *vv;
+			else
+				p = vv->coord();
+			bmin = bmax = GridType::cell(p);
+		}
+		else { // else, call the boundingBox function
+			typename GridType::BBoxType bb = vcl::boundingBox(*vv); //bbox of value
+
+			bmin = GridType::cell(bb.min); // first cell where insert
+			bmax = GridType::cell(bb.max); // last cell where insert
+		}
+
+		bool ins = false;
+
+		if (intersects) { // custom intersection function between cell and value
+			for (const auto& cell : GridType::cells(bmin, bmax)) {
+				if (intersects(GridType::cellBox(cell), v)) {
+					ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+				}
+			}
+		}
+		else {
+			for (const auto& cell : GridType::cells(bmin, bmax)) {
+				ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+			}
+		}
+		return ins;
+	}
+	return false;
+}
+
+/**
+ * @brief Inserts all the elements from `begin` to `end`. The type referenced by the iterator must
+ * be the ValueType of the AbstractDSGrid.
+ * @param begin
+ * @param end
+ * @return The number of inserted elements.
+ */
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename ObjIterator>
+uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin, ObjIterator end)
+{
+	uint cnt = 0;
+	for (ObjIterator it = begin; it != end; ++it)
+		if (insert(*it))
+			cnt++;
+	return cnt;
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::erase(const ValueType& v)
+{
+	const VT* vv = getCleanValueTypePointer(v);
+
+	if (vv) {
+		KeyType bmin, bmax; // first and last cell where erase (could be the same)
+
+		if constexpr (PointConcept<VT> || VertexConcept<VT>) {
+			typename GridType::PointType p;
+			if constexpr(PointConcept<VT>)
+				p = *vv;
+			else
+				p = vv->coord();
+			bmin = bmax = GridType::cell(p);
+		}
+		else {
+			typename GridType::BBoxType bb = vcl::boundingBox(*vv);
+
+			bmin = GridType::cell(bb.min);
+			bmax = GridType::cell(bb.max);
+		}
+
+		bool found = false;
+		for (const auto& cell : GridType::cells(bmin, bmax)) {
+			found |= static_cast<DerivedGrid*>(this)->eraseInCell(cell, v);
+		}
+		return found;
+	}
+	return false;
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::eraseAllInCell(const KeyType& k)
+{
+	bool res = false;
+	auto& p = static_cast<DerivedGrid*>(this)->valuesInCell(k);
+	for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
+		res |= static_cast<DerivedGrid*>(this)->eraseInCell(k, it->second);
+	}
+	return res;
+}
+
 template<typename GridType, typename ValueType, typename DerivedGrid>
 uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::countInSphere(
 	const Sphere<typename GridType::ScalarType>& s) const
@@ -75,7 +189,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 {
 	std::vector<typename DerivedGrid::ConstIterator> resVec;
 
-	// interval of cells containing the sphere
+		   // interval of cells containing the sphere
 	KeyType first = GridType::cell(s.center() - s.radius());
 	KeyType last = GridType::cell(s.center() + s.radius());
 
@@ -90,129 +204,6 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 		}
 	}
 	return resVec;
-}
-
-/**
- * @brief Inserts the given element in the AbstractDSGrid.
- *
- * If the ValueType is Puntual (a Point or a Vertex), the element will be inserted in just one
- * cell of the grid. If the element is a spatial object having a bounding box with min != max, the
- * element will be stored in all the cells where its bounding box lies.
- *
- * @param v
- * @return
- */
-template<typename GridType, typename ValueType, typename DerivedGrid>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v)
-{
-	auto vv = getCleanValueTypePointer(v);
-
-	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
-		if constexpr (PointConcept<VT>) { // if the ValueType is a Point (or Point*)
-			typename GridType::CellCoord cell = GridType::cell(*vv);
-			if (intersects) { // custom intersection function between cell and value
-				if (intersects(GridType::cellBox(cell), v)) {
-					return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-				}
-			}
-			else {
-				return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-			}
-		}
-		else if constexpr (VertexConcept<VT>) { // if the ValueType was a Vertex (or Vertex*)
-			typename GridType::CellCoord cell = GridType::cell(vv->coord());
-			if (intersects) { // custom intersection function between cell and value
-				if (intersects(GridType::cellBox(cell), v)) {
-					return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-				}
-			}
-			else {
-				return static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-			}
-		}
-		else { // else, call the boundingBox function
-			typename GridType::BBoxType bb = vcl::boundingBox(*vv); //bbox of value
-
-			typename GridType::CellCoord bmin = GridType::cell(bb.min); // first cell where insert
-			typename GridType::CellCoord bmax = GridType::cell(bb.max); // last cell where insert
-
-			bool ins = false;
-
-			if (intersects) { // custom intersection function between cell and value
-				for (const auto& cell : GridType::cells(bmin, bmax)) {
-					if (intersects(GridType::cellBox(cell), v)) {
-						ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-					}
-				}
-			}
-			else {
-				for (const auto& cell : GridType::cells(bmin, bmax)) {
-					ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
-				}
-			}
-			return ins;
-		}
-	}
-	return false;
-}
-
-/**
- * @brief Inserts all the elements from `begin` to `end`. The type referenced by the iterator must
- * be the ValueType of the AbstractDSGrid.
- * @param begin
- * @param end
- * @return The number of inserted elements.
- */
-template<typename GridType, typename ValueType, typename DerivedGrid>
-template<typename ObjIterator>
-uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin, ObjIterator end)
-{
-	uint cnt = 0;
-	for (ObjIterator it = begin; it != end; ++it)
-		if (insert(*it))
-			cnt++;
-	return cnt;
-}
-
-template<typename GridType, typename ValueType, typename DerivedGrid>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::erase(const ValueType& v)
-{
-	auto vv = getCleanValueTypePointer(v);
-
-	if (vv) {
-		if constexpr (PointConcept<VT>) {
-			typename GridType::CellCoord cell = GridType::cell(*vv);
-			return static_cast<DerivedGrid*>(this)->eraseInCell(cell, v);
-		}
-		else if constexpr (VertexConcept<VT>) {
-			typename GridType::CellCoord cell = GridType::cell(vv->coord());
-			return static_cast<DerivedGrid*>(this)->eraseInCell(cell, v);
-		}
-		else {
-			typename GridType::BBoxType bb = vcl::boundingBox(*vv);
-
-			typename GridType::CellCoord bmin = GridType::cell(bb.min);
-			typename GridType::CellCoord bmax = GridType::cell(bb.max);
-
-			bool found = false;
-			for (const auto& cell : GridType::cells(bmin, bmax)) {
-				found |= static_cast<DerivedGrid*>(this)->eraseInCell(cell, v);
-			}
-			return found;
-		}
-	}
-	return false;
-}
-
-template<typename GridType, typename ValueType, typename DerivedGrid>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::eraseAllInCell(const KeyType& k)
-{
-	bool res = false;
-	auto& p = static_cast<DerivedGrid*>(this)->valuesInCell(k);
-	for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-		res |= static_cast<DerivedGrid*>(this)->eraseInCell(k, it->second);
-	}
-	return res;
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
@@ -347,14 +338,16 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
 	Iterator it,
 	const Sphere<typename GridType::ScalarType>& s) const
 {
-	auto vv = getCleanValueTypePointer(it->second);
+	const VT* vv = getCleanValueTypePointer(it->second);
 
 	bool test = false;
-	if constexpr(PointConcept<VT>) { // check if the point value is inside the sphere
-		test = vv && s.isInside(*vv);
-	}
-	else if constexpr(VertexConcept<VT>) { // check if the vertex coord is inside the sphere
-		test = vv && s.isInside(vv->coord());
+	if constexpr (PointConcept<VT> || VertexConcept<VT>) {
+		typename GridType::PointType p;
+		if constexpr(PointConcept<VT>)
+			p = *vv;
+		else
+			p = vv->coord();
+		test = vv && s.isInside(p);
 	}
 	else { // check if the bbox of the value intersects the sphere
 		if (!isMarked(it.markableValue())) {
@@ -387,11 +380,12 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
  * @param v
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
-const typename AbstractDSGrid<GridType, ValueType, DerivedGrid>::VT*
-AbstractDSGrid<GridType, ValueType, DerivedGrid>::getCleanValueTypePointer(const ValueType& v)
+template<typename T>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::getCleanValueTypePointer(const T& v)
 {
-	const VT* vv = nullptr; // vv is a pointer to VT
-	if constexpr(std::is_pointer<ValueType>::value) {
+	using NT = RemoveRefAndPointer<T>;
+	const NT* vv = nullptr; // vv is a pointer to T
+	if constexpr(std::is_pointer<T>::value) {
 		vv = v;
 	}
 	else {
