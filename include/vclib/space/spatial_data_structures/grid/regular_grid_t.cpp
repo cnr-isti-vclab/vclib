@@ -156,6 +156,12 @@ Point<Scalar, N> RegularGrid<Scalar, N>::cellLengths() const
 }
 
 template<typename Scalar, int N>
+Scalar RegularGrid<Scalar, N>::cellDiagonal() const
+{
+	return cellLengths().norm();
+}
+
+template<typename Scalar, int N>
 uint RegularGrid<Scalar, N>::cell(uint d, const Scalar& s) const
 {
 	if (s < bbox.min(d)) return 0;

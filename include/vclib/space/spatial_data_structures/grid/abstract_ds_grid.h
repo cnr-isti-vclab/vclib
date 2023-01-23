@@ -170,7 +170,7 @@ protected:
 	IsInCellFunction intersects;
 
 private:
-	using Boxi = vcl::Box<Point<int, GridType::DIM>>;
+	using Boxui = vcl::Box<Point<uint, GridType::DIM>>;
 
 	mutable uint m = 1; // mark of the data structure
 
@@ -185,9 +185,9 @@ private:
 	auto closestInCells(
 		const QueryValueType&             qv,
 		const typename GridType::ScalarType& maxDist,
-		const Boxi&                       interval,
+		const Boxui&                      interval,
 		QueryDistFunction<QueryValueType> distFunction,
-		const Boxi&                       ignore = Boxi()) const;
+		const Boxui&                      ignore = Boxui()) const;
 
 	template<typename T>
 	static auto getCleanValueTypePointer(const T& v);

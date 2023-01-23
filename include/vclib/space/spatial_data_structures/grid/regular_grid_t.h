@@ -62,6 +62,7 @@ public:
 
 	Scalar cellLength(uint d) const;
 	Point<Scalar, N> cellLengths() const;
+	Scalar cellDiagonal() const;
 
 	uint cell(uint d, const Scalar& s) const;
 	CellCoord cell(const Point<Scalar, N>& p) const;

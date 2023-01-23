@@ -228,17 +228,17 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 
 	using QVT = RemoveRefAndPointer<QueryValueType>;
 	const QVT* qvv = getCleanValueTypePointer(qv);
-	ResType result = static_cast<DerivedGrid*>(this)->end();
+	ResType result = static_cast<const DerivedGrid*>(this)->end();
 
 	if (qvv) {
-		ScalarType cellDiag = GridType::cellBox().diagonal();
+		ScalarType cellDiag = GridType::cellDiagonal();
 
 		ScalarType centerDist = cellDiag;
 		PointType center = vcl::boundingBox(*qvv).center();
 
 		// we first look just on the cells where the query value lies
 		// here, we will store also the looking interval where we need to look
-		Boxi currentIntervalBox;
+		Boxui currentIntervalBox;
 
 		typename GridType::BBoxType bb = vcl::boundingBox(*qvv); //bbox of query value
 		currentIntervalBox.add(GridType::cell(bb.min)); // first cell where look for closest
@@ -256,26 +256,26 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 
 		// now we start with the actual search, including all the cells in the actual interval
 
-		if (result != static_cast<DerivedGrid*>(this)->end()) {
+		if (result != static_cast<const DerivedGrid*>(this)->end()) {
 			centerDist = distFunction(qv, result->second);
 		}
 
 		bool end = false;
 
 		do {
-			Boxi lastIntervalBox = currentIntervalBox;
+			Boxui lastIntervalBox = currentIntervalBox;
 			currentIntervalBox.add(GridType::cell(center - centerDist));
 			currentIntervalBox.add(GridType::cell(center + centerDist));
 
 			ResType winner =
 				closestInCells(qv, centerDist, currentIntervalBox, distFunction, lastIntervalBox);
 
-			if (winner != static_cast<DerivedGrid*>(this)->end()) {
+			if (winner != static_cast<const DerivedGrid*>(this)->end()) {
 				result = winner;
 			}
 
 			centerDist += cellDiag;
-			end = result != static_cast<DerivedGrid*>(this)->end();
+			end = result != static_cast<const DerivedGrid*>(this)->end();
 			end |= (center - centerDist < GridType::min() && center + centerDist > GridType::max());
 		} while (!end);
 	}
@@ -438,14 +438,14 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
 auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestInCells(
-	const QueryValueType&             qv,
+	const QueryValueType&                qv,
 	const typename GridType::ScalarType& maxDist,
-	const Boxi&                       interval,
-	QueryDistFunction<QueryValueType> distFunction,
-	const Boxi&                       ignore) const
+	const Boxui&                         interval,
+	QueryDistFunction<QueryValueType>    distFunction,
+	const Boxui&                         ignore) const
 {
 	using ResType = typename DerivedGrid::ConstIterator;
-	ResType res = static_cast<DerivedGrid*>(this)->end();
+	ResType res = static_cast<const DerivedGrid*>(this)->end();
 	typename GridType::ScalarType dist = maxDist;
 
 	// for each cell in the interval

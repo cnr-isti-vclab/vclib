@@ -74,6 +74,16 @@ int main()
 	}
 	std::cerr << "\n\n";
 
+	std::function<double(const vcl::Point3d&, const vcl::Point3d&)> dist =
+		[](const vcl::Point3d& p1, const vcl::Point3d& p2)
+	{
+		return p1.dist(p2);
+	};
+
+	auto it = sht.closestValue(vcl::Point3d(0.09, 0.09, 0.29), dist);
+
+	std::cerr << "Closest is: " << it->value << "\n\n";
+
 	sht.eraseInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
 
 	std::cerr << "Values in HashTableGrid: \n";

@@ -27,6 +27,10 @@
 
 namespace vcl {
 
+/**
+ * @brief The Empty constructor of a box, initializes a null box.
+ * @see setNull
+ */
 template<PointConcept PointT>
 Box<PointT>::Box()
 {
@@ -173,13 +177,14 @@ auto Box<PointT>::maxDim() const
  * @brief Box::setNull sets the Box to null. A box is considered null if at least one min component
  * is greater than the corresponding max component.
  *
- * This member function sets all the min values to 1 and the max values to -1.
+ * This member function sets all the min values to the max representable Scalar and the max
+ * values to lowest representable Scalar.
  */
 template<PointConcept PointT>
 void Box<PointT>::setNull()
 {
-	min.setConstant(1);
-	max.setConstant(-1);
+	min.setConstant(std::numeric_limits<typename PointT::ScalarType>::max());
+	max.setConstant(std::numeric_limits<typename PointT::ScalarType>::lowest());
 }
 
 /**
