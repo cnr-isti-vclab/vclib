@@ -41,7 +41,10 @@ template<typename GridType, typename ValueType>
 class StaticGrid : public AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>
 {
 	using AbstractGrid = AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
-	using PairComparator = FirstElementPairComparator<std::pair<uint,  vcl::Markable<ValueType>>>;
+	using MarkableValuePointer = typename AbstractGrid::MarkableValuePointer;;
+
+	using PairType =  std::pair<uint, MarkableValuePointer>;
+	using PairComparator = FirstElementPairComparator<PairType>;
 
 	friend AbstractGrid;
 
@@ -79,7 +82,7 @@ private:
 
 	// each value is stored as a pair: [cell index of the grid - value]
 	// when the grid is built, this vector is sorted by the cell indices
-	std::vector<std::pair<uint, vcl::Markable<ValueType>>> values;
+	std::vector<PairType> values;
 
 	// for each cell of the grid, we store the index (in the values vector ) of the first ValueType
 	// object contained in the cell, or values.size() if the cell is empty
@@ -90,7 +93,7 @@ private:
 	using AbstractGrid::eraseAllInCell;
 	using AbstractGrid::eraseInSphere;
 
-	bool insertInCell(const KeyType& cell, const ValueType& v);
+	bool insertInCell(const KeyType& cell, MarkableValuePointer v);
 	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
 };
 

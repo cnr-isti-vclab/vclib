@@ -55,6 +55,8 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v
 	const VT* vv = getCleanValueTypePointer(v);
 
 	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
+		values.push_back(vcl::Markable<ValueType>(v));
+
 		KeyType bmin, bmax; // first and last cell where insert (could be the same)
 
 		// if ValueType is Point, Point*, Vertex, Vertex*
@@ -78,14 +80,17 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v
 		if (intersects) { // custom intersection function between cell and value
 			for (const auto& cell : GridType::cells(bmin, bmax)) {
 				if (intersects(GridType::cellBox(cell), v)) {
-					ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+					ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, &values.back());
 				}
 			}
 		}
 		else {
 			for (const auto& cell : GridType::cells(bmin, bmax)) {
-				ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
+				ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, &values.back());
 			}
+		}
+		if (!ins) {
+			values.pop_back();
 		}
 		return ins;
 	}

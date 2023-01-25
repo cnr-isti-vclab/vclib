@@ -42,7 +42,7 @@ class HashTableGridIterator
 	friend class HashTableGrid;
 
 private:
-	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>>::iterator;
+	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>*>::iterator;
 
 public:
 	using T = KeyRefValueRefPair<const KeyType, ValueType>;
@@ -83,7 +83,7 @@ class ConstHashTableGridIterator
 	friend class HashTableGrid;
 
 private:
-	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>>::const_iterator;
+	using MapIt = typename std::unordered_multimap<KeyType, Markable<ValueType>*>::const_iterator;
 
 public:
 	using T =

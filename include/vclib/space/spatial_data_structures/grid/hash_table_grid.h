@@ -52,6 +52,8 @@ class HashTableGrid : public AbstractDSGrid<GridType, ValueType, HashTableGrid<G
 	using AbstractGrid =
 		AbstractDSGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>;
 
+	using MarkableValuePointer = typename AbstractGrid::MarkableValuePointer;
+
 	friend AbstractGrid;
 
 public:
@@ -92,14 +94,14 @@ public:
 	ConstIterator end() const;
 
 private:
-	using MapType      = typename std::unordered_multimap<KeyType, vcl::Markable<ValueType>>;
+	using MapType      = typename std::unordered_multimap<KeyType, MarkableValuePointer>;
 	using MapIterator  = typename MapType::iterator;
 	using MapValueType = typename MapType::value_type;
 
 	mutable uint m = 1;
 	MapType map;
 
-	bool insertInCell(const KeyType& k, const ValueType& v);
+	bool insertInCell(const KeyType& k, MarkableValuePointer v);
 	bool eraseInCell(const KeyType& k, const ValueType& v);
 };
 
