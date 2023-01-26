@@ -256,10 +256,11 @@ void updatePrincipalCurvaturePCA(
 	using FaceType   = typename MeshType::FaceType;
 
 	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
-	using GridIterator = typename vcl::HashTableGrid3<VertexType*>::ConstIterator;
+	using VGrid = typename vcl::HashTableGrid3<VertexType*>;
+	using VGridIterator = typename VGrid::ConstIterator;
 
 	vcl::PointSampler<CoordType> sampler;
-	vcl::HashTableGrid3<VertexType*> pGrid;
+	VGrid pGrid;
 	ScalarType area;
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -270,25 +271,26 @@ void updatePrincipalCurvaturePCA(
 	vcl::normalizePerVertexNormals(m);
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.log(5, "Computing per vertex curvature...");
+		log.log(0, "Computing per vertex curvature...");
 	}
 
-	uint logPerc = 5;
-	const uint logPercStep = 5;
-	uint logVertStep = m.vertexNumber() / ((95 / logPercStep) - 1);
+	uint logPerc = 0;
+	const uint logPercStep = 10;
+	uint logVertStep = m.vertexNumber() / ((100 / logPercStep) - 1);
 
 	if (montecarloSampling) {
 		area = vcl::surfaceArea(m);
 		uint nSamples = 1000 * area * (2 * M_PI * radius * radius);
 		sampler = vcl::montecarloPointSampling<vcl::PointSampler<CoordType>>(m, nSamples);
 		pGrid.insert(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+		//pGrid.build();
 	}
 
 	for (VertexType& v : m.vertices()) {
 		vcl::Matrix33<ScalarType> A, eigenvectors;
 		CoordType bp, eigenvalues;
 		if (montecarloSampling) {
-			std::vector<GridIterator> vec = std::as_const(pGrid).valuesInSphere({v.coord(), radius});
+			std::vector<VGridIterator> vec = std::as_const(pGrid).valuesInSphere({v.coord(), radius});
 			std::vector<CoordType> points;
 			points.reserve(vec.size());
 			for (const auto& it : vec){
