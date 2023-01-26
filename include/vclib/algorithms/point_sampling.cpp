@@ -26,9 +26,16 @@
 #include <vclib/algorithms/shuffle.h>
 #include <vclib/algorithms/stat.h>
 #include <vclib/math/random.h>
+#include <vclib/misc/comparators.h>
 
 namespace vcl {
 
+/**
+ * @brief Returns a Sampler object that contains all the vertices contained in the given mesh.
+ * @param m
+ * @param onlySelected
+ * @return
+ */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType allVerticesPointSampling(const MeshType &m, bool onlySelected)
 {
@@ -42,6 +49,13 @@ SamplerType allVerticesPointSampling(const MeshType &m, bool onlySelected)
 	return sampler;
 }
 
+/**
+ * @brief Returns a FaceSampler object that contains all the face barycenters contained in the given
+ * mesh.
+ * @param m
+ * @param onlySelected
+ * @return
+ */
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected)
 {
@@ -55,6 +69,15 @@ SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected)
 	return sampler;
 }
 
+/**
+ * @brief Returns a Sampler object that contains the given number of samples taken from the vertices
+ * of the given mesh. Each vertex has the same probability of being chosen.
+ * @param m
+ * @param nSamples
+ * @param onlySelected
+ * @param deterministic
+ * @return
+ */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexUniformPointSampling(
 	const MeshType &m,
@@ -93,6 +116,15 @@ SamplerType vertexUniformPointSampling(
 	return ps;
 }
 
+/**
+ * @brief Returns a FaceSampler object that contains the given number of samples taken from the
+ * face barycenters of the given mesh. Each face has the same probability of being chosen.
+ * @param m
+ * @param nSamples
+ * @param onlySelected
+ * @param deterministic
+ * @return
+ */
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
 	const MeshType& m,
@@ -271,6 +303,14 @@ SamplerType faceScalarWeightedPointSampling(const MeshType& m, uint nSamples, bo
 	return faceWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
+/**
+ * @brief Samples the vertices in a weighted way, using the area. Each vertex
+ * has a probability of being chosen that is proportional to the average area of its adjacent faces.
+ *
+ * @param m
+ * @param nSamples
+ * @return
+ */
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType vertexAreaWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
@@ -300,6 +340,14 @@ SamplerType vertexAreaWeightedPointSampling(const MeshType& m, uint nSamples, bo
 	return vertexWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
+/**
+ * @brief Samples the faces in a weighted way, using the per face area. Each face
+ * has a probability of being chosen that is proportional to its area.
+ *
+ * @param m
+ * @param nSamples
+ * @return
+ */
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceAreaWeightedPointSampling(
 	const MeshType& m,
@@ -315,6 +363,61 @@ SamplerType faceAreaWeightedPointSampling(
 	}
 
 	return faceWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
+}
+
+/**
+ * @brief Computes a montecarlo distribution with an exact number of samples. It works by generating
+ * a sequence of consecutive segments proportional to the face areas and actually shooting sample
+ * over this line.
+ *
+ * @param m
+ * @param nSamples
+ * @param deterministic
+ * @return
+ */
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic)
+{
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::ScalarType;
+	using FaceType = typename MeshType::FaceType;
+	using Interval = std::pair<ScalarType, const FaceType*>;
+
+	vcl::FirstElementPairComparator<Interval> comparator;
+	SamplerType sampler;
+
+	std::uniform_real_distribution<ScalarType> dist(0, 1);
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	if (deterministic)
+		gen = std::mt19937(0);
+
+	std::vector<Interval> intervals(m.faceNumber());
+	uint i = 0;
+	ScalarType area = 0;
+	for (const FaceType& f : m.faces()) {
+		area += vcl::polygonArea(f);
+		intervals[i] = std::make_pair(area, &f);
+		i++;
+	}
+
+	ScalarType meshArea = intervals.back().first;
+	for (uint i = 0; i < nSamples; i++) {
+		ScalarType val = meshArea * dist(gen);
+		// lower_bound returns the furthermost iterator i in [first, last) such that, for every
+		// iterator j in [first, i), *j < value. E.g. An iterator pointing to the first element "not
+		// less than" val, or end() if every element is less than val.
+		typename std::vector<Interval>::iterator it = std::lower_bound(
+			intervals.begin(), intervals.end(), std::make_pair(val, nullptr), comparator);
+
+		sampler.addFace(
+			*it->second,
+			m,
+			vcl::randomPolygonBarycentricCoordinate<ScalarType>(it->second->vertexNumber(), gen));
+	}
+
+	return sampler;
 }
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
@@ -435,7 +538,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
 	for (const FaceType& f : m.faces()) {
 		// compute # samples in the current face (taking into account of the remainders)
 		floatSampleNum += weightedArea(f, m, radius) * samplePerAreaUnit;
-		int faceSampleNum = (int) floatSampleNum;
+		uint faceSampleNum = (uint) floatSampleNum;
 
 		// for every sample p_i in T...
 		for (uint i = 0; i < faceSampleNum; i++)

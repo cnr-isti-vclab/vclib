@@ -82,6 +82,12 @@ SamplerType faceAreaWeightedPointSampling(
 	bool deterministic = false);
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType montecarloPointSampling(
+	const MeshType& m,
+	uint nSamples,
+	bool deterministic = false);
+
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType stratifiedMontecarloPointSampling(
 	const MeshType& m,
 	uint nSamples,

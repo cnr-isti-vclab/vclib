@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 	uint nSamples = 50;
 
 	vcl::MeshSampler<vcl::TriMesh> s =
-		vcl::montecarloPoissonPointSampling<vcl::MeshSampler<vcl::TriMesh>>(m, nSamples);
+		vcl::montecarloPointSampling<vcl::MeshSampler<vcl::TriMesh>>(m, nSamples);
 
 	vcl::TriMesh samples = s.samples();
 
