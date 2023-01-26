@@ -71,7 +71,7 @@ private:
 template<typename KeyType, typename ValueType, typename GridType>
 class ConstStaticGridIterator
 {
-	using VecIt = typename std::vector<std::pair<uint, vcl::Markable<ValueType>>*>::const_iterator;
+	using VecIt = typename std::vector<std::pair<uint, vcl::Markable<ValueType>*>>::const_iterator;
 
 public:
 	using T = KeyValueRefPair<KeyType, const typename std::remove_reference<ValueType>::type>;

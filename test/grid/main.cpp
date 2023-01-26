@@ -27,6 +27,7 @@
 
 #include <vclib/io/load_ply.h>
 #include <vclib/tri_mesh.h>
+#include <vclib/misc/timer.h>
 #include <vclib/algorithms/create.h>
 #include <vclib/algorithms/intersection.h>
 
@@ -181,7 +182,7 @@ int main()
 
 
 
-	vcl::HashTableGrid3<const vcl::TriMesh::Vertex&> vmsg(m.vertexBegin(), m.vertexEnd());
+	vcl::StaticGrid3<const vcl::TriMesh::Vertex&> vmsg(m.vertexBegin(), m.vertexEnd());
 
 	const vcl::Point3d qv(0.5, 0.5, 0.5);
 
