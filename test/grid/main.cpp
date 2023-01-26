@@ -25,6 +25,7 @@
 
 #include <vclib/space/spatial_data_structures.h>
 
+#include <vclib/io/load_ply.h>
 #include <vclib/tri_mesh.h>
 #include <vclib/algorithms/create.h>
 #include <vclib/algorithms/intersection.h>
@@ -173,6 +174,26 @@ int main()
 	auto fsv  = fsg.valuesInSphere({vcl::Point3d(-1, -1, -1), 0.5});
 
 	for (const auto& p : fsv) {
+		std::cerr << p->first << ": " << m.index(p->second) << "\n";
+	}
+
+	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+
+
+
+	vcl::HashTableGrid3<const vcl::TriMesh::Vertex&> vmsg(m.vertexBegin(), m.vertexEnd());
+
+	const vcl::Point3d qv(0.5, 0.5, 0.5);
+
+	std::function<double(const vcl::Point3d&, const vcl::TriMesh::Vertex&)> fdist =
+		[](const vcl::Point3d& p, const vcl::TriMesh::Vertex& v)
+	{
+		return v.coord().dist(p);
+	};
+
+	auto vec = vmsg.kClosestValues(qv, 5, fdist);
+
+	for (const auto& p : vec) {
 		std::cerr << p->first << ": " << m.index(p->second) << "\n";
 	}
 

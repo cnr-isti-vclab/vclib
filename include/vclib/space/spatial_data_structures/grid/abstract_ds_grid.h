@@ -25,9 +25,11 @@
 #define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ABSTRACT_DS_GRID_H
 
 #include <deque>
+#include <set>
 
 #include <vclib/algorithms/stat/bounding_box.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/comparators.h>
 #include <vclib/misc/mark.h>
 #include <vclib/space/sphere.h>
 
@@ -103,6 +105,10 @@ namespace vcl {
 template<typename GridType, typename ValueType, typename DerivedGrid>
 class AbstractDSGrid : public GridType
 {
+protected:
+	using MarkableValuePointer = vcl::Markable<ValueType>*;
+
+private:
 	// ValueType could be anything. We need to understand if it is a pointer, a reference or not, in
 	// order to make proper optimized operations. Therefore, we declare VT, that is used internally
 	// in this class. VT is ValueType without pointers or references:
@@ -147,9 +153,13 @@ public:
 		const QueryValueType& qv,
 		QueryDistFunction<QueryValueType> distFunction) const;
 
-protected:
-	using MarkableValuePointer = vcl::Markable<ValueType>*;
+	template<typename QueryValueType>
+	auto kClosestValues(
+		const QueryValueType& qv,
+		uint n,
+		QueryDistFunction<QueryValueType> distFunction) const;
 
+protected:
 	AbstractDSGrid();
 
 	AbstractDSGrid(const GridType& grid, IsInCellFunction intersects = nullptr);
@@ -195,6 +205,13 @@ private:
 		const Boxui&                      interval,
 		QueryDistFunction<QueryValueType> distFunction,
 		const Boxui&                      ignore = Boxui()) const;
+
+	template<typename QueryValueType>
+	auto valuesInCellNeighborhood(
+		const QueryValueType&             qv,
+		uint                              n,
+		QueryDistFunction<QueryValueType> distFunction,
+		Boxui& ignore) const;
 
 	template<typename T>
 	static auto getCleanValueTypePointer(const T& v);

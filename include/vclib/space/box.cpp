@@ -259,6 +259,18 @@ void Box<PointT>::translate(const PointT& p)
 }
 
 template<PointConcept PointT>
+bool Box<PointT>::operator==(const Box<PointT>& p) const
+{
+	return min == p.min && max == p.max;
+}
+
+template<PointConcept PointT>
+bool Box<PointT>::operator!=(const Box<PointT>& p) const
+{
+	return !(*this == p);
+}
+
+template<PointConcept PointT>
 template<typename Scalar>
 void Box<PointT>::add(const PointT& p, Scalar radius)
 {

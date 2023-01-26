@@ -66,6 +66,9 @@ public:
 	void intersect(const Box<PointT>& p);
 	void translate(const PointT& p);
 
+	bool operator==(const Box<PointT>& p) const;
+	bool operator!=(const Box<PointT>& p) const;
+
 	PointT min;
 	PointT max;
 };

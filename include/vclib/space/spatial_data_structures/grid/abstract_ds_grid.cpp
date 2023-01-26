@@ -288,6 +288,66 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	return result;
 }
 
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename QueryValueType>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
+	const QueryValueType&             qv,
+	uint                              n,
+	QueryDistFunction<QueryValueType> distFunction) const
+{
+	// types used for K closest neighbors queries
+	using KClosestPairType =  std::pair<typename GridType::ScalarType, typename DerivedGrid::ConstIterator>;
+	using PairComparator = FirstElementPairComparator<KClosestPairType>;
+	using KClosestSet = std::set<KClosestPairType, PairComparator>;
+	using ResType = std::vector<typename DerivedGrid::ConstIterator>;
+
+	unMarkAll();
+	Boxui ignore; // will contain the interval of cells already visited
+	KClosestSet set = valuesInCellNeighborhood(qv, n, distFunction, ignore);
+
+	auto it = set.size() >= n ? std::next(set.begin(), n) : set.end();
+	// if we didn't found n values, it means that there aren't n values in the grid - nothing to do
+	if (it != set.end()) {
+		using QVT = RemoveRefAndPointer<QueryValueType>;
+		const QVT* qvv = getCleanValueTypePointer(qv);
+
+		typename GridType::BBoxType bb = vcl::boundingBox(*qvv); //bbox of query value
+		// we need to be sure that there are no values that are closest w.r.t. the n-th that we
+		// have already found by looking in the cell neighborhood
+		// we extend the bb with the distance of the n-th closest found value
+		bb.min -= it->first;
+		bb.max += it->first;
+
+		// and we look in all of these cells
+		Boxui currentIntervalBox;
+		currentIntervalBox.add(GridType::cell(bb.min)); // first cell where look for closest
+		currentIntervalBox.add(GridType::cell(bb.max)); // last cell where look for closest
+		for (const KeyType& c : GridType::cells(currentIntervalBox.min, currentIntervalBox.max)) {
+			if (!ignore.isInsideOpenBox(c)) {
+				const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
+				for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
+					if (!isMarked(it.markableValue())) {
+						mark(it.markableValue());
+						auto tmp = distFunction(qv, it->second);
+						set.insert(std::make_pair(tmp, it));
+					}
+				}
+			}
+		}
+	}
+
+	ResType vec;
+	// if there are more than n values in the set, we will return n values, otherwise set.size()
+	uint retNValues = std::min((uint)set.size(), n);
+	vec.reserve(retNValues);
+	it = set.begin();
+	for (uint i = 0; i < retNValues; i++) {
+		vec.push_back(it->second);
+		it++;
+	}
+	return vec;
+}
+
 /**
  * @brief Empty constructor, creates an usable AbstractDSGrid, since the Grid is not initialized.
  */
@@ -470,6 +530,57 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestInCells(
 			}
 		}
 	}
+	return res;
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename QueryValueType>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
+	const QueryValueType&             qv,
+	uint                              n,
+	QueryDistFunction<QueryValueType> distFunction,
+	Boxui& ignore) const
+{
+	// types used for K closest neighbors queries
+	using KClosestPairType =  std::pair<typename GridType::ScalarType, typename DerivedGrid::ConstIterator>;
+	using PairComparator = FirstElementPairComparator<KClosestPairType>;
+	using KClosestSet = std::set<KClosestPairType, PairComparator>;
+	KClosestSet res;
+
+	using QVT = RemoveRefAndPointer<QueryValueType>;
+	const QVT* qvv = getCleanValueTypePointer(qv);
+
+	if (qvv) {
+		Boxui currentIntervalBox;
+		typename GridType::BBoxType bb = vcl::boundingBox(*qvv); //bbox of query value
+		currentIntervalBox.add(GridType::cell(bb.min)); // first cell where look for closest
+		currentIntervalBox.add(GridType::cell(bb.max)); // last cell where look for closest
+
+		ignore.setNull();
+		while (res.size() < n && res.size() < values.size() && currentIntervalBox != ignore) {
+			// for each cell in the interval
+			for (const KeyType& c : GridType::cells(currentIntervalBox.min, currentIntervalBox.max)) {
+				if (!ignore.isInsideOpenBox(c)) {
+					const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
+					for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
+						if (!isMarked(it.markableValue())) {
+							mark(it.markableValue());
+							auto tmp = distFunction(qv, it->second);
+							res.insert(std::make_pair(tmp, it));
+						}
+					}
+				}
+			}
+			ignore = currentIntervalBox;
+			for (uint i = 0; i < currentIntervalBox.min.DIM; ++i) {
+				if (currentIntervalBox.min(i) != 0)
+					currentIntervalBox.min(i)--;
+				if (currentIntervalBox.max(i) != GridType::cellNumber(i))
+					currentIntervalBox.max(i)++;
+			}
+		}
+	}
+
 	return res;
 }
 

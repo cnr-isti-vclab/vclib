@@ -29,7 +29,6 @@
 
 #include <vclib/algorithms/stat/bounding_box.h>
 #include <vclib/iterators/grid/static_grid_iterator.h>
-#include <vclib/misc/comparators.h>
 #include <vclib/misc/mark.h>
 #include <vclib/space/spatial_data_structures/grid.h>
 
