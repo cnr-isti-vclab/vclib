@@ -24,14 +24,18 @@
 #include "curvature.h"
 
 #include <vclib/algorithms/update/normal.h>
+#include <vclib/algorithms/stat.h>
+#include <vclib/algorithms/point_sampling.h>
 #include <vclib/algorithms/polygon.h>
+#include <vclib/iterators/pointer_iterator.h>
 #include <vclib/math/matrix.h>
 #include <vclib/mesh_utils/mesh_pos.h>
 #include <vclib/space/principal_curvature.h>
+#include <vclib/space/spatial_data_structures.h>
 
 namespace vcl {
 
-template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType>
+template<FaceMeshConcept MeshType, LoggerConcept LogType>
 void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 {
 	vcl::requirePerVertexPrincipalCurvature(m);
@@ -226,7 +230,140 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 	}
 }
 
-template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType>
+/**
+ * @brief Computes the Principal Curvature meseaure as described in the paper:
+ * Robust principal curvatures on Multiple Scales, Yong-Liang Yang, Yu-Kun Lai, Shi-Min Hu Helmut
+ * Pottmann SGP 2004.
+ * If montecarloSampling==true the covariance is computed by montecarlo sampling on the mesh
+ * (faster); If montecarloSampling==false the covariance is computed by (analytic)integration over
+ * the surface (slower).
+ * @param m
+ * @param radius
+ * @param montecarloSampling
+ * @param log
+ */
+template<FaceMeshConcept MeshType, LoggerConcept LogType>
+void updatePrincipalCurvaturePCA(
+	MeshType&  m,
+	typename MeshType::VertexType::ScalarType radius,
+	bool       montecarloSampling,
+	LogType&   log)
+{
+	using VertexType = typename MeshType::VertexType;
+	using CoordType = typename VertexType::CoordType;
+	using ScalarType = typename CoordType::ScalarType;
+	using NormalType = typename VertexType::NormalType;
+	using FaceType   = typename MeshType::FaceType;
+
+	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
+	using GridIterator = typename vcl::HashTableGrid3<VertexType*>::ConstIterator;
+
+	vcl::PointSampler<CoordType> sampler;
+	vcl::HashTableGrid3<VertexType*> pGrid;
+	ScalarType area;
+
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(0, "Updating per vertex normals...");
+	}
+
+	vcl::updatePerVertexNormalsAngleWeighted(m);
+	vcl::normalizePerVertexNormals(m);
+
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(5, "Computing per vertex curvature...");
+	}
+
+	uint logPerc = 5;
+	const uint logPercStep = 5;
+	uint logVertStep = m.vertexNumber() / ((95 / logPercStep) - 1);
+
+	if (montecarloSampling) {
+		area = vcl::surfaceArea(m);
+		uint nSamples = 1000 * area * (2 * M_PI * radius * radius);
+		sampler = vcl::montecarloPointSampling<vcl::PointSampler<CoordType>>(m, nSamples);
+		pGrid.insert(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+	}
+
+	for (VertexType& v : m.vertices()) {
+		vcl::Matrix33<ScalarType> A, eigenvectors;
+		CoordType bp, eigenvalues;
+		if (montecarloSampling) {
+			std::vector<GridIterator> vec = std::as_const(pGrid).valuesInSphere({v.coord(), radius});
+			std::vector<CoordType> points;
+			points.reserve(vec.size());
+			for (const auto& it : vec){
+				points.push_back(it->second->coord());
+			}
+			A = vcl::covarianceMatrixOfPointCloud(points);
+			A *= area * area / 1000;
+		}
+		else {
+			// todo - intersection sphere - mesh...
+		}
+		Eigen::SelfAdjointEigenSolver<vcl::Matrix33<ScalarType>> eig(A);
+		eigenvalues = CoordType(eig.eigenvalues());
+		eigenvectors = eig.eigenvectors(); // eigenvector are stored as columns.
+		// get the estimate of curvatures from eigenvalues and eigenvectors
+		// find the 2 most tangent eigenvectors (by finding the one closest to the normal)
+		uint best = 0;
+		ScalarType bestv = std::abs(v.normal().dot(CoordType(eigenvectors.col(0).normalized())));
+		for(uint i  = 1 ; i < 3; ++i){
+			ScalarType prod = std::abs(v.normal().dot(CoordType(eigenvectors.col(i).normalized())));
+			if(prod > bestv){
+				bestv = prod;
+				best = i;
+			}
+		}
+		v.principalCurvature().maxDir() = (eigenvectors.col((best + 1) % 3).normalized());
+		v.principalCurvature().minDir() = (eigenvectors.col((best + 2) % 3).normalized());
+
+		vcl::Matrix33<ScalarType> rot;
+		ScalarType angle;
+		angle = acos(v.principalCurvature().maxDir().dot(v.normal()));
+
+		rot = vcl::rotationMatrix<vcl::Matrix33<ScalarType>>(
+			v.principalCurvature().maxDir().cross(v.normal()), -(M_PI * 0.5 - angle));
+
+		v.principalCurvature().maxDir() = rot * v.principalCurvature().maxDir();
+
+		angle = acos(v.principalCurvature().minDir().dot(v.normal()));
+
+		rot = vcl::rotationMatrix<vcl::Matrix33<ScalarType>>(
+			v.principalCurvature().minDir().cross(v.normal()), -(M_PI * 0.5 - angle));
+
+		v.principalCurvature().minDir() = rot * v.principalCurvature().minDir();
+
+		// copmutes the curvature values
+		const ScalarType r5 = std::pow(radius, 5);
+		const ScalarType r6 = r5 * radius;
+		v.principalCurvature().maxValue() = (2.0 / 5.0) *
+											(4.0 * M_PI * r5 + 15 * eigenvalues[(best + 2) % 3] -
+											 45.0 * eigenvalues[(best + 1) % 3]) /
+											(M_PI * r6);
+		v.principalCurvature().minValue() = (2.0 / 5.0) *
+											(4.0 * M_PI * r5 + 15 * eigenvalues[(best + 1) % 3] -
+											 45.0 * eigenvalues[(best + 2) % 3]) /
+											(M_PI * r6);
+		if (v.principalCurvature().maxValue() < v.principalCurvature().minValue()) {
+			std::swap(v.principalCurvature().minValue(), v.principalCurvature().maxValue());
+			std::swap(v.principalCurvature().minDir(), v.principalCurvature().maxDir());
+		}
+
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			uint n = m.index(v);
+			if (n % logVertStep == 0) {
+				logPerc += logPercStep;
+				log.log(logPerc, "");
+			}
+		}
+	}
+
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(100, "Per vertex curvature computed.");
+	}
+}
+
+template<FaceMeshConcept MeshType, LoggerConcept LogType>
 void updatePrincipalCurvature(MeshType& m, LogType& log)
 {
 	vcl::requirePerVertexPrincipalCurvature(m);
@@ -234,15 +371,19 @@ void updatePrincipalCurvature(MeshType& m, LogType& log)
 	updatePrincipalCurvatureTaubin95(m, log);
 }
 
-template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType>
+template<FaceMeshConcept MeshType, LoggerConcept LogType>
 void updatePrincipalCurvature(MeshType& m, VCLibPrincipalCurvatureAlgorithm alg, LogType& log)
 {
 	vcl::requirePerVertexPrincipalCurvature(m);
 
+	double radius;
 	switch (alg) {
 	case VCL_PRINCIPAL_CURVATURE_TAUBIN95:
 		updatePrincipalCurvatureTaubin95(m, log);
 		break;
+	case VCL_PRINCIPAL_CURVATURE_PCA:
+		radius = vcl::boundingBox(m).diagonal() * 0.1;
+		updatePrincipalCurvaturePCA(m, radius, true, log);
 	}
 }
 

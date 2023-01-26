@@ -30,22 +30,30 @@
 namespace vcl {
 
 typedef enum {
-	VCL_PRINCIPAL_CURVATURE_TAUBIN95
+	VCL_PRINCIPAL_CURVATURE_TAUBIN95,
+	VCL_PRINCIPAL_CURVATURE_PCA
 } VCLibPrincipalCurvatureAlgorithm;
 
-template <HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType = NullLogger>
+template <FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger);
 
-template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType = NullLogger>
-void updatePrincipalCurvature(
-	MeshType&                        m,
-	LogType& log = nullLogger);
+template<
+	FaceMeshConcept MeshType,
+	LoggerConcept LogType = NullLogger>
+void updatePrincipalCurvaturePCA(
+	MeshType&  m,
+	typename MeshType::VertexType::ScalarType radius,
+	bool       montecarloSampling = true,
+	LogType&   log                = nullLogger);
 
-template<HasPerVertexPrincipalCurvature MeshType, LoggerConcept LogType = NullLogger>
+template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void updatePrincipalCurvature(MeshType& m, LogType& log = nullLogger);
+
+template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvature(
 	MeshType&                        m,
 	VCLibPrincipalCurvatureAlgorithm alg = VCL_PRINCIPAL_CURVATURE_TAUBIN95,
-	LogType& log = nullLogger);
+	LogType&                         log = nullLogger);
 
 } // namespace vcl
 

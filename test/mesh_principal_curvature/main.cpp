@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 	vcl::updatePerVertexAdjacentFaces(m);
 
 	log.startTimer();
-	vcl::updatePrincipalCurvature(m, log);
+	vcl::updatePrincipalCurvature(m, vcl::VCL_PRINCIPAL_CURVATURE_PCA, log);
 
 	vcl::setPerVertexScalarFromPrincipalCurvatureMean(m);
 	vcl::setPerVertexColorFromScalar(m);

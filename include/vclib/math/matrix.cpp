@@ -29,6 +29,21 @@
 
 namespace vcl {
 
+template<MatrixConcept MatrixType, PointConcept PointType>
+PointType operator*(const MatrixType& m, const PointType& p)
+{
+	static_assert(MatrixType::RowsAtCompileTime == PointType::DIM, "");
+	static_assert(MatrixType::ColsAtCompileTime == PointType::DIM, "");
+
+	PointType res;
+	for (uint i = 0; i < PointType::DIM; i++) {
+		for (uint j = 0; j < PointType::DIM; j++) {
+			res(i) += m(i,j)* p(i);
+		}
+	}
+	return res;
+}
+
 /**
  * @brief Given an 3D axis and an angle expressed in randiants, fills the given matrix with a
  * transform matrix that represents the rotation matrix of the given axis/angle.

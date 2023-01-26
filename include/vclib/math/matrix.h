@@ -30,6 +30,13 @@
 
 namespace vcl {
 
+template<typename T>
+concept MatrixConcept = requires(T o, const T& co)
+{
+	o.RowsAtCompileTime;
+	o.ColsAtCompileTime;
+};
+
 template<typename Scalar>
 using Matrix33 = Eigen::Matrix<Scalar, 3, 3>;
 
@@ -43,6 +50,9 @@ using Matrix44 = Eigen::Matrix<Scalar, 4, 4>;
 using Matrix44i = Matrix44<int>;
 using Matrix44f = Matrix44<float>;
 using Matrix44d = Matrix44<double>;
+
+template<MatrixConcept MatrixType, PointConcept PointType>
+PointType operator*(const MatrixType& m, const PointType& p);
 
 template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotation(
