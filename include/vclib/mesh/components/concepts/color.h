@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -29,24 +30,33 @@
 namespace vcl::comp {
 
 /**
- * @brief HasColor concept
+ * @brief HasColor concept is satisfied only if a Element/Mesh class provides the types and member
+ * functions specified in this concept. These types and member functions allow to access to a
+ * Color component of a given element/mesh.
  *
- * This concept is satisfied only if a class has a member function 'color()' which returns a
- * vcl::Color&
+ * Note that this concept does not discriminate between the Horizontal Color component
+ * and the vertical OptionalColor component, therefore it does not guarantee that a
+ * template Element type that satisfies this concept provides Color component at runtime
+ * (it is guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that Color is available at runtime, you need to call the member
+ * function `isColorEnabled()`.
  */
 template<typename T>
-concept HasColor = requires(T o)
+concept HasColor = requires(
+	T o,
+	const T& co)
 {
 	typename T::ColorType;
 	{ o.color() } -> std::same_as<vcl::Color&>;
+	{ co.color() } -> std::same_as<const vcl::Color&>;
+	{ co.isColorEnabled() } -> std::same_as<bool>;
 };
 
 /**
- * @brief HasOptionalColor concept
- *
- * This concept is satisfied only if a class has two member functions:
- * - 'color()' which returns a vcl::Color&
- * - '__optionalColor()'
+ * @brief HasOptionalColor concept is satisfied only if a class satisfis the HasColor concept and
+ * has the additional member function '__optionalColor()', which is the discriminator between the
+ * non-optional and optional component.
  */
 template<typename T>
 concept HasOptionalColor = HasColor<T> && requires(T o)

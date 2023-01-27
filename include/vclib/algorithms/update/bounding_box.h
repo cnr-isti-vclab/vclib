@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_BOUNDING_BOX_H
-#define VCL_ALGORITHMS_BOUNDING_BOX_H
+#ifndef VCL_ALGORITHMS_UPDATE_BOUNDING_BOX_H
+#define VCL_ALGORITHMS_UPDATE_BOUNDING_BOX_H
 
 #include <vclib/mesh/requirements.h>
 
@@ -35,4 +36,4 @@ void updateBoundingBox(MeshType& m)
 
 #include "bounding_box.cpp"
 
-#endif // VCL_ALGORITHMS_BOUNDING_BOX_H
+#endif // VCL_ALGORITHMS_UPDATE_BOUNDING_BOX_H

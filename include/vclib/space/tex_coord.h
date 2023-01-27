@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TEX_COORD_H
-#define VCL_TEX_COORD_H
+#ifndef VCL_SPACE_TEX_COORD_H
+#define VCL_SPACE_TEX_COORD_H
 
 #include "point/point2.h"
 
@@ -37,8 +38,8 @@ public:
 	using ScalarType = Scalar;
 
 	TexCoord();
-	TexCoord(const Scalar& s1, const Scalar& s2, short n = 0);
-	TexCoord(const Point2<Scalar>& p, short n = 0);
+	TexCoord(const Scalar& s1, const Scalar& s2);
+	TexCoord(const Point2<Scalar>& p);
 
 	template<typename S>
 	TexCoord<S> cast() const;
@@ -51,9 +52,6 @@ public:
 	void    setV(Scalar s);
 	void    set(Scalar u, Scalar v);
 
-	short  nTexture() const;
-	short& nTexture();
-
 	// operators
 	Scalar&       operator()(uint i);
 	const Scalar& operator()(uint i) const;
@@ -64,7 +62,6 @@ public:
 
 private:
 	Point2<Scalar> coord;
-	short          n;
 };
 
 using TexCoordi = TexCoord<int>;
@@ -75,4 +72,4 @@ using TexCoordd = TexCoord<double>;
 
 #include "tex_coord.cpp"
 
-#endif // VCL_TEX_COORD_H
+#endif // VCL_SPACE_TEX_COORD_H

@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -63,7 +64,7 @@ namespace vcl {
  * @param[in] p2: third point of the triangle.
  * @return The normal of the triangle composed by p0, p1 and p2.
  */
-template<typename PointType>
+template<PointConcept PointType>
 PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2)
 {
 	return (p1 - p0).cross(p2 - p0);
@@ -78,7 +79,7 @@ PointType triangleNormal(const PointType& p0, const PointType& p1, const PointTy
  * @param[in] t: input triangle of type Face
  * @return The normal of t.
  */
-template<typename Triangle>
+template<FaceConcept Triangle>
 typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t)
 {
 	return triangleNormal(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
@@ -92,7 +93,7 @@ typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t)
  * @param[in] p2: third point of the triangle.
  * @return The barycenter of the triangle composed by p0, p1 and p2.
  */
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleBarycenter(const PointType& p0, const PointType& p1, const PointType& p2)
 {
 	return (p0 + p1 + p2) / 3;
@@ -106,7 +107,7 @@ PointType triangleBarycenter(const PointType& p0, const PointType& p1, const Poi
  * @param[in] t: input triangle of type Face
  * @return The barycenter of t.
  */
-template<typename Triangle, typename PointType>
+template<TriangleFaceConcept Triangle, PointConcept PointType>
 PointType triangleBarycenter(const Triangle& t)
 {
 	return triangleBarycenter(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
@@ -123,13 +124,32 @@ PointType triangleBarycenter(const Triangle& t)
  * @param[in] w2: weight of the third point of the triangle.
  * @return The weighted barycenter of the triangle composed by p0, p1 and p2.
  */
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleWeightedBarycenter(
 	const PointType& p0, typename PointType::ScalarType w0,
 	const PointType& p1, typename PointType::ScalarType w1,
 	const PointType& p2, typename PointType::ScalarType w2)
 {
 	return (p0 * w0 + p1 * w1 + p2 * w2) / (w0 + w1 + w2);
+}
+
+template<PointConcept PointType, typename ScalarType>
+PointType triangleBarycentricCoordinatePoint(
+	const PointType& p0,
+	const PointType& p1,
+	const PointType& p2,
+	const Point3<ScalarType> &barCoords)
+{
+	return p0 * barCoords(0) + p1 * barCoords(1) + p2 * barCoords(2);
+}
+
+template <typename Triangle, typename ScalarType>
+typename Triangle::CoordType triangleBarycentricCoordinatePoint(
+	const Triangle& t,
+	const Point3<ScalarType>& barCoords)
+{
+	return triangleBarycentricCoordinatePoint(
+		t.vertex->coord(0), t.vertex->coord(1), t.vertex->coord(2), barCoords);
 }
 
 /**
@@ -141,7 +161,7 @@ PointType triangleWeightedBarycenter(
  * @param[in] p2: third point of the triangle.
  * @return The area of the triangle composed by p0, p1 and p2.
  */
-template<typename PointType>
+template<PointConcept PointType>
 typename PointType::ScalarType
 triangleArea(const PointType& p0, const PointType& p1, const PointType& p2)
 {
@@ -169,7 +189,7 @@ ScalarType triangleArea(const Triangle& t)
  * @param[in] p: input container of 3D points representing a polygon.
  * @return The normal of p.
  */
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonNormal(const std::vector<PointType>& p)
 {
 	// compute the sum of normals for each triplet of consecutive points
@@ -212,7 +232,7 @@ typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p)
  * @param[in] p: input container of points representing a polygon.
  * @return The barycenter of p.
  */
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonBarycenter(const std::vector<PointType>& p)
 {
 	PointType bar;
@@ -250,7 +270,7 @@ typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p)
  * @param[in] w: the weights for each point of the polygon.
  * @return The weighted barycenter of p.
  */
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonWeighedBarycenter(
 	const std::vector<PointType>&                      p,
 	const std::vector<typename PointType::ScalarType>& w)
@@ -274,8 +294,8 @@ PointType polygonWeighedBarycenter(
  * @param[in] p: input container of 3D points representing a polygon.
  * @return The area of p.
  */
-template<typename PointType>
-typename PointType::Scalar polygonArea(const std::vector<PointType>& p)
+template<PointConcept PointType>
+typename PointType::ScalarType polygonArea(const std::vector<PointType>& p)
 {
 	using Scalar = typename PointType::ScalarType;
 	PointType bar = polygonBarycenter(p);
@@ -299,6 +319,10 @@ template<typename Polygon, typename ScalarType>
 ScalarType polygonArea(const Polygon& p)
 {
 	using PointType = typename Polygon::VertexType::CoordType;
+
+	if (p.vertexNumber() == 3) {
+		return triangleArea(p);
+	}
 
 	PointType bar = polygonBarycenter(p);
 	ScalarType area = 0;
@@ -358,8 +382,8 @@ std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
  * @param[in] polygon: A (polygonal) face of a vcl::Mesh.
  * @return A vector of indices, representing the triplets of the triangulation of the polygon.
  */
-template <typename Polygon>
-std::vector<uint> earCut(const Polygon& polygon)
+template <FaceConcept Face>
+std::vector<uint> earCut(const Face& polygon)
 {
 	return mesh::earCut(polygon);
 }

@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_PLANE_H
-#define VCL_PLANE_H
+#ifndef VCL_SPACE_PLANE_H
+#define VCL_SPACE_PLANE_H
 
 #include "point/point3.h"
 
@@ -82,4 +83,4 @@ using Planed = Plane<double>;
 
 #include "plane.cpp"
 
-#endif // VCL_PLANE_H
+#endif // VCL_SPACE_PLANE_H

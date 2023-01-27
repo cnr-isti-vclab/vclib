@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,24 +29,33 @@
 namespace vcl::comp {
 
 /**
- * @brief HasNormal concept
+ * @brief HasNormal concept is satisfied only if a Element class provides the types and member
+ * functions specified in this concept. These types and member functions allow to access to a
+ * Normal component of a given element.
  *
- * This concept is satisfied only if a class has a member function 'normal()'.
- * No check is made on the return type.
+ * Note that this concept does not discriminate between the Horizontal Normal component
+ * and the vertical OptionalNormal component, therefore it does not guarantee that a
+ * template Element type that satisfies this concept provides Normal component at runtime
+ * (it is guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that Normal is available at runtime, you need to call the member
+ * function `isNormalEnabled()`.
  */
 template<typename T>
-concept HasNormal = requires(T o)
+concept HasNormal = requires(
+	T o,
+	const T& co)
 {
 	typename T::NormalType;
-	o.normal();
+	{ o.normal() } -> std::same_as<typename T::NormalType&>;
+	{ co.normal() } -> std::same_as<const typename T::NormalType&>;
+	{ co.isNormalEnabled() } -> std::same_as<bool>;
 };
 
 /**
- * @brief HasOptionalNormal concept
- *
- * This concept is satisfied only if a class has two member functions:
- * - 'normal()'
- * - '__optionalNormal()'
+ * @brief HasOptionalNormal concept is satisfied only if a class satisfis the HasNormal concept and
+ * has the additional member function '__optionalNormal()', which is the discriminator between the
+ * non-optional and optional component.
  */
 template<typename T>
 concept HasOptionalNormal = HasNormal<T> && requires(T o)

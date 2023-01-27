@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -60,10 +61,29 @@ concept HasHalfEdgeOptionalContainer =
 	HasHalfEdgeContainer<T> && comp::HasVerticalComponent<typename T::HalfEdgeType>;
 
 template <typename T>
-concept HasFaceContainer = requires(T o)
+concept HasFaceContainer = requires(T o, const T& co, typename T::FaceType* f)
 {
 	typename T::FaceType;
-	o.face(uint());
+	typename T::FaceIterator;
+	typename T::ConstFaceIterator;
+	typename T::FaceRangeIterator;
+	typename T::ConstFaceRangeIterator;
+	{ o.face(uint()) } -> std::same_as<typename T::FaceType&>;
+	{ co.face(uint()) } -> std::same_as<const typename T::FaceType&>;
+	{ co.faceNumber() } -> std::same_as<uint>;
+	{ co.faceContainerSize() } -> std::same_as<uint>;
+	{ co.deletedFaceNumber() } -> std::same_as<uint>;
+	o.deleteFace(uint());
+	o.deleteFace(f);
+	{ o.faceIndexIfCompact(uint()) } -> std::same_as<uint>;
+	{ o.faceCompactIndices() } -> std::same_as<std::vector<int>>;
+
+	{ o.faceBegin() } -> std::same_as<typename T::FaceIterator>;
+	{ co.faceBegin() } -> std::same_as<typename T::ConstFaceIterator>;
+	{ o.faceEnd() } -> std::same_as<typename T::FaceIterator>;
+	{ co.faceEnd() } -> std::same_as<typename T::ConstFaceIterator>;
+	{ o.faces() } -> std::same_as<typename T::FaceRangeIterator>;
+	{ co.faces() } -> std::same_as<typename T::ConstFaceRangeIterator>;
 };
 
 template <typename T>
@@ -71,10 +91,29 @@ concept HasFaceOptionalContainer =
 	HasFaceContainer<T> && comp::HasVerticalComponent<typename T::FaceType>;
 
 template <typename T>
-concept HasVertexContainer = requires(T o)
+concept HasVertexContainer = requires(T o, const T& co, typename T::VertexType* v)
 {
 	typename T::VertexType;
-	o.vertex(uint());
+	typename T::VertexIterator;
+	typename T::ConstVertexIterator;
+	typename T::VertexRangeIterator;
+	typename T::ConstVertexRangeIterator;
+	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType&>;
+	{ co.vertex(uint()) } -> std::same_as<const typename T::VertexType&>;
+	{ co.vertexNumber() } -> std::same_as<uint>;
+	{ co.vertexContainerSize() } -> std::same_as<uint>;
+	{ co.deletedVertexNumber() } -> std::same_as<uint>;
+	o.deleteVertex(uint());
+	o.deleteVertex(v);
+	{ o.vertexIndexIfCompact(uint()) } -> std::same_as<uint>;
+	{ o.vertexCompactIndices() } -> std::same_as<std::vector<int>>;
+
+	{ o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
+	{ co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
+	{ o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
+	{ co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
+	{ o.vertices() } -> std::same_as<typename T::VertexRangeIterator>;
+	{ co.vertices() } -> std::same_as<typename T::ConstVertexRangeIterator>;
 };
 
 template <typename T>

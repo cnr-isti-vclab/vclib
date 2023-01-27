@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -55,6 +56,7 @@ class PointCloudT :
 			mesh::VertexContainer<pointcloud::Vertex<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
 			mesh::Mark,
+			mesh::Name,
 			mesh::TexturePaths,
 			mesh::TransformMatrix<ScalarType>>
 {

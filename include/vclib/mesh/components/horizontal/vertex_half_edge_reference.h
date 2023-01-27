@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -25,8 +26,8 @@
 
 #include <vector>
 
-#include <vclib/iterators/half_edge/vertex_adj_face_iterator.h>
-#include <vclib/iterators/half_edge/vertex_adj_vertex_iterator.h>
+#include <vclib/iterators/mesh/half_edge/vertex_adj_face_iterator.h>
+#include <vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h>
 #include <vclib/iterators/range_iterator.h>
 
 #include "../concepts/vertex_half_edge_reference.h"

@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -41,10 +42,12 @@ public:
 };
 
 template<comp::HasOptionalAdjacentVertices T>
-class AdjacentVerticesVector<T> : private GenericComponentVector<typename T::AdjVertsContainer>
+class AdjacentVerticesVector<T> :
+		private GenericComponentVector<
+			std::vector<typename T::AdjacentVertexType*>>
 {
 private:
-	using AdjVertsContainer = typename T::AdjVertsContainer;
+	using AdjVertsContainer = std::vector<typename T::AdjacentVertexType*>;
 	using Base = GenericComponentVector<AdjVertsContainer>;
 
 public:

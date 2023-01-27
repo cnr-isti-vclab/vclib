@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -83,7 +84,7 @@ using Normal3 = comp::Normal3<ScalarType>;
 using Normal3f = comp::Normal3f;
 using Normal3d = comp::Normal3d;
 
-/* Port PrincipalCurvature class into face namespace */
+/* Port PrincipalCurvature class into vert namespace */
 template<typename ScalarType>
 using PrincipalCurvature = comp::PrincipalCurvature<ScalarType>;
 

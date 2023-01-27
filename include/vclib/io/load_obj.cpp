@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -35,7 +36,7 @@ namespace vcl::io {
 
 namespace internal {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadMaterials(
 	std::map<std::string, obj::Material>& materialMap,
 	MeshType& mesh,
@@ -128,7 +129,7 @@ void loadMaterials(
 		materialMap[matName] = mat;
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadVertexCoord(
 	MeshType&                    m,
 	vcl::Tokenizer::iterator&    token,
@@ -176,7 +177,7 @@ void loadVertexCoord(
 }
 
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadVertexNormal(
 	MeshType&                    m,
 	std::map<uint, vcl::Point3d> mapNormalsCache,
@@ -214,7 +215,7 @@ void loadVertexNormal(
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadFace(
 	MeshType& m,
 	FileMeshInfo&         loadedInfo,
@@ -328,7 +329,7 @@ void loadFace(
 						}
 						f.wedgeTexCoord(i) = wedgeTexCoords[wids[i]].cast<typename FaceType::WedgeTexCoordType::ScalarType>();
 						if (currentMaterial.hasTexture){
-							f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
+							f.textureIndex() = currentMaterial.mapId;
 						}
 					}
 				}
@@ -352,7 +353,7 @@ void loadFace(
 							// set the wedge texcoord in the same position of the vertex
 							f.wedgeTexCoord(i) = wedgeTexCoords[wids[pos]].cast<typename FaceType::WedgeTexCoordType::ScalarType>();
 							if (currentMaterial.hasTexture){
-								f.wedgeTexCoord(i).nTexture() = currentMaterial.mapId;
+								f.textureIndex() = currentMaterial.mapId;
 							}
 						}
 					}
@@ -364,14 +365,14 @@ void loadFace(
 
 } // namespace internal
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadObj(const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	return loadObj<MeshType>(filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType
 loadObj(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
 {
@@ -380,14 +381,14 @@ loadObj(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOption
 	return m;
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadObj(MeshType& m, const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	loadObj(m, filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadObj(
 	MeshType&          m,
 	const std::string& filename,
@@ -420,6 +421,10 @@ void loadObj(
 
 	if constexpr (HasTexturePaths<MeshType>) {
 		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
+	}
+
+	if constexpr (HasName<MeshType>) {
+		m.name() = fileInfo::filenameWithoutExtension(filename);
 	}
 
 	// cycle that reads line by line
@@ -462,9 +467,6 @@ void loadObj(
 					for (uint i = 0; i < 2; ++i) {
 						tf[i] = internal::readDouble<double>(token);
 					}
-					// store also the texture id, if present in the currentMaterial
-					if (currentMaterial.hasTexture)
-						tf.nTexture() = currentMaterial.mapId;
 					texCoords.push_back(tf);
 				}
 			}

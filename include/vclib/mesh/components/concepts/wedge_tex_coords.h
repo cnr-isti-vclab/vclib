@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,15 +29,48 @@
 namespace vcl::comp {
 
 /**
- * @brief HasWedgeTexCoords concept
+ * @brief HasWedgeTexCoords concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to
+ * an WedgeTexCoords component of a given element.
  *
- * This concept is satisfied only if a class has a member function 'wedgeTexCoord(uint)'.
+ * Note that this concept does not discriminate between the Horizontal WedgeTexCoords component and
+ * the vertical OptionalWedgeTexCoords component, therefore it does not guarantee that a template
+ * Element type that satisfies this concept provides WedgeTexCoords component at runtime (it is
+ * guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that WedgeTexCoords is available at runtime, you need to call the member
+ * function `isWedgeTexCoordsEnabled()`.
  */
 template<typename T>
-concept HasWedgeTexCoords = requires(T o)
+concept HasWedgeTexCoords = requires(
+	T o,
+	const T& co,
+	const typename T::WedgeTexCoordType& t,
+	std::vector<typename T::WedgeTexCoordType> v)
 {
+	T::WEDGE_TEX_COORD_NUMBER;
 	typename T::WedgeTexCoordType;
-	o.wedgeTexCoord(uint());
+	typename T::WedgeTexCoordsIterator;
+	typename T::ConstWedgeTexCoordsIterator;
+	typename T::WedgeTexCoordsRangeIterator;
+	typename T::ConstWedgeTexCoordsRangeIterator;
+
+	{ o.wedgeTexCoord(uint()) } -> std::same_as<typename T::WedgeTexCoordType&>;
+	{ co.wedgeTexCoord(uint()) } -> std::same_as<const typename T::WedgeTexCoordType&>;
+	{ o.wedgeTexCoordMod(int()) } -> std::same_as<typename T::WedgeTexCoordType&>;
+	{ co.wedgeTexCoordMod(int()) } -> std::same_as<const typename T::WedgeTexCoordType&>;
+	{ o.setWedgeTexCoord(t, uint()) } -> std::same_as<void>;
+	{ o.setWedgeTexCoords(v) } -> std::same_as<void>;
+	{ o.textureIndex() } -> std::same_as<short&>;
+	{ co.textureIndex() } -> std::same_as<const short&>;
+	{ co.isWedgeTexCoordsEnabled() } -> std::same_as<bool>;
+
+	{ o.wedgeTexCoordBegin() } -> std::same_as<typename T::WedgeTexCoordsIterator>;
+	{ o.wedgeTexCoordEnd() } -> std::same_as<typename T::WedgeTexCoordsIterator>;
+	{ co.wedgeTexCoordBegin() } -> std::same_as<typename T::ConstWedgeTexCoordsIterator>;
+	{ co.wedgeTexCoordEnd() } -> std::same_as<typename T::ConstWedgeTexCoordsIterator>;
+	{ o.wedgeTexCoords() } -> std::same_as<typename T::WedgeTexCoordsRangeIterator>;
+	{ co.wedgeTexCoords() } -> std::same_as<typename T::ConstWedgeTexCoordsRangeIterator>;
 };
 
 /**

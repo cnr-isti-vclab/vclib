@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -175,7 +176,7 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 
 	if (vertElemPos >= 0) {
 		mod.setVertices();
-		for (Property p : elements[vertElemPos].properties) {
+		for (const Property& p : elements[vertElemPos].properties) {
 			switch (p.name) {
 			case ply::x:
 			case ply::y:
@@ -195,7 +196,7 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 	}
 	if (faceElemPos >= 0) {
 		mod.setFaces();
-		for (Property p : elements[faceElemPos].properties) {
+		for (const Property& p : elements[faceElemPos].properties) {
 			switch (p.name) {
 			case ply::vertex_indices: mod.setFaceVRefs(); break;
 			case ply::nx:
@@ -213,7 +214,7 @@ inline io::FileMeshInfo PlyHeader::getInfo() const
 	}
 	if (trisElemPos >= 0) {
 		mod.setFaces();
-		for (Property p : elements[trisElemPos].properties) {
+		for (const Property& p : elements[trisElemPos].properties) {
 			switch (p.name) {
 			case ply::vertex_indices: mod.setFaceVRefs(); break;
 			case ply::nx:
@@ -507,7 +508,7 @@ inline std::string PlyHeader::toString() const
 	for (const std::string& str : textureFiles) {
 		s += "comment TextureFile " + str + "\n";
 	}
-	for (Element e : elements) {
+	for (const Element& e : elements) {
 		s += "element ";
 		switch (e.type) {
 		case VERTEX: s += "vertex " + std::to_string(e.numberElements) + "\n"; break;
@@ -517,7 +518,7 @@ inline std::string PlyHeader::toString() const
 		case MATERIAL: s += "material " + std::to_string(e.numberElements) + "\n"; break;
 		case OTHER: s += e.unknownElementType + " " + std::to_string(e.numberElements) + "\n"; break;
 		}
-		for (Property p : e.properties) {
+		for (const Property& p : e.properties) {
 			s += "property ";
 			if (p.list) {
 				s += "list ";

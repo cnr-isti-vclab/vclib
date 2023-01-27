@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -29,6 +30,8 @@
 #include <vector>
 #include <bitset>
 
+#include <vclib/mesh/requirements.h>
+
 namespace vcl::io {
 
 /**
@@ -45,7 +48,7 @@ public:
 
 	FileMeshInfo();
 
-	template<typename Mesh>
+	template<MeshConcept Mesh>
 	FileMeshInfo(const Mesh& m);
 
 	bool isTriangleMesh() const;

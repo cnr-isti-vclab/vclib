@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -48,7 +49,7 @@ uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
 template <FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m);
 
-template <typename FaceType>
+template <FaceConcept FaceType>
 bool isManifoldOnEdge(const FaceType& f, uint edge);
 
 template <FaceMeshConcept MeshType>

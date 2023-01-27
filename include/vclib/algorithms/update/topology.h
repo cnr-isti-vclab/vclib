@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_TOPOLOGY_H
-#define VCL_ALGORITHMS_TOPOLOGY_H
+#ifndef VCL_ALGORITHMS_UPDATE_TOPOLOGY_H
+#define VCL_ALGORITHMS_UPDATE_TOPOLOGY_H
 
 #include <vclib/mesh/requirements.h>
 
@@ -49,4 +50,4 @@ void updatePerFaceAdjacentFaces(MeshType& m);
 
 #include "topology.cpp"
 
-#endif // VCL_ALGORITHMS_TOPOLOGY_H
+#endif // VCL_ALGORITHMS_UPDATE_TOPOLOGY_H

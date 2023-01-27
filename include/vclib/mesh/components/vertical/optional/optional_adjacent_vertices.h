@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -50,11 +51,10 @@ private:
 	uint thisId() const { return B::index((T*)this); }
 
 public:
+	using AdjacentVertexType = Vertex;
+
 	// possibility to access to the AdjacentVertices class, whether is optional or not.
 	using AdjacentVertices = OptionalAdjacentVertices;
-
-	// the AdjVertsContainer type will be array or vector, depending on N value
-	using AdjVertsContainer = std::vector<Vertex*>;
 
 	/* Iterator Types declaration */
 

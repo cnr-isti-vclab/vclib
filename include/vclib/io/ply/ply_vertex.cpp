@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -33,7 +34,7 @@ namespace vcl::io::ply {
 
 namespace internal {
 
-template<typename MeshType, typename VertexType, typename Stream>
+template<MeshConcept MeshType, VertexConcept VertexType, typename Stream>
 void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Property p)
 {
 	bool hasBeenRead = false;
@@ -81,14 +82,6 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 			}
 		}
 	}
-	if (p.name == ply::texnumber) {
-		if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-			if (vcl::isPerVertexTexCoordEnabled(mesh)) {
-				v.texCoord().nTexture() = io::internal::readProperty<uint>(file, p.type);
-				hasBeenRead = true;
-			}
-		}
-	}
 	if (!hasBeenRead) {
 		if (p.list) {
 			uint s = io::internal::readProperty<int>(file, p.listSizeType);
@@ -101,7 +94,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	}
 }
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void loadVerticesTxt(
 	std::ifstream& file,
 	const PlyHeader& header,
@@ -114,7 +107,7 @@ void loadVerticesTxt(
 		vcl::Tokenizer spaceTokenizer = io::internal::nextNonEmptyTokenizedLine(file);
 		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 		VertexType& v = mesh.vertex(vid);
-		for (ply::Property p : header.vertexProperties()) {
+		for (const ply::Property& p : header.vertexProperties()) {
 			if (token == spaceTokenizer.end()){
 				throw vcl::MalformedFileException("Unexpected end of line.");
 			}
@@ -123,7 +116,7 @@ void loadVerticesTxt(
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadVerticesBin(
 	std::ifstream& file,
 	const PlyHeader& header,
@@ -133,7 +126,7 @@ void loadVerticesBin(
 	mesh.addVertices(header.numberVertices());
 	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
 		VertexType& v = mesh.vertex(vid);
-		for (ply::Property p : header.vertexProperties()) {
+		for (const ply::Property& p : header.vertexProperties()) {
 			loadVertexProperty(file, mesh, v, p);
 		}
 	}
@@ -141,7 +134,7 @@ void loadVerticesBin(
 
 } //namespace vcl::ply::internal
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void saveVertices(
 	std::ofstream& file,
 	const PlyHeader& header,
@@ -151,7 +144,7 @@ void saveVertices(
 
 	bool bin = header.format() == ply::BINARY;
 	for(const VertexType& v : mesh.vertices()) {
-		for (ply::Property p : header.vertexProperties()) {
+		for (const ply::Property& p : header.vertexProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name >= ply::x && p.name <= ply::z) {
 				io::internal::writeProperty(file, v.coord()[p.name - ply::x], p.type, bin);
@@ -182,12 +175,6 @@ void saveVertices(
 					hasBeenWritten = true;
 				}
 			}
-			if (p.name == ply::texnumber) {
-				if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-					io::internal::writeProperty(file, v.texCoord().nTexture(), p.type, bin);
-					hasBeenWritten = true;
-				}
-			}
 			if (!hasBeenWritten){
 				// be sure to write something if the header declares some property that is not
 				// in the mesh
@@ -199,7 +186,7 @@ void saveVertices(
 	}
 }
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void loadVertices(
 	std::ifstream& file,
 	const PlyHeader& header,

@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -26,7 +27,7 @@
 
 namespace vcl::io::ply {
 
-template<typename MeshType>
+template<EdgeMeshConcept MeshType>
 void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType& mesh)
 {
 	using EdgeType = typename MeshType::EdgeType;
@@ -36,7 +37,7 @@ void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 	std::vector<int> vIndices = mesh.vertexCompactIndices();
 
 	for (const EdgeType& e : mesh.edges()) {
-		for (ply::Property p : header.edgeProperties()) {
+		for (const ply::Property& p : header.edgeProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name == ply::vertex1) {
 				io::internal::writeProperty(file, vIndices[mesh.index(e.vertex(0))], p.type, bin);

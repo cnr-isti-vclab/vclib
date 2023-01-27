@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_COLOR_H
-#define VCL_ALGORITHMS_COLOR_H
+#ifndef VCL_ALGORITHMS_UPDATE_COLOR_H
+#define VCL_ALGORITHMS_UPDATE_COLOR_H
 
 #include <set>
 
@@ -35,6 +36,9 @@ void setPerVertexColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlyS
 
 template<FaceMeshConcept MeshType>
 void setPerFaceColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlySelected = false);
+
+template<HasColor MeshType>
+void setMeshColor(MeshType& m, vcl::Color c = vcl::Color::White);
 
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceColor(MeshType& m);
@@ -74,14 +78,14 @@ void setPerFaceColorFromConnectedComponents(MeshType& m);
 template<FaceMeshConcept MeshType>
 void setPerFaceColorScattering(MeshType& m, uint nColors = 50, bool checkFauxEdges = true);
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexColorPerlinNoise(
 	MeshType& m,
 	PointType period,
 	PointType offset     = PointType(0, 0, 0),
 	bool      onSelected = false);
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexPerlinColor(
 	MeshType& m,
 	double period,
@@ -94,4 +98,4 @@ void setPerVertexPerlinColor(
 
 #include "color.cpp"
 
-#endif // VCL_ALGORITHMS_COLOR_H
+#endif // VCL_ALGORITHMS_UPDATE_COLOR_H

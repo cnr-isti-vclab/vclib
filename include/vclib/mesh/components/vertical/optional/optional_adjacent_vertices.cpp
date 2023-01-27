@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -138,7 +139,7 @@ void OptionalAdjacentVertices<Vertex, T>::pushAdjVertex(Vertex* f)
 template<typename Vertex, typename T>
 void OptionalAdjacentVertices<Vertex, T>::insertAdjVertex(uint i, Vertex* f)
 {
-	assert(i < adjVerticesNumber());
+	assert(i < adjVerticesNumber() + 1);
 	B::optCont().adjVerts(thisId()).insert(B::optCont().adjVerts(thisId()).begin() + i, f);
 }
 

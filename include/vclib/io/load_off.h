@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -27,19 +28,19 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadOff(const std::string& filename, bool enableOptionalComponents = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadOff(
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
 	bool               enableOptionalComponents = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadOff(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadOff(
 	MeshType&          m,
 	const std::string& filename,

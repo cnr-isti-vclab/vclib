@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -101,6 +102,7 @@ public:
 	void compactFaces() requires HasFaces<Mesh>;
 
 	// functions that could involve other components
+	// need to be here and not in the FaceContainer due to the possibility to be in a Dcel
 
 	// WedgeColors
 	template<HasFaces M = Mesh>
@@ -154,10 +156,12 @@ public:
 
 protected:
 	// Vertices
+	template<typename M = Mesh>
 	void updateVertexReferences(
 		const typename Mesh::VertexType* oldBase,
 		const typename Mesh::VertexType* newBase);
 
+	template<typename M = Mesh>
 	void updateVertexReferencesAfterCompact(
 		const typename Mesh::VertexType* base,
 		const std::vector<int>&       newIndices);

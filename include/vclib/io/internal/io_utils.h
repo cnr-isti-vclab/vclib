@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -39,7 +40,7 @@ std::ofstream saveFileStream(const std::string& filename, const std::string& ext
 
 std::ifstream loadFileStream(const std::string& filename);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void enableOptionalComponents(FileMeshInfo& info, MeshType& m);
 
 vcl::Tokenizer nextNonEmptyTokenizedLine(std::ifstream& file, char separator = ' ');

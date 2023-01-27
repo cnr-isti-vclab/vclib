@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -63,7 +64,7 @@ MeshType createTetrahedron()
  * @param p3
  * @return a Mesh containing a Tetrahedron.
  */
-template<FaceMeshConcept MeshType, typename CoordType>
+template<FaceMeshConcept MeshType, PointConcept CoordType>
 MeshType createTetrahedron(
 	const CoordType& p0,
 	const CoordType& p1,

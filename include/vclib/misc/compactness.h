@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_COMPACTNESS_H
-#define VCL_COMPACTNESS_H
+#ifndef VCL_MISC_COMPACTNESS_H
+#define VCL_MISC_COMPACTNESS_H
 
 #include <vector>
 
@@ -36,4 +37,4 @@ void compactVector(std::vector<T, Args...>& vec, const std::vector<int>& newIndi
 
 #include "compactness.cpp"
 
-#endif // VCL_COMPACTNESS_H
+#endif // VCL_MISC_COMPACTNESS_H

@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -25,7 +26,7 @@
 #include <cmath>
 #include <vector>
 
-#include <vclib/space/kd_tree.h>
+#include <vclib/space/spatial_data_structures/kd_tree.h>
 
 namespace vcl {
 
@@ -218,15 +219,16 @@ void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNu
  * @param neighborNum
  * @param iterNum
  */
-template<MeshConcept MeshType, typename Scalar>
+template<MeshConcept MeshType, PointConcept PointType>
 void smoothPerVertexNormalsPointCloud(
 	MeshType&             m,
-	const KDTree<Scalar>& tree,
+	const KDTree<PointType>& tree,
 	uint                  neighborNum,
 	uint                  iterNum)
 {
 	vcl::requirePerVertexNormal(m);
 
+	using Scalar     = typename PointType::ScalarType;
 	using VertexType = typename MeshType::VertexType;
 	using NormalType = typename VertexType::NormalType;
 

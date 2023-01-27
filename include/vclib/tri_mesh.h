@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -44,6 +45,7 @@ class Vertex :
 			vcl::vert::Scalar<Scalar>,                                      // 4 or 8b
 			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
 			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
 			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
 			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
 			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
@@ -75,7 +77,9 @@ class TriMeshT :
 			mesh::VertexContainer<trimesh::Vertex<ScalarType>>,
 			mesh::FaceContainer<trimesh::Face<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
+			mesh::Color,
 			mesh::Mark,
+			mesh::Name,
 			mesh::TexturePaths,
 			mesh::TransformMatrix<ScalarType>>
 {

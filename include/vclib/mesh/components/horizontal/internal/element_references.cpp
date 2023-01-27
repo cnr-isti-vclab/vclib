@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -26,6 +27,11 @@
 
 namespace vcl::comp::internal {
 
+/*
+ * Create a container of Element references (pointers to Elements stored in some other container).
+ * If this Container is a static array, all its element will be initialized to nullptr.
+ * If this Container is a dynamic vector, it will be an empty container.
+ */
 template<typename Elem, int N>
 ElementReferences<Elem, N>::ElementReferences() : Base()
 {
@@ -41,13 +47,27 @@ ElementReferences<Elem, N>::ElementReferences() : Base()
 	}
 }
 
+/*
+ * This member function is called when we need to update the references in this container.
+ *
+ * This is necessary when, for example, the original container of Elements has been reallocated.
+ * When this happens, the all the Elements have been moved in another portion of memory, and
+ * all the pointers to that Elements must be updated. Since in this container are stored pointers
+ * to Elements, we need to update them.
+ *
+ * To update them, we need to know the oldBase (the pointer to the first Element of the reallocated
+ * Container before the reallocation) and the newBase (the pointer to the first Element of the
+ * reallocated Container after the reallocation. We can then compute, for each pointer, the offset
+ * w.r.t. the first element of the Container, and update the the pointer accordingly using the
+ * newBase.
+ */
 template<typename Elem, int N>
 void ElementReferences<Elem, N>::updateElementReferences(const Elem* oldBase, const Elem* newBase)
 {
-	for (uint j = 0; j < Base::size(); ++j) {
+	for (uint j = 0; j < Base::size(); ++j) { // for each pointer in this container
 		if (Base::at(j) != nullptr) {
-			size_t diff = Base::at(j) - oldBase;
-			Base::at(j)  = (Elem*) newBase + diff;
+			size_t diff = Base::at(j) - oldBase; // offset w.r.t. the old base
+			Base::at(j)  = (Elem*) newBase + diff; // update the pointer using newBase
 		}
 	}
 }

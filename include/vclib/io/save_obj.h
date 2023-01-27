@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -27,10 +28,10 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveObj(const MeshType& m, const std::string& filename);
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo& info);
 
 } // namespace vcl::io

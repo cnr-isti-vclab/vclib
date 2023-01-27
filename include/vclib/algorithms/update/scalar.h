@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_SCALAR_H
-#define VCL_ALGORITHMS_SCALAR_H
+#ifndef VCL_ALGORITHMS_UPDATE_SCALAR_H
+#define VCL_ALGORITHMS_UPDATE_SCALAR_H
 
 #include <vclib/mesh/requirements.h>
 
@@ -63,8 +64,26 @@ void setPerVertexScalarFromVertexValence(MeshType& m);
 template<FaceMeshConcept MeshType>
 void setPerFaceScalarFromFaceArea(MeshType& m);
 
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureGaussian(MeshType& m);
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMean(MeshType& m);
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMinValue(MeshType& m);
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMaxValue(MeshType& m);
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureShapeIndex(MeshType& m);
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureCurvedness(MeshType& m);
+
 } // namespace vcl
 
 #include "scalar.cpp"
 
-#endif // VCL_ALGORITHMS_SCALAR_H
+#endif // VCL_ALGORITHMS_UPDATE_SCALAR_H

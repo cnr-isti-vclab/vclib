@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -494,6 +495,20 @@ void FaceHalfEdgeReference<HalfEdge>::setWedgeTexCoords(
 	for (typename HE::TexCoordType& c : wedgeTexCoords()) {
 		c = list[i++];
 	}
+}
+
+template<typename HalfEdge>
+template<HasTexCoord HE>
+short& FaceHalfEdgeReference<HalfEdge>::textureIndex()
+{
+	return texIndex;
+}
+
+template<typename HalfEdge>
+template<HasTexCoord HE>
+const short& FaceHalfEdgeReference<HalfEdge>::textureIndex() const
+{
+	return texIndex;
 }
 
 template<typename HalfEdge>

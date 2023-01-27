@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -58,6 +59,8 @@ public:
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjFacesNumber() member function.
 	static const int ADJ_FACE_NUMBER = Base::CONTAINER_SIZE;
+
+	using AdjacentFaceType = Face;
 
 	/* Iterator Types declaration */
 

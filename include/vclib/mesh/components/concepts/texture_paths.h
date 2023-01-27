@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,15 +29,36 @@
 namespace vcl::comp {
 
 /**
- * @brief HasTexturePaths concept
- *
- * This concept is satisfied only if a class has a member function 'textureNumber()' which returns
- * an uint
+ * @brief HasTexturePaths concept is satisfied only if a Element or Mesh class provides the member
+ * functions specified in this concept. These member functions allows to access to a TexturePaths
+ * component of a given element/mesh.
  */
 template<typename T>
-concept HasTexturePaths = requires(T o)
+concept HasTexturePaths = requires(
+	T o,
+	const T& co,
+	std::string s)
 {
-	{ o.textureNumber() } -> std::same_as<uint>;
+	typename T::TexFileNamesIterator;
+	typename T::ConstTexFileNamesIterator;
+	typename T::TexFileNamesRangeIterator;
+	typename T::ConstTexFileNamesRangeIterator;
+
+	{ co.textureNumber() } -> std::same_as<uint>;
+	{ co.texturePath(uint()) } -> std::same_as<const std::string&>;
+	{ o.texturePath(uint()) } -> std::same_as<std::string&>;
+	{ co.meshBasePath() } -> std::same_as<const std::string&>;
+	{ o.meshBasePath() } -> std::same_as<std::string&>;
+
+	{ o.clearTexturePaths() } -> std::same_as<void>;
+	{ o.pushTexturePath(s) } -> std::same_as<void>;
+
+	{ o.texturePathBegin() } -> std::same_as<typename T::TexFileNamesIterator>;
+	{ o.texturePathEnd() } -> std::same_as<typename T::TexFileNamesIterator>;
+	{ co.texturePathBegin() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
+	{ co.texturePathEnd() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
+	{ o.texturePaths() } -> std::same_as<typename T::TexFileNamesRangeIterator>;
+	{ co.texturePaths() } -> std::same_as<typename T::ConstTexFileNamesRangeIterator>;
 };
 
 } // namespace vcl::comp

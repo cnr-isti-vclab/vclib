@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,7 +29,7 @@ namespace vcl::comp {
  * @brief Returns the bounding box of this object.
  * @return The bounding box of this object.
  */
-template<typename PointType>
+template<PointConcept PointType>
 const Box<PointType>& BoundingBox<PointType>::boundingBox() const
 {
 	return box;
@@ -38,13 +39,13 @@ const Box<PointType>& BoundingBox<PointType>::boundingBox() const
  * @brief Returns the bounding box of this object.
  * @return The bounding box of this object.
  */
-template<typename PointType>
+template<PointConcept PointType>
 Box<PointType>& BoundingBox<PointType>::boundingBox()
 {
 	return box;
 }
 
-template<typename PointType>
+template<PointConcept PointType>
 template<typename Element>
 void BoundingBox<PointType>::importFrom(const Element& e)
 {

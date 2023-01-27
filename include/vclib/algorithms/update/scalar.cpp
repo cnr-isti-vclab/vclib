@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -151,7 +152,7 @@ void normalizePerVertexScalar(
 	using ScalarType = typename VertexType::ScalarType;
 
 	ScalarType range = maxS - minS;
-	std::pair<ScalarType, ScalarType> p = perVertexScalarMinMax(m);
+	std::pair<ScalarType, ScalarType> p = vertexScalarMinMax(m);
 
 	for (VertexType& v : m.vertices()) {
 		v.scalar() = minS + range * ((v.scalar() - p.first)/(p.second-p.first));
@@ -182,7 +183,7 @@ void normalizePerFaceScalar(
 	using ScalarType = typename FaceType::ScalarType;
 
 	ScalarType range = maxS - minS;
-	std::pair<ScalarType, ScalarType> p = perFaceScalarMinMax(m);
+	std::pair<ScalarType, ScalarType> p = faceScalarMinMax(m);
 
 	for (FaceType& f : m.faces()) {
 		f.scalar() = minS + range * ((f.scalar() - p.first)/(p.second-p.first));
@@ -236,6 +237,114 @@ void setPerFaceScalarFromFaceArea(MeshType& m)
 
 	for (FaceType& f : m.faces()) {
 		f.scalar() = polygonArea(f);
+	}
+}
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureGaussian(MeshType &m)
+{
+	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexPrincipalCurvature(m);
+
+	using VertexType = typename MeshType::VertexType;
+
+	for (VertexType& v : m.vertices()) {
+		v.scalar() = v.principalCurvature().maxValue() * v.principalCurvature().minValue();
+	}
+}
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMean(MeshType& m)
+{
+	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexPrincipalCurvature(m);
+
+	using VertexType = typename MeshType::VertexType;
+
+	for (VertexType& v : m.vertices()) {
+		v.scalar() = (v.principalCurvature().maxValue() + v.principalCurvature().minValue()) / 2;
+	}
+}
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMinValue(MeshType& m)
+{
+	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexPrincipalCurvature(m);
+
+	using VertexType = typename MeshType::VertexType;
+
+	for (VertexType& v : m.vertices()) {
+		v.scalar() = v.principalCurvature().minValue();
+	}
+}
+
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureMaxValue(MeshType& m)
+{
+	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexPrincipalCurvature(m);
+
+	using VertexType = typename MeshType::VertexType;
+
+	for (VertexType& v : m.vertices()) {
+		v.scalar() = v.principalCurvature().maxValue();
+	}
+}
+
+/**
+ * @brief Computes the Shape Index S from the Principal Curvature, as defined by [Koenderink 1992]
+ * and stores it in the per-vertex scalar.
+ *
+ * S = 2/pi atan(k1+k2/k1-k2)
+ *
+ * J. Koenderink and A. van Doorn.
+ * Surface shape and curvature scales.
+ * Image and vision computing, 10(8):557–565, 1992.
+ * @param m
+ */
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureShapeIndex(MeshType& m)
+{
+	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexPrincipalCurvature(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::PrincipalCurvatureType::ScalarType;
+
+	for (VertexType& v : m.vertices()) {
+		ScalarType k1 = v.principalCurvature().maxValue();
+		ScalarType k2 = v.principalCurvature().minValue();
+		if (k1 < k2) std::swap(k1, k2);
+		v.scalar() = (2.0 / M_PI) * std::atan2(k1 + k2, k1 - k2);
+	}
+}
+
+/**
+ * @brief Computes the Curvedness C from the Principal Curvature, as defined by [Koenderink 1992]
+ * and stores it in the per-vertex scalar.
+ *
+ * C =  Sqrt((k1*k1+k2*k2)/2.0)
+ *
+ * J. Koenderink and A. van Doorn.
+ * Surface shape and curvature scales.
+ * Image and vision computing, 10(8):557–565, 1992.
+ * @param m
+ */
+template<MeshConcept MeshType>
+void setPerVertexScalarFromPrincipalCurvatureCurvedness(MeshType& m)
+{
+	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexPrincipalCurvature(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::PrincipalCurvatureType::ScalarType;
+
+	for (VertexType& v : m.vertices()) {
+		ScalarType k1 = v.principalCurvature().maxValue();
+		ScalarType k2 = v.principalCurvature().minValue();
+
+		v.scalar() = std::sqrt((k1 * k1 + k2 * k2) / 2.0);
 	}
 }
 

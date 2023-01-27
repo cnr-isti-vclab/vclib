@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_PRINCIPAL_CURVATURE_H
-#define VCL_PRINCIPAL_CURVATURE_H
+#ifndef VCL_SPACE_PRINCIPAL_CURVATURE_H
+#define VCL_SPACE_PRINCIPAL_CURVATURE_H
 
 #include "point/point3.h"
 
@@ -31,6 +32,8 @@ template<typename Scalar>
 class PrincipalCurvature
 {
 public:
+	using ScalarType = Scalar;
+
 	PrincipalCurvature();
 
 	template<typename S>
@@ -54,4 +57,4 @@ private:
 
 #include "principal_curvature.cpp"
 
-#endif // VCL_PRINCIPAL_CURVATURE_H
+#endif // VCL_SPACE_PRINCIPAL_CURVATURE_H

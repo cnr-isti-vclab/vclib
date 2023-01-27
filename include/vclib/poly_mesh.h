@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -74,7 +75,9 @@ class PolyMeshT :
 			mesh::VertexContainer<polymesh::Vertex<ScalarType>>,
 			mesh::FaceContainer<polymesh::Face<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
+			mesh::Color,
 			mesh::Mark,
+			mesh::Name,
 			mesh::TexturePaths,
 			mesh::TransformMatrix<ScalarType>>
 {

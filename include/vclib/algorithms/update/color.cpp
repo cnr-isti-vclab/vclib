@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -91,6 +92,22 @@ void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
 			f.color() = c;
 		}
 	}
+}
+
+/**
+ * @brief Sets the color component of a mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Color
+ *
+ * @param[in,out] m: the mesh on which set the color.
+ * @param[in] c: the color to set to the mesh.
+ */
+template<HasColor MeshType>
+void setMeshColor(MeshType& m, vcl::Color c)
+{
+	m.color() = c;
 }
 
 /**
@@ -192,7 +209,7 @@ void setPerVertexColorFromScalar(
 	using ScalarType = typename VertexType::ScalarType;
 
 	if (minScalar == maxScalar) {
-		std::pair<ScalarType, ScalarType> pair = perVertexScalarMinMax(m);
+		std::pair<ScalarType, ScalarType> pair = vertexScalarMinMax(m);
 		minScalar                              = pair.first;
 		maxScalar                              = pair.second;
 	}
@@ -233,7 +250,7 @@ void setPerFaceColorFromScalar(
 	using ScalarType = typename FaceType::ScalarType;
 
 	if (minScalar == maxScalar) {
-		std::pair<ScalarType, ScalarType> pair = perFaceScalarMinMax(m);
+		std::pair<ScalarType, ScalarType> pair = faceScalarMinMax(m);
 		minScalar                              = pair.first;
 		maxScalar                              = pair.second;
 	}
@@ -423,7 +440,7 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
  * @param offset
  * @param onSelected
  */
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offset, bool onSelected)
 {
 	vcl::requirePerVertexColor(m);
@@ -462,7 +479,7 @@ void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offse
  * @param color2
  * @param onSelected
  */
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexPerlinColor(
 	MeshType&      m,
 	double         period,

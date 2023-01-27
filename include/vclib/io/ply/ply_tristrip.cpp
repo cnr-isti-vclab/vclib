@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -29,7 +30,7 @@ namespace vcl::io::ply {
 
 namespace internal {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void facesFromTriStrip(MeshType& m, const std::vector<int>& tristrip)
 {
 	using FaceType   = typename MeshType::FaceType;
@@ -65,13 +66,13 @@ void facesFromTriStrip(MeshType& m, const std::vector<int>& tristrip)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
 {
 	for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
 		vcl::Tokenizer spaceTokenizer = vcl::io::internal::nextNonEmptyTokenizedLine(file);
 		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
-		for (ply::Property p : header.triStripsProperties()) {
+		for (const ply::Property& p : header.triStripsProperties()) {
 			if (token == spaceTokenizer.end()) {
 				throw vcl::MalformedFileException("Unexpected end of line.");
 			}
@@ -98,11 +99,11 @@ void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadTriStripsBin(std::ifstream& file, const PlyHeader& header, MeshType& m)
 {
 	for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
-		for (ply::Property p : header.triStripsProperties()) {
+		for (const ply::Property& p : header.triStripsProperties()) {
 			bool hasBeenRead = false;
 			if (p.name == ply::vertex_indices) {
 				uint             tSize = io::internal::readProperty<uint>(file, p.listSizeType);
@@ -128,7 +129,7 @@ void loadTriStripsBin(std::ifstream& file, const PlyHeader& header, MeshType& m)
 
 } // namespace internal
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadTriStrips(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	if (header.format() == ply::ASCII) {

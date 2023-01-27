@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -77,6 +78,11 @@ inline bool TriangleBitFlags::isEdgeOnBorder(uint i) const
 inline bool TriangleBitFlags::isAnyEdgeOnBorder() const
 {
 	return isEdgeOnBorder(0) || isEdgeOnBorder(1) || isEdgeOnBorder(2);
+}
+
+inline bool TriangleBitFlags::isOnBorder() const
+{
+	return isAnyEdgeOnBorder();
 }
 
 inline bool TriangleBitFlags::isEdgeSelected(uint i) const

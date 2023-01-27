@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -26,9 +27,8 @@
 #include <stack>
 #include <vector>
 
-#include <vclib/mesh/mesh_pos.h>
-
-#include "internal/per_face_edge.h"
+#include <vclib/algorithms/sort.h>
+#include <vclib/mesh_utils/mesh_pos.h>
 
 namespace vcl {
 
@@ -139,7 +139,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 		for (uint i = 0; i < f.vertexNumber(); ++i){
 			if (!visited[m.index(f.vertex(i))]) {
 				visited[m.index(f.vertex(i))] = true;
-				mesh::MeshPos pos(&f, i);
+				MeshPos pos(&f, i);
 				uint starSize = pos.numberOfAdjacentFacesToV();
 				if (starSize != TD[m.index(f.vertex(i))])
 					nonManifoldVertices[m.index(f.vertex(i))] = true;
@@ -153,7 +153,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 template<FaceMeshConcept MeshType>
 uint numberEdges(const MeshType& m, uint& numBoundaryEdges, uint& numNonManifoldEdges)
 {
-	std::vector<ConstPerFaceEdge<MeshType>> edgeVec = fillAndSortEdgeVector(m);
+	std::vector<ConstMeshEdgeUtil<MeshType>> edgeVec = fillAndSortMeshEdgeUtilVector(m);
 
 	uint numEdges = 0;
 	numBoundaryEdges = 0;
@@ -438,7 +438,7 @@ uint removeDegenerateFaces(MeshType& m)
 	return count;
 }
 
-template<typename FaceType>
+template<FaceConcept FaceType>
 bool isManifoldOnEdge(const FaceType& f, uint edge)
 {
 	if (comp::isAdjacentFacesEnabledOn(f)) {
@@ -515,8 +515,8 @@ uint numberHoles(const MeshType& m)
 		uint e = 0;
 		for(const VertexType* v : f.vertices()) {
 			if(!visitedFaces[m.index(f)] && f.adjFace(e) == nullptr) {
-				mesh::MeshPos<FaceType> startPos(&f,e);
-				mesh::MeshPos<FaceType> curPos=startPos;
+				MeshPos<FaceType> startPos(&f,e);
+				MeshPos<FaceType> curPos=startPos;
 				do {
 					curPos.nextEdgeOnBorderAdjacentToV();
 					curPos.flipVertex();

@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -22,12 +23,71 @@
 
 #include "point_t.h"
 
+#include <vclib/misc/hash.h>
+
 namespace vcl {
+
+template<typename Scalar, int N>
+template<typename... Scalars>
+Point<Scalar, N>::Point(Scalars... scalars) requires(sizeof...(scalars) == N)
+{
+	Scalar args[N]   = {static_cast<Scalar>(scalars)...};
+	for (uint i = 0; i < N; i++)
+		p(i) = args[i];
+}
 
 template<typename Scalar, int N>
 Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, 1, N>& v)
 {
 	p << v;
+}
+
+template<typename Scalar, int N>
+Scalar& Point<Scalar, N>::x() requires (N >= 1)
+{
+	return p(0);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::x() const requires (N >= 1)
+{
+	return p(0);
+}
+
+template<typename Scalar, int N>
+Scalar& Point<Scalar, N>::y() requires (N >= 2)
+{
+	return p(1);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::y() const requires (N >= 2)
+{
+	return p(1);
+}
+
+template<typename Scalar, int N>
+Scalar& Point<Scalar, N>::z() requires (N >= 3)
+{
+	return p(2);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::z() const requires (N >= 3)
+{
+	return p(2);
+}
+
+template<typename Scalar, int N>
+Scalar& Point<Scalar, N>::w() requires (N >= 4)
+{
+	return p(3);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::w() const requires (N >= 4)
+{
+	return p(3);
 }
 
 template<typename Scalar, int N>
@@ -109,6 +169,24 @@ Point<Scalar,N> Point<Scalar, N>::cross(const Point& p1) const requires (N == 3)
 }
 
 template<typename Scalar, int N>
+Point<Scalar, N> Point<Scalar, N>::mul(const Point& p1) const
+{
+	Point<Scalar, N> tmp;
+	for (size_t i = 0; i < DIM; ++i)
+		tmp[i] = p[i] * p1.p[i];
+	return tmp;
+}
+
+template<typename Scalar, int N>
+Point<Scalar, N> Point<Scalar, N>::div(const Point& p1) const
+{
+	Point<Scalar, N> tmp;
+	for (size_t i = 0; i < DIM; ++i)
+		tmp[i] = p[i] / p1.p[i];
+	return tmp;
+}
+
+template<typename Scalar, int N>
 Scalar Point<Scalar, N>::norm() const
 {
 	return p.norm();
@@ -168,6 +246,15 @@ const Eigen::Matrix<Scalar, 1, N>& Point<Scalar, N>::eigenVector() const
 }
 
 template<typename Scalar, int N>
+std::size_t Point<Scalar, N>::hash() const
+{
+	std::size_t h = 0;
+	for (size_t i = 0; i < DIM; ++i)
+		vcl::hashCombine(h, p(i));
+	return h;
+}
+
+template<typename Scalar, int N>
 Scalar& Point<Scalar, N>::operator()(uint i)
 {
 	return p(i);
@@ -180,10 +267,22 @@ const Scalar& Point<Scalar, N>::operator()(uint i) const
 }
 
 template<typename Scalar, int N>
+Scalar& Point<Scalar, N>::operator[](uint i)
+{
+	return p(i);
+}
+
+template<typename Scalar, int N>
+const Scalar& Point<Scalar, N>::operator[](uint i) const
+{
+	return p(i);
+}
+
+template<typename Scalar, int N>
 auto Point<Scalar, N>::operator<=>(const Point& p1) const
 {
 	uint i = 0;
-	while (p[i] == p1.p[i] && i < DIM) {
+	while (i < DIM && p[i] == p1.p[i]) {
 		++i;
 	}
 	return i == DIM ? p[0] <=> p1.p[0] : p[i] <=> p1.p[i];
@@ -323,15 +422,10 @@ Point<Scalar, N>& Point<Scalar, N>::operator/=(const Scalar& s)
 }
 
 template<typename Scalar, int N>
-Scalar& Point<Scalar, N>::operator[](uint i)
+Point<Scalar, N>& Point<Scalar, N>::operator=(const Eigen::Matrix<Scalar, 1, N>& v)
 {
-	return p(i);
-}
-
-template<typename Scalar, int N>
-const Scalar& Point<Scalar, N>::operator[](uint i) const
-{
-	return p(i);
+	p << v;
+	return *this;
 }
 
 template<typename Scalar, int N>
@@ -342,3 +436,13 @@ std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
 }
 
 } // namespace vcl
+
+namespace std {
+
+template<typename Scalar, int N>
+std::size_t hash<vcl::Point<Scalar, N> >::operator()(const vcl::Point<Scalar, N>& id) const noexcept
+{
+	return id.hash();
+}
+
+} // namespace std

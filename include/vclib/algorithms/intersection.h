@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -23,10 +24,26 @@
 #ifndef VCL_ALGORITHMS_INTERSECTION_H
 #define VCL_ALGORITHMS_INTERSECTION_H
 
-#include <vclib/space/plane.h>
+#include <vclib/algorithms/polygon.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/plane.h>
 
 namespace vcl {
+
+template<typename PlaneType, typename BoxType>
+bool planeBoxIntersect(const PlaneType& p, const BoxType& b);
+
+template<PointConcept PointType>
+bool triangleBoxIntersect(
+	const PointType&      p0,
+	const PointType&      p1,
+	const PointType&      p2,
+	const Box<PointType>& b) requires (PointType::DIM == 3);
+
+template<FaceConcept FaceType, PointConcept PointType>
+bool faceBoxIntersect(
+	const FaceType& f,
+	const Box<PointType>& b);
 
 template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
 void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl);

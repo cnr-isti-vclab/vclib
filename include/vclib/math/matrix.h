@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -25,7 +26,16 @@
 
 #include <Eigen/Core>
 
+#include <vclib/space/point.h>
+
 namespace vcl {
+
+template<typename T>
+concept MatrixConcept = requires(T o, const T& co)
+{
+	o.RowsAtCompileTime;
+	o.ColsAtCompileTime;
+};
 
 template<typename Scalar>
 using Matrix33 = Eigen::Matrix<Scalar, 3, 3>;
@@ -41,28 +51,31 @@ using Matrix44i = Matrix44<int>;
 using Matrix44f = Matrix44<float>;
 using Matrix44d = Matrix44<double>;
 
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<MatrixConcept MatrixType, PointConcept PointType>
+PointType operator*(const MatrixType& m, const PointType& p);
+
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotation(
 	MatrixType&       matrix,
 	PointType         axis,
 	const ScalarType& angleRad);
 
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotationDeg(
 	MatrixType&       matrix,
 	PointType         axis,
 	const ScalarType& angleDeg);
 
-template<typename ScalarType, typename PointType>
+template<typename ScalarType, PointConcept PointType>
 void setTrasformMatrixTranslation(Matrix44<ScalarType>& matrix, const PointType& translation);
 
-template<typename ScalarType, typename PointType>
+template<typename ScalarType, PointConcept PointType>
 void setTrasformMatrixScale(Matrix44<ScalarType>& matrix, const PointType& scale);
 
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad);
 
-template<typename MatrixType, typename PointType, typename ScalarType>
+template<typename MatrixType, PointConcept PointType, typename ScalarType>
 MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg);
 
 } // namespace vcl

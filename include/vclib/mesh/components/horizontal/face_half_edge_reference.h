@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -25,11 +26,11 @@
 
 #include <vector>
 
-#include <vclib/iterators/half_edge/face_adj_face_iterator.h>
-#include <vclib/iterators/half_edge/face_half_edge_iterator.h>
-#include <vclib/iterators/half_edge/face_vertex_iterator.h>
-#include <vclib/iterators/half_edge/face_wedge_color_iterator.h>
-#include <vclib/iterators/half_edge/face_wedge_tex_coord_iterator.h>
+#include <vclib/iterators/mesh/half_edge/face_adj_face_iterator.h>
+#include <vclib/iterators/mesh/half_edge/face_half_edge_iterator.h>
+#include <vclib/iterators/mesh/half_edge/face_vertex_iterator.h>
+#include <vclib/iterators/mesh/half_edge/face_wedge_color_iterator.h>
+#include <vclib/iterators/mesh/half_edge/face_wedge_tex_coord_iterator.h>
 #include <vclib/iterators/range_iterator.h>
 
 #include <vclib/space/color.h>
@@ -94,9 +95,10 @@ public:
 	// compatibility between mesh types.
 	using VertexReferences         = FaceHalfEdgeReference;
 
-	static const int VERTEX_NUMBER = -1; // half edges support by design polygonal meshes
-	static const int ADJ_FACE_NUMBER = -1;
-	static const int WEDGE_COLOR_NUMBER = -1;
+	static const int VERTEX_NUMBER          = -1; // half edges support by design polygonal meshes
+	static const int ADJ_FACE_NUMBER        = -1;
+	static const int WEDGE_COLOR_NUMBER     = -1;
+	static const int WEDGE_TEX_COORD_NUMBER = -1;
 
 	/* Constructor */
 
@@ -189,6 +191,12 @@ public:
 	template<HasTexCoord HE = HalfEdge>
 	void setWedgeTexCoords(const std::vector<typename HE::TexCoordType>& list);
 
+	template<HasTexCoord HE = HalfEdge>
+	short& textureIndex();
+
+	template<HasTexCoord HE = HalfEdge>
+	const short& textureIndex() const;
+
 	bool isWedgeTexCoordsEnabled() const requires HasTexCoord<HalfEdge>;
 
 	/* Iterator Member functions */
@@ -262,6 +270,8 @@ protected:
 private:
 	HalfEdge*              ohe = nullptr; // outer half edge
 	std::vector<HalfEdge*> ihe;           // inner half edges, one for each hole of the face
+
+	short texIndex = 0;
 };
 
 } // namespace vcl::comp

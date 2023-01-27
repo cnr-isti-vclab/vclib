@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ARRAY2_H
-#define VCL_ARRAY2_H
+#ifndef VCL_SPACE_ARRAY_ARRAY2_H
+#define VCL_SPACE_ARRAY_ARRAY2_H
 
 #include <iomanip>
 
@@ -56,4 +57,4 @@ std::ostream& operator<<(std::ostream& inputStream, const Array2<T>& a);
 
 #include "array2.cpp"
 
-#endif // VCL_ARRAY2_H
+#endif // VCL_SPACE_ARRAY_ARRAY2_H

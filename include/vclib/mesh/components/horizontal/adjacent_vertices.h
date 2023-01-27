@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -51,6 +52,8 @@ class AdjacentVertices : protected internal::ElementReferences<Vertex, -1>
 	using Base = internal::ElementReferences<Vertex, -1>;
 
 public:
+	using AdjacentVertexType = Vertex;
+
 	/* Iterator Types declaration */
 
 	using AdjacentVertexIterator           = typename Base::GCIterator;

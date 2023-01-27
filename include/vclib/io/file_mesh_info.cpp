@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -29,27 +30,25 @@ inline FileMeshInfo::FileMeshInfo()
 {
 }
 
-template<typename Mesh>
+template<MeshConcept Mesh>
 inline FileMeshInfo::FileMeshInfo(const Mesh& m)
 {
-	if constexpr (vcl::HasVertices<Mesh>) {
-		setVertices();
-		setVertexCoords(true, getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
-		if constexpr (vcl::HasPerVertexNormal<Mesh>)
-			if (vcl::isPerVertexNormalEnabled(m))
-				setVertexNormals(true, getPropType<typename Mesh::VertexType::NormalType::ScalarType>());
-		if constexpr (vcl::HasPerVertexColor<Mesh>)
-			if (vcl::isPerVertexColorEnabled(m))
-				setVertexColors(true, UCHAR);
-		if constexpr (vcl::HasPerVertexScalar<Mesh>)
-			if (vcl::isPerVertexScalarEnabled(m))
-				setVertexScalars(true, getPropType<typename Mesh::VertexType::ScalarType>());
-		if constexpr (vcl::HasPerVertexTexCoord<Mesh>)
-			if (vcl::isPerVertexTexCoordEnabled(m))
-				setVertexTexCoords(
-					true,
-					getPropType<typename Mesh::VertexType::TexCoordType::ScalarType>());
-	}
+	setVertices();
+	setVertexCoords(true, getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
+	if constexpr (vcl::HasPerVertexNormal<Mesh>)
+		if (vcl::isPerVertexNormalEnabled(m))
+			setVertexNormals(true, getPropType<typename Mesh::VertexType::NormalType::ScalarType>());
+	if constexpr (vcl::HasPerVertexColor<Mesh>)
+		if (vcl::isPerVertexColorEnabled(m))
+			setVertexColors(true, UCHAR);
+	if constexpr (vcl::HasPerVertexScalar<Mesh>)
+		if (vcl::isPerVertexScalarEnabled(m))
+			setVertexScalars(true, getPropType<typename Mesh::VertexType::ScalarType>());
+	if constexpr (vcl::HasPerVertexTexCoord<Mesh>)
+		if (vcl::isPerVertexTexCoordEnabled(m))
+			setVertexTexCoords(
+				true,
+				getPropType<typename Mesh::VertexType::TexCoordType::ScalarType>());
 
 	if constexpr (vcl::HasFaces<Mesh>) {
 		setFaces();

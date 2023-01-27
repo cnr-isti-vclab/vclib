@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,7 +29,7 @@
 
 namespace vcl::io::ply {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh)
 {
 	if constexpr (vcl::HasTexturePaths<MeshType>) {
@@ -38,7 +39,7 @@ void loadTextures(const PlyHeader& header, MeshType& mesh)
 	}
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveTextures(PlyHeader& header, const MeshType& mesh)
 {
 	if constexpr (vcl::HasTexturePaths<MeshType>) {
@@ -57,7 +58,7 @@ void readUnknownElements(std::ifstream& file, const PlyHeader& header, ply::Elem
 	}
 	else {
 		for (uint i = 0; i < el.numberElements; ++i) {
-			for (Property p : el.properties) {
+			for (const Property& p : el.properties) {
 				if (p.list) {
 					uint s = io::internal::readProperty<int>(file, p.listSizeType);
 					for (uint i = 0; i < s; ++i)

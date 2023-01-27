@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -29,7 +30,7 @@
 
 namespace vcl::io::ply {
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadTriStrips(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
 
 } // namespace vcl::ply

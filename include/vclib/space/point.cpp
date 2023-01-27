@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -24,6 +25,45 @@
 
 namespace vcl {
 
+template<PointConcept PointType>
+PointType min(const PointType &p1, const PointType &p2)
+{
+	PointType p;
+	for (size_t i = 0; i < p.DIM; i++) {
+		p[i] = std::min(p1[i], p2[i]);
+	}
+	return p;
+}
+
+template<PointConcept PointType>
+PointType max(const PointType &p1, const PointType &p2)
+{
+	PointType p;
+	for (size_t i = 0; i < p.DIM; i++) {
+		p[i] = std::max(p1[i], p2[i]);
+	}
+	return p;
+}
+
+/**
+ * @brief OuterProduct between two points, which is p1 * p2^T
+ * The returned type is a DIM*DIM Eigen Matrix, where DIM is the number of dimensions of the two
+ * points.
+ * @param p1
+ * @param p2
+ */
+template<PointConcept PointType>
+auto outerProduct(const PointType& p1, const PointType& p2)
+{
+	Eigen::Matrix<typename PointType::ScalarType, PointType::DIM, PointType::DIM> res;
+	for (uint i = 0; i < PointType::DIM; i++) {
+		for (uint j = 0; j < PointType::DIM; j++) {
+			res(i,j) = p1(i) * p2(j);
+		}
+	}
+	return res;
+}
+
 /**
  * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
  * from a given vector n.
@@ -33,7 +73,7 @@ namespace vcl {
  * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
  */
 template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
+void orthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
 {
 	const double   LocEps = double(1e-7);
 	Point3<Scalar> up(0, 1, 0);

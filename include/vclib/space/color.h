@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_COLOR_H
-#define VCL_COLOR_H
+#ifndef VCL_SPACE_COLOR_H
+#define VCL_SPACE_COLOR_H
 
 #include "point/point4.h"
 
@@ -35,28 +36,36 @@ class Color : public Point4<uint8_t>
 public:
 	/// ARGB enum with some standard colors.
 	/// Can be used to initialize a color with an ARGB integer
-	enum ColorARGB {
-		Black = 0xff000000,
-		Gray  = 0xff808080,
-		White = 0xffffffff,
+	enum ColorRGBA {
+		Black     = 0x000000ff,
+		DarkGray  = 0x404040ff,
+		Gray      = 0x808080ff,
+		LightGray = 0xc0c0c0ff,
+		White     = 0xffffffff,
 
 		Red   = 0xff0000ff,
-		Green = 0xff00ff00,
-		Blue  = 0xffff0000,
+		Green = 0x00ff00ff,
+		Blue  = 0x0000ffff,
 
-		Cyan    = 0xffffff00,
-		Yellow  = 0xff00ffff,
-		Magenta = 0xffff00ff,
+		Cyan    = 0x00ffffff,
+		Yellow  = 0xffff00ff,
+		Magenta = 0xff00ffff,
 
-		LightGray  = 0xffc0c0c0,
 		LightRed   = 0xff8080ff,
-		LightGreen = 0xff80ff80,
-		LightBlue  = 0xffff8080,
+		LightGreen = 0x80ff80ff,
+		LightBlue  = 0x8080ffff,
 
-		DarkGray  = 0xff404040,
-		DarkRed   = 0xff000040,
-		DarkGreen = 0xff004000,
-		DarkBlue  = 0xff400000
+		LightCyan    = 0x80ffffff,
+		LightYellow  = 0xffff80ff,
+		LightMagenta = 0xff80ffff,
+
+		DarkRed   = 0x400000ff,
+		DarkGreen = 0x004000ff,
+		DarkBlue  = 0x000040ff,
+
+		DarkCyan    = 0x004040ff,
+		DarkYellow  = 0x404000ff,
+		DarkMagenta = 0x400040ff
 	};
 
 	/// List of Color Maps
@@ -67,7 +76,7 @@ public:
 	};
 
 	Color();
-	Color(ColorARGB cc);
+	Color(ColorRGBA cc);
 	Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
 
 	uint8_t red() const;
@@ -137,4 +146,4 @@ std::vector<Color> colorScattering(uint n, float sat = 0.3, float val = 0.9);
 
 #include "color.cpp"
 
-#endif // VCL_COLOR_H
+#endif // VCL_SPACE_COLOR_H

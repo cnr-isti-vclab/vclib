@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -24,6 +25,7 @@
 
 #include <vclib/algorithms/polygon.h>
 #include <vclib/exception/io_exception.h>
+#include <vclib/misc/file_info.h>
 #include <vclib/misc/tokenizer.h>
 
 #include "off/off.h"
@@ -32,7 +34,7 @@ namespace vcl::io {
 
 namespace internal {
 
-template <typename MeshType>
+template <MeshConcept MeshType>
 void loadOffVertices(
 	MeshType& mesh,
 	std::ifstream& file,
@@ -102,7 +104,7 @@ void loadOffVertices(
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadOffFaces(
 	MeshType&      mesh,
 	std::ifstream& file,
@@ -174,14 +176,14 @@ void loadOffFaces(
 
 } // namespace internal
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadOff(const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	return loadOff<MeshType>(filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType
 loadOff(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
 {
@@ -190,14 +192,14 @@ loadOff(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOption
 	return m;
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadOff(MeshType& m, const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	loadOff(m, filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadOff(
 	MeshType&          m,
 	const std::string& filename,
@@ -206,7 +208,13 @@ void loadOff(
 {
 	std::ifstream file = internal::loadFileStream(filename);
 	uint nVertices, nFaces, nEdges;
+
+	if constexpr (HasName<MeshType>) {
+		m.name() = fileInfo::filenameWithoutExtension(filename);
+	}
+
 	FileMeshInfo fileInfo; // data that needs to be read from the file
+
 	off::loadOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
 	loadedInfo = fileInfo; // data that will be stored in the mesh!
 	if (enableOptionalComponents)

@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TOKENIZER_H
-#define VCL_TOKENIZER_H
+#ifndef VCL_MISC_TOKENIZER_H
+#define VCL_MISC_TOKENIZER_H
 
 #include <string>
 #include <vector>
@@ -58,4 +59,4 @@ private:
 
 #include "tokenizer.cpp"
 
-#endif // VCL_TOKENIZER_H
+#endif // VCL_MISC_TOKENIZER_H

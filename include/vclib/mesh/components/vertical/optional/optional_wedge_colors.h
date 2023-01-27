@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -56,16 +57,10 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	static const int WEDGE_COLOR_NUMBER = N;
+
 	// possibility to access to the WedgeColors class, whether is optional or not.
 	using WedgeColors = OptionalWedgeColors;
-
-	// the WedgeColorsContainer type will be array or vector, depending on N value
-	using WedgeColorsContainer = typename std::conditional<
-		(N >= 0),
-		typename std::array<vcl::Color, ARRAY_SIZE>,
-		typename std::vector<vcl::Color>>::type;
-
-	static const int WEDGE_COLOR_NUMBER = N;
 
 	/* Iterator Types declaration */
 

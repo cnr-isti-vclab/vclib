@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TIMER_H
-#define VCL_TIMER_H
+#ifndef VCL_MISC_TIMER_H
+#define VCL_MISC_TIMER_H
 
 #include <chrono>
 #include <iostream>
@@ -61,4 +62,4 @@ private:
 
 #include "timer.cpp"
 
-#endif // VCL_TIMER_H
+#endif // VCL_MISC_TIMER_H

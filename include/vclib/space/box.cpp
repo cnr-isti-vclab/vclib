@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -26,34 +27,45 @@
 
 namespace vcl {
 
-template<typename PointType>
-Box<PointType>::Box()
+/**
+ * @brief The Empty constructor of a box, initializes a null box.
+ * @see setNull
+ */
+template<PointConcept PointT>
+Box<PointT>::Box()
 {
 	setNull();
 }
 
-template<typename PointType>
-Box<PointType>::Box(const PointType& p) : min(p), max(p)
+template<PointConcept PointT>
+Box<PointT>::Box(const PointT& p) : min(p), max(p)
 {
 }
 
-template<typename PointType>
-Box<PointType>::Box(const PointType& min, const PointType& max) : min(min), max(max)
+template<PointConcept PointT>
+Box<PointT>::Box(const PointT& min, const PointT& max) : min(min), max(max)
 {
 }
 
-template<typename PointType>
-bool Box<PointType>::isNull() const
+template<PointConcept PointT>
+template<typename P>
+Box<PointT>::Box(const Box<P>& ob) :
+		min(ob.min), max(ob.max)
 {
-	for (uint i = 0; i < PointType::DIM; ++i) {
+}
+
+template<PointConcept PointT>
+bool Box<PointT>::isNull() const
+{
+	for (uint i = 0; i < PointT::DIM; ++i) {
 		if (min[i] > max[i])
 			return true;
 	}
 	return false;
 }
 
-template<typename PointType>
-bool Box<PointType>::isEmpty() const
+template<PointConcept PointT>
+bool Box<PointT>::isEmpty() const
 {
 	return min == max;
 }
@@ -63,10 +75,10 @@ bool Box<PointType>::isEmpty() const
  * @param p
  * @return true if p is inside the box, bounds included; e.g. p in [min, max].
  */
-template<typename PointType>
-bool Box<PointType>::isInside(const PointType& p) const
+template<PointConcept PointT>
+bool Box<PointT>::isInside(const PointT& p) const
 {
-	for (uint i = 0; i < PointType::DIM; ++i) {
+	for (uint i = 0; i < PointT::DIM; ++i) {
 		if (p[i] < min[i] || p[i] > max[i])
 			return false;
 	}
@@ -78,83 +90,83 @@ bool Box<PointType>::isInside(const PointType& p) const
  * @param p: the point to check if is inside the curren box.
  * @return true if p is inside the open box (max bound excluded); e.g. p in [min, max).
  */
-template<typename PointType>
-bool Box<PointType>::isInsideOpenBox(const PointType& p) const
+template<PointConcept PointT>
+bool Box<PointT>::isInsideOpenBox(const PointT& p) const
 {
-	for (uint i = 0; i < PointType::DIM; ++i) {
+	for (uint i = 0; i < PointT::DIM; ++i) {
 		if (p[i] < min[i] || p[i] >= max[i])
 			return false;
 	}
 	return true;
 }
 
-template<typename PointType>
-bool Box<PointType>::collide(const Box<PointType>& b) const
+template<PointConcept PointT>
+bool Box<PointT>::collide(const Box<PointT>& b) const
 {
-	for (uint i = 0; i < PointType::DIM; ++i) {
+	for (uint i = 0; i < PointT::DIM; ++i) {
 		if (b.min[i] >= max[i] || b.max[i] <= min[i])
 			return false;
 	}
 	return true;
 }
 
-template<typename PointType>
-auto Box<PointType>::diagonal() const
+template<PointConcept PointT>
+auto Box<PointT>::diagonal() const
 {
 	return min.dist(max);
 }
 
-template<typename PointType>
-auto Box<PointType>::squaredDiagonal() const
+template<PointConcept PointT>
+auto Box<PointT>::squaredDiagonal() const
 {
 	return min.squaredDist(max);
 }
 
-template<typename PointType>
-PointType Box<PointType>::center() const
+template<PointConcept PointT>
+PointT Box<PointT>::center() const
 {
 	return (max + min) / 2;
 }
 
-template<typename PointType>
-PointType Box<PointType>::size() const
+template<PointConcept PointT>
+PointT Box<PointT>::size() const
 {
 	return max - min;
 }
 
-template<typename PointType>
-auto Box<PointType>::volume() const
+template<PointConcept PointT>
+auto Box<PointT>::volume() const
 {
 	auto vol = max[0] - min[0];
-	for (uint i = 1; i < PointType::DIM; ++i) {
+	for (uint i = 1; i < PointT::DIM; ++i) {
 		vol *= max[i] - min[i];
 	}
 	return vol;
 }
 
-template<typename PointType>
-auto Box<PointType>::dim(uint i) const
+template<PointConcept PointT>
+auto Box<PointT>::dim(uint i) const
 {
-	assert(i < PointType::DIM);
+	assert(i < PointT::DIM);
 	return max[i]-min[i];
 }
 
-template<typename PointType>
-auto Box<PointType>::minDim() const
+template<PointConcept PointT>
+auto Box<PointT>::minDim() const
 {
 	auto m = max[0] - min[0];
-	for (uint i = 1; i < PointType::DIM; ++i) {
+	for (uint i = 1; i < PointT::DIM; ++i) {
 		if (max[i] - min[i] < m)
 			m = max[i] - min[i];
 	}
 	return m;
 }
 
-template<typename PointType>
-auto Box<PointType>::maxDim() const
+template<PointConcept PointT>
+auto Box<PointT>::maxDim() const
 {
 	auto m = max[0] - min[0];
-	for (uint i = 1; i < PointType::DIM; ++i) {
+	for (uint i = 1; i < PointT::DIM; ++i) {
 		if (max[i] - min[i] > m)
 			m = max[i] - min[i];
 	}
@@ -165,13 +177,14 @@ auto Box<PointType>::maxDim() const
  * @brief Box::setNull sets the Box to null. A box is considered null if at least one min component
  * is greater than the corresponding max component.
  *
- * This member function sets all the min values to 1 and the max values to -1.
+ * This member function sets all the min values to the max representable Scalar and the max
+ * values to lowest representable Scalar.
  */
-template<typename PointType>
-void Box<PointType>::setNull()
+template<PointConcept PointT>
+void Box<PointT>::setNull()
 {
-	min.setConstant(1);
-	max.setConstant(-1);
+	min.setConstant(std::numeric_limits<typename PointT::ScalarType>::max());
+	max.setConstant(std::numeric_limits<typename PointT::ScalarType>::lowest());
 }
 
 /**
@@ -181,8 +194,8 @@ void Box<PointType>::setNull()
  * If this box was null, the current box will have the same values of b.
  * @param b: the box to add to the current box.
  */
-template<typename PointType>
-void Box<PointType>::add(const Box<PointType>& b)
+template<PointConcept PointT>
+void Box<PointT>::add(const Box<PointT>& b)
 {
 	// Adding a null box should do nothing
 	if (!b.isNull()) {
@@ -190,17 +203,13 @@ void Box<PointType>::add(const Box<PointType>& b)
 			*this = b;
 		}
 		else {
-			for (uint i = 0; i < PointType::DIM; ++i) {
-				if (min[i] > b.min[i])
-					min[i] = b.min[i];
-				if (max[i] < b.max[i])
-					max[i] = b.max[i];
-			}
+			add(b.min);
+			add(b.max);
 		}
 	}
 }
 
-template<typename PointType>
+template<PointConcept PointT>
 /**
  * @brief Box::add adds the given point to the current box, expanding this box in order that will
  * contain also the p values.
@@ -208,17 +217,13 @@ template<typename PointType>
  * If this box was null, both the values the current box will be set to p.
  * @param p: the point to add to the current box.
  */
-void Box<PointType>::add(const PointType& p)
+void Box<PointT>::add(const PointT& p)
 {
 	if (isNull())
 		*this = Box(p);
 	else {
-		for (uint i = 0; i < PointType::DIM; ++i) {
-			if (min[i] > p[i])
-				min[i] = p[i];
-			if (max[i] < p[i])
-				max[i] = p[i];
-		}
+		min = vcl::min(min, p);
+		max = vcl::max(max, p);
 	}
 }
 
@@ -227,10 +232,10 @@ void Box<PointType>::add(const PointType& p)
  * given box b
  * @param b
  */
-template<typename PointType>
-void Box<PointType>::intersect(const Box<PointType>& b)
+template<PointConcept PointT>
+void Box<PointT>::intersect(const Box<PointT>& b)
 {
-	for (uint i = 0; i < PointType::DIM; ++i) {
+	for (uint i = 0; i < PointT::DIM; ++i) {
 		if (min[i] < b.min[i])
 			min[i] = b.min[i];
 		if (max[i] > b.max[i])
@@ -246,24 +251,34 @@ void Box<PointType>::intersect(const Box<PointType>& b)
  * @brief Translates the box by summing the values of p
  * @param p
  */
-template<typename PointType>
-void Box<PointType>::translate(const PointType& p)
+template<PointConcept PointT>
+void Box<PointT>::translate(const PointT& p)
 {
 	min += p;
 	max += p;
 }
 
-template<typename PointType>
+template<PointConcept PointT>
+bool Box<PointT>::operator==(const Box<PointT>& p) const
+{
+	return min == p.min && max == p.max;
+}
+
+template<PointConcept PointT>
+bool Box<PointT>::operator!=(const Box<PointT>& p) const
+{
+	return !(*this == p);
+}
+
+template<PointConcept PointT>
 template<typename Scalar>
-void Box<PointType>::add(const PointType& p, Scalar radius)
+void Box<PointT>::add(const PointT& p, Scalar radius)
 {
 	if (isNull())
-		*this = Box(p);
+		*this = Box(p - radius, p + radius);
 	else {
-		for (uint i = 0; i < PointType::DIM; ++i) {
-			min[i] = std::min(min[i], p[i] - radius);
-			max[i] = std::max(max[i], p[i] + radius);
-		}
+		min = vcl::min(min, p - radius);
+		max = vcl::max(max, p + radius);
 	}
 }
 

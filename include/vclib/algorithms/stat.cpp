@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -22,8 +23,7 @@
 
 #include "stat.h"
 
-#include "internal/inertia.h"
-#include "polygon.h"
+#include <vclib/mesh_utils/mesh_inertia.h>
 
 namespace vcl {
 
@@ -132,7 +132,7 @@ typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
 template<FaceMeshConcept MeshType>
 double volume(const MeshType& m)
 {
-	internal::Inertia<MeshType> i(m);
+	MeshInertia<MeshType> i(m);
 	return i.volume();
 }
 
@@ -179,129 +179,11 @@ double borderLength(const MeshType& m)
 }
 
 /**
- * @brief Returns a pair containing the min and the maximum vertex scalars.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Scalar
- *
- * @param[in] m: the input Mesh on which compute the minimum and the maximum scalars.
- * @return A `std::pair` having as first element the minimum, and as second element the maximum
- * scalar.
- */
-template<MeshConcept MeshType>
-std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
-perVertexScalarMinMax(const MeshType& m)
-{
-	vcl::requirePerVertexScalar(m);
-
-	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
-
-	std::pair<ScalarType, ScalarType> p = std::make_pair(
-		std::numeric_limits<ScalarType>::max(), std::numeric_limits<ScalarType>::lowest());
-
-	for (const VertexType& v : m.vertices()) {
-		if (v.scalar() < p.first)
-			p.first = v.scalar();
-		if (v.scalar() > p.second)
-			p.second = v.scalar();
-	}
-}
-
-/**
- * @brief Returns a pair containing the min and the maximum face scalars.
- *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - Scalar
- *
- * @param[in] m: the input Mesh on which compute the minimum and the maximum scalars.
- * @return A `std::pair` having as first element the minimum, and as second element the maximum
- * scalar.
- */
-template<FaceMeshConcept MeshType>
-std::pair<typename MeshType::FaceType::ScalarType, typename MeshType::FaceType::ScalarType>
-perFaceScalarMinMax(const MeshType& m)
-{
-	vcl::requirePerFaceScalar(m);
-
-	using FaceType   = typename MeshType::FaceType;
-	using ScalarType = typename FaceType::ScalarType;
-
-	std::pair<ScalarType, ScalarType> p = std::make_pair(
-		std::numeric_limits<ScalarType>::max(), std::numeric_limits<ScalarType>::lowest());
-
-	for (const FaceType& f : m.faces()) {
-		if (f.scalar() < p.first)
-			p.first = f.scalar();
-		if (f.scalar() > p.second)
-			p.second = f.scalar();
-	}
-}
-
-/**
- * @brief Returns a scalar that is the average of the vertex scalars.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Scalar
- *
- * @param[in] m: the input Mesh on which compute the average of the scalars.
- * @return The average of the vertex scalars of the given mesh.
- */
-template<MeshConcept MeshType>
-typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType& m)
-{
-	vcl::requirePerVertexScalar(m);
-
-	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
-
-	ScalarType avg = 0;
-
-	for (const VertexType& v : m.vertices())
-		avg += v.scalar();
-
-	return avg / m.vertexNumber();
-}
-
-/**
- * @brief Returns a scalar that is the average of the face scalars.
- *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - Scalar
- *
- * @param[in] m: the input Mesh on which compute the average of the scalars.
- * @return The average of the face scalars of the given mesh.
- */
-template<FaceMeshConcept MeshType>
-typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m)
-{
-	vcl::requirePerFaceScalar(m);
-
-	using FaceType   = typename MeshType::FaceType;
-	using ScalarType = typename FaceType::ScalarType;
-
-	ScalarType avg = 0;
-
-	for (const FaceType& f : m.faces())
-		avg += f.scalar();
-
-	return avg / m.faceNumber();
-}
-
-/**
  * @brief Compute the covariance matrix of a set of points.
  * @param pointVec
  * @return The 3x3 covariance matrix of the given set of points.
  */
-template<typename PointType>
+template<PointConcept PointType>
 Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
 {
 	Matrix33<double> m;
@@ -349,7 +231,7 @@ Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m)
  * @param weights
  * @return
  */
-template<typename PointType>
+template<PointConcept PointType>
 Matrix33<double> weightedCovarianceMatrixOfPointCloud(
 	const std::vector<PointType>& pointVec,
 	const std::vector<typename PointType::ScalarType>& weights)
@@ -432,6 +314,47 @@ Matrix33<double> covarianceMatrixOfMesh(const MeshType& m)
 		C+=DC;
 	}
 	return C;
+}
+
+/**
+ * @brief When performing an adptive pruning for each sample we expect a varying radius to be
+ * removed.
+ * The radius is a PerVertex attribute that we compute from the current per vertex weights given as
+ * argument. The expected radius of the sample is computed so that it linearly maps the quality
+ * between diskradius and diskradius*variance
+ *
+ * @param m
+ * @param weights
+ * @param diskRadius
+ * @param radiusVariance
+ * @param invert
+ * @return
+ */
+template<MeshConcept MeshType, typename ScalarType>
+std::vector<ScalarType> vertexRadiusFromWeights(
+	const MeshType&                m,
+	const std::vector<ScalarType>& weights,
+	double                         diskRadius,
+	double                         radiusVariance,
+	bool                           invert)
+{
+	using VertexType = typename MeshType::VertexType;
+
+	std::vector<ScalarType> radius(m.vertexContainerSize());
+	auto minmax = std::minmax_element(weights.begin(), weights.end());
+
+	float minRad = diskRadius;
+	float maxRad = diskRadius * radiusVariance;
+	float deltaQ = *minmax.second - *minmax.first;
+	float deltaRad = maxRad - minRad;
+	for (const VertexType& v : m.vertices()) {
+		ScalarType w = weights[m.index(v)];
+		radius[m.index(v)] =
+			minRad +
+			deltaRad * ((invert ? *minmax.second - w : w - *minmax.first) / deltaQ);
+	}
+
+	return radius;
 }
 
 } // namespace vcl

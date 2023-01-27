@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,49 +29,61 @@
 
 namespace vcl {
 
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template<typename Triangle>
+template<FaceConcept Triangle>
 typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t);
 
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleBarycenter(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template<typename Triangle, typename PointType = Point3f>
+template<TriangleFaceConcept Triangle, PointConcept PointType = Point3f>
 PointType triangleBarycenter(const Triangle& t);
 
-template <typename PointType>
+template <PointConcept PointType>
 PointType triangleWeightedBarycenter(
 	const PointType& p0, typename PointType::ScalarType w0,
 	const PointType& p1, typename PointType::ScalarType w1,
 	const PointType& p2, typename PointType::ScalarType w2);
 
-template<typename PointType>
+template <PointConcept PointType, typename ScalarType>
+PointType triangleBarycentricCoordinatePoint(
+	const PointType& p0,
+	const PointType& p1,
+	const PointType& p2,
+	const Point3<ScalarType> &barCoords);
+
+template <typename Triangle, typename ScalarType>
+typename Triangle::CoordType triangleBarycentricCoordinatePoint(
+	const Triangle& t,
+	const Point3<ScalarType>& barCoords);
+
+template<PointConcept PointType>
 typename PointType::ScalarType
 triangleArea(const PointType& p0, const PointType& p1, const PointType& p2);
 
 template<typename Triangle, typename ScalarType = double>
 ScalarType triangleArea(const Triangle& t);
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonNormal(const std::vector<PointType>& p);
 
 template<typename Polygon>
 typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p);
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonBarycenter(const std::vector<PointType>& p);
 
 template<typename Polygon>
 typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p);
 
-template<typename PointType>
+template<PointConcept PointType>
 PointType polygonWeighedBarycenter(
 	const std::vector<PointType>&                      p,
 	const std::vector<typename PointType::ScalarType>& w);
 
-template<typename PointType>
+template<PointConcept PointType>
 typename PointType::ScalarType polygonArea(const std::vector<PointType>& p);
 
 template<typename Polygon, typename ScalarType = double>
@@ -82,8 +95,8 @@ std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon);
 
-template<typename Polygon>
-std::vector<uint> earCut(const Polygon& polygon);
+template<FaceConcept Face>
+std::vector<uint> earCut(const Face& polygon);
 
 template<FaceMeshConcept MeshType, typename FaceType>
 void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon);

@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_TRANSFORM_H
-#define VCL_ALGORITHMS_TRANSFORM_H
+#ifndef VCL_ALGORITHMS_UPDATE_TRANSFORM_H
+#define VCL_ALGORITHMS_UPDATE_TRANSFORM_H
 
 #include <vclib/math/matrix.h>
 #include <vclib/mesh/requirements.h>
@@ -34,14 +35,17 @@ void applyTransformMatrix(
 	const Matrix44<ScalarM>& matrix,
 	bool                     updateNormals = true);
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void translate(MeshType& mesh, const PointType& t);
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void scale(MeshType& mesh, const PointType& s);
+
+template<MeshConcept MeshType, typename Scalar = double>
+void scale(MeshType& mesh, const Scalar& s);
 
 } // namespace vcl
 
 #include "transform.cpp"
 
-#endif // VCL_ALGORITHMS_TRANSFORM_H
+#endif // VCL_ALGORITHMS_UPDATE_TRANSFORM_H

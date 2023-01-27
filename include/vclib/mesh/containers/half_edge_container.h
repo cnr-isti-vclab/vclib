@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -23,8 +24,6 @@
 #ifndef VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
 
-#include <vclib/iterators/container_iterator.h>
-#include <vclib/iterators/container_range_iterator.h>
 #include <vclib/mesh/elements/half_edge.h>
 
 #include "../components/vertical/vectors/custom_component_vector_handle.h"

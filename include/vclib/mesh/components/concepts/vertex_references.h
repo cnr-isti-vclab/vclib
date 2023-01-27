@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,16 +29,46 @@
 namespace vcl::comp {
 
 /**
- * @brief HasVertexReferences concept
- *
- * This concept is satisfied only if a class has a member function 'vertexNumber()' which returns
- * an uint
+ * @brief HasVertexReferences concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to
+ * an VertexReferences component of a given element.
  */
 template<typename T>
-concept HasVertexReferences = requires(T o)
+concept HasVertexReferences = requires(
+	T o,
+	const T& co,
+	typename T::VertexType v,
+	std::vector<typename T::VertexType*> vec)
 {
+	T::VERTEX_NUMBER;
 	typename T::VertexType;
-	{ o.vertexNumber() } -> std::same_as<uint>;
+	typename T::VertexIterator;
+	typename T::ConstVertexIterator;
+	typename T::VertexRangeIterator;
+	typename T::ConstVertexRangeIterator;
+
+	{ co.vertexNumber() } -> std::same_as<uint>;
+	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType*&>;
+	{ co.vertex(uint()) } -> std::same_as<const typename T::VertexType*>;
+	{ o.vertexMod(int()) } -> std::same_as<typename T::VertexType*&>;
+	{ co.vertexMod(int()) } -> std::same_as<const typename T::VertexType*>;
+
+	{ o.setVertex(&v, uint()) } -> std::same_as<void>;
+	{ o.setVertices(vec) } -> std::same_as<void>;
+
+	{ co.containsVertex(&v) } -> std::same_as<bool>;
+	{ o.findVertex(&v) } -> std::same_as<typename T::VertexIterator>;
+	{ co.findVertex(&v) } -> std::same_as<typename T::ConstVertexIterator>;
+
+	{ co.indexOfVertex(&v) } -> std::same_as<int>;
+	{ co.indexOfEdge(&v, &v) } -> std::same_as<int>;
+
+	{ o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
+	{ o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
+	{ co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
+	{ co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
+	{ o.vertices() } -> std::same_as<typename T::VertexRangeIterator>;
+	{ co.vertices() } -> std::same_as<typename T::ConstVertexRangeIterator>;
 };
 
 } // namespace vcl::comp

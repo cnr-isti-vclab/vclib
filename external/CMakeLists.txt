@@ -13,43 +13,60 @@ cmake_minimum_required(VERSION 3.13)
 project(vclib-external)
 
 # Eigen options
-option(ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
-option(ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
+option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
+option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 
 # MapBox earcut
-option(ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut source" ON)
+option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut source" ON)
 
-find_package(Eigen3)
+# Doctest
+if (VCLIB_BUILD_TESTS)
+	option(VCLIB_ALLOW_BUNDLED_DOCTEST "Allow use of bundled doctest source" ON)
+endif()
+
+# OpenGL
+option(VCLIB_ALLOW_SYSTEM_OPENGL "Allow use of system-provided OpenGL" ON)
+
+# Qt
+option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
+
+# QGLViewer
+option(VCLIB_ALLOW_SYSTEM_QGLVIEWER "Allow use of system-provided QGLViewer" ON)
+
+# STB
+option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
+
+# TBB
+option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
+
+set(VCLIB_EXTERNAL_LIBRARIES "")
+
+# === REQUIRED === #
 
 ### Eigen
-set(VCLIB_EIGEN_DIR ${CMAKE_CURRENT_LIST_DIR}/eigen-3.4.0)
-
-if(ALLOW_SYSTEM_EIGEN AND EIGEN3_INCLUDE_DIR)
-	message(STATUS "- Eigen - using system-provided library")
-	set(EIGEN_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
-elseif(ALLOW_BUNDLED_EIGEN AND EXISTS "${VCLIB_EIGEN_DIR}/Eigen/Eigen")
-	message(STATUS "- Eigen - using bundled source")
-	set(EIGEN_INCLUDE_DIRS ${VCLIB_EIGEN_DIR})
-else()
-	message(
-		FATAL_ERROR
-		"Eigen is required - at least one of ALLOW_SYSTEM_EIGEN or ALLOW_BUNDLED_EIGEN must be enabled and found.")
-endif()
-
-add_library(vclib-external-eigen INTERFACE)
-target_include_directories(vclib-external-eigen INTERFACE ${EIGEN_INCLUDE_DIRS})
+include(eigen.cmake)
 
 ### Mapbox-Earcut
-set(VCLIB_MAPBOX_EARCUT_DIR ${CMAKE_CURRENT_LIST_DIR}/earcut.hpp-2.2.3)
+include(mapbox.cmake)
 
-if (ALLOW_BUNDLED_MAPBOX_EARCUT)
-	message(STATUS "- Mapbox-Eaurcut - using bundled source")
-	set(MAPBOX_EARCUT_INCLUDE_DIRS ${VCLIB_MAPBOX_EARCUT_DIR}/include)
-else()
-	message(
-		FATAL_ERROR
-		"MapBox earcut is required - ALLOW_BUNDLED_MAPBOX_EARCUT must be enabled and found.")
-endif()
+# === OPTIONAL === #
 
-add_library(vclib-external-mapbox-earcut INTERFACE)
-target_include_directories(vclib-external-mapbox-earcut INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
+### Doctest
+include(doctest.cmake)
+
+### OpenGL
+include(opengl.cmake)
+
+### Qt
+include(qt.cmake)
+
+### QGLViewer
+include(qglviewer.cmake)
+
+### STB
+include(stb.cmake)
+
+### TBB
+include(tbb.cmake)
+
+set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)

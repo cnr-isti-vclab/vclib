@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_H
-#define VCL_POINT_H
+#ifndef VCL_SPACE_POINT_H
+#define VCL_SPACE_POINT_H
 
 #include "point/point2.h"
 #include "point/point3.h"
@@ -29,11 +30,20 @@
 
 namespace vcl {
 
+template<PointConcept PointType>
+PointType min(const PointType& p1, const PointType& p2);
+
+template<PointConcept PointType>
+PointType max(const PointType& p1, const PointType& p2);
+
+template<PointConcept PointType>
+auto outerProduct(const PointType& p1, const PointType& p2);
+
 template<typename Scalar>
-void getOrthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
+void orthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v);
 
 } // namespace vcl
 
 #include "point.cpp"
 
-#endif // VCL_POINT_H
+#endif // VCL_SPACE_POINT_H

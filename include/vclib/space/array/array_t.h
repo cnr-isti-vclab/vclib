@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ARRAY_T_H
-#define VCL_ARRAY_T_H
+#ifndef VCL_SPACE_ARRAY_ARRAY_T_H
+#define VCL_SPACE_ARRAY_ARRAY_T_H
 
 #include <assert.h>
 #include <vclib/misc/nested_initializer_lists.h>
@@ -93,6 +94,9 @@ public:
 	Array(vcl::NestedInitializerLists<T, N> values);
 
 	constexpr unsigned long int dimensions() const;
+
+	bool empty() const;
+
 	template<typename... I>
 	T& operator()(I... indices);
 	template<typename... I>
@@ -101,6 +105,8 @@ public:
 	T* cArray(I... indices);
 	template<typename... I>
 	const T*              cArray(I... indices) const;
+	T* data();
+	const T* data() const;
 	std::vector<T>        stdVector();
 	const std::vector<T>& stdVector() const;
 
@@ -140,4 +146,4 @@ protected:
 
 #include "array_t.cpp"
 
-#endif // VCL_ARRAY_T_H
+#endif // VCL_SPACE_ARRAY_ARRAY_T_H

@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -56,18 +57,12 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
-	// possibility to access to the WedgeTexCoords class, whether is optional or not.
-	using WedgeTexCoords = OptionalWedgeTexCoords;
+	static const int WEDGE_TEX_COORD_NUMBER = N;
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 
-	// the AdjFacesContainer type will be array or vector, depending on N value
-	using WedgeTexCoordsContainer = typename std::conditional<
-		(N >= 0),
-		typename std::array<vcl::TexCoord<Scalar>, ARRAY_SIZE>,
-		typename std::vector<vcl::TexCoord<Scalar>>>::type;
-
-	static const int WEDGE_TEX_COORD_NUMBER = N;
+	// possibility to access to the WedgeTexCoords class, whether is optional or not.
+	using WedgeTexCoords = OptionalWedgeTexCoords;
 
 	/** Iterator Types declaration **/
 
@@ -101,6 +96,9 @@ public:
 
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
+
+	short& textureIndex();
+	const short& textureIndex() const;
 
 	bool isWedgeTexCoordsEnabled() const;
 

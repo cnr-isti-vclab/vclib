@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,16 +29,18 @@
 namespace vcl::comp {
 
 /**
- * @brief HasBoundingBox concept
- *
- * This concept is satisfied only if a class has a member function 'boundingBox()'.
- * No check is made on the return type.
+ * @brief HasBoundingBox concept is satisfied only if a Element or Mesh class provides the member
+ * functions specified in this concept. These member functions allows to access to a BoundingBox
+ * component of a given element/mesh.
  */
 template<typename T>
-concept HasBoundingBox = requires(T o)
+concept HasBoundingBox = requires(
+	T o,
+	const T& co)
 {
 	typename T::BoundingBoxType;
-	o.boundingBox();
+	{ o.boundingBox() } -> std::same_as<typename T::BoundingBoxType&>;
+	{ co.boundingBox() } -> std::same_as<const typename T::BoundingBoxType&>;
 };
 
 } // namespace vcl::comp

@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -35,7 +36,7 @@ template<typename Scalar, int N, typename T>
 vcl::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoord(uint i)
 {
 	assert(i < wedgeTexCoordsNumber());
-	return B::optCont().wedgeTexCoords(thisId())[i];
+	return B::optCont().wedgeTexCoords(thisId()).first[i];
 }
 
 template<typename Scalar, int N, typename T>
@@ -43,21 +44,21 @@ const vcl::TexCoord<Scalar>&
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoord(uint i) const
 {
 	assert(i < wedgeTexCoordsNumber());
-	return B::optCont().wedgeTexCoords(thisId())[i];
+	return B::optCont().wedgeTexCoords(thisId()).first[i];
 }
 
 template<typename Scalar, int N, typename T>
 vcl::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordMod(int i)
 {
 	int n = wedgeTexCoordsNumber();
-	return B::optCont().wedgeTexCoords(thisId())[(i % n + n) % n];
+	return B::optCont().wedgeTexCoords(thisId()).first[(i % n + n) % n];
 }
 
 template<typename Scalar, int N, typename T>
 const vcl::TexCoord<Scalar>& OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordMod(int i) const
 {
 	int n = wedgeTexCoordsNumber();
-	return B::optCont().wedgeTexCoords(thisId())[(i % n + n) % n];
+	return B::optCont().wedgeTexCoords(thisId()).first[(i % n + n) % n];
 }
 
 template<typename Scalar, int N, typename T>
@@ -66,7 +67,7 @@ void OptionalWedgeTexCoords<Scalar, N, T>::setWedgeTexCoord(
 	uint                 i)
 {
 	assert(i < wedgeTexCoordsNumber());
-	B::optCont().wedgeTexCoords(thisId())[i] = t;
+	B::optCont().wedgeTexCoords(thisId()).first[i] = t;
 }
 
 template<typename Scalar, int N, typename T>
@@ -82,8 +83,20 @@ void OptionalWedgeTexCoords<Scalar, N, T>::setWedgeTexCoords(
 		}
 	}
 	else {
-		B::optCont().wedgeTexCoords(thisId()) = list;
+		B::optCont().wedgeTexCoords(thisId()).first = list;
 	}
+}
+
+template<typename Scalar, int N, typename T>
+short& OptionalWedgeTexCoords<Scalar, N, T>::textureIndex()
+{
+	return B::optCont().wedgeTexCoords(thisId()).second;
+}
+
+template<typename Scalar, int N, typename T>
+const short& OptionalWedgeTexCoords<Scalar, N, T>::textureIndex() const
+{
+	return B::optCont().wedgeTexCoords(thisId()).second;
 }
 
 template<typename Scalar, int N, typename T>
@@ -96,28 +109,28 @@ template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordBegin()
 {
-	return B::optCont().wedgeTexCoords(thisId()).begin();
+	return B::optCont().wedgeTexCoords(thisId()).first.begin();
 }
 
 template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::WedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordEnd()
 {
-	return B::optCont().wedgeTexCoords(thisId()).end();
+	return B::optCont().wedgeTexCoords(thisId()).first.end();
 }
 
 template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::ConstWedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordBegin() const
 {
-	return B::optCont().wedgeTexCoords(thisId()).begin();
+	return B::optCont().wedgeTexCoords(thisId()).first.begin();
 }
 
 template<typename Scalar, int N, typename T>
 typename OptionalWedgeTexCoords<Scalar, N, T>::ConstWedgeTexCoordsIterator
 OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordEnd() const
 {
-	return B::optCont().wedgeTexCoords(thisId()).end();
+	return B::optCont().wedgeTexCoords(thisId()).first.end();
 }
 
 template<typename Scalar, int N, typename T>
@@ -143,14 +156,14 @@ OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoords() const
 template<typename Scalar, int N, typename T>
 void OptionalWedgeTexCoords<Scalar, N, T>::resizeWedgeTexCoords(uint n) requires (N < 0)
 {
-	B::optCont().wedgeTexCoords(thisId()).resize(n);
+	B::optCont().wedgeTexCoords(thisId()).first.resize(n);
 }
 
 template<typename Scalar, int N, typename T>
 void OptionalWedgeTexCoords<Scalar, N, T>::pushWedgeTexCoord(
 	const vcl::TexCoord<Scalar>& t) requires(N < 0)
 {
-	B::optCont().wedgeTexCoords(thisId()).push_back(t);
+	B::optCont().wedgeTexCoords(thisId()).first.push_back(t);
 }
 
 template<typename Scalar, int N, typename T>
@@ -158,22 +171,23 @@ void OptionalWedgeTexCoords<Scalar, N, T>::insertWedgeTexCoord(
 	uint                 i,
 	const vcl::TexCoord<Scalar>& t) requires (N < 0)
 {
-	assert(i < wedgeTexCoordsNumber());
-	B::optCont().wedgeTexCoords(thisId()).insert(
-		B::optCont().wedgeTexCoords(thisId()).begin() + i, t);
+	assert(i < wedgeTexCoordsNumber() + 1);
+	B::optCont().wedgeTexCoords(thisId()).first.insert(
+		B::optCont().wedgeTexCoords(thisId()).first.begin() + i, t);
 }
 
 template<typename Scalar, int N, typename T>
 void OptionalWedgeTexCoords<Scalar, N, T>::eraseWedgeTexCoord(uint i) requires (N < 0)
 {
 	assert(i < wedgeTexCoordsNumber());
-	B::optCont().wedgeTexCoords(thisId()).erase(B::optCont().wedgeTexCoords(thisId()).begin() + i);
+	B::optCont().wedgeTexCoords(thisId()).first.erase(
+		B::optCont().wedgeTexCoords(thisId()).first.begin() + i);
 }
 
 template<typename Scalar, int N, typename T>
 void OptionalWedgeTexCoords<Scalar, N, T>::clearWedgeTexCoord() requires (N < 0)
 {
-	B::optCont().wedgeTexCoords(thisId()).clear();
+	B::optCont().wedgeTexCoords(thisId()).first.clear();
 }
 
 template<typename Scalar, int N, typename T>
@@ -222,7 +236,7 @@ uint OptionalWedgeTexCoords<Scalar, N, T>::wedgeTexCoordsNumber() const
 		return N;
 	}
 	else {
-		return B::optCont().wedgeTexCoords(thisId()).size();
+		return B::optCont().wedgeTexCoords(thisId()).first.size();
 	}
 }
 

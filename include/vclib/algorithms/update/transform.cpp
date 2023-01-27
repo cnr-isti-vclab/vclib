@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -47,7 +48,7 @@ void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool 
 	}
 }
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void translate(MeshType& mesh, const PointType& t)
 {
 	using VertexType = typename MeshType::VertexType;
@@ -56,7 +57,7 @@ void translate(MeshType& mesh, const PointType& t)
 	}
 }
 
-template<MeshConcept MeshType, typename PointType>
+template<MeshConcept MeshType, PointConcept PointType>
 void scale(MeshType& mesh, const PointType& s)
 {
 	using VertexType = typename MeshType::VertexType;
@@ -64,6 +65,15 @@ void scale(MeshType& mesh, const PointType& s)
 		v.coord()(0) *= s(0);
 		v.coord()(1) *= s(1);
 		v.coord()(2) *= s(2);
+	}
+}
+
+template<MeshConcept MeshType, typename Scalar>
+void scale(MeshType& mesh, const Scalar& s)
+{
+	using VertexType = typename MeshType::VertexType;
+	for (VertexType& v : mesh.vertices()) {
+		v.coord() *= s;
 	}
 }
 

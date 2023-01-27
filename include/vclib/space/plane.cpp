@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -168,7 +169,7 @@ bool Plane<Scalar, NORM>::segmentIntersection(
 
 	if(p0_proj == p1_proj) return false;
 
-	   // check that we perform the computation in a way that is independent with v0 v1 swaps
+	// check that we perform the computation in a way that is independent with v0 v1 swaps
 	if(p0_proj < p1_proj)
 		intersection =  s.first + (s.second - s.first) * fabs(p0_proj/(p1_proj-p0_proj));
 	if(p0_proj > p1_proj)

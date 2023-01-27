@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -30,7 +31,7 @@
 namespace vcl::comp {
 
 /**
- * @brief The BoundingBox component class represent an axis aligned bounding box. This class is
+ * @brief The BoundingBox component class represents an axis aligned bounding box. This class is
  * usually used as a component of a Mesh.
  *
  * The member functions of this class will be available in the instance of any Element or Mesh that
@@ -43,7 +44,7 @@ namespace vcl::comp {
  * m.boundingBox();
  * @endcode
  */
-template<typename  PointType>
+template<PointConcept PointType>
 class BoundingBox
 {
 public:

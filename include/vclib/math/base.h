@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -24,33 +25,26 @@
 #define VCL_MATH_BASE_H
 
 #include <cmath>
+#include <assert.h>
 
 namespace vcl {
 
 template<typename Scalar>
-bool isDegenerate(Scalar t)
-{
-	return std::isinf(t) || std::isnan(t);
-}
+bool isDegenerate(Scalar t);
 
 template <typename Scalar>
-bool epsilonCompare(Scalar p1, Scalar p2, Scalar epsilon = std::numeric_limits<Scalar>::epsilon())
-{
-	return (std::abs(p1 - p2) <= epsilon);
-}
+bool epsilonCompare(Scalar p1, Scalar p2, Scalar epsilon = std::numeric_limits<Scalar>::epsilon());
 
 template<typename Scalar>
-Scalar toRad(const Scalar& a)
-{
-	return M_PI*a/180.0;
-}
+Scalar toRad(const Scalar& a);
 
 template<typename Scalar>
-Scalar toDeg(const Scalar& a)
-{
-	return a*180.0/M_PI;
-}
+Scalar toDeg(const Scalar& a);
+
+static double lnOfFactorial(int n);
 
 } // namespace vcl
+
+#include "base.cpp"
 
 #endif // VCL_MATH_BASE_H

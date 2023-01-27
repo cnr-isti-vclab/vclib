@@ -1,0 +1,34 @@
+name: BuildAndRunTests
+
+on:
+  [push, pull_request]
+
+jobs:
+  meshlab_build:
+    name: Build and run Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get install cmake ninja-build libtbb-dev
+    - name: Install dependencies
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake ninja
+    - name: Build
+      shell: bash
+      run: |
+        mkdir build
+        cd build
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Release ..
+        ninja

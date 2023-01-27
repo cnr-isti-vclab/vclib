@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -26,7 +27,10 @@
 #include <vector>
 
 #include <vclib/math/matrix.h>
-#include <vclib/mesh/requirements.h>
+
+#include "stat/bounding_box.h"
+#include "stat/scalar.h"
+#include "stat/selection.h"
 
 namespace vcl {
 
@@ -48,33 +52,27 @@ double surfaceArea(const MeshType& m);
 template<FaceMeshConcept MeshType>
 double borderLength(const MeshType& m);
 
-template<MeshConcept MeshType>
-std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
-perVertexScalarMinMax(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-std::pair<typename MeshType::FaceType::ScalarType, typename MeshType::FaceType::ScalarType>
-perFaceScalarMinMax(const MeshType& m);
-
-template<MeshConcept MeshType>
-typename MeshType::VertexType::ScalarType perVertexScalarAverage(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-typename MeshType::FaceType::ScalarType perFaceScalarAverage(const MeshType& m);
-
-template<typename PointType>
+template<PointConcept PointType>
 Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
 
 template<MeshConcept MeshType>
 Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
 
-template<typename PointType>
+template<PointConcept PointType>
 Matrix33<double> weightedCovarianceMatrixOfPointCloud(
 	const std::vector<PointType>& pointVec,
 	const std::vector<typename PointType::ScalarType>& weigths);
 
 template<FaceMeshConcept MeshType>
 Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
+
+template<MeshConcept MeshType, typename ScalarType>
+std::vector<ScalarType> vertexRadiusFromWeights(
+	const MeshType&                m,
+	const std::vector<ScalarType>& weights,
+	double                         diskRadius,
+	double                         radiusVariance,
+	bool                           invert = false);
 
 } // namespace vcl
 

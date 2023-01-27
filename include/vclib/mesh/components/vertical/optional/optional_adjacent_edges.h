@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -54,16 +55,12 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 public:
+	static const int ADJ_EDGE_NUMBER = N;
+
+	using AdjacentEdgeType = Edge;
+
 	// possibility to access to the AdjacentEdges class, whether is optional or not.
 	using AdjacentEdges = OptionalAdjacentEdges;
-
-	// the AdjEdgesContainer type will be array or vector, depending on N value
-	using AdjEdgesContainer = typename std::conditional<
-		(N >= 0),
-		typename std::array<Edge*, ARRAY_SIZE>,
-		typename std::vector<Edge*>>::type;
-
-	static const int ADJ_EDGE_NUMBER = N;
 
 	/* Iterator Types declaration */
 

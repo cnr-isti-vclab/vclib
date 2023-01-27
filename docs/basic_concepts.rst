@@ -27,7 +27,7 @@ We can first declare a new Triangle Mesh and load a ply file:
 
    vcl::Trimesh myTriMesh;
 
-   vcl::loadPly(m, "bunny.ply");
+   vcl::loadPly(myTriMesh, "bunny.ply");
 
 The TriMesh data structure has containers of Vertices and Faces, plus some other
 info like Bounding Box, Transform Matrix, ...
@@ -69,7 +69,7 @@ We can iterate over Vertices and over Faces of the mesh:
                up = false;
        }
        if (up) {
-           std::cout << m.index(f) << " is above the y barycenter\n";
+           std::cout << myTriMesh.index(f) << " is above the y barycenter\n";
        }
    }
 

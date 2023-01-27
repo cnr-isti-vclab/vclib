@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,7 +29,9 @@
 #include "vertex_concepts.h"
 
 #include "../components/concepts/bounding_box.h"
+#include "../components/concepts/color.h"
 #include "../components/concepts/mark.h"
+#include "../components/concepts/name.h"
 #include "../components/concepts/texture_paths.h"
 #include "../components/concepts/transform_matrix.h"
 
@@ -60,13 +63,67 @@ struct IsAMesh<Mesh<Args...>> : // For types matching the pattern Mesh<Args...>
 template<typename T>
 concept HasBoundingBox = comp::HasBoundingBox<T>;
 template<typename T>
+concept HasColor = comp::HasColor<T>;
+template<typename T>
 concept HasMark = comp::HasMark<T>;
+template<typename T>
+concept HasName = comp::HasName<T>;
 template<typename T>
 concept HasTexturePaths = comp::HasTexturePaths<T>;
 template<typename T>
 concept HasTransformMatrix = comp::HasTransformMatrix<T>;
 
 } // namespace mesh
+
+template<typename MeshType>
+concept HasBoundingBox =
+	mesh::HasBoundingBox<MeshType>;
+
+template<typename MeshType>
+concept HasColor =
+	mesh::HasColor<MeshType>;
+
+template<typename MeshType>
+concept HasMark =
+	mesh::HasMark<MeshType>;
+
+template<typename MeshType>
+concept HasName =
+	mesh::HasName<MeshType>;
+
+template<typename MeshType>
+concept HasTexturePaths =
+	mesh::HasTexturePaths<MeshType>;
+
+template<typename MeshType>
+concept HasTransformMatrix =
+	mesh::HasTransformMatrix<MeshType>;
+
+template<typename T>
+concept BaseMeshConcept =
+	(mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
+	mesh::HasVertexContainer<T> &&
+	requires(
+		T o,
+		const T& co,
+		typename T::VertexType v,
+		typename T::VertexType::CoordType c)
+{
+	typename T::VertexType;
+	typename T::VertexContainer;
+
+	{ o.clear() } -> std::same_as<void>;
+	{ o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
+	{ o.importFrom(T()) } -> std::same_as<void>;
+	{ co.index(v) } -> std::same_as<uint>;
+	{ co.index(&v) } -> std::same_as<uint>;
+	{ o.addVertex() } -> std::same_as<uint>;
+	{ o.addVertex(c) } -> std::same_as<uint>;
+	{ o.addVertices(uint()) } -> std::same_as<uint>;
+	{ o.addVertices(c, c, c, c) } -> std::same_as<uint>;
+	{ o.reserveVertices(uint()) } -> std::same_as<void>;
+	{ o.compactVertices() } -> std::same_as<void>;
+};
 
 template<typename MeshType>
 concept HasTriangles =
@@ -80,28 +137,25 @@ template<typename MeshType>
 concept HasPolygons =
 	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
 
-template<typename MeshType>
-concept HasBoundingBox =
-	mesh::HasBoundingBox<MeshType>;
-
-template<typename MeshType>
-concept HasMark =
-	mesh::HasMark<MeshType>;
-
-template<typename MeshType>
-concept HasTexturePaths =
-	mesh::HasTexturePaths<MeshType>;
-
-template<typename MeshType>
-concept HasTransformMatrix =
-	mesh::HasTransformMatrix<MeshType>;
-
-template<typename T>
-concept BaseMeshConcept = mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value;
-
 template<typename T>
 concept FaceMeshConcept =
-	BaseMeshConcept<T> && mesh::HasFaceContainer<T>;
+	BaseMeshConcept<T> && mesh::HasFaceContainer<T> &&
+	requires(
+		T o,
+		const T& co,
+		typename T::FaceType f)
+{
+	typename T::FaceType;
+	typename T::FaceContainer;
+
+	{ co.index(f) } -> std::same_as<uint>;
+	{ co.index(&f) } -> std::same_as<uint>;
+	{ o.addFace() } -> std::same_as<uint>;
+	{ o.addFace(uint(), uint(), uint()) } -> std::same_as<uint>;
+	{ o.addFaces(uint()) } -> std::same_as<uint>;
+	{ o.reserveFaces(uint()) } -> std::same_as<void>;
+	{ o.compactFaces() } -> std::same_as<void>;
+};
 
 template<typename T>
 concept TriangleMeshConcept =
@@ -117,7 +171,22 @@ concept PolygonMeshConcept =
 
 template<typename T>
 concept EdgeMeshConcept =
-	BaseMeshConcept<T> && mesh::HasEdgeContainer<T>;
+	BaseMeshConcept<T> && mesh::HasEdgeContainer<T> &&
+	requires(
+		T o,
+		const T& co,
+		typename T::EdgeType e)
+{
+	typename T::EdgeType;
+	typename T::EdgeContainer;
+
+	{ co.index(e) } -> std::same_as<uint>;
+	{ co.index(&e) } -> std::same_as<uint>;
+	{ o.addEdge() } -> std::same_as<uint>;
+	{ o.addEdges(uint()) } -> std::same_as<uint>;
+	{ o.reserveEdges(uint()) } -> std::same_as<void>;
+	{ o.compactEdges() } -> std::same_as<void>;
+};
 
 /**
  * @brief The DcelMeshConcept is satisfied when:
@@ -140,7 +209,22 @@ concept DcelMeshConcept =
 	!comp::HasAdjacentVerticesComponent<typename T::VertexType> &&
 	!comp::HasAdjacentFacesComponent<typename T::FaceType> &&
 	!comp::HasWedgeColorsComponent<typename T::FaceType> &&
-	!comp::HasWedgeTexCoordsComponent<typename T::FaceType>;
+	!comp::HasWedgeTexCoordsComponent<typename T::FaceType> &&
+	requires(
+		T o,
+		const T& co,
+		typename T::HalfEdgeType e)
+{
+	typename T::HalfEdgeType;
+	typename T::HalfEdgeContainer;
+
+	{ co.index(e) } -> std::same_as<uint>;
+	{ co.index(&e) } -> std::same_as<uint>;
+	{ o.addHalfEdge() } -> std::same_as<uint>;
+	{ o.addHalfEdges(uint()) } -> std::same_as<uint>;
+	{ o.reserveHalfEdges(uint()) } -> std::same_as<void>;
+	{ o.compactHalfEdges() } -> std::same_as<void>;
+};
 
 /**
  * @brief The MeshConcept is satisfied when a Mesh data structure is considered valid.

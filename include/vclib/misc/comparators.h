@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
  
-#ifndef VCL_COMPARATORS_H
-#define VCL_COMPARATORS_H
+#ifndef VCL_MISC_COMPARATORS_H
+#define VCL_MISC_COMPARATORS_H
 
 #include <algorithm>
 #include <utility>
@@ -51,6 +52,20 @@ struct UnorderedPairComparator
 	}
 };
 
+/**
+ * @brief The FirstElementPairComparator struct is an utility comparator that allow to sort
+ * std::pair (or any type that has a sortable member called 'first') using only its first element.
+ * The second element of the Pair type is ignored and won't be considered by the comparator.
+ */
+template<typename Pair>
+struct FirstElementPairComparator
+{
+	bool operator()(const Pair& p1, const Pair& p2) const
+	{
+		return p1.first < p2.first;
+	}
+};
+
 } // namespace vcl
 
-#endif // VCL_COMPARATORS_H
+#endif // VCL_MISC_COMPARATORS_H

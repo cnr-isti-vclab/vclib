@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -160,7 +161,7 @@ void OptionalAdjacentFaces<Face, N, T>::pushAdjFace(Face* f) requires (N < 0)
 template<typename Face, int N, typename T>
 void OptionalAdjacentFaces<Face, N, T>::insertAdjFace(uint i, Face* f) requires (N < 0)
 {
-	assert(i < adjFacesNumber());
+	assert(i < adjFacesNumber() + 1);
 	B::optCont().adjFaces(thisId()).insert(B::optCont().adjFaces(thisId()).begin() + i, f);
 }
 

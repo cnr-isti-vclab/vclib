@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2022                                                    *
+#* Copyright(C) 2021-2023                                                    *
 #* Alessandro Muntoni                                                        *
 #* VCLab - ISTI - Italian National Research Council                          *
 #*                                                                           *
@@ -22,16 +22,14 @@ option(VCLIB_BUILD_DOCS
 	"Build documentation -
 	requires doxygen and sphinx with readthedocs theme and breathe extensions" OFF)
 
-# Add the cmake folder so the FindSphinx module is found
+# In case of building shared libraries, on windows we need to export all symbols
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+# Add the cmake folder for find_package scripts
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-# threads and tbb, required for parallel on linux and macos
-if (UNIX)
-	find_package(Threads)
-	find_package(TBB)
-endif()
-
 # external libraries
+message(STATUS "VCLib: external libraries")
 add_subdirectory(external)
 
 if (WIN32)
@@ -52,19 +50,28 @@ set(HEADERS
 	include/vclib/poly_mesh.h
 	include/vclib/tri_mesh.h
 	include/vclib/algorithms/clean.h
+	include/vclib/algorithms/create.h
 	include/vclib/algorithms/export_to_matrix.h
 	include/vclib/algorithms/fitting.h
 	include/vclib/algorithms/intersection.h
+	include/vclib/algorithms/point_sampling.h
 	include/vclib/algorithms/polygon.h
+	include/vclib/algorithms/shuffle.h
 	include/vclib/algorithms/smooth.h
+	include/vclib/algorithms/sort.h
 	include/vclib/algorithms/stat.h
+	include/vclib/algorithms/update.h
 	include/vclib/algorithms/create/dodecahedron.h
 	include/vclib/algorithms/create/hexahedron.h
+	include/vclib/algorithms/create/icosahedron.h
+	include/vclib/algorithms/create/sphere.h
 	include/vclib/algorithms/create/tetrahedron.h
-	include/vclib/algorithms/internal/inertia.h
-	include/vclib/algorithms/internal/per_face_edge.h
+	include/vclib/algorithms/stat/bounding_box.h
+	include/vclib/algorithms/stat/scalar.h
+	include/vclib/algorithms/stat/selection.h
 	include/vclib/algorithms/update/bounding_box.h
 	include/vclib/algorithms/update/color.h
+	include/vclib/algorithms/update/curvature.h
 	include/vclib/algorithms/update/flag.h
 	include/vclib/algorithms/update/normal.h
 	include/vclib/algorithms/update/scalar.h
@@ -74,6 +81,7 @@ set(HEADERS
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
 	include/vclib/exception/misc_exception.h
+	include/vclib/image/image.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load.h
 	include/vclib/io/load_obj.h
@@ -95,26 +103,31 @@ set(HEADERS
 	include/vclib/io/ply/ply_header.h
 	include/vclib/io/ply/ply_tristrip.h
 	include/vclib/io/ply/ply_vertex.h
-	include/vclib/iterators/container_iterator.h
-	include/vclib/iterators/container_range_iterator.h
+	include/vclib/iterators/pointer_iterator.h
 	include/vclib/iterators/range_iterator.h
-	include/vclib/iterators/half_edge/face_adj_face_iterator.h
-	include/vclib/iterators/half_edge/face_base_iterator.h
-	include/vclib/iterators/half_edge/face_half_edge_iterator.h
-	include/vclib/iterators/half_edge/face_vertex_iterator.h
-	include/vclib/iterators/half_edge/face_wedge_color_iterator.h
-	include/vclib/iterators/half_edge/face_wedge_tex_coord_iterator.h
-	include/vclib/iterators/half_edge/vertex_adj_face_iterator.h
-	include/vclib/iterators/half_edge/vertex_adj_vertex_iterator.h
-	include/vclib/iterators/half_edge/vertex_base_iterator.h
+	include/vclib/iterators/grid/cell_iterator.h
+	include/vclib/iterators/grid/cell_range_iterator.h
+	include/vclib/iterators/grid/hash_table_grid_iterator.h
+	include/vclib/iterators/grid/static_grid_iterator.h
+	include/vclib/iterators/mesh/container_iterator.h
+	include/vclib/iterators/mesh/container_range_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_base_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_half_edge_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_vertex_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_wedge_color_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_wedge_tex_coord_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_base_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/matrix.h
 	include/vclib/math/perlin_noise.h
+	include/vclib/math/random.h
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_algorithms.h
 	include/vclib/mesh/mesh_components.h
-	include/vclib/mesh/mesh_pos.h
 	include/vclib/mesh/requirements.h
 	include/vclib/mesh/components/concepts/adjacent_edges.h
 	include/vclib/mesh/components/concepts/adjacent_faces.h
@@ -127,6 +140,7 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/face_half_edge_reference.h
 	include/vclib/mesh/components/concepts/half_edge_references.h
 	include/vclib/mesh/components/concepts/mark.h
+	include/vclib/mesh/components/concepts/name.h
 	include/vclib/mesh/components/concepts/normal.h
 	include/vclib/mesh/components/concepts/principal_curvature.h
 	include/vclib/mesh/components/concepts/scalar.h
@@ -147,6 +161,7 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/face_half_edge_reference.h
 	include/vclib/mesh/components/horizontal/half_edge_references.h
 	include/vclib/mesh/components/horizontal/mark.h
+	include/vclib/mesh/components/horizontal/name.h
 	include/vclib/mesh/components/horizontal/normal.h
 	include/vclib/mesh/components/horizontal/polygon_bit_flags.h
 	include/vclib/mesh/components/horizontal/principal_curvature.h
@@ -221,54 +236,96 @@ set(HEADERS
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_concepts.h
 	include/vclib/mesh/requirements/vertex_requirements.h
+	include/vclib/mesh_utils/mesh_edge_util.h
+	include/vclib/mesh_utils/mesh_inertia.h
+	include/vclib/mesh_utils/mesh_pos.h
+	include/vclib/mesh_utils/tri_poly_index_bimap.h
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h
 	include/vclib/misc/file_info.h
+	include/vclib/misc/hash.h
+	include/vclib/misc/logger.h
+	include/vclib/misc/mark.h
 	include/vclib/misc/nested_initializer_lists.h
+	include/vclib/misc/pair.h
 	include/vclib/misc/parallel.h
 	include/vclib/misc/string.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
 	include/vclib/misc/types.h
 	include/vclib/misc/internal/tmp_meshes.h
+	include/vclib/misc/logger/console_logger.h
+	include/vclib/misc/logger/logger.h
+	include/vclib/misc/logger/logger_concept.h
+	include/vclib/misc/mark/markable.h
+	include/vclib/misc/mark/markable_vector.h
+	include/vclib/render/drawable_object.h
+	include/vclib/render/drawable_object_vector.h
+	include/vclib/render/generic_drawable_mesh.h
+	include/vclib/render/mesh_render_buffers.h
+	include/vclib/render/mesh_render_settings.h
 	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
-	include/vclib/space/kd_tree.h
 	include/vclib/space/plane.h
 	include/vclib/space/point.h
 	include/vclib/space/principal_curvature.h
+	include/vclib/space/sampler.h
+	include/vclib/space/spatial_data_structures.h
+	include/vclib/space/sphere.h
 	include/vclib/space/tex_coord.h
 	include/vclib/space/array/array_t.h
 	include/vclib/space/array/array2.h
 	include/vclib/space/array/array3.h
 	include/vclib/space/array/array4.h
 	include/vclib/space/array/array_bool.h
+	include/vclib/space/spatial_data_structures/grid.h
+	include/vclib/space/spatial_data_structures/kd_tree.h
+	include/vclib/space/spatial_data_structures/grid/abstract_ds_grid.h
+	include/vclib/space/spatial_data_structures/grid/hash_table_grid.h
+	include/vclib/space/spatial_data_structures/grid/regular_grid_t.h
+	include/vclib/space/spatial_data_structures/grid/regular_grid2.h
+	include/vclib/space/spatial_data_structures/grid/regular_grid3.h
+	include/vclib/space/spatial_data_structures/grid/static_grid.h
+	include/vclib/space/point/point_concept.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
-	include/vclib/space/point/point4.h)
+	include/vclib/space/point/point4.h
+	include/vclib/space/sampler/mesh_sampler.h
+	include/vclib/space/sampler/point_sampler.h
+	include/vclib/space/sampler/sampler_concept.h
+	include/vclib/space/sampler/vertex_index_sampler.h)
 
 set(SOURCES
 	include/vclib/algorithms/clean.cpp
 	include/vclib/algorithms/export_to_matrix.cpp
 	include/vclib/algorithms/fitting.cpp
 	include/vclib/algorithms/intersection.cpp
+	include/vclib/algorithms/point_sampling.cpp
 	include/vclib/algorithms/polygon.cpp
+	include/vclib/algorithms/shuffle.cpp
 	include/vclib/algorithms/smooth.cpp
+	include/vclib/algorithms/sort.cpp
 	include/vclib/algorithms/stat.cpp
 	include/vclib/algorithms/create/dodecahedron.cpp
 	include/vclib/algorithms/create/hexahedron.cpp
+	include/vclib/algorithms/create/icosahedron.cpp
+	include/vclib/algorithms/create/sphere.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
-	include/vclib/algorithms/internal/inertia.cpp
+	include/vclib/algorithms/stat/bounding_box.cpp
+	include/vclib/algorithms/stat/scalar.cpp
+	include/vclib/algorithms/stat/selection.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
 	include/vclib/algorithms/update/color.cpp
+	include/vclib/algorithms/update/curvature.cpp
 	include/vclib/algorithms/update/flag.cpp
 	include/vclib/algorithms/update/normal.cpp
 	include/vclib/algorithms/update/scalar.cpp
 	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
+	include/vclib/image/image.cpp
 	include/vclib/io/file_mesh_info.cpp
 	include/vclib/io/load.cpp
 	include/vclib/io/load_obj.cpp
@@ -289,15 +346,19 @@ set(SOURCES
 	include/vclib/io/ply/ply_header.cpp
 	include/vclib/io/ply/ply_tristrip.cpp
 	include/vclib/io/ply/ply_vertex.cpp
-	include/vclib/iterators/container_iterator.cpp
-	include/vclib/iterators/half_edge/face_base_iterator.cpp
-	include/vclib/iterators/half_edge/vertex_base_iterator.cpp
+	include/vclib/iterators/grid/cell_iterator.cpp
+	include/vclib/iterators/grid/hash_table_grid_iterator.cpp
+	include/vclib/iterators/grid/static_grid_iterator.cpp
+	include/vclib/iterators/mesh/container_iterator.cpp
+	include/vclib/iterators/mesh/half_edge/face_base_iterator.cpp
+	include/vclib/iterators/mesh/half_edge/vertex_base_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/matrix.cpp
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/mesh_algorithms.cpp
-	include/vclib/mesh/mesh_pos.cpp
+	include/vclib/math/base.cpp
+	include/vclib/math/random.cpp
 	include/vclib/mesh/components/horizontal/adjacent_edges.cpp
 	include/vclib/mesh/components/horizontal/adjacent_faces.cpp
 	include/vclib/mesh/components/horizontal/adjacent_vertices.cpp
@@ -308,6 +369,7 @@ set(SOURCES
 	include/vclib/mesh/components/horizontal/face_half_edge_reference.cpp
 	include/vclib/mesh/components/horizontal/half_edge_references.cpp
 	include/vclib/mesh/components/horizontal/mark.cpp
+	include/vclib/mesh/components/horizontal/name.cpp
 	include/vclib/mesh/components/horizontal/normal.cpp
 	include/vclib/mesh/components/horizontal/polygon_bit_flags.cpp
 	include/vclib/mesh/components/horizontal/principal_curvature.cpp
@@ -350,6 +412,9 @@ set(SOURCES
 	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp
+	include/vclib/mesh_utils/mesh_inertia.cpp
+	include/vclib/mesh_utils/mesh_pos.cpp
+	include/vclib/mesh_utils/tri_poly_index_bimap.cpp
 	include/vclib/misc/compactness.cpp
 	include/vclib/misc/file_info.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
@@ -357,40 +422,127 @@ set(SOURCES
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
+	include/vclib/misc/logger/console_logger.cpp
+	include/vclib/misc/logger/logger.cpp
+	include/vclib/misc/mark/markable_vector.cpp
+	include/vclib/render/drawable_object_vector.cpp
+	include/vclib/render/generic_drawable_mesh.cpp
+	include/vclib/render/mesh_render_buffers.cpp
+	include/vclib/render/mesh_render_settings.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
-	include/vclib/space/kd_tree.cpp
 	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
+	include/vclib/space/sphere.cpp
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/array/array_t.cpp
 	include/vclib/space/array/array2.cpp
 	include/vclib/space/array/array3.cpp
 	include/vclib/space/array/array4.cpp
+	include/vclib/space/spatial_data_structures/grid.cpp
+	include/vclib/space/spatial_data_structures/kd_tree.cpp
+	include/vclib/space/spatial_data_structures/grid/abstract_ds_grid.cpp
+	include/vclib/space/spatial_data_structures/grid/hash_table_grid.cpp
+	include/vclib/space/spatial_data_structures/grid/regular_grid_t.cpp
+	include/vclib/space/spatial_data_structures/grid/static_grid.cpp
 	include/vclib/space/point/point_t.cpp
-	include/vclib/space/point/point2.cpp
-	include/vclib/space/point/point3.cpp
-	include/vclib/space/point/point4.cpp)
+	include/vclib/space/sampler/mesh_sampler.cpp
+	include/vclib/space/sampler/point_sampler.cpp
+	include/vclib/space/sampler/vertex_index_sampler.cpp)
+
+set(HEADERS_LIB
+	)
+
+set(SOURCES_LIB
+	)
+
+set (FORMS_LIB
+	)
+
+# headers and sources to include only if using OpenGL
+if (TARGET vclib-external-opengl)
+	list(APPEND HEADERS
+		include/vclib/ext/opengl2/draw_objects2.h
+		include/vclib/ext/opengl2/draw_objects3.h
+		include/vclib/ext/opengl2/drawable_mesh.h)
+
+	list(APPEND SOURCES
+		include/vclib/ext/opengl2/draw_objects2.cpp
+		include/vclib/ext/opengl2/draw_objects3.cpp
+		include/vclib/ext/opengl2/drawable_mesh.cpp)
+endif()
+
+# headers and sources to include only if using qt
+if (TARGET vclib-external-qt)
+	# header only sources
+	list(APPEND HEADERS
+		)
+
+	list(APPEND SOURCES
+		)
+
+	# sources that must be built
+	list(APPEND HEADERS_LIB
+		include/vclib/ext/qt/gui/drawable_object_frame.h
+		include/vclib/ext/qt/gui/drawable_object_vector_frame.h
+		include/vclib/ext/qt/gui/mesh_render_settings_frame.h
+		include/vclib/ext/qt/gui/q_clickable_label.h)
+
+	list(APPEND SOURCES_LIB
+		include/vclib/ext/qt/gui/drawable_object_frame.cpp
+		include/vclib/ext/qt/gui/drawable_object_vector_frame.cpp
+		include/vclib/ext/qt/gui/mesh_render_settings_frame.cpp
+		include/vclib/ext/qt/gui/q_clickable_label.cpp)
+
+	list(APPEND FORMS_LIB
+		include/vclib/ext/qt/gui/drawable_object_frame.ui
+		include/vclib/ext/qt/gui/drawable_object_vector_frame.ui
+		include/vclib/ext/qt/gui/mesh_render_settings_frame.ui)
+
+	# headers and sources to include only if using QGLViewer
+	if (TARGET vclib-external-qglviewer)
+		# header only sources
+		list(APPEND HEADERS
+			include/vclib/ext/qglviewer/gl_area.h)
+
+		list(APPEND SOURCES
+			include/vclib/ext/qglviewer/gl_area.cpp)
+
+		# sources that must be built
+		list(APPEND HEADERS_LIB
+			include/vclib/ext/qglviewer/viewer_main_window.h)
+
+		list(APPEND SOURCES_LIB
+			include/vclib/ext/qglviewer/viewer_main_window.cpp)
+
+		list(APPEND FORMS_LIB
+			include/vclib/ext/qglviewer/viewer_main_window.ui)
+	endif()
+endif()
 
 add_library(vclib INTERFACE)
 
 target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})
-target_link_libraries(vclib INTERFACE vclib-external-eigen vclib-external-mapbox-earcut)
+target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
-if (UNIX)
-	if (TARGET TBB::tbb AND TARGET Threads::Threads)
-		message(STATUS "VCLIB using parallel algorithms")
-		target_link_libraries(vclib INTERFACE TBB::tbb Threads::Threads)
-	else()
-		message(STATUS "VCLIB not using parallel algorithms")
-	endif()
-else() # natively supported by msvc
-	message(STATUS "VCLIB using parallel algorithms")
+if (WIN32 OR TARGET vclib-external-tbb)
+	message(STATUS "VCLib: using parallel algorithms")
+else()
+	message(STATUS "VCLib: not using parallel algorithms")
+endif()
+
+if (TARGET vclib-external-qt)
+	add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
+	target_include_directories(vclib-qt PRIVATE ${VCLIB_INCLUDE_DIR})
+	target_link_libraries(vclib-qt PRIVATE ${VCLIB_EXTERNAL_LIBRARIES})
+
+	target_link_libraries(vclib INTERFACE vclib-qt)
 endif()
 
 if (VCLIB_IDE)
-	add_custom_target(vclib_ide SOURCES ${HEADERS} ${SOURCES})
+	add_custom_target(vclib_ide SOURCES
+		${HEADERS} ${HEADERS_LIB} ${SOURCES} ${SOURCES_LIB} ${FORMS_LIB})
 endif()
 
 if (VCLIB_BUILD_TESTS)
@@ -400,3 +552,5 @@ endif()
 if (VCLIB_BUILD_DOCS)
 	add_subdirectory(docs)
 endif()
+
+

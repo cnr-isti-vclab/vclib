@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_NESTED_INITIALIZER_LISTS_H
-#define VCL_NESTED_INITIALIZER_LISTS_H
+#ifndef VCL_MISC_NESTED_INITIALIZER_LISTS_H
+#define VCL_MISC_NESTED_INITIALIZER_LISTS_H
 
 /* @link https://zcrou.com/blog/dev/nested-initializers */
 
@@ -103,4 +104,4 @@ public:
 
 #include "nested_initializer_lists.cpp"
 
-#endif // VCL_NESTED_INITIALIZER_LISTS_H
+#endif // VCL_MISC_NESTED_INITIALIZER_LISTS_H

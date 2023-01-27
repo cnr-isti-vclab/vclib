@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -33,7 +34,7 @@ namespace vcl::io::ply {
 
 namespace internal {
 
-template<typename MeshType, typename FaceType>
+template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void saveFaceIndices(
 	std::ofstream&          file,
 	Property                p,
@@ -51,7 +52,7 @@ void saveFaceIndices(
 	}
 }
 
-template<typename MeshType, typename FaceType>
+template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 {
 	bool splitFace = false;
@@ -85,7 +86,7 @@ void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 	}
 }
 
-template<typename MeshType, typename FaceType, typename Scalar>
+template<FaceMeshConcept MeshType, FaceConcept FaceType, typename Scalar>
 void setFaceWedgeTexCoords(
 	FaceType&                                     f,
 	MeshType&                                     m,
@@ -122,7 +123,7 @@ void setFaceWedgeTexCoords(
 	}
 }
 
-template<typename MeshType, typename FaceType, typename Stream>
+template<FaceMeshConcept MeshType, FaceConcept FaceType, typename Stream>
 void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p)
 {
 	bool              hasBeenRead = false;
@@ -162,9 +163,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 				hasBeenRead = true;
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh
 				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
-					for (uint i = 0; i < mesh.face(ff).vertexNumber(); ++i) {
-						mesh.face(ff).wedgeTexCoord(i).nTexture() = n;
-					}
+					mesh.face(ff).textureIndex() = n;
 				}
 			}
 		}
@@ -223,7 +222,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadFacesTxt(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	using FaceType       = typename MeshType::FaceType;
@@ -234,7 +233,7 @@ void loadFacesTxt(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
 		mesh.addFace();
 		FaceType& f = mesh.face(mesh.faceNumber() - 1);
-		for (ply::Property p : header.faceProperties()) {
+		for (const ply::Property& p : header.faceProperties()) {
 			if (token == spaceTokenizer.end()) {
 				throw vcl::MalformedFileException("Unexpected end of line.");
 			}
@@ -243,7 +242,7 @@ void loadFacesTxt(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadFacesBin(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	using FaceType = typename MeshType::FaceType;
@@ -251,7 +250,7 @@ void loadFacesBin(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
 		uint      ffid = mesh.addFace();
 		FaceType& f    = mesh.face(ffid);
-		for (ply::Property p : header.faceProperties()) {
+		for (const ply::Property& p : header.faceProperties()) {
 			loadFaceProperty(file, mesh, f, p);
 		}
 	}
@@ -259,7 +258,7 @@ void loadFacesBin(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 
 } // namespace internal
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mesh)
 {
 	using FaceType = typename MeshType::FaceType;
@@ -270,7 +269,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 	std::vector<int> vIndices = mesh.vertexCompactIndices();
 
 	for (const FaceType& f : mesh.faces()) {
-		for (ply::Property p : header.faceProperties()) {
+		for (const ply::Property& p : header.faceProperties()) {
 			bool hasBeenWritten = false;
 			if (p.name == ply::vertex_indices) {
 				internal::saveFaceIndices(file, p, mesh, vIndices, f, bin);
@@ -306,7 +305,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 			}
 			if (p.name == ply::texnumber) {
 				if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-					io::internal::writeProperty(file, f.wedgeTexCoord(0).nTexture(), p.type, bin);
+					io::internal::writeProperty(file, f.textureIndex(), p.type, bin);
 					hasBeenWritten = true;
 				}
 			}
@@ -321,7 +320,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 	}
 }
 
-template<typename MeshType>
+template<FaceMeshConcept MeshType>
 void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
 	if (header.format() == ply::ASCII) {

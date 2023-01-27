@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT3_H
-#define VCL_POINT3_H
+#ifndef VCL_SPACE_POINT_POINT3_H
+#define VCL_SPACE_POINT_POINT3_H
 
 #include "point_t.h"
 
@@ -31,29 +32,18 @@ namespace vcl {
  * @brief The Point3 class represents a 3-dimensional point containing 3 ScalarType values.
  * Specializes the Point class, providing some additional member functions useful for 3D points.
  */
-template<typename ScalarType>
-class Point3 : public Point<ScalarType, 3>
-{
-public:
-	Point3() = default; // default empty constructor
-
-	Point3(const Point<ScalarType, 3>& p1); // from base class - will include all its constructors
-	Point3(const ScalarType& x, const ScalarType& y, const ScalarType& z);
-
-	ScalarType x() const;
-	ScalarType y() const;
-	ScalarType z() const;
-	ScalarType& x();
-	ScalarType& y();
-	ScalarType& z();
-};
+template<typename Scalar>
+using Point3 = Point<Scalar, 3>;
 
 using Point3i = Point3<int>;
 using Point3f = Point3<float>;
 using Point3d = Point3<double>;
 
+// makes sure that Point3 classes satisfy PointConcept
+static_assert(PointConcept<Point3i>, "Point3i is not a valid Point");
+static_assert(PointConcept<Point3f>, "Point3f is not a valid Point");
+static_assert(PointConcept<Point3d>, "Point3d is not a valid Point");
+
 } // namespace vcl
 
-#include "point3.cpp"
-
-#endif // VCL_POINT3_H
+#endif // VCL_SPACE_POINT_POINT3_H

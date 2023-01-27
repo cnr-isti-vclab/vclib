@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -26,17 +27,17 @@
 namespace vcl {
 
 template<typename Scalar>
-TexCoord<Scalar>::TexCoord() : coord(0, 0), n(0)
+TexCoord<Scalar>::TexCoord() : coord(0, 0)
 {
 }
 
 template<typename Scalar>
-TexCoord<Scalar>::TexCoord(const Scalar &s1, const Scalar &s2, short n) : coord(s1, s2), n(n)
+TexCoord<Scalar>::TexCoord(const Scalar &s1, const Scalar &s2) : coord(s1, s2)
 {
 }
 
 template<typename Scalar>
-TexCoord<Scalar>::TexCoord(const Point2<Scalar> &p, short n) : coord(p), n(n)
+TexCoord<Scalar>::TexCoord(const Point2<Scalar> &p) : coord(p)
 {
 }
 
@@ -50,7 +51,6 @@ TexCoord<S> TexCoord<Scalar>::cast() const
 	else {
 		TexCoord<S> tmp;
 		tmp.coord = coord.template cast<S>();
-		tmp.n = n;
 		return tmp;
 	}
 }
@@ -100,18 +100,6 @@ void TexCoord<Scalar>::set(Scalar u, Scalar v)
 	assert(v >= 0 && v <= 1);
 	coord.x() = u;
 	coord.y() = v;
-}
-
-template<typename Scalar>
-short TexCoord<Scalar>::nTexture() const
-{
-	return n;
-}
-
-template<typename Scalar>
-short& TexCoord<Scalar>::nTexture()
-{
-	return n;
 }
 
 template<typename Scalar>

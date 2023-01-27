@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -139,6 +140,10 @@ concept FaceConcept =
 	comp::SanityCheckAdjacentFaces<T> &&
 	comp::SanityCheckWedgeColors<T> &&
 	comp::SanityCheckWedgeTexCoords<T>;
+
+template<typename T>
+concept TriangleFaceConcept =
+	T::VERTEX_NUMBER == 3 && FaceConcept<T>;
 
 /**
  * @brief PolygonFaceConcept

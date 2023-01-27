@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -90,6 +91,12 @@ template<class T, size_t N>
 constexpr unsigned long int Array<T, N>::dimensions() const
 {
 	return N;
+}
+
+template<class T, size_t N>
+bool Array<T, N>::empty() const
+{
+	return v.empty();
 }
 
 /**
@@ -216,6 +223,18 @@ const T* Array<T, N>::cArray(I... indices) const
 		ind *= sizes[i];
 	}
 	return &v[ind];
+}
+
+template<class T, size_t N>
+T* Array<T, N>::data()
+{
+	return v.data();
+}
+
+template<class T, size_t N>
+const T* Array<T, N>::data() const
+{
+	return v.data();
 }
 
 /**

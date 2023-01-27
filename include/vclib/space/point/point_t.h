@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,14 +21,17 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_POINT_T_H
-#define VCL_POINT_T_H
+#ifndef VCL_SPACE_POINT_POINT_T_H
+#define VCL_SPACE_POINT_POINT_T_H
+
+#include <compare>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
+#include "point_concept.h"
+
 #include <vclib/math/base.h>
-#include <vclib/misc/types.h>
 
 namespace vcl {
 
@@ -47,7 +51,19 @@ public:
 
 	Point() = default; // default empty constructor
 
+	template<typename... Scalars>
+	Point(Scalars... scalars) requires(sizeof...(scalars) == N);
+
 	Point(const Eigen::Matrix<Scalar, 1, N>& v); // constructor from 1xN eigen matrix
+
+	ScalarType& x() requires (N >= 1);
+	const ScalarType& x() const requires (N >= 1);
+	ScalarType& y() requires (N >= 2);
+	const ScalarType& y() const requires (N >= 2);
+	ScalarType& z() requires (N >= 3);
+	const ScalarType& z() const requires (N >= 3);
+	ScalarType& w() requires (N >= 4);
+	const ScalarType& w() const requires (N >= 4);
 
 	template<typename S>
 	Point<S, N> cast() const;
@@ -62,6 +78,8 @@ public:
 	Scalar squaredDist(const Point& p1) const;
 
 	Point cross(const Point& p1) const requires (N == 3);
+	Point mul(const Point& p1) const;
+	Point div(const Point& p1) const;
 
 	Scalar norm() const;
 	Scalar squaredNorm() const;
@@ -76,9 +94,13 @@ public:
 
 	const Eigen::Matrix<Scalar, 1, N>& eigenVector() const;
 
+	std::size_t hash() const;
+
 	// operators
 	Scalar&       operator()(uint i);
 	const Scalar& operator()(uint i) const;
+	Scalar& operator[](uint i);
+	const Scalar& operator[](uint i) const;
 
 	bool operator==(const Point& p1) const = default;
 	auto operator<=>(const Point& p1) const;
@@ -109,8 +131,7 @@ public:
 
 	Point& operator/=(const Scalar& s);
 
-	Scalar& operator[](uint i);
-	const Scalar& operator[](uint i) const;
+	Point& operator=(const Eigen::Matrix<Scalar, 1, N>& v);
 
 	/// @private
 	template<typename S, int M>
@@ -125,6 +146,15 @@ std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1);
 
 } // namespace vcl
 
+// inject vcl::Point hash function in std namespace
+namespace std {
+template <typename Scalar, int N>
+struct hash<vcl::Point<Scalar, N> >
+{
+	size_t operator()(const vcl::Point<Scalar, N>& id) const noexcept;
+};
+} // namespace std
+
 #include "point_t.cpp"
 
-#endif // VCL_POINT_T_H
+#endif // VCL_SPACE_POINT_POINT_T_H

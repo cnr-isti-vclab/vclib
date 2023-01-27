@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -21,6 +22,8 @@
  ****************************************************************************/
 
 #include "bounding_box.h"
+
+#include <vclib/algorithms/stat.h>
 
 namespace vcl {
 
@@ -40,10 +43,7 @@ void updateBoundingBox(MeshType& m)
 {
 	using VertexType = typename MeshType::VertexType;
 
-	m.boundingBox().setNull();
-	for (const VertexType& v : m.vertices()) {
-		m.boundingBox().add(v.coord());
-	}
+	m.boundingBox() = vcl::boundingBox(m);
 }
 
 } // namespace vcl

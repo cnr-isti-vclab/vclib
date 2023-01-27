@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -34,7 +35,7 @@ namespace vcl::io {
 
 namespace internal {
 
-template<typename VertexType, typename MeshType>
+template<VertexConcept VertexType, MeshConcept MeshType>
 obj::Material materialFromVertex(const VertexType& v, const FileMeshInfo& fi)
 {
 	obj::Material mat;
@@ -49,7 +50,7 @@ obj::Material materialFromVertex(const VertexType& v, const FileMeshInfo& fi)
 	return mat;
 }
 
-template<typename FaceType, typename MeshType>
+template<FaceConcept FaceType, MeshConcept MeshType>
 obj::Material materialFromFace(const FaceType& f, const MeshType& m, const FileMeshInfo& fi)
 {
 	obj::Material mat;
@@ -62,19 +63,13 @@ obj::Material materialFromFace(const FaceType& f, const MeshType& m, const FileM
 	if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
 		if (fi.hasFaceWedgeTexCoords()) {
 			mat.hasTexture = true;
-			mat.map_Kd = m.texture(f.wedgeTexCoord(0).nTexture());
-		}
-	}
-	if constexpr (HasPerVertexTexCoord<MeshType>) {
-		if (fi.hasVertexTexCoords()) {
-			mat.hasTexture = true;
-			mat.map_Kd = m.texturePath(f.vertex(0)->texCoord().nTexture());
+			mat.map_Kd = m.texture(f.textureIndex());
 		}
 	}
 	return mat;
 }
 
-template<typename ElementType, typename MeshType>
+template<typename ElementType, MeshConcept MeshType>
 void writeElementMaterial(
 	const ElementType&                    e,
 	const MeshType&                       m,
@@ -115,14 +110,14 @@ void writeElementMaterial(
 
 } // namespace internal
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveObj(const MeshType& m, const std::string& filename)
 {
 	vcl::io::FileMeshInfo info(m);
 	saveObj(m, filename, info);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo& info)
 {
 	FileMeshInfo meshInfo(m);

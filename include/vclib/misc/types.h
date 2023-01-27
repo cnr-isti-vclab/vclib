@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,12 +21,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCL_MISC_TYPES_H
+#define VCL_MISC_TYPES_H
+
+#define NOMINMAX
 
 #include <assert.h>
 #include <concepts>
 #include <type_traits>
+
+// tbb and qt conflicts: if both are linked, we need to first undef Qt's emit
+// see: https://github.com/oneapi-src/oneTBB/issues/547
+#ifndef Q_MOC_RUN
+#if defined(emit)
+#undef emit
+#include <execution>
+#define emit // restore the macro definition of "emit", as it was defined in gtmetamacros.h
+#else
+#include <execution>
+#endif // defined(emit)
+#endif // Q_MOC_RUN
 
 // clang does not support Standardization of Parallelism yet -> https://en.cppreference.com/w/cpp/compiler_support
 #ifdef __clang__
@@ -38,6 +53,13 @@ using uint = unsigned int;
 using ushort = unsigned short;
 
 namespace vcl {
+
+/*
+ * Utility to get clean type from an input type that could have a reference or a pointer.
+ */
+template<typename T>
+using RemoveRefAndPointer =
+	typename std::remove_pointer<typename std::remove_reference<T>::type>::type;
 
 /*
  * Utility type that makes possible to treat const pointers in a templated class that can treat a
@@ -113,4 +135,4 @@ using IsDerivedFromTemplateSpecialization = typename std::invoke_result< interna
 
 } // namespace vcl
 
-#endif // VCL_TYPES_H
+#endif // VCL_MISC_TYPES_H

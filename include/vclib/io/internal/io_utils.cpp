@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -82,7 +83,7 @@ inline std::ifstream loadFileStream(const std::string& filename)
  * @param info
  * @param m
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
 {
 	if (info.hasVertices()) {

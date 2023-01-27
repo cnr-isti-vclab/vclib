@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,23 +29,34 @@
 namespace vcl::comp {
 
 /**
- * @brief HasMark concept
+ * @brief HasMark concept is satisfied only if a Element/Mesh class provides the types and member
+ * functions specified in this concept. These types and member functions allow to access to a
+ * Mark component of a given element/mesh.
  *
- * This concept is satisfied only if a class has a member function that 'mark()' which returns an
- * int&
+ * Note that this concept does not discriminate between the Horizontal Mark component
+ * and the vertical OptionalMark component, therefore it does not guarantee that a
+ * template Element type that satisfies this concept provides Mark component at runtime
+ * (it is guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that Color is available at runtime, you need to call the member
+ * function `isMarkEnabled()`.
  */
 template<typename T>
-concept HasMark = requires(T o)
+concept HasMark = requires(
+	T o,
+	const T& co)
 {
-	{ o.mark() } -> std::same_as<int&>;
+	{ co.mark() } -> std::same_as<int>;
+	{ o.resetMark() } -> std::same_as<void>;
+	{ o.incrementMark() } -> std::same_as<void>;
+	{ o.decrementMark() } -> std::same_as<void>;
+	{ co.isMarkEnabled() } -> std::same_as<bool>;
 };
 
 /**
- * @brief HasOptionalMark concept
- *
- * This concept is satisfied only if a class has two member functions:
- * - 'mark()' which returns an int&
- * - '__optionalMark()'
+ * @brief HasOptionalMark concept is satisfied only if a class satisfis the HasMark concept and
+ * has the additional member function '__optionalMark()', which is the discriminator between the
+ * non-optional and optional component.
  */
 template<typename T>
 concept HasOptionalMark = HasMark<T> && requires(T o)

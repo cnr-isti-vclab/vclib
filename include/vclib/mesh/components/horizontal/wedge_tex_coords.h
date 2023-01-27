@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -37,9 +38,9 @@ class WedgeTexCoords :
 	using Base = internal::GenericContainer<vcl::TexCoord<Scalar>, N>;
 
 public:
-	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
-
 	static const int WEDGE_TEX_COORD_NUMBER = Base::CONTAINER_SIZE;
+
+	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 
 	/* Iterator Types declaration */
 
@@ -60,6 +61,9 @@ public:
 
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
+
+	short& textureIndex();
+	const short& textureIndex() const;
 
 	constexpr bool isWedgeTexCoordsEnabled() const { return true; }
 
@@ -93,6 +97,8 @@ protected:
 private:
 	template<typename Element>
 	void importWedgeTexCoordsFrom(const Element& e);
+
+	short texIndex;
 };
 
 } // namespace vcl::comp

@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -23,6 +24,342 @@
 #include "intersection.h"
 
 namespace vcl {
+
+namespace internal {
+
+// triangle box intersect functions
+template<typename ScalarType>
+inline void findMinMax(
+	ScalarType x0,
+	ScalarType x1,
+	ScalarType x2,
+	ScalarType &min,
+	ScalarType &max) {
+	min = max = x0;
+	if (x1 < min)
+		min = x1;
+	if (x1 > max)
+		max = x1;
+	if (x2 < min)
+		min = x2;
+	if (x2 > max)
+		max = x2;
+}
+
+/*======================== X-tests ========================*/
+template<typename ScalarType, PointConcept PointType>
+inline bool axisTestX01(
+	ScalarType       a,
+	ScalarType       b,
+	ScalarType       fa,
+	ScalarType       fb,
+	const PointType& v0,
+	const PointType& v2,
+	const PointType& bHalfSixe)
+{
+	ScalarType p0 = a * v0.y() - b * v0.z();
+	ScalarType p2 = a * v2.y() - b * v2.z();
+	ScalarType min, max;
+	if (p0 < p2) {
+		min = p0;
+		max = p2;
+	} else {
+		min = p2;
+		max = p0;
+	}
+	ScalarType rad = fa * bHalfSixe.y() + fb * bHalfSixe.z();
+	if (min > rad || max < -rad)
+		return false;
+	return true;
+}
+
+template<typename ScalarType, PointConcept PointType>
+inline bool axisTestX2(
+	ScalarType       a,
+	ScalarType       b,
+	ScalarType       fa,
+	ScalarType       fb,
+	const PointType& v0,
+	const PointType& v1,
+	const PointType& bHalfSixe)
+{
+	ScalarType p0 = a * v0.y() - b * v0.z();
+	ScalarType p1 = a * v1.y() - b * v1.z();
+	ScalarType min, max;
+	if (p0 < p1) {
+		min = p0;
+		max = p1;
+	} else {
+		min = p1;
+		max = p0;
+	}
+	ScalarType  rad = fa * bHalfSixe.y() + fb * bHalfSixe.z();
+	if (min > rad || max < -rad)
+		return false;
+	return true;
+}
+
+/*======================== Y-tests ========================*/
+template<typename ScalarType, PointConcept PointType>
+inline bool axisTestY02(
+	ScalarType       a,
+	ScalarType       b,
+	ScalarType       fa,
+	ScalarType       fb,
+	const PointType& v0,
+	const PointType& v2,
+	const PointType& bHalfSixe)
+{
+	ScalarType p0 = -a * v0.x() + b * v0.z();
+	ScalarType p2 = -a * v2.x() + b * v2.z();
+	ScalarType min, max;
+	if (p0 < p2) {
+		min = p0;
+		max = p2;
+	} else {
+		min = p2;
+		max = p0;
+	}
+	ScalarType rad = fa * bHalfSixe.x() + fb * bHalfSixe.z();
+	if (min > rad || max < -rad)
+		return false;
+	return true;
+}
+
+template<typename ScalarType, PointConcept PointType>
+inline bool axisTestY1(
+	ScalarType       a,
+	ScalarType       b,
+	ScalarType       fa,
+	ScalarType       fb,
+	const PointType& v0,
+	const PointType& v1,
+	const PointType& bHalfSixe)
+{
+	ScalarType p0 = -a * v0.x() + b * v0.z();
+	ScalarType p1 = -a * v1.x() + b * v1.z();
+	ScalarType min, max;
+	if (p0 < p1) {
+		min = p0;
+		max = p1;
+	} else {
+		min = p1;
+		max = p0;
+	}
+	ScalarType rad = fa * bHalfSixe.x() + fb * bHalfSixe.z();
+	if (min > rad || max < -rad)
+		return false;
+	return true;
+}
+
+/*======================== Z-tests ========================*/
+template<typename ScalarType, PointConcept PointType>
+inline bool axisTestZ12(
+	ScalarType       a,
+	ScalarType       b,
+	ScalarType       fa,
+	ScalarType       fb,
+	const PointType& v1,
+	const PointType& v2,
+	const PointType& bHalfSixe)
+{
+	ScalarType p1 = a * v1.x() - b * v1.y();
+	ScalarType p2 = a * v2.x() - b * v2.y();
+	ScalarType min, max;
+	if (p1 < p2) {
+		min = p1;
+		max = p2;
+	} else {
+		min = p2;
+		max = p1;
+	}
+	ScalarType rad = fa * bHalfSixe.x() + fb * bHalfSixe.y();
+	if (min > rad || max < -rad)
+		return false;
+	return true;
+}
+
+template<typename ScalarType, PointConcept PointType>
+inline bool axisTestZ0(
+	ScalarType       a,
+	ScalarType       b,
+	ScalarType       fa,
+	ScalarType       fb,
+	const PointType& v0,
+	const PointType& v1,
+	const PointType& bHalfSixe)
+{
+	ScalarType p0 = a * v0.x() - b * v0.y();
+	ScalarType p1 = a * v1.x() - b * v1.y();
+	ScalarType min, max;
+	if (p0 < p1) {
+		min = p0;
+		max = p1;
+	} else {
+		min = p1;
+		max = p0;
+	}
+	ScalarType rad = fa * bHalfSixe.x() + fb * bHalfSixe.y();
+	if (min > rad || max < -rad)
+		return false;
+	return true;
+}
+
+} // namespace vcl::internal
+
+/**
+ * @brief Checks if a plane intersects with a box.
+ *
+ * https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
+ *
+ * @param p
+ * @param b
+ * @return
+ */
+template<typename PlaneType, typename BoxType>
+bool planeBoxIntersect(const PlaneType& p, const BoxType& b)
+{
+	using PointType = typename BoxType::PointType;
+	using ScalarType = typename PointType::ScalarType;
+
+	// Convert AABB to center-extents representation
+	PointType c = (b.max + b.min) * 0.5f; // Compute AABB center
+	PointType e = b.max - c; // Compute positive extents
+
+	PointType n = p.direction();
+	// Compute the projection interval radius of b onto L(t) = b.c + t * p.n
+	ScalarType r = e[0]*std::abs(n[0]) + e[1]*std::abs(n[1]) + e[2]*std::abs(n[2]);
+
+	// Compute distance of box center from plane
+	ScalarType s = n.dot(c) - p.offset();
+
+	// Intersection occurs when distance s falls within [-r,+r] interval
+	return std::abs(s) <= r;
+}
+
+/**
+ * @brief Checks if a triangle intersects with a box.
+ * https://gist.github.com/jflipts/fc68d4eeacfcc04fbdb2bf38e0911850
+ */
+template<PointConcept PointType>
+bool triangleBoxIntersect(
+	const PointType&      tv0,
+	const PointType&      tv1,
+	const PointType&      tv2,
+	const Box<PointType>& b) requires (PointType::DIM == 3)
+{
+	using ScalarType = typename PointType::ScalarType;
+
+	PointType boxcenter = b.center();
+	PointType bHalfSixe = b.size() / 2;
+
+	/*    use separating axis theorem to test overlap between triangle and box */
+	/*    need to test for overlap in these directions: */
+	/*    1) the {x,y,z}-directions (actually, since we use the AABB of the triangle */
+	/*       we do not even need to test these) */
+	/*    2) normal of the triangle */
+	/*    3) crossproduct(edge from tri, {x,y,z}-directin) */
+	/*       this gives 3x3=9 more tests */
+	ScalarType min, max;
+	PointType normal;
+
+	/* This is the fastest branch on Sun */
+	/* move everything so that the boxcenter is in (0,0,0) */
+	PointType v0 = tv0 - boxcenter;
+	PointType v1 = tv1 - boxcenter;
+	PointType v2 = tv2 - boxcenter;
+
+	/* compute triangle edges */
+	PointType e0 = v1 - v0;
+	PointType e1 = v2 - v1;
+	PointType e2 = v0 - v2;
+
+	/* Bullet 3:  */
+	/*  test the 9 tests first (this was faster) */
+	ScalarType fex = std::abs(e0.x());
+	ScalarType fey = std::abs(e0.y());
+	ScalarType fez = std::abs(e0.z());
+
+	if (!internal::axisTestX01(e0.z(), e0.y(), fez, fey, v0, v2, bHalfSixe))
+		return false;
+	if (!internal::axisTestY02(e0.z(), e0.x(), fez, fex, v0, v2, bHalfSixe))
+		return false;
+	if (!internal::axisTestZ12(e0.y(), e0.x(), fey, fex, v1, v2, bHalfSixe))
+		return false;
+
+	fex = std::abs(e1.x());
+	fey = std::abs(e1.y());
+	fez = std::abs(e1.z());
+
+	if (!internal::axisTestX01(e1.z(), e1.y(), fez, fey, v0, v2, bHalfSixe))
+		return false;
+	if (!internal::axisTestY02(e1.z(), e1.x(), fez, fex, v0, v2, bHalfSixe))
+		return false;
+	if (!internal::axisTestZ0(e1.y(), e1.x(), fey, fex, v0, v1, bHalfSixe))
+		return false;
+
+	fex = std::abs(e2.x());
+	fey = std::abs(e2.y());
+	fez = std::abs(e2.z());
+	if (!internal::axisTestX2(e2.z(), e2.y(), fez, fey, v0, v1, bHalfSixe))
+		return false;
+	if (!internal::axisTestY1(e2.z(), e2.x(), fez, fex, v0, v1, bHalfSixe))
+		return false;
+	if (!internal::axisTestZ12(e2.y(), e2.x(), fey, fex, v1, v2, bHalfSixe))
+		return false;
+
+	/* Bullet 1: */
+	/*  first test overlap in the {x,y,z}-directions */
+	/*  find min, max of the triangle each direction, and test for overlap in */
+	/*  that direction -- this is equivalent to testing a minimal AABB around */
+	/*  the triangle against the AABB */
+
+	/* test in X-direction */
+	internal::findMinMax(v0.x(), v1.x(), v2.x(), min, max);
+	if (min > bHalfSixe.x() || max < -bHalfSixe.x())
+		return false;
+
+	/* test in Y-direction */
+	internal::findMinMax(v0.y(), v1.y(), v2.y(), min, max);
+	if (min > bHalfSixe.y() || max < -bHalfSixe.y())
+		return false;
+
+	/* test in Z-direction */
+	internal::findMinMax(v0.z(), v1.z(), v2.z(), min, max);
+	if (min > bHalfSixe.z() || max < -bHalfSixe.z())
+		return false;
+
+	/* Bullet 2: */
+	/*  test if the box intersects the plane of the triangle */
+	/*  compute plane equation of triangle: normal*x+d=0 */
+	normal = e0.cross(e1);
+	vcl::Plane<ScalarType> plane(tv0, tv1, tv2);
+	if (!planeBoxIntersect(plane, b))
+		return false;
+
+	return true; /* box and triangle overlaps */
+}
+
+template<FaceConcept FaceType, PointConcept PointType>
+bool faceBoxIntersect(const FaceType& f, const Box<PointType>& b)
+{
+	if constexpr(TriangleFaceConcept<FaceType>) {
+		return triangleBoxIntersect(
+			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord(), b);
+	}
+	else {
+		bool b = false;
+		std::vector<uint> tris = vcl::earCut(f);
+		for (uint i = 0; i < tris.size() && !b; i += 3) {
+			b |= triangleBoxIntersect(
+				f.vertex(tris[i])->coord(),
+				f.vertex(tris[i + 1])->coord(),
+				f.vertex(tris[i + 2])->coord(),
+				b);
+		}
+		return b;
+	}
+}
 
 template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
 void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)

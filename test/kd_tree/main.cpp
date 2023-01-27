@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -24,25 +25,22 @@
 
 #include <vclib/tri_mesh.h>
 #include <vclib/io/load_ply.h>
-#include <vclib/space/kd_tree.h>
+#include <vclib/space/spatial_data_structures.h>
 
-int main()
+#include <doctest/doctest.h>
+
+std::vector<uint> getKNearestNeighbors(const vcl::Point3d& p, uint k, std::string mesh = "bone.ply")
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/" + mesh);
 
 	vcl::KDTree<vcl::Point3d> tree(m);
 
-	uint pid = tree.nearestNeighborIndex(vcl::Point3d(0.5, 0.5, 0.5));
+	return tree.kNearestNeighborsIndices(p, k);
+}
 
-	assert(pid == 1558);
+static const vcl::Point3d p(0.5, 0.5, 0.5);
 
-	std::vector<uint> res = tree.kNearestNeighborsIndices(vcl::Point3d(0.5, 0.5, 0.5), 5);
-
-	assert(res[0] == 1558);
-	assert(res[1] == 1613);
-	assert(res[2] == 1720);
-	assert(res[3] == 1576);
-	assert(res[4] == 163);
-
-	return 0;
+TEST_CASE("testing nearest neighbours to [0.5, 0.5, 0.5] in bone.ply") {
+	CHECK(getKNearestNeighbors(p, 1)[0] == 1558);
+	CHECK(getKNearestNeighbors(p, 5) == std::vector<uint>{1558, 1613, 1720, 1576, 163});
 }

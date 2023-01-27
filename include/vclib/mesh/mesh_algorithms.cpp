@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -25,6 +26,7 @@
 #if __has_include(<mapbox/earcut.hpp>)
 #include <mapbox/earcut.hpp>
 #else
+// inclusion for usage of vclib without CMake - not ideal but necessary for header only
 #include "../../../external/earcut.hpp-2.2.3/include/mapbox/earcut.hpp"
 #endif
 
@@ -44,7 +46,7 @@ std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
 {
 	Point3<Scalar> n = polygonNormal(polygon);
 	Point3<Scalar> u, v;
-	getOrthoBase(n, u, v);
+	orthoBase(n, u, v);
 
 	std::vector<Point2<Scalar>> poly2D(polygon.size());
 	for (uint i = 0; i < polygon.size(); ++i){
@@ -54,10 +56,10 @@ std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
 	return mesh::earCut(poly2D);
 }
 
-template<typename Polygon>
-std::vector<uint> earCut(const Polygon& polygon)
+template<typename Face>
+std::vector<uint> earCut(const Face& polygon)
 {
-	using VertexType = typename Polygon::VertexType;
+	using VertexType = typename Face::VertexType;
 	using CoordType = typename VertexType::CoordType;
 
 	std::vector<CoordType> pol; pol.reserve(polygon.vertexNumber());

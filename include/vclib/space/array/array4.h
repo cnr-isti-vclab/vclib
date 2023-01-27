@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ARRAY4_H
-#define VCL_ARRAY4_H
+#ifndef VCL_SPACE_ARRAY_ARRAY4_H
+#define VCL_SPACE_ARRAY_ARRAY4_H
 
 #include "array_bool.h"
 
@@ -59,4 +60,4 @@ public:
 
 #include "array4.cpp"
 
-#endif // VCL_ARRAY4_H
+#endif // VCL_SPACE_ARRAY_ARRAY4_H

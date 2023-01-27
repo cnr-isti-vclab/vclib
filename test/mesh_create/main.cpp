@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -22,9 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/create/dodecahedron.h>
-#include <vclib/algorithms/create/hexahedron.h>
-#include <vclib/algorithms/create/tetrahedron.h>
+#include <vclib/algorithms/create.h>
 #include <vclib/io/save_ply.h>
 #include <vclib/tri_mesh.h>
 #include <vclib/poly_mesh.h>
@@ -46,10 +45,16 @@ int main()
 
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/tetrahedron.ply", info);
 
+	m = vcl::createIcosahedron<vcl::TriMesh>(true);
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/icosahedron.ply", info);
+
 	m = vcl::createHexahedron<vcl::TriMesh>();
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/hexahedron.ply", info);
 
-	m = vcl::createDodecahedron<vcl::TriMesh>();
+	vcl::ConsoleLogger log;
+	log.setPrintTimer(true);
+	log.startTimer();
+	m = vcl::createDodecahedron<vcl::TriMesh>(log);
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/dodecahedron.ply", info);
 
 	vcl::PolyMesh pm = vcl::createHexahedron<vcl::PolyMesh>();
@@ -60,6 +65,15 @@ int main()
 
 	pm = vcl::createCube<vcl::PolyMesh>(vcl::Point3d(0,0,0), 4);
 	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/cube_poly.ply", info);
+
+	m = vcl::createSphereSpherifiedCube<vcl::TriMesh>({vcl::Point3d(), 1.0}, 50);
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/sphere_tri.ply");
+
+	pm = vcl::createSphereSpherifiedCube<vcl::PolyMesh>({vcl::Point3d(), 1.0}, 50);
+	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/sphere_poly.ply");
+
+	m = vcl::createSphereIcosahedron<vcl::TriMesh>({vcl::Point3d(), 1.0}, 5);
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/sphere_ico.ply");
 
 	return 0;
 }

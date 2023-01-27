@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -26,7 +27,7 @@
 #include <vclib/tri_mesh.h>
 #include <vclib/algorithms/create/tetrahedron.h>
 #include <vclib/io/save.h>
-#include "vclib/io/load.h"
+#include <vclib/io/load.h>
 
 int main()
 {

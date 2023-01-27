@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -20,10 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_PARALLEL_H
-#define VCL_PARALLEL_H
-
-#include <execution>
+#ifndef VCL_MISC_PARALLEL_H
+#define VCL_MISC_PARALLEL_H
 
 #include <vclib/misc/types.h>
 
@@ -45,4 +44,4 @@ void parallelFor(const Container& c, Lambda&& F);
 
 #include "parallel.cpp"
 
-#endif // VCL_PARALLEL_H
+#endif // VCL_MISC_PARALLEL_H

@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -27,7 +28,16 @@
 
 #include "generic_component_vector.h"
 
+#include <vclib/space/color.h>
+
 namespace vcl::internal {
+
+// the WedgeColorsContainer type will be array or vector, depending on N value
+template<int N>
+using WedgeColorsContainer = typename std::conditional<
+	(N >= 0),
+	typename std::array<vcl::Color, N>,
+	typename std::vector<vcl::Color>>::type;
 
 template<typename>
 class WedgeColorsVector
@@ -41,10 +51,12 @@ public:
 };
 
 template<comp::HasOptionalWedgeColors T>
-class WedgeColorsVector<T> : private GenericComponentVector<typename T::WedgeColorsContainer>
+class WedgeColorsVector<T> :
+		private GenericComponentVector<
+			WedgeColorsContainer<T::WEDGE_COLOR_NUMBER>>
 {
-	using WedgeColorsContainer = typename T::WedgeColorsContainer;
-	using Base                 = GenericComponentVector<WedgeColorsContainer>;
+	using Container = WedgeColorsContainer<T::WEDGE_COLOR_NUMBER>;
+	using Base                 = GenericComponentVector<Container>;
 
 public:
 	using Base::clear;
@@ -56,8 +68,8 @@ public:
 	void enableWedgeColors(uint size) { Base::enable(size); }
 	void disableWedgeColors() { Base::disable(); }
 
-	WedgeColorsContainer&       wedgeColors(uint i) { return Base::at(i); }
-	const WedgeColorsContainer& wedgeColors(uint i) const { return Base::at(i); }
+	Container&       wedgeColors(uint i) { return Base::at(i); }
+	const Container& wedgeColors(uint i) const { return Base::at(i); }
 };
 
 } // namespace vcl::internal

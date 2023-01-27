@@ -2,9 +2,10 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -28,24 +29,33 @@
 namespace vcl::comp {
 
 /**
- * @brief HasScalar concept
+ * @brief HasScalar concept is satisfied only if a Element class provides the types and member
+ * functions specified in this concept. These types and member functions allow to access to a
+ * Scalar component of a given element.
  *
- * This concept is satisfied only if a class has a member function 'scalar()'.
- * No check is made on the return type.
+ * Note that this concept does not discriminate between the Horizontal Scalar component
+ * and the vertical OptionalScalar component, therefore it does not guarantee that a
+ * template Element type that satisfies this concept provides Scalar component at runtime
+ * (it is guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that Scalar is available at runtime, you need to call the member
+ * function `isScalarEnabled()`.
  */
 template<typename T>
-concept HasScalar = requires(T o)
+concept HasScalar = requires(
+	T o,
+	const T& co)
 {
 	typename T::ScalarType;
-	o.scalar();
+	{ o.scalar() } -> std::same_as<typename T::ScalarType&>;
+	{ co.scalar() } -> std::same_as<const typename T::ScalarType&>;
+	{ co.isScalarEnabled() } -> std::same_as<bool>;
 };
 
 /**
- * @brief HasOptionalScalar concept
- *
- * This concept is satisfied only if a class has two member functions:
- * - 'scalar()'
- * - '__optionalScalar()'
+ * @brief HasOptionalScalar concept is satisfied only if a class satisfis the HasScalar concept and
+ * has the additional member function '__optionalScalar()', which is the discriminator between the
+ * non-optional and optional component.
  */
 template<typename T>
 concept HasOptionalScalar = HasScalar<T> && requires(T o)

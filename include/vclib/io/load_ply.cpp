@@ -4,7 +4,8 @@
  *                                                                           *
  * Copyright(C) 2021-2022                                                    *
  * Alessandro Muntoni                                                        *
- * VCLab - ISTI - Italian National Research Council                          *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
  *                                                                           *
@@ -34,14 +35,14 @@
 
 namespace vcl::io {
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadPly(const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
 	return loadPly<MeshType>(filename, loadedInfo, enableOptionalComponents);
 }
 
-template<typename MeshType>
+template<MeshConcept MeshType>
 MeshType loadPly(
 	const std::string&     filename,
 	vcl::io::FileMeshInfo& loadedInfo,
@@ -67,7 +68,7 @@ MeshType loadPly(
  * @param filename
  * @param enableOptionalComponents
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadPly(MeshType& m, const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
@@ -90,7 +91,7 @@ void loadPly(MeshType& m, const std::string& filename, bool enableOptionalCompon
  * @param loadedInfo
  * @param enableOptionalComponents
  */
-template<typename MeshType>
+template<MeshConcept MeshType>
 void loadPly(
 	MeshType&              m,
 	const std::string&     filename,
@@ -98,6 +99,7 @@ void loadPly(
 	bool                   enableOptionalComponents)
 {
 	std::ifstream file = internal::loadFileStream(filename);
+
 	ply::PlyHeader header(filename, file);
 	if (header.errorWhileLoading())
 		throw MalformedFileException("Header not valid: " + filename);
@@ -108,11 +110,14 @@ void loadPly(
 		internal::enableOptionalComponents(loadedInfo, m);
 
 	m.clear();
+	if constexpr (HasName<MeshType>) {
+		m.name() = fileInfo::filenameWithoutExtension(filename);
+	}
 	if constexpr (HasTexturePaths<MeshType>) {
 		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
 	}
 	try {
-		for (ply::Element el : header) {
+		for (const ply::Element& el : header) {
 			switch (el.type) {
 			case ply::VERTEX: ply::loadVertices(file, header, m); break;
 			case ply::FACE: ply::loadFaces(file, header, m); break;
