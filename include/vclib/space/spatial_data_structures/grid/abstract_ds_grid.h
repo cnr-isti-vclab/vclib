@@ -196,7 +196,7 @@ private:
 	void unMarkAll() const;
 
 	template<typename Iterator>
-	bool valueIsInSpehere(Iterator it, const Sphere<typename GridType::ScalarType>& s) const;
+	bool valueIsInSpehere(const Iterator& it, const Sphere<typename GridType::ScalarType>& s) const;
 
 	template<typename QueryValueType>
 	auto closestInCells(

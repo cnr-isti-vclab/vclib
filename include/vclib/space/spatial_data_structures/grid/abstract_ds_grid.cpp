@@ -472,7 +472,7 @@ void AbstractDSGrid<GridType, ValueType, DerivedGrid>::unMarkAll() const
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename Iterator>
 bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
-	Iterator it,
+	const Iterator& it,
 	const Sphere<typename GridType::ScalarType>& s) const
 {
 	const VT* vv = getCleanValueTypePointer(it->second);
