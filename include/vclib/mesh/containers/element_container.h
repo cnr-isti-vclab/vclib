@@ -26,8 +26,8 @@
 
 #include <vector>
 
-#include <vclib/iterators/mesh/container_iterator.h>
-#include <vclib/iterators/mesh/container_range_iterator.h>
+#include <vclib/iterators/mesh/element_container_iterator.h>
+#include <vclib/iterators/mesh/element_container_range_iterator.h>
 #include "../components/vertical/vertical_component.h"
 #include "../components/vertical/vectors/vertical_components_vector.h"
 #include "containers_concepts.h"
@@ -46,16 +46,17 @@ class ElementContainer : public ElementContainerTriggerer
 
 public:
 	using ElementType          = T;
-	using ElementIterator      = ContainerIterator<std::vector, T>;
-	using ConstElementIterator = ConstContainerIterator<std::vector, T>;
-	using ElementRangeIterator = ContainerRangeIterator<ElementContainerType, ElementIterator>;
+	using ElementIterator      = ElementContainerIterator<std::vector, T>;
+	using ConstElementIterator = ConstElementContainerIterator<std::vector, T>;
+	using ElementRangeIterator =
+		ElementContainerRangeIterator<ElementContainerType, ElementIterator>;
 	using ConstElementRangeIterator =
-		ConstContainerRangeIterator<ElementContainerType, ConstElementIterator>;
+		ConstElementContainerRangeIterator<ElementContainerType, ConstElementIterator>;
 
 	ElementContainer();
 
-	const T &element(uint i) const;
-	T &element(uint i);
+	const T& element(uint i) const;
+	T& element(uint i);
 
 	uint elementNumber() const;
 	uint elementContainerSize() const;

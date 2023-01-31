@@ -21,16 +21,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_CONTAINER_RANGE_ITERATOR_H
-#define VCL_ITERATORS_MESH_CONTAINER_RANGE_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_ELEMENT_CONTAINER_RANGE_ITERATOR_H
+#define VCL_ITERATORS_MESH_ELEMENT_CONTAINER_RANGE_ITERATOR_H
 
 namespace vcl {
 
 template<typename Container, typename Iterator>
-class ContainerRangeIterator
+class ElementContainerRangeIterator
 {
 public:
-	ContainerRangeIterator(
+	ElementContainerRangeIterator(
 		Container& c,
 		bool       jumpDeleted,
 		Iterator (Container::*beginFunction)(bool),
@@ -52,10 +52,10 @@ private:
 };
 
 template<typename Container, typename ConstIterator>
-class ConstContainerRangeIterator
+class ConstElementContainerRangeIterator
 {
 public:
-	ConstContainerRangeIterator(
+	ConstElementContainerRangeIterator(
 		const Container& c,
 		bool             jumpDeleted,
 		ConstIterator (Container::*beginFunction)(bool) const,
@@ -78,4 +78,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_CONTAINER_RANGE_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_ELEMENT_CONTAINER_RANGE_ITERATOR_H
