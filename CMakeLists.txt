@@ -252,6 +252,7 @@ set(HEADERS
 	include/vclib/misc/string.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
+	include/vclib/misc/tuple.h
 	include/vclib/misc/types.h
 	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/misc/logger/console_logger.h

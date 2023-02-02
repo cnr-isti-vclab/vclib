@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -54,6 +54,8 @@ using ushort = unsigned short;
 
 namespace vcl {
 
+const uint UINT_NULL = std::numeric_limits<uint>::max();
+
 /*
  * Utility to get clean type from an input type that could have a reference or a pointer.
  */
@@ -100,6 +102,28 @@ constexpr T* asConst(T* value) noexcept
 }
 template<typename T>
 void asConst(T const&&) = delete;
+
+/*
+ * Possibility to get the index of a Type T in a pack of types (variadic templates).
+ * The pack is composed of U and Us...
+ *
+ * https://stackoverflow.com/a/71477756/5851101
+ */
+
+template <typename T, typename U, typename... Us>
+constexpr auto indexInTypePack() {
+	if constexpr (std::is_same_v<T, U>) {
+		return 0;
+	}
+	else {
+		if constexpr (sizeof...(Us)) { // there is at least another type to check
+			return 1 + indexInTypePack<T, Us...>();
+		}
+		else { // not found
+			return UINT_NULL;
+		}
+	}
+}
 
 namespace internal {
 
