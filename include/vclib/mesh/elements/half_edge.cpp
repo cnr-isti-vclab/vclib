@@ -37,4 +37,22 @@ void HalfEdge<MeshType, Args...>::importFrom(const Element& e)
 	(Args::importFrom(e), ...);
 }
 
+template<typename MeshType, typename... Args>
+constexpr MeshType* HalfEdge<MeshType, Args...>::parentMesh()
+{
+	return parent;
+}
+
+template<typename MeshType, typename... Args>
+constexpr const MeshType* HalfEdge<MeshType, Args...>::parentMesh() const
+{
+	return parent;
+}
+
+template<typename MeshType, typename... Args>
+void HalfEdge<MeshType, Args...>::setParentMesh(void* parentMesh)
+{
+	parent = static_cast<MeshType*>(parentMesh);
+}
+
 } // namespace vcl

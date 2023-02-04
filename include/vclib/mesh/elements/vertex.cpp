@@ -37,4 +37,22 @@ template<typename Element>
 	(Args::importFrom(v), ...);
 }
 
+template<typename MeshType, typename... Args>
+constexpr MeshType* Vertex<MeshType, Args...>::parentMesh()
+{
+	return parent;
+}
+
+template<typename MeshType, typename... Args>
+constexpr const MeshType* Vertex<MeshType, Args...>::parentMesh() const
+{
+	return parent;
+}
+
+template<typename MeshType, typename... Args>
+void Vertex<MeshType, Args...>::setParentMesh(void* parentMesh)
+{
+	parent = static_cast<MeshType*>(parentMesh);
+}
+
 } // namespace vcl

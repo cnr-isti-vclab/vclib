@@ -177,4 +177,22 @@ void Face<MeshType, Args...>::importFrom(const Element& f)
 
 //}
 
+template<typename MeshType, typename... Args>
+constexpr MeshType* Face<MeshType, Args...>::parentMesh()
+{
+	return parent;
+}
+
+template<typename MeshType, typename... Args>
+constexpr const MeshType* Face<MeshType, Args...>::parentMesh() const
+{
+	return parent;
+}
+
+template<typename MeshType, typename... Args>
+void Face<MeshType, Args...>::setParentMesh(void* parentMesh)
+{
+	parent = static_cast<MeshType*>(parentMesh);
+}
+
 } // namespace vcl

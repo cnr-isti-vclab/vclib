@@ -257,6 +257,14 @@ public:
 				T::clearWedgeTexCoord();
 		}
 	}
+
+	constexpr MeshType* parentMesh();
+	constexpr const MeshType* parentMesh() const;
+
+private:
+	MeshType* parent = nullptr;
+
+	void setParentMesh(void* parentMesh);
 };
 
 } // namespace vcl

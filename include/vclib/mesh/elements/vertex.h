@@ -53,6 +53,14 @@ public:
 
 	template<typename Element>
 	void importFrom(const Element& v);
+
+	constexpr MeshType* parentMesh();
+	constexpr const MeshType* parentMesh() const;
+
+private:
+	MeshType* parent = nullptr;
+
+	void setParentMesh(void* parentMesh);
 };
 
 } // namespace vcl
