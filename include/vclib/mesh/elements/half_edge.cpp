@@ -25,14 +25,14 @@
 
 namespace vcl {
 
-template<typename... Args>
-HalfEdge<Args...>::HalfEdge()
+template<typename MeshType, typename... Args>
+HalfEdge<MeshType, Args...>::HalfEdge()
 {
 }
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
 template<typename Element>
-void HalfEdge<Args...>::importFrom(const Element& e)
+void HalfEdge<MeshType, Args...>::importFrom(const Element& e)
 {
 	(Args::importFrom(e), ...);
 }

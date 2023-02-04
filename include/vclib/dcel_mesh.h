@@ -48,6 +48,7 @@ class Face;
 template<typename Scalar>
 class HalfEdge :
 		public vcl::HalfEdge<
+			DcelMeshT<Scalar>,
 			vcl::hedge::BitFlags,
 			vcl::hedge::HalfEdgeReferences<HalfEdge<Scalar>, Vertex<Scalar>, Face<Scalar>>,
 			vcl::hedge::OptionalScalar<Scalar, HalfEdge<Scalar>>,
