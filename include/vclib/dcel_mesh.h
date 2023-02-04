@@ -27,6 +27,13 @@
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
+namespace vcl {
+
+template<typename ScalarType>
+class DcelMeshT;
+
+}
+
 namespace vcl::dcel {
 
 template<typename Scalar>
@@ -54,6 +61,7 @@ class HalfEdge :
 template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
+			DcelMeshT<Scalar>,
 			vcl::vert::BitFlags,
 			vcl::vert::Coordinate3<Scalar>,
 			vcl::vert::Normal3<Scalar>,

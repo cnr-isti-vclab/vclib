@@ -29,7 +29,7 @@
 
 namespace vcl {
 
-template<typename...>
+template<typename, typename...>
 class Vertex;
 
 namespace vert {

@@ -27,6 +27,13 @@
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
+namespace vcl {
+
+template<typename ScalarType>
+class PolyMeshT;
+
+}
+
 namespace vcl::polymesh {
 
 template<typename Scalar>
@@ -38,6 +45,7 @@ class Face;
 template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
+			PolyMeshT<Scalar>,
 			vcl::vert::BitFlags,
 			vcl::vert::Coordinate3<Scalar>,
 			vcl::vert::Normal3<Scalar>,

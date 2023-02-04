@@ -28,19 +28,24 @@
 
 namespace vcl::internal {
 
+class TMPSimpleTriMesh;
+class TMPSimplePolyMesh;
+
 namespace tmpMesh {
-class Vertex;
-class Face;
 
-class Vertex : public vcl::Vertex<vcl::vert::BitFlags, vcl::vert::Coordinate3d>
+class TriVertex : public vcl::Vertex<TMPSimpleTriMesh, vcl::vert::BitFlags, vcl::vert::Coordinate3d>
 {
 };
 
-class TriFace : public vcl::Face<vcl::face::TriangleBitFlags, vcl::face::TriangleVertexRefs<Vertex>>
+class PolyVertex : public vcl::Vertex<TMPSimplePolyMesh, vcl::vert::BitFlags, vcl::vert::Coordinate3d>
 {
 };
 
-class PolyFace : public vcl::Face<vcl::face::PolygonBitFlags, vcl::face::PolygonVertexRefs<Vertex>>
+class TriFace : public vcl::Face<vcl::face::TriangleBitFlags, vcl::face::TriangleVertexRefs<TriVertex>>
+{
+};
+
+class PolyFace : public vcl::Face<vcl::face::PolygonBitFlags, vcl::face::PolygonVertexRefs<PolyVertex>>
 {
 };
 
@@ -48,14 +53,14 @@ class PolyFace : public vcl::Face<vcl::face::PolygonBitFlags, vcl::face::Polygon
 
 class TMPSimpleTriMesh :
 		public vcl::Mesh<
-			mesh::VertexContainer<tmpMesh::Vertex>,
+			mesh::VertexContainer<tmpMesh::TriVertex>,
 			mesh::FaceContainer<tmpMesh::TriFace>>
 {
 };
 
 class TMPSimplePolyMesh :
 		public vcl::Mesh<
-			mesh::VertexContainer<tmpMesh::Vertex>,
+			mesh::VertexContainer<tmpMesh::PolyVertex>,
 			mesh::FaceContainer<tmpMesh::PolyFace>>
 {
 };

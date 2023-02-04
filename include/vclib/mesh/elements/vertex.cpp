@@ -25,14 +25,14 @@
 
 namespace vcl {
 
-template<typename... Args>
-Vertex<Args...>::Vertex()
+template<typename MeshType, typename... Args>
+Vertex<MeshType, Args...>::Vertex()
 {
 }
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
 template<typename Element>
-void Vertex<Args...>::importFrom(const Element& v)
+	void Vertex<MeshType, Args...>::importFrom(const Element& v)
 {
 	(Args::importFrom(v), ...);
 }

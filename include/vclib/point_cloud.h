@@ -27,6 +27,13 @@
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
+namespace vcl {
+
+template<typename ScalarType>
+class PointCloudT;
+
+}
+
 namespace vcl::pointcloud {
 
 template<typename Scalar>
@@ -35,6 +42,7 @@ class Vertex;
 template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
+			PointCloudT<Scalar>,
 			vcl::vert::BitFlags,                                 // 4b
 			vcl::vert::Coordinate3<Scalar>,                      // 24b
 			vcl::vert::Normal3<Scalar>,                          // 24b
