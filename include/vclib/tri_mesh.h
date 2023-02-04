@@ -63,6 +63,7 @@ class Vertex :
 template<typename Scalar>
 class Face :
 		public vcl::Face<
+			TriMeshT<Scalar>,
 			vcl::face::TriangleBitFlags,                                     // 4b
 			vcl::face::TriangleVertexRefs<Vertex<Scalar>>,                   // 24b
 			vcl::face::Normal3<Scalar>,                                      // 12 or 24b

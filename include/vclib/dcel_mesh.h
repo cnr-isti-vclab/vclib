@@ -77,6 +77,7 @@ class Vertex :
 template<typename Scalar>
 class Face :
 		public vcl::Face<
+			DcelMeshT<Scalar>,
 			vcl::face::BitFlags,
 			vcl::face::HalfEdgeReference<HalfEdge<Scalar>>,
 			vcl::face::Normal3<Scalar>,

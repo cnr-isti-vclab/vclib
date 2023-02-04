@@ -62,6 +62,7 @@ class Vertex :
 template<typename Scalar>
 class Face :
 		public vcl::Face<
+			PolyMeshT<Scalar>,
 			vcl::face::PolygonBitFlags, // 4b
 			vcl::face::PolygonVertexRefs<Vertex<Scalar>>,
 			vcl::face::Normal3<Scalar>,

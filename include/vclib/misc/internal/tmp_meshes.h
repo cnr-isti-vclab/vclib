@@ -37,15 +37,24 @@ class TriVertex : public vcl::Vertex<TMPSimpleTriMesh, vcl::vert::BitFlags, vcl:
 {
 };
 
-class PolyVertex : public vcl::Vertex<TMPSimplePolyMesh, vcl::vert::BitFlags, vcl::vert::Coordinate3d>
+class PolyVertex :
+		public vcl::Vertex<TMPSimplePolyMesh, vcl::vert::BitFlags, vcl::vert::Coordinate3d>
 {
 };
 
-class TriFace : public vcl::Face<vcl::face::TriangleBitFlags, vcl::face::TriangleVertexRefs<TriVertex>>
+class TriFace :
+		public vcl::Face<
+			TMPSimpleTriMesh,
+			vcl::face::TriangleBitFlags,
+			vcl::face::TriangleVertexRefs<TriVertex>>
 {
 };
 
-class PolyFace : public vcl::Face<vcl::face::PolygonBitFlags, vcl::face::PolygonVertexRefs<PolyVertex>>
+class PolyFace :
+		public vcl::Face<
+			TMPSimplePolyMesh,
+			vcl::face::PolygonBitFlags,
+			vcl::face::PolygonVertexRefs<PolyVertex>>
 {
 };
 
