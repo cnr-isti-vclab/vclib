@@ -25,14 +25,14 @@
 
 namespace vcl {
 
-template<typename... Args>
-Edge<Args...>::Edge()
+template<typename MeshType, typename... Args>
+Edge<MeshType, Args...>::Edge()
 {
 }
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
 template<typename Element>
-void Edge<Args...>::importFrom(const Element& e)
+void Edge<MeshType, Args...>::importFrom(const Element& e)
 {
 	(Args::importFrom(e), ...);
 }

@@ -62,6 +62,7 @@ class Vertex :
 template<typename Scalar>
 class Edge :
 		public vcl::Edge<
+			EdgeMeshT<Scalar>,
 			vcl::edge::BitFlags,                             // 4b
 			vcl::edge::VertexReferences<Vertex<Scalar>>,     // 24b
 			vcl::edge::OptionalScalar<Scalar, Edge<Scalar>>, // 0b

@@ -39,7 +39,7 @@ class ElementContainer;
 
 namespace vcl {
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
 class Edge : public Args...
 {
 	template<EdgeConcept>
