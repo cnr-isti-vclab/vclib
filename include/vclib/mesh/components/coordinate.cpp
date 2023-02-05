@@ -37,10 +37,10 @@ P& CoordT<P, El, h>::coord()
 	return p();
 }
 
-template<PointConcept P, typename ElementType, bool horizontal>
-P& CoordT<P, ElementType, horizontal>::p()
+template<PointConcept P, typename El, bool h>
+P& CoordT<P, El, h>::p()
 {
-	if constexpr (horizontal) {
+	if constexpr (h) {
 		return data.p;
 	}
 	else {
@@ -48,10 +48,10 @@ P& CoordT<P, ElementType, horizontal>::p()
 	}
 }
 
-template<PointConcept P, typename ElementType, bool horizontal>
-const P& CoordT<P, ElementType, horizontal>::p() const
+template<PointConcept P, typename El, bool h>
+const P& CoordT<P, El, h>::p() const
 {
-	if constexpr (horizontal) {
+	if constexpr (h) {
 		return data.p;
 	}
 	else {

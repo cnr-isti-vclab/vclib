@@ -36,7 +36,7 @@
 namespace vcl::hedge {
 
 /* Port BitFlags class into hedge namespace */
-using BitFlags = comp::BitFlags;
+using BitFlags = comp::BitFlags<void*, true>;
 
 /* Port Color class into hedge namespace */
 using Color = comp::Color;

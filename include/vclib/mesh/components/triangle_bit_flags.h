@@ -57,9 +57,13 @@ namespace vcl::comp {
  * v.isAnyEdgeOnBorder();
  * @endcode
  */
-class TriangleBitFlags : public BitFlags
+template<typename ElementType, bool horizontal>
+class TriangleBitFlags : public BitFlags<ElementType, horizontal>
 {
+	using Base = BitFlags<ElementType, horizontal>;
+	using ThisType = TriangleBitFlags<ElementType, horizontal>;
 public:
+	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
 	bool userBitFlag(uint bit) const;
 	void setUserBit(uint bit);
@@ -106,20 +110,20 @@ protected:
 		// Edge border
 		// BORDER0 is BORDER, inherited from superclass  bits [2, 4]
 		// Edge selection
-		EDGESEL0 = 1 << (BitFlags::FIRST_USER_BIT + 2), // bits [5, 7]
+		EDGESEL0 = 1 << (Base::FIRST_USER_BIT + 2), // bits [5, 7]
 		// Faux edges: when representing polygonal meshes on triangle meshes, some triangle edges
 		// can be marked as "faux", meaning that they are internal on the polygon
-		FAUX0 = 1 << (BitFlags::FIRST_USER_BIT + 5) // bits [8, 10]
+		FAUX0 = 1 << (Base::FIRST_USER_BIT + 5) // bits [8, 10]
 	};
 
 	// hide base class constant, 8 is the number of bits used by this class
-	static const uint FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 8; // bits [11, 31]
+	static const uint FIRST_USER_BIT = Base::FIRST_USER_BIT + 8; // bits [11, 31]
 
 private:
 	// will use these members as isOnBorder0, setOnBorder0 and unsetOnBorder0
-	using BitFlags::isOnBorder;
-	using BitFlags::setOnBorder;
-	using BitFlags::unsetOnBorder;
+	using Base::isOnBorder;
+	using Base::setOnBorder;
+	using Base::unsetOnBorder;
 };
 
 } // namespace vcl::comp

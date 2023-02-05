@@ -44,7 +44,7 @@ template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
 /* Port BitFlags class into edge namespace */
-using BitFlags = comp::BitFlags;
+using BitFlags = comp::BitFlags<void*, true>;
 
 /* Port Color class into edge namespace */
 using Color = comp::Color;

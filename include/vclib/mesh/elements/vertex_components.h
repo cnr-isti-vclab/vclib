@@ -53,7 +53,7 @@ template<typename VertexType>
 using AdjacentVertices = comp::AdjacentVertices<VertexType>;
 
 /* Port BitFlags class into vert namespace */
-using BitFlags = comp::BitFlags;
+using BitFlags = comp::BitFlags<void*, true>;
 
 /* Port Color class into vert namespace */
 using Color = comp::Color;

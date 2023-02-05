@@ -25,8 +25,19 @@
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
 #include "concepts/bit_flags.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
+
+namespace internal {
+
+template<bool>
+struct BitFlagsData { int flags = 0; };
+
+template<>
+struct BitFlagsData<false> { };
+
+} // vcl::comp::internal
 
 /**
  * @brief The BitFlags component class represents a collection of 32 bits that will be part of an
@@ -57,9 +68,16 @@ namespace vcl::comp {
  * v.isDeleted();
  * @endcode
  */
+template<typename ElementType, bool horizontal>
 class BitFlags
 {
+	using ThisType = BitFlags<ElementType, horizontal>;
 public:
+	using DataValueType = int; // data that the component stores internally (or vertically)
+	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	bool isDeleted() const;
 	bool isSelected() const;
 	bool isOnBorder() const;
@@ -92,7 +110,8 @@ protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
-	int flags = 0;
+	int& flags();
+	const int& flags() const;
 
 	static const uint FIRST_USER_BIT = 3;
 
@@ -102,6 +121,9 @@ protected:
 		SELECTED = 1 << 1, // bit 1
 		BORDER   = 1 << 2  // bit 2
 	};
+
+private:
+	internal::BitFlagsData<horizontal> data;
 };
 
 } // namespace vcl::comp

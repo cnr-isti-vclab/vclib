@@ -65,9 +65,13 @@ namespace vcl::comp {
  * v.isAnyEdgeOnBorder();
  * @endcode
  */
-class PolygonBitFlags : public BitFlags
+template<typename ElementType, bool horizontal>
+class PolygonBitFlags : public BitFlags<ElementType, horizontal>
 {
+	using Base = BitFlags<ElementType, horizontal>;
+	using ThisType = PolygonBitFlags<ElementType, horizontal>;
 public:
+	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
 	bool userBitFlag(uint bit) const;
 	void setUserBit(uint bit);
@@ -113,19 +117,19 @@ protected:
 		// Edge border
 		// BORDER0 is BORDER, inherited from superclass - bits [2, 13]
 		// Edge selection
-		EDGESEL0 = 1 << (BitFlags::FIRST_USER_BIT + 11), // bits [14, 25]
+		EDGESEL0 = 1 << (Base::FIRST_USER_BIT + 11), // bits [14, 25]
 		// Faux edges, for portability with TriangleBits
-		FAUX0 = 1 << (BitFlags::FIRST_USER_BIT + 23) // bits [26, 28]
+		FAUX0 = 1 << (Base::FIRST_USER_BIT + 23) // bits [26, 28]
 	};
 
 	// hide base class constant, 26 is the number of bits used by this class
-	static const uint FIRST_USER_BIT = BitFlags::FIRST_USER_BIT + 26; // bits [29, 31]
+	static const uint FIRST_USER_BIT = Base::FIRST_USER_BIT + 26; // bits [29, 31]
 
 private:
 	// will use these members as isOnBorder0, setOnBorder0 and unsetOnBorder0
-	using BitFlags::unsetOnBorder;
-	using BitFlags::isOnBorder;
-	using BitFlags::setOnBorder;
+	using Base::unsetOnBorder;
+	using Base::isOnBorder;
+	using Base::setOnBorder;
 };
 
 } // namespace vcl::comp

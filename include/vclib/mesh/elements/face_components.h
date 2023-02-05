@@ -57,7 +57,7 @@ template<typename FaceType>
 using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3>;
 
 /* Port BitFlags class into face namespace */
-using BitFlags = comp::BitFlags;
+using BitFlags = comp::BitFlags<void*, true>;
 
 /* Port Color class into face namespace */
 using Color = comp::Color;
@@ -84,7 +84,7 @@ template<typename MeshType>
 using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port PolygonBitFlags class into face namespace */
-using PolygonBitFlags = comp::PolygonBitFlags;
+using PolygonBitFlags = comp::PolygonBitFlags<void*, true>;
 
 /* Port PrincipalCurvature class into face namespace */
 template<typename FaceType>
@@ -101,7 +101,7 @@ using Scalarf = comp::Scalarf;
 using Scalard = comp::Scalard;
 
 /* Port TriangleBitFlags class into face namespace */
-using TriangleBitFlags = comp::TriangleBitFlags;
+using TriangleBitFlags = comp::TriangleBitFlags<void*, true>;
 
 /* Port VertexReferences class into face namespace */
 template<typename Vertex, int N>

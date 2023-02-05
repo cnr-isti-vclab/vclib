@@ -44,10 +44,14 @@ struct CoordTData<P, false> { };
 template<PointConcept P, typename ElementType, bool horizontal>
 class CoordT
 {
+	using ThisType = CoordT<P, ElementType, horizontal>;
 public:
-	using CoordType = P;
+	using DataValueType = P;         // data that the component stores internally (or vertically)
+	using CoordComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+
+	using CoordType = P;
 
 	const P& coord() const;
 	P&       coord();
