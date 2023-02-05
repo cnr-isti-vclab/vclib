@@ -21,53 +21,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_BOUNDING_BOX_H
-#define VCL_MESH_COMPONENTS_BOUNDING_BOX_H
+#ifndef VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+#define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 
-#include <vclib/space/box.h>
+#include <vclib/math/matrix.h>
 
-#include "../concepts/bounding_box.h"
+#include "concepts/transform_matrix.h"
 
 namespace vcl::comp {
 
-/**
- * @brief The BoundingBox component class represents an axis aligned bounding box. This class is
- * usually used as a component of a Mesh.
- *
- * The member functions of this class will be available in the instance of any Element or Mesh that
- * will contain this component.
- *
- * For example, if you have a Mesh `m` with the BoundingBox component, you'll be able to
- * access to this component member functions from `m`:
- *
- * @code{.cpp}
- * m.boundingBox();
- * @endcode
- */
-template<PointConcept PointType>
-class BoundingBox
+template<typename Scalar>
+class TransformMatrix
 {
 public:
-	using BoundingBoxType = Box<PointType>;
+	using TransformMatrixType = Matrix44<Scalar>;
 
-	const BoundingBoxType& boundingBox() const;
-	BoundingBoxType&       boundingBox();
+	TransformMatrix();
+
+	const TransformMatrixType& transformMatrix() const;
+	TransformMatrixType&       transformMatrix();
 
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
 private:
-	Box<PointType> box;
+	Matrix44<Scalar> tr;
 };
-
-template <typename S>
-using BoundingBox3  = BoundingBox<Point3<S>>;
-using BoundingBox3f = BoundingBox<Point3f>;
-using BoundingBox3d = BoundingBox<Point3d>;
 
 } // namespace vcl::comp
 
-#include "bounding_box.cpp"
+#include "transform_matrix.cpp"
 
-#endif // VCL_MESH_COMPONENTS_BOUNDING_BOX_H
+#endif // VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H

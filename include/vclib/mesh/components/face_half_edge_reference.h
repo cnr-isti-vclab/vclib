@@ -35,9 +35,9 @@
 
 #include <vclib/space/color.h>
 
-#include "../concepts/face_half_edge_reference.h"
-#include "../concepts/color.h"
-#include "../concepts/tex_coord.h"
+#include "concepts/face_half_edge_reference.h"
+#include "concepts/color.h"
+#include "concepts/tex_coord.h"
 
 namespace vcl::comp {
 

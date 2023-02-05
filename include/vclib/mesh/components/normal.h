@@ -21,59 +21,45 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEXTURE_PATHS_H
-#define VCL_MESH_COMPONENTS_TEXTURE_PATHS_H
+#ifndef VCL_MESH_COMPONENTS_NORMAL_H
+#define VCL_MESH_COMPONENTS_NORMAL_H
 
-#include <string>
-#include <vector>
+#include <vclib/space/point.h>
 
-#include <vclib/iterators/range_iterator.h>
-
-#include "../concepts/texture_paths.h"
+#include "concepts/normal.h"
 
 namespace vcl::comp {
 
-class TexturePaths
+template <PointConcept P>
+class NormalT
 {
 public:
-	// iterators
-	using TexFileNamesIterator      = std::vector<std::string>::iterator;
-	using ConstTexFileNamesIterator = std::vector<std::string>::const_iterator;
-	using TexFileNamesRangeIterator =
-		RangeIterator<TexturePaths, TexFileNamesIterator>;
-	using ConstTexFileNamesRangeIterator =
-		ConstRangeIterator<TexturePaths, ConstTexFileNamesIterator>;
+	using NormalType = P;
 
-	TexturePaths();
-	uint textureNumber() const;
+	const P& normal() const;
+	P&       normal();
 
-	const std::string& texturePath(uint i) const;
-	std::string&       texturePath(uint i);
-	const std::string& meshBasePath() const;
-	std::string&       meshBasePath();
-
-	void clearTexturePaths();
-
-	void pushTexturePath(const std::string& textName);
-
-	TexFileNamesIterator texturePathBegin();
-	TexFileNamesIterator texturePathEnd();
-	ConstTexFileNamesIterator texturePathBegin() const;
-	ConstTexFileNamesIterator texturePathEnd() const;
-	TexFileNamesRangeIterator texturePaths();
-	ConstTexFileNamesRangeIterator texturePaths() const;
+	constexpr bool isNormalEnabled() const { return true; }
 
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
 private:
-	std::vector<std::string> texPaths;
-	std::string meshPath;
+	P n;
 };
+
+template<typename Scalar, int N>
+using Normal = NormalT<Point<Scalar, N>>;
+
+template<typename Scalar>
+using Normal3 = NormalT<Point3<Scalar>>;
+
+using Normal3f = Normal3<float>;
+using Normal3d = Normal3<double>;
 
 } // namespace vcl::comp
 
-#include "texture_paths.cpp"
+#include "normal.cpp"
 
-#endif // VCL_MESH_COMPONENTS_TEXTURE_PATHS_H
+#endif // VCL_MESH_COMPONENTS_NORMAL_H

@@ -24,14 +24,14 @@
 #ifndef VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_H
 #define VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_H
 
-#include "../components/horizontal/bit_flags.h"
-#include "../components/horizontal/color.h"
-#include "../components/horizontal/half_edge_references.h"
-#include "../components/horizontal/mark.h"
-#include "../components/horizontal/normal.h"
-#include "../components/horizontal/parent_mesh_pointer.h"
-#include "../components/horizontal/scalar.h"
-#include "../components/horizontal/tex_coord.h"
+#include "../components/bit_flags.h"
+#include "../components/color.h"
+#include "../components/half_edge_references.h"
+#include "../components/mark.h"
+#include "../components/normal.h"
+#include "../components/parent_mesh_pointer.h"
+#include "../components/scalar.h"
+#include "../components/tex_coord.h"
 
 namespace vcl::hedge {
 

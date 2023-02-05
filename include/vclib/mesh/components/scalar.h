@@ -21,36 +21,37 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
-#define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+#ifndef VCL_MESH_COMPONENTS_SCALAR_H
+#define VCL_MESH_COMPONENTS_SCALAR_H
 
-#include <vclib/math/matrix.h>
-
-#include "../concepts/transform_matrix.h"
+#include "concepts/scalar.h"
 
 namespace vcl::comp {
 
-template<typename Scalar>
-class TransformMatrix
+template<typename T>
+class Scalar
 {
 public:
-	using TransformMatrixType = Matrix44<Scalar>;
+	using ScalarType = T;
 
-	TransformMatrix();
+	const ScalarType& scalar() const;
+	ScalarType&       scalar();
 
-	const TransformMatrixType& transformMatrix() const;
-	TransformMatrixType&       transformMatrix();
+	constexpr bool isScalarEnabled() const { return true; }
 
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
 private:
-	Matrix44<Scalar> tr;
+	ScalarType s;
 };
+
+using Scalarf = Scalar<float>;
+using Scalard = Scalar<double>;
 
 } // namespace vcl::comp
 
-#include "transform_matrix.cpp"
+#include "scalar.cpp"
 
-#endif // VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+#endif // VCL_MESH_COMPONENTS_SCALAR_H

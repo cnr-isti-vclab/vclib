@@ -30,7 +30,7 @@
 #include <vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h>
 #include <vclib/iterators/range_iterator.h>
 
-#include "../concepts/vertex_half_edge_reference.h"
+#include "concepts/vertex_half_edge_reference.h"
 
 namespace vcl::comp {
 

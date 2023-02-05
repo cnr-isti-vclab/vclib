@@ -21,42 +21,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_COLOR_H
-#define VCL_MESH_COMPONENTS_COLOR_H
+#ifndef VCL_MESH_COMPONENTS_TEX_COORD_H
+#define VCL_MESH_COMPONENTS_TEX_COORD_H
 
-#include <vclib/space/color.h>
+#include <vclib/space/tex_coord.h>
 
-#include "../concepts/color.h"
+#include "concepts/tex_coord.h"
 
 namespace vcl::comp {
 
-/**
- * @brief The Color class represents a RGBA color that will be part of an Element
- * (e.g. Vertex, Face, ...).
- *
- * Allows to get and set an object of type Color.
- */
-class Color
+template<typename Scalar>
+class TexCoord
 {
 public:
-	using ColorType = vcl::Color;
+	using TexCoordType = vcl::TexCoord<Scalar>;
 
-	const vcl::Color& color() const;
+	const TexCoordType& texCoord() const;
+	TexCoordType&       texCoord();
 
-	vcl::Color& color();
-
-	constexpr bool isColorEnabled() const { return true; }
+	constexpr bool isTexCoordEnabled() const { return true; }
 
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
 private:
-	vcl::Color c;
+	vcl::TexCoord<Scalar> t;
 };
+
+using TexCoordf = TexCoord<float>;
+using TexCoordd = TexCoord<double>;
 
 } // namespace vcl::comp
 
-#include "color.cpp"
+#include "tex_coord.cpp"
 
-#endif // VCL_MESH_COMPONENTS_COLOR_H
+#endif // VCL_MESH_COMPONENTS_TEXCOORD_H

@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
-#include "../concepts/vertex_references.h"
+#include "concepts/vertex_references.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {

@@ -26,7 +26,7 @@
 
 #include <vector>
 
-#include "../concepts/half_edge_references.h"
+#include "concepts/half_edge_references.h"
 
 namespace vcl::comp {
 

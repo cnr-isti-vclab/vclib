@@ -24,19 +24,19 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_H
 #define VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_H
 
-#include "../components/horizontal/adjacent_edges.h"
-#include "../components/horizontal/adjacent_faces.h"
-#include "../components/horizontal/adjacent_vertices.h"
-#include "../components/horizontal/bit_flags.h"
-#include "../components/horizontal/color.h"
-#include "../components/horizontal/coordinate.h"
-#include "../components/horizontal/mark.h"
-#include "../components/horizontal/normal.h"
-#include "../components/horizontal/parent_mesh_pointer.h"
-#include "../components/horizontal/principal_curvature.h"
-#include "../components/horizontal/scalar.h"
-#include "../components/horizontal/vertex_half_edge_reference.h"
-#include "../components/horizontal/tex_coord.h"
+#include "../components/adjacent_edges.h"
+#include "../components/adjacent_faces.h"
+#include "../components/adjacent_vertices.h"
+#include "../components/bit_flags.h"
+#include "../components/color.h"
+#include "../components/coordinate.h"
+#include "../components/mark.h"
+#include "../components/normal.h"
+#include "../components/parent_mesh_pointer.h"
+#include "../components/principal_curvature.h"
+#include "../components/scalar.h"
+#include "../components/vertex_half_edge_reference.h"
+#include "../components/tex_coord.h"
 
 namespace vcl::vert {
 

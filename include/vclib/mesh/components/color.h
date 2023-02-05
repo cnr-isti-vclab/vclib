@@ -21,43 +21,42 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_COORDINATE_H
-#define VCL_MESH_COMPONENTS_COORDINATE_H
+#ifndef VCL_MESH_COMPONENTS_COLOR_H
+#define VCL_MESH_COMPONENTS_COLOR_H
 
-#include "../concepts/coordinate.h"
+#include <vclib/space/color.h>
 
-#include <vclib/space/point.h>
+#include "concepts/color.h"
 
 namespace vcl::comp {
 
-template<PointConcept P>
-class CoordT
+/**
+ * @brief The Color class represents a RGBA color that will be part of an Element
+ * (e.g. Vertex, Face, ...).
+ *
+ * Allows to get and set an object of type Color.
+ */
+class Color
 {
 public:
-	using CoordType = P;
+	using ColorType = vcl::Color;
 
-	const P& coord() const;
-	P&       coord();
+	const vcl::Color& color() const;
+
+	vcl::Color& color();
+
+	constexpr bool isColorEnabled() const { return true; }
 
 protected:
 	template<typename Element>
-	void importFrom(const Element& v);
+	void importFrom(const Element& e);
 
 private:
-	P p;
+	vcl::Color c;
 };
-
-template<typename Scalar, int N>
-using Coordinate = CoordT<Point<Scalar, N>>;
-
-template<typename Scalar>
-using Coordinate3 = CoordT<Point3<Scalar>>;
-
-using Coordinate3f = Coordinate3<float>;
-using Coordinate3d = Coordinate3<double>;
 
 } // namespace vcl::comp
 
-#include "coordinate.cpp"
+#include "color.cpp"
 
-#endif // VCL_MESH_COMPONENTS_COORDINATE_H
+#endif // VCL_MESH_COMPONENTS_COLOR_H

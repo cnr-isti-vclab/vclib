@@ -21,39 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEX_COORD_H
-#define VCL_MESH_COMPONENTS_TEX_COORD_H
+#ifndef VCL_MESH_COMPONENTS_COORDINATE_H
+#define VCL_MESH_COMPONENTS_COORDINATE_H
 
-#include <vclib/space/tex_coord.h>
+#include "concepts/coordinate.h"
 
-#include "../concepts/tex_coord.h"
+#include <vclib/space/point.h>
 
 namespace vcl::comp {
 
-template<typename Scalar>
-class TexCoord
+template<PointConcept P>
+class CoordT
 {
 public:
-	using TexCoordType = vcl::TexCoord<Scalar>;
+	using CoordType = P;
 
-	const TexCoordType& texCoord() const;
-	TexCoordType&       texCoord();
-
-	constexpr bool isTexCoordEnabled() const { return true; }
+	const P& coord() const;
+	P&       coord();
 
 protected:
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& v);
 
 private:
-	vcl::TexCoord<Scalar> t;
+	P p;
 };
 
-using TexCoordf = TexCoord<float>;
-using TexCoordd = TexCoord<double>;
+template<typename Scalar, int N>
+using Coordinate = CoordT<Point<Scalar, N>>;
+
+template<typename Scalar>
+using Coordinate3 = CoordT<Point3<Scalar>>;
+
+using Coordinate3f = Coordinate3<float>;
+using Coordinate3d = Coordinate3<double>;
 
 } // namespace vcl::comp
 
-#include "tex_coord.cpp"
+#include "coordinate.cpp"
 
-#endif // VCL_MESH_COMPONENTS_TEXCOORD_H
+#endif // VCL_MESH_COMPONENTS_COORDINATE_H

@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
-#include "../concepts/adjacent_edges.h"
+#include "concepts/adjacent_edges.h"
 #include "internal/element_references.h"
 
 namespace vcl::comp {

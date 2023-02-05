@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_NAME_H
 #define VCL_MESH_COMPONENTS_NAME_H
 
-#include "../concepts/name.h"
+#include "concepts/name.h"
 
 namespace vcl::comp {
 

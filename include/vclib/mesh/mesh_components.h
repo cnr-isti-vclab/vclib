@@ -24,12 +24,12 @@
 #ifndef VCL_MESH_COMPONENTS_H
 #define VCL_MESH_COMPONENTS_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/color.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/name.h"
-#include "components/horizontal/texture_paths.h"
-#include "components/horizontal/transform_matrix.h"
+#include "components/bounding_box.h"
+#include "components/color.h"
+#include "components/mark.h"
+#include "components/name.h"
+#include "components/texture_paths.h"
+#include "components/transform_matrix.h"
 
 namespace vcl::mesh {
 

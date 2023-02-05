@@ -21,45 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_NORMAL_H
-#define VCL_MESH_COMPONENTS_NORMAL_H
+#ifndef VCL_MESH_COMPONENTS_BOUNDING_BOX_H
+#define VCL_MESH_COMPONENTS_BOUNDING_BOX_H
 
-#include <vclib/space/point.h>
+#include <vclib/space/box.h>
 
-#include "../concepts/normal.h"
+#include "concepts/bounding_box.h"
 
 namespace vcl::comp {
 
-template <PointConcept P>
-class NormalT
+/**
+ * @brief The BoundingBox component class represents an axis aligned bounding box. This class is
+ * usually used as a component of a Mesh.
+ *
+ * The member functions of this class will be available in the instance of any Element or Mesh that
+ * will contain this component.
+ *
+ * For example, if you have a Mesh `m` with the BoundingBox component, you'll be able to
+ * access to this component member functions from `m`:
+ *
+ * @code{.cpp}
+ * m.boundingBox();
+ * @endcode
+ */
+template<PointConcept PointType>
+class BoundingBox
 {
 public:
-	using NormalType = P;
+	using BoundingBoxType = Box<PointType>;
 
-	const P& normal() const;
-	P&       normal();
-
-	constexpr bool isNormalEnabled() const { return true; }
+	const BoundingBoxType& boundingBox() const;
+	BoundingBoxType&       boundingBox();
 
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
 private:
-	P n;
+	Box<PointType> box;
 };
 
-template<typename Scalar, int N>
-using Normal = NormalT<Point<Scalar, N>>;
-
-template<typename Scalar>
-using Normal3 = NormalT<Point3<Scalar>>;
-
-using Normal3f = Normal3<float>;
-using Normal3d = Normal3<double>;
+template <typename S>
+using BoundingBox3  = BoundingBox<Point3<S>>;
+using BoundingBox3f = BoundingBox<Point3f>;
+using BoundingBox3d = BoundingBox<Point3d>;
 
 } // namespace vcl::comp
 
-#include "normal.cpp"
+#include "bounding_box.cpp"
 
-#endif // VCL_MESH_COMPONENTS_NORMAL_H
+#endif // VCL_MESH_COMPONENTS_BOUNDING_BOX_H
