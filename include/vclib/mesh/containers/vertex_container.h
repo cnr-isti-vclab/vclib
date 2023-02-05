@@ -163,8 +163,11 @@ protected:
 
 	void clearVertices();
 
-	uint addVertex();
-	uint addVertices(uint nVertices);
+	template<typename MeshType>
+	uint addVertex(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addVertices(uint nVertices, MeshType* parentMesh);
 	void reserveVertices(uint size);
 
 	std::vector<int> compactVertices();
@@ -172,8 +175,8 @@ protected:
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
+	template<typename OtherMesh>
+	void importFrom(const OtherMesh& m);
 
 	template<typename Mesh>
 	void importVertexReferencesFrom(const Mesh& m, T* base);

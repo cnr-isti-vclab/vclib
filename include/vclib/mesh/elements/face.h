@@ -54,6 +54,7 @@ class Face : public Args...
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
+	using ParentMeshType = MeshType;
 	using VertexType = typename VRefs::VertexType;
 
 	Face();

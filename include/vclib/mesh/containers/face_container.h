@@ -156,8 +156,11 @@ protected:
 
 	void clearFaces();
 
-	uint addFace();
-	uint addFaces(uint nFaces);
+	template<typename MeshType>
+	uint addFace(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addFaces(uint nFaces, MeshType* parentMesh);
 	void reserveFaces(uint size);
 
 	std::vector<int> compactFaces();
@@ -165,8 +168,8 @@ protected:
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
+	template<typename OtherMesh>
+	void importFrom(const OtherMesh& m);
 
 	template<typename Mesh, typename Vertex>
 	void importVertexReferencesFrom(const Mesh& m, Vertex* base);

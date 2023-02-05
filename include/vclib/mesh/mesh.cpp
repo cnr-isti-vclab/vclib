@@ -191,15 +191,18 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 
 	(Args::importFrom(m), ...);
 
-		 // after importing ordinary components, we need to convert the references between containers.
-		 // each container can import more than one reference type, e.g.:
-		 // - VertexContainer could import vertex references (adjacent vertices), face references
-		 //   (adjacent faces), and so on;
-		 // - FaceContainer will always import vertex references, but could also import face references
-		 //   (adjacent faces), edge references (adjacent edges)...
-		 // for each container of this Mesh, we'll call the importReferences passing the container (Args)
-		 // as template parameter. This parameter will be used to call all the possible import functions
-		 // available (vertices, faces, edges, half edges)
+	//
+	(setParentMeshPointers<Args>(), ...);
+
+	// after importing ordinary components, we need to convert the references between containers.
+	// each container can import more than one reference type, e.g.:
+	// - VertexContainer could import vertex references (adjacent vertices), face references
+	//   (adjacent faces), and so on;
+	// - FaceContainer will always import vertex references, but could also import face references
+	//   (adjacent faces), edge references (adjacent edges)...
+	// for each container of this Mesh, we'll call the importReferences passing the container (Args)
+	// as template parameter. This parameter will be used to call all the possible import functions
+	// available (vertices, faces, edges, half edges)
 
 	(importReferences<Args>(m), ...);
 
@@ -305,7 +308,7 @@ uint Mesh<Args...>::addVertex()
 	// vertex container are updated automatically)
 
 	Vertex* oldBase = VertexContainer::vec.data();
-	uint    vid     = VertexContainer::addVertex();
+	uint    vid     = VertexContainer::addVertex(this);
 	Vertex* newBase = VertexContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
 		// change all the vertex references in the other containers
@@ -357,7 +360,7 @@ uint Mesh<Args...>::addVertices(uint n)
 	// vertex container are updated automatically)
 
 	Vertex* oldBase = VertexContainer::vec.data();
-	uint    vid     = VertexContainer::addVertices(n); // add the number of vertices
+	uint    vid     = VertexContainer::addVertices(n, this); // add the number of vertices
 	Vertex* newBase = VertexContainer::vec.data();
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
@@ -496,7 +499,7 @@ uint Mesh<Args...>::addFace()
 	using FaceContainer = typename M::FaceContainer;
 
 	Face* oldBase = FaceContainer::vec.data();
-	uint  fid     = FaceContainer::addFace();
+	uint  fid     = FaceContainer::addFace(this);
 	Face* newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
@@ -595,7 +598,7 @@ uint Mesh<Args...>::addFaces(uint n)
 	using FaceContainer = typename M::FaceContainer;
 
 	Face* oldBase = FaceContainer::vec.data();
-	uint  fid     = FaceContainer::addFaces(n);
+	uint  fid     = FaceContainer::addFaces(n, this);
 	Face* newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
@@ -755,7 +758,7 @@ uint Mesh<Args...>::addEdge()
 	using EdgeContainer = typename M::EdgeContainer;
 
 	Edge* oldBase = EdgeContainer::vec.data();
-	uint  eid     = EdgeContainer::addEdge();
+	uint  eid     = EdgeContainer::addEdge(this);
 	Edge* newBase = EdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateEdgeReferences(oldBase, newBase);
@@ -788,7 +791,7 @@ uint Mesh<Args...>::addEdges(uint n)
 	// edge container are updated automatically)
 
 	Edge* oldBase = EdgeContainer::vec.data();
-	uint  eid     = EdgeContainer::addEdges(n); // add the number of edges
+	uint  eid     = EdgeContainer::addEdges(n, this); // add the number of edges
 	Edge* newBase = EdgeContainer::vec.data();
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
@@ -887,7 +890,7 @@ uint Mesh<Args...>::addHalfEdge()
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 
 	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
-	uint      eid     = HalfEdgeContainer::addHalfEdge();
+	uint      eid     = HalfEdgeContainer::addHalfEdge(this);
 	HalfEdge* newBase = HalfEdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateHalfEdgeReferences(oldBase, newBase);
@@ -920,7 +923,7 @@ uint Mesh<Args...>::addHalfEdges(uint n)
 	// Halfedge container are updated automatically)
 
 	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
-	uint      eid     = HalfEdgeContainer::addHalfEdges(n); // add the number of half edges
+	uint      eid     = HalfEdgeContainer::addHalfEdges(n, this); // add the number of half edges
 	HalfEdge* newBase = HalfEdgeContainer::vec.data();
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
@@ -1308,6 +1311,15 @@ void Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
 	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont>
+void Mesh<Args...>::setParentMeshPointers()
+{
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		Cont::setParentMeshPointers(this);
+	}
+}
+
 /**
  * This function will call, for a given container of this mesh that is passed as a template
  * parameter Cont, all the references of all the elements from the other mesh m.
@@ -1386,7 +1398,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 
 				// number of other faces to add
 				uint nf = tris.size() / 3 - 1;
-				uint fid = FaceContainer::addFaces(nf);
+				uint fid = FaceContainer::addFaces(nf, this);
 
 				uint i = 3; // index that cycles into tris
 				for (; fid < FaceContainer::faceContainerSize(); ++fid) {

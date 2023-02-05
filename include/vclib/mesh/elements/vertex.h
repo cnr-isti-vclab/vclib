@@ -49,6 +49,8 @@ class Vertex : public Args...
 	friend class mesh::ElementContainer;
 
 public:
+	using ParentMeshType = MeshType;
+
 	Vertex();
 
 	template<typename Element>

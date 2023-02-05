@@ -805,9 +805,10 @@ void vcl::mesh::FaceContainer<T>::clearFaces()
 }
 
 template<FaceConcept T>
-uint FaceContainer<T>::addFace()
+template<typename MeshType>
+uint FaceContainer<T>::addFace(MeshType* parentMesh)
 {
-	return Base::addElement();
+	return Base::addElement(parentMesh);
 }
 
 /**
@@ -819,9 +820,10 @@ uint FaceContainer<T>::addFace()
  * @return the id of the first added face.
  */
 template<FaceConcept T>
-uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces)
+template<typename MeshType>
+uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces, MeshType* parentMesh)
 {
-	return Base::addElements(nFaces);
+	return Base::addElements(nFaces, parentMesh);
 }
 
 template<FaceConcept T>
@@ -855,11 +857,11 @@ void FaceContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 }
 
 template<FaceConcept T>
-template<typename Mesh>
-void FaceContainer<T>::importFrom(const Mesh& m)
+template<typename OtherMesh>
+void FaceContainer<T>::importFrom(const OtherMesh& m)
 {
-	if constexpr (HasFaceContainer<Mesh>) {
-		using MFaceContainer = typename Mesh::FaceContainer::Base;
+	if constexpr (HasFaceContainer<OtherMesh>) {
+		using MFaceContainer = typename OtherMesh::FaceContainer::Base;
 
 		Base::importFrom((const MFaceContainer&)m);
 	}

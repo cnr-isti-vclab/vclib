@@ -703,9 +703,10 @@ void vcl::mesh::EdgeContainer<T>::clearEdges()
 }
 
 template<EdgeConcept T>
-uint EdgeContainer<T>::addEdge()
+template<typename MeshType>
+uint EdgeContainer<T>::addEdge(MeshType* parentMesh)
 {
-	return Base::addElement();
+	return Base::addElement(parentMesh);
 }
 
 /**
@@ -717,9 +718,10 @@ uint EdgeContainer<T>::addEdge()
  * @return the id of the first added edge.
  */
 template<EdgeConcept T>
-uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges)
+template<typename MeshType>
+uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges, MeshType* parentMesh)
 {
-	return Base::addElements(nEdges);
+	return Base::addElements(nEdges, parentMesh);
 }
 
 template<EdgeConcept T>
@@ -753,11 +755,11 @@ void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 }
 
 template<EdgeConcept T>
-template<typename Mesh>
-void EdgeContainer<T>::importFrom(const Mesh& m)
+template<typename OtherMesh>
+void EdgeContainer<T>::importFrom(const OtherMesh& m)
 {
-	if constexpr (HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
+	if constexpr (HasEdgeContainer<OtherMesh>) {
+		using MEdgeContainer = typename OtherMesh::EdgeContainer::Base;
 
 		Base::importFrom((const MEdgeContainer&)m);
 	}

@@ -128,8 +128,11 @@ protected:
 
 	void clearHalfEdges();
 
-	uint addHalfEdge();
-	uint addHalfEdges(uint nEdges);
+	template<typename MeshType>
+	uint addHalfEdge(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addHalfEdges(uint nEdges, MeshType* parentMesh);
 	void reserveHalfEdges(uint size);
 
 	std::vector<int> compactHalfEdges();
@@ -137,8 +140,8 @@ protected:
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
+	template<typename OtherMesh>
+	void importFrom(const OtherMesh& m);
 
 	template<typename Mesh, typename Vertex>
 	void importVertexReferencesFrom(const Mesh& m, Vertex* base);

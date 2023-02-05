@@ -49,6 +49,8 @@ class HalfEdge : public Args...
 	friend class mesh::ElementContainer;
 
 public:
+	using ParentMeshType = MeshType;
+
 	HalfEdge();
 
 	template<typename Element>

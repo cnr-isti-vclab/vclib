@@ -49,6 +49,8 @@ class Edge : public Args...
 	friend class mesh::ElementContainer;
 
 public:
+	using ParentMeshType = MeshType;
+
 	Edge();
 
 	template<typename Element>

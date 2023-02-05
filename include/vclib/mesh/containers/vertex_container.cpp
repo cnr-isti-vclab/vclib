@@ -857,21 +857,22 @@ ConstCustomComponentVectorHandle<K> VertexContainer<T>::getPerVertexCustomCompon
 }
 
 template<VertexConcept T>
-void VertexContainer<T>::clearVertices()
-{
-	Base::clearElements();
-}
-
-template<VertexConcept T>
 uint VertexContainer<T>::index(const VertexType* v) const
 {
 	return Base::index(v);
 }
 
 template<VertexConcept T>
-uint VertexContainer<T>::addVertex()
+void VertexContainer<T>::clearVertices()
 {
-	return Base::addElement();
+	Base::clearElements();
+}
+
+template<VertexConcept T>
+template<typename MeshType>
+uint VertexContainer<T>::addVertex(MeshType* parentMesh)
+{
+	return Base::addElement(parentMesh);
 }
 
 /**
@@ -883,9 +884,10 @@ uint VertexContainer<T>::addVertex()
  * @return the id of the first added vertex.
  */
 template<VertexConcept T>
-uint VertexContainer<T>::addVertices(uint nVertices)
+template<typename MeshType>
+uint VertexContainer<T>::addVertices(uint nVertices, MeshType* parentMesh)
 {
-	return Base::addElements(nVertices);
+	return Base::addElements(nVertices, parentMesh);
 }
 
 template<VertexConcept T>
@@ -920,14 +922,11 @@ void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 }
 
 template<VertexConcept T>
-template<typename Mesh>
-void VertexContainer<T>::importFrom(const Mesh& m)
+template<typename OtherMesh>
+void VertexContainer<T>::importFrom(const OtherMesh& m)
 {
-	if constexpr (HasVertexContainer<Mesh>) {
-		using MVertexContainer = typename Mesh::VertexContainer::Base;
-
-		Base::importFrom((const MVertexContainer&) m);
-	}
+	using MVertexContainer = typename OtherMesh::VertexContainer::Base;
+	Base::importFrom((const MVertexContainer&) m);
 }
 
 template<VertexConcept T>

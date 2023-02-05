@@ -200,6 +200,15 @@ std::vector<int> ElementContainer<T>::elementCompactIndices() const
 	return newIndices;
 }
 
+template<typename T>
+template<typename MeshType>
+void ElementContainer<T>::setParentMeshPointers(MeshType* parentMesh)
+{
+	for (auto& e : elements(false)) {
+		setParentMeshPointer(e, parentMesh);
+	}
+}
+
 /**
  * @brief Returns an iterator to the beginning of the container.
  *
@@ -342,14 +351,16 @@ void ElementContainer<T>::clearElements()
 }
 
 template<typename T>
-uint ElementContainer<T>::addElement()
+template<typename MeshType>
+uint ElementContainer<T>::addElement(MeshType* parentMesh)
 {
 	T* oldB = vec.data();
 	vec.push_back(T());
 	T* newB = vec.data();
 	en++;
+	setParentMeshPointer(vec.back(), parentMesh);
 	if constexpr (comp::HasVerticalComponent<T>) {
-		setContainerPointer(vec[vec.size() - 1]);
+		setContainerPointer(vec.back());
 		optionalVec.resize(vec.size());
 	}
 	updateContainerPointers(oldB, newB);
@@ -365,7 +376,8 @@ uint ElementContainer<T>::addElement()
  * @return the id of the first added element.
  */
 template<typename T>
-uint ElementContainer<T>::addElements(uint size)
+template<typename MeshType>
+uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 {
 	uint baseId = vec.size();
 	T*   oldB   = vec.data();
@@ -375,6 +387,7 @@ uint ElementContainer<T>::addElements(uint size)
 	if constexpr (comp::HasVerticalComponent<T>) {
 		optionalVec.resize(vec.size());
 		for (uint i = baseId; i < vec.size(); ++i) {
+			setParentMeshPointer(vec[i], parentMesh);
 			setContainerPointer(vec[i]);
 		}
 	}
@@ -421,6 +434,13 @@ std::vector<int> ElementContainer<T>::compactElements()
 		}
 	}
 	return newIndices;
+}
+
+template<typename T>
+template<typename MeshType>
+void ElementContainer<T>::setParentMeshPointer(T& element, MeshType* parentMesh)
+{
+	element.setParentMesh(parentMesh);
 }
 
 /**
@@ -757,7 +777,8 @@ template<typename Container>
 void ElementContainer<T>::importFrom(const Container &c)
 {
 	clearElements();
-	addElements(c.elementContainerSize());
+	// pointer to parent mesh needs to be updated later by the mesh
+	addElements<typename T::ParentMeshType>(c.elementContainerSize(), nullptr);
 	unsigned int eid = 0;
 	for (const typename Container::ElementType& e : c.elements(false)) {
 		element(eid).importFrom(e);

@@ -651,15 +651,17 @@ void HalfEdgeContainer<T>::clearHalfEdges()
 }
 
 template<HalfEdgeConcept T>
-uint HalfEdgeContainer<T>::addHalfEdge()
+template<typename MeshType>
+uint HalfEdgeContainer<T>::addHalfEdge(MeshType* parentMesh)
 {
-	return Base::addElement();
+	return Base::addElement(parentMesh);
 }
 
 template<HalfEdgeConcept T>
-uint HalfEdgeContainer<T>::addHalfEdges(uint nEdges)
+template<typename MeshType>
+uint HalfEdgeContainer<T>::addHalfEdges(uint nEdges, MeshType* parentMesh)
 {
-	return Base::addElements(nEdges);
+	return Base::addElements(nEdges, parentMesh);
 }
 
 template<HalfEdgeConcept T>
@@ -687,12 +689,12 @@ void HalfEdgeContainer<T>::enableOptionalComponentsOf(const Mesh &m)
 }
 
 template<HalfEdgeConcept T>
-template<typename Mesh>
-void HalfEdgeContainer<T>::importFrom(const Mesh &m)
+template<typename OtherMesh>
+void HalfEdgeContainer<T>::importFrom(const OtherMesh &m)
 {
 	// if half edges are enabled in the other Mesh
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
-		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
+	if constexpr (mesh::HasHalfEdgeContainer<OtherMesh>) {
+		using MHalfEdgeContainer = typename OtherMesh::HalfEdgeContainer::Base;
 
 		Base::importFrom((const MHalfEdgeContainer&)m);
 	}

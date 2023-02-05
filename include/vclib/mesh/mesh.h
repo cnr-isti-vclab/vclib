@@ -233,6 +233,9 @@ private:
 	template<HasFaces M = Mesh, typename... V>
 	void addFaceHelper(typename M::FaceType& f, uint vid, V... args);
 
+	template<typename Cont>
+	void setParentMeshPointers();
+
 	template<typename Cont, typename OthMesh>
 	void importReferences(const OthMesh& m);
 

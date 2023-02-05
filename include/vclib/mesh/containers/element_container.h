@@ -63,10 +63,13 @@ public:
 	uint deletedElementNumber() const;
 
 	void deleteElement(uint i);
-	void deleteElement(const T *e);
+	void deleteElement(const T* e);
 
 	uint elementIndexIfCompact(uint i) const;
 	std::vector<int> elementCompactIndices() const;
+
+	template<typename MeshType>
+	void setParentMeshPointers(MeshType* parentMesh);
 
 	ElementIterator           elementBegin(bool jumpDeleted = true);
 	ElementIterator           elementEnd();
@@ -79,12 +82,18 @@ protected:
 	uint index(const T *e) const;
 	void clearElements();
 
-	uint addElement();
-	uint addElements(uint size);
+	template<typename MeshType>
+	uint addElement(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addElements(uint size, MeshType* parentMesh);
+
 	void reserveElements(uint size);
 
 	std::vector<int> compactElements();
 
+	template<typename MeshType>
+	void setParentMeshPointer(T& element, MeshType* parentMesh);
 	void setContainerPointer(T& element);
 
 	void updateContainerPointers(const T* oldBase, const T* newBase);

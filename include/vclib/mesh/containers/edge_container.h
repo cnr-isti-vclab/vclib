@@ -132,8 +132,12 @@ protected:
 
 	void clearEdges();
 
-	uint addEdge();
-	uint addEdges(uint nEdges);
+	template<typename MeshType>
+	uint addEdge(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addEdges(uint nEdges, MeshType* parentMesh);
+
 	void reserveEdges(uint size);
 
 	std::vector<int> compactEdges();
@@ -141,8 +145,8 @@ protected:
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
+	template<typename OtherMesh>
+	void importFrom(const OtherMesh& m);
 
 	template<typename Mesh, typename Vertex>
 	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
