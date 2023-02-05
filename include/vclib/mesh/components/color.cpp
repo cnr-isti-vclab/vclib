@@ -28,26 +28,51 @@ namespace vcl::comp {
 /**
  * @brief Returns const reference of the color of the element.
  */
-inline const vcl::Color& Color::color() const
+template<typename El, bool h>
+const vcl::Color& Color<El, h>::color() const
 {
-	return c;
+	return c();
 }
 
 /**
  * @brief Returns a reference pf the color of the element.
  */
-inline vcl::Color& Color::color()
+template<typename El, bool h>
+vcl::Color& Color<El, h>::color()
 {
-	return c;
+	return c();
 }
 
+template<typename El, bool h>
 template<typename Element>
-void Color::importFrom(const Element& e)
+void Color<El, h>::importFrom(const Element& e)
 {
 	if constexpr (HasColor<Element>) {
 		if (isColorEnabledOn(e)) {
-			c = e.color();
+			c() = e.color();
 		}
+	}
+}
+
+template<typename El, bool h>
+vcl::Color& Color<El, h>::c()
+{
+	if constexpr (h) {
+		return data.c;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
+	}
+}
+
+template<typename El, bool h>
+const vcl::Color& Color<El, h>::c() const
+{
+	if constexpr (h) {
+		return data.c;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
 	}
 }
 

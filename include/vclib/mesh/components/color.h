@@ -27,8 +27,19 @@
 #include <vclib/space/color.h>
 
 #include "concepts/color.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
+
+namespace internal {
+
+template<bool>
+struct ColorData { vcl::Color c; };
+
+template<>
+struct ColorData<false> { };
+
+} // vcl::comp::internal
 
 /**
  * @brief The Color class represents a RGBA color that will be part of an Element
@@ -36,9 +47,16 @@ namespace vcl::comp {
  *
  * Allows to get and set an object of type Color.
  */
+template<typename ElementType, bool horizontal>
 class Color
 {
+	using ThisType = Color<ElementType, horizontal>;
 public:
+	using DataValueType = vcl::Color; // data that the component stores internally (or vertically)
+	using ColorComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using ColorType = vcl::Color;
 
 	const vcl::Color& color() const;
@@ -52,7 +70,11 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	vcl::Color c;
+	vcl::Color& c();
+	const vcl::Color& c() const;
+
+	// contians the actual point, if the component is horizontal
+	internal::ColorData<horizontal> data;
 };
 
 } // namespace vcl::comp

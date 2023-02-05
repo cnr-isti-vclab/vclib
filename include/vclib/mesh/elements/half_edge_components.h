@@ -39,7 +39,7 @@ namespace vcl::hedge {
 using BitFlags = comp::BitFlags<void*, true>;
 
 /* Port Color class into hedge namespace */
-using Color = comp::Color;
+using Color = comp::Color<void*, true>;
 
 /* Port HalfEdgeReferences class into hedge namespace */
 template<typename HalfEdgeType, typename VertexType, typename FaceType>

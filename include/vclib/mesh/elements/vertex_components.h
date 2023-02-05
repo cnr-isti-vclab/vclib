@@ -56,7 +56,7 @@ using AdjacentVertices = comp::AdjacentVertices<VertexType>;
 using BitFlags = comp::BitFlags<void*, true>;
 
 /* Port Color class into vert namespace */
-using Color = comp::Color;
+using Color = comp::Color<void*, true>;
 
 /* Port Coordinate class into vert namespace */
 template<typename ScalarType, int N>

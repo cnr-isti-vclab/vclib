@@ -60,7 +60,7 @@ using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3>;
 using BitFlags = comp::BitFlags<void*, true>;
 
 /* Port Color class into face namespace */
-using Color = comp::Color;
+using Color = comp::Color<void*, true>;
 
 /* Port Half Edge reference into face namespace*/
 template<typename HalfEdge>

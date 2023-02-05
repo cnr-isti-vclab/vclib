@@ -47,7 +47,7 @@ using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 using BitFlags = comp::BitFlags<void*, true>;
 
 /* Port Color class into edge namespace */
-using Color = comp::Color;
+using Color = comp::Color<void*, true>;
 
 /* Port Mark class into edge namespace */
 using Mark = comp::Mark;

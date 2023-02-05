@@ -58,7 +58,13 @@ struct BoundingBoxData<P, false> { };
 template<PointConcept PointType, typename ElementType, bool horizontal>
 class BoundingBox
 {
+	using ThisType = BoundingBox<PointType, ElementType, horizontal>;
 public:
+	using DataValueType = Box<PointType>; // data that the component stores internally (or vertically)
+	using BoundingBoxComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using BoundingBoxType = Box<PointType>;
 
 	const BoundingBoxType& boundingBox() const;

@@ -44,7 +44,7 @@ using BoundingBox3f = comp::BoundingBox3f<void*, true>;
 using BoundingBox3d = comp::BoundingBox3d<void*, true>;
 
 /** Port Color class into mesh namespace **/
-using Color = comp::Color;
+using Color = comp::Color<void*, true>;
 
 /** Port Mark class into mesh namespace **/
 using Mark = comp::Mark;
