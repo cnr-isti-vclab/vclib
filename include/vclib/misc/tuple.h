@@ -30,10 +30,52 @@
 
 namespace vcl {
 
+/**
+ * @brief Returns the index of a type T in a std::tuple<U, Us...> passed as parameter;
+ * Returns UINT_NULL if the type T is not found in the tuple
+ */
 template <typename T, typename U, typename... Us>
 constexpr auto tupleIndexByType(const std::tuple<U, Us...> &) {
 	return indexInTypePack<T, U, Us...>();
 }
+
+/* Remove all types that do not satisfy a condition, and get them as a tuple. */
+
+namespace internal {
+
+template <typename, typename> struct Cons;
+
+template <typename  T, typename ...Args>
+struct Cons<T, std::tuple<Args...>>
+{
+	using type = std::tuple<T, Args...>;
+};
+
+} // namespace vcl::internal
+
+template <template <class> class, typename ...>
+struct FilterTypesByCondition { using type = std::tuple<>; };
+
+/**
+ * @brief Removes all types that do not satisfy a condition, and get them as a tuple.
+ *
+ * Usage:
+ *
+ * @code{.cpp}
+ * using ResTuple = FilterTypesByCondition<std::is_integral, int, float, double, char>::type;
+ * static_assert(std::is_same<ResTuple, std::tuple<int, char>>::value, "");
+ * @endcode
+ *
+ * ResTuple will be a std::tuple<int, char> (int and char are the only integral types)
+ */
+template <template <class> class Pred, typename Head, typename ...Tail>
+struct FilterTypesByCondition<Pred, Head, Tail...>
+{
+	using type = typename std::conditional<
+		Pred<Head>::value,
+		typename internal::Cons<Head, typename FilterTypesByCondition<Pred, Tail...>::type>::type,
+		typename FilterTypesByCondition<Pred, Tail...>::type>::type;
+};
 
 } // namespace vcl
 
