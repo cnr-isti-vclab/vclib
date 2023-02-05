@@ -60,13 +60,13 @@ using Color = comp::Color;
 
 /* Port Coordinate class into vert namespace */
 template<typename ScalarType, int N>
-using Coordinate = comp::Coordinate<ScalarType, N>;
+using Coordinate = comp::Coordinate<ScalarType, N, void*, true>;
 
 template<typename ScalarType>
-using Coordinate3 = comp::Coordinate3<ScalarType>;
+using Coordinate3 = comp::Coordinate3<ScalarType, void*, true>;
 
-using Coordinate3f = comp::Coordinate3f;
-using Coordinate3d = comp::Coordinate3d;
+using Coordinate3f = comp::Coordinate3f<void*, true>;
+using Coordinate3d = comp::Coordinate3d<void*, true>;
 
 /* Port Half Edge reference into vert namespace*/
 template<typename HalfEdge>

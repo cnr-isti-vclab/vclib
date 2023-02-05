@@ -25,24 +25,46 @@
 
 namespace vcl::comp {
 
-template<PointConcept Point>
-const Point& CoordT<Point>::coord() const
+template<PointConcept P, typename El, bool h>
+const P& CoordT<P, El, h>::coord() const
 {
-	return p;
+	return p();
 }
 
-template<PointConcept Point>
-Point& CoordT<Point>::coord()
+template<PointConcept P, typename El, bool h>
+P& CoordT<P, El, h>::coord()
 {
-	return p;
+	return p();
 }
 
-template<PointConcept Point>
+template<PointConcept P, typename ElementType, bool horizontal>
+P& CoordT<P, ElementType, horizontal>::p()
+{
+	if constexpr (horizontal) {
+		return data.p;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
+	}
+}
+
+template<PointConcept P, typename ElementType, bool horizontal>
+const P& CoordT<P, ElementType, horizontal>::p() const
+{
+	if constexpr (horizontal) {
+		return data.p;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
+	}
+}
+
+template<PointConcept P, typename El, bool h>
 template<typename Element>
-void CoordT<Point>::importFrom(const Element& v)
+void CoordT<P, El, h>::importFrom(const Element& v)
 {
 	if constexpr (HasCoordinate<Element>) {
-		p = v.coord().template cast<typename CoordType::ScalarType>();
+		p() = v.coord().template cast<typename CoordType::ScalarType>();
 	}
 }
 

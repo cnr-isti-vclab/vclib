@@ -25,16 +25,29 @@
 #define VCL_MESH_COMPONENTS_COORDINATE_H
 
 #include "concepts/coordinate.h"
+#include "internal/get_vertical_component_data.h"
 
 #include <vclib/space/point.h>
 
 namespace vcl::comp {
 
+namespace internal {
+
+template<PointConcept P, bool>
+struct CoordTData { P p; };
+
 template<PointConcept P>
+struct CoordTData<P, false> { };
+
+} // vcl::comp::internal
+
+template<PointConcept P, typename ElementType, bool horizontal>
 class CoordT
 {
 public:
 	using CoordType = P;
+
+	static const bool IS_VERTICAL = !horizontal;
 
 	const P& coord() const;
 	P&       coord();
@@ -44,17 +57,25 @@ protected:
 	void importFrom(const Element& v);
 
 private:
-	P p;
+	// members that allow to access the point, trough data (horizontal) or trough parent (vertical)
+	P& p();
+	const P& p() const;
+
+	// contians the actual point, if the component is horizontal
+	internal::CoordTData<P, horizontal> data;
 };
 
-template<typename Scalar, int N>
-using Coordinate = CoordT<Point<Scalar, N>>;
+template<typename Scalar, int N, typename ElementType, bool horizontal>
+using Coordinate = CoordT<Point<Scalar, N>, ElementType, horizontal>;
 
-template<typename Scalar>
-using Coordinate3 = CoordT<Point3<Scalar>>;
+template<typename Scalar, typename ElementType, bool horizontal>
+using Coordinate3 = CoordT<Point3<Scalar>, ElementType, horizontal>;
 
-using Coordinate3f = Coordinate3<float>;
-using Coordinate3d = Coordinate3<double>;
+template<typename ElementType, bool horizontal>
+using Coordinate3f = Coordinate3<float, ElementType, horizontal>;
+
+template<typename ElementType, bool horizontal>
+using Coordinate3d = Coordinate3<double, ElementType, horizontal>;
 
 } // namespace vcl::comp
 
