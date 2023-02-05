@@ -47,10 +47,10 @@ using BoundingBox3d = comp::BoundingBox3d<void*, true>;
 using Color = comp::Color<void*, true>;
 
 /** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+using Mark = comp::Mark<void*, true>;
 
 /** Port Name class into mesh namespace **/
-using Name = comp::Name;
+using Name = comp::Name<void*, true>;
 
 /** Port TexturePaths class into mesh namespace **/
 using TexturePaths = comp::TexturePaths;

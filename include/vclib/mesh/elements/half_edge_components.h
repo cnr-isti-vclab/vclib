@@ -46,7 +46,7 @@ template<typename HalfEdgeType, typename VertexType, typename FaceType>
 using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType>;
 
 /* Port Mark class into hedge namespace */
-using Mark = comp::Mark;
+using Mark = comp::Mark<void*, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>

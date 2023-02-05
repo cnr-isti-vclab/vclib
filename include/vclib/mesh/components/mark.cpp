@@ -25,44 +25,72 @@
 
 namespace vcl::comp {
 
-inline int Mark::mark() const
+template<typename El, bool h>
+int Mark<El, h>::mark() const
 {
-	return m;
+	return m();
 }
 
-inline void Mark::resetMark()
+template<typename El, bool h>
+void Mark<El, h>::resetMark()
 {
-	m = 0;
+	m() = 0;
 }
 
+template<typename El, bool h>
 template<typename E>
-bool Mark::hasSameMark(const E& e) const
+bool Mark<El, h>::hasSameMark(const E& e) const
 {
 	if constexpr (std::is_pointer<E>::value) {
-		return e->mark() == m;
+		return e->mark() == m();
 	}
 	else {
-		return e.mark() == m;
+		return e.mark() == m();
 	}
 }
 
-inline void Mark::incrementMark()
+template<typename El, bool h>
+void Mark<El, h>::incrementMark()
 {
-	m++;
+	m()++;
 }
 
-inline void Mark::decrementMark()
+template<typename El, bool h>
+void Mark<El, h>::decrementMark()
 {
-	m--;
+	m()--;
 }
 
+template<typename El, bool h>
 template<typename Element>
-void Mark::importFrom(const Element& e)
+void Mark<El, h>::importFrom(const Element& e)
 {
 	if constexpr (HasMark<Element>) {
 		if (isMarkEnabledOn(e)) {
-			m = e.mark();
+			m() = e.mark();
 		}
+	}
+}
+
+template<typename El, bool h>
+int& Mark<El, h>::m()
+{
+	if constexpr (h) {
+		return data.m;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
+	}
+}
+
+template<typename El, bool h>
+const int& Mark<El, h>::m() const
+{
+	if constexpr (h) {
+		return data.m;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
 	}
 }
 

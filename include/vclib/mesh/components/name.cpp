@@ -29,25 +29,50 @@ namespace vcl::comp {
  * @brief Returns the name of this object.
  * @return The name of this object.
  */
-inline std::string& Name::name()
+template<typename El, bool h>
+std::string& Name<El, h>::name()
 {
-	return n;
+	return n();
 }
 
 /**
  * @brief Returns the name of this object.
  * @return The name of this object.
  */
-inline const std::string& Name::name() const
+template<typename El, bool h>
+const std::string& Name<El, h>::name() const
 {
-	return n;
+	return n();
 }
 
+template<typename El, bool h>
 template<typename Element>
-void Name::importFrom(const Element &e)
+void Name<El, h>::importFrom(const Element &e)
 {
 	if constexpr(HasName<Element>) {
-		n = e.name();
+		n() = e.name();
+	}
+}
+
+template<typename El, bool h>
+std::string &Name<El, h>::n()
+{
+	if constexpr (h) {
+		return data.n;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
+	}
+}
+
+template<typename El, bool h>
+const std::string &Name<El, h>::n() const
+{
+	if constexpr (h) {
+		return data.n;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
 	}
 }
 

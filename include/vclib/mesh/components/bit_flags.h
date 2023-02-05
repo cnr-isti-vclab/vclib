@@ -110,6 +110,7 @@ protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
 	int& flags();
 	const int& flags() const;
 
@@ -123,6 +124,7 @@ protected:
 	};
 
 private:
+	// contians the actual flags, if the component is horizontal
 	internal::BitFlagsData<horizontal> data;
 };
 

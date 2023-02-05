@@ -73,7 +73,7 @@ template<typename HalfEdge>
 using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge>;
 
 /* Port Mark class into vert namespace */
-using Mark = comp::Mark;
+using Mark = comp::Mark<void*, true>;
 
 /* Port Normal classes into vert namespace */
 template<typename ScalarType, int N>

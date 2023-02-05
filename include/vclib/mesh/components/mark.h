@@ -25,8 +25,19 @@
 #define VCL_MESH_COMPONENTS_MARK_H
 
 #include "concepts/mark.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
+
+namespace internal {
+
+template<bool>
+struct MarkData { int m = 0; };
+
+template<>
+struct MarkData<false> { };
+
+} // vcl::comp::internal
 
 /**
  * @brief The Mark class is an utility class useful to un-mark components in constant time.
@@ -61,6 +72,7 @@ namespace vcl::comp {
  * m.hasSameMark(m.vertex(5)); // or: m.vertex(5).hasSameMark(m)
  * @endcode
  */
+template<typename ElementType, bool horizontal>
 class Mark
 {
 public:
@@ -82,7 +94,12 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	int m = 0;
+	// members that allow to access the point, trough data (horizontal) or trough parent (vertical)
+	int& m();
+	const int& m() const;
+
+	// contians the actual mark, if the component is horizontal
+	internal::MarkData<horizontal> data;
 };
 
 } // namespace vcl::comp

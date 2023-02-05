@@ -25,8 +25,19 @@
 #define VCL_MESH_COMPONENTS_NAME_H
 
 #include "concepts/name.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
+
+namespace internal {
+
+template<bool>
+struct NameData { std::string n; };
+
+template<>
+struct NameData<false> { };
+
+} // vcl::comp::internal
 
 /**
  * @brief The Name component class represents a simple name stored as string. This class is
@@ -42,9 +53,16 @@ namespace vcl::comp {
  * m.name();
  * @endcode
  */
+template<typename ElementType, bool horizontal>
 class Name
 {
+	using ThisType = Name<ElementType, horizontal>;
 public:
+	using DataValueType = std::string; // data that the component stores internally (or vertically)
+	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	Name() {}
 
 	std::string& name();
@@ -55,7 +73,12 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	std::string n;
+	// members that allow to access the name, trough data (horizontal) or trough parent (vertical)
+	std::string& n();
+	const std::string& n() const;
+
+	// contians the actual flags, if the component is horizontal
+	internal::NameData<horizontal> data;
 };
 
 } // namespace vcl::comp

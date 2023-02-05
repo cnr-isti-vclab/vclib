@@ -50,7 +50,7 @@ using BitFlags = comp::BitFlags<void*, true>;
 using Color = comp::Color<void*, true>;
 
 /* Port Mark class into edge namespace */
-using Mark = comp::Mark;
+using Mark = comp::Mark<void*, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
