@@ -35,13 +35,13 @@ namespace vcl::mesh {
 
 /** Port BoundingBox class into mesh namespace **/
 template<typename P>
-using BoundingBox = comp::BoundingBox<P>;
+using BoundingBox = comp::BoundingBox<P, void*, true>;
 
 template <typename S>
-using BoundingBox3 = comp::BoundingBox3<S>;
+using BoundingBox3 = comp::BoundingBox3<S, void*, true>;
 
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
+using BoundingBox3f = comp::BoundingBox3f<void*, true>;
+using BoundingBox3d = comp::BoundingBox3d<void*, true>;
 
 /** Port Color class into mesh namespace **/
 using Color = comp::Color;

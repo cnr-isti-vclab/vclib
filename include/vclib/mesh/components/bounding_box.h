@@ -27,8 +27,19 @@
 #include <vclib/space/box.h>
 
 #include "concepts/bounding_box.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
+
+namespace internal {
+
+template<PointConcept P, bool>
+struct BoundingBoxData { Box<P> box; };
+
+template<PointConcept P>
+struct BoundingBoxData<P, false> { };
+
+} // vcl::comp::internal
 
 /**
  * @brief The BoundingBox component class represents an axis aligned bounding box. This class is
@@ -44,7 +55,7 @@ namespace vcl::comp {
  * m.boundingBox();
  * @endcode
  */
-template<PointConcept PointType>
+template<PointConcept PointType, typename ElementType, bool horizontal>
 class BoundingBox
 {
 public:
@@ -58,13 +69,21 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	Box<PointType> box;
+	Box<PointType>& box();
+	const Box<PointType>& box() const;
+
+	// contians the actual box, if the component is horizontal
+	internal::BoundingBoxData<PointType, horizontal> data;
 };
 
-template <typename S>
-using BoundingBox3  = BoundingBox<Point3<S>>;
-using BoundingBox3f = BoundingBox<Point3f>;
-using BoundingBox3d = BoundingBox<Point3d>;
+template <typename S, typename ElementType, bool horizontal>
+using BoundingBox3  = BoundingBox<Point3<S>, ElementType, horizontal>;
+
+template<typename ElementType, bool horizontal>
+using BoundingBox3f = BoundingBox<Point3f, ElementType, horizontal>;
+
+template<typename ElementType, bool horizontal>
+using BoundingBox3d = BoundingBox<Point3d, ElementType, horizontal>;
 
 } // namespace vcl::comp
 

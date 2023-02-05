@@ -29,28 +29,50 @@ namespace vcl::comp {
  * @brief Returns the bounding box of this object.
  * @return The bounding box of this object.
  */
-template<PointConcept PointType>
-const Box<PointType>& BoundingBox<PointType>::boundingBox() const
+template<PointConcept P, typename El, bool h>
+const Box<P>& BoundingBox<P, El, h>::boundingBox() const
 {
-	return box;
+	return box();
 }
 
 /**
  * @brief Returns the bounding box of this object.
  * @return The bounding box of this object.
  */
-template<PointConcept PointType>
-Box<PointType>& BoundingBox<PointType>::boundingBox()
+template<PointConcept P, typename El, bool h>
+Box<P>& BoundingBox<P, El, h>::boundingBox()
 {
-	return box;
+	return box();
 }
 
-template<PointConcept PointType>
+template<PointConcept P, typename El, bool h>
 template<typename Element>
-void BoundingBox<PointType>::importFrom(const Element& e)
+void BoundingBox<P, El, h>::importFrom(const Element& e)
 {
 	if constexpr(HasBoundingBox<Element>) {
-		box = e.boundingBox();
+		box() = e.boundingBox();
+	}
+}
+
+template<PointConcept P, typename El, bool h>
+Box<P>& BoundingBox<P, El, h>::box()
+{
+	if constexpr (h) {
+		return data.box;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
+	}
+}
+
+template<PointConcept P, typename El, bool h>
+const Box<P>& BoundingBox<P, El, h>::box() const
+{
+	if constexpr (h) {
+		return data.box;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
 	}
 }
 
