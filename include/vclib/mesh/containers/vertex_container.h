@@ -168,7 +168,9 @@ protected:
 
 	template<typename MeshType>
 	uint addVertices(uint nVertices, MeshType* parentMesh);
-	void reserveVertices(uint size);
+
+	template<typename MeshType>
+	void reserveVertices(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactVertices();
 

@@ -161,7 +161,9 @@ protected:
 
 	template<typename MeshType>
 	uint addFaces(uint nFaces, MeshType* parentMesh);
-	void reserveFaces(uint size);
+
+	template<typename MeshType>
+	void reserveFaces(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactFaces();
 

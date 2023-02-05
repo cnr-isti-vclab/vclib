@@ -29,6 +29,7 @@
 #include "../components/horizontal/half_edge_references.h"
 #include "../components/horizontal/mark.h"
 #include "../components/horizontal/normal.h"
+#include "../components/horizontal/parent_mesh_pointer.h"
 #include "../components/horizontal/scalar.h"
 #include "../components/horizontal/tex_coord.h"
 
@@ -46,6 +47,10 @@ using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, Fa
 
 /* Port Mark class into hedge namespace */
 using Mark = comp::Mark;
+
+/* Port ParentMeshPointer class into vert namespace */
+template<typename MeshType>
+using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port Scalar class into hedge namespace */
 template<typename ScalarType>

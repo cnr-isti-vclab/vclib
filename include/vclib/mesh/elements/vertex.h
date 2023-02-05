@@ -40,7 +40,7 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Vertex : public Args...
+class Vertex : public vert::ParentMeshPointer<MeshType>, public Args...
 {
 	template<VertexConcept>
 	friend class mesh::VertexContainer;
@@ -55,14 +55,6 @@ public:
 
 	template<typename Element>
 	void importFrom(const Element& v);
-
-	constexpr MeshType* parentMesh();
-	constexpr const MeshType* parentMesh() const;
-
-private:
-	MeshType* parent = nullptr;
-
-	void setParentMesh(void* parentMesh);
 };
 
 } // namespace vcl

@@ -431,7 +431,7 @@ void Mesh<Args...>::reserveVertices(uint n)
 	using VertexContainer = typename Mesh::VertexContainer;
 
 	Vertex* oldBase = VertexContainer::vec.data();
-	VertexContainer::reserveVertices(n);
+	VertexContainer::reserveVertices(n, this);
 	Vertex* newBase = VertexContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateVertexReferences(oldBase, newBase);
@@ -613,7 +613,7 @@ void Mesh<Args...>::reserveFaces(uint n)
 	using FaceContainer = typename M::FaceContainer;
 
 	Face* oldBase = FaceContainer::vec.data();
-	FaceContainer::reserveFaces(n);
+	FaceContainer::reserveFaces(n, this);
 	Face* newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
@@ -826,7 +826,7 @@ void Mesh<Args...>::reserveEdges(uint n)
 	using EdgeContainer = typename M::EdgeContainer;
 
 	Edge* oldBase = EdgeContainer::vec.data();
-	EdgeContainer::reserveEdges(n);
+	EdgeContainer::reserveEdges(n, this);
 	Edge* newBase = EdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateEdgeReferences(oldBase, newBase);
@@ -986,7 +986,7 @@ void Mesh<Args...>::reserveHalfEdges(uint n)
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 
 	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
-	HalfEdgeContainer::reserveHalfEdges(n);
+	HalfEdgeContainer::reserveHalfEdges(n, this);
 	HalfEdge* newBase = HalfEdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateHalfEdgeReferences(oldBase, newBase);

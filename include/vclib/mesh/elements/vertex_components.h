@@ -32,6 +32,7 @@
 #include "../components/horizontal/coordinate.h"
 #include "../components/horizontal/mark.h"
 #include "../components/horizontal/normal.h"
+#include "../components/horizontal/parent_mesh_pointer.h"
 #include "../components/horizontal/principal_curvature.h"
 #include "../components/horizontal/scalar.h"
 #include "../components/horizontal/vertex_half_edge_reference.h"
@@ -83,6 +84,10 @@ using Normal3 = comp::Normal3<ScalarType>;
 
 using Normal3f = comp::Normal3f;
 using Normal3d = comp::Normal3d;
+
+/* Port ParentMeshPointer class into vert namespace */
+template<typename MeshType>
+using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port PrincipalCurvature class into vert namespace */
 template<typename ScalarType>

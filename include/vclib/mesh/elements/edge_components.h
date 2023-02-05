@@ -29,6 +29,7 @@
 #include "../components/horizontal/bit_flags.h"
 #include "../components/horizontal/color.h"
 #include "../components/horizontal/mark.h"
+#include "../components/horizontal/parent_mesh_pointer.h"
 #include "../components/horizontal/scalar.h"
 #include "../components/horizontal/vertex_references.h"
 
@@ -50,6 +51,10 @@ using Color = comp::Color;
 
 /* Port Mark class into edge namespace */
 using Mark = comp::Mark;
+
+/* Port ParentMeshPointer class into vert namespace */
+template<typename MeshType>
+using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port Scalar class into edge namespace */
 template<typename ScalarType>

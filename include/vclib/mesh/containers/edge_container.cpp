@@ -725,9 +725,10 @@ uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges, MeshType* parentMesh)
 }
 
 template<EdgeConcept T>
-void EdgeContainer<T>::reserveEdges(uint size)
+template<typename MeshType>
+void EdgeContainer<T>::reserveEdges(uint size, MeshType* parentMesh)
 {
-	Base::reserveElements(size);
+	Base::reserveElements(size, parentMesh);
 }
 
 /**

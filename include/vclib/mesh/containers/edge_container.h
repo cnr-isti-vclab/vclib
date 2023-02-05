@@ -138,7 +138,8 @@ protected:
 	template<typename MeshType>
 	uint addEdges(uint nEdges, MeshType* parentMesh);
 
-	void reserveEdges(uint size);
+	template<typename MeshType>
+	void reserveEdges(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactEdges();
 

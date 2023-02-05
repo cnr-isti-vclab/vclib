@@ -827,9 +827,10 @@ uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces, MeshType* parentMesh)
 }
 
 template<FaceConcept T>
-void FaceContainer<T>::reserveFaces(uint size)
+template<typename MeshType>
+void FaceContainer<T>::reserveFaces(uint size, MeshType* parentMesh)
 {
-	Base::reserveElements(size);
+	Base::reserveElements(size, parentMesh);
 }
 
 /**

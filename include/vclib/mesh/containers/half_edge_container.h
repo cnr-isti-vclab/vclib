@@ -133,7 +133,9 @@ protected:
 
 	template<typename MeshType>
 	uint addHalfEdges(uint nEdges, MeshType* parentMesh);
-	void reserveHalfEdges(uint size);
+
+	template<typename MeshType>
+	void reserveHalfEdges(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactHalfEdges();
 

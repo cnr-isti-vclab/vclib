@@ -665,9 +665,10 @@ uint HalfEdgeContainer<T>::addHalfEdges(uint nEdges, MeshType* parentMesh)
 }
 
 template<HalfEdgeConcept T>
-void HalfEdgeContainer<T>::reserveHalfEdges(uint size)
+template<typename MeshType>
+void HalfEdgeContainer<T>::reserveHalfEdges(uint size, MeshType* parentMesh)
 {
-	Base::reserveElements(size);
+	Base::reserveElements(size, parentMesh);
 }
 
 template<HalfEdgeConcept T>

@@ -891,9 +891,10 @@ uint VertexContainer<T>::addVertices(uint nVertices, MeshType* parentMesh)
 }
 
 template<VertexConcept T>
-void VertexContainer<T>::reserveVertices(uint size)
+template<typename MeshType>
+void VertexContainer<T>::reserveVertices(uint size, MeshType* parentMesh)
 {
-	Base::reserveElements(size);
+	Base::reserveElements(size, parentMesh);
 }
 
 /**

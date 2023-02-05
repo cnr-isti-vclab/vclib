@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,20 +21,38 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "vertex.h"
+#ifndef PARENT_MESH_POINTER_H
+#define PARENT_MESH_POINTER_H
 
-namespace vcl {
+namespace vcl::comp {
 
-template<typename MeshType, typename... Args>
-Vertex<MeshType, Args...>::Vertex()
+template<typename MeshType>
+class ParentMeshPointer
 {
-}
+public:
+	using ParentMeshType = MeshType;
 
-template<typename MeshType, typename... Args>
-template<typename Element>
-	void Vertex<MeshType, Args...>::importFrom(const Element& v)
-{
-	(Args::importFrom(v), ...);
-}
+	ParentMeshPointer();
 
-} // namespace vcl
+	// copy and move semantics: nothing will be done here
+	// this instance will be updated only by the mesh, and optional data
+	// can be accessed only when an element is part of a mesh
+	ParentMeshPointer(const ParentMeshPointer<MeshType>&) {}
+	ParentMeshPointer(ParentMeshPointer<MeshType>&&) {}
+	ParentMeshPointer& operator=(const ParentMeshPointer<MeshType>&) {return *this;}
+
+	constexpr MeshType* parentMesh();
+	constexpr const MeshType* parentMesh() const;
+
+protected:
+	void setParentMesh(void* parentMesh);
+
+private:
+	MeshType* parent = nullptr;
+};
+
+} // namespace vcl::comp
+
+#include "parent_mesh_pointer.cpp"
+
+#endif // PARENT_MESH_POINTER_H

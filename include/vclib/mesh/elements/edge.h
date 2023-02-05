@@ -40,7 +40,7 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Edge : public Args...
+class Edge : public edge::ParentMeshPointer<MeshType>, public Args...
 {
 	template<EdgeConcept>
 	friend class mesh::EdgeContainer;
@@ -49,20 +49,10 @@ class Edge : public Args...
 	friend class mesh::ElementContainer;
 
 public:
-	using ParentMeshType = MeshType;
-
 	Edge();
 
 	template<typename Element>
 	void importFrom(const Element& e);
-
-	constexpr MeshType* parentMesh();
-	constexpr const MeshType* parentMesh() const;
-
-private:
-	MeshType* parent = nullptr;
-
-	void setParentMesh(void* parentMesh);
 };
 
 } // namespace vcl

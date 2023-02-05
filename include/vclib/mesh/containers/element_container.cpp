@@ -363,7 +363,7 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
 		setContainerPointer(vec.back());
 		optionalVec.resize(vec.size());
 	}
-	updateContainerPointers(oldB, newB);
+	updateContainerPointers(oldB, newB, parentMesh);
 	return vec.size() - 1;
 }
 
@@ -391,12 +391,13 @@ uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 			setContainerPointer(vec[i]);
 		}
 	}
-	updateContainerPointers(oldB, newB);
+	updateContainerPointers(oldB, newB, parentMesh);
 	return baseId;
 }
 
 template<typename T>
-void ElementContainer<T>::reserveElements(uint size)
+template<typename MeshType>
+void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 {
 	T* oldB = vec.data();
 	vec.reserve(size);
@@ -404,7 +405,7 @@ void ElementContainer<T>::reserveElements(uint size)
 	if constexpr (comp::HasVerticalComponent<T>) {
 		optionalVec.reserve(size);
 	}
-	updateContainerPointers(oldB, newB);
+	updateContainerPointers(oldB, newB, parentMesh);
 }
 
 /**
@@ -463,13 +464,15 @@ void ElementContainer<T>::setContainerPointer(T &element)
  * of the container) does not copy the container pointer for security reasons.
  */
 template<typename T>
-void ElementContainer<T>::updateContainerPointers(const T *oldBase, const T *newBase)
+template<typename MeshType>
+void ElementContainer<T>::updateContainerPointers(const T *oldBase, const T *newBase, MeshType* parentMesh)
 {
 	if constexpr (comp::HasVerticalComponent<T>) {
 		if (oldBase != newBase) {
 			// all the faces must point to the right container - also the deleted ones
 			for (T& f : elements(false)) {
 				setContainerPointer(f);
+				setParentMeshPointer(f, parentMesh);
 			}
 		}
 	}

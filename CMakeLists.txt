@@ -163,6 +163,7 @@ set(HEADERS
 	include/vclib/mesh/components/horizontal/mark.h
 	include/vclib/mesh/components/horizontal/name.h
 	include/vclib/mesh/components/horizontal/normal.h
+	include/vclib/mesh/components/horizontal/parent_mesh_pointer.h
 	include/vclib/mesh/components/horizontal/polygon_bit_flags.h
 	include/vclib/mesh/components/horizontal/principal_curvature.h
 	include/vclib/mesh/components/horizontal/scalar.h
@@ -372,6 +373,7 @@ set(SOURCES
 	include/vclib/mesh/components/horizontal/mark.cpp
 	include/vclib/mesh/components/horizontal/name.cpp
 	include/vclib/mesh/components/horizontal/normal.cpp
+	include/vclib/mesh/components/horizontal/parent_mesh_pointer.cpp
 	include/vclib/mesh/components/horizontal/polygon_bit_flags.cpp
 	include/vclib/mesh/components/horizontal/principal_curvature.cpp
 	include/vclib/mesh/components/horizontal/scalar.cpp

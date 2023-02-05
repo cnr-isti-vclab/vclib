@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,20 +21,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "vertex.h"
+#include "parent_mesh_pointer.h"
 
-namespace vcl {
+namespace vcl::comp {
 
-template<typename MeshType, typename... Args>
-Vertex<MeshType, Args...>::Vertex()
+template<typename MeshType>
+ParentMeshPointer<MeshType>::ParentMeshPointer()
 {
 }
 
-template<typename MeshType, typename... Args>
-template<typename Element>
-	void Vertex<MeshType, Args...>::importFrom(const Element& v)
+template<typename MeshType>
+constexpr MeshType* ParentMeshPointer<MeshType>::parentMesh()
 {
-	(Args::importFrom(v), ...);
+	return parent;
 }
 
-} // namespace vcl
+template<typename MeshType>
+constexpr const MeshType* ParentMeshPointer<MeshType>::parentMesh() const
+{
+	return parent;
+}
+
+template<typename MeshType>
+void ParentMeshPointer<MeshType>::setParentMesh(void *parentMesh)
+{
+	parent = static_cast<MeshType*>(parentMesh);
+}
+
+} // namespace vcl::comp

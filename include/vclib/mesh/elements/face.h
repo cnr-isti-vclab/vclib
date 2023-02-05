@@ -40,7 +40,7 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Face : public Args...
+class Face : public face::ParentMeshPointer<MeshType>, public Args...
 {
 	template<FaceConcept>
 	friend class mesh::FaceContainer;
@@ -54,7 +54,6 @@ class Face : public Args...
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
-	using ParentMeshType = MeshType;
 	using VertexType = typename VRefs::VertexType;
 
 	Face();
@@ -258,14 +257,6 @@ public:
 				T::clearWedgeTexCoord();
 		}
 	}
-
-	constexpr MeshType* parentMesh();
-	constexpr const MeshType* parentMesh() const;
-
-private:
-	MeshType* parent = nullptr;
-
-	void setParentMesh(void* parentMesh);
 };
 
 } // namespace vcl
