@@ -19,7 +19,7 @@ if (VCLIB_ALLOW_SYSTEM_OPENGL)
 		target_link_libraries(vclib-external-opengl INTERFACE OpenGL::GL)
 
 		if(APPLE)
-			target_compile_definitions(vclib-external-opengl INTERFACE GL_SILENCE_DEPRECATIO)
+			target_compile_definitions(vclib-external-opengl INTERFACE GL_SILENCE_DEPRECATION)
 		endif()
 
 		list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-opengl)
