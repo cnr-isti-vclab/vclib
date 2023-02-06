@@ -53,7 +53,7 @@ P& CoordT<P, El, h>::p()
 		return data.p;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 
@@ -64,7 +64,7 @@ const P& CoordT<P, El, h>::p() const
 		return data.p;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 

@@ -27,13 +27,32 @@
 #include <vclib/space/tex_coord.h>
 
 #include "concepts/tex_coord.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
 
+namespace internal {
+
+template<typename Scalar, bool>
+struct TexCoordData { vcl::TexCoord<Scalar> t; };
+
 template<typename Scalar>
+struct TexCoordData<Scalar, false> { };
+
+} // vcl::comp::internal
+
+template<typename Scalar, typename ElementType, bool horizontal>
 class TexCoord
 {
+	using ThisType = TexCoord<Scalar, ElementType, horizontal>;
 public:
+	// data that the component stores internally (or vertically)
+	using DataValueType = vcl::TexCoord<Scalar>;
+	// expose the type to allow access to this component
+	using TexCoordComponent = ThisType;
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
 	const TexCoordType& texCoord() const;
@@ -46,11 +65,19 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	vcl::TexCoord<Scalar> t;
+	// members that allow to access the texcoord, trough data (hor) or trough parent (vert)
+	vcl::TexCoord<Scalar>& t();
+	const vcl::TexCoord<Scalar>& t() const;
+
+	// contians the actual texcoord, if the component is horizontal
+	internal::TexCoordData<Scalar, horizontal> data;
 };
 
-using TexCoordf = TexCoord<float>;
-using TexCoordd = TexCoord<double>;
+template<typename ElementType, bool horizontal>
+using TexCoordf = TexCoord<float, ElementType, horizontal>;
+
+template<typename ElementType, bool horizontal>
+using TexCoordd = TexCoord<double, ElementType, horizontal>;
 
 } // namespace vcl::comp
 

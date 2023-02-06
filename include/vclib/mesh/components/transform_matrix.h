@@ -27,13 +27,31 @@
 #include <vclib/math/matrix.h>
 
 #include "concepts/transform_matrix.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
 
+namespace internal {
+
+template<typename Scalar, bool>
+struct  TransformMatrixData { Matrix44<Scalar> tr; };
+
 template<typename Scalar>
+struct TransformMatrixData<Scalar, false> { };
+
+} // vcl::comp::internal
+
+template<typename Scalar, typename ElementType, bool horizontal>
 class TransformMatrix
 {
+	using ThisType = TransformMatrix<Scalar, ElementType, horizontal>;
 public:
+	// data that the component stores internally (or vertically)
+	using DataValueType = Matrix44<Scalar>;
+	using TransformMatrixComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using TransformMatrixType = Matrix44<Scalar>;
 
 	TransformMatrix();
@@ -46,7 +64,12 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	Matrix44<Scalar> tr;
+	// members that allow to access the matrix, trough data (horizontal) or trough parent (vertical)
+	Matrix44<Scalar>& tr();
+	const Matrix44<Scalar>& tr() const;
+
+	// contians the actual scalar, if the component is horizontal
+	internal::TransformMatrixData<Scalar, horizontal> data;
 };
 
 } // namespace vcl::comp

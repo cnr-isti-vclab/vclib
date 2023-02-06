@@ -55,7 +55,7 @@ T& Scalar<T, El, h>::s()
 		return data.s;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 
@@ -66,7 +66,7 @@ const T& Scalar<T, El, h>::s() const
 		return data.s;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 

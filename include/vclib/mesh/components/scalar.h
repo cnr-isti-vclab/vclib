@@ -61,11 +61,11 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-
+	// members that allow to access the scalar, trough data (horizontal) or trough parent (vertical)
 	ScalarType& s();
 	const ScalarType& s() const;
 
-	// contians the actual principal curvature, if the component is horizontal
+	// contians the actual scalar, if the component is horizontal
 	internal::ScalarData<T, horizontal> data;
 };
 

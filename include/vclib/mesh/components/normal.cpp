@@ -55,7 +55,7 @@ P& NormalT<P, El, h>::n()
 		return data.n;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 
@@ -66,7 +66,7 @@ const P& NormalT<P, El, h>::n() const
 		return data.n;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 

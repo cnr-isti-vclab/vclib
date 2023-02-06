@@ -57,10 +57,10 @@ using TexturePaths = comp::TexturePaths;
 
 /** Port TransformMatrix class into mesh namespace **/
 template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar>;
+using TransformMatrix = comp::TransformMatrix<Scalar, void*, true>;
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+using TransformMatrixf = comp::TransformMatrix<float, void*, true>;
+using TransformMatrixd = comp::TransformMatrix<double, void*, true>;
 
 } // namespace vcl::mesh
 

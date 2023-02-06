@@ -61,7 +61,7 @@ vcl::Color& Color<El, h>::c()
 		return data.c;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 
@@ -72,7 +72,7 @@ const vcl::Color& Color<El, h>::c() const
 		return data.c;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 

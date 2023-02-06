@@ -61,7 +61,7 @@ Box<P>& BoundingBox<P, El, h>::box()
 		return data.box;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 
@@ -72,7 +72,7 @@ const Box<P>& BoundingBox<P, El, h>::box() const
 		return data.box;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 

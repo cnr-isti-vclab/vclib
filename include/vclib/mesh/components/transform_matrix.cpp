@@ -25,31 +25,54 @@
 
 namespace vcl::comp {
 
-template<typename Scalar>
-TransformMatrix<Scalar>::TransformMatrix()
+template<typename Scalar, typename El, bool h>
+TransformMatrix<Scalar, El, h>::TransformMatrix()
 {
-	tr.setIdentity();
+	tr().setIdentity();
 }
 
-template<typename Scalar>
-const typename TransformMatrix<Scalar>::TransformMatrixType&
-TransformMatrix<Scalar>::transformMatrix() const
+template<typename Scalar, typename El, bool h>
+const typename TransformMatrix<Scalar, El, h>::TransformMatrixType&
+TransformMatrix<Scalar, El, h>::transformMatrix() const
 {
-	return tr;
+	return tr();
 }
 
-template<typename Scalar>
-typename TransformMatrix<Scalar>::TransformMatrixType& TransformMatrix<Scalar>::transformMatrix()
+template<typename Scalar, typename El, bool h>
+typename TransformMatrix<Scalar, El, h>::TransformMatrixType&
+TransformMatrix<Scalar, El, h>::transformMatrix()
 {
-	return tr;
+	return tr();
 }
 
-template<typename Scalar>
+template<typename Scalar, typename El, bool h>
 template<typename Element>
-void TransformMatrix<Scalar>::importFrom(const Element& e)
+void TransformMatrix<Scalar, El, h>::importFrom(const Element& e)
 {
 	if constexpr(HasTransformMatrix<Element>) {
-		tr = e.transformMatrix().template cast<Scalar>();
+		tr() = e.transformMatrix().template cast<Scalar>();
+	}
+}
+
+template<typename Scalar, typename El, bool h>
+Matrix44<Scalar>& TransformMatrix<Scalar, El, h>::tr()
+{
+	if constexpr (h) {
+		return data.tr;
+	}
+	else {
+		return internal::getVerticalComponentData<El>(this);
+	}
+}
+
+template<typename Scalar, typename El, bool h>
+const Matrix44<Scalar>& TransformMatrix<Scalar, El, h>::tr() const
+{
+	if constexpr (h) {
+		return data.tr;
+	}
+	else {
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 

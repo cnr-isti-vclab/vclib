@@ -58,7 +58,7 @@ PrincipalCurvature<Scalar, El, h>::princCurv()
 		return data.princCurv;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 
@@ -70,7 +70,7 @@ PrincipalCurvature<Scalar, El, h>::princCurv() const
 		return data.princCurv;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 

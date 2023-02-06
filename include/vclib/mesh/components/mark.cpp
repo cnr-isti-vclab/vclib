@@ -79,7 +79,7 @@ int& Mark<El, h>::m()
 		return data.m;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 
@@ -90,7 +90,7 @@ const int& Mark<El, h>::m() const
 		return data.m;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 

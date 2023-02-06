@@ -61,7 +61,7 @@ std::string &Name<El, h>::n()
 		return data.n;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 
@@ -72,7 +72,7 @@ const std::string &Name<El, h>::n() const
 		return data.n;
 	}
 	else {
-		return internal::getVerticalComponentData(this);
+		return internal::getVerticalComponentData<El>(this);
 	}
 }
 

@@ -61,10 +61,10 @@ using Scalard = comp::Scalard<void*, true>;
 
 /* Port TexCoord class into hedge namespace */
 template<typename ScalarType>
-using TexCoord = comp::TexCoord<ScalarType>;
+using TexCoord = comp::TexCoord<ScalarType, void*, true>;
 
-using TexCoordf = comp::TexCoordf;
-using TexCoordd = comp::TexCoordd;
+using TexCoordf = comp::TexCoordf<void*, true>;
+using TexCoordd = comp::TexCoordd<void*, true>;
 
 } // namespace vcl::hedge
 
