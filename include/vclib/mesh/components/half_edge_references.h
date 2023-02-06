@@ -37,11 +37,11 @@ class HalfEdgeReferences
 	using ThisType = HalfEdgeReferences<HalfEdge, Vertex, Face, ElementType, horizontal>;
 
 	struct HERData {
-		HalfEdge* n = nullptr; // next half edge
-		HalfEdge* p = nullptr; // prev half edge
-		HalfEdge* t = nullptr; // twin half edge
-		Vertex*   v = nullptr; // from vertex
-		Face*     f = nullptr; // incident face
+		HalfEdge* n; // next half edge
+		HalfEdge* p; // prev half edge
+		HalfEdge* t; // twin half edge
+		Vertex*   v; // from vertex
+		Face*     f; // incident face
 	};
 public:
 	using DataValueType = HERData; // data that the component stores internally (or vertically)

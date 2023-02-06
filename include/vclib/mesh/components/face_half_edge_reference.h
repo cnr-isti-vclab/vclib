@@ -38,16 +38,31 @@
 #include "concepts/face_half_edge_reference.h"
 #include "concepts/color.h"
 #include "concepts/tex_coord.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
-template<typename HalfEdge>
+template<typename HalfEdge, typename ElementType, bool horizontal>
 class FaceHalfEdgeReference
 {
+	using ThisType = FaceHalfEdgeReference<HalfEdge, ElementType, horizontal>;
+
+	struct FHERData {
+		HalfEdge*              ohe; // outer half edge
+		std::vector<HalfEdge*> ihe; // inner half edges, one for each hole of the face
+
+		short texIndex;
+	};
+
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
 
 public:
+	using DataValueType = FHERData; // data that the component stores internally (or vertically)
+	using FaceHalfEdgeReferencesComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using HalfEdgeType = HalfEdge;
 	using VertexType   = typename HalfEdge::VertexType;
 
@@ -102,7 +117,7 @@ public:
 
 	/* Constructor */
 
-	FaceHalfEdgeReference();
+	void init();
 
 	/* Member functions */
 
@@ -173,29 +188,29 @@ public:
 
 	/* WedgeTexCoords compatibility */
 
-	template<HasTexCoord HE = HalfEdge>
-	typename HE::TexCoordType& wedgeTexCoord(uint i);
+	template<HasTexCoord OHE = HalfEdge>
+	typename OHE::TexCoordType& wedgeTexCoord(uint i);
 
-	template<HasTexCoord HE = HalfEdge>
-	const typename HE::TexCoordType& wedgeTexCoord(uint i) const;
+	template<HasTexCoord OHE = HalfEdge>
+	const typename OHE::TexCoordType& wedgeTexCoord(uint i) const;
 
-	template<HasTexCoord HE = HalfEdge>
-	typename HE::TexCoordType& wedgeTexCoordMod(int i);
+	template<HasTexCoord OHE = HalfEdge>
+	typename OHE::TexCoordType& wedgeTexCoordMod(int i);
 
-	template<HasTexCoord HE = HalfEdge>
-	const typename HE::TexCoordType& wedgeTexCoordMod(int i) const;
+	template<HasTexCoord OHE = HalfEdge>
+	const typename OHE::TexCoordType& wedgeTexCoordMod(int i) const;
 
-	template<HasTexCoord HE = HalfEdge>
-	void setWedgeTexCoord(const typename HE::TexCoordType& t, uint i);
+	template<HasTexCoord OHE = HalfEdge>
+	void setWedgeTexCoord(const typename OHE::TexCoordType& t, uint i);
 
-	template<HasTexCoord HE = HalfEdge>
-	void setWedgeTexCoords(const std::vector<typename HE::TexCoordType>& list);
+	template<HasTexCoord OHE = HalfEdge>
+	void setWedgeTexCoords(const std::vector<typename OHE::TexCoordType>& list);
 
-	template<HasTexCoord HE = HalfEdge>
+	template<HasTexCoord OHE = HalfEdge>
 	short& textureIndex();
 
-	template<HasTexCoord HE = HalfEdge>
-	const short& textureIndex() const;
+	template<HasTexCoord OHE = HalfEdge>
+	short textureIndex() const;
 
 	bool isWedgeTexCoordsEnabled() const requires HasTexCoord<HalfEdge>;
 
@@ -268,10 +283,15 @@ protected:
 	void importHalfEdgeReferencesFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
 
 private:
-	HalfEdge*              ohe = nullptr; // outer half edge
-	std::vector<HalfEdge*> ihe;           // inner half edges, one for each hole of the face
+	HalfEdge*& ohe(); // outer half edge
+	const HalfEdge* ohe() const;
+	std::vector<HalfEdge*>& ihe();           // inner half edges, one for each hole of the face
+	const std::vector<HalfEdge*>& ihe() const;
 
-	short texIndex = 0;
+	short& texIndex();
+	short texIndex() const;
+
+	internal::ComponentData<FHERData, true> data;
 };
 
 } // namespace vcl::comp

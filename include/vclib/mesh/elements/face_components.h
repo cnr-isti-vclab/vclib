@@ -64,7 +64,7 @@ using Color = comp::Color<void*, true>;
 
 /* Port Half Edge reference into face namespace*/
 template<typename HalfEdge>
-using HalfEdgeReference = comp::FaceHalfEdgeReference<HalfEdge>;
+using HalfEdgeReference = comp::FaceHalfEdgeReference<HalfEdge, void*, true>;
 
 /* Port Mark class into face namespace */
 using Mark = comp::Mark<void*, true>;
