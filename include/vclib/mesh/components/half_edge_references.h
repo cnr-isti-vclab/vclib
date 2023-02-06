@@ -27,18 +27,33 @@
 #include <vector>
 
 #include "concepts/half_edge_references.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
-template<typename HalfEdge, typename Vertex, typename Face>
+template<typename HalfEdge, typename Vertex, typename Face, typename ElementType, bool horizontal>
 class HalfEdgeReferences
 {
+	using ThisType = HalfEdgeReferences<HalfEdge, Vertex, Face, ElementType, horizontal>;
+
+	struct HERData {
+		HalfEdge* n = nullptr; // next half edge
+		HalfEdge* p = nullptr; // prev half edge
+		HalfEdge* t = nullptr; // twin half edge
+		Vertex*   v = nullptr; // from vertex
+		Face*     f = nullptr; // incident face
+	};
 public:
+	using DataValueType = HERData; // data that the component stores internally (or vertically)
+	using HalfEdgeReferencesComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using HalfEdgeType = HalfEdge;
 	using VertexType   = Vertex;
 	using FaceType     = Face;
 
-	HalfEdgeReferences();
+	void init();
 
 	const HalfEdge* next() const;
 	HalfEdge*&      next();
@@ -85,11 +100,19 @@ protected:
 	void importFaceReferencesFrom(const HE& e, Face* base, const FType* ebase);
 
 private:
-	HalfEdge* n = nullptr; // next half edge
-	HalfEdge* p = nullptr; // prev half edge
-	HalfEdge* t = nullptr; // twin half edge
-	Vertex*   v = nullptr; // from vertex
-	Face*     f = nullptr; // incident face
+	// members that allow to access the data, trough data (horizontal) or trough parent (vertical)
+	HalfEdge*& n(); // next half edge
+	const HalfEdge* n() const;
+	HalfEdge*& p(); // prev half edge
+	const HalfEdge* p() const;
+	HalfEdge*& t(); // twin half edge
+	const HalfEdge* t() const;
+	Vertex*&   v(); // from vertex
+	const Vertex*   v() const;
+	Face*&     f(); // incident face
+	const Face*     f() const;
+
+	internal::ComponentData<HERData, true> data;
 };
 
 } // namespace vcl::comp

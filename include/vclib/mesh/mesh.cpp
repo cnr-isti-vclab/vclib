@@ -1282,6 +1282,7 @@ template<typename Comp>
 void Mesh<Args...>::construct()
 {
 	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
+		// todo - check here if component is optional and, in case, if enabled
 		Comp::init();
 	}
 }

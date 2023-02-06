@@ -43,6 +43,7 @@ template<typename Comp>
 void Edge<MeshType, Args...>::construct()
 {
 	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
+		// todo - check here if component is optional and, in case, if enabled
 		Comp::init();
 	}
 }

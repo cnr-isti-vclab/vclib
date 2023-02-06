@@ -43,7 +43,7 @@ using Color = comp::Color<void*, true>;
 
 /* Port HalfEdgeReferences class into hedge namespace */
 template<typename HalfEdgeType, typename VertexType, typename FaceType>
-using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType>;
+using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType, void*, true>;
 
 /* Port Mark class into hedge namespace */
 using Mark = comp::Mark<void*, true>;

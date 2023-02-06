@@ -80,7 +80,7 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	// members that allow to access the point, trough data (horizontal) or trough parent (vertical)
+	// members that allow to access the data
 	std::vector<std::string>& texPaths();
 	const std::vector<std::string>& texPaths() const;
 	std::string& meshPath();
