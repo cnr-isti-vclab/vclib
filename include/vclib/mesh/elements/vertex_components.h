@@ -98,10 +98,10 @@ using PrincipalCurvatured = comp::PrincipalCurvatured<void*, true>;
 
 /* Port Scalar class into vert namespace */
 template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType>;
+using Scalar = comp::Scalar<ScalarType, void*, true>;
 
-using Scalarf = comp::Scalarf;
-using Scalard = comp::Scalard;
+using Scalarf = comp::Scalarf<void*, true>;
+using Scalard = comp::Scalard<void*, true>;
 
 /* Port TexCoord class into vert namespace */
 template<typename ScalarType>

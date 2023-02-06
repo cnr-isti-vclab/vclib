@@ -25,26 +25,48 @@
 
 namespace vcl::comp {
 
-template<typename T>
-const T& Scalar<T>::scalar() const
+template<typename T, typename El, bool h>
+const T& Scalar<T, El, h>::scalar() const
 {
-	return s;
+	return s();
 }
 
-template<typename T>
-T& Scalar<T>::scalar()
+template<typename T, typename El, bool h>
+T& Scalar<T, El, h>::scalar()
 {
-	return s;
+	return s();
 }
 
-template<typename T>
+template<typename T, typename El, bool h>
 template<typename Element>
-void Scalar<T>::importFrom(const Element& e)
+void Scalar<T, El, h>::importFrom(const Element& e)
 {
 	if constexpr (HasScalar<Element>) {
 		if (isScalarEnabledOn(e)){
-			s = e.scalar();
+			s() = e.scalar();
 		}
+	}
+}
+
+template<typename T, typename El, bool h>
+T& Scalar<T, El, h>::s()
+{
+	if constexpr (h) {
+		return data.s;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
+	}
+}
+
+template<typename T, typename El, bool h>
+const T& Scalar<T, El, h>::s() const
+{
+	if constexpr (h) {
+		return data.s;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
 	}
 }
 

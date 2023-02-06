@@ -25,13 +25,30 @@
 #define VCL_MESH_COMPONENTS_SCALAR_H
 
 #include "concepts/scalar.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
 
+namespace internal {
+
+template<typename T, bool>
+struct  ScalarData { T s; };
+
 template<typename T>
+struct ScalarData<T, false> { };
+
+} // vcl::comp::internal
+
+template<typename T, typename ElementType, bool horizontal>
 class Scalar
 {
+	using ThisType = Scalar<T, ElementType, horizontal>;
 public:
+	using DataValueType = T;         // data that the component stores internally (or vertically)
+	using ScalarComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using ScalarType = T;
 
 	const ScalarType& scalar() const;
@@ -44,11 +61,19 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	ScalarType s;
+
+	ScalarType& s();
+	const ScalarType& s() const;
+
+	// contians the actual principal curvature, if the component is horizontal
+	internal::ScalarData<T, horizontal> data;
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+template<typename ElementType, bool horizontal>
+using Scalarf = Scalar<float, ElementType, horizontal>;
+
+template<typename ElementType, bool horizontal>
+using Scalard = Scalar<double, ElementType, horizontal>;
 
 } // namespace vcl::comp
 

@@ -44,7 +44,15 @@ struct PrincipalCurvatureData<Scalar, false> { };
 template<typename Scalar, typename ElementType, bool horizontal>
 class PrincipalCurvature
 {
+	using ThisType = PrincipalCurvature<Scalar, ElementType, horizontal>;
 public:
+	// data that the component stores internally (or vertically)
+	using DataValueType = vcl::PrincipalCurvature<Scalar>;
+	// expose the type to allow access to this component
+	using PrincipalCurvatureComponent = ThisType;
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
 	const PrincipalCurvatureType& principalCurvature() const;

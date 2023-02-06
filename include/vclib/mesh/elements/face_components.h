@@ -95,10 +95,10 @@ using PrincipalCurvatured = comp::PrincipalCurvatured<void*, true>;
 
 /* Port Scalar class into face namespace */
 template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType>;
+using Scalar = comp::Scalar<ScalarType, void*, true>;
 
-using Scalarf = comp::Scalarf;
-using Scalard = comp::Scalard;
+using Scalarf = comp::Scalarf<void*, true>;
+using Scalard = comp::Scalard<void*, true>;
 
 /* Port TriangleBitFlags class into face namespace */
 using TriangleBitFlags = comp::TriangleBitFlags<void*, true>;
