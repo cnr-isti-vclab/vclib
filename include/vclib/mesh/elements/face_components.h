@@ -71,13 +71,13 @@ using Mark = comp::Mark<void*, true>;
 
 /* Port Normal classes into face namespace */
 template<typename ScalarType, int N>
-using Normal = comp::Normal<ScalarType, N>;
+using Normal = comp::Normal<ScalarType, N, void*, true>;
 
 template<typename ScalarType>
-using Normal3 = comp::Normal3<ScalarType>;
+using Normal3 = comp::Normal3<ScalarType, void*, true>;
 
-using Normal3f = comp::Normal3f;
-using Normal3d = comp::Normal3d;
+using Normal3f = comp::Normal3f<void*, true>;
+using Normal3d = comp::Normal3d<void*, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>

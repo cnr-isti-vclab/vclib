@@ -27,13 +27,30 @@
 #include <vclib/space/point.h>
 
 #include "concepts/normal.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
 
-template <PointConcept P>
+namespace internal {
+
+template<PointConcept P, bool>
+struct NormalTData { P n; };
+
+template<PointConcept P>
+struct NormalTData<P, false> { };
+
+} // vcl::comp::internal
+
+template <PointConcept P, typename ElementType, bool horizontal>
 class NormalT
 {
+	using ThisType = NormalT<P, ElementType, horizontal>;
 public:
+	using DataValueType = P;         // data that the component stores internally (or vertically)
+	using NormalComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using NormalType = P;
 
 	const P& normal() const;
@@ -46,17 +63,25 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	P n;
+	// members that allow to access the normal, trough data (horizontal) or trough parent (vertical)
+	P& n();
+	const P& n() const;
+
+	// contians the actual point, if the component is horizontal
+	internal::NormalTData<P, horizontal> data;
 };
 
-template<typename Scalar, int N>
-using Normal = NormalT<Point<Scalar, N>>;
+template<typename Scalar, int N, typename ElementType, bool horizontal>
+using Normal = NormalT<Point<Scalar, N>, ElementType, horizontal>;
 
-template<typename Scalar>
-using Normal3 = NormalT<Point3<Scalar>>;
+template<typename Scalar, typename ElementType, bool horizontal>
+using Normal3 = NormalT<Point3<Scalar>, ElementType, horizontal>;
 
-using Normal3f = Normal3<float>;
-using Normal3d = Normal3<double>;
+template<typename ElementType, bool horizontal>
+using Normal3f = Normal3<float, ElementType, horizontal>;
+
+template<typename ElementType, bool horizontal>
+using Normal3d = Normal3<double, ElementType, horizontal>;
 
 } // namespace vcl::comp
 

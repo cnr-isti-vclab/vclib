@@ -25,26 +25,48 @@
 
 namespace vcl::comp {
 
-template<PointConcept P>
-const P& NormalT<P>::normal() const
+template<PointConcept P, typename El, bool h>
+const P& NormalT<P, El, h>::normal() const
 {
-	return n;
+	return n();
 }
 
-template<PointConcept P>
-P& NormalT<P>::normal()
+template<PointConcept P, typename El, bool h>
+P& NormalT<P, El, h>::normal()
 {
-	return n;
+	return n();
 }
 
-template<PointConcept P>
+template<PointConcept P, typename El, bool h>
 template<typename Element>
-void NormalT<P>::importFrom(const Element& e)
+void NormalT<P, El, h>::importFrom(const Element& e)
 {
 	if constexpr(HasNormal<Element>) {
 		if (isNormalEnabledOn(e)){
-			n = e.normal().template cast<typename NormalType::ScalarType>();
+			n() = e.normal().template cast<typename NormalType::ScalarType>();
 		}
+	}
+}
+
+template<PointConcept P, typename El, bool h>
+P& NormalT<P, El, h>::n()
+{
+	if constexpr (h) {
+		return data.n;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
+	}
+}
+
+template<PointConcept P, typename El, bool h>
+const P& NormalT<P, El, h>::n() const
+{
+	if constexpr (h) {
+		return data.n;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
 	}
 }
 

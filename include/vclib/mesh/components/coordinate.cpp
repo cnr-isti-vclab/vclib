@@ -38,6 +38,15 @@ P& CoordT<P, El, h>::coord()
 }
 
 template<PointConcept P, typename El, bool h>
+template<typename Element>
+void CoordT<P, El, h>::importFrom(const Element& v)
+{
+	if constexpr (HasCoordinate<Element>) {
+		p() = v.coord().template cast<typename CoordType::ScalarType>();
+	}
+}
+
+template<PointConcept P, typename El, bool h>
 P& CoordT<P, El, h>::p()
 {
 	if constexpr (h) {
@@ -56,15 +65,6 @@ const P& CoordT<P, El, h>::p() const
 	}
 	else {
 		return internal::getVerticalComponentData(this);
-	}
-}
-
-template<PointConcept P, typename El, bool h>
-template<typename Element>
-void CoordT<P, El, h>::importFrom(const Element& v)
-{
-	if constexpr (HasCoordinate<Element>) {
-		p() = v.coord().template cast<typename CoordType::ScalarType>();
 	}
 }
 
