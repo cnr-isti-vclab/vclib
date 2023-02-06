@@ -38,12 +38,12 @@ ElementReferences<Elem, N>::ElementReferences() : Base()
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
 		// There will be a static number of references.
-		Base::container = std::array<Elem*, N> {nullptr};
+		container.fill(nullptr);
 	}
 	else {
 		// I'll use the vector, because N is < 0.
 		// There will be a dynamic number of references.
-		Base::container = std::vector<Elem*>();
+		container.clear();
 	}
 }
 
@@ -64,10 +64,10 @@ ElementReferences<Elem, N>::ElementReferences() : Base()
 template<typename Elem, int N>
 void ElementReferences<Elem, N>::updateElementReferences(const Elem* oldBase, const Elem* newBase)
 {
-	for (uint j = 0; j < Base::size(); ++j) { // for each pointer in this container
-		if (Base::at(j) != nullptr) {
-			size_t diff = Base::at(j) - oldBase; // offset w.r.t. the old base
-			Base::at(j)  = (Elem*) newBase + diff; // update the pointer using newBase
+	for (uint j = 0; j < container.size(); ++j) { // for each pointer in this container
+		if (container.at(j) != nullptr) {
+			size_t diff = container.at(j) - oldBase; // offset w.r.t. the old base
+			container.at(j)  = (Elem*) newBase + diff; // update the pointer using newBase
 		}
 	}
 }
@@ -77,14 +77,14 @@ void ElementReferences<Elem, N>::updateElementReferencesAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices)
 {
-	for (uint j = 0; j < Base::size(); ++j) {
-		if (Base::at(j) != nullptr) {
-			size_t diff = Base::at(j) - base;
+	for (uint j = 0; j < container.size(); ++j) {
+		if (container.at(j) != nullptr) {
+			size_t diff = container.at(j) - base;
 			if (newIndices[diff] < 0) { // element has been removed
-				Base::at(j) = nullptr;
+				container.at(j) = nullptr;
 			}
 			else { // the new pointer will be base + newIndices[diff]
-				Base::at(j) = (Elem*) base + newIndices[diff];
+				container.at(j) = (Elem*) base + newIndices[diff];
 			}
 		}
 	}

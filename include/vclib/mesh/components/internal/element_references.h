@@ -51,6 +51,8 @@ protected:
 	void updateElementReferences(const Elem* oldBase, const Elem* newBase);
 
 	void updateElementReferencesAfterCompact(const Elem* base, const std::vector<int>& newIndices);
+
+	RandomAccessContainer<Elem*, N> container;
 };
 
 } // namespace vcl::comp::internal

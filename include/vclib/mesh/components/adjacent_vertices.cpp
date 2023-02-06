@@ -42,7 +42,7 @@ AdjacentVertices<Vertex>::AdjacentVertices() : Base()
 template<typename Vertex>
 uint AdjacentVertices<Vertex>::adjVerticesNumber() const
 {
-	return Base::size();
+    return Base::container.size();
 }
 
 /**
@@ -60,63 +60,63 @@ uint AdjacentVertices<Vertex>::adjVerticesNumber() const
 template<typename Vertex>
 Vertex*& AdjacentVertices<Vertex>::adjVertex(uint i)
 {
-	return Base::at(i);
+    return Base::container.at(i);
 }
 
 template<typename Vertex>
 const Vertex* AdjacentVertices<Vertex>::adjVertex(uint i) const
 {
-	return Base::at(i);
+    return Base::container.at(i);
 }
 
 template<typename Vertex>
 Vertex*& AdjacentVertices<Vertex>::adjVertexMod(int i)
 {
-	return Base::atMod(i);
+    return Base::container.atMod(i);
 }
 
 template<typename Vertex>
 const Vertex* AdjacentVertices<Vertex>::adjVertexMod(int i) const
 {
-	return Base::atMod(i);
+    return Base::container.atMod(i);
 }
 
 template<typename Vertex>
 void AdjacentVertices<Vertex>::setAdjVertex(Vertex* v, uint i)
 {
-	Base::set(v, i);
+    Base::container.set(v, i);
 }
 
 template<typename Vertex>
 void AdjacentVertices<Vertex>::setAdjVertices(const std::vector<Vertex*>& list)
 {
-	Base::set(list);
+    Base::container.set(list);
 }
 
 template<typename Vertex>
 bool AdjacentVertices<Vertex>::containsAdjVertex(const Vertex* v) const
 {
-	return Base::contains(v);
+    return Base::container.contains(v);
 }
 
 template<typename Vertex>
 typename AdjacentVertices<Vertex>::AdjacentVertexIterator
 AdjacentVertices<Vertex>::findAdjVertex(const Vertex* v)
 {
-	return Base::find(v);
+    return Base::container.find(v);
 }
 
 template<typename Vertex>
 typename AdjacentVertices<Vertex>::ConstAdjacentVertexIterator
 AdjacentVertices<Vertex>::findAdjVertex(const Vertex* v) const
 {
-	return Base::find(v);
+	return Base::container.find(v);
 }
 
 template<typename Vertex>
 int AdjacentVertices<Vertex>::indexOfAdjVertex(const Vertex* v) const
 {
-	return Base::indexOf(v);
+    return Base::container.indexOf(v);
 }
 
 /**
@@ -128,73 +128,73 @@ int AdjacentVertices<Vertex>::indexOfAdjVertex(const Vertex* v) const
 template<typename Vertex>
 void AdjacentVertices<Vertex>::resizeAdjVertices(uint n)
 {
-	Base::resize(n);
+    Base::container.resize(n);
 }
 
 template<typename Vertex>
 void AdjacentVertices<Vertex>::pushAdjVertex(Vertex* v)
 {
-	Base::pushBack(v);
+    Base::container.pushBack(v);
 }
 
 template<typename Vertex>
 void AdjacentVertices<Vertex>::insertAdjVertex(uint i, Vertex* v)
 {
-	Base::insert(i, v);
+    Base::container.insert(i, v);
 }
 
 template<typename Vertex>
 void AdjacentVertices<Vertex>::eraseAdjVertex(uint i)
 {
-	Base::erase(i);
+    Base::container.erase(i);
 }
 
 template<typename Vertex>
 void AdjacentVertices<Vertex>::clearAdjVertices()
 {
-	Base::clear();
+    Base::container.clear();
 }
 
 template<typename Vertex>
 typename AdjacentVertices<Vertex>::AdjacentVertexIterator
 AdjacentVertices<Vertex>::adjVertexBegin()
 {
-	return Base::begin();
+    return Base::container.begin();
 }
 
 template<typename Vertex>
 typename AdjacentVertices<Vertex>::AdjacentVertexIterator
 AdjacentVertices<Vertex>::adjVertexEnd()
 {
-	return Base::end();
+    return Base::container.end();
 }
 
 template<typename Vertex>
 typename AdjacentVertices<Vertex>::ConstAdjacentVertexIterator
 AdjacentVertices<Vertex>::adjVertexBegin() const
 {
-	return Base::begin();
+    return Base::container.begin();
 }
 
 template<typename Vertex>
 typename AdjacentVertices<Vertex>::ConstAdjacentVertexIterator
 AdjacentVertices<Vertex>::adjVertexEnd() const
 {
-	return Base::end();
+    return Base::container.end();
 }
 
 template<typename Vertex>
 typename AdjacentVertices<Vertex>::AdjacentVertexRangeIterator
 AdjacentVertices<Vertex>::adjVertices()
 {
-	return Base::rangeIterator();
+    return Base::container.rangeIterator();
 }
 
 template<typename Vertex>
 typename AdjacentVertices<Vertex>::ConstAdjacentVertexRangeIterator
 AdjacentVertices<Vertex>::adjVertices() const
 {
-	return Base::rangeIterator();
+	return Base::container.rangeIterator();
 }
 
 template<typename Vertex>

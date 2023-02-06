@@ -81,6 +81,8 @@ public:
 	void set(const C& e, uint i);
 	void set(const std::vector<C>& list);
 
+	void fill(const C& e);
+
 	bool contains(const typename MakeConstPointer<C>::type& e) const;
 
 	Iterator find(const typename MakeConstPointer<C>::type& e);

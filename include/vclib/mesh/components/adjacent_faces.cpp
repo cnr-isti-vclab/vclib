@@ -42,7 +42,7 @@ AdjacentFaces<Face, N>::AdjacentFaces() : Base()
 template<typename Face, int N>
 uint AdjacentFaces<Face, N>::adjFacesNumber() const
 {
-	return Base::size();
+    return Base::container.size();
 }
 
 /**
@@ -61,7 +61,7 @@ uint AdjacentFaces<Face, N>::adjFacesNumber() const
 template<typename Face, int N>
 Face*& AdjacentFaces<Face, N>::adjFace(uint i)
 {
-	return Base::at(i);
+    return Base::container.at(i);
 }
 
 /**
@@ -73,7 +73,7 @@ Face*& AdjacentFaces<Face, N>::adjFace(uint i)
 template<typename Face, int N>
 const Face* AdjacentFaces<Face, N>::adjFace(uint i) const
 {
-	return Base::at(i);
+    return Base::container.at(i);
 }
 
 /**
@@ -95,7 +95,7 @@ const Face* AdjacentFaces<Face, N>::adjFace(uint i) const
 template<typename Face, int N>
 Face*& AdjacentFaces<Face, N>::adjFaceMod(int i)
 {
-	return Base::atMod(i);
+    return Base::container.atMod(i);
 }
 
 /**
@@ -107,7 +107,7 @@ Face*& AdjacentFaces<Face, N>::adjFaceMod(int i)
 template<typename Face, int N>
 const Face* AdjacentFaces<Face, N>::adjFaceMod(int i) const
 {
-	return Base::atMod(i);
+    return Base::container.atMod(i);
 }
 
 /**
@@ -119,7 +119,7 @@ const Face* AdjacentFaces<Face, N>::adjFaceMod(int i) const
 template<typename Face, int N>
 void AdjacentFaces<Face, N>::setAdjFace(Face* f, uint i)
 {
-	Base::set(f, i);
+    Base::container.set(f, i);
 }
 
 /**
@@ -133,33 +133,33 @@ void AdjacentFaces<Face, N>::setAdjFace(Face* f, uint i)
 template<typename Face, int N>
 void AdjacentFaces<Face, N>::setAdjFaces(const std::vector<Face*>& list)
 {
-	Base::set(list);
+    Base::container.set(list);
 }
 
 template<typename Face, int N>
 bool AdjacentFaces<Face, N>::containsAdjFace(const Face* f) const
 {
-	return Base::contains(f);
+    return Base::container.contains(f);
 }
 
 template<typename Face, int N>
 typename AdjacentFaces<Face, N>::AdjacentFaceIterator
 AdjacentFaces<Face, N>::findAdjFace(const Face* f)
 {
-	return Base::find(f);
+    return Base::container.find(f);
 }
 
 template<typename Face, int N>
 typename AdjacentFaces<Face, N>::ConstAdjacentFaceIterator
 AdjacentFaces<Face, N>::findAdjFace(const Face* f) const
 {
-	return Base::find(f);
+	return Base::container.find(f);
 }
 
 template<typename Face, int N>
 int AdjacentFaces<Face, N>::indexOfAdjFace(const Face* f) const
 {
-	return Base::indexOf(f);
+    return Base::container.indexOf(f);
 }
 
 /**
@@ -171,70 +171,70 @@ int AdjacentFaces<Face, N>::indexOfAdjFace(const Face* f) const
 template<typename Face, int N>
 void AdjacentFaces<Face, N>::resizeAdjFaces(uint n) requires (N < 0)
 {
-	Base::resize(n);
+    Base::container.resize(n);
 }
 
 template<typename Face, int N>
 void AdjacentFaces<Face, N>::pushAdjFace(Face* f) requires (N < 0)
 {
-	Base::pushBack(f);
+    Base::container.pushBack(f);
 }
 
 template<typename Face, int N>
 void AdjacentFaces<Face, N>::insertAdjFace(uint i, Face* f) requires (N < 0)
 {
-	Base::insert(i, f);
+    Base::container.insert(i, f);
 }
 
 template<typename Face, int N>
 void AdjacentFaces<Face, N>::eraseAdjFace(uint i) requires (N < 0)
 {
-	Base::erase(i);
+    Base::container.erase(i);
 }
 
 template<typename Face, int N>
 void AdjacentFaces<Face, N>::clearAdjFaces() requires (N < 0)
 {
-	Base::clear();
+    Base::container.clear();
 }
 
 template<typename Face, int N>
 typename AdjacentFaces<Face, N>::AdjacentFaceIterator AdjacentFaces<Face, N>::adjFaceBegin()
 {
-	return Base::begin();
+    return Base::container.begin();
 }
 
 template<typename Face, int N>
 typename AdjacentFaces<Face, N>::AdjacentFaceIterator AdjacentFaces<Face, N>::adjFaceEnd()
 {
-	return Base::end();
+    return Base::container.end();
 }
 
 template<typename Face, int N>
 typename AdjacentFaces<Face, N>::ConstAdjacentFaceIterator
 AdjacentFaces<Face, N>::adjFaceBegin() const
 {
-	return Base::begin();
+    return Base::container.begin();
 }
 
 template<typename Face, int N>
 typename AdjacentFaces<Face, N>::ConstAdjacentFaceIterator
 AdjacentFaces<Face, N>::adjFaceEnd() const
 {
-	return Base::end();
+	return Base::container.end();
 }
 
 template<typename Face, int N>
 typename AdjacentFaces<Face, N>::AdjacentFaceRangeIterator AdjacentFaces<Face, N>::adjFaces()
 {
-	return Base::rangeIterator();
+	return Base::container.rangeIterator();
 }
 
 template<typename Face, int N>
 typename AdjacentFaces<Face, N>::ConstAdjacentFaceRangeIterator
 AdjacentFaces<Face, N>::adjFaces() const
 {
-	return Base::rangeIterator();
+	return Base::container.rangeIterator();
 }
 
 template<typename Face, int N>

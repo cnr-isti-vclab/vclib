@@ -115,6 +115,12 @@ void RandomAccessContainer<C, N>::set(const std::vector<C>& list)
 }
 
 template<typename C, int N>
+void RandomAccessContainer<C, N>::fill(const C& e)
+{
+	std::fill(container.begin(), container.end(), e);
+}
+
+template<typename C, int N>
 bool RandomAccessContainer<C, N>::contains(const typename MakeConstPointer<C>::type& e) const
 {
 	return std::find(container.begin(), container.end(), e) != container.end();

@@ -33,69 +33,69 @@ VertexReferences<Vertex, N>::VertexReferences() : Base()
 template<typename Vertex, int N>
 uint VertexReferences<Vertex, N>::vertexNumber() const
 {
-	return Base::size();
+	return Base::container.size();
 }
 
 template<typename Vertex, int N>
 Vertex*& VertexReferences<Vertex, N>::vertex(uint i)
 {
-	return Base::at(i);
+	return Base::container.at(i);
 }
 
 template<typename Vertex, int N>
 const Vertex* VertexReferences<Vertex, N>::vertex(uint i) const
 {
-	return Base::at(i);
+	return Base::container.at(i);
 }
 
 template<typename Vertex, int N>
 Vertex*& VertexReferences<Vertex, N>::vertexMod(int i)
 {
-	return Base::atMod(i);
+	return Base::container.atMod(i);
 }
 
 template<typename Vertex, int N>
 const Vertex* VertexReferences<Vertex, N>::vertexMod(int i) const
 {
-	return Base::atMod(i);
+	return Base::container.atMod(i);
 }
 
 template<typename Vertex, int N>
 void VertexReferences<Vertex, N>::setVertex(Vertex* v, uint i)
 {
-	Base::set(v, i);
+	Base::container.set(v, i);
 }
 
 template<typename Vertex, int N>
 void VertexReferences<Vertex, N>::setVertices(const std::vector<Vertex*>& list)
 {
-	Base::set(list);
+	Base::container.set(list);
 }
 
 template<typename Vertex, int N>
 bool VertexReferences<Vertex, N>::containsVertex(const Vertex* v) const
 {
-	return Base::contains(v);
+	return Base::container.contains(v);
 }
 
 template<typename Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexIterator
 VertexReferences<Vertex, N>::findVertex(const Vertex* v)
 {
-	return Base::find(v);
+	return Base::container.find(v);
 }
 
 template<typename Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexIterator
 VertexReferences<Vertex, N>::findVertex(const Vertex* v) const
 {
-	return Base::find(v);
+	return Base::container.find(v);
 }
 
 template<typename Vertex, int N>
 int VertexReferences<Vertex, N>::indexOfVertex(const Vertex* v) const
 {
-	return Base::indexOf(v);
+	return Base::container.indexOf(v);
 }
 
 template<typename Vertex, int N>
@@ -120,70 +120,70 @@ int VertexReferences<Vertex, N>::indexOfEdge(const Vertex* v1, const Vertex* v2)
 template<typename Vertex, int N>
 void VertexReferences<Vertex, N>::resizeVertices(uint n) requires (N < 0)
 {
-	Base::resize(n);
+	Base::container.resize(n);
 }
 
 template<typename Vertex, int N>
 void VertexReferences<Vertex, N>::pushVertex(Vertex* v) requires (N < 0)
 {
-	Base::pushBack(v);
+	Base::container.pushBack(v);
 }
 
 template<typename Vertex, int N>
 void VertexReferences<Vertex, N>::insertVertex(uint i, Vertex* v) requires (N < 0)
 {
-	Base::insert(i, v);
+	Base::container.insert(i, v);
 }
 
 template<typename Vertex, int N>
 void VertexReferences<Vertex, N>::eraseVertex(uint i) requires (N < 0)
 {
-	Base::erase(i);
+	Base::container.erase(i);
 }
 
 template<typename Vertex, int N>
 void VertexReferences<Vertex, N>::clearVertices() requires (N < 0)
 {
-	Base::clear();
+	Base::container.clear();
 }
 
 template<typename Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexBegin()
 {
-	return Base::begin();
+	return Base::container.begin();
 }
 
 template<typename Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexEnd()
 {
-	return Base::end();
+	return Base::container.end();
 }
 
 template<typename Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexIterator
 VertexReferences<Vertex, N>::vertexBegin() const
 {
-	return Base::begin();
+	return Base::container.begin();
 }
 
 template<typename Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexIterator
 VertexReferences<Vertex, N>::vertexEnd() const
 {
-	return Base::end();
+	return Base::container.end();
 }
 
 template<typename Vertex, int N>
 typename VertexReferences<Vertex, N>::VertexRangeIterator VertexReferences<Vertex, N>::vertices()
 {
-	return Base::rangeIterator();
+	return Base::container.rangeIterator();
 }
 
 template<typename Vertex, int N>
 typename VertexReferences<Vertex, N>::ConstVertexRangeIterator
 VertexReferences<Vertex, N>::vertices() const
 {
-	return Base::rangeIterator();
+	return Base::container.rangeIterator();
 }
 
 template<typename Vertex, int N>

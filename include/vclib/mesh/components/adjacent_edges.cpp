@@ -42,7 +42,7 @@ AdjacentEdges<Edge, N>::AdjacentEdges() : Base()
 template<typename Edge, int N>
 uint AdjacentEdges<Edge, N>::adjEdgesNumber() const
 {
-	return Base::size();
+    return Base::container.size();
 }
 
 /**
@@ -61,7 +61,7 @@ uint AdjacentEdges<Edge, N>::adjEdgesNumber() const
 template<typename Edge, int N>
 Edge*& AdjacentEdges<Edge, N>::adjEdge(uint i)
 {
-	return Base::at(i);
+    return Base::container.at(i);
 }
 
 /**
@@ -73,7 +73,7 @@ Edge*& AdjacentEdges<Edge, N>::adjEdge(uint i)
 template<typename Edge, int N>
 const Edge* AdjacentEdges<Edge, N>::adjEdge(uint i) const
 {
-	return Base::at(i);
+    return Base::container.at(i);
 }
 
 /**
@@ -95,7 +95,7 @@ const Edge* AdjacentEdges<Edge, N>::adjEdge(uint i) const
 template<typename Edge, int N>
 Edge*& AdjacentEdges<Edge, N>::adjEdgeMod(int i)
 {
-	return Base::atMod(i);
+    return Base::container.atMod(i);
 }
 
 /**
@@ -107,7 +107,7 @@ Edge*& AdjacentEdges<Edge, N>::adjEdgeMod(int i)
 template<typename Edge, int N>
 const Edge* AdjacentEdges<Edge, N>::adjEdgeMod(int i) const
 {
-	return Base::atMod(i);
+    return Base::container.atMod(i);
 }
 
 /**
@@ -119,7 +119,7 @@ const Edge* AdjacentEdges<Edge, N>::adjEdgeMod(int i) const
 template<typename Edge, int N>
 void AdjacentEdges<Edge, N>::setAdjEdge(Edge* e, uint i)
 {
-	Base::set(e, i);
+    Base::container.set(e, i);
 }
 
 /**
@@ -133,33 +133,33 @@ void AdjacentEdges<Edge, N>::setAdjEdge(Edge* e, uint i)
 template<typename Edge, int N>
 void AdjacentEdges<Edge, N>::setAdjEdges(const std::vector<Edge*>& list)
 {
-	Base::set(list);
+    Base::container.set(list);
 }
 
 template<typename Edge, int N>
 bool AdjacentEdges<Edge, N>::containsAdjEdge(const Edge* e) const
 {
-	return Base::contains(e);
+    return Base::container.contains(e);
 }
 
 template<typename Edge, int N>
 typename AdjacentEdges<Edge, N>::AdjacentEdgeIterator
 AdjacentEdges<Edge, N>::findAdjEdge(const Edge* e)
 {
-	return Base::find(e);
+    return Base::container.find(e);
 }
 
 template<typename Edge, int N>
 typename AdjacentEdges<Edge, N>::ConstAdjacentEdgeIterator
 AdjacentEdges<Edge, N>::findAdjEdge(const Edge* e) const
 {
-	return Base::find(e);
+	return Base::container.find(e);
 }
 
 template<typename Edge, int N>
 int AdjacentEdges<Edge, N>::indexOfAdjEdge(const Edge* e) const
 {
-	return Base::indexOf(e);
+    return Base::container.indexOf(e);
 }
 
 /**
@@ -171,70 +171,70 @@ int AdjacentEdges<Edge, N>::indexOfAdjEdge(const Edge* e) const
 template<typename Edge, int N>
 void AdjacentEdges<Edge, N>::resizeAdjEdges(uint n) requires (N < 0)
 {
-	Base::resize(n);
+    Base::container.resize(n);
 }
 
 template<typename Edge, int N>
 void AdjacentEdges<Edge, N>::pushAdjEdge(Edge* e) requires (N < 0)
 {
-	Base::pushBack(e);
+    Base::container.pushBack(e);
 }
 
 template<typename Edge, int N>
 void AdjacentEdges<Edge, N>::insertAdjEdge(uint i, Edge* e) requires (N < 0)
 {
-	Base::insert(i, e);
+    Base::container.insert(i, e);
 }
 
 template<typename Edge, int N>
 void AdjacentEdges<Edge, N>::eraseAdjEdge(uint i) requires (N < 0)
 {
-	Base::erase(i);
+    Base::container.erase(i);
 }
 
 template<typename Edge, int N>
 void AdjacentEdges<Edge, N>::clearAdjEdges() requires (N < 0)
 {
-	Base::clear();
+    Base::container.clear();
 }
 
 template<typename Edge, int N>
 typename AdjacentEdges<Edge, N>::AdjacentEdgeIterator AdjacentEdges<Edge, N>::adjEdgeBegin()
 {
-	return Base::begin();
+    return Base::container.begin();
 }
 
 template<typename Edge, int N>
 typename AdjacentEdges<Edge, N>::AdjacentEdgeIterator AdjacentEdges<Edge, N>::adjEdgeEnd()
 {
-	return Base::end();
+    return Base::container.end();
 }
 
 template<typename Edge, int N>
 typename AdjacentEdges<Edge, N>::ConstAdjacentEdgeIterator
 AdjacentEdges<Edge, N>::adjEdgeBegin() const
 {
-	return Base::begin();
+    return Base::container.begin();
 }
 
 template<typename Edge, int N>
 typename AdjacentEdges<Edge, N>::ConstAdjacentEdgeIterator
 AdjacentEdges<Edge, N>::adjEdgeEnd() const
 {
-	return Base::end();
+	return Base::container.end();
 }
 
 template<typename Edge, int N>
 typename AdjacentEdges<Edge, N>::AdjacentEdgeRangeIterator AdjacentEdges<Edge, N>::adjEdges()
 {
-	return Base::rangeIterator();
+	return Base::container.rangeIterator();
 }
 
 template<typename Edge, int N>
 typename AdjacentEdges<Edge, N>::ConstAdjacentEdgeRangeIterator
 AdjacentEdges<Edge, N>::adjEdges() const
 {
-	return Base::rangeIterator();
+	return Base::container.rangeIterator();
 }
 
 template<typename Edge, int N>
