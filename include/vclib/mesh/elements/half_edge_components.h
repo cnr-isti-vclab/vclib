@@ -36,17 +36,17 @@
 namespace vcl::hedge {
 
 /* Port BitFlags class into hedge namespace */
-using BitFlags = comp::BitFlags<void*, true>;
+using BitFlags = comp::BitFlags<void, true>;
 
 /* Port Color class into hedge namespace */
-using Color = comp::Color<void*, true>;
+using Color = comp::Color<void, true>;
 
 /* Port HalfEdgeReferences class into hedge namespace */
 template<typename HalfEdgeType, typename VertexType, typename FaceType>
-using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType, void*, true>;
+using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType, void, true>;
 
 /* Port Mark class into hedge namespace */
-using Mark = comp::Mark<void*, true>;
+using Mark = comp::Mark<void, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
@@ -54,17 +54,17 @@ using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port Scalar class into hedge namespace */
 template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType, void*, true>;
+using Scalar = comp::Scalar<ScalarType, void, true>;
 
-using Scalarf = comp::Scalarf<void*, true>;
-using Scalard = comp::Scalard<void*, true>;
+using Scalarf = comp::Scalarf<void, true>;
+using Scalard = comp::Scalard<void, true>;
 
 /* Port TexCoord class into hedge namespace */
 template<typename ScalarType>
-using TexCoord = comp::TexCoord<ScalarType, void*, true>;
+using TexCoord = comp::TexCoord<ScalarType, void, true>;
 
-using TexCoordf = comp::TexCoordf<void*, true>;
-using TexCoordd = comp::TexCoordd<void*, true>;
+using TexCoordf = comp::TexCoordf<void, true>;
+using TexCoordd = comp::TexCoordd<void, true>;
 
 } // namespace vcl::hedge
 

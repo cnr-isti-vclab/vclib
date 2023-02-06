@@ -31,16 +31,6 @@
 
 namespace vcl::comp {
 
-namespace internal {
-
-template<PointConcept P, bool>
-struct CoordTData { P p; };
-
-template<PointConcept P>
-struct CoordTData<P, false> { };
-
-} // vcl::comp::internal
-
 template<PointConcept P, typename ElementType, bool horizontal>
 class CoordT
 {

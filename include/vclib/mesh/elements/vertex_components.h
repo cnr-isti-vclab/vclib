@@ -53,37 +53,37 @@ template<typename VertexType>
 using AdjacentVertices = comp::AdjacentVertices<VertexType>;
 
 /* Port BitFlags class into vert namespace */
-using BitFlags = comp::BitFlags<void*, true>;
+using BitFlags = comp::BitFlags<void, true>;
 
 /* Port Color class into vert namespace */
-using Color = comp::Color<void*, true>;
+using Color = comp::Color<void, true>;
 
 /* Port Coordinate class into vert namespace */
 template<typename ScalarType, int N>
-using Coordinate = comp::Coordinate<ScalarType, N, void*, true>;
+using Coordinate = comp::Coordinate<ScalarType, N, void, true>;
 
 template<typename ScalarType>
-using Coordinate3 = comp::Coordinate3<ScalarType, void*, true>;
+using Coordinate3 = comp::Coordinate3<ScalarType, void, true>;
 
-using Coordinate3f = comp::Coordinate3f<void*, true>;
-using Coordinate3d = comp::Coordinate3d<void*, true>;
+using Coordinate3f = comp::Coordinate3f<void, true>;
+using Coordinate3d = comp::Coordinate3d<void, true>;
 
 /* Port Half Edge reference into vert namespace*/
 template<typename HalfEdge>
-using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge, void*, true>;
+using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge, void, true>;
 
 /* Port Mark class into vert namespace */
-using Mark = comp::Mark<void*, true>;
+using Mark = comp::Mark<void, true>;
 
 /* Port Normal classes into vert namespace */
 template<typename ScalarType, int N>
-using Normal = comp::Normal<ScalarType, N, void*, true>;
+using Normal = comp::Normal<ScalarType, N, void, true>;
 
 template<typename ScalarType>
-using Normal3 = comp::Normal3<ScalarType, void*, true>;
+using Normal3 = comp::Normal3<ScalarType, void, true>;
 
-using Normal3f = comp::Normal3f<void*, true>;
-using Normal3d = comp::Normal3d<void*, true>;
+using Normal3f = comp::Normal3f<void, true>;
+using Normal3d = comp::Normal3d<void, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
@@ -91,24 +91,24 @@ using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port PrincipalCurvature class into vert namespace */
 template<typename ScalarType>
-using PrincipalCurvature = comp::PrincipalCurvature<ScalarType, void*, true>;
+using PrincipalCurvature = comp::PrincipalCurvature<ScalarType, void, true>;
 
-using PrincipalCurvaturef = comp::PrincipalCurvaturef<void*, true>;
-using PrincipalCurvatured = comp::PrincipalCurvatured<void*, true>;
+using PrincipalCurvaturef = comp::PrincipalCurvaturef<void, true>;
+using PrincipalCurvatured = comp::PrincipalCurvatured<void, true>;
 
 /* Port Scalar class into vert namespace */
 template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType, void*, true>;
+using Scalar = comp::Scalar<ScalarType, void, true>;
 
-using Scalarf = comp::Scalarf<void*, true>;
-using Scalard = comp::Scalard<void*, true>;
+using Scalarf = comp::Scalarf<void, true>;
+using Scalard = comp::Scalard<void, true>;
 
 /* Port TexCoord class into vert namespace */
 template<typename ScalarType>
-using TexCoord = comp::TexCoord<ScalarType, void*, true>;
+using TexCoord = comp::TexCoord<ScalarType, void, true>;
 
-using TexCoordf = comp::TexCoordf<void*, true>;
-using TexCoordd = comp::TexCoordd<void*, true>;
+using TexCoordf = comp::TexCoordf<void, true>;
+using TexCoordd = comp::TexCoordd<void, true>;
 
 } // namespace vcl::vert
 

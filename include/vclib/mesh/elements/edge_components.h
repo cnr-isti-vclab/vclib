@@ -44,13 +44,13 @@ template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
 /* Port BitFlags class into edge namespace */
-using BitFlags = comp::BitFlags<void*, true>;
+using BitFlags = comp::BitFlags<void, true>;
 
 /* Port Color class into edge namespace */
-using Color = comp::Color<void*, true>;
+using Color = comp::Color<void, true>;
 
 /* Port Mark class into edge namespace */
-using Mark = comp::Mark<void*, true>;
+using Mark = comp::Mark<void, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
@@ -58,10 +58,10 @@ using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port Scalar class into edge namespace */
 template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType, void*, true>;
+using Scalar = comp::Scalar<ScalarType, void, true>;
 
-using Scalarf = comp::Scalarf<void*, true>;
-using Scalard = comp::Scalard<void*, true>;
+using Scalarf = comp::Scalarf<void, true>;
+using Scalard = comp::Scalard<void, true>;
 
 /* Port VertexReferences class into edge namespace */
 template<typename VertexType>

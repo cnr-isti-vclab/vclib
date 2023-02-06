@@ -25,18 +25,30 @@
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
 #include "concepts/wedge_tex_coords.h"
+#include "internal/component_data.h"
 
 #include <vclib/misc/random_access_container.h>
 #include <vclib/space/tex_coord.h>
 
 namespace vcl::comp {
 
-template<typename Scalar, int N>
+template<typename Scalar, int N, typename ElementType, bool horizontal>
 class WedgeTexCoords
 {
-	using Base = RandomAccessContainer<vcl::TexCoord<Scalar>, N>;
+	using ThisType = WedgeTexCoords<Scalar, N, ElementType, horizontal>;
 
+	struct WTCData {
+		RandomAccessContainer<vcl::TexCoord<Scalar>, N> texCoords;
+		short texIndex;
+	};
+
+	using Base = RandomAccessContainer<vcl::TexCoord<Scalar>, N>;
 public:
+	using DataValueType = WTCData; // data that the component stores internally (or vertically)
+	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	static const int WEDGE_TEX_COORD_NUMBER = Base::CONTAINER_SIZE;
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
@@ -48,7 +60,7 @@ public:
 	using WedgeTexCoordsRangeIterator      = typename Base::RACRangeIterator;
 	using ConstWedgeTexCoordsRangeIterator = typename Base::RACConstRangeIterator;
 
-	WedgeTexCoords();
+	void init();
 
 	/* Member functions */
 
@@ -97,8 +109,12 @@ private:
 	template<typename Element>
 	void importWedgeTexCoordsFrom(const Element& e);
 
-	short texIndex;
-	RandomAccessContainer<vcl::TexCoord<Scalar>, N> texCoords;
+	short& texIndex();
+	short texIndex() const;
+	RandomAccessContainer<vcl::TexCoord<Scalar>, N>& texCoords();
+	const RandomAccessContainer<vcl::TexCoord<Scalar>, N>& texCoords() const;
+
+	internal::ComponentData<WTCData, true> data;
 };
 
 } // namespace vcl::comp
