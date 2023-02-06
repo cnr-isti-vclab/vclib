@@ -44,17 +44,17 @@ namespace vcl::face {
 
 /* Port AdjacentEdges class into face namespace */
 template<typename EdgeType>
-using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1>;
+using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, void, true>;
 
 template<typename EdgeType>
-using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3>;
+using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, void, true>;
 
 /* Port AdjacentFaces class into face namespace */
 template<typename FaceType>
-using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1>;
+using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1, void, true>;
 
 template<typename FaceType>
-using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3>;
+using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3, void, true>;
 
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags<void, true>;
@@ -105,13 +105,13 @@ using TriangleBitFlags = comp::TriangleBitFlags<void, true>;
 
 /* Port VertexReferences class into face namespace */
 template<typename Vertex, int N>
-using VertexReferences = comp::VertexReferences<Vertex, N>;
+using VertexReferences = comp::VertexReferences<Vertex, N, void, true>;
 
 template<typename Vertex>
-using TriangleVertexRefs = comp::VertexReferences<Vertex, 3>;
+using TriangleVertexRefs = comp::VertexReferences<Vertex, 3, void, true>;
 
 template<typename Vertex>
-using PolygonVertexRefs = comp::VertexReferences<Vertex, -1>;
+using PolygonVertexRefs = comp::VertexReferences<Vertex, -1, void, true>;
 
 /* Port WedgeColors class into face namespace */
 using PolygonWedgeColors = comp::WedgeColors<-1>;

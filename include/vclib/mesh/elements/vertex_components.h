@@ -42,15 +42,15 @@ namespace vcl::vert {
 
 /* Port AdjacentEdges class into vert namespace */
 template<typename Edge>
-using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
+using AdjacentEdges = comp::AdjacentEdges<Edge, -1, void, true>;
 
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, void, true>;
 
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>
-using AdjacentVertices = comp::AdjacentVertices<VertexType>;
+using AdjacentVertices = comp::AdjacentVertices<VertexType, void, true>;
 
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags<void, true>;

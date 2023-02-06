@@ -29,7 +29,7 @@
 
 namespace vcl::comp {
 
-template<typename Vertex, int N>
+template<typename Vertex, int N, typename ElementType, bool hoerizontal>
 class VertexReferences : protected internal::ElementReferences<Vertex, N>
 {
 	using Base = internal::ElementReferences<Vertex, N>;

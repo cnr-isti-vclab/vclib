@@ -25,81 +25,81 @@
 
 namespace vcl::comp {
 
-template<typename Vertex, int N>
-VertexReferences<Vertex, N>::VertexReferences() : Base()
+template<typename Vertex, int N, typename El, bool h>
+VertexReferences<Vertex, N, El, h>::VertexReferences() : Base()
 {
 }
 
-template<typename Vertex, int N>
-uint VertexReferences<Vertex, N>::vertexNumber() const
+template<typename Vertex, int N, typename El, bool h>
+uint VertexReferences<Vertex, N, El, h>::vertexNumber() const
 {
 	return Base::container.size();
 }
 
-template<typename Vertex, int N>
-Vertex*& VertexReferences<Vertex, N>::vertex(uint i)
+template<typename Vertex, int N, typename El, bool h>
+Vertex*& VertexReferences<Vertex, N, El, h>::vertex(uint i)
 {
 	return Base::container.at(i);
 }
 
-template<typename Vertex, int N>
-const Vertex* VertexReferences<Vertex, N>::vertex(uint i) const
+template<typename Vertex, int N, typename El, bool h>
+const Vertex* VertexReferences<Vertex, N, El, h>::vertex(uint i) const
 {
 	return Base::container.at(i);
 }
 
-template<typename Vertex, int N>
-Vertex*& VertexReferences<Vertex, N>::vertexMod(int i)
+template<typename Vertex, int N, typename El, bool h>
+Vertex*& VertexReferences<Vertex, N, El, h>::vertexMod(int i)
 {
 	return Base::container.atMod(i);
 }
 
-template<typename Vertex, int N>
-const Vertex* VertexReferences<Vertex, N>::vertexMod(int i) const
+template<typename Vertex, int N, typename El, bool h>
+const Vertex* VertexReferences<Vertex, N, El, h>::vertexMod(int i) const
 {
 	return Base::container.atMod(i);
 }
 
-template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::setVertex(Vertex* v, uint i)
+template<typename Vertex, int N, typename El, bool h>
+void VertexReferences<Vertex, N, El, h>::setVertex(Vertex* v, uint i)
 {
 	Base::container.set(v, i);
 }
 
-template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::setVertices(const std::vector<Vertex*>& list)
+template<typename Vertex, int N, typename El, bool h>
+void VertexReferences<Vertex, N, El, h>::setVertices(const std::vector<Vertex*>& list)
 {
 	Base::container.set(list);
 }
 
-template<typename Vertex, int N>
-bool VertexReferences<Vertex, N>::containsVertex(const Vertex* v) const
+template<typename Vertex, int N, typename El, bool h>
+bool VertexReferences<Vertex, N, El, h>::containsVertex(const Vertex* v) const
 {
 	return Base::container.contains(v);
 }
 
-template<typename Vertex, int N>
-typename VertexReferences<Vertex, N>::VertexIterator
-VertexReferences<Vertex, N>::findVertex(const Vertex* v)
+template<typename Vertex, int N, typename El, bool h>
+typename VertexReferences<Vertex, N, El, h>::VertexIterator
+VertexReferences<Vertex, N, El, h>::findVertex(const Vertex* v)
 {
 	return Base::container.find(v);
 }
 
-template<typename Vertex, int N>
-typename VertexReferences<Vertex, N>::ConstVertexIterator
-VertexReferences<Vertex, N>::findVertex(const Vertex* v) const
+template<typename Vertex, int N, typename El, bool h>
+typename VertexReferences<Vertex, N, El, h>::ConstVertexIterator
+VertexReferences<Vertex, N, El, h>::findVertex(const Vertex* v) const
 {
 	return Base::container.find(v);
 }
 
-template<typename Vertex, int N>
-int VertexReferences<Vertex, N>::indexOfVertex(const Vertex* v) const
+template<typename Vertex, int N, typename El, bool h>
+int VertexReferences<Vertex, N, El, h>::indexOfVertex(const Vertex* v) const
 {
 	return Base::container.indexOf(v);
 }
 
-template<typename Vertex, int N>
-int VertexReferences<Vertex, N>::indexOfEdge(const Vertex* v1, const Vertex* v2) const
+template<typename Vertex, int N, typename El, bool h>
+int VertexReferences<Vertex, N, El, h>::indexOfEdge(const Vertex* v1, const Vertex* v2) const
 {
 	int vid = indexOfVertex(v1);
 	if (vid < 0) {
@@ -117,100 +117,100 @@ int VertexReferences<Vertex, N>::indexOfEdge(const Vertex* v1, const Vertex* v2)
 	}
 }
 
-template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::resizeVertices(uint n) requires (N < 0)
+template<typename Vertex, int N, typename El, bool h>
+void VertexReferences<Vertex, N, El, h>::resizeVertices(uint n) requires (N < 0)
 {
 	Base::container.resize(n);
 }
 
-template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::pushVertex(Vertex* v) requires (N < 0)
+template<typename Vertex, int N, typename El, bool h>
+void VertexReferences<Vertex, N, El, h>::pushVertex(Vertex* v) requires (N < 0)
 {
 	Base::container.pushBack(v);
 }
 
-template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::insertVertex(uint i, Vertex* v) requires (N < 0)
+template<typename Vertex, int N, typename El, bool h>
+void VertexReferences<Vertex, N, El, h>::insertVertex(uint i, Vertex* v) requires (N < 0)
 {
 	Base::container.insert(i, v);
 }
 
-template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::eraseVertex(uint i) requires (N < 0)
+template<typename Vertex, int N, typename El, bool h>
+void VertexReferences<Vertex, N, El, h>::eraseVertex(uint i) requires (N < 0)
 {
 	Base::container.erase(i);
 }
 
-template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::clearVertices() requires (N < 0)
+template<typename Vertex, int N, typename El, bool h>
+void VertexReferences<Vertex, N, El, h>::clearVertices() requires (N < 0)
 {
 	Base::container.clear();
 }
 
-template<typename Vertex, int N>
-typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexBegin()
+template<typename Vertex, int N, typename El, bool h>
+typename VertexReferences<Vertex, N, El, h>::VertexIterator VertexReferences<Vertex, N, El, h>::vertexBegin()
 {
 	return Base::container.begin();
 }
 
-template<typename Vertex, int N>
-typename VertexReferences<Vertex, N>::VertexIterator VertexReferences<Vertex, N>::vertexEnd()
+template<typename Vertex, int N, typename El, bool h>
+typename VertexReferences<Vertex, N, El, h>::VertexIterator VertexReferences<Vertex, N, El, h>::vertexEnd()
 {
 	return Base::container.end();
 }
 
-template<typename Vertex, int N>
-typename VertexReferences<Vertex, N>::ConstVertexIterator
-VertexReferences<Vertex, N>::vertexBegin() const
+template<typename Vertex, int N, typename El, bool h>
+typename VertexReferences<Vertex, N, El, h>::ConstVertexIterator
+VertexReferences<Vertex, N, El, h>::vertexBegin() const
 {
 	return Base::container.begin();
 }
 
-template<typename Vertex, int N>
-typename VertexReferences<Vertex, N>::ConstVertexIterator
-VertexReferences<Vertex, N>::vertexEnd() const
+template<typename Vertex, int N, typename El, bool h>
+typename VertexReferences<Vertex, N, El, h>::ConstVertexIterator
+VertexReferences<Vertex, N, El, h>::vertexEnd() const
 {
 	return Base::container.end();
 }
 
-template<typename Vertex, int N>
-typename VertexReferences<Vertex, N>::VertexRangeIterator VertexReferences<Vertex, N>::vertices()
+template<typename Vertex, int N, typename El, bool h>
+typename VertexReferences<Vertex, N, El, h>::VertexRangeIterator VertexReferences<Vertex, N, El, h>::vertices()
 {
 	return Base::container.rangeIterator();
 }
 
-template<typename Vertex, int N>
-typename VertexReferences<Vertex, N>::ConstVertexRangeIterator
-VertexReferences<Vertex, N>::vertices() const
+template<typename Vertex, int N, typename El, bool h>
+typename VertexReferences<Vertex, N, El, h>::ConstVertexRangeIterator
+VertexReferences<Vertex, N, El, h>::vertices() const
 {
 	return Base::container.rangeIterator();
 }
 
-template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::updateVertexReferences(
+template<typename Vertex, int N, typename El, bool h>
+void VertexReferences<Vertex, N, El, h>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
 {
 	Base::updateElementReferences(oldBase, newBase);
 }
 
-template<typename Vertex, int N>
-void VertexReferences<Vertex, N>::updateVertexReferencesAfterCompact(
+template<typename Vertex, int N, typename El, bool h>
+void VertexReferences<Vertex, N, El, h>::updateVertexReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementReferencesAfterCompact(base, newIndices);
 }
 
-template<typename Vertex, int N>
+template<typename Vertex, int N, typename El, bool h>
 template<typename Element>
-void VertexReferences<Vertex, N>::importFrom(const Element&)
+void VertexReferences<Vertex, N, El, h>::importFrom(const Element&)
 {
 }
 
-template<typename Vertex, int N>
+template<typename Vertex, int N, typename El, bool h>
 template<typename Element, typename ElVType>
-void VertexReferences<Vertex, N>::importVertexReferencesFrom(
+void VertexReferences<Vertex, N, El, h>::importVertexReferencesFrom(
 	const Element& e,
 	Vertex* base,
 	const ElVType* ebase)
@@ -239,9 +239,9 @@ void VertexReferences<Vertex, N>::importVertexReferencesFrom(
 	}
 }
 
-template<typename Vertex, int N>
+template<typename Vertex, int N, typename El, bool h>
 template<typename Element, typename ElVType>
-void VertexReferences<Vertex, N>::importReferencesFrom(
+void VertexReferences<Vertex, N, El, h>::importReferencesFrom(
 	const Element& e,
 	Vertex* base,
 	const ElVType* ebase)

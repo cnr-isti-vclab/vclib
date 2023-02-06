@@ -30,8 +30,8 @@ namespace vcl::comp {
  * If the size of the container is static, all the values will be set to nullptr.
  * If the size is dynamic, the number of values in the container is zero.
  */
-template<typename Face, int N>
-AdjacentFaces<Face, N>::AdjacentFaces() : Base()
+template<typename Face, int N, typename El, bool h>
+AdjacentFaces<Face, N, El, h>::AdjacentFaces() : Base()
 {
 }
 
@@ -39,10 +39,10 @@ AdjacentFaces<Face, N>::AdjacentFaces() : Base()
  * @brief Returns the number of adjacent faces of this element.
  * @return The number of adjacent faces of this element.
  */
-template<typename Face, int N>
-uint AdjacentFaces<Face, N>::adjFacesNumber() const
+template<typename Face, int N, typename El, bool h>
+uint AdjacentFaces<Face, N, El, h>::adjFacesNumber() const
 {
-    return Base::container.size();
+	return Base::container.size();
 }
 
 /**
@@ -58,10 +58,10 @@ uint AdjacentFaces<Face, N>::adjFacesNumber() const
  * between 0 and the number of adj faces.
  * @return The pointer to the i-th adjacent face of this element.
  */
-template<typename Face, int N>
-Face*& AdjacentFaces<Face, N>::adjFace(uint i)
+template<typename Face, int N, typename El, bool h>
+Face*& AdjacentFaces<Face, N, El, h>::adjFace(uint i)
 {
-    return Base::container.at(i);
+	return Base::container.at(i);
 }
 
 /**
@@ -70,10 +70,10 @@ Face*& AdjacentFaces<Face, N>::adjFace(uint i)
  * between 0 and the number of adj faces.
  * @return The pointer to the i-th adjacent face of this element.
  */
-template<typename Face, int N>
-const Face* AdjacentFaces<Face, N>::adjFace(uint i) const
+template<typename Face, int N, typename El, bool h>
+const Face* AdjacentFaces<Face, N, El, h>::adjFace(uint i) const
 {
-    return Base::container.at(i);
+	return Base::container.at(i);
 }
 
 /**
@@ -92,10 +92,10 @@ const Face* AdjacentFaces<Face, N>::adjFace(uint i) const
  * value is modularized on adjFaceNumber().
  * @return The pointer to the required adjacent face of this element.
  */
-template<typename Face, int N>
-Face*& AdjacentFaces<Face, N>::adjFaceMod(int i)
+template<typename Face, int N, typename El, bool h>
+Face*& AdjacentFaces<Face, N, El, h>::adjFaceMod(int i)
 {
-    return Base::container.atMod(i);
+	return Base::container.atMod(i);
 }
 
 /**
@@ -104,10 +104,10 @@ Face*& AdjacentFaces<Face, N>::adjFaceMod(int i)
  * value is modularized on adjFaceNumber().
  * @return The pointer to the required adjacent face of this element.
  */
-template<typename Face, int N>
-const Face* AdjacentFaces<Face, N>::adjFaceMod(int i) const
+template<typename Face, int N, typename El, bool h>
+const Face* AdjacentFaces<Face, N, El, h>::adjFaceMod(int i) const
 {
-    return Base::container.atMod(i);
+	return Base::container.atMod(i);
 }
 
 /**
@@ -116,10 +116,10 @@ const Face* AdjacentFaces<Face, N>::adjFaceMod(int i) const
  * @param[in] i: the position in the container on which set the adj face; the value must be
  * between 0 and the number of adj faces.
  */
-template<typename Face, int N>
-void AdjacentFaces<Face, N>::setAdjFace(Face* f, uint i)
+template<typename Face, int N, typename El, bool h>
+void AdjacentFaces<Face, N, El, h>::setAdjFace(Face* f, uint i)
 {
-    Base::container.set(f, i);
+	Base::container.set(f, i);
 }
 
 /**
@@ -130,36 +130,36 @@ void AdjacentFaces<Face, N>::setAdjFace(Face* f, uint i)
  *
  * @param[in] list: vector of adjacent faces to set.
  */
-template<typename Face, int N>
-void AdjacentFaces<Face, N>::setAdjFaces(const std::vector<Face*>& list)
+template<typename Face, int N, typename El, bool h>
+void AdjacentFaces<Face, N, El, h>::setAdjFaces(const std::vector<Face*>& list)
 {
-    Base::container.set(list);
+	Base::container.set(list);
 }
 
-template<typename Face, int N>
-bool AdjacentFaces<Face, N>::containsAdjFace(const Face* f) const
+template<typename Face, int N, typename El, bool h>
+bool AdjacentFaces<Face, N, El, h>::containsAdjFace(const Face* f) const
 {
-    return Base::container.contains(f);
+	return Base::container.contains(f);
 }
 
-template<typename Face, int N>
-typename AdjacentFaces<Face, N>::AdjacentFaceIterator
-AdjacentFaces<Face, N>::findAdjFace(const Face* f)
-{
-    return Base::container.find(f);
-}
-
-template<typename Face, int N>
-typename AdjacentFaces<Face, N>::ConstAdjacentFaceIterator
-AdjacentFaces<Face, N>::findAdjFace(const Face* f) const
+template<typename Face, int N, typename El, bool h>
+typename AdjacentFaces<Face, N, El, h>::AdjacentFaceIterator
+AdjacentFaces<Face, N, El, h>::findAdjFace(const Face* f)
 {
 	return Base::container.find(f);
 }
 
-template<typename Face, int N>
-int AdjacentFaces<Face, N>::indexOfAdjFace(const Face* f) const
+template<typename Face, int N, typename El, bool h>
+typename AdjacentFaces<Face, N, El, h>::ConstAdjacentFaceIterator
+AdjacentFaces<Face, N, El, h>::findAdjFace(const Face* f) const
 {
-    return Base::container.indexOf(f);
+	return Base::container.find(f);
+}
+
+template<typename Face, int N, typename El, bool h>
+int AdjacentFaces<Face, N, El, h>::indexOfAdjFace(const Face* f) const
+{
+	return Base::container.indexOf(f);
 }
 
 /**
@@ -168,112 +168,117 @@ int AdjacentFaces<Face, N>::indexOfAdjFace(const Face* f) const
  * size.
  * @param n
  */
-template<typename Face, int N>
-void AdjacentFaces<Face, N>::resizeAdjFaces(uint n) requires (N < 0)
+template<typename Face, int N, typename El, bool h>
+void AdjacentFaces<Face, N, El, h>::resizeAdjFaces(uint n)
+	requires(N < 0)
 {
-    Base::container.resize(n);
+	Base::container.resize(n);
 }
 
-template<typename Face, int N>
-void AdjacentFaces<Face, N>::pushAdjFace(Face* f) requires (N < 0)
+template<typename Face, int N, typename El, bool h>
+void AdjacentFaces<Face, N, El, h>::pushAdjFace(Face* f)
+	requires(N < 0)
 {
-    Base::container.pushBack(f);
+	Base::container.pushBack(f);
 }
 
-template<typename Face, int N>
-void AdjacentFaces<Face, N>::insertAdjFace(uint i, Face* f) requires (N < 0)
+template<typename Face, int N, typename El, bool h>
+void AdjacentFaces<Face, N, El, h>::insertAdjFace(uint i, Face* f)
+	requires(N < 0)
 {
-    Base::container.insert(i, f);
+	Base::container.insert(i, f);
 }
 
-template<typename Face, int N>
-void AdjacentFaces<Face, N>::eraseAdjFace(uint i) requires (N < 0)
+template<typename Face, int N, typename El, bool h>
+void AdjacentFaces<Face, N, El, h>::eraseAdjFace(uint i)
+	requires(N < 0)
 {
-    Base::container.erase(i);
+	Base::container.erase(i);
 }
 
-template<typename Face, int N>
-void AdjacentFaces<Face, N>::clearAdjFaces() requires (N < 0)
+template<typename Face, int N, typename El, bool h>
+void AdjacentFaces<Face, N, El, h>::clearAdjFaces()
+	requires(N < 0)
 {
-    Base::container.clear();
+	Base::container.clear();
 }
 
-template<typename Face, int N>
-typename AdjacentFaces<Face, N>::AdjacentFaceIterator AdjacentFaces<Face, N>::adjFaceBegin()
+template<typename Face, int N, typename El, bool h>
+typename AdjacentFaces<Face, N, El, h>::AdjacentFaceIterator AdjacentFaces<Face, N, El, h>::adjFaceBegin()
 {
-    return Base::container.begin();
+	return Base::container.begin();
 }
 
-template<typename Face, int N>
-typename AdjacentFaces<Face, N>::AdjacentFaceIterator AdjacentFaces<Face, N>::adjFaceEnd()
-{
-    return Base::container.end();
-}
-
-template<typename Face, int N>
-typename AdjacentFaces<Face, N>::ConstAdjacentFaceIterator
-AdjacentFaces<Face, N>::adjFaceBegin() const
-{
-    return Base::container.begin();
-}
-
-template<typename Face, int N>
-typename AdjacentFaces<Face, N>::ConstAdjacentFaceIterator
-AdjacentFaces<Face, N>::adjFaceEnd() const
+template<typename Face, int N, typename El, bool h>
+typename AdjacentFaces<Face, N, El, h>::AdjacentFaceIterator AdjacentFaces<Face, N, El, h>::adjFaceEnd()
 {
 	return Base::container.end();
 }
 
-template<typename Face, int N>
-typename AdjacentFaces<Face, N>::AdjacentFaceRangeIterator AdjacentFaces<Face, N>::adjFaces()
+template<typename Face, int N, typename El, bool h>
+typename AdjacentFaces<Face, N, El, h>::ConstAdjacentFaceIterator
+AdjacentFaces<Face, N, El, h>::adjFaceBegin() const
+{
+	return Base::container.begin();
+}
+
+template<typename Face, int N, typename El, bool h>
+typename AdjacentFaces<Face, N, El, h>::ConstAdjacentFaceIterator
+AdjacentFaces<Face, N, El, h>::adjFaceEnd() const
+{
+	return Base::container.end();
+}
+
+template<typename Face, int N, typename El, bool h>
+typename AdjacentFaces<Face, N, El, h>::AdjacentFaceRangeIterator AdjacentFaces<Face, N, El, h>::adjFaces()
 {
 	return Base::container.rangeIterator();
 }
 
-template<typename Face, int N>
-typename AdjacentFaces<Face, N>::ConstAdjacentFaceRangeIterator
-AdjacentFaces<Face, N>::adjFaces() const
+template<typename Face, int N, typename El, bool h>
+typename AdjacentFaces<Face, N, El, h>::ConstAdjacentFaceRangeIterator
+AdjacentFaces<Face, N, El, h>::adjFaces() const
 {
 	return Base::container.rangeIterator();
 }
 
-template<typename Face, int N>
-void AdjacentFaces<Face, N>::updateFaceReferences(const Face* oldBase, const Face* newBase)
+template<typename Face, int N, typename El, bool h>
+void AdjacentFaces<Face, N, El, h>::updateFaceReferences(const Face* oldBase, const Face* newBase)
 {
 	Base::updateElementReferences(oldBase, newBase);
 }
 
-template<typename Face, int N>
-void AdjacentFaces<Face, N>::updateFaceReferencesAfterCompact(
+template<typename Face, int N, typename El, bool h>
+void AdjacentFaces<Face, N, El, h>::updateFaceReferencesAfterCompact(
 	const Face*             base,
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementReferencesAfterCompact(base, newIndices);
 }
 
-template<typename Face, int N>
+template<typename Face, int N, typename El, bool h>
 template<typename Element>
-void AdjacentFaces<Face, N>::importFrom(const Element&)
+void AdjacentFaces<Face, N, El, h>::importFrom(const Element&)
 {
 }
 
-template<typename Face, int N>
+template<typename Face, int N, typename El, bool h>
 template<typename Element, typename ElFType>
-void AdjacentFaces<Face, N>::importFaceReferencesFrom(
+void AdjacentFaces<Face, N, El, h>::importFaceReferencesFrom(
 	const Element& e,
-	Face* base,
+	Face*          base,
 	const ElFType* ebase)
 {
 	if constexpr (HasAdjacentFaces<Element>) {
-		if (isAdjacentFacesEnabledOn(e)){
-			if constexpr(N > 0) {
+		if (isAdjacentFacesEnabledOn(e)) {
+			if constexpr (N > 0) {
 				// same static size
 				if constexpr (N == Element::ADJ_FACE_NUMBER) {
 					importReferencesFrom(e, base, ebase);
 				}
 				// from dynamic to static, but dynamic size == static size
-				else if constexpr (Element::ADJ_FACE_NUMBER < 0){
-					if (e.adjFacesNumber() == N){
+				else if constexpr (Element::ADJ_FACE_NUMBER < 0) {
+					if (e.adjFacesNumber() == N) {
 						importReferencesFrom(e, base, ebase);
 					}
 				}
@@ -290,16 +295,16 @@ void AdjacentFaces<Face, N>::importFaceReferencesFrom(
 	}
 }
 
-template<typename Face, int N>
+template<typename Face, int N, typename El, bool h>
 template<typename Element, typename ElFType>
-void AdjacentFaces<Face, N>::importReferencesFrom(
+void AdjacentFaces<Face, N, El, h>::importReferencesFrom(
 	const Element& e,
-	Face* base,
+	Face*          base,
 	const ElFType* ebase)
 {
 	if (ebase != nullptr && base != nullptr) {
-		for (uint i = 0; i < e.adjFacesNumber(); ++i){
-			if (e.adjFace(i) != nullptr){
+		for (uint i = 0; i < e.adjFacesNumber(); ++i) {
+			if (e.adjFace(i) != nullptr) {
 				adjFace(i) = base + (e.adjFace(i) - ebase);
 			}
 		}

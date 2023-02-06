@@ -46,7 +46,7 @@ namespace vcl::comp {
  * v.adjVerticesNumber();
  * @endcode
  */
-template<typename Vertex>
+template<typename Vertex, typename ElementType, bool horizontal>
 class AdjacentVertices : protected internal::ElementReferences<Vertex, -1>
 {
 	using Base = internal::ElementReferences<Vertex, -1>;

@@ -37,11 +37,11 @@ namespace vcl::edge {
 
 /* Port AdjacentEdges class into edge namespace */
 template<typename EdgeType>
-using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
+using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, void, true>;
 
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, void, true>;
 
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags<void, true>;
@@ -65,7 +65,7 @@ using Scalard = comp::Scalard<void, true>;
 
 /* Port VertexReferences class into edge namespace */
 template<typename VertexType>
-using VertexReferences = comp::VertexReferences<VertexType, 2>;
+using VertexReferences = comp::VertexReferences<VertexType, 2, void, true>;
 
 } // namespace vcl::edge
 
