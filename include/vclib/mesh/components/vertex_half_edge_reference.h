@@ -31,16 +31,24 @@
 #include <vclib/iterators/range_iterator.h>
 
 #include "concepts/vertex_half_edge_reference.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
-template<typename HalfEdge>
+template<typename HalfEdge, typename ElementType, bool horizontal>
 class VertexHalfEdgeReference
 {
+	using ThisType = VertexHalfEdgeReference<HalfEdge, ElementType, horizontal>;
+
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
 
 public:
+	using DataValueType = HalfEdge*; // data that the component stores internally (or vertically)
+	using VertexHalfEdgeReferencesComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using HalfEdgeType = HalfEdge;
 
 	/* Iterator Types declaration */
@@ -60,7 +68,7 @@ public:
 
 	/* Constructor */
 
-	VertexHalfEdgeReference();
+	void init();
 
 	/* Member functions */
 
@@ -143,7 +151,10 @@ protected:
 	void importHalfEdgeReferencesFrom(const OtherVertex& e, HalfEdge* base, const OtherHEType* ebase);
 
 private:
-	HalfEdge* he = nullptr; // outgoing half edge
+	HalfEdge*& he();
+	const HalfEdge* he() const;
+
+	internal::ComponentData<HalfEdge*, true> data;
 };
 
 } // vcl::comp

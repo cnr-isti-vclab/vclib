@@ -70,7 +70,7 @@ using Coordinate3d = comp::Coordinate3d<void*, true>;
 
 /* Port Half Edge reference into vert namespace*/
 template<typename HalfEdge>
-using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge>;
+using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge, void*, true>;
 
 /* Port Mark class into vert namespace */
 using Mark = comp::Mark<void*, true>;
