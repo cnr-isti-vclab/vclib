@@ -41,10 +41,10 @@ public:
 
 	/* Iterator Types declaration */
 
-	using VertexIterator           = typename Base::GCIterator;
-	using ConstVertexIterator      = typename Base::ConstGCIterator;
-	using VertexRangeIterator      = typename Base::GCRangeIterator;
-	using ConstVertexRangeIterator = typename Base::ConstGCRangeIterator;
+	using VertexIterator           = typename Base::Iterator;
+	using ConstVertexIterator      = typename Base::ConstIterator;
+	using VertexRangeIterator      = typename Base::RACRangeIterator;
+	using ConstVertexRangeIterator = typename Base::RACConstRangeIterator;
 
 	/* Constructor */
 
