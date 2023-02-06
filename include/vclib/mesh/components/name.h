@@ -63,8 +63,6 @@ public:
 
 	static const bool IS_VERTICAL = !horizontal;
 
-	Name() {}
-
 	std::string& name();
 	const std::string& name() const;
 

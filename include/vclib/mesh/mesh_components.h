@@ -53,7 +53,7 @@ using Mark = comp::Mark<void*, true>;
 using Name = comp::Name<void*, true>;
 
 /** Port TexturePaths class into mesh namespace **/
-using TexturePaths = comp::TexturePaths;
+using TexturePaths = comp::TexturePaths<void*, true>;
 
 /** Port TransformMatrix class into mesh namespace **/
 template <typename Scalar>

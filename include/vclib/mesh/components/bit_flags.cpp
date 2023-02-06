@@ -25,6 +25,12 @@
 
 namespace vcl::comp {
 
+template<typename El, bool h>
+void BitFlags<El, h>::init()
+{
+	flags() = 0;
+}
+
 /**
  * @brief Returns whether this Element is marked as deleted.
  *

@@ -221,6 +221,12 @@ protected:
 	void updateAllOptionalContainerReferences();
 
 private:
+	// hide init member functions of all components
+	void init() {};
+
+	template<typename Comp>
+	void construct();
+
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);
 

@@ -26,7 +26,7 @@
 namespace vcl::comp {
 
 template<typename Scalar, typename El, bool h>
-TransformMatrix<Scalar, El, h>::TransformMatrix()
+void TransformMatrix<Scalar, El, h>::init()
 {
 	tr().setIdentity();
 }

@@ -28,6 +28,7 @@ namespace vcl {
 template<typename MeshType, typename... Args>
 Face<MeshType, Args...>::Face()
 {
+	(construct<Args>(), ...);
 }
 
 /**
@@ -177,4 +178,15 @@ void Face<MeshType, Args...>::importFrom(const Element& f)
 
 //}
 
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Face<MeshType, Args...>::construct()
+{
+	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
+		Comp::init();
+	}
+}
+
 } // namespace vcl
+
+

@@ -30,12 +30,25 @@
 #include <vclib/iterators/range_iterator.h>
 
 #include "concepts/texture_paths.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
+template<typename ElementType, bool horizontal>
 class TexturePaths
 {
+	using ThisType = TexturePaths<ElementType, horizontal>;
+
+	struct TPData {
+		std::vector<std::string> texPaths;
+		std::string meshPath;
+	};
 public:
+	using DataValueType = TPData; // data that the component stores internally (or vertically)
+	using TexturePathsComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	// iterators
 	using TexFileNamesIterator      = std::vector<std::string>::iterator;
 	using ConstTexFileNamesIterator = std::vector<std::string>::const_iterator;
@@ -44,7 +57,6 @@ public:
 	using ConstTexFileNamesRangeIterator =
 		ConstRangeIterator<TexturePaths, ConstTexFileNamesIterator>;
 
-	TexturePaths();
 	uint textureNumber() const;
 
 	const std::string& texturePath(uint i) const;
@@ -68,8 +80,13 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	std::vector<std::string> texPaths;
-	std::string meshPath;
+	// members that allow to access the point, trough data (horizontal) or trough parent (vertical)
+	std::vector<std::string>& texPaths();
+	const std::vector<std::string>& texPaths() const;
+	std::string& meshPath();
+	const std::string& meshPath() const;
+
+	internal::ComponentData<TPData, true> data;
 };
 
 } // namespace vcl::comp

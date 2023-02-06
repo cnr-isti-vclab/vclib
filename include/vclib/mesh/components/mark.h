@@ -82,7 +82,7 @@ public:
 
 	static const bool IS_VERTICAL = !horizontal;
 
-	Mark() {}
+	void init();
 
 	int  mark() const;
 	void resetMark();

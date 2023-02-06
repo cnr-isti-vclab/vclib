@@ -26,6 +26,12 @@
 namespace vcl::comp {
 
 template<typename El, bool h>
+void Mark<El, h>::init()
+{
+	resetMark();
+}
+
+template<typename El, bool h>
 int Mark<El, h>::mark() const
 {
 	return m();

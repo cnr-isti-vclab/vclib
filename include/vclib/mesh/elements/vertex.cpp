@@ -28,6 +28,7 @@ namespace vcl {
 template<typename MeshType, typename... Args>
 Vertex<MeshType, Args...>::Vertex()
 {
+	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>
@@ -35,6 +36,15 @@ template<typename Element>
 	void Vertex<MeshType, Args...>::importFrom(const Element& v)
 {
 	(Args::importFrom(v), ...);
+}
+
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Vertex<MeshType, Args...>::construct()
+{
+	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
+		Comp::init();
+	}
 }
 
 } // namespace vcl

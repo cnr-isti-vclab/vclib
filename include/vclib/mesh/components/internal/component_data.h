@@ -24,6 +24,16 @@
 #ifndef VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H
 #define VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H
 
+namespace vcl::comp {
+
+template<typename T>
+concept HasInitMemberFunction = requires(T o)
+{
+	o.init();
+};
+
+}
+
 namespace vcl::comp::internal {
 
 // store the data if horizontal

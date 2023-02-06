@@ -25,84 +25,118 @@
 
 namespace vcl::comp {
 
-inline TexturePaths::TexturePaths()
+template<typename El, bool h>
+uint TexturePaths<El, h>::textureNumber() const
 {
+	return texPaths().size();
 }
 
-inline uint TexturePaths::textureNumber() const
+template<typename El, bool h>
+const std::string& TexturePaths<El, h>::texturePath(uint i) const
 {
-	return texPaths.size();
+	return texPaths()[i];
 }
 
-inline const std::string& TexturePaths::texturePath(uint i) const
+template<typename El, bool h>
+std::string& TexturePaths<El, h>::texturePath(uint i)
 {
-	return texPaths[i];
+	return texPaths()[i];
 }
 
-inline std::string& TexturePaths::texturePath(uint i)
+template<typename El, bool h>
+const std::string &TexturePaths<El, h>::meshBasePath() const
 {
-	return texPaths[i];
+	return meshPath();
 }
 
-inline const std::string &TexturePaths::meshBasePath() const
+template<typename El, bool h>
+std::string &TexturePaths<El, h>::meshBasePath()
 {
-	return meshPath;
+	return meshPath();
 }
 
-inline std::string &TexturePaths::meshBasePath()
+template<typename El, bool h>
+void TexturePaths<El, h>::clearTexturePaths()
 {
-	return meshPath;
+	texPaths().clear();
 }
 
-inline void TexturePaths::clearTexturePaths()
+template<typename El, bool h>
+void TexturePaths<El, h>::pushTexturePath(const std::string& textName)
 {
-	texPaths.clear();
+	texPaths().push_back(textName);
 }
 
-inline void TexturePaths::pushTexturePath(const std::string& textName)
+template<typename El, bool h>
+typename TexturePaths<El, h>::TexFileNamesIterator TexturePaths<El, h>::texturePathBegin()
 {
-	texPaths.push_back(textName);
+	return texPaths().begin();
 }
 
-inline TexturePaths::TexFileNamesIterator TexturePaths::texturePathBegin()
+template<typename El, bool h>
+typename TexturePaths<El, h>::TexFileNamesIterator TexturePaths<El, h>::texturePathEnd()
 {
-	return texPaths.begin();
+	return texPaths().end();
 }
 
-inline TexturePaths::TexFileNamesIterator TexturePaths::texturePathEnd()
+template<typename El, bool h>
+typename TexturePaths<El, h>::ConstTexFileNamesIterator TexturePaths<El, h>::texturePathBegin() const
 {
-	return texPaths.end();
+	return texPaths().begin();
 }
 
-inline TexturePaths::ConstTexFileNamesIterator TexturePaths::texturePathBegin() const
+template<typename El, bool h>
+typename TexturePaths<El, h>::ConstTexFileNamesIterator TexturePaths<El, h>::texturePathEnd() const
 {
-	return texPaths.begin();
+	return texPaths().end();
 }
 
-inline TexturePaths::ConstTexFileNamesIterator TexturePaths::texturePathEnd() const
-{
-	return texPaths.end();
-}
-
-inline TexturePaths::TexFileNamesRangeIterator TexturePaths::texturePaths()
+template<typename El, bool h>
+typename TexturePaths<El, h>::TexFileNamesRangeIterator TexturePaths<El, h>::texturePaths()
 {
 	return TexFileNamesRangeIterator(
 		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
 }
 
-inline TexturePaths::ConstTexFileNamesRangeIterator TexturePaths::texturePaths() const
+template<typename El, bool h>
+typename TexturePaths<El, h>::ConstTexFileNamesRangeIterator TexturePaths<El, h>::texturePaths() const
 {
 	return ConstTexFileNamesRangeIterator(
 		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
 }
 
+template<typename El, bool h>
 template<typename Element>
-void TexturePaths::importFrom(const Element& e)
+void TexturePaths<El, h>::importFrom(const Element& e)
 {
 	if constexpr (HasTexturePaths<Element>) {
-		texPaths = e.TexturePaths::texPaths;
-		meshPath = e.TexturePaths::meshPath;
+		texPaths() = e.texPaths();
+		meshPath() = e.meshPath();
 	}
+}
+
+template<typename El, bool h>
+std::vector<std::string>& TexturePaths<El, h>::texPaths()
+{
+	return data.template get<El>(this).texPaths;
+}
+
+template<typename El, bool h>
+const std::vector<std::string>& TexturePaths<El, h>::texPaths() const
+{
+	return data.template get<El>(this).texPaths;
+}
+
+template<typename El, bool h>
+std::string& TexturePaths<El, h>::meshPath()
+{
+	return data.template get<El>(this).meshPath;
+}
+
+template<typename El, bool h>
+const std::string& TexturePaths<El, h>::meshPath() const
+{
+	return data.template get<El>(this).meshPath;
 }
 
 } // namespace vcl::comp

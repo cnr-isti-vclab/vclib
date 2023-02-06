@@ -68,6 +68,8 @@ public:
 
 	static const bool IS_VERTICAL = !horizontal;
 
+	void init();
+
 	bool isDeleted() const;
 	bool isSelected() const;
 	bool isOnBorder() const;

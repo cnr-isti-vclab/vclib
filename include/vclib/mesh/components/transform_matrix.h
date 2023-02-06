@@ -54,7 +54,7 @@ public:
 
 	using TransformMatrixType = Matrix44<Scalar>;
 
-	TransformMatrix();
+	void init();
 
 	const TransformMatrixType& transformMatrix() const;
 	TransformMatrixType&       transformMatrix();

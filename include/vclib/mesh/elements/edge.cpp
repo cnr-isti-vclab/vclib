@@ -28,6 +28,7 @@ namespace vcl {
 template<typename MeshType, typename... Args>
 Edge<MeshType, Args...>::Edge()
 {
+	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>
@@ -35,6 +36,15 @@ template<typename Element>
 void Edge<MeshType, Args...>::importFrom(const Element& e)
 {
 	(Args::importFrom(e), ...);
+}
+
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Edge<MeshType, Args...>::construct()
+{
+	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
+		Comp::init();
+	}
 }
 
 } // namespace vcl

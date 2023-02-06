@@ -28,6 +28,7 @@ namespace vcl {
 template<typename MeshType, typename... Args>
 HalfEdge<MeshType, Args...>::HalfEdge()
 {
+	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>
@@ -35,6 +36,15 @@ template<typename Element>
 void HalfEdge<MeshType, Args...>::importFrom(const Element& e)
 {
 	(Args::importFrom(e), ...);
+}
+
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void HalfEdge<MeshType, Args...>::construct()
+{
+	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
+		Comp::init();
+	}
 }
 
 } // namespace vcl
