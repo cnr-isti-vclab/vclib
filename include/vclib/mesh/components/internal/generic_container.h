@@ -58,7 +58,6 @@ private:
 public:
 	GenericContainer();
 
-protected:
 	static const int CONTAINER_SIZE = N;
 
 	/** Iterator Types declaration **/
@@ -111,6 +110,7 @@ protected:
 	GCRangeIterator      rangeIterator();
 	ConstGCRangeIterator rangeIterator() const;
 
+protected:
 	Container container;
 };
 
