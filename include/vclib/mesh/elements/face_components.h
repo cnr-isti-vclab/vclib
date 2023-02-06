@@ -88,10 +88,10 @@ using PolygonBitFlags = comp::PolygonBitFlags<void*, true>;
 
 /* Port PrincipalCurvature class into face namespace */
 template<typename FaceType>
-using PrincipalCurvature = comp::PrincipalCurvature<FaceType>;
+using PrincipalCurvature = comp::PrincipalCurvature<FaceType, void*, true>;
 
-using PrincipalCurvaturef = comp::PrincipalCurvaturef;
-using PrincipalCurvatured = comp::PrincipalCurvatured;
+using PrincipalCurvaturef = comp::PrincipalCurvaturef<void*, true>;
+using PrincipalCurvatured = comp::PrincipalCurvatured<void*, true>;
 
 /* Port Scalar class into face namespace */
 template<typename ScalarType>

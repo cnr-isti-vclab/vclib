@@ -91,10 +91,10 @@ using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port PrincipalCurvature class into vert namespace */
 template<typename ScalarType>
-using PrincipalCurvature = comp::PrincipalCurvature<ScalarType>;
+using PrincipalCurvature = comp::PrincipalCurvature<ScalarType, void*, true>;
 
-using PrincipalCurvaturef = comp::PrincipalCurvaturef;
-using PrincipalCurvatured = comp::PrincipalCurvatured;
+using PrincipalCurvaturef = comp::PrincipalCurvaturef<void*, true>;
+using PrincipalCurvatured = comp::PrincipalCurvatured<void*, true>;
 
 /* Port Scalar class into vert namespace */
 template<typename ScalarType>

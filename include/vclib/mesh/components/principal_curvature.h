@@ -27,10 +27,21 @@
 #include <vclib/space/principal_curvature.h>
 
 #include "concepts/principal_curvature.h"
+#include "internal/get_vertical_component_data.h"
 
 namespace vcl::comp {
 
+namespace internal {
+
+template<typename Scalar, bool>
+struct PrincipalCurvatureData { vcl::PrincipalCurvature<Scalar> princCurv; };
+
 template<typename Scalar>
+struct PrincipalCurvatureData<Scalar, false> { };
+
+} // vcl::comp::internal
+
+template<typename Scalar, typename ElementType, bool horizontal>
 class PrincipalCurvature
 {
 public:
@@ -46,11 +57,19 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	vcl::PrincipalCurvature<Scalar> princCurv;
+	// members that allow to access the curvature, trough data (hor) or trough parent (vert)
+	vcl::PrincipalCurvature<Scalar>& princCurv();
+	const vcl::PrincipalCurvature<Scalar>& princCurv() const;
+
+	// contians the actual principal curvature, if the component is horizontal
+	internal::PrincipalCurvatureData<Scalar, horizontal> data;
 };
 
-using PrincipalCurvaturef = PrincipalCurvature<float>;
-using PrincipalCurvatured = PrincipalCurvature<double>;
+template<typename ElementType, bool horizontal>
+using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, horizontal>;
+
+template<typename ElementType, bool horizontal>
+using PrincipalCurvatured = PrincipalCurvature<double, ElementType, horizontal>;
 
 } // namespace vcl::comp
 

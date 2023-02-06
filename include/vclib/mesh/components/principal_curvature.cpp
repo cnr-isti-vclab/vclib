@@ -25,28 +25,52 @@
 
 namespace vcl::comp {
 
-template<typename Scalar>
-const typename PrincipalCurvature<Scalar>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar>::principalCurvature() const
+template<typename Scalar, typename El, bool h>
+const typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, h>::principalCurvature() const
 {
-	return princCurv;
+	return princCurv();
 }
 
-template<typename Scalar>
-typename PrincipalCurvature<Scalar>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar>::principalCurvature()
+template<typename Scalar, typename El, bool h>
+typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, h>::principalCurvature()
 {
-	return princCurv;
+	return princCurv();
 }
 
-template<typename Scalar>
+template<typename Scalar, typename El, bool h>
 template<typename Element>
-void PrincipalCurvature<Scalar>::importFrom(const Element& e)
+void PrincipalCurvature<Scalar, El, h>::importFrom(const Element& e)
 {
 	if constexpr (HasPrincipalCurvature<Element>) {
 		if (isPrincipalCurvatureEnabledOn(e)) {
-			princCurv = e.principalCurvature().template cast<Scalar>();
+			princCurv() = e.principalCurvature().template cast<Scalar>();
 		}
+	}
+}
+
+template<typename Scalar, typename El, bool h>
+typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, h>::princCurv()
+{
+	if constexpr (h) {
+		return data.princCurv;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
+	}
+}
+
+template<typename Scalar, typename El, bool h>
+const typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, h>::princCurv() const
+{
+	if constexpr (h) {
+		return data.princCurv;
+	}
+	else {
+		return internal::getVerticalComponentData(this);
 	}
 }
 
