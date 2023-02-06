@@ -64,10 +64,10 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentEdgeIterator           = typename Base::GCIterator;
-	using ConstAdjacentEdgeIterator      = typename Base::ConstGCIterator;
-	using AdjacentEdgeRangeIterator      = typename Base::GCRangeIterator;
-	using ConstAdjacentEdgeRangeIterator = typename Base::ConstGCRangeIterator;
+	using AdjacentEdgeIterator           = typename Base::Iterator;
+	using ConstAdjacentEdgeIterator      = typename Base::ConstIterator;
+	using AdjacentEdgeRangeIterator      = typename Base::RACRangeIterator;
+	using ConstAdjacentEdgeRangeIterator = typename Base::RACConstRangeIterator;
 
 	/* Constructor */
 

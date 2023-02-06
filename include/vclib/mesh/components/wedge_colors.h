@@ -25,24 +25,25 @@
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
 #include "concepts/wedge_colors.h"
-#include "internal/generic_container.h"
+
+#include <vclib/misc/random_access_container.h>
 
 namespace vcl::comp {
 
 template<int N>
-class WedgeColors : protected internal::GenericContainer<vcl::Color, N>
+class WedgeColors : protected RandomAccessContainer<vcl::Color, N>
 {
-	using Base = internal::GenericContainer<vcl::Color, N>;
+	using Base = RandomAccessContainer<vcl::Color, N>;
 
 public:
 	static const int WEDGE_COLOR_NUMBER = Base::CONTAINER_SIZE;
 
 	/* Iterator Types declaration */
 
-	using WedgeColorsIterator           = typename Base::GCIterator;
-	using ConstWedgeColorsIterator      = typename Base::ConstGCIterator;
-	using WedgeColorsRangeIterator      = typename Base::GCRangeIterator;
-	using ConstWedgeColorsRangeIterator = typename Base::ConstGCRangeIterator;
+	using WedgeColorsIterator           = typename Base::Iterator;
+	using ConstWedgeColorsIterator      = typename Base::ConstIterator;
+	using WedgeColorsRangeIterator      = typename Base::RACRangeIterator;
+	using ConstWedgeColorsRangeIterator = typename Base::RACConstRangeIterator;
 
 	WedgeColors();
 

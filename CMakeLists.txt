@@ -177,7 +177,6 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/wedge_tex_coords.h
 	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/element_references.h
-	include/vclib/mesh/components/internal/generic_container.h
 	include/vclib/mesh/components/vertical/vertical_component.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.h
@@ -251,6 +250,7 @@ set(HEADERS
 	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/pair.h
 	include/vclib/misc/parallel.h
+	include/vclib/misc/random_access_container.h
 	include/vclib/misc/string.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
@@ -387,7 +387,6 @@ set(SOURCES
 	include/vclib/mesh/components/wedge_colors.cpp
 	include/vclib/mesh/components/wedge_tex_coords.cpp
 	include/vclib/mesh/components/internal/element_references.cpp
-	include/vclib/mesh/components/internal/generic_container.cpp
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.cpp
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.cpp
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_vertices.cpp
@@ -423,6 +422,7 @@ set(SOURCES
 	include/vclib/misc/file_info.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
 	include/vclib/misc/parallel.cpp
+	include/vclib/misc/random_access_container.cpp
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp

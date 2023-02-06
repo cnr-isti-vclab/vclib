@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H
 #define VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H
 
-#include "generic_container.h"
+#include <vclib/misc/random_access_container.h>
 
 namespace vcl::comp::internal {
 
@@ -37,10 +37,10 @@ namespace vcl::comp::internal {
  * Its major use is for adjacencies.
  */
 template<typename Elem, int N>
-class ElementReferences : protected GenericContainer<Elem*, N>
+class ElementReferences : protected RandomAccessContainer<Elem*, N>
 {
 private:
-	using Base = GenericContainer<Elem*, N>;
+	using Base = RandomAccessContainer<Elem*, N>;
 
 public:
 	/** Constructor **/

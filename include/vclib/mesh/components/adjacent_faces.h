@@ -64,10 +64,10 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentFaceIterator           = typename Base::GCIterator;
-	using ConstAdjacentFaceIterator      = typename Base::ConstGCIterator;
-	using AdjacentFaceRangeIterator      = typename Base::GCRangeIterator;
-	using ConstAdjacentFaceRangeIterator = typename Base::ConstGCRangeIterator;
+	using AdjacentFaceIterator           = typename Base::Iterator;
+	using ConstAdjacentFaceIterator      = typename Base::ConstIterator;
+	using AdjacentFaceRangeIterator      = typename Base::RACRangeIterator;
+	using ConstAdjacentFaceRangeIterator = typename Base::RACConstRangeIterator;
 
 	/* Constructor */
 

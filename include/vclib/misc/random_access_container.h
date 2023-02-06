@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -32,19 +32,14 @@
 #include <vclib/iterators/range_iterator.h>
 #include <vclib/misc/types.h>
 
-namespace vcl::comp::internal {
+namespace vcl {
 
 /**
- * @brief The GenericContainer class is a generic container class of values, that could be static
- * or dynamic depending on the templated size N. This class is meant to be inherited by some other
- * Component that needs to store a number of values of the same type. All its members are protected.
- *
- * This class is mainly used by:
- * - Element references (Vertex references, Face references, Adjacencies in general)
- * - Wedge components (Wedge TexCoords, Wedge Colors, ...)
+ * @brief The RandomAccessContainer class is a generic container class of values, that could be
+ * static or dynamic depending on the templated size N.
  */
 template<typename C, int N>
-class GenericContainer
+class RandomAccessContainer
 {
 private:
 	// if we use the vector, the size of the array will be 0
@@ -56,25 +51,25 @@ private:
 		conditional<(N >= 0), typename std::array<C, ARRAY_SIZE>, typename std::vector<C>>::type;
 
 public:
-	GenericContainer();
+	RandomAccessContainer();
 
 	static const int CONTAINER_SIZE = N;
 
 	/** Iterator Types declaration **/
 
 	// if using array, will be the array iterator, the vector iterator otherwise
-	using GCIterator = typename std::conditional<
+	using Iterator = typename std::conditional<
 		(N >= 0),
 		typename std::array<C, ARRAY_SIZE>::iterator,
 		typename std::vector<C>::iterator>::type;
 
-	using ConstGCIterator = typename std::conditional<
+	using ConstIterator = typename std::conditional<
 		(N >= 0),
 		typename std::array<C, ARRAY_SIZE>::const_iterator,
 		typename std::vector<C>::const_iterator>::type;
 
-	using GCRangeIterator      = RangeIterator<GenericContainer, GCIterator>;
-	using ConstGCRangeIterator = ConstRangeIterator<GenericContainer, ConstGCIterator>;
+	using RACRangeIterator      = RangeIterator<RandomAccessContainer, Iterator>;
+	using RACConstRangeIterator = ConstRangeIterator<RandomAccessContainer, ConstIterator>;
 
 	uint size() const;
 
@@ -88,8 +83,8 @@ public:
 
 	bool contains(const typename MakeConstPointer<C>::type& e) const;
 
-	GCIterator find(const typename MakeConstPointer<C>::type& e);
-	ConstGCIterator find(const typename MakeConstPointer<C>::type& e) const;
+	Iterator find(const typename MakeConstPointer<C>::type& e);
+	ConstIterator find(const typename MakeConstPointer<C>::type& e) const;
 
 	int indexOf(const typename MakeConstPointer<C>::type& e) const;
 
@@ -103,19 +98,20 @@ public:
 
 	/** Iterator Member functions **/
 
-	GCIterator           begin();
-	GCIterator           end();
-	ConstGCIterator      begin() const;
-	ConstGCIterator      end() const;
-	GCRangeIterator      rangeIterator();
-	ConstGCRangeIterator rangeIterator() const;
+	Iterator              begin();
+	Iterator              end();
+	ConstIterator         begin() const;
+	ConstIterator         end() const;
+	// todo: remove these iterators
+	RACRangeIterator      rangeIterator();
+	RACConstRangeIterator rangeIterator() const;
 
 protected:
 	Container container;
 };
 
-} // namespace vcl::comp::internal
+} // namespace vcl
 
-#include "generic_container.cpp"
+#include "random_access_container.cpp"
 
 #endif // VCL_MESH_COMPONENTS_GENERIC_CONTAINER_H
