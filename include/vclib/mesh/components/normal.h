@@ -27,7 +27,7 @@
 #include <vclib/space/point.h>
 
 #include "concepts/normal.h"
-#include "internal/get_vertical_component_data.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -67,8 +67,8 @@ private:
 	P& n();
 	const P& n() const;
 
-	// contians the actual point, if the component is horizontal
-	internal::NormalTData<P, horizontal> data;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 template<typename Scalar, int N, typename ElementType, bool horizontal>

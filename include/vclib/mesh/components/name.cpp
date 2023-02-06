@@ -57,23 +57,13 @@ void Name<El, h>::importFrom(const Element &e)
 template<typename El, bool h>
 std::string &Name<El, h>::n()
 {
-	if constexpr (h) {
-		return data.n;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<typename El, bool h>
 const std::string &Name<El, h>::n() const
 {
-	if constexpr (h) {
-		return data.n;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

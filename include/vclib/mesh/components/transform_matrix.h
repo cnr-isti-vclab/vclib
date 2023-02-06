@@ -27,7 +27,7 @@
 #include <vclib/math/matrix.h>
 
 #include "concepts/transform_matrix.h"
-#include "internal/get_vertical_component_data.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -68,8 +68,8 @@ private:
 	Matrix44<Scalar>& tr();
 	const Matrix44<Scalar>& tr() const;
 
-	// contians the actual scalar, if the component is horizontal
-	internal::TransformMatrixData<Scalar, horizontal> data;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 } // namespace vcl::comp

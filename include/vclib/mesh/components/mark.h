@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_MARK_H
 
 #include "concepts/mark.h"
-#include "internal/get_vertical_component_data.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -75,7 +75,13 @@ struct MarkData<false> { };
 template<typename ElementType, bool horizontal>
 class Mark
 {
+	using ThisType = Mark<ElementType, horizontal>;
 public:
+	using DataValueType = int; // data that the component stores internally (or vertically)
+	using MarkComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	Mark() {}
 
 	int  mark() const;
@@ -98,8 +104,8 @@ private:
 	int& m();
 	const int& m() const;
 
-	// contians the actual mark, if the component is horizontal
-	internal::MarkData<horizontal> data;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 } // namespace vcl::comp

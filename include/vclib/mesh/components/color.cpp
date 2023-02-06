@@ -57,23 +57,13 @@ void Color<El, h>::importFrom(const Element& e)
 template<typename El, bool h>
 vcl::Color& Color<El, h>::c()
 {
-	if constexpr (h) {
-		return data.c;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<typename El, bool h>
 const vcl::Color& Color<El, h>::c() const
 {
-	if constexpr (h) {
-		return data.c;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

@@ -51,23 +51,13 @@ void TexCoord<Scalar, El, h>::importFrom(const Element& e)
 template<typename Scalar, typename El, bool h>
 vcl::TexCoord<Scalar>& TexCoord<Scalar, El, h>::t()
 {
-	if constexpr (h) {
-		return data.t;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<typename Scalar, typename El, bool h>
 const vcl::TexCoord<Scalar>& TexCoord<Scalar, El, h>::t() const
 {
-	if constexpr (h) {
-		return data.t;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

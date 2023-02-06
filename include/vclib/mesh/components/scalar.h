@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_SCALAR_H
 
 #include "concepts/scalar.h"
-#include "internal/get_vertical_component_data.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -65,8 +65,8 @@ private:
 	ScalarType& s();
 	const ScalarType& s() const;
 
-	// contians the actual scalar, if the component is horizontal
-	internal::ScalarData<T, horizontal> data;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 template<typename ElementType, bool horizontal>

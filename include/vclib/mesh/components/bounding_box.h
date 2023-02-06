@@ -27,7 +27,7 @@
 #include <vclib/space/box.h>
 
 #include "concepts/bounding_box.h"
-#include "internal/get_vertical_component_data.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -78,8 +78,8 @@ private:
 	Box<PointType>& box();
 	const Box<PointType>& box() const;
 
-	// contians the actual box, if the component is horizontal
-	internal::BoundingBoxData<PointType, horizontal> data;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 template <typename S, typename ElementType, bool horizontal>

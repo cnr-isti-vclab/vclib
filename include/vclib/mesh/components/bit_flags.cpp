@@ -299,23 +299,13 @@ void BitFlags<El, h>::importFrom(const Element& e)
 template<typename El, bool h>
 int& BitFlags<El, h>::flags()
 {
-	if constexpr (h) {
-		return data.flags;
-	}
-	else {
-		return internal::getVerticalComponentData(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<typename El, bool h>
 const int& BitFlags<El, h>::flags() const
 {
-	if constexpr (h) {
-		return data.flags;
-	}
-	else {
-		return internal::getVerticalComponentData(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

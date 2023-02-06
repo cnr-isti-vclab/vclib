@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_NAME_H
 
 #include "concepts/name.h"
-#include "internal/get_vertical_component_data.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -77,8 +77,8 @@ private:
 	std::string& n();
 	const std::string& n() const;
 
-	// contians the actual flags, if the component is horizontal
-	internal::NameData<horizontal> data;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 } // namespace vcl::comp

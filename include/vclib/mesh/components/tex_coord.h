@@ -27,7 +27,7 @@
 #include <vclib/space/tex_coord.h>
 
 #include "concepts/tex_coord.h"
-#include "internal/get_vertical_component_data.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -69,8 +69,8 @@ private:
 	vcl::TexCoord<Scalar>& t();
 	const vcl::TexCoord<Scalar>& t() const;
 
-	// contians the actual texcoord, if the component is horizontal
-	internal::TexCoordData<Scalar, horizontal> data;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 template<typename ElementType, bool horizontal>

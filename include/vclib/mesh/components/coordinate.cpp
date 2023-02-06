@@ -49,23 +49,13 @@ void CoordT<P, El, h>::importFrom(const Element& v)
 template<PointConcept P, typename El, bool h>
 P& CoordT<P, El, h>::p()
 {
-	if constexpr (h) {
-		return data.p;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<PointConcept P, typename El, bool h>
 const P& CoordT<P, El, h>::p() const
 {
-	if constexpr (h) {
-		return data.p;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

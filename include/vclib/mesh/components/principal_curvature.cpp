@@ -54,24 +54,14 @@ template<typename Scalar, typename El, bool h>
 typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar, El, h>::princCurv()
 {
-	if constexpr (h) {
-		return data.princCurv;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<typename Scalar, typename El, bool h>
 const typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar, El, h>::princCurv() const
 {
-	if constexpr (h) {
-		return data.princCurv;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

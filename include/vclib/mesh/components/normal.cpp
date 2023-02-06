@@ -51,23 +51,13 @@ void NormalT<P, El, h>::importFrom(const Element& e)
 template<PointConcept P, typename El, bool h>
 P& NormalT<P, El, h>::n()
 {
-	if constexpr (h) {
-		return data.n;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<PointConcept P, typename El, bool h>
 const P& NormalT<P, El, h>::n() const
 {
-	if constexpr (h) {
-		return data.n;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

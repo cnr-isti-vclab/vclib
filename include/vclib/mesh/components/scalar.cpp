@@ -51,23 +51,13 @@ void Scalar<T, El, h>::importFrom(const Element& e)
 template<typename T, typename El, bool h>
 T& Scalar<T, El, h>::s()
 {
-	if constexpr (h) {
-		return data.s;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<typename T, typename El, bool h>
 const T& Scalar<T, El, h>::s() const
 {
-	if constexpr (h) {
-		return data.s;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

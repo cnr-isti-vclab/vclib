@@ -175,9 +175,9 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/vertex_references.h
 	include/vclib/mesh/components/concepts/wedge_colors.h
 	include/vclib/mesh/components/concepts/wedge_tex_coords.h
+	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/element_references.h
 	include/vclib/mesh/components/internal/generic_container.h
-	include/vclib/mesh/components/internal/get_vertical_component_data.h
 	include/vclib/mesh/components/vertical/vertical_component.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.h

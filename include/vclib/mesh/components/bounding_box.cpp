@@ -57,23 +57,13 @@ void BoundingBox<P, El, h>::importFrom(const Element& e)
 template<PointConcept P, typename El, bool h>
 Box<P>& BoundingBox<P, El, h>::box()
 {
-	if constexpr (h) {
-		return data.box;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<PointConcept P, typename El, bool h>
 const Box<P>& BoundingBox<P, El, h>::box() const
 {
-	if constexpr (h) {
-		return data.box;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

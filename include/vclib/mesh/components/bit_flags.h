@@ -25,19 +25,9 @@
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
 #include "concepts/bit_flags.h"
-#include "internal/get_vertical_component_data.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
-
-namespace internal {
-
-template<bool>
-struct BitFlagsData { int flags = 0; };
-
-template<>
-struct BitFlagsData<false> { };
-
-} // vcl::comp::internal
 
 /**
  * @brief The BitFlags component class represents a collection of 32 bits that will be part of an
@@ -124,8 +114,8 @@ protected:
 	};
 
 private:
-	// contians the actual flags, if the component is horizontal
-	internal::BitFlagsData<horizontal> data;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 } // namespace vcl::comp

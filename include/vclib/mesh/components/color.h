@@ -27,7 +27,7 @@
 #include <vclib/space/color.h>
 
 #include "concepts/color.h"
-#include "internal/get_vertical_component_data.h"
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -73,8 +73,8 @@ private:
 	vcl::Color& c();
 	const vcl::Color& c() const;
 
-	// contians the actual point, if the component is horizontal
-	internal::ColorData<horizontal> data;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 } // namespace vcl::comp

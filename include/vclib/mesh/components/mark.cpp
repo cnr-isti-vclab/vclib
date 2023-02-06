@@ -75,23 +75,13 @@ void Mark<El, h>::importFrom(const Element& e)
 template<typename El, bool h>
 int& Mark<El, h>::m()
 {
-	if constexpr (h) {
-		return data.m;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 template<typename El, bool h>
 const int& Mark<El, h>::m() const
 {
-	if constexpr (h) {
-		return data.m;
-	}
-	else {
-		return internal::getVerticalComponentData<El>(this);
-	}
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp
