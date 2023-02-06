@@ -26,44 +26,44 @@
 namespace vcl::comp {
 
 template<typename Scalar, int N>
-WedgeTexCoords<Scalar, N>::WedgeTexCoords() : Base()
+WedgeTexCoords<Scalar, N>::WedgeTexCoords()
 {
 }
 
 template<typename Scalar, int N>
 vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N>::wedgeTexCoord(uint i)
 {
-	return Base::at(i);
+	return texCoords.at(i);
 }
 
 template<typename Scalar, int N>
 const vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N>::wedgeTexCoord(uint i) const
 {
-	return Base::at(i);
+	return texCoords.at(i);
 }
 
 template<typename Scalar, int N>
 vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N>::wedgeTexCoordMod(int i)
 {
-	return Base::atMod(i);
+	return texCoords.atMod(i);
 }
 
 template<typename Scalar, int N>
 const vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N>::wedgeTexCoordMod(int i) const
 {
-	return Base::atMod(i);
+	return texCoords.atMod(i);
 }
 
 template<typename Scalar, int N>
 void WedgeTexCoords<Scalar, N>::setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i)
 {
-	Base::set(t, i);
+	texCoords.set(t, i);
 }
 
 template<typename Scalar, int N>
 void WedgeTexCoords<Scalar, N>::setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar> >& list)
 {
-	Base::set(list);
+	texCoords.set(list);
 }
 
 template<typename Scalar, int N>
@@ -82,54 +82,54 @@ template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::WedgeTexCoordsIterator
 WedgeTexCoords<Scalar, N>::wedgeTexCoordBegin()
 {
-	return Base::begin();
+	return texCoords.begin();
 }
 
 template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::WedgeTexCoordsIterator
 WedgeTexCoords<Scalar, N>::wedgeTexCoordEnd()
 {
-	return Base::end();
+	return texCoords.end();
 }
 
 template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::ConstWedgeTexCoordsIterator
 WedgeTexCoords<Scalar, N>::wedgeTexCoordBegin() const
 {
-	return Base::begin();
+	return texCoords.begin();
 }
 
 template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::ConstWedgeTexCoordsIterator
 WedgeTexCoords<Scalar, N>::wedgeTexCoordEnd() const
 {
-	return Base::end();
+	return texCoords.end();
 }
 
 template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::WedgeTexCoordsRangeIterator
 WedgeTexCoords<Scalar, N>::wedgeTexCoords()
 {
-	return Base::rangeIterator();
+	return texCoords.rangeIterator();
 }
 
 template<typename Scalar, int N>
 typename WedgeTexCoords<Scalar, N>::ConstWedgeTexCoordsRangeIterator
 WedgeTexCoords<Scalar, N>::wedgeTexCoords() const
 {
-	return Base::rangeIterator();
+	return texCoords.rangeIterator();
 }
 
 template<typename Scalar, int N>
 void WedgeTexCoords<Scalar, N>::resizeWedgeTexCoords(uint n) requires (N < 0)
 {
-	Base::resize(n);
+	texCoords.resize(n);
 }
 
 template<typename Scalar, int N>
 void WedgeTexCoords<Scalar, N>::pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t) requires (N < 0)
 {
-	Base::pushBack(t);
+	texCoords.pushBack(t);
 }
 
 template<typename Scalar, int N>
@@ -137,19 +137,19 @@ void WedgeTexCoords<Scalar, N>::insertWedgeTexCoord(
 	uint                         i,
 	const vcl::TexCoord<Scalar>& t) requires(N < 0)
 {
-	Base::insert(i, t);
+	texCoords.insert(i, t);
 }
 
 template<typename Scalar, int N>
 void WedgeTexCoords<Scalar, N>::eraseWedgeTexCoord(uint i) requires (N < 0)
 {
-	Base::erase(i);
+	texCoords.erase(i);
 }
 
 template<typename Scalar, int N>
 void WedgeTexCoords<Scalar, N>::clearWedgeTexCoord() requires (N < 0)
 {
-	Base::clear();
+	texCoords.clear();
 }
 
 template<typename Scalar, int N>

@@ -32,8 +32,7 @@
 namespace vcl::comp {
 
 template<typename Scalar, int N>
-class WedgeTexCoords :
-		protected internal::GenericContainer<vcl::TexCoord<Scalar>, N>
+class WedgeTexCoords
 {
 	using Base = internal::GenericContainer<vcl::TexCoord<Scalar>, N>;
 
@@ -99,6 +98,7 @@ private:
 	void importWedgeTexCoordsFrom(const Element& e);
 
 	short texIndex;
+	internal::GenericContainer<vcl::TexCoord<Scalar>, N> texCoords;
 };
 
 } // namespace vcl::comp
