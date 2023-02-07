@@ -1499,19 +1499,19 @@ template<typename El>
 auto& Mesh<Args...>::customComponents() requires ElementConcept<El>
 {
 	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh::EdgeContainer;
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		return EdgeContainer::ccVec;
 	}
 	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh::FaceContainer;
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		return FaceContainer::ccVec;
 	}
 	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
 		return HalfEdgeContainer::ccVec;
 	}
 	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh::VertexContainer;
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
 		return VertexContainer::ccVec;
 	}
 }
@@ -1521,19 +1521,19 @@ template<typename El>
 const auto& Mesh<Args...>::customComponents() const requires ElementConcept<El>
 {
 	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh::EdgeContainer;
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		return EdgeContainer::ccVec;
 	}
 	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh::FaceContainer;
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		return FaceContainer::ccVec;
 	}
 	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
 		return HalfEdgeContainer::ccVec;
 	}
 	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh::VertexContainer;
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
 		return VertexContainer::ccVec;
 	}
 }
