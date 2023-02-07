@@ -25,17 +25,25 @@
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
 #include "concepts/wedge_colors.h"
+#include "internal/component_data.h"
 
 #include <vclib/misc/random_access_container.h>
 
 namespace vcl::comp {
 
-template<int N>
-class WedgeColors : protected RandomAccessContainer<vcl::Color, N>
+template<int N, typename ElementType, bool horizontal>
+class WedgeColors
 {
+	using ThisType = WedgeColors<N, ElementType, horizontal>;
+
 	using Base = RandomAccessContainer<vcl::Color, N>;
 
 public:
+	using DataValueType = RandomAccessContainer<vcl::Color, N>; // data that the component stores internally (or vertically)
+	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	static const int WEDGE_COLOR_NUMBER = Base::CONTAINER_SIZE;
 
 	/* Iterator Types declaration */
@@ -88,6 +96,11 @@ protected:
 private:
 	template<typename Element>
 	void importWedgeColorsFrom(const Element& e);
+
+	RandomAccessContainer<vcl::Color, N>& colors();
+	const RandomAccessContainer<vcl::Color, N>& colors() const;
+
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 } // namespace vcl::comp

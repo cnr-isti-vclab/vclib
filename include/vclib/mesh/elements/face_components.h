@@ -114,9 +114,9 @@ template<typename Vertex>
 using PolygonVertexRefs = comp::VertexReferences<Vertex, -1, void, true>;
 
 /* Port WedgeColors class into face namespace */
-using PolygonWedgeColors = comp::WedgeColors<-1>;
+using PolygonWedgeColors = comp::WedgeColors<-1, void, true>;
 
-using TriangleWedgeColors = comp::WedgeColors<3>;
+using TriangleWedgeColors = comp::WedgeColors<3, void, true>;
 
 /* Port WedgeTexCoords class into face namespace */
 template<typename ScalarType>

@@ -24,6 +24,8 @@
 #ifndef VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H
 #define VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H
 
+#include <vclib/misc/types.h>
+
 namespace vcl::comp {
 
 template<typename T>
@@ -32,9 +34,21 @@ concept HasInitMemberFunction = requires(T o)
 	o.init();
 };
 
-}
+template<typename T>
+concept IsVerticalComponent = requires(T o)
+{
+	{ o.IS_VERTICAL } -> std::same_as<bool>;
+	o.IS_VERTICAL == true;
+};
 
-namespace vcl::comp::internal {
+template<typename T>
+concept IsOptionalComponent = IsVerticalComponent<T> && requires(T o)
+{
+	{ o.IS_OPTIONAL } -> std::same_as<bool>;
+	o.IS_OPTIONAL == true;
+};
+
+namespace internal {
 
 // store the data if horizontal
 template<typename Data, bool horizontal>
@@ -115,5 +129,7 @@ struct ComponentData<Data, false>
 };
 
 } // namespace vcl::comp::internal
+
+} // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H
