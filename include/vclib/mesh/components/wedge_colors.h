@@ -54,8 +54,6 @@ public:
 	using WedgeColorsRangeIterator      = typename Base::RACRangeIterator;
 	using ConstWedgeColorsRangeIterator = typename Base::RACConstRangeIterator;
 
-	WedgeColors();
-
 	/* Member functions */
 
 	vcl::Color&       wedgeColor(uint i);

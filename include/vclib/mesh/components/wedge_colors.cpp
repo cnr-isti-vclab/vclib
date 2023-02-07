@@ -26,11 +26,6 @@
 namespace vcl::comp {
 
 template<int N, typename El, bool h, bool o>
-WedgeColors<N, El, h, o>::WedgeColors() : Base()
-{
-}
-
-template<int N, typename El, bool h, bool o>
 vcl::Color& WedgeColors<N, El, h, o>::wedgeColor(uint i)
 {
 	return colors().at(i);

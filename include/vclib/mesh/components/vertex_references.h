@@ -59,10 +59,6 @@ public:
 	using VertexRangeIterator      = typename Base::RACRangeIterator;
 	using ConstVertexRangeIterator = typename Base::RACConstRangeIterator;
 
-	/* Constructor */
-
-	VertexReferences();
-
 	/* Member functions */
 
 	uint vertexNumber() const;

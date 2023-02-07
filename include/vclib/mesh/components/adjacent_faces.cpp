@@ -26,16 +26,6 @@
 namespace vcl::comp {
 
 /**
- * @brief Creates a Container of Adjacent Faces, stored as Face Pointers.
- * If the size of the container is static, all the values will be set to nullptr.
- * If the size is dynamic, the number of values in the container is zero.
- */
-template<typename Face, int N, typename El, bool h, bool o>
-AdjacentFaces<Face, N, El, h, o>::AdjacentFaces() : Base()
-{
-}
-
-/**
  * @brief Returns the number of adjacent faces of this element.
  * @return The number of adjacent faces of this element.
  */

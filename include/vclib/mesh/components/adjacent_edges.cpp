@@ -26,16 +26,6 @@
 namespace vcl::comp {
 
 /**
- * @brief Creates a Container of Adjacent Edges, stored as Edge Pointers.
- * If the size of the container is static, all the values will be set to nullptr.
- * If the size is dynamic, the number of values in the container is zero.
- */
-template<typename Edge, int N, typename El, bool h, bool o>
-AdjacentEdges<Edge, N, El, h, o>::AdjacentEdges() : Base()
-{
-}
-
-/**
  * @brief Returns the number of adjacent edges of this element.
  * @return The number of adjacent edges of this element.
  */

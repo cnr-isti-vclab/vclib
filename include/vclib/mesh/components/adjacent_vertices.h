@@ -73,10 +73,6 @@ public:
 	using AdjacentVertexRangeIterator      = typename Base::RACRangeIterator;
 	using ConstAdjacentVertexRangeIterator = typename Base::RACConstRangeIterator;
 
-	/* Constructor */
-
-	AdjacentVertices();
-
 	/* Member functions */
 
 	uint adjVerticesNumber() const;

@@ -26,11 +26,6 @@
 namespace vcl::comp {
 
 template<typename Vertex, int N, typename El, bool h, bool o>
-VertexReferences<Vertex, N, El, h, o>::VertexReferences() : Base()
-{
-}
-
-template<typename Vertex, int N, typename El, bool h, bool o>
 uint VertexReferences<Vertex, N, El, h, o>::vertexNumber() const
 {
 	return Base::container(this).size();

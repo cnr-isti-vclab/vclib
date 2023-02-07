@@ -26,16 +26,6 @@
 namespace vcl::comp {
 
 /**
- * @brief Creates a Container of Adjacent Vertices, stored as Vertex Pointers.
- * If the size of the container is static, all the values will be set to nullptr.
- * If the size is dynamic, the number of values in the container is zero.
- */
-template<typename Vertex, typename El, bool h, bool o>
-AdjacentVertices<Vertex, El, h, o>::AdjacentVertices() : Base()
-{
-}
-
-/**
  * @brief Returns the number of adjacent vertices of the element.
  * @return The number of adjacent vertices of the element.
  */
