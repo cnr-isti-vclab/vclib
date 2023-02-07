@@ -24,8 +24,9 @@
 #ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 #define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
+#include "component.h"
+
 #include <string>
-#include <vclib/misc/types.h>
 
 namespace vcl::comp {
 

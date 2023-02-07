@@ -21,46 +21,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_PATHS_H
-#define VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_PATHS_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_COMPONENT_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_COMPONENT_H
 
-#include "component.h"
+#include <vclib/misc/types.h>
 
 namespace vcl::comp {
 
-/**
- * @brief HasTexturePaths concept is satisfied only if a Element or Mesh class provides the member
- * functions specified in this concept. These member functions allows to access to a TexturePaths
- * component of a given element/mesh.
- */
 template<typename T>
-concept HasTexturePaths = requires(
-	T o,
-	const T& co,
-	std::string s)
+concept HasInitMemberFunction = requires(T o)
 {
-	typename T::TexFileNamesIterator;
-	typename T::ConstTexFileNamesIterator;
-	typename T::TexFileNamesRangeIterator;
-	typename T::ConstTexFileNamesRangeIterator;
-
-	{ co.textureNumber() } -> std::same_as<uint>;
-	{ co.texturePath(uint()) } -> std::same_as<const std::string&>;
-	{ o.texturePath(uint()) } -> std::same_as<std::string&>;
-	{ co.meshBasePath() } -> std::same_as<const std::string&>;
-	{ o.meshBasePath() } -> std::same_as<std::string&>;
-
-	{ o.clearTexturePaths() } -> std::same_as<void>;
-	{ o.pushTexturePath(s) } -> std::same_as<void>;
-
-	{ o.texturePathBegin() } -> std::same_as<typename T::TexFileNamesIterator>;
-	{ o.texturePathEnd() } -> std::same_as<typename T::TexFileNamesIterator>;
-	{ co.texturePathBegin() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
-	{ co.texturePathEnd() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
-	{ o.texturePaths() } -> std::same_as<typename T::TexFileNamesRangeIterator>;
-	{ co.texturePaths() } -> std::same_as<typename T::ConstTexFileNamesRangeIterator>;
+	o.init();
 };
 
-} // namespace vcl::comp
+template<typename T>
+concept IsVerticalComponent = requires(T o)
+{
+	{ o.IS_VERTICAL } -> std::same_as<bool>;
+	o.IS_VERTICAL == true;
+};
 
-#endif // VCL_MESH_COMPONENTS_CONCEPTS_TEXTURE_PATHS_H
+template<typename T>
+concept IsOptionalComponent = IsVerticalComponent<T> && requires(T o)
+{
+	{ o.IS_OPTIONAL } -> std::same_as<bool>;
+	o.IS_OPTIONAL == true;
+};
+
+} // namespace vcl
+
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_COMPONENT_H

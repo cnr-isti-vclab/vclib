@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_PRINCIPAL_CURVATURE_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_PRINCIPAL_CURVATURE_H
 
-#include <vclib/misc/types.h>
+#include "component.h"
 
 namespace vcl::comp {
 

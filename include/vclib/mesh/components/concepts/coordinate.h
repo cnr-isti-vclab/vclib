@@ -24,7 +24,8 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_COORDINATE_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_COORDINATE_H
 
-#include <vclib/misc/types.h>
+#include "component.h"
+
 #include <vclib/space/point.h>
 
 namespace vcl::comp {

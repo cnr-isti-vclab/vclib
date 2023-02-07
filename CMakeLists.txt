@@ -159,6 +159,7 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/bit_flags.h
 	include/vclib/mesh/components/concepts/bounding_box.h
 	include/vclib/mesh/components/concepts/color.h
+	include/vclib/mesh/components/concepts/component.h
 	include/vclib/mesh/components/concepts/coordinate.h
 	include/vclib/mesh/components/concepts/custom_components.h
 	include/vclib/mesh/components/concepts/face_half_edge_reference.h

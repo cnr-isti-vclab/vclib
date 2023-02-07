@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_EDGES_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_EDGES_H
 
-#include <vclib/misc/types.h>
+#include "component.h"
 
 namespace vcl::comp {
 
