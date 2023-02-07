@@ -29,15 +29,15 @@
 
 namespace vcl::comp {
 
-template<typename T, typename ElementType = void, bool horizontal = true, bool optional = false>
+template<typename T, typename ElementType = void, bool optional = false>
 class Scalar
 {
-	using ThisType = Scalar<T, ElementType, horizontal, optional>;
+	using ThisType = Scalar<T, ElementType, optional>;
 public:
 	using DataValueType = T;         // data that the component stores internally (or vertically)
 	using ScalarComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	using ScalarType = T;
@@ -57,14 +57,14 @@ private:
 	const ScalarType& s() const;
 
 	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
-template<typename ElementType = void, bool horizontal = true, bool optional = false>
-using Scalarf = Scalar<float, ElementType, horizontal, optional>;
+template<typename ElementType = void, bool optional = false>
+using Scalarf = Scalar<float, ElementType, optional>;
 
-template<typename ElementType = void, bool horizontal = true, bool optional = false>
-using Scalard = Scalar<double, ElementType, horizontal, optional>;
+template<typename ElementType = void, bool optional = false>
+using Scalard = Scalar<double, ElementType, optional>;
 
 } // namespace vcl::comp
 

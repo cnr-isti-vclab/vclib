@@ -27,26 +27,26 @@
 
 namespace vcl::comp {
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::init()
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::init()
 {
 	he() = nullptr;
 }
 
-template<typename HE, typename El, bool h, bool o>
-const HE* VertexHalfEdgeReference<HE, El, h, o>::halfEdge() const
+template<typename HE, typename El, bool o>
+const HE* VertexHalfEdgeReference<HE, El, o>::halfEdge() const
 {
 	return he();
 }
 
-template<typename HE, typename El, bool h, bool o>
-HE*& VertexHalfEdgeReference<HE, El, h, o>::halfEdge()
+template<typename HE, typename El, bool o>
+HE*& VertexHalfEdgeReference<HE, El, o>::halfEdge()
 {
 	return he();
 }
 
-template<typename HE, typename El, bool h, bool o>
-uint VertexHalfEdgeReference<HE, El, h, o>::adjFacesNumber() const
+template<typename HE, typename El, bool o>
+uint VertexHalfEdgeReference<HE, El, o>::adjFacesNumber() const
 {
 	uint cnt = 0;
 	for (const Face* f : adjFaces())
@@ -54,9 +54,9 @@ uint VertexHalfEdgeReference<HE, El, h, o>::adjFacesNumber() const
 	return cnt;
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::Face*&
-VertexHalfEdgeReference<HE, El, h, o>::adjFace(uint i)
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::Face*&
+VertexHalfEdgeReference<HE, El, o>::adjFace(uint i)
 {
 	uint                 j  = 0;
 	AdjacentFaceIterator it = adjFaceBegin();
@@ -67,9 +67,9 @@ VertexHalfEdgeReference<HE, El, h, o>::adjFace(uint i)
 	return *it;
 }
 
-template<typename HE, typename El, bool h, bool o>
-const typename VertexHalfEdgeReference<HE, El, h, o>::Face*
-VertexHalfEdgeReference<HE, El, h, o>::adjFace(uint i) const
+template<typename HE, typename El, bool o>
+const typename VertexHalfEdgeReference<HE, El, o>::Face*
+VertexHalfEdgeReference<HE, El, o>::adjFace(uint i) const
 {
 	uint                 j  = 0;
 	ConstAdjacentFaceIterator it = adjFaceBegin();
@@ -80,9 +80,9 @@ VertexHalfEdgeReference<HE, El, h, o>::adjFace(uint i) const
 	return *it;
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::Face*&
-VertexHalfEdgeReference<HE, El, h, o>::adjFaceMod(int i)
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::Face*&
+VertexHalfEdgeReference<HE, El, o>::adjFaceMod(int i)
 {
 	uint                 j  = 0;
 	AdjacentFaceIterator it =
@@ -97,9 +97,9 @@ VertexHalfEdgeReference<HE, El, h, o>::adjFaceMod(int i)
 	return *it;
 }
 
-template<typename HE, typename El, bool h, bool o>
-const typename VertexHalfEdgeReference<HE, El, h, o>::Face*
-VertexHalfEdgeReference<HE, El, h, o>::adjFaceMod(int i) const
+template<typename HE, typename El, bool o>
+const typename VertexHalfEdgeReference<HE, El, o>::Face*
+VertexHalfEdgeReference<HE, El, o>::adjFaceMod(int i) const
 {
 	uint                 j  = 0;
 	ConstAdjacentFaceIterator it =
@@ -114,14 +114,14 @@ VertexHalfEdgeReference<HE, El, h, o>::adjFaceMod(int i) const
 	return *it;
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::setAdjFace(Face* f, uint i)
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::setAdjFace(Face* f, uint i)
 {
 	adjFace(i) = f;
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::setAdjFaces(const std::vector<Face*> &list)
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::setAdjFaces(const std::vector<Face*> &list)
 {
 	assert(list.size() == adjFacesNumber());
 	uint i = 0;
@@ -130,28 +130,28 @@ void VertexHalfEdgeReference<HE, El, h, o>::setAdjFaces(const std::vector<Face*>
 	}
 }
 
-template<typename HE, typename El, bool h, bool o>
-bool VertexHalfEdgeReference<HE, El, h, o>::containsAdjFace(const Face* f) const
+template<typename HE, typename El, bool o>
+bool VertexHalfEdgeReference<HE, El, o>::containsAdjFace(const Face* f) const
 {
 	return findAdjFace(f) != adjFaceEnd();
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::AdjacentFaceIterator
-VertexHalfEdgeReference<HE, El, h, o>::findAdjFace(const Face* f)
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentFaceIterator
+VertexHalfEdgeReference<HE, El, o>::findAdjFace(const Face* f)
 {
 	return std::find(adjFaceBegin(), adjFaceEnd(), f);
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::ConstAdjacentFaceIterator
-VertexHalfEdgeReference<HE, El, h, o>::findAdjFace(const Face* f) const
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentFaceIterator
+VertexHalfEdgeReference<HE, El, o>::findAdjFace(const Face* f) const
 {
 	return std::find(adjFaceBegin(), adjFaceEnd(), f);
 }
 
-template<typename HE, typename El, bool h, bool o>
-int VertexHalfEdgeReference<HE, El, h, o>::indexOfAdjFace(const Face* f) const
+template<typename HE, typename El, bool o>
+int VertexHalfEdgeReference<HE, El, o>::indexOfAdjFace(const Face* f) const
 {
 	uint i = 0;
 	for (const Face* ff : adjFaces()) {
@@ -162,8 +162,8 @@ int VertexHalfEdgeReference<HE, El, h, o>::indexOfAdjFace(const Face* f) const
 	return -1;
 }
 
-template<typename HE, typename El, bool h, bool o>
-uint VertexHalfEdgeReference<HE, El, h, o>::adjVerticesNumber() const
+template<typename HE, typename El, bool o>
+uint VertexHalfEdgeReference<HE, El, o>::adjVerticesNumber() const
 {
 	uint cnt = 0;
 	for (const Vertex* f : adjVertices())
@@ -171,9 +171,9 @@ uint VertexHalfEdgeReference<HE, El, h, o>::adjVerticesNumber() const
 	return cnt;
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::Vertex*&
-VertexHalfEdgeReference<HE, El, h, o>::adjVertex(uint i)
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::Vertex*&
+VertexHalfEdgeReference<HE, El, o>::adjVertex(uint i)
 {
 	uint                   j  = 0;
 	AdjacentVertexIterator it = adjVertexBegin();
@@ -184,9 +184,9 @@ VertexHalfEdgeReference<HE, El, h, o>::adjVertex(uint i)
 	return *it;
 }
 
-template<typename HE, typename El, bool h, bool o>
-const typename VertexHalfEdgeReference<HE, El, h, o>::Vertex*
-VertexHalfEdgeReference<HE, El, h, o>::adjVertex(uint i) const
+template<typename HE, typename El, bool o>
+const typename VertexHalfEdgeReference<HE, El, o>::Vertex*
+VertexHalfEdgeReference<HE, El, o>::adjVertex(uint i) const
 {
 	uint                        j  = 0;
 	ConstAdjacentVertexIterator it = adjVertexBegin();
@@ -197,9 +197,9 @@ VertexHalfEdgeReference<HE, El, h, o>::adjVertex(uint i) const
 	return *it;
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::Vertex*&
-VertexHalfEdgeReference<HE, El, h, o>::adjVertexMod(int i)
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::Vertex*&
+VertexHalfEdgeReference<HE, El, o>::adjVertexMod(int i)
 {
 	uint                   j  = 0;
 	AdjacentVertexIterator it =
@@ -214,9 +214,9 @@ VertexHalfEdgeReference<HE, El, h, o>::adjVertexMod(int i)
 	return *it;
 }
 
-template<typename HE, typename El, bool h, bool o>
-const typename VertexHalfEdgeReference<HE, El, h, o>::Vertex*
-VertexHalfEdgeReference<HE, El, h, o>::adjVertexMod(int i) const
+template<typename HE, typename El, bool o>
+const typename VertexHalfEdgeReference<HE, El, o>::Vertex*
+VertexHalfEdgeReference<HE, El, o>::adjVertexMod(int i) const
 {
 	uint                 j  = 0;
 	ConstAdjacentVertexIterator it =
@@ -231,14 +231,14 @@ VertexHalfEdgeReference<HE, El, h, o>::adjVertexMod(int i) const
 	return *it;
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::setAdjVertex(Vertex* v, uint i)
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::setAdjVertex(Vertex* v, uint i)
 {
 	adjVertex(i) = v;
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::setAdjVertices(const std::vector<Vertex*> &list)
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::setAdjVertices(const std::vector<Vertex*> &list)
 {
 	assert(list.size() == adjVerticesNumber());
 	uint i = 0;
@@ -247,28 +247,28 @@ void VertexHalfEdgeReference<HE, El, h, o>::setAdjVertices(const std::vector<Ver
 	}
 }
 
-template<typename HE, typename El, bool h, bool o>
-bool VertexHalfEdgeReference<HE, El, h, o>::containsAdjVertex(const Vertex* v) const
+template<typename HE, typename El, bool o>
+bool VertexHalfEdgeReference<HE, El, o>::containsAdjVertex(const Vertex* v) const
 {
 	return findAdjVertex(v) != adjVertexEnd();
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::AdjacentVertexIterator
-VertexHalfEdgeReference<HE, El, h, o>::findAdjVertex(const Vertex* v)
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentVertexIterator
+VertexHalfEdgeReference<HE, El, o>::findAdjVertex(const Vertex* v)
 {
 	return std::find(adjVertexBegin(), adjVertexEnd(), v);
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::ConstAdjacentVertexIterator
-VertexHalfEdgeReference<HE, El, h, o>::findAdjVertex(const Vertex* v) const
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentVertexIterator
+VertexHalfEdgeReference<HE, El, o>::findAdjVertex(const Vertex* v) const
 {
 	return std::find(adjVertexBegin(), adjVertexEnd(), v);
 }
 
-template<typename HE, typename El, bool h, bool o>
-int VertexHalfEdgeReference<HE, El, h, o>::indexOfAdjVertex(const Vertex* v) const
+template<typename HE, typename El, bool o>
+int VertexHalfEdgeReference<HE, El, o>::indexOfAdjVertex(const Vertex* v) const
 {
 	uint i = 0;
 	for (const Vertex* vv : adjVertices()) {
@@ -279,96 +279,96 @@ int VertexHalfEdgeReference<HE, El, h, o>::indexOfAdjVertex(const Vertex* v) con
 	return -1;
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::AdjacentFaceIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjFaceBegin()
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentFaceIterator
+VertexHalfEdgeReference<HE, El, o>::adjFaceBegin()
 {
 	return AdjacentFaceIterator(he());
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::AdjacentFaceIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjFaceEnd()
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentFaceIterator
+VertexHalfEdgeReference<HE, El, o>::adjFaceEnd()
 {
 	return AdjacentFaceIterator(nullptr);
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::ConstAdjacentFaceIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjFaceBegin() const
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentFaceIterator
+VertexHalfEdgeReference<HE, El, o>::adjFaceBegin() const
 {
 	return ConstAdjacentFaceIterator(he());
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::ConstAdjacentFaceIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjFaceEnd() const
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentFaceIterator
+VertexHalfEdgeReference<HE, El, o>::adjFaceEnd() const
 {
 	return ConstAdjacentFaceIterator(nullptr);
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::AdjacentFaceRangeIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjFaces()
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentFaceRangeIterator
+VertexHalfEdgeReference<HE, El, o>::adjFaces()
 {
 	return AdjacentFaceRangeIterator(
 		*this, &VertexHalfEdgeReference::adjFaceBegin, &VertexHalfEdgeReference::adjFaceEnd);
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::ConstAdjacentFaceRangeIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjFaces() const
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentFaceRangeIterator
+VertexHalfEdgeReference<HE, El, o>::adjFaces() const
 {
 	return ConstAdjacentFaceRangeIterator(
 		*this, &VertexHalfEdgeReference::adjFaceBegin, &VertexHalfEdgeReference::adjFaceEnd);
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::AdjacentVertexIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjVertexBegin()
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentVertexIterator
+VertexHalfEdgeReference<HE, El, o>::adjVertexBegin()
 {
 	return AdjacentVertexIterator(he());
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::AdjacentVertexIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjVertexEnd()
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentVertexIterator
+VertexHalfEdgeReference<HE, El, o>::adjVertexEnd()
 {
 	return AdjacentVertexIterator(nullptr);
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::ConstAdjacentVertexIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjVertexBegin() const
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentVertexIterator
+VertexHalfEdgeReference<HE, El, o>::adjVertexBegin() const
 {
 	return ConstAdjacentVertexIterator(he());
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::ConstAdjacentVertexIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjVertexEnd() const
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentVertexIterator
+VertexHalfEdgeReference<HE, El, o>::adjVertexEnd() const
 {
 	return ConstAdjacentVertexIterator(nullptr);
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::AdjacentVertexRangeIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjVertices()
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentVertexRangeIterator
+VertexHalfEdgeReference<HE, El, o>::adjVertices()
 {
 	return AdjacentVertexRangeIterator(
 		*this, &VertexHalfEdgeReference::adjVertexBegin, &VertexHalfEdgeReference::adjVertexEnd);
 }
 
-template<typename HE, typename El, bool h, bool o>
-typename VertexHalfEdgeReference<HE, El, h, o>::ConstAdjacentVertexRangeIterator
-VertexHalfEdgeReference<HE, El, h, o>::adjVertices() const
+template<typename HE, typename El, bool o>
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentVertexRangeIterator
+VertexHalfEdgeReference<HE, El, o>::adjVertices() const
 {
 	return ConstAdjacentVertexRangeIterator(
 		*this, &VertexHalfEdgeReference::adjVertexBegin, &VertexHalfEdgeReference::adjVertexEnd);
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::updateHalfEdgeReferences(
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::updateHalfEdgeReferences(
 	const HE* oldBase,
 	const HE* newBase)
 {
@@ -378,8 +378,8 @@ void VertexHalfEdgeReference<HE, El, h, o>::updateHalfEdgeReferences(
 	}
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::updateHalfEdgeReferencesAfterCompact(
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::updateHalfEdgeReferencesAfterCompact(
 	const HE*         base,
 	const std::vector<int>& newIndices)
 {
@@ -392,39 +392,39 @@ void VertexHalfEdgeReference<HE, El, h, o>::updateHalfEdgeReferencesAfterCompact
 	}
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::updateVertexReferences(const Vertex*, const Vertex*)
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::updateVertexReferences(const Vertex*, const Vertex*)
 {
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::updateVertexReferencesAfterCompact(
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::updateVertexReferencesAfterCompact(
 	const Vertex*,
 	const std::vector<int>&)
 {
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::updateFaceReferences(const Face*, const Face*)
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::updateFaceReferences(const Face*, const Face*)
 {
 }
 
-template<typename HE, typename El, bool h, bool o>
-void VertexHalfEdgeReference<HE, El, h, o>::updateFaceReferencesAfterCompact(
+template<typename HE, typename El, bool o>
+void VertexHalfEdgeReference<HE, El, o>::updateFaceReferencesAfterCompact(
 	const Face*,
 	const std::vector<int>&)
 {
 }
 
-template<typename HE, typename El, bool h, bool o>
+template<typename HE, typename El, bool o>
 template<typename Element>
-void VertexHalfEdgeReference<HE, El, h, o>::importFrom(const Element&)
+void VertexHalfEdgeReference<HE, El, o>::importFrom(const Element&)
 {
 }
 
-template<typename HE, typename El, bool h, bool o>
+template<typename HE, typename El, bool o>
 template<typename OtherVertex, typename OtherHEType>
-void VertexHalfEdgeReference<HE, El, h, o>::importHalfEdgeReferencesFrom(
+void VertexHalfEdgeReference<HE, El, o>::importHalfEdgeReferencesFrom(
 	const OtherVertex& e,
 	HE*          base,
 	const OtherHEType* ebase)
@@ -438,14 +438,14 @@ void VertexHalfEdgeReference<HE, El, h, o>::importHalfEdgeReferencesFrom(
 	}
 }
 
-template<typename HE, typename El, bool h, bool o>
-HE*& VertexHalfEdgeReference<HE, El, h, o>::he()
+template<typename HE, typename El, bool o>
+HE*& VertexHalfEdgeReference<HE, El, o>::he()
 {
 	return data.template get<El>(this);
 }
 
-template<typename HE, typename El, bool h, bool o>
-const HE* VertexHalfEdgeReference<HE, El, h, o>::he() const
+template<typename HE, typename El, bool o>
+const HE* VertexHalfEdgeReference<HE, El, o>::he() const
 {
 	return data.template get<El>(this);
 }

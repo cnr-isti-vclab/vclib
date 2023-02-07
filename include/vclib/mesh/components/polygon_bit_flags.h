@@ -65,11 +65,11 @@ namespace vcl::comp {
  * v.isAnyEdgeOnBorder();
  * @endcode
  */
-template<typename ElementType = void, bool horizontal = true, bool optional = false>
-class PolygonBitFlags : public BitFlags<ElementType, horizontal, optional>
+template<typename ElementType = void, bool optional = false>
+class PolygonBitFlags : public BitFlags<ElementType, optional>
 {
-	using Base = BitFlags<ElementType, horizontal, optional>;
-	using ThisType = PolygonBitFlags<ElementType, horizontal, optional>;
+	using Base = BitFlags<ElementType, optional>;
+	using ThisType = PolygonBitFlags<ElementType, optional>;
 public:
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)

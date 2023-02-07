@@ -32,8 +32,8 @@ namespace vcl::comp {
  * @param[in] bit: The position of the bit that will be returned.
  * @return `true` if the required bit is enabled, false otherwise.
  */
-template<typename El, bool h, bool o>
-bool PolygonBitFlags<El, h, o>::userBitFlag(uint bit) const
+template<typename El, bool o>
+bool PolygonBitFlags<El, o>::userBitFlag(uint bit) const
 {
 	// using FIRST_USER_BIT of this class
 	return Base::userBitFlag(bit, FIRST_USER_BIT);
@@ -45,8 +45,8 @@ bool PolygonBitFlags<El, h, o>::userBitFlag(uint bit) const
  *
  * @param[in] bit: The position of the bit that will be set.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::setUserBit(uint bit)
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::setUserBit(uint bit)
 {
 	// using FIRST_USER_BIT of this class
 	Base::setUserBit(bit, FIRST_USER_BIT);
@@ -58,8 +58,8 @@ void PolygonBitFlags<El, h, o>::setUserBit(uint bit)
  *
  * @param[in] bit: The position of the bit that will be reset.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::unsetUserBit(uint bit)
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::unsetUserBit(uint bit)
 {
 	// using FIRST_USER_BIT of this class
 	Base::unsetUserBit(bit, FIRST_USER_BIT);
@@ -72,8 +72,8 @@ void PolygonBitFlags<El, h, o>::unsetUserBit(uint bit)
  * this parameter about the actual size of the polygon.
  * @return `true` if the ith edge of the Polygon is on border, false otherwise.
  */
-template<typename El, bool h, bool o>
-bool PolygonBitFlags<El, h, o>::isEdgeOnBorder(uint i) const
+template<typename El, bool o>
+bool PolygonBitFlags<El, o>::isEdgeOnBorder(uint i) const
 {
 	assert(i < 12);
 	return Base::flagValue(Base::BORDER << i);
@@ -84,8 +84,8 @@ bool PolygonBitFlags<El, h, o>::isEdgeOnBorder(uint i) const
  *
  * @return `true` if any edge is on border.
  */
-template<typename El, bool h, bool o>
-bool PolygonBitFlags<El, h, o>::isAnyEdgeOnBorder() const
+template<typename El, bool o>
+bool PolygonBitFlags<El, o>::isAnyEdgeOnBorder() const
 {
 	for (uint i = 0; i < 12; ++i)
 		if (isEdgeOnBorder(i))
@@ -93,8 +93,8 @@ bool PolygonBitFlags<El, h, o>::isAnyEdgeOnBorder() const
 	return false;
 }
 
-template<typename El, bool h, bool o>
-bool PolygonBitFlags<El, h, o>::isOnBorder() const
+template<typename El, bool o>
+bool PolygonBitFlags<El, o>::isOnBorder() const
 {
 	return isAnyEdgeOnBorder();
 }
@@ -106,8 +106,8 @@ bool PolygonBitFlags<El, h, o>::isOnBorder() const
  * this parameter about the actual size of the polygon.
  * @return `true` if the ith edge is selected.
  */
-template<typename El, bool h, bool o>
-bool PolygonBitFlags<El, h, o>::isEdgeSelected(uint i) const
+template<typename El, bool o>
+bool PolygonBitFlags<El, o>::isEdgeSelected(uint i) const
 {
 	assert(i < 12);
 	return Base::flagValue(EDGESEL0 << i);
@@ -118,8 +118,8 @@ bool PolygonBitFlags<El, h, o>::isEdgeSelected(uint i) const
  *
  * @return `true` if any edge is selected.
  */
-template<typename El, bool h, bool o>
-bool PolygonBitFlags<El, h, o>::isAnyEdgeSelected() const
+template<typename El, bool o>
+bool PolygonBitFlags<El, o>::isAnyEdgeSelected() const
 {
 	for (uint i = 0; i < 12; ++i)
 		if (isEdgeSelected(i))
@@ -137,8 +137,8 @@ bool PolygonBitFlags<El, h, o>::isAnyEdgeSelected() const
  * this parameter about the actual size of the polygon.
  * @return `true` if the ith edge is faux.
  */
-template<typename El, bool h, bool o>
-bool PolygonBitFlags<El, h, o>::isEdgeFaux(uint i) const
+template<typename El, bool o>
+bool PolygonBitFlags<El, o>::isEdgeFaux(uint i) const
 {
 	assert(i < 3);
 	return Base::flagValue(FAUX0 << i);
@@ -152,8 +152,8 @@ bool PolygonBitFlags<El, h, o>::isEdgeFaux(uint i) const
  *
  * @return `true` if any edge is selected.
  */
-template<typename El, bool h, bool o>
-bool PolygonBitFlags<El, h, o>::isAnyEdgeFaux() const
+template<typename El, bool o>
+bool PolygonBitFlags<El, o>::isAnyEdgeFaux() const
 {
 	return isEdgeFaux(0) || isEdgeFaux(1) || isEdgeFaux(2);
 }
@@ -164,8 +164,8 @@ bool PolygonBitFlags<El, h, o>::isAnyEdgeFaux() const
  * @param[in] i: Index of the edge in the polygon, must be < 12. No sanity check is performed on
  * this parameter about the actual size of the polygon.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::setEdgeOnBorder(uint i)
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::setEdgeOnBorder(uint i)
 {
 	assert(i < 12);
 	Base::setFlag(Base::BORDER << i);
@@ -177,8 +177,8 @@ void PolygonBitFlags<El, h, o>::setEdgeOnBorder(uint i)
  * @param[in] i: Index of the edge in the polygon, must be < 12. No sanity check is performed on
  * this parameter about the actual size of the polygon.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::setEdgeSelected(uint i)
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::setEdgeSelected(uint i)
 {
 	assert(i < 12);
 	Base::setFlag(EDGESEL0 << i);
@@ -193,8 +193,8 @@ void PolygonBitFlags<El, h, o>::setEdgeSelected(uint i)
  * @param[in] i: Index of the edge in the polygon, must be < 3. No sanity check is performed on
  * this parameter about the actual size of the polygon.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::setEdgeFaux(uint i)
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::setEdgeFaux(uint i)
 {
 	assert(i < 3);
 	Base::setFlag(FAUX0 << i);
@@ -206,8 +206,8 @@ void PolygonBitFlags<El, h, o>::setEdgeFaux(uint i)
  * @param[in] i: Index of the edge in the polygon, must be < 12. No sanity check is performed on
  * this parameter about the actual size of the polygon.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::unsetEdgeOnBorder(uint i)
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::unsetEdgeOnBorder(uint i)
 {
 	assert(i < 12);
 	Base::unsetFlag(Base::BORDER << i);
@@ -216,8 +216,8 @@ void PolygonBitFlags<El, h, o>::unsetEdgeOnBorder(uint i)
 /**
  * @brief Marks as non-on-border alle the edges of this polygon.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::unsetAllEdgesOnBorder()
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::unsetAllEdgesOnBorder()
 {
 	for (uint i = 0; i < 12; ++i)
 		unsetEdgeOnBorder(i);
@@ -229,8 +229,8 @@ void PolygonBitFlags<El, h, o>::unsetAllEdgesOnBorder()
  * @param[in] i: Index of the edge in the polygon, must be < 12. No sanity check is performed on
  * this parameter about the actual size of the polygon.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::unsetEdgeSelected(uint i)
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::unsetEdgeSelected(uint i)
 {
 	assert(i < 12);
 	Base::unsetFlag(EDGESEL0 << i);
@@ -239,8 +239,8 @@ void PolygonBitFlags<El, h, o>::unsetEdgeSelected(uint i)
 /**
  * @brief Marks as non-selected alle the edges of this polygon.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::unsetAllEdgesSelected()
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::unsetAllEdgesSelected()
 {
 	for (uint i = 0; i < 12; ++i)
 		unsetEdgeSelected(i);
@@ -255,8 +255,8 @@ void PolygonBitFlags<El, h, o>::unsetAllEdgesSelected()
  * @param[in] i: Index of the edge in the polygon, must be < 3. No sanity check is performed on
  * this parameter about the actual size of the polygon.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::unsetEdgeFaux(uint i)
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::unsetEdgeFaux(uint i)
 {
 	assert(i < 3);
 	Base::unsetFlag(FAUX0 << i);
@@ -268,16 +268,16 @@ void PolygonBitFlags<El, h, o>::unsetEdgeFaux(uint i)
  * @note Faux edges in Polygons make no sense. This function has been left in this Component
  * just for compatibility reasons between Triangle and Polygon meshes.
  */
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::unsetAllEdgesFaux()
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::unsetAllEdgesFaux()
 {
 	unsetEdgeFaux(0);
 	unsetEdgeFaux(1);
 	unsetEdgeFaux(2);
 }
 
-template<typename El, bool h, bool o>
-void PolygonBitFlags<El, h, o>::importFromVCGFlags(int f)
+template<typename El, bool o>
+void PolygonBitFlags<El, o>::importFromVCGFlags(int f)
 {
 	if (f & 0x00000020)
 		Base::setSelected();
@@ -301,8 +301,8 @@ void PolygonBitFlags<El, h, o>::importFromVCGFlags(int f)
 		setEdgeFaux(2);
 }
 
-template<typename El, bool h, bool o>
-int PolygonBitFlags<El, h, o>::exportToVCGFlags() const
+template<typename El, bool o>
+int PolygonBitFlags<El, o>::exportToVCGFlags() const
 {
 	int f = 0;
 	if (Base::isSelected())
@@ -328,9 +328,9 @@ int PolygonBitFlags<El, h, o>::exportToVCGFlags() const
 	return f;
 }
 
-template<typename El, bool h, bool o>
+template<typename El, bool o>
 template<typename Element>
-void PolygonBitFlags<El, h, o>::importFrom(const Element& e)
+void PolygonBitFlags<El, o>::importFrom(const Element& e)
 {
 	if constexpr (HasBitFlags<Element>) {
 		Base::unsetAllFlags();

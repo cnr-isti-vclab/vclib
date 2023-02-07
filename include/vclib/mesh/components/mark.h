@@ -72,15 +72,15 @@ struct MarkData<false> { };
  * m.hasSameMark(m.vertex(5)); // or: m.vertex(5).hasSameMark(m)
  * @endcode
  */
-template<typename ElementType = void, bool horizontal = true, bool optional = false>
+template<typename ElementType = void, bool optional = false>
 class Mark
 {
-	using ThisType = Mark<ElementType, horizontal, optional>;
+	using ThisType = Mark<ElementType, optional>;
 public:
 	using DataValueType = int; // data that the component stores internally (or vertically)
 	using MarkComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	void init();
@@ -106,7 +106,7 @@ private:
 	const int& m() const;
 
 	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

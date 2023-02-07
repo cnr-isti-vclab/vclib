@@ -38,12 +38,13 @@ namespace vcl::comp::internal {
  *
  * Its major use is for adjacencies.
  */
-template<typename Elem, int N, typename ElementType, bool horizontal>
+template<typename Elem, int N, typename ElementType>
 class ElementReferences
 {
 private:
 	using Base = RandomAccessContainer<Elem*, N>;
 
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 public:
 	using DataValueType = RandomAccessContainer<Elem*, N>; // data that the component stores internally (or vertically)
 
@@ -73,7 +74,7 @@ protected:
 	template<typename Comp>
 	const RandomAccessContainer<Elem*, N>& container(const Comp* comp) const;
 
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp::internal

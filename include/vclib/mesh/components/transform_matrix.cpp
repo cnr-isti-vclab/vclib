@@ -25,43 +25,43 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, typename El, bool h, bool o>
-void TransformMatrix<Scalar, El, h, o>::init()
+template<typename Scalar, typename El, bool o>
+void TransformMatrix<Scalar, El, o>::init()
 {
 	tr().setIdentity();
 }
 
-template<typename Scalar, typename El, bool h, bool o>
-const typename TransformMatrix<Scalar, El, h, o>::TransformMatrixType&
-TransformMatrix<Scalar, El, h, o>::transformMatrix() const
+template<typename Scalar, typename El, bool o>
+const typename TransformMatrix<Scalar, El, o>::TransformMatrixType&
+TransformMatrix<Scalar, El, o>::transformMatrix() const
 {
 	return tr();
 }
 
-template<typename Scalar, typename El, bool h, bool o>
-typename TransformMatrix<Scalar, El, h, o>::TransformMatrixType&
-TransformMatrix<Scalar, El, h, o>::transformMatrix()
+template<typename Scalar, typename El, bool o>
+typename TransformMatrix<Scalar, El, o>::TransformMatrixType&
+TransformMatrix<Scalar, El, o>::transformMatrix()
 {
 	return tr();
 }
 
-template<typename Scalar, typename El, bool h, bool o>
+template<typename Scalar, typename El, bool o>
 template<typename Element>
-void TransformMatrix<Scalar, El, h, o>::importFrom(const Element& e)
+void TransformMatrix<Scalar, El, o>::importFrom(const Element& e)
 {
 	if constexpr(HasTransformMatrix<Element>) {
 		tr() = e.transformMatrix().template cast<Scalar>();
 	}
 }
 
-template<typename Scalar, typename El, bool h, bool o>
-Matrix44<Scalar>& TransformMatrix<Scalar, El, h, o>::tr()
+template<typename Scalar, typename El, bool o>
+Matrix44<Scalar>& TransformMatrix<Scalar, El, o>::tr()
 {
 	return data.template get<El>(this);
 }
 
-template<typename Scalar, typename El, bool h, bool o>
-const Matrix44<Scalar>& TransformMatrix<Scalar, El, h, o>::tr() const
+template<typename Scalar, typename El, bool o>
+const Matrix44<Scalar>& TransformMatrix<Scalar, El, o>::tr() const
 {
 	return data.template get<El>(this);
 }

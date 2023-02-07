@@ -33,19 +33,18 @@ template<
 	typename Vertex,
 	int N,
 	typename ElementType = void,
-	bool horizontal      = true,
 	bool optional        = false>
-class VertexReferences : protected internal::ElementReferences<Vertex, N, ElementType, horizontal>
+class VertexReferences : protected internal::ElementReferences<Vertex, N, ElementType>
 {
-	using ThisType = VertexReferences<Vertex, N, ElementType, horizontal, optional>;
+	using ThisType = VertexReferences<Vertex, N, ElementType, optional>;
 
-	using Base = internal::ElementReferences<Vertex, N, ElementType, horizontal>;
+	using Base = internal::ElementReferences<Vertex, N, ElementType>;
 
 public:
 	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
 	using VertexReferencesComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	using VertexType = Vertex;

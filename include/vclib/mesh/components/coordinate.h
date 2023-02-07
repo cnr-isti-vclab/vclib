@@ -31,15 +31,15 @@
 
 namespace vcl::comp {
 
-template<PointConcept P, typename ElementType = void, bool horizontal = true, bool optional = false>
+template<PointConcept P, typename ElementType = void, bool optional = false>
 class CoordT
 {
-	using ThisType = CoordT<P, ElementType, horizontal, optional>;
+	using ThisType = CoordT<P, ElementType, optional>;
 public:
 	using DataValueType = P;         // data that the component stores internally (or vertically)
 	using CoordComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	using CoordType = P;
@@ -57,29 +57,27 @@ private:
 	const P& p() const;
 
 	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 template<
 	typename Scalar,
 	int N,
 	typename ElementType = void,
-	bool horizontal      = true,
 	bool optional        = false>
-using Coordinate = CoordT<Point<Scalar, N>, ElementType, horizontal, optional>;
+using Coordinate = CoordT<Point<Scalar, N>, ElementType, optional>;
 
 template<
 	typename Scalar,
 	typename ElementType = void,
-	bool horizontal      = true,
 	bool optional        = false>
-using Coordinate3 = CoordT<Point3<Scalar>, ElementType, horizontal, optional>;
+using Coordinate3 = CoordT<Point3<Scalar>, ElementType, optional>;
 
-template<typename ElementType = void, bool horizontal = true, bool optional = false>
-using Coordinate3f = Coordinate3<float, ElementType, horizontal, optional>;
+template<typename ElementType = void, bool optional = false>
+using Coordinate3f = Coordinate3<float, ElementType, optional>;
 
-template<typename ElementType = void, bool horizontal = true, bool optional = false>
-using Coordinate3d = Coordinate3<double, ElementType, horizontal, optional>;
+template<typename ElementType = void, bool optional = false>
+using Coordinate3d = Coordinate3<double, ElementType, optional>;
 
 } // namespace vcl::comp
 

@@ -35,32 +35,32 @@ namespace vcl::mesh {
 
 /** Port BoundingBox class into mesh namespace **/
 template<typename P>
-using BoundingBox = comp::BoundingBox<P, void*, true>;
+using BoundingBox = comp::BoundingBox<P>;
 
 template <typename S>
-using BoundingBox3 = comp::BoundingBox3<S, void*, true>;
+using BoundingBox3 = comp::BoundingBox3<S>;
 
-using BoundingBox3f = comp::BoundingBox3f<void*, true>;
-using BoundingBox3d = comp::BoundingBox3d<void*, true>;
+using BoundingBox3f = comp::BoundingBox3f<>;
+using BoundingBox3d = comp::BoundingBox3d<>;
 
 /** Port Color class into mesh namespace **/
-using Color = comp::Color<void*, true>;
+using Color = comp::Color<>;
 
 /** Port Mark class into mesh namespace **/
-using Mark = comp::Mark<void*, true>;
+using Mark = comp::Mark<>;
 
 /** Port Name class into mesh namespace **/
-using Name = comp::Name<void*, true>;
+using Name = comp::Name<>;
 
 /** Port TexturePaths class into mesh namespace **/
-using TexturePaths = comp::TexturePaths<void*, true>;
+using TexturePaths = comp::TexturePaths<>;
 
 /** Port TransformMatrix class into mesh namespace **/
 template <typename Scalar>
-using TransformMatrix = comp::TransformMatrix<Scalar, void*, true>;
+using TransformMatrix = comp::TransformMatrix<Scalar>;
 
-using TransformMatrixf = comp::TransformMatrix<float, void*, true>;
-using TransformMatrixd = comp::TransformMatrix<double, void*, true>;
+using TransformMatrixf = comp::TransformMatrix<float>;
+using TransformMatrixd = comp::TransformMatrix<double>;
 
 } // namespace vcl::mesh
 

@@ -31,10 +31,10 @@
 
 namespace vcl::comp {
 
-template<int N, typename ElementType = void, bool horizontal = true, bool optional = false>
+template<int N, typename ElementType = void, bool optional = false>
 class WedgeColors
 {
-	using ThisType = WedgeColors<N, ElementType, horizontal, optional>;
+	using ThisType = WedgeColors<N, ElementType, optional>;
 
 	using Base = RandomAccessContainer<vcl::Color, N>;
 
@@ -42,7 +42,7 @@ public:
 	using DataValueType = RandomAccessContainer<vcl::Color, N>; // data that the component stores internally (or vertically)
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	static const int WEDGE_COLOR_NUMBER = Base::CONTAINER_SIZE;
@@ -99,7 +99,7 @@ private:
 	RandomAccessContainer<vcl::Color, N>& colors();
 	const RandomAccessContainer<vcl::Color, N>& colors() const;
 
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

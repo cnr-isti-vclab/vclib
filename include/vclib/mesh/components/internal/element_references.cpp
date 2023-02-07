@@ -32,8 +32,8 @@ namespace vcl::comp::internal {
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
-template<typename Elem, int N, typename ElementType, bool horizontal>
-void ElementReferences<Elem, N, ElementType, horizontal>::init()
+template<typename Elem, int N, typename ElementType>
+void ElementReferences<Elem, N, ElementType>::init()
 {
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
@@ -61,9 +61,9 @@ void ElementReferences<Elem, N, ElementType, horizontal>::init()
  * w.r.t. the first element of the Container, and update the the pointer accordingly using the
  * newBase.
  */
-template<typename Elem, int N, typename El, bool h>
+template<typename Elem, int N, typename El>
 template<typename Comp>
-void ElementReferences<Elem, N, El, h>::updateElementReferences(
+void ElementReferences<Elem, N, El>::updateElementReferences(
 	const Elem* oldBase,
 	const Elem* newBase,
 	Comp* comp)
@@ -76,9 +76,9 @@ void ElementReferences<Elem, N, El, h>::updateElementReferences(
 	}
 }
 
-template<typename Elem, int N, typename El, bool h>
+template<typename Elem, int N, typename El>
 template<typename Comp>
-void ElementReferences<Elem, N, El, h>::updateElementReferencesAfterCompact(
+void ElementReferences<Elem, N, El>::updateElementReferencesAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices,
 	Comp* comp)
@@ -96,16 +96,16 @@ void ElementReferences<Elem, N, El, h>::updateElementReferencesAfterCompact(
 	}
 }
 
-template<typename Elem, int N, typename El, bool h>
+template<typename Elem, int N, typename El>
 template<typename Comp>
-RandomAccessContainer<Elem*, N>& ElementReferences<Elem, N, El, h>::container(Comp* comp)
+RandomAccessContainer<Elem*, N>& ElementReferences<Elem, N, El>::container(Comp* comp)
 {
 	return data.template get<El>(comp);
 }
 
-template<typename Elem, int N, typename El, bool h>
+template<typename Elem, int N, typename El>
 template<typename Comp>
-const RandomAccessContainer<Elem*, N>& ElementReferences<Elem, N, El, h>::container(const Comp* comp) const
+const RandomAccessContainer<Elem*, N>& ElementReferences<Elem, N, El>::container(const Comp* comp) const
 {
 	return data.template get<El>(comp);
 }

@@ -36,11 +36,10 @@ template<
 	typename Scalar,
 	int N,
 	typename ElementType = void,
-	bool horizontal      = true,
 	bool optional        = false>
 class WedgeTexCoords
 {
-	using ThisType = WedgeTexCoords<Scalar, N, ElementType, horizontal, optional>;
+	using ThisType = WedgeTexCoords<Scalar, N, ElementType, optional>;
 
 	struct WTCData {
 		RandomAccessContainer<vcl::TexCoord<Scalar>, N> texCoords;
@@ -52,7 +51,7 @@ public:
 	using DataValueType = WTCData; // data that the component stores internally (or vertically)
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	static const int WEDGE_TEX_COORD_NUMBER = Base::CONTAINER_SIZE;
@@ -120,7 +119,7 @@ private:
 	RandomAccessContainer<vcl::TexCoord<Scalar>, N>& texCoords();
 	const RandomAccessContainer<vcl::TexCoord<Scalar>, N>& texCoords() const;
 
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

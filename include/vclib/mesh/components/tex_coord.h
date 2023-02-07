@@ -34,18 +34,17 @@ namespace vcl::comp {
 template<
 	typename Scalar,
 	typename ElementType = void,
-	bool horizontal      = true,
 	bool optional        = false>
 class TexCoord
 {
-	using ThisType = TexCoord<Scalar, ElementType, horizontal, optional>;
+	using ThisType = TexCoord<Scalar, ElementType, optional>;
 public:
 	// data that the component stores internally (or vertically)
 	using DataValueType = vcl::TexCoord<Scalar>;
 	// expose the type to allow access to this component
 	using TexCoordComponent = ThisType;
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	using TexCoordType = vcl::TexCoord<Scalar>;
@@ -65,14 +64,14 @@ private:
 	const vcl::TexCoord<Scalar>& t() const;
 
 	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 template<typename ElementType = void, bool horizontal = true, bool optional = false>
-using TexCoordf = TexCoord<float, ElementType, horizontal, optional>;
+using TexCoordf = TexCoord<float, ElementType, optional>;
 
 template<typename ElementType = void, bool horizontal = true, bool optional = false>
-using TexCoordd = TexCoord<double, ElementType, horizontal, optional>;
+using TexCoordd = TexCoord<double, ElementType, optional>;
 
 } // namespace vcl::comp
 

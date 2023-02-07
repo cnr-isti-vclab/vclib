@@ -38,11 +38,10 @@ namespace vcl::comp {
 template<
 	typename HalfEdge,
 	typename ElementType = void,
-	bool horizontal      = true,
 	bool optional        = false>
 class VertexHalfEdgeReference
 {
-	using ThisType = VertexHalfEdgeReference<HalfEdge, ElementType, horizontal, optional>;
+	using ThisType = VertexHalfEdgeReference<HalfEdge, ElementType, optional>;
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
@@ -51,7 +50,7 @@ public:
 	using DataValueType = HalfEdge*; // data that the component stores internally (or vertically)
 	using VertexHalfEdgeReferencesComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	using HalfEdgeType = HalfEdge;
@@ -159,7 +158,7 @@ private:
 	HalfEdge*& he();
 	const HalfEdge* he() const;
 
-	internal::ComponentData<HalfEdge*, true> data;
+	internal::ComponentData<HalfEdge*, IS_VERTICAL> data;
 };
 
 } // vcl::comp

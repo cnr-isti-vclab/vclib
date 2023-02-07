@@ -49,19 +49,18 @@ namespace vcl::comp {
 template<
 	typename Vertex,
 	typename ElementType = void,
-	bool horizontal      = true,
 	bool optional        = false>
-class AdjacentVertices : protected internal::ElementReferences<Vertex, -1, ElementType, horizontal>
+class AdjacentVertices : protected internal::ElementReferences<Vertex, -1, ElementType>
 {
-	using ThisType = AdjacentVertices<Vertex, ElementType, horizontal, optional>;
+	using ThisType = AdjacentVertices<Vertex, ElementType, optional>;
 
-	using Base = internal::ElementReferences<Vertex, -1, ElementType, horizontal>;
+	using Base = internal::ElementReferences<Vertex, -1, ElementType>;
 
 public:
 	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
 	using AdjacentVerticesComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	using AdjacentVertexType = Vertex;

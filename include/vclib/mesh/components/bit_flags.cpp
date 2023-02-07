@@ -25,8 +25,8 @@
 
 namespace vcl::comp {
 
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::init()
+template<typename El, bool o>
+void BitFlags<El, o>::init()
 {
 	flags() = 0;
 }
@@ -36,8 +36,8 @@ void BitFlags<El, h, o>::init()
  *
  * @return `true` if this Element is deleted, `false` otherwise.
  */
-template<typename El, bool h, bool o>
-bool BitFlags<El, h, o>::isDeleted() const
+template<typename El, bool o>
+bool BitFlags<El, o>::isDeleted() const
 {
 	return flagValue(DELETED);
 }
@@ -47,8 +47,8 @@ bool BitFlags<El, h, o>::isDeleted() const
  *
  * @return `true` if this Element is seleced, `false` otherwise.
  */
-template<typename El, bool h, bool o>
-bool BitFlags<El, h, o>::isSelected() const
+template<typename El, bool o>
+bool BitFlags<El, o>::isSelected() const
 {
 	return flagValue(SELECTED);
 }
@@ -58,8 +58,8 @@ bool BitFlags<El, h, o>::isSelected() const
  *
  * @return `true` if this Element is marked to be on border, `false` otherwise.
  */
-template<typename El, bool h, bool o>
-bool BitFlags<El, h, o>::isOnBorder() const
+template<typename El, bool o>
+bool BitFlags<El, o>::isOnBorder() const
 {
 	return flagValue(BORDER);
 }
@@ -71,8 +71,8 @@ bool BitFlags<El, h, o>::isOnBorder() const
  * @param[in] bit: the position of the bit that will be returned.
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
-template<typename El, bool h, bool o>
-bool BitFlags<El, h, o>::userBitFlag(uint bit) const
+template<typename El, bool o>
+bool BitFlags<El, o>::userBitFlag(uint bit) const
 {
 	return userBitFlag(bit, FIRST_USER_BIT);
 }
@@ -80,8 +80,8 @@ bool BitFlags<El, h, o>::userBitFlag(uint bit) const
 /**
  * @brief Marks as selected this Element.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::setSelected()
+template<typename El, bool o>
+void BitFlags<El, o>::setSelected()
 {
 	setFlag(SELECTED);
 }
@@ -89,8 +89,8 @@ void BitFlags<El, h, o>::setSelected()
 /**
  * @brief Marks as on-border this Element.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::setOnBorder()
+template<typename El, bool o>
+void BitFlags<El, o>::setOnBorder()
 {
 	setFlag(BORDER);
 }
@@ -101,8 +101,8 @@ void BitFlags<El, h, o>::setOnBorder()
  *
  * @param[in] bit: the position of the bit that will be set.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::setUserBit(uint bit)
+template<typename El, bool o>
+void BitFlags<El, o>::setUserBit(uint bit)
 {
 	setUserBit(bit, FIRST_USER_BIT);
 }
@@ -111,8 +111,8 @@ void BitFlags<El, h, o>::setUserBit(uint bit)
  * @brief Unsets all the flags of this Element and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::unsetAllFlags()
+template<typename El, bool o>
+void BitFlags<El, o>::unsetAllFlags()
 {
 	bool isD = isDeleted();
 	flags()  = 0;
@@ -123,8 +123,8 @@ void BitFlags<El, h, o>::unsetAllFlags()
 /**
  * @brief Marks as non-selected this Element.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::unsetSelected()
+template<typename El, bool o>
+void BitFlags<El, o>::unsetSelected()
 {
 	unsetFlag(SELECTED);
 }
@@ -132,8 +132,8 @@ void BitFlags<El, h, o>::unsetSelected()
 /**
  * @brief Marks as non-on-border this Element.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::unsetOnBorder()
+template<typename El, bool o>
+void BitFlags<El, o>::unsetOnBorder()
 {
 	unsetFlag(BORDER);
 }
@@ -144,14 +144,14 @@ void BitFlags<El, h, o>::unsetOnBorder()
  *
  * @param[in] bit: the position of the bit that will be reset.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::unsetUserBit(uint bit)
+template<typename El, bool o>
+void BitFlags<El, o>::unsetUserBit(uint bit)
 {
 	unsetUserBit(bit, FIRST_USER_BIT);
 }
 
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::importFromVCGFlags(int f)
+template<typename El, bool o>
+void BitFlags<El, o>::importFromVCGFlags(int f)
 {
 	unsetAllFlags();
 	if (f & 0x0020)
@@ -160,8 +160,8 @@ void BitFlags<El, h, o>::importFromVCGFlags(int f)
 		setOnBorder();
 }
 
-template<typename El, bool h, bool o>
-int BitFlags<El, h, o>::exportToVCGFlags() const
+template<typename El, bool o>
+int BitFlags<El, o>::exportToVCGFlags() const
 {
 	int f = 0;
 	if (isSelected())
@@ -174,8 +174,8 @@ int BitFlags<El, h, o>::exportToVCGFlags() const
 /**
  * @brief Marks as deleted this Element.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::setDeleted()
+template<typename El, bool o>
+void BitFlags<El, o>::setDeleted()
 {
 	setFlag(DELETED);
 }
@@ -183,8 +183,8 @@ void BitFlags<El, h, o>::setDeleted()
 /**
  * @brief Marks as non-deleted this Element.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::unsetDeleted()
+template<typename El, bool o>
+void BitFlags<El, o>::unsetDeleted()
 {
 	unsetFlag(DELETED);
 }
@@ -195,8 +195,8 @@ void BitFlags<El, h, o>::unsetDeleted()
  * @param flag: value of the flag to return.
  * @return whether the flag is `true` or `false`.
  */
-template<typename El, bool h, bool o>
-bool BitFlags<El, h, o>::flagValue(uint flag) const
+template<typename El, bool o>
+bool BitFlags<El, o>::flagValue(uint flag) const
 {
 	return flags() & flag;
 }
@@ -206,8 +206,8 @@ bool BitFlags<El, h, o>::flagValue(uint flag) const
  *
  * @param[in] flag: value of the flag to set.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::setFlag(uint flag)
+template<typename El, bool o>
+void BitFlags<El, o>::setFlag(uint flag)
 {
 	flags() |= flag;
 }
@@ -217,8 +217,8 @@ void BitFlags<El, h, o>::setFlag(uint flag)
  *
  * @param[in] flag: value of the flag to reset.
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::unsetFlag(uint flag)
+template<typename El, bool o>
+void BitFlags<El, o>::unsetFlag(uint flag)
 {
 	flags() &= ~flag;
 }
@@ -236,8 +236,8 @@ void BitFlags<El, h, o>::unsetFlag(uint flag)
  * @param[in] firstBit: first user bit available (must be < than bit)
  * @return the value of the bit
  */
-template<typename El, bool h, bool o>
-bool BitFlags<El, h, o>::userBitFlag(uint bit, uint firstBit) const
+template<typename El, bool o>
+bool BitFlags<El, o>::userBitFlag(uint bit, uint firstBit) const
 {
 	assert(bit < 32 - firstBit);
 	uint flag = 1 << (firstBit + bit);
@@ -256,8 +256,8 @@ bool BitFlags<El, h, o>::userBitFlag(uint bit, uint firstBit) const
  * @param[in] bit: position of the bit
  * @param[in] firstBit: first user bit available (must be < than bit)
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::setUserBit(uint bit, uint firstBit)
+template<typename El, bool o>
+void BitFlags<El, o>::setUserBit(uint bit, uint firstBit)
 {
 	assert(bit < 32 - firstBit);
 	uint flag = 1 << (firstBit + bit);
@@ -276,17 +276,17 @@ void BitFlags<El, h, o>::setUserBit(uint bit, uint firstBit)
  * @param[in] bit: position of the bit
  * @param[in] firstBit: first user bit available (must be < than bit)
  */
-template<typename El, bool h, bool o>
-void BitFlags<El, h, o>::unsetUserBit(uint bit, uint firstBit)
+template<typename El, bool o>
+void BitFlags<El, o>::unsetUserBit(uint bit, uint firstBit)
 {
 	assert(bit < 32 - firstBit);
 	uint flag = 1 << (firstBit + bit);
 	unsetFlag(flag);
 }
 
-template<typename El, bool h, bool o>
+template<typename El, bool o>
 template<typename Element>
-void BitFlags<El, h, o>::importFrom(const Element& e)
+void BitFlags<El, o>::importFrom(const Element& e)
 {
 	if constexpr (HasBitFlags<Element>) {
 		unsetAllFlags();
@@ -302,14 +302,14 @@ void BitFlags<El, h, o>::importFrom(const Element& e)
 	}
 }
 
-template<typename El, bool h, bool o>
-int& BitFlags<El, h, o>::flags()
+template<typename El, bool o>
+int& BitFlags<El, o>::flags()
 {
 	return data.template get<El>(this);
 }
 
-template<typename El, bool h, bool o>
-const int& BitFlags<El, h, o>::flags() const
+template<typename El, bool o>
+const int& BitFlags<El, o>::flags() const
 {
 	return data.template get<El>(this);
 }

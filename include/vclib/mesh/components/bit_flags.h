@@ -58,15 +58,15 @@ namespace vcl::comp {
  * v.isDeleted();
  * @endcode
  */
-template<typename ElementType = void, bool horizontal = true, bool optional = false>
+template<typename ElementType = void, bool optional = false>
 class BitFlags
 {
-	using ThisType = BitFlags<ElementType, horizontal, optional>;
+	using ThisType = BitFlags<ElementType, optional>;
 public:
 	using DataValueType = int; // data that the component stores internally (or vertically)
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	void init();
@@ -118,7 +118,7 @@ protected:
 
 private:
 	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

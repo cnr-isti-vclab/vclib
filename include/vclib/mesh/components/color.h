@@ -47,15 +47,15 @@ struct ColorData<false> { };
  *
  * Allows to get and set an object of type Color.
  */
-template<typename ElementType = void, bool horizontal = true, bool optional = false>
+template<typename ElementType = void, bool optional = false>
 class Color
 {
-	using ThisType = Color<ElementType, horizontal, optional>;
+	using ThisType = Color<ElementType, optional>;
 public:
 	using DataValueType = vcl::Color; // data that the component stores internally (or vertically)
 	using ColorComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	using ColorType = vcl::Color;
@@ -75,7 +75,7 @@ private:
 	const vcl::Color& c() const;
 
 	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

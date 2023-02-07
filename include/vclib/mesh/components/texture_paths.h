@@ -34,10 +34,10 @@
 
 namespace vcl::comp {
 
-template<typename ElementType = void, bool horizontal = true, bool optional = false>
+template<typename ElementType = void, bool optional = false>
 class TexturePaths
 {
-	using ThisType = TexturePaths<ElementType, horizontal, optional>;
+	using ThisType = TexturePaths<ElementType, optional>;
 
 	struct TPData {
 		std::vector<std::string> texPaths;
@@ -47,7 +47,7 @@ public:
 	using DataValueType = TPData; // data that the component stores internally (or vertically)
 	using TexturePathsComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	// iterators
@@ -87,7 +87,7 @@ private:
 	std::string& meshPath();
 	const std::string& meshPath() const;
 
-	internal::ComponentData<TPData, true> data;
+	internal::ComponentData<TPData, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

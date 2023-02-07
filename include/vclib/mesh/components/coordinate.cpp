@@ -25,35 +25,35 @@
 
 namespace vcl::comp {
 
-template<PointConcept P, typename El, bool h, bool o>
-const P& CoordT<P, El, h, o>::coord() const
+template<PointConcept P, typename El, bool o>
+const P& CoordT<P, El, o>::coord() const
 {
 	return p();
 }
 
-template<PointConcept P, typename El, bool h, bool o>
-P& CoordT<P, El, h, o>::coord()
+template<PointConcept P, typename El, bool o>
+P& CoordT<P, El, o>::coord()
 {
 	return p();
 }
 
-template<PointConcept P, typename El, bool h, bool o>
+template<PointConcept P, typename El, bool o>
 template<typename Element>
-void CoordT<P, El, h, o>::importFrom(const Element& v)
+void CoordT<P, El, o>::importFrom(const Element& v)
 {
 	if constexpr (HasCoordinate<Element>) {
 		p() = v.coord().template cast<typename CoordType::ScalarType>();
 	}
 }
 
-template<PointConcept P, typename El, bool h, bool o>
-P& CoordT<P, El, h, o>::p()
+template<PointConcept P, typename El, bool o>
+P& CoordT<P, El, o>::p()
 {
 	return data.template get<El>(this);
 }
 
-template<PointConcept P, typename El, bool h, bool o>
-const P& CoordT<P, El, h, o>::p() const
+template<PointConcept P, typename El, bool o>
+const P& CoordT<P, El, o>::p() const
 {
 	return data.template get<El>(this);
 }

@@ -28,8 +28,8 @@ namespace vcl::comp {
 /**
  * @brief Returns const reference of the color of the element.
  */
-template<typename El, bool h, bool o>
-const vcl::Color& Color<El, h, o>::color() const
+template<typename El, bool o>
+const vcl::Color& Color<El, o>::color() const
 {
 	return c();
 }
@@ -37,15 +37,15 @@ const vcl::Color& Color<El, h, o>::color() const
 /**
  * @brief Returns a reference pf the color of the element.
  */
-template<typename El, bool h, bool o>
-vcl::Color& Color<El, h, o>::color()
+template<typename El, bool o>
+vcl::Color& Color<El, o>::color()
 {
 	return c();
 }
 
-template<typename El, bool h, bool o>
+template<typename El, bool o>
 template<typename Element>
-void Color<El, h, o>::importFrom(const Element& e)
+void Color<El, o>::importFrom(const Element& e)
 {
 	if constexpr (HasColor<Element>) {
 		if (isColorEnabledOn(e)) {
@@ -54,14 +54,14 @@ void Color<El, h, o>::importFrom(const Element& e)
 	}
 }
 
-template<typename El, bool h, bool o>
-vcl::Color& Color<El, h, o>::c()
+template<typename El, bool o>
+vcl::Color& Color<El, o>::c()
 {
 	return data.template get<El>(this);
 }
 
-template<typename El, bool h, bool o>
-const vcl::Color& Color<El, h, o>::c() const
+template<typename El, bool o>
+const vcl::Color& Color<El, o>::c() const
 {
 	return data.template get<El>(this);
 }

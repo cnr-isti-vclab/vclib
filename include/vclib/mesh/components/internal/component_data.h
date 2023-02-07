@@ -29,7 +29,7 @@
 namespace vcl::comp::internal {
 
 // store the data if horizontal
-template<typename Data, bool horizontal>
+template<typename Data, bool vertical>
 struct ComponentData
 {
 	Data data;
@@ -49,7 +49,7 @@ struct ComponentData
 
 // do not store data if vertical; it will be fetched by vertical vectors in the element container
 template<typename Data>
-struct ComponentData<Data, false>
+struct ComponentData<Data, true>
 {
 	/*
 	 * These member functions allow to access to the data of a vertical component.

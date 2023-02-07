@@ -54,19 +54,18 @@ template<
 	typename Face,
 	int N,
 	typename ElementType = void,
-	bool horizontal      = true,
 	bool optional        = false>
-class AdjacentFaces : protected internal::ElementReferences<Face, N, ElementType, horizontal>
+class AdjacentFaces : protected internal::ElementReferences<Face, N, ElementType>
 {
-	using ThisType = AdjacentFaces<Face, N, ElementType, horizontal, optional>;
+	using ThisType = AdjacentFaces<Face, N, ElementType, optional>;
 
-	using Base = internal::ElementReferences<Face, N, ElementType, horizontal>;
+	using Base = internal::ElementReferences<Face, N, ElementType>;
 
 public:
 	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
 	using AdjacentFacesComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	/// Static size of the container. If the container is dynamic, this value will be negative and

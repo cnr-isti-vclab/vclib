@@ -48,16 +48,15 @@ namespace vcl::comp {
 template<
 	PointConcept PointType,
 	typename ElementType = void,
-	bool horizontal      = true,
 	bool optional        = false>
 class BoundingBox
 {
-	using ThisType = BoundingBox<PointType, ElementType, horizontal, optional>;
+	using ThisType = BoundingBox<PointType, ElementType, optional>;
 public:
 	using DataValueType = Box<PointType>; // data that the component stores internally (or vertically)
 	using BoundingBoxComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	using BoundingBoxType = Box<PointType>;
@@ -74,17 +73,17 @@ private:
 	const Box<PointType>& box() const;
 
 	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, horizontal> data;
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
-template <typename S, typename ElementType = void, bool horizontal = true, bool optional= false>
-using BoundingBox3  = BoundingBox<Point3<S>, ElementType, horizontal, optional>;
+template <typename S, typename ElementType = void, bool optional= false>
+using BoundingBox3  = BoundingBox<Point3<S>, ElementType, optional>;
 
-template<typename ElementType = void, bool horizontal = true, bool optional= false>
-using BoundingBox3f = BoundingBox<Point3f, ElementType, horizontal, optional>;
+template<typename ElementType = void, bool optional= false>
+using BoundingBox3f = BoundingBox<Point3f, ElementType, optional>;
 
-template<typename ElementType = void, bool horizontal = true, bool optional= false>
-using BoundingBox3d = BoundingBox<Point3d, ElementType, horizontal, optional>;
+template<typename ElementType = void, bool optional= false>
+using BoundingBox3d = BoundingBox<Point3d, ElementType, optional>;
 
 } // namespace vcl::comp
 

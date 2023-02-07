@@ -29,8 +29,8 @@ namespace vcl::comp {
  * @brief Returns the bounding box of this object.
  * @return The bounding box of this object.
  */
-template<PointConcept P, typename El, bool h, bool o>
-const Box<P>& BoundingBox<P, El, h, o>::boundingBox() const
+template<PointConcept P, typename El, bool o>
+const Box<P>& BoundingBox<P, El, o>::boundingBox() const
 {
 	return box();
 }
@@ -39,29 +39,29 @@ const Box<P>& BoundingBox<P, El, h, o>::boundingBox() const
  * @brief Returns the bounding box of this object.
  * @return The bounding box of this object.
  */
-template<PointConcept P, typename El, bool h, bool o>
-Box<P>& BoundingBox<P, El, h, o>::boundingBox()
+template<PointConcept P, typename El, bool o>
+Box<P>& BoundingBox<P, El, o>::boundingBox()
 {
 	return box();
 }
 
-template<PointConcept P, typename El, bool h, bool o>
+template<PointConcept P, typename El, bool o>
 template<typename Element>
-void BoundingBox<P, El, h, o>::importFrom(const Element& e)
+void BoundingBox<P, El, o>::importFrom(const Element& e)
 {
 	if constexpr(HasBoundingBox<Element>) {
 		box() = e.boundingBox();
 	}
 }
 
-template<PointConcept P, typename El, bool h, bool o>
-Box<P>& BoundingBox<P, El, h, o>::box()
+template<PointConcept P, typename El, bool o>
+Box<P>& BoundingBox<P, El, o>::box()
 {
 	return data.template get<El>(this);
 }
 
-template<PointConcept P, typename El, bool h, bool o>
-const Box<P>& BoundingBox<P, El, h, o>::box() const
+template<PointConcept P, typename El, bool o>
+const Box<P>& BoundingBox<P, El, o>::box() const
 {
 	return data.template get<El>(this);
 }
