@@ -51,6 +51,8 @@ class Edge : public edge::ParentMeshPointer<MeshType>, public Args...
 public:
 	Edge();
 
+	uint index() const;
+
 	template<typename Element>
 	void importFrom(const Element& e);
 

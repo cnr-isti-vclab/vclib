@@ -32,6 +32,13 @@ HalfEdge<MeshType, Args...>::HalfEdge()
 }
 
 template<typename MeshType, typename... Args>
+uint HalfEdge<MeshType, Args...>::index() const
+{
+	assert(hedge::ParentMeshPointer<MeshType>::parentMesh());
+	return hedge::ParentMeshPointer<MeshType>::parentMesh()->index(this);
+}
+
+template<typename MeshType, typename... Args>
 template<typename Element>
 void HalfEdge<MeshType, Args...>::importFrom(const Element& e)
 {

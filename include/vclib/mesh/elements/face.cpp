@@ -51,6 +51,13 @@ Face<MeshType, Args...>::Face(const std::vector<VertexType*>& list) // todo add 
 	setVertices(list);
 }
 
+template<typename MeshType, typename... Args>
+uint Face<MeshType, Args...>::index() const
+{
+	assert(face::ParentMeshPointer<MeshType>::parentMesh());
+	return face::ParentMeshPointer<MeshType>::parentMesh()->index(this);
+}
+
 /**
  * @brief Sets a list of Vertex references to the face. If the Face size is non-dcel dynamic, will
  * take care to update the also the number of adjacent faces and the number of wedge components, if

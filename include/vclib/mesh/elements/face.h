@@ -63,6 +63,8 @@ public:
 	template<typename... V>
 	Face(V... args); // todo add requires
 
+	uint index() const;
+
 	void setVertices(const std::vector<VertexType*>& list);
 
 	template<typename... V>

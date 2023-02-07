@@ -51,6 +51,8 @@ class HalfEdge : public hedge::ParentMeshPointer<MeshType>, public Args...
 public:
 	HalfEdge();
 
+	uint index() const;
+
 	template<typename Element>
 	void importFrom(const Element& e);
 

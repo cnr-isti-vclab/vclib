@@ -53,6 +53,8 @@ public:
 
 	Vertex();
 
+	uint index() const;
+
 	template<typename Element>
 	void importFrom(const Element& v);
 

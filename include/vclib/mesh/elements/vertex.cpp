@@ -32,6 +32,13 @@ Vertex<MeshType, Args...>::Vertex()
 }
 
 template<typename MeshType, typename... Args>
+uint Vertex<MeshType, Args...>::index() const
+{
+	assert(vert::ParentMeshPointer<MeshType>::parentMesh());
+	return vert::ParentMeshPointer<MeshType>::parentMesh()->index(this);
+}
+
+template<typename MeshType, typename... Args>
 template<typename Element>
 	void Vertex<MeshType, Args...>::importFrom(const Element& v)
 {
