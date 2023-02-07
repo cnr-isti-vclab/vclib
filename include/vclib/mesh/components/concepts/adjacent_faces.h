@@ -87,7 +87,7 @@ concept HasAdjacentFaces = requires(
 template<typename T>
 concept HasAdjacentFacesComponent = requires(T o)
 {
-	HasAdjacentFaces<T>;
+	requires HasAdjacentFaces<T>;
 	{ o.__compAdjFaces() } -> std::same_as<void>;
 };
 

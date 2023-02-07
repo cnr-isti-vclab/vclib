@@ -86,7 +86,7 @@ concept HasAdjacentVertices = requires(
 template<typename T>
 concept HasAdjacentVerticesComponent = requires(T o)
 {
-	HasAdjacentVertices<T>;
+	requires HasAdjacentVertices<T>;
 	{ o.__compAdjVertices() } -> std::same_as<void>;
 };
 

@@ -80,7 +80,7 @@ concept HasWedgeColors = requires(
 template<typename T>
 concept HasWedgeColorsComponent = requires(T o)
 {
-	HasWedgeColors<T>;
+	requires HasWedgeColors<T>;
 	{ o.__compWedgeColors() } -> std::same_as<void>;
 };
 

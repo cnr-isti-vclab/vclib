@@ -84,7 +84,7 @@ concept HasWedgeTexCoords = requires(
 template<typename T>
 concept HasWedgeTexCoordsComponent = requires(T o)
 {
-	HasWedgeTexCoords<T>;
+	requires HasWedgeTexCoords<T>;
 	{ o.__compWedgeTexCoords() } -> std::same_as<void>;
 };
 
