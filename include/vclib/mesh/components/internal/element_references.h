@@ -36,7 +36,7 @@ namespace vcl::comp::internal {
  *
  * Its major use is for adjacencies.
  */
-template<typename Elem, int N>
+template<typename Elem, int N, typename ElementType, bool horizontal>
 class ElementReferences : protected RandomAccessContainer<Elem*, N>
 {
 private:

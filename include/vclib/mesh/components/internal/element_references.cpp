@@ -32,8 +32,8 @@ namespace vcl::comp::internal {
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
-template<typename Elem, int N>
-ElementReferences<Elem, N>::ElementReferences() : Base()
+template<typename Elem, int N, typename El, bool h>
+ElementReferences<Elem, N, El, h>::ElementReferences() : Base()
 {
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
@@ -61,8 +61,8 @@ ElementReferences<Elem, N>::ElementReferences() : Base()
  * w.r.t. the first element of the Container, and update the the pointer accordingly using the
  * newBase.
  */
-template<typename Elem, int N>
-void ElementReferences<Elem, N>::updateElementReferences(const Elem* oldBase, const Elem* newBase)
+template<typename Elem, int N, typename El, bool h>
+void ElementReferences<Elem, N, El, h>::updateElementReferences(const Elem* oldBase, const Elem* newBase)
 {
 	for (uint j = 0; j < container.size(); ++j) { // for each pointer in this container
 		if (container.at(j) != nullptr) {
@@ -72,8 +72,8 @@ void ElementReferences<Elem, N>::updateElementReferences(const Elem* oldBase, co
 	}
 }
 
-template<typename Elem, int N>
-void ElementReferences<Elem, N>::updateElementReferencesAfterCompact(
+template<typename Elem, int N, typename El, bool h>
+void ElementReferences<Elem, N, El, h>::updateElementReferencesAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices)
 {

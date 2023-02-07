@@ -47,9 +47,9 @@ namespace vcl::comp {
  * @endcode
  */
 template<typename Vertex, typename ElementType, bool horizontal>
-class AdjacentVertices : protected internal::ElementReferences<Vertex, -1>
+class AdjacentVertices : protected internal::ElementReferences<Vertex, -1, ElementType, horizontal>
 {
-	using Base = internal::ElementReferences<Vertex, -1>;
+	using Base = internal::ElementReferences<Vertex, -1, ElementType, horizontal>;
 
 public:
 	using AdjacentVertexType = Vertex;

@@ -51,9 +51,9 @@ namespace vcl::comp {
  * Adjacent Faces in case of dynamic size won't be available on Face Elements.
  */
 template<typename Face, int N, typename ElementType, bool horizontal>
-class AdjacentFaces : protected internal::ElementReferences<Face, N>
+class AdjacentFaces : protected internal::ElementReferences<Face, N, ElementType, horizontal>
 {
-	using Base = internal::ElementReferences<Face, N>;
+	using Base = internal::ElementReferences<Face, N, ElementType, horizontal>;
 
 public:
 	/// Static size of the container. If the container is dynamic, this value will be negative and
