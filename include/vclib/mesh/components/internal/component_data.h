@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H
 #define VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H
 
-#include <vclib/misc/types.h>
+#include "../concepts/component.h"
 
 namespace vcl::comp::internal {
 
@@ -103,6 +103,23 @@ struct ComponentData<Data, false>
 
 		// return the component at the index of this vertex
 		return vc[elem->index()];
+	}
+
+	template<typename ElementType, typename ComponentType>
+	bool isComponentEnabled(const ComponentType* comp) const
+	{
+		if constexpr (!IsOptionalComponent<ComponentType>) { // just vertical component
+			return true;
+		}
+		else { // optional component -> we need to check at runtime the vector tuple
+			const ElementType* elem = static_cast<const ElementType*>(comp);
+			assert(elem->parentMesh());
+
+			// get the tuple of vector of vertical components
+			auto& tvc = elem->parentMesh()->template components<ElementType>();
+
+			return tvc.template isComponentEnabled<ComponentType>();
+		}
 	}
 };
 
