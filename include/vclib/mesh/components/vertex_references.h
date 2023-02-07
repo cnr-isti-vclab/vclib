@@ -32,9 +32,16 @@ namespace vcl::comp {
 template<typename Vertex, int N, typename ElementType, bool horizontal>
 class VertexReferences : protected internal::ElementReferences<Vertex, N, ElementType, horizontal>
 {
+	using ThisType = VertexReferences<Vertex, N, ElementType, horizontal>;
+
 	using Base = internal::ElementReferences<Vertex, N, ElementType, horizontal>;
 
 public:
+	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
+	using VertexReferencesComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	using VertexType = Vertex;
 
 	static const int VERTEX_NUMBER = Base::CONTAINER_SIZE;

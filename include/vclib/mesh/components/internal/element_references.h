@@ -26,6 +26,8 @@
 
 #include <vclib/misc/random_access_container.h>
 
+#include "component_data.h"
+
 namespace vcl::comp::internal {
 
 /**
@@ -37,22 +39,41 @@ namespace vcl::comp::internal {
  * Its major use is for adjacencies.
  */
 template<typename Elem, int N, typename ElementType, bool horizontal>
-class ElementReferences : protected RandomAccessContainer<Elem*, N>
+class ElementReferences
 {
 private:
 	using Base = RandomAccessContainer<Elem*, N>;
 
 public:
+	using DataValueType = RandomAccessContainer<Elem*, N>; // data that the component stores internally (or vertically)
+
+	static const int CONTAINER_SIZE = Base::CONTAINER_SIZE;
+
+	/* Iterator Types declaration */
+
+	using Iterator              = typename Base::Iterator;
+	using ConstIterator         = typename Base::ConstIterator;
+	using RACRangeIterator      = typename Base::RACRangeIterator;
+	using RACConstRangeIterator = typename Base::RACConstRangeIterator;
+
 	/** Constructor **/
 
-	ElementReferences();
+	void init();
 
 protected:
-	void updateElementReferences(const Elem* oldBase, const Elem* newBase);
+	template<typename Comp>
+	void updateElementReferences(const Elem* oldBase, const Elem* newBase, Comp* comp);
 
-	void updateElementReferencesAfterCompact(const Elem* base, const std::vector<int>& newIndices);
+	template<typename Comp>
+	void updateElementReferencesAfterCompact(const Elem* base, const std::vector<int>& newIndices, Comp* comp);
 
-	RandomAccessContainer<Elem*, N> container;
+	template<typename Comp>
+	RandomAccessContainer<Elem*, N>& container(Comp* comp);
+
+	template<typename Comp>
+	const RandomAccessContainer<Elem*, N>& container(const Comp* comp) const;
+
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 } // namespace vcl::comp::internal

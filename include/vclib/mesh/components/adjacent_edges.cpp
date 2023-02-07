@@ -42,7 +42,7 @@ AdjacentEdges<Edge, N, El, h>::AdjacentEdges() : Base()
 template<typename Edge, int N, typename El, bool h>
 uint AdjacentEdges<Edge, N, El, h>::adjEdgesNumber() const
 {
-	return Base::container.size();
+	return Base::container(this).size();
 }
 
 /**
@@ -61,7 +61,7 @@ uint AdjacentEdges<Edge, N, El, h>::adjEdgesNumber() const
 template<typename Edge, int N, typename El, bool h>
 Edge*& AdjacentEdges<Edge, N, El, h>::adjEdge(uint i)
 {
-	return Base::container.at(i);
+	return Base::container(this).at(i);
 }
 
 /**
@@ -73,7 +73,7 @@ Edge*& AdjacentEdges<Edge, N, El, h>::adjEdge(uint i)
 template<typename Edge, int N, typename El, bool h>
 const Edge* AdjacentEdges<Edge, N, El, h>::adjEdge(uint i) const
 {
-	return Base::container.at(i);
+	return Base::container(this).at(i);
 }
 
 /**
@@ -95,7 +95,7 @@ const Edge* AdjacentEdges<Edge, N, El, h>::adjEdge(uint i) const
 template<typename Edge, int N, typename El, bool h>
 Edge*& AdjacentEdges<Edge, N, El, h>::adjEdgeMod(int i)
 {
-	return Base::container.atMod(i);
+	return Base::container(this).atMod(i);
 }
 
 /**
@@ -107,7 +107,7 @@ Edge*& AdjacentEdges<Edge, N, El, h>::adjEdgeMod(int i)
 template<typename Edge, int N, typename El, bool h>
 const Edge* AdjacentEdges<Edge, N, El, h>::adjEdgeMod(int i) const
 {
-	return Base::container.atMod(i);
+	return Base::container(this).atMod(i);
 }
 
 /**
@@ -119,7 +119,7 @@ const Edge* AdjacentEdges<Edge, N, El, h>::adjEdgeMod(int i) const
 template<typename Edge, int N, typename El, bool h>
 void AdjacentEdges<Edge, N, El, h>::setAdjEdge(Edge* e, uint i)
 {
-	Base::container.set(e, i);
+	Base::container(this).set(e, i);
 }
 
 /**
@@ -133,33 +133,33 @@ void AdjacentEdges<Edge, N, El, h>::setAdjEdge(Edge* e, uint i)
 template<typename Edge, int N, typename El, bool h>
 void AdjacentEdges<Edge, N, El, h>::setAdjEdges(const std::vector<Edge*>& list)
 {
-	Base::container.set(list);
+	Base::container(this).set(list);
 }
 
 template<typename Edge, int N, typename El, bool h>
 bool AdjacentEdges<Edge, N, El, h>::containsAdjEdge(const Edge* e) const
 {
-	return Base::container.contains(e);
+	return Base::container(this).contains(e);
 }
 
 template<typename Edge, int N, typename El, bool h>
 typename AdjacentEdges<Edge, N, El, h>::AdjacentEdgeIterator
 AdjacentEdges<Edge, N, El, h>::findAdjEdge(const Edge* e)
 {
-	return Base::container.find(e);
+	return Base::container(this).find(e);
 }
 
 template<typename Edge, int N, typename El, bool h>
 typename AdjacentEdges<Edge, N, El, h>::ConstAdjacentEdgeIterator
 AdjacentEdges<Edge, N, El, h>::findAdjEdge(const Edge* e) const
 {
-	return Base::container.find(e);
+	return Base::container(this).find(e);
 }
 
 template<typename Edge, int N, typename El, bool h>
 int AdjacentEdges<Edge, N, El, h>::indexOfAdjEdge(const Edge* e) const
 {
-	return Base::container.indexOf(e);
+	return Base::container(this).indexOf(e);
 }
 
 /**
@@ -172,83 +172,83 @@ template<typename Edge, int N, typename El, bool h>
 void AdjacentEdges<Edge, N, El, h>::resizeAdjEdges(uint n)
 	requires(N < 0)
 {
-	Base::container.resize(n);
+	Base::container(this).resize(n);
 }
 
 template<typename Edge, int N, typename El, bool h>
 void AdjacentEdges<Edge, N, El, h>::pushAdjEdge(Edge* e)
 	requires(N < 0)
 {
-	Base::container.pushBack(e);
+	Base::container(this).pushBack(e);
 }
 
 template<typename Edge, int N, typename El, bool h>
 void AdjacentEdges<Edge, N, El, h>::insertAdjEdge(uint i, Edge* e)
 	requires(N < 0)
 {
-	Base::container.insert(i, e);
+	Base::container(this).insert(i, e);
 }
 
 template<typename Edge, int N, typename El, bool h>
 void AdjacentEdges<Edge, N, El, h>::eraseAdjEdge(uint i)
 	requires(N < 0)
 {
-	Base::container.erase(i);
+	Base::container(this).erase(i);
 }
 
 template<typename Edge, int N, typename El, bool h>
 void AdjacentEdges<Edge, N, El, h>::clearAdjEdges()
 	requires(N < 0)
 {
-	Base::container.clear();
+	Base::container(this).clear();
 }
 
 template<typename Edge, int N, typename El, bool h>
 typename AdjacentEdges<Edge, N, El, h>::AdjacentEdgeIterator
 AdjacentEdges<Edge, N, El, h>::adjEdgeBegin()
 {
-	return Base::container.begin();
+	return Base::container(this).begin();
 }
 
 template<typename Edge, int N, typename El, bool h>
 typename AdjacentEdges<Edge, N, El, h>::AdjacentEdgeIterator
 AdjacentEdges<Edge, N, El, h>::adjEdgeEnd()
 {
-	return Base::container.end();
+	return Base::container(this).end();
 }
 
 template<typename Edge, int N, typename El, bool h>
 typename AdjacentEdges<Edge, N, El, h>::ConstAdjacentEdgeIterator
 AdjacentEdges<Edge, N, El, h>::adjEdgeBegin() const
 {
-	return Base::container.begin();
+	return Base::container(this).begin();
 }
 
 template<typename Edge, int N, typename El, bool h>
 typename AdjacentEdges<Edge, N, El, h>::ConstAdjacentEdgeIterator
 AdjacentEdges<Edge, N, El, h>::adjEdgeEnd() const
 {
-	return Base::container.end();
+	return Base::container(this).end();
 }
 
 template<typename Edge, int N, typename El, bool h>
 typename AdjacentEdges<Edge, N, El, h>::AdjacentEdgeRangeIterator
 AdjacentEdges<Edge, N, El, h>::adjEdges()
 {
-	return Base::container.rangeIterator();
+	return Base::container(this).rangeIterator();
 }
 
 template<typename Edge, int N, typename El, bool h>
 typename AdjacentEdges<Edge, N, El, h>::ConstAdjacentEdgeRangeIterator
 AdjacentEdges<Edge, N, El, h>::adjEdges() const
 {
-	return Base::container.rangeIterator();
+	return Base::container(this).rangeIterator();
 }
 
 template<typename Edge, int N, typename El, bool h>
 void AdjacentEdges<Edge, N, El, h>::updateEdgeReferences(const Edge* oldBase, const Edge* newBase)
 {
-	Base::updateElementReferences(oldBase, newBase);
+	Base::updateElementReferences(oldBase, newBase, this);
 }
 
 template<typename Edge, int N, typename El, bool h>
@@ -256,7 +256,7 @@ void AdjacentEdges<Edge, N, El, h>::updateEdgeReferencesAfterCompact(
 	const Edge*             base,
 	const std::vector<int>& newIndices)
 {
-	Base::updateElementReferencesAfterCompact(base, newIndices);
+	Base::updateElementReferencesAfterCompact(base, newIndices, this);
 }
 
 template<typename Edge, int N, typename El, bool h>

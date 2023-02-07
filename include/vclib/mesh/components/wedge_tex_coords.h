@@ -114,7 +114,7 @@ private:
 	RandomAccessContainer<vcl::TexCoord<Scalar>, N>& texCoords();
 	const RandomAccessContainer<vcl::TexCoord<Scalar>, N>& texCoords() const;
 
-	internal::ComponentData<WTCData, true> data;
+	internal::ComponentData<DataValueType, horizontal> data;
 };
 
 } // namespace vcl::comp

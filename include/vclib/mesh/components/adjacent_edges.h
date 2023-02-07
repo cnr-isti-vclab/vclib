@@ -53,9 +53,16 @@ namespace vcl::comp {
 template<typename Edge, int N, typename ElementType, bool horizontal>
 class AdjacentEdges : protected internal::ElementReferences<Edge, N, ElementType, horizontal>
 {
+	using ThisType = AdjacentEdges<Edge, N, ElementType, horizontal>;
+
 	using Base = internal::ElementReferences<Edge, N, ElementType, horizontal>;
 
 public:
+	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
+	using AdjacentEdgesComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjEdgesNumber() member function.
 	static const int ADJ_EDGE_NUMBER = Base::CONTAINER_SIZE;

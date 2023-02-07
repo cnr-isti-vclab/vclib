@@ -33,69 +33,69 @@ VertexReferences<Vertex, N, El, h>::VertexReferences() : Base()
 template<typename Vertex, int N, typename El, bool h>
 uint VertexReferences<Vertex, N, El, h>::vertexNumber() const
 {
-	return Base::container.size();
+	return Base::container(this).size();
 }
 
 template<typename Vertex, int N, typename El, bool h>
 Vertex*& VertexReferences<Vertex, N, El, h>::vertex(uint i)
 {
-	return Base::container.at(i);
+	return Base::container(this).at(i);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 const Vertex* VertexReferences<Vertex, N, El, h>::vertex(uint i) const
 {
-	return Base::container.at(i);
+	return Base::container(this).at(i);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 Vertex*& VertexReferences<Vertex, N, El, h>::vertexMod(int i)
 {
-	return Base::container.atMod(i);
+	return Base::container(this).atMod(i);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 const Vertex* VertexReferences<Vertex, N, El, h>::vertexMod(int i) const
 {
-	return Base::container.atMod(i);
+	return Base::container(this).atMod(i);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 void VertexReferences<Vertex, N, El, h>::setVertex(Vertex* v, uint i)
 {
-	Base::container.set(v, i);
+	Base::container(this).set(v, i);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 void VertexReferences<Vertex, N, El, h>::setVertices(const std::vector<Vertex*>& list)
 {
-	Base::container.set(list);
+	Base::container(this).set(list);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 bool VertexReferences<Vertex, N, El, h>::containsVertex(const Vertex* v) const
 {
-	return Base::container.contains(v);
+	return Base::container(this).contains(v);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 typename VertexReferences<Vertex, N, El, h>::VertexIterator
 VertexReferences<Vertex, N, El, h>::findVertex(const Vertex* v)
 {
-	return Base::container.find(v);
+	return Base::container(this).find(v);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 typename VertexReferences<Vertex, N, El, h>::ConstVertexIterator
 VertexReferences<Vertex, N, El, h>::findVertex(const Vertex* v) const
 {
-	return Base::container.find(v);
+	return Base::container(this).find(v);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 int VertexReferences<Vertex, N, El, h>::indexOfVertex(const Vertex* v) const
 {
-	return Base::container.indexOf(v);
+	return Base::container(this).indexOf(v);
 }
 
 template<typename Vertex, int N, typename El, bool h>
@@ -120,70 +120,70 @@ int VertexReferences<Vertex, N, El, h>::indexOfEdge(const Vertex* v1, const Vert
 template<typename Vertex, int N, typename El, bool h>
 void VertexReferences<Vertex, N, El, h>::resizeVertices(uint n) requires (N < 0)
 {
-	Base::container.resize(n);
+	Base::container(this).resize(n);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 void VertexReferences<Vertex, N, El, h>::pushVertex(Vertex* v) requires (N < 0)
 {
-	Base::container.pushBack(v);
+	Base::container(this).pushBack(v);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 void VertexReferences<Vertex, N, El, h>::insertVertex(uint i, Vertex* v) requires (N < 0)
 {
-	Base::container.insert(i, v);
+	Base::container(this).insert(i, v);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 void VertexReferences<Vertex, N, El, h>::eraseVertex(uint i) requires (N < 0)
 {
-	Base::container.erase(i);
+	Base::container(this).erase(i);
 }
 
 template<typename Vertex, int N, typename El, bool h>
 void VertexReferences<Vertex, N, El, h>::clearVertices() requires (N < 0)
 {
-	Base::container.clear();
+	Base::container(this).clear();
 }
 
 template<typename Vertex, int N, typename El, bool h>
 typename VertexReferences<Vertex, N, El, h>::VertexIterator VertexReferences<Vertex, N, El, h>::vertexBegin()
 {
-	return Base::container.begin();
+	return Base::container(this).begin();
 }
 
 template<typename Vertex, int N, typename El, bool h>
 typename VertexReferences<Vertex, N, El, h>::VertexIterator VertexReferences<Vertex, N, El, h>::vertexEnd()
 {
-	return Base::container.end();
+	return Base::container(this).end();
 }
 
 template<typename Vertex, int N, typename El, bool h>
 typename VertexReferences<Vertex, N, El, h>::ConstVertexIterator
 VertexReferences<Vertex, N, El, h>::vertexBegin() const
 {
-	return Base::container.begin();
+	return Base::container(this).begin();
 }
 
 template<typename Vertex, int N, typename El, bool h>
 typename VertexReferences<Vertex, N, El, h>::ConstVertexIterator
 VertexReferences<Vertex, N, El, h>::vertexEnd() const
 {
-	return Base::container.end();
+	return Base::container(this).end();
 }
 
 template<typename Vertex, int N, typename El, bool h>
 typename VertexReferences<Vertex, N, El, h>::VertexRangeIterator VertexReferences<Vertex, N, El, h>::vertices()
 {
-	return Base::container.rangeIterator();
+	return Base::container(this).rangeIterator();
 }
 
 template<typename Vertex, int N, typename El, bool h>
 typename VertexReferences<Vertex, N, El, h>::ConstVertexRangeIterator
 VertexReferences<Vertex, N, El, h>::vertices() const
 {
-	return Base::container.rangeIterator();
+	return Base::container(this).rangeIterator();
 }
 
 template<typename Vertex, int N, typename El, bool h>
@@ -191,7 +191,7 @@ void VertexReferences<Vertex, N, El, h>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
 {
-	Base::updateElementReferences(oldBase, newBase);
+	Base::updateElementReferences(oldBase, newBase, this);
 }
 
 template<typename Vertex, int N, typename El, bool h>
@@ -199,7 +199,7 @@ void VertexReferences<Vertex, N, El, h>::updateVertexReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
-	Base::updateElementReferencesAfterCompact(base, newIndices);
+	Base::updateElementReferencesAfterCompact(base, newIndices, this);
 }
 
 template<typename Vertex, int N, typename El, bool h>

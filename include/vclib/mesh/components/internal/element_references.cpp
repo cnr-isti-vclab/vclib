@@ -32,18 +32,18 @@ namespace vcl::comp::internal {
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
-template<typename Elem, int N, typename El, bool h>
-ElementReferences<Elem, N, El, h>::ElementReferences() : Base()
+template<typename Elem, int N, typename ElementType, bool horizontal>
+void ElementReferences<Elem, N, ElementType, horizontal>::init()
 {
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
 		// There will be a static number of references.
-		container.fill(nullptr);
+		container().fill(nullptr);
 	}
 	else {
 		// I'll use the vector, because N is < 0.
 		// There will be a dynamic number of references.
-		container.clear();
+		container().clear();
 	}
 }
 
@@ -62,32 +62,52 @@ ElementReferences<Elem, N, El, h>::ElementReferences() : Base()
  * newBase.
  */
 template<typename Elem, int N, typename El, bool h>
-void ElementReferences<Elem, N, El, h>::updateElementReferences(const Elem* oldBase, const Elem* newBase)
+template<typename Comp>
+void ElementReferences<Elem, N, El, h>::updateElementReferences(
+	const Elem* oldBase,
+	const Elem* newBase,
+	Comp* comp)
 {
-	for (uint j = 0; j < container.size(); ++j) { // for each pointer in this container
-		if (container.at(j) != nullptr) {
-			size_t diff = container.at(j) - oldBase; // offset w.r.t. the old base
-			container.at(j)  = (Elem*) newBase + diff; // update the pointer using newBase
+	for (uint j = 0; j < container(comp).size(); ++j) { // for each pointer in this container
+		if (container(comp).at(j) != nullptr) {
+			size_t diff = container(comp).at(j) - oldBase; // offset w.r.t. the old base
+			container(comp).at(j)  = (Elem*) newBase + diff; // update the pointer using newBase
 		}
 	}
 }
 
 template<typename Elem, int N, typename El, bool h>
+template<typename Comp>
 void ElementReferences<Elem, N, El, h>::updateElementReferencesAfterCompact(
 	const Elem*             base,
-	const std::vector<int>& newIndices)
+	const std::vector<int>& newIndices,
+	Comp* comp)
 {
-	for (uint j = 0; j < container.size(); ++j) {
-		if (container.at(j) != nullptr) {
-			size_t diff = container.at(j) - base;
+	for (uint j = 0; j < container(comp).size(); ++j) {
+		if (container(comp).at(j) != nullptr) {
+			size_t diff = container(comp).at(j) - base;
 			if (newIndices[diff] < 0) { // element has been removed
-				container.at(j) = nullptr;
+				container(comp).at(j) = nullptr;
 			}
 			else { // the new pointer will be base + newIndices[diff]
-				container.at(j) = (Elem*) base + newIndices[diff];
+				container(comp).at(j) = (Elem*) base + newIndices[diff];
 			}
 		}
 	}
+}
+
+template<typename Elem, int N, typename El, bool h>
+template<typename Comp>
+RandomAccessContainer<Elem*, N>& ElementReferences<Elem, N, El, h>::container(Comp* comp)
+{
+	return data.template get<El>(comp);
+}
+
+template<typename Elem, int N, typename El, bool h>
+template<typename Comp>
+const RandomAccessContainer<Elem*, N>& ElementReferences<Elem, N, El, h>::container(const Comp* comp) const
+{
+	return data.template get<El>(comp);
 }
 
 } // namespace vcl::comp::internal

@@ -53,9 +53,16 @@ namespace vcl::comp {
 template<typename Face, int N, typename ElementType, bool horizontal>
 class AdjacentFaces : protected internal::ElementReferences<Face, N, ElementType, horizontal>
 {
+	using ThisType = AdjacentFaces<Face, N, ElementType, horizontal>;
+
 	using Base = internal::ElementReferences<Face, N, ElementType, horizontal>;
 
 public:
+	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
+	using AdjacentFacesComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !horizontal;
+
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjFacesNumber() member function.
 	static const int ADJ_FACE_NUMBER = Base::CONTAINER_SIZE;
