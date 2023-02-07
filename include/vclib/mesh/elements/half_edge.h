@@ -49,6 +49,9 @@ class HalfEdge : public hedge::ParentMeshPointer<MeshType>, public Args...
 	friend class mesh::ElementContainer;
 
 public:
+	using ParentMeshType = MeshType;
+	using Components = std::tuple<Args...>;
+	
 	HalfEdge();
 
 	uint index() const;

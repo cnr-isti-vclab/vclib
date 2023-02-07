@@ -51,6 +51,12 @@ concept IsVerticalComponent = VerticalComponentConcept<T> && requires(T o)
 };
 
 template<typename T>
+struct IsVerticalComponentPred
+{
+	static const bool value = IsVerticalComponent<T>;
+};
+
+template<typename T>
 concept IsOptionalComponent = IsVerticalComponent<T> && requires(T o)
 {
 	{ o.IS_OPTIONAL } -> std::same_as<bool>;

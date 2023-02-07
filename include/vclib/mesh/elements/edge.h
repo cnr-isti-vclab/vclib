@@ -49,6 +49,9 @@ class Edge : public edge::ParentMeshPointer<MeshType>, public Args...
 	friend class mesh::ElementContainer;
 
 public:
+	using ParentMeshType = MeshType;
+	using Components = std::tuple<Args...>;
+	
 	Edge();
 
 	uint index() const;

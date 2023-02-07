@@ -26,28 +26,28 @@
 namespace vcl::mesh {
 
 template<typename ...Comp>
-ComponentsVectorTuple<Comp...>::ComponentsVectorTuple()
+VerticalComponentsVectorTuple<Comp...>::VerticalComponentsVectorTuple()
 {
 	// by default, all the components are enabled
 	vecEnabled.fill(true);
 }
 
 template<typename ...Comp>
-constexpr uint ComponentsVectorTuple<Comp...>::componentsNumber()
+constexpr uint VerticalComponentsVectorTuple<Comp...>::componentsNumber()
 {
 	return std::tuple_size_v<std::tuple<std::vector<Comp>...>>;
 }
 
 template<typename ...Comp>
 template<typename C>
-constexpr uint ComponentsVectorTuple<Comp...>::indexOfType()
+constexpr uint VerticalComponentsVectorTuple<Comp...>::indexOfType()
 {
 	return vcl::indexInTypePack<C, Comp...>();
 }
 
 template<typename ...Comp>
 template<typename C>
-constexpr std::vector<typename C::ValueType>& ComponentsVectorTuple<Comp...>::vector()
+constexpr std::vector<typename C::ValueType>& VerticalComponentsVectorTuple<Comp...>::vector()
 {
 	constexpr uint ind = indexOfType<C>();
 	return std::get<ind>(tuple);
@@ -55,27 +55,27 @@ constexpr std::vector<typename C::ValueType>& ComponentsVectorTuple<Comp...>::ve
 
 template<typename ...Comp>
 template<typename C>
-constexpr const std::vector<typename C::ValueType>& ComponentsVectorTuple<Comp...>::vector() const
+constexpr const std::vector<typename C::ValueType>& VerticalComponentsVectorTuple<Comp...>::vector() const
 {
 	constexpr uint ind = indexOfType<C>();
 	return std::get<ind>(tuple);
 }
 
 template<typename ...Comp>
-std::size_t ComponentsVectorTuple<Comp...>::size() const
+std::size_t VerticalComponentsVectorTuple<Comp...>::size() const
 {
 	return siz;
 }
 
 template<typename ...Comp>
-void ComponentsVectorTuple<Comp...>::resize(std::size_t size)
+void VerticalComponentsVectorTuple<Comp...>::resize(std::size_t size)
 {
 	vectorResize<componentsNumber()-1>(size);
 	siz = size;
 }
 
 template<typename ...Comp>
-void ComponentsVectorTuple<Comp...>::clear()
+void VerticalComponentsVectorTuple<Comp...>::clear()
 {
 	auto function =
 		[](auto&... args)
@@ -89,7 +89,7 @@ void ComponentsVectorTuple<Comp...>::clear()
 
 template<typename ...Comp>
 template<typename C>
-bool ComponentsVectorTuple<Comp...>::isComponentEnabled() const
+bool VerticalComponentsVectorTuple<Comp...>::isComponentEnabled() const
 {
 	constexpr uint ind = indexOfType<C>();
 	return vecEnabled[ind];
@@ -97,7 +97,7 @@ bool ComponentsVectorTuple<Comp...>::isComponentEnabled() const
 
 template<typename ...Comp>
 template<typename C>
-void ComponentsVectorTuple<Comp...>::enableComponent()
+void VerticalComponentsVectorTuple<Comp...>::enableComponent()
 {
 	constexpr uint ind = indexOfType<C>();
 	vecEnabled[ind] = true;
@@ -106,7 +106,7 @@ void ComponentsVectorTuple<Comp...>::enableComponent()
 
 template<typename ...Comp>
 template<typename C>
-void ComponentsVectorTuple<Comp...>::disableComponent()
+void VerticalComponentsVectorTuple<Comp...>::disableComponent()
 {
 	constexpr uint ind = indexOfType<C>();
 	vecEnabled[ind] = false;
@@ -115,7 +115,7 @@ void ComponentsVectorTuple<Comp...>::disableComponent()
 
 template<typename ...Comp>
 template<std::size_t N>
-void ComponentsVectorTuple<Comp...>::vectorResize(std::size_t size)
+void VerticalComponentsVectorTuple<Comp...>::vectorResize(std::size_t size)
 {
 	if (vecEnabled[N]) {
 		std::get<N>(tuple).resize(size);

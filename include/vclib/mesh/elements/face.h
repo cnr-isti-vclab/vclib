@@ -54,6 +54,9 @@ class Face : public face::ParentMeshPointer<MeshType>, public Args...
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
+	using ParentMeshType = MeshType;
+	using Components = std::tuple<Args...>;
+	
 	using VertexType = typename VRefs::VertexType;
 
 	Face();

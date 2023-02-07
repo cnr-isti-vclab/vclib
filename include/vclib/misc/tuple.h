@@ -77,6 +77,12 @@ struct FilterTypesByCondition<Pred, Head, Tail...>
 		typename FilterTypesByCondition<Pred, Tail...>::type>::type;
 };
 
+template <template <class> class Pred, typename ...Tail>
+struct FilterTypesByCondition<Pred, std::tuple<Tail...>>
+{
+	using type = typename FilterTypesByCondition<Pred, Tail...>::type;
+};
+
 } // namespace vcl
 
 #endif // VCL_MISC_TUPLE_H

@@ -64,12 +64,12 @@ struct ComponentData<Data, true>
 	 * And a parameter comp, which is the 'this' pointer of the ComponentType instance that performs
 	 * the function call.
 	 *
-	 * The functions first perform a static cast from the Component to the Element (this operation
-	 * is safe also in case of multiple inheritance - see
+	 * These member functions first perform a static cast from the Component to the Element (this
+	 * operation is safe also in case of multiple inheritance - see
 	 * https://stackoverflow.com/questions/65177399/alignment-of-multiple-crtp-base-classes), then
 	 * access to the parent mesh of the Element and asks for access to the tuple of vectors of
-	 * vertical components of the element (they are private, but these functions are friends of the
-	 * mesh). Then, gets the vector of the given component and then the component associated to the
+	 * vertical components of the element (they are private, but ComponentData is friends of the
+	 * Mesh). Then, gets the vector of the given component and then the component associated to the
 	 * index of the element.
 	 */
 
@@ -80,7 +80,7 @@ struct ComponentData<Data, true>
 		assert(elem->parentMesh());
 
 		// get the tuple of vector of vertical components
-		auto& tvc = elem->parentMesh()->template components<ElementType>();
+		auto& tvc = elem->parentMesh()->template verticalComponents<ElementType>();
 
 		// get the vector of the required component
 		auto& vc = tvc.template vector<ComponentType>();
@@ -96,7 +96,7 @@ struct ComponentData<Data, true>
 		assert(elem->parentMesh());
 
 		// get the tuple of vector of vertical components
-		auto& tvc = elem->parentMesh()->template components<ElementType>();
+		auto& tvc = elem->parentMesh()->template verticalComponents<ElementType>();
 
 		// get the vector of the required component
 		auto& vc = tvc.template vector<ComponentType>();

@@ -26,12 +26,15 @@
 
 #include <vector>
 
+#include <vclib/mesh/components/concepts/custom_components.h>
 #include <vclib/iterators/mesh/element_container_iterator.h>
 #include <vclib/iterators/mesh/element_container_range_iterator.h>
 #include "../components/vertical/vertical_component.h"
 #include "../components/vertical/vectors/vertical_components_vector.h"
 #include "containers_concepts.h"
 #include "custom_components_vector.h"
+#include "vertical_components_vector_tuple.h"
+
 
 namespace vcl::mesh {
 
@@ -145,7 +148,10 @@ protected:
 
 	template<typename Container, typename MyBase, typename CBase>
 	void importHalfEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
-
+	
+	// filter components of elements, taking only vertical ones
+	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
+	
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.
@@ -153,6 +159,7 @@ protected:
 	uint en = 0;
 	std::vector<T> vec;
 	internal::VerticalComponentsVector<T> optionalVec;
+	VerticalComponentsVectorTuple<vComps> vcTVec;
 	CustomComponentsVector<T, comp::HasCustomComponents<T>> ccVec;
 };
 

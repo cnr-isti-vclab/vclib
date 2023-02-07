@@ -272,6 +272,12 @@ private:
 
 	template<typename El>
 	const auto& customComponents() const requires ElementConcept<El>;
+	
+	template<typename El>
+	auto& verticalComponents() requires ElementConcept<El>;
+	
+	template<typename El>
+	const auto& verticalComponents() const requires ElementConcept<El>;
 };
 
 template<typename... A> requires HasVertices<A...>

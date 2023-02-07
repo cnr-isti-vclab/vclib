@@ -34,11 +34,11 @@
 namespace vcl::mesh {
 
 template<typename ...Comp>
-class ComponentsVectorTuple
+class VerticalComponentsVectorTuple
 {
 	using ComponentTypes = std::tuple<Comp...>;
 public:
-	ComponentsVectorTuple();
+	VerticalComponentsVectorTuple();
 
 	static constexpr uint componentsNumber();
 
@@ -76,7 +76,7 @@ private:
 };
 
 template<typename ...Comp>
-class ComponentsVectorTuple<std::tuple<Comp...>> : public ComponentsVectorTuple<Comp...>
+class VerticalComponentsVectorTuple<std::tuple<Comp...>> : public VerticalComponentsVectorTuple<Comp...>
 {
 };
 

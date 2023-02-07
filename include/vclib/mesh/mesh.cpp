@@ -1538,6 +1538,50 @@ const auto& Mesh<Args...>::customComponents() const requires ElementConcept<El>
 	}
 }
 
+template<typename... Args> requires HasVertices<Args...>
+template<typename El>
+auto& Mesh<Args...>::verticalComponents() requires ElementConcept<El>
+{
+	if constexpr (EdgeConcept<El>) {
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+		return EdgeContainer::vcVec;
+	}
+	if constexpr (FaceConcept<El>) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		return FaceContainer::vcVec;
+	}
+	if constexpr (HalfEdgeConcept<El>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		return HalfEdgeContainer::vcVec;
+	}
+	if constexpr (VertexConcept<El>) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		return VertexContainer::vcVec;
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename El>
+const auto& Mesh<Args...>::verticalComponents() const requires ElementConcept<El>
+{
+	if constexpr (EdgeConcept<El>) {
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+		return EdgeContainer::vcTVec;
+	}
+	if constexpr (FaceConcept<El>) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		return FaceContainer::vcTVec;
+	}
+	if constexpr (HalfEdgeConcept<El>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		return HalfEdgeContainer::vcTVec;
+	}
+	if constexpr (VertexConcept<El>) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		return VertexContainer::vcTVec;
+	}
+}
+
 /**
  * @brief Swaps two meshes of the same type
  */

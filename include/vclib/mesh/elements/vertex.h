@@ -50,6 +50,7 @@ class Vertex : public vert::ParentMeshPointer<MeshType>, public Args...
 
 public:
 	using ParentMeshType = MeshType;
+	using Components = std::tuple<Args...>;
 
 	Vertex();
 
