@@ -44,86 +44,86 @@ namespace vcl::face {
 
 /* Port AdjacentEdges class into face namespace */
 template<typename EdgeType>
-using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, void, true>;
+using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1>;
 
 template<typename EdgeType>
-using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, void, true>;
+using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3>;
 
 /* Port AdjacentFaces class into face namespace */
 template<typename FaceType>
-using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1, void, true>;
+using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1>;
 
 template<typename FaceType>
-using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3, void, true>;
+using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3>;
 
 /* Port BitFlags class into face namespace */
-using BitFlags = comp::BitFlags<void, true>;
+using BitFlags = comp::BitFlags<>;
 
 /* Port Color class into face namespace */
-using Color = comp::Color<void, true>;
+using Color = comp::Color<>;
 
 /* Port Half Edge reference into face namespace*/
 template<typename HalfEdge>
-using HalfEdgeReference = comp::FaceHalfEdgeReference<HalfEdge, void, true>;
+using HalfEdgeReference = comp::FaceHalfEdgeReference<HalfEdge>;
 
 /* Port Mark class into face namespace */
-using Mark = comp::Mark<void, true>;
+using Mark = comp::Mark<>;
 
 /* Port Normal classes into face namespace */
 template<typename ScalarType, int N>
-using Normal = comp::Normal<ScalarType, N, void, true>;
+using Normal = comp::Normal<ScalarType, N>;
 
 template<typename ScalarType>
-using Normal3 = comp::Normal3<ScalarType, void, true>;
+using Normal3 = comp::Normal3<ScalarType>;
 
-using Normal3f = comp::Normal3f<void, true>;
-using Normal3d = comp::Normal3d<void, true>;
+using Normal3f = comp::Normal3f<>;
+using Normal3d = comp::Normal3d<>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
 using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port PolygonBitFlags class into face namespace */
-using PolygonBitFlags = comp::PolygonBitFlags<void, true>;
+using PolygonBitFlags = comp::PolygonBitFlags<>;
 
 /* Port PrincipalCurvature class into face namespace */
 template<typename FaceType>
-using PrincipalCurvature = comp::PrincipalCurvature<FaceType, void, true>;
+using PrincipalCurvature = comp::PrincipalCurvature<FaceType>;
 
-using PrincipalCurvaturef = comp::PrincipalCurvaturef<void, true>;
-using PrincipalCurvatured = comp::PrincipalCurvatured<void, true>;
+using PrincipalCurvaturef = comp::PrincipalCurvaturef<>;
+using PrincipalCurvatured = comp::PrincipalCurvatured<>;
 
 /* Port Scalar class into face namespace */
 template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType, void, true>;
+using Scalar = comp::Scalar<ScalarType>;
 
-using Scalarf = comp::Scalarf<void, true>;
-using Scalard = comp::Scalard<void, true>;
+using Scalarf = comp::Scalarf<>;
+using Scalard = comp::Scalard<>;
 
 /* Port TriangleBitFlags class into face namespace */
-using TriangleBitFlags = comp::TriangleBitFlags<void, true>;
+using TriangleBitFlags = comp::TriangleBitFlags<>;
 
 /* Port VertexReferences class into face namespace */
 template<typename Vertex, int N>
-using VertexReferences = comp::VertexReferences<Vertex, N, void, true>;
+using VertexReferences = comp::VertexReferences<Vertex, N>;
 
 template<typename Vertex>
-using TriangleVertexRefs = comp::VertexReferences<Vertex, 3, void, true>;
+using TriangleVertexRefs = comp::VertexReferences<Vertex, 3>;
 
 template<typename Vertex>
-using PolygonVertexRefs = comp::VertexReferences<Vertex, -1, void, true>;
+using PolygonVertexRefs = comp::VertexReferences<Vertex, -1>;
 
 /* Port WedgeColors class into face namespace */
-using PolygonWedgeColors = comp::WedgeColors<-1, void, true>;
+using PolygonWedgeColors = comp::WedgeColors<-1>;
 
-using TriangleWedgeColors = comp::WedgeColors<3, void, true>;
+using TriangleWedgeColors = comp::WedgeColors<3>;
 
 /* Port WedgeTexCoords class into face namespace */
 template<typename ScalarType>
-using PolygonWedgeTexCoords = comp::WedgeTexCoords<ScalarType, -1, void, true>;
+using PolygonWedgeTexCoords = comp::WedgeTexCoords<ScalarType, -1>;
 
 template<typename ScalarType>
-using TriangleWedgeTexCoords = comp::WedgeTexCoords<ScalarType, 3, void, true>;
+using TriangleWedgeTexCoords = comp::WedgeTexCoords<ScalarType, 3>;
 
 using PolygonWedgeTexCoordsf = PolygonWedgeTexCoords<float>;
 using PolygonWedgeTexCoordsd = PolygonWedgeTexCoords<double>;

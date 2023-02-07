@@ -25,89 +25,89 @@
 
 namespace vcl::comp {
 
-template<typename El, bool h>
-uint TexturePaths<El, h>::textureNumber() const
+template<typename El, bool h, bool o>
+uint TexturePaths<El, h, o>::textureNumber() const
 {
 	return texPaths().size();
 }
 
-template<typename El, bool h>
-const std::string& TexturePaths<El, h>::texturePath(uint i) const
+template<typename El, bool h, bool o>
+const std::string& TexturePaths<El, h, o>::texturePath(uint i) const
 {
 	return texPaths()[i];
 }
 
-template<typename El, bool h>
-std::string& TexturePaths<El, h>::texturePath(uint i)
+template<typename El, bool h, bool o>
+std::string& TexturePaths<El, h, o>::texturePath(uint i)
 {
 	return texPaths()[i];
 }
 
-template<typename El, bool h>
-const std::string &TexturePaths<El, h>::meshBasePath() const
+template<typename El, bool h, bool o>
+const std::string &TexturePaths<El, h, o>::meshBasePath() const
 {
 	return meshPath();
 }
 
-template<typename El, bool h>
-std::string &TexturePaths<El, h>::meshBasePath()
+template<typename El, bool h, bool o>
+std::string &TexturePaths<El, h, o>::meshBasePath()
 {
 	return meshPath();
 }
 
-template<typename El, bool h>
-void TexturePaths<El, h>::clearTexturePaths()
+template<typename El, bool h, bool o>
+void TexturePaths<El, h, o>::clearTexturePaths()
 {
 	texPaths().clear();
 }
 
-template<typename El, bool h>
-void TexturePaths<El, h>::pushTexturePath(const std::string& textName)
+template<typename El, bool h, bool o>
+void TexturePaths<El, h, o>::pushTexturePath(const std::string& textName)
 {
 	texPaths().push_back(textName);
 }
 
-template<typename El, bool h>
-typename TexturePaths<El, h>::TexFileNamesIterator TexturePaths<El, h>::texturePathBegin()
+template<typename El, bool h, bool o>
+typename TexturePaths<El, h, o>::TexFileNamesIterator TexturePaths<El, h, o>::texturePathBegin()
 {
 	return texPaths().begin();
 }
 
-template<typename El, bool h>
-typename TexturePaths<El, h>::TexFileNamesIterator TexturePaths<El, h>::texturePathEnd()
+template<typename El, bool h, bool o>
+typename TexturePaths<El, h, o>::TexFileNamesIterator TexturePaths<El, h, o>::texturePathEnd()
 {
 	return texPaths().end();
 }
 
-template<typename El, bool h>
-typename TexturePaths<El, h>::ConstTexFileNamesIterator TexturePaths<El, h>::texturePathBegin() const
+template<typename El, bool h, bool o>
+typename TexturePaths<El, h, o>::ConstTexFileNamesIterator TexturePaths<El, h, o>::texturePathBegin() const
 {
 	return texPaths().begin();
 }
 
-template<typename El, bool h>
-typename TexturePaths<El, h>::ConstTexFileNamesIterator TexturePaths<El, h>::texturePathEnd() const
+template<typename El, bool h, bool o>
+typename TexturePaths<El, h, o>::ConstTexFileNamesIterator TexturePaths<El, h, o>::texturePathEnd() const
 {
 	return texPaths().end();
 }
 
-template<typename El, bool h>
-typename TexturePaths<El, h>::TexFileNamesRangeIterator TexturePaths<El, h>::texturePaths()
+template<typename El, bool h, bool o>
+typename TexturePaths<El, h, o>::TexFileNamesRangeIterator TexturePaths<El, h, o>::texturePaths()
 {
 	return TexFileNamesRangeIterator(
 		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
 }
 
-template<typename El, bool h>
-typename TexturePaths<El, h>::ConstTexFileNamesRangeIterator TexturePaths<El, h>::texturePaths() const
+template<typename El, bool h, bool o>
+typename TexturePaths<El, h, o>::ConstTexFileNamesRangeIterator TexturePaths<El, h, o>::texturePaths() const
 {
 	return ConstTexFileNamesRangeIterator(
 		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
 }
 
-template<typename El, bool h>
+template<typename El, bool h, bool o>
 template<typename Element>
-void TexturePaths<El, h>::importFrom(const Element& e)
+void TexturePaths<El, h, o>::importFrom(const Element& e)
 {
 	if constexpr (HasTexturePaths<Element>) {
 		texPaths() = e.texPaths();
@@ -115,26 +115,26 @@ void TexturePaths<El, h>::importFrom(const Element& e)
 	}
 }
 
-template<typename El, bool h>
-std::vector<std::string>& TexturePaths<El, h>::texPaths()
+template<typename El, bool h, bool o>
+std::vector<std::string>& TexturePaths<El, h, o>::texPaths()
 {
 	return data.template get<El>(this).texPaths;
 }
 
-template<typename El, bool h>
-const std::vector<std::string>& TexturePaths<El, h>::texPaths() const
+template<typename El, bool h, bool o>
+const std::vector<std::string>& TexturePaths<El, h, o>::texPaths() const
 {
 	return data.template get<El>(this).texPaths;
 }
 
-template<typename El, bool h>
-std::string& TexturePaths<El, h>::meshPath()
+template<typename El, bool h, bool o>
+std::string& TexturePaths<El, h, o>::meshPath()
 {
 	return data.template get<El>(this).meshPath;
 }
 
-template<typename El, bool h>
-const std::string& TexturePaths<El, h>::meshPath() const
+template<typename El, bool h, bool o>
+const std::string& TexturePaths<El, h, o>::meshPath() const
 {
 	return data.template get<El>(this).meshPath;
 }

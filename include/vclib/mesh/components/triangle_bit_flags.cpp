@@ -32,8 +32,8 @@ namespace vcl::comp {
  * @param[in] bit: the position of the bit that will be returned.
  * @return true if the required bit is enabled, false otherwise.
  */
-template<typename El, bool h>
-bool TriangleBitFlags<El, h>::userBitFlag(uint bit) const
+template<typename El, bool h, bool o>
+bool TriangleBitFlags<El, h, o>::userBitFlag(uint bit) const
 {
 	// using FIRST_USER_BIT of this class
 	return Base::userBitFlag(bit, FIRST_USER_BIT);
@@ -45,8 +45,8 @@ bool TriangleBitFlags<El, h>::userBitFlag(uint bit) const
  *
  * @param bit: the position of the bit that will be set.
  */
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::setUserBit(uint bit)
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::setUserBit(uint bit)
 {
 	// using FIRST_USER_BIT of this class
 	Base::setUserBit(bit, FIRST_USER_BIT);
@@ -58,8 +58,8 @@ void TriangleBitFlags<El, h>::setUserBit(uint bit)
  *
  * @param bit: the position of the bit that will be reset.
  */
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::unsetUserBit(uint bit)
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::unsetUserBit(uint bit)
 {
 	// using FIRST_USER_BIT of this class
 	Base::unsetUserBit(bit, FIRST_USER_BIT);
@@ -72,119 +72,119 @@ void TriangleBitFlags<El, h>::unsetUserBit(uint bit)
  * @param[in] i: id of the edge, must be < 3.
  * @return true if the ith Edge of the Triangle is on border, false otherwise.
  */
-template<typename El, bool h>
-bool TriangleBitFlags<El, h>::isEdgeOnBorder(uint i) const
+template<typename El, bool h, bool o>
+bool TriangleBitFlags<El, h, o>::isEdgeOnBorder(uint i) const
 {
 	assert(i < 3);
 	return Base::flagValue(Base::BORDER << i);
 }
 
-template<typename El, bool h>
-bool TriangleBitFlags<El, h>::isAnyEdgeOnBorder() const
+template<typename El, bool h, bool o>
+bool TriangleBitFlags<El, h, o>::isAnyEdgeOnBorder() const
 {
 	return isEdgeOnBorder(0) || isEdgeOnBorder(1) || isEdgeOnBorder(2);
 }
 
-template<typename El, bool h>
-bool TriangleBitFlags<El, h>::isOnBorder() const
+template<typename El, bool h, bool o>
+bool TriangleBitFlags<El, h, o>::isOnBorder() const
 {
 	return isAnyEdgeOnBorder();
 }
 
-template<typename El, bool h>
-bool TriangleBitFlags<El, h>::isEdgeSelected(uint i) const
+template<typename El, bool h, bool o>
+bool TriangleBitFlags<El, h, o>::isEdgeSelected(uint i) const
 {
 	assert(i < 3);
 	return Base::flagValue(EDGESEL0 << i);
 }
 
-template<typename El, bool h>
-bool TriangleBitFlags<El, h>::isAnyEdgeSelected() const
+template<typename El, bool h, bool o>
+bool TriangleBitFlags<El, h, o>::isAnyEdgeSelected() const
 {
 	return isEdgeSelected(0) || isEdgeSelected(1) || isEdgeSelected(2);
 }
 
-template<typename El, bool h>
-bool TriangleBitFlags<El, h>::isEdgeFaux(uint i) const
+template<typename El, bool h, bool o>
+bool TriangleBitFlags<El, h, o>::isEdgeFaux(uint i) const
 {
 	assert(i < 3);
 	return Base::flagValue(FAUX0 << i);
 }
 
-template<typename El, bool h>
-bool TriangleBitFlags<El, h>::isAnyEdgeFaux() const
+template<typename El, bool h, bool o>
+bool TriangleBitFlags<El, h, o>::isAnyEdgeFaux() const
 {
 	return isEdgeFaux(0) || isEdgeFaux(1) || isEdgeFaux(2);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::setEdgeOnBorder(uint i)
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::setEdgeOnBorder(uint i)
 {
 	assert(i < 3);
 	Base::setFlag(Base::BORDER << i);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::setEdgeSelected(uint i)
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::setEdgeSelected(uint i)
 {
 	assert(i < 3);
 	Base::setFlag(EDGESEL0 << i);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::setEdgeFaux(uint i)
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::setEdgeFaux(uint i)
 {
 	assert(i < 3);
 	Base::setFlag(FAUX0 << i);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::unsetEdgeOnBorder(uint i)
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::unsetEdgeOnBorder(uint i)
 {
 	assert(i < 3);
 	Base::unsetFlag(Base::BORDER << i);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::unsetAllEdgesOnBorder()
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::unsetAllEdgesOnBorder()
 {
 	unsetEdgeOnBorder(0);
 	unsetEdgeOnBorder(1);
 	unsetEdgeOnBorder(2);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::unsetEdgeSelected(uint i)
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::unsetEdgeSelected(uint i)
 {
 	assert(i < 3);
 	Base::unsetFlag(EDGESEL0 << i);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::unsetAllEdgesSelected()
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::unsetAllEdgesSelected()
 {
 	unsetEdgeSelected(0);
 	unsetEdgeSelected(1);
 	unsetEdgeSelected(2);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::unsetEdgeFaux(uint i)
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::unsetEdgeFaux(uint i)
 {
 	assert(i < 3);
 	Base::unsetFlag(FAUX0 << i);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::unsetAllEdgeFaux()
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::unsetAllEdgeFaux()
 {
 	unsetEdgeFaux(0);
 	unsetEdgeFaux(1);
 	unsetEdgeFaux(2);
 }
 
-template<typename El, bool h>
-void TriangleBitFlags<El, h>::importFromVCGFlags(int f)
+template<typename El, bool h, bool o>
+void TriangleBitFlags<El, h, o>::importFromVCGFlags(int f)
 {
 	if (f & 0x00000020)
 		Base::setSelected();
@@ -208,8 +208,8 @@ void TriangleBitFlags<El, h>::importFromVCGFlags(int f)
 		setEdgeFaux(2);
 }
 
-template<typename El, bool h>
-int TriangleBitFlags<El, h>::exportToVCGFlags() const
+template<typename El, bool h, bool o>
+int TriangleBitFlags<El, h, o>::exportToVCGFlags() const
 {
 	int f = 0;
 	if (Base::isSelected())
@@ -235,9 +235,9 @@ int TriangleBitFlags<El, h>::exportToVCGFlags() const
 	return f;
 }
 
-template<typename El, bool h>
+template<typename El, bool h, bool o>
 template<typename Element>
-void TriangleBitFlags<El, h>::importFrom(const Element& e)
+void TriangleBitFlags<El, h, o>::importFrom(const Element& e)
 {
 	if constexpr (HasBitFlags<Element>) {
 		Base::unsetAllFlags();

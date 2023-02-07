@@ -34,10 +34,10 @@
 
 namespace vcl::comp {
 
-template<typename ElementType, bool horizontal>
+template<typename ElementType = void, bool horizontal = true, bool optional = false>
 class TexturePaths
 {
-	using ThisType = TexturePaths<ElementType, horizontal>;
+	using ThisType = TexturePaths<ElementType, horizontal, optional>;
 
 	struct TPData {
 		std::vector<std::string> texPaths;
@@ -48,6 +48,7 @@ public:
 	using TexturePathsComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	// iterators
 	using TexFileNamesIterator      = std::vector<std::string>::iterator;

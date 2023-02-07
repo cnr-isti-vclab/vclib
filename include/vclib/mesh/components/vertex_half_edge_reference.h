@@ -35,10 +35,14 @@
 
 namespace vcl::comp {
 
-template<typename HalfEdge, typename ElementType, bool horizontal>
+template<
+	typename HalfEdge,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
 class VertexHalfEdgeReference
 {
-	using ThisType = VertexHalfEdgeReference<HalfEdge, ElementType, horizontal>;
+	using ThisType = VertexHalfEdgeReference<HalfEdge, ElementType, horizontal, optional>;
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
@@ -48,6 +52,7 @@ public:
 	using VertexHalfEdgeReferencesComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	using HalfEdgeType = HalfEdge;
 

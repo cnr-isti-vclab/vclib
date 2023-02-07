@@ -35,9 +35,18 @@ concept HasInitMemberFunction = requires(T o)
 };
 
 template<typename T>
-concept IsVerticalComponent = requires(T o)
+concept VerticalComponentConcept = requires (T o)
 {
 	{ o.IS_VERTICAL } -> std::same_as<bool>;
+	typename T::DataValueType;
+	// a vertical component must also have a private member
+	// internal::ComponentData<T::DataValueType, horizontal> from which access its data
+	// this member will take care to manage the difference between horizontal and vertical component
+};
+
+template<typename T>
+concept IsVerticalComponent = VerticalComponentConcept<T> && requires(T o)
+{
 	o.IS_VERTICAL == true;
 };
 

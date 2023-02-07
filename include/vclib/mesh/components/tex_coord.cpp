@@ -25,21 +25,21 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, typename El, bool h>
-const typename TexCoord<Scalar, El, h>::TexCoordType& TexCoord<Scalar, El, h>::texCoord() const
+template<typename Scalar, typename El, bool h, bool o>
+const typename TexCoord<Scalar, El, h, o>::TexCoordType& TexCoord<Scalar, El, h, o>::texCoord() const
 {
 	return t();
 }
 
-template<typename Scalar, typename El, bool h>
-typename TexCoord<Scalar, El, h>::TexCoordType& TexCoord<Scalar, El, h>::texCoord()
+template<typename Scalar, typename El, bool h, bool o>
+typename TexCoord<Scalar, El, h, o>::TexCoordType& TexCoord<Scalar, El, h, o>::texCoord()
 {
 	return t();
 }
 
-template<typename Scalar, typename El, bool h>
+template<typename Scalar, typename El, bool h, bool o>
 template<typename Element>
-void TexCoord<Scalar, El, h>::importFrom(const Element& e)
+void TexCoord<Scalar, El, h, o>::importFrom(const Element& e)
 {
 	if constexpr(HasTexCoord<Element>) {
 		if (isTexCoordEnabledOn(e)){
@@ -48,14 +48,14 @@ void TexCoord<Scalar, El, h>::importFrom(const Element& e)
 	}
 }
 
-template<typename Scalar, typename El, bool h>
-vcl::TexCoord<Scalar>& TexCoord<Scalar, El, h>::t()
+template<typename Scalar, typename El, bool h, bool o>
+vcl::TexCoord<Scalar>& TexCoord<Scalar, El, h, o>::t()
 {
 	return data.template get<El>(this);
 }
 
-template<typename Scalar, typename El, bool h>
-const vcl::TexCoord<Scalar>& TexCoord<Scalar, El, h>::t() const
+template<typename Scalar, typename El, bool h, bool o>
+const vcl::TexCoord<Scalar>& TexCoord<Scalar, El, h, o>::t() const
 {
 	return data.template get<El>(this);
 }

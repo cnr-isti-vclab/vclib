@@ -30,8 +30,8 @@ namespace vcl::comp {
  * If the size of the container is static, all the values will be set to nullptr.
  * If the size is dynamic, the number of values in the container is zero.
  */
-template<typename Edge, int N, typename El, bool h>
-AdjacentEdges<Edge, N, El, h>::AdjacentEdges() : Base()
+template<typename Edge, int N, typename El, bool h, bool o>
+AdjacentEdges<Edge, N, El, h, o>::AdjacentEdges() : Base()
 {
 }
 
@@ -39,8 +39,8 @@ AdjacentEdges<Edge, N, El, h>::AdjacentEdges() : Base()
  * @brief Returns the number of adjacent edges of this element.
  * @return The number of adjacent edges of this element.
  */
-template<typename Edge, int N, typename El, bool h>
-uint AdjacentEdges<Edge, N, El, h>::adjEdgesNumber() const
+template<typename Edge, int N, typename El, bool h, bool o>
+uint AdjacentEdges<Edge, N, El, h, o>::adjEdgesNumber() const
 {
 	return Base::container(this).size();
 }
@@ -58,8 +58,8 @@ uint AdjacentEdges<Edge, N, El, h>::adjEdgesNumber() const
  * between 0 and the number of adj edges.
  * @return The pointer to the i-th adjacent edge of this element.
  */
-template<typename Edge, int N, typename El, bool h>
-Edge*& AdjacentEdges<Edge, N, El, h>::adjEdge(uint i)
+template<typename Edge, int N, typename El, bool h, bool o>
+Edge*& AdjacentEdges<Edge, N, El, h, o>::adjEdge(uint i)
 {
 	return Base::container(this).at(i);
 }
@@ -70,8 +70,8 @@ Edge*& AdjacentEdges<Edge, N, El, h>::adjEdge(uint i)
  * between 0 and the number of adj edges.
  * @return The pointer to the i-th adjacent edge of this element.
  */
-template<typename Edge, int N, typename El, bool h>
-const Edge* AdjacentEdges<Edge, N, El, h>::adjEdge(uint i) const
+template<typename Edge, int N, typename El, bool h, bool o>
+const Edge* AdjacentEdges<Edge, N, El, h, o>::adjEdge(uint i) const
 {
 	return Base::container(this).at(i);
 }
@@ -92,8 +92,8 @@ const Edge* AdjacentEdges<Edge, N, El, h>::adjEdge(uint i) const
  * value is modularized on adjEdgeNumber().
  * @return The pointer to the required adjacent edge of this element.
  */
-template<typename Edge, int N, typename El, bool h>
-Edge*& AdjacentEdges<Edge, N, El, h>::adjEdgeMod(int i)
+template<typename Edge, int N, typename El, bool h, bool o>
+Edge*& AdjacentEdges<Edge, N, El, h, o>::adjEdgeMod(int i)
 {
 	return Base::container(this).atMod(i);
 }
@@ -104,8 +104,8 @@ Edge*& AdjacentEdges<Edge, N, El, h>::adjEdgeMod(int i)
  * value is modularized on adjEdgeNumber().
  * @return The pointer to the required adjacent edge of this element.
  */
-template<typename Edge, int N, typename El, bool h>
-const Edge* AdjacentEdges<Edge, N, El, h>::adjEdgeMod(int i) const
+template<typename Edge, int N, typename El, bool h, bool o>
+const Edge* AdjacentEdges<Edge, N, El, h, o>::adjEdgeMod(int i) const
 {
 	return Base::container(this).atMod(i);
 }
@@ -116,8 +116,8 @@ const Edge* AdjacentEdges<Edge, N, El, h>::adjEdgeMod(int i) const
  * @param[in] i: the position in the container on which set the adj edge; the value must be
  * between 0 and the number of adj edges.
  */
-template<typename Edge, int N, typename El, bool h>
-void AdjacentEdges<Edge, N, El, h>::setAdjEdge(Edge* e, uint i)
+template<typename Edge, int N, typename El, bool h, bool o>
+void AdjacentEdges<Edge, N, El, h, o>::setAdjEdge(Edge* e, uint i)
 {
 	Base::container(this).set(e, i);
 }
@@ -130,34 +130,34 @@ void AdjacentEdges<Edge, N, El, h>::setAdjEdge(Edge* e, uint i)
  *
  * @param[in] list: vector of adjacent edges to set.
  */
-template<typename Edge, int N, typename El, bool h>
-void AdjacentEdges<Edge, N, El, h>::setAdjEdges(const std::vector<Edge*>& list)
+template<typename Edge, int N, typename El, bool h, bool o>
+void AdjacentEdges<Edge, N, El, h, o>::setAdjEdges(const std::vector<Edge*>& list)
 {
 	Base::container(this).set(list);
 }
 
-template<typename Edge, int N, typename El, bool h>
-bool AdjacentEdges<Edge, N, El, h>::containsAdjEdge(const Edge* e) const
+template<typename Edge, int N, typename El, bool h, bool o>
+bool AdjacentEdges<Edge, N, El, h, o>::containsAdjEdge(const Edge* e) const
 {
 	return Base::container(this).contains(e);
 }
 
-template<typename Edge, int N, typename El, bool h>
-typename AdjacentEdges<Edge, N, El, h>::AdjacentEdgeIterator
-AdjacentEdges<Edge, N, El, h>::findAdjEdge(const Edge* e)
+template<typename Edge, int N, typename El, bool h, bool o>
+typename AdjacentEdges<Edge, N, El, h, o>::AdjacentEdgeIterator
+AdjacentEdges<Edge, N, El, h, o>::findAdjEdge(const Edge* e)
 {
 	return Base::container(this).find(e);
 }
 
-template<typename Edge, int N, typename El, bool h>
-typename AdjacentEdges<Edge, N, El, h>::ConstAdjacentEdgeIterator
-AdjacentEdges<Edge, N, El, h>::findAdjEdge(const Edge* e) const
+template<typename Edge, int N, typename El, bool h, bool o>
+typename AdjacentEdges<Edge, N, El, h, o>::ConstAdjacentEdgeIterator
+AdjacentEdges<Edge, N, El, h, o>::findAdjEdge(const Edge* e) const
 {
 	return Base::container(this).find(e);
 }
 
-template<typename Edge, int N, typename El, bool h>
-int AdjacentEdges<Edge, N, El, h>::indexOfAdjEdge(const Edge* e) const
+template<typename Edge, int N, typename El, bool h, bool o>
+int AdjacentEdges<Edge, N, El, h, o>::indexOfAdjEdge(const Edge* e) const
 {
 	return Base::container(this).indexOf(e);
 }
@@ -168,106 +168,106 @@ int AdjacentEdges<Edge, N, El, h>::indexOfAdjEdge(const Edge* e) const
  * size.
  * @param n
  */
-template<typename Edge, int N, typename El, bool h>
-void AdjacentEdges<Edge, N, El, h>::resizeAdjEdges(uint n)
+template<typename Edge, int N, typename El, bool h, bool o>
+void AdjacentEdges<Edge, N, El, h, o>::resizeAdjEdges(uint n)
 	requires(N < 0)
 {
 	Base::container(this).resize(n);
 }
 
-template<typename Edge, int N, typename El, bool h>
-void AdjacentEdges<Edge, N, El, h>::pushAdjEdge(Edge* e)
+template<typename Edge, int N, typename El, bool h, bool o>
+void AdjacentEdges<Edge, N, El, h, o>::pushAdjEdge(Edge* e)
 	requires(N < 0)
 {
 	Base::container(this).pushBack(e);
 }
 
-template<typename Edge, int N, typename El, bool h>
-void AdjacentEdges<Edge, N, El, h>::insertAdjEdge(uint i, Edge* e)
+template<typename Edge, int N, typename El, bool h, bool o>
+void AdjacentEdges<Edge, N, El, h, o>::insertAdjEdge(uint i, Edge* e)
 	requires(N < 0)
 {
 	Base::container(this).insert(i, e);
 }
 
-template<typename Edge, int N, typename El, bool h>
-void AdjacentEdges<Edge, N, El, h>::eraseAdjEdge(uint i)
+template<typename Edge, int N, typename El, bool h, bool o>
+void AdjacentEdges<Edge, N, El, h, o>::eraseAdjEdge(uint i)
 	requires(N < 0)
 {
 	Base::container(this).erase(i);
 }
 
-template<typename Edge, int N, typename El, bool h>
-void AdjacentEdges<Edge, N, El, h>::clearAdjEdges()
+template<typename Edge, int N, typename El, bool h, bool o>
+void AdjacentEdges<Edge, N, El, h, o>::clearAdjEdges()
 	requires(N < 0)
 {
 	Base::container(this).clear();
 }
 
-template<typename Edge, int N, typename El, bool h>
-typename AdjacentEdges<Edge, N, El, h>::AdjacentEdgeIterator
-AdjacentEdges<Edge, N, El, h>::adjEdgeBegin()
+template<typename Edge, int N, typename El, bool h, bool o>
+typename AdjacentEdges<Edge, N, El, h, o>::AdjacentEdgeIterator
+AdjacentEdges<Edge, N, El, h, o>::adjEdgeBegin()
 {
 	return Base::container(this).begin();
 }
 
-template<typename Edge, int N, typename El, bool h>
-typename AdjacentEdges<Edge, N, El, h>::AdjacentEdgeIterator
-AdjacentEdges<Edge, N, El, h>::adjEdgeEnd()
+template<typename Edge, int N, typename El, bool h, bool o>
+typename AdjacentEdges<Edge, N, El, h, o>::AdjacentEdgeIterator
+AdjacentEdges<Edge, N, El, h, o>::adjEdgeEnd()
 {
 	return Base::container(this).end();
 }
 
-template<typename Edge, int N, typename El, bool h>
-typename AdjacentEdges<Edge, N, El, h>::ConstAdjacentEdgeIterator
-AdjacentEdges<Edge, N, El, h>::adjEdgeBegin() const
+template<typename Edge, int N, typename El, bool h, bool o>
+typename AdjacentEdges<Edge, N, El, h, o>::ConstAdjacentEdgeIterator
+AdjacentEdges<Edge, N, El, h, o>::adjEdgeBegin() const
 {
 	return Base::container(this).begin();
 }
 
-template<typename Edge, int N, typename El, bool h>
-typename AdjacentEdges<Edge, N, El, h>::ConstAdjacentEdgeIterator
-AdjacentEdges<Edge, N, El, h>::adjEdgeEnd() const
+template<typename Edge, int N, typename El, bool h, bool o>
+typename AdjacentEdges<Edge, N, El, h, o>::ConstAdjacentEdgeIterator
+AdjacentEdges<Edge, N, El, h, o>::adjEdgeEnd() const
 {
 	return Base::container(this).end();
 }
 
-template<typename Edge, int N, typename El, bool h>
-typename AdjacentEdges<Edge, N, El, h>::AdjacentEdgeRangeIterator
-AdjacentEdges<Edge, N, El, h>::adjEdges()
+template<typename Edge, int N, typename El, bool h, bool o>
+typename AdjacentEdges<Edge, N, El, h, o>::AdjacentEdgeRangeIterator
+AdjacentEdges<Edge, N, El, h, o>::adjEdges()
 {
 	return Base::container(this).rangeIterator();
 }
 
-template<typename Edge, int N, typename El, bool h>
-typename AdjacentEdges<Edge, N, El, h>::ConstAdjacentEdgeRangeIterator
-AdjacentEdges<Edge, N, El, h>::adjEdges() const
+template<typename Edge, int N, typename El, bool h, bool o>
+typename AdjacentEdges<Edge, N, El, h, o>::ConstAdjacentEdgeRangeIterator
+AdjacentEdges<Edge, N, El, h, o>::adjEdges() const
 {
 	return Base::container(this).rangeIterator();
 }
 
-template<typename Edge, int N, typename El, bool h>
-void AdjacentEdges<Edge, N, El, h>::updateEdgeReferences(const Edge* oldBase, const Edge* newBase)
+template<typename Edge, int N, typename El, bool h, bool o>
+void AdjacentEdges<Edge, N, El, h, o>::updateEdgeReferences(const Edge* oldBase, const Edge* newBase)
 {
 	Base::updateElementReferences(oldBase, newBase, this);
 }
 
-template<typename Edge, int N, typename El, bool h>
-void AdjacentEdges<Edge, N, El, h>::updateEdgeReferencesAfterCompact(
+template<typename Edge, int N, typename El, bool h, bool o>
+void AdjacentEdges<Edge, N, El, h, o>::updateEdgeReferencesAfterCompact(
 	const Edge*             base,
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementReferencesAfterCompact(base, newIndices, this);
 }
 
-template<typename Edge, int N, typename El, bool h>
+template<typename Edge, int N, typename El, bool h, bool o>
 template<typename Element>
-void AdjacentEdges<Edge, N, El, h>::importFrom(const Element&)
+void AdjacentEdges<Edge, N, El, h, o>::importFrom(const Element&)
 {
 }
 
-template<typename Edge, int N, typename El, bool h>
+template<typename Edge, int N, typename El, bool h, bool o>
 template<typename Element, typename ElEType>
-void AdjacentEdges<Edge, N, El, h>::importEdgeReferencesFrom(
+void AdjacentEdges<Edge, N, El, h, o>::importEdgeReferencesFrom(
 	const Element& e,
 	Edge*          base,
 	const ElEType* ebase)
@@ -298,9 +298,9 @@ void AdjacentEdges<Edge, N, El, h>::importEdgeReferencesFrom(
 	}
 }
 
-template<typename Edge, int N, typename El, bool h>
+template<typename Edge, int N, typename El, bool h, bool o>
 template<typename Element, typename ElEType>
-void AdjacentEdges<Edge, N, El, h>::importReferencesFrom(
+void AdjacentEdges<Edge, N, El, h, o>::importReferencesFrom(
 	const Element& e,
 	Edge*          base,
 	const ElEType* ebase)

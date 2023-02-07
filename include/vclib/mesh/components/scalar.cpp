@@ -25,21 +25,21 @@
 
 namespace vcl::comp {
 
-template<typename T, typename El, bool h>
-const T& Scalar<T, El, h>::scalar() const
+template<typename T, typename El, bool h, bool o>
+const T& Scalar<T, El, h, o>::scalar() const
 {
 	return s();
 }
 
-template<typename T, typename El, bool h>
-T& Scalar<T, El, h>::scalar()
+template<typename T, typename El, bool h, bool o>
+T& Scalar<T, El, h, o>::scalar()
 {
 	return s();
 }
 
-template<typename T, typename El, bool h>
+template<typename T, typename El, bool h, bool o>
 template<typename Element>
-void Scalar<T, El, h>::importFrom(const Element& e)
+void Scalar<T, El, h, o>::importFrom(const Element& e)
 {
 	if constexpr (HasScalar<Element>) {
 		if (isScalarEnabledOn(e)){
@@ -48,14 +48,14 @@ void Scalar<T, El, h>::importFrom(const Element& e)
 	}
 }
 
-template<typename T, typename El, bool h>
-T& Scalar<T, El, h>::s()
+template<typename T, typename El, bool h, bool o>
+T& Scalar<T, El, h, o>::s()
 {
 	return data.template get<El>(this);
 }
 
-template<typename T, typename El, bool h>
-const T& Scalar<T, El, h>::s() const
+template<typename T, typename El, bool h, bool o>
+const T& Scalar<T, El, h, o>::s() const
 {
 	return data.template get<El>(this);
 }

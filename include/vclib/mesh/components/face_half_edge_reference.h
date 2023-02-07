@@ -42,10 +42,14 @@
 
 namespace vcl::comp {
 
-template<typename HalfEdge, typename ElementType, bool horizontal>
+template<
+	typename HalfEdge,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
 class FaceHalfEdgeReference
 {
-	using ThisType = FaceHalfEdgeReference<HalfEdge, ElementType, horizontal>;
+	using ThisType = FaceHalfEdgeReference<HalfEdge, ElementType, horizontal, optional>;
 
 	struct FHERData {
 		HalfEdge*              ohe; // outer half edge
@@ -62,6 +66,7 @@ public:
 	using FaceHalfEdgeReferencesComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	using HalfEdgeType = HalfEdge;
 	using VertexType   = typename HalfEdge::VertexType;

@@ -25,21 +25,21 @@
 
 namespace vcl::comp {
 
-template<PointConcept P, typename El, bool h>
-const P& NormalT<P, El, h>::normal() const
+template<PointConcept P, typename El, bool h, bool o>
+const P& NormalT<P, El, h, o>::normal() const
 {
 	return n();
 }
 
-template<PointConcept P, typename El, bool h>
-P& NormalT<P, El, h>::normal()
+template<PointConcept P, typename El, bool h, bool o>
+P& NormalT<P, El, h, o>::normal()
 {
 	return n();
 }
 
-template<PointConcept P, typename El, bool h>
+template<PointConcept P, typename El, bool h, bool o>
 template<typename Element>
-void NormalT<P, El, h>::importFrom(const Element& e)
+void NormalT<P, El, h, o>::importFrom(const Element& e)
 {
 	if constexpr(HasNormal<Element>) {
 		if (isNormalEnabledOn(e)){
@@ -48,14 +48,14 @@ void NormalT<P, El, h>::importFrom(const Element& e)
 	}
 }
 
-template<PointConcept P, typename El, bool h>
-P& NormalT<P, El, h>::n()
+template<PointConcept P, typename El, bool h, bool o>
+P& NormalT<P, El, h, o>::n()
 {
 	return data.template get<El>(this);
 }
 
-template<PointConcept P, typename El, bool h>
-const P& NormalT<P, El, h>::n() const
+template<PointConcept P, typename El, bool h, bool o>
+const P& NormalT<P, El, h, o>::n() const
 {
 	return data.template get<El>(this);
 }

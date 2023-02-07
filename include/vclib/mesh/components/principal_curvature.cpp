@@ -25,23 +25,23 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, typename El, bool h>
-const typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, h>::principalCurvature() const
+template<typename Scalar, typename El, bool h, bool o>
+const typename PrincipalCurvature<Scalar, El, h, o>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, h, o>::principalCurvature() const
 {
 	return princCurv();
 }
 
-template<typename Scalar, typename El, bool h>
-typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, h>::principalCurvature()
+template<typename Scalar, typename El, bool h, bool o>
+typename PrincipalCurvature<Scalar, El, h, o>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, h, o>::principalCurvature()
 {
 	return princCurv();
 }
 
-template<typename Scalar, typename El, bool h>
+template<typename Scalar, typename El, bool h, bool o>
 template<typename Element>
-void PrincipalCurvature<Scalar, El, h>::importFrom(const Element& e)
+void PrincipalCurvature<Scalar, El, h, o>::importFrom(const Element& e)
 {
 	if constexpr (HasPrincipalCurvature<Element>) {
 		if (isPrincipalCurvatureEnabledOn(e)) {
@@ -50,16 +50,16 @@ void PrincipalCurvature<Scalar, El, h>::importFrom(const Element& e)
 	}
 }
 
-template<typename Scalar, typename El, bool h>
-typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, h>::princCurv()
+template<typename Scalar, typename El, bool h, bool o>
+typename PrincipalCurvature<Scalar, El, h, o>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, h, o>::princCurv()
 {
 	return data.template get<El>(this);
 }
 
-template<typename Scalar, typename El, bool h>
-const typename PrincipalCurvature<Scalar, El, h>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, h>::princCurv() const
+template<typename Scalar, typename El, bool h, bool o>
+const typename PrincipalCurvature<Scalar, El, h, o>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, h, o>::princCurv() const
 {
 	return data.template get<El>(this);
 }

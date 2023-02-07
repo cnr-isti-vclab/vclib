@@ -32,10 +32,15 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename ElementType, bool horizontal>
+template<
+	typename Scalar,
+	int N,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
 class WedgeTexCoords
 {
-	using ThisType = WedgeTexCoords<Scalar, N, ElementType, horizontal>;
+	using ThisType = WedgeTexCoords<Scalar, N, ElementType, horizontal, optional>;
 
 	struct WTCData {
 		RandomAccessContainer<vcl::TexCoord<Scalar>, N> texCoords;
@@ -48,6 +53,7 @@ public:
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	static const int WEDGE_TEX_COORD_NUMBER = Base::CONTAINER_SIZE;
 

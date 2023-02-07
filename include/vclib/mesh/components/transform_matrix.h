@@ -31,26 +31,17 @@
 
 namespace vcl::comp {
 
-namespace internal {
-
-template<typename Scalar, bool>
-struct  TransformMatrixData { Matrix44<Scalar> tr; };
-
-template<typename Scalar>
-struct TransformMatrixData<Scalar, false> { };
-
-} // vcl::comp::internal
-
-template<typename Scalar, typename ElementType, bool horizontal>
+template<typename Scalar, typename ElementType = void, bool horizontal = true, bool optional = false>
 class TransformMatrix
 {
-	using ThisType = TransformMatrix<Scalar, ElementType, horizontal>;
+	using ThisType = TransformMatrix<Scalar, ElementType, horizontal, optional>;
 public:
 	// data that the component stores internally (or vertically)
 	using DataValueType = Matrix44<Scalar>;
 	using TransformMatrixComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	using TransformMatrixType = Matrix44<Scalar>;
 

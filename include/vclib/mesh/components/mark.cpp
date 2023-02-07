@@ -25,27 +25,27 @@
 
 namespace vcl::comp {
 
-template<typename El, bool h>
-void Mark<El, h>::init()
+template<typename El, bool h, bool o>
+void Mark<El, h, o>::init()
 {
 	resetMark();
 }
 
-template<typename El, bool h>
-int Mark<El, h>::mark() const
+template<typename El, bool h, bool o>
+int Mark<El, h, o>::mark() const
 {
 	return m();
 }
 
-template<typename El, bool h>
-void Mark<El, h>::resetMark()
+template<typename El, bool h, bool o>
+void Mark<El, h, o>::resetMark()
 {
 	m() = 0;
 }
 
-template<typename El, bool h>
+template<typename El, bool h, bool o>
 template<typename E>
-bool Mark<El, h>::hasSameMark(const E& e) const
+bool Mark<El, h, o>::hasSameMark(const E& e) const
 {
 	if constexpr (std::is_pointer<E>::value) {
 		return e->mark() == m();
@@ -55,21 +55,21 @@ bool Mark<El, h>::hasSameMark(const E& e) const
 	}
 }
 
-template<typename El, bool h>
-void Mark<El, h>::incrementMark()
+template<typename El, bool h, bool o>
+void Mark<El, h, o>::incrementMark()
 {
 	m()++;
 }
 
-template<typename El, bool h>
-void Mark<El, h>::decrementMark()
+template<typename El, bool h, bool o>
+void Mark<El, h, o>::decrementMark()
 {
 	m()--;
 }
 
-template<typename El, bool h>
+template<typename El, bool h, bool o>
 template<typename Element>
-void Mark<El, h>::importFrom(const Element& e)
+void Mark<El, h, o>::importFrom(const Element& e)
 {
 	if constexpr (HasMark<Element>) {
 		if (isMarkEnabledOn(e)) {
@@ -78,14 +78,14 @@ void Mark<El, h>::importFrom(const Element& e)
 	}
 }
 
-template<typename El, bool h>
-int& Mark<El, h>::m()
+template<typename El, bool h, bool o>
+int& Mark<El, h, o>::m()
 {
 	return data.template get<El>(this);
 }
 
-template<typename El, bool h>
-const int& Mark<El, h>::m() const
+template<typename El, bool h, bool o>
+const int& Mark<El, h, o>::m() const
 {
 	return data.template get<El>(this);
 }

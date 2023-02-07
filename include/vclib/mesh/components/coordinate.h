@@ -31,15 +31,16 @@
 
 namespace vcl::comp {
 
-template<PointConcept P, typename ElementType, bool horizontal>
+template<PointConcept P, typename ElementType = void, bool horizontal = true, bool optional = false>
 class CoordT
 {
-	using ThisType = CoordT<P, ElementType, horizontal>;
+	using ThisType = CoordT<P, ElementType, horizontal, optional>;
 public:
 	using DataValueType = P;         // data that the component stores internally (or vertically)
 	using CoordComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	using CoordType = P;
 
@@ -59,17 +60,26 @@ private:
 	internal::ComponentData<DataValueType, horizontal> data;
 };
 
-template<typename Scalar, int N, typename ElementType, bool horizontal>
-using Coordinate = CoordT<Point<Scalar, N>, ElementType, horizontal>;
+template<
+	typename Scalar,
+	int N,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
+using Coordinate = CoordT<Point<Scalar, N>, ElementType, horizontal, optional>;
 
-template<typename Scalar, typename ElementType, bool horizontal>
-using Coordinate3 = CoordT<Point3<Scalar>, ElementType, horizontal>;
+template<
+	typename Scalar,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
+using Coordinate3 = CoordT<Point3<Scalar>, ElementType, horizontal, optional>;
 
-template<typename ElementType, bool horizontal>
-using Coordinate3f = Coordinate3<float, ElementType, horizontal>;
+template<typename ElementType = void, bool horizontal = true, bool optional = false>
+using Coordinate3f = Coordinate3<float, ElementType, horizontal, optional>;
 
-template<typename ElementType, bool horizontal>
-using Coordinate3d = Coordinate3<double, ElementType, horizontal>;
+template<typename ElementType = void, bool horizontal = true, bool optional = false>
+using Coordinate3d = Coordinate3<double, ElementType, horizontal, optional>;
 
 } // namespace vcl::comp
 

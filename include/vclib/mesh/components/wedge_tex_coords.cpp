@@ -25,137 +25,137 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, int N, typename El, bool h>
-void WedgeTexCoords<Scalar, N, El, h>::init()
+template<typename Scalar, int N, typename El, bool h, bool o>
+void WedgeTexCoords<Scalar, N, El, h, o>::init()
 {
 	texIndex() = 0;
 }
 
-template<typename Scalar, int N, typename El, bool h>
-vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoord(uint i)
+template<typename Scalar, int N, typename El, bool h, bool o>
+vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoord(uint i)
 {
 	return texCoords().at(i);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-const vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoord(uint i) const
+template<typename Scalar, int N, typename El, bool h, bool o>
+const vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoord(uint i) const
 {
 	return texCoords().at(i);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoordMod(int i)
+template<typename Scalar, int N, typename El, bool h, bool o>
+vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoordMod(int i)
 {
 	return texCoords().atMod(i);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-const vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoordMod(int i) const
+template<typename Scalar, int N, typename El, bool h, bool o>
+const vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoordMod(int i) const
 {
 	return texCoords().atMod(i);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-void WedgeTexCoords<Scalar, N, El, h>::setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i)
+template<typename Scalar, int N, typename El, bool h, bool o>
+void WedgeTexCoords<Scalar, N, El, h, o>::setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i)
 {
 	texCoords().set(t, i);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-void WedgeTexCoords<Scalar, N, El, h>::setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar> >& list)
+template<typename Scalar, int N, typename El, bool h, bool o>
+void WedgeTexCoords<Scalar, N, El, h, o>::setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar> >& list)
 {
 	texCoords().set(list);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-short& WedgeTexCoords<Scalar, N, El, h>::textureIndex()
+template<typename Scalar, int N, typename El, bool h, bool o>
+short& WedgeTexCoords<Scalar, N, El, h, o>::textureIndex()
 {
 	return texIndex();
 }
 
-template<typename Scalar, int N, typename El, bool h>
-const short& WedgeTexCoords<Scalar, N, El, h>::textureIndex() const
+template<typename Scalar, int N, typename El, bool h, bool o>
+const short& WedgeTexCoords<Scalar, N, El, h, o>::textureIndex() const
 {
 	return texIndex();
 }
 
-template<typename Scalar, int N, typename El, bool h>
-typename WedgeTexCoords<Scalar, N, El, h>::WedgeTexCoordsIterator
-WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoordBegin()
+template<typename Scalar, int N, typename El, bool h, bool o>
+typename WedgeTexCoords<Scalar, N, El, h, o>::WedgeTexCoordsIterator
+WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoordBegin()
 {
 	return texCoords().begin();
 }
 
-template<typename Scalar, int N, typename El, bool h>
-typename WedgeTexCoords<Scalar, N, El, h>::WedgeTexCoordsIterator
-WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoordEnd()
+template<typename Scalar, int N, typename El, bool h, bool o>
+typename WedgeTexCoords<Scalar, N, El, h, o>::WedgeTexCoordsIterator
+WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoordEnd()
 {
 	return texCoords().end();
 }
 
-template<typename Scalar, int N, typename El, bool h>
-typename WedgeTexCoords<Scalar, N, El, h>::ConstWedgeTexCoordsIterator
-WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoordBegin() const
+template<typename Scalar, int N, typename El, bool h, bool o>
+typename WedgeTexCoords<Scalar, N, El, h, o>::ConstWedgeTexCoordsIterator
+WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoordBegin() const
 {
 	return texCoords().begin();
 }
 
-template<typename Scalar, int N, typename El, bool h>
-typename WedgeTexCoords<Scalar, N, El, h>::ConstWedgeTexCoordsIterator
-WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoordEnd() const
+template<typename Scalar, int N, typename El, bool h, bool o>
+typename WedgeTexCoords<Scalar, N, El, h, o>::ConstWedgeTexCoordsIterator
+WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoordEnd() const
 {
 	return texCoords().end();
 }
 
-template<typename Scalar, int N, typename El, bool h>
-typename WedgeTexCoords<Scalar, N, El, h>::WedgeTexCoordsRangeIterator
-WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoords()
+template<typename Scalar, int N, typename El, bool h, bool o>
+typename WedgeTexCoords<Scalar, N, El, h, o>::WedgeTexCoordsRangeIterator
+WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoords()
 {
 	return texCoords().rangeIterator();
 }
 
-template<typename Scalar, int N, typename El, bool h>
-typename WedgeTexCoords<Scalar, N, El, h>::ConstWedgeTexCoordsRangeIterator
-WedgeTexCoords<Scalar, N, El, h>::wedgeTexCoords() const
+template<typename Scalar, int N, typename El, bool h, bool o>
+typename WedgeTexCoords<Scalar, N, El, h, o>::ConstWedgeTexCoordsRangeIterator
+WedgeTexCoords<Scalar, N, El, h, o>::wedgeTexCoords() const
 {
 	return texCoords().rangeIterator();
 }
 
-template<typename Scalar, int N, typename El, bool h>
-void WedgeTexCoords<Scalar, N, El, h>::resizeWedgeTexCoords(uint n) requires (N < 0)
+template<typename Scalar, int N, typename El, bool h, bool o>
+void WedgeTexCoords<Scalar, N, El, h, o>::resizeWedgeTexCoords(uint n) requires (N < 0)
 {
 	texCoords().resize(n);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-void WedgeTexCoords<Scalar, N, El, h>::pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t) requires (N < 0)
+template<typename Scalar, int N, typename El, bool h, bool o>
+void WedgeTexCoords<Scalar, N, El, h, o>::pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t) requires (N < 0)
 {
 	texCoords().pushBack(t);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-void WedgeTexCoords<Scalar, N, El, h>::insertWedgeTexCoord(
+template<typename Scalar, int N, typename El, bool h, bool o>
+void WedgeTexCoords<Scalar, N, El, h, o>::insertWedgeTexCoord(
 	uint                         i,
 	const vcl::TexCoord<Scalar>& t) requires(N < 0)
 {
 	texCoords().insert(i, t);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-void WedgeTexCoords<Scalar, N, El, h>::eraseWedgeTexCoord(uint i) requires (N < 0)
+template<typename Scalar, int N, typename El, bool h, bool o>
+void WedgeTexCoords<Scalar, N, El, h, o>::eraseWedgeTexCoord(uint i) requires (N < 0)
 {
 	texCoords().erase(i);
 }
 
-template<typename Scalar, int N, typename El, bool h>
-void WedgeTexCoords<Scalar, N, El, h>::clearWedgeTexCoord() requires (N < 0)
+template<typename Scalar, int N, typename El, bool h, bool o>
+void WedgeTexCoords<Scalar, N, El, h, o>::clearWedgeTexCoord() requires (N < 0)
 {
 	texCoords().clear();
 }
 
-template<typename Scalar, int N, typename El, bool h>
+template<typename Scalar, int N, typename El, bool h, bool o>
 template<typename Element>
-void WedgeTexCoords<Scalar, N, El, h>::importFrom(const Element& e)
+void WedgeTexCoords<Scalar, N, El, h, o>::importFrom(const Element& e)
 {
 	if constexpr (HasWedgeTexCoords<Element>) {
 		if (isWedgeTexCoordsEnabledOn(e)) {
@@ -183,9 +183,9 @@ void WedgeTexCoords<Scalar, N, El, h>::importFrom(const Element& e)
 	}
 }
 
-template<typename Scalar, int N, typename El, bool h>
+template<typename Scalar, int N, typename El, bool h, bool o>
 template<typename Element>
-void WedgeTexCoords<Scalar, N, El, h>::importWedgeTexCoordsFrom(const Element& e)
+void WedgeTexCoords<Scalar, N, El, h, o>::importWedgeTexCoordsFrom(const Element& e)
 {
 	for (uint i = 0; i < e.vertexNumber(); ++i){
 		wedgeTexCoord(i) = e.wedgeTexCoord(i).template cast<Scalar>();
@@ -193,27 +193,27 @@ void WedgeTexCoords<Scalar, N, El, h>::importWedgeTexCoordsFrom(const Element& e
 	texIndex() = e.textureIndex();
 }
 
-template<typename Scalar, int N, typename El, bool h>
-short& WedgeTexCoords<Scalar, N, El, h>::texIndex()
+template<typename Scalar, int N, typename El, bool h, bool o>
+short& WedgeTexCoords<Scalar, N, El, h, o>::texIndex()
 {
 	return data.template get<El>(this).texIndex;
 }
 
-template<typename Scalar, int N, typename El, bool h>
-short WedgeTexCoords<Scalar, N, El, h>::texIndex() const
+template<typename Scalar, int N, typename El, bool h, bool o>
+short WedgeTexCoords<Scalar, N, El, h, o>::texIndex() const
 {
 	return data.template get<El>(this).texIndex;
 }
 
-template<typename Scalar, int N, typename El, bool h>
-RandomAccessContainer<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, h>::texCoords()
+template<typename Scalar, int N, typename El, bool h, bool o>
+RandomAccessContainer<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, h, o>::texCoords()
 {
 	return data.template get<El>(this).texCoords;
 }
 
-template<typename Scalar, int N, typename El, bool h>
+template<typename Scalar, int N, typename El, bool h, bool o>
 const RandomAccessContainer<vcl::TexCoord<Scalar>, N>&
-WedgeTexCoords<Scalar, N, El, h>::texCoords() const
+WedgeTexCoords<Scalar, N, El, h, o>::texCoords() const
 {
 	return data.template get<El>(this).texCoords;
 }

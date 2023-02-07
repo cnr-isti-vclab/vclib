@@ -37,20 +37,20 @@ namespace vcl::edge {
 
 /* Port AdjacentEdges class into edge namespace */
 template<typename EdgeType>
-using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, void, true>;
+using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
 
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, void, true>;
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
 /* Port BitFlags class into edge namespace */
-using BitFlags = comp::BitFlags<void, true>;
+using BitFlags = comp::BitFlags<>;
 
 /* Port Color class into edge namespace */
-using Color = comp::Color<void, true>;
+using Color = comp::Color<>;
 
 /* Port Mark class into edge namespace */
-using Mark = comp::Mark<void, true>;
+using Mark = comp::Mark<>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
@@ -58,14 +58,14 @@ using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port Scalar class into edge namespace */
 template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType, void, true>;
+using Scalar = comp::Scalar<ScalarType>;
 
-using Scalarf = comp::Scalarf<void, true>;
-using Scalard = comp::Scalard<void, true>;
+using Scalarf = comp::Scalarf<>;
+using Scalard = comp::Scalard<>;
 
 /* Port VertexReferences class into edge namespace */
 template<typename VertexType>
-using VertexReferences = comp::VertexReferences<VertexType, 2, void, true>;
+using VertexReferences = comp::VertexReferences<VertexType, 2>;
 
 } // namespace vcl::edge
 

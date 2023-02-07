@@ -31,16 +31,6 @@
 
 namespace vcl::comp {
 
-namespace internal {
-
-template<PointConcept P, bool>
-struct BoundingBoxData { Box<P> box; };
-
-template<PointConcept P>
-struct BoundingBoxData<P, false> { };
-
-} // vcl::comp::internal
-
 /**
  * @brief The BoundingBox component class represents an axis aligned bounding box. This class is
  * usually used as a component of a Mesh.
@@ -55,15 +45,20 @@ struct BoundingBoxData<P, false> { };
  * m.boundingBox();
  * @endcode
  */
-template<PointConcept PointType, typename ElementType, bool horizontal>
+template<
+	PointConcept PointType,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
 class BoundingBox
 {
-	using ThisType = BoundingBox<PointType, ElementType, horizontal>;
+	using ThisType = BoundingBox<PointType, ElementType, horizontal, optional>;
 public:
 	using DataValueType = Box<PointType>; // data that the component stores internally (or vertically)
 	using BoundingBoxComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	using BoundingBoxType = Box<PointType>;
 
@@ -82,14 +77,14 @@ private:
 	internal::ComponentData<DataValueType, horizontal> data;
 };
 
-template <typename S, typename ElementType, bool horizontal>
-using BoundingBox3  = BoundingBox<Point3<S>, ElementType, horizontal>;
+template <typename S, typename ElementType = void, bool horizontal = true, bool optional= false>
+using BoundingBox3  = BoundingBox<Point3<S>, ElementType, horizontal, optional>;
 
-template<typename ElementType, bool horizontal>
-using BoundingBox3f = BoundingBox<Point3f, ElementType, horizontal>;
+template<typename ElementType = void, bool horizontal = true, bool optional= false>
+using BoundingBox3f = BoundingBox<Point3f, ElementType, horizontal, optional>;
 
-template<typename ElementType, bool horizontal>
-using BoundingBox3d = BoundingBox<Point3d, ElementType, horizontal>;
+template<typename ElementType = void, bool horizontal = true, bool optional= false>
+using BoundingBox3d = BoundingBox<Point3d, ElementType, horizontal, optional>;
 
 } // namespace vcl::comp
 

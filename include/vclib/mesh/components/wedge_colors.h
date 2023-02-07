@@ -31,10 +31,10 @@
 
 namespace vcl::comp {
 
-template<int N, typename ElementType, bool horizontal>
+template<int N, typename ElementType = void, bool horizontal = true, bool optional = false>
 class WedgeColors
 {
-	using ThisType = WedgeColors<N, ElementType, horizontal>;
+	using ThisType = WedgeColors<N, ElementType, horizontal, optional>;
 
 	using Base = RandomAccessContainer<vcl::Color, N>;
 
@@ -43,6 +43,7 @@ public:
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	static const int WEDGE_COLOR_NUMBER = Base::CONTAINER_SIZE;
 

@@ -29,10 +29,15 @@
 
 namespace vcl::comp {
 
-template<typename Vertex, int N, typename ElementType, bool horizontal>
+template<
+	typename Vertex,
+	int N,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
 class VertexReferences : protected internal::ElementReferences<Vertex, N, ElementType, horizontal>
 {
-	using ThisType = VertexReferences<Vertex, N, ElementType, horizontal>;
+	using ThisType = VertexReferences<Vertex, N, ElementType, horizontal, optional>;
 
 	using Base = internal::ElementReferences<Vertex, N, ElementType, horizontal>;
 
@@ -41,6 +46,7 @@ public:
 	using VertexReferencesComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	using VertexType = Vertex;
 

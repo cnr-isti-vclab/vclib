@@ -46,10 +46,14 @@ namespace vcl::comp {
  * v.adjVerticesNumber();
  * @endcode
  */
-template<typename Vertex, typename ElementType, bool horizontal>
+template<
+	typename Vertex,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
 class AdjacentVertices : protected internal::ElementReferences<Vertex, -1, ElementType, horizontal>
 {
-	using ThisType = AdjacentVertices<Vertex, ElementType, horizontal>;
+	using ThisType = AdjacentVertices<Vertex, ElementType, horizontal, optional>;
 
 	using Base = internal::ElementReferences<Vertex, -1, ElementType, horizontal>;
 
@@ -58,6 +62,7 @@ public:
 	using AdjacentVerticesComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	using AdjacentVertexType = Vertex;
 

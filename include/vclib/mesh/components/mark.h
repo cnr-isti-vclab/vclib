@@ -72,15 +72,16 @@ struct MarkData<false> { };
  * m.hasSameMark(m.vertex(5)); // or: m.vertex(5).hasSameMark(m)
  * @endcode
  */
-template<typename ElementType, bool horizontal>
+template<typename ElementType = void, bool horizontal = true, bool optional = false>
 class Mark
 {
-	using ThisType = Mark<ElementType, horizontal>;
+	using ThisType = Mark<ElementType, horizontal, optional>;
 public:
 	using DataValueType = int; // data that the component stores internally (or vertically)
 	using MarkComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	void init();
 

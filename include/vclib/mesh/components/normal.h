@@ -31,25 +31,16 @@
 
 namespace vcl::comp {
 
-namespace internal {
-
-template<PointConcept P, bool>
-struct NormalTData { P n; };
-
-template<PointConcept P>
-struct NormalTData<P, false> { };
-
-} // vcl::comp::internal
-
-template <PointConcept P, typename ElementType, bool horizontal>
+template<PointConcept P, typename ElementType = void, bool horizontal = true, bool optional = false>
 class NormalT
 {
-	using ThisType = NormalT<P, ElementType, horizontal>;
+	using ThisType = NormalT<P, ElementType, horizontal, optional>;
 public:
 	using DataValueType = P;         // data that the component stores internally (or vertically)
 	using NormalComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	using NormalType = P;
 
@@ -71,17 +62,26 @@ private:
 	internal::ComponentData<DataValueType, horizontal> data;
 };
 
-template<typename Scalar, int N, typename ElementType, bool horizontal>
-using Normal = NormalT<Point<Scalar, N>, ElementType, horizontal>;
+template<
+	typename Scalar,
+	int N,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
+using Normal = NormalT<Point<Scalar, N>, ElementType, horizontal, optional>;
 
-template<typename Scalar, typename ElementType, bool horizontal>
-using Normal3 = NormalT<Point3<Scalar>, ElementType, horizontal>;
+template<
+	typename Scalar,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
+using Normal3 = NormalT<Point3<Scalar>, ElementType, horizontal, optional>;
 
-template<typename ElementType, bool horizontal>
-using Normal3f = Normal3<float, ElementType, horizontal>;
+template<typename ElementType = void, bool horizontal = true, bool optional = false>
+using Normal3f = Normal3<float, ElementType, horizontal, optional>;
 
-template<typename ElementType, bool horizontal>
-using Normal3d = Normal3<double, ElementType, horizontal>;
+template<typename ElementType = void, bool horizontal = true, bool optional = false>
+using Normal3d = Normal3<double, ElementType, horizontal, optional>;
 
 } // namespace vcl::comp
 

@@ -50,10 +50,15 @@ namespace vcl::comp {
  * Vertex Number of the Face, therefore all the members that allows to modify the number of
  * Adjacent Faces in case of dynamic size won't be available on Face Elements.
  */
-template<typename Face, int N, typename ElementType, bool horizontal>
+template<
+	typename Face,
+	int N,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
 class AdjacentFaces : protected internal::ElementReferences<Face, N, ElementType, horizontal>
 {
-	using ThisType = AdjacentFaces<Face, N, ElementType, horizontal>;
+	using ThisType = AdjacentFaces<Face, N, ElementType, horizontal, optional>;
 
 	using Base = internal::ElementReferences<Face, N, ElementType, horizontal>;
 
@@ -62,6 +67,7 @@ public:
 	using AdjacentFacesComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjFacesNumber() member function.

@@ -31,20 +31,14 @@
 
 namespace vcl::comp {
 
-namespace internal {
-
-template<typename Scalar, bool>
-struct PrincipalCurvatureData { vcl::PrincipalCurvature<Scalar> princCurv; };
-
-template<typename Scalar>
-struct PrincipalCurvatureData<Scalar, false> { };
-
-} // vcl::comp::internal
-
-template<typename Scalar, typename ElementType, bool horizontal>
+template<
+	typename Scalar,
+	typename ElementType = void,
+	bool horizontal      = true,
+	bool optional        = false>
 class PrincipalCurvature
 {
-	using ThisType = PrincipalCurvature<Scalar, ElementType, horizontal>;
+	using ThisType = PrincipalCurvature<Scalar, ElementType, horizontal, optional>;
 public:
 	// data that the component stores internally (or vertically)
 	using DataValueType = vcl::PrincipalCurvature<Scalar>;
@@ -52,6 +46,7 @@ public:
 	using PrincipalCurvatureComponent = ThisType;
 
 	static const bool IS_VERTICAL = !horizontal;
+	static const bool IS_OPTIONAL = optional;
 
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
@@ -73,11 +68,11 @@ private:
 	internal::ComponentData<DataValueType, horizontal> data;
 };
 
-template<typename ElementType, bool horizontal>
-using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, horizontal>;
+template<typename ElementType = void, bool horizontal = true, bool optional = false>
+using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, horizontal, optional>;
 
-template<typename ElementType, bool horizontal>
-using PrincipalCurvatured = PrincipalCurvature<double, ElementType, horizontal>;
+template<typename ElementType = void, bool horizontal = true, bool optional = false>
+using PrincipalCurvatured = PrincipalCurvature<double, ElementType, horizontal, optional>;
 
 } // namespace vcl::comp
 
