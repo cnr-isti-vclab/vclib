@@ -615,7 +615,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::hasPerFaceCustomComponent(
 	const std::string& name) const requires face::HasCustomComponents<T>
 {
-	return Base::optionalVec.componentExists(name);
+	return Base::ccVec.componentExists(name);
 }
 
 /**
@@ -630,7 +630,7 @@ template<FaceConcept T>
 std::vector<std::string> FaceContainer<T>::getAllPerFaceCustomComponentNames()
 	const requires face::HasCustomComponents<T>
 {
-	return Base::optionalVec.allComponentNames();
+	return Base::ccVec.allComponentNames();
 }
 
 /**
@@ -655,7 +655,7 @@ template<typename K>
 bool FaceContainer<T>::isPerFaceCustomComponentOfType(const std::string& name) const
 	requires face::HasCustomComponents<T>
 {
-	return Base::optionalVec.template isComponentOfType<K>(name);
+	return Base::ccVec.template isComponentOfType<K>(name);
 }
 
 /**
@@ -678,7 +678,7 @@ template<typename K>
 std::vector<std::string> FaceContainer<T>::getPerFaceCustomComponentNamesOfType()
 	const requires face::HasCustomComponents<T>
 {
-	return Base::optionalVec.template allComponentNamesOfType<K>();
+	return Base::ccVec.template allComponentNamesOfType<K>();
 }
 
 /**
@@ -694,7 +694,7 @@ template<typename K>
 void FaceContainer<T>::addPerFaceCustomComponent(
 	const std::string& name) requires face::HasCustomComponents<T>
 {
-	Base::optionalVec.template addNewComponent<K>(name, faceContainerSize());
+	Base::ccVec.template addNewComponent<K>(name, faceContainerSize());
 }
 
 /**
@@ -710,7 +710,7 @@ template<FaceConcept T>
 void FaceContainer<T>::deletePerFaceCustomComponent(
 	const std::string& name) requires face::HasCustomComponents<T>
 {
-	Base::optionalVec.deleteComponent(name);
+	Base::ccVec.deleteComponent(name);
 }
 
 /**
@@ -744,7 +744,7 @@ template<typename K>
 CustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentVectorHandle(
 	const std::string& name) requires face::HasCustomComponents<T>
 {
-	std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	std::vector<std::any>& cc = Base::ccVec.template componentVector<K>(name);
 	CustomComponentVectorHandle<K> v(cc);
 	return v;
 }
@@ -782,7 +782,7 @@ template<typename K>
 ConstCustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentVectorHandle(
 	const std::string& name) const requires face::HasCustomComponents<T>
 {
-	const std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	const std::vector<std::any>& cc = Base::ccVec.template componentVector<K>(name);
 	ConstCustomComponentVectorHandle<K> v(cc);
 	return cc;
 }

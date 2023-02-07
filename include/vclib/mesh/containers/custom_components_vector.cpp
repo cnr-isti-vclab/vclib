@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -26,13 +26,13 @@
 #include <vclib/exception/mesh_exception.h>
 #include <vclib/misc/compactness.h>
 
-namespace vcl::internal {
+namespace vcl::mesh {
 
 /**
  * @brief Removes all the custom components associated to the T element
  */
 template<typename T>
-void CustomComponentsVector<T, IfHasCustomComp<T> >::clear()
+void CustomComponentsVector<T, true>::clear()
 {
 	map.clear();
 	needToInitialize.clear();
@@ -45,7 +45,7 @@ void CustomComponentsVector<T, IfHasCustomComp<T> >::clear()
  * @param size
  */
 template<typename T>
-void CustomComponentsVector<T, IfHasCustomComp<T>>::reserve(uint size)
+void CustomComponentsVector<T, true>::reserve(uint size)
 {
 	for (auto& p : map) {
 		p.second.reserve(size);
@@ -63,7 +63,7 @@ void CustomComponentsVector<T, IfHasCustomComp<T>>::reserve(uint size)
  * @param size
  */
 template<typename T>
-void CustomComponentsVector<T, IfHasCustomComp<T>>::resize(uint size)
+void CustomComponentsVector<T, true>::resize(uint size)
 {
 	for (auto& p : map) {
 		if (p.second.size() < size)
@@ -81,7 +81,7 @@ void CustomComponentsVector<T, IfHasCustomComp<T>>::resize(uint size)
  * @param newIndices
  */
 template<typename T>
-void CustomComponentsVector<T, IfHasCustomComp<T> >::compact(const std::vector<int>& newIndices)
+void CustomComponentsVector<T, true>::compact(const std::vector<int>& newIndices)
 {
 	for (auto& p : map) {
 		vcl::compactVector(p.second, newIndices);
@@ -100,7 +100,7 @@ void CustomComponentsVector<T, IfHasCustomComp<T> >::compact(const std::vector<i
  */
 template<typename T>
 template<typename CompType>
-void CustomComponentsVector<T, IfHasCustomComp<T>>::addNewComponent(
+void CustomComponentsVector<T, true>::addNewComponent(
 	const std::string& name,
 	uint       size)
 {
@@ -116,7 +116,7 @@ void CustomComponentsVector<T, IfHasCustomComp<T>>::addNewComponent(
  * @param name
  */
 template<typename T>
-void CustomComponentsVector<T, IfHasCustomComp<T> >::deleteComponent(const std::string& name)
+void CustomComponentsVector<T, true>::deleteComponent(const std::string& name)
 {
 	map.erase(name);
 	needToInitialize.erase(name);
@@ -128,7 +128,7 @@ void CustomComponentsVector<T, IfHasCustomComp<T> >::deleteComponent(const std::
  * @param compName
  */
 template<typename T>
-void CustomComponentsVector<T, IfHasCustomComp<T>>::assertComponentExists(
+void CustomComponentsVector<T, true>::assertComponentExists(
 	const std::string& compName) const
 {
 	(void) (compName);
@@ -141,7 +141,7 @@ void CustomComponentsVector<T, IfHasCustomComp<T>>::assertComponentExists(
  * @return
  */
 template<typename T>
-bool CustomComponentsVector<T, IfHasCustomComp<T>>::componentExists(
+bool CustomComponentsVector<T, true>::componentExists(
 	const std::string& compName) const
 {
 	return (map.find(compName) != map.end());
@@ -153,7 +153,7 @@ bool CustomComponentsVector<T, IfHasCustomComp<T>>::componentExists(
  * @return
  */
 template<typename T>
-std::vector<std::string> CustomComponentsVector<T, IfHasCustomComp<T>>::allComponentNames() const
+std::vector<std::string> CustomComponentsVector<T, true>::allComponentNames() const
 {
 	std::vector<std::string> names(map.size());
 	for (const auto& p : map)
@@ -169,7 +169,7 @@ std::vector<std::string> CustomComponentsVector<T, IfHasCustomComp<T>>::allCompo
  */
 template<typename T>
 template<typename CompType>
-bool CustomComponentsVector<T, IfHasCustomComp<T>>::isComponentOfType(
+bool CustomComponentsVector<T, true>::isComponentOfType(
 	const std::string& compName) const
 {
 	std::type_index t(typeid(CompType));
@@ -183,7 +183,7 @@ bool CustomComponentsVector<T, IfHasCustomComp<T>>::isComponentOfType(
  */
 template<typename T>
 template<typename CompType>
-std::vector<std::string> CustomComponentsVector<T, IfHasCustomComp<T>>::allComponentNamesOfType() const
+std::vector<std::string> CustomComponentsVector<T, true>::allComponentNamesOfType() const
 {
 	std::vector<std::string> names;
 	std::type_index t(typeid(CompType));
@@ -209,7 +209,7 @@ std::vector<std::string> CustomComponentsVector<T, IfHasCustomComp<T>>::allCompo
 template<typename T>
 template<typename CompType>
 const std::vector<std::any>&
-CustomComponentsVector<T, IfHasCustomComp<T>>::componentVector(const std::string& compName) const
+CustomComponentsVector<T, true>::componentVector(const std::string& compName) const
 {
 	checkComponentType<CompType>(compName);
 	std::vector<std::any>& v = const_cast<std::vector<std::any>&>(map.at(compName));
@@ -238,7 +238,7 @@ CustomComponentsVector<T, IfHasCustomComp<T>>::componentVector(const std::string
 template<typename T>
 template<typename CompType>
 std::vector<std::any>&
-CustomComponentsVector<T, IfHasCustomComp<T>>::componentVector(const std::string& compName)
+CustomComponentsVector<T, true>::componentVector(const std::string& compName)
 {
 	checkComponentType<CompType>(compName);
 	std::vector<std::any>& v = map.at(compName);
@@ -254,7 +254,7 @@ CustomComponentsVector<T, IfHasCustomComp<T>>::componentVector(const std::string
 
 template<typename T>
 template<typename CompType>
-void CustomComponentsVector<T, IfHasCustomComp<T>>::checkComponentType(
+void CustomComponentsVector<T, true>::checkComponentType(
 	const std::string& compName) const
 {
 	std::type_index t(typeid(CompType));

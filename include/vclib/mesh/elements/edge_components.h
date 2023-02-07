@@ -28,6 +28,7 @@
 #include "../components/adjacent_faces.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
+#include "../components/custom_components.h"
 #include "../components/mark.h"
 #include "../components/parent_mesh_pointer.h"
 #include "../components/scalar.h"
@@ -48,6 +49,10 @@ using BitFlags = comp::BitFlags<>;
 
 /* Port Color class into edge namespace */
 using Color = comp::Color<>;
+
+/* Port CustomComponents class into edge namespace */
+template<typename EdgeType>
+using CustomComponents = comp::CustomComponents<EdgeType>;
 
 /* Port Mark class into edge namespace */
 using Mark = comp::Mark<>;

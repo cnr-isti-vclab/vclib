@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,47 +21,54 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_PERSISTENT_CUSTOM_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_PERSISTENT_CUSTOM_COMPONENTS_H
-
-#include "../vertical_component.h"
+#ifndef VCL_MESH_CONTAINERS_CUSTOM_COMPONENT_VECTOR_HANDLE_H
+#define VCL_MESH_CONTAINERS_CUSTOM_COMPONENT_VECTOR_HANDLE_H
 
 #include <any>
-#include <string>
 #include <vector>
 
-#include "../../concepts/custom_components.h"
+#include <vclib/misc/types.h>
 
-namespace vcl::comp {
+namespace vcl {
 
-/**
- * @brief The CustomComponents class is a container of custom and additional components associated
- * to an Element (e.g. Vertex, Face).
- *
- */
 template<typename T>
-class CustomComponents : public virtual VerticalComponent<T>
+class CustomComponentVectorHandle
 {
-private:
-	using B = VerticalComponent<T>;
-	uint thisId() const { return B::index((T*)this); }
-
 public:
-	bool hasCustomComponent(const std::string& attrName) const;
+	using iterator = typename std::vector<std::reference_wrapper<T>>::iterator;
+	using const_iterator = typename std::vector<std::reference_wrapper<T>>::const_iterator;
 
-	template<typename CompType>
-	const CompType& customComponent(const std::string& attrName) const;
+	CustomComponentVectorHandle();
+	CustomComponentVectorHandle(std::vector<std::any>& cc);
 
-	template<typename CompType>
-	CompType& customComponent(const std::string& attrName);
+	T& at(uint i);
+	const T& at(uint i) const;
 
-protected:
-	template <typename Element>
-	void importFrom(const Element& e);
+	T& front();
+	const T& front() const;
+
+	T& back();
+	const T& back() const;
+
+	uint size() const;
+
+	T& operator[](uint i);
+	const T& operator[](uint i) const;
+
+	iterator begin();
+	iterator end();
+	const_iterator begin() const;
+	const_iterator end() const;
+
+private:
+	std::vector<std::reference_wrapper<T>> v;
 };
 
-} // namespace vcl::comp
+template<typename T>
+using ConstCustomComponentVectorHandle = CustomComponentVectorHandle<const T>;
 
-#include "custom_components.cpp"
+} // namespace vcl
 
-#endif // VCL_MESH_COMPONENTS_PERSISTENT_CUSTOM_COMPONENTS_H
+#include "custom_component_vector_handle.cpp"
+
+#endif // VCL_MESH_CONTAINERS_CUSTOM_COMPONENT_VECTOR_HANDLE_H

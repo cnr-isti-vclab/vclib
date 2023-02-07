@@ -24,7 +24,6 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
 #define VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
 
-#include "../components/vertical/persistent/custom_components.h"
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
 #include "../components/vertical/optional/optional_color.h"
@@ -58,10 +57,6 @@ using OptionalScalarf = comp::OptionalScalar<float, EdgeType>;
 
 template<typename EdgeType>
 using OptionalScalard = comp::OptionalScalar<double, EdgeType>;
-
-/* Port CustomComponents class into edge namespace */
-template<typename EdgeType>
-using CustomComponents = comp::CustomComponents<EdgeType>;
 
 /* Port VerticalComponent class into edge namespace */
 template<typename EdgeType>

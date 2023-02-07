@@ -28,6 +28,7 @@
 #include "../components/adjacent_faces.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
+#include "../components/custom_components.h"
 #include "../components/face_half_edge_reference.h"
 #include "../components/mark.h"
 #include "../components/normal.h"
@@ -61,6 +62,10 @@ using BitFlags = comp::BitFlags<>;
 
 /* Port Color class into face namespace */
 using Color = comp::Color<>;
+
+/* Port CustomComponents class into face namespace */
+template<typename FaceType>
+using CustomComponents = comp::CustomComponents<FaceType>;
 
 /* Port Half Edge reference into face namespace*/
 template<typename HalfEdge>

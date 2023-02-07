@@ -24,7 +24,6 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_COMPONENTS_OPTIONAL_H
 #define VCL_MESH_ELEMENTS_FACE_COMPONENTS_OPTIONAL_H
 
-#include "../components/vertical/persistent/custom_components.h"
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
 #include "../components/vertical/optional/optional_color.h"
@@ -113,10 +112,6 @@ template<typename FaceType>
 using OptionalTriangleWedgeTexCoordsf = comp::OptionalWedgeTexCoords<float, 3, FaceType>;
 template<typename FaceType>
 using OptionalTriangleWedgeTexCoordsd = comp::OptionalWedgeTexCoords<double, 3, FaceType>;
-
-/* Port CustomComponents class into face namespace */
-template<typename FaceType>
-using CustomComponents = comp::CustomComponents<FaceType>;
 
 /* Port VerticalComponent class into face namespace */
 template<typename FaceType>

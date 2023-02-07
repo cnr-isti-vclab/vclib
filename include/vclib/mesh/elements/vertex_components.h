@@ -30,6 +30,7 @@
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/coordinate.h"
+#include "../components/custom_components.h"
 #include "../components/mark.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
@@ -67,6 +68,10 @@ using Coordinate3 = comp::Coordinate3<ScalarType>;
 
 using Coordinate3f = comp::Coordinate3f<>;
 using Coordinate3d = comp::Coordinate3d<>;
+
+/* Port CustomComponents class into vert namespace */
+template<typename VertexType>
+using CustomComponents = comp::CustomComponents<VertexType>;
 
 /* Port Half Edge reference into vert namespace*/
 template<typename HalfEdge>

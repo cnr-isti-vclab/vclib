@@ -348,6 +348,9 @@ void ElementContainer<T>::clearElements()
 	if constexpr (comp::HasVerticalComponent<T>) {
 		optionalVec.clear();
 	}
+	if constexpr (HAS_CUSTOM_COMPONENTS) {
+		ccVec.clear();
+	}
 }
 
 template<typename T>
@@ -362,6 +365,9 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
 	if constexpr (comp::HasVerticalComponent<T>) {
 		setContainerPointer(vec.back());
 		optionalVec.resize(vec.size());
+	}
+	if constexpr (HAS_CUSTOM_COMPONENTS) {
+		ccVec.resize(vec.size());
 	}
 	updateContainerPointers(oldB, newB, parentMesh);
 	return vec.size() - 1;
@@ -391,6 +397,9 @@ uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 			setContainerPointer(vec[i]);
 		}
 	}
+	if constexpr (HAS_CUSTOM_COMPONENTS) {
+		ccVec.resize(vec.size());
+	}
 	updateContainerPointers(oldB, newB, parentMesh);
 	return baseId;
 }
@@ -404,6 +413,9 @@ void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 	T* newB = vec.data();
 	if constexpr (comp::HasVerticalComponent<T>) {
 		optionalVec.reserve(size);
+	}
+	if constexpr (HAS_CUSTOM_COMPONENTS) {
+		ccVec.reserve(vec.size());
 	}
 	updateContainerPointers(oldB, newB, parentMesh);
 }
@@ -432,6 +444,9 @@ std::vector<int> ElementContainer<T>::compactElements()
 		vec.resize(k);
 		if constexpr (comp::HasVerticalComponent<T>) {
 			optionalVec.compact(newIndices);
+		}
+		if constexpr (HAS_CUSTOM_COMPONENTS) {
+			ccVec.compact(newIndices);
 		}
 	}
 	return newIndices;

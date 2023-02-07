@@ -29,7 +29,6 @@
 #include "adjacent_faces_vector.h"
 #include "adjacent_vertices_vector.h"
 #include "color_vector.h"
-#include "custom_components_vector.h"
 #include "mark_vector.h"
 #include "normal_vector.h"
 #include "principal_curvature_vector.h"
@@ -73,8 +72,7 @@ class VerticalComponentsVector :
 			ScalarVector<T>,
 			TexCoordVector<T>,
 			WedgeColorsVector<T>,
-			WedgeTexCoordsVector<T>,
-			CustomComponentsVector<T>>
+			WedgeTexCoordsVector<T>>
 {
 };
 

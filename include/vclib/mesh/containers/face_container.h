@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_CONTAINER_FACE_CONTAINER_H
 #define VCL_MESH_CONTAINER_FACE_CONTAINER_H
 
-#include <vclib/mesh/components/vertical/vectors/custom_component_vector_handle.h>
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/face.h>
 
 #include "element_container.h"

@@ -466,7 +466,7 @@ template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(
 	const std::string& name) const requires hedge::HasCustomComponents<T>
 {
-	return Base::optionalVec.componentExists(name);
+	return Base::ccVec.componentExists(name);
 }
 
 /**
@@ -481,7 +481,7 @@ template<HalfEdgeConcept T>
 std::vector<std::string> HalfEdgeContainer<T>::getAllPerHalfEdgeCustomComponentNames()
 	const requires hedge::HasCustomComponents<T>
 {
-	return Base::optionalVec.allComponentNames();
+	return Base::ccVec.allComponentNames();
 }
 
 /**
@@ -506,7 +506,7 @@ template<typename K>
 bool HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(
 	const std::string& name) const requires hedge::HasCustomComponents<T>
 {
-	return Base::optionalVec.template isComponentOfType<K>(name);
+	return Base::ccVec.template isComponentOfType<K>(name);
 }
 
 /**
@@ -529,7 +529,7 @@ template<typename K>
 std::vector<std::string> HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentNamesOfType()
 	const requires hedge::HasCustomComponents<T>
 {
-	return Base::optionalVec.template allComponentNamesOfType<K>();
+	return Base::ccVec.template allComponentNamesOfType<K>();
 }
 
 /**
@@ -545,7 +545,7 @@ template<typename K>
 void HalfEdgeContainer<T>::addPerHalfEdgeCustomComponent(const std::string& name)
 	requires hedge::HasCustomComponents<T>
 {
-	Base::optionalVec.template addNewComponent<K>(name, halfEdgeContainerSize());
+	Base::ccVec.template addNewComponent<K>(name, halfEdgeContainerSize());
 }
 
 /**
@@ -561,7 +561,7 @@ template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(
 	const std::string& name) requires hedge::HasCustomComponents<T>
 {
-	Base::optionalVec.deleteComponent(name);
+	Base::ccVec.deleteComponent(name);
 }
 
 /**
@@ -595,7 +595,7 @@ template<typename K>
 CustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(
 	const std::string& name) requires hedge::HasCustomComponents<T>
 {
-	std::vector<std::any>&         cc = Base::optionalVec.template componentVector<K>(name);
+	std::vector<std::any>&         cc = Base::ccVec.template componentVector<K>(name);
 	CustomComponentVectorHandle<K> v(cc);
 	return v;
 }
@@ -633,7 +633,7 @@ template<typename K>
 ConstCustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(
 	const std::string& name) const requires hedge::HasCustomComponents<T>
 {
-	const std::vector<std::any>&        cc = Base::optionalVec.template componentVector<K>(name);
+	const std::vector<std::any>&        cc = Base::ccVec.template componentVector<K>(name);
 	ConstCustomComponentVectorHandle<K> v(cc);
 	return cc;
 }

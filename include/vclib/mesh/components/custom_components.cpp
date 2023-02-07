@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -25,33 +25,59 @@
 
 namespace vcl::comp {
 
-template<typename T>
-bool CustomComponents<T>::hasCustomComponent(const std::string& attrName) const
+template<typename El>
+bool CustomComponents<El>::hasCustomComponent(const std::string& attrName) const
 {
-	return B::optCont().componentExists(attrName);
+	return ccVec().componentExists(attrName);
 }
 
-template<typename T>
+template<typename El>
 template<typename CompType>
-const CompType& CustomComponents<T>::customComponent(const std::string& attrName) const
+const CompType& CustomComponents<El>::customComponent(const std::string& attrName) const
 {
 	return std::any_cast<const CompType&>(
-		B::optCont().template componentVector<CompType>(attrName)[thisId()]);
+		ccVec().template componentVector<CompType>(attrName)[thisId()]);
 }
 
-template<typename T>
+template<typename El>
 template<typename CompType>
-CompType& CustomComponents<T>::customComponent(const std::string& attrName)
+CompType& CustomComponents<El>::customComponent(const std::string& attrName)
 {
 	return std::any_cast<CompType&>(
-		B::optCont().template componentVector<CompType>(attrName)[thisId()]);
+		ccVec().template componentVector<CompType>(attrName)[thisId()]);
 }
 
-template<typename T>
+template<typename El>
 template<typename Element>
-void CustomComponents<T>::importFrom(const Element&)
+void CustomComponents<El>::importFrom(const Element&)
 {
 	// todo
+}
+
+template<typename El>
+uint CustomComponents<El>::thisId() const
+{
+	const El* elem = static_cast<const El*>(this);
+	assert(elem->parentMesh());
+	return elem->index();
+}
+
+template<typename El>
+auto& CustomComponents<El>::ccVec()
+{
+	El* elem = static_cast<El*>(this);
+	assert(elem->parentMesh());
+	// get the tuple of vector of vertical components
+	return elem->parentMesh()->template customComponents<El>();
+}
+
+template<typename El>
+const auto& CustomComponents<El>::ccVec() const
+{
+	const El* elem = static_cast<const El*>(this);
+	assert(elem->parentMesh());
+	// get the tuple of vector of vertical components
+	return elem->parentMesh()->template customComponents<El>();
 }
 
 } // namespace vcl::comp

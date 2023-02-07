@@ -1494,6 +1494,50 @@ void Mesh<Args...>::importTriReferencesHelper(
 	}
 }
 
+template<typename... Args> requires HasVertices<Args...>
+template<typename El>
+auto& Mesh<Args...>::customComponents() requires ElementConcept<El>
+{
+	if constexpr (EdgeConcept<El>) {
+		using EdgeContainer = typename Mesh::EdgeContainer;
+		return EdgeContainer::ccVec;
+	}
+	if constexpr (FaceConcept<El>) {
+		using FaceContainer = typename Mesh::FaceContainer;
+		return FaceContainer::ccVec;
+	}
+	if constexpr (HalfEdgeConcept<El>) {
+		using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
+		return HalfEdgeContainer::ccVec;
+	}
+	if constexpr (VertexConcept<El>) {
+		using VertexContainer = typename Mesh::VertexContainer;
+		return VertexContainer::ccVec;
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename El>
+const auto& Mesh<Args...>::customComponents() const requires ElementConcept<El>
+{
+	if constexpr (EdgeConcept<El>) {
+		using EdgeContainer = typename Mesh::EdgeContainer;
+		return EdgeContainer::ccVec;
+	}
+	if constexpr (FaceConcept<El>) {
+		using FaceContainer = typename Mesh::FaceContainer;
+		return FaceContainer::ccVec;
+	}
+	if constexpr (HalfEdgeConcept<El>) {
+		using HalfEdgeContainer = typename Mesh::HalfEdgeContainer;
+		return HalfEdgeContainer::ccVec;
+	}
+	if constexpr (VertexConcept<El>) {
+		using VertexContainer = typename Mesh::VertexContainer;
+		return VertexContainer::ccVec;
+	}
+}
+
 /**
  * @brief Swaps two meshes of the same type
  */

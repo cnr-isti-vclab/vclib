@@ -26,6 +26,7 @@
 
 #include "../components/bit_flags.h"
 #include "../components/color.h"
+#include "../components/custom_components.h"
 #include "../components/half_edge_references.h"
 #include "../components/mark.h"
 #include "../components/normal.h"
@@ -40,6 +41,10 @@ using BitFlags = comp::BitFlags<>;
 
 /* Port Color class into hedge namespace */
 using Color = comp::Color<>;
+
+/* Port CustomComponents class into hedge namespace */
+template<typename EdgeType>
+using CustomComponents = comp::CustomComponents<EdgeType>;
 
 /* Port HalfEdgeReferences class into hedge namespace */
 template<typename HalfEdgeType, typename VertexType, typename FaceType>

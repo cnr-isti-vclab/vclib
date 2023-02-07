@@ -31,6 +31,7 @@
 #include "../components/vertical/vertical_component.h"
 #include "../components/vertical/vectors/vertical_components_vector.h"
 #include "containers_concepts.h"
+#include "custom_components_vector.h"
 
 namespace vcl::mesh {
 
@@ -43,6 +44,8 @@ class ElementContainer : public ElementContainerTriggerer
 	friend class ElementContainer;
 
 	using ElementContainerType = ElementContainer<T>;
+
+	static const bool HAS_CUSTOM_COMPONENTS = comp::HasCustomComponents<T>;
 
 public:
 	using ElementType          = T;
@@ -150,6 +153,7 @@ protected:
 	uint en = 0;
 	std::vector<T> vec;
 	internal::VerticalComponentsVector<T> optionalVec;
+	CustomComponentsVector<T, comp::HasCustomComponents<T>> ccVec;
 };
 
 } // namespace vcl::mesh

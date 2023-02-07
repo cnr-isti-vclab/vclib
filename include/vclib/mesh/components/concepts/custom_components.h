@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#ifndef VCL_MESH_COMPONENTS_CONCEPTS_CUSTOM_COMPONENTS_H
+#define VCL_MESH_COMPONENTS_CONCEPTS_CUSTOM_COMPONENTS_H
 
 #include "component.h"
 
@@ -48,4 +48,4 @@ concept HasCustomComponents = requires(
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_CUSTOM_COMPONENTS_H

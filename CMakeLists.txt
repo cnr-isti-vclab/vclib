@@ -136,6 +136,7 @@ set(HEADERS
 	include/vclib/mesh/components/bounding_box.h
 	include/vclib/mesh/components/color.h
 	include/vclib/mesh/components/coordinate.h
+	include/vclib/mesh/components/custom_components.h
 	include/vclib/mesh/components/face_half_edge_reference.h
 	include/vclib/mesh/components/half_edge_references.h
 	include/vclib/mesh/components/mark.h
@@ -190,13 +191,10 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/optional/optional_tex_coord.h
 	include/vclib/mesh/components/vertical/optional/optional_wedge_colors.h
 	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.h
-	include/vclib/mesh/components/vertical/persistent/custom_components.h
 	include/vclib/mesh/components/vertical/vectors/adjacent_edges_vector.h
 	include/vclib/mesh/components/vertical/vectors/adjacent_faces_vector.h
 	include/vclib/mesh/components/vertical/vectors/adjacent_vertices_vector.h
 	include/vclib/mesh/components/vertical/vectors/color_vector.h
-	include/vclib/mesh/components/vertical/vectors/custom_component_vector_handle.h
-	include/vclib/mesh/components/vertical/vectors/custom_components_vector.h
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.h
 	include/vclib/mesh/components/vertical/vectors/mark_vector.h
 	include/vclib/mesh/components/vertical/vectors/normal_vector.h
@@ -208,6 +206,8 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/vectors/wedge_tex_coords_vector.h
 	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/containers_concepts.h
+	include/vclib/mesh/containers/custom_component_vector_handle.h
+	include/vclib/mesh/containers/custom_components_vector.h
 	include/vclib/mesh/containers/edge_container.h
 	include/vclib/mesh/containers/element_container.h
 	include/vclib/mesh/containers/face_container.h
@@ -218,6 +218,7 @@ set(HEADERS
 	include/vclib/mesh/elements/edge_components.h
 	include/vclib/mesh/elements/edge_components_optional.h
 	include/vclib/mesh/elements/edge_concept.h
+	include/vclib/mesh/elements/element_concept.h
 	include/vclib/mesh/elements/face.h
 	include/vclib/mesh/elements/face_components.h
 	include/vclib/mesh/elements/face_components_optional.h
@@ -371,6 +372,7 @@ set(SOURCES
 	include/vclib/mesh/components/bounding_box.cpp
 	include/vclib/mesh/components/color.cpp
 	include/vclib/mesh/components/coordinate.cpp
+	include/vclib/mesh/components/custom_components.cpp
 	include/vclib/mesh/components/face_half_edge_reference.cpp
 	include/vclib/mesh/components/half_edge_references.cpp
 	include/vclib/mesh/components/mark.cpp
@@ -400,10 +402,9 @@ set(SOURCES
 	include/vclib/mesh/components/vertical/optional/optional_tex_coord.cpp
 	include/vclib/mesh/components/vertical/optional/optional_wedge_colors.cpp
 	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.cpp
-	include/vclib/mesh/components/vertical/persistent/custom_components.cpp
-	include/vclib/mesh/components/vertical/vectors/custom_component_vector_handle.cpp
-	include/vclib/mesh/components/vertical/vectors/custom_components_vector.cpp
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.cpp
+	include/vclib/mesh/containers/custom_component_vector_handle.cpp
+	include/vclib/mesh/containers/custom_components_vector.cpp
 	include/vclib/mesh/containers/edge_container.cpp
 	include/vclib/mesh/containers/element_container.cpp
 	include/vclib/mesh/containers/half_edge_container.cpp

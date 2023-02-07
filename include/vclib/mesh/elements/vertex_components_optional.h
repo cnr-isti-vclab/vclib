@@ -24,7 +24,6 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_OPTIONAL_H
 #define VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_OPTIONAL_H
 
-#include "../components/vertical/persistent/custom_components.h"
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
 #include "../components/vertical/optional/optional_adjacent_vertices.h"
@@ -98,10 +97,6 @@ using OptionalTexCoordf = comp::OptionalTexCoord<float, VertexType>;
 
 template<typename VertexType>
 using OptionalTexCoordd = comp::OptionalTexCoord<double, VertexType>;
-
-/* Port CustomComponents class into vert namespace */
-template<typename VertexType>
-using CustomComponents = comp::CustomComponents<VertexType>;
 
 /* Port VerticalComponent class into vert namespace */
 template<typename VertexType>

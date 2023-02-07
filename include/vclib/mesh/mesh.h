@@ -25,6 +25,7 @@
 #define VCL_MESH_MESH_H
 
 #include "containers/containers.h"
+#include "elements/element_concept.h"
 #include "mesh_components.h"
 #include "requirements/mesh_concepts.h"
 
@@ -46,6 +47,12 @@ namespace vcl {
 template<typename... Args> requires HasVertices<Args...>
 class Mesh : public Args...
 {
+	template<typename El>
+	friend class comp::CustomComponents;
+
+	template<typename El, bool b>
+	friend struct comp::internal::ComponentData;
+
 public:
 	Mesh();
 	Mesh(const Mesh& oth);
@@ -259,6 +266,12 @@ private:
 		const MVertexType*       mvbase,
 		const std::vector<uint>& tris,
 		uint                     basetri);
+
+	template<typename El>
+	auto& customComponents() requires ElementConcept<El>;
+
+	template<typename El>
+	const auto& customComponents() const requires ElementConcept<El>;
 };
 
 template<typename... A> requires HasVertices<A...>

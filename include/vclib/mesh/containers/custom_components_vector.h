@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,24 +21,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_VECTOR_H
-#define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_VECTOR_H
+#ifndef VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_H
+#define VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_H
 
+#include <any>
 #include <unordered_map>
-
 #include <typeindex>
 
-#include "../persistent/custom_components.h"
+#include <vclib/misc/types.h>
 
-#include "generic_component_vector.h"
+namespace vcl::mesh {
 
-namespace vcl::internal {
-
-// to shorten triggerer for Vertex class
-template<typename T>
-using IfHasCustomComp = std::enable_if_t<comp::HasCustomComponents<T>>;
-
-template<typename, typename = void>
+// we do not have custom components, we leave this class empty
+template<typename, bool HasCustomComponent>
 class CustomComponentsVector
 {
 public:
@@ -49,9 +44,7 @@ public:
 };
 
 template<typename T>
-class CustomComponentsVector<
-	T,
-	IfHasCustomComp<T>>
+class CustomComponentsVector<T, true>
 {
 public:
 	void clear();
@@ -102,8 +95,8 @@ private:
 	void checkComponentType(const std::string& compName) const;
 };
 
-} // namespace vcl::internal
+} // namespace vcl::mesh
 
 #include "custom_components_vector.cpp"
 
-#endif // VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_VECTOR_H
+#endif // VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_H

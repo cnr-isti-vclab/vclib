@@ -24,7 +24,6 @@
 #ifndef VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_OPTIONAL_H
 #define VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_OPTIONAL_H
 
-#include "../components/vertical/persistent/custom_components.h"
 #include "../components/vertical/optional/optional_color.h"
 #include "../components/vertical/optional/optional_mark.h"
 #include "../components/vertical/optional/optional_scalar.h"
@@ -59,10 +58,6 @@ using OptionalTexCoordf = comp::OptionalTexCoord<float, VertexType>;
 
 template<typename VertexType>
 using OptionalTexCoordd = comp::OptionalTexCoord<double, VertexType>;
-
-/* Port CustomComponents class into hedge namespace */
-template<typename EdgeType>
-using CustomComponents = comp::CustomComponents<EdgeType>;
 
 /* Port VerticalComponent class into hedge namespace */
 template<typename EdgeType>
