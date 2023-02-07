@@ -31,16 +31,6 @@
 
 namespace vcl::comp {
 
-namespace internal {
-
-template<bool>
-struct ColorData { vcl::Color c; };
-
-template<>
-struct ColorData<false> { };
-
-} // vcl::comp::internal
-
 /**
  * @brief The Color class represents a RGBA color that will be part of an Element
  * (e.g. Vertex, Face, ...).
