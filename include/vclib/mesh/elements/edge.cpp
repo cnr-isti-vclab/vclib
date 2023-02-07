@@ -35,7 +35,8 @@ template<typename MeshType, typename... Args>
 uint Edge<MeshType, Args...>::index() const
 {
 	assert(edge::ParentMeshPointer<MeshType>::parentMesh());
-	return edge::ParentMeshPointer<MeshType>::parentMesh()->index(this);
+	return edge::ParentMeshPointer<MeshType>::parentMesh()->index(
+		static_cast<const typename MeshType::EdgeType*>(this));
 }
 
 template<typename MeshType, typename... Args>

@@ -55,7 +55,8 @@ template<typename MeshType, typename... Args>
 uint Face<MeshType, Args...>::index() const
 {
 	assert(face::ParentMeshPointer<MeshType>::parentMesh());
-	return face::ParentMeshPointer<MeshType>::parentMesh()->index(this);
+	return face::ParentMeshPointer<MeshType>::parentMesh()->index(
+		static_cast<const typename MeshType::FaceType*>(this));
 }
 
 /**

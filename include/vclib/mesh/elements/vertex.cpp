@@ -35,7 +35,8 @@ template<typename MeshType, typename... Args>
 uint Vertex<MeshType, Args...>::index() const
 {
 	assert(vert::ParentMeshPointer<MeshType>::parentMesh());
-	return vert::ParentMeshPointer<MeshType>::parentMesh()->index(this);
+	return vert::ParentMeshPointer<MeshType>::parentMesh()->index(
+		static_cast<const typename MeshType::VertexType*>(this));
 }
 
 template<typename MeshType, typename... Args>

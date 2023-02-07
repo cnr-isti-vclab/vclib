@@ -35,7 +35,8 @@ template<typename MeshType, typename... Args>
 uint HalfEdge<MeshType, Args...>::index() const
 {
 	assert(hedge::ParentMeshPointer<MeshType>::parentMesh());
-	return hedge::ParentMeshPointer<MeshType>::parentMesh()->index(this);
+	return hedge::ParentMeshPointer<MeshType>::parentMesh()->index(
+		static_cast<const typename MeshType::HalfEdgeType*>(this));
 }
 
 template<typename MeshType, typename... Args>
