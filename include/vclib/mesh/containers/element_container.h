@@ -32,7 +32,7 @@
 #include "../components/vertical/vertical_component.h"
 #include "../components/vertical/vectors/vertical_components_vector.h"
 #include "containers_concepts.h"
-#include "custom_components_vector.h"
+#include "custom_components_vector_map.h"
 #include "vertical_components_vector_tuple.h"
 
 
@@ -157,10 +157,25 @@ protected:
 	 * due to elements marked as deleted into the container.
 	 */
 	uint en = 0;
+
+	/**
+	 * @brief vec: the vector of elements: will contain the set of elements, each one of these will
+	 * contain the data of the horizontal components and a pointer to the parent mesh
+	 */
 	std::vector<T> vec;
-	internal::VerticalComponentsVector<T> optionalVec;
+
+	/**
+	 * @brief vcTVec the tuple of vectors of all the vertical components of the element. Contains
+	 * both the optional and the persistent vertical components
+	 */
 	VerticalComponentsVectorTuple<vComps> vcTVec;
-	CustomComponentsVector<T, comp::HasCustomComponents<T>> ccVec;
+
+	/**
+	 * @brief ccVec the map that associates a string to a vector of custom components
+	 */
+	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVec;
+
+	internal::VerticalComponentsVector<T> optionalVec;
 };
 
 } // namespace vcl::mesh

@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_H
-#define VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_H
+#ifndef VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_MAP_H
+#define VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_MAP_H
 
 #include <any>
 #include <unordered_map>
@@ -34,7 +34,7 @@ namespace vcl::mesh {
 
 // we do not have custom components, we leave this class empty
 template<typename, bool HasCustomComponent>
-class CustomComponentsVector
+class CustomComponentsVectorMap
 {
 public:
 	void clear() {}
@@ -44,7 +44,7 @@ public:
 };
 
 template<typename T>
-class CustomComponentsVector<T, true>
+class CustomComponentsVectorMap<T, true>
 {
 public:
 	void clear();
@@ -97,6 +97,6 @@ private:
 
 } // namespace vcl::mesh
 
-#include "custom_components_vector.cpp"
+#include "custom_components_vector_map.cpp"
 
-#endif // VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_H
+#endif // VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_MAP_H

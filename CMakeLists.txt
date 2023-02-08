@@ -207,7 +207,7 @@ set(HEADERS
 	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/containers_concepts.h
 	include/vclib/mesh/containers/custom_component_vector_handle.h
-	include/vclib/mesh/containers/custom_components_vector.h
+	include/vclib/mesh/containers/custom_components_vector_map.h
 	include/vclib/mesh/containers/edge_container.h
 	include/vclib/mesh/containers/element_container.h
 	include/vclib/mesh/containers/face_container.h
@@ -404,7 +404,7 @@ set(SOURCES
 	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.cpp
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.cpp
 	include/vclib/mesh/containers/custom_component_vector_handle.cpp
-	include/vclib/mesh/containers/custom_components_vector.cpp
+	include/vclib/mesh/containers/custom_components_vector_map.cpp
 	include/vclib/mesh/containers/edge_container.cpp
 	include/vclib/mesh/containers/element_container.cpp
 	include/vclib/mesh/containers/half_edge_container.cpp

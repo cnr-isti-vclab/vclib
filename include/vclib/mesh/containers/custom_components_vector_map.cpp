@@ -21,7 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "custom_components_vector.h"
+#include "custom_components_vector_map.h"
 
 #include <vclib/exception/mesh_exception.h>
 #include <vclib/misc/compactness.h>
@@ -32,7 +32,7 @@ namespace vcl::mesh {
  * @brief Removes all the custom components associated to the T element
  */
 template<typename T>
-void CustomComponentsVector<T, true>::clear()
+void CustomComponentsVectorMap<T, true>::clear()
 {
 	map.clear();
 	needToInitialize.clear();
@@ -45,7 +45,7 @@ void CustomComponentsVector<T, true>::clear()
  * @param size
  */
 template<typename T>
-void CustomComponentsVector<T, true>::reserve(uint size)
+void CustomComponentsVectorMap<T, true>::reserve(uint size)
 {
 	for (auto& p : map) {
 		p.second.reserve(size);
@@ -63,7 +63,7 @@ void CustomComponentsVector<T, true>::reserve(uint size)
  * @param size
  */
 template<typename T>
-void CustomComponentsVector<T, true>::resize(uint size)
+void CustomComponentsVectorMap<T, true>::resize(uint size)
 {
 	for (auto& p : map) {
 		if (p.second.size() < size)
@@ -81,7 +81,7 @@ void CustomComponentsVector<T, true>::resize(uint size)
  * @param newIndices
  */
 template<typename T>
-void CustomComponentsVector<T, true>::compact(const std::vector<int>& newIndices)
+void CustomComponentsVectorMap<T, true>::compact(const std::vector<int>& newIndices)
 {
 	for (auto& p : map) {
 		vcl::compactVector(p.second, newIndices);
@@ -100,7 +100,7 @@ void CustomComponentsVector<T, true>::compact(const std::vector<int>& newIndices
  */
 template<typename T>
 template<typename CompType>
-void CustomComponentsVector<T, true>::addNewComponent(
+void CustomComponentsVectorMap<T, true>::addNewComponent(
 	const std::string& name,
 	uint       size)
 {
@@ -116,7 +116,7 @@ void CustomComponentsVector<T, true>::addNewComponent(
  * @param name
  */
 template<typename T>
-void CustomComponentsVector<T, true>::deleteComponent(const std::string& name)
+void CustomComponentsVectorMap<T, true>::deleteComponent(const std::string& name)
 {
 	map.erase(name);
 	needToInitialize.erase(name);
@@ -128,7 +128,7 @@ void CustomComponentsVector<T, true>::deleteComponent(const std::string& name)
  * @param compName
  */
 template<typename T>
-void CustomComponentsVector<T, true>::assertComponentExists(
+void CustomComponentsVectorMap<T, true>::assertComponentExists(
 	const std::string& compName) const
 {
 	(void) (compName);
@@ -141,7 +141,7 @@ void CustomComponentsVector<T, true>::assertComponentExists(
  * @return
  */
 template<typename T>
-bool CustomComponentsVector<T, true>::componentExists(
+bool CustomComponentsVectorMap<T, true>::componentExists(
 	const std::string& compName) const
 {
 	return (map.find(compName) != map.end());
@@ -153,7 +153,7 @@ bool CustomComponentsVector<T, true>::componentExists(
  * @return
  */
 template<typename T>
-std::vector<std::string> CustomComponentsVector<T, true>::allComponentNames() const
+std::vector<std::string> CustomComponentsVectorMap<T, true>::allComponentNames() const
 {
 	std::vector<std::string> names(map.size());
 	for (const auto& p : map)
@@ -169,7 +169,7 @@ std::vector<std::string> CustomComponentsVector<T, true>::allComponentNames() co
  */
 template<typename T>
 template<typename CompType>
-bool CustomComponentsVector<T, true>::isComponentOfType(
+bool CustomComponentsVectorMap<T, true>::isComponentOfType(
 	const std::string& compName) const
 {
 	std::type_index t(typeid(CompType));
@@ -183,7 +183,7 @@ bool CustomComponentsVector<T, true>::isComponentOfType(
  */
 template<typename T>
 template<typename CompType>
-std::vector<std::string> CustomComponentsVector<T, true>::allComponentNamesOfType() const
+std::vector<std::string> CustomComponentsVectorMap<T, true>::allComponentNamesOfType() const
 {
 	std::vector<std::string> names;
 	std::type_index t(typeid(CompType));
@@ -209,7 +209,7 @@ std::vector<std::string> CustomComponentsVector<T, true>::allComponentNamesOfTyp
 template<typename T>
 template<typename CompType>
 const std::vector<std::any>&
-CustomComponentsVector<T, true>::componentVector(const std::string& compName) const
+CustomComponentsVectorMap<T, true>::componentVector(const std::string& compName) const
 {
 	checkComponentType<CompType>(compName);
 	std::vector<std::any>& v = const_cast<std::vector<std::any>&>(map.at(compName));
@@ -238,7 +238,7 @@ CustomComponentsVector<T, true>::componentVector(const std::string& compName) co
 template<typename T>
 template<typename CompType>
 std::vector<std::any>&
-CustomComponentsVector<T, true>::componentVector(const std::string& compName)
+CustomComponentsVectorMap<T, true>::componentVector(const std::string& compName)
 {
 	checkComponentType<CompType>(compName);
 	std::vector<std::any>& v = map.at(compName);
@@ -254,7 +254,7 @@ CustomComponentsVector<T, true>::componentVector(const std::string& compName)
 
 template<typename T>
 template<typename CompType>
-void CustomComponentsVector<T, true>::checkComponentType(
+void CustomComponentsVectorMap<T, true>::checkComponentType(
 	const std::string& compName) const
 {
 	std::type_index t(typeid(CompType));
