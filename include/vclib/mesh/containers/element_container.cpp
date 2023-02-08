@@ -23,9 +23,10 @@
 
 #include "element_container.h"
 
-#include "../components/color.h"
+#include "../components/concepts/color.h"
 #include "../components/concepts/face_half_edge_reference.h"
 #include "../components/concepts/half_edge_references.h"
+#include "../components/concepts/mark.h"
 #include "../components/concepts/principal_curvature.h"
 #include "../components/concepts/vertex_references.h"
 #include "../components/concepts/vertex_half_edge_reference.h"
@@ -760,8 +761,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Mark
 	if constexpr (comp::HasOptionalMark<T>) {
 		if constexpr (comp::HasMark<CT>) {
-			if (!comp::HasOptionalMark<CT> || c.optionalVec.isMarkEnabled()) {
-				optionalVec.enableMark(size);
+			if (!comp::HasOptionalMark<CT> || c.template isOptionalComponentEnabled<typename CT::MarkComponent>()) {
+				enableOptionalComponent<typename T::MarkComponent>();
 			}
 		}
 	}

@@ -468,7 +468,7 @@ void FaceContainer<T>::disablePerFaceColor() requires face::HasOptionalColor<T>
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceMarkEnabled() const requires face::HasOptionalMark<T>
 {
-	return Base::optionalVec.isMarkEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::MarkComponent>();
 }
 
 /**
@@ -479,7 +479,7 @@ bool FaceContainer<T>::isPerFaceMarkEnabled() const requires face::HasOptionalMa
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceMark() requires face::HasOptionalMark<T>
 {
-	Base::optionalVec.enableMark(faceContainerSize());
+	return Base::template enableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**
@@ -490,7 +490,7 @@ void FaceContainer<T>::enablePerFaceMark() requires face::HasOptionalMark<T>
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceMark() requires face::HasOptionalMark<T>
 {
-	Base::optionalVec.disableMark();
+	return Base::template disableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**

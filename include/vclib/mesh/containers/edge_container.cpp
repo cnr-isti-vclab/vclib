@@ -441,7 +441,7 @@ void EdgeContainer<T>::disablePerEdgeColor() requires edge::HasOptionalColor<T>
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeMarkEnabled() const requires edge::HasOptionalMark<T>
 {
-	return Base::optionalVec.isMarkEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::MarkComponent>();
 }
 
 /**
@@ -452,7 +452,7 @@ bool EdgeContainer<T>::isPerEdgeMarkEnabled() const requires edge::HasOptionalMa
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeMark() requires edge::HasOptionalMark<T>
 {
-	Base::optionalVec.enableMark(edgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**
@@ -463,7 +463,7 @@ void EdgeContainer<T>::enablePerEdgeMark() requires edge::HasOptionalMark<T>
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeMark() requires edge::HasOptionalMark<T>
 {
-	Base::optionalVec.disableMark();
+	return Base::template disableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**

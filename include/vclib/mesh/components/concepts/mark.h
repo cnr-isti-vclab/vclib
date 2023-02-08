@@ -46,6 +46,7 @@ concept HasMark = requires(
 	T o,
 	const T& co)
 {
+	typename T::MarkComponent;
 	{ co.mark() } -> std::same_as<int>;
 	{ o.resetMark() } -> std::same_as<void>;
 	{ o.incrementMark() } -> std::same_as<void>;
@@ -55,14 +56,10 @@ concept HasMark = requires(
 
 /**
  * @brief HasOptionalMark concept is satisfied only if a class satisfis the HasMark concept and
- * has the additional member function '__optionalMark()', which is the discriminator between the
- * non-optional and optional component.
+ * and the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalMark = HasMark<T> && requires(T o)
-{
-	{ o.__optionalMark() } -> std::same_as<void>;
-};
+concept HasOptionalMark = HasMark<T> && IsOptionalComponent<typename T::MarkComponent>;;
 
 /* Detector function to check if a class has Mark enabled */
 

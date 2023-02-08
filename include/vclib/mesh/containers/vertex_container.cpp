@@ -497,7 +497,7 @@ void VertexContainer<T>::disablePerVertexColor() requires vert::HasOptionalColor
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexMarkEnabled() const requires vert::HasOptionalMark<T>
 {
-	return Base::optionalVec.isMarkEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::MarkComponent>();
 }
 
 /**
@@ -508,7 +508,7 @@ bool VertexContainer<T>::isPerVertexMarkEnabled() const requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexMark() requires vert::HasOptionalMark<T>
 {
-	Base::optionalVec.enableMark(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**
@@ -519,7 +519,7 @@ void VertexContainer<T>::enablePerVertexMark() requires vert::HasOptionalMark<T>
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexMark() requires vert::HasOptionalMark<T>
 {
-	Base::optionalVec.disableMark();
+	return Base::template disableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**

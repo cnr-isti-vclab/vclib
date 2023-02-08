@@ -60,6 +60,9 @@ using CustomComponents = comp::CustomComponents<EdgeType>;
 /* Port Mark class into edge namespace */
 using Mark = comp::Mark<>;
 
+template<typename EdgeType>
+using OptionalMark = comp::Mark<EdgeType, true>;
+
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
 using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;

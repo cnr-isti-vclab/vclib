@@ -183,7 +183,6 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.h
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_vertices.h
-	include/vclib/mesh/components/vertical/optional/optional_mark.h
 	include/vclib/mesh/components/vertical/optional/optional_normal.h
 	include/vclib/mesh/components/vertical/optional/optional_scalar.h
 	include/vclib/mesh/components/vertical/optional/optional_tex_coord.h
@@ -193,7 +192,6 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/vectors/adjacent_faces_vector.h
 	include/vclib/mesh/components/vertical/vectors/adjacent_vertices_vector.h
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.h
-	include/vclib/mesh/components/vertical/vectors/mark_vector.h
 	include/vclib/mesh/components/vertical/vectors/normal_vector.h
 	include/vclib/mesh/components/vertical/vectors/scalar_vector.h
 	include/vclib/mesh/components/vertical/vectors/tex_coord_vector.h
@@ -390,7 +388,6 @@ set(SOURCES
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.cpp
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_faces.cpp
 	include/vclib/mesh/components/vertical/optional/optional_adjacent_vertices.cpp
-	include/vclib/mesh/components/vertical/optional/optional_mark.cpp
 	include/vclib/mesh/components/vertical/optional/optional_normal.cpp
 	include/vclib/mesh/components/vertical/optional/optional_scalar.cpp
 	include/vclib/mesh/components/vertical/optional/optional_tex_coord.cpp

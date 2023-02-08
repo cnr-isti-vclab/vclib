@@ -77,6 +77,9 @@ using HalfEdgeReference = comp::FaceHalfEdgeReference<HalfEdge>;
 /* Port Mark class into face namespace */
 using Mark = comp::Mark<>;
 
+template<typename FaceType>
+using OptionalMark = comp::Mark<FaceType, true>;
+
 /* Port Normal classes into face namespace */
 template<typename ScalarType, int N>
 using Normal = comp::Normal<ScalarType, N>;

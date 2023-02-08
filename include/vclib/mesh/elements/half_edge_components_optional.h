@@ -24,15 +24,10 @@
 #ifndef VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_OPTIONAL_H
 #define VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_OPTIONAL_H
 
-#include "../components/vertical/optional/optional_mark.h"
 #include "../components/vertical/optional/optional_scalar.h"
 #include "../components/vertical/optional/optional_tex_coord.h"
 
 namespace vcl::hedge {
-
-/* Port OptionalMark class into hedge namespace */
-template<typename EdgeType>
-using OptionalMark = comp::OptionalMark<EdgeType>;
 
 /* Port OptionalScalar class into hedge namespace */
 template<typename ScalarType, typename EdgeType>

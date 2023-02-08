@@ -28,7 +28,6 @@
 #include "adjacent_edges_vector.h"
 #include "adjacent_faces_vector.h"
 #include "adjacent_vertices_vector.h"
-#include "mark_vector.h"
 #include "normal_vector.h"
 #include "scalar_vector.h"
 #include "tex_coord_vector.h"
@@ -63,7 +62,6 @@ class VerticalComponentsVector :
 			AdjacentEdgesVector<T>,
 			AdjacentFacesVector<T>,
 			AdjacentVerticesVector<T>,
-			MarkVector<T>,
 			NormalVector<T>,
 			ScalarVector<T>,
 			TexCoordVector<T>,
