@@ -209,6 +209,27 @@ void ElementContainer<T>::setParentMeshPointers(MeshType* parentMesh)
 	}
 }
 
+template<typename T>
+template<typename C>
+bool ElementContainer<T>::isOptionalComponentEnabled() const
+{
+	return vcVecTuple.template isComponentEnabled<C>();
+}
+
+template<typename T>
+template<typename C>
+void ElementContainer<T>::enableOptionalComponent()
+{
+	vcVecTuple.template enableComponent<C>();
+}
+
+template<typename T>
+template<typename C>
+void ElementContainer<T>::disableOptionalComponent()
+{
+	vcVecTuple.template disableComponent<C>();
+}
+
 /**
  * @brief Returns an iterator to the beginning of the container.
  *

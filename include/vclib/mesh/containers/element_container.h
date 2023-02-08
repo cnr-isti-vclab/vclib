@@ -77,6 +77,15 @@ public:
 	template<typename MeshType>
 	void setParentMeshPointers(MeshType* parentMesh);
 
+	template<typename C>
+	bool isOptionalComponentEnabled() const;
+
+	template<typename C>
+	void enableOptionalComponent();
+
+	template<typename C>
+	void disableOptionalComponent();
+
 	ElementIterator           elementBegin(bool jumpDeleted = true);
 	ElementIterator           elementEnd();
 	ConstElementIterator      elementBegin(bool jumpDeleted = true) const;
