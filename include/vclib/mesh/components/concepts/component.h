@@ -35,11 +35,10 @@ concept HasInitMemberFunction = requires(T o)
 };
 
 template<typename T>
-concept IsVerticalComponent = requires (T o)
+concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o)
 {
 	typename T::DataValueType;
 	{ o.IS_VERTICAL } -> std::same_as<const bool&>;
-	o.IS_VERTICAL == true;
 };
 
 template<typename T>
@@ -49,10 +48,9 @@ struct IsVerticalComponentPred
 };
 
 template<typename T>
-concept IsOptionalComponent = IsVerticalComponent<T> && requires(T o)
+concept IsOptionalComponent = IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires(T o)
 {
 	{ o.IS_OPTIONAL } -> std::same_as<const bool&>;
-	o.IS_OPTIONAL == true;
 };
 
 } // namespace vcl
