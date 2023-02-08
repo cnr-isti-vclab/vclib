@@ -46,10 +46,10 @@ public:
 	static constexpr uint indexOfType();
 
 	template<typename C>
-	constexpr std::vector<typename C::ValueType>& vector();
+	constexpr std::vector<typename C::DataValueType>& vector();
 
 	template<typename C>
-	constexpr const std::vector<typename C::ValueType>& vector() const;
+	constexpr const std::vector<typename C::DataValueType>& vector() const;
 
 	std::size_t size() const;
 
@@ -73,6 +73,9 @@ private:
 
 	template<std::size_t N>
 	void vectorResize(std::size_t size);
+
+	template<typename C, bool E>
+	void setComponentEnabled();
 };
 
 template<typename ...Comp>

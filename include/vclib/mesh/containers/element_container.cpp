@@ -349,7 +349,7 @@ void ElementContainer<T>::clearElements()
 		optionalVec.clear();
 	}
 	if constexpr (HAS_CUSTOM_COMPONENTS) {
-		ccVec.clear();
+		ccVecMap.clear();
 	}
 }
 
@@ -367,7 +367,7 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
 		optionalVec.resize(vec.size());
 	}
 	if constexpr (HAS_CUSTOM_COMPONENTS) {
-		ccVec.resize(vec.size());
+		ccVecMap.resize(vec.size());
 	}
 	updateContainerPointers(oldB, newB, parentMesh);
 	return vec.size() - 1;
@@ -398,7 +398,7 @@ uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 		}
 	}
 	if constexpr (HAS_CUSTOM_COMPONENTS) {
-		ccVec.resize(vec.size());
+		ccVecMap.resize(vec.size());
 	}
 	updateContainerPointers(oldB, newB, parentMesh);
 	return baseId;
@@ -415,7 +415,7 @@ void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 		optionalVec.reserve(size);
 	}
 	if constexpr (HAS_CUSTOM_COMPONENTS) {
-		ccVec.reserve(vec.size());
+		ccVecMap.reserve(vec.size());
 	}
 	updateContainerPointers(oldB, newB, parentMesh);
 }
@@ -446,7 +446,7 @@ std::vector<int> ElementContainer<T>::compactElements()
 			optionalVec.compact(newIndices);
 		}
 		if constexpr (HAS_CUSTOM_COMPONENTS) {
-			ccVec.compact(newIndices);
+			ccVecMap.compact(newIndices);
 		}
 	}
 	return newIndices;

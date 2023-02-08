@@ -165,15 +165,15 @@ protected:
 	std::vector<T> vec;
 
 	/**
-	 * @brief vcTVec the tuple of vectors of all the vertical components of the element. Contains
+	 * @brief vcVecTuple the tuple of vectors of all the vertical components of the element. Contains
 	 * both the optional and the persistent vertical components
 	 */
-	VerticalComponentsVectorTuple<vComps> vcTVec;
+	VerticalComponentsVectorTuple<vComps> vcVecTuple;
 
 	/**
-	 * @brief ccVec the map that associates a string to a vector of custom components
+	 * @brief ccVecMap the map that associates a string to a vector of custom components
 	 */
-	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVec;
+	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVecMap;
 
 	internal::VerticalComponentsVector<T> optionalVec;
 };

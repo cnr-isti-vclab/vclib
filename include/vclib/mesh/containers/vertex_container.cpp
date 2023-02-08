@@ -682,7 +682,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name)
 	const requires vert::HasCustomComponents<T>
 {
-	return Base::ccVec.componentExists(name);
+	return Base::ccVecMap.componentExists(name);
 }
 
 /**
@@ -697,7 +697,7 @@ template<VertexConcept T>
 std::vector<std::string> VertexContainer<T>::getAllPerVertexCustomComponentNames()
 	const requires vert::HasCustomComponents<T>
 {
-	return Base::ccVec.allComponentNames();
+	return Base::ccVecMap.allComponentNames();
 }
 
 /**
@@ -722,7 +722,7 @@ template<typename K>
 bool VertexContainer<T>::isPerVertexCustomComponentOfType(
 	const std::string& name) const requires vert::HasCustomComponents<T>
 {
-	return Base::ccVec.template isComponentOfType<K>(name);
+	return Base::ccVecMap.template isComponentOfType<K>(name);
 }
 
 /**
@@ -746,7 +746,7 @@ std::vector<std::string>
 VertexContainer<T>::getPerVertexCustomComponentNamesOfType()
 	const requires vert::HasCustomComponents<T>
 {
-	return Base::ccVec.template allComponentNamesOfType<K>();
+	return Base::ccVecMap.template allComponentNamesOfType<K>();
 }
 
 /**
@@ -763,7 +763,7 @@ template<typename K>
 void VertexContainer<T>::addPerVertexCustomComponent(
 	const std::string& name) requires vert::HasCustomComponents<T>
 {
-	Base::ccVec.template addNewComponent<K>(name, vertexContainerSize());
+	Base::ccVecMap.template addNewComponent<K>(name, vertexContainerSize());
 }
 
 /**
@@ -779,7 +779,7 @@ template<VertexConcept T>
 void VertexContainer<T>::deletePerVertexCustomComponent(
 	const std::string& name) requires vert::HasCustomComponents<T>
 {
-	Base::ccVec.deleteComponent(name);
+	Base::ccVecMap.deleteComponent(name);
 }
 
 /**
@@ -813,7 +813,7 @@ template<typename K>
 CustomComponentVectorHandle<K> VertexContainer<T>::getPerVertexCustomComponentVectorHandle(
 	const std::string& name) requires vert::HasCustomComponents<T>
 {
-	std::vector<std::any>& cc = Base::ccVec.template componentVector<K>(name);
+	std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
 	CustomComponentVectorHandle<K> v(cc);
 	return v;
 }
@@ -851,7 +851,7 @@ template<typename K>
 ConstCustomComponentVectorHandle<K> VertexContainer<T>::getPerVertexCustomComponentVectorHandle(
 	const std::string& name) const requires vert::HasCustomComponents<T>
 {
-	const std::vector<std::any>& cc = Base::ccVec.template componentVector<K>(name);
+	const std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
 	ConstCustomComponentVectorHandle<K> v(cc);
 	return cc;
 }

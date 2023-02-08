@@ -23,13 +23,14 @@
 
 #include "vertical_components_vector_tuple.h"
 
+#include <vclib/mesh/components/concepts/component.h>
+
 namespace vcl::mesh {
 
 template<typename ...Comp>
 VerticalComponentsVectorTuple<Comp...>::VerticalComponentsVectorTuple()
 {
-	// by default, all the components are enabled
-	vecEnabled.fill(true);
+	(setComponentEnabled<Comp, !vcl::comp::IsOptionalComponent<Comp>>(), ...);
 }
 
 template<typename ...Comp>
@@ -47,7 +48,7 @@ constexpr uint VerticalComponentsVectorTuple<Comp...>::indexOfType()
 
 template<typename ...Comp>
 template<typename C>
-constexpr std::vector<typename C::ValueType>& VerticalComponentsVectorTuple<Comp...>::vector()
+constexpr std::vector<typename C::DataValueType>& VerticalComponentsVectorTuple<Comp...>::vector()
 {
 	constexpr uint ind = indexOfType<C>();
 	return std::get<ind>(tuple);
@@ -55,7 +56,7 @@ constexpr std::vector<typename C::ValueType>& VerticalComponentsVectorTuple<Comp
 
 template<typename ...Comp>
 template<typename C>
-constexpr const std::vector<typename C::ValueType>& VerticalComponentsVectorTuple<Comp...>::vector() const
+constexpr const std::vector<typename C::DataValueType>& VerticalComponentsVectorTuple<Comp...>::vector() const
 {
 	constexpr uint ind = indexOfType<C>();
 	return std::get<ind>(tuple);
@@ -122,6 +123,18 @@ void VerticalComponentsVectorTuple<Comp...>::vectorResize(std::size_t size)
 	}
 	if constexpr (N != 0)
 		vectorResize<N-1>(size);
+}
+
+template<typename ...Comp>
+template<typename C, bool E>
+void VerticalComponentsVectorTuple<Comp...>::setComponentEnabled()
+{
+	if constexpr (E) {
+		enableComponent<C>();
+	}
+	else {
+		disableComponent<C>();
+	}
 }
 
 } // namespace vcl::mesh
