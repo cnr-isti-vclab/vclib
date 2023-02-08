@@ -26,7 +26,6 @@
 
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
-#include "../components/vertical/optional/optional_color.h"
 #include "../components/vertical/optional/optional_mark.h"
 #include "../components/vertical/optional/optional_scalar.h"
 
@@ -39,10 +38,6 @@ using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, EdgeType
 /* Port OptionalAdjacentFaces class into edge namespace */
 template<typename FaceType, typename EdgeType>
 using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, EdgeType>;
-
-/* Port OptionalColor class into edge namespace */
-template<typename EdgeType>
-using OptionalColor = comp::OptionalColor<EdgeType>;
 
 /* Port OptionalMark class into edge namespace */
 template<typename EdgeType>

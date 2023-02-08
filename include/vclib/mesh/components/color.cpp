@@ -44,6 +44,17 @@ vcl::Color& Color<El, o>::color()
 }
 
 template<typename El, bool o>
+bool Color<El, o>::isColorEnabled() const
+{
+	if constexpr (o) {
+		return data.template isComponentEnabled<El>(this);
+	}
+	else {
+		return true;
+	}
+}
+
+template<typename El, bool o>
 template<typename Element>
 void Color<El, o>::importFrom(const Element& e)
 {

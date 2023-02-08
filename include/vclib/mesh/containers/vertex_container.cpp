@@ -462,7 +462,7 @@ void VertexContainer<T>::disablePerVertexAdjacentVertices()
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexColorEnabled() const requires vert::HasOptionalColor<T>
 {
-	return Base::optionalVec.isColorEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ColorComponent>();
 }
 
 /**
@@ -473,7 +473,7 @@ bool VertexContainer<T>::isPerVertexColorEnabled() const requires vert::HasOptio
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexColor() requires vert::HasOptionalColor<T>
 {
-	Base::optionalVec.enableColor(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -484,7 +484,7 @@ void VertexContainer<T>::enablePerVertexColor() requires vert::HasOptionalColor<
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexColor() requires vert::HasOptionalColor<T>
 {
-	Base::optionalVec.disableColor();
+	return Base::template disableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**

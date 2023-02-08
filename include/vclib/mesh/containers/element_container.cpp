@@ -750,8 +750,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Color
 	if constexpr (comp::HasOptionalColor<T>) {
 		if constexpr (comp::HasColor<CT>) {
-			if (!comp::HasOptionalColor<CT> || c.optionalVec.isColorEnabled()) {
-				optionalVec.enableColor(size);
+			if (!comp::HasOptionalColor<CT> || c.template isOptionalComponentEnabled<typename CT::ColorComponent>()) {
+				enableOptionalComponent<typename T::ColorComponent>();
 			}
 		}
 	}

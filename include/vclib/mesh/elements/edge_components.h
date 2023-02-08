@@ -50,6 +50,9 @@ using BitFlags = comp::BitFlags<>;
 /* Port Color class into edge namespace */
 using Color = comp::Color<>;
 
+template<typename EdgeType>
+using OptionalColor = comp::Color<EdgeType, true>;
+
 /* Port CustomComponents class into edge namespace */
 template<typename EdgeType>
 using CustomComponents = comp::CustomComponents<EdgeType>;

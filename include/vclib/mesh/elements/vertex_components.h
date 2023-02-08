@@ -59,6 +59,9 @@ using BitFlags = comp::BitFlags<>;
 /* Port Color class into vert namespace */
 using Color = comp::Color<>;
 
+template<typename VertexType>
+using OptionalColor = comp::Color<VertexType, true>;
+
 /* Port Coordinate class into vert namespace */
 template<typename ScalarType, int N>
 using Coordinate = comp::Coordinate<ScalarType, N>;

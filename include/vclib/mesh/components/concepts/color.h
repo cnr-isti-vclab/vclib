@@ -49,6 +49,7 @@ concept HasColor = requires(
 	const T& co)
 {
 	typename T::ColorType;
+	typename T::ColorComponent;
 	{ o.color() } -> std::same_as<vcl::Color&>;
 	{ co.color() } -> std::same_as<const vcl::Color&>;
 	{ co.isColorEnabled() } -> std::same_as<bool>;
@@ -60,10 +61,7 @@ concept HasColor = requires(
  * non-optional and optional component.
  */
 template<typename T>
-concept HasOptionalColor = HasColor<T> && requires(T o)
-{
-	{ o.__optionalColor() } -> std::same_as<void>;
-};
+concept HasOptionalColor = HasColor<T> && IsOptionalComponent<typename T::ColorComponent>;
 
 /* Detector function to check if a class has Color enabled */
 

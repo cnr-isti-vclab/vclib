@@ -63,6 +63,9 @@ using BitFlags = comp::BitFlags<>;
 /* Port Color class into face namespace */
 using Color = comp::Color<>;
 
+template<typename FaceType>
+using OptionalColor = comp::Color<FaceType, true>;
+
 /* Port CustomComponents class into face namespace */
 template<typename FaceType>
 using CustomComponents = comp::CustomComponents<FaceType>;

@@ -27,7 +27,6 @@
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
 #include "../components/vertical/optional/optional_adjacent_vertices.h"
-#include "../components/vertical/optional/optional_color.h"
 #include "../components/vertical/optional/optional_mark.h"
 #include "../components/vertical/optional/optional_normal.h"
 #include "../components/vertical/optional/optional_principal_curvature.h"
@@ -47,10 +46,6 @@ using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, VertexTy
 /* Port OptionalAdjacentVertices class into vert namespace */
 template<typename VertexType>
 using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, VertexType>;
-
-/* Port OptionalColor class into vert namespace */
-template<typename VertexType>
-using OptionalColor = comp::OptionalColor<VertexType>;
 
 /* Port OptionalMark class into vert namespace */
 template<typename VertexType>

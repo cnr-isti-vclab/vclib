@@ -54,7 +54,7 @@ public:
 
 	vcl::Color& color();
 
-	constexpr bool isColorEnabled() const { return true; }
+	bool isColorEnabled() const;
 
 protected:
 	template<typename Element>

@@ -406,7 +406,7 @@ void EdgeContainer<T>::disablePerEdgeAdjacentFaces() requires edge::HasOptionalA
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeColorEnabled() const requires edge::HasOptionalColor<T>
 {
-	return Base::optionalVec.isColorEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ColorComponent>();
 }
 
 /**
@@ -417,7 +417,7 @@ bool EdgeContainer<T>::isPerEdgeColorEnabled() const requires edge::HasOptionalC
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeColor() requires edge::HasOptionalColor<T>
 {
-	Base::optionalVec.enableColor(edgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -428,7 +428,7 @@ void EdgeContainer<T>::enablePerEdgeColor() requires edge::HasOptionalColor<T>
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeColor() requires edge::HasOptionalColor<T>
 {
-	Base::optionalVec.disableColor();
+	return Base::template disableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**

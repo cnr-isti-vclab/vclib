@@ -26,7 +26,6 @@
 
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
-#include "../components/vertical/optional/optional_color.h"
 #include "../components/vertical/optional/optional_mark.h"
 #include "../components/vertical/optional/optional_normal.h"
 #include "../components/vertical/optional/optional_principal_curvature.h"
@@ -49,10 +48,6 @@ using OptionalAdjacentPolygons = comp::OptionalAdjacentFaces<FaceType, -1, FaceT
 
 template<typename FaceType>
 using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<FaceType, 3, FaceType>;
-
-/* Port OptionalColor class into face namespace */
-template<typename FaceType>
-using OptionalColor = comp::OptionalColor<FaceType>;
 
 /* Port OptionalMark class into face namespace */
 template<typename FaceType>

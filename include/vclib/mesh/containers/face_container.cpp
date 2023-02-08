@@ -433,7 +433,7 @@ void FaceContainer<T>::disablePerFaceAdjacentFaces() requires face::HasOptionalA
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceColorEnabled() const requires face::HasOptionalColor<T>
 {
-	return Base::optionalVec.isColorEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ColorComponent>();
 }
 
 /**
@@ -444,7 +444,7 @@ bool FaceContainer<T>::isPerFaceColorEnabled() const requires face::HasOptionalC
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceColor() requires face::HasOptionalColor<T>
 {
-	Base::optionalVec.enableColor(faceContainerSize());
+	return Base::template enableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -455,7 +455,7 @@ void FaceContainer<T>::enablePerFaceColor() requires face::HasOptionalColor<T>
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceColor() requires face::HasOptionalColor<T>
 {
-	Base::optionalVec.disableColor();
+	return Base::template disableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**

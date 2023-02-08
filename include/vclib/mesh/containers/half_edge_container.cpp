@@ -325,7 +325,7 @@ void HalfEdgeContainer<T>::disableAllPerHalfEdgeOptionalComponents()
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const requires hedge::HasOptionalColor<T>
 {
-	return Base::optionalVec.isColorEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ColorComponent>();
 }
 
 /**
@@ -336,7 +336,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const requires hedge::Has
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>
 {
-	Base::optionalVec.enableColor(halfEdgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -347,7 +347,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeColor() requires hedge::HasOptionalC
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>
 {
-	Base::optionalVec.disableColor();
+	return Base::template disableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
