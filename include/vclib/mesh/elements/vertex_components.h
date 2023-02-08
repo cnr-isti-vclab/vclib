@@ -104,6 +104,14 @@ using PrincipalCurvature = comp::PrincipalCurvature<ScalarType>;
 using PrincipalCurvaturef = comp::PrincipalCurvaturef<>;
 using PrincipalCurvatured = comp::PrincipalCurvatured<>;
 
+template<typename ScalarType, typename VertexType>
+using OptionalPrincipalCurvature = comp::PrincipalCurvature<ScalarType, VertexType, true>;
+
+template<typename VertexType>
+using OptionalPrincipalCurvaturef = comp::PrincipalCurvaturef<VertexType, true>;
+template<typename VertexType>
+using OptionalPrincipalCurvatured = comp::PrincipalCurvatured<VertexType, true>;
+
 /* Port Scalar class into vert namespace */
 template<typename ScalarType>
 using Scalar = comp::Scalar<ScalarType>;

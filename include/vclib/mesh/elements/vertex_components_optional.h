@@ -29,7 +29,6 @@
 #include "../components/vertical/optional/optional_adjacent_vertices.h"
 #include "../components/vertical/optional/optional_mark.h"
 #include "../components/vertical/optional/optional_normal.h"
-#include "../components/vertical/optional/optional_principal_curvature.h"
 #include "../components/vertical/optional/optional_scalar.h"
 #include "../components/vertical/optional/optional_tex_coord.h"
 
@@ -63,15 +62,6 @@ using OptionalNormal3f = comp::OptionalNormal3f<VertexType>;
 
 template<typename VertexType>
 using OptionalNormal3d = comp::OptionalNormal3d<VertexType>;
-
-/* Port OptionalPrincipalCurvature class into vert namespace */
-template<typename ScalarType, typename VertexType>
-using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<ScalarType, VertexType>;
-
-template<typename VertexType>
-using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<VertexType>;
-template<typename VertexType>
-using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<VertexType>;
 
 /* Port OptionalScalar class into vert namespace */
 template<typename ScalarType, typename VertexType>

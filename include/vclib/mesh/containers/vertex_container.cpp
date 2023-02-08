@@ -570,7 +570,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled()
 	const requires vert::HasOptionalPrincipalCurvature<T>
 {
-	return Base::optionalVec.isPrincipalCurvatureEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::PrincipalCurvatureComponent>();
 }
 
 /**
@@ -583,7 +583,7 @@ template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexPrincipalCurvature()
 	requires vert::HasOptionalPrincipalCurvature<T>
 {
-	Base::optionalVec.enablePrincipalCurvature(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::PrincipalCurvatureComponent>();
 }
 
 /**
@@ -596,7 +596,7 @@ template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexPrincipalCurvature()
 	requires vert::HasOptionalPrincipalCurvature<T>
 {
-	Base::optionalVec.disablePrincipalCurvature();
+	return Base::template disableOptionalComponent<typename T::PrincipalCurvatureComponent>();
 }
 
 /**

@@ -57,8 +57,7 @@ concept HasColor = requires(
 
 /**
  * @brief HasOptionalColor concept is satisfied only if a class satisfis the HasColor concept and
- * has the additional member function '__optionalColor()', which is the discriminator between the
- * non-optional and optional component.
+ * the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
 concept HasOptionalColor = HasColor<T> && IsOptionalComponent<typename T::ColorComponent>;

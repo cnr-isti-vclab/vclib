@@ -23,9 +23,11 @@
 
 #include "element_container.h"
 
-#include "../components/concepts/vertex_references.h"
+#include "../components/color.h"
 #include "../components/concepts/face_half_edge_reference.h"
 #include "../components/concepts/half_edge_references.h"
+#include "../components/concepts/principal_curvature.h"
+#include "../components/concepts/vertex_references.h"
 #include "../components/concepts/vertex_half_edge_reference.h"
 
 namespace vcl::mesh {
@@ -775,8 +777,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	if constexpr (comp::HasOptionalPrincipalCurvature<T>) {
 		if constexpr (comp::HasPrincipalCurvature<CT>) {
 			if (!comp::HasOptionalPrincipalCurvature<CT> ||
-				c.optionalVec.isPrincipalCurvatureEnabled()) {
-				optionalVec.enablePrincipalCurvature(size);
+				c.template isOptionalComponentEnabled<typename CT::PrincipalCurvatureComponent>()) {
+				enableOptionalComponent<typename T::PrincipalCurvatureComponent>();
 			}
 		}
 	}

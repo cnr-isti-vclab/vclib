@@ -101,6 +101,14 @@ using PrincipalCurvature = comp::PrincipalCurvature<FaceType>;
 using PrincipalCurvaturef = comp::PrincipalCurvaturef<>;
 using PrincipalCurvatured = comp::PrincipalCurvatured<>;
 
+template<typename ScalarType, typename FaceType>
+using OptionalPrincipalCurvature = comp::PrincipalCurvature<ScalarType, FaceType, true>;
+
+template<typename FaceType>
+using OptionalPrincipalCurvaturef = comp::PrincipalCurvaturef<FaceType, true>;
+template<typename FaceType>
+using OptionalPrincipalCurvatured = comp::PrincipalCurvatured<FaceType, true>;
+
 /* Port Scalar class into face namespace */
 template<typename ScalarType>
 using Scalar = comp::Scalar<ScalarType>;

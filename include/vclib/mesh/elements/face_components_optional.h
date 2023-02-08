@@ -28,7 +28,6 @@
 #include "../components/vertical/optional/optional_adjacent_faces.h"
 #include "../components/vertical/optional/optional_mark.h"
 #include "../components/vertical/optional/optional_normal.h"
-#include "../components/vertical/optional/optional_principal_curvature.h"
 #include "../components/vertical/optional/optional_scalar.h"
 #include "../components/vertical/optional/optional_wedge_colors.h"
 #include "../components/vertical/optional/optional_wedge_tex_coords.h"
@@ -65,15 +64,6 @@ using OptionalNormal3f = comp::OptionalNormal3f<FaceType>;
 
 template<typename FaceType>
 using OptionalNormal3d = comp::OptionalNormal3d<FaceType>;
-
-/* Port OptionalPrincipalCurvature class into face namespace */
-template<typename ScalarType, typename FaceType>
-using OptionalPrincipalCurvature = comp::OptionalPrincipalCurvature<ScalarType, FaceType>;
-
-template<typename FaceType>
-using OptionalPrincipalCurvaturef = comp::OptionalPrincipalCurvaturef<FaceType>;
-template<typename FaceType>
-using OptionalPrincipalCurvatured = comp::OptionalPrincipalCurvatured<FaceType>;
 
 /* Port OptionalScalar class into face namespace */
 template<typename ScalarType, typename FaceType>

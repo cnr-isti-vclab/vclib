@@ -51,8 +51,8 @@ public:
 
 	const PrincipalCurvatureType& principalCurvature() const;
 	PrincipalCurvatureType&       principalCurvature();
-
-	constexpr bool isPrincipalCurvatureEnabled() const { return true; }
+	
+	bool isPrincipalCurvatureEnabled() const;
 
 protected:
 	template<typename Element>

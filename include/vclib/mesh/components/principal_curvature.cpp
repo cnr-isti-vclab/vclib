@@ -40,6 +40,17 @@ PrincipalCurvature<Scalar, El, o>::principalCurvature()
 }
 
 template<typename Scalar, typename El, bool o>
+bool PrincipalCurvature<Scalar, El, o>::isPrincipalCurvatureEnabled() const
+{
+	if constexpr (o) {
+		return data.template isComponentEnabled<El>(this);
+	}
+	else {
+		return true;
+	}
+}
+
+template<typename Scalar, typename El, bool o>
 template<typename Element>
 void PrincipalCurvature<Scalar, El, o>::importFrom(const Element& e)
 {

@@ -30,7 +30,6 @@
 #include "adjacent_vertices_vector.h"
 #include "mark_vector.h"
 #include "normal_vector.h"
-#include "principal_curvature_vector.h"
 #include "scalar_vector.h"
 #include "tex_coord_vector.h"
 #include "wedge_colors_vector.h"
@@ -66,7 +65,6 @@ class VerticalComponentsVector :
 			AdjacentVerticesVector<T>,
 			MarkVector<T>,
 			NormalVector<T>,
-			PrincipalCurvatureVector<T>,
 			ScalarVector<T>,
 			TexCoordVector<T>,
 			WedgeColorsVector<T>,

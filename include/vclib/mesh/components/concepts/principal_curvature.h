@@ -47,6 +47,7 @@ concept HasPrincipalCurvature = requires(
 	const T& co)
 {
 	typename T::PrincipalCurvatureType;
+	typename T::PrincipalCurvatureComponent;
 	{ o.principalCurvature() } -> std::same_as<typename T::PrincipalCurvatureType&>;
 	{ co.principalCurvature() } -> std::same_as<const typename T::PrincipalCurvatureType&>;
 	{ co.isPrincipalCurvatureEnabled() } -> std::same_as<bool>;
@@ -54,15 +55,10 @@ concept HasPrincipalCurvature = requires(
 
 /**
  * @brief HasOptionalPrincipalCurvature concept is satisfied only if a class satisfis the
- * HasPrincipalCurvature concept and has the additional member function
- * '__optionalPrincipalCurvature()', which is the discriminator between the non-optional and
- * optional component.
+ * HasPrincipalCurvature concept and the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && requires(T o)
-{
-	{ o.__optionalPrincipalCurvature() } -> std::same_as<void>;
-};
+concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && IsOptionalComponent<typename T::PrincipalCurvatureComponent>;
 
 /* Detector function to check if a class has PrincipalCurvature enabled */
 
