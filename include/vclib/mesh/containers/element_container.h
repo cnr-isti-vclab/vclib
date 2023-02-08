@@ -48,8 +48,6 @@ class ElementContainer : public ElementContainerTriggerer
 
 	using ElementContainerType = ElementContainer<T>;
 
-	static const bool HAS_CUSTOM_COMPONENTS = comp::HasCustomComponents<T>;
-
 public:
 	using ElementType          = T;
 	using ElementIterator      = ElementContainerIterator<std::vector, T>;

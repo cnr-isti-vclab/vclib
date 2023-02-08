@@ -24,6 +24,7 @@
 #include "vertical_components_vector_tuple.h"
 
 #include <vclib/mesh/components/concepts/component.h>
+#include <vclib/misc/compactness.h>
 
 namespace vcl::mesh {
 
@@ -71,8 +72,26 @@ std::size_t VerticalComponentsVectorTuple<Comp...>::size() const
 template<typename ...Comp>
 void VerticalComponentsVectorTuple<Comp...>::resize(std::size_t size)
 {
-	vectorResize<componentsNumber()-1>(size);
+	if constexpr (componentsNumber() > 0) {
+		vectorResize<componentsNumber()-1>(size);
+	}
 	siz = size;
+}
+
+template<typename ...Comp>
+void VerticalComponentsVectorTuple<Comp...>::reserve(std::size_t size)
+{
+	if constexpr (componentsNumber() > 0) {
+		vectorReserve<componentsNumber()-1>(size);
+	}
+}
+
+template<typename ...Comp>
+void VerticalComponentsVectorTuple<Comp...>::compact(const std::vector<int>& newIndices)
+{
+	if constexpr (componentsNumber() > 0) {
+		vectorCompact<componentsNumber()-1>(newIndices);
+	}
 }
 
 template<typename ...Comp>
@@ -123,6 +142,28 @@ void VerticalComponentsVectorTuple<Comp...>::vectorResize(std::size_t size)
 	}
 	if constexpr (N != 0)
 		vectorResize<N-1>(size);
+}
+
+template<typename ...Comp>
+template<std::size_t N>
+void VerticalComponentsVectorTuple<Comp...>::vectorReserve(std::size_t size)
+{
+	if (vecEnabled[N]) {
+		std::get<N>(tuple).reserve(size);
+	}
+	if constexpr (N != 0)
+		vectorReserve<N-1>(size);
+}
+
+template<typename ...Comp>
+template<std::size_t N>
+void VerticalComponentsVectorTuple<Comp...>::vectorCompact(const std::vector<int>& newIndices)
+{
+	if (vecEnabled[N]) {
+		vcl::compactVector(std::get<N>(tuple), newIndices);
+	}
+	if constexpr (N != 0)
+		vectorCompact<N-1>(newIndices);
 }
 
 template<typename ...Comp>

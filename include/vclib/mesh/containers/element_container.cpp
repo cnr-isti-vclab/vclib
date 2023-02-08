@@ -369,9 +369,9 @@ void ElementContainer<T>::clearElements()
 	if constexpr (comp::HasVerticalComponent<T>) {
 		optionalVec.clear();
 	}
-	if constexpr (HAS_CUSTOM_COMPONENTS) {
-		ccVecMap.clear();
-	}
+
+	vcVecTuple.clear();
+	ccVecMap.clear();
 }
 
 template<typename T>
@@ -387,9 +387,10 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
 		setContainerPointer(vec.back());
 		optionalVec.resize(vec.size());
 	}
-	if constexpr (HAS_CUSTOM_COMPONENTS) {
-		ccVecMap.resize(vec.size());
-	}
+
+	vcVecTuple.resize(vec.size());
+	ccVecMap.resize(vec.size());
+
 	updateContainerPointers(oldB, newB, parentMesh);
 	return vec.size() - 1;
 }
@@ -418,9 +419,10 @@ uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 			setContainerPointer(vec[i]);
 		}
 	}
-	if constexpr (HAS_CUSTOM_COMPONENTS) {
-		ccVecMap.resize(vec.size());
-	}
+
+	ccVecMap.resize(vec.size());
+	vcVecTuple.resize(vec.size());
+
 	updateContainerPointers(oldB, newB, parentMesh);
 	return baseId;
 }
@@ -435,9 +437,10 @@ void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 	if constexpr (comp::HasVerticalComponent<T>) {
 		optionalVec.reserve(size);
 	}
-	if constexpr (HAS_CUSTOM_COMPONENTS) {
-		ccVecMap.reserve(vec.size());
-	}
+
+	ccVecMap.reserve(vec.size());
+	vcVecTuple.reserve(vec.size());
+
 	updateContainerPointers(oldB, newB, parentMesh);
 }
 
@@ -466,9 +469,9 @@ std::vector<int> ElementContainer<T>::compactElements()
 		if constexpr (comp::HasVerticalComponent<T>) {
 			optionalVec.compact(newIndices);
 		}
-		if constexpr (HAS_CUSTOM_COMPONENTS) {
-			ccVecMap.compact(newIndices);
-		}
+
+		ccVecMap.compact(newIndices);
+		vcVecTuple.compact(newIndices);
 	}
 	return newIndices;
 }
