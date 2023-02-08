@@ -116,7 +116,7 @@ struct ComponentData<Data, true>
 			assert(elem->parentMesh());
 
 			// get the tuple of vector of vertical components
-			auto& tvc = elem->parentMesh()->template components<ElementType>();
+			auto& tvc = elem->parentMesh()->template verticalComponents<ElementType>();
 
 			return tvc.template isComponentEnabled<ComponentType>();
 		}
