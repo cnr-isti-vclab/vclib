@@ -47,6 +47,7 @@ concept HasTexCoord = requires(
 	const T& co)
 {
 	typename T::TexCoordType;
+	typename T::TexCoordComponent;
 	{ o.texCoord() } -> std::same_as<typename T::TexCoordType&>;
 	{ co.texCoord() } -> std::same_as<const typename T::TexCoordType&>;
 	{ co.isTexCoordEnabled() } -> std::same_as<bool>;
@@ -54,14 +55,10 @@ concept HasTexCoord = requires(
 
 /**
  * @brief HasOptionalTexCoord concept is satisfied only if a class satisfis the HasTexCoord concept
- * and has the additional member function '__optionalTexCoord()', which is the discriminator between
- * the non-optional and optional component.
+ * and the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalTexCoord = HasTexCoord<T> && requires(T o)
-{
-	{ o.__optionalTexCoord() } -> std::same_as<void>;
-};
+concept HasOptionalTexCoord = HasTexCoord<T> && IsOptionalComponent<typename T::TexCoordComponent>;;
 
 /* Detector function to check if a class has TexCoord enabled */
 

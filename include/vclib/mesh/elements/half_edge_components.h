@@ -86,6 +86,15 @@ using TexCoord = comp::TexCoord<ScalarType>;
 using TexCoordf = comp::TexCoordf<>;
 using TexCoordd = comp::TexCoordd<>;
 
+template<typename ScalarType, typename VertexType>
+using OptionalTexCoord = comp::TexCoord<ScalarType, VertexType, true>;
+
+template<typename VertexType>
+using OptionalTexCoordf = comp::TexCoord<float, VertexType, true>;
+
+template<typename VertexType>
+using OptionalTexCoordd = comp::TexCoord<double, VertexType, true>;
+
 } // namespace vcl::hedge
 
 #endif // VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_H

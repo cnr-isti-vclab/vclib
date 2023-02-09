@@ -28,7 +28,6 @@
 #include "adjacent_edges_vector.h"
 #include "adjacent_faces_vector.h"
 #include "adjacent_vertices_vector.h"
-#include "tex_coord_vector.h"
 #include "wedge_colors_vector.h"
 #include "wedge_tex_coords_vector.h"
 
@@ -60,7 +59,6 @@ class VerticalComponentsVector :
 			AdjacentEdgesVector<T>,
 			AdjacentFacesVector<T>,
 			AdjacentVerticesVector<T>,
-			TexCoordVector<T>,
 			WedgeColorsVector<T>,
 			WedgeTexCoordsVector<T>>
 {

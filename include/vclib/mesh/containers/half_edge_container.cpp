@@ -429,7 +429,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeScalar() requires hedge::HasOptiona
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::HasOptionalTexCoord<T>
 {
-	return Base::optionalVec.isTexCoordEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::TexCoordComponent>();
 }
 /**
  * @brief Enables the Optional TexCoord of the halfedge.
@@ -439,7 +439,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
 {
-	Base::optionalVec.enableTexCoord(halfEdgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::TexCoordComponent>();
 }
 
 /**
@@ -450,7 +450,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOption
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
 {
-	Base::optionalVec.disableTexCoord();
+	return Base::template disableOptionalComponent<typename T::TexCoordComponent>();
 }
 
 /**

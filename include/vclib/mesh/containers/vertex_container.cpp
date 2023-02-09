@@ -644,7 +644,7 @@ void VertexContainer<T>::disablePerVertexScalar() requires vert::HasOptionalScal
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexTexCoordEnabled() const requires vert::HasOptionalTexCoord<T>
 {
-	return Base::optionalVec.isTexCoordEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::TexCoordComponent>();
 }
 
 /**
@@ -655,7 +655,7 @@ bool VertexContainer<T>::isPerVertexTexCoordEnabled() const requires vert::HasOp
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
-	Base::optionalVec.enableTexCoord(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::TexCoordComponent>();
 }
 
 /**
@@ -666,7 +666,7 @@ void VertexContainer<T>::enablePerVertexTexCoord() requires vert::HasOptionalTex
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
-	Base::optionalVec.disableTexCoord();
+	return Base::template disableOptionalComponent<typename T::TexCoordComponent>();
 }
 
 /**

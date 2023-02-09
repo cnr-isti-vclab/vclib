@@ -27,7 +27,6 @@
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
 #include "../components/vertical/optional/optional_adjacent_vertices.h"
-#include "../components/vertical/optional/optional_tex_coord.h"
 
 namespace vcl::vert {
 
@@ -42,16 +41,6 @@ using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, VertexTy
 /* Port OptionalAdjacentVertices class into vert namespace */
 template<typename VertexType>
 using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, VertexType>;
-
-/* Port OptionalTexCoord class into vert namespace */
-template<typename ScalarType, typename VertexType>
-using OptionalTexCoord = comp::OptionalTexCoord<ScalarType, VertexType>;
-
-template<typename VertexType>
-using OptionalTexCoordf = comp::OptionalTexCoord<float, VertexType>;
-
-template<typename VertexType>
-using OptionalTexCoordd = comp::OptionalTexCoord<double, VertexType>;
 
 /* Port VerticalComponent class into vert namespace */
 template<typename VertexType>

@@ -30,6 +30,7 @@
 #include "../components/concepts/normal.h"
 #include "../components/concepts/principal_curvature.h"
 #include "../components/concepts/scalar.h"
+#include "../components/concepts/tex_coord.h"
 #include "../components/concepts/vertex_references.h"
 #include "../components/concepts/vertex_half_edge_reference.h"
 
@@ -814,8 +815,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// TexCoord
 	if constexpr (comp::HasOptionalTexCoord<T>) {
 		if constexpr (comp::HasTexCoord<CT>) {
-			if (!comp::HasOptionalTexCoord<CT> || c.optionalVec.isTexCoordEnabled()) {
-				optionalVec.enableTexCoord(size);
+			if (!comp::HasOptionalTexCoord<CT> || c.template isOptionalComponentEnabled<typename CT::TexCoordComponent>()) {
+				enableOptionalComponent<typename T::TexCoordComponent>();
 			}
 		}
 	}
