@@ -24,20 +24,9 @@
 #ifndef VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_OPTIONAL_H
 #define VCL_MESH_ELEMENTS_HALF_EDGE_COMPONENTS_OPTIONAL_H
 
-#include "../components/vertical/optional/optional_scalar.h"
 #include "../components/vertical/optional/optional_tex_coord.h"
 
 namespace vcl::hedge {
-
-/* Port OptionalScalar class into hedge namespace */
-template<typename ScalarType, typename EdgeType>
-using OptionalScalar = comp::OptionalScalar<ScalarType, EdgeType>;
-
-template<typename EdgeType>
-using OptionalScalarf = comp::OptionalScalar<float, EdgeType>;
-
-template<typename EdgeType>
-using OptionalScalard = comp::OptionalScalar<double, EdgeType>;
 
 /* Port OptionalTexCoord class into hedge namespace */
 template<typename ScalarType, typename VertexType>

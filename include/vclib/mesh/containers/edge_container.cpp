@@ -476,7 +476,7 @@ void EdgeContainer<T>::disablePerEdgeMark() requires edge::HasOptionalMark<T>
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeScalarEnabled() const requires edge::HasOptionalScalar<T>
 {
-	return Base::optionalVec.isScalarEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
 }
 /**
  * @brief Enables the Optional Scalar of the edge.
@@ -486,7 +486,7 @@ bool EdgeContainer<T>::isPerEdgeScalarEnabled() const requires edge::HasOptional
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeScalar() requires edge::HasOptionalScalar<T>
 {
-	Base::optionalVec.enableScalar(edgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -497,7 +497,7 @@ void EdgeContainer<T>::enablePerEdgeScalar() requires edge::HasOptionalScalar<T>
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeScalar() requires edge::HasOptionalScalar<T>
 {
-	Base::optionalVec.disableScalar();
+	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**

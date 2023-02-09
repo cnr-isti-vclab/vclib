@@ -609,7 +609,7 @@ void VertexContainer<T>::disablePerVertexPrincipalCurvature()
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexScalarEnabled() const requires vert::HasOptionalScalar<T>
 {
-	return Base::optionalVec.isScalarEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
 }
 
 /**
@@ -620,7 +620,7 @@ bool VertexContainer<T>::isPerVertexScalarEnabled() const requires vert::HasOpti
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexScalar() requires vert::HasOptionalScalar<T>
 {
-	Base::optionalVec.enableScalar(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -631,7 +631,7 @@ void VertexContainer<T>::enablePerVertexScalar() requires vert::HasOptionalScala
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexScalar() requires vert::HasOptionalScalar<T>
 {
-	Base::optionalVec.disableScalar();
+	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**

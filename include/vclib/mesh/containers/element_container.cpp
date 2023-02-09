@@ -28,6 +28,7 @@
 #include "../components/concepts/half_edge_references.h"
 #include "../components/concepts/mark.h"
 #include "../components/concepts/principal_curvature.h"
+#include "../components/concepts/scalar.h"
 #include "../components/concepts/vertex_references.h"
 #include "../components/concepts/vertex_half_edge_reference.h"
 
@@ -804,8 +805,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Scalar
 	if constexpr (comp::HasOptionalScalar<T>) {
 		if constexpr (comp::HasScalar<CT>) {
-			if (!comp::HasOptionalScalar<CT> || c.optionalVec.isScalarEnabled()) {
-				optionalVec.enableScalar(size);
+			if (!comp::HasOptionalScalar<CT> || c.template isOptionalComponentEnabled<typename CT::ScalarComponent>()) {
+				enableOptionalComponent<typename T::ScalarComponent>();
 			}
 		}
 	}

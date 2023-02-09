@@ -395,7 +395,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeMark() requires hedge::HasOptionalM
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeScalarEnabled() const requires hedge::HasOptionalScalar<T>
 {
-	return Base::optionalVec.isScalarEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
 }
 /**
  * @brief Enables the Optional Scalar of the halfedge.
@@ -405,7 +405,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeScalarEnabled() const requires hedge::Ha
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>
 {
-	Base::optionalVec.enableScalar(halfEdgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -416,7 +416,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeScalar() requires hedge::HasOptional
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>
 {
-	Base::optionalVec.disableScalar();
+	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**

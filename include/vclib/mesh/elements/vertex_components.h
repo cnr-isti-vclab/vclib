@@ -122,6 +122,15 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf<>;
 using Scalard = comp::Scalard<>;
 
+template<typename ScalarType, typename VertexType>
+using OptionalScalar = comp::Scalar<ScalarType, VertexType, true>;
+
+template<typename VertexType>
+using OptionalScalarf = comp::Scalar<float, VertexType, true>;
+
+template<typename VertexType>
+using OptionalScalard = comp::Scalar<double, VertexType, true>;
+
 /* Port TexCoord class into vert namespace */
 template<typename ScalarType>
 using TexCoord = comp::TexCoord<ScalarType>;

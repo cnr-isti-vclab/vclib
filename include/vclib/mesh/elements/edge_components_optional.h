@@ -26,7 +26,6 @@
 
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
-#include "../components/vertical/optional/optional_scalar.h"
 
 namespace vcl::edge {
 
@@ -37,16 +36,6 @@ using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, EdgeType
 /* Port OptionalAdjacentFaces class into edge namespace */
 template<typename FaceType, typename EdgeType>
 using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, EdgeType>;
-
-/* Port OptionalScalar class into edge namespace */
-template<typename ScalarType, typename EdgeType>
-using OptionalScalar = comp::OptionalScalar<ScalarType, EdgeType>;
-
-template<typename EdgeType>
-using OptionalScalarf = comp::OptionalScalar<float, EdgeType>;
-
-template<typename EdgeType>
-using OptionalScalard = comp::OptionalScalar<double, EdgeType>;
 
 /* Port VerticalComponent class into edge namespace */
 template<typename EdgeType>

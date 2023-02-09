@@ -540,7 +540,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFacePrincipalCurvatureEnabled()
 	const requires face::HasOptionalPrincipalCurvature<T>
 {
-	return Base::optionalVec.isPrincipalCurvatureEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::PrincipalCurvatureComponent>();
 }
 /**
  * @brief Enables the Optional PrincipalCurvature of the face.
@@ -552,7 +552,7 @@ template<FaceConcept T>
 void FaceContainer<T>::enablePerFacePrincipalCurvature()
 	requires face::HasOptionalPrincipalCurvature<T>
 {
-	Base::optionalVec.enablePrincipalCurvature(faceContainerSize());
+	return Base::template enableOptionalComponent<typename T::PrincipalCurvatureComponent>();
 }
 
 /**
@@ -565,7 +565,7 @@ template<FaceConcept T>
 void FaceContainer<T>::disablePerFacePrincipalCurvature()
 	requires face::HasOptionalPrincipalCurvature<T>
 {
-	Base::optionalVec.disablePrincipalCurvature();
+	return Base::template disableOptionalComponent<typename T::PrincipalCurvatureComponent>();
 }
 
 /**
@@ -578,7 +578,7 @@ void FaceContainer<T>::disablePerFacePrincipalCurvature()
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceScalarEnabled() const requires face::HasOptionalScalar<T>
 {
-	return Base::optionalVec.isScalarEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
 }
 /**
  * @brief Enables the Optional Scalar of the face.
@@ -588,7 +588,7 @@ bool FaceContainer<T>::isPerFaceScalarEnabled() const requires face::HasOptional
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceScalar() requires face::HasOptionalScalar<T>
 {
-	Base::optionalVec.enableScalar(faceContainerSize());
+	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -599,7 +599,7 @@ void FaceContainer<T>::enablePerFaceScalar() requires face::HasOptionalScalar<T>
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceScalar() requires face::HasOptionalScalar<T>
 {
-	Base::optionalVec.disableScalar();
+	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**

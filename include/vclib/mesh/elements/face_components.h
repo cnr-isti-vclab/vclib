@@ -119,6 +119,15 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf<>;
 using Scalard = comp::Scalard<>;
 
+template<typename ScalarType, typename FaceType>
+using OptionalScalar = comp::Scalar<ScalarType, FaceType, true>;
+
+template<typename FaceType>
+using OptionalScalarf = comp::Scalar<float, FaceType, true>;
+
+template<typename FaceType>
+using OptionalScalard = comp::Scalar<double, FaceType, true>;
+
 /* Port TriangleBitFlags class into face namespace */
 using TriangleBitFlags = comp::TriangleBitFlags<>;
 

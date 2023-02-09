@@ -70,6 +70,15 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf<>;
 using Scalard = comp::Scalard<>;
 
+template<typename ScalarType, typename EdgeType>
+using OptionalScalar = comp::Scalar<ScalarType, EdgeType, true>;
+
+template<typename EdgeType>
+using OptionalScalarf = comp::Scalar<float, EdgeType, true>;
+
+template<typename EdgeType>
+using OptionalScalard = comp::Scalar<double, EdgeType, true>;
+
 /* Port TexCoord class into hedge namespace */
 template<typename ScalarType>
 using TexCoord = comp::TexCoord<ScalarType>;

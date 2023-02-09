@@ -28,7 +28,6 @@
 #include "../components/vertical/optional/optional_adjacent_faces.h"
 #include "../components/vertical/optional/optional_adjacent_vertices.h"
 #include "../components/vertical/optional/optional_normal.h"
-#include "../components/vertical/optional/optional_scalar.h"
 #include "../components/vertical/optional/optional_tex_coord.h"
 
 namespace vcl::vert {
@@ -57,16 +56,6 @@ using OptionalNormal3f = comp::OptionalNormal3f<VertexType>;
 
 template<typename VertexType>
 using OptionalNormal3d = comp::OptionalNormal3d<VertexType>;
-
-/* Port OptionalScalar class into vert namespace */
-template<typename ScalarType, typename VertexType>
-using OptionalScalar = comp::OptionalScalar<ScalarType, VertexType>;
-
-template<typename VertexType>
-using OptionalScalarf = comp::OptionalScalar<float, VertexType>;
-
-template<typename VertexType>
-using OptionalScalard = comp::OptionalScalar<double, VertexType>;
 
 /* Port OptionalTexCoord class into vert namespace */
 template<typename ScalarType, typename VertexType>

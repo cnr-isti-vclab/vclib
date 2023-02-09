@@ -27,7 +27,6 @@
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
 #include "../components/vertical/optional/optional_normal.h"
-#include "../components/vertical/optional/optional_scalar.h"
 #include "../components/vertical/optional/optional_wedge_colors.h"
 #include "../components/vertical/optional/optional_wedge_tex_coords.h"
 
@@ -59,16 +58,6 @@ using OptionalNormal3f = comp::OptionalNormal3f<FaceType>;
 
 template<typename FaceType>
 using OptionalNormal3d = comp::OptionalNormal3d<FaceType>;
-
-/* Port OptionalScalar class into face namespace */
-template<typename ScalarType, typename FaceType>
-using OptionalScalar = comp::OptionalScalar<ScalarType, FaceType>;
-
-template<typename FaceType>
-using OptionalScalarf = comp::OptionalScalar<float, FaceType>;
-
-template<typename FaceType>
-using OptionalScalard = comp::OptionalScalar<double, FaceType>;
 
 /* Port OptionalWedgeColors class into face namespace */
 template<typename FaceType>

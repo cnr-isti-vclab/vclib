@@ -74,6 +74,15 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf<>;
 using Scalard = comp::Scalard<>;
 
+template<typename ScalarType, typename EdgeType>
+using OptionalScalar = comp::Scalar<ScalarType, EdgeType, true>;
+
+template<typename EdgeType>
+using OptionalScalarf = comp::Scalar<float, EdgeType, true>;
+
+template<typename EdgeType>
+using OptionalScalard = comp::Scalar<double, EdgeType, true>;
+
 /* Port VertexReferences class into edge namespace */
 template<typename VertexType>
 using VertexReferences = comp::VertexReferences<VertexType, 2>;
