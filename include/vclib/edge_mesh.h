@@ -32,9 +32,7 @@ namespace vcl {
 template<typename ScalarType>
 class EdgeMeshT;
 
-}
-
-namespace vcl::edgemesh {
+namespace edgemesh {
 
 template<typename Scalar>
 class Vertex;
@@ -42,40 +40,51 @@ class Vertex;
 template<typename Scalar>
 class Edge;
 
-template<typename Scalar>
-class Vertex :
-		public vcl::Vertex<
-			EdgeMeshT<Scalar>,
-			vcl::vert::BitFlags,                                            // 4b
-			vcl::vert::Coordinate3<Scalar>,                                 // 24b
-			vcl::vert::Normal3<Scalar>,                                     // 24b
-			vcl::vert::Color,                                               // 4b
-			vcl::vert::Scalar<Scalar>,                                      // 8b
-			vcl::vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>, // 0b
-			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
-			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
-			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
-{
-};
+/** Vertex **/
 
 template<typename Scalar>
-class Edge :
-		public vcl::Edge<
-			EdgeMeshT<Scalar>,
-			vcl::edge::BitFlags,                             // 4b
-			vcl::edge::VertexReferences<Vertex<Scalar>>,     // 24b
-			vcl::edge::OptionalScalar<Scalar, Edge<Scalar>>, // 0b
-			vcl::edge::OptionalColor<Edge<Scalar>>,          // 0b
-			vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,  // 0b
-			vcl::edge::OptionalMark<Edge<Scalar>>,           // 0b
-			vcl::edge::CustomComponents<Edge<Scalar>>>       // 0b
+using VertexComponents =
+	TypeWrapper<
+		vcl::vert::BitFlags,                                            // 4b
+		vcl::vert::Coordinate3<Scalar>,                                 // 24b
+		vcl::vert::Normal3<Scalar>,                                     // 24b
+		vcl::vert::Color,                                               // 4b
+		vcl::vert::Scalar<Scalar>,                                      // 8b
+		vcl::vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>, // 0b
+		vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+		vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
+		vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
+		vcl::vert::CustomComponents<Vertex<Scalar>>
+		>;
+
+template<typename Scalar>
+class Vertex : public vcl::Vertex<EdgeMeshT<Scalar>, VertexComponents<Scalar>>
 {
+public:
+	using vcl::Vertex<EdgeMeshT<Scalar>,VertexComponents<Scalar>>::Vertex; // inherit constructors
+};
+
+/** Edge **/
+
+template<typename Scalar>
+using EdgeComponents =
+	TypeWrapper<
+		vcl::edge::BitFlags,                             // 4b
+		vcl::edge::VertexReferences<Vertex<Scalar>>,     // 24b
+		vcl::edge::OptionalScalar<Scalar, Edge<Scalar>>, // 0b
+		vcl::edge::OptionalColor<Edge<Scalar>>,          // 0b
+		vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,  // 0b
+		vcl::edge::OptionalMark<Edge<Scalar>>,           // 0b
+		vcl::edge::CustomComponents<Edge<Scalar>>>;
+
+template<typename Scalar>
+class Edge : public vcl::Edge<EdgeMeshT<Scalar>, EdgeComponents<Scalar>>
+{
+public:
+	using vcl::Edge<EdgeMeshT<Scalar>,EdgeComponents<Scalar>>::Edge; // inherit constructors
 };
 
 } // namespace vcl::trimesh
-
-namespace vcl {
 
 template<typename ScalarType = double>
 class EdgeMeshT :

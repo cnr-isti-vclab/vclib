@@ -32,9 +32,7 @@ namespace vcl {
 template<typename ScalarType>
 class TriMeshT;
 
-}
-
-namespace vcl::trimesh {
+namespace trimesh {
 
 template<typename Scalar>
 class Vertex;
@@ -42,43 +40,55 @@ class Vertex;
 template<typename Scalar>
 class Face;
 
-template<typename Scalar>
-class Vertex :
-		public vcl::Vertex<
-			TriMeshT<Scalar>,
-			vcl::vert::BitFlags,                                            // 4b
-			vcl::vert::Coordinate3<Scalar>,                                 // 12 or 24b
-			vcl::vert::Normal3<Scalar>,                                     // 12 or 24b
-			vcl::vert::Color,                                               // 4b
-			vcl::vert::Scalar<Scalar>,                                      // 4 or 8b
-			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
-			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
-			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
-			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
-			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
-{
-};
+/** Vertex **/
 
 template<typename Scalar>
-class Face :
-		public vcl::Face<
-			TriMeshT<Scalar>,
-			vcl::face::TriangleBitFlags,                                     // 4b
-			vcl::face::TriangleVertexRefs<Vertex<Scalar>>,                   // 24b
-			vcl::face::Normal3<Scalar>,                                      // 12 or 24b
-			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,                 // 0b
-			vcl::face::OptionalColor<Face<Scalar>>,                          // 0b
-			vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,              // 0b
-			vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>, // 0b
-			vcl::face::OptionalMark<Face<Scalar>>,                           // 0b
-			vcl::face::CustomComponents<Face<Scalar>>>                       // 0b
+using VertexComponents =
+	TypeWrapper<
+		vcl::vert::BitFlags,                                            // 4b
+		vcl::vert::Coordinate3<Scalar>,                                 // 12 or 24b
+		vcl::vert::Normal3<Scalar>,                                     // 12 or 24b
+		vcl::vert::Color,                                               // 4b
+		vcl::vert::Scalar<Scalar>,                                      // 4 or 8b
+		vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
+		vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+		vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,  // 0b
+		vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
+		vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
+		vcl::vert::CustomComponents<Vertex<Scalar>>                     // 0b
+		>;
+
+template<typename Scalar>
+class Vertex : public vcl::Vertex<TriMeshT<Scalar>, VertexComponents<Scalar>>
 {
+public:
+	using vcl::Vertex<TriMeshT<Scalar>,VertexComponents<Scalar>>::Vertex; // inherit constructors
+};
+
+/** Face **/
+
+template<typename Scalar>
+using FaceComponents =
+	TypeWrapper<
+		vcl::face::TriangleBitFlags,                                     // 4b
+		vcl::face::TriangleVertexRefs<Vertex<Scalar>>,                   // 24b
+		vcl::face::Normal3<Scalar>,                                      // 12 or 24b
+		vcl::face::OptionalScalar<Scalar, Face<Scalar>>,                 // 0b
+		vcl::face::OptionalColor<Face<Scalar>>,                          // 0b
+		vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,              // 0b
+		vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>, // 0b
+		vcl::face::OptionalMark<Face<Scalar>>,                           // 0b
+		vcl::face::CustomComponents<Face<Scalar>>
+		>;
+
+template<typename Scalar>
+class Face : public vcl::Face<TriMeshT<Scalar>, FaceComponents<Scalar>>
+{
+public:
+	using vcl::Face<TriMeshT<Scalar>,FaceComponents<Scalar>>::Face; // inherit constructors
 };
 
 } // namespace vcl::trimesh
-
-namespace vcl {
 
 template<typename ScalarType = double>
 class TriMeshT :

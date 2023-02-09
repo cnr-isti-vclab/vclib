@@ -32,9 +32,7 @@ namespace vcl {
 template<typename ScalarType>
 class PolyMeshT;
 
-}
-
-namespace vcl::polymesh {
+namespace polymesh {
 
 template<typename Scalar>
 class Vertex;
@@ -42,41 +40,59 @@ class Vertex;
 template<typename Scalar>
 class Face;
 
+/** Vertex **/
+
+template<typename Scalar>
+using VertexComponents =
+	TypeWrapper<
+		vcl::vert::BitFlags,
+		vcl::vert::Coordinate3<Scalar>,
+		vcl::vert::Normal3<Scalar>,
+		vcl::vert::Color,
+		vcl::vert::Scalar<Scalar>,
+		vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+		vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
+		vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
+		vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
+		vcl::vert::CustomComponents<Vertex<Scalar>>
+		>;
+
 template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
 			PolyMeshT<Scalar>,
-			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3<Scalar>,
-			vcl::vert::Normal3<Scalar>,
-			vcl::vert::Color,
-			vcl::vert::Scalar<Scalar>,
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
-			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
-			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-			vcl::vert::CustomComponents<Vertex<Scalar>>>
+			VertexComponents<Scalar>>
 {
+public:
+	using vcl::Vertex<PolyMeshT<Scalar>,VertexComponents<Scalar>>::Vertex; // inherit constructors
 };
+
+/** Face **/
+
+template<typename Scalar>
+using FaceComponents =
+	TypeWrapper<
+		vcl::face::PolygonBitFlags, // 4b
+		vcl::face::PolygonVertexRefs<Vertex<Scalar>>,
+		vcl::face::Normal3<Scalar>,
+		vcl::face::OptionalColor<Face<Scalar>>,
+		vcl::face::OptionalScalar<Scalar, Face<Scalar>>,
+		vcl::face::OptionalAdjacentPolygons<Face<Scalar>>,
+		vcl::face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar>>,
+		vcl::face::CustomComponents<Face<Scalar>>
+		>;
 
 template<typename Scalar>
 class Face :
 		public vcl::Face<
 			PolyMeshT<Scalar>,
-			vcl::face::PolygonBitFlags, // 4b
-			vcl::face::PolygonVertexRefs<Vertex<Scalar>>,
-			vcl::face::Normal3<Scalar>,
-			vcl::face::OptionalColor<Face<Scalar>>,
-			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,
-			vcl::face::OptionalAdjacentPolygons<Face<Scalar>>,
-			vcl::face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar>>,
-			vcl::face::CustomComponents<Face<Scalar>>>
+			FaceComponents<Scalar>>
 {
+public:
+	using vcl::Face<PolyMeshT<Scalar>,FaceComponents<Scalar>>::Face; // inherit constructors
 };
 
 } // namespace vcl::polymesh
-
-namespace vcl {
 
 template<typename ScalarType = double>
 class PolyMeshT :
