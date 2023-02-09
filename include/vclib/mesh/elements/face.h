@@ -40,7 +40,16 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Face : public face::ParentMeshPointer<MeshType>, public Args...
+class Face : public Face<MeshType, TypeWrapper<Args...>>
+{
+public:
+	using Face<MeshType, TypeWrapper<Args...>>::Face;
+};
+
+template<typename MeshType, typename... Args>
+class Face<MeshType, TypeWrapper<Args...>> :
+		public face::ParentMeshPointer<MeshType>,
+		public Args...
 {
 	template<FaceConcept>
 	friend class mesh::FaceContainer;
@@ -50,6 +59,7 @@ class Face : public face::ParentMeshPointer<MeshType>, public Args...
 
 	// Vertex references component of the Face
 	using VRefs = typename Face::VertexReferences;
+	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
@@ -80,8 +90,6 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void resizeVertices(uint n) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
-
 		VRefs::resizeVertices(n);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -117,8 +125,6 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
-
 		VRefs::pushVertex(v);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -155,8 +161,6 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
-
 		VRefs::insertVertex(i, v);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -193,8 +197,6 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
-
 		VRefs::eraseVertex(i);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -230,8 +232,6 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void clearVertices() requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
-
 		VRefs::clearVertices();
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -268,7 +268,7 @@ private:
 	void construct();
 
 	// hide init member functions of all components
-	void init() {};
+	void init() {}
 };
 
 } // namespace vcl

@@ -26,7 +26,7 @@
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-Face<MeshType, Args...>::Face()
+Face<MeshType, TypeWrapper<Args...>>::Face()
 {
 	(construct<Args>(), ...);
 }
@@ -46,13 +46,13 @@ Face<MeshType, Args...>::Face()
  *                  vertices of the face.
  */
 template<typename MeshType, typename... Args>
-Face<MeshType, Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
+Face<MeshType, TypeWrapper<Args...>>::Face(const std::vector<VertexType*>& list) // todo add requires
 {
 	setVertices(list);
 }
 
 template<typename MeshType, typename... Args>
-uint Face<MeshType, Args...>::index() const
+uint Face<MeshType, TypeWrapper<Args...>>::index() const
 {
 	assert(face::ParentMeshPointer<MeshType>::parentMesh());
 	return face::ParentMeshPointer<MeshType>::parentMesh()->index(
@@ -73,7 +73,7 @@ uint Face<MeshType, Args...>::index() const
  */
 template<typename MeshType, typename... Args>
 template<typename... V>
-Face<MeshType, Args...>::Face(V... args) // todo add requires
+Face<MeshType, TypeWrapper<Args...>>::Face(V... args) // todo add requires
 {
 	setVertices({args...});
 }
@@ -89,10 +89,8 @@ Face<MeshType, Args...>::Face(V... args) // todo add requires
  *                  vertices of the face.
  */
 template<typename MeshType, typename... Args>
-void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
+void Face<MeshType, TypeWrapper<Args...>>::setVertices(const std::vector<VertexType*>& list)
 {
-	using F = Face<Args...>;
-
 	VRefs::setVertices(list);
 
 	if constexpr (comp::HasAdjacentEdges<F> && NonDcelPolygonFaceConcept<F>) {
@@ -126,14 +124,14 @@ void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 
 template<typename MeshType, typename... Args>
 template<typename... V>
-void Face<MeshType, Args...>::setVertices(V... args)
+void Face<MeshType, TypeWrapper<Args...>>::setVertices(V... args)
 {
 	setVertices({args...});
 }
 
 template<typename MeshType, typename... Args>
 template<typename Element>
-void Face<MeshType, Args...>::importFrom(const Element& f)
+void Face<MeshType, TypeWrapper<Args...>>::importFrom(const Element& f)
 {
 	(Args::importFrom(f), ...);
 }
@@ -153,42 +151,42 @@ void Face<MeshType, Args...>::importFrom(const Element& f)
  */
 //TODO: Clang bug. Move definition here when it will be solved
 //template<typename MeshType, typename... Args>
-//void Face<MeshType, Args...>::resizeVertices(uint n) requires PolygonFaceConcept<Face<Args...>>
+//void Face<MeshType, TypeWrapper<Args...>>::resizeVertices(uint n) requires PolygonFaceConcept<Face>
 //{
 
 //}
 
 //TODO: Clang bug. Move definition here when it will be solved
 //template<typename MeshType, typename... Args>
-//void Face<MeshType, Args...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+//void Face<MeshType, TypeWrapper<Args...>>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
 //{
 
 //}
 
 //TODO: Clang bug. Move definition here when it will be solved
 //template<typename MeshType, typename... Args>
-//void Face<MeshType, Args...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+//void Face<MeshType, TypeWrapper<Args...>>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
 //{
 
 //}
 
 //TODO: Clang bug. Move definition here when it will be solved
 //template<typename MeshType, typename... Args>
-//void Face<MeshType, Args...>::eraseVertex(uint i) requires PolygonFaceConcept<Face<Args...>>
+//void Face<MeshType, TypeWrapper<Args...>>::eraseVertex(uint i) requires PolygonFaceConcept<Face>
 //{
 
 //}
 
 //TODO: Clang bug. Move definition here when it will be solved
 //template<typename MeshType, typename... Args>
-//void Face<MeshType, Args...>::clearVertices() requires PolygonFaceConcept<Face<Args...>>
+//void Face<MeshType, TypeWrapper<Args...>>::clearVertices() requires PolygonFaceConcept<Face>
 //{
 
 //}
 
 template<typename MeshType, typename... Args>
 template<typename Comp>
-void Face<MeshType, Args...>::construct()
+void Face<MeshType, TypeWrapper<Args...>>::construct()
 {
 	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
 		// todo - check here if component is optional and, in case, if enabled

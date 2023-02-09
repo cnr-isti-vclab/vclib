@@ -40,7 +40,16 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Vertex : public vert::ParentMeshPointer<MeshType>, public Args...
+class Vertex : public Vertex<MeshType, TypeWrapper<Args...>>
+{
+public:
+	using Vertex<MeshType, TypeWrapper<Args...>>::Vertex;
+};
+
+template<typename MeshType, typename... Args>
+class Vertex<MeshType, TypeWrapper<Args...>> :
+		public vert::ParentMeshPointer<MeshType>,
+		public Args...
 {
 	template<VertexConcept>
 	friend class mesh::VertexContainer;
@@ -64,7 +73,7 @@ private:
 	void construct();
 
 	// hide init member functions of all components
-	void init() {};
+	void init() {}
 };
 
 } // namespace vcl

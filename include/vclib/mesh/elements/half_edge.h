@@ -40,7 +40,16 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class HalfEdge : public hedge::ParentMeshPointer<MeshType>, public Args...
+class HalfEdge : public HalfEdge<MeshType, TypeWrapper<Args...>>
+{
+public:
+	using HalfEdge<MeshType, TypeWrapper<Args...>>::HalfEdge;
+};
+
+template<typename MeshType, typename... Args>
+class HalfEdge<MeshType, TypeWrapper<Args...>> :
+		public hedge::ParentMeshPointer<MeshType>,
+		public Args...
 {
 	template<HalfEdgeConcept>
 	friend class mesh::HalfEdgeContainer;
@@ -51,7 +60,7 @@ class HalfEdge : public hedge::ParentMeshPointer<MeshType>, public Args...
 public:
 	using ParentMeshType = MeshType;
 	using Components = TypeWrapper<Args...>;
-	
+
 	HalfEdge();
 
 	uint index() const;
@@ -64,7 +73,7 @@ private:
 	void construct();
 
 	// hide init member functions of all components
-	void init() {};
+	void init() {}
 };
 
 } // namespace vcl
