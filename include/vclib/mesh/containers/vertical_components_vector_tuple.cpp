@@ -44,7 +44,7 @@ template<typename ...Comp>
 template<typename C>
 constexpr uint VerticalComponentsVectorTuple<Comp...>::indexOfType()
 {
-	return vcl::indexInTypePack<C, Comp...>();
+	return vcl::IndexInTypes<C, Comp...>::value;
 }
 
 template<typename ...Comp>

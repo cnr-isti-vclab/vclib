@@ -55,7 +55,7 @@ class Face : public face::ParentMeshPointer<MeshType>, public Args...
 
 public:
 	using ParentMeshType = MeshType;
-	using Components = std::tuple<Args...>;
+	using Components = TypeWrapper<Args...>;
 	
 	using VertexType = typename VRefs::VertexType;
 

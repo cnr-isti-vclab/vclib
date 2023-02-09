@@ -50,7 +50,7 @@ class HalfEdge : public hedge::ParentMeshPointer<MeshType>, public Args...
 
 public:
 	using ParentMeshType = MeshType;
-	using Components = std::tuple<Args...>;
+	using Components = TypeWrapper<Args...>;
 	
 	HalfEdge();
 

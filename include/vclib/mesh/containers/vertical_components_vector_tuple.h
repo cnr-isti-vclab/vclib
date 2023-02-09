@@ -88,8 +88,10 @@ private:
 	void setComponentEnabled();
 };
 
+/** Crucial specialization - allows to catch components that are passed with a TypeWrapper **/
 template<typename ...Comp>
-class VerticalComponentsVectorTuple<std::tuple<Comp...>> : public VerticalComponentsVectorTuple<Comp...>
+class VerticalComponentsVectorTuple<TypeWrapper<Comp...>> :
+		public VerticalComponentsVectorTuple<Comp...>
 {
 };
 

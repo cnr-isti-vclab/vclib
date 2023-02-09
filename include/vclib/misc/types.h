@@ -54,7 +54,114 @@ using ushort = unsigned short;
 
 namespace vcl {
 
+/*
+ * Represent a null value of uintm that is the maximum value that can be represented with unsigned
+ * int. Allows to fully use all the possible values (except one) that can be represented in an
+ * unsigned int, but with the possibility to flag is a value is not initialized or is set to null.
+ */
 const uint UINT_NULL = std::numeric_limits<uint>::max();
+
+
+/*******************************************/
+/****** VARIADIC TEMPLATES MANAGEMENT ******/
+/*******************************************/
+
+/*
+ * A simple structure that wraps a list of variadic templates, without instantiating anything.
+ * Useful when you need to wrap a list of types, and consider them as a single type.
+ */
+template<typename...>
+struct TypeWrapper
+{
+};
+
+/*
+ * Possibility to get the index of a Type T in a pack of types (variadic templates).
+ * The pack is composed of U and Us...
+ *
+ * https://stackoverflow.com/a/71477756/5851101
+ */
+
+
+template <typename T, typename U, typename... Us>
+constexpr uint indexInTypePack() {
+	if constexpr (std::is_same_v<T, U>) {
+		return 0;
+	}
+	else {
+		if constexpr (sizeof...(Us)) { // there is at least another type to check
+			return 1 + indexInTypePack<T, Us...>();
+		}
+		else { // not found
+			return UINT_NULL;
+		}
+	}
+}
+
+template<typename T, typename... Us>
+struct IndexInTypes
+{
+	static constexpr uint value = indexInTypePack<T, Us...>();
+};
+
+template<typename T, typename... Us>
+struct IndexInTypes<T, TypeWrapper<Us...>>
+{
+	static constexpr uint value = indexInTypePack<T, Us...>();
+};
+
+/* Remove all types that do not satisfy a condition, and get them as a TypeWrapper. */
+
+namespace internal {
+
+template <typename, typename> struct TypeWrapperConstructor;
+
+template <typename  T, typename ...Args>
+struct TypeWrapperConstructor<T, TypeWrapper<Args...>>
+{
+	using type = TypeWrapper<T, Args...>;
+};
+
+} // namespace vcl::internal
+
+template <template <class> class, typename ...>
+struct FilterTypesByCondition
+{
+	using type = TypeWrapper<>;
+};
+
+/**
+ * @brief Removes all types that do not satisfy a condition, and get them as a tuple.
+ *
+ * Usage:
+ *
+ * @code{.cpp}
+ * using ResTypes = FilterTypesByCondition<std::is_integral, int, float, double, char>::type;
+ * static_assert(std::is_same<ResTypes, TypeWrapper<int, char>>::value, "");
+ * @endcode
+ *
+ * ResTuple will be a TypeWrapper<int, char> (int and char are the only integral types)
+ */
+template <template <class> class Pred, typename Head, typename ...Tail>
+struct FilterTypesByCondition<Pred, Head, Tail...>
+{
+	using type = typename std::conditional<
+		Pred<Head>::value,
+		typename internal::TypeWrapperConstructor<
+			Head,
+			typename FilterTypesByCondition<Pred, Tail...>::type>::type,
+		typename FilterTypesByCondition<Pred, Tail...>::type>::type;
+};
+
+template <template <class> class Pred, typename ...Tail>
+struct FilterTypesByCondition<Pred, TypeWrapper<Tail...>>
+{
+	using type = typename FilterTypesByCondition<Pred, Tail...>::type;
+};
+
+/*******************************************************************/
+/****** POINTERS, REFERENCES AND CONST CORRECTNESS MANAGEMENT ******/
+/*******************************************************************/
 
 /*
  * Utility to get clean type from an input type that could have a reference or a pointer.
@@ -103,27 +210,9 @@ constexpr T* asConst(T* value) noexcept
 template<typename T>
 void asConst(T const&&) = delete;
 
-/*
- * Possibility to get the index of a Type T in a pack of types (variadic templates).
- * The pack is composed of U and Us...
- *
- * https://stackoverflow.com/a/71477756/5851101
- */
-
-template <typename T, typename U, typename... Us>
-constexpr auto indexInTypePack() {
-	if constexpr (std::is_same_v<T, U>) {
-		return 0;
-	}
-	else {
-		if constexpr (sizeof...(Us)) { // there is at least another type to check
-			return 1 + indexInTypePack<T, Us...>();
-		}
-		else { // not found
-			return UINT_NULL;
-		}
-	}
-}
+/*****************************************************/
+/****** INHERITANCE AND POLYMORPHISM MANAGEMENT ******/
+/*****************************************************/
 
 namespace internal {
 
