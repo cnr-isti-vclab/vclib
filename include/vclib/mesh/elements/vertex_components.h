@@ -96,6 +96,18 @@ using Normal3 = comp::Normal3<ScalarType>;
 using Normal3f = comp::Normal3f<>;
 using Normal3d = comp::Normal3d<>;
 
+template<typename ScalarType, int N, typename VertexType>
+using OptionalNormal = comp::Normal<ScalarType, N, VertexType, true>;
+
+template<typename ScalarType, typename VertexType>
+using OptionalNormal3 = comp::Normal3<ScalarType, VertexType, true>;
+
+template<typename VertexType>
+using OptionalNormal3f = comp::Normal3f<VertexType, true>;
+
+template<typename VertexType>
+using OptionalNormal3d = comp::Normal3d<VertexType, true>;
+
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
 using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;

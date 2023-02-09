@@ -26,7 +26,6 @@
 
 #include "../components/vertical/optional/optional_adjacent_edges.h"
 #include "../components/vertical/optional/optional_adjacent_faces.h"
-#include "../components/vertical/optional/optional_normal.h"
 #include "../components/vertical/optional/optional_wedge_colors.h"
 #include "../components/vertical/optional/optional_wedge_tex_coords.h"
 
@@ -45,19 +44,6 @@ using OptionalAdjacentPolygons = comp::OptionalAdjacentFaces<FaceType, -1, FaceT
 
 template<typename FaceType>
 using OptionalAdjacentTriangles = comp::OptionalAdjacentFaces<FaceType, 3, FaceType>;
-
-/* Port OptionalNormal class into face namespace */
-template<typename ScalarType, int N, typename FaceType>
-using OptionalNormal = comp::OptionalNormal<ScalarType, N, FaceType>;
-
-template<typename ScalarType, typename FaceType>
-using OptionalNormal3 = comp::OptionalNormal3<ScalarType, FaceType>;
-
-template<typename FaceType>
-using OptionalNormal3f = comp::OptionalNormal3f<FaceType>;
-
-template<typename FaceType>
-using OptionalNormal3d = comp::OptionalNormal3d<FaceType>;
 
 /* Port OptionalWedgeColors class into face namespace */
 template<typename FaceType>

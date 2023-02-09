@@ -27,6 +27,7 @@
 #include "../components/concepts/face_half_edge_reference.h"
 #include "../components/concepts/half_edge_references.h"
 #include "../components/concepts/mark.h"
+#include "../components/concepts/normal.h"
 #include "../components/concepts/principal_curvature.h"
 #include "../components/concepts/scalar.h"
 #include "../components/concepts/vertex_references.h"
@@ -788,8 +789,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Normal
 	if constexpr (comp::HasOptionalNormal<T>) {
 		if constexpr (comp::HasNormal<CT>) {
-			if (!comp::HasOptionalNormal<CT> || c.optionalVec.isNormalEnabled()) {
-				optionalVec.enableNormal(size);
+			if (!comp::HasOptionalNormal<CT> || c.template isOptionalComponentEnabled<typename CT::NormalComponent>()) {
+				enableOptionalComponent<typename T::NormalComponent>();
 			}
 		}
 	}

@@ -533,7 +533,7 @@ void VertexContainer<T>::disablePerVertexMark() requires vert::HasOptionalMark<T
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexNormalEnabled() const requires vert::HasOptionalNormal<T>
 {
-	return Base::optionalVec.isNormalEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::NormalComponent>();
 }
 
 /**
@@ -544,7 +544,7 @@ bool VertexContainer<T>::isPerVertexNormalEnabled() const requires vert::HasOpti
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
-	Base::optionalVec.enableNormal(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::NormalComponent>();
 }
 
 /**
@@ -555,7 +555,7 @@ void VertexContainer<T>::enablePerVertexNormal() requires vert::HasOptionalNorma
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
-	Base::optionalVec.disableNormal();
+	return Base::template disableOptionalComponent<typename T::NormalComponent>();
 }
 
 /**

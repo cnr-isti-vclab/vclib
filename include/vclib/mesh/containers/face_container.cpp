@@ -503,7 +503,7 @@ void FaceContainer<T>::disablePerFaceMark() requires face::HasOptionalMark<T>
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceNormalEnabled() const requires face::HasOptionalNormal<T>
 {
-	return Base::optionalVec.isNormalEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::NormalComponent>();
 }
 
 /**
@@ -514,7 +514,7 @@ bool FaceContainer<T>::isPerFaceNormalEnabled() const requires face::HasOptional
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceNormal() requires face::HasOptionalNormal<T>
 {
-	Base::optionalVec.enableNormal(faceContainerSize());
+	return Base::template enableOptionalComponent<typename T::NormalComponent>();
 }
 
 /**
@@ -525,7 +525,7 @@ void FaceContainer<T>::enablePerFaceNormal() requires face::HasOptionalNormal<T>
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceNormal() requires face::HasOptionalNormal<T>
 {
-	Base::optionalVec.disableNormal();
+	return Base::template disableOptionalComponent<typename T::NormalComponent>();
 }
 
 /**
