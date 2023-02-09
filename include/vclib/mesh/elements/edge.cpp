@@ -28,7 +28,6 @@ namespace vcl {
 template<typename MeshType, typename... Args>
 Edge<MeshType, TypeWrapper<Args...>>::Edge()
 {
-	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>
@@ -44,6 +43,12 @@ template<typename Element>
 void Edge<MeshType, TypeWrapper<Args...>>::importFrom(const Element& e)
 {
 	(Args::importFrom(e), ...);
+}
+
+template<typename MeshType, typename... Args>
+void vcl::Edge<MeshType, TypeWrapper<Args...> >::init()
+{
+	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>

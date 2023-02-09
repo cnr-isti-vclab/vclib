@@ -28,7 +28,8 @@ namespace vcl::comp {
 template<typename El, bool o>
 void Mark<El, o>::init()
 {
-	resetMark();
+	if (isMarkEnabled())
+		resetMark();
 }
 
 template<typename El, bool o>
@@ -65,6 +66,12 @@ template<typename El, bool o>
 void Mark<El, o>::decrementMark()
 {
 	m()--;
+}
+
+template<typename El, bool o>
+bool Mark<El, o>::isMarkEnabled() const
+{
+	return data.template isComponentEnabled<El>(this);
 }
 
 template<typename El, bool o>

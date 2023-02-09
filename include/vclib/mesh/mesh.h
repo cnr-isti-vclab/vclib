@@ -225,6 +225,7 @@ protected:
 		const typename M::HalfEdgeType* base,
 		const std::vector<int>&         newIndices);
 
+	void updateAllParentMeshPointers();
 	void updateAllOptionalContainerReferences();
 
 private:

@@ -46,6 +46,9 @@ template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		Args(oth)... // call auto copy constructors for all the container elements and components
 {
+	// Set to all elements their parent mesh (this)
+	updateAllParentMeshPointers();
+
 	// update all the optional container references
 	updateAllOptionalContainerReferences();
 
@@ -192,8 +195,8 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 
 	(Args::importFrom(m), ...);
 
-	//
-	(setParentMeshPointers<Args>(), ...);
+	// Set to all elements their parent mesh (this)
+	updateAllParentMeshPointers();
 
 	// after importing ordinary components, we need to convert the references between containers.
 	// each container can import more than one reference type, e.g.:
@@ -1238,6 +1241,12 @@ void Mesh<Args...>::updateHalfEdgeReferencesAfterCompact(
 }
 
 template<typename... Args> requires HasVertices<Args...>
+void Mesh<Args...>::updateAllParentMeshPointers()
+{
+	(setParentMeshPointers<Args>(), ...);
+}
+
+template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::updateAllOptionalContainerReferences()
 {
 	// if there is the optional vertex container, I need to update, for each vertex of the
@@ -1625,6 +1634,10 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	// compose the Mesh
 	using std::swap;
 	(swap((A&) m1, (A&) m2), ...);
+
+	// Set to all elements their parent mesh
+	m1.updateAllParentMeshPointers();
+	m2.updateAllParentMeshPointers();
 
 	// set to all the elements, the new pointer of the optional containers
 	m1.updateAllOptionalContainerReferences();

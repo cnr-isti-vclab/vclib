@@ -106,12 +106,9 @@ protected:
 
 	std::vector<int> compactElements();
 
-	template<typename MeshType>
-	void setParentMeshPointer(T& element, MeshType* parentMesh);
 	void setContainerPointer(T& element);
 
-	template<typename MeshType>
-	void updateContainerPointers(const T* oldBase, const T* newBase, MeshType* parentMesh);
+	void updateContainerPointers(const T* oldBase, const T* newBase);
 
 	template<typename Vertex>
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);

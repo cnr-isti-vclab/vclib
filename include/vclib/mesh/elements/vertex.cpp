@@ -28,7 +28,6 @@ namespace vcl {
 template<typename MeshType, typename... Args>
 Vertex<MeshType, TypeWrapper<Args...>>::Vertex()
 {
-	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>
@@ -44,6 +43,12 @@ template<typename Element>
 void Vertex<MeshType, TypeWrapper<Args...>>::importFrom(const Element& v)
 {
 	(Args::importFrom(v), ...);
+}
+
+template<typename MeshType, typename... Args>
+void vcl::Vertex<MeshType, TypeWrapper<Args...> >::init()
+{
+	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>

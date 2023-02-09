@@ -28,7 +28,6 @@ namespace vcl {
 template<typename MeshType, typename... Args>
 HalfEdge<MeshType, TypeWrapper<Args...>>::HalfEdge()
 {
-	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>
@@ -44,6 +43,12 @@ template<typename Element>
 void HalfEdge<MeshType, TypeWrapper<Args...>>::importFrom(const Element& e)
 {
 	(Args::importFrom(e), ...);
+}
+
+template<typename MeshType, typename... Args>
+void vcl::HalfEdge<MeshType, TypeWrapper<Args...> >::init()
+{
+	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>

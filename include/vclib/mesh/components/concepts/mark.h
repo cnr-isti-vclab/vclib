@@ -59,7 +59,7 @@ concept HasMark = requires(
  * and the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalMark = HasMark<T> && IsOptionalComponent<typename T::MarkComponent>;;
+concept HasOptionalMark = HasMark<T> && IsOptionalComponent<typename T::MarkComponent>;
 
 /* Detector function to check if a class has Mark enabled */
 

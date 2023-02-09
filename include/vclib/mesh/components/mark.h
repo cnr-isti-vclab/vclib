@@ -94,7 +94,7 @@ public:
 	void incrementMark();
 	void decrementMark();
 
-	constexpr bool isMarkEnabled() const { return true; }
+	bool isMarkEnabled() const;
 
 protected:
 	template<typename Element>

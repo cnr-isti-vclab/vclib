@@ -28,7 +28,6 @@ namespace vcl {
 template<typename MeshType, typename... Args>
 Face<MeshType, TypeWrapper<Args...>>::Face()
 {
-	(construct<Args>(), ...);
 }
 
 /**
@@ -187,6 +186,12 @@ void Face<MeshType, TypeWrapper<Args...>>::importFrom(const Element& f)
 //}
 
 template<typename MeshType, typename... Args>
+void Face<MeshType, TypeWrapper<Args...>>::init()
+{
+	(construct<Args>(), ...);
+}
+
+template<typename MeshType, typename... Args>
 template<typename Comp>
 void Face<MeshType, TypeWrapper<Args...>>::construct()
 {
@@ -197,5 +202,3 @@ void Face<MeshType, TypeWrapper<Args...>>::construct()
 }
 
 } // namespace vcl
-
-

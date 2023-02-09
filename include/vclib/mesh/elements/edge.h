@@ -69,11 +69,11 @@ public:
 	void importFrom(const Element& e);
 
 private:
+	// hide init member functions of all components - to call after set parent mesh
+	void init();
+
 	template<typename Comp>
 	void construct();
-
-	// hide init member functions of all components
-	void init() {}
 };
 
 } // namespace vcl

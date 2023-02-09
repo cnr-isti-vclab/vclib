@@ -45,6 +45,12 @@ struct ComponentData
 	{
 		return data;
 	}
+
+	template<typename, typename Comp>
+	constexpr bool isComponentEnabled(const Comp*) const
+	{
+		return true;
+	}
 };
 
 // do not store data if vertical; it will be fetched by vertical vectors in the element container
