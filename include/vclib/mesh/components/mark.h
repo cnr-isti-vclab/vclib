@@ -29,16 +29,6 @@
 
 namespace vcl::comp {
 
-namespace internal {
-
-template<bool>
-struct MarkData { int m = 0; };
-
-template<>
-struct MarkData<false> { };
-
-} // vcl::comp::internal
-
 /**
  * @brief The Mark class is an utility class useful to un-mark components in constant time.
  *

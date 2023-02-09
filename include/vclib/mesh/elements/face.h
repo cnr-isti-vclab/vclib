@@ -40,16 +40,7 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Face : public Face<MeshType, TypeWrapper<Args...>>
-{
-public:
-	using Face<MeshType, TypeWrapper<Args...>>::Face;
-};
-
-template<typename MeshType, typename... Args>
-class Face<MeshType, TypeWrapper<Args...>> :
-		public face::ParentMeshPointer<MeshType>,
-		public Args...
+class Face : public face::ParentMeshPointer<MeshType>, public Args...
 {
 	template<FaceConcept>
 	friend class mesh::FaceContainer;
@@ -65,7 +56,7 @@ class Face<MeshType, TypeWrapper<Args...>> :
 public:
 	using ParentMeshType = MeshType;
 	using Components = TypeWrapper<Args...>;
-	
+
 	using VertexType = typename VRefs::VertexType;
 
 	Face();
@@ -278,6 +269,11 @@ private:
 
 	template<typename Comp>
 	void construct();
+};
+
+template<typename MeshType, typename... Args>
+class Face<MeshType, TypeWrapper<Args...>> : public Face<MeshType, Args...>
+{
 };
 
 } // namespace vcl

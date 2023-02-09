@@ -40,16 +40,7 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class HalfEdge : public HalfEdge<MeshType, TypeWrapper<Args...>>
-{
-public:
-	using HalfEdge<MeshType, TypeWrapper<Args...>>::HalfEdge;
-};
-
-template<typename MeshType, typename... Args>
-class HalfEdge<MeshType, TypeWrapper<Args...>> :
-		public hedge::ParentMeshPointer<MeshType>,
-		public Args...
+class HalfEdge : public hedge::ParentMeshPointer<MeshType>, public Args...
 {
 	template<HalfEdgeConcept>
 	friend class mesh::HalfEdgeContainer;
@@ -74,6 +65,11 @@ private:
 
 	template<typename Comp>
 	void construct();
+};
+
+template<typename MeshType, typename... Args>
+class HalfEdge<MeshType, TypeWrapper<Args...>> : public HalfEdge<MeshType, Args...>
+{
 };
 
 } // namespace vcl

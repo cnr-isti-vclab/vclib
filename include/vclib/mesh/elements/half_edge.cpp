@@ -26,12 +26,12 @@
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-HalfEdge<MeshType, TypeWrapper<Args...>>::HalfEdge()
+HalfEdge<MeshType, Args...>::HalfEdge()
 {
 }
 
 template<typename MeshType, typename... Args>
-uint HalfEdge<MeshType, TypeWrapper<Args...>>::index() const
+uint HalfEdge<MeshType, Args...>::index() const
 {
 	assert(hedge::ParentMeshPointer<MeshType>::parentMesh());
 	return hedge::ParentMeshPointer<MeshType>::parentMesh()->index(
@@ -40,20 +40,20 @@ uint HalfEdge<MeshType, TypeWrapper<Args...>>::index() const
 
 template<typename MeshType, typename... Args>
 template<typename Element>
-void HalfEdge<MeshType, TypeWrapper<Args...>>::importFrom(const Element& e)
+void HalfEdge<MeshType, Args...>::importFrom(const Element& e)
 {
 	(Args::importFrom(e), ...);
 }
 
 template<typename MeshType, typename... Args>
-void vcl::HalfEdge<MeshType, TypeWrapper<Args...> >::init()
+void vcl::HalfEdge<MeshType, Args...>::init()
 {
 	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>
 template<typename Comp>
-void HalfEdge<MeshType, TypeWrapper<Args...>>::construct()
+void HalfEdge<MeshType, Args...>::construct()
 {
 	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
 		// todo - check here if component is optional and, in case, if enabled

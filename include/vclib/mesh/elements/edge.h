@@ -40,16 +40,7 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Edge : public Edge<MeshType, TypeWrapper<Args...>>
-{
-public:
-	using Edge<MeshType, TypeWrapper<Args...>>::Edge;
-};
-
-template<typename MeshType, typename... Args>
-class Edge<MeshType, TypeWrapper<Args...>> :
-		public edge::ParentMeshPointer<MeshType>,
-		public Args...
+class Edge : public edge::ParentMeshPointer<MeshType>, public Args...
 {
 	template<EdgeConcept>
 	friend class mesh::EdgeContainer;
@@ -60,7 +51,7 @@ class Edge<MeshType, TypeWrapper<Args...>> :
 public:
 	using ParentMeshType = MeshType;
 	using Components = TypeWrapper<Args...>;
-	
+
 	Edge();
 
 	uint index() const;
@@ -74,6 +65,11 @@ private:
 
 	template<typename Comp>
 	void construct();
+};
+
+template<typename MeshType, typename... Args>
+class Edge<MeshType, TypeWrapper<Args...>> : public Edge<MeshType, Args...>
+{
 };
 
 } // namespace vcl

@@ -40,16 +40,7 @@ class ElementContainer;
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Vertex : public Vertex<MeshType, TypeWrapper<Args...>>
-{
-public:
-	using Vertex<MeshType, TypeWrapper<Args...>>::Vertex;
-};
-
-template<typename MeshType, typename... Args>
-class Vertex<MeshType, TypeWrapper<Args...>> :
-		public vert::ParentMeshPointer<MeshType>,
-		public Args...
+class Vertex : public vert::ParentMeshPointer<MeshType>, public Args...
 {
 	template<VertexConcept>
 	friend class mesh::VertexContainer;
@@ -74,6 +65,11 @@ private:
 
 	template<typename Comp>
 	void construct();
+};
+
+template<typename MeshType, typename... Args>
+class Vertex<MeshType, TypeWrapper<Args...>> : public Vertex<MeshType, Args...>
+{
 };
 
 } // namespace vcl

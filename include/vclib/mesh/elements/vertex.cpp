@@ -26,12 +26,12 @@
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-Vertex<MeshType, TypeWrapper<Args...>>::Vertex()
+Vertex<MeshType, Args...>::Vertex()
 {
 }
 
 template<typename MeshType, typename... Args>
-uint Vertex<MeshType, TypeWrapper<Args...>>::index() const
+uint Vertex<MeshType, Args...>::index() const
 {
 	assert(vert::ParentMeshPointer<MeshType>::parentMesh());
 	return vert::ParentMeshPointer<MeshType>::parentMesh()->index(
@@ -40,20 +40,20 @@ uint Vertex<MeshType, TypeWrapper<Args...>>::index() const
 
 template<typename MeshType, typename... Args>
 template<typename Element>
-void Vertex<MeshType, TypeWrapper<Args...>>::importFrom(const Element& v)
+void Vertex<MeshType, Args...>::importFrom(const Element& v)
 {
 	(Args::importFrom(v), ...);
 }
 
 template<typename MeshType, typename... Args>
-void vcl::Vertex<MeshType, TypeWrapper<Args...> >::init()
+void vcl::Vertex<MeshType, Args...>::init()
 {
 	(construct<Args>(), ...);
 }
 
 template<typename MeshType, typename... Args>
 template<typename Comp>
-void Vertex<MeshType, TypeWrapper<Args...>>::construct()
+void Vertex<MeshType, Args...>::construct()
 {
 	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
 		// todo - check here if component is optional and, in case, if enabled
