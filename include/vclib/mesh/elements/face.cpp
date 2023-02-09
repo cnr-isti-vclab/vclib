@@ -196,7 +196,12 @@ template<typename Comp>
 void Face<MeshType, Args...>::construct()
 {
 	if constexpr (comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>) {
-		if (Comp::isEnabled()) {
+		if constexpr (comp::HasIsEnabledMemberFunction<Comp>) {
+			if (Comp::isEnabled()) {
+				Comp::init();
+			}
+		}
+		else { // no possibility to check if is enabled
 			Comp::init();
 		}
 	}

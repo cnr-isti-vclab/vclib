@@ -31,7 +31,13 @@ namespace vcl::comp {
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
 {
-	o.init();
+	{ o.init() } -> std::same_as<void>;
+};
+
+template<typename T>
+concept HasIsEnabledMemberFunction = requires(T o)
+{
+	{ o.isEnabled() } -> std::same_as<bool>;
 };
 
 template<typename T>
