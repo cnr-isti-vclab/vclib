@@ -32,34 +32,31 @@ namespace vcl {
 template<typename ScalarType>
 class PointCloudT;
 
-namespace pointcloud {
+}
 
-/** Vertex **/
+namespace vcl::pointcloud {
 
 template<typename Scalar>
-using VertexComponents =
-	TypeWrapper<
-		vcl::vert::BitFlags,                                 // 4b
-		vcl::vert::Coordinate3<Scalar>,                      // 24b
-		vcl::vert::Normal3<Scalar>,                          // 24b
-		vcl::vert::Color,                                    // 4b
-		vcl::vert::Scalar<Scalar>,                           // 8b
-		vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>, // 0b
-		vcl::vert::OptionalMark<Vertex<Scalar>>,             // 0b
-		vcl::vert::CustomComponents<Vertex<Scalar>>          // 0b
-		>;
+class Vertex;
 
 template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
 			PointCloudT<Scalar>,
-			VertexComponents<Scalar>>
+			vcl::vert::BitFlags,                                 // 4b
+			vcl::vert::Coordinate3<Scalar>,                      // 24b
+			vcl::vert::Normal3<Scalar>,                          // 24b
+			vcl::vert::Color,                                    // 4b
+			vcl::vert::Scalar<Scalar>,                           // 8b
+			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>, // 0b
+			vcl::vert::OptionalMark<Vertex<Scalar>>,             // 0b
+			vcl::vert::CustomComponents<Vertex<Scalar>>>         // 0b
 {
-public:
-	using vcl::Vertex<PointCloudT<Scalar>,VertexComponents<Scalar>>::Vertex; // inherit constructors
 };
 
 } // namespace vcl::pointcloud
+
+namespace vcl {
 
 template<typename ScalarType = double>
 class PointCloudT :
