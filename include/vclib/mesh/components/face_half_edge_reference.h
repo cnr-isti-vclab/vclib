@@ -121,6 +121,8 @@ public:
 
 	/* Constructor and isEnabled */
 
+	FaceHalfEdgeReference();
+
 	void init();
 
 	bool isEnabled();

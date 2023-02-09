@@ -25,6 +25,14 @@
 
 namespace vcl::comp {
 
+template<typename HalfEdge, typename El, bool o>
+FaceHalfEdgeReference<HalfEdge, El, o>::FaceHalfEdgeReference()
+{
+	if constexpr (!IS_VERTICAL) {
+		init();
+	}
+}
+
 template<typename HE, typename El, bool o>
 void FaceHalfEdgeReference<HE, El, o>::init()
 {

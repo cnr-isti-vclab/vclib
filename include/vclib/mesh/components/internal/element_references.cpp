@@ -32,6 +32,24 @@ namespace vcl::comp::internal {
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
+template<typename Elem, int N, typename ElementType>
+ElementReferences<Elem, N, ElementType>::ElementReferences()
+{
+	if constexpr (!IS_VERTICAL) {
+		if constexpr (N >= 0) {
+			data.data.fill(nullptr);
+		}
+		else {
+			data.data.clear();
+		}
+	}
+}
+
+/*
+ * Create a container of Element references (pointers to Elements stored in some other container).
+ * If this Container is a static array, all its element will be initialized to nullptr.
+ * If this Container is a dynamic vector, it will be an empty container.
+ */
 template<typename Elem, int N, typename El>
 template<typename Comp>
 void ElementReferences<Elem, N, El>::init(Comp* comp)

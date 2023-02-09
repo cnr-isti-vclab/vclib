@@ -26,6 +26,14 @@
 namespace vcl::comp {
 
 template<typename Scalar, typename El, bool o>
+TransformMatrix<Scalar, El, o>::TransformMatrix()
+{
+	if constexpr (!IS_VERTICAL) {
+		init();
+	}
+}
+
+template<typename Scalar, typename El, bool o>
 void TransformMatrix<Scalar, El, o>::init()
 {
 	tr().setIdentity();

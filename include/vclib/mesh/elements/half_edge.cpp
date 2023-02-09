@@ -46,7 +46,7 @@ void HalfEdge<MeshType, Args...>::importFrom(const Element& e)
 }
 
 template<typename MeshType, typename... Args>
-void vcl::HalfEdge<MeshType, Args...>::init()
+void vcl::HalfEdge<MeshType, Args...>::initVerticalComponents()
 {
 	(construct<Args>(), ...);
 }
@@ -55,9 +55,10 @@ template<typename MeshType, typename... Args>
 template<typename Comp>
 void HalfEdge<MeshType, Args...>::construct()
 {
-	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
-		// todo - check here if component is optional and, in case, if enabled
-		Comp::init();
+	if constexpr (comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>) {
+		if (Comp::isEnabled()) {
+			Comp::init();
+		}
 	}
 }
 

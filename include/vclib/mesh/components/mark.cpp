@@ -26,10 +26,17 @@
 namespace vcl::comp {
 
 template<typename El, bool o>
+Mark<El, o>::Mark()
+{
+	if constexpr (!IS_VERTICAL) {
+		init();
+	}
+}
+
+template<typename El, bool o>
 void Mark<El, o>::init()
 {
-	if (isMarkEnabled())
-		resetMark();
+	m() = 0;
 }
 
 template<typename El, bool o>

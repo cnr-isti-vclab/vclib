@@ -33,7 +33,6 @@ namespace vcl {
 template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>::Mesh()
 {
-	(construct<Args>(), ...);
 }
 
 /**
@@ -1283,16 +1282,6 @@ void Mesh<Args...>::updateAllOptionalContainerReferences()
 		for (auto& e : HalfEdgeContainer::halfEdges(true)) {
 			HalfEdgeContainer::setContainerPointer(e);
 		}
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Comp>
-void Mesh<Args...>::construct()
-{
-	if constexpr (vcl::comp::HasInitMemberFunction<Comp>) {
-		// todo - check here if component is optional and, in case, if enabled
-		Comp::init();
 	}
 }
 

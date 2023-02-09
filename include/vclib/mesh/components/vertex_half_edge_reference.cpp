@@ -28,6 +28,14 @@
 namespace vcl::comp {
 
 template<typename HE, typename El, bool o>
+VertexHalfEdgeReference<HE, El, o>::VertexHalfEdgeReference()
+{
+	if constexpr (!IS_VERTICAL) {
+		init();
+	}
+}
+
+template<typename HE, typename El, bool o>
 void VertexHalfEdgeReference<HE, El, o>::init()
 {
 	he() = nullptr;

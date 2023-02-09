@@ -26,6 +26,14 @@
 namespace vcl::comp {
 
 template<typename El, bool o>
+BitFlags<El, o>::BitFlags()
+{
+	if constexpr (!IS_VERTICAL) {
+		init();
+	}
+}
+
+template<typename El, bool o>
 void BitFlags<El, o>::init()
 {
 	flags() = 0;

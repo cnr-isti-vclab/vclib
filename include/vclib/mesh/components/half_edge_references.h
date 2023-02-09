@@ -61,6 +61,8 @@ public:
 
 	/* Constructor and isEnabled */
 
+	HalfEdgeReferences();
+
 	void init();
 
 	bool isEnabled();

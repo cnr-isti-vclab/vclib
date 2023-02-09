@@ -47,6 +47,8 @@ public:
 
 	/* Constructor and isEnabled */
 
+	TransformMatrix();
+
 	void init();
 
 	bool isEnabled();

@@ -59,6 +59,8 @@ public:
 
 	/* Constructor and isEnabled */
 
+	ElementReferences();
+
 	template<typename Comp>
 	void init(Comp* comp);
 

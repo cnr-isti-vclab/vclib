@@ -264,9 +264,12 @@ public:
 	}
 
 private:
-	// hide init member functions of all components - to call after set parent mesh
-	void init();
+	// hide init and isEnabled members
+	void init() {}
 	bool isEnabled() { return true; }
+
+	// init to call after set parent mesh
+	void initVerticalComponents();
 
 	template<typename Comp>
 	void construct();

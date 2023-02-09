@@ -229,12 +229,9 @@ protected:
 	void updateAllOptionalContainerReferences();
 
 private:
-	// hide init and isEnabled member functions of all components
+	// hide init and isEnabled members
 	void init() {};
 	bool isEnabled() { return true; }
-
-	template<typename Comp>
-	void construct();
 
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);

@@ -72,6 +72,8 @@ public:
 
 	/* Constructor and isEnabled */
 
+	VertexHalfEdgeReference();
+
 	void init();
 
 	bool isEnabled();

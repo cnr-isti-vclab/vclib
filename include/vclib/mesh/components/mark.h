@@ -75,6 +75,8 @@ public:
 
 	/* Constructor and isEnabled */
 
+	Mark();
+
 	void init();
 
 	bool isEnabled();

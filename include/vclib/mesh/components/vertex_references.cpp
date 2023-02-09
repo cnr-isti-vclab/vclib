@@ -26,6 +26,14 @@
 namespace vcl::comp {
 
 template<typename Vertex, int N, typename El, bool o>
+VertexReferences<Vertex, N, El, o>::VertexReferences()
+{
+	if constexpr (!IS_VERTICAL) {
+		init();
+	}
+}
+
+template<typename Vertex, int N, typename El, bool o>
 void VertexReferences<Vertex, N, El, o>::init()
 {
 	Base::init(this);

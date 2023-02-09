@@ -60,6 +60,8 @@ public:
 
 	/* Constructor and isEnabled */
 
+	VertexReferences();
+
 	void init();
 
 	bool isEnabled();

@@ -224,6 +224,12 @@ template<typename C>
 void ElementContainer<T>::enableOptionalComponent()
 {
 	vcVecTuple.template enableComponent<C>();
+	if constexpr (comp::HasInitMemberFunction<C>) {
+		auto& vec = vcVecTuple.template vector<C>();
+		for (auto& c : vec) {
+			c.init();
+		}
+	}
 }
 
 template<typename T>
@@ -390,7 +396,7 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
 	en++;
 
 	vec.back().setParentMesh(parentMesh);
-	vec.back().init();
+	vec.back().initVerticalComponents();
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
@@ -428,7 +434,7 @@ uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 
 	for (uint i = baseId; i < vec.size(); ++i) {
 		vec[i].setParentMesh(parentMesh);
-		vec[i].init();
+		vec[i].initVerticalComponents();
 	}
 
 	if (oldB != newB) {

@@ -71,6 +71,8 @@ public:
 
 	/* Constructor and isEnabled */
 
+	BitFlags();
+
 	void init();
 
 	bool isEnabled();
