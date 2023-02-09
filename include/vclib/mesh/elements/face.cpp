@@ -91,6 +91,8 @@ Face<MeshType, TypeWrapper<Args...>>::Face(V... args) // todo add requires
 template<typename MeshType, typename... Args>
 void Face<MeshType, TypeWrapper<Args...>>::setVertices(const std::vector<VertexType*>& list)
 {
+	using F = Face<MeshType, TypeWrapper<Args...>>;
+
 	VRefs::setVertices(list);
 
 	if constexpr (comp::HasAdjacentEdges<F> && NonDcelPolygonFaceConcept<F>) {

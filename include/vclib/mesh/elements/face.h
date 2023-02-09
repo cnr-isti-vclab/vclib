@@ -59,7 +59,6 @@ class Face<MeshType, TypeWrapper<Args...>> :
 
 	// Vertex references component of the Face
 	using VRefs = typename Face::VertexReferences;
-	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
@@ -90,6 +89,8 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void resizeVertices(uint n) requires NonDcelPolygonFaceConcept<Face>
 	{
+		using F = Face<MeshType, TypeWrapper<Args...>>;
+
 		VRefs::resizeVertices(n);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -125,6 +126,8 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
+		using F = Face<MeshType, TypeWrapper<Args...>>;
+
 		VRefs::pushVertex(v);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -161,6 +164,8 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
+		using F = Face<MeshType, TypeWrapper<Args...>>;
+
 		VRefs::insertVertex(i, v);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -197,6 +202,8 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face>
 	{
+		using F = Face<MeshType, TypeWrapper<Args...>>;
+
 		VRefs::eraseVertex(i);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -232,6 +239,8 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void clearVertices() requires NonDcelPolygonFaceConcept<Face>
 	{
+		using F = Face<MeshType, TypeWrapper<Args...>>;
+
 		VRefs::clearVertices();
 
 		if constexpr (face::HasAdjacentEdges<F>) {
