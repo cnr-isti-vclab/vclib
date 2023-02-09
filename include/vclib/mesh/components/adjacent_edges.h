@@ -81,6 +81,12 @@ public:
 	using AdjacentEdgeRangeIterator      = typename Base::RACRangeIterator;
 	using ConstAdjacentEdgeRangeIterator = typename Base::RACConstRangeIterator;
 
+	/* Constructor and isEnabled */
+
+	void init();
+
+	bool isEnabled();
+
 	/* Member functions */
 
 	uint adjEdgesNumber() const;

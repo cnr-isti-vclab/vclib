@@ -33,6 +33,12 @@ void Mark<El, o>::init()
 }
 
 template<typename El, bool o>
+bool Mark<El, o>::isEnabled()
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
+template<typename El, bool o>
 int Mark<El, o>::mark() const
 {
 	return m();

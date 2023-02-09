@@ -25,6 +25,18 @@
 
 namespace vcl::comp {
 
+template<typename Vertex, typename El, bool o>
+void AdjacentVertices<Vertex, El, o>::init()
+{
+	Base::init(this);
+}
+
+template<typename Vertex, typename El, bool o>
+bool AdjacentVertices<Vertex, El, o>::isEnabled()
+{
+	return Base::isEnabled(this);
+}
+
 /**
  * @brief Returns the number of adjacent vertices of the element.
  * @return The number of adjacent vertices of the element.

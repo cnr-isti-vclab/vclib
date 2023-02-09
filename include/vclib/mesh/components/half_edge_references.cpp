@@ -38,6 +38,12 @@ void HalfEdgeReferences<HE, V, F, El, o>::init()
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
+bool HalfEdgeReferences<HE, V, F, El, o>::isEnabled()
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
+template<typename HE, typename V, typename F, typename El, bool o>
 const HE* HalfEdgeReferences<HE, V, F, El, o>::next() const
 {
 	return n();

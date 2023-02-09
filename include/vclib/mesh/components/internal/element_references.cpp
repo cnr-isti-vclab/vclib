@@ -32,19 +32,27 @@ namespace vcl::comp::internal {
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
-template<typename Elem, int N, typename ElementType>
-void ElementReferences<Elem, N, ElementType>::init()
+template<typename Elem, int N, typename El>
+template<typename Comp>
+void ElementReferences<Elem, N, El>::init(Comp* comp)
 {
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
 		// There will be a static number of references.
-		container().fill(nullptr);
+		container(comp).fill(nullptr);
 	}
 	else {
 		// I'll use the vector, because N is < 0.
 		// There will be a dynamic number of references.
-		container().clear();
+		container(comp).clear();
 	}
+}
+
+template<typename Elem, int N, typename El>
+template<typename Comp>
+bool ElementReferences<Elem, N, El>::isEnabled(Comp* comp)
+{
+	return data.template isComponentEnabled<El>(comp);
 }
 
 /*

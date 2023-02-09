@@ -26,12 +26,6 @@
 namespace vcl::comp {
 
 template<typename Scalar, int N, typename El, bool o>
-void WedgeTexCoords<Scalar, N, El, o>::init()
-{
-	texIndex() = 0;
-}
-
-template<typename Scalar, int N, typename El, bool o>
 vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoord(uint i)
 {
 	return texCoords().at(i);

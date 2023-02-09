@@ -31,6 +31,12 @@ void BitFlags<El, o>::init()
 	flags() = 0;
 }
 
+template<typename El, bool o>
+bool BitFlags<El, o>::isEnabled()
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
 /**
  * @brief Returns whether this Element is marked as deleted.
  *

@@ -119,9 +119,11 @@ public:
 	static const int WEDGE_COLOR_NUMBER     = -1;
 	static const int WEDGE_TEX_COORD_NUMBER = -1;
 
-	/* Constructor */
+	/* Constructor and isEnabled */
 
 	void init();
+
+	bool isEnabled();
 
 	/* Member functions */
 

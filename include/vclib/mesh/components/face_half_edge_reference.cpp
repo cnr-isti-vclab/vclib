@@ -32,6 +32,12 @@ void FaceHalfEdgeReference<HE, El, o>::init()
 	texIndex() = 0;
 }
 
+template<typename HalfEdge, typename El, bool o>
+bool FaceHalfEdgeReference<HalfEdge, El, o>::isEnabled()
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
 template<typename HE, typename El, bool o>
 const HE* FaceHalfEdgeReference<HE, El, o>::outerHalfEdge() const
 {

@@ -25,6 +25,19 @@
 
 namespace vcl::comp {
 
+
+template<typename Edge, int N, typename El, bool o>
+void AdjacentEdges<Edge, N, El, o>::init()
+{
+	Base::init(this);
+}
+
+template<typename Edge, int N, typename El, bool o>
+bool AdjacentEdges<Edge, N, El, o>::isEnabled()
+{
+	return Base::isEnabled(this);
+}
+
 /**
  * @brief Returns the number of adjacent edges of this element.
  * @return The number of adjacent edges of this element.

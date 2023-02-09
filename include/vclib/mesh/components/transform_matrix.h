@@ -45,7 +45,13 @@ public:
 
 	using TransformMatrixType = Matrix44<Scalar>;
 
+	/* Constructor and isEnabled */
+
 	void init();
+
+	bool isEnabled();
+
+	/* Member functions */
 
 	const TransformMatrixType& transformMatrix() const;
 	TransformMatrixType&       transformMatrix();

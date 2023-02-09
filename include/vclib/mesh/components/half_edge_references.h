@@ -59,7 +59,13 @@ public:
 	using VertexType   = Vertex;
 	using FaceType     = Face;
 
+	/* Constructor and isEnabled */
+
 	void init();
+
+	bool isEnabled();
+
+	/* Member functions */
 
 	const HalfEdge* next() const;
 	HalfEdge*&      next();

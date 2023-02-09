@@ -25,6 +25,18 @@
 
 namespace vcl::comp {
 
+template<typename Face, int N, typename El, bool o>
+void AdjacentFaces<Face, N, El, o>::init()
+{
+	Base::init(this);
+}
+
+template<typename Face, int N, typename El, bool o>
+bool AdjacentFaces<Face, N, El, o>::isEnabled()
+{
+	return Base::isEnabled(this);
+}
+
 /**
  * @brief Returns the number of adjacent faces of this element.
  * @return The number of adjacent faces of this element.

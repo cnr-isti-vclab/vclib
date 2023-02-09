@@ -69,7 +69,13 @@ public:
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
+	/* Constructor and isEnabled */
+
 	void init();
+
+	bool isEnabled();
+
+	/* Member functions */
 
 	bool isDeleted() const;
 	bool isSelected() const;

@@ -26,6 +26,18 @@
 namespace vcl::comp {
 
 template<typename Vertex, int N, typename El, bool o>
+void VertexReferences<Vertex, N, El, o>::init()
+{
+	Base::init(this);
+}
+
+template<typename Vertex, int N, typename El, bool o>
+bool VertexReferences<Vertex, N, El, o>::isEnabled()
+{
+	return Base::isEnabled(this);
+}
+
+template<typename Vertex, int N, typename El, bool o>
 uint VertexReferences<Vertex, N, El, o>::vertexNumber() const
 {
 	return Base::container(this).size();

@@ -81,6 +81,12 @@ public:
 	using AdjacentFaceRangeIterator      = typename Base::RACRangeIterator;
 	using ConstAdjacentFaceRangeIterator = typename Base::RACConstRangeIterator;
 
+	/* Constructor and isEnabled */
+
+	void init();
+
+	bool isEnabled();
+
 	/* Member functions */
 
 	uint adjFacesNumber() const;

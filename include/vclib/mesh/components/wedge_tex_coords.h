@@ -65,8 +65,6 @@ public:
 	using WedgeTexCoordsRangeIterator      = typename Base::RACRangeIterator;
 	using ConstWedgeTexCoordsRangeIterator = typename Base::RACConstRangeIterator;
 
-	void init();
-
 	/* Member functions */
 
 	vcl::TexCoord<Scalar>&       wedgeTexCoord(uint i);

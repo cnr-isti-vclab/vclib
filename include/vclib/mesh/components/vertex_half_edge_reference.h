@@ -70,9 +70,11 @@ public:
 	using ConstAdjacentVertexRangeIterator =
 		ConstRangeIterator<VertexHalfEdgeReference, ConstAdjacentVertexIterator>;
 
-	/* Constructor */
+	/* Constructor and isEnabled */
 
 	void init();
+
+	bool isEnabled();
 
 	/* Member functions */
 

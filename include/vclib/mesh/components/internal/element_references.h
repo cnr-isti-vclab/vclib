@@ -57,9 +57,13 @@ public:
 	using RACRangeIterator      = typename Base::RACRangeIterator;
 	using RACConstRangeIterator = typename Base::RACConstRangeIterator;
 
-	/** Constructor **/
+	/* Constructor and isEnabled */
 
-	void init();
+	template<typename Comp>
+	void init(Comp* comp);
+
+	template<typename Comp>
+	bool isEnabled(Comp* comp);
 
 protected:
 	template<typename Comp>

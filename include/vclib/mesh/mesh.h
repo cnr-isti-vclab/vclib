@@ -229,8 +229,9 @@ protected:
 	void updateAllOptionalContainerReferences();
 
 private:
-	// hide init member functions of all components
+	// hide init and isEnabled member functions of all components
 	void init() {};
+	bool isEnabled() { return true; }
 
 	template<typename Comp>
 	void construct();

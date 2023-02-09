@@ -34,6 +34,12 @@ void VertexHalfEdgeReference<HE, El, o>::init()
 }
 
 template<typename HE, typename El, bool o>
+bool VertexHalfEdgeReference<HE, El, o>::isEnabled()
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
+template<typename HE, typename El, bool o>
 const HE* VertexHalfEdgeReference<HE, El, o>::halfEdge() const
 {
 	return he();

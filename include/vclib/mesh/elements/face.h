@@ -266,6 +266,7 @@ public:
 private:
 	// hide init member functions of all components - to call after set parent mesh
 	void init();
+	bool isEnabled() { return true; }
 
 	template<typename Comp>
 	void construct();

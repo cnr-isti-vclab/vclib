@@ -32,6 +32,12 @@ void TransformMatrix<Scalar, El, o>::init()
 }
 
 template<typename Scalar, typename El, bool o>
+bool TransformMatrix<Scalar, El, o>::isEnabled()
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
+template<typename Scalar, typename El, bool o>
 const typename TransformMatrix<Scalar, El, o>::TransformMatrixType&
 TransformMatrix<Scalar, El, o>::transformMatrix() const
 {
