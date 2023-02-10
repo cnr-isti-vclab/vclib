@@ -73,6 +73,15 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf<>;
 using Scalard = comp::Scalard<>;
 
+template<typename ScalarType, typename FaceType>
+using VerticalScalar = comp::Scalar<ScalarType, FaceType>;
+
+template<typename FaceType>
+using VerticalScalarf = comp::Scalar<float, FaceType>;
+
+template<typename FaceType>
+using VerticalScalard = comp::Scalar<double, FaceType>;
+
 template<typename ScalarType, typename EdgeType>
 using OptionalScalar = comp::Scalar<ScalarType, EdgeType, true>;
 

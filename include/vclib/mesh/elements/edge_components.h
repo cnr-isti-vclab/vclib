@@ -84,6 +84,15 @@ using Scalarf = comp::Scalarf<>;
 using Scalard = comp::Scalard<>;
 
 template<typename ScalarType, typename EdgeType>
+using VerticalScalar = comp::Scalar<ScalarType, EdgeType>;
+
+template<typename EdgeType>
+using VerticalScalarf = comp::Scalar<float, EdgeType>;
+
+template<typename EdgeType>
+using VerticalScalard = comp::Scalar<double, EdgeType>;
+
+template<typename ScalarType, typename EdgeType>
 using OptionalScalar = comp::Scalar<ScalarType, EdgeType, true>;
 
 template<typename EdgeType>

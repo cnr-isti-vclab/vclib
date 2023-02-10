@@ -121,6 +121,18 @@ using Normal3f = comp::Normal3f<>;
 using Normal3d = comp::Normal3d<>;
 
 template<typename ScalarType, int N, typename VertexType>
+using VerticalNormal = comp::Normal<ScalarType, N, VertexType>;
+
+template<typename ScalarType, typename VertexType>
+using VerticalNormal3 = comp::Normal3<ScalarType, VertexType>;
+
+template<typename VertexType>
+using VerticalNormal3f = comp::Normal3f<VertexType>;
+
+template<typename VertexType>
+using VerticalNormal3d = comp::Normal3d<VertexType>;
+
+template<typename ScalarType, int N, typename VertexType>
 using OptionalNormal = comp::Normal<ScalarType, N, VertexType, true>;
 
 template<typename ScalarType, typename VertexType>
@@ -157,6 +169,15 @@ using Scalar = comp::Scalar<ScalarType>;
 
 using Scalarf = comp::Scalarf<>;
 using Scalard = comp::Scalard<>;
+
+template<typename ScalarType, typename FaceType>
+using VerticalScalar = comp::Scalar<ScalarType, FaceType>;
+
+template<typename FaceType>
+using VerticalScalarf = comp::Scalar<float, FaceType>;
+
+template<typename FaceType>
+using VerticalScalard = comp::Scalar<double, FaceType>;
 
 template<typename ScalarType, typename VertexType>
 using OptionalScalar = comp::Scalar<ScalarType, VertexType, true>;
