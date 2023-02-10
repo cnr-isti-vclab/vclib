@@ -170,6 +170,12 @@ using PolygonWedgeColors = comp::WedgeColors<-1>;
 
 using TriangleWedgeColors = comp::WedgeColors<3>;
 
+template<typename FaceType>
+using OptionalPolygonWedgeColors = comp::WedgeColors<-1, FaceType, true>;
+
+template<typename FaceType>
+using OptionalTriangleWedgeColors = comp::WedgeColors<3, FaceType, true>;
+
 /* Port WedgeTexCoords class into face namespace */
 template<typename ScalarType>
 using PolygonWedgeTexCoords = comp::WedgeTexCoords<ScalarType, -1>;

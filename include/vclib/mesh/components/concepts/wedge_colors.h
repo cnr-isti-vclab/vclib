@@ -82,7 +82,7 @@ template<typename T>
 concept HasWedgeColorsComponent = requires(T o)
 {
 	requires HasWedgeColors<T>;
-	{ o.__compWedgeColors() } -> std::same_as<void>;
+	typename T::WedgeColorsComponent;
 };
 
 /**
@@ -91,10 +91,8 @@ concept HasWedgeColorsComponent = requires(T o)
  * the discriminator between the non-optional and optional component.
  */
 template<typename T>
-concept HasOptionalWedgeColors = HasWedgeColors<T> && requires(T o)
-{
-	{ o.__optionalWedgeColors() } -> std::same_as<void>;
-};
+concept HasOptionalWedgeColors =
+	HasWedgeColorsComponent<T> && IsOptionalComponent<typename T::WedgeColorsComponent>;
 
 /**
  * @brief HasRightNumberOfWedgeColors concept

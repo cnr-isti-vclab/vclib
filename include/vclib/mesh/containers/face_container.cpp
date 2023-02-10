@@ -922,7 +922,7 @@ void FaceContainer<T>::importHalfEdgeReferencesFrom(const Mesh &m, HalfEdge *bas
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>
 {
-	return Base::optionalVec.isWedgeColorsEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::WedgeColorsComponent>();
 }
 
 /**
@@ -937,7 +937,7 @@ bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOpt
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
 {
-	Base::optionalVec.enableWedgeColors(Base::vec.size());
+	return Base::template enableOptionalComponent<typename T::WedgeColorsComponent>();
 	static const int N = T::VERTEX_NUMBER;
 	if constexpr (N < 0) {
 		for (T& f : faces()) {
@@ -954,7 +954,7 @@ void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedg
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
 {
-	Base::optionalVec.disableWedgeColors();
+	return Base::template disableOptionalComponent<typename T::WedgeColorsComponent>();
 }
 
 /**

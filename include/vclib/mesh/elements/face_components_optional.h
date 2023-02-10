@@ -24,17 +24,9 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_COMPONENTS_OPTIONAL_H
 #define VCL_MESH_ELEMENTS_FACE_COMPONENTS_OPTIONAL_H
 
-#include "../components/vertical/optional/optional_wedge_colors.h"
 #include "../components/vertical/optional/optional_wedge_tex_coords.h"
 
 namespace vcl::face {
-
-/* Port OptionalWedgeColors class into face namespace */
-template<typename FaceType>
-using OptionalPolygonWedgeColors = comp::OptionalWedgeColors<-1, FaceType>;
-
-template<typename FaceType>
-using OptionalTriangleWedgeColors = comp::OptionalWedgeColors<3, FaceType>;
 
 /* Port OptionalWedgeTexCoords class into face namespace */
 template<typename ScalarType, typename FaceType>

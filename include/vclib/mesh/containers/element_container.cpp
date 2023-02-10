@@ -36,6 +36,7 @@
 #include "../components/concepts/tex_coord.h"
 #include "../components/concepts/vertex_references.h"
 #include "../components/concepts/vertex_half_edge_reference.h"
+#include "../components/concepts/wedge_colors.h"
 
 namespace vcl::mesh {
 
@@ -837,8 +838,9 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Wedge Colors
 	if constexpr (comp::HasOptionalWedgeColors<T>) {
 		if constexpr (comp::HasWedgeColors<CT>) {
-			if (!comp::HasOptionalWedgeColors<CT> || c.optionalVec.isWedgeColorsEnabled()) {
-				optionalVec.enableWedgeColors(size);
+			if (!comp::HasOptionalWedgeColors<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::WedgeColorsComponent>()) {
+				enableOptionalComponent<typename T::WedgeColorsComponent>();
 			}
 		}
 	}

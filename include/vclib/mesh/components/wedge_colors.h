@@ -76,10 +76,6 @@ public:
 	WedgeColorsRangeIterator      wedgeColors();
 	ConstWedgeColorsRangeIterator wedgeColors() const;
 
-	// dummy member to discriminate between this component and the one simulated by the
-	// FaceHalfEdgeReference component
-	void __compWedgeColors() const {};
-
 protected:
 	/* Member functions specific for vector of wedge colors */
 

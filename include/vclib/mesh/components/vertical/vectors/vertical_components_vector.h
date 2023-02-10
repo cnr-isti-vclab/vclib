@@ -25,7 +25,6 @@
 #define VCL_MESH_VERTICAL_COMPONENTS_VECTOR_H
 
 
-#include "wedge_colors_vector.h"
 #include "wedge_tex_coords_vector.h"
 
 namespace vcl::internal {
@@ -53,7 +52,6 @@ public:
 template<typename T>
 class VerticalComponentsVector :
 		public VerticalComponentsAggregator<
-			WedgeColorsVector<T>,
 			WedgeTexCoordsVector<T>>
 {
 };
