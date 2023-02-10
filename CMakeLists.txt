@@ -213,7 +213,6 @@ set(HEADERS
 	include/vclib/mesh/elements/face_concept.h
 	include/vclib/mesh/elements/half_edge.h
 	include/vclib/mesh/elements/half_edge_components.h
-	include/vclib/mesh/elements/half_edge_components_optional.h
 	include/vclib/mesh/elements/half_edge_concept.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
