@@ -188,6 +188,21 @@ using PolygonWedgeTexCoordsd = PolygonWedgeTexCoords<double>;
 using TriangleWedgeTexCoordsf = TriangleWedgeTexCoords<float>;
 using TriangleWedgeTexCoordsd = TriangleWedgeTexCoords<double>;
 
+template<typename ScalarType, typename FaceType>
+using OptionalPolygonWedgeTexCoords = comp::WedgeTexCoords<ScalarType, -1, FaceType, true>;
+
+template<typename ScalarType, typename FaceType>
+using OptionalTriangleWedgeTexCoords = comp::WedgeTexCoords<ScalarType, 3, FaceType, true>;
+
+template<typename FaceType>
+using OptionalPolygonWedgeTexCoordsf = comp::WedgeTexCoords<float, -1, FaceType, true>;
+template<typename FaceType>
+using OptionalPolygonWedgeTexCoordsd = comp::WedgeTexCoords<double, -1, FaceType, true>;
+template<typename FaceType>
+using OptionalTriangleWedgeTexCoordsf = comp::WedgeTexCoords<float, 3, FaceType, true>;
+template<typename FaceType>
+using OptionalTriangleWedgeTexCoordsd = comp::WedgeTexCoords<double, 3, FaceType, true>;
+
 } // namespace vcl::face
 
 #endif // VCL_MESH_ELEMENTS_FACE_COMPONENTS_H

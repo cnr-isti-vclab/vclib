@@ -26,6 +26,18 @@
 namespace vcl::comp {
 
 template<typename Scalar, typename El, bool o>
+bool PrincipalCurvature<Scalar, El, o>::isEnabled() const
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
+template<typename Scalar, typename El, bool o>
+bool PrincipalCurvature<Scalar, El, o>::isPrincipalCurvatureEnabled() const
+{
+	return isEnabled();
+}
+
+template<typename Scalar, typename El, bool o>
 const typename PrincipalCurvature<Scalar, El, o>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar, El, o>::principalCurvature() const
 {
@@ -37,17 +49,6 @@ typename PrincipalCurvature<Scalar, El, o>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar, El, o>::principalCurvature()
 {
 	return princCurv();
-}
-
-template<typename Scalar, typename El, bool o>
-bool PrincipalCurvature<Scalar, El, o>::isPrincipalCurvatureEnabled() const
-{
-	if constexpr (o) {
-		return data.template isComponentEnabled<El>(this);
-	}
-	else {
-		return true;
-	}
 }
 
 template<typename Scalar, typename El, bool o>

@@ -42,10 +42,11 @@ public:
 
 	using ScalarType = T;
 
+	bool isEnabled() const;
+	bool isScalarEnabled() const;
+
 	const ScalarType& scalar() const;
 	ScalarType&       scalar();
-
-	constexpr bool isScalarEnabled() const { return true; }
 
 protected:
 	template<typename Element>

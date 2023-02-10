@@ -85,7 +85,8 @@ public:
 
 	void init();
 
-	bool isEnabled();
+	bool isEnabled() const;
+	bool isAdjFacesEnabled() const;
 
 	/* Member functions */
 
@@ -105,8 +106,6 @@ public:
 	ConstAdjacentFaceIterator findAdjFace(const Face* f) const;
 
 	int indexOfAdjFace(const Face* f) const;
-
-	constexpr bool isAdjFacesEnabled() const { return true; }
 
 	/* Member functions specific for vector adjacent faces */
 

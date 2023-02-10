@@ -51,7 +51,7 @@ public:
 
 	void init();
 
-	bool isEnabled();
+	bool isEnabled() const;
 
 	/* Member functions */
 

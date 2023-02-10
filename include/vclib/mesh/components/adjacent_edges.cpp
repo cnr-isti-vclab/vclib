@@ -33,9 +33,15 @@ void AdjacentEdges<Edge, N, El, o>::init()
 }
 
 template<typename Edge, int N, typename El, bool o>
-bool AdjacentEdges<Edge, N, El, o>::isEnabled()
+bool AdjacentEdges<Edge, N, El, o>::isEnabled() const
 {
 	return Base::isEnabled(this);
+}
+
+template<typename Edge, int N, typename El, bool o>
+bool AdjacentEdges<Edge, N, El, o>::isAdjEdgesEnabled() const
+{
+	return isEnabled();
 }
 
 /**

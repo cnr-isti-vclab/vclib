@@ -180,10 +180,8 @@ set(HEADERS
 	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/element_references.h
 	include/vclib/mesh/components/vertical/vertical_component.h
-	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.h
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.h
 	include/vclib/mesh/components/vertical/vectors/vertical_components_vector.h
-	include/vclib/mesh/components/vertical/vectors/wedge_tex_coords_vector.h
 	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/containers_concepts.h
 	include/vclib/mesh/containers/custom_component_vector_handle.h
@@ -200,7 +198,6 @@ set(HEADERS
 	include/vclib/mesh/elements/element_concept.h
 	include/vclib/mesh/elements/face.h
 	include/vclib/mesh/elements/face_components.h
-	include/vclib/mesh/elements/face_components_optional.h
 	include/vclib/mesh/elements/face_concept.h
 	include/vclib/mesh/elements/half_edge.h
 	include/vclib/mesh/elements/half_edge_components.h
@@ -368,7 +365,6 @@ set(SOURCES
 	include/vclib/mesh/components/wedge_colors.cpp
 	include/vclib/mesh/components/wedge_tex_coords.cpp
 	include/vclib/mesh/components/internal/element_references.cpp
-	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.cpp
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.cpp
 	include/vclib/mesh/containers/custom_component_vector_handle.cpp
 	include/vclib/mesh/containers/custom_components_vector_map.cpp

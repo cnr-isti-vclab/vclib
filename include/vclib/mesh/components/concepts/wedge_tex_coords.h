@@ -62,7 +62,7 @@ concept HasWedgeTexCoords = requires(
 	{ o.setWedgeTexCoord(t, uint()) } -> std::same_as<void>;
 	{ o.setWedgeTexCoords(v) } -> std::same_as<void>;
 	{ o.textureIndex() } -> std::same_as<short&>;
-	{ co.textureIndex() } -> std::same_as<const short&>;
+	{ co.textureIndex() } -> std::same_as<short>;
 	{ co.isWedgeTexCoordsEnabled() } -> std::same_as<bool>;
 
 	{ o.wedgeTexCoordBegin() } -> std::same_as<typename T::WedgeTexCoordsIterator>;
@@ -85,21 +85,16 @@ template<typename T>
 concept HasWedgeTexCoordsComponent = requires(T o)
 {
 	requires HasWedgeTexCoords<T>;
-	{ o.__compWedgeTexCoords() } -> std::same_as<void>;
+	typename T::WedgeTexCoordsComponent;
 };
 
 /**
- * @brief HasOptionalWedgeColors concept
- *
- * This concept is satisfied only if a class has two member functions:
- * - 'wedgeTexCoord(uint)'
- * - '__optionalWedgeTexCoords()'
+ * @brief HasOptionalWedgeTexCoords concept is satisfied only if a class satisfied the
+ * HasWedgeCoordsComponent and has the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalWedgeTexCoords = HasWedgeTexCoords<T> && requires(T o)
-{
-	{ o.__optionalWedgeTexCoords() } -> std::same_as<void>;
-};
+concept HasOptionalWedgeTexCoords =
+	HasWedgeTexCoordsComponent<T> && IsOptionalComponent<typename T::WedgeTexCoordsComponent>;
 
 /**
  * @brief HasRightNumberOfWedgeTexCoords concept

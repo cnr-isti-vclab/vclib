@@ -25,7 +25,6 @@
 #define VCL_MESH_ELEMENTS_FACE_CONCEPT_H
 
 #include "face_components.h"
-#include "face_components_optional.h"
 
 namespace vcl {
 

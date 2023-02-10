@@ -54,6 +54,9 @@ public:
 	using WedgeColorsRangeIterator      = typename Base::RACRangeIterator;
 	using ConstWedgeColorsRangeIterator = typename Base::RACConstRangeIterator;
 
+	bool isEnabled() const;
+	bool isWedgeColorsEnabled() const;
+
 	/* Member functions */
 
 	vcl::Color&       wedgeColor(uint i);
@@ -64,8 +67,6 @@ public:
 
 	void setWedgeColor(const vcl::Color& t, uint i);
 	void setWedgeColors(const std::vector<vcl::Color>& list);
-
-	constexpr bool isWedgeColorsEnabled() const { return true; }
 
 	/* Iterator Member functions */
 

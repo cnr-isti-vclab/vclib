@@ -68,7 +68,7 @@ void ElementReferences<Elem, N, El>::init(Comp* comp)
 
 template<typename Elem, int N, typename El>
 template<typename Comp>
-bool ElementReferences<Elem, N, El>::isEnabled(Comp* comp)
+bool ElementReferences<Elem, N, El>::isEnabled(Comp* comp) const
 {
 	return data.template isComponentEnabled<El>(comp);
 }

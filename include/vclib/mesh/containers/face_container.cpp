@@ -968,7 +968,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
 	const requires face::HasOptionalWedgeTexCoords<T>
 {
-	return Base::optionalVec.isWedgeTexCoordsEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::WedgeTexCoordsComponent>();
 }
 
 /**
@@ -984,7 +984,7 @@ bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
 {
-	Base::optionalVec.enableWedgeTexCoords(Base::vec.size());
+	return Base::template enableOptionalComponent<typename T::WedgeTexCoordsComponent>();
 	static const int N = T::VERTEX_NUMBER;
 	if constexpr (N < 0) {
 		for (T& f : faces()) {
@@ -1002,7 +1002,7 @@ void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalW
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
 {
-	Base::optionalVec.disableWedgeTexCoords();
+	return Base::template disableOptionalComponent<typename T::WedgeTexCoordsComponent>();
 }
 
 } // namespace vcl::mesh

@@ -32,6 +32,18 @@ const T& Scalar<T, El, o>::scalar() const
 }
 
 template<typename T, typename El, bool o>
+bool Scalar<T, El, o>::isEnabled() const
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
+template<typename T, typename El, bool o>
+bool Scalar<T, El, o>::isScalarEnabled() const
+{
+	return isEnabled();
+}
+
+template<typename T, typename El, bool o>
 T& Scalar<T, El, o>::scalar()
 {
 	return s();

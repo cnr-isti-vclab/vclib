@@ -65,7 +65,7 @@ public:
 	void init(Comp* comp);
 
 	template<typename Comp>
-	bool isEnabled(Comp* comp);
+	bool isEnabled(Comp* comp) const;
 
 protected:
 	template<typename Comp>

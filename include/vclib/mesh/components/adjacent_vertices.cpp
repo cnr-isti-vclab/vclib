@@ -32,9 +32,15 @@ void AdjacentVertices<Vertex, El, o>::init()
 }
 
 template<typename Vertex, typename El, bool o>
-bool AdjacentVertices<Vertex, El, o>::isEnabled()
+bool AdjacentVertices<Vertex, El, o>::isEnabled() const
 {
 	return Base::isEnabled(this);
+}
+
+template<typename Vertex, typename El, bool o>
+bool AdjacentVertices<Vertex, El, o>::isAdjVerticesEnabled() const
+{
+	return isEnabled();
 }
 
 /**

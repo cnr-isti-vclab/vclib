@@ -44,10 +44,11 @@ public:
 
 	using NormalType = P;
 
+	bool isEnabled() const;
+	bool isNormalEnabled() const;
+
 	const P& normal() const;
 	P&       normal();
-
-	constexpr bool isNormalEnabled() const { return true; }
 
 protected:
 	template<typename Element>

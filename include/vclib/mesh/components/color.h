@@ -50,11 +50,12 @@ public:
 
 	using ColorType = vcl::Color;
 
+	bool isEnabled() const;
+	bool isColorEnabled() const;
+
 	const vcl::Color& color() const;
 
 	vcl::Color& color();
-
-	bool isColorEnabled() const;
 
 protected:
 	template<typename Element>

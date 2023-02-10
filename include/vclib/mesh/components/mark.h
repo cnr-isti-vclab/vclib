@@ -79,7 +79,8 @@ public:
 
 	void init();
 
-	bool isEnabled();
+	bool isEnabled() const;
+	bool isMarkEnabled() const;
 
 	/* Member functions */
 
@@ -91,8 +92,6 @@ public:
 
 	void incrementMark();
 	void decrementMark();
-
-	bool isMarkEnabled() const;
 
 protected:
 	template<typename Element>

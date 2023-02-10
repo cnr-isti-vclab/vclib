@@ -67,6 +67,9 @@ public:
 
 	/* Member functions */
 
+	bool isEnabled() const;
+	bool isWedgeTexCoordsEnabled() const;
+
 	vcl::TexCoord<Scalar>&       wedgeTexCoord(uint i);
 	const vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) const;
 
@@ -77,9 +80,7 @@ public:
 	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
 
 	short& textureIndex();
-	const short& textureIndex() const;
-
-	constexpr bool isWedgeTexCoordsEnabled() const { return true; }
+	short textureIndex() const;
 
 	/* Iterator Member functions */
 
@@ -89,10 +90,6 @@ public:
 	ConstWedgeTexCoordsIterator      wedgeTexCoordEnd() const;
 	WedgeTexCoordsRangeIterator      wedgeTexCoords();
 	ConstWedgeTexCoordsRangeIterator wedgeTexCoords() const;
-
-	// dummy member to discriminate between this component and the one simulated by the
-	// FaceHalfEdgeReference component
-	void __compWedgeTexCoords() const {};
 
 protected:
 	using WedgeTexCoordScalarType = Scalar;

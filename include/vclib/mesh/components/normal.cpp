@@ -26,6 +26,18 @@
 namespace vcl::comp {
 
 template<PointConcept P, typename El, bool o>
+bool NormalT<P, El, o>::isEnabled() const
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
+template<PointConcept P, typename El, bool o>
+bool NormalT<P, El, o>::isNormalEnabled() const
+{
+	return isEnabled();
+}
+
+template<PointConcept P, typename El, bool o>
 const P& NormalT<P, El, o>::normal() const
 {
 	return n();

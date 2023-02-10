@@ -26,6 +26,18 @@
 namespace vcl::comp {
 
 template<typename Scalar, int N, typename El, bool o>
+bool WedgeTexCoords<Scalar, N, El, o>::isEnabled() const
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
+template<typename Scalar, int N, typename El, bool o>
+bool WedgeTexCoords<Scalar, N, El, o>::isWedgeTexCoordsEnabled() const
+{
+	return isEnabled();
+}
+
+template<typename Scalar, int N, typename El, bool o>
 vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoord(uint i)
 {
 	return texCoords().at(i);
@@ -68,7 +80,7 @@ short& WedgeTexCoords<Scalar, N, El, o>::textureIndex()
 }
 
 template<typename Scalar, int N, typename El, bool o>
-const short& WedgeTexCoords<Scalar, N, El, o>::textureIndex() const
+short WedgeTexCoords<Scalar, N, El, o>::textureIndex() const
 {
 	return texIndex();
 }

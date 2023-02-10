@@ -25,6 +25,18 @@
 
 namespace vcl::comp {
 
+template<typename El, bool o>
+bool Color<El, o>::isEnabled() const
+{
+	return data.template isComponentEnabled<El>(this);
+}
+
+template<typename El, bool o>
+bool Color<El, o>::isColorEnabled() const
+{
+	return isEnabled();
+}
+
 /**
  * @brief Returns const reference of the color of the element.
  */
@@ -41,17 +53,6 @@ template<typename El, bool o>
 vcl::Color& Color<El, o>::color()
 {
 	return c();
-}
-
-template<typename El, bool o>
-bool Color<El, o>::isColorEnabled() const
-{
-	if constexpr (o) {
-		return data.template isComponentEnabled<El>(this);
-	}
-	else {
-		return true;
-	}
 }
 
 template<typename El, bool o>

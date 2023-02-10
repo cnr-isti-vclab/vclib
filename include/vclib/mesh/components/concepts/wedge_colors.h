@@ -87,8 +87,7 @@ concept HasWedgeColorsComponent = requires(T o)
 
 /**
  * @brief HasOptionalWedgeColors concept is satisfied only if a class satisfies the
- * HasWedgeColors concept and has the additional member function '__optionalWedgeColors()', which is
- * the discriminator between the non-optional and optional component.
+ * HasWedgeColors concept and has the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
 concept HasOptionalWedgeColors =

@@ -40,9 +40,15 @@ void Mark<El, o>::init()
 }
 
 template<typename El, bool o>
-bool Mark<El, o>::isEnabled()
+bool Mark<El, o>::isEnabled() const
 {
 	return data.template isComponentEnabled<El>(this);
+}
+
+template<typename El, bool o>
+bool Mark<El, o>::isMarkEnabled() const
+{
+	return isEnabled();
 }
 
 template<typename El, bool o>
@@ -79,12 +85,6 @@ template<typename El, bool o>
 void Mark<El, o>::decrementMark()
 {
 	m()--;
-}
-
-template<typename El, bool o>
-bool Mark<El, o>::isMarkEnabled() const
-{
-	return data.template isComponentEnabled<El>(this);
 }
 
 template<typename El, bool o>

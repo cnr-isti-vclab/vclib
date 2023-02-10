@@ -85,7 +85,8 @@ public:
 
 	void init();
 
-	bool isEnabled();
+	bool isEnabled() const;
+	bool isAdjEdgesEnabled() const;
 
 	/* Member functions */
 
@@ -105,8 +106,6 @@ public:
 	ConstAdjacentEdgeIterator findAdjEdge(const Edge* e) const;
 
 	int indexOfAdjEdge(const Edge* e) const;
-
-	constexpr bool isAdjEdgesEnabled() const { return true; }
 
 	/* Member functions specific for vector of adjacent edges */
 

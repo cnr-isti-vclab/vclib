@@ -76,7 +76,8 @@ public:
 
 	void init();
 
-	bool isEnabled();
+	bool isEnabled() const;
+	bool isAdjVerticesEnabled() const;
 
 	/* Member functions */
 
@@ -96,8 +97,6 @@ public:
 	ConstAdjacentVertexIterator findAdjVertex(const Vertex* v) const;
 
 	int indexOfAdjVertex(const Vertex* v) const;
-
-	constexpr bool isAdjVerticesEnabled() const { return true; }
 
 	void resizeAdjVertices(uint n);
 	void pushAdjVertex(Vertex* v);

@@ -32,9 +32,15 @@ void AdjacentFaces<Face, N, El, o>::init()
 }
 
 template<typename Face, int N, typename El, bool o>
-bool AdjacentFaces<Face, N, El, o>::isEnabled()
+bool AdjacentFaces<Face, N, El, o>::isEnabled() const
 {
 	return Base::isEnabled(this);
+}
+
+template<typename Face, int N, typename El, bool o>
+bool AdjacentFaces<Face, N, El, o>::isAdjFacesEnabled() const
+{
+	return isEnabled();
 }
 
 /**
