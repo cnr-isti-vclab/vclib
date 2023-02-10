@@ -42,6 +42,9 @@ using BitFlags = comp::BitFlags<>;
 /* Port Color class into hedge namespace */
 using Color = comp::Color<>;
 
+template<typename VertexType>
+using VerticalColor = comp::Color<VertexType>; 
+
 template<typename EdgeType>
 using OptionalColor = comp::Color<EdgeType, true>;
 

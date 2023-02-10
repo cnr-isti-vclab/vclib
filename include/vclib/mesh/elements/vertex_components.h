@@ -69,6 +69,9 @@ using BitFlags = comp::BitFlags<>;
 using Color = comp::Color<>;
 
 template<typename VertexType>
+using VerticalColor = comp::Color<VertexType>; 
+
+template<typename VertexType>
 using OptionalColor = comp::Color<VertexType, true>;
 
 /* Port Coordinate class into vert namespace */
@@ -80,6 +83,18 @@ using Coordinate3 = comp::Coordinate3<ScalarType>;
 
 using Coordinate3f = comp::Coordinate3f<>;
 using Coordinate3d = comp::Coordinate3d<>;
+
+template<typename ScalarType, int N, typename VertexType>
+using VerticalCoordinate = comp::Coordinate<ScalarType, N, VertexType>;
+
+template<typename ScalarType, typename VertexType>
+using VerticalCoordinate3 = comp::Coordinate3<ScalarType, VertexType>;
+
+template<typename VertexType>
+using VerticalCoordinate3f = comp::Coordinate3f<VertexType>;
+
+template<typename VertexType>
+using VerticalCoordinate3d = comp::Coordinate3d<VertexType>;
 
 /* Port CustomComponents class into vert namespace */
 template<typename VertexType>

@@ -75,6 +75,9 @@ using BitFlags = comp::BitFlags<>;
 /* Port Color class into face namespace */
 using Color = comp::Color<>;
 
+template<typename VertexType>
+using VerticalColor = comp::Color<VertexType>; 
+
 template<typename FaceType>
 using OptionalColor = comp::Color<FaceType, true>;
 

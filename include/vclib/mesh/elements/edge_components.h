@@ -56,6 +56,9 @@ using BitFlags = comp::BitFlags<>;
 /* Port Color class into edge namespace */
 using Color = comp::Color<>;
 
+template<typename VertexType>
+using VerticalColor = comp::Color<VertexType>; 
+
 template<typename EdgeType>
 using OptionalColor = comp::Color<EdgeType, true>;
 
