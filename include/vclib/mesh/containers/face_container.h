@@ -170,8 +170,8 @@ protected:
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename OtherMesh>
-	void importFrom(const OtherMesh& m);
+	template<typename OtherMesh, typename ParentMeshType>
+	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 
 	template<typename Mesh, typename Vertex>
 	void importVertexReferencesFrom(const Mesh& m, Vertex* base);

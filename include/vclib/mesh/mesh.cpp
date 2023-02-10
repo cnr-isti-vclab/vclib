@@ -188,8 +188,8 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 	// In case of containers, it first creates the same number of elements in the container,
 	// and then calls the importFrom function for each new element.
 	// References are not managed here, since they need additional parameters to be imported
-
-	(Args::importFrom(m), ...);
+	
+	(importContainersAndComponents<Args>(m), ...);
 
 	// Set to all elements their parent mesh (this)
 	updateAllParentMeshPointers();
@@ -1283,6 +1283,18 @@ void Mesh<Args...>::setParentMeshPointers()
 {
 	if constexpr(mesh::IsElementContainer<Cont>) {
 		Cont::setParentMeshPointers(this);
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont, typename OthMesh>
+void Mesh<Args...>::importContainersAndComponents(const OthMesh &m)
+{
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		Cont::importFrom(m, this);
+	}
+	else {
+		Cont::importFrom(m);
 	}
 }
 

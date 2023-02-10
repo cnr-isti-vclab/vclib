@@ -246,6 +246,9 @@ private:
 
 	template<typename Cont>
 	void setParentMeshPointers();
+	
+	template<typename Cont, typename OthMesh>
+	void importContainersAndComponents(const OthMesh& m);
 
 	template<typename Cont, typename OthMesh>
 	void importReferences(const OthMesh& m);

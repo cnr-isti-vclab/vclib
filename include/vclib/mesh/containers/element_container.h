@@ -131,8 +131,8 @@ protected:
 	template<typename Container>
 	void enableOptionalComponentsOf(const Container& c);
 
-	template<typename Container>
-	void importFrom(const Container& c);
+	template<typename Container, typename ParentMeshType>
+	void importFrom(const Container& c, ParentMeshType* parent);
 
 	template<typename Container, typename MyBase, typename CBase>
 	void importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);

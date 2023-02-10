@@ -923,11 +923,11 @@ void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 }
 
 template<VertexConcept T>
-template<typename OtherMesh>
-void VertexContainer<T>::importFrom(const OtherMesh& m)
+template<typename OtherMesh, typename ParentMeshType>
+void VertexContainer<T>::importFrom(const OtherMesh& m, ParentMeshType* parent)
 {
 	using MVertexContainer = typename OtherMesh::VertexContainer::Base;
-	Base::importFrom((const MVertexContainer&) m);
+	Base::importFrom((const MVertexContainer&) m, parent);
 }
 
 template<VertexConcept T>

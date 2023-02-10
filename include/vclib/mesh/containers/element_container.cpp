@@ -799,12 +799,12 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 }
 
 template<typename T>
-template<typename Container>
-void ElementContainer<T>::importFrom(const Container &c)
+template<typename Container, typename ParentMeshType>
+void ElementContainer<T>::importFrom(const Container &c, ParentMeshType* parent)
 {
 	clearElements();
 	// pointer to parent mesh needs to be updated later by the mesh
-	addElements<typename T::ParentMeshType>(c.elementContainerSize(), nullptr);
+	addElements(c.elementContainerSize(), parent);
 	unsigned int eid = 0;
 	for (const typename Container::ElementType& e : c.elements(false)) {
 		element(eid).importFrom(e);

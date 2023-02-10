@@ -858,13 +858,13 @@ void FaceContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 }
 
 template<FaceConcept T>
-template<typename OtherMesh>
-void FaceContainer<T>::importFrom(const OtherMesh& m)
+template<typename OtherMesh, typename ParentMeshType>
+void FaceContainer<T>::importFrom(const OtherMesh& m, ParentMeshType* parent)
 {
 	if constexpr (HasFaceContainer<OtherMesh>) {
 		using MFaceContainer = typename OtherMesh::FaceContainer::Base;
 
-		Base::importFrom((const MFaceContainer&)m);
+		Base::importFrom((const MFaceContainer&)m, parent);
 	}
 }
 
