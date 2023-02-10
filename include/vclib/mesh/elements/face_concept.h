@@ -94,8 +94,6 @@ concept HasTriangleBitFlags = comp::HasTriangleBitFlags<T>;
 template<typename T>
 concept HasVertexReferences = comp::HasVertexReferences<T>;
 template<typename T>
-concept HasVerticalComponent = comp::HasVerticalComponent<T>;
-template<typename T>
 concept HasWedgeColors = comp::HasWedgeColors<T>;
 template<typename T>
 concept HasOptionalWedgeColors = comp::HasOptionalWedgeColors<T>;

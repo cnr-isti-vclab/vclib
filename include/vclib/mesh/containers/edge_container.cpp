@@ -369,7 +369,7 @@ void EdgeContainer<T>::disablePerEdgeAdjacentEdges() requires edge::HasOptionalA
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const requires edge::HasOptionalAdjacentFaces<T>
 {
-	return Base::optionalVec.isAdjacentFacesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -381,7 +381,7 @@ bool EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const requires edge::HasO
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
 {
-	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
+	Base::template enableOptionalComponent<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -393,7 +393,7 @@ void EdgeContainer<T>::enablePerEdgeAdjacentFaces() requires edge::HasOptionalAd
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
 {
-	Base::optionalVec.disableAdjacentFaces();
+	Base::template disableOptionalComponent<typename T::AdjacentFacesComponent>();
 }
 
 /**

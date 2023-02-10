@@ -29,8 +29,7 @@
 #include <vclib/mesh/components/concepts/custom_components.h>
 #include <vclib/iterators/mesh/element_container_iterator.h>
 #include <vclib/iterators/mesh/element_container_range_iterator.h>
-#include "../components/vertical/vertical_component.h"
-#include "../components/vertical/vectors/vertical_components_vector.h"
+
 #include "containers_concepts.h"
 #include "custom_components_vector_map.h"
 #include "vertical_components_vector_tuple.h"
@@ -41,8 +40,6 @@ namespace vcl::mesh {
 template <typename T>
 class ElementContainer : public ElementContainerTriggerer
 {
-	friend class comp::VerticalComponent<T>;
-
 	template <typename U>
 	friend class ElementContainer;
 
@@ -105,10 +102,6 @@ protected:
 	void reserveElements(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactElements();
-
-	void setContainerPointer(T& element);
-
-	void updateContainerPointers(const T* oldBase, const T* newBase);
 
 	template<typename Vertex>
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
@@ -178,8 +171,6 @@ protected:
 	 * @brief ccVecMap the map that associates a string to a vector of custom components
 	 */
 	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVecMap;
-
-	internal::VerticalComponentsVector<T> optionalVec;
 };
 
 } // namespace vcl::mesh

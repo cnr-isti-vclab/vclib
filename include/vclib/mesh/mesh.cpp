@@ -48,9 +48,6 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	// Set to all elements their parent mesh (this)
 	updateAllParentMeshPointers();
 
-	// update all the optional container references
-	updateAllOptionalContainerReferences();
-
 	// update references into the vertex container
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
 	// just run the same function that we use when vector is reallocated, but using
@@ -1246,46 +1243,6 @@ void Mesh<Args...>::updateAllParentMeshPointers()
 }
 
 template<typename... Args> requires HasVertices<Args...>
-void Mesh<Args...>::updateAllOptionalContainerReferences()
-{
-	// if there is the optional vertex container, I need to update, for each vertex of the
-	// new mesh, the containerPointer
-	if constexpr (mesh::HasVertexOptionalContainer<Mesh<Args...>>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		for (auto& v : VertexContainer::vertices(true)) {
-			VertexContainer::setContainerPointer(v);
-		}
-	}
-
-	// if there is the optional face container, I need to update, for each face of the
-	// new mesh, the containerPointer
-	if constexpr (mesh::HasFaceOptionalContainer<Mesh<Args...>>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		for (auto& f : FaceContainer::faces(true)) {
-			FaceContainer::setContainerPointer(f);
-		}
-	}
-
-	// if there is the optional edge container, I need to update, for each edge of the
-	// new mesh, the containerPointer
-	if constexpr (mesh::HasEdgeOptionalContainer<Mesh<Args...>>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		for (auto& e : EdgeContainer::edges(true)) {
-			EdgeContainer::setContainerPointer(e);
-		}
-	}
-
-	// if there is the optional edge container, I need to update, for each edge of the
-	// new mesh, the containerPointer
-	if constexpr (mesh::HasHalfEdgeOptionalContainer<Mesh<Args...>>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		for (auto& e : HalfEdgeContainer::halfEdges(true)) {
-			HalfEdgeContainer::setContainerPointer(e);
-		}
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 void Mesh<Args...>::addFaceHelper(typename M::FaceType&)
 {
@@ -1627,10 +1584,6 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	// Set to all elements their parent mesh
 	m1.updateAllParentMeshPointers();
 	m2.updateAllParentMeshPointers();
-
-	// set to all the elements, the new pointer of the optional containers
-	m1.updateAllOptionalContainerReferences();
-	m2.updateAllOptionalContainerReferences();
 
 	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
 	if constexpr (mesh::HasVertexContainer<Mesh<A...>>) {

@@ -26,8 +26,6 @@
 
 #include <vclib/misc/types.h>
 
-#include "../components/vertical/vertical_component.h"
-
 namespace vcl::mesh {
 
 class ElementContainerTriggerer
@@ -46,19 +44,11 @@ concept HasEdgeContainer = requires(T o)
 };
 
 template <typename T>
-concept HasEdgeOptionalContainer =
-	HasEdgeContainer<T> && comp::HasVerticalComponent<typename T::EdgeType>;
-
-template <typename T>
 concept HasHalfEdgeContainer = requires(T o)
 {
 	typename T::HalfEdgeType;
 	o.halfEdge(uint());
 };
-
-template <typename T>
-concept HasHalfEdgeOptionalContainer =
-	HasHalfEdgeContainer<T> && comp::HasVerticalComponent<typename T::HalfEdgeType>;
 
 template <typename T>
 concept HasFaceContainer = requires(T o, const T& co, typename T::FaceType* f)
@@ -87,10 +77,6 @@ concept HasFaceContainer = requires(T o, const T& co, typename T::FaceType* f)
 };
 
 template <typename T>
-concept HasFaceOptionalContainer =
-	HasFaceContainer<T> && comp::HasVerticalComponent<typename T::FaceType>;
-
-template <typename T>
 concept HasVertexContainer = requires(T o, const T& co, typename T::VertexType* v)
 {
 	typename T::VertexType;
@@ -115,10 +101,6 @@ concept HasVertexContainer = requires(T o, const T& co, typename T::VertexType* 
 	{ o.vertices() } -> std::same_as<typename T::VertexRangeIterator>;
 	{ co.vertices() } -> std::same_as<typename T::ConstVertexRangeIterator>;
 };
-
-template <typename T>
-concept HasVertexOptionalContainer =
-	HasVertexContainer<T> && comp::HasVerticalComponent<typename T::VertexType>;
 
 } // namespace vcl::mesh
 

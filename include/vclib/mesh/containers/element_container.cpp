@@ -382,9 +382,6 @@ void ElementContainer<T>::clearElements()
 {
 	vec.clear();
 	en = 0;
-	if constexpr (comp::HasVerticalComponent<T>) {
-		optionalVec.clear();
-	}
 
 	vcVecTuple.clear();
 	ccVecMap.clear();
@@ -409,12 +406,6 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
 		setParentMeshPointers(parentMesh);
 	}
 
-	if constexpr (comp::HasVerticalComponent<T>) {
-		setContainerPointer(vec.back());
-		optionalVec.resize(vec.size());
-	}
-
-	updateContainerPointers(oldB, newB);
 	return vec.size() - 1;
 }
 
@@ -448,14 +439,6 @@ uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 		setParentMeshPointers(parentMesh);
 	}
 
-	if constexpr (comp::HasVerticalComponent<T>) {
-		optionalVec.resize(vec.size());
-		for (uint i = baseId; i < vec.size(); ++i) {
-			setContainerPointer(vec[i]);
-		}
-	}
-
-	updateContainerPointers(oldB, newB);
 	return baseId;
 }
 
@@ -473,11 +456,6 @@ void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
 	}
-
-	if constexpr (comp::HasVerticalComponent<T>) {
-		optionalVec.reserve(size);
-	}
-	updateContainerPointers(oldB, newB);
 }
 
 /**
@@ -505,44 +483,8 @@ std::vector<int> ElementContainer<T>::compactElements()
 
 		ccVecMap.compact(newIndices);
 		vcVecTuple.compact(newIndices);
-
-		if constexpr (comp::HasVerticalComponent<T>) {
-			optionalVec.compact(newIndices);
-		}
 	}
 	return newIndices;
-}
-
-/**
- * @brief Sets this cointainer pointer to the element. Necessary to give to the element access to
- * the vertical components. This operation needs to be done after element creation in the container
- * and after every reallocation of the elements.
- * @param element
- */
-template<typename T>
-void ElementContainer<T>::setContainerPointer(T &element)
-{
-	if constexpr (comp::HasVerticalComponent<T>) {
-		element.setContainerPointer(this);
-	}
-}
-
-/**
- * @brief After a reallocation, it is needed always to update the container pointers of all the
- * elements, because the assignment operator of the VerticalComponent (which stores the pointer
- * of the container) does not copy the container pointer for security reasons.
- */
-template<typename T>
-void ElementContainer<T>::updateContainerPointers(const T *oldBase, const T *newBase)
-{
-	if constexpr (comp::HasVerticalComponent<T>) {
-		if (oldBase != newBase) {
-			// all the faces must point to the right container - also the deleted ones
-			for (T& f : elements(false)) {
-				setContainerPointer(f);
-			}
-		}
-	}
 }
 
 template<typename T>

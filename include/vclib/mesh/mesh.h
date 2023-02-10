@@ -226,7 +226,6 @@ protected:
 		const std::vector<int>&         newIndices);
 
 	void updateAllParentMeshPointers();
-	void updateAllOptionalContainerReferences();
 
 private:
 	// hide init and isEnabled members
