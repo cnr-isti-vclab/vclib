@@ -40,6 +40,9 @@ namespace vcl::edge {
 template<typename EdgeType>
 using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
 
+template<typename EdgeType>
+using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, EdgeType, true>;
+
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;

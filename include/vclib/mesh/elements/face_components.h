@@ -50,6 +50,12 @@ using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1>;
 template<typename EdgeType>
 using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3>;
 
+template<typename EdgeType, typename FaceType>
+using OptionalAdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, FaceType, true>;
+
+template<typename EdgeType, typename FaceType>
+using OptionalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, FaceType, true>;
+
 /* Port AdjacentFaces class into face namespace */
 template<typename FaceType>
 using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1>;

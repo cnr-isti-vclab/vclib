@@ -25,7 +25,6 @@
 #define VCL_MESH_ELEMENTS_VERTEX_CONCEPT_H
 
 #include "vertex_components.h"
-#include "vertex_components_optional.h"
 
 namespace vcl {
 
@@ -96,8 +95,6 @@ template<typename T>
 concept HasTexCoord = comp::HasTexCoord<T>;
 template<typename T>
 concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
-template<typename T>
-concept HasVerticalComponent = comp::HasVerticalComponent<T>;
 
 } // namespace vcl::vert
 

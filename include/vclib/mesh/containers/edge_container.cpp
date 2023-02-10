@@ -321,7 +321,7 @@ template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled()
 	const requires edge::HasOptionalAdjacentEdges<T>
 {
-	return Base::optionalVec.isAdjacentEdgesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>();
 }
 
 /**
@@ -337,7 +337,7 @@ bool EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled()
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 {
-	Base::optionalVec.enableAdjacentEdges(Base::vec.size());
+	Base::template enableOptionalComponent<typename T::AdjacentEdgesComponent>();
 	static const int N = T::VERTEX_NUMBER;
 	if constexpr (N < 0) {
 		for (T& f : edges()) {
@@ -355,7 +355,7 @@ void EdgeContainer<T>::enablePerEdgeAdjacentEdges() requires edge::HasOptionalAd
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 {
-	Base::optionalVec.disableAdjacentEdges();
+	Base::template disableOptionalComponent<typename T::AdjacentEdgesComponent>();
 }
 
 /**

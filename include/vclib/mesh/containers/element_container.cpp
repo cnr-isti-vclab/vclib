@@ -23,6 +23,7 @@
 
 #include "element_container.h"
 
+#include "../components/concepts/adjacent_edges.h"
 #include "../components/concepts/adjacent_faces.h"
 #include "../components/concepts/adjacent_vertices.h"
 #include "../components/concepts/color.h"
@@ -611,7 +612,8 @@ void ElementContainer<T>::updateFaceReferences(const Face *oldBase, const Face *
 	// AdjacentFaces component
 	if constexpr (comp::HasAdjacentFaces<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentFaces<T> || isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
+		if (!comp::HasOptionalAdjacentFaces<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
 			for (T& e : elements()) {
 				e.updateFaceReferences(oldBase, newBase);
 			}
@@ -657,7 +659,8 @@ void ElementContainer<T>::updateEdgeReferences(const Edge *oldBase, const Edge *
 	// AdjacentEdges component
 	if constexpr (comp::HasAdjacentEdges<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentEdges<T> || optionalVec.isAdjacentEdgesEnabled()) {
+		if (!comp::HasOptionalAdjacentEdges<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>()) {
 			for (T& e : elements()) {
 				e.updateEdgeReferences(oldBase, newBase);
 			}
@@ -674,7 +677,8 @@ void ElementContainer<T>::updateEdgeReferencesAfterCompact(
 	// AdjacentEdges component
 	if constexpr (comp::HasAdjacentEdges<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentEdges<T> || optionalVec.isAdjacentEdgesEnabled()) {
+		if (!comp::HasOptionalAdjacentEdges<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>()) {
 			for (T& e : elements()) {
 				e.updateEdgeReferencesAfterCompact(base, newIndices);
 			}
@@ -752,8 +756,9 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 		if constexpr (comp::HasAdjacentEdges<CT>) {
 
 			// short circuited or: if optional, then I check if enabled; if not optional, then true
-			if (!comp::HasOptionalAdjacentEdges<CT> || c.optionalVec.isAdjacentEdgesEnabled()) {
-				optionalVec.enableAdjacentEdges(size);
+			if (!comp::HasOptionalAdjacentEdges<CT> ||
+				isOptionalComponentEnabled<typename CT::AdjacentEdgesComponent>()) {
+				enableOptionalComponent<typename T::AdjacentEdgesComponent>();
 			}
 		}
 	}
@@ -814,7 +819,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Scalar
 	if constexpr (comp::HasOptionalScalar<T>) {
 		if constexpr (comp::HasScalar<CT>) {
-			if (!comp::HasOptionalScalar<CT> || c.template isOptionalComponentEnabled<typename CT::ScalarComponent>()) {
+			if (!comp::HasOptionalScalar<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::ScalarComponent>()) {
 				enableOptionalComponent<typename T::ScalarComponent>();
 			}
 		}
@@ -822,7 +828,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// TexCoord
 	if constexpr (comp::HasOptionalTexCoord<T>) {
 		if constexpr (comp::HasTexCoord<CT>) {
-			if (!comp::HasOptionalTexCoord<CT> || c.template isOptionalComponentEnabled<typename CT::TexCoordComponent>()) {
+			if (!comp::HasOptionalTexCoord<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::TexCoordComponent>()) {
 				enableOptionalComponent<typename T::TexCoordComponent>();
 			}
 		}

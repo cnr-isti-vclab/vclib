@@ -337,7 +337,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceAdjacentEdgesEnabled()
 	const requires face::HasOptionalAdjacentEdges<T>
 {
-	return Base::optionalVec.isAdjacentEdgesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>();
 }
 
 /**
@@ -353,7 +353,7 @@ bool FaceContainer<T>::isPerFaceAdjacentEdgesEnabled()
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>
 {
-	Base::optionalVec.enableAdjacentEdges(Base::vec.size());
+	Base::template enableOptionalComponent<typename T::AdjacentEdgesComponent>();
 	static const int N = T::VERTEX_NUMBER;
 	if constexpr (N < 0) {
 		for (T& f : faces()) {
@@ -371,7 +371,7 @@ void FaceContainer<T>::enablePerFaceAdjacentEdges() requires face::HasOptionalAd
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>
 {
-	Base::optionalVec.disableAdjacentEdges();
+	Base::template disableOptionalComponent<typename T::AdjacentEdgesComponent>();
 }
 
 /**

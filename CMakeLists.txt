@@ -180,10 +180,8 @@ set(HEADERS
 	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/element_references.h
 	include/vclib/mesh/components/vertical/vertical_component.h
-	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.h
 	include/vclib/mesh/components/vertical/optional/optional_wedge_colors.h
 	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.h
-	include/vclib/mesh/components/vertical/vectors/adjacent_edges_vector.h
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.h
 	include/vclib/mesh/components/vertical/vectors/vertical_components_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_colors_vector.h
@@ -200,7 +198,6 @@ set(HEADERS
 	include/vclib/mesh/containers/vertical_components_vector_tuple.h
 	include/vclib/mesh/elements/edge.h
 	include/vclib/mesh/elements/edge_components.h
-	include/vclib/mesh/elements/edge_components_optional.h
 	include/vclib/mesh/elements/edge_concept.h
 	include/vclib/mesh/elements/element_concept.h
 	include/vclib/mesh/elements/face.h
@@ -212,7 +209,6 @@ set(HEADERS
 	include/vclib/mesh/elements/half_edge_concept.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
-	include/vclib/mesh/elements/vertex_components_optional.h
 	include/vclib/mesh/elements/vertex_concept.h
 	include/vclib/mesh/requirements/element_concepts.h
 	include/vclib/mesh/requirements/face_concepts.h
@@ -374,7 +370,6 @@ set(SOURCES
 	include/vclib/mesh/components/wedge_colors.cpp
 	include/vclib/mesh/components/wedge_tex_coords.cpp
 	include/vclib/mesh/components/internal/element_references.cpp
-	include/vclib/mesh/components/vertical/optional/optional_adjacent_edges.cpp
 	include/vclib/mesh/components/vertical/optional/optional_wedge_colors.cpp
 	include/vclib/mesh/components/vertical/optional/optional_wedge_tex_coords.cpp
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.cpp
