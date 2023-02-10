@@ -189,7 +189,6 @@ set(HEADERS
 	include/vclib/mesh/components/vertical/vectors/adjacent_faces_vector.h
 	include/vclib/mesh/components/vertical/vectors/adjacent_vertices_vector.h
 	include/vclib/mesh/components/vertical/vectors/generic_component_vector.h
-	include/vclib/mesh/components/vertical/vectors/tex_coord_vector.h
 	include/vclib/mesh/components/vertical/vectors/vertical_components_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_colors_vector.h
 	include/vclib/mesh/components/vertical/vectors/wedge_tex_coords_vector.h
