@@ -49,6 +49,9 @@ using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
+template<typename FaceType, typename VertexType>
+using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, VertexType, true>;
+
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>
 using AdjacentVertices = comp::AdjacentVertices<VertexType>;

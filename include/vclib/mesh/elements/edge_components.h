@@ -44,6 +44,9 @@ using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
+template<typename FaceType, typename EdgeType>
+using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, EdgeType, true>;
+
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags<>;
 

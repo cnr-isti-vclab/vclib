@@ -25,17 +25,12 @@
 #define VCL_MESH_ELEMENTS_EDGE_COMPONENTS_OPTIONAL_H
 
 #include "../components/vertical/optional/optional_adjacent_edges.h"
-#include "../components/vertical/optional/optional_adjacent_faces.h"
 
 namespace vcl::edge {
 
 /* Port OptionalAdjacentEdges class into edge namespace */
 template<typename EdgeType>
 using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, EdgeType>;
-
-/* Port OptionalAdjacentFaces class into edge namespace */
-template<typename FaceType, typename EdgeType>
-using OptionalAdjacentFaces = comp::OptionalAdjacentFaces<FaceType, -1, EdgeType>;
 
 /* Port VerticalComponent class into edge namespace */
 template<typename EdgeType>

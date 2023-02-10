@@ -384,7 +384,7 @@ void VertexContainer<T>::disablePerVertexAdjacentEdges() requires vert::HasOptio
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const requires vert::HasOptionalAdjacentFaces<T>
 {
-	return Base::optionalVec.isAdjacentFacesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -396,7 +396,7 @@ bool VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const requires vert::
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
-	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
+	Base::template enableOptionalComponent<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -408,7 +408,7 @@ void VertexContainer<T>::enablePerVertexAdjacentFaces() requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
-	Base::optionalVec.disableAdjacentFaces();
+	Base::template disableOptionalComponent<typename T::AdjacentFacesComponent>();
 }
 
 /**

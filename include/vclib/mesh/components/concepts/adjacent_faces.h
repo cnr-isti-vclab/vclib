@@ -88,19 +88,16 @@ template<typename T>
 concept HasAdjacentFacesComponent = requires(T o)
 {
 	requires HasAdjacentFaces<T>;
-	{ o.__compAdjFaces() } -> std::same_as<void>;
+	typename T::AdjacentFacesComponent;
 };
 
 /**
  * @brief HasOptionalAdjacentFaces concept is satisfied only if a class satisfies the
- * HasAdjacentFaces concept and has the additional member function '__optionalAdjFaces()', which is
- * the discriminator between the non-optional and optional component.
+ * HasAdjacentFacesComponent concept and the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalAdjacentFaces = HasAdjacentFaces<T> && requires(T o)
-{
-	{ o.__optionalAdjFaces() } -> std::same_as<void>;
-};
+concept HasOptionalAdjacentFaces =
+	HasAdjacentFacesComponent<T> && IsOptionalComponent<typename T::AdjacentFacesComponent>;
 
 /**
  * @brief HasRightNumberOfAdjacentFaces concept

@@ -23,6 +23,7 @@
 
 #include "element_container.h"
 
+#include "../components/concepts/adjacent_faces.h"
 #include "../components/concepts/color.h"
 #include "../components/concepts/face_half_edge_reference.h"
 #include "../components/concepts/half_edge_references.h"
@@ -228,9 +229,8 @@ void ElementContainer<T>::enableOptionalComponent()
 {
 	vcVecTuple.template enableComponent<C>();
 	if constexpr (comp::HasInitMemberFunction<C>) {
-		auto& vec = vcVecTuple.template vector<C>();
-		for (auto& c : vec) {
-			c.init();
+		for (auto& e : elements()) {
+			e.C::init();
 		}
 	}
 }
@@ -608,7 +608,7 @@ void ElementContainer<T>::updateFaceReferences(const Face *oldBase, const Face *
 	// AdjacentFaces component
 	if constexpr (comp::HasAdjacentFaces<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentFaces<T> || optionalVec.isAdjacentFacesEnabled()) {
+		if (!comp::HasOptionalAdjacentFaces<T> || isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
 			for (T& e : elements()) {
 				e.updateFaceReferences(oldBase, newBase);
 			}
@@ -632,7 +632,7 @@ void ElementContainer<T>::updateFaceReferencesAfterCompact(
 	// AdjacentFaces component
 	if constexpr (comp::HasAdjacentFaces<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentFaces<T> || optionalVec.isAdjacentFacesEnabled()) {
+		if (!comp::HasOptionalAdjacentFaces<T> || isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
 			for (T& e : elements()) {
 				e.updateFaceReferencesAfterCompact(base, newIndices);
 			}
@@ -757,8 +757,9 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Adjacent Faces
 	if constexpr (comp::HasOptionalAdjacentFaces<T>) {
 		if constexpr (comp::HasAdjacentFaces<CT>) {
-			if (!comp::HasOptionalAdjacentFaces<CT> || c.optionalVec.isAdjacentFacesEnabled()) {
-				optionalVec.enableAdjacentFaces(size);
+			if (!comp::HasOptionalAdjacentFaces<CT> ||
+				isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
+				enableOptionalComponent<typename T::AdjacentFacesComponent>();
 			}
 		}
 	}
