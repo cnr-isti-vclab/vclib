@@ -423,7 +423,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentVerticesEnabled()
 	const requires vert::HasOptionalAdjacentVertices<T>
 {
-	return Base::optionalVec.isAdjacentVerticesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>();
 }
 
 /**
@@ -436,7 +436,7 @@ template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentVertices()
 	requires vert::HasOptionalAdjacentVertices<T>
 {
-	Base::optionalVec.enableAdjacentVertices(vertexContainerSize());
+	Base::template enableOptionalComponent<typename T::AdjacentVerticesComponent>();
 }
 
 /**
@@ -449,7 +449,7 @@ template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentVertices()
 	requires vert::HasOptionalAdjacentVertices<T>
 {
-	Base::optionalVec.disableAdjacentVertices();
+	Base::template disableOptionalComponent<typename T::AdjacentVerticesComponent>();
 }
 
 /**

@@ -24,6 +24,7 @@
 #include "element_container.h"
 
 #include "../components/concepts/adjacent_faces.h"
+#include "../components/concepts/adjacent_vertices.h"
 #include "../components/concepts/color.h"
 #include "../components/concepts/face_half_edge_reference.h"
 #include "../components/concepts/half_edge_references.h"
@@ -555,7 +556,8 @@ void ElementContainer<T>::updateVertexReferences(const Vertex *oldBase, const Ve
 	// AdjacentVertexReferences component update
 	if constexpr(comp::HasAdjacentVertices<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentVertices<T> || optionalVec.isAdjacentVerticesEnabled()) {
+		if (!comp::HasOptionalAdjacentVertices<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>()) {
 			for (T& e : elements()) {
 				e.updateVertexReferences(oldBase, newBase);
 			}
@@ -586,7 +588,8 @@ void ElementContainer<T>::updateVertexReferencesAfterCompact(
 	// AdjacentVertexReferences component update
 	if constexpr (comp::HasAdjacentVertices<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentVertices<T> || optionalVec.isAdjacentVerticesEnabled()) {
+		if (!comp::HasOptionalAdjacentVertices<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>()) {
 			for (T& v : elements()) {
 				v.updateVertexReferencesAfterCompact(base, newIndices);
 			}
@@ -758,7 +761,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	if constexpr (comp::HasOptionalAdjacentFaces<T>) {
 		if constexpr (comp::HasAdjacentFaces<CT>) {
 			if (!comp::HasOptionalAdjacentFaces<CT> ||
-				isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
+				isOptionalComponentEnabled<typename CT::AdjacentFacesComponent>()) {
 				enableOptionalComponent<typename T::AdjacentFacesComponent>();
 			}
 		}
@@ -767,15 +770,16 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	if constexpr (comp::HasOptionalAdjacentVertices<T>) {
 		if constexpr (comp::HasAdjacentVertices<CT>) {
 			if (!comp::HasOptionalAdjacentVertices<CT> ||
-				c.optionalVec.isAdjacentVerticesEnabled()) {
-				optionalVec.enableAdjacentVertices(size);
+				isOptionalComponentEnabled<typename CT::AdjacentVerticesComponent>()) {
+				enableOptionalComponent<typename T::AdjacentVerticesComponent>();
 			}
 		}
 	}
 	// Color
 	if constexpr (comp::HasOptionalColor<T>) {
 		if constexpr (comp::HasColor<CT>) {
-			if (!comp::HasOptionalColor<CT> || c.template isOptionalComponentEnabled<typename CT::ColorComponent>()) {
+			if (!comp::HasOptionalColor<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::ColorComponent>()) {
 				enableOptionalComponent<typename T::ColorComponent>();
 			}
 		}
@@ -783,7 +787,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Mark
 	if constexpr (comp::HasOptionalMark<T>) {
 		if constexpr (comp::HasMark<CT>) {
-			if (!comp::HasOptionalMark<CT> || c.template isOptionalComponentEnabled<typename CT::MarkComponent>()) {
+			if (!comp::HasOptionalMark<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::MarkComponent>()) {
 				enableOptionalComponent<typename T::MarkComponent>();
 			}
 		}
@@ -791,7 +796,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// Normal
 	if constexpr (comp::HasOptionalNormal<T>) {
 		if constexpr (comp::HasNormal<CT>) {
-			if (!comp::HasOptionalNormal<CT> || c.template isOptionalComponentEnabled<typename CT::NormalComponent>()) {
+			if (!comp::HasOptionalNormal<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::NormalComponent>()) {
 				enableOptionalComponent<typename T::NormalComponent>();
 			}
 		}

@@ -87,19 +87,16 @@ template<typename T>
 concept HasAdjacentVerticesComponent = requires(T o)
 {
 	requires HasAdjacentVertices<T>;
-	{ o.__compAdjVertices() } -> std::same_as<void>;
+	typename T::AdjacentVerticesComponent;
 };
 
 /**
  * @brief HasOptionalAdjacentVertices concept is satisfied only if a class satisfies the
- * HasAdjacentVertices concept and has the additional member function '__optionalAdjVertices()',
- * which is the discriminator between the non-optional and optional component.
+ * HasAdjacentVertices concept and has the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalAdjacentVertices = HasAdjacentVertices<T> && requires(T o)
-{
-	{ o.__optionalAdjVertices() } -> std::same_as<void>;
-};
+concept HasOptionalAdjacentVertices =
+	HasAdjacentVerticesComponent<T> && IsOptionalComponent<typename T::AdjacentVerticesComponent>;
 
 /* Detector function to check if a class has AdjacentVertices enabled */
 

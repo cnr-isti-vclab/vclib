@@ -25,17 +25,12 @@
 #define VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_OPTIONAL_H
 
 #include "../components/vertical/optional/optional_adjacent_edges.h"
-#include "../components/vertical/optional/optional_adjacent_vertices.h"
 
 namespace vcl::vert {
 
 /* Port OptionalAdjacentEdges class into vert namespace */
 template<typename EdgeType, typename VertexType>
 using OptionalAdjacentEdges = comp::OptionalAdjacentEdges<EdgeType, -1, VertexType>;
-
-/* Port OptionalAdjacentVertices class into vert namespace */
-template<typename VertexType>
-using OptionalAdjacentVertices = comp::OptionalAdjacentVertices<VertexType, VertexType>;
 
 /* Port VerticalComponent class into vert namespace */
 template<typename VertexType>
