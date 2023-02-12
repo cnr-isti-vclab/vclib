@@ -62,6 +62,9 @@ template<typename ElementType = void, bool optional = false>
 class BitFlags
 {
 	using ThisType = BitFlags<ElementType, optional>;
+
+	template<typename, bool>
+	friend class BitFlags;
 public:
 	using DataValueType = int; // data that the component stores internally (or vertically)
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
@@ -113,7 +116,7 @@ protected:
 
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
 	int& flags();
-	const int& flags() const;
+	int flags() const;
 
 	static const uint FIRST_USER_BIT = 3;
 

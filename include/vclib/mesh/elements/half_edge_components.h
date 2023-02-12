@@ -39,18 +39,21 @@ namespace vcl::hedge {
 /* Port BitFlags class into hedge namespace */
 using BitFlags = comp::BitFlags<>;
 
+template<typename HEdgeType>
+using VerticalBitFlags = comp::BitFlags<HEdgeType>;
+
 /* Port Color class into hedge namespace */
 using Color = comp::Color<>;
 
-template<typename VertexType>
-using VerticalColor = comp::Color<VertexType>; 
+template<typename HEdgeType>
+using VerticalColor = comp::Color<HEdgeType>; 
 
-template<typename EdgeType>
-using OptionalColor = comp::Color<EdgeType, true>;
+template<typename HEdgeType>
+using OptionalColor = comp::Color<HEdgeType, true>;
 
 /* Port CustomComponents class into hedge namespace */
-template<typename EdgeType>
-using CustomComponents = comp::CustomComponents<EdgeType>;
+template<typename HEdgeType>
+using CustomComponents = comp::CustomComponents<HEdgeType>;
 
 /* Port HalfEdgeReferences class into hedge namespace */
 template<typename HalfEdgeType, typename VertexType, typename FaceType>
@@ -59,8 +62,11 @@ using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, Fa
 /* Port Mark class into hedge namespace */
 using Mark = comp::Mark<>;
 
-template<typename EdgeType>
-using OptionalMark = comp::Mark<EdgeType, true>;
+template<typename HEdgeType>
+using VerticalMark = comp::Mark<HEdgeType>;
+
+template<typename HEdgeType>
+using OptionalMark = comp::Mark<HEdgeType, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
@@ -73,23 +79,23 @@ using Scalar = comp::Scalar<ScalarType>;
 using Scalarf = comp::Scalarf<>;
 using Scalard = comp::Scalard<>;
 
-template<typename ScalarType, typename FaceType>
-using VerticalScalar = comp::Scalar<ScalarType, FaceType>;
+template<typename ScalarType, typename HEdgeType>
+using VerticalScalar = comp::Scalar<ScalarType, HEdgeType>;
 
-template<typename FaceType>
-using VerticalScalarf = comp::Scalar<float, FaceType>;
+template<typename HEdgeType>
+using VerticalScalarf = comp::Scalar<float, HEdgeType>;
 
-template<typename FaceType>
-using VerticalScalard = comp::Scalar<double, FaceType>;
+template<typename HEdgeType>
+using VerticalScalard = comp::Scalar<double, HEdgeType>;
 
-template<typename ScalarType, typename EdgeType>
-using OptionalScalar = comp::Scalar<ScalarType, EdgeType, true>;
+template<typename ScalarType, typename HEdgeType>
+using OptionalScalar = comp::Scalar<ScalarType, HEdgeType, true>;
 
-template<typename EdgeType>
-using OptionalScalarf = comp::Scalar<float, EdgeType, true>;
+template<typename HEdgeType>
+using OptionalScalarf = comp::Scalar<float, HEdgeType, true>;
 
-template<typename EdgeType>
-using OptionalScalard = comp::Scalar<double, EdgeType, true>;
+template<typename HEdgeType>
+using OptionalScalard = comp::Scalar<double, HEdgeType, true>;
 
 /* Port TexCoord class into hedge namespace */
 template<typename ScalarType>
@@ -98,14 +104,23 @@ using TexCoord = comp::TexCoord<ScalarType>;
 using TexCoordf = comp::TexCoordf<>;
 using TexCoordd = comp::TexCoordd<>;
 
-template<typename ScalarType, typename VertexType>
-using OptionalTexCoord = comp::TexCoord<ScalarType, VertexType, true>;
+template<typename ScalarType, typename HEdgeType>
+using VerticalTexCoord = comp::TexCoord<ScalarType, HEdgeType>;
 
-template<typename VertexType>
-using OptionalTexCoordf = comp::TexCoord<float, VertexType, true>;
+template<typename HEdgeType>
+using VerticalTexCoordf = comp::TexCoord<float, HEdgeType>;
 
-template<typename VertexType>
-using OptionalTexCoordd = comp::TexCoord<double, VertexType, true>;
+template<typename HEdgeType>
+using VerticalTexCoordd = comp::TexCoord<double, HEdgeType>;
+
+template<typename ScalarType, typename HEdgeType>
+using OptionalTexCoord = comp::TexCoord<ScalarType, HEdgeType, true>;
+
+template<typename HEdgeType>
+using OptionalTexCoordf = comp::TexCoord<float, HEdgeType, true>;
+
+template<typename HEdgeType>
+using OptionalTexCoordd = comp::TexCoord<double, HEdgeType, true>;
 
 } // namespace vcl::hedge
 

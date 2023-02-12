@@ -41,11 +41,17 @@ template<typename EdgeType>
 using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
 
 template<typename EdgeType>
+using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, EdgeType>;
+
+template<typename EdgeType>
 using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, EdgeType, true>;
 
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
+
+template<typename FaceType, typename EdgeType>
+using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, EdgeType>;
 
 template<typename FaceType, typename EdgeType>
 using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, EdgeType, true>;
@@ -68,6 +74,9 @@ using CustomComponents = comp::CustomComponents<EdgeType>;
 
 /* Port Mark class into edge namespace */
 using Mark = comp::Mark<>;
+
+template<typename EdgeType>
+using VerticalMark = comp::Mark<EdgeType>;
 
 template<typename EdgeType>
 using OptionalMark = comp::Mark<EdgeType, true>;

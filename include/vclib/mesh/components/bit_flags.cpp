@@ -323,7 +323,7 @@ int& BitFlags<El, o>::flags()
 }
 
 template<typename El, bool o>
-const int& BitFlags<El, o>::flags() const
+int BitFlags<El, o>::flags() const
 {
 	return data.template get<El>(this);
 }

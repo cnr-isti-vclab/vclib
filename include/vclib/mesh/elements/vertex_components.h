@@ -46,11 +46,17 @@ template<typename Edge>
 using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
 
 template<typename EdgeType, typename VertexType>
+using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, VertexType>;
+
+template<typename EdgeType, typename VertexType>
 using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, VertexType, true>;
 
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
+
+template<typename FaceType, typename VertexType>
+using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, VertexType>;
 
 template<typename FaceType, typename VertexType>
 using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, VertexType, true>;
@@ -60,10 +66,16 @@ template<typename VertexType>
 using AdjacentVertices = comp::AdjacentVertices<VertexType>;
 
 template<typename VertexType>
+using VerticalAdjacentVertices = comp::AdjacentVertices<VertexType, VertexType>;
+
+template<typename VertexType>
 using OptionalAdjacentVertices = comp::AdjacentVertices<VertexType, VertexType, true>;
 
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags<>;
+
+template<typename VertexType>
+using VerticalBitFlags = comp::BitFlags<VertexType>;
 
 /* Port Color class into vert namespace */
 using Color = comp::Color<>;
@@ -106,6 +118,9 @@ using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge>;
 
 /* Port Mark class into vert namespace */
 using Mark = comp::Mark<>;
+
+template<typename VertexType>
+using VerticalMark = comp::Mark<VertexType>;
 
 template<typename VertexType>
 using OptionalMark = comp::Mark<VertexType, true>;
@@ -156,6 +171,14 @@ using PrincipalCurvaturef = comp::PrincipalCurvaturef<>;
 using PrincipalCurvatured = comp::PrincipalCurvatured<>;
 
 template<typename ScalarType, typename VertexType>
+using VerticalPrincipalCurvature = comp::PrincipalCurvature<ScalarType, VertexType>;
+
+template<typename VertexType>
+using VerticalPrincipalCurvaturef = comp::PrincipalCurvaturef<VertexType>;
+template<typename VertexType>
+using VerticalPrincipalCurvatured = comp::PrincipalCurvatured<VertexType>;
+
+template<typename ScalarType, typename VertexType>
 using OptionalPrincipalCurvature = comp::PrincipalCurvature<ScalarType, VertexType, true>;
 
 template<typename VertexType>
@@ -194,6 +217,15 @@ using TexCoord = comp::TexCoord<ScalarType>;
 
 using TexCoordf = comp::TexCoordf<>;
 using TexCoordd = comp::TexCoordd<>;
+
+template<typename ScalarType, typename VertexType>
+using VerticalTexCoord = comp::TexCoord<ScalarType, VertexType>;
+
+template<typename VertexType>
+using VerticalTexCoordf = comp::TexCoord<float, VertexType>;
+
+template<typename VertexType>
+using VerticalTexCoordd = comp::TexCoord<double, VertexType>;
 
 template<typename ScalarType, typename VertexType>
 using OptionalTexCoord = comp::TexCoord<ScalarType, VertexType, true>;
