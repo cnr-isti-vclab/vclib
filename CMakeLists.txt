@@ -178,6 +178,7 @@ set(HEADERS
 	include/vclib/mesh/components/concepts/wedge_colors.h
 	include/vclib/mesh/components/concepts/wedge_tex_coords.h
 	include/vclib/mesh/components/internal/component_data.h
+	include/vclib/mesh/components/internal/custom_components_data.h
 	include/vclib/mesh/components/internal/element_references.h
 	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/containers_concepts.h
