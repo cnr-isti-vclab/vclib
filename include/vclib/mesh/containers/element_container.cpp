@@ -691,8 +691,6 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// unfortunately, this function cannot be shortened in a smart way
 	using CT = typename Container::ElementType;
 
-	const uint size = elementContainerSize();
-
 	// Adjacent Edges
 	// if this Element of this container has optional adjacent edges
 	if constexpr (comp::HasOptionalAdjacentEdges<T>) {
@@ -701,7 +699,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 
 			// short circuited or: if optional, then I check if enabled; if not optional, then true
 			if (!comp::HasOptionalAdjacentEdges<CT> ||
-				isOptionalComponentEnabled<typename CT::AdjacentEdgesComponent>()) {
+				c.template isOptionalComponentEnabled<typename CT::AdjacentEdgesComponent>()) {
 				enableOptionalComponent<typename T::AdjacentEdgesComponent>();
 			}
 		}
@@ -710,7 +708,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	if constexpr (comp::HasOptionalAdjacentFaces<T>) {
 		if constexpr (comp::HasAdjacentFaces<CT>) {
 			if (!comp::HasOptionalAdjacentFaces<CT> ||
-				isOptionalComponentEnabled<typename CT::AdjacentFacesComponent>()) {
+				c.template isOptionalComponentEnabled<typename CT::AdjacentFacesComponent>()) {
 				enableOptionalComponent<typename T::AdjacentFacesComponent>();
 			}
 		}
@@ -719,7 +717,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	if constexpr (comp::HasOptionalAdjacentVertices<T>) {
 		if constexpr (comp::HasAdjacentVertices<CT>) {
 			if (!comp::HasOptionalAdjacentVertices<CT> ||
-				isOptionalComponentEnabled<typename CT::AdjacentVerticesComponent>()) {
+				c.template isOptionalComponentEnabled<typename CT::AdjacentVerticesComponent>()) {
 				enableOptionalComponent<typename T::AdjacentVerticesComponent>();
 			}
 		}

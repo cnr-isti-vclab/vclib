@@ -66,9 +66,9 @@ namespace vcl::comp {
  * @endcode
  */
 template<typename ElementType = void, bool optional = false>
-class PolygonBitFlags : public BitFlags<ElementType, optional>
+class PolygonBitFlags : public BitFlagsT<PolygonBitFlags<ElementType, optional>, ElementType, optional>
 {
-	using Base = BitFlags<ElementType, optional>;
+	using Base = BitFlagsT<PolygonBitFlags<ElementType, optional>, ElementType, optional>;
 	using ThisType = PolygonBitFlags<ElementType, optional>;
 public:
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
