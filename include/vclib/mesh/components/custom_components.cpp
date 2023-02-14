@@ -31,21 +31,21 @@ bool CustomComponents<El>::hasCustomComponent(const std::string& attrName) const
 	return data.componentExists(attrName, static_cast<const El*>(this));
 }
 
-template<typename El>
-template<typename CompType>
-bool CustomComponents<El>::isCustomComponentOfType(const std::string& compName) const
-	requires(!IS_VERTICAL)
-{
-	return data.template isCustomComponentOfType<CompType>(compName);
-}
+//template<typename El>
+//template<typename CompType>
+//bool CustomComponents<El>::isCustomComponentOfType(const std::string& compName) const
+//	requires(!IS_VERTICAL)
+//{
+//	return data.template isCustomComponentOfType<CompType>(compName);
+//}
 
-template<typename El>
-template<typename CompType>
-std::vector<std::string> CustomComponents<El>::customComponentNamesOfType() const
-	requires(!IS_VERTICAL)
-{
-	return data.template customComponentNamesOfType<CompType>();
-}
+//template<typename El>
+//template<typename CompType>
+//std::vector<std::string> CustomComponents<El>::customComponentNamesOfType() const
+//	requires(!IS_VERTICAL)
+//{
+//	return data.template customComponentNamesOfType<CompType>();
+//}
 
 template<typename El>
 template<typename CompType>
@@ -67,12 +67,12 @@ void CustomComponents<El>::importFrom(const Element&)
 {
 }
 
-template<typename El>
-template<typename CompType>
-void CustomComponents<El>::addCustomComponent(const std::string& compName, const CompType& value) requires (!IS_VERTICAL)
-{
-	return data.template addCustomComponent<CompType>(compName, value);
-}
+//template<typename El>
+//template<typename CompType>
+//void CustomComponents<El>::addCustomComponent(const std::string& compName, const CompType& value) requires (!IS_VERTICAL)
+//{
+//	return data.template addCustomComponent<CompType>(compName, value);
+//}
 
 //template<typename El>
 //void CustomComponents<El>::deleteCustomComponent(const std::string& compName)

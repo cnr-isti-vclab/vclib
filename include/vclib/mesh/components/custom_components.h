@@ -45,11 +45,19 @@ class CustomComponents
 public:
 	bool hasCustomComponent(const std::string& attrName) const;
 
+	// msvc and clang bug - move in cpp when solved
 	template<typename CompType>
-	bool isCustomComponentOfType(const std::string& compName) const requires (!IS_VERTICAL);
+	bool isCustomComponentOfType(const std::string& compName) const requires (!IS_VERTICAL)
+	{
+		return data.template isCustomComponentOfType<CompType>(compName);
+	}
 
+	// msvc and clang bug - move in cpp when solved
 	template<typename CompType>
-	std::vector<std::string> customComponentNamesOfType() const requires (!IS_VERTICAL);
+	std::vector<std::string> customComponentNamesOfType() const requires (!IS_VERTICAL)
+	{
+		return data.template customComponentNamesOfType<CompType>();
+	}
 
 	template<typename CompType>
 	const CompType& customComponent(const std::string& attrName) const;
@@ -57,9 +65,13 @@ public:
 	template<typename CompType>
 	CompType& customComponent(const std::string& attrName);
 
+	// msvc and clang bug - move in cpp when solved
 	template<typename CompType>
 	void addCustomComponent(const std::string& compName, const CompType& value = CompType())
-		requires(!IS_VERTICAL);
+		requires(!IS_VERTICAL)
+	{
+		return data.template addCustomComponent<CompType>(compName, value);
+	}
 
 	// msvc and clang bug - move in cpp when solved
 	void deleteCustomComponent(const std::string& compName) requires (!IS_VERTICAL)
