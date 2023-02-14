@@ -27,6 +27,7 @@
 #include <vclib/io/save_ply.h>
 #include <vclib/tri_mesh.h>
 #include <vclib/algorithms/smooth.h>
+#include <vclib/algorithms/stat.h>
 
 int main()
 {
@@ -79,6 +80,10 @@ int main()
 	avgDist /= m.vertexNumber();
 
 	std::cerr << "Avg distance after taubin smoothing: " << avgDist << "\n";
+
+	m.addCustomComponent<vcl::Point3d>("barycenter", vcl::barycenter(m));
+
+	std::cerr << "Mesh barycenter: " << m.customComponent<vcl::Point3d>("barycenter") << "\n";
 
 	return 0;
 }

@@ -32,8 +32,6 @@ namespace vcl::comp::internal {
 template<typename Data, bool vertical>
 struct ComponentData
 {
-	Data data;
-
 	template<typename, typename Comp>
 	Data& get(Comp*)
 	{
@@ -51,6 +49,9 @@ struct ComponentData
 	{
 		return true;
 	}
+
+private:
+	Data data;
 };
 
 // do not store data if vertical; it will be fetched by vertical vectors in the element container

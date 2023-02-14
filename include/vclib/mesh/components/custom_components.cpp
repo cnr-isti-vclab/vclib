@@ -28,56 +28,57 @@ namespace vcl::comp {
 template<typename El>
 bool CustomComponents<El>::hasCustomComponent(const std::string& attrName) const
 {
-	return ccVec().componentExists(attrName);
+	return data.componentExists(attrName, static_cast<const El*>(this));
+}
+
+template<typename El>
+template<typename CompType>
+bool CustomComponents<El>::isCustomComponentOfType(const std::string& compName) const
+	requires(!IS_VERTICAL)
+{
+	return data.template isCustomComponentOfType<CompType>(compName);
+}
+
+template<typename El>
+template<typename CompType>
+std::vector<std::string> CustomComponents<El>::customComponentNamesOfType() const
+	requires(!IS_VERTICAL)
+{
+	return data.template customComponentNamesOfType<CompType>();
 }
 
 template<typename El>
 template<typename CompType>
 const CompType& CustomComponents<El>::customComponent(const std::string& attrName) const
 {
-	return std::any_cast<const CompType&>(
-		ccVec().template componentVector<CompType>(attrName)[thisId()]);
+	return data.template get<CompType>(attrName, static_cast<const El*>(this));
 }
 
 template<typename El>
 template<typename CompType>
 CompType& CustomComponents<El>::customComponent(const std::string& attrName)
 {
-	return std::any_cast<CompType&>(
-		ccVec().template componentVector<CompType>(attrName)[thisId()]);
+	return data.template get<CompType>(attrName, static_cast<El*>(this));
 }
 
 template<typename El>
 template<typename Element>
 void CustomComponents<El>::importFrom(const Element&)
 {
-	// todo
 }
 
 template<typename El>
-uint CustomComponents<El>::thisId() const
+template<typename CompType>
+void CustomComponents<El>::addCustomComponent(const std::string& compName, const CompType& value) requires (!IS_VERTICAL)
 {
-	const El* elem = static_cast<const El*>(this);
-	assert(elem->parentMesh());
-	return elem->index();
+	return data.template addCustomComponent<CompType>(compName, value);
 }
 
-template<typename El>
-auto& CustomComponents<El>::ccVec()
-{
-	El* elem = static_cast<El*>(this);
-	assert(elem->parentMesh());
-	// get the tuple of vector of vertical components
-	return elem->parentMesh()->template customComponents<El>();
-}
-
-template<typename El>
-const auto& CustomComponents<El>::ccVec() const
-{
-	const El* elem = static_cast<const El*>(this);
-	assert(elem->parentMesh());
-	// get the tuple of vector of vertical components
-	return elem->parentMesh()->template customComponents<El>();
-}
+//template<typename El>
+//void CustomComponents<El>::deleteCustomComponent(const std::string& compName)
+//	requires(!IS_VERTICAL)
+//{
+//	return data.deleteCustomComponent(compName);
+//}
 
 } // namespace vcl::comp

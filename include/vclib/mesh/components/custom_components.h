@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "concepts/custom_components.h"
+#include "internal/custom_components_data.h"
 
 namespace vcl::comp {
 
@@ -37,11 +38,18 @@ namespace vcl::comp {
  * to an Element (e.g. Vertex, Face).
  *
  */
-template<typename ElementType>
+template<typename ElementType = void>
 class CustomComponents
 {
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 public:
 	bool hasCustomComponent(const std::string& attrName) const;
+
+	template<typename CompType>
+	bool isCustomComponentOfType(const std::string& compName) const requires (!IS_VERTICAL);
+
+	template<typename CompType>
+	std::vector<std::string> customComponentNamesOfType() const requires (!IS_VERTICAL);
 
 	template<typename CompType>
 	const CompType& customComponent(const std::string& attrName) const;
@@ -49,15 +57,22 @@ public:
 	template<typename CompType>
 	CompType& customComponent(const std::string& attrName);
 
+	template<typename CompType>
+	void addCustomComponent(const std::string& compName, const CompType& value = CompType())
+		requires(!IS_VERTICAL);
+
+	// msvc and clang bug - move in cpp when solved
+	void deleteCustomComponent(const std::string& compName) requires (!IS_VERTICAL)
+	{
+		return data.deleteCustomComponent(compName);
+	}
+
 protected:
 	template <typename Element>
 	void importFrom(const Element& e);
 
 private:
-	uint thisId() const;
-
-	auto& ccVec();
-	const auto& ccVec() const;
+	internal::CustomComponentsData<ElementType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

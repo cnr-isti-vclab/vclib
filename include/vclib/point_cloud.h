@@ -66,7 +66,8 @@ class PointCloudT :
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
-			mesh::TransformMatrix<ScalarType>>
+			mesh::TransformMatrix<ScalarType>,
+			mesh::CustomComponents>
 {
 };
 

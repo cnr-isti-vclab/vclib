@@ -26,6 +26,7 @@
 
 #include "components/bounding_box.h"
 #include "components/color.h"
+#include "components/custom_components.h"
 #include "components/mark.h"
 #include "components/name.h"
 #include "components/texture_paths.h"
@@ -45,6 +46,9 @@ using BoundingBox3d = comp::BoundingBox3d<>;
 
 /** Port Color class into mesh namespace **/
 using Color = comp::Color<>;
+
+/* Port CustomComponents class into mesh namespace */
+using CustomComponents = comp::CustomComponents<>;
 
 /** Port Mark class into mesh namespace **/
 using Mark = comp::Mark<>;

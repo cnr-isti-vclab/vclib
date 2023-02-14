@@ -25,23 +25,135 @@
 #define VCL_MESH_COMPONENTS_INTERNAL_CUSTOM_COMPONENTS_DATA_H
 
 #include <any>
+#include <string>
 #include <unordered_map>
+#include <vector>
 #include <typeindex>
 
 namespace vcl::comp::internal {
 
 //store the data if horizontal
 
-template<bool vertical>
+template<typename ElementType, bool vertical>
 struct CustomComponentsData
 {
+	bool componentExists(const std::string& compName, const ElementType*) const
+	{
+		return (map.find(compName) != map.end());
+	}
+
+	template<typename CompType>
+	bool isCustomComponentOfType(const std::string& compName)
+	{
+		std::type_index t(typeid(CompType));
+		return t == componentType.at(compName);
+	}
+
+	template<typename CompType>
+	std::vector<std::string> customComponentNamesOfType() const
+	{
+		std::vector<std::string> names;
+		std::type_index t(typeid(CompType));
+		for (const auto& p : componentType) {
+			if (p.second == t)
+				names.push_back(p.first);
+		}
+		return names;
+	}
+
+	template<typename CompType>
+	const CompType& get(const std::string& compName, const ElementType*) const
+	{
+		return std::any_cast<const CompType&>(map.at(compName));
+	}
+
+	template<typename CompType>
+	CompType& get(const std::string& compName, ElementType*)
+	{
+		return std::any_cast<CompType&>(map.at(compName));
+	}
+
+	template<typename CompType>
+	void addCustomComponent(const std::string& compName, const CompType c = CompType())
+	{
+		map[compName] = c;
+		componentType.insert({compName, typeid(CompType)});
+	}
+
+	void deleteCustomComponent(const std::string& compName)
+	{
+		map.erase(compName);
+		componentType.erase(compName);
+	}
+
+private:
 	std::unordered_map<std::string, std::any> map;
 	std::unordered_map<std::string, std::type_index> componentType;
 };
 
-template<>
-struct CustomComponentsData<true>
+template<typename ElementType>
+struct CustomComponentsData<ElementType, true>
 {
+	bool componentExists(const std::string& compName, const ElementType* elem) const
+	{
+		return ccVec(elem).componentExists(compName);
+	}
+
+//	template<typename>
+//	bool isCustomComponentOfType(const std::string&)
+//	{
+//		return false;
+//	}
+
+//	template<typename>
+//	std::vector<std::string> customComponentNamesOfType() const
+//	{
+//		return std::vector<std::string>();
+//	}
+
+	template<typename CompType>
+	const CompType& get(const std::string& compName, const ElementType* elem) const
+	{
+		return std::any_cast<const CompType&>(
+			ccVec(elem).template componentVector<CompType>(compName)[thisId(elem)]);
+	}
+
+	template<typename CompType>
+	CompType& get(const std::string& compName, ElementType* elem)
+	{
+		return std::any_cast<CompType&>(
+			ccVec(elem).template componentVector<CompType>(compName)[thisId(elem)]);
+	}
+
+//	template<typename CompType>
+//	void addCustomComponent(const std::string&, const CompType = CompType())
+//	{
+//	}
+
+//	void deleteCustomComponent(const std::string&)
+//	{
+//	}
+
+private:
+	uint thisId(const ElementType* elem) const
+	{
+		assert(elem->parentMesh());
+		return elem->index();
+	}
+
+	auto& ccVec(ElementType* elem)
+	{
+		assert(elem->parentMesh());
+		// get the tuple of vector of vertical components
+		return elem->parentMesh()->template customComponents<ElementType>();
+	}
+
+	const auto& ccVec(const ElementType* elem) const
+	{
+		assert(elem->parentMesh());
+		// get the tuple of vector of vertical components
+		return elem->parentMesh()->template customComponents<ElementType>();
+	}
 };
 
 } // namespace vcl::comp::internal

@@ -32,15 +32,12 @@ namespace vcl::comp::internal {
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
-template<typename Elem, int N, typename ElementType>
-ElementReferences<Elem, N, ElementType>::ElementReferences()
+template<typename Elem, int N, typename El>
+ElementReferences<Elem, N, El>::ElementReferences()
 {
 	if constexpr (!IS_VERTICAL) {
 		if constexpr (N >= 0) {
-			data.data.fill(nullptr);
-		}
-		else {
-			data.data.clear();
+			data.template get<El, void*>(nullptr).fill(nullptr);
 		}
 	}
 }

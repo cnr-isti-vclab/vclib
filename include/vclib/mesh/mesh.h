@@ -47,8 +47,8 @@ namespace vcl {
 template<typename... Args> requires HasVertices<Args...>
 class Mesh : public Args...
 {
-	template<typename El>
-	friend class comp::CustomComponents;
+	template<typename El, bool b>
+	friend struct comp::internal::CustomComponentsData;
 
 	template<typename El, bool b>
 	friend struct comp::internal::ComponentData;
