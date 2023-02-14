@@ -39,8 +39,8 @@ class ElementContainer;
 
 namespace vcl {
 
-template<typename... Args>
-class Edge : public Args...
+template<typename MeshType, typename... Args>
+class Edge : public edge::ParentMeshPointer<MeshType>, public Args...
 {
 	template<EdgeConcept>
 	friend class mesh::EdgeContainer;
@@ -49,10 +49,31 @@ class Edge : public Args...
 	friend class mesh::ElementContainer;
 
 public:
+	using ParentMeshType = MeshType;
+	using Components = TypeWrapper<Args...>;
+
 	Edge();
+
+	uint index() const;
 
 	template<typename Element>
 	void importFrom(const Element& e);
+
+private:
+	// hide init and isEnabled members
+	void init() {}
+	bool isEnabled() { return true; }
+
+	// init to call after set parent mesh
+	void initVerticalComponents();
+
+	template<typename Comp>
+	void construct();
+};
+
+template<typename MeshType, typename... Args>
+class Edge<MeshType, TypeWrapper<Args...>> : public Edge<MeshType, Args...>
+{
 };
 
 } // namespace vcl

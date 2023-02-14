@@ -32,7 +32,7 @@ class MyVertex :
 		public vcl::Vertex<
 			vcl::vert::BitFlags,
 			vcl::vert::Coordinate3d,
-			vcl::vert::OptionalNormal3f<MyVertex>,
+			vcl::vert::Normal3f,
 			vcl::vert::Color>
 {
 };

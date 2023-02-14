@@ -26,19 +26,20 @@
 
 #include <vector>
 
+#include <vclib/mesh/components/concepts/custom_components.h>
 #include <vclib/iterators/mesh/element_container_iterator.h>
 #include <vclib/iterators/mesh/element_container_range_iterator.h>
-#include "../components/vertical/vertical_component.h"
-#include "../components/vertical/vectors/vertical_components_vector.h"
+
 #include "containers_concepts.h"
+#include "custom_components_vector_map.h"
+#include "vertical_components_vector_tuple.h"
+
 
 namespace vcl::mesh {
 
 template <typename T>
 class ElementContainer : public ElementContainerTriggerer
 {
-	friend class comp::VerticalComponent<T>;
-
 	template <typename U>
 	friend class ElementContainer;
 
@@ -63,10 +64,22 @@ public:
 	uint deletedElementNumber() const;
 
 	void deleteElement(uint i);
-	void deleteElement(const T *e);
+	void deleteElement(const T* e);
 
 	uint elementIndexIfCompact(uint i) const;
 	std::vector<int> elementCompactIndices() const;
+
+	template<typename MeshType>
+	void setParentMeshPointers(MeshType* parentMesh);
+
+	template<typename C>
+	bool isOptionalComponentEnabled() const;
+
+	template<typename C>
+	void enableOptionalComponent();
+
+	template<typename C>
+	void disableOptionalComponent();
 
 	ElementIterator           elementBegin(bool jumpDeleted = true);
 	ElementIterator           elementEnd();
@@ -79,15 +92,16 @@ protected:
 	uint index(const T *e) const;
 	void clearElements();
 
-	uint addElement();
-	uint addElements(uint size);
-	void reserveElements(uint size);
+	template<typename MeshType>
+	uint addElement(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addElements(uint size, MeshType* parentMesh);
+
+	template<typename MeshType>
+	void reserveElements(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactElements();
-
-	void setContainerPointer(T& element);
-
-	void updateContainerPointers(const T* oldBase, const T* newBase);
 
 	template<typename Vertex>
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
@@ -117,8 +131,8 @@ protected:
 	template<typename Container>
 	void enableOptionalComponentsOf(const Container& c);
 
-	template<typename Container>
-	void importFrom(const Container& c);
+	template<typename Container, typename ParentMeshType>
+	void importFrom(const Container& c, ParentMeshType* parent);
 
 	template<typename Container, typename MyBase, typename CBase>
 	void importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
@@ -131,14 +145,32 @@ protected:
 
 	template<typename Container, typename MyBase, typename CBase>
 	void importHalfEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
-
+	
+	// filter components of elements, taking only vertical ones
+	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
+	
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.
 	 */
 	uint en = 0;
+
+	/**
+	 * @brief vec: the vector of elements: will contain the set of elements, each one of these will
+	 * contain the data of the horizontal components and a pointer to the parent mesh
+	 */
 	std::vector<T> vec;
-	internal::VerticalComponentsVector<T> optionalVec;
+
+	/**
+	 * @brief vcVecTuple the tuple of vectors of all the vertical components of the element. Contains
+	 * both the optional and the persistent vertical components
+	 */
+	VerticalComponentsVectorTuple<vComps> vcVecTuple;
+
+	/**
+	 * @brief ccVecMap the map that associates a string to a vector of custom components
+	 */
+	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVecMap;
 };
 
 } // namespace vcl::mesh

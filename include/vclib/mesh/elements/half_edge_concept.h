@@ -25,11 +25,10 @@
 #define VCL_MESH_ELEMENTS_HALF_EDGE_CONCEPT_H
 
 #include "half_edge_components.h"
-#include "half_edge_components_optional.h"
 
 namespace vcl {
 
-template<typename...>
+template<typename, typename...>
 class HalfEdge;
 
 namespace hedge {
@@ -74,8 +73,6 @@ template<typename T>
 concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
 template<typename T>
 concept HasOptionalScalar = comp::HasOptionalScalar<T>;
-template<typename T>
-concept HasVerticalComponent = comp::HasVerticalComponent<T>;
 
 } // namespace vcl::hedge
 

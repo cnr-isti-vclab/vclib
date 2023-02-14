@@ -39,8 +39,8 @@ class ElementContainer;
 
 namespace vcl {
 
-template<typename... Args>
-class Vertex : public Args...
+template<typename MeshType, typename... Args>
+class Vertex : public vert::ParentMeshPointer<MeshType>, public Args...
 {
 	template<VertexConcept>
 	friend class mesh::VertexContainer;
@@ -49,10 +49,31 @@ class Vertex : public Args...
 	friend class mesh::ElementContainer;
 
 public:
+	using ParentMeshType = MeshType;
+	using Components = TypeWrapper<Args...>;
+
 	Vertex();
+
+	uint index() const;
 
 	template<typename Element>
 	void importFrom(const Element& v);
+
+private:
+	// hide init and isEnabled members
+	void init() {}
+	bool isEnabled() { return true; }
+
+	// init to call after set parent mesh
+	void initVerticalComponents();
+
+	template<typename Comp>
+	void construct();
+};
+
+template<typename MeshType, typename... Args>
+class Vertex<MeshType, TypeWrapper<Args...>> : public Vertex<MeshType, Args...>
+{
 };
 
 } // namespace vcl

@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_EDGES_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_EDGES_H
 
-#include <vclib/misc/types.h>
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -49,6 +49,7 @@ concept HasAdjacentEdges = requires(
 	std::vector<typename T::AdjacentEdgeType*> v)
 {
 	T::ADJ_EDGE_NUMBER;
+	typename T::AdjacentEdgesComponent;
 	typename T::AdjacentEdgeType;
 	typename T::AdjacentEdgeIterator;
 	typename T::ConstAdjacentEdgeIterator;
@@ -79,14 +80,11 @@ concept HasAdjacentEdges = requires(
 
 /**
  * @brief HasOptionalAdjacentEdges concept is satisfied only if a class satisfies the
- * HasAdjacentEdges concept and has the additional member function '__optionalAdjEdges()', which is
- * the discriminator between the non-optional and optional component.
+ * HasAdjacentEdges concept and the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalAdjacentEdges = HasAdjacentEdges<T> && requires(T o)
-{
-	{ o.__optionalAdjEdges() } -> std::same_as<void>;
-};
+concept HasOptionalAdjacentEdges =
+	HasAdjacentEdges<T> && IsOptionalComponent<typename T::AdjacentEdgesComponent>;
 
 /**
  * @brief HasRightNumberOfAdjacentEdges concept

@@ -24,9 +24,9 @@
 #ifndef VCL_MESH_CONTAINER_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINER_EDGE_CONTAINER_H
 
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/edge.h>
 
-#include "../components/vertical/vectors/custom_component_vector_handle.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
@@ -132,17 +132,22 @@ protected:
 
 	void clearEdges();
 
-	uint addEdge();
-	uint addEdges(uint nEdges);
-	void reserveEdges(uint size);
+	template<typename MeshType>
+	uint addEdge(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addEdges(uint nEdges, MeshType* parentMesh);
+
+	template<typename MeshType>
+	void reserveEdges(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactEdges();
 
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
+	template<typename OtherMesh, typename ParentMeshType>
+	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 
 	template<typename Mesh, typename Vertex>
 	void importVertexReferencesFrom(const Mesh& m, Vertex* base);

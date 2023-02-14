@@ -39,8 +39,8 @@ class ElementContainer;
 
 namespace vcl {
 
-template<typename... Args>
-class Face : public Args...
+template<typename MeshType, typename... Args>
+class Face : public face::ParentMeshPointer<MeshType>, public Args...
 {
 	template<FaceConcept>
 	friend class mesh::FaceContainer;
@@ -54,6 +54,9 @@ class Face : public Args...
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
+	using ParentMeshType = MeshType;
+	using Components = TypeWrapper<Args...>;
+
 	using VertexType = typename VRefs::VertexType;
 
 	Face();
@@ -62,6 +65,8 @@ public:
 
 	template<typename... V>
 	Face(V... args); // todo add requires
+
+	uint index() const;
 
 	void setVertices(const std::vector<VertexType*>& list);
 
@@ -75,7 +80,7 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void resizeVertices(uint n) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
+		using F = Face<MeshType, TypeWrapper<Args...>>;
 
 		VRefs::resizeVertices(n);
 
@@ -112,7 +117,7 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
+		using F = Face<MeshType, TypeWrapper<Args...>>;
 
 		VRefs::pushVertex(v);
 
@@ -150,7 +155,7 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
+		using F = Face<MeshType, TypeWrapper<Args...>>;
 
 		VRefs::insertVertex(i, v);
 
@@ -188,7 +193,7 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
+		using F = Face<MeshType, TypeWrapper<Args...>>;
 
 		VRefs::eraseVertex(i);
 
@@ -225,7 +230,7 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void clearVertices() requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<Args...>;
+		using F = Face<MeshType, TypeWrapper<Args...>>;
 
 		VRefs::clearVertices();
 
@@ -257,6 +262,22 @@ public:
 				T::clearWedgeTexCoord();
 		}
 	}
+
+private:
+	// hide init and isEnabled members
+	void init() {}
+	bool isEnabled() { return true; }
+
+	// init to call after set parent mesh
+	void initVerticalComponents();
+
+	template<typename Comp>
+	void construct();
+};
+
+template<typename MeshType, typename... Args>
+class Face<MeshType, TypeWrapper<Args...>> : public Face<MeshType, Args...>
+{
 };
 
 } // namespace vcl

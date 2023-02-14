@@ -39,8 +39,8 @@ class ElementContainer;
 
 namespace vcl {
 
-template<typename... Args>
-class HalfEdge : public Args...
+template<typename MeshType, typename... Args>
+class HalfEdge : public hedge::ParentMeshPointer<MeshType>, public Args...
 {
 	template<HalfEdgeConcept>
 	friend class mesh::HalfEdgeContainer;
@@ -49,10 +49,31 @@ class HalfEdge : public Args...
 	friend class mesh::ElementContainer;
 
 public:
+	using ParentMeshType = MeshType;
+	using Components = TypeWrapper<Args...>;
+
 	HalfEdge();
+
+	uint index() const;
 
 	template<typename Element>
 	void importFrom(const Element& e);
+
+private:
+	// hide init and isEnabled members
+	void init() {}
+	bool isEnabled() { return true; }
+
+	// init to call after set parent mesh
+	void initVerticalComponents();
+
+	template<typename Comp>
+	void construct();
+};
+
+template<typename MeshType, typename... Args>
+class HalfEdge<MeshType, TypeWrapper<Args...>> : public HalfEdge<MeshType, Args...>
+{
 };
 
 } // namespace vcl

@@ -25,16 +25,46 @@
 
 namespace vcl {
 
-template<typename... Args>
-Vertex<Args...>::Vertex()
+template<typename MeshType, typename... Args>
+Vertex<MeshType, Args...>::Vertex()
 {
 }
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
+uint Vertex<MeshType, Args...>::index() const
+{
+	assert(vert::ParentMeshPointer<MeshType>::parentMesh());
+	return vert::ParentMeshPointer<MeshType>::parentMesh()->index(
+		static_cast<const typename MeshType::VertexType*>(this));
+}
+
+template<typename MeshType, typename... Args>
 template<typename Element>
-void Vertex<Args...>::importFrom(const Element& v)
+void Vertex<MeshType, Args...>::importFrom(const Element& v)
 {
 	(Args::importFrom(v), ...);
+}
+
+template<typename MeshType, typename... Args>
+void vcl::Vertex<MeshType, Args...>::initVerticalComponents()
+{
+	(construct<Args>(), ...);
+}
+
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Vertex<MeshType, Args...>::construct()
+{
+	if constexpr (comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>) {
+		if constexpr (comp::HasIsEnabledMemberFunction<Comp>) {
+			if (Comp::isEnabled()) {
+				Comp::init();
+			}
+		}
+		else { // no possibility to check if is enabled
+			Comp::init();
+		}
+	}
 }
 
 } // namespace vcl

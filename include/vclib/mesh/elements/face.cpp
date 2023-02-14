@@ -25,8 +25,8 @@
 
 namespace vcl {
 
-template<typename... Args>
-Face<Args...>::Face()
+template<typename MeshType, typename... Args>
+Face<MeshType, Args...>::Face()
 {
 }
 
@@ -44,10 +44,18 @@ Face<Args...>::Face()
  * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
  *                  vertices of the face.
  */
-template<typename... Args>
-Face<Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
+template<typename MeshType, typename... Args>
+Face<MeshType, Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
 {
 	setVertices(list);
+}
+
+template<typename MeshType, typename... Args>
+uint Face<MeshType, Args...>::index() const
+{
+	assert(face::ParentMeshPointer<MeshType>::parentMesh());
+	return face::ParentMeshPointer<MeshType>::parentMesh()->index(
+		static_cast<const typename MeshType::FaceType*>(this));
 }
 
 /**
@@ -62,9 +70,9 @@ Face<Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
  * @param[in] args: a variable number of vertex pointers in counterclockwise order that will be set
  *                  as vertices of the face.
  */
-template<typename... Args>
+template<typename MeshType, typename... Args>
 template<typename... V>
-Face<Args...>::Face(V... args) // todo add requires
+Face<MeshType, Args...>::Face(V... args) // todo add requires
 {
 	setVertices({args...});
 }
@@ -79,10 +87,10 @@ Face<Args...>::Face(V... args) // todo add requires
  * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
  *                  vertices of the face.
  */
-template<typename... Args>
-void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
+template<typename MeshType, typename... Args>
+void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 {
-	using F = Face<Args...>;
+	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	VRefs::setVertices(list);
 
@@ -115,16 +123,16 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 	}
 }
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
 template<typename... V>
-void Face<Args...>::setVertices(V... args)
+void Face<MeshType, Args...>::setVertices(V... args)
 {
 	setVertices({args...});
 }
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
 template<typename Element>
-void Face<Args...>::importFrom(const Element& f)
+void Face<MeshType, Args...>::importFrom(const Element& f)
 {
 	(Args::importFrom(f), ...);
 }
@@ -143,38 +151,60 @@ void Face<Args...>::importFrom(const Element& f)
  * @param n: the new number of vertices.
  */
 //TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::resizeVertices(uint n) requires PolygonFaceConcept<Face<Args...>>
+//template<typename MeshType, typename... Args>
+//void Face<MeshType, Args...>::resizeVertices(uint n) requires PolygonFaceConcept<Face>
 //{
 
 //}
 
 //TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+//template<typename MeshType, typename... Args>
+//void Face<MeshType, Args...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
 //{
 
 //}
 
 //TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+//template<typename MeshType, typename... Args>
+//void Face<MeshType, Args...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
 //{
 
 //}
 
 //TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::eraseVertex(uint i) requires PolygonFaceConcept<Face<Args...>>
+//template<typename MeshType, typename... Args>
+//void Face<MeshType, Args...>::eraseVertex(uint i) requires PolygonFaceConcept<Face>
 //{
 
 //}
 
 //TODO: Clang bug. Move definition here when it will be solved
-//template<typename... Args>
-//void Face<Args...>::clearVertices() requires PolygonFaceConcept<Face<Args...>>
+//template<typename MeshType, typename... Args>
+//void Face<MeshType, Args...>::clearVertices() requires PolygonFaceConcept<Face>
 //{
 
 //}
+
+template<typename MeshType, typename... Args>
+void Face<MeshType, Args...>::initVerticalComponents()
+{
+	(construct<Args>(), ...);
+}
+
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Face<MeshType, Args...>::construct()
+{
+	if constexpr (comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>) {
+		if constexpr (comp::HasIsEnabledMemberFunction<Comp>) {
+			if (Comp::isEnabled()) {
+				Comp::init();
+			}
+		}
+		else { // no possibility to check if is enabled
+			Comp::init();
+		}
+	}
+}
 
 } // namespace vcl

@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_NORMAL_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_NORMAL_H
 
-#include <vclib/misc/types.h>
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -47,6 +47,7 @@ concept HasNormal = requires(
 	const T& co)
 {
 	typename T::NormalType;
+	typename T::NormalComponent;
 	{ o.normal() } -> std::same_as<typename T::NormalType&>;
 	{ co.normal() } -> std::same_as<const typename T::NormalType&>;
 	{ co.isNormalEnabled() } -> std::same_as<bool>;
@@ -54,14 +55,10 @@ concept HasNormal = requires(
 
 /**
  * @brief HasOptionalNormal concept is satisfied only if a class satisfis the HasNormal concept and
- * has the additional member function '__optionalNormal()', which is the discriminator between the
- * non-optional and optional component.
+ * the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalNormal = HasNormal<T> && requires(T o)
-{
-	{ o.__optionalNormal() } -> std::same_as<void>;
-};
+concept HasOptionalNormal = HasNormal<T> && IsOptionalComponent<typename T::NormalComponent>;
 
 /* Detector function to check if a class has Normal enabled */
 

@@ -27,6 +27,13 @@
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
+namespace vcl {
+
+template<typename ScalarType>
+class DcelMeshT;
+
+}
+
 namespace vcl::dcel {
 
 template<typename Scalar>
@@ -41,6 +48,7 @@ class Face;
 template<typename Scalar>
 class HalfEdge :
 		public vcl::HalfEdge<
+			DcelMeshT<Scalar>,
 			vcl::hedge::BitFlags,
 			vcl::hedge::HalfEdgeReferences<HalfEdge<Scalar>, Vertex<Scalar>, Face<Scalar>>,
 			vcl::hedge::OptionalScalar<Scalar, HalfEdge<Scalar>>,
@@ -54,6 +62,7 @@ class HalfEdge :
 template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
+			DcelMeshT<Scalar>,
 			vcl::vert::BitFlags,
 			vcl::vert::Coordinate3<Scalar>,
 			vcl::vert::Normal3<Scalar>,
@@ -69,6 +78,7 @@ class Vertex :
 template<typename Scalar>
 class Face :
 		public vcl::Face<
+			DcelMeshT<Scalar>,
 			vcl::face::BitFlags,
 			vcl::face::HalfEdgeReference<HalfEdge<Scalar>>,
 			vcl::face::Normal3<Scalar>,
@@ -93,7 +103,8 @@ class DcelMeshT :
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
-			mesh::TransformMatrix<ScalarType>>
+			mesh::TransformMatrix<ScalarType>,
+			mesh::CustomComponents>
 {
 };
 

@@ -24,8 +24,9 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_COLOR_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_COLOR_H
 
-#include <vclib/misc/types.h>
 #include <vclib/space/color.h>
+
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -48,6 +49,7 @@ concept HasColor = requires(
 	const T& co)
 {
 	typename T::ColorType;
+	typename T::ColorComponent;
 	{ o.color() } -> std::same_as<vcl::Color&>;
 	{ co.color() } -> std::same_as<const vcl::Color&>;
 	{ co.isColorEnabled() } -> std::same_as<bool>;
@@ -55,14 +57,10 @@ concept HasColor = requires(
 
 /**
  * @brief HasOptionalColor concept is satisfied only if a class satisfis the HasColor concept and
- * has the additional member function '__optionalColor()', which is the discriminator between the
- * non-optional and optional component.
+ * the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalColor = HasColor<T> && requires(T o)
-{
-	{ o.__optionalColor() } -> std::same_as<void>;
-};
+concept HasOptionalColor = HasColor<T> && IsOptionalComponent<typename T::ColorComponent>;
 
 /* Detector function to check if a class has Color enabled */
 

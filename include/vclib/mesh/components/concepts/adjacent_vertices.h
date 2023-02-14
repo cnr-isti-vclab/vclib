@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_VERTICES_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_VERTICES_H
 
-#include <vclib/misc/types.h>
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -86,20 +86,17 @@ concept HasAdjacentVertices = requires(
 template<typename T>
 concept HasAdjacentVerticesComponent = requires(T o)
 {
-	HasAdjacentVertices<T>;
-	{ o.__compAdjVertices() } -> std::same_as<void>;
+	requires HasAdjacentVertices<T>;
+	typename T::AdjacentVerticesComponent;
 };
 
 /**
  * @brief HasOptionalAdjacentVertices concept is satisfied only if a class satisfies the
- * HasAdjacentVertices concept and has the additional member function '__optionalAdjVertices()',
- * which is the discriminator between the non-optional and optional component.
+ * HasAdjacentVertices concept and has the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalAdjacentVertices = HasAdjacentVertices<T> && requires(T o)
-{
-	{ o.__optionalAdjVertices() } -> std::same_as<void>;
-};
+concept HasOptionalAdjacentVertices =
+	HasAdjacentVerticesComponent<T> && IsOptionalComponent<typename T::AdjacentVerticesComponent>;
 
 /* Detector function to check if a class has AdjacentVertices enabled */
 

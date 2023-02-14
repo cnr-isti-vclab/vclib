@@ -24,13 +24,15 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_COMPONENTS_H
 #define VCL_MESH_ELEMENTS_EDGE_COMPONENTS_H
 
-#include "../components/horizontal/adjacent_edges.h"
-#include "../components/horizontal/adjacent_faces.h"
-#include "../components/horizontal/bit_flags.h"
-#include "../components/horizontal/color.h"
-#include "../components/horizontal/mark.h"
-#include "../components/horizontal/scalar.h"
-#include "../components/horizontal/vertex_references.h"
+#include "../components/adjacent_edges.h"
+#include "../components/adjacent_faces.h"
+#include "../components/bit_flags.h"
+#include "../components/color.h"
+#include "../components/custom_components.h"
+#include "../components/mark.h"
+#include "../components/parent_mesh_pointer.h"
+#include "../components/scalar.h"
+#include "../components/vertex_references.h"
 
 namespace vcl::edge {
 
@@ -38,25 +40,75 @@ namespace vcl::edge {
 template<typename EdgeType>
 using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
 
+template<typename EdgeType>
+using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, EdgeType>;
+
+template<typename EdgeType>
+using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, EdgeType, true>;
+
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
 
+template<typename FaceType, typename EdgeType>
+using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, EdgeType>;
+
+template<typename FaceType, typename EdgeType>
+using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, EdgeType, true>;
+
 /* Port BitFlags class into edge namespace */
-using BitFlags = comp::BitFlags;
+using BitFlags = comp::BitFlags<>;
 
 /* Port Color class into edge namespace */
-using Color = comp::Color;
+using Color = comp::Color<>;
+
+template<typename VertexType>
+using VerticalColor = comp::Color<VertexType>; 
+
+template<typename EdgeType>
+using OptionalColor = comp::Color<EdgeType, true>;
+
+/* Port CustomComponents class into edge namespace */
+template<typename EdgeType>
+using CustomComponents = comp::CustomComponents<EdgeType>;
 
 /* Port Mark class into edge namespace */
-using Mark = comp::Mark;
+using Mark = comp::Mark<>;
+
+template<typename EdgeType>
+using VerticalMark = comp::Mark<EdgeType>;
+
+template<typename EdgeType>
+using OptionalMark = comp::Mark<EdgeType, true>;
+
+/* Port ParentMeshPointer class into vert namespace */
+template<typename MeshType>
+using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port Scalar class into edge namespace */
 template<typename ScalarType>
 using Scalar = comp::Scalar<ScalarType>;
 
-using Scalarf = comp::Scalarf;
-using Scalard = comp::Scalard;
+using Scalarf = comp::Scalarf<>;
+using Scalard = comp::Scalard<>;
+
+template<typename ScalarType, typename EdgeType>
+using VerticalScalar = comp::Scalar<ScalarType, EdgeType>;
+
+template<typename EdgeType>
+using VerticalScalarf = comp::Scalar<float, EdgeType>;
+
+template<typename EdgeType>
+using VerticalScalard = comp::Scalar<double, EdgeType>;
+
+template<typename ScalarType, typename EdgeType>
+using OptionalScalar = comp::Scalar<ScalarType, EdgeType, true>;
+
+template<typename EdgeType>
+using OptionalScalarf = comp::Scalar<float, EdgeType, true>;
+
+template<typename EdgeType>
+using OptionalScalard = comp::Scalar<double, EdgeType, true>;
 
 /* Port VertexReferences class into edge namespace */
 template<typename VertexType>

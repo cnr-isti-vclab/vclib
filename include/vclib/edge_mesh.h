@@ -27,6 +27,13 @@
 #include "mesh/mesh.h"
 #include "mesh/requirements.h"
 
+namespace vcl {
+
+template<typename ScalarType>
+class EdgeMeshT;
+
+}
+
 namespace vcl::edgemesh {
 
 template<typename Scalar>
@@ -38,6 +45,7 @@ class Edge;
 template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
+			EdgeMeshT<Scalar>,
 			vcl::vert::BitFlags,                                            // 4b
 			vcl::vert::Coordinate3<Scalar>,                                 // 24b
 			vcl::vert::Normal3<Scalar>,                                     // 24b
@@ -54,6 +62,7 @@ class Vertex :
 template<typename Scalar>
 class Edge :
 		public vcl::Edge<
+			EdgeMeshT<Scalar>,
 			vcl::edge::BitFlags,                             // 4b
 			vcl::edge::VertexReferences<Vertex<Scalar>>,     // 24b
 			vcl::edge::OptionalScalar<Scalar, Edge<Scalar>>, // 0b
@@ -77,7 +86,8 @@ class EdgeMeshT :
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
-			mesh::TransformMatrix<ScalarType>>
+			mesh::TransformMatrix<ScalarType>,
+			mesh::CustomComponents>
 {
 };
 

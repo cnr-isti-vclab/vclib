@@ -24,9 +24,9 @@
 #ifndef VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
 
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/half_edge.h>
 
-#include "../components/vertical/vectors/custom_component_vector_handle.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
@@ -128,17 +128,22 @@ protected:
 
 	void clearHalfEdges();
 
-	uint addHalfEdge();
-	uint addHalfEdges(uint nEdges);
-	void reserveHalfEdges(uint size);
+	template<typename MeshType>
+	uint addHalfEdge(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addHalfEdges(uint nEdges, MeshType* parentMesh);
+
+	template<typename MeshType>
+	void reserveHalfEdges(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactHalfEdges();
 
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
+	template<typename OtherMesh, typename ParentMeshType>
+	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 
 	template<typename Mesh, typename Vertex>
 	void importVertexReferencesFrom(const Mesh& m, Vertex* base);

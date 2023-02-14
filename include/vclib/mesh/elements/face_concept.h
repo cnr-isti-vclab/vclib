@@ -25,11 +25,10 @@
 #define VCL_MESH_ELEMENTS_FACE_CONCEPT_H
 
 #include "face_components.h"
-#include "face_components_optional.h"
 
 namespace vcl {
 
-template<typename...>
+template<typename, typename...>
 class Face;
 
 namespace face {
@@ -94,8 +93,6 @@ template<typename T>
 concept HasTriangleBitFlags = comp::HasTriangleBitFlags<T>;
 template<typename T>
 concept HasVertexReferences = comp::HasVertexReferences<T>;
-template<typename T>
-concept HasVerticalComponent = comp::HasVerticalComponent<T>;
 template<typename T>
 concept HasWedgeColors = comp::HasWedgeColors<T>;
 template<typename T>

@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
 #define VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
 
-#include <vclib/mesh/components/vertical/vectors/custom_component_vector_handle.h>
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/vertex.h>
 
 #include "element_container.h"
@@ -163,17 +163,22 @@ protected:
 
 	void clearVertices();
 
-	uint addVertex();
-	uint addVertices(uint nVertices);
-	void reserveVertices(uint size);
+	template<typename MeshType>
+	uint addVertex(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addVertices(uint nVertices, MeshType* parentMesh);
+
+	template<typename MeshType>
+	void reserveVertices(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactVertices();
 
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
+	template<typename OtherMesh, typename ParentMeshType>
+	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 
 	template<typename Mesh>
 	void importVertexReferencesFrom(const Mesh& m, T* base);

@@ -25,6 +25,7 @@
 #define VCL_MESH_MESH_H
 
 #include "containers/containers.h"
+#include "elements/element_concept.h"
 #include "mesh_components.h"
 #include "requirements/mesh_concepts.h"
 
@@ -46,6 +47,12 @@ namespace vcl {
 template<typename... Args> requires HasVertices<Args...>
 class Mesh : public Args...
 {
+	template<typename El, bool b>
+	friend struct comp::internal::CustomComponentsData;
+
+	template<typename El, bool b>
+	friend struct comp::internal::ComponentData;
+
 public:
 	Mesh();
 	Mesh(const Mesh& oth);
@@ -218,9 +225,13 @@ protected:
 		const typename M::HalfEdgeType* base,
 		const std::vector<int>&         newIndices);
 
-	void updateAllOptionalContainerReferences();
+	void updateAllParentMeshPointers();
 
 private:
+	// hide init and isEnabled members
+	void init() {};
+	bool isEnabled() { return true; }
+
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);
 
@@ -232,6 +243,12 @@ private:
 
 	template<HasFaces M = Mesh, typename... V>
 	void addFaceHelper(typename M::FaceType& f, uint vid, V... args);
+
+	template<typename Cont>
+	void setParentMeshPointers();
+	
+	template<typename Cont, typename OthMesh>
+	void importContainersAndComponents(const OthMesh& m);
 
 	template<typename Cont, typename OthMesh>
 	void importReferences(const OthMesh& m);
@@ -250,6 +267,18 @@ private:
 		const MVertexType*       mvbase,
 		const std::vector<uint>& tris,
 		uint                     basetri);
+
+	template<typename El>
+	auto& customComponents() requires ElementConcept<El>;
+
+	template<typename El>
+	const auto& customComponents() const requires ElementConcept<El>;
+	
+	template<typename El>
+	auto& verticalComponents() requires ElementConcept<El>;
+	
+	template<typename El>
+	const auto& verticalComponents() const requires ElementConcept<El>;
 };
 
 template<typename... A> requires HasVertices<A...>

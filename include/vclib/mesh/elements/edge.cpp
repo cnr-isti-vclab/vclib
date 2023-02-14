@@ -25,16 +25,46 @@
 
 namespace vcl {
 
-template<typename... Args>
-Edge<Args...>::Edge()
+template<typename MeshType, typename... Args>
+Edge<MeshType, Args...>::Edge()
 {
 }
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
+uint Edge<MeshType, Args...>::index() const
+{
+	assert(edge::ParentMeshPointer<MeshType>::parentMesh());
+	return edge::ParentMeshPointer<MeshType>::parentMesh()->index(
+		static_cast<const typename MeshType::EdgeType*>(this));
+}
+
+template<typename MeshType, typename... Args>
 template<typename Element>
-void Edge<Args...>::importFrom(const Element& e)
+void Edge<MeshType, Args...>::importFrom(const Element& e)
 {
 	(Args::importFrom(e), ...);
+}
+
+template<typename MeshType, typename... Args>
+void vcl::Edge<MeshType, Args...>::initVerticalComponents()
+{
+	(construct<Args>(), ...);
+}
+
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Edge<MeshType, Args...>::construct()
+{
+	if constexpr (comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>) {
+		if constexpr (comp::HasIsEnabledMemberFunction<Comp>) {
+			if (Comp::isEnabled()) {
+				Comp::init();
+			}
+		}
+		else { // no possibility to check if is enabled
+			Comp::init();
+		}
+	}
 }
 
 } // namespace vcl

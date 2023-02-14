@@ -24,7 +24,8 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_COLORS_H
 
-#include <vclib/misc/types.h>
+#include "component.h"
+
 #include <vclib/space/color.h>
 
 namespace vcl::comp {
@@ -80,20 +81,17 @@ concept HasWedgeColors = requires(
 template<typename T>
 concept HasWedgeColorsComponent = requires(T o)
 {
-	HasWedgeColors<T>;
-	{ o.__compWedgeColors() } -> std::same_as<void>;
+	requires HasWedgeColors<T>;
+	typename T::WedgeColorsComponent;
 };
 
 /**
  * @brief HasOptionalWedgeColors concept is satisfied only if a class satisfies the
- * HasWedgeColors concept and has the additional member function '__optionalWedgeColors()', which is
- * the discriminator between the non-optional and optional component.
+ * HasWedgeColors concept and has the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalWedgeColors = HasWedgeColors<T> && requires(T o)
-{
-	{ o.__optionalWedgeColors() } -> std::same_as<void>;
-};
+concept HasOptionalWedgeColors =
+	HasWedgeColorsComponent<T> && IsOptionalComponent<typename T::WedgeColorsComponent>;
 
 /**
  * @brief HasRightNumberOfWedgeColors concept

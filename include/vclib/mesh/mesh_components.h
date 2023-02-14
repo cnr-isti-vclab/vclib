@@ -24,12 +24,13 @@
 #ifndef VCL_MESH_COMPONENTS_H
 #define VCL_MESH_COMPONENTS_H
 
-#include "components/horizontal/bounding_box.h"
-#include "components/horizontal/color.h"
-#include "components/horizontal/mark.h"
-#include "components/horizontal/name.h"
-#include "components/horizontal/texture_paths.h"
-#include "components/horizontal/transform_matrix.h"
+#include "components/bounding_box.h"
+#include "components/color.h"
+#include "components/custom_components.h"
+#include "components/mark.h"
+#include "components/name.h"
+#include "components/texture_paths.h"
+#include "components/transform_matrix.h"
 
 namespace vcl::mesh {
 
@@ -40,20 +41,23 @@ using BoundingBox = comp::BoundingBox<P>;
 template <typename S>
 using BoundingBox3 = comp::BoundingBox3<S>;
 
-using BoundingBox3f = comp::BoundingBox3f;
-using BoundingBox3d = comp::BoundingBox3d;
+using BoundingBox3f = comp::BoundingBox3f<>;
+using BoundingBox3d = comp::BoundingBox3d<>;
 
 /** Port Color class into mesh namespace **/
-using Color = comp::Color;
+using Color = comp::Color<>;
+
+/* Port CustomComponents class into mesh namespace */
+using CustomComponents = comp::CustomComponents<>;
 
 /** Port Mark class into mesh namespace **/
-using Mark = comp::Mark;
+using Mark = comp::Mark<>;
 
 /** Port Name class into mesh namespace **/
-using Name = comp::Name;
+using Name = comp::Name<>;
 
 /** Port TexturePaths class into mesh namespace **/
-using TexturePaths = comp::TexturePaths;
+using TexturePaths = comp::TexturePaths<>;
 
 /** Port TransformMatrix class into mesh namespace **/
 template <typename Scalar>

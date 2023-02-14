@@ -25,16 +25,46 @@
 
 namespace vcl {
 
-template<typename... Args>
-HalfEdge<Args...>::HalfEdge()
+template<typename MeshType, typename... Args>
+HalfEdge<MeshType, Args...>::HalfEdge()
 {
 }
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
+uint HalfEdge<MeshType, Args...>::index() const
+{
+	assert(hedge::ParentMeshPointer<MeshType>::parentMesh());
+	return hedge::ParentMeshPointer<MeshType>::parentMesh()->index(
+		static_cast<const typename MeshType::HalfEdgeType*>(this));
+}
+
+template<typename MeshType, typename... Args>
 template<typename Element>
-void HalfEdge<Args...>::importFrom(const Element& e)
+void HalfEdge<MeshType, Args...>::importFrom(const Element& e)
 {
 	(Args::importFrom(e), ...);
+}
+
+template<typename MeshType, typename... Args>
+void vcl::HalfEdge<MeshType, Args...>::initVerticalComponents()
+{
+	(construct<Args>(), ...);
+}
+
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void HalfEdge<MeshType, Args...>::construct()
+{
+	if constexpr (comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>) {
+		if constexpr (comp::HasIsEnabledMemberFunction<Comp>) {
+			if (Comp::isEnabled()) {
+				Comp::init();
+			}
+		}
+		else { // no possibility to check if is enabled
+			Comp::init();
+		}
+	}
 }
 
 } // namespace vcl

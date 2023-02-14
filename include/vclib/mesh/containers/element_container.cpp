@@ -23,10 +23,21 @@
 
 #include "element_container.h"
 
-#include "../components/concepts/vertex_references.h"
+#include "../components/concepts/adjacent_edges.h"
+#include "../components/concepts/adjacent_faces.h"
+#include "../components/concepts/adjacent_vertices.h"
+#include "../components/concepts/color.h"
 #include "../components/concepts/face_half_edge_reference.h"
 #include "../components/concepts/half_edge_references.h"
+#include "../components/concepts/mark.h"
+#include "../components/concepts/normal.h"
+#include "../components/concepts/principal_curvature.h"
+#include "../components/concepts/scalar.h"
+#include "../components/concepts/tex_coord.h"
+#include "../components/concepts/vertex_references.h"
 #include "../components/concepts/vertex_half_edge_reference.h"
+#include "../components/concepts/wedge_colors.h"
+#include "../components/concepts/wedge_tex_coords.h"
 
 namespace vcl::mesh {
 
@@ -200,6 +211,41 @@ std::vector<int> ElementContainer<T>::elementCompactIndices() const
 	return newIndices;
 }
 
+template<typename T>
+template<typename MeshType>
+void ElementContainer<T>::setParentMeshPointers(MeshType* parentMesh)
+{
+	for (auto& e : elements(false)) {
+		e.setParentMesh(parentMesh);
+	}
+}
+
+template<typename T>
+template<typename C>
+bool ElementContainer<T>::isOptionalComponentEnabled() const
+{
+	return vcVecTuple.template isComponentEnabled<C>();
+}
+
+template<typename T>
+template<typename C>
+void ElementContainer<T>::enableOptionalComponent()
+{
+	vcVecTuple.template enableComponent<C>();
+	if constexpr (comp::HasInitMemberFunction<C>) {
+		for (auto& e : elements()) {
+			e.C::init();
+		}
+	}
+}
+
+template<typename T>
+template<typename C>
+void ElementContainer<T>::disableOptionalComponent()
+{
+	vcVecTuple.template disableComponent<C>();
+}
+
 /**
  * @brief Returns an iterator to the beginning of the container.
  *
@@ -336,23 +382,30 @@ void ElementContainer<T>::clearElements()
 {
 	vec.clear();
 	en = 0;
-	if constexpr (comp::HasVerticalComponent<T>) {
-		optionalVec.clear();
-	}
+
+	vcVecTuple.clear();
+	ccVecMap.clear();
 }
 
 template<typename T>
-uint ElementContainer<T>::addElement()
+template<typename MeshType>
+uint ElementContainer<T>::addElement(MeshType* parentMesh)
 {
+	vcVecTuple.resize(vec.size() + 1);
+	ccVecMap.resize(vec.size() + 1);
+
 	T* oldB = vec.data();
 	vec.push_back(T());
 	T* newB = vec.data();
 	en++;
-	if constexpr (comp::HasVerticalComponent<T>) {
-		setContainerPointer(vec[vec.size() - 1]);
-		optionalVec.resize(vec.size());
+
+	vec.back().setParentMesh(parentMesh);
+	vec.back().initVerticalComponents();
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
 	}
-	updateContainerPointers(oldB, newB);
+
 	return vec.size() - 1;
 }
 
@@ -365,33 +418,44 @@ uint ElementContainer<T>::addElement()
  * @return the id of the first added element.
  */
 template<typename T>
-uint ElementContainer<T>::addElements(uint size)
+template<typename MeshType>
+uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 {
+	ccVecMap.resize(vec.size() + size);
+	vcVecTuple.resize(vec.size() + size);
+
 	uint baseId = vec.size();
 	T*   oldB   = vec.data();
 	vec.resize(vec.size() + size);
 	T* newB = vec.data();
 	en += size;
-	if constexpr (comp::HasVerticalComponent<T>) {
-		optionalVec.resize(vec.size());
-		for (uint i = baseId; i < vec.size(); ++i) {
-			setContainerPointer(vec[i]);
-		}
+
+	for (uint i = baseId; i < vec.size(); ++i) {
+		vec[i].setParentMesh(parentMesh);
+		vec[i].initVerticalComponents();
 	}
-	updateContainerPointers(oldB, newB);
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
+	}
+
 	return baseId;
 }
 
 template<typename T>
-void ElementContainer<T>::reserveElements(uint size)
+template<typename MeshType>
+void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 {
 	T* oldB = vec.data();
 	vec.reserve(size);
 	T* newB = vec.data();
-	if constexpr (comp::HasVerticalComponent<T>) {
-		optionalVec.reserve(size);
+
+	ccVecMap.reserve(size);
+	vcVecTuple.reserve(size);
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
 	}
-	updateContainerPointers(oldB, newB);
 }
 
 /**
@@ -416,43 +480,11 @@ std::vector<int> ElementContainer<T>::compactElements()
 		}
 		k++;
 		vec.resize(k);
-		if constexpr (comp::HasVerticalComponent<T>) {
-			optionalVec.compact(newIndices);
-		}
+
+		ccVecMap.compact(newIndices);
+		vcVecTuple.compact(newIndices);
 	}
 	return newIndices;
-}
-
-/**
- * @brief Sets this cointainer pointer to the element. Necessary to give to the element access to
- * the vertical components. This operation needs to be done after element creation in the container
- * and after every reallocation of the elements.
- * @param element
- */
-template<typename T>
-void ElementContainer<T>::setContainerPointer(T &element)
-{
-	if constexpr (comp::HasVerticalComponent<T>) {
-		element.setContainerPointer(this);
-	}
-}
-
-/**
- * @brief After a reallocation, it is needed always to update the container pointers of all the
- * elements, because the assignment operator of the VerticalComponent (which stores the pointer
- * of the container) does not copy the container pointer for security reasons.
- */
-template<typename T>
-void ElementContainer<T>::updateContainerPointers(const T *oldBase, const T *newBase)
-{
-	if constexpr (comp::HasVerticalComponent<T>) {
-		if (oldBase != newBase) {
-			// all the faces must point to the right container - also the deleted ones
-			for (T& f : elements(false)) {
-				setContainerPointer(f);
-			}
-		}
-	}
 }
 
 template<typename T>
@@ -469,7 +501,8 @@ void ElementContainer<T>::updateVertexReferences(const Vertex *oldBase, const Ve
 	// AdjacentVertexReferences component update
 	if constexpr(comp::HasAdjacentVertices<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentVertices<T> || optionalVec.isAdjacentVerticesEnabled()) {
+		if (!comp::HasOptionalAdjacentVertices<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>()) {
 			for (T& e : elements()) {
 				e.updateVertexReferences(oldBase, newBase);
 			}
@@ -500,7 +533,8 @@ void ElementContainer<T>::updateVertexReferencesAfterCompact(
 	// AdjacentVertexReferences component update
 	if constexpr (comp::HasAdjacentVertices<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentVertices<T> || optionalVec.isAdjacentVerticesEnabled()) {
+		if (!comp::HasOptionalAdjacentVertices<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>()) {
 			for (T& v : elements()) {
 				v.updateVertexReferencesAfterCompact(base, newIndices);
 			}
@@ -522,7 +556,8 @@ void ElementContainer<T>::updateFaceReferences(const Face *oldBase, const Face *
 	// AdjacentFaces component
 	if constexpr (comp::HasAdjacentFaces<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentFaces<T> || optionalVec.isAdjacentFacesEnabled()) {
+		if (!comp::HasOptionalAdjacentFaces<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
 			for (T& e : elements()) {
 				e.updateFaceReferences(oldBase, newBase);
 			}
@@ -546,7 +581,7 @@ void ElementContainer<T>::updateFaceReferencesAfterCompact(
 	// AdjacentFaces component
 	if constexpr (comp::HasAdjacentFaces<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentFaces<T> || optionalVec.isAdjacentFacesEnabled()) {
+		if (!comp::HasOptionalAdjacentFaces<T> || isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
 			for (T& e : elements()) {
 				e.updateFaceReferencesAfterCompact(base, newIndices);
 			}
@@ -568,7 +603,8 @@ void ElementContainer<T>::updateEdgeReferences(const Edge *oldBase, const Edge *
 	// AdjacentEdges component
 	if constexpr (comp::HasAdjacentEdges<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentEdges<T> || optionalVec.isAdjacentEdgesEnabled()) {
+		if (!comp::HasOptionalAdjacentEdges<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>()) {
 			for (T& e : elements()) {
 				e.updateEdgeReferences(oldBase, newBase);
 			}
@@ -585,7 +621,8 @@ void ElementContainer<T>::updateEdgeReferencesAfterCompact(
 	// AdjacentEdges component
 	if constexpr (comp::HasAdjacentEdges<T>) {
 		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentEdges<T> || optionalVec.isAdjacentEdgesEnabled()) {
+		if (!comp::HasOptionalAdjacentEdges<T> ||
+			isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>()) {
 			for (T& e : elements()) {
 				e.updateEdgeReferencesAfterCompact(base, newIndices);
 			}
@@ -654,8 +691,6 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	// unfortunately, this function cannot be shortened in a smart way
 	using CT = typename Container::ElementType;
 
-	const uint size = elementContainerSize();
-
 	// Adjacent Edges
 	// if this Element of this container has optional adjacent edges
 	if constexpr (comp::HasOptionalAdjacentEdges<T>) {
@@ -663,16 +698,18 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 		if constexpr (comp::HasAdjacentEdges<CT>) {
 
 			// short circuited or: if optional, then I check if enabled; if not optional, then true
-			if (!comp::HasOptionalAdjacentEdges<CT> || c.optionalVec.isAdjacentEdgesEnabled()) {
-				optionalVec.enableAdjacentEdges(size);
+			if (!comp::HasOptionalAdjacentEdges<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::AdjacentEdgesComponent>()) {
+				enableOptionalComponent<typename T::AdjacentEdgesComponent>();
 			}
 		}
 	}
 	// Adjacent Faces
 	if constexpr (comp::HasOptionalAdjacentFaces<T>) {
 		if constexpr (comp::HasAdjacentFaces<CT>) {
-			if (!comp::HasOptionalAdjacentFaces<CT> || c.optionalVec.isAdjacentFacesEnabled()) {
-				optionalVec.enableAdjacentFaces(size);
+			if (!comp::HasOptionalAdjacentFaces<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::AdjacentFacesComponent>()) {
+				enableOptionalComponent<typename T::AdjacentFacesComponent>();
 			}
 		}
 	}
@@ -680,32 +717,35 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	if constexpr (comp::HasOptionalAdjacentVertices<T>) {
 		if constexpr (comp::HasAdjacentVertices<CT>) {
 			if (!comp::HasOptionalAdjacentVertices<CT> ||
-				c.optionalVec.isAdjacentVerticesEnabled()) {
-				optionalVec.enableAdjacentVertices(size);
+				c.template isOptionalComponentEnabled<typename CT::AdjacentVerticesComponent>()) {
+				enableOptionalComponent<typename T::AdjacentVerticesComponent>();
 			}
 		}
 	}
 	// Color
 	if constexpr (comp::HasOptionalColor<T>) {
 		if constexpr (comp::HasColor<CT>) {
-			if (!comp::HasOptionalColor<CT> || c.optionalVec.isColorEnabled()) {
-				optionalVec.enableColor(size);
+			if (!comp::HasOptionalColor<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::ColorComponent>()) {
+				enableOptionalComponent<typename T::ColorComponent>();
 			}
 		}
 	}
 	// Mark
 	if constexpr (comp::HasOptionalMark<T>) {
 		if constexpr (comp::HasMark<CT>) {
-			if (!comp::HasOptionalMark<CT> || c.optionalVec.isMarkEnabled()) {
-				optionalVec.enableMark(size);
+			if (!comp::HasOptionalMark<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::MarkComponent>()) {
+				enableOptionalComponent<typename T::MarkComponent>();
 			}
 		}
 	}
 	// Normal
 	if constexpr (comp::HasOptionalNormal<T>) {
 		if constexpr (comp::HasNormal<CT>) {
-			if (!comp::HasOptionalNormal<CT> || c.optionalVec.isNormalEnabled()) {
-				optionalVec.enableNormal(size);
+			if (!comp::HasOptionalNormal<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::NormalComponent>()) {
+				enableOptionalComponent<typename T::NormalComponent>();
 			}
 		}
 	}
@@ -713,51 +753,56 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	if constexpr (comp::HasOptionalPrincipalCurvature<T>) {
 		if constexpr (comp::HasPrincipalCurvature<CT>) {
 			if (!comp::HasOptionalPrincipalCurvature<CT> ||
-				c.optionalVec.isPrincipalCurvatureEnabled()) {
-				optionalVec.enablePrincipalCurvature(size);
+				c.template isOptionalComponentEnabled<typename CT::PrincipalCurvatureComponent>()) {
+				enableOptionalComponent<typename T::PrincipalCurvatureComponent>();
 			}
 		}
 	}
 	// Scalar
 	if constexpr (comp::HasOptionalScalar<T>) {
 		if constexpr (comp::HasScalar<CT>) {
-			if (!comp::HasOptionalScalar<CT> || c.optionalVec.isScalarEnabled()) {
-				optionalVec.enableScalar(size);
+			if (!comp::HasOptionalScalar<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::ScalarComponent>()) {
+				enableOptionalComponent<typename T::ScalarComponent>();
 			}
 		}
 	}
 	// TexCoord
 	if constexpr (comp::HasOptionalTexCoord<T>) {
 		if constexpr (comp::HasTexCoord<CT>) {
-			if (!comp::HasOptionalTexCoord<CT> || c.optionalVec.isTexCoordEnabled()) {
-				optionalVec.enableTexCoord(size);
+			if (!comp::HasOptionalTexCoord<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::TexCoordComponent>()) {
+				enableOptionalComponent<typename T::TexCoordComponent>();
 			}
 		}
 	}
 	// Wedge Colors
 	if constexpr (comp::HasOptionalWedgeColors<T>) {
 		if constexpr (comp::HasWedgeColors<CT>) {
-			if (!comp::HasOptionalWedgeColors<CT> || c.optionalVec.isWedgeColorsEnabled()) {
-				optionalVec.enableWedgeColors(size);
+			if (!comp::HasOptionalWedgeColors<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::WedgeColorsComponent>()) {
+				enableOptionalComponent<typename T::WedgeColorsComponent>();
 			}
 		}
 	}
 	// Wedge TexCoords
 	if constexpr (comp::HasOptionalWedgeTexCoords<T>) {
 		if constexpr (comp::HasWedgeTexCoords<CT>) {
-			if (!comp::HasOptionalWedgeTexCoords<CT> || c.optionalVec.isWedgeTexCoordsEnabled()) {
-				optionalVec.enableWedgeTexCoords(size);
+			if (!comp::HasOptionalWedgeTexCoords<CT> ||
+				c.template isOptionalComponentEnabled<typename CT::WedgeTexCoordsComponent>()) {
+				enableOptionalComponent<typename T::WedgeTexCoordsComponent>();
 			}
 		}
 	}
 }
 
 template<typename T>
-template<typename Container>
-void ElementContainer<T>::importFrom(const Container &c)
+template<typename Container, typename ParentMeshType>
+void ElementContainer<T>::importFrom(const Container &c, ParentMeshType* parent)
 {
 	clearElements();
-	addElements(c.elementContainerSize());
+	// pointer to parent mesh needs to be updated later by the mesh
+	addElements(c.elementContainerSize(), parent);
 	unsigned int eid = 0;
 	for (const typename Container::ElementType& e : c.elements(false)) {
 		element(eid).importFrom(e);

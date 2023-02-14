@@ -25,11 +25,10 @@
 #define VCL_MESH_ELEMENTS_EDGE_CONCEPT_H
 
 #include "edge_components.h"
-#include "edge_components_optional.h"
 
 namespace vcl {
 
-template<typename...>
+template<typename, typename...>
 class Edge;
 
 namespace edge {
@@ -78,8 +77,6 @@ template<typename T>
 concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>
 concept HasVertexReferences = comp::HasVertexReferences<T>;
-template<typename T>
-concept HasVerticalComponent = comp::HasVerticalComponent<T>;
 
 } // namespace vcl::edge
 

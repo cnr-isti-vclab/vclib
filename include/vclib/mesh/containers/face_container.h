@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_CONTAINER_FACE_CONTAINER_H
 #define VCL_MESH_CONTAINER_FACE_CONTAINER_H
 
-#include <vclib/mesh/components/vertical/vectors/custom_component_vector_handle.h>
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/face.h>
 
 #include "element_container.h"
@@ -156,17 +156,22 @@ protected:
 
 	void clearFaces();
 
-	uint addFace();
-	uint addFaces(uint nFaces);
-	void reserveFaces(uint size);
+	template<typename MeshType>
+	uint addFace(MeshType* parentMesh);
+
+	template<typename MeshType>
+	uint addFaces(uint nFaces, MeshType* parentMesh);
+
+	template<typename MeshType>
+	void reserveFaces(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactFaces();
 
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
+	template<typename OtherMesh, typename ParentMeshType>
+	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 
 	template<typename Mesh, typename Vertex>
 	void importVertexReferencesFrom(const Mesh& m, Vertex* base);

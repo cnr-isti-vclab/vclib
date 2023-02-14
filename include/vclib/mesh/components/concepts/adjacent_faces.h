@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_ADJACENT_FACES_H
 
-#include <vclib/misc/types.h>
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -87,20 +87,17 @@ concept HasAdjacentFaces = requires(
 template<typename T>
 concept HasAdjacentFacesComponent = requires(T o)
 {
-	HasAdjacentFaces<T>;
-	{ o.__compAdjFaces() } -> std::same_as<void>;
+	requires HasAdjacentFaces<T>;
+	typename T::AdjacentFacesComponent;
 };
 
 /**
  * @brief HasOptionalAdjacentFaces concept is satisfied only if a class satisfies the
- * HasAdjacentFaces concept and has the additional member function '__optionalAdjFaces()', which is
- * the discriminator between the non-optional and optional component.
+ * HasAdjacentFacesComponent concept and the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalAdjacentFaces = HasAdjacentFaces<T> && requires(T o)
-{
-	{ o.__optionalAdjFaces() } -> std::same_as<void>;
-};
+concept HasOptionalAdjacentFaces =
+	HasAdjacentFacesComponent<T> && IsOptionalComponent<typename T::AdjacentFacesComponent>;
 
 /**
  * @brief HasRightNumberOfAdjacentFaces concept

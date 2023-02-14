@@ -23,6 +23,8 @@
 
 #include "color.h"
 
+#include <vector>
+
 namespace vcl {
 
 /**

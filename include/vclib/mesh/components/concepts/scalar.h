@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_SCALAR_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_SCALAR_H
 
-#include <vclib/misc/types.h>
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -47,6 +47,7 @@ concept HasScalar = requires(
 	const T& co)
 {
 	typename T::ScalarType;
+	typename T::ScalarComponent;
 	{ o.scalar() } -> std::same_as<typename T::ScalarType&>;
 	{ co.scalar() } -> std::same_as<const typename T::ScalarType&>;
 	{ co.isScalarEnabled() } -> std::same_as<bool>;
@@ -54,14 +55,10 @@ concept HasScalar = requires(
 
 /**
  * @brief HasOptionalScalar concept is satisfied only if a class satisfis the HasScalar concept and
- * has the additional member function '__optionalScalar()', which is the discriminator between the
- * non-optional and optional component.
+ * the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalScalar = HasScalar<T> && requires(T o)
-{
-	{ o.__optionalScalar() } -> std::same_as<void>;
-};
+concept HasOptionalScalar = HasScalar<T> && IsOptionalComponent<typename T::ScalarComponent>;
 
 
 /* Detector function to check if a class has Scalar enabled */
