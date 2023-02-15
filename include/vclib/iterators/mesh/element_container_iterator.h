@@ -58,6 +58,8 @@ public:
 
 	ElemContIterator operator++();
 	ElemContIterator operator++(int);
+	ElemContIterator operator--();
+	ElemContIterator operator--(int);
 
 private:
 	ElemContIterator incrementJump();

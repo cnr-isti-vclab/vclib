@@ -93,6 +93,18 @@ ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::ope
 	return (this->*postIncrement)();
 }
 
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::operator--()
+{
+	return (this->*decrement)();
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::operator--(int)
+{
+	return (this->*postDecrement)();
+}
+
 /**
  * @brief Increment function that will be called if we need to jump deleted elements.
  */
