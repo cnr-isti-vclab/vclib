@@ -290,7 +290,7 @@ void updatePrincipalCurvaturePCA(
 		//pGrid.build();
 	}
 
-	std::for_each(std::execution::par, m.vertices().begin(), m.vertices().end(), [&](VertexType& v){
+	vcl::parallelFor(m.vertices().begin(), m.vertices().end(), [&](VertexType& v){
 	//for (VertexType& v : m.vertices()) {
 		vcl::Matrix33<ScalarType> A, eigenvectors;
 		CoordType bp, eigenvalues;
