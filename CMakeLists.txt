@@ -193,6 +193,7 @@ set(HEADERS
 	include/vclib/mesh/elements/edge.h
 	include/vclib/mesh/elements/edge_components.h
 	include/vclib/mesh/elements/edge_concept.h
+	include/vclib/mesh/elements/element.h
 	include/vclib/mesh/elements/element_concept.h
 	include/vclib/mesh/elements/face.h
 	include/vclib/mesh/elements/face_components.h
@@ -372,6 +373,7 @@ set(SOURCES
 	include/vclib/mesh/containers/vertex_container.cpp
 	include/vclib/mesh/containers/vertical_components_vector_tuple.cpp
 	include/vclib/mesh/elements/edge.cpp
+	include/vclib/mesh/elements/element.cpp
 	include/vclib/mesh/elements/face.cpp
 	include/vclib/mesh/elements/half_edge.cpp
 	include/vclib/mesh/elements/vertex.cpp

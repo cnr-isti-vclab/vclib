@@ -53,9 +53,7 @@ Face<MeshType, Args...>::Face(const std::vector<VertexType*>& list) // todo add 
 template<typename MeshType, typename... Args>
 uint Face<MeshType, Args...>::index() const
 {
-	assert(face::ParentMeshPointer<MeshType>::parentMesh());
-	return face::ParentMeshPointer<MeshType>::parentMesh()->index(
-		static_cast<const typename MeshType::FaceType*>(this));
+	return Element<MeshType, Args...>::template index<typename MeshType::FaceType>();
 }
 
 /**
@@ -130,13 +128,6 @@ void Face<MeshType, Args...>::setVertices(V... args)
 	setVertices({args...});
 }
 
-template<typename MeshType, typename... Args>
-template<typename Element>
-void Face<MeshType, Args...>::importFrom(const Element& f)
-{
-	(Args::importFrom(f), ...);
-}
-
 /**
  * @brief Resize the number of Vertex References of the Face, taking care of updating also the
  * number of adjacent faces and the number of wedge components of the Face, if these components
@@ -184,27 +175,5 @@ void Face<MeshType, Args...>::importFrom(const Element& f)
 //{
 
 //}
-
-template<typename MeshType, typename... Args>
-void Face<MeshType, Args...>::initVerticalComponents()
-{
-	(construct<Args>(), ...);
-}
-
-template<typename MeshType, typename... Args>
-template<typename Comp>
-void Face<MeshType, Args...>::construct()
-{
-	if constexpr (comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>) {
-		if constexpr (comp::HasIsEnabledMemberFunction<Comp>) {
-			if (Comp::isEnabled()) {
-				Comp::init();
-			}
-		}
-		else { // no possibility to check if is enabled
-			Comp::init();
-		}
-	}
-}
 
 } // namespace vcl

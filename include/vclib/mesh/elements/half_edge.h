@@ -26,49 +26,15 @@
 
 #include "half_edge_concept.h"
 
-namespace vcl::mesh {
-
-// EdgeContainer class declaration
-template<HalfEdgeConcept>
-class HalfEdgeContainer;
-
-template<typename>
-class ElementContainer;
-
-} // namespace vcl::mesh
+#include "element.h"
 
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class HalfEdge : public hedge::ParentMeshPointer<MeshType>, public Args...
+class HalfEdge : public Element<MeshType, Args...>
 {
-	template<HalfEdgeConcept>
-	friend class mesh::HalfEdgeContainer;
-
-	template<typename>
-	friend class mesh::ElementContainer;
-
 public:
-	using ParentMeshType = MeshType;
-	using Components = TypeWrapper<Args...>;
-
-	HalfEdge();
-
 	uint index() const;
-
-	template<typename Element>
-	void importFrom(const Element& e);
-
-private:
-	// hide init and isEnabled members
-	void init() {}
-	bool isEnabled() { return true; }
-
-	// init to call after set parent mesh
-	void initVerticalComponents();
-
-	template<typename Comp>
-	void construct();
 };
 
 template<typename MeshType, typename... Args>

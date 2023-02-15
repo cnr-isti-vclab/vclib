@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -26,49 +26,15 @@
 
 #include "edge_concept.h"
 
-namespace vcl::mesh {
-
-// EdgeContainer class declaration
-template<EdgeConcept>
-class EdgeContainer;
-
-template<typename>
-class ElementContainer;
-
-} // namespace vcl::mesh
+#include "element.h"
 
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Edge : public edge::ParentMeshPointer<MeshType>, public Args...
+class Edge : public Element<MeshType, Args...>
 {
-	template<EdgeConcept>
-	friend class mesh::EdgeContainer;
-
-	template<typename>
-	friend class mesh::ElementContainer;
-
 public:
-	using ParentMeshType = MeshType;
-	using Components = TypeWrapper<Args...>;
-
-	Edge();
-
 	uint index() const;
-
-	template<typename Element>
-	void importFrom(const Element& e);
-
-private:
-	// hide init and isEnabled members
-	void init() {}
-	bool isEnabled() { return true; }
-
-	// init to call after set parent mesh
-	void initVerticalComponents();
-
-	template<typename Comp>
-	void construct();
 };
 
 template<typename MeshType, typename... Args>

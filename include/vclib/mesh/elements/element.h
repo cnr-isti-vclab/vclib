@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -21,14 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "edge.h"
+#ifndef VCL_MESH_ELEMENTS_ELEMENT_H
+#define VCL_MESH_ELEMENTS_ELEMENT_H
+
+#include <vclib/mesh/components/concepts/component.h>
+#include <vclib/mesh/components/parent_mesh_pointer.h>
+#include <vclib/misc/types.h>
+
+namespace vcl::mesh {
+
+template<typename>
+class ElementContainer;
+
+} // namespace vcl::mesh
 
 namespace vcl {
 
-template<typename MeshType, typename... Args>
-uint Edge<MeshType, Args...>::index() const
+template <typename MeshType, typename... Args>
+class Element : public comp::ParentMeshPointer<MeshType>, public Args...
 {
-	return Element<MeshType, Args...>::template index<typename MeshType::EdgeType>();
-}
+	template<typename>
+	friend class mesh::ElementContainer;
+public:
+	using ParentMeshType = MeshType;
+	using Components = TypeWrapper<Args...>;
+
+	template<typename ElType>
+	void importFrom(const ElType& v);
+
+protected:
+
+	template<typename ElType>
+	uint index() const;
+
+private:
+	// hide init and isEnabled members
+	void init() {}
+	bool isEnabled() { return true; }
+
+	// init to call after set parent mesh
+	void initVerticalComponents();
+
+	template<typename Comp>
+	void construct();
+};
 
 } // namespace vcl
+
+#include "element.cpp"
+
+#endif // VCL_MESH_ELEMENTS_ELEMENT_H

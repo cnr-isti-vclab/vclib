@@ -24,6 +24,8 @@
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_TEX_COORDS_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_WEDGE_TEX_COORDS_H
 
+#include <vector>
+
 #include "component.h"
 
 namespace vcl::comp {

@@ -26,27 +26,23 @@
 
 #include "face_concept.h"
 
+#include "element.h"
+
 namespace vcl::mesh {
 
 // FaceContainer class declaration
 template<FaceConcept>
 class FaceContainer;
 
-template<typename>
-class ElementContainer;
-
 } // namespace vcl::mesh
 
 namespace vcl {
 
 template<typename MeshType, typename... Args>
-class Face : public face::ParentMeshPointer<MeshType>, public Args...
+class Face : public Element<MeshType, Args...>
 {
 	template<FaceConcept>
 	friend class mesh::FaceContainer;
-
-	template<typename>
-	friend class mesh::ElementContainer;
 
 	// Vertex references component of the Face
 	using VRefs = typename Face::VertexReferences;
@@ -54,9 +50,6 @@ class Face : public face::ParentMeshPointer<MeshType>, public Args...
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
-	using ParentMeshType = MeshType;
-	using Components = TypeWrapper<Args...>;
-
 	using VertexType = typename VRefs::VertexType;
 
 	Face();
@@ -72,9 +65,6 @@ public:
 
 	template<typename... V>
 	void setVertices(V... args);
-
-	template<typename Element>
-	void importFrom(const Element& f);
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
@@ -262,17 +252,6 @@ public:
 				T::clearWedgeTexCoord();
 		}
 	}
-
-private:
-	// hide init and isEnabled members
-	void init() {}
-	bool isEnabled() { return true; }
-
-	// init to call after set parent mesh
-	void initVerticalComponents();
-
-	template<typename Comp>
-	void construct();
 };
 
 template<typename MeshType, typename... Args>
