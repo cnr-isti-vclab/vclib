@@ -46,12 +46,16 @@ ElemContIterator<Container, T, CONST>::ElemContIterator(
 		postIncrement = &ElemContIterator::postIncrementJump;
 		decrement     = &ElemContIterator::decrementJump;
 		postDecrement = &ElemContIterator::postDecrementJump;
+		assignSum     = &ElemContIterator::assignSumJump;
+		diff          = &ElemContIterator::diffJump;
 	}
 	else {
 		increment     = &ElemContIterator::incrementFast;
 		postIncrement = &ElemContIterator::postIncrementFast;
 		decrement     = &ElemContIterator::decrementFast;
 		postDecrement = &ElemContIterator::postDecrementFast;
+		assignSum     = &ElemContIterator::assignSumFast;
+		diff          = &ElemContIterator::diffFast;
 	}
 }
 
@@ -103,6 +107,74 @@ template<template<typename, typename...> typename Container, typename T, bool CO
 ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::operator--(int)
 {
 	return (this->*postDecrement)();
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+ElemContIterator<Container, T, CONST>&
+ElemContIterator<Container, T, CONST>::operator+=(difference_type n)
+{
+	return (this->*assignSum)(n);
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+ElemContIterator<Container, T, CONST>&
+ElemContIterator<Container, T, CONST>::operator-=(difference_type n)
+{
+	return (this->*assignSum)(-n);
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+ElemContIterator<Container, T, CONST>
+ElemContIterator<Container, T, CONST>::operator+(difference_type n) const
+{
+	ElemContIterator temp = *this;
+	return temp += n;
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+ElemContIterator<Container, T, CONST>
+ElemContIterator<Container, T, CONST>::operator-(difference_type n) const
+{
+	ElemContIterator temp = *this;
+	return temp += -n;
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+typename ElemContIterator<Container, T, CONST>::difference_type
+ElemContIterator<Container, T, CONST>::operator-(const ElemContIterator& oi) const
+{
+	return (this->*diff)(oi);
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+typename ElemContIterator<Container, T, CONST>::reference
+ElemContIterator<Container, T, CONST>::operator[](difference_type i)
+{
+	return *(*this + i);
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+bool ElemContIterator<Container, T, CONST>::operator<(const ElemContIterator& oi) const
+{
+	return it < oi.it;
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+bool ElemContIterator<Container, T, CONST>::operator>(const ElemContIterator& oi) const
+{
+	return it > oi.it;
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+bool ElemContIterator<Container, T, CONST>::operator<=(const ElemContIterator& oi) const
+{
+	return it <= oi.it;
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+bool ElemContIterator<Container, T, CONST>::operator>=(const ElemContIterator& oi) const
+{
+	return it >= oi.it;
 }
 
 /**
@@ -197,4 +269,55 @@ ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::pos
 	return old;
 }
 
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+ElemContIterator<Container, T, CONST>&
+ElemContIterator<Container, T, CONST>::assignSumJump(difference_type n)
+{
+	difference_type m = n;
+
+	if (m >= 0)
+		while (m--)
+			this->operator++();
+	else
+		while (m++)
+			this->operator--();
+	return *this;
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+ElemContIterator<Container, T, CONST>&
+ElemContIterator<Container, T, CONST>::assignSumFast(difference_type n)
+{
+	it += n;
+	return *this;
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+typename ElemContIterator<Container, T, CONST>::difference_type
+ElemContIterator<Container, T, CONST>::diffJump(const ElemContIterator& oi) const
+{
+	ElemContIterator i = oi;
+	difference_type diff = 0;
+	while(i != *this) {
+		++diff;
+		++i;
+	}
+	return diff;
+}
+
+template<template<typename, typename...> typename Container, typename T, bool CONST>
+typename ElemContIterator<Container, T, CONST>::difference_type
+ElemContIterator<Container, T, CONST>::diffFast(const ElemContIterator& oi) const
+{
+	return this->it - oi.it;
+}
+
 } // namespace vcl::internal
+
+template<template<typename, typename...> typename Container, typename T, bool C>
+vcl::internal::ElemContIterator<Container, T, C> operator+(
+	typename vcl::internal::ElemContIterator<Container, T, C>::difference_type n,
+	const vcl::internal::ElemContIterator<Container, T, C>& it)
+{
+	return it + n;
+}
