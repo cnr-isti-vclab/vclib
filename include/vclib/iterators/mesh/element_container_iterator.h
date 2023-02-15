@@ -39,7 +39,7 @@ namespace vcl {
  * operators will be as fast as a normal increment, without any overhead for checking if the
  * iterator needs to jump elements.
  */
-template<template<typename, typename...> class Container, typename T>
+template<template<typename, typename...> typename Container, typename T>
 class ElementContainerIterator
 {
 private:
@@ -92,7 +92,7 @@ private:
  * ElementContainerIterator, that allows to iterate over a const Container and get only const
  * Elements.
  */
-template<template<typename, typename...> class Container, typename T>
+template<template<typename, typename...> typename Container, typename T>
 class ConstElementContainerIterator
 {
 private:
