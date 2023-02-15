@@ -33,7 +33,9 @@ template<template<typename, typename...> class Container, typename T>
 ElementContainerIterator<Container, T>::ElementContainerIterator()
 {
 	increment     = &ElementContainerIterator::incrementFast;
-	postIncrement = &ElementContainerIterator::incrementFast;
+	postIncrement = &ElementContainerIterator::postIncrementFast;
+	decrement     = &ElementContainerIterator::decrementFast;
+	postDecrement = &ElementContainerIterator::postDecrementFast;
 }
 
 template<template<typename, typename...> class Container, typename T>
@@ -46,10 +48,14 @@ ElementContainerIterator<Container, T>::ElementContainerIterator(
 	if (jumpDeleted) {
 		increment     = &ElementContainerIterator::incrementJump;
 		postIncrement = &ElementContainerIterator::postIncrementJump;
+		decrement     = &ElementContainerIterator::decrementJump;
+		postDecrement = &ElementContainerIterator::postDecrementJump;
 	}
 	else {
 		increment     = &ElementContainerIterator::incrementFast;
-		postIncrement = &ElementContainerIterator::incrementFast;
+		postIncrement = &ElementContainerIterator::postIncrementFast;
+		decrement     = &ElementContainerIterator::decrementFast;
+		postDecrement = &ElementContainerIterator::postDecrementFast;
 	}
 }
 
@@ -137,6 +143,52 @@ ElementContainerIterator<Container, T> ElementContainerIterator<Container, T>::p
 	return old;
 }
 
+/**
+ * @brief Decrement function that will be called if we need to jump deleted elements.
+ */
+template<template<typename, typename...> class Container, typename T>
+ElementContainerIterator<Container, T> ElementContainerIterator<Container, T>::decrementJump()
+{
+	do {
+		--it;
+	} while (it != vec->begin() && it->isDeleted());
+	return *this;
+}
+
+/**
+ * @brief Post decrement function that will be called if we need to jump deleted elements.
+ */
+template<template<typename, typename...> class Container, typename T>
+ElementContainerIterator<Container, T> ElementContainerIterator<Container, T>::postDecrementJump()
+{
+	ElementContainerIterator old = *this;
+	do {
+		--it;
+	} while (it != vec->begin() && it->isDeleted());
+	return old;
+}
+
+/**
+ * @brief Decrement function that will be called if we don't need to jump deleted elements.
+ */
+template<template<typename, typename...> class Container, typename T>
+ElementContainerIterator<Container, T> ElementContainerIterator<Container, T>::decrementFast()
+{
+	--it;
+	return *this;
+}
+
+/**
+ * @brief Post decrement function that will be called if we don't need to jump deleted elements.
+ */
+template<template<typename, typename...> class Container, typename T>
+ElementContainerIterator<Container, T> ElementContainerIterator<Container, T>::postDecrementFast()
+{
+	ElementContainerIterator old = *this;
+	--it;
+	return old;
+}
+
 /*
  * ConstContainerIterator
  */
@@ -145,7 +197,9 @@ template<template<typename, typename...> class Container, typename T>
 ConstElementContainerIterator<Container, T>::ConstElementContainerIterator()
 {
 	increment     = &ConstElementContainerIterator::incrementFast;
-	postIncrement = &ConstElementContainerIterator::incrementFast;
+	postIncrement = &ConstElementContainerIterator::postIncrementFast;
+	decrement     = &ConstElementContainerIterator::decrementFast;
+	postDecrement = &ConstElementContainerIterator::postDecrementFast;
 }
 
 template<template<typename, typename...> class Container, typename T>
@@ -158,10 +212,14 @@ ConstElementContainerIterator<Container, T>::ConstElementContainerIterator(
 	if (jumpDeleted) {
 		increment     = &ConstElementContainerIterator::incrementJump;
 		postIncrement = &ConstElementContainerIterator::postIncrementJump;
+		decrement     = &ConstElementContainerIterator::decrementJump;
+		postDecrement = &ConstElementContainerIterator::postDecrementJump;
 	}
 	else {
 		increment     = &ConstElementContainerIterator::incrementFast;
-		postIncrement = &ConstElementContainerIterator::incrementFast;
+		postIncrement = &ConstElementContainerIterator::postIncrementFast;
+		decrement     = &ConstElementContainerIterator::decrementFast;
+		postDecrement = &ConstElementContainerIterator::postDecrementFast;
 	}
 }
 
@@ -251,8 +309,54 @@ ConstElementContainerIterator<Container, T> ConstElementContainerIterator<Contai
 template<template<typename, typename...> class Container, typename T>
 ConstElementContainerIterator<Container, T> ConstElementContainerIterator<Container, T>::postIncrementFast()
 {
-	ElementContainerIterator old = *this;
+	ConstElementContainerIterator old = *this;
 	++it;
+	return old;
+}
+
+/**
+ * @brief Decrement function that will be called if we need to jump deleted elements.
+ */
+template<template<typename, typename...> class Container, typename T>
+ConstElementContainerIterator<Container, T> ConstElementContainerIterator<Container, T>::decrementJump()
+{
+	do {
+		--it;
+	} while (it != vec->begin() && it->isDeleted());
+	return *this;
+}
+
+/**
+ * @brief Post decrement function that will be called if we need to jump deleted elements.
+ */
+template<template<typename, typename...> class Container, typename T>
+ConstElementContainerIterator<Container, T> ConstElementContainerIterator<Container, T>::postDecrementJump()
+{
+	ConstElementContainerIterator old = *this;
+	do {
+		--it;
+	} while (it != vec->begin() && it->isDeleted());
+	return old;
+}
+
+/**
+ * @brief Decrement function that will be called if we don't need to jump deleted elements.
+ */
+template<template<typename, typename...> class Container, typename T>
+ConstElementContainerIterator<Container, T> ConstElementContainerIterator<Container, T>::decrementFast()
+{
+	--it;
+	return *this;
+}
+
+/**
+ * @brief Post decrement function that will be called if we don't need to jump deleted elements.
+ */
+template<template<typename, typename...> class Container, typename T>
+ConstElementContainerIterator<Container, T> ConstElementContainerIterator<Container, T>::postDecrementFast()
+{
+	ConstElementContainerIterator old = *this;
+	--it;
 	return old;
 }
 

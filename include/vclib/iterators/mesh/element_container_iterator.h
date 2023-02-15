@@ -50,7 +50,7 @@ public:
 	using value_type        = T;
 	using reference         = T&;
 	using pointer           = T*;
-	using iterator_category = std::forward_iterator_tag;
+	using iterator_category = std::bidirectional_iterator_tag;
 
 	ElementContainerIterator();
 	ElementContainerIterator(ContIt it, const Container<T>& vec, bool jumpDeleted = true);
@@ -69,11 +69,19 @@ private:
 	ElementContainerIterator postIncrementJump();
 	ElementContainerIterator incrementFast();
 	ElementContainerIterator postIncrementFast();
+	ElementContainerIterator decrementJump();
+	ElementContainerIterator postDecrementJump();
+	ElementContainerIterator decrementFast();
+	ElementContainerIterator postDecrementFast();
 
 	// pointer to increment function, assigned in the constructor
 	ElementContainerIterator (ElementContainerIterator::*increment)();
 	// pointer to post increment function, assigned in the constructor
 	ElementContainerIterator (ElementContainerIterator::*postIncrement)();
+	// pointer to decrement function, assigned in the constructor
+	ElementContainerIterator (ElementContainerIterator::*decrement)();
+	// pointer to post decrement function, assigned in the constructor
+	ElementContainerIterator (ElementContainerIterator::*postDecrement)();
 
 	ContIt              it;  // the actual iterator
 	const Container<T>* vec = nullptr; // needed to check for end when jumping elements
@@ -95,7 +103,7 @@ public:
 	using value_type        = T;
 	using reference         = const T&;
 	using pointer           = const T*;
-	using iterator_category = std::forward_iterator_tag;
+	using iterator_category = std::bidirectional_iterator_tag;
 
 	ConstElementContainerIterator();
 	ConstElementContainerIterator(ContIt it, const Container<T>& vec, bool jumpDeleted = true);
@@ -115,11 +123,19 @@ private:
 	ConstElementContainerIterator postIncrementJump();
 	ConstElementContainerIterator incrementFast();
 	ConstElementContainerIterator postIncrementFast();
+	ConstElementContainerIterator decrementJump();
+	ConstElementContainerIterator postDecrementJump();
+	ConstElementContainerIterator decrementFast();
+	ConstElementContainerIterator postDecrementFast();
 
 	// pointer to increment function, assigned in the constructor
 	ConstElementContainerIterator (ConstElementContainerIterator::*increment)();
 	// pointer to post increment function, assigned in the constructor
 	ConstElementContainerIterator (ConstElementContainerIterator::*postIncrement)();
+	// pointer to decrement function, assigned in the constructor
+	ConstElementContainerIterator (ConstElementContainerIterator::*decrement)();
+	// pointer to post decrement function, assigned in the constructor
+	ConstElementContainerIterator (ConstElementContainerIterator::*postDecrement)();
 
 	ContIt              it;  // the actual iterator
 	const Container<T>* vec = nullptr; // needed to check for end when jumping elements
