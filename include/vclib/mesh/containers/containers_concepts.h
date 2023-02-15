@@ -24,6 +24,8 @@
 #ifndef  VCL_MESH_CONTAINERS_CONCEPTS_H
 #define  VCL_MESH_CONTAINERS_CONCEPTS_H
 
+#include <vector>
+
 #include <vclib/misc/types.h>
 
 namespace vcl::mesh {

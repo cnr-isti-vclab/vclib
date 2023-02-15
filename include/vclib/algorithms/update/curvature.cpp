@@ -23,6 +23,8 @@
 
 #include "curvature.h"
 
+#include <mutex>
+
 #include <vclib/algorithms/update/normal.h>
 #include <vclib/algorithms/stat.h>
 #include <vclib/algorithms/point_sampling.h>
@@ -30,6 +32,7 @@
 #include <vclib/iterators/pointer_iterator.h>
 #include <vclib/math/matrix.h>
 #include <vclib/mesh_utils/mesh_pos.h>
+#include <vclib/misc/parallel.h>
 #include <vclib/space/principal_curvature.h>
 #include <vclib/space/spatial_data_structures.h>
 
@@ -259,6 +262,7 @@ void updatePrincipalCurvaturePCA(
 	using VGrid = typename vcl::HashTableGrid3<VertexType*>;
 	using VGridIterator = typename VGrid::ConstIterator;
 
+	std::mutex mutex;
 	vcl::PointSampler<CoordType> sampler;
 	VGrid pGrid;
 	ScalarType area;
@@ -286,7 +290,8 @@ void updatePrincipalCurvaturePCA(
 		//pGrid.build();
 	}
 
-	for (VertexType& v : m.vertices()) {
+	std::for_each(std::execution::par, m.vertices().begin(), m.vertices().end(), [&](VertexType& v){
+	//for (VertexType& v : m.vertices()) {
 		vcl::Matrix33<ScalarType> A, eigenvectors;
 		CoordType bp, eigenvalues;
 		if (montecarloSampling) {
@@ -354,11 +359,14 @@ void updatePrincipalCurvaturePCA(
 		if constexpr (vcl::isLoggerValid<LogType>()) {
 			uint n = m.index(v);
 			if (n % logVertStep == 0) {
+				mutex.lock();
 				logPerc += logPercStep;
 				log.log(logPerc, "");
+				mutex.unlock();
 			}
 		}
-	}
+	//}
+	});
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
 		log.log(100, "Per vertex curvature computed.");

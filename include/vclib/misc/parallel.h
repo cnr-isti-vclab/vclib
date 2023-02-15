@@ -26,6 +26,25 @@
 
 #include <vclib/misc/types.h>
 
+// tbb and qt conflicts: if both are linked, we need to first undef Qt's emit
+// see: https://github.com/oneapi-src/oneTBB/issues/547
+#ifndef Q_MOC_RUN
+#if defined(emit)
+#undef emit
+#include <execution>
+#define emit // restore the macro definition of "emit", as it was defined in gtmetamacros.h
+#else
+#include <execution>
+#endif // defined(emit)
+#endif // Q_MOC_RUN
+
+// clang does not support Standardization of Parallelism yet -> https://en.cppreference.com/w/cpp/compiler_support
+#ifdef __clang__
+#define VCL_PARALLEL
+#else
+#define VCL_PARALLEL std::execution::par_unseq,
+#endif
+
 namespace vcl {
 
 template<typename Iterator, typename Lambda>

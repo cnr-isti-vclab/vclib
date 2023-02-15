@@ -25,6 +25,8 @@
 
 #include <algorithm>
 
+#include <vclib/misc/parallel.h>
+
 namespace vcl {
 
 template<FaceMeshConcept MeshType>
