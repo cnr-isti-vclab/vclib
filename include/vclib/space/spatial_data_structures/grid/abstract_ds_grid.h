@@ -188,12 +188,12 @@ protected:
 private:
 	using Boxui = vcl::Box<Point<uint, GridType::DIM>>;
 
-	mutable uint m = 1; // mark of the data structure
+//	mutable uint m = 1; // mark of the data structure
 	std::deque<vcl::Markable<ValueType>> values;
 
-	bool isMarked(const vcl::Markable<ValueType>& v) const;
-	void mark(const vcl::Markable<ValueType>& v) const;
-	void unMarkAll() const;
+//	bool isMarked(const vcl::Markable<ValueType>& v) const;
+//	void mark(const vcl::Markable<ValueType>& v) const;
+//	void unMarkAll() const;
 
 	template<typename Iterator>
 	bool valueIsInSpehere(const Iterator& it, const Sphere<typename GridType::ScalarType>& s) const;

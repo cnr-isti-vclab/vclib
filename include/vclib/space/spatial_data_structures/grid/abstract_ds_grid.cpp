@@ -175,7 +175,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 	KeyType first = GridType::cell(s.center() - s.radius());
 	KeyType last = GridType::cell(s.center() + s.radius());
 
-	unMarkAll();
+	//unMarkAll();
 
 	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
 		// p is a pair of iterators
@@ -198,7 +198,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 	KeyType first = GridType::cell(s.center() - s.radius());
 	KeyType last = GridType::cell(s.center() + s.radius());
 
-	unMarkAll();
+	//unMarkAll();
 
 	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the interval
 		// p is a pair of iterators
@@ -249,7 +249,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 		currentIntervalBox.add(GridType::cell(bb.min)); // first cell where look for closest
 		currentIntervalBox.add(GridType::cell(bb.max)); // last cell where look for closest
 
-		unMarkAll();
+		//unMarkAll();
 
 		// looking just on cells where query lies
 		result = closestInCells(qv, cellDiag, currentIntervalBox, distFunction);
@@ -301,7 +301,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	using KClosestSet = std::set<KClosestPairType, PairComparator>;
 	using ResType = std::vector<typename DerivedGrid::ConstIterator>;
 
-	unMarkAll();
+	//unMarkAll();
 	Boxui ignore; // will contain the interval of cells already visited
 	KClosestSet set = valuesInCellNeighborhood(qv, n, distFunction, ignore);
 
@@ -326,11 +326,11 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 			if (!ignore.isInsideOpenBox(c)) {
 				const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 				for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-					if (!isMarked(it.markableValue())) {
-						mark(it.markableValue());
+					//if (!isMarked(it.markableValue())) {
+						//mark(it.markableValue());
 						auto tmp = distFunction(qv, it->second);
 						set.insert(std::make_pair(tmp, it));
-					}
+					//}
 				}
 			}
 		}
@@ -444,25 +444,25 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 	}
 }
 
-template<typename GridType, typename ValueType, typename DerivedGrid>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::isMarked(
-	const vcl::Markable<ValueType>& v) const
-{
-	return v.mark() == m;
-}
+//template<typename GridType, typename ValueType, typename DerivedGrid>
+//bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::isMarked(
+//	const vcl::Markable<ValueType>& v) const
+//{
+//	return v.mark() == m;
+//}
 
-template<typename GridType, typename ValueType, typename DerivedGrid>
-void AbstractDSGrid<GridType, ValueType, DerivedGrid>::mark(
-	const vcl::Markable<ValueType>& v) const
-{
-	v.mark() = m;
-}
+//template<typename GridType, typename ValueType, typename DerivedGrid>
+//void AbstractDSGrid<GridType, ValueType, DerivedGrid>::mark(
+//	const vcl::Markable<ValueType>& v) const
+//{
+//	v.mark() = m;
+//}
 
-template<typename GridType, typename ValueType, typename DerivedGrid>
-void AbstractDSGrid<GridType, ValueType, DerivedGrid>::unMarkAll() const
-{
-	m++;
-}
+//template<typename GridType, typename ValueType, typename DerivedGrid>
+//void AbstractDSGrid<GridType, ValueType, DerivedGrid>::unMarkAll() const
+//{
+//	m++;
+//}
 
 /**
  * This function is meant to be called by another function of the AbstractGrid.
@@ -487,10 +487,10 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
 		test = vv && s.isInside(p);
 	}
 	else { // check if the bbox of the value intersects the sphere
-		if (!isMarked(it.markableValue())) {
+		//if (!isMarked(it.markableValue())) {
 			test = vv && s.intersects(vcl::boundingBox(*vv));
-			mark(it.markableValue());
-		}
+			//mark(it.markableValue());
+		//}
 	}
 	return test;
 }
@@ -519,14 +519,14 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestInCells(
 			// p is a pair of iterators
 			const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 			for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-				if (!isMarked(it.markableValue())) {
-					mark(it.markableValue());
+				//if (!isMarked(it.markableValue())) {
+					//mark(it.markableValue());
 					auto tmp = distFunction(qv, it->second);
 					if (tmp < dist) {
 						dist = tmp;
 						res = it;
 					}
-				}
+				//}
 			}
 		}
 	}
@@ -563,11 +563,11 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 				if (!ignore.isInsideOpenBox(c)) {
 					const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 					for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-						if (!isMarked(it.markableValue())) {
-							mark(it.markableValue());
+						//if (!isMarked(it.markableValue())) {
+							//mark(it.markableValue());
 							auto tmp = distFunction(qv, it->second);
 							res.insert(std::make_pair(tmp, it));
-						}
+						//}
 					}
 				}
 			}
