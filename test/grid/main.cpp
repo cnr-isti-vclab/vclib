@@ -115,7 +115,7 @@ int main()
 	std::cerr << "Values in StaticGrid: \n";
 
 	for (const auto& p : sg) {
-		std::cerr << p.key << ": " << p.value << "\n";
+		std::cerr << p.first << ": " << p.second << "\n";
 	}
 
 	std::cerr << "Values in cell 0, 1, 2: \n";
@@ -149,7 +149,7 @@ int main()
 
 	std::cerr << "Values in HashTableGrid: \n";
 
-	for (auto p : fsht) {
+	for (const auto& p : fsht) {
 		std::cerr << p.first << ": " << m.index(p.second) << "\n";
 	}
 
@@ -168,7 +168,7 @@ int main()
 	std::cerr << "Values in Static Grid : \n";
 
 	for (const auto& p : fsg) {
-		std::cerr << p.key << ": " << m.index(p.value) << "\n";
+		std::cerr << p.first << ": " << m.index(p.second) << "\n";
 	}
 
 	std::cerr << "\nValues in Sphere: \n";

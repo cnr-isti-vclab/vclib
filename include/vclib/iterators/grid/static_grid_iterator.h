@@ -36,7 +36,7 @@ class StaticGridIterator
 	using VecIt = typename std::vector<std::pair<uint, ValueType>>::iterator;
 
 public:
-	using T = KeyValueRefPair<KeyType, ValueType>;
+	using T = SecondRefPair<KeyType, ValueType>;
 	using value_type = T;
 
 	class ArrowHelper
@@ -71,7 +71,7 @@ class ConstStaticGridIterator
 	using VecIt = typename std::vector<std::pair<uint, ValueType>>::const_iterator;
 
 public:
-	using T = KeyValueRefPair<KeyType, const ValueType>;
+	using T = SecondRefPair<KeyType, const ValueType>;
 	using value_type = T;
 
 	class ArrowHelper
