@@ -55,7 +55,6 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v
 	const VT* vv = getCleanValueTypePointer(v);
 
 	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
-		values.push_back(v);
 
 		KeyType bmin, bmax; // first and last cell where insert (could be the same)
 
@@ -80,17 +79,14 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v
 		if (intersects) { // custom intersection function between cell and value
 			for (const auto& cell : GridType::cells(bmin, bmax)) {
 				if (intersects(GridType::cellBox(cell), v)) {
-					ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, &values.back());
+					ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
 				}
 			}
 		}
 		else {
 			for (const auto& cell : GridType::cells(bmin, bmax)) {
-				ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, &values.back());
+				ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
 			}
-		}
-		if (!ins) {
-			values.pop_back();
 		}
 		return ins;
 	}
@@ -175,8 +171,6 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 	KeyType first = GridType::cell(s.center() - s.radius());
 	KeyType last = GridType::cell(s.center() + s.radius());
 
-	//unMarkAll();
-
 	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
 		// p is a pair of iterators
 		const auto& p = static_cast<DerivedGrid*>(this)->valuesInCell(c);
@@ -197,8 +191,6 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 	// interval of cells containing the sphere
 	KeyType first = GridType::cell(s.center() - s.radius());
 	KeyType last = GridType::cell(s.center() + s.radius());
-
-	//unMarkAll();
 
 	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the interval
 		// p is a pair of iterators
@@ -248,8 +240,6 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 		typename GridType::BBoxType bb = vcl::boundingBox(*qvv); //bbox of query value
 		currentIntervalBox.add(GridType::cell(bb.min)); // first cell where look for closest
 		currentIntervalBox.add(GridType::cell(bb.max)); // last cell where look for closest
-
-		//unMarkAll();
 
 		// looking just on cells where query lies
 		result = closestInCells(qv, cellDiag, currentIntervalBox, distFunction);
@@ -301,7 +291,6 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	using KClosestSet = std::set<KClosestPairType, PairComparator>;
 	using ResType = std::vector<typename DerivedGrid::ConstIterator>;
 
-	//unMarkAll();
 	Boxui ignore; // will contain the interval of cells already visited
 	KClosestSet set = valuesInCellNeighborhood(qv, n, distFunction, ignore);
 
@@ -326,11 +315,8 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 			if (!ignore.isInsideOpenBox(c)) {
 				const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 				for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-					//if (!isMarked(it.markableValue())) {
-						//mark(it.markableValue());
-						auto tmp = distFunction(qv, it->second);
-						set.insert(std::make_pair(tmp, it));
-					//}
+					auto tmp = distFunction(qv, it->second);
+					set.insert(std::make_pair(tmp, it));
 				}
 			}
 		}
@@ -447,7 +433,6 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 /**
  * This function is meant to be called by another function of the AbstractGrid.
  * Check if the current iterated value is inside a sphere
- * Sets and checks for marks, but does not unMark before execution.
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename Iterator>
@@ -467,10 +452,7 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
 		test = vv && s.isInside(p);
 	}
 	else { // check if the bbox of the value intersects the sphere
-		//if (!isMarked(it.markableValue())) {
-			test = vv && s.intersects(vcl::boundingBox(*vv));
-			//mark(it.markableValue());
-		//}
+		test = vv && s.intersects(vcl::boundingBox(*vv));
 	}
 	return test;
 }
@@ -478,7 +460,6 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
 /**
  * This function is meant to be called by another function of the AbstractGrid.
  * Returns the closest Value (if any) to the given query value contained in the given interval of
- * cells. Sets and checks for marks, but does not unMark before execution.
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
@@ -499,14 +480,11 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestInCells(
 			// p is a pair of iterators
 			const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 			for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-				//if (!isMarked(it.markableValue())) {
-					//mark(it.markableValue());
-					auto tmp = distFunction(qv, it->second);
-					if (tmp < dist) {
-						dist = tmp;
-						res = it;
-					}
-				//}
+				auto tmp = distFunction(qv, it->second);
+				if (tmp < dist) {
+					dist = tmp;
+					res = it;
+				}
 			}
 		}
 	}
@@ -537,17 +515,14 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 		currentIntervalBox.add(GridType::cell(bb.max)); // last cell where look for closest
 
 		ignore.setNull();
-		while (res.size() < n && res.size() < values.size() && currentIntervalBox != ignore) {
+		while (res.size() < n && /*res.size() < values.size() &&*/ currentIntervalBox != ignore) {
 			// for each cell in the interval
 			for (const KeyType& c : GridType::cells(currentIntervalBox.min, currentIntervalBox.max)) {
 				if (!ignore.isInsideOpenBox(c)) {
 					const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 					for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-						//if (!isMarked(it.markableValue())) {
-							//mark(it.markableValue());
-							auto tmp = distFunction(qv, it->second);
-							res.insert(std::make_pair(tmp, it));
-						//}
+						auto tmp = distFunction(qv, it->second);
+						res.insert(std::make_pair(tmp, it));
 					}
 				}
 			}

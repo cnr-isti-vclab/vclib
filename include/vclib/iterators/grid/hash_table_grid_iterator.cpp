@@ -40,7 +40,7 @@ template<typename KeyType, typename ValueType>
 typename HashTableGridIterator<KeyType, ValueType>::value_type
 HashTableGridIterator<KeyType, ValueType>::operator *() const
 {
-	return value_type(mapIt->first, *mapIt->second);
+	return value_type(mapIt->first, mapIt->second);
 }
 
 template<typename KeyType, typename ValueType>
@@ -92,7 +92,7 @@ template<typename KeyType, typename ValueType>
 typename ConstHashTableGridIterator<KeyType, ValueType>::value_type
 ConstHashTableGridIterator<KeyType, ValueType>::operator *() const
 {
-	return value_type(mapIt->first, *mapIt->second);
+	return value_type(mapIt->first, mapIt->second);
 }
 
 template<typename KeyType, typename ValueType>

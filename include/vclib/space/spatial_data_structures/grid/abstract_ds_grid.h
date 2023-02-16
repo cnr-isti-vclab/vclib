@@ -185,7 +185,7 @@ protected:
 private:
 	using Boxui = vcl::Box<Point<uint, GridType::DIM>>;
 
-	std::deque<ValueType> values;
+	//std::deque<ValueType> values;
 
 	template<typename Iterator>
 	bool valueIsInSpehere(const Iterator& it, const Sphere<typename GridType::ScalarType>& s) const;

@@ -183,8 +183,8 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::end() const
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insertInCell(
-	const KeyType&       k,
-	ValueType* v)
+	const KeyType&   k,
+	const ValueType& v)
 {
 	if constexpr (AllowDuplicates) {
 		map.insert(MapValueType(k, v));

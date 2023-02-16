@@ -92,14 +92,14 @@ public:
 	ConstIterator end() const;
 
 private:
-	using MapType      = typename std::unordered_multimap<KeyType, ValueType*>;
+	using MapType      = typename std::unordered_multimap<KeyType, ValueType>;
 	using MapIterator  = typename MapType::iterator;
 	using MapValueType = typename MapType::value_type;
 
 	mutable uint m = 1;
 	MapType map;
 
-	bool insertInCell(const KeyType& k, ValueType* v);
+	bool insertInCell(const KeyType& k, const ValueType& v);
 	bool eraseInCell(const KeyType& k, const ValueType& v);
 };
 

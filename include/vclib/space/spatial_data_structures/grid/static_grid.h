@@ -41,7 +41,7 @@ class StaticGrid : public AbstractDSGrid<GridType, ValueType, StaticGrid<GridTyp
 {
 	using AbstractGrid = AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
 
-	using PairType =  std::pair<uint, ValueType*>;
+	using PairType =  std::pair<uint, ValueType>;
 	using PairComparator = FirstElementPairComparator<PairType>;
 
 	friend AbstractGrid;
@@ -91,7 +91,7 @@ private:
 	using AbstractGrid::eraseAllInCell;
 	using AbstractGrid::eraseInSphere;
 
-	bool insertInCell(const KeyType& cell, ValueType* v);
+	bool insertInCell(const KeyType& cell, const ValueType& v);
 	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
 };
 
