@@ -184,7 +184,7 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::end() const
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insertInCell(
 	const KeyType&       k,
-	MarkableValuePointer v)
+	ValueType* v)
 {
 	if constexpr (AllowDuplicates) {
 		map.insert(MapValueType(k, v));
@@ -194,7 +194,7 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insertInCell(
 		auto range = map.equal_range(k);
 		bool found = false;
 		for(MapIterator ci = range.first; ci != range.second && !found; ++ci) {
-			if (ci->second->get() == v->get()) {
+			if (ci->second == v) {
 				found = true;
 			}
 		}
@@ -213,7 +213,7 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInCell(
 
 	std::pair<MapIterator, MapIterator> range = map.equal_range(k);
 	for(MapIterator ci = range.first; ci != range.second; ++ci) {
-		if (ci->second->get() == v) {
+		if (ci->second == v) {
 			found = true;
 			map.erase(ci);
 			if constexpr (!AllowDuplicates) {

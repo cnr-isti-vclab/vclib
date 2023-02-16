@@ -105,9 +105,6 @@ namespace vcl {
 template<typename GridType, typename ValueType, typename DerivedGrid>
 class AbstractDSGrid : public GridType
 {
-protected:
-	using MarkableValuePointer = vcl::Markable<ValueType>*;
-
 private:
 	// ValueType could be anything. We need to understand if it is a pointer, a reference or not, in
 	// order to make proper optimized operations. Therefore, we declare VT, that is used internally
@@ -188,12 +185,7 @@ protected:
 private:
 	using Boxui = vcl::Box<Point<uint, GridType::DIM>>;
 
-//	mutable uint m = 1; // mark of the data structure
-	std::deque<vcl::Markable<ValueType>> values;
-
-//	bool isMarked(const vcl::Markable<ValueType>& v) const;
-//	void mark(const vcl::Markable<ValueType>& v) const;
-//	void unMarkAll() const;
+	std::deque<ValueType> values;
 
 	template<typename Iterator>
 	bool valueIsInSpehere(const Iterator& it, const Sphere<typename GridType::ScalarType>& s) const;

@@ -55,7 +55,7 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v
 	const VT* vv = getCleanValueTypePointer(v);
 
 	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
-		values.push_back(vcl::Markable<ValueType>(v));
+		values.push_back(v);
 
 		KeyType bmin, bmax; // first and last cell where insert (could be the same)
 
@@ -443,26 +443,6 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 		GridType::set(bbox, sizes);
 	}
 }
-
-//template<typename GridType, typename ValueType, typename DerivedGrid>
-//bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::isMarked(
-//	const vcl::Markable<ValueType>& v) const
-//{
-//	return v.mark() == m;
-//}
-
-//template<typename GridType, typename ValueType, typename DerivedGrid>
-//void AbstractDSGrid<GridType, ValueType, DerivedGrid>::mark(
-//	const vcl::Markable<ValueType>& v) const
-//{
-//	v.mark() = m;
-//}
-
-//template<typename GridType, typename ValueType, typename DerivedGrid>
-//void AbstractDSGrid<GridType, ValueType, DerivedGrid>::unMarkAll() const
-//{
-//	m++;
-//}
 
 /**
  * This function is meant to be called by another function of the AbstractGrid.

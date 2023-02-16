@@ -33,7 +33,7 @@ namespace vcl {
 template<typename KeyType, typename ValueType, typename GridType>
 class StaticGridIterator
 {
-	using VecIt = typename std::vector<std::pair<uint, vcl::Markable<ValueType>*>>::iterator;
+	using VecIt = typename std::vector<std::pair<uint, ValueType*>>::iterator;
 
 public:
 	using T = KeyValueRefPair<KeyType, ValueType>;
@@ -50,9 +50,6 @@ public:
 
 	StaticGridIterator();
 	StaticGridIterator(VecIt it, const GridType& g);
-
-	const Markable<ValueType>& markableValue() const;
-	Markable<ValueType>& markableValue();
 
 	value_type  operator*() const;
 	ArrowHelper operator->() const;
@@ -71,7 +68,7 @@ private:
 template<typename KeyType, typename ValueType, typename GridType>
 class ConstStaticGridIterator
 {
-	using VecIt = typename std::vector<std::pair<uint, vcl::Markable<ValueType>*>>::const_iterator;
+	using VecIt = typename std::vector<std::pair<uint, ValueType*>>::const_iterator;
 
 public:
 	using T = KeyValueRefPair<KeyType, const typename std::remove_reference<ValueType>::type>;
@@ -88,8 +85,6 @@ public:
 
 	ConstStaticGridIterator();
 	ConstStaticGridIterator(VecIt it, const GridType& g);
-
-	const Markable<ValueType>& markableValue() const;
 
 	value_type  operator*() const;
 	ArrowHelper operator->() const;

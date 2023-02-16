@@ -40,23 +40,11 @@ StaticGridIterator<KeyType, ValueType, GridType>::StaticGridIterator(
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-const Markable<ValueType>& StaticGridIterator<KeyType, ValueType, GridType>::markableValue() const
-{
-	return *vecIt->second;
-}
-
-template<typename KeyType, typename ValueType, typename GridType>
-Markable<ValueType>& StaticGridIterator<KeyType, ValueType, GridType>::markableValue()
-{
-	return *vecIt->second;
-}
-
-template<typename KeyType, typename ValueType, typename GridType>
 typename StaticGridIterator<KeyType, ValueType, GridType>::value_type
 StaticGridIterator<KeyType, ValueType, GridType>::operator*() const
 {
 	KeyType cell = g->cellOfIndex(vecIt->first);
-	return value_type(cell, vecIt->second->get());
+	return value_type(cell, *vecIt->second);
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
@@ -112,17 +100,11 @@ ConstStaticGridIterator<KeyType, ValueType, GridType>::ConstStaticGridIterator(
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-const Markable<ValueType>& ConstStaticGridIterator<KeyType, ValueType, GridType>::markableValue() const
-{
-	return *vecIt->second;
-}
-
-template<typename KeyType, typename ValueType, typename GridType>
 typename ConstStaticGridIterator<KeyType, ValueType, GridType>::value_type
 ConstStaticGridIterator<KeyType, ValueType, GridType>::operator*() const
 {
 	KeyType cell = g->cellOfIndex(vecIt->first);
-	return value_type(cell, vecIt->second->get());
+	return value_type(cell, *vecIt->second);
 }
 
 template<typename KeyType, typename ValueType, typename GridType>

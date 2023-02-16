@@ -37,22 +37,10 @@ HashTableGridIterator<KeyType, ValueType>::HashTableGridIterator(MapIt it) :
 }
 
 template<typename KeyType, typename ValueType>
-const Markable<ValueType>& HashTableGridIterator<KeyType, ValueType>::markableValue() const
-{
-	return *mapIt->second;
-}
-
-template<typename KeyType, typename ValueType>
-Markable<ValueType>& HashTableGridIterator<KeyType, ValueType>::markableValue()
-{
-	return *mapIt->second;
-}
-
-template<typename KeyType, typename ValueType>
 typename HashTableGridIterator<KeyType, ValueType>::value_type
 HashTableGridIterator<KeyType, ValueType>::operator *() const
 {
-	return value_type(mapIt->first, mapIt->second->get());
+	return value_type(mapIt->first, *mapIt->second);
 }
 
 template<typename KeyType, typename ValueType>
@@ -101,16 +89,10 @@ ConstHashTableGridIterator<KeyType, ValueType>::ConstHashTableGridIterator(MapIt
 }
 
 template<typename KeyType, typename ValueType>
-const Markable<ValueType>& ConstHashTableGridIterator<KeyType, ValueType>::markableValue() const
-{
-	return *mapIt->second;
-}
-
-template<typename KeyType, typename ValueType>
 typename ConstHashTableGridIterator<KeyType, ValueType>::value_type
 ConstHashTableGridIterator<KeyType, ValueType>::operator *() const
 {
-	return value_type(mapIt->first, mapIt->second->get());
+	return value_type(mapIt->first, *mapIt->second);
 }
 
 template<typename KeyType, typename ValueType>

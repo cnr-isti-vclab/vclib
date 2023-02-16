@@ -40,9 +40,8 @@ template<typename GridType, typename ValueType>
 class StaticGrid : public AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>
 {
 	using AbstractGrid = AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
-	using MarkableValuePointer = typename AbstractGrid::MarkableValuePointer;;
 
-	using PairType =  std::pair<uint, MarkableValuePointer>;
+	using PairType =  std::pair<uint, ValueType*>;
 	using PairComparator = FirstElementPairComparator<PairType>;
 
 	friend AbstractGrid;
@@ -92,7 +91,7 @@ private:
 	using AbstractGrid::eraseAllInCell;
 	using AbstractGrid::eraseInSphere;
 
-	bool insertInCell(const KeyType& cell, MarkableValuePointer v);
+	bool insertInCell(const KeyType& cell, ValueType* v);
 	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
 };
 

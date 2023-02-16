@@ -192,7 +192,7 @@ typename StaticGrid<GridType, ValueType>::ConstIterator StaticGrid<GridType, Val
 }
 
 template<typename GridType, typename ValueType>
-bool StaticGrid<GridType, ValueType>::insertInCell(const KeyType& cell, MarkableValuePointer v)
+bool StaticGrid<GridType, ValueType>::insertInCell(const KeyType& cell, ValueType* v)
 {
 	uint cellIndex = GridType::indexOfCell(cell);
 	values.push_back(std::make_pair(cellIndex, v));
