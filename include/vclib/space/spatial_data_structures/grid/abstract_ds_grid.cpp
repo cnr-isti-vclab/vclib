@@ -163,30 +163,17 @@ uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::countInSphere(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
-	const Sphere<typename GridType::ScalarType>& s)
-{
-	std::vector<typename DerivedGrid::Iterator> resVec;
-
-	// interval of cells containing the sphere
-	KeyType first = GridType::cell(s.center() - s.radius());
-	KeyType last = GridType::cell(s.center() + s.radius());
-
-	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the intervall
-		// p is a pair of iterators
-		const auto& p = static_cast<DerivedGrid*>(this)->valuesInCell(c);
-		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-			if (valueIsInSpehere(it, s))
-				resVec.push_back(it);
-		}
-	}
-	return resVec;
-}
-
-template<typename GridType, typename ValueType, typename DerivedGrid>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 	const Sphere<typename GridType::ScalarType>& s) const
 {
-	std::vector<typename DerivedGrid::ConstIterator> resVec;
+	using Iter = typename DerivedGrid::ConstIterator;
+	using IterSet = std::set<Iter, IterComparator<Iter>>;
+
+	// will use this set only if the value type is not a point -- that is when the value can occupy
+	// more than one single cell. We therefore push the results in a set in order to avoid
+	// possible duplicates
+	IterSet valuesSet;
+
+	std::vector<Iter> resVec;
 
 	// interval of cells containing the sphere
 	KeyType first = GridType::cell(s.center() - s.radius());
@@ -196,9 +183,20 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 		// p is a pair of iterators
 		const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-			if (valueIsInSpehere(it, s))
-				resVec.push_back(it);
+			if (valueIsInSpehere(it, s)) {
+				if constexpr (!PointConcept<VT> && !VertexConcept<VT>) {
+					valuesSet.insert(it);
+				}
+				else {
+					resVec.push_back(it);
+				}
+			}
 		}
+	}
+
+	// if the valuetype is a point (or vertex), we already pushed in resVec - faster than using set
+	if constexpr (!PointConcept<VT> && !VertexConcept<VT>) {
+		resVec = std::vector<Iter>(valuesSet.begin(), valuesSet.end());
 	}
 	return resVec;
 }
@@ -207,10 +205,19 @@ template<typename GridType, typename ValueType, typename DerivedGrid>
 void AbstractDSGrid<GridType, ValueType, DerivedGrid>::eraseInSphere(
 	const Sphere<typename GridType::ScalarType>& s)
 {
-	// vector of iterators
-	auto toDel = valuesInSphere(s);
-	for (auto& it : toDel)
-		eraseInCell(it->first, it->second);
+	// interval of cells containing the sphere
+	KeyType first = GridType::cell(s.center() - s.radius());
+	KeyType last = GridType::cell(s.center() + s.radius());
+
+	for (const KeyType& c : GridType::cells(first, last)) { // for each cell in the interval
+		// p is a pair of iterators
+		const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
+		for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
+			if (valueIsInSpehere(it, s)) {
+				eraseInCell(it->first, it->second);
+			}
+		}
+	}
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
@@ -285,13 +292,14 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	uint                              n,
 	QueryDistFunction<QueryValueType> distFunction) const
 {
-	// types used for K closest neighbors queries
-	using KClosestPairType =  std::pair<typename GridType::ScalarType, typename DerivedGrid::ConstIterator>;
-	using PairComparator = FirstElementPairComparator<KClosestPairType>;
-	using KClosestSet = std::set<KClosestPairType, PairComparator>;
 	using ResType = std::vector<typename DerivedGrid::ConstIterator>;
+	// KClosest Types
+	using KClosestPairType =
+		std::pair<typename GridType::ScalarType, typename DerivedGrid::ConstIterator>;
+	using KClosestSet = std::set<KClosestPairType, DistIterPairComparator<KClosestPairType>>;
 
 	Boxui ignore; // will contain the interval of cells already visited
+
 	KClosestSet set = valuesInCellNeighborhood(qv, n, distFunction, ignore);
 
 	auto it = set.size() >= n ? std::next(set.begin(), n) : set.end();
@@ -500,9 +508,9 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 	Boxui& ignore) const
 {
 	// types used for K closest neighbors queries
-	using KClosestPairType =  std::pair<typename GridType::ScalarType, typename DerivedGrid::ConstIterator>;
-	using PairComparator = FirstElementPairComparator<KClosestPairType>;
-	using KClosestSet = std::set<KClosestPairType, PairComparator>;
+	using KClosestPairType =
+		std::pair<typename GridType::ScalarType, typename DerivedGrid::ConstIterator>;
+	using KClosestSet = std::set<KClosestPairType, DistIterPairComparator<KClosestPairType>>;
 	KClosestSet res;
 
 	using QVT = RemoveRefAndPointer<QueryValueType>;

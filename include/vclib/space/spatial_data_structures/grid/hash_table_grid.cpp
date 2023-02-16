@@ -148,7 +148,7 @@ template<typename GridType, typename ValueType, bool AllowDuplicates>
 void HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInSphere(
 	const Sphere<typename GridType::ScalarType>& s)
 {
-	std::vector<Iterator> toDel = AbstractGrid::valuesInSphere(s);
+	std::vector<ConstIterator> toDel = AbstractGrid::valuesInSphere(s);
 	for (auto& it : toDel)
 		map.erase(it);
 }

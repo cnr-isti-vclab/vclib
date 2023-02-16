@@ -133,8 +133,6 @@ public:
 	uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	// vector of iterators - return type must be auto here (we still don't know the iterator type)
-	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s);
-	// vector of const iterators - return type must be auto also here
 	auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const;
 
 	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
@@ -179,6 +177,26 @@ protected:
 
 private:
 	using Boxui = vcl::Box<Point<uint, GridType::DIM>>;
+
+	template<typename Iter>
+	struct IterComparator
+	{
+		bool operator()(const Iter& i1, const Iter& i2) const {
+			return i1->second < i2->second;
+		}
+	};
+
+	template<typename Pair>
+	struct DistIterPairComparator
+	{
+		bool operator()(const Pair& p1, const Pair& p2) const
+		{
+			if (p1.first == p2.first) {
+				return p1.second->second < p2.second->second;
+			}
+			return p1.first < p2.first;
+		}
+	};
 
 	//std::deque<ValueType> values;
 

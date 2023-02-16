@@ -30,6 +30,23 @@
 namespace vcl {
 
 /**
+ * @brief The PairComparator struct is an utility comparator to allow to sort pairs in lexical order
+ *
+ * It first compare the first element, and in case they are equal it compares the second element.
+ */
+template<typename Pair>
+struct PairComparator
+{
+	bool operator()(const Pair& p1, const Pair& p2) const
+	{
+		if (p1.first == p2.first) {
+			return p1.second < p2.second;
+		}
+		return p1.first < p2.first;
+	}
+};
+
+/**
  * @brief The UnorderedPairComparator struct is an utility comparator to allow to sort unordered
  * std::pair<T, T>, that means that it is not important the order of the first and the second
  * element of the pair. This menas that pairs (1, 2) and (2, 1) are considered equal, and
@@ -56,6 +73,8 @@ struct UnorderedPairComparator
  * @brief The FirstElementPairComparator struct is an utility comparator that allow to sort
  * std::pair (or any type that has a sortable member called 'first') using only its first element.
  * The second element of the Pair type is ignored and won't be considered by the comparator.
+ * This means that pairs having equal first elements but different second elements will be
+ * considered as equals.
  */
 template<typename Pair>
 struct FirstElementPairComparator
