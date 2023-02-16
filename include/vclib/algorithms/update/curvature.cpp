@@ -286,7 +286,7 @@ void updatePrincipalCurvaturePCA(
 		area = vcl::surfaceArea(m);
 		uint nSamples = 1000 * area * (2 * M_PI * radius * radius);
 		sampler = vcl::montecarloPointSampling<vcl::PointSampler<CoordType>>(m, nSamples);
-		pGrid.insert(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+		pGrid = VGrid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
 		//pGrid.build();
 	}
 
