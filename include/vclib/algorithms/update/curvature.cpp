@@ -295,7 +295,7 @@ void updatePrincipalCurvaturePCA(
 		vcl::Matrix33<ScalarType> A, eigenvectors;
 		CoordType bp, eigenvalues;
 		if (montecarloSampling) {
-			std::vector<VGridIterator> vec = std::as_const(pGrid).valuesInSphere({v.coord(), radius});
+			std::vector<VGridIterator> vec = pGrid.valuesInSphere({v.coord(), radius});
 			std::vector<CoordType> points;
 			points.reserve(vec.size());
 			for (const auto& it : vec){
