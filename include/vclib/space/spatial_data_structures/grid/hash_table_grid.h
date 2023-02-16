@@ -27,7 +27,6 @@
 #include <set>
 #include <unordered_map>
 
-#include <vclib/iterators/grid/hash_table_grid_iterator.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/spatial_data_structures/grid.h>
 
@@ -63,8 +62,8 @@ public:
 	using KeyType = typename AbstractGrid::KeyType;
 	using IsInCellFunction = typename AbstractGrid::IsInCellFunction;
 
-	using Iterator = HashTableGridIterator<KeyType, ValueType>;
-	using ConstIterator = ConstHashTableGridIterator<KeyType, ValueType>;
+	using Iterator = typename std::unordered_multimap<KeyType, ValueType>::iterator;
+	using ConstIterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
 
 	HashTableGrid();
 	HashTableGrid(const GridType& g);
@@ -93,7 +92,6 @@ public:
 
 private:
 	using MapType      = typename std::unordered_multimap<KeyType, ValueType>;
-	using MapIterator  = typename MapType::iterator;
 	using MapValueType = typename MapType::value_type;
 
 	mutable uint m = 1;

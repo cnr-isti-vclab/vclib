@@ -107,7 +107,6 @@ set(HEADERS
 	include/vclib/iterators/range_iterator.h
 	include/vclib/iterators/grid/cell_iterator.h
 	include/vclib/iterators/grid/cell_range_iterator.h
-	include/vclib/iterators/grid/hash_table_grid_iterator.h
 	include/vclib/iterators/grid/static_grid_iterator.h
 	include/vclib/iterators/mesh/element_container_iterator.h
 	include/vclib/iterators/mesh/element_container_range_iterator.h
@@ -326,7 +325,6 @@ set(SOURCES
 	include/vclib/io/ply/ply_tristrip.cpp
 	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/iterators/grid/cell_iterator.cpp
-	include/vclib/iterators/grid/hash_table_grid_iterator.cpp
 	include/vclib/iterators/grid/static_grid_iterator.cpp
 	include/vclib/iterators/mesh/element_container_iterator.cpp
 	include/vclib/iterators/mesh/half_edge/face_base_iterator.cpp

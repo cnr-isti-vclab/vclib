@@ -37,17 +37,15 @@ namespace vcl {
 
 // Developer Documentation
 // A class that derives from an AbstractDSGrid must store, in some way, an association between a
-// GridCell coordinate (a Point of unsigned integers) and elements of type MarkableValuePointer,
-// that is defined in this class. ValueType elements are stored by this Abstract class: in your
-// derived class you have to choose how to store the association cell -> pointer to (markable)
-// value. Each cell may contain more than one element value, and each element value may be stored in
-// more than one cell if it intersects with more than one cell.
+// GridCell coordinate (a Point of unsigned integers) and elements of type ValueType. Each cell may
+// contain more than one element value, and each element value may be stored in more than one cell
+// if it intersects with more than one cell.
 //
 // This class is made using CRTP static polymorphism
 // (https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
 // The last template parameter, is the Derived class that derives from this grid.
 // This allows to avoid calling virtual member functions, which would be called very often and may
-// cause a significan overhead during queries.
+// cause a significant overhead during queries.
 //
 // What you need to do is to declared your Grid Data Structure as follows:
 //
@@ -66,7 +64,7 @@ namespace vcl {
 //     iterators that will allow to cycle over the elements contained in a cell.
 //     this function must be overloaded both in const and non-const versions, returning proper
 //     const or non-const iterators.
-//   - bool insertInCell(const KeyType&, MarkableValuePointer) -> inserts the element pointer in a
+//   - bool insertInCell(const KeyType&, const ValueType&) -> inserts the element in a
 //     Grid Cell. The returned type tells if the element has been inserted (in some implementations,
 //     insertion could not happen, e.g. when duplicates are not allowed).
 //   - bool eraseInCell(const KeyType&, const ValueType&) -> erases all the element equal to the
@@ -81,9 +79,6 @@ namespace vcl {
 //   - operator->() return a pointer to the same pair
 // - operator+() and operator+(int), that moves the iterator in the same cell if there are more
 //   values in it, or moves in the next cell-element
-// - a markableValue() member function that returns a vcl::Markable<ValueType>&.
-//   - this member function should be private. In that case, make sure to declare the AbstractDSGrid
-//     as friend in your Iterator class
 //
 // You can reimplement in your derived class all the member functions implemented in this class that
 // may take advantage of a speedup depending on the internal storage.

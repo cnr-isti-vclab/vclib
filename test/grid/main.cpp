@@ -57,14 +57,14 @@ int main()
 	std::cerr << "Values in HashTableGrid: \n";
 
 	for (const auto& p : sht) {
-		std::cerr << p.key << ": " << p.value << "\n";
+		std::cerr << p.first << ": " << p.second << "\n";
 	}
 
 	std::cerr << "Values in cell 0, 1, 2: \n";
 
 	auto p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
 	for (auto& it = p.first; it != p.second; ++it) {
-		std::cerr << it->value << "; ";
+		std::cerr << it->second << "; ";
 	}
 	std::cerr << "\n";
 
@@ -72,7 +72,7 @@ int main()
 
 	std::cerr << "Values in sphere: \n";
 	for (auto it : set) {
-		std::cerr << it->value << "; ";
+		std::cerr << it->second << "; ";
 	}
 	std::cerr << "\n\n";
 
@@ -84,14 +84,14 @@ int main()
 
 	auto it = sht.closestValue(vcl::Point3d(0.09, 0.09, 0.29), dist);
 
-	std::cerr << "Closest is: " << it->value << "\n\n";
+	std::cerr << "Closest is: " << it->second << "\n\n";
 
 	sht.eraseInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
 
 	std::cerr << "Values in HashTableGrid: \n";
 
 	for (const auto& p : sht) {
-		std::cerr << p.key << ": " << p.value << "\n";
+		std::cerr << p.first << ": " << p.second << "\n";
 	}
 
 	std::cerr << "\n==================================\n\n";
@@ -150,7 +150,7 @@ int main()
 	std::cerr << "Values in HashTableGrid: \n";
 
 	for (auto p : fsht) {
-		std::cerr << p.key << ": " << m.index(p.value) << "\n";
+		std::cerr << p.first << ": " << m.index(p.second) << "\n";
 	}
 
 	std::cerr << "\nValues in Sphere: \n";
@@ -158,7 +158,7 @@ int main()
 	auto sv  = fsht.valuesInSphere({vcl::Point3d(-1, -1, -1), 0.5});
 
 	for (const auto& p : sv) {
-		std::cerr << p->key << ": " << m.index(p->value) << "\n";
+		std::cerr << p->first << ": " << m.index(p->second) << "\n";
 	}
 
 	std::cerr << "\n==================================\n\n";

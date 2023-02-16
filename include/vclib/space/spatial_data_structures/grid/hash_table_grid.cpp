@@ -136,7 +136,7 @@ void HashTableGrid<GridType, ValueType, AllowDuplicates>::clear()
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 bool HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseAllInCell(const KeyType& k)
 {
-	std::pair<MapIterator,MapIterator> range = map.equal_range(k);
+	std::pair<Iterator,Iterator> range = map.equal_range(k);
 	if (range != map.end()) {
 		map.erase(range.first, range.second);
 		return true;
@@ -150,35 +150,35 @@ void HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInSphere(
 {
 	std::vector<Iterator> toDel = AbstractGrid::valuesInSphere(s);
 	for (auto& it : toDel)
-		map.erase(it.mapIt);
+		map.erase(it);
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator
 HashTableGrid<GridType, ValueType, AllowDuplicates>::begin()
 {
-	return Iterator(map.begin());
+	return map.begin();
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator
 HashTableGrid<GridType, ValueType, AllowDuplicates>::begin() const
 {
-	return ConstIterator(map.begin());
+	return map.begin();
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 typename HashTableGrid<GridType, ValueType, AllowDuplicates>::Iterator
 HashTableGrid<GridType, ValueType, AllowDuplicates>::end()
 {
-	return Iterator(map.end());
+	return map.end();
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 typename HashTableGrid<GridType, ValueType, AllowDuplicates>::ConstIterator
 HashTableGrid<GridType, ValueType, AllowDuplicates>::end() const
 {
-	return ConstIterator(map.end());
+	return map.end();
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
@@ -193,7 +193,7 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insertInCell(
 	else {
 		auto range = map.equal_range(k);
 		bool found = false;
-		for(MapIterator ci = range.first; ci != range.second && !found; ++ci) {
+		for(Iterator ci = range.first; ci != range.second && !found; ++ci) {
 			if (ci->second == v) {
 				found = true;
 			}
@@ -211,8 +211,8 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInCell(
 {
 	bool found = false;
 
-	std::pair<MapIterator, MapIterator> range = map.equal_range(k);
-	for(MapIterator ci = range.first; ci != range.second; ++ci) {
+	std::pair<Iterator, Iterator> range = map.equal_range(k);
+	for(Iterator ci = range.first; ci != range.second; ++ci) {
 		if (ci->second == v) {
 			found = true;
 			map.erase(ci);
