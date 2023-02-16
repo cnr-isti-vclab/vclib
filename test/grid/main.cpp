@@ -138,13 +138,14 @@ int main()
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
 
-	std::function<bool(const vcl::Box3d&, const vcl::TriMesh::Face&)> intersects =
-		[](const vcl::Box3d& bb, const  vcl::TriMesh::Face& v)
+	std::function<bool(const vcl::Box3d&, const vcl::TriMesh::Face*)> intersects =
+		[](const vcl::Box3d& bb, const  vcl::TriMesh::Face* v)
 	{
-		return vcl::faceBoxIntersect(v, bb);
+		return vcl::faceBoxIntersect(*v, bb);
 	};
 
-	vcl::HashTableGrid3<const vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd(), intersects);
+	using FPI = vcl::PointerIterator<typename vcl::TriMesh::FaceIterator>;
+	vcl::HashTableGrid3<const vcl::TriMesh::Face*> fsht(FPI(m.faceBegin()), FPI(m.faceEnd()), intersects);
 
 	std::cerr << "Values in HashTableGrid: \n";
 
@@ -162,7 +163,7 @@ int main()
 
 	std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<const vcl::TriMesh::Face&> fsg(m.faceBegin(), m.faceEnd(), intersects);
+	vcl::StaticGrid3<const vcl::TriMesh::Face*> fsg(FPI(m.faceBegin()), FPI(m.faceEnd()), intersects);
 
 	std::cerr << "Values in Static Grid : \n";
 
@@ -181,15 +182,15 @@ int main()
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
 
-
-	vcl::StaticGrid3<const vcl::TriMesh::Vertex&> vmsg(m.vertexBegin(), m.vertexEnd());
+	using VPI = vcl::PointerIterator<typename vcl::TriMesh::VertexIterator>;
+	vcl::StaticGrid3<const vcl::TriMesh::Vertex*> vmsg(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
 
 	const vcl::Point3d qv(0.5, 0.5, 0.5);
 
-	std::function<double(const vcl::Point3d&, const vcl::TriMesh::Vertex&)> fdist =
-		[](const vcl::Point3d& p, const vcl::TriMesh::Vertex& v)
+	std::function<double(const vcl::Point3d&, const vcl::TriMesh::Vertex* const&)> fdist =
+		[](const vcl::Point3d& p, const vcl::TriMesh::Vertex* const& v)
 	{
-		return v.coord().dist(p);
+		return v->coord().dist(p);
 	};
 
 	auto vec = vmsg.kClosestValues(qv, 5, fdist);
