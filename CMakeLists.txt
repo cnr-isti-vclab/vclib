@@ -121,6 +121,7 @@ set(HEADERS
 	include/vclib/iterators/mesh/half_edge/vertex_base_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
+	include/vclib/math/histogram.h
 	include/vclib/math/matrix.h
 	include/vclib/math/perlin_noise.h
 	include/vclib/math/random.h
@@ -330,6 +331,7 @@ set(SOURCES
 	include/vclib/iterators/mesh/half_edge/face_base_iterator.cpp
 	include/vclib/iterators/mesh/half_edge/vertex_base_iterator.cpp
 	include/vclib/math/distribution.cpp
+	include/vclib/math/histogram.cpp
 	include/vclib/math/matrix.cpp
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/mesh/mesh.cpp
