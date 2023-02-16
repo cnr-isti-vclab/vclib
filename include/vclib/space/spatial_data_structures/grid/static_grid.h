@@ -76,7 +76,7 @@ public:
 	ConstIterator end() const;
 
 private:
-	const PairComparator comparator = PairComparator();
+	PairComparator comparator = PairComparator();
 
 	// each value is stored as a pair: [cell index of the grid - value]
 	// when the grid is built, this vector is sorted by the cell indices

@@ -259,7 +259,7 @@ void updatePrincipalCurvaturePCA(
 	using FaceType   = typename MeshType::FaceType;
 
 	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
-	using VGrid = typename vcl::HashTableGrid3<VertexType*>;
+	using VGrid = typename vcl::StaticGrid3<VertexType*>;
 	using VGridIterator = typename VGrid::ConstIterator;
 
 	std::mutex mutex;
@@ -287,7 +287,7 @@ void updatePrincipalCurvaturePCA(
 		uint nSamples = 1000 * area * (2 * M_PI * radius * radius);
 		sampler = vcl::montecarloPointSampling<vcl::PointSampler<CoordType>>(m, nSamples);
 		pGrid = VGrid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
-		//pGrid.build();
+		pGrid.build();
 	}
 
 	vcl::parallelFor(m.vertexBegin(), m.vertexEnd(), [&](VertexType& v){
