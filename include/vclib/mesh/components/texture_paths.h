@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#include <vclib/iterators/range_iterator.h>
+#include <vclib/iterators/container_range_iterator.h>
 
 #include "concepts/texture_paths.h"
 #include "internal/component_data.h"
@@ -54,9 +54,9 @@ public:
 	using TexFileNamesIterator      = std::vector<std::string>::iterator;
 	using ConstTexFileNamesIterator = std::vector<std::string>::const_iterator;
 	using TexFileNamesRangeIterator =
-		RangeIterator<TexturePaths, TexFileNamesIterator>;
+		ContainerRangeIterator<TexturePaths, TexFileNamesIterator>;
 	using ConstTexFileNamesRangeIterator =
-		ConstRangeIterator<TexturePaths, ConstTexFileNamesIterator>;
+		ConstContainerRangeIterator<TexturePaths, ConstTexFileNamesIterator>;
 
 	uint textureNumber() const;
 

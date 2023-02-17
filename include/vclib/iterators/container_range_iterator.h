@@ -21,49 +21,51 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_RANGE_ITERATOR_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_RANGE_ITERATOR_H
-
-#include <vclib/iterators/container_range_iterator.h>
-
-#include <vclib/space/point.h>
+#ifndef VCL_ITERATORS_CONTAINER_RANGE_ITERATOR_H
+#define VCL_ITERATORS_CONTAINER_RANGE_ITERATOR_H
 
 namespace vcl {
 
-template<typename Container, typename ConstIterator>
-class CellRangeIterator : public ConstContainerRangeIterator<Container, ConstIterator>
+template<typename Container, typename Iterator>
+class ContainerRangeIterator
 {
-private:
-	using Base = ConstContainerRangeIterator<Container, ConstIterator>;
-	using CellCoord = typename Container::CellCoord;
 public:
+	ContainerRangeIterator(
+		Container& c,
+		Iterator (Container::*beginFunction)(),
+		Iterator (Container::*endFunction)()) :
+			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
 
-	CellRangeIterator(
+	Iterator begin() { return (c.*(beginFunction))(); }
+
+	Iterator end() { return (c.*(endFunction))(); }
+
+protected:
+	Container& c;
+	Iterator (Container::*beginFunction)();
+	Iterator (Container::*endFunction)();
+};
+
+template<typename Container, typename ConstIterator>
+class ConstContainerRangeIterator
+{
+public:
+	ConstContainerRangeIterator(
 		const Container& c,
 		ConstIterator (Container::*beginFunction)() const,
 		ConstIterator (Container::*endFunction)() const) :
-			Base(c, beginFunction, endFunction)
-		{
-			last = c.cellNumbers() - 1;
-		};
+			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
 
-	CellRangeIterator(
-		const Container& c,
-		ConstIterator (Container::*beginFunction)() const,
-		ConstIterator (Container::*endFunction)() const,
-		const CellCoord& first,
-		const CellCoord& last) :
-			Base(c, beginFunction, endFunction), first(first), last(last)
-		{};
+	ConstIterator begin() { return (c.*(beginFunction))(); }
 
-	ConstIterator begin() const
-	{
-		return Base::c.cellBegin(first, last);
-	}
-private:
-	CellCoord first, last;
+	ConstIterator end() { return (c.*(endFunction))(); }
+
+protected:
+	const Container& c;
+	ConstIterator (Container::*beginFunction)() const;
+	ConstIterator (Container::*endFunction)() const;
 };
 
-} // namespace vcl
+}
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_RANGE_ITERATOR_H
+#endif // VCL_ITERATORS_CONTAINER_RANGE_ITERATOR_H

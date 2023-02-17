@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <vector>
 
-#include <vclib/iterators/range_iterator.h>
+#include <vclib/iterators/container_range_iterator.h>
 #include <vclib/misc/types.h>
 
 namespace vcl {
@@ -68,8 +68,8 @@ public:
 		typename std::array<C, ARRAY_SIZE>::const_iterator,
 		typename std::vector<C>::const_iterator>::type;
 
-	using RACRangeIterator      = RangeIterator<RandomAccessContainer, Iterator>;
-	using RACConstRangeIterator = ConstRangeIterator<RandomAccessContainer, ConstIterator>;
+	using RACRangeIterator      = ContainerRangeIterator<RandomAccessContainer, Iterator>;
+	using RACConstRangeIterator = ConstContainerRangeIterator<RandomAccessContainer, ConstIterator>;
 
 	uint size() const;
 

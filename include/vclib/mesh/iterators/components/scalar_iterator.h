@@ -73,6 +73,28 @@ using VertexScalarIterator = ScalarIterator<typename MeshType::VertexIterator>;
 template<typename MeshType>
 using ConstVertexScalarIterator = ConstScalarIterator<typename MeshType::ConstVertexIterator>;
 
+template<typename MeshType>
+using VertexScalarRangeIterator = RangeIterator<VertexScalarIterator<MeshType>>;
+
+template<typename MeshType>
+using ConstVertexScalarRangeIterator = RangeIterator<ConstVertexScalarIterator<MeshType>>;
+
+template<typename MeshType>
+VertexScalarRangeIterator<MeshType> vertexScalars(MeshType& m)
+{
+	return VertexScalarRangeIterator<MeshType>(
+		VertexScalarIterator<MeshType>(m.vertexBegin()),
+		VertexScalarIterator<MeshType>(m.vertexEnd()));
+}
+
+template<typename MeshType>
+ConstVertexScalarRangeIterator<MeshType> vertexScalars(const MeshType& m)
+{
+	return ConstVertexScalarRangeIterator<MeshType>(
+		ConstVertexScalarIterator<MeshType>(m.vertexBegin()),
+		ConstVertexScalarIterator<MeshType>(m.vertexEnd()));
+}
+
 } // namespace vcl
 
 

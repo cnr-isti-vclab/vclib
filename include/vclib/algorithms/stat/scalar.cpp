@@ -209,11 +209,9 @@ Histogram<HScalar> vertexScalarHistogram(const MeshType& m, bool selectionOnly, 
 		}
 	}
 
-//	for (auto it = ConstVertexScalarIterator<MeshType>(m.vertexBegin());
-//		 it != ConstVertexScalarIterator<MeshType>(m.vertexEnd());
-//		++it) {
-//		assert(!isDegenerate(*it));
-//		h.addValue(*it);
+//	for (const ScalarType& s : vcl::vertexScalars(m)) {
+//		assert(!isDegenerate(s));
+//		h.addValue(s);
 //	}
 	return h;
 }

@@ -103,6 +103,7 @@ set(HEADERS
 	include/vclib/io/ply/ply_header.h
 	include/vclib/io/ply/ply_tristrip.h
 	include/vclib/io/ply/ply_vertex.h
+	include/vclib/iterators/container_range_iterator.h
 	include/vclib/iterators/pointer_iterator.h
 	include/vclib/iterators/range_iterator.h
 	include/vclib/math/base.h

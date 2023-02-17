@@ -31,7 +31,7 @@
 #include <vclib/mesh/iterators/half_edge/face_vertex_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_wedge_color_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_wedge_tex_coord_iterator.h>
-#include <vclib/iterators/range_iterator.h>
+#include <vclib/iterators/container_range_iterator.h>
 
 #include <vclib/space/color.h>
 
@@ -74,40 +74,40 @@ public:
 
 	using AdjacentFaceIterator      = vcl::FaceAdjFaceIterator<HalfEdge>;
 	using ConstAdjacentFaceIterator = vcl::ConstFaceAdjFaceIterator<HalfEdge>;
-	using AdjacentFaceRangeIterator = RangeIterator<FaceHalfEdgeReference, AdjacentFaceIterator>;
+	using AdjacentFaceRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, AdjacentFaceIterator>;
 	using ConstAdjacentFaceRangeIterator =
-		ConstRangeIterator<FaceHalfEdgeReference, ConstAdjacentFaceIterator>;
+		ConstContainerRangeIterator<FaceHalfEdgeReference, ConstAdjacentFaceIterator>;
 
 	using InnerHalfEdgeIterator      = typename std::vector<HalfEdge*>::iterator;
 	using ConstInnerHalfEdgeIterator = typename std::vector<HalfEdge*>::const_iterator;
-	using InnerHalfEdgeRangeIterator = RangeIterator<FaceHalfEdgeReference, InnerHalfEdgeIterator>;
+	using InnerHalfEdgeRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, InnerHalfEdgeIterator>;
 	using ConstInnerHalfEdgeRangeIterator =
-		RangeIterator<FaceHalfEdgeReference, ConstInnerHalfEdgeIterator>;
+		ContainerRangeIterator<FaceHalfEdgeReference, ConstInnerHalfEdgeIterator>;
 
 	using HalfEdgeIterator      = vcl::FaceHalfEdgeIterator<HalfEdge>;
 	using ConstHalfEdgeIterator = vcl::ConstFaceHalfEdgeIterator<HalfEdge>;
-	using HalfEdgeRangeIterator = RangeIterator<FaceHalfEdgeReference, HalfEdgeIterator>;
+	using HalfEdgeRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, HalfEdgeIterator>;
 	using ConstHalfEdgeRangeIterator =
-		ConstRangeIterator<FaceHalfEdgeReference, ConstHalfEdgeIterator>;
+		ConstContainerRangeIterator<FaceHalfEdgeReference, ConstHalfEdgeIterator>;
 
 	using VertexIterator           = vcl::FaceVertexIterator<HalfEdge>;
 	using ConstVertexIterator      = vcl::ConstFaceVertexIterator<HalfEdge>;
-	using VertexRangeIterator      = RangeIterator<FaceHalfEdgeReference, VertexIterator>;
-	using ConstVertexRangeIterator = ConstRangeIterator<FaceHalfEdgeReference, ConstVertexIterator>;
+	using VertexRangeIterator      = ContainerRangeIterator<FaceHalfEdgeReference, VertexIterator>;
+	using ConstVertexRangeIterator = ConstContainerRangeIterator<FaceHalfEdgeReference, ConstVertexIterator>;
 
 	// these types won't be used when half edge has no colors - all member functions are disabled
 	using WedgeColorsIterator = vcl::FaceWedgeColorIterator<HalfEdge>;
 	using ConstWedgeColorsIterator = vcl::ConstFaceWedgeColorIterator<HalfEdge>;
-	using WedgeColorsRangeIterator = RangeIterator<FaceHalfEdgeReference, WedgeColorsIterator>;
+	using WedgeColorsRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, WedgeColorsIterator>;
 	using ConstWedgeColorsRangeIterator =
-		ConstRangeIterator<FaceHalfEdgeReference, ConstWedgeColorsIterator>;
+		ConstContainerRangeIterator<FaceHalfEdgeReference, ConstWedgeColorsIterator>;
 
 	// these types won't be used when half edge has no texcoords - all member functions are disabled
 	using WedgeTexCoordsIterator = vcl::FaceWedgeTexCoordIterator<HalfEdge>;
 	using ConstWedgeTexCoordsIterator = vcl::ConstFaceWedgeTexCoordIterator<HalfEdge>;
-	using WedgeTexCoordsRangeIterator = RangeIterator<FaceHalfEdgeReference, WedgeTexCoordsIterator>;
+	using WedgeTexCoordsRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, WedgeTexCoordsIterator>;
 	using ConstWedgeTexCoordsRangeIterator =
-		ConstRangeIterator<FaceHalfEdgeReference, ConstWedgeTexCoordsIterator>;
+		ConstContainerRangeIterator<FaceHalfEdgeReference, ConstWedgeTexCoordsIterator>;
 
 	// Vertex references can be accessed from a face using half edge reference, therefore this
 	// component claims that it is the VertexReferences component. This is done just for

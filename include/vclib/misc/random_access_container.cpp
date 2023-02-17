@@ -209,13 +209,13 @@ typename RandomAccessContainer<C, N>::ConstIterator RandomAccessContainer<C, N>:
 template<typename C, int N>
 typename RandomAccessContainer<C, N>::RACRangeIterator RandomAccessContainer<C, N>::rangeIterator()
 {
-	return RangeIterator(*this, &RandomAccessContainer::begin, &RandomAccessContainer::end);
+	return ContainerRangeIterator(*this, &RandomAccessContainer::begin, &RandomAccessContainer::end);
 }
 
 template<typename C, int N>
 typename RandomAccessContainer<C, N>::RACConstRangeIterator RandomAccessContainer<C, N>::rangeIterator() const
 {
-	return ConstRangeIterator(*this, &RandomAccessContainer::begin, &RandomAccessContainer::end);
+	return ConstContainerRangeIterator(*this, &RandomAccessContainer::begin, &RandomAccessContainer::end);
 }
 
 } // namespace vcl

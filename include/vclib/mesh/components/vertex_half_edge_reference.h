@@ -26,7 +26,7 @@
 
 #include <vector>
 
-#include <vclib/iterators/range_iterator.h>
+#include <vclib/iterators/container_range_iterator.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h>
 
@@ -59,16 +59,16 @@ public:
 
 	using AdjacentFaceIterator      = vcl::VertexAdjFaceIterator<HalfEdge>;
 	using ConstAdjacentFaceIterator = vcl::ConstVertexAdjFaceIterator<HalfEdge>;
-	using AdjacentFaceRangeIterator = RangeIterator<VertexHalfEdgeReference, AdjacentFaceIterator>;
+	using AdjacentFaceRangeIterator = ContainerRangeIterator<VertexHalfEdgeReference, AdjacentFaceIterator>;
 	using ConstAdjacentFaceRangeIterator =
-		ConstRangeIterator<VertexHalfEdgeReference, ConstAdjacentFaceIterator>;
+		ConstContainerRangeIterator<VertexHalfEdgeReference, ConstAdjacentFaceIterator>;
 
 	using AdjacentVertexIterator      = vcl::VertexAdjVertexIterator<HalfEdge>;
 	using ConstAdjacentVertexIterator = vcl::ConstVertexAdjVertexIterator<HalfEdge>;
 	using AdjacentVertexRangeIterator =
-		RangeIterator<VertexHalfEdgeReference, AdjacentVertexIterator>;
+		ContainerRangeIterator<VertexHalfEdgeReference, AdjacentVertexIterator>;
 	using ConstAdjacentVertexRangeIterator =
-		ConstRangeIterator<VertexHalfEdgeReference, ConstAdjacentVertexIterator>;
+		ConstContainerRangeIterator<VertexHalfEdgeReference, ConstAdjacentVertexIterator>;
 
 	/* Constructor and isEnabled */
 

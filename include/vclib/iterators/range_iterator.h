@@ -26,46 +26,23 @@
 
 namespace vcl {
 
-template<typename Container, typename Iterator>
+template<typename Iterator>
 class RangeIterator
 {
 public:
-	RangeIterator(
-		Container& c,
-		Iterator (Container::*beginFunction)(),
-		Iterator (Container::*endFunction)()) :
-			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
+	RangeIterator(Iterator begin, Iterator end) :
+			b(begin), e(end)
+	{
+	};
 
-	Iterator begin() { return (c.*(beginFunction))(); }
+	Iterator begin() { return b; }
 
-	Iterator end() { return (c.*(endFunction))(); }
-
-protected:
-	Container& c;
-	Iterator (Container::*beginFunction)();
-	Iterator (Container::*endFunction)();
-};
-
-template<typename Container, typename ConstIterator>
-class ConstRangeIterator
-{
-public:
-	ConstRangeIterator(
-		const Container& c,
-		ConstIterator (Container::*beginFunction)() const,
-		ConstIterator (Container::*endFunction)() const) :
-			c(c), beginFunction(beginFunction), endFunction(endFunction) {};
-
-	ConstIterator begin() { return (c.*(beginFunction))(); }
-
-	ConstIterator end() { return (c.*(endFunction))(); }
+	Iterator end() { return e; }
 
 protected:
-	const Container& c;
-	ConstIterator (Container::*beginFunction)() const;
-	ConstIterator (Container::*endFunction)() const;
+	Iterator b, e;
 };
 
-}
+} // namespace vcl
 
 #endif // VCL_ITERATORS_RANGE_ITERATOR_H
