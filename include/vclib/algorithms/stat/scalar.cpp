@@ -25,8 +25,6 @@
 
 #include <vclib/math/base.h>
 
-#include <vclib/mesh/iterators/components/scalar_iterator.h>
-
 namespace vcl {
 
 /**
@@ -208,11 +206,6 @@ Histogram<HScalar> vertexScalarHistogram(const MeshType& m, bool selectionOnly, 
 			h.addValue(v.scalar());
 		}
 	}
-
-//	for (const ScalarType& s : vcl::vertexScalars(m)) {
-//		assert(!isDegenerate(s));
-//		h.addValue(s);
-//	}
 	return h;
 }
 
