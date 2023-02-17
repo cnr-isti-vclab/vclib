@@ -35,23 +35,35 @@ class Histogram
 {
 public:
 	Histogram();
+	Histogram(ScalarType minValue, ScalarType maxValue, uint nIntervals, ScalarType gamma = 1.0);
 
+	void clear();
 
+	void addValue(ScalarType value, ScalarType increment = 1.0);
+
+	ScalarType binCountInd(uint ind) const;
+	ScalarType binCount(ScalarType value) const;
+	ScalarType binCount(ScalarType value, ScalarType width) const;
+
+	ScalarType rangeCount(ScalarType rangeMin, ScalarType rangeMax) const;
 
 protected:
+	uint binIndex(ScalarType val) const;
+
 	std::vector<ScalarType> H; // Counters for bins
 	std::vector<ScalarType> R; // Range for bins
 
-	ScalarType minValue;
-	ScalarType maxValue;
+	ScalarType minVal = 0; // Minimum value
+	ScalarType maxVal = 1; // Maximum value
 
-	ScalarType minElem;
-	ScalarType maxElem;
-	uint nIntervals; // Number of valid intervals stored between minValue and maxValue
+	ScalarType minElem = std::numeric_limits<ScalarType>::max();
+	ScalarType maxElem = std::numeric_limits<ScalarType>::lowest();
 
-	ScalarType cnt; // Number of accumulated samples
-	ScalarType avg; // Average
-	ScalarType rms; // Root mean square
+	uint nIntervals = 0; // Number of valid intervals stored between minValue and maxValue
+
+	ScalarType cnt = 0; // Number of accumulated samples
+	ScalarType sum = 0; // Sum of values
+	ScalarType rms = 0; // Root mean square
 };
 
 } // namespace vcl
