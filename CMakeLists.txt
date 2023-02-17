@@ -66,6 +66,9 @@ set(HEADERS
 	include/vclib/algorithms/create/icosahedron.h
 	include/vclib/algorithms/create/sphere.h
 	include/vclib/algorithms/create/tetrahedron.h
+	include/vclib/algorithms/intersection/element.h
+	include/vclib/algorithms/intersection/mesh.h
+	include/vclib/algorithms/intersection/misc.h
 	include/vclib/algorithms/stat/bounding_box.h
 	include/vclib/algorithms/stat/scalar.h
 	include/vclib/algorithms/stat/selection.h
@@ -281,7 +284,6 @@ set(SOURCES
 	include/vclib/algorithms/clean.cpp
 	include/vclib/algorithms/export_to_matrix.cpp
 	include/vclib/algorithms/fitting.cpp
-	include/vclib/algorithms/intersection.cpp
 	include/vclib/algorithms/point_sampling.cpp
 	include/vclib/algorithms/polygon.cpp
 	include/vclib/algorithms/shuffle.cpp
@@ -293,6 +295,9 @@ set(SOURCES
 	include/vclib/algorithms/create/icosahedron.cpp
 	include/vclib/algorithms/create/sphere.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
+	include/vclib/algorithms/intersection/element.cpp
+	include/vclib/algorithms/intersection/mesh.cpp
+	include/vclib/algorithms/intersection/misc.cpp
 	include/vclib/algorithms/stat/bounding_box.cpp
 	include/vclib/algorithms/stat/scalar.cpp
 	include/vclib/algorithms/stat/selection.cpp

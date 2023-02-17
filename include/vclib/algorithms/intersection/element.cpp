@@ -21,7 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "intersection.h"
+#include "element.h"
 
 namespace vcl {
 
@@ -208,36 +208,6 @@ inline bool axisTestZ0(
 } // namespace vcl::internal
 
 /**
- * @brief Checks if a plane intersects with a box.
- *
- * https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
- *
- * @param p
- * @param b
- * @return
- */
-template<typename PlaneType, typename BoxType>
-bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
-{
-	using PointType = typename BoxType::PointType;
-	using ScalarType = typename PointType::ScalarType;
-
-	// Convert AABB to center-extents representation
-	PointType c = (box.max + box.min) * 0.5f; // Compute AABB center
-	PointType e = box.max - c; // Compute positive extents
-
-	PointType n = p.direction();
-	// Compute the projection interval radius of b onto L(t) = b.c + t * p.n
-	ScalarType r = e[0]*std::abs(n[0]) + e[1]*std::abs(n[1]) + e[2]*std::abs(n[2]);
-
-	// Compute distance of box center from plane
-	ScalarType s = n.dot(c) - p.offset();
-
-	// Intersection occurs when distance s falls within [-r,+r] interval
-	return std::abs(s) <= r;
-}
-
-/**
  * @brief Checks if a triangle intersects with a box.
  * https://gist.github.com/jflipts/fc68d4eeacfcc04fbdb2bf38e0911850
  */
@@ -253,8 +223,8 @@ bool triangleBoxIntersect(
 	PointType boxcenter = box.center();
 	PointType bHalfSixe = box.size() / 2;
 
-	/*    use separating axis theorem to test overlap between triangle and box */
-	/*    need to test for overlap in these directions: */
+	/* use separating axis theorem to test overlap between triangle and box */
+	/* need to test for overlap in these directions: */
 	/*    1) the {x,y,z}-directions (actually, since we use the AABB of the triangle */
 	/*       we do not even need to test these) */
 	/*    2) normal of the triangle */
@@ -404,7 +374,7 @@ bool triangleSphereItersect(
 	ScalarType delta1_p12 = p21.dot(p2);
 	ScalarType delta2_p12 = -p21.dot(p1);
 
-	// the closest point can be one of the vertices of the triangle
+		   // the closest point can be one of the vertices of the triangle
 	if (delta1_p01 <= ScalarType(0.0) && delta2_p02 <= ScalarType(0.0))
 		witness = p0;
 	else if (delta0_p01 <= ScalarType(0.0) && delta2_p12 <= ScalarType(0.0))
@@ -417,7 +387,7 @@ bool triangleSphereItersect(
 		ScalarType delta1_p012 = delta1_p01 * delta0_p02 - delta2_p02 * temp;
 		ScalarType delta2_p012 = delta2_p02 * delta0_p01 - delta1_p01 * (p20.dot(p1));
 
-		// otherwise, can be a point lying on same edge of the triangle
+			   // otherwise, can be a point lying on same edge of the triangle
 		if (delta0_p012 <= ScalarType(0.0)) {
 			ScalarType denominator = delta1_p12 + delta2_p12;
 			ScalarType mu1         = delta1_p12 / denominator;
@@ -547,91 +517,6 @@ bool faceSphereItersect(const FaceType& f, const Sphere<SScalar>& sphere)
 	Point3d witness;
 	std::pair<SScalar, SScalar> res;
 	return faceSphereItersect(f, sphere, witness, res);
-}
-
-template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
-void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
-{
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
-	using CoordType  = typename VertexType::CoordType;
-
-	std::vector<double> qH(m.vertexContainerSize());
-
-	for (const VertexType& v : m.vertices())
-		qH[m.index(v)] = pl.dist(v.coord());
-
-	for (const FaceType& f : m.faces()) {
-		std::vector<CoordType>  ptVec;
-		std::vector<CoordType> nmVec;
-		for (uint j = 0; j < f.vertexNumber(); ++j) {
-			if (qH[m.index(f.vertex(j))] == 0) {
-				ptVec.push_back(f.vertex(j)->coord());
-				if constexpr(HasPerVertexNormal<MeshType>) {
-					if (isPerVertexNormalEnabled(m)) {
-						nmVec.push_back(f.vertex(j)->normal());
-					}
-				}
-			}
-			else if ((qH[m.index(f.vertex(j))] * qH[m.index(f.vertexMod(j + 1))]) < 0) {
-				const CoordType&  p0 = f.vertex(j)->coord();
-				const CoordType&  p1 = f.vertexMod(j + 1)->coord();
-				float             q0 = qH[m.index(f.vertex(j))];
-				float             q1 = qH[m.index(f.vertexMod(j + 1))];
-
-				std::pair<CoordType, CoordType> seg(p0, p1);
-				CoordType                       pp = pl.segmentIntersection(seg);
-				ptVec.push_back(pp);
-				if constexpr(HasPerVertexNormal<MeshType>) {
-					if (isPerVertexNormalEnabled(m)) {
-						using NormalType = typename VertexType::NormalType;
-						const NormalType& n0 = f.vertex(j)->normal();
-						const NormalType& n1 = f.vertexMod(j + 1)->normal();
-						CoordType nn = (n0 * fabs(q1) + n1 * fabs(q0)) / fabs(q0 - q1);
-						nmVec.push_back(nn);
-					}
-				}
-			}
-		}
-		if (ptVec.size() >= 2) {
-			uint eid               = em.addEdge();
-			uint v0                = em.addVertices(2);
-			uint v1                = v0 + 1;
-			em.vertex(v0).coord()  = ptVec[0];
-			em.vertex(v1).coord()  = ptVec[1];
-			em.edge(eid).vertex(0) = &em.vertex(v0);
-			em.edge(eid).vertex(1) = &em.vertex(v1);
-			if constexpr (HasPerVertexNormal<MeshType> && HasPerVertexNormal<EdgeMesh>) {
-				if (isPerVertexNormalEnabled(m) && isPerVertexNormalEnabled(em)) {
-					em.vertex(v0).normal() = nmVec[0];
-					em.vertex(v1).normal() = nmVec[1];
-				}
-			}
-		}
-	}
-
-//	// Clean-up: Remove duplicate vertex
-//	tri::Clean<EdgeMeshType>::RemoveDuplicateVertex(em);
-
-//	// Clean-up: Sort edges ensuring orientation coherence
-//	for (size_t j = 1; j < em.edge.size(); j++) {
-//		auto& n = em.edge[j - 1].V(1);
-//		for (size_t i = j; i < em.edge.size(); i++) {
-//			auto& ei = em.edge[i];
-//			if (ei.V(1) == n)
-//				std::swap(ei.V(0), ei.V(1));
-//			if (ei.V(0) == n) {
-//				std::swap(em.edge[j], em.edge[i]);
-//				break;
-//			}
-//		}
-//	}
-}
-
-template<FaceMeshConcept MeshType, typename SScalar>
-MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere)
-{
-	// todo
 }
 
 } // namespace vcl

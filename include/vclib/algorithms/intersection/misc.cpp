@@ -21,10 +21,38 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_INTERSECTION_H
-#define VCL_ALGORITHMS_INTERSECTION_H
+#include "misc.h"
 
-#include "intersection/mesh.h"
-#include "intersection/misc.h"
+namespace vcl {
 
-#endif // VCL_ALGORITHMS_INTERSECTION_H
+/**
+ * @brief Checks if a plane intersects with a box.
+ *
+ * https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
+ *
+ * @param p
+ * @param b
+ * @return
+ */
+template<typename PlaneType, typename BoxType>
+bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
+{
+	using PointType = typename BoxType::PointType;
+	using ScalarType = typename PointType::ScalarType;
+
+	// Convert AABB to center-extents representation
+	PointType c = (box.max + box.min) * 0.5f; // Compute AABB center
+	PointType e = box.max - c; // Compute positive extents
+
+	PointType n = p.direction();
+	// Compute the projection interval radius of b onto L(t) = b.c + t * p.n
+	ScalarType r = e[0]*std::abs(n[0]) + e[1]*std::abs(n[1]) + e[2]*std::abs(n[2]);
+
+	// Compute distance of box center from plane
+	ScalarType s = n.dot(c) - p.offset();
+
+	// Intersection occurs when distance s falls within [-r,+r] interval
+	return std::abs(s) <= r;
+}
+
+} // namespace vcl

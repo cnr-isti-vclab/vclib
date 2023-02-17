@@ -21,10 +21,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_INTERSECTION_H
-#define VCL_ALGORITHMS_INTERSECTION_H
+#ifndef VCL_ALGORITHMS_INTERSECTION_MESH_H
+#define VCL_ALGORITHMS_INTERSECTION_MESH_H
 
-#include "intersection/mesh.h"
-#include "intersection/misc.h"
+#include "element.h"
 
-#endif // VCL_ALGORITHMS_INTERSECTION_H
+namespace vcl {
+
+template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
+void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl);
+
+template<FaceMeshConcept MeshType, typename SScalar>
+MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere);
+
+} // namespace vcl
+
+#include "mesh.cpp"
+
+#endif // VCL_ALGORITHMS_INTERSECTION_MESH_H

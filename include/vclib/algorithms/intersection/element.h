@@ -21,10 +21,51 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_INTERSECTION_H
-#define VCL_ALGORITHMS_INTERSECTION_H
+#ifndef VCL_ALGORITHMS_INTERSECTION_ELEMENT_H
+#define VCL_ALGORITHMS_INTERSECTION_ELEMENT_H
 
-#include "intersection/mesh.h"
-#include "intersection/misc.h"
+#include <vclib/algorithms/polygon.h>
+#include <vclib/mesh/requirements.h>
+#include <vclib/space/plane.h>
+#include <vclib/space/sphere.h>
 
-#endif // VCL_ALGORITHMS_INTERSECTION_H
+namespace vcl {
+
+template<PointConcept PointType>
+bool triangleBoxIntersect(
+	const PointType&      p0,
+	const PointType&      p1,
+	const PointType&      p2,
+	const Box<PointType>& box) requires (PointType::DIM == 3);
+
+template<FaceConcept FaceType, PointConcept PointType>
+bool faceBoxIntersect(
+	const FaceType& f,
+	const Box<PointType>& box);
+
+template<PointConcept PointType, typename SScalar>
+bool triangleSphereItersect(
+	PointType      p0,
+	PointType      p1,
+	PointType      p2,
+	const vcl::Sphere<SScalar>& sphere,
+	PointType& witness,
+	std::pair<SScalar, SScalar>& res);
+
+template<PointConcept PointType, typename SScalar>
+bool triangleSphereItersect(
+	const PointType&       p0,
+	const PointType&       p1,
+	const PointType&       p2,
+	const Sphere<SScalar>& sphere);
+
+template<FaceConcept FaceType, typename SScalar>
+bool faceSphereItersect(
+	const FaceType& f,
+	const Sphere<SScalar>& sphere);
+
+} // namespace vcl
+
+#include "element.cpp"
+
+#endif // VCL_ALGORITHMS_INTERSECTION_ELEMENT_H

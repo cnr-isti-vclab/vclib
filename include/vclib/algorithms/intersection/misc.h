@@ -21,10 +21,18 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_INTERSECTION_H
-#define VCL_ALGORITHMS_INTERSECTION_H
+#ifndef VCL_ALGORITHMS_INTERSECTION_MISC_H
+#define VCL_ALGORITHMS_INTERSECTION_MISC_H
 
-#include "intersection/mesh.h"
-#include "intersection/misc.h"
+#include <vclib/space/plane.h>
 
-#endif // VCL_ALGORITHMS_INTERSECTION_H
+namespace vcl {
+
+template<typename PlaneType, typename BoxType>
+bool planeBoxIntersect(const PlaneType& p, const BoxType& box);
+
+} // namespace vcl
+
+#include "misc.cpp"
+
+#endif // VCL_ALGORITHMS_INTERSECTION_MISC_H
