@@ -27,28 +27,57 @@
 #include <vclib/algorithms/polygon.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/plane.h>
+#include <vclib/space/sphere.h>
 
 namespace vcl {
 
+// Element Intersection algorithms
+
 template<typename PlaneType, typename BoxType>
-bool planeBoxIntersect(const PlaneType& p, const BoxType& b);
+bool planeBoxIntersect(const PlaneType& p, const BoxType& box);
 
 template<PointConcept PointType>
 bool triangleBoxIntersect(
 	const PointType&      p0,
 	const PointType&      p1,
 	const PointType&      p2,
-	const Box<PointType>& b) requires (PointType::DIM == 3);
+	const Box<PointType>& box) requires (PointType::DIM == 3);
 
 template<FaceConcept FaceType, PointConcept PointType>
 bool faceBoxIntersect(
 	const FaceType& f,
-	const Box<PointType>& b);
+	const Box<PointType>& box);
+
+template<PointConcept PointType, typename SScalar>
+bool triangleSphereItersect(
+	PointType      p0,
+	PointType      p1,
+	PointType      p2,
+	const vcl::Sphere<SScalar>& sphere,
+	PointType& witness,
+	std::pair<SScalar, SScalar>& res);
+
+template<PointConcept PointType, typename SScalar>
+bool triangleSphereItersect(
+	const PointType&       p0,
+	const PointType&       p1,
+	const PointType&       p2,
+	const Sphere<SScalar>& sphere);
+
+template<FaceConcept FaceType, typename SScalar>
+bool faceSphereItersect(
+	const FaceType& f,
+	const Sphere<SScalar>& sphere);
+
+// Mesh Intersection algorithms
 
 template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
 void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl);
 
-}
+template<FaceMeshConcept MeshType, typename SScalar>
+MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere);
+
+} // namespace vcl
 
 #include "intersection.cpp"
 

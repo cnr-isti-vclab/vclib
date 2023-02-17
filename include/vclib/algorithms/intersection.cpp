@@ -217,14 +217,14 @@ inline bool axisTestZ0(
  * @return
  */
 template<typename PlaneType, typename BoxType>
-bool planeBoxIntersect(const PlaneType& p, const BoxType& b)
+bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
 {
 	using PointType = typename BoxType::PointType;
 	using ScalarType = typename PointType::ScalarType;
 
 	// Convert AABB to center-extents representation
-	PointType c = (b.max + b.min) * 0.5f; // Compute AABB center
-	PointType e = b.max - c; // Compute positive extents
+	PointType c = (box.max + box.min) * 0.5f; // Compute AABB center
+	PointType e = box.max - c; // Compute positive extents
 
 	PointType n = p.direction();
 	// Compute the projection interval radius of b onto L(t) = b.c + t * p.n
@@ -246,12 +246,12 @@ bool triangleBoxIntersect(
 	const PointType&      tv0,
 	const PointType&      tv1,
 	const PointType&      tv2,
-	const Box<PointType>& b) requires (PointType::DIM == 3)
+	const Box<PointType>& box) requires (PointType::DIM == 3)
 {
 	using ScalarType = typename PointType::ScalarType;
 
-	PointType boxcenter = b.center();
-	PointType bHalfSixe = b.size() / 2;
+	PointType boxcenter = box.center();
+	PointType bHalfSixe = box.size() / 2;
 
 	/*    use separating axis theorem to test overlap between triangle and box */
 	/*    need to test for overlap in these directions: */
@@ -334,18 +334,18 @@ bool triangleBoxIntersect(
 	/*  compute plane equation of triangle: normal*x+d=0 */
 	normal = e0.cross(e1);
 	vcl::Plane<ScalarType> plane(tv0, tv1, tv2);
-	if (!planeBoxIntersect(plane, b))
+	if (!planeBoxIntersect(plane, box))
 		return false;
 
 	return true; /* box and triangle overlaps */
 }
 
 template<FaceConcept FaceType, PointConcept PointType>
-bool faceBoxIntersect(const FaceType& f, const Box<PointType>& b)
+bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
 {
 	if constexpr(TriangleFaceConcept<FaceType>) {
 		return triangleBoxIntersect(
-			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord(), b);
+			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord(), box);
 	}
 	else {
 		bool b = false;
@@ -355,10 +355,198 @@ bool faceBoxIntersect(const FaceType& f, const Box<PointType>& b)
 				f.vertex(tris[i])->coord(),
 				f.vertex(tris[i + 1])->coord(),
 				f.vertex(tris[i + 2])->coord(),
-				b);
+				box);
 		}
 		return b;
 	}
+}
+
+/**
+ * @brief Compute the intersection between a sphere and a triangle.
+ * @param[in] p0: first 3d point of the triangle
+ * @param[in] p1: second 3d point of the triangle
+ * @param[in] p2: third 3d point of the triangle
+ * @param[in] sphere: the input sphere
+ * @param[out] witness: the point on the triangle nearest to the center of the sphere (even when
+ *                      there isn't intersection)
+ * @param[out] res: if not null, in the first item is stored the minimum distance between the
+ *                  triangle and the sphere, while in the second item is stored the penetration
+ *                  depth
+ * @return true iff there is an intersection between the sphere and the triangle
+ */
+template<PointConcept PointType, typename SScalar>
+bool triangleSphereItersect(
+	PointType                    p0,
+	PointType                    p1,
+	PointType                    p2,
+	const Sphere<SScalar>&       sphere,
+	PointType&                   witness,
+	std::pair<SScalar, SScalar>& res)
+{
+	using ScalarType = typename PointType::ScalarType;
+
+	bool penetrationDetected = false;
+
+	ScalarType radius = sphere.radius();
+	PointType  center = sphere.center();
+	p0 -= center;
+	p1 -= center;
+	p2 -= center;
+
+	PointType p10 = p1 - p0;
+	PointType p21 = p2 - p1;
+	PointType p20 = p2 - p0;
+
+	ScalarType delta0_p01 = p10.dot(p1);
+	ScalarType delta1_p01 = -p10.dot(p0);
+	ScalarType delta0_p02 = p20.dot(p2);
+	ScalarType delta2_p02 = -p20.dot(p0);
+	ScalarType delta1_p12 = p21.dot(p2);
+	ScalarType delta2_p12 = -p21.dot(p1);
+
+	// the closest point can be one of the vertices of the triangle
+	if (delta1_p01 <= ScalarType(0.0) && delta2_p02 <= ScalarType(0.0))
+		witness = p0;
+	else if (delta0_p01 <= ScalarType(0.0) && delta2_p12 <= ScalarType(0.0))
+		witness = p1;
+	else if (delta0_p02 <= ScalarType(0.0) && delta1_p12 <= ScalarType(0.0))
+		witness = p2;
+	else {
+		ScalarType temp        = p10.dot(p2);
+		ScalarType delta0_p012 = delta0_p01 * delta1_p12 + delta2_p12 * temp;
+		ScalarType delta1_p012 = delta1_p01 * delta0_p02 - delta2_p02 * temp;
+		ScalarType delta2_p012 = delta2_p02 * delta0_p01 - delta1_p01 * (p20.dot(p1));
+
+		// otherwise, can be a point lying on same edge of the triangle
+		if (delta0_p012 <= ScalarType(0.0)) {
+			ScalarType denominator = delta1_p12 + delta2_p12;
+			ScalarType mu1         = delta1_p12 / denominator;
+			ScalarType mu2         = delta2_p12 / denominator;
+
+			witness = (p1 * mu1 + p2 * mu2);
+		}
+		else if (delta1_p012 <= ScalarType(0.0)) {
+			ScalarType denominator = delta0_p02 + delta2_p02;
+			ScalarType mu0         = delta0_p02 / denominator;
+			ScalarType mu2         = delta2_p02 / denominator;
+
+			witness = (p0 * mu0 + p2 * mu2);
+		}
+		else if (delta2_p012 <= ScalarType(0.0)) {
+			ScalarType denominator = delta0_p01 + delta1_p01;
+			ScalarType mu0         = delta0_p01 / denominator;
+			ScalarType mu1         = delta1_p01 / denominator;
+
+			witness = (p0 * mu0 + p1 * mu1);
+		}
+		else {
+			// or else can be an point internal to the triangle
+			ScalarType denominator = delta0_p012 + delta1_p012 + delta2_p012;
+			ScalarType lambda0     = delta0_p012 / denominator;
+			ScalarType lambda1     = delta1_p012 / denominator;
+			ScalarType lambda2     = delta2_p012 / denominator;
+
+			witness = p0 * lambda0 + p1 * lambda1 + p2 * lambda2;
+		}
+	}
+
+	ScalarType witness_norm = witness.Norm();
+
+	res.first  = std::max<ScalarType>(witness_norm - radius, ScalarType(0.0));
+	res.second = std::max<ScalarType>(radius - witness_norm, ScalarType(0.0));
+
+	penetrationDetected = (witness.SquaredNorm() <= (radius * radius));
+	witness += center;
+	return penetrationDetected;
+}
+
+/**
+ * @brief Compute the intersection between a sphere and a triangle.
+ * @param[in] p0: first 3d point of the triangle
+ * @param[in] p1: second 3d point of the triangle
+ * @param[in] p2: third 3d point of the triangle
+ * @param[in] sphere: the input sphere
+ * @return true iff there is an intersection between the sphere and the triangle
+ */
+template<PointConcept PointType, typename SScalar>
+bool triangleSphereItersect(
+	const PointType&       p0,
+	const PointType&       p1,
+	const PointType&       p2,
+	const Sphere<SScalar>& sphere)
+{
+	PointType witness;
+	std::pair<SScalar, SScalar> res;
+	return triangleBoxIntersect(p0, p1, p2, sphere, witness, res);
+}
+
+/**
+ * @brief Compute the intersection between a sphere and a face, that may be also polygonal.
+ *
+ * If the face is a triangle, the triangleSphereIntersect function will be used.
+ * If the face is polygonal, the face is first triangulated using an earcut algorithm, and then
+ * for each triangle, the triangleSphereIntersect is computed.
+ *
+ * @param[in] f: the input face
+ * @param[in] sphere: the input sphere
+ * @param[out] witness: the point on the triangle nearest to the center of the sphere (even when
+ *                      there isn't intersection)
+ * @param[out] res: if not null, in the first item is stored the minimum distance between the
+ *                  face and the sphere, while in the second item is stored the penetration depth
+ * @return true iff there is an intersection between the sphere and the face
+ */
+template<FaceConcept FaceType, PointConcept PointType, typename SScalar>
+bool faceSphereItersect(
+	const FaceType&              f,
+	const Sphere<SScalar>&       sphere,
+	PointType&                   witness,
+	std::pair<SScalar, SScalar>& res)
+{
+	if constexpr(TriangleFaceConcept<FaceType>) {
+		return triangleSphereItersect(
+			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord(), sphere, witness, res);
+	}
+	else {
+		res.first = std::numeric_limits<SScalar>::max();
+		bool b = false;
+		PointType w;
+		std::pair<SScalar, SScalar> r;
+		std::vector<uint> tris = vcl::earCut(f);
+		for (uint i = 0; i < tris.size() && !b; i += 3) {
+			b |= triangleSphereItersect(
+				f.vertex(tris[i])->coord(),
+				f.vertex(tris[i + 1])->coord(),
+				f.vertex(tris[i + 2])->coord(),
+				sphere,
+				w,
+				r);
+
+			if (r.first < res.first) {
+				res = r;
+				witness = w;
+			}
+		}
+		return b;
+	}
+}
+
+/**
+ * @brief Compute the intersection between a sphere and a face, that may be also polygonal.
+ *
+ * If the face is a triangle, the triangleSphereIntersect function will be used.
+ * If the face is polygonal, the face is first triangulated using an earcut algorithm, and then
+ * for each triangle, the triangleSphereIntersect is computed.
+ *
+ * @param[in] f: the input face
+ * @param[in] sphere: the input sphere
+ * @return true iff there is an intersection between the sphere and the face
+ */
+template<FaceConcept FaceType, typename SScalar>
+bool faceSphereItersect(const FaceType& f, const Sphere<SScalar>& sphere)
+{
+	Point3d witness;
+	std::pair<SScalar, SScalar> res;
+	return faceSphereItersect(f, sphere, witness, res);
 }
 
 template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
@@ -437,7 +625,13 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 //				break;
 //			}
 //		}
-	//	}
+//	}
+}
+
+template<FaceMeshConcept MeshType, typename SScalar>
+MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere)
+{
+	// todo
 }
 
 } // namespace vcl
