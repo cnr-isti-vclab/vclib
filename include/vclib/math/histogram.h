@@ -24,6 +24,7 @@
 #ifndef VCL_MATH_HISTOGRAM_H
 #define VCL_MATH_HISTOGRAM_H
 
+#include <algorithm>
 #include <vector>
 
 #include <vclib/misc/types.h>
