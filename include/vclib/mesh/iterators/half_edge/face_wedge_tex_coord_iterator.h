@@ -21,43 +21,57 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_VERTEX_ITERATOR_H
-#define VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_VERTEX_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_WEDGE_TEX_COORD_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_FACE_WEDGE_TEX_COORD_ITERATOR_H
 
-#include "vertex_base_iterator.h"
+#include "face_base_iterator.h"
+
+#include <vclib/space/tex_coord.h>
 
 namespace vcl {
 
 template<typename HalfEdge>
-class VertexAdjVertexIterator : public VertexBaseIterator<HalfEdge>
+class FaceWedgeTexCoordIterator : public FaceBaseIterator<HalfEdge>
 {
-	using Base = VertexBaseIterator<HalfEdge>;
+	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = typename HalfEdge::VertexType*;
-	using reference         = typename HalfEdge::VertexType*&;
-	using pointer           = typename HalfEdge::VertexType**;
+	using value_type        = typename HalfEdge::TexCoordType;
+	using reference         = typename HalfEdge::TexCoordType&;
+	using pointer           = typename HalfEdge::TexCoordType*;
 
 	using Base::Base;
 
-	reference operator*() const { return Base::current->toVertex(); }
-	pointer operator->() const { return &(Base::current->toVertex()); }
+	reference operator*() const
+	{
+		return Base::current->texCoord();
+	}
+	pointer operator->() const
+	{
+		return &(Base::current->texCoord());
+	}
 };
 
 template<typename HalfEdge>
-class ConstVertexAdjVertexIterator : public ConstVertexBaseIterator<HalfEdge>
+class ConstFaceWedgeTexCoordIterator : public ConstFaceBaseIterator<HalfEdge>
 {
-	using Base = ConstVertexBaseIterator<HalfEdge>;
+	using Base = ConstFaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = const typename HalfEdge::VertexType*;
-	using reference         = const typename HalfEdge::VertexType*;
-	using pointer           = const typename HalfEdge::VertexType**;
+	using value_type        = const typename HalfEdge::TexCoordType;
+	using reference         = const typename HalfEdge::TexCoordType&;
+	using pointer           = const typename HalfEdge::TexCoordType*;
 
 	using Base::Base;
 
-	reference operator*() const { return Base::current->toVertex(); }
-	pointer operator->() const { return &(Base::current->toVertex()); }
+	reference operator*() const
+	{
+		return Base::current->texCoord();
+	}
+	pointer operator->() const
+	{
+		return &(Base::current->texCoord());
+	}
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_VERTEX_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_WEDGE_TEX_COORD_ITERATOR_H

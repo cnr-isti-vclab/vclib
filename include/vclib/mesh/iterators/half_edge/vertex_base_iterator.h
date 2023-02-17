@@ -21,43 +21,63 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_VERTEX_ITERATOR_H
-#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_VERTEX_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_BASE_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_BASE_ITERATOR_H
 
-#include "face_base_iterator.h"
+#include <iterator>
 
 namespace vcl {
 
 template<typename HalfEdge>
-class FaceVertexIterator : public FaceBaseIterator<HalfEdge>
+class VertexBaseIterator
 {
-	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = typename HalfEdge::VertexType*;
-	using reference         = typename HalfEdge::VertexType*&;
-	using pointer           = typename HalfEdge::VertexType**;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	VertexBaseIterator();
+	VertexBaseIterator(HalfEdge* start);
+	VertexBaseIterator(HalfEdge* start, const HalfEdge* end);
 
-	reference operator*() const { return Base::current->fromVertex(); }
-	pointer operator->() const { return &(Base::current->fromVertex()); }
+	bool operator==(const VertexBaseIterator& oi) const;
+	bool operator!=(const VertexBaseIterator& oi) const;
+
+	VertexBaseIterator operator++();
+	VertexBaseIterator operator++(int);
+	VertexBaseIterator operator--();
+	VertexBaseIterator operator--(int);
+
+protected:
+	HalfEdge* current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 template<typename HalfEdge>
-class ConstFaceVertexIterator : public ConstFaceBaseIterator<HalfEdge>
+class ConstVertexBaseIterator
 {
-	using Base = ConstFaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = const typename HalfEdge::VertexType*;
-	using reference         = const typename HalfEdge::VertexType*;
-	using pointer           = const typename HalfEdge::VertexType**;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	ConstVertexBaseIterator();
+	ConstVertexBaseIterator(const HalfEdge* start);
+	ConstVertexBaseIterator(const HalfEdge* start, const HalfEdge* end);
 
-	reference operator*() const { return Base::current->fromVertex(); }
-	pointer operator->() const { return &(Base::current->fromVertex()); }
+	bool operator==(const ConstVertexBaseIterator& oi) const;
+	bool operator!=(const ConstVertexBaseIterator& oi) const;
+
+	ConstVertexBaseIterator operator++();
+	ConstVertexBaseIterator operator++(int);
+	ConstVertexBaseIterator operator--();
+	ConstVertexBaseIterator operator--(int);
+
+protected:
+	const HalfEdge* current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_VERTEX_ITERATOR_H
+#include "vertex_base_iterator.cpp"
+
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_BASE_ITERATOR_H

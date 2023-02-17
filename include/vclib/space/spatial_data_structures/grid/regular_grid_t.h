@@ -24,8 +24,8 @@
 #ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID_T_H
 #define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID_T_H
 
-#include <vclib/iterators/grid/cell_iterator.h>
-#include <vclib/iterators/grid/cell_range_iterator.h>
+#include "iterators/cell_iterator.h"
+#include "iterators/cell_range_iterator.h"
 #include <vclib/space/box.h>
 
 namespace vcl {

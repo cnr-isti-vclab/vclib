@@ -21,57 +21,63 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_WEDGE_TEX_COORD_ITERATOR_H
-#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_WEDGE_TEX_COORD_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
 
-#include "face_base_iterator.h"
-
-#include <vclib/space/tex_coord.h>
+#include <iterator>
 
 namespace vcl {
 
 template<typename HalfEdge>
-class FaceWedgeTexCoordIterator : public FaceBaseIterator<HalfEdge>
+class FaceBaseIterator
 {
-	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = typename HalfEdge::TexCoordType;
-	using reference         = typename HalfEdge::TexCoordType&;
-	using pointer           = typename HalfEdge::TexCoordType*;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	FaceBaseIterator();
+	FaceBaseIterator(HalfEdge* start);
+	FaceBaseIterator(HalfEdge* start, const HalfEdge* end);
 
-	reference operator*() const
-	{
-		return Base::current->texCoord();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->texCoord());
-	}
+	bool operator==(const FaceBaseIterator& oi) const;
+	bool operator!=(const FaceBaseIterator& oi) const;
+
+	FaceBaseIterator operator++();
+	FaceBaseIterator operator++(int);
+	FaceBaseIterator operator--();
+	FaceBaseIterator operator--(int);
+
+protected:
+	HalfEdge* current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 template<typename HalfEdge>
-class ConstFaceWedgeTexCoordIterator : public ConstFaceBaseIterator<HalfEdge>
+class ConstFaceBaseIterator
 {
-	using Base = ConstFaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = const typename HalfEdge::TexCoordType;
-	using reference         = const typename HalfEdge::TexCoordType&;
-	using pointer           = const typename HalfEdge::TexCoordType*;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	ConstFaceBaseIterator();
+	ConstFaceBaseIterator(const HalfEdge* start);
+	ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end);
 
-	reference operator*() const
-	{
-		return Base::current->texCoord();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->texCoord());
-	}
+	bool operator==(const ConstFaceBaseIterator& oi) const;
+	bool operator!=(const ConstFaceBaseIterator& oi) const;
+
+	ConstFaceBaseIterator operator++();
+	ConstFaceBaseIterator operator++(int);
+	ConstFaceBaseIterator operator--();
+	ConstFaceBaseIterator operator--(int);
+
+protected:
+	const HalfEdge* current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_WEDGE_TEX_COORD_ITERATOR_H
+#include "face_base_iterator.cpp"
+
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H

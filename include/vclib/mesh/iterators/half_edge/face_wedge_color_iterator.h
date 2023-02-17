@@ -21,63 +21,57 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_BASE_ITERATOR_H
-#define VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_BASE_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_WEDGE_COLOR_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_FACE_WEDGE_COLOR_ITERATOR_H
 
-#include <iterator>
+#include "face_base_iterator.h"
+
+#include <vclib/space/color.h>
 
 namespace vcl {
 
 template<typename HalfEdge>
-class VertexBaseIterator
+class FaceWedgeColorIterator : public FaceBaseIterator<HalfEdge>
 {
+	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
+	using value_type        = vcl::Color;
+	using reference         = vcl::Color&;
+	using pointer           = vcl::Color*;
 
-	VertexBaseIterator();
-	VertexBaseIterator(HalfEdge* start);
-	VertexBaseIterator(HalfEdge* start, const HalfEdge* end);
+	using Base::Base;
 
-	bool operator==(const VertexBaseIterator& oi) const;
-	bool operator!=(const VertexBaseIterator& oi) const;
-
-	VertexBaseIterator operator++();
-	VertexBaseIterator operator++(int);
-	VertexBaseIterator operator--();
-	VertexBaseIterator operator--(int);
-
-protected:
-	HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
+	reference operator*() const
+	{
+		return Base::current->color();
+	}
+	pointer operator->() const
+	{
+		return &(Base::current->color());
+	}
 };
 
 template<typename HalfEdge>
-class ConstVertexBaseIterator
+class ConstFaceWedgeColorIterator : public ConstFaceBaseIterator<HalfEdge>
 {
+	using Base = ConstFaceBaseIterator<HalfEdge>;
 public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
+	using value_type        = const vcl::Color;
+	using reference         = const vcl::Color&;
+	using pointer           = const vcl::Color*;
 
-	ConstVertexBaseIterator();
-	ConstVertexBaseIterator(const HalfEdge* start);
-	ConstVertexBaseIterator(const HalfEdge* start, const HalfEdge* end);
+	using Base::Base;
 
-	bool operator==(const ConstVertexBaseIterator& oi) const;
-	bool operator!=(const ConstVertexBaseIterator& oi) const;
-
-	ConstVertexBaseIterator operator++();
-	ConstVertexBaseIterator operator++(int);
-	ConstVertexBaseIterator operator--();
-	ConstVertexBaseIterator operator--(int);
-
-protected:
-	const HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
+	reference operator*() const
+	{
+		return Base::current->color();
+	}
+	pointer operator->() const
+	{
+		return &(Base::current->color());
+	}
 };
 
 } // namespace vcl
 
-#include "vertex_base_iterator.cpp"
-
-#endif // VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_BASE_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_WEDGE_COLOR_ITERATOR_H

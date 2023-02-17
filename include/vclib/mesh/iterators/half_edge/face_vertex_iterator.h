@@ -21,45 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_GRID_CELL_ITERATOR_H
-#define VCL_ITERATORS_GRID_CELL_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_VERTEX_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_FACE_VERTEX_ITERATOR_H
 
-#include <vclib/space/point.h>
+#include "face_base_iterator.h"
 
 namespace vcl {
 
-template<int N>
-class CellIterator
+template<typename HalfEdge>
+class FaceVertexIterator : public FaceBaseIterator<HalfEdge>
 {
+	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using difference_type   = ptrdiff_t;
-	using value_type        = vcl::Point<uint, N>;
-	using reference         = const vcl::Point<uint, N>&;
-	using pointer           = const vcl::Point<uint, N>*;
-	using iterator_category = std::forward_iterator_tag;
+	using value_type        = typename HalfEdge::VertexType*;
+	using reference         = typename HalfEdge::VertexType*&;
+	using pointer           = typename HalfEdge::VertexType**;
 
-	CellIterator();
-	CellIterator(const vcl::Point<uint, N>& end);
-	CellIterator(const vcl::Point<uint, N>& first, const vcl::Point<uint, N>& end);
+	using Base::Base;
 
-	reference operator*() const;
-	pointer   operator->() const;
+	reference operator*() const { return Base::current->fromVertex(); }
+	pointer operator->() const { return &(Base::current->fromVertex()); }
+};
 
-	bool operator==(const CellIterator& oi) const;
-	bool operator!=(const CellIterator& oi) const;
+template<typename HalfEdge>
+class ConstFaceVertexIterator : public ConstFaceBaseIterator<HalfEdge>
+{
+	using Base = ConstFaceBaseIterator<HalfEdge>;
+public:
+	using value_type        = const typename HalfEdge::VertexType*;
+	using reference         = const typename HalfEdge::VertexType*;
+	using pointer           = const typename HalfEdge::VertexType**;
 
-	CellIterator operator++();
-	CellIterator operator++(int);
+	using Base::Base;
 
-private:
-	vcl::Point<uint, N> it;
-	vcl::Point<uint, N> first, end;
-
-	void incrementIt(uint d);
+	reference operator*() const { return Base::current->fromVertex(); }
+	pointer operator->() const { return &(Base::current->fromVertex()); }
 };
 
 } // namespace vcl
 
-#include "cell_iterator.cpp"
-
-#endif // VCL_ITERATORS_GRID_CELL_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_VERTEX_ITERATOR_H

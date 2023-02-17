@@ -26,9 +26,9 @@
 
 #include <vector>
 
+#include <vclib/mesh/iterators/element_container_iterator.h>
+#include <vclib/mesh/iterators/element_container_range_iterator.h>
 #include <vclib/mesh/components/concepts/custom_components.h>
-#include <vclib/iterators/mesh/element_container_iterator.h>
-#include <vclib/iterators/mesh/element_container_range_iterator.h>
 
 #include "containers_concepts.h"
 #include "custom_components_vector_map.h"

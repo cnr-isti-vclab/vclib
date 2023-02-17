@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_ADJ_FACE_ITERATOR_H
-#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_ADJ_FACE_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_ADJ_FACE_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_FACE_ADJ_FACE_ITERATOR_H
 
 #include "face_base_iterator.h"
 
@@ -76,4 +76,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_ADJ_FACE_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_ADJ_FACE_ITERATOR_H

@@ -21,57 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_WEDGE_COLOR_ITERATOR_H
-#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_WEDGE_COLOR_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
 
 #include "face_base_iterator.h"
-
-#include <vclib/space/color.h>
 
 namespace vcl {
 
 template<typename HalfEdge>
-class FaceWedgeColorIterator : public FaceBaseIterator<HalfEdge>
+class FaceHalfEdgeIterator : public FaceBaseIterator<HalfEdge>
 {
 	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = vcl::Color;
-	using reference         = vcl::Color&;
-	using pointer           = vcl::Color*;
+	using value_type        = HalfEdge;
+	using reference         = HalfEdge*&;
+	using pointer           = HalfEdge**;
 
 	using Base::Base;
 
-	reference operator*() const
-	{
-		return Base::current->color();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->color());
-	}
+	reference operator*() const { return Base::current; }
+	pointer operator->() const { return &(Base::current); }
 };
 
 template<typename HalfEdge>
-class ConstFaceWedgeColorIterator : public ConstFaceBaseIterator<HalfEdge>
+class ConstFaceHalfEdgeIterator : public ConstFaceBaseIterator<HalfEdge>
 {
 	using Base = ConstFaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = const vcl::Color;
-	using reference         = const vcl::Color&;
-	using pointer           = const vcl::Color*;
+	using value_type        = const HalfEdge*;
+	using reference         = const HalfEdge*;
+	using pointer           = const HalfEdge**;
 
 	using Base::Base;
 
-	reference operator*() const
-	{
-		return Base::current->color();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->color());
-	}
+	reference operator*() const { return Base::current; }
+	pointer operator->() const { return &(Base::current); }
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_WEDGE_COLOR_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H

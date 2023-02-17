@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_GRID_STATIC_GRID_ITERATOR_H
-#define VCL_ITERATORS_GRID_STATIC_GRID_ITERATOR_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_STATIC_GRID_ITERATOR_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_STATIC_GRID_ITERATOR_H
 
 #include <vclib/misc/mark.h>
 #include <vclib/misc/pair.h>
@@ -104,4 +104,4 @@ private:
 
 #include "static_grid_iterator.cpp"
 
-#endif // VCL_ITERATORS_GRID_STATIC_GRID_ITERATOR_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_STATIC_GRID_ITERATOR_H

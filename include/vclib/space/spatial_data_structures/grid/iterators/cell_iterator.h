@@ -21,43 +21,45 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
-#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_ITERATOR_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_ITERATOR_H
 
-#include "face_base_iterator.h"
+#include <vclib/space/point.h>
 
 namespace vcl {
 
-template<typename HalfEdge>
-class FaceHalfEdgeIterator : public FaceBaseIterator<HalfEdge>
+template<int N>
+class CellIterator
 {
-	using Base = FaceBaseIterator<HalfEdge>;
 public:
-	using value_type        = HalfEdge;
-	using reference         = HalfEdge*&;
-	using pointer           = HalfEdge**;
+	using difference_type   = ptrdiff_t;
+	using value_type        = vcl::Point<uint, N>;
+	using reference         = const vcl::Point<uint, N>&;
+	using pointer           = const vcl::Point<uint, N>*;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	CellIterator();
+	CellIterator(const vcl::Point<uint, N>& end);
+	CellIterator(const vcl::Point<uint, N>& first, const vcl::Point<uint, N>& end);
 
-	reference operator*() const { return Base::current; }
-	pointer operator->() const { return &(Base::current); }
-};
+	reference operator*() const;
+	pointer   operator->() const;
 
-template<typename HalfEdge>
-class ConstFaceHalfEdgeIterator : public ConstFaceBaseIterator<HalfEdge>
-{
-	using Base = ConstFaceBaseIterator<HalfEdge>;
-public:
-	using value_type        = const HalfEdge*;
-	using reference         = const HalfEdge*;
-	using pointer           = const HalfEdge**;
+	bool operator==(const CellIterator& oi) const;
+	bool operator!=(const CellIterator& oi) const;
 
-	using Base::Base;
+	CellIterator operator++();
+	CellIterator operator++(int);
 
-	reference operator*() const { return Base::current; }
-	pointer operator->() const { return &(Base::current); }
+private:
+	vcl::Point<uint, N> it;
+	vcl::Point<uint, N> first, end;
+
+	void incrementIt(uint d);
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
+#include "cell_iterator.cpp"
+
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_ITERATOR_H

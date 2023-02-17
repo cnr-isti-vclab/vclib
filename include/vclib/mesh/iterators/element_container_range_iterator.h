@@ -21,43 +21,61 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
-#define VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
-
-#include "vertex_base_iterator.h"
+#ifndef VCL_MESH_ITERATORS_ELEMENT_CONTAINER_RANGE_ITERATOR_H
+#define VCL_MESH_ITERATORS_ELEMENT_CONTAINER_RANGE_ITERATOR_H
 
 namespace vcl {
 
-template<typename HalfEdge>
-class VertexAdjFaceIterator : public VertexBaseIterator<HalfEdge>
+template<typename Container, typename Iterator>
+class ElementContainerRangeIterator
 {
-	using Base = VertexBaseIterator<HalfEdge>;
 public:
-	using value_type        = typename HalfEdge::FaceType*;
-	using reference         = typename HalfEdge::FaceType*&;
-	using pointer           = typename HalfEdge::FaceType**;
+	ElementContainerRangeIterator(
+		Container& c,
+		bool       jumpDeleted,
+		Iterator (Container::*beginFunction)(bool),
+		Iterator (Container::*endFunction)()) :
+			c(c),
+			beginFunction(beginFunction),
+			endFunction(endFunction),
+			jumpDeleted(jumpDeleted) {};
 
-	using Base::Base;
+	Iterator begin() { return (c.*(beginFunction))(jumpDeleted); }
 
-	reference operator*() const { return Base::current->face(); }
-	pointer operator->() const { return &(Base::current->face()); }
+	Iterator end() { return (c.*(endFunction))(); }
+
+private:
+	Container& c;
+	Iterator (Container::*beginFunction)(bool);
+	Iterator (Container::*endFunction)();
+	bool jumpDeleted;
 };
 
-template<typename HalfEdge>
-class ConstVertexAdjFaceIterator : public ConstVertexBaseIterator<HalfEdge>
+template<typename Container, typename ConstIterator>
+class ConstElementContainerRangeIterator
 {
-	using Base = ConstVertexBaseIterator<HalfEdge>;
 public:
-	using value_type        = const typename HalfEdge::FaceType*;
-	using reference         = const typename HalfEdge::FaceType*;
-	using pointer           = const typename HalfEdge::FaceType**;
+	ConstElementContainerRangeIterator(
+		const Container& c,
+		bool             jumpDeleted,
+		ConstIterator (Container::*beginFunction)(bool) const,
+		ConstIterator (Container::*endFunction)() const) :
+			c(c),
+			beginFunction(beginFunction),
+			endFunction(endFunction),
+			jumpDeleted(jumpDeleted) {};
 
-	using Base::Base;
+	ConstIterator begin() { return (c.*(beginFunction))(jumpDeleted); }
 
-	reference operator*() const { return Base::current->face(); }
-	pointer operator->() const { return &(Base::current->face()); }
+	ConstIterator end() { return (c.*(endFunction))(); }
+
+private:
+	const Container& c;
+	ConstIterator (Container::*beginFunction)(bool) const;
+	ConstIterator (Container::*endFunction)() const;
+	bool jumpDeleted;
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_ELEMENT_CONTAINER_RANGE_ITERATOR_H

@@ -21,49 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_GRID_CELL_RANGE_ITERATOR_H
-#define VCL_ITERATORS_GRID_CELL_RANGE_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
 
-#include "../range_iterator.h"
-
-#include <vclib/space/point.h>
+#include "vertex_base_iterator.h"
 
 namespace vcl {
 
-template<typename Container, typename ConstIterator>
-class CellRangeIterator : public ConstRangeIterator<Container, ConstIterator>
+template<typename HalfEdge>
+class VertexAdjFaceIterator : public VertexBaseIterator<HalfEdge>
 {
-private:
-	using Base = ConstRangeIterator<Container, ConstIterator>;
-	using CellCoord = typename Container::CellCoord;
+	using Base = VertexBaseIterator<HalfEdge>;
 public:
+	using value_type        = typename HalfEdge::FaceType*;
+	using reference         = typename HalfEdge::FaceType*&;
+	using pointer           = typename HalfEdge::FaceType**;
 
-	CellRangeIterator(
-		const Container& c,
-		ConstIterator (Container::*beginFunction)() const,
-		ConstIterator (Container::*endFunction)() const) :
-			Base(c, beginFunction, endFunction)
-		{
-			last = c.cellNumbers() - 1;
-		};
+	using Base::Base;
 
-	CellRangeIterator(
-		const Container& c,
-		ConstIterator (Container::*beginFunction)() const,
-		ConstIterator (Container::*endFunction)() const,
-		const CellCoord& first,
-		const CellCoord& last) :
-			Base(c, beginFunction, endFunction), first(first), last(last)
-		{};
+	reference operator*() const { return Base::current->face(); }
+	pointer operator->() const { return &(Base::current->face()); }
+};
 
-	ConstIterator begin() const
-	{
-		return Base::c.cellBegin(first, last);
-	}
-private:
-	CellCoord first, last;
+template<typename HalfEdge>
+class ConstVertexAdjFaceIterator : public ConstVertexBaseIterator<HalfEdge>
+{
+	using Base = ConstVertexBaseIterator<HalfEdge>;
+public:
+	using value_type        = const typename HalfEdge::FaceType*;
+	using reference         = const typename HalfEdge::FaceType*;
+	using pointer           = const typename HalfEdge::FaceType**;
+
+	using Base::Base;
+
+	reference operator*() const { return Base::current->face(); }
+	pointer operator->() const { return &(Base::current->face()); }
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_GRID_CELL_RANGE_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H

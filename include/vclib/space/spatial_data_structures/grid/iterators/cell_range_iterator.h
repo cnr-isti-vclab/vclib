@@ -21,61 +21,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_ELEMENT_CONTAINER_RANGE_ITERATOR_H
-#define VCL_ITERATORS_MESH_ELEMENT_CONTAINER_RANGE_ITERATOR_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_RANGE_ITERATOR_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_RANGE_ITERATOR_H
+
+#include <vclib/iterators/range_iterator.h>
+
+#include <vclib/space/point.h>
 
 namespace vcl {
 
-template<typename Container, typename Iterator>
-class ElementContainerRangeIterator
-{
-public:
-	ElementContainerRangeIterator(
-		Container& c,
-		bool       jumpDeleted,
-		Iterator (Container::*beginFunction)(bool),
-		Iterator (Container::*endFunction)()) :
-			c(c),
-			beginFunction(beginFunction),
-			endFunction(endFunction),
-			jumpDeleted(jumpDeleted) {};
-
-	Iterator begin() { return (c.*(beginFunction))(jumpDeleted); }
-
-	Iterator end() { return (c.*(endFunction))(); }
-
-private:
-	Container& c;
-	Iterator (Container::*beginFunction)(bool);
-	Iterator (Container::*endFunction)();
-	bool jumpDeleted;
-};
-
 template<typename Container, typename ConstIterator>
-class ConstElementContainerRangeIterator
+class CellRangeIterator : public ConstRangeIterator<Container, ConstIterator>
 {
-public:
-	ConstElementContainerRangeIterator(
-		const Container& c,
-		bool             jumpDeleted,
-		ConstIterator (Container::*beginFunction)(bool) const,
-		ConstIterator (Container::*endFunction)() const) :
-			c(c),
-			beginFunction(beginFunction),
-			endFunction(endFunction),
-			jumpDeleted(jumpDeleted) {};
-
-	ConstIterator begin() { return (c.*(beginFunction))(jumpDeleted); }
-
-	ConstIterator end() { return (c.*(endFunction))(); }
-
 private:
-	const Container& c;
-	ConstIterator (Container::*beginFunction)(bool) const;
-	ConstIterator (Container::*endFunction)() const;
-	bool jumpDeleted;
+	using Base = ConstRangeIterator<Container, ConstIterator>;
+	using CellCoord = typename Container::CellCoord;
+public:
+
+	CellRangeIterator(
+		const Container& c,
+		ConstIterator (Container::*beginFunction)() const,
+		ConstIterator (Container::*endFunction)() const) :
+			Base(c, beginFunction, endFunction)
+		{
+			last = c.cellNumbers() - 1;
+		};
+
+	CellRangeIterator(
+		const Container& c,
+		ConstIterator (Container::*beginFunction)() const,
+		ConstIterator (Container::*endFunction)() const,
+		const CellCoord& first,
+		const CellCoord& last) :
+			Base(c, beginFunction, endFunction), first(first), last(last)
+		{};
+
+	ConstIterator begin() const
+	{
+		return Base::c.cellBegin(first, last);
+	}
+private:
+	CellCoord first, last;
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_ELEMENT_CONTAINER_RANGE_ITERATOR_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_RANGE_ITERATOR_H

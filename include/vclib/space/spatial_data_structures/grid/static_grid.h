@@ -28,11 +28,11 @@
 #include <vector>
 
 #include <vclib/algorithms/stat/bounding_box.h>
-#include <vclib/iterators/grid/static_grid_iterator.h>
 #include <vclib/misc/mark.h>
 #include <vclib/space/spatial_data_structures/grid.h>
 
 #include "abstract_ds_grid.h"
+#include "iterators/static_grid_iterator.h"
 
 namespace vcl {
 
