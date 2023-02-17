@@ -23,6 +23,7 @@
 
 #include <iostream>
 
+#include <vclib/algorithms/stat/scalar.h>
 #include <vclib/algorithms/update/topology.h>
 #include <vclib/algorithms/update/curvature.h>
 #include <vclib/algorithms/update/scalar.h>
@@ -58,7 +59,12 @@ int main(int argc, char **argv)
 	vcl::updatePrincipalCurvature(m, vcl::VCL_PRINCIPAL_CURVATURE_PCA, log);
 
 	vcl::setPerVertexScalarFromPrincipalCurvatureMean(m);
-	vcl::setPerVertexColorFromScalar(m);
+	vcl::Histogramd h = vcl::vertexScalarHistogram(m);
+
+	vcl::setPerVertexColorFromScalar(m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
+
+	std::cout << "Curvature range: " << h.minRangeValue() << " " << h.maxRangeValue() << "\n";
+	std::cout << "Used 90 percentile: " << h.percentile(0.1) << " " << h.percentile(0.9) << "\n";
 
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.ply");
 

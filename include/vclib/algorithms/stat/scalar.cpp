@@ -23,6 +23,8 @@
 
 #include "scalar.h"
 
+#include <vclib/math/base.h>
+
 namespace vcl {
 
 /**
@@ -185,6 +187,46 @@ std::vector<typename MeshType::VertexType::ScalarType> vertexRadiusFromScalar(
 	}
 
 	return radius;
+}
+
+template<MeshConcept MeshType, typename HScalar>
+Histogram<HScalar> vertexScalarHistogram(const MeshType& m, bool selectionOnly, uint histSize)
+{
+	vcl::requirePerVertexScalar(m);
+
+	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::ScalarType;
+
+	auto minmax = vertexScalarMinMax(m);
+
+	vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
+	for (const VertexType& v : m.vertices()) {
+		if (!selectionOnly || v.isSelected()) {
+			assert(!isDegenerate(v.scalar()));
+			h.addValue(v.scalar());
+		}
+	}
+	return h;
+}
+
+template<FaceMeshConcept MeshType, typename HScalar>
+Histogram<HScalar> faceScalarHistogram(const MeshType& m, bool selectionOnly, uint histSize)
+{
+	vcl::requirePerFaceScalar(m);
+
+	using FaceType = typename MeshType::FaceType;
+	using ScalarType = typename FaceType::ScalarType;
+
+	auto minmax = vertexScalarMinMax(m);
+
+	vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
+	for (const FaceType& f : m.faces()) {
+		if (!selectionOnly || f.isSelected()) {
+			assert(!isDegenerate(f.scalar()));
+			h.addValue(f.scalar());
+		}
+	}
+	return h;
 }
 
 } // namespace vcl

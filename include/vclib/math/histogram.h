@@ -35,17 +35,38 @@ class Histogram
 {
 public:
 	Histogram();
-	Histogram(ScalarType minValue, ScalarType maxValue, uint nIntervals, ScalarType gamma = 1.0);
+	Histogram(ScalarType minRangeValue, ScalarType maxRangeValue, uint nBins, ScalarType gamma = 1.0);
 
 	void clear();
-
 	void addValue(ScalarType value, ScalarType increment = 1.0);
 
-	ScalarType binCountInd(uint ind) const;
-	ScalarType binCount(ScalarType value) const;
-	ScalarType binCount(ScalarType value, ScalarType width) const;
+	ScalarType minRangeValue() const;
+	ScalarType maxRangeValue() const;
+
+	ScalarType sumValues() const;
+	ScalarType numberValues() const;
+	ScalarType minValue() const;
+	ScalarType maxValue() const;
+
+	ScalarType maxBinCount() const;
+	ScalarType maxBinCountInRange() const;
+	uint binsNumber() const;
+
+	ScalarType binCount(uint ind) const;
+	ScalarType binLowerBound(uint ind) const;
+	ScalarType binUpperBound(uint ind) const;
+
+	ScalarType binOfValueCount(ScalarType value) const;
+	ScalarType binOfValueCount(ScalarType value, ScalarType width) const;
+	ScalarType binOfValueWidth(ScalarType value);
 
 	ScalarType rangeCount(ScalarType rangeMin, ScalarType rangeMax) const;
+
+	ScalarType percentile(ScalarType frac) const;
+	ScalarType average() const;
+	ScalarType rootMeanSquare() const;
+	ScalarType variance() const;
+	ScalarType standardDeviation() const;
 
 protected:
 	uint binIndex(ScalarType val) const;
@@ -53,18 +74,21 @@ protected:
 	std::vector<ScalarType> H; // Counters for bins
 	std::vector<ScalarType> R; // Range for bins
 
-	ScalarType minVal = 0; // Minimum value
-	ScalarType maxVal = 1; // Maximum value
+	ScalarType minRangeVal = 0; // Minimum range value
+	ScalarType maxRangeVal = 1; // Maximum range value
 
-	ScalarType minElem = std::numeric_limits<ScalarType>::max();
-	ScalarType maxElem = std::numeric_limits<ScalarType>::lowest();
+	ScalarType minVal = std::numeric_limits<ScalarType>::max();
+	ScalarType maxVal = std::numeric_limits<ScalarType>::lowest();
 
-	uint nIntervals = 0; // Number of valid intervals stored between minValue and maxValue
+	uint nBins = 0; // Number of valid bins stored between minRangeValue and maxRangeValue
 
-	ScalarType cnt = 0; // Number of accumulated samples
+	ScalarType cnt = 0; // Number of accumulated values
 	ScalarType sum = 0; // Sum of values
 	ScalarType rms = 0; // Root mean square
 };
+
+using Histogramf = Histogram<float>;
+using Histogramd = Histogram<double>;
 
 } // namespace vcl
 

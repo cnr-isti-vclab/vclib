@@ -24,6 +24,7 @@
 #ifndef VCL_ALGORITHMS_STAT_SCALAR_H
 #define VCL_ALGORITHMS_STAT_SCALAR_H
 
+#include <vclib/math/histogram.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -48,6 +49,18 @@ std::vector<typename MeshType::VertexType::ScalarType> vertexRadiusFromScalar(
 	double          diskRadius,
 	double          radiusVariance,
 	bool            invert = false);
+
+template<MeshConcept MeshType, typename HScalar = double>
+Histogram<HScalar> vertexScalarHistogram(
+	const MeshType& m,
+	bool selectionOnly = false,
+	uint histSize = 10000);
+
+template<FaceMeshConcept MeshType, typename HScalar = double>
+Histogram<HScalar> faceScalarHistogram(
+	const MeshType& m,
+	bool selectionOnly = false,
+	uint histSize = 10000);
 
 } // namespace vcl
 
