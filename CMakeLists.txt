@@ -53,6 +53,7 @@ set(HEADERS
 	include/vclib/algorithms/create.h
 	include/vclib/algorithms/export_to_matrix.h
 	include/vclib/algorithms/fitting.h
+	include/vclib/algorithms/generate.h
 	include/vclib/algorithms/intersection.h
 	include/vclib/algorithms/point_sampling.h
 	include/vclib/algorithms/polygon.h
@@ -284,6 +285,7 @@ set(SOURCES
 	include/vclib/algorithms/clean.cpp
 	include/vclib/algorithms/export_to_matrix.cpp
 	include/vclib/algorithms/fitting.cpp
+	include/vclib/algorithms/generate.cpp
 	include/vclib/algorithms/point_sampling.cpp
 	include/vclib/algorithms/polygon.cpp
 	include/vclib/algorithms/shuffle.cpp
