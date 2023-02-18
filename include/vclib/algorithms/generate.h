@@ -38,7 +38,13 @@ template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
 OutMeshType generateMeshFromVertexBoolVector(
 	const InMeshType& m,
 	std::vector<bool>& vec,
-	bool saveBirthVertexInCustomComponent = true);
+	bool saveBirthIndicesInCustomComponent = true);
+
+template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
+OutMeshType generateMeshFromFaceBoolVector(
+	const InMeshType& m,
+	std::vector<bool>& vec,
+	bool saveBirthIndicesInCustomComponent = true);
 
 } // namespace vcl
 
