@@ -25,10 +25,11 @@
 
 #include <mutex>
 
-#include <vclib/algorithms/update/normal.h>
+#include <vclib/algorithms/intersection.h>
 #include <vclib/algorithms/stat.h>
 #include <vclib/algorithms/point_sampling.h>
 #include <vclib/algorithms/polygon.h>
+#include <vclib/algorithms/update/normal.h>
 #include <vclib/iterators/pointer_iterator.h>
 #include <vclib/math/matrix.h>
 #include <vclib/mesh_utils/mesh_pos.h>
@@ -263,7 +264,6 @@ void updatePrincipalCurvaturePCA(
 	using VGridIterator = typename VGrid::ConstIterator;
 
 	std::mutex mutex;
-	vcl::PointSampler<CoordType> sampler;
 	VGrid pGrid;
 	ScalarType area;
 
@@ -281,11 +281,11 @@ void updatePrincipalCurvaturePCA(
 	uint logPerc = 0;
 	const uint logPercStep = 10;
 	uint logVertStep = m.vertexNumber() / ((100 / logPercStep) - 1);
+	if (logVertStep == 0)
+		logVertStep = m.vertexNumber();
 
 	if (montecarloSampling) {
 		area = vcl::surfaceArea(m);
-		uint nSamples = 1000 * area * (2 * M_PI * radius * radius);
-		sampler = vcl::montecarloPointSampling<vcl::PointSampler<CoordType>>(m, nSamples);
 		pGrid = VGrid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
 		pGrid.build();
 	}
@@ -305,7 +305,9 @@ void updatePrincipalCurvaturePCA(
 			A *= area * area / 1000;
 		}
 		else {
-			// todo - intersection sphere - mesh...
+			Sphere<ScalarType> sph(v.coord(), radius);
+			MeshType tmpMesh = meshSphereIntersection(m, sph);
+			A = covarianceMatrixOfMesh(tmpMesh);
 		}
 		Eigen::SelfAdjointEigenSolver<vcl::Matrix33<ScalarType>> eig(A);
 		eigenvalues = CoordType(eig.eigenvalues());

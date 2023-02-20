@@ -52,11 +52,13 @@ int main(int argc, char **argv)
 	m.enablePerFaceAdjacentFaces();
 	m.enablePerVertexPrincipalCurvature();
 
+	vcl::updatePerFaceNormals(m);
 	vcl::updatePerFaceAdjacentFaces(m);
 	vcl::updatePerVertexAdjacentFaces(m);
 
+	double radius = vcl::boundingBox(m).diagonal() * 0.1;
 	log.startTimer();
-	vcl::updatePrincipalCurvature(m, vcl::VCL_PRINCIPAL_CURVATURE_PCA, log);
+	vcl::updatePrincipalCurvaturePCA(m, radius, false, log);
 
 	vcl::setPerVertexScalarFromPrincipalCurvatureMean(m);
 	vcl::Histogramd h = vcl::vertexScalarHistogram(m);

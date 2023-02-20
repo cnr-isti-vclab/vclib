@@ -26,7 +26,7 @@
 #include "icosahedron.h"
 
 #include <vclib/algorithms/clean.h>
-#include <vclib/algorithms/update.h>
+#include <vclib/algorithms/update/transform.h>
 
 namespace vcl {
 
