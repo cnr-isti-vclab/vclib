@@ -21,46 +21,55 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPHERE_H
-#define VCL_SPACE_SPHERE_H
+#include <iostream>
 
-#include "box.h"
+#include <vclib/algorithms/create.h>
+#include <vclib/algorithms/intersection.h>
+#include <vclib/algorithms/update.h>
+#include <vclib/io/load_obj.h>
+#include <vclib/tri_mesh.h>
 
-namespace vcl {
+#ifdef VCLIB_WITH_QGLVIEWER
+#include <QApplication>
 
-template<typename Scalar>
-class Sphere
+#include <vclib/ext/opengl2/drawable_mesh.h>
+#include <vclib/ext/qglviewer/viewer_main_window.h>
+#endif
+
+int main(int argc, char **argv)
 {
-public:
-	using ScalarType = Scalar;
+	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
 
-	Sphere();
-	Sphere(const vcl::Point3<Scalar>& center, Scalar radius);
+	vcl::updatePerFaceNormals(m);
+	vcl::updatePerVertexNormals(m);
+	vcl::setPerVertexColor(m, vcl::Color::Gray);
 
-	const Point3<Scalar>& center() const;
-	Point3<Scalar>& center();
+	vcl::Sphered s({0,0,0}, 0.3);
+	vcl::TriMesh m1 = vcl::meshSphereIntersection(m, s);
 
-	const Scalar& radius() const;
-	Scalar& radius();
+	vcl::TriMesh sm = vcl::createSphere<vcl::TriMesh>(s);
+	vcl::updatePerFaceNormals(sm);
+	vcl::updatePerVertexNormals(sm);
+	vcl::setPerVertexColor(sm, vcl::Color::Gray);
 
-	Scalar diameter() const;
-	Scalar circumference() const;
-	Scalar surfaceArea() const;
-	Scalar volume() const;
+#ifdef VCLIB_WITH_QGLVIEWER
+	QApplication application(argc, argv);
 
-	bool isInside(const vcl::Point3<Scalar>& p) const;
-	bool intersects(const Box3<Scalar>& b) const;
+	vcl::ViewerMainWindow viewer;
+	vcl::DrawableMesh<vcl::TriMesh> dm(m1);
+	vcl::DrawableMesh<vcl::TriMesh> sdm(sm);
 
-private:
-	vcl::Point3<Scalar> c;
-	Scalar r;
-};
+	std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+	vector->pushBack(dm);
+	vector->pushBack(sdm);
+	viewer.setDrawableObjectVector(vector);
 
-using Spheref = Sphere<float>;
-using Sphered = Sphere<double>;
+	viewer.show();
 
-} // namespace vcl
-
-#include "sphere.cpp"
-
-#endif // VCL_SPACE_SPHERE_H
+	return application.exec();
+#else
+	(void) argc; // unused
+	(void) argv;
+	return 0;
+#endif
+}

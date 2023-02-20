@@ -420,12 +420,12 @@ bool triangleSphereItersect(
 		}
 	}
 
-	ScalarType witness_norm = witness.Norm();
+	ScalarType witness_norm = witness.norm();
 
 	res.first  = std::max<ScalarType>(witness_norm - radius, ScalarType(0.0));
 	res.second = std::max<ScalarType>(radius - witness_norm, ScalarType(0.0));
 
-	penetrationDetected = (witness.SquaredNorm() <= (radius * radius));
+	penetrationDetected = (witness.squaredNorm() <= (radius * radius));
 	witness += center;
 	return penetrationDetected;
 }

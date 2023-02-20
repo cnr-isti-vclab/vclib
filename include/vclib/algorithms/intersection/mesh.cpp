@@ -23,6 +23,8 @@
 
 #include "mesh.h"
 
+#include <vclib/algorithms/generate.h>
+
 namespace vcl {
 
 template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
@@ -106,11 +108,7 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 
 /**
  * @brief Compute the intersection between a mesh and a ball.
- * given a mesh return a new mesh made by a copy of all the faces entirely includeded in the ball
- * plus new faces created by refining the ones intersected by the ball border. It works by
- * recursively splitting the triangles that cross the border, as long as their area is greater than
- * a given value tol. If no value is provided, 1/10^5*2*pi*radius is used
- * NOTE: the returned mesh is a triangle soup
+ *
  * @param m
  * @param sphere
  * @return
@@ -118,7 +116,17 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 template<FaceMeshConcept MeshType, typename SScalar>
 MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere)
 {
-	// todo
+	using FaceType = typename MeshType::FaceType;
+
+	std::vector<bool> fIntersect(m.faceNumber(), false);
+
+	for (const FaceType& f : m.faces()) {
+		if (faceSphereItersect(f, sphere)) {
+			fIntersect[m.index(f)] = true;
+		}
+	}
+
+	return generateMeshFromFaceBoolVector(m, fIntersect);
 }
 
 } // namespace vcl
