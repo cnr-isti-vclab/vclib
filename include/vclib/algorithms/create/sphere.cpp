@@ -333,7 +333,7 @@ MeshType createSphere(const Sphere<ScalarType>& sp, const CreateSphereArgs& args
 template<FaceMeshConcept MeshType>
 MeshType createSphere()
 {
-	return createSphere<MeshType, vcl::Point3d, double>(vcl::Point3d(), 1);
+	return createSphere<MeshType, double>({vcl::Point3d(), 1});
 }
 
 } // namespace vcl
