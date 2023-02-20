@@ -100,7 +100,7 @@ void Histogram<ScalarType>::addValue(ScalarType val, ScalarType increment)
 		minVal = val;
 	if (val > maxVal)
 		maxVal = val;
-	assert((pos >= 0) && (pos <= nIntervals + 1));
+	assert((pos >= 0) && (pos <= nBins + 1));
 	H[pos] += increment;
 	cnt += increment;
 	sum += val * increment;
@@ -332,8 +332,8 @@ uint Histogram<ScalarType>::binIndex(ScalarType elem) const
 	uint pos = it - R.begin();
 	pos -= 1;
 
-	assert (R[pos] < val);
-	assert (val <= R[pos+1] );
+	assert (R[pos] < elem);
+	assert (elem <= R[pos+1] );
 	return pos;
 }
 
