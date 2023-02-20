@@ -477,26 +477,37 @@ bool faceSphereItersect(
 			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord(), sphere, witness, res);
 	}
 	else {
-		res.first = std::numeric_limits<SScalar>::max();
-		bool b = false;
-		PointType w;
-		std::pair<SScalar, SScalar> r;
-		std::vector<uint> tris = vcl::earCut(f);
-		for (uint i = 0; i < tris.size() && !b; i += 3) {
-			b |= triangleSphereItersect(
-				f.vertex(tris[i])->coord(),
-				f.vertex(tris[i + 1])->coord(),
-				f.vertex(tris[i + 2])->coord(),
+		if (f.vertexNumber() == 3) {
+			return triangleSphereItersect(
+				f.vertex(0)->coord(),
+				f.vertex(1)->coord(),
+				f.vertex(2)->coord(),
 				sphere,
-				w,
-				r);
-
-			if (r.first < res.first) {
-				res = r;
-				witness = w;
-			}
+				witness,
+				res);
 		}
-		return b;
+		else {
+			res.first = std::numeric_limits<SScalar>::max();
+			bool b = false;
+			PointType w;
+			std::pair<SScalar, SScalar> r;
+			std::vector<uint> tris = vcl::earCut(f);
+			for (uint i = 0; i < tris.size() && !b; i += 3) {
+				b |= triangleSphereItersect(
+					f.vertex(tris[i])->coord(),
+					f.vertex(tris[i + 1])->coord(),
+					f.vertex(tris[i + 2])->coord(),
+					sphere,
+					w,
+					r);
+
+				if (r.first < res.first) {
+					res = r;
+					witness = w;
+				}
+			}
+			return b;
+		}
 	}
 }
 

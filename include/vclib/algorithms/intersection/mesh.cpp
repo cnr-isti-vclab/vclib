@@ -107,8 +107,9 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 }
 
 /**
- * @brief Compute the intersection between a mesh and a ball.
+ * @brief Same as meshSphereIntersection(MeshType, Sphere, double);
  *
+ * The tolerance is set as 1/10^5*2*pi*radius.
  * @param m
  * @param sphere
  * @return
@@ -116,6 +117,30 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 template<FaceMeshConcept MeshType, typename SScalar>
 MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere)
 {
+	double tol = M_PI * sphere.radius() * sphere.radius() / 100000;
+	return meshSphereIntersection(m, sphere, tol);
+}
+
+/**
+ * @brief Compute the intersection between a mesh and a ball.
+ *
+ * given a mesh return a new mesh made by a copy of all the faces entirely includeded in the ball
+ * plus new faces created by refining the ones intersected by the ball border. It works by
+ * recursively splitting the triangles that cross the border, as long as their area is greater than
+ * a given value tol.
+ * NOTE: the returned mesh is a triangle soup
+ *
+ * @param m
+ * @param sphere
+ * @param tol
+ * @return
+ */
+template<FaceMeshConcept MeshType, typename SScalar>
+MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere, double tol)
+{
+	using VertexType = typename MeshType::VertexType;
+	using CoordType = typename VertexType::CoordType;
+	using ScalarType = typename CoordType::ScalarType;
 	using FaceType = typename MeshType::FaceType;
 
 	std::vector<bool> fIntersect(m.faceNumber(), false);
@@ -126,7 +151,60 @@ MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& s
 		}
 	}
 
-	return generateMeshFromFaceBoolVector(m, fIntersect);
+	MeshType res = generateMeshFromFaceBoolVector(m, fIntersect);
+
+	uint i = 0;
+	while (i < res.faceContainerSize()) {
+		FaceType& f = res.face(i);
+
+		CoordType witness;
+		std::pair<ScalarType, ScalarType> ires(0,0);
+
+		bool allIn = true;
+		for (const auto* v : f.vertices()) {
+			allIn = allIn && sphere.isInside(v->coord());
+		}
+		if (!allIn && faceSphereItersect(f, sphere, witness, ires)) {
+			if (polygonArea(f) > tol) {
+				uint v0 = res.addVertices(3);
+				uint v1 = v0 + 1;
+				uint v2 = v0 + 2;
+				uint fi = res.addFaces(4);
+				FaceType& f = res.face(i);
+
+				res.vertex(v0).importFrom(*f.vertex(0));
+				res.vertex(v0).coord() = (f.vertex(0)->coord() + f.vertex(1)->coord()) / 2;
+				res.vertex(v1).importFrom(*f.vertex(1));
+				res.vertex(v1).coord() = (f.vertex(1)->coord() + f.vertex(2)->coord()) / 2;
+				res.vertex(v2).importFrom(*f.vertex(2));
+				res.vertex(v2).coord() = (f.vertex(2)->coord() + f.vertex(0)->coord()) / 2;
+
+				res.face(fi).importFrom(f);
+				res.face(fi).setVertices(f.vertex(0), &res.vertex(v0), &res.vertex(v2));
+
+				++fi;
+				res.face(fi).importFrom(f);
+				res.face(fi).setVertices(f.vertex(1), &res.vertex(v1), &res.vertex(v0));
+
+				++fi;
+				res.face(fi).importFrom(f);
+				res.face(fi).setVertices(&res.vertex(v0), &res.vertex(v1), &res.vertex(v2));
+
+				++fi;
+				res.face(fi).importFrom(f);
+				res.face(fi).setVertices(&res.vertex(v2), &res.vertex(v1), f.vertex(2));
+
+				res.deleteFace(i);
+			}
+		}
+		if (ires.first > 0.0) { // closest point - radius. If >0 is outside
+			res.deleteFace(i);
+		}
+
+		++i;
+	}
+
+	return res;
 }
 
 } // namespace vcl

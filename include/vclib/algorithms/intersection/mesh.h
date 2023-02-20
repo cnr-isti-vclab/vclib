@@ -34,6 +34,9 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 template<FaceMeshConcept MeshType, typename SScalar>
 MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere);
 
+template<FaceMeshConcept MeshType, typename SScalar>
+MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere, double tol);
+
 } // namespace vcl
 
 #include "mesh.cpp"

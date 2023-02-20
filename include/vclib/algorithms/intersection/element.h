@@ -59,6 +59,13 @@ bool triangleSphereItersect(
 	const PointType&       p2,
 	const Sphere<SScalar>& sphere);
 
+template<FaceConcept FaceType, PointConcept PointType, typename SScalar>
+bool faceSphereItersect(
+	const FaceType&              f,
+	const Sphere<SScalar>&       sphere,
+	PointType&                   witness,
+	std::pair<SScalar, SScalar>& res);
+
 template<FaceConcept FaceType, typename SScalar>
 bool faceSphereItersect(
 	const FaceType& f,
