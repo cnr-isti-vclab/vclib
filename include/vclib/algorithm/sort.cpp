@@ -49,7 +49,7 @@ std::vector<MeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(MeshType& m, b
 			}
 		}
 	}
-	std::sort(VCL_PARALLEL vec.begin(), vec.end()); // Lo ordino per vertici
+	std::sort(std::execution::par_unseq, vec.begin(), vec.end()); // Lo ordino per vertici
 
 	return vec;
 }
@@ -76,7 +76,7 @@ fillAndSortMeshEdgeUtilVector(const MeshType& m, bool includeFauxEdges)
 		}
 	}
 
-	std::sort(VCL_PARALLEL vec.begin(), vec.end()); // Lo ordino per vertici
+	std::sort(std::execution::par_unseq, vec.begin(), vec.end()); // Lo ordino per vertici
 
 	return vec;
 }

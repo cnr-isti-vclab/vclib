@@ -26,23 +26,29 @@
 
 #include <vclib/misc/types.h>
 
-// tbb and qt conflicts: if both are linked, we need to first undef Qt's emit
-// see: https://github.com/oneapi-src/oneTBB/issues/547
-#ifndef Q_MOC_RUN
-#if defined(emit)
-#undef emit
-#include <execution>
-#define emit // restore the macro definition of "emit", as it was defined in gtmetamacros.h
-#else
-#include <execution>
-#endif // defined(emit)
-#endif // Q_MOC_RUN
-
-// clang does not support Standardization of Parallelism yet -> https://en.cppreference.com/w/cpp/compiler_support
+// Apple clang does not support c++17 parallel algorithms.
+// To compensate this lack, waiting for Apple to support them, we use pstld
+// (https://github.com/mikekazakov/pstld) that implements them in the stl namespace
 #ifdef __clang__
-#define VCL_PARALLEL
+    #if __has_include(<pstld/pstld.h>)
+        #include <pstld/pstld.h>
+    #else
+        // inclusion for usage of vclib without cmake
+        #define PSTLD_HEADER_ONLY // no prebuilt library, only the header
+        #include "../../../external/pstld-master/pstld/pstld.h"
+    #endif
 #else
-#define VCL_PARALLEL std::execution::par_unseq,
+    // tbb and qt conflicts: if both are linked, we need to first undef Qt's emit
+    // see: https://github.com/oneapi-src/oneTBB/issues/547
+    #ifndef Q_MOC_RUN
+        #if defined(emit)
+            #undef emit
+            #include <execution>
+            #define emit // restore the macro definition of "emit", as it was defined in gtmetamacros.h
+        #else
+            #include <execution>
+        #endif
+    #endif
 #endif
 
 namespace vcl {
