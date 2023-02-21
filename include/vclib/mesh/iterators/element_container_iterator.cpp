@@ -25,8 +25,8 @@
 
 namespace vcl::internal {
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST>::ElemContIterator()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST>::ElemContIterator()
 {
 	increment     = &ElemContIterator::incrementFast;
 	postIncrement = &ElemContIterator::postIncrementFast;
@@ -34,8 +34,8 @@ ElemContIterator<Container, T, CONST>::ElemContIterator()
 	postDecrement = &ElemContIterator::postDecrementFast;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST>::ElemContIterator(
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST>::ElemContIterator(
 	ContIt               it,
 	const Container<T>& vec,
 	bool                jumpDeleted) :
@@ -59,120 +59,120 @@ ElemContIterator<Container, T, CONST>::ElemContIterator(
 	}
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-typename ElemContIterator<Container, T, CONST>::reference
-ElemContIterator<Container, T, CONST>::operator*() const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+typename ElemContIterator<Container, T, CNST>::reference
+ElemContIterator<Container, T, CNST>::operator*() const
 {
 	return *it;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-typename ElemContIterator<Container, T, CONST>::pointer
-ElemContIterator<Container, T, CONST>::operator->() const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+typename ElemContIterator<Container, T, CNST>::pointer
+ElemContIterator<Container, T, CNST>::operator->() const
 {
 	return &*it;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-bool ElemContIterator<Container, T, CONST>::operator==(const ElemContIterator& oi) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+bool ElemContIterator<Container, T, CNST>::operator==(const ElemContIterator& oi) const
 {
 	return it == oi.it;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-bool ElemContIterator<Container, T, CONST>::operator!=(const ElemContIterator& oi) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+bool ElemContIterator<Container, T, CNST>::operator!=(const ElemContIterator& oi) const
 {
 	return it != oi.it;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::operator++()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::operator++()
 {
 	return (this->*increment)();
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::operator++(int)
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::operator++(int)
 {
 	return (this->*postIncrement)();
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::operator--()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::operator--()
 {
 	return (this->*decrement)();
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::operator--(int)
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::operator--(int)
 {
 	return (this->*postDecrement)();
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST>&
-ElemContIterator<Container, T, CONST>::operator+=(difference_type n)
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST>&
+ElemContIterator<Container, T, CNST>::operator+=(difference_type n)
 {
 	return (this->*assignSum)(n);
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST>&
-ElemContIterator<Container, T, CONST>::operator-=(difference_type n)
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST>&
+ElemContIterator<Container, T, CNST>::operator-=(difference_type n)
 {
 	return (this->*assignSum)(-n);
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST>
-ElemContIterator<Container, T, CONST>::operator+(difference_type n) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST>
+ElemContIterator<Container, T, CNST>::operator+(difference_type n) const
 {
 	ElemContIterator temp = *this;
 	return temp += n;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST>
-ElemContIterator<Container, T, CONST>::operator-(difference_type n) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST>
+ElemContIterator<Container, T, CNST>::operator-(difference_type n) const
 {
 	ElemContIterator temp = *this;
 	return temp += -n;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-typename ElemContIterator<Container, T, CONST>::difference_type
-ElemContIterator<Container, T, CONST>::operator-(const ElemContIterator& oi) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+typename ElemContIterator<Container, T, CNST>::difference_type
+ElemContIterator<Container, T, CNST>::operator-(const ElemContIterator& oi) const
 {
 	return (this->*diff)(oi);
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-typename ElemContIterator<Container, T, CONST>::reference
-ElemContIterator<Container, T, CONST>::operator[](difference_type i)
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+typename ElemContIterator<Container, T, CNST>::reference
+ElemContIterator<Container, T, CNST>::operator[](difference_type i)
 {
 	return *(*this + i);
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-bool ElemContIterator<Container, T, CONST>::operator<(const ElemContIterator& oi) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+bool ElemContIterator<Container, T, CNST>::operator<(const ElemContIterator& oi) const
 {
 	return it < oi.it;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-bool ElemContIterator<Container, T, CONST>::operator>(const ElemContIterator& oi) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+bool ElemContIterator<Container, T, CNST>::operator>(const ElemContIterator& oi) const
 {
 	return it > oi.it;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-bool ElemContIterator<Container, T, CONST>::operator<=(const ElemContIterator& oi) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+bool ElemContIterator<Container, T, CNST>::operator<=(const ElemContIterator& oi) const
 {
 	return it <= oi.it;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-bool ElemContIterator<Container, T, CONST>::operator>=(const ElemContIterator& oi) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+bool ElemContIterator<Container, T, CNST>::operator>=(const ElemContIterator& oi) const
 {
 	return it >= oi.it;
 }
@@ -180,8 +180,8 @@ bool ElemContIterator<Container, T, CONST>::operator>=(const ElemContIterator& o
 /**
  * @brief Increment function that will be called if we need to jump deleted elements.
  */
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::incrementJump()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::incrementJump()
 {
 	do {
 		++it;
@@ -192,8 +192,8 @@ ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::inc
 /**
  * @brief Post increment function that will be called if we need to jump deleted elements.
  */
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::postIncrementJump()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::postIncrementJump()
 {
 	ElemContIterator old = *this;
 	do {
@@ -205,8 +205,8 @@ ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::pos
 /**
  * @brief Increment function that will be called if we don't need to jump deleted elements.
  */
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::incrementFast()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::incrementFast()
 {
 	++it;
 	return *this;
@@ -215,8 +215,8 @@ ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::inc
 /**
  * @brief Post increment function that will be called if we don't need to jump deleted elements.
  */
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::postIncrementFast()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::postIncrementFast()
 {
 	ElemContIterator old = *this;
 	++it;
@@ -226,8 +226,8 @@ ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::pos
 /**
  * @brief Decrement function that will be called if we need to jump deleted elements.
  */
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::decrementJump()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::decrementJump()
 {
 	do {
 		--it;
@@ -238,8 +238,8 @@ ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::dec
 /**
  * @brief Post decrement function that will be called if we need to jump deleted elements.
  */
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::postDecrementJump()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::postDecrementJump()
 {
 	ElemContIterator old = *this;
 	do {
@@ -251,8 +251,8 @@ ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::pos
 /**
  * @brief Decrement function that will be called if we don't need to jump deleted elements.
  */
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::decrementFast()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::decrementFast()
 {
 	--it;
 	return *this;
@@ -261,17 +261,17 @@ ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::dec
 /**
  * @brief Post decrement function that will be called if we don't need to jump deleted elements.
  */
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST> ElemContIterator<Container, T, CONST>::postDecrementFast()
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::postDecrementFast()
 {
 	ElemContIterator old = *this;
 	--it;
 	return old;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST>&
-ElemContIterator<Container, T, CONST>::assignSumJump(difference_type n)
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST>&
+ElemContIterator<Container, T, CNST>::assignSumJump(difference_type n)
 {
 	difference_type m = n;
 
@@ -284,17 +284,17 @@ ElemContIterator<Container, T, CONST>::assignSumJump(difference_type n)
 	return *this;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-ElemContIterator<Container, T, CONST>&
-ElemContIterator<Container, T, CONST>::assignSumFast(difference_type n)
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+ElemContIterator<Container, T, CNST>&
+ElemContIterator<Container, T, CNST>::assignSumFast(difference_type n)
 {
 	it += n;
 	return *this;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-typename ElemContIterator<Container, T, CONST>::difference_type
-ElemContIterator<Container, T, CONST>::diffJump(const ElemContIterator& oi) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+typename ElemContIterator<Container, T, CNST>::difference_type
+ElemContIterator<Container, T, CNST>::diffJump(const ElemContIterator& oi) const
 {
 	ElemContIterator i = oi;
 	difference_type diff = 0;
@@ -305,9 +305,9 @@ ElemContIterator<Container, T, CONST>::diffJump(const ElemContIterator& oi) cons
 	return diff;
 }
 
-template<template<typename, typename...> typename Container, typename T, bool CONST>
-typename ElemContIterator<Container, T, CONST>::difference_type
-ElemContIterator<Container, T, CONST>::diffFast(const ElemContIterator& oi) const
+template<template<typename, typename...> typename Container, typename T, bool CNST>
+typename ElemContIterator<Container, T, CNST>::difference_type
+ElemContIterator<Container, T, CNST>::diffFast(const ElemContIterator& oi) const
 {
 	return this->it - oi.it;
 }

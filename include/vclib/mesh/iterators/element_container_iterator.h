@@ -31,20 +31,20 @@ namespace vcl {
 
 namespace internal {
 
-template<template<typename, typename...> typename Container, typename T, bool CONST = false>
+template<template<typename, typename...> typename Container, typename T, bool CNST = false>
 class ElemContIterator
 {
 private:
 	using ContIt = typename std::conditional_t<
-		CONST,
+		CNST,
 		typename Container<T>::const_iterator,
 		typename Container<T>::iterator>;
 
 public:
 	using difference_type   = ptrdiff_t;
 	using value_type        = T;
-	using reference         = typename std::conditional_t<CONST, const T&, T&>;
-	using pointer           = typename std::conditional_t<CONST, const T*, T*>;
+	using reference         = typename std::conditional_t<CNST, const T&, T&>;
+	using pointer           = typename std::conditional_t<CNST, const T*, T*>;
 	using iterator_category = std::random_access_iterator_tag;
 
 	ElemContIterator();
