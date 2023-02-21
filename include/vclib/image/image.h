@@ -60,9 +60,6 @@ public:
 	void mirror(bool horizontal = false, bool vertical = true);
 
 private:
-	unsigned char* dataImage = nullptr;
-	int h = 0, w = 0;
-
 	vcl::Array2<uint32_t> img;
 };
 
