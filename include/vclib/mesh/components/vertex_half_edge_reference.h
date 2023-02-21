@@ -26,7 +26,7 @@
 
 #include <vector>
 
-#include <vclib/iterators/container_range_iterator.h>
+#include <vclib/iterator/container_range_iterator.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h>
 

@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_RANGE_ITERATOR_H
 #define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_RANGE_ITERATOR_H
 
-#include <vclib/iterators/container_range_iterator.h>
+#include <vclib/iterator/container_range_iterator.h>
 
 #include <vclib/space/point.h>
 

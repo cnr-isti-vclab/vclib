@@ -23,11 +23,10 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/update/transform.h>
+#include <vclib/algorithm.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/io/save_ply.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/poly_mesh.h>
+#include <vclib/mesh.h>
 
 int main()
 {

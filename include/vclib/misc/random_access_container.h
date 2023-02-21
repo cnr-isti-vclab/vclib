@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <vector>
 
-#include <vclib/iterators/container_range_iterator.h>
+#include <vclib/iterator/container_range_iterator.h>
 #include <vclib/misc/types.h>
 
 namespace vcl {

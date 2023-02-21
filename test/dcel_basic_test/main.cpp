@@ -23,11 +23,9 @@
 
 #include <iostream>
 
-#include <vclib/dcel_mesh.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/algorithms/create/tetrahedron.h>
-#include <vclib/io/save.h>
-#include <vclib/io/load.h>
+#include <vclib/algorithm.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
 
 int main()
 {

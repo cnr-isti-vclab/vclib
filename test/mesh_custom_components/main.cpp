@@ -25,9 +25,8 @@
 
 #include <vclib/io/load_ply.h>
 #include <vclib/io/save_ply.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/algorithms/smooth.h>
-#include <vclib/algorithms/stat.h>
+#include <vclib/mesh.h>
+#include <vclib/algorithm.h>
 
 int main()
 {

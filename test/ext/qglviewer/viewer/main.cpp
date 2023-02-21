@@ -25,10 +25,9 @@
 
 #include <QApplication>
 
-#include <vclib/algorithms/update/normal.h>
-#include <vclib/algorithms/update/color.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/poly_mesh.h>
+#include <vclib/algorithm/update/normal.h>
+#include <vclib/algorithm/update/color.h>
+#include <vclib/mesh.h>
 #include <vclib/io/load_obj.h>
 #include <vclib/io/load_ply.h>
 

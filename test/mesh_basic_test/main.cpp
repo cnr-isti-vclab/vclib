@@ -23,10 +23,10 @@
 
 #include <iostream>
 
-#include <vclib/tri_mesh.h>
+#include <vclib/mesh.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/io/save_ply.h>
-#include <vclib/algorithms/create/tetrahedron.h>
+#include <vclib/algorithm.h>
 
 class MyVertex :
 		public vcl::Vertex<

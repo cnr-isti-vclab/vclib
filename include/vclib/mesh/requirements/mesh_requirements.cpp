@@ -23,8 +23,6 @@
 
 #include "mesh_requirements.h"
 
-#include "../mesh.h"
-
 namespace vcl {
 
 /********************

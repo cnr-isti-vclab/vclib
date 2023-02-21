@@ -23,15 +23,14 @@
 
 #include <iostream>
 
-#include <vclib/space/spatial_data_structures.h>
+#include <vclib/space.h>
 
-#include <vclib/io/load_ply.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/misc/timer.h>
-#include <vclib/algorithms/create.h>
-#include <vclib/algorithms/intersection.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/algorithm.h>
 
-#include <vclib/iterators/pointer_iterator.h>
+#include <vclib/iterator/pointer_iterator.h>
 
 int main()
 {

@@ -23,7 +23,7 @@
 
 #include "load_off.h"
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithm/polygon.h>
 #include <vclib/exception/io_exception.h>
 #include <vclib/misc/file_info.h>
 #include <vclib/misc/tokenizer.h>

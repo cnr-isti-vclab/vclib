@@ -23,15 +23,11 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/stat/scalar.h>
-#include <vclib/algorithms/update/topology.h>
-#include <vclib/algorithms/update/curvature.h>
-#include <vclib/algorithms/update/scalar.h>
-#include <vclib/algorithms/update/color.h>
+#include <vclib/algorithm.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/io/load_obj.h>
 #include <vclib/io/save_ply.h>
-#include <vclib/tri_mesh.h>
+#include <vclib/mesh.h>
 #include <vclib/misc/timer.h>
 
 #ifdef VCLIB_WITH_QGLVIEWER

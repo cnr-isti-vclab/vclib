@@ -23,7 +23,7 @@
 
 #include "hash_table_grid.h"
 
-#include <vclib/algorithms/stat/bounding_box.h>
+#include <vclib/algorithm/stat/bounding_box.h>
 
 namespace vcl {
 

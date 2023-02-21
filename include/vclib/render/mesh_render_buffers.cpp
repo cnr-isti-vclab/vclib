@@ -23,8 +23,8 @@
 
 #include "mesh_render_buffers.h"
 
-#include <vclib/algorithms/polygon.h>
-#include <vclib/mesh/mesh_algorithms.h>
+#include <vclib/algorithm/polygon.h>
+#include <vclib/mesh/mesh/mesh_algorithms.h>
 
 namespace vcl {
 

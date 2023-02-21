@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/tri_mesh.h>
+#include <vclib/mesh.h>
 #include <vclib/io/load_obj.h>
 
 //template<typename T>

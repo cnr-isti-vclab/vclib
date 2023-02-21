@@ -27,7 +27,7 @@
 #include <set>
 #include <vector>
 
-#include <vclib/algorithms/stat/bounding_box.h>
+#include <vclib/algorithm/stat/bounding_box.h>
 #include <vclib/misc/mark.h>
 #include <vclib/space/spatial_data_structures/grid.h>
 

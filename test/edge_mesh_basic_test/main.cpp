@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/edge_mesh.h>
+#include <vclib/mesh.h>
 
 int main()
 {

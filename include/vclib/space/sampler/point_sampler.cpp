@@ -23,7 +23,7 @@
 
 #include "point_sampler.h"
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithm/polygon.h>
 
 namespace vcl {
 

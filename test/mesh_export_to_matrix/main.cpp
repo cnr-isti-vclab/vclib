@@ -23,11 +23,10 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/export_to_matrix.h>
+#include <vclib/algorithm.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/space/array.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/poly_mesh.h>
+#include <vclib/mesh.h>
 
 int main()
 {

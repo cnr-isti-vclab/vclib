@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithm.h>
 
 int main()
 {

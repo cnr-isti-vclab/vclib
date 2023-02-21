@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#include <vclib/iterators/container_range_iterator.h>
+#include <vclib/iterator/container_range_iterator.h>
 
 #include "concepts/texture_paths.h"
 #include "internal/component_data.h"

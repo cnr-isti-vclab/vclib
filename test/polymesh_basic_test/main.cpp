@@ -23,11 +23,11 @@
 
 #include <iostream>
 
-#include <vclib/poly_mesh.h>
+#include <vclib/mesh.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/io/save_ply.h>
-#include <vclib/algorithms/update/flag.h>
-#include <vclib/algorithms/smooth.h>
+#include <vclib/algorithm/update/flag.h>
+#include <vclib/algorithm/smooth.h>
 
 int main()
 {
