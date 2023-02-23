@@ -84,7 +84,7 @@ private:
 	void fillMeshAttribs(const MeshType& m);
 
 	template<typename FaceType>
-	void fillFaceNromals(const FaceType& f, bool triangle, uint fi);
+	void fillFaceNormals(const FaceType& f, bool triangle, uint fi);
 };
 
 } // namespace vcl

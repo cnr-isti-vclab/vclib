@@ -30,6 +30,24 @@
 #include "../../../../external/earcut.hpp-2.2.3/include/mapbox/earcut.hpp"
 #endif
 
+// structs to make working the mapbox earcut algorithm on vcl::Point2
+namespace mapbox {
+namespace util {
+
+template<typename Scalar>
+struct nth<0, vcl::Point2<Scalar>>
+{
+	inline static auto get(const vcl::Point2<Scalar>& t) { return t.x(); };
+};
+template<typename Scalar>
+struct nth<1, vcl::Point2<Scalar>>
+{
+	inline static auto get(const vcl::Point2<Scalar>& t) { return t.y(); };
+};
+
+} // namespace util
+} // namespace mapbox
+
 namespace vcl::mesh {
 
 template<typename Scalar>

@@ -21,53 +21,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_CLEAN_H
-#define VCL_ALGORITHM_CLEAN_H
-
-#include <set>
-#include <vector>
+#ifndef VCL_ALGORITHM_POLYGON_GEOMETRY_POLYGON_H
+#define VCL_ALGORITHM_POLYGON_GEOMETRY_POLYGON_H
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/point.h>
 
 namespace vcl {
 
-template <MeshConcept MeshType>
-uint numberUnreferencedVertices(const MeshType& m);
+template<PointConcept PointType>
+PointType polygonNormal(const std::vector<PointType>& p);
 
-template <MeshConcept MeshType>
-uint removeUnreferencedVertices(MeshType& m);
+template<typename Polygon>
+typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p);
 
-template <FaceMeshConcept MeshType>
-uint removeDuplicatedVertices(MeshType& m);
+template<PointConcept PointType>
+PointType polygonBarycenter(const std::vector<PointType>& p);
 
-template <TriangleMeshConcept MeshType>
-uint removeDuplicatedFaces(MeshType& m);
+template<typename Polygon>
+typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p);
 
-template <MeshConcept MeshType>
-uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
+template<PointConcept PointType>
+PointType polygonWeighedBarycenter(
+	const std::vector<PointType>&                      p,
+	const std::vector<typename PointType::ScalarType>& w);
 
-template <FaceMeshConcept MeshType>
-uint removeDegenerateFaces(MeshType& m);
+template<PointConcept PointType>
+typename PointType::ScalarType polygonArea(const std::vector<PointType>& p);
 
-template <FaceMeshConcept MeshType>
-uint numberNonManifoldVertices(const MeshType& m);
+template<typename Polygon, typename ScalarType = double>
+ScalarType polygonArea(const Polygon& p);
 
-template <FaceMeshConcept MeshType>
-bool isWaterTight(const MeshType& m);
+} // namespace vcl
 
-template <FaceMeshConcept MeshType>
-uint numberHoles(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
+#include "polygon.cpp"
 
-template <FaceMeshConcept MeshType>
-std::vector<std::set<uint>> connectedComponents(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
-
-template <FaceMeshConcept MeshType>
-uint numberConnectedComponents(const MeshType& m);
-
-}
-
-#include "clean.cpp"
-
-#endif // VCL_ALGORITHM_CLEAN_H
+#endif // VCL_ALGORITHM_POLYGON_GEOMETRY_POLYGON_H

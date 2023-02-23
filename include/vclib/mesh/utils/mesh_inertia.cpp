@@ -39,8 +39,8 @@ MeshInertia<MeshType>::MeshInertia(const MeshType& m)
 		= TP[X] = TP[Y] = TP[Z] = 0;
 
 	for (const FaceType& f : m.faces()) {
-		if (vcl::polygonArea(f) > std::numeric_limits<float>::min()){
-			Point3<ScalarType> fn = vcl::polygonNormal(f);
+		if (vcl::faceArea(f) > std::numeric_limits<float>::min()){
+			Point3<ScalarType> fn = vcl::faceNormal(f);
 			fn.normalize();
 
 			nx = std::abs(fn[0]);

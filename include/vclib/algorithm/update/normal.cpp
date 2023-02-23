@@ -60,19 +60,11 @@ void updatePerFaceNormals(MeshType& m, bool normalize)
 	vcl::requirePerFaceNormal(m);
 
 	using FaceType = typename MeshType::FaceType;
-	if constexpr (vcl::HasTriangles<MeshType>) {
-		for (FaceType& f : m.faces()) {
-			f.normal() = triangleNormal(f).
-						 template cast<typename FaceType::NormalType::ScalarType>();
-		}
-		
+	for (FaceType& f : m.faces()) {
+		f.normal() = faceNormal(f).
+						template cast<typename FaceType::NormalType::ScalarType>();
 	}
-	else {
-		for (FaceType& f : m.faces()) {
-			f.normal() = polygonNormal(f).
-						 template cast<typename FaceType::NormalType::ScalarType>();
-		}
-	}
+
 	if (normalize)
 		normalizePerFaceNormals(m);
 }
@@ -173,7 +165,7 @@ void updatePerVertexNormals(MeshType& m, bool normalize)
 	using NormalType = typename VertexType::NormalType;
 
 	for (FaceType& f : m.faces()) {
-		NormalType n = polygonNormal(f).template cast<typename NormalType::ScalarType>();
+		NormalType n = faceNormal(f).template cast<typename NormalType::ScalarType>();
 		for (VertexType* v : f.vertices()) {
 			v->normal() += n;
 		}
@@ -251,7 +243,7 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
 	using NScalarType = typename NormalType::ScalarType;
 
 	for (FaceType& f : m.faces()) {
-		NormalType n = polygonNormal(f).template cast<NScalarType>();
+		NormalType n = faceNormal(f).template cast<NScalarType>();
 
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
 			NormalType vec1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
@@ -306,7 +298,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
 	using NScalarType = typename NormalType::ScalarType;
 
 	for (FaceType& f : m.faces()) {
-		NormalType n = polygonNormal(f).template cast<NScalarType>();
+		NormalType n = faceNormal(f).template cast<NScalarType>();
 
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
 			NScalarType e1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();

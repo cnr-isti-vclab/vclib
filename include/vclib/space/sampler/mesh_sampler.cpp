@@ -101,7 +101,7 @@ void MeshSampler<MeshType>::addFace(
 	bool                                copyNormal,
 	bool                                copyScalar)
 {
-	uint vi = m.addVertex(vcl::polygonBarycenter(f));
+	uint vi = m.addVertex(vcl::faceBarycenter(f));
 
 	copyComponents(vi, f, copyNormal, copyScalar);
 	setBirthElement(vi, "birthFace", mm.index(f));

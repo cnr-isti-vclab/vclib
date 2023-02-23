@@ -26,6 +26,8 @@
 
 #include "component.h"
 
+#include <vector>
+
 namespace vcl::comp {
 
 /**

@@ -165,7 +165,7 @@ MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& s
 			allIn = allIn && sphere.isInside(v->coord());
 		}
 		if (!allIn && faceSphereItersect(f, sphere, witness, ires)) {
-			if (polygonArea(f) > tol) {
+			if (faceArea(f) > tol) {
 				uint v0 = res.addVertices(3);
 				uint v1 = v0 + 1;
 				uint v2 = v0 + 2;

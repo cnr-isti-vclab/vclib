@@ -323,7 +323,7 @@ SamplerType vertexAreaWeightedPointSampling(const MeshType& m, uint nSamples, bo
 
 	// for each vertex, store in weights the adjacent faces area and their number
 	for (const FaceType& f : m.faces()) {
-		ScalarType area = vcl::polygonArea(f);
+		ScalarType area = vcl::faceArea(f);
 		for (const VertexType* v : f.vertices()) {
 			weights[m.index(v)] += area;
 			cnt[m.index(v)]++;
@@ -359,7 +359,7 @@ SamplerType faceAreaWeightedPointSampling(
 	std::vector<double> weights(m.faceContainerSize());
 
 	for (const FaceType& f : m.faces()) {
-		weights[m.index(f)] =  vcl::polygonArea(f);
+		weights[m.index(f)] =  vcl::faceArea(f);
 	}
 
 	return faceWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
@@ -397,7 +397,7 @@ SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deter
 	uint i = 0;
 	ScalarType area = 0;
 	for (const FaceType& f : m.faces()) {
-		area += vcl::polygonArea(f);
+		area += vcl::faceArea(f);
 		intervals[i] = std::make_pair(area, &f);
 		i++;
 	}
@@ -440,7 +440,7 @@ SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, 
 
 	for(const FaceType& f : m.faces()) {
 		// compute # samples in the current face (taking into account of the remainders)
-		floatSampleNum += vcl::polygonArea(f) * samplePerAreaUnit;
+		floatSampleNum += vcl::faceArea(f) * samplePerAreaUnit;
 		int faceSampleNum   = (int) floatSampleNum;
 		// for every sample p_i in T...
 		for(int i=0; i < faceSampleNum; i++)
@@ -486,7 +486,7 @@ SamplerType montecarloPoissonPointSampling(const MeshType& m, uint nSamples, boo
 	ScalarType samplePerAreaUnit = nSamples / area;
 
 	for(const FaceType& f : m.faces()) {
-		ScalarType areaT = vcl::polygonArea(f);
+		ScalarType areaT = vcl::faceArea(f);
 		int faceSampleNum = vcl::poissonRandomNumber(areaT * samplePerAreaUnit, gen);
 
 		// for every sample p_i in T...
@@ -516,7 +516,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
 			averageQ += r[m.index(f.vertex(i))];
 
 		averageQ /= f.vertexNumber();
-		return averageQ * averageQ * vcl::polygonArea(f);
+		return averageQ * averageQ * vcl::faceArea(f);
 	};
 
 	SamplerType ps;

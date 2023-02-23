@@ -74,7 +74,7 @@ template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
 void PointSampler<PointType>::addFace(const typename MeshType::FaceType& f, const MeshType&)
 {
-	samplesVec.push_back(vcl::polygonBarycenter(f));
+	samplesVec.push_back(vcl::faceBarycenter(f));
 }
 
 template<PointConcept PointType>

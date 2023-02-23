@@ -307,7 +307,6 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 			}
 		}
 
-		uint i = 0;
 		for (const auto& f : m.faces()) {
 			if constexpr(vcl::HasPerFaceNormal<MeshType>) {
 				if (vcl::isPerFaceNormalEnabled(m)) {
@@ -326,11 +325,11 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 					}
 				}
 				else {
-					fillFaceNromals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
+					fillFaceNormals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
 				}
 			}
 			else {
-				fillFaceNromals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
+				fillFaceNormals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
 			}
 
 			if constexpr(vcl::HasPerFaceColor<MeshType>) {
@@ -377,8 +376,6 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 					}
 				}
 			}
-
-			i += 3;
 		}
 	}
 }
@@ -408,7 +405,7 @@ void MeshRenderBuffers<MeshType>::fillMeshAttribs(const MeshType &m)
 
 template<MeshConcept MeshType>
 template<typename FaceType>
-void MeshRenderBuffers<MeshType>::fillFaceNromals(const FaceType &f, bool triangle, uint fi)
+void MeshRenderBuffers<MeshType>::fillFaceNormals(const FaceType &f, bool triangle, uint fi)
 {
 	using NormalType = typename FaceType::VertexType::CoordType;
 	if (triangle) {

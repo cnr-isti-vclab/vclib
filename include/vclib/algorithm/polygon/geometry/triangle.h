@@ -21,53 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_CLEAN_H
-#define VCL_ALGORITHM_CLEAN_H
-
-#include <set>
-#include <vector>
+#ifndef VCL_ALGORITHM_POLYGON_GEOMETRY_TRIANGLE_H
+#define VCL_ALGORITHM_POLYGON_GEOMETRY_TRIANGLE_H
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/point.h>
 
 namespace vcl {
 
-template <MeshConcept MeshType>
-uint numberUnreferencedVertices(const MeshType& m);
+template <PointConcept PointType>
+PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template <MeshConcept MeshType>
-uint removeUnreferencedVertices(MeshType& m);
+template<FaceConcept Triangle>
+typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t);
 
-template <FaceMeshConcept MeshType>
-uint removeDuplicatedVertices(MeshType& m);
+template <PointConcept PointType>
+PointType triangleBarycenter(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template <TriangleMeshConcept MeshType>
-uint removeDuplicatedFaces(MeshType& m);
+template<FaceConcept Triangle>
+typename Triangle::VertexType::CoordType triangleBarycenter(const Triangle& t);
 
-template <MeshConcept MeshType>
-uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
+template <PointConcept PointType>
+PointType triangleWeightedBarycenter(
+	const PointType& p0, typename PointType::ScalarType w0,
+	const PointType& p1, typename PointType::ScalarType w1,
+	const PointType& p2, typename PointType::ScalarType w2);
 
-template <FaceMeshConcept MeshType>
-uint removeDegenerateFaces(MeshType& m);
+template <PointConcept PointType, typename ScalarType>
+PointType triangleBarycentricCoordinatePoint(
+	const PointType& p0,
+	const PointType& p1,
+	const PointType& p2,
+	const Point3<ScalarType> &barCoords);
 
-template <FaceMeshConcept MeshType>
-uint numberNonManifoldVertices(const MeshType& m);
+template <FaceConcept Triangle, typename ScalarType>
+typename Triangle::CoordType triangleBarycentricCoordinatePoint(
+	const Triangle& t,
+	const Point3<ScalarType>& barCoords);
 
-template <FaceMeshConcept MeshType>
-bool isWaterTight(const MeshType& m);
+template<PointConcept PointType>
+typename PointType::ScalarType
+triangleArea(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template <FaceMeshConcept MeshType>
-uint numberHoles(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
+template<FaceConcept Triangle, typename ScalarType = double>
+ScalarType triangleArea(const Triangle& t);
 
-template <FaceMeshConcept MeshType>
-std::vector<std::set<uint>> connectedComponents(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
+} // namespace vcl
 
-template <FaceMeshConcept MeshType>
-uint numberConnectedComponents(const MeshType& m);
+#include "triangle.cpp"
 
-}
-
-#include "clean.cpp"
-
-#endif // VCL_ALGORITHM_CLEAN_H
+#endif // VCL_ALGORITHM_POLYGON_GEOMETRY_TRIANGLE_H

@@ -236,7 +236,7 @@ void setPerFaceScalarFromFaceArea(MeshType& m)
 	using FaceType = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
-		f.scalar() = polygonArea(f);
+		f.scalar() = faceArea(f);
 	}
 }
 

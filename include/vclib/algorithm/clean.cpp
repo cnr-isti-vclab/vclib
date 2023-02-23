@@ -27,6 +27,7 @@
 #include <stack>
 #include <vector>
 
+#include <vclib/algorithm/polygon/topology.h>
 #include <vclib/algorithm/sort.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 
@@ -127,7 +128,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 	for (const FaceType& f : m.faces()) {
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
 			TD[m.index(f.vertex(i))]++;
-			if (!isManifoldOnEdge(f, i)) {
+			if (!isFaceManifoldOnEdge(f, i)) {
 				nonManifoldInc[m.index(f.vertex(i))] = true;
 				nonManifoldInc[m.index(f.vertexMod(i+1))] = true;
 			}
@@ -437,23 +438,6 @@ uint removeDegenerateFaces(MeshType& m)
 	}
 	return count;
 }
-
-template<FaceConcept FaceType>
-bool isManifoldOnEdge(const FaceType& f, uint edge)
-{
-	if (comp::isAdjacentFacesEnabledOn(f)) {
-		if (f.adjFace(edge) == nullptr) {
-			return true;
-		}
-		else {
-			return f.adjFace(edge)->indexOfAdjFace(&f) >= 0;
-		}
-	}
-	else {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
-	}
-}
-
 
 template<FaceMeshConcept MeshType>
 uint numberNonManifoldVertices(const MeshType& m)

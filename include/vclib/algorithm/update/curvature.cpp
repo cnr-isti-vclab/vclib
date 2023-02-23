@@ -90,7 +90,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 			AdjVertex adjV;
 			adjV.isBorder = pos.isEdgeOnBorder();
 			adjV.vert = tmpVertex;
-			adjV.doubleArea = vcl::polygonArea(*pos.face()) * 2;
+			adjV.doubleArea = vcl::faceArea(*pos.face()) * 2;
 			totalDoubleAreaSize += adjV.doubleArea;
 			vertices.push_back(adjV);
 		} while (tmpVertex != firstVertex);

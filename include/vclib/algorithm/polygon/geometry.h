@@ -21,53 +21,25 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_CLEAN_H
-#define VCL_ALGORITHM_CLEAN_H
+#ifndef VCL_ALGORITHM_POLYGON_GEOMETRY_H
+#define VCL_ALGORITHM_POLYGON_GEOMETRY_H
 
-#include <set>
-#include <vector>
-
-#include <vclib/mesh/requirements.h>
+#include "geometry/triangle.h"
+#include "geometry/polygon.h"
 
 namespace vcl {
 
-template <MeshConcept MeshType>
-uint numberUnreferencedVertices(const MeshType& m);
+template<FaceConcept FaceType>
+typename FaceType::VertexType::CoordType faceNormal(const FaceType& f);
 
-template <MeshConcept MeshType>
-uint removeUnreferencedVertices(MeshType& m);
+template<FaceConcept FaceType>
+typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f);
 
-template <FaceMeshConcept MeshType>
-uint removeDuplicatedVertices(MeshType& m);
+template<FaceConcept FaceType, typename ScalarType = double>
+ScalarType faceArea(const FaceType& f);
 
-template <TriangleMeshConcept MeshType>
-uint removeDuplicatedFaces(MeshType& m);
+} // namespace vcl
 
-template <MeshConcept MeshType>
-uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
+#include "geometry.cpp"
 
-template <FaceMeshConcept MeshType>
-uint removeDegenerateFaces(MeshType& m);
-
-template <FaceMeshConcept MeshType>
-uint numberNonManifoldVertices(const MeshType& m);
-
-template <FaceMeshConcept MeshType>
-bool isWaterTight(const MeshType& m);
-
-template <FaceMeshConcept MeshType>
-uint numberHoles(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
-
-template <FaceMeshConcept MeshType>
-std::vector<std::set<uint>> connectedComponents(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
-
-template <FaceMeshConcept MeshType>
-uint numberConnectedComponents(const MeshType& m);
-
-}
-
-#include "clean.cpp"
-
-#endif // VCL_ALGORITHM_CLEAN_H
+#endif // VCL_ALGORITHM_POLYGON_GEOMETRY_H

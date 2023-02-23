@@ -21,53 +21,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_CLEAN_H
-#define VCL_ALGORITHM_CLEAN_H
-
-#include <set>
-#include <vector>
+#ifndef VCL_ALGORITHM_POLYGON_TOPOLOGY_H
+#define VCL_ALGORITHM_POLYGON_TOPOLOGY_H
 
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template <MeshConcept MeshType>
-uint numberUnreferencedVertices(const MeshType& m);
+template <FaceConcept FaceType>
+bool isFaceManifoldOnEdge(const FaceType& f, uint edge);
 
-template <MeshConcept MeshType>
-uint removeUnreferencedVertices(MeshType& m);
+template<FaceConcept FaceType>
+bool isFaceEdgeOnBorder(const FaceType& f, uint edge);
 
-template <FaceMeshConcept MeshType>
-uint removeDuplicatedVertices(MeshType& m);
+template<typename Scalar>
+std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);
 
-template <TriangleMeshConcept MeshType>
-uint removeDuplicatedFaces(MeshType& m);
+template<typename Scalar>
+std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon);
 
-template <MeshConcept MeshType>
-uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
+template<FaceConcept Face>
+std::vector<uint> earCut(const Face& polygon);
 
-template <FaceMeshConcept MeshType>
-uint removeDegenerateFaces(MeshType& m);
+template<FaceMeshConcept MeshType, typename FaceType>
+void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon);
 
-template <FaceMeshConcept MeshType>
-uint numberNonManifoldVertices(const MeshType& m);
+template<FaceMeshConcept MeshType>
+uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon);
 
-template <FaceMeshConcept MeshType>
-bool isWaterTight(const MeshType& m);
+} // namespace vcl
 
-template <FaceMeshConcept MeshType>
-uint numberHoles(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
+#include "topology.cpp"
 
-template <FaceMeshConcept MeshType>
-std::vector<std::set<uint>> connectedComponents(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
-
-template <FaceMeshConcept MeshType>
-uint numberConnectedComponents(const MeshType& m);
-
-}
-
-#include "clean.cpp"
-
-#endif // VCL_ALGORITHM_CLEAN_H
+#endif // VCL_ALGORITHM_POLYGON_TOPOLOGY_H

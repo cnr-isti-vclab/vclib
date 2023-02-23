@@ -114,8 +114,8 @@ typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
 	ScalarType areaSum = 0;
 
 	for (const FaceType& f : m.faces()) {
-		ScalarType area = polygonArea(f);
-		bar += polygonBarycenter(f) * area;
+		ScalarType area = faceArea(f);
+		bar += faceBarycenter(f) * area;
 		areaSum += area;
 	}
 
@@ -150,7 +150,7 @@ double surfaceArea(const MeshType& m)
 
 	double area = 0;
 	for (const FaceType& f : m.faces()) {
-		area += polygonArea(f);
+		area += faceArea(f);
 	}
 	return area;
 }
