@@ -69,6 +69,47 @@ bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacent
 }
 
 /**
+ * @brief Returns the number of adjacent faces to the given face f on the given edge.
+ *
+ * If the given edge is manifold, the returned number will be 0 (if the edge is on border) or 1
+ * (there is only one adjacent face). If the edge is non manifold, the number of faces adjacent to
+ * the given face will be counted.
+ */
+template<FaceConcept FaceType>
+uint adjacentFacesNumberOnEdge(const FaceType& f, uint edge)
+	requires comp::HasAdjacentFaces<FaceType>
+{
+	using VertexType = typename FaceType::VertexType;
+
+	if (! comp::isAdjacentFacesEnabledOn(f)) {
+		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	}
+
+	if (isFaceEdgeOnBorder(f, edge))
+		return 0;
+	if (isFaceManifoldOnEdge(f, edge))
+		return 1;
+
+	const VertexType* v0 = f.vertex(edge);
+	const VertexType* v1 = f.vertexMod(edge+1);
+
+	uint cnt = 0;
+
+	const FaceType* ff = f.adjFace(edge);
+	int e = ff->indexOfEdge(v0, v1);
+
+	do {
+		cnt++;
+
+		ff = ff->adjFace(e);
+		e = ff->indexOfEdge(v0, v1);
+		assert(e != -1);
+	} while(ff != &f);
+
+	return cnt;
+}
+
+/**
  * @brief Returns the number of edges that are on border (no adjacent faces) on the given faces.
  *
  * This function requires AdjacentFaces component, that must be enabled and computed before calling

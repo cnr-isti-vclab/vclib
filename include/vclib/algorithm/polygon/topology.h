@@ -34,6 +34,10 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjace
 template<FaceConcept FaceType>
 bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
 
+template<FaceConcept FaceType>
+uint adjacentFacesNumberOnEdge(const FaceType& f, uint edge)
+	requires comp::HasAdjacentFaces<FaceType>;
+
 template <FaceConcept FaceType>
 uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<FaceType>;
 

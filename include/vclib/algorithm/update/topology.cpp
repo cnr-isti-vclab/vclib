@@ -175,7 +175,8 @@ void clearPerFaceAdjacentFaces(MeshType& m)
 /**
  * @brief Updates the per face adjacent face component.
  *
- * All the faces that does not have an adjacent face will have the adjacent face set to nullptr.
+ * All the faces that does not have an adjacent face (border) will have the adjacent face set to
+ * nullptr.
  *
  * If there are non-manifold edges (edges on which there are more than two incident faces), then
  * a chain-link composed of all the incident faces is built.
@@ -203,7 +204,7 @@ void clearPerFaceAdjacentFaces(MeshType& m)
  *
  * @code{.cpp}
  * fj = fi->adjFace(ei);
- * fj->adjFace(ej) != f1; // if true, the edge is non-manifold
+ * fj->adjFace(ej) != fi; // if true, the edge is non-manifold
  * @endcode
  *
  *
