@@ -31,31 +31,62 @@
 
 namespace vcl {
 
+/**
+ * @brief Returns true if the edge in the given face is manifold.
+ *
+ * This function requires AdjacentFaces component, that must be enabled and computed before calling
+ * this function.
+ */
 template<FaceConcept FaceType>
-bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
+bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (comp::isAdjacentFacesEnabledOn(f)) {
-		if (f.adjFace(edge) == nullptr) {
-			return true;
-		}
-		else {
-			return f.adjFace(edge)->indexOfAdjFace(&f) >= 0;
-		}
+	if (! comp::isAdjacentFacesEnabledOn(f)) {
+		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	}
+
+	if (f.adjFace(edge) == nullptr) {
+		return true;
 	}
 	else {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+		return f.adjFace(edge)->indexOfAdjFace(&f) >= 0;
 	}
 }
 
+/**
+ * @brief Returns true if the edge in the given face is on border.
+ *
+ * This function requires AdjacentFaces component, that must be enabled and computed before calling
+ * this function.
+ */
 template<FaceConcept FaceType>
-bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
+bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (comp::isAdjacentFacesEnabledOn(f)) {
-		return f->adjFace(edge) == nullptr;
-	}
-	else {
+	if (! comp::isAdjacentFacesEnabledOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
+
+	return f->adjFace(edge) == nullptr;
+}
+
+/**
+ * @brief Returns the number of edges that are on border (no adjacent faces) on the given faces.
+ *
+ * This function requires AdjacentFaces component, that must be enabled and computed before calling
+ * this function.
+ */
+template <FaceConcept FaceType>
+uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<FaceType>
+{
+	if (! comp::isAdjacentFacesEnabledOn(f)) {
+		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	}
+
+	uint cnt = 0;
+	for (uint i = 0; i < f.vertexNumber(); ++i)
+		if (isFaceEdgeOnBorder(f, i))
+			cnt++;
+
+	return cnt;
 }
 
 /**

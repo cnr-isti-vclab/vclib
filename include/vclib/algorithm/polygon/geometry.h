@@ -38,6 +38,12 @@ typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f);
 template<FaceConcept FaceType, typename ScalarType = double>
 ScalarType faceArea(const FaceType& f);
 
+template<FaceConcept FaceType>
+auto faceAngleOnVertexRad(const FaceType& f, uint v);
+
+template<FaceConcept FaceType>
+auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjacentFaces<FaceType>;
+
 } // namespace vcl
 
 #include "geometry.cpp"

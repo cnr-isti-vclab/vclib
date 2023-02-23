@@ -29,10 +29,13 @@
 namespace vcl {
 
 template <FaceConcept FaceType>
-bool isFaceManifoldOnEdge(const FaceType& f, uint edge);
+bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
 
 template<FaceConcept FaceType>
-bool isFaceEdgeOnBorder(const FaceType& f, uint edge);
+bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
+
+template <FaceConcept FaceType>
+uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<FaceType>;
 
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);
