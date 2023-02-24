@@ -35,7 +35,7 @@ template<FaceConcept FaceType>
 bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
 
 template<FaceConcept FaceType>
-uint adjacentFacesNumberOnEdge(const FaceType& f, uint edge)
+uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
 	requires comp::HasAdjacentFaces<FaceType>;
 
 template <FaceConcept FaceType>

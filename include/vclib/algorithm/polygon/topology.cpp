@@ -70,14 +70,14 @@ bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacent
 }
 
 /**
- * @brief Returns the number of adjacent faces to the given face f on the given edge.
+ * @brief Returns the number of adjacent faces to the given edge of the face f.
  *
- * If the given edge is manifold, the returned number will be 0 (if the edge is on border) or 1
- * (there is only one adjacent face). If the edge is non manifold, the number of faces adjacent to
- * the given face will be counted.
+ * If the given edge is manifold, the returned number will be 1 (if the edge is on border - just one
+ * face) or 2 (two adjacent faces on the edge). If the edge is non manifold, the number of faces
+ * adjacent to the given face will be counted.
  */
 template<FaceConcept FaceType>
-uint adjacentFacesNumberOnEdge(const FaceType& f, uint edge)
+uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
 	requires comp::HasAdjacentFaces<FaceType>
 {
 	if (! comp::isAdjacentFacesEnabledOn(f)) {
@@ -90,7 +90,7 @@ uint adjacentFacesNumberOnEdge(const FaceType& f, uint edge)
 		++cnt;
 	}
 
-	return cnt - 1;
+	return cnt;
 }
 
 /**
