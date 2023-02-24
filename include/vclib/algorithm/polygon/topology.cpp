@@ -115,6 +115,81 @@ uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<
 }
 
 /**
+ * @brief Detaches the Face f on the given edge, which consists on updating adjacent faces such that
+ * any face that was linking the Face f won't link it anymore. It manages also non-manifold edges.
+ *
+ * If the given pair face-edge is on border, nothing is done.
+ * If the given pair face-edge is a normal manifold edge, this operation will set nullptr as
+ * adjacent face of f (making edge a border) and vice versa on the adjacent face.
+ * If the given pair face-edge is a non-manifold edge, the function will "remove" the current face
+ * from the ring of faces incident on the edge. The given face f will have the given edge set as a
+ * border (nullptr).
+ */
+template <FaceConcept FaceType>
+void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
+{
+	if (! comp::isAdjacentFacesEnabledOn(f)) {
+		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	}
+
+	FaceType* nextFace = f.adjFace(edge);
+
+	// if nextFace == nullptr there is nothing to do
+	// the face is already detached on the edge
+	if (nextFace != nullptr) {
+
+		FaceType* prevFace;
+		ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
+		for (auto it = begin ; it != end; ++it) {
+			prevFace = *it;
+		}
+
+		if (nextFace == prevFace) { // manifold case
+			int en = nextFace->indexOfAdjFace(&f);
+			assert(en >= 0);
+			nextFace->adjFace(en) = nullptr;
+		}
+		else { // non manifold case
+			// the prev face does not have to point to f anymore, but to nextFace
+			int pn = prevFace->indexOfAdjFace(&f);
+			assert(pn >= 0);
+			prevFace->adjFace(pn) = nextFace;
+		}
+		f.adjFace(edge) = nullptr;
+	}
+}
+
+/**
+ * @brief Detaches the face f from all its vertices and adjacent faces, meaning that every vertex
+ * and face won't link anymore f as adjacent face, and f won't have anymore adjacent faces (all
+ * their values are set to nullptr). Vertices of the face f are unchanged.
+ */
+template <FaceConcept FaceType>
+void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
+{
+	if (! comp::isAdjacentFacesEnabledOn(f)) {
+		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	}
+
+	using VertexType = typename FaceType::VertexType;
+
+	for (uint e = 0; e < f.vertexNumber(); ++e) {
+		detachAdjacentFacesOnEdge(f, e);
+
+		// if the vertices have adjacent faces
+		if constexpr (comp::HasAdjacentFaces<VertexType>) {
+			if (comp::isAdjacentFacesEnabledOn(f.vertex(e))) {
+				VertexType* v = f.vertex(e);
+				int vpos = v->indexOfAdjFace(&f);
+				if (vpos >= 0) { // may happen if vertex adj faces are not initialized / updated
+						v->eraseAdjFace(vpos); // the vertex v has not anymore the adjacent face f
+				}
+			}
+		}
+	}
+}
+
+/**
  * @brief Computes the EarCut algorithm of a 2D polygon, that returns a triangulation of the
  * polygon.
  *

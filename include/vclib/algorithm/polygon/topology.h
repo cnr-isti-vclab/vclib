@@ -41,6 +41,12 @@ uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
 template <FaceConcept FaceType>
 uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<FaceType>;
 
+template <FaceConcept FaceType>
+void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
+
+template <FaceConcept FaceType>
+void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>;
+
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);
 
