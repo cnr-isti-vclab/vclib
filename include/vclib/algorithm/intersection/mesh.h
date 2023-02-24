@@ -29,7 +29,7 @@
 namespace vcl {
 
 template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
-void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl);
+EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl);
 
 template<FaceMeshConcept MeshType, typename SScalar>
 MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere);

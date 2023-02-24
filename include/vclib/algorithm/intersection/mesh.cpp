@@ -27,12 +27,46 @@
 
 namespace vcl {
 
+/**
+ * @brief Takes a mesh and a plane as inputs and computes the intersection between the mesh and the
+ * plane. It creates a new EdgeMesh to represent the intersection edges.
+ *
+ * First, for each vertex in the original mesh, it computes its distance to the plane and stores it
+ * in a vector. Then, for each face in the original mesh, it checks each of its edges to see if they
+ * intersect the plane. If an edge intersects the plane, the intersection point is computed and
+ * added to a vector of intersection points. If the edge lies exactly on the plane, its vertices are
+ * added to the intersection points.
+ *
+ * Once all intersection points have been computed, the function creates a new edge mesh and adds an
+ * edge between each pair of consecutive intersection points that forms a line segment on the plane.
+ * If the original mesh has per-vertex normals, the function also computes and stores the normal at
+ * each intersection point.
+ *
+ * Requirements:
+ * - EdgeMesh:
+ *   - Vertices
+ *     - Normals (optional)
+ *   - Edges
+ *
+ * - MeshType:
+ *   - Vertices
+ *     - Normals (optional)
+ *   - Faces
+ *
+ * @param m
+ * @param pl
+ *
+ * @return the intersection between the original mesh and the plane as a collection of line segments
+ * with optional normal vectors.
+ */
 template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
-void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
+EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
 	using CoordType  = typename VertexType::CoordType;
+
+	EdgeMesh em;
 
 	std::vector<double> qH(m.vertexContainerSize());
 
@@ -104,6 +138,8 @@ void meshPlaneIntersection(EdgeMesh& em, const MeshType& m, const PlaneType& pl)
 	//			}
 	//		}
 	//	}
+
+	return em;
 }
 
 /**

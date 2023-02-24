@@ -28,6 +28,7 @@
 #include <vclib/exception/mesh_exception.h>
 #include <vclib/mesh/mesh/mesh_algorithms.h>
 #include <vclib/mesh/iterators/edge_adj_face_iterator.h>
+#include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/comparators.h>
 
 namespace vcl {
@@ -67,6 +68,71 @@ bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacent
 	}
 
 	return f->adjFace(edge) == nullptr;
+}
+
+/**
+ * @brief Returns a boolean value indicating whether the edge flip operation is allowed or not.
+ *
+ * This function requires AdjacentFaces component, that must be enabled and computed before calling
+ * this function.
+ *
+ * The function first checks if the specified edge is a boundary edge, in which case the flip
+ * operation is not allowed. If the edge is not a boundary edge, the function checks whether the
+ * mesh is well-oriented by verifying that the vertices of the edge to be flipped are the same in
+ * the adjacent face.
+ *
+ * Next, the function checks if the flipped edge already exists in the mesh. To do this, the
+ * function performs a depth-first search starting from the current face, following the edges that
+ * share the opposite vertex to the edge being flipped. The search checks if the vertex on the other
+ * end of the flipped edge is already connected to any other face in the mesh. If it is, the flip
+ * operation is not allowed.
+ *
+ * The depth-first search is limited to the faces that share the opposite vertex to the edge being
+ * flipped, so it does not perform an exhaustive search of the entire mesh. However, it is
+ * sufficient to detect non-manifoldness caused by the flipped edge.
+ */
+template<FaceConcept FaceType>
+bool checkFlipEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
+{
+	if (! comp::isAdjacentFacesEnabledOn(f)) {
+		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	}
+
+	using VertexType = typename FaceType::VertexType;
+
+	if (f.vertexNumber() > 3)
+		return false;
+
+	if (vcl::isFaceEdgeOnBorder(f, edge))
+		return false;
+
+	const VertexType* v0 = f.vertex(edge);
+	const VertexType* v1 = f.vertexMod(edge+1);
+
+	const FaceType* of = f.adjFace(edge);
+	int oe = of->indexOfAdjFace(&f);
+	assert(oe);
+
+	// check if the vertices of the edge are the same
+	// e.g. the mesh has to be well oriented
+	if (of->vertex(oe) != v1 || of->vertexMod(oe+1) != v0)
+		return false;
+
+	// check if the flipped edge is already present in the mesh
+	// f_v2 and of_v2 are the vertices of the new edge
+	const VertexType* f_v2 = f.vertexMod(edge+2);
+	const VertexType* of_v2 = of->vertexMod(oe+2);
+
+	MeshPos<FaceType> pos(&f, f_v2);
+	MeshPos<FaceType> startPos = pos;
+	// loop in the one ring of f_v2
+	do {
+		pos.nextEdgeAdjacentToV();
+		if (pos.adjVertex() == of_v2)
+			return false;
+	} while(pos != startPos);
+
+	return true;
 }
 
 /**
