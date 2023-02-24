@@ -27,6 +27,7 @@
 
 #include <vclib/exception/mesh_exception.h>
 #include <vclib/mesh/mesh/mesh_algorithms.h>
+#include <vclib/mesh/iterators/edge_adj_face_iterator.h>
 #include <vclib/misc/comparators.h>
 
 namespace vcl {
@@ -79,34 +80,17 @@ template<FaceConcept FaceType>
 uint adjacentFacesNumberOnEdge(const FaceType& f, uint edge)
 	requires comp::HasAdjacentFaces<FaceType>
 {
-	using VertexType = typename FaceType::VertexType;
-
 	if (! comp::isAdjacentFacesEnabledOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
-	if (isFaceEdgeOnBorder(f, edge))
-		return 0;
-	if (isFaceManifoldOnEdge(f, edge))
-		return 1;
-
-	const VertexType* v0 = f.vertex(edge);
-	const VertexType* v1 = f.vertexMod(edge+1);
-
+	ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
 	uint cnt = 0;
+	for (auto it = begin ; it != end; ++it) {
+		++cnt;
+	}
 
-	const FaceType* ff = f.adjFace(edge);
-	int e = ff->indexOfEdge(v0, v1);
-
-	do {
-		cnt++;
-
-		ff = ff->adjFace(e);
-		e = ff->indexOfEdge(v0, v1);
-		assert(e != -1);
-	} while(ff != &f);
-
-	return cnt;
+	return cnt - 1;
 }
 
 /**
