@@ -23,6 +23,8 @@
 
 #include "polygon.h"
 
+#include <vclib/mesh/mesh/mesh_algorithms.h>
+
 namespace vcl {
 
 /**
@@ -35,15 +37,7 @@ namespace vcl {
 template<PointConcept PointType>
 PointType polygonNormal(const std::vector<PointType>& p)
 {
-	// compute the sum of normals for each triplet of consecutive points
-	PointType sum;
-	sum.setZero();
-	for (uint i = 0; i < p.size(); ++i) {
-		sum += triangleNormal(
-			p[i], p[(i+1)%p.size()], p[(i+2)%p.size()]);
-	}
-	sum.normalize();
-	return sum;
+	return mesh::polygonNormal(p);
 }
 
 /**
@@ -63,7 +57,7 @@ typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p)
 	sum.setZero();
 	for (uint i = 0; i < p.vertexNumber(); ++i) {
 		sum += triangleNormal(
-			p.vertexMod(i)->coord(), p.vertexMod(i + 1)->coord(), p.vertexMod(i + 2)->coord());
+			p.vertex(i)->coord(), p.vertexMod(i + 1)->coord(), p.vertexMod(i + 2)->coord());
 	}
 	sum.normalize();
 	return sum;

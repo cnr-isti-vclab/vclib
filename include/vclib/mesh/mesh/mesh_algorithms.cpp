@@ -50,6 +50,20 @@ struct nth<1, vcl::Point2<Scalar>>
 
 namespace vcl::mesh {
 
+template<PointConcept PointType>
+PointType polygonNormal(const std::vector<PointType>& p)
+{
+	// compute the sum of normals for each triplet of consecutive points
+	PointType sum;
+	sum.setZero();
+	for (uint i = 0; i < p.size(); ++i) {
+		sum += triangleNormal(
+			p[i], p[(i+1)%p.size()], p[(i+2)%p.size()]);
+	}
+	sum.normalize();
+	return sum;
+}
+
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon)
 {
@@ -62,7 +76,7 @@ std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon)
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon)
 {
-	Point3<Scalar> n = polygonNormal(polygon);
+	Point3<Scalar> n = mesh::polygonNormal(polygon);
 	Point3<Scalar> u, v;
 	orthoBase(n, u, v);
 
