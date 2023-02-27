@@ -80,6 +80,24 @@ ScalarType faceArea(const FaceType& f)
 }
 
 /**
+ * @brief Computes the perimeter of a face. Works both for triangle and polygonal faces, and it is
+ * optimized in case of triangle faces.
+ *
+ * @param f
+ * @return
+ */
+template<FaceConcept FaceType, typename ScalarType>
+ScalarType facePerimeter(const FaceType& f)
+{
+	if constexpr (TriangleFaceConcept<FaceType>) {
+		return trianglePerimeter<FaceType, ScalarType>(f);
+	}
+	else {
+		return polygonPerimeter<FaceType, ScalarType>(f);
+	}
+}
+
+/**
  * @brief Returns the internal angle (in radians) of the vi-th vertex of the face.
  *
  * @param[in] f: the face on which calculate the angle

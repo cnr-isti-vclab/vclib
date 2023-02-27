@@ -201,4 +201,36 @@ ScalarType polygonArea(const Polygon& p)
 	return area;
 }
 
+template<typename Iterator>
+auto polygonPerimeter(Iterator begin, Iterator end)
+	requires PointConcept<typename Iterator::value_type>
+{
+	using PointType = typename Iterator::value_type;
+	using Scalar = typename PointType::ScalarType;
+
+	Scalar per = 0;
+	for (auto i = begin; i != end; ++i){
+		const PointType& p0 = *i;
+		auto i1 = i; ++i;
+		if (i1 == end) i1 = begin;
+		const PointType& p1 = *i1;
+		per += p0.dist(p1);
+	}
+	return per;
+}
+
+template<typename Polygon, typename ScalarType>
+ScalarType polygonPerimeter(const Polygon& p)
+{
+	using PointType = typename Polygon::VertexType::CoordType;
+
+	ScalarType per = 0;
+	for (uint i = 0; i < p.vertexNumber(); ++i){
+		const PointType& p0 = p.vertex(i)->coord();
+		const PointType& p1 = p.vertexMod(i+1)->coord();
+		per += p0.dist(p1);
+	}
+	return per;
+}
+
 } // namespace vcl

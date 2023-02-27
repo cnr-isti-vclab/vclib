@@ -61,6 +61,13 @@ ScalarType polygonArea(const Polygon& p);
 
 /* Perimeter */
 
+template<typename Iterator>
+auto polygonPerimeter(Iterator begin, Iterator end)
+	requires PointConcept<typename Iterator::value_type>;
+
+template<typename Polygon, typename ScalarType = double>
+ScalarType polygonPerimeter(const Polygon& p);
+
 } // namespace vcl
 
 #include "polygon.cpp"
