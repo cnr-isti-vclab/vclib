@@ -29,11 +29,15 @@
 
 namespace vcl {
 
+/* Normal */
+
 template<PointConcept PointType>
 PointType polygonNormal(const std::vector<PointType>& p);
 
 template<typename Polygon>
 typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p);
+
+/* Barycenter */
 
 template<PointConcept PointType>
 PointType polygonBarycenter(const std::vector<PointType>& p);
@@ -46,11 +50,15 @@ PointType polygonWeighedBarycenter(
 	const std::vector<PointType>&                      p,
 	const std::vector<typename PointType::ScalarType>& w);
 
+/* Area */
+
 template<PointConcept PointType>
 typename PointType::ScalarType polygonArea(const std::vector<PointType>& p);
 
 template<typename Polygon, typename ScalarType = double>
 ScalarType polygonArea(const Polygon& p);
+
+/* Perimeter */
 
 } // namespace vcl
 
