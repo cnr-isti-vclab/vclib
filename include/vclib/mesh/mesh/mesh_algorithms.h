@@ -28,8 +28,9 @@
 
 namespace vcl::mesh {
 
-template<PointConcept PointType>
-PointType polygonNormal(const std::vector<PointType>& p);
+template<typename Iterator>
+auto polygonNormal(Iterator begin, Iterator end)
+	requires PointConcept<typename Iterator::value_type>;
 
 template<typename Scalar>
 std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);

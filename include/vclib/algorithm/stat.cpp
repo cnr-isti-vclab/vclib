@@ -188,7 +188,7 @@ Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& poin
 {
 	Matrix33<double> m;
 	m.setZero();
-	PointType barycenter = polygonBarycenter(pointVec);
+	PointType barycenter = polygonBarycenter(pointVec.begin(), pointVec.end());
 
 	// compute covariance matrix
 	for (const PointType& p : pointVec){
@@ -238,7 +238,8 @@ Matrix33<double> weightedCovarianceMatrixOfPointCloud(
 {
 	Matrix33<double> m;
 	m.setZero();
-	PointType barycenter = polygonWeighedBarycenter(pointVec, weights);
+	PointType barycenter =
+		polygonWeighedBarycenter(pointVec.begin(), pointVec.end(), weights.begin());
 
 	// compute covariance matrix
 	typename PointType::ScalarType wsum = 0;

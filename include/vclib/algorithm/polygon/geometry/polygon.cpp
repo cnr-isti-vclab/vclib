@@ -23,21 +23,26 @@
 
 #include "polygon.h"
 
+#include "triangle.h"
+
 #include <vclib/mesh/mesh/mesh_algorithms.h>
 
 namespace vcl {
 
 /**
- * @brief Computes the normal of a std::vector of 3D points listed in counterclockwise order,
- * representing a polygon.
+ * @brief Computes the normal of a container of 3D points iterated between the iterators begin and
+ * end, listed in counterclockwise order, representing a polygon.
  *
- * @param[in] p: input container of 3D points representing a polygon.
- * @return The normal of p.
+ * @tparam Iterator: an iterator which points to a type that satiesfies the PointConcept.
+ * @param[in] begin: iterator pointing to the first point of the polygon.
+ * @param[in] end: end iterator
+ * @return The normal of the polygon.
  */
-template<PointConcept PointType>
-PointType polygonNormal(const std::vector<PointType>& p)
+template<typename Iterator>
+auto polygonNormal(Iterator begin, Iterator end)
+	requires PointConcept<typename Iterator::value_type>
 {
-	return mesh::polygonNormal(p);
+	return mesh::polygonNormal(begin, end);
 }
 
 /**
@@ -64,20 +69,32 @@ typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p)
 }
 
 /**
- * @brief Computes the barycenter of a std::vector of points representing a polygon.
+ * @brief Computes the barycenter of a container of 3D points iterated between the iterators begin
+ * and end, listed in counterclockwise order, representing a polygon.
  *
- * @param[in] p: input container of points representing a polygon.
+ * @tparam Iterator: an iterator which points to a type that satiesfies the PointConcept.
+ * @param[in] begin: iterator pointing to the first point of the polygon.
+ * @param[in] end: end iterator
  * @return The barycenter of p.
  */
-template<PointConcept PointType>
-PointType polygonBarycenter(const std::vector<PointType>& p)
+template<typename Iterator>
+auto polygonBarycenter(Iterator begin, Iterator end)
+	requires PointConcept<typename Iterator::value_type>
 {
+	using PointType = typename Iterator::value_type;
+
 	PointType bar;
 	bar.setZero();
 
-	for (const PointType& pp : p)
-		bar += pp;
-	return bar / p.size();
+	uint cnt = 0;
+	for (; begin != end; ++begin) {
+		bar += *begin;
+		++cnt;
+	}
+
+	assert(cnt);
+
+	return bar / cnt;
 }
 
 /**
@@ -101,24 +118,32 @@ typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p)
 }
 
 /**
- * @brief Computes the weighted barycenter of a std::vector of points representing a polygon.
+ * @brief Computes the weighted barycenter of a container of 3D points iterated between the
+ * iterators begin and end, listed in counterclockwise order, representing a polygon. Weights are
+ * iterated by another iterator wbegin, which iterates to a container of the same size of the
+ * polygon container.
  *
- * @param[in] p: input container of points representing a polygon.
- * @param[in] w: the weights for each point of the polygon.
+ * @tparam Iterator: an iterator which points to a type that satiesfies the PointConcept.
+ * @tparam WIterator: an iterator which points to a scalar type.
+ * @param[in] begin: iterator pointing to the first point of the polygon.
+ * @param[in] end: end iterator of the polygon container.
+ * @param[in] wbegin: iterator pointing to the first weight associated to the fist polygon point.
  * @return The weighted barycenter of p.
  */
-template<PointConcept PointType>
-PointType polygonWeighedBarycenter(
-	const std::vector<PointType>&                      p,
-	const std::vector<typename PointType::ScalarType>& w)
+template<typename Iterator, typename WIterator>
+auto polygonWeighedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
+	requires PointConcept<typename Iterator::value_type>
 {
+	using PointType = typename Iterator::value_type;
+	using ScalarType = typename WIterator::value_type;
+
 	PointType bar;
 	bar.setZero();
-	typename PointType::ScalarType wsum = 0;
+	ScalarType wsum = 0;
 
-	for (uint i = 0; i < p.size(); ++i){
-		bar += p[i] * w[i];
-		wsum += w[i];
+	for (; begin != end; ++begin, ++wbegin){
+		bar += *begin * *wbegin;
+		wsum += *wbegin;
 	}
 
 	return bar / wsum;
@@ -131,15 +156,20 @@ PointType polygonWeighedBarycenter(
  * @param[in] p: input container of 3D points representing a polygon.
  * @return The area of p.
  */
-template<PointConcept PointType>
-typename PointType::ScalarType polygonArea(const std::vector<PointType>& p)
+template<typename Iterator>
+auto polygonArea(Iterator begin, Iterator end) requires PointConcept<typename Iterator::value_type>
 {
+	using PointType = typename Iterator::value_type;
 	using Scalar = typename PointType::ScalarType;
-	PointType bar = polygonBarycenter(p);
+
+	PointType bar = polygonBarycenter(begin, end);
 	Scalar area = 0;
-	for (uint i = 0; i < p.size(); ++i){
-		const PointType& p0 = p[i];
-		const PointType& p1 = p[(i+1)%p.size()];
+	for (auto i = begin; i != end; ++i){
+		const PointType& p0 = *i;
+		auto i1 = i; ++i;
+		if (i1 == end) i1 = begin;
+		const PointType& p1 = *i1;
+
 		area += triangleArea(p0, p1, bar);
 	}
 	return area;

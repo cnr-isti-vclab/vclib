@@ -31,29 +31,30 @@ namespace vcl {
 
 /* Normal */
 
-template<PointConcept PointType>
-PointType polygonNormal(const std::vector<PointType>& p);
+template<typename Iterator>
+auto polygonNormal(Iterator begin, Iterator end)
+	requires PointConcept<typename Iterator::value_type>;
 
 template<typename Polygon>
 typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p);
 
 /* Barycenter */
 
-template<PointConcept PointType>
-PointType polygonBarycenter(const std::vector<PointType>& p);
+template<typename Iterator>
+auto polygonBarycenter(Iterator begin, Iterator end)
+	requires PointConcept<typename Iterator::value_type>;
 
 template<typename Polygon>
 typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p);
 
-template<PointConcept PointType>
-PointType polygonWeighedBarycenter(
-	const std::vector<PointType>&                      p,
-	const std::vector<typename PointType::ScalarType>& w);
+template<typename Iterator, typename WIterator>
+auto polygonWeighedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
+	requires PointConcept<typename Iterator::value_type>;
 
 /* Area */
 
-template<PointConcept PointType>
-typename PointType::ScalarType polygonArea(const std::vector<PointType>& p);
+template<typename Iterator>
+auto polygonArea(Iterator begin, Iterator end) requires PointConcept<typename Iterator::value_type>;
 
 template<typename Polygon, typename ScalarType = double>
 ScalarType polygonArea(const Polygon& p);
