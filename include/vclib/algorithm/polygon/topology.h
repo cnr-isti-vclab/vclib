@@ -59,7 +59,7 @@ std::vector<uint> earCut(Iterator begin, Iterator end)
 template<FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon);
 
-template<FaceMeshConcept MeshType, typename FaceType>
+template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon);
 
 template<FaceMeshConcept MeshType>
