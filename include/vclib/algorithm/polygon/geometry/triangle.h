@@ -71,8 +71,8 @@ template<PointConcept PointType>
 typename PointType::ScalarType
 triangleArea(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template<FaceConcept Triangle, typename ScalarType = double>
-ScalarType triangleArea(const Triangle& t);
+template<FaceConcept Triangle>
+auto triangleArea(const Triangle& t);
 
 /* Perimeter */
 
@@ -80,8 +80,8 @@ template<PointConcept PointType>
 typename PointType::ScalarType
 trianglePerimeter(const PointType& p0, const PointType& p1, const PointType& p2);
 
-template<FaceConcept Triangle, typename ScalarType = double>
-ScalarType trianglePerimeter(const Triangle& t);
+template<FaceConcept Triangle>
+auto trianglePerimeter(const Triangle& t);
 
 /* Quality */
 

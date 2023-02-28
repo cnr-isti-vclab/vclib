@@ -68,14 +68,14 @@ typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
  * @param f
  * @return
  */
-template<FaceConcept FaceType, typename ScalarType>
-ScalarType faceArea(const FaceType& f)
+template<FaceConcept FaceType>
+auto faceArea(const FaceType& f)
 {
 	if constexpr (TriangleFaceConcept<FaceType>) {
-		return triangleArea<FaceType, ScalarType>(f);
+		return triangleArea<FaceType>(f);
 	}
 	else {
-		return polygonArea<FaceType, ScalarType>(f);
+		return polygonArea<FaceType>(f);
 	}
 }
 
@@ -86,14 +86,14 @@ ScalarType faceArea(const FaceType& f)
  * @param f
  * @return
  */
-template<FaceConcept FaceType, typename ScalarType>
-ScalarType facePerimeter(const FaceType& f)
+template<FaceConcept FaceType>
+auto facePerimeter(const FaceType& f)
 {
 	if constexpr (TriangleFaceConcept<FaceType>) {
-		return trianglePerimeter<FaceType, ScalarType>(f);
+		return trianglePerimeter<FaceType>(f);
 	}
 	else {
-		return polygonPerimeter<FaceType, ScalarType>(f);
+		return polygonPerimeter<FaceType>(f);
 	}
 }
 

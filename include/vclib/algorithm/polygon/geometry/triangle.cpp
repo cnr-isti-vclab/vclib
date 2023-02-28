@@ -150,8 +150,8 @@ triangleArea(const PointType& p0, const PointType& p1, const PointType& p2)
  * @param[in] t: input triangle of type Face
  * @return The area of t.
  */
-template<FaceConcept Triangle, typename ScalarType>
-ScalarType triangleArea(const Triangle& t)
+template<FaceConcept Triangle>
+auto triangleArea(const Triangle& t)
 {
 	return triangleArea(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
 }
@@ -163,8 +163,8 @@ trianglePerimeter(const PointType& p0, const PointType& p1, const PointType& p2)
 	return p0.dist(p1) + p1.dist(p2) + p2.dist(p0);
 }
 
-template<FaceConcept Triangle, typename ScalarType>
-ScalarType trianglePerimeter(const Triangle& t)
+template<FaceConcept Triangle>
+auto trianglePerimeter(const Triangle& t)
 {
 	return trianglePerimeter(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
 }

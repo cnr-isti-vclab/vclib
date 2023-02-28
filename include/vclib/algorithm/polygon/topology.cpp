@@ -181,8 +181,9 @@ uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<
 }
 
 /**
- * @brief Detaches the Face f on the given edge, which consists on updating adjacent faces such that
- * any face that was linking the Face f won't link it anymore. It manages also non-manifold edges.
+ * @brief Detaches the face \p f on the given edge, which consists on updating adjacent faces such
+ * that any face that was linking the face \p f won't link it anymore. It manages also non-manifold
+ * edges.
  *
  * If the given pair face-edge is on border, nothing is done.
  * If the given pair face-edge is a normal manifold edge, this operation will set nullptr as
@@ -190,6 +191,14 @@ uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<
  * If the given pair face-edge is a non-manifold edge, the function will "remove" the current face
  * from the ring of faces incident on the edge. The given face f will have the given edge set as a
  * border (nullptr).
+ *
+ * This function is designed to work with faces that have an enabled "Adjacent Faces" component.
+ * If the component is not enabled, a MissingComponentException is thrown.
+ *
+ * @tparam FaceType: The type of face to detach.
+ * @param[in] f: The face to detach on the given edge.
+ * @param[in] edge: The index of the edge to detach the face from.
+ * @throws vcl::MissingComponentException If the "Adjacent Faces" component is not enabled on \p f.
  */
 template <FaceConcept FaceType>
 void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
@@ -226,9 +235,19 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacen
 }
 
 /**
- * @brief Detaches the face f from all its vertices and adjacent faces, meaning that every vertex
- * and face won't link anymore f as adjacent face, and f won't have anymore adjacent faces (all
- * their values are set to nullptr). Vertices of the face f are unchanged.
+ * @brief Detaches the given face from all its adjacent vertices and adjacent faces.
+ *
+ * The detachFace function detaches the given face from all its adjacent vertices and adjacent
+ * faces. This means that every vertex and face will no longer link to the face \p f as an adjacent
+ * face, and \p f will no longer have any adjacent faces (all their values are set to nullptr). The
+ * vertices of the face \p f are unchanged.
+ *
+ * This function is designed to work with faces that have an enabled "Adjacent Faces" component.
+ * If the component is not enabled, a MissingComponentException is thrown.
+ *
+ * @tparam FaceType: The type of the face.
+ * @param[in] f: The face to detach from its vertices and adjacent faces.
+ * @throws MissingComponentException if the adjacent faces component is not enabled on the face.
  */
 template <FaceConcept FaceType>
 void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>

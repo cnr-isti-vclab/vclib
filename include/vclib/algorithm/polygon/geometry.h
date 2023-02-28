@@ -35,11 +35,11 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f);
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f);
 
-template<FaceConcept FaceType, typename ScalarType = double>
-ScalarType faceArea(const FaceType& f);
+template<FaceConcept FaceType>
+auto faceArea(const FaceType& f);
 
-template<FaceConcept FaceType, typename ScalarType = double>
-ScalarType facePerimeter(const FaceType& f);
+template<FaceConcept FaceType>
+auto facePerimeter(const FaceType& f);
 
 template<FaceConcept FaceType>
 auto faceAngleOnVertexRad(const FaceType& f, uint v);

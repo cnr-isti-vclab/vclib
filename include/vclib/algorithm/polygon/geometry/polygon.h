@@ -56,8 +56,8 @@ auto polygonWeighedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
 template<typename Iterator>
 auto polygonArea(Iterator begin, Iterator end) requires PointConcept<typename Iterator::value_type>;
 
-template<typename Polygon, typename ScalarType = double>
-ScalarType polygonArea(const Polygon& p);
+template<typename Polygon>
+auto polygonArea(const Polygon& p);
 
 /* Perimeter */
 
@@ -65,8 +65,8 @@ template<typename Iterator>
 auto polygonPerimeter(Iterator begin, Iterator end)
 	requires PointConcept<typename Iterator::value_type>;
 
-template<typename Polygon, typename ScalarType = double>
-ScalarType polygonPerimeter(const Polygon& p);
+template<typename Polygon>
+auto polygonPerimeter(const Polygon& p);
 
 } // namespace vcl
 

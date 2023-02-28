@@ -53,7 +53,7 @@ auto polygonNormal(Iterator begin, Iterator end)
  * @param[in] p: input polygonal Face
  * @return The normal of p.
  */
-template<typename Polygon>
+template<FaceConcept Polygon>
 typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p)
 {
 	using NormalType = typename Polygon::VertexType::CoordType;
@@ -104,7 +104,7 @@ auto polygonBarycenter(Iterator begin, Iterator end)
  * @param[in] p: input polygonal Face
  * @return The barycenter of p.
  */
-template<typename Polygon>
+template<FaceConcept Polygon>
 typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p)
 {
 	using PointType = typename Polygon::VertexType::CoordType;
@@ -182,17 +182,18 @@ auto polygonArea(Iterator begin, Iterator end) requires PointConcept<typename It
  * @param[in] p: input polygonal Face
  * @return The area of p.
  */
-template<typename Polygon, typename ScalarType>
-ScalarType polygonArea(const Polygon& p)
+template<FaceConcept Polygon>
+auto polygonArea(const Polygon& p)
 {
 	using PointType = typename Polygon::VertexType::CoordType;
+	using Scalar = typename PointType::ScalarType;
 
 	if (p.vertexNumber() == 3) {
 		return triangleArea(p);
 	}
 
 	PointType bar = polygonBarycenter(p);
-	ScalarType area = 0;
+	Scalar area = 0;
 	for (uint i = 0; i < p.vertexNumber(); ++i){
 		const PointType& p0 = p.vertex(i)->coord();
 		const PointType& p1 = p.vertexMod(i+1)->coord();
@@ -201,6 +202,20 @@ ScalarType polygonArea(const Polygon& p)
 	return area;
 }
 
+/**
+ * @brief Calculates the perimeter of a polygon defined by a range of points.
+ *
+ * The polygonPerimeter function calculates the perimeter of a polygon defined by a range of points.
+ * The function takes two iterators as input, representing the beginning and end of the range of
+ * points. The points in the range must satisfy the PointConcept, which is a concept that requires
+ * the point type to have a ScalarType and a dist() function that calculates the distance between
+ * two points.
+ *
+ * @tparam Iterator The type of the iterators that define the range of points.
+ * @param[in] begin: An iterator pointing to the first point in the range.
+ * @param[in] end: An iterator pointing to one past the last point in the range.
+ * @returns The perimeter of the polygon defined by the range of points.
+ */
 template<typename Iterator>
 auto polygonPerimeter(Iterator begin, Iterator end)
 	requires PointConcept<typename Iterator::value_type>
@@ -219,12 +234,26 @@ auto polygonPerimeter(Iterator begin, Iterator end)
 	return per;
 }
 
-template<typename Polygon, typename ScalarType>
-ScalarType polygonPerimeter(const Polygon& p)
+/**
+ * @brief Calculates the perimeter of a polygon.
+ *
+ * The polygonPerimeter function calculates the perimeter of a polygon.
+ * The function takes a polygon as input, which must satisfy the FaceConcept. The FaceConcept is a
+ * concept that requires the polygon to have a VertexType and a vertexNumber() function that returns
+ * the number of vertices in the polygon.
+ *
+ * @tparam Polygon The type of the polygon.
+ * @param[in] p: The polygon for which to calculate the perimeter.
+ * @returns The perimeter of the polygon.
+ */
+
+template<FaceConcept Polygon>
+auto polygonPerimeter(const Polygon& p)
 {
 	using PointType = typename Polygon::VertexType::CoordType;
+	using Scalar = typename PointType::ScalarType;
 
-	ScalarType per = 0;
+	Scalar per = 0;
 	for (uint i = 0; i < p.vertexNumber(); ++i){
 		const PointType& p0 = p.vertex(i)->coord();
 		const PointType& p1 = p.vertexMod(i+1)->coord();
