@@ -90,6 +90,12 @@ concept PointConcept = requires(T o, const T& co)
 #endif
 };
 
+template<typename T>
+concept Point2Concept = PointConcept<T> && T::DIM == 2;
+
+template<typename T>
+concept Point3Concept = PointConcept<T> && T::DIM == 3;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_POINT_POINT_CONCEPT_H

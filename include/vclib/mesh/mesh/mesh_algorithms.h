@@ -32,11 +32,13 @@ template<typename Iterator>
 auto polygonNormal(Iterator begin, Iterator end)
 	requires PointConcept<typename Iterator::value_type>;
 
-template<typename Scalar>
-std::vector<uint> earCut(const std::vector<Point2<Scalar>>& polygon);
+template<typename Iterator>
+std::vector<uint> earCut(Iterator begin, Iterator end)
+	requires Point2Concept<typename Iterator::value_type>;
 
-template<typename Scalar>
-std::vector<uint> earCut(const std::vector<Point3<Scalar>>& polygon);
+template<typename Iterator>
+std::vector<uint> earCut(Iterator begin, Iterator end)
+	requires Point3Concept<typename Iterator::value_type>;
 
 template<typename Face>
 std::vector<uint> earCut(const Face& polygon);
