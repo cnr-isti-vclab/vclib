@@ -26,14 +26,15 @@
 namespace vcl {
 
 /**
- * @brief Computes the normal of the triangle composed by the points p0, p1, and p2, considering
- * that these three points are ordered in counterclockwise order.
+ * @brief Computes the normal of the triangle composed by the points \p p0, \p p1, and \p p2,
+ * considering that these three points are ordered in counter-clockwise order.
  *
- * @tparam PointType A type that satisfies the PointConcept.
+ * @tparam PointType: A type that satisfies the PointConcept.
+ *
  * @param[in] p0: first point of the triangle.
  * @param[in] p1: second point of the triangle.
  * @param[in] p2: third point of the triangle.
- * @return The normal of the triangle composed by p0, p1 and p2.
+ * @return The normal of the triangle composed by \p p0, \p p1 and \p p2.
  */
 template<PointConcept PointType>
 PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2)
@@ -42,13 +43,21 @@ PointType triangleNormal(const PointType& p0, const PointType& p1, const PointTy
 }
 
 /**
- * @brief Computes the normal of a Face that is a triangle. Does not modify the triangle.
- * This function could accept also polygonal faces, but it will take into account only the first 3
- * vertices of the polygon. In this case, the resulting normal could be flipped w.r.yt. the actual
- * normal of the polygon.
+ * @brief Computes the normal of a triangle face.
  *
- * @param[in] t: input triangle of type Face
- * @return The normal of t.
+ * Given a triangle face, this function computes its normal vector without modifying the input.
+ * If a polygonal face is provided, only the first three vertices of the face are taken into
+ * account. In such cases, the resulting normal may be flipped with respect to the actual normal of
+ * the polygon.
+ *
+ * @tparam Triangle: A type that satisfies the FaceConcept. The type should have a nested type
+ *         called VertexType, which satisfies the VertexConcept. The VertexType should have a nested
+ *         type called CoordType, which represents the type of the vertex coordinates.
+ *
+ * @param[in] t: The input triangle face of type Face.
+ * @return The normal vector of the input triangle face.
+ *
+ * @note The input triangle is not modified by this function.
  */
 template<FaceConcept Triangle>
 typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t)
@@ -57,13 +66,14 @@ typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t)
 }
 
 /**
- * @brief Computes the barycenter of the triangle composed by the points p0, p1, and p2.
+ * @brief Computes the barycenter of the triangle composed by the points \p p0, \p p1, and \p p2.
  *
- * @tparam PointType A type that satisfies the PointConcept.
+ * @tparam PointType: A type that satisfies the PointConcept.
+ *
  * @param[in] p0: first point of the triangle.
  * @param[in] p1: second point of the triangle.
  * @param[in] p2: third point of the triangle.
- * @return The barycenter of the triangle composed by p0, p1 and p2.
+ * @return The barycenter of the triangle composed by \p p0, \p p1 and \p p2.
  */
 template <PointConcept PointType>
 PointType triangleBarycenter(const PointType& p0, const PointType& p1, const PointType& p2)
@@ -72,12 +82,20 @@ PointType triangleBarycenter(const PointType& p0, const PointType& p1, const Poi
 }
 
 /**
- * @brief Computes the barycenter of a Face that is a triangle. This function could accept also
- * polygonal faces, but it will take into account only the first 3 vertices of the polygon. In this
- * case, the resulting barycenter won't be accurate.
+ * @brief Computes the barycenter of a triangle face.
  *
- * @param[in] t: input triangle of type Face
- * @return The barycenter of t.
+ * Given a triangle face, this function computes its barycenter without modifying the input.
+ * If a polygonal face is provided, only the first three vertices of the face are taken into
+ * account. In such cases, the resulting barycenter may not be accurate.
+ *
+ * @tparam Triangle A type that satisfies the FaceConcept. The type should have a nested type
+ *         called VertexType, which satisfies the VertexConcept. The VertexType should have a nested
+ *         type called CoordType, which represents the type of the vertex coordinates.
+ *
+ * @param[in] t: The input triangle face of type Face.
+ * @return The barycenter of the input triangle face.
+ *
+ * @note The input triangle is not modified by this function.
  */
 template<FaceConcept Triangle>
 typename Triangle::VertexType::CoordType triangleBarycenter(const Triangle& t)
@@ -86,16 +104,21 @@ typename Triangle::VertexType::CoordType triangleBarycenter(const Triangle& t)
 }
 
 /**
- * @brief Computes the weighted barycenter of the triangle composed by the points p0, p1, and p2.
+ * @brief Computes the weighted barycenter of a triangle composed of three points.
  *
- * @tparam PointType A type that satisfies the PointConcept.
- * @param[in] p0: first point of the triangle.
- * @param[in] w0: weight of the first point of the triangle.
- * @param[in] p1: second point of the triangle.
- * @param[in] w1: weight of the second point of the triangle.
- * @param[in] p2: third point of the triangle.
- * @param[in] w2: weight of the third point of the triangle.
- * @return The weighted barycenter of the triangle composed by p0, p1 and p2.
+ * Given three points and their corresponding weights, this function computes the weighted
+ * barycenter of the triangle they form.
+ *
+ * @tparam PointType: A type that satisfies the PointConcept. The type should have a nested type
+ *         called ScalarType, which represents the type of the point coordinates.
+ *
+ * @param[in] p0: The first point of the triangle of type PointType.
+ * @param[in] w0: The weight of the first point of the triangle.
+ * @param[in] p1: The second point of the triangle of type PointType.
+ * @param[in] w1: The weight of the second point of the triangle.
+ * @param[in] p2: The third point of the triangle of type PointType.
+ * @param[in] w2: The weight of the third point of the triangle.
+ * @return The weighted barycenter of the triangle formed by p0, p1 and p2.
  */
 template <PointConcept PointType>
 PointType triangleWeightedBarycenter(
@@ -106,6 +129,26 @@ PointType triangleWeightedBarycenter(
 	return (p0 * w0 + p1 * w1 + p2 * w2) / (w0 + w1 + w2);
 }
 
+/**
+ * @brief Computes the point in a triangle with the given barycentric coordinates.
+ *
+ * Given a triangle with vertices \p p0, \p p1, and \p p2, and a set of barycentric coordinates \p
+ * barCoords, this function computes the point in the triangle corresponding to those barycentric
+ * coordinates.
+ *
+ * @tparam PointType: A type that satisfies the PointConcept. The type should represent a point
+ *         in a three-dimensional Euclidean space.
+ * @tparam ScalarType: The type of the scalar values used to represent the coordinates of the
+ *         points.
+ *
+ * @param[in] p0: The first vertex of the triangle of type PointType.
+ * @param[in] p1: The second vertex of the triangle of type PointType.
+ * @param[in] p2: The third vertex of the triangle of type PointType.
+ * @param[in] barCoords: The barycentric coordinates of the point in the triangle of type
+ *            Point3<ScalarType>.
+ *
+ * @return The point in the triangle corresponding to the given barycentric coordinates.
+ */
 template<PointConcept PointType, typename ScalarType>
 PointType triangleBarycentricCoordinatePoint(
 	const PointType& p0,
@@ -116,6 +159,16 @@ PointType triangleBarycentricCoordinatePoint(
 	return p0 * barCoords(0) + p1 * barCoords(1) + p2 * barCoords(2);
 }
 
+/**
+ * @brief Computes the point in barycentric coordinates of the given triangle.
+ *
+ * @tparam Triangle: A type that satisfies the FaceConcept.
+ * @tparam ScalarType: The type of the scalar value used to represent the coordinates.
+ *
+ * @param[in] t: the triangle to compute the barycentric coordinate point for.
+ * @param[in] barCoords: the barycentric coordinates of the point.
+ * @return The point in Cartesian coordinates.
+ */
 template <FaceConcept Triangle, typename ScalarType>
 typename Triangle::CoordType triangleBarycentricCoordinatePoint(
 	const Triangle& t,
@@ -126,19 +179,26 @@ typename Triangle::CoordType triangleBarycentricCoordinatePoint(
 }
 
 /**
- * @brief Computes the area of the triangle composed by the points p0, p1, and p2, considering
- * that these three points are ordered in counterclockwise order.
+ * @brief Computes the area of the triangle composed by the points \p p0, \p p1, and \p p2,
+ * considering that these three points are ordered in counterclockwise order.
  *
- * @tparam PointType A type that satisfies the PointConcept.
- * @param[in] p0: first point of the triangle.
- * @param[in] p1: second point of the triangle.
- * @param[in] p2: third point of the triangle.
- * @return The area of the triangle composed by p0, p1 and p2.
+ * @tparam PointType: A type that satisfies the PointConcept.
+ *
+ * @param[in] p0: First point of the triangle.
+ * @param[in] p1: Second point of the triangle.
+ * @param[in] p2: Third point of the triangle.
+ *
+ * @return The area of the triangle composed by \p p0, \p p1, and \p p2.
  */
 template<PointConcept PointType>
 typename PointType::ScalarType
 triangleArea(const PointType& p0, const PointType& p1, const PointType& p2)
 {
+	/*
+	 * The area of a triangle can be computed as the norm of the cross product of two of its sides
+	 * divided by two. Here, we choose to use the cross product of the vectors p1 - p0 and p2 - p0
+	 * as these vectors represent two sides of the triangle.
+	 */
 	return triangleNormal(p0, p1, p2).norm() / 2;
 }
 
@@ -147,8 +207,10 @@ triangleArea(const PointType& p0, const PointType& p1, const PointType& p2)
  * polygonal faces, but it will take into account only the first 3 vertices of the polygon. In this
  * case, the resulting area won't be accurate.
  *
+ * @tparam Triangle: A type that satisfies the FaceConcept.
+ *
  * @param[in] t: input triangle of type Face
- * @return The area of t.
+ * @return The area of \p t.
  */
 template<FaceConcept Triangle>
 auto triangleArea(const Triangle& t)
@@ -156,6 +218,16 @@ auto triangleArea(const Triangle& t)
 	return triangleArea(t.vertex(0)->coord(), t.vertex(1)->coord(), t.vertex(2)->coord());
 }
 
+/**
+ * @brief Computes the perimeter of the triangle composed by the points \p p0, \p p1, and \p p2.
+ *
+ * @tparam PointType: A type that satisfies the PointConcept.
+ *
+ * @param[in] p0: first point of the triangle.
+ * @param[in] p1: second point of the triangle.
+ * @param[in] p2: third point of the triangle.
+ * @return The perimeter of the triangle composed by \p p0, \p p1, and \p p2.
+ */
 template<PointConcept PointType>
 typename PointType::ScalarType
 trianglePerimeter(const PointType& p0, const PointType& p1, const PointType& p2)
@@ -163,6 +235,14 @@ trianglePerimeter(const PointType& p0, const PointType& p1, const PointType& p2)
 	return p0.dist(p1) + p1.dist(p2) + p2.dist(p0);
 }
 
+/**
+ * @brief Computes the perimeter of a triangle given its vertices as a Face of type Triangle.
+ *
+ * @tparam Triangle: A type that satisfies the FaceConcept.
+ *
+ * @param[in] t: The Triangle face whose perimeter is to be computed.
+ * @return The perimeter of the triangle.
+ */
 template<FaceConcept Triangle>
 auto trianglePerimeter(const Triangle& t)
 {
@@ -170,17 +250,19 @@ auto trianglePerimeter(const Triangle& t)
 }
 
 /**
- * Calculates the quality measure of a triangle, given its three vertices.
+ * @brief Calculates the quality measure of a triangle, given its three vertices.
  *
  * The quality measure is computed as 2 times the triangle's area divided by the square of the
  * length of its longest edge. The resulting value is in the range [0.0, 0.866], where 0.0
  * represents a degenerate triangle and 0.866 represents an equilateral triangle.
  *
- * @tparam PointType A type that satisfies the PointConcept.
- * @param[in] p0 The first vertex of the triangle.
- * @param[in] p1 The second vertex of the triangle.
- * @param[in] p2 The third vertex of the triangle.
+ * @tparam PointType: A type that satisfies the PointConcept.
+ *
+ * @param[in] p0: The first vertex of the triangle.
+ * @param[in] p1: The second vertex of the triangle.
+ * @param[in] p2: The third vertex of the triangle.
  * @return The quality measure of the triangle.
+ *
  * @note If the area of the triangle is zero (i.e., the vertices are collinear), the function
  * returns 0.0.
  */
@@ -202,7 +284,8 @@ double triangleQuality(const PointType& p0, const PointType& p1, const PointType
 }
 
 /**
- * Calculates the quality measure of a a Face that is a triangle. Does not modify the triangle.
+ * @brief Calculates the quality measure of a a Face that is a triangle. Does not modify the
+ * triangle.
  *
  * The quality measure is computed as 2 times the triangle's area divided by the square of the
  * length of its longest edge. The resulting value is in the range [0.0, 0.866], where 0.0
@@ -210,8 +293,10 @@ double triangleQuality(const PointType& p0, const PointType& p1, const PointType
  *
  *
  * @tparam Triangle The type of the Face, that satisfies the FaceConcept.
- * @param[in] t The input triangle face.
+ *
+ * @param[in] t: The input triangle face.
  * @return The quality measure of the triangle.
+ *
  * @note If the area of the triangle is zero (i.e., the vertices are collinear), the function
  * returns 0.0.
  */
@@ -222,16 +307,17 @@ double triangleQuality(const Triangle& t)
 }
 
 /**
- * @brief Compute a shape quality measure of the triangle composed by points p0, p1, p2.
+ * @brief Compute a shape quality measure of the triangle composed by points \p p0, \p p1, \p p2.
  *
  * This function computes the quality measure of a triangle based on the ratio between its inradius
- * and circumradius. The function takes three points (p0, p1, p2) representing the vertices of the
- * triangle.
+ * and circumradius. The function takes three points (\p p0, \p p1, \p p2) representing the vertices
+ * of the triangle.
  *
- * @tparam PointType A type that satisfies the PointConcept.
- * @param[in] p0 The first vertex of the triangle.
- * @param[in] p1 The second vertex of the triangle.
- * @param[in] p2 The third vertex of the triangle.
+ * @tparam PointType: A type that satisfies the PointConcept.
+ *
+ * @param[in] p0: The first vertex of the triangle.
+ * @param[in] p1: The second vertex of the triangle.
+ * @param[in] p2: The third vertex of the triangle.
  * @return A value between 0 and 1 that represents the quality of the triangle shape. A value of 1
  * means the triangle is perfectly equilateral, while lower values indicate more distorted shapes
  * (i.e., halfsquare: 0.81). A value of 0 is returned when the triangle is degenerate (i.e., it has
@@ -261,7 +347,8 @@ double triangleQualityRadii(const PointType& p0, const PointType& p1, const Poin
  * and circumradius. The function takes a FaceConcept Face.
  *
  * @tparam Triangle The type of the Face, that must satisfy the FaceConcept concept.
- * @param[in] t The input triangle face.
+ *
+ * @param[in] t: The input triangle face.
  * @return A value between 0 and 1 that represents the quality of the triangle shape. A value of 1
  * means the triangle is perfectly equilateral, while lower values indicate more distorted shapes
  * (i.e., halfsquare: 0.81). A value of 0 is returned when the triangle is degenerate (i.e., it has
@@ -276,17 +363,19 @@ double triangleQualityRadii(const Triangle& t)
 /**
  * @brief Compute the mean ratio of a triangle shape quality measure.
  *
- * Given three points p0, p1, p2 representing a triangle, the function computes the mean ratio
- * shape quality measure of the triangle. The mean ratio is defined as 2 * sqrt(a * b) / (a + b),
- * where a and b are the eigenvalues of the M^tM transformation matrix into a regular simplex.
+ * Given three points \p p0, \p p1, \p p2 representing a triangle, the function computes the mean
+ * ratio shape quality measure of the triangle. The mean ratio is defined as 2 * sqrt(a * b) / (a +
+ * b), where a and b are the eigenvalues of the M^tM transformation matrix into a regular simplex.
  * The mean ratio is a scalar value in the range [0, 1] that describes the triangle quality,
  * where 0 means the triangle is degenerate, and 1 means it is perfectly equilateral.
  *
- * @tparam PointType A type that satisfies the PointConcept requirements.
+ * @tparam PointType: A type that satisfies the PointConcept requirements.
+ *
  * @param[in] p0 The first point of the triangle.
  * @param[in] p1 The second point of the triangle.
  * @param[in] p2 The third point of the triangle.
  * @return The mean ratio shape quality measure of the triangle.
+ *
  * @note The function assumes that the three points are not collinear and form a valid triangle.
  * If the three points are collinear or form a degenerate triangle, the function returns 0.
  */
@@ -307,15 +396,17 @@ double triangleQualityMeanRatio(const PointType& p0, const PointType& p1, const 
 /**
  * @brief Compute the mean ratio of a Face that is a triangle. Does not modify the triangle.
  *
- * Given the triangle t, the function computes the mean ratio shape quality measure of the triangle.
- * The mean ratio is defined as 2 * sqrt(a * b) / (a + b), where a and b are the eigenvalues of the
- * M^tM transformation matrix into a regular simplex. The mean ratio is a scalar value in the range
- * [0, 1] that describes the triangle quality, where 0 means the triangle is degenerate, and 1 means
- * it is perfectly equilateral.
+ * Given the triangle \p t, the function computes the mean ratio shape quality measure of the
+ * triangle. The mean ratio is defined as 2 * sqrt(a * b) / (a + b), where a and b are the
+ * eigenvalues of the M^tM transformation matrix into a regular simplex. The mean ratio is a scalar
+ * value in the range [0, 1] that describes the triangle quality, where 0 means the triangle is
+ * degenerate, and 1 means it is perfectly equilateral.
  *
- * @tparam Triangle The type of the Face, that must satisfy the FaceConcept concept.
- * @param[in] t The input triangle face.
+ * @tparam Triangle: The type of the Face, that must satisfy the FaceConcept concept.
+ *
+ * @param[in] t: The input triangle face.
  * @return The mean ratio shape quality measure of the triangle.
+ *
  * @note The function assumes that the three points are not collinear and form a valid triangle.
  * If the three points are collinear or form a degenerate triangle, the function returns 0.
  */
@@ -329,16 +420,18 @@ double triangleQualityMeanRatio(const Triangle& t)
 /**
  * @brief Compute the circumcenter of a triangle.
  *
- * Given three points p0, p1, p2 representing a triangle, the function computes the circumcenter
- * of the triangle, which is the center of the circle that passes through the three vertices of
- * the triangle. The circumcenter is defined as the intersection of the perpendicular bisectors
- * of the three sides of the triangle.
+ * Given three points \p p0, \p p1, \p p2 representing a triangle, the function computes the
+ * circumcenter of the triangle, which is the center of the circle that passes through the three
+ * vertices of the triangle. The circumcenter is defined as the intersection of the perpendicular
+ * bisectors of the three sides of the triangle.
  *
- * @tparam PointType A type that satisfies the PointConcept.
- * @param[in] p0 The first point of the triangle.
- * @param[in] p1 The second point of the triangle.
- * @param[in] p2 The third point of the triangle.
+ * @tparam PointType: A type that satisfies the PointConcept.
+ *
+ * @param[in] p0: The first point of the triangle.
+ * @param[in] p1: The second point of the triangle.
+ * @param[in] p2: The third point of the triangle.
  * @return The circumcenter of the triangle.
+ *
  * @note The function assumes that the three points are not collinear and form a valid triangle.
  */
 template <PointConcept PointType>
@@ -359,13 +452,15 @@ PointType triangleCircumcenter(const PointType& p0, const PointType& p1, const P
 /**
  * @brief Compute the circumcenter of a Face that is a triangle. Does not modify the triangle.
  *
- * Given the triangle t, the function computes the circumcenter of the triangle, which is the center
- * of the circle that passes through the three vertices of the triangle. The circumcenter is defined
- * as the intersection of the perpendicular bisectors of the three sides of the triangle.
+ * Given the triangle \p t, the function computes the circumcenter of the triangle, which is the
+ * center of the circle that passes through the three vertices of the triangle. The circumcenter is
+ * defined as the intersection of the perpendicular bisectors of the three sides of the triangle.
  *
- * @tparam Triangle The type of the Face, that must satisfy the FaceConcept concept.
- * @param[in] t The input triangle face.
+ * @tparam Triangle: The type of the Face, that must satisfy the FaceConcept concept.
+ *
+ * @param[in] t: The input triangle face.
  * @return The circumcenter of the triangle.
+ *
  * @note The function assumes that the three points are not collinear and form a valid triangle.
  */
 template<FaceConcept Triangle>

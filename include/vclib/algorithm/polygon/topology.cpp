@@ -198,7 +198,7 @@ uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<
  * @tparam FaceType: The type of face to detach.
  * @param[in] f: The face to detach on the given edge.
  * @param[in] edge: The index of the edge to detach the face from.
- * @throws vcl::MissingComponentException If the "Adjacent Faces" component is not enabled on \p f.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
  */
 template <FaceConcept FaceType>
 void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>

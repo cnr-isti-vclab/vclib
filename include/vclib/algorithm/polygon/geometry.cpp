@@ -26,11 +26,13 @@
 namespace vcl {
 
 /**
- * @brief Computes the normal of a face, whithout modifying the face. Works both for triangle and
+ * @brief Computes the normal of a face, without modifying the face. Works both for triangle and
  * polygonal faces, and it is optimized in case of triangle faces.
  *
- * @param f
- * @return
+ * @tparam FaceType: the type of the face that satisfies the FaceConcept.
+ *
+ * @param[in] f: the input face.
+ * @return the normal of the face.
  */
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
@@ -47,8 +49,10 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
  * @brief Computes the barycenter of a face. Works both for triangle and polygonal faces, and it is
  * optimized in case of triangle faces.
  *
- * @param f
- * @return
+ * @tparam FaceType: the type of the face that satisfies the FaceConcept.
+ *
+ * @param[in] f: the input face.
+ * @return the barycenter of the face.
  */
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
@@ -65,8 +69,10 @@ typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
  * @brief Computes the area of a face. Works both for triangle and polygonal faces, and it is
  * optimized in case of triangle faces.
  *
- * @param f
- * @return
+ * @tparam FaceType: the type of the face that satisfies the FaceConcept.
+ *
+ * @param[in] f: the input face.
+ * @return the area of the face.
  */
 template<FaceConcept FaceType>
 auto faceArea(const FaceType& f)
@@ -83,8 +89,10 @@ auto faceArea(const FaceType& f)
  * @brief Computes the perimeter of a face. Works both for triangle and polygonal faces, and it is
  * optimized in case of triangle faces.
  *
- * @param f
- * @return
+ * @tparam FaceType: the type of the face that satisfies the FaceConcept.
+ *
+ * @param[in] f: the input face.
+ * @return the perimeter of the face.
  */
 template<FaceConcept FaceType>
 auto facePerimeter(const FaceType& f)
@@ -100,7 +108,9 @@ auto facePerimeter(const FaceType& f)
 /**
  * @brief Returns the internal angle (in radians) of the vi-th vertex of the face.
  *
- * @param[in] f: the face on which calculate the angle
+ * @tparam FaceType: the type of the face that satisfies the FaceConcept.
+ *
+ * @param[in] f: the input face.
  * @param[in] vi: the index of the vertex in the face on which calculate the angle
  * @return the angle in radians at the vi-th vertex.
  */
@@ -114,8 +124,8 @@ auto faceAngleOnVertexRad(const FaceType& f, uint vi)
 }
 
 /**
- * @brief Compute the signed dihedral angle between the normals of the given face and its adjacent
- * face on the edge e.
+ * * @brief Compute the signed dihedral angle between the normals of the given face and its adjacent
+ * face on the edge \p e.
  *
  * The angle between the normal is signed according to the concavity/convexity of the
  * dihedral angle: negative if the edge shared between the two faces is concave, positive otherwise.
@@ -123,14 +133,13 @@ auto faceAngleOnVertexRad(const FaceType& f, uint vi)
  * It simply use the projection of  the opposite vertex onto the plane of the other one.
  * It does not assume anything on face normals.
  *
- *     v0 ___________ vf1
- *       |\          |
- *       | e\     f1 |
- *       |    \e1    |
- *       |f     \    |
- *       |        \  |
- *       |__________\|
- *    vf0             v1
+ * @tparam FaceType: the type of the face that satisfies the FaceConcept.
+ *
+ * @param[in] f The face for which to compute the dihedral angle on an edge.
+ * @param[in] e The index of the edge shared between the two faces.
+ * @return The signed dihedral angle between the normals of the given face and its adjacent face
+ * on the edge e.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
  */
 template<FaceConcept FaceType>
 auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjacentFaces<FaceType>
@@ -138,6 +147,17 @@ auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjace
 	if (! comp::isAdjacentFacesEnabledOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
+
+	/*
+	 *     v0 ___________ vf1
+	 *       |\          |
+	 *       | e\     f1 |
+	 *       |    \e1    |
+	 *       |f     \    |
+	 *       |        \  |
+	 *       |__________\|
+	 *    vf0             v1
+	 */
 
 	assert(f.adjFace(e) != nullptr);
 	const FaceType& f1 = *(f.adjFace(e));

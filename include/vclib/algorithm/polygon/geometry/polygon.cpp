@@ -34,6 +34,7 @@ namespace vcl {
  * end, listed in counterclockwise order, representing a polygon.
  *
  * @tparam Iterator: an iterator which points to a type that satiesfies the PointConcept.
+ *
  * @param[in] begin: iterator pointing to the first point of the polygon.
  * @param[in] end: end iterator
  * @return The normal of the polygon.
@@ -50,8 +51,10 @@ auto polygonNormal(Iterator begin, Iterator end)
  * polygon. This function works also with simple triangles, but it is less efficient thant the
  * function "triangleNormal".
  *
+ * @tparam Polygon: The type of the polygon, that must satisfy the FaceConcept concept.
+ *
  * @param[in] p: input polygonal Face
- * @return The normal of p.
+ * @return The normal of \p p.
  */
 template<FaceConcept Polygon>
 typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p)
@@ -69,13 +72,14 @@ typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p)
 }
 
 /**
- * @brief Computes the barycenter of a container of 3D points iterated between the iterators begin
+ * @brief Computes the barycenter of a container of points iterated between the iterators begin
  * and end, listed in counterclockwise order, representing a polygon.
  *
  * @tparam Iterator: an iterator which points to a type that satiesfies the PointConcept.
+ *
  * @param[in] begin: iterator pointing to the first point of the polygon.
  * @param[in] end: end iterator
- * @return The barycenter of p.
+ * @return The barycenter of the polygon.
  */
 template<typename Iterator>
 auto polygonBarycenter(Iterator begin, Iterator end)
@@ -101,8 +105,10 @@ auto polygonBarycenter(Iterator begin, Iterator end)
  * @brief Computes the barycenter of a Face that is a generic polygon. This function works also with
  * simple triangles, but it is less efficient thant the function "triangleBarycenter".
  *
+ * @tparam Polygon: The type of the polygon, that must satisfy the FaceConcept concept.
+ *
  * @param[in] p: input polygonal Face
- * @return The barycenter of p.
+ * @return The barycenter of \p p.
  */
 template<FaceConcept Polygon>
 typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p)
@@ -125,10 +131,11 @@ typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p)
  *
  * @tparam Iterator: an iterator which points to a type that satiesfies the PointConcept.
  * @tparam WIterator: an iterator which points to a scalar type.
+ *
  * @param[in] begin: iterator pointing to the first point of the polygon.
  * @param[in] end: end iterator of the polygon container.
  * @param[in] wbegin: iterator pointing to the first weight associated to the fist polygon point.
- * @return The weighted barycenter of p.
+ * @return The weighted barycenter of the polygon.
  */
 template<typename Iterator, typename WIterator>
 auto polygonWeighedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
@@ -150,11 +157,18 @@ auto polygonWeighedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
 }
 
 /**
- * @brief Computes the area of a std::vector of 3D points listed in counterclockwise order,
- * representing a polygon.
+ * @brief Calculates the area of a polygon. This function works also with simple triangles, but it
+ * is less efficient thant the function "triangleArea".
  *
- * @param[in] p: input container of 3D points representing a polygon.
- * @return The area of p.
+ * @tparam Iterator: an iterator which points to a type that satiesfies the PointConcept.
+ *
+ * @param[in] begin: an iterator pointing to the first point in the polygon
+ * @param[in] end: an iterator pointing past the last point in the polygon
+ * @return the area of the polygon
+ *
+ * @note The points in the polygon must have a scalar type, and must satisfy the PointConcept
+ * concept.
+ * @note The polygon must be simple, i.e., it cannot intersect itself.
  */
 template<typename Iterator>
 auto polygonArea(Iterator begin, Iterator end) requires PointConcept<typename Iterator::value_type>
@@ -179,8 +193,12 @@ auto polygonArea(Iterator begin, Iterator end) requires PointConcept<typename It
  * @brief Computes the area of a Face that is a generic polygon. This function works also with
  * simple triangles, but it is less efficient thant the function "triangleArea".
  *
+ * @tparam Polygon: The type of the polygon, that must satisfy the FaceConcept concept.
+ *
  * @param[in] p: input polygonal Face
  * @return The area of p.
+ *
+ * @note The polygon must be simple, i.e., it cannot intersect itself.
  */
 template<FaceConcept Polygon>
 auto polygonArea(const Polygon& p)
@@ -211,7 +229,8 @@ auto polygonArea(const Polygon& p)
  * the point type to have a ScalarType and a dist() function that calculates the distance between
  * two points.
  *
- * @tparam Iterator The type of the iterators that define the range of points.
+ * @tparam Iterator: an iterator which points to a type that satiesfies the PointConcept.
+ *
  * @param[in] begin: An iterator pointing to the first point in the range.
  * @param[in] end: An iterator pointing to one past the last point in the range.
  * @returns The perimeter of the polygon defined by the range of points.
@@ -242,7 +261,8 @@ auto polygonPerimeter(Iterator begin, Iterator end)
  * concept that requires the polygon to have a VertexType and a vertexNumber() function that returns
  * the number of vertices in the polygon.
  *
- * @tparam Polygon The type of the polygon.
+ * @tparam Polygon: The type of the polygon, that must satisfy the FaceConcept concept.
+ *
  * @param[in] p: The polygon for which to calculate the perimeter.
  * @returns The perimeter of the polygon.
  */
