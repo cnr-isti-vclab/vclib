@@ -25,6 +25,7 @@
 #define VCL_SPACE_ARRAY_ARRAY_T_H
 
 #include <assert.h>
+#include <array>
 #include <vector>
 
 #include <vclib/misc/nested_initializer_lists.h>
