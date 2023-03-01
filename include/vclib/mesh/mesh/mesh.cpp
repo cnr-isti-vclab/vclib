@@ -67,7 +67,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other edge container data
-		updateEdgeReferences(oth.EdgeContainer::vec.data(), EdgeContainer::vec.data());
+		(updateEdgeReferences<Args>(oth.EdgeContainer::vec.data(), EdgeContainer::vec.data()), ...);
 	}
 
 	// update references into the half edge container
@@ -75,7 +75,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other half edge container data
-		updateEdgeReferences(oth.HalfEdgeContainer::vec.data(), HalfEdgeContainer::vec.data());
+		updateHalfEdgeReferences(oth.HalfEdgeContainer::vec.data(), HalfEdgeContainer::vec.data());
 	}
 }
 
@@ -761,7 +761,7 @@ uint Mesh<Args...>::addEdge()
 	uint  eid     = EdgeContainer::addElement(this);
 	Edge* newBase = EdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
-		updateEdgeReferences(oldBase, newBase);
+		(updateEdgeReferences<Args>(oldBase, newBase), ...);
 	return eid;
 }
 
@@ -796,7 +796,7 @@ uint Mesh<Args...>::addEdges(uint n)
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
 		// change all the vertex references in the other containers
-		updateEdgeReferences(oldBase, newBase);
+		(updateEdgeReferences<Args>(oldBase, newBase), ...);
 	}
 	return eid;
 }
@@ -829,7 +829,7 @@ void Mesh<Args...>::reserveEdges(uint n)
 	EdgeContainer::reserveElements(n, this);
 	Edge* newBase = EdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
-		updateEdgeReferences(oldBase, newBase);
+		(updateEdgeReferences<Args>(oldBase, newBase), ...);
 }
 
 /**
@@ -852,7 +852,7 @@ void Mesh<Args...>::compactEdges()
 		Edge*            newBase    = EdgeContainer::vec.data();
 		assert(oldBase == newBase);
 
-		updateEdgeReferencesAfterCompact(oldBase, newIndices);
+		(updateEdgeReferencesAfterCompact<Args>(oldBase, newIndices), ...);
 	}
 }
 
@@ -1065,50 +1065,24 @@ void Mesh<Args...>::updateFaceReferencesAfterCompact(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
+template<typename Cont, HasEdges M>
 void Mesh<Args...>::updateEdgeReferences(
 	const typename M::EdgeType* oldBase,
 	const typename M::EdgeType* newBase)
 {
-	if (oldBase != newBase) {
-		// update edge references in Edge Container
-		using EdgeContainer = typename M::EdgeContainer;
-		EdgeContainer::updateEdgeReferences(oldBase, newBase);
-
-		// update edge references in the Vertex Container, if it exists
-		if constexpr (mesh::HasVertexContainer<M>) {
-			using VertexContainer = typename M::VertexContainer;
-			VertexContainer::updateEdgeReferences(oldBase, newBase);
-		}
-
-		// update edge references in the Face Container, if it exists
-		if constexpr (mesh::HasFaceContainer<M>) {
-			using FaceContainer = typename M::FaceContainer;
-			FaceContainer::updateEdgeReferences(oldBase, newBase);
-		}
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		Cont::updateEdgeReferences(oldBase, newBase);
 	}
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
+template<typename Cont, HasEdges M>
 void Mesh<Args...>::updateEdgeReferencesAfterCompact(
 	const typename M::EdgeType* base,
 	const std::vector<int>&     newIndices)
 {
-	// update edge references in Edge Container
-	using EdgeContainer = typename M::EdgeContainer;
-	EdgeContainer::updateEdgeReferencesAfterCompact(base, newIndices);
-
-	// update edge references in the Vertex Container, if it exists
-	if constexpr (mesh::HasVertexContainer<M>) {
-		using VertexContainer = typename M::VertexContainer;
-		VertexContainer::updateEdgeReferencesAfterCompact(base, newIndices);
-	}
-
-	// update edge references in the Face Container, if it exists
-	if constexpr (mesh::HasEdgeContainer<M>) {
-		using FaceContainer = typename M::FaceContainer;
-		FaceContainer::updateEdgeReferencesAfterCompact(base, newIndices);
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		Cont::updateEdgeReferencesAfterCompact(base, newIndices);
 	}
 }
 
@@ -1535,8 +1509,8 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	if constexpr (mesh::HasEdgeContainer<Mesh<A...>>) {
 		using EdgeType      = typename Mesh<A...>::EdgeType;
 		using EdgeContainer = typename Mesh<A...>::EdgeContainer;
-		m1.updateEdgeReferences((EdgeType*) m2BaseE, m1.EdgeContainer::vec.data());
-		m2.updateEdgeReferences((EdgeType*) m1BaseE, m2.EdgeContainer::vec.data());
+		(m1.template updateEdgeReferences<A>((EdgeType*) m2BaseE, m1.EdgeContainer::vec.data()), ...);
+		(m2.template updateEdgeReferences<A>((EdgeType*) m1BaseE, m2.EdgeContainer::vec.data()), ...);
 	}
 	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
 		using HalfEdgeType      = typename Mesh<A...>::HalfEdgeType;
