@@ -631,8 +631,8 @@ void Mesh<Args...>::compactFaces()
 		std::vector<int> newIndices = FaceContainer::compactElements();
 		Face*            newBase    = FaceContainer::vec.data();
 		assert(oldBase == newBase);
-
-		updateFaceReferencesAfterCompact(oldBase, newIndices);
+		
+		(updateFaceReferencesAfterCompact<Args>(oldBase, newIndices), ...);
 	}
 }
 
@@ -1054,31 +1054,13 @@ void Mesh<Args...>::updateFaceReferences(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
+template<typename Cont, HasFaces M>
 void Mesh<Args...>::updateFaceReferencesAfterCompact(
 	const typename M::FaceType* base,
 	const std::vector<int>&     newIndices)
 {
-	// update face references in Face Container
-	using FaceContainer = typename M::FaceContainer;
-	FaceContainer::updateFaceReferencesAfterCompact(base, newIndices);
-
-	// update face references in the Vertex Container, if it exists
-	if constexpr (mesh::HasVertexContainer<M>) {
-		using VertexContainer = typename M::VertexContainer;
-		VertexContainer::updateFaceReferencesAfterCompact(base, newIndices);
-	}
-
-	// update face references in the Edge Container, if it exists
-	if constexpr (mesh::HasEdgeContainer<M>) {
-		using EdgeContainer = typename M::EdgeContainer;
-		EdgeContainer::updateFaceReferencesAfterCompact(base, newIndices);
-	}
-
-	// update face references in the HalfEdge Container, if it exists
-	if constexpr (mesh::HasHalfEdgeContainer<M>) {
-		using HalfEdgeContainer = typename M::HalfEdgeContainer;
-		HalfEdgeContainer::updateFaceReferencesAfterCompact(base, newIndices);
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		Cont::updateFaceReferencesAfterCompact(base, newIndices);
 	}
 }
 
