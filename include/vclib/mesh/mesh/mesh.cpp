@@ -59,7 +59,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other face container data
-		updateFaceReferences(oth.FaceContainer::vec.data(), FaceContainer::vec.data());
+		(updateFaceReferences<Args>(oth.FaceContainer::vec.data(), FaceContainer::vec.data()), ...);
 	}
 
 	// update references into the edge container
@@ -502,7 +502,7 @@ uint Mesh<Args...>::addFace()
 	uint  fid     = FaceContainer::addElement(this);
 	Face* newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
-		updateFaceReferences(oldBase, newBase);
+		(updateFaceReferences<Args>(oldBase, newBase), ...);
 	return fid;
 }
 
@@ -601,7 +601,7 @@ uint Mesh<Args...>::addFaces(uint n)
 	uint  fid     = FaceContainer::addElements(n, this);
 	Face* newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
-		updateFaceReferences(oldBase, newBase);
+		(updateFaceReferences<Args>(oldBase, newBase), ...);
 	return fid;
 }
 
@@ -616,7 +616,7 @@ void Mesh<Args...>::reserveFaces(uint n)
 	FaceContainer::reserveElements(n, this);
 	Face* newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
-		updateFaceReferences(oldBase, newBase);
+		(updateFaceReferences<Args>(oldBase, newBase), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -1043,33 +1043,13 @@ void Mesh<Args...>::updateVertexReferencesAfterCompact(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
+template<typename Cont, HasFaces M>
 void Mesh<Args...>::updateFaceReferences(
 	const typename M::FaceType* oldBase,
 	const typename M::FaceType* newBase)
 {
-	if (oldBase != newBase) {
-		// update face references in Face Container
-		using FaceContainer = typename M::FaceContainer;
-		FaceContainer::updateFaceReferences(oldBase, newBase);
-
-		// update face references in the Vertex Container, if it exists
-		if constexpr (mesh::HasVertexContainer<M>) {
-			using VertexContainer = typename M::VertexContainer;
-			VertexContainer::updateFaceReferences(oldBase, newBase);
-		}
-
-		// update face references in the Edge Container, if it exists
-		if constexpr (mesh::HasEdgeContainer<M>) {
-			using EdgeContainer = typename M::EdgeContainer;
-			EdgeContainer::updateFaceReferences(oldBase, newBase);
-		}
-
-		// update face references in the HalfEdge Container, if it exists
-		if constexpr (mesh::HasHalfEdgeContainer<M>) {
-			using HalfEdgeContainer = typename M::HalfEdgeContainer;
-			HalfEdgeContainer::updateFaceReferences(oldBase, newBase);
-		}
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		Cont::updateFaceReferences(oldBase, newBase);
 	}
 }
 
@@ -1567,8 +1547,8 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	if constexpr (mesh::HasFaceContainer<Mesh<A...>>) {
 		using FaceType      = typename Mesh<A...>::FaceType;
 		using FaceContainer = typename Mesh<A...>::FaceContainer;
-		m1.updateFaceReferences((FaceType*) m2BaseF, m1.FaceContainer::vec.data());
-		m2.updateFaceReferences((FaceType*) m1BaseF, m2.FaceContainer::vec.data());
+		(m1.template updateFaceReferences<A>((FaceType*) m2BaseF, m1.FaceContainer::vec.data()), ...);
+		(m2.template updateFaceReferences<A>((FaceType*) m1BaseF, m2.FaceContainer::vec.data()), ...);
 	}
 	if constexpr (mesh::HasEdgeContainer<Mesh<A...>>) {
 		using EdgeType      = typename Mesh<A...>::EdgeType;
