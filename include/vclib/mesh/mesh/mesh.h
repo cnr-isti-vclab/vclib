@@ -216,12 +216,12 @@ protected:
 		const std::vector<int>&     newIndices);
 
 	// HalfEdges
-	template<HasHalfEdges M = Mesh>
+	template<typename Cont, HasHalfEdges M = Mesh>
 	void updateHalfEdgeReferences(
 		const typename M::HalfEdgeType* oldBase,
 		const typename M::HalfEdgeType* newBase);
 
-	template<HasHalfEdges M = Mesh>
+	template<typename Cont, HasHalfEdges M = Mesh>
 	void updateHalfEdgeReferencesAfterCompact(
 		const typename M::HalfEdgeType* base,
 		const std::vector<int>&         newIndices);
