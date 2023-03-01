@@ -639,45 +639,6 @@ ConstCustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomCo
 }
 
 template<HalfEdgeConcept T>
-uint HalfEdgeContainer<T>::index(const HalfEdgeType *e) const
-{
-	return Base::index(e);
-}
-
-template<HalfEdgeConcept T>
-void HalfEdgeContainer<T>::clearHalfEdges()
-{
-	Base::clearElements();
-}
-
-template<HalfEdgeConcept T>
-template<typename MeshType>
-uint HalfEdgeContainer<T>::addHalfEdge(MeshType* parentMesh)
-{
-	return Base::addElement(parentMesh);
-}
-
-template<HalfEdgeConcept T>
-template<typename MeshType>
-uint HalfEdgeContainer<T>::addHalfEdges(uint nEdges, MeshType* parentMesh)
-{
-	return Base::addElements(nEdges, parentMesh);
-}
-
-template<HalfEdgeConcept T>
-template<typename MeshType>
-void HalfEdgeContainer<T>::reserveHalfEdges(uint size, MeshType* parentMesh)
-{
-	Base::reserveElements(size, parentMesh);
-}
-
-template<HalfEdgeConcept T>
-std::vector<int> HalfEdgeContainer<T>::compactHalfEdges()
-{
-	return Base::compactElements();
-}
-
-template<HalfEdgeConcept T>
 template<typename Mesh>
 void HalfEdgeContainer<T>::enableOptionalComponentsOf(const Mesh &m)
 {

@@ -857,60 +857,6 @@ ConstCustomComponentVectorHandle<K> VertexContainer<T>::getPerVertexCustomCompon
 }
 
 template<VertexConcept T>
-uint VertexContainer<T>::index(const VertexType* v) const
-{
-	return Base::index(v);
-}
-
-template<VertexConcept T>
-void VertexContainer<T>::clearVertices()
-{
-	Base::clearElements();
-}
-
-template<VertexConcept T>
-template<typename MeshType>
-uint VertexContainer<T>::addVertex(MeshType* parentMesh)
-{
-	return Base::addElement(parentMesh);
-}
-
-/**
- * @brief Container::addVertices adds nVertices to the Vertex Container of the mesh.
- *
- * Returns the id of the first added vertex.
- *
- * @param nVertices
- * @return the id of the first added vertex.
- */
-template<VertexConcept T>
-template<typename MeshType>
-uint VertexContainer<T>::addVertices(uint nVertices, MeshType* parentMesh)
-{
-	return Base::addElements(nVertices, parentMesh);
-}
-
-template<VertexConcept T>
-template<typename MeshType>
-void VertexContainer<T>::reserveVertices(uint size, MeshType* parentMesh)
-{
-	Base::reserveElements(size, parentMesh);
-}
-
-/**
- * @brief Compacts the vertex container, keeping only the non-deleted
- * vertices.
- *
- * @return a vector that tells, for each old vertex index, the new index of the vertex. Will contain
- * -1 if the vertex has been deleted.
- */
-template<VertexConcept T>
-std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
-{
-	return Base::compactElements();
-}
-
-template<VertexConcept T>
 template<typename Mesh>
 void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 {

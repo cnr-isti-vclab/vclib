@@ -101,6 +101,9 @@ protected:
 	template<typename MeshType>
 	void reserveElements(uint size, MeshType* parentMesh);
 
+	template<typename MeshType>
+	void resizeElements(uint size, MeshType* parentMesh);
+
 	std::vector<int> compactElements();
 
 	template<typename Vertex>

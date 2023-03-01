@@ -124,21 +124,6 @@ public:
 		const std::string& name) const requires hedge::HasCustomComponents<T>;
 
 protected:
-	uint index(const HalfEdgeType* e) const;
-
-	void clearHalfEdges();
-
-	template<typename MeshType>
-	uint addHalfEdge(MeshType* parentMesh);
-
-	template<typename MeshType>
-	uint addHalfEdges(uint nEdges, MeshType* parentMesh);
-
-	template<typename MeshType>
-	void reserveHalfEdges(uint size, MeshType* parentMesh);
-
-	std::vector<int> compactHalfEdges();
-
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 

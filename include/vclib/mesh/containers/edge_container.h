@@ -128,10 +128,6 @@ public:
 		const std::string& name) const requires edge::HasCustomComponents<T>;
 
 protected:
-	uint index(const EdgeType* e) const;
-
-	void clearEdges();
-
 	template<typename MeshType>
 	uint addEdge(MeshType* parentMesh);
 

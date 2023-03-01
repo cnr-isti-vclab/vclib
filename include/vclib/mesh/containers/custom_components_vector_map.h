@@ -25,6 +25,8 @@
 #define VCL_MESH_CONTAINERS_CUSTOM_COMPONENTS_VECTOR_MAP_H
 
 #include <any>
+#include <string>
+#include <vector>
 #include <unordered_map>
 #include <typeindex>
 

@@ -685,64 +685,6 @@ ConstCustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentV
 	return cc;
 }
 
-/**
- * @brief Returns the index of the given edge.
- * @param f: edge pointer.
- * @return The index of f.
- */
-template<EdgeConcept T>
-uint EdgeContainer<T>::index(const EdgeType* e) const
-{
-	return Base::index(e);
-}
-
-template<EdgeConcept T>
-void vcl::mesh::EdgeContainer<T>::clearEdges()
-{
-	Base::clearElements();
-}
-
-template<EdgeConcept T>
-template<typename MeshType>
-uint EdgeContainer<T>::addEdge(MeshType* parentMesh)
-{
-	return Base::addElement(parentMesh);
-}
-
-/**
- * @brief Adds nEdges to the Edge Container of the mesh.
- *
- * Returns the id of the first added edge.
- *
- * @param nEdges
- * @return the id of the first added edge.
- */
-template<EdgeConcept T>
-template<typename MeshType>
-uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges, MeshType* parentMesh)
-{
-	return Base::addElements(nEdges, parentMesh);
-}
-
-template<EdgeConcept T>
-template<typename MeshType>
-void EdgeContainer<T>::reserveEdges(uint size, MeshType* parentMesh)
-{
-	Base::reserveElements(size, parentMesh);
-}
-
-/**
- * @brief Compacts the edge container, keeping only the non-deleted edges.
- *
- * @return a vector that tells, for each old edge index, the new index of the edge. Will contain -1
- * if the edge has been deleted.
- */
-template<EdgeConcept T>
-std::vector<int> vcl::mesh::EdgeContainer<T>::compactEdges()
-{
-	return Base::compactElements();
-}
-
 template<EdgeConcept T>
 template<typename Mesh>
 void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)

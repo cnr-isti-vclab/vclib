@@ -100,19 +100,19 @@ void Mesh<Args...>::clear()
 {
 	if constexpr (mesh::HasVertexContainer<Mesh<Args...>>) {
 		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		VertexContainer::clearVertices(); // clear vertices, only if the mesh has vertices
+		VertexContainer::clearElements(); // clear vertices, only if the mesh has vertices
 	}
 	if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		FaceContainer::clearFaces(); // clear faces, only if the mesh has faces
+		FaceContainer::clearElements(); // clear faces, only if the mesh has faces
 	}
 	if constexpr (mesh::HasEdgeContainer<Mesh<Args...>>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		EdgeContainer::clearEdges(); // clear edges, only if the mesh has edges
+		EdgeContainer::clearElements(); // clear edges, only if the mesh has edges
 	}
 	if constexpr (mesh::HasHalfEdgeContainer<Mesh<Args...>>) {
 		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		HalfEdgeContainer::clearHalfEdges(); // clear half edges, only if the mesh has half edges
+		HalfEdgeContainer::clearElements(); // clear half edges, only if the mesh has half edges
 	}
 }
 
@@ -308,7 +308,7 @@ uint Mesh<Args...>::addVertex()
 	// vertex container are updated automatically)
 
 	Vertex* oldBase = VertexContainer::vec.data();
-	uint    vid     = VertexContainer::addVertex(this);
+	uint    vid     = VertexContainer::addElement(this);
 	Vertex* newBase = VertexContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
 		// change all the vertex references in the other containers
@@ -360,7 +360,7 @@ uint Mesh<Args...>::addVertices(uint n)
 	// vertex container are updated automatically)
 
 	Vertex* oldBase = VertexContainer::vec.data();
-	uint    vid     = VertexContainer::addVertices(n, this); // add the number of vertices
+	uint    vid     = VertexContainer::addElements(n, this); // add the number of vertices
 	Vertex* newBase = VertexContainer::vec.data();
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
@@ -431,7 +431,7 @@ void Mesh<Args...>::reserveVertices(uint n)
 	using VertexContainer = typename Mesh::VertexContainer;
 
 	Vertex* oldBase = VertexContainer::vec.data();
-	VertexContainer::reserveVertices(n, this);
+	VertexContainer::reserveElements(n, this);
 	Vertex* newBase = VertexContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateVertexReferences(oldBase, newBase);
@@ -451,7 +451,7 @@ void Mesh<Args...>::compactVertices()
 	if (VertexContainer::vertexNumber() != VertexContainer::vertexContainerSize()) {
 
 		Vertex*          oldBase    = VertexContainer::vec.data();
-		std::vector<int> newIndices = VertexContainer::compactVertices();
+		std::vector<int> newIndices = VertexContainer::compactElements();
 		Vertex*          newBase    = VertexContainer::vec.data();
 		assert(oldBase == newBase);
 
@@ -499,7 +499,7 @@ uint Mesh<Args...>::addFace()
 	using FaceContainer = typename M::FaceContainer;
 
 	Face* oldBase = FaceContainer::vec.data();
-	uint  fid     = FaceContainer::addFace(this);
+	uint  fid     = FaceContainer::addElement(this);
 	Face* newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
@@ -598,7 +598,7 @@ uint Mesh<Args...>::addFaces(uint n)
 	using FaceContainer = typename M::FaceContainer;
 
 	Face* oldBase = FaceContainer::vec.data();
-	uint  fid     = FaceContainer::addFaces(n, this);
+	uint  fid     = FaceContainer::addElements(n, this);
 	Face* newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
@@ -613,7 +613,7 @@ void Mesh<Args...>::reserveFaces(uint n)
 	using FaceContainer = typename M::FaceContainer;
 
 	Face* oldBase = FaceContainer::vec.data();
-	FaceContainer::reserveFaces(n, this);
+	FaceContainer::reserveElements(n, this);
 	Face* newBase = FaceContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateFaceReferences(oldBase, newBase);
@@ -628,7 +628,7 @@ void Mesh<Args...>::compactFaces()
 
 	if (FaceContainer::faceNumber() != FaceContainer::faceContainerSize()) {
 		Face*            oldBase    = FaceContainer::vec.data();
-		std::vector<int> newIndices = FaceContainer::compactFaces();
+		std::vector<int> newIndices = FaceContainer::compactElements();
 		Face*            newBase    = FaceContainer::vec.data();
 		assert(oldBase == newBase);
 
@@ -758,7 +758,7 @@ uint Mesh<Args...>::addEdge()
 	using EdgeContainer = typename M::EdgeContainer;
 
 	Edge* oldBase = EdgeContainer::vec.data();
-	uint  eid     = EdgeContainer::addEdge(this);
+	uint  eid     = EdgeContainer::addElement(this);
 	Edge* newBase = EdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateEdgeReferences(oldBase, newBase);
@@ -791,7 +791,7 @@ uint Mesh<Args...>::addEdges(uint n)
 	// edge container are updated automatically)
 
 	Edge* oldBase = EdgeContainer::vec.data();
-	uint  eid     = EdgeContainer::addEdges(n, this); // add the number of edges
+	uint  eid     = EdgeContainer::addElements(n, this); // add the number of edges
 	Edge* newBase = EdgeContainer::vec.data();
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
@@ -826,7 +826,7 @@ void Mesh<Args...>::reserveEdges(uint n)
 	using EdgeContainer = typename M::EdgeContainer;
 
 	Edge* oldBase = EdgeContainer::vec.data();
-	EdgeContainer::reserveEdges(n, this);
+	EdgeContainer::reserveElements(n, this);
 	Edge* newBase = EdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateEdgeReferences(oldBase, newBase);
@@ -848,7 +848,7 @@ void Mesh<Args...>::compactEdges()
 
 	if (EdgeContainer::edgeNumber() != EdgeContainer::edgeContainerSize()) {
 		Edge*            oldBase    = EdgeContainer::vec.data();
-		std::vector<int> newIndices = EdgeContainer::compactEdges();
+		std::vector<int> newIndices = EdgeContainer::compactElements();
 		Edge*            newBase    = EdgeContainer::vec.data();
 		assert(oldBase == newBase);
 
@@ -890,7 +890,7 @@ uint Mesh<Args...>::addHalfEdge()
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 
 	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
-	uint      eid     = HalfEdgeContainer::addHalfEdge(this);
+	uint      eid     = HalfEdgeContainer::addElement(this);
 	HalfEdge* newBase = HalfEdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateHalfEdgeReferences(oldBase, newBase);
@@ -923,7 +923,7 @@ uint Mesh<Args...>::addHalfEdges(uint n)
 	// Halfedge container are updated automatically)
 
 	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
-	uint      eid     = HalfEdgeContainer::addHalfEdges(n, this); // add the number of half edges
+	uint      eid     = HalfEdgeContainer::addElements(n, this); // add the number of half edges
 	HalfEdge* newBase = HalfEdgeContainer::vec.data();
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
@@ -986,7 +986,7 @@ void Mesh<Args...>::reserveHalfEdges(uint n)
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 
 	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
-	HalfEdgeContainer::reserveHalfEdges(n, this);
+	HalfEdgeContainer::reserveElements(n, this);
 	HalfEdge* newBase = HalfEdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		updateHalfEdgeReferences(oldBase, newBase);
@@ -1008,7 +1008,7 @@ void Mesh<Args...>::compactHalfEdges()
 
 	if (HalfEdgeContainer::HalfedgeNumber() != HalfEdgeContainer::HalfedgeContainerSize()) {
 		HalfEdge*        oldBase    = HalfEdgeContainer::vec.data();
-		std::vector<int> newIndices = HalfEdgeContainer::compactHalfEdges();
+		std::vector<int> newIndices = HalfEdgeContainer::compactElements();
 		HalfEdge*        newBase    = HalfEdgeContainer::vec.data();
 		assert(oldBase == newBase);
 
@@ -1376,7 +1376,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 
 				// number of other faces to add
 				uint nf = tris.size() / 3 - 1;
-				uint fid = FaceContainer::addFaces(nf, this);
+				uint fid = FaceContainer::addElements(nf, this);
 
 				uint i = 3; // index that cycles into tris
 				for (; fid < FaceContainer::faceContainerSize(); ++fid) {

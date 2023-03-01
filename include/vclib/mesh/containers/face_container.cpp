@@ -787,64 +787,6 @@ ConstCustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentV
 	return cc;
 }
 
-/**
- * @brief Returns the index of the given face.
- * @param f: face pointer.
- * @return The index of f.
- */
-template<FaceConcept T>
-uint FaceContainer<T>::index(const FaceType* f) const
-{
-	return Base::index(f);
-}
-
-template<FaceConcept T>
-void vcl::mesh::FaceContainer<T>::clearFaces()
-{
-	Base::clearElements();
-}
-
-template<FaceConcept T>
-template<typename MeshType>
-uint FaceContainer<T>::addFace(MeshType* parentMesh)
-{
-	return Base::addElement(parentMesh);
-}
-
-/**
- * @brief Adds nFaces to the Face Container of the mesh.
- *
- * Returns the id of the first added face.
- *
- * @param nFaces
- * @return the id of the first added face.
- */
-template<FaceConcept T>
-template<typename MeshType>
-uint vcl::mesh::FaceContainer<T>::addFaces(uint nFaces, MeshType* parentMesh)
-{
-	return Base::addElements(nFaces, parentMesh);
-}
-
-template<FaceConcept T>
-template<typename MeshType>
-void FaceContainer<T>::reserveFaces(uint size, MeshType* parentMesh)
-{
-	Base::reserveElements(size, parentMesh);
-}
-
-/**
- * @brief Compacts the face container, keeping only the non-deleted faces.
- *
- * @return a vector that tells, for each old face index, the new index of the face. Will contain -1
- * if the face has been deleted.
- */
-template<FaceConcept T>
-std::vector<int> vcl::mesh::FaceContainer<T>::compactFaces()
-{
-	return Base::compactElements();
-}
-
 template<FaceConcept T>
 template<typename Mesh>
 void FaceContainer<T>::enableOptionalComponentsOf(const Mesh& m)

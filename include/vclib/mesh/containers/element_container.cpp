@@ -458,6 +458,22 @@ void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 	}
 }
 
+template<typename T>
+template<typename MeshType>
+void ElementContainer<T>::resizeElements(uint size, MeshType* parentMesh)
+{
+	T* oldB = vec.data();
+	vec.resize(size);
+	T* newB = vec.data();
+
+	ccVecMap.resize(size);
+	vcVecTuple.resize(size);
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
+	}
+}
+
 /**
  * @brief Compacts the element container, keeping only the non-deleted elements.
  *

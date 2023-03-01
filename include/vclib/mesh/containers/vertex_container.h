@@ -159,21 +159,6 @@ public:
 		const std::string& name) const requires vert::HasCustomComponents<T>;
 
 protected:
-	uint index(const VertexType* v) const;
-
-	void clearVertices();
-
-	template<typename MeshType>
-	uint addVertex(MeshType* parentMesh);
-
-	template<typename MeshType>
-	uint addVertices(uint nVertices, MeshType* parentMesh);
-
-	template<typename MeshType>
-	void reserveVertices(uint size, MeshType* parentMesh);
-
-	std::vector<int> compactVertices();
-
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
