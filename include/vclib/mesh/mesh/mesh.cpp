@@ -843,7 +843,7 @@ void Mesh<Args...>::compactEdges()
 		Edge*            newBase    = EdgeContainer::vec.data();
 		assert(oldBase == newBase);
 
-		(updateEdgeReferencesAfterCompact<Args>(oldBase, newIndices), ...);
+		(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
 	}
 }
 
@@ -1003,7 +1003,7 @@ void Mesh<Args...>::compactHalfEdges()
 		HalfEdge*        newBase    = HalfEdgeContainer::vec.data();
 		assert(oldBase == newBase);
 		
-		(updateHalfEdgeReferencesAfterCompact<Args>(oldBase, newBase), ...);
+		(updateReferencesAfterCompact<Args>(oldBase, newBase), ...);
 	}
 }
 
@@ -1030,39 +1030,6 @@ void Mesh<Args...>::updateReferencesAfterCompact(
 {
 	if constexpr(mesh::IsElementContainer<Cont>) {
 		Cont::updateReferencesAfterCompact(base, newIndices);
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont, HasFaces M>
-void Mesh<Args...>::updateFaceReferencesAfterCompact(
-	const typename M::FaceType* base,
-	const std::vector<int>&     newIndices)
-{
-	if constexpr(mesh::IsElementContainer<Cont>) {
-		Cont::updateFaceReferencesAfterCompact(base, newIndices);
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont, HasEdges M>
-void Mesh<Args...>::updateEdgeReferencesAfterCompact(
-	const typename M::EdgeType* base,
-	const std::vector<int>&     newIndices)
-{
-	if constexpr(mesh::IsElementContainer<Cont>) {
-		Cont::updateEdgeReferencesAfterCompact(base, newIndices);
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont, HasHalfEdges M>
-void Mesh<Args...>::updateHalfEdgeReferencesAfterCompact(
-	const typename M::HalfEdgeType* base,
-	const std::vector<int>&         newIndices)
-{
-	if constexpr(mesh::IsElementContainer<Cont>) {
-		Cont::updateHalfEdgeReferencesAfterCompact(base, newIndices);
 	}
 }
 

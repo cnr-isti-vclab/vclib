@@ -112,16 +112,6 @@ protected:
 	template<typename Element>
 	void updateReferencesAfterCompact(const Element* base, const std::vector<int>& newIndices);
 
-	template<typename Face>
-	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
-
-	template<typename Edge>
-	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
-
-	template<typename HalfEdge>
-	void
-	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
-
 	template<typename Container>
 	void enableOptionalComponentsOf(const Container& c);
 

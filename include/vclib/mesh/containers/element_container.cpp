@@ -524,39 +524,6 @@ void ElementContainer<T>::updateReferencesAfterCompact(
 }
 
 template<typename T>
-template<typename Face>
-void ElementContainer<T>::updateFaceReferencesAfterCompact(
-	const Face*             base,
-	const std::vector<int>& newIndices)
-{
-	using Comps = typename T::Components;
-
-	updateReferencesAfterCompactOnComponents(base, newIndices, Comps());
-}
-
-template<typename T>
-template<typename Edge>
-void ElementContainer<T>::updateEdgeReferencesAfterCompact(
-	const Edge*             base,
-	const std::vector<int>& newIndices)
-{
-	using Comps = typename T::Components;
-
-	updateReferencesAfterCompactOnComponents(base, newIndices, Comps());
-}
-
-template<typename T>
-template<typename HalfEdge>
-void ElementContainer<T>::updateHalfEdgeReferencesAfterCompact(
-	const HalfEdge*             base,
-	const std::vector<int>& newIndices)
-{
-	using Comps = typename T::Components;
-
-	updateReferencesAfterCompactOnComponents(base, newIndices, Comps());
-}
-
-template<typename T>
 template<typename Container>
 void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 {

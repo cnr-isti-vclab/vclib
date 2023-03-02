@@ -194,27 +194,6 @@ protected:
 		const Element*          base,
 		const std::vector<int>& newIndices);
 
-	// Faces
-
-	template<typename Cont, HasFaces M = Mesh>
-	void updateFaceReferencesAfterCompact(
-		const typename M::FaceType* base,
-		const std::vector<int>&     newIndices);
-
-	// Edges
-
-	template<typename Cont, HasEdges M = Mesh>
-	void updateEdgeReferencesAfterCompact(
-		const typename M::EdgeType* base,
-		const std::vector<int>&     newIndices);
-
-	// HalfEdges
-
-	template<typename Cont, HasHalfEdges M = Mesh>
-	void updateHalfEdgeReferencesAfterCompact(
-		const typename M::HalfEdgeType* base,
-		const std::vector<int>&         newIndices);
-
 	void updateAllParentMeshPointers();
 
 private:
