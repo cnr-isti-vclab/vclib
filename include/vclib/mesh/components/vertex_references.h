@@ -29,12 +29,10 @@
 
 namespace vcl::comp {
 
-template<
-	typename Vertex,
-	int N,
-	typename ElementType = void,
-	bool optional        = false>
-class VertexReferences : protected internal::ElementReferences<Vertex, N, ElementType>
+template<typename Vertex, int N, typename ElementType = void, bool optional = false>
+class VertexReferences :
+		public ReferencesComponentTriggerer<Vertex>,
+		protected internal::ElementReferences<Vertex, N, ElementType>
 {
 	using ThisType = VertexReferences<Vertex, N, ElementType, optional>;
 

@@ -46,11 +46,10 @@ namespace vcl::comp {
  * v.adjVerticesNumber();
  * @endcode
  */
-template<
-	typename Vertex,
-	typename ElementType = void,
-	bool optional        = false>
-class AdjacentVertices : protected internal::ElementReferences<Vertex, -1, ElementType>
+template<typename Vertex, typename ElementType = void, bool optional = false>
+class AdjacentVertices :
+		public ReferencesComponentTriggerer<Vertex>,
+		protected internal::ElementReferences<Vertex, -1, ElementType>
 {
 	using ThisType = AdjacentVertices<Vertex, ElementType, optional>;
 

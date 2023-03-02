@@ -37,7 +37,10 @@ template<
 	typename Face,
 	typename ElementType = void,
 	bool optional        = false>
-class HalfEdgeReferences
+class HalfEdgeReferences :
+		public ReferencesComponentTriggerer<HalfEdge>,
+		public ReferencesComponentTriggerer<Vertex>,
+		public ReferencesComponentTriggerer<Face>
 {
 	using ThisType = HalfEdgeReferences<HalfEdge, Vertex, Face, ElementType, optional>;
 

@@ -59,6 +59,43 @@ concept IsOptionalComponent = IsVerticalComponent<T> && T::IS_OPTIONAL == true &
 	{ o.IS_OPTIONAL } -> std::same_as<const bool&>;
 };
 
+template<typename T>
+class ReferencesComponentTriggerer
+{
+};
+
+/**
+ * @brief HasReferencesOfType concept
+ *
+ * Each component that store reference of a type R, must:
+ *
+ * - inherit from ReferencesComponentTriggerer<R>
+ * - provide the following **protected** member functions:
+ *   - void updateReferences(const R* oldBase, const R* newBase);
+ *
+ *     the function updates the stored R references having the old base of the container and the
+ *     new base of the container.
+ *
+ *   - void updateReferencesAfterCompact(const R* base, const std::vector<int>& newIndices);
+ *
+ *     the function updates the stored R references having the base of the container, and, for each
+ *     old element index, its new index in the container.
+ *
+ *   - template<typename Element, typename ElRType>
+ *     void importReferencesFrom(const Element& e, const R* base, const ElRType* ebase);
+ *
+ *     the function imports the references from the references of another element.
+ *     - e is the another element;
+ *     - base is the base of container that stores this element
+ *     - ebase is the base of the container that stores the another elements
+ */
+template<typename T, typename R>
+concept HasReferencesOfType =
+	std::is_base_of<ReferencesComponentTriggerer<R>, T>::value;
+
+template<typename T, typename R>
+concept HasOptionalReferencesOfType = HasReferencesOfType<T, R> && IsOptionalComponent<T>;
+
 } // namespace vcl
 
 #endif // VCL_MESH_COMPONENTS_CONCEPTS_COMPONENT_H

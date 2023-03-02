@@ -50,12 +50,10 @@ namespace vcl::comp {
  * Vertex Number of the Face, therefore all the members that allows to modify the number of
  * Adjacent Edges in case of dynamic size won't be available on Face Elements.
  */
-template<
-	typename Edge,
-	int N,
-	typename ElementType = void,
-	bool optional        = false>
-class AdjacentEdges : protected internal::ElementReferences<Edge, N, ElementType>
+template<typename Edge, int N, typename ElementType = void, bool optional = false>
+class AdjacentEdges :
+		public ReferencesComponentTriggerer<Edge>,
+		protected internal::ElementReferences<Edge, N, ElementType>
 {
 	using ThisType = AdjacentEdges<Edge, N, ElementType, optional>;
 
