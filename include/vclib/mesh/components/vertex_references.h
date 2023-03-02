@@ -102,7 +102,11 @@ public:
 	ConstVertexRangeIterator vertices() const;
 
 protected:
+	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
+
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+
+	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
@@ -111,12 +115,16 @@ protected:
 
 	template<typename Element, typename ElVType>
 	void
+	importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+
+	template<typename Element, typename ElVType>
+	void
 	importVertexReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
 
 private:
 	template<typename Element, typename ElVType>
 	void
-	importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	importRefsFrom(const Element& e, Vertex* base, const ElVType* ebase);
 };
 
 } // namespace vcl::comp

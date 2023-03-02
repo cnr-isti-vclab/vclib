@@ -52,7 +52,7 @@ namespace vcl::comp {
  */
 template<typename Face, int N, typename ElementType = void, bool optional = false>
 class AdjacentFaces :
-		public ReferencesComponentTriggerer<Face>,
+		//public ReferencesComponentTriggerer<Face>,
 		protected internal::ElementReferences<Face, N, ElementType>
 {
 	using ThisType = AdjacentFaces<Face, N, ElementType, optional>;

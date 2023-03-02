@@ -201,12 +201,27 @@ VertexReferences<Vertex, N, El, o>::vertices() const
 	return Base::container(this).rangeIterator();
 }
 
+template<typename Vertex, int N, typename ElementType, bool optional>
+void VertexReferences<Vertex, N, ElementType, optional>::updateReferences(
+	const Vertex* oldBase, const Vertex* newBase)
+{
+	updateVertexReferences(oldBase, newBase);
+}
+
 template<typename Vertex, int N, typename El, bool o>
 void VertexReferences<Vertex, N, El, o>::updateVertexReferences(
 	const Vertex* oldBase,
 	const Vertex* newBase)
 {
 	Base::updateElementReferences(oldBase, newBase, this);
+}
+
+template<typename Vertex, int N, typename ElementType, bool optional>
+void VertexReferences<Vertex, N, ElementType, optional>::updateReferencesAfterCompact(
+	const Vertex*           base,
+	const std::vector<int>& newIndices)
+{
+	updateReferencesAfterCompact(base, newIndices);
 }
 
 template<typename Vertex, int N, typename El, bool o>
@@ -225,6 +240,16 @@ void VertexReferences<Vertex, N, El, o>::importFrom(const Element&)
 
 template<typename Vertex, int N, typename El, bool o>
 template<typename Element, typename ElVType>
+void VertexReferences<Vertex, N, El, o>::importReferencesFrom(
+	const Element& e,
+	Vertex* base,
+	const ElVType* ebase)
+{
+	importVertexReferencesFrom(e, base, ebase);
+}
+
+template<typename Vertex, int N, typename El, bool o>
+template<typename Element, typename ElVType>
 void VertexReferences<Vertex, N, El, o>::importVertexReferencesFrom(
 	const Element& e,
 	Vertex* base,
@@ -234,12 +259,12 @@ void VertexReferences<Vertex, N, El, o>::importVertexReferencesFrom(
 		if constexpr(N > 0) {
 			// same size non-polygonal faces
 			if constexpr (N == Element::VERTEX_NUMBER) {
-				importReferencesFrom(e, base, ebase);
+				importRefsFrom(e, base, ebase);
 			}
 			// from polygonal to fixed size, but the polygon size == the fixed face size
 			else if constexpr (Element::VERTEX_NUMBER < 0){
 				if (e.vertexNumber() == N) {
-					importReferencesFrom(e, base, ebase);
+					importRefsFrom(e, base, ebase);
 				}
 			}
 			else {
@@ -249,14 +274,14 @@ void VertexReferences<Vertex, N, El, o>::importVertexReferencesFrom(
 		else {
 			// from fixed to polygonal size: need to resize first, then import
 			resizeVertices(e.vertexNumber());
-			importReferencesFrom(e, base, ebase);
+			importRefsFrom(e, base, ebase);
 		}
 	}
 }
 
 template<typename Vertex, int N, typename El, bool o>
 template<typename Element, typename ElVType>
-void VertexReferences<Vertex, N, El, o>::importReferencesFrom(
+void VertexReferences<Vertex, N, El, o>::importRefsFrom(
 	const Element& e,
 	Vertex* base,
 	const ElVType* ebase)

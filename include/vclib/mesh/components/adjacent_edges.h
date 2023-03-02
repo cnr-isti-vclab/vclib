@@ -52,7 +52,7 @@ namespace vcl::comp {
  */
 template<typename Edge, int N, typename ElementType = void, bool optional = false>
 class AdjacentEdges :
-		public ReferencesComponentTriggerer<Edge>,
+		//public ReferencesComponentTriggerer<Edge>,
 		protected internal::ElementReferences<Edge, N, ElementType>
 {
 	using ThisType = AdjacentEdges<Edge, N, ElementType, optional>;

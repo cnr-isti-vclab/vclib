@@ -205,9 +205,23 @@ AdjacentVertices<Vertex, El, o>::adjVertices() const
 }
 
 template<typename Vertex, typename El, bool o>
+void AdjacentVertices<Vertex, El, o>::updateReferences(const Vertex* oldBase, const Vertex* newBase)
+{
+	updateVertexReferences(oldBase, newBase);
+}
+
+template<typename Vertex, typename El, bool o>
 void AdjacentVertices<Vertex, El, o>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
 {
 	Base::updateElementReferences(oldBase, newBase, this);
+}
+
+template<typename Vertex, typename El, bool o>
+void AdjacentVertices<Vertex, El, o>::updateReferencesAfterCompact(
+	const Vertex*           base,
+	const std::vector<int>& newIndices)
+{
+	updateVertexReferencesAfterCompact(base, newIndices);
 }
 
 template<typename Vertex, typename El, bool o>
@@ -226,6 +240,16 @@ void AdjacentVertices<Vertex, El, o>::importFrom(const Element&)
 
 template<typename Vertex, typename El, bool o>
 template<typename Element, typename ElVType>
+void AdjacentVertices<Vertex, El, o>::importReferencesFrom(
+	const Element& e,
+	Vertex*        base,
+	const ElVType* ebase)
+{
+	importVertexReferencesFrom(e, base, ebase);
+}
+
+template<typename Vertex, typename El, bool o>
+template<typename Element, typename ElVType>
 void AdjacentVertices<Vertex, El, o>::importVertexReferencesFrom(
 	const Element& e,
 	Vertex*        base,
@@ -235,14 +259,14 @@ void AdjacentVertices<Vertex, El, o>::importVertexReferencesFrom(
 		if (isAdjacentVerticesEnabledOn(e)) {
 			// from static/dynamic to dynamic size: need to resize first, then import
 			resizeAdjVertices(e.adjVerticesNumber());
-			importReferencesFrom(e, base, ebase);
+			importRefsFrom(e, base, ebase);
 		}
 	}
 }
 
 template<typename Vertex, typename El, bool o>
 template<typename Element, typename ElVType>
-void AdjacentVertices<Vertex, El, o>::importReferencesFrom(
+void AdjacentVertices<Vertex, El, o>::importRefsFrom(
 	const Element& e,
 	Vertex*        base,
 	const ElVType* ebase)
