@@ -197,10 +197,6 @@ protected:
 		const std::vector<int>&       newIndices);
 
 	// Faces
-	template<typename Cont, HasFaces M = Mesh>
-	void updateFaceReferences(
-		const typename M::FaceType* oldBase,
-		const typename M::FaceType* newBase);
 
 	template<typename Cont, HasFaces M = Mesh>
 	void updateFaceReferencesAfterCompact(

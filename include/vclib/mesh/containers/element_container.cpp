@@ -525,15 +525,6 @@ void ElementContainer<T>::updateVertexReferencesAfterCompact(
 
 template<typename T>
 template<typename Face>
-void ElementContainer<T>::updateFaceReferences(const Face *oldBase, const Face *newBase)
-{
-	using Comps = typename T::Components;
-
-	updateReferencesOnComponents(oldBase, newBase, Comps());
-}
-
-template<typename T>
-template<typename Face>
 void ElementContainer<T>::updateFaceReferencesAfterCompact(
 	const Face*             base,
 	const std::vector<int>& newIndices)

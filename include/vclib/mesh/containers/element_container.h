@@ -113,9 +113,6 @@ protected:
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	template<typename Face>
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
-
-	template<typename Face>
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
 	template<typename Edge>
