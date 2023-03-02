@@ -251,13 +251,13 @@ AdjacentFaces<Face, N, El, o>::adjFaces() const
 }
 
 template<typename Face, int N, typename El, bool o>
-void AdjacentFaces<Face, N, El, o>::updateFaceReferences(const Face* oldBase, const Face* newBase)
+void AdjacentFaces<Face, N, El, o>::updateReferences(const Face* oldBase, const Face* newBase)
 {
 	Base::updateElementReferences(oldBase, newBase, this);
 }
 
 template<typename Face, int N, typename El, bool o>
-void AdjacentFaces<Face, N, El, o>::updateFaceReferencesAfterCompact(
+void AdjacentFaces<Face, N, El, o>::updateReferencesAfterCompact(
 	const Face*             base,
 	const std::vector<int>& newIndices)
 {
@@ -272,7 +272,7 @@ void AdjacentFaces<Face, N, El, o>::importFrom(const Element&)
 
 template<typename Face, int N, typename El, bool o>
 template<typename Element, typename ElFType>
-void AdjacentFaces<Face, N, El, o>::importFaceReferencesFrom(
+void AdjacentFaces<Face, N, El, o>::importReferencesFrom(
 	const Element& e,
 	Face*          base,
 	const ElFType* ebase)
@@ -282,12 +282,12 @@ void AdjacentFaces<Face, N, El, o>::importFaceReferencesFrom(
 			if constexpr (N > 0) {
 				// same static size
 				if constexpr (N == Element::ADJ_FACE_NUMBER) {
-					importReferencesFrom(e, base, ebase);
+					importRefsFrom(e, base, ebase);
 				}
 				// from dynamic to static, but dynamic size == static size
 				else if constexpr (Element::ADJ_FACE_NUMBER < 0) {
 					if (e.adjFacesNumber() == N) {
-						importReferencesFrom(e, base, ebase);
+						importRefsFrom(e, base, ebase);
 					}
 				}
 				else {
@@ -297,7 +297,7 @@ void AdjacentFaces<Face, N, El, o>::importFaceReferencesFrom(
 			else {
 				// from static/dynamic to dynamic size: need to resize first, then import
 				resizeAdjFaces(e.adjFacesNumber());
-				importReferencesFrom(e, base, ebase);
+				importRefsFrom(e, base, ebase);
 			}
 		}
 	}
@@ -305,7 +305,7 @@ void AdjacentFaces<Face, N, El, o>::importFaceReferencesFrom(
 
 template<typename Face, int N, typename El, bool o>
 template<typename Element, typename ElFType>
-void AdjacentFaces<Face, N, El, o>::importReferencesFrom(
+void AdjacentFaces<Face, N, El, o>::importRefsFrom(
 	const Element& e,
 	Face*          base,
 	const ElFType* ebase)

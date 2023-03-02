@@ -527,23 +527,9 @@ template<typename T>
 template<typename Face>
 void ElementContainer<T>::updateFaceReferences(const Face *oldBase, const Face *newBase)
 {
-	// AdjacentFaces component
-	if constexpr (comp::HasAdjacentFaces<T>) {
-		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentFaces<T> ||
-			isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
-			for (T& e : elements()) {
-				e.updateFaceReferences(oldBase, newBase);
-			}
-		}
-	}
+	using Comps = typename T::Components;
 
-	// HalfEdgeReferences component
-	if constexpr (comp::HasHalfEdgeReferences<T>) {
-		for (T& e : elements()) {
-			e.updateFaceReferences(oldBase, newBase);
-		}
-	}
+	updateReferencesOnComponents(oldBase, newBase, Comps());
 }
 
 template<typename T>
@@ -552,22 +538,9 @@ void ElementContainer<T>::updateFaceReferencesAfterCompact(
 	const Face*             base,
 	const std::vector<int>& newIndices)
 {
-	// AdjacentFaces component
-	if constexpr (comp::HasAdjacentFaces<T>) {
-		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentFaces<T> || isOptionalComponentEnabled<typename T::AdjacentFacesComponent>()) {
-			for (T& e : elements()) {
-				e.updateFaceReferencesAfterCompact(base, newIndices);
-			}
-		}
-	}
+	using Comps = typename T::Components;
 
-	// HalfEdgeReferences component
-	if constexpr (comp::HasHalfEdgeReferences<T>) {
-		for (T& e : elements()) {
-			e.updateFaceReferencesAfterCompact(base, newIndices);
-		}
-	}
+	updateReferencesAfterCompactOnComponents(base, newIndices, Comps());
 }
 
 template<typename T>
@@ -811,24 +784,6 @@ void ElementContainer<T>::importVertexReferencesFrom(const Container& c, MyBase*
 	using Comps = typename T::Components;
 
 	importReferencesOnComponentsFrom(c, base, cbase, Comps());
-//	// Dcel case: the element (face or vertex) has the illusion to have adjacence references, but
-//	// it has only half edge references and the other references are into the half edge component.
-//	// therefore, we don't need to import anything here - we will import in the half edge component
-//	// using the importVertexReferencesFrom member function called on half edges
-//	if constexpr (!comp::HasFaceHalfEdgeReference<T> && !comp::HasVertexHalfEdgeReference<T>) {
-//		// if the element of this container has at least one of these components (it will have just
-//		// one of these), it means that it has the importVertexReferencesFrom member function that
-//		// can be called. This function takes the ith element of the other mesh, and the bases
-//		// to compute the offset and then the new reference
-//		if constexpr (
-//			comp::HasVertexReferences<T> ||
-//			comp::HasAdjacentVertices<T> ||
-//			comp::HasHalfEdgeReferences<T>) {
-//			for (uint i = 0; i < elementContainerSize(); ++i) {
-//				element(i).importVertexReferencesFrom(c.element(i), base, cbase);
-//			}
-//		}
-//	}
 }
 
 /**
@@ -855,21 +810,9 @@ template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importFaceReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	// Dcel case: the element (face or vertex) has the illusion to have adjacence references, but
-	// it has only half edge references and the other references are into the half edge component.
-	// therefore, we don't need to import anything here - we will import in the half edge component
-	// using the importFaceReferencesFrom member function called on half edges
-	if constexpr (!comp::HasFaceHalfEdgeReference<T> && !comp::HasVertexHalfEdgeReference<T>) {
-		// if the element of this container has at least one of these components (it will have just
-		// one of these), it means that it has the importFaceReferencesFrom member function that
-		// can be called. This function takes the ith element of the other mesh, and the bases
-		// to compute the offset and then the new reference
-		if constexpr(comp::HasAdjacentFaces<T> || comp::HasHalfEdgeReferences<T>) {
-			for (uint i = 0; i < elementContainerSize(); ++i) {
-				element(i).importFaceReferencesFrom(c.element(i), base, cbase);
-			}
-		}
-	}
+	using Comps = typename T::Components;
+
+	importReferencesOnComponentsFrom(c, base, cbase, Comps());
 }
 
 /**
@@ -1012,13 +955,13 @@ void ElementContainer<T>::updateReferencesAfterCompactOnComponent(
 		if constexpr (comp::HasOptionalReferencesOfType<Comp, ElRef>) {
 			if(isOptionalComponentEnabled<Comp>()) {
 				for (T& e : elements()) {
-					e.Comp::updateVertexReferencesAfterCompact(base, newIndices);
+					e.Comp::updateReferencesAfterCompact(base, newIndices);
 				}
 			}
 		}
 		else {
 			for (T& e : elements()) {
-				e.Comp::updateVertexReferencesAfterCompact(base, newIndices);
+				e.Comp::updateReferencesAfterCompact(base, newIndices);
 			}
 		}
 	}
@@ -1035,13 +978,13 @@ void ElementContainer<T>::importReferencesOnComponentFrom(
 		if constexpr (comp::HasOptionalReferencesOfType<Comp, ElRef>) {
 			if(isOptionalComponentEnabled<Comp>()) {
 				for (uint i = 0; i < elementContainerSize(); ++i) {
-					element(i).Comp::importVertexReferencesFrom(c.element(i), base, cbase);
+					element(i).Comp::importReferencesFrom(c.element(i), base, cbase);
 				}
 			}
 		}
 		else {
 			for (uint i = 0; i < elementContainerSize(); ++i) {
-				element(i).Comp::importVertexReferencesFrom(c.element(i), base, cbase);
+				element(i).Comp::importReferencesFrom(c.element(i), base, cbase);
 			}
 		}
 	}

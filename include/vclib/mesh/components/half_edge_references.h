@@ -39,8 +39,8 @@ template<
 	bool optional        = false>
 class HalfEdgeReferences :
 		//public ReferencesComponentTriggerer<HalfEdge>,
-		public ReferencesComponentTriggerer<Vertex>//,
-		//public ReferencesComponentTriggerer<Face>
+		public ReferencesComponentTriggerer<Vertex>,
+		public ReferencesComponentTriggerer<Face>
 {
 	using ThisType = HalfEdgeReferences<HalfEdge, Vertex, Face, ElementType, optional>;
 
@@ -95,16 +95,13 @@ public:
 
 protected:
 	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
-	void
-	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+	void updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
-	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+	void updateReferences(const Face* oldBase, const Face* newBase);
+	void updateReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
 	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
 	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
@@ -115,11 +112,8 @@ protected:
 	template<typename HE, typename VType>
 	void importReferencesFrom(const HE& e, Vertex* base, const VType* ebase);
 
-	template<typename HE, typename VType>
-	void importVertexReferencesFrom(const HE& e, Vertex* base, const VType* ebase);
-
 	template<typename HE, typename FType>
-	void importFaceReferencesFrom(const HE& e, Face* base, const FType* ebase);
+	void importReferencesFrom(const HE& e, Face* base, const FType* ebase);
 
 private:
 	// members that allow to access the data, trough data (horizontal) or trough parent (vertical)
