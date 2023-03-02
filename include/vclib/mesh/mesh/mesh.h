@@ -183,7 +183,14 @@ public:
 	template<HasHalfEdges M = Mesh>
 	void compactHalfEdges();
 
-protected:
+private:
+	// hide init and isEnabled members
+	void init() {};
+	bool isEnabled() { return true; }
+
+	template<typename Cont, typename Element>
+	uint addElement();
+
 	template<typename Cont, typename Element>
 	void updateReferences(
 		const Element* oldBase,
@@ -195,11 +202,6 @@ protected:
 		const std::vector<int>& newIndices);
 
 	void updateAllParentMeshPointers();
-
-private:
-	// hide init and isEnabled members
-	void init() {};
-	bool isEnabled() { return true; }
 
 	template<typename Cont>
 	void clearContainer();

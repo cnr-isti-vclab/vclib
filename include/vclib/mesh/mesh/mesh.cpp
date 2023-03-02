@@ -294,18 +294,7 @@ uint Mesh<Args...>::addVertex()
 	using Vertex          = typename Mesh::VertexType;
 	using VertexContainer = typename Mesh::VertexContainer;
 
-	// If the base pointer of the container of vertices changes, it means that all the vertex
-	// references contained in the other elements need to be updated (the ones contained in the
-	// vertex container are updated automatically)
-
-	Vertex* oldBase = VertexContainer::vec.data();
-	uint    vid     = VertexContainer::addElement(this);
-	Vertex* newBase = VertexContainer::vec.data();
-	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the vertex references in the other containers
-		(updateReferences<Args>(oldBase, newBase), ...);
-	}
-	return vid;
+	return addElement<VertexContainer, Vertex>();
 }
 
 /**
@@ -489,12 +478,7 @@ uint Mesh<Args...>::addFace()
 	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
 
-	Face* oldBase = FaceContainer::vec.data();
-	uint  fid     = FaceContainer::addElement(this);
-	Face* newBase = FaceContainer::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updateReferences<Args>(oldBase, newBase), ...);
-	return fid;
+	return addElement<FaceContainer, Face>();
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -748,12 +732,7 @@ uint Mesh<Args...>::addEdge()
 	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
 
-	Edge* oldBase = EdgeContainer::vec.data();
-	uint  eid     = EdgeContainer::addElement(this);
-	Edge* newBase = EdgeContainer::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updateReferences<Args>(oldBase, newBase), ...);
-	return eid;
+	return addElement<EdgeContainer, Edge>();
 }
 
 /**
@@ -880,12 +859,7 @@ uint Mesh<Args...>::addHalfEdge()
 	using HalfEdge          = typename M::HalfEdgeType;
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 
-	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
-	uint      eid     = HalfEdgeContainer::addElement(this);
-	HalfEdge* newBase = HalfEdgeContainer::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updateReferences<Args>(oldBase, newBase), ...);
-	return eid;
+	return addElement<HalfEdgeContainer, HalfEdge>();
 }
 
 /**
@@ -1010,6 +984,23 @@ void Mesh<Args...>::compactHalfEdges()
 /*********************
  * Protected Members *
  *********************/
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont, typename Element>
+uint Mesh<Args...>::addElement()
+{
+	// If the base pointer of the container of elements changes, it means that all the elements
+	// references contained in the elements need to be updated
+
+	Element* oldBase = Cont::vec.data();
+	uint     eid     = Cont::addElement(this);
+	Element* newBase = Cont::vec.data();
+	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
+		// change all the element references in the containers
+		(updateReferences<Args>(oldBase, newBase), ...);
+	}
+	return eid;
+}
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename Element>
