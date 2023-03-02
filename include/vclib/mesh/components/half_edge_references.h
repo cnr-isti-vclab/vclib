@@ -39,7 +39,7 @@ template<
 	bool optional        = false>
 class HalfEdgeReferences :
 		//public ReferencesComponentTriggerer<HalfEdge>,
-		//public ReferencesComponentTriggerer<Vertex>,
+		public ReferencesComponentTriggerer<Vertex>//,
 		//public ReferencesComponentTriggerer<Face>
 {
 	using ThisType = HalfEdgeReferences<HalfEdge, Vertex, Face, ElementType, optional>;
@@ -101,7 +101,9 @@ protected:
 	void updateFaceReferences(const Face* oldBase, const Face* newBase);
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
+	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
 	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
@@ -109,6 +111,9 @@ protected:
 
 	template<typename HE, typename HEType>
 	void importHalfEdgeReferencesFrom(const HE& e, HalfEdge* base, const HEType* ebase);
+
+	template<typename HE, typename VType>
+	void importReferencesFrom(const HE& e, Vertex* base, const VType* ebase);
 
 	template<typename HE, typename VType>
 	void importVertexReferencesFrom(const HE& e, Vertex* base, const VType* ebase);

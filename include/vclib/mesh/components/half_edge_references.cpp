@@ -216,6 +216,14 @@ void HalfEdgeReferences<HE, V, F, El, o>::updateFaceReferencesAfterCompact(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferences(
+	const V* oldBase,
+	const V* newBase)
+{
+	updateVertexReferences(oldBase, newBase);
+}
+
+template<typename HE, typename V, typename F, typename El, bool o>
 void HalfEdgeReferences<HE, V, F, El, o>::updateVertexReferences(
 	const V* oldBase,
 	const V* newBase)
@@ -224,6 +232,14 @@ void HalfEdgeReferences<HE, V, F, El, o>::updateVertexReferences(
 		size_t diff = v() - oldBase;
 		v() = (V*)newBase + diff;
 	}
+}
+
+template<typename HE, typename V, typename F, typename El, bool o>
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferencesAfterCompact(
+	const V*                base,
+	const std::vector<int>& newIndices)
+{
+	updateVertexReferencesAfterCompact(base, newIndices);
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
@@ -275,6 +291,16 @@ void HalfEdgeReferences<HE, V, F, El, o>::importHalfEdgeReferencesFrom(
 			}
 		}
 	}
+}
+
+template<typename HE, typename V, typename F, typename El, bool o>
+template<typename OHE, typename VType>
+void HalfEdgeReferences<HE, V, F, El, o>::importReferencesFrom(
+	const OHE&   e,
+	V*           base,
+	const VType* ebase)
+{
+	importVertexReferencesFrom(e, base, ebase);
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
