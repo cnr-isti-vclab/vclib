@@ -174,6 +174,13 @@ protected:
 	 * @brief ccVecMap the map that associates a string to a vector of custom components
 	 */
 	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVecMap;
+
+private:
+	template<typename ElRef, typename... Comps>
+	void updateReferencesOnComponents(const ElRef* oldBase, const ElRef* newBase, TypeWrapper<Comps...>);
+
+	template<typename Comp, typename ElRef>
+	void updateReferencesOnComponent(const ElRef* oldBase, const ElRef* newBase);
 };
 
 } // namespace vcl::mesh

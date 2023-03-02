@@ -507,30 +507,34 @@ template<typename T>
 template<typename Vertex>
 void ElementContainer<T>::updateVertexReferences(const Vertex *oldBase, const Vertex *newBase)
 {
-	// VertexReferences component update
-	if constexpr(comp::HasVertexReferences<T>) {
-		for (T& e : elements()) {
-			e.updateVertexReferences(oldBase, newBase);
-		}
-	}
+	using Comps = typename T::Components;
 
-	// AdjacentVertexReferences component update
-	if constexpr(comp::HasAdjacentVertices<T>) {
-		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentVertices<T> ||
-			isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>()) {
-			for (T& e : elements()) {
-				e.updateVertexReferences(oldBase, newBase);
-			}
-		}
-	}
+	updateReferencesOnComponents(oldBase, newBase, Comps());
 
-	// HalfEdgeReferences component update
-	if constexpr (comp::HasHalfEdgeReferences<T>) {
-		for (T& e : elements()) {
-			e.updateVertexReferences(oldBase, newBase);
-		}
-	}
+//	// VertexReferences component update
+//	if constexpr(comp::HasVertexReferences<T>) {
+//		for (T& e : elements()) {
+//			e.updateVertexReferences(oldBase, newBase);
+//		}
+//	}
+
+//	// AdjacentVertexReferences component update
+//	if constexpr(comp::HasAdjacentVertices<T>) {
+//		// short circuited or: if optional, then I check if enabled; if not optional, then true
+//		if (!comp::HasOptionalAdjacentVertices<T> ||
+//			isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>()) {
+//			for (T& e : elements()) {
+//				e.updateVertexReferences(oldBase, newBase);
+//			}
+//		}
+//	}
+
+//	// HalfEdgeReferences component update
+//	if constexpr (comp::HasHalfEdgeReferences<T>) {
+//		for (T& e : elements()) {
+//			e.updateVertexReferences(oldBase, newBase);
+//		}
+//	}
 }
 
 template<typename T>
@@ -980,6 +984,42 @@ void ElementContainer<T>::importHalfEdgeReferencesFrom(const Container& c, MyBas
 		comp::HasVertexHalfEdgeReference<T>) {
 		for (uint i = 0; i < elementContainerSize(); ++i) {
 			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
+		}
+	}
+}
+
+template<typename T>
+template<typename ElRef, typename... Comps>
+void ElementContainer<T>::updateReferencesOnComponents(
+	const ElRef* oldBase,
+	const ElRef* newBase,
+	TypeWrapper<Comps...>)
+{
+	(updateReferencesOnComponent<Comps>(oldBase, newBase), ...);
+}
+
+/*
+ * This function is called for each component of the element.
+ *
+ * Only if a component has references of the type ElRef, then the updateReferences on each element
+ * will be executed
+ */
+template<typename T>
+template<typename Comp, typename ElRef>
+void ElementContainer<T>::updateReferencesOnComponent(const ElRef* oldBase, const ElRef* newBase)
+{
+	if constexpr (comp::HasReferencesOfType<Comp, ElRef>) {
+		if constexpr (comp::HasOptionalReferencesOfType<Comp, ElRef>) {
+			if(isOptionalComponentEnabled<Comp>()) {
+				for (T& e : elements()) {
+					e.Comp::updateReferences(oldBase, newBase);
+				}
+			}
+		}
+		else {
+			for (T& e : elements()) {
+				e.Comp::updateReferences(oldBase, newBase);
+			}
 		}
 	}
 }
