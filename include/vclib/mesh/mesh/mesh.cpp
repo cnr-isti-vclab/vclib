@@ -1058,8 +1058,7 @@ void Mesh<Args...>::compactContainer()
 		auto* newBase = Cont::vec.data();
 		assert(oldBase == newBase);
 
-		// todo
-		//(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
+		(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
 	}
 }
 

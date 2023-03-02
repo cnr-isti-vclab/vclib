@@ -1,8 +1,7 @@
 # VCLib ToDo list
 
 - Mesh:
-  - [ ] generic updateReferences (avoid updateVertexReferences, updateFaceReferences, etc. on containers and components)
-  - [ ] complete generic compact function when the updateReferences will be ready
+  - [ ] generic importReferences (avoid importVertexReferences, importFaceReferences, etc. on containers and components)
   - [ ] remove duplicate code inside mesh class, use pack expansion
   - [ ] manage clean() for all components of mesh, not only element containers
 - Samplers:

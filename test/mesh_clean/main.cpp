@@ -60,7 +60,7 @@ int main()
 
 	std::cerr << "Removed Duplicated Vertices: " << nv << "\n";
 
-	m.compactVertices();
+	m.compact();
 
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
 
