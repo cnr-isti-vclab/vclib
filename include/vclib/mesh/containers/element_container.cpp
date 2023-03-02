@@ -547,16 +547,9 @@ template<typename T>
 template<typename Edge>
 void ElementContainer<T>::updateEdgeReferences(const Edge *oldBase, const Edge *newBase)
 {
-	// AdjacentEdges component
-	if constexpr (comp::HasAdjacentEdges<T>) {
-		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentEdges<T> ||
-			isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>()) {
-			for (T& e : elements()) {
-				e.updateEdgeReferences(oldBase, newBase);
-			}
-		}
-	}
+	using Comps = typename T::Components;
+
+	updateReferencesOnComponents(oldBase, newBase, Comps());
 }
 
 template<typename T>
@@ -565,16 +558,9 @@ void ElementContainer<T>::updateEdgeReferencesAfterCompact(
 	const Edge*             base,
 	const std::vector<int>& newIndices)
 {
-	// AdjacentEdges component
-	if constexpr (comp::HasAdjacentEdges<T>) {
-		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentEdges<T> ||
-			isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>()) {
-			for (T& e : elements()) {
-				e.updateEdgeReferencesAfterCompact(base, newIndices);
-			}
-		}
-	}
+	using Comps = typename T::Components;
+
+	updateReferencesAfterCompactOnComponents(base, newIndices, Comps());
 }
 
 template<typename T>
@@ -839,15 +825,9 @@ template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	// if the element of this container has at least one of these components (it will have just
-	// one of these), it means that it has the importEdgeReferencesFrom member function that
-	// can be called. This function takes the ith element of the other mesh, and the bases
-	// to compute the offset and then the new reference
-	if constexpr (comp::HasAdjacentEdges<T>) {
-		for (uint i = 0; i < elementContainerSize(); ++i) {
-			element(i).importEdgeReferencesFrom(c.element(i), base, cbase);
-		}
-	}
+	using Comps = typename T::Components;
+
+	importReferencesOnComponentsFrom(c, base, cbase, Comps());
 }
 
 /**

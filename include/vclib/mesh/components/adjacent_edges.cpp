@@ -255,13 +255,13 @@ AdjacentEdges<Edge, N, El, o>::adjEdges() const
 }
 
 template<typename Edge, int N, typename El, bool o>
-void AdjacentEdges<Edge, N, El, o>::updateEdgeReferences(const Edge* oldBase, const Edge* newBase)
+void AdjacentEdges<Edge, N, El, o>::updateReferences(const Edge* oldBase, const Edge* newBase)
 {
 	Base::updateElementReferences(oldBase, newBase, this);
 }
 
 template<typename Edge, int N, typename El, bool o>
-void AdjacentEdges<Edge, N, El, o>::updateEdgeReferencesAfterCompact(
+void AdjacentEdges<Edge, N, El, o>::updateReferencesAfterCompact(
 	const Edge*             base,
 	const std::vector<int>& newIndices)
 {
@@ -276,7 +276,7 @@ void AdjacentEdges<Edge, N, El, o>::importFrom(const Element&)
 
 template<typename Edge, int N, typename El, bool o>
 template<typename Element, typename ElEType>
-void AdjacentEdges<Edge, N, El, o>::importEdgeReferencesFrom(
+void AdjacentEdges<Edge, N, El, o>::importReferencesFrom(
 	const Element& e,
 	Edge*          base,
 	const ElEType* ebase)
@@ -286,12 +286,12 @@ void AdjacentEdges<Edge, N, El, o>::importEdgeReferencesFrom(
 			if constexpr (N > 0) {
 				// same static size
 				if constexpr (N == Element::ADJ_EDGE_NUMBER) {
-					importReferencesFrom(e, base, ebase);
+					importRefsFrom(e, base, ebase);
 				}
 				// from dynamic to static, but dynamic size == static size
 				else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
 					if (e.adjEdgesNumber() == N) {
-						importReferencesFrom(e, base, ebase);
+						importRefsFrom(e, base, ebase);
 					}
 				}
 				else {
@@ -301,7 +301,7 @@ void AdjacentEdges<Edge, N, El, o>::importEdgeReferencesFrom(
 			else {
 				// from static/dynamic to dynamic size: need to resize first, then import
 				resizeAdjEdges(e.adjEdgesNumber());
-				importReferencesFrom(e, base, ebase);
+				importRefsFrom(e, base, ebase);
 			}
 		}
 	}
@@ -309,7 +309,7 @@ void AdjacentEdges<Edge, N, El, o>::importEdgeReferencesFrom(
 
 template<typename Edge, int N, typename El, bool o>
 template<typename Element, typename ElEType>
-void AdjacentEdges<Edge, N, El, o>::importReferencesFrom(
+void AdjacentEdges<Edge, N, El, o>::importRefsFrom(
 	const Element& e,
 	Edge*          base,
 	const ElEType* ebase)
