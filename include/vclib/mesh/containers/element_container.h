@@ -119,9 +119,6 @@ protected:
 	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
 
 	template<typename HalfEdge>
-	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
-
-	template<typename HalfEdge>
 	void
 	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 

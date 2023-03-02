@@ -547,15 +547,6 @@ void ElementContainer<T>::updateEdgeReferencesAfterCompact(
 
 template<typename T>
 template<typename HalfEdge>
-void ElementContainer<T>::updateHalfEdgeReferences(const HalfEdge *oldBase, const HalfEdge *newBase)
-{
-	using Comps = typename T::Components;
-
-	updateReferencesOnComponents(oldBase, newBase, Comps());
-}
-
-template<typename T>
-template<typename HalfEdge>
 void ElementContainer<T>::updateHalfEdgeReferencesAfterCompact(
 	const HalfEdge*             base,
 	const std::vector<int>& newIndices)

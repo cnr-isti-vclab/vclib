@@ -75,7 +75,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
 		// just run the same function that we use when vector is reallocated, but using
 		// as old base the base of the other half edge container data
-		(updateHalfEdgeReferences<Args>(oth.HalfEdgeContainer::vec.data(), HalfEdgeContainer::vec.data()), ...);
+		(updateReferences<Args>(oth.HalfEdgeContainer::vec.data(), HalfEdgeContainer::vec.data()), ...);
 	}
 }
 
@@ -884,7 +884,7 @@ uint Mesh<Args...>::addHalfEdge()
 	uint      eid     = HalfEdgeContainer::addElement(this);
 	HalfEdge* newBase = HalfEdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
-		(updateHalfEdgeReferences<Args>(oldBase, newBase), ...);
+		(updateReferences<Args>(oldBase, newBase), ...);
 	return eid;
 }
 
@@ -919,7 +919,7 @@ uint Mesh<Args...>::addHalfEdges(uint n)
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
 		// change all the half edge references in the other containers
-		(updateHalfEdgeReferences<Args>(oldBase, newBase), ...);
+		(updateReferences<Args>(oldBase, newBase), ...);
 	}
 	return eid;
 }
@@ -980,7 +980,7 @@ void Mesh<Args...>::reserveHalfEdges(uint n)
 	HalfEdgeContainer::reserveElements(n, this);
 	HalfEdge* newBase = HalfEdgeContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
-		(updateHalfEdgeReferences<Args>(oldBase, newBase), ...);
+		(updateReferences<Args>(oldBase, newBase), ...);
 }
 
 /**
@@ -1052,17 +1052,6 @@ void Mesh<Args...>::updateEdgeReferencesAfterCompact(
 {
 	if constexpr(mesh::IsElementContainer<Cont>) {
 		Cont::updateEdgeReferencesAfterCompact(base, newIndices);
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont, HasHalfEdges M>
-void Mesh<Args...>::updateHalfEdgeReferences(
-	const typename M::HalfEdgeType* oldBase,
-	const typename M::HalfEdgeType* newBase)
-{
-	if constexpr(mesh::IsElementContainer<Cont>) {
-		Cont::updateHalfEdgeReferences(oldBase, newBase);
 	}
 }
 
@@ -1482,8 +1471,8 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
 		using HalfEdgeType      = typename Mesh<A...>::HalfEdgeType;
 		using HalfEdgeContainer = typename Mesh<A...>::HalfEdgeContainer;
-		(m1.template updateHalfEdgeReferences<A>((HalfEdgeType*) m2BaseHE, m1.HalfEdgeContainer::vec.data()), ...);
-		(m2.template updateHalfEdgeReferences<A>((HalfEdgeType*) m1BaseHE, m2.HalfEdgeContainer::vec.data()), ...);
+		(m1.template updateReferences<A>((HalfEdgeType*) m2BaseHE, m1.HalfEdgeContainer::vec.data()), ...);
+		(m2.template updateReferences<A>((HalfEdgeType*) m1BaseHE, m2.HalfEdgeContainer::vec.data()), ...);
 	}
 }
 
