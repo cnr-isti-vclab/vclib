@@ -808,24 +808,27 @@ template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	// Dcel case: the element (face or vertex) has the illusion to have adjacence references, but
-	// it has only half edge references and the other references are into the half edge component.
-	// therefore, we don't need to import anything here - we will import in the half edge component
-	// using the importVertexReferencesFrom member function called on half edges
-	if constexpr (!comp::HasFaceHalfEdgeReference<T> && !comp::HasVertexHalfEdgeReference<T>) {
-		// if the element of this container has at least one of these components (it will have just
-		// one of these), it means that it has the importVertexReferencesFrom member function that
-		// can be called. This function takes the ith element of the other mesh, and the bases
-		// to compute the offset and then the new reference
-		if constexpr (
-			comp::HasVertexReferences<T> ||
-			comp::HasAdjacentVertices<T> ||
-			comp::HasHalfEdgeReferences<T>) {
-			for (uint i = 0; i < elementContainerSize(); ++i) {
-				element(i).importVertexReferencesFrom(c.element(i), base, cbase);
-			}
-		}
-	}
+	using Comps = typename T::Components;
+
+	importReferencesOnComponentsFrom(c, base, cbase, Comps());
+//	// Dcel case: the element (face or vertex) has the illusion to have adjacence references, but
+//	// it has only half edge references and the other references are into the half edge component.
+//	// therefore, we don't need to import anything here - we will import in the half edge component
+//	// using the importVertexReferencesFrom member function called on half edges
+//	if constexpr (!comp::HasFaceHalfEdgeReference<T> && !comp::HasVertexHalfEdgeReference<T>) {
+//		// if the element of this container has at least one of these components (it will have just
+//		// one of these), it means that it has the importVertexReferencesFrom member function that
+//		// can be called. This function takes the ith element of the other mesh, and the bases
+//		// to compute the offset and then the new reference
+//		if constexpr (
+//			comp::HasVertexReferences<T> ||
+//			comp::HasAdjacentVertices<T> ||
+//			comp::HasHalfEdgeReferences<T>) {
+//			for (uint i = 0; i < elementContainerSize(); ++i) {
+//				element(i).importVertexReferencesFrom(c.element(i), base, cbase);
+//			}
+//		}
+//	}
 }
 
 /**
@@ -962,6 +965,17 @@ void ElementContainer<T>::updateReferencesAfterCompactOnComponents(
 	(updateReferencesAfterCompactOnComponent<Comps>(base, newIndices), ...);
 }
 
+template<typename T>
+template<typename Container, typename ElRef, typename CBase, typename... Comps>
+void ElementContainer<T>::importReferencesOnComponentsFrom(
+	const Container& c,
+	ElRef*           base,
+	const CBase*     cbase,
+	TypeWrapper<Comps...>)
+{
+	(importReferencesOnComponentFrom<Comps>(c, base, cbase), ...);
+}
+
 /*
  * This function is called for each component of the element.
  *
@@ -1005,6 +1019,29 @@ void ElementContainer<T>::updateReferencesAfterCompactOnComponent(
 		else {
 			for (T& e : elements()) {
 				e.Comp::updateVertexReferencesAfterCompact(base, newIndices);
+			}
+		}
+	}
+}
+
+template<typename T>
+template<typename Comp, typename Container, typename ElRef, typename CBase>
+void ElementContainer<T>::importReferencesOnComponentFrom(
+	const Container& c,
+	ElRef*           base,
+	const CBase*     cbase)
+{
+	if constexpr (comp::HasReferencesOfType<Comp, ElRef>) {
+		if constexpr (comp::HasOptionalReferencesOfType<Comp, ElRef>) {
+			if(isOptionalComponentEnabled<Comp>()) {
+				for (uint i = 0; i < elementContainerSize(); ++i) {
+					element(i).Comp::importVertexReferencesFrom(c.element(i), base, cbase);
+				}
+			}
+		}
+		else {
+			for (uint i = 0; i < elementContainerSize(); ++i) {
+				element(i).Comp::importVertexReferencesFrom(c.element(i), base, cbase);
 			}
 		}
 	}

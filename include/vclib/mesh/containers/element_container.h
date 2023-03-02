@@ -188,6 +188,13 @@ private:
 		const std::vector<int>& newIndices,
 		TypeWrapper<Comps...>);
 
+	template<typename Container, typename ElRef, typename CBase, typename... Comps>
+	void importReferencesOnComponentsFrom(
+		const Container& c,
+		ElRef*           base,
+		const CBase*     cbase,
+		TypeWrapper<Comps...>);
+
 	template<typename Comp, typename ElRef>
 	void updateReferencesOnComponent(const ElRef* oldBase, const ElRef* newBase);
 
@@ -195,6 +202,12 @@ private:
 	void updateReferencesAfterCompactOnComponent(
 		const ElRef* base,
 		const std::vector<int>& newIndices);
+
+	template<typename Comp, typename Container, typename ElRef, typename CBase>
+	void importReferencesOnComponentFrom(
+		const Container& c,
+		ElRef*           base,
+		const CBase*     cbase);
 };
 
 } // namespace vcl::mesh
