@@ -177,10 +177,24 @@ protected:
 
 private:
 	template<typename ElRef, typename... Comps>
-	void updateReferencesOnComponents(const ElRef* oldBase, const ElRef* newBase, TypeWrapper<Comps...>);
+	void updateReferencesOnComponents(
+		const ElRef* oldBase,
+		const ElRef* newBase,
+		TypeWrapper<Comps...>);
+
+	template<typename ElRef, typename... Comps>
+	void updateReferencesAfterCompactOnComponents(
+		const ElRef*            base,
+		const std::vector<int>& newIndices,
+		TypeWrapper<Comps...>);
 
 	template<typename Comp, typename ElRef>
 	void updateReferencesOnComponent(const ElRef* oldBase, const ElRef* newBase);
+
+	template<typename Comp, typename ElRef>
+	void updateReferencesAfterCompactOnComponent(
+		const ElRef* base,
+		const std::vector<int>& newIndices);
 };
 
 } // namespace vcl::mesh

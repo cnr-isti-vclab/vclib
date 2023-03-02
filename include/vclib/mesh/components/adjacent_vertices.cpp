@@ -207,12 +207,6 @@ AdjacentVertices<Vertex, El, o>::adjVertices() const
 template<typename Vertex, typename El, bool o>
 void AdjacentVertices<Vertex, El, o>::updateReferences(const Vertex* oldBase, const Vertex* newBase)
 {
-	updateVertexReferences(oldBase, newBase);
-}
-
-template<typename Vertex, typename El, bool o>
-void AdjacentVertices<Vertex, El, o>::updateVertexReferences(const Vertex* oldBase, const Vertex* newBase)
-{
 	Base::updateElementReferences(oldBase, newBase, this);
 }
 

@@ -98,22 +98,13 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::clear()
 {
-	if constexpr (mesh::HasVertexContainer<Mesh<Args...>>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		VertexContainer::clearElements(); // clear vertices, only if the mesh has vertices
-	}
-	if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		FaceContainer::clearElements(); // clear faces, only if the mesh has faces
-	}
-	if constexpr (mesh::HasEdgeContainer<Mesh<Args...>>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		EdgeContainer::clearElements(); // clear edges, only if the mesh has edges
-	}
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh<Args...>>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		HalfEdgeContainer::clearElements(); // clear half edges, only if the mesh has half edges
-	}
+	(clearContainer<Args>(), ...);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+void Mesh<Args...>::compact()
+{
+	(compactContainer<Args>(), ...);
 }
 
 /**
@@ -1112,6 +1103,30 @@ template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::updateAllParentMeshPointers()
 {
 	(setParentMeshPointers<Args>(), ...);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont>
+void Mesh<Args...>::clearContainer()
+{
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		Cont::clearElements();
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont>
+void Mesh<Args...>::compactContainer()
+{
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		auto* oldBase = Cont::vec.data();
+		std::vector<int> newIndices = Cont::compactElements();
+		auto* newBase = Cont::vec.data();
+		assert(oldBase == newBase);
+
+		// todo
+		//(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
+	}
 }
 
 template<typename... Args> requires HasVertices<Args...>

@@ -104,8 +104,6 @@ public:
 protected:
 	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
 
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
-
 	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);

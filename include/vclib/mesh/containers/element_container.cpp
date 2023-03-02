@@ -510,31 +510,6 @@ void ElementContainer<T>::updateVertexReferences(const Vertex *oldBase, const Ve
 	using Comps = typename T::Components;
 
 	updateReferencesOnComponents(oldBase, newBase, Comps());
-
-//	// VertexReferences component update
-//	if constexpr(comp::HasVertexReferences<T>) {
-//		for (T& e : elements()) {
-//			e.updateVertexReferences(oldBase, newBase);
-//		}
-//	}
-
-//	// AdjacentVertexReferences component update
-//	if constexpr(comp::HasAdjacentVertices<T>) {
-//		// short circuited or: if optional, then I check if enabled; if not optional, then true
-//		if (!comp::HasOptionalAdjacentVertices<T> ||
-//			isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>()) {
-//			for (T& e : elements()) {
-//				e.updateVertexReferences(oldBase, newBase);
-//			}
-//		}
-//	}
-
-//	// HalfEdgeReferences component update
-//	if constexpr (comp::HasHalfEdgeReferences<T>) {
-//		for (T& e : elements()) {
-//			e.updateVertexReferences(oldBase, newBase);
-//		}
-//	}
 }
 
 template<typename T>
@@ -543,30 +518,9 @@ void ElementContainer<T>::updateVertexReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
-	// VertexReferences component update
-	if constexpr(comp::HasVertexReferences<T>) {
-		for (T& e: elements()) {
-			e.updateVertexReferencesAfterCompact(base, newIndices);
-		}
-	}
+	using Comps = typename T::Components;
 
-	// AdjacentVertexReferences component update
-	if constexpr (comp::HasAdjacentVertices<T>) {
-		// short circuited or: if optional, then I check if enabled; if not optional, then true
-		if (!comp::HasOptionalAdjacentVertices<T> ||
-			isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>()) {
-			for (T& v : elements()) {
-				v.updateVertexReferencesAfterCompact(base, newIndices);
-			}
-		}
-	}
-
-	// HalfEdgeReferences component update
-	if constexpr (comp::HasHalfEdgeReferences<T>) {
-		for (T& e : elements()) {
-			e.updateVertexReferencesAfterCompact(base, newIndices);
-		}
-	}
+	updateReferencesAfterCompactOnComponents(base, newIndices, Comps());
 }
 
 template<typename T>
@@ -998,6 +952,16 @@ void ElementContainer<T>::updateReferencesOnComponents(
 	(updateReferencesOnComponent<Comps>(oldBase, newBase), ...);
 }
 
+template<typename T>
+template<typename ElRef, typename... Comps>
+void ElementContainer<T>::updateReferencesAfterCompactOnComponents(
+	const ElRef* base,
+	const std::vector<int>& newIndices,
+	TypeWrapper<Comps...>)
+{
+	(updateReferencesAfterCompactOnComponent<Comps>(base, newIndices), ...);
+}
+
 /*
  * This function is called for each component of the element.
  *
@@ -1019,6 +983,28 @@ void ElementContainer<T>::updateReferencesOnComponent(const ElRef* oldBase, cons
 		else {
 			for (T& e : elements()) {
 				e.Comp::updateReferences(oldBase, newBase);
+			}
+		}
+	}
+}
+
+template<typename T>
+template<typename Comp, typename ElRef>
+void ElementContainer<T>::updateReferencesAfterCompactOnComponent(
+	const ElRef* base,
+	const std::vector<int>& newIndices)
+{
+	if constexpr (comp::HasReferencesOfType<Comp, ElRef>) {
+		if constexpr (comp::HasOptionalReferencesOfType<Comp, ElRef>) {
+			if(isOptionalComponentEnabled<Comp>()) {
+				for (T& e : elements()) {
+					e.Comp::updateVertexReferencesAfterCompact(base, newIndices);
+				}
+			}
+		}
+		else {
+			for (T& e : elements()) {
+				e.Comp::updateVertexReferencesAfterCompact(base, newIndices);
 			}
 		}
 	}

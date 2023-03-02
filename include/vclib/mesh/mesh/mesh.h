@@ -61,6 +61,8 @@ public:
 
 	void clear();
 
+	void compact();
+
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
 
@@ -232,6 +234,12 @@ private:
 	// hide init and isEnabled members
 	void init() {};
 	bool isEnabled() { return true; }
+
+	template<typename Cont>
+	void clearContainer();
+
+	template<typename Cont>
+	void compactContainer();
 
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);

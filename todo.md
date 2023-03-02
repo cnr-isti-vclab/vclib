@@ -2,7 +2,9 @@
 
 - Mesh:
   - [ ] generic updateReferences (avoid updateVertexReferences, updateFaceReferences, etc. on containers and components)
+  - [ ] complete generic compact function when the updateReferences will be ready
   - [ ] remove duplicate code inside mesh class, use pack expansion
+  - [ ] manage clean() for all components of mesh, not only element containers
 - Samplers:
   - [ ] add resize member function to allow parallel algorithms
 - Algorithms:

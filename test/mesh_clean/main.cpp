@@ -60,6 +60,8 @@ int main()
 
 	std::cerr << "Removed Duplicated Vertices: " << nv << "\n";
 
+	m.compactVertices();
+
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
 
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");

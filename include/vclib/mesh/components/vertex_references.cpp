@@ -205,14 +205,6 @@ template<typename Vertex, int N, typename ElementType, bool optional>
 void VertexReferences<Vertex, N, ElementType, optional>::updateReferences(
 	const Vertex* oldBase, const Vertex* newBase)
 {
-	updateVertexReferences(oldBase, newBase);
-}
-
-template<typename Vertex, int N, typename El, bool o>
-void VertexReferences<Vertex, N, El, o>::updateVertexReferences(
-	const Vertex* oldBase,
-	const Vertex* newBase)
-{
 	Base::updateElementReferences(oldBase, newBase, this);
 }
 
