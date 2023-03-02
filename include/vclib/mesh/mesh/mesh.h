@@ -204,10 +204,6 @@ protected:
 		const std::vector<int>&     newIndices);
 
 	// Edges
-	template<typename Cont, HasEdges M = Mesh>
-	void updateEdgeReferences(
-		const typename M::EdgeType* oldBase,
-		const typename M::EdgeType* newBase);
 
 	template<typename Cont, HasEdges M = Mesh>
 	void updateEdgeReferencesAfterCompact(

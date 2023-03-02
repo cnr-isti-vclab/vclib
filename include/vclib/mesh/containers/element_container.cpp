@@ -536,15 +536,6 @@ void ElementContainer<T>::updateFaceReferencesAfterCompact(
 
 template<typename T>
 template<typename Edge>
-void ElementContainer<T>::updateEdgeReferences(const Edge *oldBase, const Edge *newBase)
-{
-	using Comps = typename T::Components;
-
-	updateReferencesOnComponents(oldBase, newBase, Comps());
-}
-
-template<typename T>
-template<typename Edge>
 void ElementContainer<T>::updateEdgeReferencesAfterCompact(
 	const Edge*             base,
 	const std::vector<int>& newIndices)
