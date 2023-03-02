@@ -184,11 +184,12 @@ public:
 	void compactHalfEdges();
 
 protected:
+	template<typename Cont, typename Element>
+	void updateReferences(
+		const Element* oldBase,
+		const Element* newBase);
+
 	// Vertices
-	template<typename Cont>
-	void updateVertexReferences(
-		const typename Mesh::VertexType* oldBase,
-		const typename Mesh::VertexType* newBase);
 
 	template<typename Cont>
 	void updateVertexReferencesAfterCompact(

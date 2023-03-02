@@ -52,7 +52,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
 	// just run the same function that we use when vector is reallocated, but using
 	// as old base the base of the other vertex container data
-	(updateVertexReferences<Args>(oth.VertexContainer::vec.data(), VertexContainer::vec.data()), ...);
+	(updateReferences<Args>(oth.VertexContainer::vec.data(), VertexContainer::vec.data()), ...);
 
 	// update references into the face container
 	if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
@@ -303,7 +303,7 @@ uint Mesh<Args...>::addVertex()
 	Vertex* newBase = VertexContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
 		// change all the vertex references in the other containers
-		(updateVertexReferences<Args>(oldBase, newBase), ...);
+		(updateReferences<Args>(oldBase, newBase), ...);
 	}
 	return vid;
 }
@@ -356,7 +356,7 @@ uint Mesh<Args...>::addVertices(uint n)
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
 		// change all the vertex references in the other containers
-		(updateVertexReferences<Args>(oldBase, newBase), ...);
+		(updateReferences<Args>(oldBase, newBase), ...);
 	}
 	return vid;
 }
@@ -425,7 +425,7 @@ void Mesh<Args...>::reserveVertices(uint n)
 	VertexContainer::reserveElements(n, this);
 	Vertex* newBase = VertexContainer::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
-		(updateVertexReferences<Args>(oldBase, newBase), ...);
+		(updateReferences<Args>(oldBase, newBase), ...);
 }
 
 /**
@@ -1012,13 +1012,13 @@ void Mesh<Args...>::compactHalfEdges()
  *********************/
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
-void Mesh<Args...>::updateVertexReferences(
-	const typename Mesh::VertexType* oldBase,
-	const typename Mesh::VertexType* newBase)
+template<typename Cont, typename Element>
+void Mesh<Args...>::updateReferences(
+	const Element* oldBase,
+	const Element* newBase)
 {
 	if constexpr(mesh::IsElementContainer<Cont>) {
-		Cont::updateVertexReferences(oldBase, newBase);
+		Cont::updateReferences(oldBase, newBase);
 	}
 }
 
@@ -1486,8 +1486,8 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
 
 	using VertexType      = typename Mesh<A...>::VertexType;
-	(m1.template updateVertexReferences<A>((VertexType*) m2BaseV, m1.VertexContainer::vec.data()), ...);
-	(m2.template updateVertexReferences<A>((VertexType*) m1BaseV, m2.VertexContainer::vec.data()), ...);
+	(m1.template updateReferences<A>((VertexType*) m2BaseV, m1.VertexContainer::vec.data()), ...);
+	(m2.template updateReferences<A>((VertexType*) m1BaseV, m2.VertexContainer::vec.data()), ...);
 
 	if constexpr (mesh::HasFaceContainer<Mesh<A...>>) {
 		using FaceType      = typename Mesh<A...>::FaceType;

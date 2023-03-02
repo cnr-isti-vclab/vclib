@@ -106,8 +106,8 @@ protected:
 
 	std::vector<int> compactElements();
 
-	template<typename Vertex>
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+	template<typename Element>
+	void updateReferences(const Element* oldBase, const Element* newBase);
 
 	template<typename Vertex>
 	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);

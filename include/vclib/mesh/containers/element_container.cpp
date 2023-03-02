@@ -504,8 +504,8 @@ std::vector<int> ElementContainer<T>::compactElements()
 }
 
 template<typename T>
-template<typename Vertex>
-void ElementContainer<T>::updateVertexReferences(const Vertex *oldBase, const Vertex *newBase)
+template<typename Element>
+void ElementContainer<T>::updateReferences(const Element* oldBase, const Element* newBase)
 {
 	using Comps = typename T::Components;
 
