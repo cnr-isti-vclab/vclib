@@ -119,16 +119,7 @@ protected:
 	void importFrom(const Container& c, ParentMeshType* parent);
 
 	template<typename Container, typename MyBase, typename CBase>
-	void importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
-
-	template<typename Container, typename MyBase, typename CBase>
-	void importFaceReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
-
-	template<typename Container, typename MyBase, typename CBase>
-	void importEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
-
-	template<typename Container, typename MyBase, typename CBase>
-	void importHalfEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
+	void importReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
 	
 	// filter components of elements, taking only vertical ones
 	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
