@@ -109,8 +109,8 @@ protected:
 	template<typename Element>
 	void updateReferences(const Element* oldBase, const Element* newBase);
 
-	template<typename Vertex>
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+	template<typename Element>
+	void updateReferencesAfterCompact(const Element* base, const std::vector<int>& newIndices);
 
 	template<typename Face>
 	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);

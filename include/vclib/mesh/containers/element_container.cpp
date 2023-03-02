@@ -513,9 +513,9 @@ void ElementContainer<T>::updateReferences(const Element* oldBase, const Element
 }
 
 template<typename T>
-template<typename Vertex>
-void ElementContainer<T>::updateVertexReferencesAfterCompact(
-	const Vertex*           base,
+template<typename Element>
+void ElementContainer<T>::updateReferencesAfterCompact(
+	const Element*          base,
 	const std::vector<int>& newIndices)
 {
 	using Comps = typename T::Components;

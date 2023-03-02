@@ -189,12 +189,10 @@ protected:
 		const Element* oldBase,
 		const Element* newBase);
 
-	// Vertices
-
-	template<typename Cont>
-	void updateVertexReferencesAfterCompact(
-		const typename Mesh::VertexType* base,
-		const std::vector<int>&       newIndices);
+	template<typename Cont, typename Element>
+	void updateReferencesAfterCompact(
+		const Element*          base,
+		const std::vector<int>& newIndices);
 
 	// Faces
 

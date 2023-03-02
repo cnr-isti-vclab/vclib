@@ -215,14 +215,6 @@ void AdjacentVertices<Vertex, El, o>::updateReferencesAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
-	updateVertexReferencesAfterCompact(base, newIndices);
-}
-
-template<typename Vertex, typename El, bool o>
-void AdjacentVertices<Vertex, El, o>::updateVertexReferencesAfterCompact(
-	const Vertex*           base,
-	const std::vector<int>& newIndices)
-{
 	Base::updateElementReferencesAfterCompact(base, newIndices, this);
 }
 
@@ -235,16 +227,6 @@ void AdjacentVertices<Vertex, El, o>::importFrom(const Element&)
 template<typename Vertex, typename El, bool o>
 template<typename Element, typename ElVType>
 void AdjacentVertices<Vertex, El, o>::importReferencesFrom(
-	const Element& e,
-	Vertex*        base,
-	const ElVType* ebase)
-{
-	importVertexReferencesFrom(e, base, ebase);
-}
-
-template<typename Vertex, typename El, bool o>
-template<typename Element, typename ElVType>
-void AdjacentVertices<Vertex, El, o>::importVertexReferencesFrom(
 	const Element& e,
 	Vertex*        base,
 	const ElVType* ebase)

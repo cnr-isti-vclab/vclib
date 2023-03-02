@@ -446,7 +446,7 @@ void Mesh<Args...>::compactVertices()
 		Vertex*          newBase    = VertexContainer::vec.data();
 		assert(oldBase == newBase);
 
-		(updateVertexReferencesAfterCompact<Args>(oldBase, newIndices), ...);
+		(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
 	}
 }
 
@@ -1023,13 +1023,13 @@ void Mesh<Args...>::updateReferences(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
-void Mesh<Args...>::updateVertexReferencesAfterCompact(
-	const typename Mesh::VertexType* base,
-	const std::vector<int>&       newIndices)
+template<typename Cont, typename Element>
+void Mesh<Args...>::updateReferencesAfterCompact(
+	const Element*          base,
+	const std::vector<int>& newIndices)
 {
 	if constexpr(mesh::IsElementContainer<Cont>) {
-		Cont::updateVertexReferencesAfterCompact(base, newIndices);
+		Cont::updateReferencesAfterCompact(base, newIndices);
 	}
 }
 

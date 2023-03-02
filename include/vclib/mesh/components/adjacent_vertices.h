@@ -117,18 +117,11 @@ protected:
 
 	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
-
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElVType>
-	void
-	importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
-
-	template<typename Element, typename ElVType>
-	void
-	importVertexReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	void importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
 
 private:
 	template<typename Element, typename ElVType>

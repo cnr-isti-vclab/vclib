@@ -213,14 +213,6 @@ void VertexReferences<Vertex, N, ElementType, optional>::updateReferencesAfterCo
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
-	updateReferencesAfterCompact(base, newIndices);
-}
-
-template<typename Vertex, int N, typename El, bool o>
-void VertexReferences<Vertex, N, El, o>::updateVertexReferencesAfterCompact(
-	const Vertex*           base,
-	const std::vector<int>& newIndices)
-{
 	Base::updateElementReferencesAfterCompact(base, newIndices, this);
 }
 
@@ -233,16 +225,6 @@ void VertexReferences<Vertex, N, El, o>::importFrom(const Element&)
 template<typename Vertex, int N, typename El, bool o>
 template<typename Element, typename ElVType>
 void VertexReferences<Vertex, N, El, o>::importReferencesFrom(
-	const Element& e,
-	Vertex* base,
-	const ElVType* ebase)
-{
-	importVertexReferencesFrom(e, base, ebase);
-}
-
-template<typename Vertex, int N, typename El, bool o>
-template<typename Element, typename ElVType>
-void VertexReferences<Vertex, N, El, o>::importVertexReferencesFrom(
 	const Element& e,
 	Vertex* base,
 	const ElVType* ebase)
