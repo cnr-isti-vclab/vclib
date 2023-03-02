@@ -859,7 +859,7 @@ FaceHalfEdgeReference<HE, El, o>::wedgeTexCoords() const requires HasTexCoord<HE
 }
 
 template<typename HE, typename El, bool o>
-void FaceHalfEdgeReference<HE, El, o>::updateHalfEdgeReferences(
+void FaceHalfEdgeReference<HE, El, o>::updateReferences(
 	const HE* oldBase,
 	const HE* newBase)
 {
@@ -876,7 +876,7 @@ void FaceHalfEdgeReference<HE, El, o>::updateHalfEdgeReferences(
 }
 
 template<typename HE, typename El, bool o>
-void FaceHalfEdgeReference<HE, El, o>::updateHalfEdgeReferencesAfterCompact(
+void FaceHalfEdgeReference<HE, El, o>::updateReferencesAfterCompact(
 	const HE*         base,
 	const std::vector<int>& newIndices)
 {
@@ -899,30 +899,6 @@ void FaceHalfEdgeReference<HE, El, o>::updateHalfEdgeReferencesAfterCompact(
 }
 
 template<typename HE, typename El, bool o>
-void FaceHalfEdgeReference<HE, El, o>::updateVertexReferences(const Vertex *, const Vertex *)
-{
-}
-
-template<typename HE, typename El, bool o>
-void FaceHalfEdgeReference<HE, El, o>::updateVertexReferencesAfterCompact(
-	const Vertex*,
-	const std::vector<int>&)
-{
-}
-
-template<typename HE, typename El, bool o>
-void FaceHalfEdgeReference<HE, El, o>::updateFaceReferences(const Face*, const Face*)
-{
-}
-
-template<typename HE, typename El, bool o>
-void FaceHalfEdgeReference<HE, El, o>::updateFaceReferencesAfterCompact(
-	const Face*,
-	const std::vector<int>&)
-{
-}
-
-template<typename HE, typename El, bool o>
 template<typename Element>
 void FaceHalfEdgeReference<HE, El, o>::importFrom(const Element &)
 {
@@ -930,7 +906,7 @@ void FaceHalfEdgeReference<HE, El, o>::importFrom(const Element &)
 
 template<typename HE, typename El, bool o>
 template<typename OtherFace, typename OtherHEdge>
-void FaceHalfEdgeReference<HE, El, o>::importHalfEdgeReferencesFrom(
+void FaceHalfEdgeReference<HE, El, o>::importReferencesFrom(
 	const OtherFace&  e,
 	HE*         base,
 	const OtherHEdge* ebase)

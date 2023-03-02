@@ -567,26 +567,9 @@ template<typename T>
 template<typename HalfEdge>
 void ElementContainer<T>::updateHalfEdgeReferences(const HalfEdge *oldBase, const HalfEdge *newBase)
 {
-	// FaceHalfEdgeReference component
-	if constexpr (comp::HasFaceHalfEdgeReference<T>) {
-		for (T& e : elements()) {
-			e.updateHalfEdgeReferences(oldBase, newBase);
-		}
-	}
+	using Comps = typename T::Components;
 
-	// HalfEdgeReferences component
-	if constexpr (comp::HasHalfEdgeReferences<T>) {
-		for (T& e : elements()) {
-			e.updateHalfEdgeReferences(oldBase, newBase);
-		}
-	}
-
-	// VertexHalfEdgeReference component
-	if constexpr (comp::HasVertexHalfEdgeReference<T>) {
-		for (T& e : elements()) {
-			e.updateHalfEdgeReferences(oldBase, newBase);
-		}
-	}
+	updateReferencesOnComponents(oldBase, newBase, Comps());
 }
 
 template<typename T>
@@ -595,26 +578,9 @@ void ElementContainer<T>::updateHalfEdgeReferencesAfterCompact(
 	const HalfEdge*             base,
 	const std::vector<int>& newIndices)
 {
-	// FaceHalfEdgeReference component
-	if constexpr (comp::HasFaceHalfEdgeReference<T>) {
-		for (T& e : elements()) {
-			e.updateHalfEdgeReferencesAfterCompact(base, newIndices);
-		}
-	}
+	using Comps = typename T::Components;
 
-	// HalfEdgeReferences component
-	if constexpr (comp::HasHalfEdgeReferences<T>) {
-		for (T& e : elements()) {
-			e.updateHalfEdgeReferencesAfterCompact(base, newIndices);
-		}
-	}
-
-	// VertexHalfEdgeReference component
-	if constexpr (comp::HasVertexHalfEdgeReference<T>) {
-		for (T& e : elements()) {
-			e.updateHalfEdgeReferencesAfterCompact(base, newIndices);
-		}
-	}
+	updateReferencesAfterCompactOnComponents(base, newIndices, Comps());
 }
 
 template<typename T>
@@ -854,18 +820,9 @@ template<typename T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importHalfEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
-	// if the element of this container has at least one of these components (it will have just
-	// one of these), it means that it has the importHalfEdgeReferencesFrom member function that
-	// can be called. This function takes the ith element of the other mesh, and the bases
-	// to compute the offset and then the new reference
-	if constexpr (
-		comp::HasFaceHalfEdgeReference<T> ||
-		comp::HasHalfEdgeReferences<T> ||
-		comp::HasVertexHalfEdgeReference<T>) {
-		for (uint i = 0; i < elementContainerSize(); ++i) {
-			element(i).importHalfEdgeReferencesFrom(c.element(i), base, cbase);
-		}
-	}
+	using Comps = typename T::Components;
+
+	importReferencesOnComponentsFrom(c, base, cbase, Comps());
 }
 
 template<typename T>

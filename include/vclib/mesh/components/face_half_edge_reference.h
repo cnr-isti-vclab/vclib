@@ -46,8 +46,8 @@ template<
 	typename HalfEdge,
 	typename ElementType = void,
 	bool optional        = false>
-class FaceHalfEdgeReference //:
-		//public ReferencesComponentTriggerer<HalfEdge>
+class FaceHalfEdgeReference :
+		public ReferencesComponentTriggerer<HalfEdge>
 {
 	using ThisType = FaceHalfEdgeReference<HalfEdge, ElementType, optional>;
 
@@ -274,22 +274,15 @@ public:
 	ConstWedgeTexCoordsRangeIterator wedgeTexCoords() const requires HasTexCoord<HalfEdge>;
 
 protected:
-	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void updateReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
 
-	void
-	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
-
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
-
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
-	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+	void updateReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	template<typename OtherFace, typename OtherHEdge>
-	void importHalfEdgeReferencesFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
+	void importReferencesFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
 
 private:
 	HalfEdge*& ohe(); // outer half edge

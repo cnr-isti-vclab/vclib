@@ -144,7 +144,7 @@ F*& HalfEdgeReferences<HE, V, F, El, o>::face()
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgeReferences<HE, V, F, El, o>::updateHalfEdgeReferences(
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferences(
 	const HE* oldBase,
 	const HE* newBase)
 {
@@ -163,7 +163,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::updateHalfEdgeReferences(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgeReferences<HE, V, F, El, o>::updateHalfEdgeReferencesAfterCompact(
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferencesAfterCompact(
 	const HE*               base,
 	const std::vector<int>& newIndices)
 {
@@ -255,7 +255,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::importFrom(const Element&)
  */
 template<typename HE, typename V, typename F, typename El, bool o>
 template<typename OHE, typename HEType>
-void HalfEdgeReferences<HE, V, F, El, o>::importHalfEdgeReferencesFrom(
+void HalfEdgeReferences<HE, V, F, El, o>::importReferencesFrom(
 	const OHE&    e,
 	HE*           base,
 	const HEType* ebase)
