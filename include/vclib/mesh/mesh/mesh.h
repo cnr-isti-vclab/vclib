@@ -55,6 +55,15 @@ class Mesh : public Args...
 	friend struct comp::internal::ComponentData;
 
 public:
+	// filter Components of the Mesh, taking only the Container
+	// Containers is a vcl::TypeWrapper containing all the containers that were in Args
+	// Containers are the types that satisfy the concept IsElementContainer
+	//
+	// Using this type, you can iterate over containers of a mesh and call generic functions on
+	// them, regardless the actual type of the container
+	using Containers = typename vcl::
+		FilterTypesByCondition<mesh::IsElementContainerPred, vcl::TypeWrapper<Args...>>::type;
+
 	Mesh();
 	Mesh(const Mesh& oth);
 	Mesh(Mesh&& oth);
@@ -255,16 +264,16 @@ private:
 	// member functions used by friends
 
 	template<typename El>
-	auto& customComponents() requires ElementConcept<El>;
+	auto& customComponents();
 
 	template<typename El>
-	const auto& customComponents() const requires ElementConcept<El>;
+	const auto& customComponents() const;
 	
 	template<typename El>
-	auto& verticalComponents() requires ElementConcept<El>;
+	auto& verticalComponents();
 	
 	template<typename El>
-	const auto& verticalComponents() const requires ElementConcept<El>;
+	const auto& verticalComponents() const;
 };
 
 template<typename... A> requires HasVertices<A...>

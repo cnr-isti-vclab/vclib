@@ -24,6 +24,7 @@
 #ifndef VCL_MESH_ELEMENTS_HALF_EDGE_CONCEPT_H
 #define VCL_MESH_ELEMENTS_HALF_EDGE_CONCEPT_H
 
+#include "element_concept.h"
 #include "half_edge_components.h"
 
 namespace vcl {
@@ -89,7 +90,8 @@ concept HasOptionalScalar = comp::HasOptionalScalar<T>;
  */
 template<typename T>
 concept HalfEdgeConcept =
-	hedge::IsDerivedFromHalfEdge<T>::value || hedge::IsAHalfEdge<T>::value &&
+	T::ELEMENT_TYPE == HALF_EDGE &&
+	(hedge::IsDerivedFromHalfEdge<T>::value || hedge::IsAHalfEdge<T>::value) &&
 	hedge::HasBitFlags<T> &&
 	hedge::HasHalfEdgeReferences<T>;
 

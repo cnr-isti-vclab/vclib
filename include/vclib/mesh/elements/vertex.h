@@ -34,6 +34,8 @@ template<typename MeshType, typename... Args>
 class Vertex : public Element<MeshType, Args...>
 {
 public:
+	static const uint ELEMENT_TYPE = VERTEX;
+
 	uint index() const;
 };
 

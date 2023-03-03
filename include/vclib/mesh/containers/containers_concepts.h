@@ -38,6 +38,12 @@ template<typename T>
 concept IsElementContainer =
 	std::is_base_of<ElementContainerTriggerer, T>::value;
 
+template<typename T>
+struct IsElementContainerPred
+{
+	static const bool value = IsElementContainer<T>;
+};
+
 template <typename T>
 concept HasEdgeContainer = requires(T o)
 {

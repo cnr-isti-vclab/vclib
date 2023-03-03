@@ -1,10 +1,20 @@
 # VCLib ToDo list
 
 - Mesh:
-  - [ ] generic importReferences (avoid importVertexReferences, importFaceReferences, etc. on containers and components)
-  - [ ] remove duplicate code inside mesh class, use pack expansion
-  - [ ] manage clean() for all components of mesh, not only element containers
-  - [ ] import dcel from mesh: update adjacent faces e wedges 
+  - Components:
+
+  - Elements:
+    - [ ] set properly elements concepts
+    - [ ] set constructors for Edge element
+    - [ ] set constructors for HalfEdge element
+  - Containers:
+    - [ ] set properly container concepts
+  - Mesh:
+    - [ ] customComponents and verticalComponents members should be dynamic, and do not static check on the type of element
+    - [ ] generic importReferences (avoid importVertexReferences, importFaceReferences, etc. on containers and components)
+  
+    - [ ] manage clean() for all components of mesh, not only element containers
+    - [ ] import dcel from mesh: update adjacent faces e wedges 
 - Samplers:
   - [ ] add resize member function to allow parallel algorithms
 - Algorithms:

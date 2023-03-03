@@ -24,6 +24,7 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_CONCEPT_H
 #define VCL_MESH_ELEMENTS_VERTEX_CONCEPT_H
 
+#include "element_concept.h"
 #include "vertex_components.h"
 
 namespace vcl {
@@ -111,6 +112,7 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
  */
 template<typename T>
 concept VertexConcept =
+	T::ELEMENT_TYPE == VERTEX &&
 	(vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value) &&
 	vert::HasBitFlags<T> &&
 	vert::HasCoordinate<T>;

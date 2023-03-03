@@ -1207,8 +1207,9 @@ void Mesh<Args...>::importTriReferencesHelper(
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename El>
-auto& Mesh<Args...>::customComponents() requires ElementConcept<El>
+auto& Mesh<Args...>::customComponents()
 {
+	// todo make this dynamic: take the container of El and return its ccVecMap
 	if constexpr (EdgeConcept<El>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		return EdgeContainer::ccVecMap;
@@ -1229,8 +1230,9 @@ auto& Mesh<Args...>::customComponents() requires ElementConcept<El>
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename El>
-const auto& Mesh<Args...>::customComponents() const requires ElementConcept<El>
+const auto& Mesh<Args...>::customComponents() const
 {
+	// todo make this dynamic: take the container of El and return its ccVecMap
 	if constexpr (EdgeConcept<El>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		return EdgeContainer::ccVecMap;
@@ -1251,8 +1253,9 @@ const auto& Mesh<Args...>::customComponents() const requires ElementConcept<El>
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename El>
-auto& Mesh<Args...>::verticalComponents() requires ElementConcept<El>
+auto& Mesh<Args...>::verticalComponents()
 {
+	// todo make this dynamic: take the container of El and return its vcVecTuple
 	if constexpr (EdgeConcept<El>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		return EdgeContainer::vcVecTuple;
@@ -1273,8 +1276,9 @@ auto& Mesh<Args...>::verticalComponents() requires ElementConcept<El>
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename El>
-const auto& Mesh<Args...>::verticalComponents() const requires ElementConcept<El>
+const auto& Mesh<Args...>::verticalComponents() const
 {
+	// todo make this dynamic: take the container of El and return its vcVecTuple
 	if constexpr (EdgeConcept<El>) {
 		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
 		return EdgeContainer::vcVecTuple;
