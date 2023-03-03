@@ -188,8 +188,20 @@ private:
 	void init() {};
 	bool isEnabled() { return true; }
 
-	template<typename Cont, typename Element>
+	template<typename Cont>
 	uint addElement();
+
+	template<typename Cont>
+	uint addElements(uint n);
+
+	template<typename Cont>
+	void reserveElements(uint n);
+
+	template<typename Cont>
+	void compactElements();
+
+	template<typename Cont>
+	void clearElements();
 
 	template<typename Cont, typename Element>
 	void updateReferences(
@@ -202,12 +214,6 @@ private:
 		const std::vector<int>& newIndices);
 
 	void updateAllParentMeshPointers();
-
-	template<typename Cont>
-	void clearContainer();
-
-	template<typename Cont>
-	void compactContainer();
 
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);

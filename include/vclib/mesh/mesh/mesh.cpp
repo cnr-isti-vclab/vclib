@@ -98,13 +98,13 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::clear()
 {
-	(clearContainer<Args>(), ...);
+	(clearElements<Args>(), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::compact()
 {
-	(compactContainer<Args>(), ...);
+	(compactElements<Args>(), ...);
 }
 
 /**
@@ -291,10 +291,9 @@ uint Mesh<Args...>::index(const typename Mesh::VertexType* v) const
 template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::addVertex()
 {
-	using Vertex          = typename Mesh::VertexType;
 	using VertexContainer = typename Mesh::VertexContainer;
 
-	return addElement<VertexContainer, Vertex>();
+	return addElement<VertexContainer>();
 }
 
 /**
@@ -332,22 +331,9 @@ uint Mesh<Args...>::addVertex(const typename Mesh::VertexType::CoordType& p)
 template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::addVertices(uint n)
 {
-	using Vertex          = typename Mesh::VertexType;
 	using VertexContainer = typename Mesh::VertexContainer;
 
-	// If the base pointer of the container of vertices changes, it means that all the vertex
-	// references contained in the other elements need to be updated (the ones contained in the
-	// vertex container are updated automatically)
-
-	Vertex* oldBase = VertexContainer::vec.data();
-	uint    vid     = VertexContainer::addElements(n, this); // add the number of vertices
-	Vertex* newBase = VertexContainer::vec.data();
-
-	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the vertex references in the other containers
-		(updateReferences<Args>(oldBase, newBase), ...);
-	}
-	return vid;
+	return addElements<VertexContainer>(n);
 }
 
 /**
@@ -407,14 +393,9 @@ uint Mesh<Args...>::addVertices(
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::reserveVertices(uint n)
 {
-	using Vertex          = typename Mesh::VertexType;
 	using VertexContainer = typename Mesh::VertexContainer;
 
-	Vertex* oldBase = VertexContainer::vec.data();
-	VertexContainer::reserveElements(n, this);
-	Vertex* newBase = VertexContainer::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updateReferences<Args>(oldBase, newBase), ...);
+	reserveElements<VertexContainer>(n);
 }
 
 /**
@@ -425,18 +406,9 @@ void Mesh<Args...>::reserveVertices(uint n)
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::compactVertices()
 {
-	using Vertex          = typename Mesh::VertexType;
 	using VertexContainer = typename Mesh::VertexContainer;
 
-	if (VertexContainer::vertexNumber() != VertexContainer::vertexContainerSize()) {
-
-		Vertex*          oldBase    = VertexContainer::vec.data();
-		std::vector<int> newIndices = VertexContainer::compactElements();
-		Vertex*          newBase    = VertexContainer::vec.data();
-		assert(oldBase == newBase);
-
-		(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
-	}
+	compactElements<VertexContainer>();
 }
 
 /**
@@ -475,10 +447,9 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 uint Mesh<Args...>::addFace()
 {
-	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
 
-	return addElement<FaceContainer, Face>();
+	return addElement<FaceContainer>();
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -569,46 +540,27 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 uint Mesh<Args...>::addFaces(uint n)
 {
-	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
 
-	Face* oldBase = FaceContainer::vec.data();
-	uint  fid     = FaceContainer::addElements(n, this);
-	Face* newBase = FaceContainer::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updateReferences<Args>(oldBase, newBase), ...);
-	return fid;
+	return addElements<FaceContainer>(n);
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 void Mesh<Args...>::reserveFaces(uint n)
 {
-	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
 
-	Face* oldBase = FaceContainer::vec.data();
-	FaceContainer::reserveElements(n, this);
-	Face* newBase = FaceContainer::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updateReferences<Args>(oldBase, newBase), ...);
+	reserveElements<FaceContainer>(n);
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 void Mesh<Args...>::compactFaces()
 {
-	using Face          = typename M::FaceType;
 	using FaceContainer = typename M::FaceContainer;
 
-	if (FaceContainer::faceNumber() != FaceContainer::faceContainerSize()) {
-		Face*            oldBase    = FaceContainer::vec.data();
-		std::vector<int> newIndices = FaceContainer::compactElements();
-		Face*            newBase    = FaceContainer::vec.data();
-		assert(oldBase == newBase);
-		
-		(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
-	}
+	compactElements<FaceContainer>();
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -729,10 +681,9 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasEdges M>
 uint Mesh<Args...>::addEdge()
 {
-	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
 
-	return addElement<EdgeContainer, Edge>();
+	return addElement<EdgeContainer>();
 }
 
 /**
@@ -753,22 +704,9 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasEdges M>
 uint Mesh<Args...>::addEdges(uint n)
 {
-	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
 
-	// If the base pointer of the container of edges changes, it means that all the edge
-	// references contained in the other elements need to be updated (the ones contained in the
-	// edge container are updated automatically)
-
-	Edge* oldBase = EdgeContainer::vec.data();
-	uint  eid     = EdgeContainer::addElements(n, this); // add the number of edges
-	Edge* newBase = EdgeContainer::vec.data();
-
-	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the vertex references in the other containers
-		(updateReferences<Args>(oldBase, newBase), ...);
-	}
-	return eid;
+	return addElements<EdgeContainer>(n);
 }
 
 /**
@@ -792,14 +730,9 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasEdges M>
 void Mesh<Args...>::reserveEdges(uint n)
 {
-	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
 
-	Edge* oldBase = EdgeContainer::vec.data();
-	EdgeContainer::reserveElements(n, this);
-	Edge* newBase = EdgeContainer::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updateReferences<Args>(oldBase, newBase), ...);
+	reserveElements<EdgeContainer>(n);
 }
 
 /**
@@ -813,17 +746,9 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasEdges M>
 void Mesh<Args...>::compactEdges()
 {
-	using Edge          = typename M::EdgeType;
 	using EdgeContainer = typename M::EdgeContainer;
 
-	if (EdgeContainer::edgeNumber() != EdgeContainer::edgeContainerSize()) {
-		Edge*            oldBase    = EdgeContainer::vec.data();
-		std::vector<int> newIndices = EdgeContainer::compactElements();
-		Edge*            newBase    = EdgeContainer::vec.data();
-		assert(oldBase == newBase);
-
-		(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
-	}
+	compactElements<EdgeContainer>();
 }
 
 /**
@@ -856,10 +781,9 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasHalfEdges M>
 uint Mesh<Args...>::addHalfEdge()
 {
-	using HalfEdge          = typename M::HalfEdgeType;
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 
-	return addElement<HalfEdgeContainer, HalfEdge>();
+	return addElement<HalfEdgeContainer>();
 }
 
 /**
@@ -880,22 +804,9 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasHalfEdges M>
 uint Mesh<Args...>::addHalfEdges(uint n)
 {
-	using HalfEdge          = typename M::HalfEdgeType;
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 
-	// If the base pointer of the container of Halfedges changes, it means that all the Halfedge
-	// references contained in the other elements need to be updated (the ones contained in the
-	// Halfedge container are updated automatically)
-
-	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
-	uint      eid     = HalfEdgeContainer::addElements(n, this); // add the number of half edges
-	HalfEdge* newBase = HalfEdgeContainer::vec.data();
-
-	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the half edge references in the other containers
-		(updateReferences<Args>(oldBase, newBase), ...);
-	}
-	return eid;
+	return addElements<HalfEdgeContainer>(n);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -947,14 +858,9 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasHalfEdges M>
 void Mesh<Args...>::reserveHalfEdges(uint n)
 {
-	using HalfEdge          = typename M::HalfEdgeType;
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 
-	HalfEdge* oldBase = HalfEdgeContainer::vec.data();
-	HalfEdgeContainer::reserveElements(n, this);
-	HalfEdge* newBase = HalfEdgeContainer::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updateReferences<Args>(oldBase, newBase), ...);
+	reserveElements<HalfEdgeContainer>(n);
 }
 
 /**
@@ -968,17 +874,9 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasHalfEdges M>
 void Mesh<Args...>::compactHalfEdges()
 {
-	using HalfEdge          = typename M::HalfEdgeType;
 	using HalfEdgeContainer = typename M::HalfEdgeContainer;
 
-	if (HalfEdgeContainer::HalfedgeNumber() != HalfEdgeContainer::HalfedgeContainerSize()) {
-		HalfEdge*        oldBase    = HalfEdgeContainer::vec.data();
-		std::vector<int> newIndices = HalfEdgeContainer::compactElements();
-		HalfEdge*        newBase    = HalfEdgeContainer::vec.data();
-		assert(oldBase == newBase);
-		
-		(updateReferencesAfterCompact<Args>(oldBase, newBase), ...);
-	}
+	compactElements<HalfEdgeContainer>();
 }
 
 /*********************
@@ -986,9 +884,11 @@ void Mesh<Args...>::compactHalfEdges()
  *********************/
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename Cont, typename Element>
+template<typename Cont>
 uint Mesh<Args...>::addElement()
 {
+	using Element = typename Cont::ElementType;
+
 	// If the base pointer of the container of elements changes, it means that all the elements
 	// references contained in the elements need to be updated
 
@@ -1000,6 +900,64 @@ uint Mesh<Args...>::addElement()
 		(updateReferences<Args>(oldBase, newBase), ...);
 	}
 	return eid;
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont>
+uint Mesh<Args...>::addElements(uint n)
+{
+	using Element = typename Cont::ElementType;
+
+	// If the base pointer of the container of elements changes, it means that all the elements
+	// references contained in the other elements need to be updated
+
+	Element* oldBase = Cont::vec.data();
+	uint     eid     = Cont::addElements(n, this); // add the number elements
+	Element* newBase = Cont::vec.data();
+
+	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
+		// change all the element references in the other containers
+		(updateReferences<Args>(oldBase, newBase), ...);
+	}
+	return eid;
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont>
+void Mesh<Args...>::reserveElements(uint n)
+{
+	using Element = typename Cont::ElementType;
+
+	Element* oldBase = Cont::vec.data();
+	Cont::reserveElements(n, this);
+	Element* newBase = Cont::vec.data();
+	if (oldBase != nullptr && oldBase != newBase)
+		(updateReferences<Args>(oldBase, newBase), ...);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont>
+void Mesh<Args...>::compactElements()
+{
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		if (Cont::elementNumber() != Cont::elementContainerSize()) {
+			auto* oldBase = Cont::vec.data();
+			std::vector<int> newIndices = Cont::compactElements();
+			auto* newBase = Cont::vec.data();
+			assert(oldBase == newBase);
+
+			(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
+		}
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont>
+void Mesh<Args...>::clearElements()
+{
+	if constexpr(mesh::IsElementContainer<Cont>) {
+		Cont::clearElements();
+	}
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -1028,29 +986,6 @@ template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::updateAllParentMeshPointers()
 {
 	(setParentMeshPointers<Args>(), ...);
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
-void Mesh<Args...>::clearContainer()
-{
-	if constexpr(mesh::IsElementContainer<Cont>) {
-		Cont::clearElements();
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
-void Mesh<Args...>::compactContainer()
-{
-	if constexpr(mesh::IsElementContainer<Cont>) {
-		auto* oldBase = Cont::vec.data();
-		std::vector<int> newIndices = Cont::compactElements();
-		auto* newBase = Cont::vec.data();
-		assert(oldBase == newBase);
-
-		(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
-	}
 }
 
 template<typename... Args> requires HasVertices<Args...>
