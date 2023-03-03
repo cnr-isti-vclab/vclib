@@ -488,17 +488,10 @@ uint Mesh<Args...>::addFace(Iterator begin, Iterator end)
 	using FaceContainer = typename M::FaceContainer;
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
 
-	if (begin == end) return -1;
+	if (begin == end) return UINT_NULL;
 
 	uint  fid = addFace();
 	Face& f   = FaceContainer::face(fid);
-
-	if constexpr (Face::VERTEX_NUMBER < 0) {
-		if constexpr (!comp::HasFaceHalfEdgeReference<Face>) {
-			uint n = std::distance(begin, end);
-			f.resizeVertices(n);
-		}
-	}
 
 	if constexpr (comp::HasFaceHalfEdgeReference<Face>) {
 		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
@@ -526,6 +519,11 @@ uint Mesh<Args...>::addFace(Iterator begin, Iterator end)
 		f.outerHalfEdge() = first;
 	}
 	else {
+		if constexpr (Face::VERTEX_NUMBER < 0) {
+			uint n = std::distance(begin, end);
+			f.resizeVertices(n);
+		}
+
 		unsigned int i = 0;
 		for (Iterator it = begin; it != end; ++it) {
 			f.vertex(i) = &VertexContainer::vertex(*it);

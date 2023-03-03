@@ -183,11 +183,7 @@ public:
 	template<HasHalfEdges M = Mesh>
 	void compactHalfEdges();
 
-private:
-	// hide init and isEnabled members
-	void init() {};
-	bool isEnabled() { return true; }
-
+protected:
 	template<typename Cont>
 	uint addElement();
 
@@ -212,6 +208,11 @@ private:
 	void updateReferencesAfterCompact(
 		const Element*          base,
 		const std::vector<int>& newIndices);
+
+private:
+	// hide init and isEnabled members
+	void init() {};
+	bool isEnabled() { return true; }
 
 	void updateAllParentMeshPointers();
 
@@ -250,6 +251,8 @@ private:
 		const MVertexType*       mvbase,
 		const std::vector<uint>& tris,
 		uint                     basetri);
+
+	// member functions used by friends
 
 	template<typename El>
 	auto& customComponents() requires ElementConcept<El>;
