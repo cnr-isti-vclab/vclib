@@ -937,7 +937,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
 void Mesh<Args...>::compactElements()
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		if (Cont::elementNumber() != Cont::elementContainerSize()) {
 			auto* oldBase = Cont::vec.data();
 			std::vector<int> newIndices = Cont::compactElements();
@@ -953,7 +953,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
 void Mesh<Args...>::clearElements()
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::clearElements();
 	}
 }
@@ -964,7 +964,7 @@ void Mesh<Args...>::updateReferences(
 	const Element* oldBase,
 	const Element* newBase)
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updateReferences(oldBase, newBase);
 	}
 }
@@ -975,7 +975,7 @@ void Mesh<Args...>::updateReferencesAfterCompact(
 	const Element*          base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updateReferencesAfterCompact(base, newIndices);
 	}
 }
@@ -1025,7 +1025,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
 void Mesh<Args...>::setParentMeshPointers()
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::setParentMeshPointers(this);
 	}
 }
@@ -1034,7 +1034,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importContainersAndComponents(const OthMesh &m)
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::importFrom(m, this);
 	}
 	else {
@@ -1053,7 +1053,7 @@ void Mesh<Args...>::importReferences(const OthMesh &m)
 	using ThisMesh = Mesh<Args...>;
 
 	// if Cont is a container (could be a mesh component)
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		// will call the specific importVertexReferences of the Cont container.
 		// it will take care to import the reference from tha same container type of m.
 		Cont::importVertexReferencesFrom(m, &this->vertex(0));

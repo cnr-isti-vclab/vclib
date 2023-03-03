@@ -34,14 +34,21 @@ class ElementContainerTriggerer
 {
 };
 
+/**
+ * @brief ElementContainerConcept is a concept satisfied when the type T is an Element Container.
+ */
 template<typename T>
-concept IsElementContainer =
+concept ElementContainerConcept =
 	std::is_base_of<ElementContainerTriggerer, T>::value;
 
+/**
+ * @brief The predicate IsElementContainerPred sets its bool `value` to `true` when the type T
+ * satisfies the ElementContainerConcept concept
+ */
 template<typename T>
 struct IsElementContainerPred
 {
-	static const bool value = IsElementContainer<T>;
+	static const bool value = ElementContainerConcept<T>;
 };
 
 template <typename T>
