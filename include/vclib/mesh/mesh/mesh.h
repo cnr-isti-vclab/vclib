@@ -61,6 +61,8 @@ public:
 
 	void clear();
 
+	void compact();
+
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
 
@@ -181,57 +183,37 @@ public:
 	template<HasHalfEdges M = Mesh>
 	void compactHalfEdges();
 
-protected:
-	// Vertices
-	template<typename Cont>
-	void updateVertexReferences(
-		const typename Mesh::VertexType* oldBase,
-		const typename Mesh::VertexType* newBase);
-
-	template<typename Cont>
-	void updateVertexReferencesAfterCompact(
-		const typename Mesh::VertexType* base,
-		const std::vector<int>&       newIndices);
-
-	// Faces
-	template<typename Cont, HasFaces M = Mesh>
-	void updateFaceReferences(
-		const typename M::FaceType* oldBase,
-		const typename M::FaceType* newBase);
-
-	template<typename Cont, HasFaces M = Mesh>
-	void updateFaceReferencesAfterCompact(
-		const typename M::FaceType* base,
-		const std::vector<int>&     newIndices);
-
-	// Edges
-	template<typename Cont, HasEdges M = Mesh>
-	void updateEdgeReferences(
-		const typename M::EdgeType* oldBase,
-		const typename M::EdgeType* newBase);
-
-	template<typename Cont, HasEdges M = Mesh>
-	void updateEdgeReferencesAfterCompact(
-		const typename M::EdgeType* base,
-		const std::vector<int>&     newIndices);
-
-	// HalfEdges
-	template<typename Cont, HasHalfEdges M = Mesh>
-	void updateHalfEdgeReferences(
-		const typename M::HalfEdgeType* oldBase,
-		const typename M::HalfEdgeType* newBase);
-
-	template<typename Cont, HasHalfEdges M = Mesh>
-	void updateHalfEdgeReferencesAfterCompact(
-		const typename M::HalfEdgeType* base,
-		const std::vector<int>&         newIndices);
-
-	void updateAllParentMeshPointers();
-
 private:
 	// hide init and isEnabled members
 	void init() {};
 	bool isEnabled() { return true; }
+
+	template<typename Cont>
+	uint addElement();
+
+	template<typename Cont>
+	uint addElements(uint n);
+
+	template<typename Cont>
+	void reserveElements(uint n);
+
+	template<typename Cont>
+	void compactElements();
+
+	template<typename Cont>
+	void clearElements();
+
+	template<typename Cont, typename Element>
+	void updateReferences(
+		const Element* oldBase,
+		const Element* newBase);
+
+	template<typename Cont, typename Element>
+	void updateReferencesAfterCompact(
+		const Element*          base,
+		const std::vector<int>& newIndices);
+
+	void updateAllParentMeshPointers();
 
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);

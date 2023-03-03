@@ -50,12 +50,10 @@ namespace vcl::comp {
  * Vertex Number of the Face, therefore all the members that allows to modify the number of
  * Adjacent Faces in case of dynamic size won't be available on Face Elements.
  */
-template<
-	typename Face,
-	int N,
-	typename ElementType = void,
-	bool optional        = false>
-class AdjacentFaces : protected internal::ElementReferences<Face, N, ElementType>
+template<typename Face, int N, typename ElementType = void, bool optional = false>
+class AdjacentFaces :
+		public ReferencesComponentTriggerer<Face>,
+		protected internal::ElementReferences<Face, N, ElementType>
 {
 	using ThisType = AdjacentFaces<Face, N, ElementType, optional>;
 
@@ -125,21 +123,21 @@ public:
 	ConstAdjacentFaceRangeIterator adjFaces() const;
 
 protected:
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
+	void updateReferences(const Face* oldBase, const Face* newBase);
 
-	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+	void updateReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElFType>
 	void
-	importFaceReferencesFrom(const Element& e, Face* base, const ElFType* ebase);
+	importReferencesFrom(const Element& e, Face* base, const ElFType* ebase);
 
 private:
 	template<typename Element, typename ElFType>
 	void
-	importReferencesFrom(const Element& e, Face* base, const ElFType* ebase);
+	importRefsFrom(const Element& e, Face* base, const ElFType* ebase);
 };
 
 } // namespace vcl::comp

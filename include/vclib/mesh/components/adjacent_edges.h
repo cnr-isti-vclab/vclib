@@ -50,12 +50,10 @@ namespace vcl::comp {
  * Vertex Number of the Face, therefore all the members that allows to modify the number of
  * Adjacent Edges in case of dynamic size won't be available on Face Elements.
  */
-template<
-	typename Edge,
-	int N,
-	typename ElementType = void,
-	bool optional        = false>
-class AdjacentEdges : protected internal::ElementReferences<Edge, N, ElementType>
+template<typename Edge, int N, typename ElementType = void, bool optional = false>
+class AdjacentEdges :
+		public ReferencesComponentTriggerer<Edge>,
+		protected internal::ElementReferences<Edge, N, ElementType>
 {
 	using ThisType = AdjacentEdges<Edge, N, ElementType, optional>;
 
@@ -125,21 +123,21 @@ public:
 	ConstAdjacentEdgeRangeIterator adjEdges() const;
 
 protected:
-	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);
+	void updateReferences(const Edge* oldBase, const Edge* newBase);
 
-	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
+	void updateReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
 
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElEType>
 	void
-	importEdgeReferencesFrom(const Element& e, Edge* base, const ElEType* ebase);
+	importReferencesFrom(const Element& e, Edge* base, const ElEType* ebase);
 
 private:
 	template<typename Element, typename ElEType>
 	void
-	importReferencesFrom(const Element& e, Edge* base, const ElEType* ebase);
+	importRefsFrom(const Element& e, Edge* base, const ElEType* ebase);
 };
 
 } // namespace vcl::comp

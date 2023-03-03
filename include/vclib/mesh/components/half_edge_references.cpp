@@ -144,7 +144,7 @@ F*& HalfEdgeReferences<HE, V, F, El, o>::face()
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgeReferences<HE, V, F, El, o>::updateHalfEdgeReferences(
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferences(
 	const HE* oldBase,
 	const HE* newBase)
 {
@@ -163,7 +163,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::updateHalfEdgeReferences(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgeReferences<HE, V, F, El, o>::updateHalfEdgeReferencesAfterCompact(
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferencesAfterCompact(
 	const HE*               base,
 	const std::vector<int>& newIndices)
 {
@@ -191,7 +191,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::updateHalfEdgeReferencesAfterCompact(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgeReferences<HE, V, F, El, o>::updateFaceReferences(
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferences(
 	const F* oldBase,
 	const F* newBase)
 {
@@ -202,7 +202,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::updateFaceReferences(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgeReferences<HE, V, F, El, o>::updateFaceReferencesAfterCompact(
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferencesAfterCompact(
 	const F*                base,
 	const std::vector<int>& newIndices)
 {
@@ -216,7 +216,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::updateFaceReferencesAfterCompact(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgeReferences<HE, V, F, El, o>::updateVertexReferences(
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferences(
 	const V* oldBase,
 	const V* newBase)
 {
@@ -227,7 +227,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::updateVertexReferences(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgeReferences<HE, V, F, El, o>::updateVertexReferencesAfterCompact(
+void HalfEdgeReferences<HE, V, F, El, o>::updateReferencesAfterCompact(
 	const V*                base,
 	const std::vector<int>& newIndices)
 {
@@ -255,7 +255,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::importFrom(const Element&)
  */
 template<typename HE, typename V, typename F, typename El, bool o>
 template<typename OHE, typename HEType>
-void HalfEdgeReferences<HE, V, F, El, o>::importHalfEdgeReferencesFrom(
+void HalfEdgeReferences<HE, V, F, El, o>::importReferencesFrom(
 	const OHE&    e,
 	HE*           base,
 	const HEType* ebase)
@@ -279,7 +279,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::importHalfEdgeReferencesFrom(
 
 template<typename HE, typename V, typename F, typename El, bool o>
 template<typename OHE, typename VType>
-void HalfEdgeReferences<HE, V, F, El, o>::importVertexReferencesFrom(
+void HalfEdgeReferences<HE, V, F, El, o>::importReferencesFrom(
 	const OHE&   e,
 	V*           base,
 	const VType* ebase)
@@ -295,7 +295,7 @@ void HalfEdgeReferences<HE, V, F, El, o>::importVertexReferencesFrom(
 
 template<typename HE, typename V, typename F, typename El, bool o>
 template<typename OHE, typename FType>
-void HalfEdgeReferences<HE, V, F, El, o>::importFaceReferencesFrom(
+void HalfEdgeReferences<HE, V, F, El, o>::importReferencesFrom(
 	const OHE&   e,
 	F*           base,
 	const FType* ebase)

@@ -37,7 +37,10 @@ template<
 	typename Face,
 	typename ElementType = void,
 	bool optional        = false>
-class HalfEdgeReferences
+class HalfEdgeReferences :
+		public ReferencesComponentTriggerer<HalfEdge>,
+		public ReferencesComponentTriggerer<Vertex>,
+		public ReferencesComponentTriggerer<Face>
 {
 	using ThisType = HalfEdgeReferences<HalfEdge, Vertex, Face, ElementType, optional>;
 
@@ -91,27 +94,26 @@ public:
 	Face*&      face();
 
 protected:
-	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
-	void
-	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+	void updateReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void updateReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
-	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+	void updateReferences(const Face* oldBase, const Face* newBase);
+	void updateReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
+	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	template<typename HE, typename HEType>
-	void importHalfEdgeReferencesFrom(const HE& e, HalfEdge* base, const HEType* ebase);
+	void importReferencesFrom(const HE& e, HalfEdge* base, const HEType* ebase);
 
 	template<typename HE, typename VType>
-	void importVertexReferencesFrom(const HE& e, Vertex* base, const VType* ebase);
+	void importReferencesFrom(const HE& e, Vertex* base, const VType* ebase);
 
 	template<typename HE, typename FType>
-	void importFaceReferencesFrom(const HE& e, Face* base, const FType* ebase);
+	void importReferencesFrom(const HE& e, Face* base, const FType* ebase);
 
 private:
 	// members that allow to access the data, trough data (horizontal) or trough parent (vertical)

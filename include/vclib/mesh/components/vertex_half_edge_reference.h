@@ -39,7 +39,8 @@ template<
 	typename HalfEdge,
 	typename ElementType = void,
 	bool optional        = false>
-class VertexHalfEdgeReference
+class VertexHalfEdgeReference :
+	public ReferencesComponentTriggerer<HalfEdge>
 {
 	using ThisType = VertexHalfEdgeReference<HalfEdge, ElementType, optional>;
 
@@ -142,21 +143,14 @@ public:
 	ConstAdjacentVertexRangeIterator adjVertices() const;
 
 protected:
-	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
-	void
-	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
-
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
-
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
-	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+	void updateReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void updateReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	template<typename OtherVertex, typename OtherHEType>
-	void importHalfEdgeReferencesFrom(const OtherVertex& e, HalfEdge* base, const OtherHEType* ebase);
+	void importReferencesFrom(const OtherVertex& e, HalfEdge* base, const OtherHEType* ebase);
 
 private:
 	HalfEdge*& he();

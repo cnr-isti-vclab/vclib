@@ -883,7 +883,7 @@ void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m, T* base)
 	if constexpr (HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
-		Base::importVertexReferencesFrom((const MVertexContainer&) m, base, &m.vertex(0));
+		Base::importReferencesFrom((const MVertexContainer&) m, base, &m.vertex(0));
 	}
 }
 
@@ -894,7 +894,7 @@ void VertexContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 	if constexpr (HasFaceContainer<Mesh> && HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
-		Base::importFaceReferencesFrom((const MVertexContainer&) m, base, &m.face(0));
+		Base::importReferencesFrom((const MVertexContainer&) m, base, &m.face(0));
 	}
 }
 
@@ -905,7 +905,7 @@ void VertexContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
 	if constexpr (HasEdgeContainer<Mesh> && HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
-		Base::importEdgeReferencesFrom((const MVertexContainer&) m, base, &m.edge(0));
+		Base::importReferencesFrom((const MVertexContainer&) m, base, &m.edge(0));
 	}
 }
 
@@ -916,7 +916,7 @@ void VertexContainer<T>::importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* b
 	if constexpr (HasHalfEdgeContainer<Mesh> && HasVertexContainer<Mesh>) {
 		using MVertexContainer = typename Mesh::VertexContainer::Base;
 
-		Base::importHalfEdgeReferencesFrom((const MVertexContainer&) m, base, &m.halfEdge(0));
+		Base::importReferencesFrom((const MVertexContainer&) m, base, &m.halfEdge(0));
 	}
 }
 

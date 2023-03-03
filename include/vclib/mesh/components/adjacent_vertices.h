@@ -46,11 +46,10 @@ namespace vcl::comp {
  * v.adjVerticesNumber();
  * @endcode
  */
-template<
-	typename Vertex,
-	typename ElementType = void,
-	bool optional        = false>
-class AdjacentVertices : protected internal::ElementReferences<Vertex, -1, ElementType>
+template<typename Vertex, typename ElementType = void, bool optional = false>
+class AdjacentVertices :
+		public ReferencesComponentTriggerer<Vertex>,
+		protected internal::ElementReferences<Vertex, -1, ElementType>
 {
 	using ThisType = AdjacentVertices<Vertex, ElementType, optional>;
 
@@ -114,21 +113,20 @@ public:
 	ConstAdjacentVertexRangeIterator adjVertices() const;
 
 protected:
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
 
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElVType>
-	void
-	importVertexReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	void importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
 
 private:
 	template<typename Element, typename ElVType>
 	void
-	importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	importRefsFrom(const Element& e, Vertex* base, const ElVType* ebase);
 };
 
 } // namespace vcl::comp

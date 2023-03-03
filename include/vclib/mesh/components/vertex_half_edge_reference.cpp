@@ -382,7 +382,7 @@ VertexHalfEdgeReference<HE, El, o>::adjVertices() const
 }
 
 template<typename HE, typename El, bool o>
-void VertexHalfEdgeReference<HE, El, o>::updateHalfEdgeReferences(
+void VertexHalfEdgeReference<HE, El, o>::updateReferences(
 	const HE* oldBase,
 	const HE* newBase)
 {
@@ -393,7 +393,7 @@ void VertexHalfEdgeReference<HE, El, o>::updateHalfEdgeReferences(
 }
 
 template<typename HE, typename El, bool o>
-void VertexHalfEdgeReference<HE, El, o>::updateHalfEdgeReferencesAfterCompact(
+void VertexHalfEdgeReference<HE, El, o>::updateReferencesAfterCompact(
 	const HE*         base,
 	const std::vector<int>& newIndices)
 {
@@ -407,30 +407,6 @@ void VertexHalfEdgeReference<HE, El, o>::updateHalfEdgeReferencesAfterCompact(
 }
 
 template<typename HE, typename El, bool o>
-void VertexHalfEdgeReference<HE, El, o>::updateVertexReferences(const Vertex*, const Vertex*)
-{
-}
-
-template<typename HE, typename El, bool o>
-void VertexHalfEdgeReference<HE, El, o>::updateVertexReferencesAfterCompact(
-	const Vertex*,
-	const std::vector<int>&)
-{
-}
-
-template<typename HE, typename El, bool o>
-void VertexHalfEdgeReference<HE, El, o>::updateFaceReferences(const Face*, const Face*)
-{
-}
-
-template<typename HE, typename El, bool o>
-void VertexHalfEdgeReference<HE, El, o>::updateFaceReferencesAfterCompact(
-	const Face*,
-	const std::vector<int>&)
-{
-}
-
-template<typename HE, typename El, bool o>
 template<typename Element>
 void VertexHalfEdgeReference<HE, El, o>::importFrom(const Element&)
 {
@@ -438,7 +414,7 @@ void VertexHalfEdgeReference<HE, El, o>::importFrom(const Element&)
 
 template<typename HE, typename El, bool o>
 template<typename OtherVertex, typename OtherHEType>
-void VertexHalfEdgeReference<HE, El, o>::importHalfEdgeReferencesFrom(
+void VertexHalfEdgeReference<HE, El, o>::importReferencesFrom(
 	const OtherVertex& e,
 	HE*          base,
 	const OtherHEType* ebase)

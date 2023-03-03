@@ -29,12 +29,10 @@
 
 namespace vcl::comp {
 
-template<
-	typename Vertex,
-	int N,
-	typename ElementType = void,
-	bool optional        = false>
-class VertexReferences : protected internal::ElementReferences<Vertex, N, ElementType>
+template<typename Vertex, int N, typename ElementType = void, bool optional = false>
+class VertexReferences :
+		public ReferencesComponentTriggerer<Vertex>,
+		protected internal::ElementReferences<Vertex, N, ElementType>
 {
 	using ThisType = VertexReferences<Vertex, N, ElementType, optional>;
 
@@ -104,21 +102,20 @@ public:
 	ConstVertexRangeIterator vertices() const;
 
 protected:
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
 
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElVType>
-	void
-	importVertexReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	void importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
 
 private:
 	template<typename Element, typename ElVType>
 	void
-	importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	importRefsFrom(const Element& e, Vertex* base, const ElVType* ebase);
 };
 
 } // namespace vcl::comp

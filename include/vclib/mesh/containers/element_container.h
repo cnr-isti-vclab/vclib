@@ -106,30 +106,11 @@ protected:
 
 	std::vector<int> compactElements();
 
-	template<typename Vertex>
-	void updateVertexReferences(const Vertex* oldBase, const Vertex* newBase);
+	template<typename Element>
+	void updateReferences(const Element* oldBase, const Element* newBase);
 
-	template<typename Vertex>
-	void updateVertexReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
-
-	template<typename Face>
-	void updateFaceReferences(const Face* oldBase, const Face* newBase);
-
-	template<typename Face>
-	void updateFaceReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
-
-	template<typename Edge>
-	void updateEdgeReferences(const Edge* oldBase, const Edge* newBase);
-
-	template<typename Edge>
-	void updateEdgeReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
-
-	template<typename HalfEdge>
-	void updateHalfEdgeReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
-
-	template<typename HalfEdge>
-	void
-	updateHalfEdgeReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+	template<typename Element>
+	void updateReferencesAfterCompact(const Element* base, const std::vector<int>& newIndices);
 
 	template<typename Container>
 	void enableOptionalComponentsOf(const Container& c);
@@ -138,16 +119,7 @@ protected:
 	void importFrom(const Container& c, ParentMeshType* parent);
 
 	template<typename Container, typename MyBase, typename CBase>
-	void importVertexReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
-
-	template<typename Container, typename MyBase, typename CBase>
-	void importFaceReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
-
-	template<typename Container, typename MyBase, typename CBase>
-	void importEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
-
-	template<typename Container, typename MyBase, typename CBase>
-	void importHalfEdgeReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
+	void importReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
 	
 	// filter components of elements, taking only vertical ones
 	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
@@ -174,6 +146,40 @@ protected:
 	 * @brief ccVecMap the map that associates a string to a vector of custom components
 	 */
 	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVecMap;
+
+private:
+	template<typename ElRef, typename... Comps>
+	void updateReferencesOnComponents(
+		const ElRef* oldBase,
+		const ElRef* newBase,
+		TypeWrapper<Comps...>);
+
+	template<typename ElRef, typename... Comps>
+	void updateReferencesAfterCompactOnComponents(
+		const ElRef*            base,
+		const std::vector<int>& newIndices,
+		TypeWrapper<Comps...>);
+
+	template<typename Container, typename ElRef, typename CBase, typename... Comps>
+	void importReferencesOnComponentsFrom(
+		const Container& c,
+		ElRef*           base,
+		const CBase*     cbase,
+		TypeWrapper<Comps...>);
+
+	template<typename Comp, typename ElRef>
+	void updateReferencesOnComponent(const ElRef* oldBase, const ElRef* newBase);
+
+	template<typename Comp, typename ElRef>
+	void updateReferencesAfterCompactOnComponent(
+		const ElRef* base,
+		const std::vector<int>& newIndices);
+
+	template<typename Comp, typename Container, typename ElRef, typename CBase>
+	void importReferencesOnComponentFrom(
+		const Container& c,
+		ElRef*           base,
+		const CBase*     cbase);
 };
 
 } // namespace vcl::mesh

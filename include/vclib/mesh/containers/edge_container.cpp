@@ -715,7 +715,7 @@ void EdgeContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
 	if constexpr (mesh::HasVertexContainer<Mesh> && HasEdgeContainer<Mesh>) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
-		Base::importVertexReferencesFrom((const MEdgeContainer&)m, base, &m.vertex(0));
+		Base::importReferencesFrom((const MEdgeContainer&)m, base, &m.vertex(0));
 	}
 }
 
@@ -726,7 +726,7 @@ void EdgeContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
 	if constexpr (HasFaceContainer<Mesh> && HasEdgeContainer<Mesh>) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
-		Base::importFaceReferencesFrom((const MEdgeContainer&)m, base, &m.face(0));
+		Base::importReferencesFrom((const MEdgeContainer&)m, base, &m.face(0));
 	}
 }
 
@@ -737,7 +737,7 @@ void EdgeContainer<T>::importEdgeReferencesFrom(const Mesh& m, T *base)
 	if constexpr (HasEdgeContainer<Mesh>) {
 		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
 
-		Base::importFaceReferencesFrom((const MEdgeContainer&)m, base, &m.edge(0));
+		Base::importReferencesFrom((const MEdgeContainer&)m, base, &m.edge(0));
 	}
 }
 
