@@ -32,6 +32,19 @@
 
 namespace vcl {
 
+namespace internal {
+
+template<uint i, typename Cont, typename Array, typename... A>
+void setContainerBase(Mesh<A...>& m, Array& bases);
+
+template<typename... A>
+auto getContainerBases(Mesh<A...>& m);
+
+} // namespace vcl::internal
+
+template<typename... A> requires HasVertices<A...>
+inline void swap(Mesh<A...>& m1, Mesh<A...>& m2);
+
 /**
  * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
  * containers of Elements (which can be vertices, faces, edges...), plus some other components.
@@ -77,6 +90,10 @@ public:
 
 	template<typename OtherMeshType>
 	void importFrom(const OtherMeshType& m);
+
+	/// @private
+	template<uint i, typename Cont, typename Array, typename... A>
+	friend void internal::setContainerBase(Mesh<A...>& m, Array& bases);
 
 	/// @private
 	template<typename... A> requires HasVertices<A...>
@@ -275,9 +292,6 @@ private:
 	template<typename El>
 	const auto& verticalComponents() const;
 };
-
-template<typename... A> requires HasVertices<A...>
-inline void swap(Mesh<A...>& m1, Mesh<A...>& m2);
 
 } // namespace vcl
 
