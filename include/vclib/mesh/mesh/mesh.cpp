@@ -104,7 +104,7 @@ void Mesh<Args...>::compact()
  * MeshType m1;
  * OtherMeshType m2;
  *
- * // do stuff
+ * // do stuff on m2
  *
  * m1.enableSameOptionalComponentsOf(m2); // m1 enables all the available components of m2
  * m1.importFrom(m2); // m1 will import all the data contained in m2 that can be stored in m1
@@ -119,23 +119,7 @@ void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 	// enable all optional components of this Mesh depending on what's available in the
 	// OtherMeshType
 
-	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-	VertexContainer::enableOptionalComponentsOf(m);
-
-	if constexpr (vcl::mesh::HasFaceContainer<Mesh<Args...>>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		FaceContainer::enableOptionalComponentsOf(m);
-	}
-
-	if constexpr (vcl::mesh::HasEdgeContainer<Mesh<Args...>>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		EdgeContainer::enableOptionalComponentsOf(m);
-	}
-
-	if constexpr (vcl::mesh::HasHalfEdgeContainer<Mesh<Args...>>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		HalfEdgeContainer::enableOptionalComponentsOf(m);
-	}
+	(enableSameOptionalComponentsOf<Args>(m), ...);
 }
 
 /**
@@ -1015,6 +999,15 @@ void Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
 	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
 	f.vertex(n)         = &VertexContainer::vertex(vid); // set the vertex
 	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont, typename OtherMeshType>
+void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
+{
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
+		Cont::enableOptionalComponentsOf(m);
+	}
 }
 
 template<typename... Args> requires HasVertices<Args...>

@@ -231,6 +231,11 @@ private:
 	template<HasFaces M = Mesh, typename... V>
 	void addFaceHelper(typename M::FaceType& f, uint vid, V... args);
 
+	// enable optional components
+
+	template<typename Cont, typename OtherMeshType>
+	void enableSameOptionalComponentsOf(const OtherMeshType& m);
+
 	// private parent mesh pointers functions
 
 	void updateAllParentMeshPointers();
