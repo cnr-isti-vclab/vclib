@@ -47,16 +47,18 @@ class ElementContainer : public ElementContainerTriggerer
 
 public:
 	using ElementType          = T;
+
+	static const uint ELEMENT_TYPE = T::ELEMENT_TYPE;
+
+	ElementContainer();
+
+protected:
 	using ElementIterator      = ElementContainerIterator<std::vector, T>;
 	using ConstElementIterator = ConstElementContainerIterator<std::vector, T>;
 	using ElementRangeIterator =
 		ElementContainerRangeIterator<ElementContainerType, ElementIterator>;
 	using ConstElementRangeIterator =
 		ConstElementContainerRangeIterator<ElementContainerType, ConstElementIterator>;
-
-	static const uint ELEMENT_TYPE = T::ELEMENT_TYPE;
-
-	ElementContainer();
 
 	const T& element(uint i) const;
 	T& element(uint i);
@@ -90,7 +92,6 @@ public:
 	ElementRangeIterator      elements(bool jumpDeleted = true);
 	ConstElementRangeIterator elements(bool jumpDeleted = true) const;
 
-protected:
 	uint index(const T *e) const;
 	void clearElements();
 

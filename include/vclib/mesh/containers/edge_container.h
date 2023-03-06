@@ -32,7 +32,7 @@
 namespace vcl::mesh {
 
 template<EdgeConcept T>
-class EdgeContainer : protected ElementContainer<T>
+class EdgeContainer : public ElementContainer<T>
 {
 	template <EdgeConcept U>
 	friend class EdgeContainer;
