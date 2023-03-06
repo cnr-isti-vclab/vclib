@@ -32,22 +32,6 @@
 
 namespace vcl {
 
-namespace internal {
-
-template<uint i, typename Cont, typename Array, typename... A>
-void setContainerBase(Mesh<A...>& m, Array& bases);
-
-template<typename... A>
-auto getContainerBases(Mesh<A...>& m);
-
-template<typename Cont, typename Array, typename... A>
-void updateReferencesOfContainerType(Mesh<A...>& m, Array& bases);
-
-} // namespace vcl::internal
-
-template<typename... A> requires HasVertices<A...>
-inline void swap(Mesh<A...>& m1, Mesh<A...>& m2);
-
 /**
  * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
  * containers of Elements (which can be vertices, faces, edges...), plus some other components.
@@ -93,18 +77,6 @@ public:
 
 	template<typename OtherMeshType>
 	void importFrom(const OtherMeshType& m);
-
-	/// @private
-	template<uint i, typename Cont, typename Array, typename... A>
-	friend void internal::setContainerBase(Mesh<A...>& m, Array& bases);
-
-	/// @private
-	template<typename Cont, typename Array, typename... A>
-	friend void internal::updateReferencesOfContainerType(Mesh<A...>& m, Array& bases);
-
-	/// @private
-	template<typename... A> requires HasVertices<A...>
-	friend void swap(Mesh<A...>& m1, Mesh<A...>& m2);
 
 	void swap(Mesh& m2);
 
@@ -284,6 +256,17 @@ private:
 		const MVertexType*       mvbase,
 		const std::vector<uint>& tris,
 		uint                     basetri);
+
+	// private swap member functions
+
+	template<uint i, typename Cont, typename Array, typename... A>
+	static void setContainerBase(Mesh<A...>& m, Array& bases);
+
+	template<typename... A>
+	static auto getContainerBases(Mesh<A...>& m);
+
+	template<typename Cont, typename Array, typename... A>
+	static void updateReferencesOfContainerType(Mesh<A...>& m, Array& bases);
 
 	// member functions used by friends
 

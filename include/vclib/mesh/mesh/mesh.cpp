@@ -27,74 +27,6 @@
 
 namespace vcl {
 
-namespace internal {
-
-template<uint I, typename Cont, typename Array, typename... A>
-void setContainerBase(Mesh<A...>& m, Array& bases)
-{
-	if constexpr (mesh::ElementContainerConcept<Cont>) {
-		static_assert(I >= 0 && I != UINT_NULL);
-		bases[I] = m.Cont::vec.data();
-	}
-}
-
-template<typename... A>
-auto getContainerBases(Mesh<A...>& m)
-{
-	using Containers = typename Mesh<A...>::Containers;
-	constexpr uint N_CONTAINERS = NumberOfTypes<Containers>::value;
-	std::array<void*, N_CONTAINERS> bases;
-
-	(setContainerBase<IndexInTypes<A, Containers>::value, A>(m, bases), ...);
-
-	return bases;
-}
-
-template<typename Cont, typename Array, typename... A>
-void updateReferencesOfContainerType(Mesh<A...>& m, Array& bases)
-{
-	if constexpr (mesh::ElementContainerConcept<Cont>) {
-		using ElType = typename Cont::ElementType;
-
-		using Containers = typename Mesh<A...>::Containers;
-		constexpr uint I = IndexInTypes<Cont, Containers>::value;
-		static_assert(I >= 0 && I != UINT_NULL);
-
-		(m.template updateReferences<A>((ElType*)bases[I], m.Cont::vec.data()), ...);
-	}
-}
-
-} // namespace vcl::internal
-
-/**
- * @brief Swaps two meshes of the same type
- */
-template<typename... A> requires HasVertices<A...>
-inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
-{
-	constexpr uint N_CONTAINERS = NumberOfTypes<typename Mesh<A...>::Containers>::value;
-	static_assert(N_CONTAINERS != 0);
-
-	// container bases of each container for m1 and m2
-	// we save the bases of the containers before swap
-	std::array<void*, N_CONTAINERS> m1Bases = internal::getContainerBases(m1);
-	std::array<void*, N_CONTAINERS> m2Bases = internal::getContainerBases(m2);
-
-	// actual swap of all the containers and the components of the mesh
-	// using pack expansion: swap will be called for each of the containers (or components!) that
-	// compose the Mesh
-	using std::swap;
-	(swap((A&) m1, (A&) m2), ...);
-
-	// Set to all elements their parent mesh
-	m1.updateAllParentMeshPointers();
-	m2.updateAllParentMeshPointers();
-
-	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
-	(internal::updateReferencesOfContainerType<A>(m1, m2Bases), ...);
-	(internal::updateReferencesOfContainerType<A>(m2, m1Bases), ...);
-}
-
 /**
  * @brief Empty constructor, constructs an empty mesh.
  */
@@ -309,7 +241,29 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::swap(Mesh& m2)
 {
-	vcl::swap(*this, m2);
+	Mesh<Args...>& m1 = *this;
+
+	constexpr uint N_CONTAINERS = NumberOfTypes<typename Mesh<Args...>::Containers>::value;
+	static_assert(N_CONTAINERS != 0);
+
+	// container bases of each container for m1 and m2
+	// we save the bases of the containers before swap
+	std::array<void*, N_CONTAINERS> m1Bases = Mesh<Args...>::getContainerBases(m1);
+	std::array<void*, N_CONTAINERS> m2Bases = Mesh<Args...>::getContainerBases(m2);
+
+	// actual swap of all the containers and the components of the mesh
+	// using pack expansion: swap will be called for each of the containers (or components!) that
+	// compose the Mesh
+	using std::swap;
+	(swap((Args&) m1, (Args&) m2), ...);
+
+	// Set to all elements their parent mesh
+	m1.updateAllParentMeshPointers();
+	m2.updateAllParentMeshPointers();
+
+	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
+	(Mesh<Args...>::template updateReferencesOfContainerType<Args>(m1, m2Bases), ...);
+	(Mesh<Args...>::template updateReferencesOfContainerType<Args>(m2, m1Bases), ...);
 }
 
 /**
@@ -1270,6 +1224,62 @@ void Mesh<Args...>::importTriReferencesHelper(
 						.template cast<typename FaceType::WedgeTexCoordType::ScalarType>();
 			}
 		}
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint I, typename Cont, typename Array, typename... A>
+void Mesh<Args...>::setContainerBase(Mesh<A...>& m, Array& bases)
+{
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		static_assert(I >= 0 && I != UINT_NULL);
+		bases[I] = m.Cont::vec.data();
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename... A>
+auto Mesh<Args...>::getContainerBases(Mesh<A...>& m)
+{
+	using Containers = typename Mesh<A...>::Containers;
+	constexpr uint N_CONTAINERS = NumberOfTypes<Containers>::value;
+	std::array<void*, N_CONTAINERS> bases;
+
+	(setContainerBase<IndexInTypes<A, Containers>::value, A>(m, bases), ...);
+
+	return bases;
+}
+
+/**
+ * This function is called for each container of the mesh.
+ *
+ * In general, for each container, we need to update all the references contained in it,
+ * that may of any element of the mesh (example: in the VertexContainer there could be
+ * Vertex references, but also Face or Edge references).
+ *
+ * Here in this function, we loop into the containers of the Mesh m using pack expansion, and
+ * we use the Cont type to choose which reference type we are updating.
+ *
+ * bases contains the old bases (the ones of the other mesh) for each container.
+ */
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont, typename Array, typename... A>
+void Mesh<Args...>::updateReferencesOfContainerType(Mesh<A...>& m, Array& bases)
+{
+	// since this function is called using pack expansion, it means that Cont could be a mesh
+	// component and not a cointainer. We check if Cont is a container
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		// The element type contained in the container
+		// We need it to get back the actual type of the element from the old bases
+		using ElType = typename Cont::ElementType;
+
+		using Containers = typename Mesh<A...>::Containers;
+		constexpr uint I = IndexInTypes<Cont, Containers>::value;
+		static_assert(I >= 0 && I != UINT_NULL);
+
+		// for each Container A in m, we update the references of ElType.
+		// old base is contained in the array bases, the new base is the base of the container
+		(m.template updateReferences<A>((ElType*)bases[I], m.Cont::vec.data()), ...);
 	}
 }
 
