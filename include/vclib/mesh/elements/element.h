@@ -24,13 +24,15 @@
 #ifndef VCL_MESH_ELEMENTS_ELEMENT_H
 #define VCL_MESH_ELEMENTS_ELEMENT_H
 
+#include "element_concept.h"
+
 #include <vclib/mesh/components/concepts/component.h>
 #include <vclib/mesh/components/parent_mesh_pointer.h>
 #include <vclib/misc/types.h>
 
 namespace vcl::mesh {
 
-template<typename>
+template<ElementConcept>
 class ElementContainer;
 
 } // namespace vcl::mesh
@@ -40,7 +42,7 @@ namespace vcl {
 template <typename MeshType, typename... Args>
 class Element : public comp::ParentMeshPointer<MeshType>, public Args...
 {
-	template<typename>
+	template<ElementConcept>
 	friend class mesh::ElementContainer;
 public:
 	using ParentMeshType = MeshType;

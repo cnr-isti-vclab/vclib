@@ -24,6 +24,7 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_CONCEPT_H
 #define VCL_MESH_ELEMENTS_FACE_CONCEPT_H
 
+#include "element_concept.h"
 #include "face_components.h"
 
 namespace vcl {
@@ -128,6 +129,7 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
  */
 template<typename T>
 concept FaceConcept =
+	T::ELEMENT_TYPE == FACE &&
 	(face::IsDerivedFromFace<T>::value || face::IsAFace<T>::value) &&
 	face::HasBitFlags<T> &&
 	face::HasVertexReferences<T> &&

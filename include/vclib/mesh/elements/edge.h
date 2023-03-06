@@ -28,12 +28,30 @@
 
 #include "element.h"
 
+namespace vcl::mesh {
+
+// EdgeContainer class declaration
+template<EdgeConcept>
+class EdgeContainer;
+
+} // namespace vcl::mesh
+
 namespace vcl {
 
 template<typename MeshType, typename... Args>
 class Edge : public Element<MeshType, Args...>
 {
+	template<EdgeConcept>
+	friend class mesh::EdgeContainer;
+
+	// Vertex references component of the Edge
+	using VRefs = typename Edge::VertexReferences;
+
 public:
+	static const uint ELEMENT_TYPE = EDGE;
+
+	using VertexType = typename VRefs::VertexType;
+
 	uint index() const;
 };
 

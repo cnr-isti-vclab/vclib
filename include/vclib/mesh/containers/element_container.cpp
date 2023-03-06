@@ -44,7 +44,7 @@ namespace vcl::mesh {
 /**
  * @brief Empty constructor that creates an empty container of Elements.
  */
-template<typename T>
+template<ElementConcept T>
 inline ElementContainer<T>::ElementContainer()
 {
 }
@@ -59,7 +59,7 @@ inline ElementContainer<T>::ElementContainer()
  *
  * @param[in] i: the index of the element that will be returned.
  */
-template<typename T>
+template<ElementConcept T>
 inline const T& ElementContainer<T>::element(uint i) const
 {
 	return vec[i];
@@ -75,7 +75,7 @@ inline const T& ElementContainer<T>::element(uint i) const
  *
  * @param[in] i: the index of the element that will be returned.
  */
-template<typename T>
+template<ElementConcept T>
 inline T& ElementContainer<T>::element(uint i)
 {
 	return vec[i];
@@ -90,7 +90,7 @@ inline T& ElementContainer<T>::element(uint i)
  *
  * @return The number of non-deleted elements of the Mesh.
  */
-template<typename T>
+template<ElementConcept T>
 inline uint ElementContainer<T>::elementNumber() const
 {
 	return en;
@@ -105,7 +105,7 @@ inline uint ElementContainer<T>::elementNumber() const
  *
  * @return The number of all the elements contained in the Mesh.
  */
-template<typename T>
+template<ElementConcept T>
 inline uint ElementContainer<T>::elementContainerSize() const
 {
 	return vec.size();
@@ -117,7 +117,7 @@ inline uint ElementContainer<T>::elementContainerSize() const
  *
  * @return The number of deleted elements in the container.
  */
-template<typename T>
+template<ElementConcept T>
 inline uint ElementContainer<T>::deletedElementNumber() const
 {
 	return elementContainerSize() - elementNumber();
@@ -133,7 +133,7 @@ inline uint ElementContainer<T>::deletedElementNumber() const
  *
  * @param[in] i: the id of the element that will be marked as deleted.
  */
-template<typename T>
+template<ElementConcept T>
 inline void ElementContainer<T>::deleteElement(uint i)
 {
 	vec[i].setDeleted();
@@ -151,7 +151,7 @@ inline void ElementContainer<T>::deleteElement(uint i)
  *
  * @param[in] e: the pointer of the element that will be marked as deleted.
  */
-template<typename T>
+template<ElementConcept T>
 inline void ElementContainer<T>::deleteElement(const T* e)
 {
 	deleteElement(index(e));
@@ -169,7 +169,7 @@ inline void ElementContainer<T>::deleteElement(const T* e)
  * @param[in] i: the index of a element of the container.
  * @return The index that the element with index i would have if this container would be compact.
  */
-template<typename T>
+template<ElementConcept T>
 uint ElementContainer<T>::elementIndexIfCompact(uint i) const
 {
 	if (vec.size() == en)
@@ -194,7 +194,7 @@ uint ElementContainer<T>::elementIndexIfCompact(uint i) const
  *
  * @return A vector containing, for each element index, its index if the container would be compact.
  */
-template<typename T>
+template<ElementConcept T>
 std::vector<int> ElementContainer<T>::elementCompactIndices() const
 {
 	std::vector<int> newIndices(vec.size());
@@ -211,7 +211,7 @@ std::vector<int> ElementContainer<T>::elementCompactIndices() const
 	return newIndices;
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename MeshType>
 void ElementContainer<T>::setParentMeshPointers(MeshType* parentMesh)
 {
@@ -220,14 +220,14 @@ void ElementContainer<T>::setParentMeshPointers(MeshType* parentMesh)
 	}
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename C>
 bool ElementContainer<T>::isOptionalComponentEnabled() const
 {
 	return vcVecTuple.template isComponentEnabled<C>();
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename C>
 void ElementContainer<T>::enableOptionalComponent()
 {
@@ -239,7 +239,7 @@ void ElementContainer<T>::enableOptionalComponent()
 	}
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename C>
 void ElementContainer<T>::disableOptionalComponent()
 {
@@ -255,7 +255,7 @@ void ElementContainer<T>::disableOptionalComponent()
  * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
  * @return An iterator the the first element of the container.
  */
-template<typename T>
+template<ElementConcept T>
 typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted)
 {
 	auto it = vec.begin();
@@ -273,7 +273,7 @@ typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementBegin(
  * @brief Returns an iterator to the end of the container.
  * @return An iterator to the end of the container.
  */
-template<typename T>
+template<ElementConcept T>
 typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementEnd()
 {
 	return ElementIterator(vec.end(), vec);
@@ -288,7 +288,7 @@ typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementEnd()
  * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
  * @return A const iterator the the first element of the container.
  */
-template<typename T>
+template<ElementConcept T>
 typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted) const
 {
 	auto it = vec.begin();
@@ -306,7 +306,7 @@ typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementB
  * @brief Returns a const iterator to the end of the container.
  * @return A const iterator to the end of the container.
  */
-template<typename T>
+template<ElementConcept T>
 typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementEnd() const
 {
 	return ConstElementIterator(vec.end(), vec);
@@ -331,7 +331,7 @@ typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementE
  * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
-template<typename T>
+template<ElementConcept T>
 typename ElementContainer<T>::ElementRangeIterator ElementContainer<T>::elements(bool jumpDeleted)
 {
 	return ElementRangeIterator(
@@ -360,7 +360,7 @@ typename ElementContainer<T>::ElementRangeIterator ElementContainer<T>::elements
  * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
-template<typename T>
+template<ElementConcept T>
 typename ElementContainer<T>::ConstElementRangeIterator ElementContainer<T>::elements(bool jumpDeleted) const
 {
 	return ConstElementRangeIterator(
@@ -370,14 +370,14 @@ typename ElementContainer<T>::ConstElementRangeIterator ElementContainer<T>::ele
 		&ElementContainer::elementEnd);
 }
 
-template<typename T>
+template<ElementConcept T>
 inline uint ElementContainer<T>::index(const T* e) const
 {
 	assert(!vec.empty() && e >= vec.data() && e <= &vec.back());
 	return e - vec.data();
 }
 
-template<typename T>
+template<ElementConcept T>
 void ElementContainer<T>::clearElements()
 {
 	vec.clear();
@@ -387,7 +387,7 @@ void ElementContainer<T>::clearElements()
 	ccVecMap.clear();
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename MeshType>
 uint ElementContainer<T>::addElement(MeshType* parentMesh)
 {
@@ -417,7 +417,7 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
  * @param size
  * @return the id of the first added element.
  */
-template<typename T>
+template<ElementConcept T>
 template<typename MeshType>
 uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 {
@@ -442,7 +442,7 @@ uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 	return baseId;
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename MeshType>
 void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 {
@@ -458,7 +458,7 @@ void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 	}
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename MeshType>
 void ElementContainer<T>::resizeElements(uint size, MeshType* parentMesh)
 {
@@ -480,7 +480,7 @@ void ElementContainer<T>::resizeElements(uint size, MeshType* parentMesh)
  * @return a vector that tells, for each old element index, the new index of the element. Will
  * contain -1 if the element has been deleted.
  */
-template<typename T>
+template<ElementConcept T>
 std::vector<int> ElementContainer<T>::compactElements()
 {
 	std::vector<int> newIndices = elementCompactIndices();
@@ -503,7 +503,7 @@ std::vector<int> ElementContainer<T>::compactElements()
 	return newIndices;
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename Element>
 void ElementContainer<T>::updateReferences(const Element* oldBase, const Element* newBase)
 {
@@ -512,7 +512,7 @@ void ElementContainer<T>::updateReferences(const Element* oldBase, const Element
 	updateReferencesOnComponents(oldBase, newBase, Comps());
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename Element>
 void ElementContainer<T>::updateReferencesAfterCompact(
 	const Element*          base,
@@ -523,7 +523,7 @@ void ElementContainer<T>::updateReferencesAfterCompact(
 	updateReferencesAfterCompactOnComponents(base, newIndices, Comps());
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename Container>
 void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 {
@@ -635,7 +635,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 	}
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename Container, typename ParentMeshType>
 void ElementContainer<T>::importFrom(const Container &c, ParentMeshType* parent)
 {
@@ -669,7 +669,7 @@ void ElementContainer<T>::importFrom(const Container &c, ParentMeshType* parent)
  *          the offset between any vertex reference contained in the other element and the base,
  *          and the offset is then used to compute the new vertex pointer for this container
  */
-template<typename T>
+template<ElementConcept T>
 template<typename Container, typename MyBase, typename CBase>
 void ElementContainer<T>::importReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
 {
@@ -678,7 +678,7 @@ void ElementContainer<T>::importReferencesFrom(const Container& c, MyBase* base,
 	importReferencesOnComponentsFrom(c, base, cbase, Comps());
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename ElRef, typename... Comps>
 void ElementContainer<T>::updateReferencesOnComponents(
 	const ElRef* oldBase,
@@ -688,7 +688,7 @@ void ElementContainer<T>::updateReferencesOnComponents(
 	(updateReferencesOnComponent<Comps>(oldBase, newBase), ...);
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename ElRef, typename... Comps>
 void ElementContainer<T>::updateReferencesAfterCompactOnComponents(
 	const ElRef* base,
@@ -698,7 +698,7 @@ void ElementContainer<T>::updateReferencesAfterCompactOnComponents(
 	(updateReferencesAfterCompactOnComponent<Comps>(base, newIndices), ...);
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename Container, typename ElRef, typename CBase, typename... Comps>
 void ElementContainer<T>::importReferencesOnComponentsFrom(
 	const Container& c,
@@ -715,7 +715,7 @@ void ElementContainer<T>::importReferencesOnComponentsFrom(
  * Only if a component has references of the type ElRef, then the updateReferences on each element
  * will be executed
  */
-template<typename T>
+template<ElementConcept T>
 template<typename Comp, typename ElRef>
 void ElementContainer<T>::updateReferencesOnComponent(const ElRef* oldBase, const ElRef* newBase)
 {
@@ -735,7 +735,7 @@ void ElementContainer<T>::updateReferencesOnComponent(const ElRef* oldBase, cons
 	}
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename Comp, typename ElRef>
 void ElementContainer<T>::updateReferencesAfterCompactOnComponent(
 	const ElRef* base,
@@ -757,7 +757,7 @@ void ElementContainer<T>::updateReferencesAfterCompactOnComponent(
 	}
 }
 
-template<typename T>
+template<ElementConcept T>
 template<typename Comp, typename Container, typename ElRef, typename CBase>
 void ElementContainer<T>::importReferencesOnComponentFrom(
 	const Container& c,

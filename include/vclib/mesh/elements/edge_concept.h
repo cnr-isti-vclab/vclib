@@ -24,6 +24,7 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_CONCEPT_H
 #define VCL_MESH_ELEMENTS_EDGE_CONCEPT_H
 
+#include "element_concept.h"
 #include "edge_components.h"
 
 namespace vcl {
@@ -94,6 +95,7 @@ concept HasVertexReferences = comp::HasVertexReferences<T>;
  */
 template<typename T>
 concept EdgeConcept =
+	T::ELEMENT_TYPE == EDGE &&
 	(edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value) &&
 	edge::HasBitFlags<T> &&
 	edge::HasVertexReferences<T> &&

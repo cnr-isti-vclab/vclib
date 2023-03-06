@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <concepts>
 #include <numeric>
+#include <tuple>
 #include <type_traits>
 
 using uint = unsigned int;
@@ -57,14 +58,24 @@ struct TypeWrapper
 {
 };
 
+template<typename... Args>
+struct FirstType
+{
+	using type = typename std::tuple_element<0, std::tuple<Args...>>::type;
+};
+
+template<typename... Args>
+struct FirstType<TypeWrapper<Args...>>
+{
+	using type = typename std::tuple_element<0, std::tuple<Args...>>::type;
+};
+
 /*
  * Possibility to get the index of a Type T in a pack of types (variadic templates).
  * The pack is composed of U and Us...
  *
  * https://stackoverflow.com/a/71477756/5851101
  */
-
-
 template <typename T, typename U, typename... Us>
 constexpr uint indexInTypePack() {
 	if constexpr (std::is_same_v<T, U>) {
@@ -90,6 +101,17 @@ template<typename T, typename... Us>
 struct IndexInTypes<T, TypeWrapper<Us...>>
 {
 	static constexpr uint value = indexInTypePack<T, Us...>();
+};
+
+template<typename... Args>
+struct NumberOfTypes
+{
+	static constexpr uint value = sizeof...(Args);
+};
+
+template<typename... Args>
+struct NumberOfTypes<TypeWrapper<Args...>> : public NumberOfTypes<Args...>
+{
 };
 
 /* Remove all types that do not satisfy a condition, and get them as a TypeWrapper. */
@@ -135,10 +157,67 @@ struct FilterTypesByCondition<Pred, Head, Tail...>
 		typename FilterTypesByCondition<Pred, Tail...>::type>::type;
 };
 
+// TypeWrapper specialization
 template <template <class> class Pred, typename ...Tail>
 struct FilterTypesByCondition<Pred, TypeWrapper<Tail...>>
 {
 	using type = typename FilterTypesByCondition<Pred, Tail...>::type;
+};
+
+/**
+ * @brief Its value is set to true if there is at least one type in the given pack Args...
+ * that satisfies the given condition
+ *
+ * Usage:
+ *
+ * @code{.cpp}
+ * // there is a type (int) that is integral
+ * static const bool res = TypesContainConditionType<std::is_integral, int, float, double>::value;
+ * static_assert(res == true, "");
+ * static const bool res2 = TypesContainConditionType<std::is_integral, float, double>::value;
+ * static_assert(res2 != true, "");
+ * @endcode
+ */
+template <template <class> class Pred, typename ...Args>
+struct TypesContainConditionType
+{
+private:
+	using ResTypes = typename FilterTypesByCondition<Pred, Args...>::type;
+public:
+	static constexpr bool value = NumberOfTypes<ResTypes>::value != 0;
+};
+
+// TypeWrapper specialization
+template <template <class> class Pred, typename ...Args>
+struct TypesContainConditionType<Pred, TypeWrapper<Args...>>
+{
+	using type = typename TypesContainConditionType<Pred, Args...>::type;
+};
+
+/**
+ * @brief The the first type of a pack that satisties the given condition
+ *
+ * Usage:
+ * @code{.cpp}
+ * // the first integral type is char
+ * using ResType = GetTypeByCondition<std::is_integral, float, double, char, int>::type;
+ * static_assert(std::is_same<ResType, char>::value, "");
+ * @endcode
+ */
+template <template <class> class Pred, typename ...Args>
+struct GetTypeByCondition
+{
+private:
+	using ResTypes = typename FilterTypesByCondition<Pred, Args...>::type;
+public:
+	using type = typename FirstType<ResTypes>::type;
+};
+
+// TypeWrapper specialization
+template <template <class> class Pred, typename ...Args>
+struct GetTypeByCondition<Pred, TypeWrapper<Args...>>
+{
+	using type = typename GetTypeByCondition<Pred, Args...>::type;
 };
 
 /*******************************************************************/

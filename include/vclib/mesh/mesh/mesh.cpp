@@ -241,7 +241,29 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::swap(Mesh& m2)
 {
-	vcl::swap(*this, m2);
+	Mesh<Args...>& m1 = *this;
+
+	constexpr uint N_CONTAINERS = NumberOfTypes<typename Mesh<Args...>::Containers>::value;
+	static_assert(N_CONTAINERS != 0);
+
+	// container bases of each container for m1 and m2
+	// we save the bases of the containers before swap
+	std::array<void*, N_CONTAINERS> m1Bases = Mesh<Args...>::getContainerBases(m1);
+	std::array<void*, N_CONTAINERS> m2Bases = Mesh<Args...>::getContainerBases(m2);
+
+	// actual swap of all the containers and the components of the mesh
+	// using pack expansion: swap will be called for each of the containers (or components!) that
+	// compose the Mesh
+	using std::swap;
+	(swap((Args&) m1, (Args&) m2), ...);
+
+	// Set to all elements their parent mesh
+	m1.updateAllParentMeshPointers();
+	m2.updateAllParentMeshPointers();
+
+	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
+	(Mesh<Args...>::template updateReferencesOfContainerType<Args>(m1, m2Bases), ...);
+	(Mesh<Args...>::template updateReferencesOfContainerType<Args>(m2, m1Bases), ...);
 }
 
 /**
@@ -937,7 +959,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
 void Mesh<Args...>::compactElements()
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		if (Cont::elementNumber() != Cont::elementContainerSize()) {
 			auto* oldBase = Cont::vec.data();
 			std::vector<int> newIndices = Cont::compactElements();
@@ -953,7 +975,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
 void Mesh<Args...>::clearElements()
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::clearElements();
 	}
 }
@@ -964,7 +986,7 @@ void Mesh<Args...>::updateReferences(
 	const Element* oldBase,
 	const Element* newBase)
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updateReferences(oldBase, newBase);
 	}
 }
@@ -975,7 +997,7 @@ void Mesh<Args...>::updateReferencesAfterCompact(
 	const Element*          base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updateReferencesAfterCompact(base, newIndices);
 	}
 }
@@ -1025,7 +1047,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
 void Mesh<Args...>::setParentMeshPointers()
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::setParentMeshPointers(this);
 	}
 }
@@ -1034,7 +1056,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importContainersAndComponents(const OthMesh &m)
 {
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::importFrom(m, this);
 	}
 	else {
@@ -1053,7 +1075,7 @@ void Mesh<Args...>::importReferences(const OthMesh &m)
 	using ThisMesh = Mesh<Args...>;
 
 	// if Cont is a container (could be a mesh component)
-	if constexpr(mesh::IsElementContainer<Cont>) {
+	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		// will call the specific importVertexReferences of the Cont container.
 		// it will take care to import the reference from tha same container type of m.
 		Cont::importVertexReferencesFrom(m, &this->vertex(0));
@@ -1206,163 +1228,150 @@ void Mesh<Args...>::importTriReferencesHelper(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename El>
-auto& Mesh<Args...>::customComponents() requires ElementConcept<El>
+template<uint I, typename Cont, typename Array, typename... A>
+void Mesh<Args...>::setContainerBase(Mesh<A...>& m, Array& bases)
 {
-	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		return EdgeContainer::ccVecMap;
-	}
-	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		return FaceContainer::ccVecMap;
-	}
-	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		return HalfEdgeContainer::ccVecMap;
-	}
-	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		return VertexContainer::ccVecMap;
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		static_assert(I >= 0 && I != UINT_NULL);
+		bases[I] = m.Cont::vec.data();
 	}
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<typename El>
-const auto& Mesh<Args...>::customComponents() const requires ElementConcept<El>
+template<typename... A>
+auto Mesh<Args...>::getContainerBases(Mesh<A...>& m)
 {
-	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		return EdgeContainer::ccVecMap;
-	}
-	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		return FaceContainer::ccVecMap;
-	}
-	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		return HalfEdgeContainer::ccVecMap;
-	}
-	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		return VertexContainer::ccVecMap;
-	}
-}
+	using Containers = typename Mesh<A...>::Containers;
+	constexpr uint N_CONTAINERS = NumberOfTypes<Containers>::value;
+	std::array<void*, N_CONTAINERS> bases;
 
-template<typename... Args> requires HasVertices<Args...>
-template<typename El>
-auto& Mesh<Args...>::verticalComponents() requires ElementConcept<El>
-{
-	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		return EdgeContainer::vcVecTuple;
-	}
-	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		return FaceContainer::vcVecTuple;
-	}
-	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		return HalfEdgeContainer::vcVecTuple;
-	}
-	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		return VertexContainer::vcVecTuple;
-	}
-}
+	(setContainerBase<IndexInTypes<A, Containers>::value, A>(m, bases), ...);
 
-template<typename... Args> requires HasVertices<Args...>
-template<typename El>
-const auto& Mesh<Args...>::verticalComponents() const requires ElementConcept<El>
-{
-	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		return EdgeContainer::vcVecTuple;
-	}
-	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		return FaceContainer::vcVecTuple;
-	}
-	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		return HalfEdgeContainer::vcVecTuple;
-	}
-	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		return VertexContainer::vcVecTuple;
-	}
+	return bases;
 }
 
 /**
- * @brief Swaps two meshes of the same type
+ * This function is called for each container of the mesh.
+ *
+ * In general, for each container, we need to update all the references contained in it,
+ * that may of any element of the mesh (example: in the VertexContainer there could be
+ * Vertex references, but also Face or Edge references).
+ *
+ * Here in this function, we loop into the containers of the Mesh m using pack expansion, and
+ * we use the Cont type to choose which reference type we are updating.
+ *
+ * bases contains the old bases (the ones of the other mesh) for each container.
  */
-template<typename... A> requires HasVertices<A...>
-inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont, typename Array, typename... A>
+void Mesh<Args...>::updateReferencesOfContainerType(Mesh<A...>& m, Array& bases)
 {
-	// container bases of verts and faces, and edges Vec for m1 and m2
-	void* m1BaseV = nullptr;
-	void* m2BaseV = nullptr;
-	void* m1BaseF = nullptr;
-	void* m2BaseF = nullptr;
-	void* m1BaseE = nullptr;
-	void* m2BaseE = nullptr;
-	void* m1BaseHE = nullptr;
-	void* m2BaseHE = nullptr;
+	// since this function is called using pack expansion, it means that Cont could be a mesh
+	// component and not a cointainer. We check if Cont is a container
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		// The element type contained in the container
+		// We need it to get back the actual type of the element from the old bases
+		using ElType = typename Cont::ElementType;
 
-	// save the bases of the containers before swap
-	using VertexContainer = typename Mesh<A...>::VertexContainer;
-	m1BaseV               = m1.VertexContainer::vec.data();
-	m2BaseV               = m2.VertexContainer::vec.data();
+		using Containers = typename Mesh<A...>::Containers;
+		constexpr uint I = IndexInTypes<Cont, Containers>::value;
+		static_assert(I >= 0 && I != UINT_NULL);
 
-	if constexpr (mesh::HasFaceContainer<Mesh<A...>>) {
-		using FaceContainer = typename Mesh<A...>::FaceContainer;
-		m1BaseF             = m1.FaceContainer::vec.data();
-		m2BaseF             = m2.FaceContainer::vec.data();
+		// for each Container A in m, we update the references of ElType.
+		// old base is contained in the array bases, the new base is the base of the container
+		(m.template updateReferences<A>((ElType*)bases[I], m.Cont::vec.data()), ...);
 	}
-	if constexpr (mesh::HasEdgeContainer<Mesh<A...>>) {
-		using EdgeContainer = typename Mesh<A...>::EdgeContainer;
-		m1BaseE             = m1.EdgeContainer::vec.data();
-		m2BaseE             = m2.EdgeContainer::vec.data();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename El>
+auto& Mesh<Args...>::customComponents()
+{
+	// todo make this dynamic: take the container of El and return its ccVecMap
+	if constexpr (EdgeConcept<El>) {
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+		return EdgeContainer::ccVecMap;
 	}
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
-		using HalfEdgeContainer = typename Mesh<A...>::HalfEdgeContainer;
-		m1BaseHE             = m1.HalfEdgeContainer::vec.data();
-		m2BaseHE             = m2.HalfEdgeContainer::vec.data();
+	if constexpr (FaceConcept<El>) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		return FaceContainer::ccVecMap;
 	}
-
-	// actual swap of all the containers and the components of the mesh
-	// using pack expansion: swap will be called for each of the containers (or components!) that
-	// compose the Mesh
-	using std::swap;
-	(swap((A&) m1, (A&) m2), ...);
-
-	// Set to all elements their parent mesh
-	m1.updateAllParentMeshPointers();
-	m2.updateAllParentMeshPointers();
-
-	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
-
-	using VertexType      = typename Mesh<A...>::VertexType;
-	(m1.template updateReferences<A>((VertexType*) m2BaseV, m1.VertexContainer::vec.data()), ...);
-	(m2.template updateReferences<A>((VertexType*) m1BaseV, m2.VertexContainer::vec.data()), ...);
-
-	if constexpr (mesh::HasFaceContainer<Mesh<A...>>) {
-		using FaceType      = typename Mesh<A...>::FaceType;
-		using FaceContainer = typename Mesh<A...>::FaceContainer;
-		(m1.template updateReferences<A>((FaceType*) m2BaseF, m1.FaceContainer::vec.data()), ...);
-		(m2.template updateReferences<A>((FaceType*) m1BaseF, m2.FaceContainer::vec.data()), ...);
+	if constexpr (HalfEdgeConcept<El>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		return HalfEdgeContainer::ccVecMap;
 	}
-	if constexpr (mesh::HasEdgeContainer<Mesh<A...>>) {
-		using EdgeType      = typename Mesh<A...>::EdgeType;
-		using EdgeContainer = typename Mesh<A...>::EdgeContainer;
-		(m1.template updateReferences<A>((EdgeType*) m2BaseE, m1.EdgeContainer::vec.data()), ...);
-		(m2.template updateReferences<A>((EdgeType*) m1BaseE, m2.EdgeContainer::vec.data()), ...);
+	if constexpr (VertexConcept<El>) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		return VertexContainer::ccVecMap;
 	}
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
-		using HalfEdgeType      = typename Mesh<A...>::HalfEdgeType;
-		using HalfEdgeContainer = typename Mesh<A...>::HalfEdgeContainer;
-		(m1.template updateReferences<A>((HalfEdgeType*) m2BaseHE, m1.HalfEdgeContainer::vec.data()), ...);
-		(m2.template updateReferences<A>((HalfEdgeType*) m1BaseHE, m2.HalfEdgeContainer::vec.data()), ...);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename El>
+const auto& Mesh<Args...>::customComponents() const
+{
+	// todo make this dynamic: take the container of El and return its ccVecMap
+	if constexpr (EdgeConcept<El>) {
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+		return EdgeContainer::ccVecMap;
+	}
+	if constexpr (FaceConcept<El>) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		return FaceContainer::ccVecMap;
+	}
+	if constexpr (HalfEdgeConcept<El>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		return HalfEdgeContainer::ccVecMap;
+	}
+	if constexpr (VertexConcept<El>) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		return VertexContainer::ccVecMap;
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename El>
+auto& Mesh<Args...>::verticalComponents()
+{
+	// todo make this dynamic: take the container of El and return its vcVecTuple
+	if constexpr (EdgeConcept<El>) {
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+		return EdgeContainer::vcVecTuple;
+	}
+	if constexpr (FaceConcept<El>) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		return FaceContainer::vcVecTuple;
+	}
+	if constexpr (HalfEdgeConcept<El>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		return HalfEdgeContainer::vcVecTuple;
+	}
+	if constexpr (VertexConcept<El>) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		return VertexContainer::vcVecTuple;
+	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<typename El>
+const auto& Mesh<Args...>::verticalComponents() const
+{
+	// todo make this dynamic: take the container of El and return its vcVecTuple
+	if constexpr (EdgeConcept<El>) {
+		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
+		return EdgeContainer::vcVecTuple;
+	}
+	if constexpr (FaceConcept<El>) {
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		return FaceContainer::vcVecTuple;
+	}
+	if constexpr (HalfEdgeConcept<El>) {
+		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
+		return HalfEdgeContainer::vcVecTuple;
+	}
+	if constexpr (VertexConcept<El>) {
+		using VertexContainer = typename Mesh<Args...>::VertexContainer;
+		return VertexContainer::vcVecTuple;
 	}
 }
 

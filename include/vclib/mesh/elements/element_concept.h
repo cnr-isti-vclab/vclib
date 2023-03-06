@@ -24,16 +24,23 @@
 #ifndef VCL_MESH_ELEMENTS_ELEMENT_CONCEPT_H
 #define VCL_MESH_ELEMENTS_ELEMENT_CONCEPT_H
 
-#include "edge_concept.h"
-#include "face_concept.h"
-#include "half_edge_concept.h"
-#include "vertex_concept.h"
+#include <vclib/misc/types.h>
 
 namespace vcl {
 
-template<typename El>
-concept ElementConcept =
-	EdgeConcept<El> || FaceConcept<El> || HalfEdgeConcept<El> || VertexConcept<El>;
+typedef enum {
+	VERTEX = 0,
+	FACE,
+	EDGE,
+	HALF_EDGE
+} ElementType;
+
+template<typename T>
+concept ElementConcept = requires (T o, const T& co)
+{
+	T::ELEMENT_TYPE;
+	{ co.index() } -> std::same_as<uint>;
+};
 
 } // namespace vcl
 

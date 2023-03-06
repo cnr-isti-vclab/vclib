@@ -28,12 +28,31 @@
 
 #include "element.h"
 
+namespace vcl::mesh {
+
+// EdgeContainer class declaration
+template<HalfEdgeConcept>
+class HalfEdgeContainer;
+
+} // namespace vcl::mesh
+
 namespace vcl {
 
 template<typename MeshType, typename... Args>
 class HalfEdge : public Element<MeshType, Args...>
 {
+	template<HalfEdgeConcept>
+	friend class mesh::HalfEdgeContainer;
+
+	// HalfEdge references component of the HalfEdge
+	using HFRefs = typename HalfEdge::HalfEdgeReferences;
+
 public:
+	static const uint ELEMENT_TYPE = HALF_EDGE;
+
+	using VertexType = typename HFRefs::VertexType;
+	using FaceType   = typename HFRefs::FaceType;
+
 	uint index() const;
 };
 

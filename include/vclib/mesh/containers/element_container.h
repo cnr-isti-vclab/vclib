@@ -26,6 +26,7 @@
 
 #include <vector>
 
+#include <vclib/mesh/elements/element_concept.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
 #include <vclib/mesh/iterators/element_container_range_iterator.h>
 #include <vclib/mesh/components/concepts/custom_components.h>
@@ -34,13 +35,12 @@
 #include "custom_components_vector_map.h"
 #include "vertical_components_vector_tuple.h"
 
-
 namespace vcl::mesh {
 
-template <typename T>
+template <ElementConcept T>
 class ElementContainer : public ElementContainerTriggerer
 {
-	template <typename U>
+	template <ElementConcept U>
 	friend class ElementContainer;
 
 	using ElementContainerType = ElementContainer<T>;
@@ -53,6 +53,8 @@ public:
 		ElementContainerRangeIterator<ElementContainerType, ElementIterator>;
 	using ConstElementRangeIterator =
 		ConstElementContainerRangeIterator<ElementContainerType, ConstElementIterator>;
+
+	static const uint ELEMENT_TYPE = T::ELEMENT_TYPE;
 
 	ElementContainer();
 
