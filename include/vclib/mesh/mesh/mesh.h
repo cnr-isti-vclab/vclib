@@ -219,8 +219,6 @@ private:
 	void init() {};
 	bool isEnabled() { return true; }
 
-	void updateAllParentMeshPointers();
-
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);
 
@@ -233,9 +231,15 @@ private:
 	template<HasFaces M = Mesh, typename... V>
 	void addFaceHelper(typename M::FaceType& f, uint vid, V... args);
 
+	// private parent mesh pointers functions
+
+	void updateAllParentMeshPointers();
+
 	template<typename Cont>
 	void setParentMeshPointers();
 	
+	// private import member functions
+
 	template<typename Cont, typename OthMesh>
 	void importContainersAndComponents(const OthMesh& m);
 
@@ -257,16 +261,16 @@ private:
 		const std::vector<uint>& tris,
 		uint                     basetri);
 
-	// private swap member functions
+	// private copy and swap member functions
 
 	template<uint i, typename Cont, typename Array, typename... A>
-	static void setContainerBase(Mesh<A...>& m, Array& bases);
+	static void setContainerBase(const Mesh<A...>& m, Array& bases);
 
 	template<typename... A>
-	static auto getContainerBases(Mesh<A...>& m);
+	static auto getContainerBases(const Mesh<A...>& m);
 
 	template<typename Cont, typename Array, typename... A>
-	static void updateReferencesOfContainerType(Mesh<A...>& m, Array& bases);
+	static void updateReferencesOfContainerType(Mesh<A...>& m, const Array& bases);
 
 	// member functions used by friends
 

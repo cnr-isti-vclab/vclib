@@ -48,35 +48,15 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	// Set to all elements their parent mesh (this)
 	updateAllParentMeshPointers();
 
-	// update references into the vertex container
-	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-	// just run the same function that we use when vector is reallocated, but using
-	// as old base the base of the other vertex container data
-	(updateReferences<Args>(oth.VertexContainer::vec.data(), VertexContainer::vec.data()), ...);
+	// save base reference of each container of the other mesh
+	constexpr uint N_CONTAINERS = NumberOfTypes<typename Mesh<Args...>::Containers>::value;
+	std::array<const void*, N_CONTAINERS> othBases = Mesh<Args...>::getContainerBases(oth);
 
-	// update references into the face container
-	if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		// just run the same function that we use when vector is reallocated, but using
-		// as old base the base of the other face container data
-		(updateReferences<Args>(oth.FaceContainer::vec.data(), FaceContainer::vec.data()), ...);
-	}
-
-	// update references into the edge container
-	if constexpr (mesh::HasEdgeContainer<Mesh<Args...>>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		// just run the same function that we use when vector is reallocated, but using
-		// as old base the base of the other edge container data
-		(updateReferences<Args>(oth.EdgeContainer::vec.data(), EdgeContainer::vec.data()), ...);
-	}
-
-	// update references into the half edge container
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh<Args...>>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		// just run the same function that we use when vector is reallocated, but using
-		// as old base the base of the other half edge container data
-		(updateReferences<Args>(oth.HalfEdgeContainer::vec.data(), HalfEdgeContainer::vec.data()), ...);
-	}
+	// update all the references contained on each container
+	// use the base reference of each container of oth to update all the references in this mesh
+	// each pointer of oth that was copied in this mesh, will be updated computing its offset wrt
+	// the base of oth, and then adding that offset to the new base reference of this mesh
+	(Mesh<Args...>::template updateReferencesOfContainerType<Args>(*this, othBases), ...);
 }
 
 /**
@@ -248,8 +228,8 @@ void Mesh<Args...>::swap(Mesh& m2)
 
 	// container bases of each container for m1 and m2
 	// we save the bases of the containers before swap
-	std::array<void*, N_CONTAINERS> m1Bases = Mesh<Args...>::getContainerBases(m1);
-	std::array<void*, N_CONTAINERS> m2Bases = Mesh<Args...>::getContainerBases(m2);
+	std::array<const void*, N_CONTAINERS> m1Bases = Mesh<Args...>::getContainerBases(m1);
+	std::array<const void*, N_CONTAINERS> m2Bases = Mesh<Args...>::getContainerBases(m2);
 
 	// actual swap of all the containers and the components of the mesh
 	// using pack expansion: swap will be called for each of the containers (or components!) that
@@ -1003,12 +983,6 @@ void Mesh<Args...>::updateReferencesAfterCompact(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-void Mesh<Args...>::updateAllParentMeshPointers()
-{
-	(setParentMeshPointers<Args>(), ...);
-}
-
-template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 void Mesh<Args...>::addFaceHelper(typename M::FaceType&)
 {
@@ -1041,6 +1015,12 @@ void Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
 	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
 	f.vertex(n)         = &VertexContainer::vertex(vid); // set the vertex
 	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
+}
+
+template<typename... Args> requires HasVertices<Args...>
+void Mesh<Args...>::updateAllParentMeshPointers()
+{
+	(setParentMeshPointers<Args>(), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -1227,10 +1207,19 @@ void Mesh<Args...>::importTriReferencesHelper(
 	}
 }
 
+/**
+ * This function sets the Ith position of the array bases, where I is an index of a container in
+ * a TypeWrapper of containers
+ *
+ * In the Ith position will be placed the base pointer of the vector of the elements contained
+ * in the container Cont.
+ */
 template<typename... Args> requires HasVertices<Args...>
 template<uint I, typename Cont, typename Array, typename... A>
-void Mesh<Args...>::setContainerBase(Mesh<A...>& m, Array& bases)
+void Mesh<Args...>::setContainerBase(const Mesh<A...>& m, Array& bases)
 {
+	// since this function is called using pack expansion, it means that Cont could be a mesh
+	// component and not a cointainer. We check if Cont is a container
 	if constexpr (mesh::ElementContainerConcept<Cont>) {
 		static_assert(I >= 0 && I != UINT_NULL);
 		bases[I] = m.Cont::vec.data();
@@ -1239,12 +1228,18 @@ void Mesh<Args...>::setContainerBase(Mesh<A...>& m, Array& bases)
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename... A>
-auto Mesh<Args...>::getContainerBases(Mesh<A...>& m)
+auto Mesh<Args...>::getContainerBases(const Mesh<A...>& m)
 {
 	using Containers = typename Mesh<A...>::Containers;
-	constexpr uint N_CONTAINERS = NumberOfTypes<Containers>::value;
-	std::array<void*, N_CONTAINERS> bases;
 
+	// the number of containers in Mesh<A...>
+	constexpr uint N_CONTAINERS = NumberOfTypes<Containers>::value;
+	// each element of this array will contain the base pointer of the vector of elements contained
+	// in each container of Mesh<A...>
+	std::array<const void*, N_CONTAINERS> bases;
+
+	// for each container/component of Mesh<A...>, we set call the function that sets
+	// the base of the container in its index
 	(setContainerBase<IndexInTypes<A, Containers>::value, A>(m, bases), ...);
 
 	return bases;
@@ -1264,7 +1259,7 @@ auto Mesh<Args...>::getContainerBases(Mesh<A...>& m)
  */
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename Array, typename... A>
-void Mesh<Args...>::updateReferencesOfContainerType(Mesh<A...>& m, Array& bases)
+void Mesh<Args...>::updateReferencesOfContainerType(Mesh<A...>& m, const Array& bases)
 {
 	// since this function is called using pack expansion, it means that Cont could be a mesh
 	// component and not a cointainer. We check if Cont is a container
@@ -1279,7 +1274,7 @@ void Mesh<Args...>::updateReferencesOfContainerType(Mesh<A...>& m, Array& bases)
 
 		// for each Container A in m, we update the references of ElType.
 		// old base is contained in the array bases, the new base is the base of the container
-		(m.template updateReferences<A>((ElType*)bases[I], m.Cont::vec.data()), ...);
+		(m.template updateReferences<A>((const ElType*)bases[I], m.Cont::vec.data()), ...);
 	}
 }
 
