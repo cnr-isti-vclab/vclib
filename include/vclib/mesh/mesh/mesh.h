@@ -40,6 +40,9 @@ void setContainerBase(Mesh<A...>& m, Array& bases);
 template<typename... A>
 auto getContainerBases(Mesh<A...>& m);
 
+template<typename Cont, typename Array, typename... A>
+void updateReferencesOfContainerType(Mesh<A...>& m, Array& bases);
+
 } // namespace vcl::internal
 
 template<typename... A> requires HasVertices<A...>
@@ -94,6 +97,10 @@ public:
 	/// @private
 	template<uint i, typename Cont, typename Array, typename... A>
 	friend void internal::setContainerBase(Mesh<A...>& m, Array& bases);
+
+	/// @private
+	template<typename Cont, typename Array, typename... A>
+	friend void internal::updateReferencesOfContainerType(Mesh<A...>& m, Array& bases);
 
 	/// @private
 	template<typename... A> requires HasVertices<A...>

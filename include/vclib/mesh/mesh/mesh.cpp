@@ -29,12 +29,12 @@ namespace vcl {
 
 namespace internal {
 
-template<uint i, typename Cont, typename Array, typename... A>
+template<uint I, typename Cont, typename Array, typename... A>
 void setContainerBase(Mesh<A...>& m, Array& bases)
 {
 	if constexpr (mesh::ElementContainerConcept<Cont>) {
-		static_assert(i >= 0);
-		bases[i] = m.Cont::vec.data();
+		static_assert(I >= 0 && I != UINT_NULL);
+		bases[I] = m.Cont::vec.data();
 	}
 }
 
@@ -50,6 +50,20 @@ auto getContainerBases(Mesh<A...>& m)
 	return bases;
 }
 
+template<typename Cont, typename Array, typename... A>
+void updateReferencesOfContainerType(Mesh<A...>& m, Array& bases)
+{
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		using ElType = typename Cont::ElementType;
+
+		using Containers = typename Mesh<A...>::Containers;
+		constexpr uint I = IndexInTypes<Cont, Containers>::value;
+		static_assert(I >= 0 && I != UINT_NULL);
+
+		(m.template updateReferences<A>((ElType*)bases[I], m.Cont::vec.data()), ...);
+	}
+}
+
 } // namespace vcl::internal
 
 /**
@@ -61,39 +75,10 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	constexpr uint N_CONTAINERS = NumberOfTypes<typename Mesh<A...>::Containers>::value;
 	static_assert(N_CONTAINERS != 0);
 
+	// container bases of each container for m1 and m2
+	// we save the bases of the containers before swap
 	std::array<void*, N_CONTAINERS> m1Bases = internal::getContainerBases(m1);
 	std::array<void*, N_CONTAINERS> m2Bases = internal::getContainerBases(m2);
-
-	// container bases of verts and faces, and edges Vec for m1 and m2
-	void* m1BaseV = nullptr;
-	void* m2BaseV = nullptr;
-	void* m1BaseF = nullptr;
-	void* m2BaseF = nullptr;
-	void* m1BaseE = nullptr;
-	void* m2BaseE = nullptr;
-	void* m1BaseHE = nullptr;
-	void* m2BaseHE = nullptr;
-
-	// save the bases of the containers before swap
-	using VertexContainer = typename Mesh<A...>::VertexContainer;
-	m1BaseV               = m1.VertexContainer::vec.data();
-	m2BaseV               = m2.VertexContainer::vec.data();
-
-	if constexpr (mesh::HasFaceContainer<Mesh<A...>>) {
-		using FaceContainer = typename Mesh<A...>::FaceContainer;
-		m1BaseF             = m1.FaceContainer::vec.data();
-		m2BaseF             = m2.FaceContainer::vec.data();
-	}
-	if constexpr (mesh::HasEdgeContainer<Mesh<A...>>) {
-		using EdgeContainer = typename Mesh<A...>::EdgeContainer;
-		m1BaseE             = m1.EdgeContainer::vec.data();
-		m2BaseE             = m2.EdgeContainer::vec.data();
-	}
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
-		using HalfEdgeContainer = typename Mesh<A...>::HalfEdgeContainer;
-		m1BaseHE             = m1.HalfEdgeContainer::vec.data();
-		m2BaseHE             = m2.HalfEdgeContainer::vec.data();
-	}
 
 	// actual swap of all the containers and the components of the mesh
 	// using pack expansion: swap will be called for each of the containers (or components!) that
@@ -106,29 +91,8 @@ inline void swap(Mesh<A...>& m1, Mesh<A...>& m2)
 	m2.updateAllParentMeshPointers();
 
 	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
-
-	using VertexType      = typename Mesh<A...>::VertexType;
-	(m1.template updateReferences<A>((VertexType*) m2BaseV, m1.VertexContainer::vec.data()), ...);
-	(m2.template updateReferences<A>((VertexType*) m1BaseV, m2.VertexContainer::vec.data()), ...);
-
-	if constexpr (mesh::HasFaceContainer<Mesh<A...>>) {
-		using FaceType      = typename Mesh<A...>::FaceType;
-		using FaceContainer = typename Mesh<A...>::FaceContainer;
-		(m1.template updateReferences<A>((FaceType*) m2BaseF, m1.FaceContainer::vec.data()), ...);
-		(m2.template updateReferences<A>((FaceType*) m1BaseF, m2.FaceContainer::vec.data()), ...);
-	}
-	if constexpr (mesh::HasEdgeContainer<Mesh<A...>>) {
-		using EdgeType      = typename Mesh<A...>::EdgeType;
-		using EdgeContainer = typename Mesh<A...>::EdgeContainer;
-		(m1.template updateReferences<A>((EdgeType*) m2BaseE, m1.EdgeContainer::vec.data()), ...);
-		(m2.template updateReferences<A>((EdgeType*) m1BaseE, m2.EdgeContainer::vec.data()), ...);
-	}
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh<A...>>) {
-		using HalfEdgeType      = typename Mesh<A...>::HalfEdgeType;
-		using HalfEdgeContainer = typename Mesh<A...>::HalfEdgeContainer;
-		(m1.template updateReferences<A>((HalfEdgeType*) m2BaseHE, m1.HalfEdgeContainer::vec.data()), ...);
-		(m2.template updateReferences<A>((HalfEdgeType*) m1BaseHE, m2.HalfEdgeContainer::vec.data()), ...);
-	}
+	(internal::updateReferencesOfContainerType<A>(m1, m2Bases), ...);
+	(internal::updateReferencesOfContainerType<A>(m2, m1Bases), ...);
 }
 
 /**
