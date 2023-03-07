@@ -40,10 +40,24 @@ inline void VertexIndexSampler::reserve(uint n)
 	samplesVec.reserve(n);
 }
 
+inline void VertexIndexSampler::resize(uint n)
+{
+	samplesVec.resize(n);
+}
+
 template<MeshConcept MeshType>
 void VertexIndexSampler::addVertex(const typename MeshType::VertexType &v, const MeshType &m)
 {
 	samplesVec.push_back(m.index(v));
+}
+
+template<MeshConcept MeshType>
+void VertexIndexSampler::setVertex(
+	uint                                 i,
+	const typename MeshType::VertexType& v,
+	const MeshType&                      m)
+{
+	samplesVec[i] = m.index(v);
 }
 
 } // namespace vcl

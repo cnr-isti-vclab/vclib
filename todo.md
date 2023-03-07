@@ -13,8 +13,6 @@
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] import dcel from mesh: update adjacent faces and wedges 
-- Samplers:
-  - [ ] add resize member function to allow parallel algorithms
 - Algorithms:
   - [ ] implement housdorff
   - [ ] update adjacent faces optimized for dcel

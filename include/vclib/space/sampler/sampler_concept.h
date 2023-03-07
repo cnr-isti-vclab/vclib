@@ -38,7 +38,9 @@ concept SamplerConcept = requires(
 
 	o.clear();
 	o.reserve(uint());
+	o.resize(uint());
 	o.addVertex(v, m);
+	o.setVertex(uint(), v, m);
 };
 
 template<typename T>
@@ -51,7 +53,9 @@ concept FaceSamplerConcept = SamplerConcept<T> &&
 {
 	typename T::ScalarType;
 	o.addFace(f, m);
+	o.setFace(uint(), f, m);
 	o.addFace(f, m, p);
+	o.setFace(uint(), f, m, p);
 };
 
 } // namespace vcl
