@@ -39,8 +39,8 @@ concept SamplerConcept = requires(
 	o.clear();
 	o.reserve(uint());
 	o.resize(uint());
-	o.addVertex(v, m);
-	o.setVertex(uint(), v, m);
+	o.add(v, m);
+	o.set(uint(), v, m);
 };
 
 template<typename T>
@@ -52,10 +52,10 @@ concept FaceSamplerConcept = SamplerConcept<T> &&
 		const internal::TMPSimplePolyMesh::FaceType& f)
 {
 	typename T::ScalarType;
-	o.addFace(f, m);
-	o.setFace(uint(), f, m);
-	o.addFace(f, m, p);
-	o.setFace(uint(), f, m, p);
+	o.add(f, m);
+	o.set(uint(), f, m);
+	o.add(f, m, p);
+	o.set(uint(), f, m, p);
 };
 
 } // namespace vcl

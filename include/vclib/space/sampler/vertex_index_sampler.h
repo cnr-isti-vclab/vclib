@@ -42,10 +42,10 @@ public:
 	void resize(uint n);
 
 	template<MeshConcept MeshType>
-	void addVertex(const typename MeshType::VertexType& v, const MeshType& m);
+	void add(const typename MeshType::VertexType& v, const MeshType& m);
 
 	template<MeshConcept MeshType>
-	void setVertex(uint i, const typename MeshType::VertexType& v, const MeshType& m);
+	void set(uint i, const typename MeshType::VertexType& v, const MeshType& m);
 
 private:
 	std::vector<uint> samplesVec;

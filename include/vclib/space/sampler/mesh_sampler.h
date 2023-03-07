@@ -45,24 +45,24 @@ public:
 	void resize(uint n);
 	void reserve(uint n);
 
-	void addPoint(const PointType& p);
-	void setPoint(uint i, const PointType& p);
+	void add(const PointType& p);
+	void set(uint i, const PointType& p);
 
 	template<MeshConcept OMeshType>
-	void addVertex(const typename OMeshType::VertexType& v, const OMeshType& m);
+	void add(const typename OMeshType::VertexType& v, const OMeshType& m);
 
 	template<MeshConcept OMeshType>
-	void setVertex(uint i, const typename OMeshType::VertexType& v, const OMeshType& m);
+	void set(uint i, const typename OMeshType::VertexType& v, const OMeshType& m);
 
 	template<EdgeMeshConcept OMeshType>
-	void addEdge(
+	void add(
 		const typename OMeshType::EdgeType& e,
 		const OMeshType&,
 		double u,
 		bool   copyScalar = true);
 
 	template<EdgeMeshConcept OMeshType>
-	void setEdge(
+	void set(
 		uint i,
 		const typename OMeshType::EdgeType& e,
 		const OMeshType&,
@@ -70,14 +70,14 @@ public:
 		bool   copyScalar = true);
 
 	template<FaceMeshConcept OMeshType>
-	void addFace(
+	void add(
 		const typename OMeshType::FaceType& f,
 		const OMeshType&,
 		bool copyNormal = false,
 		bool copyScalar = true);
 
 	template<FaceMeshConcept OMeshType>
-	void setFace(
+	void set(
 		uint i,
 		const typename OMeshType::FaceType& f,
 		const OMeshType&,
@@ -85,7 +85,7 @@ public:
 		bool copyScalar = true);
 
 	template<FaceMeshConcept OMeshType>
-	void addFace(
+	void add(
 		const typename OMeshType::FaceType& f,
 		const OMeshType&,
 		const std::vector<ScalarType>&      barCoords,
@@ -93,7 +93,7 @@ public:
 		bool                                copyScalar = true);
 
 	template<FaceMeshConcept OMeshType>
-	void setFace(
+	void set(
 		uint                                i,
 		const typename OMeshType::FaceType& f,
 		const OMeshType&,
@@ -102,7 +102,7 @@ public:
 		bool                                copyScalar = true);
 
 	template<FaceMeshConcept OMeshType>
-	void addFace(
+	void add(
 		const typename OMeshType::FaceType&  f,
 		const OMeshType&,
 		const PointType&                     barCoords,
@@ -110,7 +110,7 @@ public:
 		bool                                 copyScalar = true);
 
 	template<FaceMeshConcept OMeshType>
-	void setFace(
+	void set(
 		uint i,
 		const typename OMeshType::FaceType&  f,
 		const OMeshType&,

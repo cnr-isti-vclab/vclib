@@ -65,20 +65,20 @@ void MeshSampler<MeshType>::reserve(uint n)
 }
 
 template<MeshConcept MeshType>
-void MeshSampler<MeshType>::addPoint(const PointType& p)
+void MeshSampler<MeshType>::add(const PointType& p)
 {
 	m.addVertex(p);
 }
 
 template<MeshConcept MeshType>
-void MeshSampler<MeshType>::setPoint(uint i, const PointType& p)
+void MeshSampler<MeshType>::set(uint i, const PointType& p)
 {
 	m.vertex(i).coord() = p;
 }
 
 template<MeshConcept MeshType>
 template<MeshConcept OMeshType>
-void MeshSampler<MeshType>::addVertex(const typename OMeshType::VertexType& v, const OMeshType& mm)
+void MeshSampler<MeshType>::add(const typename OMeshType::VertexType& v, const OMeshType& mm)
 {
 	uint vi = m.addVertex(v.coord());
 	m.vertex(vi).importFrom(v);
@@ -88,7 +88,7 @@ void MeshSampler<MeshType>::addVertex(const typename OMeshType::VertexType& v, c
 
 template<MeshConcept MeshType>
 template<MeshConcept OMeshType>
-void MeshSampler<MeshType>::setVertex(uint i, const typename OMeshType::VertexType& v, const OMeshType& mm)
+void MeshSampler<MeshType>::set(uint i, const typename OMeshType::VertexType& v, const OMeshType& mm)
 {
 	m.vertex(i).coord() = v.coord();
 	m.vertex(i).importFrom(v);
@@ -98,7 +98,7 @@ void MeshSampler<MeshType>::setVertex(uint i, const typename OMeshType::VertexTy
 
 template<MeshConcept MeshType>
 template<EdgeMeshConcept OMeshType>
-void MeshSampler<MeshType>::addEdge(
+void MeshSampler<MeshType>::add(
 	const typename OMeshType::EdgeType& e,
 	const OMeshType&                    mm,
 	double                              u,
@@ -120,7 +120,7 @@ void MeshSampler<MeshType>::addEdge(
 
 template<MeshConcept MeshType>
 template<EdgeMeshConcept OMeshType>
-void MeshSampler<MeshType>::setEdge(
+void MeshSampler<MeshType>::set(
 	uint                                i,
 	const typename OMeshType::EdgeType& e,
 	const OMeshType&                    mm,
@@ -144,7 +144,7 @@ void MeshSampler<MeshType>::setEdge(
 
 template<MeshConcept MeshType>
 template<FaceMeshConcept OMeshType>
-void MeshSampler<MeshType>::addFace(
+void MeshSampler<MeshType>::add(
 	const typename OMeshType::FaceType& f,
 	const OMeshType&                    mm,
 	bool                                copyNormal,
@@ -158,7 +158,7 @@ void MeshSampler<MeshType>::addFace(
 
 template<MeshConcept MeshType>
 template<FaceMeshConcept OMeshType>
-void MeshSampler<MeshType>::setFace(
+void MeshSampler<MeshType>::set(
 	uint                                i,
 	const typename OMeshType::FaceType& f,
 	const OMeshType&                    mm,
@@ -173,7 +173,7 @@ void MeshSampler<MeshType>::setFace(
 
 template<MeshConcept MeshType>
 template<FaceMeshConcept OMeshType>
-void MeshSampler<MeshType>::addFace(
+void MeshSampler<MeshType>::add(
 	const typename OMeshType::FaceType& f,
 	const OMeshType&                    mm,
 	const std::vector<ScalarType>&      barCoords,
@@ -194,7 +194,7 @@ void MeshSampler<MeshType>::addFace(
 
 template<MeshConcept MeshType>
 template<FaceMeshConcept OMeshType>
-void MeshSampler<MeshType>::setFace(
+void MeshSampler<MeshType>::set(
 	uint                                i,
 	const typename OMeshType::FaceType& f,
 	const OMeshType&                    mm,
@@ -216,7 +216,7 @@ void MeshSampler<MeshType>::setFace(
 
 template<MeshConcept MeshType>
 template<FaceMeshConcept OMeshType>
-void MeshSampler<MeshType>::addFace(
+void MeshSampler<MeshType>::add(
 	const typename OMeshType::FaceType& f,
 	const OMeshType&                    mm,
 	const PointType&                    barCoords,
@@ -239,7 +239,7 @@ void MeshSampler<MeshType>::addFace(
 
 template<MeshConcept MeshType>
 template<FaceMeshConcept OMeshType>
-void MeshSampler<MeshType>::setFace(
+void MeshSampler<MeshType>::set(
 	uint i,
 	const typename OMeshType::FaceType& f,
 	const OMeshType&                    mm,

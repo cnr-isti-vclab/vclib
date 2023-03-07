@@ -46,13 +46,13 @@ inline void VertexIndexSampler::resize(uint n)
 }
 
 template<MeshConcept MeshType>
-void VertexIndexSampler::addVertex(const typename MeshType::VertexType &v, const MeshType &m)
+void VertexIndexSampler::add(const typename MeshType::VertexType &v, const MeshType &m)
 {
 	samplesVec.push_back(m.index(v));
 }
 
 template<MeshConcept MeshType>
-void VertexIndexSampler::setVertex(
+void VertexIndexSampler::set(
 	uint                                 i,
 	const typename MeshType::VertexType& v,
 	const MeshType&                      m)

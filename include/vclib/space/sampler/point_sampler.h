@@ -44,48 +44,48 @@ public:
 	void reserve(uint n);
 	void resize(uint n);
 
-	void addPoint(const PointType& p);
-	void setPoint(uint i, const PointType& p);
+	void add(const PointType& p);
+	void set(uint i, const PointType& p);
 
 	template<MeshConcept MeshType>
-	void addVertex(const typename MeshType::VertexType& v, const MeshType&);
+	void add(const typename MeshType::VertexType& v, const MeshType&);
 
 	template<MeshConcept MeshType>
-	void setVertex(uint i, const typename MeshType::VertexType& v, const MeshType&);
+	void set(uint i, const typename MeshType::VertexType& v, const MeshType&);
 
 	template<EdgeMeshConcept MeshType>
-	void addEdge(const typename MeshType::EdgeType& e, const MeshType&, double u = 0.5);
+	void add(const typename MeshType::EdgeType& e, const MeshType&, double u = 0.5);
 
 	template<EdgeMeshConcept MeshType>
-	void setEdge(uint i, const typename MeshType::EdgeType& e, const MeshType&, double u = 0.5);
+	void set(uint i, const typename MeshType::EdgeType& e, const MeshType&, double u = 0.5);
 
 	template<FaceMeshConcept MeshType>
-	void addFace(const typename MeshType::FaceType& f, const MeshType&);
+	void add(const typename MeshType::FaceType& f, const MeshType&);
 
 	template<FaceMeshConcept MeshType>
-	void setFace(uint i, const typename MeshType::FaceType& f, const MeshType&);
+	void set(uint i, const typename MeshType::FaceType& f, const MeshType&);
 
 	template<FaceMeshConcept MeshType>
-	void addFace(
+	void add(
 		const typename MeshType::FaceType& f,
 		const MeshType&,
 		const std::vector<ScalarType>&     barCoords);
 
 	template<FaceMeshConcept MeshType>
-	void setFace(
+	void set(
 		uint i,
 		const typename MeshType::FaceType& f,
 		const MeshType&,
 		const std::vector<ScalarType>&     barCoords);
 
 	template<FaceMeshConcept MeshType>
-	void addFace(
+	void add(
 		const typename MeshType::FaceType& f,
 		const MeshType&,
 		const PointType&                   barCoords);
 
 	template<FaceMeshConcept MeshType>
-	void setFace(
+	void set(
 		uint i,
 		const typename MeshType::FaceType& f,
 		const MeshType&,

@@ -52,20 +52,20 @@ void PointSampler<PointType>::resize(uint n)
 }
 
 template<PointConcept PointType>
-void PointSampler<PointType>::addPoint(const PointType& p)
+void PointSampler<PointType>::add(const PointType& p)
 {
 	samplesVec.push_back(p);
 }
 
 template<PointConcept PointType>
-void PointSampler<PointType>::setPoint(uint i, const PointType& p)
+void PointSampler<PointType>::set(uint i, const PointType& p)
 {
 	samplesVec[i] = p;
 }
 
 template<PointConcept PointType>
 template<MeshConcept MeshType>
-void PointSampler<PointType>::addVertex(
+void PointSampler<PointType>::add(
 	const typename MeshType::VertexType& v,
 	const MeshType&)
 {
@@ -74,7 +74,7 @@ void PointSampler<PointType>::addVertex(
 
 template<PointConcept PointType>
 template<MeshConcept MeshType>
-void PointSampler<PointType>::setVertex(
+void PointSampler<PointType>::set(
 	uint i,
 	const typename MeshType::VertexType& v,
 	const MeshType&)
@@ -84,7 +84,7 @@ void PointSampler<PointType>::setVertex(
 
 template<PointConcept PointType>
 template<EdgeMeshConcept MeshType>
-void PointSampler<PointType>::addEdge(
+void PointSampler<PointType>::add(
 	const typename MeshType::EdgeType& e,
 	const MeshType&,
 	double u)
@@ -94,7 +94,7 @@ void PointSampler<PointType>::addEdge(
 
 template<PointConcept PointType>
 template<EdgeMeshConcept MeshType>
-void PointSampler<PointType>::setEdge(
+void PointSampler<PointType>::set(
 	uint i,
 	const typename MeshType::EdgeType& e,
 	const MeshType&,
@@ -105,21 +105,21 @@ void PointSampler<PointType>::setEdge(
 
 template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::addFace(const typename MeshType::FaceType& f, const MeshType&)
+void PointSampler<PointType>::add(const typename MeshType::FaceType& f, const MeshType&)
 {
 	samplesVec.push_back(vcl::faceBarycenter(f));
 }
 
 template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::setFace(uint i, const typename MeshType::FaceType& f, const MeshType&)
+void PointSampler<PointType>::set(uint i, const typename MeshType::FaceType& f, const MeshType&)
 {
 	samplesVec[i] = vcl::faceBarycenter(f);
 }
 
 template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::addFace(
+void PointSampler<PointType>::add(
 	const typename MeshType::FaceType& f,
 	const MeshType&,
 	const std::vector<ScalarType>&     barCoords)
@@ -135,7 +135,7 @@ void PointSampler<PointType>::addFace(
 
 template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::setFace(
+void PointSampler<PointType>::set(
 	uint i,
 	const typename MeshType::FaceType& f,
 	const MeshType&,
@@ -152,7 +152,7 @@ void PointSampler<PointType>::setFace(
 
 template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::addFace(
+void PointSampler<PointType>::add(
 	const typename MeshType::FaceType& f,
 	const MeshType&,
 	const PointType&                   barCoords)
@@ -170,7 +170,7 @@ void PointSampler<PointType>::addFace(
 
 template<PointConcept PointType>
 template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::setFace(
+void PointSampler<PointType>::set(
 	uint i,
 	const typename MeshType::FaceType& f,
 	const MeshType&,
