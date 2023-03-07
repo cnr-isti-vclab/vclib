@@ -32,7 +32,7 @@
 namespace vcl::mesh {
 
 template<EdgeConcept T>
-class EdgeContainer : protected ElementContainer<T>
+class EdgeContainer : public ElementContainer<T>
 {
 	template <EdgeConcept U>
 	friend class EdgeContainer;
@@ -138,21 +138,6 @@ protected:
 	void reserveEdges(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactEdges();
-
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
-
-	template<typename OtherMesh, typename ParentMeshType>
-	void importFrom(const OtherMesh& m, ParentMeshType* parent);
-
-	template<typename Mesh, typename Vertex>
-	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
-
-	template<typename Mesh, typename Face>
-	void importFaceReferencesFrom(const Mesh& m, Face* base);
-
-	template<typename Mesh>
-	void importEdgeReferencesFrom(const Mesh& m, T* base);
 };
 
 } // namespace vcl::mesh

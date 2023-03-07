@@ -42,7 +42,7 @@ namespace vcl::mesh {
  * This container can be templated on a type that satisfies the VertexConcept concept.
  */
 template<vcl::VertexConcept T>
-class VertexContainer : protected ElementContainer<T>
+class VertexContainer : public ElementContainer<T>
 {
 	template <VertexConcept U>
 	friend class VertexContainer;
@@ -157,25 +157,6 @@ public:
 	template<typename K>
 	ConstCustomComponentVectorHandle<K> getPerVertexCustomComponentVectorHandle(
 		const std::string& name) const requires vert::HasCustomComponents<T>;
-
-protected:
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
-
-	template<typename OtherMesh, typename ParentMeshType>
-	void importFrom(const OtherMesh& m, ParentMeshType* parent);
-
-	template<typename Mesh>
-	void importVertexReferencesFrom(const Mesh& m, T* base);
-
-	template<typename Mesh, typename Face>
-	void importFaceReferencesFrom(const Mesh& m, Face* base);
-
-	template<typename Mesh, typename Edge>
-	void importEdgeReferencesFrom(const Mesh& m, Edge* base);
-
-	template<typename Mesh, typename HalfEdge>
-	void importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* base);
 };
 
 } // namespace vcl::mesh

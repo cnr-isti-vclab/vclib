@@ -88,6 +88,39 @@ void Mesh<Args...>::compact()
 }
 
 /**
+ * @brief The HasContainerOf struct sets the bool `value` to true if this Mesh has a container
+ * of elements having the same Element ID of the template Element El.
+ *
+ * This means that this the only value checked is the ELEMENT_TYPE unsigned int exposed by the
+ * Element, meaning that it does not check if the Elements of this mesh are exactly the same of
+ * El.
+ *
+ * In other words, it returns true also if we pass an Element of another mesh that is of the
+ * same ELEMENT_TYPE (both Vertices, Faces, ecc).
+ *
+ * Example of usage (Note: EdgeMesh has Vertices, but not Faces):
+ *
+ * @code{.cpp}
+ * static_assert(vcl::EdgeMesh::hasContainerOf<vcl::TriMesh::Vertex>(),
+ *					"EdgeMesh does not have Vertices");
+ * static_assert(!vcl::EdgeMesh::hasContainerOf<vcl::TriMesh::Face>(),
+ *					"EdgeMesh has Faces");
+ * @endcode
+ *
+ * HasContainerOf sets its value to true when El is the TriMesh::Vertex, because EdgeMesh has
+ * a Container of Vertices (Vertices of TriMesh and EdgeMesh are defined in different ways, but
+ * they have the same ELEMENT_TYPE id).
+ * HasContainerOf sets its value to false when El is the TriMesh::Face, because EdgeMesh does
+ * not have a Container of Faces.
+ */
+template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept El>
+constexpr bool Mesh<Args...>::hasContainerOf()
+{
+	return HasContainerOfPred<El>::value;
+}
+
+/**
  * @brief Enables all the OptionalComponents of this mesh according to the Components available
  * on the OtherMeshType m.
  *
@@ -1038,29 +1071,25 @@ void Mesh<Args...>::importContainersAndComponents(const OthMesh &m)
 }
 
 /**
- * This function will call, for a given container of this mesh that is passed as a template
+ * This function will import, for a given container of this mesh that is passed as a template
  * parameter Cont, all the references of all the elements from the other mesh m.
  */
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importReferences(const OthMesh &m)
 {
-	using ThisMesh = Mesh<Args...>;
+	// will loop again on Args. Args will be the element references imported on Cont
+	(importReferencesOfElement<Cont, Args>(m), ...);
+}
 
-	// if Cont is a container (could be a mesh component)
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
-		// will call the specific importVertexReferences of the Cont container.
-		// it will take care to import the reference from tha same container type of m.
-		Cont::importVertexReferencesFrom(m, &this->vertex(0));
-		if constexpr (mesh::HasFaceContainer<ThisMesh>) {
-			Cont::importFaceReferencesFrom(m, &this->face(0));
-		}
-		if constexpr (mesh::HasEdgeContainer<ThisMesh>) {
-			Cont::importEdgeReferencesFrom(m, &this->edge(0));
-		}
-		if constexpr (mesh::HasHalfEdgeContainer<ThisMesh>) {
-			Cont::importHalfEdgeReferencesFrom(m, &this->halfEdge(0));
-		}
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont, typename ElemCont, typename OthMesh>
+void Mesh<Args...>::importReferencesOfElement(const OthMesh& m)
+{
+	// if Cont and ElemCont are containers (could be mesh components)
+	if constexpr(mesh::ElementContainerConcept<Cont> && mesh::ElementContainerConcept<ElemCont>) {
+		// import in Cont the ElemCont references from m
+		Cont::importReferencesFrom(m, ElemCont::vec.data());
 	}
 }
 

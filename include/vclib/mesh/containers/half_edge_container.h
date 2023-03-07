@@ -32,7 +32,7 @@
 namespace vcl::mesh {
 
 template<HalfEdgeConcept T>
-class HalfEdgeContainer : protected ElementContainer<T>
+class HalfEdgeContainer : public ElementContainer<T>
 {
 	template <HalfEdgeConcept U>
 	friend class HalfEdgeContainer;
@@ -122,22 +122,6 @@ public:
 	template<typename K>
 	ConstCustomComponentVectorHandle<K> getPerHalfEdgeCustomComponentVectorHandle(
 		const std::string& name) const requires hedge::HasCustomComponents<T>;
-
-protected:
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
-
-	template<typename OtherMesh, typename ParentMeshType>
-	void importFrom(const OtherMesh& m, ParentMeshType* parent);
-
-	template<typename Mesh, typename Vertex>
-	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
-
-	template<typename Mesh, typename Face>
-	void importFaceReferencesFrom(const Mesh& m, Face* base);
-
-	template<typename Mesh>
-	void importHalfEdgeReferencesFrom(const Mesh& m, T* base);
 };
 
 } // namespace vcl::mesh

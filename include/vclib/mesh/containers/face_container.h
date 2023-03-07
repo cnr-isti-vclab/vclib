@@ -40,7 +40,7 @@ namespace vcl::mesh {
  * enablers/disablers of the eventual optional components of the face.
  */
 template<FaceConcept T>
-class FaceContainer : protected ElementContainer<T>
+class FaceContainer : public ElementContainer<T>
 {
 	template <FaceConcept U>
 	friend class FaceContainer;
@@ -146,24 +146,6 @@ public:
 		const std::string& name) const requires face::HasCustomComponents<T>;
 
 protected:
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
-
-	template<typename OtherMesh, typename ParentMeshType>
-	void importFrom(const OtherMesh& m, ParentMeshType* parent);
-
-	template<typename Mesh, typename Vertex>
-	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
-
-	template<typename Mesh>
-	void importFaceReferencesFrom(const Mesh& m, T* base);
-
-	template<typename Mesh, typename Edge>
-	void importEdgeReferencesFrom(const Mesh& m, Edge* base);
-
-	template<typename Mesh, typename HalfEdge>
-	void importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* base);
-
 	// WedgeColors
 	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
 	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;

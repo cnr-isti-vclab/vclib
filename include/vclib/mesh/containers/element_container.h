@@ -47,16 +47,18 @@ class ElementContainer : public ElementContainerTriggerer
 
 public:
 	using ElementType          = T;
+
+	static const uint ELEMENT_TYPE = T::ELEMENT_TYPE;
+
+	ElementContainer();
+
+protected:
 	using ElementIterator      = ElementContainerIterator<std::vector, T>;
 	using ConstElementIterator = ConstElementContainerIterator<std::vector, T>;
 	using ElementRangeIterator =
 		ElementContainerRangeIterator<ElementContainerType, ElementIterator>;
 	using ConstElementRangeIterator =
 		ConstElementContainerRangeIterator<ElementContainerType, ConstElementIterator>;
-
-	static const uint ELEMENT_TYPE = T::ELEMENT_TYPE;
-
-	ElementContainer();
 
 	const T& element(uint i) const;
 	T& element(uint i);
@@ -90,7 +92,6 @@ public:
 	ElementRangeIterator      elements(bool jumpDeleted = true);
 	ConstElementRangeIterator elements(bool jumpDeleted = true) const;
 
-protected:
 	uint index(const T *e) const;
 	void clearElements();
 
@@ -114,14 +115,14 @@ protected:
 	template<typename Element>
 	void updateReferencesAfterCompact(const Element* base, const std::vector<int>& newIndices);
 
-	template<typename Container>
-	void enableOptionalComponentsOf(const Container& c);
+	template<typename OtherMesh>
+	void enableOptionalComponentsOf(const OtherMesh& m);
 
-	template<typename Container, typename ParentMeshType>
-	void importFrom(const Container& c, ParentMeshType* parent);
+	template<typename OtherMesh, typename ParentMeshType>
+	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 
-	template<typename Container, typename MyBase, typename CBase>
-	void importReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
+	template<typename OtherMesh, typename ElRefBase>
+	void importReferencesFrom(const OtherMesh& othMesh, ElRefBase* base);
 	
 	// filter components of elements, taking only vertical ones
 	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
@@ -161,6 +162,9 @@ private:
 		const ElRef*            base,
 		const std::vector<int>& newIndices,
 		TypeWrapper<Comps...>);
+
+	template<typename Container, typename MyBase, typename CBase>
+	void importReferencesFromContainer(const Container& c, MyBase* base, const CBase* cbase);
 
 	template<typename Container, typename ElRef, typename CBase, typename... Comps>
 	void importReferencesOnComponentsFrom(
