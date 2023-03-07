@@ -75,11 +75,7 @@ int main()
 	}
 	std::cerr << "\n\n";
 
-	std::function<double(const vcl::Point3d&, const vcl::Point3d&)> dist =
-		[](const vcl::Point3d& p1, const vcl::Point3d& p2)
-	{
-		return p1.dist(p2);
-	};
+	auto dist = vcl::distFunction<vcl::Point3d, vcl::Point3d>();
 
 	auto it = sht.closestValue(vcl::Point3d(0.09, 0.09, 0.29), dist);
 
@@ -178,6 +174,10 @@ int main()
 		std::cerr << p->first << ": " << m.index(p->second) << "\n";
 	}
 
+	std::cerr << "\n==================================\n\n";
+
+	std::cerr << "\nK closest values: \n";
+
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
 
@@ -186,11 +186,7 @@ int main()
 
 	const vcl::Point3d qv(0.5, 0.5, 0.5);
 
-	std::function<double(const vcl::Point3d&, const vcl::TriMesh::Vertex* const&)> fdist =
-		[](const vcl::Point3d& p, const vcl::TriMesh::Vertex* const& v)
-	{
-		return v->coord().dist(p);
-	};
+	auto fdist = vcl::distFunction<vcl::Point3d, vcl::TriMesh::Vertex*>();
 
 	auto vec = vmsg.kClosestValues(qv, 5, fdist);
 

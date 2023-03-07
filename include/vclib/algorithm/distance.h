@@ -21,22 +21,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_H
-#define VCL_ALGORITHM_H
+#ifndef VCL_ALGORITHM_DISTANCE_H
+#define VCL_ALGORITHM_DISTANCE_H
 
-#include "algorithm/clean.h"
-#include "algorithm/create.h"
-#include "algorithm/distance.h"
-#include "algorithm/export_to_matrix.h"
-#include "algorithm/fitting.h"
-#include "algorithm/generate.h"
-#include "algorithm/intersection.h"
-#include "algorithm/point_sampling.h"
-#include "algorithm/polygon.h"
-#include "algorithm/shuffle.h"
-#include "algorithm/smooth.h"
-#include "algorithm/sort.h"
-#include "algorithm/stat.h"
-#include "algorithm/update.h"
+#include "distance/functions.h"
 
-#endif // VCL_ALGORITHM_H
+#endif // VCL_ALGORITHM_DISTANCE_H

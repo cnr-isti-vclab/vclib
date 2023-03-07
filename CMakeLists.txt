@@ -54,6 +54,7 @@ set(HEADERS
 	include/vclib/space.h
 	include/vclib/algorithm/clean.h
 	include/vclib/algorithm/create.h
+	include/vclib/algorithm/distance.h
 	include/vclib/algorithm/export_to_matrix.h
 	include/vclib/algorithm/fitting.h
 	include/vclib/algorithm/generate.h
@@ -70,6 +71,7 @@ set(HEADERS
 	include/vclib/algorithm/create/icosahedron.h
 	include/vclib/algorithm/create/sphere.h
 	include/vclib/algorithm/create/tetrahedron.h
+	include/vclib/algorithm/distance/functions.h
 	include/vclib/algorithm/intersection/element.h
 	include/vclib/algorithm/intersection/mesh.h
 	include/vclib/algorithm/intersection/misc.h
