@@ -638,16 +638,4 @@ ConstCustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomCo
 	return cc;
 }
 
-template<HalfEdgeConcept T>
-template<typename Mesh>
-void HalfEdgeContainer<T>::enableOptionalComponentsOf(const Mesh &m)
-{
-	// if half edges are enabled in the other Mesh
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
-		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
-
-		Base::enableOptionalComponentsOf((const MHalfEdgeContainer&)m);
-	}
-}
-
 } // namespace vcl::mesh

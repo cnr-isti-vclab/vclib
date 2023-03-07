@@ -122,10 +122,6 @@ public:
 	template<typename K>
 	ConstCustomComponentVectorHandle<K> getPerHalfEdgeCustomComponentVectorHandle(
 		const std::string& name) const requires hedge::HasCustomComponents<T>;
-
-protected:
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
 };
 
 } // namespace vcl::mesh

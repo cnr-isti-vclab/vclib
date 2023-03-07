@@ -138,9 +138,6 @@ protected:
 	void reserveEdges(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactEdges();
-
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
 };
 
 } // namespace vcl::mesh

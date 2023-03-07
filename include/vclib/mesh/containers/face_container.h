@@ -146,9 +146,6 @@ public:
 		const std::string& name) const requires face::HasCustomComponents<T>;
 
 protected:
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
-
 	// WedgeColors
 	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
 	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;

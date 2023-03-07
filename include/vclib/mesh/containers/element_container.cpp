@@ -524,112 +524,119 @@ void ElementContainer<T>::updateReferencesAfterCompact(
 }
 
 template<ElementConcept T>
-template<typename Container>
-void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
+template<typename OtherMesh>
+void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 {
-	// unfortunately, this function cannot be shortened in a smart way
-	using CT = typename Container::ElementType;
+	if constexpr (OtherMesh::template hasContainerOf<T>()) {
+		// get the container type of the other mesh for T - used to upcast othMesh
+		using Container = typename OtherMesh::template GetContainerOf<T>::type;
 
-	// Adjacent Edges
-	// if this Element of this container has optional adjacent edges
-	if constexpr (comp::HasOptionalAdjacentEdges<T>) {
-		// if the other Container Element type has adjacent edges
-		if constexpr (comp::HasAdjacentEdges<CT>) {
+		const Container& c = (const Container&)m;
 
-			// short circuited or: if optional, then I check if enabled; if not optional, then true
-			if (!comp::HasOptionalAdjacentEdges<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::AdjacentEdgesComponent>()) {
-				enableOptionalComponent<typename T::AdjacentEdgesComponent>();
+		// unfortunately, this function cannot be shortened in a smart way
+		using CT = typename Container::ElementType;
+
+		// Adjacent Edges
+		// if this Element of this container has optional adjacent edges
+		if constexpr (comp::HasOptionalAdjacentEdges<T>) {
+			// if the other Container Element type has adjacent edges
+			if constexpr (comp::HasAdjacentEdges<CT>) {
+
+				// short circuited or: if optional, then I check if enabled; if not optional, then true
+				if (!comp::HasOptionalAdjacentEdges<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::AdjacentEdgesComponent>()) {
+					enableOptionalComponent<typename T::AdjacentEdgesComponent>();
+				}
 			}
 		}
-	}
-	// Adjacent Faces
-	if constexpr (comp::HasOptionalAdjacentFaces<T>) {
-		if constexpr (comp::HasAdjacentFaces<CT>) {
-			if (!comp::HasOptionalAdjacentFaces<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::AdjacentFacesComponent>()) {
-				enableOptionalComponent<typename T::AdjacentFacesComponent>();
+		// Adjacent Faces
+		if constexpr (comp::HasOptionalAdjacentFaces<T>) {
+			if constexpr (comp::HasAdjacentFaces<CT>) {
+				if (!comp::HasOptionalAdjacentFaces<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::AdjacentFacesComponent>()) {
+					enableOptionalComponent<typename T::AdjacentFacesComponent>();
+				}
 			}
 		}
-	}
-	// Adjacent Vertices
-	if constexpr (comp::HasOptionalAdjacentVertices<T>) {
-		if constexpr (comp::HasAdjacentVertices<CT>) {
-			if (!comp::HasOptionalAdjacentVertices<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::AdjacentVerticesComponent>()) {
-				enableOptionalComponent<typename T::AdjacentVerticesComponent>();
+		// Adjacent Vertices
+		if constexpr (comp::HasOptionalAdjacentVertices<T>) {
+			if constexpr (comp::HasAdjacentVertices<CT>) {
+				if (!comp::HasOptionalAdjacentVertices<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::AdjacentVerticesComponent>()) {
+					enableOptionalComponent<typename T::AdjacentVerticesComponent>();
+				}
 			}
 		}
-	}
-	// Color
-	if constexpr (comp::HasOptionalColor<T>) {
-		if constexpr (comp::HasColor<CT>) {
-			if (!comp::HasOptionalColor<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::ColorComponent>()) {
-				enableOptionalComponent<typename T::ColorComponent>();
+		// Color
+		if constexpr (comp::HasOptionalColor<T>) {
+			if constexpr (comp::HasColor<CT>) {
+				if (!comp::HasOptionalColor<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::ColorComponent>()) {
+					enableOptionalComponent<typename T::ColorComponent>();
+				}
 			}
 		}
-	}
-	// Mark
-	if constexpr (comp::HasOptionalMark<T>) {
-		if constexpr (comp::HasMark<CT>) {
-			if (!comp::HasOptionalMark<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::MarkComponent>()) {
-				enableOptionalComponent<typename T::MarkComponent>();
+		// Mark
+		if constexpr (comp::HasOptionalMark<T>) {
+			if constexpr (comp::HasMark<CT>) {
+				if (!comp::HasOptionalMark<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::MarkComponent>()) {
+					enableOptionalComponent<typename T::MarkComponent>();
+				}
 			}
 		}
-	}
-	// Normal
-	if constexpr (comp::HasOptionalNormal<T>) {
-		if constexpr (comp::HasNormal<CT>) {
-			if (!comp::HasOptionalNormal<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::NormalComponent>()) {
-				enableOptionalComponent<typename T::NormalComponent>();
+		// Normal
+		if constexpr (comp::HasOptionalNormal<T>) {
+			if constexpr (comp::HasNormal<CT>) {
+				if (!comp::HasOptionalNormal<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::NormalComponent>()) {
+					enableOptionalComponent<typename T::NormalComponent>();
+				}
 			}
 		}
-	}
-	// Principal Curvature
-	if constexpr (comp::HasOptionalPrincipalCurvature<T>) {
-		if constexpr (comp::HasPrincipalCurvature<CT>) {
-			if (!comp::HasOptionalPrincipalCurvature<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::PrincipalCurvatureComponent>()) {
-				enableOptionalComponent<typename T::PrincipalCurvatureComponent>();
+		// Principal Curvature
+		if constexpr (comp::HasOptionalPrincipalCurvature<T>) {
+			if constexpr (comp::HasPrincipalCurvature<CT>) {
+				if (!comp::HasOptionalPrincipalCurvature<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::PrincipalCurvatureComponent>()) {
+					enableOptionalComponent<typename T::PrincipalCurvatureComponent>();
+				}
 			}
 		}
-	}
-	// Scalar
-	if constexpr (comp::HasOptionalScalar<T>) {
-		if constexpr (comp::HasScalar<CT>) {
-			if (!comp::HasOptionalScalar<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::ScalarComponent>()) {
-				enableOptionalComponent<typename T::ScalarComponent>();
+		// Scalar
+		if constexpr (comp::HasOptionalScalar<T>) {
+			if constexpr (comp::HasScalar<CT>) {
+				if (!comp::HasOptionalScalar<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::ScalarComponent>()) {
+					enableOptionalComponent<typename T::ScalarComponent>();
+				}
 			}
 		}
-	}
-	// TexCoord
-	if constexpr (comp::HasOptionalTexCoord<T>) {
-		if constexpr (comp::HasTexCoord<CT>) {
-			if (!comp::HasOptionalTexCoord<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::TexCoordComponent>()) {
-				enableOptionalComponent<typename T::TexCoordComponent>();
+		// TexCoord
+		if constexpr (comp::HasOptionalTexCoord<T>) {
+			if constexpr (comp::HasTexCoord<CT>) {
+				if (!comp::HasOptionalTexCoord<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::TexCoordComponent>()) {
+					enableOptionalComponent<typename T::TexCoordComponent>();
+				}
 			}
 		}
-	}
-	// Wedge Colors
-	if constexpr (comp::HasOptionalWedgeColors<T>) {
-		if constexpr (comp::HasWedgeColors<CT>) {
-			if (!comp::HasOptionalWedgeColors<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::WedgeColorsComponent>()) {
-				enableOptionalComponent<typename T::WedgeColorsComponent>();
+		// Wedge Colors
+		if constexpr (comp::HasOptionalWedgeColors<T>) {
+			if constexpr (comp::HasWedgeColors<CT>) {
+				if (!comp::HasOptionalWedgeColors<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::WedgeColorsComponent>()) {
+					enableOptionalComponent<typename T::WedgeColorsComponent>();
+				}
 			}
 		}
-	}
-	// Wedge TexCoords
-	if constexpr (comp::HasOptionalWedgeTexCoords<T>) {
-		if constexpr (comp::HasWedgeTexCoords<CT>) {
-			if (!comp::HasOptionalWedgeTexCoords<CT> ||
-				c.template isOptionalComponentEnabled<typename CT::WedgeTexCoordsComponent>()) {
-				enableOptionalComponent<typename T::WedgeTexCoordsComponent>();
+		// Wedge TexCoords
+		if constexpr (comp::HasOptionalWedgeTexCoords<T>) {
+			if constexpr (comp::HasWedgeTexCoords<CT>) {
+				if (!comp::HasOptionalWedgeTexCoords<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::WedgeTexCoordsComponent>()) {
+					enableOptionalComponent<typename T::WedgeTexCoordsComponent>();
+				}
 			}
 		}
 	}
@@ -666,9 +673,9 @@ void ElementContainer<T>::importFrom(const OtherMesh &m, ParentMeshType* parent)
  * and a Container of Faces).
  */
 template<ElementConcept T>
-template<typename MeshType, typename ElRefBase>
+template<typename OtherMesh, typename ElRefBase>
 void ElementContainer<T>::ElementContainer::importReferencesFrom(
-	const MeshType& othMesh,
+	const OtherMesh& othMesh,
 	ElRefBase*      base)
 {
 	// We need to be sure that the other mesh has two containers (that can be the same, see later):
@@ -678,12 +685,12 @@ void ElementContainer<T>::ElementContainer::importReferencesFrom(
 	// Note that ElRefBase may be the same of T (e.g. Vertex[T] has references of other
 	// Vertices[ElRefBase]) or different (e.g. Vertex[T] has references of Faces[ElRefBase])
 	if constexpr (
-		MeshType::template hasContainerOf<T>() && MeshType::template hasContainerOf<ElRefBase>()) {
+		OtherMesh::template hasContainerOf<T>() && OtherMesh::template hasContainerOf<ElRefBase>()) {
 
 		// get the containe type of the other mesh for MyBase - used for get the base pointer
-		using OthBaseContainer = typename MeshType::template GetContainerOf<ElRefBase>::type;
+		using OthBaseContainer = typename OtherMesh::template GetContainerOf<ElRefBase>::type;
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using OthTContainer = typename MeshType::template GetContainerOf<T>::type;
+		using OthTContainer = typename OtherMesh::template GetContainerOf<T>::type;
 
 		// get the container base of the other mesh, that we use to import references
 		const auto* cbase = othMesh.OthBaseContainer::vec.data();

@@ -157,10 +157,6 @@ public:
 	template<typename K>
 	ConstCustomComponentVectorHandle<K> getPerVertexCustomComponentVectorHandle(
 		const std::string& name) const requires vert::HasCustomComponents<T>;
-
-protected:
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
 };
 
 } // namespace vcl::mesh

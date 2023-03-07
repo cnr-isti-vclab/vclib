@@ -685,16 +685,4 @@ ConstCustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentV
 	return cc;
 }
 
-template<EdgeConcept T>
-template<typename Mesh>
-void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
-{
-	// if edges are enabled in the other Mesh
-	if constexpr (HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
-
-		Base::enableOptionalComponentsOf((const MEdgeContainer&)m);
-	}
-}
-
 } // namespace vcl::mesh

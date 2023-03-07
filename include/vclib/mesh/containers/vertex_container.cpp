@@ -856,16 +856,4 @@ ConstCustomComponentVectorHandle<K> VertexContainer<T>::getPerVertexCustomCompon
 	return cc;
 }
 
-template<VertexConcept T>
-template<typename Mesh>
-void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
-{
-	// if vertices are present in the other Mesh
-	if constexpr (HasVertexContainer<Mesh>) {
-		using MVertexContainer = typename Mesh::VertexContainer::Base;
-
-		Base::enableOptionalComponentsOf((const MVertexContainer&)m);
-	}
-}
-
 } // namespace vcl::mesh

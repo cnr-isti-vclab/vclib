@@ -787,18 +787,6 @@ ConstCustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentV
 	return cc;
 }
 
-template<FaceConcept T>
-template<typename Mesh>
-void FaceContainer<T>::enableOptionalComponentsOf(const Mesh& m)
-{
-	// if faces are enabled in the other Mesh
-	if constexpr (HasFaceContainer<Mesh>) {
-		using MFaceContainer = typename Mesh::FaceContainer::Base;
-
-		Base::enableOptionalComponentsOf((const MFaceContainer&)m);
-	}
-}
-
 /**
  * @brief Checks if the face Optional WedgeColors Faces is enabled.
  *

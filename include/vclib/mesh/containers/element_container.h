@@ -115,14 +115,14 @@ protected:
 	template<typename Element>
 	void updateReferencesAfterCompact(const Element* base, const std::vector<int>& newIndices);
 
-	template<typename Container>
-	void enableOptionalComponentsOf(const Container& c);
+	template<typename OtherMesh>
+	void enableOptionalComponentsOf(const OtherMesh& m);
 
 	template<typename OtherMesh, typename ParentMeshType>
 	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 
-	template<typename MeshType, typename ElRefBase>
-	void importReferencesFrom(const MeshType& othMesh, ElRefBase* base);
+	template<typename OtherMesh, typename ElRefBase>
+	void importReferencesFrom(const OtherMesh& othMesh, ElRefBase* base);
 	
 	// filter components of elements, taking only vertical ones
 	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
