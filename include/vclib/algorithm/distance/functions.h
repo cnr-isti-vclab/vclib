@@ -29,12 +29,15 @@
 
 namespace vcl {
 
+// generic case - nothing is done here. It will fail because a specialization must exist
 template<typename Obj1, typename Obj2, typename RetScalarType>
 struct DistFunctionStruct
 {
 };
 
+// Specialization for distance between two points
 template<PointConcept Obj1, PointConcept Obj2, typename RetScalarType>
+	requires (Obj1::DIM == Obj2::DIM)
 struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 {
 	static inline const std::function<RetScalarType(const Obj1&, const Obj2&)> distFun =
@@ -44,6 +47,7 @@ struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 	};
 };
 
+// Specialization for distance between Vertex and Point
 template<VertexConcept Obj1, PointConcept Obj2, typename RetScalarType>
 struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 {
@@ -54,6 +58,7 @@ struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 	};
 };
 
+// Specialization for distance between Vertex* and Point
 template<VertexConcept Obj1, PointConcept Obj2, typename RetScalarType>
 struct DistFunctionStruct<Obj1*, Obj2, RetScalarType>
 {
@@ -64,6 +69,7 @@ struct DistFunctionStruct<Obj1*, Obj2, RetScalarType>
 	};
 };
 
+// Specialization for distance between Point and Vertex
 template<PointConcept Obj1, VertexConcept Obj2, typename RetScalarType>
 struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 {
@@ -74,6 +80,7 @@ struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 	};
 };
 
+// Specialization for distance between Point and Vertex*
 template<PointConcept Obj1, VertexConcept Obj2, typename RetScalarType>
 struct DistFunctionStruct<Obj1, Obj2*, RetScalarType>
 {
@@ -84,6 +91,14 @@ struct DistFunctionStruct<Obj1, Obj2*, RetScalarType>
 	};
 };
 
+/**
+ * @brief Return a proper dist function between a Obj1 object and an Obj2 object.
+ *
+ * The function will return a function defined in a specialization of the struct DistFunctionStruct.
+ * If the distance function for your types is not defined, you can write your own DistFunctionStruct
+ * specialization that defines a proper `static const inline` object called `distFun` of
+ * `std::function` type.
+ */
 template<typename Obj1, typename Obj2, typename RetScalarType = double>
 auto distFunction()
 {
