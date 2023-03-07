@@ -1304,92 +1304,36 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 auto& Mesh<Args...>::customComponents()
 {
-	// todo make this dynamic: take the container of El and return its ccVecMap
-	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		return EdgeContainer::ccVecMap;
-	}
-	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		return FaceContainer::ccVecMap;
-	}
-	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		return HalfEdgeContainer::ccVecMap;
-	}
-	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		return VertexContainer::ccVecMap;
-	}
+	using ElCont = typename GetContainerOf<El>::type;
+
+	return ElCont::ccVecMap;
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 const auto& Mesh<Args...>::customComponents() const
 {
-	// todo make this dynamic: take the container of El and return its ccVecMap
-	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		return EdgeContainer::ccVecMap;
-	}
-	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		return FaceContainer::ccVecMap;
-	}
-	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		return HalfEdgeContainer::ccVecMap;
-	}
-	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		return VertexContainer::ccVecMap;
-	}
+	using ElCont = typename GetContainerOf<El>::type;
+
+	return ElCont::ccVecMap;
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 auto& Mesh<Args...>::verticalComponents()
 {
-	// todo make this dynamic: take the container of El and return its vcVecTuple
-	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		return EdgeContainer::vcVecTuple;
-	}
-	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		return FaceContainer::vcVecTuple;
-	}
-	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		return HalfEdgeContainer::vcVecTuple;
-	}
-	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		return VertexContainer::vcVecTuple;
-	}
+	using ElCont = typename GetContainerOf<El>::type;
+
+	return ElCont::vcVecTuple;
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 const auto& Mesh<Args...>::verticalComponents() const
 {
-	// todo make this dynamic: take the container of El and return its vcVecTuple
-	if constexpr (EdgeConcept<El>) {
-		using EdgeContainer = typename Mesh<Args...>::EdgeContainer;
-		return EdgeContainer::vcVecTuple;
-	}
-	if constexpr (FaceConcept<El>) {
-		using FaceContainer = typename Mesh<Args...>::FaceContainer;
-		return FaceContainer::vcVecTuple;
-	}
-	if constexpr (HalfEdgeConcept<El>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		return HalfEdgeContainer::vcVecTuple;
-	}
-	if constexpr (VertexConcept<El>) {
-		using VertexContainer = typename Mesh<Args...>::VertexContainer;
-		return VertexContainer::vcVecTuple;
-	}
+	using ElCont = typename GetContainerOf<El>::type;
+
+	return ElCont::vcVecTuple;
 }
 
 } // namespace vcl

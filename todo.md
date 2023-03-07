@@ -2,7 +2,8 @@
 
 - Mesh:
   - Components:
-
+    - [ ] add an enum COMPONENT_TYPE that allows to identify same class of components easily -- same usage of ELEMENT_TYPE for elements
+      - [ ] then allow to write a generic enableSameOptionalComponentsOf member function in ElementContainer
   - Elements:
     - [ ] set properly elements concepts
     - [ ] set constructors for Edge element
@@ -10,11 +11,8 @@
   - Containers:
     - [ ] set properly container concepts
   - Mesh:
-    - [ ] customComponents and verticalComponents members should be dynamic, and do not static check on the type of element
-    - [ ] generic importReferences (avoid importVertexReferences, importFaceReferences, etc. on containers and components)
-  
     - [ ] manage clean() for all components of mesh, not only element containers
-    - [ ] import dcel from mesh: update adjacent faces e wedges 
+    - [ ] import dcel from mesh: update adjacent faces and wedges 
 - Samplers:
   - [ ] add resize member function to allow parallel algorithms
 - Algorithms:
