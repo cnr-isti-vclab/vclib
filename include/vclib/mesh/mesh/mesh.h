@@ -257,6 +257,9 @@ private:
 	template<typename Cont, typename OthMesh>
 	void importReferences(const OthMesh& m);
 
+	template<typename Cont, typename ElemCont, typename OthMesh>
+	void importReferencesOfElement(const OthMesh& m);
+
 	template<typename OthMesh>
 	void manageImportTriFromPoly(const OthMesh& m);
 

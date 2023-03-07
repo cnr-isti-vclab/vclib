@@ -1071,29 +1071,25 @@ void Mesh<Args...>::importContainersAndComponents(const OthMesh &m)
 }
 
 /**
- * This function will call, for a given container of this mesh that is passed as a template
+ * This function will import, for a given container of this mesh that is passed as a template
  * parameter Cont, all the references of all the elements from the other mesh m.
  */
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importReferences(const OthMesh &m)
 {
-	using ThisMesh = Mesh<Args...>;
+	// will loop again on Args. Args will be the element references imported on Cont
+	(importReferencesOfElement<Cont, Args>(m), ...);
+}
 
-	// if Cont is a container (could be a mesh component)
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
-		// will call the specific importVertexReferences of the Cont container.
-		// it will take care to import the reference from tha same container type of m.
-		Cont::importReferencesFrom(m, &this->vertex(0));
-		if constexpr (mesh::HasFaceContainer<ThisMesh>) {
-			Cont::importReferencesFrom(m, &this->face(0));
-		}
-		if constexpr (mesh::HasEdgeContainer<ThisMesh>) {
-			Cont::importReferencesFrom(m, &this->edge(0));
-		}
-		if constexpr (mesh::HasHalfEdgeContainer<ThisMesh>) {
-			Cont::importReferencesFrom(m, &this->halfEdge(0));
-		}
+template<typename... Args> requires HasVertices<Args...>
+template<typename Cont, typename ElemCont, typename OthMesh>
+void Mesh<Args...>::importReferencesOfElement(const OthMesh& m)
+{
+	// if Cont and ElemCont are containers (could be mesh components)
+	if constexpr(mesh::ElementContainerConcept<Cont> && mesh::ElementContainerConcept<ElemCont>) {
+		// import in Cont the ElemCont references from m
+		Cont::importReferencesFrom(m, ElemCont::vec.data());
 	}
 }
 
