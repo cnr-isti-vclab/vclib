@@ -88,6 +88,39 @@ void Mesh<Args...>::compact()
 }
 
 /**
+ * @brief The HasContainerOf struct sets the bool `value` to true if this Mesh has a container
+ * of elements having the same Element ID of the template Element El.
+ *
+ * This means that this the only value checked is the ELEMENT_TYPE unsigned int exposed by the
+ * Element, meaning that it does not check if the Elements of this mesh are exactly the same of
+ * El.
+ *
+ * In other words, it returns true also if we pass an Element of another mesh that is of the
+ * same ELEMENT_TYPE (both Vertices, Faces, ecc).
+ *
+ * Example of usage (Note: EdgeMesh has Vertices, but not Faces):
+ *
+ * @code{.cpp}
+ * static_assert(vcl::EdgeMesh::hasContainerOf<vcl::TriMesh::Vertex>(),
+ *					"EdgeMesh does not have Vertices");
+ * static_assert(!vcl::EdgeMesh::hasContainerOf<vcl::TriMesh::Face>(),
+ *					"EdgeMesh has Faces");
+ * @endcode
+ *
+ * HasContainerOf sets its value to true when El is the TriMesh::Vertex, because EdgeMesh has
+ * a Container of Vertices (Vertices of TriMesh and EdgeMesh are defined in different ways, but
+ * they have the same ELEMENT_TYPE id).
+ * HasContainerOf sets its value to false when El is the TriMesh::Face, because EdgeMesh does
+ * not have a Container of Faces.
+ */
+template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept El>
+constexpr bool Mesh<Args...>::hasContainerOf()
+{
+	return HasContainerOfPred<El>::value;
+}
+
+/**
  * @brief Enables all the OptionalComponents of this mesh according to the Components available
  * on the OtherMeshType m.
  *

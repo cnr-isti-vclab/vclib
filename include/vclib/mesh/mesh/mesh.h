@@ -72,6 +72,9 @@ public:
 
 	void compact();
 
+	template<ElementConcept El>
+	static constexpr bool hasContainerOf();
+
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
 
@@ -290,6 +293,33 @@ private:
 	
 	template<typename El>
 	const auto& verticalComponents() const;
+
+	// Predicate structures
+
+	// Elements can be individuated with their ID, which is an unsigned int.
+	// This struct sets its bool `value` to true if this Mesh has a Container of Elements with the
+	// given unsigned integer El
+	template<uint El>
+	struct HasContainerOfTypeIndexPred
+	{
+	private:
+		template <typename Cont>
+		struct SameElPred
+		{
+			static constexpr bool value = Cont::ELEMENT_TYPE == El;
+		};
+
+		using ResCont = typename vcl::FilterTypesByCondition<SameElPred, Containers>::type;
+
+	public:
+		static constexpr bool value = NumberOfTypes<ResCont>::value == 1;
+	};
+
+	template<ElementConcept El>
+	struct HasContainerOfPred
+	{
+		static constexpr bool value = HasContainerOfTypeIndexPred<El::ELEMENT_TYPE>::value;
+	};
 };
 
 } // namespace vcl
