@@ -48,7 +48,7 @@ struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 };
 
 // Specialization for distance between Vertex and Point
-template<VertexConcept Obj1, PointConcept Obj2, typename RetScalarType>
+template<VertexConcept Obj1, Point3Concept Obj2, typename RetScalarType>
 struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 {
 	static inline const std::function<RetScalarType(const Obj1&, const Obj2&)> distFun =
@@ -59,7 +59,7 @@ struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 };
 
 // Specialization for distance between Vertex* and Point
-template<VertexConcept Obj1, PointConcept Obj2, typename RetScalarType>
+template<VertexConcept Obj1, Point3Concept Obj2, typename RetScalarType>
 struct DistFunctionStruct<Obj1*, Obj2, RetScalarType>
 {
 	static inline const std::function<RetScalarType(const Obj1* const&, const Obj2&)> distFun =
@@ -70,7 +70,7 @@ struct DistFunctionStruct<Obj1*, Obj2, RetScalarType>
 };
 
 // Specialization for distance between Point and Vertex
-template<PointConcept Obj1, VertexConcept Obj2, typename RetScalarType>
+template<Point3Concept Obj1, VertexConcept Obj2, typename RetScalarType>
 struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 {
 	static inline const std::function<RetScalarType(const Obj1&, const Obj2&)> distFun =
@@ -81,7 +81,7 @@ struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 };
 
 // Specialization for distance between Point and Vertex*
-template<PointConcept Obj1, VertexConcept Obj2, typename RetScalarType>
+template<Point3Concept Obj1, VertexConcept Obj2, typename RetScalarType>
 struct DistFunctionStruct<Obj1, Obj2*, RetScalarType>
 {
 	static const inline std::function<RetScalarType(const Obj1&, const Obj2* const&)> distFun =
