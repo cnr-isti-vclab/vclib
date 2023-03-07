@@ -54,6 +54,9 @@ class Mesh : public Args...
 	template<typename El, bool b>
 	friend struct comp::internal::ComponentData;
 
+	template<ElementConcept T>
+	friend class mesh::ElementContainer;
+
 public:
 	// filter Components of the Mesh, taking only the Container
 	// Containers is a vcl::TypeWrapper containing all the containers that were in Args
@@ -299,8 +302,10 @@ private:
 	// Elements can be individuated with their ID, which is an unsigned int.
 	// This struct sets its bool `value` to true if this Mesh has a Container of Elements with the
 	// given unsigned integer El
+	// Sets also `type` with a TypeWrapper contianing the Container that satisfied the condition.
+	// the TypeWrapper will be empty if no Containers were found.
 	template<uint El>
-	struct HasContainerOfTypeIndexPred
+	struct ContainerOfTypeIndexPred
 	{
 	private:
 		template <typename Cont>
@@ -309,16 +314,33 @@ private:
 			static constexpr bool value = Cont::ELEMENT_TYPE == El;
 		};
 
-		using ResCont = typename vcl::FilterTypesByCondition<SameElPred, Containers>::type;
-
 	public:
-		static constexpr bool value = NumberOfTypes<ResCont>::value == 1;
+		// TypeWrapper of the found container, if any
+		using type = typename vcl::FilterTypesByCondition<SameElPred, Containers>::type;
+		static constexpr bool value = NumberOfTypes<type>::value == 1;
 	};
 
 	template<ElementConcept El>
 	struct HasContainerOfPred
 	{
-		static constexpr bool value = HasContainerOfTypeIndexPred<El::ELEMENT_TYPE>::value;
+		static constexpr bool value = ContainerOfTypeIndexPred<El::ELEMENT_TYPE>::value;
+	};
+
+	template<ElementConcept El>
+	struct GetContainerOf
+	{
+	private:
+		template<typename>
+		struct TypeUnwrapper {};
+
+		template<typename C>
+		struct TypeUnwrapper<TypeWrapper<C>>
+		{
+			using type = C;
+		};
+	public:
+		using type = typename TypeUnwrapper<
+			typename ContainerOfTypeIndexPred<El::ELEMENT_TYPE>::type>::type;
 	};
 };
 

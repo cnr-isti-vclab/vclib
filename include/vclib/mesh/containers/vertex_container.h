@@ -164,18 +164,6 @@ protected:
 
 	template<typename OtherMesh, typename ParentMeshType>
 	void importFrom(const OtherMesh& m, ParentMeshType* parent);
-
-	template<typename Mesh>
-	void importVertexReferencesFrom(const Mesh& m, T* base);
-
-	template<typename Mesh, typename Face>
-	void importFaceReferencesFrom(const Mesh& m, Face* base);
-
-	template<typename Mesh, typename Edge>
-	void importEdgeReferencesFrom(const Mesh& m, Edge* base);
-
-	template<typename Mesh, typename HalfEdge>
-	void importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* base);
 };
 
 } // namespace vcl::mesh

@@ -121,8 +121,8 @@ protected:
 	template<typename Container, typename ParentMeshType>
 	void importFrom(const Container& c, ParentMeshType* parent);
 
-	template<typename Container, typename MyBase, typename CBase>
-	void importReferencesFrom(const Container& c, MyBase* base, const CBase* cbase);
+	template<typename MeshType, typename ElRefBase>
+	void importReferencesFrom(const MeshType& othMesh, ElRefBase* base);
 	
 	// filter components of elements, taking only vertical ones
 	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
@@ -162,6 +162,9 @@ private:
 		const ElRef*            base,
 		const std::vector<int>& newIndices,
 		TypeWrapper<Comps...>);
+
+	template<typename Container, typename MyBase, typename CBase>
+	void importReferencesFromContainer(const Container& c, MyBase* base, const CBase* cbase);
 
 	template<typename Container, typename ElRef, typename CBase, typename... Comps>
 	void importReferencesOnComponentsFrom(

@@ -1084,15 +1084,15 @@ void Mesh<Args...>::importReferences(const OthMesh &m)
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		// will call the specific importVertexReferences of the Cont container.
 		// it will take care to import the reference from tha same container type of m.
-		Cont::importVertexReferencesFrom(m, &this->vertex(0));
+		Cont::importReferencesFrom(m, &this->vertex(0));
 		if constexpr (mesh::HasFaceContainer<ThisMesh>) {
-			Cont::importFaceReferencesFrom(m, &this->face(0));
+			Cont::importReferencesFrom(m, &this->face(0));
 		}
 		if constexpr (mesh::HasEdgeContainer<ThisMesh>) {
-			Cont::importEdgeReferencesFrom(m, &this->edge(0));
+			Cont::importReferencesFrom(m, &this->edge(0));
 		}
 		if constexpr (mesh::HasHalfEdgeContainer<ThisMesh>) {
-			Cont::importHalfEdgeReferencesFrom(m, &this->halfEdge(0));
+			Cont::importReferencesFrom(m, &this->halfEdge(0));
 		}
 	}
 }

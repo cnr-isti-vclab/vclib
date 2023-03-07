@@ -650,6 +650,63 @@ void ElementContainer<T>::importFrom(const Container &c, ParentMeshType* parent)
 }
 
 /**
+ * This function imports from another mesh, the references of the element ElRefBase stored on this
+ * container.
+ *
+ * Checks if the other mesh has two containers: the one of T and the one of ElRefBase.
+ * Only if both containers exists in othMesh, then the import makes sense (e.g. we can import per
+ * Vertex Face references (T = Vertex, ElRefBase = Face) if othMesh has both a container of Vertices
+ * and a Container of Faces).
+ */
+template<ElementConcept T>
+template<typename MeshType, typename ElRefBase>
+void ElementContainer<T>::ElementContainer::importReferencesFrom(
+	const MeshType& othMesh,
+	ElRefBase*      base)
+{
+	// We need to be sure that the other mesh has two containers (that can be the same, see later):
+	// - the one of Elements of same type as T
+	// - the one of Elements of same type as ElRefBase (the references that we are actually
+	// importing on this Container of T elements)
+	// Note that ElRefBase may be the same of T (e.g. Vertex[T] has references of other
+	// Vertices[ElRefBase]) or different (e.g. Vertex[T] has references of Faces[ElRefBase])
+	if constexpr (
+		MeshType::template hasContainerOf<T>() && MeshType::template hasContainerOf<ElRefBase>()) {
+
+		// get the containe type of the other mesh for MyBase - used for get the base pointer
+		using OthBaseContainer = typename MeshType::template GetContainerOf<ElRefBase>::type;
+		// get the container type of the other mesh for T - used to upcast othMesh
+		using OthTContainer = typename MeshType::template GetContainerOf<T>::type;
+
+		// get the container base of the other mesh, that we use to import references
+		const auto* cbase = othMesh.OthBaseContainer::vec.data();
+
+		// upcast the other mesh to the container and import the references from the OthTContainer
+		importReferencesFromContainer((const OthTContainer&)othMesh, base, cbase);
+	}
+}
+
+template<ElementConcept T>
+template<typename ElRef, typename... Comps>
+void ElementContainer<T>::updateReferencesOnComponents(
+	const ElRef* oldBase,
+	const ElRef* newBase,
+	TypeWrapper<Comps...>)
+{
+	(updateReferencesOnComponent<Comps>(oldBase, newBase), ...);
+}
+
+template<ElementConcept T>
+template<typename ElRef, typename... Comps>
+void ElementContainer<T>::updateReferencesAfterCompactOnComponents(
+	const ElRef* base,
+	const std::vector<int>& newIndices,
+	TypeWrapper<Comps...>)
+{
+	(updateReferencesAfterCompactOnComponent<Comps>(base, newIndices), ...);
+}
+
+/**
  * This member function is called when this Element container needs to import vertex references from
  * another Container c.
  *
@@ -671,31 +728,11 @@ void ElementContainer<T>::importFrom(const Container &c, ParentMeshType* parent)
  */
 template<ElementConcept T>
 template<typename Container, typename MyBase, typename CBase>
-void ElementContainer<T>::importReferencesFrom(const Container& c, MyBase* base, const CBase* cbase)
+void ElementContainer<T>::importReferencesFromContainer(const Container& c, MyBase* base, const CBase* cbase)
 {
 	using Comps = typename T::Components;
 
 	importReferencesOnComponentsFrom(c, base, cbase, Comps());
-}
-
-template<ElementConcept T>
-template<typename ElRef, typename... Comps>
-void ElementContainer<T>::updateReferencesOnComponents(
-	const ElRef* oldBase,
-	const ElRef* newBase,
-	TypeWrapper<Comps...>)
-{
-	(updateReferencesOnComponent<Comps>(oldBase, newBase), ...);
-}
-
-template<ElementConcept T>
-template<typename ElRef, typename... Comps>
-void ElementContainer<T>::updateReferencesAfterCompactOnComponents(
-	const ElRef* base,
-	const std::vector<int>& newIndices,
-	TypeWrapper<Comps...>)
-{
-	(updateReferencesAfterCompactOnComponent<Comps>(base, newIndices), ...);
 }
 
 template<ElementConcept T>

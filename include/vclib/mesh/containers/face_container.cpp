@@ -810,50 +810,6 @@ void FaceContainer<T>::importFrom(const OtherMesh& m, ParentMeshType* parent)
 	}
 }
 
-template<FaceConcept T>
-template<typename Mesh, typename Vertex>
-void FaceContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
-{
-	if constexpr (HasVertexContainer<Mesh> && HasFaceContainer<Mesh>) {
-		using MFaceContainer = typename Mesh::FaceContainer::Base;
-
-		Base::importReferencesFrom((const MFaceContainer&)m, base, &m.vertex(0));
-	}
-}
-
-template<FaceConcept T>
-template<typename Mesh>
-void FaceContainer<T>::importFaceReferencesFrom(const Mesh& m, T *base)
-{
-	if constexpr (HasFaceContainer<Mesh>) {
-		using MFaceContainer = typename Mesh::FaceContainer::Base;
-
-		Base::importReferencesFrom((const MFaceContainer&)m, base, &m.face(0));
-	}
-}
-
-template<FaceConcept T>
-template<typename Mesh, typename Edge>
-void FaceContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
-{
-	if constexpr (HasEdgeContainer<Mesh> && HasFaceContainer<Mesh>) {
-		using MFaceContainer = typename Mesh::FaceContainer::Base;
-
-		Base::importReferencesFrom((const MFaceContainer&)m, base, &m.edge(0));
-	}
-}
-
-template<FaceConcept T>
-template<typename Mesh, typename HalfEdge>
-void FaceContainer<T>::importHalfEdgeReferencesFrom(const Mesh &m, HalfEdge *base)
-{
-	if constexpr (HasHalfEdgeContainer<Mesh> && HasFaceContainer<Mesh>) {
-		using MFaceContainer = typename Mesh::FaceContainer::Base;
-
-		Base::importReferencesFrom((const MFaceContainer&)m, base, &m.halfEdge(0));
-	}
-}
-
 /**
  * @brief Checks if the face Optional WedgeColors Faces is enabled.
  *

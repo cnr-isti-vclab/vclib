@@ -708,37 +708,4 @@ void EdgeContainer<T>::importFrom(const OtherMesh& m, ParentMeshType* parent)
 	}
 }
 
-template<EdgeConcept T>
-template<typename Mesh, typename Vertex>
-void EdgeContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
-{
-	if constexpr (mesh::HasVertexContainer<Mesh> && HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
-
-		Base::importReferencesFrom((const MEdgeContainer&)m, base, &m.vertex(0));
-	}
-}
-
-template<EdgeConcept T>
-template<typename Mesh, typename Face>
-void EdgeContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
-{
-	if constexpr (HasFaceContainer<Mesh> && HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
-
-		Base::importReferencesFrom((const MEdgeContainer&)m, base, &m.face(0));
-	}
-}
-
-template<EdgeConcept T>
-template<typename Mesh>
-void EdgeContainer<T>::importEdgeReferencesFrom(const Mesh& m, T *base)
-{
-	if constexpr (HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
-
-		Base::importReferencesFrom((const MEdgeContainer&)m, base, &m.edge(0));
-	}
-}
-
 } // namespace vcl::mesh
