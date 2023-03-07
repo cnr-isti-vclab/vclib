@@ -650,16 +650,4 @@ void HalfEdgeContainer<T>::enableOptionalComponentsOf(const Mesh &m)
 	}
 }
 
-template<HalfEdgeConcept T>
-template<typename OtherMesh, typename ParentMeshType>
-void HalfEdgeContainer<T>::importFrom(const OtherMesh &m, ParentMeshType* parent)
-{
-	// if half edges are enabled in the other Mesh
-	if constexpr (mesh::HasHalfEdgeContainer<OtherMesh>) {
-		using MHalfEdgeContainer = typename OtherMesh::HalfEdgeContainer::Base;
-
-		Base::importFrom((const MHalfEdgeContainer&)m, parent);
-	}
-}
-
 } // namespace vcl::mesh

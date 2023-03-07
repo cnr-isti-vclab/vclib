@@ -118,8 +118,8 @@ protected:
 	template<typename Container>
 	void enableOptionalComponentsOf(const Container& c);
 
-	template<typename Container, typename ParentMeshType>
-	void importFrom(const Container& c, ParentMeshType* parent);
+	template<typename OtherMesh, typename ParentMeshType>
+	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 
 	template<typename MeshType, typename ElRefBase>
 	void importReferencesFrom(const MeshType& othMesh, ElRefBase* base);

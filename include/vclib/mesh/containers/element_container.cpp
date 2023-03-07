@@ -636,16 +636,23 @@ void ElementContainer<T>::enableOptionalComponentsOf(const Container &c)
 }
 
 template<ElementConcept T>
-template<typename Container, typename ParentMeshType>
-void ElementContainer<T>::importFrom(const Container &c, ParentMeshType* parent)
+template<typename OtherMesh, typename ParentMeshType>
+void ElementContainer<T>::importFrom(const OtherMesh &m, ParentMeshType* parent)
 {
-	clearElements();
-	// pointer to parent mesh needs to be updated later by the mesh
-	addElements(c.elementContainerSize(), parent);
-	unsigned int eid = 0;
-	for (const typename Container::ElementType& e : c.elements(false)) {
-		element(eid).importFrom(e);
-		++eid;
+	if constexpr (OtherMesh::template hasContainerOf<T>()) {
+		// get the container type of the other mesh for T - used to upcast othMesh
+		using Container = typename OtherMesh::template GetContainerOf<T>::type;
+
+		const Container& c = (const Container&)m;
+
+		clearElements();
+		// pointer to parent mesh needs to be updated later by the mesh
+		addElements(c.elementContainerSize(), parent);
+		unsigned int eid = 0;
+		for (const typename Container::ElementType& e : c.elements(false)) {
+			element(eid).importFrom(e);
+			++eid;
+		}
 	}
 }
 

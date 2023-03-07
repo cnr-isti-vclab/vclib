@@ -697,15 +697,4 @@ void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
 	}
 }
 
-template<EdgeConcept T>
-template<typename OtherMesh, typename ParentMeshType>
-void EdgeContainer<T>::importFrom(const OtherMesh& m, ParentMeshType* parent)
-{
-	if constexpr (HasEdgeContainer<OtherMesh>) {
-		using MEdgeContainer = typename OtherMesh::EdgeContainer::Base;
-
-		Base::importFrom((const MEdgeContainer&)m, parent);
-	}
-}
-
 } // namespace vcl::mesh

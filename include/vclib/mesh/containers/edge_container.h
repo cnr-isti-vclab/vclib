@@ -141,9 +141,6 @@ protected:
 
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
-
-	template<typename OtherMesh, typename ParentMeshType>
-	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 };
 
 } // namespace vcl::mesh

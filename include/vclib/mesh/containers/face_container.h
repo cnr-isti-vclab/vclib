@@ -149,9 +149,6 @@ protected:
 	template<typename Mesh>
 	void enableOptionalComponentsOf(const Mesh& m);
 
-	template<typename OtherMesh, typename ParentMeshType>
-	void importFrom(const OtherMesh& m, ParentMeshType* parent);
-
 	// WedgeColors
 	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
 	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
