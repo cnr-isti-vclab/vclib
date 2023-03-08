@@ -28,18 +28,44 @@
 
 namespace vcl {
 
+/**
+ * @brief A class representing a box in N-dimensional space.
+ *
+ * The `Box` class represents an axis-aligned box in N-dimensional space, defined
+ * by its minimum and maximum corners. It provides functions for performing various
+ * operations on boxes, such as checking if a point is inside the box, computing the
+ * box's diagonal, and adding other boxes to the current box. The class is parameterized
+ * by a `PointConcept`, which must provide the `DIM` constant and the `[]` operator for
+ * accessing the point coordinates.
+ *
+ * @tparam PointT A type that satisfies the `PointConcept` requirements.
+ */
 template<PointConcept PointT>
 class Box
 {
 public:
+	/**
+	 * @brief The type of point used to represent the corners of the box.
+	 */
 	using PointType = PointT;
+
+	/**
+	 * @brief The dimensionality of the box.
+	 */
+	static const int DIM = PointT::DIM;
 
 	Box();
 	Box(const PointT& p);
 	Box(const PointT& min, const PointT& max);
 
 	template<typename P>
-	Box(const Box<P>& ob);
+	Box(const Box<P>& ob) requires (DIM == P::DIM);
+
+	PointT& min();
+	const PointT& min() const;
+
+	PointT& max();
+	const PointT& max() const;
 
 	bool isNull() const;
 	bool isEmpty() const;
@@ -58,10 +84,12 @@ public:
 
 	void setNull();
 
-	void add(const Box<PointT>& b);
 	void add(const PointT& p);
+
 	template<typename Scalar>
 	void add(const PointT& p, Scalar radius);
+
+	void add(const Box<PointT>& b);
 
 	void intersect(const Box<PointT>& p);
 	void translate(const PointT& p);
@@ -69,8 +97,9 @@ public:
 	bool operator==(const Box<PointT>& p) const;
 	bool operator!=(const Box<PointT>& p) const;
 
-	PointT min;
-	PointT max;
+private:
+	PointT minP;
+	PointT maxP;
 };
 
 template <typename S>

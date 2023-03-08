@@ -70,8 +70,8 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v
 		else { // else, call the boundingBox function
 			typename GridType::BBoxType bb = vcl::boundingBox(*vv); //bbox of value
 
-			bmin = GridType::cell(bb.min); // first cell where insert
-			bmax = GridType::cell(bb.max); // last cell where insert
+			bmin = GridType::cell(bb.min()); // first cell where insert
+			bmax = GridType::cell(bb.max()); // last cell where insert
 		}
 
 		bool ins = false;
@@ -245,8 +245,8 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 		Boxui currentIntervalBox;
 
 		typename GridType::BBoxType bb = vcl::boundingBox(*qvv); //bbox of query value
-		currentIntervalBox.add(GridType::cell(bb.min)); // first cell where look for closest
-		currentIntervalBox.add(GridType::cell(bb.max)); // last cell where look for closest
+		currentIntervalBox.add(GridType::cell(bb.min())); // first cell where look for closest
+		currentIntervalBox.add(GridType::cell(bb.max())); // last cell where look for closest
 
 		// looking just on cells where query lies
 		result = closestInCells(qv, cellDiag, currentIntervalBox, distFunction);
@@ -312,14 +312,14 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 		// we need to be sure that there are no values that are closest w.r.t. the n-th that we
 		// have already found by looking in the cell neighborhood
 		// we extend the bb with the distance of the n-th closest found value
-		bb.min -= it->first;
-		bb.max += it->first;
+		bb.min() -= it->first;
+		bb.max() += it->first;
 
 		// and we look in all of these cells
 		Boxui currentIntervalBox;
-		currentIntervalBox.add(GridType::cell(bb.min)); // first cell where look for closest
-		currentIntervalBox.add(GridType::cell(bb.max)); // last cell where look for closest
-		for (const KeyType& c : GridType::cells(currentIntervalBox.min, currentIntervalBox.max)) {
+		currentIntervalBox.add(GridType::cell(bb.min())); // first cell where look for closest
+		currentIntervalBox.add(GridType::cell(bb.max())); // last cell where look for closest
+		for (const KeyType& c : GridType::cells(currentIntervalBox.min(), currentIntervalBox.max())) {
 			if (!ignore.isInsideOpenBox(c)) {
 				const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 				for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
@@ -429,8 +429,8 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 	if (nElements > 0) {
 		// inflated bb
 		ScalarType infl = bbox.diagonal() / nElements;
-		bbox.min -= infl;
-		bbox.max += infl;
+		bbox.min() -= infl;
+		bbox.max() += infl;
 
 		CellCoord sizes = bestGridSize(bbox.size(), nElements);
 
@@ -483,7 +483,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestInCells(
 	typename GridType::ScalarType dist = maxDist;
 
 	// for each cell in the interval
-	for (const KeyType& c : GridType::cells(interval.min, interval.max)) {
+	for (const KeyType& c : GridType::cells(interval.min(), interval.max())) {
 		if (!ignore.isInsideOpenBox(c)) {
 			// p is a pair of iterators
 			const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
@@ -519,13 +519,13 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 	if (qvv) {
 		Boxui currentIntervalBox;
 		typename GridType::BBoxType bb = vcl::boundingBox(*qvv); //bbox of query value
-		currentIntervalBox.add(GridType::cell(bb.min)); // first cell where look for closest
-		currentIntervalBox.add(GridType::cell(bb.max)); // last cell where look for closest
+		currentIntervalBox.add(GridType::cell(bb.min())); // first cell where look for closest
+		currentIntervalBox.add(GridType::cell(bb.max())); // last cell where look for closest
 
 		ignore.setNull();
 		while (res.size() < n && /*res.size() < values.size() &&*/ currentIntervalBox != ignore) {
 			// for each cell in the interval
-			for (const KeyType& c : GridType::cells(currentIntervalBox.min, currentIntervalBox.max)) {
+			for (const KeyType& c : GridType::cells(currentIntervalBox.min(), currentIntervalBox.max())) {
 				if (!ignore.isInsideOpenBox(c)) {
 					const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 					for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
@@ -535,11 +535,11 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 				}
 			}
 			ignore = currentIntervalBox;
-			for (uint i = 0; i < currentIntervalBox.min.DIM; ++i) {
-				if (currentIntervalBox.min(i) != 0)
-					currentIntervalBox.min(i)--;
-				if (currentIntervalBox.max(i) != GridType::cellNumber(i))
-					currentIntervalBox.max(i)++;
+			for (uint i = 0; i < currentIntervalBox.min().DIM; ++i) {
+				if (currentIntervalBox.min()(i) != 0)
+					currentIntervalBox.min()(i)--;
+				if (currentIntervalBox.max()(i) != GridType::cellNumber(i))
+					currentIntervalBox.max()(i)++;
 			}
 		}
 	}

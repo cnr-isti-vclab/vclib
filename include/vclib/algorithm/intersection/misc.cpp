@@ -41,8 +41,8 @@ bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
 	using ScalarType = typename PointType::ScalarType;
 
 	// Convert AABB to center-extents representation
-	PointType c = (box.max + box.min) * 0.5f; // Compute AABB center
-	PointType e = box.max - c; // Compute positive extents
+	PointType c = (box.max() + box.min()) * 0.5f; // Compute AABB center
+	PointType e = box.max() - c; // Compute positive extents
 
 	PointType n = p.direction();
 	// Compute the projection interval radius of b onto L(t) = b.c + t * p.n

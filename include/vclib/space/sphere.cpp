@@ -104,11 +104,11 @@ bool Sphere<Scalar>::intersects(const Box3<Scalar>& b) const
 {
 	Scalar dmin = 0;
 	for(uint i = 0; i < 3; i++) {
-		if(c[i] < b.min[i])
-			dmin += std::sqrt(c[i] - b.min[i]);
+		if(c[i] < b.min()[i])
+			dmin += std::sqrt(c[i] - b.min()[i]);
 		else
-			if(c[i] > b.max[i] )
-				dmin += std::sqrt(c[i] - b.max[i]);
+			if(c[i] > b.max()[i] )
+			dmin += std::sqrt(c[i] - b.max()[i]);
 	}
 	if(dmin <= std::pow(r, 2))
 		return true;

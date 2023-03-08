@@ -385,7 +385,7 @@ uint KDTree<PointType>::createTree(uint nodeId, uint start, uint end, uint level
 		aabb.add(points[i]);
 
 	// bounding box diagonal
-	PointType diag = aabb.max - aabb.min;
+	PointType diag = aabb.max() - aabb.min();
 
 	// the split "dim" is the dimension of the box with the biggest value
 	uint   dim = 0;
@@ -408,7 +408,7 @@ uint KDTree<PointType>::createTree(uint nodeId, uint start, uint end, uint level
 	}
 	// we divide the bounding box in 2 partitions, considering the average of the "dim" dimension
 	else {
-		node.splitValue = Scalar(0.5 * (aabb.max[dim] + aabb.min[dim]));
+		node.splitValue = Scalar(0.5 * (aabb.max()[dim] + aabb.min()[dim]));
 	}
 
 	// midId is the index of the first element in the second partition

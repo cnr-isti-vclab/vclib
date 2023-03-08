@@ -168,8 +168,8 @@ void MeshRenderBuffers<MeshType>::fillVertices(const MeshType &m)
 
 	// if mesh has bounding box, I set it anyway from its bb
 	if constexpr(vcl::HasBoundingBox<MeshType>) {
-		bbmin = m.boundingBox().min;
-		bbmax = m.boundingBox().max;
+		bbmin = m.boundingBox().min();
+		bbmax = m.boundingBox().max();
 	}
 	if (bbToInitialize) { // if I need to compute bb, I initialize to invalid numbers
 		bbmin = Point3d(

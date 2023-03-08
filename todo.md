@@ -14,8 +14,11 @@
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] import dcel from mesh: update adjacent faces and wedges 
 - Algorithms:
+  - [ ] intersection functions (like distance functions)
   - [ ] implement housdorff
   - [ ] update adjacent faces optimized for dcel
+- Space:
+  - [ ] implement segment data structure
 - I/O:
   - [ ] move appropriately load/save functions outside "vcl::io" namespace 
   - [ ] implement STL importer/exporter  

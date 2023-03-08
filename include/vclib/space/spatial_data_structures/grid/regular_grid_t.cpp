@@ -43,13 +43,13 @@ RegularGrid<Scalar, N>::RegularGrid(const Box<Point<Scalar, N> >& bbox, const Po
 template<typename Scalar, int N>
 Point<Scalar, N> RegularGrid<Scalar, N>::min() const
 {
-	return bbox.min;
+	return bbox.min();
 }
 
 template<typename Scalar, int N>
 Point<Scalar, N> RegularGrid<Scalar, N>::max() const
 {
-	return bbox.max;
+	return bbox.max();
 }
 
 /**
@@ -164,9 +164,9 @@ Scalar RegularGrid<Scalar, N>::cellDiagonal() const
 template<typename Scalar, int N>
 uint RegularGrid<Scalar, N>::cell(uint d, const Scalar& s) const
 {
-	if (s < bbox.min(d)) return 0;
-	if (s > bbox.max(d)) return cellNumber(d) - 1;
-	Scalar t = s - bbox.min(d);
+	if (s < bbox.min()(d)) return 0;
+	if (s > bbox.max()(d)) return cellNumber(d) - 1;
+	Scalar t = s - bbox.min()(d);
 	return uint(t / cellLength(d));
 }
 
@@ -196,9 +196,9 @@ typename RegularGrid<Scalar, N>::BBoxType RegularGrid<Scalar, N>::cellBox(const 
 	Point<Scalar, N> p;
 	for (size_t i = 0; i < DIM; ++i)
 		p(i) = (Scalar)c(i)*cellLength(i);
-	p += bbox.min;
-	b.min = p;
-	b.max = (p + cellLengths());
+	p += bbox.min();
+	b.min() = p;
+	b.max() = (p + cellLengths());
 
 	return b;
 }
