@@ -84,8 +84,18 @@ public:
 
 	void flip();
 
-	bool operator==(const Segment<PointT>& s) const;
-	bool operator!=(const Segment<PointT>& s) const;
+	bool operator==(const Segment<PointT>& s) const = default;
+	bool operator!=(const Segment<PointT>& s) const = default;
+
+	Segment<PointT> operator+(const Segment<PointT>& s) const;
+	Segment<PointT> operator-(const Segment<PointT>& s) const;
+	Segment<PointT> operator*(const ScalarType& s) const;
+	Segment<PointT> operator/(const ScalarType& s) const;
+
+	Segment<PointT>& operator+=(const Segment<PointT>& s) const;
+	Segment<PointT>& operator-=(const Segment<PointT>& s) const;
+	Segment<PointT>& operator*=(const ScalarType& s) const;
+	Segment<PointT>& operator/=(const ScalarType& s) const;
 
 private:
 	PointT point0;

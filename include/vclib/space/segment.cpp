@@ -125,15 +125,59 @@ void Segment<PointT>::flip()
 }
 
 template<PointConcept PointT>
-bool Segment<PointT>::operator==(const Segment<PointT>& s) const
+Segment<PointT> Segment<PointT>::operator+(const Segment<PointT>& s) const
 {
-	return point0 == s.point0 && point1 == s.point1;
+	return Segment<PointT>(point0 + s.point0, point1 + s.point1);
 }
 
 template<PointConcept PointT>
-bool Segment<PointT>::operator!=(const Segment<PointT>& s) const
+Segment<PointT> Segment<PointT>::operator-(const Segment<PointT>& s) const
 {
-	return !(*this == s);
+	return Segment<PointT>(point0 - s.point0, point1 - s.point1);
+}
+
+template<PointConcept PointT>
+Segment<PointT> Segment<PointT>::operator*(const ScalarType& s) const
+{
+	return Segment<PointT>(point0 * s, point1 * s);
+}
+
+template<PointConcept PointT>
+Segment<PointT> Segment<PointT>::operator/(const ScalarType& s) const
+{
+	return Segment<PointT>(point0 / s, point1 / s);
+}
+
+template<PointConcept PointT>
+Segment<PointT>& Segment<PointT>::operator+=(const Segment<PointT>& s) const
+{
+	point0 += s.point0;
+	point1 += s.point1;
+	return *this;
+}
+
+template<PointConcept PointT>
+Segment<PointT>& Segment<PointT>::operator-=(const Segment<PointT>& s) const
+{
+	point0 -= s.point0;
+	point1 -= s.point1;
+	return *this;
+}
+
+template<PointConcept PointT>
+Segment<PointT>& Segment<PointT>::operator*=(const ScalarType& s) const
+{
+	point0 *= s;
+	point1 *= s;
+	return *this;
+}
+
+template<PointConcept PointT>
+Segment<PointT>& Segment<PointT>::operator/=(const ScalarType& s) const
+{
+	point0 /= s;
+	point1 /= s;
+	return *this;
 }
 
 } // namespace vcl
