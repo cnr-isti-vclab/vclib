@@ -29,7 +29,7 @@
 // Apple clang does not support c++17 parallel algorithms.
 // To compensate this lack, waiting for Apple to support them, we use pstld
 // (https://github.com/mikekazakov/pstld) that implements them in the stl namespace
-#ifdef __clang__
+#if defined(__clang__) && defined(__APPLE__)
     #if __has_include(<pstld/pstld.h>)
         #include <pstld/pstld.h>
     #else

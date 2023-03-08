@@ -58,8 +58,9 @@ public:
 	Box(const PointT& p);
 	Box(const PointT& min, const PointT& max);
 
+	// todo: move this definition on cpp when apple clang bug will be solved
 	template<typename P>
-	Box(const Box<P>& ob) requires (DIM == P::DIM);
+	Box(const Box<P>& ob) requires (DIM == P::DIM) : minP(ob.minP), maxP(ob.maxP) {};
 
 	PointT& min();
 	const PointT& min() const;

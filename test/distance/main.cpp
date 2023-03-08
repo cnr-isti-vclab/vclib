@@ -24,12 +24,12 @@
 #include <iostream>
 
 #include <vclib/mesh.h>
-#include <vclib/io/load_obj.h>
+#include <vclib/io/load_ply.h>
 #include <vclib/algorithm.h>
 
 int main()
 {
-	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>("/home/alessandro/Drive/Research/3DMeshes/cube.obj");
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "cube_tri.ply");
 
 	vcl::updatePerFaceNormals(m);
 

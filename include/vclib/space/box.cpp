@@ -114,12 +114,12 @@ const PointT& Box<PointT>::max() const
  * @tparam P: The scalar type of the other box.
  * @param[in] ob: The other box to copy.
  */
-template<PointConcept PointT>
-template<typename P>
-Box<PointT>::Box(const Box<P>& ob) requires (DIM == P::DIM) :
-		minP(ob.minP), maxP(ob.maxP)
-{
-}
+//template<PointConcept PointT>
+//template<typename P>
+//Box<PointT>::Box(const Box<P>& ob) requires (DIM == P::DIM) :
+//		minP(ob.minP), maxP(ob.maxP)
+//{
+//}
 
 /**
  * @brief Checks whether the box is null or not.
