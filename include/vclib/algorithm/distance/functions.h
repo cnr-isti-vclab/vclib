@@ -24,8 +24,9 @@
 #ifndef VCL_ALGORITHM_DISTANCE_FUNCTIONS_H
 #define VCL_ALGORITHM_DISTANCE_FUNCTIONS_H
 
+#include "misc.h"
+
 #include <vclib/mesh/requirements.h>
-#include <vclib/space/point.h>
 
 namespace vcl {
 
@@ -44,6 +45,30 @@ struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 		[](const Obj1& o1, const Obj2& o2)
 	{
 		return o1.dist(o2);
+	};
+};
+
+// Specialization for distance between a point and a segment
+template<PointConcept Obj1, SegmentConcept Obj2, typename RetScalarType>
+	requires (Obj1::DIM == Obj2::DIM)
+struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
+{
+	static inline const std::function<RetScalarType(const Obj1&, const Obj2&)> distFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return pointSegmentDistance(o1, o2);
+	};
+};
+
+// Specialization for distance between a segment and a point
+template<SegmentConcept Obj1, PointConcept Obj2, typename RetScalarType>
+	requires (Obj1::DIM == Obj2::DIM)
+struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
+{
+	static inline const std::function<RetScalarType(const Obj1&, const Obj2&)> distFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return pointSegmentDistance(o2, o1);
 	};
 };
 

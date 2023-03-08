@@ -21,30 +21,41 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_INTERSECTION_MISC_H
-#define VCL_ALGORITHM_INTERSECTION_MISC_H
-
-#include <vclib/space/plane.h>
-#include <vclib/space/segment.h>
+#include "misc.h"
 
 namespace vcl {
 
-template<typename PlaneType, typename BoxType>
-bool planeBoxIntersect(const PlaneType& p, const BoxType& box);
+template<PointConcept PointType, SegmentConcept SegmentType>
+auto pointSegmentDistance(const PointType& p, const SegmentType& s, PointType& closest)
+	requires (PointType::DIM == SegmentType::DIM)
+{
+	using ScalarType = typename PointType::ScalarType;
 
-template<typename PlaneType, Segment3Concept SegmentType>
-bool planeSegmentIntersect(
-	const PlaneType&                 p,
-	const SegmentType&               s,
-	typename SegmentType::PointType& intersection);
+	ScalarType dist;
 
-template<typename PlaneType, Segment3Concept SegmentType>
-bool planeSegmentIntersect(
-	const PlaneType&                 p,
-	const SegmentType&               s);
+	PointType dir = s.direction();
+	ScalarType esn = dir.squaredNorm();
+
+	if (esn < std::numeric_limits<ScalarType>::min()) {
+		closest = s.midPoint();
+	}
+	else {
+		ScalarType t = ((p-s.p0())*dir)/esn;
+		if (t < 0) t = 0;
+		else if (t > 1) t = 1;
+
+		closest = s.p0() * (1-t) + s.p1() * t;
+	}
+	dist = p.dist(closest);
+	return dist;
+}
+
+template<PointConcept PointType, SegmentConcept SegmentType>
+auto pointSegmentDistance(const PointType& p, const SegmentType& s)
+	requires (PointType::DIM == SegmentType::DIM)
+{
+	PointType closest;
+	return pointSegmentDistance(p, s, closest);
+}
 
 } // namespace vcl
-
-#include "misc.cpp"
-
-#endif // VCL_ALGORITHM_INTERSECTION_MISC_H

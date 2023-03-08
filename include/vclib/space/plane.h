@@ -62,12 +62,6 @@ public:
 	Point3<Scalar> mirrorPoint(const Point3<Scalar>& p) const;
 	Scalar dist(const Point3<Scalar>& p) const;
 
-	bool segmentIntersection(
-		Point3<Scalar>& intersection,
-		const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const;
-
-	Point3<Scalar> segmentIntersection(const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const;
-
 	bool operator==(const Plane& p) const;
 	bool operator!=(const Plane& p) const;
 

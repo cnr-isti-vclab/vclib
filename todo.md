@@ -18,7 +18,7 @@
   - [ ] implement housdorff
   - [ ] update adjacent faces optimized for dcel
 - Space:
-  - [ ] implement segment data structure
+  - [ ] implement PlaneConcept
 - I/O:
   - [ ] move appropriately load/save functions outside "vcl::io" namespace 
   - [ ] implement STL importer/exporter  

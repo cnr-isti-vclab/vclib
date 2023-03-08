@@ -40,6 +40,12 @@ concept SegmentConcept = requires(T o, const T& co)
 	{ co.p1() } -> std::same_as<const typename T::PointType&>;
 };
 
+template<typename T>
+concept Segment2Concept = SegmentConcept<T> && T::DIM == 2;
+
+template<typename T>
+concept Segment3Concept = SegmentConcept<T> && T::DIM == 3;
+
 /**
  * @brief A class representing a line segment in n-dimensional space. The class is parameterized
  * by a `PointConcept`, which must provide the `DIM` constant and the `[]` operator for

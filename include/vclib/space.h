@@ -31,6 +31,7 @@
 #include "space/point.h"
 #include "space/principal_curvature.h"
 #include "space/sampler.h"
+#include "space/segment.h"
 #include "space/spatial_data_structures.h"
 #include "space/sphere.h"
 #include "space/tex_coord.h"

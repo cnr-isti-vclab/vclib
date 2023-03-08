@@ -21,30 +21,23 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_INTERSECTION_MISC_H
-#define VCL_ALGORITHM_INTERSECTION_MISC_H
+#ifndef VCL_ALGORITHM_DISTANCE_MISC_H
+#define VCL_ALGORITHM_DISTANCE_MISC_H
 
-#include <vclib/space/plane.h>
 #include <vclib/space/segment.h>
 
 namespace vcl {
 
-template<typename PlaneType, typename BoxType>
-bool planeBoxIntersect(const PlaneType& p, const BoxType& box);
+template<PointConcept PointType, SegmentConcept SegmentType>
+auto pointSegmentDistance(const PointType& p, const SegmentType& s, PointType& closest)
+	requires (PointType::DIM == SegmentType::DIM);
 
-template<typename PlaneType, Segment3Concept SegmentType>
-bool planeSegmentIntersect(
-	const PlaneType&                 p,
-	const SegmentType&               s,
-	typename SegmentType::PointType& intersection);
-
-template<typename PlaneType, Segment3Concept SegmentType>
-bool planeSegmentIntersect(
-	const PlaneType&                 p,
-	const SegmentType&               s);
+template<PointConcept PointType, SegmentConcept SegmentType>
+auto pointSegmentDistance(const PointType& p, const SegmentType& s)
+	requires (PointType::DIM == SegmentType::DIM);
 
 } // namespace vcl
 
 #include "misc.cpp"
 
-#endif // VCL_ALGORITHM_INTERSECTION_MISC_H
+#endif // VCL_ALGORITHM_DISTANCE_MISC_H
