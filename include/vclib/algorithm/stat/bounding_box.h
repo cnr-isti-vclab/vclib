@@ -26,11 +26,19 @@
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/mesh/elements/edge_concept.h>
+#include <vclib/space/segment.h>
+#include <vclib/space/sphere.h>
 
 namespace vcl {
 
 template<PointConcept PointType>
 auto boundingBox(const PointType& p);
+
+template<SegmentConcept SegmentType>
+auto boundingBox(const SegmentType& s);
+
+template<SphereConcept SphereType>
+auto boundingBox(const SphereType& s);
 
 template<MeshConcept MeshType>
 auto boundingBox(const MeshType& m);

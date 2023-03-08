@@ -28,6 +28,17 @@
 
 namespace vcl {
 
+template<typename T>
+concept SphereConcept = requires(T o, const T& co)
+{
+	typename T::ScalarType;
+
+	{ o.center() } -> std::same_as<Point3<typename T::ScalarType>&>;
+	{ co.center() } -> std::same_as<const Point3<typename T::ScalarType>&>;
+	{ o.radius() } -> std::same_as<typename T::ScalarType&>;
+	{ co.radius() } -> std::same_as<const typename T::ScalarType&>;
+};
+
 template<typename Scalar>
 class Sphere
 {

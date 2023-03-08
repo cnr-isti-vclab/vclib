@@ -28,7 +28,7 @@
 namespace vcl {
 
 /**
- * @brief updateBoundingBox updates the bounding box of the mesh.
+ * @brief Updates the bounding box of the mesh.
  *
  * Requirements:
  * - Mesh:

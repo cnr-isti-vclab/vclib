@@ -267,6 +267,7 @@ set(HEADERS
 	include/vclib/space/point.h
 	include/vclib/space/principal_curvature.h
 	include/vclib/space/sampler.h
+	include/vclib/space/segment.h
 	include/vclib/space/spatial_data_structures.h
 	include/vclib/space/sphere.h
 	include/vclib/space/tex_coord.h
@@ -429,6 +430,7 @@ set(SOURCES
 	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
+	include/vclib/space/segment.cpp
 	include/vclib/space/sphere.cpp
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/array/array_t.cpp
