@@ -72,6 +72,7 @@ set(HEADERS
 	include/vclib/algorithm/create/sphere.h
 	include/vclib/algorithm/create/tetrahedron.h
 	include/vclib/algorithm/distance/functions.h
+	include/vclib/algorithm/distance/element.h
 	include/vclib/algorithm/distance/misc.h
 	include/vclib/algorithm/intersection/element.h
 	include/vclib/algorithm/intersection/mesh.h
@@ -124,6 +125,7 @@ set(HEADERS
 	include/vclib/math/distribution.h
 	include/vclib/math/histogram.h
 	include/vclib/math/matrix.h
+	include/vclib/math/min_max.h
 	include/vclib/math/perlin_noise.h
 	include/vclib/math/random.h
 	include/vclib/mesh/dcel_mesh.h
@@ -313,6 +315,7 @@ set(SOURCES
 	include/vclib/algorithm/create/icosahedron.cpp
 	include/vclib/algorithm/create/sphere.cpp
 	include/vclib/algorithm/create/tetrahedron.cpp
+	include/vclib/algorithm/distance/element.cpp
 	include/vclib/algorithm/distance/misc.cpp
 	include/vclib/algorithm/intersection/element.cpp
 	include/vclib/algorithm/intersection/mesh.cpp
@@ -357,6 +360,7 @@ set(SOURCES
 	include/vclib/math/distribution.cpp
 	include/vclib/math/histogram.cpp
 	include/vclib/math/matrix.cpp
+	include/vclib/math/min_max.cpp
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/math/base.cpp
 	include/vclib/math/random.cpp

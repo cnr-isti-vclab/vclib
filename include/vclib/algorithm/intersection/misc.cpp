@@ -28,11 +28,15 @@ namespace vcl {
 /**
  * @brief Checks if a plane intersects with a box.
  *
+ * Uses the algorithm from
  * https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
  *
- * @param p
- * @param b
- * @return
+ * @tparam PlaneType: The type of plane used in the intersection check
+ * @tparam BoxType: The type of box used in the intersection check
+ *
+ * @param [in] p: The plane to check intersection with
+ * @param [in] box: The box to check intersection with
+ * @return True if the plane intersects with the box, false otherwise
  */
 template<typename PlaneType, typename BoxType>
 bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
@@ -56,13 +60,15 @@ bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
 }
 
 /**
- * @brief Computes the intersectin between a plane and a segment. Returns `true` if the
- * intersection exists, false otherwise.
+ * @brief This function computes the intersection between a plane and a 3D segment. If the
+ * intersection exists, it returns true and stores the intersection point in the output parameter
+ * intersection, otherwise, it returns false.
  *
- * @param[in] p: the plane on which conpute the intersection.
- * @param[in] s: the segment on which compute the intersection.
- * @param[out] intersection: the resulting intersection between the plane and the segment.
- * @return True if the intersection exists, false otherwise.
+ * @param[in] p: the plane to compute the intersection with.
+ * @param[in] s: the 3D segment to compute the intersection with.
+ * @param[out] intersection: A reference to the point that stores the resulting intersection between
+ * the plane and the segment. This parameter is only written to if the function returns true.
+ * @return A boolean value indicating whether an intersection was found or not.
  */
 template<typename PlaneType, Segment3Concept SegmentType>
 bool planeSegmentIntersect(
@@ -72,29 +78,34 @@ bool planeSegmentIntersect(
 {
 	using ScalarType = typename SegmentType::ScalarType;
 
+	// Compute the projection of the segment endpoints onto the plane.
 	ScalarType p1_proj = s.p1() * p.direction() - p.offset();
 	ScalarType p0_proj = s.p0() * p.direction() - p.offset();
+
+	// If both endpoints are on the same side of the plane, there is no intersection.
 	if ( (p1_proj>0)-(p0_proj<0))
 		return false;
 
-	if(p0_proj == p1_proj) return false;
+	// If both endpoints have the same projection onto the plane, there is no intersection.
+	if(p0_proj == p1_proj)
+		return false;
 
 	// check that we perform the computation in a way that is independent with v0 v1 swaps
 	if(p0_proj < p1_proj)
-		intersection =  s.first + (s.second - s.first) * std::abs(p0_proj/(p1_proj-p0_proj));
+		intersection = s.p0() + (s.p1() - s.p0()) * std::abs(p0_proj/(p1_proj-p0_proj));
 	if(p0_proj > p1_proj)
-		intersection =  s.second + (s.first - s.second) * std::abs(p1_proj/(p0_proj-p1_proj));
+		intersection = s.p1() + (s.p0() - s.p1()) * std::abs(p1_proj/(p0_proj-p1_proj));
 
 	return true;
 }
 
 /**
- * @brief Computes the intersectin between a plane and a segment. Returns `true` if the
- * intersection exists, false otherwise.
+ * @brief This function computes the intersection between a plane and a 3D segment. If the
+ * intersection exists, it returns true, otherwise, it returns false.
  *
- * @param[in] p: the plane on which conpute the intersection.
- * @param[in] s: the segment on which compute the intersection.
- * @return True if the intersection exists, false otherwise.
+ * @param[in] p: the plane to compute the intersection with.
+ * @param[in] s: the 3D segment to compute the intersection with.
+ * @return A boolean value indicating whether an intersection was found or not.
  */
 template<typename PlaneType, Segment3Concept SegmentType>
 bool planeSegmentIntersect(

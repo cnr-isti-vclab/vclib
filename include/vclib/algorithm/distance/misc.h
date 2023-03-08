@@ -24,9 +24,13 @@
 #ifndef VCL_ALGORITHM_DISTANCE_MISC_H
 #define VCL_ALGORITHM_DISTANCE_MISC_H
 
+#include <vclib/space/plane.h>
 #include <vclib/space/segment.h>
 
 namespace vcl {
+
+template<Point3Concept PointType, typename PlaneType>
+auto pointPlaneDistance(const PointType& p, const PlaneType& plane, bool signedDist = false);
 
 template<PointConcept PointType, SegmentConcept SegmentType>
 auto pointSegmentDistance(const PointType& p, const SegmentType& s, PointType& closest)

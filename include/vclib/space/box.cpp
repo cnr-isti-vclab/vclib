@@ -25,6 +25,8 @@
 
 #include <algorithm>
 
+#include <vclib/math/min_max.h>
+
 namespace vcl {
 
 /**

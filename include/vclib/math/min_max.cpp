@@ -21,60 +21,52 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "point.h"
+#include "min_max.h"
 
 namespace vcl {
 
-/**
- * @brief OuterProduct between two points, which is p1 * p2^T
- * The returned type is a DIM*DIM Eigen Matrix, where DIM is the number of dimensions of the two
- * points.
- * @param p1
- * @param p2
- */
-template<PointConcept PointType>
-auto outerProduct(const PointType& p1, const PointType& p2)
+template<typename T>
+constexpr auto min(const T& el1, const T& el2)
 {
-	Eigen::Matrix<typename PointType::ScalarType, PointType::DIM, PointType::DIM> res;
-	for (uint i = 0; i < PointType::DIM; i++) {
-		for (uint j = 0; j < PointType::DIM; j++) {
-			res(i,j) = p1(i) * p2(j);
-		}
-	}
-	return res;
+	return std::min(el1, el2);
 }
 
-/**
- * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
- * from a given vector n.
- *
- * @param[in] n: input vector.
- * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
- * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
- */
-template<typename Scalar>
-void orthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
+template <typename Head, typename... Tail>
+constexpr auto min(const Head& head0, const Head& head1, const Tail&... tail) requires(sizeof...(tail) > 0)
 {
-	const double   LocEps = double(1e-7);
-	Point3<Scalar> up(0, 1, 0);
-	u          = n.cross(up);
-	double len = u.norm();
-	if (len < LocEps) {
-		if (std::abs(n[0]) < std::abs(n[1])) {
-			if (std::abs(n[0]) < std::abs(n[2]))
-				up = Point3<Scalar>(1, 0, 0); // x is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		else {
-			if (std::abs(n[1]) < std::abs(n[2]))
-				up = Point3<Scalar>(0, 1, 0); // y is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		u = n.cross(up);
+	return min(min(head0, head1), tail...);
+}
+
+template<typename T>
+constexpr auto max(const T& el1, const T& el2)
+{
+	return std::max(el1, el2);
+}
+
+template <typename Head, typename... Tail>
+constexpr auto max(const Head& head0, const Head& head1, const Tail&... tail) requires(sizeof...(tail) > 0)
+{
+	return max(max(head0, head1), tail...);
+}
+
+template<PointConcept PointType>
+constexpr auto min(const PointType& p1, const PointType& p2)
+{
+	PointType p;
+	for (size_t i = 0; i < p.DIM; i++) {
+		p[i] = std::min(p1[i], p2[i]);
 	}
-	v = n.cross(u);
+	return p;
+}
+
+template<PointConcept PointType>
+constexpr auto max(const PointType& p1, const PointType& p2)
+{
+	PointType p;
+	for (size_t i = 0; i < p.DIM; i++) {
+		p[i] = std::max(p1[i], p2[i]);
+	}
+	return p;
 }
 
 } // namespace vcl

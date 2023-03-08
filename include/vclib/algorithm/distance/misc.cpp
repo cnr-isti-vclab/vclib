@@ -25,6 +25,15 @@
 
 namespace vcl {
 
+template<Point3Concept PointType, typename PlaneType>
+auto pointPlaneDistance(const PointType& p, const PlaneType& plane, bool signedDist)
+{
+	auto dist = plane.direction().dot(p) - plane.offset();
+	if (!signedDist)
+		dist = std::abs(dist);
+	return dist;
+}
+
 template<PointConcept PointType, SegmentConcept SegmentType>
 auto pointSegmentDistance(const PointType& p, const SegmentType& s, PointType& closest)
 	requires (PointType::DIM == SegmentType::DIM)

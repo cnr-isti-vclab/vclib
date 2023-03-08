@@ -138,17 +138,6 @@ Point3<Scalar> Plane<Scalar, NORM>::mirrorPoint(const Point3<Scalar>& p) const
 	return mirr;
 }
 
-/**
- * @brief Given a point, returns the *signed* distance between the point and this plane.
- * @param p
- * @return
- */
-template<typename Scalar, bool NORM>
-Scalar Plane<Scalar, NORM>::dist(const Point3<Scalar>& p) const
-{
-	return dir.dot(p) - off;
-}
-
 template<typename Scalar, bool NORM>
 bool Plane<Scalar, NORM>::operator==(const Plane& p) const
 {

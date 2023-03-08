@@ -24,6 +24,7 @@
 #ifndef VCL_ALGORITHM_DISTANCE_FUNCTIONS_H
 #define VCL_ALGORITHM_DISTANCE_FUNCTIONS_H
 
+#include "element.h"
 #include "misc.h"
 
 #include <vclib/mesh/requirements.h>

@@ -60,7 +60,6 @@ public:
 
 	Point3<Scalar> projectPoint(const Point3<Scalar>& p) const;
 	Point3<Scalar> mirrorPoint(const Point3<Scalar>& p) const;
-	Scalar dist(const Point3<Scalar>& p) const;
 
 	bool operator==(const Plane& p) const;
 	bool operator!=(const Plane& p) const;

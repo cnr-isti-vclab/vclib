@@ -21,60 +21,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "point.h"
+#ifndef VCL_ALGORITHM_DISTANCE_ELEMENT_H
+#define VCL_ALGORITHM_DISTANCE_ELEMENT_H
+
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-/**
- * @brief OuterProduct between two points, which is p1 * p2^T
- * The returned type is a DIM*DIM Eigen Matrix, where DIM is the number of dimensions of the two
- * points.
- * @param p1
- * @param p2
- */
-template<PointConcept PointType>
-auto outerProduct(const PointType& p1, const PointType& p2)
-{
-	Eigen::Matrix<typename PointType::ScalarType, PointType::DIM, PointType::DIM> res;
-	for (uint i = 0; i < PointType::DIM; i++) {
-		for (uint j = 0; j < PointType::DIM; j++) {
-			res(i,j) = p1(i) * p2(j);
-		}
-	}
-	return res;
-}
+template<Point3Concept PointType, FaceConcept FaceType>
+auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest, bool signedDist = false);
 
-/**
- * @brief Computes an [Orthonormal Basis](https://en.wikipedia.org/wiki/Orthonormal_basis) starting
- * from a given vector n.
- *
- * @param[in] n: input vector.
- * @param[out] u: first output vector of the orthonormal basis, orthogonal to n and v.
- * @param[out] v: second output vector of the orthonormal basis, orthogonal to n and u.
- */
-template<typename Scalar>
-void orthoBase(const Point3<Scalar>& n, Point3<Scalar>& u, Point3<Scalar>& v)
-{
-	const double   LocEps = double(1e-7);
-	Point3<Scalar> up(0, 1, 0);
-	u          = n.cross(up);
-	double len = u.norm();
-	if (len < LocEps) {
-		if (std::abs(n[0]) < std::abs(n[1])) {
-			if (std::abs(n[0]) < std::abs(n[2]))
-				up = Point3<Scalar>(1, 0, 0); // x is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		else {
-			if (std::abs(n[1]) < std::abs(n[2]))
-				up = Point3<Scalar>(0, 1, 0); // y is the min
-			else
-				up = Point3<Scalar>(0, 0, 1); // z is the min
-		}
-		u = n.cross(up);
-	}
-	v = n.cross(u);
-}
+template<Point3Concept PointType, FaceConcept FaceType>
+auto pointFaceDistance(const PointType& p, const FaceType& f, bool signedDist = false);
 
 } // namespace vcl
+
+#include "element.cpp"
+
+#endif // VCL_ALGORITHM_DISTANCE_ELEMENT_H

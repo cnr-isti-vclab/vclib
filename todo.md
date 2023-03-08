@@ -18,6 +18,8 @@
   - [ ] implement housdorff
   - [ ] update adjacent faces optimized for dcel
 - Space:
+  - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
+  - [ ] implement BoxConcept
   - [ ] implement PlaneConcept
 - I/O:
   - [ ] move appropriately load/save functions outside "vcl::io" namespace 

@@ -23,6 +23,8 @@
 
 #include "gl_area.h"
 
+#include <vclib/math/min_max.h>
+
 namespace vcl {
 
 inline GLArea::GLArea(QWidget* parent) :
