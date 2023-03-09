@@ -75,6 +75,7 @@ set(HEADERS
 	include/vclib/algorithm/distance/element.h
 	include/vclib/algorithm/distance/misc.h
 	include/vclib/algorithm/intersection/element.h
+	include/vclib/algorithm/intersection/functions.h
 	include/vclib/algorithm/intersection/mesh.h
 	include/vclib/algorithm/intersection/misc.h
 	include/vclib/algorithm/polygon/geometry.h

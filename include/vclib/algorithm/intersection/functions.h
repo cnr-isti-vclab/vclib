@@ -21,10 +21,41 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_INTERSECTION_H
-#define VCL_ALGORITHM_INTERSECTION_H
+#ifndef VCL_ALGORITHM_INTERSECTION_FUNCTIONS_H
+#define VCL_ALGORITHM_INTERSECTION_FUNCTIONS_H
 
-#include "intersection/functions.h"
-#include "intersection/mesh.h"
+#include "element.h"
+#include "misc.h"
 
-#endif // VCL_ALGORITHM_INTERSECTION_H
+#include <vclib/mesh/requirements.h>
+
+namespace vcl {
+
+// generic case - nothing is done here. It will fail because a specialization must exist
+template<typename Obj1, typename Obj2>
+struct IntersFunctionStruct
+{
+};
+
+/**
+ * @brief Return a proper intersect function between a Obj1 object and an Obj2 object.
+ *
+ * This function will return a function defined in a specialization of the struct
+ * IntersFunctionStruct.
+ *
+ * The returned function is a std::function that takes in input two const references of the desired
+ * types and returns a boolean that tells if the two objects intersect.
+ *
+ * If the intersection function for your types is not defined, you can write
+ * your own IntersFunctionStruct specialization that defines a proper `static const inline` object
+ * called `intersFun` of `std::function` type.
+ */
+template<typename Obj1, typename Obj2>
+auto intersectFunction()
+{
+	return IntersFunctionStruct<Obj1, Obj2>::distFun;
+}
+
+} // namespace vcl
+
+#endif // VCL_ALGORITHM_INTERSECTION_FUNCTIONS_H

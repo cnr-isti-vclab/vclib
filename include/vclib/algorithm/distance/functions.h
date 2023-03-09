@@ -41,6 +41,10 @@ struct DistFunctionStruct
  * @brief Return a proper dist function between a Obj1 object and an Obj2 object.
  *
  * The function will return a function defined in a specialization of the struct DistFunctionStruct.
+ *
+ * The returned function is a std::function that takes in input two const references of the desired
+ * types and returns a scalar that is the distance between the two objects.
+ *
  * If the distance function for your types is not defined, you can write your own DistFunctionStruct
  * specialization that defines a proper `static const inline` object called `distFun` of
  * `std::function` type.
