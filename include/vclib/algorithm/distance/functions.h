@@ -37,6 +37,22 @@ struct DistFunctionStruct
 {
 };
 
+/**
+ * @brief Return a proper dist function between a Obj1 object and an Obj2 object.
+ *
+ * The function will return a function defined in a specialization of the struct DistFunctionStruct.
+ * If the distance function for your types is not defined, you can write your own DistFunctionStruct
+ * specialization that defines a proper `static const inline` object called `distFun` of
+ * `std::function` type.
+ */
+template<typename Obj1, typename Obj2, typename RetScalarType = double>
+auto distFunction()
+{
+	return DistFunctionStruct<Obj1, Obj2, RetScalarType>::distFun;
+}
+
+/********* DistFunctionStruct Specializations *********/
+
 // Specialization for distance between two points
 template<PointConcept Obj1, PointConcept Obj2, typename RetScalarType>
 	requires (Obj1::DIM == Obj2::DIM)
@@ -117,19 +133,138 @@ struct DistFunctionStruct<Obj1, Obj2*, RetScalarType>
 	};
 };
 
-/**
- * @brief Return a proper dist function between a Obj1 object and an Obj2 object.
- *
- * The function will return a function defined in a specialization of the struct DistFunctionStruct.
- * If the distance function for your types is not defined, you can write your own DistFunctionStruct
- * specialization that defines a proper `static const inline` object called `distFun` of
- * `std::function` type.
- */
-template<typename Obj1, typename Obj2, typename RetScalarType = double>
-auto distFunction()
+// Specialization for distance between Point and Face
+template<Point3Concept Obj1, FaceConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
 {
-	return DistFunctionStruct<Obj1, Obj2, RetScalarType>::distFun;
-}
+	static const inline std::function<RetScalarType(const Obj1&, const Obj2&)> distFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return pointFaceDistance(o1, o2);
+	};
+};
+
+// Specialization for distance between Point and Face*
+template<Point3Concept Obj1, FaceConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1, Obj2*, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1&, const Obj2* const&)> distFun =
+		[](const Obj1& o1, const Obj2* const& o2)
+	{
+		return pointFaceDistance(o1, *o2);
+	};
+};
+
+// Specialization for distance between Face and Point
+template<FaceConcept Obj1, Point3Concept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1&, const Obj2&)> distFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return pointFaceDistance(o2, o1);
+	};
+};
+
+// Specialization for distance between Face* and Point
+template<FaceConcept Obj1, Point3Concept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1*, Obj2, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1* const&, const Obj2&)> distFun =
+		[](const Obj1* const& o1, const Obj2& o2)
+	{
+		return pointFaceDistance(o2, *o1);
+	};
+};
+
+// Specialization for distance between Vertex and Face
+template<VertexConcept Obj1, FaceConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1&, const Obj2&)> distFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return pointFaceDistance(o1.coord(), o2);
+	};
+};
+
+// Specialization for distance between Vertex* and Face
+template<VertexConcept Obj1, FaceConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1*, Obj2, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1* const&, const Obj2&)> distFun =
+		[](const Obj1* const& o1, const Obj2& o2)
+	{
+		return pointFaceDistance(o1->coord(), o2);
+	};
+};
+
+// Specialization for distance between Vertex and Face*
+template<VertexConcept Obj1, FaceConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1, Obj2*, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1&, const Obj2* const&)> distFun =
+		[](const Obj1& o1, const Obj2* const& o2)
+	{
+		return pointFaceDistance(o1.coord(), *o2);
+	};
+};
+
+// Specialization for distance between Vertex* and Face*
+template<VertexConcept Obj1, FaceConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1*, Obj2*, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1* const&, const Obj2* const&)> distFun =
+		[](const Obj1* const& o1, const Obj2* const& o2)
+	{
+		return pointFaceDistance(o1->coord(), *o2);
+	};
+};
+
+// Specialization for distance between Face and Vertex
+template<FaceConcept Obj1, VertexConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1, Obj2, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1&, const Obj2&)> distFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return pointFaceDistance(o2.coord(), o1);
+	};
+};
+
+// Specialization for distance between Face* and Vertex
+template<FaceConcept Obj1, VertexConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1*, Obj2, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1* const&, const Obj2&)> distFun =
+		[](const Obj1* const& o1, const Obj2& o2)
+	{
+		return pointFaceDistance(o2.coord(), *o1);
+	};
+};
+
+
+// Specialization for distance between Face and Vertex*
+template<FaceConcept Obj1, VertexConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1, Obj2*, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1&, const Obj2* const&)> distFun =
+		[](const Obj1& o1, const Obj2* const& o2)
+	{
+		return pointFaceDistance(o2->coord(), o1);
+	};
+};
+
+// Specialization for distance between Face* and Vertex*
+template<FaceConcept Obj1, VertexConcept Obj2, typename RetScalarType>
+struct DistFunctionStruct<Obj1*, Obj2*, RetScalarType>
+{
+	static const inline std::function<RetScalarType(const Obj1* const&, const Obj2* const&)> distFun =
+		[](const Obj1* const& o1, const Obj2* const& o2)
+	{
+		return pointFaceDistance(o2->coord(), *o1);
+	};
+};
 
 } // namespace vcl
 
