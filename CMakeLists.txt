@@ -131,6 +131,7 @@ set(HEADERS
 	include/vclib/concept/mesh/element/face.h
 	include/vclib/concept/mesh/element/half_edge.h
 	include/vclib/concept/mesh/element/vertex.h
+	include/vclib/concept/space/box.h
 	include/vclib/concept/space/matrix.h
 	include/vclib/concept/space/point.h
 	include/vclib/concept/space/sampler.h

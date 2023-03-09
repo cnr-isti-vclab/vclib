@@ -24,6 +24,8 @@
 #ifndef VCL_SPACE_BOX_H
 #define VCL_SPACE_BOX_H
 
+#include <vclib/concept/space/box.h>
+
 #include "point.h"
 
 namespace vcl {

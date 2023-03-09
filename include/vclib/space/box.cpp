@@ -457,4 +457,12 @@ bool Box<PointT>::operator!=(const Box<PointT>& b) const
 	return !(*this == b);
 }
 
+static_assert(BoxConcept<Box2i>, "Box2i does not satisfy the BoxConcept");
+static_assert(BoxConcept<Box2f>, "Box2f does not satisfy the BoxConcept");
+static_assert(BoxConcept<Box2d>, "Box2d does not satisfy the BoxConcept");
+
+static_assert(BoxConcept<Box3i>, "Box3i does not satisfy the BoxConcept");
+static_assert(BoxConcept<Box3f>, "Box3f does not satisfy the BoxConcept");
+static_assert(BoxConcept<Box3d>, "Box3d does not satisfy the BoxConcept");
+
 } // namespace vcl
