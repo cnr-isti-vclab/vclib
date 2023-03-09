@@ -24,9 +24,9 @@
 #ifndef VCL_MESH_COMPONENTS_COLOR_H
 #define VCL_MESH_COMPONENTS_COLOR_H
 
+#include <vclib/concept/mesh/component/color.h>
 #include <vclib/space/color.h>
 
-#include "concepts/color.h"
 #include "internal/component_data.h"
 
 namespace vcl::comp {

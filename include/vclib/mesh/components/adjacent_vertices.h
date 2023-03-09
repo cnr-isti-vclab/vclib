@@ -24,7 +24,8 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
-#include "concepts/adjacent_vertices.h"
+#include <vclib/concept/mesh/component/adjacent_vertices.h>
+
 #include "internal/element_references.h"
 
 namespace vcl::comp {

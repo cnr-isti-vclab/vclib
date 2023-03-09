@@ -24,7 +24,7 @@
 #ifndef VCL_ALGORITHM_UPDATE_TRANSFORM_H
 #define VCL_ALGORITHM_UPDATE_TRANSFORM_H
 
-#include <vclib/math/matrix.h>
+#include <vclib/math/transform.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {

@@ -24,9 +24,9 @@
 #ifndef VCL_MESH_ELEMENTS_ELEMENT_H
 #define VCL_MESH_ELEMENTS_ELEMENT_H
 
-#include "element_concept.h"
+#include <vclib/concept/mesh/element/element.h>
 
-#include <vclib/mesh/components/concepts/component.h>
+#include <vclib/concept/mesh/component/component.h>
 #include <vclib/mesh/components/parent_mesh_pointer.h>
 #include <vclib/misc/types.h>
 

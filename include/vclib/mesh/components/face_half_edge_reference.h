@@ -26,18 +26,17 @@
 
 #include <vector>
 
+#include <vclib/concept/mesh/component/color.h>
+#include <vclib/concept/mesh/component/face_half_edge_reference.h>
+#include <vclib/concept/mesh/component/tex_coord.h>
 #include <vclib/mesh/iterators/half_edge/face_adj_face_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_half_edge_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_vertex_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_wedge_color_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_wedge_tex_coord_iterator.h>
 #include <vclib/iterator/container_range_iterator.h>
-
 #include <vclib/space/color.h>
 
-#include "concepts/face_half_edge_reference.h"
-#include "concepts/color.h"
-#include "concepts/tex_coord.h"
 #include "internal/component_data.h"
 
 namespace vcl::comp {

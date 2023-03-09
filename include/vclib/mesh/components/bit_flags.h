@@ -24,7 +24,8 @@
 #ifndef VCL_MESH_COMPONENTS_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
-#include "concepts/bit_flags.h"
+#include <vclib/concept/mesh/component/bit_flags.h>
+
 #include "internal/component_data.h"
 
 namespace vcl::comp {

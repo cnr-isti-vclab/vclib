@@ -26,11 +26,11 @@
 
 #include <vector>
 
+#include <vclib/concept/mesh/component/vertex_half_edge_reference.h>
 #include <vclib/iterator/container_range_iterator.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h>
 
-#include "concepts/vertex_half_edge_reference.h"
 #include "internal/component_data.h"
 
 namespace vcl::comp {

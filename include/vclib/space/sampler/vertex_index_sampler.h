@@ -24,9 +24,8 @@
 #ifndef VCL_SPACE_SAMPLER_VERTEX_INDEX_SAMPLER_H
 #define VCL_SPACE_SAMPLER_VERTEX_INDEX_SAMPLER_H
 
+#include <vclib/concept/space/sampler.h>
 #include <vclib/misc/types.h>
-
-#include "sampler_concept.h"
 
 namespace vcl {
 

@@ -45,6 +45,7 @@ set(VCLIB_SRC_DIR ${VCLIB_INCLUDE_DIR}/vclib)
 
 set(HEADERS
 	include/vclib/algorithm.h
+	include/vclib/concept.h
 	include/vclib/exception.h
 	include/vclib/image.h
 	include/vclib/load_save.h
@@ -94,6 +95,47 @@ set(HEADERS
 	include/vclib/algorithm/update/selection.h
 	include/vclib/algorithm/update/topology.h
 	include/vclib/algorithm/update/transform.h
+	include/vclib/concept/logger.h
+	include/vclib/concept/mesh.h
+	include/vclib/concept/space.h
+	include/vclib/concept/mesh/component.h
+	include/vclib/concept/mesh/container.h
+	include/vclib/concept/mesh/per_face.h
+	include/vclib/concept/mesh/per_half_edge.h
+	include/vclib/concept/mesh/per_vertex.h
+	include/vclib/concept/mesh/component/adjacent_edges.h
+	include/vclib/concept/mesh/component/adjacent_faces.h
+	include/vclib/concept/mesh/component/adjacent_vertices.h
+	include/vclib/concept/mesh/component/bit_flags.h
+	include/vclib/concept/mesh/component/bounding_box.h
+	include/vclib/concept/mesh/component/color.h
+	include/vclib/concept/mesh/component/component.h
+	include/vclib/concept/mesh/component/coordinate.h
+	include/vclib/concept/mesh/component/custom_components.h
+	include/vclib/concept/mesh/component/face_half_edge_reference.h
+	include/vclib/concept/mesh/component/half_edge_references.h
+	include/vclib/concept/mesh/component/mark.h
+	include/vclib/concept/mesh/component/name.h
+	include/vclib/concept/mesh/component/normal.h
+	include/vclib/concept/mesh/component/principal_curvature.h
+	include/vclib/concept/mesh/component/scalar.h
+	include/vclib/concept/mesh/component/tex_coord.h
+	include/vclib/concept/mesh/component/texture_paths.h
+	include/vclib/concept/mesh/component/transform_matrix.h
+	include/vclib/concept/mesh/component/vertex_half_edge_reference.h
+	include/vclib/concept/mesh/component/vertex_references.h
+	include/vclib/concept/mesh/component/wedge_colors.h
+	include/vclib/concept/mesh/component/wedge_tex_coords.h
+	include/vclib/concept/mesh/element/edge.h
+	include/vclib/concept/mesh/element/element.h
+	include/vclib/concept/mesh/element/face.h
+	include/vclib/concept/mesh/element/half_edge.h
+	include/vclib/concept/mesh/element/vertex.h
+	include/vclib/concept/space/matrix.h
+	include/vclib/concept/space/point.h
+	include/vclib/concept/space/sampler.h
+	include/vclib/concept/space/segment.h
+	include/vclib/concept/space/sphere.h
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
 	include/vclib/exception/misc_exception.h
@@ -125,10 +167,10 @@ set(HEADERS
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/histogram.h
-	include/vclib/math/matrix.h
 	include/vclib/math/min_max.h
 	include/vclib/math/perlin_noise.h
 	include/vclib/math/random.h
+	include/vclib/math/transform.h
 	include/vclib/mesh/dcel_mesh.h
 	include/vclib/mesh/edge_mesh.h
 	include/vclib/mesh/point_cloud.h
@@ -160,34 +202,10 @@ set(HEADERS
 	include/vclib/mesh/components/triangle_bit_flags.h
 	include/vclib/mesh/components/wedge_colors.h
 	include/vclib/mesh/components/wedge_tex_coords.h
-	include/vclib/mesh/components/concepts/adjacent_edges.h
-	include/vclib/mesh/components/concepts/adjacent_faces.h
-	include/vclib/mesh/components/concepts/adjacent_vertices.h
-	include/vclib/mesh/components/concepts/bit_flags.h
-	include/vclib/mesh/components/concepts/bounding_box.h
-	include/vclib/mesh/components/concepts/color.h
-	include/vclib/mesh/components/concepts/component.h
-	include/vclib/mesh/components/concepts/coordinate.h
-	include/vclib/mesh/components/concepts/custom_components.h
-	include/vclib/mesh/components/concepts/face_half_edge_reference.h
-	include/vclib/mesh/components/concepts/half_edge_references.h
-	include/vclib/mesh/components/concepts/mark.h
-	include/vclib/mesh/components/concepts/name.h
-	include/vclib/mesh/components/concepts/normal.h
-	include/vclib/mesh/components/concepts/principal_curvature.h
-	include/vclib/mesh/components/concepts/scalar.h
-	include/vclib/mesh/components/concepts/tex_coord.h
-	include/vclib/mesh/components/concepts/texture_paths.h
-	include/vclib/mesh/components/concepts/transform_matrix.h
-	include/vclib/mesh/components/concepts/vertex_half_edge_reference.h
-	include/vclib/mesh/components/concepts/vertex_references.h
-	include/vclib/mesh/components/concepts/wedge_colors.h
-	include/vclib/mesh/components/concepts/wedge_tex_coords.h
 	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/custom_components_data.h
 	include/vclib/mesh/components/internal/element_references.h
 	include/vclib/mesh/containers/containers.h
-	include/vclib/mesh/containers/containers_concepts.h
 	include/vclib/mesh/containers/custom_component_vector_handle.h
 	include/vclib/mesh/containers/custom_components_vector_map.h
 	include/vclib/mesh/containers/edge_container.h
@@ -198,18 +216,13 @@ set(HEADERS
 	include/vclib/mesh/containers/vertical_components_vector_tuple.h
 	include/vclib/mesh/elements/edge.h
 	include/vclib/mesh/elements/edge_components.h
-	include/vclib/mesh/elements/edge_concept.h
 	include/vclib/mesh/elements/element.h
-	include/vclib/mesh/elements/element_concept.h
 	include/vclib/mesh/elements/face.h
 	include/vclib/mesh/elements/face_components.h
-	include/vclib/mesh/elements/face_concept.h
 	include/vclib/mesh/elements/half_edge.h
 	include/vclib/mesh/elements/half_edge_components.h
-	include/vclib/mesh/elements/half_edge_concept.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
-	include/vclib/mesh/elements/vertex_concept.h
 	include/vclib/mesh/iterators/edge_adj_face_iterator.h
 	include/vclib/mesh/iterators/element_container_iterator.h
 	include/vclib/mesh/iterators/element_container_range_iterator.h
@@ -225,14 +238,9 @@ set(HEADERS
 	include/vclib/mesh/mesh/mesh.h
 	include/vclib/mesh/mesh/mesh_algorithms.h
 	include/vclib/mesh/mesh/mesh_components.h
-	include/vclib/mesh/requirements/element_concepts.h
-	include/vclib/mesh/requirements/face_concepts.h
 	include/vclib/mesh/requirements/face_requirements.h
-	include/vclib/mesh/requirements/half_edge_concepts.h
 	include/vclib/mesh/requirements/half_edge_requirements.h
-	include/vclib/mesh/requirements/mesh_concepts.h
 	include/vclib/mesh/requirements/mesh_requirements.h
-	include/vclib/mesh/requirements/vertex_concepts.h
 	include/vclib/mesh/requirements/vertex_requirements.h
 	include/vclib/mesh/utils/mesh_edge_util.h
 	include/vclib/mesh/utils/mesh_inertia.h
@@ -256,7 +264,6 @@ set(HEADERS
 	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/misc/logger/console_logger.h
 	include/vclib/misc/logger/logger.h
-	include/vclib/misc/logger/logger_concept.h
 	include/vclib/misc/mark/markable.h
 	include/vclib/misc/mark/markable_vector.h
 	include/vclib/render/drawable_object.h
@@ -267,6 +274,7 @@ set(HEADERS
 	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
+	include/vclib/space/matrix.h
 	include/vclib/space/plane.h
 	include/vclib/space/point.h
 	include/vclib/space/principal_curvature.h
@@ -291,14 +299,12 @@ set(HEADERS
 	include/vclib/space/spatial_data_structures/grid/iterators/cell_iterator.h
 	include/vclib/space/spatial_data_structures/grid/iterators/cell_range_iterator.h
 	include/vclib/space/spatial_data_structures/grid/iterators/static_grid_iterator.h
-	include/vclib/space/point/point_concept.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
 	include/vclib/space/point/point4.h
 	include/vclib/space/sampler/mesh_sampler.h
 	include/vclib/space/sampler/point_sampler.h
-	include/vclib/space/sampler/sampler_concept.h
 	include/vclib/space/sampler/vertex_index_sampler.h)
 
 set(SOURCES
@@ -360,11 +366,11 @@ set(SOURCES
 	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/histogram.cpp
-	include/vclib/math/matrix.cpp
 	include/vclib/math/min_max.cpp
 	include/vclib/math/perlin_noise.cpp
 	include/vclib/math/base.cpp
 	include/vclib/math/random.cpp
+	include/vclib/math/transform.cpp
 	include/vclib/mesh/components/adjacent_edges.cpp
 	include/vclib/mesh/components/adjacent_faces.cpp
 	include/vclib/mesh/components/adjacent_vertices.cpp
@@ -434,6 +440,7 @@ set(SOURCES
 	include/vclib/render/mesh_render_settings.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
+	include/vclib/space/matrix.cpp
 	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp

@@ -24,11 +24,11 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
-#include "concepts/wedge_tex_coords.h"
-#include "internal/component_data.h"
-
+#include <vclib/concept/mesh/component/wedge_tex_coords.h>
 #include <vclib/misc/random_access_container.h>
 #include <vclib/space/tex_coord.h>
+
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 

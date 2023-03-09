@@ -24,7 +24,8 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_H
 #define VCL_MESH_ELEMENTS_FACE_H
 
-#include "face_concept.h"
+#include <vclib/concept/mesh/element/face.h>
+#include <vclib/space/tex_coord.h>
 
 #include "element.h"
 

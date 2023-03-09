@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_HALF_EDGE_REQUIREMENTS_H
 #define VCL_MESH_HALF_EDGE_REQUIREMENTS_H
 
-#include "mesh_concepts.h"
+#include <vclib/concept/mesh.h>
 
 namespace vcl {
 

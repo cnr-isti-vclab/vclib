@@ -24,8 +24,8 @@
 #ifndef VCL_ALGORITHM_UPDATE_NORMAL_H
 #define VCL_ALGORITHM_UPDATE_NORMAL_H
 
-#include <vclib/math/matrix.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/matrix.h>
 
 namespace vcl {
 

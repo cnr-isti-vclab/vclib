@@ -26,7 +26,7 @@
 
 #include <vector>
 
-#include <vclib/math/matrix.h>
+#include <vclib/space/matrix.h>
 
 #include "stat/bounding_box.h"
 #include "stat/scalar.h"

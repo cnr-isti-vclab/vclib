@@ -24,11 +24,10 @@
 #ifndef VCL_MESH_MESH_MESH_H
 #define VCL_MESH_MESH_MESH_H
 
+#include <vclib/concept/mesh.h>
 #include <vclib/mesh/containers/containers.h>
-#include <vclib/mesh/elements/element_concept.h>
 
 #include "mesh_components.h"
-#include "../requirements/mesh_concepts.h"
 
 namespace vcl {
 

@@ -31,7 +31,7 @@
 #include <vclib/algorithm/polygon.h>
 #include <vclib/algorithm/update/normal.h>
 #include <vclib/iterator/pointer_iterator.h>
-#include <vclib/math/matrix.h>
+#include <vclib/math/transform.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/parallel.h>
 #include <vclib/space/principal_curvature.h>

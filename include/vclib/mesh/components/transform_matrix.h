@@ -24,9 +24,9 @@
 #ifndef VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 #define VCL_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 
-#include <vclib/math/matrix.h>
+#include <vclib/concept/mesh/component/transform_matrix.h>
+#include <vclib/space/matrix.h>
 
-#include "concepts/transform_matrix.h"
 #include "internal/component_data.h"
 
 namespace vcl::comp {

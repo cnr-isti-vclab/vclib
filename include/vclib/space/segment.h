@@ -24,27 +24,11 @@
 #ifndef VCL_SPACE_SEGMENT_H
 #define VCL_SPACE_SEGMENT_H
 
+#include <vclib/concept/space/segment.h>
+
 #include "point.h"
 
 namespace vcl {
-
-template<typename T>
-concept SegmentConcept = requires(T o, const T& co)
-{
-	typename T::PointType;
-	typename T::ScalarType;
-	o.DIM;
-	{ o.p0() } -> std::same_as<typename T::PointType&>;
-	{ co.p0() } -> std::same_as<const typename T::PointType&>;
-	{ o.p1() } -> std::same_as<typename T::PointType&>;
-	{ co.p1() } -> std::same_as<const typename T::PointType&>;
-};
-
-template<typename T>
-concept Segment2Concept = SegmentConcept<T> && T::DIM == 2;
-
-template<typename T>
-concept Segment3Concept = SegmentConcept<T> && T::DIM == 3;
 
 /**
  * @brief A class representing a line segment in n-dimensional space. The class is parameterized

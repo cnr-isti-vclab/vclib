@@ -26,6 +26,7 @@
 
 #include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/edge.h>
+#include <vclib/mesh/elements/edge_components.h>
 
 #include "element_container.h"
 

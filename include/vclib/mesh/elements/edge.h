@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_H
 #define VCL_MESH_ELEMENTS_EDGE_H
 
-#include "edge_concept.h"
+#include <vclib/concept/mesh/element/edge.h>
 
 #include "element.h"
 

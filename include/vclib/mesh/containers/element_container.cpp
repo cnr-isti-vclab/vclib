@@ -23,21 +23,7 @@
 
 #include "element_container.h"
 
-#include "../components/concepts/adjacent_edges.h"
-#include "../components/concepts/adjacent_faces.h"
-#include "../components/concepts/adjacent_vertices.h"
-#include "../components/concepts/color.h"
-#include "../components/concepts/face_half_edge_reference.h"
-#include "../components/concepts/half_edge_references.h"
-#include "../components/concepts/mark.h"
-#include "../components/concepts/normal.h"
-#include "../components/concepts/principal_curvature.h"
-#include "../components/concepts/scalar.h"
-#include "../components/concepts/tex_coord.h"
-#include "../components/concepts/vertex_references.h"
-#include "../components/concepts/vertex_half_edge_reference.h"
-#include "../components/concepts/wedge_colors.h"
-#include "../components/concepts/wedge_tex_coords.h"
+#include <vclib/concept/mesh/component.h>
 
 namespace vcl::mesh {
 

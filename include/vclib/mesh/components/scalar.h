@@ -24,7 +24,8 @@
 #ifndef VCL_MESH_COMPONENTS_SCALAR_H
 #define VCL_MESH_COMPONENTS_SCALAR_H
 
-#include "concepts/scalar.h"
+#include <vclib/concept/mesh/component/scalar.h>
+
 #include "internal/component_data.h"
 
 namespace vcl::comp {

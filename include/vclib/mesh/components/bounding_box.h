@@ -24,9 +24,9 @@
 #ifndef VCL_MESH_COMPONENTS_BOUNDING_BOX_H
 #define VCL_MESH_COMPONENTS_BOUNDING_BOX_H
 
+#include <vclib/concept/mesh/component/bounding_box.h>
 #include <vclib/space/box.h>
 
-#include "concepts/bounding_box.h"
 #include "internal/component_data.h"
 
 namespace vcl::comp {

@@ -1,6 +1,8 @@
 # VCLib ToDo list
 
 - Mesh:
+  - Concepts:
+    - [ ] implement per edge concepts
   - Components:
     - [ ] add an enum COMPONENT_TYPE that allows to identify same class of components easily -- same usage of ELEMENT_TYPE for elements
       - [ ] then allow to write a generic enableSameOptionalComponentsOf member function in ElementContainer
@@ -21,6 +23,7 @@
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
   - [ ] implement BoxConcept
   - [ ] implement PlaneConcept
+  - [ ] move random access container in space. In general, every data structure must be in space directory
 - I/O:
   - [ ] move appropriately load/save functions outside "vcl::io" namespace 
   - [ ] implement STL importer/exporter  
@@ -29,4 +32,5 @@
 - Documentation:
   - [ ] Make documentation using only doxygen
   - [ ] Explain appropriately the structure of the library
-  
+- Style:
+  - [ ] Each directory must be at singular, not plural (i.e. container, not containers)

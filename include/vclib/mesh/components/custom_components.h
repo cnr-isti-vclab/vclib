@@ -28,7 +28,8 @@
 #include <string>
 #include <vector>
 
-#include "concepts/custom_components.h"
+#include <vclib/concept/mesh/component/custom_components.h>
+
 #include "internal/custom_components_data.h"
 
 namespace vcl::comp {

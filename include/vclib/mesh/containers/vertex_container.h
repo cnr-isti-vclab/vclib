@@ -26,6 +26,7 @@
 
 #include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/vertex.h>
+#include <vclib/mesh/elements/vertex_components.h>
 
 #include "element_container.h"
 

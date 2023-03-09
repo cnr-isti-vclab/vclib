@@ -24,10 +24,10 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
-#include "concepts/wedge_colors.h"
-#include "internal/component_data.h"
-
+#include <vclib/concept/mesh/component/wedge_colors.h>
 #include <vclib/misc/random_access_container.h>
+
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 

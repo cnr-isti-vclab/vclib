@@ -26,12 +26,12 @@
 
 #include <vector>
 
-#include <vclib/mesh/elements/element_concept.h>
+#include <vclib/concept/mesh/component/custom_components.h>
+#include <vclib/concept/mesh/container.h>
+#include <vclib/concept/mesh/element/element.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
 #include <vclib/mesh/iterators/element_container_range_iterator.h>
-#include <vclib/mesh/components/concepts/custom_components.h>
 
-#include "containers_concepts.h"
 #include "custom_components_vector_map.h"
 #include "vertical_components_vector_tuple.h"
 

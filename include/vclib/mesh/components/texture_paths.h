@@ -27,9 +27,9 @@
 #include <string>
 #include <vector>
 
+#include <vclib/concept/mesh/component/texture_paths.h>
 #include <vclib/iterator/container_range_iterator.h>
 
-#include "concepts/texture_paths.h"
 #include "internal/component_data.h"
 
 namespace vcl::comp {
