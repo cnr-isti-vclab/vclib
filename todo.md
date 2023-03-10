@@ -22,6 +22,7 @@
   - [ ] update adjacent faces optimized for dcel
 - Space:
   - [ ] move algorithm/polygon/geometry functions into two space data structure Triangle and Polygon.
+    - [ ] make the TriangleWrapper and PolygonWrapper classes that allow to create static triangles and polygon that do not store points
     - [ ] remove the usage of the old functions
     - [ ] make the Triangle and Polygon concepts, making sure that Triangle satisfies PolygonConcept
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
