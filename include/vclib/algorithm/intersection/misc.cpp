@@ -38,7 +38,7 @@ namespace vcl {
  * @param[in] box: The box to check intersection with
  * @return True if the plane intersects with the box, false otherwise
  */
-template<typename PlaneType, Box3Concept BoxType>
+template<PlaneConcept PlaneType, Box3Concept BoxType>
 bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
 {
 	using PointType = typename BoxType::PointType;
@@ -70,7 +70,7 @@ bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
  * the plane and the segment. This parameter is only written to if the function returns true.
  * @return A boolean value indicating whether an intersection was found or not.
  */
-template<typename PlaneType, Segment3Concept SegmentType>
+template<PlaneConcept PlaneType, Segment3Concept SegmentType>
 bool planeSegmentIntersect(
 	const PlaneType&                 p,
 	const SegmentType&               s,
@@ -107,7 +107,7 @@ bool planeSegmentIntersect(
  * @param[in] s: the 3D segment to compute the intersection with.
  * @return A boolean value indicating whether an intersection was found or not.
  */
-template<typename PlaneType, Segment3Concept SegmentType>
+template<PlaneConcept PlaneType, Segment3Concept SegmentType>
 bool planeSegmentIntersect(
 	const PlaneType&                 p,
 	const SegmentType&               s)

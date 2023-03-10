@@ -21,61 +21,52 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_PLANE_H
-#define VCL_SPACE_PLANE_H
+#ifndef VCL_CONCEPT_SPACE_PLANE_H
+#define VCL_CONCEPT_SPACE_PLANE_H
 
-#include <vclib/concept/space/plane.h>
-
-#include "point/point3.h"
+#include <vclib/misc/types.h>
 
 namespace vcl {
 
+template<typename T, int N>
+class Point;
+
 /**
- * @brief The Plane class represent a 2D plane in 3D space.
+ * @brief A C++ concept that requires a type to represent a plane in 3D space.
+ * @tparam T: The type to check for compliance with the PlaneConcept.
  *
- * This is the class for infinite planes in 3D space. A Plane is stored just as a Point3 and a
- * scalar:
- * - a direction (not necessarily normalized),
- * - an offset from the origin
+ * This concept requires that the input type T has the following public member functions:
+ *  - typename T::ScalarType: A type alias representing the scalar type used in the plane equations.
+ *  - const Point<typename T::ScalarType, 3>& T::direction(): A const reference to the direction
+ *    vector of the plane.
+ *  - typename T::ScalarType T::offset(): The offset of the plane from the origin.
+ *  - Point<typename T::ScalarType, 3> T::projectPoint(const Point<typename T::ScalarType, 3>& p):
+ *    Projects a point onto the plane.
+ *  - Point<typename T::ScalarType, 3> T::mirrorPoint(const Point<typename T::ScalarType, 3>& p):
+ *    Mirrors a point across the plane.
+ *  - bool T::operator==(const T& o): Equality comparison operator for planes.
+ *  - bool T::operator!=(const T& o): Inequality comparison operator for planes.
  *
- * Just to be clear, given a point p on a plane it always holds:
- *    plane.direction().dot(p) == plane.offset()
- *
- * A vcl::Plane, once initialized, cannot be changed.
+ * All of the member functions must satisfy the requirements listed in the Doxygen comments above.
  */
-template<typename Scalar, bool NORM=true>
-class Plane
+template<typename T>
+concept PlaneConcept = requires(
+	T o,
+	const T& co,
+	const Point<typename T::ScalarType, 3>& p)
 {
-public:
-	using ScalarType = Scalar;
+	typename T::ScalarType;
 
-	Plane();
-	Plane(const Point3<Scalar>& direction, Scalar offset);
-	Plane(const Point3<Scalar>& p0, const Point3<Scalar>& normal);
-	Plane(const Point3<Scalar>& p0, const Point3<Scalar>& p1, const Point3<Scalar>& p2);
+	{ co.direction() } -> std::same_as<const Point<typename T::ScalarType, 3>&>;
+	{ co.offset() } -> std::same_as<typename T::ScalarType>;
 
-	template<typename S>
-	Plane<S, NORM> cast() const;
+	{ co.projectPoint(p) } -> std::same_as<Point<typename T::ScalarType, 3>>;
+	{ co.mirrorPoint(p) } -> std::same_as<Point<typename T::ScalarType, 3>>;
 
-	const Point3<Scalar>& direction() const;
-	Scalar offset() const;
-
-	Point3<Scalar> projectPoint(const Point3<Scalar>& p) const;
-	Point3<Scalar> mirrorPoint(const Point3<Scalar>& p) const;
-
-	bool operator==(const Plane& p) const;
-	bool operator!=(const Plane& p) const;
-
-private:
-	Point3<Scalar> dir;
-	Scalar off;
+	{ co == co } -> std::same_as<bool>;
+	{ co != co } -> std::same_as<bool>;
 };
-
-using Planef = Plane<float>;
-using Planed = Plane<double>;
 
 } // namespace vcl
 
-#include "plane.cpp"
-
-#endif // VCL_SPACE_PLANE_H
+#endif // VCL_CONCEPT_SPACE_PLANE_H

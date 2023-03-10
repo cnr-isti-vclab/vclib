@@ -30,16 +30,16 @@
 
 namespace vcl {
 
-template<typename PlaneType, Box3Concept BoxType>
+template<PlaneConcept PlaneType, Box3Concept BoxType>
 bool planeBoxIntersect(const PlaneType& p, const BoxType& box);
 
-template<typename PlaneType, Segment3Concept SegmentType>
+template<PlaneConcept PlaneType, Segment3Concept SegmentType>
 bool planeSegmentIntersect(
 	const PlaneType&                 p,
 	const SegmentType&               s,
 	typename SegmentType::PointType& intersection);
 
-template<typename PlaneType, Segment3Concept SegmentType>
+template<PlaneConcept PlaneType, Segment3Concept SegmentType>
 bool planeSegmentIntersect(
 	const PlaneType&                 p,
 	const SegmentType&               s);

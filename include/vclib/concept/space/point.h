@@ -29,10 +29,15 @@
 namespace vcl {
 
 /**
- * @brief The PointConcept concept lists all the requirements that a template T must
- * satisfy to be treated by the VCLib as a Point of undefined dimension.
+ * @brief A concept that defines the requirements for a type to be considered a point in space.
  *
- * Lists all the member functions and operators that a Point class must implement.
+ * A type that satisfies the PointConcept must have a member `ScalarType`, which indicates the type
+ * of the elements of the point, and a member `DIM`, which indicates the dimension of the point.
+ *
+ * In addition, the type must have a set of methods that represent common operations on points, such
+ * as dot product, norm, distance, and so on.
+ *
+ * @tparam T: The type to be tested for conformity to the PointConcept.
  */
 template<typename T>
 concept PointConcept = requires(T o, const T& co)
@@ -90,12 +95,36 @@ concept PointConcept = requires(T o, const T& co)
 #endif
 };
 
+/**
+ * @brief A concept for points in two-dimensional space.
+ *
+ * A type satisfies this concept if it satisfies the `PointConcept` and if the `DIM` value
+ * of the point type is 2.
+ *
+ * @tparam T: The type to be tested for conformity to the Point2Concept.
+ */
 template<typename T>
 concept Point2Concept = PointConcept<T> && T::DIM == 2;
 
+/**
+ * @brief A concept for points in three-dimensional space.
+ *
+ * A type satisfies this concept if it satisfies the `PointConcept` and if the `DIM` value
+ * of the point type is 3.
+ *
+ * @tparam T: The type to be tested for conformity to the Point3Concept.
+ */
 template<typename T>
 concept Point3Concept = PointConcept<T> && T::DIM == 3;
 
+/**
+ * @brief A concept for points in four-dimensional space.
+ *
+ * A type satisfies this concept if it satisfies the `PointConcept` and if the `DIM` value
+ * of the point type is 4.
+ *
+ * @tparam T: The type to be tested for conformity to the Point4Concept.
+ */
 template<typename T>
 concept Point4Concept = PointConcept<T> && T::DIM == 4;
 

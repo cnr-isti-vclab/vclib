@@ -59,7 +59,7 @@ namespace vcl {
  * @return the intersection between the original mesh and the plane as a collection of line segments
  * with optional normal vectors.
  */
-template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, typename PlaneType>
+template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, PlaneConcept PlaneType>
 EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
 {
 	using VertexType = typename MeshType::VertexType;

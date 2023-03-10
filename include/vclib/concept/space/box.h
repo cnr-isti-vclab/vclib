@@ -28,6 +28,15 @@
 
 namespace vcl {
 
+/**
+ * @brief A concept representing a N-Dimensional Box.
+ *
+ * This concept defines a set of requirements that must be satisfied by any type that
+ * wishes to be considered a Box. A Box is a geometric object that is defined by two points
+ * in space, typically referred to as the minimum and maximum corners of the box.
+ *
+ * @tparam T: The type to be tested for conformity to the BoxConcept.
+ */
 template<typename T>
 concept BoxConcept = requires(
 	T o,
@@ -37,18 +46,26 @@ concept BoxConcept = requires(
 	typename T::PointType;
 	o.DIM;
 
+	// Accessors for the minimum and maximum corners of the box.
 	{ co.min() } -> std::same_as<const typename T::PointType&>;
 	{ o.min() } -> std::same_as<typename T::PointType&>;
 	{ co.max() } -> std::same_as<const typename T::PointType&>;
 	{ o.max() } -> std::same_as<typename T::PointType&>;
+
+	// Boolean tests for the nullity and emptiness of the box.
 	{ co.isNull() } -> std::same_as<bool>;
 	{ co.isEmpty() } -> std::same_as<bool>;
+
+	// Boolean tests for whether a point lies inside or outside the box.
 	{ co.isInside(p) }  -> std::same_as<bool>;
 	{ co.isInsideOpenBox(p) }  -> std::same_as<bool>;
+
+	// Boolean tests for whether two boxes overlap with each other.
 	{ co.overlap(co) }  -> std::same_as<bool>;
 	{ co.collide(co) }  -> std::same_as<bool>;
 	{ co.intersects(co) }  -> std::same_as<bool>;
 
+	// Accessors for various properties of the box.
 	{ co.diagonal() } -> std::same_as<typename T::PointType::ScalarType>;
 	{ co.squaredDiagonal() } -> std::same_as<typename T::PointType::ScalarType>;
 	{ co.center() } -> std::same_as<typename T::PointType>;
@@ -59,19 +76,39 @@ concept BoxConcept = requires(
 	{ co.maxDim() } -> std::same_as<typename T::PointType::ScalarType>;
 	{ co.intersection(co) } -> std::same_as<T>;
 
+	// Mutators for modifying the state of the box.
 	{ o.setNull() } -> std::same_as<void>;
 	{ o.add(typename T::PointType()) } -> std::same_as<void>;
 	{ o.add(typename T::PointType(), double()) } -> std::same_as<void>;
 	{ o.add(co) } -> std::same_as<void>;
 	{ o.translate(typename T::PointType()) } -> std::same_as<void>;
 
+	// Comparison operators.
 	{ co == co } -> std::same_as<bool>;
 	{ co != co } -> std::same_as<bool>;
 };
 
+/**
+ * @brief A concept that requires a type to satisfy the BoxConcept and have a dimension of 2.
+ *
+ * The Box2Concept concept requires that the given type satisfies the BoxConcept concept and
+ * that its dimension is equal to 2. This can be used to constrain template parameters of
+ * functions or classes that require a 2D box.
+ *
+ * @tparam T: The type to be tested for conformity to the Box2Concept.
+ */
 template<typename T>
 concept Box2Concept = BoxConcept<T> && T::DIM == 2;
 
+/**
+ * @brief A concept that requires a type to satisfy the BoxConcept and have a dimension of 3.
+ *
+ * The Box3Concept concept requires that the given type satisfies the BoxConcept concept and
+ * that its dimension is equal to 3. This can be used to constrain template parameters of
+ * functions or classes that require a 3D box.
+ *
+ * @tparam T: The type to be tested for conformity to the Box2Concept.
+ */
 template<typename T>
 concept Box3Concept = BoxConcept<T> && T::DIM == 3;
 

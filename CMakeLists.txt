@@ -133,6 +133,7 @@ set(HEADERS
 	include/vclib/concept/mesh/element/vertex.h
 	include/vclib/concept/space/box.h
 	include/vclib/concept/space/matrix.h
+	include/vclib/concept/space/plane.h
 	include/vclib/concept/space/point.h
 	include/vclib/concept/space/sampler.h
 	include/vclib/concept/space/segment.h

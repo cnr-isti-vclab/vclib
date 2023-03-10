@@ -29,7 +29,7 @@
 
 namespace vcl {
 
-template<Point3Concept PointType, typename PlaneType>
+template<Point3Concept PointType, PlaneConcept PlaneType>
 auto pointPlaneDistance(const PointType& p, const PlaneType& plane, bool signedDist = false);
 
 template<PointConcept PointType, SegmentConcept SegmentType>
