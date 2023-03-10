@@ -441,7 +441,7 @@ PointType triangleCircumcenter(const PointType& p0, const PointType& p1, const P
 
 	ScalarType a2 = (p1 - p2).squaredNorm();
 	ScalarType b2 = (p2 - p0).squaredNorm();
-	ScalarType c2 = (p0 - p2).squaredNorm();
+	ScalarType c2 = (p0 - p1).squaredNorm();
 
 	PointType  c  = p0 * a2 * (-a2 + b2 + c2) + p1 * b2 * (a2 - b2 + c2) + p2 * c2 * (a2 + b2 - c2);
 	c /= 2 * (a2 * b2 + a2 * c2 + b2 * c2) - a2 * a2 - b2 * b2 - c2 * c2;

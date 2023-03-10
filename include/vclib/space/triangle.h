@@ -54,6 +54,11 @@ public:
 	ScalarType sideLength1() const;
 	ScalarType sideLength2() const;
 
+	PointT normal() const requires (PointT::DIM == 3)
+	{
+		return normal(p[0], p[1], p[2]);
+	}
+
 	PointT barycenter() const;
 	PointT weightedBarycenter(ScalarType w0, ScalarType w1, ScalarType w2) const;
 	PointT weightedBarycenter(const Point3<ScalarType>& w) const;
@@ -65,14 +70,33 @@ public:
 	ScalarType perimeter() const;
 	ScalarType area() const;
 
-	PointT normal() const requires (DIM == 3)
-	{
-		return (p[1] - p[0]).cross(p[2] - p[0]);
-	}
-
 	ScalarType quality() const;
 	ScalarType qualityRadii() const;
 	ScalarType qualityMeanRatio() const;
+
+	// static members
+
+	static PointT normal(const PointT& p0, const PointT& p1, const PointT& p2)
+		requires (PointT::DIM == 3);
+
+	static PointT barycenter(const PointT& p0, const PointT& p1, const PointT& p2);
+	static PointT weightedBarycenter(
+		const PointT& p0,
+		const PointT& p1,
+		const PointT& p2,
+		ScalarType    w0,
+		ScalarType    w1,
+		ScalarType    w2);
+	static PointT barycentricCoordinatePoint(
+		const PointT& p0,
+		const PointT& p1,
+		const PointT& p2,
+		ScalarType    b0,
+		ScalarType    b1,
+		ScalarType    b2);
+	static PointT circumcenter(const PointT& p0, const PointT& p1, const PointT& p2);
+	static ScalarType perimeter(const PointT& p0, const PointT& p1, const PointT& p2);
+	static ScalarType area(const PointT& p0, const PointT& p1, const PointT& p2);
 
 private:
 	std::array<PointT, 3> p;

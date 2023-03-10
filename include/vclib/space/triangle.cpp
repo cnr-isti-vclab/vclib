@@ -116,7 +116,7 @@ typename Triangle<PointT>::ScalarType Triangle<PointT>::sideLength2() const
 template<PointConcept PointT>
 PointT Triangle<PointT>::barycenter() const
 {
-	return (p[0] + p[1] + p[2]) / 3;
+	return barycenter(p[0], p[1], p[2]);
 }
 
 /**
@@ -133,7 +133,7 @@ PointT Triangle<PointT>::barycenter() const
 template<PointConcept PointT>
 PointT Triangle<PointT>::weightedBarycenter(ScalarType w0, ScalarType w1, ScalarType w2) const
 {
-	return (p[0] * w0 + p[1] * w1 + p[2] * w2) / (w0 + w1 + w2);
+	return weightedBarycenter(p[0], p[1], p[2], w0, w1, w2);
 }
 
 template<PointConcept PointT>
@@ -143,9 +143,12 @@ PointT Triangle<PointT>::weightedBarycenter(const Point3<ScalarType>& w) const
 }
 
 template<PointConcept PointT>
-PointT Triangle<PointT>::barycentricCoordinatePoint(ScalarType b0, ScalarType b1, ScalarType b2) const
+PointT Triangle<PointT>::barycentricCoordinatePoint(
+	ScalarType b0,
+	ScalarType b1,
+	ScalarType b2) const
 {
-	return p[0] * b0 + p[1] * b1 + p[2] * b2;
+	return barycentricCoordinatePoint(p[0], p[1], p[2], b0, b1, b2);
 }
 
 /**
@@ -162,7 +165,7 @@ PointT Triangle<PointT>::barycentricCoordinatePoint(ScalarType b0, ScalarType b1
 template<PointConcept PointT>
 PointT Triangle<PointT>::barycentricCoordinatePoint(const Point3<ScalarType>& b) const
 {
-	return barycentricCoordinatePoint(b(0), b(1), b(2));
+	return barycentricCoordinatePoint(p[0], p[1], p[2], b(0), b(1), b(2));
 }
 
 /**
@@ -179,15 +182,7 @@ PointT Triangle<PointT>::barycentricCoordinatePoint(const Point3<ScalarType>& b)
 template<PointConcept PointT>
 PointT Triangle<PointT>::circumcenter() const
 {
-	ScalarType a2 = (p[1] - p[2]).squaredNorm();
-	ScalarType b2 = (p[2] - p[0]).squaredNorm();
-	ScalarType c2 = (p[0] - p[2]).squaredNorm();
-
-	PointType c =
-		p[0] * a2 * (-a2 + b2 + c2) + p[1] * b2 * (a2 - b2 + c2) + p[2] * c2 * (a2 + b2 - c2);
-	c /= 2 * (a2 * b2 + a2 * c2 + b2 * c2) - a2 * a2 - b2 * b2 - c2 * c2;
-
-	return c;
+	return circumcenter(p[0], p[1], p[2]);
 }
 
 /**
@@ -198,7 +193,7 @@ PointT Triangle<PointT>::circumcenter() const
 template<PointConcept PointT>
 typename Triangle<PointT>::ScalarType Triangle<PointT>::perimeter() const
 {
-	return sideLength0() + sideLength1() + sideLength2();
+	return perimeter(p[0], p[1], p[2]);
 }
 
 /**
@@ -209,14 +204,7 @@ typename Triangle<PointT>::ScalarType Triangle<PointT>::perimeter() const
 template<PointConcept PointT>
 typename Triangle<PointT>::ScalarType Triangle<PointT>::area() const
 {
-	if constexpr(DIM == 3) {
-		return normal().norm() / 2;
-	}
-	else {
-		// heron's formula
-		ScalarType s = perimeter() / 2;
-		return std::sqrt(s * (s - sideLength0()) * (s - sideLength1()) * (s - sideLength2()));
-	}
+	return area(p[0], p[1], p[2]);
 }
 
 /**
@@ -301,6 +289,165 @@ typename Triangle<PointT>::ScalarType Triangle<PointT>::qualityMeanRatio() const
 		return 0;
 
 	return (4.0 * std::sqrt(3.0) * std::sqrt(area2)) / (a * a + b * b + c * c);
+}
+
+/**
+ * @brief Computes the normal of the triangle composed by the 3D points \p p0, \p p1, and \p p2,
+ * considering that these three points are ordered in counter-clockwise order.
+ *
+ * @tparam PointType: A type that satisfies the PointConcept.
+ *
+ * @param[in] p0: first point of the triangle.
+ * @param[in] p1: second point of the triangle.
+ * @param[in] p2: third point of the triangle.
+ * @return The normal of the triangle composed by \p p0, \p p1 and \p p2.
+ */
+template<PointConcept PointT>
+PointT Triangle<PointT>::normal(const PointT& p0, const PointT& p1, const PointT& p2)
+	requires(PointT::DIM == 3)
+{
+	return (p1 - p0).cross(p2 - p0);
+}
+
+/**
+ * @brief Computes the barycenter of the triangle composed by the points \p p0, \p p1, and \p p2.
+ *
+ * @param[in] p0: first point of the triangle.
+ * @param[in] p1: second point of the triangle.
+ * @param[in] p2: third point of the triangle.
+ * @return The barycenter of the triangle composed by \p p0, \p p1 and \p p2.
+ */
+template<PointConcept PointT>
+PointT Triangle<PointT>::barycenter(const PointT &p0, const PointT &p1, const PointT &p2)
+{
+	return (p0 + p1 + p2) / 3;
+}
+
+/**
+ * @brief Computes the weighted barycenter of a triangle composed of three points.
+ *
+ * Given three points and their corresponding weights, this function computes the weighted
+ * barycenter of the triangle they form.
+ *
+ * @param[in] p0: The first point of the triangle.
+ * @param[in] w0: The weight of the first point of the triangle.
+ * @param[in] p1: The second point of the triangle.
+ * @param[in] w1: The weight of the second point of the triangle.
+ * @param[in] p2: The third point of the triangle.
+ * @param[in] w2: The weight of the third point of the triangle.
+ * @return The weighted barycenter of the triangle formed by p0, p1 and p2.
+ */
+template<PointConcept PointT>
+PointT Triangle<PointT>::weightedBarycenter(
+	const PointT& p0,
+	const PointT& p1,
+	const PointT& p2,
+	ScalarType    w0,
+	ScalarType    w1,
+	ScalarType    w2)
+{
+	return (p0 * w0 + p1 * w1 + p2 * w2) / (w0 + w1 + w2);
+}
+
+/**
+ * @brief Computes the point in a triangle with the given barycentric coordinates.
+ *
+ * Given a triangle with vertices \p p0, \p p1, and \p p2, and a set of barycentric coordinates \p
+ * b0, \p b1 and \p b2, this function computes the point in the triangle corresponding to those
+ * barycentric coordinates.
+ *
+ * @param[in] p0: The first vertex of the triangle.
+ * @param[in] p1: The second vertex of the triangle.
+ * @param[in] p2: The third vertex of the triangle.
+ * @param[in] b0: The first barycentric coordinate of the point in the triangle.
+ * @param[in] b1: The first barycentric coordinate of the point in the triangle.
+ * @param[in] b2: The first barycentric coordinate of the point in the triangle.
+ *
+ * @return The point in the triangle corresponding to the given barycentric coordinates.
+ */
+template<PointConcept PointT>
+PointT Triangle<PointT>::barycentricCoordinatePoint(
+	const PointT& p0,
+	const PointT& p1,
+	const PointT& p2,
+	ScalarType    b0,
+	ScalarType    b1,
+	ScalarType    b2)
+{
+	return p0 * b0 + p1 * b1 + p2 * b2;
+}
+
+/**
+ * @brief Compute the circumcenter of a triangle.
+ *
+ * Given three points \p p0, \p p1, \p p2 representing a triangle, the function computes the
+ * circumcenter of the triangle, which is the center of the circle that passes through the three
+ * vertices of the triangle. The circumcenter is defined as the intersection of the perpendicular
+ * bisectors of the three sides of the triangle.
+ *
+ * @tparam PointType: A type that satisfies the PointConcept.
+ *
+ * @param[in] p0: The first point of the triangle.
+ * @param[in] p1: The second point of the triangle.
+ * @param[in] p2: The third point of the triangle.
+ * @return The circumcenter of the triangle.
+ *
+ * @note The function assumes that the three points are not collinear and form a valid triangle.
+ */
+template<PointConcept PointT>
+PointT Triangle<PointT>::circumcenter(const PointT &p0, const PointT &p1, const PointT &p2)
+{
+	ScalarType a2 = p1.squaredDist(p2);
+	ScalarType b2 = p2.squaredDist(p0);
+	ScalarType c2 = p0.squaredDist(p1);
+
+	PointType c = p0 * a2 * (-a2 + b2 + c2) + p1 * b2 * (a2 - b2 + c2) + p2 * c2 * (a2 + b2 - c2);
+	c /= 2 * (a2 * b2 + a2 * c2 + b2 * c2) - a2 * a2 - b2 * b2 - c2 * c2;
+
+	return c;
+}
+
+/**
+ * @brief Computes the perimeter of the triangle composed by the points \p p0, \p p1, and \p p2.
+ *
+ * @param[in] p0: first point of the triangle.
+ * @param[in] p1: second point of the triangle.
+ * @param[in] p2: third point of the triangle.
+ * @return The perimeter of the triangle composed by \p p0, \p p1, and \p p2.
+ */
+template<PointConcept PointT>
+typename Triangle<PointT>::ScalarType Triangle<PointT>::perimeter(
+	const PointT &p0,
+	const PointT &p1,
+	const PointT &p2)
+{
+	return p0.dist(p1) + p1.dist(p2) + p2.dist(p0);
+}
+
+/**
+ * @brief Computes the area of the triangle composed by the points \p p0, \p p1, and \p p2,
+ * considering that these three points are ordered in counterclockwise order.
+ *
+ * @param[in] p0: First point of the triangle.
+ * @param[in] p1: Second point of the triangle.
+ * @param[in] p2: Third point of the triangle.
+ *
+ * @return The area of the triangle composed by \p p0, \p p1, and \p p2.
+ */
+template<PointConcept PointT>
+typename Triangle<PointT>::ScalarType  Triangle<PointT>::area(
+	const PointT &p0,
+	const PointT &p1,
+	const PointT &p2)
+{
+	if constexpr(DIM == 3) {
+		return normal(p0, p1, p2).norm() / 2;
+	}
+	else {
+		// heron's formula
+		ScalarType s = perimeter() / 2;
+		return std::sqrt(s * (s - p0.dist(p1)) * (s - p1.dist(p2)) * (s - p2.dist(p0)));
+	}
 }
 
 } // namespace vcl
