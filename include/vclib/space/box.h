@@ -75,7 +75,9 @@ public:
 
 	bool isInside(const PointT& p) const;
 	bool isInsideOpenBox(const PointT& p) const;
+	bool overlap(const Box<PointT>& b) const;
 	bool collide(const Box<PointT>& b) const;
+	bool intersects(const Box<PointT>& b) const;
 	auto diagonal() const;
 	auto squaredDiagonal() const;
 	PointT center() const;
@@ -84,6 +86,7 @@ public:
 	auto dim(uint i) const;
 	auto minDim() const;
 	auto maxDim() const;
+	Box<PointT> intersection(const Box<PointT>& p) const;
 
 	void setNull();
 
@@ -94,7 +97,6 @@ public:
 
 	void add(const Box<PointT>& b);
 
-	void intersect(const Box<PointT>& p);
 	void translate(const PointT& p);
 
 	bool operator==(const Box<PointT>& b) const;

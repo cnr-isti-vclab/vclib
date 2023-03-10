@@ -2,7 +2,7 @@
 
 - Mesh:
   - Concepts:
-    - [ ] complete box concept
+    - [ ] complete space data structures concepts
     - [ ] implement per edge concepts
   - Components:
     - [ ] add an enum COMPONENT_TYPE that allows to identify same class of components easily -- same usage of ELEMENT_TYPE for elements

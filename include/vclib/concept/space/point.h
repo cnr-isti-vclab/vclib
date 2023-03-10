@@ -96,6 +96,9 @@ concept Point2Concept = PointConcept<T> && T::DIM == 2;
 template<typename T>
 concept Point3Concept = PointConcept<T> && T::DIM == 3;
 
+template<typename T>
+concept Point4Concept = PointConcept<T> && T::DIM == 4;
+
 } // namespace vcl
 
 #endif // VCL_CONCEPT_SPACE_POINT_H

@@ -194,7 +194,7 @@ bool Box<PointT>::isInsideOpenBox(const PointT& p) const
  * @return true if the two boxes overlap, false otherwise.
  */
 template<PointConcept PointT>
-bool Box<PointT>::collide(const Box<PointT>& b) const
+bool Box<PointT>::overlap(const Box<PointT>& b) const
 {
 	// Check if any dimension of the boxes does not overlap.
 	for (uint i = 0; i < PointT::DIM; ++i) {
@@ -203,6 +203,30 @@ bool Box<PointT>::collide(const Box<PointT>& b) const
 	}
 	// All dimensions overlap, the boxes collide.
 	return true;
+}
+
+/**
+ * @brief Same as Box::overlap.
+ *
+ * @param[in] b: the box to check the collision with.
+ * @return true if the two boxes overlap, false otherwise.
+ */
+template<PointConcept PointT>
+bool Box<PointT>::collide(const Box<PointT>& b) const
+{
+	return overlap(b);
+}
+
+/**
+ * @brief Same as Box::overlap.
+ *
+ * @param[in] b: the box to check the collision with.
+ * @return true if the two boxes overlap, false otherwise.
+ */
+template<PointConcept PointT>
+bool Box<PointT>::intersects(const Box<PointT>& b) const
+{
+	return overlap(b);
 }
 
 /**
@@ -314,6 +338,29 @@ auto Box<PointT>::maxDim() const
 }
 
 /**
+ * @brief Computes and returns the intersection between the current box and the given box b
+ *
+ * @param[in] b: The box to intersect with the current box
+ * @return The intersection between the current box and b
+ */
+template<PointConcept PointT>
+Box<PointT> Box<PointT>::intersection(const Box<PointT>& b) const
+{
+	Box<PointT> res = *this;
+	for (uint i = 0; i < PointT::DIM; ++i) {
+		if (minP[i] < b.minP[i])
+			res.minP[i] = b.minP[i]; // set the minimum point to the larger value
+		if (maxP[i] > b.maxP[i])
+			res.maxP[i] = b.maxP[i]; // set the maximum point to the smaller value
+		if (res.minP[i] > res.maxP[i]){
+			res.setNull(); // if the minimum point is larger than the maximum point, the box is null
+			return res;
+		}
+	}
+	return res;
+}
+
+/**
  * @brief Sets the Box to null. A box is considered null if at least one min component
  * is greater than the corresponding max component.
  *
@@ -401,27 +448,6 @@ void Box<PointT>::add(const Box<PointT>& b)
 }
 
 /**
- * @brief Sets the current box as the intersection between the current box and the
- * given box b
- *
- * @param[in] b: The box to intersect with the current box
- */
-template<PointConcept PointT>
-void Box<PointT>::intersect(const Box<PointT>& b)
-{
-	for (uint i = 0; i < PointT::DIM; ++i) {
-		if (minP[i] < b.minP[i])
-			minP[i] = b.minP[i]; // set the minimum point to the larger value
-		if (maxP[i] > b.maxP[i])
-			maxP[i] = b.maxP[i]; // set the maximum point to the smaller value
-		if (minP[i] > maxP[i]){
-			setNull(); // if the minimum point is larger than the maximum point, the box is null
-			return;
-		}
-	}
-}
-
-/**
  * @brief Translates the box by summing the values of p
  *
  * @param[in] p: The point to translate the box by
@@ -457,12 +483,12 @@ bool Box<PointT>::operator!=(const Box<PointT>& b) const
 	return !(*this == b);
 }
 
-static_assert(BoxConcept<Box2i>, "Box2i does not satisfy the BoxConcept");
-static_assert(BoxConcept<Box2f>, "Box2f does not satisfy the BoxConcept");
-static_assert(BoxConcept<Box2d>, "Box2d does not satisfy the BoxConcept");
+static_assert(Box2Concept<Box2i>, "Box2i does not satisfy the Box2Concept");
+static_assert(Box2Concept<Box2f>, "Box2f does not satisfy the Box2Concept");
+static_assert(Box2Concept<Box2d>, "Box2d does not satisfy the Box2Concept");
 
-static_assert(BoxConcept<Box3i>, "Box3i does not satisfy the BoxConcept");
-static_assert(BoxConcept<Box3f>, "Box3f does not satisfy the BoxConcept");
-static_assert(BoxConcept<Box3d>, "Box3d does not satisfy the BoxConcept");
+static_assert(Box3Concept<Box3i>, "Box3i does not satisfy the Box3Concept");
+static_assert(Box3Concept<Box3f>, "Box3f does not satisfy the Box3Concept");
+static_assert(Box3Concept<Box3d>, "Box3d does not satisfy the Box3Concept");
 
 } // namespace vcl

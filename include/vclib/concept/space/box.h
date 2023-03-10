@@ -45,7 +45,9 @@ concept BoxConcept = requires(
 	{ co.isEmpty() } -> std::same_as<bool>;
 	{ co.isInside(p) }  -> std::same_as<bool>;
 	{ co.isInsideOpenBox(p) }  -> std::same_as<bool>;
-	{ co.collide(T()) }  -> std::same_as<bool>;
+	{ co.overlap(co) }  -> std::same_as<bool>;
+	{ co.collide(co) }  -> std::same_as<bool>;
+	{ co.intersects(co) }  -> std::same_as<bool>;
 
 	{ co.diagonal() } -> std::same_as<typename T::PointType::ScalarType>;
 	{ co.squaredDiagonal() } -> std::same_as<typename T::PointType::ScalarType>;
@@ -55,7 +57,23 @@ concept BoxConcept = requires(
 	{ co.dim(uint()) } -> std::same_as<typename T::PointType::ScalarType>;
 	{ co.minDim() } -> std::same_as<typename T::PointType::ScalarType>;
 	{ co.maxDim() } -> std::same_as<typename T::PointType::ScalarType>;
+	{ co.intersection(co) } -> std::same_as<T>;
+
+	{ o.setNull() } -> std::same_as<void>;
+	{ o.add(typename T::PointType()) } -> std::same_as<void>;
+	{ o.add(typename T::PointType(), double()) } -> std::same_as<void>;
+	{ o.add(co) } -> std::same_as<void>;
+	{ o.translate(typename T::PointType()) } -> std::same_as<void>;
+
+	{ co == co } -> std::same_as<bool>;
+	{ co != co } -> std::same_as<bool>;
 };
+
+template<typename T>
+concept Box2Concept = BoxConcept<T> && T::DIM == 2;
+
+template<typename T>
+concept Box3Concept = BoxConcept<T> && T::DIM == 3;
 
 } // namespace vcl
 

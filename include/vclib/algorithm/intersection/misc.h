@@ -24,12 +24,13 @@
 #ifndef VCL_ALGORITHM_INTERSECTION_MISC_H
 #define VCL_ALGORITHM_INTERSECTION_MISC_H
 
+#include <vclib/space/box.h>
 #include <vclib/space/plane.h>
 #include <vclib/space/segment.h>
 
 namespace vcl {
 
-template<typename PlaneType, typename BoxType>
+template<typename PlaneType, Box3Concept BoxType>
 bool planeBoxIntersect(const PlaneType& p, const BoxType& box);
 
 template<typename PlaneType, Segment3Concept SegmentType>

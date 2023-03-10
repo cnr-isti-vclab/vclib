@@ -32,13 +32,13 @@ namespace vcl {
  * https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
  *
  * @tparam PlaneType: The type of plane used in the intersection check
- * @tparam BoxType: The type of box used in the intersection check
+ * @tparam BoxType: The type of box used in the intersection check, must satisfy the Box3Concept
  *
- * @param [in] p: The plane to check intersection with
- * @param [in] box: The box to check intersection with
+ * @param[in] p: The plane to check intersection with
+ * @param[in] box: The box to check intersection with
  * @return True if the plane intersects with the box, false otherwise
  */
-template<typename PlaneType, typename BoxType>
+template<typename PlaneType, Box3Concept BoxType>
 bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
 {
 	using PointType = typename BoxType::PointType;
