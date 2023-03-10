@@ -48,6 +48,7 @@ class Plane
 {
 public:
 	using ScalarType = Scalar;
+	using PointType = vcl::Point3<Scalar>;
 
 	Plane();
 	Plane(const Point3<Scalar>& direction, Scalar offset);

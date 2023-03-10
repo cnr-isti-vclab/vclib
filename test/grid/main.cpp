@@ -133,11 +133,7 @@ int main()
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
 
-	std::function<bool(const vcl::Box3d&, const vcl::TriMesh::Face*)> intersects =
-		[](const vcl::Box3d& bb, const  vcl::TriMesh::Face* v)
-	{
-		return vcl::faceBoxIntersect(*v, bb);
-	};
+	auto intersects = vcl::intersectFunction<vcl::Box3d, vcl::TriMesh::Face*>();
 
 	using FPI = vcl::PointerIterator<typename vcl::TriMesh::FaceIterator>;
 	vcl::HashTableGrid3<const vcl::TriMesh::Face*> fsht(FPI(m.faceBegin()), FPI(m.faceEnd()), intersects);

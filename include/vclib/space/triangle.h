@@ -21,33 +21,65 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_INTERSECTION_ELEMENT_H
-#define VCL_ALGORITHM_INTERSECTION_ELEMENT_H
+#ifndef VCL_SPACE_TRIANGLE_H
+#define VCL_SPACE_TRIANGLE_H
 
-#include <vclib/algorithm/polygon.h>
-#include <vclib/mesh/requirements.h>
+#include "point.h"
 
 namespace vcl {
 
-template<FaceConcept FaceType, PointConcept PointType>
-bool faceBoxIntersect(
-	const FaceType& f,
-	const Box<PointType>& box);
+template<PointConcept PointT>
+class Triangle
+{
+public:
+	using ScalarType = typename PointT::ScalarType;
+	using PointType = PointT;
 
-template<FaceConcept FaceType, PointConcept PointType, typename SScalar>
-bool faceSphereItersect(
-	const FaceType&              f,
-	const Sphere<SScalar>&       sphere,
-	PointType&                   witness,
-	std::pair<SScalar, SScalar>& res);
+	static const int DIM = PointT::DIM;
 
-template<FaceConcept FaceType, typename SScalar>
-bool faceSphereItersect(
-	const FaceType& f,
-	const Sphere<SScalar>& sphere);
+	Triangle();
+	Triangle(const PointT& p0, const PointT& p1, const PointT& p2);
+
+	PointT& point(uint i);
+	const PointT& point(uint i) const;
+	PointT& point0();
+	const PointT& point0() const;
+	PointT& point1();
+	const PointT& point1() const;
+	PointT& point2();
+	const PointT& point2() const;
+
+	ScalarType sideLength(uint i) const;
+	ScalarType sideLength0() const;
+	ScalarType sideLength1() const;
+	ScalarType sideLength2() const;
+
+	PointT barycenter() const;
+	PointT weightedBarycenter(ScalarType w0, ScalarType w1, ScalarType w2) const;
+	PointT weightedBarycenter(const Point3<ScalarType>& w) const;
+	PointT barycentricCoordinatePoint(ScalarType b0, ScalarType b1, ScalarType b2) const;
+	PointT barycentricCoordinatePoint(const Point3<ScalarType>& b) const;
+
+	PointT circumcenter() const;
+
+	ScalarType perimeter() const;
+	ScalarType area() const;
+
+	PointT normal() const requires (DIM == 3)
+	{
+		return (p[1] - p[0]).cross(p[2] - p[0]);
+	}
+
+	ScalarType quality() const;
+	ScalarType qualityRadii() const;
+	ScalarType qualityMeanRatio() const;
+
+private:
+	std::array<PointT, 3> p;
+};
 
 } // namespace vcl
 
-#include "element.cpp"
+#include "triangle.cpp"
 
-#endif // VCL_ALGORITHM_INTERSECTION_ELEMENT_H
+#endif // VCL_SPACE_TRIANGLE_H

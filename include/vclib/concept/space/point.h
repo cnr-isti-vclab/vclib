@@ -29,13 +29,25 @@
 namespace vcl {
 
 /**
- * @brief A concept that defines the requirements for a type to be considered a point in space.
+ * @brief Concept for types representing points in Euclidean space.
  *
- * A type that satisfies the PointConcept must have a member `ScalarType`, which indicates the type
- * of the elements of the point, and a member `DIM`, which indicates the dimension of the point.
+ * A type `T` models the `PointConcept` if it provides the following:
  *
- * In addition, the type must have a set of methods that represent common operations on points, such
- * as dot product, norm, distance, and so on.
+ * - `typename T::ScalarType`: a type that represents the scalar used for the coordinates of the point.
+ * - `o.DIM`: a static data member or constant expression that specifies the dimension of the point.
+ * - `o.isDegenerate()`: a member function that returns true if the point is degenerate (e.g., the zero vector).
+ * - `co.dot(co)`: a member function that returns the dot product of the point with another point `co`.
+ * - `co.angle(co)`: a member function that returns the angle between the point and another point `co`.
+ * - `co.dist(co)`: a member function that returns the Euclidean distance between the point and another point `co`.
+ * - `co.squaredDist(co)`: a member function that returns the squared Euclidean distance between the point and another point `co`.
+ * - `co.norm()`: a member function that returns the Euclidean norm (length) of the point.
+ * - `co.squaredNorm()`: a member function that returns the squared Euclidean norm (length) of the point.
+ * - `co.size()`: a member function that returns the size (number of coordinates) of the point.
+ * - `o.setConstant(typename T::ScalarType())`: a member function that sets all coordinates of the point to a constant scalar value.
+ * - `o.setZero()`: a member function that sets all coordinates of the point to zero.
+ * - `o.setOnes()`: a member function that sets all coordinates of the point to one.
+ * - `o.normalize()`: a member function that normalizes the point to have unit length.
+ * - `co.hash()`: a member function that returns a hash value for the point.
  *
  * @tparam T: The type to be tested for conformity to the PointConcept.
  */

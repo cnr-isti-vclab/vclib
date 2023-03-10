@@ -27,6 +27,7 @@
 #include <vclib/space/box.h>
 #include <vclib/space/plane.h>
 #include <vclib/space/segment.h>
+#include <vclib/space/sphere.h>
 
 namespace vcl {
 
@@ -43,6 +44,32 @@ template<PlaneConcept PlaneType, Segment3Concept SegmentType>
 bool planeSegmentIntersect(
 	const PlaneType&                 p,
 	const SegmentType&               s);
+
+template<SphereConcept SphereType, Box3Concept BoxType>
+bool sphereBoxIntersect(const SphereType& s, const BoxType& box);
+
+template<PointConcept PointType>
+bool triangleBoxIntersect(
+	const PointType&      p0,
+	const PointType&      p1,
+	const PointType&      p2,
+	const Box<PointType>& box) requires (PointType::DIM == 3);
+
+template<PointConcept PointType, typename SScalar>
+bool triangleSphereItersect(
+	PointType      p0,
+	PointType      p1,
+	PointType      p2,
+	const vcl::Sphere<SScalar>& sphere,
+	PointType& witness,
+	std::pair<SScalar, SScalar>& res);
+
+template<PointConcept PointType, typename SScalar>
+bool triangleSphereItersect(
+	const PointType&       p0,
+	const PointType&       p1,
+	const PointType&       p2,
+	const Sphere<SScalar>& sphere);
 
 } // namespace vcl
 

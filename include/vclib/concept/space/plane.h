@@ -28,22 +28,20 @@
 
 namespace vcl {
 
-template<typename T, int N>
-class Point;
-
 /**
  * @brief A C++ concept that requires a type to represent a plane in 3D space.
  * @tparam T: The type to check for compliance with the PlaneConcept.
  *
  * This concept requires that the input type T has the following public member functions:
  *  - typename T::ScalarType: A type alias representing the scalar type used in the plane equations.
- *  - const Point<typename T::ScalarType, 3>& T::direction(): A const reference to the direction
- *    vector of the plane.
+ *  - typename T::PointType: A type alias representing the Point type used in the plane equations.
+ *  - const typename T::PointType& T::direction(): A const reference to the direction vector of the
+ *    plane.
  *  - typename T::ScalarType T::offset(): The offset of the plane from the origin.
- *  - Point<typename T::ScalarType, 3> T::projectPoint(const Point<typename T::ScalarType, 3>& p):
- *    Projects a point onto the plane.
- *  - Point<typename T::ScalarType, 3> T::mirrorPoint(const Point<typename T::ScalarType, 3>& p):
- *    Mirrors a point across the plane.
+ *  - typename T::PointType T::projectPoint(const typename T::PointType& p): Projects a point onto
+ *    the plane.
+ *  - typename T::PointType T::mirrorPoint(const typename T::PointType& p): Mirrors a point across
+ *    the plane.
  *  - bool T::operator==(const T& o): Equality comparison operator for planes.
  *  - bool T::operator!=(const T& o): Inequality comparison operator for planes.
  *
@@ -53,15 +51,16 @@ template<typename T>
 concept PlaneConcept = requires(
 	T o,
 	const T& co,
-	const Point<typename T::ScalarType, 3>& p)
+	const typename T::PointType& p)
 {
 	typename T::ScalarType;
+	typename T::PointType;
 
-	{ co.direction() } -> std::same_as<const Point<typename T::ScalarType, 3>&>;
+	{ co.direction() } -> std::same_as<const typename T::PointType&>;
 	{ co.offset() } -> std::same_as<typename T::ScalarType>;
 
-	{ co.projectPoint(p) } -> std::same_as<Point<typename T::ScalarType, 3>>;
-	{ co.mirrorPoint(p) } -> std::same_as<Point<typename T::ScalarType, 3>>;
+	{ co.projectPoint(p) } -> std::same_as<typename T::PointType>;
+	{ co.mirrorPoint(p) } -> std::same_as<typename T::PointType>;
 
 	{ co == co } -> std::same_as<bool>;
 	{ co != co } -> std::same_as<bool>;

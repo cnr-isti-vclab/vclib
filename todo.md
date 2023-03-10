@@ -21,9 +21,10 @@
   - [ ] implement housdorff
   - [ ] update adjacent faces optimized for dcel
 - Space:
+  - [ ] move algorithm/polygon/geometry functions into two space data structure Triangle and Polygon.
+    - [ ] remove the usage of the old functions
+    - [ ] make the Triangle and Polygon concepts, making sure that Triangle satisfies PolygonConcept
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
-  - [ ] implement BoxConcept
-  - [ ] implement PlaneConcept
   - [ ] move random access container in space. In general, every data structure must be in space directory
 - I/O:
   - [ ] move appropriately load/save functions outside "vcl::io" namespace 

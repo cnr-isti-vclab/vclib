@@ -28,6 +28,20 @@
 
 namespace vcl {
 
+/**
+ * @brief A concept for a container that stores Point samples.
+ *
+ * A type satisfies this concept if it provides the following interface:
+ * - `o.samples()`: returns a container of samples in the sampler.
+ * - `o.clear()`: clears all previously contained samples.
+ * - `o.reserve(uint())`: reserves memory for the given number of samples.
+ * - `o.resize(uint())`: resizes the sampler to the given number of samples.
+ * - `o.add(v, m)`: adds a sample with the coord of the given vertex `v` of the mesh `m`.
+ * - `o.set(uint(), v, m)`: sets the sample at the given index with the coord of the given vertex
+ *   `v` of the mesh `m`
+ *
+ * @tparam T: The type to be tested for conformity to the SamplerConcept.
+ */
 template<typename T>
 concept SamplerConcept = requires(
 	T o,
@@ -43,6 +57,22 @@ concept SamplerConcept = requires(
 	o.set(uint(), v, m);
 };
 
+/**
+ * @brief A concept for a container that stores Point samples, and allows to generate them using
+ * Faces.
+ *
+ * A type satisfies this concept if it satisfies the SamplerConcept and provides the following
+ * interface:
+ * - `o.add(f, m)`: adds a sample with barycenter of the given face `f` of the mesh `m`.
+ * - `o.set(uint(), f, m)`: sets the sample at the given index with the the given face `f` of the
+ *    mesh `m`.
+ * - `o.add(f, m, p)`: adds a sample with the coord computed as the barycentric coordinate `p` on
+ *    the given face `f` of the mesh `m`.
+ * - `o.set(uint(), f, m, p)`: sets the sample at the given index with the coord computed as the
+ *    barycentric coordinate `p` on the given face `f` of the mesh `m`.
+ *
+ * @tparam T: The type to be tested for conformity to the FaceSamplerConcept.
+ */
 template<typename T>
 concept FaceSamplerConcept = SamplerConcept<T> &&
 	requires(

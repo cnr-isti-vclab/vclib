@@ -285,6 +285,7 @@ set(HEADERS
 	include/vclib/space/spatial_data_structures.h
 	include/vclib/space/sphere.h
 	include/vclib/space/tex_coord.h
+	include/vclib/space/triangle.h
 	include/vclib/space/array/array_t.h
 	include/vclib/space/array/array2.h
 	include/vclib/space/array/array3.h
@@ -449,6 +450,7 @@ set(SOURCES
 	include/vclib/space/segment.cpp
 	include/vclib/space/sphere.cpp
 	include/vclib/space/tex_coord.cpp
+	include/vclib/space/triangle.cpp
 	include/vclib/space/array/array_t.cpp
 	include/vclib/space/array/array2.cpp
 	include/vclib/space/array/array3.cpp
