@@ -25,91 +25,52 @@
 #define VCL_ALGORITHM_POLYGON_GEOMETRY_TRIANGLE_H
 
 #include <vclib/mesh/requirements.h>
-#include <vclib/space/point.h>
+#include <vclib/space/triangle.h>
 
 namespace vcl {
 
 /* Normal */
-
-template <PointConcept PointType>
-PointType triangleNormal(const PointType& p0, const PointType& p1, const PointType& p2);
 
 template<FaceConcept Triangle>
 typename Triangle::VertexType::CoordType triangleNormal(const Triangle& t);
 
 /* Barycenter */
 
-template <PointConcept PointType>
-PointType triangleBarycenter(const PointType& p0, const PointType& p1, const PointType& p2);
-
 template<FaceConcept Triangle>
 typename Triangle::VertexType::CoordType triangleBarycenter(const Triangle& t);
 
-template <PointConcept PointType>
-PointType triangleWeightedBarycenter(
-	const PointType& p0, typename PointType::ScalarType w0,
-	const PointType& p1, typename PointType::ScalarType w1,
-	const PointType& p2, typename PointType::ScalarType w2);
-
 /* Baricentric Coordinates */
-
-template <PointConcept PointType, typename ScalarType>
-PointType triangleBarycentricCoordinatePoint(
-	const PointType& p0,
-	const PointType& p1,
-	const PointType& p2,
-	const Point3<ScalarType> &barCoords);
 
 template <FaceConcept Triangle, typename ScalarType>
 typename Triangle::CoordType triangleBarycentricCoordinatePoint(
 	const Triangle& t,
 	const Point3<ScalarType>& barCoords);
 
-/* Area */
-
-template<PointConcept PointType>
-typename PointType::ScalarType
-triangleArea(const PointType& p0, const PointType& p1, const PointType& p2);
+/* Circumcenter */
 
 template<FaceConcept Triangle>
-auto triangleArea(const Triangle& t);
+typename Triangle::VertexType::CoordType triangleCircumcenter(const Triangle& t);
 
 /* Perimeter */
-
-template<PointConcept PointType>
-typename PointType::ScalarType
-trianglePerimeter(const PointType& p0, const PointType& p1, const PointType& p2);
 
 template<FaceConcept Triangle>
 auto trianglePerimeter(const Triangle& t);
 
-/* Quality */
+/* Area */
 
-template <PointConcept PointType>
-double triangleQuality(const PointType& p0, const PointType& p1, const PointType& p2);
+template<FaceConcept Triangle>
+auto triangleArea(const Triangle& t);
+
+/* Quality */
 
 template<FaceConcept Triangle>
 double triangleQuality(const Triangle& t);
 
-template <PointConcept PointType>
-double triangleQualityRadii(const PointType& p0, const PointType& p1, const PointType& p2);
-
 template<FaceConcept Triangle>
 double triangleQualityRadii(const Triangle& t);
 
-template <PointConcept PointType>
-double triangleQualityMeanRatio(const PointType& p0, const PointType& p1, const PointType& p2);
-
 template<FaceConcept Triangle>
 double triangleQualityMeanRatio(const Triangle& t);
-
-/* Circumcenter */
-
-template <PointConcept PointType>
-PointType triangleCircumcenter(const PointType& p0, const PointType& p1, const PointType& p2);
-
-template<FaceConcept Triangle>
-typename Triangle::VertexType::CoordType triangleCircumcenter(const Triangle& t);
 
 } // namespace vcl
 

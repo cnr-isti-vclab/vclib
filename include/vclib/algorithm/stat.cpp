@@ -24,6 +24,7 @@
 #include "stat.h"
 
 #include <vclib/mesh/utils/mesh_inertia.h>
+#include <vclib/space/polygon.h>
 
 namespace vcl {
 
@@ -188,7 +189,7 @@ Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& poin
 {
 	Matrix33<double> m;
 	m.setZero();
-	PointType barycenter = polygonBarycenter(pointVec.begin(), pointVec.end());
+	PointType barycenter = Polygon<PointType>::barycenter(pointVec.begin(), pointVec.end());
 
 	// compute covariance matrix
 	for (const PointType& p : pointVec){

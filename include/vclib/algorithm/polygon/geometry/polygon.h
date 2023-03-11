@@ -31,41 +31,22 @@ namespace vcl {
 
 /* Normal */
 
-template<typename Iterator>
-auto polygonNormal(Iterator begin, Iterator end)
-	requires PointConcept<typename Iterator::value_type>;
-
-template<typename Polygon>
+template<FaceConcept Polygon>
 typename Polygon::VertexType::CoordType polygonNormal(const Polygon& p);
 
 /* Barycenter */
 
-template<typename Iterator>
-auto polygonBarycenter(Iterator begin, Iterator end)
-	requires PointConcept<typename Iterator::value_type>;
-
-template<typename Polygon>
+template<FaceConcept Polygon>
 typename Polygon::VertexType::CoordType polygonBarycenter(const Polygon& p);
-
-template<typename Iterator, typename WIterator>
-auto polygonWeighedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
-	requires PointConcept<typename Iterator::value_type>;
 
 /* Area */
 
-template<typename Iterator>
-auto polygonArea(Iterator begin, Iterator end) requires PointConcept<typename Iterator::value_type>;
-
-template<typename Polygon>
+template<FaceConcept Polygon>
 auto polygonArea(const Polygon& p);
 
 /* Perimeter */
 
-template<typename Iterator>
-auto polygonPerimeter(Iterator begin, Iterator end)
-	requires PointConcept<typename Iterator::value_type>;
-
-template<typename Polygon>
+template<FaceConcept Polygon>
 auto polygonPerimeter(const Polygon& p);
 
 } // namespace vcl
