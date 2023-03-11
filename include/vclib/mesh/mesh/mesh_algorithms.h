@@ -28,18 +28,6 @@
 
 namespace vcl::mesh {
 
-template<typename Iterator>
-auto polygonNormal(Iterator begin, Iterator end)
-	requires PointConcept<typename Iterator::value_type>;
-
-template<typename Iterator>
-std::vector<uint> earCut(Iterator begin, Iterator end)
-	requires Point2Concept<typename Iterator::value_type>;
-
-template<typename Iterator>
-std::vector<uint> earCut(Iterator begin, Iterator end)
-	requires Point3Concept<typename Iterator::value_type>;
-
 template<typename Face>
 std::vector<uint> earCut(const Face& polygon);
 

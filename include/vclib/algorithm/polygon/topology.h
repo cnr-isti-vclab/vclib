@@ -50,12 +50,6 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacen
 template <FaceConcept FaceType>
 void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>;
 
-template<typename Iterator>
-std::vector<uint> earCut(Iterator begin, Iterator end)
-	requires(
-		Point2Concept<typename Iterator::value_type> ||
-		Point3Concept<typename Iterator::value_type>);
-
 template<FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon);
 

@@ -30,6 +30,7 @@
 #include <vclib/mesh/iterators/edge_adj_face_iterator.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/comparators.h>
+#include <vclib/space/polygon.h>
 
 namespace vcl {
 
@@ -325,42 +326,6 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 }
 
 /**
- * @brief Triangulates a simple polygon with no holes using the ear-cutting algorithm.
- *
- * If the iterated points are in 3D, it projects the polygon onto a 2D plane and then applies the
- * ear-cutting algorithm.
- *
- * @tparam Iterator: The type of iterator used to represent the vertices of the polygon. It must
- * satisfy the Point2Concept or Point3Concept requirement.
- *
- * @param[in] begin: An iterator pointing to the first vertex of the polygon.
- * @param[in] end: An iterator pointing to one past the last vertex of the polygon.
- * @return A vector containing the indices of the vertices that form triangles in the triangulated
- * polygon. Each group of three indices represents the vertices of a single triangle, and the
- * indices are ordered in a counter-clockwise direction.
- * @throws std::logic_error If the polygon is not simple or has holes.
- *
- * @remarks This function uses the ear-cutting algorithm to triangulate a simple polygon with no
- * holes. The polygon is represented as a sequence of vertices, where each vertex can be a
- * two-dimensional or three-dimensional point. The function returns a vector containing the indices
- * of the vertices that form triangles in the triangulated polygon. The indices are ordered in a
- * counter-clockwise direction, and each group of three indices represents the vertices of a single
- * triangle. The function requires that the type of iterator used to represent the vertices of the
- * polygon satisfies the Point2Concept or Point3Concept requirement, which means that it must have a
- * value_type that is a Point2 or Point3 object with a ScalarType member representing the scalar
- * type used to represent the coordinates of the point. If the polygon is not simple or has holes,
- * the function throws a std::logic_error.
- */
-template<typename Iterator>
-std::vector<uint> earCut(Iterator begin, Iterator end)
-	requires(
-		Point2Concept<typename Iterator::value_type> ||
-		Point3Concept<typename Iterator::value_type>)
-{
-	return mesh::earCut(begin, end);
-}
-
-/**
  * @brief Computes the earcut algorithm of a 3D *planar* polygon, that returns a triangulation of
  * the polygon.
  *
@@ -419,7 +384,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 	}
 
 	// compute earcut of the polygons
-	std::vector<uint> tris = earCut(polCoords.begin(), polCoords.end());
+	std::vector<uint> tris = Polygon<CoordType>::earCut(polCoords.begin(), polCoords.end());
 
 	// faux edges management: create a set of unordered edges of the polygon
 	// note: we use indices from 0 to polygon.size() because that are the output indices given by

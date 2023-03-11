@@ -13,6 +13,7 @@
     - [ ] set constructors for HalfEdge element
   - Containers:
     - [ ] set properly container concepts
+  - Mesh Algorithms: remove earcut from mesh_algorithms.h and use the one in Polygon class, with the FaceVertexCoordIterator
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] import dcel from mesh: update adjacent faces and wedges 
@@ -20,9 +21,10 @@
   - [ ] intersection functions (like distance functions)
   - [ ] implement housdorff
   - [ ] update adjacent faces optimized for dcel
+- Iterators:
+  - [ ] FaceVertexCoordIterator - allow to iterate over the coordinate of a face easily
 - Space:
   - [ ] move algorithm/polygon/geometry functions into two space data structure Triangle and Polygon.
-    - [ ] add static functions to Triangle and Polygon
     - [ ] remove the usage of the old functions
     - [ ] move mesh algorithms into space/polygon
     - [ ] make the Triangle and Polygon concepts, making sure that Triangle satisfies PolygonConcept

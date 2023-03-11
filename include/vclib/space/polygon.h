@@ -68,6 +68,14 @@ public:
 	static PointT area(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
+	template<typename Iterator>
+	static std::vector<uint> earCut(Iterator begin, Iterator end)
+		requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 2);
+
+	template<typename Iterator>
+	static std::vector<uint> earCut(Iterator begin, Iterator end)
+		requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 3);
+
 private:
 	std::vector<PointT> p;
 };
