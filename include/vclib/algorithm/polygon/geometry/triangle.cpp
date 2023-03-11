@@ -272,7 +272,7 @@ double triangleQuality(const PointType& p0, const PointType& p1, const PointType
 	PointType d10=p1-p0;
 	PointType d20=p2-p0;
 	PointType d12=p1-p2;
-	PointType x = d10^d20;
+	PointType x = d10.cross(d20);
 
 	double a = x.norm();
 	if (a == 0)

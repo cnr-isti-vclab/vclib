@@ -222,17 +222,7 @@ typename Triangle<PointT>::ScalarType Triangle<PointT>::area() const
 template<PointConcept PointT>
 typename Triangle<PointT>::ScalarType Triangle<PointT>::quality() const
 {
-	ScalarType a = area();
-	if (a == 0)
-		return 0; // Area zero triangles have surely quality==0;
-
-	PointType d10=p[1]-p[0];
-	PointType d20=p[2]-p[0];
-	PointType d12=p[1]-p[2];
-	double b = std::min({d10.squaredNorm(), d20.squaredNorm(), d12.squaredNorm()});
-	if (b == 0)
-		return 0; // Again: area zero triangles have surely quality==0;
-	return (2 * a) / b;
+	return quality(p[0], p[1], p[2]);
 }
 
 /**
@@ -249,17 +239,7 @@ typename Triangle<PointT>::ScalarType Triangle<PointT>::quality() const
 template<PointConcept PointT>
 typename Triangle<PointT>::ScalarType Triangle<PointT>::qualityRadii() const
 {
-	ScalarType a = sideLength0();
-	ScalarType b = sideLength1();
-	ScalarType c = sideLength2();
-
-	double sum = perimeter() * 0.5;
-	double area2 = sum * (a + b - sum) * (a + c - sum) * (b + c - sum);
-
-	if (area2 <= 0)
-		return 0;
-
-	return (8 * area2) / (a * b * c * sum);
+	return qualityRadii(p[0], p[1], p[2]);
 }
 
 /**
@@ -278,18 +258,10 @@ typename Triangle<PointT>::ScalarType Triangle<PointT>::qualityRadii() const
 template<PointConcept PointT>
 typename Triangle<PointT>::ScalarType Triangle<PointT>::qualityMeanRatio() const
 {
-	ScalarType a = sideLength0();
-	ScalarType b = sideLength1();
-	ScalarType c = sideLength2();
-
-	double sum = perimeter() * 0.5;
-	double area2 = sum * (a + b - sum) * (a + c - sum) * (b + c - sum);
-
-	if (area2 <= 0)
-		return 0;
-
-	return (4.0 * std::sqrt(3.0) * std::sqrt(area2)) / (a * a + b * b + c * c);
+	return qualityMeanRatio(p[0], p[1], p[2]);
 }
+
+/* Static member functions */
 
 /**
  * @brief Computes the normal of the triangle composed by the 3D points \p p0, \p p1, and \p p2,
@@ -318,7 +290,7 @@ PointT Triangle<PointT>::normal(const PointT& p0, const PointT& p1, const PointT
  * @return The barycenter of the triangle composed by \p p0, \p p1 and \p p2.
  */
 template<PointConcept PointT>
-PointT Triangle<PointT>::barycenter(const PointT &p0, const PointT &p1, const PointT &p2)
+PointT Triangle<PointT>::barycenter(const PointT& p0, const PointT& p1, const PointT& p2)
 {
 	return (p0 + p1 + p2) / 3;
 }
@@ -395,7 +367,7 @@ PointT Triangle<PointT>::barycentricCoordinatePoint(
  * @note The function assumes that the three points are not collinear and form a valid triangle.
  */
 template<PointConcept PointT>
-PointT Triangle<PointT>::circumcenter(const PointT &p0, const PointT &p1, const PointT &p2)
+PointT Triangle<PointT>::circumcenter(const PointT& p0, const PointT& p1, const PointT& p2)
 {
 	ScalarType a2 = p1.squaredDist(p2);
 	ScalarType b2 = p2.squaredDist(p0);
@@ -417,9 +389,9 @@ PointT Triangle<PointT>::circumcenter(const PointT &p0, const PointT &p1, const 
  */
 template<PointConcept PointT>
 typename Triangle<PointT>::ScalarType Triangle<PointT>::perimeter(
-	const PointT &p0,
-	const PointT &p1,
-	const PointT &p2)
+	const PointT& p0,
+	const PointT& p1,
+	const PointT& p2)
 {
 	return p0.dist(p1) + p1.dist(p2) + p2.dist(p0);
 }
@@ -435,10 +407,10 @@ typename Triangle<PointT>::ScalarType Triangle<PointT>::perimeter(
  * @return The area of the triangle composed by \p p0, \p p1, and \p p2.
  */
 template<PointConcept PointT>
-typename Triangle<PointT>::ScalarType  Triangle<PointT>::area(
-	const PointT &p0,
-	const PointT &p1,
-	const PointT &p2)
+typename Triangle<PointT>::ScalarType Triangle<PointT>::area(
+	const PointT& p0,
+	const PointT& p1,
+	const PointT& p2)
 {
 	if constexpr(DIM == 3) {
 		return normal(p0, p1, p2).norm() / 2;
@@ -448,6 +420,108 @@ typename Triangle<PointT>::ScalarType  Triangle<PointT>::area(
 		ScalarType s = perimeter() / 2;
 		return std::sqrt(s * (s - p0.dist(p1)) * (s - p1.dist(p2)) * (s - p2.dist(p0)));
 	}
+}
+
+/**
+ * @brief Calculates the quality measure of a triangle, given its three vertices.
+ *
+ * The quality measure is computed as 2 times the triangle's area divided by the square of the
+ * length of its longest edge. The resulting value is in the range [0.0, 0.866], where 0.0
+ * represents a degenerate triangle and 0.866 represents an equilateral triangle.
+ *
+ * @param[in] p0: The first vertex of the triangle.
+ * @param[in] p1: The second vertex of the triangle.
+ * @param[in] p2: The third vertex of the triangle.
+ * @return The quality measure of the triangle.
+ *
+ * @note If the area of the triangle is zero (i.e., the vertices are collinear), the function
+ * returns 0.0.
+ */
+template<PointConcept PointT>
+typename Triangle<PointT>::ScalarType Triangle<PointT>::quality(
+	const PointT& p0,
+	const PointT& p1,
+	const PointT& p2)
+{
+	ScalarType a = area();
+	if (a == 0)
+		return 0; // Area zero triangles have surely quality==0;
+
+	PointType d10 = p1 - p0;
+	PointType d20 = p2 - p0;
+	PointType d12 = p1 - p2;
+	double b = std::min({d10.squaredNorm(), d20.squaredNorm(), d12.squaredNorm()});
+	if (b == 0)
+		return 0; // Again: area zero triangles have surely quality==0;
+	return (2 * a) / b;
+}
+
+/**
+ * @brief Compute a shape quality measure of the triangle composed by points \p p0, \p p1, \p p2.
+ *
+ * This function computes the quality measure of a triangle based on the ratio between its inradius
+ * and circumradius. The function takes three points (\p p0, \p p1, \p p2) representing the vertices
+ * of the triangle.
+ *
+ * @param[in] p0: The first vertex of the triangle.
+ * @param[in] p1: The second vertex of the triangle.
+ * @param[in] p2: The third vertex of the triangle.
+ * @return A value between 0 and 1 that represents the quality of the triangle shape. A value of 1
+ * means the triangle is perfectly equilateral, while lower values indicate more distorted shapes
+ * (i.e., halfsquare: 0.81). A value of 0 is returned when the triangle is degenerate (i.e., it has
+ * zero area).
+ */
+template<PointConcept PointT>
+typename Triangle<PointT>::ScalarType Triangle<PointT>::qualityRadii(
+	const PointT& p0,
+	const PointT& p1,
+	const PointT& p2)
+{
+	double a = p0.dist(p1);
+	double b = p2.dist(p0);
+	double c = p1.dist(p2);
+
+	double sum = (a + b + c) * 0.5;
+	double area2 = sum * (a + b - sum) * (a + c - sum) * (b + c - sum);
+
+	if (area2 <= 0)
+		return 0;
+
+	return (8 * area2) / (a * b * c * sum);
+}
+
+/**
+ * @brief Compute the mean ratio of a triangle shape quality measure.
+ *
+ * Given three points \p p0, \p p1, \p p2 representing a triangle, the function computes the mean
+ * ratio shape quality measure of the triangle. The mean ratio is defined as 2 * sqrt(a * b) / (a +
+ * b), where a and b are the eigenvalues of the M^tM transformation matrix into a regular simplex.
+ * The mean ratio is a scalar value in the range [0, 1] that describes the triangle quality,
+ * where 0 means the triangle is degenerate, and 1 means it is perfectly equilateral.
+ *
+ * @param[in] p0 The first point of the triangle.
+ * @param[in] p1 The second point of the triangle.
+ * @param[in] p2 The third point of the triangle.
+ * @return The mean ratio shape quality measure of the triangle.
+ *
+ * @note The function assumes that the three points are not collinear and form a valid triangle.
+ * If the three points are collinear or form a degenerate triangle, the function returns 0.
+ */
+template<PointConcept PointT>
+typename Triangle<PointT>::ScalarType Triangle<PointT>::qualityMeanRatio(
+	const PointT& p0,
+	const PointT& p1,
+	const PointT& p2)
+{
+	double a = p0.dist(p1);
+	double b = p2.dist(p0);
+	double c = p1.dist(p2);
+
+	double sum   = (a + b + c) * 0.5; // semiperimeter
+	double area2 = sum * (a + b - sum) * (a + c - sum) * (b + c - sum);
+	if (area2 <= 0)
+		return 0;
+	return (4.0 * std::sqrt(3.0) * std::sqrt(area2)) / (a * a + b * b + c * c);
 }
 
 } // namespace vcl

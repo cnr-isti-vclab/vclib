@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_TRIANGLE_H
 #define VCL_SPACE_TRIANGLE_H
 
-#include "point.h"
+#include <vclib/space/point.h>
 
 namespace vcl {
 
@@ -74,7 +74,7 @@ public:
 	ScalarType qualityRadii() const;
 	ScalarType qualityMeanRatio() const;
 
-	// static members
+	// static member functions
 
 	static PointT normal(const PointT& p0, const PointT& p1, const PointT& p2)
 		requires (PointT::DIM == 3);
@@ -97,6 +97,9 @@ public:
 	static PointT circumcenter(const PointT& p0, const PointT& p1, const PointT& p2);
 	static ScalarType perimeter(const PointT& p0, const PointT& p1, const PointT& p2);
 	static ScalarType area(const PointT& p0, const PointT& p1, const PointT& p2);
+	static ScalarType quality(const PointT& p0, const PointT& p1, const PointT& p2);
+	static ScalarType qualityRadii(const PointT& p0, const PointT& p1, const PointT& p2);
+	static ScalarType qualityMeanRatio(const PointT& p0, const PointT& p1, const PointT& p2);
 
 private:
 	std::array<PointT, 3> p;

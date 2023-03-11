@@ -304,8 +304,10 @@ struct IsDerivedFromImplementation
  * https://stackoverflow.com/questions/25845536/trait-to-check-if-some-specialization-of-template-class-is-base-class-of-specifi#comment40451928_25846080
  * http://coliru.stacked-crooked.com/a/9feadc62e7594eb2
  */
-template< typename derived, template< typename ... > class base >
-using IsDerivedFromTemplateSpecialization = typename std::invoke_result< internal::IsDerivedFromImplementation< base >, typename std::remove_cv< derived >::type * >::type;
+template<typename derived, template<typename...> class base>
+using IsDerivedFromTemplateSpecialization = typename std::invoke_result<
+	internal::IsDerivedFromImplementation<base>,
+	typename std::remove_cv<derived>::type*>::type;
 
 } // namespace vcl
 

@@ -306,6 +306,7 @@ set(HEADERS
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
 	include/vclib/space/point/point4.h
+	include/vclib/space/polygon.h
 	include/vclib/space/sampler/mesh_sampler.h
 	include/vclib/space/sampler/point_sampler.h
 	include/vclib/space/sampler/vertex_index_sampler.h)
@@ -447,6 +448,7 @@ set(SOURCES
 	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
+	include/vclib/space/polygon.cpp
 	include/vclib/space/segment.cpp
 	include/vclib/space/sphere.cpp
 	include/vclib/space/tex_coord.cpp

@@ -24,6 +24,7 @@
   - [ ] move algorithm/polygon/geometry functions into two space data structure Triangle and Polygon.
     - [ ] add static functions to Triangle and Polygon
     - [ ] remove the usage of the old functions
+    - [ ] move mesh algorithms into space/polygon
     - [ ] make the Triangle and Polygon concepts, making sure that Triangle satisfies PolygonConcept
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
   - [ ] move random access container in space. In general, every data structure must be in space directory
