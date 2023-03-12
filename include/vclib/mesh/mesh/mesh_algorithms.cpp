@@ -24,6 +24,7 @@
 #include "mesh_algorithms.h"
 
 #include <vclib/space/polygon.h>
+#include <vclib/mesh/iterators/face/face_vertex_coord_iterator.h>
 
 namespace vcl::mesh {
 
@@ -63,6 +64,10 @@ std::vector<uint> earCut(const Face& polygon)
 		pol.push_back(v->coord());
 	}
 	return Polygon<CoordType>::earCut(pol.begin(), pol.end());
+
+//	return Polygon<CoordType>::earCut(
+//		FaceVertexCoordIterator(polygon.vertexBegin()),
+//		FaceVertexCoordIterator(polygon.vertexEnd()));
 }
 
 } // namespace vcl::mesh

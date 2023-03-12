@@ -27,7 +27,7 @@
 
 #include <vclib/exception/mesh_exception.h>
 #include <vclib/mesh/mesh/mesh_algorithms.h>
-#include <vclib/mesh/iterators/edge_adj_face_iterator.h>
+#include <vclib/mesh/iterators/face/edge_adj_face_iterator.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/space/polygon.h>

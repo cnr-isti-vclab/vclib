@@ -70,12 +70,12 @@ class PointerIterator : public It
 {
 public:
 	using value_type = typename It::value_type*;
-	using reference         = const value_type;
+	using reference  = const value_type;
 
 	using It::It;
-	PointerIterator(const It& it) : It(it) {};
+	PointerIterator(const It& it) : It(it) {}
 
-	reference operator*() const { return It::operator->(); };
+	reference operator*() const { return It::operator->(); }
 };
 
 } // namespace vcl
