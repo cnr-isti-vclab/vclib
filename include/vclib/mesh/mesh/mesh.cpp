@@ -23,7 +23,7 @@
 
 #include "mesh.h"
 
-#include "mesh_algorithms.h"
+#include <vclib/space/polygon.h>
 
 namespace vcl {
 
@@ -1104,6 +1104,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 {
 	using VertexType = typename Mesh<Args...>::VertexType;
 	using MVertexType = typename OthMesh::VertexType;
+	using MCoordType = typename MVertexType::CoordType;
 	using FaceType = typename Mesh<Args...>::FaceType;
 	using MFaceType = typename OthMesh::FaceType;
 
@@ -1138,7 +1139,9 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 				// triangulate mf; the first triangle of the triangulation will be
 				// this->face(m.index(mf));
 				// the other triangles will be added at the end of the container
-				std::vector<uint> tris = vcl::mesh::earCut(mf);
+				std::vector<uint> tris = Polygon<MCoordType>::earCut(
+					FaceVertexCoordIterator(mf.vertexBegin()),
+					FaceVertexCoordIterator(mf.vertexEnd()));
 				FaceType& f = FaceContainer::face(m.index(mf));
 				importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
 

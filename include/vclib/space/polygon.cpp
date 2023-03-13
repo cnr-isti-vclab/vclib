@@ -364,7 +364,13 @@ std::vector<uint> Polygon<PointT>::earCut(Iterator begin, Iterator end)
 
 	// Project each vertex onto the plane defined by the orthonormal basis.
 	std::vector<Point2<Scalar>> poly2D;
-	poly2D.reserve(std::distance(begin, end));
+
+	if constexpr (std::is_same_v<
+					  typename Iterator::iterator_category,
+					  std::random_access_iterator_tag>) {
+		poly2D.reserve(std::distance(begin, end));
+	}
+
 	for (auto i = begin; i != end; ++i){
 		// project i-th polygon in a 2D plane
 		poly2D.push_back(Point2<Scalar>(*i*u, *i*v));

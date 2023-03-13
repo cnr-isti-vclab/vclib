@@ -29,22 +29,24 @@
 namespace vcl {
 
 template<typename It>
-class FaceVertexCoordIterator
+class FaceVertexCoordIterator : public It
 {
 	using VertexType = typename std::remove_pointer<typename It::value_type>::type;
-	using CoordType = typename VertexType::CoordType;
+
+	using CoordType = typename std::conditional_t<
+		std::is_const_v<VertexType>,
+		const typename VertexType::CoordType,
+		typename VertexType::CoordType>;
 
 public:
-	using value_type = CoordType;
-	using reference  = value_type&;
-	using pointer    = value_type*;
-	using difference_type   = typename It::ptrdiff_t;
-	using iterator_category = typename It::iterator_category;
+	using value_type = typename std::remove_const<CoordType>::type;
+	using reference  = CoordType&;
+	using pointer    = CoordType*;
 
 	FaceVertexCoordIterator(const It& it) : It(it) {}
 
-	reference operator*() const { return It::operator->()->coord(); }
-	pointer operator->() const { return &It::operator->()->coord(); }
+	reference operator*() const { return It::operator*()->coord(); }
+	pointer operator->() const { return &It::operator*()->coord(); }
 
 };
 

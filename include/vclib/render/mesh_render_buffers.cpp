@@ -25,7 +25,6 @@
 
 #include <vclib/algorithm/polygon.h>
 #include <vclib/math/min_max.h>
-#include <vclib/mesh/mesh/mesh_algorithms.h>
 
 namespace vcl {
 
@@ -280,7 +279,7 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 					vinds.push_back({0, 1, 2});
 				}
 				else {
-					std::vector<uint> vind = vcl::mesh::earCut(f);
+					std::vector<uint> vind = vcl::earCut(f);
 					for (uint vi = 0; vi < vind.size(); vi+=3) {
 						triPolyMap.insert(nt + vi/3, m.faceIndexIfCompact(m.index(f)));
 						tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(vind[vi + 0]))));

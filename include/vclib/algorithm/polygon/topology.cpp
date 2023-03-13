@@ -26,8 +26,8 @@
 #include <set>
 
 #include <vclib/exception/mesh_exception.h>
-#include <vclib/mesh/mesh/mesh_algorithms.h>
 #include <vclib/mesh/iterators/face/edge_adj_face_iterator.h>
+#include <vclib/mesh/iterators/face/face_vertex_coord_iterator.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/space/polygon.h>
@@ -344,7 +344,10 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 template <FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
-	return mesh::earCut(polygon);
+	using CoordType = typename Face::VertexType::CoordType;
+	return Polygon<CoordType>::earCut(
+		FaceVertexCoordIterator(polygon.vertexBegin()),
+		FaceVertexCoordIterator(polygon.vertexEnd()));
 }
 
 /**

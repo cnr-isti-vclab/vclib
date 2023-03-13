@@ -25,7 +25,6 @@
 
 #include "triangle.h"
 
-#include <vclib/mesh/mesh/mesh_algorithms.h>
 #include <vclib/space/polygon.h>
 
 namespace vcl {
