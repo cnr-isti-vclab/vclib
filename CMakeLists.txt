@@ -133,9 +133,11 @@ set(HEADERS
 	include/vclib/concept/space/matrix.h
 	include/vclib/concept/space/plane.h
 	include/vclib/concept/space/point.h
+	include/vclib/concept/space/polygon.h
 	include/vclib/concept/space/sampler.h
 	include/vclib/concept/space/segment.h
 	include/vclib/concept/space/sphere.h
+	include/vclib/concept/space/triangle.h
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
 	include/vclib/exception/misc_exception.h
@@ -277,6 +279,7 @@ set(HEADERS
 	include/vclib/space/matrix.h
 	include/vclib/space/plane.h
 	include/vclib/space/point.h
+	include/vclib/space/polygon.h
 	include/vclib/space/principal_curvature.h
 	include/vclib/space/sampler.h
 	include/vclib/space/segment.h
@@ -284,6 +287,7 @@ set(HEADERS
 	include/vclib/space/sphere.h
 	include/vclib/space/tex_coord.h
 	include/vclib/space/triangle.h
+	include/vclib/space/triangle_wrapper.h
 	include/vclib/space/array/array_t.h
 	include/vclib/space/array/array2.h
 	include/vclib/space/array/array3.h
@@ -304,7 +308,6 @@ set(HEADERS
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
 	include/vclib/space/point/point4.h
-	include/vclib/space/polygon.h
 	include/vclib/space/sampler/mesh_sampler.h
 	include/vclib/space/sampler/point_sampler.h
 	include/vclib/space/sampler/vertex_index_sampler.h)
@@ -448,6 +451,7 @@ set(SOURCES
 	include/vclib/space/sphere.cpp
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/triangle.cpp
+	include/vclib/space/triangle_wrapper.cpp
 	include/vclib/space/array/array_t.cpp
 	include/vclib/space/array/array2.cpp
 	include/vclib/space/array/array3.cpp

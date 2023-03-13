@@ -26,6 +26,8 @@
 
 #include <vclib/algorithm/polygon.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/space/box.h>
+#include <vclib/space/sphere.h>
 
 namespace vcl {
 

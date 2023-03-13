@@ -59,6 +59,12 @@ Polygon<PointT>::Polygon()
 }
 
 template<PointConcept PointT>
+uint Polygon<PointT>::size() const
+{
+	return p.size();
+}
+
+template<PointConcept PointT>
 template<typename Iterator>
 Polygon<PointT>::Polygon(Iterator begin, Iterator end)
 	requires (std::is_same_v<typename Iterator::value_type, PointT>) :
@@ -104,7 +110,7 @@ PointT Polygon<PointT>::weightedBarycenter(WIterator wbegin) const
 }
 
 template<PointConcept PointT>
-typename Polygon<PointT>::ScalarType Polygon<PointT>::perimenter() const
+typename Polygon<PointT>::ScalarType Polygon<PointT>::perimeter() const
 {
 	return perimeter(p.begin(), p.end());
 }

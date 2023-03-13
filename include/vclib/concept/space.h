@@ -27,8 +27,10 @@
 #include "space/box.h"
 #include "space/matrix.h"
 #include "space/point.h"
+#include "space/polygon.h"
 #include "space/sampler.h"
 #include "space/segment.h"
 #include "space/sphere.h"
+#include "space/triangle.h"
 
 #endif // VCL_CONCEPT_SPACE_H

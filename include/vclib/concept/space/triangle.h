@@ -21,33 +21,54 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_POLYGON_GEOMETRY_H
-#define VCL_ALGORITHM_POLYGON_GEOMETRY_H
+#ifndef VCL_CONCEPT_SPACE_TRIANGLE_H
+#define VCL_CONCEPT_SPACE_TRIANGLE_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/misc/types.h>
 
 namespace vcl {
 
-template<FaceConcept FaceType>
-typename FaceType::VertexType::CoordType faceNormal(const FaceType& f);
+template<typename T>
+concept ConstTriangleConcept = requires(
+	const T& co)
+{
+	typename T::ScalarType;
+	typename T::PointType;
 
-template<FaceConcept FaceType>
-typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f);
+	co.DIM;
+	co.size() == 3;
 
-template<FaceConcept FaceType>
-auto faceArea(const FaceType& f);
+	{ co.point(uint()) } -> std::same_as<const typename T::PointType&>;
+	{ co.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
+	{ co.barycenter() } -> std::same_as<typename T::PointType>;
+	{ co.perimeter() } -> std::same_as<typename T::ScalarType>;
+	{ co.area() } -> std::same_as<typename T::ScalarType>;
+};
 
-template<FaceConcept FaceType>
-auto facePerimeter(const FaceType& f);
+template<typename T>
+concept TriangleConcept = ConstTriangleConcept<T> && requires(
+	T o,
+	const T& co)
+{
+	{ o.point(uint()) } -> std::same_as<typename T::PointType&>;
+};
 
-template<FaceConcept FaceType>
-auto faceAngleOnVertexRad(const FaceType& f, uint v);
+template<typename T>
+concept ConstTriangle2Concept = ConstTriangleConcept<T> && T::DIM == 2;
 
-template<FaceConcept FaceType>
-auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjacentFaces<FaceType>;
+template<typename T>
+concept Triangle2Concept = ConstTriangle2Concept<T> && TriangleConcept<T>;
+
+template<typename T>
+concept ConstTriangle3Concept = ConstTriangleConcept<T> && T::DIM == 3 && requires(
+	const T& co)
+{
+	{ co.normal() } -> std::same_as<typename T::PointType>;
+};
+
+template<typename T>
+concept Triangle3Concept = ConstTriangle3Concept<T> && TriangleConcept<T>;
 
 } // namespace vcl
 
-#include "geometry.cpp"
-
-#endif // VCL_ALGORITHM_POLYGON_GEOMETRY_H
+#endif // VCL_CONCEPT_SPACE_TRIANGLE_H

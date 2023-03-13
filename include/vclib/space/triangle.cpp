@@ -108,6 +108,12 @@ typename Triangle<PointT>::ScalarType Triangle<PointT>::sideLength2() const
 	return p[2].dist(p[0]);
 }
 
+template<PointConcept PointT>
+PointT Triangle<PointT>::normal() const requires (PointT::DIM == 3)
+{
+	return normal(p[0], p[1], p[2]);
+}
+
 /**
  * @brief Computes the barycenter of the triangle.
  *

@@ -21,33 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_POLYGON_GEOMETRY_H
-#define VCL_ALGORITHM_POLYGON_GEOMETRY_H
+#ifndef VCL_CONCEPT_SPACE_POLYGON_H
+#define VCL_CONCEPT_SPACE_POLYGON_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/misc/types.h>
 
 namespace vcl {
 
-template<FaceConcept FaceType>
-typename FaceType::VertexType::CoordType faceNormal(const FaceType& f);
+template<typename T>
+concept PolygonConcept = requires(
+	T o,
+	const T& co,
+	const typename T::PointType& p)
+{
+	typename T::ScalarType;
+	typename T::PointType;
 
-template<FaceConcept FaceType>
-typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f);
+	co.DIM;
 
-template<FaceConcept FaceType>
-auto faceArea(const FaceType& f);
+	{ co.size() } -> std::same_as<uint>;
+	{ o.point(uint()) } -> std::same_as<typename T::PointType&>;
+	{ co.point(uint()) } -> std::same_as<const typename T::PointType&>;
+	{ co.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
+	{ co.barycenter() } -> std::same_as<typename T::PointType>;
+	{ co.perimeter() } -> std::same_as<typename T::ScalarType>;
+	{ co.area() } -> std::same_as<typename T::ScalarType>;
+};
 
-template<FaceConcept FaceType>
-auto facePerimeter(const FaceType& f);
+template<typename T>
+concept Polygon2Concept = PolygonConcept<T> && T::DIM == 2;
 
-template<FaceConcept FaceType>
-auto faceAngleOnVertexRad(const FaceType& f, uint v);
-
-template<FaceConcept FaceType>
-auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjacentFaces<FaceType>;
+template<typename T>
+concept Polygon3Concept = PolygonConcept<T> && T::DIM == 3 && requires(
+	const T& co)
+{
+	{ co.normal() } -> std::same_as<typename T::PointType>;
+};
 
 } // namespace vcl
 
-#include "geometry.cpp"
-
-#endif // VCL_ALGORITHM_POLYGON_GEOMETRY_H
+#endif // VCL_CONCEPT_SPACE_POLYGON_H

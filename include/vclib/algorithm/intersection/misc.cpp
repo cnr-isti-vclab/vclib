@@ -319,13 +319,12 @@ bool sphereBoxIntersect(const SphereType& s, const BoxType& box)
  * @brief Checks if a triangle intersects with a box.
  * https://gist.github.com/jflipts/fc68d4eeacfcc04fbdb2bf38e0911850
  */
-template<PointConcept PointType>
+template<ConstTriangle3Concept TriangleType, Box3Concept BoxType>
 bool triangleBoxIntersect(
-	const PointType&      tv0,
-	const PointType&      tv1,
-	const PointType&      tv2,
-	const Box<PointType>& box) requires (PointType::DIM == 3)
+	const TriangleType& t,
+	const BoxType& box)
 {
+	using PointType = typename TriangleType::PointType;
 	using ScalarType = typename PointType::ScalarType;
 
 	PointType boxcenter = box.center();
@@ -343,9 +342,9 @@ bool triangleBoxIntersect(
 
 	/* This is the fastest branch on Sun */
 	/* move everything so that the boxcenter is in (0,0,0) */
-	PointType v0 = tv0 - boxcenter;
-	PointType v1 = tv1 - boxcenter;
-	PointType v2 = tv2 - boxcenter;
+	PointType v0 = t.point(0) - boxcenter;
+	PointType v1 = t.point(1) - boxcenter;
+	PointType v2 = t.point(2) - boxcenter;
 
 	/* compute triangle edges */
 	PointType e0 = v1 - v0;
@@ -411,7 +410,7 @@ bool triangleBoxIntersect(
 	/*  test if the box intersects the plane of the triangle */
 	/*  compute plane equation of triangle: normal*x+d=0 */
 	normal = e0.cross(e1);
-	vcl::Plane<ScalarType> plane(tv0, tv1, tv2);
+	vcl::Plane<ScalarType> plane(t.point(0), t.point(1), t.point(2));
 	if (!planeBoxIntersect(plane, box))
 		return false;
 
@@ -420,9 +419,7 @@ bool triangleBoxIntersect(
 
 /**
  * @brief Compute the intersection between a sphere and a triangle.
- * @param[in] p0: first 3d point of the triangle
- * @param[in] p1: second 3d point of the triangle
- * @param[in] p2: third 3d point of the triangle
+ * @param[in] t: the 3D input triangle
  * @param[in] sphere: the input sphere
  * @param[out] witness: the point on the triangle nearest to the center of the sphere (even when
  *                      there isn't intersection)
@@ -431,24 +428,24 @@ bool triangleBoxIntersect(
  *                  depth
  * @return true iff there is an intersection between the sphere and the triangle
  */
-template<PointConcept PointType, typename SScalar>
+template<
+	ConstTriangle3Concept TriangleType,
+	SphereConcept         SphereType,
+	Point3Concept         PointType,
+	typename ScalarType>
 bool triangleSphereItersect(
-	PointType                    p0,
-	PointType                    p1,
-	PointType                    p2,
-	const Sphere<SScalar>&       sphere,
+	const TriangleType&          t,
+	const SphereType&            sphere,
 	PointType&                   witness,
-	std::pair<SScalar, SScalar>& res)
+	std::pair<ScalarType, ScalarType>& res)
 {
-	using ScalarType = typename PointType::ScalarType;
-
 	bool penetrationDetected = false;
 
 	ScalarType radius = sphere.radius();
 	PointType  center = sphere.center();
-	p0 -= center;
-	p1 -= center;
-	p2 -= center;
+	PointType p0 = t.point0() - center;
+	PointType p1 = t.point1() - center;
+	PointType p2 = t.point2() - center;
 
 	PointType p10 = p1 - p0;
 	PointType p21 = p2 - p1;
@@ -461,7 +458,7 @@ bool triangleSphereItersect(
 	ScalarType delta1_p12 = p21.dot(p2);
 	ScalarType delta2_p12 = -p21.dot(p1);
 
-		   // the closest point can be one of the vertices of the triangle
+	// the closest point can be one of the vertices of the triangle
 	if (delta1_p01 <= ScalarType(0.0) && delta2_p02 <= ScalarType(0.0))
 		witness = p0;
 	else if (delta0_p01 <= ScalarType(0.0) && delta2_p12 <= ScalarType(0.0))
@@ -474,7 +471,7 @@ bool triangleSphereItersect(
 		ScalarType delta1_p012 = delta1_p01 * delta0_p02 - delta2_p02 * temp;
 		ScalarType delta2_p012 = delta2_p02 * delta0_p01 - delta1_p01 * (p20.dot(p1));
 
-			   // otherwise, can be a point lying on same edge of the triangle
+		// otherwise, can be a point lying on same edge of the triangle
 		if (delta0_p012 <= ScalarType(0.0)) {
 			ScalarType denominator = delta1_p12 + delta2_p12;
 			ScalarType mu1         = delta1_p12 / denominator;
@@ -519,22 +516,17 @@ bool triangleSphereItersect(
 
 /**
  * @brief Compute the intersection between a sphere and a triangle.
- * @param[in] p0: first 3d point of the triangle
- * @param[in] p1: second 3d point of the triangle
- * @param[in] p2: third 3d point of the triangle
+ * @param[in] t: the 3D input triangle
  * @param[in] sphere: the input sphere
  * @return true iff there is an intersection between the sphere and the triangle
  */
-template<PointConcept PointType, typename SScalar>
-bool triangleSphereItersect(
-	const PointType&       p0,
-	const PointType&       p1,
-	const PointType&       p2,
-	const Sphere<SScalar>& sphere)
+template<ConstTriangle3Concept TriangleType, SphereConcept SphereType>
+bool triangleSphereItersect(const TriangleType& t, const SphereType& sphere)
 {
-	PointType witness;
+	using SScalar = typename SphereType::ScalarType;
+	typename TriangleType::PointType witness;
 	std::pair<SScalar, SScalar> res;
-	return triangleBoxIntersect(p0, p1, p2, sphere, witness, res);
+	return triangleBoxIntersect(t, sphere, witness, res);
 }
 
 } // namespace vcl

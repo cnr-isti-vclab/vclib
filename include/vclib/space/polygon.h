@@ -26,7 +26,8 @@
 
 #include <vector>
 
-#include <vclib/concept/space/point.h>
+#include <vclib/concept/space/polygon.h>
+#include <vclib/space/point.h>
 
 namespace vcl {
 
@@ -45,6 +46,8 @@ public:
 	Polygon(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
+	uint size() const;
+
 	PointT& point(uint i);
 	const PointT& point(uint i) const;
 
@@ -57,7 +60,7 @@ public:
 	template<typename WIterator>
 	PointT weightedBarycenter(WIterator wbegin) const;
 
-	ScalarType perimenter() const;
+	ScalarType perimeter() const;
 	ScalarType area() const;
 
 	std::vector<uint> earCut() const requires (PointT::DIM == 2 || PointT::DIM == 3);
@@ -95,6 +98,24 @@ public:
 private:
 	std::vector<PointT> p;
 };
+
+template<typename Scalar>
+using Polygon2 = Polygon<Point2<Scalar>>;
+
+using Polygon2f = Polygon<Point2f>;
+using Polygon2d = Polygon<Point2d>;
+
+template<typename Scalar>
+using Polygon3 = Polygon<Point3<Scalar>>;
+
+using Polygon3f = Polygon<Point3f>;
+using Polygon3d = Polygon<Point3d>;
+
+static_assert(Polygon2Concept<Polygon2f>, "Polygon2f does not satisfy the Polygon2Concept");
+static_assert(Polygon2Concept<Polygon2d>, "Polygon2d does not satisfy the Polygon2Concept");
+
+static_assert(Polygon3Concept<Polygon3f>, "Polygon3f does not satisfy the Polygon3Concept");
+static_assert(Polygon3Concept<Polygon3d>, "Polygon3d does not satisfy the Polygon3Concept");
 
 } // namespace vcl
 

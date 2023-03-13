@@ -25,6 +25,8 @@
 
 #include "misc.h"
 
+#include <vclib/space/triangle_wrapper.h>
+
 namespace vcl {
 
 template<FaceConcept FaceType, PointConcept PointType>
@@ -32,16 +34,17 @@ bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
 {
 	if constexpr(TriangleFaceConcept<FaceType>) {
 		return triangleBoxIntersect(
-			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord(), box);
+			TriangleWrapper(f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord()), box);
 	}
 	else {
 		bool b = false;
 		std::vector<uint> tris = vcl::earCut(f);
 		for (uint i = 0; i < tris.size() && !b; i += 3) {
 			b |= triangleBoxIntersect(
-				f.vertex(tris[i])->coord(),
-				f.vertex(tris[i + 1])->coord(),
-				f.vertex(tris[i + 2])->coord(),
+				TriangleWrapper(
+					f.vertex(tris[i])->coord(),
+					f.vertex(tris[i + 1])->coord(),
+					f.vertex(tris[i + 2])->coord()),
 				box);
 		}
 		return b;
@@ -72,14 +75,15 @@ bool faceSphereItersect(
 {
 	if constexpr(TriangleFaceConcept<FaceType>) {
 		return triangleSphereItersect(
-			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord(), sphere, witness, res);
+			TriangleWrapper(f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord()),
+			sphere,
+			witness,
+			res);
 	}
 	else {
 		if (f.vertexNumber() == 3) {
 			return triangleSphereItersect(
-				f.vertex(0)->coord(),
-				f.vertex(1)->coord(),
-				f.vertex(2)->coord(),
+				TriangleWrapper(f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord()),
 				sphere,
 				witness,
 				res);
@@ -92,9 +96,10 @@ bool faceSphereItersect(
 			std::vector<uint> tris = vcl::earCut(f);
 			for (uint i = 0; i < tris.size() && !b; i += 3) {
 				b |= triangleSphereItersect(
-					f.vertex(tris[i])->coord(),
-					f.vertex(tris[i + 1])->coord(),
-					f.vertex(tris[i + 2])->coord(),
+					TriangleWrapper(
+						f.vertex(tris[i])->coord(),
+						f.vertex(tris[i + 1])->coord(),
+						f.vertex(tris[i + 2])->coord()),
 					sphere,
 					w,
 					r);
