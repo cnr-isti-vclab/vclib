@@ -1139,9 +1139,8 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 				// triangulate mf; the first triangle of the triangulation will be
 				// this->face(m.index(mf));
 				// the other triangles will be added at the end of the container
-				std::vector<uint> tris = Polygon<MCoordType>::earCut(
-					FaceVertexCoordIterator(mf.vertexBegin()),
-					FaceVertexCoordIterator(mf.vertexEnd()));
+				std::vector<uint> tris =
+					Polygon<MCoordType>::earCut(mf.vertexCoordBegin(), mf.vertexCoordEnd());
 				FaceType& f = FaceContainer::face(m.index(mf));
 				importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
 

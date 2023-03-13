@@ -81,7 +81,7 @@ const PointT& Polygon<PointT>::point(uint i) const
 template<PointConcept PointT>
 typename Polygon<PointT>::ScalarType Polygon<PointT>::sideLength(uint i) const
 {
-	return p[i].dist(p[(i+1)%3]);
+	return p[i].dist(p[(i+1)%p.size()]);
 }
 
 template<PointConcept PointT>

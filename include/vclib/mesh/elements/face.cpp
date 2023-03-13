@@ -176,4 +176,45 @@ void Face<MeshType, Args...>::setVertices(V... args)
 
 //}
 
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordBegin()
+{
+	return FaceVertexCoordIterator(VRefs::vertexBegin());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::ConstVertexCoordIterator
+Face<MeshType, Args...>::vertexCoordBegin() const
+{
+	return FaceVertexCoordIterator(VRefs::vertexBegin());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordEnd()
+{
+	return FaceVertexCoordIterator(VRefs::vertexEnd());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::ConstVertexCoordIterator
+Face<MeshType, Args...>::vertexCoordEnd() const
+{
+	return FaceVertexCoordIterator(VRefs::vertexEnd());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::VertexCoordRangeIterator Face<MeshType, Args...>::vertexCoords()
+{
+	return RangeIterator(vertexCoordBegin(), vertexCoordEnd());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::ConstVertexCoordRangeIterator
+Face<MeshType, Args...>::vertexCoords() const
+{
+	return RangeIterator(vertexCoordBegin(), vertexCoordEnd());
+}
+
 } // namespace vcl
+
+

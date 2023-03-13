@@ -25,6 +25,8 @@
 #define VCL_MESH_ELEMENTS_FACE_H
 
 #include <vclib/concept/mesh/element/face.h>
+#include <vclib/iterator/range_iterator.h>
+#include <vclib/mesh/iterators/face/face_vertex_coord_iterator.h>
 #include <vclib/space/tex_coord.h>
 
 #include "element.h"
@@ -54,6 +56,12 @@ public:
 	static const uint ELEMENT_TYPE = FACE;
 
 	using VertexType = typename VRefs::VertexType;
+
+	// Iterator types to iterate over vertex coords
+	using VertexCoordIterator = FaceVertexCoordIterator<typename VRefs::VertexIterator>;
+	using ConstVertexCoordIterator = FaceVertexCoordIterator<typename VRefs::ConstVertexIterator>;
+	using VertexCoordRangeIterator = RangeIterator<VertexCoordIterator>;
+	using ConstVertexCoordRangeIterator = RangeIterator<ConstVertexCoordIterator>;
 
 	Face();
 
@@ -255,6 +263,13 @@ public:
 				T::clearWedgeTexCoord();
 		}
 	}
+
+	VertexCoordIterator vertexCoordBegin();
+	ConstVertexCoordIterator vertexCoordBegin() const;
+	VertexCoordIterator vertexCoordEnd();
+	ConstVertexCoordIterator vertexCoordEnd() const;
+	VertexCoordRangeIterator vertexCoords();
+	ConstVertexCoordRangeIterator vertexCoords() const;
 };
 
 template<typename MeshType, typename... Args>

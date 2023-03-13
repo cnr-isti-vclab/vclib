@@ -132,7 +132,7 @@ auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest
 
 		const ScalarType EPS = ScalarType(0.000001);
 		ScalarType b = vcl::min(b0, b1, b2);
-		if (b < EPS * polygonArea(f)) {
+		if (b < EPS * faceArea(f)) {
 			ScalarType bt;
 			if (b == b0)
 				bt = pointSegmentDistance(p, s0, closest);

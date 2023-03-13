@@ -23,6 +23,8 @@
 
 #include "geometry.h"
 
+#include <vclib/space/polygon.h>
+
 namespace vcl {
 
 /**
@@ -37,11 +39,19 @@ namespace vcl {
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 {
+	using CoordType = typename FaceType::VertexType::CoordType;
 	if constexpr (TriangleFaceConcept<FaceType>) {
-		return triangleNormal(f);
+		return Triangle<CoordType>::normal(
+			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
 	}
 	else {
-		return polygonNormal(f);
+		if (f.vertexNumber() == 3) {
+			return Triangle<CoordType>::normal(
+				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+		}
+		else {
+			return Polygon<CoordType>::normal(f.vertexCoordBegin(), f.vertexCoordEnd());
+		}
 	}
 }
 
@@ -57,11 +67,13 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
 {
+	using CoordType = typename FaceType::VertexType::CoordType;
 	if constexpr (TriangleFaceConcept<FaceType>) {
-		return triangleBarycenter(f);
+		return Triangle<CoordType>::barycenter(
+			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
 	}
 	else {
-		return polygonBarycenter(f);
+		return Polygon<CoordType>::barycenter(f.vertexCoordBegin(), f.vertexCoordEnd());
 	}
 }
 
@@ -77,11 +89,19 @@ typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
 template<FaceConcept FaceType>
 auto faceArea(const FaceType& f)
 {
+	using CoordType = typename FaceType::VertexType::CoordType;
 	if constexpr (TriangleFaceConcept<FaceType>) {
-		return triangleArea<FaceType>(f);
+		return Triangle<CoordType>::area(
+			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
 	}
 	else {
-		return polygonArea<FaceType>(f);
+		if (f.vertexNumber() == 3) {
+			return Triangle<CoordType>::area(
+				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+		}
+		else {
+			return Polygon<CoordType>::area(f.vertexCoordBegin(), f.vertexCoordEnd());
+		}
 	}
 }
 
@@ -97,11 +117,19 @@ auto faceArea(const FaceType& f)
 template<FaceConcept FaceType>
 auto facePerimeter(const FaceType& f)
 {
+	using CoordType = typename FaceType::VertexType::CoordType;
 	if constexpr (TriangleFaceConcept<FaceType>) {
-		return trianglePerimeter<FaceType>(f);
+		return Triangle<CoordType>::perimeter(
+			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
 	}
 	else {
-		return polygonPerimeter<FaceType>(f);
+		if (f.vertexNumber() == 3) {
+			return Triangle<CoordType>::perimeter(
+				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+		}
+		else {
+			return Polygon<CoordType>::perimeter(f.vertexCoordBegin(), f.vertexCoordEnd());
+		}
 	}
 }
 

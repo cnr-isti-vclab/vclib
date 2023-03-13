@@ -345,9 +345,7 @@ template <FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
 	using CoordType = typename Face::VertexType::CoordType;
-	return Polygon<CoordType>::earCut(
-		FaceVertexCoordIterator(polygon.vertexBegin()),
-		FaceVertexCoordIterator(polygon.vertexEnd()));
+	return Polygon<CoordType>::earCut(polygon.vertexCoordBegin(), polygon.vertexCoordEnd());
 }
 
 /**

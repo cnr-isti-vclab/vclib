@@ -81,8 +81,6 @@ set(HEADERS
 	include/vclib/algorithm/intersection/misc.h
 	include/vclib/algorithm/polygon/geometry.h
 	include/vclib/algorithm/polygon/topology.h
-	include/vclib/algorithm/polygon/geometry/polygon.h
-	include/vclib/algorithm/polygon/geometry/triangle.h
 	include/vclib/algorithm/stat/bounding_box.h
 	include/vclib/algorithm/stat/scalar.h
 	include/vclib/algorithm/stat/selection.h
@@ -333,8 +331,6 @@ set(SOURCES
 	include/vclib/algorithm/intersection/misc.cpp
 	include/vclib/algorithm/polygon/geometry.cpp
 	include/vclib/algorithm/polygon/topology.cpp
-	include/vclib/algorithm/polygon/geometry/polygon.cpp
-	include/vclib/algorithm/polygon/geometry/triangle.cpp
 	include/vclib/algorithm/stat/bounding_box.cpp
 	include/vclib/algorithm/stat/scalar.cpp
 	include/vclib/algorithm/stat/selection.cpp

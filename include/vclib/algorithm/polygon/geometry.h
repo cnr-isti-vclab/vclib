@@ -24,9 +24,6 @@
 #ifndef VCL_ALGORITHM_POLYGON_GEOMETRY_H
 #define VCL_ALGORITHM_POLYGON_GEOMETRY_H
 
-#include "geometry/triangle.h"
-#include "geometry/polygon.h"
-
 namespace vcl {
 
 template<FaceConcept FaceType>

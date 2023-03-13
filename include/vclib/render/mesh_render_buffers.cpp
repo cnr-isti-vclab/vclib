@@ -408,14 +408,13 @@ template<typename FaceType>
 void MeshRenderBuffers<MeshType>::fillFaceNormals(const FaceType &f, bool triangle, uint fi)
 {
 	using NormalType = typename FaceType::VertexType::CoordType;
+	NormalType n = vcl::faceNormal(f);
 	if (triangle) {
-		NormalType n = vcl::triangleNormal(f);
 		tNormals.push_back(n.x());
 		tNormals.push_back(n.y());
 		tNormals.push_back(n.z());
 	}
 	else {
-		NormalType n = vcl::polygonNormal(f);
 		for (uint i = 0; i < triPolyMap.triangleNumber(fi); i++) {
 			tNormals.push_back(n.x());
 			tNormals.push_back(n.y());
