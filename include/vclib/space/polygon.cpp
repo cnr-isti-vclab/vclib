@@ -59,9 +59,17 @@ Polygon<PointT>::Polygon()
 }
 
 template<PointConcept PointT>
+template<typename Iterator>
+Polygon<PointT>::Polygon(Iterator begin, Iterator end)
+	requires (std::is_same_v<typename Iterator::value_type, PointT>) :
+		p(begin, end)
+{
+}
+
+template<PointConcept PointT>
 PointT& Polygon<PointT>::point(uint i)
 {
-    return p[i];
+	return p[i];
 }
 
 template<PointConcept PointT>
@@ -74,6 +82,44 @@ template<PointConcept PointT>
 typename Polygon<PointT>::ScalarType Polygon<PointT>::sideLength(uint i) const
 {
 	return p[i].dist(p[(i+1)%3]);
+}
+
+template<PointConcept PointT>
+PointT Polygon<PointT>::normal() const requires (PointT::DIM == 3)
+{
+	return normal(p.begin(), p.end());
+}
+
+template<PointConcept PointT>
+PointT Polygon<PointT>::barycenter() const
+{
+	return barycenter(p.begin(), p.end());
+}
+
+template<PointConcept PointT>
+template<typename WIterator>
+PointT Polygon<PointT>::weightedBarycenter(WIterator wbegin) const
+{
+	return weightedBarycenter(p.begin(), p.end(), wbegin);
+}
+
+template<PointConcept PointT>
+typename Polygon<PointT>::ScalarType Polygon<PointT>::perimenter() const
+{
+	return perimeter(p.begin(), p.end());
+}
+
+template<PointConcept PointT>
+typename Polygon<PointT>::ScalarType Polygon<PointT>::area() const
+{
+	return area(p.begin(), p.end());
+}
+
+template<PointConcept PointT>
+std::vector<uint> Polygon<PointT>::earCut() const
+	requires (PointT::DIM == 2 || PointT::DIM == 3)
+{
+	return earCut(p.begin(), p.end());
 }
 
 /**
@@ -185,7 +231,7 @@ PointT Polygon<PointT>::weightedBarycenter(Iterator begin, Iterator end, WIterat
  */
 template<PointConcept PointT>
 template<typename Iterator>
-PointT Polygon<PointT>::perimeter(Iterator begin, Iterator end)
+typename PointT::ScalarType Polygon<PointT>::perimeter(Iterator begin, Iterator end)
 	requires (std::is_same_v<typename Iterator::value_type, PointT>)
 {
 	using Scalar = typename PointType::ScalarType;
@@ -217,7 +263,7 @@ PointT Polygon<PointT>::perimeter(Iterator begin, Iterator end)
  */
 template<PointConcept PointT>
 template<typename Iterator>
-PointT Polygon<PointT>::area(Iterator begin, Iterator end)
+typename PointT::ScalarType  Polygon<PointT>::area(Iterator begin, Iterator end)
 	requires (std::is_same_v<typename Iterator::value_type, PointT>)
 {
 	using Scalar = typename PointType::ScalarType;

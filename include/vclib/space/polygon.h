@@ -41,10 +41,26 @@ public:
 
 	Polygon();
 
+	template<typename Iterator>
+	Polygon(Iterator begin, Iterator end)
+		requires (std::is_same_v<typename Iterator::value_type, PointT>);
+
 	PointT& point(uint i);
 	const PointT& point(uint i) const;
 
 	ScalarType sideLength(uint i) const;
+
+	PointT normal() const requires (PointT::DIM == 3);
+
+	PointT barycenter() const;
+
+	template<typename WIterator>
+	PointT weightedBarycenter(WIterator wbegin) const;
+
+	ScalarType perimenter() const;
+	ScalarType area() const;
+
+	std::vector<uint> earCut() const requires (PointT::DIM == 2 || PointT::DIM == 3);
 
 	// static member functions
 
@@ -61,11 +77,11 @@ public:
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
 	template<typename Iterator>
-	static PointT perimeter(Iterator begin, Iterator end)
+	static ScalarType perimeter(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
 	template<typename Iterator>
-	static PointT area(Iterator begin, Iterator end)
+	static ScalarType area(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
 	template<typename Iterator>
