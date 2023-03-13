@@ -144,10 +144,16 @@ public:
 		QueryDistFunction<QueryValueType> distFunction) const;
 
 	template<typename QueryValueType>
+	auto closestValue(const QueryValueType& qv) const;
+
+	template<typename QueryValueType>
 	auto kClosestValues(
 		const QueryValueType& qv,
 		uint n,
 		QueryDistFunction<QueryValueType> distFunction) const;
+
+	template<typename QueryValueType>
+	auto kClosestValues(const QueryValueType& qv, uint n) const;
 
 protected:
 	AbstractDSGrid();

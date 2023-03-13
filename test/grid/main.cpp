@@ -75,9 +75,7 @@ int main()
 	}
 	std::cerr << "\n\n";
 
-	auto dist = vcl::distFunction<vcl::Point3d, vcl::Point3d>();
-
-	auto it = sht.closestValue(vcl::Point3d(0.09, 0.09, 0.29), dist);
+	auto it = sht.closestValue(vcl::Point3d(0.09, 0.09, 0.29));
 
 	std::cerr << "Closest is: " << it->second << "\n\n";
 

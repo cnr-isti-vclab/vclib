@@ -35,6 +35,9 @@ namespace vcl {
 template<typename Obj1, typename Obj2>
 struct IntersFunctionStruct
 {
+	static_assert(
+		sizeof(Obj1) != sizeof(Obj1), // always fail
+		"There is no a IntersFunctionStruct specialization for the given types.");
 };
 
 /**
@@ -58,8 +61,19 @@ auto intersectFunction()
 
 /********* IntersFunctionStruct Specializations *********/
 
+// Note: for every specialization there is also its commutative;
+//       for Elements (Vertices, Faces, ...) there are also the pointer variants
+//       e.g. intersection between Box and Face, intersection between Box and Face*
+//
+// List of Specializations:
+// - Box3-Face
+// - Sphere-Face
+// - Plane-Box3
+// - Plane-Segment
+// - Sphere-Box3
+
 // Specialization for intersection between Box and Face
-template<BoxConcept Obj1, FaceConcept Obj2>
+template<Box3Concept Obj1, FaceConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
 	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
@@ -70,7 +84,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 };
 
 // Specialization for intersection between Box and Face*
-template<BoxConcept Obj1, FaceConcept Obj2>
+template<Box3Concept Obj1, FaceConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2*>
 {
 	static inline const std::function<bool(const Obj1&, const Obj2* const&)> intersFun =
@@ -81,7 +95,7 @@ struct IntersFunctionStruct<Obj1, Obj2*>
 };
 
 // Specialization for intersection between Face and Box
-template<FaceConcept Obj1, BoxConcept Obj2>
+template<FaceConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
 	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
@@ -92,7 +106,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 };
 
 // Specialization for intersection between Face* and Box
-template<FaceConcept Obj1, BoxConcept Obj2>
+template<FaceConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1*, Obj2>
 {
 	static inline const std::function<bool(const Obj1* const&, const Obj2&)> intersFun =
@@ -143,6 +157,72 @@ struct IntersFunctionStruct<Obj1*, Obj2>
 		[](const Obj1* const& o1, const Obj2& o2)
 	{
 		return faceSphereIntersect(*o1, o2);
+	};
+};
+
+// Specialization for intersection between Plane and Box3
+template<PlaneConcept Obj1, Box3Concept Obj2>
+struct IntersFunctionStruct<Obj1, Obj2>
+{
+	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return planeBoxIntersect(o1, o2);
+	};
+};
+
+// Specialization for intersection between Box3 and Plane
+template<Box3Concept Obj1, PlaneConcept Obj2>
+struct IntersFunctionStruct<Obj1, Obj2>
+{
+	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return planeBoxIntersect(o2, o1);
+	};
+};
+
+// Specialization for intersection between Plane and Segment3
+template<PlaneConcept Obj1, Segment3Concept Obj2>
+struct IntersFunctionStruct<Obj1, Obj2>
+{
+	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return planeSegmentIntersect(o1, o2);
+	};
+};
+
+// Specialization for intersection between Segment3 and Plane
+template<Segment3Concept Obj1, PlaneConcept Obj2>
+struct IntersFunctionStruct<Obj1, Obj2>
+{
+	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return planeSegmentIntersect(o2, o1);
+	};
+};
+
+// Specialization for intersection between Sphere and Box3
+template<SphereConcept Obj1, Box3Concept Obj2>
+struct IntersFunctionStruct<Obj1, Obj2>
+{
+	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return sphereBoxIntersect(o1, o2);
+	};
+};
+
+// Specialization for intersection between Box3 and Sphere
+template<Box3Concept Obj1, SphereConcept Obj2>
+struct IntersFunctionStruct<Obj1, Obj2>
+{
+	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
+		[](const Obj1& o1, const Obj2& o2)
+	{
+		return sphereBoxIntersect(o2, o1);
 	};
 };
 

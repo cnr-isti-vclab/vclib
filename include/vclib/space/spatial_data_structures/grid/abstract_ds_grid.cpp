@@ -23,6 +23,8 @@
 
 #include "abstract_ds_grid.h"
 
+#include <vclib/algorithm/distance/functions.h>
+
 namespace vcl {
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
@@ -287,6 +289,14 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(const QueryValueType& qv) const
+{
+	auto f = distFunction<QueryValueType, ValueType>();
+	return closestValue(qv, f);
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename QueryValueType>
 auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	const QueryValueType&             qv,
 	uint                              n,
@@ -340,6 +350,16 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 		it++;
 	}
 	return vec;
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename QueryValueType>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
+	const QueryValueType& qv,
+	uint                  n) const
+{
+	auto f = distFunction<QueryValueType, ValueType>();
+	return kClosestValues(qv, n, f);
 }
 
 /**

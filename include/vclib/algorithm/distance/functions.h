@@ -35,6 +35,9 @@ namespace vcl {
 template<typename Obj1, typename Obj2, typename RetScalarType>
 struct DistFunctionStruct
 {
+	static_assert(
+		sizeof(Obj1) != sizeof(Obj1), // always fail
+		"There is no a DistFunctionStruct specialization for the given types.");
 };
 
 /**
