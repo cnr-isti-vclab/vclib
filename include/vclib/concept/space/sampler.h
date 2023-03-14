@@ -45,9 +45,13 @@ namespace vcl {
 template<typename T>
 concept SamplerConcept = requires(
 	T o,
+	const T& co,
 	internal::TMPSimplePolyMesh::VertexType& v)
 {
 	o.samples();
+
+	{ co.size() } -> std::same_as<std::size_t>;
+	co.sample(uint());
 
 	o.clear();
 	o.reserve(uint());

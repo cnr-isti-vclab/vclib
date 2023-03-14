@@ -15,6 +15,18 @@ VertexSampler<VertexType, CNST>::samples() const
 }
 
 template<VertexConcept VertexType, bool CNST>
+const typename VertexType::CoordType& VertexSampler<VertexType, CNST>::sample(uint i) const
+{
+	return samplesVec[i]->coord();
+}
+
+template<VertexConcept VertexType, bool CNST>
+std::size_t vcl::internal::VertexSampler<VertexType, CNST>::size() const
+{
+	return samplesVec.size();
+}
+
+template<VertexConcept VertexType, bool CNST>
 void VertexSampler<VertexType, CNST>::clear()
 {
 	samplesVec.clear();

@@ -39,6 +39,10 @@ public:
 
 	const std::vector<PointType>& samples() const;
 
+	const PointType& sample(uint i) const;
+
+	std::size_t size() const;
+
 	void clear();
 	void reserve(uint n);
 	void resize(uint n);

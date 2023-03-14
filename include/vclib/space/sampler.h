@@ -26,7 +26,6 @@
 
 #include "sampler/mesh_sampler.h"
 #include "sampler/point_sampler.h"
-#include "sampler/vertex_index_sampler.h"
 #include "sampler/vertex_sampler.h"
 
 #endif // VCL_SPACE_SAMPLER_H

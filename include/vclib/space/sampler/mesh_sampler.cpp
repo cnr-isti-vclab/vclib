@@ -44,6 +44,18 @@ const MeshType& MeshSampler<MeshType>::samples() const
 }
 
 template<MeshConcept MeshType>
+const typename MeshSampler<MeshType>::PointType& MeshSampler<MeshType>::sample(uint i) const
+{
+	return m.vertex(i).coord();
+}
+
+template<MeshConcept MeshType>
+std::size_t MeshSampler<MeshType>::size() const
+{
+	return m.vertexNumber();
+}
+
+template<MeshConcept MeshType>
 void MeshSampler<MeshType>::clear()
 {
 	m.clear();

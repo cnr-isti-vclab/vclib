@@ -19,6 +19,10 @@ public:
 
 	const std::vector<VP> samples() const;
 
+	const typename VertexType::CoordType& sample(uint i) const;
+
+	std::size_t size() const;
+
 	void clear();
 	void reserve(uint n);
 	void resize(uint n);

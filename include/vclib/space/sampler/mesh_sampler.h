@@ -40,6 +40,9 @@ public:
 
 	const MeshType& samples() const;
 
+	const PointType& sample(uint i) const;
+	std::size_t size() const;
+
 	void clear();
 	void resize(uint n);
 	void reserve(uint n);

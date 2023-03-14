@@ -34,6 +34,18 @@ const std::vector<PointType>& PointSampler<PointType>::samples() const
 }
 
 template<PointConcept PointType>
+const PointType& PointSampler<PointType>::sample(uint i) const
+{
+	return samplesVec[i];
+}
+
+template<PointConcept PointType>
+std::size_t PointSampler<PointType>::size() const
+{
+	return samplesVec.size();
+}
+
+template<PointConcept PointType>
 void PointSampler<PointType>::clear()
 {
 	samplesVec.clear();

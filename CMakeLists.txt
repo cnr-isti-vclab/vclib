@@ -311,7 +311,6 @@ set(HEADERS
 	include/vclib/space/point/point4.h
 	include/vclib/space/sampler/mesh_sampler.h
 	include/vclib/space/sampler/point_sampler.h
-	include/vclib/space/sampler/vertex_index_sampler.h
 	include/vclib/space/sampler/vertex_sampler.h
 )
 
@@ -471,7 +470,6 @@ set(SOURCES
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/sampler/mesh_sampler.cpp
 	include/vclib/space/sampler/point_sampler.cpp
-	include/vclib/space/sampler/vertex_index_sampler.cpp
 	include/vclib/space/sampler/vertex_sampler.cpp)
 
 set(HEADERS_LIB
