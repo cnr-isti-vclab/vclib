@@ -47,75 +47,53 @@ public:
 	void add(const PointType& p);
 	void set(uint i, const PointType& p);
 
-	template<MeshConcept OMeshType>
-	void add(const typename OMeshType::VertexType& v, const OMeshType& m);
+	template<VertexConcept VertexType>
+	void add(const VertexType& v);
 
-	template<MeshConcept OMeshType>
-	void set(uint i, const typename OMeshType::VertexType& v, const OMeshType& m);
+	template<VertexConcept VertexType>
+	void set(uint i, const VertexType& v);
 
-	template<EdgeMeshConcept OMeshType>
-	void add(
-		const typename OMeshType::EdgeType& e,
-		const OMeshType&,
-		double u,
-		bool   copyScalar = true);
+	template<EdgeConcept EdgeType>
+	void add(const EdgeType& e, double u, bool copyScalar = true);
 
-	template<EdgeMeshConcept OMeshType>
-	void set(
-		uint i,
-		const typename OMeshType::EdgeType& e,
-		const OMeshType&,
-		double u,
-		bool   copyScalar = true);
+	template<EdgeConcept EdgeType>
+	void set(uint i, const EdgeType& e, double u, bool copyScalar = true);
 
-	template<FaceMeshConcept OMeshType>
-	void add(
-		const typename OMeshType::FaceType& f,
-		const OMeshType&,
-		bool copyNormal = false,
-		bool copyScalar = true);
+	template<FaceConcept FaceType>
+	void add(const FaceType& f, bool copyNormal = false, bool copyScalar = true);
 
-	template<FaceMeshConcept OMeshType>
-	void set(
-		uint i,
-		const typename OMeshType::FaceType& f,
-		const OMeshType&,
-		bool copyNormal = false,
-		bool copyScalar = true);
+	template<FaceConcept FaceType>
+	void set(uint i, const FaceType& f, bool copyNormal = false, bool copyScalar = true);
 
-	template<FaceMeshConcept OMeshType>
-	void add(
-		const typename OMeshType::FaceType& f,
-		const OMeshType&,
-		const std::vector<ScalarType>&      barCoords,
-		bool                                copyNormal = false,
-		bool                                copyScalar = true);
+	template<FaceConcept FaceType>
+	void
+	add(const FaceType&                f,
+		const std::vector<ScalarType>& barCoords,
+		bool                           copyNormal = false,
+		bool                           copyScalar = true);
 
-	template<FaceMeshConcept OMeshType>
-	void set(
-		uint                                i,
-		const typename OMeshType::FaceType& f,
-		const OMeshType&,
-		const std::vector<ScalarType>&      barCoords,
-		bool                                copyNormal = false,
-		bool                                copyScalar = true);
+	template<FaceConcept FaceType>
+	void
+	set(uint                           i,
+		const FaceType&                f,
+		const std::vector<ScalarType>& barCoords,
+		bool                           copyNormal = false,
+		bool                           copyScalar = true);
 
-	template<FaceMeshConcept OMeshType>
-	void add(
-		const typename OMeshType::FaceType&  f,
-		const OMeshType&,
-		const PointType&                     barCoords,
-		bool                                 copyNormal = false,
-		bool                                 copyScalar = true);
+	template<FaceConcept FaceType>
+	void
+	add(const FaceType&  f,
+		const PointType& barCoords,
+		bool             copyNormal = false,
+		bool             copyScalar = true);
 
-	template<FaceMeshConcept OMeshType>
-	void set(
-		uint i,
-		const typename OMeshType::FaceType&  f,
-		const OMeshType&,
-		const PointType&                     barCoords,
-		bool                                 copyNormal = false,
-		bool                                 copyScalar = true);
+	template<FaceConcept FaceType>
+	void
+	set(uint             i,
+		const FaceType&  f,
+		const PointType& barCoords,
+		bool             copyNormal = false,
+		bool             copyScalar = true);
 
 private:
 

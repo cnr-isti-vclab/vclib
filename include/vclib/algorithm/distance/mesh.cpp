@@ -31,6 +31,50 @@ namespace vcl {
 
 namespace internal {
 
+template<MeshConcept MeshType, SamplerConcept SamplerType, typename GridType>
+HausdorffDistResult hausdorffDist(const MeshType& m, const SamplerType& s, const GridType& g)
+{
+	HausdorffDistResult res;
+	res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
+
+	// todo
+
+	return res;
+}
+
+template<MeshConcept MeshType, SamplerConcept SamplerType>
+HausdorffDistResult samplerMeshHausdorff(const MeshType& m, const SamplerType& s)
+	requires(!HasFaces<MeshType>)
+{
+	using VertexType = typename MeshType::VertexType;
+	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
+
+	vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+
+	return hausdorffDist(m, s, grid);
+}
+
+template<FaceMeshConcept MeshType, SamplerConcept SamplerType>
+HausdorffDistResult samplerMeshHausdorff(const MeshType& m, const SamplerType& s)
+{
+	using VertexType = typename MeshType::VertexType;
+	using FaceType   = typename MeshType::FaceType;
+	using VPI = vcl::PointerIterator<typename MeshType::ConstVertexIterator>;
+	using FPI = vcl::PointerIterator<typename MeshType::ConstFaceIterator>;
+
+	vcl::StaticGrid3<const VertexType*> vgrid;
+	vcl::StaticGrid3<const FaceType*> fgrid;
+
+	if (m.faceNumber() == 0) {
+		vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+		return hausdorffDist(m, s, grid);
+	}
+	else {
+		vcl::StaticGrid3<const FaceType*> grid(FPI(m.faceBegin()), FPI(m.faceEnd()));
+		return hausdorffDist(m, s, grid);
+	}
+}
+
 template<MeshConcept MeshType1, MeshConcept MeshType2, SamplerConcept SamplerType>
 HausdorffDistResult vertUniformHausdorffDistance(
 	const MeshType1& m1,
@@ -40,23 +84,10 @@ HausdorffDistResult vertUniformHausdorffDistance(
 	SamplerType& sampler,
 	std::vector<uint>& birthVertices)
 {
-	using VertexType1 = typename MeshType1::VertexType;
-	using VPI = vcl::PointerIterator<typename MeshType1::VertexIterator>;
-
-	HausdorffDistResult res;
-	vcl::StaticGrid3<const VertexType1*> grid(VPI(m1.vertexBegin()), VPI(m1.vertexEnd()));
-
-	res.histogram = Histogramd(0, m1.boundingBox().diagonal() / 100, 100);
-
 	sampler = vcl::vertexUniformPointSampling<SamplerType>(
 		m2, nSamples, birthVertices, false, deterministic);
 
-	// loop on all the samples
-	// for each sample
-	//     compute closest between m1 vertices (stored in grid) and sample
-	//     update results
-
-	return res;
+	return samplerMeshHausdorff(m1, sampler);
 }
 
 } // namespace vcl::internal

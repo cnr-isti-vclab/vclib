@@ -68,7 +68,7 @@ SamplerType allVerticesPointSampling(
 	// Loop through all the vertices in the mesh and add them to the sampler if they are selected
 	for (const VertexType& v : m.vertices()) {
 		if (!onlySelected || v.isSelected()) {
-			sampler.add(v, m);
+			sampler.add(v);
 			birthVertices.push_back(m.index(v));
 		}
 	}
@@ -136,7 +136,7 @@ SamplerType allFacesPointSampling(
 
 	for (const FaceType& f : m.faces()) {
 		if (!onlySelected || f.isSelected()) {
-			sampler.add(f, m);
+			sampler.add(f);
 			birthFaces.push_back(m.index(f));
 		}
 	}
@@ -220,7 +220,7 @@ SamplerType vertexUniformPointSampling(
 			(!onlySelected || m.vertex(vi).isSelected())) {
 			visited[vi] = true;
 			nVisited++;
-			ps.add(m.vertex(vi), m);
+			ps.add(m.vertex(vi));
 			birthVertices.push_back(vi);
 		}
 	}
@@ -310,7 +310,7 @@ SamplerType faceUniformPointSampling(
 			(!onlySelected || m.face(fi).isSelected())) {
 			visited[fi] = true;
 			nVisited++;
-			ps.add(m.face(fi), m);
+			ps.add(m.face(fi));
 			birthFaces.push_back(fi);
 		}
 	}
@@ -398,7 +398,7 @@ SamplerType vertexWeightedPointSampling(
 		if (vi < m.vertexContainerSize() && !m.vertex(vi).isDeleted() && !visited[vi]) {
 			visited[vi] = true;
 			nVisited++;
-			ps.add(m.vertex(vi), m);
+			ps.add(m.vertex(vi));
 			birthVertices.push_back(vi);
 		}
 	}
@@ -490,7 +490,7 @@ SamplerType faceWeightedPointSampling(
 		if (fi < m.faceContainerSize() && !m.face(fi).isDeleted() && !visited[fi]) {
 			visited[fi] = true;
 			nVisited++;
-			ps.add(m.face(fi), m);
+			ps.add(m.face(fi));
 			birthFaces.push_back(fi);
 		}
 	}
@@ -689,7 +689,6 @@ SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deter
 
 		sampler.add(
 			*it->second,
-			m,
 			vcl::randomPolygonBarycentricCoordinate<ScalarType>(it->second->vertexNumber(), gen));
 	}
 
@@ -720,7 +719,7 @@ SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, 
 		int faceSampleNum   = (int) floatSampleNum;
 		// for every sample p_i in T...
 		for(int i=0; i < faceSampleNum; i++)
-			ps.add(f, m, vcl::randomPolygonBarycentricCoordinate<ScalarType>(f.vertexNumber(), gen));
+			ps.add(f, vcl::randomPolygonBarycentricCoordinate<ScalarType>(f.vertexNumber(), gen));
 		floatSampleNum -= (double) faceSampleNum;
 	}
 
@@ -767,7 +766,7 @@ SamplerType montecarloPoissonPointSampling(const MeshType& m, uint nSamples, boo
 
 		// for every sample p_i in T...
 		for(int i=0; i < faceSampleNum; i++)
-			ps.add(f, m, vcl::randomPolygonBarycentricCoordinate<ScalarType>(f.vertexNumber(), gen));
+			ps.add(f, vcl::randomPolygonBarycentricCoordinate<ScalarType>(f.vertexNumber(), gen));
 	}
 
 	return ps;
@@ -819,7 +818,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
 		// for every sample p_i in T...
 		for (uint i = 0; i < faceSampleNum; i++)
 			ps.add(
-				f, m, vcl::randomPolygonBarycentricCoordinate<ScalarType>(f.vertexNumber(), gen));
+				f, vcl::randomPolygonBarycentricCoordinate<ScalarType>(f.vertexNumber(), gen));
 
 		floatSampleNum -= (double) faceSampleNum;
 	}

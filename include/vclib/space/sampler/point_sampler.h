@@ -46,49 +46,35 @@ public:
 	void add(const PointType& p);
 	void set(uint i, const PointType& p);
 
-	template<MeshConcept MeshType>
-	void add(const typename MeshType::VertexType& v, const MeshType&);
+	template<VertexConcept VertexType>
+	void add(const VertexType& v);
 
-	template<MeshConcept MeshType>
-	void set(uint i, const typename MeshType::VertexType& v, const MeshType&);
+	template<VertexConcept VertexType>
+	void set(uint i, const VertexType& v);
 
-	template<EdgeMeshConcept MeshType>
-	void add(const typename MeshType::EdgeType& e, const MeshType&, double u = 0.5);
+	template<EdgeConcept EdgeType>
+	void add(const EdgeType& e, double u = 0.5);
 
-	template<EdgeMeshConcept MeshType>
-	void set(uint i, const typename MeshType::EdgeType& e, const MeshType&, double u = 0.5);
+	template<EdgeConcept EdgeType>
+	void set(uint i, const EdgeType& e, double u = 0.5);
 
-	template<FaceMeshConcept MeshType>
-	void add(const typename MeshType::FaceType& f, const MeshType&);
+	template<FaceConcept FaceType>
+	void add(const FaceType& f);
 
-	template<FaceMeshConcept MeshType>
-	void set(uint i, const typename MeshType::FaceType& f, const MeshType&);
+	template<FaceConcept FaceType>
+	void set(uint i, const FaceType& f);
 
-	template<FaceMeshConcept MeshType>
-	void add(
-		const typename MeshType::FaceType& f,
-		const MeshType&,
-		const std::vector<ScalarType>&     barCoords);
+	template<FaceConcept FaceType>
+	void add(const FaceType& f, const std::vector<ScalarType>& barCoords);
 
-	template<FaceMeshConcept MeshType>
-	void set(
-		uint i,
-		const typename MeshType::FaceType& f,
-		const MeshType&,
-		const std::vector<ScalarType>&     barCoords);
+	template<FaceConcept FaceType>
+	void set(uint i, const FaceType& f, const std::vector<ScalarType>& barCoords);
 
-	template<FaceMeshConcept MeshType>
-	void add(
-		const typename MeshType::FaceType& f,
-		const MeshType&,
-		const PointType&                   barCoords);
+	template<FaceConcept FaceType>
+	void add(const FaceType& f, const PointType& barCoords);
 
-	template<FaceMeshConcept MeshType>
-	void set(
-		uint i,
-		const typename MeshType::FaceType& f,
-		const MeshType&,
-		const PointType&                   barCoords);
+	template<FaceConcept FaceType>
+	void set(uint i, const FaceType& f, const PointType& barCoords);
 
 private:
 	std::vector<PointType> samplesVec;

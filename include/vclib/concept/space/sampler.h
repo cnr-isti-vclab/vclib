@@ -45,16 +45,15 @@ namespace vcl {
 template<typename T>
 concept SamplerConcept = requires(
 	T o,
-	const internal::TMPSimplePolyMesh& m,
-	const internal::TMPSimplePolyMesh::VertexType& v)
+	internal::TMPSimplePolyMesh::VertexType& v)
 {
 	o.samples();
 
 	o.clear();
 	o.reserve(uint());
 	o.resize(uint());
-	o.add(v, m);
-	o.set(uint(), v, m);
+	o.add(v);
+	o.set(uint(), v);
 };
 
 /**
@@ -77,15 +76,14 @@ template<typename T>
 concept FaceSamplerConcept = SamplerConcept<T> &&
 	requires(
 		T o,
-		const internal::TMPSimplePolyMesh& m,
 		const internal::TMPSimplePolyMesh::VertexType::CoordType& p,
 		const internal::TMPSimplePolyMesh::FaceType& f)
 {
 	typename T::ScalarType;
-	o.add(f, m);
-	o.set(uint(), f, m);
-	o.add(f, m, p);
-	o.set(uint(), f, m, p);
+	o.add(f);
+	o.set(uint(), f);
+	o.add(f, p);
+	o.set(uint(), f, p);
 };
 
 } // namespace vcl

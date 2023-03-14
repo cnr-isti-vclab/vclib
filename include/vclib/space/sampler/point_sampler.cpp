@@ -64,65 +64,53 @@ void PointSampler<PointType>::set(uint i, const PointType& p)
 }
 
 template<PointConcept PointType>
-template<MeshConcept MeshType>
+template<VertexConcept VertexType>
 void PointSampler<PointType>::add(
-	const typename MeshType::VertexType& v,
-	const MeshType&)
+	const VertexType& v)
 {
 	samplesVec.push_back(v.coord());
 }
 
 template<PointConcept PointType>
-template<MeshConcept MeshType>
+template<VertexConcept VertexType>
 void PointSampler<PointType>::set(
 	uint i,
-	const typename MeshType::VertexType& v,
-	const MeshType&)
+	const VertexType& v)
 {
 	samplesVec[i] = v.coord();
 }
 
 template<PointConcept PointType>
-template<EdgeMeshConcept MeshType>
-void PointSampler<PointType>::add(
-	const typename MeshType::EdgeType& e,
-	const MeshType&,
-	double u)
+template<EdgeConcept EdgeType>
+void PointSampler<PointType>::add(const EdgeType& e, double u)
 {
 	samplesVec.push_back((e.vertex(0).coord()*(1-u)) + (e.vertex(1).coord()*u));
 }
 
 template<PointConcept PointType>
-template<EdgeMeshConcept MeshType>
-void PointSampler<PointType>::set(
-	uint i,
-	const typename MeshType::EdgeType& e,
-	const MeshType&,
-	double u)
+template<EdgeConcept EdgeType>
+void PointSampler<PointType>::set(uint i, const EdgeType& e, double u)
 {
 	samplesVec[i] = (e.vertex(0).coord()*(1-u)) + (e.vertex(1).coord()*u);
 }
 
 template<PointConcept PointType>
-template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::add(const typename MeshType::FaceType& f, const MeshType&)
+template<FaceConcept FaceType>
+void PointSampler<PointType>::add(const FaceType& f)
 {
 	samplesVec.push_back(vcl::faceBarycenter(f));
 }
 
 template<PointConcept PointType>
-template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::set(uint i, const typename MeshType::FaceType& f, const MeshType&)
+template<FaceConcept FaceType>
+void PointSampler<PointType>::set(uint i, const FaceType& f)
 {
 	samplesVec[i] = vcl::faceBarycenter(f);
 }
 
 template<PointConcept PointType>
-template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::add(
-	const typename MeshType::FaceType& f,
-	const MeshType&,
-	const std::vector<ScalarType>&     barCoords)
+template<FaceConcept FaceType>
+void PointSampler<PointType>::add(const FaceType& f, const std::vector<ScalarType>& barCoords)
 {
 	assert(f.vertexNumber() <= barCoords.size());
 
@@ -134,12 +122,11 @@ void PointSampler<PointType>::add(
 }
 
 template<PointConcept PointType>
-template<FaceMeshConcept MeshType>
+template<FaceConcept FaceType>
 void PointSampler<PointType>::set(
-	uint i,
-	const typename MeshType::FaceType& f,
-	const MeshType&,
-	const std::vector<ScalarType>&     barCoords)
+	uint                           i,
+	const FaceType&                f,
+	const std::vector<ScalarType>& barCoords)
 {
 	assert(f.vertexNumber() <= barCoords.size());
 
@@ -151,13 +138,9 @@ void PointSampler<PointType>::set(
 }
 
 template<PointConcept PointType>
-template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::add(
-	const typename MeshType::FaceType& f,
-	const MeshType&,
-	const PointType&                   barCoords)
+template<FaceConcept FaceType>
+void PointSampler<PointType>::add(const FaceType& f, const PointType& barCoords)
 {
-	using FaceType = typename MeshType::FaceType;
 	static_assert(FaceType::NV == 3 || FaceType::NV == -1);
 	if constexpr(FaceType::NV == -1) {
 		assert(f.vertexNumber() == 3);
@@ -169,14 +152,9 @@ void PointSampler<PointType>::add(
 }
 
 template<PointConcept PointType>
-template<FaceMeshConcept MeshType>
-void PointSampler<PointType>::set(
-	uint i,
-	const typename MeshType::FaceType& f,
-	const MeshType&,
-	const PointType&                   barCoords)
+template<FaceConcept FaceType>
+void PointSampler<PointType>::set(uint i, const FaceType& f, const PointType& barCoords)
 {
-	using FaceType = typename MeshType::FaceType;
 	static_assert(FaceType::NV == 3 || FaceType::NV == -1);
 	if constexpr(FaceType::NV == -1) {
 		assert(f.vertexNumber() == 3);

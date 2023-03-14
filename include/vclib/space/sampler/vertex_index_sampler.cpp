@@ -45,19 +45,16 @@ inline void VertexIndexSampler::resize(uint n)
 	samplesVec.resize(n);
 }
 
-template<MeshConcept MeshType>
-void VertexIndexSampler::add(const typename MeshType::VertexType &v, const MeshType &m)
+template<VertexConcept VertexType>
+void VertexIndexSampler::add(const VertexType& v)
 {
-	samplesVec.push_back(m.index(v));
+	samplesVec.push_back(v.index());
 }
 
-template<MeshConcept MeshType>
-void VertexIndexSampler::set(
-	uint                                 i,
-	const typename MeshType::VertexType& v,
-	const MeshType&                      m)
+template<VertexConcept VertexType>
+void VertexIndexSampler::set(uint i, const VertexType& v)
 {
-	samplesVec[i] = m.index(v);
+	samplesVec[i] = v.index();
 }
 
 } // namespace vcl

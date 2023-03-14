@@ -77,34 +77,29 @@ void MeshSampler<MeshType>::set(uint i, const PointType& p)
 }
 
 template<MeshConcept MeshType>
-template<MeshConcept OMeshType>
-void MeshSampler<MeshType>::add(const typename OMeshType::VertexType& v, const OMeshType& mm)
+template<VertexConcept VertexType>
+void MeshSampler<MeshType>::add(const VertexType& v)
 {
 	uint vi = m.addVertex(v.coord());
 	m.vertex(vi).importFrom(v);
 
-	setBirthElement(vi, "birthVertex", mm.index(v));
+	setBirthElement(vi, "birthVertex", v.index());
 }
 
 template<MeshConcept MeshType>
-template<MeshConcept OMeshType>
-void MeshSampler<MeshType>::set(uint i, const typename OMeshType::VertexType& v, const OMeshType& mm)
+template<VertexConcept VertexType>
+void MeshSampler<MeshType>::set(uint i, const VertexType& v)
 {
 	m.vertex(i).coord() = v.coord();
 	m.vertex(i).importFrom(v);
 
-	setBirthElement(i, "birthVertex", mm.index(v));
+	setBirthElement(i, "birthVertex", v.index());
 }
 
 template<MeshConcept MeshType>
-template<EdgeMeshConcept OMeshType>
-void MeshSampler<MeshType>::add(
-	const typename OMeshType::EdgeType& e,
-	const OMeshType&                    mm,
-	double                              u,
-	bool                                copyScalar)
+template<EdgeConcept EdgeType>
+void MeshSampler<MeshType>::add(const EdgeType& e, double u, bool copyScalar)
 {
-	using EdgeType = typename OMeshType::EdgeType;
 	uint vi        = m.addVertex((e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u));
 
 	if constexpr (vcl::HasPerVertexScalar<MeshType> && vcl::edge::HasScalar<EdgeType>) {
@@ -115,20 +110,13 @@ void MeshSampler<MeshType>::add(
 		}
 	}
 
-	setBirthElement(vi, "birthEdge", mm.index(e));
+	setBirthElement(vi, "birthEdge", e.index());
 }
 
 template<MeshConcept MeshType>
-template<EdgeMeshConcept OMeshType>
-void MeshSampler<MeshType>::set(
-	uint                                i,
-	const typename OMeshType::EdgeType& e,
-	const OMeshType&                    mm,
-	double                              u,
-	bool                                copyScalar)
+template<EdgeConcept EdgeType>
+void MeshSampler<MeshType>::set(uint i, const EdgeType& e, double u, bool copyScalar)
 {
-	using EdgeType = typename OMeshType::EdgeType;
-
 	m.vertex(i).coord() = (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u);
 
 	if constexpr (vcl::HasPerVertexScalar<MeshType> && vcl::edge::HasScalar<EdgeType>) {
@@ -139,43 +127,33 @@ void MeshSampler<MeshType>::set(
 		}
 	}
 
-	setBirthElement(i, "birthEdge", mm.index(e));
+	setBirthElement(i, "birthEdge", e.index());
 }
 
 template<MeshConcept MeshType>
-template<FaceMeshConcept OMeshType>
-void MeshSampler<MeshType>::add(
-	const typename OMeshType::FaceType& f,
-	const OMeshType&                    mm,
-	bool                                copyNormal,
-	bool                                copyScalar)
+template<FaceConcept FaceType>
+void MeshSampler<MeshType>::add(const FaceType& f, bool copyNormal, bool copyScalar)
 {
 	uint vi = m.addVertex(vcl::faceBarycenter(f));
 
 	copyComponents(vi, f, copyNormal, copyScalar);
-	setBirthElement(vi, "birthFace", mm.index(f));
+	setBirthElement(vi, "birthFace", f.index());
 }
 
 template<MeshConcept MeshType>
-template<FaceMeshConcept OMeshType>
-void MeshSampler<MeshType>::set(
-	uint                                i,
-	const typename OMeshType::FaceType& f,
-	const OMeshType&                    mm,
-	bool                                copyNormal,
-	bool                                copyScalar)
+template<FaceConcept FaceType>
+void MeshSampler<MeshType>::set(uint i, const FaceType& f, bool copyNormal, bool copyScalar)
 {
 	m.vertex(i).coord() = vcl::faceBarycenter(f);
 
 	copyComponents(i, f, copyNormal, copyScalar);
-	setBirthElement(i, "birthFace", mm.index(f));
+	setBirthElement(i, "birthFace", f.index());
 }
 
 template<MeshConcept MeshType>
-template<FaceMeshConcept OMeshType>
+template<FaceConcept FaceType>
 void MeshSampler<MeshType>::add(
-	const typename OMeshType::FaceType& f,
-	const OMeshType&                    mm,
+	const FaceType& f,
 	const std::vector<ScalarType>&      barCoords,
 	bool                                copyNormal,
 	bool                                copyScalar)
@@ -189,15 +167,14 @@ void MeshSampler<MeshType>::add(
 	uint vi = m.addVertex(p);
 
 	copyComponents(vi, f, copyNormal, copyScalar);
-	setBirthElement(vi, "birthFace", mm.index(f));
+	setBirthElement(vi, "birthFace", f.index());
 }
 
 template<MeshConcept MeshType>
-template<FaceMeshConcept OMeshType>
+template<FaceConcept FaceType>
 void MeshSampler<MeshType>::set(
 	uint                                i,
-	const typename OMeshType::FaceType& f,
-	const OMeshType&                    mm,
+	const FaceType& f,
 	const std::vector<ScalarType>&      barCoords,
 	bool                                copyNormal,
 	bool                                copyScalar)
@@ -211,19 +188,17 @@ void MeshSampler<MeshType>::set(
 	m.vertex(i).coord() = p;
 
 	copyComponents(i, f, copyNormal, copyScalar);
-	setBirthElement(i, "birthFace", mm.index(f));
+	setBirthElement(i, "birthFace", f.index());
 }
 
 template<MeshConcept MeshType>
-template<FaceMeshConcept OMeshType>
+template<FaceConcept FaceType>
 void MeshSampler<MeshType>::add(
-	const typename OMeshType::FaceType& f,
-	const OMeshType&                    mm,
+	const FaceType& f,
 	const PointType&                    barCoords,
 	bool                                copyNormal,
 	bool                                copyScalar)
 {
-	using FaceType = typename OMeshType::FaceType;
 	static_assert(FaceType::NV == 3 || FaceType::NV == -1);
 	if constexpr(FaceType::NV == -1) {
 		assert(f.vertexNumber() == 3);
@@ -234,20 +209,18 @@ void MeshSampler<MeshType>::add(
 	uint vi = m.addVertex(p);
 
 	copyComponents(vi, f, copyNormal, copyScalar);
-	setBirthElement(vi, "birthFace", mm.index(f));
+	setBirthElement(vi, "birthFace", f.index());
 }
 
 template<MeshConcept MeshType>
-template<FaceMeshConcept OMeshType>
+template<FaceConcept FaceType>
 void MeshSampler<MeshType>::set(
 	uint i,
-	const typename OMeshType::FaceType& f,
-	const OMeshType&                    mm,
+	const FaceType& f,
 	const PointType&                    barCoords,
 	bool                                copyNormal,
 	bool                                copyScalar)
 {
-	using FaceType = typename OMeshType::FaceType;
 	static_assert(FaceType::NV == 3 || FaceType::NV == -1);
 	if constexpr(FaceType::NV == -1) {
 		assert(f.vertexNumber() == 3);
@@ -258,7 +231,7 @@ void MeshSampler<MeshType>::set(
 	m.vertex(i).coord() = p;
 
 	copyComponents(i, f, copyNormal, copyScalar);
-	setBirthElement(i, "birthFace", mm.index(f));
+	setBirthElement(i, "birthFace", f.index());
 }
 
 template<MeshConcept MeshType>
