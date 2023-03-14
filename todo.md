@@ -13,12 +13,17 @@
     - [ ] set constructors for HalfEdge element
   - Containers:
     - [ ] set properly container concepts
+  - Iterators:
+    - [ ] implement range iterators for element scalars and colors
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] import dcel from mesh: update adjacent faces and wedges 
 - Algorithms:
   - [ ] intersection functions (like distance functions)
-  - [ ] implement housdorff
+  - Point Sampling:
+    - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
+    - [ ] weights input argument of all the function should be a range
+    - [ ] implement housdorff
   - [ ] update adjacent faces optimized for dcel
 - Space:
   - [ ] move algorithm/polygon/geometry functions into two space data structure Triangle and Polygon.

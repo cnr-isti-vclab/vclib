@@ -32,66 +32,177 @@ namespace vcl {
 
 /**
  * @brief Returns a Sampler object that contains all the vertices contained in the given mesh.
- * @param m
- * @param onlySelected
- * @return
+ *
+ * This function creates a SamplerType object that contains all the vertices in the given MeshType
+ * object m. If onlySelected is true, only the selected vertices are sampled. The indices of the
+ * sampled vertices in the mesh are stored in the birthVertices vector.
+ *
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
+ * @tparam MeshType: A type that satisfies the MeshConcept
+ *
+ * @param[in] m: A const reference to the Mesh object
+ * @param[out] birthVertices: A vector of uints that will contain the indices of the sampled
+ *                            vertices in the mesh
+ * @param[in,opt] onlySelected: A bool that specifies whether to sample only selected vertices
+ *
+ * @return A SamplerType object that contains the sampled vertices
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType allVerticesPointSampling(const MeshType &m, bool onlySelected)
+SamplerType allVerticesPointSampling(
+	const MeshType&    m,
+	std::vector<uint>& birthVertices,
+	bool               onlySelected)
 {
 	using VertexType = typename MeshType::VertexType;
 
 	SamplerType sampler;
+
+	// Determine the number of vertices to sample
+	uint n = onlySelected ? vertexSelectionNumber(m) : m.vertexNumber();
+
+	// Reserve space in the sampler and birthVertices vectors
+	sampler.reserve(n);
+	birthVertices.reserve(n);
+	birthVertices.clear();
+
+	// Loop through all the vertices in the mesh and add them to the sampler if they are selected
 	for (const VertexType& v : m.vertices()) {
-		if (!onlySelected || v.isSelected())
+		if (!onlySelected || v.isSelected()) {
 			sampler.add(v, m);
+			birthVertices.push_back(m.index(v));
+		}
 	}
 	return sampler;
 }
 
 /**
- * @brief Returns a FaceSampler object that contains all the face barycenters contained in the given
- * mesh.
- * @param m
- * @param onlySelected
- * @return
+ * @brief Returns a Sampler object that contains all the vertices contained in the given mesh.
+ *
+ * This function creates a SamplerType object that contains all the vertices in the given MeshType
+ * object m. If onlySelected is true, only the selected vertices are sampled.
+ *
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
+ * @tparam MeshType: A type that satisfies the MeshConcept
+ *
+ * @param[in] m: A const reference to the Mesh object
+ * @param[in,opt] onlySelected: A bool that specifies whether to sample only selected vertices
+ *
+ * @return A SamplerType object that contains the sampled vertices
+ */
+template<SamplerConcept SamplerType, MeshConcept MeshType>
+SamplerType allVerticesPointSampling(const MeshType& m, bool onlySelected)
+{
+	std::vector<uint> v;
+	return allVerticesPointSampling<SamplerType>(m, v, onlySelected);
+}
+
+/**
+ * @brief Returns a SamplerType object that contains all the faces contained in the given mesh.
+ *
+ * This function creates a SamplerType object that contains sampled points on the faces of the given
+ * MeshType object m. If onlySelected is true, only the selected faces are sampled. The indices of
+ * the sampled faces in the mesh are stored in the birthFaces vector.
+ *
+ * The specific sampling method is determined by the implementation of the SamplerType class.
+ * However, in general, the sampled point on each face is the face barycenter.
+ *
+ * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam MeshType: A type that satisfies the FaceMeshConcept
+ *
+ * @param[in] m: A const reference to the Mesh object
+ * @param[out,opt] birthFaces: A vector of uints that will contain the indices of the sampled faces
+ *                             in the mesh
+ * @param[in,opt] onlySelected: A bool that specifies whether to sample only selected faces
+ *
+ * @return A SamplerType object that contains the sampled points on the faces
  */
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected)
+SamplerType allFacesPointSampling(
+	const MeshType&    m,
+	std::vector<uint>& birthFaces,
+	bool               onlySelected)
 {
 	using FaceType = typename MeshType::FaceType;
 
 	SamplerType sampler;
+
+	// Determine the number of vertices to sample
+	uint n = onlySelected ? faceSelectionNumber(m) : m.faceNumber();
+
+	// Reserve space in the sampler and birthVertices vectors
+	sampler.reserve(n);
+	birthFaces.reserve(n);
+	birthFaces.clear();
+
 	for (const FaceType& f : m.faces()) {
-		if (!onlySelected || f.isSelected())
+		if (!onlySelected || f.isSelected()) {
 			sampler.add(f, m);
+			birthFaces.push_back(m.index(f));
+		}
 	}
 	return sampler;
 }
 
 /**
- * @brief Returns a Sampler object that contains the given number of samples taken from the vertices
- * of the given mesh. Each vertex has the same probability of being chosen.
- * @param m
- * @param nSamples
- * @param onlySelected
- * @param deterministic
- * @return
+ * @brief Returns a SamplerType object that contains all the faces contained in the given mesh.
+ *
+ * This function creates a SamplerType object that contains sampled points on the faces of the given
+ * MeshType object m. If onlySelected is true, only the selected faces are sampled.
+ *
+ * The specific sampling method is determined by the implementation of the SamplerType class.
+ * However, in general, the sampled point on each face is the face barycenter.
+ *
+ * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam MeshType: A type that satisfies the FaceMeshConcept
+ *
+ * @param[in] m: A const reference to the Mesh object
+ * @param[in,opt] onlySelected: A bool that specifies whether to sample only selected faces
+ *
+ * @return A SamplerType object that contains the sampled points on the faces
+ */
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected)
+{
+	std::vector<uint> v;
+	return allFacesPointSampling<SamplerType>(m, v, onlySelected);
+}
+
+/**
+ * @brief Returns a SamplerType object that contains the given number of samples taken from the
+ * vertices of the given mesh. Each vertex has the same probability of being chosen. If onlySelected
+ * is true, only the selected vertices are sampled. The indices of the sampled vertices in the mesh
+ * are stored in the birthVertices vector.
+ *
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
+ * @tparam MeshType: A type that satisfies the MeshConcept
+ *
+ * @param[in] m: The mesh to sample from.
+ * @param[in] nSamples The number of samples to take.
+ * @param[out] birthVertices: A vector of indices of the birth vertices.
+ * @param[in,opt] onlySelected: Whether to only sample from the selected vertices.
+ * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @return A SamplerType object containing the sampled vertices.
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexUniformPointSampling(
-	const MeshType &m,
-	uint nSamples,
-	bool onlySelected,
-	bool deterministic)
+	const MeshType&    m,
+	uint               nSamples,
+	std::vector<uint>& birthVertices,
+	bool               onlySelected,
+	bool               deterministic)
 {
 	uint vn = onlySelected ? vcl::vertexSelectionNumber(m) : m.vertexNumber();
 
 	if (nSamples >= vn) {
-		return allVerticesPointSampling<SamplerType>(m, onlySelected);
+		return allVerticesPointSampling<SamplerType>(m, birthVertices, onlySelected);
 	}
 
 	SamplerType ps;
+
+	// Reserve space in the sampler and birthVertices vectors
+	ps.reserve(vn);
+	birthVertices.reserve(vn);
+	birthVertices.clear();
 
 	std::uniform_int_distribution<uint> dist(0, m.vertexContainerSize() - 1);
 
@@ -110,6 +221,7 @@ SamplerType vertexUniformPointSampling(
 			visited[vi] = true;
 			nVisited++;
 			ps.add(m.vertex(vi), m);
+			birthVertices.push_back(vi);
 		}
 	}
 
@@ -117,28 +229,70 @@ SamplerType vertexUniformPointSampling(
 }
 
 /**
- * @brief Returns a FaceSampler object that contains the given number of samples taken from the
- * face barycenters of the given mesh. Each face has the same probability of being chosen.
- * @param m
- * @param nSamples
- * @param onlySelected
- * @param deterministic
- * @return
+ * @brief Returns a SamplerType object that contains the given number of samples taken from the
+ * vertices of the given mesh. Each vertex has the same probability of being chosen. If onlySelected
+ * is true, only the selected vertices are sampled.
+ *
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
+ * @tparam MeshType: A type that satisfies the MeshConcept
+ *
+ * @param[in] m: The mesh to sample from.
+ * @param[in] nSamples The number of samples to take.
+ * @param[in,opt] onlySelected: Whether to only sample from the selected vertices.
+ * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @return A Sampler object containing the sampled vertices.
+ */
+template<SamplerConcept SamplerType, MeshConcept MeshType>
+SamplerType vertexUniformPointSampling(
+	const MeshType&    m,
+	uint               nSamples,
+	bool               onlySelected,
+	bool               deterministic)
+{
+	std::vector<uint> v;
+	return vertexUniformPointSampling<SamplerType>(m, nSamples, v, onlySelected, deterministic);
+}
+
+/**
+ * @brief Returns a SamplerType object that contains the given number of samples taken from the
+ * faces of the given mesh. Each face has the same probability of being chosen. If
+ * onlySelected is true, only the selected faces are sampled. The indices of the sampled faces
+ * in the mesh are stored in the birthFaces vector.
+ *
+ * The specific sampling method is determined by the implementation of the SamplerType class.
+ * However, in general, the sampled point on each face is the face barycenter.
+ *
+ * @tparam SamplerType A type that satisfies the FaceSamplerConcept
+ * @tparam MeshType A type that satisfies the FaceMeshConcept
+ *
+ * @param[in] m: The mesh to sample from.
+ * @param[in] nSamples: The number of samples to take.
+ * @param[out] birthFaces: A vector of indices of the birth faces.
+ * @param[in,opt] onlySelected: Whether to only sample from the selected faces.
+ * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ *
+ * @return A SamplerType object that contains the sampled points on the faces.
  */
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
-	const MeshType& m,
-	uint            nSamples,
-	bool            onlySelected,
-	bool            deterministic)
+	const MeshType&    m,
+	uint               nSamples,
+	std::vector<uint>& birthFaces,
+	bool               onlySelected,
+	bool               deterministic)
 {
 	uint fn = onlySelected ? vcl::faceSelectionNumber(m) : m.faceNumber();
 
 	if (nSamples >= fn) {
-		return allFacesPointSampling<SamplerType>(m, onlySelected);
+		return allFacesPointSampling<SamplerType>(m, birthFaces, onlySelected);
 	}
 
 	SamplerType ps;
+
+	// Reserve space in the sampler and birthFaces vectors
+	ps.reserve(fn);
+	birthFaces.reserve(fn);
+	birthFaces.clear();
 
 	std::uniform_int_distribution<uint> dist(0, m.faceContainerSize() - 1);
 
@@ -157,6 +311,7 @@ SamplerType faceUniformPointSampling(
 			visited[fi] = true;
 			nVisited++;
 			ps.add(m.face(fi), m);
+			birthFaces.push_back(fi);
 		}
 	}
 
@@ -164,27 +319,69 @@ SamplerType faceUniformPointSampling(
 }
 
 /**
- * @brief Samples the vertices in a weighted way, using the per vertex weights given as input.
- * Each vertex has a probability of being chosen that is proportional to its weight.
+ * @brief Returns a SamplerType object that contains the given number of samples taken from the
+ * faces of the given mesh. Each face has the same probability of being chosen. If
+ * onlySelected is true, only the selected faces are sampled.
  *
- * @param m
- * @param weights: a vector of scalars having the i-th entry associated to the vertex having index i.
- *                 Note: weights.size() == m.vertexContainerSize().
- * @param nSamples
- * @return A Sampler, that is a collection of samples selected from the input mesh.
+ * The specific sampling method is determined by the implementation of the SamplerType class.
+ * However, in general, the sampled point on each face is the face barycenter.
+ *
+ * @tparam SamplerType A type that satisfies the FaceSamplerConcept
+ * @tparam MeshType A type that satisfies the FaceMeshConcept
+ *
+ * @param[in] m: The mesh to sample from.
+ * @param[in] nSamples: The number of samples to take.
+ * @param[in,opt] onlySelected: Whether to only sample from the selected faces.
+ * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ *
+ * @return A SamplerType object that contains the sampled points on the faces.
+ */
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType faceUniformPointSampling(
+	const MeshType&    m,
+	uint               nSamples,
+	bool               onlySelected,
+	bool               deterministic)
+{
+	std::vector<uint> v;
+	return faceUniformPointSampling<SamplerType>(m, nSamples, v, onlySelected, deterministic);
+}
+
+/**
+ * @brief Samples the vertices in a weighted way, using the per vertex weights given as input.
+ * Each vertex has a probability of being chosen that is proportional to its weight. If onlySelected
+ * is true, only the selected vertices are sampled. The indices of the sampled vertices in the mesh
+ * are stored in the birthVertices vector.
+ *
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
+ * @tparam MeshType: A type that satisfies the MeshConcept
+ * @tparam ScalarType: The scalar type used for the weights
+ *
+ * @param[in] m: The input mesh to sample from.
+ * @param[in] weights: A vector of scalars having the i-th entry associated to the vertex having
+ *                     index i. Note: weights.size() == m.vertexContainerSize().
+ * @param[in] nSamples: The number of vertices to sample.
+ * @param[out] birthVertices: A vector to store the indices of the vertices that were sampled.
+ * @param[in,opt] deterministic: If true, sets the random number generator to a deterministic mode.
+ *
+ * @return A SamplerType object containing the samples selected from the input mesh.
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
 SamplerType vertexWeightedPointSampling(
-	const MeshType& m,
+	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
-	uint nSamples,
-	bool deterministic)
+	uint                           nSamples,
+	std::vector<uint>&             birthVertices,
+	bool                           deterministic)
 {
 	if (nSamples >= m.vertexNumber()) {
-		return allVerticesPointSampling<SamplerType>(m);
+		return allVerticesPointSampling<SamplerType>(m, birthVertices);
 	}
 
 	SamplerType ps;
+	ps.reserve(nSamples);
+	birthVertices.reserve(nSamples);
+	birthVertices.clear();
 
 	std::discrete_distribution<> dist(std::begin(weights), std::end(weights));
 
@@ -202,6 +399,7 @@ SamplerType vertexWeightedPointSampling(
 			visited[vi] = true;
 			nVisited++;
 			ps.add(m.vertex(vi), m);
+			birthVertices.push_back(vi);
 		}
 	}
 
@@ -209,20 +407,61 @@ SamplerType vertexWeightedPointSampling(
 }
 
 /**
- * @brief Samples the barycenter faces in a weighted way, using the per face weights given as input.
- * Each face has a probability of being chosen that is proportional to its weight.
+ * @brief Samples the vertices in a weighted way, using the per vertex weights given as input.
+ * Each vertex has a probability of being chosen that is proportional to its weight. If onlySelected
+ * is true, only the selected vertices are sampled.
  *
- * @param m
- * @param weights: a vector of scalars having the i-th entry associated to the face having index i.
- *                 Note: weights.size() == m.faceContainerSize().
- * @param nSamples
- * @return A Sampler, that is a collection of samples selected from the input mesh.
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
+ * @tparam MeshType: A type that satisfies the MeshConcept
+ * @tparam ScalarType: The scalar type used for the weights
+ *
+ * @param[in] m: The input mesh to sample from.
+ * @param[in] weights: A vector of scalars having the i-th entry associated to the vertex having
+ *                     index i. Note: weights.size() == m.vertexContainerSize().
+ * @param[in] nSamples: The number of vertices to sample.
+ * @param[in,opt] deterministic: If true, sets the random number generator to a deterministic mode.
+ *
+ * @return A SamplerType object containing the samples selected from the input mesh.
+ */
+template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
+SamplerType vertexWeightedPointSampling(
+	const MeshType&                m,
+	const std::vector<ScalarType>& weights,
+	uint                           nSamples,
+	bool                           deterministic)
+{
+	std::vector<uint> v;
+	return vertexWeightedPointSampling<SamplerType>(m, weights, nSamples, v, deterministic);
+}
+
+/**
+ * @brief Returns a SamplerType object that contains the given number of samples taken from the
+ * faces of the given mesh. Each face has the same probability of being chosen. If
+ * onlySelected is true, only the selected faces are sampled. The indices of the sampled faces
+ * in the mesh are stored in the birthFaces vector.
+ *
+ * The specific sampling method is determined by the implementation of the SamplerType class.
+ * However, in general, the sampled point on each face is the face barycenter.
+ *
+ * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam MeshType: A type that satisfies the FaceMeshConcept
+ * @tparam ScalarType: The scalar type used for the weights
+ *
+ * @param[in] m: The mesh to sample from.
+ * @param[in] weights: A vector of scalars having the i-th entry associated to the face having
+ *                     index i. Note: weights.size() == m.faceContainerSize().
+ * @param[in] nSamples: The number of samples to take.
+ * @param[out] birthFaces: A vector to store the indices of the faces that were sampled.
+ * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ *
+ * @return A SamplerType object that contains the sampled points on the faces.
  */
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
 SamplerType faceWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
 	uint                           nSamples,
+	std::vector<uint>&             birthFaces,
 	bool                           deterministic)
 {
 	if (nSamples >= m.faceNumber()) {
@@ -230,6 +469,11 @@ SamplerType faceWeightedPointSampling(
 	}
 
 	SamplerType ps;
+
+	// Reserve space in the sampler and birthFaces vectors
+	ps.reserve(nSamples);
+	birthFaces.reserve(nSamples);
+	birthFaces.clear();
 
 	std::discrete_distribution<> dist(std::begin(weights), std::end(weights));
 
@@ -247,10 +491,42 @@ SamplerType faceWeightedPointSampling(
 			visited[fi] = true;
 			nVisited++;
 			ps.add(m.face(fi), m);
+			birthFaces.push_back(fi);
 		}
 	}
 
 	return ps;
+}
+
+/**
+ * @brief Returns a SamplerType object that contains the given number of samples taken from the
+ * faces of the given mesh. Each face has the same probability of being chosen. If
+ * onlySelected is true, only the selected faces are sampled.
+ *
+ * The specific sampling method is determined by the implementation of the SamplerType class.
+ * However, in general, the sampled point on each face is the face barycenter.
+ *
+ * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam MeshType: A type that satisfies the FaceMeshConcept
+ * @tparam ScalarType: The scalar type used for the weights
+ *
+ * @param[in] m: The mesh to sample from.
+ * @param[in] weights: A vector of scalars having the i-th entry associated to the face having
+ *                     index i. Note: weights.size() == m.faceContainerSize().
+ * @param[in] nSamples: The number of samples to take.
+ * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ *
+ * @return A SamplerType object that contains the sampled points on the faces.
+ */
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+SamplerType faceWeightedPointSampling(
+	const MeshType&                m,
+	const std::vector<ScalarType>& weights,
+	uint                           nSamples,
+	bool                           deterministic)
+{
+	std::vector<uint> v;
+	return faceWeightedPointSampling<SamplerType>(m, weights, nSamples, v, deterministic);
 }
 
 /**
