@@ -226,7 +226,8 @@ template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
 auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	const QueryValueType& qv,
-	QueryDistFunction<QueryValueType> distFunction) const
+	QueryDistFunction<QueryValueType> distFunction,
+	typename GridType::ScalarType& dist) const
 {
 	using ScalarType = typename GridType::ScalarType;
 	using PointType = typename GridType::PointType;
@@ -235,9 +236,10 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	using QVT = RemoveRefAndPointer<QueryValueType>;
 	const QVT* qvv = getCleanValueTypePointer(qv);
 	ResType result = static_cast<const DerivedGrid*>(this)->end();
+	dist = std::numeric_limits<ScalarType>::max();
 
 	if (qvv) {
-		ScalarType cellDiag = GridType::cellDiagonal();
+		const ScalarType cellDiag = GridType::cellDiagonal();
 
 		ScalarType centerDist = cellDiag;
 		PointType center = vcl::boundingBox(*qvv).center();
@@ -251,7 +253,8 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 		currentIntervalBox.add(GridType::cell(bb.max())); // last cell where look for closest
 
 		// looking just on cells where query lies
-		result = closestInCells(qv, cellDiag, currentIntervalBox, distFunction);
+		dist = cellDiag;
+		result = closestInCells(qv, dist, currentIntervalBox, distFunction);
 
 		// we have found (maybe) the closest value contained in the cell(s) where the query value
 		// lies (if the cells were empty, we did not found nothing).
@@ -261,7 +264,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 		// now we start with the actual search, including all the cells in the actual interval
 
 		if (result != static_cast<const DerivedGrid*>(this)->end()) {
-			centerDist = distFunction(qv, result->second);
+			centerDist = dist;
 		}
 
 		bool end = false;
@@ -271,8 +274,9 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 			currentIntervalBox.add(GridType::cell(center - centerDist));
 			currentIntervalBox.add(GridType::cell(center + centerDist));
 
+			dist = centerDist;
 			ResType winner =
-				closestInCells(qv, centerDist, currentIntervalBox, distFunction, lastIntervalBox);
+				closestInCells(qv, dist, currentIntervalBox, distFunction, lastIntervalBox);
 
 			if (winner != static_cast<const DerivedGrid*>(this)->end()) {
 				result = winner;
@@ -289,10 +293,31 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
+	const QueryValueType& qv,
+	QueryDistFunction<QueryValueType> distFunction) const
+{
+	typename GridType::ScalarType dist;
+	return closestValue(qv, distFunction, dist);
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename QueryValueType>
+auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
+	const QueryValueType& qv,
+	typename GridType::ScalarType& dist) const
+{
+	auto f = distFunction<QueryValueType, ValueType>();
+	return closestValue(qv, f, dist);
+}
+
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename QueryValueType>
 auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(const QueryValueType& qv) const
 {
 	auto f = distFunction<QueryValueType, ValueType>();
-	return closestValue(qv, f);
+	typename GridType::ScalarType dist;
+	return closestValue(qv, f, dist);
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
@@ -493,14 +518,13 @@ template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
 auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestInCells(
 	const QueryValueType&                qv,
-	const typename GridType::ScalarType& maxDist,
+	typename GridType::ScalarType&       dist,
 	const Boxui&                         interval,
 	QueryDistFunction<QueryValueType>    distFunction,
 	const Boxui&                         ignore) const
 {
 	using ResType = typename DerivedGrid::ConstIterator;
 	ResType res = static_cast<const DerivedGrid*>(this)->end();
-	typename GridType::ScalarType dist = maxDist;
 
 	// for each cell in the interval
 	for (const KeyType& c : GridType::cells(interval.min(), interval.max())) {

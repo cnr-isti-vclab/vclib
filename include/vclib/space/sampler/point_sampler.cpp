@@ -76,6 +76,18 @@ void PointSampler<PointType>::set(uint i, const PointType& p)
 }
 
 template<PointConcept PointType>
+typename PointSampler<PointType>::ConstIterator PointSampler<PointType>::begin() const
+{
+	return samplesVec.begin();
+}
+
+template<PointConcept PointType>
+typename PointSampler<PointType>::ConstIterator PointSampler<PointType>::end() const
+{
+	return samplesVec.end();
+}
+
+template<PointConcept PointType>
 template<VertexConcept VertexType>
 void PointSampler<PointType>::add(
 	const VertexType& v)

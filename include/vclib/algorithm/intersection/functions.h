@@ -85,7 +85,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 
 // Specialization for intersection between Box and Face*
 template<Box3Concept Obj1, FaceConcept Obj2>
-struct IntersFunctionStruct<Obj1, Obj2*>
+struct IntersFunctionStruct<Obj1, const Obj2*>
 {
 	static inline const std::function<bool(const Obj1&, const Obj2* const&)> intersFun =
 		[](const Obj1& o1, const Obj2* const& o2)
@@ -107,7 +107,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 
 // Specialization for intersection between Face* and Box
 template<FaceConcept Obj1, Box3Concept Obj2>
-struct IntersFunctionStruct<Obj1*, Obj2>
+struct IntersFunctionStruct<const Obj1*, Obj2>
 {
 	static inline const std::function<bool(const Obj1* const&, const Obj2&)> intersFun =
 		[](const Obj1* const& o1, const Obj2& o2)
@@ -129,7 +129,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 
 // Specialization for intersection between Sphere and Face*
 template<SphereConcept Obj1, FaceConcept Obj2>
-struct IntersFunctionStruct<Obj1, Obj2*>
+struct IntersFunctionStruct<Obj1, const Obj2*>
 {
 	static inline const std::function<bool(const Obj1&, const Obj2* const&)> intersFun =
 		[](const Obj1& o1, const Obj2* const& o2)
@@ -151,7 +151,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 
 // Specialization for intersection between Face* and Sphere
 template<FaceConcept Obj1, SphereConcept Obj2>
-struct IntersFunctionStruct<Obj1*, Obj2>
+struct IntersFunctionStruct<const Obj1*, Obj2>
 {
 	static inline const std::function<bool(const Obj1* const&, const Obj2&)> intersFun =
 		[](const Obj1* const& o1, const Obj2& o2)

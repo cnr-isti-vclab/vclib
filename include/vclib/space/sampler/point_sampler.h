@@ -34,6 +34,7 @@ class PointSampler
 {
 public:
 	using ScalarType = typename PointType::ScalarType;
+	using ConstIterator = typename std::vector<PointType>::const_iterator;
 
 	PointSampler() = default;
 
@@ -79,6 +80,9 @@ public:
 
 	template<FaceConcept FaceType>
 	void set(uint i, const FaceType& f, const PointType& barCoords);
+
+	ConstIterator begin() const;
+	ConstIterator end() const;
 
 private:
 	std::vector<PointType> samplesVec;

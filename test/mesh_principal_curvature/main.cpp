@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 
 	double radius = vcl::boundingBox(m).diagonal() * 0.1;
 	log.startTimer();
-	vcl::updatePrincipalCurvaturePCA(m, radius, false, log);
+	vcl::updatePrincipalCurvaturePCA(m, radius, true, log);
 
 	vcl::setPerVertexScalarFromPrincipalCurvatureMean(m);
 	vcl::Histogramd h = vcl::vertexScalarHistogram(m);

@@ -70,10 +70,23 @@ class PointerIterator : public It
 {
 public:
 	using value_type = typename It::value_type*;
-	using reference  = const value_type;
+	using reference  = value_type;
 
 	using It::It;
 	PointerIterator(const It& it) : It(it) {}
+
+	reference operator*() const { return It::operator->(); }
+};
+
+template<typename It>
+class ConstPointerIterator : public It
+{
+public:
+	using value_type = const typename It::value_type*;
+	using reference  = value_type;
+
+	using It::It;
+	ConstPointerIterator(const It& it) : It(it) {}
 
 	reference operator*() const { return It::operator->(); }
 };

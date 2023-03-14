@@ -141,7 +141,18 @@ public:
 	template<typename QueryValueType>
 	auto closestValue(
 		const QueryValueType& qv,
+		QueryDistFunction<QueryValueType> distFunction,
+		typename GridType::ScalarType& dist) const;
+
+	template<typename QueryValueType>
+	auto closestValue(
+		const QueryValueType& qv,
 		QueryDistFunction<QueryValueType> distFunction) const;
+
+	template<typename QueryValueType>
+	auto closestValue(
+		const QueryValueType& qv,
+		typename GridType::ScalarType& dist) const;
 
 	template<typename QueryValueType>
 	auto closestValue(const QueryValueType& qv) const;
@@ -212,7 +223,7 @@ private:
 	template<typename QueryValueType>
 	auto closestInCells(
 		const QueryValueType&             qv,
-		const typename GridType::ScalarType& maxDist,
+		typename GridType::ScalarType&    dist,
 		const Boxui&                      interval,
 		QueryDistFunction<QueryValueType> distFunction,
 		const Boxui&                      ignore = Boxui()) const;

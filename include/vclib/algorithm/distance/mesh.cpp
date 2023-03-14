@@ -26,6 +26,9 @@
 #include <vclib/algorithm/point_sampling.h>
 #include <vclib/iterator/pointer_iterator.h>
 #include <vclib/space/spatial_data_structures.h>
+#include <vclib/misc/parallel.h>
+
+#include <mutex>
 
 namespace vcl {
 
@@ -37,7 +40,31 @@ HausdorffDistResult hausdorffDist(const MeshType& m, const SamplerType& s, const
 	HausdorffDistResult res;
 	res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
 
-	// todo
+	std::mutex mutex;
+
+	uint ns = 0;
+//  vcl::parallelFor(s.begin(), s.end(), [&](const auto& sample){
+	for (uint i = 0; i < s.size(); ++i) {
+		const auto& sample = s.sample(i);
+		double dist;
+		const auto iter = g.closestValue(sample, dist);
+		if (iter != g.end()) {
+			mutex.lock();
+			ns++;
+			if (dist > res.maxDist)
+				res.maxDist = dist;
+			if (dist < res.minDist)
+				res.minDist = dist;
+			res.meanDist += dist;
+			res.RMSDist += dist*dist;
+			res.histogram.addValue(dist);
+			mutex.unlock();
+		}
+	}
+//	});
+
+	res.meanDist /= ns;
+	res.RMSDist /= ns;
 
 	return res;
 }
@@ -50,6 +77,7 @@ HausdorffDistResult samplerMeshHausdorff(const MeshType& m, const SamplerType& s
 	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
 
 	vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+	grid.build();
 
 	return hausdorffDist(m, s, grid);
 }
@@ -59,18 +87,17 @@ HausdorffDistResult samplerMeshHausdorff(const MeshType& m, const SamplerType& s
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
-	using VPI = vcl::PointerIterator<typename MeshType::ConstVertexIterator>;
-	using FPI = vcl::PointerIterator<typename MeshType::ConstFaceIterator>;
-
-	vcl::StaticGrid3<const VertexType*> vgrid;
-	vcl::StaticGrid3<const FaceType*> fgrid;
+	using VPI = vcl::ConstPointerIterator<typename MeshType::ConstVertexIterator>;
+	using FPI = vcl::ConstPointerIterator<typename MeshType::ConstFaceIterator>;
 
 	if (m.faceNumber() == 0) {
 		vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+		grid.build();
 		return hausdorffDist(m, s, grid);
 	}
 	else {
 		vcl::StaticGrid3<const FaceType*> grid(FPI(m.faceBegin()), FPI(m.faceEnd()));
+		grid.build();
 		return hausdorffDist(m, s, grid);
 	}
 }
@@ -107,8 +134,8 @@ HausdorffDistResult hausdorffDistance(
 
 	switch (sampMethod) {
 	case VERTEX_UNIFORM: {
-		//ToDo VertexReferenceSampler
-		VertexIndexSampler sampler;
+		//ConstVertexSampler<typename MeshType2::VertexType> sampler;
+		PointSampler sampler;
 
 		return internal::vertUniformHausdorffDistance(
 			m1, m2, nSamples, deterministic, sampler, birth);

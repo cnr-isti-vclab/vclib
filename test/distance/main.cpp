@@ -24,12 +24,13 @@
 #include <iostream>
 
 #include <vclib/mesh.h>
+#include <vclib/io/load_obj.h>
 #include <vclib/io/load_ply.h>
 #include <vclib/algorithm.h>
 
 int main()
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "cube_tri.ply");
+	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
 	vcl::updatePerFaceNormals(m);
 
@@ -43,6 +44,18 @@ int main()
 		std::cerr << "\tdist: " << dist << ";\n";
 		std::cerr << "\tclos: " << c << "\n";
 	}
+
+	vcl::TriMesh m1 = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+	vcl::TriMesh m2 = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny.obj");
+
+	vcl::updateBoundingBox(m1);
+	vcl::updateBoundingBox(m2);
+	auto res = vcl::hausdorffDistance(m1, m2, 20);
+
+	std::cerr << "\n\nmin: " << res.minDist << ";\n";
+	std::cerr << "max: " << res.maxDist << ";\n";
+	std::cerr << "mean: " << res.meanDist << ";\n";
+	std::cerr << "rms: " << res.RMSDist << ";\n";
 
 	return 0;
 }

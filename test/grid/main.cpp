@@ -131,7 +131,7 @@ int main()
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
 
-	auto intersects = vcl::intersectFunction<vcl::Box3d, vcl::TriMesh::Face*>();
+	auto intersects = vcl::intersectFunction<vcl::Box3d, const vcl::TriMesh::Face*>();
 
 	using FPI = vcl::PointerIterator<typename vcl::TriMesh::FaceIterator>;
 	vcl::HashTableGrid3<const vcl::TriMesh::Face*> fsht(FPI(m.faceBegin()), FPI(m.faceEnd()), intersects);
@@ -180,9 +180,7 @@ int main()
 
 	const vcl::Point3d qv(0.5, 0.5, 0.5);
 
-	auto fdist = vcl::distFunction<vcl::Point3d, vcl::TriMesh::Vertex*>();
-
-	auto vec = vmsg.kClosestValues(qv, 5, fdist);
+	auto vec = vmsg.kClosestValues(qv, 5);
 
 	for (const auto& p : vec) {
 		std::cerr << p->first << ": " << m.index(p->second) << "\n";
