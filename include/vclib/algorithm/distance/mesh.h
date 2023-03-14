@@ -21,10 +21,38 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_DISTANCE_H
-#define VCL_ALGORITHM_DISTANCE_H
+#ifndef VCL_ALGORITHM_DISTANCE_MESH_H
+#define VCL_ALGORITHM_DISTANCE_MESH_H
 
-#include "distance/functions.h"
-#include "distance/mesh.h"
+#include <vclib/math/histogram.h>
+#include <vclib/mesh/requirements.h>
 
-#endif // VCL_ALGORITHM_DISTANCE_H
+namespace vcl {
+
+struct HausdorffDistResult {
+	double minDist  = std::numeric_limits<double>::max();
+	double maxDist  = std::numeric_limits<double>::lowest();
+	double meanDist = 0;
+	double RMSDist  = 0;
+	Histogram<double> histogram;
+};
+
+enum HausdorffSamplingMethod {
+	VERTEX_UNIFORM = 0,
+	EDGE_UNIFORM,
+	MONTECARLO
+};
+
+template<MeshConcept MeshType1, MeshConcept MeshType2>
+HausdorffDistResult hausdorffDistance(
+	const MeshType1& m1,
+	const MeshType2& m2,
+	uint nSamples = 0,
+	HausdorffSamplingMethod sampMethod = VERTEX_UNIFORM,
+	bool deterministic = false);
+
+} // namespace vcl
+
+#include "mesh.cpp"
+
+#endif // VCL_ALGORITHM_DISTANCE_MESH_H

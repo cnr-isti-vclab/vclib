@@ -74,6 +74,7 @@ set(HEADERS
 	include/vclib/algorithm/create/tetrahedron.h
 	include/vclib/algorithm/distance/functions.h
 	include/vclib/algorithm/distance/element.h
+	include/vclib/algorithm/distance/mesh.h
 	include/vclib/algorithm/distance/misc.h
 	include/vclib/algorithm/intersection/element.h
 	include/vclib/algorithm/intersection/functions.h
@@ -328,6 +329,7 @@ set(SOURCES
 	include/vclib/algorithm/create/sphere.cpp
 	include/vclib/algorithm/create/tetrahedron.cpp
 	include/vclib/algorithm/distance/element.cpp
+	include/vclib/algorithm/distance/mesh.cpp
 	include/vclib/algorithm/distance/misc.cpp
 	include/vclib/algorithm/intersection/element.cpp
 	include/vclib/algorithm/intersection/mesh.cpp
