@@ -45,12 +45,17 @@ int main()
 		std::cerr << "\tclos: " << c << "\n";
 	}
 
+	vcl::ConsoleLogger log;
+	log.setPrintTimer(true);
+
 	vcl::TriMesh m1 = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
 	vcl::TriMesh m2 = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny.obj");
 
 	vcl::updateBoundingBox(m1);
 	vcl::updateBoundingBox(m2);
-	auto res = vcl::hausdorffDistance(m1, m2, 20);
+
+	log.startTimer();
+	auto res = vcl::hausdorffDistance(m1, m2, 20, vcl::VERTEX_UNIFORM, log);
 
 	std::cerr << "\n\nmin: " << res.minDist << ";\n";
 	std::cerr << "max: " << res.maxDist << ";\n";

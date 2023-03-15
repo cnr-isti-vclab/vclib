@@ -44,10 +44,21 @@ HausdorffDistResult hausdorffDist(
 	HausdorffDistResult res;
 	res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
 
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(5, "Computing distances...");
+	}
+
+	uint logPerc = 0;
+	const uint logPercStep = 10;
+	uint logVertStep = s.size() / ((100 / logPercStep) - 1);
+	if (logVertStep == 0)
+		logVertStep = s.size();
+
 	std::mutex mutex;
 
 	uint ns = 0;
-//  vcl::parallelFor(s.begin(), s.end(), [&](const auto& sample){
+//	uint i = 0;
+//	vcl::parallelFor(s.begin(), s.end(), [&](const auto& sample){
 	for (uint i = 0; i < s.size(); ++i) {
 		const auto& sample = s.sample(i);
 		double dist;
@@ -64,7 +75,17 @@ HausdorffDistResult hausdorffDist(
 			res.histogram.addValue(dist);
 			mutex.unlock();
 		}
+
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			if (i % logVertStep == 0) {
+				mutex.lock();
+				logPerc += logPercStep;
+				log.log(logPerc, "");
+				mutex.unlock();
+			}
+		}
 	}
+//	++i;
 //	});
 
 	res.meanDist /= ns;
@@ -83,8 +104,16 @@ HausdorffDistResult samplerMeshHausdorff(
 	using VertexType = typename MeshType::VertexType;
 	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
 
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(0, "Building Grid on first mesh vertices...");
+	}
+
 	vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
 	grid.build();
+
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(5, "Grid built.");
+	}
 
 	return hausdorffDist(m, s, grid, log);
 }
@@ -101,13 +130,31 @@ HausdorffDistResult samplerMeshHausdorff(
 	using FPI = vcl::ConstPointerIterator<typename MeshType::ConstFaceIterator>;
 
 	if (m.faceNumber() == 0) {
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			log.log(0, "Building Grid on first mesh vertices...");
+		}
+
 		vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
 		grid.build();
+
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			log.log(5, "Grid built.");
+		}
+
 		return hausdorffDist(m, s, grid, log);
 	}
 	else {
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			log.log(0, "Building Grid on first mesh faces...");
+		}
+
 		vcl::StaticGrid3<const FaceType*> grid(FPI(m.faceBegin()), FPI(m.faceEnd()));
 		grid.build();
+
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			log.log(5, "Grid built.");
+		}
+
 		return hausdorffDist(m, s, grid, log);
 	}
 }
@@ -126,10 +173,25 @@ HausdorffDistResult hausdorffDistanceVertexUniformSampling(
 	std::vector<uint>& birthVertices,
 	LogType& log)
 {
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(0, "Sampling the second mesh...");
+	}
+
 	sampler = vcl::vertexUniformPointSampling<SamplerType>(
 		m2, nSamples, birthVertices, false, deterministic);
 
-	return samplerMeshHausdorff(m1, sampler, log);
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(5, "Second mesh sampled.");
+		log.startNewTask(5, 100, "Computing distance between samples and first mesh...");
+	}
+
+	auto res = samplerMeshHausdorff(m1, sampler, log);
+
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.endTask("Distance between samples and first mesh computed.");
+	}
+
+	return res;
 }
 
 } // namespace vcl::internal
