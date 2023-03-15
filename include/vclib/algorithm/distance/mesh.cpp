@@ -34,8 +34,12 @@ namespace vcl {
 
 namespace internal {
 
-template<MeshConcept MeshType, SamplerConcept SamplerType, typename GridType>
-HausdorffDistResult hausdorffDist(const MeshType& m, const SamplerType& s, const GridType& g)
+template<MeshConcept MeshType, SamplerConcept SamplerType, typename GridType, LoggerConcept  LogType>
+HausdorffDistResult hausdorffDist(
+	const MeshType& m,
+	const SamplerType& s,
+	const GridType& g,
+	LogType& log)
 {
 	HausdorffDistResult res;
 	res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
@@ -69,8 +73,11 @@ HausdorffDistResult hausdorffDist(const MeshType& m, const SamplerType& s, const
 	return res;
 }
 
-template<MeshConcept MeshType, SamplerConcept SamplerType>
-HausdorffDistResult samplerMeshHausdorff(const MeshType& m, const SamplerType& s)
+template<MeshConcept MeshType, SamplerConcept SamplerType, LoggerConcept  LogType>
+HausdorffDistResult samplerMeshHausdorff(
+	const MeshType& m,
+	const SamplerType& s,
+	LogType& log)
 	requires(!HasFaces<MeshType>)
 {
 	using VertexType = typename MeshType::VertexType;
@@ -79,11 +86,14 @@ HausdorffDistResult samplerMeshHausdorff(const MeshType& m, const SamplerType& s
 	vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
 	grid.build();
 
-	return hausdorffDist(m, s, grid);
+	return hausdorffDist(m, s, grid, log);
 }
 
-template<FaceMeshConcept MeshType, SamplerConcept SamplerType>
-HausdorffDistResult samplerMeshHausdorff(const MeshType& m, const SamplerType& s)
+template<FaceMeshConcept MeshType, SamplerConcept SamplerType, LoggerConcept  LogType>
+HausdorffDistResult samplerMeshHausdorff(
+	const MeshType& m,
+	const SamplerType& s,
+	LogType& log)
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
@@ -93,38 +103,44 @@ HausdorffDistResult samplerMeshHausdorff(const MeshType& m, const SamplerType& s
 	if (m.faceNumber() == 0) {
 		vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
 		grid.build();
-		return hausdorffDist(m, s, grid);
+		return hausdorffDist(m, s, grid, log);
 	}
 	else {
 		vcl::StaticGrid3<const FaceType*> grid(FPI(m.faceBegin()), FPI(m.faceEnd()));
 		grid.build();
-		return hausdorffDist(m, s, grid);
+		return hausdorffDist(m, s, grid, log);
 	}
 }
 
-template<MeshConcept MeshType1, MeshConcept MeshType2, SamplerConcept SamplerType>
-HausdorffDistResult vertUniformHausdorffDistance(
-	const MeshType1& m1,
-	const MeshType2& m2,
-	uint nSamples,
-	bool deterministic,
-	SamplerType& sampler,
-	std::vector<uint>& birthVertices)
+template<
+	MeshConcept    MeshType1,
+	MeshConcept    MeshType2,
+	SamplerConcept SamplerType,
+	LoggerConcept  LogType>
+HausdorffDistResult hausdorffDistanceVertexUniformSampling(
+	const MeshType1&   m1,
+	const MeshType2&   m2,
+	uint               nSamples,
+	bool               deterministic,
+	SamplerType&       sampler,
+	std::vector<uint>& birthVertices,
+	LogType& log)
 {
 	sampler = vcl::vertexUniformPointSampling<SamplerType>(
 		m2, nSamples, birthVertices, false, deterministic);
 
-	return samplerMeshHausdorff(m1, sampler);
+	return samplerMeshHausdorff(m1, sampler, log);
 }
 
 } // namespace vcl::internal
 
-template<MeshConcept MeshType1, MeshConcept MeshType2>
+template<MeshConcept MeshType1, MeshConcept MeshType2, LoggerConcept LogType>
 HausdorffDistResult hausdorffDistance(
 	const MeshType1& m1,
 	const MeshType2& m2,
 	uint nSamples,
 	HausdorffSamplingMethod sampMethod,
+	LogType& log,
 	bool deterministic)
 {
 	if (nSamples == 0)
@@ -137,8 +153,8 @@ HausdorffDistResult hausdorffDistance(
 		//ConstVertexSampler<typename MeshType2::VertexType> sampler;
 		PointSampler sampler;
 
-		return internal::vertUniformHausdorffDistance(
-			m1, m2, nSamples, deterministic, sampler, birth);
+		return internal::hausdorffDistanceVertexUniformSampling(
+			m1, m2, nSamples, deterministic, sampler, birth, log);
 	}
 
 	case EDGE_UNIFORM: {

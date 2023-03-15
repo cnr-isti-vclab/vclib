@@ -26,6 +26,7 @@
 
 #include <vclib/math/histogram.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/logger.h>
 
 namespace vcl {
 
@@ -43,12 +44,13 @@ enum HausdorffSamplingMethod {
 	MONTECARLO
 };
 
-template<MeshConcept MeshType1, MeshConcept MeshType2>
+template<MeshConcept MeshType1, MeshConcept MeshType2, LoggerConcept LogType = NullLogger>
 HausdorffDistResult hausdorffDistance(
 	const MeshType1& m1,
 	const MeshType2& m2,
 	uint nSamples = 0,
 	HausdorffSamplingMethod sampMethod = VERTEX_UNIFORM,
+	LogType& log = nullLogger,
 	bool deterministic = false);
 
 } // namespace vcl
