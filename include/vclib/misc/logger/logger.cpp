@@ -80,8 +80,8 @@ void Logger<Stream>::startNewTask(double fromPerc, double toPerc, const std::str
 	assert(fromPerc >= 0);
 	assert(toPerc <= 100);
 	std::pair<double, double> newP;
-	newP.first = stack.top().first * (fromPerc / 100);
-	newP.second = stack.top().second * (toPerc / 100);
+	newP.first = stack.top().first + (stack.top().second - stack.top().first) * (fromPerc / 100);
+	newP.second = (stack.top().second - stack.top().first) * (toPerc / 100);
 	progress = newP.first;
 	stack.push(newP);
 	updateStep();
@@ -111,7 +111,7 @@ template<typename Stream>
 void Logger<Stream>::setPercentage(uint newPerc)
 {
 	if(newPerc >= 0 && newPerc <= 100) {
-		progress = step * newPerc;
+		progress = (stack.top().first) + step * newPerc;
 	}
 }
 

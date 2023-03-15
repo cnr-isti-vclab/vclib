@@ -72,9 +72,14 @@ private:
 
 	uint percPrecision = 0;
 
+	// on top of the stack, we save the interval percentages of the current task
+	// values are between 0 and 100
 	std::stack<std::pair<double, double>> stack;
+
+	// actual percentage (0 - 100), that is in the interval in top of the stack
 	double progress;
-	double step;
+
+	double step; // the value that corresponds to 1% on the current task
 
 	bool indent = true;
 	uint lineW = 80;
