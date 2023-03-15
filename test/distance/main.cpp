@@ -53,9 +53,11 @@ int main()
 
 	vcl::updateBoundingBox(m1);
 	vcl::updateBoundingBox(m2);
+	vcl::updatePerFaceNormals(m1);
+	vcl::updatePerFaceNormals(m2);
 
 	log.startTimer();
-	auto res = vcl::hausdorffDistance(m1, m2, 20, vcl::VERTEX_UNIFORM, log);
+	auto res = vcl::hausdorffDistance(m1, m2, log);
 
 	std::cerr << "\n\nmin: " << res.minDist << ";\n";
 	std::cerr << "max: " << res.maxDist << ";\n";

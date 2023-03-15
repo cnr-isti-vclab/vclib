@@ -48,9 +48,9 @@ template<MeshConcept MeshType1, MeshConcept MeshType2, LoggerConcept LogType = N
 HausdorffDistResult hausdorffDistance(
 	const MeshType1& m1,
 	const MeshType2& m2,
+	LogType& log = nullLogger,
 	uint nSamples = 0,
 	HausdorffSamplingMethod sampMethod = VERTEX_UNIFORM,
-	LogType& log = nullLogger,
 	bool deterministic = false);
 
 } // namespace vcl
