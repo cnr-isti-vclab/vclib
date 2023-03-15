@@ -25,6 +25,7 @@
 #define VCL_SPACE_SAMPLER_MESH_SAMPLER_H
 
 #include <vclib/concept/space/sampler.h>
+#include <vclib/mesh/iterators/vertex_coord_iterator.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -35,6 +36,7 @@ class MeshSampler
 public:
 	using PointType  = typename MeshType::VertexType::CoordType;
 	using ScalarType = typename PointType::ScalarType;
+	using ConstIterator = VertexCoordIterator<typename MeshType::ConstVertexIterator>;
 
 	MeshSampler();
 
@@ -97,6 +99,9 @@ public:
 		const PointType& barCoords,
 		bool             copyNormal = false,
 		bool             copyScalar = true);
+
+	ConstIterator begin() const;
+	ConstIterator end() const;
 
 private:
 

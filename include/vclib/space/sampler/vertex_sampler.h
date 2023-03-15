@@ -2,6 +2,7 @@
 #define VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H
 
 #include <vclib/concept/space/sampler.h>
+#include <vclib/mesh/iterators/vertex_coord_iterator.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -15,6 +16,9 @@ class VertexSampler
 	using VPar = typename std::conditional_t<CNST, const VertexType&, VertexType&>;
 
 public:
+	using PointType = typename VertexType::CoordType;
+	using ConstIterator = VertexPointerCoordIterator<typename std::vector<VP>::const_iterator>;
+
 	VertexSampler();
 
 	const std::vector<VP> samples() const;
@@ -29,6 +33,9 @@ public:
 
 	void add(VPar v);
 	void set(uint i, VPar v);
+
+	ConstIterator begin() const;
+	ConstIterator end() const;
 
 private:
 	std::vector<VP> samplesVec;

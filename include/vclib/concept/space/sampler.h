@@ -36,18 +36,19 @@ namespace vcl {
  * - `o.clear()`: clears all previously contained samples.
  * - `o.reserve(uint())`: reserves memory for the given number of samples.
  * - `o.resize(uint())`: resizes the sampler to the given number of samples.
- * - `o.add(v, m)`: adds a sample with the coord of the given vertex `v` of the mesh `m`.
- * - `o.set(uint(), v, m)`: sets the sample at the given index with the coord of the given vertex
- *   `v` of the mesh `m`
  *
  * @tparam T: The type to be tested for conformity to the SamplerConcept.
  */
 template<typename T>
 concept SamplerConcept = requires(
 	T o,
-	const T& co,
-	internal::TMPSimplePolyMesh::VertexType& v)
+	const T& co)
 {
+	typename T::PointType;
+	typename T::ConstIterator;
+
+	std::is_same_v<typename T::PointType, typename T::ConstIterator::value_type>;
+
 	o.samples();
 
 	{ co.size() } -> std::same_as<std::size_t>;
@@ -56,8 +57,9 @@ concept SamplerConcept = requires(
 	o.clear();
 	o.reserve(uint());
 	o.resize(uint());
-	o.add(v);
-	o.set(uint(), v);
+
+	{ co.begin() } -> std::same_as<typename T::ConstIterator>;
+	{ co.end() } -> std::same_as<typename T::ConstIterator>;
 };
 
 /**

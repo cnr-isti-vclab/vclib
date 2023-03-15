@@ -21,15 +21,37 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_FACE_VERTEX_COORD_ITERATOR_H
-#define VCL_MESH_ITERATORS_FACE_VERTEX_COORD_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_VERTEX_COORD_ITERATOR_H
+#define VCL_MESH_ITERATORS_VERTEX_COORD_ITERATOR_H
 
 #include <vclib/misc/types.h>
 
 namespace vcl {
 
 template<typename It>
-class FaceVertexCoordIterator : public It
+class VertexCoordIterator : public It
+{
+	using VertexType = typename It::value_type;
+
+	using CoordType = typename std::conditional_t<
+		std::is_const_v<VertexType>,
+		const typename VertexType::CoordType,
+		typename VertexType::CoordType>;
+
+public:
+	using value_type = typename std::remove_const<CoordType>::type;
+	using reference  = CoordType&;
+	using pointer    = CoordType*;
+
+	VertexCoordIterator(const It& it) : It(it) {}
+
+	reference operator*() const { return It::operator*().coord(); }
+	pointer operator->() const { return &It::operator*().coord(); }
+
+};
+
+template<typename It>
+class VertexPointerCoordIterator : public It
 {
 	using VertexType = typename std::remove_pointer<typename It::value_type>::type;
 
@@ -43,7 +65,7 @@ public:
 	using reference  = CoordType&;
 	using pointer    = CoordType*;
 
-	FaceVertexCoordIterator(const It& it) : It(it) {}
+	VertexPointerCoordIterator(const It& it) : It(it) {}
 
 	reference operator*() const { return It::operator*()->coord(); }
 	pointer operator->() const { return &It::operator*()->coord(); }
@@ -52,4 +74,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MESH_ITERATORS_FACE_VERTEX_COORD_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_VERTEX_COORD_ITERATOR_H

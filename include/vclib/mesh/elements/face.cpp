@@ -179,27 +179,27 @@ void Face<MeshType, Args...>::setVertices(V... args)
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordBegin()
 {
-	return FaceVertexCoordIterator(VRefs::vertexBegin());
+	return VertexPointerCoordIterator(VRefs::vertexBegin());
 }
 
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::ConstVertexCoordIterator
 Face<MeshType, Args...>::vertexCoordBegin() const
 {
-	return FaceVertexCoordIterator(VRefs::vertexBegin());
+	return VertexPointerCoordIterator(VRefs::vertexBegin());
 }
 
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordEnd()
 {
-	return FaceVertexCoordIterator(VRefs::vertexEnd());
+	return VertexPointerCoordIterator(VRefs::vertexEnd());
 }
 
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::ConstVertexCoordIterator
 Face<MeshType, Args...>::vertexCoordEnd() const
 {
-	return FaceVertexCoordIterator(VRefs::vertexEnd());
+	return VertexPointerCoordIterator(VRefs::vertexEnd());
 }
 
 template<typename MeshType, typename... Args>

@@ -247,6 +247,18 @@ void MeshSampler<MeshType>::set(
 }
 
 template<MeshConcept MeshType>
+typename MeshSampler<MeshType>::ConstIterator MeshSampler<MeshType>::begin() const
+{
+	return ConstIterator(m.vertexBegin());
+}
+
+template<MeshConcept MeshType>
+typename MeshSampler<MeshType>::ConstIterator MeshSampler<MeshType>::end() const
+{
+	return ConstIterator(m.vertexEnd());
+}
+
+template<MeshConcept MeshType>
 template<FaceConcept FaceType>
 void MeshSampler<MeshType>::copyComponents(
 	uint            vi,

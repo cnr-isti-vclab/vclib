@@ -29,18 +29,19 @@
 
 namespace vcl {
 
-template<PointConcept PointType = vcl::Point3d>
+template<PointConcept PointT = vcl::Point3d>
 class PointSampler
 {
 public:
-	using ScalarType = typename PointType::ScalarType;
-	using ConstIterator = typename std::vector<PointType>::const_iterator;
+	using PointType = PointT;
+	using ScalarType = typename PointT::ScalarType;
+	using ConstIterator = typename std::vector<PointT>::const_iterator;
 
 	PointSampler() = default;
 
-	const std::vector<PointType>& samples() const;
+	const std::vector<PointT>& samples() const;
 
-	const PointType& sample(uint i) const;
+	const PointT& sample(uint i) const;
 
 	std::size_t size() const;
 
@@ -48,8 +49,8 @@ public:
 	void reserve(uint n);
 	void resize(uint n);
 
-	void add(const PointType& p);
-	void set(uint i, const PointType& p);
+	void add(const PointT& p);
+	void set(uint i, const PointT& p);
 
 	template<VertexConcept VertexType>
 	void add(const VertexType& v);
@@ -76,16 +77,16 @@ public:
 	void set(uint i, const FaceType& f, const std::vector<ScalarType>& barCoords);
 
 	template<FaceConcept FaceType>
-	void add(const FaceType& f, const PointType& barCoords);
+	void add(const FaceType& f, const PointT& barCoords);
 
 	template<FaceConcept FaceType>
-	void set(uint i, const FaceType& f, const PointType& barCoords);
+	void set(uint i, const FaceType& f, const PointT& barCoords);
 
 	ConstIterator begin() const;
 	ConstIterator end() const;
 
 private:
-	std::vector<PointType> samplesVec;
+	std::vector<PointT> samplesVec;
 };
 
 // makes sure that the VertexIndexSampler satisfies SamplerConcept

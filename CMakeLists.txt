@@ -228,8 +228,8 @@ set(HEADERS
 	include/vclib/mesh/elements/vertex_components.h
 	include/vclib/mesh/iterators/element_container_iterator.h
 	include/vclib/mesh/iterators/element_container_range_iterator.h
+	include/vclib/mesh/iterators/vertex_coord_iterator.h
 	include/vclib/mesh/iterators/face/edge_adj_face_iterator.h
-	include/vclib/mesh/iterators/face/face_vertex_coord_iterator.h
 	include/vclib/mesh/iterators/half_edge/face_adj_face_iterator.h
 	include/vclib/mesh/iterators/half_edge/face_base_iterator.h
 	include/vclib/mesh/iterators/half_edge/face_half_edge_iterator.h

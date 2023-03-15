@@ -27,164 +27,164 @@
 
 namespace vcl {
 
-template<PointConcept PointType>
-const std::vector<PointType>& PointSampler<PointType>::samples() const
+template<PointConcept PointT>
+const std::vector<PointT>& PointSampler<PointT>::samples() const
 {
 	return samplesVec;
 }
 
-template<PointConcept PointType>
-const PointType& PointSampler<PointType>::sample(uint i) const
+template<PointConcept PointT>
+const PointT& PointSampler<PointT>::sample(uint i) const
 {
 	return samplesVec[i];
 }
 
-template<PointConcept PointType>
-std::size_t PointSampler<PointType>::size() const
+template<PointConcept PointT>
+std::size_t PointSampler<PointT>::size() const
 {
 	return samplesVec.size();
 }
 
-template<PointConcept PointType>
-void PointSampler<PointType>::clear()
+template<PointConcept PointT>
+void PointSampler<PointT>::clear()
 {
 	samplesVec.clear();
 }
 
-template<PointConcept PointType>
-void PointSampler<PointType>::reserve(uint n)
+template<PointConcept PointT>
+void PointSampler<PointT>::reserve(uint n)
 {
 	samplesVec.reserve(n);
 }
 
-template<PointConcept PointType>
-void PointSampler<PointType>::resize(uint n)
+template<PointConcept PointT>
+void PointSampler<PointT>::resize(uint n)
 {
 	samplesVec.resize(n);
 }
 
-template<PointConcept PointType>
-void PointSampler<PointType>::add(const PointType& p)
+template<PointConcept PointT>
+void PointSampler<PointT>::add(const PointT& p)
 {
 	samplesVec.push_back(p);
 }
 
-template<PointConcept PointType>
-void PointSampler<PointType>::set(uint i, const PointType& p)
+template<PointConcept PointT>
+void PointSampler<PointT>::set(uint i, const PointT& p)
 {
 	samplesVec[i] = p;
 }
 
-template<PointConcept PointType>
-typename PointSampler<PointType>::ConstIterator PointSampler<PointType>::begin() const
+template<PointConcept PointT>
+typename PointSampler<PointT>::ConstIterator PointSampler<PointT>::begin() const
 {
 	return samplesVec.begin();
 }
 
-template<PointConcept PointType>
-typename PointSampler<PointType>::ConstIterator PointSampler<PointType>::end() const
+template<PointConcept PointT>
+typename PointSampler<PointT>::ConstIterator PointSampler<PointT>::end() const
 {
 	return samplesVec.end();
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<VertexConcept VertexType>
-void PointSampler<PointType>::add(
+void PointSampler<PointT>::add(
 	const VertexType& v)
 {
 	samplesVec.push_back(v.coord());
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<VertexConcept VertexType>
-void PointSampler<PointType>::set(
+void PointSampler<PointT>::set(
 	uint i,
 	const VertexType& v)
 {
 	samplesVec[i] = v.coord();
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<EdgeConcept EdgeType>
-void PointSampler<PointType>::add(const EdgeType& e, double u)
+void PointSampler<PointT>::add(const EdgeType& e, double u)
 {
 	samplesVec.push_back((e.vertex(0).coord()*(1-u)) + (e.vertex(1).coord()*u));
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<EdgeConcept EdgeType>
-void PointSampler<PointType>::set(uint i, const EdgeType& e, double u)
+void PointSampler<PointT>::set(uint i, const EdgeType& e, double u)
 {
 	samplesVec[i] = (e.vertex(0).coord()*(1-u)) + (e.vertex(1).coord()*u);
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<FaceConcept FaceType>
-void PointSampler<PointType>::add(const FaceType& f)
+void PointSampler<PointT>::add(const FaceType& f)
 {
 	samplesVec.push_back(vcl::faceBarycenter(f));
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<FaceConcept FaceType>
-void PointSampler<PointType>::set(uint i, const FaceType& f)
+void PointSampler<PointT>::set(uint i, const FaceType& f)
 {
 	samplesVec[i] = vcl::faceBarycenter(f);
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<FaceConcept FaceType>
-void PointSampler<PointType>::add(const FaceType& f, const std::vector<ScalarType>& barCoords)
+void PointSampler<PointT>::add(const FaceType& f, const std::vector<ScalarType>& barCoords)
 {
 	assert(f.vertexNumber() <= barCoords.size());
 
-	PointType p;
+	PointT p;
 	for (uint i = 0; i < f.vertexNumber(); i++)
 		p += f.vertex(i)->coord() * barCoords[i];
 
 	samplesVec.push_back(p);
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<FaceConcept FaceType>
-void PointSampler<PointType>::set(
+void PointSampler<PointT>::set(
 	uint                           i,
 	const FaceType&                f,
 	const std::vector<ScalarType>& barCoords)
 {
 	assert(f.vertexNumber() <= barCoords.size());
 
-	PointType p;
+	PointT p;
 	for (uint i = 0; i < f.vertexNumber(); i++)
 		p += f.vertex(i)->coord() * barCoords[i];
 
 	samplesVec[i] = p;
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<FaceConcept FaceType>
-void PointSampler<PointType>::add(const FaceType& f, const PointType& barCoords)
+void PointSampler<PointT>::add(const FaceType& f, const PointT& barCoords)
 {
 	static_assert(FaceType::NV == 3 || FaceType::NV == -1);
 	if constexpr(FaceType::NV == -1) {
 		assert(f.vertexNumber() == 3);
 	}
 
-	PointType p = triangleBarycentricCoordinatePoint(f, barCoords);
+	PointT p = triangleBarycentricCoordinatePoint(f, barCoords);
 
 	samplesVec.push_back(p);
 }
 
-template<PointConcept PointType>
+template<PointConcept PointT>
 template<FaceConcept FaceType>
-void PointSampler<PointType>::set(uint i, const FaceType& f, const PointType& barCoords)
+void PointSampler<PointT>::set(uint i, const FaceType& f, const PointT& barCoords)
 {
 	static_assert(FaceType::NV == 3 || FaceType::NV == -1);
 	if constexpr(FaceType::NV == -1) {
 		assert(f.vertexNumber() == 3);
 	}
 
-	PointType p = triangleBarycentricCoordinatePoint(f, barCoords);
+	PointT p = triangleBarycentricCoordinatePoint(f, barCoords);
 
 	samplesVec[i] = p;
 }

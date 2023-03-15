@@ -56,4 +56,16 @@ void VertexSampler<VertexType, CNST>::set(uint i, VPar v)
 	samplesVec[i] = &v;
 }
 
+template<VertexConcept VertexType, bool CNST>
+typename VertexSampler<VertexType, CNST>::ConstIterator VertexSampler<VertexType, CNST>::begin() const
+{
+	return ConstIterator(samplesVec.begin());
+}
+
+template<VertexConcept VertexType, bool CNST>
+typename VertexSampler<VertexType, CNST>::ConstIterator VertexSampler<VertexType, CNST>::end() const
+{
+	return ConstIterator(samplesVec.end());
+}
+
 } // namespace vcl::internal
