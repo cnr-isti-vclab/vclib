@@ -59,4 +59,6 @@ static_assert(
 
 } // namespace vcl
 
+#include "vertex_sampler.cpp"
+
 #endif // VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H

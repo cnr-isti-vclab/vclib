@@ -60,9 +60,8 @@ HausdorffDistResult hausdorffDist(
 
 	uint ns = 0;
 	uint i = 0;
-	vcl::parallelFor(s.begin(), s.end(), [&](const PointSampleType& sample){
-//	for (uint i = 0; i < s.size(); ++i) {
-//		const PointSampleType& sample = s.sample(i);
+	vcl::parallelFor(s, [&](const PointSampleType& sample){
+//	for (const PointSampleType& sample : s) {
 		double dist;
 		const auto iter = g.closestValue(sample, dist);
 
@@ -234,8 +233,7 @@ HausdorffDistResult hausdorffDistance(
 
 	switch (sampMethod) {
 	case VERTEX_UNIFORM: {
-		//ConstVertexSampler<typename MeshType2::VertexType> sampler;
-		PointSampler sampler;
+		ConstVertexSampler<typename MeshType2::VertexType> sampler;
 
 		return internal::hausdorffDistanceVertexUniformSampling(
 			m1, m2, nSamples, deterministic, sampler, birth, log);
