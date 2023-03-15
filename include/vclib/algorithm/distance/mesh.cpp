@@ -41,6 +41,8 @@ HausdorffDistResult hausdorffDist(
 	const GridType& g,
 	LogType& log)
 {
+	using PointSampleType = typename SamplerType::PointType;
+
 	HausdorffDistResult res;
 	res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
 
@@ -58,9 +60,9 @@ HausdorffDistResult hausdorffDist(
 
 	uint ns = 0;
 	uint i = 0;
-	vcl::parallelFor(s.begin(), s.end(), [&](const auto& sample){
+	vcl::parallelFor(s.begin(), s.end(), [&](const PointSampleType& sample){
 //	for (uint i = 0; i < s.size(); ++i) {
-//		const auto& sample = s.sample(i);
+//		const PointSampleType& sample = s.sample(i);
 		double dist;
 		const auto iter = g.closestValue(sample, dist);
 
