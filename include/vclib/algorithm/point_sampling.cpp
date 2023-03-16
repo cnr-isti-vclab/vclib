@@ -644,15 +644,24 @@ SamplerType faceAreaWeightedPointSampling(
 /**
  * @brief Computes a montecarlo distribution with an exact number of samples. It works by generating
  * a sequence of consecutive segments proportional to the face areas and actually shooting sample
- * over this line.
+ * over this line. The indices of the sampled faces in the mesh are stored in the birthFaces vector.
  *
- * @param m
- * @param nSamples
- * @param deterministic
- * @return
+ * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam MeshType: A type that satisfies the FaceMeshConcept
+ *
+ * @param[in] m: The mesh to sample from.
+ * @param[in] nSamples: The number of samples to take.
+ * @param[out] birthFaces: A vector to store the indices of the faces that were sampled.
+ * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ *
+ * @return A SamplerType object that contains the sampled points on the faces.
  */
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic)
+SamplerType montecarloPointSampling(
+	const MeshType&    m,
+	uint               nSamples,
+	std::vector<uint>& birthFaces,
+	bool               deterministic)
 {
 	using VertexType = typename MeshType::VertexType;
 	using ScalarType = typename VertexType::ScalarType;
@@ -661,6 +670,11 @@ SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deter
 
 	vcl::FirstElementPairComparator<Interval> comparator;
 	SamplerType sampler;
+
+	// Reserve space in the sampler and birthFaces vectors
+	sampler.reserve(nSamples);
+	birthFaces.reserve(nSamples);
+	birthFaces.clear();
 
 	std::uniform_real_distribution<ScalarType> dist(0, 1);
 
@@ -690,9 +704,31 @@ SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deter
 		sampler.add(
 			*it->second,
 			vcl::randomPolygonBarycentricCoordinate<ScalarType>(it->second->vertexNumber(), gen));
+		birthFaces.push_back(it->second->index());
 	}
 
 	return sampler;
+}
+
+/**
+ * @brief Computes a montecarlo distribution with an exact number of samples. It works by generating
+ * a sequence of consecutive segments proportional to the face areas and actually shooting sample
+ * over this line.
+ *
+ * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam MeshType: A type that satisfies the FaceMeshConcept
+ *
+ * @param[in] m: The mesh to sample from.
+ * @param[in] nSamples: The number of samples to take.
+ * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ *
+ * @return A SamplerType object that contains the sampled points on the faces.
+ */
+template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic)
+{
+	std::vector<uint> birthFaces;
+	return montecarloPointSampling<SamplerType>(m, nSamples, birthFaces, deterministic);
 }
 
 template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>

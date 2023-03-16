@@ -39,9 +39,9 @@ struct HausdorffDistResult {
 };
 
 enum HausdorffSamplingMethod {
-	VERTEX_UNIFORM = 0,
-	EDGE_UNIFORM,
-	MONTECARLO
+	HAUSDORFF_VERTEX_UNIFORM = 0,
+	HAUSDORFF_EDGE_UNIFORM,
+	HAUSDORFF_MONTECARLO
 };
 
 template<MeshConcept MeshType1, MeshConcept MeshType2, LoggerConcept LogType = NullLogger>
@@ -49,8 +49,8 @@ HausdorffDistResult hausdorffDistance(
 	const MeshType1& m1,
 	const MeshType2& m2,
 	LogType& log = nullLogger,
+	HausdorffSamplingMethod sampMethod = HAUSDORFF_VERTEX_UNIFORM,
 	uint nSamples = 0,
-	HausdorffSamplingMethod sampMethod = VERTEX_UNIFORM,
 	bool deterministic = false);
 
 } // namespace vcl

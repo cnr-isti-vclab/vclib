@@ -57,7 +57,7 @@ int main()
 	vcl::updatePerFaceNormals(m2);
 
 	log.startTimer();
-	auto res = vcl::hausdorffDistance(m1, m2, log);
+	auto res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_MONTECARLO);
 
 	std::cerr << "\n\nmin: " << res.minDist << ";\n";
 	std::cerr << "max: " << res.maxDist << ";\n";

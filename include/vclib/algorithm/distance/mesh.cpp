@@ -172,17 +172,18 @@ HausdorffDistResult samplerMeshHausdorff(
 }
 
 template<
+	uint METHOD,
 	MeshConcept    MeshType1,
 	MeshConcept    MeshType2,
 	SamplerConcept SamplerType,
 	LoggerConcept  LogType>
-HausdorffDistResult hausdorffDistanceVertexUniformSampling(
+HausdorffDistResult hausdorffDistance(
 	const MeshType1&   m1,
 	const MeshType2&   m2,
 	uint               nSamples,
 	bool               deterministic,
 	SamplerType&       sampler,
-	std::vector<uint>& birthVertices,
+	std::vector<uint>& birth,
 	LogType& log)
 {
 	std::string meshName1 = "first mesh";
@@ -195,11 +196,20 @@ HausdorffDistResult hausdorffDistanceVertexUniformSampling(
 	}
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.log(0, "Sampling " + meshName2 + "...");
+		log.log(0, "Sampling " + meshName2 + " with " + std::to_string(nSamples) + " samples...");
 	}
 
-	sampler = vcl::vertexUniformPointSampling<SamplerType>(
-		m2, nSamples, birthVertices, false, deterministic);
+	if constexpr (METHOD == HAUSDORFF_VERTEX_UNIFORM) {
+		sampler = vcl::vertexUniformPointSampling<SamplerType>(
+			m2, nSamples, birth, false, deterministic);
+	}
+	else if constexpr (METHOD == HAUSDORFF_EDGE_UNIFORM) {
+		// todo
+	}
+	else {
+		sampler = vcl::montecarloPointSampling<SamplerType>(
+			m2, nSamples, birth, deterministic);
+	}
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
 		log.log(5, meshName2 + " sampled.");
@@ -222,8 +232,8 @@ HausdorffDistResult hausdorffDistance(
 	const MeshType1& m1,
 	const MeshType2& m2,
 	LogType& log,
-	uint nSamples,
 	HausdorffSamplingMethod sampMethod,
+	uint nSamples,
 	bool deterministic)
 {
 	if (nSamples == 0)
@@ -232,24 +242,26 @@ HausdorffDistResult hausdorffDistance(
 	std::vector<uint> birth;
 
 	switch (sampMethod) {
-	case VERTEX_UNIFORM: {
+	case HAUSDORFF_VERTEX_UNIFORM: {
 		ConstVertexSampler<typename MeshType2::VertexType> sampler;
 
-		return internal::hausdorffDistanceVertexUniformSampling(
+		return internal::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
 			m1, m2, nSamples, deterministic, sampler, birth, log);
 	}
 
-	case EDGE_UNIFORM: {
+	case HAUSDORFF_EDGE_UNIFORM: {
 		// todo
 		return HausdorffDistResult();
 	}
-	case MONTECARLO: {
-		// todo
-		return HausdorffDistResult();
+	case HAUSDORFF_MONTECARLO: {
+		PointSampler<typename MeshType2::VertexType::CoordType> sampler;
+
+		return internal::hausdorffDistance<HAUSDORFF_MONTECARLO>(
+			m1, m2, nSamples, deterministic, sampler, birth, log);
+	}
 	default:
 		assert(0);
 		return HausdorffDistResult();
-	}
 	}
 }
 
