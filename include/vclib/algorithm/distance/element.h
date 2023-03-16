@@ -28,6 +28,12 @@
 
 namespace vcl {
 
+template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
+auto pointFaceDistance(const PointType& p, const FaceType& f, ScalarType maxDist, PointType& closest, bool signedDist = false);
+
+template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
+auto pointFaceDistance(const PointType& p, const FaceType& f, ScalarType maxDist, bool signedDist = false);
+
 template<Point3Concept PointType, FaceConcept FaceType>
 auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest, bool signedDist = false);
 

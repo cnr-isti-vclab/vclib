@@ -62,7 +62,7 @@ HausdorffDistResult hausdorffDist(
 	uint i = 0;
 	vcl::parallelFor(s, [&](const PointSampleType& sample){
 //	for (const PointSampleType& sample : s) {
-		double dist;
+		double dist = std::numeric_limits<double>::max();
 		const auto iter = g.closestValue(sample, dist);
 
 		if (iter != g.end()) {

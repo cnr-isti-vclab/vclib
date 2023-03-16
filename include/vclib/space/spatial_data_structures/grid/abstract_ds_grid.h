@@ -115,6 +115,12 @@ public:
 	using QueryDistFunction =
 		std::function<typename GridType::ScalarType(const QueryValueType&, const ValueType&)>;
 
+	template<typename QueryValueType>
+	using QueryBoundedDistFunction = std::function<typename GridType::ScalarType(
+		const QueryValueType&,
+		const ValueType&,
+		typename GridType::ScalarType)>;
+
 	bool cellEmpty(const KeyType& k) const;
 
 	std::size_t countInCell(const KeyType& k) const;
@@ -138,6 +144,12 @@ public:
 	void eraseInSphere(const Sphere<typename GridType::ScalarType>& s);
 
 	// closest queries
+	template<typename QueryValueType>
+	auto closestValue(
+		const QueryValueType& qv,
+		QueryBoundedDistFunction<QueryValueType> distFunction,
+		typename GridType::ScalarType& dist) const;
+
 	template<typename QueryValueType>
 	auto closestValue(
 		const QueryValueType& qv,
@@ -225,7 +237,7 @@ private:
 		const QueryValueType&             qv,
 		typename GridType::ScalarType&    dist,
 		const Boxui&                      interval,
-		QueryDistFunction<QueryValueType> distFunction,
+		QueryBoundedDistFunction<QueryValueType> distFunction,
 		const Boxui&                      ignore = Boxui()) const;
 
 	template<typename QueryValueType>

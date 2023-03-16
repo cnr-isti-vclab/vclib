@@ -43,10 +43,14 @@ namespace vcl {
  * @param[in] signedDist: Whether to calculate the signed distance. Default is false.
  * @return The distance between the point and the face.
  */
-template<Point3Concept PointType, FaceConcept FaceType>
-auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest, bool signedDist)
+template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
+auto pointFaceDistance(
+	const PointType& p,
+	const FaceType&  f,
+	ScalarType       maxDist,
+	PointType&       closest,
+	bool             signedDist)
 {
-	using ScalarType = typename PointType::ScalarType;
 	using FPointType = typename FaceType::VertexType::CoordType;
 
 	ScalarType dist;
@@ -78,6 +82,9 @@ auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest
 		// Calculate the distance between the query point and the plane of the triangle.
 		Plane<ScalarType> fPlane(fp0, f.normal());
 		dist = pointPlaneDistance(p, fPlane, true);
+
+		if (dist >= maxDist)
+			return dist;
 
 		// Project the query point onto the triangle plane to obtain the closest point on the
 		// triangle.
@@ -152,6 +159,22 @@ auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest
 	return dist;
 }
 
+template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
+auto pointFaceDistance(const PointType& p, const FaceType& f, ScalarType maxDist, bool signedDist)
+{
+	PointType closest;
+	return pointFaceDistance(p, f, maxDist, closest, signedDist);
+}
+
+template<Point3Concept PointType, FaceConcept FaceType>
+auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest, bool signedDist)
+{
+	using ScalarType = typename PointType::ScalarType;
+
+	ScalarType maxDist = std::numeric_limits<ScalarType>::max();
+	return pointFaceDistance(p, f, maxDist, closest, signedDist);
+}
+
 /**
  * @brief Calculate the distance between a 3D point and a 3D triangle face.
  *
@@ -166,8 +189,12 @@ auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest
 template<Point3Concept PointType, FaceConcept FaceType>
 auto pointFaceDistance(const PointType& p, const FaceType& f, bool signedDist)
 {
+	using ScalarType = typename PointType::ScalarType;
+
 	PointType closest;
-	return pointFaceDistance(p, f, closest, signedDist);
+
+	ScalarType maxDist = std::numeric_limits<ScalarType>::max();
+	return pointFaceDistance(p, f, maxDist, closest, signedDist);
 }
 
 } // namespace vcl
