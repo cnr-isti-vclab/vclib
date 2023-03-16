@@ -137,7 +137,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const Point<S, M>& p);
 
 protected:
-	Eigen::Matrix<Scalar, 1, N> p;
+	Eigen::Matrix<Scalar, 1, N> p = Eigen::Matrix<Scalar, 1, N>::Zero();
 };
 
 template<typename Scalar,  uint N>

@@ -56,17 +56,17 @@ int main()
 	vcl::updatePerFaceNormals(m1);
 	vcl::updatePerFaceNormals(m2);
 
-//	log.startTimer();
-//	auto res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_VERTEX_UNIFORM);
+	log.startTimer();
+	auto res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_VERTEX_UNIFORM);
 
-//	std::cerr << "\n\nmin: " << res.minDist << ";\n";
-//	std::cerr << "max: " << res.maxDist << ";\n";
-//	std::cerr << "mean: " << res.meanDist << ";\n";
-//	std::cerr << "rms: " << res.RMSDist << ";\n";
-//	std::cerr << "======================================\n";
+	std::cerr << "\n\nmin: " << res.minDist << ";\n";
+	std::cerr << "max: " << res.maxDist << ";\n";
+	std::cerr << "mean: " << res.meanDist << ";\n";
+	std::cerr << "rms: " << res.RMSDist << ";\n";
+	std::cerr << "======================================\n";
 
 	log.startTimer();
-	auto res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_MONTECARLO);
+	res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_MONTECARLO);
 
 	std::cerr << "\n\nmin: " << res.minDist << ";\n";
 	std::cerr << "max: " << res.maxDist << ";\n";
