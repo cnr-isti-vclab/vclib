@@ -47,7 +47,7 @@ HausdorffDistResult hausdorffDist(
 	res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.log(5, "Computing distances...");
+		log.log(5, "Computing distances for " + std::to_string(s.size()) + " samples...");
 	}
 
 	uint logPerc = 0;
@@ -91,6 +91,17 @@ HausdorffDistResult hausdorffDist(
 		}
 //	}
 	});
+
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.log(100, "Computed " + std::to_string(ns) + " distances.");
+		if (ns != s.size()) {
+			log.log(
+				100,
+				LogType::WARNING,
+				std::to_string(s.size() - ns) +
+					" samples were not counted because no closest vertex/face was found.");
+		}
+	}
 
 	res.meanDist /= ns;
 	res.RMSDist = std::sqrt(res.RMSDist / ns);
