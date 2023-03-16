@@ -54,7 +54,7 @@ public:
 	/**
 	 * @brief The dimensionality of the box.
 	 */
-	static const int DIM = PointT::DIM;
+	static const uint DIM = PointT::DIM;
 
 	Box();
 	Box(const PointT& p);

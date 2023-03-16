@@ -43,6 +43,7 @@ public:
 	using reference  = CoordType&;
 	using pointer    = CoordType*;
 
+	using It::It;
 	VertexCoordIterator(const It& it) : It(it) {}
 
 	reference operator*() const { return It::operator*().coord(); }
@@ -65,6 +66,7 @@ public:
 	using reference  = CoordType&;
 	using pointer    = CoordType*;
 
+	using It::It;
 	VertexPointerCoordIterator(const It& it) : It(it) {}
 
 	reference operator*() const { return It::operator*()->coord(); }

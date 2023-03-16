@@ -27,7 +27,7 @@
 
 namespace vcl {
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 template<typename... Scalars>
 Point<Scalar, N>::Point(Scalars... scalars) requires(sizeof...(scalars) == N)
 {
@@ -36,61 +36,61 @@ Point<Scalar, N>::Point(Scalars... scalars) requires(sizeof...(scalars) == N)
 		p(i) = args[i];
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N>::Point(const Eigen::Matrix<Scalar, 1, N>& v)
 {
 	p << v;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar& Point<Scalar, N>::x() requires (N >= 1)
 {
 	return p(0);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 const Scalar& Point<Scalar, N>::x() const requires (N >= 1)
 {
 	return p(0);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar& Point<Scalar, N>::y() requires (N >= 2)
 {
 	return p(1);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 const Scalar& Point<Scalar, N>::y() const requires (N >= 2)
 {
 	return p(1);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar& Point<Scalar, N>::z() requires (N >= 3)
 {
 	return p(2);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 const Scalar& Point<Scalar, N>::z() const requires (N >= 3)
 {
 	return p(2);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar& Point<Scalar, N>::w() requires (N >= 4)
 {
 	return p(3);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 const Scalar& Point<Scalar, N>::w() const requires (N >= 4)
 {
 	return p(3);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 template<typename S>
 Point<S, N> Point<Scalar, N>::cast() const
 {
@@ -106,7 +106,7 @@ Point<S, N> Point<Scalar, N>::cast() const
  * @brief Returns true if at least one of its components is NaN or inf.
  * @return true if the point is degenerate, false otherwise.
  */
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 bool Point<Scalar, N>::isDegenerate() const
 {
 	for (size_t i = 0; i < DIM; ++i)
@@ -115,7 +115,7 @@ bool Point<Scalar, N>::isDegenerate() const
 	return false;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 bool Point<Scalar, N>::epsilonCompare(const Point &p1, Scalar epsilon)
 {
 	bool b = true;
@@ -124,13 +124,13 @@ bool Point<Scalar, N>::epsilonCompare(const Point &p1, Scalar epsilon)
 	return b;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar Point<Scalar, N>::dot(const Point& p1) const
 {
 	return p.dot(p1.p);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar Point<Scalar, N>::angle(const Point& p1) const
 {
 	Scalar w = p.norm() * p1.p.norm();
@@ -144,13 +144,13 @@ Scalar Point<Scalar, N>::angle(const Point& p1) const
 	return (Scalar) acos(t);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar Point<Scalar, N>::dist(const Point& p1) const
 {
 	return (p - p1.p).norm();
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar Point<Scalar, N>::squaredDist(const Point& p1) const
 {
 
@@ -162,13 +162,13 @@ Scalar Point<Scalar, N>::squaredDist(const Point& p1) const
  * @note This function is available only on Points having size == 3.
  * @return The cross product between this and the other point.
  */
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar,N> Point<Scalar, N>::cross(const Point& p1) const requires (N == 3)
 {
 	return p.cross(p1.p);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::mul(const Point& p1) const
 {
 	Point<Scalar, N> tmp;
@@ -177,7 +177,7 @@ Point<Scalar, N> Point<Scalar, N>::mul(const Point& p1) const
 	return tmp;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::div(const Point& p1) const
 {
 	Point<Scalar, N> tmp;
@@ -186,43 +186,43 @@ Point<Scalar, N> Point<Scalar, N>::div(const Point& p1) const
 	return tmp;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar Point<Scalar, N>::norm() const
 {
 	return p.norm();
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar Point<Scalar, N>::squaredNorm() const
 {
 	return p.squaredNorm();
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 uint Point<Scalar, N>::size() const
 {
 	return p.size();
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 void Point<Scalar, N>::setConstant(Scalar s)
 {
 	p.setConstant(s);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 void Point<Scalar, N>::setZero()
 {
 	p.setZero();
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 void Point<Scalar, N>::setOnes()
 {
 	p.setOnes();
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::normalized() const
 {
 	if (norm() > 0) {
@@ -231,7 +231,7 @@ Point<Scalar, N> Point<Scalar, N>::normalized() const
 	return *this;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 void Point<Scalar, N>::normalize()
 {
 	if (norm() > 0) {
@@ -239,13 +239,13 @@ void Point<Scalar, N>::normalize()
 	}
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 const Eigen::Matrix<Scalar, 1, N>& Point<Scalar, N>::eigenVector() const
 {
 	return p;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 std::size_t Point<Scalar, N>::hash() const
 {
 	std::size_t h = 0;
@@ -254,31 +254,31 @@ std::size_t Point<Scalar, N>::hash() const
 	return h;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar& Point<Scalar, N>::operator()(uint i)
 {
 	return p(i);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 const Scalar& Point<Scalar, N>::operator()(uint i) const
 {
 	return p(i);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar& Point<Scalar, N>::operator[](uint i)
 {
 	return p(i);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 const Scalar& Point<Scalar, N>::operator[](uint i) const
 {
 	return p(i);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 auto Point<Scalar, N>::operator<=>(const Point& p1) const
 {
 	uint i = 0;
@@ -288,49 +288,49 @@ auto Point<Scalar, N>::operator<=>(const Point& p1) const
 	return i == DIM ? p[0] <=> p1.p[0] : p[i] <=> p1.p[i];
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator+(const Scalar& s) const
 {
 	return Point<Scalar, N>(p.array() + s);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator+(const Point<Scalar, N>& p1) const
 {
 	return Point<Scalar, N>(p + p1.p);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator-() const
 {
 	return Point<Scalar, N>(-p);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator-(const Scalar& s) const
 {
 	return Point<Scalar, N>(p.array() - s);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator-(const Point<Scalar, N>& p1) const
 {
 	return Point<Scalar, N>(p - p1.p);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator*(const Scalar& s) const
 {
 	return Point<Scalar, N>(p * s);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Scalar Point<Scalar, N>::operator*(const Point<Scalar, N>& p1) const
 {
 	return dot(p1);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<Scalar, N, N>& m) const
 {
 	return Point<Scalar, N>(p * m);
@@ -339,7 +339,7 @@ Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<Scalar, N, N>& 
 /**
  * @brief Returns a new 3D point/vector on which has been applied an TRS 4x4 matrix.
  */
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator*(
 	const Eigen::Matrix<Scalar, N+1, N+1>& m) const requires (N == 3)
 {
@@ -354,48 +354,48 @@ Point<Scalar, N> Point<Scalar, N>::operator*(
 	return Point(s);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator/(const Scalar& s) const
 {
 	return Point<Scalar, N>(p / s);
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator+=(const Scalar& s)
 {
 	p = p.array() + s;
 	return *this;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator+=(const Point<Scalar, N>& p1)
 {
 	p += p1.p;
 	return *this;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator-=(const Scalar& s)
 {
 	p = p.array() - s;
 	return *this;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator-=(const Point<Scalar, N>& p1)
 {
 	p -= p1.p;
 	return *this;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator*=(const Scalar& s)
 {
 	p *= s;
 	return *this;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<Scalar, N, N>& m)
 {
 	p *= m;
@@ -406,7 +406,7 @@ Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<Scalar, N, N>
  * @brief Applies to the given point/vector an TRS 4x4 matrix.
  * @param m
  */
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar,N>& Point<Scalar, N>::operator*=(
 	const Eigen::Matrix<Scalar, N+1, N+1>& m) requires (N == 3)
 {
@@ -414,21 +414,21 @@ Point<Scalar,N>& Point<Scalar, N>::operator*=(
 	return *this;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator/=(const Scalar& s)
 {
 	p /= s;
 	return *this;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator=(const Eigen::Matrix<Scalar, 1, N>& v)
 {
 	p << v;
 	return *this;
 }
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
 {
 	out << p1.p;
@@ -439,7 +439,7 @@ std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
 
 namespace std {
 
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 std::size_t hash<vcl::Point<Scalar, N> >::operator()(const vcl::Point<Scalar, N>& id) const noexcept
 {
 	return id.hash();

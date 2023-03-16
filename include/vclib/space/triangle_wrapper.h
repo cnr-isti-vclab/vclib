@@ -35,7 +35,7 @@ public:
 	using ScalarType = typename PointT::ScalarType;
 	using PointType = PointT;
 
-	static const int DIM = PointT::DIM;
+	static const uint DIM = PointT::DIM;
 
 	TriangleWrapper(const PointT& p0, const PointT& p1, const PointT& p2);
 

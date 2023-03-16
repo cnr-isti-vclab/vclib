@@ -54,7 +54,7 @@ public:
 	/**
 	 * @brief The dimensionality of the segment.
 	 */
-	static const int DIM = PointT::DIM;
+	static const uint DIM = PointT::DIM;
 
 	Segment();
 	Segment(const PointT& p0, const PointT& p1);

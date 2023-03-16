@@ -38,7 +38,7 @@ public:
 	using ScalarType = typename PointT::ScalarType;
 	using PointType = PointT;
 
-	static const int DIM = PointT::DIM;
+	static const uint DIM = PointT::DIM;
 
 	Polygon();
 
