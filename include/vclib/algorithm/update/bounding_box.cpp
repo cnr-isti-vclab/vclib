@@ -23,7 +23,7 @@
 
 #include "bounding_box.h"
 
-#include <vclib/algorithm/stat.h>
+#include <vclib/algorithm/bounding_box.h>
 
 namespace vcl {
 

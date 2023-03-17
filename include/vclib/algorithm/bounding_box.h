@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHM_STAT_BOUNDING_BOX_H
-#define VCL_ALGORITHM_STAT_BOUNDING_BOX_H
+#ifndef VCL_ALGORITHM_BOUNDING_BOX_H
+#define VCL_ALGORITHM_BOUNDING_BOX_H
 
 #include <vclib/concept/mesh/element/edge.h>
 #include <vclib/mesh/requirements.h>
@@ -68,4 +68,4 @@ auto boundingBox(Iterator begin, Iterator end);
 
 #include "bounding_box.cpp"
 
-#endif // VCL_ALGORITHM_STAT_BOUNDING_BOX_H
+#endif // VCL_ALGORITHM_BOUNDING_BOX_H

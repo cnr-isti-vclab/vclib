@@ -23,8 +23,6 @@
 
 #include "hash_table_grid.h"
 
-#include <vclib/algorithm/stat/bounding_box.h>
-
 namespace vcl {
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>

@@ -53,6 +53,7 @@ set(HEADERS
 	include/vclib/mesh.h
 	include/vclib/miscellaneous.h
 	include/vclib/space.h
+	include/vclib/algorithm/bounding_box.h
 	include/vclib/algorithm/clean.h
 	include/vclib/algorithm/create.h
 	include/vclib/algorithm/distance.h
@@ -82,7 +83,6 @@ set(HEADERS
 	include/vclib/algorithm/intersection/misc.h
 	include/vclib/algorithm/polygon/geometry.h
 	include/vclib/algorithm/polygon/topology.h
-	include/vclib/algorithm/stat/bounding_box.h
 	include/vclib/algorithm/stat/scalar.h
 	include/vclib/algorithm/stat/selection.h
 	include/vclib/algorithm/update/bounding_box.h
@@ -315,6 +315,7 @@ set(HEADERS
 )
 
 set(SOURCES
+	include/vclib/algorithm/bounding_box.cpp
 	include/vclib/algorithm/clean.cpp
 	include/vclib/algorithm/export_to_matrix.cpp
 	include/vclib/algorithm/fitting.cpp
@@ -337,7 +338,6 @@ set(SOURCES
 	include/vclib/algorithm/intersection/misc.cpp
 	include/vclib/algorithm/polygon/geometry.cpp
 	include/vclib/algorithm/polygon/topology.cpp
-	include/vclib/algorithm/stat/bounding_box.cpp
 	include/vclib/algorithm/stat/scalar.cpp
 	include/vclib/algorithm/stat/selection.cpp
 	include/vclib/algorithm/update/bounding_box.cpp

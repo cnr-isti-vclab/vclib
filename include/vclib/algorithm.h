@@ -24,6 +24,7 @@
 #ifndef VCL_ALGORITHM_H
 #define VCL_ALGORITHM_H
 
+#include "algorithm/bounding_box.h"
 #include "algorithm/clean.h"
 #include "algorithm/create.h"
 #include "algorithm/distance.h"

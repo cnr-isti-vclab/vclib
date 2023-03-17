@@ -28,7 +28,6 @@
 
 #include <vclib/space/matrix.h>
 
-#include "stat/bounding_box.h"
 #include "stat/scalar.h"
 #include "stat/selection.h"
 

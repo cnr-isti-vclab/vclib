@@ -25,7 +25,7 @@
 
 #include "misc.h"
 
-#include <vclib/algorithm/stat/bounding_box.h>
+#include <vclib/algorithm/bounding_box.h>
 #include <vclib/algorithm/polygon/geometry.h>
 #include <vclib/math/min_max.h>
 
