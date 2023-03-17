@@ -229,6 +229,24 @@ inline float Color::hsvSaturationF() const
 	return (float) hsvSaturation() / 255;
 }
 
+inline unsigned short Color::toUnsignedR5G5B5() const
+{
+	unsigned short r = x()/8;
+	unsigned short g = y()/8;
+	unsigned short b = z()/8;
+	unsigned short res = r + g*32 + b*1024;
+	return res;
+}
+
+inline unsigned short Color::toUnsignedB5G5R5() const
+{
+	unsigned short r = x()/8;
+	unsigned short g = y()/8;
+	unsigned short b = z()/8;
+	unsigned short res = b + g*32 + r*1024;
+	return res;
+}
+
 /**
  * @brief Sets the alpha of this color [0-255]
  * @param[in] alpha

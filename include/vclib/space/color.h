@@ -99,6 +99,9 @@ public:
 
 	float hsvHueF() const;
 	float hsvSaturationF() const;
+	
+	unsigned short toUnsignedR5G5B5() const;
+	unsigned short toUnsignedB5G5R5() const;
 
 	void setAlpha(uint8_t alpha);
 	void setRed(uint8_t red);

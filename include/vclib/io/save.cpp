@@ -47,6 +47,9 @@ void save(const MeshType& m, const std::string& filename, const FileMeshInfo& in
 	else if (ext == ".ply") {
 		io::savePly(m, filename, info, binary);
 	}
+	else if (ext == ".stl") {
+		io::saveStl(m, filename, info, binary);
+	}
 	else {
 		throw vcl::UnknownFileFormatException(ext);
 	}

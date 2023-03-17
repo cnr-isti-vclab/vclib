@@ -26,6 +26,8 @@
 #include "../internal/io_utils.h"
 #include "../internal/io_write.h"
 
+#include <vclib/algorithm/polygon.h>
+
 namespace vcl::io {
 
 namespace internal {
@@ -47,6 +49,44 @@ void writeStlHeader(std::ofstream& fp, bool magicsMode, bool binary)
 	fp << header;
 	if (!binary)
 		fp << std::endl;
+}
+
+template<Point3Concept PointType, Point3Concept NormalType>
+void writeTriangle(
+	std::ofstream& fp,
+	const PointType& p0,
+	const PointType& p1,
+	const PointType& p2,
+	const NormalType& n,
+	uint attributes,
+	bool binary)
+{
+	if (binary) {
+		for (uint i = 0; i < 3; ++i)
+			internal::writeFloat(fp, n[i]);
+		
+		for (uint i = 0; i < 3; ++i)
+			internal::writeFloat(fp, p0[i]);
+		
+		for (uint i = 0; i < 3; ++i)
+			internal::writeFloat(fp, p1[i]);
+		
+		for (uint i = 0; i < 3; ++i)
+			internal::writeFloat(fp, p2[i]);
+		
+		internal::writeUShort(fp, attributes);
+	}
+	else {
+		fp << "  facet normal " << n.x() << " " << n.y() << " " << n.z() << std::endl;
+		fp << "    outer loop" << std::endl;
+		
+		fp << "      vertex "  << p0.x() << " " << p0.y() << " " << p0.z() << std::endl;
+		fp << "      vertex "  << p1.x() << " " << p1.y() << " " << p1.z() << std::endl;
+		fp << "      vertex "  << p2.x() << " " << p2.y() << " " << p2.z() << std::endl;
+		
+		fp << "    endloop" << std::endl;
+		fp << "  endfacet" << std::endl;
+	}
 }
 
 }
@@ -106,8 +146,48 @@ void saveStl(
 		}
 
 		for (const FaceType& f : m.faces()) {
-			//todo
+			// For each triangle write the normal, the three coords and a short
+			auto n = vcl::faceNormal(f);
+			
+			unsigned short attributes = 0;
+			
+			if constexpr (HasPerFaceColor<MeshType>) {
+				if (meshInfo.hasFaceColors()) {
+					if(magicsMode)
+						attributes = 32768 | f.color().toUnsignedR5G5B5();
+					else
+						attributes = 32768 | f.color().toUnsignedB5G5R5();
+				}
+			}
+			
+			if (f.vertexNumber() == 3) {
+				internal::writeTriangle(
+					fp,
+					f.vertex(0)->coord(),
+					f.vertex(1)->coord(),
+					f.vertex(2)->coord(),
+					n,
+					attributes,
+					binary);
+			}
+			else {
+				std::vector<uint> tris = vcl::earCut(f);
+				for (uint i = 0; i < tris.size(); i += 3) {
+					internal::writeTriangle(
+						fp,
+						f.vertex(tris[i])->coord(),
+						f.vertex(tris[i + 1])->coord(),
+						f.vertex(tris[i + 2])->coord(),
+						n,
+						attributes,
+						binary);
+				}
+			}
 		}
+	}
+	
+	if (!binary) {
+		fp << "endsolid  VCLib" << std::endl;
 	}
 
 	fp.close();

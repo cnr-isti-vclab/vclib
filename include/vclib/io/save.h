@@ -27,6 +27,7 @@
 #include "obj/save.h"
 #include "off/save.h"
 #include "ply/save.h"
+#include "stl/save.h"
 
 namespace vcl {
 
