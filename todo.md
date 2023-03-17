@@ -32,8 +32,7 @@
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
   - [ ] move random access container in space. In general, every data structure must be in space directory
 - I/O:
-  - [ ] move appropriately load/save functions outside "vcl::io" namespace 
-  - [ ] implement STL importer/exporter  
+  - [ ] implement STL importer/exporter
 - External:
   - [ ] make render functions using bgfx
 - Documentation:
