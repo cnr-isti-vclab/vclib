@@ -24,12 +24,11 @@
 #include <iostream>
 
 #include <vclib/mesh.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
+#include <vclib/load_save.h>
 
 int main()
 {
-	vcl::io::FileMeshInfo loadedInfo;
+	vcl::FileMeshInfo loadedInfo;
 	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
 
 	assert(loadedInfo.hasVertices());

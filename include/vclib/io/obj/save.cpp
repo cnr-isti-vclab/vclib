@@ -21,15 +21,15 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "save_obj.h"
+#include "save.h"
 
 #include <map>
 #include <vclib/exception/io_exception.h>
 #include <vclib/misc/file_info.h>
 
-#include "internal/io_utils.h"
-#include "internal/io_write.h"
-#include "obj/material.h"
+#include "../internal/io_utils.h"
+#include "../internal/io_write.h"
+#include "material.h"
 
 namespace vcl::io {
 
@@ -113,7 +113,7 @@ void writeElementMaterial(
 template<MeshConcept MeshType>
 void saveObj(const MeshType& m, const std::string& filename)
 {
-	vcl::io::FileMeshInfo info(m);
+	FileMeshInfo info(m);
 	saveObj(m, filename, info);
 }
 

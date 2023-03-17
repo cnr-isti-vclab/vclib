@@ -21,31 +21,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_SAVE_PLY_H
-#define VCL_IO_SAVE_PLY_H
+#ifndef VCL_IO_OFF_UTILS_H
+#define VCL_IO_OFF_UTILS_H
 
-#include <vclib/exception/io_exception.h>
+#include <vclib/misc/tokenizer.h>
 
-#include "ply/ply.h"
-#include "ply/ply_edge.h"
-#include "ply/ply_extra.h"
-#include "ply/ply_face.h"
-#include "ply/ply_vertex.h"
+#include "../file_mesh_info.h"
 
-namespace vcl::io {
+namespace vcl::io::off {
 
-template<MeshConcept MeshType>
-void savePly(const MeshType& m, const std::string& filename, bool binary = true);
+void loadOffHeader(std::ifstream& file, FileMeshInfo& fileInfo, uint& nv, uint& nf, uint& ne);
 
-template<MeshConcept MeshType>
-void savePly(
-	const MeshType&     m,
-	const std::string&  filename,
-	const FileMeshInfo& info,
-	bool                binary = true);
+vcl::Color loadColor(vcl::Tokenizer::iterator& token, int nColorComponents);
 
-} // namespace vcl::io
+}
 
-#include "save_ply.cpp"
+#include "utils.cpp"
 
-#endif // VCL_IO_SAVE_PLY_H
+#endif // VCL_IO_OFF_UTILS_H

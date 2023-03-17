@@ -24,7 +24,7 @@
 #include <iostream>
 
 #include <vclib/algorithm.h>
-#include <vclib/io/load_ply.h>
+#include <vclib/load_save.h>
 #include <vclib/space/array.h>
 #include <vclib/mesh.h>
 

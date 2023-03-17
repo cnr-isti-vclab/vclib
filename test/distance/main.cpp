@@ -24,8 +24,7 @@
 #include <iostream>
 
 #include <vclib/mesh.h>
-#include <vclib/io/load_obj.h>
-#include <vclib/io/load_ply.h>
+#include <vclib/load_save.h>
 #include <vclib/algorithm.h>
 
 int main()

@@ -24,9 +24,7 @@
 #include <iostream>
 
 #include <vclib/algorithm.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/io/load_obj.h>
-#include <vclib/io/save_ply.h>
+#include <vclib/load_save.h>
 #include <vclib/mesh.h>
 #include <vclib/misc/timer.h>
 

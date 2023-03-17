@@ -145,18 +145,17 @@ set(HEADERS
 	include/vclib/image/image.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load.h
-	include/vclib/io/load_obj.h
-	include/vclib/io/load_off.h
-	include/vclib/io/load_ply.h
 	include/vclib/io/save.h
-	include/vclib/io/save_obj.h
-	include/vclib/io/save_off.h
-	include/vclib/io/save_ply.h
 	include/vclib/io/internal/io_read.h
 	include/vclib/io/internal/io_utils.h
 	include/vclib/io/internal/io_write.h
+	include/vclib/io/obj/load.h
 	include/vclib/io/obj/material.h
-	include/vclib/io/off/off.h
+	include/vclib/io/obj/save.h
+	include/vclib/io/off/load.h
+	include/vclib/io/off/save.h
+	include/vclib/io/off/utils.h
+	include/vclib/io/ply/load.h
 	include/vclib/io/ply/ply.h
 	include/vclib/io/ply/ply_edge.h
 	include/vclib/io/ply/ply_extra.h
@@ -164,6 +163,7 @@ set(HEADERS
 	include/vclib/io/ply/ply_header.h
 	include/vclib/io/ply/ply_tristrip.h
 	include/vclib/io/ply/ply_vertex.h
+	include/vclib/io/ply/save.h
 	include/vclib/iterator/container_range_iterator.h
 	include/vclib/iterator/pointer_iterator.h
 	include/vclib/iterator/range_iterator.h
@@ -352,24 +352,24 @@ set(SOURCES
 	include/vclib/image/image.cpp
 	include/vclib/io/file_mesh_info.cpp
 	include/vclib/io/load.cpp
-	include/vclib/io/load_obj.cpp
-	include/vclib/io/load_off.cpp
-	include/vclib/io/load_ply.cpp
 	include/vclib/io/save.cpp
-	include/vclib/io/save_obj.cpp
-	include/vclib/io/save_off.cpp
-	include/vclib/io/save_ply.cpp
 	include/vclib/io/internal/io_read.cpp
 	include/vclib/io/internal/io_utils.cpp
 	include/vclib/io/internal/io_write.cpp
+	include/vclib/io/obj/load.cpp
 	include/vclib/io/obj/material.cpp
-	include/vclib/io/off/off.cpp
+	include/vclib/io/obj/save.cpp
+	include/vclib/io/off/load.cpp
+	include/vclib/io/off/save.cpp
+	include/vclib/io/off/utils.cpp
+	include/vclib/io/ply/load.cpp
 	include/vclib/io/ply/ply_edge.cpp
 	include/vclib/io/ply/ply_extra.cpp
 	include/vclib/io/ply/ply_face.cpp
 	include/vclib/io/ply/ply_header.cpp
 	include/vclib/io/ply/ply_tristrip.cpp
 	include/vclib/io/ply/ply_vertex.cpp
+	include/vclib/io/ply/save.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/histogram.cpp
 	include/vclib/math/min_max.cpp

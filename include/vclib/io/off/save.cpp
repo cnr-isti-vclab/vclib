@@ -21,19 +21,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "save_off.h"
+#include "save.h"
 
 #include <vclib/exception/io_exception.h>
 
-#include "internal/io_utils.h"
-#include "internal/io_write.h"
+#include "../internal/io_utils.h"
+#include "../internal/io_write.h"
 
 namespace vcl::io {
 
 template<MeshConcept MeshType>
 void saveOff(const MeshType& m, const std::string& filename)
 {
-	vcl::io::FileMeshInfo info(m);
+	FileMeshInfo info(m);
 	saveOff(m, filename, info);
 }
 

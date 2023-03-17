@@ -60,10 +60,10 @@ int main()
 		}
 
 		vcl::DcelMesh t = vcl::createTetrahedron<vcl::DcelMesh>();
-		vcl::io::save(t, VCL_TEST_RESULTS_PATH "/tet_dcel.ply");
+		vcl::save(t, VCL_TEST_RESULTS_PATH "/tet_dcel.ply");
 
 		m = t;
-		vcl::io::save(m, VCL_TEST_RESULTS_PATH "/tet_copied_dcel.ply");
+		vcl::save(m, VCL_TEST_RESULTS_PATH "/tet_copied_dcel.ply");
 
 		vcl::DcelMesh l = vcl::io::loadPly<vcl::DcelMesh>(VCL_TEST_DATA_PATH "/models/cube_tri.ply");
 

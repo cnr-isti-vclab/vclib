@@ -24,17 +24,17 @@
 #include <iostream>
 
 #include <vclib/algorithm.h>
-#include <vclib/io/save_ply.h>
+#include <vclib/io/save.h>
 #include <vclib/mesh.h>
 
 int main()
 {
-	vcl::io::FileMeshInfo info;
+	vcl::FileMeshInfo info;
 
 	// want to save just these infos in the files, ignore the rest
 	info.setVertices();
 	info.setFaces();
-	info.setVertexCoords(true, vcl::io::FileMeshInfo::FLOAT);
+	info.setVertexCoords(true, vcl::FileMeshInfo::FLOAT);
 	info.setFaceVRefs();
 
 	vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();

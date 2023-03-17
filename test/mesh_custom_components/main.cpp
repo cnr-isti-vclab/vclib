@@ -23,8 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
+#include <vclib/load_save.h>
 #include <vclib/mesh.h>
 #include <vclib/algorithm.h>
 

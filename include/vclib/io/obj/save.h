@@ -21,34 +21,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_LOAD_OFF_H
-#define VCL_IO_LOAD_OFF_H
+#ifndef VCL_IO_OBJ_SAVE_H
+#define VCL_IO_OBJ_SAVE_H
 
-#include "file_mesh_info.h"
+#include <vclib/io/file_mesh_info.h>
 
 namespace vcl::io {
 
 template<MeshConcept MeshType>
-MeshType loadOff(const std::string& filename, bool enableOptionalComponents = true);
+void saveObj(const MeshType& m, const std::string& filename);
 
 template<MeshConcept MeshType>
-MeshType loadOff(
-	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType>
-void loadOff(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
-
-template<MeshConcept MeshType>
-void loadOff(
-	MeshType&          m,
-	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
-	bool               enableOptionalComponents = true);
+void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo& info);
 
 } // namespace vcl::io
 
-#include "load_off.cpp"
+#include "save.cpp"
 
-#endif // VCL_IO_LOAD_OFF_H
+#endif // VCL_IO_OBJ_SAVE_H

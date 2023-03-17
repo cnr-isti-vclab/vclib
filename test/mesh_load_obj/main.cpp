@@ -24,7 +24,7 @@
 #include <iostream>
 
 #include <vclib/mesh.h>
-#include <vclib/io/load_obj.h>
+#include <vclib/load_save.h>
 
 //template<typename T>
 //concept MyConcept = std::is_integral<T>::value; //could be anything...
@@ -62,7 +62,7 @@
 
 int main()
 {
-	vcl::io::FileMeshInfo loadedInfo;
+	vcl::FileMeshInfo loadedInfo;
 	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.obj", loadedInfo);
 
 	return 0;

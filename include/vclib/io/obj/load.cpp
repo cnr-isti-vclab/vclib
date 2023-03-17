@@ -21,16 +21,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "load_obj.h"
+#include "load.h"
 
 #include <map>
 
 #include <vclib/algorithm/polygon.h>
 #include <vclib/misc/file_info.h>
 
-#include "internal/io_read.h"
-#include "internal/io_utils.h"
-#include "obj/material.h"
+#include "../internal/io_read.h"
+#include "../internal/io_utils.h"
+#include "material.h"
 
 namespace vcl::io {
 

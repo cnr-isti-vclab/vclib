@@ -23,12 +23,12 @@
 
 #include "save.h"
 
-namespace vcl::io {
+namespace vcl {
 
 template<MeshConcept MeshType>
 void save(const MeshType& m, const std::string& filename, bool binary)
 {
-	vcl::io::FileMeshInfo info(m);
+	FileMeshInfo info(m);
 	save(m, filename, info, binary);
 }
 
@@ -39,17 +39,17 @@ void save(const MeshType& m, const std::string& filename, const FileMeshInfo& in
 	vcl::fileInfo::separateExtensionFromFilename(filename, name, ext);
 	ext = vcl::str::toLower(ext);
 	if (ext == ".obj") {
-		saveObj(m, filename, info);
+		io::saveObj(m, filename, info);
 	}
 	else if (ext == ".off") {
-		saveOff(m, filename, info);
+		io::saveOff(m, filename, info);
 	}
 	else if (ext == ".ply") {
-		savePly(m, filename, info, binary);
+		io::savePly(m, filename, info, binary);
 	}
 	else {
 		throw vcl::UnknownFileFormatException(ext);
 	}
 }
 
-} // namespace vcl::io
+} // namespace vcl

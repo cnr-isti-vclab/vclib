@@ -21,16 +21,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "load_ply.h"
+#include "load.h"
 
 #include <vclib/mesh/requirements.h>
 
-#include "internal/io_utils.h"
-#include "ply/ply.h"
-#include "ply/ply_vertex.h"
-#include "ply/ply_face.h"
-#include "ply/ply_tristrip.h"
-#include "ply/ply_extra.h"
+#include "../internal/io_utils.h"
+#include "ply.h"
+#include "ply_vertex.h"
+#include "ply_face.h"
+#include "ply_tristrip.h"
+#include "ply_extra.h"
 
 
 namespace vcl::io {
@@ -43,10 +43,8 @@ MeshType loadPly(const std::string& filename, bool enableOptionalComponents)
 }
 
 template<MeshConcept MeshType>
-MeshType loadPly(
-	const std::string&     filename,
-	vcl::io::FileMeshInfo& loadedInfo,
-	bool                   enableOptionalComponents)
+MeshType
+loadPly(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
 {
 	MeshType m;
 	loadPly(m, filename, loadedInfo, enableOptionalComponents);
@@ -93,10 +91,10 @@ void loadPly(MeshType& m, const std::string& filename, bool enableOptionalCompon
  */
 template<MeshConcept MeshType>
 void loadPly(
-	MeshType&              m,
-	const std::string&     filename,
-	vcl::io::FileMeshInfo& loadedInfo,
-	bool                   enableOptionalComponents)
+	MeshType&          m,
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	bool               enableOptionalComponents)
 {
 	std::ifstream file = internal::loadFileStream(filename);
 

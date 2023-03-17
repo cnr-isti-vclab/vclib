@@ -21,16 +21,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "save_ply.h"
+#include "save.h"
 
-#include "internal/io_utils.h"
+#include "../internal/io_utils.h"
 
 namespace vcl::io {
 
 template<MeshConcept MeshType>
 void savePly(const MeshType& m, const std::string& filename, bool binary)
 {
-	vcl::io::FileMeshInfo info(m);
+	FileMeshInfo info(m);
 	savePly(m, filename, info, binary);
 }
 

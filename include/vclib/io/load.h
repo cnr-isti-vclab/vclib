@@ -24,11 +24,11 @@
 #ifndef VCL_IO_LOAD_H
 #define VCL_IO_LOAD_H
 
-#include "load_obj.h"
-#include "load_off.h"
-#include "load_ply.h"
+#include "obj/load.h"
+#include "off/load.h"
+#include "ply/load.h"
 
-namespace vcl::io {
+namespace vcl {
 
 template<MeshConcept MeshType>
 MeshType load(const std::string& filename, bool enableOptionalComponents = true);

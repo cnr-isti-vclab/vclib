@@ -25,7 +25,7 @@
 
 #include <vclib/algorithm.h>
 
-#include <vclib/io/load_ply.h>
+#include <vclib/load_save.h>
 #include <vclib/mesh.h>
 
 #ifdef VCLIB_WITH_QGLVIEWER

@@ -24,11 +24,11 @@
 #ifndef VCL_IO_SAVE_H
 #define VCL_IO_SAVE_H
 
-#include "save_obj.h"
-#include "save_off.h"
-#include "save_ply.h"
+#include "obj/save.h"
+#include "off/save.h"
+#include "ply/save.h"
 
-namespace vcl::io {
+namespace vcl {
 
 template<MeshConcept MeshType>
 void save(const MeshType& m, const std::string& filename, bool binary = true);
@@ -40,7 +40,7 @@ void save(
 	const FileMeshInfo& info,
 	bool                binary = true);
 
-} // namespace vcl::io
+} // namespace vcl
 
 #include "save.cpp"
 

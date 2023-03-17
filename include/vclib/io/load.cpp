@@ -23,7 +23,7 @@
 
 #include "load.h"
 
-namespace vcl::io {
+namespace vcl {
 
 template<MeshConcept MeshType>
 MeshType load(const std::string& filename, bool enableOptionalComponents)
@@ -58,13 +58,13 @@ void load(
 	vcl::fileInfo::separateExtensionFromFilename(filename, name, ext);
 	ext = vcl::str::toLower(ext);
 	if (ext == ".obj") {
-		loadObj(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadObj(m, filename, loadedInfo, enableOptionalComponents);
 	}
 	else if (ext == ".off") {
-		loadOff(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadOff(m, filename, loadedInfo, enableOptionalComponents);
 	}
 	else if (ext == ".ply") {
-		loadPly(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadPly(m, filename, loadedInfo, enableOptionalComponents);
 	}
 	else {
 		throw vcl::UnknownFileFormatException(ext);

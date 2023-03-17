@@ -44,7 +44,7 @@ inline PlyHeader::PlyHeader() :
 
 PlyHeader::PlyHeader(
 	Format                   format,
-	const io::FileMeshInfo&  info,
+	const FileMeshInfo&  info,
 	std::vector<std::string> textureFiles) :
 		_format(format),
 		valid(true),
@@ -169,9 +169,9 @@ inline ply::Format PlyHeader::format() const
 	return _format;
 }
 
-inline io::FileMeshInfo PlyHeader::getInfo() const
+inline FileMeshInfo PlyHeader::getInfo() const
 {
-	io::FileMeshInfo mod;
+	FileMeshInfo mod;
 	// x, y, z, nx, ny, nz, red, green, blue, alpha, vertex_indices
 
 	if (vertElemPos >= 0) {
@@ -351,7 +351,7 @@ inline void PlyHeader::pushTextureFileName(const std::string& tn)
 }
 
 inline void PlyHeader::setInfo(
-	const io::FileMeshInfo& info,
+	const FileMeshInfo& info,
 	std::vector<std::string> textureFileNames,
 	bool binary)
 {

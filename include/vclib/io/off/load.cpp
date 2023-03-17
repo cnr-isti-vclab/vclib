@@ -21,14 +21,14 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "load_off.h"
+#include "load.h"
 
 #include <vclib/algorithm/polygon.h>
 #include <vclib/exception/io_exception.h>
 #include <vclib/misc/file_info.h>
 #include <vclib/misc/tokenizer.h>
 
-#include "off/off.h"
+#include "utils.h"
 
 namespace vcl::io {
 

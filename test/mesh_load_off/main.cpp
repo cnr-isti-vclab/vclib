@@ -24,11 +24,11 @@
 #include <iostream>
 
 #include <vclib/mesh.h>
-#include <vclib/io/load_off.h>
+#include <vclib/load_save.h>
 
 int main()
 {
-	vcl::io::FileMeshInfo loadedInfo;
+	vcl::FileMeshInfo loadedInfo;
 	vcl::TriMesh m = vcl::io::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.off", loadedInfo);
 
 	assert(loadedInfo.hasVertices());
