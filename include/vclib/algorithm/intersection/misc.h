@@ -42,17 +42,19 @@ bool planeSegmentIntersect(
 	typename SegmentType::PointType& intersection);
 
 template<PlaneConcept PlaneType, Segment3Concept SegmentType>
-bool planeSegmentIntersect(
-	const PlaneType&                 p,
-	const SegmentType&               s);
+bool planeSegmentIntersect(const PlaneType& p, const SegmentType& s);
 
 template<SphereConcept SphereType, Box3Concept BoxType>
 bool sphereBoxIntersect(const SphereType& s, const BoxType& box);
 
+template<Triangle2Concept TriangleType, Point2Concept PointType>
+bool trianglePointIntersect(const TriangleType& t, const PointType& p);
+
+template<Triangle3Concept TriangleType, Point3Concept PointType>
+bool trianglePointIntersect(const TriangleType& t, const PointType& p);
+
 template<ConstTriangle3Concept TriangleType, Box3Concept BoxType>
-bool triangleBoxIntersect(
-	const TriangleType& t,
-	const BoxType& box);
+bool triangleBoxIntersect(const TriangleType& t, const BoxType& box);
 
 template<
 	ConstTriangle3Concept TriangleType,

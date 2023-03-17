@@ -300,7 +300,7 @@ bool planeSegmentIntersect(
 }
 
 /**
- * Check if a sphere intersects with a box in 3D space.
+ * Checks if a sphere intersects with a box in 3D space.
  *
  * @tparam SphereType: A type that satisfies the SphereConcept concept.
  * @tparam BoxType: A type that satisfies the Box3Concept concept.
@@ -313,6 +313,64 @@ template<SphereConcept SphereType, Box3Concept BoxType>
 bool sphereBoxIntersect(const SphereType& s, const BoxType& box)
 {
 	return s.intersects(box);
+}
+
+/**
+ * Checks if a 2D point intersects with/is inside a given 2D triangle having its points in
+ * counterclockwise order.
+ *
+ * The function checks if a point lies within a given triangle using barycentric coordinates.
+ * It first calculates the area of the triangle, and then calculates the barycentric coordinates
+ * of the point with respect to the triangle. If the barycentric coordinates satisfy certain
+ * conditions, then the point is considered to intersect with the triangle.
+ *
+ * @tparam TriangleType: A type that satisfies the ConstTriangle2Concept concept.
+ * @tparam PointType: A type that satisfies the Point2Concept concept.
+ *
+ * @param[in] tr: The triangle to test for intersection.
+ * @param[in] p: The point to test for intersection with the triangle.
+ * @return True if the point intersects with/is inside the triangle, false otherwise.
+ */
+template<ConstTriangle2Concept TriangleType, Point2Concept PointType>
+bool trianglePointIntersect(const TriangleType& tr, const PointType& p)
+{
+	using TP = typename TriangleType::PointType;
+	using ScalarType = typename TP::ScalarType;
+
+	const TP& p0 = tr.point(0);
+	const TP& p1 = tr.point(1);
+	const TP& p2 = tr.point(2);
+
+	ScalarType A = tr.area();
+	ScalarType sign = A < 0 ? -1 : 1;
+
+	ScalarType s = (p0.y() * p2.x() - p0.x() * p2.y() + (p2.y() - p0.y()) * p.x() +
+					(p0.x() - p2.x()) * p.y()) * sign;
+	ScalarType t = (p0.x() * p1.y() - p0.y() * p1.x() + (p0.y() - p1.y()) * p.x() +
+					(p1.x() - p0.x()) * p.y()) * sign;
+
+	return s > 0 && t > 0 && (s + t) < 2 * A * sign;
+}
+
+/**
+ * Checks if a 3D point intersects/is inside a 3D triangle having its points in counterclockwise
+ * order.
+ *
+ * @tparam TriangleType: A type that satisfies the ConstTriangle3Concept concept.
+ * @tparam PointType: A type that satisfies the Point3Concept concept.
+ *
+ * @param[in] t: The triangle to test for intersection.
+ * @param[in] p: The point to test for intersection with the triangle.
+ * @return True if the point intersects with/is inside the triangle, false otherwise.
+ */
+template<ConstTriangle3Concept TriangleType, Point3Concept PointType>
+bool trianglePointIntersect(const TriangleType& t, const PointType& p)
+{
+	PointType v1 = t.point(1) - t.point(0);
+	PointType v2 = t.point(2) - t.point(0);
+	PointType v3 = p - t.point(0);
+
+	return v1.dot(v2.cross(v3)) > 0;
 }
 
 /**

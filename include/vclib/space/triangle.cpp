@@ -418,6 +418,9 @@ typename Triangle<PointT>::ScalarType Triangle<PointT>::area(
 	const PointT& p1,
 	const PointT& p2)
 {
+	if constexpr(DIM == 2) {
+		return ((p1[0] - p0[0]) * (p2[1] - p0[1]) - (p2[0] - p0[0]) * (p1[1] - p0[1])) / 2;
+	}
 	if constexpr(DIM == 3) {
 		return normal(p0, p1, p2).norm() / 2;
 	}
