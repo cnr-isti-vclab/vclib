@@ -86,9 +86,13 @@ void loadMaterials(
 					}
 				}
 			}
-			if (header == "d" || header == "Tr") {
+			if (header == "d") {
 				if ((*token)[0] == '-') token++;
 				mat.d = readFloat<float>(token);
+			}
+			if (header == "Tr") {
+				if ((*token)[0] == '-') token++;
+				mat.d = 1 - readFloat<float>(token);
 			}
 			if (header == "Ns") {
 				mat.Ns = readFloat<float>(token);
