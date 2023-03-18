@@ -34,6 +34,12 @@ Matrix vertexMatrix(const MeshType& m);
 template<typename Matrix, FaceMeshConcept MeshType>
 Matrix faceMatrix(const MeshType& m);
 
+template<typename Matrix, EdgeMeshConcept MeshType>
+Matrix edgeMatrix(const MeshType& m);
+
+template<typename Matrix, MeshConcept MeshType>
+Matrix vertexNormalsMatrix(const MeshType& m) requires HasPerVertexNormal<MeshType>;
+
 } // namespace vcl
 
 #include "export_to_matrix.cpp"

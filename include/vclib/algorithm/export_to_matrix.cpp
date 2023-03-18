@@ -125,4 +125,45 @@ Matrix faceMatrix(const MeshType& mesh)
 	return F;
 }
 
+template<typename Matrix, EdgeMeshConcept MeshType>
+Matrix edgeMatrix(const MeshType &mesh)
+{
+	vcl::requireVertexContainerCompactness(mesh);
+	
+	using VertexType = typename MeshType::VertexType;
+	using EdgeType = typename MeshType::EdgeType;
+	
+	Matrix E(mesh.edgeNumber(), 2);
+	
+	uint i = 0;
+	for (const EdgeType& e : mesh.edges()){
+		// check if this edge is greater than the cols of the matrix
+		uint j = 0;
+		
+		E(i, 0) = mesh.index(e.vertex(0));
+		E(i, 1) = mesh.index(e.vertex(1));
+		++i; // go to next face/row
+	}
+	return E;
+}
+
+template<typename Matrix, MeshConcept MeshType>
+Matrix vertexNormalsMatrix(const MeshType& mesh) requires HasPerVertexNormal<MeshType>
+{
+	requirePerVertexNormal(mesh);
+	
+	using VertexType = typename MeshType::VertexType;
+	
+	Matrix VN(mesh.vertexNumber(), 3);
+	
+	uint i = 0;
+	for (const VertexType& v : mesh.vertices()) {
+		for (uint j = 0; j < 3; ++j) {
+			VN(i, j) = v.normal()[j];
+		}
+		++i;
+	}
+	return VN;
+}
+
 } // namespace vcl
