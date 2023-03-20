@@ -125,6 +125,29 @@ Matrix faceMatrix(const MeshType& mesh)
 	return F;
 }
 
+/**
+ * @brief Get a #E*2 Matrix of integers containing the indices of the vertices of the edges of a Mesh.
+ * The function is templated on the Matrix itself.
+ *
+ * This function works with every Matrix type that:
+ * - has a constructor with rows and columns numbers;
+ * - has the `()` operator to acces to the (i,j) element (e.g.: `M(i,j) = 0;`).
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixXi E = vcl::edgeMatrix<Eigen::MatrixXi>(myMesh);
+ * @endcode
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Edges
+ *   - Vertices
+ *     - Compactness
+ *
+ * @param[in] mesh: input mesh
+ * @return #E*2 matrix of integers (edge indices)
+ */
 template<typename Matrix, EdgeMeshConcept MeshType>
 Matrix edgeMatrix(const MeshType &mesh)
 {
@@ -137,16 +160,35 @@ Matrix edgeMatrix(const MeshType &mesh)
 	
 	uint i = 0;
 	for (const EdgeType& e : mesh.edges()){
-		// check if this edge is greater than the cols of the matrix
-		uint j = 0;
-		
 		E(i, 0) = mesh.index(e.vertex(0));
 		E(i, 1) = mesh.index(e.vertex(1));
-		++i; // go to next face/row
+		++i; // go to next edge/row
 	}
 	return E;
 }
 
+/**
+ * @brief Get a #V*3 Matrix of scalars containing the normals of the vertices of a Mesh.
+ * The function is templated on the Matrix itself.
+ *
+ * This function works with every Matrix type that:
+ * - has a constructor with rows and columns numbers;
+ * - has the `()` operator to acces to the (i,j) element (e.g.: `M(i,j) = 0;`).
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixX3d VN = vcl::vertexNormalsMatrix<Eigen::MatrixX3d>(myMesh);
+ * @endcode
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *      - Normals
+ *
+ * @param[in] mesh: input mesh
+ * @return #V*3 matrix of scalars (vertex normals)
+ */
 template<typename Matrix, MeshConcept MeshType>
 Matrix vertexNormalsMatrix(const MeshType& mesh) requires HasPerVertexNormal<MeshType>
 {

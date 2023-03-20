@@ -23,31 +23,18 @@
 
 #include "io_utils.h"
 
+#include <algorithm>
+
 #include <vclib/exception/io_exception.h>
+#include <vclib/misc/file_info.h>
 #include <vclib/misc/string.h>
 
 namespace vcl::io::internal {
 
-std::string addExtensionToFileName(const std::string& filename, const std::string& ext)
-{
-	std::string actualfilename;
-	size_t lastindex = filename.find_last_of(".");
-	if (lastindex != std::string::npos) {
-		std::string e = filename.substr(lastindex+1, filename.size());
-		if (e == ext)
-			actualfilename = filename;
-		else
-			actualfilename = filename + "." + ext;
-	}
-	else
-		actualfilename = filename + "." + ext;
-	return actualfilename;
-}
-
 inline std::ofstream saveFileStream(const std::string& filename, const std::string& ext)
 {
 	setlocale(LC_ALL, "C");
-	std::string actualfilename = addExtensionToFileName(filename, ext);
+	std::string actualfilename = FileInfo::addExtensionToFileName(filename, ext);
 
 	std::ofstream fp;
 	fp.imbue(std::locale().classic());

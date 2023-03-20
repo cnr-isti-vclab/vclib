@@ -144,7 +144,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 				   (meshInfo.hasVertexTexCoords() || meshInfo.hasFaceWedgeTexCoords()));
 	if (useMtl) {
 		mtlfp                   = internal::saveFileStream(filename, "mtl");
-		std::string mtlFileName = vcl::fileInfo::filenameWithExtension(filename) + ".mtl";
+		std::string mtlFileName = FileInfo::filenameWithExtension(filename) + ".mtl";
 		fp << "mtllib ./" << mtlFileName << std::endl;
 	}
 

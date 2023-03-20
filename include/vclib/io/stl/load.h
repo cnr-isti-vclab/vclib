@@ -21,58 +21,34 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_FILE_INFO_H
-#define VCL_MISC_FILE_INFO_H
+#ifndef VCL_IO_STL_LOAD_H
+#define VCL_IO_STL_LOAD_H
 
-#include <string>
+#include <vclib/io/file_mesh_info.h>
 
-namespace vcl {
+namespace vcl::io {
 
-class FileInfo
-{
-public:
-	FileInfo();
+template<MeshConcept MeshType>
+MeshType loadStl(const std::string& filename, bool enableOptionalComponents = true);
 
-	FileInfo(const std::string& filename);
+template<MeshConcept MeshType>
+MeshType loadStl(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	bool               enableOptionalComponents = true);
 
-	/* Static members */
+template<MeshConcept MeshType>
+void loadStl(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
 
-	// file stat
+template<MeshConcept MeshType>
+void loadStl(
+	MeshType&          m,
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	bool               enableOptionalComponents = true);
 
-	bool exists(const std::string& filename);
+} // namespace vcl::io
 
-	static std::size_t fileSize(const std::string& filename);
+#include "load.cpp"
 
-	static bool isFileBinary(const std::string& filename);
-
-	// name and extension management
-
-	static void separateExtensionFromFilename(
-		const std::string& fullname,
-		std::string& rawname,
-		std::string& extension);
-
-	static void separateFilenameFromPath(
-		const std::string& fullpath,
-		std::string& path,
-		std::string& filename);
-
-	static std::string pathWithoutFilename(const std::string& fullpath);
-
-	static std::string filenameWithoutExtension(const std::string& fullpath);
-
-	static std::string filenameWithExtension(const std::string& fullpath);
-
-	static std::string extension(const std::string& filename);
-
-	static std::string addExtensionToFileName(const std::string& filename, const std::string& ext);
-
-private:
-	std::string filename;
-};
-
-} // namespace vcl
-
-#include "file_info.cpp"
-
-#endif // VCL_MISC_FILE_INFO_H
+#endif // VCL_IO_STL_LOAD_H

@@ -27,6 +27,7 @@
 #include "obj/load.h"
 #include "off/load.h"
 #include "ply/load.h"
+#include "stl/load.h"
 
 namespace vcl {
 

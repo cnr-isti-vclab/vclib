@@ -23,51 +23,80 @@
 
 #include "load.h"
 
-namespace vcl {
+#include "../internal/io_utils.h"
+#include "../internal/io_read.h"
+
+namespace vcl::io {
+
+namespace internal {
+
+bool isBinStlMalformed(const std::string& filename, bool& isBinary)
+{
+	std::size_t fsize = FileInfo::fileSize(filename);
+	isBinary = FileInfo::isFileBinary(filename);
+
+	if (isBinary) {
+		// we can check if the size of the file is the expected one
+		std::ifstream fp = internal::loadFileStream(filename);
+		fp.seekg(80); // size of the header
+		uint fnum = internal::readUInt<uint>(fp);
+		std::size_t expectedFileSize =
+			80 + 4 + // header and number of faces
+			fnum * ( // for each face
+				3 * sizeof(float) + // 3 floats for the face normal
+				3 * 3 * sizeof(float)); // 3 floats for each vertex of the face
+		if (expectedFileSize != fsize) {
+			// sometimes the size is a bit wrong
+			std::size_t diff = std::abs((long int)expectedFileSize - (long int)fsize);
+			if (diff > fsize / 20)
+				return true;
+		}
+	}
+
+	return false;
+}
+
+
+
+} // namespace vcl::io::internal
 
 template<MeshConcept MeshType>
-MeshType load(const std::string& filename, bool enableOptionalComponents)
+MeshType loadStl(const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	return load<MeshType>(filename, loadedInfo, enableOptionalComponents);
+	return loadStl<MeshType>(filename, loadedInfo, enableOptionalComponents);
 }
 
 template<MeshConcept MeshType>
-MeshType load(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
+MeshType loadStl(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	bool               enableOptionalComponents)
 {
 	MeshType m;
-	load(m, filename, loadedInfo, enableOptionalComponents);
+	loadStl(m, filename, loadedInfo, enableOptionalComponents);
 	return m;
 }
 
 template<MeshConcept MeshType>
-void load(MeshType& m, const std::string& filename, bool enableOptionalComponents)
+void loadStl(MeshType& m, const std::string& filename, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	load(m, filename, loadedInfo, enableOptionalComponents);
+	loadStl(m, filename, loadedInfo, enableOptionalComponents);
 }
 
 template<MeshConcept MeshType>
-void load(
+void loadStl(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
 	bool               enableOptionalComponents)
 {
-	std::string ext = FileInfo::extension(filename);
-	ext = vcl::str::toLower(ext);
-	if (ext == ".obj") {
-		io::loadObj(m, filename, loadedInfo, enableOptionalComponents);
-	}
-	else if (ext == ".off") {
-		io::loadOff(m, filename, loadedInfo, enableOptionalComponents);
-	}
-	else if (ext == ".ply") {
-		io::loadPly(m, filename, loadedInfo, enableOptionalComponents);
-	}
-	else {
-		throw vcl::UnknownFileFormatException(ext);
-	}
+	bool isBinary;
+	if (internal::isBinStlMalformed(filename, isBinary))
+		throw MalformedFileException(filename + " is malformed.");
+
+	// todo
 }
 
 } // namespace vcl::io

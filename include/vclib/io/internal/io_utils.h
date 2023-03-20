@@ -34,8 +34,6 @@ namespace vcl::io::internal {
 
 typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, NONE } PropertyType;
 
-std::string addExtensionToFileName(const std::string& filename, const std::string& ext);
-
 std::ofstream saveFileStream(const std::string& filename, const std::string& ext);
 
 std::ifstream loadFileStream(const std::string& filename);

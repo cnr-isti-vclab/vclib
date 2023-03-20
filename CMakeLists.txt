@@ -164,6 +164,7 @@ set(HEADERS
 	include/vclib/io/ply/ply_tristrip.h
 	include/vclib/io/ply/ply_vertex.h
 	include/vclib/io/ply/save.h
+	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
 	include/vclib/iterator/container_range_iterator.h
 	include/vclib/iterator/pointer_iterator.h
@@ -371,6 +372,7 @@ set(SOURCES
 	include/vclib/io/ply/ply_tristrip.cpp
 	include/vclib/io/ply/ply_vertex.cpp
 	include/vclib/io/ply/save.cpp
+	include/vclib/io/stl/load.cpp
 	include/vclib/io/stl/save.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/histogram.cpp

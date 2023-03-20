@@ -95,7 +95,7 @@ inline PlyHeader::PlyHeader(const std::string& filename, std::ifstream& file) : 
 									if (it != textName.end()) {
 										uint pos = it-textName.begin();
 										std::string fn =
-											vcl::fileInfo::filenameWithoutExtension(filename);
+											vcl::FileInfo::filenameWithoutExtension(filename);
 										textName =
 											textName.substr(0, pos) +
 											fn + textName.substr(pos+6, textName.size());

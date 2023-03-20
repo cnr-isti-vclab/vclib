@@ -23,9 +23,6 @@
 
 #include "load.h"
 
-#include <vclib/mesh/requirements.h>
-
-#include "../internal/io_utils.h"
 #include "ply.h"
 #include "ply_vertex.h"
 #include "ply_face.h"
@@ -109,10 +106,10 @@ void loadPly(
 
 	m.clear();
 	if constexpr (HasName<MeshType>) {
-		m.name() = fileInfo::filenameWithoutExtension(filename);
+		m.name() = FileInfo::filenameWithoutExtension(filename);
 	}
 	if constexpr (HasTexturePaths<MeshType>) {
-		m.meshBasePath() = fileInfo::pathWithoutFilename(filename);
+		m.meshBasePath() = FileInfo::pathWithoutFilename(filename);
 	}
 	try {
 		for (const ply::Element& el : header) {
