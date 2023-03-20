@@ -113,7 +113,7 @@ void loadOffFaces(
 	bool           enableOptionalComponents)
 {
 	if constexpr (HasFaces<MeshType>) {
-		using FaceType       = typename MeshType::FaceType;
+		using FaceType = typename MeshType::FaceType;
 
 		mesh.reserveFaces(nf);
 		for (uint fid = 0; fid < nf; ++fid) {

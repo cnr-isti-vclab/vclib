@@ -119,6 +119,9 @@ public:
 	void setRgbF(float red, float green, float blue, float alpha = 1.0);
 	void setHsvF(float hf, float sf, float vf, float alpha = 1.0);
 
+	void setFromUnsignedR5G5B5(unsigned short val);
+	void setFromUnsignedB5G5R5(unsigned short val);
+
 	bool operator==(const Color& otherColor) const;
 	bool operator!=(const Color& otherColor) const;
 	bool operator<(const Color& otherColor) const;

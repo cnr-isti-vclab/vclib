@@ -56,7 +56,115 @@ bool isBinStlMalformed(const std::string& filename, bool& isBinary)
 	return false;
 }
 
+bool isStlColored(std::ifstream& fp, bool& magicsMode)
+{
+	bool colored = false;
 
+	char buf[80];
+	fp.read(buf, 80);
+	std::string s(buf);
+	size_t cInd = s.rfind("COLOR=");
+	size_t mInd = s.rfind("MATERIAL=");
+	if(cInd!=std::string::npos && mInd!=std::string::npos)
+		magicsMode = true;
+	else
+		magicsMode = false;
+	uint fnum = internal::readUInt<uint>(fp);
+	static const uint fmax = 1000;
+	static const uint fdataSize = 12 * sizeof(float); // 3 floats for normal and 9 for vcoords
+
+	for (uint i = 0; i < std::min(fnum, fmax); ++i) {
+		fp.seekg(fdataSize, std::ios::cur);
+		unsigned short attr = internal::readShort<unsigned short>(fp);
+		Color c; c.setFromUnsignedR5G5B5(attr);
+		if (c != Color::White)
+			colored = true;
+	}
+	return colored;
+}
+
+template<MeshConcept MeshType>
+void loadStlBin(
+	MeshType&      m,
+	std::ifstream& fp,
+	FileMeshInfo&  loadedInfo,
+	bool           enableOptionalComponents)
+{
+	bool magicsMode, colored;
+	colored = isStlColored(fp, magicsMode);
+
+	if (enableOptionalComponents) {
+		if (colored)
+			loadedInfo.setFaceColors();
+		internal::enableOptionalComponents(loadedInfo, m);
+	}
+	else if (colored) {
+		if constexpr (HasPerFaceColor<MeshType>) {
+			if (isPerFaceColorEnabled(m))
+				loadedInfo.setFaceColors();
+		}
+	}
+
+	fp.seekg(80); // size of the header
+	uint fnum = internal::readUInt<uint>(fp);
+
+	m.addVertices(fnum * 3);
+	if constexpr(HasFaces<MeshType>) {
+		m.reserveFaces(fnum);
+	}
+
+	uint vi = 0;
+	for (uint i = 0; i < fnum; ++i) {
+		Point3f norm;
+		norm.x() = internal::readFloat<float>(fp);
+		norm.y() = internal::readFloat<float>(fp);
+		norm.z() = internal::readFloat<float>(fp);
+
+		for (uint j = 0; j < 3; ++j) {
+			m.vertex(vi + j).coord().x() = internal::readFloat<float>(fp);
+			m.vertex(vi + j).coord().y() = internal::readFloat<float>(fp);
+			m.vertex(vi + j).coord().z() = internal::readFloat<float>(fp);
+		}
+
+		unsigned short attr = internal::readShort<unsigned short>(fp);
+
+		if constexpr (HasFaces<MeshType>) {
+			using FaceType = typename MeshType::FaceType;
+
+			uint fi = m.addFace();
+			FaceType& f = m.face(fi);
+			for (uint j = 0; j < 3; ++j)
+				f.vertex(j) = &m.vertex(vi + j);
+			if (HasPerFaceNormal<MeshType>) {
+				using ST = typename FaceType::NormalType::ScalarType;
+				if (isPerFaceNormalEnabled(m)) {
+					f.normal() = norm.cast<ST>();
+				}
+			}
+			if (HasPerFaceColor<MeshType>) {
+				if (isPerFaceColorEnabled(m) && colored) {
+					Color c;
+					if (magicsMode)
+						c.setFromUnsignedR5G5B5(attr);
+					else
+						c.setFromUnsignedB5G5R5(attr);
+					f.color() = c;
+				}
+			}
+		}
+
+
+		vi += 3;
+	}
+}
+
+template<MeshConcept MeshType>
+void loadStlAscii(
+	MeshType&      m,
+	std::ifstream& fp)
+{
+
+}
 
 } // namespace vcl::io::internal
 
@@ -96,7 +204,25 @@ void loadStl(
 	if (internal::isBinStlMalformed(filename, isBinary))
 		throw MalformedFileException(filename + " is malformed.");
 
-	// todo
+	std::ifstream fp = internal::loadFileStream(filename);
+
+	loadedInfo = FileMeshInfo();
+	loadedInfo.setVertices();
+	loadedInfo.setVertexCoords();
+	if constexpr(HasFaces<MeshType>) {
+		loadedInfo.setFaces();
+		loadedInfo.setFaceVRefs();
+		loadedInfo.setFaceNormals();
+	}
+
+	if constexpr (HasName<MeshType>) {
+		m.name() = FileInfo::filenameWithoutExtension(filename);
+	}
+
+	if (isBinary)
+		internal::loadStlBin(m, fp, loadedInfo, enableOptionalComponents);
+	else
+		internal::loadStlAscii(m, fp);
 }
 
 } // namespace vcl::io
