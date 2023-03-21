@@ -167,6 +167,7 @@ set(HEADERS
 	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
 	include/vclib/iterator/container_range_iterator.h
+	include/vclib/iterator/iterator_wrapper.h
 	include/vclib/iterator/pointer_iterator.h
 	include/vclib/iterator/range_iterator.h
 	include/vclib/math/base.h
@@ -374,6 +375,7 @@ set(SOURCES
 	include/vclib/io/ply/save.cpp
 	include/vclib/io/stl/load.cpp
 	include/vclib/io/stl/save.cpp
+	include/vclib/iterator/iterator_wrapper.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/histogram.cpp
 	include/vclib/math/min_max.cpp

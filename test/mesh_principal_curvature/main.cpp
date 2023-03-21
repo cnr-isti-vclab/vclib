@@ -62,7 +62,10 @@ int main(int argc, char **argv)
 	std::cout << "Curvature range: " << h.minRangeValue() << " " << h.maxRangeValue() << "\n";
 	std::cout << "Used 90 percentile: " << h.percentile(0.1) << " " << h.percentile(0.9) << "\n";
 
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.ply");
+	m.enablePerFaceColor();
+	vcl::setPerFaceColorFromVertexColor(m);
+
+	vcl::io::saveStl(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.stl");
 
 #ifdef VCLIB_WITH_QGLVIEWER
 	QApplication application(argc, argv);

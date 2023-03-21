@@ -105,7 +105,7 @@ template<MeshConcept MeshType>
 void saveStl(const MeshType& m, const std::string& filename, bool magicsMode, bool binary)
 {
 	FileMeshInfo info(m);
-	saveStl(m, filename, info, binary, magicsMode);
+	saveStl(m, filename, info, magicsMode, binary);
 }
 
 /**

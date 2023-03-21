@@ -24,12 +24,19 @@
 #ifndef VCL_MESH_ITERATORS_VERTEX_COORD_ITERATOR_H
 #define VCL_MESH_ITERATORS_VERTEX_COORD_ITERATOR_H
 
-#include <vclib/misc/types.h>
+#include <vclib/iterator/iterator_wrapper.h>
 
 namespace vcl {
 
-template<typename It>
-class VertexCoordIterator : public It
+// Specialization when using a pointer instead of an actual iterator - forces to use the variant
+// with an iterator, by wrapping the pointer type into a forward iterator
+template<typename PointerType>
+class VertexCoordIterator : public VertexCoordIterator<IteratorWrapper<PointerType>>
+{
+};
+
+template<typename It> requires (std::is_class_v<It>)
+class VertexCoordIterator<It> : public It
 {
 	using VertexType = typename It::value_type;
 
@@ -51,8 +58,15 @@ public:
 
 };
 
-template<typename It>
-class VertexPointerCoordIterator : public It
+// Specialization when using a pointer instead of an actual iterator - forces to use the variant
+// with an iterator, by wrapping the pointer type into a forward iterator
+template<typename PointerType>
+class VertexPointerCoordIterator : public VertexPointerCoordIterator<IteratorWrapper<PointerType>>
+{
+};
+
+template<typename It> requires (std::is_class_v<It>)
+class VertexPointerCoordIterator<It> : public It
 {
 	using VertexType = typename std::remove_pointer<typename It::value_type>::type;
 
