@@ -21,56 +21,48 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "load.h"
+#include <iostream>
 
-namespace vcl {
+#include <vclib/mesh.h>
+#include <vclib/load_save.h>
+#include <vclib/algorithm/update.h>
 
-template<MeshConcept MeshType>
-MeshType load(const std::string& filename, bool enableOptionalComponents)
+#ifdef VCLIB_WITH_QGLVIEWER
+#include <QApplication>
+
+#include <vclib/ext/opengl2/drawable_mesh.h>
+#include <vclib/ext/qglviewer/viewer_main_window.h>
+#endif
+
+int main(int argc, char **argv)
 {
-	FileMeshInfo loadedInfo;
-	return load<MeshType>(filename, loadedInfo, enableOptionalComponents);
-}
+	vcl::FileMeshInfo loadedInfo;
+	vcl::TriMesh m1 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo);
+	vcl::updateBoundingBox(m1);
+	vcl::updatePerVertexNormals(m1);
 
-template<MeshConcept MeshType>
-MeshType load(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
-{
-	MeshType m;
-	load(m, filename, loadedInfo, enableOptionalComponents);
-	return m;
-}
+	//vcl::TriMesh m2 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo);
+	//vcl::updateBoundingBox(m2);
+	//vcl::updatePerVertexNormals(m2);
 
-template<MeshConcept MeshType>
-void load(MeshType& m, const std::string& filename, bool enableOptionalComponents)
-{
-	FileMeshInfo loadedInfo;
-	load(m, filename, loadedInfo, enableOptionalComponents);
-}
+#ifdef VCLIB_WITH_QGLVIEWER
+	QApplication application(argc, argv);
 
-template<MeshConcept MeshType>
-void load(
-	MeshType&          m,
-	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
-	bool               enableOptionalComponents)
-{
-	std::string ext = FileInfo::extension(filename);
-	ext = vcl::str::toLower(ext);
-	if (ext == ".obj") {
-		io::loadObj(m, filename, loadedInfo, enableOptionalComponents);
-	}
-	else if (ext == ".off") {
-		io::loadOff(m, filename, loadedInfo, enableOptionalComponents);
-	}
-	else if (ext == ".ply") {
-		io::loadPly(m, filename, loadedInfo, enableOptionalComponents);
-	}
-	else if (ext == ".stl") {
-		io::loadStl(m, filename, loadedInfo, enableOptionalComponents);
-	}
-	else {
-		throw vcl::UnknownFileFormatException(ext);
-	}
-}
+	vcl::ViewerMainWindow viewer;
+	vcl::DrawableMesh<vcl::TriMesh> dm1(m1);
+	//vcl::DrawableMesh<vcl::TriMesh> dm2(m2);
 
-} // namespace vcl::io
+	std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+	vector->pushBack(dm1);
+	//vector->pushBack(dm2);
+	viewer.setDrawableObjectVector(vector);
+
+	viewer.show();
+
+	return application.exec();
+#else
+	(void) argc; // unused
+	(void) argv;
+	return 0;
+#endif
+}

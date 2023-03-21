@@ -81,10 +81,10 @@ inline bool FileInfo::isFileBinary(const std::string& filename)
 	std::size_t size = std::min(fsize, CHECK_BUFF_SIZE);
 	file.seekg(0, std::ios::beg);
 
-	std::vector<char> buffer(size);
-	if (file.read(buffer.data(), size)) {
-		for (char a : buffer) {
-			if (a > 127)
+	std::vector<unsigned char> buffer(size);
+	if (file.read((char*)buffer.data(), size)) {
+		for (uint i = 0; i < buffer.size(); ++i) {
+			if (buffer[i] > 127)
 				return true;
 		}
 	}

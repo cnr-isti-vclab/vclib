@@ -44,7 +44,8 @@ bool isBinStlMalformed(const std::string& filename, bool& isBinary)
 			80 + 4 + // header and number of faces
 			fnum * ( // for each face
 				3 * sizeof(float) + // 3 floats for the face normal
-				3 * 3 * sizeof(float)); // 3 floats for each vertex of the face
+				3 * 3 * sizeof(float) + // 3 floats for each vertex of the face
+				sizeof(unsigned short)); // a short containing attributes
 		if (expectedFileSize != fsize) {
 			// sometimes the size is a bit wrong
 			std::size_t diff = std::abs((long int)expectedFileSize - (long int)fsize);
