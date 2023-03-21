@@ -187,7 +187,7 @@ void saveStl(
 	}
 	
 	if (!binary) {
-		fp << "endsolid  VCLib" << std::endl;
+		fp << "endsolid VCLib" << std::endl;
 	}
 
 	fp.close();

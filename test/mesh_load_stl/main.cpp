@@ -40,21 +40,23 @@ int main(int argc, char **argv)
 	vcl::TriMesh m1 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo);
 	vcl::updateBoundingBox(m1);
 	vcl::updatePerVertexNormals(m1);
+	vcl::setPerVertexColor(m1, vcl::Color::DarkMagenta);
 
-	//vcl::TriMesh m2 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo);
-	//vcl::updateBoundingBox(m2);
-	//vcl::updatePerVertexNormals(m2);
+	vcl::TriMesh m2 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo);
+	vcl::updateBoundingBox(m2);
+	vcl::updatePerVertexNormals(m2);
+	vcl::setPerVertexColor(m2, vcl::Color::DarkMagenta);
 
 #ifdef VCLIB_WITH_QGLVIEWER
 	QApplication application(argc, argv);
 
 	vcl::ViewerMainWindow viewer;
 	vcl::DrawableMesh<vcl::TriMesh> dm1(m1);
-	//vcl::DrawableMesh<vcl::TriMesh> dm2(m2);
+	vcl::DrawableMesh<vcl::TriMesh> dm2(m2);
 
 	std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
 	vector->pushBack(dm1);
-	//vector->pushBack(dm2);
+	vector->pushBack(dm2);
 	viewer.setDrawableObjectVector(vector);
 
 	viewer.show();

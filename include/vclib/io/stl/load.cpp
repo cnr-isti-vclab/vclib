@@ -162,9 +162,65 @@ void loadStlBin(
 template<MeshConcept MeshType>
 void loadStlAscii(
 	MeshType&      m,
-	std::ifstream& fp)
+	std::ifstream& fp,
+	FileMeshInfo&  loadedInfo,
+	bool           enableOptionalComponents)
 {
+	if (enableOptionalComponents) {
+		internal::enableOptionalComponents(loadedInfo, m);
+	}
 
+	vcl::Tokenizer tokens = internal::nextNonEmptyTokenizedLineNoThrow(fp);
+	if (fp) {
+		// cycle that reads a face starting from the actual tokenized line
+		do {
+			vcl::Tokenizer::iterator token = tokens.begin();
+			if (token != tokens.end() && *token == "facet") {
+				++token; // skip the "facet" word
+				++token; // skip the "normal" word
+
+				// add 3 vertices for the face
+				uint vi = m.addVertices(3);
+
+				// read the normal of the face
+				Point3f normal;
+
+				normal.x() = io::internal::readFloat<float>(token);
+				normal.y() = io::internal::readFloat<float>(token);
+				normal.z() = io::internal::readFloat<float>(token);
+
+				internal::nextNonEmptyTokenizedLine(fp); // outer loop
+				tokens = internal::nextNonEmptyTokenizedLine(fp); // vertex x y z
+
+				for (uint i = 0; i < 3; i++) { // read the three vertices
+					token = tokens.begin(); ++token; // skip the "vertex" word
+
+					m.vertex(vi + i).coord().x() = io::internal::readFloat<float>(token);
+					m.vertex(vi + i).coord().y() = io::internal::readFloat<float>(token);
+					m.vertex(vi + i).coord().z() = io::internal::readFloat<float>(token);
+
+					tokens = internal::nextNonEmptyTokenizedLine(fp); // next vertex
+				}
+				internal::nextNonEmptyTokenizedLine(fp); // endfacet
+
+				if constexpr (HasFaces<MeshType>) {
+					using FaceType = typename MeshType::FaceType;
+					uint fi = m.addFace();
+
+					FaceType& f = m.face(fi);
+					for (uint j = 0; j < 3; ++j)
+						f.vertex(j) = &m.vertex(vi + j);
+					if (HasPerFaceNormal<MeshType>) {
+						using ST = typename FaceType::NormalType::ScalarType;
+						if (isPerFaceNormalEnabled(m)) {
+							f.normal() = normal.cast<ST>();
+						}
+					}
+				}
+			}
+			tokens = internal::nextNonEmptyTokenizedLineNoThrow(fp);
+		} while (fp);
+	}
 }
 
 } // namespace vcl::io::internal
@@ -223,7 +279,7 @@ void loadStl(
 	if (isBinary)
 		internal::loadStlBin(m, fp, loadedInfo, enableOptionalComponents);
 	else
-		internal::loadStlAscii(m, fp);
+		internal::loadStlAscii(m, fp, loadedInfo, enableOptionalComponents);
 }
 
 } // namespace vcl::io
