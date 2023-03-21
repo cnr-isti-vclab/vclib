@@ -179,40 +179,40 @@ void Face<MeshType, Args...>::setVertices(V... args)
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordBegin()
 {
-	return VertexPointerCoordIterator(VRefs::vertexBegin());
+	return VertexCoordIterator(VRefs::vertexBegin());
 }
 
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::ConstVertexCoordIterator
 Face<MeshType, Args...>::vertexCoordBegin() const
 {
-	return VertexPointerCoordIterator(VRefs::vertexBegin());
+	return ConstVertexCoordIterator(VRefs::vertexBegin());
 }
 
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordEnd()
 {
-	return VertexPointerCoordIterator(VRefs::vertexEnd());
+	return VertexCoordIterator(VRefs::vertexEnd());
 }
 
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::ConstVertexCoordIterator
 Face<MeshType, Args...>::vertexCoordEnd() const
 {
-	return VertexPointerCoordIterator(VRefs::vertexEnd());
+	return ConstVertexCoordIterator(VRefs::vertexEnd());
 }
 
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::VertexCoordRangeIterator Face<MeshType, Args...>::vertexCoords()
 {
-	return RangeIterator(vertexCoordBegin(), vertexCoordEnd());
+	return VertexCoordRangeIterator(vertexCoordBegin(), vertexCoordEnd());
 }
 
 template<typename MeshType, typename... Args>
 typename Face<MeshType, Args...>::ConstVertexCoordRangeIterator
 Face<MeshType, Args...>::vertexCoords() const
 {
-	return RangeIterator(vertexCoordBegin(), vertexCoordEnd());
+	return ConstVertexCoordRangeIterator(vertexCoordBegin(), vertexCoordEnd());
 }
 
 } // namespace vcl

@@ -171,9 +171,10 @@ void setPerFaceColorFromVertexColor(MeshType& m)
 	for (FaceType& f : m.faces()) {
 		vcl::Point4<uint> avg(0, 0, 0, 0);
 		for (const VertexType* v : f.vertices()) {
-			avg += v->color();
+			avg += v->color().template cast<uint>();
 		}
-		f->color() = avg / f.vertexNumber();
+		avg /= f.vertexNumber();
+		f.color() = avg.cast<uint8_t>();
 	}
 }
 

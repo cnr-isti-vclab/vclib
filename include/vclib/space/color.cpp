@@ -55,6 +55,11 @@ inline Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) :
 {
 }
 
+inline Color::Color(const Point4<uint8_t>& p) :
+		Point4<uint8_t>(p)
+{
+}
+
 /**
  * @brief Returns the red component of this color [0-255]
  * @return red component of this color

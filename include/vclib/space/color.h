@@ -78,6 +78,7 @@ public:
 	Color();
 	Color(ColorRGBA cc);
 	Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+	Color(const Point4<uint8_t>& p);
 
 	uint8_t red() const;
 	uint8_t green() const;
