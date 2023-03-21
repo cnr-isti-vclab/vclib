@@ -33,6 +33,8 @@ namespace vcl {
 template<typename PointerType>
 class VertexCoordIterator : public VertexCoordIterator<IteratorWrapper<PointerType>>
 {
+public:
+	using VertexCoordIterator<IteratorWrapper<PointerType>>::VertexCoordIterator;
 };
 
 template<typename It> requires (std::is_class_v<It>)
@@ -63,6 +65,8 @@ public:
 template<typename PointerType>
 class VertexPointerCoordIterator : public VertexPointerCoordIterator<IteratorWrapper<PointerType>>
 {
+public:
+	using VertexPointerCoordIterator<IteratorWrapper<PointerType>>::VertexPointerCoordIterator;
 };
 
 template<typename It> requires (std::is_class_v<It>)
