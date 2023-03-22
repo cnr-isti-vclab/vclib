@@ -368,34 +368,38 @@ void loadFace(
 
 } // namespace internal
 
-template<MeshConcept MeshType>
-MeshType loadObj(const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType loadObj(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	return loadObj<MeshType>(filename, loadedInfo, enableOptionalComponents);
+	return loadObj<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
-template<MeshConcept MeshType>
-MeshType
-loadObj(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType loadObj(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	LogType&           log,
+	bool               enableOptionalComponents)
 {
 	MeshType m;
-	loadObj(m, filename, loadedInfo, enableOptionalComponents);
+	loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
 	return m;
 }
 
-template<MeshConcept MeshType>
-void loadObj(MeshType& m, const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void loadObj(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	loadObj(m, filename, loadedInfo, enableOptionalComponents);
+	loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void loadObj(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log,
 	bool               enableOptionalComponents)
 {
 	std::ifstream file = internal::loadFileStream(filename);

@@ -30,15 +30,15 @@
 
 namespace vcl::io {
 
-template<MeshConcept MeshType>
-void saveOff(const MeshType& m, const std::string& filename)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void saveOff(const MeshType& m, const std::string& filename, LogType& log)
 {
 	FileMeshInfo info(m);
-	saveOff(m, filename, info);
+	saveOff(m, filename, info, log);
 }
 
-template<MeshConcept MeshType>
-void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo& info, LogType& log)
 {
 	FileMeshInfo meshInfo(m);
 

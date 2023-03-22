@@ -62,13 +62,13 @@ void load(
 	std::string ext = FileInfo::extension(filename);
 	ext = vcl::str::toLower(ext);
 	if (ext == ".obj") {
-		io::loadObj(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
 	}
 	else if (ext == ".off") {
-		io::loadOff(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
 	}
 	else if (ext == ".ply") {
-		io::loadPly(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
 	}
 	else if (ext == ".stl") {
 		io::loadStl(m, filename, loadedInfo, log, enableOptionalComponents);

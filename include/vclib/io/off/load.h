@@ -25,26 +25,36 @@
 #define VCL_IO_OFF_LOAD_H
 
 #include <vclib/io/file_mesh_info.h>
+#include <vclib/misc/logger.h>
 
 namespace vcl::io {
 
-template<MeshConcept MeshType>
-MeshType loadOff(const std::string& filename, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadOff(
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadOff(
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
-void loadOff(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadOff(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadOff(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 
 } // namespace vcl::io

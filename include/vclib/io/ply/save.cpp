@@ -27,15 +27,20 @@
 
 namespace vcl::io {
 
-template<MeshConcept MeshType>
-void savePly(const MeshType& m, const std::string& filename, bool binary)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void savePly(const MeshType& m, const std::string& filename, LogType& log, bool binary)
 {
 	FileMeshInfo info(m);
-	savePly(m, filename, info, binary);
+	savePly(m, filename, info, log, binary);
 }
 
-template<MeshConcept MeshType>
-void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void savePly(
+	const MeshType&     m,
+	const std::string&  filename,
+	const FileMeshInfo& info,
+	LogType&            log,
+	bool                binary)
 {
 	FileMeshInfo meshInfo(m);
 
@@ -45,11 +50,8 @@ void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo&
 	meshInfo = info.intersect(meshInfo);
 
 	ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, meshInfo);
-	if constexpr (vcl::HasVertices<MeshType>) {
-		if (header.hasVertices()) {
-			header.setNumberVertices(m.vertexNumber());
-		}
-	}
+	header.setNumberVertices(m.vertexNumber());
+
 	if constexpr (vcl::HasFaces<MeshType>) {
 		if (header.hasFaces()) {
 			header.setNumberFaces(m.faceNumber());
@@ -69,11 +71,7 @@ void savePly(const MeshType& m, const std::string& filename, const FileMeshInfo&
 
 	fp << header.toString();
 
-	if constexpr (vcl::HasVertices<MeshType>) {
-		if (header.hasVertices()) {
-			ply::saveVertices(fp, header, m);
-		}
-	}
+	ply::saveVertices(fp, header, m);
 
 	if constexpr (vcl::HasFaces<MeshType>) {
 		if (header.hasFaces()) {

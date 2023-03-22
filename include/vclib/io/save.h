@@ -38,6 +38,9 @@ void save(
 	LogType&           log    = nullLogger,
 	bool               binary = true);
 
+template<MeshConcept MeshType>
+void save(const MeshType& m, const std::string& filename, bool binary);
+
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
 	const MeshType&     m,

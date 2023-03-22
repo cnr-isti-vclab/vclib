@@ -32,19 +32,22 @@
 
 namespace vcl::io {
 
-template<MeshConcept MeshType>
-MeshType loadPly(const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType loadPly(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	return loadPly<MeshType>(filename, loadedInfo, enableOptionalComponents);
+	return loadPly<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
-template<MeshConcept MeshType>
-MeshType
-loadPly(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType loadPly(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	LogType&           log,
+	bool               enableOptionalComponents)
 {
 	MeshType m;
-	loadPly(m, filename, loadedInfo, enableOptionalComponents);
+	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
 	return m;
 }
 
@@ -63,11 +66,11 @@ loadPly(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOption
  * @param filename
  * @param enableOptionalComponents
  */
-template<MeshConcept MeshType>
-void loadPly(MeshType& m, const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void loadPly(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	loadPly(m, filename, loadedInfo, enableOptionalComponents);
+	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
 /**
@@ -86,11 +89,12 @@ void loadPly(MeshType& m, const std::string& filename, bool enableOptionalCompon
  * @param loadedInfo
  * @param enableOptionalComponents
  */
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void loadPly(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log,
 	bool               enableOptionalComponents)
 {
 	std::ifstream file = internal::loadFileStream(filename);

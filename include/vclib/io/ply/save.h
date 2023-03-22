@@ -25,6 +25,7 @@
 #define VCL_IO_PLY_SAVE_H
 
 #include <vclib/exception/io_exception.h>
+#include <vclib/misc/logger.h>
 
 #include "ply.h"
 #include "ply_edge.h"
@@ -34,14 +35,19 @@
 
 namespace vcl::io {
 
-template<MeshConcept MeshType>
-void savePly(const MeshType& m, const std::string& filename, bool binary = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void savePly(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log    = nullLogger,
+	bool               binary = true);
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
 	const MeshType&     m,
 	const std::string&  filename,
 	const FileMeshInfo& info,
+	LogType&            log    = nullLogger,
 	bool                binary = true);
 
 } // namespace vcl::io

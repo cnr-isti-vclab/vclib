@@ -25,26 +25,36 @@
 #define VCL_IO_PLY_LOAD_H
 
 #include <vclib/io/file_mesh_info.h>
+#include <vclib/misc/logger.h>
 
 namespace vcl::io {
 
-template<MeshConcept MeshType>
-MeshType loadPly(const std::string& filename, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadPly(
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadPly(
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
-void loadPly(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadPly(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadPly(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 
 } // namespace vcl::io

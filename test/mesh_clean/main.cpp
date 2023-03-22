@@ -92,7 +92,7 @@ int main()
 
 	vcl::setPerVertexColorPerlinNoise(m, vcl::Point3d(d, d, d));
 
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
+	vcl::save(m, VCL_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
 
 	return 0;
 }

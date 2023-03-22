@@ -32,6 +32,14 @@ void save(const MeshType& m, const std::string& filename, LogType& log, bool bin
 	save(m, filename, info, log, binary);
 }
 
+template<MeshConcept MeshType>
+void save(const MeshType& m, const std::string& filename, bool binary)
+{
+	FileMeshInfo info(m);
+	NullLogger log;
+	save(m, filename, info, log, binary);
+}
+
 template<MeshConcept MeshType, LoggerConcept LogType>
 void save(
 	const MeshType&     m,
@@ -43,13 +51,13 @@ void save(
 	std::string ext = FileInfo::extension(filename);
 	ext = vcl::str::toLower(ext);
 	if (ext == ".obj") {
-		io::saveObj(m, filename, info);
+		io::saveObj(m, filename, info, log);
 	}
 	else if (ext == ".off") {
-		io::saveOff(m, filename, info);
+		io::saveOff(m, filename, info, log);
 	}
 	else if (ext == ".ply") {
-		io::savePly(m, filename, info, binary);
+		io::savePly(m, filename, info, log, binary);
 	}
 	else if (ext == ".stl") {
 		io::saveStl(m, filename, info, log, binary);

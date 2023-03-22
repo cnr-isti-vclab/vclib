@@ -25,14 +25,19 @@
 #define VCL_IO_OBJ_SAVE_H
 
 #include <vclib/io/file_mesh_info.h>
+#include <vclib/misc/logger.h>
 
 namespace vcl::io {
 
-template<MeshConcept MeshType>
-void saveObj(const MeshType& m, const std::string& filename);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(const MeshType& m, const std::string& filename, LogType& log = nullLogger);
 
-template<MeshConcept MeshType>
-void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo& info);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(
+	const MeshType&     m,
+	const std::string&  filename,
+	const FileMeshInfo& info,
+	LogType&            log = nullLogger);
 
 } // namespace vcl::io
 
