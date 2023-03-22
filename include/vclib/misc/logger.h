@@ -24,8 +24,6 @@
 #ifndef VCL_MISC_LOGGER_H
 #define VCL_MISC_LOGGER_H
 
-#include <vclib/concept/logger.h>
-
 #include "logger/console_logger.h"
 
 #endif // VCL_MISC_LOGGER_H

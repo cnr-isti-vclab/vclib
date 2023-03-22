@@ -31,14 +31,19 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-void save(const MeshType& m, const std::string& filename, bool binary = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void save(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log    = nullLogger,
+	bool               binary = true);
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
 	const MeshType&     m,
 	const std::string&  filename,
 	const FileMeshInfo& info,
+	LogType&            log    = nullLogger,
 	bool                binary = true);
 
 } // namespace vcl

@@ -101,11 +101,16 @@ void writeTriangle(
  * flag is set to `true`.
  * @param binary
  */
-template<MeshConcept MeshType>
-void saveStl(const MeshType& m, const std::string& filename, bool magicsMode, bool binary)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void saveStl(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log,
+	bool               binary,
+	bool               magicsMode)
 {
 	FileMeshInfo info(m);
-	saveStl(m, filename, info, magicsMode, binary);
+	saveStl(m, filename, info, log, binary, magicsMode);
 }
 
 /**
@@ -119,13 +124,14 @@ void saveStl(const MeshType& m, const std::string& filename, bool magicsMode, bo
  * flag is set to `true`.
  * @param binary
  */
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void saveStl(
 	const MeshType&     m,
 	const std::string&  filename,
 	const FileMeshInfo& info,
-	bool                magicsMode,
-	bool                binary)
+	LogType&            log,
+	bool                binary,
+	bool                magicsMode)
 {
 	FileMeshInfo meshInfo(m);
 
@@ -136,6 +142,10 @@ void saveStl(
 
 	std::ofstream fp = internal::saveFileStream(filename, "stl");
 
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(0, "Saving STL file");
+	}
+
 	internal::writeStlHeader(fp, magicsMode, binary);
 
 	if constexpr (HasFaces<MeshType>) {
@@ -143,6 +153,10 @@ void saveStl(
 
 		if (binary) {
 			internal::writeInt(fp, m.faceNumber());
+		}
+
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			log.startProgress("Loading STL file", m.faces());
 		}
 
 		for (const FaceType& f : m.faces()) {
@@ -183,6 +197,13 @@ void saveStl(
 						binary);
 				}
 			}
+
+			if constexpr (vcl::isLoggerValid<LogType>()) {
+				log.progress(m.index(f));
+			}
+		}
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			log.endProgress();
 		}
 	}
 	

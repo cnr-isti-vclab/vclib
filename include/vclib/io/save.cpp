@@ -25,15 +25,20 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-void save(const MeshType& m, const std::string& filename, bool binary)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void save(const MeshType& m, const std::string& filename, LogType& log, bool binary)
 {
 	FileMeshInfo info(m);
-	save(m, filename, info, binary);
+	save(m, filename, info, log, binary);
 }
 
-template<MeshConcept MeshType>
-void save(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void save(
+	const MeshType&     m,
+	const std::string&  filename,
+	const FileMeshInfo& info,
+	LogType&            log,
+	bool                binary)
 {
 	std::string ext = FileInfo::extension(filename);
 	ext = vcl::str::toLower(ext);
@@ -47,7 +52,7 @@ void save(const MeshType& m, const std::string& filename, const FileMeshInfo& in
 		io::savePly(m, filename, info, binary);
 	}
 	else if (ext == ".stl") {
-		io::saveStl(m, filename, info, binary);
+		io::saveStl(m, filename, info, log, binary);
 	}
 	else {
 		throw vcl::UnknownFileFormatException(ext);
