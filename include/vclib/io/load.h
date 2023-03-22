@@ -31,21 +31,32 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-MeshType load(const std::string& filename, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType load(
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
-MeshType
-load(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType load(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
-void load(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void load(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void load(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 
 } // namespace vcl::io

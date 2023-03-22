@@ -30,9 +30,9 @@ namespace vcl::io {
 
 namespace internal {
 
-bool isBinStlMalformed(const std::string& filename, bool& isBinary)
+bool isBinStlMalformed(const std::string& filename, bool& isBinary, std::size_t& fsize)
 {
-	std::size_t fsize = FileInfo::fileSize(filename);
+	fsize = FileInfo::fileSize(filename);
 	isBinary = FileInfo::isFileBinary(filename);
 
 	if (isBinary) {
@@ -84,11 +84,12 @@ bool isStlColored(std::ifstream& fp, bool& magicsMode)
 	return colored;
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void loadStlBin(
 	MeshType&      m,
 	std::ifstream& fp,
 	FileMeshInfo&  loadedInfo,
+	LogType&       log,
 	bool           enableOptionalComponents)
 {
 	bool magicsMode, colored;
@@ -108,6 +109,12 @@ void loadStlBin(
 
 	fp.seekg(80); // size of the header
 	uint fnum = internal::readUInt<uint>(fp);
+
+	uint logPerc = 0;
+	const uint logPercStep = 10;
+	uint logStep = fnum / ((100 / logPercStep) - 1);
+	if (logStep == 0)
+		logStep =fnum;
 
 	m.addVertices(fnum * 3);
 	if constexpr(HasFaces<MeshType>) {
@@ -156,19 +163,35 @@ void loadStlBin(
 
 
 		vi += 3;
+
+		if constexpr (vcl::isLoggerValid<LogType>()) {
+			if (i % logStep == 0) {
+				logPerc += logPercStep;
+				log.log(logPerc, "Loading STL file");
+			}
+		}
 	}
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void loadStlAscii(
 	MeshType&      m,
 	std::ifstream& fp,
 	FileMeshInfo&  loadedInfo,
+	LogType&       log,
+	std::size_t    fsize,
 	bool           enableOptionalComponents)
 {
 	if (enableOptionalComponents) {
 		internal::enableOptionalComponents(loadedInfo, m);
 	}
+
+	uint logPerc = 0;
+	const uint logPercStep = 10;
+	uint logStep = fsize / ((100 / logPercStep) - 1);
+	uint lastDiv = 0;
+	if (logStep == 0)
+		logStep = fsize;
 
 	vcl::Tokenizer tokens = internal::nextNonEmptyTokenizedLineNoThrow(fp);
 	if (fp) {
@@ -219,47 +242,68 @@ void loadStlAscii(
 				}
 			}
 			tokens = internal::nextNonEmptyTokenizedLineNoThrow(fp);
+
+			if constexpr (vcl::isLoggerValid<LogType>()) {
+				uint div = fp.tellg() / logStep;
+				if (lastDiv < div) {
+					logPerc += logPercStep;
+					log.log(logPerc, "Loading STL file");
+					lastDiv = div;
+				}
+			}
+
 		} while (fp);
 	}
 }
 
 } // namespace vcl::io::internal
 
-template<MeshConcept MeshType>
-MeshType loadStl(const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType loadStl(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	return loadStl<MeshType>(filename, loadedInfo, enableOptionalComponents);
+	return loadStl<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType loadStl(
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log,
 	bool               enableOptionalComponents)
 {
 	MeshType m;
-	loadStl(m, filename, loadedInfo, enableOptionalComponents);
+	loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
 	return m;
 }
 
-template<MeshConcept MeshType>
-void loadStl(MeshType& m, const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void loadStl(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	loadStl(m, filename, loadedInfo, enableOptionalComponents);
+	loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void loadStl(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log,
 	bool               enableOptionalComponents)
 {
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(0, "Checking STL file");
+	}
+
 	bool isBinary;
-	if (internal::isBinStlMalformed(filename, isBinary))
+	std::size_t filesize;
+	if (internal::isBinStlMalformed(filename, isBinary, filesize))
 		throw MalformedFileException(filename + " is malformed.");
+
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(0, "Opening STL file");
+	}
 
 	std::ifstream fp = internal::loadFileStream(filename);
 
@@ -276,10 +320,18 @@ void loadStl(
 		m.name() = FileInfo::filenameWithoutExtension(filename);
 	}
 
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(0, "Loading STL file");
+	}
+
 	if (isBinary)
-		internal::loadStlBin(m, fp, loadedInfo, enableOptionalComponents);
+		internal::loadStlBin(m, fp, loadedInfo, log, enableOptionalComponents);
 	else
-		internal::loadStlAscii(m, fp, loadedInfo, enableOptionalComponents);
+		internal::loadStlAscii(m, fp, loadedInfo, log, filesize, enableOptionalComponents);
+
+	if constexpr (isLoggerValid<LogType>()) {
+		log.log(100, "STL file loaded");
+	}
 }
 
 } // namespace vcl::io

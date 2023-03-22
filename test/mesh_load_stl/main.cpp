@@ -36,13 +36,17 @@
 
 int main(int argc, char **argv)
 {
+	vcl::ConsoleLogger log;
 	vcl::FileMeshInfo loadedInfo;
-	vcl::TriMesh m1 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo);
+
+	log.startTimer();
+	vcl::TriMesh m1 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo, log);
 	vcl::updateBoundingBox(m1);
 	vcl::updatePerVertexNormals(m1);
 	vcl::setPerVertexColor(m1, vcl::Color::DarkMagenta);
 
-	vcl::TriMesh m2 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo);
+	log.startTimer();
+	vcl::TriMesh m2 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo, log);
 	vcl::updateBoundingBox(m2);
 	vcl::updatePerVertexNormals(m2);
 	vcl::setPerVertexColor(m2, vcl::Color::DarkMagenta);

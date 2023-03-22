@@ -25,33 +25,38 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-MeshType load(const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType load(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	return load<MeshType>(filename, loadedInfo, enableOptionalComponents);
+	return load<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
-template<MeshConcept MeshType>
-MeshType load(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType load(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	LogType&           log,
+	bool               enableOptionalComponents)
 {
 	MeshType m;
-	load(m, filename, loadedInfo, enableOptionalComponents);
+	load(m, filename, loadedInfo, log, enableOptionalComponents);
 	return m;
 }
 
-template<MeshConcept MeshType>
-void load(MeshType& m, const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void load(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	load(m, filename, loadedInfo, enableOptionalComponents);
+	load(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void load(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log,
 	bool               enableOptionalComponents)
 {
 	std::string ext = FileInfo::extension(filename);
@@ -66,7 +71,7 @@ void load(
 		io::loadPly(m, filename, loadedInfo, enableOptionalComponents);
 	}
 	else if (ext == ".stl") {
-		io::loadStl(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
 	}
 	else {
 		throw vcl::UnknownFileFormatException(ext);
