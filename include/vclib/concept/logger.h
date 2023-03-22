@@ -64,6 +64,10 @@ concept LoggerConcept =
 	{ o.log(lvl, msg) } -> std::same_as<void>;
 	{ o.log(uint(), msg) } -> std::same_as<void>;
 	{ o.log(uint(), lvl, msg) } -> std::same_as<void>;
+
+	{ o.startProgress(msg, uint(), uint(), uint(), uint())} -> std::same_as<void>;
+	{ o.endProgress() }  -> std::same_as<void>;
+	{ o.progress(uint()) }  -> std::same_as<void>;
 };
 
 template <typename T>

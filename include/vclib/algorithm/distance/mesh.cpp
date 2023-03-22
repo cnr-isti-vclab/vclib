@@ -50,11 +50,9 @@ HausdorffDistResult hausdorffDist(
 		log.log(5, "Computing distances for " + std::to_string(s.size()) + " samples...");
 	}
 
-	uint logPerc = 0;
-	const uint logPercStep = 10;
-	uint logVertStep = s.size() / ((100 / logPercStep) - 1);
-	if (logVertStep == 0)
-		logVertStep = s.size();
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.startProgress("", s.size());
+	}
 
 	std::mutex mutex;
 
@@ -81,18 +79,14 @@ HausdorffDistResult hausdorffDist(
 		if constexpr (vcl::isLoggerValid<LogType>()) {
 			mutex.lock();
 			++i;
+			log.progress(i);
 			mutex.unlock();
-			if (i % logVertStep == 0) {
-				mutex.lock();
-				logPerc += logPercStep;
-				log.log(logPerc, "");
-				mutex.unlock();
-			}
 		}
 //	}
 	});
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.endProgress();
 		log.log(100, "Computed " + std::to_string(ns) + " distances.");
 		if (ns != s.size()) {
 			log.log(

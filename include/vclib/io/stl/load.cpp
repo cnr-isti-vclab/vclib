@@ -110,11 +110,9 @@ void loadStlBin(
 	fp.seekg(80); // size of the header
 	uint fnum = internal::readUInt<uint>(fp);
 
-	uint logPerc = 0;
-	const uint logPercStep = 10;
-	uint logStep = fnum / ((100 / logPercStep) - 1);
-	if (logStep == 0)
-		logStep =fnum;
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.startProgress("Loading STL file", fnum);
+	}
 
 	m.addVertices(fnum * 3);
 	if constexpr(HasFaces<MeshType>) {
@@ -165,11 +163,11 @@ void loadStlBin(
 		vi += 3;
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {
-			if (i % logStep == 0) {
-				logPerc += logPercStep;
-				log.log(logPerc, "Loading STL file");
-			}
+			log.progress(i);
 		}
+	}
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.endProgress();
 	}
 }
 
@@ -186,12 +184,9 @@ void loadStlAscii(
 		internal::enableOptionalComponents(loadedInfo, m);
 	}
 
-	uint logPerc = 0;
-	const uint logPercStep = 10;
-	uint logStep = fsize / ((100 / logPercStep) - 1);
-	uint lastDiv = 0;
-	if (logStep == 0)
-		logStep = fsize;
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.startProgress("Loading STL file", fsize);
+	}
 
 	vcl::Tokenizer tokens = internal::nextNonEmptyTokenizedLineNoThrow(fp);
 	if (fp) {
@@ -244,15 +239,13 @@ void loadStlAscii(
 			tokens = internal::nextNonEmptyTokenizedLineNoThrow(fp);
 
 			if constexpr (vcl::isLoggerValid<LogType>()) {
-				uint div = fp.tellg() / logStep;
-				if (lastDiv < div) {
-					logPerc += logPercStep;
-					log.log(logPerc, "Loading STL file");
-					lastDiv = div;
-				}
+				log.progress(fp.tellg());
 			}
-
 		} while (fp);
+	}
+
+	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.endProgress();
 	}
 }
 

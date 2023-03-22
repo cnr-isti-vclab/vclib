@@ -29,6 +29,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <mutex>
 #include <sstream>
 #include <stack>
 
@@ -62,6 +63,16 @@ public:
 	void log(uint perc, const std::string& msg);
 	void log(uint perc, LogLevel lvl, const std::string& msg);
 
+	void startProgress(
+		const std::string& msg,
+		uint               progressSize,
+		uint               percPrintProgress = 10,
+		uint               startPerc = 0,
+		uint               endPerc = 100);
+	void endProgress();
+
+	void progress(uint n);
+
 protected:
 	// you should override this member function if you want to use a different stream that are not
 	// std::cout and std::cerr
@@ -77,7 +88,7 @@ private:
 	std::stack<std::pair<double, double>> stack;
 
 	// actual percentage (0 - 100), that is in the interval in top of the stack
-	double progress;
+	double globalPercProgress;
 
 	double step; // the value that corresponds to 1% on the current task
 
@@ -87,6 +98,16 @@ private:
 
 	vcl::Timer timer;
 	bool printTimer = false;
+
+	// progress status members
+	bool isProgressActive = false;
+	std::string progressMessage;
+	uint progressStep;
+	uint progressPerc;
+	uint progressPercStep;
+	uint lastProgress;
+
+	std::mutex mutex;
 
 	void updateStep();
 

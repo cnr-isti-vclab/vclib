@@ -68,11 +68,9 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
 		log.log(5, "Computing per vertex curvature...");
+		// log every 5%, starting from 5% to 100%
+		log.startProgress("", m.vertexNumber(), 5, 5, 100);
 	}
-
-	uint logPerc = 5;
-	const uint logPercStep = 5;
-	uint logVertStep = m.vertexNumber() / ((95 / logPercStep) - 1);
 
 	for (VertexType& v : m.vertices()) {
 		std::vector<ScalarType> weights;
@@ -221,15 +219,12 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 		v.principalCurvature().minValue() = principalCurv2;
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {
-			uint n = m.index(v);
-			if (n % logVertStep == 0) {
-				logPerc += logPercStep;
-				log.setPercentage(logPerc);
-			}
+			log.progress(m.index(v));
 		}
 	}
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.endProgress();
 		log.log(100, "Per vertex curvature computed.");
 	}
 }
@@ -263,7 +258,6 @@ void updatePrincipalCurvaturePCA(
 	using VGrid = typename vcl::StaticGrid3<VertexType*>;
 	using VGridIterator = typename VGrid::ConstIterator;
 
-	std::mutex mutex;
 	VGrid pGrid;
 	ScalarType area;
 
@@ -276,13 +270,8 @@ void updatePrincipalCurvaturePCA(
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
 		log.log(0, "Computing per vertex curvature...");
+		log.startProgress("", m.vertexNumber());
 	}
-
-	uint logPerc = 0;
-	const uint logPercStep = 10;
-	uint logVertStep = m.vertexNumber() / ((100 / logPercStep) - 1);
-	if (logVertStep == 0)
-		logVertStep = m.vertexNumber();
 
 	if (montecarloSampling) {
 		area = vcl::surfaceArea(m);
@@ -342,7 +331,7 @@ void updatePrincipalCurvaturePCA(
 
 		v.principalCurvature().minDir() = rot * v.principalCurvature().minDir();
 
-		// copmutes the curvature values
+		// computes the curvature values
 		const ScalarType r5 = std::pow(radius, 5);
 		const ScalarType r6 = r5 * radius;
 		v.principalCurvature().maxValue() = (2.0 / 5.0) *
@@ -359,18 +348,13 @@ void updatePrincipalCurvaturePCA(
 		}
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {
-			uint n = m.index(v);
-			if (n % logVertStep == 0) {
-				mutex.lock();
-				logPerc += logPercStep;
-				log.log(logPerc, "");
-				mutex.unlock();
-			}
+			log.progress(m.index(v));
 		}
 	//}
 	});
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
+		log.endProgress();
 		log.log(100, "Per vertex curvature computed.");
 	}
 }

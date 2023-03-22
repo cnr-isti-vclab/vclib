@@ -26,6 +26,8 @@
 
 #include "logger.h"
 
+#include <vclib/concept/logger.h>
+
 namespace vcl {
 
 class ConsoleLogger : public Logger<std::ostream>
@@ -47,6 +49,8 @@ private:
 	std::ostream& progStream = std::cout;
 	std::ostream& debugStream = std::cerr;
 };
+
+static_assert(LoggerConcept<ConsoleLogger>, "ConsoleLogger does not satisfy the LoggerConcept");
 
 } // namespace vcl
 
