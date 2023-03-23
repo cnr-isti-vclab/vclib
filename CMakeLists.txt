@@ -172,6 +172,7 @@ set(HEADERS
 	include/vclib/iterator/range_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
+	include/vclib/math/fibonacci.h
 	include/vclib/math/histogram.h
 	include/vclib/math/min_max.h
 	include/vclib/math/perlin_noise.h
@@ -377,6 +378,7 @@ set(SOURCES
 	include/vclib/io/stl/save.cpp
 	include/vclib/iterator/iterator_wrapper.cpp
 	include/vclib/math/distribution.cpp
+	include/vclib/math/fibonacci.cpp
 	include/vclib/math/histogram.cpp
 	include/vclib/math/min_max.cpp
 	include/vclib/math/perlin_noise.cpp

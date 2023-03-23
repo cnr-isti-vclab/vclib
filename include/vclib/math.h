@@ -26,8 +26,8 @@
 
 #include "math/base.h"
 #include "math/distribution.h"
+#include "math/fibonacci.h"
 #include "math/histogram.h"
-#include "math/matrix.h"
 #include "math/min_max.h"
 #include "math/perlin_noise.h"
 #include "math/random.h"

@@ -21,74 +21,50 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "drawable_object_vector_frame.h"
-#include "ui_drawable_object_vector_frame.h"
-
-#include <QStandardItemModel>
+#include "fibonacci.h"
 
 namespace vcl {
 
-DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
-		QFrame(parent),
-		ui(new Ui::DrawableObjectVectorFrame)
+namespace internal {
+
+template<Point3Concept PointType>
+PointType sphericalFibonacciPoint(uint i, uint n)
 {
-	ui->setupUi(this);
+	using ScalarType = typename PointType::ScalarType;
+
+	const ScalarType Phi      = ScalarType(std::sqrt(ScalarType(5)) * 0.5 + 0.5);
+	const ScalarType phi      = 2.0 * M_PI * (i / Phi - std::floor(i / Phi));
+	ScalarType       cosTheta = 1.0 - (2 * i + 1.0) / ScalarType(n);
+	ScalarType       sinTheta = 1 - cosTheta * cosTheta;
+	sinTheta = std::sqrt(std::min(ScalarType(1), std::max(ScalarType(0), sinTheta)));
+	return PointType(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta);
 }
 
-DrawableObjectVectorFrame::DrawableObjectVectorFrame(
-	std::shared_ptr<DrawableObjectVector> v,
-	QWidget*                              parent) :
-		DrawableObjectVectorFrame(parent)
+} // namespace vcl::internal
+
+/**
+ * @brief Returns a vector of `n` points distributed in a unit sphere.
+ *
+ * This function returns a vector of `n` points that are uniformly distributed on a unit sphere,
+ * using the Spherical Fibonacci Point Sets algorithm described in the paper "Spherical Fibonacci
+ * Mapping" by Benjamin Keinert, Matthias Innmann, Michael Sanger, and Marc Stamminger (TOG 2015).
+ *
+ * @tparam PointType The type of the point to generate. This type must satisfy the `Point3Concept`
+ * concept.
+ *
+ * @param[in] n: The number of points to generate.
+ * @return A vector of `n` points distributed in a unit sphere.
+ */
+template<Point3Concept PointType>
+std::vector<PointType> sphericalFibonacciPointSet(uint n)
 {
-	drawList = v;
-	updateDrawableVectorWidget();
+	using ScalarType = typename PointType::ScalarType;
 
-}
+	std::vector<PointType> v(n);
+	for (uint i = 0; i < n; ++i)
+		v[i] = internal::sphericalFibonacciPoint<PointType>(i, n);
 
-DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
-{
-	delete ui;
-}
-
-void DrawableObjectVectorFrame::setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
-{
-	drawList = v;
-	updateDrawableVectorWidget();
-}
-
-uint DrawableObjectVectorFrame::selectedDrawableObject() const
-{
-	auto item = ui->listWidget->selectedItems().first();
-	return ui->listWidget->row(item);
-}
-
-void DrawableObjectVectorFrame::on_listWidget_itemSelectionChanged()
-{
-	if (ui->listWidget->selectedItems().size() > 0) {
-		emit drawableObjectSelectionChanged(selectedDrawableObject());
-	}
-	else {
-		ui->listWidget->item(0)->setSelected(true);
-	}
-}
-
-void DrawableObjectVectorFrame::updateDrawableVectorWidget()
-{
-	ui->listWidget->clear();
-	for (auto* d : *drawList) {
-		QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
-		DrawableObjectFrame* frame = new DrawableObjectFrame(d, ui->listWidget);
-
-		item->setSizeHint(frame->sizeHint());
-		ui->listWidget->addItem(item);
-		ui->listWidget->setItemWidget(item, frame);
-		connect(
-			frame, SIGNAL(visibilityChanged()),
-			this, SIGNAL(drawableObjectVisibilityChanged()));
-	}
-	if (drawList->size() > 0) {
-		ui->listWidget->item(0)->setSelected(true);
-	}
+	return v;
 }
 
 } // namespace vcl

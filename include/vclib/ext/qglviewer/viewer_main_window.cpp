@@ -114,7 +114,7 @@ void ViewerMainWindow::setDrawableObjectVector(std::shared_ptr<vcl::DrawableObje
  */
 void ViewerMainWindow::visibilityDrawableObjectChanged()
 {
-	// get the selecte drawable object
+	// get the selected drawable object
 	uint i = ui->drawVectorFrame->selectedDrawableObject();
 	try {
 		// if it is a GenericDrawableMesh, we must be sure that its render settings are updated
