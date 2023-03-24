@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID3_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID3_H
+#ifndef VCL_SPACE_GRID_REGULAR_GRID3_H
+#define VCL_SPACE_GRID_REGULAR_GRID3_H
 
 #include "regular_grid_t.h"
 
@@ -37,4 +37,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID3_H
+#endif // VCL_SPACE_GRID_REGULAR_GRID3_H

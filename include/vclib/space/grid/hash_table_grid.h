@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_HASH_TABLE_GRID_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_HASH_TABLE_GRID_H
+#ifndef VCL_SPACE_GRID_HASH_TABLE_GRID_H
+#define VCL_SPACE_GRID_HASH_TABLE_GRID_H
 
 #include <set>
 #include <unordered_map>
@@ -112,4 +112,4 @@ using HashTableGrid3 = HashTableGrid<RegularGrid3<ScalarType>, ValueType, AD>;
 
 #include "hash_table_grid.cpp"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_HASH_TABLE_GRID_H
+#endif // VCL_SPACE_GRID_HASH_TABLE_GRID_H

@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STATIC_GRID_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STATIC_GRID_H
+#ifndef VCL_SPACE_GRID_STATIC_GRID_H
+#define VCL_SPACE_GRID_STATIC_GRID_H
 
 #include <set>
 #include <vector>
@@ -106,4 +106,4 @@ using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
 
 #include "static_grid.cpp"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_STATIC_GRID_H
+#endif // VCL_SPACE_GRID_STATIC_GRID_H

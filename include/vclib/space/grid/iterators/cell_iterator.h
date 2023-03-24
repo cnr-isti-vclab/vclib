@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_ITERATOR_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_ITERATOR_H
+#ifndef VCL_SPACE_GRID_ITERATORS_CELL_ITERATOR_H
+#define VCL_SPACE_GRID_ITERATORS_CELL_ITERATOR_H
 
 #include <vclib/space/point.h>
 
@@ -62,4 +62,4 @@ private:
 
 #include "cell_iterator.cpp"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ITERATORS_CELL_ITERATOR_H
+#endif // VCL_SPACE_GRID_ITERATORS_CELL_ITERATOR_H

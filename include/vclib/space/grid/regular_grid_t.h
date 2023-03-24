@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID_T_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID_T_H
+#ifndef VCL_SPACE_GRID_REGULAR_GRID_T_H
+#define VCL_SPACE_GRID_REGULAR_GRID_T_H
 
 #include "iterators/cell_iterator.h"
 #include "iterators/cell_range_iterator.h"
@@ -92,4 +92,4 @@ vcl::Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nEl
 
 #include "regular_grid_t.cpp"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_REGULAR_GRID_T_H
+#endif // VCL_SPACE_GRID_REGULAR_GRID_T_H

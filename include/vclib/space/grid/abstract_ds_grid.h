@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ABSTRACT_DS_GRID_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ABSTRACT_DS_GRID_H
+#ifndef VCL_SPACE_GRID_ABSTRACT_DS_GRID_H
+#define VCL_SPACE_GRID_ABSTRACT_DS_GRID_H
 
 #include <deque>
 #include <set>
@@ -255,4 +255,4 @@ private:
 
 #include "abstract_ds_grid.cpp"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_ABSTRACT_DS_GRID_H
+#endif // VCL_SPACE_GRID_ABSTRACT_DS_GRID_H
