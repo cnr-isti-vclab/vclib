@@ -105,8 +105,8 @@ protected:
 
 } // namespace vcl
 
-#include "bipartite_graph.cpp"
-
 #include "iterator/bipartite_graph_iterators.h"
+
+#include "bipartite_graph.cpp"
 
 #endif // VCL_SPACE_GRAPH_BIPARTITE_BIPARTITE_GRAPH_H
