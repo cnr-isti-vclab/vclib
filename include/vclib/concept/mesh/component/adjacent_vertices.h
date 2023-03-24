@@ -53,8 +53,8 @@ concept HasAdjacentVertices = requires(
 	typename T::AdjacentVertexType;
 	typename T::AdjacentVertexIterator;
 	typename T::ConstAdjacentVertexIterator;
-	typename T::AdjacentVertexRangeIterator;
-	typename T::ConstAdjacentVertexRangeIterator;
+	typename T::AdjacentVertexRange;
+	typename T::ConstAdjacentVertexRange;
 
 	{ o.adjVerticesNumber() } -> std::same_as<uint>;
 	{ o.adjVertex(uint()) } -> std::same_as<typename T::AdjacentVertexType*&>;
@@ -74,8 +74,8 @@ concept HasAdjacentVertices = requires(
 	{ o.adjVertexEnd() } -> std::same_as<typename T::AdjacentVertexIterator>;
 	{ co.adjVertexBegin() } -> std::same_as<typename T::ConstAdjacentVertexIterator>;
 	{ co.adjVertexEnd() } -> std::same_as<typename T::ConstAdjacentVertexIterator>;
-	{ o.adjVertices() } -> std::same_as<typename T::AdjacentVertexRangeIterator>;
-	{ co.adjVertices() } -> std::same_as<typename T::ConstAdjacentVertexRangeIterator>;
+	{ o.adjVertices() } -> std::same_as<typename T::AdjacentVertexRange>;
+	{ co.adjVertices() } -> std::same_as<typename T::ConstAdjacentVertexRange>;
 };
 
 /**

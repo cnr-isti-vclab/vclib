@@ -27,7 +27,7 @@
 #include <vector>
 
 #include <vclib/concept/mesh/component/vertex_half_edge_reference.h>
-#include <vclib/iterator/container_range_iterator.h>
+#include <vclib/iterator/range.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h>
 
@@ -60,16 +60,13 @@ public:
 
 	using AdjacentFaceIterator      = vcl::VertexAdjFaceIterator<HalfEdge>;
 	using ConstAdjacentFaceIterator = vcl::ConstVertexAdjFaceIterator<HalfEdge>;
-	using AdjacentFaceRangeIterator = ContainerRangeIterator<VertexHalfEdgeReference, AdjacentFaceIterator>;
-	using ConstAdjacentFaceRangeIterator =
-		ConstContainerRangeIterator<VertexHalfEdgeReference, ConstAdjacentFaceIterator>;
+	using AdjacentFaceRange         = vcl::Range<AdjacentFaceIterator>;
+	using ConstAdjacentFaceRange    = vcl::Range<ConstAdjacentFaceIterator>;
 
 	using AdjacentVertexIterator      = vcl::VertexAdjVertexIterator<HalfEdge>;
 	using ConstAdjacentVertexIterator = vcl::ConstVertexAdjVertexIterator<HalfEdge>;
-	using AdjacentVertexRangeIterator =
-		ContainerRangeIterator<VertexHalfEdgeReference, AdjacentVertexIterator>;
-	using ConstAdjacentVertexRangeIterator =
-		ConstContainerRangeIterator<VertexHalfEdgeReference, ConstAdjacentVertexIterator>;
+	using AdjacentVertexRange         = vcl::Range<AdjacentVertexIterator>;
+	using ConstAdjacentVertexRange    = vcl::Range<ConstAdjacentVertexIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -128,19 +125,19 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentFaceIterator           adjFaceBegin();
-	AdjacentFaceIterator           adjFaceEnd();
-	ConstAdjacentFaceIterator      adjFaceBegin() const;
-	ConstAdjacentFaceIterator      adjFaceEnd() const;
-	AdjacentFaceRangeIterator      adjFaces();
-	ConstAdjacentFaceRangeIterator adjFaces() const;
+	AdjacentFaceIterator      adjFaceBegin();
+	AdjacentFaceIterator      adjFaceEnd();
+	ConstAdjacentFaceIterator adjFaceBegin() const;
+	ConstAdjacentFaceIterator adjFaceEnd() const;
+	AdjacentFaceRange         adjFaces();
+	ConstAdjacentFaceRange    adjFaces() const;
 
-	AdjacentVertexIterator           adjVertexBegin();
-	AdjacentVertexIterator           adjVertexEnd();
-	ConstAdjacentVertexIterator      adjVertexBegin() const;
-	ConstAdjacentVertexIterator      adjVertexEnd() const;
-	AdjacentVertexRangeIterator      adjVertices();
-	ConstAdjacentVertexRangeIterator adjVertices() const;
+	AdjacentVertexIterator      adjVertexBegin();
+	AdjacentVertexIterator      adjVertexEnd();
+	ConstAdjacentVertexIterator adjVertexBegin() const;
+	ConstAdjacentVertexIterator adjVertexEnd() const;
+	AdjacentVertexRange         adjVertices();
+	ConstAdjacentVertexRange    adjVertices() const;
 
 protected:
 	void updateReferences(const HalfEdge* oldBase, const HalfEdge* newBase);

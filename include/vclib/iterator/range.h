@@ -21,16 +21,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATOR_RANGE_ITERATOR_H
-#define VCL_ITERATOR_RANGE_ITERATOR_H
+#ifndef VCL_ITERATOR_RANGE_H
+#define VCL_ITERATOR_RANGE_H
 
 namespace vcl {
 
+/**
+ * @brief The Range class is a simple class that stores and exposes two iterators begin and end.
+ *
+ * It is useful for classes that expose multiple containers, and they do not expose the classic
+ * member functions begin()/end().
+ * In these cases, it is possible to expose the range of a selected container by returning a Range
+ * object initialized with the begin/end iterators.
+ *
+ * For example, a Mesh can expose Vertex and Face containers.
+ * The mesh exposes the member functions:
+ * - vertexBegin()
+ * - vertexEnd()
+ * - faceBegin()
+ * - faceEnd()
+ * To allow range iteration over vertices, the Mesh could expose a vertices() member function that
+ * returns a Range object that is constructed in this way: Range(vertexBegin(), vertexEnd());
+ */
 template<typename Iterator>
-class RangeIterator
+class Range
 {
 public:
-	RangeIterator(Iterator begin, Iterator end) :
+	Range(Iterator begin, Iterator end) :
 			b(begin), e(end)
 	{
 	};
@@ -45,4 +62,4 @@ protected:
 
 } // namespace vcl
 
-#endif // VCL_ITERATOR_RANGE_ITERATOR_H
+#endif // VCL_ITERATOR_RANGE_H

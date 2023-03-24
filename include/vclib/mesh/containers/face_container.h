@@ -54,8 +54,8 @@ public:
 	using FaceType          = T;
 	using FaceIterator      = typename Base::ElementIterator;
 	using ConstFaceIterator = typename Base::ConstElementIterator;
-	using FaceRangeIterator = typename Base::ElementRangeIterator;
-	using ConstFaceRangeIterator = typename Base::ConstElementRangeIterator;
+	using FaceRange         = typename Base::ElementRange;
+	using ConstFaceRange    = typename Base::ConstElementRange;
 
 	FaceContainer();
 
@@ -72,12 +72,12 @@ public:
 	uint             faceIndexIfCompact(uint id) const;
 	std::vector<int> faceCompactIndices() const;
 
-	FaceIterator           faceBegin(bool jumpDeleted = true);
-	FaceIterator           faceEnd();
-	ConstFaceIterator      faceBegin(bool jumpDeleted = true) const;
-	ConstFaceIterator      faceEnd() const;
-	FaceRangeIterator      faces(bool jumpDeleted = true);
-	ConstFaceRangeIterator faces(bool jumpDeleted = true) const;
+	FaceIterator      faceBegin(bool jumpDeleted = true);
+	FaceIterator      faceEnd();
+	ConstFaceIterator faceBegin(bool jumpDeleted = true) const;
+	ConstFaceIterator faceEnd() const;
+	FaceRange         faces(bool jumpDeleted = true);
+	ConstFaceRange    faces(bool jumpDeleted = true) const;
 
 	void enableAllPerFaceOptionalComponents();
 	void disableAllPerFaceOptionalComponents();

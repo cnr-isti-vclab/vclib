@@ -191,14 +191,14 @@ AdjacentVertices<Vertex, El, o>::adjVertexEnd() const
 }
 
 template<typename Vertex, typename El, bool o>
-typename AdjacentVertices<Vertex, El, o>::AdjacentVertexRangeIterator
+typename AdjacentVertices<Vertex, El, o>::AdjacentVertexRange
 AdjacentVertices<Vertex, El, o>::adjVertices()
 {
 	return Base::container(this).rangeIterator();
 }
 
 template<typename Vertex, typename El, bool o>
-typename AdjacentVertices<Vertex, El, o>::ConstAdjacentVertexRangeIterator
+typename AdjacentVertices<Vertex, El, o>::ConstAdjacentVertexRange
 AdjacentVertices<Vertex, El, o>::adjVertices() const
 {
 	return Base::container(this).rangeIterator();

@@ -52,12 +52,12 @@ class VertexContainer : public ElementContainer<T>
 	using Base                = ElementContainer<T>;
 
 public:
-	using Vertex                   = T;
-	using VertexType               = T;
-	using VertexIterator           = typename Base::ElementIterator;
-	using ConstVertexIterator      = typename Base::ConstElementIterator;
-	using VertexRangeIterator      = typename Base::ElementRangeIterator;
-	using ConstVertexRangeIterator = typename Base::ConstElementRangeIterator;
+	using Vertex              = T;
+	using VertexType          = T;
+	using VertexIterator      = typename Base::ElementIterator;
+	using ConstVertexIterator = typename Base::ConstElementIterator;
+	using VertexRange         = typename Base::ElementRange;
+	using ConstVertexRange    = typename Base::ConstElementRange;
 
 	VertexContainer();
 
@@ -74,12 +74,12 @@ public:
 	uint             vertexIndexIfCompact(uint id) const;
 	std::vector<int> vertexCompactIndices() const;
 
-	VertexIterator           vertexBegin(bool jumpDeleted = true);
-	VertexIterator           vertexEnd();
-	ConstVertexIterator      vertexBegin(bool jumpDeleted = true) const;
-	ConstVertexIterator      vertexEnd() const;
-	VertexRangeIterator      vertices(bool jumpDeleted = true);
-	ConstVertexRangeIterator vertices(bool jumpDeleted = true) const;
+	VertexIterator      vertexBegin(bool jumpDeleted = true);
+	VertexIterator      vertexEnd();
+	ConstVertexIterator vertexBegin(bool jumpDeleted = true) const;
+	ConstVertexIterator vertexEnd() const;
+	VertexRange         vertices(bool jumpDeleted = true);
+	ConstVertexRange    vertices(bool jumpDeleted = true) const;
 
 	void enableAllPerVertexOptionalComponents();
 	void disableAllPerVertexOptionalComponents();

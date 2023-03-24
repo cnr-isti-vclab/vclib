@@ -54,8 +54,8 @@ concept HasWedgeTexCoords = requires(
 	typename T::WedgeTexCoordType;
 	typename T::WedgeTexCoordsIterator;
 	typename T::ConstWedgeTexCoordsIterator;
-	typename T::WedgeTexCoordsRangeIterator;
-	typename T::ConstWedgeTexCoordsRangeIterator;
+	typename T::WedgeTexCoordsRange;
+	typename T::ConstWedgeTexCoordsRange;
 
 	{ o.wedgeTexCoord(uint()) } -> std::same_as<typename T::WedgeTexCoordType&>;
 	{ co.wedgeTexCoord(uint()) } -> std::same_as<const typename T::WedgeTexCoordType&>;
@@ -71,8 +71,8 @@ concept HasWedgeTexCoords = requires(
 	{ o.wedgeTexCoordEnd() } -> std::same_as<typename T::WedgeTexCoordsIterator>;
 	{ co.wedgeTexCoordBegin() } -> std::same_as<typename T::ConstWedgeTexCoordsIterator>;
 	{ co.wedgeTexCoordEnd() } -> std::same_as<typename T::ConstWedgeTexCoordsIterator>;
-	{ o.wedgeTexCoords() } -> std::same_as<typename T::WedgeTexCoordsRangeIterator>;
-	{ co.wedgeTexCoords() } -> std::same_as<typename T::ConstWedgeTexCoordsRangeIterator>;
+	{ o.wedgeTexCoords() } -> std::same_as<typename T::WedgeTexCoordsRange>;
+	{ co.wedgeTexCoords() } -> std::same_as<typename T::ConstWedgeTexCoordsRange>;
 };
 
 /**

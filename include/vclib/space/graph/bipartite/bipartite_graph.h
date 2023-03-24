@@ -29,7 +29,7 @@
 #include <set>
 #include <vector>
 
-#include <vclib/iterator/container_range_iterator.h>
+#include <vclib/iterator/range.h>
 #include <vclib/space/graph/undirected_node.h>
 
 #include "iterator/node_iterator.h"
@@ -44,8 +44,8 @@ public:
 	using RightNodeIterator =
 		NodeIterator<typename std::vector<UndirectedNode<T2>>::const_iterator>;
 
-	using LeftNodeRange  = ContainerRangeIterator<BipartiteGraph, LeftNodeIterator>;
-	using RightNodeRange = ContainerRangeIterator<BipartiteGraph, RightNodeIterator>;
+	using LeftNodeRange  = vcl::Range<LeftNodeIterator>;
+	using RightNodeRange = vcl::Range<RightNodeIterator>;
 
 	class AdjacentLeftNodeIterator;
 	class AdjacentRightNodeIterator;

@@ -46,8 +46,8 @@ public:
 	using EdgeType          = T;
 	using EdgeIterator      = typename Base::ElementIterator;
 	using ConstEdgeIterator = typename Base::ConstElementIterator;
-	using EdgeRangeIterator = typename Base::ElementRangeIterator;
-	using ConstEdgeRangeIterator = typename Base::ConstElementRangeIterator;
+	using EdgeRange         = typename Base::ElementRange;
+	using ConstEdgeRange    = typename Base::ConstElementRange;
 
 	EdgeContainer();
 
@@ -64,12 +64,12 @@ public:
 	uint             edgeIndexIfCompact(uint id) const;
 	std::vector<int> edgeCompactIndices() const;
 
-	EdgeIterator           edgeBegin(bool jumpDeleted = true);
-	EdgeIterator           edgeEnd();
-	ConstEdgeIterator      edgeBegin(bool jumpDeleted = true) const;
-	ConstEdgeIterator      edgeEnd() const;
-	EdgeRangeIterator      edges(bool jumpDeleted = true);
-	ConstEdgeRangeIterator edges(bool jumpDeleted = true) const;
+	EdgeIterator      edgeBegin(bool jumpDeleted = true);
+	EdgeIterator      edgeEnd();
+	ConstEdgeIterator edgeBegin(bool jumpDeleted = true) const;
+	ConstEdgeIterator edgeEnd() const;
+	EdgeRange         edges(bool jumpDeleted = true);
+	ConstEdgeRange    edges(bool jumpDeleted = true) const;
 
 	void enableAllPerEdgeOptionalComponents();
 	void disableAllPerEdgeOptionalComponents();

@@ -114,14 +114,14 @@ WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoordEnd() const
 }
 
 template<typename Scalar, int N, typename El, bool o>
-typename WedgeTexCoords<Scalar, N, El, o>::WedgeTexCoordsRangeIterator
+typename WedgeTexCoords<Scalar, N, El, o>::WedgeTexCoordsRange
 WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords()
 {
 	return texCoords().rangeIterator();
 }
 
 template<typename Scalar, int N, typename El, bool o>
-typename WedgeTexCoords<Scalar, N, El, o>::ConstWedgeTexCoordsRangeIterator
+typename WedgeTexCoords<Scalar, N, El, o>::ConstWedgeTexCoordsRange
 WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords() const
 {
 	return texCoords().rangeIterator();

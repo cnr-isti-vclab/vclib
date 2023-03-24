@@ -98,13 +98,13 @@ typename WedgeColors<N, El, o>::ConstWedgeColorsIterator WedgeColors<N, El, o>::
 }
 
 template<int N, typename El, bool o>
-typename WedgeColors<N, El, o>::WedgeColorsRangeIterator WedgeColors<N, El, o>::wedgeColors()
+typename WedgeColors<N, El, o>::WedgeColorsRange WedgeColors<N, El, o>::wedgeColors()
 {
 	return colors().rangeIterator();
 }
 
 template<int N, typename El, bool o>
-typename WedgeColors<N, El, o>::ConstWedgeColorsRangeIterator WedgeColors<N, El, o>::wedgeColors() const
+typename WedgeColors<N, El, o>::ConstWedgeColorsRange WedgeColors<N, El, o>::wedgeColors() const
 {
 	return colors().rangeIterator();
 }

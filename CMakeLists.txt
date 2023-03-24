@@ -169,7 +169,7 @@ set(HEADERS
 	include/vclib/iterator/container_range_iterator.h
 	include/vclib/iterator/iterator_wrapper.h
 	include/vclib/iterator/pointer_iterator.h
-	include/vclib/iterator/range_iterator.h
+	include/vclib/iterator/range.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/fibonacci.h

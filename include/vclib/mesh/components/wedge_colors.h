@@ -49,10 +49,10 @@ public:
 
 	/* Iterator Types declaration */
 
-	using WedgeColorsIterator           = typename Base::Iterator;
-	using ConstWedgeColorsIterator      = typename Base::ConstIterator;
-	using WedgeColorsRangeIterator      = typename Base::RACRangeIterator;
-	using ConstWedgeColorsRangeIterator = typename Base::RACConstRangeIterator;
+	using WedgeColorsIterator      = typename Base::Iterator;
+	using ConstWedgeColorsIterator = typename Base::ConstIterator;
+	using WedgeColorsRange         = typename Base::RACRangeIterator;
+	using ConstWedgeColorsRange    = typename Base::RACConstRangeIterator;
 
 	bool isEnabled() const;
 	bool isWedgeColorsEnabled() const;
@@ -70,12 +70,12 @@ public:
 
 	/* Iterator Member functions */
 
-	WedgeColorsIterator           wedgeColorBegin();
-	WedgeColorsIterator           wedgeColorEnd();
-	ConstWedgeColorsIterator      wedgeColorBegin() const;
-	ConstWedgeColorsIterator      wedgeColorEnd() const;
-	WedgeColorsRangeIterator      wedgeColors();
-	ConstWedgeColorsRangeIterator wedgeColors() const;
+	WedgeColorsIterator      wedgeColorBegin();
+	WedgeColorsIterator      wedgeColorEnd();
+	ConstWedgeColorsIterator wedgeColorBegin() const;
+	ConstWedgeColorsIterator wedgeColorEnd() const;
+	WedgeColorsRange         wedgeColors();
+	ConstWedgeColorsRange    wedgeColors() const;
 
 protected:
 	/* Member functions specific for vector of wedge colors */

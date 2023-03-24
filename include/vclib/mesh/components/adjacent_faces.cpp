@@ -238,13 +238,13 @@ AdjacentFaces<Face, N, El, o>::adjFaceEnd() const
 }
 
 template<typename Face, int N, typename El, bool o>
-typename AdjacentFaces<Face, N, El, o>::AdjacentFaceRangeIterator AdjacentFaces<Face, N, El, o>::adjFaces()
+typename AdjacentFaces<Face, N, El, o>::AdjacentFaceRange AdjacentFaces<Face, N, El, o>::adjFaces()
 {
 	return Base::container(this).rangeIterator();
 }
 
 template<typename Face, int N, typename El, bool o>
-typename AdjacentFaces<Face, N, El, o>::ConstAdjacentFaceRangeIterator
+typename AdjacentFaces<Face, N, El, o>::ConstAdjacentFaceRange
 AdjacentFaces<Face, N, El, o>::adjFaces() const
 {
 	return Base::container(this).rangeIterator();

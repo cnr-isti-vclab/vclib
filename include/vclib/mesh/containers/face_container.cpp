@@ -241,7 +241,7 @@ typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceEnd() const
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<FaceConcept T>
-typename FaceContainer<T>::FaceRangeIterator FaceContainer<T>::faces(bool jumpDeleted)
+typename FaceContainer<T>::FaceRange FaceContainer<T>::faces(bool jumpDeleted)
 {
 	return Base::elements(jumpDeleted);
 }
@@ -266,7 +266,7 @@ typename FaceContainer<T>::FaceRangeIterator FaceContainer<T>::faces(bool jumpDe
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<FaceConcept T>
-typename FaceContainer<T>::ConstFaceRangeIterator FaceContainer<T>::faces(bool jumpDeleted) const
+typename FaceContainer<T>::ConstFaceRange FaceContainer<T>::faces(bool jumpDeleted) const
 {
 	return Base::elements(jumpDeleted);
 }

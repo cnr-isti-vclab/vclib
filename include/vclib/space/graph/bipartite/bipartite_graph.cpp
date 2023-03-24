@@ -385,13 +385,13 @@ typename BipartiteGraph<T1, T2>::RightNodeIterator BipartiteGraph<T1, T2>::right
 template<class T1, class T2>
 typename BipartiteGraph<T1, T2>::LeftNodeRange BipartiteGraph<T1, T2>::leftNodes() const
 {
-	return LeftNodeRange(*this, &BipartiteGraph::leftNodeBegin, &BipartiteGraph::leftNodeEnd);
+	return LeftNodeRange(leftNodeBegin(), leftNodeEnd());
 }
 
 template<class T1, class T2>
 typename BipartiteGraph<T1, T2>::RightNodeRange BipartiteGraph<T1, T2>::rightNodes() const
 {
-	return RightNodeRange(*this, &BipartiteGraph::rightNodeBegin, &BipartiteGraph::rightNodeEnd);
+	return RightNodeRange(rightNodeBegin(), rightNodeEnd());
 }
 
 template<class T1, class T2>

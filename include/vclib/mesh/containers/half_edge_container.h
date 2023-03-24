@@ -42,12 +42,12 @@ class HalfEdgeContainer : public ElementContainer<T>
 	using Base = ElementContainer<T>;
 
 public:
-	using HalfEdge                   = T;
-	using HalfEdgeType               = T;
-	using HalfEdgeIterator           = typename Base::ElementIterator;
-	using ConstHalfEdgeIterator      = typename Base::ConstElementIterator;
-	using HalfEdgeRangeIterator      = typename Base::ElementRangeIterator;
-	using ConstHalfEdgeRangeIterator = typename Base::ConstElementRangeIterator;
+	using HalfEdge              = T;
+	using HalfEdgeType          = T;
+	using HalfEdgeIterator      = typename Base::ElementIterator;
+	using ConstHalfEdgeIterator = typename Base::ConstElementIterator;
+	using HalfEdgeRange         = typename Base::ElementRange;
+	using ConstHalfEdgeRange    = typename Base::ConstElementRange;
 
 	HalfEdgeContainer();
 
@@ -64,12 +64,12 @@ public:
 	uint             halfEdgeIndexIfCompact(uint id) const;
 	std::vector<int> halfEdgeCompactIndices() const;
 
-	HalfEdgeIterator           halfEdgeBegin(bool jumpDeleted = true);
-	HalfEdgeIterator           halfEdgeEnd();
-	ConstHalfEdgeIterator      halfEdgeBegin(bool jumpDeleted = true) const;
-	ConstHalfEdgeIterator      halfEdgeEnd() const;
-	HalfEdgeRangeIterator      halfEdges(bool jumpDeleted = true);
-	ConstHalfEdgeRangeIterator halfEdges(bool jumpDeleted = true) const;
+	HalfEdgeIterator      halfEdgeBegin(bool jumpDeleted = true);
+	HalfEdgeIterator      halfEdgeEnd();
+	ConstHalfEdgeIterator halfEdgeBegin(bool jumpDeleted = true) const;
+	ConstHalfEdgeIterator halfEdgeEnd() const;
+	HalfEdgeRange         halfEdges(bool jumpDeleted = true);
+	ConstHalfEdgeRange    halfEdges(bool jumpDeleted = true) const;
 
 	void enableAllPerHalfEdgeOptionalComponents();
 	void disableAllPerHalfEdgeOptionalComponents();

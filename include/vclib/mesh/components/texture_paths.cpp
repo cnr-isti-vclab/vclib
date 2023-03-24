@@ -92,17 +92,15 @@ typename TexturePaths<El, o>::ConstTexFileNamesIterator TexturePaths<El, o>::tex
 }
 
 template<typename El, bool o>
-typename TexturePaths<El, o>::TexFileNamesRangeIterator TexturePaths<El, o>::texturePaths()
+typename TexturePaths<El, o>::TexFileNamesRange TexturePaths<El, o>::texturePaths()
 {
-	return TexFileNamesRangeIterator(
-		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
+	return TexFileNamesRange(texturePathBegin(), texturePathEnd());
 }
 
 template<typename El, bool o>
-typename TexturePaths<El, o>::ConstTexFileNamesRangeIterator TexturePaths<El, o>::texturePaths() const
+typename TexturePaths<El, o>::ConstTexFileNamesRange TexturePaths<El, o>::texturePaths() const
 {
-	return ConstTexFileNamesRangeIterator(
-		*this, &TexturePaths::texturePathBegin, &TexturePaths::texturePathEnd);
+	return ConstTexFileNamesRange(texturePathBegin(), texturePathEnd());
 }
 
 template<typename El, bool o>

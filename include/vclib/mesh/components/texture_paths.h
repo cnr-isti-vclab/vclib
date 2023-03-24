@@ -28,7 +28,7 @@
 #include <vector>
 
 #include <vclib/concept/mesh/component/texture_paths.h>
-#include <vclib/iterator/container_range_iterator.h>
+#include <vclib/iterator/range.h>
 
 #include "internal/component_data.h"
 
@@ -53,10 +53,8 @@ public:
 	// iterators
 	using TexFileNamesIterator      = std::vector<std::string>::iterator;
 	using ConstTexFileNamesIterator = std::vector<std::string>::const_iterator;
-	using TexFileNamesRangeIterator =
-		ContainerRangeIterator<TexturePaths, TexFileNamesIterator>;
-	using ConstTexFileNamesRangeIterator =
-		ConstContainerRangeIterator<TexturePaths, ConstTexFileNamesIterator>;
+	using TexFileNamesRange         = vcl::Range<TexFileNamesIterator>;
+	using ConstTexFileNamesRange    = vcl::Range<ConstTexFileNamesIterator>;
 
 	uint textureNumber() const;
 
@@ -69,12 +67,12 @@ public:
 
 	void pushTexturePath(const std::string& textName);
 
-	TexFileNamesIterator texturePathBegin();
-	TexFileNamesIterator texturePathEnd();
+	TexFileNamesIterator      texturePathBegin();
+	TexFileNamesIterator      texturePathEnd();
 	ConstTexFileNamesIterator texturePathBegin() const;
 	ConstTexFileNamesIterator texturePathEnd() const;
-	TexFileNamesRangeIterator texturePaths();
-	ConstTexFileNamesRangeIterator texturePaths() const;
+	TexFileNamesRange         texturePaths();
+	ConstTexFileNamesRange    texturePaths() const;
 
 protected:
 	template<typename Element>

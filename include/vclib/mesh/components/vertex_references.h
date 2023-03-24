@@ -52,10 +52,10 @@ public:
 
 	/* Iterator Types declaration */
 
-	using VertexIterator           = typename Base::Iterator;
-	using ConstVertexIterator      = typename Base::ConstIterator;
-	using VertexRangeIterator      = typename Base::RACRangeIterator;
-	using ConstVertexRangeIterator = typename Base::RACConstRangeIterator;
+	using VertexIterator      = typename Base::Iterator;
+	using ConstVertexIterator = typename Base::ConstIterator;
+	using VertexRange         = typename Base::RACRangeIterator;
+	using ConstVertexRange    = typename Base::RACConstRangeIterator;
 
 	/* Constructor and isEnabled */
 
@@ -99,8 +99,8 @@ public:
 	VertexIterator           vertexEnd();
 	ConstVertexIterator      vertexBegin() const;
 	ConstVertexIterator      vertexEnd() const;
-	VertexRangeIterator      vertices();
-	ConstVertexRangeIterator vertices() const;
+	VertexRange              vertices();
+	ConstVertexRange         vertices() const;
 
 protected:
 	void updateReferences(const Vertex* oldBase, const Vertex* newBase);

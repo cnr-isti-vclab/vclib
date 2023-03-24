@@ -75,10 +75,10 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentFaceIterator           = typename Base::Iterator;
-	using ConstAdjacentFaceIterator      = typename Base::ConstIterator;
-	using AdjacentFaceRangeIterator      = typename Base::RACRangeIterator;
-	using ConstAdjacentFaceRangeIterator = typename Base::RACConstRangeIterator;
+	using AdjacentFaceIterator      = typename Base::Iterator;
+	using ConstAdjacentFaceIterator = typename Base::ConstIterator;
+	using AdjacentFaceRange         = typename Base::RACRangeIterator;
+	using ConstAdjacentFaceRange    = typename Base::RACConstRangeIterator;
 
 	/* Constructor and isEnabled */
 
@@ -116,12 +116,12 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentFaceIterator           adjFaceBegin();
-	AdjacentFaceIterator           adjFaceEnd();
-	ConstAdjacentFaceIterator      adjFaceBegin() const;
-	ConstAdjacentFaceIterator      adjFaceEnd() const;
-	AdjacentFaceRangeIterator      adjFaces();
-	ConstAdjacentFaceRangeIterator adjFaces() const;
+	AdjacentFaceIterator      adjFaceBegin();
+	AdjacentFaceIterator      adjFaceEnd();
+	ConstAdjacentFaceIterator adjFaceBegin() const;
+	ConstAdjacentFaceIterator adjFaceEnd() const;
+	AdjacentFaceRange         adjFaces();
+	ConstAdjacentFaceRange    adjFaces() const;
 
 protected:
 	void updateReferences(const Face* oldBase, const Face* newBase);

@@ -75,10 +75,10 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentEdgeIterator           = typename Base::Iterator;
-	using ConstAdjacentEdgeIterator      = typename Base::ConstIterator;
-	using AdjacentEdgeRangeIterator      = typename Base::RACRangeIterator;
-	using ConstAdjacentEdgeRangeIterator = typename Base::RACConstRangeIterator;
+	using AdjacentEdgeIterator      = typename Base::Iterator;
+	using ConstAdjacentEdgeIterator = typename Base::ConstIterator;
+	using AdjacentEdgeRange         = typename Base::RACRangeIterator;
+	using ConstAdjacentEdgeRange    = typename Base::RACConstRangeIterator;
 
 	/* Constructor and isEnabled */
 
@@ -116,12 +116,12 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentEdgeIterator           adjEdgeBegin();
-	AdjacentEdgeIterator           adjEdgeEnd();
-	ConstAdjacentEdgeIterator      adjEdgeBegin() const;
-	ConstAdjacentEdgeIterator      adjEdgeEnd() const;
-	AdjacentEdgeRangeIterator      adjEdges();
-	ConstAdjacentEdgeRangeIterator adjEdges() const;
+	AdjacentEdgeIterator      adjEdgeBegin();
+	AdjacentEdgeIterator      adjEdgeEnd();
+	ConstAdjacentEdgeIterator adjEdgeBegin() const;
+	ConstAdjacentEdgeIterator adjEdgeEnd() const;
+	AdjacentEdgeRange         adjEdges();
+	ConstAdjacentEdgeRange    adjEdges() const;
 
 protected:
 	void updateReferences(const Edge* oldBase, const Edge* newBase);

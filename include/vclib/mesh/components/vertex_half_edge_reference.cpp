@@ -322,19 +322,17 @@ VertexHalfEdgeReference<HE, El, o>::adjFaceEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgeReference<HE, El, o>::AdjacentFaceRangeIterator
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentFaceRange
 VertexHalfEdgeReference<HE, El, o>::adjFaces()
 {
-	return AdjacentFaceRangeIterator(
-		*this, &VertexHalfEdgeReference::adjFaceBegin, &VertexHalfEdgeReference::adjFaceEnd);
+	return AdjacentFaceRange(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentFaceRangeIterator
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentFaceRange
 VertexHalfEdgeReference<HE, El, o>::adjFaces() const
 {
-	return ConstAdjacentFaceRangeIterator(
-		*this, &VertexHalfEdgeReference::adjFaceBegin, &VertexHalfEdgeReference::adjFaceEnd);
+	return ConstAdjacentFaceRange(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename HE, typename El, bool o>
@@ -366,19 +364,17 @@ VertexHalfEdgeReference<HE, El, o>::adjVertexEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgeReference<HE, El, o>::AdjacentVertexRangeIterator
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentVertexRange
 VertexHalfEdgeReference<HE, El, o>::adjVertices()
 {
-	return AdjacentVertexRangeIterator(
-		*this, &VertexHalfEdgeReference::adjVertexBegin, &VertexHalfEdgeReference::adjVertexEnd);
+	return AdjacentVertexRange(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentVertexRangeIterator
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentVertexRange
 VertexHalfEdgeReference<HE, El, o>::adjVertices() const
 {
-	return ConstAdjacentVertexRangeIterator(
-		*this, &VertexHalfEdgeReference::adjVertexBegin, &VertexHalfEdgeReference::adjVertexEnd);
+	return ConstAdjacentVertexRange(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename HE, typename El, bool o>

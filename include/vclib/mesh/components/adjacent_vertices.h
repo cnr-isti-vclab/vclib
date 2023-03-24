@@ -67,10 +67,10 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentVertexIterator           = typename Base::Iterator;
-	using ConstAdjacentVertexIterator      = typename Base::ConstIterator;
-	using AdjacentVertexRangeIterator      = typename Base::RACRangeIterator;
-	using ConstAdjacentVertexRangeIterator = typename Base::RACConstRangeIterator;
+	using AdjacentVertexIterator      = typename Base::Iterator;
+	using ConstAdjacentVertexIterator = typename Base::ConstIterator;
+	using AdjacentVertexRange         = typename Base::RACRangeIterator;
+	using ConstAdjacentVertexRange    = typename Base::RACConstRangeIterator;
 
 	/* Constructor and isEnabled */
 
@@ -110,8 +110,8 @@ public:
 	AdjacentVertexIterator           adjVertexEnd();
 	ConstAdjacentVertexIterator      adjVertexBegin() const;
 	ConstAdjacentVertexIterator      adjVertexEnd() const;
-	AdjacentVertexRangeIterator      adjVertices();
-	ConstAdjacentVertexRangeIterator adjVertices() const;
+	AdjacentVertexRange              adjVertices();
+	ConstAdjacentVertexRange         adjVertices() const;
 
 protected:
 	void updateReferences(const Vertex* oldBase, const Vertex* newBase);

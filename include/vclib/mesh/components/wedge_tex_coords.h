@@ -60,10 +60,10 @@ public:
 
 	/* Iterator Types declaration */
 
-	using WedgeTexCoordsIterator           = typename Base::Iterator;
-	using ConstWedgeTexCoordsIterator      = typename Base::ConstIterator;
-	using WedgeTexCoordsRangeIterator      = typename Base::RACRangeIterator;
-	using ConstWedgeTexCoordsRangeIterator = typename Base::RACConstRangeIterator;
+	using WedgeTexCoordsIterator      = typename Base::Iterator;
+	using ConstWedgeTexCoordsIterator = typename Base::ConstIterator;
+	using WedgeTexCoordsRange         = typename Base::RACRangeIterator;
+	using ConstWedgeTexCoordsRange    = typename Base::RACConstRangeIterator;
 
 	/* Member functions */
 
@@ -84,12 +84,12 @@ public:
 
 	/* Iterator Member functions */
 
-	WedgeTexCoordsIterator           wedgeTexCoordBegin();
-	WedgeTexCoordsIterator           wedgeTexCoordEnd();
-	ConstWedgeTexCoordsIterator      wedgeTexCoordBegin() const;
-	ConstWedgeTexCoordsIterator      wedgeTexCoordEnd() const;
-	WedgeTexCoordsRangeIterator      wedgeTexCoords();
-	ConstWedgeTexCoordsRangeIterator wedgeTexCoords() const;
+	WedgeTexCoordsIterator      wedgeTexCoordBegin();
+	WedgeTexCoordsIterator      wedgeTexCoordEnd();
+	ConstWedgeTexCoordsIterator wedgeTexCoordBegin() const;
+	ConstWedgeTexCoordsIterator wedgeTexCoordEnd() const;
+	WedgeTexCoordsRange         wedgeTexCoords();
+	ConstWedgeTexCoordsRange    wedgeTexCoords() const;
 
 protected:
 	using WedgeTexCoordScalarType = Scalar;

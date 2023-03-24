@@ -46,8 +46,8 @@ concept HasVertexReferences = requires(
 	typename T::VertexType;
 	typename T::VertexIterator;
 	typename T::ConstVertexIterator;
-	typename T::VertexRangeIterator;
-	typename T::ConstVertexRangeIterator;
+	typename T::VertexRange;
+	typename T::ConstVertexRange;
 
 	{ co.vertexNumber() } -> std::same_as<uint>;
 	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType*&>;
@@ -69,8 +69,8 @@ concept HasVertexReferences = requires(
 	{ o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
 	{ co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
 	{ co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
-	{ o.vertices() } -> std::same_as<typename T::VertexRangeIterator>;
-	{ co.vertices() } -> std::same_as<typename T::ConstVertexRangeIterator>;
+	{ o.vertices() } -> std::same_as<typename T::VertexRange>;
+	{ co.vertices() } -> std::same_as<typename T::ConstVertexRange>;
 };
 
 } // namespace vcl::comp

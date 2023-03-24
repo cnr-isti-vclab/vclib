@@ -34,7 +34,7 @@
 #include <vclib/mesh/iterators/half_edge/face_vertex_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_wedge_color_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_wedge_tex_coord_iterator.h>
-#include <vclib/iterator/container_range_iterator.h>
+#include <vclib/iterator/range.h>
 #include <vclib/space/color.h>
 
 #include "internal/component_data.h"
@@ -74,40 +74,35 @@ public:
 
 	using AdjacentFaceIterator      = vcl::FaceAdjFaceIterator<HalfEdge>;
 	using ConstAdjacentFaceIterator = vcl::ConstFaceAdjFaceIterator<HalfEdge>;
-	using AdjacentFaceRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, AdjacentFaceIterator>;
-	using ConstAdjacentFaceRangeIterator =
-		ConstContainerRangeIterator<FaceHalfEdgeReference, ConstAdjacentFaceIterator>;
-
-	using InnerHalfEdgeIterator      = typename std::vector<HalfEdge*>::iterator;
-	using ConstInnerHalfEdgeIterator = typename std::vector<HalfEdge*>::const_iterator;
-	using InnerHalfEdgeRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, InnerHalfEdgeIterator>;
-	using ConstInnerHalfEdgeRangeIterator =
-		ContainerRangeIterator<FaceHalfEdgeReference, ConstInnerHalfEdgeIterator>;
+	using AdjacentFaceRange         = vcl::Range<AdjacentFaceIterator>;
+	using ConstAdjacentFaceRange    = vcl::Range<ConstAdjacentFaceIterator>;
 
 	using HalfEdgeIterator      = vcl::FaceHalfEdgeIterator<HalfEdge>;
 	using ConstHalfEdgeIterator = vcl::ConstFaceHalfEdgeIterator<HalfEdge>;
-	using HalfEdgeRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, HalfEdgeIterator>;
-	using ConstHalfEdgeRangeIterator =
-		ConstContainerRangeIterator<FaceHalfEdgeReference, ConstHalfEdgeIterator>;
+	using HalfEdgeRange         = vcl::Range<HalfEdgeIterator>;
+	using ConstHalfEdgeRange    = vcl::Range<ConstHalfEdgeIterator>;
 
-	using VertexIterator           = vcl::FaceVertexIterator<HalfEdge>;
-	using ConstVertexIterator      = vcl::ConstFaceVertexIterator<HalfEdge>;
-	using VertexRangeIterator      = ContainerRangeIterator<FaceHalfEdgeReference, VertexIterator>;
-	using ConstVertexRangeIterator = ConstContainerRangeIterator<FaceHalfEdgeReference, ConstVertexIterator>;
+	using InnerHalfEdgeIterator      = typename std::vector<HalfEdge*>::iterator;
+	using ConstInnerHalfEdgeIterator = typename std::vector<HalfEdge*>::const_iterator;
+	using InnerHalfEdgeRange         = vcl::Range<InnerHalfEdgeIterator>;
+	using ConstInnerHalfEdgeRange    = vcl::Range<ConstInnerHalfEdgeIterator>;
+
+	using VertexIterator      = vcl::FaceVertexIterator<HalfEdge>;
+	using ConstVertexIterator = vcl::ConstFaceVertexIterator<HalfEdge>;
+	using VertexRange         = vcl::Range<VertexIterator>;
+	using ConstVertexRange    = vcl::Range<ConstVertexIterator>;
 
 	// these types won't be used when half edge has no colors - all member functions are disabled
-	using WedgeColorsIterator = vcl::FaceWedgeColorIterator<HalfEdge>;
+	using WedgeColorsIterator      = vcl::FaceWedgeColorIterator<HalfEdge>;
 	using ConstWedgeColorsIterator = vcl::ConstFaceWedgeColorIterator<HalfEdge>;
-	using WedgeColorsRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, WedgeColorsIterator>;
-	using ConstWedgeColorsRangeIterator =
-		ConstContainerRangeIterator<FaceHalfEdgeReference, ConstWedgeColorsIterator>;
+	using WedgeColorsRange         = vcl::Range<WedgeColorsIterator>;
+	using ConstWedgeColorsRange    = vcl::Range<ConstWedgeColorsIterator>;
 
 	// these types won't be used when half edge has no texcoords - all member functions are disabled
-	using WedgeTexCoordsIterator = vcl::FaceWedgeTexCoordIterator<HalfEdge>;
+	using WedgeTexCoordsIterator      = vcl::FaceWedgeTexCoordIterator<HalfEdge>;
 	using ConstWedgeTexCoordsIterator = vcl::ConstFaceWedgeTexCoordIterator<HalfEdge>;
-	using WedgeTexCoordsRangeIterator = ContainerRangeIterator<FaceHalfEdgeReference, WedgeTexCoordsIterator>;
-	using ConstWedgeTexCoordsRangeIterator =
-		ConstContainerRangeIterator<FaceHalfEdgeReference, ConstWedgeTexCoordsIterator>;
+	using WedgeTexCoordsRange         = vcl::Range<WedgeTexCoordsIterator>;
+	using ConstWedgeTexCoordsRange    = vcl::Range<ConstWedgeTexCoordsIterator>;
 
 	// Vertex references can be accessed from a face using half edge reference, therefore this
 	// component claims that it is the VertexReferences component. This is done just for
@@ -224,53 +219,53 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentFaceIterator           adjFaceBegin();
-	AdjacentFaceIterator           adjFaceBegin(HalfEdge* he);
-	AdjacentFaceIterator           adjFaceEnd();
-	ConstAdjacentFaceIterator      adjFaceBegin() const;
-	ConstAdjacentFaceIterator      adjFaceBegin(const HalfEdge* he) const;
-	ConstAdjacentFaceIterator      adjFaceEnd() const;
-	AdjacentFaceRangeIterator      adjFaces();
-	ConstAdjacentFaceRangeIterator adjFaces() const;
+	AdjacentFaceIterator      adjFaceBegin();
+	AdjacentFaceIterator      adjFaceBegin(HalfEdge* he);
+	AdjacentFaceIterator      adjFaceEnd();
+	ConstAdjacentFaceIterator adjFaceBegin() const;
+	ConstAdjacentFaceIterator adjFaceBegin(const HalfEdge* he) const;
+	ConstAdjacentFaceIterator adjFaceEnd() const;
+	AdjacentFaceRange         adjFaces();
+	ConstAdjacentFaceRange    adjFaces() const;
 
-	HalfEdgeIterator           haflEdgeBegin();
-	HalfEdgeIterator           haflEdgeBegin(HalfEdge* he);
-	ConstHalfEdgeIterator      halfEdgeBegin() const;
-	ConstHalfEdgeIterator      halfEdgeBegin(const HalfEdge* he) const;
-	HalfEdgeIterator           halfEdgeEnd();
-	ConstHalfEdgeIterator      halfEdgeEnd() const;
-	HalfEdgeRangeIterator      halfEdges();
-	ConstHalfEdgeRangeIterator halfEdges() const;
+	HalfEdgeIterator      haflEdgeBegin();
+	HalfEdgeIterator      haflEdgeBegin(HalfEdge* he);
+	ConstHalfEdgeIterator halfEdgeBegin() const;
+	ConstHalfEdgeIterator halfEdgeBegin(const HalfEdge* he) const;
+	HalfEdgeIterator      halfEdgeEnd();
+	ConstHalfEdgeIterator halfEdgeEnd() const;
+	HalfEdgeRange         halfEdges();
+	ConstHalfEdgeRange    halfEdges() const;
 
-	InnerHalfEdgeIterator           innerHalfEdgeBegin();
-	ConstInnerHalfEdgeIterator      innerHalfEdgeBegin() const;
-	InnerHalfEdgeIterator           innerHalfEdgeEnd();
-	ConstInnerHalfEdgeIterator      innerHalfEdgeEnd() const;
-	InnerHalfEdgeRangeIterator      innerHalfEdges();
-	ConstInnerHalfEdgeRangeIterator innerHalfEdges() const;
+	InnerHalfEdgeIterator      innerHalfEdgeBegin();
+	ConstInnerHalfEdgeIterator innerHalfEdgeBegin() const;
+	InnerHalfEdgeIterator      innerHalfEdgeEnd();
+	ConstInnerHalfEdgeIterator innerHalfEdgeEnd() const;
+	InnerHalfEdgeRange         innerHalfEdges();
+	ConstInnerHalfEdgeRange    innerHalfEdges() const;
 
-	VertexIterator           vertexBegin();
-	VertexIterator           vertexBegin(HalfEdge* he);
-	ConstVertexIterator      vertexBegin() const;
-	ConstVertexIterator      vertexBegin(const HalfEdge* he) const;
-	VertexIterator           vertexEnd();
-	ConstVertexIterator      vertexEnd() const;
-	VertexRangeIterator      vertices();
-	ConstVertexRangeIterator vertices() const;
+	VertexIterator      vertexBegin();
+	VertexIterator      vertexBegin(HalfEdge* he);
+	ConstVertexIterator vertexBegin() const;
+	ConstVertexIterator vertexBegin(const HalfEdge* he) const;
+	VertexIterator      vertexEnd();
+	ConstVertexIterator vertexEnd() const;
+	VertexRange         vertices();
+	ConstVertexRange    vertices() const;
 
-	WedgeColorsIterator           wedgeColorBegin() requires HasColor<HalfEdge>;
-	WedgeColorsIterator           wedgeColorEnd() requires HasColor<HalfEdge>;
-	ConstWedgeColorsIterator      wedgeColorBegin() const requires HasColor<HalfEdge>;
-	ConstWedgeColorsIterator      wedgeColorEnd() const requires HasColor<HalfEdge>;
-	WedgeColorsRangeIterator      wedgeColors() requires HasColor<HalfEdge>;
-	ConstWedgeColorsRangeIterator wedgeColors() const requires HasColor<HalfEdge>;
+	WedgeColorsIterator      wedgeColorBegin()       requires HasColor<HalfEdge>;
+	WedgeColorsIterator      wedgeColorEnd()         requires HasColor<HalfEdge>;
+	ConstWedgeColorsIterator wedgeColorBegin() const requires HasColor<HalfEdge>;
+	ConstWedgeColorsIterator wedgeColorEnd() const   requires HasColor<HalfEdge>;
+	WedgeColorsRange         wedgeColors()           requires HasColor<HalfEdge>;
+	ConstWedgeColorsRange    wedgeColors() const     requires HasColor<HalfEdge>;
 
-	WedgeTexCoordsIterator           wedgeTexCoordBegin() requires HasTexCoord<HalfEdge>;
-	WedgeTexCoordsIterator           wedgeTexCoordEnd() requires HasTexCoord<HalfEdge>;
-	ConstWedgeTexCoordsIterator      wedgeTexCoordBegin() const requires HasTexCoord<HalfEdge>;
-	ConstWedgeTexCoordsIterator      wedgeTexCoordEnd() const requires HasTexCoord<HalfEdge>;
-	WedgeTexCoordsRangeIterator      wedgeTexCoords() requires HasTexCoord<HalfEdge>;
-	ConstWedgeTexCoordsRangeIterator wedgeTexCoords() const requires HasTexCoord<HalfEdge>;
+	WedgeTexCoordsIterator      wedgeTexCoordBegin()       requires HasTexCoord<HalfEdge>;
+	WedgeTexCoordsIterator      wedgeTexCoordEnd()         requires HasTexCoord<HalfEdge>;
+	ConstWedgeTexCoordsIterator wedgeTexCoordBegin() const requires HasTexCoord<HalfEdge>;
+	ConstWedgeTexCoordsIterator wedgeTexCoordEnd() const   requires HasTexCoord<HalfEdge>;
+	WedgeTexCoordsRange         wedgeTexCoords()           requires HasTexCoord<HalfEdge>;
+	ConstWedgeTexCoordsRange    wedgeTexCoords() const     requires HasTexCoord<HalfEdge>;
 
 protected:
 	void updateReferences(const HalfEdge* oldBase, const HalfEdge* newBase);

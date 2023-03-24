@@ -55,10 +55,8 @@ public:
 protected:
 	using ElementIterator      = ElementContainerIterator<std::vector, T>;
 	using ConstElementIterator = ConstElementContainerIterator<std::vector, T>;
-	using ElementRangeIterator =
-		ElementContainerRangeIterator<ElementContainerType, ElementIterator>;
-	using ConstElementRangeIterator =
-		ConstElementContainerRangeIterator<ElementContainerType, ConstElementIterator>;
+	using ElementRange = ElementContainerRangeIterator<ElementContainerType, ElementIterator>;
+	using ConstElementRange = ConstElementContainerRangeIterator<ElementContainerType, ConstElementIterator>;
 
 	const T& element(uint i) const;
 	T& element(uint i);
@@ -85,12 +83,12 @@ protected:
 	template<typename C>
 	void disableOptionalComponent();
 
-	ElementIterator           elementBegin(bool jumpDeleted = true);
-	ElementIterator           elementEnd();
-	ConstElementIterator      elementBegin(bool jumpDeleted = true) const;
-	ConstElementIterator      elementEnd() const;
-	ElementRangeIterator      elements(bool jumpDeleted = true);
-	ConstElementRangeIterator elements(bool jumpDeleted = true) const;
+	ElementIterator      elementBegin(bool jumpDeleted = true);
+	ElementIterator      elementEnd();
+	ConstElementIterator elementBegin(bool jumpDeleted = true) const;
+	ConstElementIterator elementEnd() const;
+	ElementRange         elements(bool jumpDeleted = true);
+	ConstElementRange    elements(bool jumpDeleted = true) const;
 
 	uint index(const T *e) const;
 	void clearElements();

@@ -248,7 +248,7 @@ typename VertexContainer<T>::ConstVertexIterator VertexContainer<T>::vertexEnd()
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<VertexConcept T>
-typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bool jumpDeleted)
+typename VertexContainer<T>::VertexRange VertexContainer<T>::vertices(bool jumpDeleted)
 {
 	return Base::elements(jumpDeleted);
 }
@@ -274,7 +274,7 @@ typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bo
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<VertexConcept T>
-typename VertexContainer<T>::ConstVertexRangeIterator
+typename VertexContainer<T>::ConstVertexRange
 VertexContainer<T>::vertices(bool jumpDeleted) const
 {
 	return Base::elements(jumpDeleted);
