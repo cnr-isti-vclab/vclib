@@ -34,8 +34,9 @@
 #include <vclib/math/transform.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/parallel.h>
+#include <vclib/space/grid.h>
 #include <vclib/space/principal_curvature.h>
-#include <vclib/space/spatial_data_structures.h>
+
 
 namespace vcl {
 

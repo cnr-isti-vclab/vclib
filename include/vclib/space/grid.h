@@ -21,11 +21,10 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_H
-#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_H
+#ifndef VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_H
+#define VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_H
 
-#include "spatial_data_structures/kd_tree.h"
-#include "spatial_data_structures/grid/hash_table_grid.h"
-#include "spatial_data_structures/grid/static_grid.h"
+#include "grid/hash_table_grid.h"
+#include "grid/static_grid.h"
 
-#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_H
+#endif // VCL_SPACE_SPATIAL_DATA_STRUCTURES_GRID_H

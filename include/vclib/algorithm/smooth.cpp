@@ -26,7 +26,7 @@
 #include <cmath>
 #include <vector>
 
-#include <vclib/space/spatial_data_structures/kd_tree.h>
+#include <vclib/space/kd_tree.h>
 
 namespace vcl {
 

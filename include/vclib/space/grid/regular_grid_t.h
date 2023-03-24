@@ -85,6 +85,9 @@ private:
 	Point<uint, N> siz;
 };
 
+template<PointConcept PointType>
+vcl::Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements);
+
 } // namespace vcl
 
 #include "regular_grid_t.cpp"

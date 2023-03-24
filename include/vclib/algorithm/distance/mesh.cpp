@@ -25,7 +25,7 @@
 
 #include <vclib/algorithm/point_sampling.h>
 #include <vclib/iterator/pointer_iterator.h>
-#include <vclib/space/spatial_data_structures.h>
+#include <vclib/space/grid.h>
 #include <vclib/misc/parallel.h>
 
 #include <mutex>

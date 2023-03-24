@@ -250,4 +250,82 @@ void RegularGrid<Scalar, N>::set(const Box<Point<Scalar, N> >& box, const Point<
 	siz = size;
 }
 
+/**
+ * @brief Returns the best sizes (number of cells per dimension) of a Grid, starting from the
+ * lengths of the grid and the number of elements to place in the grid.
+ *
+ * @param lengths
+ * @param nElements
+ * @return
+ */
+template<PointConcept PointType>
+Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements)
+{
+	using Scalar = typename PointType::ScalarType;
+
+	static const int DIM = PointType::DIM;
+
+	const uint   mincells = 1;                   // Numero minimo di celle
+	const Scalar GFactor  = 1;                   // GridEntry = NumElem*GFactor
+	const Scalar diag     = lengths.norm();      // Diagonale del box
+	const Scalar eps      = diag * 1e-4;         // Fattore di tolleranza
+	const uint   ncell    = nElements * GFactor; // Calcolo numero di voxel
+
+	Point<uint, PointType::DIM> sizes;
+	sizes.setConstant(mincells);
+
+	bool sanityCheckLengths = true;
+	uint lessEpsDimNumber = 0;
+	std::array<bool, DIM> isLessEps;
+
+	for (uint i = 0; i < DIM; i++) {
+		sanityCheckLengths = sanityCheckLengths && lengths(i) > 0.0;
+		if (lengths(i) < eps) {
+			lessEpsDimNumber++;
+			isLessEps[i] = true;
+		}
+	}
+	uint greaterEpsDimNumber = DIM - lessEpsDimNumber;
+
+	if (nElements > 0 && sanityCheckLengths) {
+
+			   // no lenghts less than epsilon - standard computation for sizes
+		if (greaterEpsDimNumber == DIM) {
+			Scalar product = 1;
+			for (uint i = 0; i < DIM; i++)
+				product *= lengths(i);
+
+			Scalar k = std::pow((ncell/product), (1.0/DIM));
+
+			for (uint i = 0; i < DIM; i++)
+				sizes(i) = int(lengths(i) * k);
+		}
+		// at least one lenght is less than epsilon
+		else {
+			for (uint i = 0; i < DIM; i++) {
+				if (isLessEps[i]) { // the ith dimension is less than epsilon
+					sizes(i) = 1;
+				}
+				else {
+					// compute the product between all the dimensions that are not i and not less
+					// than epsilon
+					Scalar product = 1;
+					for (uint j = 0; j < DIM; j++)
+						if (j != i && !isLessEps[j])
+							product *= lengths(j);
+
+						   // ith dimension size
+					sizes(i) =
+						std::pow((ncell * lengths(i) / product), (1.0 / greaterEpsDimNumber));
+				}
+			}
+		}
+
+		for (uint i = 0; i < DIM; i++)
+			sizes(i) = std::max(sizes(i), (uint)1);
+	}
+
+	return sizes;
+}
+
 } // namespace vcl

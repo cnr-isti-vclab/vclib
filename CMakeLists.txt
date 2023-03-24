@@ -282,6 +282,8 @@ set(HEADERS
 	include/vclib/space/box.h
 	include/vclib/space/color.h
 	include/vclib/space/graph.h
+	include/vclib/space/grid.h
+	include/vclib/space/kd_tree.h
 	include/vclib/space/matrix.h
 	include/vclib/space/plane.h
 	include/vclib/space/point.h
@@ -289,7 +291,6 @@ set(HEADERS
 	include/vclib/space/principal_curvature.h
 	include/vclib/space/sampler.h
 	include/vclib/space/segment.h
-	include/vclib/space/spatial_data_structures.h
 	include/vclib/space/sphere.h
 	include/vclib/space/tex_coord.h
 	include/vclib/space/triangle.h
@@ -303,17 +304,15 @@ set(HEADERS
 	include/vclib/space/graph/bipartite/bipartite_graph.h
 	include/vclib/space/graph/bipartite/iterator/bipartite_graph_iterators.h
 	include/vclib/space/graph/bipartite/iterator/node_iterator.h
-	include/vclib/space/spatial_data_structures/grid.h
-	include/vclib/space/spatial_data_structures/kd_tree.h
-	include/vclib/space/spatial_data_structures/grid/abstract_ds_grid.h
-	include/vclib/space/spatial_data_structures/grid/hash_table_grid.h
-	include/vclib/space/spatial_data_structures/grid/regular_grid_t.h
-	include/vclib/space/spatial_data_structures/grid/regular_grid2.h
-	include/vclib/space/spatial_data_structures/grid/regular_grid3.h
-	include/vclib/space/spatial_data_structures/grid/static_grid.h
-	include/vclib/space/spatial_data_structures/grid/iterators/cell_iterator.h
-	include/vclib/space/spatial_data_structures/grid/iterators/cell_range_iterator.h
-	include/vclib/space/spatial_data_structures/grid/iterators/static_grid_iterator.h
+	include/vclib/space/grid/abstract_ds_grid.h
+	include/vclib/space/grid/hash_table_grid.h
+	include/vclib/space/grid/regular_grid_t.h
+	include/vclib/space/grid/regular_grid2.h
+	include/vclib/space/grid/regular_grid3.h
+	include/vclib/space/grid/static_grid.h
+	include/vclib/space/grid/iterators/cell_iterator.h
+	include/vclib/space/grid/iterators/cell_range_iterator.h
+	include/vclib/space/grid/iterators/static_grid_iterator.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h
 	include/vclib/space/point/point3.h
@@ -459,6 +458,7 @@ set(SOURCES
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/matrix.cpp
+	include/vclib/space/kd_tree.cpp
 	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp
@@ -475,14 +475,12 @@ set(SOURCES
 	include/vclib/space/graph/undirected_node.cpp
 	include/vclib/space/graph/bipartite/bipartite_graph.cpp
 	include/vclib/space/graph/bipartite/iterator/bipartite_graph_iterators.cpp
-	include/vclib/space/spatial_data_structures/grid.cpp
-	include/vclib/space/spatial_data_structures/kd_tree.cpp
-	include/vclib/space/spatial_data_structures/grid/abstract_ds_grid.cpp
-	include/vclib/space/spatial_data_structures/grid/hash_table_grid.cpp
-	include/vclib/space/spatial_data_structures/grid/regular_grid_t.cpp
-	include/vclib/space/spatial_data_structures/grid/static_grid.cpp
-	include/vclib/space/spatial_data_structures/grid/iterators/cell_iterator.cpp
-	include/vclib/space/spatial_data_structures/grid/iterators/static_grid_iterator.cpp
+	include/vclib/space/grid/abstract_ds_grid.cpp
+	include/vclib/space/grid/hash_table_grid.cpp
+	include/vclib/space/grid/regular_grid_t.cpp
+	include/vclib/space/grid/static_grid.cpp
+	include/vclib/space/grid/iterators/cell_iterator.cpp
+	include/vclib/space/grid/iterators/static_grid_iterator.cpp
 	include/vclib/space/point/point_t.cpp
 	include/vclib/space/sampler/mesh_sampler.cpp
 	include/vclib/space/sampler/point_sampler.cpp

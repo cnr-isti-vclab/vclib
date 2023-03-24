@@ -28,9 +28,10 @@
 #include <unordered_map>
 
 #include <vclib/mesh/requirements.h>
-#include <vclib/space/spatial_data_structures/grid.h>
 
 #include "abstract_ds_grid.h"
+#include "regular_grid2.h"
+#include "regular_grid3.h"
 
 namespace vcl {
 
