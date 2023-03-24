@@ -40,6 +40,11 @@ template<class T1, class T2>
 class BipartiteGraph
 {
 public:
+	using LeftType  = T1;
+	using RightType = T2;
+	using LeftNodeType  = UndirectedNode<T1>;
+	using RightNodeType = UndirectedNode<T2>;
+
 	using LeftNodeIterator = NodeIterator<typename std::vector<UndirectedNode<T1>>::const_iterator>;
 	using RightNodeIterator =
 		NodeIterator<typename std::vector<UndirectedNode<T2>>::const_iterator>;
