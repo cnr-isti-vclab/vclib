@@ -166,7 +166,6 @@ set(HEADERS
 	include/vclib/io/ply/save.h
 	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
-	include/vclib/iterator/container_range_iterator.h
 	include/vclib/iterator/iterator_wrapper.h
 	include/vclib/iterator/pointer_iterator.h
 	include/vclib/iterator/range.h
@@ -231,7 +230,6 @@ set(HEADERS
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
 	include/vclib/mesh/iterators/element_container_iterator.h
-	include/vclib/mesh/iterators/element_container_range_iterator.h
 	include/vclib/mesh/iterators/vertex_coord_iterator.h
 	include/vclib/mesh/iterators/face/edge_adj_face_iterator.h
 	include/vclib/mesh/iterators/half_edge/face_adj_face_iterator.h

@@ -320,11 +320,7 @@ typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementE
 template<ElementConcept T>
 typename ElementContainer<T>::ElementRange ElementContainer<T>::elements(bool jumpDeleted)
 {
-	return ElementRange(
-		*this,
-		jumpDeleted && vec.size() != en,
-		&ElementContainer::elementBegin,
-		&ElementContainer::elementEnd);
+	return ElementRange(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
 }
 
 /**
@@ -349,11 +345,7 @@ typename ElementContainer<T>::ElementRange ElementContainer<T>::elements(bool ju
 template<ElementConcept T>
 typename ElementContainer<T>::ConstElementRange ElementContainer<T>::elements(bool jumpDeleted) const
 {
-	return ConstElementRange(
-		*this,
-		jumpDeleted && vec.size() != en,
-		&ElementContainer::elementBegin,
-		&ElementContainer::elementEnd);
+	return ConstElementRange(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
 }
 
 template<ElementConcept T>

@@ -29,8 +29,8 @@
 #include <vclib/concept/mesh/component/custom_components.h>
 #include <vclib/concept/mesh/container.h>
 #include <vclib/concept/mesh/element/element.h>
+#include <vclib/iterator/range.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
-#include <vclib/mesh/iterators/element_container_range_iterator.h>
 
 #include "custom_components_vector_map.h"
 #include "vertical_components_vector_tuple.h"
@@ -55,8 +55,8 @@ public:
 protected:
 	using ElementIterator      = ElementContainerIterator<std::vector, T>;
 	using ConstElementIterator = ConstElementContainerIterator<std::vector, T>;
-	using ElementRange = ElementContainerRangeIterator<ElementContainerType, ElementIterator>;
-	using ConstElementRange = ConstElementContainerRangeIterator<ElementContainerType, ConstElementIterator>;
+	using ElementRange         = vcl::Range<ElementIterator>;
+	using ConstElementRange    = vcl::Range<ConstElementIterator>;
 
 	const T& element(uint i) const;
 	T& element(uint i);
