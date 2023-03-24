@@ -21,23 +21,72 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_H
-#define VCL_SPACE_H
+#include "undirected_node.h"
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/graph.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/spatial_data_structures.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/triangle_wrapper.h"
+namespace vcl {
 
-#endif // VCL_SPACE_H
+template<class T>
+UndirectedNode<T>::UndirectedNode()
+{
+}
+
+template<class T>
+UndirectedNode<T>::UndirectedNode(const T& info) : inf(inf)
+{
+}
+
+template<class T>
+const T& UndirectedNode<T>::info() const
+{
+	return inf;
+}
+
+template<class T>
+T& UndirectedNode<T>::info()
+{
+	return inf;
+}
+
+template<class T>
+void UndirectedNode<T>::addAdjacent(unsigned int node)
+{
+	adjacentNodes.insert(node);
+}
+
+template<class T>
+bool UndirectedNode<T>::isAdjacent(unsigned int node) const
+{
+	return adjacentNodes.find(node) != adjacentNodes.end();
+}
+
+template<class T>
+void UndirectedNode<T>::deleteAdjacent(unsigned int node)
+{
+	adjacentNodes.erase(node);
+}
+
+template<class T>
+void UndirectedNode<T>::clearAdjacentNodes()
+{
+	adjacentNodes.clear();
+}
+
+template<class T>
+std::unordered_set<unsigned int>::const_iterator UndirectedNode<T>::begin() const
+{
+	return adjacentNodes.begin();
+}
+
+template<class T>
+std::unordered_set<unsigned int>::const_iterator UndirectedNode<T>::end() const
+{
+	return adjacentNodes.end();
+}
+
+template<class T>
+unsigned int UndirectedNode<T>::sizeAdjacentNodes() const
+{
+	return (unsigned int) adjacentNodes.size();
+}
+
+} // namespace vcl

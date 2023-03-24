@@ -21,23 +21,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_H
-#define VCL_SPACE_H
+#ifndef VCL_SPACE_GRAPH_H
+#define VCL_SPACE_GRAPH_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/graph.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/spatial_data_structures.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/triangle_wrapper.h"
+#include "graph/bipartite/bipartite_graph.h"
 
-#endif // VCL_SPACE_H
+#endif // VCL_SPACE_GRAPH_H

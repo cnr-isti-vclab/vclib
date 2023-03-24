@@ -21,23 +21,27 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_H
-#define VCL_SPACE_H
+#ifndef  VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
+#define  VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/graph.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/spatial_data_structures.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/triangle_wrapper.h"
+namespace vcl {
 
-#endif // VCL_SPACE_H
+template<typename Iterator>
+class NodeIterator
+{
+public:
+	using Iterator::Iterator;
+
+	using value_type = typename Iterator::value_type::InfoType;
+	using reference = const value_type&;
+	using pointer = const value_type*;
+
+	NodeIterator(Iterator it) : Iterator(it) {}
+
+	reference operator*() const { return Iterator::operator*().info(); }
+	pointer   operator->() const { return &Iterator::operator->().info(); }
+};
+
+} // namespace vcl
+
+#endif //  VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H

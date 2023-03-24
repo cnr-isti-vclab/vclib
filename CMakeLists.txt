@@ -281,6 +281,7 @@ set(HEADERS
 	include/vclib/space/array.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
+	include/vclib/space/graph.h
 	include/vclib/space/matrix.h
 	include/vclib/space/plane.h
 	include/vclib/space/point.h
@@ -298,6 +299,10 @@ set(HEADERS
 	include/vclib/space/array/array3.h
 	include/vclib/space/array/array4.h
 	include/vclib/space/array/array_bool.h
+	include/vclib/space/graph/undirected_node.h
+	include/vclib/space/graph/bipartite/bipartite_graph.h
+	include/vclib/space/graph/bipartite/iterator/bipartite_graph_iterators.h
+	include/vclib/space/graph/bipartite/iterator/node_iterator.h
 	include/vclib/space/spatial_data_structures/grid.h
 	include/vclib/space/spatial_data_structures/kd_tree.h
 	include/vclib/space/spatial_data_structures/grid/abstract_ds_grid.h
@@ -467,6 +472,9 @@ set(SOURCES
 	include/vclib/space/array/array2.cpp
 	include/vclib/space/array/array3.cpp
 	include/vclib/space/array/array4.cpp
+	include/vclib/space/graph/undirected_node.cpp
+	include/vclib/space/graph/bipartite/bipartite_graph.cpp
+	include/vclib/space/graph/bipartite/iterator/bipartite_graph_iterators.cpp
 	include/vclib/space/spatial_data_structures/grid.cpp
 	include/vclib/space/spatial_data_structures/kd_tree.cpp
 	include/vclib/space/spatial_data_structures/grid/abstract_ds_grid.cpp

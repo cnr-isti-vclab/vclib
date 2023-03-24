@@ -21,23 +21,42 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_H
-#define VCL_SPACE_H
+#ifndef VCL_SPACE_GRAPH_UNDIRECTED_NODE_H
+#define VCL_SPACE_GRAPH_UNDIRECTED_NODE_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/graph.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/spatial_data_structures.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/triangle_wrapper.h"
+#include <unordered_set>
 
-#endif // VCL_SPACE_H
+namespace vcl {
+
+template<class T>
+class UndirectedNode
+{
+public:
+	using InfoType = T;
+
+	UndirectedNode();
+	UndirectedNode(const T& info);
+
+	const T& info() const;
+	T&       info();
+
+	void addAdjacent(unsigned int node);
+	bool isAdjacent(unsigned int node) const;
+	void deleteAdjacent(unsigned int node);
+	void clearAdjacentNodes();
+
+	std::unordered_set<unsigned int>::const_iterator begin() const;
+	std::unordered_set<unsigned int>::const_iterator end() const;
+
+	unsigned int sizeAdjacentNodes() const;
+
+protected:
+	T                                inf;
+	std::unordered_set<unsigned int> adjacentNodes;
+};
+
+} // namespace vcl
+
+#include "undirected_node.cpp"
+
+#endif // VCL_SPACE_GRAPH_UNDIRECTED_NODE_H
