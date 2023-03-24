@@ -25,6 +25,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
 #include <vclib/concept/mesh/component/adjacent_vertices.h>
+#include <vclib/iterator/range.h>
 
 #include "internal/element_references.h"
 
@@ -69,8 +70,8 @@ public:
 
 	using AdjacentVertexIterator      = typename Base::Iterator;
 	using ConstAdjacentVertexIterator = typename Base::ConstIterator;
-	using AdjacentVertexRange         = typename Base::RACRangeIterator;
-	using ConstAdjacentVertexRange    = typename Base::RACConstRangeIterator;
+	using AdjacentVertexRange         = vcl::Range<AdjacentVertexIterator>;
+	using ConstAdjacentVertexRange    = vcl::Range<ConstAdjacentVertexIterator>;
 
 	/* Constructor and isEnabled */
 

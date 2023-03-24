@@ -25,6 +25,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
 #include <vclib/concept/mesh/component/adjacent_edges.h>
+#include <vclib/iterator/range.h>
 
 #include "internal/element_references.h"
 
@@ -77,8 +78,8 @@ public:
 
 	using AdjacentEdgeIterator      = typename Base::Iterator;
 	using ConstAdjacentEdgeIterator = typename Base::ConstIterator;
-	using AdjacentEdgeRange         = typename Base::RACRangeIterator;
-	using ConstAdjacentEdgeRange    = typename Base::RACConstRangeIterator;
+	using AdjacentEdgeRange         = vcl::Range<AdjacentEdgeIterator>;
+	using ConstAdjacentEdgeRange    = vcl::Range<ConstAdjacentEdgeIterator>;
 
 	/* Constructor and isEnabled */
 

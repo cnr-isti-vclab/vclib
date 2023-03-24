@@ -25,6 +25,7 @@
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
 #include <vclib/concept/mesh/component/wedge_tex_coords.h>
+#include <vclib/iterator/range.h>
 #include <vclib/misc/random_access_container.h>
 #include <vclib/space/tex_coord.h>
 
@@ -62,8 +63,8 @@ public:
 
 	using WedgeTexCoordsIterator      = typename Base::Iterator;
 	using ConstWedgeTexCoordsIterator = typename Base::ConstIterator;
-	using WedgeTexCoordsRange         = typename Base::RACRangeIterator;
-	using ConstWedgeTexCoordsRange    = typename Base::RACConstRangeIterator;
+	using WedgeTexCoordsRange         = vcl::Range<WedgeTexCoordsIterator>;
+	using ConstWedgeTexCoordsRange    = vcl::Range<ConstWedgeTexCoordsIterator>;
 
 	/* Member functions */
 

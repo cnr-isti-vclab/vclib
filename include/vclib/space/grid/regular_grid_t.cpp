@@ -223,24 +223,16 @@ typename RegularGrid<Scalar, N>::CellIterator RegularGrid<Scalar, N>::cellEnd() 
 }
 
 template<typename Scalar, int N>
-typename RegularGrid<Scalar, N>::CellRangeIterator RegularGrid<Scalar, N>::cells() const
+typename RegularGrid<Scalar, N>::CellRange RegularGrid<Scalar, N>::cells() const
 {
-	return CellRangeIterator(
-		*this,
-		&RegularGrid<Scalar, N>::cellBegin,
-		&RegularGrid<Scalar, N>::cellEnd);
+	return CellRange(cellBegin(), cellEnd());
 }
 
 template<typename Scalar, int N>
-typename RegularGrid<Scalar, N>::CellRangeIterator
+typename RegularGrid<Scalar, N>::CellRange
 RegularGrid<Scalar, N>::cells(const CellCoord& first, const CellCoord& last) const
 {
-	return CellRangeIterator(
-		*this,
-		&RegularGrid<Scalar, N>::cellBegin,
-		&RegularGrid<Scalar, N>::cellEnd,
-		first,
-		last);
+	return CellRange(cellBegin(first, last), cellEnd());
 }
 
 template<typename Scalar, int N>

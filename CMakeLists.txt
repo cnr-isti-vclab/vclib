@@ -311,7 +311,6 @@ set(HEADERS
 	include/vclib/space/grid/regular_grid3.h
 	include/vclib/space/grid/static_grid.h
 	include/vclib/space/grid/iterators/cell_iterator.h
-	include/vclib/space/grid/iterators/cell_range_iterator.h
 	include/vclib/space/grid/iterators/static_grid_iterator.h
 	include/vclib/space/point/point_t.h
 	include/vclib/space/point/point2.h

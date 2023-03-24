@@ -206,16 +206,4 @@ typename RandomAccessContainer<C, N>::ConstIterator RandomAccessContainer<C, N>:
 	return container.end();
 }
 
-template<typename C, int N>
-typename RandomAccessContainer<C, N>::RACRangeIterator RandomAccessContainer<C, N>::rangeIterator()
-{
-	return RACRangeIterator(*this, &RandomAccessContainer::begin, &RandomAccessContainer::end);
-}
-
-template<typename C, int N>
-typename RandomAccessContainer<C, N>::RACConstRangeIterator RandomAccessContainer<C, N>::rangeIterator() const
-{
-	return RACConstRangeIterator(*this, &RandomAccessContainer::begin, &RandomAccessContainer::end);
-}
-
 } // namespace vcl

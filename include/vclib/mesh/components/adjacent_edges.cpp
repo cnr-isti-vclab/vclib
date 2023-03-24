@@ -244,14 +244,14 @@ template<typename Edge, int N, typename El, bool o>
 typename AdjacentEdges<Edge, N, El, o>::AdjacentEdgeRange
 AdjacentEdges<Edge, N, El, o>::adjEdges()
 {
-	return Base::container(this).rangeIterator();
+	return AdjacentEdgeRange(adjEdgeBegin(), adjEdgeEnd());
 }
 
 template<typename Edge, int N, typename El, bool o>
 typename AdjacentEdges<Edge, N, El, o>::ConstAdjacentEdgeRange
 AdjacentEdges<Edge, N, El, o>::adjEdges() const
 {
-	return Base::container(this).rangeIterator();
+	return ConstAdjacentEdgeRange(adjEdgeBegin(), adjEdgeEnd());
 }
 
 template<typename Edge, int N, typename El, bool o>

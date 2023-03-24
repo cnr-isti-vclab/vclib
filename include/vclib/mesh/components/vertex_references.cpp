@@ -191,14 +191,14 @@ VertexReferences<Vertex, N, El, o>::vertexEnd() const
 template<typename Vertex, int N, typename El, bool o>
 typename VertexReferences<Vertex, N, El, o>::VertexRange VertexReferences<Vertex, N, El, o>::vertices()
 {
-	return Base::container(this).rangeIterator();
+	return VertexRange(vertexBegin(), vertexEnd());
 }
 
 template<typename Vertex, int N, typename El, bool o>
 typename VertexReferences<Vertex, N, El, o>::ConstVertexRange
 VertexReferences<Vertex, N, El, o>::vertices() const
 {
-	return Base::container(this).rangeIterator();
+	return ConstVertexRange(vertexBegin(), vertexEnd());
 }
 
 template<typename Vertex, int N, typename ElementType, bool optional>

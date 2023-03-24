@@ -54,8 +54,6 @@ public:
 
 	using Iterator              = typename Base::Iterator;
 	using ConstIterator         = typename Base::ConstIterator;
-	using RACRangeIterator      = typename Base::RACRangeIterator;
-	using RACConstRangeIterator = typename Base::RACConstRangeIterator;
 
 	/* Constructor and isEnabled */
 

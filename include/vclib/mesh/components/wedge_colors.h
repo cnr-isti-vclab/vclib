@@ -25,6 +25,7 @@
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
 #include <vclib/concept/mesh/component/wedge_colors.h>
+#include <vclib/iterator/range.h>
 #include <vclib/misc/random_access_container.h>
 
 #include "internal/component_data.h"
@@ -51,8 +52,8 @@ public:
 
 	using WedgeColorsIterator      = typename Base::Iterator;
 	using ConstWedgeColorsIterator = typename Base::ConstIterator;
-	using WedgeColorsRange         = typename Base::RACRangeIterator;
-	using ConstWedgeColorsRange    = typename Base::RACConstRangeIterator;
+	using WedgeColorsRange         = vcl::Range<WedgeColorsIterator>;
+	using ConstWedgeColorsRange    = vcl::Range<ConstWedgeColorsIterator>;
 
 	bool isEnabled() const;
 	bool isWedgeColorsEnabled() const;
