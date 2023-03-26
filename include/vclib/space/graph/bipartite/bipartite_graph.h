@@ -33,6 +33,8 @@
 #include <vclib/space/graph/undirected_node.h>
 
 #include "iterator/node_iterator.h"
+#include "iterator/adjacent_left_node_iterator.h"
+#include "iterator/adjacent_right_node_iterator.h"
 
 namespace vcl {
 
@@ -52,11 +54,15 @@ public:
 	using LeftNodeRange  = vcl::Range<LeftNodeIterator>;
 	using RightNodeRange = vcl::Range<RightNodeIterator>;
 
-	class AdjacentLeftNodeIterator;
-	class AdjacentRightNodeIterator;
-
-	class AdjacentLeftNodeRangeBasedIterator;
-	class AdjacentRightNodeRangeBasedIterator;
+	using AdjacentLeftNodeIterator = internal::AdjacentLeftNodeIterator<
+		BipartiteGraph<T1, T2>,
+		std::unordered_set<unsigned int>::const_iterator>;
+	using AdjacentRightNodeIterator = internal::AdjacentRightNodeIterator<
+		BipartiteGraph<T1, T2>,
+		std::unordered_set<unsigned int>::const_iterator>;
+	
+	using AdjacentLeftNodeRange  = vcl::Range<AdjacentLeftNodeIterator>;
+	using AdjacentRightNodeRange = vcl::Range<AdjacentRightNodeIterator>;
 
 	BipartiteGraph();
 	bool         addLeftNode(const T1& info);
@@ -91,8 +97,8 @@ public:
 	LeftNodeRange leftNodes() const;
 	RightNodeRange rightNodes() const;
 
-	AdjacentLeftNodeRangeBasedIterator  adjacentLeftNodeIterator(const T1& lNode) const;
-	AdjacentRightNodeRangeBasedIterator adjacentRightNodeIterator(const T2& rNode) const;
+	AdjacentLeftNodeRange  adjacentLeftNodes(const T1& lNode) const;
+	AdjacentRightNodeRange adjacentRightNodes(const T2& rNode) const;
 
 protected:
 	int getIdLeftNode(const T1& uNode) const;
@@ -109,8 +115,6 @@ protected:
 };
 
 } // namespace vcl
-
-#include "iterator/bipartite_graph_iterators.h"
 
 #include "bipartite_graph.cpp"
 
