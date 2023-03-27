@@ -30,6 +30,7 @@
 #include <vector>
 
 #include <vclib/iterator/range.h>
+#include <vclib/misc/types.h>
 #include <vclib/space/graph/undirected_node.h>
 
 #include "iterator/node_iterator.h"
@@ -65,22 +66,25 @@ public:
 	using AdjacentRightNodeRange = vcl::Range<AdjacentRightNodeIterator>;
 
 	BipartiteGraph();
-	bool         addLeftNode(const T1& info);
-	bool         addRightNode(const T2& info);
-	bool         existsLeftNode(const T1& lNode) const;
-	bool         existsRightNode(const T2& rNode) const;
-	unsigned int sizeLeftNodes() const;
-	unsigned int sizeRightNodes() const;
-	unsigned int sizeAdjacencesLeftNode(const T1& lNode) const;
-	unsigned int sizeAdjacencesRightNode(const T2& rNode) const;
-	bool         deleteLeftNode(const T1& lNode);
-	bool         deleteRightNode(const T2& rNode);
-	bool         addArc(const T1& lNode, const T2& rNode);
-	bool         deleteArc(const T1& lNode, const T2& rNode);
-	bool         clearAdjacencesLeftNode(const T1& lNode);
-	bool         clearAdjacencesRightNode(const T2& rNode);
-	bool         modifyLeftNode(const T1& old, const T1& newInfo);
-	bool         modifyRightNode(const T2& old, const T2& newInfo);
+
+	bool leftNodeExists(const T1& lNode) const;
+	bool rightNodeExists(const T2& rNode) const;
+
+	uint leftNodesNumber() const;
+	uint rightNodesNumber() const;
+	uint adjacentLeftNodeNumber(const T1& lNode) const;
+	uint adjacentRightNodeNumber(const T2& rNode) const;
+
+	bool addLeftNode(const T1& info);
+	bool addRightNode(const T2& info);
+	bool deleteLeftNode(const T1& lNode);
+	bool deleteRightNode(const T2& rNode);
+	bool addArc(const T1& lNode, const T2& rNode);
+	bool deleteArc(const T1& lNode, const T2& rNode);
+	bool clearAdjacencesLeftNode(const T1& lNode);
+	bool clearAdjacencesRightNode(const T2& rNode);
+	bool setLeftNode(const T1& old, const T1& newInfo);
+	bool setRightNode(const T2& old, const T2& newInfo);
 
 	AdjacentLeftNodeIterator adjacentLeftNodeBegin(const T1& lNode) const;
 	AdjacentLeftNodeIterator adjacentLeftNodeEnd(const T1& lNode) const;

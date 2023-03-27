@@ -26,8 +26,7 @@
 namespace vcl {
 
 /**
- * @brief BipartiteGraph<T1, T2>::BipartiteGraph
- * Default constructor. It creates an empty Bipartite Graph.
+ * @brief Default constructor. It creates an empty Bipartite Graph.
  */
 template<class T1, class T2>
 BipartiteGraph<T1, T2>::BipartiteGraph()
@@ -35,8 +34,130 @@ BipartiteGraph<T1, T2>::BipartiteGraph()
 }
 
 /**
- * @brief BipartiteGraph<T1, T2>::addLeftNode
- * Adds a new node on the left side of the graph.
+ * @brief Checks if a node exists on the left side of the graph
+ * @param lNode
+ * @return true if the node exists
+ */
+template<class T1, class T2>
+bool BipartiteGraph<T1, T2>::leftNodeExists(const T1& lNode) const
+{
+	return mapL.find(lNode) != mapL.end();
+}
+
+/**
+ * @brief Checks if a node exists on the right side of the graph
+ * @param rNode
+ * @return true if the node exists
+ */
+template<class T1, class T2>
+bool BipartiteGraph<T1, T2>::rightNodeExists(const T2& rNode) const
+{
+	return mapR.find(rNode) != mapR.end();
+}
+
+/**
+ * @brief Returns the number of left nodes of the graph.
+ * @return the number of nodes on the left side of the graph
+ */
+template<class T1, class T2>
+unsigned int BipartiteGraph<T1, T2>::leftNodesNumber() const
+{
+	return (unsigned int) (nodesL.size() - unusedLNodes.size());
+}
+
+/**
+ * @brief Returns the number of right nodes of the graph.
+ * @return the number of nodes on the right side of the graph
+ */
+template<class T1, class T2>
+unsigned int BipartiteGraph<T1, T2>::rightNodesNumber() const
+{
+	return (unsigned int) (nodesR.size() - unusedRNodes.size());
+}
+
+/**
+ * @brief Returns the number of adjacent nodes to `lNode`.
+ * @param lNode
+ * @return the number of adjacent nodes to lNode
+ */
+template<class T1, class T2>
+unsigned int BipartiteGraph<T1, T2>::adjacentLeftNodeNumber(const T1& lNode) const
+{
+	int uid = getIdLeftNode(lNode);
+	return nodesL[uid].sizeAdjacentNodes();
+}
+
+/**
+ * @brief Returns the number of adjacent nodes to `rNode`.
+ * @param rNode
+ * @return the number of adjacent nodes to rNode
+ */
+template<class T1, class T2>
+unsigned int BipartiteGraph<T1, T2>::adjacentRightNodeNumber(const T2& rNode) const
+{
+	int vid = getIdRightNode(rNode);
+	return nodesR[vid].sizeAdjacentNodes();
+}
+
+/**
+ * @brief Removes lNode and all its arcs from the graph
+ * @param lNode
+ * @return true if the node is successfully deleted
+ */
+template<class T1, class T2>
+bool BipartiteGraph<T1, T2>::deleteLeftNode(const T1& lNode)
+{
+	if (clearAdjacencesLeftNode(lNode)) {
+		unusedLNodes.insert(mapL[lNode]);
+		mapL.erase(lNode);
+		return true;
+	}
+	else
+		return false;
+}
+
+/**
+ * @brief Removes rNode and all its arcs from the graph
+ * @param rNode
+ * @return true if the node is successfully deleted
+ */
+template<class T1, class T2>
+bool BipartiteGraph<T1, T2>::deleteRightNode(const T2& rNode)
+{
+	if (clearAdjacencesRightNode(rNode)) {
+		unusedRNodes.insert(mapR[rNode]);
+		mapR.erase(rNode);
+		return true;
+	}
+	else
+		return false;
+}
+
+/**
+ * @brief Creates an arc between lNode and rNode
+ * @param lNode
+ * @param rNode
+ * @return true if the arc is successfully created (both nodes exists in the graph)
+ */
+template<class T1, class T2>
+bool BipartiteGraph<T1, T2>::addArc(const T1& lNode, const T2& rNode)
+{
+	try {
+		int uid = getIdLeftNode(lNode);
+		int vid = getIdRightNode(rNode);
+		assert((unsigned int) uid < nodesL.size());
+		assert((unsigned int) vid < nodesR.size());
+		nodesL[uid].addAdjacent(vid);
+		nodesR[vid].addAdjacent(uid);
+		return true;
+	}
+	catch (...) {
+		return false;
+	}
+}
+
+/**
+ * @brief Adds a new node on the left side of the graph.
  * @param[in] info: the value associated to the new node
  * @return true if the node is correctly added, false otherwise (if the node already exists)
  */
@@ -61,8 +182,7 @@ bool BipartiteGraph<T1, T2>::addLeftNode(const T1& info)
 }
 
 /**
- * @brief BipartiteGraph<T1, T2>::addRightNode
- * Adds a new node on the right side of the graph.
+ * @brief Adds a new node on the right side of the graph.
  * @param[in] info: the value associated to the new node
  * @return true if the node is correctly added, false otherwise (if the node already exists)
  */
@@ -87,136 +207,7 @@ bool BipartiteGraph<T1, T2>::addRightNode(const T2& info)
 }
 
 /**
- * @brief BipartiteGraph<T1, T2>::existsLeftNode
- * Checks if a node exists on the left side of the graph
- * @param lNode
- * @return true if the node exists
- */
-template<class T1, class T2>
-bool BipartiteGraph<T1, T2>::existsLeftNode(const T1& lNode) const
-{
-	return mapL.find(lNode) != mapL.end();
-}
-
-/**
- * @brief BipartiteGraph<T1, T2>::existsRightNode
- * Checks if a node exists on the right side of the graph
- * @param rNode
- * @return true if the node exists
- */
-template<class T1, class T2>
-bool BipartiteGraph<T1, T2>::existsRightNode(const T2& rNode) const
-{
-	return mapR.find(rNode) != mapR.end();
-}
-
-/**
- * @brief BipartiteGraph<T1, T2>::sizeLeftNodes
- * @return the number of nodes on the left side of the graph
- */
-template<class T1, class T2>
-unsigned int BipartiteGraph<T1, T2>::sizeLeftNodes() const
-{
-	return (unsigned int) (nodesL.size() - unusedLNodes.size());
-}
-
-/**
- * @brief BipartiteGraph<T1, T2>::sizeRightNodes
- * @return the number of nodes on the right side of the graph
- */
-template<class T1, class T2>
-unsigned int BipartiteGraph<T1, T2>::sizeRightNodes() const
-{
-	return (unsigned int) (nodesR.size() - unusedRNodes.size());
-}
-
-/**
- * @brief BipartiteGraph<T1, T2>::sizeAdjacencesLeftNode
- * @param lNode
- * @return the number of adjacent nodes to lNode
- */
-template<class T1, class T2>
-unsigned int BipartiteGraph<T1, T2>::sizeAdjacencesLeftNode(const T1& lNode) const
-{
-	int uid = getIdLeftNode(lNode);
-	return nodesL[uid].sizeAdjacentNodes();
-}
-
-/**
- * @brief BipartiteGraph<T1, T2>::sizeAdjacencesRightNode
- * @param rNode
- * @return the number of adjacent nodes to rNode
- */
-template<class T1, class T2>
-unsigned int BipartiteGraph<T1, T2>::sizeAdjacencesRightNode(const T2& rNode) const
-{
-	int vid = getIdRightNode(rNode);
-	return nodesR[vid].sizeAdjacentNodes();
-}
-
-/**
- * @brief BipartiteGraph<T1, T2>::deleteLeftNode
- * removes lNode and all its arcs from the graph
- * @param lNode
- * @return true if the node is successfully deleted
- */
-template<class T1, class T2>
-bool BipartiteGraph<T1, T2>::deleteLeftNode(const T1& lNode)
-{
-	if (clearAdjacencesLeftNode(lNode)) {
-		unusedLNodes.insert(mapL[lNode]);
-		mapL.erase(lNode);
-		return true;
-	}
-	else
-		return false;
-}
-
-/**
- * @brief BipartiteGraph<T1, T2>::deleteRightNode
- * removes rNode and all its arcs from the graph
- * @param rNode
- * @return true if the node is successfully deleted
- */
-template<class T1, class T2>
-bool BipartiteGraph<T1, T2>::deleteRightNode(const T2& rNode)
-{
-	if (clearAdjacencesRightNode(rNode)) {
-		unusedRNodes.insert(mapR[rNode]);
-		mapR.erase(rNode);
-		return true;
-	}
-	else
-		return false;
-}
-
-/**
- * @brief BipartiteGraph<T1, T2>::addArc
- * creates an arc between lNode and rNode
- * @param lNode
- * @param rNode
- * @return true if the arc is successfully created (both nodes exists in the graph)
- */
-template<class T1, class T2>
-bool BipartiteGraph<T1, T2>::addArc(const T1& lNode, const T2& rNode)
-{
-	try {
-		int uid = getIdLeftNode(lNode);
-		int vid = getIdRightNode(rNode);
-		assert((unsigned int) uid < nodesL.size());
-		assert((unsigned int) vid < nodesR.size());
-		nodesL[uid].addAdjacent(vid);
-		nodesR[vid].addAdjacent(uid);
-		return true;
-	}
-	catch (...) {
-		return false;
-	}
-}
-
-/**
- * @brief BipartiteGraph<T1, T2>::deleteArc
- * removes the arc between lNode and rNode
+ * @brief Removes the arc between lNode and rNode
  * @param lNode
  * @param rNode
  * @return true if the arc is successfully deleted (both nodes and the arc exists in the graph)
@@ -239,8 +230,7 @@ bool BipartiteGraph<T1, T2>::deleteArc(const T1& lNode, const T2& rNode)
 }
 
 /**
- * @brief BipartiteGraph<T1, T2>::clearAdjacencesLeftNode
- * removes all the arcs connected to lNode (lNode won't have adjacent nodes)
+ * @brief Removes all the arcs connected to lNode (lNode won't have adjacent nodes)
  * @param lNode
  * @return true if all the arcs are successfully removes
  */
@@ -261,8 +251,7 @@ bool BipartiteGraph<T1, T2>::clearAdjacencesLeftNode(const T1& lNode)
 }
 
 /**
- * @brief BipartiteGraph<T1, T2>::clearAdjacencesLeftNode
- * removes all the arcs connected to rNode (lNode won't have adjacent nodes)
+ * @brief Removes all the arcs connected to rNode (lNode won't have adjacent nodes)
  * @param rNode
  * @return true if all the arcs are successfully removes
  */
@@ -283,14 +272,13 @@ bool BipartiteGraph<T1, T2>::clearAdjacencesRightNode(const T2& rNode)
 }
 
 /**
- * @brief BipartiteGraph<T1, T2>::modifyLeftNode
- * modifies the key of an lNode
+ * @brief Sets the key of an lNode
  * @param old
  * @param newInfo
  * @return true if the key of the node is successfully modified
  */
 template<class T1, class T2>
-bool BipartiteGraph<T1, T2>::modifyLeftNode(const T1& old, const T1& newInfo)
+bool BipartiteGraph<T1, T2>::setLeftNode(const T1& old, const T1& newInfo)
 {
 	try {
 		int uid     = getIdLeftNode(old);
@@ -305,14 +293,13 @@ bool BipartiteGraph<T1, T2>::modifyLeftNode(const T1& old, const T1& newInfo)
 }
 
 /**
- * @brief BipartiteGraph<T1, T2>::modifyRightNode
- * modifies the key of a rNode
+ * @brief Sets the key of a rNode
  * @param old
  * @param newInfo
  * @return true if the key of the node is successfully modified
  */
 template<class T1, class T2>
-bool BipartiteGraph<T1, T2>::modifyRightNode(const T2& old, const T2& newInfo)
+bool BipartiteGraph<T1, T2>::setRightNode(const T2& old, const T2& newInfo)
 {
 	try {
 		int vid     = getIdRightNode(old);
