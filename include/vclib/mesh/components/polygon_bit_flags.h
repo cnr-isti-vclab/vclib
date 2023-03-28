@@ -106,20 +106,20 @@ public:
 	int exportToVCGFlags() const;
 	
 	// dummy member to discriminate between triangle and non-triangle bit flags
-	void __polygonBitFlags() const {};
+	void __polygonBitFlags() const {}
 
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 
-	// values of the flags, used for flagValue, setFlag and unsetFlag member functions
+	// indices of the bits, used for flagValue, setFlag and unsetFlag member functions
 	enum {
 		// Edge border
 		// BORDER0 is BORDER, inherited from superclass - bits [2, 13]
 		// Edge selection
-		EDGESEL0 = 1 << (Base::FIRST_USER_BIT + 11), // bits [14, 25]
+		EDGESEL0 = Base::FIRST_USER_BIT + 11, // bits [14, 25]
 		// Faux edges, for portability with TriangleBits
-		FAUX0 = 1 << (Base::FIRST_USER_BIT + 23) // bits [26, 28]
+		FAUX0 = Base::FIRST_USER_BIT + 23 // bits [26, 28]
 	};
 
 	// hide base class constant, 26 is the number of bits used by this class

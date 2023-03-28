@@ -21,44 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATOR_RANGE_H
-#define VCL_ITERATOR_RANGE_H
+#ifndef VCL_MISC_BIT_PROXY_H
+#define VCL_MISC_BIT_PROXY_H
+
+#include "types.h"
 
 namespace vcl {
 
 /**
- * @brief The Range class is a simple class that stores and exposes two iterators begin and end.
+ * @brief The BitProxy class allows to access to a bool reference from a bit saved in a mask,
+ * and then allow assignment.
  *
- * It is useful for classes that expose multiple containers, and they do not expose the classic
- * member functions begin()/end().
- * In these cases, it is possible to expose the range of a selected container by returning a Range
- * object initialized with the begin/end iterators.
- *
- * For example, a Mesh can expose Vertex and Face containers.
- * The mesh exposes the member functions:
- * - vertexBegin()
- * - vertexEnd()
- * - faceBegin()
- * - faceEnd()
- * To allow range iteration over vertices, the Mesh could expose a vertices() member function that
- * returns a Range object that is constructed in this way: Range(vertexBegin(), vertexEnd());
+ * See: https://stackoverflow.com/a/10145050/5851101
  */
-template<typename It>
-class Range
+class BitProxy
 {
 public:
-	using iterator = It;
+	BitProxy(int& mask, uint index) : mask(mask), index(index) {}
 
-	Range(It begin, It end) : b(begin), e(end) {}
+	void setIndex(uint ind) { index = ind; }
 
-	It begin() const { return b; }
+	operator bool() const { return mask.get() & (1 << index); }
 
-	It end() const { return e; }
+	void operator=(bool bit) { mask.get() = (mask.get() & ~(bit << index)) | (bit << index); }
 
-protected:
-	It b, e;
+	BitProxy& operator|=(bool bit)
+	{
+		mask.get() |= (bit << index);
+		return *this;
+	}
+
+	BitProxy& operator&=(bool bit)
+	{
+		mask.get() &= ~(bit << index);
+		return *this;
+	}
+
+	BitProxy& operator/=(bool bit)
+	{
+		mask.get() ^= (bit << index);
+		return *this;
+	}
+
+private:
+	std::reference_wrapper<int> mask;
+	uint index;
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATOR_RANGE_H
+#endif // VCL_MISC_BIT_PROXY_H

@@ -21,44 +21,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATOR_RANGE_H
-#define VCL_ITERATOR_RANGE_H
+#ifndef VCL_MESH_ITERATORS_ELEMENT_SELECTION_ITERATOR_H
+#define VCL_MESH_ITERATORS_ELEMENT_SELECTION_ITERATOR_H
+
+#include <vclib/iterator/iterator_wrapper.h>
+#include <vclib/iterator/range.h>
+#include <vclib/misc/bit_proxy.h>
 
 namespace vcl {
 
-/**
- * @brief The Range class is a simple class that stores and exposes two iterators begin and end.
- *
- * It is useful for classes that expose multiple containers, and they do not expose the classic
- * member functions begin()/end().
- * In these cases, it is possible to expose the range of a selected container by returning a Range
- * object initialized with the begin/end iterators.
- *
- * For example, a Mesh can expose Vertex and Face containers.
- * The mesh exposes the member functions:
- * - vertexBegin()
- * - vertexEnd()
- * - faceBegin()
- * - faceEnd()
- * To allow range iteration over vertices, the Mesh could expose a vertices() member function that
- * returns a Range object that is constructed in this way: Range(vertexBegin(), vertexEnd());
- */
 template<typename It>
-class Range
+class ElementSelectionIterator : public It
 {
+	using ElementType = typename std::remove_pointer_t<typename It::pointer>;
+	using BoolType = typename std::conditional_t <
+		std::is_const_v<ElementType>,
+		bool, BitProxy>;
+
 public:
-	using iterator = It;
+	using value_type = BoolType;
+	using reference  = BoolType;
+	using pointer    = BoolType*;
 
-	Range(It begin, It end) : b(begin), e(end) {}
+	using It::It;
+	ElementSelectionIterator(const It& it) : It(it) {}
 
-	It begin() const { return b; }
+	reference operator*() const { return It::operator*().selected(); }
+	pointer operator->() const { return &It::operator*().selected(); }
+};
 
-	It end() const { return e; }
-
-protected:
-	It b, e;
+template<typename Range>
+class ElementSelectionRange : public vcl::Range<ElementSelectionIterator<typename Range::iterator>>
+{
+	using Base = vcl::Range<ElementSelectionIterator<typename Range::iterator>>;
+public:
+	using Base::Range;
+	ElementSelectionRange(const Range& r) :
+			Base(ElementSelectionIterator(r.begin()), ElementSelectionIterator(r.end()))
+	{
+	}
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATOR_RANGE_H
+#endif // VCL_MESH_ITERATORS_ELEMENT_SELECTION_ITERATOR_H

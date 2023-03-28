@@ -25,22 +25,18 @@
 #define VCL_MESH_ITERATORS_VERTEX_COORD_ITERATOR_H
 
 #include <vclib/iterator/iterator_wrapper.h>
+#include <vclib/iterator/range.h>
 
 namespace vcl {
 
-// Specialization when using a pointer instead of an actual iterator - forces to use the variant
-// with an iterator, by wrapping the pointer type into a forward iterator
-template<typename PointerType>
-class VertexCoordIterator : public VertexCoordIterator<IteratorWrapper<PointerType>>
+/**
+ * @brief The VertexCoordIterator class allows to iterate over the coordinates of the vertices given
+ * an iterator It that iterates over the vertices.
+ */
+template<typename It>
+class VertexCoordIterator : public It
 {
-public:
-	using VertexCoordIterator<IteratorWrapper<PointerType>>::VertexCoordIterator;
-};
-
-template<typename It> requires (std::is_class_v<It>)
-class VertexCoordIterator<It> : public It
-{
-	using VertexType = typename It::value_type;
+	using VertexType = typename std::remove_pointer_t<typename It::pointer>;
 
 	using CoordType = typename std::conditional_t<
 		std::is_const_v<VertexType>,
@@ -48,7 +44,7 @@ class VertexCoordIterator<It> : public It
 		typename VertexType::CoordType>;
 
 public:
-	using value_type = typename std::remove_const<CoordType>::type;
+	using value_type = typename std::remove_const_t<CoordType>;
 	using reference  = CoordType&;
 	using pointer    = CoordType*;
 
@@ -58,6 +54,18 @@ public:
 	reference operator*() const { return It::operator*().coord(); }
 	pointer operator->() const { return &It::operator*().coord(); }
 
+};
+
+template<typename Range>
+class VertexCoordRange : public vcl::Range<VertexCoordIterator<typename Range::iterator>>
+{
+	using Base = vcl::Range<VertexCoordIterator<typename Range::iterator>>;
+public:
+	using Base::Range;
+	VertexCoordRange(const Range& r) :
+			Base(VertexCoordIterator(r.begin()), VertexCoordIterator(r.end()))
+	{
+	}
 };
 
 // Specialization when using a pointer instead of an actual iterator - forces to use the variant
@@ -72,7 +80,7 @@ public:
 template<typename It> requires (std::is_class_v<It>)
 class VertexPointerCoordIterator<It> : public It
 {
-	using VertexType = typename std::remove_pointer<typename It::value_type>::type;
+	using VertexType = typename std::remove_pointer_t<typename It::value_type>;
 
 	using CoordType = typename std::conditional_t<
 		std::is_const_v<VertexType>,
@@ -80,7 +88,7 @@ class VertexPointerCoordIterator<It> : public It
 		typename VertexType::CoordType>;
 
 public:
-	using value_type = typename std::remove_const<CoordType>::type;
+	using value_type = typename std::remove_const_t<CoordType>;
 	using reference  = CoordType&;
 	using pointer    = CoordType*;
 

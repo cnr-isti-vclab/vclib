@@ -230,6 +230,7 @@ set(HEADERS
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
 	include/vclib/mesh/iterators/element_container_iterator.h
+	include/vclib/mesh/iterators/element_selection_iterator.h
 	include/vclib/mesh/iterators/vertex_coord_iterator.h
 	include/vclib/mesh/iterators/face/edge_adj_face_iterator.h
 	include/vclib/mesh/iterators/half_edge/face_adj_face_iterator.h
@@ -251,6 +252,7 @@ set(HEADERS
 	include/vclib/mesh/utils/mesh_inertia.h
 	include/vclib/mesh/utils/mesh_pos.h
 	include/vclib/mesh/utils/tri_poly_index_bimap.h
+	include/vclib/misc/bit_proxy.h
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h
 	include/vclib/misc/file_info.h

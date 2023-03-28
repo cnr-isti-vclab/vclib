@@ -25,6 +25,7 @@
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
 #include <vclib/concept/mesh/component/bit_flags.h>
+#include <vclib/misc/bit_proxy.h>
 
 #include "internal/component_data.h"
 
@@ -89,6 +90,9 @@ public:
 	void setOnBorder();
 	void setUserBit(uint bit);
 
+	BitProxy selected();
+	bool selected() const;
+
 	void unsetAllFlags();
 	void unsetSelected();
 	void unsetOnBorder();
@@ -101,9 +105,9 @@ protected:
 	void setDeleted();
 	void unsetDeleted();
 
-	bool flagValue(uint flag) const;
-	void setFlag(uint flag);
-	void unsetFlag(uint flag);
+	bool flagValue(uint bit) const;
+	void setFlag(uint bit);
+	void unsetFlag(uint bit);
 
 	bool userBitFlag(uint bit, uint firstBit) const;
 	void setUserBit(uint bit, uint firstBit);
@@ -118,11 +122,11 @@ protected:
 
 	static const uint FIRST_USER_BIT = 3;
 
-	// values of the flags, used for flagValue, setFlag and unsetFlag member functions
+	// indices of the bits, used for flagValue, setFlag and unsetFlag member functions
 	enum {
-		DELETED  = 1 << 0, // bit 0
-		SELECTED = 1 << 1, // bit 1
-		BORDER   = 1 << 2  // bit 2
+		DELETED  = 0, // bit 0
+		SELECTED = 1, // bit 1
+		BORDER   = 2  // bit 2
 	};
 
 private:

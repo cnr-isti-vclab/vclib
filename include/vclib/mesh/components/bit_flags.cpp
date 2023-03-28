@@ -121,6 +121,18 @@ void BitFlagsT<C, El, o>::setUserBit(uint bit)
 	setUserBit(bit, FIRST_USER_BIT);
 }
 
+template<typename Component, typename ElementType, bool optional>
+BitProxy BitFlagsT<Component, ElementType, optional>::selected()
+{
+	return BitProxy(flags(), SELECTED);
+}
+
+template<typename Component, typename ElementType, bool optional>
+bool BitFlagsT<Component, ElementType, optional>::selected() const
+{
+	return isSelected();
+}
+
 /**
  * @brief Unsets all the flags of this Element and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
@@ -204,37 +216,38 @@ void BitFlagsT<C, El, o>::unsetDeleted()
 }
 
 /**
- * @brief Returns the value of the given flag (value of the enum).
+ * @brief Returns the value of the given bit (index of the bit in the mask).
  *
- * @param flag: value of the flag to return.
- * @return whether the flag is `true` or `false`.
+ * @param bit: index of the bit to return.
+ * @return whether the bit is `true` or `false`.
  */
 template<typename C, typename El, bool o>
-bool BitFlagsT<C, El, o>::flagValue(uint flag) const
+bool BitFlagsT<C, El, o>::flagValue(uint bit) const
 {
-	return flags() & flag;
+	assert(bit < 32);
+	return flags() & (1 << bit);
 }
 
 /**
- * @brief Sets to `true` the value of the given flag (value of the enum).
+ * @brief Sets to `true` the value of the given bit (index of the bit in the mask).
  *
- * @param[in] flag: value of the flag to set.
+ * @param[in] bit: index of the bit to set.
  */
 template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::setFlag(uint flag)
+void BitFlagsT<C, El, o>::setFlag(uint bit)
 {
-	flags() |= flag;
+	flags() |= (1 << bit);
 }
 
 /**
- * @brief Sets to `false` the value of the given flag (value of the enum).
+ * @brief Sets to `false` the value of the given bit (index of the bit in the mask).
  *
- * @param[in] flag: value of the flag to reset.
+ * @param[in] bit: index of the bit to reset.
  */
 template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::unsetFlag(uint flag)
+void BitFlagsT<C, El, o>::unsetFlag(uint bit)
 {
-	flags() &= ~flag;
+	flags() &= ~(1 << bit);
 }
 
 /**
@@ -254,8 +267,7 @@ template<typename C, typename El, bool o>
 bool BitFlagsT<C, El, o>::userBitFlag(uint bit, uint firstBit) const
 {
 	assert(bit < 32 - firstBit);
-	uint flag = 1 << (firstBit + bit);
-	return flagValue(flag);
+	return flagValue(firstBit + bit);
 }
 
 /**
@@ -274,8 +286,7 @@ template<typename C, typename El, bool o>
 void BitFlagsT<C, El, o>::setUserBit(uint bit, uint firstBit)
 {
 	assert(bit < 32 - firstBit);
-	uint flag = 1 << (firstBit + bit);
-	setFlag(flag);
+	setFlag(firstBit + bit);
 }
 
 /**
@@ -294,8 +305,7 @@ template<typename C, typename El, bool o>
 void BitFlagsT<C, El, o>::unsetUserBit(uint bit, uint firstBit)
 {
 	assert(bit < 32 - firstBit);
-	uint flag = 1 << (firstBit + bit);
-	unsetFlag(flag);
+	unsetFlag(firstBit + bit);
 }
 
 template<typename C, typename El, bool o>

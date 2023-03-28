@@ -21,44 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATOR_RANGE_H
-#define VCL_ITERATOR_RANGE_H
+#include <iostream>
 
-namespace vcl {
+#include <vclib/mesh.h>
+#include <vclib/load_save.h>
 
-/**
- * @brief The Range class is a simple class that stores and exposes two iterators begin and end.
- *
- * It is useful for classes that expose multiple containers, and they do not expose the classic
- * member functions begin()/end().
- * In these cases, it is possible to expose the range of a selected container by returning a Range
- * object initialized with the begin/end iterators.
- *
- * For example, a Mesh can expose Vertex and Face containers.
- * The mesh exposes the member functions:
- * - vertexBegin()
- * - vertexEnd()
- * - faceBegin()
- * - faceEnd()
- * To allow range iteration over vertices, the Mesh could expose a vertices() member function that
- * returns a Range object that is constructed in this way: Range(vertexBegin(), vertexEnd());
- */
-template<typename It>
-class Range
+#include <vclib/mesh/iterators/element_selection_iterator.h>
+#include <vclib/mesh/iterators/vertex_coord_iterator.h>
+
+int main()
 {
-public:
-	using iterator = It;
+	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-	Range(It begin, It end) : b(begin), e(end) {}
+	// print
 
-	It begin() const { return b; }
+	const vcl::TriMesh& cm = m;
 
-	It end() const { return e; }
+	for (const auto& c : vcl::VertexCoordRange(cm.vertices())) {
+		std::cerr << c << "\n";
+	}
 
-protected:
-	It b, e;
-};
+	// transform
+	std::cerr << "\n\nTransformed:\n\n";
 
-} // namespace vcl
+	for (auto& c : vcl::VertexCoordRange(m.vertices())) {
+		c *= 2;
+		std::cerr << c << "\n";
+	}
 
-#endif // VCL_ITERATOR_RANGE_H
+	std::cerr << "\n\nTransform Selection:\n";
+
+	uint i = 0;
+//	for (auto& v : m.vertices()) {
+//		v.selected() = i % 2 ? true : false;
+//		i++;
+//	}
+	for (auto sel : vcl::ElementSelectionRange(m.vertices())) {
+		sel = i % 2 ? true : false;
+		std::cerr << sel << "\n";
+		++i;
+	}
+
+
+
+	std::cerr << "\n\nPrint Selection:\n";
+	for (const auto& sel : vcl::ElementSelectionRange(cm.vertices())) {
+		std::cerr << sel << "\n";
+	}
+
+	return 0;
+}

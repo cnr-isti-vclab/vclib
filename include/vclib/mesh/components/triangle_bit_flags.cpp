@@ -76,7 +76,7 @@ template<typename El, bool o>
 bool TriangleBitFlags<El, o>::isEdgeOnBorder(uint i) const
 {
 	assert(i < 3);
-	return Base::flagValue(Base::BORDER << i);
+	return Base::flagValue(Base::BORDER + i);
 }
 
 template<typename El, bool o>
@@ -95,7 +95,7 @@ template<typename El, bool o>
 bool TriangleBitFlags<El, o>::isEdgeSelected(uint i) const
 {
 	assert(i < 3);
-	return Base::flagValue(EDGESEL0 << i);
+	return Base::flagValue(EDGESEL0 + i);
 }
 
 template<typename El, bool o>
@@ -108,7 +108,7 @@ template<typename El, bool o>
 bool TriangleBitFlags<El, o>::isEdgeFaux(uint i) const
 {
 	assert(i < 3);
-	return Base::flagValue(FAUX0 << i);
+	return Base::flagValue(FAUX0 + i);
 }
 
 template<typename El, bool o>
@@ -121,21 +121,21 @@ template<typename El, bool o>
 void TriangleBitFlags<El, o>::setEdgeOnBorder(uint i)
 {
 	assert(i < 3);
-	Base::setFlag(Base::BORDER << i);
+	Base::setFlag(Base::BORDER + i);
 }
 
 template<typename El, bool o>
 void TriangleBitFlags<El, o>::setEdgeSelected(uint i)
 {
 	assert(i < 3);
-	Base::setFlag(EDGESEL0 << i);
+	Base::setFlag(EDGESEL0 + i);
 }
 
 template<typename El, bool o>
 void TriangleBitFlags<El, o>::setEdgeFaux(uint i)
 {
 	assert(i < 3);
-	Base::setFlag(FAUX0 << i);
+	Base::setFlag(FAUX0 + i);
 }
 
 template<typename El, bool o>
