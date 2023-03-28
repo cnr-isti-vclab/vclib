@@ -56,13 +56,12 @@ public:
 
 };
 
-template<typename Range>
-class VertexCoordRange : public vcl::Range<VertexCoordIterator<typename Range::iterator>>
+template<typename Rng>
+class VertexCoordRange : public vcl::Range<VertexCoordIterator<typename Rng::iterator>>
 {
-	using Base = vcl::Range<VertexCoordIterator<typename Range::iterator>>;
+	using Base = vcl::Range<VertexCoordIterator<typename Rng::iterator>>;
 public:
-	using Base::Range;
-	VertexCoordRange(const Range& r) :
+	VertexCoordRange(const Rng& r) :
 			Base(VertexCoordIterator(r.begin()), VertexCoordIterator(r.end()))
 	{
 	}

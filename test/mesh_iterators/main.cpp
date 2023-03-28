@@ -56,7 +56,7 @@ int main()
 //		v.selected() = i % 2 ? true : false;
 //		i++;
 //	}
-	for (auto sel : vcl::ElementSelectionRange(m.vertices())) {
+	for (auto& sel : vcl::ElementSelectionRange(m.vertices())) {
 		sel = i % 2 ? true : false;
 		std::cerr << sel << "\n";
 		++i;

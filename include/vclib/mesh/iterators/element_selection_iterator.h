@@ -38,25 +38,46 @@ class ElementSelectionIterator : public It
 		std::is_const_v<ElementType>,
 		bool, BitProxy>;
 
+	int m;
+	mutable BitProxy bp = BitProxy(m, 0);
+
 public:
 	using value_type = BoolType;
-	using reference  = BoolType;
+	using reference  = typename std::conditional_t <
+		std::is_const_v<ElementType>, bool, BitProxy&>;
 	using pointer    = BoolType*;
 
 	using It::It;
 	ElementSelectionIterator(const It& it) : It(it) {}
 
-	reference operator*() const { return It::operator*().selected(); }
-	pointer operator->() const { return &It::operator*().selected(); }
+	reference operator*() const
+	{
+		if constexpr (std::is_const_v<ElementType>) {
+			return It::operator*().selected();
+		}
+		else {
+			bp = It::operator*().selected();
+			return bp;
+		}
+	}
+	pointer operator->() const
+	{
+		if constexpr (std::is_const_v<ElementType>) {
+			return &It::operator*().selected();
+		}
+		else {
+			bp = It::operator*().selected();
+			return &bp;
+		}
+	}
 };
 
-template<typename Range>
-class ElementSelectionRange : public vcl::Range<ElementSelectionIterator<typename Range::iterator>>
+template<typename Rng>
+class ElementSelectionRange : public vcl::Range<ElementSelectionIterator<typename Rng::iterator>>
 {
-	using Base = vcl::Range<ElementSelectionIterator<typename Range::iterator>>;
+	using Base = vcl::Range<ElementSelectionIterator<typename Rng::iterator>>;
 public:
-	using Base::Range;
-	ElementSelectionRange(const Range& r) :
+	ElementSelectionRange(const Rng& r) :
 			Base(ElementSelectionIterator(r.begin()), ElementSelectionIterator(r.end()))
 	{
 	}
