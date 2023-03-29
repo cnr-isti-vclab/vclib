@@ -21,52 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_MESH_ITERATORS_COMPONENT_SCALAR_ITERATOR_H
+#define VCL_MESH_ITERATORS_COMPONENT_SCALAR_ITERATOR_H
 
-#include <vclib/mesh.h>
-#include <vclib/load_save.h>
+#include "component_range.h"
 
-#include <vclib/mesh/iterator.h>
+#include <vclib/iterator/iterator_wrapper.h>
 
-int main()
+namespace vcl {
+
+/**
+ * @brief The ScalarIterator class allows to iterate over the scalars of the elements given
+ * an iterator It that iterates over the elements.
+ */
+template<typename It>
+class ScalarIterator : public It
 {
-	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+	using ElementType = typename std::remove_pointer_t<typename It::pointer>;
+	using ScalarType = typename std::conditional_t <
+		std::is_const_v<ElementType>,
+		const typename ElementType::ScalarType,
+		typename ElementType::ScalarType>;
 
-	// print
+public:
+	using value_type = typename std::remove_const_t<ScalarType>;
+	using reference  = ScalarType&;
+	using pointer    = ScalarType*;
 
-	const vcl::TriMesh& cm = m;
+	using It::It;
+	ScalarIterator(It& it) : It(it) {}
 
-	for (const auto& c : vcl::CoordRange(cm.vertices())) {
-		std::cerr << c << "\n";
-	}
+	reference operator*() const { return It::operator*().scalar(); }
+	pointer operator->() const { return &It::operator*().scalar(); }
+};
 
-	// transform
-	std::cerr << "\n\nTransformed:\n\n";
+template<typename Rng>
+using ScalarRange = internal::ComponentRange<Rng, ScalarIterator>;
 
-	for (auto& c : vcl::CoordRange(m.vertices())) {
-		c *= 2;
-		std::cerr << c << "\n";
-	}
+} // namespace vcl
 
-	std::cerr << "\n\nTransform Selection:\n";
-
-	uint i = 0;
-//	for (auto& v : m.vertices()) {
-//		v.selected() = i % 2 ? true : false;
-//		i++;
-//	}
-	for (auto& sel : vcl::SelectionRange(m.vertices())) {
-		sel = i % 2 ? true : false;
-		std::cerr << sel << "\n";
-		++i;
-	}
-
-
-
-	std::cerr << "\n\nPrint Selection:\n";
-	for (const auto& sel : vcl::SelectionRange(cm.vertices())) {
-		std::cerr << sel << "\n";
-	}
-
-	return 0;
-}
+#endif // VCL_MESH_ITERATORS_COMPONENT_SCALAR_ITERATOR_H

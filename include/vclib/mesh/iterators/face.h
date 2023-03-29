@@ -21,52 +21,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_MESH_ITERATOR_FACE_H
+#define VCL_MESH_ITERATOR_FACE_H
 
-#include <vclib/mesh.h>
-#include <vclib/load_save.h>
+#include "face/edge_adj_face_iterator.h"
 
-#include <vclib/mesh/iterator.h>
-
-int main()
-{
-	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
-
-	// print
-
-	const vcl::TriMesh& cm = m;
-
-	for (const auto& c : vcl::CoordRange(cm.vertices())) {
-		std::cerr << c << "\n";
-	}
-
-	// transform
-	std::cerr << "\n\nTransformed:\n\n";
-
-	for (auto& c : vcl::CoordRange(m.vertices())) {
-		c *= 2;
-		std::cerr << c << "\n";
-	}
-
-	std::cerr << "\n\nTransform Selection:\n";
-
-	uint i = 0;
-//	for (auto& v : m.vertices()) {
-//		v.selected() = i % 2 ? true : false;
-//		i++;
-//	}
-	for (auto& sel : vcl::SelectionRange(m.vertices())) {
-		sel = i % 2 ? true : false;
-		std::cerr << sel << "\n";
-		++i;
-	}
-
-
-
-	std::cerr << "\n\nPrint Selection:\n";
-	for (const auto& sel : vcl::SelectionRange(cm.vertices())) {
-		std::cerr << sel << "\n";
-	}
-
-	return 0;
-}
+#endif // VCL_MESH_ITERATOR_FACE_H

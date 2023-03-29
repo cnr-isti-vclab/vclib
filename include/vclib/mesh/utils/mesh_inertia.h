@@ -33,8 +33,8 @@ namespace vcl {
  * @brief The MeshInertia class
  *
  * Methods for computing Polyhedral Mass properties (like inertia tensor, volume, etc)
-
-
+ *
+ *
  * The algorithm is based on a three step reduction of the volume integrals
  * to successively simpler integrals. The algorithm is designed to minimize
  * the numerical errors that can result from poorly conditioned alignment of

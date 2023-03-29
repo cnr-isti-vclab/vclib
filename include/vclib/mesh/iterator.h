@@ -21,68 +21,10 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_ELEMENT_SELECTION_ITERATOR_H
-#define VCL_MESH_ITERATORS_ELEMENT_SELECTION_ITERATOR_H
+#ifndef VCL_MESH_ITERATOR_H
+#define VCL_MESH_ITERATOR_H
 
-#include <vclib/iterator/iterator_wrapper.h>
-#include <vclib/iterator/range.h>
-#include <vclib/misc/bit_proxy.h>
+#include "iterators/component.h"
+#include "iterators/face.h"
 
-namespace vcl {
-
-template<typename It>
-class ElementSelectionIterator : public It
-{
-	using ElementType = typename std::remove_pointer_t<typename It::pointer>;
-	using BoolType = typename std::conditional_t <
-		std::is_const_v<ElementType>,
-		bool, BitProxy>;
-
-	int m;
-	mutable BitProxy bp = BitProxy(m, 0);
-
-public:
-	using value_type = BoolType;
-	using reference  = typename std::conditional_t <
-		std::is_const_v<ElementType>, bool, BitProxy&>;
-	using pointer    = BoolType*;
-
-	using It::It;
-	ElementSelectionIterator(const It& it) : It(it) {}
-
-	reference operator*() const
-	{
-		if constexpr (std::is_const_v<ElementType>) {
-			return It::operator*().selected();
-		}
-		else {
-			bp = It::operator*().selected();
-			return bp;
-		}
-	}
-	pointer operator->() const
-	{
-		if constexpr (std::is_const_v<ElementType>) {
-			return &It::operator*().selected();
-		}
-		else {
-			bp = It::operator*().selected();
-			return &bp;
-		}
-	}
-};
-
-template<typename Rng>
-class ElementSelectionRange : public vcl::Range<ElementSelectionIterator<typename Rng::iterator>>
-{
-	using Base = vcl::Range<ElementSelectionIterator<typename Rng::iterator>>;
-public:
-	ElementSelectionRange(const Rng& r) :
-			Base(ElementSelectionIterator(r.begin()), ElementSelectionIterator(r.end()))
-	{
-	}
-};
-
-} // namespace vcl
-
-#endif // VCL_MESH_ITERATORS_ELEMENT_SELECTION_ITERATOR_H
+#endif // VCL_MESH_ITERATOR_H

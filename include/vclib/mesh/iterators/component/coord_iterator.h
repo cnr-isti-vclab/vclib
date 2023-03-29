@@ -21,20 +21,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_VERTEX_COORD_ITERATOR_H
-#define VCL_MESH_ITERATORS_VERTEX_COORD_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_COMPONENT_COORD_ITERATOR_H
+#define VCL_MESH_ITERATORS_COMPONENT_COORD_ITERATOR_H
+
+#include "component_range.h"
 
 #include <vclib/iterator/iterator_wrapper.h>
-#include <vclib/iterator/range.h>
 
 namespace vcl {
 
 /**
- * @brief The VertexCoordIterator class allows to iterate over the coordinates of the vertices given
- * an iterator It that iterates over the vertices.
+ * @brief The CoordIterator class allows to iterate over the coordinates of the elements given
+ * an iterator It that iterates over the elements.
  */
 template<typename It>
-class VertexCoordIterator : public It
+class CoordIterator : public It
 {
 	using VertexType = typename std::remove_pointer_t<typename It::pointer>;
 
@@ -49,7 +50,7 @@ public:
 	using pointer    = CoordType*;
 
 	using It::It;
-	VertexCoordIterator(const It& it) : It(it) {}
+	CoordIterator(const It& it) : It(it) {}
 
 	reference operator*() const { return It::operator*().coord(); }
 	pointer operator->() const { return &It::operator*().coord(); }
@@ -57,27 +58,19 @@ public:
 };
 
 template<typename Rng>
-class VertexCoordRange : public vcl::Range<VertexCoordIterator<typename Rng::iterator>>
-{
-	using Base = vcl::Range<VertexCoordIterator<typename Rng::iterator>>;
-public:
-	VertexCoordRange(const Rng& r) :
-			Base(VertexCoordIterator(r.begin()), VertexCoordIterator(r.end()))
-	{
-	}
-};
+using CoordRange = internal::ComponentRange<Rng, CoordIterator>;
 
 // Specialization when using a pointer instead of an actual iterator - forces to use the variant
 // with an iterator, by wrapping the pointer type into a forward iterator
 template<typename PointerType>
-class VertexPointerCoordIterator : public VertexPointerCoordIterator<IteratorWrapper<PointerType>>
+class PointerCoordIterator : public PointerCoordIterator<IteratorWrapper<PointerType>>
 {
 public:
-	using VertexPointerCoordIterator<IteratorWrapper<PointerType>>::VertexPointerCoordIterator;
+	using PointerCoordIterator<IteratorWrapper<PointerType>>::PointerCoordIterator;
 };
 
 template<typename It> requires (std::is_class_v<It>)
-class VertexPointerCoordIterator<It> : public It
+class PointerCoordIterator<It> : public It
 {
 	using VertexType = typename std::remove_pointer_t<typename It::value_type>;
 
@@ -92,7 +85,7 @@ public:
 	using pointer    = CoordType*;
 
 	using It::It;
-	VertexPointerCoordIterator(const It& it) : It(it) {}
+	PointerCoordIterator(const It& it) : It(it) {}
 
 	reference operator*() const { return It::operator*()->coord(); }
 	pointer operator->() const { return &It::operator*()->coord(); }
@@ -101,4 +94,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MESH_ITERATORS_VERTEX_COORD_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_COMPONENT_COORD_ITERATOR_H

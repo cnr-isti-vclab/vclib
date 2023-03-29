@@ -21,52 +21,61 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_MESH_ITERATORS_COMPONENT_SELECTION_ITERATOR_H
+#define VCL_MESH_ITERATORS_COMPONENT_SELECTION_ITERATOR_H
 
-#include <vclib/mesh.h>
-#include <vclib/load_save.h>
+#include "component_range.h"
 
-#include <vclib/mesh/iterator.h>
+#include <vclib/iterator/iterator_wrapper.h>
+#include <vclib/misc/bit_proxy.h>
 
-int main()
+namespace vcl {
+
+template<typename It>
+class SelectionIterator : public It
 {
-	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+	using ElementType = typename std::remove_pointer_t<typename It::pointer>;
+	using BoolType = typename std::conditional_t <
+		std::is_const_v<ElementType>,
+		bool, BitProxy>;
 
-	// print
+	int m;
+	mutable BitProxy bp = BitProxy(m, 0);
 
-	const vcl::TriMesh& cm = m;
+public:
+	using value_type = BoolType;
+	using reference  = typename std::conditional_t <
+		std::is_const_v<ElementType>, bool, BitProxy&>;
+	using pointer    = BoolType*;
 
-	for (const auto& c : vcl::CoordRange(cm.vertices())) {
-		std::cerr << c << "\n";
+	using It::It;
+	SelectionIterator(const It& it) : It(it) {}
+
+	reference operator*() const
+	{
+		if constexpr (std::is_const_v<ElementType>) {
+			return It::operator*().selected();
+		}
+		else {
+			bp = It::operator*().selected();
+			return bp;
+		}
 	}
-
-	// transform
-	std::cerr << "\n\nTransformed:\n\n";
-
-	for (auto& c : vcl::CoordRange(m.vertices())) {
-		c *= 2;
-		std::cerr << c << "\n";
+	pointer operator->() const
+	{
+		if constexpr (std::is_const_v<ElementType>) {
+			return &It::operator*().selected();
+		}
+		else {
+			bp = It::operator*().selected();
+			return &bp;
+		}
 	}
+};
 
-	std::cerr << "\n\nTransform Selection:\n";
+template<typename Rng>
+using SelectionRange = internal::ComponentRange<Rng, SelectionIterator>;
 
-	uint i = 0;
-//	for (auto& v : m.vertices()) {
-//		v.selected() = i % 2 ? true : false;
-//		i++;
-//	}
-	for (auto& sel : vcl::SelectionRange(m.vertices())) {
-		sel = i % 2 ? true : false;
-		std::cerr << sel << "\n";
-		++i;
-	}
+} // namespace vcl
 
-
-
-	std::cerr << "\n\nPrint Selection:\n";
-	for (const auto& sel : vcl::SelectionRange(cm.vertices())) {
-		std::cerr << sel << "\n";
-	}
-
-	return 0;
-}
+#endif // VCL_MESH_ITERATORS_COMPONENT_SELECTION_ITERATOR_H

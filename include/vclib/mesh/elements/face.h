@@ -26,7 +26,7 @@
 
 #include <vclib/concept/mesh/element/face.h>
 #include <vclib/iterator/range.h>
-#include <vclib/mesh/iterators/vertex_coord_iterator.h>
+#include <vclib/mesh/iterators/component/coord_iterator.h>
 #include <vclib/space/tex_coord.h>
 
 #include "element.h"
@@ -58,9 +58,9 @@ public:
 	using VertexType = typename VRefs::VertexType;
 
 	// Iterator types to iterate over vertex coords
-	using VertexCoordIterator = VertexPointerCoordIterator<typename VRefs::VertexIterator>;
+	using VertexCoordIterator = PointerCoordIterator<typename VRefs::VertexIterator>;
 	using ConstVertexCoordIterator =
-		VertexPointerCoordIterator<typename VRefs::ConstVertexIterator>;
+		PointerCoordIterator<typename VRefs::ConstVertexIterator>;
 	using VertexCoordRange      = Range<VertexCoordIterator>;
 	using ConstVertexCoordRange = Range<ConstVertexCoordIterator>;
 

@@ -179,6 +179,7 @@ set(HEADERS
 	include/vclib/math/transform.h
 	include/vclib/mesh/dcel_mesh.h
 	include/vclib/mesh/edge_mesh.h
+	include/vclib/mesh/iterator.h
 	include/vclib/mesh/point_cloud.h
 	include/vclib/mesh/poly_mesh.h
 	include/vclib/mesh/requirements.h
@@ -229,9 +230,13 @@ set(HEADERS
 	include/vclib/mesh/elements/half_edge_components.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
+	include/vclib/mesh/iterators/component.h
+	include/vclib/mesh/iterators/face.h
 	include/vclib/mesh/iterators/element_container_iterator.h
-	include/vclib/mesh/iterators/element_selection_iterator.h
-	include/vclib/mesh/iterators/vertex_coord_iterator.h
+	include/vclib/mesh/iterators/component/component_range.h
+	include/vclib/mesh/iterators/component/coord_iterator.h
+	include/vclib/mesh/iterators/component/scalar_iterator.h
+	include/vclib/mesh/iterators/component/selection_iterator.h
 	include/vclib/mesh/iterators/face/edge_adj_face_iterator.h
 	include/vclib/mesh/iterators/half_edge/face_adj_face_iterator.h
 	include/vclib/mesh/iterators/half_edge/face_base_iterator.h
