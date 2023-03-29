@@ -57,8 +57,22 @@ public:
 
 };
 
+// todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
+#ifdef __clang__
+template<typename Rng>
+class CoordRange : public vcl::Range<CoordIterator<typename Rng::iterator>>
+{
+	using Base = vcl::Range<CoordIterator<typename Rng::iterator>>;
+public:
+	CoordRange(const Rng& r) :
+			Base(CoordIterator(r.begin()), CoordIterator(r.end()))
+	{
+	}
+};
+#else
 template<typename Rng>
 using CoordRange = internal::ComponentRange<Rng, CoordIterator>;
+#endif
 
 // Specialization when using a pointer instead of an actual iterator - forces to use the variant
 // with an iterator, by wrapping the pointer type into a forward iterator

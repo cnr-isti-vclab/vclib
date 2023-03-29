@@ -55,8 +55,22 @@ public:
 	pointer operator->() const { return &It::operator*().scalar(); }
 };
 
+// todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
+#ifdef __clang__
+template<typename Rng>
+class ScalarRange : public vcl::Range<ScalarIterator<typename Rng::iterator>>
+{
+	using Base = vcl::Range<ScalarIterator<typename Rng::iterator>>;
+public:
+	ScalarRange(const Rng& r) :
+			Base(ScalarIterator(r.begin()), ScalarIterator(r.end()))
+	{
+	}
+};
+#else
 template<typename Rng>
 using ScalarRange = internal::ComponentRange<Rng, ScalarIterator>;
+#endif
 
 } // namespace vcl
 

@@ -73,8 +73,21 @@ public:
 	}
 };
 
+#ifdef __clang__
+template<typename Rng>
+class SelectionRange : public vcl::Range<SelectionIterator<typename Rng::iterator>>
+{
+	using Base = vcl::Range<SelectionIterator<typename Rng::iterator>>;
+public:
+	SelectionRange(const Rng& r) :
+			Base(SelectionIterator(r.begin()), SelectionIterator(r.end()))
+	{
+	}
+};
+#else
 template<typename Rng>
 using SelectionRange = internal::ComponentRange<Rng, SelectionIterator>;
+#endif
 
 } // namespace vcl
 
