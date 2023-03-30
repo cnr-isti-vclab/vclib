@@ -31,12 +31,13 @@ namespace vcl {
 // todo - transform is_class_v into std::forward_iterator - all iterators of vclib must satisfy this
 // concept
 template<typename T>
-concept IteratesOverClass = std::is_class_v<T> && std::is_class_v<typename T::value_type>;
+concept IteratorConcept = std::is_class_v<T>;
 
-// todo - transform is_class_v into std::forward_iterator - all iterators of vclib must satisfy this
-// concept
 template<typename T>
-concept IteratesOverPointer = std::is_class_v<T> && std::is_pointer_v<typename T::value_type>;
+concept IteratesOverClass = IteratorConcept<T> && std::is_class_v<typename T::value_type>;
+
+template<typename T>
+concept IteratesOverPointer = IteratorConcept<T> && std::is_pointer_v<typename T::value_type>;
 
 } // namespace vcl
 
