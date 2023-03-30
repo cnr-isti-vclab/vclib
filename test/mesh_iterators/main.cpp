@@ -61,12 +61,23 @@ int main()
 		++i;
 	}
 
-
-
 	std::cerr << "\n\nPrint Selection:\n";
 	for (const auto& sel : vcl::SelectionRange(cm.vertices())) {
 		std::cerr << sel << "\n";
 	}
 
+
+	// scalar
+
+	i = 0;
+	for (auto& scal : vcl::ScalarRange(m.vertices())) {
+		scal = ++i;
+	}
+
+	std::cerr << "\n\nPrint Scalars:\n";
+
+	for (const auto& scal : vcl::ScalarRange(cm.vertices())) {
+		std::cerr << scal << "\n";
+	}
 	return 0;
 }

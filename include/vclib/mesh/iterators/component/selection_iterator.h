@@ -31,13 +31,25 @@
 
 namespace vcl {
 
-template<typename It>
-class SelectionIterator : public It
+template<typename T>
+class SelectionIterator
 {
-	using ElementType = typename std::remove_pointer_t<typename It::pointer>;
+	SelectionIterator(T) {}
+	static_assert(sizeof(T) != sizeof(T), "");
+};
+
+template<IteratorConcept It>
+class SelectionIterator<It> : public It
+{
+	using ElementType = typename std::conditional_t<
+		IteratesOverClass<It>,
+		typename std::remove_pointer_t<typename It::pointer>,
+		typename std::remove_pointer_t<typename It::value_type>>;
+
 	using BoolType = typename std::conditional_t <
 		std::is_const_v<ElementType>,
-		bool, BitProxy>;
+		bool,
+		BitProxy>;
 
 	int m;
 	mutable BitProxy bp = BitProxy(m, 0);
@@ -54,22 +66,26 @@ public:
 	reference operator*() const
 	{
 		if constexpr (std::is_const_v<ElementType>) {
-			return It::operator*().selected();
+			if constexpr (IteratesOverClass<It>) {
+				return It::operator*().selected();
+			}
+			else {
+				return It::operator*()->selected();
+			}
 		}
 		else {
-			bp = It::operator*().selected();
+			if constexpr (IteratesOverClass<It>) {
+				bp = It::operator*().selected();
+			}
+			else {
+				bp = It::operator*()->selected();
+			}
 			return bp;
 		}
 	}
 	pointer operator->() const
 	{
-		if constexpr (std::is_const_v<ElementType>) {
-			return &It::operator*().selected();
-		}
-		else {
-			bp = It::operator*().selected();
-			return &bp;
-		}
+		return &(operator*());
 	}
 };
 

@@ -53,20 +53,20 @@ public:
 template<IteratorConcept It>
 class CoordIterator<It> : public It
 {
-	using VertexType = typename std::conditional_t<
+	using ElementType = typename std::conditional_t<
 		IteratesOverClass<It>,
 		typename std::remove_pointer_t<typename It::pointer>,
 		typename std::remove_pointer_t<typename It::value_type>>;
 
-	using CoordType = typename std::conditional_t<
-		std::is_const_v<VertexType>,
-		const typename VertexType::CoordType,
-		typename VertexType::CoordType>;
+	using CompType = typename std::conditional_t<
+		std::is_const_v<ElementType>,
+		const typename ElementType::CoordType,
+		typename ElementType::CoordType>;
 
 public:
-	using value_type = typename std::remove_const_t<CoordType>;
-	using reference  = CoordType&;
-	using pointer    = CoordType*;
+	using value_type = typename std::remove_const_t<CompType>;
+	using reference  = CompType&;
+	using pointer    = CompType*;
 
 	using It::It;
 	CoordIterator(const It& it) : It(it) {}
@@ -82,14 +82,8 @@ public:
 	}
 	pointer operator->() const
 	{
-		if constexpr (IteratesOverClass<It>) {
-			return &It::operator*().coord();
-		}
-		else {
-			return &It::operator*()->coord();
-		}
+		return &(operator*());
 	}
-
 };
 
 // todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
