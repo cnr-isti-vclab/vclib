@@ -24,7 +24,7 @@
 #ifndef VCL_CONCEPT_SPACE_SEGMENT_H
 #define VCL_CONCEPT_SPACE_SEGMENT_H
 
-#include <vclib/misc/types.h>
+#include <vclib/types.h>
 
 namespace vcl {
 

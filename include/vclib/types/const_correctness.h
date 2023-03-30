@@ -21,76 +21,51 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_MARK_MARKABLE_VECTOR_H
-#define VCL_MISC_MARK_MARKABLE_VECTOR_H
-
-#include <vector>
-
-#include <vclib/types.h>
+#ifndef VCL_TYPES_CONST_CORRECTNESS_H
+#define VCL_TYPES_CONST_CORRECTNESS_H
 
 namespace vcl {
 
-template<typename ValueType>
-class MarkableVector
+/*
+ * Utility type that makes possible to treat const pointers in a templated class that can treat a
+ * both const and non-const pointer type.
+ */
+
+template<typename T>
+struct MakeConstPointer
 {
-public:
-	using Iterator = typename std::vector<ValueType>::iterator;
-	using ConstIterator = typename std::vector<ValueType>::iterator;
-	using ReverseIterator = typename std::vector<ValueType>::reverse_iterator;
-	using ConstReverseIterator = typename std::vector<ValueType>::const_reverse_iterator;
-
-	MarkableVector();
-
-	MarkableVector(std::size_t size);
-	MarkableVector(std::size_t size, const ValueType& defaultValue);
-
-	template<typename ValueIterator>
-	MarkableVector(ValueIterator begin, ValueIterator end);
-
-	bool empty() const;
-	std::size_t size() const;
-
-	void clear();
-	void reserve(std::size_t size);
-	std::size_t capacity() const;
-	void resize(std::size_t size);
-	void resize(std::size_t size, const ValueType& defaultValue);
-
-	void insert(uint p, const ValueType& v);
-	void erase(uint p);
-	void pushBack(const ValueType& v);
-	void popBack();
-
-	bool isMarked(uint i) const;
-	void mark(uint i) const;
-	void unMarkAll() const;
-
-	ValueType* data();
-	const ValueType* data() const;
-
-	ValueType& at(uint i);
-	const ValueType& at(uint i) const;
-	ValueType& operator[](uint i);
-	const ValueType& operator[](uint i) const;
-
-	ValueType& front();
-	const ValueType& front() const;
-	ValueType& back();
-	const ValueType& back() const;
-
-	Iterator begin();
-	ConstIterator begin() const;
-	Iterator end();
-	ConstIterator end() const;
-
-private:
-	std::vector<ValueType> vector;
-	mutable std::vector<uint> marks;
-	mutable uint m = 1;
+	typedef T type;
 };
+
+template<typename T>
+struct MakeConstPointer<T*>
+{
+	typedef const T* type;
+};
+
+/*
+ * Full deduction for the possibility to re-use same code for const and non-const member functions
+ * https://stackoverflow.com/a/47369227/5851101
+ */
+
+template<typename T>
+constexpr T& asConst(T const& value) noexcept
+{
+	return const_cast<T&>(value);
+}
+template<typename T>
+constexpr T* asConst(T const* value) noexcept
+{
+	return const_cast<T*>(value);
+}
+template<typename T>
+constexpr T* asConst(T* value) noexcept
+{
+	return value;
+}
+template<typename T>
+void asConst(T const&&) = delete;
 
 } // namespace vcl
 
-#include "markable_vector.cpp"
-
-#endif // VCL_MISC_MARK_MARKABLE_VECTOR_H
+#endif // VCL_TYPES_CONST_CORRECTNESS_H

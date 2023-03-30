@@ -26,7 +26,7 @@
 
 #include <tuple>
 
-#include "types.h"
+#include <vclib/types.h>
 
 namespace vcl {
 

@@ -25,7 +25,7 @@
 #define VCL_MESH_UTILS_MESH_EDGE_UTIL_H
 
 #include <vclib/mesh/requirements.h>
-#include <vclib/misc/types.h>
+#include <vclib/types.h>
 
 namespace vcl {
 

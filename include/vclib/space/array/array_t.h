@@ -29,7 +29,7 @@
 #include <vector>
 
 #include <vclib/misc/nested_initializer_lists.h>
-#include <vclib/misc/types.h>
+#include <vclib/types.h>
 
 namespace vcl {
 

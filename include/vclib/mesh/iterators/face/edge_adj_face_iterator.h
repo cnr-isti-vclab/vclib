@@ -26,7 +26,7 @@
 
 #include <iterator>
 
-#include <vclib/misc/types.h>
+#include <vclib/types.h>
 
 namespace vcl {
 

@@ -33,6 +33,5 @@
 #include "misc/string.h"
 #include "misc/timer.h"
 #include "misc/tokenizer.h"
-#include "misc/types.h"
 
 #endif // VCL_MISCELLANEOUS_H

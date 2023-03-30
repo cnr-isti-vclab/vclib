@@ -21,33 +21,14 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_TYPES_H
-#define VCL_MISC_TYPES_H
+#ifndef VCL_TYPES_VARIADIC_TEMPLATES_H
+#define VCL_TYPES_VARIADIC_TEMPLATES_H
 
-#define NOMINMAX
+#include "base.h"
 
-#include <assert.h>
-#include <concepts>
-#include <numeric>
 #include <tuple>
-#include <type_traits>
-
-using uint = unsigned int;
-using ushort = unsigned short;
 
 namespace vcl {
-
-/*
- * Represent a null value of uintm that is the maximum value that can be represented with unsigned
- * int. Allows to fully use all the possible values (except one) that can be represented in an
- * unsigned int, but with the possibility to flag is a value is not initialized or is set to null.
- */
-const uint UINT_NULL = std::numeric_limits<uint>::max();
-
-
-/*******************************************/
-/****** VARIADIC TEMPLATES MANAGEMENT ******/
-/*******************************************/
 
 /*
  * A simple structure that wraps a list of variadic templates, without instantiating anything.
@@ -220,95 +201,6 @@ struct GetTypeByCondition<Pred, TypeWrapper<Args...>>
 	using type = typename GetTypeByCondition<Pred, Args...>::type;
 };
 
-/*******************************************************************/
-/****** POINTERS, REFERENCES AND CONST CORRECTNESS MANAGEMENT ******/
-/*******************************************************************/
-
-/*
- * Utility to get clean type from an input type that could have a reference or a pointer.
- */
-template<typename T>
-using RemoveRefAndPointer =
-	typename std::remove_pointer_t<typename std::remove_reference_t<T>>;
-
-/*
- * Utility type that makes possible to treat const pointers in a templated class that can treat a
- * both const and non-const pointer type.
- */
-
-template<typename T>
-struct MakeConstPointer
-{
-	typedef T type;
-};
-
-template<typename T>
-struct MakeConstPointer<T*>
-{
-	typedef const T* type;
-};
-
-/*
- * Full deduction for the possibility to re-use same code for const and non-const member functions
- * https://stackoverflow.com/a/47369227/5851101
- */
-
-template<typename T>
-constexpr T& asConst(T const& value) noexcept
-{
-	return const_cast<T&>(value);
-}
-template<typename T>
-constexpr T* asConst(T const* value) noexcept
-{
-	return const_cast<T*>(value);
-}
-template<typename T>
-constexpr T* asConst(T* value) noexcept
-{
-	return value;
-}
-template<typename T>
-void asConst(T const&&) = delete;
-
-/*****************************************************/
-/****** INHERITANCE AND POLYMORPHISM MANAGEMENT ******/
-/*****************************************************/
-
-namespace internal {
-
-template< template< typename ...formal > class base >
-struct IsDerivedFromImplementation
-{
-	template< typename ...actual >
-	std::true_type
-	operator () (base< actual... > *) const;
-
-	std::false_type
-	operator () (void *) const;
-};
-
-} // namespace vcl::internal
-
-/*
- * Utility class that allows to check if given class 'Derived' is derived from a
- * specialization of a templated class.
- *
- * Given a class X and a templated class C<template T>, it can be used in the following way:
- *
- * using myCheck = vcl::IsDerivedFromTemplateSpecialization<X, C>::type;
- *
- * and will return true if X derives from any specialization of C.
- *
- * https://stackoverflow.com/a/25846080/5851101
- * https://stackoverflow.com/questions/25845536/trait-to-check-if-some-specialization-of-template-class-is-base-class-of-specifi#comment40451928_25846080
- * http://coliru.stacked-crooked.com/a/9feadc62e7594eb2
- */
-template<typename derived, template<typename...> class base>
-using IsDerivedFromTemplateSpecialization = typename std::invoke_result<
-	internal::IsDerivedFromImplementation<base>,
-	typename std::remove_cv<derived>::type*>::type;
-
 } // namespace vcl
 
-#endif // VCL_MISC_TYPES_H
+#endif // VCL_TYPES_VARIADIC_TEMPLATES_H

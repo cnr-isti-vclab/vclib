@@ -21,76 +21,17 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_MARK_MARKABLE_VECTOR_H
-#define VCL_MISC_MARK_MARKABLE_VECTOR_H
+#ifndef VCL_TYPES_H
+#define VCL_TYPES_H
 
-#include <vector>
+/*
+ * This header includes all the utility types and type traits used in VCLib.
+ * Almost all the files in VCLib include this header.
+ */
 
-#include <vclib/types.h>
+#include "types/const_correctness.h"
+#include "types/inheritance.h"
+#include "types/pointers.h"
+#include "types/variadic_templates.h"
 
-namespace vcl {
-
-template<typename ValueType>
-class MarkableVector
-{
-public:
-	using Iterator = typename std::vector<ValueType>::iterator;
-	using ConstIterator = typename std::vector<ValueType>::iterator;
-	using ReverseIterator = typename std::vector<ValueType>::reverse_iterator;
-	using ConstReverseIterator = typename std::vector<ValueType>::const_reverse_iterator;
-
-	MarkableVector();
-
-	MarkableVector(std::size_t size);
-	MarkableVector(std::size_t size, const ValueType& defaultValue);
-
-	template<typename ValueIterator>
-	MarkableVector(ValueIterator begin, ValueIterator end);
-
-	bool empty() const;
-	std::size_t size() const;
-
-	void clear();
-	void reserve(std::size_t size);
-	std::size_t capacity() const;
-	void resize(std::size_t size);
-	void resize(std::size_t size, const ValueType& defaultValue);
-
-	void insert(uint p, const ValueType& v);
-	void erase(uint p);
-	void pushBack(const ValueType& v);
-	void popBack();
-
-	bool isMarked(uint i) const;
-	void mark(uint i) const;
-	void unMarkAll() const;
-
-	ValueType* data();
-	const ValueType* data() const;
-
-	ValueType& at(uint i);
-	const ValueType& at(uint i) const;
-	ValueType& operator[](uint i);
-	const ValueType& operator[](uint i) const;
-
-	ValueType& front();
-	const ValueType& front() const;
-	ValueType& back();
-	const ValueType& back() const;
-
-	Iterator begin();
-	ConstIterator begin() const;
-	Iterator end();
-	ConstIterator end() const;
-
-private:
-	std::vector<ValueType> vector;
-	mutable std::vector<uint> marks;
-	mutable uint m = 1;
-};
-
-} // namespace vcl
-
-#include "markable_vector.cpp"
-
-#endif // VCL_MISC_MARK_MARKABLE_VECTOR_H
+#endif // VCL_TYPES_H

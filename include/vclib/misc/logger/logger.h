@@ -24,14 +24,14 @@
 #ifndef VCL_MISC_LOGGER_LOGGER_H
 #define VCL_MISC_LOGGER_LOGGER_H
 
-#include "../timer.h"
-#include "../types.h"
-
 #include <cmath>
 #include <iostream>
 #include <mutex>
 #include <sstream>
 #include <stack>
+
+#include <vclib/misc/timer.h>
+#include <vclib/types.h>
 
 namespace vcl {
 

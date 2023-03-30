@@ -24,7 +24,7 @@
 #ifndef VCL_ITERATOR_ITERATOR_WRAPPER_H
 #define VCL_ITERATOR_ITERATOR_WRAPPER_H
 
-#include <vclib/misc/types.h>
+#include <vclib/types.h>
 
 namespace vcl {
 

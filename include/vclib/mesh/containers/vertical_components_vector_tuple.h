@@ -28,7 +28,7 @@
 #include <vector>
 #include <tuple>
 
-#include <vclib/misc/types.h>
+#include <vclib/types.h>
 #include <vclib/misc/tuple.h>
 
 namespace vcl::mesh {

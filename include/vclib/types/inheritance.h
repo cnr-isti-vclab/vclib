@@ -21,76 +21,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_MARK_MARKABLE_VECTOR_H
-#define VCL_MISC_MARK_MARKABLE_VECTOR_H
+#ifndef VCL_TYPES_INHERITANCE_H
+#define VCL_TYPES_INHERITANCE_H
 
-#include <vector>
-
-#include <vclib/types.h>
+#include <type_traits>
 
 namespace vcl {
 
-template<typename ValueType>
-class MarkableVector
+namespace internal {
+
+template< template< typename ...formal > class base >
+struct IsDerivedFromImplementation
 {
-public:
-	using Iterator = typename std::vector<ValueType>::iterator;
-	using ConstIterator = typename std::vector<ValueType>::iterator;
-	using ReverseIterator = typename std::vector<ValueType>::reverse_iterator;
-	using ConstReverseIterator = typename std::vector<ValueType>::const_reverse_iterator;
+	template< typename ...actual >
+	std::true_type
+	operator () (base< actual... > *) const;
 
-	MarkableVector();
-
-	MarkableVector(std::size_t size);
-	MarkableVector(std::size_t size, const ValueType& defaultValue);
-
-	template<typename ValueIterator>
-	MarkableVector(ValueIterator begin, ValueIterator end);
-
-	bool empty() const;
-	std::size_t size() const;
-
-	void clear();
-	void reserve(std::size_t size);
-	std::size_t capacity() const;
-	void resize(std::size_t size);
-	void resize(std::size_t size, const ValueType& defaultValue);
-
-	void insert(uint p, const ValueType& v);
-	void erase(uint p);
-	void pushBack(const ValueType& v);
-	void popBack();
-
-	bool isMarked(uint i) const;
-	void mark(uint i) const;
-	void unMarkAll() const;
-
-	ValueType* data();
-	const ValueType* data() const;
-
-	ValueType& at(uint i);
-	const ValueType& at(uint i) const;
-	ValueType& operator[](uint i);
-	const ValueType& operator[](uint i) const;
-
-	ValueType& front();
-	const ValueType& front() const;
-	ValueType& back();
-	const ValueType& back() const;
-
-	Iterator begin();
-	ConstIterator begin() const;
-	Iterator end();
-	ConstIterator end() const;
-
-private:
-	std::vector<ValueType> vector;
-	mutable std::vector<uint> marks;
-	mutable uint m = 1;
+	std::false_type
+	operator () (void *) const;
 };
+
+} // namespace vcl::internal
+
+/*
+ * Utility class that allows to check if given class 'Derived' is derived from a
+ * specialization of a templated class.
+ *
+ * Given a class X and a templated class C<template T>, it can be used in the following way:
+ *
+ * using myCheck = vcl::IsDerivedFromTemplateSpecialization<X, C>::type;
+ *
+ * if constexpr (myCheck::value) { ... }
+ *
+ * and will return true if X derives from any specialization of C.
+ *
+ * https://stackoverflow.com/a/25846080/5851101
+ * https://stackoverflow.com/questions/25845536/trait-to-check-if-some-specialization-of-template-class-is-base-class-of-specifi#comment40451928_25846080
+ * http://coliru.stacked-crooked.com/a/9feadc62e7594eb2
+ */
+template<typename derived, template<typename...> class base>
+using IsDerivedFromTemplateSpecialization = typename std::invoke_result<
+	internal::IsDerivedFromImplementation<base>,
+	typename std::remove_cv<derived>::type*>::type;
 
 } // namespace vcl
 
-#include "markable_vector.cpp"
-
-#endif // VCL_MISC_MARK_MARKABLE_VECTOR_H
+#endif // VCL_TYPES_INHERITANCE_H

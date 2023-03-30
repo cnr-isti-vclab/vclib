@@ -24,7 +24,7 @@
 #ifndef VCL_MISC_PARALLEL_H
 #define VCL_MISC_PARALLEL_H
 
-#include <vclib/misc/types.h>
+#include <vclib/types.h>
 
 // Apple clang does not support c++17 parallel algorithms.
 // To compensate this lack, waiting for Apple to support them, we use pstld

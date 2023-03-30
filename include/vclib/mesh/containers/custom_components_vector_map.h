@@ -30,7 +30,7 @@
 #include <unordered_map>
 #include <typeindex>
 
-#include <vclib/misc/types.h>
+#include <vclib/types.h>
 
 namespace vcl::mesh {
 

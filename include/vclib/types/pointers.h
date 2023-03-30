@@ -21,76 +21,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_MARK_MARKABLE_VECTOR_H
-#define VCL_MISC_MARK_MARKABLE_VECTOR_H
+#ifndef VCL_TYPES_POINTERS_H
+#define VCL_TYPES_POINTERS_H
 
-#include <vector>
-
-#include <vclib/types.h>
+#include <type_traits>
 
 namespace vcl {
 
-template<typename ValueType>
-class MarkableVector
-{
-public:
-	using Iterator = typename std::vector<ValueType>::iterator;
-	using ConstIterator = typename std::vector<ValueType>::iterator;
-	using ReverseIterator = typename std::vector<ValueType>::reverse_iterator;
-	using ConstReverseIterator = typename std::vector<ValueType>::const_reverse_iterator;
+/*
+ * Utility Pointer concept to check if a type is a Pointer
+ */
+template<typename T>
+concept IsPointer = std::is_pointer_v<T>;
 
-	MarkableVector();
-
-	MarkableVector(std::size_t size);
-	MarkableVector(std::size_t size, const ValueType& defaultValue);
-
-	template<typename ValueIterator>
-	MarkableVector(ValueIterator begin, ValueIterator end);
-
-	bool empty() const;
-	std::size_t size() const;
-
-	void clear();
-	void reserve(std::size_t size);
-	std::size_t capacity() const;
-	void resize(std::size_t size);
-	void resize(std::size_t size, const ValueType& defaultValue);
-
-	void insert(uint p, const ValueType& v);
-	void erase(uint p);
-	void pushBack(const ValueType& v);
-	void popBack();
-
-	bool isMarked(uint i) const;
-	void mark(uint i) const;
-	void unMarkAll() const;
-
-	ValueType* data();
-	const ValueType* data() const;
-
-	ValueType& at(uint i);
-	const ValueType& at(uint i) const;
-	ValueType& operator[](uint i);
-	const ValueType& operator[](uint i) const;
-
-	ValueType& front();
-	const ValueType& front() const;
-	ValueType& back();
-	const ValueType& back() const;
-
-	Iterator begin();
-	ConstIterator begin() const;
-	Iterator end();
-	ConstIterator end() const;
-
-private:
-	std::vector<ValueType> vector;
-	mutable std::vector<uint> marks;
-	mutable uint m = 1;
-};
+/*
+ * Utility to get clean type from an input type that could have a reference or a pointer.
+ */
+template<typename T>
+using RemoveRefAndPointer =
+	typename std::remove_pointer_t<typename std::remove_reference_t<T>>;
 
 } // namespace vcl
 
-#include "markable_vector.cpp"
-
-#endif // VCL_MISC_MARK_MARKABLE_VECTOR_H
+#endif // VCL_TYPES_POINTERS_H

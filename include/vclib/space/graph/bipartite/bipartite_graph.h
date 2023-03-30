@@ -30,7 +30,7 @@
 #include <vector>
 
 #include <vclib/iterator/range.h>
-#include <vclib/misc/types.h>
+#include <vclib/types.h>
 #include <vclib/space/graph/undirected_node.h>
 
 #include "iterator/node_iterator.h"

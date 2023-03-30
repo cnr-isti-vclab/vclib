@@ -26,7 +26,7 @@
 
 #include <functional>
 
-#include "types.h"
+#include <vclib/types.h>
 
 namespace vcl {
 

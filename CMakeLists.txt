@@ -53,6 +53,7 @@ set(HEADERS
 	include/vclib/mesh.h
 	include/vclib/miscellaneous.h
 	include/vclib/space.h
+	include/vclib/types.h
 	include/vclib/algorithm/bounding_box.h
 	include/vclib/algorithm/clean.h
 	include/vclib/algorithm/create.h
@@ -272,7 +273,6 @@ set(HEADERS
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
 	include/vclib/misc/tuple.h
-	include/vclib/misc/types.h
 	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/misc/logger/console_logger.h
 	include/vclib/misc/logger/logger.h
@@ -326,6 +326,11 @@ set(HEADERS
 	include/vclib/space/sampler/mesh_sampler.h
 	include/vclib/space/sampler/point_sampler.h
 	include/vclib/space/sampler/vertex_sampler.h
+	include/vclib/types/base.h
+	include/vclib/types/const_correctness.h
+	include/vclib/types/inheritance.h
+	include/vclib/types/pointers.h
+	include/vclib/types/variadic_templates.h
 )
 
 set(SOURCES
