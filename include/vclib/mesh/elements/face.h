@@ -58,11 +58,10 @@ public:
 	using VertexType = typename VRefs::VertexType;
 
 	// Iterator types to iterate over vertex coords
-	using VertexCoordIterator = PointerCoordIterator<typename VRefs::VertexIterator>;
-	using ConstVertexCoordIterator =
-		PointerCoordIterator<typename VRefs::ConstVertexIterator>;
-	using VertexCoordRange      = Range<VertexCoordIterator>;
-	using ConstVertexCoordRange = Range<ConstVertexCoordIterator>;
+	using VertexCoordIterator      = CoordIterator<typename VRefs::VertexIterator>;
+	using ConstVertexCoordIterator = CoordIterator<typename VRefs::ConstVertexIterator>;
+	using VertexCoordRange         = Range<VertexCoordIterator>;
+	using ConstVertexCoordRange    = Range<ConstVertexCoordIterator>;
 
 	Face();
 

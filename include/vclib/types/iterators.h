@@ -21,63 +21,23 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
-#define VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
+#ifndef VCL_TYPES_ITERATORS_H
+#define VCL_TYPES_ITERATORS_H
 
-#include <iterator>
+#include <type_traits>
 
 namespace vcl {
 
-template<typename HalfEdge>
-class FaceBaseIterator
-{
-public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
+// todo - transform is_class_v into std::forward_iterator - all iterators of vclib must satisfy this
+// concept
+template<typename T>
+concept IteratesOverClass = std::is_class_v<T> && std::is_class_v<typename T::value_type>;
 
-	FaceBaseIterator();
-	FaceBaseIterator(HalfEdge* start);
-	FaceBaseIterator(HalfEdge* start, const HalfEdge* end);
-
-	bool operator==(const FaceBaseIterator& oi) const;
-	bool operator!=(const FaceBaseIterator& oi) const;
-
-	FaceBaseIterator& operator++();
-	FaceBaseIterator operator++(int);
-	FaceBaseIterator& operator--();
-	FaceBaseIterator operator--(int);
-
-protected:
-	HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
-};
-
-template<typename HalfEdge>
-class ConstFaceBaseIterator
-{
-public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
-
-	ConstFaceBaseIterator();
-	ConstFaceBaseIterator(const HalfEdge* start);
-	ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end);
-
-	bool operator==(const ConstFaceBaseIterator& oi) const;
-	bool operator!=(const ConstFaceBaseIterator& oi) const;
-
-	ConstFaceBaseIterator operator++();
-	ConstFaceBaseIterator operator++(int);
-	ConstFaceBaseIterator operator--();
-	ConstFaceBaseIterator operator--(int);
-
-protected:
-	const HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
-};
+// todo - transform is_class_v into std::forward_iterator - all iterators of vclib must satisfy this
+// concept
+template<typename T>
+concept IteratesOverPointer = std::is_class_v<T> && std::is_pointer_v<typename T::value_type>;
 
 } // namespace vcl
 
-#include "face_base_iterator.cpp"
-
-#endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
+#endif // VCL_TYPES_ITERATORS_H

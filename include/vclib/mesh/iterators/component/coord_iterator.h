@@ -30,12 +30,28 @@
 
 namespace vcl {
 
+template<typename T>
+class CoordIterator
+{
+	CoordIterator(T) {}
+	static_assert(sizeof(T) != sizeof(T), "");
+};
+
+// Specialization when using a pointer instead of an actual iterator - forces to use the variant
+// with an iterator, by wrapping the pointer type into a forward iterator
+template<IsPointer PointerType>
+class CoordIterator<PointerType> : public CoordIterator<IteratorWrapper<PointerType>>
+{
+public:
+	using CoordIterator<IteratorWrapper<PointerType>>::CoordIterator;
+};
+
 /**
  * @brief The CoordIterator class allows to iterate over the coordinates of the elements given
  * an iterator It that iterates over the elements.
  */
-template<typename It>
-class CoordIterator : public It
+template<IteratesOverClass It>
+class CoordIterator<It> : public It
 {
 	using VertexType = typename std::remove_pointer_t<typename It::pointer>;
 
@@ -57,6 +73,29 @@ public:
 
 };
 
+template<IteratesOverPointer It>
+class CoordIterator<It> : public It
+{
+	using VertexType = typename std::remove_pointer_t<typename It::value_type>;
+
+	using CoordType = typename std::conditional_t<
+		std::is_const_v<VertexType>,
+		const typename VertexType::CoordType,
+		typename VertexType::CoordType>;
+
+public:
+	using value_type = typename std::remove_const_t<CoordType>;
+	using reference  = CoordType&;
+	using pointer    = CoordType*;
+
+	using It::It;
+	CoordIterator(const It& it) : It(it) {}
+
+	reference operator*() const { return It::operator*()->coord(); }
+	pointer operator->() const { return &It::operator*()->coord(); }
+
+};
+
 // todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
 #ifdef __clang__
 template<typename Rng>
@@ -73,38 +112,6 @@ public:
 template<typename Rng>
 using CoordRange = internal::ComponentRange<Rng, CoordIterator>;
 #endif
-
-// Specialization when using a pointer instead of an actual iterator - forces to use the variant
-// with an iterator, by wrapping the pointer type into a forward iterator
-template<typename PointerType>
-class PointerCoordIterator : public PointerCoordIterator<IteratorWrapper<PointerType>>
-{
-public:
-	using PointerCoordIterator<IteratorWrapper<PointerType>>::PointerCoordIterator;
-};
-
-template<typename It> requires (std::is_class_v<It>)
-class PointerCoordIterator<It> : public It
-{
-	using VertexType = typename std::remove_pointer_t<typename It::value_type>;
-
-	using CoordType = typename std::conditional_t<
-		std::is_const_v<VertexType>,
-		const typename VertexType::CoordType,
-		typename VertexType::CoordType>;
-
-public:
-	using value_type = typename std::remove_const_t<CoordType>;
-	using reference  = CoordType&;
-	using pointer    = CoordType*;
-
-	using It::It;
-	PointerCoordIterator(const It& it) : It(it) {}
-
-	reference operator*() const { return It::operator*()->coord(); }
-	pointer operator->() const { return &It::operator*()->coord(); }
-
-};
 
 } // namespace vcl
 

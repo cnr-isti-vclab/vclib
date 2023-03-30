@@ -16,6 +16,7 @@
   - Containers:
     - [ ] set properly container concepts
   - Iterators:
+    - [ ] all iterators of the library must satisfy at least std::forward_iterator concept (also half edge ones)
     - [ ] implement range iterators for element scalars and colors
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers

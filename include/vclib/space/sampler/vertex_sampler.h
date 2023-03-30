@@ -17,7 +17,7 @@ class VertexSampler
 
 public:
 	using PointType = typename VertexType::CoordType;
-	using ConstIterator = PointerCoordIterator<typename std::vector<VP>::const_iterator>;
+	using ConstIterator = CoordIterator<typename std::vector<VP>::const_iterator>;
 
 	VertexSampler();
 

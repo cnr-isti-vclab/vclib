@@ -329,6 +329,7 @@ set(HEADERS
 	include/vclib/types/base.h
 	include/vclib/types/const_correctness.h
 	include/vclib/types/inheritance.h
+	include/vclib/types/iterators.h
 	include/vclib/types/pointers.h
 	include/vclib/types/variadic_templates.h
 )

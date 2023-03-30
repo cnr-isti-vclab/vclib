@@ -54,7 +54,7 @@ bool FaceBaseIterator<HalfEdge>::operator!=(const FaceBaseIterator& oi) const
 }
 
 template<typename HalfEdge>
-FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator++()
+FaceBaseIterator<HalfEdge>& FaceBaseIterator<HalfEdge>::operator++()
 {
 	current = current->next();
 	if (current == end) current = nullptr;
@@ -71,7 +71,7 @@ FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator++(int)
 }
 
 template<typename HalfEdge>
-FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator--()
+FaceBaseIterator<HalfEdge>& FaceBaseIterator<HalfEdge>::operator--()
 {
 	current = current->prev();
 	if (current == end) current = nullptr;
