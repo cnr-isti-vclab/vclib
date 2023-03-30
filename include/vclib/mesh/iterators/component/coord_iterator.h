@@ -48,12 +48,15 @@ public:
 
 /**
  * @brief The CoordIterator class allows to iterate over the coordinates of the elements given
- * an iterator It that iterates over the elements.
+ * an iterator It that iterates over the elements (or pointer to elements).
  */
-template<IteratesOverClass It>
+template<IteratorConcept It>
 class CoordIterator<It> : public It
 {
-	using VertexType = typename std::remove_pointer_t<typename It::pointer>;
+	using VertexType = typename std::conditional_t<
+		IteratesOverClass<It>,
+		typename std::remove_pointer_t<typename It::pointer>,
+		typename std::remove_pointer_t<typename It::value_type>>;
 
 	using CoordType = typename std::conditional_t<
 		std::is_const_v<VertexType>,
@@ -68,31 +71,24 @@ public:
 	using It::It;
 	CoordIterator(const It& it) : It(it) {}
 
-	reference operator*() const { return It::operator*().coord(); }
-	pointer operator->() const { return &It::operator*().coord(); }
-
-};
-
-template<IteratesOverPointer It>
-class CoordIterator<It> : public It
-{
-	using VertexType = typename std::remove_pointer_t<typename It::value_type>;
-
-	using CoordType = typename std::conditional_t<
-		std::is_const_v<VertexType>,
-		const typename VertexType::CoordType,
-		typename VertexType::CoordType>;
-
-public:
-	using value_type = typename std::remove_const_t<CoordType>;
-	using reference  = CoordType&;
-	using pointer    = CoordType*;
-
-	using It::It;
-	CoordIterator(const It& it) : It(it) {}
-
-	reference operator*() const { return It::operator*()->coord(); }
-	pointer operator->() const { return &It::operator*()->coord(); }
+	reference operator*() const
+	{
+		if constexpr (IteratesOverClass<It>) {
+			return It::operator*().coord();
+		}
+		else {
+			return It::operator*()->coord();
+		}
+	}
+	pointer operator->() const
+	{
+		if constexpr (IteratesOverClass<It>) {
+			return &It::operator*().coord();
+		}
+		else {
+			return &It::operator*()->coord();
+		}
+	}
 
 };
 
