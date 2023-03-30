@@ -86,7 +86,7 @@ bool ElemContIterator<Container, T, CNST>::operator!=(const ElemContIterator& oi
 }
 
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::operator++()
+ElemContIterator<Container, T, CNST>& ElemContIterator<Container, T, CNST>::operator ++()
 {
 	return (this->*increment)();
 }
@@ -98,7 +98,7 @@ ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::opera
 }
 
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::operator--()
+ElemContIterator<Container, T, CNST>& ElemContIterator<Container, T, CNST>::operator --()
 {
 	return (this->*decrement)();
 }
@@ -181,7 +181,7 @@ bool ElemContIterator<Container, T, CNST>::operator>=(const ElemContIterator& oi
  * @brief Increment function that will be called if we need to jump deleted elements.
  */
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::incrementJump()
+ElemContIterator<Container, T, CNST>& ElemContIterator<Container, T, CNST>::incrementJump()
 {
 	do {
 		++it;
@@ -206,7 +206,7 @@ ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::postI
  * @brief Increment function that will be called if we don't need to jump deleted elements.
  */
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::incrementFast()
+ElemContIterator<Container, T, CNST>& ElemContIterator<Container, T, CNST>::incrementFast()
 {
 	++it;
 	return *this;
@@ -227,7 +227,7 @@ ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::postI
  * @brief Decrement function that will be called if we need to jump deleted elements.
  */
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::decrementJump()
+ElemContIterator<Container, T, CNST>& ElemContIterator<Container, T, CNST>::decrementJump()
 {
 	do {
 		--it;
@@ -252,7 +252,7 @@ ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::postD
  * @brief Decrement function that will be called if we don't need to jump deleted elements.
  */
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-ElemContIterator<Container, T, CNST> ElemContIterator<Container, T, CNST>::decrementFast()
+ElemContIterator<Container, T, CNST>& ElemContIterator<Container, T, CNST>::decrementFast()
 {
 	--it;
 	return *this;

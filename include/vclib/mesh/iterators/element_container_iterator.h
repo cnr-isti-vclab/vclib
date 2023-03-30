@@ -56,9 +56,9 @@ public:
 	bool operator==(const ElemContIterator& oi) const;
 	bool operator!=(const ElemContIterator& oi) const;
 
-	ElemContIterator operator++();
+	ElemContIterator& operator++();
 	ElemContIterator operator++(int);
-	ElemContIterator operator--();
+	ElemContIterator& operator--();
 	ElemContIterator operator--(int);
 
 	ElemContIterator& operator+=(difference_type n);
@@ -75,14 +75,14 @@ public:
 	bool operator>=(const ElemContIterator& oi) const;
 
 private:
-	ElemContIterator incrementJump();
+	ElemContIterator& incrementJump();
 	ElemContIterator postIncrementJump();
-	ElemContIterator incrementFast();
+	ElemContIterator& incrementFast();
 	ElemContIterator postIncrementFast();
 
-	ElemContIterator decrementJump();
+	ElemContIterator& decrementJump();
 	ElemContIterator postDecrementJump();
-	ElemContIterator decrementFast();
+	ElemContIterator& decrementFast();
 	ElemContIterator postDecrementFast();
 
 	ElemContIterator& assignSumJump(difference_type n);
@@ -92,11 +92,11 @@ private:
 	difference_type diffFast(const ElemContIterator& oi) const;
 
 	// pointer to increment function, assigned in the constructor
-	ElemContIterator (ElemContIterator::*increment)();
+	ElemContIterator& (ElemContIterator::*increment)();
 	// pointer to post increment function, assigned in the constructor
 	ElemContIterator (ElemContIterator::*postIncrement)();
 	// pointer to decrement function, assigned in the constructor
-	ElemContIterator (ElemContIterator::*decrement)();
+	ElemContIterator& (ElemContIterator::*decrement)();
 	// pointer to post decrement function, assigned in the constructor
 	ElemContIterator (ElemContIterator::*postDecrement)();
 	// pointer to assignment sum function, assigned in the constructor

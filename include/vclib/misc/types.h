@@ -229,7 +229,7 @@ struct GetTypeByCondition<Pred, TypeWrapper<Args...>>
  */
 template<typename T>
 using RemoveRefAndPointer =
-	typename std::remove_pointer<typename std::remove_reference<T>::type>::type;
+	typename std::remove_pointer_t<typename std::remove_reference_t<T>>;
 
 /*
  * Utility type that makes possible to treat const pointers in a templated class that can treat a

@@ -24,6 +24,8 @@
 #ifndef VCL_MISC_BIT_PROXY_H
 #define VCL_MISC_BIT_PROXY_H
 
+#include <functional>
+
 #include "types.h"
 
 namespace vcl {
