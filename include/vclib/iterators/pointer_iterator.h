@@ -24,6 +24,8 @@
 #ifndef VCL_ITERATOR_POINTER_ITERATOR_H
 #define VCL_ITERATOR_POINTER_ITERATOR_H
 
+#include <vclib/types.h>
+
 namespace vcl {
 
 /**
@@ -69,24 +71,14 @@ template<typename It>
 class PointerIterator : public It
 {
 public:
-	using value_type = typename It::value_type*;
+	using value_type = std::conditional_t<
+			IsPointerToConst<typename It::pointer>,
+			const typename It::value_type*,
+			typename It::value_type*>;
 	using reference  = value_type;
 
 	using It::It;
 	PointerIterator(const It& it) : It(it) {}
-
-	reference operator*() const { return It::operator->(); }
-};
-
-template<typename It>
-class ConstPointerIterator : public It
-{
-public:
-	using value_type = const typename It::value_type*;
-	using reference  = value_type;
-
-	using It::It;
-	ConstPointerIterator(const It& it) : It(it) {}
 
 	reference operator*() const { return It::operator->(); }
 };
