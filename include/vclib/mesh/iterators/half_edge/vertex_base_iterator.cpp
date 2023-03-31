@@ -25,39 +25,39 @@
 
 namespace vcl::internal {
 
-template<typename HalfEdge, bool CNST>
-VertexBaseIterator<HalfEdge, CNST> VertexBaseIterator<HalfEdge, CNST>::operator++()
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+auto& VertexBaseIterator<HalfEdge, CNST, DerivedIterator>::operator++()
 {
 	Base::current = Base::current->prev();
 	Base::current = Base::current->twin();
 	if (Base::current == Base::end) Base::current = nullptr;
-	return *this;
+	return *(static_cast<const DerivedIterator*>(this));
 }
 
-template<typename HalfEdge, bool CNST>
-VertexBaseIterator<HalfEdge, CNST> VertexBaseIterator<HalfEdge, CNST>::operator++(int)
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+auto VertexBaseIterator<HalfEdge, CNST, DerivedIterator>::operator++(int)
 {
-	auto it = *this;
+	auto it = *(static_cast<const DerivedIterator*>(this));
 	Base::current = Base::current->prev();
 	Base::current = Base::current->twin();
 	if (Base::current == Base::end) Base::current = nullptr;
 	return it;
 }
 
-template<typename HalfEdge, bool CNST>
-VertexBaseIterator<HalfEdge, CNST> VertexBaseIterator<HalfEdge, CNST>::operator--()
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+auto& VertexBaseIterator<HalfEdge, CNST, DerivedIterator>::operator--()
 {
 	Base::current = Base::current->twin();
 	if (Base::current != nullptr)
 		Base::current = Base::current->next();
 	if (Base::current == Base::end) Base::current = nullptr;
-	return *this;
+	return *(static_cast<const DerivedIterator*>(this));
 }
 
-template<typename HalfEdge, bool CNST>
-VertexBaseIterator<HalfEdge, CNST> VertexBaseIterator<HalfEdge, CNST>::operator--(int)
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+auto VertexBaseIterator<HalfEdge, CNST, DerivedIterator>::operator--(int)
 {
-	auto it = *this;
+	auto it = *(static_cast<const DerivedIterator*>(this));
 	Base::current = Base::current->twin();
 	if (Base::current != nullptr)
 		Base::current = Base::current->next();

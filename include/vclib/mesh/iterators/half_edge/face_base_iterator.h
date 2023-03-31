@@ -28,17 +28,17 @@
 
 namespace vcl::internal {
 
-template<typename HalfEdge, bool CNST>
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
 class FaceBaseIterator : public BaseIterator<HalfEdge, CNST>
 {
 	using Base = BaseIterator<HalfEdge, CNST>;
 public:
 	using Base::BaseIterator;
 
-	FaceBaseIterator& operator++();
-	FaceBaseIterator operator++(int);
-	FaceBaseIterator& operator--();
-	FaceBaseIterator operator--(int);
+	auto& operator++();
+	auto operator++(int);
+	auto& operator--();
+	auto operator--(int);
 };
 
 } // namespace vcl::internal

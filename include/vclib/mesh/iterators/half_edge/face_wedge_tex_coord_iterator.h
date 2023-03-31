@@ -33,9 +33,10 @@ namespace vcl {
 namespace internal {
 
 template<typename HalfEdge, bool CNST>
-class FaceWedgeTexCoordIterator : public FaceBaseIterator<HalfEdge, CNST>
+class FaceWedgeTexCoordIterator :
+		public FaceBaseIterator<HalfEdge, CNST, FaceWedgeTexCoordIterator<HalfEdge, CNST>>
 {
-	using Base = FaceBaseIterator<HalfEdge, CNST>;
+	using Base = FaceBaseIterator<HalfEdge, CNST, FaceWedgeTexCoordIterator<HalfEdge, CNST>>;
 public:
 	using value_type = std::conditional_t<CNST,
 			const typename HalfEdge::TexCoordType,

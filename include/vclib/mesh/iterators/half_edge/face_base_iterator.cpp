@@ -25,35 +25,35 @@
 
 namespace vcl::internal {
 
-template<typename HalfEdge, bool CNST>
-FaceBaseIterator<HalfEdge, CNST>& FaceBaseIterator<HalfEdge, CNST>::operator++()
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+auto& FaceBaseIterator<HalfEdge, CNST, DerivedIterator>::operator++()
 {
 	Base::current = Base::current->next();
 	if (Base::current == Base::end) Base::current = nullptr;
-	return *this;
+	return *(static_cast<const DerivedIterator*>(this));
 }
 
-template<typename HalfEdge, bool CNST>
-FaceBaseIterator<HalfEdge, CNST> FaceBaseIterator<HalfEdge, CNST>::operator++(int)
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+auto FaceBaseIterator<HalfEdge, CNST, DerivedIterator>::operator++(int)
 {
-	auto it = *this;
+	auto it = *(static_cast<const DerivedIterator*>(this));
 	Base::current = Base::current->next();
 	if (Base::current == Base::end) Base::current = nullptr;
 	return it;
 }
 
-template<typename HalfEdge, bool CNST>
-FaceBaseIterator<HalfEdge, CNST>& FaceBaseIterator<HalfEdge, CNST>::operator--()
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+auto& FaceBaseIterator<HalfEdge, CNST, DerivedIterator>::operator--()
 {
 	Base::current = Base::current->prev();
 	if (Base::current == Base::end) Base::current = nullptr;
-	return *this;
+	return *(static_cast<const DerivedIterator*>(this));
 }
 
-template<typename HalfEdge, bool CNST>
-FaceBaseIterator<HalfEdge, CNST> FaceBaseIterator<HalfEdge, CNST>::operator--(int)
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+auto FaceBaseIterator<HalfEdge, CNST, DerivedIterator>::operator--(int)
 {
-	auto it = *this;
+	auto it = *(static_cast<const DerivedIterator*>(this));
 	Base::current = Base::current->prev();
 	if (Base::current == Base::end) Base::current = nullptr;
 	return it;

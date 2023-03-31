@@ -33,9 +33,10 @@ namespace vcl {
 namespace internal {
 
 template<typename HalfEdge, bool CNST>
-class FaceWedgeColorIterator : public FaceBaseIterator<HalfEdge, CNST>
+class FaceWedgeColorIterator :
+		public FaceBaseIterator<HalfEdge, CNST, FaceWedgeColorIterator<HalfEdge, CNST>>
 {
-	using Base = FaceBaseIterator<HalfEdge, CNST>;
+	using Base = FaceBaseIterator<HalfEdge, CNST, FaceWedgeColorIterator<HalfEdge, CNST>>;
 public:
 	using value_type = std::conditional_t<CNST, const vcl::Color, vcl::Color>;
 	using reference  = value_type&;
