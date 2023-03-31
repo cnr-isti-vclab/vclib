@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -48,7 +48,7 @@ public:
 	PlyHeader();
 	PlyHeader(
 		ply::Format              f,
-		const io::FileMeshInfo&  info,
+		const FileMeshInfo&  info,
 		std::vector<std::string> textureFiles = std::vector<std::string>());
 	PlyHeader(const std::string& filename , std::ifstream& file);
 
@@ -57,7 +57,7 @@ public:
 
 	ply::Format format() const;
 
-	io::FileMeshInfo getInfo() const;
+	FileMeshInfo getInfo() const;
 
 	bool hasVertices() const;
 	bool hasFaces() const;
@@ -85,7 +85,7 @@ public:
 	void pushTextureFileName(const std::string& tn);
 
 	void setInfo(
-		const io::FileMeshInfo&  info,
+		const FileMeshInfo&  info,
 		std::vector<std::string> textureFiles = std::vector<std::string>(),
 		bool                     binary       = true);
 

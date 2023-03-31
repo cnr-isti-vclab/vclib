@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -251,7 +251,7 @@ typename HalfEdgeContainer<T>::ConstHalfEdgeIterator HalfEdgeContainer<T>::halfE
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<HalfEdgeConcept T>
-typename HalfEdgeContainer<T>::HalfEdgeRangeIterator
+typename HalfEdgeContainer<T>::HalfEdgeView
 HalfEdgeContainer<T>::halfEdges(bool jumpDeleted)
 {
 	return Base::elements(jumpDeleted);
@@ -279,7 +279,7 @@ HalfEdgeContainer<T>::halfEdges(bool jumpDeleted)
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<HalfEdgeConcept T>
-typename HalfEdgeContainer<T>::ConstHalfEdgeRangeIterator
+typename HalfEdgeContainer<T>::ConstHalfEdgeView
 HalfEdgeContainer<T>::halfEdges(bool jumpDeleted) const
 {
 	return Base::elements(jumpDeleted);
@@ -325,7 +325,7 @@ void HalfEdgeContainer<T>::disableAllPerHalfEdgeOptionalComponents()
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const requires hedge::HasOptionalColor<T>
 {
-	return Base::optionalVec.isColorEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ColorComponent>();
 }
 
 /**
@@ -336,7 +336,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const requires hedge::Has
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>
 {
-	Base::optionalVec.enableColor(halfEdgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -347,7 +347,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeColor() requires hedge::HasOptionalC
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>
 {
-	Base::optionalVec.disableColor();
+	return Base::template disableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -360,7 +360,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeColor() requires hedge::HasOptional
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const requires hedge::HasOptionalMark<T>
 {
-	return Base::optionalVec.isMarkEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::MarkComponent>();
 }
 
 /**
@@ -371,7 +371,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const requires hedge::HasO
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>
 {
-	Base::optionalVec.enableMark(halfEdgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**
@@ -382,7 +382,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeMark() requires hedge::HasOptionalMa
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>
 {
-	Base::optionalVec.disableMark();
+	return Base::template disableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**
@@ -395,7 +395,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeMark() requires hedge::HasOptionalM
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeScalarEnabled() const requires hedge::HasOptionalScalar<T>
 {
-	return Base::optionalVec.isScalarEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
 }
 /**
  * @brief Enables the Optional Scalar of the halfedge.
@@ -405,7 +405,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeScalarEnabled() const requires hedge::Ha
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>
 {
-	Base::optionalVec.enableScalar(halfEdgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -416,7 +416,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeScalar() requires hedge::HasOptional
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>
 {
-	Base::optionalVec.disableScalar();
+	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -429,7 +429,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeScalar() requires hedge::HasOptiona
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::HasOptionalTexCoord<T>
 {
-	return Base::optionalVec.isTexCoordEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::TexCoordComponent>();
 }
 /**
  * @brief Enables the Optional TexCoord of the halfedge.
@@ -439,7 +439,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
 {
-	Base::optionalVec.enableTexCoord(halfEdgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::TexCoordComponent>();
 }
 
 /**
@@ -450,7 +450,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOption
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
 {
-	Base::optionalVec.disableTexCoord();
+	return Base::template disableOptionalComponent<typename T::TexCoordComponent>();
 }
 
 /**
@@ -466,7 +466,7 @@ template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(
 	const std::string& name) const requires hedge::HasCustomComponents<T>
 {
-	return Base::optionalVec.componentExists(name);
+	return Base::ccVecMap.componentExists(name);
 }
 
 /**
@@ -481,7 +481,7 @@ template<HalfEdgeConcept T>
 std::vector<std::string> HalfEdgeContainer<T>::getAllPerHalfEdgeCustomComponentNames()
 	const requires hedge::HasCustomComponents<T>
 {
-	return Base::optionalVec.allComponentNames();
+	return Base::ccVecMap.allComponentNames();
 }
 
 /**
@@ -506,7 +506,7 @@ template<typename K>
 bool HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(
 	const std::string& name) const requires hedge::HasCustomComponents<T>
 {
-	return Base::optionalVec.template isComponentOfType<K>(name);
+	return Base::ccVecMap.template isComponentOfType<K>(name);
 }
 
 /**
@@ -529,7 +529,7 @@ template<typename K>
 std::vector<std::string> HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentNamesOfType()
 	const requires hedge::HasCustomComponents<T>
 {
-	return Base::optionalVec.template allComponentNamesOfType<K>();
+	return Base::ccVecMap.template allComponentNamesOfType<K>();
 }
 
 /**
@@ -545,7 +545,7 @@ template<typename K>
 void HalfEdgeContainer<T>::addPerHalfEdgeCustomComponent(const std::string& name)
 	requires hedge::HasCustomComponents<T>
 {
-	Base::optionalVec.template addNewComponent<K>(name, halfEdgeContainerSize());
+	Base::ccVecMap.template addNewComponent<K>(name, halfEdgeContainerSize());
 }
 
 /**
@@ -561,7 +561,7 @@ template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(
 	const std::string& name) requires hedge::HasCustomComponents<T>
 {
-	Base::optionalVec.deleteComponent(name);
+	Base::ccVecMap.deleteComponent(name);
 }
 
 /**
@@ -595,7 +595,7 @@ template<typename K>
 CustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(
 	const std::string& name) requires hedge::HasCustomComponents<T>
 {
-	std::vector<std::any>&         cc = Base::optionalVec.template componentVector<K>(name);
+	std::vector<std::any>&         cc = Base::ccVecMap.template componentVector<K>(name);
 	CustomComponentVectorHandle<K> v(cc);
 	return v;
 }
@@ -633,102 +633,9 @@ template<typename K>
 ConstCustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(
 	const std::string& name) const requires hedge::HasCustomComponents<T>
 {
-	const std::vector<std::any>&        cc = Base::optionalVec.template componentVector<K>(name);
+	const std::vector<std::any>&        cc = Base::ccVecMap.template componentVector<K>(name);
 	ConstCustomComponentVectorHandle<K> v(cc);
 	return cc;
-}
-
-template<HalfEdgeConcept T>
-uint HalfEdgeContainer<T>::index(const HalfEdgeType *e) const
-{
-	return Base::index(e);
-}
-
-template<HalfEdgeConcept T>
-void HalfEdgeContainer<T>::clearHalfEdges()
-{
-	Base::clearElements();
-}
-
-template<HalfEdgeConcept T>
-uint HalfEdgeContainer<T>::addHalfEdge()
-{
-	return Base::addElement();
-}
-
-template<HalfEdgeConcept T>
-uint HalfEdgeContainer<T>::addHalfEdges(uint nEdges)
-{
-	return Base::addElements(nEdges);
-}
-
-template<HalfEdgeConcept T>
-void HalfEdgeContainer<T>::reserveHalfEdges(uint size)
-{
-	Base::reserveElements(size);
-}
-
-template<HalfEdgeConcept T>
-std::vector<int> HalfEdgeContainer<T>::compactHalfEdges()
-{
-	return Base::compactElements();
-}
-
-template<HalfEdgeConcept T>
-template<typename Mesh>
-void HalfEdgeContainer<T>::enableOptionalComponentsOf(const Mesh &m)
-{
-	// if half edges are enabled in the other Mesh
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
-		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
-
-		Base::enableOptionalComponentsOf((const MHalfEdgeContainer&)m);
-	}
-}
-
-template<HalfEdgeConcept T>
-template<typename Mesh>
-void HalfEdgeContainer<T>::importFrom(const Mesh &m)
-{
-	// if half edges are enabled in the other Mesh
-	if constexpr (mesh::HasHalfEdgeContainer<Mesh>) {
-		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
-
-		Base::importFrom((const MHalfEdgeContainer&)m);
-	}
-}
-
-template<HalfEdgeConcept T>
-template<typename Mesh, typename Vertex>
-void HalfEdgeContainer<T>::importVertexReferencesFrom(const Mesh &m, Vertex *base)
-{
-	if constexpr (HasVertexContainer<Mesh> && HasHalfEdgeContainer<Mesh>) {
-		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
-
-		Base::importVertexReferencesFrom((const MHalfEdgeContainer&)m, base, &m.vertex(0));
-	}
-}
-
-template<HalfEdgeConcept T>
-template<typename Mesh, typename Face>
-void HalfEdgeContainer<T>::importFaceReferencesFrom(const Mesh &m, Face *base)
-{
-	if constexpr (HasFaceContainer<Mesh> && HasHalfEdgeContainer<Mesh>) {
-		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
-
-		Base::importFaceReferencesFrom((const MHalfEdgeContainer&)m, base, &m.face(0));
-	}
-}
-
-template<HalfEdgeConcept T>
-template<typename Mesh>
-void HalfEdgeContainer<T>::importHalfEdgeReferencesFrom(const Mesh &m, T *base)
-{
-	if constexpr (HasHalfEdgeContainer<Mesh>) {
-		using MHalfEdgeContainer = typename Mesh::HalfEdgeContainer::Base;
-
-		Base::importHalfEdgeReferencesFrom((const MHalfEdgeContainer&) m, base, &m.halfEdge(0));
-	}
 }
 
 } // namespace vcl::mesh

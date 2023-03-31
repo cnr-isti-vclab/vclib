@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,8 +23,8 @@
 
 #include "mesh_render_buffers.h"
 
-#include <vclib/algorithms/polygon.h>
-#include <vclib/mesh/mesh_algorithms.h>
+#include <vclib/algorithm/polygon.h>
+#include <vclib/math/min_max.h>
 
 namespace vcl {
 
@@ -168,8 +168,8 @@ void MeshRenderBuffers<MeshType>::fillVertices(const MeshType &m)
 
 	// if mesh has bounding box, I set it anyway from its bb
 	if constexpr(vcl::HasBoundingBox<MeshType>) {
-		bbmin = m.boundingBox().min;
-		bbmax = m.boundingBox().max;
+		bbmin = m.boundingBox().min();
+		bbmax = m.boundingBox().max();
 	}
 	if (bbToInitialize) { // if I need to compute bb, I initialize to invalid numbers
 		bbmin = Point3d(
@@ -279,7 +279,7 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 					vinds.push_back({0, 1, 2});
 				}
 				else {
-					std::vector<uint> vind = vcl::mesh::earCut(f);
+					std::vector<uint> vind = vcl::earCut(f);
 					for (uint vi = 0; vi < vind.size(); vi+=3) {
 						triPolyMap.insert(nt + vi/3, m.faceIndexIfCompact(m.index(f)));
 						tris.push_back(m.vertexIndexIfCompact(m.index(f.vertex(vind[vi + 0]))));
@@ -307,7 +307,6 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 			}
 		}
 
-		uint i = 0;
 		for (const auto& f : m.faces()) {
 			if constexpr(vcl::HasPerFaceNormal<MeshType>) {
 				if (vcl::isPerFaceNormalEnabled(m)) {
@@ -326,11 +325,11 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 					}
 				}
 				else {
-					fillFaceNromals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
+					fillFaceNormals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
 				}
 			}
 			else {
-				fillFaceNromals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
+				fillFaceNormals(f, vcl::HasTriangles<MeshType>, m.faceIndexIfCompact(m.index(f)));
 			}
 
 			if constexpr(vcl::HasPerFaceColor<MeshType>) {
@@ -377,8 +376,6 @@ void MeshRenderBuffers<MeshType>::fillTriangles(const MeshType &m)
 					}
 				}
 			}
-
-			i += 3;
 		}
 	}
 }
@@ -408,17 +405,16 @@ void MeshRenderBuffers<MeshType>::fillMeshAttribs(const MeshType &m)
 
 template<MeshConcept MeshType>
 template<typename FaceType>
-void MeshRenderBuffers<MeshType>::fillFaceNromals(const FaceType &f, bool triangle, uint fi)
+void MeshRenderBuffers<MeshType>::fillFaceNormals(const FaceType &f, bool triangle, uint fi)
 {
 	using NormalType = typename FaceType::VertexType::CoordType;
+	NormalType n = vcl::faceNormal(f);
 	if (triangle) {
-		NormalType n = vcl::triangleNormal(f);
 		tNormals.push_back(n.x());
 		tNormals.push_back(n.y());
 		tNormals.push_back(n.z());
 	}
 	else {
-		NormalType n = vcl::polygonNormal(f);
 		for (uint i = 0; i < triPolyMap.triangleNumber(fi); i++) {
 			tNormals.push_back(n.x());
 			tNormals.push_back(n.y());

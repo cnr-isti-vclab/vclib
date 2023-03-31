@@ -138,64 +138,6 @@ Point3<Scalar> Plane<Scalar, NORM>::mirrorPoint(const Point3<Scalar>& p) const
 	return mirr;
 }
 
-/**
- * @brief Given a point, returns the *signed* distance between the point and this plane.
- * @param p
- * @return
- */
-template<typename Scalar, bool NORM>
-Scalar Plane<Scalar, NORM>::dist(const Point3<Scalar>& p) const
-{
-	return dir.dot(p) - off;
-}
-
-/**
- * @brief Computes the intersectin between this plane and a segment. Returns `true` if the
- * intersection exists, false otherwise.
- *
- * @param[out] intersection: the resulting intersection between this plane and `s`.
- * @param[in] s: the segment on which compute the intersection.
- * @return `true` if the intersection exists, false otherwise.
- */
-template<typename Scalar, bool NORM>
-bool Plane<Scalar, NORM>::segmentIntersection(
-	Point3<Scalar>&                                  intersection,
-	const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const
-{
-	ScalarType p1_proj = s.second * dir - off;
-	ScalarType p0_proj = s.first * dir - off;
-	if ( (p1_proj>0)-(p0_proj<0))
-		return false;
-
-	if(p0_proj == p1_proj) return false;
-
-	// check that we perform the computation in a way that is independent with v0 v1 swaps
-	if(p0_proj < p1_proj)
-		intersection =  s.first + (s.second - s.first) * fabs(p0_proj/(p1_proj-p0_proj));
-	if(p0_proj > p1_proj)
-		intersection =  s.second + (s.first - s.second) * fabs(p1_proj/(p0_proj-p1_proj));
-
-	return true;
-}
-
-/**
- * @brief Computes and returns the intersection between this plane and a segment.
- * If the segment does not exist, a vcl::NoIntersectionException will be thrown.
- *
- * @param[in] s: the segment on which compute the intersection.
- * @return The point intersection between this plane and `s`.
- */
-template<typename Scalar, bool NORM>
-Point3<Scalar> Plane<Scalar, NORM>::segmentIntersection(
-	const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const
-{
-	Point3<Scalar> res;
-	bool b = segmentIntersection(res, s);
-	if (!b)
-		throw vcl::NoIntersectionException("Plane and Segment");
-	return res;
-}
-
 template<typename Scalar, bool NORM>
 bool Plane<Scalar, NORM>::operator==(const Plane& p) const
 {
@@ -207,5 +149,8 @@ bool Plane<Scalar, NORM>::operator!=(const Plane& p) const
 {
 	return !(*this == p);
 }
+
+static_assert(PlaneConcept<Planef>, "Planef does not satisfy the PlaneConcept");
+static_assert(PlaneConcept<Planed>, "Planed does not satisfy the PlaneConcept");
 
 } // namespace vcl

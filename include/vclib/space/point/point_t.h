@@ -29,8 +29,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "point_concept.h"
-
+#include <vclib/concept/space/point.h>
 #include <vclib/math/base.h>
 
 namespace vcl {
@@ -39,15 +38,15 @@ namespace vcl {
  * @brief The Point class represents an N-dimensional point containing
  * N scalar values.
  */
-template<typename Scalar, int N>
+template<typename Scalar, uint N>
 class Point
 {
-	template<typename S, int M>
+	template<typename S, uint M>
 	friend class Point;
 
 public:
 	using ScalarType      = Scalar;
-	static const int DIM  = N;
+	static const uint DIM  = N;
 
 	Point() = default; // default empty constructor
 
@@ -134,21 +133,21 @@ public:
 	Point& operator=(const Eigen::Matrix<Scalar, 1, N>& v);
 
 	/// @private
-	template<typename S, int M>
+	template<typename S, uint M>
 	friend std::ostream& operator<<(std::ostream& out, const Point<S, M>& p);
 
 protected:
-	Eigen::Matrix<Scalar, 1, N> p;
+	Eigen::Matrix<Scalar, 1, N> p = Eigen::Matrix<Scalar, 1, N>::Zero();
 };
 
-template<typename Scalar, int N>
+template<typename Scalar,  uint N>
 std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1);
 
 } // namespace vcl
 
 // inject vcl::Point hash function in std namespace
 namespace std {
-template <typename Scalar, int N>
+template <typename Scalar, uint N>
 struct hash<vcl::Point<Scalar, N> >
 {
 	size_t operator()(const vcl::Point<Scalar, N>& id) const noexcept;

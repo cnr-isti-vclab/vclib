@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,7 +24,9 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_H
 #define VCL_MESH_ELEMENTS_EDGE_H
 
-#include "edge_concept.h"
+#include <vclib/concept/mesh/element/edge.h>
+
+#include "element.h"
 
 namespace vcl::mesh {
 
@@ -32,27 +34,30 @@ namespace vcl::mesh {
 template<EdgeConcept>
 class EdgeContainer;
 
-template<typename>
-class ElementContainer;
-
 } // namespace vcl::mesh
 
 namespace vcl {
 
-template<typename... Args>
-class Edge : public Args...
+template<typename MeshType, typename... Args>
+class Edge : public Element<MeshType, Args...>
 {
 	template<EdgeConcept>
 	friend class mesh::EdgeContainer;
 
-	template<typename>
-	friend class mesh::ElementContainer;
+	// Vertex references component of the Edge
+	using VRefs = typename Edge::VertexReferences;
 
 public:
-	Edge();
+	static const uint ELEMENT_TYPE = EDGE;
 
-	template<typename Element>
-	void importFrom(const Element& e);
+	using VertexType = typename VRefs::VertexType;
+
+	uint index() const;
+};
+
+template<typename MeshType, typename... Args>
+class Edge<MeshType, TypeWrapper<Args...>> : public Edge<MeshType, Args...>
+{
 };
 
 } // namespace vcl

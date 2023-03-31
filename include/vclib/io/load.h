@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,27 +24,39 @@
 #ifndef VCL_IO_LOAD_H
 #define VCL_IO_LOAD_H
 
-#include "load_obj.h"
-#include "load_off.h"
-#include "load_ply.h"
+#include "obj/load.h"
+#include "off/load.h"
+#include "ply/load.h"
+#include "stl/load.h"
 
-namespace vcl::io {
+namespace vcl {
 
-template<MeshConcept MeshType>
-MeshType load(const std::string& filename, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType load(
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
-MeshType
-load(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType load(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
-void load(MeshType& m, const std::string& filename, bool enableOptionalComponents = true);
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void load(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true);
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void load(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 
 } // namespace vcl::io

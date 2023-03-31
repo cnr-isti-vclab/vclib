@@ -80,9 +80,9 @@ void Logger<Stream>::startNewTask(double fromPerc, double toPerc, const std::str
 	assert(fromPerc >= 0);
 	assert(toPerc <= 100);
 	std::pair<double, double> newP;
-	newP.first = stack.top().first * (fromPerc / 100);
-	newP.second = stack.top().second * (toPerc / 100);
-	progress = newP.first;
+	newP.first = stack.top().first + (stack.top().second - stack.top().first) * (fromPerc / 100);
+	newP.second = (stack.top().second - stack.top().first) * (toPerc / 100);
+	globalPercProgress = newP.first;
 	stack.push(newP);
 	updateStep();
 }
@@ -90,7 +90,7 @@ void Logger<Stream>::startNewTask(double fromPerc, double toPerc, const std::str
 template<typename Stream>
 void Logger<Stream>::endTask(const std::string& action)
 {
-	progress = stack.top().second;
+	globalPercProgress = stack.top().second;
 	if (stack.size() > 1) {
 		stack.pop();
 		updateStep();
@@ -103,7 +103,7 @@ template<typename Stream>
 double Logger<Stream>::percentage() const
 {
 	double k = std::pow(10, percPrecision);
-	uint c = progress * k;
+	uint c = globalPercProgress * k;
 	return c / k;
 }
 
@@ -111,7 +111,7 @@ template<typename Stream>
 void Logger<Stream>::setPercentage(uint newPerc)
 {
 	if(newPerc >= 0 && newPerc <= 100) {
-		progress = step * newPerc;
+		globalPercProgress = (stack.top().first) + step * newPerc;
 	}
 }
 
@@ -140,6 +140,128 @@ void Logger<Stream>::log(uint perc, LogLevel lvl, const std::string& msg)
 		setPercentage(perc);
 
 	printLine(msg, lvl);
+}
+
+/**
+ * @brief Allows to easily manage progresses with the logger, along with the `progress` and
+ * `endProgress` member functions.
+ *
+ * This logger functionality should be used when processing a loop having a fixed size, with
+ * regular prints of the progress.
+ *
+ * This member function starts a new progress.
+ * With the default arguments, will print a message from 0% to 100%, every 10%.
+ *
+ * The typical usage is the following:
+ *
+ * @code{.cpp}
+ * uint s = vec.size();
+ * log.startProgress("Computing...", s);
+ *
+ * for (uint i = 0; i < vec.size(); ++i) {
+ *     // make computations
+ *     log.progress(i); // will print only every 10% of progress
+ * }
+ * log.endProgress();
+ *
+ * @endcode
+ *
+ * @param[in] msg: the message that will be printed during the progress
+ * @param[in] progressSize: the number of iterations made during the progress
+ * @param[in,opt] percPrintProgress: interval of percentage on which print a progress message,
+ *                default 10%
+ * @param[in,opt] startPerc: start percentage of the progress, default 0%
+ * @param[in,opt] endPerc: end percentage of the progress, default 100%
+ */
+template<typename Stream>
+void Logger<Stream>::startProgress(
+	const std::string& msg,
+	uint               progressSize,
+	uint               percPrintProgress,
+	uint               startPerc,
+	uint               endPerc)
+{
+	assert(percPrintProgress > 0);
+	assert((endPerc - startPerc) > 0);
+	isProgressActive = true;
+	progressMessage = msg;
+	progressPerc = startPerc;
+	progressPercStep = percPrintProgress;
+	progressStep = progressSize / ((endPerc - startPerc) / percPrintProgress - 1);
+	if (progressStep == 0)
+		progressStep = progressSize;
+	lastProgress = 0;
+}
+
+/**
+ * @brief Allows to easily manage progresses with the logger, along with the `startProgress` and
+ * `progress` member functions.
+ *
+ * This logger functionality should be used when processing a loop having a fixed size, with
+ * regular prints of the progress.
+ *
+ * This member function ends the current progress.
+ *
+ * The typical usage is the following:
+ *
+ * @code{.cpp}
+ * uint s = vec.size();
+ * log.startProgress("Computing...", s);
+ *
+ * for (uint i = 0; i < vec.size(); ++i) {
+ *     // make computations
+ *     log.progress(i); // will print only every 10% of progress
+ * }
+ * log.endProgress();
+ *
+ * @endcode
+ */
+template<typename Stream>
+void Logger<Stream>::endProgress()
+{
+	isProgressActive = false;
+}
+
+/**
+ * @brief Allows to easily manage progresses with the logger, along with the `startProgress` and
+ * `endProgress` member functions.
+ *
+ * This logger functionality should be used when processing a loop having a fixed size, with
+ * regular prints of the progress.
+ *
+ * This member functions increments the current progress. Only if the current percentage reaches a
+ * new step percentage (set in the `startProgress` member function), a message will be printed by
+ * the logger.
+ *
+ * The typical usage is the following:
+ *
+ * @code{.cpp}
+ * uint s = vec.size();
+ * log.startProgress("Computing...", s);
+ *
+ * for (uint i = 0; i < vec.size(); ++i) {
+ *     // make computations
+ *     log.progress(i); // will print only every 10% of progress
+ * }
+ * log.endProgress();
+ *
+ * @endcode
+ *
+ * @param[in] n: iteration number of the current progress. It must be less than the `progressSize`
+ * argument of the `startProgress` member function.
+ */
+template<typename Stream>
+void Logger<Stream>::progress(uint n)
+{
+	mutex.lock();
+	assert(isProgressActive);
+	uint progress = n / progressStep;
+	if (lastProgress < progress) {
+		progressPerc = progress * progressPercStep;
+		log(progressPerc, progressMessage);
+		lastProgress = progress;
+	}
+	mutex.unlock();
 }
 
 template<typename Stream>

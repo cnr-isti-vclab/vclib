@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -25,16 +25,10 @@
 
 namespace vcl {
 
-template<typename... Args>
-Vertex<Args...>::Vertex()
+template<typename MeshType, typename... Args>
+uint Vertex<MeshType, Args...>::index() const
 {
-}
-
-template<typename... Args>
-template<typename Element>
-void Vertex<Args...>::importFrom(const Element& v)
-{
-	(Args::importFrom(v), ...);
+	return Element<MeshType, Args...>::template index<typename MeshType::VertexType>();
 }
 
 } // namespace vcl

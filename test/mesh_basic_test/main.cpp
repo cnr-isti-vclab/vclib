@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,16 +23,15 @@
 
 #include <iostream>
 
-#include <vclib/tri_mesh.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/algorithms/create/tetrahedron.h>
+#include <vclib/mesh.h>
+#include <vclib/load_save.h>
+#include <vclib/algorithm.h>
 
 class MyVertex :
 		public vcl::Vertex<
 			vcl::vert::BitFlags,
 			vcl::vert::Coordinate3d,
-			vcl::vert::OptionalNormal3f<MyVertex>,
+			vcl::vert::Normal3f,
 			vcl::vert::Color>
 {
 };

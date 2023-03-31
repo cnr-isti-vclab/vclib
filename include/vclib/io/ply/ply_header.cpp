@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -44,7 +44,7 @@ inline PlyHeader::PlyHeader() :
 
 PlyHeader::PlyHeader(
 	Format                   format,
-	const io::FileMeshInfo&  info,
+	const FileMeshInfo&  info,
 	std::vector<std::string> textureFiles) :
 		_format(format),
 		valid(true),
@@ -95,7 +95,7 @@ inline PlyHeader::PlyHeader(const std::string& filename, std::ifstream& file) : 
 									if (it != textName.end()) {
 										uint pos = it-textName.begin();
 										std::string fn =
-											vcl::fileInfo::filenameWithoutExtension(filename);
+											vcl::FileInfo::filenameWithoutExtension(filename);
 										textName =
 											textName.substr(0, pos) +
 											fn + textName.substr(pos+6, textName.size());
@@ -169,9 +169,9 @@ inline ply::Format PlyHeader::format() const
 	return _format;
 }
 
-inline io::FileMeshInfo PlyHeader::getInfo() const
+inline FileMeshInfo PlyHeader::getInfo() const
 {
-	io::FileMeshInfo mod;
+	FileMeshInfo mod;
 	// x, y, z, nx, ny, nz, red, green, blue, alpha, vertex_indices
 
 	if (vertElemPos >= 0) {
@@ -351,7 +351,7 @@ inline void PlyHeader::pushTextureFileName(const std::string& tn)
 }
 
 inline void PlyHeader::setInfo(
-	const io::FileMeshInfo& info,
+	const FileMeshInfo& info,
 	std::vector<std::string> textureFileNames,
 	bool binary)
 {

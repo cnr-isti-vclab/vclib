@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -60,9 +60,6 @@ public:
 	void mirror(bool horizontal = false, bool vertical = true);
 
 private:
-	unsigned char* dataImage = nullptr;
-	int h = 0, w = 0;
-
 	vcl::Array2<uint32_t> img;
 };
 

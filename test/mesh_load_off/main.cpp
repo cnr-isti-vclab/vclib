@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,12 +23,12 @@
 
 #include <iostream>
 
-#include <vclib/tri_mesh.h>
-#include <vclib/io/load_off.h>
+#include <vclib/mesh.h>
+#include <vclib/load_save.h>
 
 int main()
 {
-	vcl::io::FileMeshInfo loadedInfo;
+	vcl::FileMeshInfo loadedInfo;
 	vcl::TriMesh m = vcl::io::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.off", loadedInfo);
 
 	assert(loadedInfo.hasVertices());

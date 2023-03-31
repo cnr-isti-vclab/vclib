@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithm.h>
 
 int main()
 {
@@ -37,7 +37,7 @@ int main()
 		vcl::Point2d(0, 3),
 		vcl::Point2d(0, 0)};
 
-	std::vector<uint> tri = vcl::earCut(polygon);
+	std::vector<uint> tri = vcl::Polygon<vcl::Point2d>::earCut(polygon.begin(), polygon.end());
 
 	std::cerr << "Triangle indices: \n";
 	for (uint i = 0; i < tri.size(); i+= 3){

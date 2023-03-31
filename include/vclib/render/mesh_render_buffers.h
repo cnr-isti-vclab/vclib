@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -26,7 +26,7 @@
 
 #include <vclib/image/image.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/mesh_utils/tri_poly_index_bimap.h>
+#include <vclib/mesh/utils/tri_poly_index_bimap.h>
 
 #include "mesh_render_settings.h"
 
@@ -84,7 +84,7 @@ private:
 	void fillMeshAttribs(const MeshType& m);
 
 	template<typename FaceType>
-	void fillFaceNromals(const FaceType& f, bool triangle, uint fi);
+	void fillFaceNormals(const FaceType& f, bool triangle, uint fi);
 };
 
 } // namespace vcl

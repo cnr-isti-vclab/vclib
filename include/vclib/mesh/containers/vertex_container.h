@@ -24,8 +24,9 @@
 #ifndef VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
 #define VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
 
-#include <vclib/mesh/components/vertical/vectors/custom_component_vector_handle.h>
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/vertex.h>
+#include <vclib/mesh/elements/vertex_components.h>
 
 #include "element_container.h"
 
@@ -42,7 +43,7 @@ namespace vcl::mesh {
  * This container can be templated on a type that satisfies the VertexConcept concept.
  */
 template<vcl::VertexConcept T>
-class VertexContainer : protected ElementContainer<T>
+class VertexContainer : public ElementContainer<T>
 {
 	template <VertexConcept U>
 	friend class VertexContainer;
@@ -51,12 +52,12 @@ class VertexContainer : protected ElementContainer<T>
 	using Base                = ElementContainer<T>;
 
 public:
-	using Vertex                   = T;
-	using VertexType               = T;
-	using VertexIterator           = typename Base::ElementIterator;
-	using ConstVertexIterator      = typename Base::ConstElementIterator;
-	using VertexRangeIterator      = typename Base::ElementRangeIterator;
-	using ConstVertexRangeIterator = typename Base::ConstElementRangeIterator;
+	using Vertex              = T;
+	using VertexType          = T;
+	using VertexIterator      = typename Base::ElementIterator;
+	using ConstVertexIterator = typename Base::ConstElementIterator;
+	using VertexView          = typename Base::ElementView;
+	using ConstVertexView     = typename Base::ConstElementView;
 
 	VertexContainer();
 
@@ -73,12 +74,12 @@ public:
 	uint             vertexIndexIfCompact(uint id) const;
 	std::vector<int> vertexCompactIndices() const;
 
-	VertexIterator           vertexBegin(bool jumpDeleted = true);
-	VertexIterator           vertexEnd();
-	ConstVertexIterator      vertexBegin(bool jumpDeleted = true) const;
-	ConstVertexIterator      vertexEnd() const;
-	VertexRangeIterator      vertices(bool jumpDeleted = true);
-	ConstVertexRangeIterator vertices(bool jumpDeleted = true) const;
+	VertexIterator      vertexBegin(bool jumpDeleted = true);
+	VertexIterator      vertexEnd();
+	ConstVertexIterator vertexBegin(bool jumpDeleted = true) const;
+	ConstVertexIterator vertexEnd() const;
+	VertexView          vertices(bool jumpDeleted = true);
+	ConstVertexView     vertices(bool jumpDeleted = true) const;
 
 	void enableAllPerVertexOptionalComponents();
 	void disableAllPerVertexOptionalComponents();
@@ -157,35 +158,6 @@ public:
 	template<typename K>
 	ConstCustomComponentVectorHandle<K> getPerVertexCustomComponentVectorHandle(
 		const std::string& name) const requires vert::HasCustomComponents<T>;
-
-protected:
-	uint index(const VertexType* v) const;
-
-	void clearVertices();
-
-	uint addVertex();
-	uint addVertices(uint nVertices);
-	void reserveVertices(uint size);
-
-	std::vector<int> compactVertices();
-
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
-
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
-
-	template<typename Mesh>
-	void importVertexReferencesFrom(const Mesh& m, T* base);
-
-	template<typename Mesh, typename Face>
-	void importFaceReferencesFrom(const Mesh& m, Face* base);
-
-	template<typename Mesh, typename Edge>
-	void importEdgeReferencesFrom(const Mesh& m, Edge* base);
-
-	template<typename Mesh, typename HalfEdge>
-	void importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* base);
 };
 
 } // namespace vcl::mesh

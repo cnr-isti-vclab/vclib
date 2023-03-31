@@ -24,15 +24,16 @@
 #ifndef VCL_MESH_CONTAINER_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINER_EDGE_CONTAINER_H
 
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/edge.h>
+#include <vclib/mesh/elements/edge_components.h>
 
-#include "../components/vertical/vectors/custom_component_vector_handle.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
 
 template<EdgeConcept T>
-class EdgeContainer : protected ElementContainer<T>
+class EdgeContainer : public ElementContainer<T>
 {
 	template <EdgeConcept U>
 	friend class EdgeContainer;
@@ -45,8 +46,8 @@ public:
 	using EdgeType          = T;
 	using EdgeIterator      = typename Base::ElementIterator;
 	using ConstEdgeIterator = typename Base::ConstElementIterator;
-	using EdgeRangeIterator = typename Base::ElementRangeIterator;
-	using ConstEdgeRangeIterator = typename Base::ConstElementRangeIterator;
+	using EdgeView          = typename Base::ElementView;
+	using ConstEdgeView     = typename Base::ConstElementView;
 
 	EdgeContainer();
 
@@ -63,12 +64,12 @@ public:
 	uint             edgeIndexIfCompact(uint id) const;
 	std::vector<int> edgeCompactIndices() const;
 
-	EdgeIterator           edgeBegin(bool jumpDeleted = true);
-	EdgeIterator           edgeEnd();
-	ConstEdgeIterator      edgeBegin(bool jumpDeleted = true) const;
-	ConstEdgeIterator      edgeEnd() const;
-	EdgeRangeIterator      edges(bool jumpDeleted = true);
-	ConstEdgeRangeIterator edges(bool jumpDeleted = true) const;
+	EdgeIterator      edgeBegin(bool jumpDeleted = true);
+	EdgeIterator      edgeEnd();
+	ConstEdgeIterator edgeBegin(bool jumpDeleted = true) const;
+	ConstEdgeIterator edgeEnd() const;
+	EdgeView          edges(bool jumpDeleted = true);
+	ConstEdgeView     edges(bool jumpDeleted = true) const;
 
 	void enableAllPerEdgeOptionalComponents();
 	void disableAllPerEdgeOptionalComponents();
@@ -128,30 +129,16 @@ public:
 		const std::string& name) const requires edge::HasCustomComponents<T>;
 
 protected:
-	uint index(const EdgeType* e) const;
+	template<typename MeshType>
+	uint addEdge(MeshType* parentMesh);
 
-	void clearEdges();
+	template<typename MeshType>
+	uint addEdges(uint nEdges, MeshType* parentMesh);
 
-	uint addEdge();
-	uint addEdges(uint nEdges);
-	void reserveEdges(uint size);
+	template<typename MeshType>
+	void reserveEdges(uint size, MeshType* parentMesh);
 
 	std::vector<int> compactEdges();
-
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
-
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
-
-	template<typename Mesh, typename Vertex>
-	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
-
-	template<typename Mesh, typename Face>
-	void importFaceReferencesFrom(const Mesh& m, Face* base);
-
-	template<typename Mesh>
-	void importEdgeReferencesFrom(const Mesh& m, T* base);
 };
 
 } // namespace vcl::mesh

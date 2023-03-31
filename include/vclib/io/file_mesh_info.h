@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -32,7 +32,7 @@
 
 #include <vclib/mesh/requirements.h>
 
-namespace vcl::io {
+namespace vcl {
 
 /**
  * @brief A simple class that allows to store which components has been loaded or are going
@@ -135,7 +135,7 @@ private:
 	static PropType getPropType();
 };
 
-} // namespace vcl::io
+} // namespace vcl
 
 #include "file_mesh_info.cpp"
 

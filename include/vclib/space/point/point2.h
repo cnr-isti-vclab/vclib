@@ -40,9 +40,9 @@ using Point2f = Point2<float>;
 using Point2d = Point2<double>;
 
 // makes sure that Point2 classes satisfy PointConcept
-static_assert(PointConcept<Point2i>, "Point2i is not a valid Point");
-static_assert(PointConcept<Point2f>, "Point2f is not a valid Point");
-static_assert(PointConcept<Point2d>, "Point2d is not a valid Point");
+static_assert(Point2Concept<Point2i>, "Point2i does not satisfy the Point2Concept");
+static_assert(Point2Concept<Point2f>, "Point2f does not satisfy the Point2Concept");
+static_assert(Point2Concept<Point2d>, "Point2d does not satisfy the Point2Concept");
 
 } // namespace vcl
 

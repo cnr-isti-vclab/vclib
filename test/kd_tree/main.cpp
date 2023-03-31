@@ -23,9 +23,9 @@
 
 #include <iostream>
 
-#include <vclib/tri_mesh.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/space/spatial_data_structures.h>
+#include <vclib/mesh.h>
+#include <vclib/load_save.h>
+#include <vclib/space/kd_tree.h>
 
 #include <doctest/doctest.h>
 

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,11 +23,9 @@
 
 #include <iostream>
 
-#include <vclib/dcel_mesh.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/algorithms/create/tetrahedron.h>
-#include <vclib/io/save.h>
-#include <vclib/io/load.h>
+#include <vclib/algorithm.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
 
 int main()
 {
@@ -62,7 +60,10 @@ int main()
 		}
 
 		vcl::DcelMesh t = vcl::createTetrahedron<vcl::DcelMesh>();
-		vcl::io::save(t, VCL_TEST_RESULTS_PATH "/tet_dcel.ply");
+		vcl::save(t, VCL_TEST_RESULTS_PATH "/tet_dcel.ply");
+
+		m = t;
+		vcl::save(m, VCL_TEST_RESULTS_PATH "/tet_copied_dcel.ply");
 
 		vcl::DcelMesh l = vcl::io::loadPly<vcl::DcelMesh>(VCL_TEST_DATA_PATH "/models/cube_tri.ply");
 

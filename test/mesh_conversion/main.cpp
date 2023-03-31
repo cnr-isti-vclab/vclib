@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,10 +23,8 @@
 
 #include <iostream>
 
-#include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/poly_mesh.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
 #include <vclib/misc/timer.h>
 
 int main()
@@ -42,7 +40,7 @@ int main()
 
 	assert(pm.isPerFaceWedgeTexCoordsEnabled());
 
-	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
+	vcl::save(pm, VCL_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
 
 	pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
@@ -52,7 +50,7 @@ int main()
 	m.enableSameOptionalComponentsOf(pm);
 	m.importFrom(pm);
 
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/cube_from_poly.ply", false);
+	vcl::save(m, VCL_TEST_RESULTS_PATH "/cube_from_poly.ply", false);
 
 	return 0;
 }

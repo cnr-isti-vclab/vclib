@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,7 +24,7 @@
 #include "file_mesh_info.h"
 #include <vclib/mesh/requirements.h>
 
-namespace vcl::io {
+namespace vcl {
 
 inline FileMeshInfo::FileMeshInfo()
 {
@@ -357,7 +357,7 @@ FileMeshInfo FileMeshInfo::intersect(const FileMeshInfo& info) const
 {
 	FileMeshInfo res;
 	for (uint i = 0; i < NUM_MODES; ++i){
-		res.mode[i] = mode[i] & info.mode[i];
+		res.mode[i] = mode[i] && info.mode[i];
 		if (res.mode[i]){
 			res.modeTypes[i] = mode[i] ? modeTypes[i] : info.modeTypes[i];
 		}
@@ -391,4 +391,4 @@ FileMeshInfo::PropType FileMeshInfo::getPropType()
 	return UNKNOWN;
 }
 
-} // namespace vcl::io
+} // namespace vcl

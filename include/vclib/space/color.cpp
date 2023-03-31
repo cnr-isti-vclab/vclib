@@ -23,6 +23,8 @@
 
 #include "color.h"
 
+#include <vector>
+
 namespace vcl {
 
 /**
@@ -50,6 +52,11 @@ inline Color::Color(ColorRGBA cc)
  */
 inline Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) :
 		Point(red, green, blue, alpha)
+{
+}
+
+inline Color::Color(const Point4<uint8_t>& p) :
+		Point4<uint8_t>(p)
 {
 }
 
@@ -225,6 +232,34 @@ inline float Color::hsvHueF() const
 inline float Color::hsvSaturationF() const
 {
 	return (float) hsvSaturation() / 255;
+}
+
+/**
+ * @brief Converts the color to an unsigned short in R5G5B5 format.
+ *
+ * @return an unsigned short containing the converted color.
+ */
+inline unsigned short Color::toUnsignedR5G5B5() const
+{
+	unsigned short r = x()/8;
+	unsigned short g = y()/8;
+	unsigned short b = z()/8;
+	unsigned short res = r + g*32 + b*1024;
+	return res;
+}
+
+/**
+ * @brief Converts the color to an unsigned short in B5G5R5 format.
+ *
+ * @return an unsigned short containing the converted color.
+ */
+inline unsigned short Color::toUnsignedB5G5R5() const
+{
+	unsigned short r = x()/8;
+	unsigned short g = y()/8;
+	unsigned short b = z()/8;
+	unsigned short res = b + g*32 + r*1024;
+	return res;
 }
 
 /**
@@ -413,6 +448,46 @@ inline void Color::setRgbF(float red, float green, float blue, float alpha)
 inline void Color::setHsvF(float hf, float sf, float vf, float alpha)
 {
 	setHsv(hf * 255, sf * 255, vf * 255, alpha * 255);
+}
+
+/**
+ * Set the color values from an unsigned 5-5-5 RGB value.
+ *
+ * The input value is interpreted as follows:
+ * - The 5 least significant bits represent the red component.
+ * - The next 5 bits represent the green component.
+ * - The 5 most significant bits represent the blue component.
+ *
+ * Each color component is scaled from 0 to 255 by multiplying the value by 8.
+ *
+ * @param[in] val: The unsigned 5-5-5 RGB value to set.
+ */
+inline void Color::setFromUnsignedR5G5B5(unsigned short val)
+{
+	x() = val % 32 * 8;
+	y() = ((val / 32) % 32) * 8;
+	z() = ((val / 1024) % 32) * 8;
+	w() = 255;
+}
+
+/**
+ * Set the color values from an unsigned 5-5-5 BGR value.
+ *
+ * The input value is interpreted as follows:
+ * - The 5 least significant bits represent the blue component.
+ * - The next 5 bits represent the green component.
+ * - The 5 most significant bits represent the red component.
+ *
+ * Each color component is scaled from 0 to 255 by multiplying the value by 8.
+ *
+ * @param[in] val: The unsigned 5-5-5 BGR value to set.
+ */
+inline void Color::setFromUnsignedB5G5R5(unsigned short val)
+{
+	z() = val % 32 * 8;
+	y() = ((val / 32) % 32) * 8;
+	x() = ((val / 1024) % 32) * 8;
+	w() = 255;
 }
 
 /**

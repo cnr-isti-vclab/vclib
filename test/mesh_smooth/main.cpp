@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,11 +23,9 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/smooth.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/io/save_obj.h>
-#include <vclib/tri_mesh.h>
+#include <vclib/algorithm.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
 #include <vclib/misc/timer.h>
 
 int main()

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -64,7 +64,12 @@ uint DrawableObjectVectorFrame::selectedDrawableObject() const
 
 void DrawableObjectVectorFrame::on_listWidget_itemSelectionChanged()
 {
-	emit drawableObjectSelectionChanged(selectedDrawableObject());
+	if (ui->listWidget->selectedItems().size() > 0) {
+		emit drawableObjectSelectionChanged(selectedDrawableObject());
+	}
+	else {
+		ui->listWidget->item(0)->setSelected(true);
+	}
 }
 
 void DrawableObjectVectorFrame::updateDrawableVectorWidget()

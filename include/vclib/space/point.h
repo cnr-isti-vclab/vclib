@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -29,12 +29,6 @@
 #include "point/point4.h"
 
 namespace vcl {
-
-template<PointConcept PointType>
-PointType min(const PointType& p1, const PointType& p2);
-
-template<PointConcept PointType>
-PointType max(const PointType& p1, const PointType& p2);
 
 template<PointConcept PointType>
 auto outerProduct(const PointType& p1, const PointType& p2);

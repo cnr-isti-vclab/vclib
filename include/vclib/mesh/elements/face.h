@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,7 +24,12 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_H
 #define VCL_MESH_ELEMENTS_FACE_H
 
-#include "face_concept.h"
+#include <vclib/concept/mesh/element/face.h>
+#include <vclib/iterators/view.h>
+#include <vclib/mesh/iterators/component/coord_iterator.h>
+#include <vclib/space/tex_coord.h>
+
+#include "element.h"
 
 namespace vcl::mesh {
 
@@ -32,21 +37,15 @@ namespace vcl::mesh {
 template<FaceConcept>
 class FaceContainer;
 
-template<typename>
-class ElementContainer;
-
 } // namespace vcl::mesh
 
 namespace vcl {
 
-template<typename... Args>
-class Face : public Args...
+template<typename MeshType, typename... Args>
+class Face : public Element<MeshType, Args...>
 {
 	template<FaceConcept>
 	friend class mesh::FaceContainer;
-
-	template<typename>
-	friend class mesh::ElementContainer;
 
 	// Vertex references component of the Face
 	using VRefs = typename Face::VertexReferences;
@@ -54,7 +53,15 @@ class Face : public Args...
 	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
+	static const uint ELEMENT_TYPE = FACE;
+
 	using VertexType = typename VRefs::VertexType;
+
+	// Iterator types to iterate over vertex coords
+	using VertexCoordIterator      = CoordIterator<typename VRefs::VertexIterator>;
+	using ConstVertexCoordIterator = CoordIterator<typename VRefs::ConstVertexIterator>;
+	using VertexCoordView          = View<VertexCoordIterator>;
+	using ConstVertexCoordView     = View<ConstVertexCoordIterator>;
 
 	Face();
 
@@ -63,23 +70,34 @@ public:
 	template<typename... V>
 	Face(V... args); // todo add requires
 
+	uint index() const;
+
 	void setVertices(const std::vector<VertexType*>& list);
 
 	template<typename... V>
 	void setVertices(V... args);
 
-	template<typename Element>
-	void importFrom(const Element& f);
+	void resizeVertices(uint n) requires NonDcelPolygonFaceConcept<Face>;
 
-	void resizeVertices(uint n) requires PolygonFaceConcept<Face>;
+	void pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face>;
 
-	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>;
+	void insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face>;
 
-	void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>;
+	void eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face>;
 
-	void eraseVertex(uint i) requires PolygonFaceConcept<Face>;
+	void clearVertices() requires NonDcelPolygonFaceConcept<Face>;
 
-	void clearVertices() requires PolygonFaceConcept<Face>;
+	VertexCoordIterator      vertexCoordBegin();
+	ConstVertexCoordIterator vertexCoordBegin() const;
+	VertexCoordIterator      vertexCoordEnd();
+	ConstVertexCoordIterator vertexCoordEnd() const;
+	VertexCoordView          vertexCoords();
+	ConstVertexCoordView     vertexCoords() const;
+};
+
+template<typename MeshType, typename... Args>
+class Face<MeshType, TypeWrapper<Args...>> : public Face<MeshType, Args...>
+{
 };
 
 } // namespace vcl

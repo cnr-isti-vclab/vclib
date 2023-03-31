@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -33,8 +33,6 @@
 namespace vcl::io::internal {
 
 typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, NONE } PropertyType;
-
-std::string addExtensionToFileName(const std::string& filename, const std::string& ext);
 
 std::ofstream saveFileStream(const std::string& filename, const std::string& ext);
 

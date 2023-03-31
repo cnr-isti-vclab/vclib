@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,10 +24,8 @@
 #ifndef VCL_SPACE_SAMPLER_H
 #define VCL_SPACE_SAMPLER_H
 
-#include "sampler/sampler_concept.h"
-
 #include "sampler/mesh_sampler.h"
 #include "sampler/point_sampler.h"
-#include "sampler/vertex_index_sampler.h"
+#include "sampler/vertex_sampler.h"
 
 #endif // VCL_SPACE_SAMPLER_H

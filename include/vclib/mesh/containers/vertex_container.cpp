@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -248,7 +248,7 @@ typename VertexContainer<T>::ConstVertexIterator VertexContainer<T>::vertexEnd()
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<VertexConcept T>
-typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bool jumpDeleted)
+typename VertexContainer<T>::VertexView VertexContainer<T>::vertices(bool jumpDeleted)
 {
 	return Base::elements(jumpDeleted);
 }
@@ -274,7 +274,7 @@ typename VertexContainer<T>::VertexRangeIterator VertexContainer<T>::vertices(bo
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<VertexConcept T>
-typename VertexContainer<T>::ConstVertexRangeIterator
+typename VertexContainer<T>::ConstVertexView
 VertexContainer<T>::vertices(bool jumpDeleted) const
 {
 	return Base::elements(jumpDeleted);
@@ -346,7 +346,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentEdgesEnabled()
 	const requires vert::HasOptionalAdjacentEdges<T>
 {
-	return Base::optionalVec.isAdjacentEdgesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>();
 }
 
 /**
@@ -358,7 +358,7 @@ bool VertexContainer<T>::isPerVertexAdjacentEdgesEnabled()
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>
 {
-	Base::optionalVec.enableAdjacentEdges(vertexContainerSize());
+	Base::template enableOptionalComponent<typename T::AdjacentEdgesComponent>();
 }
 
 /**
@@ -370,7 +370,7 @@ void VertexContainer<T>::enablePerVertexAdjacentEdges() requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>
 {
-	Base::optionalVec.disableAdjacentEdges();
+	Base::template disableOptionalComponent<typename T::AdjacentEdgesComponent>();
 }
 
 /**
@@ -384,7 +384,7 @@ void VertexContainer<T>::disablePerVertexAdjacentEdges() requires vert::HasOptio
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const requires vert::HasOptionalAdjacentFaces<T>
 {
-	return Base::optionalVec.isAdjacentFacesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -396,7 +396,7 @@ bool VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const requires vert::
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
-	Base::optionalVec.enableAdjacentFaces(vertexContainerSize());
+	Base::template enableOptionalComponent<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -408,7 +408,7 @@ void VertexContainer<T>::enablePerVertexAdjacentFaces() requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
-	Base::optionalVec.disableAdjacentFaces();
+	Base::template disableOptionalComponent<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -423,7 +423,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentVerticesEnabled()
 	const requires vert::HasOptionalAdjacentVertices<T>
 {
-	return Base::optionalVec.isAdjacentVerticesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentVerticesComponent>();
 }
 
 /**
@@ -436,7 +436,7 @@ template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentVertices()
 	requires vert::HasOptionalAdjacentVertices<T>
 {
-	Base::optionalVec.enableAdjacentVertices(vertexContainerSize());
+	Base::template enableOptionalComponent<typename T::AdjacentVerticesComponent>();
 }
 
 /**
@@ -449,7 +449,7 @@ template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentVertices()
 	requires vert::HasOptionalAdjacentVertices<T>
 {
-	Base::optionalVec.disableAdjacentVertices();
+	Base::template disableOptionalComponent<typename T::AdjacentVerticesComponent>();
 }
 
 /**
@@ -462,7 +462,7 @@ void VertexContainer<T>::disablePerVertexAdjacentVertices()
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexColorEnabled() const requires vert::HasOptionalColor<T>
 {
-	return Base::optionalVec.isColorEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ColorComponent>();
 }
 
 /**
@@ -473,7 +473,7 @@ bool VertexContainer<T>::isPerVertexColorEnabled() const requires vert::HasOptio
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexColor() requires vert::HasOptionalColor<T>
 {
-	Base::optionalVec.enableColor(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -484,7 +484,7 @@ void VertexContainer<T>::enablePerVertexColor() requires vert::HasOptionalColor<
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexColor() requires vert::HasOptionalColor<T>
 {
-	Base::optionalVec.disableColor();
+	return Base::template disableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -497,7 +497,7 @@ void VertexContainer<T>::disablePerVertexColor() requires vert::HasOptionalColor
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexMarkEnabled() const requires vert::HasOptionalMark<T>
 {
-	return Base::optionalVec.isMarkEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::MarkComponent>();
 }
 
 /**
@@ -508,7 +508,7 @@ bool VertexContainer<T>::isPerVertexMarkEnabled() const requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexMark() requires vert::HasOptionalMark<T>
 {
-	Base::optionalVec.enableMark(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**
@@ -519,7 +519,7 @@ void VertexContainer<T>::enablePerVertexMark() requires vert::HasOptionalMark<T>
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexMark() requires vert::HasOptionalMark<T>
 {
-	Base::optionalVec.disableMark();
+	return Base::template disableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**
@@ -533,7 +533,7 @@ void VertexContainer<T>::disablePerVertexMark() requires vert::HasOptionalMark<T
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexNormalEnabled() const requires vert::HasOptionalNormal<T>
 {
-	return Base::optionalVec.isNormalEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::NormalComponent>();
 }
 
 /**
@@ -544,7 +544,7 @@ bool VertexContainer<T>::isPerVertexNormalEnabled() const requires vert::HasOpti
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
-	Base::optionalVec.enableNormal(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::NormalComponent>();
 }
 
 /**
@@ -555,7 +555,7 @@ void VertexContainer<T>::enablePerVertexNormal() requires vert::HasOptionalNorma
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
-	Base::optionalVec.disableNormal();
+	return Base::template disableOptionalComponent<typename T::NormalComponent>();
 }
 
 /**
@@ -570,7 +570,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled()
 	const requires vert::HasOptionalPrincipalCurvature<T>
 {
-	return Base::optionalVec.isPrincipalCurvatureEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::PrincipalCurvatureComponent>();
 }
 
 /**
@@ -583,7 +583,7 @@ template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexPrincipalCurvature()
 	requires vert::HasOptionalPrincipalCurvature<T>
 {
-	Base::optionalVec.enablePrincipalCurvature(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::PrincipalCurvatureComponent>();
 }
 
 /**
@@ -596,7 +596,7 @@ template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexPrincipalCurvature()
 	requires vert::HasOptionalPrincipalCurvature<T>
 {
-	Base::optionalVec.disablePrincipalCurvature();
+	return Base::template disableOptionalComponent<typename T::PrincipalCurvatureComponent>();
 }
 
 /**
@@ -609,7 +609,7 @@ void VertexContainer<T>::disablePerVertexPrincipalCurvature()
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexScalarEnabled() const requires vert::HasOptionalScalar<T>
 {
-	return Base::optionalVec.isScalarEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
 }
 
 /**
@@ -620,7 +620,7 @@ bool VertexContainer<T>::isPerVertexScalarEnabled() const requires vert::HasOpti
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexScalar() requires vert::HasOptionalScalar<T>
 {
-	Base::optionalVec.enableScalar(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -631,7 +631,7 @@ void VertexContainer<T>::enablePerVertexScalar() requires vert::HasOptionalScala
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexScalar() requires vert::HasOptionalScalar<T>
 {
-	Base::optionalVec.disableScalar();
+	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -644,7 +644,7 @@ void VertexContainer<T>::disablePerVertexScalar() requires vert::HasOptionalScal
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexTexCoordEnabled() const requires vert::HasOptionalTexCoord<T>
 {
-	return Base::optionalVec.isTexCoordEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::TexCoordComponent>();
 }
 
 /**
@@ -655,7 +655,7 @@ bool VertexContainer<T>::isPerVertexTexCoordEnabled() const requires vert::HasOp
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
-	Base::optionalVec.enableTexCoord(vertexContainerSize());
+	return Base::template enableOptionalComponent<typename T::TexCoordComponent>();
 }
 
 /**
@@ -666,7 +666,7 @@ void VertexContainer<T>::enablePerVertexTexCoord() requires vert::HasOptionalTex
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
-	Base::optionalVec.disableTexCoord();
+	return Base::template disableOptionalComponent<typename T::TexCoordComponent>();
 }
 
 /**
@@ -682,7 +682,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name)
 	const requires vert::HasCustomComponents<T>
 {
-	return Base::optionalVec.componentExists(name);
+	return Base::ccVecMap.componentExists(name);
 }
 
 /**
@@ -697,7 +697,7 @@ template<VertexConcept T>
 std::vector<std::string> VertexContainer<T>::getAllPerVertexCustomComponentNames()
 	const requires vert::HasCustomComponents<T>
 {
-	return Base::optionalVec.allComponentNames();
+	return Base::ccVecMap.allComponentNames();
 }
 
 /**
@@ -722,7 +722,7 @@ template<typename K>
 bool VertexContainer<T>::isPerVertexCustomComponentOfType(
 	const std::string& name) const requires vert::HasCustomComponents<T>
 {
-	return Base::optionalVec.template isComponentOfType<K>(name);
+	return Base::ccVecMap.template isComponentOfType<K>(name);
 }
 
 /**
@@ -746,7 +746,7 @@ std::vector<std::string>
 VertexContainer<T>::getPerVertexCustomComponentNamesOfType()
 	const requires vert::HasCustomComponents<T>
 {
-	return Base::optionalVec.template allComponentNamesOfType<K>();
+	return Base::ccVecMap.template allComponentNamesOfType<K>();
 }
 
 /**
@@ -763,7 +763,7 @@ template<typename K>
 void VertexContainer<T>::addPerVertexCustomComponent(
 	const std::string& name) requires vert::HasCustomComponents<T>
 {
-	Base::optionalVec.template addNewComponent<K>(name, vertexContainerSize());
+	Base::ccVecMap.template addNewComponent<K>(name, vertexContainerSize());
 }
 
 /**
@@ -779,7 +779,7 @@ template<VertexConcept T>
 void VertexContainer<T>::deletePerVertexCustomComponent(
 	const std::string& name) requires vert::HasCustomComponents<T>
 {
-	Base::optionalVec.deleteComponent(name);
+	Base::ccVecMap.deleteComponent(name);
 }
 
 /**
@@ -813,7 +813,7 @@ template<typename K>
 CustomComponentVectorHandle<K> VertexContainer<T>::getPerVertexCustomComponentVectorHandle(
 	const std::string& name) requires vert::HasCustomComponents<T>
 {
-	std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
 	CustomComponentVectorHandle<K> v(cc);
 	return v;
 }
@@ -851,127 +851,9 @@ template<typename K>
 ConstCustomComponentVectorHandle<K> VertexContainer<T>::getPerVertexCustomComponentVectorHandle(
 	const std::string& name) const requires vert::HasCustomComponents<T>
 {
-	const std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	const std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
 	ConstCustomComponentVectorHandle<K> v(cc);
 	return cc;
-}
-
-template<VertexConcept T>
-void VertexContainer<T>::clearVertices()
-{
-	Base::clearElements();
-}
-
-template<VertexConcept T>
-uint VertexContainer<T>::index(const VertexType* v) const
-{
-	return Base::index(v);
-}
-
-template<VertexConcept T>
-uint VertexContainer<T>::addVertex()
-{
-	return Base::addElement();
-}
-
-/**
- * @brief Container::addVertices adds nVertices to the Vertex Container of the mesh.
- *
- * Returns the id of the first added vertex.
- *
- * @param nVertices
- * @return the id of the first added vertex.
- */
-template<VertexConcept T>
-uint VertexContainer<T>::addVertices(uint nVertices)
-{
-	return Base::addElements(nVertices);
-}
-
-template<VertexConcept T>
-void VertexContainer<T>::reserveVertices(uint size)
-{
-	Base::reserveElements(size);
-}
-
-/**
- * @brief Compacts the vertex container, keeping only the non-deleted
- * vertices.
- *
- * @return a vector that tells, for each old vertex index, the new index of the vertex. Will contain
- * -1 if the vertex has been deleted.
- */
-template<VertexConcept T>
-std::vector<int> vcl::mesh::VertexContainer<T>::compactVertices()
-{
-	return Base::compactElements();
-}
-
-template<VertexConcept T>
-template<typename Mesh>
-void VertexContainer<T>::enableOptionalComponentsOf(const Mesh& m)
-{
-	// if vertices are present in the other Mesh
-	if constexpr (HasVertexContainer<Mesh>) {
-		using MVertexContainer = typename Mesh::VertexContainer::Base;
-
-		Base::enableOptionalComponentsOf((const MVertexContainer&)m);
-	}
-}
-
-template<VertexConcept T>
-template<typename Mesh>
-void VertexContainer<T>::importFrom(const Mesh& m)
-{
-	if constexpr (HasVertexContainer<Mesh>) {
-		using MVertexContainer = typename Mesh::VertexContainer::Base;
-
-		Base::importFrom((const MVertexContainer&) m);
-	}
-}
-
-template<VertexConcept T>
-template<typename Mesh>
-void VertexContainer<T>::importVertexReferencesFrom(const Mesh& m, T* base)
-{
-	if constexpr (HasVertexContainer<Mesh>) {
-		using MVertexContainer = typename Mesh::VertexContainer::Base;
-
-		Base::importVertexReferencesFrom((const MVertexContainer&) m, base, &m.vertex(0));
-	}
-}
-
-template<VertexConcept T>
-template<typename Mesh, typename Face>
-void VertexContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
-{
-	if constexpr (HasFaceContainer<Mesh> && HasVertexContainer<Mesh>) {
-		using MVertexContainer = typename Mesh::VertexContainer::Base;
-
-		Base::importFaceReferencesFrom((const MVertexContainer&) m, base, &m.face(0));
-	}
-}
-
-template<VertexConcept T>
-template<typename Mesh, typename Edge>
-void VertexContainer<T>::importEdgeReferencesFrom(const Mesh& m, Edge* base)
-{
-	if constexpr (HasEdgeContainer<Mesh> && HasVertexContainer<Mesh>) {
-		using MVertexContainer = typename Mesh::VertexContainer::Base;
-
-		Base::importEdgeReferencesFrom((const MVertexContainer&) m, base, &m.edge(0));
-	}
-}
-
-template<VertexConcept T>
-template<typename Mesh, typename HalfEdge>
-void VertexContainer<T>::importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* base)
-{
-	if constexpr (HasHalfEdgeContainer<Mesh> && HasVertexContainer<Mesh>) {
-		using MVertexContainer = typename Mesh::VertexContainer::Base;
-
-		Base::importHalfEdgeReferencesFrom((const MVertexContainer&) m, base, &m.halfEdge(0));
-	}
 }
 
 } // namespace vcl::mesh

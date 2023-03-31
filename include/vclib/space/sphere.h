@@ -24,6 +24,8 @@
 #ifndef VCL_SPACE_SPHERE_H
 #define VCL_SPACE_SPHERE_H
 
+#include <vclib/concept/space/sphere.h>
+
 #include "box.h"
 
 namespace vcl {
@@ -33,6 +35,7 @@ class Sphere
 {
 public:
 	using ScalarType = Scalar;
+	using PointType = vcl::Point3<Scalar>;
 
 	Sphere();
 	Sphere(const vcl::Point3<Scalar>& center, Scalar radius);
@@ -55,6 +58,12 @@ private:
 	vcl::Point3<Scalar> c;
 	Scalar r;
 };
+
+using Spheref = Sphere<float>;
+using Sphered = Sphere<double>;
+
+static_assert(SphereConcept<Spheref>, "Spheref does not satisfy the SphereConcept");
+static_assert(SphereConcept<Sphered>, "Sphered does not satisfy the SphereConcept");
 
 } // namespace vcl
 

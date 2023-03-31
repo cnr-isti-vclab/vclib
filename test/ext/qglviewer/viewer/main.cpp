@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -25,12 +25,10 @@
 
 #include <QApplication>
 
-#include <vclib/algorithms/update/normal.h>
-#include <vclib/algorithms/update/color.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/poly_mesh.h>
-#include <vclib/io/load_obj.h>
-#include <vclib/io/load_ply.h>
+#include <vclib/algorithm/update/normal.h>
+#include <vclib/algorithm/update/color.h>
+#include <vclib/mesh.h>
+#include <vclib/load_save.h>
 
 #include <vclib/ext/opengl2/drawable_mesh.h>
 #include <vclib/ext/qglviewer/viewer_main_window.h>
@@ -43,7 +41,7 @@ int main(int argc, char **argv) {
 	// Instantiate the viewer.
 	vcl::ViewerMainWindow viewer;
 
-	vcl::io::FileMeshInfo loadedInfo;
+	vcl::FileMeshInfo loadedInfo;
 
 	vcl::PolyMesh tm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/VertTextureDouble.ply", loadedInfo);
 	vcl::updatePerFaceNormals(tm);

@@ -24,8 +24,9 @@
 #ifndef VCL_MESH_CONTAINER_FACE_CONTAINER_H
 #define VCL_MESH_CONTAINER_FACE_CONTAINER_H
 
-#include <vclib/mesh/components/vertical/vectors/custom_component_vector_handle.h>
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/face.h>
+#include <vclib/mesh/elements/face_components.h>
 
 #include "element_container.h"
 
@@ -40,7 +41,7 @@ namespace vcl::mesh {
  * enablers/disablers of the eventual optional components of the face.
  */
 template<FaceConcept T>
-class FaceContainer : protected ElementContainer<T>
+class FaceContainer : public ElementContainer<T>
 {
 	template <FaceConcept U>
 	friend class FaceContainer;
@@ -53,8 +54,8 @@ public:
 	using FaceType          = T;
 	using FaceIterator      = typename Base::ElementIterator;
 	using ConstFaceIterator = typename Base::ConstElementIterator;
-	using FaceRangeIterator = typename Base::ElementRangeIterator;
-	using ConstFaceRangeIterator = typename Base::ConstElementRangeIterator;
+	using FaceView          = typename Base::ElementView;
+	using ConstFaceView     = typename Base::ConstElementView;
 
 	FaceContainer();
 
@@ -71,12 +72,12 @@ public:
 	uint             faceIndexIfCompact(uint id) const;
 	std::vector<int> faceCompactIndices() const;
 
-	FaceIterator           faceBegin(bool jumpDeleted = true);
-	FaceIterator           faceEnd();
-	ConstFaceIterator      faceBegin(bool jumpDeleted = true) const;
-	ConstFaceIterator      faceEnd() const;
-	FaceRangeIterator      faces(bool jumpDeleted = true);
-	ConstFaceRangeIterator faces(bool jumpDeleted = true) const;
+	FaceIterator      faceBegin(bool jumpDeleted = true);
+	FaceIterator      faceEnd();
+	ConstFaceIterator faceBegin(bool jumpDeleted = true) const;
+	ConstFaceIterator faceEnd() const;
+	FaceView          faces(bool jumpDeleted = true);
+	ConstFaceView     faces(bool jumpDeleted = true) const;
 
 	void enableAllPerFaceOptionalComponents();
 	void disableAllPerFaceOptionalComponents();
@@ -146,40 +147,6 @@ public:
 		const std::string& name) const requires face::HasCustomComponents<T>;
 
 protected:
-	/**
-	 * @brief fn: the number of faces in the container. Could be different from the container size
-	 * due to faces marked as deleted into the container.
-	 */
-	//uint fn = 0;
-
-	uint index(const FaceType* f) const;
-
-	void clearFaces();
-
-	uint addFace();
-	uint addFaces(uint nFaces);
-	void reserveFaces(uint size);
-
-	std::vector<int> compactFaces();
-
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
-
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
-
-	template<typename Mesh, typename Vertex>
-	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
-
-	template<typename Mesh>
-	void importFaceReferencesFrom(const Mesh& m, T* base);
-
-	template<typename Mesh, typename Edge>
-	void importEdgeReferencesFrom(const Mesh& m, Edge* base);
-
-	template<typename Mesh, typename HalfEdge>
-	void importHalfEdgeReferencesFrom(const Mesh& m, HalfEdge* base);
-
 	// WedgeColors
 	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
 	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;

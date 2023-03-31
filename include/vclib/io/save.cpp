@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,33 +23,48 @@
 
 #include "save.h"
 
-namespace vcl::io {
+namespace vcl {
+
+template<MeshConcept MeshType, LoggerConcept LogType>
+void save(const MeshType& m, const std::string& filename, LogType& log, bool binary)
+{
+	FileMeshInfo info(m);
+	save(m, filename, info, log, binary);
+}
 
 template<MeshConcept MeshType>
 void save(const MeshType& m, const std::string& filename, bool binary)
 {
-	vcl::io::FileMeshInfo info(m);
-	save(m, filename, info, binary);
+	FileMeshInfo info(m);
+	NullLogger log;
+	save(m, filename, info, log, binary);
 }
 
-template<MeshConcept MeshType>
-void save(const MeshType& m, const std::string& filename, const FileMeshInfo& info, bool binary)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void save(
+	const MeshType&     m,
+	const std::string&  filename,
+	const FileMeshInfo& info,
+	LogType&            log,
+	bool                binary)
 {
-	std::string name, ext;
-	vcl::fileInfo::separateExtensionFromFilename(filename, name, ext);
+	std::string ext = FileInfo::extension(filename);
 	ext = vcl::str::toLower(ext);
 	if (ext == ".obj") {
-		saveObj(m, filename, info);
+		io::saveObj(m, filename, info, log);
 	}
 	else if (ext == ".off") {
-		saveOff(m, filename, info);
+		io::saveOff(m, filename, info, log);
 	}
 	else if (ext == ".ply") {
-		savePly(m, filename, info, binary);
+		io::savePly(m, filename, info, log, binary);
+	}
+	else if (ext == ".stl") {
+		io::saveStl(m, filename, info, log, binary);
 	}
 	else {
 		throw vcl::UnknownFileFormatException(ext);
 	}
 }
 
-} // namespace vcl::io
+} // namespace vcl

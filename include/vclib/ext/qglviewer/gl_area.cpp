@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -22,6 +22,8 @@
  ****************************************************************************/
 
 #include "gl_area.h"
+
+#include <vclib/math/min_max.h>
 
 namespace vcl {
 
@@ -94,15 +96,15 @@ inline Box3d GLArea::fullBB() const
 
 		if (i < drawList->size()) {
 			Point3d sc = drawList->at(i).center();
-			bb.min = sc - drawList->at(i).radius();
-			bb.max = sc + drawList->at(i).radius();
+			bb.min() = sc - drawList->at(i).radius();
+			bb.max() = sc + drawList->at(i).radius();
 
 			for (i = i+1; i < drawList->size(); i++) { //rest of the list
 				Point3d sc = drawList->at(i).center();
 				Point3d tmp = sc - drawList->at(i).radius();
-				bb.min = vcl::min(bb.min, tmp);
+				bb.min() = vcl::min(bb.min(), tmp);
 				tmp = sc + drawList->at(i).radius();
-				bb.max = vcl::max(bb.max, tmp);
+				bb.max() = vcl::max(bb.max(), tmp);
 			}
 		}
 	}

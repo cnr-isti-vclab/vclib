@@ -24,15 +24,16 @@
 #ifndef VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINER_HALF_EDGE_CONTAINER_H
 
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/half_edge.h>
+#include <vclib/mesh/elements/half_edge_components.h>
 
-#include "../components/vertical/vectors/custom_component_vector_handle.h"
 #include "element_container.h"
 
 namespace vcl::mesh {
 
 template<HalfEdgeConcept T>
-class HalfEdgeContainer : protected ElementContainer<T>
+class HalfEdgeContainer : public ElementContainer<T>
 {
 	template <HalfEdgeConcept U>
 	friend class HalfEdgeContainer;
@@ -41,12 +42,12 @@ class HalfEdgeContainer : protected ElementContainer<T>
 	using Base = ElementContainer<T>;
 
 public:
-	using HalfEdge                   = T;
-	using HalfEdgeType               = T;
-	using HalfEdgeIterator           = typename Base::ElementIterator;
-	using ConstHalfEdgeIterator      = typename Base::ConstElementIterator;
-	using HalfEdgeRangeIterator      = typename Base::ElementRangeIterator;
-	using ConstHalfEdgeRangeIterator = typename Base::ConstElementRangeIterator;
+	using HalfEdge              = T;
+	using HalfEdgeType          = T;
+	using HalfEdgeIterator      = typename Base::ElementIterator;
+	using ConstHalfEdgeIterator = typename Base::ConstElementIterator;
+	using HalfEdgeView          = typename Base::ElementView;
+	using ConstHalfEdgeView     = typename Base::ConstElementView;
 
 	HalfEdgeContainer();
 
@@ -63,12 +64,12 @@ public:
 	uint             halfEdgeIndexIfCompact(uint id) const;
 	std::vector<int> halfEdgeCompactIndices() const;
 
-	HalfEdgeIterator           halfEdgeBegin(bool jumpDeleted = true);
-	HalfEdgeIterator           halfEdgeEnd();
-	ConstHalfEdgeIterator      halfEdgeBegin(bool jumpDeleted = true) const;
-	ConstHalfEdgeIterator      halfEdgeEnd() const;
-	HalfEdgeRangeIterator      halfEdges(bool jumpDeleted = true);
-	ConstHalfEdgeRangeIterator halfEdges(bool jumpDeleted = true) const;
+	HalfEdgeIterator      halfEdgeBegin(bool jumpDeleted = true);
+	HalfEdgeIterator      halfEdgeEnd();
+	ConstHalfEdgeIterator halfEdgeBegin(bool jumpDeleted = true) const;
+	ConstHalfEdgeIterator halfEdgeEnd() const;
+	HalfEdgeView          halfEdges(bool jumpDeleted = true);
+	ConstHalfEdgeView     halfEdges(bool jumpDeleted = true) const;
 
 	void enableAllPerHalfEdgeOptionalComponents();
 	void disableAllPerHalfEdgeOptionalComponents();
@@ -122,32 +123,6 @@ public:
 	template<typename K>
 	ConstCustomComponentVectorHandle<K> getPerHalfEdgeCustomComponentVectorHandle(
 		const std::string& name) const requires hedge::HasCustomComponents<T>;
-
-protected:
-	uint index(const HalfEdgeType* e) const;
-
-	void clearHalfEdges();
-
-	uint addHalfEdge();
-	uint addHalfEdges(uint nEdges);
-	void reserveHalfEdges(uint size);
-
-	std::vector<int> compactHalfEdges();
-
-	template<typename Mesh>
-	void enableOptionalComponentsOf(const Mesh& m);
-
-	template<typename Mesh>
-	void importFrom(const Mesh& m);
-
-	template<typename Mesh, typename Vertex>
-	void importVertexReferencesFrom(const Mesh& m, Vertex* base);
-
-	template<typename Mesh, typename Face>
-	void importFaceReferencesFrom(const Mesh& m, Face* base);
-
-	template<typename Mesh>
-	void importHalfEdgeReferencesFrom(const Mesh& m, T* base);
 };
 
 } // namespace vcl::mesh

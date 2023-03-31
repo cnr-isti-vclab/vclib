@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,9 +24,9 @@
 #ifndef VCL_SPACE_SAMPLER_MESH_SAMPLER_H
 #define VCL_SPACE_SAMPLER_MESH_SAMPLER_H
 
+#include <vclib/concept/space/sampler.h>
+#include <vclib/mesh/iterator.h>
 #include <vclib/mesh/requirements.h>
-
-#include "sampler_concept.h"
 
 namespace vcl {
 
@@ -36,48 +36,72 @@ class MeshSampler
 public:
 	using PointType  = typename MeshType::VertexType::CoordType;
 	using ScalarType = typename PointType::ScalarType;
+	using ConstIterator = CoordIterator<typename MeshType::ConstVertexIterator>;
 
 	MeshSampler();
 
 	const MeshType& samples() const;
 
+	const PointType& sample(uint i) const;
+	std::size_t size() const;
+
 	void clear();
+	void resize(uint n);
 	void reserve(uint n);
 
-	void addPoint(const PointType& p);
+	void add(const PointType& p);
+	void set(uint i, const PointType& p);
 
-	template<MeshConcept OMeshType>
-	void addVertex(const typename OMeshType::VertexType& v, const OMeshType& m);
+	template<VertexConcept VertexType>
+	void add(const VertexType& v);
 
-	template<EdgeMeshConcept OMeshType>
-	void addEdge(
-		const typename OMeshType::EdgeType& e,
-		const OMeshType&,
-		double u,
-		bool   copyScalar = true);
+	template<VertexConcept VertexType>
+	void set(uint i, const VertexType& v);
 
-	template<FaceMeshConcept OMeshType>
-	void addFace(
-		const typename OMeshType::FaceType& f,
-		const OMeshType&,
-		bool copyNormal = false,
-		bool copyScalar = true);
+	template<EdgeConcept EdgeType>
+	void add(const EdgeType& e, double u, bool copyScalar = true);
 
-	template<FaceMeshConcept OMeshType>
-	void addFace(
-		const typename OMeshType::FaceType& f,
-		const OMeshType&,
-		const std::vector<ScalarType>&      barCoords,
-		bool                                copyNormal = false,
-		bool                                copyScalar = true);
+	template<EdgeConcept EdgeType>
+	void set(uint i, const EdgeType& e, double u, bool copyScalar = true);
 
-	template<FaceMeshConcept OMeshType>
-	void addFace(
-		const typename OMeshType::FaceType&  f,
-		const OMeshType&,
-		const PointType&                     barCoords,
-		bool                                 copyNormal = false,
-		bool                                 copyScalar = true);
+	template<FaceConcept FaceType>
+	void add(const FaceType& f, bool copyNormal = false, bool copyScalar = true);
+
+	template<FaceConcept FaceType>
+	void set(uint i, const FaceType& f, bool copyNormal = false, bool copyScalar = true);
+
+	template<FaceConcept FaceType>
+	void
+	add(const FaceType&                f,
+		const std::vector<ScalarType>& barCoords,
+		bool                           copyNormal = false,
+		bool                           copyScalar = true);
+
+	template<FaceConcept FaceType>
+	void
+	set(uint                           i,
+		const FaceType&                f,
+		const std::vector<ScalarType>& barCoords,
+		bool                           copyNormal = false,
+		bool                           copyScalar = true);
+
+	template<FaceConcept FaceType>
+	void
+	add(const FaceType&  f,
+		const PointType& barCoords,
+		bool             copyNormal = false,
+		bool             copyScalar = true);
+
+	template<FaceConcept FaceType>
+	void
+	set(uint             i,
+		const FaceType&  f,
+		const PointType& barCoords,
+		bool             copyNormal = false,
+		bool             copyScalar = true);
+
+	ConstIterator begin() const;
+	ConstIterator end() const;
 
 private:
 

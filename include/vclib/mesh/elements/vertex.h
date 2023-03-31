@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,35 +24,24 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_H
 #define VCL_MESH_ELEMENTS_VERTEX_H
 
-#include "vertex_concept.h"
+#include <vclib/concept/mesh/element/vertex.h>
 
-namespace vcl::mesh {
-
-// VertexContainr class declaration
-template<VertexConcept>
-class VertexContainer;
-
-template<typename>
-class ElementContainer;
-
-} // namespace vcl::mesh
+#include "element.h"
 
 namespace vcl {
 
-template<typename... Args>
-class Vertex : public Args...
+template<typename MeshType, typename... Args>
+class Vertex : public Element<MeshType, Args...>
 {
-	template<VertexConcept>
-	friend class mesh::VertexContainer;
-
-	template<typename>
-	friend class mesh::ElementContainer;
-
 public:
-	Vertex();
+	static const uint ELEMENT_TYPE = VERTEX;
 
-	template<typename Element>
-	void importFrom(const Element& v);
+	uint index() const;
+};
+
+template<typename MeshType, typename... Args>
+class Vertex<MeshType, TypeWrapper<Args...>> : public Vertex<MeshType, Args...>
+{
 };
 
 } // namespace vcl

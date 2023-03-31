@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,6 +23,8 @@
 
 #ifndef VCL_SPACE_PLANE_H
 #define VCL_SPACE_PLANE_H
+
+#include <vclib/concept/space/plane.h>
 
 #include "point/point3.h"
 
@@ -46,6 +48,7 @@ class Plane
 {
 public:
 	using ScalarType = Scalar;
+	using PointType = vcl::Point3<Scalar>;
 
 	Plane();
 	Plane(const Point3<Scalar>& direction, Scalar offset);
@@ -60,13 +63,6 @@ public:
 
 	Point3<Scalar> projectPoint(const Point3<Scalar>& p) const;
 	Point3<Scalar> mirrorPoint(const Point3<Scalar>& p) const;
-	Scalar dist(const Point3<Scalar>& p) const;
-
-	bool segmentIntersection(
-		Point3<Scalar>& intersection,
-		const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const;
-
-	Point3<Scalar> segmentIntersection(const std::pair<Point3<Scalar>, Point3<Scalar>>& s) const;
 
 	bool operator==(const Plane& p) const;
 	bool operator!=(const Plane& p) const;

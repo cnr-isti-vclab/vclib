@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_FACE_REQUIREMENTS_H
 #define VCL_MESH_FACE_REQUIREMENTS_H
 
-#include "mesh_concepts.h"
+#include <vclib/concept/mesh.h>
 
 namespace vcl {
 

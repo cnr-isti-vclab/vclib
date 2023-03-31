@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,11 +23,10 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/point_sampling.h>
-#include <vclib/algorithms/update.h>
+#include <vclib/algorithm.h>
 
-#include <vclib/io/load_ply.h>
-#include <vclib/tri_mesh.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
 
 #ifdef VCLIB_WITH_QGLVIEWER
 #include <QApplication>

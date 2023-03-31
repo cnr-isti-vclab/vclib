@@ -23,13 +23,12 @@
 
 #include <iostream>
 
-#include <vclib/space/spatial_data_structures.h>
+#include <vclib/space.h>
 
-#include <vclib/io/load_ply.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/misc/timer.h>
-#include <vclib/algorithms/create.h>
-#include <vclib/algorithms/intersection.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
+#include <vclib/miscellaneous.h>
+#include <vclib/algorithm.h>
 
 #include <vclib/iterators/pointer_iterator.h>
 
@@ -57,14 +56,14 @@ int main()
 	std::cerr << "Values in HashTableGrid: \n";
 
 	for (const auto& p : sht) {
-		std::cerr << p.key << ": " << p.value << "\n";
+		std::cerr << p.first << ": " << p.second << "\n";
 	}
 
 	std::cerr << "Values in cell 0, 1, 2: \n";
 
 	auto p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
 	for (auto& it = p.first; it != p.second; ++it) {
-		std::cerr << it->value << "; ";
+		std::cerr << it->second << "; ";
 	}
 	std::cerr << "\n";
 
@@ -72,26 +71,20 @@ int main()
 
 	std::cerr << "Values in sphere: \n";
 	for (auto it : set) {
-		std::cerr << it->value << "; ";
+		std::cerr << it->second << "; ";
 	}
 	std::cerr << "\n\n";
 
-	std::function<double(const vcl::Point3d&, const vcl::Point3d&)> dist =
-		[](const vcl::Point3d& p1, const vcl::Point3d& p2)
-	{
-		return p1.dist(p2);
-	};
+	auto it = sht.closestValue(vcl::Point3d(0.09, 0.09, 0.29));
 
-	auto it = sht.closestValue(vcl::Point3d(0.09, 0.09, 0.29), dist);
-
-	std::cerr << "Closest is: " << it->value << "\n\n";
+	std::cerr << "Closest is: " << it->second << "\n\n";
 
 	sht.eraseInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
 
 	std::cerr << "Values in HashTableGrid: \n";
 
 	for (const auto& p : sht) {
-		std::cerr << p.key << ": " << p.value << "\n";
+		std::cerr << p.first << ": " << p.second << "\n";
 	}
 
 	std::cerr << "\n==================================\n\n";
@@ -115,7 +108,7 @@ int main()
 	std::cerr << "Values in StaticGrid: \n";
 
 	for (const auto& p : sg) {
-		std::cerr << p.key << ": " << p.value << "\n";
+		std::cerr << p.first << ": " << p.second << "\n";
 	}
 
 	std::cerr << "Values in cell 0, 1, 2: \n";
@@ -138,18 +131,15 @@ int main()
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
 
-	std::function<bool(const vcl::Box3d&, const vcl::TriMesh::Face&)> intersects =
-		[](const vcl::Box3d& bb, const  vcl::TriMesh::Face& v)
-	{
-		return vcl::faceBoxIntersect(v, bb);
-	};
+	auto intersects = vcl::intersectFunction<vcl::Box3d, const vcl::TriMesh::Face*>();
 
-	vcl::HashTableGrid3<const vcl::TriMesh::Face&> fsht(m.faceBegin(), m.faceEnd(), intersects);
+	using FPI = vcl::PointerIterator<typename vcl::TriMesh::FaceIterator>;
+	vcl::HashTableGrid3<const vcl::TriMesh::Face*> fsht(FPI(m.faceBegin()), FPI(m.faceEnd()), intersects);
 
 	std::cerr << "Values in HashTableGrid: \n";
 
-	for (auto p : fsht) {
-		std::cerr << p.key << ": " << m.index(p.value) << "\n";
+	for (const auto& p : fsht) {
+		std::cerr << p.first << ": " << m.index(p.second) << "\n";
 	}
 
 	std::cerr << "\nValues in Sphere: \n";
@@ -157,17 +147,17 @@ int main()
 	auto sv  = fsht.valuesInSphere({vcl::Point3d(-1, -1, -1), 0.5});
 
 	for (const auto& p : sv) {
-		std::cerr << p->key << ": " << m.index(p->value) << "\n";
+		std::cerr << p->first << ": " << m.index(p->second) << "\n";
 	}
 
 	std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<const vcl::TriMesh::Face&> fsg(m.faceBegin(), m.faceEnd(), intersects);
+	vcl::StaticGrid3<const vcl::TriMesh::Face*> fsg(FPI(m.faceBegin()), FPI(m.faceEnd()), intersects);
 
 	std::cerr << "Values in Static Grid : \n";
 
 	for (const auto& p : fsg) {
-		std::cerr << p.key << ": " << m.index(p.value) << "\n";
+		std::cerr << p.first << ": " << m.index(p.second) << "\n";
 	}
 
 	std::cerr << "\nValues in Sphere: \n";
@@ -178,21 +168,19 @@ int main()
 		std::cerr << p->first << ": " << m.index(p->second) << "\n";
 	}
 
+	std::cerr << "\n==================================\n\n";
+
+	std::cerr << "\nK closest values: \n";
+
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
 
-
-	vcl::StaticGrid3<const vcl::TriMesh::Vertex&> vmsg(m.vertexBegin(), m.vertexEnd());
+	using VPI = vcl::PointerIterator<typename vcl::TriMesh::VertexIterator>;
+	vcl::StaticGrid3<const vcl::TriMesh::Vertex*> vmsg(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
 
 	const vcl::Point3d qv(0.5, 0.5, 0.5);
 
-	std::function<double(const vcl::Point3d&, const vcl::TriMesh::Vertex&)> fdist =
-		[](const vcl::Point3d& p, const vcl::TriMesh::Vertex& v)
-	{
-		return v.coord().dist(p);
-	};
-
-	auto vec = vmsg.kClosestValues(qv, 5, fdist);
+	auto vec = vmsg.kClosestValues(qv, 5);
 
 	for (const auto& p : vec) {
 		std::cerr << p->first << ": " << m.index(p->second) << "\n";

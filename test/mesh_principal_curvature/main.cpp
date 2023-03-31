@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,14 +23,9 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/update/topology.h>
-#include <vclib/algorithms/update/curvature.h>
-#include <vclib/algorithms/update/scalar.h>
-#include <vclib/algorithms/update/color.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/io/load_obj.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/tri_mesh.h>
+#include <vclib/algorithm.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
 #include <vclib/misc/timer.h>
 
 #ifdef VCLIB_WITH_QGLVIEWER
@@ -51,16 +46,26 @@ int main(int argc, char **argv)
 	m.enablePerFaceAdjacentFaces();
 	m.enablePerVertexPrincipalCurvature();
 
+	vcl::updatePerFaceNormals(m);
 	vcl::updatePerFaceAdjacentFaces(m);
 	vcl::updatePerVertexAdjacentFaces(m);
 
+	double radius = vcl::boundingBox(m).diagonal() * 0.1;
 	log.startTimer();
-	vcl::updatePrincipalCurvature(m, vcl::VCL_PRINCIPAL_CURVATURE_PCA, log);
+	vcl::updatePrincipalCurvaturePCA(m, radius, true, log);
 
 	vcl::setPerVertexScalarFromPrincipalCurvatureMean(m);
-	vcl::setPerVertexColorFromScalar(m);
+	vcl::Histogramd h = vcl::vertexScalarHistogram(m);
 
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.ply");
+	vcl::setPerVertexColorFromScalar(m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
+
+	std::cout << "Curvature range: " << h.minRangeValue() << " " << h.maxRangeValue() << "\n";
+	std::cout << "Used 90 percentile: " << h.percentile(0.1) << " " << h.percentile(0.9) << "\n";
+
+	m.enablePerFaceColor();
+	vcl::setPerFaceColorFromVertexColor(m);
+
+	vcl::io::saveStl(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.stl");
 
 #ifdef VCLIB_WITH_QGLVIEWER
 	QApplication application(argc, argv);

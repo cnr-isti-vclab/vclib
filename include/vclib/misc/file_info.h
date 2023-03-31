@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -26,25 +26,52 @@
 
 #include <string>
 
-namespace vcl::fileInfo {
+namespace vcl {
 
-void separateExtensionFromFilename(
-	const std::string& fullname,
-	std::string& rawname,
-	std::string& extension);
+class FileInfo
+{
+public:
+	FileInfo();
 
-void separateFilenameFromPath(
-	const std::string& fullpath,
-	std::string& path,
-	std::string& filename);
+	FileInfo(const std::string& filename);
 
-std::string pathWithoutFilename(const std::string& fullpath);
+	/* Static members */
 
-std::string filenameWithoutExtension(const std::string& fullpath);
+	// file stat
 
-std::string filenameWithExtension(const std::string& fullpath);
+	bool exists(const std::string& filename);
 
-}
+	static std::size_t fileSize(const std::string& filename);
+
+	static bool isFileBinary(const std::string& filename);
+
+	// name and extension management
+
+	static void separateExtensionFromFilename(
+		const std::string& fullname,
+		std::string& rawname,
+		std::string& extension);
+
+	static void separateFilenameFromPath(
+		const std::string& fullpath,
+		std::string& path,
+		std::string& filename);
+
+	static std::string pathWithoutFilename(const std::string& fullpath);
+
+	static std::string filenameWithoutExtension(const std::string& fullpath);
+
+	static std::string filenameWithExtension(const std::string& fullpath);
+
+	static std::string extension(const std::string& filename);
+
+	static std::string addExtensionToFileName(const std::string& filename, const std::string& ext);
+
+private:
+	std::string filename;
+};
+
+} // namespace vcl
 
 #include "file_info.cpp"
 

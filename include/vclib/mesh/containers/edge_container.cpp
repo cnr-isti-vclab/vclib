@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -241,7 +241,7 @@ typename EdgeContainer<T>::ConstEdgeIterator EdgeContainer<T>::edgeEnd() const
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<EdgeConcept T>
-typename EdgeContainer<T>::EdgeRangeIterator EdgeContainer<T>::edges(bool jumpDeleted)
+typename EdgeContainer<T>::EdgeView EdgeContainer<T>::edges(bool jumpDeleted)
 {
 	return Base::elements(jumpDeleted);
 }
@@ -266,7 +266,7 @@ typename EdgeContainer<T>::EdgeRangeIterator EdgeContainer<T>::edges(bool jumpDe
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<EdgeConcept T>
-typename EdgeContainer<T>::ConstEdgeRangeIterator EdgeContainer<T>::edges(bool jumpDeleted) const
+typename EdgeContainer<T>::ConstEdgeView EdgeContainer<T>::edges(bool jumpDeleted) const
 {
 	return Base::elements(jumpDeleted);
 }
@@ -321,7 +321,7 @@ template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled()
 	const requires edge::HasOptionalAdjacentEdges<T>
 {
-	return Base::optionalVec.isAdjacentEdgesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>();
 }
 
 /**
@@ -337,7 +337,7 @@ bool EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled()
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 {
-	Base::optionalVec.enableAdjacentEdges(Base::vec.size());
+	Base::template enableOptionalComponent<typename T::AdjacentEdgesComponent>();
 	static const int N = T::VERTEX_NUMBER;
 	if constexpr (N < 0) {
 		for (T& f : edges()) {
@@ -355,7 +355,7 @@ void EdgeContainer<T>::enablePerEdgeAdjacentEdges() requires edge::HasOptionalAd
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 {
-	Base::optionalVec.disableAdjacentEdges();
+	Base::template disableOptionalComponent<typename T::AdjacentEdgesComponent>();
 }
 
 /**
@@ -369,7 +369,7 @@ void EdgeContainer<T>::disablePerEdgeAdjacentEdges() requires edge::HasOptionalA
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const requires edge::HasOptionalAdjacentFaces<T>
 {
-	return Base::optionalVec.isAdjacentFacesEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -381,7 +381,7 @@ bool EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const requires edge::HasO
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
 {
-	Base::optionalVec.enableAdjacentFaces(Base::vec.size());
+	Base::template enableOptionalComponent<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -393,7 +393,7 @@ void EdgeContainer<T>::enablePerEdgeAdjacentFaces() requires edge::HasOptionalAd
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
 {
-	Base::optionalVec.disableAdjacentFaces();
+	Base::template disableOptionalComponent<typename T::AdjacentFacesComponent>();
 }
 
 /**
@@ -406,7 +406,7 @@ void EdgeContainer<T>::disablePerEdgeAdjacentFaces() requires edge::HasOptionalA
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeColorEnabled() const requires edge::HasOptionalColor<T>
 {
-	return Base::optionalVec.isColorEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ColorComponent>();
 }
 
 /**
@@ -417,7 +417,7 @@ bool EdgeContainer<T>::isPerEdgeColorEnabled() const requires edge::HasOptionalC
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeColor() requires edge::HasOptionalColor<T>
 {
-	Base::optionalVec.enableColor(edgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -428,7 +428,7 @@ void EdgeContainer<T>::enablePerEdgeColor() requires edge::HasOptionalColor<T>
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeColor() requires edge::HasOptionalColor<T>
 {
-	Base::optionalVec.disableColor();
+	return Base::template disableOptionalComponent<typename T::ColorComponent>();
 }
 
 /**
@@ -441,7 +441,7 @@ void EdgeContainer<T>::disablePerEdgeColor() requires edge::HasOptionalColor<T>
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeMarkEnabled() const requires edge::HasOptionalMark<T>
 {
-	return Base::optionalVec.isMarkEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::MarkComponent>();
 }
 
 /**
@@ -452,7 +452,7 @@ bool EdgeContainer<T>::isPerEdgeMarkEnabled() const requires edge::HasOptionalMa
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeMark() requires edge::HasOptionalMark<T>
 {
-	Base::optionalVec.enableMark(edgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**
@@ -463,7 +463,7 @@ void EdgeContainer<T>::enablePerEdgeMark() requires edge::HasOptionalMark<T>
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeMark() requires edge::HasOptionalMark<T>
 {
-	Base::optionalVec.disableMark();
+	return Base::template disableOptionalComponent<typename T::MarkComponent>();
 }
 
 /**
@@ -476,7 +476,7 @@ void EdgeContainer<T>::disablePerEdgeMark() requires edge::HasOptionalMark<T>
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeScalarEnabled() const requires edge::HasOptionalScalar<T>
 {
-	return Base::optionalVec.isScalarEnabled();
+	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
 }
 /**
  * @brief Enables the Optional Scalar of the edge.
@@ -486,7 +486,7 @@ bool EdgeContainer<T>::isPerEdgeScalarEnabled() const requires edge::HasOptional
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeScalar() requires edge::HasOptionalScalar<T>
 {
-	Base::optionalVec.enableScalar(edgeContainerSize());
+	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -497,7 +497,7 @@ void EdgeContainer<T>::enablePerEdgeScalar() requires edge::HasOptionalScalar<T>
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeScalar() requires edge::HasOptionalScalar<T>
 {
-	Base::optionalVec.disableScalar();
+	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
 }
 
 /**
@@ -513,7 +513,7 @@ template<EdgeConcept T>
 bool EdgeContainer<T>::hasPerEdgeCustomComponent(
 	const std::string& name) const requires edge::HasCustomComponents<T>
 {
-	return Base::optionalVec.componentExists(name);
+	return Base::ccVecMap.componentExists(name);
 }
 
 /**
@@ -528,7 +528,7 @@ template<EdgeConcept T>
 std::vector<std::string> EdgeContainer<T>::getAllPerEdgeCustomComponentNames()
 	const requires edge::HasCustomComponents<T>
 {
-	return Base::optionalVec.allComponentNames();
+	return Base::ccVecMap.allComponentNames();
 }
 
 /**
@@ -553,7 +553,7 @@ template<typename K>
 bool EdgeContainer<T>::isPerEdgeCustomComponentOfType(
 	const std::string& name) const requires edge::HasCustomComponents<T>
 {
-	return Base::optionalVec.template isComponentOfType<K>(name);
+	return Base::ccVecMap.template isComponentOfType<K>(name);
 }
 
 /**
@@ -576,7 +576,7 @@ template<typename K>
 std::vector<std::string>
 EdgeContainer<T>::getPerEdgeCustomComponentNamesOfType() const requires edge::HasCustomComponents<T>
 {
-	return Base::optionalVec.template allComponentNamesOfType<K>();
+	return Base::ccVecMap.template allComponentNamesOfType<K>();
 }
 
 /**
@@ -592,7 +592,7 @@ template<typename K>
 void EdgeContainer<T>::addPerEdgeCustomComponent(
 	const std::string& name) requires edge::HasCustomComponents<T>
 {
-	Base::optionalVec.template addNewComponent<K>(name, edgeContainerSize());
+	Base::ccVecMap.template addNewComponent<K>(name, edgeContainerSize());
 }
 
 /**
@@ -608,7 +608,7 @@ template<EdgeConcept T>
 void EdgeContainer<T>::deletePerEdgeCustomComponent(
 	const std::string& name) requires edge::HasCustomComponents<T>
 {
-	Base::optionalVec.deleteComponent(name);
+	Base::ccVecMap.deleteComponent(name);
 }
 
 /**
@@ -642,7 +642,7 @@ template<typename K>
 CustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(
 	const std::string& name) requires edge::HasCustomComponents<T>
 {
-	std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
 	CustomComponentVectorHandle<K> v(cc);
 	return v;
 }
@@ -680,120 +680,9 @@ template<typename K>
 ConstCustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(
 	const std::string& name) const requires edge::HasCustomComponents<T>
 {
-	const std::vector<std::any>& cc = Base::optionalVec.template componentVector<K>(name);
+	const std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
 	ConstCustomComponentVectorHandle<K> v(cc);
 	return cc;
-}
-
-/**
- * @brief Returns the index of the given edge.
- * @param f: edge pointer.
- * @return The index of f.
- */
-template<EdgeConcept T>
-uint EdgeContainer<T>::index(const EdgeType* e) const
-{
-	return Base::index(e);
-}
-
-template<EdgeConcept T>
-void vcl::mesh::EdgeContainer<T>::clearEdges()
-{
-	Base::clearElements();
-}
-
-template<EdgeConcept T>
-uint EdgeContainer<T>::addEdge()
-{
-	return Base::addElement();
-}
-
-/**
- * @brief Adds nEdges to the Edge Container of the mesh.
- *
- * Returns the id of the first added edge.
- *
- * @param nEdges
- * @return the id of the first added edge.
- */
-template<EdgeConcept T>
-uint vcl::mesh::EdgeContainer<T>::addEdges(uint nEdges)
-{
-	return Base::addElements(nEdges);
-}
-
-template<EdgeConcept T>
-void EdgeContainer<T>::reserveEdges(uint size)
-{
-	Base::reserveElements(size);
-}
-
-/**
- * @brief Compacts the edge container, keeping only the non-deleted edges.
- *
- * @return a vector that tells, for each old edge index, the new index of the edge. Will contain -1
- * if the edge has been deleted.
- */
-template<EdgeConcept T>
-std::vector<int> vcl::mesh::EdgeContainer<T>::compactEdges()
-{
-	return Base::compactElements();
-}
-
-template<EdgeConcept T>
-template<typename Mesh>
-void EdgeContainer<T>::enableOptionalComponentsOf(const Mesh& m)
-{
-	// if edges are enabled in the other Mesh
-	if constexpr (HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
-
-		Base::enableOptionalComponentsOf((const MEdgeContainer&)m);
-	}
-}
-
-template<EdgeConcept T>
-template<typename Mesh>
-void EdgeContainer<T>::importFrom(const Mesh& m)
-{
-	if constexpr (HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
-
-		Base::importFrom((const MEdgeContainer&)m);
-	}
-}
-
-template<EdgeConcept T>
-template<typename Mesh, typename Vertex>
-void EdgeContainer<T>::importVertexReferencesFrom(const Mesh& m, Vertex* base)
-{
-	if constexpr (mesh::HasVertexContainer<Mesh> && HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
-
-		Base::importVertexReferencesFrom((const MEdgeContainer&)m, base, &m.vertex(0));
-	}
-}
-
-template<EdgeConcept T>
-template<typename Mesh, typename Face>
-void EdgeContainer<T>::importFaceReferencesFrom(const Mesh& m, Face* base)
-{
-	if constexpr (HasFaceContainer<Mesh> && HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
-
-		Base::importFaceReferencesFrom((const MEdgeContainer&)m, base, &m.face(0));
-	}
-}
-
-template<EdgeConcept T>
-template<typename Mesh>
-void EdgeContainer<T>::importEdgeReferencesFrom(const Mesh& m, T *base)
-{
-	if constexpr (HasEdgeContainer<Mesh>) {
-		using MEdgeContainer = typename Mesh::EdgeContainer::Base;
-
-		Base::importFaceReferencesFrom((const MEdgeContainer&)m, base, &m.edge(0));
-	}
 }
 
 } // namespace vcl::mesh

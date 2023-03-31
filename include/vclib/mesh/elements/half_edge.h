@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,7 +24,9 @@
 #ifndef VCL_MESH_ELEMENTS_HALF_EDGE_H
 #define VCL_MESH_ELEMENTS_HALF_EDGE_H
 
-#include "half_edge_concept.h"
+#include <vclib/concept/mesh/element/half_edge.h>
+
+#include "element.h"
 
 namespace vcl::mesh {
 
@@ -32,27 +34,31 @@ namespace vcl::mesh {
 template<HalfEdgeConcept>
 class HalfEdgeContainer;
 
-template<typename>
-class ElementContainer;
-
 } // namespace vcl::mesh
 
 namespace vcl {
 
-template<typename... Args>
-class HalfEdge : public Args...
+template<typename MeshType, typename... Args>
+class HalfEdge : public Element<MeshType, Args...>
 {
 	template<HalfEdgeConcept>
 	friend class mesh::HalfEdgeContainer;
 
-	template<typename>
-	friend class mesh::ElementContainer;
+	// HalfEdge references component of the HalfEdge
+	using HFRefs = typename HalfEdge::HalfEdgeReferences;
 
 public:
-	HalfEdge();
+	static const uint ELEMENT_TYPE = HALF_EDGE;
 
-	template<typename Element>
-	void importFrom(const Element& e);
+	using VertexType = typename HFRefs::VertexType;
+	using FaceType   = typename HFRefs::FaceType;
+
+	uint index() const;
+};
+
+template<typename MeshType, typename... Args>
+class HalfEdge<MeshType, TypeWrapper<Args...>> : public HalfEdge<MeshType, Args...>
+{
 };
 
 } // namespace vcl

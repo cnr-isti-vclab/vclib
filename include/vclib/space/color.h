@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -78,6 +78,7 @@ public:
 	Color();
 	Color(ColorRGBA cc);
 	Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+	Color(const Point4<uint8_t>& p);
 
 	uint8_t red() const;
 	uint8_t green() const;
@@ -99,6 +100,9 @@ public:
 
 	float hsvHueF() const;
 	float hsvSaturationF() const;
+	
+	unsigned short toUnsignedR5G5B5() const;
+	unsigned short toUnsignedB5G5R5() const;
 
 	void setAlpha(uint8_t alpha);
 	void setRed(uint8_t red);
@@ -115,6 +119,9 @@ public:
 
 	void setRgbF(float red, float green, float blue, float alpha = 1.0);
 	void setHsvF(float hf, float sf, float vf, float alpha = 1.0);
+
+	void setFromUnsignedR5G5B5(unsigned short val);
+	void setFromUnsignedB5G5R5(unsigned short val);
 
 	bool operator==(const Color& otherColor) const;
 	bool operator!=(const Color& otherColor) const;

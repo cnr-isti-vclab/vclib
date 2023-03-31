@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -47,7 +47,7 @@ namespace vcl {
 template<typename Iterator, typename Lambda>
 void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F)
 {
-	std::for_each(VCL_PARALLEL begin, end, F);
+	std::for_each(std::execution::par, begin, end, F);
 }
 
 /**
@@ -70,7 +70,7 @@ void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F)
 template<typename Iterator, typename Lambda>
 void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F)
 {
-	std::for_each(VCL_PARALLEL begin, end, F);
+	std::for_each(std::execution::par, begin, end, F);
 }
 
 /**

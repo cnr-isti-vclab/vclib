@@ -19,6 +19,10 @@ option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 # MapBox earcut
 option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut source" ON)
 
+if (APPLE)
+	option(VCLIB_ALLOW_BUNDLED_PSTLD "Allow use of bundled pstld source" ON)
+endif()
+
 # Doctest
 if (VCLIB_BUILD_TESTS)
 	option(VCLIB_ALLOW_BUNDLED_DOCTEST "Allow use of bundled doctest source" ON)
@@ -48,6 +52,11 @@ include(eigen.cmake)
 
 ### Mapbox-Earcut
 include(mapbox.cmake)
+
+### pstld, required on Apple clang (waiting for c++17 parallel algorithms support)
+if (APPLE)
+	include(pstld.cmake)
+endif()
 
 # === OPTIONAL === #
 

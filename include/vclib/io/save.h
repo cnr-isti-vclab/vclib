@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -24,23 +24,32 @@
 #ifndef VCL_IO_SAVE_H
 #define VCL_IO_SAVE_H
 
-#include "save_obj.h"
-#include "save_off.h"
-#include "save_ply.h"
+#include "obj/save.h"
+#include "off/save.h"
+#include "ply/save.h"
+#include "stl/save.h"
 
-namespace vcl::io {
+namespace vcl {
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void save(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log    = nullLogger,
+	bool               binary = true);
 
 template<MeshConcept MeshType>
-void save(const MeshType& m, const std::string& filename, bool binary = true);
+void save(const MeshType& m, const std::string& filename, bool binary);
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
 	const MeshType&     m,
 	const std::string&  filename,
 	const FileMeshInfo& info,
+	LogType&            log    = nullLogger,
 	bool                binary = true);
 
-} // namespace vcl::io
+} // namespace vcl
 
 #include "save.cpp"
 

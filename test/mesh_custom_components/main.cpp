@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,10 +23,9 @@
 
 #include <iostream>
 
-#include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/tri_mesh.h>
-#include <vclib/algorithms/smooth.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
+#include <vclib/algorithm.h>
 
 int main()
 {
@@ -79,6 +78,10 @@ int main()
 	avgDist /= m.vertexNumber();
 
 	std::cerr << "Avg distance after taubin smoothing: " << avgDist << "\n";
+
+	m.addCustomComponent<vcl::Point3d>("barycenter", vcl::barycenter(m));
+
+	std::cerr << "Mesh barycenter: " << m.customComponent<vcl::Point3d>("barycenter") << "\n";
 
 	return 0;
 }

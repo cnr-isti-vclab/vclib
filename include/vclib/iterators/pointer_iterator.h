@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_POINTER_ITERATOR_H
-#define VCL_ITERATORS_POINTER_ITERATOR_H
+#ifndef VCL_ITERATOR_POINTER_ITERATOR_H
+#define VCL_ITERATOR_POINTER_ITERATOR_H
 
 namespace vcl {
 
@@ -70,14 +70,27 @@ class PointerIterator : public It
 {
 public:
 	using value_type = typename It::value_type*;
-	using reference         = const value_type;
+	using reference  = value_type;
 
 	using It::It;
-	PointerIterator(const It& it) : It(it) {};
+	PointerIterator(const It& it) : It(it) {}
 
-	reference operator*() const { return It::operator->(); };
+	reference operator*() const { return It::operator->(); }
+};
+
+template<typename It>
+class ConstPointerIterator : public It
+{
+public:
+	using value_type = const typename It::value_type*;
+	using reference  = value_type;
+
+	using It::It;
+	ConstPointerIterator(const It& it) : It(it) {}
+
+	reference operator*() const { return It::operator->(); }
 };
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_POINTER_ITERATOR_H
+#endif // VCL_ITERATOR_POINTER_ITERATOR_H

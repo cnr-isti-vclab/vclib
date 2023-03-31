@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,13 +23,9 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/clean.h>
-#include <vclib/algorithms/update/bounding_box.h>
-#include <vclib/algorithms/update/color.h>
-#include <vclib/algorithms/update/topology.h>
-#include <vclib/io/load_ply.h>
-#include <vclib/io/save_ply.h>
-#include <vclib/tri_mesh.h>
+#include <vclib/algorithm.h>
+#include <vclib/load_save.h>
+#include <vclib/mesh.h>
 #include <vclib/misc/timer.h>
 
 int main()
@@ -63,6 +59,8 @@ int main()
 
 	std::cerr << "Removed Duplicated Vertices: " << nv << "\n";
 
+	m.compact();
+
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
 
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
@@ -94,7 +92,7 @@ int main()
 
 	vcl::setPerVertexColorPerlinNoise(m, vcl::Point3d(d, d, d));
 
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
+	vcl::save(m, VCL_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
 
 	return 0;
 }

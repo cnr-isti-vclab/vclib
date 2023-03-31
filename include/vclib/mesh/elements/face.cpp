@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -25,8 +25,8 @@
 
 namespace vcl {
 
-template<typename... Args>
-Face<Args...>::Face()
+template<typename MeshType, typename... Args>
+Face<MeshType, Args...>::Face()
 {
 }
 
@@ -44,10 +44,16 @@ Face<Args...>::Face()
  * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
  *                  vertices of the face.
  */
-template<typename... Args>
-Face<Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
+template<typename MeshType, typename... Args>
+Face<MeshType, Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
 {
 	setVertices(list);
+}
+
+template<typename MeshType, typename... Args>
+uint Face<MeshType, Args...>::index() const
+{
+	return Element<MeshType, Args...>::template index<typename MeshType::FaceType>();
 }
 
 /**
@@ -62,9 +68,9 @@ Face<Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
  * @param[in] args: a variable number of vertex pointers in counterclockwise order that will be set
  *                  as vertices of the face.
  */
-template<typename... Args>
+template<typename MeshType, typename... Args>
 template<typename... V>
-Face<Args...>::Face(V... args) // todo add requires
+Face<MeshType, Args...>::Face(V... args) // todo add requires
 {
 	setVertices({args...});
 }
@@ -79,10 +85,10 @@ Face<Args...>::Face(V... args) // todo add requires
  * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
  *                  vertices of the face.
  */
-template<typename... Args>
-void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
+template<typename MeshType, typename... Args>
+void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 {
-	using F = Face<Args...>;
+	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	VRefs::setVertices(list);
 
@@ -115,18 +121,11 @@ void Face<Args...>::setVertices(const std::vector<VertexType*>& list)
 	}
 }
 
-template<typename... Args>
+template<typename MeshType, typename... Args>
 template<typename... V>
-void Face<Args...>::setVertices(V... args)
+void Face<MeshType, Args...>::setVertices(V... args)
 {
 	setVertices({args...});
-}
-
-template<typename... Args>
-template<typename Element>
-void Face<Args...>::importFrom(const Element& f)
-{
-	(Args::importFrom(f), ...);
 }
 
 /**
@@ -142,10 +141,11 @@ void Face<Args...>::importFrom(const Element& f)
  *
  * @param n: the new number of vertices.
  */
-template<typename... Args>
-void Face<Args...>::resizeVertices(uint n) requires PolygonFaceConcept<Face<Args...>>
+template<typename MeshType, typename... Args>
+void Face<MeshType, Args...>::resizeVertices(uint n)
+	requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
 {
-	using F = Face<Args...>;
+	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	VRefs::resizeVertices(n);
 
@@ -178,10 +178,10 @@ void Face<Args...>::resizeVertices(uint n) requires PolygonFaceConcept<Face<Args
 	}
 }
 
-template<typename... Args>
-void Face<Args...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+template<typename MeshType, typename... Args>
+void Face<MeshType, Args...>::pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
 {
-	using F = Face<Args...>;
+	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	VRefs::pushVertex(v);
 
@@ -215,10 +215,10 @@ void Face<Args...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face<A
 	}
 }
 
-template<typename... Args>
-void Face<Args...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face<Args...>>
+template<typename MeshType, typename... Args>
+void Face<MeshType, Args...>::insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
 {
-	using F = Face<Args...>;
+	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	VRefs::insertVertex(i, v);
 
@@ -252,10 +252,10 @@ void Face<Args...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConc
 	}
 }
 
-template<typename... Args>
-void Face<Args...>::eraseVertex(uint i) requires PolygonFaceConcept<Face<Args...>>
+template<typename MeshType, typename... Args>
+void Face<MeshType, Args...>::eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
 {
-	using F = Face<Args...>;
+	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	VRefs::eraseVertex(i);
 
@@ -288,10 +288,10 @@ void Face<Args...>::eraseVertex(uint i) requires PolygonFaceConcept<Face<Args...
 	}
 }
 
-template<typename... Args>
-void Face<Args...>::clearVertices() requires PolygonFaceConcept<Face<Args...>>
+template<typename MeshType, typename... Args>
+void Face<MeshType, Args...>::clearVertices() requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
 {
-	using F = Face<Args...>;
+	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	VRefs::clearVertices();
 
@@ -324,4 +324,45 @@ void Face<Args...>::clearVertices() requires PolygonFaceConcept<Face<Args...>>
 	}
 }
 
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordBegin()
+{
+	return VertexCoordIterator(VRefs::vertexBegin());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::ConstVertexCoordIterator
+Face<MeshType, Args...>::vertexCoordBegin() const
+{
+	return ConstVertexCoordIterator(VRefs::vertexBegin());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordEnd()
+{
+	return VertexCoordIterator(VRefs::vertexEnd());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::ConstVertexCoordIterator
+Face<MeshType, Args...>::vertexCoordEnd() const
+{
+	return ConstVertexCoordIterator(VRefs::vertexEnd());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::VertexCoordView Face<MeshType, Args...>::vertexCoords()
+{
+	return VertexCoordView(vertexCoordBegin(), vertexCoordEnd());
+}
+
+template<typename MeshType, typename... Args>
+typename Face<MeshType, Args...>::ConstVertexCoordView
+Face<MeshType, Args...>::vertexCoords() const
+{
+	return ConstVertexCoordView(vertexCoordBegin(), vertexCoordEnd());
+}
+
 } // namespace vcl
+
+

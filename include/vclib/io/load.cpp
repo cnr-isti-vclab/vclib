@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -23,48 +23,55 @@
 
 #include "load.h"
 
-namespace vcl::io {
+namespace vcl {
 
-template<MeshConcept MeshType>
-MeshType load(const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType load(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	return load<MeshType>(filename, loadedInfo, enableOptionalComponents);
+	return load<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
-template<MeshConcept MeshType>
-MeshType load(const std::string& filename, FileMeshInfo& loadedInfo, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType load(
+	const std::string& filename,
+	FileMeshInfo&      loadedInfo,
+	LogType&           log,
+	bool               enableOptionalComponents)
 {
 	MeshType m;
-	load(m, filename, loadedInfo, enableOptionalComponents);
+	load(m, filename, loadedInfo, log, enableOptionalComponents);
 	return m;
 }
 
-template<MeshConcept MeshType>
-void load(MeshType& m, const std::string& filename, bool enableOptionalComponents)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void load(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
 	FileMeshInfo loadedInfo;
-	load(m, filename, loadedInfo, enableOptionalComponents);
+	load(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType>
 void load(
 	MeshType&          m,
 	const std::string& filename,
 	FileMeshInfo&      loadedInfo,
+	LogType&           log,
 	bool               enableOptionalComponents)
 {
-	std::string name, ext;
-	vcl::fileInfo::separateExtensionFromFilename(filename, name, ext);
+	std::string ext = FileInfo::extension(filename);
 	ext = vcl::str::toLower(ext);
 	if (ext == ".obj") {
-		loadObj(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
 	}
 	else if (ext == ".off") {
-		loadOff(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
 	}
 	else if (ext == ".ply") {
-		loadPly(m, filename, loadedInfo, enableOptionalComponents);
+		io::loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+	}
+	else if (ext == ".stl") {
+		io::loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
 	}
 	else {
 		throw vcl::UnknownFileFormatException(ext);

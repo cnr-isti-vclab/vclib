@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2022                                                    *
+ * Copyright(C) 2021-2023                                                    *
  * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
@@ -114,7 +114,7 @@ void ViewerMainWindow::setDrawableObjectVector(std::shared_ptr<vcl::DrawableObje
  */
 void ViewerMainWindow::visibilityDrawableObjectChanged()
 {
-	// get the selecte drawable object
+	// get the selected drawable object
 	uint i = ui->drawVectorFrame->selectedDrawableObject();
 	try {
 		// if it is a GenericDrawableMesh, we must be sure that its render settings are updated
