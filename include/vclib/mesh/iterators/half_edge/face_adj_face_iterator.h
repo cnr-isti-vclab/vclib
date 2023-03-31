@@ -28,14 +28,18 @@
 
 namespace vcl {
 
-template<typename HalfEdge>
-class FaceAdjFaceIterator : public FaceBaseIterator<HalfEdge>
+namespace internal {
+
+template<typename HalfEdge, bool CNST>
+class FaceAdjFaceIterator : public FaceBaseIterator<HalfEdge, CNST>
 {
-	using Base = FaceBaseIterator<HalfEdge>;
+	using Base = FaceBaseIterator<HalfEdge, CNST>;
 public:
-	using value_type        = typename HalfEdge::FaceType*;
-	using reference         = typename HalfEdge::FaceType*&;
-	using pointer           = typename HalfEdge::FaceType**;
+	using value_type = std::conditional_t<CNST,
+			const typename HalfEdge::FaceType*,
+			typename HalfEdge::FaceType*>;
+	using reference = std::conditional_t<CNST, value_type, value_type&>;
+	using pointer   = value_type*;
 
 	using Base::Base;
 
@@ -51,28 +55,13 @@ public:
 	}
 };
 
+} // namespace vcl::internal
+
 template<typename HalfEdge>
-class ConstFaceAdjFaceIterator : public ConstFaceBaseIterator<HalfEdge>
-{
-	using Base = ConstFaceBaseIterator<HalfEdge>;
-public:
-	using value_type        = const typename HalfEdge::FaceType*;
-	using reference         = const typename HalfEdge::FaceType*;
-	using pointer           = const typename HalfEdge::FaceType**;
+using FaceAdjFaceIterator = internal::FaceAdjFaceIterator<HalfEdge, false>;
 
-	using Base::Base;
-
-	reference operator*() const
-	{
-		if (Base::current->twin() == nullptr) return nullptr;
-		return Base::current->twin()->face();
-	}
-	pointer operator->() const
-	{
-		if (Base::current->twin() == nullptr) return nullptr;
-		return &(Base::current->twin()->face());
-	}
-};
+template<typename HalfEdge>
+using ConstFaceAdjFaceIterator = internal::FaceAdjFaceIterator<HalfEdge, true>;
 
 } // namespace vcl
 

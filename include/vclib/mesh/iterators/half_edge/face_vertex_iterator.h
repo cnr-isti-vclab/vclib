@@ -28,14 +28,19 @@
 
 namespace vcl {
 
-template<typename HalfEdge>
-class FaceVertexIterator : public FaceBaseIterator<HalfEdge>
+namespace internal {
+
+template<typename HalfEdge, bool CNST>
+class FaceVertexIterator : public FaceBaseIterator<HalfEdge, CNST>
 {
-	using Base = FaceBaseIterator<HalfEdge>;
-public:
-	using value_type        = typename HalfEdge::VertexType*;
-	using reference         = typename HalfEdge::VertexType*&;
-	using pointer           = typename HalfEdge::VertexType**;
+	using Base = FaceBaseIterator<HalfEdge, CNST>;
+
+public :
+	using value_type = std::conditional_t<CNST,
+			const typename HalfEdge::VertexType*,
+			typename HalfEdge::VertexType*>;
+	using reference  = std::conditional_t<CNST, value_type, value_type&>;
+	using pointer    = value_type*;
 
 	using Base::Base;
 
@@ -43,20 +48,13 @@ public:
 	pointer operator->() const { return &(Base::current->fromVertex()); }
 };
 
+} // namespace vcl::internal
+
 template<typename HalfEdge>
-class ConstFaceVertexIterator : public ConstFaceBaseIterator<HalfEdge>
-{
-	using Base = ConstFaceBaseIterator<HalfEdge>;
-public:
-	using value_type        = const typename HalfEdge::VertexType*;
-	using reference         = const typename HalfEdge::VertexType*;
-	using pointer           = const typename HalfEdge::VertexType**;
+using FaceVertexIterator = internal::FaceVertexIterator<HalfEdge, false>;
 
-	using Base::Base;
-
-	reference operator*() const { return Base::current->fromVertex(); }
-	pointer operator->() const { return &(Base::current->fromVertex()); }
-};
+template<typename HalfEdge>
+using ConstFaceVertexIterator = internal::FaceVertexIterator<HalfEdge, true>;
 
 } // namespace vcl
 

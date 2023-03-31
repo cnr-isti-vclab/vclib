@@ -21,28 +21,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_BASE_ITERATOR_H
-#define VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_BASE_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_BASE_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_BASE_ITERATOR_H
 
-#include "base_iterator.h"
+#include <iterator>
 
 namespace vcl::internal {
 
 template<typename HalfEdge, bool CNST>
-class VertexBaseIterator : public BaseIterator<HalfEdge, CNST>
+class BaseIterator
 {
-	using Base = BaseIterator<HalfEdge, CNST>;
+	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public:
-	using Base::BaseIterator;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	VertexBaseIterator operator++();
-	VertexBaseIterator operator++(int);
-	VertexBaseIterator operator--();
-	VertexBaseIterator operator--(int);
+	BaseIterator() {}
+	BaseIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	BaseIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
+
+	bool operator==(const BaseIterator& oi) const { return current == oi.current; }
+	bool operator!=(const BaseIterator& oi) const { return current != oi.current; }
+
+protected:
+	CurrentHEdgeType current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl::internal
 
-#include "vertex_base_iterator.cpp"
-
-#endif // VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_BASE_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_BASE_ITERATOR_H

@@ -23,146 +23,46 @@
 
 #include "vertex_base_iterator.h"
 
-namespace vcl {
+namespace vcl::internal {
 
-template<typename HalfEdge>
-VertexBaseIterator<HalfEdge>::VertexBaseIterator()
+template<typename HalfEdge, bool CNST>
+VertexBaseIterator<HalfEdge, CNST> VertexBaseIterator<HalfEdge, CNST>::operator++()
 {
-}
-
-template<typename HalfEdge>
-VertexBaseIterator<HalfEdge>::VertexBaseIterator(HalfEdge* start) : current(start), end(start)
-{
-}
-
-template<typename HalfEdge>
-VertexBaseIterator<HalfEdge>::VertexBaseIterator(HalfEdge* start, const HalfEdge* end) :
-		current(start), end(end)
-{
-}
-
-template<typename HalfEdge>
-bool VertexBaseIterator<HalfEdge>::operator==(const VertexBaseIterator &oi) const
-{
-	return current == oi.current;
-}
-
-template<typename HalfEdge>
-bool VertexBaseIterator<HalfEdge>::operator!=(const VertexBaseIterator &oi) const
-{
-	return current != oi.current;
-}
-
-template<typename HalfEdge>
-VertexBaseIterator<HalfEdge> VertexBaseIterator<HalfEdge>::operator++()
-{
-	current = current->prev();
-	current = current->twin();
-	if (current == end) current = nullptr;
+	Base::current = Base::current->prev();
+	Base::current = Base::current->twin();
+	if (Base::current == Base::end) Base::current = nullptr;
 	return *this;
 }
 
-template<typename HalfEdge>
-VertexBaseIterator<HalfEdge> VertexBaseIterator<HalfEdge>::operator++(int)
+template<typename HalfEdge, bool CNST>
+VertexBaseIterator<HalfEdge, CNST> VertexBaseIterator<HalfEdge, CNST>::operator++(int)
 {
 	auto it = *this;
-	current = current->prev();
-	current = current->twin();
-	if (current == end) current = nullptr;
+	Base::current = Base::current->prev();
+	Base::current = Base::current->twin();
+	if (Base::current == Base::end) Base::current = nullptr;
 	return it;
 }
 
-template<typename HalfEdge>
-VertexBaseIterator<HalfEdge> VertexBaseIterator<HalfEdge>::operator--()
+template<typename HalfEdge, bool CNST>
+VertexBaseIterator<HalfEdge, CNST> VertexBaseIterator<HalfEdge, CNST>::operator--()
 {
-	current = current->twin();
-	if (current != nullptr)
-		current = current->next();
-	if (current == end) current = nullptr;
+	Base::current = Base::current->twin();
+	if (Base::current != nullptr)
+		Base::current = Base::current->next();
+	if (Base::current == Base::end) Base::current = nullptr;
 	return *this;
 }
 
-template<typename HalfEdge>
-VertexBaseIterator<HalfEdge> VertexBaseIterator<HalfEdge>::operator--(int)
+template<typename HalfEdge, bool CNST>
+VertexBaseIterator<HalfEdge, CNST> VertexBaseIterator<HalfEdge, CNST>::operator--(int)
 {
 	auto it = *this;
-	current = current->twin();
-	if (current != nullptr)
-		current = current->next();
-	if (current == end) current = nullptr;
+	Base::current = Base::current->twin();
+	if (Base::current != nullptr)
+		Base::current = Base::current->next();
+	if (Base::current == Base::end) Base::current = nullptr;
 	return it;
 }
 
-template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge>::ConstVertexBaseIterator()
-{
-
-}
-
-template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge>::ConstVertexBaseIterator(const HalfEdge *start) :
-		current(start), end(start)
-{
-}
-
-template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge>::ConstVertexBaseIterator(
-	const HalfEdge* start,
-	const HalfEdge* end) :
-		current(start), end(end)
-{
-}
-
-template<typename HalfEdge>
-bool ConstVertexBaseIterator<HalfEdge>::operator==(const ConstVertexBaseIterator &oi) const
-{
-	return current == oi.current;
-}
-
-template<typename HalfEdge>
-bool ConstVertexBaseIterator<HalfEdge>::operator!=(const ConstVertexBaseIterator &oi) const
-{
-	return current != oi.current;
-}
-
-template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge> ConstVertexBaseIterator<HalfEdge>::operator++()
-{
-	current = current->prev();
-	current = current->twin();
-	if (current == end) current = nullptr;
-	return *this;
-}
-
-template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge> ConstVertexBaseIterator<HalfEdge>::operator++(int)
-{
-	auto it = *this;
-	current = current->prev();
-	current = current->twin();
-	if (current == end) current = nullptr;
-	return it;
-}
-
-template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge> ConstVertexBaseIterator<HalfEdge>::operator--()
-{
-	current = current->twin();
-	if (current != nullptr)
-		current = current->next();
-	if (current == end) current = nullptr;
-	return *this;
-}
-
-template<typename HalfEdge>
-ConstVertexBaseIterator<HalfEdge> ConstVertexBaseIterator<HalfEdge>::operator--(int)
-{
-	auto it = *this;
-	current = current->twin();
-	if (current != nullptr)
-		current = current->next();
-	if (current == end) current = nullptr;
-	return it;
-}
-
-} // namespace vcl
+} // namespace vcl::internal

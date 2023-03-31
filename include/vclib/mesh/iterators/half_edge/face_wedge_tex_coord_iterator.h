@@ -30,14 +30,18 @@
 
 namespace vcl {
 
-template<typename HalfEdge>
-class FaceWedgeTexCoordIterator : public FaceBaseIterator<HalfEdge>
+namespace internal {
+
+template<typename HalfEdge, bool CNST>
+class FaceWedgeTexCoordIterator : public FaceBaseIterator<HalfEdge, CNST>
 {
-	using Base = FaceBaseIterator<HalfEdge>;
+	using Base = FaceBaseIterator<HalfEdge, CNST>;
 public:
-	using value_type        = typename HalfEdge::TexCoordType;
-	using reference         = typename HalfEdge::TexCoordType&;
-	using pointer           = typename HalfEdge::TexCoordType*;
+	using value_type = std::conditional_t<CNST,
+			const typename HalfEdge::TexCoordType,
+			typename HalfEdge::TexCoordType>;
+	using reference  = value_type&;
+	using pointer    = value_type*;
 
 	using Base::Base;
 
@@ -51,26 +55,13 @@ public:
 	}
 };
 
+} // namespace vcl::internal
+
 template<typename HalfEdge>
-class ConstFaceWedgeTexCoordIterator : public ConstFaceBaseIterator<HalfEdge>
-{
-	using Base = ConstFaceBaseIterator<HalfEdge>;
-public:
-	using value_type        = const typename HalfEdge::TexCoordType;
-	using reference         = const typename HalfEdge::TexCoordType&;
-	using pointer           = const typename HalfEdge::TexCoordType*;
+using FaceWedgeTexCoordIterator = internal::FaceWedgeTexCoordIterator<HalfEdge, false>;
 
-	using Base::Base;
-
-	reference operator*() const
-	{
-		return Base::current->texCoord();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->texCoord());
-	}
-};
+template<typename HalfEdge>
+using ConstFaceWedgeTexCoordIterator = internal::FaceWedgeTexCoordIterator<HalfEdge, true>;
 
 } // namespace vcl
 

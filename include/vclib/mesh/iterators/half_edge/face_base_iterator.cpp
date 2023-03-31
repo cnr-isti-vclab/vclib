@@ -23,131 +23,40 @@
 
 #include "face_base_iterator.h"
 
-namespace vcl {
+namespace vcl::internal {
 
-template<typename HalfEdge>
-FaceBaseIterator<HalfEdge>::FaceBaseIterator()
+template<typename HalfEdge, bool CNST>
+FaceBaseIterator<HalfEdge, CNST>& FaceBaseIterator<HalfEdge, CNST>::operator++()
 {
-}
-
-template<typename HalfEdge>
-FaceBaseIterator<HalfEdge>::FaceBaseIterator(HalfEdge* start) : current(start), end(start)
-{
-}
-
-template<typename HalfEdge>
-FaceBaseIterator<HalfEdge>::FaceBaseIterator(HalfEdge* start, const HalfEdge* end) :
-		current(start), end(end)
-{
-}
-
-template<typename HalfEdge>
-bool FaceBaseIterator<HalfEdge>::operator==(const FaceBaseIterator& oi) const
-{
-	return current == oi.current;
-}
-
-template<typename HalfEdge>
-bool FaceBaseIterator<HalfEdge>::operator!=(const FaceBaseIterator& oi) const
-{
-	return current != oi.current;
-}
-
-template<typename HalfEdge>
-FaceBaseIterator<HalfEdge>& FaceBaseIterator<HalfEdge>::operator++()
-{
-	current = current->next();
-	if (current == end) current = nullptr;
+	Base::current = Base::current->next();
+	if (Base::current == Base::end) Base::current = nullptr;
 	return *this;
 }
 
-template<typename HalfEdge>
-FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator++(int)
+template<typename HalfEdge, bool CNST>
+FaceBaseIterator<HalfEdge, CNST> FaceBaseIterator<HalfEdge, CNST>::operator++(int)
 {
 	auto it = *this;
-	current = current->next();
-	if (current == end) current = nullptr;
+	Base::current = Base::current->next();
+	if (Base::current == Base::end) Base::current = nullptr;
 	return it;
 }
 
-template<typename HalfEdge>
-FaceBaseIterator<HalfEdge>& FaceBaseIterator<HalfEdge>::operator--()
+template<typename HalfEdge, bool CNST>
+FaceBaseIterator<HalfEdge, CNST>& FaceBaseIterator<HalfEdge, CNST>::operator--()
 {
-	current = current->prev();
-	if (current == end) current = nullptr;
+	Base::current = Base::current->prev();
+	if (Base::current == Base::end) Base::current = nullptr;
 	return *this;
 }
 
-template<typename HalfEdge>
-FaceBaseIterator<HalfEdge> FaceBaseIterator<HalfEdge>::operator--(int)
+template<typename HalfEdge, bool CNST>
+FaceBaseIterator<HalfEdge, CNST> FaceBaseIterator<HalfEdge, CNST>::operator--(int)
 {
 	auto it = *this;
-	current = current->prev();
-	if (current == end) current = nullptr;
+	Base::current = Base::current->prev();
+	if (Base::current == Base::end) Base::current = nullptr;
 	return it;
 }
 
-template<typename HalfEdge>
-ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator()
-{
-}
-
-template<typename HalfEdge>
-ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const HalfEdge* start) :
-		current(start), end(start)
-{
-}
-
-template<typename HalfEdge>
-ConstFaceBaseIterator<HalfEdge>::ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end) :
-		current(start), end(end)
-{
-}
-
-template<typename HalfEdge>
-bool ConstFaceBaseIterator<HalfEdge>::operator==(const ConstFaceBaseIterator &oi) const
-{
-	return current == oi.current;
-}
-
-template<typename HalfEdge>
-bool ConstFaceBaseIterator<HalfEdge>::operator!=(const ConstFaceBaseIterator &oi) const
-{
-	return current != oi.current;
-}
-
-template<typename HalfEdge>
-ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator++()
-{
-	current = current->next();
-	if (current == end) current = nullptr;
-	return *this;
-}
-
-template<typename HalfEdge>
-ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator++(int)
-{
-	auto it = *this;
-	current = current->next();
-	if (current == end) current = nullptr;
-	return it;
-}
-
-template<typename HalfEdge>
-ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator--()
-{
-	current = current->prev();
-	if (current == end) current = nullptr;
-	return *this;
-}
-
-template<typename HalfEdge>
-ConstFaceBaseIterator<HalfEdge> ConstFaceBaseIterator<HalfEdge>::operator--(int)
-{
-	auto it = *this;
-	current = current->prev();
-	if (current == end) current = nullptr;
-	return it;
-}
-
-} // namespace vcl
+} // namespace vcl::internal
