@@ -203,16 +203,16 @@ Face<MeshType, Args...>::vertexCoordEnd() const
 }
 
 template<typename MeshType, typename... Args>
-typename Face<MeshType, Args...>::VertexCoordRange Face<MeshType, Args...>::vertexCoords()
+typename Face<MeshType, Args...>::VertexCoordView Face<MeshType, Args...>::vertexCoords()
 {
-	return VertexCoordRange(vertexCoordBegin(), vertexCoordEnd());
+	return VertexCoordView(vertexCoordBegin(), vertexCoordEnd());
 }
 
 template<typename MeshType, typename... Args>
-typename Face<MeshType, Args...>::ConstVertexCoordRange
+typename Face<MeshType, Args...>::ConstVertexCoordView
 Face<MeshType, Args...>::vertexCoords() const
 {
-	return ConstVertexCoordRange(vertexCoordBegin(), vertexCoordEnd());
+	return ConstVertexCoordView(vertexCoordBegin(), vertexCoordEnd());
 }
 
 } // namespace vcl

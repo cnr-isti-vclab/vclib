@@ -238,16 +238,16 @@ AdjacentFaces<Face, N, El, o>::adjFaceEnd() const
 }
 
 template<typename Face, int N, typename El, bool o>
-typename AdjacentFaces<Face, N, El, o>::AdjacentFaceRange AdjacentFaces<Face, N, El, o>::adjFaces()
+typename AdjacentFaces<Face, N, El, o>::AdjacentFaceView AdjacentFaces<Face, N, El, o>::adjFaces()
 {
-	return AdjacentFaceRange(adjFaceBegin(), adjFaceEnd());
+	return AdjacentFaceView(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename Face, int N, typename El, bool o>
-typename AdjacentFaces<Face, N, El, o>::ConstAdjacentFaceRange
+typename AdjacentFaces<Face, N, El, o>::ConstAdjacentFaceView
 AdjacentFaces<Face, N, El, o>::adjFaces() const
 {
-	return ConstAdjacentFaceRange(adjFaceBegin(), adjFaceEnd());
+	return ConstAdjacentFaceView(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename Face, int N, typename El, bool o>

@@ -36,14 +36,14 @@ int main()
 
 	const vcl::TriMesh& cm = m;
 
-	for (const auto& c : vcl::CoordRange(cm.vertices())) {
+	for (const auto& c : vcl::CoordView(cm.vertices())) {
 		std::cerr << c << "\n";
 	}
 
 	// transform
 	std::cerr << "\n\nTransformed:\n\n";
 
-	for (auto& c : vcl::CoordRange(m.vertices())) {
+	for (auto& c : vcl::CoordView(m.vertices())) {
 		c *= 2;
 		std::cerr << c << "\n";
 	}
@@ -55,14 +55,14 @@ int main()
 //		v.selected() = i % 2 ? true : false;
 //		i++;
 //	}
-	for (auto& sel : vcl::SelectionRange(m.vertices())) {
+	for (auto& sel : vcl::SelectionView(m.vertices())) {
 		sel = i % 2 ? true : false;
 		std::cerr << sel << "\n";
 		++i;
 	}
 
 	std::cerr << "\n\nPrint Selection:\n";
-	for (const auto& sel : vcl::SelectionRange(cm.vertices())) {
+	for (const auto& sel : vcl::SelectionView(cm.vertices())) {
 		std::cerr << sel << "\n";
 	}
 
@@ -70,13 +70,13 @@ int main()
 	// scalar
 
 	i = 0;
-	for (auto& scal : vcl::ScalarRange(m.vertices())) {
+	for (auto& scal : vcl::ScalarView(m.vertices())) {
 		scal = ++i;
 	}
 
 	std::cerr << "\n\nPrint Scalars:\n";
 
-	for (const auto& scal : vcl::ScalarRange(cm.vertices())) {
+	for (const auto& scal : vcl::ScalarView(cm.vertices())) {
 		std::cerr << scal << "\n";
 	}
 	return 0;

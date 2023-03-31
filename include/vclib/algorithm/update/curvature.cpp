@@ -30,7 +30,7 @@
 #include <vclib/algorithm/point_sampling.h>
 #include <vclib/algorithm/polygon.h>
 #include <vclib/algorithm/update/normal.h>
-#include <vclib/iterator/pointer_iterator.h>
+#include <vclib/iterators/pointer_iterator.h>
 #include <vclib/math/transform.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/parallel.h>

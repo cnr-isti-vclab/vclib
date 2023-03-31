@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
 #include <vclib/concept/mesh/component/adjacent_faces.h>
-#include <vclib/iterator/range.h>
+#include <vclib/iterators/view.h>
 
 #include "internal/element_references.h"
 
@@ -78,8 +78,8 @@ public:
 
 	using AdjacentFaceIterator      = typename Base::Iterator;
 	using ConstAdjacentFaceIterator = typename Base::ConstIterator;
-	using AdjacentFaceRange         = vcl::Range<AdjacentFaceIterator>;
-	using ConstAdjacentFaceRange    = vcl::Range<ConstAdjacentFaceIterator>;
+	using AdjacentFaceView          = vcl::View<AdjacentFaceIterator>;
+	using ConstAdjacentFaceView     = vcl::View<ConstAdjacentFaceIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -121,8 +121,8 @@ public:
 	AdjacentFaceIterator      adjFaceEnd();
 	ConstAdjacentFaceIterator adjFaceBegin() const;
 	ConstAdjacentFaceIterator adjFaceEnd() const;
-	AdjacentFaceRange         adjFaces();
-	ConstAdjacentFaceRange    adjFaces() const;
+	AdjacentFaceView          adjFaces();
+	ConstAdjacentFaceView     adjFaces() const;
 
 protected:
 	void updateReferences(const Face* oldBase, const Face* newBase);

@@ -370,29 +370,29 @@ typename BipartiteGraph<T1, T2>::RightNodeIterator BipartiteGraph<T1, T2>::right
 }
 
 template<class T1, class T2>
-typename BipartiteGraph<T1, T2>::LeftNodeRange BipartiteGraph<T1, T2>::leftNodes() const
+typename BipartiteGraph<T1, T2>::LeftNodeView BipartiteGraph<T1, T2>::leftNodes() const
 {
-	return LeftNodeRange(leftNodeBegin(), leftNodeEnd());
+	return LeftNodeView(leftNodeBegin(), leftNodeEnd());
 }
 
 template<class T1, class T2>
-typename BipartiteGraph<T1, T2>::RightNodeRange BipartiteGraph<T1, T2>::rightNodes() const
+typename BipartiteGraph<T1, T2>::RightNodeView BipartiteGraph<T1, T2>::rightNodes() const
 {
-	return RightNodeRange(rightNodeBegin(), rightNodeEnd());
+	return RightNodeView(rightNodeBegin(), rightNodeEnd());
 }
 
 template<class T1, class T2>
-typename BipartiteGraph<T1, T2>::AdjacentLeftNodeRange
+typename BipartiteGraph<T1, T2>::AdjacentLeftNodeView
 BipartiteGraph<T1, T2>::adjacentLeftNodes(const T1& lNode) const
 {
-	return AdjacentLeftNodeRange(adjacentLeftNodeBegin(lNode), adjacentLeftNodeEnd(lNode));
+	return AdjacentLeftNodeView(adjacentLeftNodeBegin(lNode), adjacentLeftNodeEnd(lNode));
 }
 
 template<class T1, class T2>
-typename BipartiteGraph<T1, T2>::AdjacentRightNodeRange
+typename BipartiteGraph<T1, T2>::AdjacentRightNodeView
 BipartiteGraph<T1, T2>::adjacentRightNodes(const T2& rNode) const
 {
-	return AdjacentRightNodeRange(adjacentRightNodeBegin(rNode), adjacentRightNodeEnd(rNode));
+	return AdjacentRightNodeView(adjacentRightNodeBegin(rNode), adjacentRightNodeEnd(rNode));
 }
 
 template<class T1, class T2>

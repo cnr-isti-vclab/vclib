@@ -322,17 +322,17 @@ VertexHalfEdgeReference<HE, El, o>::adjFaceEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgeReference<HE, El, o>::AdjacentFaceRange
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentFaceView
 VertexHalfEdgeReference<HE, El, o>::adjFaces()
 {
-	return AdjacentFaceRange(adjFaceBegin(), adjFaceEnd());
+	return AdjacentFaceView(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentFaceRange
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentFaceView
 VertexHalfEdgeReference<HE, El, o>::adjFaces() const
 {
-	return ConstAdjacentFaceRange(adjFaceBegin(), adjFaceEnd());
+	return ConstAdjacentFaceView(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename HE, typename El, bool o>
@@ -364,17 +364,17 @@ VertexHalfEdgeReference<HE, El, o>::adjVertexEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgeReference<HE, El, o>::AdjacentVertexRange
+typename VertexHalfEdgeReference<HE, El, o>::AdjacentVertexView
 VertexHalfEdgeReference<HE, El, o>::adjVertices()
 {
-	return AdjacentVertexRange(adjVertexBegin(), adjVertexEnd());
+	return AdjacentVertexView(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentVertexRange
+typename VertexHalfEdgeReference<HE, El, o>::ConstAdjacentVertexView
 VertexHalfEdgeReference<HE, El, o>::adjVertices() const
 {
-	return ConstAdjacentVertexRange(adjVertexBegin(), adjVertexEnd());
+	return ConstAdjacentVertexView(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename HE, typename El, bool o>

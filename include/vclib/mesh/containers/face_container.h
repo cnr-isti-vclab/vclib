@@ -54,8 +54,8 @@ public:
 	using FaceType          = T;
 	using FaceIterator      = typename Base::ElementIterator;
 	using ConstFaceIterator = typename Base::ConstElementIterator;
-	using FaceRange         = typename Base::ElementRange;
-	using ConstFaceRange    = typename Base::ConstElementRange;
+	using FaceView          = typename Base::ElementView;
+	using ConstFaceView     = typename Base::ConstElementView;
 
 	FaceContainer();
 
@@ -76,8 +76,8 @@ public:
 	FaceIterator      faceEnd();
 	ConstFaceIterator faceBegin(bool jumpDeleted = true) const;
 	ConstFaceIterator faceEnd() const;
-	FaceRange         faces(bool jumpDeleted = true);
-	ConstFaceRange    faces(bool jumpDeleted = true) const;
+	FaceView          faces(bool jumpDeleted = true);
+	ConstFaceView     faces(bool jumpDeleted = true) const;
 
 	void enableAllPerFaceOptionalComponents();
 	void disableAllPerFaceOptionalComponents();

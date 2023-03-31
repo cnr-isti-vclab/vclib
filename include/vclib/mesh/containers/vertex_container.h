@@ -56,8 +56,8 @@ public:
 	using VertexType          = T;
 	using VertexIterator      = typename Base::ElementIterator;
 	using ConstVertexIterator = typename Base::ConstElementIterator;
-	using VertexRange         = typename Base::ElementRange;
-	using ConstVertexRange    = typename Base::ConstElementRange;
+	using VertexView          = typename Base::ElementView;
+	using ConstVertexView     = typename Base::ConstElementView;
 
 	VertexContainer();
 
@@ -78,8 +78,8 @@ public:
 	VertexIterator      vertexEnd();
 	ConstVertexIterator vertexBegin(bool jumpDeleted = true) const;
 	ConstVertexIterator vertexEnd() const;
-	VertexRange         vertices(bool jumpDeleted = true);
-	ConstVertexRange    vertices(bool jumpDeleted = true) const;
+	VertexView          vertices(bool jumpDeleted = true);
+	ConstVertexView     vertices(bool jumpDeleted = true) const;
 
 	void enableAllPerVertexOptionalComponents();
 	void disableAllPerVertexOptionalComponents();

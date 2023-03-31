@@ -24,9 +24,9 @@
 #ifndef VCL_MESH_ITERATORS_COMPONENT_SCALAR_ITERATOR_H
 #define VCL_MESH_ITERATORS_COMPONENT_SCALAR_ITERATOR_H
 
-#include "component_range.h"
+#include "component_view.h"
 
-#include <vclib/iterator/iterator_wrapper.h>
+#include <vclib/iterators/iterator_wrapper.h>
 
 namespace vcl {
 
@@ -88,19 +88,19 @@ public:
 
 // todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
 #ifdef __clang__
-template<typename Rng>
-class ScalarRange : public vcl::Range<ScalarIterator<typename Rng::iterator>>
+template<typename ViewType>
+class ScalarView : public vcl::View<ScalarIterator<typename ViewType::iterator>>
 {
-	using Base = vcl::Range<ScalarIterator<typename Rng::iterator>>;
+	using Base = vcl::View<ScalarIterator<typename ViewType::iterator>>;
 public:
-	ScalarRange(const Rng& r) :
+	ScalarView(const ViewType& r) :
 			Base(ScalarIterator(r.begin()), ScalarIterator(r.end()))
 	{
 	}
 };
 #else
 template<typename Rng>
-using ScalarRange = internal::ComponentRange<Rng, ScalarIterator>;
+using ScalarView = internal::ComponentView<Rng, ScalarIterator>;
 #endif
 
 } // namespace vcl

@@ -21,52 +21,44 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_COMPONENT_COMPONENT_RANGE_H
-#define VCL_MESH_ITERATORS_COMPONENT_COMPONENT_RANGE_H
+#ifndef VCL_ITERATOR_VIEW_H
+#define VCL_ITERATOR_VIEW_H
 
-#include <vclib/iterator/range.h>
-
-namespace vcl::internal {
+namespace vcl {
 
 /**
- * @brief The ComponentRange class creates a Range class (begin()/end() member functions) over a
- * component, starting from:
- * - Rng: a Range on elements on which iterate (vertices, faces)
- * - Iterator: the Iterator that allows to iterate over the component starting from the Iterator
- *             of the range Rng
+ * @brief The View class is a simple class that stores and exposes two iterators begin and end.
  *
- * Example: we want to create a Range iterator that allows to iterate over Vertex Coordinates.
- * We already have:
- * - A VertexRange class that iterate over vertices (e.g., given a Mesh m, m.vertices() return an istance
- *   of a Range class);
- * - A CoordIterator class templated over a VertexIterator (the one used by the the Range)
- * Then, we can create our CoordRange in the following way:
+ * It is useful for classes that expose multiple containers, and they do not expose the classic
+ * member functions begin()/end().
+ * In these cases, it is possible to expose the view of a selected container by returning a View
+ * object initialized with the begin/end iterators.
  *
- * using CoordRange = internal::ComponentRange<VertexRange, CoordIterator>;
- *
- * Or, we could template it on just on a range of vertices (the actual type will be deduced
- * trough the ComponentRange constructor):
- *
- * template<typename Rng>
- * using CoordRange = internal::ComponentRange<Rng, CoordIterator>;
- *
- * Usage:
- *
- * for (CoordType& c : CoordRange(m.vertices()) {
- *     c *= 2; // scale by 2 factor
- * }
+ * For example, a Mesh can expose Vertex and Face containers.
+ * The mesh exposes the member functions:
+ * - vertexBegin()
+ * - vertexEnd()
+ * - faceBegin()
+ * - faceEnd()
+ * To allow view iteration over vertices, the Mesh could expose a vertices() member function that
+ * returns a View object that is constructed in this way: View(vertexBegin(), vertexEnd());
  */
-template<typename Rng, template <typename> typename Iterator>
-class ComponentRange : public vcl::Range<Iterator<typename Rng::iterator>>
+template<typename It>
+class View
 {
-	using Base = vcl::Range<Iterator<typename Rng::iterator>>;
 public:
-	ComponentRange(const Rng& r) :
-			Base(Iterator(r.begin()), Iterator(r.end()))
-	{
-	}
+	using iterator = It;
+
+	View(It begin, It end) : b(begin), e(end) {}
+
+	It begin() const { return b; }
+
+	It end() const { return e; }
+
+protected:
+	It b, e;
 };
 
-} // namespace vcl::internal
+} // namespace vcl
 
-#endif // VCL_MESH_ITERATORS_COMPONENT_COMPONENT_RANGE_H
+#endif // VCL_ITERATOR_VIEW_H

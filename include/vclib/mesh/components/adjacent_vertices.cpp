@@ -191,17 +191,17 @@ AdjacentVertices<Vertex, El, o>::adjVertexEnd() const
 }
 
 template<typename Vertex, typename El, bool o>
-typename AdjacentVertices<Vertex, El, o>::AdjacentVertexRange
+typename AdjacentVertices<Vertex, El, o>::AdjacentVertexView
 AdjacentVertices<Vertex, El, o>::adjVertices()
 {
-	return AdjacentVertexRange(adjVertexBegin(), adjVertexEnd());
+	return AdjacentVertexView(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename Vertex, typename El, bool o>
-typename AdjacentVertices<Vertex, El, o>::ConstAdjacentVertexRange
+typename AdjacentVertices<Vertex, El, o>::ConstAdjacentVertexView
 AdjacentVertices<Vertex, El, o>::adjVertices() const
 {
-	return ConstAdjacentVertexRange(adjVertexBegin(), adjVertexEnd());
+	return ConstAdjacentVertexView(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename Vertex, typename El, bool o>

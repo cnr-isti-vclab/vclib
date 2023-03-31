@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
 #include <vclib/concept/mesh/component/vertex_references.h>
-#include <vclib/iterator/range.h>
+#include <vclib/iterators/view.h>
 
 #include "internal/element_references.h"
 
@@ -55,8 +55,8 @@ public:
 
 	using VertexIterator      = typename Base::Iterator;
 	using ConstVertexIterator = typename Base::ConstIterator;
-	using VertexRange         = vcl::Range<VertexIterator>;
-	using ConstVertexRange    = vcl::Range<ConstVertexIterator>;
+	using VertexView          = vcl::View<VertexIterator>;
+	using ConstVertexView     = vcl::View<ConstVertexIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -100,8 +100,8 @@ public:
 	VertexIterator           vertexEnd();
 	ConstVertexIterator      vertexBegin() const;
 	ConstVertexIterator      vertexEnd() const;
-	VertexRange              vertices();
-	ConstVertexRange         vertices() const;
+	VertexView               vertices();
+	ConstVertexView          vertices() const;
 
 protected:
 	void updateReferences(const Vertex* oldBase, const Vertex* newBase);

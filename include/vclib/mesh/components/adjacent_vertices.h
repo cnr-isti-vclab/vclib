@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
 #include <vclib/concept/mesh/component/adjacent_vertices.h>
-#include <vclib/iterator/range.h>
+#include <vclib/iterators/view.h>
 
 #include "internal/element_references.h"
 
@@ -70,8 +70,8 @@ public:
 
 	using AdjacentVertexIterator      = typename Base::Iterator;
 	using ConstAdjacentVertexIterator = typename Base::ConstIterator;
-	using AdjacentVertexRange         = vcl::Range<AdjacentVertexIterator>;
-	using ConstAdjacentVertexRange    = vcl::Range<ConstAdjacentVertexIterator>;
+	using AdjacentVertexView          = vcl::View<AdjacentVertexIterator>;
+	using ConstAdjacentVertexView     = vcl::View<ConstAdjacentVertexIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -111,8 +111,8 @@ public:
 	AdjacentVertexIterator           adjVertexEnd();
 	ConstAdjacentVertexIterator      adjVertexBegin() const;
 	ConstAdjacentVertexIterator      adjVertexEnd() const;
-	AdjacentVertexRange              adjVertices();
-	ConstAdjacentVertexRange         adjVertices() const;
+	AdjacentVertexView               adjVertices();
+	ConstAdjacentVertexView          adjVertices() const;
 
 protected:
 	void updateReferences(const Vertex* oldBase, const Vertex* newBase);

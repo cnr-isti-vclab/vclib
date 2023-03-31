@@ -72,8 +72,8 @@ concept HasFaceContainer = requires(T o, const T& co, typename T::FaceType* f)
 	typename T::FaceType;
 	typename T::FaceIterator;
 	typename T::ConstFaceIterator;
-	typename T::FaceRange;
-	typename T::ConstFaceRange;
+	typename T::FaceView;
+	typename T::ConstFaceView;
 	{ o.face(uint()) } -> std::same_as<typename T::FaceType&>;
 	{ co.face(uint()) } -> std::same_as<const typename T::FaceType&>;
 	{ co.faceNumber() } -> std::same_as<uint>;
@@ -88,8 +88,8 @@ concept HasFaceContainer = requires(T o, const T& co, typename T::FaceType* f)
 	{ co.faceBegin() } -> std::same_as<typename T::ConstFaceIterator>;
 	{ o.faceEnd() } -> std::same_as<typename T::FaceIterator>;
 	{ co.faceEnd() } -> std::same_as<typename T::ConstFaceIterator>;
-	{ o.faces() } -> std::same_as<typename T::FaceRange>;
-	{ co.faces() } -> std::same_as<typename T::ConstFaceRange>;
+	{ o.faces() } -> std::same_as<typename T::FaceView>;
+	{ co.faces() } -> std::same_as<typename T::ConstFaceView>;
 };
 
 template <typename T>
@@ -98,8 +98,8 @@ concept HasVertexContainer = requires(T o, const T& co, typename T::VertexType* 
 	typename T::VertexType;
 	typename T::VertexIterator;
 	typename T::ConstVertexIterator;
-	typename T::VertexRange;
-	typename T::ConstVertexRange;
+	typename T::VertexView;
+	typename T::ConstVertexView;
 	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType&>;
 	{ co.vertex(uint()) } -> std::same_as<const typename T::VertexType&>;
 	{ co.vertexNumber() } -> std::same_as<uint>;
@@ -114,8 +114,8 @@ concept HasVertexContainer = requires(T o, const T& co, typename T::VertexType* 
 	{ co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
 	{ o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
 	{ co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
-	{ o.vertices() } -> std::same_as<typename T::VertexRange>;
-	{ co.vertices() } -> std::same_as<typename T::ConstVertexRange>;
+	{ o.vertices() } -> std::same_as<typename T::VertexView>;
+	{ co.vertices() } -> std::same_as<typename T::ConstVertexView>;
 };
 
 } // namespace vcl::mesh

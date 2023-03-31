@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
 #include <vclib/concept/mesh/component/adjacent_edges.h>
-#include <vclib/iterator/range.h>
+#include <vclib/iterators/view.h>
 
 #include "internal/element_references.h"
 
@@ -78,8 +78,8 @@ public:
 
 	using AdjacentEdgeIterator      = typename Base::Iterator;
 	using ConstAdjacentEdgeIterator = typename Base::ConstIterator;
-	using AdjacentEdgeRange         = vcl::Range<AdjacentEdgeIterator>;
-	using ConstAdjacentEdgeRange    = vcl::Range<ConstAdjacentEdgeIterator>;
+	using AdjacentEdgeView          = vcl::View<AdjacentEdgeIterator>;
+	using ConstAdjacentEdgeView     = vcl::View<ConstAdjacentEdgeIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -121,8 +121,8 @@ public:
 	AdjacentEdgeIterator      adjEdgeEnd();
 	ConstAdjacentEdgeIterator adjEdgeBegin() const;
 	ConstAdjacentEdgeIterator adjEdgeEnd() const;
-	AdjacentEdgeRange         adjEdges();
-	ConstAdjacentEdgeRange    adjEdges() const;
+	AdjacentEdgeView          adjEdges();
+	ConstAdjacentEdgeView     adjEdges() const;
 
 protected:
 	void updateReferences(const Edge* oldBase, const Edge* newBase);

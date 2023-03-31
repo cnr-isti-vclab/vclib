@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
 #include <vclib/concept/mesh/component/wedge_tex_coords.h>
-#include <vclib/iterator/range.h>
+#include <vclib/iterators/view.h>
 #include <vclib/misc/random_access_container.h>
 #include <vclib/space/tex_coord.h>
 
@@ -63,8 +63,8 @@ public:
 
 	using WedgeTexCoordsIterator      = typename Base::Iterator;
 	using ConstWedgeTexCoordsIterator = typename Base::ConstIterator;
-	using WedgeTexCoordsRange         = vcl::Range<WedgeTexCoordsIterator>;
-	using ConstWedgeTexCoordsRange    = vcl::Range<ConstWedgeTexCoordsIterator>;
+	using WedgeTexCoordsView          = vcl::View<WedgeTexCoordsIterator>;
+	using ConstWedgeTexCoordsView     = vcl::View<ConstWedgeTexCoordsIterator>;
 
 	/* Member functions */
 
@@ -89,8 +89,8 @@ public:
 	WedgeTexCoordsIterator      wedgeTexCoordEnd();
 	ConstWedgeTexCoordsIterator wedgeTexCoordBegin() const;
 	ConstWedgeTexCoordsIterator wedgeTexCoordEnd() const;
-	WedgeTexCoordsRange         wedgeTexCoords();
-	ConstWedgeTexCoordsRange    wedgeTexCoords() const;
+	WedgeTexCoordsView          wedgeTexCoords();
+	ConstWedgeTexCoordsView     wedgeTexCoords() const;
 
 protected:
 	using WedgeTexCoordScalarType = Scalar;

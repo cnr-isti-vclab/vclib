@@ -27,7 +27,7 @@
 #include <vector>
 
 #include <vclib/concept/mesh/component/vertex_half_edge_reference.h>
-#include <vclib/iterator/range.h>
+#include <vclib/iterators/view.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h>
 
@@ -60,13 +60,13 @@ public:
 
 	using AdjacentFaceIterator      = vcl::VertexAdjFaceIterator<HalfEdge>;
 	using ConstAdjacentFaceIterator = vcl::ConstVertexAdjFaceIterator<HalfEdge>;
-	using AdjacentFaceRange         = vcl::Range<AdjacentFaceIterator>;
-	using ConstAdjacentFaceRange    = vcl::Range<ConstAdjacentFaceIterator>;
+	using AdjacentFaceView          = vcl::View<AdjacentFaceIterator>;
+	using ConstAdjacentFaceView     = vcl::View<ConstAdjacentFaceIterator>;
 
 	using AdjacentVertexIterator      = vcl::VertexAdjVertexIterator<HalfEdge>;
 	using ConstAdjacentVertexIterator = vcl::ConstVertexAdjVertexIterator<HalfEdge>;
-	using AdjacentVertexRange         = vcl::Range<AdjacentVertexIterator>;
-	using ConstAdjacentVertexRange    = vcl::Range<ConstAdjacentVertexIterator>;
+	using AdjacentVertexView          = vcl::View<AdjacentVertexIterator>;
+	using ConstAdjacentVertexView     = vcl::View<ConstAdjacentVertexIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -129,15 +129,15 @@ public:
 	AdjacentFaceIterator      adjFaceEnd();
 	ConstAdjacentFaceIterator adjFaceBegin() const;
 	ConstAdjacentFaceIterator adjFaceEnd() const;
-	AdjacentFaceRange         adjFaces();
-	ConstAdjacentFaceRange    adjFaces() const;
+	AdjacentFaceView          adjFaces();
+	ConstAdjacentFaceView     adjFaces() const;
 
 	AdjacentVertexIterator      adjVertexBegin();
 	AdjacentVertexIterator      adjVertexEnd();
 	ConstAdjacentVertexIterator adjVertexBegin() const;
 	ConstAdjacentVertexIterator adjVertexEnd() const;
-	AdjacentVertexRange         adjVertices();
-	ConstAdjacentVertexRange    adjVertices() const;
+	AdjacentVertexView          adjVertices();
+	ConstAdjacentVertexView     adjVertices() const;
 
 protected:
 	void updateReferences(const HalfEdge* oldBase, const HalfEdge* newBase);

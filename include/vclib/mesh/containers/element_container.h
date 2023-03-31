@@ -29,7 +29,7 @@
 #include <vclib/concept/mesh/component/custom_components.h>
 #include <vclib/concept/mesh/container.h>
 #include <vclib/concept/mesh/element/element.h>
-#include <vclib/iterator/range.h>
+#include <vclib/iterators/view.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
 
 #include "custom_components_vector_map.h"
@@ -55,8 +55,8 @@ public:
 protected:
 	using ElementIterator      = ElementContainerIterator<std::vector, T>;
 	using ConstElementIterator = ConstElementContainerIterator<std::vector, T>;
-	using ElementRange         = vcl::Range<ElementIterator>;
-	using ConstElementRange    = vcl::Range<ConstElementIterator>;
+	using ElementView          = vcl::View<ElementIterator>;
+	using ConstElementView     = vcl::View<ConstElementIterator>;
 
 	const T& element(uint i) const;
 	T& element(uint i);
@@ -87,8 +87,8 @@ protected:
 	ElementIterator      elementEnd();
 	ConstElementIterator elementBegin(bool jumpDeleted = true) const;
 	ConstElementIterator elementEnd() const;
-	ElementRange         elements(bool jumpDeleted = true);
-	ConstElementRange    elements(bool jumpDeleted = true) const;
+	ElementView          elements(bool jumpDeleted = true);
+	ConstElementView     elements(bool jumpDeleted = true) const;
 
 	uint index(const T *e) const;
 	void clearElements();

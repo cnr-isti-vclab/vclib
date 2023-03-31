@@ -55,8 +55,8 @@ concept HasAdjacentEdges = requires(
 	typename T::AdjacentEdgeType;
 	typename T::AdjacentEdgeIterator;
 	typename T::ConstAdjacentEdgeIterator;
-	typename T::AdjacentEdgeRange;
-	typename T::ConstAdjacentEdgeRange;
+	typename T::AdjacentEdgeView;
+	typename T::ConstAdjacentEdgeView;
 
 	{ o.adjEdgesNumber() } -> std::same_as<uint>;
 	{ o.adjEdge(uint()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
@@ -76,8 +76,8 @@ concept HasAdjacentEdges = requires(
 	{ o.adjEdgeEnd() } -> std::same_as<typename T::AdjacentEdgeIterator>;
 	{ co.adjEdgeBegin() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
 	{ co.adjEdgeEnd() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
-	{ o.adjEdges() } -> std::same_as<typename T::AdjacentEdgeRange>;
-	{ co.adjEdges() } -> std::same_as<typename T::ConstAdjacentEdgeRange>;
+	{ o.adjEdges() } -> std::same_as<typename T::AdjacentEdgeView>;
+	{ co.adjEdges() } -> std::same_as<typename T::ConstAdjacentEdgeView>;
 };
 
 /**

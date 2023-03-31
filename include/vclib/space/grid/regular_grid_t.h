@@ -26,7 +26,7 @@
 
 #include "iterators/cell_iterator.h"
 
-#include <vclib/iterator/range.h>
+#include <vclib/iterators/view.h>
 #include <vclib/space/box.h>
 
 namespace vcl {
@@ -43,7 +43,7 @@ public:
 	using BBoxType        = Box<PointType>;
 
 	using CellIterator = vcl::CellIterator<N>;
-	using CellRange = vcl::Range<CellIterator>;
+	using CellView     = vcl::View<CellIterator>;
 
 	RegularGrid() = default;
 	RegularGrid(const Point<Scalar, N>& min, const Point<Scalar, N>& max, const Point<uint, N>& size);
@@ -75,8 +75,8 @@ public:
 	CellIterator cellBegin() const;
 	CellIterator cellBegin(const CellCoord& first, const CellCoord& last) const;
 	CellIterator cellEnd() const;
-	CellRange    cells() const;
-	CellRange    cells(const CellCoord& first, const CellCoord& last) const;
+	CellView     cells() const;
+	CellView     cells(const CellCoord& first, const CellCoord& last) const;
 
 protected:
 	void set(const Box<Point<Scalar, N>>& box, const Point<uint, N>& size);

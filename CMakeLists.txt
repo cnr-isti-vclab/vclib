@@ -167,9 +167,9 @@ set(HEADERS
 	include/vclib/io/ply/save.h
 	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
-	include/vclib/iterator/iterator_wrapper.h
-	include/vclib/iterator/pointer_iterator.h
-	include/vclib/iterator/range.h
+	include/vclib/iterators/iterator_wrapper.h
+	include/vclib/iterators/pointer_iterator.h
+	include/vclib/iterators/view.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/fibonacci.h
@@ -234,7 +234,7 @@ set(HEADERS
 	include/vclib/mesh/iterators/component.h
 	include/vclib/mesh/iterators/face.h
 	include/vclib/mesh/iterators/element_container_iterator.h
-	include/vclib/mesh/iterators/component/component_range.h
+	include/vclib/mesh/iterators/component/component_view.h
 	include/vclib/mesh/iterators/component/coord_iterator.h
 	include/vclib/mesh/iterators/component/scalar_iterator.h
 	include/vclib/mesh/iterators/component/selection_iterator.h
@@ -392,7 +392,7 @@ set(SOURCES
 	include/vclib/io/ply/save.cpp
 	include/vclib/io/stl/load.cpp
 	include/vclib/io/stl/save.cpp
-	include/vclib/iterator/iterator_wrapper.cpp
+	include/vclib/iterators/iterator_wrapper.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/fibonacci.cpp
 	include/vclib/math/histogram.cpp

@@ -30,7 +30,7 @@
 #include <vclib/miscellaneous.h>
 #include <vclib/algorithm.h>
 
-#include <vclib/iterator/pointer_iterator.h>
+#include <vclib/iterators/pointer_iterator.h>
 
 int main()
 {

@@ -318,9 +318,9 @@ typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementE
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<ElementConcept T>
-typename ElementContainer<T>::ElementRange ElementContainer<T>::elements(bool jumpDeleted)
+typename ElementContainer<T>::ElementView ElementContainer<T>::elements(bool jumpDeleted)
 {
-	return ElementRange(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
+	return ElementView(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
 }
 
 /**
@@ -343,9 +343,9 @@ typename ElementContainer<T>::ElementRange ElementContainer<T>::elements(bool ju
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<ElementConcept T>
-typename ElementContainer<T>::ConstElementRange ElementContainer<T>::elements(bool jumpDeleted) const
+typename ElementContainer<T>::ConstElementView ElementContainer<T>::elements(bool jumpDeleted) const
 {
-	return ConstElementRange(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
+	return ConstElementView(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
 }
 
 template<ElementConcept T>
