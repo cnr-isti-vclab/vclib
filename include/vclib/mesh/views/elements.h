@@ -31,11 +31,17 @@
 namespace vcl {
 namespace internal {
 
+template<typename T>
+concept CleanMeshConcept = MeshConcept<std::remove_const_t<std::remove_reference_t<T>>>;
+
+template<typename T>
+concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_const_t<std::remove_reference_t<T>>>;
+
 struct VerticesViewClosure
 {
 	constexpr VerticesViewClosure(){}
 
-	template <typename R>
+	template <CleanMeshConcept R>
 	constexpr auto operator()(R && r) const
 	{
 		return r.vertices();
@@ -46,7 +52,7 @@ struct FacesViewClosure
 {
 	constexpr FacesViewClosure(){}
 
-	template <typename R>
+	template <CleanFaceMeshConcept R>
 	constexpr auto operator()(R && r) const
 	{
 		return r.faces();
