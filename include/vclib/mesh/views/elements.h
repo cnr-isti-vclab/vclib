@@ -17,76 +17,51 @@
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * GNU General Public License (http://www.gnu.ostd::ranges/licenses/gpl.txt)          *
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_MESH_VIEWS_ELEMENTS_H
+#define VCL_MESH_VIEWS_ELEMENTS_H
 
-#include <vclib/mesh.h>
-#include <vclib/load_save.h>
+#include "pipe.h"
 
-#include <vclib/mesh/iterator.h>
-#include <vclib/mesh/views/elements.h>
+#include <vclib/mesh/requirements.h>
 
-int main()
+namespace vcl {
+namespace internal {
+
+struct VerticesViewClosure
 {
-	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+	constexpr VerticesViewClosure(){}
 
-	// print
-
-	const vcl::TriMesh& cm = m;
-
-	for (auto& v : m | vcl::views::vertices) {
-		std::cerr << v.coord() << "\n";
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		return r.vertices();
 	}
+};
 
-	for (const auto& f : cm | vcl::views::faces) {
-		std::cerr << f.normal() << "\n";
+struct FacesViewClosure
+{
+	constexpr FacesViewClosure(){}
+
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		return r.faces();
 	}
+};
 
-	for (const auto& c : vcl::CoordView(cm.vertices())) {
-		std::cerr << c << "\n";
-	}
+} // namespace vcl::internal
 
-	// transform
-	std::cerr << "\n\nTransformed:\n\n";
+namespace views {
 
-	for (auto& c : vcl::CoordView(m.vertices())) {
-		c *= 2;
-		std::cerr << c << "\n";
-	}
+internal::VerticesViewClosure vertices;
+internal::FacesViewClosure faces;
 
-	std::cerr << "\n\nTransform Selection:\n";
+} // namespace vcl::views
 
-	uint i = 0;
-//	for (auto& v : m.vertices()) {
-//		v.selected() = i % 2 ? true : false;
-//		i++;
-//	}
-	for (auto& sel : vcl::SelectionView(m.vertices())) {
-		sel = i % 2 ? true : false;
-		std::cerr << sel << "\n";
-		++i;
-	}
+} // namespace vcl
 
-	std::cerr << "\n\nPrint Selection:\n";
-	for (const auto& sel : vcl::SelectionView(cm.vertices())) {
-		std::cerr << sel << "\n";
-	}
-
-
-	// scalar
-
-	i = 0;
-	for (auto& scal : vcl::ScalarView(m.vertices())) {
-		scal = ++i;
-	}
-
-	std::cerr << "\n\nPrint Scalars:\n";
-
-	for (const auto& scal : vcl::ScalarView(cm.vertices())) {
-		std::cerr << scal << "\n";
-	}
-	return 0;
-}
+#endif // VCL_MESH_VIEWS_ELEMENTS_H
