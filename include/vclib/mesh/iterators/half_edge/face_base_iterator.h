@@ -24,59 +24,24 @@
 #ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
 #define VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
 
-#include <iterator>
+#include "base_iterator.h"
 
-namespace vcl {
+namespace vcl::internal {
 
-template<typename HalfEdge>
-class FaceBaseIterator
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+class FaceBaseIterator : public BaseIterator<HalfEdge, CNST>
 {
+	using Base = BaseIterator<HalfEdge, CNST>;
 public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
+	using Base::BaseIterator;
 
-	FaceBaseIterator();
-	FaceBaseIterator(HalfEdge* start);
-	FaceBaseIterator(HalfEdge* start, const HalfEdge* end);
-
-	bool operator==(const FaceBaseIterator& oi) const;
-	bool operator!=(const FaceBaseIterator& oi) const;
-
-	FaceBaseIterator& operator++();
-	FaceBaseIterator operator++(int);
-	FaceBaseIterator& operator--();
-	FaceBaseIterator operator--(int);
-
-protected:
-	HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
+	auto& operator++();
+	auto operator++(int);
+	auto& operator--();
+	auto operator--(int);
 };
 
-template<typename HalfEdge>
-class ConstFaceBaseIterator
-{
-public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
-
-	ConstFaceBaseIterator();
-	ConstFaceBaseIterator(const HalfEdge* start);
-	ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end);
-
-	bool operator==(const ConstFaceBaseIterator& oi) const;
-	bool operator!=(const ConstFaceBaseIterator& oi) const;
-
-	ConstFaceBaseIterator operator++();
-	ConstFaceBaseIterator operator++(int);
-	ConstFaceBaseIterator operator--();
-	ConstFaceBaseIterator operator--(int);
-
-protected:
-	const HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
-};
-
-} // namespace vcl
+} // namespace vcl::internal
 
 #include "face_base_iterator.cpp"
 

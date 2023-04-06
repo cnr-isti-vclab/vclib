@@ -35,6 +35,15 @@ template<typename T>
 concept IsPointer = std::is_pointer_v<T>;
 
 /*
+ * Utility Pointer concept to check if it is a pointer to const object
+ * https://stackoverflow.com/a/37370281/5851101
+ */
+template<typename T>
+concept IsPointerToConst =
+	IsPointer<T> &&
+	std::is_const_v<typename std::remove_pointer_t<T>>;
+
+/*
  * Utility to get clean type from an input type that could have a reference or a pointer.
  */
 template<typename T>

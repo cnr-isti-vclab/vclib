@@ -30,14 +30,17 @@
 
 namespace vcl {
 
-template<typename HalfEdge>
-class FaceWedgeColorIterator : public FaceBaseIterator<HalfEdge>
+namespace internal {
+
+template<typename HalfEdge, bool CNST>
+class FaceWedgeColorIterator :
+		public FaceBaseIterator<HalfEdge, CNST, FaceWedgeColorIterator<HalfEdge, CNST>>
 {
-	using Base = FaceBaseIterator<HalfEdge>;
+	using Base = FaceBaseIterator<HalfEdge, CNST, FaceWedgeColorIterator<HalfEdge, CNST>>;
 public:
-	using value_type        = vcl::Color;
-	using reference         = vcl::Color&;
-	using pointer           = vcl::Color*;
+	using value_type = std::conditional_t<CNST, const vcl::Color, vcl::Color>;
+	using reference  = value_type&;
+	using pointer    = value_type*;
 
 	using Base::Base;
 
@@ -51,26 +54,13 @@ public:
 	}
 };
 
+} // namespace vcl::internal
+
 template<typename HalfEdge>
-class ConstFaceWedgeColorIterator : public ConstFaceBaseIterator<HalfEdge>
-{
-	using Base = ConstFaceBaseIterator<HalfEdge>;
-public:
-	using value_type        = const vcl::Color;
-	using reference         = const vcl::Color&;
-	using pointer           = const vcl::Color*;
+using FaceWedgeColorIterator = internal::FaceWedgeColorIterator<HalfEdge, false>;
 
-	using Base::Base;
-
-	reference operator*() const
-	{
-		return Base::current->color();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->color());
-	}
-};
+template<typename HalfEdge>
+using ConstFaceWedgeColorIterator = internal::FaceWedgeColorIterator<HalfEdge, true>;
 
 } // namespace vcl
 

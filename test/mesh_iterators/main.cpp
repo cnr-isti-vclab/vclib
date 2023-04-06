@@ -27,6 +27,7 @@
 #include <vclib/load_save.h>
 
 #include <vclib/mesh/iterator.h>
+#include <vclib/mesh/views/elements.h>
 
 int main()
 {
@@ -35,6 +36,14 @@ int main()
 	// print
 
 	const vcl::TriMesh& cm = m;
+
+	for (auto& v : m | vcl::views::vertices) {
+		std::cerr << v.coord() << "\n";
+	}
+
+	for (const auto& f : cm | vcl::views::faces) {
+		std::cerr << f.normal() << "\n";
+	}
 
 	for (const auto& c : vcl::CoordView(cm.vertices())) {
 		std::cerr << c << "\n";

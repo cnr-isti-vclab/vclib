@@ -24,59 +24,24 @@
 #ifndef VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_BASE_ITERATOR_H
 #define VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_BASE_ITERATOR_H
 
-#include <iterator>
+#include "base_iterator.h"
 
-namespace vcl {
+namespace vcl::internal {
 
-template<typename HalfEdge>
-class VertexBaseIterator
+template<typename HalfEdge, bool CNST, typename DerivedIterator>
+class VertexBaseIterator : public BaseIterator<HalfEdge, CNST>
 {
+	using Base = BaseIterator<HalfEdge, CNST>;
 public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
+	using Base::BaseIterator;
 
-	VertexBaseIterator();
-	VertexBaseIterator(HalfEdge* start);
-	VertexBaseIterator(HalfEdge* start, const HalfEdge* end);
-
-	bool operator==(const VertexBaseIterator& oi) const;
-	bool operator!=(const VertexBaseIterator& oi) const;
-
-	VertexBaseIterator operator++();
-	VertexBaseIterator operator++(int);
-	VertexBaseIterator operator--();
-	VertexBaseIterator operator--(int);
-
-protected:
-	HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
+	auto& operator++();
+	auto operator++(int);
+	auto& operator--();
+	auto operator--(int);
 };
 
-template<typename HalfEdge>
-class ConstVertexBaseIterator
-{
-public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
-
-	ConstVertexBaseIterator();
-	ConstVertexBaseIterator(const HalfEdge* start);
-	ConstVertexBaseIterator(const HalfEdge* start, const HalfEdge* end);
-
-	bool operator==(const ConstVertexBaseIterator& oi) const;
-	bool operator!=(const ConstVertexBaseIterator& oi) const;
-
-	ConstVertexBaseIterator operator++();
-	ConstVertexBaseIterator operator++(int);
-	ConstVertexBaseIterator operator--();
-	ConstVertexBaseIterator operator--(int);
-
-protected:
-	const HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
-};
-
-} // namespace vcl
+} // namespace vcl::internal
 
 #include "vertex_base_iterator.cpp"
 

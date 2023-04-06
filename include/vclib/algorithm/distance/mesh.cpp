@@ -139,8 +139,8 @@ HausdorffDistResult samplerMeshHausdorff(
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
-	using VPI = vcl::ConstPointerIterator<typename MeshType::ConstVertexIterator>;
-	using FPI = vcl::ConstPointerIterator<typename MeshType::ConstFaceIterator>;
+	using VPI = vcl::PointerIterator<typename MeshType::ConstVertexIterator>;
+	using FPI = vcl::PointerIterator<typename MeshType::ConstFaceIterator>;
 
 	std::string meshName = "first mesh";
 	if constexpr (HasName<MeshType>){

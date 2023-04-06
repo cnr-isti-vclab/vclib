@@ -17,45 +17,27 @@
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * GNU General Public License (http://www.gnu.ostd::ranges/licenses/gpl.txt)          *
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
-#define VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
+#ifndef VCL_MESH_VIEWS_PIPE_H
+#define VCL_MESH_VIEWS_PIPE_H
 
-#include "vertex_base_iterator.h"
+namespace vcl::internal {
 
-namespace vcl {
-
-namespace internal {
-
-template<typename HalfEdge, bool CNST>
-class VertexAdjFaceIterator :
-		public VertexBaseIterator<HalfEdge, CNST, VertexAdjFaceIterator<HalfEdge, CNST>>
+template <typename R, typename Closure>
+constexpr auto operator | (R& r, Closure const & a)
 {
-	using Base = VertexBaseIterator<HalfEdge, CNST, VertexAdjFaceIterator<HalfEdge, CNST>>;
-public:
-	using value_type = std::conditional_t<CNST,
-			const typename HalfEdge::FaceType*,
-			typename HalfEdge::FaceType*>;
-	using reference = std::conditional_t<CNST, value_type, value_type&>;
-	using pointer   = value_type*;
+	return a(r);
+}
 
-	using Base::Base;
+template <typename R, typename Closure>
+constexpr auto operator | (const R& r, Closure const & a)
+{
+	return a(r);
+}
 
-	reference operator*() const { return Base::current->face(); }
-	pointer operator->() const { return &(Base::current->face()); }
-};
+} // namespace internal
 
-} // namespace vcl::internal
-
-template<typename HalfEdge>
-using VertexAdjFaceIterator = internal::VertexAdjFaceIterator<HalfEdge, false>;
-
-template<typename HalfEdge>
-using ConstVertexAdjFaceIterator = internal::VertexAdjFaceIterator<HalfEdge, true>;
-
-} // namespace vcl
-
-#endif // VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
+#endif // VCL_MESH_VIEWS_PIPE_H

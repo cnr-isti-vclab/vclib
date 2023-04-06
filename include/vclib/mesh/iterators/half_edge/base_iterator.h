@@ -21,41 +21,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
-#define VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_HALF_EDGE_BASE_ITERATOR_H
+#define VCL_MESH_ITERATORS_HALF_EDGE_BASE_ITERATOR_H
 
-#include "vertex_base_iterator.h"
+#include <iterator>
 
-namespace vcl {
-
-namespace internal {
+namespace vcl::internal {
 
 template<typename HalfEdge, bool CNST>
-class VertexAdjFaceIterator :
-		public VertexBaseIterator<HalfEdge, CNST, VertexAdjFaceIterator<HalfEdge, CNST>>
+class BaseIterator
 {
-	using Base = VertexBaseIterator<HalfEdge, CNST, VertexAdjFaceIterator<HalfEdge, CNST>>;
+	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public:
-	using value_type = std::conditional_t<CNST,
-			const typename HalfEdge::FaceType*,
-			typename HalfEdge::FaceType*>;
-	using reference = std::conditional_t<CNST, value_type, value_type&>;
-	using pointer   = value_type*;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	BaseIterator() {}
+	BaseIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	BaseIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
 
-	reference operator*() const { return Base::current->face(); }
-	pointer operator->() const { return &(Base::current->face()); }
+	bool operator==(const BaseIterator& oi) const { return current == oi.current; }
+	bool operator!=(const BaseIterator& oi) const { return current != oi.current; }
+
+protected:
+	CurrentHEdgeType current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl::internal
 
-template<typename HalfEdge>
-using VertexAdjFaceIterator = internal::VertexAdjFaceIterator<HalfEdge, false>;
-
-template<typename HalfEdge>
-using ConstVertexAdjFaceIterator = internal::VertexAdjFaceIterator<HalfEdge, true>;
-
-} // namespace vcl
-
-#endif // VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_HALF_EDGE_BASE_ITERATOR_H

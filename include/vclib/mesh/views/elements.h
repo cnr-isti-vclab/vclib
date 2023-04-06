@@ -17,45 +17,57 @@
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * GNU General Public License (http://www.gnu.ostd::ranges/licenses/gpl.txt)          *
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
-#define VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
+#ifndef VCL_MESH_VIEWS_ELEMENTS_H
+#define VCL_MESH_VIEWS_ELEMENTS_H
 
-#include "vertex_base_iterator.h"
+#include "pipe.h"
+
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
-
 namespace internal {
 
-template<typename HalfEdge, bool CNST>
-class VertexAdjFaceIterator :
-		public VertexBaseIterator<HalfEdge, CNST, VertexAdjFaceIterator<HalfEdge, CNST>>
+template<typename T>
+concept CleanMeshConcept = MeshConcept<std::remove_const_t<std::remove_reference_t<T>>>;
+
+template<typename T>
+concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_const_t<std::remove_reference_t<T>>>;
+
+struct VerticesViewClosure
 {
-	using Base = VertexBaseIterator<HalfEdge, CNST, VertexAdjFaceIterator<HalfEdge, CNST>>;
-public:
-	using value_type = std::conditional_t<CNST,
-			const typename HalfEdge::FaceType*,
-			typename HalfEdge::FaceType*>;
-	using reference = std::conditional_t<CNST, value_type, value_type&>;
-	using pointer   = value_type*;
+	constexpr VerticesViewClosure(){}
 
-	using Base::Base;
+	template <CleanMeshConcept R>
+	constexpr auto operator()(R && r) const
+	{
+		return r.vertices();
+	}
+};
 
-	reference operator*() const { return Base::current->face(); }
-	pointer operator->() const { return &(Base::current->face()); }
+struct FacesViewClosure
+{
+	constexpr FacesViewClosure(){}
+
+	template <CleanFaceMeshConcept R>
+	constexpr auto operator()(R && r) const
+	{
+		return r.faces();
+	}
 };
 
 } // namespace vcl::internal
 
-template<typename HalfEdge>
-using VertexAdjFaceIterator = internal::VertexAdjFaceIterator<HalfEdge, false>;
+namespace views {
 
-template<typename HalfEdge>
-using ConstVertexAdjFaceIterator = internal::VertexAdjFaceIterator<HalfEdge, true>;
+internal::VerticesViewClosure vertices;
+internal::FacesViewClosure faces;
+
+} // namespace vcl::views
 
 } // namespace vcl
 
-#endif // VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_FACE_ITERATOR_H
+#endif // VCL_MESH_VIEWS_ELEMENTS_H
