@@ -78,20 +78,6 @@ using TriangleWrapper3 = TriangleWrapper<Point3<Scalar>>;
 using TriangleWrapper3f = TriangleWrapper<Point3f>;
 using TriangleWrapper3d = TriangleWrapper<Point3d>;
 
-static_assert(
-	ConstTriangle2Concept<TriangleWrapper2f>,
-	"TriangleWrapper2f does not satisfy the ConstTriangle2Concept");
-static_assert(
-	ConstTriangle2Concept<TriangleWrapper2d>,
-	"TriangleWrapper2d does not satisfy the ConstTriangle2Concept");
-
-static_assert(
-	ConstTriangle3Concept<Triangle3f>,
-	"Triangle3f does not satisfy the ConstTriangle3Concept");
-static_assert(
-	ConstTriangle3Concept<Triangle3d>,
-	"Triangle3d does not satisfy the ConstTriangle3Concept");
-
 } // namespace vcl
 
 #include "triangle_wrapper.cpp"

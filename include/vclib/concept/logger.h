@@ -70,10 +70,10 @@ concept LoggerConcept =
 	{ o.progress(uint()) }  -> std::same_as<void>;
 };
 
-template <typename T>
+template <LoggerConcept T>
 constexpr bool isLoggerValid()
 {
-	return !std::is_same_v<T, NullLogger> && LoggerConcept<T>;
+	return !std::is_same_v<T, NullLogger>;
 }
 
 } // nameaspace vcl

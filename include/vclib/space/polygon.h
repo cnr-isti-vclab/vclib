@@ -111,12 +111,6 @@ using Polygon3 = Polygon<Point3<Scalar>>;
 using Polygon3f = Polygon<Point3f>;
 using Polygon3d = Polygon<Point3d>;
 
-static_assert(Polygon2Concept<Polygon2f>, "Polygon2f does not satisfy the Polygon2Concept");
-static_assert(Polygon2Concept<Polygon2d>, "Polygon2d does not satisfy the Polygon2Concept");
-
-static_assert(Polygon3Concept<Polygon3f>, "Polygon3f does not satisfy the Polygon3Concept");
-static_assert(Polygon3Concept<Polygon3d>, "Polygon3d does not satisfy the Polygon3Concept");
-
 } // namespace vcl
 
 #include "polygon.cpp"

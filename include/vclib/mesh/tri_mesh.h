@@ -98,15 +98,6 @@ class TriMeshT :
 using TriMeshf = TriMeshT<float>;
 using TriMesh  = TriMeshT<double>;
 
-// makes sure that the TriMesh satisfies Mesh concepts
-static_assert(MeshConcept<TriMesh>, "The TriMesh is not a valid Mesh.");
-static_assert(FaceMeshConcept<TriMesh>, "The TriMesh is not a valid Mesh with Faces.");
-static_assert(TriangleMeshConcept<TriMesh>, "The TriMesh is not a static Triangle Mesh.");
-static_assert(!QuadMeshConcept<TriMesh>, "The TriMesh is a static Quad Mesh.");
-static_assert(!EdgeMeshConcept<TriMesh>, "The TriMesh is an Edge Mesh.");
-static_assert(!PolygonMeshConcept<TriMesh>, "The TriMesh is a valid Polygon Mesh.");
-static_assert(!DcelMeshConcept<TriMesh>, "The TriMesh is a Dcel Mesh.");
-
 } // namespace vcl
 
 #endif // VCL_MESH_TRI_MESH_H

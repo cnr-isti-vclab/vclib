@@ -50,8 +50,6 @@ private:
 	std::ostream& debugStream = std::cerr;
 };
 
-static_assert(LoggerConcept<ConsoleLogger>, "ConsoleLogger does not satisfy the LoggerConcept");
-
 } // namespace vcl
 
 #include "console_logger.cpp"

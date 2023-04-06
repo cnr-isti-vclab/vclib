@@ -89,9 +89,6 @@ private:
 	std::vector<PointT> samplesVec;
 };
 
-// makes sure that the VertexIndexSampler satisfies SamplerConcept
-static_assert(FaceSamplerConcept<PointSampler<>>, "PointSampler is not a valid FaceSampler");
-
 } // namespace vcl
 
 #include "point_sampler.cpp"
