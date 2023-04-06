@@ -17,74 +17,63 @@
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * GNU General Public License (http://www.gnu.ostd::ranges/licenses/gpl.txt)          *
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_MESH_VIEWS_COMPONENTS_H
+#define VCL_MESH_VIEWS_COMPONENTS_H
 
-#include <vclib/mesh.h>
-#include <vclib/load_save.h>
+#include "pipe.h"
 
-#include <vclib/mesh/iterator.h>
-#include <vclib/mesh/views/elements.h>
-#include <vclib/mesh/views/components.h>
+#include <vclib/mesh/iterators/component.h>
 
-int main()
+namespace vcl {
+namespace internal {
+
+struct CoordsViewClosure
 {
-	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+	constexpr CoordsViewClosure(){}
 
-	// print
-
-	const vcl::TriMesh& cm = m;
-
-	std::cerr << "\n\nCoords per face:\n\n";
-
-	for (const auto& f : cm | vcl::views::faces) {
-		for (const auto& c : f | vcl::views::vertices | vcl::views::coords) {
-			std::cerr << c << "\t";
-		}
-		std::cerr << "\n";
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		return CoordView(r);
 	}
+};
 
-	for (const auto& c : cm.vertices() | vcl::views::coords) {
-		std::cerr << c << "\n";
+struct ScalarViewClosure
+{
+	constexpr ScalarViewClosure(){}
+
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		return ScalarView(r);
 	}
+};
 
-	// transform
-	std::cerr << "\n\nTransformed:\n\n";
+struct SelectionViewClosure
+{
+	constexpr SelectionViewClosure(){}
 
-	for (auto& c : m.vertices() | vcl::views::coords) {
-		c *= 2;
-		std::cerr << c << "\n";
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		return SelectionView(r);
 	}
+};
 
-	std::cerr << "\n\nTransform Selection:\n";
-
-	uint i = 0;
-	for (auto& sel : m.vertices() | vcl::views::selection) {
-		sel = i % 2 ? true : false;
-		std::cerr << sel << "\n";
-		++i;
-	}
-
-	std::cerr << "\n\nPrint Selection:\n";
-	for (const auto& sel : m.vertices() | vcl::views::selection) {
-		std::cerr << sel << "\n";
-	}
-
-
-	// scalar
-
-	i = 0;
-	for (auto& scal : m.vertices() | vcl::views::scalars) {
-		scal = ++i;
-	}
-
-	std::cerr << "\n\nPrint Scalars:\n";
-
-	for (const auto& scal : m.vertices() | vcl::views::scalars) {
-		std::cerr << scal << "\n";
-	}
-	return 0;
 }
+
+namespace views {
+
+internal::CoordsViewClosure coords;
+internal::ScalarViewClosure scalars;
+internal::SelectionViewClosure selection;
+
+} // namespace vcl::views
+
+}
+
+#endif // VCL_MESH_VIEWS_COMPONENTS_H

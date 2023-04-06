@@ -259,6 +259,7 @@ set(HEADERS
 	include/vclib/mesh/utils/mesh_inertia.h
 	include/vclib/mesh/utils/mesh_pos.h
 	include/vclib/mesh/utils/tri_poly_index_bimap.h
+	include/vclib/mesh/views/components.h
 	include/vclib/mesh/views/elements.h
 	include/vclib/mesh/views/pipe.h
 	include/vclib/misc/bit_proxy.h

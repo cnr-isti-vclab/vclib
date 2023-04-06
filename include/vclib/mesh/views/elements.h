@@ -37,11 +37,20 @@ concept CleanMeshConcept = MeshConcept<std::remove_const_t<std::remove_reference
 template<typename T>
 concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_const_t<std::remove_reference_t<T>>>;
 
+template<typename T>
+concept CleanFaceConcept = FaceConcept<std::remove_const_t<std::remove_reference_t<T>>>;
+
 struct VerticesViewClosure
 {
 	constexpr VerticesViewClosure(){}
 
 	template <CleanMeshConcept R>
+	constexpr auto operator()(R && r) const
+	{
+		return r.vertices();
+	}
+
+	template <CleanFaceConcept R>
 	constexpr auto operator()(R && r) const
 	{
 		return r.vertices();
