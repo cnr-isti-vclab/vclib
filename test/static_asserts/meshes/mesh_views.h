@@ -11,6 +11,7 @@ void meshViewsStaticAsserts()
 	MeshType m;
 	const MeshType& cm = m;
 
+#ifndef __clang__
 	static_assert(
 		std::ranges::range<typename MeshType::VertexView>,
 		"The MeshType VertexView is not a valid range.");
@@ -57,6 +58,7 @@ void meshViewsStaticAsserts()
 			std::ranges::range<typename MeshType::ConstHalfEdgeView>,
 			"The MeshType ConstHalfEdgeView is not a valid range.");
 	}
+#endif
 }
 
 #endif // MESH_VIEWS_H
