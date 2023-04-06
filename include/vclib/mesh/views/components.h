@@ -21,50 +21,109 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_ELEMENTS_H
-#define VCL_MESH_VIEWS_ELEMENTS_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_H
+#define VCL_MESH_VIEWS_COMPONENTS_H
+
+#include <ranges>
 
 #include "pipe.h"
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh/iterators/component.h>
+#include <vclib/types.h>
 
 namespace vcl {
 namespace internal {
 
-template<typename T>
-concept CleanMeshConcept = MeshConcept<std::remove_const_t<std::remove_reference_t<T>>>;
-
-template<typename T>
-concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_const_t<std::remove_reference_t<T>>>;
-
-template<typename T>
-concept CleanFaceConcept = FaceConcept<std::remove_const_t<std::remove_reference_t<T>>>;
-
-struct VerticesViewClosure
+struct CoordsViewClosure
 {
-	constexpr VerticesViewClosure(){}
+	constexpr CoordsViewClosure(){}
 
-	template <CleanMeshConcept R>
+	template <typename R>
 	constexpr auto operator()(R && r) const
 	{
-		return r.vertices();
-	}
-
-	template <CleanFaceConcept R>
-	constexpr auto operator()(R && r) const
-	{
-		return r.vertices();
+		return CoordView(r);
 	}
 };
 
-struct FacesViewClosure
+struct ScalarViewClosure
 {
-	constexpr FacesViewClosure(){}
+	constexpr ScalarViewClosure(){}
 
-	template <CleanFaceMeshConcept R>
+	template <typename R>
 	constexpr auto operator()(R && r) const
 	{
-		return r.faces();
+		return ScalarView(r);
+	}
+};
+
+struct SelectionViewClosure
+{
+	constexpr SelectionViewClosure(){}
+
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		return SelectionView(r);
+	}
+};
+
+namespace sel {
+template<typename T>
+struct ET{
+	using t = std::remove_pointer_t<T>;
+};
+
+template<IteratorConcept T>
+struct ET<T>{
+	using t = typename T::value_type;
+};
+}
+
+template<typename Element>
+auto isSelected = [](const Element& e)
+{
+	if constexpr(vcl::IsPointer<Element>) {
+		return e->isSelected();
+	}
+	else {
+		return e.isSelected();
+	}
+};
+
+struct SelectedViewClosure
+{
+	constexpr SelectedViewClosure(){}
+
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		using CleanRange = std::remove_const_t<std::remove_reference_t<R>>;
+		using ElemType = sel::ET<typename CleanRange::iterator>::t;
+		return r | std::views::filter(isSelected<ElemType>);
+	}
+};
+
+template<typename Element>
+auto isNotSelected = [](const Element& e)
+{
+	if constexpr(vcl::IsPointer<Element>) {
+		return !e->isSelected();
+	}
+	else {
+		return !e.isSelected();
+	}
+};
+
+struct NotSelectedViewClosure
+{
+	constexpr NotSelectedViewClosure(){}
+
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		using CleanRange = std::remove_const_t<std::remove_reference_t<R>>;
+		using ElemType = sel::ET<typename CleanRange::iterator>::t;
+		return r | std::views::filter(isNotSelected<ElemType>);
 	}
 };
 
@@ -72,11 +131,14 @@ struct FacesViewClosure
 
 namespace views {
 
-internal::VerticesViewClosure vertices;
-internal::FacesViewClosure faces;
+internal::CoordsViewClosure coords;
+internal::ScalarViewClosure scalars;
+internal::SelectionViewClosure selection;
+internal::SelectedViewClosure selected;
+internal::NotSelectedViewClosure notSelected;
 
 } // namespace vcl::views
 
 } // namespace vcl
 
-#endif // VCL_MESH_VIEWS_ELEMENTS_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_H

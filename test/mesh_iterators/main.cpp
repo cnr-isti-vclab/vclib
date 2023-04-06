@@ -28,6 +28,7 @@
 
 #include <vclib/mesh/iterator.h>
 #include <vclib/mesh/views/elements.h>
+#include <vclib/mesh/views/components.h>
 
 int main()
 {
@@ -37,22 +38,23 @@ int main()
 
 	const vcl::TriMesh& cm = m;
 
-	for (auto& v : m | vcl::views::vertices) {
-		std::cerr << v.coord() << "\n";
-	}
+	std::cerr << "\n\nCoords per face:\n\n";
 
 	for (const auto& f : cm | vcl::views::faces) {
-		std::cerr << f.normal() << "\n";
+		for (const auto& c : f | vcl::views::vertices | vcl::views::coords) {
+			std::cerr << c << "\t";
+		}
+		std::cerr << "\n";
 	}
 
-	for (const auto& c : vcl::CoordView(cm.vertices())) {
+	for (const auto& c : cm.vertices() | vcl::views::coords) {
 		std::cerr << c << "\n";
 	}
 
 	// transform
 	std::cerr << "\n\nTransformed:\n\n";
 
-	for (auto& c : vcl::CoordView(m.vertices())) {
+	for (auto& c : m.vertices() | vcl::views::coords) {
 		c *= 2;
 		std::cerr << c << "\n";
 	}
@@ -60,32 +62,41 @@ int main()
 	std::cerr << "\n\nTransform Selection:\n";
 
 	uint i = 0;
-//	for (auto& v : m.vertices()) {
-//		v.selected() = i % 2 ? true : false;
-//		i++;
-//	}
-	for (auto& sel : vcl::SelectionView(m.vertices())) {
+	for (auto& sel : m.vertices() | vcl::views::selection) {
 		sel = i % 2 ? true : false;
 		std::cerr << sel << "\n";
 		++i;
 	}
 
 	std::cerr << "\n\nPrint Selection:\n";
-	for (const auto& sel : vcl::SelectionView(cm.vertices())) {
+	for (const auto& sel : m.vertices() | vcl::views::selection) {
 		std::cerr << sel << "\n";
+	}
+
+	std::cerr << "\n\nPrint Selected:\n";
+	for (const auto& v : m.vertices() | vcl::views::selected) {
+		std::cerr << m.index(v) << "\n";
+	}
+
+	std::cerr << "\n\nPrint Selected for each face:\n";
+	for (const auto& f : cm | vcl::views::faces) {
+		std::cerr << "Face: " << m.index(f) << "\n";
+		for (const auto* v : f.vertices() | vcl::views::selected) {
+			std::cerr << m.index(v) << "\n";
+		}
 	}
 
 
 	// scalar
 
 	i = 0;
-	for (auto& scal : vcl::ScalarView(m.vertices())) {
+	for (auto& scal : m.vertices() | vcl::views::scalars) {
 		scal = ++i;
 	}
 
 	std::cerr << "\n\nPrint Scalars:\n";
 
-	for (const auto& scal : vcl::ScalarView(cm.vertices())) {
+	for (const auto& scal : m.vertices() | vcl::views::scalars) {
 		std::cerr << scal << "\n";
 	}
 	return 0;
