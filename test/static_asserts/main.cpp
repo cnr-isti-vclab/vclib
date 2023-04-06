@@ -21,24 +21,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_POINT_POINT3_H
-#define VCL_SPACE_POINT_POINT3_H
+#include "loggers.h"
+#include "meshes.h"
+#include "space.h"
 
-#include "point_t.h"
+int main()
+{
+	loggersStaticAsserts();
 
-namespace vcl {
+	dcelStaticAsserts();
+	edgemeshStaticAsserts();
+	pointcloudStaticAsserts();
+	polymeshStaticAsserts();
+	trimeshStaticAsserts();
 
-/**
- * @brief The Point3 class represents a 3-dimensional point containing 3 ScalarType values.
- * Specializes the Point class, providing some additional member functions useful for 3D points.
- */
-template<typename Scalar>
-using Point3 = Point<Scalar, 3>;
-
-using Point3i = Point3<int>;
-using Point3f = Point3<float>;
-using Point3d = Point3<double>;
-
-} // namespace vcl
-
-#endif // VCL_SPACE_POINT_POINT3_H
+	spaceStaticAsserts();
+	return 0;
+}

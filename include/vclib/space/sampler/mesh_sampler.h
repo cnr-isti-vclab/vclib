@@ -113,11 +113,6 @@ private:
 	MeshType m;
 };
 
-// makes sure that the MeshSampler satisfies SamplerConcept
-static_assert(
-	FaceSamplerConcept<MeshSampler<internal::TMPSimplePolyMesh>>,
-	"MeshSampler is not a valid FaceSampler");
-
 } // namespace vcl
 
 #include "mesh_sampler.cpp"

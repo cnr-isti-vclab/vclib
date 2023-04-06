@@ -49,14 +49,6 @@ using VertexSampler = internal::VertexSampler<VertexType, false>;
 template<VertexConcept VertexType>
 using ConstVertexSampler = internal::VertexSampler<VertexType, true>;
 
-// makes sure that the VertexSampler satisfies SamplerConcept
-static_assert(
-	SamplerConcept<VertexSampler<internal::TMPSimplePolyMesh::Vertex>>,
-	"VertexSampler does not satisfy the SamplerConcept");
-static_assert(
-	SamplerConcept<ConstVertexSampler<internal::TMPSimplePolyMesh::Vertex>>,
-	"ConstVertexSampler does not satisfy the SamplerConcept");
-
 } // namespace vcl
 
 #include "vertex_sampler.cpp"

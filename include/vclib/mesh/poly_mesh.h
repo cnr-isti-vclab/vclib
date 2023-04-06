@@ -96,15 +96,6 @@ class PolyMeshT :
 using PolyMeshf = PolyMeshT<float>;
 using PolyMesh  = PolyMeshT<double>;
 
-// makes sure that the PolyMesh satisfies Mesh concepts
-static_assert(MeshConcept<PolyMesh>, "The PolyMesh is not a valid Mesh.");
-static_assert(FaceMeshConcept<PolyMesh>, "The PolyMesh is not a valid Mesh with Faces.");
-static_assert(!TriangleMeshConcept<PolyMesh>, "The PolyMesh is a static Triangle Mesh.");
-static_assert(!QuadMeshConcept<PolyMesh>, "The PolyMesh is a static Quad Mesh.");
-static_assert(!EdgeMeshConcept<PolyMesh>, "The PolyMesh is an Edge Mesh.");
-static_assert(PolygonMeshConcept<PolyMesh>, "The PolyMesh is not a valid Polygon Mesh.");
-static_assert(!DcelMeshConcept<PolyMesh>, "The PolyMesh is a Dcel Mesh.");
-
 } // namespace vcl
 
 #endif // VCL_MESH_POLY_MESH_H
