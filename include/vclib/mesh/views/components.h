@@ -24,12 +24,9 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_H
 #define VCL_MESH_VIEWS_COMPONENTS_H
 
-#include <ranges>
-
 #include "pipe.h"
 
 #include <vclib/mesh/iterators/component.h>
-#include <vclib/types.h>
 
 namespace vcl {
 namespace internal {
@@ -67,75 +64,13 @@ struct SelectionViewClosure
 	}
 };
 
-namespace sel {
-template<typename T>
-struct ET{
-	using t = std::remove_pointer_t<T>;
-};
-
-template<IteratorConcept T>
-struct ET<T>{
-	using t = typename T::value_type;
-};
 }
-
-template<typename Element>
-auto isSelected = [](const Element& e)
-{
-	if constexpr(vcl::IsPointer<Element>) {
-		return e->isSelected();
-	}
-	else {
-		return e.isSelected();
-	}
-};
-
-struct SelectedViewClosure
-{
-	constexpr SelectedViewClosure(){}
-
-	template <typename R>
-	constexpr auto operator()(R && r) const
-	{
-		using CleanRange = std::remove_const_t<std::remove_reference_t<R>>;
-		using ElemType = sel::ET<typename CleanRange::iterator>::t;
-		return r | std::views::filter(isSelected<ElemType>);
-	}
-};
-
-template<typename Element>
-auto isNotSelected = [](const Element& e)
-{
-	if constexpr(vcl::IsPointer<Element>) {
-		return !e->isSelected();
-	}
-	else {
-		return !e.isSelected();
-	}
-};
-
-struct NotSelectedViewClosure
-{
-	constexpr NotSelectedViewClosure(){}
-
-	template <typename R>
-	constexpr auto operator()(R && r) const
-	{
-		using CleanRange = std::remove_const_t<std::remove_reference_t<R>>;
-		using ElemType = sel::ET<typename CleanRange::iterator>::t;
-		return r | std::views::filter(isNotSelected<ElemType>);
-	}
-};
-
-} // namespace vcl::internal
 
 namespace views {
 
 internal::CoordsViewClosure coords;
 internal::ScalarViewClosure scalars;
 internal::SelectionViewClosure selection;
-internal::SelectedViewClosure selected;
-internal::NotSelectedViewClosure notSelected;
 
 } // namespace vcl::views
 
