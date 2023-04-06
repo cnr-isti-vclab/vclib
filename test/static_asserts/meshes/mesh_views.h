@@ -1,6 +1,8 @@
 #ifndef MESH_VIEWS_H
 #define MESH_VIEWS_H
 
+#include <ranges>
+
 #include <vclib/mesh/views/elements.h>
 
 template<typename MeshType>
