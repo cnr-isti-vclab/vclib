@@ -17,6 +17,15 @@ void polymeshStaticAsserts()
 	static_assert(PolygonMeshConcept<PolyMesh>, "The PolyMesh is not a valid Polygon Mesh.");
 	static_assert(!DcelMeshConcept<PolyMesh>, "The PolyMesh is a Dcel Mesh.");
 
+	static_assert(HasVertices<PolyMesh>, "");
+	static_assert(HasFaces<PolyMesh>, "");
+	static_assert(!HasEdges<PolyMesh>, "");
+	static_assert(!HasHalfEdges<PolyMesh>, "");
+
+	static_assert(!HasTriangles<PolyMesh>, "");
+	static_assert(!HasQuads<PolyMesh>, "");
+	static_assert(HasPolygons<PolyMesh>, "");
+
 	meshViewsStaticAsserts<PolyMesh>();
 }
 

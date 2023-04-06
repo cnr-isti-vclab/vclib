@@ -18,6 +18,15 @@ void pointcloudStaticAsserts()
 	static_assert(!PolygonMeshConcept<PointCloud>, "The PointCloud is a PolygonMesh.");
 	static_assert(!DcelMeshConcept<PointCloud>, "The PointCloud is a DcelMesh.");
 
+	static_assert(HasVertices<PointCloud>, "");
+	static_assert(!HasFaces<PointCloud>, "");
+	static_assert(!HasEdges<PointCloud>, "");
+	static_assert(!HasHalfEdges<PointCloud>, "");
+
+	static_assert(!HasTriangles<PointCloud>, "");
+	static_assert(!HasQuads<PointCloud>, "");
+	static_assert(!HasPolygons<PointCloud>, "");
+
 	// mesh views
 	meshViewsStaticAsserts<PointCloud>();
 }

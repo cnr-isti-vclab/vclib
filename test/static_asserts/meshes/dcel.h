@@ -17,6 +17,15 @@ void dcelStaticAsserts()
 	static_assert(PolygonMeshConcept<DcelMesh>, "The DcelMesh is not a PolygonMesh.");
 	static_assert(DcelMeshConcept<DcelMesh>, "The DcelMesh is not a valid DcelMesh.");
 
+	static_assert(HasVertices<DcelMesh>, "");
+	static_assert(HasFaces<DcelMesh>, "");
+	static_assert(!HasEdges<DcelMesh>, "");
+	static_assert(HasHalfEdges<DcelMesh>, "");
+
+	static_assert(!HasTriangles<DcelMesh>, "");
+	static_assert(!HasQuads<DcelMesh>, "");
+	static_assert(HasPolygons<DcelMesh>, "");
+
 	meshViewsStaticAsserts<DcelMesh>();
 }
 
