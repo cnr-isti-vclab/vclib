@@ -73,19 +73,6 @@ int main()
 		std::cerr << sel << "\n";
 	}
 
-	std::cerr << "\n\nPrint Selected:\n";
-	for (const auto& v : m.vertices() | vcl::views::selected) {
-		std::cerr << m.index(v) << "\n";
-	}
-
-	std::cerr << "\n\nPrint Selected for each face:\n";
-	for (const auto& f : cm | vcl::views::faces) {
-		std::cerr << "Face: " << m.index(f) << "\n";
-		for (const auto* v : f.vertices() | vcl::views::selected) {
-			std::cerr << m.index(v) << "\n";
-		}
-	}
-
 
 	// scalar
 
