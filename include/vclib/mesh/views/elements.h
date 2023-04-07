@@ -26,7 +26,7 @@
 
 #include <vclib/mesh/requirements.h>
 
-namespace vcl {
+namespace vcl::views {
 namespace internal {
 
 template<typename T>
@@ -94,9 +94,7 @@ struct HalfEdgesViewClosure
 	}
 };
 
-} // namespace vcl::internal
-
-namespace views {
+} // namespace vcl::views::internal
 
 inline constexpr internal::VerticesViewClosure vertices;
 inline constexpr internal::FacesViewClosure faces;
@@ -104,7 +102,5 @@ inline constexpr internal::EdgesViewClosure edges;
 inline constexpr internal::HalfEdgesViewClosure halfEdges;
 
 } // namespace vcl::views
-
-} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_ELEMENTS_H

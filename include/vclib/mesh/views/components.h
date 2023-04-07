@@ -29,14 +29,14 @@
 #include <vclib/mesh/iterators/component.h>
 #include <vclib/types.h>
 
-namespace vcl {
+namespace vcl::views {
 namespace internal {
 
 struct CoordsViewClosure
 {
 	constexpr CoordsViewClosure(){}
 
-	template <typename R>
+	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
 		return CoordView(r);
@@ -47,7 +47,7 @@ struct ScalarViewClosure
 {
 	constexpr ScalarViewClosure(){}
 
-	template <typename R>
+	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
 		return ScalarView(r);
@@ -58,7 +58,7 @@ struct SelectionViewClosure
 {
 	constexpr SelectionViewClosure(){}
 
-	template <typename R>
+	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
 		return SelectionView(r);
@@ -92,7 +92,7 @@ struct SelectedViewClosure
 {
 	constexpr SelectedViewClosure(){}
 
-	template <typename R>
+	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
 		using CleanRange = std::remove_const_t<std::remove_reference_t<R>>;
@@ -116,7 +116,7 @@ struct NotSelectedViewClosure
 {
 	constexpr NotSelectedViewClosure(){}
 
-	template <typename R>
+	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
 		using CleanRange = std::remove_const_t<std::remove_reference_t<R>>;
@@ -125,9 +125,7 @@ struct NotSelectedViewClosure
 	}
 };
 
-} // namespace vcl::internal
-
-namespace views {
+} // namespace vcl::views::internal
 
 inline constexpr internal::CoordsViewClosure coords;
 inline constexpr internal::ScalarViewClosure scalars;
@@ -136,7 +134,5 @@ inline constexpr internal::SelectedViewClosure selected;
 inline constexpr internal::NotSelectedViewClosure notSelected;
 
 } // namespace vcl::views
-
-} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_H

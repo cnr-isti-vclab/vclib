@@ -26,10 +26,13 @@
 
 #include <ranges>
 
-namespace vcl{
+namespace vcl::views{
 
 namespace internal {
 
+// here, type of R is not constrained by any concept.
+// We trust that all the closures structs defined in the vcl::views::internal namespace will
+// constraint the Range types (which may also not be ranges at all)
 template <typename R, typename Closure>
 constexpr auto operator | (R& r, Closure const & a)
 {
@@ -51,7 +54,7 @@ struct IsValidClosure
 
 	constexpr IsValidClosure() {};
 
-	template <typename R>
+	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
 		return r | std::views::filter(isValid);
@@ -67,7 +70,7 @@ struct DereferenceClosure
 
 	constexpr DereferenceClosure() {};
 
-	template <typename R>
+	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
 		return r | std::views::transform(deref);
@@ -83,16 +86,14 @@ struct ReferenceClosure
 
 	constexpr ReferenceClosure() {};
 
-	template <typename R>
+	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
 		return r | std::views::transform(ref);
 	}
 };
 
-} // namespace vcl::internal
-
-namespace views {
+} // namespace vcl::views::internal
 
 /**
  * @brief The isValid view allows to filter the pointers of a range. The resulting
@@ -118,7 +119,5 @@ inline constexpr internal::DereferenceClosure dereference;
 inline constexpr internal::ReferenceClosure reference;
 
 } // namespace vcl::views
-
-} // namespace vcl
 
 #endif // VCL_TYPES_VIEWS_H
