@@ -50,6 +50,12 @@ template<typename T>
 using RemoveRefAndPointer =
 	typename std::remove_pointer_t<typename std::remove_reference_t<T>>;
 
+/*
+ * Utility to get clean type from an input type that could have a const reference.
+ */
+template<typename T>
+using RemoveConstRef = typename std::remove_const_t<std::remove_reference_t<T>>;
+
 } // namespace vcl
 
 #endif // VCL_TYPES_POINTERS_H
