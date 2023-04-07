@@ -24,8 +24,17 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'macOS'
       run: |
-        brew install cmake ninja
+        brew install cmake ninja llvm
+    - name: Build MacOS
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        mkdir build
+        cd build
+        cmake -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm/bin/clang++ -GNinja -DCMAKE_BUILD_TYPE=Release ..
+        ninja
     - name: Build
+      if: runner.os != 'macOS'
       shell: bash
       run: |
         mkdir build
