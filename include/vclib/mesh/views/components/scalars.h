@@ -21,11 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_H
-#define VCL_MESH_VIEWS_COMPONENTS_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_SCALARS_H
+#define VCL_MESH_VIEWS_COMPONENTS_SCALARS_H
 
-#include "components/coords.h"
-#include "components/scalars.h"
-#include "components/selection.h"
+#include <vclib/mesh/iterators/component/scalar_iterator.h>
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_H
+#include "component_view.h"
+
+namespace vcl {
+
+// todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
+#ifdef __clang__
+template<std::ranges::range RngType>
+class ScalarView : public vcl::View<ScalarIterator<std::ranges::iterator_t<RngType>>>
+{
+	using Base = vcl::View<ScalarIterator<std::ranges::iterator_t<RngType>>>;
+public:
+	ScalarView(const RngType& r) :
+			Base(ScalarIterator(std::ranges::begin(r)), ScalarIterator(std::ranges::end(r)))
+	{
+	}
+};
+#else
+template<std::ranges::range RngType>
+using ScalarView = internal::ComponentView<RngType, ScalarIterator>;
+#endif
+
+namespace views {
+
+namespace internal {
+
+struct ScalarViewClosure
+{
+	constexpr ScalarViewClosure(){}
+
+	template <std::ranges::range R>
+	constexpr auto operator()(R && r) const
+	{
+		return ScalarView(r);
+	}
+};
+
+} // namespace vcl::views::internal
+
+inline constexpr internal::ScalarViewClosure scalars;
+
+} // namespace vcl::views
+
+} // namespace vcl
+
+#endif // VCL_MESH_VIEWS_COMPONENTS_SCALARS_H

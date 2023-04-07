@@ -24,8 +24,6 @@
 #ifndef VCL_MESH_ITERATORS_COMPONENT_COORD_ITERATOR_H
 #define VCL_MESH_ITERATORS_COMPONENT_COORD_ITERATOR_H
 
-#include "component_view.h"
-
 #include <vclib/iterators/iterator_wrapper.h>
 
 namespace vcl {
@@ -85,23 +83,6 @@ public:
 		return &(operator*());
 	}
 };
-
-// todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
-#ifdef __clang__
-template<std::ranges::range RngType>
-class CoordView : public vcl::View<CoordIterator<std::ranges::iterator_t<RngType>>>
-{
-	using Base = vcl::View<CoordIterator<std::ranges::iterator_t<RngType>>>;
-public:
-	CoordView(const RngType& r) :
-			Base(CoordIterator(std::ranges::begin(r)), CoordIterator(std::ranges::end(r)))
-	{
-	}
-};
-#else
-template<std::ranges::range RngType>
-using CoordView = internal::ComponentView<RngType, CoordIterator>;
-#endif
 
 } // namespace vcl
 

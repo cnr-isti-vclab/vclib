@@ -24,8 +24,6 @@
 #ifndef VCL_MESH_ITERATORS_COMPONENT_SELECTION_ITERATOR_H
 #define VCL_MESH_ITERATORS_COMPONENT_SELECTION_ITERATOR_H
 
-#include "component_view.h"
-
 #include <vclib/iterators/iterator_wrapper.h>
 #include <vclib/misc/bit_proxy.h>
 
@@ -88,22 +86,6 @@ public:
 		return &(operator*());
 	}
 };
-
-#ifdef __clang__
-template<std::ranges::range RngType>
-class SelectionView : public vcl::View<SelectionIterator<std::ranges::iterator_t<RngType>>>
-{
-	using Base = vcl::View<SelectionIterator<std::ranges::iterator_t<RngType>>>;
-public:
-	SelectionView(const RngType& r) :
-			Base(SelectionIterator(std::ranges::begin(r)), SelectionIterator(std::ranges::end(r)))
-	{
-	}
-};
-#else
-template<std::ranges::range RngType>
-using SelectionView = internal::ComponentView<RngType, SelectionIterator>;
-#endif
 
 } // namespace vcl
 

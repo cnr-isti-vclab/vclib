@@ -235,7 +235,6 @@ set(HEADERS
 	include/vclib/mesh/iterators/component.h
 	include/vclib/mesh/iterators/face.h
 	include/vclib/mesh/iterators/element_container_iterator.h
-	include/vclib/mesh/iterators/component/component_view.h
 	include/vclib/mesh/iterators/component/coord_iterator.h
 	include/vclib/mesh/iterators/component/scalar_iterator.h
 	include/vclib/mesh/iterators/component/selection_iterator.h
@@ -262,6 +261,10 @@ set(HEADERS
 	include/vclib/mesh/utils/tri_poly_index_bimap.h
 	include/vclib/mesh/views/components.h
 	include/vclib/mesh/views/elements.h
+	include/vclib/mesh/views/components/component_view.h
+	include/vclib/mesh/views/components/coords.h
+	include/vclib/mesh/views/components/scalars.h
+	include/vclib/mesh/views/components/selection.h
 	include/vclib/misc/bit_proxy.h
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h

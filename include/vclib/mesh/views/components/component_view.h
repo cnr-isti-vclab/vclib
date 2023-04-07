@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_COMPONENT_COMPONENT_VIEW_H
-#define VCL_MESH_ITERATORS_COMPONENT_COMPONENT_VIEW_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_COMPONENT_VIEW_H
+#define VCL_MESH_VIEWS_COMPONENTS_COMPONENT_VIEW_H
 
 #include <vclib/iterators/view.h>
 
@@ -69,4 +69,4 @@ public:
 
 } // namespace vcl::internal
 
-#endif // VCL_MESH_ITERATORS_COMPONENT_COMPONENT_VIEW_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_COMPONENT_VIEW_H

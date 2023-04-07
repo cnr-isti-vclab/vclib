@@ -21,11 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_H
-#define VCL_MESH_VIEWS_COMPONENTS_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_COORDS_H
+#define VCL_MESH_VIEWS_COMPONENTS_COORDS_H
 
-#include "components/coords.h"
-#include "components/scalars.h"
-#include "components/selection.h"
+#include <vclib/mesh/iterators/component/coord_iterator.h>
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_H
+#include "component_view.h"
+
+namespace vcl {
+
+// todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
+#ifdef __clang__
+template<std::ranges::range RngType>
+class CoordView : public vcl::View<CoordIterator<std::ranges::iterator_t<RngType>>>
+{
+	using Base = vcl::View<CoordIterator<std::ranges::iterator_t<RngType>>>;
+public:
+	CoordView(const RngType& r) :
+			Base(CoordIterator(std::ranges::begin(r)), CoordIterator(std::ranges::end(r)))
+	{
+	}
+};
+#else
+template<std::ranges::range RngType>
+using CoordView = internal::ComponentView<RngType, CoordIterator>;
+#endif
+
+namespace views {
+
+namespace internal {
+
+struct CoordsViewClosure
+{
+	constexpr CoordsViewClosure(){}
+
+	template <std::ranges::range R>
+	constexpr auto operator()(R && r) const
+	{
+		return CoordView(r);
+	}
+};
+
+} // namespace vcl::views::internal
+
+inline constexpr internal::CoordsViewClosure coords;
+
+} // namespace vcl::views
+
+} // namespace vcl
+
+#endif // VCL_MESH_VIEWS_COMPONENTS_COORDS_H
