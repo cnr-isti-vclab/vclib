@@ -19,9 +19,33 @@ The library is header only, therefore to install it you just need to add the vcl
 You can use the library by using the `cmake` command `add_subdirectory`, by adding the path to this repository
 in your `cmake` project. CMake will create a target called `vclib`, that you can link using the `target_link_libraries` command.
 
+## Compiler support
+
+VCLib requires recent compiler versions in order to build the newly features of the C++20 language, that have been recently integrated in the major compilers.
+
+VCLib currently builds with the follwing compilers:
+  - GCC 11.3 (default in Ubuntu 22.04)
+  - CLang 16 (can be installed in MacOS by running `brew install llvm`)
+  - MSVC 19.34 (last version in Visual Studio 2022)
+
+There is no guarantee that old compiler versions are capable to build the library.
+
+## C++20
+
+VCLib is designed to work with the most recent features of C++20:
+  - Concepts
+  - Ranges and Views
+
+In the future, when CMake will add stable support to C++20 modules, the library will be refactored and will use only modules,
+avoiding whenever is possible the usage of `#include`.
+
 ## Documentation
 
-You can find the documentation of the library [here](https://alemuntoni.github.io/vclib/).
+Right now, the library is a work in progress, and therefore is a work in progress also the documentation.
+
+The best way to learn how the library works is to look at the code in the [tests](test), which is built at every commit and therefore it is guaranteed to work.
+
+A first draft of the (not up-to-date) documentation of the library can be found [here](https://alemuntoni.github.io/vclib/).
 
 You can build the documentation trough CMake, by enabling the option `VCLIB_BUILD_DOCS`.
 To build the documentation, the following dependencies must be installed and available in your system:
