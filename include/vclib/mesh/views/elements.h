@@ -32,13 +32,19 @@ namespace vcl {
 namespace internal {
 
 template<typename T>
-concept CleanMeshConcept = MeshConcept<std::remove_const_t<std::remove_reference_t<T>>>;
+concept CleanMeshConcept = MeshConcept<RemoveConstRef<T>>;
 
 template<typename T>
-concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_const_t<std::remove_reference_t<T>>>;
+concept CleanFaceMeshConcept = FaceMeshConcept<RemoveConstRef<T>>;
 
 template<typename T>
-concept CleanFaceConcept = FaceConcept<std::remove_const_t<std::remove_reference_t<T>>>;
+concept CleanFaceConcept = FaceConcept<RemoveConstRef<T>>;
+
+template<typename T>
+concept CleanEdgeMeshConcept = EdgeMeshConcept<RemoveConstRef<T>>;
+
+template<typename T>
+concept CleanDcelMeshConcept = DcelMeshConcept<RemoveConstRef<T>>;
 
 struct VerticesViewClosure
 {
@@ -68,12 +74,36 @@ struct FacesViewClosure
 	}
 };
 
+struct EdgesViewClosure
+{
+	constexpr EdgesViewClosure(){}
+
+	template <CleanEdgeMeshConcept R>
+	constexpr auto operator()(R && r) const
+	{
+		return r.edges();
+	}
+};
+
+struct HalfEdgesViewClosure
+{
+	constexpr HalfEdgesViewClosure(){}
+
+	template <CleanDcelMeshConcept R>
+	constexpr auto operator()(R && r) const
+	{
+		return r.halfEdges();
+	}
+};
+
 } // namespace vcl::internal
 
 namespace views {
 
 internal::VerticesViewClosure vertices;
 internal::FacesViewClosure faces;
+internal::EdgesViewClosure edges;
+internal::HalfEdgesViewClosure halfEdges;
 
 } // namespace vcl::views
 
