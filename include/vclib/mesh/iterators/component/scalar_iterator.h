@@ -93,7 +93,7 @@ class ScalarView : public vcl::View<ScalarIterator<std::ranges::iterator_t<RngTy
 {
 	using Base = vcl::View<ScalarIterator<std::ranges::iterator_t<RngType>>>;
 public:
-	ScalarView(RngType&& r) :
+	ScalarView(const RngType& r) :
 			Base(ScalarIterator(std::ranges::begin(r)), ScalarIterator(std::ranges::end(r)))
 	{
 	}

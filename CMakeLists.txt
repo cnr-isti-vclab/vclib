@@ -33,6 +33,7 @@ message(STATUS "VCLib: external libraries")
 add_subdirectory(external)
 
 if (WIN32)
+	add_compile_definitions(NOMINMAX)
 	add_compile_definitions(_USE_MATH_DEFINES)
 	if (MSVC)
 		# remove possible loss of data warnings in msvc, leave the others

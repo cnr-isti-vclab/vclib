@@ -93,7 +93,7 @@ class CoordView : public vcl::View<CoordIterator<std::ranges::iterator_t<RngType
 {
 	using Base = vcl::View<CoordIterator<std::ranges::iterator_t<RngType>>>;
 public:
-	CoordView(RngType&& r) :
+	CoordView(const RngType& r) :
 			Base(CoordIterator(std::ranges::begin(r)), CoordIterator(std::ranges::end(r)))
 	{
 	}

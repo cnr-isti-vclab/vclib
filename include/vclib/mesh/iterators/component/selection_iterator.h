@@ -95,7 +95,7 @@ class SelectionView : public vcl::View<SelectionIterator<std::ranges::iterator_t
 {
 	using Base = vcl::View<SelectionIterator<std::ranges::iterator_t<RngType>>>;
 public:
-	SelectionView(RngType&& r) :
+	SelectionView(const RngType& r) :
 			Base(SelectionIterator(std::ranges::begin(r)), SelectionIterator(std::ranges::end(r)))
 	{
 	}

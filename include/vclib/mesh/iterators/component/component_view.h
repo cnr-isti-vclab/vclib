@@ -61,7 +61,7 @@ class ComponentView : public vcl::View<Iterator<std::ranges::iterator_t<RngType>
 {
 	using Base = vcl::View<Iterator<std::ranges::iterator_t<RngType>>>;
 public:
-	ComponentView(RngType&& r) :
+	ComponentView(const RngType& r) :
 			Base(Iterator(std::ranges::begin(r)), Iterator(std::ranges::end(r)))
 	{
 	}
