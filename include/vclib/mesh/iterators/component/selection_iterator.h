@@ -90,19 +90,19 @@ public:
 };
 
 #ifdef __clang__
-template<typename ViewType>
-class SelectionView : public vcl::View<SelectionIterator<typename ViewType::iterator>>
+template<std::ranges::range RngType>
+class SelectionView : public vcl::View<SelectionIterator<std::ranges::iterator_t<RngType>>>
 {
-	using Base = vcl::View<SelectionIterator<typename ViewType::iterator>>;
+	using Base = vcl::View<SelectionIterator<std::ranges::iterator_t<RngType>>>;
 public:
-	SelectionView(const ViewType& r) :
-			Base(SelectionIterator(r.begin()), SelectionIterator(r.end()))
+	SelectionView(RngType&& r) :
+			Base(SelectionIterator(std::ranges::begin(r)), SelectionIterator(std::ranges::end(r)))
 	{
 	}
 };
 #else
-template<typename Rng>
-using SelectionView = internal::ComponentView<Rng, SelectionIterator>;
+template<std::ranges::range RngType>
+using SelectionView = internal::ComponentView<RngType, SelectionIterator>;
 #endif
 
 } // namespace vcl

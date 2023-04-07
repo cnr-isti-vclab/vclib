@@ -56,13 +56,13 @@ namespace vcl::internal {
  *     c *= 2; // scale by 2 factor
  * }
  */
-template<typename ViewType, template <typename> typename Iterator>
-class ComponentView : public vcl::View<Iterator<typename ViewType::iterator>>
+template<std::ranges::range RngType, template <typename> typename Iterator>
+class ComponentView : public vcl::View<Iterator<std::ranges::iterator_t<RngType>>>
 {
-	using Base = vcl::View<Iterator<typename ViewType::iterator>>;
+	using Base = vcl::View<Iterator<std::ranges::iterator_t<RngType>>>;
 public:
-	ComponentView(const ViewType& r) :
-			Base(Iterator(r.begin()), Iterator(r.end()))
+	ComponentView(RngType&& r) :
+			Base(Iterator(std::ranges::begin(r)), Iterator(std::ranges::end(r)))
 	{
 	}
 };

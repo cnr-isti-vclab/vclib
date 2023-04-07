@@ -88,19 +88,19 @@ public:
 
 // todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
 #ifdef __clang__
-template<typename ViewType>
-class ScalarView : public vcl::View<ScalarIterator<typename ViewType::iterator>>
+template<std::ranges::range RngType>
+class ScalarView : public vcl::View<ScalarIterator<std::ranges::iterator_t<RngType>>>
 {
-	using Base = vcl::View<ScalarIterator<typename ViewType::iterator>>;
+	using Base = vcl::View<ScalarIterator<std::ranges::iterator_t<RngType>>>;
 public:
-	ScalarView(const ViewType& r) :
-			Base(ScalarIterator(r.begin()), ScalarIterator(r.end()))
+	ScalarView(RngType&& r) :
+			Base(ScalarIterator(std::ranges::begin(r)), ScalarIterator(std::ranges::end(r)))
 	{
 	}
 };
 #else
-template<typename Rng>
-using ScalarView = internal::ComponentView<Rng, ScalarIterator>;
+template<std::ranges::range RngType>
+using ScalarView = internal::ComponentView<RngType, ScalarIterator>;
 #endif
 
 } // namespace vcl

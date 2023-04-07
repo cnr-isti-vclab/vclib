@@ -88,19 +88,19 @@ public:
 
 // todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
 #ifdef __clang__
-template<typename ViewType>
-class CoordView : public vcl::View<CoordIterator<typename ViewType::iterator>>
+template<std::ranges::range RngType>
+class CoordView : public vcl::View<CoordIterator<std::ranges::iterator_t<RngType>>>
 {
-	using Base = vcl::View<CoordIterator<typename ViewType::iterator>>;
+	using Base = vcl::View<CoordIterator<std::ranges::iterator_t<RngType>>>;
 public:
-	CoordView(const ViewType& r) :
-			Base(CoordIterator(r.begin()), CoordIterator(r.end()))
+	CoordView(RngType&& r) :
+			Base(CoordIterator(std::ranges::begin(r)), CoordIterator(std::ranges::end(r)))
 	{
 	}
 };
 #else
-template<typename Rng>
-using CoordView = internal::ComponentView<Rng, CoordIterator>;
+template<std::ranges::range RngType>
+using CoordView = internal::ComponentView<RngType, CoordIterator>;
 #endif
 
 } // namespace vcl
