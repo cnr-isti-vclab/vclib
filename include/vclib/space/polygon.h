@@ -24,6 +24,7 @@
 #ifndef VCL_SPACE_POLYGON_H
 #define VCL_SPACE_POLYGON_H
 
+#include <ranges>
 #include <vector>
 
 #include <vclib/concept/space/polygon.h>
@@ -87,6 +88,9 @@ public:
 	static ScalarType area(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
+	template<std::ranges::range R>
+	static ScalarType area(R&& range);
+
 	template<typename Iterator>
 	static std::vector<uint> earCut(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 2);
@@ -94,6 +98,9 @@ public:
 	template<typename Iterator>
 	static std::vector<uint> earCut(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 3);
+
+	template<std::ranges::range R>
+	static std::vector<uint> earCut(R&& range);
 
 private:
 	std::vector<PointT> p;

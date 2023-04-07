@@ -118,14 +118,14 @@ typename Polygon<PointT>::ScalarType Polygon<PointT>::perimeter() const
 template<PointConcept PointT>
 typename Polygon<PointT>::ScalarType Polygon<PointT>::area() const
 {
-	return area(p.begin(), p.end());
+	return area(p);
 }
 
 template<PointConcept PointT>
 std::vector<uint> Polygon<PointT>::earCut() const
 	requires (PointT::DIM == 2 || PointT::DIM == 3)
 {
-	return earCut(p.begin(), p.end());
+	return earCut(p);
 }
 
 /**
@@ -287,6 +287,13 @@ typename PointT::ScalarType  Polygon<PointT>::area(Iterator begin, Iterator end)
 	return area;
 }
 
+template<PointConcept PointT>
+template<std::ranges::range R>
+typename PointT::ScalarType Polygon<PointT>::area(R&& range)
+{
+	return area(std::ranges::begin(range), std::ranges::end(range));
+}
+
 /**
  * @brief Triangulates a simple polygon with no holes using the ear-cutting algorithm.
  *
@@ -384,6 +391,13 @@ std::vector<uint> Polygon<PointT>::earCut(Iterator begin, Iterator end)
 
 	// Use the ear-cut algorithm to triangulate the polygon in the 2D plane and return the result.
 	return Polygon<Point2<Scalar>>::earCut(poly2D.begin(), poly2D.end());
+}
+
+template<PointConcept PointT>
+template<std::ranges::range R>
+std::vector<uint> Polygon<PointT>::earCut(R&& range)
+{
+	return earCut(std::ranges::begin(range), std::ranges::end(range));
 }
 
 } // namespace vcl
