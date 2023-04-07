@@ -21,10 +21,14 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_PIPE_H
-#define VCL_MESH_VIEWS_PIPE_H
+#ifndef VCL_TYPES_VIEWS_H
+#define VCL_TYPES_VIEWS_H
 
-namespace vcl::internal {
+#include <ranges>
+
+namespace vcl{
+
+namespace internal {
 
 template <typename R, typename Closure>
 constexpr auto operator | (R& r, Closure const & a)
@@ -38,6 +42,83 @@ constexpr auto operator | (const R& r, Closure const & a)
 	return a(r);
 }
 
-} // namespace internal
+struct IsValidClosure
+{
+	inline static constexpr auto isValid = [](auto* p)
+	{
+		return p != nullptr;
+	};
 
-#endif // VCL_MESH_VIEWS_PIPE_H
+	constexpr IsValidClosure() {};
+
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		return r | std::views::filter(isValid);
+	}
+};
+
+struct DereferenceClosure
+{
+	inline static constexpr auto deref = [](auto p)
+	{
+		return *p;
+	};
+
+	constexpr DereferenceClosure() {};
+
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		return r | std::views::transform(deref);
+	}
+};
+
+struct ReferenceClosure
+{
+	inline static constexpr auto ref = [](auto o)
+	{
+		return &o;
+	};
+
+	constexpr ReferenceClosure() {};
+
+	template <typename R>
+	constexpr auto operator()(R && r) const
+	{
+		return r | std::views::transform(ref);
+	}
+};
+
+} // namespace vcl::internal
+
+namespace views {
+
+/**
+ * @brief The isValid view allows to filter the pointers of a range. The resulting
+ * view will iterate only on the pointers that are not `nullptr`.
+ */
+inline constexpr internal::IsValidClosure isValid;
+
+/**
+ * @brief The dereference view allow to dereference the pointers of a range. The resulting
+ * view will iterate over the objects pointed by the range of pointers.
+ *
+ * @note: no check on the validity of the pointers is performed. If you know that in your range
+ * there is the possibility to have `nullptr` pointers, use first the `isValid` view:
+ *
+ * auto resView = inputRange | isValid | dereference;
+ */
+inline constexpr internal::DereferenceClosure dereference;
+
+/**
+ * @brief The reference view allow to reference the objects of a range. The resulting view will
+ * iterate over the pointers pointing to the object of the input range.
+ */
+inline constexpr internal::ReferenceClosure reference;
+
+} // namespace vcl::views
+
+} // namespace vcl
+
+#endif // VCL_TYPES_VIEWS_H

@@ -26,8 +26,6 @@
 
 #include <ranges>
 
-#include "pipe.h"
-
 #include <vclib/mesh/iterators/component.h>
 #include <vclib/types.h>
 
@@ -80,7 +78,7 @@ struct ET<T>{
 }
 
 template<typename Element>
-auto isSelected = [](const Element& e)
+inline constexpr auto isSelected = [](const Element& e)
 {
 	if constexpr(vcl::IsPointer<Element>) {
 		return e->isSelected();
@@ -104,7 +102,7 @@ struct SelectedViewClosure
 };
 
 template<typename Element>
-auto isNotSelected = [](const Element& e)
+inline constexpr auto isNotSelected = [](const Element& e)
 {
 	if constexpr(vcl::IsPointer<Element>) {
 		return !e->isSelected();
@@ -131,11 +129,11 @@ struct NotSelectedViewClosure
 
 namespace views {
 
-internal::CoordsViewClosure coords;
-internal::ScalarViewClosure scalars;
-internal::SelectionViewClosure selection;
-internal::SelectedViewClosure selected;
-internal::NotSelectedViewClosure notSelected;
+inline constexpr internal::CoordsViewClosure coords;
+inline constexpr internal::ScalarViewClosure scalars;
+inline constexpr internal::SelectionViewClosure selection;
+inline constexpr internal::SelectedViewClosure selected;
+inline constexpr internal::NotSelectedViewClosure notSelected;
 
 } // namespace vcl::views
 

@@ -24,8 +24,6 @@
 #ifndef VCL_MESH_VIEWS_ELEMENTS_H
 #define VCL_MESH_VIEWS_ELEMENTS_H
 
-#include "pipe.h"
-
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -100,10 +98,10 @@ struct HalfEdgesViewClosure
 
 namespace views {
 
-internal::VerticesViewClosure vertices;
-internal::FacesViewClosure faces;
-internal::EdgesViewClosure edges;
-internal::HalfEdgesViewClosure halfEdges;
+inline constexpr internal::VerticesViewClosure vertices;
+inline constexpr internal::FacesViewClosure faces;
+inline constexpr internal::EdgesViewClosure edges;
+inline constexpr internal::HalfEdgesViewClosure halfEdges;
 
 } // namespace vcl::views
 
