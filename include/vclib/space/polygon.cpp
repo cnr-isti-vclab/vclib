@@ -93,13 +93,13 @@ typename Polygon<PointT>::ScalarType Polygon<PointT>::sideLength(uint i) const
 template<PointConcept PointT>
 PointT Polygon<PointT>::normal() const requires (PointT::DIM == 3)
 {
-	return normal(p.begin(), p.end());
+	return normal(p);
 }
 
 template<PointConcept PointT>
 PointT Polygon<PointT>::barycenter() const
 {
-	return barycenter(p.begin(), p.end());
+	return barycenter(p);
 }
 
 template<PointConcept PointT>
@@ -112,7 +112,7 @@ PointT Polygon<PointT>::weightedBarycenter(WIterator wbegin) const
 template<PointConcept PointT>
 typename Polygon<PointT>::ScalarType Polygon<PointT>::perimeter() const
 {
-	return perimeter(p.begin(), p.end());
+	return perimeter(p);
 }
 
 template<PointConcept PointT>
@@ -158,6 +158,13 @@ PointT Polygon<PointT>::normal(Iterator begin, Iterator end)
 	return sum;
 }
 
+template<PointConcept PointT>
+template<std::ranges::range R>
+PointT Polygon<PointT>::normal(R&& range)
+{
+	return normal(std::ranges::begin(range), std::ranges::end(range));
+}
+
 /**
  * @brief Computes the barycenter of a container of points iterated between the iterators begin
  * and end, listed in counterclockwise order, representing a polygon.
@@ -185,6 +192,13 @@ PointT Polygon<PointT>::barycenter(Iterator begin, Iterator end)
 	assert(cnt);
 
 	return bar / cnt;
+}
+
+template<PointConcept PointT>
+template<std::ranges::range R>
+PointT Polygon<PointT>::barycenter(R&& range)
+{
+	return barycenter(std::ranges::begin(range), std::ranges::end(range));
 }
 
 /**
@@ -220,6 +234,14 @@ PointT Polygon<PointT>::weightedBarycenter(Iterator begin, Iterator end, WIterat
 	return bar / wsum;
 }
 
+template<PointConcept PointT>
+template<std::ranges::range Rp, std::ranges::range Rw>
+PointT Polygon<PointT>::weightedBarycenter(Rp&& rPolygon, Rw&& rWeights)
+{
+	return weightedBarycenter(
+		std::ranges::begin(rPolygon), std::ranges::end(rPolygon), std::ranges::begin(rWeights));
+}
+
 /**
  * @brief Calculates the perimeter of a polygon defined by a range of points.
  *
@@ -251,6 +273,13 @@ typename PointT::ScalarType Polygon<PointT>::perimeter(Iterator begin, Iterator 
 		per += p0.dist(p1);
 	}
 	return per;
+}
+
+template<PointConcept PointT>
+template<std::ranges::range R>
+typename PointT::ScalarType Polygon<PointT>::perimeter(R&& range)
+{
+	return perimeter(std::ranges::begin(range), std::ranges::end(range));
 }
 
 /**

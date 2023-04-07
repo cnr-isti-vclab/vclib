@@ -72,17 +72,29 @@ public:
 	static PointT normal(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 3);
 
+	template<std::ranges::range R>
+	static PointT normal(R&& range);
+
 	template<typename Iterator>
 	static PointT barycenter(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
+
+	template<std::ranges::range R>
+	static PointT barycenter(R&& range);
 
 	template<typename Iterator, typename WIterator>
 	static PointT weightedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
+	template<std::ranges::range Rp, std::ranges::range Rw>
+	static PointT weightedBarycenter(Rp&& rPolygon, Rw&& rWeights);
+
 	template<typename Iterator>
 	static ScalarType perimeter(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
+
+	template<std::ranges::range R>
+	static ScalarType perimeter(R&& range);
 
 	template<typename Iterator>
 	static ScalarType area(Iterator begin, Iterator end)
