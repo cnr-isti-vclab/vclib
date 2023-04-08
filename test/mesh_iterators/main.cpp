@@ -96,7 +96,7 @@ int main()
 
 	std::cerr << "\n\nPrint Scalars:\n";
 
-	for (const auto& scal : m.vertices() | vcl::views::scalars) {
+	for (const auto& scal : cm.vertices() | vcl::views::scalars) {
 		std::cerr << scal << "\n";
 	}
 	return 0;

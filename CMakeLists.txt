@@ -236,8 +236,6 @@ set(HEADERS
 	include/vclib/mesh/iterators/component.h
 	include/vclib/mesh/iterators/face.h
 	include/vclib/mesh/iterators/element_container_iterator.h
-	include/vclib/mesh/iterators/component/coord_iterator.h
-	include/vclib/mesh/iterators/component/scalar_iterator.h
 	include/vclib/mesh/iterators/component/selection_iterator.h
 	include/vclib/mesh/iterators/face/edge_adj_face_iterator.h
 	include/vclib/mesh/iterators/half_edge/base_iterator.h

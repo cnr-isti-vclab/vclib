@@ -24,28 +24,11 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_SCALARS_H
 #define VCL_MESH_VIEWS_COMPONENTS_SCALARS_H
 
-#include <vclib/mesh/iterators/component/scalar_iterator.h>
+#include <vclib/types.h>
 
 #include "component_view.h"
 
 namespace vcl {
-
-// todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
-#ifdef __clang__
-template<std::ranges::range RngType>
-class ScalarView : public vcl::View<ScalarIterator<std::ranges::iterator_t<RngType>>>
-{
-	using Base = vcl::View<ScalarIterator<std::ranges::iterator_t<RngType>>>;
-public:
-	ScalarView(const RngType& r) :
-			Base(ScalarIterator(std::ranges::begin(r)), ScalarIterator(std::ranges::end(r)))
-	{
-	}
-};
-#else
-template<std::ranges::range RngType>
-using ScalarView = internal::ComponentView<RngType, ScalarIterator>;
-#endif
 
 namespace views {
 
@@ -55,10 +38,42 @@ struct ScalarViewClosure
 {
 	constexpr ScalarViewClosure(){}
 
+	inline static constexpr auto constScalarP = [](const auto* p) -> decltype(auto)
+	{
+		return p->scalar();
+	};
+
+	inline static constexpr auto constScalar = [](const auto& p) -> decltype(auto)
+	{
+		return p.scalar();
+	};
+
+	inline static constexpr auto scalarP = [](auto* p) -> decltype(auto)
+	{
+		return p->scalar();
+	};
+
+	inline static constexpr auto scalar = [](auto& p) -> decltype(auto)
+	{
+		return p.scalar();
+	};
+
 	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
-		return ScalarView(r);
+		using It = std::ranges::iterator_t<R>;
+		if constexpr(IteratesOverClass<It>) {
+			if constexpr(std::is_const_v<typename It::value_type>)
+				return r | std::views::transform(constScalar);
+			else
+				return r | std::views::transform(scalar);
+		}
+		else {
+			if constexpr(std::is_const_v<It>)
+				return r | std::views::transform(constScalarP);
+			else
+				return r | std::views::transform(scalarP);
+		}
 	}
 };
 

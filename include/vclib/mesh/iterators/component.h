@@ -24,8 +24,6 @@
 #ifndef VCL_MESH_ITERATOR_COMPONENT_H
 #define VCL_MESH_ITERATOR_COMPONENT_H
 
-#include "component/coord_iterator.h"
-#include "component/scalar_iterator.h"
 #include "component/selection_iterator.h"
 
 #endif // VCL_MESH_ITERATOR_COMPONENT_H

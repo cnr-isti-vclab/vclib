@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_COORDS_H
 #define VCL_MESH_VIEWS_COMPONENTS_COORDS_H
 
-#include <vclib/mesh/iterators/component/coord_iterator.h>
+#include <vclib/types.h>
 
 #include "component_view.h"
 

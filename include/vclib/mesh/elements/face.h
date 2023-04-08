@@ -26,7 +26,6 @@
 
 #include <vclib/concept/mesh/element/face.h>
 #include <vclib/iterators/view.h>
-#include <vclib/mesh/iterators/component/coord_iterator.h>
 #include <vclib/space/tex_coord.h>
 
 #include "element.h"
