@@ -26,9 +26,7 @@
 
 #include <vclib/types.h>
 
-namespace vcl {
-
-namespace views {
+namespace vcl::views {
 
 namespace internal {
 
@@ -36,42 +34,30 @@ struct ScalarViewClosure
 {
 	constexpr ScalarViewClosure(){}
 
-	inline static constexpr auto constScalarP = [](const auto* p) -> decltype(auto)
-	{
-		return p->scalar();
-	};
-
 	inline static constexpr auto constScalar = [](const auto& p) -> decltype(auto)
 	{
-		return p.scalar();
-	};
-
-	inline static constexpr auto scalarP = [](auto* p) -> decltype(auto)
-	{
-		return p->scalar();
+		if constexpr(IsPointer<decltype(p)>)
+			return p->scalar();
+		else
+			return p.scalar();
 	};
 
 	inline static constexpr auto scalar = [](auto& p) -> decltype(auto)
 	{
-		return p.scalar();
+		if constexpr(IsPointer<decltype(p)>)
+			return p->scalar();
+		else
+			return p.scalar();
 	};
 
 	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
-		using It = std::ranges::iterator_t<R>;
-		if constexpr(IteratesOverClass<It>) {
-			if constexpr(std::is_const_v<typename It::value_type>)
-				return r | std::views::transform(constScalar);
-			else
-				return r | std::views::transform(scalar);
-		}
-		else {
-			if constexpr(std::is_const_v<It>)
-				return r | std::views::transform(constScalarP);
-			else
-				return r | std::views::transform(scalarP);
-		}
+		using ElemType = std::ranges::range_value_t<R>;
+		if constexpr(IsConst<ElemType>)
+			return r | std::views::transform(constScalar);
+		else
+			return r | std::views::transform(scalar);
 	}
 };
 
@@ -80,7 +66,5 @@ struct ScalarViewClosure
 inline constexpr internal::ScalarViewClosure scalars;
 
 } // namespace vcl::views
-
-} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_SCALARS_H

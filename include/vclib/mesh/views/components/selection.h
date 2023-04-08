@@ -26,16 +26,13 @@
 
 #include <vclib/types.h>
 
-namespace vcl {
-
-namespace views {
+namespace vcl::views {
 
 namespace internal {
 
-template<typename Element>
-inline constexpr auto isSelected = [](const Element& e)
+inline constexpr auto isSelected = [](const auto& e)
 {
-	if constexpr(vcl::IsPointer<Element>) {
+	if constexpr(vcl::IsPointer<decltype(e)>) {
 		return e->isSelected();
 	}
 	else {
@@ -43,10 +40,9 @@ inline constexpr auto isSelected = [](const Element& e)
 	}
 };
 
-template<typename Element>
-inline constexpr auto isNotSelected = [](const Element& e)
+inline constexpr auto isNotSelected = [](const auto& e)
 {
-	if constexpr(vcl::IsPointer<Element>) {
+	if constexpr(vcl::IsPointer<decltype(e)>) {
 		return !e->isSelected();
 	}
 	else {
@@ -61,8 +57,7 @@ struct SelectionViewClosure
 	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
-		using ElemType = std::ranges::range_value_t<R>;
-		return r | std::views::transform(isSelected<ElemType>);
+		return r | std::views::transform(isSelected);
 	}
 };
 
@@ -73,8 +68,7 @@ struct SelectedViewClosure
 	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
-		using ElemType = std::ranges::range_value_t<R>;
-		return r | std::views::filter(isSelected<ElemType>);
+		return r | std::views::filter(isSelected);
 	}
 };
 
@@ -85,8 +79,7 @@ struct NotSelectedViewClosure
 	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
-		using ElemType = std::ranges::range_value_t<R>;
-		return r | std::views::filter(isNotSelected<ElemType>);
+		return r | std::views::filter(isNotSelected);
 	}
 };
 
@@ -97,7 +90,5 @@ inline constexpr internal::SelectedViewClosure selected;
 inline constexpr internal::NotSelectedViewClosure notSelected;
 
 } // namespace vcl::views
-
-} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_SELECTION_H

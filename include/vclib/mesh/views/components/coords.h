@@ -26,54 +26,39 @@
 
 #include <vclib/types.h>
 
-namespace vcl {
-
-namespace views {
+namespace vcl::views {
 
 namespace internal {
-
-
 
 struct CoordsViewClosure
 {
 	constexpr CoordsViewClosure(){}
 
-	inline static constexpr auto constCoordP = [](const auto* p) -> decltype(auto)
-	{
-		return p->coord();
-	};
-
 	inline static constexpr auto constCoord = [](const auto& p) -> decltype(auto)
 	{
-		return p.coord();
-	};
-
-	inline static constexpr auto coordP = [](auto* p) -> decltype(auto)
-	{
-		return p->coord();
+		if constexpr(IsPointer<decltype(p)>)
+			return p->coord();
+		else
+			return p.coord();
 	};
 
 	inline static constexpr auto coord = [](auto& p) -> decltype(auto)
 	{
-		return p.coord();
+		if constexpr(IsPointer<decltype(p)>)
+			return p->coord();
+		else
+			return p.coord();
 	};
 
 	template <std::ranges::range R>
 	constexpr auto operator()(R&& r) const
 	{
-		using It = std::ranges::iterator_t<R>;
-		if constexpr(IteratesOverClass<It>) {
-			if constexpr(std::is_const_v<typename It::value_type>)
-				return r | std::views::transform(constCoord);
-			else
-				return r | std::views::transform(coord);
-		}
-		else {
-			if constexpr(std::is_const_v<It>)
-				return r | std::views::transform(constCoordP);
-			else
-				return r | std::views::transform(coordP);
-		}
+		using ElemType = std::ranges::range_value_t<R>;
+		if constexpr(IsConst<ElemType>)
+			return r | std::views::transform(constCoord);
+		else
+			return r | std::views::transform(coord);
+
 	}
 };
 
@@ -82,7 +67,5 @@ struct CoordsViewClosure
 inline constexpr internal::CoordsViewClosure coords;
 
 } // namespace vcl::views
-
-} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_COORDS_H

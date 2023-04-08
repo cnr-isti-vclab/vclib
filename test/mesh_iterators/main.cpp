@@ -47,12 +47,24 @@ int main()
 		std::cerr << "\n";
 	}
 
+	std::cerr << "\n\nTransform Coords per face:\n\n";
+
+	for (auto& f : cm | vcl::views::faces) {
+		for (auto& c : f | vcl::views::vertices | vcl::views::coords) {
+			//c*=2;
+			std::cerr << c << "\t";
+		}
+		std::cerr << "\n";
+	}
+
+	std::cerr << "\n\nPrint Coords per vertex:\n\n";
+
 	for (const auto& c : cm.vertices() | vcl::views::coords) {
 		std::cerr << c << "\n";
 	}
 
 	// transform
-	std::cerr << "\n\nTransformed:\n\n";
+	std::cerr << "\n\nTransform coords per vertex:\n\n";
 
 	for (vcl::Point3d& c : m.vertices() | vcl::views::coords) {
 		c *= 2;
