@@ -32,6 +32,8 @@ namespace views {
 
 namespace internal {
 
+
+
 struct CoordsViewClosure
 {
 	constexpr CoordsViewClosure(){}

@@ -32,61 +32,6 @@ namespace views {
 
 namespace internal {
 
-struct SelectionViewClosure
-{
-	constexpr SelectionViewClosure(){}
-
-	inline static constexpr auto constSelP = [](const auto* p) -> decltype(auto)
-	{
-		return p->isSelected();
-	};
-
-	inline static constexpr auto constSel = [](const auto& p) -> decltype(auto)
-	{
-		return p.isSelected();
-	};
-
-	inline static constexpr auto selP = [](auto* p) -> decltype(auto)
-	{
-		return p->isSelected();
-	};
-
-	inline static constexpr auto sel = [](auto& p) -> decltype(auto)
-	{
-		return p.isSelected();
-	};
-
-	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
-	{
-		using It = std::ranges::iterator_t<R>;
-		if constexpr(IteratesOverClass<It>) {
-			if constexpr(std::is_const_v<typename It::value_type>)
-				return r | std::views::transform(constSel);
-			else
-				return r | std::views::transform(sel);
-		}
-		else {
-			if constexpr(std::is_const_v<It>)
-				return r | std::views::transform(constSelP);
-			else
-				return r | std::views::transform(selP);
-		}
-	}
-};
-
-namespace sel {
-template<typename T>
-struct ET{
-	using t = std::remove_pointer_t<T>;
-};
-
-template<IteratorConcept T>
-struct ET<T>{
-	using t = typename T::value_type;
-};
-}
-
 template<typename Element>
 inline constexpr auto isSelected = [](const Element& e)
 {
@@ -95,19 +40,6 @@ inline constexpr auto isSelected = [](const Element& e)
 	}
 	else {
 		return e.isSelected();
-	}
-};
-
-struct SelectedViewClosure
-{
-	constexpr SelectedViewClosure(){}
-
-	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
-	{
-		using CleanRange = std::remove_const_t<std::remove_reference_t<R>>;
-		using ElemType = sel::ET<typename CleanRange::iterator>::t;
-		return r | std::views::filter(isSelected<ElemType>);
 	}
 };
 
@@ -122,6 +54,30 @@ inline constexpr auto isNotSelected = [](const Element& e)
 	}
 };
 
+struct SelectionViewClosure
+{
+	constexpr SelectionViewClosure(){}
+
+	template <std::ranges::range R>
+	constexpr auto operator()(R && r) const
+	{
+		using ElemType = std::ranges::range_value_t<R>;
+		return r | std::views::transform(isSelected<ElemType>);
+	}
+};
+
+struct SelectedViewClosure
+{
+	constexpr SelectedViewClosure(){}
+
+	template <std::ranges::range R>
+	constexpr auto operator()(R && r) const
+	{
+		using ElemType = std::ranges::range_value_t<R>;
+		return r | std::views::filter(isSelected<ElemType>);
+	}
+};
+
 struct NotSelectedViewClosure
 {
 	constexpr NotSelectedViewClosure(){}
@@ -129,8 +85,7 @@ struct NotSelectedViewClosure
 	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
-		using CleanRange = std::remove_const_t<std::remove_reference_t<R>>;
-		using ElemType = sel::ET<typename CleanRange::iterator>::t;
+		using ElemType = std::ranges::range_value_t<R>;
 		return r | std::views::filter(isNotSelected<ElemType>);
 	}
 };
