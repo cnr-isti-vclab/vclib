@@ -30,23 +30,6 @@
 
 namespace vcl {
 
-// todo: remove this when clang will support P1814R0 (https://clang.llvm.org/cxx_status.html)
-#ifdef __clang__
-template<std::ranges::range RngType>
-class CoordView : public vcl::View<CoordIterator<std::ranges::iterator_t<RngType>>>
-{
-	using Base = vcl::View<CoordIterator<std::ranges::iterator_t<RngType>>>;
-public:
-	CoordView(const RngType& r) :
-			Base(CoordIterator(std::ranges::begin(r)), CoordIterator(std::ranges::end(r)))
-	{
-	}
-};
-#else
-template<std::ranges::range RngType>
-using CoordView = internal::ComponentView<RngType, CoordIterator>;
-#endif
-
 namespace views {
 
 namespace internal {

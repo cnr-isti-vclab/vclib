@@ -51,6 +51,7 @@ class View : public std::ranges::view_interface<View<It>>
 public:
 	using iterator = It;
 
+	View() = default;
 	View(It begin, It end) : b(begin), e(end) {}
 
 	auto begin() const { return b; }

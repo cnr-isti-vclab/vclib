@@ -19,6 +19,10 @@
     - [ ] all iterators of the library must satisfy at least std::forward_iterator concept (also half edge ones)
     - [ ] implement views for element scalars and colors
   - Mesh:
+    - [ ] all iterators must not use inheritance
+      - [ ] remove all components iterators
+      - [ ] rewrite all dcel iterators without inheritance
+      - [ ] use views everywhere
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] import dcel from mesh: update adjacent faces and wedges 
 - Algorithms:

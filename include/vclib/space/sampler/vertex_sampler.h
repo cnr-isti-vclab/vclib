@@ -17,7 +17,7 @@ class VertexSampler
 
 public:
 	using PointType = typename VertexType::CoordType;
-	using ConstIterator = CoordIterator<typename std::vector<VP>::const_iterator>;
+	using ConstIterator = decltype(std::begin(std::vector<VP>() | views::coords));
 
 	VertexSampler();
 
@@ -34,8 +34,8 @@ public:
 	void add(VPar v);
 	void set(uint i, VPar v);
 
-	ConstIterator begin() const;
-	ConstIterator end() const;
+	auto begin() const;
+	auto end() const;
 
 private:
 	std::vector<VP> samplesVec;

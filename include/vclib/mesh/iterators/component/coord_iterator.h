@@ -28,61 +28,7 @@
 
 namespace vcl {
 
-template<typename T>
-class CoordIterator
-{
-	CoordIterator(T) {}
-	static_assert(sizeof(T) != sizeof(T), "");
-};
 
-// Specialization when using a pointer instead of an actual iterator - forces to use the variant
-// with an iterator, by wrapping the pointer type into a forward iterator
-template<IsPointer PointerType>
-class CoordIterator<PointerType> : public CoordIterator<IteratorWrapper<PointerType>>
-{
-public:
-	using CoordIterator<IteratorWrapper<PointerType>>::CoordIterator;
-};
-
-/**
- * @brief The CoordIterator class allows to iterate over the coordinates of the elements given
- * an iterator It that iterates over the elements (or pointer to elements).
- */
-template<IteratorConcept It>
-class CoordIterator<It> : public It
-{
-	using ElementType = typename std::conditional_t<
-		IteratesOverClass<It>,
-		typename std::remove_pointer_t<typename It::pointer>,
-		typename std::remove_pointer_t<typename It::value_type>>;
-
-	using CompType = typename std::conditional_t<
-		std::is_const_v<ElementType>,
-		const typename ElementType::CoordType,
-		typename ElementType::CoordType>;
-
-public:
-	using value_type = typename std::remove_const_t<CompType>;
-	using reference  = CompType&;
-	using pointer    = CompType*;
-
-	using It::It;
-	CoordIterator(const It& it) : It(it) {}
-
-	reference operator*() const
-	{
-		if constexpr (IteratesOverClass<It>) {
-			return It::operator*().coord();
-		}
-		else {
-			return It::operator*()->coord();
-		}
-	}
-	pointer operator->() const
-	{
-		return &(operator*());
-	}
-};
 
 } // namespace vcl
 

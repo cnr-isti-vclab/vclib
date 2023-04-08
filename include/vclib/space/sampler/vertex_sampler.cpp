@@ -57,15 +57,15 @@ void VertexSampler<VertexType, CNST>::set(uint i, VPar v)
 }
 
 template<VertexConcept VertexType, bool CNST>
-typename VertexSampler<VertexType, CNST>::ConstIterator VertexSampler<VertexType, CNST>::begin() const
+auto VertexSampler<VertexType, CNST>::begin() const
 {
-	return ConstIterator(samplesVec.begin());
+	return std::begin(samplesVec | views::coords);
 }
 
 template<VertexConcept VertexType, bool CNST>
-typename VertexSampler<VertexType, CNST>::ConstIterator VertexSampler<VertexType, CNST>::end() const
+auto VertexSampler<VertexType, CNST>::end() const
 {
-	return ConstIterator(samplesVec.end());
+	return std::end(samplesVec | views::coords);
 }
 
 } // namespace vcl::internal
