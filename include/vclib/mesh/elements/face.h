@@ -57,12 +57,6 @@ public:
 
 	using VertexType = typename VRefs::VertexType;
 
-	// Iterator types to iterate over vertex coords
-	using VertexCoordIterator      = CoordIterator<typename VRefs::VertexIterator>;
-	using ConstVertexCoordIterator = CoordIterator<typename VRefs::ConstVertexIterator>;
-	using VertexCoordView          = View<VertexCoordIterator>;
-	using ConstVertexCoordView     = View<ConstVertexCoordIterator>;
-
 	Face();
 
 	Face(const std::vector<VertexType*>& list); // todo add requires
@@ -263,13 +257,6 @@ public:
 				T::clearWedgeTexCoord();
 		}
 	}
-
-	VertexCoordIterator      vertexCoordBegin();
-	ConstVertexCoordIterator vertexCoordBegin() const;
-	VertexCoordIterator      vertexCoordEnd();
-	ConstVertexCoordIterator vertexCoordEnd() const;
-	VertexCoordView          vertexCoords();
-	ConstVertexCoordView     vertexCoords() const;
 };
 
 template<typename MeshType, typename... Args>

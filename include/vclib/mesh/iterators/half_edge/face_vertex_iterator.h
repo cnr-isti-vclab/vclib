@@ -24,29 +24,68 @@
 #ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_VERTEX_ITERATOR_H
 #define VCL_MESH_ITERATORS_HALF_EDGE_FACE_VERTEX_ITERATOR_H
 
-#include "face_base_iterator.h"
+#include <vclib/types.h>
 
 namespace vcl {
 
 namespace internal {
 
 template<typename HalfEdge, bool CNST>
-class FaceVertexIterator :
-		public FaceBaseIterator<HalfEdge, CNST, FaceVertexIterator<HalfEdge, CNST>>
+class FaceVertexIterator
 {
-	using Base = FaceBaseIterator<HalfEdge, CNST, FaceVertexIterator<HalfEdge, CNST>>;
+	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 
 public :
 	using value_type = std::conditional_t<CNST,
 			const typename HalfEdge::VertexType*,
 			typename HalfEdge::VertexType*>;
+
 	using reference  = std::conditional_t<CNST, value_type, value_type&>;
 	using pointer    = value_type*;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	FaceVertexIterator() = default;
+	FaceVertexIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	FaceVertexIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
 
-	reference operator*() const { return Base::current->fromVertex(); }
-	pointer operator->() const { return &(Base::current->fromVertex()); }
+	bool operator==(const FaceVertexIterator& oi) const { return current == oi.current; }
+	bool operator!=(const FaceVertexIterator& oi) const { return current != oi.current; }
+
+	reference operator*() const { return current->fromVertex(); }
+	pointer operator->() const { return &(current->fromVertex()); }
+
+	auto& operator++()
+	{
+		current = current->next();
+		if (current == end) current = nullptr;
+		return *this;
+	}
+	auto operator++(int)
+	{
+		auto it = *this;
+		current = current->next();
+		if (current == end) current = nullptr;
+		return it;
+
+	}
+	auto& operator--()
+	{
+		current = current->prev();
+		if (current == end) current = nullptr;
+		return *this;
+	}
+	auto operator--(int)
+	{
+		auto it = *this;
+		current = current->prev();
+		if (current == end) current = nullptr;
+		return it;
+	}
+
+protected:
+	CurrentHEdgeType current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl::internal

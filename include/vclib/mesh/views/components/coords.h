@@ -55,10 +55,42 @@ struct CoordsViewClosure
 {
 	constexpr CoordsViewClosure(){}
 
-	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
+	inline static constexpr auto constCoordP = [](const auto* p) -> decltype(auto)
 	{
-		return CoordView(r);
+		return p->coord();
+	};
+
+	inline static constexpr auto constCoord = [](const auto& p) -> decltype(auto)
+	{
+		return p.coord();
+	};
+
+	inline static constexpr auto coordP = [](auto* p) -> decltype(auto)
+	{
+		return p->coord();
+	};
+
+	inline static constexpr auto coord = [](auto& p) -> decltype(auto)
+	{
+		return p.coord();
+	};
+
+	template <std::ranges::range R>
+	constexpr auto operator()(R&& r) const
+	{
+		using It = std::ranges::iterator_t<R>;
+		if constexpr(IteratesOverClass<It>) {
+			if constexpr(std::is_const_v<typename It::value_type>)
+				return r | std::views::transform(constCoord);
+			else
+				return r | std::views::transform(coord);
+		}
+		else {
+			if constexpr(std::is_const_v<It>)
+				return r | std::views::transform(constCoordP);
+			else
+				return r | std::views::transform(coordP);
+		}
 	}
 };
 

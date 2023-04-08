@@ -28,6 +28,7 @@
 #include <vclib/exception/mesh_exception.h>
 #include <vclib/mesh/iterator.h>
 #include <vclib/mesh/utils/mesh_pos.h>
+#include <vclib/mesh/views.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/space/polygon.h>
 
@@ -344,7 +345,7 @@ template <FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
 	using CoordType = typename Face::VertexType::CoordType;
-	return Polygon<CoordType>::earCut(polygon.vertexCoordBegin(), polygon.vertexCoordEnd());
+	return Polygon<CoordType>::earCut(polygon.vertices() | views::coords);
 }
 
 /**

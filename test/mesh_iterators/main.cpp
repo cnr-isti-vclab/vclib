@@ -54,7 +54,7 @@ int main()
 	// transform
 	std::cerr << "\n\nTransformed:\n\n";
 
-	for (auto& c : m.vertices() | vcl::views::coords) {
+	for (vcl::Point3d& c : m.vertices() | vcl::views::coords) {
 		c *= 2;
 		std::cerr << c << "\n";
 	}

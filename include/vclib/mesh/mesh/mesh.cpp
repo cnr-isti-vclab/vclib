@@ -23,6 +23,7 @@
 
 #include "mesh.h"
 
+#include <vclib/mesh/views.h>
 #include <vclib/space/polygon.h>
 
 namespace vcl {
@@ -1140,7 +1141,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 				// this->face(m.index(mf));
 				// the other triangles will be added at the end of the container
 				std::vector<uint> tris =
-					Polygon<MCoordType>::earCut(mf.vertexCoordBegin(), mf.vertexCoordEnd());
+					Polygon<MCoordType>::earCut(mf.vertices() | views::coords);
 				FaceType& f = FaceContainer::face(m.index(mf));
 				importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
 

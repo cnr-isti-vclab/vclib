@@ -23,6 +23,7 @@
 
 #include "geometry.h"
 
+#include <vclib/mesh/views.h>
 #include <vclib/space/polygon.h>
 
 namespace vcl {
@@ -50,7 +51,7 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
 		}
 		else {
-			return Polygon<CoordType>::normal(f.vertexCoordBegin(), f.vertexCoordEnd());
+			return Polygon<CoordType>::normal(f.vertices() | views::coords);
 		}
 	}
 }

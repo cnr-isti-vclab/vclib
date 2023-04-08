@@ -53,6 +53,11 @@ void spaceStaticAsserts()
 	static_assert(
 		SamplerConcept<ConstVertexSampler<internal::TMPSimplePolyMesh::Vertex>>,
 		"ConstVertexSampler does not satisfy the SamplerConcept");
+//	static_assert(
+//		std::ranges::range<VertexSampler<internal::TMPSimplePolyMesh::Vertex>>, "");
+
+//	VertexSampler<internal::TMPSimplePolyMesh::Vertex> v;
+//	auto it = std::ranges::begin(v);
 
 	static_assert(SphereConcept<Spheref>, "Spheref does not satisfy the SphereConcept");
 	static_assert(SphereConcept<Sphered>, "Sphered does not satisfy the SphereConcept");
