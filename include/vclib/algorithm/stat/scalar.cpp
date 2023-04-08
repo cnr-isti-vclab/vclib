@@ -24,6 +24,7 @@
 #include "scalar.h"
 
 #include <vclib/math/base.h>
+#include <vclib/mesh/views.h>
 
 namespace vcl {
 
@@ -48,17 +49,9 @@ vertexScalarMinMax(const MeshType& m)
 	using VertexType = typename MeshType::VertexType;
 	using ScalarType = typename VertexType::ScalarType;
 
-	std::pair<ScalarType, ScalarType> p = std::make_pair(
-		std::numeric_limits<ScalarType>::max(), std::numeric_limits<ScalarType>::lowest());
+	auto [min, max] = std::ranges::minmax(m.vertices() | views::scalars);
 
-	for (const VertexType& v : m.vertices()) {
-		if (v.scalar() < p.first)
-			p.first = v.scalar();
-		if (v.scalar() > p.second)
-			p.second = v.scalar();
-	}
-
-	return p;
+	return std::make_pair(min, max);;
 }
 
 /**
@@ -82,17 +75,9 @@ faceScalarMinMax(const MeshType& m)
 	using FaceType   = typename MeshType::FaceType;
 	using ScalarType = typename FaceType::ScalarType;
 
-	std::pair<ScalarType, ScalarType> p = std::make_pair(
-		std::numeric_limits<ScalarType>::max(), std::numeric_limits<ScalarType>::lowest());
+	auto [min, max] = std::ranges::minmax(m.faces() | views::scalars);
 
-	for (const FaceType& f : m.faces()) {
-		if (f.scalar() < p.first)
-			p.first = f.scalar();
-		if (f.scalar() > p.second)
-			p.second = f.scalar();
-	}
-
-	return p;
+	return std::make_pair(min, max);
 }
 
 /**

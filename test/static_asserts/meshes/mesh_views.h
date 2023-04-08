@@ -3,7 +3,7 @@
 
 #include <ranges>
 
-#include <vclib/mesh/views/elements.h>
+#include <vclib/mesh/views.h>
 
 template<typename MeshType>
 void meshViewsStaticAsserts()
@@ -29,6 +29,18 @@ void meshViewsStaticAsserts()
 	static_assert(
 		std::is_same_v<decltype(cm | vcl::views::vertices), typename MeshType::ConstVertexView>,
 		"The view returned by pipe operation m | views::vertices is not a ConstVertexView.");
+
+	// assure that component ranges are ranges
+	static_assert(
+		std::ranges::range<decltype(m.vertices() | vcl::views::coords)>, "");
+	static_assert(
+		std::ranges::range<decltype(m.vertices() | vcl::views::scalars)>, "");
+	static_assert(
+		std::ranges::range<decltype(m.vertices() | vcl::views::selection)>, "");
+	static_assert(
+		std::ranges::range<decltype(m.vertices() | vcl::views::selected)>, "");
+	static_assert(
+		std::ranges::range<decltype(m.vertices() | vcl::views::notSelected)>, "");
 
 	if constexpr (vcl::HasFaces<MeshType>) {
 		static_assert(

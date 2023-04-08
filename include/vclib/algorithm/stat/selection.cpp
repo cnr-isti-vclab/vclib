@@ -23,32 +23,20 @@
 
 #include "selection.h"
 
+#include <vclib/mesh/views.h>
+
 namespace vcl {
 
 template<MeshConcept MeshType>
 uint vertexSelectionNumber(const MeshType &m)
 {
-	using VertexType = typename MeshType::VertexType;
-
-	uint cnt = 0;
-	for (const VertexType& v : m.vertices())
-		if (v.isSelected())
-			cnt++;
-
-	return cnt;
+	return std::ranges::distance(m.vertices() | views::selected);
 }
 
 template<FaceMeshConcept MeshType>
 uint faceSelectionNumber(const MeshType &m)
 {
-	using FaceType = typename MeshType::FaceType;
-
-	uint cnt = 0;
-	for (const FaceType& f : m.faces())
-		if (f.isSelected())
-			cnt++;
-
-	return cnt;
+	return std::ranges::distance(m.faces() | views::selected);
 }
 
 } // namespace vcl
