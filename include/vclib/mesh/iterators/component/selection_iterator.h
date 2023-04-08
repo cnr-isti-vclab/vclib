@@ -39,46 +39,21 @@ class SelectionIterator
 template<IteratorConcept It>
 class SelectionIterator<It> : public It
 {
-	using ElementType = typename std::conditional_t<
-		IteratesOverClass<It>,
-		typename std::remove_pointer_t<typename It::pointer>,
-		typename std::remove_pointer_t<typename It::value_type>>;
-
-	using BoolType = typename std::conditional_t <
-		std::is_const_v<ElementType>,
-		bool,
-		BitProxy>;
-
-	int m;
-	mutable BitProxy bp = BitProxy(m, 0);
-
 public:
-	using value_type = BoolType;
-	using reference  = typename std::conditional_t <
-		std::is_const_v<ElementType>, bool, BitProxy&>;
-	using pointer    = BoolType*;
+	using value_type = bool;
+	using reference  = bool;
+	using pointer    = bool*;
 
 	using It::It;
 	SelectionIterator(const It& it) : It(it) {}
 
 	reference operator*() const
 	{
-		if constexpr (std::is_const_v<ElementType>) {
-			if constexpr (IteratesOverClass<It>) {
-				return It::operator*().selected();
-			}
-			else {
-				return It::operator*()->selected();
-			}
+		if constexpr (IteratesOverClass<It>) {
+			return It::operator*().selected();
 		}
 		else {
-			if constexpr (IteratesOverClass<It>) {
-				bp = It::operator*().selected();
-			}
-			else {
-				bp = It::operator*()->selected();
-			}
-			return bp;
+			return It::operator*()->selected();
 		}
 	}
 	pointer operator->() const

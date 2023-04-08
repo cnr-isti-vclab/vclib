@@ -62,14 +62,14 @@ int main()
 	std::cerr << "\n\nTransform Selection:\n";
 
 	uint i = 0;
-	for (auto& sel : m.vertices() | vcl::views::selection) {
-		sel = i % 2 ? true : false;
-		std::cerr << sel << "\n";
+	for (auto& v : m.vertices()) {
+		v.selected() = i % 2 ? true : false;
+		std::cerr << v.selected() << "\n";
 		++i;
 	}
 
 	std::cerr << "\n\nPrint Selection:\n";
-	for (const auto& sel : m.vertices() | vcl::views::selection) {
+	for (bool sel : m.vertices() | vcl::views::selection) {
 		std::cerr << sel << "\n";
 	}
 
