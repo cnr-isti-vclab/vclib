@@ -26,6 +26,8 @@
 
 #include <vclib/types.h>
 
+#include "face_base_iterator.h"
+
 namespace vcl {
 
 namespace internal {
@@ -33,8 +35,9 @@ namespace internal {
 template<typename HalfEdge, bool CNST>
 class FaceVertexIterator
 {
-	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
+	friend class FaceBaseIterator;
 
+	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public :
 	using value_type = std::conditional_t<CNST,
 			const typename HalfEdge::VertexType*,
@@ -55,33 +58,10 @@ public :
 	reference operator*() const { return current->fromVertex(); }
 	pointer operator->() const { return &(current->fromVertex()); }
 
-	auto& operator++()
-	{
-		current = current->next();
-		if (current == end) current = nullptr;
-		return *this;
-	}
-	auto operator++(int)
-	{
-		auto it = *this;
-		current = current->next();
-		if (current == end) current = nullptr;
-		return it;
-
-	}
-	auto& operator--()
-	{
-		current = current->prev();
-		if (current == end) current = nullptr;
-		return *this;
-	}
-	auto operator--(int)
-	{
-		auto it = *this;
-		current = current->prev();
-		if (current == end) current = nullptr;
-		return it;
-	}
+	auto& operator++()   { return FaceBaseIterator::increment(*this); }
+	auto operator++(int) { return FaceBaseIterator::postIncrement(*this); }
+	auto& operator--()   { return FaceBaseIterator::decrement(*this); }
+	auto operator--(int) { return FaceBaseIterator::postDecrement(*this); }
 
 protected:
 	CurrentHEdgeType current = nullptr;

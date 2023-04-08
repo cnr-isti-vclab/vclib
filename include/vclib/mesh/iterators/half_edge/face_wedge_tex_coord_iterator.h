@@ -33,27 +33,38 @@ namespace vcl {
 namespace internal {
 
 template<typename HalfEdge, bool CNST>
-class FaceWedgeTexCoordIterator :
-		public FaceBaseIterator<HalfEdge, CNST, FaceWedgeTexCoordIterator<HalfEdge, CNST>>
+class FaceWedgeTexCoordIterator
 {
-	using Base = FaceBaseIterator<HalfEdge, CNST, FaceWedgeTexCoordIterator<HalfEdge, CNST>>;
+	friend class FaceBaseIterator;
+
+	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public:
 	using value_type = std::conditional_t<CNST,
 			const typename HalfEdge::TexCoordType,
 			typename HalfEdge::TexCoordType>;
 	using reference  = value_type&;
 	using pointer    = value_type*;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	FaceWedgeTexCoordIterator() = default;
+	FaceWedgeTexCoordIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	FaceWedgeTexCoordIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
 
-	reference operator*() const
-	{
-		return Base::current->texCoord();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->texCoord());
-	}
+	bool operator==(const FaceWedgeTexCoordIterator& oi) const { return current == oi.current; }
+	bool operator!=(const FaceWedgeTexCoordIterator& oi) const { return current != oi.current; }
+
+	reference operator*() const { return current->texCoord(); }
+	pointer operator->() const { return &(current->texCoord()); }
+
+	auto& operator++()   { return FaceBaseIterator::increment(*this); }
+	auto operator++(int) { return FaceBaseIterator::postIncrement(*this); }
+	auto& operator--()   { return FaceBaseIterator::decrement(*this); }
+	auto operator--(int) { return FaceBaseIterator::postDecrement(*this); }
+
+protected:
+	CurrentHEdgeType current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl::internal

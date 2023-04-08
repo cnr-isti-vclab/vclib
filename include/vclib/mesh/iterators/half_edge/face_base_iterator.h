@@ -28,21 +28,51 @@
 
 namespace vcl::internal {
 
-template<typename HalfEdge, bool CNST, typename DerivedIterator>
-class FaceBaseIterator : public BaseIterator<HalfEdge, CNST>
-{
-	using Base = BaseIterator<HalfEdge, CNST>;
+// This class is for internal use, and it contains only static member functions.
+// Its functions are meant to be used by the iterators that iterate over Face components
+// trough its half edge. Functions are provided here to avoid code duplication, and are
+// the functions for the operators++ and --, prefix and postfix.
+// These functions allow to move to the next / prev half edge checking for the end of the iteration
+// and returning the correct iterator after the operation.
+// This class is meant to be declared as friend of the iterator,
+// and will access to the `current` and `end` members of the iterator passed as parameter of each
+// function (which should be the *this iterator).
+class FaceBaseIterator {
 public:
-	using Base::BaseIterator;
 
-	auto& operator++();
-	auto operator++(int);
-	auto& operator--();
-	auto operator--(int);
+	template<typename It>
+	static It& increment(It& it)
+	{
+		it.current = it.current->next();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
+	}
+
+	template<typename It>
+	static It postIncrement(It& it)
+	{
+		It tmp = it;
+		increment(it);
+		return tmp;
+	}
+
+	template<typename It>
+	static It& decrement(It& it)
+	{
+		it.current = it.current->prev();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
+	}
+
+	template<typename It>
+	static It postDecrement(It& it)
+	{
+		It tmp = it;
+		decrement(it);
+		return tmp;
+	}
 };
 
 } // namespace vcl::internal
-
-#include "face_base_iterator.cpp"
 
 #endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H

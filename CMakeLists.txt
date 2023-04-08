@@ -447,7 +447,6 @@ set(SOURCES
 	include/vclib/mesh/elements/vertex.cpp
 	include/vclib/mesh/iterators/element_container_iterator.cpp
 	include/vclib/mesh/iterators/face/edge_adj_face_iterator.cpp
-	include/vclib/mesh/iterators/half_edge/face_base_iterator.cpp
 	include/vclib/mesh/iterators/half_edge/vertex_base_iterator.cpp
 	include/vclib/mesh/mesh/mesh.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp

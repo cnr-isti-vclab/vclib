@@ -33,25 +33,36 @@ namespace vcl {
 namespace internal {
 
 template<typename HalfEdge, bool CNST>
-class FaceWedgeColorIterator :
-		public FaceBaseIterator<HalfEdge, CNST, FaceWedgeColorIterator<HalfEdge, CNST>>
+class FaceWedgeColorIterator
 {
-	using Base = FaceBaseIterator<HalfEdge, CNST, FaceWedgeColorIterator<HalfEdge, CNST>>;
+	friend class FaceBaseIterator;
+
+	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public:
 	using value_type = std::conditional_t<CNST, const vcl::Color, vcl::Color>;
 	using reference  = value_type&;
 	using pointer    = value_type*;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	FaceWedgeColorIterator() = default;
+	FaceWedgeColorIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	FaceWedgeColorIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
 
-	reference operator*() const
-	{
-		return Base::current->color();
-	}
-	pointer operator->() const
-	{
-		return &(Base::current->color());
-	}
+	bool operator==(const FaceWedgeColorIterator& oi) const { return current == oi.current; }
+	bool operator!=(const FaceWedgeColorIterator& oi) const { return current != oi.current; }
+
+	reference operator*() const { return current->color(); }
+	pointer operator->() const { return &(current->color()); }
+
+	auto& operator++()   { return FaceBaseIterator::increment(*this); }
+	auto operator++(int) { return FaceBaseIterator::postIncrement(*this); }
+	auto& operator--()   { return FaceBaseIterator::decrement(*this); }
+	auto operator--(int) { return FaceBaseIterator::postDecrement(*this); }
+
+protected:
+	CurrentHEdgeType current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl::internal

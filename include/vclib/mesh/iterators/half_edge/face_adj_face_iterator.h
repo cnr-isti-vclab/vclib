@@ -31,29 +31,46 @@ namespace vcl {
 namespace internal {
 
 template<typename HalfEdge, bool CNST>
-class FaceAdjFaceIterator :
-		public FaceBaseIterator<HalfEdge, CNST, FaceAdjFaceIterator<HalfEdge, CNST>>
+class FaceAdjFaceIterator
 {
-	using Base = FaceBaseIterator<HalfEdge, CNST, FaceAdjFaceIterator<HalfEdge, CNST>>;
+	friend class FaceBaseIterator;
+
+	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public:
 	using value_type = std::conditional_t<CNST,
 			const typename HalfEdge::FaceType*,
 			typename HalfEdge::FaceType*>;
 	using reference = std::conditional_t<CNST, value_type, value_type&>;
 	using pointer   = value_type*;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	FaceAdjFaceIterator() = default;
+	FaceAdjFaceIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	FaceAdjFaceIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
+
+	bool operator==(const FaceAdjFaceIterator& oi) const { return current == oi.current; }
+	bool operator!=(const FaceAdjFaceIterator& oi) const { return current != oi.current; }
 
 	reference operator*() const
 	{
-		if (Base::current->twin() == nullptr) return nullptr;
-		return Base::current->twin()->face();
+		if (current->twin() == nullptr) return nullptr;
+		return current->twin()->face();
 	}
 	pointer operator->() const
 	{
-		if (Base::current->twin() == nullptr) return nullptr;
-		return &(Base::current->twin()->face());
+		if (current->twin() == nullptr) return nullptr;
+		return &(current->twin()->face());
 	}
+
+	auto& operator++()   { return FaceBaseIterator::increment(*this); }
+	auto operator++(int) { return FaceBaseIterator::postIncrement(*this); }
+	auto& operator--()   { return FaceBaseIterator::decrement(*this); }
+	auto operator--(int) { return FaceBaseIterator::postDecrement(*this); }
+
+protected:
+	CurrentHEdgeType current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl::internal
