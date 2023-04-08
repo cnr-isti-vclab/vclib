@@ -26,8 +26,6 @@
 
 #include <vclib/types.h>
 
-#include "component_view.h"
-
 namespace vcl {
 
 namespace views {

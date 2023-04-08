@@ -24,27 +24,9 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
 #define VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
 
-#include <vclib/mesh/iterators/component/selection_iterator.h>
-
-#include "component_view.h"
+#include <vclib/types.h>
 
 namespace vcl {
-
-#ifdef __clang__
-template<std::ranges::range RngType>
-class SelectionView : public vcl::View<SelectionIterator<std::ranges::iterator_t<RngType>>>
-{
-	using Base = vcl::View<SelectionIterator<std::ranges::iterator_t<RngType>>>;
-public:
-	SelectionView(const RngType& r) :
-			Base(SelectionIterator(std::ranges::begin(r)), SelectionIterator(std::ranges::end(r)))
-	{
-	}
-};
-#else
-template<std::ranges::range RngType>
-using SelectionView = internal::ComponentView<RngType, SelectionIterator>;
-#endif
 
 namespace views {
 
@@ -54,10 +36,42 @@ struct SelectionViewClosure
 {
 	constexpr SelectionViewClosure(){}
 
+	inline static constexpr auto constSelP = [](const auto* p) -> decltype(auto)
+	{
+		return p->isSelected();
+	};
+
+	inline static constexpr auto constSel = [](const auto& p) -> decltype(auto)
+	{
+		return p.isSelected();
+	};
+
+	inline static constexpr auto selP = [](auto* p) -> decltype(auto)
+	{
+		return p->isSelected();
+	};
+
+	inline static constexpr auto sel = [](auto& p) -> decltype(auto)
+	{
+		return p.isSelected();
+	};
+
 	template <std::ranges::range R>
 	constexpr auto operator()(R && r) const
 	{
-		return SelectionView(r);
+		using It = std::ranges::iterator_t<R>;
+		if constexpr(IteratesOverClass<It>) {
+			if constexpr(std::is_const_v<typename It::value_type>)
+				return r | std::views::transform(constSel);
+			else
+				return r | std::views::transform(sel);
+		}
+		else {
+			if constexpr(std::is_const_v<It>)
+				return r | std::views::transform(constSelP);
+			else
+				return r | std::views::transform(selP);
+		}
 	}
 };
 
