@@ -74,7 +74,7 @@ void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F)
 }
 
 /**
- * @brief This function executes a parallel (vectorized) for over a container if 
+ * @brief This function executes a parallel (vectorized) for over a range if
  * parallel requirements have been found in the system.
  *
  * Example of usage on a vcl::Mesh, iterating over vertices:
@@ -85,17 +85,17 @@ void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F)
  * });
  * @endcode
  *
- * @param[in] c: container having begin() and end() functions
+ * @param[in] r: a range having begin() and end() functions
  * @param[in] F: lambda function that takes the iterated type as input
  */
-template<typename Container, typename Lambda>
-void parallelFor(Container&& c, Lambda&& F)
+template<std::ranges::range Rng, typename Lambda>
+void parallelFor(Rng&& r, Lambda&& F)
 {
-	parallelFor(c.begin(), c.end(), F);
+	parallelFor(std::ranges::begin(r), std::ranges::end(r), F);
 }
 
 /**
- * @brief This function executes a parallel (vectorized) for over a container if 
+ * @brief This function executes a parallel (vectorized) for over a range if
  * parallel requirements have been found in the system.
  *
  * Example of usage on a vcl::Mesh, iterating over vertices:
@@ -106,13 +106,13 @@ void parallelFor(Container&& c, Lambda&& F)
  * });
  * @endcode
  *
- * @param[in] c: container having begin() and end() functions
+ * @param[in] r: a range having begin() and end() functions
  * @param[in] F: lambda function that takes the iterated type as input
  */
-template<typename Container, typename Lambda>
-void parallelFor(const Container& c, Lambda&& F)
+template<std::ranges::range Rng, typename Lambda>
+void parallelFor(const Rng& r, Lambda&& F)
 {
-	parallelFor(c.begin(), c.end(), F);
+	parallelFor(std::ranges::begin(r), std::ranges::end(r), F);
 }
 
 } // namespace vcl
