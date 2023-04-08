@@ -45,9 +45,6 @@ concept SamplerConcept = requires(
 	const T& co)
 {
 	typename T::PointType;
-	typename T::ConstIterator;
-
-	std::is_same_v<typename T::PointType, typename T::ConstIterator::value_type>;
 
 	o.samples();
 
@@ -58,8 +55,8 @@ concept SamplerConcept = requires(
 	o.reserve(uint());
 	o.resize(uint());
 
-	{ co.begin() } -> std::same_as<typename T::ConstIterator>;
-	{ co.end() } -> std::same_as<typename T::ConstIterator>;
+	co.begin();
+	co.end();
 };
 
 /**

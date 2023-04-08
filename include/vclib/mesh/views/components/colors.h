@@ -21,86 +21,52 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_ELEMENTS_H
-#define VCL_MESH_VIEWS_ELEMENTS_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_COLORS_H
+#define VCL_MESH_VIEWS_COMPONENTS_COLORS_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/types.h>
 
 namespace vcl::views {
+
 namespace internal {
 
-template<typename T>
-concept CleanMeshConcept = MeshConcept<RemoveConstRef<T>>;
-
-template<typename T>
-concept CleanFaceMeshConcept = FaceMeshConcept<RemoveConstRef<T>>;
-
-template<typename T>
-concept CleanFaceConcept = FaceConcept<RemoveConstRef<T>>;
-
-template<typename T>
-concept CleanEdgeMeshConcept = EdgeMeshConcept<RemoveConstRef<T>>;
-
-template<typename T>
-concept CleanDcelMeshConcept = DcelMeshConcept<RemoveConstRef<T>>;
-
-struct VerticesView
+struct ColorsView
 {
-	constexpr VerticesView() = default;
+	constexpr ColorsView() = default;
 
-	template <CleanMeshConcept R>
-	friend constexpr auto operator|(R&& r, VerticesView)
+	inline static constexpr auto constColor = [](const auto& p) -> decltype(auto)
 	{
-		return r.vertices();
+		if constexpr(IsPointer<decltype(p)>)
+			return p->color();
+		else
+			return p.color();
+	};
+
+	inline static constexpr auto color = [](auto& p) -> decltype(auto)
+	{
+		if constexpr(IsPointer<decltype(p)>)
+			return p->color();
+		else
+			return p.color();
+	};
+
+	template <std::ranges::range R>
+	friend constexpr auto operator|(R&& r, ColorsView)
+	{
+		using ElemType = std::ranges::range_value_t<R>;
+		if constexpr(IsConst<ElemType>)
+			return std::forward<R>(r) | std::views::transform(constColor);
+		else
+			return std::forward<R>(r) | std::views::transform(color);
+
 	}
 
-	template <CleanFaceConcept R>
-	friend constexpr auto operator|(R&& r, VerticesView)
-	{
-		return r.vertices();
-	}
-};
-
-struct FacesView
-{
-	constexpr FacesView() = default;
-
-	template <CleanFaceMeshConcept R>
-	friend constexpr auto operator|(R&& r, FacesView)
-	{
-		return r.faces();
-	}
-};
-
-struct EdgesView
-{
-	constexpr EdgesView() = default;
-
-	template <CleanEdgeMeshConcept R>
-	friend constexpr auto operator|(R&& r, EdgesView)
-	{
-		return r.edges();
-	}
-};
-
-struct HalfEdgesView
-{
-	constexpr HalfEdgesView() = default;
-
-	template <CleanDcelMeshConcept R>
-	friend constexpr auto operator|(R&& r, HalfEdgesView)
-	{
-		return r.halfEdges();
-	}
 };
 
 } // namespace vcl::views::internal
 
-inline constexpr internal::VerticesView vertices;
-inline constexpr internal::FacesView faces;
-inline constexpr internal::EdgesView edges;
-inline constexpr internal::HalfEdgesView halfEdges;
+inline constexpr internal::ColorsView colors;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_ELEMENTS_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_COLORS_H

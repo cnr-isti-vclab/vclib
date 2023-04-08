@@ -17,7 +17,6 @@ class VertexSampler
 
 public:
 	using PointType = typename VertexType::CoordType;
-	using ConstIterator = decltype(std::begin(std::vector<VP>() | views::coords));
 
 	VertexSampler();
 

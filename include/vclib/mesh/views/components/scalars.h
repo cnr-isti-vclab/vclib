@@ -30,9 +30,9 @@ namespace vcl::views {
 
 namespace internal {
 
-struct ScalarViewClosure
+struct ScalarView
 {
-	constexpr ScalarViewClosure(){}
+	constexpr ScalarView() = default;
 
 	inline static constexpr auto constScalar = [](const auto& p) -> decltype(auto)
 	{
@@ -51,19 +51,19 @@ struct ScalarViewClosure
 	};
 
 	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
+	friend constexpr auto operator|(R&& r, ScalarView)
 	{
 		using ElemType = std::ranges::range_value_t<R>;
 		if constexpr(IsConst<ElemType>)
-			return r | std::views::transform(constScalar);
+			return std::forward<R>(r) | std::views::transform(constScalar);
 		else
-			return r | std::views::transform(scalar);
+			return std::forward<R>(r) | std::views::transform(scalar);
 	}
 };
 
 } // namespace vcl::views::internal
 
-inline constexpr internal::ScalarViewClosure scalars;
+inline constexpr internal::ScalarView scalars;
 
 } // namespace vcl::views
 

@@ -30,66 +30,36 @@ namespace vcl::views{
 
 namespace internal {
 
-// here, type of R is not constrained by any concept.
-// We trust that all the closures structs defined in the vcl::views::internal namespace will
-// constraint the Range types (which may also not be ranges at all)
-template <typename R, typename Closure>
-constexpr auto operator | (R& r, Closure const & a)
+struct IsValidView : std::ranges::view_base
 {
-	return a(r);
-}
-
-template <typename R, typename Closure>
-constexpr auto operator | (const R& r, Closure const & a)
-{
-	return a(r);
-}
-
-struct IsValidClosure
-{
-	inline static constexpr auto isValid = [](auto* p)
-	{
-		return p != nullptr;
-	};
-
-	constexpr IsValidClosure() {};
+	constexpr IsValidView() = default;
 
 	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
+	friend constexpr auto operator|(R&& r, IsValidView)
 	{
-		return r | std::views::filter(isValid);
+		return std::views::filter(r, [](auto* p) { return p != nullptr; });
 	}
 };
 
-struct DereferenceClosure
+struct DereferenceView : std::ranges::view_base
 {
-	inline static constexpr auto deref = [](auto p)
-	{
-		return *p;
-	};
-
-	constexpr DereferenceClosure() {};
+	constexpr DereferenceView() = default;
 
 	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
+	friend constexpr auto operator|(R&& r, DereferenceView)
 	{
-		return r | std::views::transform(deref);
+		return std::views::transform(r, [](auto p) { return *p; });
 	}
 };
 
-struct ReferenceClosure
+struct ReferenceView
 {
-	inline static constexpr auto ref = [](auto o)
-	{
-		return &o;
-	};
-
-	constexpr ReferenceClosure() {};
+	constexpr ReferenceView() = default;
 
 	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
+	friend constexpr auto operator|(R&& r, ReferenceView)
 	{
-		return r | std::views::transform(ref);
+		return std::views::transform(r, [](auto o) { return &o; });
 	}
 };
 
@@ -99,7 +69,7 @@ struct ReferenceClosure
  * @brief The isValid view allows to filter the pointers of a range. The resulting
  * view will iterate only on the pointers that are not `nullptr`.
  */
-inline constexpr internal::IsValidClosure isValid;
+inline constexpr internal::IsValidView isValid;
 
 /**
  * @brief The dereference view allow to dereference the pointers of a range. The resulting
@@ -110,13 +80,13 @@ inline constexpr internal::IsValidClosure isValid;
  *
  * auto resView = inputRange | isValid | dereference;
  */
-inline constexpr internal::DereferenceClosure dereference;
+inline constexpr internal::DereferenceView dereference;
 
 /**
  * @brief The reference view allow to reference the objects of a range. The resulting view will
  * iterate over the pointers pointing to the object of the input range.
  */
-inline constexpr internal::ReferenceClosure reference;
+inline constexpr internal::ReferenceView reference;
 
 } // namespace vcl::views
 

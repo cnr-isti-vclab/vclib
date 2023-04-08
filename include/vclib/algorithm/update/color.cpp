@@ -24,6 +24,7 @@
 #include "color.h"
 
 #include <vclib/math/perlin_noise.h>
+#include <vclib/mesh/views.h>
 
 #include "../clean.h"
 #include "../stat.h"
@@ -58,12 +59,11 @@ void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
 {
 	vcl::requirePerVertexColor(m);
 
-	using VertexType = typename MeshType::VertexType;
-
-	for (VertexType& v : m.vertices()) {
-		if (!onlySelected || v.isSelected()) {
-			v.color() = c;
-		}
+	if (onlySelected) {
+		std::ranges::fill(m.vertices() | views::selected | views::colors, c);
+	}
+	else {
+		std::ranges::fill(m.vertices() | views::colors, c);
 	}
 }
 
@@ -85,12 +85,11 @@ void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
 {
 	vcl::requirePerFaceColor(m);
 
-	using FaceType = typename MeshType::FaceType;
-
-	for (FaceType& f : m.faces()) {
-		if (!onlySelected || f.isSelected()) {
-			f.color() = c;
-		}
+	if (onlySelected) {
+		std::ranges::fill(m.faces() | views::selected | views::colors, c);
+	}
+	else {
+		std::ranges::fill(m.faces() | views::colors, c);
 	}
 }
 

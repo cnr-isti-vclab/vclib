@@ -30,9 +30,9 @@ namespace vcl::views {
 
 namespace internal {
 
-struct CoordsViewClosure
+struct CoordsView
 {
-	constexpr CoordsViewClosure(){}
+	constexpr CoordsView() = default;
 
 	inline static constexpr auto constCoord = [](const auto& p) -> decltype(auto)
 	{
@@ -51,20 +51,19 @@ struct CoordsViewClosure
 	};
 
 	template <std::ranges::range R>
-	constexpr auto operator()(R&& r) const
+	friend constexpr auto operator|(R&& r, CoordsView)
 	{
 		using ElemType = std::ranges::range_value_t<R>;
 		if constexpr(IsConst<ElemType>)
-			return r | std::views::transform(constCoord);
+			return std::forward<R>(r) | std::views::transform(constCoord);
 		else
-			return r | std::views::transform(coord);
-
+			return std::forward<R>(r) | std::views::transform(coord);
 	}
 };
 
 } // namespace vcl::views::internal
 
-inline constexpr internal::CoordsViewClosure coords;
+inline constexpr internal::CoordsView coords;
 
 } // namespace vcl::views
 

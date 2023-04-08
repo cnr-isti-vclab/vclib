@@ -32,6 +32,8 @@ void meshViewsStaticAsserts()
 
 	// assure that component ranges are ranges
 	static_assert(
+		std::ranges::range<decltype(m.vertices() | vcl::views::colors)>, "");
+	static_assert(
 		std::ranges::range<decltype(m.vertices() | vcl::views::coords)>, "");
 	static_assert(
 		std::ranges::range<decltype(m.vertices() | vcl::views::scalars)>, "");
@@ -39,6 +41,8 @@ void meshViewsStaticAsserts()
 		std::ranges::range<decltype(m.vertices() | vcl::views::selection)>, "");
 	static_assert(
 		std::ranges::range<decltype(m.vertices() | vcl::views::selected)>, "");
+	static_assert(
+		std::ranges::range<decltype(m.vertices() | vcl::views::selected | vcl::views::colors)>, "");
 	static_assert(
 		std::ranges::range<decltype(m.vertices() | vcl::views::notSelected)>, "");
 

@@ -50,44 +50,44 @@ inline constexpr auto isNotSelected = [](const auto& e)
 	}
 };
 
-struct SelectionViewClosure
+struct SelectionView
 {
-	constexpr SelectionViewClosure(){}
+	constexpr SelectionView() = default;
 
 	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
+	friend constexpr auto operator|(R&& r, SelectionView)
 	{
-		return r | std::views::transform(isSelected);
+		return std::forward<R>(r) | std::views::transform(isSelected);
 	}
 };
 
-struct SelectedViewClosure
+struct SelectedView
 {
-	constexpr SelectedViewClosure(){}
+	constexpr SelectedView() = default;
 
 	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
+	friend constexpr auto operator|(R&& r, SelectedView)
 	{
-		return r | std::views::filter(isSelected);
+		return std::forward<R>(r) | std::views::filter(isSelected);
 	}
 };
 
-struct NotSelectedViewClosure
+struct NotSelectedView
 {
-	constexpr NotSelectedViewClosure(){}
+	constexpr NotSelectedView() = default;
 
 	template <std::ranges::range R>
-	constexpr auto operator()(R && r) const
+	friend constexpr auto operator|(R&& r, NotSelectedView)
 	{
-		return r | std::views::filter(isNotSelected);
+		return std::forward<R>(r) | std::views::filter(isNotSelected);
 	}
 };
 
 } // namespace vcl::views::internal
 
-inline constexpr internal::SelectionViewClosure selection;
-inline constexpr internal::SelectedViewClosure selected;
-inline constexpr internal::NotSelectedViewClosure notSelected;
+inline constexpr internal::SelectionView selection;
+inline constexpr internal::SelectedView selected;
+inline constexpr internal::NotSelectedView notSelected;
 
 } // namespace vcl::views
 
