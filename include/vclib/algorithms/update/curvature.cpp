@@ -30,7 +30,6 @@
 #include <vclib/algorithms/point_sampling.h>
 #include <vclib/algorithms/polygon.h>
 #include <vclib/algorithms/update/normal.h>
-#include <vclib/iterators/pointer_iterator.h>
 #include <vclib/math/transform.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/parallel.h>
@@ -255,7 +254,6 @@ void updatePrincipalCurvaturePCA(
 	using NormalType = typename VertexType::NormalType;
 	using FaceType   = typename MeshType::FaceType;
 
-	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
 	using VGrid = typename vcl::StaticGrid3<VertexType*>;
 	using VGridIterator = typename VGrid::ConstIterator;
 
@@ -276,7 +274,7 @@ void updatePrincipalCurvaturePCA(
 
 	if (montecarloSampling) {
 		area = vcl::surfaceArea(m);
-		pGrid = VGrid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+		pGrid = VGrid(m.vertices() | views::reference);
 		pGrid.build();
 	}
 

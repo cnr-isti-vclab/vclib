@@ -59,7 +59,7 @@ struct ReferenceView
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, ReferenceView)
 	{
-		return std::views::transform(r, [](auto o) { return &o; });
+		return std::views::transform(r, [](auto& o) { return &o; });
 	}
 };
 

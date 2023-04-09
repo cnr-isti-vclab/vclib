@@ -169,7 +169,6 @@ set(HEADERS
 	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
 	include/vclib/iterators/iterator_wrapper.h
-	include/vclib/iterators/pointer_iterator.h
 	include/vclib/iterators/view.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h

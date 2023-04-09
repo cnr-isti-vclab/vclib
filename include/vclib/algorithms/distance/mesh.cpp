@@ -24,7 +24,6 @@
 #include "mesh.h"
 
 #include <vclib/algorithms/point_sampling.h>
-#include <vclib/iterators/pointer_iterator.h>
 #include <vclib/space/grid.h>
 #include <vclib/misc/parallel.h>
 
@@ -111,7 +110,6 @@ HausdorffDistResult samplerMeshHausdorff(
 	requires(!HasFaces<MeshType>)
 {
 	using VertexType = typename MeshType::VertexType;
-	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
 
 	std::string meshName = "first mesh";
 	if constexpr (HasName<MeshType>){
@@ -121,7 +119,7 @@ HausdorffDistResult samplerMeshHausdorff(
 		log.log(0, "Building Grid on " + meshName + " vertices...");
 	}
 
-	vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+	vcl::StaticGrid3<const VertexType*> grid(m.vertices() | views::reference);
 	grid.build();
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -139,8 +137,6 @@ HausdorffDistResult samplerMeshHausdorff(
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
-	using VPI = vcl::PointerIterator<typename MeshType::ConstVertexIterator>;
-	using FPI = vcl::PointerIterator<typename MeshType::ConstFaceIterator>;
 
 	std::string meshName = "first mesh";
 	if constexpr (HasName<MeshType>){
@@ -151,7 +147,7 @@ HausdorffDistResult samplerMeshHausdorff(
 			log.log(0, "Building Grid on " + meshName + " vertices...");
 		}
 
-		vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+		vcl::StaticGrid3<const VertexType*> grid(m.vertices() | views::reference);
 		grid.build();
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -165,7 +161,7 @@ HausdorffDistResult samplerMeshHausdorff(
 			log.log(0, "Building Grid on " + meshName + " faces...");
 		}
 
-		vcl::StaticGrid3<const FaceType*> grid(FPI(m.faceBegin()), FPI(m.faceEnd()));
+		vcl::StaticGrid3<const FaceType*> grid(m.faces() | views::reference);
 		grid.build();
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {

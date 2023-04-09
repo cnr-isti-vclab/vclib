@@ -30,8 +30,6 @@
 #include <vclib/miscellaneous.h>
 #include <vclib/algorithms.h>
 
-#include <vclib/iterators/pointer_iterator.h>
-
 int main()
 {
 	vcl::RegularGrid3<double> g(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3<uint>(10, 10, 10));
@@ -133,8 +131,7 @@ int main()
 
 	auto intersects = vcl::intersectFunction<vcl::Box3d, const vcl::TriMesh::Face*>();
 
-	using FPI = vcl::PointerIterator<typename vcl::TriMesh::FaceIterator>;
-	vcl::HashTableGrid3<const vcl::TriMesh::Face*> fsht(FPI(m.faceBegin()), FPI(m.faceEnd()), intersects);
+	vcl::HashTableGrid3<const vcl::TriMesh::Face*> fsht(m.faces() | vcl::views::reference, intersects);
 
 	std::cerr << "Values in HashTableGrid: \n";
 
@@ -152,7 +149,7 @@ int main()
 
 	std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<const vcl::TriMesh::Face*> fsg(FPI(m.faceBegin()), FPI(m.faceEnd()), intersects);
+	vcl::StaticGrid3<const vcl::TriMesh::Face*> fsg(m.faces() | vcl::views::reference, intersects);
 
 	std::cerr << "Values in Static Grid : \n";
 
@@ -175,8 +172,7 @@ int main()
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
 
-	using VPI = vcl::PointerIterator<typename vcl::TriMesh::VertexIterator>;
-	vcl::StaticGrid3<const vcl::TriMesh::Vertex*> vmsg(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+	vcl::StaticGrid3<const vcl::TriMesh::Vertex*> vmsg(m.vertices() | vcl::views::reference);
 
 	const vcl::Point3d qv(0.5, 0.5, 0.5);
 

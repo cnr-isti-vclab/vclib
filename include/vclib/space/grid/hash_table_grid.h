@@ -72,6 +72,9 @@ public:
 	template<typename ObjIterator>
 	HashTableGrid(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects = nullptr);
 
+	template<std::ranges::range Rng>
+	HashTableGrid(Rng&& r, const IsInCellFunction& intersects = nullptr);
+
 	bool empty() const;
 	bool cellEmpty(const KeyType& k) const;
 	std::set<KeyType> nonEmptyCells() const;

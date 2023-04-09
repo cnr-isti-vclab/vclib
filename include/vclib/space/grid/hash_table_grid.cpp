@@ -58,6 +58,15 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
 	AbstractGrid::insert(begin, end);
 }
 
+template<typename GridType, typename ValueType, bool AllowDuplicates>
+template<std::ranges::range Rng>
+HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
+	Rng&& r,
+	const IsInCellFunction& intersects) :
+		HashTableGrid(std::ranges::begin(r), std::ranges::end(r), intersects)
+{
+}
+
 /**
  * @brief Returns true if the HashTableGrid is empty (no elements in it).
  * @return
