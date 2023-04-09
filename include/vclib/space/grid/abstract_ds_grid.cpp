@@ -23,7 +23,7 @@
 
 #include "abstract_ds_grid.h"
 
-#include <vclib/algorithm/distance/functions.h>
+#include <vclib/algorithms/distance/functions.h>
 
 namespace vcl {
 

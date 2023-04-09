@@ -25,8 +25,8 @@
 
 #include <vclib/mesh.h>
 #include <vclib/load_save.h>
-#include <vclib/algorithm/update/flag.h>
-#include <vclib/algorithm/smooth.h>
+#include <vclib/algorithms/update/flag.h>
+#include <vclib/algorithms/smooth.h>
 
 int main()
 {

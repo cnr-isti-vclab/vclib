@@ -117,12 +117,6 @@ using Triangle3 = Triangle<Point3<Scalar>>;
 using Triangle3f = Triangle<Point3f>;
 using Triangle3d = Triangle<Point3d>;
 
-static_assert(Triangle2Concept<Triangle2f>, "Triangle2f does not satisfy the Triangle2Concept");
-static_assert(Triangle2Concept<Triangle2d>, "Triangle2d does not satisfy the Triangle2Concept");
-
-static_assert(Triangle3Concept<Triangle3f>, "Triangle3f does not satisfy the Triangle3Concept");
-static_assert(Triangle3Concept<Triangle3d>, "Triangle3d does not satisfy the Triangle3Concept");
-
 } // namespace vcl
 
 #include "triangle.cpp"

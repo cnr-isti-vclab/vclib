@@ -25,7 +25,7 @@
 #define VCL_SPACE_SAMPLER_MESH_SAMPLER_H
 
 #include <vclib/concept/space/sampler.h>
-#include <vclib/mesh/iterator.h>
+#include <vclib/mesh/views.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -33,10 +33,13 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshSampler
 {
+	using CoordView = decltype(typename MeshType::VertexView() | views::coords);
+
 public:
 	using PointType  = typename MeshType::VertexType::CoordType;
 	using ScalarType = typename PointType::ScalarType;
-	using ConstIterator = CoordIterator<typename MeshType::ConstVertexIterator>;
+
+	using ConstIterator = std::ranges::iterator_t<CoordView>;
 
 	MeshSampler();
 
@@ -112,11 +115,6 @@ private:
 
 	MeshType m;
 };
-
-// makes sure that the MeshSampler satisfies SamplerConcept
-static_assert(
-	FaceSamplerConcept<MeshSampler<internal::TMPSimplePolyMesh>>,
-	"MeshSampler is not a valid FaceSampler");
 
 } // namespace vcl
 

@@ -25,7 +25,7 @@
 #define VCL_MESH_POINT_CLOUD_H
 
 #include "mesh/mesh.h"
-#include "mesh/requirements.h"
+#include "requirements.h"
 
 namespace vcl {
 
@@ -73,15 +73,6 @@ class PointCloudT :
 
 using PointCloudf = PointCloudT<float>;
 using PointCloud  = PointCloudT<double>;
-
-// makes sure that the PointCloud satisfies Mesh concepts
-static_assert(MeshConcept<PointCloud>, "The PointCloud is not a valid Mesh.");
-static_assert(!FaceMeshConcept<PointCloud>, "The PointCloud is a valid Mesh with Faces.");
-static_assert(!TriangleMeshConcept<PointCloud>, "The PointCloud is a static Triangle Mesh.");
-static_assert(!QuadMeshConcept<PointCloud>, "The PointCloud is a static Quad Mesh.");
-static_assert(!EdgeMeshConcept<PointCloud>, "The PointCloud is an Edge Mesh.");
-static_assert(!PolygonMeshConcept<PointCloud>, "The PointCloud is a PolygonMesh.");
-static_assert(!DcelMeshConcept<PointCloud>, "The PointCloud is a DcelMesh.");
 
 } // namespace vcl
 

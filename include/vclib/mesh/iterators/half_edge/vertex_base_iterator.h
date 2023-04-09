@@ -26,58 +26,55 @@
 
 #include <iterator>
 
-namespace vcl {
+namespace vcl::internal {
 
-template<typename HalfEdge>
+// This class is for internal use, and it contains only static member functions.
+// Its functions are meant to be used by the iterators that iterate over Vertex components
+// trough its half edge. Functions are provided here to avoid code duplication, and are
+// the functions for the operators++ and --, prefix and postfix.
+// These functions allow to move to the next-twin / twin-prev half edge checking for the end of the
+// iteration and returning the correct iterator after the operation. This class is meant to be
+// declared as friend of the iterator, and will access to the `current` and `end` members of the
+// iterator passed as parameter of each function (which should be the *this iterator).
 class VertexBaseIterator
 {
 public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
+	template<typename It>
+	static It& increment(It& it)
+	{
+		it.current = it.current->prev();
+		it.current = it.current->twin();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
+	}
 
-	VertexBaseIterator();
-	VertexBaseIterator(HalfEdge* start);
-	VertexBaseIterator(HalfEdge* start, const HalfEdge* end);
+	template<typename It>
+	static It postIncrement(It& it)
+	{
+		It tmp = it;
+		increment(it);
+		return tmp;
+	}
 
-	bool operator==(const VertexBaseIterator& oi) const;
-	bool operator!=(const VertexBaseIterator& oi) const;
+	template<typename It>
+	static It& decrement(It& it)
+	{
+		it.current = it.current->twin();
+		if(it.current != nullptr)
+			it.current = it.current->next();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
+	}
 
-	VertexBaseIterator operator++();
-	VertexBaseIterator operator++(int);
-	VertexBaseIterator operator--();
-	VertexBaseIterator operator--(int);
-
-protected:
-	HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
+	template<typename It>
+	static It postDecrement(It& it)
+	{
+		It tmp = it;
+		decrement(it);
+		return tmp;
+	}
 };
 
-template<typename HalfEdge>
-class ConstVertexBaseIterator
-{
-public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
-
-	ConstVertexBaseIterator();
-	ConstVertexBaseIterator(const HalfEdge* start);
-	ConstVertexBaseIterator(const HalfEdge* start, const HalfEdge* end);
-
-	bool operator==(const ConstVertexBaseIterator& oi) const;
-	bool operator!=(const ConstVertexBaseIterator& oi) const;
-
-	ConstVertexBaseIterator operator++();
-	ConstVertexBaseIterator operator++(int);
-	ConstVertexBaseIterator operator--();
-	ConstVertexBaseIterator operator--(int);
-
-protected:
-	const HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
-};
-
-} // namespace vcl
-
-#include "vertex_base_iterator.cpp"
+} // namespace vcl::internal
 
 #endif // VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_BASE_ITERATOR_H

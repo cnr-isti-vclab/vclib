@@ -24,7 +24,15 @@
 #ifndef VCL_TYPES_CONST_CORRECTNESS_H
 #define VCL_TYPES_CONST_CORRECTNESS_H
 
+#include <type_traits>
+
 namespace vcl {
+
+/*
+ * Utility that returns true if T is const or it is a pointer to const
+ */
+template<typename T>
+concept IsConst = std::is_const_v<typename std::remove_pointer_t<T>>;
 
 /*
  * Utility type that makes possible to treat const pointers in a templated class that can treat a

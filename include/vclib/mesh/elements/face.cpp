@@ -324,45 +324,6 @@ void Face<MeshType, Args...>::clearVertices() requires NonDcelPolygonFaceConcept
 	}
 }
 
-template<typename MeshType, typename... Args>
-typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordBegin()
-{
-	return VertexCoordIterator(VRefs::vertexBegin());
-}
-
-template<typename MeshType, typename... Args>
-typename Face<MeshType, Args...>::ConstVertexCoordIterator
-Face<MeshType, Args...>::vertexCoordBegin() const
-{
-	return ConstVertexCoordIterator(VRefs::vertexBegin());
-}
-
-template<typename MeshType, typename... Args>
-typename Face<MeshType, Args...>::VertexCoordIterator Face<MeshType, Args...>::vertexCoordEnd()
-{
-	return VertexCoordIterator(VRefs::vertexEnd());
-}
-
-template<typename MeshType, typename... Args>
-typename Face<MeshType, Args...>::ConstVertexCoordIterator
-Face<MeshType, Args...>::vertexCoordEnd() const
-{
-	return ConstVertexCoordIterator(VRefs::vertexEnd());
-}
-
-template<typename MeshType, typename... Args>
-typename Face<MeshType, Args...>::VertexCoordView Face<MeshType, Args...>::vertexCoords()
-{
-	return VertexCoordView(vertexCoordBegin(), vertexCoordEnd());
-}
-
-template<typename MeshType, typename... Args>
-typename Face<MeshType, Args...>::ConstVertexCoordView
-Face<MeshType, Args...>::vertexCoords() const
-{
-	return ConstVertexCoordView(vertexCoordBegin(), vertexCoordEnd());
-}
-
 } // namespace vcl
 
 

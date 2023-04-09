@@ -150,7 +150,4 @@ bool Plane<Scalar, NORM>::operator!=(const Plane& p) const
 	return !(*this == p);
 }
 
-static_assert(PlaneConcept<Planef>, "Planef does not satisfy the PlaneConcept");
-static_assert(PlaneConcept<Planed>, "Planed does not satisfy the PlaneConcept");
-
 } // namespace vcl

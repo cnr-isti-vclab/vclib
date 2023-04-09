@@ -26,7 +26,6 @@
 
 #include <vclib/concept/mesh/element/face.h>
 #include <vclib/iterators/view.h>
-#include <vclib/mesh/iterators/component/coord_iterator.h>
 #include <vclib/space/tex_coord.h>
 
 #include "element.h"
@@ -57,12 +56,6 @@ public:
 
 	using VertexType = typename VRefs::VertexType;
 
-	// Iterator types to iterate over vertex coords
-	using VertexCoordIterator      = CoordIterator<typename VRefs::VertexIterator>;
-	using ConstVertexCoordIterator = CoordIterator<typename VRefs::ConstVertexIterator>;
-	using VertexCoordView          = View<VertexCoordIterator>;
-	using ConstVertexCoordView     = View<ConstVertexCoordIterator>;
-
 	Face();
 
 	Face(const std::vector<VertexType*>& list); // todo add requires
@@ -86,13 +79,6 @@ public:
 	void eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face>;
 
 	void clearVertices() requires NonDcelPolygonFaceConcept<Face>;
-
-	VertexCoordIterator      vertexCoordBegin();
-	ConstVertexCoordIterator vertexCoordBegin() const;
-	VertexCoordIterator      vertexCoordEnd();
-	ConstVertexCoordIterator vertexCoordEnd() const;
-	VertexCoordView          vertexCoords();
-	ConstVertexCoordView     vertexCoords() const;
 };
 
 template<typename MeshType, typename... Args>

@@ -25,8 +25,8 @@
 
 #include <QApplication>
 
-#include <vclib/algorithm/update/normal.h>
-#include <vclib/algorithm/update/color.h>
+#include <vclib/algorithms/update/normal.h>
+#include <vclib/algorithms/update/color.h>
 #include <vclib/mesh.h>
 #include <vclib/load_save.h>
 

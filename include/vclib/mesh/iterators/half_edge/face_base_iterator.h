@@ -26,58 +26,54 @@
 
 #include <iterator>
 
-namespace vcl {
+namespace vcl::internal {
 
-template<typename HalfEdge>
+// This class is for internal use, and it contains only static member functions.
+// Its functions are meant to be used by the iterators that iterate over Face components
+// trough its half edge. Functions are provided here to avoid code duplication, and are
+// the functions for the operators++ and --, prefix and postfix.
+// These functions allow to move to the next / prev half edge checking for the end of the iteration
+// and returning the correct iterator after the operation.
+// This class is meant to be declared as friend of the iterator,
+// and will access to the `current` and `end` members of the iterator passed as parameter of each
+// function (which should be the *this iterator).
 class FaceBaseIterator
 {
 public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
 
-	FaceBaseIterator();
-	FaceBaseIterator(HalfEdge* start);
-	FaceBaseIterator(HalfEdge* start, const HalfEdge* end);
+	template<typename It>
+	static It& increment(It& it)
+	{
+		it.current = it.current->next();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
+	}
 
-	bool operator==(const FaceBaseIterator& oi) const;
-	bool operator!=(const FaceBaseIterator& oi) const;
+	template<typename It>
+	static It postIncrement(It& it)
+	{
+		It tmp = it;
+		increment(it);
+		return tmp;
+	}
 
-	FaceBaseIterator& operator++();
-	FaceBaseIterator operator++(int);
-	FaceBaseIterator& operator--();
-	FaceBaseIterator operator--(int);
+	template<typename It>
+	static It& decrement(It& it)
+	{
+		it.current = it.current->prev();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
+	}
 
-protected:
-	HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
+	template<typename It>
+	static It postDecrement(It& it)
+	{
+		It tmp = it;
+		decrement(it);
+		return tmp;
+	}
 };
 
-template<typename HalfEdge>
-class ConstFaceBaseIterator
-{
-public:
-	using difference_type   = ptrdiff_t;
-	using iterator_category = std::forward_iterator_tag;
-
-	ConstFaceBaseIterator();
-	ConstFaceBaseIterator(const HalfEdge* start);
-	ConstFaceBaseIterator(const HalfEdge* start, const HalfEdge* end);
-
-	bool operator==(const ConstFaceBaseIterator& oi) const;
-	bool operator!=(const ConstFaceBaseIterator& oi) const;
-
-	ConstFaceBaseIterator operator++();
-	ConstFaceBaseIterator operator++(int);
-	ConstFaceBaseIterator operator--();
-	ConstFaceBaseIterator operator--(int);
-
-protected:
-	const HalfEdge* current = nullptr;
-	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
-};
-
-} // namespace vcl
-
-#include "face_base_iterator.cpp"
+} // namespace vcl::internal
 
 #endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H

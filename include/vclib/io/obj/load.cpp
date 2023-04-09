@@ -25,7 +25,7 @@
 
 #include <map>
 
-#include <vclib/algorithm/polygon.h>
+#include <vclib/algorithms/polygon.h>
 #include <vclib/misc/file_info.h>
 
 #include "../internal/io_read.h"

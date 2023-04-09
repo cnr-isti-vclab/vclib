@@ -23,7 +23,7 @@
 
 #include "ply_face.h"
 
-#include <vclib/algorithm/polygon.h>
+#include <vclib/algorithms/polygon.h>
 #include <vclib/exception/io_exception.h>
 #include <vclib/mesh/requirements.h>
 

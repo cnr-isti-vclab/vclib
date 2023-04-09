@@ -23,7 +23,7 @@
 
 #include "mesh_inertia.h"
 
-#include <vclib/algorithm/polygon.h>
+#include <vclib/algorithms/polygon.h>
 
 #include <Eigen/Eigenvalues>
 

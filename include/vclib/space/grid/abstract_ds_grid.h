@@ -27,7 +27,7 @@
 #include <deque>
 #include <set>
 
-#include <vclib/algorithm/bounding_box.h>
+#include <vclib/algorithms/bounding_box.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/misc/mark.h>

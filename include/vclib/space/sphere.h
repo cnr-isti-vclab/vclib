@@ -62,9 +62,6 @@ private:
 using Spheref = Sphere<float>;
 using Sphered = Sphere<double>;
 
-static_assert(SphereConcept<Spheref>, "Spheref does not satisfy the SphereConcept");
-static_assert(SphereConcept<Sphered>, "Sphered does not satisfy the SphereConcept");
-
 } // namespace vcl
 
 #include "sphere.cpp"

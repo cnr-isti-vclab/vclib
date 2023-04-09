@@ -24,39 +24,57 @@
 #ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_VERTEX_ITERATOR_H
 #define VCL_MESH_ITERATORS_HALF_EDGE_FACE_VERTEX_ITERATOR_H
 
+#include <vclib/types.h>
+
 #include "face_base_iterator.h"
 
 namespace vcl {
 
-template<typename HalfEdge>
-class FaceVertexIterator : public FaceBaseIterator<HalfEdge>
+namespace internal {
+
+template<typename HalfEdge, bool CNST>
+class FaceVertexIterator
 {
-	using Base = FaceBaseIterator<HalfEdge>;
-public:
-	using value_type        = typename HalfEdge::VertexType*;
-	using reference         = typename HalfEdge::VertexType*&;
-	using pointer           = typename HalfEdge::VertexType**;
+	friend class FaceBaseIterator;
 
-	using Base::Base;
+	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
+public :
+	using value_type = std::conditional_t<CNST,
+			const typename HalfEdge::VertexType*,
+			typename HalfEdge::VertexType*>;
 
-	reference operator*() const { return Base::current->fromVertex(); }
-	pointer operator->() const { return &(Base::current->fromVertex()); }
+	using reference  = std::conditional_t<CNST, value_type, value_type&>;
+	using pointer    = value_type*;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
+
+	FaceVertexIterator() = default;
+	FaceVertexIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	FaceVertexIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
+
+	bool operator==(const FaceVertexIterator& oi) const { return current == oi.current; }
+	bool operator!=(const FaceVertexIterator& oi) const { return current != oi.current; }
+
+	reference operator*() const { return current->fromVertex(); }
+	pointer operator->() const { return &(current->fromVertex()); }
+
+	auto& operator++()   { return FaceBaseIterator::increment(*this); }
+	auto operator++(int) { return FaceBaseIterator::postIncrement(*this); }
+	auto& operator--()   { return FaceBaseIterator::decrement(*this); }
+	auto operator--(int) { return FaceBaseIterator::postDecrement(*this); }
+
+protected:
+	CurrentHEdgeType current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
+} // namespace vcl::internal
+
 template<typename HalfEdge>
-class ConstFaceVertexIterator : public ConstFaceBaseIterator<HalfEdge>
-{
-	using Base = ConstFaceBaseIterator<HalfEdge>;
-public:
-	using value_type        = const typename HalfEdge::VertexType*;
-	using reference         = const typename HalfEdge::VertexType*;
-	using pointer           = const typename HalfEdge::VertexType**;
+using FaceVertexIterator = internal::FaceVertexIterator<HalfEdge, false>;
 
-	using Base::Base;
-
-	reference operator*() const { return Base::current->fromVertex(); }
-	pointer operator->() const { return &(Base::current->fromVertex()); }
-};
+template<typename HalfEdge>
+using ConstFaceVertexIterator = internal::FaceVertexIterator<HalfEdge, true>;
 
 } // namespace vcl
 

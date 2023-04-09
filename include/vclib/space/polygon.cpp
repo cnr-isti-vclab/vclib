@@ -93,13 +93,13 @@ typename Polygon<PointT>::ScalarType Polygon<PointT>::sideLength(uint i) const
 template<PointConcept PointT>
 PointT Polygon<PointT>::normal() const requires (PointT::DIM == 3)
 {
-	return normal(p.begin(), p.end());
+	return normal(p);
 }
 
 template<PointConcept PointT>
 PointT Polygon<PointT>::barycenter() const
 {
-	return barycenter(p.begin(), p.end());
+	return barycenter(p);
 }
 
 template<PointConcept PointT>
@@ -112,20 +112,20 @@ PointT Polygon<PointT>::weightedBarycenter(WIterator wbegin) const
 template<PointConcept PointT>
 typename Polygon<PointT>::ScalarType Polygon<PointT>::perimeter() const
 {
-	return perimeter(p.begin(), p.end());
+	return perimeter(p);
 }
 
 template<PointConcept PointT>
 typename Polygon<PointT>::ScalarType Polygon<PointT>::area() const
 {
-	return area(p.begin(), p.end());
+	return area(p);
 }
 
 template<PointConcept PointT>
 std::vector<uint> Polygon<PointT>::earCut() const
 	requires (PointT::DIM == 2 || PointT::DIM == 3)
 {
-	return earCut(p.begin(), p.end());
+	return earCut(p);
 }
 
 /**
@@ -158,6 +158,13 @@ PointT Polygon<PointT>::normal(Iterator begin, Iterator end)
 	return sum;
 }
 
+template<PointConcept PointT>
+template<std::ranges::range R>
+PointT Polygon<PointT>::normal(R&& range)
+{
+	return normal(std::ranges::begin(range), std::ranges::end(range));
+}
+
 /**
  * @brief Computes the barycenter of a container of points iterated between the iterators begin
  * and end, listed in counterclockwise order, representing a polygon.
@@ -185,6 +192,13 @@ PointT Polygon<PointT>::barycenter(Iterator begin, Iterator end)
 	assert(cnt);
 
 	return bar / cnt;
+}
+
+template<PointConcept PointT>
+template<std::ranges::range R>
+PointT Polygon<PointT>::barycenter(R&& range)
+{
+	return barycenter(std::ranges::begin(range), std::ranges::end(range));
 }
 
 /**
@@ -220,6 +234,14 @@ PointT Polygon<PointT>::weightedBarycenter(Iterator begin, Iterator end, WIterat
 	return bar / wsum;
 }
 
+template<PointConcept PointT>
+template<std::ranges::range Rp, std::ranges::range Rw>
+PointT Polygon<PointT>::weightedBarycenter(Rp&& rPolygon, Rw&& rWeights)
+{
+	return weightedBarycenter(
+		std::ranges::begin(rPolygon), std::ranges::end(rPolygon), std::ranges::begin(rWeights));
+}
+
 /**
  * @brief Calculates the perimeter of a polygon defined by a range of points.
  *
@@ -251,6 +273,13 @@ typename PointT::ScalarType Polygon<PointT>::perimeter(Iterator begin, Iterator 
 		per += p0.dist(p1);
 	}
 	return per;
+}
+
+template<PointConcept PointT>
+template<std::ranges::range R>
+typename PointT::ScalarType Polygon<PointT>::perimeter(R&& range)
+{
+	return perimeter(std::ranges::begin(range), std::ranges::end(range));
 }
 
 /**
@@ -285,6 +314,13 @@ typename PointT::ScalarType  Polygon<PointT>::area(Iterator begin, Iterator end)
 		area += Triangle<PointT>::area(p0, p1, bar);
 	}
 	return area;
+}
+
+template<PointConcept PointT>
+template<std::ranges::range R>
+typename PointT::ScalarType Polygon<PointT>::area(R&& range)
+{
+	return area(std::ranges::begin(range), std::ranges::end(range));
 }
 
 /**
@@ -384,6 +420,13 @@ std::vector<uint> Polygon<PointT>::earCut(Iterator begin, Iterator end)
 
 	// Use the ear-cut algorithm to triangulate the polygon in the 2D plane and return the result.
 	return Polygon<Point2<Scalar>>::earCut(poly2D.begin(), poly2D.end());
+}
+
+template<PointConcept PointT>
+template<std::ranges::range R>
+std::vector<uint> Polygon<PointT>::earCut(R&& range)
+{
+	return earCut(std::ranges::begin(range), std::ranges::end(range));
 }
 
 } // namespace vcl

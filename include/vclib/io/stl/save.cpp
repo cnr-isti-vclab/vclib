@@ -26,7 +26,7 @@
 #include "../internal/io_utils.h"
 #include "../internal/io_write.h"
 
-#include <vclib/algorithm/polygon.h>
+#include <vclib/algorithms/polygon.h>
 
 namespace vcl::io {
 

@@ -24,6 +24,8 @@
 #ifndef VCL_ITERATOR_VIEW_H
 #define VCL_ITERATOR_VIEW_H
 
+#include <ranges>
+
 namespace vcl {
 
 /**
@@ -44,16 +46,17 @@ namespace vcl {
  * returns a View object that is constructed in this way: View(vertexBegin(), vertexEnd());
  */
 template<typename It>
-class View
+class View : public std::ranges::view_interface<View<It>>
 {
 public:
 	using iterator = It;
 
+	View() = default;
 	View(It begin, It end) : b(begin), e(end) {}
 
-	It begin() const { return b; }
+	auto begin() const { return b; }
 
-	It end() const { return e; }
+	auto end() const { return e; }
 
 protected:
 	It b, e;

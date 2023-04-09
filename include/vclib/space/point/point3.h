@@ -39,11 +39,6 @@ using Point3i = Point3<int>;
 using Point3f = Point3<float>;
 using Point3d = Point3<double>;
 
-// makes sure that Point3 classes satisfy PointConcept
-static_assert(Point3Concept<Point3i>, "Point3i does not satisfy the Point3Concept");
-static_assert(Point3Concept<Point3f>, "Point3f does not satisfy the Point3Concept");
-static_assert(Point3Concept<Point3d>, "Point3d does not satisfy the Point3Concept");
-
 } // namespace vcl
 
 #endif // VCL_SPACE_POINT_POINT3_H

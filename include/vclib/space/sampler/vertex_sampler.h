@@ -17,7 +17,6 @@ class VertexSampler
 
 public:
 	using PointType = typename VertexType::CoordType;
-	using ConstIterator = CoordIterator<typename std::vector<VP>::const_iterator>;
 
 	VertexSampler();
 
@@ -34,8 +33,8 @@ public:
 	void add(VPar v);
 	void set(uint i, VPar v);
 
-	ConstIterator begin() const;
-	ConstIterator end() const;
+	auto begin() const;
+	auto end() const;
 
 private:
 	std::vector<VP> samplesVec;
@@ -48,14 +47,6 @@ using VertexSampler = internal::VertexSampler<VertexType, false>;
 
 template<VertexConcept VertexType>
 using ConstVertexSampler = internal::VertexSampler<VertexType, true>;
-
-// makes sure that the VertexSampler satisfies SamplerConcept
-static_assert(
-	SamplerConcept<VertexSampler<internal::TMPSimplePolyMesh::Vertex>>,
-	"VertexSampler does not satisfy the SamplerConcept");
-static_assert(
-	SamplerConcept<ConstVertexSampler<internal::TMPSimplePolyMesh::Vertex>>,
-	"ConstVertexSampler does not satisfy the SamplerConcept");
 
 } // namespace vcl
 

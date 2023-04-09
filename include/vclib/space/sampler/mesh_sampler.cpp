@@ -23,7 +23,7 @@
 
 #include "mesh_sampler.h"
 
-#include <vclib/algorithm/polygon.h>
+#include <vclib/algorithms/polygon.h>
 
 namespace vcl {
 
@@ -249,13 +249,13 @@ void MeshSampler<MeshType>::set(
 template<MeshConcept MeshType>
 typename MeshSampler<MeshType>::ConstIterator MeshSampler<MeshType>::begin() const
 {
-	return ConstIterator(m.vertexBegin());
+	return std::ranges::begin(m.vertices() | views::coords);
 }
 
 template<MeshConcept MeshType>
 typename MeshSampler<MeshType>::ConstIterator MeshSampler<MeshType>::end() const
 {
-	return ConstIterator(m.vertexEnd());
+	return std::ranges::end(m.vertices() | views::coords);
 }
 
 template<MeshConcept MeshType>

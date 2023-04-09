@@ -53,7 +53,7 @@ public:
 	bool operator==(const EdgeAdjFaceIterator& oi) const;
 	bool operator!=(const EdgeAdjFaceIterator& oi) const;
 
-	EdgeAdjFaceIterator operator++();
+	EdgeAdjFaceIterator& operator++();
 	EdgeAdjFaceIterator operator++(int);
 
 	reference operator*() const;

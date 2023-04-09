@@ -24,6 +24,7 @@
 #ifndef VCL_SPACE_POLYGON_H
 #define VCL_SPACE_POLYGON_H
 
+#include <ranges>
 #include <vector>
 
 #include <vclib/concept/space/polygon.h>
@@ -71,21 +72,36 @@ public:
 	static PointT normal(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 3);
 
+	template<std::ranges::range R>
+	static PointT normal(R&& range);
+
 	template<typename Iterator>
 	static PointT barycenter(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
+
+	template<std::ranges::range R>
+	static PointT barycenter(R&& range);
 
 	template<typename Iterator, typename WIterator>
 	static PointT weightedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
+	template<std::ranges::range Rp, std::ranges::range Rw>
+	static PointT weightedBarycenter(Rp&& rPolygon, Rw&& rWeights);
+
 	template<typename Iterator>
 	static ScalarType perimeter(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
+	template<std::ranges::range R>
+	static ScalarType perimeter(R&& range);
+
 	template<typename Iterator>
 	static ScalarType area(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
+
+	template<std::ranges::range R>
+	static ScalarType area(R&& range);
 
 	template<typename Iterator>
 	static std::vector<uint> earCut(Iterator begin, Iterator end)
@@ -94,6 +110,9 @@ public:
 	template<typename Iterator>
 	static std::vector<uint> earCut(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 3);
+
+	template<std::ranges::range R>
+	static std::vector<uint> earCut(R&& range);
 
 private:
 	std::vector<PointT> p;
@@ -110,12 +129,6 @@ using Polygon3 = Polygon<Point3<Scalar>>;
 
 using Polygon3f = Polygon<Point3f>;
 using Polygon3d = Polygon<Point3d>;
-
-static_assert(Polygon2Concept<Polygon2f>, "Polygon2f does not satisfy the Polygon2Concept");
-static_assert(Polygon2Concept<Polygon2d>, "Polygon2d does not satisfy the Polygon2Concept");
-
-static_assert(Polygon3Concept<Polygon3f>, "Polygon3f does not satisfy the Polygon3Concept");
-static_assert(Polygon3Concept<Polygon3d>, "Polygon3d does not satisfy the Polygon3Concept");
 
 } // namespace vcl
 

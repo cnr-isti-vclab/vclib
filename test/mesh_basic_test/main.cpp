@@ -25,7 +25,7 @@
 
 #include <vclib/mesh.h>
 #include <vclib/load_save.h>
-#include <vclib/algorithm.h>
+#include <vclib/algorithms.h>
 
 class MyVertex :
 		public vcl::Vertex<
