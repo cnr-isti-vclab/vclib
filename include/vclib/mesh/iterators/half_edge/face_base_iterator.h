@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
 #define VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
 
-#include "base_iterator.h"
+#include <iterator>
 
 namespace vcl::internal {
 
@@ -37,7 +37,8 @@ namespace vcl::internal {
 // This class is meant to be declared as friend of the iterator,
 // and will access to the `current` and `end` members of the iterator passed as parameter of each
 // function (which should be the *this iterator).
-class FaceBaseIterator {
+class FaceBaseIterator
+{
 public:
 
 	template<typename It>

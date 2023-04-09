@@ -31,21 +31,38 @@ namespace vcl {
 namespace internal {
 
 template<typename HalfEdge, bool CNST>
-class VertexAdjFaceIterator :
-		public VertexBaseIterator<HalfEdge, CNST, VertexAdjFaceIterator<HalfEdge, CNST>>
+class VertexAdjFaceIterator
 {
-	using Base = VertexBaseIterator<HalfEdge, CNST, VertexAdjFaceIterator<HalfEdge, CNST>>;
+	friend class VertexBaseIterator;
+
+	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public:
 	using value_type = std::conditional_t<CNST,
 			const typename HalfEdge::FaceType*,
 			typename HalfEdge::FaceType*>;
 	using reference = std::conditional_t<CNST, value_type, value_type&>;
 	using pointer   = value_type*;
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
 
-	using Base::Base;
+	VertexAdjFaceIterator() {}
+	VertexAdjFaceIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	VertexAdjFaceIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
 
-	reference operator*() const { return Base::current->face(); }
-	pointer operator->() const { return &(Base::current->face()); }
+	bool operator==(const VertexAdjFaceIterator& oi) const { return current == oi.current; }
+	bool operator!=(const VertexAdjFaceIterator& oi) const { return current != oi.current; }
+
+	reference operator*() const { return current->face(); }
+	pointer operator->() const { return &(current->face()); }
+
+	auto& operator++()   { return VertexBaseIterator::increment(*this); }
+	auto operator++(int) { return VertexBaseIterator::postIncrement(*this); }
+	auto& operator--()   { return VertexBaseIterator::decrement(*this); }
+	auto operator--(int) { return VertexBaseIterator::postDecrement(*this); }
+
+protected:
+	CurrentHEdgeType current = nullptr;
+	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
 } // namespace vcl::internal
