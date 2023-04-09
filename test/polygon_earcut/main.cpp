@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/algorithm.h>
+#include <vclib/algorithms.h>
 
 int main()
 {

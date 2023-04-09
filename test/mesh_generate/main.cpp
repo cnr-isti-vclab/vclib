@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/algorithm.h>
+#include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/mesh.h>
 

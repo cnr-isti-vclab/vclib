@@ -23,7 +23,7 @@
 
 #include "mesh_sampler.h"
 
-#include <vclib/algorithm/polygon.h>
+#include <vclib/algorithms/polygon.h>
 
 namespace vcl {
 

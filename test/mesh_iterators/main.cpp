@@ -26,7 +26,7 @@
 #include <vclib/mesh.h>
 #include <vclib/load_save.h>
 
-#include <vclib/algorithm/update.h>
+#include <vclib/algorithms/update.h>
 #include <vclib/mesh/iterator.h>
 #include <vclib/mesh/views/elements.h>
 #include <vclib/mesh/views/components.h>

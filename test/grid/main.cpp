@@ -28,7 +28,7 @@
 #include <vclib/load_save.h>
 #include <vclib/mesh.h>
 #include <vclib/miscellaneous.h>
-#include <vclib/algorithm.h>
+#include <vclib/algorithms.h>
 
 #include <vclib/iterators/pointer_iterator.h>
 

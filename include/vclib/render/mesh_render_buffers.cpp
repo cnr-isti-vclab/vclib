@@ -23,7 +23,7 @@
 
 #include "mesh_render_buffers.h"
 
-#include <vclib/algorithm/polygon.h>
+#include <vclib/algorithms/polygon.h>
 #include <vclib/math/min_max.h>
 
 namespace vcl {

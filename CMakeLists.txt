@@ -45,7 +45,7 @@ set(VCLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(VCLIB_SRC_DIR ${VCLIB_INCLUDE_DIR}/vclib)
 
 set(HEADERS
-	include/vclib/algorithm.h
+	include/vclib/algorithms.h
 	include/vclib/concept.h
 	include/vclib/exception.h
 	include/vclib/image.h
@@ -55,47 +55,47 @@ set(HEADERS
 	include/vclib/miscellaneous.h
 	include/vclib/space.h
 	include/vclib/types.h
-	include/vclib/algorithm/bounding_box.h
-	include/vclib/algorithm/clean.h
-	include/vclib/algorithm/create.h
-	include/vclib/algorithm/distance.h
-	include/vclib/algorithm/export_to_matrix.h
-	include/vclib/algorithm/fitting.h
-	include/vclib/algorithm/generate.h
-	include/vclib/algorithm/intersection.h
-	include/vclib/algorithm/point_sampling.h
-	include/vclib/algorithm/polygon.h
-	include/vclib/algorithm/shuffle.h
-	include/vclib/algorithm/smooth.h
-	include/vclib/algorithm/sort.h
-	include/vclib/algorithm/stat.h
-	include/vclib/algorithm/update.h
-	include/vclib/algorithm/create/dodecahedron.h
-	include/vclib/algorithm/create/hexahedron.h
-	include/vclib/algorithm/create/icosahedron.h
-	include/vclib/algorithm/create/sphere.h
-	include/vclib/algorithm/create/tetrahedron.h
-	include/vclib/algorithm/distance/functions.h
-	include/vclib/algorithm/distance/element.h
-	include/vclib/algorithm/distance/mesh.h
-	include/vclib/algorithm/distance/misc.h
-	include/vclib/algorithm/intersection/element.h
-	include/vclib/algorithm/intersection/functions.h
-	include/vclib/algorithm/intersection/mesh.h
-	include/vclib/algorithm/intersection/misc.h
-	include/vclib/algorithm/polygon/geometry.h
-	include/vclib/algorithm/polygon/topology.h
-	include/vclib/algorithm/stat/scalar.h
-	include/vclib/algorithm/stat/selection.h
-	include/vclib/algorithm/update/bounding_box.h
-	include/vclib/algorithm/update/color.h
-	include/vclib/algorithm/update/curvature.h
-	include/vclib/algorithm/update/flag.h
-	include/vclib/algorithm/update/normal.h
-	include/vclib/algorithm/update/scalar.h
-	include/vclib/algorithm/update/selection.h
-	include/vclib/algorithm/update/topology.h
-	include/vclib/algorithm/update/transform.h
+	include/vclib/algorithms/bounding_box.h
+	include/vclib/algorithms/clean.h
+	include/vclib/algorithms/create.h
+	include/vclib/algorithms/distance.h
+	include/vclib/algorithms/export_to_matrix.h
+	include/vclib/algorithms/fitting.h
+	include/vclib/algorithms/generate.h
+	include/vclib/algorithms/intersection.h
+	include/vclib/algorithms/point_sampling.h
+	include/vclib/algorithms/polygon.h
+	include/vclib/algorithms/shuffle.h
+	include/vclib/algorithms/smooth.h
+	include/vclib/algorithms/sort.h
+	include/vclib/algorithms/stat.h
+	include/vclib/algorithms/update.h
+	include/vclib/algorithms/create/dodecahedron.h
+	include/vclib/algorithms/create/hexahedron.h
+	include/vclib/algorithms/create/icosahedron.h
+	include/vclib/algorithms/create/sphere.h
+	include/vclib/algorithms/create/tetrahedron.h
+	include/vclib/algorithms/distance/functions.h
+	include/vclib/algorithms/distance/element.h
+	include/vclib/algorithms/distance/mesh.h
+	include/vclib/algorithms/distance/misc.h
+	include/vclib/algorithms/intersection/element.h
+	include/vclib/algorithms/intersection/functions.h
+	include/vclib/algorithms/intersection/mesh.h
+	include/vclib/algorithms/intersection/misc.h
+	include/vclib/algorithms/polygon/geometry.h
+	include/vclib/algorithms/polygon/topology.h
+	include/vclib/algorithms/stat/scalar.h
+	include/vclib/algorithms/stat/selection.h
+	include/vclib/algorithms/update/bounding_box.h
+	include/vclib/algorithms/update/color.h
+	include/vclib/algorithms/update/curvature.h
+	include/vclib/algorithms/update/flag.h
+	include/vclib/algorithms/update/normal.h
+	include/vclib/algorithms/update/scalar.h
+	include/vclib/algorithms/update/selection.h
+	include/vclib/algorithms/update/topology.h
+	include/vclib/algorithms/update/transform.h
 	include/vclib/concept/logger.h
 	include/vclib/concept/mesh.h
 	include/vclib/concept/space.h
@@ -342,40 +342,40 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithm/bounding_box.cpp
-	include/vclib/algorithm/clean.cpp
-	include/vclib/algorithm/export_to_matrix.cpp
-	include/vclib/algorithm/fitting.cpp
-	include/vclib/algorithm/generate.cpp
-	include/vclib/algorithm/point_sampling.cpp
-	include/vclib/algorithm/shuffle.cpp
-	include/vclib/algorithm/smooth.cpp
-	include/vclib/algorithm/sort.cpp
-	include/vclib/algorithm/stat.cpp
-	include/vclib/algorithm/create/dodecahedron.cpp
-	include/vclib/algorithm/create/hexahedron.cpp
-	include/vclib/algorithm/create/icosahedron.cpp
-	include/vclib/algorithm/create/sphere.cpp
-	include/vclib/algorithm/create/tetrahedron.cpp
-	include/vclib/algorithm/distance/element.cpp
-	include/vclib/algorithm/distance/mesh.cpp
-	include/vclib/algorithm/distance/misc.cpp
-	include/vclib/algorithm/intersection/element.cpp
-	include/vclib/algorithm/intersection/mesh.cpp
-	include/vclib/algorithm/intersection/misc.cpp
-	include/vclib/algorithm/polygon/geometry.cpp
-	include/vclib/algorithm/polygon/topology.cpp
-	include/vclib/algorithm/stat/scalar.cpp
-	include/vclib/algorithm/stat/selection.cpp
-	include/vclib/algorithm/update/bounding_box.cpp
-	include/vclib/algorithm/update/color.cpp
-	include/vclib/algorithm/update/curvature.cpp
-	include/vclib/algorithm/update/flag.cpp
-	include/vclib/algorithm/update/normal.cpp
-	include/vclib/algorithm/update/scalar.cpp
-	include/vclib/algorithm/update/selection.cpp
-	include/vclib/algorithm/update/topology.cpp
-	include/vclib/algorithm/update/transform.cpp
+	include/vclib/algorithms/bounding_box.cpp
+	include/vclib/algorithms/clean.cpp
+	include/vclib/algorithms/export_to_matrix.cpp
+	include/vclib/algorithms/fitting.cpp
+	include/vclib/algorithms/generate.cpp
+	include/vclib/algorithms/point_sampling.cpp
+	include/vclib/algorithms/shuffle.cpp
+	include/vclib/algorithms/smooth.cpp
+	include/vclib/algorithms/sort.cpp
+	include/vclib/algorithms/stat.cpp
+	include/vclib/algorithms/create/dodecahedron.cpp
+	include/vclib/algorithms/create/hexahedron.cpp
+	include/vclib/algorithms/create/icosahedron.cpp
+	include/vclib/algorithms/create/sphere.cpp
+	include/vclib/algorithms/create/tetrahedron.cpp
+	include/vclib/algorithms/distance/element.cpp
+	include/vclib/algorithms/distance/mesh.cpp
+	include/vclib/algorithms/distance/misc.cpp
+	include/vclib/algorithms/intersection/element.cpp
+	include/vclib/algorithms/intersection/mesh.cpp
+	include/vclib/algorithms/intersection/misc.cpp
+	include/vclib/algorithms/polygon/geometry.cpp
+	include/vclib/algorithms/polygon/topology.cpp
+	include/vclib/algorithms/stat/scalar.cpp
+	include/vclib/algorithms/stat/selection.cpp
+	include/vclib/algorithms/update/bounding_box.cpp
+	include/vclib/algorithms/update/color.cpp
+	include/vclib/algorithms/update/curvature.cpp
+	include/vclib/algorithms/update/flag.cpp
+	include/vclib/algorithms/update/normal.cpp
+	include/vclib/algorithms/update/scalar.cpp
+	include/vclib/algorithms/update/selection.cpp
+	include/vclib/algorithms/update/topology.cpp
+	include/vclib/algorithms/update/transform.cpp
 	include/vclib/image/image.cpp
 	include/vclib/io/file_mesh_info.cpp
 	include/vclib/io/load.cpp
