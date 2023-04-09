@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef  VCL_CONCEPTS_MESH_CONTAINER_H
-#define  VCL_CONCEPTS_MESH_CONTAINER_H
+#ifndef  VCL_CONCEPTS_MESH_CONTAINERS_H
+#define  VCL_CONCEPTS_MESH_CONTAINERS_H
 
 #include <vector>
 
@@ -243,4 +243,4 @@ concept HasVertices = (vcl::mesh::HasVertexContainer<Args> || ...);
 } // namespace vcl
 
 
-#endif //  VCL_CONCEPTS_MESH_CONTAINER_H
+#endif //  VCL_CONCEPTS_MESH_CONTAINERS_H

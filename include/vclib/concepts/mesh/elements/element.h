@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_ELEMENT_ELEMENT_H
-#define VCL_CONCEPTS_MESH_ELEMENT_ELEMENT_H
+#ifndef VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H
+#define VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H
 
 #include <vclib/types.h>
 
@@ -44,4 +44,4 @@ concept ElementConcept = requires (T o, const T& co)
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_ELEMENT_ELEMENT_H
+#endif // VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H

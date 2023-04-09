@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_ELEMENT_HALF_EDGE_H
-#define VCL_CONCEPTS_MESH_ELEMENT_HALF_EDGE_H
+#ifndef VCL_CONCEPTS_MESH_ELEMENTS_VERTEX_H
+#define VCL_CONCEPTS_MESH_ELEMENTS_VERTEX_H
 
 #include <vclib/concepts/mesh/components.h>
 
@@ -31,28 +31,40 @@
 namespace vcl {
 
 template<typename, typename...>
-class HalfEdge;
+class Vertex;
 
-namespace hedge {
+namespace vert {
 
-// checks if a type derives from vcl::HalfEdge<Args...>
+// checks if a type derives from vcl::Vertex<Args...>
 template<typename Derived>
-using IsDerivedFromHalfEdge = IsDerivedFromTemplateSpecialization<Derived, HalfEdge>;
+using IsDerivedFromVertex = IsDerivedFromTemplateSpecialization<Derived, Vertex>;
 
-// checks if a type is a vcl::HalfEdge<Args...>
+// checks if a type is a vcl::Vertex<Args...>
 template<class T>
-struct IsAHalfEdge : // Default case, no pattern match
+struct IsAVertex : // Default case, no pattern match
 		std::false_type
 {
 };
 
-template<class... Args>
-struct IsAHalfEdge<HalfEdge<Args...>> : // For types matching the pattern HalfEdge<Args...>
+template<class... Args> // note: here the templated types are the components of the Vertex
+struct IsAVertex<Vertex<Args...>> : // For types matching the pattern Vertex<Args...>
 		std::true_type
 {
 };
 
-/* Port concepts into the hedge namespace */
+/* Port concepts into the vert namespace */
+template<typename T>
+concept HasAdjacentEdges = comp::HasAdjacentEdges<T>;
+template<typename T>
+concept HasOptionalAdjacentEdges = comp::HasOptionalAdjacentEdges<T>;
+template<typename T>
+concept HasAdjacentFaces = comp::HasAdjacentFaces<T>;
+template<typename T>
+concept HasOptionalAdjacentFaces = comp::HasOptionalAdjacentFaces<T>;
+template<typename T>
+concept HasAdjacentVertices = comp::HasAdjacentVertices<T>;
+template<typename T>
+concept HasOptionalAdjacentVertices = comp::HasOptionalAdjacentVertices<T>;
 template<typename T>
 concept HasBitFlags = comp::HasBitFlags<T>;
 template<typename T>
@@ -62,40 +74,50 @@ concept HasOptionalColor = comp::HasOptionalColor<T>;
 template<typename T>
 concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
-concept HasHalfEdgeReferences = comp::HasHalfEdgeReferences<T>;
+concept HasCoordinate = comp::HasCoordinate<T>;
+template<typename T>
+concept HasHalfEdgeReference = comp::HasVertexHalfEdgeReference<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
 template<typename T>
+concept HasNormal = comp::HasNormal<T>;
+template<typename T>
+concept HasOptionalNormal = comp::HasOptionalNormal<T>;
+template<typename T>
+concept HasPrincipalCurvature = comp::HasPrincipalCurvature<T>;
+template<typename T>
+concept HasOptionalPrincipalCurvature = comp::HasOptionalPrincipalCurvature<T>;
+template<typename T>
 concept HasScalar = comp::HasScalar<T>;
+template<typename T>
+concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>
 concept HasTexCoord = comp::HasTexCoord<T>;
 template<typename T>
 concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
-template<typename T>
-concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 
-} // namespace vcl::hedge
+} // namespace vcl::vert
 
 /**
- * @brief HalfEdgeConcept
+ * @brief VertexConcept
  *
- * The HalfEdge concept describes how a HalfEdge element that can be used for a HalfEdgeContainer
- * should be organized.
+ * The Vertex concept describes how a Vertex element that can be used for a VertexContainer should
+ * be organized.
  *
- * The HalfEdge concept is satisfied for a class HE if ALL the following sentences are true:
- * - The class HE is a vcl::HalfEdge, or derives from it;
- * - The class HE has the BitFlags component (or a derivate);
- * - The class HE has the HalfEdgeReferences component (or a derivate);
+ * The Vertex concept is satisfied for a class V if ALL the following sentences are true:
+ * - The class V is a vcl::Vertex, or derives from it;
+ * - The class V has the BitFlags component (or a derivate);
+ * - The class V has the Coordinate component (or a derivate);
  */
 template<typename T>
-concept HalfEdgeConcept =
-	T::ELEMENT_TYPE == HALF_EDGE &&
-	(hedge::IsDerivedFromHalfEdge<T>::value || hedge::IsAHalfEdge<T>::value) &&
-	hedge::HasBitFlags<T> &&
-	hedge::HasHalfEdgeReferences<T>;
+concept VertexConcept =
+	T::ELEMENT_TYPE == VERTEX &&
+	(vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value) &&
+	vert::HasBitFlags<T> &&
+	vert::HasCoordinate<T>;
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_ELEMENT_HALF_EDGE_H
+#endif // VCL_CONCEPTS_MESH_ELEMENTS_VERTEX_H

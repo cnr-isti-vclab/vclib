@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_ELEMENT_VERTEX_H
-#define VCL_CONCEPTS_MESH_ELEMENT_VERTEX_H
+#ifndef VCL_CONCEPTS_MESH_ELEMENTS_EDGE_H
+#define VCL_CONCEPTS_MESH_ELEMENTS_EDGE_H
 
 #include <vclib/concepts/mesh/components.h>
 
@@ -31,23 +31,23 @@
 namespace vcl {
 
 template<typename, typename...>
-class Vertex;
+class Edge;
 
-namespace vert {
+namespace edge {
 
-// checks if a type derives from vcl::Vertex<Args...>
+// checks if a type derives from vcl::Edge<Args...>
 template<typename Derived>
-using IsDerivedFromVertex = IsDerivedFromTemplateSpecialization<Derived, Vertex>;
+using IsDerivedFromEdge = IsDerivedFromTemplateSpecialization<Derived, Edge>;
 
-// checks if a type is a vcl::Vertex<Args...>
+// checks if a type is an vcl::Edge<Args...>
 template<class T>
-struct IsAVertex : // Default case, no pattern match
+struct IsAnEdge : // Default case, no pattern match
 		std::false_type
 {
 };
 
-template<class... Args> // note: here the templated types are the components of the Vertex
-struct IsAVertex<Vertex<Args...>> : // For types matching the pattern Vertex<Args...>
+template<class... Args>
+struct IsAnEdge<Edge<Args...>> : // For types matching the pattern Edge<Args...>
 		std::true_type
 {
 };
@@ -62,10 +62,6 @@ concept HasAdjacentFaces = comp::HasAdjacentFaces<T>;
 template<typename T>
 concept HasOptionalAdjacentFaces = comp::HasOptionalAdjacentFaces<T>;
 template<typename T>
-concept HasAdjacentVertices = comp::HasAdjacentVertices<T>;
-template<typename T>
-concept HasOptionalAdjacentVertices = comp::HasOptionalAdjacentVertices<T>;
-template<typename T>
 concept HasBitFlags = comp::HasBitFlags<T>;
 template<typename T>
 concept HasColor = comp::HasColor<T>;
@@ -74,50 +70,38 @@ concept HasOptionalColor = comp::HasOptionalColor<T>;
 template<typename T>
 concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
-concept HasCoordinate = comp::HasCoordinate<T>;
-template<typename T>
-concept HasHalfEdgeReference = comp::HasVertexHalfEdgeReference<T>;
-template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
-template<typename T>
-concept HasNormal = comp::HasNormal<T>;
-template<typename T>
-concept HasOptionalNormal = comp::HasOptionalNormal<T>;
-template<typename T>
-concept HasPrincipalCurvature = comp::HasPrincipalCurvature<T>;
-template<typename T>
-concept HasOptionalPrincipalCurvature = comp::HasOptionalPrincipalCurvature<T>;
 template<typename T>
 concept HasScalar = comp::HasScalar<T>;
 template<typename T>
 concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>
-concept HasTexCoord = comp::HasTexCoord<T>;
-template<typename T>
-concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
+concept HasVertexReferences = comp::HasVertexReferences<T>;
 
-} // namespace vcl::vert
+} // namespace vcl::edge
 
 /**
- * @brief VertexConcept
+ * @brief EdgeConcept
  *
- * The Vertex concept describes how a Vertex element that can be used for a VertexContainer should
- * be organized.
+ * The Edge concept describes how a Edge element that can be used for a EdgeContainer should be
+ * organized.
  *
- * The Vertex concept is satisfied for a class V if ALL the following sentences are true:
- * - The class V is a vcl::Vertex, or derives from it;
- * - The class V has the BitFlags component (or a derivate);
- * - The class V has the Coordinate component (or a derivate);
+ * The Edge concept is satisfied for a class E if ALL the following sentences are true:
+ * - The class E is vcl::Edge, or derives from it;
+ * - The class E has the BitFlags component (or a derivate);
+ * - The class E has the VertexReferences component (or a derivate);
+ * - The number of vertices of the VertexReferences is 2.
  */
 template<typename T>
-concept VertexConcept =
-	T::ELEMENT_TYPE == VERTEX &&
-	(vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value) &&
-	vert::HasBitFlags<T> &&
-	vert::HasCoordinate<T>;
+concept EdgeConcept =
+	T::ELEMENT_TYPE == EDGE &&
+	(edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value) &&
+	edge::HasBitFlags<T> &&
+	edge::HasVertexReferences<T> &&
+	T::VERTEX_NUMBER == 2;
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_ELEMENT_VERTEX_H
+#endif // VCL_CONCEPTS_MESH_ELEMENTS_EDGE_H

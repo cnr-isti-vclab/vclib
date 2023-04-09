@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_ELEMENT_FACE_H
-#define VCL_CONCEPTS_MESH_ELEMENT_FACE_H
+#ifndef VCL_CONCEPTS_MESH_ELEMENTS_FACE_H
+#define VCL_CONCEPTS_MESH_ELEMENTS_FACE_H
 
 #include <vclib/concepts/mesh/components.h>
 
@@ -165,4 +165,4 @@ concept NonDcelPolygonFaceConcept =
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_ELEMENT_FACE_H
+#endif // VCL_CONCEPTS_MESH_ELEMENTS_FACE_H

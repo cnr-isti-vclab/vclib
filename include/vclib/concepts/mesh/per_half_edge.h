@@ -24,8 +24,8 @@
 #ifndef VCL_CONCEPTS_MESH_PER_HALF_EDGE_H
 #define VCL_CONCEPTS_MESH_PER_HALF_EDGE_H
 
-#include "container.h"
-#include "element/half_edge.h"
+#include "containers.h"
+#include "elements/half_edge.h"
 
 namespace vcl {
 

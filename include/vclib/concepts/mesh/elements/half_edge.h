@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_ELEMENT_EDGE_H
-#define VCL_CONCEPTS_MESH_ELEMENT_EDGE_H
+#ifndef VCL_CONCEPTS_MESH_ELEMENTS_HALF_EDGE_H
+#define VCL_CONCEPTS_MESH_ELEMENTS_HALF_EDGE_H
 
 #include <vclib/concepts/mesh/components.h>
 
@@ -31,36 +31,28 @@
 namespace vcl {
 
 template<typename, typename...>
-class Edge;
+class HalfEdge;
 
-namespace edge {
+namespace hedge {
 
-// checks if a type derives from vcl::Edge<Args...>
+// checks if a type derives from vcl::HalfEdge<Args...>
 template<typename Derived>
-using IsDerivedFromEdge = IsDerivedFromTemplateSpecialization<Derived, Edge>;
+using IsDerivedFromHalfEdge = IsDerivedFromTemplateSpecialization<Derived, HalfEdge>;
 
-// checks if a type is an vcl::Edge<Args...>
+// checks if a type is a vcl::HalfEdge<Args...>
 template<class T>
-struct IsAnEdge : // Default case, no pattern match
+struct IsAHalfEdge : // Default case, no pattern match
 		std::false_type
 {
 };
 
 template<class... Args>
-struct IsAnEdge<Edge<Args...>> : // For types matching the pattern Edge<Args...>
+struct IsAHalfEdge<HalfEdge<Args...>> : // For types matching the pattern HalfEdge<Args...>
 		std::true_type
 {
 };
 
-/* Port concepts into the vert namespace */
-template<typename T>
-concept HasAdjacentEdges = comp::HasAdjacentEdges<T>;
-template<typename T>
-concept HasOptionalAdjacentEdges = comp::HasOptionalAdjacentEdges<T>;
-template<typename T>
-concept HasAdjacentFaces = comp::HasAdjacentFaces<T>;
-template<typename T>
-concept HasOptionalAdjacentFaces = comp::HasOptionalAdjacentFaces<T>;
+/* Port concepts into the hedge namespace */
 template<typename T>
 concept HasBitFlags = comp::HasBitFlags<T>;
 template<typename T>
@@ -70,38 +62,40 @@ concept HasOptionalColor = comp::HasOptionalColor<T>;
 template<typename T>
 concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
+concept HasHalfEdgeReferences = comp::HasHalfEdgeReferences<T>;
+template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
 template<typename T>
 concept HasScalar = comp::HasScalar<T>;
 template<typename T>
-concept HasOptionalScalar = comp::HasOptionalScalar<T>;
+concept HasTexCoord = comp::HasTexCoord<T>;
 template<typename T>
-concept HasVertexReferences = comp::HasVertexReferences<T>;
+concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
+template<typename T>
+concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 
-} // namespace vcl::edge
+} // namespace vcl::hedge
 
 /**
- * @brief EdgeConcept
+ * @brief HalfEdgeConcept
  *
- * The Edge concept describes how a Edge element that can be used for a EdgeContainer should be
- * organized.
+ * The HalfEdge concept describes how a HalfEdge element that can be used for a HalfEdgeContainer
+ * should be organized.
  *
- * The Edge concept is satisfied for a class E if ALL the following sentences are true:
- * - The class E is vcl::Edge, or derives from it;
- * - The class E has the BitFlags component (or a derivate);
- * - The class E has the VertexReferences component (or a derivate);
- * - The number of vertices of the VertexReferences is 2.
+ * The HalfEdge concept is satisfied for a class HE if ALL the following sentences are true:
+ * - The class HE is a vcl::HalfEdge, or derives from it;
+ * - The class HE has the BitFlags component (or a derivate);
+ * - The class HE has the HalfEdgeReferences component (or a derivate);
  */
 template<typename T>
-concept EdgeConcept =
-	T::ELEMENT_TYPE == EDGE &&
-	(edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value) &&
-	edge::HasBitFlags<T> &&
-	edge::HasVertexReferences<T> &&
-	T::VERTEX_NUMBER == 2;
+concept HalfEdgeConcept =
+	T::ELEMENT_TYPE == HALF_EDGE &&
+	(hedge::IsDerivedFromHalfEdge<T>::value || hedge::IsAHalfEdge<T>::value) &&
+	hedge::HasBitFlags<T> &&
+	hedge::HasHalfEdgeReferences<T>;
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_ELEMENT_EDGE_H
+#endif // VCL_CONCEPTS_MESH_ELEMENTS_HALF_EDGE_H

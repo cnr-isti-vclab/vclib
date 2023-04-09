@@ -24,7 +24,7 @@
 #ifndef VCL_ALGORITHMS_BOUNDING_BOX_H
 #define VCL_ALGORITHMS_BOUNDING_BOX_H
 
-#include <vclib/concepts/mesh/element/edge.h>
+#include <vclib/concepts/mesh/elements/edge.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/segment.h>
 #include <vclib/space/sphere.h>

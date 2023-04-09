@@ -100,7 +100,7 @@ set(HEADERS
 	include/vclib/concepts/mesh.h
 	include/vclib/concepts/space.h
 	include/vclib/concepts/mesh/components.h
-	include/vclib/concepts/mesh/container.h
+	include/vclib/concepts/mesh/containers.h
 	include/vclib/concepts/mesh/per_face.h
 	include/vclib/concepts/mesh/per_half_edge.h
 	include/vclib/concepts/mesh/per_vertex.h
@@ -127,11 +127,11 @@ set(HEADERS
 	include/vclib/concepts/mesh/components/vertex_references.h
 	include/vclib/concepts/mesh/components/wedge_colors.h
 	include/vclib/concepts/mesh/components/wedge_tex_coords.h
-	include/vclib/concepts/mesh/element/edge.h
-	include/vclib/concepts/mesh/element/element.h
-	include/vclib/concepts/mesh/element/face.h
-	include/vclib/concepts/mesh/element/half_edge.h
-	include/vclib/concepts/mesh/element/vertex.h
+	include/vclib/concepts/mesh/elements/edge.h
+	include/vclib/concepts/mesh/elements/element.h
+	include/vclib/concepts/mesh/elements/face.h
+	include/vclib/concepts/mesh/elements/half_edge.h
+	include/vclib/concepts/mesh/elements/vertex.h
 	include/vclib/concepts/space/box.h
 	include/vclib/concepts/space/matrix.h
 	include/vclib/concepts/space/plane.h
