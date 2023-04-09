@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_H
-#define VCL_MESH_VIEWS_COMPONENTS_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_H
+#define VCL_VIEWS_MESH_COMPONENTS_H
 
 #include "components/adj_edges.h"
 #include "components/adj_faces.h"
@@ -32,4 +32,4 @@
 #include "components/scalars.h"
 #include "components/selection.h"
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_H

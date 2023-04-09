@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_ELEMENTS_H
-#define VCL_MESH_VIEWS_ELEMENTS_H
+#ifndef VCL_VIEWS_MESH_ELEMENTS_H
+#define VCL_VIEWS_MESH_ELEMENTS_H
 
 #include <vclib/concepts/mesh.h>
 
@@ -103,4 +103,4 @@ inline constexpr internal::HalfEdgesView halfEdges;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_ELEMENTS_H
+#endif // VCL_VIEWS_MESH_ELEMENTS_H

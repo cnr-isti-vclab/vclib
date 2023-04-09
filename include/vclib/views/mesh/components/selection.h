@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
-#define VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_SELECTION_H
+#define VCL_VIEWS_MESH_COMPONENTS_SELECTION_H
 
 #include <vclib/types.h>
 
@@ -91,4 +91,4 @@ inline constexpr internal::NotSelectedView notSelected;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_SELECTION_H

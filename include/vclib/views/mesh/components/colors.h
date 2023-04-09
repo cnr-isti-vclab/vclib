@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_COLORS_H
-#define VCL_MESH_VIEWS_COMPONENTS_COLORS_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_COLORS_H
+#define VCL_VIEWS_MESH_COMPONENTS_COLORS_H
 
 #include <vclib/types.h>
 
@@ -69,4 +69,4 @@ inline constexpr internal::ColorsView colors;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_COLORS_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_COLORS_H

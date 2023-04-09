@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
-#define VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H
+#define VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H
 
 #include <vclib/concepts/mesh.h>
 #include <vclib/types.h>
@@ -54,4 +54,4 @@ inline constexpr internal::AdjEdgesView adjEdges;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H

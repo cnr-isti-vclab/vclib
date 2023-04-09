@@ -336,6 +336,7 @@ set(HEADERS
 	include/vclib/views/mesh/components/adj_vertices.h
 	include/vclib/views/mesh/components/colors.h
 	include/vclib/views/mesh/components/coords.h
+	include/vclib/views/mesh/components/normals.h
 	include/vclib/views/mesh/components/scalars.h
 	include/vclib/views/mesh/components/selection.h
 )

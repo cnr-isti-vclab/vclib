@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_SCALARS_H
-#define VCL_MESH_VIEWS_COMPONENTS_SCALARS_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_SCALARS_H
+#define VCL_VIEWS_MESH_COMPONENTS_SCALARS_H
 
 #include <vclib/types.h>
 
@@ -67,4 +67,4 @@ inline constexpr internal::ScalarView scalars;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_SCALARS_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_SCALARS_H
