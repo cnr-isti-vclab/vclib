@@ -23,7 +23,7 @@
 
 #include "save.h"
 
-#include <vclib/exception/io_exception.h>
+#include <vclib/exceptions/io_exceptions.h>
 
 #include "../internal/io_utils.h"
 #include "../internal/io_write.h"

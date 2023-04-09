@@ -21,27 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_EXCEPTION_H
-#define VCL_MISC_EXCEPTION_H
+#ifndef VCL_IO_EXCEPTIONS_H
+#define VCL_IO_EXCEPTIONS_H
 
 #include <stdexcept>
 #include <string>
 
 namespace vcl {
 
-class NoIntersectionException : public std::runtime_error
+class UnknownFileFormatException : public std::runtime_error
 {
 public:
-	NoIntersectionException(const std::string& err) : std::runtime_error(err) {}
+	UnknownFileFormatException(const std::string& err) : std::runtime_error(err) {}
 
 	virtual const char* what() const throw()
 	{
 		static std::string error;
-		error = std::string("No Intersection - ") + std::runtime_error::what();
+		error = std::string("Unknown File Format - ") + std::runtime_error::what();
+		return error.c_str();
+	}
+};
+
+class CannotOpenFileException : public std::runtime_error
+{
+public:
+	CannotOpenFileException(const std::string& err) : std::runtime_error(err) {}
+
+	virtual const char* what() const throw()
+	{
+		static std::string error;
+		error = std::string("Cannot Open File - ") + std::runtime_error::what();
+		return error.c_str();
+	}
+};
+
+class MalformedFileException : public std::runtime_error
+{
+public:
+	MalformedFileException(const std::string& err) : std::runtime_error(err) {}
+
+	virtual const char* what() const throw()
+	{
+		static std::string error;
+		error = std::string("Malformed File - ") + std::runtime_error::what();
 		return error.c_str();
 	}
 };
 
 } // namespace vcl
 
-#endif // VCL_MISC_EXCEPTION_H
+#endif // VCL_IO_EXCEPTIONS_H

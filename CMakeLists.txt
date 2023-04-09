@@ -47,7 +47,7 @@ set(VCLIB_SRC_DIR ${VCLIB_INCLUDE_DIR}/vclib)
 set(HEADERS
 	include/vclib/algorithms.h
 	include/vclib/concepts.h
-	include/vclib/exception.h
+	include/vclib/exceptions.h
 	include/vclib/image.h
 	include/vclib/load_save.h
 	include/vclib/math.h
@@ -141,9 +141,9 @@ set(HEADERS
 	include/vclib/concepts/space/segment.h
 	include/vclib/concepts/space/sphere.h
 	include/vclib/concepts/space/triangle.h
-	include/vclib/exception/io_exception.h
-	include/vclib/exception/mesh_exception.h
-	include/vclib/exception/misc_exception.h
+	include/vclib/exceptions/io_exceptions.h
+	include/vclib/exceptions/mesh_exceptions.h
+	include/vclib/exceptions/misc_exceptions.h
 	include/vclib/image/image.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load.h

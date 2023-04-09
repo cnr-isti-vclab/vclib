@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_EXCEPTION_H
-#define VCL_MESH_EXCEPTION_H
+#ifndef VCL_MESH_EXCEPTIONS_H
+#define VCL_MESH_EXCEPTIONS_H
 
 #include <stdexcept>
 #include <string>
@@ -133,4 +133,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MESH_EXCEPTION_H
+#endif // VCL_MESH_EXCEPTIONS_H

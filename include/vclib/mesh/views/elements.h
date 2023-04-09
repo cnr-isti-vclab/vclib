@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_VIEWS_ELEMENTS_H
 #define VCL_MESH_VIEWS_ELEMENTS_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/concepts/mesh.h>
 
 namespace vcl::views {
 namespace internal {

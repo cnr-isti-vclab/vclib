@@ -21,11 +21,27 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXCEPTION_H
-#define VCL_EXCEPTION_H
+#ifndef VCL_MISC_EXCEPTIONS_H
+#define VCL_MISC_EXCEPTIONS_H
 
-#include "exception/io_exception.h"
-#include "exception/mesh_exception.h"
-#include "exception/misc_exception.h"
+#include <stdexcept>
+#include <string>
 
-#endif // VCL_EXCEPTION_H
+namespace vcl {
+
+class NoIntersectionException : public std::runtime_error
+{
+public:
+	NoIntersectionException(const std::string& err) : std::runtime_error(err) {}
+
+	virtual const char* what() const throw()
+	{
+		static std::string error;
+		error = std::string("No Intersection - ") + std::runtime_error::what();
+		return error.c_str();
+	}
+};
+
+} // namespace vcl
+
+#endif // VCL_MISC_EXCEPTIONS_H

@@ -24,7 +24,7 @@
 #include "save.h"
 
 #include <map>
-#include <vclib/exception/io_exception.h>
+#include <vclib/exceptions/io_exceptions.h>
 #include <vclib/misc/file_info.h>
 
 #include "../internal/io_utils.h"

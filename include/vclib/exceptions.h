@@ -21,53 +21,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_EXCEPTION_H
-#define VCL_IO_EXCEPTION_H
+#ifndef VCL_EXCEPTIONS_H
+#define VCL_EXCEPTIONS_H
 
-#include <stdexcept>
-#include <string>
+#include "exceptions/io_exception.h"
+#include "exceptions/mesh_exception.h"
+#include "exceptions/misc_exception.h"
 
-namespace vcl {
-
-class UnknownFileFormatException : public std::runtime_error
-{
-public:
-	UnknownFileFormatException(const std::string& err) : std::runtime_error(err) {}
-
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Unknown File Format - ") + std::runtime_error::what();
-		return error.c_str();
-	}
-};
-
-class CannotOpenFileException : public std::runtime_error
-{
-public:
-	CannotOpenFileException(const std::string& err) : std::runtime_error(err) {}
-
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Cannot Open File - ") + std::runtime_error::what();
-		return error.c_str();
-	}
-};
-
-class MalformedFileException : public std::runtime_error
-{
-public:
-	MalformedFileException(const std::string& err) : std::runtime_error(err) {}
-
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Malformed File - ") + std::runtime_error::what();
-		return error.c_str();
-	}
-};
-
-} // namespace vcl
-
-#endif // VCL_IO_EXCEPTION_H
+#endif // VCL_EXCEPTIONS_H

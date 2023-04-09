@@ -25,7 +25,7 @@
 
 #include <set>
 
-#include <vclib/exception/mesh_exception.h>
+#include <vclib/exceptions/mesh_exceptions.h>
 #include <vclib/mesh/iterator.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/mesh/views.h>
