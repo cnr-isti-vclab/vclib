@@ -21,52 +21,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_COORDS_H
-#define VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#ifndef VCL_VIEWS_H
+#define VCL_VIEWS_H
 
-#include <vclib/types.h>
+#include "views/view.h"
+#include "views/views.h"
+#include "views/mesh.h"
 
-#include <ranges>
-
-namespace vcl::views {
-
-namespace internal {
-
-struct CoordsView
-{
-	constexpr CoordsView() = default;
-
-	inline static constexpr auto constCoord = [](const auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->coord();
-		else
-			return p.coord();
-	};
-
-	inline static constexpr auto coord = [](auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->coord();
-		else
-			return p.coord();
-	};
-
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, CoordsView)
-	{
-		using ElemType = std::ranges::range_value_t<R>;
-		if constexpr(IsConst<ElemType>)
-			return std::forward<R>(r) | std::views::transform(constCoord);
-		else
-			return std::forward<R>(r) | std::views::transform(coord);
-	}
-};
-
-} // namespace vcl::views::internal
-
-inline constexpr internal::CoordsView coords;
-
-} // namespace vcl::views
-
-#endif // VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#endif // VCL_VIEWS_H

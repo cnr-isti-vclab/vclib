@@ -26,6 +26,7 @@
 #include <vclib/algorithms/point_sampling.h>
 #include <vclib/space/grid.h>
 #include <vclib/misc/parallel.h>
+#include <vclib/views.h>
 
 #include <mutex>
 

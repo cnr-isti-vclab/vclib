@@ -29,6 +29,7 @@
 #include "components/adj_vertices.h"
 #include "components/colors.h"
 #include "components/coords.h"
+#include "components/normals.h"
 #include "components/scalars.h"
 #include "components/selection.h"
 

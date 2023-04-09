@@ -31,7 +31,7 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 void updateBorder(MeshType& m);
 
-}
+} // namespace vcl
 
 #include "flag.cpp"
 

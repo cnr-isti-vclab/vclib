@@ -55,6 +55,7 @@ set(HEADERS
 	include/vclib/miscellaneous.h
 	include/vclib/space.h
 	include/vclib/types.h
+	include/vclib/views.h
 	include/vclib/algorithms/bounding_box.h
 	include/vclib/algorithms/clean.h
 	include/vclib/algorithms/create.h
@@ -326,9 +327,9 @@ set(HEADERS
 	include/vclib/types/iterators.h
 	include/vclib/types/pointers.h
 	include/vclib/types/variadic_templates.h
-	include/vclib/types/views.h
 	include/vclib/views/mesh.h
 	include/vclib/views/view.h
+	include/vclib/views/views.h
 	include/vclib/views/mesh/components.h
 	include/vclib/views/mesh/elements.h
 	include/vclib/views/mesh/components/adj_edges.h
@@ -337,8 +338,10 @@ set(HEADERS
 	include/vclib/views/mesh/components/colors.h
 	include/vclib/views/mesh/components/coords.h
 	include/vclib/views/mesh/components/normals.h
+	include/vclib/views/mesh/components/principal_curvatures.h
 	include/vclib/views/mesh/components/scalars.h
 	include/vclib/views/mesh/components/selection.h
+	include/vclib/views/mesh/components/tex_coords.h
 )
 
 set(SOURCES

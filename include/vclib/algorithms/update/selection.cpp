@@ -27,24 +27,40 @@
 
 namespace vcl {
 
+namespace internal {
+
+template<std::ranges::range Rng>
+void clearSelection(Rng&& r)
+{
+	for (auto& e : r) {
+		e.unsetSelected();
+	}
+}
+
+} // namespace vcl::internal
+
 template<MeshConcept MeshType>
 void clearVertexSelection(MeshType& m)
 {
-	using VertexType = typename MeshType::VertexType;
-
-	for (VertexType& v : m.vertices()) {
-		v.unsetSelected();
-	}
+	internal::clearSelection(m.vertices());
 }
 
 template<FaceMeshConcept MeshType>
 void clearFaceSelection(MeshType& m)
 {
-	using FaceType = typename MeshType::FaceType;
+	internal::clearSelection(m.faces());
+}
 
-	for (FaceType& f : m.faces()) {
-		f.unsetSelected();
-	}
+template<EdgeMeshConcept MeshType>
+void clearEdgeSelection(MeshType& m)
+{
+	internal::clearSelection(m.edges());
+}
+
+template<DcelMeshConcept MeshType>
+void clearHalfEdgeSelection(MeshType& m)
+{
+	internal::clearSelection(m.halfEdges());
 }
 
 template<FaceMeshConcept MeshType>

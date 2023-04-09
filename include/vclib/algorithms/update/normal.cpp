@@ -42,10 +42,8 @@ void normalizePerFaceNormals(MeshType& m)
 {
 	vcl::requirePerFaceNormal(m);
 
-	using FaceType = typename MeshType::FaceType;
-
-	for (FaceType& f : m.faces()) {
-		f.normal().normalize();
+	for (auto& n : m.faces() | views::normals) {
+		n.normalize();
 	}
 }
 
@@ -84,10 +82,8 @@ void clearPerVertexNormals(MeshType& m)
 {
 	vcl::requirePerVertexNormal(m);
 
-	using VertexType = typename MeshType::VertexType;
-
-	for (VertexType& v : m.vertices()) {
-		v.normal().setZero();
+	for (auto& n : m.vertices() | views::normals) {
+		n.setZero();
 	}
 }
 
@@ -112,8 +108,8 @@ void clearPerReferencedVertexNormals(MeshType& m)
 	using FaceType   = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
-		for (VertexType* v : f.vertices()) {
-			v->normal().setZero();
+		for (auto& n : f.vertices() | views::normals) {
+			n.setZero();
 		}
 	}
 }
@@ -135,8 +131,8 @@ void normalizePerVertexNormals(MeshType& m)
 
 	using VertexType = typename MeshType::VertexType;
 
-	for (VertexType& v : m.vertices()) {
-		v.normal().normalize();
+	for (auto& n : m.vertices() | views::normals) {
+		n.normalize();
 	}
 }
 

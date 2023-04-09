@@ -26,6 +26,8 @@
 
 #include <vclib/types.h>
 
+#include <ranges>
+
 namespace vcl::views {
 
 namespace internal {

@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_COORDS_H
-#define VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_PRINCIPAL_CURVATURES_H
+#define VCL_VIEWS_MESH_COMPONENTS_PRINCIPAL_CURVATURES_H
 
 #include <vclib/types.h>
 
@@ -32,41 +32,42 @@ namespace vcl::views {
 
 namespace internal {
 
-struct CoordsView
+struct PrincipalCurvaturesView
 {
-	constexpr CoordsView() = default;
+	constexpr PrincipalCurvaturesView() = default;
 
-	inline static constexpr auto constCoord = [](const auto& p) -> decltype(auto)
+	inline static constexpr auto constPrincipalCurvature = [](const auto& p) -> decltype(auto)
 	{
 		if constexpr(IsPointer<decltype(p)>)
-			return p->coord();
+			return p->principalCurvature();
 		else
-			return p.coord();
+			return p.principalCurvature();
 	};
 
-	inline static constexpr auto coord = [](auto& p) -> decltype(auto)
+	inline static constexpr auto principalCurvature = [](auto& p) -> decltype(auto)
 	{
 		if constexpr(IsPointer<decltype(p)>)
-			return p->coord();
+			return p->principalCurvature();
 		else
-			return p.coord();
+			return p.principalCurvature();
 	};
 
 	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, CoordsView)
+	friend constexpr auto operator|(R&& r, PrincipalCurvaturesView)
 	{
 		using ElemType = std::ranges::range_value_t<R>;
 		if constexpr(IsConst<ElemType>)
-			return std::forward<R>(r) | std::views::transform(constCoord);
+			return std::forward<R>(r) | std::views::transform(constPrincipalCurvature);
 		else
-			return std::forward<R>(r) | std::views::transform(coord);
+			return std::forward<R>(r) | std::views::transform(principalCurvature);
+
 	}
 };
 
 } // namespace vcl::views::internal
 
-inline constexpr internal::CoordsView coords;
+inline constexpr internal::PrincipalCurvaturesView principalCurvatures;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_PRINCIPAL_CURVATURES_H

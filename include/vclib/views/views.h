@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_VIEWS_H
-#define VCL_TYPES_VIEWS_H
+#ifndef VCL_VIEWS_VIEWS_H
+#define VCL_VIEWS_VIEWS_H
 
 #include <ranges>
 
@@ -90,4 +90,4 @@ inline constexpr internal::ReferenceView reference;
 
 } // namespace vcl::views
 
-#endif // VCL_TYPES_VIEWS_H
+#endif // VCL_VIEWS_VIEWS_H
