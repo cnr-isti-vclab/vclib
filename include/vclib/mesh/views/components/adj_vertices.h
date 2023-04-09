@@ -21,73 +21,37 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_VIEWS_H
-#define VCL_TYPES_VIEWS_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
+#define VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
 
-#include <ranges>
+#include <vclib/mesh/requirements.h>
+#include <vclib/types.h>
 
-namespace vcl::views{
+namespace vcl::views {
 
 namespace internal {
 
-struct NotNullView : std::ranges::view_base
+template<typename T>
+concept CleanAdjVerticesConcept = comp::HasAdjacentVertices<RemoveConstRef<T>>;
+
+struct AdjVerticesView
 {
-	constexpr NotNullView() = default;
+	constexpr AdjVerticesView() = default;
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, NotNullView)
+	template <CleanAdjVerticesConcept R>
+	friend constexpr auto operator|(R&& r, AdjVerticesView)
 	{
-		return std::views::filter(r, [](auto* p) { return p != nullptr; });
-	}
-};
-
-struct DereferenceView : std::ranges::view_base
-{
-	constexpr DereferenceView() = default;
-
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, DereferenceView)
-	{
-		return std::views::transform(r, [](auto p) { return *p; });
-	}
-};
-
-struct ReferenceView
-{
-	constexpr ReferenceView() = default;
-
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, ReferenceView)
-	{
-		return std::views::transform(r, [](auto o) { return &o; });
+		if constexpr(IsPointer<R>)
+			return r->adjVertices();
+		else
+			return r.adjVertices();
 	}
 };
 
 } // namespace vcl::views::internal
 
-/**
- * @brief The notNull view allows to filter the pointers of a range. The resulting
- * view will iterate only on the pointers that are not `nullptr`.
- */
-inline constexpr internal::NotNullView notNull;
-
-/**
- * @brief The dereference view allow to dereference the pointers of a range. The resulting
- * view will iterate over the objects pointed by the range of pointers.
- *
- * @note: no check on the validity of the pointers is performed. If you know that in your range
- * there is the possibility to have `nullptr` pointers, use first the `isValid` view:
- *
- * auto resView = inputRange | isValid | dereference;
- */
-inline constexpr internal::DereferenceView dereference;
-
-/**
- * @brief The reference view allow to reference the objects of a range. The resulting view will
- * iterate over the pointers pointing to the object of the input range.
- */
-inline constexpr internal::ReferenceView reference;
+inline constexpr internal::AdjVerticesView adjVertices;
 
 } // namespace vcl::views
 
-#endif // VCL_TYPES_VIEWS_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H

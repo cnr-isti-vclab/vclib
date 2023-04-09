@@ -257,6 +257,9 @@ set(HEADERS
 	include/vclib/mesh/utils/tri_poly_index_bimap.h
 	include/vclib/mesh/views/components.h
 	include/vclib/mesh/views/elements.h
+	include/vclib/mesh/views/components/adj_edges.h
+	include/vclib/mesh/views/components/adj_faces.h
+	include/vclib/mesh/views/components/adj_vertices.h
 	include/vclib/mesh/views/components/colors.h
 	include/vclib/mesh/views/components/coords.h
 	include/vclib/mesh/views/components/scalars.h

@@ -26,6 +26,7 @@
 #include <vclib/mesh.h>
 #include <vclib/load_save.h>
 
+#include <vclib/algorithm/update.h>
 #include <vclib/mesh/iterator.h>
 #include <vclib/mesh/views/elements.h>
 #include <vclib/mesh/views/components.h>
@@ -33,6 +34,9 @@
 int main()
 {
 	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+
+	m.enablePerFaceAdjacentFaces();
+	vcl::updatePerFaceAdjacentFaces(m);
 
 	// print
 
@@ -43,6 +47,15 @@ int main()
 	for (const auto& f : cm | vcl::views::faces) {
 		for (const auto& c : f | vcl::views::vertices | vcl::views::coords) {
 			std::cerr << c << "\t";
+		}
+		std::cerr << "\n";
+	}
+
+	std::cerr << "\n\nAdjFaces per face:\n\n";
+
+	for (const auto& f : cm | vcl::views::faces) {
+		for (const auto& af : f | vcl::views::adjFaces | vcl::views::notNull) {
+			std::cerr << m.index(af) << "\t";
 		}
 		std::cerr << "\n";
 	}

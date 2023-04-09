@@ -6,7 +6,8 @@
     - [ ] implement per edge concepts
   - Components:
     - [ ] add a static boolean that allows to discriminate components that are tied to vertex number when used in faces
-    - [ ] add FaceEdgeBitFlag component
+    - [ ] add FaceEdgeBitFlag component - a bit flag for each edge of the face (tied with number of vertices or, in case of dcel, stored in half edge)
+      - [ ] needs to be interchangeable with TriangleBitFlags and PolygonBitFlags
     - [ ] add an enum COMPONENT_TYPE that allows to identify same class of components easily -- same usage of ELEMENT_TYPE for elements
       - [ ] then allow to write a generic enableSameOptionalComponentsOf member function in ElementContainer
   - Elements:
@@ -15,28 +16,17 @@
     - [ ] set constructors for HalfEdge element
   - Containers:
     - [ ] set properly container concepts
-  - Iterators:
-    - [ ] all iterators of the library must satisfy at least std::forward_iterator concept (also half edge ones)
-    - [ ] implement views for element scalars and colors
   - Mesh:
-    - [ ] all iterators must not use inheritance
-      - [ ] remove all components iterators
-      - [ ] rewrite all dcel iterators without inheritance
-      - [ ] use views everywhere
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] import dcel from mesh: update adjacent faces and wedges 
 - Algorithms:
-  - [ ] take iterator arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
+  - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] intersection functions (like distance functions)
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range
-    - [ ] implement housdorff
   - [ ] update adjacent faces optimized for dcel
 - Space:
-  - [ ] move algorithm/polygon/geometry functions into two space data structure Triangle and Polygon.
-    - [ ] remove the usage of the old functions
-    - [ ] make the Triangle and Polygon concepts, making sure that Triangle satisfies PolygonConcept
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
   - [ ] move random access container in space. In general, every data structure must be in space directory
 - External:
@@ -44,5 +34,3 @@
 - Documentation:
   - [ ] Make documentation using only doxygen
   - [ ] Explain appropriately the structure of the library
-- Style:
-  - [ ] Each directory must be at singular, not plural (i.e. container, not containers)
