@@ -21,59 +21,51 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_POINT_CLOUD_H
-#define VCL_MESH_POINT_CLOUD_H
+#ifndef VCL_MESH_COMPONENTS_H
+#define VCL_MESH_COMPONENTS_H
 
-#include "mesh/mesh.h"
-#include "requirements.h"
+#include "components/bounding_box.h"
+#include "components/color.h"
+#include "components/custom_components.h"
+#include "components/mark.h"
+#include "components/name.h"
+#include "components/texture_paths.h"
+#include "components/transform_matrix.h"
 
-namespace vcl {
+namespace vcl::mesh {
 
-template<typename ScalarType>
-class PointCloudT;
+/** Port BoundingBox class into mesh namespace **/
+template<typename P>
+using BoundingBox = comp::BoundingBox<P>;
 
-}
+template <typename S>
+using BoundingBox3 = comp::BoundingBox3<S>;
 
-namespace vcl::pointcloud {
+using BoundingBox3f = comp::BoundingBox3f<>;
+using BoundingBox3d = comp::BoundingBox3d<>;
 
-template<typename Scalar>
-class Vertex;
+/** Port Color class into mesh namespace **/
+using Color = comp::Color<>;
 
-template<typename Scalar>
-class Vertex :
-		public vcl::Vertex<
-			PointCloudT<Scalar>,
-			vcl::vert::BitFlags,                                 // 4b
-			vcl::vert::Coordinate3<Scalar>,                      // 24b
-			vcl::vert::Normal3<Scalar>,                          // 24b
-			vcl::vert::Color,                                    // 4b
-			vcl::vert::Scalar<Scalar>,                           // 8b
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>, // 0b
-			vcl::vert::OptionalMark<Vertex<Scalar>>,             // 0b
-			vcl::vert::CustomComponents<Vertex<Scalar>>>         // 0b
-{
-};
+/* Port CustomComponents class into mesh namespace */
+using CustomComponents = comp::CustomComponents<>;
 
-} // namespace vcl::pointcloud
+/** Port Mark class into mesh namespace **/
+using Mark = comp::Mark<>;
 
-namespace vcl {
+/** Port Name class into mesh namespace **/
+using Name = comp::Name<>;
 
-template<typename ScalarType = double>
-class PointCloudT :
-		public vcl::Mesh<
-			mesh::VertexContainer<pointcloud::Vertex<ScalarType>>,
-			mesh::BoundingBox3<ScalarType>,
-			mesh::Mark,
-			mesh::Name,
-			mesh::TexturePaths,
-			mesh::TransformMatrix<ScalarType>,
-			mesh::CustomComponents>
-{
-};
+/** Port TexturePaths class into mesh namespace **/
+using TexturePaths = comp::TexturePaths<>;
 
-using PointCloudf = PointCloudT<float>;
-using PointCloud  = PointCloudT<double>;
+/** Port TransformMatrix class into mesh namespace **/
+template <typename Scalar>
+using TransformMatrix = comp::TransformMatrix<Scalar>;
 
-} // namespace vcl
+using TransformMatrixf = comp::TransformMatrix<float>;
+using TransformMatrixd = comp::TransformMatrix<double>;
 
-#endif // VCL_MESH_POINT_CLOUD_H
+} // namespace vcl::mesh
+
+#endif // VCL_MESH_COMPONENTS_H

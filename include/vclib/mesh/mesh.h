@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_MESH_H
-#define VCL_MESH_MESH_MESH_H
+#ifndef VCL_MESH_MESH_H
+#define VCL_MESH_MESH_H
 
 #include <vclib/concepts/mesh.h>
 #include <vclib/mesh/containers/containers.h>
@@ -350,4 +350,4 @@ private:
 
 #include "mesh.cpp"
 
-#endif // VCL_MESH_MESH_MESH_H
+#endif // VCL_MESH_MESH_H

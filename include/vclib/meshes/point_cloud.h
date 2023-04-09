@@ -21,67 +21,47 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_EDGE_MESH_H
-#define VCL_MESH_EDGE_MESH_H
+#ifndef VCL_MESHES_POINT_CLOUD_H
+#define VCL_MESHES_POINT_CLOUD_H
 
-#include "mesh/mesh.h"
-#include "requirements.h"
+#include <vclib/mesh/mesh.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
 template<typename ScalarType>
-class EdgeMeshT;
+class PointCloudT;
 
 }
 
-namespace vcl::edgemesh {
+namespace vcl::pointcloud {
 
 template<typename Scalar>
 class Vertex;
 
 template<typename Scalar>
-class Edge;
-
-template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
-			EdgeMeshT<Scalar>,
-			vcl::vert::BitFlags,                                            // 4b
-			vcl::vert::Coordinate3<Scalar>,                                 // 24b
-			vcl::vert::Normal3<Scalar>,                                     // 24b
-			vcl::vert::Color,                                               // 4b
-			vcl::vert::Scalar<Scalar>,                                      // 8b
-			vcl::vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>, // 0b
-			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
-			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
-			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
+			PointCloudT<Scalar>,
+			vcl::vert::BitFlags,                                 // 4b
+			vcl::vert::Coordinate3<Scalar>,                      // 24b
+			vcl::vert::Normal3<Scalar>,                          // 24b
+			vcl::vert::Color,                                    // 4b
+			vcl::vert::Scalar<Scalar>,                           // 8b
+			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>, // 0b
+			vcl::vert::OptionalMark<Vertex<Scalar>>,             // 0b
+			vcl::vert::CustomComponents<Vertex<Scalar>>>         // 0b
 {
 };
 
-template<typename Scalar>
-class Edge :
-		public vcl::Edge<
-			EdgeMeshT<Scalar>,
-			vcl::edge::BitFlags,                             // 4b
-			vcl::edge::VertexReferences<Vertex<Scalar>>,     // 24b
-			vcl::edge::OptionalScalar<Scalar, Edge<Scalar>>, // 0b
-			vcl::edge::OptionalColor<Edge<Scalar>>,          // 0b
-			vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,  // 0b
-			vcl::edge::OptionalMark<Edge<Scalar>>,           // 0b
-			vcl::edge::CustomComponents<Edge<Scalar>>>       // 0b
-{
-};
-
-} // namespace vcl::trimesh
+} // namespace vcl::pointcloud
 
 namespace vcl {
 
 template<typename ScalarType = double>
-class EdgeMeshT :
+class PointCloudT :
 		public vcl::Mesh<
-			mesh::VertexContainer<edgemesh::Vertex<ScalarType>>,
-			mesh::EdgeContainer<edgemesh::Edge<ScalarType>>,
+			mesh::VertexContainer<pointcloud::Vertex<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
 			mesh::Mark,
 			mesh::Name,
@@ -91,9 +71,9 @@ class EdgeMeshT :
 {
 };
 
-using EdgeMeshf = EdgeMeshT<float>;
-using EdgeMesh  = EdgeMeshT<double>;
+using PointCloudf = PointCloudT<float>;
+using PointCloud  = PointCloudT<double>;
 
 } // namespace vcl
 
-#endif // VCL_MESH_EDGE_MESH_H
+#endif // VCL_MESHES_POINT_CLOUD_H

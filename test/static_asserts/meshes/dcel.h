@@ -3,7 +3,7 @@
 
 #include "mesh_views.h"
 
-#include <vclib/mesh/dcel_mesh.h>
+#include <vclib/meshes/dcel_mesh.h>
 
 void dcelStaticAsserts()
 {

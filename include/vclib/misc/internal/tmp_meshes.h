@@ -24,7 +24,7 @@
 #ifndef VCL_MISC_TMP_MESHES_H
 #define VCL_MISC_TMP_MESHES_H
 
-#include <vclib/mesh/mesh/mesh.h>
+#include <vclib/mesh/mesh.h>
 
 namespace vcl::internal {
 

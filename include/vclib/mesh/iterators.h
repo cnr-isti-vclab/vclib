@@ -21,12 +21,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_H
-#define VCL_MESH_H
+#ifndef VCL_MESH_ITERATORS_H
+#define VCL_MESH_ITERATORS_H
 
-#include "mesh/dcel_mesh.h"
-#include "mesh/edge_mesh.h"
-#include "mesh/poly_mesh.h"
-#include "mesh/tri_mesh.h"
+#include "iterators/face.h"
 
-#endif // VCL_MESH_H
+#endif // VCL_MESH_ITERATORS_H

@@ -21,20 +21,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_TRI_MESH_H
-#define VCL_MESH_TRI_MESH_H
+#ifndef VCL_MESHES_POLY_MESH_H
+#define VCL_MESHES_POLY_MESH_H
 
-#include "mesh/mesh.h"
-#include "requirements.h"
+#include <vclib/mesh/mesh.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
 template<typename ScalarType>
-class TriMeshT;
+class PolyMeshT;
 
 }
 
-namespace vcl::trimesh {
+namespace vcl::polymesh {
 
 template<typename Scalar>
 class Vertex;
@@ -45,46 +45,44 @@ class Face;
 template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
-			TriMeshT<Scalar>,
-			vcl::vert::BitFlags,                                            // 4b
-			vcl::vert::Coordinate3<Scalar>,                                 // 12 or 24b
-			vcl::vert::Normal3<Scalar>,                                     // 12 or 24b
-			vcl::vert::Color,                                               // 4b
-			vcl::vert::Scalar<Scalar>,                                      // 4 or 8b
-			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
-			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+			PolyMeshT<Scalar>,
+			vcl::vert::BitFlags,
+			vcl::vert::Coordinate3<Scalar>,
+			vcl::vert::Normal3<Scalar>,
+			vcl::vert::Color,
+			vcl::vert::Scalar<Scalar>,
+			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
+			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
 			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
-			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
-			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
+			vcl::vert::CustomComponents<Vertex<Scalar>>>
 {
 };
 
 template<typename Scalar>
 class Face :
 		public vcl::Face<
-			TriMeshT<Scalar>,
-			vcl::face::TriangleBitFlags,                                     // 4b
-			vcl::face::TriangleVertexRefs<Vertex<Scalar>>,                   // 24b
-			vcl::face::Normal3<Scalar>,                                      // 12 or 24b
-			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,                 // 0b
-			vcl::face::OptionalColor<Face<Scalar>>,                          // 0b
-			vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,              // 0b
-			vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>, // 0b
-			vcl::face::OptionalMark<Face<Scalar>>,                           // 0b
-			vcl::face::CustomComponents<Face<Scalar>>>                       // 0b
+			PolyMeshT<Scalar>,
+			vcl::face::PolygonBitFlags, // 4b
+			vcl::face::PolygonVertexRefs<Vertex<Scalar>>,
+			vcl::face::Normal3<Scalar>,
+			vcl::face::OptionalColor<Face<Scalar>>,
+			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,
+			vcl::face::OptionalAdjacentPolygons<Face<Scalar>>,
+			vcl::face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar>>,
+			vcl::face::CustomComponents<Face<Scalar>>>
 {
 };
 
-} // namespace vcl::trimesh
+} // namespace vcl::polymesh
 
 namespace vcl {
 
 template<typename ScalarType = double>
-class TriMeshT :
+class PolyMeshT :
 		public vcl::Mesh<
-			mesh::VertexContainer<trimesh::Vertex<ScalarType>>,
-			mesh::FaceContainer<trimesh::Face<ScalarType>>,
+			mesh::VertexContainer<polymesh::Vertex<ScalarType>>,
+			mesh::FaceContainer<polymesh::Face<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
 			mesh::Color,
 			mesh::Mark,
@@ -95,9 +93,9 @@ class TriMeshT :
 {
 };
 
-using TriMeshf = TriMeshT<float>;
-using TriMesh  = TriMeshT<double>;
+using PolyMeshf = PolyMeshT<float>;
+using PolyMesh  = PolyMeshT<double>;
 
 } // namespace vcl
 
-#endif // VCL_MESH_TRI_MESH_H
+#endif // VCL_MESHES_POLY_MESH_H

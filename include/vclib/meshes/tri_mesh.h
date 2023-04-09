@@ -21,23 +21,20 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_DCEL_MESH_H
-#define VCL_MESH_DCEL_MESH_H
+#ifndef VCL_MESHES_TRI_MESH_H
+#define VCL_MESHES_TRI_MESH_H
 
-#include "mesh/mesh.h"
-#include "requirements.h"
+#include <vclib/mesh/mesh.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
 template<typename ScalarType>
-class DcelMeshT;
+class TriMeshT;
 
 }
 
-namespace vcl::dcel {
-
-template<typename Scalar>
-class HalfEdge;
+namespace vcl::trimesh {
 
 template<typename Scalar>
 class Vertex;
@@ -46,60 +43,50 @@ template<typename Scalar>
 class Face;
 
 template<typename Scalar>
-class HalfEdge :
-		public vcl::HalfEdge<
-			DcelMeshT<Scalar>,
-			vcl::hedge::BitFlags,
-			vcl::hedge::HalfEdgeReferences<HalfEdge<Scalar>, Vertex<Scalar>, Face<Scalar>>,
-			vcl::hedge::OptionalScalar<Scalar, HalfEdge<Scalar>>,
-			vcl::hedge::OptionalColor<HalfEdge<Scalar>>,
-			vcl::hedge::OptionalMark<HalfEdge<Scalar>>,
-			vcl::hedge::OptionalTexCoord<Scalar, HalfEdge<Scalar>>,
-			vcl::hedge::CustomComponents<HalfEdge<Scalar>>>
-{
-};
-
-template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
-			DcelMeshT<Scalar>,
-			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3<Scalar>,
-			vcl::vert::Normal3<Scalar>,
-			vcl::vert::Color,
-			vcl::vert::Scalar<Scalar>,
-			vcl::vert::HalfEdgeReference<HalfEdge<Scalar>>,
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-			vcl::vert::OptionalMark<Vertex<Scalar>>,
-			vcl::vert::CustomComponents<Vertex<Scalar>>>
+			TriMeshT<Scalar>,
+			vcl::vert::BitFlags,                                            // 4b
+			vcl::vert::Coordinate3<Scalar>,                                 // 12 or 24b
+			vcl::vert::Normal3<Scalar>,                                     // 12 or 24b
+			vcl::vert::Color,                                               // 4b
+			vcl::vert::Scalar<Scalar>,                                      // 4 or 8b
+			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
+			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
+			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
+			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
+			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
 {
 };
 
 template<typename Scalar>
 class Face :
 		public vcl::Face<
-			DcelMeshT<Scalar>,
-			vcl::face::BitFlags,
-			vcl::face::HalfEdgeReference<HalfEdge<Scalar>>,
-			vcl::face::Normal3<Scalar>,
-			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,
-			vcl::face::OptionalColor<Face<Scalar>>,
-			vcl::face::OptionalMark<Face<Scalar>>,
-			vcl::face::CustomComponents<Face<Scalar>>>
+			TriMeshT<Scalar>,
+			vcl::face::TriangleBitFlags,                                     // 4b
+			vcl::face::TriangleVertexRefs<Vertex<Scalar>>,                   // 24b
+			vcl::face::Normal3<Scalar>,                                      // 12 or 24b
+			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,                 // 0b
+			vcl::face::OptionalColor<Face<Scalar>>,                          // 0b
+			vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,              // 0b
+			vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>, // 0b
+			vcl::face::OptionalMark<Face<Scalar>>,                           // 0b
+			vcl::face::CustomComponents<Face<Scalar>>>                       // 0b
 {
 };
 
-} // namespace vcl::dcel
+} // namespace vcl::trimesh
 
 namespace vcl {
 
 template<typename ScalarType = double>
-class DcelMeshT :
+class TriMeshT :
 		public vcl::Mesh<
-			mesh::VertexContainer<dcel::Vertex<ScalarType>>,
-			mesh::FaceContainer<dcel::Face<ScalarType>>,
-			mesh::HalfEdgeContainer<dcel::HalfEdge<ScalarType>>,
+			mesh::VertexContainer<trimesh::Vertex<ScalarType>>,
+			mesh::FaceContainer<trimesh::Face<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
+			mesh::Color,
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
@@ -108,9 +95,9 @@ class DcelMeshT :
 {
 };
 
-using DcelMeshf = DcelMeshT<float>;
-using DcelMesh  = DcelMeshT<double>;
+using TriMeshf = TriMeshT<float>;
+using TriMesh  = TriMeshT<double>;
 
 } // namespace vcl
 
-#endif // VCL_MESH_DCEL_MESH_H
+#endif // VCL_MESHES_TRI_MESH_H

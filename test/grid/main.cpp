@@ -26,7 +26,7 @@
 #include <vclib/space.h>
 
 #include <vclib/load_save.h>
-#include <vclib/mesh.h>
+#include <vclib/meshes.h>
 #include <vclib/miscellaneous.h>
 #include <vclib/algorithms.h>
 

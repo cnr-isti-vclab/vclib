@@ -21,70 +21,68 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_POLY_MESH_H
-#define VCL_MESH_POLY_MESH_H
+#ifndef VCL_MESHES_EDGE_MESH_H
+#define VCL_MESHES_EDGE_MESH_H
 
-#include "mesh/mesh.h"
-#include "requirements.h"
+#include <vclib/mesh/mesh.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
 template<typename ScalarType>
-class PolyMeshT;
+class EdgeMeshT;
 
 }
 
-namespace vcl::polymesh {
+namespace vcl::edgemesh {
 
 template<typename Scalar>
 class Vertex;
 
 template<typename Scalar>
-class Face;
+class Edge;
 
 template<typename Scalar>
 class Vertex :
 		public vcl::Vertex<
-			PolyMeshT<Scalar>,
-			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3<Scalar>,
-			vcl::vert::Normal3<Scalar>,
-			vcl::vert::Color,
-			vcl::vert::Scalar<Scalar>,
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
-			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
-			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-			vcl::vert::CustomComponents<Vertex<Scalar>>>
+			EdgeMeshT<Scalar>,
+			vcl::vert::BitFlags,                                            // 4b
+			vcl::vert::Coordinate3<Scalar>,                                 // 24b
+			vcl::vert::Normal3<Scalar>,                                     // 24b
+			vcl::vert::Color,                                               // 4b
+			vcl::vert::Scalar<Scalar>,                                      // 8b
+			vcl::vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>, // 0b
+			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
+			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
+			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
 {
 };
 
 template<typename Scalar>
-class Face :
-		public vcl::Face<
-			PolyMeshT<Scalar>,
-			vcl::face::PolygonBitFlags, // 4b
-			vcl::face::PolygonVertexRefs<Vertex<Scalar>>,
-			vcl::face::Normal3<Scalar>,
-			vcl::face::OptionalColor<Face<Scalar>>,
-			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,
-			vcl::face::OptionalAdjacentPolygons<Face<Scalar>>,
-			vcl::face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar>>,
-			vcl::face::CustomComponents<Face<Scalar>>>
+class Edge :
+		public vcl::Edge<
+			EdgeMeshT<Scalar>,
+			vcl::edge::BitFlags,                             // 4b
+			vcl::edge::VertexReferences<Vertex<Scalar>>,     // 24b
+			vcl::edge::OptionalScalar<Scalar, Edge<Scalar>>, // 0b
+			vcl::edge::OptionalColor<Edge<Scalar>>,          // 0b
+			vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,  // 0b
+			vcl::edge::OptionalMark<Edge<Scalar>>,           // 0b
+			vcl::edge::CustomComponents<Edge<Scalar>>>       // 0b
 {
 };
 
-} // namespace vcl::polymesh
+} // namespace vcl::trimesh
 
 namespace vcl {
 
 template<typename ScalarType = double>
-class PolyMeshT :
+class EdgeMeshT :
 		public vcl::Mesh<
-			mesh::VertexContainer<polymesh::Vertex<ScalarType>>,
-			mesh::FaceContainer<polymesh::Face<ScalarType>>,
+			mesh::VertexContainer<edgemesh::Vertex<ScalarType>>,
+			mesh::EdgeContainer<edgemesh::Edge<ScalarType>>,
 			mesh::BoundingBox3<ScalarType>,
-			mesh::Color,
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
@@ -93,9 +91,9 @@ class PolyMeshT :
 {
 };
 
-using PolyMeshf = PolyMeshT<float>;
-using PolyMesh  = PolyMeshT<double>;
+using EdgeMeshf = EdgeMeshT<float>;
+using EdgeMesh  = EdgeMeshT<double>;
 
 } // namespace vcl
 
-#endif // VCL_MESH_POLY_MESH_H
+#endif // VCL_MESHES_EDGE_MESH_H

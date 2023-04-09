@@ -2,7 +2,7 @@
 #define VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H
 
 #include <vclib/concepts/space/sampler.h>
-#include <vclib/mesh/iterator.h>
+#include <vclib/mesh/iterators.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {

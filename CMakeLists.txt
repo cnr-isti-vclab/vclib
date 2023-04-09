@@ -51,7 +51,7 @@ set(HEADERS
 	include/vclib/image.h
 	include/vclib/load_save.h
 	include/vclib/math.h
-	include/vclib/mesh.h
+	include/vclib/meshes.h
 	include/vclib/miscellaneous.h
 	include/vclib/space.h
 	include/vclib/types.h
@@ -179,13 +179,10 @@ set(HEADERS
 	include/vclib/math/perlin_noise.h
 	include/vclib/math/random.h
 	include/vclib/math/transform.h
-	include/vclib/mesh/dcel_mesh.h
-	include/vclib/mesh/edge_mesh.h
-	include/vclib/mesh/iterator.h
-	include/vclib/mesh/point_cloud.h
-	include/vclib/mesh/poly_mesh.h
+	include/vclib/mesh/iterators.h
+	include/vclib/mesh/mesh.h
+	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/requirements.h
-	include/vclib/mesh/tri_mesh.h
 	include/vclib/mesh/views.h
 	include/vclib/mesh/components/adjacent_edges.h
 	include/vclib/mesh/components/adjacent_faces.h
@@ -245,8 +242,6 @@ set(HEADERS
 	include/vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h
 	include/vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h
 	include/vclib/mesh/iterators/half_edge/vertex_base_iterator.h
-	include/vclib/mesh/mesh/mesh.h
-	include/vclib/mesh/mesh/mesh_components.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/half_edge_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
@@ -264,6 +259,11 @@ set(HEADERS
 	include/vclib/mesh/views/components/coords.h
 	include/vclib/mesh/views/components/scalars.h
 	include/vclib/mesh/views/components/selection.h
+	include/vclib/meshes/dcel_mesh.h
+	include/vclib/meshes/edge_mesh.h
+	include/vclib/meshes/point_cloud.h
+	include/vclib/meshes/poly_mesh.h
+	include/vclib/meshes/tri_mesh.h
 	include/vclib/misc/bit_proxy.h
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h
@@ -408,6 +408,7 @@ set(SOURCES
 	include/vclib/math/base.cpp
 	include/vclib/math/random.cpp
 	include/vclib/math/transform.cpp
+	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/components/adjacent_edges.cpp
 	include/vclib/mesh/components/adjacent_faces.cpp
 	include/vclib/mesh/components/adjacent_vertices.cpp
@@ -449,7 +450,6 @@ set(SOURCES
 	include/vclib/mesh/elements/vertex.cpp
 	include/vclib/mesh/iterators/element_container_iterator.cpp
 	include/vclib/mesh/iterators/face/edge_adj_face_iterator.cpp
-	include/vclib/mesh/mesh/mesh.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp

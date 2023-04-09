@@ -25,7 +25,7 @@
 
 #include <vclib/algorithms.h>
 #include <vclib/load_save.h>
-#include <vclib/mesh.h>
+#include <vclib/meshes.h>
 
 template<typename MeshType>
 void updateAndPrintNormals(MeshType& m){
