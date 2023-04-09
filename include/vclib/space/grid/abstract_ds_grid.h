@@ -131,6 +131,9 @@ public:
 	template<typename ObjIterator>
 	uint insert(ObjIterator begin, ObjIterator end);
 
+	template<std::ranges::range Rng>
+	uint insert(Rng&& r);
+
 	// erase
 	bool erase(const ValueType& v);
 	bool eraseAllInCell(const KeyType& k);
@@ -199,6 +202,9 @@ protected:
 	// this constructor **does not insert elements**.
 	template<typename ObjIterator>
 	AbstractDSGrid(ObjIterator begin, ObjIterator end, IsInCellFunction intersects = nullptr);
+
+	template<std::ranges::range Rng>
+	AbstractDSGrid(Rng&& r, IsInCellFunction intersects = nullptr);
 
 	// custom function that checks if a value intersects with a cell (a box)
 	// if not initialized, bounding box of value will be used to check if it is in cell
