@@ -26,7 +26,7 @@
 
 #include "logger.h"
 
-#include <vclib/concept/logger.h>
+#include <vclib/concepts/logger.h>
 
 namespace vcl {
 

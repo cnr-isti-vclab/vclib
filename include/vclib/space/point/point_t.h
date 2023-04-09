@@ -29,7 +29,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include <vclib/concept/space/point.h>
+#include <vclib/concepts/space/point.h>
 #include <vclib/math/base.h>
 
 namespace vcl {

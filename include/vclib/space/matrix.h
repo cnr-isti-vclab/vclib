@@ -26,8 +26,8 @@
 
 #include <Eigen/Core>
 
-#include <vclib/concept/space/matrix.h>
-#include <vclib/concept/space/point.h>
+#include <vclib/concepts/space/matrix.h>
+#include <vclib/concepts/space/point.h>
 
 namespace vcl {
 

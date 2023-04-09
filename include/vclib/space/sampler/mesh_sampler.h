@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_SAMPLER_MESH_SAMPLER_H
 #define VCL_SPACE_SAMPLER_MESH_SAMPLER_H
 
-#include <vclib/concept/space/sampler.h>
+#include <vclib/concepts/space/sampler.h>
 #include <vclib/mesh/views.h>
 #include <vclib/mesh/requirements.h>
 

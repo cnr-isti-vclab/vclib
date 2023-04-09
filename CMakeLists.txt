@@ -46,7 +46,7 @@ set(VCLIB_SRC_DIR ${VCLIB_INCLUDE_DIR}/vclib)
 
 set(HEADERS
 	include/vclib/algorithms.h
-	include/vclib/concept.h
+	include/vclib/concepts.h
 	include/vclib/exception.h
 	include/vclib/image.h
 	include/vclib/load_save.h
@@ -96,51 +96,51 @@ set(HEADERS
 	include/vclib/algorithms/update/selection.h
 	include/vclib/algorithms/update/topology.h
 	include/vclib/algorithms/update/transform.h
-	include/vclib/concept/logger.h
-	include/vclib/concept/mesh.h
-	include/vclib/concept/space.h
-	include/vclib/concept/mesh/component.h
-	include/vclib/concept/mesh/container.h
-	include/vclib/concept/mesh/per_face.h
-	include/vclib/concept/mesh/per_half_edge.h
-	include/vclib/concept/mesh/per_vertex.h
-	include/vclib/concept/mesh/component/adjacent_edges.h
-	include/vclib/concept/mesh/component/adjacent_faces.h
-	include/vclib/concept/mesh/component/adjacent_vertices.h
-	include/vclib/concept/mesh/component/bit_flags.h
-	include/vclib/concept/mesh/component/bounding_box.h
-	include/vclib/concept/mesh/component/color.h
-	include/vclib/concept/mesh/component/component.h
-	include/vclib/concept/mesh/component/coordinate.h
-	include/vclib/concept/mesh/component/custom_components.h
-	include/vclib/concept/mesh/component/face_half_edge_reference.h
-	include/vclib/concept/mesh/component/half_edge_references.h
-	include/vclib/concept/mesh/component/mark.h
-	include/vclib/concept/mesh/component/name.h
-	include/vclib/concept/mesh/component/normal.h
-	include/vclib/concept/mesh/component/principal_curvature.h
-	include/vclib/concept/mesh/component/scalar.h
-	include/vclib/concept/mesh/component/tex_coord.h
-	include/vclib/concept/mesh/component/texture_paths.h
-	include/vclib/concept/mesh/component/transform_matrix.h
-	include/vclib/concept/mesh/component/vertex_half_edge_reference.h
-	include/vclib/concept/mesh/component/vertex_references.h
-	include/vclib/concept/mesh/component/wedge_colors.h
-	include/vclib/concept/mesh/component/wedge_tex_coords.h
-	include/vclib/concept/mesh/element/edge.h
-	include/vclib/concept/mesh/element/element.h
-	include/vclib/concept/mesh/element/face.h
-	include/vclib/concept/mesh/element/half_edge.h
-	include/vclib/concept/mesh/element/vertex.h
-	include/vclib/concept/space/box.h
-	include/vclib/concept/space/matrix.h
-	include/vclib/concept/space/plane.h
-	include/vclib/concept/space/point.h
-	include/vclib/concept/space/polygon.h
-	include/vclib/concept/space/sampler.h
-	include/vclib/concept/space/segment.h
-	include/vclib/concept/space/sphere.h
-	include/vclib/concept/space/triangle.h
+	include/vclib/concepts/logger.h
+	include/vclib/concepts/mesh.h
+	include/vclib/concepts/space.h
+	include/vclib/concepts/mesh/component.h
+	include/vclib/concepts/mesh/container.h
+	include/vclib/concepts/mesh/per_face.h
+	include/vclib/concepts/mesh/per_half_edge.h
+	include/vclib/concepts/mesh/per_vertex.h
+	include/vclib/concepts/mesh/component/adjacent_edges.h
+	include/vclib/concepts/mesh/component/adjacent_faces.h
+	include/vclib/concepts/mesh/component/adjacent_vertices.h
+	include/vclib/concepts/mesh/component/bit_flags.h
+	include/vclib/concepts/mesh/component/bounding_box.h
+	include/vclib/concepts/mesh/component/color.h
+	include/vclib/concepts/mesh/component/component.h
+	include/vclib/concepts/mesh/component/coordinate.h
+	include/vclib/concepts/mesh/component/custom_components.h
+	include/vclib/concepts/mesh/component/face_half_edge_reference.h
+	include/vclib/concepts/mesh/component/half_edge_references.h
+	include/vclib/concepts/mesh/component/mark.h
+	include/vclib/concepts/mesh/component/name.h
+	include/vclib/concepts/mesh/component/normal.h
+	include/vclib/concepts/mesh/component/principal_curvature.h
+	include/vclib/concepts/mesh/component/scalar.h
+	include/vclib/concepts/mesh/component/tex_coord.h
+	include/vclib/concepts/mesh/component/texture_paths.h
+	include/vclib/concepts/mesh/component/transform_matrix.h
+	include/vclib/concepts/mesh/component/vertex_half_edge_reference.h
+	include/vclib/concepts/mesh/component/vertex_references.h
+	include/vclib/concepts/mesh/component/wedge_colors.h
+	include/vclib/concepts/mesh/component/wedge_tex_coords.h
+	include/vclib/concepts/mesh/element/edge.h
+	include/vclib/concepts/mesh/element/element.h
+	include/vclib/concepts/mesh/element/face.h
+	include/vclib/concepts/mesh/element/half_edge.h
+	include/vclib/concepts/mesh/element/vertex.h
+	include/vclib/concepts/space/box.h
+	include/vclib/concepts/space/matrix.h
+	include/vclib/concepts/space/plane.h
+	include/vclib/concepts/space/point.h
+	include/vclib/concepts/space/polygon.h
+	include/vclib/concepts/space/sampler.h
+	include/vclib/concepts/space/segment.h
+	include/vclib/concepts/space/sphere.h
+	include/vclib/concepts/space/triangle.h
 	include/vclib/exception/io_exception.h
 	include/vclib/exception/mesh_exception.h
 	include/vclib/exception/misc_exception.h

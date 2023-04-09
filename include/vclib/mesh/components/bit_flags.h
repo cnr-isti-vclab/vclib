@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
-#include <vclib/concept/mesh/component/bit_flags.h>
+#include <vclib/concepts/mesh/component/bit_flags.h>
 #include <vclib/misc/bit_proxy.h>
 
 #include "internal/component_data.h"

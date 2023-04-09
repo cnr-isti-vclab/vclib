@@ -26,9 +26,9 @@
 
 #include <vector>
 
-#include <vclib/concept/mesh/component/custom_components.h>
-#include <vclib/concept/mesh/container.h>
-#include <vclib/concept/mesh/element/element.h>
+#include <vclib/concepts/mesh/component/custom_components.h>
+#include <vclib/concepts/mesh/container.h>
+#include <vclib/concepts/mesh/element/element.h>
 #include <vclib/iterators/view.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
 

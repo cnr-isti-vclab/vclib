@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_MESH_MESH_H
 #define VCL_MESH_MESH_MESH_H
 
-#include <vclib/concept/mesh.h>
+#include <vclib/concepts/mesh.h>
 #include <vclib/mesh/containers/containers.h>
 
 #include "mesh_components.h"

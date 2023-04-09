@@ -23,7 +23,7 @@
 
 #include "element_container.h"
 
-#include <vclib/concept/mesh/component.h>
+#include <vclib/concepts/mesh/component.h>
 
 namespace vcl::mesh {
 

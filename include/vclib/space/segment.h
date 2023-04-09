@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_SEGMENT_H
 #define VCL_SPACE_SEGMENT_H
 
-#include <vclib/concept/space/segment.h>
+#include <vclib/concepts/space/segment.h>
 
 #include "point.h"
 

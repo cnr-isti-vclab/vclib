@@ -26,9 +26,9 @@
 
 #include <vector>
 
-#include <vclib/concept/mesh/component/color.h>
-#include <vclib/concept/mesh/component/face_half_edge_reference.h>
-#include <vclib/concept/mesh/component/tex_coord.h>
+#include <vclib/concepts/mesh/component/color.h>
+#include <vclib/concepts/mesh/component/face_half_edge_reference.h>
+#include <vclib/concepts/mesh/component/tex_coord.h>
 #include <vclib/mesh/iterators/half_edge/face_adj_face_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_half_edge_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_vertex_iterator.h>

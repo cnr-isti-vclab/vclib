@@ -26,7 +26,7 @@
 
 #include <vector>
 
-#include <vclib/concept/mesh/component/half_edge_references.h>
+#include <vclib/concepts/mesh/component/half_edge_references.h>
 
 #include "internal/component_data.h"
 

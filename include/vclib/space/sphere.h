@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_SPHERE_H
 #define VCL_SPACE_SPHERE_H
 
-#include <vclib/concept/space/sphere.h>
+#include <vclib/concepts/space/sphere.h>
 
 #include "box.h"
 

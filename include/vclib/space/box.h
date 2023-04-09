@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_BOX_H
 #define VCL_SPACE_BOX_H
 
-#include <vclib/concept/space/box.h>
+#include <vclib/concepts/space/box.h>
 
 #include "point.h"
 

@@ -27,7 +27,7 @@
 #include <ranges>
 #include <vector>
 
-#include <vclib/concept/space/polygon.h>
+#include <vclib/concepts/space/polygon.h>
 #include <vclib/space/point.h>
 
 namespace vcl {

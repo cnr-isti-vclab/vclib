@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_NAME_H
 #define VCL_MESH_COMPONENTS_NAME_H
 
-#include <vclib/concept/mesh/component/name.h>
+#include <vclib/concepts/mesh/component/name.h>
 
 #include "internal/component_data.h"
 
