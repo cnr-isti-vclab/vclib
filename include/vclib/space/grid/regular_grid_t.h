@@ -26,7 +26,7 @@
 
 #include "iterators/cell_iterator.h"
 
-#include <vclib/iterators/view.h>
+#include <vclib/views/view.h>
 #include <vclib/space/box.h>
 
 namespace vcl {

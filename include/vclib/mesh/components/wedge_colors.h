@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
 #include <vclib/concepts/mesh/components/wedge_colors.h>
-#include <vclib/iterators/view.h>
+#include <vclib/views/view.h>
 #include <vclib/misc/random_access_container.h>
 
 #include "internal/component_data.h"

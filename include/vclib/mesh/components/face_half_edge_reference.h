@@ -34,7 +34,7 @@
 #include <vclib/mesh/iterators/half_edge/face_vertex_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_wedge_color_iterator.h>
 #include <vclib/mesh/iterators/half_edge/face_wedge_tex_coord_iterator.h>
-#include <vclib/iterators/view.h>
+#include <vclib/views/view.h>
 #include <vclib/space/color.h>
 
 #include "internal/component_data.h"

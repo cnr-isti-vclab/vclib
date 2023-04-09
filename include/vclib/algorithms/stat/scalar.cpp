@@ -24,7 +24,7 @@
 #include "scalar.h"
 
 #include <vclib/math/base.h>
-#include <vclib/mesh/views.h>
+#include <vclib/views/mesh.h>
 
 namespace vcl {
 

@@ -27,9 +27,9 @@
 #include <vector>
 
 #include <vclib/concepts/mesh/components/vertex_half_edge_reference.h>
-#include <vclib/iterators/view.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h>
 #include <vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h>
+#include <vclib/views/view.h>
 
 #include "internal/component_data.h"
 

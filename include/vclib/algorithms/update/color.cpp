@@ -24,7 +24,7 @@
 #include "color.h"
 
 #include <vclib/math/perlin_noise.h>
-#include <vclib/mesh/views.h>
+#include <vclib/views/mesh.h>
 
 #include "../clean.h"
 #include "../stat.h"

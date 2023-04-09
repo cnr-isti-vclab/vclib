@@ -29,7 +29,7 @@
 #include <set>
 #include <vector>
 
-#include <vclib/iterators/view.h>
+#include <vclib/views/view.h>
 #include <vclib/types.h>
 #include <vclib/space/graph/undirected_node.h>
 

@@ -28,7 +28,7 @@
 #include <vclib/exceptions/mesh_exceptions.h>
 #include <vclib/mesh/iterators.h>
 #include <vclib/mesh/utils/mesh_pos.h>
-#include <vclib/mesh/views.h>
+#include <vclib/views/mesh.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/space/polygon.h>
 

@@ -25,8 +25,8 @@
 #define VCL_SPACE_SAMPLER_MESH_SAMPLER_H
 
 #include <vclib/concepts/space/sampler.h>
-#include <vclib/mesh/views.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/views/mesh.h>
 
 namespace vcl {
 

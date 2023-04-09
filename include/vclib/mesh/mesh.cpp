@@ -23,7 +23,7 @@
 
 #include "mesh.h"
 
-#include <vclib/mesh/views.h>
+#include <vclib/views/mesh.h>
 #include <vclib/space/polygon.h>
 
 namespace vcl {

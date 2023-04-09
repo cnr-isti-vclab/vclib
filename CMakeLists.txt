@@ -169,7 +169,6 @@ set(HEADERS
 	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
 	include/vclib/iterators/iterator_wrapper.h
-	include/vclib/iterators/view.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/fibonacci.h
@@ -182,7 +181,6 @@ set(HEADERS
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/requirements.h
-	include/vclib/mesh/views.h
 	include/vclib/mesh/components/adjacent_edges.h
 	include/vclib/mesh/components/adjacent_faces.h
 	include/vclib/mesh/components/adjacent_vertices.h
@@ -249,15 +247,6 @@ set(HEADERS
 	include/vclib/mesh/utils/mesh_inertia.h
 	include/vclib/mesh/utils/mesh_pos.h
 	include/vclib/mesh/utils/tri_poly_index_bimap.h
-	include/vclib/mesh/views/components.h
-	include/vclib/mesh/views/elements.h
-	include/vclib/mesh/views/components/adj_edges.h
-	include/vclib/mesh/views/components/adj_faces.h
-	include/vclib/mesh/views/components/adj_vertices.h
-	include/vclib/mesh/views/components/colors.h
-	include/vclib/mesh/views/components/coords.h
-	include/vclib/mesh/views/components/scalars.h
-	include/vclib/mesh/views/components/selection.h
 	include/vclib/meshes/dcel_mesh.h
 	include/vclib/meshes/edge_mesh.h
 	include/vclib/meshes/point_cloud.h
@@ -338,6 +327,17 @@ set(HEADERS
 	include/vclib/types/pointers.h
 	include/vclib/types/variadic_templates.h
 	include/vclib/types/views.h
+	include/vclib/views/mesh.h
+	include/vclib/views/view.h
+	include/vclib/views/mesh/components.h
+	include/vclib/views/mesh/elements.h
+	include/vclib/views/mesh/components/adj_edges.h
+	include/vclib/views/mesh/components/adj_faces.h
+	include/vclib/views/mesh/components/adj_vertices.h
+	include/vclib/views/mesh/components/colors.h
+	include/vclib/views/mesh/components/coords.h
+	include/vclib/views/mesh/components/scalars.h
+	include/vclib/views/mesh/components/selection.h
 )
 
 set(SOURCES

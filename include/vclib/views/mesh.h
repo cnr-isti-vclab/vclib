@@ -21,10 +21,10 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_H
-#define VCL_MESH_VIEWS_H
+#ifndef VCL_VIEWS_MESH_H
+#define VCL_VIEWS_MESH_H
 
-#include "views/components.h"
-#include "views/elements.h"
+#include "mesh/components.h"
+#include "mesh/elements.h"
 
-#endif // VCL_MESH_VIEWS_H
+#endif // VCL_VIEWS_MESH_H

@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ITERATOR_VIEW_H
-#define VCL_ITERATOR_VIEW_H
+#ifndef VCL_VIEWS_VIEW_H
+#define VCL_VIEWS_VIEW_H
 
 #include <ranges>
 
@@ -64,4 +64,4 @@ protected:
 
 } // namespace vcl
 
-#endif // VCL_ITERATOR_VIEW_H
+#endif // VCL_VIEWS_VIEW_H

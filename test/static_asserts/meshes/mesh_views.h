@@ -3,7 +3,7 @@
 
 #include <ranges>
 
-#include <vclib/mesh/views.h>
+#include <vclib/views/mesh.h>
 
 template<typename MeshType>
 void meshViewsStaticAsserts()

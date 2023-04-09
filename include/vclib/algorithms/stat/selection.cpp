@@ -23,7 +23,7 @@
 
 #include "selection.h"
 
-#include <vclib/mesh/views.h>
+#include <vclib/views/mesh.h>
 
 namespace vcl {
 
