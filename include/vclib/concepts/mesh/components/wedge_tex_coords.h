@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_WEDGE_TEX_COORDS_H
-#define VCL_CONCEPTS_MESH_COMPONENT_WEDGE_TEX_COORDS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
 #include <vector>
 
@@ -138,4 +138,4 @@ bool isWedgeTexCoordsEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_WEDGE_TEX_COORDS_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_WEDGE_TEX_COORDS_H

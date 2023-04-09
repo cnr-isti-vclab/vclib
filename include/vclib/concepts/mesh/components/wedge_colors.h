@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_WEDGE_COLORS_H
-#define VCL_CONCEPTS_MESH_COMPONENT_WEDGE_COLORS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_WEDGE_COLORS_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_WEDGE_COLORS_H
 
 #include "component.h"
 
@@ -133,4 +133,4 @@ bool isWedgeColorsEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_WEDGE_COLORS_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_WEDGE_COLORS_H

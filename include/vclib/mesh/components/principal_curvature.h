@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
 #define VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
 
-#include <vclib/concepts/mesh/component/principal_curvature.h>
+#include <vclib/concepts/mesh/components/principal_curvature.h>
 #include <vclib/space/principal_curvature.h>
 
 #include "internal/component_data.h"

@@ -21,31 +21,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_FACE_HALF_EDGE_REFERENCE_H
-#define VCL_CONCEPTS_MESH_COMPONENT_FACE_HALF_EDGE_REFERENCE_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_H
 
-#include "component.h"
+#include "components/adjacent_edges.h"
+#include "components/adjacent_faces.h"
+#include "components/adjacent_vertices.h"
+#include "components/bit_flags.h"
+#include "components/bounding_box.h"
+#include "components/color.h"
+#include "components/component.h"
+#include "components/coordinate.h"
+#include "components/custom_components.h"
+#include "components/face_half_edge_reference.h"
+#include "components/half_edge_references.h"
+#include "components/mark.h"
+#include "components/name.h"
+#include "components/normal.h"
+#include "components/principal_curvature.h"
+#include "components/scalar.h"
+#include "components/tex_coord.h"
+#include "components/texture_paths.h"
+#include "components/transform_matrix.h"
+#include "components/vertex_half_edge_reference.h"
+#include "components/vertex_references.h"
+#include "components/wedge_colors.h"
+#include "components/wedge_tex_coords.h"
 
-namespace vcl::comp {
-
-/**
- * @brief HasFaceHalfEdgeReference concept
- *
- * This concept is satisfied only if a class has the following member functions:
- * - outerHalfEdge()
- * - numberHoles(), which returns an uint
- * - innerHalfEdge(uint)
- */
-template<typename T>
-concept HasFaceHalfEdgeReference = requires(T o)
-{
-	typename T::HalfEdgeType;
-	typename T::VertexType;
-	o.outerHalfEdge();
-	{ o.numberHoles() } -> std::same_as<uint>;
-	o.innerHalfEdge(uint());
-};
-
-} // namespace vcl::comp
-
-#endif // VCL_CONCEPTS_MESH_COMPONENT_FACE_HALF_EDGE_REFERENCE_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_H

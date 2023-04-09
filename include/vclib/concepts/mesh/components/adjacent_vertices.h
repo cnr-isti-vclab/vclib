@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_ADJACENT_VERTICES_H
-#define VCL_CONCEPTS_MESH_COMPONENT_ADJACENT_VERTICES_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_ADJACENT_VERTICES_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
 #include <vector>
 
@@ -115,4 +115,4 @@ bool isAdjacentVerticesEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_ADJACENT_VERTICES_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_ADJACENT_VERTICES_H

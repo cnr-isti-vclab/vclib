@@ -21,30 +21,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_COORDINATE_H
-#define VCL_CONCEPTS_MESH_COMPONENT_COORDINATE_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
 
 #include "component.h"
-
-#include <vclib/space/point.h>
 
 namespace vcl::comp {
 
 /**
- * @brief HasCoordinate concept is satisfied only if a Element class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * Coordinate component of a given element.
+ * @brief HasHalfEdgeReferences concept
+ *
+ * This concept is satisfied only if a class has the following member functions:
+ * - next()
+ * - prev()
+ * - twin()
  */
 template<typename T>
-concept HasCoordinate = requires(
-	T o,
-	const T& co)
+concept HasHalfEdgeReferences =
+	requires(T o)
 {
-	typename T::CoordType;
-	{ o.coord() } -> std::same_as<typename T::CoordType&>;
-	{ co.coord() } -> std::same_as<const typename T::CoordType&>;
+	typename T::HalfEdgeType;
+	typename T::VertexType;
+	typename T::FaceType;
+	o.next();
+	o.prev();
+	o.twin();
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_COORDINATE_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H

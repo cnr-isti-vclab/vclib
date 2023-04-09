@@ -24,7 +24,7 @@
 #ifndef VCL_CONCEPTS_MESH_ELEMENT_FACE_H
 #define VCL_CONCEPTS_MESH_ELEMENT_FACE_H
 
-#include <vclib/concepts/mesh/component.h>
+#include <vclib/concepts/mesh/components.h>
 
 #include "element.h"
 

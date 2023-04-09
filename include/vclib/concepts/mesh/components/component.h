@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_COMPONENT_H
-#define VCL_CONCEPTS_MESH_COMPONENT_COMPONENT_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_COMPONENT_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_COMPONENT_H
 
 #include <vclib/types.h>
 
@@ -98,4 +98,4 @@ concept HasOptionalReferencesOfType = HasReferencesOfType<T, R> && IsOptionalCom
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_COMPONENT_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_COMPONENT_H

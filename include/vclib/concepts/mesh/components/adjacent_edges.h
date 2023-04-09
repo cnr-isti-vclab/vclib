@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_ADJACENT_EDGES_H
-#define VCL_CONCEPTS_MESH_COMPONENT_ADJACENT_EDGES_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_ADJACENT_EDGES_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_ADJACENT_EDGES_H
 
 #include <vector>
 
@@ -128,4 +128,4 @@ bool isAdjacentEdgesEnabledOn(const T& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_ADJACENT_EDGES_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_ADJACENT_EDGES_H

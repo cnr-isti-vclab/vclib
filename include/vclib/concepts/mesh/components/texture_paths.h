@@ -21,31 +21,48 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_H
-#define VCL_CONCEPTS_MESH_COMPONENT_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 
-#include "component/adjacent_edges.h"
-#include "component/adjacent_faces.h"
-#include "component/adjacent_vertices.h"
-#include "component/bit_flags.h"
-#include "component/bounding_box.h"
-#include "component/color.h"
-#include "component/component.h"
-#include "component/coordinate.h"
-#include "component/custom_components.h"
-#include "component/face_half_edge_reference.h"
-#include "component/half_edge_references.h"
-#include "component/mark.h"
-#include "component/name.h"
-#include "component/normal.h"
-#include "component/principal_curvature.h"
-#include "component/scalar.h"
-#include "component/tex_coord.h"
-#include "component/texture_paths.h"
-#include "component/transform_matrix.h"
-#include "component/vertex_half_edge_reference.h"
-#include "component/vertex_references.h"
-#include "component/wedge_colors.h"
-#include "component/wedge_tex_coords.h"
+#include "component.h"
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_H
+#include <string>
+
+namespace vcl::comp {
+
+/**
+ * @brief HasTexturePaths concept is satisfied only if a Element or Mesh class provides the member
+ * functions specified in this concept. These member functions allows to access to a TexturePaths
+ * component of a given element/mesh.
+ */
+template<typename T>
+concept HasTexturePaths = requires(
+	T o,
+	const T& co,
+	std::string s)
+{
+	typename T::TexFileNamesIterator;
+	typename T::ConstTexFileNamesIterator;
+	typename T::TexFileNamesView;
+	typename T::ConstTexFileNamesView;
+
+	{ co.textureNumber() } -> std::same_as<uint>;
+	{ co.texturePath(uint()) } -> std::same_as<const std::string&>;
+	{ o.texturePath(uint()) } -> std::same_as<std::string&>;
+	{ co.meshBasePath() } -> std::same_as<const std::string&>;
+	{ o.meshBasePath() } -> std::same_as<std::string&>;
+
+	{ o.clearTexturePaths() } -> std::same_as<void>;
+	{ o.pushTexturePath(s) } -> std::same_as<void>;
+
+	{ o.texturePathBegin() } -> std::same_as<typename T::TexFileNamesIterator>;
+	{ o.texturePathEnd() } -> std::same_as<typename T::TexFileNamesIterator>;
+	{ co.texturePathBegin() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
+	{ co.texturePathEnd() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
+	{ o.texturePaths() } -> std::same_as<typename T::TexFileNamesView>;
+	{ co.texturePaths() } -> std::same_as<typename T::ConstTexFileNamesView>;
+};
+
+} // namespace vcl::comp
+
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H

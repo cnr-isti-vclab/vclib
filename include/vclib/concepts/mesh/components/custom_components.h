@@ -21,27 +21,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_NAME_H
-#define VCL_CONCEPTS_MESH_COMPONENT_NAME_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
 #include "component.h"
+
+#include <string>
 
 namespace vcl::comp {
 
 /**
- * @brief HasName concept is satisfied only if a Element or Mesh class provides the member
- * functions specified in this concept. These member functions allows to access to a Name
- * component of a given element/mesh.
+ * @brief HasCustomComponents concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to a
+ * CustomComponents component of a given element.
  */
 template<typename T>
-concept HasName = requires(
+concept HasCustomComponents = requires(
 	T o,
-	const T& co)
+	const T& co,
+	std::string s)
 {
-	{ o.name() } -> std::same_as<std::string&>;
-	{ co.name() } -> std::same_as<const std::string&>;
+	{ o.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
+	{ o.template customComponent<int>(s) } -> std::same_as<int&>;
+	{ co.template customComponent<int>(s) } -> std::same_as<const int&>;
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_NAME_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H

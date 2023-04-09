@@ -21,58 +21,28 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_TEX_COORD_H
-#define VCL_CONCEPTS_MESH_COMPONENT_TEX_COORD_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
 
 #include "component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief HasTexCoord concept is satisfied only if a Element class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * TexCoord component of a given element.
- *
- * Note that this concept does not discriminate between the Horizontal TexCoord component
- * and the vertical OptionalTexCoord component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides TexCoord component at runtime
- * (it is guaranteed only that the proper member functions are available at compile time).
- *
- * To be completely sure that TexCoord is available at runtime, you need to call the member
- * function `isTexCoordEnabled()`.
+ * @brief HasBoundingBox concept is satisfied only if a Element or Mesh class provides the member
+ * functions specified in this concept. These member functions allows to access to a BoundingBox
+ * component of a given element/mesh.
  */
 template<typename T>
-concept HasTexCoord = requires(
+concept HasBoundingBox = requires(
 	T o,
 	const T& co)
 {
-	typename T::TexCoordType;
-	typename T::TexCoordComponent;
-	{ o.texCoord() } -> std::same_as<typename T::TexCoordType&>;
-	{ co.texCoord() } -> std::same_as<const typename T::TexCoordType&>;
-	{ co.isTexCoordEnabled() } -> std::same_as<bool>;
+	typename T::BoundingBoxType;
+	{ o.boundingBox() } -> std::same_as<typename T::BoundingBoxType&>;
+	{ co.boundingBox() } -> std::same_as<const typename T::BoundingBoxType&>;
 };
-
-/**
- * @brief HasOptionalTexCoord concept is satisfied only if a class satisfis the HasTexCoord concept
- * and the static boolean constant IS_OPTIONAL is set to true.
- */
-template<typename T>
-concept HasOptionalTexCoord = HasTexCoord<T> && IsOptionalComponent<typename T::TexCoordComponent>;;
-
-/* Detector function to check if a class has TexCoord enabled */
-
-template <typename T>
-bool isTexCoordEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalTexCoord<T>) {
-		return element.isTexCoordEnabled();
-	}
-	else {
-		return HasTexCoord<T>;
-	}
-}
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_TEX_COORD_H
+#endif // VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H

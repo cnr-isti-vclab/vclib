@@ -21,55 +21,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ELEMENTS_ELEMENT_H
-#define VCL_MESH_ELEMENTS_ELEMENT_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_H
 
-#include <vclib/concepts/mesh/element/element.h>
+#include "component.h"
 
-#include <vclib/concepts/mesh/components/component.h>
-#include <vclib/mesh/components/parent_mesh_pointer.h>
-#include <vclib/types.h>
+namespace vcl::comp {
 
-namespace vcl::mesh {
-
-template<ElementConcept>
-class ElementContainer;
-
-} // namespace vcl::mesh
-
-namespace vcl {
-
-template <typename MeshType, typename... Args>
-class Element : public comp::ParentMeshPointer<MeshType>, public Args...
+/**
+ * @brief HasFaceHalfEdgeReference concept
+ *
+ * This concept is satisfied only if a class has the following member functions:
+ * - outerHalfEdge()
+ * - numberHoles(), which returns an uint
+ * - innerHalfEdge(uint)
+ */
+template<typename T>
+concept HasFaceHalfEdgeReference = requires(T o)
 {
-	template<ElementConcept>
-	friend class mesh::ElementContainer;
-public:
-	using ParentMeshType = MeshType;
-	using Components = TypeWrapper<Args...>;
-
-	template<typename ElType>
-	void importFrom(const ElType& v);
-
-protected:
-
-	template<typename ElType>
-	uint index() const;
-
-private:
-	// hide init and isEnabled members
-	void init() {}
-	bool isEnabled() { return true; }
-
-	// init to call after set parent mesh
-	void initVerticalComponents();
-
-	template<typename Comp>
-	void construct();
+	typename T::HalfEdgeType;
+	typename T::VertexType;
+	o.outerHalfEdge();
+	{ o.numberHoles() } -> std::same_as<uint>;
+	o.innerHalfEdge(uint());
 };
 
-} // namespace vcl
+} // namespace vcl::comp
 
-#include "element.cpp"
-
-#endif // VCL_MESH_ELEMENTS_ELEMENT_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_H

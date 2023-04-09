@@ -24,7 +24,7 @@
 #ifndef VCL_CONCEPTS_MESH_H
 #define VCL_CONCEPTS_MESH_H
 
-#include "mesh/component.h"
+#include "mesh/components.h"
 #include "mesh/container.h"
 #include "mesh/per_face.h"
 #include "mesh/per_half_edge.h"

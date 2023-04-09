@@ -99,34 +99,34 @@ set(HEADERS
 	include/vclib/concepts/logger.h
 	include/vclib/concepts/mesh.h
 	include/vclib/concepts/space.h
-	include/vclib/concepts/mesh/component.h
+	include/vclib/concepts/mesh/components.h
 	include/vclib/concepts/mesh/container.h
 	include/vclib/concepts/mesh/per_face.h
 	include/vclib/concepts/mesh/per_half_edge.h
 	include/vclib/concepts/mesh/per_vertex.h
-	include/vclib/concepts/mesh/component/adjacent_edges.h
-	include/vclib/concepts/mesh/component/adjacent_faces.h
-	include/vclib/concepts/mesh/component/adjacent_vertices.h
-	include/vclib/concepts/mesh/component/bit_flags.h
-	include/vclib/concepts/mesh/component/bounding_box.h
-	include/vclib/concepts/mesh/component/color.h
-	include/vclib/concepts/mesh/component/component.h
-	include/vclib/concepts/mesh/component/coordinate.h
-	include/vclib/concepts/mesh/component/custom_components.h
-	include/vclib/concepts/mesh/component/face_half_edge_reference.h
-	include/vclib/concepts/mesh/component/half_edge_references.h
-	include/vclib/concepts/mesh/component/mark.h
-	include/vclib/concepts/mesh/component/name.h
-	include/vclib/concepts/mesh/component/normal.h
-	include/vclib/concepts/mesh/component/principal_curvature.h
-	include/vclib/concepts/mesh/component/scalar.h
-	include/vclib/concepts/mesh/component/tex_coord.h
-	include/vclib/concepts/mesh/component/texture_paths.h
-	include/vclib/concepts/mesh/component/transform_matrix.h
-	include/vclib/concepts/mesh/component/vertex_half_edge_reference.h
-	include/vclib/concepts/mesh/component/vertex_references.h
-	include/vclib/concepts/mesh/component/wedge_colors.h
-	include/vclib/concepts/mesh/component/wedge_tex_coords.h
+	include/vclib/concepts/mesh/components/adjacent_edges.h
+	include/vclib/concepts/mesh/components/adjacent_faces.h
+	include/vclib/concepts/mesh/components/adjacent_vertices.h
+	include/vclib/concepts/mesh/components/bit_flags.h
+	include/vclib/concepts/mesh/components/bounding_box.h
+	include/vclib/concepts/mesh/components/color.h
+	include/vclib/concepts/mesh/components/component.h
+	include/vclib/concepts/mesh/components/coordinate.h
+	include/vclib/concepts/mesh/components/custom_components.h
+	include/vclib/concepts/mesh/components/face_half_edge_reference.h
+	include/vclib/concepts/mesh/components/half_edge_references.h
+	include/vclib/concepts/mesh/components/mark.h
+	include/vclib/concepts/mesh/components/name.h
+	include/vclib/concepts/mesh/components/normal.h
+	include/vclib/concepts/mesh/components/principal_curvature.h
+	include/vclib/concepts/mesh/components/scalar.h
+	include/vclib/concepts/mesh/components/tex_coord.h
+	include/vclib/concepts/mesh/components/texture_paths.h
+	include/vclib/concepts/mesh/components/transform_matrix.h
+	include/vclib/concepts/mesh/components/vertex_half_edge_reference.h
+	include/vclib/concepts/mesh/components/vertex_references.h
+	include/vclib/concepts/mesh/components/wedge_colors.h
+	include/vclib/concepts/mesh/components/wedge_tex_coords.h
 	include/vclib/concepts/mesh/element/edge.h
 	include/vclib/concepts/mesh/element/element.h
 	include/vclib/concepts/mesh/element/face.h

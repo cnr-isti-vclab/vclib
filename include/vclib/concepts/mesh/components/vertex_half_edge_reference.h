@@ -21,28 +21,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_TRANSFORM_MATRIX_H
-#define VCL_CONCEPTS_MESH_COMPONENT_TRANSFORM_MATRIX_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
 
 #include "component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief HasTransformMatrix concept is satisfied only if a Element or Mesh class provides the
- * member functions specified in this concept. These member functions allows to access to a
- * TransformMatrix component of a given element/mesh.
+ * @brief HasVertexHalfEdgeReference concept
+ *
+ * This concept is satisfied only if a class has the following member functions:
+ * - halfEdge()
  */
 template<typename T>
-concept HasTransformMatrix = requires(
-	T o,
-	const T& co)
+concept HasVertexHalfEdgeReference = requires(T o)
 {
-	typename T::TransformMatrixType;
-	{ co.transformMatrix() } -> std::same_as<const typename T::TransformMatrixType&>;
-	{ o.transformMatrix() } -> std::same_as<typename T::TransformMatrixType&>;
+	typename T::HalfEdgeType;
+	o.halfEdge();
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_TRANSFORM_MATRIX_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H

@@ -21,48 +21,30 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_TEXTURE_PATHS_H
-#define VCL_CONCEPTS_MESH_COMPONENT_TEXTURE_PATHS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
 
 #include "component.h"
 
-#include <string>
+#include <vclib/space/point.h>
 
 namespace vcl::comp {
 
 /**
- * @brief HasTexturePaths concept is satisfied only if a Element or Mesh class provides the member
- * functions specified in this concept. These member functions allows to access to a TexturePaths
- * component of a given element/mesh.
+ * @brief HasCoordinate concept is satisfied only if a Element class provides the types and member
+ * functions specified in this concept. These types and member functions allow to access to a
+ * Coordinate component of a given element.
  */
 template<typename T>
-concept HasTexturePaths = requires(
+concept HasCoordinate = requires(
 	T o,
-	const T& co,
-	std::string s)
+	const T& co)
 {
-	typename T::TexFileNamesIterator;
-	typename T::ConstTexFileNamesIterator;
-	typename T::TexFileNamesView;
-	typename T::ConstTexFileNamesView;
-
-	{ co.textureNumber() } -> std::same_as<uint>;
-	{ co.texturePath(uint()) } -> std::same_as<const std::string&>;
-	{ o.texturePath(uint()) } -> std::same_as<std::string&>;
-	{ co.meshBasePath() } -> std::same_as<const std::string&>;
-	{ o.meshBasePath() } -> std::same_as<std::string&>;
-
-	{ o.clearTexturePaths() } -> std::same_as<void>;
-	{ o.pushTexturePath(s) } -> std::same_as<void>;
-
-	{ o.texturePathBegin() } -> std::same_as<typename T::TexFileNamesIterator>;
-	{ o.texturePathEnd() } -> std::same_as<typename T::TexFileNamesIterator>;
-	{ co.texturePathBegin() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
-	{ co.texturePathEnd() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
-	{ o.texturePaths() } -> std::same_as<typename T::TexFileNamesView>;
-	{ co.texturePaths() } -> std::same_as<typename T::ConstTexFileNamesView>;
+	typename T::CoordType;
+	{ o.coord() } -> std::same_as<typename T::CoordType&>;
+	{ co.coord() } -> std::same_as<const typename T::CoordType&>;
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_TEXTURE_PATHS_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H

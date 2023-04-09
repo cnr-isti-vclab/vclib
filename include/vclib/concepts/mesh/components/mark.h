@@ -21,58 +21,59 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_NORMAL_H
-#define VCL_CONCEPTS_MESH_COMPONENT_NORMAL_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_MARK_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_MARK_H
 
 #include "component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief HasNormal concept is satisfied only if a Element class provides the types and member
+ * @brief HasMark concept is satisfied only if a Element/Mesh class provides the types and member
  * functions specified in this concept. These types and member functions allow to access to a
- * Normal component of a given element.
+ * Mark component of a given element/mesh.
  *
- * Note that this concept does not discriminate between the Horizontal Normal component
- * and the vertical OptionalNormal component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides Normal component at runtime
+ * Note that this concept does not discriminate between the Horizontal Mark component
+ * and the vertical OptionalMark component, therefore it does not guarantee that a
+ * template Element type that satisfies this concept provides Mark component at runtime
  * (it is guaranteed only that the proper member functions are available at compile time).
  *
- * To be completely sure that Normal is available at runtime, you need to call the member
- * function `isNormalEnabled()`.
+ * To be completely sure that Color is available at runtime, you need to call the member
+ * function `isMarkEnabled()`.
  */
 template<typename T>
-concept HasNormal = requires(
+concept HasMark = requires(
 	T o,
 	const T& co)
 {
-	typename T::NormalType;
-	typename T::NormalComponent;
-	{ o.normal() } -> std::same_as<typename T::NormalType&>;
-	{ co.normal() } -> std::same_as<const typename T::NormalType&>;
-	{ co.isNormalEnabled() } -> std::same_as<bool>;
+	typename T::MarkComponent;
+	{ co.mark() } -> std::same_as<int>;
+	{ o.resetMark() } -> std::same_as<void>;
+	{ o.incrementMark() } -> std::same_as<void>;
+	{ o.decrementMark() } -> std::same_as<void>;
+	{ co.isMarkEnabled() } -> std::same_as<bool>;
 };
 
 /**
- * @brief HasOptionalNormal concept is satisfied only if a class satisfis the HasNormal concept and
- * the static boolean constant IS_OPTIONAL is set to true.
+ * @brief HasOptionalMark concept is satisfied only if a class satisfis the HasMark concept and
+ * and the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalNormal = HasNormal<T> && IsOptionalComponent<typename T::NormalComponent>;
+concept HasOptionalMark = HasMark<T> && IsOptionalComponent<typename T::MarkComponent>;
 
-/* Detector function to check if a class has Normal enabled */
+/* Detector function to check if a class has Mark enabled */
 
 template <typename T>
-bool isNormalEnabledOn(const T& element)
+bool isMarkEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalNormal<T>) {
-		return element.isNormalEnabled();
+	if constexpr (HasOptionalMark<T>) {
+		return element.isMarkEnabled();
 	}
 	else {
-		return HasNormal<T>;
+		return HasMark<T>;
 	}
 }
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_NORMAL_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_MARK_H

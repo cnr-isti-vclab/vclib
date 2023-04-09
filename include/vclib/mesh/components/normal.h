@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_NORMAL_H
 #define VCL_MESH_COMPONENTS_NORMAL_H
 
-#include <vclib/concepts/mesh/component/normal.h>
+#include <vclib/concepts/mesh/components/normal.h>
 #include <vclib/space/point.h>
 
 #include "internal/component_data.h"

@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
-#include <vclib/concepts/mesh/component/wedge_tex_coords.h>
+#include <vclib/concepts/mesh/components/wedge_tex_coords.h>
 #include <vclib/iterators/view.h>
 #include <vclib/misc/random_access_container.h>
 #include <vclib/space/tex_coord.h>

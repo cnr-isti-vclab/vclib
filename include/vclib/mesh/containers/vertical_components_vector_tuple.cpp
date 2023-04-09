@@ -23,7 +23,7 @@
 
 #include "vertical_components_vector_tuple.h"
 
-#include <vclib/concepts/mesh/component/component.h>
+#include <vclib/concepts/mesh/components/component.h>
 #include <vclib/misc/compactness.h>
 
 namespace vcl::mesh {

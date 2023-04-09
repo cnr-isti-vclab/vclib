@@ -21,60 +21,58 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_COLOR_H
-#define VCL_CONCEPTS_MESH_COMPONENT_COLOR_H
-
-#include <vclib/space/color.h>
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
 #include "component.h"
+
+#include <vector>
 
 namespace vcl::comp {
 
 /**
- * @brief HasColor concept is satisfied only if a Element/Mesh class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * Color component of a given element/mesh.
- *
- * Note that this concept does not discriminate between the Horizontal Color component
- * and the vertical OptionalColor component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides Color component at runtime
- * (it is guaranteed only that the proper member functions are available at compile time).
- *
- * To be completely sure that Color is available at runtime, you need to call the member
- * function `isColorEnabled()`.
+ * @brief HasVertexReferences concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to
+ * an VertexReferences component of a given element.
  */
 template<typename T>
-concept HasColor = requires(
+concept HasVertexReferences = requires(
 	T o,
-	const T& co)
+	const T& co,
+	typename T::VertexType v,
+	std::vector<typename T::VertexType*> vec)
 {
-	typename T::ColorType;
-	typename T::ColorComponent;
-	{ o.color() } -> std::same_as<vcl::Color&>;
-	{ co.color() } -> std::same_as<const vcl::Color&>;
-	{ co.isColorEnabled() } -> std::same_as<bool>;
+	T::VERTEX_NUMBER;
+	typename T::VertexType;
+	typename T::VertexIterator;
+	typename T::ConstVertexIterator;
+	typename T::VertexView;
+	typename T::ConstVertexView;
+
+	{ co.vertexNumber() } -> std::same_as<uint>;
+	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType*&>;
+	{ co.vertex(uint()) } -> std::same_as<const typename T::VertexType*>;
+	{ o.vertexMod(int()) } -> std::same_as<typename T::VertexType*&>;
+	{ co.vertexMod(int()) } -> std::same_as<const typename T::VertexType*>;
+
+	{ o.setVertex(&v, uint()) } -> std::same_as<void>;
+	{ o.setVertices(vec) } -> std::same_as<void>;
+
+	{ co.containsVertex(&v) } -> std::same_as<bool>;
+	{ o.findVertex(&v) } -> std::same_as<typename T::VertexIterator>;
+	{ co.findVertex(&v) } -> std::same_as<typename T::ConstVertexIterator>;
+
+	{ co.indexOfVertex(&v) } -> std::same_as<int>;
+	{ co.indexOfEdge(&v, &v) } -> std::same_as<int>;
+
+	{ o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
+	{ o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
+	{ co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
+	{ co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
+	{ o.vertices() } -> std::same_as<typename T::VertexView>;
+	{ co.vertices() } -> std::same_as<typename T::ConstVertexView>;
 };
-
-/**
- * @brief HasOptionalColor concept is satisfied only if a class satisfis the HasColor concept and
- * the static boolean constant IS_OPTIONAL is set to true.
- */
-template<typename T>
-concept HasOptionalColor = HasColor<T> && IsOptionalComponent<typename T::ColorComponent>;
-
-/* Detector function to check if a class has Color enabled */
-
-template <typename T>
-bool isColorEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalColor<T>) {
-		return element.isColorEnabled();
-	}
-	else {
-		return HasColor<T>;
-	}
-}
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_COLOR_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H

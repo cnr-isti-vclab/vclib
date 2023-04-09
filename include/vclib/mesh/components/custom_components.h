@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-#include <vclib/concepts/mesh/component/custom_components.h>
+#include <vclib/concepts/mesh/components/custom_components.h>
 
 #include "internal/custom_components_data.h"
 

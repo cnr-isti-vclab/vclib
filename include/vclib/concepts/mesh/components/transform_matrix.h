@@ -21,59 +21,28 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_MARK_H
-#define VCL_CONCEPTS_MESH_COMPONENT_MARK_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_TRANSFORM_MATRIX_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 
 #include "component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief HasMark concept is satisfied only if a Element/Mesh class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * Mark component of a given element/mesh.
- *
- * Note that this concept does not discriminate between the Horizontal Mark component
- * and the vertical OptionalMark component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides Mark component at runtime
- * (it is guaranteed only that the proper member functions are available at compile time).
- *
- * To be completely sure that Color is available at runtime, you need to call the member
- * function `isMarkEnabled()`.
+ * @brief HasTransformMatrix concept is satisfied only if a Element or Mesh class provides the
+ * member functions specified in this concept. These member functions allows to access to a
+ * TransformMatrix component of a given element/mesh.
  */
 template<typename T>
-concept HasMark = requires(
+concept HasTransformMatrix = requires(
 	T o,
 	const T& co)
 {
-	typename T::MarkComponent;
-	{ co.mark() } -> std::same_as<int>;
-	{ o.resetMark() } -> std::same_as<void>;
-	{ o.incrementMark() } -> std::same_as<void>;
-	{ o.decrementMark() } -> std::same_as<void>;
-	{ co.isMarkEnabled() } -> std::same_as<bool>;
+	typename T::TransformMatrixType;
+	{ co.transformMatrix() } -> std::same_as<const typename T::TransformMatrixType&>;
+	{ o.transformMatrix() } -> std::same_as<typename T::TransformMatrixType&>;
 };
-
-/**
- * @brief HasOptionalMark concept is satisfied only if a class satisfis the HasMark concept and
- * and the static boolean constant IS_OPTIONAL is set to true.
- */
-template<typename T>
-concept HasOptionalMark = HasMark<T> && IsOptionalComponent<typename T::MarkComponent>;
-
-/* Detector function to check if a class has Mark enabled */
-
-template <typename T>
-bool isMarkEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalMark<T>) {
-		return element.isMarkEnabled();
-	}
-	else {
-		return HasMark<T>;
-	}
-}
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_MARK_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_TRANSFORM_MATRIX_H

@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_MARK_H
 #define VCL_MESH_COMPONENTS_MARK_H
 
-#include <vclib/concepts/mesh/component/mark.h>
+#include <vclib/concepts/mesh/components/mark.h>
 
 #include "internal/component_data.h"
 

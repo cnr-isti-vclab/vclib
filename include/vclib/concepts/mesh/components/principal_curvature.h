@@ -21,31 +21,58 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_CUSTOM_COMPONENTS_H
-#define VCL_CONCEPTS_MESH_COMPONENT_CUSTOM_COMPONENTS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
 
 #include "component.h"
-
-#include <string>
 
 namespace vcl::comp {
 
 /**
- * @brief HasCustomComponents concept is satisfied only if a Element class provides the types and
+ * @brief HasPrincipalCurvature concept is satisfied only if a Element class provides the types and
  * member functions specified in this concept. These types and member functions allow to access to a
- * CustomComponents component of a given element.
+ * PrincipalCurvature component of a given element.
+ *
+ * Note that this concept does not discriminate between the Horizontal PrincipalCurvature component
+ * and the vertical OptionalPrincipalCurvature component, therefore it does not guarantee that a
+ * template Element type that satisfies this concept provides PrincipalCurvature component at
+ * runtime (it is guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that PrincipalCurvature is available at runtime, you need to call the
+ * member function `isPrincipalCurvatureEnabled()`.
  */
 template<typename T>
-concept HasCustomComponents = requires(
+concept HasPrincipalCurvature = requires(
 	T o,
-	const T& co,
-	std::string s)
+	const T& co)
 {
-	{ o.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
-	{ o.template customComponent<int>(s) } -> std::same_as<int&>;
-	{ co.template customComponent<int>(s) } -> std::same_as<const int&>;
+	typename T::PrincipalCurvatureType;
+	typename T::PrincipalCurvatureComponent;
+	{ o.principalCurvature() } -> std::same_as<typename T::PrincipalCurvatureType&>;
+	{ co.principalCurvature() } -> std::same_as<const typename T::PrincipalCurvatureType&>;
+	{ co.isPrincipalCurvatureEnabled() } -> std::same_as<bool>;
 };
+
+/**
+ * @brief HasOptionalPrincipalCurvature concept is satisfied only if a class satisfis the
+ * HasPrincipalCurvature concept and the static boolean constant IS_OPTIONAL is set to true.
+ */
+template<typename T>
+concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && IsOptionalComponent<typename T::PrincipalCurvatureComponent>;
+
+/* Detector function to check if a class has PrincipalCurvature enabled */
+
+template <typename T>
+bool isPrincipalCurvatureEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalPrincipalCurvature<T>) {
+		return element.isPrincipalCurvatureEnabled();
+	}
+	else {
+		return HasPrincipalCurvature<T>;
+	}
+}
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENT_CUSTOM_COMPONENTS_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H

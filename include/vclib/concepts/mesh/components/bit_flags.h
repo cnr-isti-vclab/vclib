@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENT_BIT_FLAGS_H
-#define VCL_CONCEPTS_MESH_COMPONENT_BIT_FLAGS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H
 
 #include "component.h"
 
