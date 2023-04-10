@@ -32,5 +32,6 @@
 #include "components/normals.h"
 #include "components/scalars.h"
 #include "components/selection.h"
+#include "components/tex_coords.h"
 
 #endif // VCL_VIEWS_MESH_COMPONENTS_H

@@ -24,6 +24,7 @@
 #ifndef VCL_VIEWS_MESH_COMPONENTS_COLORS_H
 #define VCL_VIEWS_MESH_COMPONENTS_COLORS_H
 
+#include <vclib/concepts/mesh.h>
 #include <vclib/types.h>
 
 #include <ranges>
@@ -31,6 +32,9 @@
 namespace vcl::views {
 
 namespace internal {
+
+template<typename T>
+concept CleanWedgeColorsConcept = comp::HasWedgeColors<RemoveConstRef<T>>;
 
 struct ColorsView
 {
@@ -63,6 +67,14 @@ struct ColorsView
 
 	}
 
+	template <CleanWedgeColorsConcept R>
+	friend constexpr auto operator|(R&& r, ColorsView)
+	{
+		if constexpr(IsPointer<R>)
+			return r->wedgeColors();
+		else
+			return r.wedgeColors();
+	}
 };
 
 } // namespace vcl::views::internal

@@ -50,6 +50,18 @@ struct AdjEdgesView
 
 } // namespace vcl::views::internal
 
+/**
+ * @brief The adjEdges view allows to obtain a view that access to the adjacent edges of
+ * the object that has been piped. Every object having type that satisfies the HasAdjacentEdges
+ * concept can be applied to this view.
+ *
+ * Resulting adjacent edges will be pointers to Edges, that may be `nullptr`.
+ * If you are interested only on the not-null pointers, you can use the `notNull` view:
+ *
+ * @code{.cpp}
+ * for (auto* ae: f | views::adjEdges | views::notNull) { ... }
+ * @endcode
+ */
 inline constexpr internal::AdjEdgesView adjEdges;
 
 } // namespace vcl::views

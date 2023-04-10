@@ -50,6 +50,18 @@ struct AdjVerticesView
 
 } // namespace vcl::views::internal
 
+/**
+ * @brief The adjVertices view allows to obtain a view that access to the adjacent vertices of
+ * the object that has been piped. Every object having type that satisfies the HasAdjacentVertices
+ * concept can be applied to this view.
+ *
+ * Resulting adjacent faces will be pointers to Vertices, that may be `nullptr`.
+ * If you are interested only on the not-null pointers, you can use the `notNull` view:
+ *
+ * @code{.cpp}
+ * for (auto* av: v | views::adjVertices | views::notNull) { ... }
+ * @endcode
+ */
 inline constexpr internal::AdjVerticesView adjVertices;
 
 } // namespace vcl::views

@@ -50,6 +50,18 @@ struct AdjFacesView
 
 } // namespace vcl::views::internal
 
+/**
+ * @brief The adjFaces view allows to obtain a view that access to the adjacent faces of
+ * the object that has been piped. Every object having type that satisfies the HasAdjacentFaces
+ * concept can be applied to this view.
+ *
+ * Resulting adjacent faces will be pointers to Faces, that may be `nullptr`.
+ * If you are interested only on the not-null pointers, you can use the `notNull` view:
+ *
+ * @code{.cpp}
+ * for (auto* af: f | views::adjFaces | views::notNull) { ... }
+ * @endcode
+ */
 inline constexpr internal::AdjFacesView adjFaces;
 
 } // namespace vcl::views

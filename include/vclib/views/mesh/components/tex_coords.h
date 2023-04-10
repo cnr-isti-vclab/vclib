@@ -24,6 +24,7 @@
 #ifndef VCL_VIEWS_MESH_COMPONENTS_TEX_COORDS_H
 #define VCL_VIEWS_MESH_COMPONENTS_TEX_COORDS_H
 
+#include <vclib/concepts/mesh.h>
 #include <vclib/types.h>
 
 #include <ranges>
@@ -31,6 +32,9 @@
 namespace vcl::views {
 
 namespace internal {
+
+template<typename T>
+concept CleanWedgeTexCoordsConcept = comp::HasWedgeTexCoords<RemoveConstRef<T>>;
 
 struct TexCoordsView
 {
@@ -60,6 +64,15 @@ struct TexCoordsView
 			return std::forward<R>(r) | std::views::transform(constTexCoord);
 		else
 			return std::forward<R>(r) | std::views::transform(texCoord);
+	}
+
+	template <CleanWedgeTexCoordsConcept R>
+	friend constexpr auto operator|(R&& r, TexCoordsView)
+	{
+		if constexpr(IsPointer<R>)
+			return r->wedgeTexCoords();
+		else
+			return r.wedgeTexCoords();
 	}
 };
 

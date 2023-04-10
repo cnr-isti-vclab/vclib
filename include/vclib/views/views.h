@@ -76,9 +76,9 @@ inline constexpr internal::NotNullView notNull;
  * view will iterate over the objects pointed by the range of pointers.
  *
  * @note: no check on the validity of the pointers is performed. If you know that in your range
- * there is the possibility to have `nullptr` pointers, use first the `isValid` view:
+ * there is the possibility to have `nullptr` pointers, use first the `notNull` view:
  *
- * auto resView = inputRange | isValid | dereference;
+ * auto resView = inputRange | notNull | dereference;
  */
 inline constexpr internal::DereferenceView dereference;
 
