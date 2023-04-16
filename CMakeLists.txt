@@ -592,11 +592,11 @@ endif()
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	# using Clang
 	if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 16.0)
-		target_compile_definitions(vclib PUBLIC VCLIB_USES_RANGES)
+		target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
 	endif()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 	# using GCC or Visual Studio C++
-	target_compile_definitions(vclib PUBLIC VCLIB_USES_RANGES)
+	target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
 endif()
 	
 
