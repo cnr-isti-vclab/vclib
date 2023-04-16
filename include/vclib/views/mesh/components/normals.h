@@ -51,8 +51,7 @@ struct NormalsView
 		else
 			return p. normal();
 	};
-	
-#ifdef VCLIB_USES_RANGES
+
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, NormalsView)
 	{
@@ -62,7 +61,6 @@ struct NormalsView
 		else
 			return std::forward<R>(r) | std::views::transform(normal);
 	}
-#endif
 };
 
 } // namespace vcl::views::internal

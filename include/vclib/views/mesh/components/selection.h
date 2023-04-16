@@ -55,38 +55,34 @@ inline constexpr auto isNotSelected = [](const auto& e)
 struct SelectionView
 {
 	constexpr SelectionView() = default;
-#ifdef VCLIB_USES_RANGES
+
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, SelectionView)
 	{
 		return std::forward<R>(r) | std::views::transform(isSelected);
 	}
-#endif
 };
 
 struct SelectedView
 {
 	constexpr SelectedView() = default;
-	
-#ifdef VCLIB_USES_RANGES
+
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, SelectedView)
 	{
 		return std::forward<R>(r) | std::views::filter(isSelected);
 	}
-#endif
 };
 
 struct NotSelectedView
 {
 	constexpr NotSelectedView() = default;
-#ifdef VCLIB_USES_RANGES
+
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, NotSelectedView)
 	{
 		return std::forward<R>(r) | std::views::filter(isNotSelected);
 	}
-#endif
 };
 
 } // namespace vcl::views::internal

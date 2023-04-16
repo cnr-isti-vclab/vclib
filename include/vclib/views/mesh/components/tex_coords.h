@@ -55,7 +55,7 @@ struct TexCoordsView
 		else
 			return p.texCoord();
 	};
-#ifdef VCLIB_USES_RANGES
+
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, TexCoordsView)
 	{
@@ -65,7 +65,6 @@ struct TexCoordsView
 		else
 			return std::forward<R>(r) | std::views::transform(texCoord);
 	}
-#endif
 
 	template <CleanWedgeTexCoordsConcept R>
 	friend constexpr auto operator|(R&& r, TexCoordsView)

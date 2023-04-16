@@ -171,7 +171,6 @@ set(HEADERS
 	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
 	include/vclib/iterators/iterator_wrapper.h
-	include/vclib/iterators/pointer_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/fibonacci.h
@@ -589,24 +588,7 @@ else()
 	message(STATUS "VCLib: not using parallel algorithms")
 endif()
 
-# ToDo: remove this and all the code under the not defined VCLIB_USES_RANGES when Apple Clang will 
-# be updated by default to Clang 16 and supports the ranges library
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	# using Clang
-	if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 16.0)
-		target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
-		message(STATUS "VCLib: using std::ranges library")
-	else()
-		message(STATUS "VCLib: not using std::ranges library")
-	endif()
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-	# using GCC or Visual Studio C++
-	target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
-	message(STATUS "VCLib: using std::ranges library")
-else()
-	message(STATUS "VCLib: not using std::ranges library")
-endif()
-	
+message(STATUS "VCLib: using std::ranges library")
 
 if (TARGET vclib-external-qt)
 	add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})

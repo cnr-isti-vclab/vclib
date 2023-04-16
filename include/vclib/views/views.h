@@ -31,51 +31,36 @@ namespace vcl::views{
 namespace internal {
 
 struct NotNullView
-#ifdef VCLIB_USES_RANGES
-		: std::ranges::view_base
-#endif
 {
 	constexpr NotNullView() = default;
 
-#ifdef VCLIB_USES_RANGES
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, NotNullView)
 	{
 		return std::views::filter(r, [](auto* p) { return p != nullptr; });
 	}
-#endif
 };
 
 struct DereferenceView
-#ifdef VCLIB_USES_RANGES
-		: std::ranges::view_base
-#endif
 {
 	constexpr DereferenceView() = default;
 
-#ifdef VCLIB_USES_RANGES
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, DereferenceView)
 	{
 		return std::views::transform(r, [](auto p) { return *p; });
 	}
-#endif
 };
 
 struct ReferenceView
-#ifdef VCLIB_USES_RANGES
-		: std::ranges::view_base
-#endif
 {
 	constexpr ReferenceView() = default;
 
-#ifdef VCLIB_USES_RANGES
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, ReferenceView)
 	{
 		return std::views::transform(r, [](auto& o) { return &o; });
 	}
-#endif
 };
 
 } // namespace vcl::views::internal

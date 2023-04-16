@@ -32,10 +32,6 @@
 #include <vclib/misc/comparators.h>
 #include <vclib/space/polygon.h>
 
-#ifndef VCLIB_USES_RANGES
-#include "geometry.h"
-#endif
-
 namespace vcl {
 
 /**
@@ -349,11 +345,7 @@ template <FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
 	using CoordType = typename Face::VertexType::CoordType;
-#ifdef VCLIB_USES_RANGES
 	return Polygon<CoordType>::earCut(polygon.vertices() | views::coords);
-#else
-	return Polygon<CoordType>::earCut(faceCoords(polygon));
-#endif
 }
 
 /**

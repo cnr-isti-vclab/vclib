@@ -51,8 +51,7 @@ struct ScalarView
 		else
 			return p.scalar();
 	};
-	
-#ifdef VCLIB_USES_RANGES
+
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, ScalarView)
 	{
@@ -62,7 +61,6 @@ struct ScalarView
 		else
 			return std::forward<R>(r) | std::views::transform(scalar);
 	}
-#endif
 };
 
 } // namespace vcl::views::internal

@@ -28,21 +28,6 @@
 
 namespace vcl {
 
-#ifndef VCLIB_USES_RANGES
-template<FaceConcept FaceType>
-auto faceCoords(const FaceType& f)
-{
-	using CoordType = typename FaceType::VertexType::CoordType;
-	
-	std::vector<CoordType> vec;
-	vec.reserve(f.vertexNumber());
-	for (const auto* v : f.vertices())
-		vec.push_back(v->coord());
-	
-	return vec;
-}
-#endif
-
 /**
  * @brief Computes the normal of a face, without modifying the face. Works both for triangle and
  * polygonal faces, and it is optimized in case of triangle faces.
@@ -66,11 +51,7 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
 		}
 		else {
-#ifdef VCLIB_USES_RANGES
 			return Polygon<CoordType>::normal(f.vertices() | views::coords);
-#else
-			return Polygon<CoordType>::normal(faceCoords(f));
-#endif
 		}
 	}
 }
@@ -93,11 +74,7 @@ typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
 			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
 	}
 	else {
-#ifdef VCLIB_USES_RANGES
 		return Polygon<CoordType>::barycenter(f.vertices() | views::coords);
-#else
-		return Polygon<CoordType>::barycenter(faceCoords(f));
-#endif
 	}
 }
 
@@ -124,11 +101,7 @@ auto faceArea(const FaceType& f)
 				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
 		}
 		else {
-#ifdef VCLIB_USES_RANGES
 			return Polygon<CoordType>::area(f.vertices() | views::coords);
-#else
-			return Polygon<CoordType>::area(faceCoords(f));
-#endif
 		}
 	}
 }
@@ -156,11 +129,7 @@ auto facePerimeter(const FaceType& f)
 				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
 		}
 		else {
-#ifdef VCLIB_USES_RANGES
 			return Polygon<CoordType>::perimeter(f.vertices() | views::coords);
-#else
-			return Polygon<CoordType>::perimeter(faceCoords(f));
-#endif
 		}
 	}
 }

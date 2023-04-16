@@ -51,8 +51,7 @@ struct CoordsView
 		else
 			return p.coord();
 	};
-	
-#ifdef VCLIB_USES_RANGES
+
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, CoordsView)
 	{
@@ -63,7 +62,6 @@ struct CoordsView
 			
 		return std::forward<R>(r) | std::views::transform(coord);
 	}
-#endif
 };
 
 } // namespace vcl::views::internal

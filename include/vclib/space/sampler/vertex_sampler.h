@@ -32,13 +32,9 @@ public:
 
 	void add(VPar v);
 	void set(uint i, VPar v);
-	
-#ifdef VCLIB_USES_RANGES
+
 	auto begin() const;
 	auto end() const;
-#else
-	auto points() const;
-#endif
 
 private:
 	std::vector<VP> samplesVec;

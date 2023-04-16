@@ -55,10 +55,8 @@ concept SamplerConcept = requires(
 	o.reserve(uint());
 	o.resize(uint());
 	
-#ifdef VCLIB_USES_RANGES
 	co.begin();
 	co.end();
-#endif
 };
 
 /**

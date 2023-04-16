@@ -37,10 +37,6 @@
 #include <vclib/space/principal_curvature.h>
 #include <vclib/views.h>
 
-#ifndef VCLIB_USES_RANGES
-#include <vclib/iterators/pointer_iterator.h>
-#endif
-
 namespace vcl {
 
 template<FaceMeshConcept MeshType, LoggerConcept LogType>
@@ -278,12 +274,7 @@ void updatePrincipalCurvaturePCA(
 
 	if (montecarloSampling) {
 		area = vcl::surfaceArea(m);
-#ifdef VCLIB_USES_RANGES
 		pGrid = VGrid(m.vertices() | views::reference);
-#else
-		using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
-		pGrid = VGrid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
-#endif
 		pGrid.build();
 	}
 

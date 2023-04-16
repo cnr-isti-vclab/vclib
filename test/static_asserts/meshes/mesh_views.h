@@ -10,7 +10,7 @@ void meshViewsStaticAsserts()
 {
 	MeshType m;
 	const MeshType& cm = m;
-#ifdef VCLIB_USES_RANGES
+
 	static_assert(
 		std::ranges::range<typename MeshType::VertexView>,
 		"The MeshType VertexView is not a valid range.");
@@ -93,7 +93,6 @@ void meshViewsStaticAsserts()
 			std::ranges::range<decltype(cm | vcl::views::halfEdges)>,
 			"The view returned by pipe operation cm | views::halfEdges is not a valid range.");
 	}
-#endif
 }
 
 #endif // MESH_VIEWS_H
