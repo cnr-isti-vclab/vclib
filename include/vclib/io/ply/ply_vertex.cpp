@@ -25,7 +25,7 @@
 
 #include <vclib/misc/tokenizer.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/exception/io_exception.h>
+#include <vclib/exceptions/io_exceptions.h>
 
 #include "../internal/io_read.h"
 #include "../internal/io_write.h"

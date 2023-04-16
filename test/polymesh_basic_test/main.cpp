@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include <vclib/mesh.h>
+#include <vclib/meshes.h>
 #include <vclib/load_save.h>
 #include <vclib/algorithms/update/flag.h>
 #include <vclib/algorithms/smooth.h>

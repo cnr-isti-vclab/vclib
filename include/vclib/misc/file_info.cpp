@@ -27,7 +27,7 @@
 #include <filesystem>
 #include <vector>
 
-#include <vclib/exception/io_exception.h>
+#include <vclib/exceptions/io_exceptions.h>
 
 namespace vcl {
 

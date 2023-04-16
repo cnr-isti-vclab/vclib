@@ -27,8 +27,8 @@
 #include <string>
 #include <vector>
 
-#include <vclib/concept/mesh/component/texture_paths.h>
-#include <vclib/iterators/view.h>
+#include <vclib/concepts/mesh/components/texture_paths.h>
+#include <vclib/views/view.h>
 
 #include "internal/component_data.h"
 

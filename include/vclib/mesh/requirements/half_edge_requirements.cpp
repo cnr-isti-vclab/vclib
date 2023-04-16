@@ -23,7 +23,7 @@
 
 #include "vertex_requirements.h"
 
-#include <vclib/exception/mesh_exception.h>
+#include <vclib/exceptions/mesh_exceptions.h>
 
 #include "../containers/half_edge_container.h"
 

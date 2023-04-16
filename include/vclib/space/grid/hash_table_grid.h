@@ -71,6 +71,9 @@ public:
 
 	template<typename ObjIterator>
 	HashTableGrid(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects = nullptr);
+	
+	template<vcl::Range Rng>
+	HashTableGrid(Rng&& r, const IsInCellFunction& intersects = nullptr);
 
 	bool empty() const;
 	bool cellEmpty(const KeyType& k) const;

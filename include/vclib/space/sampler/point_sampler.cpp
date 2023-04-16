@@ -87,6 +87,14 @@ typename PointSampler<PointT>::ConstIterator PointSampler<PointT>::end() const
 	return samplesVec.end();
 }
 
+#ifndef VCLIB_USES_RANGES
+template<PointConcept PointT>
+const std::vector<PointT>& PointSampler<PointT>::points() const
+{
+	return samplesVec;
+}
+#endif
+
 template<PointConcept PointT>
 template<VertexConcept VertexType>
 void PointSampler<PointT>::add(

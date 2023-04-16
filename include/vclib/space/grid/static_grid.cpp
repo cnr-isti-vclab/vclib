@@ -49,6 +49,15 @@ StaticGrid<GridType, ValueType>::StaticGrid(
 }
 
 template<typename GridType, typename ValueType>
+template<vcl::Range Rng>
+StaticGrid<GridType, ValueType>::StaticGrid(
+	Rng&& r,
+	const IsInCellFunction& intersects) :
+		StaticGrid(std::ranges::begin(r), std::ranges::end(r), intersects)
+{
+}
+
+template<typename GridType, typename ValueType>
 void StaticGrid<GridType, ValueType>::build()
 {
 	uint totCellNumber = 1;

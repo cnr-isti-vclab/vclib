@@ -46,15 +46,16 @@ set(VCLIB_SRC_DIR ${VCLIB_INCLUDE_DIR}/vclib)
 
 set(HEADERS
 	include/vclib/algorithms.h
-	include/vclib/concept.h
-	include/vclib/exception.h
+	include/vclib/concepts.h
+	include/vclib/exceptions.h
 	include/vclib/image.h
 	include/vclib/load_save.h
 	include/vclib/math.h
-	include/vclib/mesh.h
+	include/vclib/meshes.h
 	include/vclib/miscellaneous.h
 	include/vclib/space.h
 	include/vclib/types.h
+	include/vclib/views.h
 	include/vclib/algorithms/bounding_box.h
 	include/vclib/algorithms/clean.h
 	include/vclib/algorithms/create.h
@@ -96,54 +97,55 @@ set(HEADERS
 	include/vclib/algorithms/update/selection.h
 	include/vclib/algorithms/update/topology.h
 	include/vclib/algorithms/update/transform.h
-	include/vclib/concept/logger.h
-	include/vclib/concept/mesh.h
-	include/vclib/concept/space.h
-	include/vclib/concept/mesh/component.h
-	include/vclib/concept/mesh/container.h
-	include/vclib/concept/mesh/per_face.h
-	include/vclib/concept/mesh/per_half_edge.h
-	include/vclib/concept/mesh/per_vertex.h
-	include/vclib/concept/mesh/component/adjacent_edges.h
-	include/vclib/concept/mesh/component/adjacent_faces.h
-	include/vclib/concept/mesh/component/adjacent_vertices.h
-	include/vclib/concept/mesh/component/bit_flags.h
-	include/vclib/concept/mesh/component/bounding_box.h
-	include/vclib/concept/mesh/component/color.h
-	include/vclib/concept/mesh/component/component.h
-	include/vclib/concept/mesh/component/coordinate.h
-	include/vclib/concept/mesh/component/custom_components.h
-	include/vclib/concept/mesh/component/face_half_edge_reference.h
-	include/vclib/concept/mesh/component/half_edge_references.h
-	include/vclib/concept/mesh/component/mark.h
-	include/vclib/concept/mesh/component/name.h
-	include/vclib/concept/mesh/component/normal.h
-	include/vclib/concept/mesh/component/principal_curvature.h
-	include/vclib/concept/mesh/component/scalar.h
-	include/vclib/concept/mesh/component/tex_coord.h
-	include/vclib/concept/mesh/component/texture_paths.h
-	include/vclib/concept/mesh/component/transform_matrix.h
-	include/vclib/concept/mesh/component/vertex_half_edge_reference.h
-	include/vclib/concept/mesh/component/vertex_references.h
-	include/vclib/concept/mesh/component/wedge_colors.h
-	include/vclib/concept/mesh/component/wedge_tex_coords.h
-	include/vclib/concept/mesh/element/edge.h
-	include/vclib/concept/mesh/element/element.h
-	include/vclib/concept/mesh/element/face.h
-	include/vclib/concept/mesh/element/half_edge.h
-	include/vclib/concept/mesh/element/vertex.h
-	include/vclib/concept/space/box.h
-	include/vclib/concept/space/matrix.h
-	include/vclib/concept/space/plane.h
-	include/vclib/concept/space/point.h
-	include/vclib/concept/space/polygon.h
-	include/vclib/concept/space/sampler.h
-	include/vclib/concept/space/segment.h
-	include/vclib/concept/space/sphere.h
-	include/vclib/concept/space/triangle.h
-	include/vclib/exception/io_exception.h
-	include/vclib/exception/mesh_exception.h
-	include/vclib/exception/misc_exception.h
+	include/vclib/concepts/logger.h
+	include/vclib/concepts/mesh.h
+	include/vclib/concepts/range.h
+	include/vclib/concepts/space.h
+	include/vclib/concepts/mesh/components.h
+	include/vclib/concepts/mesh/containers.h
+	include/vclib/concepts/mesh/per_face.h
+	include/vclib/concepts/mesh/per_half_edge.h
+	include/vclib/concepts/mesh/per_vertex.h
+	include/vclib/concepts/mesh/components/adjacent_edges.h
+	include/vclib/concepts/mesh/components/adjacent_faces.h
+	include/vclib/concepts/mesh/components/adjacent_vertices.h
+	include/vclib/concepts/mesh/components/bit_flags.h
+	include/vclib/concepts/mesh/components/bounding_box.h
+	include/vclib/concepts/mesh/components/color.h
+	include/vclib/concepts/mesh/components/component.h
+	include/vclib/concepts/mesh/components/coordinate.h
+	include/vclib/concepts/mesh/components/custom_components.h
+	include/vclib/concepts/mesh/components/face_half_edge_reference.h
+	include/vclib/concepts/mesh/components/half_edge_references.h
+	include/vclib/concepts/mesh/components/mark.h
+	include/vclib/concepts/mesh/components/name.h
+	include/vclib/concepts/mesh/components/normal.h
+	include/vclib/concepts/mesh/components/principal_curvature.h
+	include/vclib/concepts/mesh/components/scalar.h
+	include/vclib/concepts/mesh/components/tex_coord.h
+	include/vclib/concepts/mesh/components/texture_paths.h
+	include/vclib/concepts/mesh/components/transform_matrix.h
+	include/vclib/concepts/mesh/components/vertex_half_edge_reference.h
+	include/vclib/concepts/mesh/components/vertex_references.h
+	include/vclib/concepts/mesh/components/wedge_colors.h
+	include/vclib/concepts/mesh/components/wedge_tex_coords.h
+	include/vclib/concepts/mesh/elements/edge.h
+	include/vclib/concepts/mesh/elements/element.h
+	include/vclib/concepts/mesh/elements/face.h
+	include/vclib/concepts/mesh/elements/half_edge.h
+	include/vclib/concepts/mesh/elements/vertex.h
+	include/vclib/concepts/space/box.h
+	include/vclib/concepts/space/matrix.h
+	include/vclib/concepts/space/plane.h
+	include/vclib/concepts/space/point.h
+	include/vclib/concepts/space/polygon.h
+	include/vclib/concepts/space/sampler.h
+	include/vclib/concepts/space/segment.h
+	include/vclib/concepts/space/sphere.h
+	include/vclib/concepts/space/triangle.h
+	include/vclib/exceptions/io_exceptions.h
+	include/vclib/exceptions/mesh_exceptions.h
+	include/vclib/exceptions/misc_exceptions.h
 	include/vclib/image/image.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load.h
@@ -170,7 +172,6 @@ set(HEADERS
 	include/vclib/io/stl/save.h
 	include/vclib/iterators/iterator_wrapper.h
 	include/vclib/iterators/pointer_iterator.h
-	include/vclib/iterators/view.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/fibonacci.h
@@ -179,14 +180,10 @@ set(HEADERS
 	include/vclib/math/perlin_noise.h
 	include/vclib/math/random.h
 	include/vclib/math/transform.h
-	include/vclib/mesh/dcel_mesh.h
-	include/vclib/mesh/edge_mesh.h
-	include/vclib/mesh/iterator.h
-	include/vclib/mesh/point_cloud.h
-	include/vclib/mesh/poly_mesh.h
+	include/vclib/mesh/iterators.h
+	include/vclib/mesh/mesh.h
+	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/requirements.h
-	include/vclib/mesh/tri_mesh.h
-	include/vclib/mesh/views.h
 	include/vclib/mesh/components/adjacent_edges.h
 	include/vclib/mesh/components/adjacent_faces.h
 	include/vclib/mesh/components/adjacent_vertices.h
@@ -245,8 +242,6 @@ set(HEADERS
 	include/vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h
 	include/vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h
 	include/vclib/mesh/iterators/half_edge/vertex_base_iterator.h
-	include/vclib/mesh/mesh/mesh.h
-	include/vclib/mesh/mesh/mesh_components.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/half_edge_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
@@ -255,15 +250,11 @@ set(HEADERS
 	include/vclib/mesh/utils/mesh_inertia.h
 	include/vclib/mesh/utils/mesh_pos.h
 	include/vclib/mesh/utils/tri_poly_index_bimap.h
-	include/vclib/mesh/views/components.h
-	include/vclib/mesh/views/elements.h
-	include/vclib/mesh/views/components/adj_edges.h
-	include/vclib/mesh/views/components/adj_faces.h
-	include/vclib/mesh/views/components/adj_vertices.h
-	include/vclib/mesh/views/components/colors.h
-	include/vclib/mesh/views/components/coords.h
-	include/vclib/mesh/views/components/scalars.h
-	include/vclib/mesh/views/components/selection.h
+	include/vclib/meshes/dcel_mesh.h
+	include/vclib/meshes/edge_mesh.h
+	include/vclib/meshes/point_cloud.h
+	include/vclib/meshes/poly_mesh.h
+	include/vclib/meshes/tri_mesh.h
 	include/vclib/misc/bit_proxy.h
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h
@@ -338,7 +329,21 @@ set(HEADERS
 	include/vclib/types/iterators.h
 	include/vclib/types/pointers.h
 	include/vclib/types/variadic_templates.h
-	include/vclib/types/views.h
+	include/vclib/views/mesh.h
+	include/vclib/views/view.h
+	include/vclib/views/views.h
+	include/vclib/views/mesh/components.h
+	include/vclib/views/mesh/elements.h
+	include/vclib/views/mesh/components/adj_edges.h
+	include/vclib/views/mesh/components/adj_faces.h
+	include/vclib/views/mesh/components/adj_vertices.h
+	include/vclib/views/mesh/components/colors.h
+	include/vclib/views/mesh/components/coords.h
+	include/vclib/views/mesh/components/normals.h
+	include/vclib/views/mesh/components/principal_curvatures.h
+	include/vclib/views/mesh/components/scalars.h
+	include/vclib/views/mesh/components/selection.h
+	include/vclib/views/mesh/components/tex_coords.h
 )
 
 set(SOURCES
@@ -408,6 +413,7 @@ set(SOURCES
 	include/vclib/math/base.cpp
 	include/vclib/math/random.cpp
 	include/vclib/math/transform.cpp
+	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/components/adjacent_edges.cpp
 	include/vclib/mesh/components/adjacent_faces.cpp
 	include/vclib/mesh/components/adjacent_vertices.cpp
@@ -449,7 +455,6 @@ set(SOURCES
 	include/vclib/mesh/elements/vertex.cpp
 	include/vclib/mesh/iterators/element_container_iterator.cpp
 	include/vclib/mesh/iterators/face/edge_adj_face_iterator.cpp
-	include/vclib/mesh/mesh/mesh.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
@@ -583,6 +588,25 @@ if (WIN32 OR TARGET vclib-external-tbb)
 else()
 	message(STATUS "VCLib: not using parallel algorithms")
 endif()
+
+# ToDo: remove this and all the code under the not defined VCLIB_USES_RANGES when Apple Clang will 
+# be updated by default to Clang 16 and supports the ranges library
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	# using Clang
+	if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 16.0)
+		target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
+		message(STATUS "VCLib: using std::ranges library")
+	else()
+		message(STATUS "VCLib: not using std::ranges library")
+	endif()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	# using GCC or Visual Studio C++
+	target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
+	message(STATUS "VCLib: using std::ranges library")
+else()
+	message(STATUS "VCLib: not using std::ranges library")
+endif()
+	
 
 if (TARGET vclib-external-qt)
 	add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})

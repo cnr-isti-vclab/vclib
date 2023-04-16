@@ -113,6 +113,19 @@ uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin,
 	return cnt;
 }
 
+/**
+ * @brief Inserts all the elements contained in the input range r, from `begin` to `end`. The type
+ * referenced by the iterator must be the ValueType of the AbstractDSGrid.
+ * @param r: a range that satisfies the concept std::ranges::range
+ * @return The number of inserted elements.
+ */
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<vcl::Range Rng>
+uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(Rng&& r)
+{
+	return insert(std::ranges::begin(r), std::ranges::end(r));
+}
+
 template<typename GridType, typename ValueType, typename DerivedGrid>
 bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::erase(const ValueType& v)
 {
@@ -503,6 +516,28 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 
 		GridType::set(bbox, sizes);
 	}
+}
+
+/**
+ * @brief Creates an AbstractDSGrid having a proper Grid to store the elements.
+ *
+ * The bounding box and the sizes of the Grid are automatically computed.
+ * Bounding box is computed starting from the bounding box of all the iterated elements, and then
+ * inflated. The number of cells per dimension is computed using the `vcl::bestGridSize` function.
+ *
+ * @note This constructor **does not insert the elements** in the Grid Data Structure.
+ * Pure virtual classes cannot call pure virtual member functions from constuctors. It is duty of
+ * each derived class to insert the elements after calling this constructor.
+ *
+ * @param r: a range that satisfies the concept std::ranges::range
+ */
+template<typename GridType, typename ValueType, typename DerivedGrid>
+template<vcl::Range Rng>
+AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
+	Rng&& r,
+	IsInCellFunction intersects) :
+		AbstractDSGrid(std::ranges::begin(r), std::ranges::end(r), intersects)
+{
 }
 
 /**

@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_VERTEX_REQUIREMENTS_H
 #define VCL_MESH_VERTEX_REQUIREMENTS_H
 
-#include <vclib/concept/mesh.h>
+#include <vclib/concepts/mesh.h>
 
 namespace vcl {
 

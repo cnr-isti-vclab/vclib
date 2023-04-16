@@ -60,6 +60,9 @@ public:
 	template<typename ObjIterator>
 	StaticGrid(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects = nullptr);
 
+	template<vcl::Range Rng>
+	StaticGrid(Rng&& r, const IsInCellFunction& intersects = nullptr);
+
 	void build();
 
 	bool empty() const;

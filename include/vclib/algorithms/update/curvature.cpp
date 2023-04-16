@@ -30,13 +30,16 @@
 #include <vclib/algorithms/point_sampling.h>
 #include <vclib/algorithms/polygon.h>
 #include <vclib/algorithms/update/normal.h>
-#include <vclib/iterators/pointer_iterator.h>
 #include <vclib/math/transform.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/parallel.h>
 #include <vclib/space/grid.h>
 #include <vclib/space/principal_curvature.h>
+#include <vclib/views.h>
 
+#ifndef VCLIB_USES_RANGES
+#include <vclib/iterators/pointer_iterator.h>
+#endif
 
 namespace vcl {
 
@@ -255,7 +258,6 @@ void updatePrincipalCurvaturePCA(
 	using NormalType = typename VertexType::NormalType;
 	using FaceType   = typename MeshType::FaceType;
 
-	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
 	using VGrid = typename vcl::StaticGrid3<VertexType*>;
 	using VGridIterator = typename VGrid::ConstIterator;
 
@@ -276,7 +278,12 @@ void updatePrincipalCurvaturePCA(
 
 	if (montecarloSampling) {
 		area = vcl::surfaceArea(m);
+#ifdef VCLIB_USES_RANGES
+		pGrid = VGrid(m.vertices() | views::reference);
+#else
+		using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
 		pGrid = VGrid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+#endif
 		pGrid.build();
 	}
 

@@ -3,7 +3,7 @@
 
 #include "mesh_views.h"
 
-#include <vclib/mesh/edge_mesh.h>
+#include <vclib/meshes/edge_mesh.h>
 
 void edgemeshStaticAsserts()
 {

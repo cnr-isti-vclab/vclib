@@ -1,8 +1,8 @@
 #ifndef VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H
 #define VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H
 
-#include <vclib/concept/space/sampler.h>
-#include <vclib/mesh/iterator.h>
+#include <vclib/concepts/space/sampler.h>
+#include <vclib/mesh/iterators.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -32,9 +32,13 @@ public:
 
 	void add(VPar v);
 	void set(uint i, VPar v);
-
+	
+#ifdef VCLIB_USES_RANGES
 	auto begin() const;
 	auto end() const;
+#else
+	auto points() const;
+#endif
 
 private:
 	std::vector<VP> samplesVec;

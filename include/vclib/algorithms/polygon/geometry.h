@@ -28,6 +28,11 @@
 
 namespace vcl {
 
+#ifndef VCLIB_USES_RANGES
+template<FaceConcept FaceType>
+auto faceCoords(const FaceType& f);
+#endif
+
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceNormal(const FaceType& f);
 

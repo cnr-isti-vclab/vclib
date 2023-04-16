@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_PLANE_H
 #define VCL_SPACE_PLANE_H
 
-#include <vclib/concept/space/plane.h>
+#include <vclib/concepts/space/plane.h>
 
 #include "point/point3.h"
 

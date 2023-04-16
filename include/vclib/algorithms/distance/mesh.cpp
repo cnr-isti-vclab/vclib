@@ -24,11 +24,15 @@
 #include "mesh.h"
 
 #include <vclib/algorithms/point_sampling.h>
-#include <vclib/iterators/pointer_iterator.h>
 #include <vclib/space/grid.h>
 #include <vclib/misc/parallel.h>
+#include <vclib/views.h>
 
 #include <mutex>
+
+#ifndef VCLIB_USES_RANGES
+#include <vclib/iterators/pointer_iterator.h>
+#endif
 
 namespace vcl {
 
@@ -58,8 +62,13 @@ HausdorffDistResult hausdorffDist(
 
 	uint ns = 0;
 	uint i = 0;
+#ifdef VCLIB_USES_RANGES
 	vcl::parallelFor(s, [&](const PointSampleType& sample){
 //	for (const PointSampleType& sample : s) {
+#else
+	vcl::parallelFor(s.points(), [&](const PointSampleType& sample){
+//	for (const PointSampleType& sample : s.points()) {
+#endif
 		double dist = std::numeric_limits<double>::max();
 		const auto iter = g.closestValue(sample, dist);
 
@@ -111,7 +120,6 @@ HausdorffDistResult samplerMeshHausdorff(
 	requires(!HasFaces<MeshType>)
 {
 	using VertexType = typename MeshType::VertexType;
-	using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
 
 	std::string meshName = "first mesh";
 	if constexpr (HasName<MeshType>){
@@ -121,7 +129,7 @@ HausdorffDistResult samplerMeshHausdorff(
 		log.log(0, "Building Grid on " + meshName + " vertices...");
 	}
 
-	vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+	vcl::StaticGrid3<const VertexType*> grid(m.vertices() | views::reference);
 	grid.build();
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -139,8 +147,6 @@ HausdorffDistResult samplerMeshHausdorff(
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
-	using VPI = vcl::PointerIterator<typename MeshType::ConstVertexIterator>;
-	using FPI = vcl::PointerIterator<typename MeshType::ConstFaceIterator>;
 
 	std::string meshName = "first mesh";
 	if constexpr (HasName<MeshType>){
@@ -150,8 +156,13 @@ HausdorffDistResult samplerMeshHausdorff(
 		if constexpr (vcl::isLoggerValid<LogType>()) {
 			log.log(0, "Building Grid on " + meshName + " vertices...");
 		}
-
+		
+#ifdef VCLIB_USES_RANGES
+		vcl::StaticGrid3<const VertexType*> grid(m.vertices() | views::reference);
+#else
+		using VPI = vcl::PointerIterator<typename MeshType::ConstVertexIterator>;
 		vcl::StaticGrid3<const VertexType*> grid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));
+#endif
 		grid.build();
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -164,8 +175,12 @@ HausdorffDistResult samplerMeshHausdorff(
 		if constexpr (vcl::isLoggerValid<LogType>()) {
 			log.log(0, "Building Grid on " + meshName + " faces...");
 		}
-
+#ifdef VCLIB_USES_RANGES
+		vcl::StaticGrid3<const FaceType*> grid(m.faces() | views::reference);
+#else
+		using FPI = vcl::PointerIterator<typename MeshType::ConstFaceIterator>;
 		vcl::StaticGrid3<const FaceType*> grid(FPI(m.faceBegin()), FPI(m.faceEnd()));
+#endif
 		grid.build();
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {

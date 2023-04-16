@@ -23,7 +23,7 @@
 
 #include "custom_components_vector_map.h"
 
-#include <vclib/exception/mesh_exception.h>
+#include <vclib/exceptions/mesh_exceptions.h>
 #include <vclib/misc/compactness.h>
 
 namespace vcl::mesh {

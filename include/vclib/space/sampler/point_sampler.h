@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_SAMPLER_POINT_SAMPLER_H
 #define VCL_SPACE_SAMPLER_POINT_SAMPLER_H
 
-#include <vclib/concept/space/sampler.h>
+#include <vclib/concepts/space/sampler.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
@@ -84,6 +84,10 @@ public:
 
 	ConstIterator begin() const;
 	ConstIterator end() const;
+	
+#ifndef VCLIB_USES_RANGES
+	const std::vector<PointT>& points() const;
+#endif
 
 private:
 	std::vector<PointT> samplesVec;

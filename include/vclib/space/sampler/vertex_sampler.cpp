@@ -56,6 +56,7 @@ void VertexSampler<VertexType, CNST>::set(uint i, VPar v)
 	samplesVec[i] = &v;
 }
 
+#ifdef VCLIB_USES_RANGES
 template<VertexConcept VertexType, bool CNST>
 auto VertexSampler<VertexType, CNST>::begin() const
 {
@@ -67,5 +68,16 @@ auto VertexSampler<VertexType, CNST>::end() const
 {
 	return std::end(samplesVec | views::coords);
 }
+#else
+template<VertexConcept VertexType, bool CNST>
+auto VertexSampler<VertexType, CNST>::points() const
+{
+	std::vector<PointType> vec;
+	vec.reserve(samplesVec.size());
+	for (const auto* v : samplesVec)
+		vec.push_back(v->coord());
+	return vec;
+}
+#endif
 
 } // namespace vcl::internal

@@ -24,7 +24,7 @@
 #ifndef VCL_IO_PLY_SAVE_H
 #define VCL_IO_PLY_SAVE_H
 
-#include <vclib/exception/io_exception.h>
+#include <vclib/exceptions/io_exceptions.h>
 #include <vclib/misc/logger.h>
 
 #include "ply.h"

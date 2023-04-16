@@ -28,6 +28,7 @@
 
 namespace vcl {
 
+#ifndef VCLIB_USES_RANGES
 /**
  * @brief The PointerIterator class is an utility iterator wrapper that allows to create, starting
  * from an iterator It that iterates over a type T, an iterator that iterates over T*.
@@ -82,6 +83,7 @@ public:
 
 	reference operator*() const { return It::operator->(); }
 };
+#endif
 
 } // namespace vcl
 

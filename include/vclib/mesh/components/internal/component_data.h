@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H
 #define VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H
 
-#include <vclib/concept/mesh/component/component.h>
+#include <vclib/concepts/mesh/components/component.h>
 
 namespace vcl::comp::internal {
 

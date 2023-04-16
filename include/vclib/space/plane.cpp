@@ -23,7 +23,7 @@
 
 #include "plane.h"
 
-#include <vclib/exception/misc_exception.h>
+#include <vclib/exceptions/misc_exceptions.h>
 
 namespace vcl {
 

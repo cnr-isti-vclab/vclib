@@ -3,7 +3,7 @@
 
 #include "mesh_views.h"
 
-#include <vclib/mesh/poly_mesh.h>
+#include <vclib/meshes/poly_mesh.h>
 
 void polymeshStaticAsserts()
 {

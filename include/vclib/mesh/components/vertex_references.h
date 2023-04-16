@@ -24,8 +24,8 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
-#include <vclib/concept/mesh/component/vertex_references.h>
-#include <vclib/iterators/view.h>
+#include <vclib/concepts/mesh/components/vertex_references.h>
+#include <vclib/views/view.h>
 
 #include "internal/element_references.h"
 

@@ -23,16 +23,15 @@
 
 #include <iostream>
 
-#include <vclib/mesh.h>
+#include <vclib/meshes.h>
 #include <vclib/load_save.h>
 
 #include <vclib/algorithms/update.h>
-#include <vclib/mesh/iterator.h>
-#include <vclib/mesh/views/elements.h>
-#include <vclib/mesh/views/components.h>
+#include <vclib/views/mesh.h>
 
 int main()
 {
+#ifdef VCL_USES_RANGES
 	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
 	m.enablePerFaceAdjacentFaces();
@@ -125,4 +124,6 @@ int main()
 		std::cerr << scal << "\n";
 	}
 	return 0;
+
+#endif
 }

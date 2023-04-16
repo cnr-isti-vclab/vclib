@@ -25,12 +25,16 @@
 
 #include <set>
 
-#include <vclib/exception/mesh_exception.h>
-#include <vclib/mesh/iterator.h>
+#include <vclib/exceptions/mesh_exceptions.h>
+#include <vclib/mesh/iterators.h>
 #include <vclib/mesh/utils/mesh_pos.h>
-#include <vclib/mesh/views.h>
+#include <vclib/views/mesh.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/space/polygon.h>
+
+#ifndef VCLIB_USES_RANGES
+#include "geometry.h"
+#endif
 
 namespace vcl {
 
@@ -345,7 +349,11 @@ template <FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
 	using CoordType = typename Face::VertexType::CoordType;
+#ifdef VCLIB_USES_RANGES
 	return Polygon<CoordType>::earCut(polygon.vertices() | views::coords);
+#else
+	return Polygon<CoordType>::earCut(faceCoords(polygon));
+#endif
 }
 
 /**

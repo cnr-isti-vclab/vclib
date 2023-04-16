@@ -27,7 +27,7 @@
 
 #include <vclib/algorithms/update/normal.h>
 #include <vclib/algorithms/update/color.h>
-#include <vclib/mesh.h>
+#include <vclib/meshes.h>
 #include <vclib/load_save.h>
 
 #include <vclib/ext/opengl2/drawable_mesh.h>

@@ -159,7 +159,7 @@ PointT Polygon<PointT>::normal(Iterator begin, Iterator end)
 }
 
 template<PointConcept PointT>
-template<std::ranges::range R>
+template<vcl::Range R>
 PointT Polygon<PointT>::normal(R&& range)
 {
 	return normal(std::ranges::begin(range), std::ranges::end(range));
@@ -195,7 +195,7 @@ PointT Polygon<PointT>::barycenter(Iterator begin, Iterator end)
 }
 
 template<PointConcept PointT>
-template<std::ranges::range R>
+template<vcl::Range R>
 PointT Polygon<PointT>::barycenter(R&& range)
 {
 	return barycenter(std::ranges::begin(range), std::ranges::end(range));
@@ -235,7 +235,7 @@ PointT Polygon<PointT>::weightedBarycenter(Iterator begin, Iterator end, WIterat
 }
 
 template<PointConcept PointT>
-template<std::ranges::range Rp, std::ranges::range Rw>
+template<vcl::Range Rp, vcl::Range Rw>
 PointT Polygon<PointT>::weightedBarycenter(Rp&& rPolygon, Rw&& rWeights)
 {
 	return weightedBarycenter(
@@ -276,7 +276,7 @@ typename PointT::ScalarType Polygon<PointT>::perimeter(Iterator begin, Iterator 
 }
 
 template<PointConcept PointT>
-template<std::ranges::range R>
+template<vcl::Range R>
 typename PointT::ScalarType Polygon<PointT>::perimeter(R&& range)
 {
 	return perimeter(std::ranges::begin(range), std::ranges::end(range));
@@ -317,7 +317,7 @@ typename PointT::ScalarType  Polygon<PointT>::area(Iterator begin, Iterator end)
 }
 
 template<PointConcept PointT>
-template<std::ranges::range R>
+template<vcl::Range R>
 typename PointT::ScalarType Polygon<PointT>::area(R&& range)
 {
 	return area(std::ranges::begin(range), std::ranges::end(range));
@@ -423,7 +423,7 @@ std::vector<uint> Polygon<PointT>::earCut(Iterator begin, Iterator end)
 }
 
 template<PointConcept PointT>
-template<std::ranges::range R>
+template<vcl::Range R>
 std::vector<uint> Polygon<PointT>::earCut(R&& range)
 {
 	return earCut(std::ranges::begin(range), std::ranges::end(range));

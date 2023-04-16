@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_ELEMENTS_HALF_EDGE_H
 #define VCL_MESH_ELEMENTS_HALF_EDGE_H
 
-#include <vclib/concept/mesh/element/half_edge.h>
+#include <vclib/concepts/mesh/elements/half_edge.h>
 
 #include "element.h"
 

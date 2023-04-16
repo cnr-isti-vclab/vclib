@@ -34,6 +34,12 @@ void clearVertexSelection(MeshType& m);
 template<FaceMeshConcept MeshType>
 void clearFaceSelection(MeshType& m);
 
+template<EdgeMeshConcept MeshType>
+void clearEdgeSelection(MeshType& m);
+
+template<DcelMeshConcept MeshType>
+void clearHalfEdgeSelection(MeshType& m);
+
 template<FaceMeshConcept MeshType>
 void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst);
 

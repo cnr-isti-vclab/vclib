@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_COORDINATE_H
 #define VCL_MESH_COMPONENTS_COORDINATE_H
 
-#include <vclib/concept/mesh/component/coordinate.h>
+#include <vclib/concepts/mesh/components/coordinate.h>
 #include <vclib/space/point.h>
 
 #include "internal/component_data.h"

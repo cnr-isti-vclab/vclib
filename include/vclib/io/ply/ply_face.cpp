@@ -24,7 +24,7 @@
 #include "ply_face.h"
 
 #include <vclib/algorithms/polygon.h>
-#include <vclib/exception/io_exception.h>
+#include <vclib/exceptions/io_exceptions.h>
 #include <vclib/mesh/requirements.h>
 
 #include "../internal/io_read.h"
