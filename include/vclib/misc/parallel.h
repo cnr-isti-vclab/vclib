@@ -24,6 +24,7 @@
 #ifndef VCL_MISC_PARALLEL_H
 #define VCL_MISC_PARALLEL_H
 
+#include <vclib/concepts/range.h>
 #include <vclib/types.h>
 
 // Apple clang does not support c++17 parallel algorithms.
@@ -59,10 +60,10 @@ void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F);
 template<typename Iterator, typename Lambda>
 void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F);
 
-template<std::ranges::range Rng, typename Lambda>
+template<vcl::Range Rng, typename Lambda>
 void parallelFor(Rng&& r, Lambda&& F);
 
-template<std::ranges::range Rng, typename Lambda>
+template<vcl::Range Rng, typename Lambda>
 void parallelFor(const Rng& r, Lambda&& F);
 
 } // namespace vcl

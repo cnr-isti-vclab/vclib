@@ -59,7 +59,7 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
-template<std::ranges::range Rng>
+template<vcl::Range Rng>
 HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
 	Rng&& r,
 	const IsInCellFunction& intersects) :

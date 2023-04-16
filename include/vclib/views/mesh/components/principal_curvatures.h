@@ -51,7 +51,8 @@ struct PrincipalCurvaturesView
 		else
 			return p.principalCurvature();
 	};
-
+	
+#ifdef VCLIB_USES_RANGES
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, PrincipalCurvaturesView)
 	{
@@ -60,8 +61,8 @@ struct PrincipalCurvaturesView
 			return std::forward<R>(r) | std::views::transform(constPrincipalCurvature);
 		else
 			return std::forward<R>(r) | std::views::transform(principalCurvature);
-
 	}
+#endif
 };
 
 } // namespace vcl::views::internal

@@ -25,11 +25,13 @@
 
 #include "../clean.h"
 
+#include <vclib/concepts/range.h>
+
 namespace vcl {
 
 namespace internal {
 
-template<std::ranges::range Rng>
+template<vcl::Range Rng>
 void clearSelection(Rng&& r)
 {
 	for (auto& e : r) {

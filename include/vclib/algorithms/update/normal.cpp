@@ -41,10 +41,18 @@ template<FaceMeshConcept MeshType>
 void normalizePerFaceNormals(MeshType& m)
 {
 	vcl::requirePerFaceNormal(m);
-
+	
+#ifdef VCLIB_USES_RANGES
 	for (auto& n : m.faces() | views::normals) {
 		n.normalize();
 	}
+#else
+	using FaceType = typename MeshType::FaceType;
+	
+	for (FaceType& f : m.faces()) {
+		f.normal().normalize();
+	}
+#endif
 }
 
 /**
@@ -81,10 +89,18 @@ template<MeshConcept MeshType>
 void clearPerVertexNormals(MeshType& m)
 {
 	vcl::requirePerVertexNormal(m);
-
+	
+#ifdef VCLIB_USES_RANGES
 	for (auto& n : m.vertices() | views::normals) {
 		n.setZero();
 	}
+#else
+	using VertexType = typename MeshType::VertexType;
+	
+	for (VertexType& v : m.vertices()) {
+		v.normal().setZero();
+	}
+#endif
 }
 
 /**
@@ -108,9 +124,15 @@ void clearPerReferencedVertexNormals(MeshType& m)
 	using FaceType   = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
+#ifdef VCLIB_USES_RANGES
 		for (auto& n : f.vertices() | views::normals) {
 			n.setZero();
 		}
+#else
+		for (VertexType* v : f.vertices()) {
+			v->normal().setZero();
+		}
+#endif
 	}
 }
 
@@ -129,11 +151,17 @@ void normalizePerVertexNormals(MeshType& m)
 {
 	vcl::requirePerVertexNormal(m);
 
-	using VertexType = typename MeshType::VertexType;
-
+#ifdef VCLIB_USES_RANGES
 	for (auto& n : m.vertices() | views::normals) {
 		n.normalize();
 	}
+#else
+	using VertexType = typename MeshType::VertexType;
+
+	for (VertexType& v : m.vertices()) {
+		v.normal().normalize();
+	}
+#endif
 }
 
 /**

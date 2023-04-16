@@ -31,6 +31,7 @@
 
 int main()
 {
+#ifdef VCL_USES_RANGES
 	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
 	m.enablePerFaceAdjacentFaces();
@@ -123,4 +124,6 @@ int main()
 		std::cerr << scal << "\n";
 	}
 	return 0;
+
+#endif
 }

@@ -49,7 +49,7 @@ StaticGrid<GridType, ValueType>::StaticGrid(
 }
 
 template<typename GridType, typename ValueType>
-template<std::ranges::range Rng>
+template<vcl::Range Rng>
 StaticGrid<GridType, ValueType>::StaticGrid(
 	Rng&& r,
 	const IsInCellFunction& intersects) :

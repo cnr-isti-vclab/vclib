@@ -46,7 +46,10 @@ namespace vcl {
  * returns a View object that is constructed in this way: View(vertexBegin(), vertexEnd());
  */
 template<typename It>
-class View : public std::ranges::view_interface<View<It>>
+class View
+#ifdef VCLIB_USES_RANGES
+		: public std::ranges::view_interface<View<It>>
+#endif
 {
 public:
 	using iterator = It;

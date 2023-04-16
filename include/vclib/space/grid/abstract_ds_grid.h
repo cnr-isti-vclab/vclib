@@ -28,6 +28,7 @@
 #include <set>
 
 #include <vclib/algorithms/bounding_box.h>
+#include <vclib/concepts/range.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/misc/mark.h>
@@ -131,7 +132,7 @@ public:
 	template<typename ObjIterator>
 	uint insert(ObjIterator begin, ObjIterator end);
 
-	template<std::ranges::range Rng>
+	template<vcl::Range Rng>
 	uint insert(Rng&& r);
 
 	// erase
@@ -203,7 +204,7 @@ protected:
 	template<typename ObjIterator>
 	AbstractDSGrid(ObjIterator begin, ObjIterator end, IsInCellFunction intersects = nullptr);
 
-	template<std::ranges::range Rng>
+	template<vcl::Range Rng>
 	AbstractDSGrid(Rng&& r, IsInCellFunction intersects = nullptr);
 
 	// custom function that checks if a value intersects with a cell (a box)

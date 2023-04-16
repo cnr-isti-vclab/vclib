@@ -130,7 +130,7 @@ int main()
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
 
 	auto intersects = vcl::intersectFunction<vcl::Box3d, const vcl::TriMesh::Face*>();
-
+#ifdef VCLIB_USES_RANGES
 	vcl::HashTableGrid3<const vcl::TriMesh::Face*> fsht(m.faces() | vcl::views::reference, intersects);
 
 	std::cerr << "Values in HashTableGrid: \n";
@@ -181,6 +181,6 @@ int main()
 	for (const auto& p : vec) {
 		std::cerr << p->first << ": " << m.index(p->second) << "\n";
 	}
-
+#endif
 	return 0;
 }

@@ -120,7 +120,7 @@ uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin,
  * @return The number of inserted elements.
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
-template<std::ranges::range Rng>
+template<vcl::Range Rng>
 uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(Rng&& r)
 {
 	return insert(std::ranges::begin(r), std::ranges::end(r));
@@ -532,7 +532,7 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
  * @param r: a range that satisfies the concept std::ranges::range
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
-template<std::ranges::range Rng>
+template<vcl::Range Rng>
 AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 	Rng&& r,
 	IsInCellFunction intersects) :

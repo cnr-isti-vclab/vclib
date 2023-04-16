@@ -58,13 +58,23 @@ template<MeshConcept MeshType>
 void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
 {
 	vcl::requirePerVertexColor(m);
-
+	
+#ifdef VCLIB_USES_RANGES
 	if (onlySelected) {
 		std::ranges::fill(m.vertices() | views::selected | views::colors, c);
 	}
 	else {
 		std::ranges::fill(m.vertices() | views::colors, c);
 	}
+#else
+	using VertexType = typename MeshType::VertexType;
+	
+	for (VertexType& v : m.vertices()) {
+		if (!onlySelected || v.isSelected()) {
+			v.color() = c;
+		}
+	}
+#endif
 }
 
 /**
@@ -84,13 +94,23 @@ template<FaceMeshConcept MeshType>
 void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
 {
 	vcl::requirePerFaceColor(m);
-
+	
+#ifdef VCLIB_USES_RANGES
 	if (onlySelected) {
 		std::ranges::fill(m.faces() | views::selected | views::colors, c);
 	}
 	else {
 		std::ranges::fill(m.faces() | views::colors, c);
 	}
+#else
+	using FaceType = typename MeshType::FaceType;
+	
+	for (FaceType& f : m.faces()) {
+		if (!onlySelected || f.isSelected()) {
+			f.color() = c;
+		}
+	}
+#endif
 }
 
 /**

@@ -84,6 +84,10 @@ public:
 
 	ConstIterator begin() const;
 	ConstIterator end() const;
+	
+#ifndef VCLIB_USES_RANGES
+	const std::vector<PointT>& points() const;
+#endif
 
 private:
 	std::vector<PointT> samplesVec;

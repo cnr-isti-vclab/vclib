@@ -49,7 +49,18 @@ vertexScalarMinMax(const MeshType& m)
 	using VertexType = typename MeshType::VertexType;
 	using ScalarType = typename VertexType::ScalarType;
 
+#ifdef VCLIB_USES_RANGES
 	auto [min, max] = std::ranges::minmax(m.vertices() | views::scalars);
+#else
+	ScalarType min = std::numeric_limits<ScalarType>::max(), max = std::numeric_limits<ScalarType>::lowest();
+	
+	for (const VertexType& v : m.vertices()) {
+		if (v.scalar() < min)
+			min = v.scalar();
+		if (v.scalar() > max)
+			max = v.scalar();
+	}
+#endif
 
 	return std::make_pair(min, max);;
 }
@@ -74,8 +85,19 @@ faceScalarMinMax(const MeshType& m)
 
 	using FaceType   = typename MeshType::FaceType;
 	using ScalarType = typename FaceType::ScalarType;
-
+	
+#ifdef VCLIB_USES_RANGES
 	auto [min, max] = std::ranges::minmax(m.faces() | views::scalars);
+#else
+	ScalarType min = std::numeric_limits<ScalarType>::max(), max = std::numeric_limits<ScalarType>::lowest();
+	
+	for (const FaceType& f : m.faces()) {
+		if (f.scalar() < min)
+			min = f.scalar();
+		if (f.scalar() > max)
+			max = f.scalar();
+	}
+#endif
 
 	return std::make_pair(min, max);
 }

@@ -99,6 +99,7 @@ set(HEADERS
 	include/vclib/algorithms/update/transform.h
 	include/vclib/concepts/logger.h
 	include/vclib/concepts/mesh.h
+	include/vclib/concepts/range.h
 	include/vclib/concepts/space.h
 	include/vclib/concepts/mesh/components.h
 	include/vclib/concepts/mesh/containers.h
@@ -170,6 +171,7 @@ set(HEADERS
 	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
 	include/vclib/iterators/iterator_wrapper.h
+	include/vclib/iterators/pointer_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/fibonacci.h
@@ -586,6 +588,17 @@ if (WIN32 OR TARGET vclib-external-tbb)
 else()
 	message(STATUS "VCLib: not using parallel algorithms")
 endif()
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	# using Clang
+	if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 16.0)
+		target_compile_definitions(vclib PUBLIC VCLIB_USES_RANGES)
+	endif()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	# using GCC or Visual Studio C++
+	target_compile_definitions(vclib PUBLIC VCLIB_USES_RANGES)
+endif()
+	
 
 if (TARGET vclib-external-qt)
 	add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})

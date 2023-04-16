@@ -28,6 +28,7 @@
 #include <vector>
 
 #include <vclib/concepts/space/polygon.h>
+#include <vclib/concepts/range.h>
 #include <vclib/space/point.h>
 
 namespace vcl {
@@ -71,36 +72,36 @@ public:
 	template<typename Iterator>
 	static PointT normal(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 3);
-
-	template<std::ranges::range R>
+	
+	template<vcl::Range R>
 	static PointT normal(R&& range);
 
 	template<typename Iterator>
 	static PointT barycenter(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
-	template<std::ranges::range R>
+	template<vcl::Range R>
 	static PointT barycenter(R&& range);
 
 	template<typename Iterator, typename WIterator>
 	static PointT weightedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
-	template<std::ranges::range Rp, std::ranges::range Rw>
+	template<vcl::Range Rp, vcl::Range Rw>
 	static PointT weightedBarycenter(Rp&& rPolygon, Rw&& rWeights);
 
 	template<typename Iterator>
 	static ScalarType perimeter(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
-	template<std::ranges::range R>
+	template<vcl::Range R>
 	static ScalarType perimeter(R&& range);
 
 	template<typename Iterator>
 	static ScalarType area(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT>);
 
-	template<std::ranges::range R>
+	template<vcl::Range R>
 	static ScalarType area(R&& range);
 
 	template<typename Iterator>
@@ -111,7 +112,7 @@ public:
 	static std::vector<uint> earCut(Iterator begin, Iterator end)
 		requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 3);
 
-	template<std::ranges::range R>
+	template<vcl::Range R>
 	static std::vector<uint> earCut(R&& range);
 
 private:

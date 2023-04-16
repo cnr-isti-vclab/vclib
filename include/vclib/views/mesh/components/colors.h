@@ -56,6 +56,7 @@ struct ColorsView
 			return p.color();
 	};
 
+#ifdef VCLIB_USES_RANGES
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, ColorsView)
 	{
@@ -66,6 +67,7 @@ struct ColorsView
 			return std::forward<R>(r) | std::views::transform(color);
 
 	}
+#endif
 
 	template <CleanWedgeColorsConcept R>
 	friend constexpr auto operator|(R&& r, ColorsView)

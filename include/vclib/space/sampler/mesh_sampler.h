@@ -33,14 +33,15 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshSampler
 {
+#ifdef VCLIB_USES_RANGES
 	using CoordView = decltype(typename MeshType::VertexView() | views::coords);
-
+#endif
 public:
 	using PointType  = typename MeshType::VertexType::CoordType;
 	using ScalarType = typename PointType::ScalarType;
-
+#ifdef VCLIB_USES_RANGES
 	using ConstIterator = std::ranges::iterator_t<CoordView>;
-
+#endif
 	MeshSampler();
 
 	const MeshType& samples() const;
@@ -103,8 +104,12 @@ public:
 		bool             copyNormal = false,
 		bool             copyScalar = true);
 
+#ifdef VCLIB_USES_RANGES
 	ConstIterator begin() const;
 	ConstIterator end() const;
+#else
+	auto points() const;
+#endif
 
 private:
 
