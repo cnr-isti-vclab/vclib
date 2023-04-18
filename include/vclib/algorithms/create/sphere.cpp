@@ -62,8 +62,8 @@ static const Point3d ups[6] = {
 
 } // namespace vcl::internal
 
-template<FaceMeshConcept MeshType, typename ScalarType>
-MeshType createSphereUV(const Sphere<ScalarType>& sp, uint parallels, uint meridians)
+template<FaceMeshConcept MeshType>
+MeshType createSphereUV(const SphereConcept auto& sp, uint parallels, uint meridians)
 {
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
@@ -126,8 +126,8 @@ MeshType createSphereUV(const Sphere<ScalarType>& sp, uint parallels, uint merid
 	return mesh;
 }
 
-template<FaceMeshConcept MeshType, typename ScalarType>
-MeshType createSphereNormalizedCube(const Sphere<ScalarType>& sp, uint divisions)
+template<FaceMeshConcept MeshType>
+MeshType createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions)
 {
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
@@ -187,8 +187,8 @@ MeshType createSphereNormalizedCube(const Sphere<ScalarType>& sp, uint divisions
 	return mesh;
 }
 
-template<FaceMeshConcept MeshType, typename ScalarType>
-MeshType createSphereSpherifiedCube(const Sphere<ScalarType>& sp, uint divisions)
+template<FaceMeshConcept MeshType>
+MeshType createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions)
 {
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
@@ -252,8 +252,8 @@ MeshType createSphereSpherifiedCube(const Sphere<ScalarType>& sp, uint divisions
 	return mesh;
 }
 
-template<FaceMeshConcept MeshType, typename ScalarType>
-MeshType createSphereIcosahedron(const Sphere<ScalarType>& sp, uint divisions)
+template<FaceMeshConcept MeshType>
+MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
 {
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
@@ -304,8 +304,8 @@ MeshType createSphereIcosahedron(const Sphere<ScalarType>& sp, uint divisions)
  * @param args
  * @return
  */
-template<FaceMeshConcept MeshType, typename ScalarType>
-MeshType createSphere(const Sphere<ScalarType>& sp, const CreateSphereArgs& args)
+template<FaceMeshConcept MeshType>
+MeshType createSphere(const SphereConcept auto& sp, const CreateSphereArgs& args)
 {
 	MeshType m;
 	switch (args.mode) {

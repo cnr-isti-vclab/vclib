@@ -65,13 +65,15 @@ int main()
 	pm = vcl::createCube<vcl::PolyMesh>(vcl::Point3d(0,0,0), 4);
 	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/cube_poly.ply", info);
 
-	m = vcl::createSphereSpherifiedCube<vcl::TriMesh>({vcl::Point3d(), 1.0}, 50);
+	vcl::Sphere st(vcl::Point3<vcl::TriMesh::ScalarType>(), 1.0);
+	m = vcl::createSphereSpherifiedCube<vcl::TriMesh>(st, 50);
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/sphere_tri.ply");
 
-	pm = vcl::createSphereSpherifiedCube<vcl::PolyMesh>({vcl::Point3d(), 1.0}, 50);
+	vcl::Sphere sp = st.cast<vcl::PolyMesh::ScalarType>();
+	pm = vcl::createSphereSpherifiedCube<vcl::PolyMesh>(sp, 50);
 	vcl::io::savePly(pm, VCL_TEST_RESULTS_PATH "/sphere_poly.ply");
 
-	m = vcl::createSphereIcosahedron<vcl::TriMesh>({vcl::Point3d(), 1.0}, 5);
+	m = vcl::createSphereIcosahedron<vcl::TriMesh>(st, 5);
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/sphere_ico.ply");
 
 	return 0;

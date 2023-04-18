@@ -46,6 +46,9 @@ public:
 	const Scalar& radius() const;
 	Scalar& radius();
 
+	template<typename S>
+	Sphere<S> cast() const;
+
 	Scalar diameter() const;
 	Scalar circumference() const;
 	Scalar surfaceArea() const;
@@ -58,6 +61,10 @@ private:
 	vcl::Point3<Scalar> c;
 	Scalar r;
 };
+
+// deduction guides
+template<Point3Concept P, typename T>
+Sphere(P, T) -> Sphere<typename P::ScalarType>;
 
 using Spheref = Sphere<float>;
 using Sphered = Sphere<double>;
