@@ -78,19 +78,21 @@ class Face :
 
 namespace vcl {
 
-template<typename ScalarType = double>
+template<typename Scalar = double>
 class PolyMeshT :
 		public vcl::Mesh<
-			mesh::VertexContainer<polymesh::Vertex<ScalarType>>,
-			mesh::FaceContainer<polymesh::Face<ScalarType>>,
-			mesh::BoundingBox3<ScalarType>,
+			mesh::VertexContainer<polymesh::Vertex<Scalar>>,
+			mesh::FaceContainer<polymesh::Face<Scalar>>,
+			mesh::BoundingBox3<Scalar>,
 			mesh::Color,
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
-			mesh::TransformMatrix<ScalarType>,
+			mesh::TransformMatrix<Scalar>,
 			mesh::CustomComponents>
 {
+public:
+	using ScalarType = Scalar;
 };
 
 using PolyMeshf = PolyMeshT<float>;

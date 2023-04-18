@@ -93,19 +93,21 @@ class Face :
 
 namespace vcl {
 
-template<typename ScalarType = double>
+template<typename Scalar = double>
 class DcelMeshT :
 		public vcl::Mesh<
-			mesh::VertexContainer<dcel::Vertex<ScalarType>>,
-			mesh::FaceContainer<dcel::Face<ScalarType>>,
-			mesh::HalfEdgeContainer<dcel::HalfEdge<ScalarType>>,
-			mesh::BoundingBox3<ScalarType>,
+			mesh::VertexContainer<dcel::Vertex<Scalar>>,
+			mesh::FaceContainer<dcel::Face<Scalar>>,
+			mesh::HalfEdgeContainer<dcel::HalfEdge<Scalar>>,
+			mesh::BoundingBox3<Scalar>,
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
-			mesh::TransformMatrix<ScalarType>,
+			mesh::TransformMatrix<Scalar>,
 			mesh::CustomComponents>
 {
+public:
+	using ScalarType = Scalar;
 };
 
 using DcelMeshf = DcelMeshT<float>;
