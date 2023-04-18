@@ -118,17 +118,14 @@ private:
 
 // deduction guides
 template<MeshConcept MeshType>
-KDTree(const MeshType& m)
-	-> KDTree<typename MeshType::VertexType::CoordType>;
+KDTree(const MeshType& m) -> KDTree<typename MeshType::VertexType::CoordType>;
 
 template<MeshConcept MeshType>
-KDTree(const MeshType& m, uint pointsPerCell)
-	-> KDTree<typename MeshType::VertexType::CoordType>;
+KDTree(const MeshType& m, uint pointsPerCell) -> KDTree<typename MeshType::VertexType::CoordType>;
 
 template<MeshConcept MeshType>
 KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth)
 	-> KDTree<typename MeshType::VertexType::CoordType>;
-
 
 template<MeshConcept MeshType>
 KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, bool balanced)

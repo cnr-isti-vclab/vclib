@@ -94,7 +94,7 @@ template<typename Scalar, uint N>
 template<typename S>
 Point<S, N> Point<Scalar, N>::cast() const
 {
-	if constexpr (std::is_same<Scalar, S>::value) {
+	if constexpr (std::is_same_v<Scalar, S>) {
 		return *this;
 	}
 	else {

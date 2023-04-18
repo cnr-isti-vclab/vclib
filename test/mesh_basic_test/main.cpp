@@ -40,18 +40,20 @@ int main()
 {
 	vcl::TriMesh m;
 
+	using TriMeshPoint = vcl::TriMesh::VertexType::CoordType;
+
 	// adding some vertices
 	m.addVertex();
 	m.addVertex();
 	m.addVertex();
 
 	// setting coordinate
-	m.vertex(0).coord() = vcl::Point3d(0, 0, 0);
-	m.vertex(1).coord() = vcl::Point3d(0, 1, 0);
-	m.vertex(2).coord() = vcl::Point3d(1, 0, 0);
+	m.vertex(0).coord() = TriMeshPoint(0, 0, 0);
+	m.vertex(1).coord() = TriMeshPoint(0, 1, 0);
+	m.vertex(2).coord() = TriMeshPoint(1, 0, 0);
 
 	vcl::TriMesh::Vertex myv;
-	myv.coord() = vcl::Point3d(3, 1, 2);
+	myv.coord() = TriMeshPoint(3, 1, 2);
 
 	m.enablePerVertexTexCoord();
 
@@ -62,7 +64,7 @@ int main()
 	
 	// setting vertex normals
 	// in this mesh vertex normaks are not optional, I don't need to enable them
-	m.vertex(0).normal() = vcl::Point3d(1, 0, 0);
+	m.vertex(0).normal() = TriMeshPoint(1, 0, 0);
 
 	// setting vertex colors, also colors here are not optional
 	m.vertex(0).color() = vcl::Color(3, 7, 4);

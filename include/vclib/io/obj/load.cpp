@@ -36,6 +36,13 @@ namespace vcl::io {
 namespace internal {
 
 template<MeshConcept MeshType>
+using NormalsMap =
+	std::conditional_t<
+		HasPerVertexNormal<MeshType>,
+		std::map<uint, typename MeshType::VertexType::NormalType>,
+		std::map<uint, vcl::Point3d>>;
+
+template<MeshConcept MeshType>
 void loadMaterials(
 	std::map<std::string, obj::Material>& materialMap,
 	MeshType& mesh,
@@ -179,16 +186,17 @@ void loadVertexCoord(
 	}
 }
 
-
 template<MeshConcept MeshType>
 void loadVertexNormal(
-	MeshType&                    m,
-	std::map<uint, vcl::Point3d> mapNormalsCache,
-	uint                         vn,
-	vcl::Tokenizer::iterator&    token,
-	FileMeshInfo&                loadedInfo,
-	bool                         enableOptionalComponents)
+	MeshType&                       m,
+	internal::NormalsMap<MeshType>& mapNormalsCache,
+	uint                            vn,
+	vcl::Tokenizer::iterator&       token,
+	FileMeshInfo&                   loadedInfo,
+	bool                            enableOptionalComponents)
 {
+	using NormalType = typename MeshType::VertexType::NormalType;
+
 	// first, need to check if I can store normals in the mesh
 	if (vn == 0) {
 		if (enableOptionalComponents) {
@@ -202,9 +210,9 @@ void loadVertexNormal(
 	}
 	if (loadedInfo.hasVertexNormals()) {
 		// read the normal
-		Point3d n;
+		NormalType n;
 		for (uint i = 0; i < 3; ++i) {
-			n[i] = internal::readDouble<double>(token);
+			n[i] = internal::readDouble<typename NormalType::ScalarType>(token);
 		}
 		// I can store the normal in its vertex
 		if (m.vertexNumber() > vn) {
@@ -404,7 +412,7 @@ void loadObj(
 {
 	std::ifstream file = internal::loadFileStream(filename);
 	// save normals if they can't be stored directly into vertices
-	std::map<uint, vcl::Point3d> mapNormalsCache;
+	internal::NormalsMap<MeshType> mapNormalsCache;
 	uint vn = 0; // number of vertex normals read
 	// save array of texcoords, that are stored later (into wedges when loading faces or into
 	// vertices as a fallback)
