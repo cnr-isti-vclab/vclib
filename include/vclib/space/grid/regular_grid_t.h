@@ -89,6 +89,10 @@ private:
 template<PointConcept PointType>
 vcl::Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements);
 
+// deduction guides
+template<PointConcept PointType, typename D>
+RegularGrid(PointType, PointType, D) -> RegularGrid<typename PointType::ScalarType, PointType::DIM>;
+
 } // namespace vcl
 
 #include "regular_grid_t.cpp"

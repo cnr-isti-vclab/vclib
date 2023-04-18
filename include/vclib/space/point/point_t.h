@@ -143,6 +143,10 @@ protected:
 template<typename Scalar,  uint N>
 std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1);
 
+//deduction guides
+template<typename S, typename... Scalars>
+Point(S, Scalars... scalars) -> Point<S, sizeof...(Scalars) + 1>;
+
 } // namespace vcl
 
 // inject vcl::Point hash function in std namespace

@@ -106,13 +106,6 @@ private:
 	PointT maxP;
 };
 
-// deduction guides
-template<PointConcept PointT>
-Box(const PointT& p) -> Box<PointT>;
-
-template<PointConcept PointT>
-Box(const PointT& min, const PointT& max) -> Box<PointT>;
-
 // common types
 template <typename S>
 using Box2 = Box<Point2<S>>;
