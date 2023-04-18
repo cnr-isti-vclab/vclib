@@ -77,18 +77,20 @@ class Edge :
 
 namespace vcl {
 
-template<typename ScalarType = double>
+template<typename Scalar = double>
 class EdgeMeshT :
 		public vcl::Mesh<
-			mesh::VertexContainer<edgemesh::Vertex<ScalarType>>,
-			mesh::EdgeContainer<edgemesh::Edge<ScalarType>>,
-			mesh::BoundingBox3<ScalarType>,
+			mesh::VertexContainer<edgemesh::Vertex<Scalar>>,
+			mesh::EdgeContainer<edgemesh::Edge<Scalar>>,
+			mesh::BoundingBox3<Scalar>,
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
-			mesh::TransformMatrix<ScalarType>,
+			mesh::TransformMatrix<Scalar>,
 			mesh::CustomComponents>
 {
+public:
+	using ScalarType = Scalar;
 };
 
 using EdgeMeshf = EdgeMeshT<float>;

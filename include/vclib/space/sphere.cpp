@@ -62,6 +62,18 @@ Scalar &Sphere<Scalar>::radius()
 }
 
 template<typename Scalar>
+template<typename S>
+Sphere<S> Sphere<Scalar>::cast() const
+{
+	if constexpr (std::is_same_v<Scalar, S>) {
+		return *this;
+	}
+	else {
+		return Sphere<S>(c.template cast<S>(), r);
+	}
+}
+
+template<typename Scalar>
 Scalar Sphere<Scalar>::diameter() const
 {
 	return 2 * r;

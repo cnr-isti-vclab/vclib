@@ -58,17 +58,19 @@ class Vertex :
 
 namespace vcl {
 
-template<typename ScalarType = double>
+template<typename Scalar = double>
 class PointCloudT :
 		public vcl::Mesh<
-			mesh::VertexContainer<pointcloud::Vertex<ScalarType>>,
-			mesh::BoundingBox3<ScalarType>,
+			mesh::VertexContainer<pointcloud::Vertex<Scalar>>,
+			mesh::BoundingBox3<Scalar>,
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
-			mesh::TransformMatrix<ScalarType>,
+			mesh::TransformMatrix<Scalar>,
 			mesh::CustomComponents>
 {
+public:
+	using ScalarType = Scalar;
 };
 
 using PointCloudf = PointCloudT<float>;

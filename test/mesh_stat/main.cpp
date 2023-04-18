@@ -31,7 +31,7 @@ int main()
 {
 	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
-	vcl::Point3d bar = vcl::barycenter(m);
+	auto bar = vcl::barycenter(m);
 
 	std::cerr << "Barycenter: " << bar << "\n";
 

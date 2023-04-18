@@ -42,12 +42,14 @@ public:
 		uint                          pointsPerCell = 16,
 		uint                          maxDepth      = 64,
 		bool                          balanced      = false);
+
 	template<MeshConcept MeshType>
 	KDTree(
 		const MeshType& m,
 		uint                          pointsPerCell = 16,
 		uint                          maxDepth      = 64,
-		bool                          balanced      = false);
+		bool                          balanced      = false)
+		requires (std::is_same_v<typename MeshType::VertexType::CoordType, PointType>);
 
 	uint      nearestNeighborIndex(const PointType& queryPoint, Scalar& dist = dummyScalar) const;
 	PointType nearestNeighbor(const PointType& queryPoint, Scalar& dist = dummyScalar) const;
@@ -113,6 +115,21 @@ private:
 		Scalar sq;     // squared distance to the next node
 	};
 };
+
+// deduction guides
+template<MeshConcept MeshType>
+KDTree(const MeshType& m) -> KDTree<typename MeshType::VertexType::CoordType>;
+
+template<MeshConcept MeshType>
+KDTree(const MeshType& m, uint pointsPerCell) -> KDTree<typename MeshType::VertexType::CoordType>;
+
+template<MeshConcept MeshType>
+KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth)
+	-> KDTree<typename MeshType::VertexType::CoordType>;
+
+template<MeshConcept MeshType>
+KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, bool balanced)
+	-> KDTree<typename MeshType::VertexType::CoordType>;
 
 } // namespace vcl
 

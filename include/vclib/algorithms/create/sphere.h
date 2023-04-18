@@ -51,21 +51,21 @@ struct CreateSphereArgs {
 	uint             divisions = 20; // used for mode = NORMALIZED_CUBE, SPHERIFIED_CUBE, ICOSAHEDRON
 };
 
-template<FaceMeshConcept MeshType, typename ScalarType = double>
-MeshType createSphereUV(const Sphere<ScalarType>& sp, uint parallels = 10, uint meridians = 20);
+template<FaceMeshConcept MeshType>
+MeshType createSphereUV(const SphereConcept auto& sp, uint parallels = 10, uint meridians = 20);
 
-template<FaceMeshConcept MeshType, typename ScalarType = double>
-MeshType createSphereNormalizedCube(const Sphere<ScalarType>& sp, uint divisions);
+template<FaceMeshConcept MeshType>
+MeshType createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions);
 
-template<FaceMeshConcept MeshType, typename ScalarType = double>
-MeshType createSphereSpherifiedCube(const Sphere<ScalarType>& sp, uint divisions);
+template<FaceMeshConcept MeshType>
+MeshType createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions);
 
-template<FaceMeshConcept MeshType, typename ScalarType = double>
-MeshType createSphereIcosahedron(const Sphere<ScalarType>& sp, uint divisions);
+template<FaceMeshConcept MeshType>
+MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions);
 
-template<FaceMeshConcept MeshType, typename ScalarType = double>
+template<FaceMeshConcept MeshType>
 MeshType createSphere(
-	const Sphere<ScalarType>& sp,
+	const SphereConcept auto& sp,
 	const CreateSphereArgs& args = CreateSphereArgs());
 
 template<FaceMeshConcept MeshType>

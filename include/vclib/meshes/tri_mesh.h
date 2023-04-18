@@ -80,19 +80,21 @@ class Face :
 
 namespace vcl {
 
-template<typename ScalarType = double>
+template<typename Scalar = double>
 class TriMeshT :
 		public vcl::Mesh<
-			mesh::VertexContainer<trimesh::Vertex<ScalarType>>,
-			mesh::FaceContainer<trimesh::Face<ScalarType>>,
-			mesh::BoundingBox3<ScalarType>,
+			mesh::VertexContainer<trimesh::Vertex<Scalar>>,
+			mesh::FaceContainer<trimesh::Face<Scalar>>,
+			mesh::BoundingBox3<Scalar>,
 			mesh::Color,
 			mesh::Mark,
 			mesh::Name,
 			mesh::TexturePaths,
-			mesh::TransformMatrix<ScalarType>,
+			mesh::TransformMatrix<Scalar>,
 			mesh::CustomComponents>
 {
+public:
+	using ScalarType = Scalar;
 };
 
 using TriMeshf = TriMeshT<float>;

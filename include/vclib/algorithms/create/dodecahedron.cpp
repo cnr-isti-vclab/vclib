@@ -125,9 +125,10 @@ MeshType createDodecahedron(LogType& log)
 	}
 
 	MeshType mesh;
+	using ST = typename MeshType::VertexType::CoordType::ScalarType;
 	mesh.reserveVertices(pmesh.vertexNumber());
 	for (const auto& v : pmesh.vertices()) {
-		mesh.addVertex(v.coord());
+		mesh.addVertex(v.coord().cast<ST>());
 	}
 
 	if constexpr (isLoggerValid<LogType>()) {

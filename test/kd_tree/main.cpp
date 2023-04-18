@@ -29,16 +29,18 @@
 
 #include <doctest/doctest.h>
 
-std::vector<uint> getKNearestNeighbors(const vcl::Point3d& p, uint k, std::string mesh = "bone.ply")
+using PointType = vcl::TriMesh::VertexType::CoordType;
+
+std::vector<uint> getKNearestNeighbors(const PointType& p, uint k, std::string mesh = "bone.ply")
 {
 	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/" + mesh);
 
-	vcl::KDTree<vcl::Point3d> tree(m);
+	vcl::KDTree tree(m);
 
 	return tree.kNearestNeighborsIndices(p, k);
 }
 
-static const vcl::Point3d p(0.5, 0.5, 0.5);
+static const PointType p(0.5, 0.5, 0.5);
 
 TEST_CASE("testing nearest neighbours to [0.5, 0.5, 0.5] in bone.ply") {
 	CHECK(getKNearestNeighbors(p, 1)[0] == 1558);
