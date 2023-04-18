@@ -64,7 +64,8 @@ KDTree<PointType>::KDTree(
  */
 template<PointConcept PointType>
 template<MeshConcept MeshType>
-KDTree<PointType>::KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, bool balanced) :
+KDTree<PointType>::KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, bool balanced)
+		requires (std::is_same_v<typename MeshType::VertexType::CoordType, PointType>) :
 		points(m.vertexNumber()),
 		indices(m.vertexNumber()),
 		pointsPerCell(pointsPerCell),

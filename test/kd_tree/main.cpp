@@ -33,7 +33,7 @@ std::vector<uint> getKNearestNeighbors(const vcl::Point3d& p, uint k, std::strin
 {
 	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/" + mesh);
 
-	vcl::KDTree<vcl::Point3d> tree(m);
+	vcl::KDTree tree(m);
 
 	return tree.kNearestNeighborsIndices(p, k);
 }
