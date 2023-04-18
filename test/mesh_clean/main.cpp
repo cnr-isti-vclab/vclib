@@ -88,9 +88,9 @@ int main()
 
 	vcl::setPerFaceColorFromConnectedComponents(m, cc);
 
-	double d = m.boundingBox().diagonal()/10;
+	auto d = m.boundingBox().diagonal()/10;
 
-	vcl::setPerVertexColorPerlinNoise(m, vcl::Point3d(d, d, d));
+	vcl::setPerVertexColorPerlinNoise(m, vcl::Point(d, d, d));
 
 	vcl::save(m, VCL_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
 

@@ -35,7 +35,7 @@ int main()
 
 	vcl::TriMesh m = tm;
 
-	vcl::Matrix44<double> m44;
+	vcl::Matrix44<vcl::TriMesh::ScalarType> m44;
 	m44.setZero();
 	m44.diagonal() << -1, -1, -1, 1;
 

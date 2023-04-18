@@ -39,10 +39,10 @@ PrincipalCurvature<S> PrincipalCurvature<Scalar>::cast() const
 	}
 	else {
 		PrincipalCurvature<S> tmp;
-		tmp.dir1 = dir1.template cast<S>();
-		tmp.dir2 = dir2.template cast<S>();
-		tmp.k1 = k1;
-		tmp.k2 = k2;
+		tmp.maxDir() = dir1.template cast<S>();
+		tmp.minDir() = dir2.template cast<S>();
+		tmp.maxValue() = k1;
+		tmp.minValue() = k2;
 		return tmp;
 	}
 }

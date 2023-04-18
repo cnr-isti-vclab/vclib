@@ -29,12 +29,13 @@
 
 int main()
 {
+	using PointType = vcl::TriMesh::VertexType::CoordType;
 	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
 	vcl::updatePerFaceNormals(m);
 
-	vcl::Point3d p(2, 1, 0);
-	vcl::Point3d c;
+	PointType p(2, 1, 0);
+	PointType c;
 
 	for (const auto& f : m.faces()) {
 		double dist = vcl::pointFaceDistance(p, f, c);
