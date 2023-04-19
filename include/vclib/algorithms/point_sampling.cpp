@@ -106,7 +106,7 @@ SamplerType allVerticesPointSampling(const MeshType& m, bool onlySelected)
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: A const reference to the Mesh object
@@ -116,7 +116,7 @@ SamplerType allVerticesPointSampling(const MeshType& m, bool onlySelected)
  *
  * @return A SamplerType object that contains the sampled points on the faces
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType allFacesPointSampling(
 	const MeshType&    m,
 	std::vector<uint>& birthFaces,
@@ -152,7 +152,7 @@ SamplerType allFacesPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: A const reference to the Mesh object
@@ -160,7 +160,7 @@ SamplerType allFacesPointSampling(
  *
  * @return A SamplerType object that contains the sampled points on the faces
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected)
 {
 	std::vector<uint> v;
@@ -262,7 +262,7 @@ SamplerType vertexUniformPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType A type that satisfies the SamplerConcept
  * @tparam MeshType A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: The mesh to sample from.
@@ -273,7 +273,7 @@ SamplerType vertexUniformPointSampling(
  *
  * @return A SamplerType object that contains the sampled points on the faces.
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
 	const MeshType&    m,
 	uint               nSamples,
@@ -326,7 +326,7 @@ SamplerType faceUniformPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType A type that satisfies the SamplerConcept
  * @tparam MeshType A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: The mesh to sample from.
@@ -336,7 +336,7 @@ SamplerType faceUniformPointSampling(
  *
  * @return A SamplerType object that contains the sampled points on the faces.
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
 	const MeshType&    m,
 	uint               nSamples,
@@ -443,7 +443,7 @@ SamplerType vertexWeightedPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  * @tparam ScalarType: The scalar type used for the weights
  *
@@ -456,7 +456,7 @@ SamplerType vertexWeightedPointSampling(
  *
  * @return A SamplerType object that contains the sampled points on the faces.
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
 SamplerType faceWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
@@ -506,7 +506,7 @@ SamplerType faceWeightedPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  * @tparam ScalarType: The scalar type used for the weights
  *
@@ -518,7 +518,7 @@ SamplerType faceWeightedPointSampling(
  *
  * @return A SamplerType object that contains the sampled points on the faces.
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
 SamplerType faceWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
@@ -562,7 +562,7 @@ SamplerType vertexScalarWeightedPointSampling(const MeshType& m, uint nSamples, 
  * @param nSamples
  * @return
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceScalarWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	vcl::requirePerFaceScalar(m);
@@ -624,7 +624,7 @@ SamplerType vertexAreaWeightedPointSampling(const MeshType& m, uint nSamples, bo
  * @param nSamples
  * @return
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceAreaWeightedPointSampling(
 	const MeshType& m,
 	uint nSamples,
@@ -646,7 +646,7 @@ SamplerType faceAreaWeightedPointSampling(
  * a sequence of consecutive segments proportional to the face areas and actually shooting sample
  * over this line. The indices of the sampled faces in the mesh are stored in the birthFaces vector.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: The mesh to sample from.
@@ -656,7 +656,7 @@ SamplerType faceAreaWeightedPointSampling(
  *
  * @return A SamplerType object that contains the sampled points on the faces.
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPointSampling(
 	const MeshType&    m,
 	uint               nSamples,
@@ -715,7 +715,7 @@ SamplerType montecarloPointSampling(
  * a sequence of consecutive segments proportional to the face areas and actually shooting sample
  * over this line.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: The mesh to sample from.
@@ -724,14 +724,14 @@ SamplerType montecarloPointSampling(
  *
  * @return A SamplerType object that contains the sampled points on the faces.
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	std::vector<uint> birthFaces;
 	return montecarloPointSampling<SamplerType>(m, nSamples, birthFaces, deterministic);
 }
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	using FaceType = typename MeshType::FaceType;
@@ -780,7 +780,7 @@ SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, 
  * @param deterministic
  * @return
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPoissonPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	using FaceType = typename MeshType::FaceType;

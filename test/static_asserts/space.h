@@ -42,10 +42,11 @@ void spaceStaticAsserts()
 	static_assert(Polygon3Concept<Polygon3d>, "Polygon3d does not satisfy the Polygon3Concept");
 
 	static_assert(
-		FaceSamplerConcept<MeshSampler<internal::TMPSimplePolyMesh>>,
-		"MeshSampler is not a valid FaceSampler");
+		SamplerConcept<MeshSampler<internal::TMPSimplePolyMesh>>,
+		"MeshSampler does not satisfy the SamplerConcept");
 
-	static_assert(FaceSamplerConcept<PointSampler<>>, "PointSampler is not a valid FaceSampler");
+	static_assert(
+		SamplerConcept<PointSampler<>>, "PointSampler does not satisfy the SamplerConcept");
 
 	static_assert(
 		SamplerConcept<VertexSampler<internal::TMPSimplePolyMesh::Vertex>>,
