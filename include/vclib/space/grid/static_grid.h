@@ -99,10 +99,10 @@ private:
 	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
 };
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
+template<typename ValueType, typename ScalarType = double>
 using StaticGrid2 = StaticGrid<RegularGrid2<ScalarType>, ValueType>;
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
+template<typename ValueType, typename ScalarType = double>
 using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
 
 } // namespace vcl

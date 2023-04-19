@@ -36,7 +36,7 @@ int main()
 
 	vcl::Point3<uint> first(2,2,2), last(5, 4, 7);
 
-	vcl::HashTableGrid3<vcl::Point<double, 3>, false> sht(g);
+	vcl::HashTableGrid3<vcl::Point<double, 3>, double, false> sht(g);
 
 	sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
 	sht.insert(vcl::Point3d(0.05, 0.15, 0.25)); // duplicate won't be inserted
@@ -132,7 +132,7 @@ int main()
 
 	auto intersects = vcl::intersectFunction<vcl::Box3<ST>, const vcl::TriMesh::Face*>();
 #ifdef VCLIB_USES_RANGES
-	vcl::HashTableGrid3<const vcl::TriMesh::Face*, true, ST> fsht(
+	vcl::HashTableGrid3<const vcl::TriMesh::Face*, ST> fsht(
 		m.faces() | vcl::views::reference, intersects);
 
 	std::cerr << "Values in HashTableGrid: \n";
@@ -151,7 +151,7 @@ int main()
 
 	std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<const vcl::TriMesh::Face*, true, ST> fsg(m.faces() | vcl::views::reference, intersects);
+	vcl::StaticGrid3<const vcl::TriMesh::Face*, ST> fsg(m.faces() | vcl::views::reference, intersects);
 
 	std::cerr << "Values in Static Grid : \n";
 
@@ -174,7 +174,7 @@ int main()
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
 
-	vcl::StaticGrid3<const vcl::TriMesh::Vertex*, true, ST> vmsg(m.vertices() | vcl::views::reference);
+	vcl::StaticGrid3<const vcl::TriMesh::Vertex*, ST> vmsg(m.vertices() | vcl::views::reference);
 
 	const vcl::Point3<ST> qv(0.5, 0.5, 0.5);
 

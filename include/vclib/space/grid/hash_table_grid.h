@@ -105,11 +105,11 @@ private:
 	bool eraseInCell(const KeyType& k, const ValueType& v);
 };
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
-using HashTableGrid2 = HashTableGrid<RegularGrid2<ScalarType>, ValueType, AD>;
+template<typename ValueType, typename ScalarType = double, bool AllowDuplicates = true>
+using HashTableGrid2 = HashTableGrid<RegularGrid2<ScalarType>, ValueType, AllowDuplicates>;
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
-using HashTableGrid3 = HashTableGrid<RegularGrid3<ScalarType>, ValueType, AD>;
+template<typename ValueType, typename ScalarType = double, bool AllowDuplicates = true>
+using HashTableGrid3 = HashTableGrid<RegularGrid3<ScalarType>, ValueType, AllowDuplicates>;
 
 } // namespace vcl
 

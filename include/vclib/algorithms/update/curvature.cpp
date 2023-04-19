@@ -258,7 +258,7 @@ void updatePrincipalCurvaturePCA(
 	using NormalType = typename VertexType::NormalType;
 	using FaceType   = typename MeshType::FaceType;
 
-	using VGrid = typename vcl::StaticGrid3<VertexType*, true, ScalarType>;
+	using VGrid = typename vcl::StaticGrid3<VertexType*, ScalarType>;
 	using VGridIterator = typename VGrid::ConstIterator;
 
 	VGrid pGrid;
