@@ -36,7 +36,7 @@ int main()
 
 	vcl::Point3<uint> first(2,2,2), last(5, 4, 7);
 
-	vcl::HashTableGrid3<vcl::Point<double, 3>, false> sht(g);
+	vcl::HashTableGrid3<vcl::Point<double, 3>, double, false> sht(g);
 
 	sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
 	sht.insert(vcl::Point3d(0.05, 0.15, 0.25)); // duplicate won't be inserted
@@ -128,10 +128,11 @@ int main()
 	std::cerr << "\n==================================\n\n";
 
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
+	using ST = vcl::TriMesh::ScalarType;
 
-	auto intersects = vcl::intersectFunction<vcl::Box3d, const vcl::TriMesh::Face*>();
+	auto intersects = vcl::intersectFunction<vcl::Box3<ST>, const vcl::TriMesh::Face*>();
 
-	vcl::HashTableGrid3<const vcl::TriMesh::Face*> fsht(m.faces() | vcl::views::reference, intersects);
+	vcl::HashTableGrid3<const vcl::TriMesh::Face*, ST> fsht(m.faces() | vcl::views::reference, intersects);
 
 	std::cerr << "Values in HashTableGrid: \n";
 
@@ -141,7 +142,7 @@ int main()
 
 	std::cerr << "\nValues in Sphere: \n";
 
-	auto sv  = fsht.valuesInSphere({vcl::Point3d(-1, -1, -1), 0.5});
+	auto sv  = fsht.valuesInSphere({vcl::Point3<ST>(-1, -1, -1), 0.5});
 
 	for (const auto& p : sv) {
 		std::cerr << p->first << ": " << m.index(p->second) << "\n";
@@ -149,7 +150,7 @@ int main()
 
 	std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<const vcl::TriMesh::Face*> fsg(m.faces() | vcl::views::reference, intersects);
+	vcl::StaticGrid3<const vcl::TriMesh::Face*, ST> fsg(m.faces() | vcl::views::reference, intersects);
 
 	std::cerr << "Values in Static Grid : \n";
 
@@ -159,7 +160,7 @@ int main()
 
 	std::cerr << "\nValues in Sphere: \n";
 
-	auto fsv  = fsg.valuesInSphere({vcl::Point3d(-1, -1, -1), 0.5});
+	auto fsv  = fsg.valuesInSphere({vcl::Point3<ST>(-1, -1, -1), 0.5});
 
 	for (const auto& p : fsv) {
 		std::cerr << p->first << ": " << m.index(p->second) << "\n";
@@ -172,9 +173,9 @@ int main()
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
 
-	vcl::StaticGrid3<const vcl::TriMesh::Vertex*> vmsg(m.vertices() | vcl::views::reference);
+	vcl::StaticGrid3<const vcl::TriMesh::Vertex*, ST> vmsg(m.vertices() | vcl::views::reference);
 
-	const vcl::Point3d qv(0.5, 0.5, 0.5);
+	const vcl::Point3<ST> qv(0.5, 0.5, 0.5);
 
 	auto vec = vmsg.kClosestValues(qv, 5);
 

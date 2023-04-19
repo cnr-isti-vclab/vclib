@@ -307,7 +307,7 @@ set(HEADERS
 	include/vclib/space/graph/bipartite/iterator/adjacent_node_iterator.h
 	include/vclib/space/graph/bipartite/iterator/adjacent_right_node_iterator.h
 	include/vclib/space/graph/bipartite/iterator/node_iterator.h
-	include/vclib/space/grid/abstract_ds_grid.h
+	include/vclib/space/grid/abstract_grid.h
 	include/vclib/space/grid/hash_table_grid.h
 	include/vclib/space/grid/regular_grid_t.h
 	include/vclib/space/grid/regular_grid2.h
@@ -496,7 +496,7 @@ set(SOURCES
 	include/vclib/space/graph/undirected_node.cpp
 	include/vclib/space/graph/bipartite/bipartite_graph.cpp
 	include/vclib/space/graph/bipartite/iterator/adjacent_node_iterator.cpp
-	include/vclib/space/grid/abstract_ds_grid.cpp
+	include/vclib/space/grid/abstract_grid.cpp
 	include/vclib/space/grid/hash_table_grid.cpp
 	include/vclib/space/grid/regular_grid_t.cpp
 	include/vclib/space/grid/static_grid.cpp

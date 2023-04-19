@@ -38,13 +38,13 @@ SamplerType allVerticesPointSampling(
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType allVerticesPointSampling(const MeshType& m, bool onlySelected = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType allFacesPointSampling(
 	const MeshType&    m,
 	std::vector<uint>& birthFaces,
 	bool               onlySelected = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected = false);
 
 template<SamplerConcept SamplerType, MeshConcept MeshType>
@@ -62,7 +62,7 @@ SamplerType vertexUniformPointSampling(
 	bool               onlySelected  = false,
 	bool               deterministic = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
 	const MeshType&    m,
 	uint               nSamples,
@@ -70,7 +70,7 @@ SamplerType faceUniformPointSampling(
 	bool               onlySelected  = false,
 	bool               deterministic = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
 	const MeshType&    m,
 	uint               nSamples,
@@ -92,7 +92,7 @@ SamplerType vertexWeightedPointSampling(
 	uint                           nSamples,
 	bool                           deterministic = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
 SamplerType faceWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
@@ -100,7 +100,7 @@ SamplerType faceWeightedPointSampling(
 	std::vector<uint>&             birthFaces,
 	bool                           deterministic = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
 SamplerType faceWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
@@ -119,29 +119,29 @@ SamplerType vertexAreaWeightedPointSampling(
 	uint nSamples,
 	bool deterministic = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceAreaWeightedPointSampling(
 	const MeshType& m,
 	uint nSamples,
 	bool deterministic = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPointSampling(
 	const MeshType&    m,
 	uint               nSamples,
 	std::vector<uint>& birthFaces,
 	bool               deterministic = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType stratifiedMontecarloPointSampling(
 	const MeshType& m,
 	uint nSamples,
 	bool deterministic = false);
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPoissonPointSampling(
 	const MeshType& m,
 	uint nSamples,

@@ -132,6 +132,7 @@ MeshType createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
 	using Facetype = typename MeshType::FaceType;
+	using ScalarType = typename CoordType::ScalarType;
 
 	MeshType mesh;
 
@@ -139,9 +140,9 @@ MeshType createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions
 	const CoordType step3(step, step, step);
 
 	for (uint face = 0; face < 6; ++face) {
-		const CoordType origin = internal::cts::origins[face];
-		const CoordType right = internal::cts::rights[face];
-		const CoordType up = internal::cts::ups[face];
+		const CoordType origin = internal::cts::origins[face].cast<ScalarType>();
+		const CoordType right = internal::cts::rights[face].cast<ScalarType>();
+		const CoordType up = internal::cts::ups[face].cast<ScalarType>();
 		for (uint j = 0; j < divisions + 1; ++j) {
 			const CoordType j3(j, j, j);
 			for (uint i = 0; i < divisions + 1; ++i) {
@@ -192,7 +193,7 @@ MeshType createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions
 {
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
-	using ST = typename CoordType::ScalarType;
+	using ScalarType = typename CoordType::ScalarType;
 	using Facetype = typename MeshType::FaceType;
 
 	MeshType mesh;
@@ -201,9 +202,9 @@ MeshType createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions
 	const CoordType step3(step, step, step);
 
 	for (uint face = 0; face < 6; ++face) {
-		const CoordType origin = internal::cts::origins[face].cast<ST>();
-		const CoordType right = internal::cts::rights[face].cast<ST>();
-		const CoordType up = internal::cts::ups[face].cast<ST>();
+		const CoordType origin = internal::cts::origins[face].cast<ScalarType>();
+		const CoordType right = internal::cts::rights[face].cast<ScalarType>();
+		const CoordType up = internal::cts::ups[face].cast<ScalarType>();
 		for (uint j = 0; j < divisions + 1; ++j) {
 			const CoordType j3(j, j, j);
 			for (uint i = 0; i < divisions + 1; ++i) {

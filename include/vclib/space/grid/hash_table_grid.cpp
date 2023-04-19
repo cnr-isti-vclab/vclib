@@ -32,7 +32,7 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid()
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
 HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(const GridType& g) :
-		AbstractGrid(g)
+		AbsGrid(g)
 {
 }
 
@@ -53,9 +53,9 @@ HashTableGrid<GridType, ValueType, AllowDuplicates>::HashTableGrid(
 	ObjIterator             begin,
 	ObjIterator             end,
 	const IsInCellFunction& intersects) :
-		AbstractGrid(begin, end, intersects)
+		AbsGrid(begin, end, intersects)
 {
-	AbstractGrid::insert(begin, end);
+	AbsGrid::insert(begin, end);
 }
 
 template<typename GridType, typename ValueType, bool AllowDuplicates>
@@ -155,7 +155,7 @@ template<typename GridType, typename ValueType, bool AllowDuplicates>
 void HashTableGrid<GridType, ValueType, AllowDuplicates>::eraseInSphere(
 	const Sphere<typename GridType::ScalarType>& s)
 {
-	std::vector<ConstIterator> toDel = AbstractGrid::valuesInSphere(s);
+	std::vector<ConstIterator> toDel = AbsGrid::valuesInSphere(s);
 	for (auto& it : toDel)
 		map.erase(it);
 }

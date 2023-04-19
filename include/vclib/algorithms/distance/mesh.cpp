@@ -42,6 +42,7 @@ HausdorffDistResult hausdorffDist(
 	LogType& log)
 {
 	using PointSampleType = typename SamplerType::PointType;
+	using ScalarType = typename PointSampleType::ScalarType;
 
 	HausdorffDistResult res;
 	res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
@@ -60,7 +61,7 @@ HausdorffDistResult hausdorffDist(
 	uint i = 0;
 	vcl::parallelFor(s, [&](const PointSampleType& sample){
 //	for (const PointSampleType& sample : s) {
-		double dist = std::numeric_limits<double>::max();
+		ScalarType dist = std::numeric_limits<ScalarType>::max();
 		const auto iter = g.closestValue(sample, dist);
 
 		if (iter != g.end()) {
@@ -138,6 +139,7 @@ HausdorffDistResult samplerMeshHausdorff(
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
+	using ScalarType = typename VertexType::CoordType::ScalarType;
 
 	std::string meshName = "first mesh";
 	if constexpr (HasName<MeshType>){
@@ -148,7 +150,7 @@ HausdorffDistResult samplerMeshHausdorff(
 			log.log(0, "Building Grid on " + meshName + " vertices...");
 		}
 		
-		vcl::StaticGrid3<const VertexType*> grid(m.vertices() | views::reference);
+		vcl::StaticGrid3<const VertexType*, ScalarType> grid(m.vertices() | views::reference);
 		grid.build();
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -161,7 +163,7 @@ HausdorffDistResult samplerMeshHausdorff(
 		if constexpr (vcl::isLoggerValid<LogType>()) {
 			log.log(0, "Building Grid on " + meshName + " faces...");
 		}
-		vcl::StaticGrid3<const FaceType*> grid(m.faces() | views::reference);
+		vcl::StaticGrid3<const FaceType*, ScalarType> grid(m.faces() | views::reference);
 		grid.build();
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {

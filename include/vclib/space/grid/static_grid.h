@@ -29,7 +29,7 @@
 
 #include <vclib/misc/mark.h>
 
-#include "abstract_ds_grid.h"
+#include "abstract_grid.h"
 #include "regular_grid2.h"
 #include "regular_grid3.h"
 
@@ -38,18 +38,18 @@
 namespace vcl {
 
 template<typename GridType, typename ValueType>
-class StaticGrid : public AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>
+class StaticGrid : public AbstractGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>
 {
-	using AbstractGrid = AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
+	using AbsGrid = AbstractGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
 
 	using PairType =  std::pair<uint, ValueType>;
 	using PairComparator = FirstElementPairComparator<PairType>;
 
-	friend AbstractGrid;
+	friend AbsGrid;
 
 public:
-	using KeyType = typename AbstractGrid::KeyType;
-	using IsInCellFunction = typename AbstractGrid::IsInCellFunction;
+	using KeyType = typename AbsGrid::KeyType;
+	using IsInCellFunction = typename AbsGrid::IsInCellFunction;
 
 	using Iterator = StaticGridIterator<KeyType, ValueType, GridType>;
 	using ConstIterator = ConstStaticGridIterator<KeyType, ValueType, GridType>;
@@ -91,18 +91,18 @@ private:
 	std::vector<uint> grid;
 
 	// not available member functions
-	using AbstractGrid::erase;
-	using AbstractGrid::eraseAllInCell;
-	using AbstractGrid::eraseInSphere;
+	using AbsGrid::erase;
+	using AbsGrid::eraseAllInCell;
+	using AbsGrid::eraseInSphere;
 
 	bool insertInCell(const KeyType& cell, const ValueType& v);
 	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
 };
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
+template<typename ValueType, typename ScalarType = double>
 using StaticGrid2 = StaticGrid<RegularGrid2<ScalarType>, ValueType>;
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
+template<typename ValueType, typename ScalarType = double>
 using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
 
 } // namespace vcl

@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_ABSTRACT_DS_GRID_H
-#define VCL_SPACE_GRID_ABSTRACT_DS_GRID_H
+#ifndef VCL_SPACE_GRID_ABSTRACT_GRID_H
+#define VCL_SPACE_GRID_ABSTRACT_GRID_H
 
 #include <deque>
 #include <set>
@@ -37,7 +37,7 @@
 namespace vcl {
 
 // Developer Documentation
-// A class that derives from an AbstractDSGrid must store, in some way, an association between a
+// A class that derives from an AbstractGrid must store, in some way, an association between a
 // GridCell coordinate (a Point of unsigned integers) and elements of type ValueType. Each cell may
 // contain more than one element value, and each element value may be stored in more than one cell
 // if it intersects with more than one cell.
@@ -52,11 +52,11 @@ namespace vcl {
 //
 // template<typename GridType, typename ValueType>
 // class MyDSGrid :
-//     public AbstractDSGrid<GridType, ValueType, MyDSGrid<GridType, ValueType>>
+//     public AbstractGrid<GridType, ValueType, MyDSGrid<GridType, ValueType>>
 // { ... };
 //
 // Make sure that your class:
-// - declares the AbstractDSGrid class as friend (if one of the following member functions is
+// - declares the AbstractGrid class as friend (if one of the following member functions is
 //   protected/private);
 // - implements iterators Iterator and ConstIterator that iterate over pairs of
 //   <KeyType, ValueType> (see below for more details)
@@ -87,7 +87,7 @@ namespace vcl {
 // derived class.
 
 /**
- * @brief The AbstractDSGrid class describes a generic Spatial Data Structure organized on a regular
+ * @brief The AbstractGrid class describes a generic Spatial Data Structure organized on a regular
  * grid, that allows to store elements (ValueType) in a particular way that will be managed by its
  * derived classes (e.g. StaticGrid, HashTableGrid).
  *
@@ -99,7 +99,7 @@ namespace vcl {
  * disallow the possibility to remove elements from a grid).
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
-class AbstractDSGrid : public GridType
+class AbstractGrid : public GridType
 {
 private:
 	// ValueType could be anything. We need to understand if it is a pointer, a reference or not, in
@@ -183,29 +183,29 @@ public:
 	auto kClosestValues(const QueryValueType& qv, uint n) const;
 
 protected:
-	AbstractDSGrid();
+	AbstractGrid();
 
-	AbstractDSGrid(const GridType& grid, IsInCellFunction intersects = nullptr);
+	AbstractGrid(const GridType& grid, IsInCellFunction intersects = nullptr);
 
 	template<PointConcept PointType>
-	AbstractDSGrid(
+	AbstractGrid(
 		const PointType& min,
 		const PointType& max,
 		const KeyType&   sizes,
 		IsInCellFunction intersects = nullptr);
 
 	template<typename BoxType>
-	AbstractDSGrid(
+	AbstractGrid(
 		const BoxType&   bbox,
 		const KeyType&   sizes,
 		IsInCellFunction intersects = nullptr);
 
 	// this constructor **does not insert elements**.
 	template<typename ObjIterator>
-	AbstractDSGrid(ObjIterator begin, ObjIterator end, IsInCellFunction intersects = nullptr);
+	AbstractGrid(ObjIterator begin, ObjIterator end, IsInCellFunction intersects = nullptr);
 
 	template<vcl::Range Rng>
-	AbstractDSGrid(Rng&& r, IsInCellFunction intersects = nullptr);
+	AbstractGrid(Rng&& r, IsInCellFunction intersects = nullptr);
 
 	// custom function that checks if a value intersects with a cell (a box)
 	// if not initialized, bounding box of value will be used to check if it is in cell
@@ -260,6 +260,6 @@ private:
 
 } // namespace vcl
 
-#include "abstract_ds_grid.cpp"
+#include "abstract_grid.cpp"
 
-#endif // VCL_SPACE_GRID_ABSTRACT_DS_GRID_H
+#endif // VCL_SPACE_GRID_ABSTRACT_GRID_H
