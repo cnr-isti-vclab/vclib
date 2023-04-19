@@ -41,6 +41,17 @@ using RemoveRefAndPointer =
 template<typename T>
 using RemoveConstRef = typename std::remove_const_t<std::remove_reference_t<T>>;
 
+/*
+ * Utility to get a pointer type without the constness.
+ * e.g. If T is const int*, the resulting type is int*
+ * If the type is not a pointer, it is left as it was
+ */
+template<typename T>
+using RemoveConstPointer =
+	std::conditional_t<std::is_pointer_v<T>, 
+	std::add_pointer_t<typename std::remove_cv_t<typename std::remove_pointer_t<T>>>,
+	T>;
+
 } // namespace vcl
 
 #endif // VCL_TYPES_POINTERS_H
