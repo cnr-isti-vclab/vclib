@@ -185,9 +185,9 @@ double borderLength(const MeshType& m)
  * @return The 3x3 covariance matrix of the given set of points.
  */
 template<PointConcept PointType>
-Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
+auto covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
 {
-	Matrix33<double> m;
+	Matrix33<typename PointType::ScalarType> m;
 	m.setZero();
 	PointType barycenter = Polygon<PointType>::barycenter(pointVec.begin(), pointVec.end());
 
@@ -210,13 +210,14 @@ Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& poin
  * @return The 3x3 covariance matrix of the given point cloud.
  */
 template<MeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m)
+auto covarianceMatrixOfPointCloud(const MeshType& m)
 {
 	using VertexType = typename MeshType::VertexType;
+	using ScalarType = typename VertexType::CoordType::ScalarType;
 
 	auto barycenter = vcl::barycenter(m);
 
-	Matrix33<double> mm;
+	Matrix33<ScalarType> mm;
 	mm.setZero();
 	// compute covariance matrix
 	for (const VertexType& v : m.vertices()){
@@ -233,11 +234,11 @@ Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m)
  * @return
  */
 template<PointConcept PointType>
-Matrix33<double> weightedCovarianceMatrixOfPointCloud(
+auto weightedCovarianceMatrixOfPointCloud(
 	const std::vector<PointType>& pointVec,
 	const std::vector<typename PointType::ScalarType>& weights)
 {
-	Matrix33<double> m;
+	Matrix33<typename PointType::ScalarType> m;
 	m.setZero();
 	PointType barycenter =
 		polygonWeighedBarycenter(pointVec.begin(), pointVec.end(), weights.begin());
@@ -261,7 +262,7 @@ Matrix33<double> weightedCovarianceMatrixOfPointCloud(
  * @return The 3x3 covariance matrix of the given mesh.
  */
 template<FaceMeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfMesh(const MeshType& m)
+auto covarianceMatrixOfMesh(const MeshType& m)
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType = typename MeshType::FaceType;
@@ -269,18 +270,18 @@ Matrix33<double> covarianceMatrixOfMesh(const MeshType& m)
 	using ScalarType = typename CoordType::ScalarType;
 
 	CoordType bar = shellBarycenter(m);
-	Matrix33<double> C;
+	Matrix33<ScalarType> C;
 	C.setZero();
-	Matrix33<double> C0;
+	Matrix33<ScalarType> C0;
 	C0.setZero();
 	C0(0,0) = C0(1,1) = 2.0;
 	C0(0,1) = C0(1,0) = 1.0;
 	C0*=1/24.0;
 	// integral of (x,y,0) in the same triangle
-	Eigen::Vector3d x;
+	Eigen::Vector3<ScalarType> x;
 	x << 1/6.0,1/6.0,0;
-	Matrix33<double> A; // matrix that bring the vertices to (v1-v0,v2-v0,n)
-	Matrix33<double> DC;
+	Matrix33<ScalarType> A; // matrix that bring the vertices to (v1-v0,v2-v0,n)
+	Matrix33<ScalarType> DC;
 
 	for (const FaceType& f : m.faces()) {
 		const CoordType& p0 = f.vertex(0)->coord();
@@ -298,7 +299,7 @@ Matrix33<double> covarianceMatrixOfMesh(const MeshType& m)
 			A(j, 1) = tmpp(j);
 		for (uint j = 0; j < 3; j++)
 			A(j, 2) = n(j);
-		Eigen::Vector3d delta;
+		Eigen::Vector3<ScalarType> delta;
 		tmpp = p0 - bar;
 		for (uint j = 0; j < 3; j++)
 			delta(j) = tmpp(j);
@@ -307,7 +308,7 @@ Matrix33<double> covarianceMatrixOfMesh(const MeshType& m)
 		 * where delta = v0-bary */
 		DC.setZero();
 		DC += A* C0 * A.transpose();
-		Matrix33<double> tmp = (A*x) * delta.transpose();
+		Matrix33<ScalarType> tmp = (A*x) * delta.transpose();
 		DC += tmp + tmp.transpose();
 		DC += tmp;
 		tmp = delta * delta.transpose();

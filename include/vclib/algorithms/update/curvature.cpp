@@ -258,7 +258,7 @@ void updatePrincipalCurvaturePCA(
 	using NormalType = typename VertexType::NormalType;
 	using FaceType   = typename MeshType::FaceType;
 
-	using VGrid = typename vcl::StaticGrid3<VertexType*>;
+	using VGrid = typename vcl::StaticGrid3<VertexType*, true, ScalarType>;
 	using VGridIterator = typename VGrid::ConstIterator;
 
 	VGrid pGrid;
@@ -292,7 +292,8 @@ void updatePrincipalCurvaturePCA(
 		vcl::Matrix33<ScalarType> A, eigenvectors;
 		CoordType bp, eigenvalues;
 		if (montecarloSampling) {
-			std::vector<VGridIterator> vec = pGrid.valuesInSphere({v.coord(), radius});
+			vcl::Sphere s(v.coord(), radius);
+			std::vector<VGridIterator> vec = pGrid.valuesInSphere(s);
 			std::vector<CoordType> points;
 			points.reserve(vec.size());
 			for (const auto& it : vec){

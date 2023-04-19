@@ -267,7 +267,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 		currentIntervalBox.add(GridType::cell(bb.max())); // last cell where look for closest
 
 		// looking just on cells where query lies
-		double tmp = cellDiag;
+		ScalarType tmp = cellDiag;
 		result = closestInCells(qv, tmp, currentIntervalBox, distFunction);
 
 		// we have found (maybe) the closest value contained in the cell(s) where the query value
@@ -289,7 +289,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 			currentIntervalBox.add(GridType::cell(center - centerDist));
 			currentIntervalBox.add(GridType::cell(center + centerDist));
 
-			double tmp = centerDist;
+			ScalarType tmp = centerDist;
 			ResType winner =
 				closestInCells(qv, tmp, currentIntervalBox, distFunction, lastIntervalBox);
 

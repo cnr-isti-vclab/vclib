@@ -128,7 +128,7 @@ bool faceSphereItersect(
 template<FaceConcept FaceType, typename SScalar>
 bool faceSphereItersect(const FaceType& f, const Sphere<SScalar>& sphere)
 {
-	Point3d witness;
+	Point3<SScalar> witness;
 	std::pair<SScalar, SScalar> res;
 	return faceSphereItersect(f, sphere, witness, res);
 }
