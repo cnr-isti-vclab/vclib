@@ -21,24 +21,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_ITERATORS_H
-#define VCL_TYPES_ITERATORS_H
+#ifndef VCL_CONCEPTS_POINTERS_H
+#define VCL_CONCEPTS_POINTERS_H
 
-#include <type_traits>
+#include "const_correctness.h"
 
 namespace vcl {
 
-// todo - transform is_class_v into std::forward_iterator - all iterators of vclib must satisfy this
-// concept
+/*
+ * Utility Pointer concept to check if a type is a Pointer
+ */
 template<typename T>
-concept IteratorConcept = std::is_class_v<T>;
+concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
 
+/*
+ * Utility Pointer concept to check if it is a pointer to const object
+ * https://stackoverflow.com/a/37370281/5851101
+ */
 template<typename T>
-concept IteratesOverClass = IteratorConcept<T> && std::is_class_v<typename T::value_type>;
-
-template<typename T>
-concept IteratesOverPointer = IteratorConcept<T> && std::is_pointer_v<typename T::value_type>;
+concept IsPointerToConst = IsPointer<T> && IsConst<T>;
 
 } // namespace vcl
 
-#endif // VCL_TYPES_ITERATORS_H
+#endif // VCL_CONCEPTS_POINTERS_H

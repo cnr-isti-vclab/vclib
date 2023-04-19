@@ -99,6 +99,18 @@ private:
 	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
 };
 
+// deduction guides
+
+template<PointIteratorConcept It>
+StaticGrid(It, It) -> StaticGrid<
+	RegularGrid<typename It::value_type, It::value_type::DIM>,
+	typename It::value_type::ScalarType>;
+
+template<PointIteratorConcept It, typename F>
+StaticGrid(It, It, F) -> StaticGrid<
+	RegularGrid<typename It::value_type, It::value_type::DIM>,
+	typename It::value_type::ScalarType>;
+
 template<typename ValueType, typename ScalarType = double>
 using StaticGrid2 = StaticGrid<RegularGrid2<ScalarType>, ValueType>;
 

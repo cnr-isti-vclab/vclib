@@ -21,26 +21,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_POINTERS_H
-#define VCL_TYPES_POINTERS_H
+#ifndef VCL_CONCEPTS_CONST_CORRECTNESS_H
+#define VCL_CONCEPTS_CONST_CORRECTNESS_H
 
 #include <type_traits>
 
 namespace vcl {
 
-/*
- * Utility to get clean type from an input type that could have a reference or a pointer.
+/**
+ * Utility concept that returns true if T is const or it is a pointer to const
  */
 template<typename T>
-using RemoveRefAndPointer =
-	typename std::remove_pointer_t<typename std::remove_reference_t<T>>;
-
-/*
- * Utility to get clean type from an input type that could have a const reference.
- */
-template<typename T>
-using RemoveConstRef = typename std::remove_const_t<std::remove_reference_t<T>>;
+concept IsConst = std::is_const_v<typename std::remove_pointer_t<T>>;
 
 } // namespace vcl
 
-#endif // VCL_TYPES_POINTERS_H
+#endif // VCL_CONCEPTS_CONST_CORRECTNESS_H

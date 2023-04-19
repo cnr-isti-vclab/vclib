@@ -21,26 +21,23 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_POINTERS_H
-#define VCL_TYPES_POINTERS_H
+#ifndef VCL_CONCEPTS_ITERATORS_H
+#define VCL_CONCEPTS_ITERATORS_H
 
+#include <iterator>
 #include <type_traits>
 
 namespace vcl {
 
-/*
- * Utility to get clean type from an input type that could have a reference or a pointer.
- */
 template<typename T>
-using RemoveRefAndPointer =
-	typename std::remove_pointer_t<typename std::remove_reference_t<T>>;
+concept IteratorConcept = std::input_or_output_iterator<T>;
 
-/*
- * Utility to get clean type from an input type that could have a const reference.
- */
 template<typename T>
-using RemoveConstRef = typename std::remove_const_t<std::remove_reference_t<T>>;
+concept IteratesOverClass = IteratorConcept<T> && std::is_class_v<typename T::value_type>;
+
+template<typename T>
+concept IteratesOverPointer = IteratorConcept<T> && std::is_pointer_v<typename T::value_type>;
 
 } // namespace vcl
 
-#endif // VCL_TYPES_POINTERS_H
+#endif // VCL_CONCEPTS_ITERATORS_H

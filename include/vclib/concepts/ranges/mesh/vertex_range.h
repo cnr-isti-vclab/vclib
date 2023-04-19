@@ -21,26 +21,25 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_POINTERS_H
-#define VCL_TYPES_POINTERS_H
+#ifndef VCLIB_CONCEPTS_RANGES_VERTEX_RANGE_H
+#define VCLIB_CONCEPTS_RANGES_VERTEX_RANGE_H
 
-#include <type_traits>
+#include <vclib/concepts/pointers.h>
+#include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts/mesh/elements/vertex.h>
 
 namespace vcl {
 
-/*
- * Utility to get clean type from an input type that could have a reference or a pointer.
- */
-template<typename T>
-using RemoveRefAndPointer =
-	typename std::remove_pointer_t<typename std::remove_reference_t<T>>;
+template<typename Rng>
+concept VertexRangeConcept =
+	Range<Rng> && VertexConcept<typename std::ranges::iterator_t<Rng>::value_type>;
 
-/*
- * Utility to get clean type from an input type that could have a const reference.
- */
-template<typename T>
-using RemoveConstRef = typename std::remove_const_t<std::remove_reference_t<T>>;
+template<typename Rng>
+concept VertexPointerRangeConcept =
+	Range<Rng> && IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+	VertexConcept<typename std::decay_t<
+		std::remove_pointer_t<typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 
-#endif // VCL_TYPES_POINTERS_H
+#endif // VCLIB_CONCEPTS_RANGES_VERTEX_RANGE_H

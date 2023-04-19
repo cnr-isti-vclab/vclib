@@ -31,7 +31,6 @@
 
 #include "types/const_correctness.h"
 #include "types/inheritance.h"
-#include "types/iterators.h"
 #include "types/pointers.h"
 #include "types/variadic_templates.h"
 

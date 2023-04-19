@@ -97,8 +97,11 @@ set(HEADERS
 	include/vclib/algorithms/update/selection.h
 	include/vclib/algorithms/update/topology.h
 	include/vclib/algorithms/update/transform.h
+	include/vclib/concepts/const_correctness.h
+	include/vclib/concepts/iterators.h
 	include/vclib/concepts/logger.h
 	include/vclib/concepts/mesh.h
+	include/vclib/concepts/pointers.h
 	include/vclib/concepts/range.h
 	include/vclib/concepts/space.h
 	include/vclib/concepts/mesh/components.h
@@ -134,6 +137,9 @@ set(HEADERS
 	include/vclib/concepts/mesh/elements/face.h
 	include/vclib/concepts/mesh/elements/half_edge.h
 	include/vclib/concepts/mesh/elements/vertex.h
+	include/vclib/concepts/ranges/mesh.h
+	include/vclib/concepts/ranges/range.h
+	include/vclib/concepts/ranges/mesh/vertex_range.h
 	include/vclib/concepts/space/box.h
 	include/vclib/concepts/space/matrix.h
 	include/vclib/concepts/space/plane.h
@@ -326,7 +332,6 @@ set(HEADERS
 	include/vclib/types/base.h
 	include/vclib/types/const_correctness.h
 	include/vclib/types/inheritance.h
-	include/vclib/types/iterators.h
 	include/vclib/types/pointers.h
 	include/vclib/types/variadic_templates.h
 	include/vclib/views/mesh.h

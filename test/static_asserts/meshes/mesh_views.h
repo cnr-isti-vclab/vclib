@@ -3,20 +3,23 @@
 
 #include <ranges>
 
-#include <vclib/views/mesh.h>
+#include <vclib/views.h>
 
 template<typename MeshType>
 void meshViewsStaticAsserts()
 {
 	MeshType m;
 	const MeshType& cm = m;
+
+	static_assert(
+		vcl::VertexRangeConcept<typename MeshType::VertexView>,
+		"The MeshType VertexView is not a valid range of vertices.");
+
+	static_assert(
+		vcl::VertexRangeConcept<typename MeshType::ConstVertexView>,
+		"The MeshType VertexView is not a valid range of vertices.");
+
 #ifdef VCLIB_USES_RANGES
-	static_assert(
-		std::ranges::range<typename MeshType::VertexView>,
-		"The MeshType VertexView is not a valid range.");
-	static_assert(
-		std::ranges::range<typename MeshType::ConstVertexView>,
-		"The MeshType ConstVertexView is not a valid range.");
 	static_assert(
 		std::ranges::range<decltype(m | vcl::views::vertices)>,
 		"The view returned by pipe operation m | views::vertices is not a valid range.");
@@ -29,6 +32,16 @@ void meshViewsStaticAsserts()
 	static_assert(
 		std::is_same_v<decltype(cm | vcl::views::vertices), typename MeshType::ConstVertexView>,
 		"The view returned by pipe operation m | views::vertices is not a ConstVertexView.");
+
+	static_assert(
+		vcl::VertexPointerRangeConcept<decltype(m.vertices() | vcl::views::reference)>,
+		"The view returned by pipe operation m | views::reference is not a "
+		"VertexPointerRangeConcept.");
+
+	static_assert(
+		vcl::VertexPointerRangeConcept<decltype(cm.vertices() | vcl::views::reference)>,
+		"The view returned by pipe operation cm | views::reference is not a "
+		"VertexPointerRangeConcept.");
 
 	// assure that component ranges are ranges
 	static_assert(

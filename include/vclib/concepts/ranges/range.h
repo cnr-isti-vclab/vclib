@@ -21,26 +21,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_POINTERS_H
-#define VCL_TYPES_POINTERS_H
+#ifndef VCLIB_CONCEPTS_RANGES_RANGE_H
+#define VCLIB_CONCEPTS_RANGES_RANGE_H
 
-#include <type_traits>
+#ifndef VCLIB_USES_RANGES
+#include <__ranges/access.h>
+#endif
+
+#include <ranges>
 
 namespace vcl {
 
-/*
- * Utility to get clean type from an input type that could have a reference or a pointer.
- */
-template<typename T>
-using RemoveRefAndPointer =
-	typename std::remove_pointer_t<typename std::remove_reference_t<T>>;
+#ifdef VCLIB_USES_RANGES
 
-/*
- * Utility to get clean type from an input type that could have a const reference.
- */
 template<typename T>
-using RemoveConstRef = typename std::remove_const_t<std::remove_reference_t<T>>;
+concept Range = std::ranges::range<T>;
+
+#else
+
+template<typename T>
+concept Range = requires(T o)
+{
+	std::ranges::begin(o);
+	std::ranges::end(o);
+};
+
+#endif
 
 } // namespace vcl
 
-#endif // VCL_TYPES_POINTERS_H
+#endif // VCLIB_CONCEPTS_RANGES_RANGE_H

@@ -24,6 +24,7 @@
 #ifndef VCL_CONCEPTS_SPACE_POINT_H
 #define VCL_CONCEPTS_SPACE_POINT_H
 
+#include <vclib/concepts/iterators.h>
 #include <vclib/types.h>
 
 namespace vcl {
@@ -139,6 +140,53 @@ concept Point3Concept = PointConcept<T> && T::DIM == 3;
  */
 template<typename T>
 concept Point4Concept = PointConcept<T> && T::DIM == 4;
+
+/**
+ * @brief Concept for iterators that iterate over Points (class that satisfies the PointConcept).
+ *
+ * A type satisfies this concept if it is an iterator having its `value_type` that satisfies the
+ * `PointConcpet`.
+ *
+ * @tparam It: The type to be tested for conformity to the PointIteratorConcept.
+ */
+template<typename It>
+concept PointIteratorConcept = IteratorConcept<It> && PointConcept<typename It::value_type>;
+
+/**
+ * @brief Concept for iterators that iterate over 2D Points (class that satisfies the
+ * Point2Concept).
+ *
+ * A type satisfies this concept if it is an iterator having its `value_type` that satisfies the
+ * `Point2Concpet`.
+ *
+ * @tparam It: The type to be tested for conformity to the Point2IteratorConcept.
+ */
+template<typename It>
+concept Point2IteratorConcept = IteratorConcept<It> && Point2Concept<typename It::value_type>;
+
+/**
+ * @brief Concept for iterators that iterate over 3D Points (class that satisfies the
+ * Point3Concept).
+ *
+ * A type satisfies this concept if it is an iterator having its `value_type` that satisfies the
+ * `Point3Concpet`.
+ *
+ * @tparam It: The type to be tested for conformity to the Point3IteratorConcept.
+ */
+template<typename It>
+concept Point3IteratorConcept = IteratorConcept<It> && Point3Concept<typename It::value_type>;
+
+/**
+ * @brief Concept for iterators that iterate over 4D Points (class that satisfies the
+ * Point4Concept).
+ *
+ * A type satisfies this concept if it is an iterator having its `value_type` that satisfies the
+ * `Point4Concpet`.
+ *
+ * @tparam It: The type to be tested for conformity to the Point4IteratorConcept.
+ */
+template<typename It>
+concept Point4IteratorConcept = IteratorConcept<It> && Point4Concept<typename It::value_type>;
 
 } // namespace vcl
 
