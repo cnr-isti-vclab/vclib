@@ -21,28 +21,28 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "abstract_ds_grid.h"
+#include "abstract_grid.h"
 
 #include <vclib/algorithms/distance/functions.h>
 
 namespace vcl {
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::cellEmpty(const KeyType& k) const
+bool AbstractGrid<GridType, ValueType, DerivedGrid>::cellEmpty(const KeyType& k) const
 {
 	auto p = static_cast<const DerivedGrid*>(this)->valuesInCell(k);
 	return p.first == p.second;
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
-std::size_t AbstractDSGrid<GridType, ValueType, DerivedGrid>::countInCell(const KeyType& k) const
+std::size_t AbstractGrid<GridType, ValueType, DerivedGrid>::countInCell(const KeyType& k) const
 {
 	auto p = static_cast<const DerivedGrid*>(this)->valuesInCell(k);
 	return std::distance(p.first, p.second);
 }
 
 /**
- * @brief Inserts the given element in the AbstractDSGrid.
+ * @brief Inserts the given element in the AbstractGrid.
  *
  * If the ValueType is Puntual (a Point or a Vertex), the element will be inserted in just one
  * cell of the grid. If the element is a spatial object having a bounding box with min != max, the
@@ -52,7 +52,7 @@ std::size_t AbstractDSGrid<GridType, ValueType, DerivedGrid>::countInCell(const 
  * @return
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v)
+bool AbstractGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v)
 {
 	const VT* vv = getCleanValueTypePointer(v);
 
@@ -97,14 +97,14 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v
 
 /**
  * @brief Inserts all the elements from `begin` to `end`. The type referenced by the iterator must
- * be the ValueType of the AbstractDSGrid.
+ * be the ValueType of the AbstractGrid.
  * @param begin
  * @param end
  * @return The number of inserted elements.
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename ObjIterator>
-uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin, ObjIterator end)
+uint AbstractGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin, ObjIterator end)
 {
 	uint cnt = 0;
 	for (ObjIterator it = begin; it != end; ++it)
@@ -115,19 +115,19 @@ uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(ObjIterator begin,
 
 /**
  * @brief Inserts all the elements contained in the input range r, from `begin` to `end`. The type
- * referenced by the iterator must be the ValueType of the AbstractDSGrid.
+ * referenced by the iterator must be the ValueType of the AbstractGrid.
  * @param r: a range that satisfies the concept std::ranges::range
  * @return The number of inserted elements.
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<vcl::Range Rng>
-uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::insert(Rng&& r)
+uint AbstractGrid<GridType, ValueType, DerivedGrid>::insert(Rng&& r)
 {
 	return insert(std::ranges::begin(r), std::ranges::end(r));
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::erase(const ValueType& v)
+bool AbstractGrid<GridType, ValueType, DerivedGrid>::erase(const ValueType& v)
 {
 	const VT* vv = getCleanValueTypePointer(v);
 
@@ -159,7 +159,7 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::erase(const ValueType& v)
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::eraseAllInCell(const KeyType& k)
+bool AbstractGrid<GridType, ValueType, DerivedGrid>::eraseAllInCell(const KeyType& k)
 {
 	bool res = false;
 	auto& p = static_cast<DerivedGrid*>(this)->valuesInCell(k);
@@ -170,14 +170,14 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::eraseAllInCell(const KeyT
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
-uint AbstractDSGrid<GridType, ValueType, DerivedGrid>::countInSphere(
+uint AbstractGrid<GridType, ValueType, DerivedGrid>::countInSphere(
 	const Sphere<typename GridType::ScalarType>& s) const
 {
 	return valuesInSphere(s).size();
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 	const Sphere<typename GridType::ScalarType>& s) const
 {
 	using Iter = typename DerivedGrid::ConstIterator;
@@ -217,7 +217,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 }
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
-void AbstractDSGrid<GridType, ValueType, DerivedGrid>::eraseInSphere(
+void AbstractGrid<GridType, ValueType, DerivedGrid>::eraseInSphere(
 	const Sphere<typename GridType::ScalarType>& s)
 {
 	// interval of cells containing the sphere
@@ -237,7 +237,7 @@ void AbstractDSGrid<GridType, ValueType, DerivedGrid>::eraseInSphere(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	const QueryValueType& qv,
 	QueryBoundedDistFunction<QueryValueType> distFunction,
 	typename GridType::ScalarType& dist) const
@@ -310,7 +310,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	const QueryValueType& qv,
 	QueryDistFunction<QueryValueType> distFunction,
 	typename GridType::ScalarType& dist) const
@@ -328,7 +328,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	const QueryValueType& qv,
 	QueryDistFunction<QueryValueType> distFunction) const
 {
@@ -338,7 +338,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	const QueryValueType& qv,
 	typename GridType::ScalarType& dist) const
 {
@@ -348,7 +348,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(const QueryValueType& qv) const
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(const QueryValueType& qv) const
 {
 	std::function f = boundedDistFunction<QueryValueType, ValueType, typename GridType::ScalarType>();
 	typename GridType::ScalarType dist = std::numeric_limits<typename GridType::ScalarType>::max();
@@ -357,7 +357,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(const QueryV
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	const QueryValueType&             qv,
 	uint                              n,
 	QueryDistFunction<QueryValueType> distFunction) const
@@ -414,7 +414,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	const QueryValueType& qv,
 	uint                  n) const
 {
@@ -423,19 +423,19 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 }
 
 /**
- * @brief Empty constructor, creates an usable AbstractDSGrid, since the Grid is not initialized.
+ * @brief Empty constructor, creates an usable AbstractGrid, since the Grid is not initialized.
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
-AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid()
+AbstractGrid<GridType, ValueType, DerivedGrid>::AbstractGrid()
 {
 }
 
 /**
- * @brief Creates a AbstractDSGrid that allows to store ValueType values on the given grid.
+ * @brief Creates a AbstractGrid that allows to store ValueType values on the given grid.
  * @param grid
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
-AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
+AbstractGrid<GridType, ValueType, DerivedGrid>::AbstractGrid(
 	const GridType&  grid,
 	IsInCellFunction intersects) :
 		GridType(grid), intersects(intersects)
@@ -443,7 +443,7 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 }
 
 /**
- * @brief Creates a AbstractDSGrid that allows to store ValueType values on a Grid having `min` as
+ * @brief Creates a AbstractGrid that allows to store ValueType values on a Grid having `min` as
  * minimum coordinte of the Grid, `max` as maximum coordinate of the grid, and the number of cells
  * per dimension given by `sizes`.
  * @param min
@@ -452,7 +452,7 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<PointConcept PointType>
-AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
+AbstractGrid<GridType, ValueType, DerivedGrid>::AbstractGrid(
 	const PointType& min,
 	const PointType& max,
 	const KeyType&   sizes,
@@ -462,14 +462,14 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 }
 
 /**
- * @brief Creates a AbstractDSGrid that allows to store ValueType values on a Grid bounded by
+ * @brief Creates a AbstractGrid that allows to store ValueType values on a Grid bounded by
  * `bbox`, and having the number of cells per dimension given by `sizes`.
  * @param bbox
  * @param sizes
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename BoxType>
-AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
+AbstractGrid<GridType, ValueType, DerivedGrid>::AbstractGrid(
 	const BoxType& bbox,
 	const KeyType& sizes,
 	IsInCellFunction intersects) :
@@ -478,7 +478,7 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 }
 
 /**
- * @brief Creates an AbstractDSGrid having a proper Grid to store the elements.
+ * @brief Creates an AbstractGrid having a proper Grid to store the elements.
  *
  * The bounding box and the sizes of the Grid are automatically computed.
  * Bounding box is computed starting from the bounding box of all the iterated elements, and then
@@ -493,7 +493,7 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename ObjIterator>
-AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
+AbstractGrid<GridType, ValueType, DerivedGrid>::AbstractGrid(
 	ObjIterator      begin,
 	ObjIterator      end,
 	IsInCellFunction intersects) :
@@ -519,7 +519,7 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
 }
 
 /**
- * @brief Creates an AbstractDSGrid having a proper Grid to store the elements.
+ * @brief Creates an AbstractGrid having a proper Grid to store the elements.
  *
  * The bounding box and the sizes of the Grid are automatically computed.
  * Bounding box is computed starting from the bounding box of all the iterated elements, and then
@@ -533,10 +533,10 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<vcl::Range Rng>
-AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
+AbstractGrid<GridType, ValueType, DerivedGrid>::AbstractGrid(
 	Rng&& r,
 	IsInCellFunction intersects) :
-		AbstractDSGrid(std::ranges::begin(r), std::ranges::end(r), intersects)
+		AbstractGrid(std::ranges::begin(r), std::ranges::end(r), intersects)
 {
 }
 
@@ -546,7 +546,7 @@ AbstractDSGrid<GridType, ValueType, DerivedGrid>::AbstractDSGrid(
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename Iterator>
-bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
+bool AbstractGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
 	const Iterator& it,
 	const Sphere<typename GridType::ScalarType>& s) const
 {
@@ -573,7 +573,7 @@ bool AbstractDSGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestInCells(
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestInCells(
 	const QueryValueType&                    qv,
 	typename GridType::ScalarType&           dist,
 	const Boxui&                             interval,
@@ -602,7 +602,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestInCells(
 
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 	const QueryValueType&             qv,
 	uint                              n,
 	QueryDistFunction<QueryValueType> distFunction,
@@ -671,7 +671,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename T>
-auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::getCleanValueTypePointer(const T& v)
+auto AbstractGrid<GridType, ValueType, DerivedGrid>::getCleanValueTypePointer(const T& v)
 {
 	using NT = RemoveRefAndPointer<T>;
 	const NT* vv = nullptr; // vv is a pointer to T

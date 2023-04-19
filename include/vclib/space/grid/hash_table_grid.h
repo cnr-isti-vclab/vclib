@@ -29,7 +29,7 @@
 
 #include <vclib/mesh/requirements.h>
 
-#include "abstract_ds_grid.h"
+#include "abstract_grid.h"
 #include "regular_grid2.h"
 #include "regular_grid3.h"
 
@@ -47,12 +47,12 @@ namespace vcl {
  * AllowDuplicates template parameter, that is defaulted to `true`.
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates = true>
-class HashTableGrid : public AbstractDSGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>
+class HashTableGrid : public AbstractGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>
 {
-	using AbstractGrid =
-		AbstractDSGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>;
+	using AbsGrid =
+		AbstractGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>;
 
-	friend AbstractGrid;
+	friend AbsGrid;
 
 public:
 	static_assert(
@@ -60,8 +60,8 @@ public:
 		"Not allowing duplicates in a Spatial Data Structures means that ValueType must implement "
 		"operator==.");
 
-	using KeyType = typename AbstractGrid::KeyType;
-	using IsInCellFunction = typename AbstractGrid::IsInCellFunction;
+	using KeyType = typename AbsGrid::KeyType;
+	using IsInCellFunction = typename AbsGrid::IsInCellFunction;
 
 	using Iterator = typename std::unordered_multimap<KeyType, ValueType>::iterator;
 	using ConstIterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
