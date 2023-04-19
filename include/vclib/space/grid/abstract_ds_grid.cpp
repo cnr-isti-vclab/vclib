@@ -342,7 +342,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	const QueryValueType& qv,
 	typename GridType::ScalarType& dist) const
 {
-	auto f = boundedDistFunction<QueryValueType, ValueType>();
+	std::function f = boundedDistFunction<QueryValueType, ValueType, typename GridType::ScalarType>();
 	return closestValue(qv, f, dist);
 }
 
@@ -350,7 +350,7 @@ template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
 auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::closestValue(const QueryValueType& qv) const
 {
-	auto f = boundedDistFunction<QueryValueType, ValueType>();
+	std::function f = boundedDistFunction<QueryValueType, ValueType, typename GridType::ScalarType>();
 	typename GridType::ScalarType dist = std::numeric_limits<typename GridType::ScalarType>::max();
 	return closestValue(qv, f, dist);
 }
@@ -418,7 +418,7 @@ auto AbstractDSGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	const QueryValueType& qv,
 	uint                  n) const
 {
-	auto f = distFunction<QueryValueType, ValueType>();
+	std::function f = distFunction<QueryValueType, ValueType>();
 	return kClosestValues(qv, n, f);
 }
 
