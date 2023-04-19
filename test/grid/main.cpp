@@ -174,7 +174,7 @@ int main()
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
 
-	vcl::StaticGrid3<const vcl::TriMesh::Vertex*, ST> vmsg(m.vertices() | vcl::views::reference);
+	vcl::StaticGrid vmsg(m.vertices() | vcl::views::constReference);
 
 	const vcl::Point3<ST> qv(0.5, 0.5, 0.5);
 
