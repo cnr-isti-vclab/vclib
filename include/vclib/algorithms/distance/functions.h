@@ -56,7 +56,7 @@ struct DistFunctionStruct
 template<typename Obj1, typename Obj2>
 auto distFunction()
 {
-	return DistFunctionStruct<Obj1, Obj2, double>::distFun;
+	return DistFunctionStruct<RemoveConstPointer<Obj1>, RemoveConstPointer<Obj2>, double>::distFun;
 }
 
 /**
@@ -83,7 +83,7 @@ auto distFunction()
 template<typename Obj1, typename Obj2, typename ScalarType = double>
 auto boundedDistFunction()
 {
-	return DistFunctionStruct<Obj1, Obj2, ScalarType>::boundDistFun;
+	return DistFunctionStruct<RemoveConstPointer<Obj1>, RemoveConstPointer<Obj2>, ScalarType>::boundDistFun;
 }
 
 /********* DistFunctionStruct Specializations *********/

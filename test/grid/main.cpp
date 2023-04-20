@@ -133,7 +133,7 @@ int main()
 	auto intersects = vcl::intersectFunction<vcl::Box3<ST>, const vcl::TriMesh::Face*>();
 #ifdef VCLIB_USES_RANGES
 	vcl::HashTableGrid3<const vcl::TriMesh::Face*, ST> fsht(
-		m.faces() | vcl::views::reference, intersects);
+		m.faces() | vcl::views::constReference, intersects);
 
 	std::cerr << "Values in HashTableGrid: \n";
 
@@ -151,7 +151,7 @@ int main()
 
 	std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<const vcl::TriMesh::Face*, ST> fsg(m.faces() | vcl::views::reference, intersects);
+	vcl::StaticGrid3<const vcl::TriMesh::Face*, ST> fsg(m.faces() | vcl::views::constReference, intersects);
 
 	std::cerr << "Values in Static Grid : \n";
 
