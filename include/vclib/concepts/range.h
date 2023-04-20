@@ -1,13 +1,6 @@
 #ifndef VCLIB_CONCEPTS_RANGE_H
 #define VCLIB_CONCEPTS_RANGE_H
 
-#include <ranges>
-
-namespace vcl {
-
-template<typename T>
-concept Range = std::ranges::range<T>;
-
-} // namespace vcl
+#include "ranges/mesh.h"
 
 #endif // VCLIB_CONCEPTS_RANGE_H

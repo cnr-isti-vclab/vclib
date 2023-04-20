@@ -21,17 +21,23 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCL_CONCEPTS_ITERATORS_H
+#define VCL_CONCEPTS_ITERATORS_H
 
-/*
- * This header includes all the utility types and type traits used in VCLib.
- * Almost all the files in VCLib include this header.
- */
+#include <iterator>
+#include <type_traits>
 
-#include "types/const_correctness.h"
-#include "types/inheritance.h"
-#include "types/pointers.h"
-#include "types/variadic_templates.h"
+namespace vcl {
 
-#endif // VCL_TYPES_H
+template<typename T>
+concept IteratorConcept = std::input_or_output_iterator<T>;
+
+template<typename T>
+concept IteratesOverClass = IteratorConcept<T> && std::is_class_v<typename T::value_type>;
+
+template<typename T>
+concept IteratesOverPointer = IteratorConcept<T> && std::is_pointer_v<typename T::value_type>;
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_ITERATORS_H

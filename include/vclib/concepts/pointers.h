@@ -21,17 +21,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCL_CONCEPTS_POINTERS_H
+#define VCL_CONCEPTS_POINTERS_H
+
+#include "const_correctness.h"
+
+namespace vcl {
 
 /*
- * This header includes all the utility types and type traits used in VCLib.
- * Almost all the files in VCLib include this header.
+ * Utility Pointer concept to check if a type is a Pointer
  */
+template<typename T>
+concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
 
-#include "types/const_correctness.h"
-#include "types/inheritance.h"
-#include "types/pointers.h"
-#include "types/variadic_templates.h"
+/*
+ * Utility Pointer concept to check if it is a pointer to const object
+ * https://stackoverflow.com/a/37370281/5851101
+ */
+template<typename T>
+concept IsPointerToConst = IsPointer<T> && IsConst<T>;
 
-#endif // VCL_TYPES_H
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_POINTERS_H

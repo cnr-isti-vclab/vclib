@@ -21,17 +21,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCLIB_CONCEPTS_RANGES_MESH_H
+#define VCLIB_CONCEPTS_RANGES_MESH_H
 
-/*
- * This header includes all the utility types and type traits used in VCLib.
- * Almost all the files in VCLib include this header.
- */
+#include "mesh/vertex_range.h"
 
-#include "types/const_correctness.h"
-#include "types/inheritance.h"
-#include "types/pointers.h"
-#include "types/variadic_templates.h"
-
-#endif // VCL_TYPES_H
+#endif // VCLIB_CONCEPTS_RANGES_MESH_H

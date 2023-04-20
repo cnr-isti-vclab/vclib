@@ -24,7 +24,7 @@
 #ifndef VCL_CONCEPTS_SPACE_SAMPLER_H
 #define VCL_CONCEPTS_SPACE_SAMPLER_H
 
-#include <vclib/misc/internal/tmp_meshes.h>
+#include <vclib/types/base.h>
 
 namespace vcl {
 

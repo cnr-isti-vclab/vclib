@@ -21,17 +21,25 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_H
-#define VCL_TYPES_H
+#ifndef VCLIB_CONCEPTS_RANGES_VERTEX_RANGE_H
+#define VCLIB_CONCEPTS_RANGES_VERTEX_RANGE_H
 
-/*
- * This header includes all the utility types and type traits used in VCLib.
- * Almost all the files in VCLib include this header.
- */
+#include <vclib/concepts/pointers.h>
+#include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts/mesh/elements/vertex.h>
 
-#include "types/const_correctness.h"
-#include "types/inheritance.h"
-#include "types/pointers.h"
-#include "types/variadic_templates.h"
+namespace vcl {
 
-#endif // VCL_TYPES_H
+template<typename Rng>
+concept VertexRangeConcept =
+	Range<Rng> && VertexConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+
+template<typename Rng>
+concept VertexPointerRangeConcept =
+	Range<Rng> && IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+	VertexConcept<typename std::decay_t<
+		std::remove_pointer_t<typename std::ranges::iterator_t<Rng>::value_type>>>;
+
+} // namespace vcl
+
+#endif // VCLIB_CONCEPTS_RANGES_VERTEX_RANGE_H

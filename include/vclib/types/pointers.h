@@ -24,22 +24,9 @@
 #ifndef VCL_TYPES_POINTERS_H
 #define VCL_TYPES_POINTERS_H
 
-#include "const_correctness.h"
+#include <type_traits>
 
 namespace vcl {
-
-/*
- * Utility Pointer concept to check if a type is a Pointer
- */
-template<typename T>
-concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
-
-/*
- * Utility Pointer concept to check if it is a pointer to const object
- * https://stackoverflow.com/a/37370281/5851101
- */
-template<typename T>
-concept IsPointerToConst = IsPointer<T> && IsConst<T>;
 
 /*
  * Utility to get clean type from an input type that could have a reference or a pointer.
@@ -53,6 +40,17 @@ using RemoveRefAndPointer =
  */
 template<typename T>
 using RemoveConstRef = typename std::remove_const_t<std::remove_reference_t<T>>;
+
+/*
+ * Utility to get a pointer type without the constness.
+ * e.g. If T is const int*, the resulting type is int*
+ * If the type is not a pointer, it is left as it was
+ */
+template<typename T>
+using RemoveConstPointer =
+	std::conditional_t<std::is_pointer_v<T>, 
+	std::add_pointer_t<typename std::remove_cv_t<typename std::remove_pointer_t<T>>>,
+	T>;
 
 } // namespace vcl
 

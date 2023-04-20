@@ -24,7 +24,7 @@
 #ifndef VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H
 #define VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H
 
-#include <vclib/concepts/mesh.h>
+#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 namespace vcl::views {

@@ -63,6 +63,17 @@ struct ReferenceView
 	}
 };
 
+struct ConstReferenceView
+{
+	constexpr ConstReferenceView() = default;
+
+	template <std::ranges::range R>
+	friend constexpr auto operator|(R&& r, ConstReferenceView)
+	{
+		return std::views::transform(r, [](const auto& o) { return &o; });
+	}
+};
+
 } // namespace vcl::views::internal
 
 /**
@@ -87,6 +98,13 @@ inline constexpr internal::DereferenceView dereference;
  * iterate over the pointers pointing to the object of the input range.
  */
 inline constexpr internal::ReferenceView reference;
+
+/**
+ * @brief The constReference view allow to const reference the objects of a range. The resulting
+ * view will iterate over the const pointers pointing to the object of the input range (that may be
+ * also not const).
+ */
+inline constexpr internal::ConstReferenceView constReference;
 
 } // namespace vcl::views
 

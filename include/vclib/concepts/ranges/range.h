@@ -21,24 +21,16 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_ITERATORS_H
-#define VCL_TYPES_ITERATORS_H
+#ifndef VCLIB_CONCEPTS_RANGES_RANGE_H
+#define VCLIB_CONCEPTS_RANGES_RANGE_H
 
-#include <type_traits>
+#include <ranges>
 
 namespace vcl {
 
-// todo - transform is_class_v into std::forward_iterator - all iterators of vclib must satisfy this
-// concept
 template<typename T>
-concept IteratorConcept = std::is_class_v<T>;
-
-template<typename T>
-concept IteratesOverClass = IteratorConcept<T> && std::is_class_v<typename T::value_type>;
-
-template<typename T>
-concept IteratesOverPointer = IteratorConcept<T> && std::is_pointer_v<typename T::value_type>;
+concept Range = std::ranges::range<T>;
 
 } // namespace vcl
 
-#endif // VCL_TYPES_ITERATORS_H
+#endif // VCLIB_CONCEPTS_RANGES_RANGE_H

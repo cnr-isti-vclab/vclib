@@ -2,6 +2,7 @@
 #define SPACE_H
 
 #include <vclib/space.h>
+#include <vclib/misc/internal/tmp_meshes.h>
 
 void spaceStaticAsserts()
 {
@@ -41,6 +42,11 @@ void spaceStaticAsserts()
 	static_assert(Polygon3Concept<Polygon3f>, "Polygon3f does not satisfy the Polygon3Concept");
 	static_assert(Polygon3Concept<Polygon3d>, "Polygon3d does not satisfy the Polygon3Concept");
 
+	// point iterators
+	static_assert(PointIteratorConcept<std::vector<Point2d>::iterator>, "");
+	static_assert(PointIteratorConcept<std::vector<Point3d>::const_iterator>, "");
+
+	// sampler
 	static_assert(
 		SamplerConcept<MeshSampler<internal::TMPSimplePolyMesh>>,
 		"MeshSampler does not satisfy the SamplerConcept");

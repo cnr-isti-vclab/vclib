@@ -35,6 +35,8 @@
 
 #include "iterators/static_grid_iterator.h"
 
+#include <vclib/concepts/ranges/mesh/vertex_range.h>
+
 namespace vcl {
 
 template<typename GridType, typename ValueType>
@@ -98,6 +100,29 @@ private:
 	bool insertInCell(const KeyType& cell, const ValueType& v);
 	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
 };
+
+// deduction guides
+
+template<PointIteratorConcept It>
+StaticGrid(It, It) -> StaticGrid<
+	RegularGrid<typename It::value_type, It::value_type::DIM>,
+	typename It::value_type::ScalarType>;
+
+template<PointIteratorConcept It, typename F>
+StaticGrid(It, It, F) -> StaticGrid<
+	RegularGrid<typename It::value_type, It::value_type::DIM>,
+	typename It::value_type::ScalarType>;
+
+template<VertexPointerRangeConcept Rng>
+StaticGrid(Rng) -> StaticGrid<
+	RegularGrid<
+		// scalar type used for the grid, the same of the CoordType of the Vertex
+		typename std::remove_pointer_t<
+			typename std::ranges::iterator_t<Rng>::value_type>::CoordType::ScalarType,
+		3>, // the dimension of the Grid
+	// the ValueType of the StaticGrid, which is the iterated type in the given range
+	// (pointer to vertex)
+	typename std::ranges::iterator_t<Rng>::value_type>;
 
 template<typename ValueType, typename ScalarType = double>
 using StaticGrid2 = StaticGrid<RegularGrid2<ScalarType>, ValueType>;
