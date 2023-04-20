@@ -1,4 +1,0 @@
-.. _create:
-
-Create Algorithms
-=================

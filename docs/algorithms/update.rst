@@ -1,4 +1,0 @@
-.. _update:
-
-Update Algorithms
-=================
