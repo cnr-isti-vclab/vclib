@@ -31,9 +31,6 @@ namespace vcl::views{
 namespace internal {
 
 struct NotNullView
-#ifdef VCLIB_USES_RANGES
-		: std::ranges::view_base
-#endif
 {
 	constexpr NotNullView() = default;
 
@@ -47,9 +44,6 @@ struct NotNullView
 };
 
 struct DereferenceView
-#ifdef VCLIB_USES_RANGES
-		: std::ranges::view_base
-#endif
 {
 	constexpr DereferenceView() = default;
 
@@ -63,9 +57,6 @@ struct DereferenceView
 };
 
 struct ReferenceView
-#ifdef VCLIB_USES_RANGES
-		: std::ranges::view_base
-#endif
 {
 	constexpr ReferenceView() = default;
 
@@ -79,9 +70,6 @@ struct ReferenceView
 };
 
 struct ConstReferenceView
-#ifdef VCLIB_USES_RANGES
-		: std::ranges::view_base
-#endif
 {
 	constexpr ConstReferenceView() = default;
 
