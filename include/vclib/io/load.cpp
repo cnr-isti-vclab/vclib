@@ -25,6 +25,15 @@
 
 namespace vcl {
 
+/**
+ * @brief Loads and returns a Mesh from the given file.
+ * @ingroup load
+ *
+ * @param filename
+ * @param log
+ * @param enableOptionalComponents
+ * @return
+ */
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType load(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
