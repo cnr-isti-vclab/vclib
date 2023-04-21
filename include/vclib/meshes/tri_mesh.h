@@ -97,7 +97,14 @@ public:
 	using ScalarType = Scalar;
 };
 
+/**
+ * @brief The TriMeshf class is a specialization of TriMeshT that uses `float` as scalar.
+ */
 using TriMeshf = TriMeshT<float>;
+
+/**
+ * @brief The TriMesh class is a specialization of TriMeshT that uses `double` as scalar.
+ */
 using TriMesh  = TriMeshT<double>;
 
 } // namespace vcl

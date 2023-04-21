@@ -35,7 +35,7 @@ this feature is available in your system.
 
 On Ubuntu, you can download the `Threading Building Blocks` library by running on terminal:
 
-```
+```bash
 sudo apt install libtbb-dev
 ```
 
@@ -44,7 +44,7 @@ sudo apt install libtbb-dev
 To include VCLib in your CMake project, you'll first need to place the VCLib directory inside your project directory.
 Then, in your `CMakeLists.txt`:
 
-```
+```cmake
 add_subdirectory(vclib)
 
 [...]
@@ -56,13 +56,13 @@ Where `my_target` is the target of your project.
 ## Usage with INCLUDE_PATH
 
 To work with VCLib, you need to have Eigen accessible in your `INCLUDE_PATH`.
-MapBox Earcut is already included automatically by VCLib and you don't need to include it manually.
+MapBox Earcut, STB and (if you are using Apple Clang) pstld are already included automatically by VCLib and you don't need to include it manually.
 
 Eigen is also provided inside the `external` directory of VCLib.
 
 Set your `INCLUDE_PATH` in the following way:
 
-```
+```cmake
 INCLUDE_PATH += path/to/vclib/external/eigen-3.4.0/ # or your favorite Eigen version
 INCLUDE_PATH += path/to/vclib/include/
 ```
