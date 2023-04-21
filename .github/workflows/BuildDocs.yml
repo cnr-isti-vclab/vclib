@@ -24,10 +24,10 @@ jobs:
           cd docs
           doxygen Doxyfile
       - name: Upload Docs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: vclib_docs
-          path: docs/_build/html
+          path: docs/_doxygen/html
 
   upload_docs:
     needs: build_docs
@@ -44,7 +44,7 @@ jobs:
           cd static/vclib
           rm -R *
       - name: Download new docs
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: vclib_docs
           path: static/vclib/
