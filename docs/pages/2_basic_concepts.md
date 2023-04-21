@@ -1,10 +1,12 @@
-Basic Concepts     {#basic_concepts}
-==============
+# Basic Concepts     {#basic_concepts}
 
 Into the `include` directory, the library is structured as follows:
 
-* algorithms: contains a set of header/source files having functions that implement various geometry processing algorithms;
-* exception: contains all the exception classes used in this library, divided by caregories in header files;
+* `algorithms`: contains a set of header/source files having functions that implement various geometry processing algorithms; generally speaking, these algorithms are functions that take at least an input mesh and give some output, depending on the purpose of the function. You can use all the functions defined on this directory by including `#include <vclib/algorithms.h>`;
+* `concepts`:
+* `exception`: contains all the exception classes used in this library, divided by caregories in header files;
+* `ext`:
+* `image`: 
 * io: contains functions and data structures to manage the input/output of the data structures supported in this library;
 * math: contains a set of headers having various math helper functions;
 * mesh: contains all the core classes that allows to define the various Mesh data structures of this library;
@@ -13,8 +15,7 @@ Into the `include` directory, the library is structured as follows:
 
 The library also provides a set of pre-defined Mesh data structures that can be found inside the main directory of the library, like TriMesh, PolygonMesh...
 
-Let's start
------------
+# Let's start
 
 We can first declare a new Triangle Mesh and load a ply file:
 
