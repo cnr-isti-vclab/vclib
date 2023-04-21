@@ -11,8 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
-        run: |
-          sudo apt-get install doxygen graphviz
+        run: | # apt doxygen version is buggy - need to use 1.9.6
+          mkdir doxygen
+          cd doxygen
+          wget https://www.doxygen.nl/files/doxygen-1.9.6.linux.bin.tar.gz
+          tar -xvzf doxygen-1.9.6.linux.bin.tar.gz
+          mv doxygen-*/* .
+          chmod +x bin/*
+          echo "${GITHUB_WORKSPACE}/doxygen/bin" >> $GITHUB_PATH
       - name: Build Docs
         run: |
           cd docs
@@ -23,28 +29,4 @@ jobs:
           name: vclib_docs
           path: docs/_build/html
 
-  upload_docs:
-    needs: build_docs
-    name: Upload Docs
-    runs-on: ubuntu-22.04
 
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          repository: alemuntoni/alemuntoni.github.io
-          token: ${{ secrets.PAT }}
-      - name: Delete old docs
-        run: |
-          cd static/vclib
-          rm -R *
-      - name: Download new docs
-        uses: actions/download-artifact@v2
-        with:
-          name: vclib_docs
-          path: static/vclib/
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Automatic Update VCLib docs
-          commit_user_name: alemuntoni
-          commit_user_email: ${{ secrets.EMAIL }}
-          commit_author: alemuntoni <${{ secrets.EMAIL }}>
