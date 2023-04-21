@@ -2,13 +2,11 @@
 
 ## Introduction
 
-VCLib is a C++20 header-only library, which means that you just need to add the library (and a few dependencies) in your `INCLUDE_PATH` to
-start to use the library. However, VCLib comes also with a `cmake` ready configuration, that we strongly suggest to use.
-Therefore, if you use `cmake` for your C++ projects, you can derectly jump to the [CMake paragraph](#cmake_config).
+VCLib is a header-only C++20 library, which means that you only need to add the library (and a few dependencies) to your `INCLUDE_PATH` to start using it. However, VCLib also comes with a `cmake`-ready configuration that we strongly recommend using. Therefore, if you use `cmake` for your C++ projects, you can directly jump to the [CMake paragraph](#cmake_config).
 
 ## Supported Compilers
 
-Since the C++20 standard is recent, VCLib works only with recent C++ compilers:
+As the C++20 standard is new, VCLib is designed to work exclusively with recent C++ compilers::
 
    * GCC: 11.2
    * Clang: 14.0
@@ -16,24 +14,22 @@ Since the C++20 standard is recent, VCLib works only with recent C++ compilers:
 
 ## Dependencies
 
-To access to the basic functionalities of VCLib, you don't need to install any dependency. The libraries on which VCLib depends are header only, and they are bundled in the repository. There libraries are the following:
+To access the basic functionalities of VCLib, you don't need to install any dependencies. The libraries that VCLib depends on are header-only and are bundled in the repository. These libraries are as follows:
 
    * [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
    * [MapBox Earcut](https://github.com/mapbox/earcut.hpp)
    * [STB](https://github.com/nothings/stb)
 
-However, at the at the time of writing, some functionalities of standard C++17 require a bit of attention to be used in some platforms.
-Specifically, VCLib uses C++17 parallel STL, which:
+However, at the time of writing, some functionalities of standard C++17 require attention when used on certain platforms. Specifically, VCLib uses C++17 parallel STL, which:
 
-   * On Apple systems using CLang can be used thanks to [pstld](https://github.com/mikekazakov/pstld) (header only, bundled in VCLib, nothing to do);
-   * It is supported by MSVC (nothing to do);
-   * It is supported by GCC + libstdc++ when the [Threading Building Blocks](https://github.com/oneapi-src/oneTBB) library is linked (need to link it);
-   * It is not supported by CLang + libc++ (with the exception of Apple systems, thanks to `pstld`);
+   * On Apple systems using CLang, it can be used thanks to [pstld](https://github.com/mikekazakov/pstld) (header only, bundled in VCLib, no additional action required);
+   * It is supported by MSVC without requiring additional action;
+   * It is supported by GCC + libstdc++ when the [Threading Building Blocks](https://github.com/oneapi-src/oneTBB) library is linked (linking is required);
+   * It is not supported by CLang + libc++ (except for Apple systems, thanks to `pstld`);
 
-To have access to the parallel speedup of VCLib, we suggest to use the [CMake](#cmake_config) that will check automatically if
-this feature is available in your system.
+To access the parallel speedup of VCLib, we suggest using [CMake](#cmake_config) which will automatically check whether this feature is available on your system.
 
-On Ubuntu, you can download the `Threading Building Blocks` library by running on terminal:
+If you are using Ubuntu, you can download the `Threading Building Blocks` library by running the following command in the terminal:
 
 ```bash
 sudo apt install libtbb-dev
@@ -41,8 +37,7 @@ sudo apt install libtbb-dev
 
 ## CMake Configuration {#cmake_config}
 
-To include VCLib in your CMake project, you'll first need to place the VCLib directory inside your project directory.
-Then, in your `CMakeLists.txt`:
+To include VCLib in your CMake project, first copy the VCLib directory into your project directory. Then, in your `CMakeLists.txt`:
 
 ```cmake
 add_subdirectory(vclib)
@@ -55,12 +50,10 @@ target_link_libraries(my_target PRIVATE vclib)
 Where `my_target` is the target of your project.
 ## Usage with INCLUDE_PATH
 
-To work with VCLib, you need to have Eigen accessible in your `INCLUDE_PATH`.
-MapBox Earcut, STB and (if you are using Apple Clang) pstld are already included automatically by VCLib and you don't need to include it manually.
+In order to work with VCLib, you must ensure that Eigen is accessible in your `INCLUDE_PATH`.
+MapBox Earcut, STB, and (if you're using Apple Clang) pstld are already included automatically by VCLib, so you don't need to include them manually. Eigen is also provided within the `external` directory of VCLib.
 
-Eigen is also provided inside the `external` directory of VCLib.
-
-Set your `INCLUDE_PATH` in the following way:
+To set your `INCLUDE_PATH` correctly, follow these steps:
 
 ```cmake
 INCLUDE_PATH += path/to/vclib/external/eigen-3.4.0/ # or your favorite Eigen version
