@@ -1,4 +1,4 @@
-# Basic Concepts     {#basic_concepts}
+# Basic Concepts     {#basic_concepts_page}
 
 There are a small set of headers that will bring all the library functionalitied that need to be exposed to the user:
 
@@ -11,7 +11,7 @@ There are a small set of headers that will bring all the library functionalitied
 * `#include<vclib/views.h>`: includes all the c++20 [Range Views](https://en.cppreference.com/w/cpp/ranges) of the library. They allow to iterate easily along all the elements and components contained by the Meshes;
 * `#include<vclib/miscellaneous.h>`: includes a list of miscellanous classes, functions or utility structures (e.g. comparators, loggers, timers, ...);
 
-Attitional headers that are Work in Progress:
+Additional headers that are Work in Progress:
 
 * `#include<vclib/image.h>`: Data structures to manage images;
 

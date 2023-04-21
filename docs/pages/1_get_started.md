@@ -1,4 +1,4 @@
-# Get Started     {#get_started}
+# Get Started     {#get_started_page}
 
 ## Introduction
 
