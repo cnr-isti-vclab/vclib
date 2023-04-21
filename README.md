@@ -47,16 +47,14 @@ The best way to learn how the library works is to look at the code in the [tests
 
 A first draft of the (not up-to-date) documentation of the library can be found [here](https://alemuntoni.github.io/vclib/).
 
-You can build the documentation trough CMake, by enabling the option `VCLIB_BUILD_DOCS`.
-To build the documentation, the following dependencies must be installed and available in your system:
+You can build the documentation using doxygen (tested on 1.9.1 version):
 
-- doxygen (https://www.doxygen.nl/download.html#srcbin)
-- sphinx (`pip3 install sphinx`)
-- breathe (`pip3 install breathe`)
-- readthedocs (`pip3 install sphinx_rtd_theme` and `pip3 install readthedocs-sphinx-ext`)
+```
+cd docs
+doxygen Doxyfile
+```
 
-Once all the dependencies are satisfied and the `VCLIB_BUILD_DOCS` is enabled, you just need to build the
-project, and the directory `docs/_build/html` will contain the html documentation.
+The output will be placed in the `docs/_doxygen/html` directory.
 
 ## License
 
