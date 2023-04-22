@@ -276,6 +276,7 @@ set(HEADERS
 	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/misc/logger/console_logger.h
 	include/vclib/misc/logger/logger.h
+	include/vclib/misc/logger/null_logger.h
 	include/vclib/misc/mark/markable.h
 	include/vclib/misc/mark/markable_vector.h
 	include/vclib/render/drawable_object.h

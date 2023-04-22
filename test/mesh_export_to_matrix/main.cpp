@@ -30,7 +30,7 @@
 
 int main()
 {
-	vcl::TriMesh tm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+	vcl::TriMesh tm = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
 	Eigen::MatrixXd v = vcl::vertexMatrix<Eigen::MatrixXd>(tm);
 	Eigen::MatrixXi f = vcl::faceMatrix<Eigen::MatrixXi>(tm);

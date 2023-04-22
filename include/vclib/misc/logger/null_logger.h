@@ -21,61 +21,60 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "load.h"
+#ifndef VCL_MISC_LOGGER_NULL_LOGGER_H
+#define VCL_MISC_LOGGER_NULL_LOGGER_H
 
 namespace vcl {
 
-template<MeshConcept MeshType, LoggerConcept LogType>
-MeshType load(const std::string& filename, LogType& log, bool enableOptionalComponents)
-{
-	FileMeshInfo loadedInfo;
-	return load<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
-}
+/**
+ * @brief The NullLogger class is an empty class that is used as default type in all the library
+ * functions that take as input a logger type.
+ *
+ * This class satisfies the LoggerConcept.
+ *
+ * Before using a logger object, you should check if the type of the logger is valid in the
+ * following way:
+ *
+ * @code{.cpp}
+ * if constexpr (vcl::isLoggerValid<LoggerType>()) {
+ *     // use here the log object
+ * }
+ * @endcode
+ *
+ * This allows to compile the log code only when the user gives a proper Logger object that
+ * satisfies the LoggerConcept.
+ *
+ * @ingroup miscellaneous
+ */
+class NullLogger {
+};
 
-template<MeshConcept MeshType, LoggerConcept LogType>
-MeshType load(
-	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
-	LogType&           log,
-	bool               enableOptionalComponents)
-{
-	MeshType m;
-	load(m, filename, loadedInfo, log, enableOptionalComponents);
-	return m;
-}
+/**
+ * @brief The static nullLogger object is an object of type NullLogger that is used as default
+ * argument in the functions that can take as input a logger.
+ *
+ * A typical function that could take a logger is defined as follows:
+ *
+ * @code{.cpp}
+ * template<typename T, LoggerConcept LoggerType = NullLogger>
+ * void foo(T obj, LoggerType log = nullLogger)
+ * {
+ *    // code of the function...
+ *
+ *    if constexpr (vcl::isLoggerValid<LoggerType>()) {
+ *       log.log("log!");
+ *    }
+ *
+ * }
+ * @endcode
+ *
+ * In this way, when the user does not give a logger argument, the default will be an object of
+ * NullLogger type that allows to check at compile time if the logger object is valid.
+ *
+ * @ingroup miscellaneous
+ */
+static inline NullLogger nullLogger;
 
-template<MeshConcept MeshType, LoggerConcept LogType>
-void load(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
-{
-	FileMeshInfo loadedInfo;
-	load(m, filename, loadedInfo, log, enableOptionalComponents);
-}
+} // namespace vcl
 
-template<MeshConcept MeshType, LoggerConcept LogType>
-void load(
-	MeshType&          m,
-	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
-	LogType&           log,
-	bool               enableOptionalComponents)
-{
-	std::string ext = FileInfo::extension(filename);
-	ext = vcl::str::toLower(ext);
-	if (ext == ".obj") {
-		io::loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
-	}
-	else if (ext == ".off") {
-		io::loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
-	}
-	else if (ext == ".ply") {
-		io::loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
-	}
-	else if (ext == ".stl") {
-		io::loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
-	}
-	else {
-		throw vcl::UnknownFileFormatException(ext);
-	}
-}
-
-} // namespace vcl::io
+#endif // VCL_MISC_LOGGER_NULL_LOGGER_H

@@ -30,10 +30,7 @@
 
 namespace vcl {
 
-class NullLogger {
-};
-
-static NullLogger nullLogger;
+class NullLogger;
 
 template <typename T>
 concept LoggerConcept =
