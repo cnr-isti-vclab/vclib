@@ -31,6 +31,8 @@ namespace vcl {
 /**
  * @brief The Point2 class represents a 2-dimensional point containing 2 scalar values.
  * Specializes the Point class, providing some additional member functions useful for 2D points.
+ *
+ * @ingroup space
  */
 template<typename Scalar>
 using Point2 = Point<Scalar, 2>;

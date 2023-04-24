@@ -82,6 +82,8 @@ namespace vcl {
  *
  * In this example, array is a 3-dimensional array with sizes 2*4*3.
  * All the missing numbers are filled with zeros (in every dimension).
+ *
+ * @ingroup space
  */
 template<class T, size_t N>
 class Array

@@ -41,6 +41,8 @@ namespace vcl {
  * accessing the point coordinates.
  *
  * @tparam PointT A type that satisfies the `PointConcept` requirements.
+ *
+ * @ingroup space
  */
 template<PointConcept PointT>
 class Box

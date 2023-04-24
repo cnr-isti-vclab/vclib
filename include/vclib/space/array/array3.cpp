@@ -26,17 +26,17 @@
 namespace vcl {
 
 template<class T>
-Array3D<T>::Array3D() : Array<T, 3>()
+Array3<T>::Array3() : Array<T, 3>()
 {
 }
 
 template<class T>
-Array3D<T>::Array3D(const Array<T, 3>& a) : Array<T, 3>(a)
+Array3<T>::Array3(const Array<T, 3>& a) : Array<T, 3>(a)
 {
 }
 
 template<class T>
-inline Array3D<T>::Array3D(
+inline Array3<T>::Array3(
 	unsigned long int sizeX,
 	unsigned long int sizeY,
 	unsigned long int sizeZ) :
@@ -45,7 +45,7 @@ inline Array3D<T>::Array3D(
 }
 
 template<class T>
-inline Array3D<T>::Array3D(
+inline Array3<T>::Array3(
 	unsigned long int sizeX,
 	unsigned long int sizeY,
 	unsigned long int sizeZ,
@@ -58,25 +58,25 @@ inline Array3D<T>::Array3D(
 }
 
 template<class T>
-inline Array3D<T>::Array3D(vcl::NestedInitializerLists<T, 3> values)
+inline Array3<T>::Array3(vcl::NestedInitializerLists<T, 3> values)
 {
 	Array<T, 3>::initializeNestedLists(values);
 }
 
 template<class T>
-inline unsigned long int Array3D<T>::sizeX() const
+inline unsigned long int Array3<T>::sizeX() const
 {
 	return Array<T, 3>::sizes[0];
 }
 
 template<class T>
-inline unsigned long int Array3D<T>::sizeY() const
+inline unsigned long int Array3<T>::sizeY() const
 {
 	return Array<T, 3>::sizes[1];
 }
 
 template<class T>
-inline unsigned long int Array3D<T>::sizeZ() const
+inline unsigned long int Array3<T>::sizeZ() const
 {
 	return Array<T, 3>::sizes[2];
 }

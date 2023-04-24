@@ -31,6 +31,8 @@ namespace vcl {
 /**
  * @brief The Point4 class represents a 4-dimensional point containing 4 ScalarType values.
  * Specializes the Point class, providing some additional member functions useful for 4D points.
+ *
+ * @ingroup space
  */
 template<typename Scalar>
 using Point4 = Point<Scalar, 4>;

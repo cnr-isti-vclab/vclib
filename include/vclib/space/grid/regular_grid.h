@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_REGULAR_GRID_T_H
-#define VCL_SPACE_GRID_REGULAR_GRID_T_H
+#ifndef VCL_SPACE_GRID_REGULAR_GRID_H
+#define VCL_SPACE_GRID_REGULAR_GRID_H
 
 #include "iterators/cell_iterator.h"
 
@@ -86,15 +86,21 @@ private:
 	Point<uint, N> siz;
 };
 
-template<PointConcept PointType>
-vcl::Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements);
+template<typename Scalar>
+using RegularGrid2 = RegularGrid<Scalar, 2>;
+
+template<typename Scalar>
+using RegularGrid3 = RegularGrid<Scalar, 3>;
 
 // deduction guides
 template<PointConcept PointType, typename D>
 RegularGrid(PointType, PointType, D) -> RegularGrid<typename PointType::ScalarType, PointType::DIM>;
 
+template<PointConcept PointType>
+vcl::Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements);
+
 } // namespace vcl
 
-#include "regular_grid_t.cpp"
+#include "regular_grid.cpp"
 
-#endif // VCL_SPACE_GRID_REGULAR_GRID_T_H
+#endif // VCL_SPACE_GRID_REGULAR_GRID_H

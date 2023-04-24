@@ -97,6 +97,8 @@ namespace vcl {
  * classes.
  * Note that derived class can hide some of the member exposed in this class (e.g. they could
  * disallow the possibility to remove elements from a grid).
+ *
+ * @ingroup space
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 class AbstractGrid : public GridType

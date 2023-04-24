@@ -30,8 +30,7 @@
 #include <vclib/misc/mark.h>
 
 #include "abstract_grid.h"
-#include "regular_grid2.h"
-#include "regular_grid3.h"
+#include "regular_grid.h"
 
 #include "iterators/static_grid_iterator.h"
 

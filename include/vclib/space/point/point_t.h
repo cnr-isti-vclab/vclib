@@ -37,6 +37,8 @@ namespace vcl {
 /**
  * @brief The Point class represents an N-dimensional point containing
  * N scalar values.
+ *
+ * @ingroup space
  */
 template<typename Scalar, uint N>
 class Point

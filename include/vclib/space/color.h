@@ -30,6 +30,8 @@ namespace vcl {
 
 /**
  * @brief The Color class represents an RGBA color.
+ *
+ * @ingroup space
  */
 class Color : public Point4<uint8_t>
 {

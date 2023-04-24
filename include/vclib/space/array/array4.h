@@ -33,23 +33,23 @@ namespace vcl {
  * Specialization of vcl::Array class with 4 dimensions.
  */
 template<typename T>
-class Array4D : public Array<T, 4>
+class Array4 : public Array<T, 4>
 {
 public:
-	Array4D();
-	Array4D(const Array<T, 4>& a);
-	Array4D(
+	Array4();
+	Array4(const Array<T, 4>& a);
+	Array4(
 		unsigned long int sizeX,
 		unsigned long int sizeY,
 		unsigned long int sizeZ,
 		unsigned long int sizeW);
-	Array4D(
+	Array4(
 		unsigned long int sizeX,
 		unsigned long int sizeY,
 		unsigned long int sizeZ,
 		unsigned long int sizeW,
 		const T&          value);
-	Array4D(vcl::NestedInitializerLists<T, 4> values);
+	Array4(vcl::NestedInitializerLists<T, 4> values);
 	unsigned long int sizeX() const;
 	unsigned long int sizeY() const;
 	unsigned long int sizeZ() const;

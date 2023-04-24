@@ -31,6 +31,8 @@ namespace vcl {
 /**
  * @brief The Point3 class represents a 3-dimensional point containing 3 ScalarType values.
  * Specializes the Point class, providing some additional member functions useful for 3D points.
+ *
+ * @ingroup space
  */
 template<typename Scalar>
 using Point3 = Point<Scalar, 3>;
