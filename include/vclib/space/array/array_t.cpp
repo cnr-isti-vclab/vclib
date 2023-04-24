@@ -108,9 +108,8 @@ bool Array<T, N>::empty() const
  */
 template<class T, size_t N>
 template<typename... I>
-T& Array<T, N>::operator()(I... indices)
+typename Array<T, N>::Reference Array<T, N>::operator()(I... indices) requires(sizeof...(indices) == N)
 {
-	static_assert(sizeof...(indices) == N, "Wrong number of arguments for operator().");
 	unsigned long int args[N] = {static_cast<unsigned long int>(indices)...};
 	return v[getIndex(args)];
 }
@@ -124,9 +123,9 @@ T& Array<T, N>::operator()(I... indices)
  */
 template<class T, size_t N>
 template<typename... I>
-const T& Array<T, N>::operator()(I... indices) const
+typename Array<T, N>::ConstReference Array<T, N>::operator()(I... indices) const
+	requires(sizeof...(indices) == N)
 {
-	static_assert(sizeof...(indices) == N, "Wrong number of arguments for operator().");
 	unsigned long int args[N] = {static_cast<unsigned long int>(indices)...};
 	return v[getIndex(args)];
 }
@@ -139,13 +138,13 @@ const T& Array<T, N>::operator()(I... indices) const
  * //...
  * int* carray = array.cArray(3); //carray will point to the element in position (3,0,0).
  * for (unsigned int i = 0; i < 13*4; i++)
- *    std::cout << carry[i]; // will print all the elements of the sub 2D array starting from
- *                           // (3,0,0).
+ *    std::cout << carry[i]; // will print all the elements of the sub array starting from
+ *                           // position (3,0,0).
  *
  * carray = array.cArray(4, 2); // carray will point to the element in position (4, 2, 0).
  * for (unsigned int i = 0; i < 4; i++)
- *    std::cout << carry[i]; // will print all the elements of the sub 1D array starting from
- *                           // (4,2,0).
+ *    std::cout << carry[i]; // will print all the elements of the sub array starting from
+ *                           // position (4,2,0).
  *
  * carray = array.cArray(); // carray will point to the element in position (0, 0, 0).
  *

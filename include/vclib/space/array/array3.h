@@ -33,18 +33,18 @@ namespace vcl {
  * Specialization of vcl::Array class with 3 dimensions.
  */
 template<typename T>
-class Array3D : public Array<T, 3>
+class Array3 : public Array<T, 3>
 {
 public:
-	Array3D();
-	Array3D(const Array<T, 3>& a);
-	Array3D(unsigned long int sizeX, unsigned long int sizeY, unsigned long int sizeZ);
-	Array3D(
+	Array3();
+	Array3(const Array<T, 3>& a);
+	Array3(unsigned long int sizeX, unsigned long int sizeY, unsigned long int sizeZ);
+	Array3(
 		unsigned long int sizeX,
 		unsigned long int sizeY,
 		unsigned long int sizeZ,
 		const T&          value);
-	Array3D(vcl::NestedInitializerLists<T, 3> values);
+	Array3(vcl::NestedInitializerLists<T, 3> values);
 	unsigned long int sizeX() const;
 	unsigned long int sizeY() const;
 	unsigned long int sizeZ() const;

@@ -82,6 +82,8 @@ namespace vcl {
  *
  * In this example, array is a 3-dimensional array with sizes 2*4*3.
  * All the missing numbers are filled with zeros (in every dimension).
+ *
+ * @ingroup space
  */
 template<class T, size_t N>
 class Array
@@ -90,6 +92,12 @@ class Array
 	friend class Array<T, N + 1>;
 
 public:
+	using ValueType      = typename std::vector<T>::value_type;
+	using ConstReference = typename std::vector<T>::const_reference;
+	using Reference      = typename std::vector<T>::reference;
+	using ConstPointer   = typename std::vector<T>::const_pointer;
+	using Pointer        = typename std::vector<T>::pointer;
+
 	Array();
 	template<typename... Sizes>
 	Array(Sizes... sizes);
@@ -101,9 +109,9 @@ public:
 	bool empty() const;
 
 	template<typename... I>
-	T& operator()(I... indices);
+	Reference operator()(I... indices) requires(sizeof...(indices) == N);
 	template<typename... I>
-	const T& operator()(I... indices) const;
+	ConstReference operator()(I... indices) const requires(sizeof...(indices) == N);
 	template<typename... I>
 	T* cArray(I... indices);
 	template<typename... I>

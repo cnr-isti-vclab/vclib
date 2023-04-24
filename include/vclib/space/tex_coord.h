@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_TEX_COORD_H
 #define VCL_SPACE_TEX_COORD_H
 
-#include "point/point2.h"
+#include "point.h"
 
 namespace vcl {
 

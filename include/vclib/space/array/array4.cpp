@@ -26,17 +26,17 @@
 namespace vcl {
 
 template<typename T>
-Array4D<T>::Array4D() : Array<T, 4>()
+Array4<T>::Array4() : Array<T, 4>()
 {
 }
 
 template<typename T>
-Array4D<T>::Array4D(const Array<T, 4>& a) : Array<T, 4>(a)
+Array4<T>::Array4(const Array<T, 4>& a) : Array<T, 4>(a)
 {
 }
 
 template<class T>
-inline Array4D<T>::Array4D(
+inline Array4<T>::Array4(
 	unsigned long int sizeX,
 	unsigned long int sizeY,
 	unsigned long int sizeZ,
@@ -46,7 +46,7 @@ inline Array4D<T>::Array4D(
 }
 
 template<class T>
-inline Array4D<T>::Array4D(
+inline Array4<T>::Array4(
 	unsigned long int sizeX,
 	unsigned long int sizeY,
 	unsigned long int sizeZ,
@@ -61,31 +61,31 @@ inline Array4D<T>::Array4D(
 }
 
 template<class T>
-inline Array4D<T>::Array4D(vcl::NestedInitializerLists<T, 4> values)
+inline Array4<T>::Array4(vcl::NestedInitializerLists<T, 4> values)
 {
 	Array<T, 4>::initializeNestedLists(values);
 }
 
 template<class T>
-inline unsigned long int Array4D<T>::sizeX() const
+inline unsigned long int Array4<T>::sizeX() const
 {
 	return Array<T, 4>::sizes[0];
 }
 
 template<class T>
-inline unsigned long int Array4D<T>::sizeY() const
+inline unsigned long int Array4<T>::sizeY() const
 {
 	return Array<T, 4>::sizes[1];
 }
 
 template<class T>
-inline unsigned long int Array4D<T>::sizeZ() const
+inline unsigned long int Array4<T>::sizeZ() const
 {
 	return Array<T, 4>::sizes[2];
 }
 
 template<class T>
-inline unsigned long int Array4D<T>::sizeW() const
+inline unsigned long int Array4<T>::sizeW() const
 {
 	return Array<T, 4>::sizes[3];
 }

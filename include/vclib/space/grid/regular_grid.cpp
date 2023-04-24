@@ -21,7 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "regular_grid_t.h"
+#include "regular_grid.h"
 
 namespace vcl {
 

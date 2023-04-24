@@ -37,7 +37,6 @@
 #endif
 
 #include <vclib/space/color.h>
-#include <vclib/space/point/point3.h>
 
 namespace vcl {
 

@@ -30,8 +30,7 @@
 #include <vclib/mesh/requirements.h>
 
 #include "abstract_grid.h"
-#include "regular_grid2.h"
-#include "regular_grid3.h"
+#include "regular_grid.h"
 
 namespace vcl {
 
@@ -45,6 +44,8 @@ namespace vcl {
  * managing this data structure is the same of managing an std::unordered_multimap.
  * The user can allow or disallow the insertion of duplicate values by setting the boolean
  * AllowDuplicates template parameter, that is defaulted to `true`.
+ *
+ * @ingroup space
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates = true>
 class HashTableGrid : public AbstractGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>

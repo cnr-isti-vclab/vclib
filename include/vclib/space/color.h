@@ -24,12 +24,14 @@
 #ifndef VCL_SPACE_COLOR_H
 #define VCL_SPACE_COLOR_H
 
-#include "point/point4.h"
+#include "point.h"
 
 namespace vcl {
 
 /**
  * @brief The Color class represents an RGBA color.
+ *
+ * @ingroup space
  */
 class Color : public Point4<uint8_t>
 {

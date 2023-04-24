@@ -29,6 +29,16 @@
 
 #include <vclib/mesh/requirements.h>
 
+/**
+ * @defgroup clean Cleaning and Repairing Algorithms
+ *
+ * @ingroup algorithms
+ *
+ * @brief List of Mesh Cleaning and repairing algorithms.
+ *
+ * You can access these algorithms by including `#include <vclib/algorithms/clean.h>`
+ */
+
 namespace vcl {
 
 template <MeshConcept MeshType>
@@ -37,7 +47,7 @@ uint numberUnreferencedVertices(const MeshType& m);
 template <MeshConcept MeshType>
 uint removeUnreferencedVertices(MeshType& m);
 
-template <FaceMeshConcept MeshType>
+template <MeshConcept MeshType>
 uint removeDuplicatedVertices(MeshType& m);
 
 template <TriangleMeshConcept MeshType>

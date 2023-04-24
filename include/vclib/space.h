@@ -41,4 +41,12 @@
 #include "space/tex_coord.h"
 #include "space/triangle_wrapper.h"
 
+/**
+ * @defgroup space Spatial Data Structures
+ *
+ * @brief List of Spatial Data Structures of VCLib.
+ *
+ * You can access all the algorithms of VCLib by including `#include <vclib/space.h>`
+ */
+
 #endif // VCL_SPACE_H
