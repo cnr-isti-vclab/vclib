@@ -25,5 +25,6 @@
 #define VCL_MISC_LOGGER_H
 
 #include "logger/console_logger.h"
+#include "logger/null_logger.h"
 
 #endif // VCL_MISC_LOGGER_H

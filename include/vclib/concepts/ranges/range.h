@@ -28,6 +28,13 @@
 
 namespace vcl {
 
+/**
+ * @brief Utility concept that is evaluated true if T is a range, e.g. if has a begin and an end.
+ *
+ * It is equivalent to std::ranges::range.
+ *
+ * @ingroup uconcepts
+ */
 template<typename T>
 concept Range = std::ranges::range<T>;
 

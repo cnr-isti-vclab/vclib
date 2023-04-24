@@ -80,6 +80,10 @@ class Face :
 
 namespace vcl {
 
+/**
+ * @brief The TriMeshT class
+ * @ingroup meshes
+ */
 template<typename Scalar = double>
 class TriMeshT :
 		public vcl::Mesh<
@@ -97,7 +101,16 @@ public:
 	using ScalarType = Scalar;
 };
 
+/**
+ * @brief The TriMeshf class is a specialization of TriMeshT that uses `float` as scalar.
+ * @ingroup meshes
+ */
 using TriMeshf = TriMeshT<float>;
+
+/**
+ * @brief The TriMesh class is a specialization of TriMeshT that uses `double` as scalar.
+ * @ingroup meshes
+ */
 using TriMesh  = TriMeshT<double>;
 
 } // namespace vcl

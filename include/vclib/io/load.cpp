@@ -25,6 +25,24 @@
 
 namespace vcl {
 
+/**
+ * @brief Loads a mesh from a file with the given filename and stores it in the returned mesh
+ * object. Checks automatically the file format to load from the fiven filename.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] filename: The filename of the file containing the mesh data.
+ * @param[in, out] log: The logger object to use for logging messages during loading. Default is
+ * the nullLogger object.
+ * @param[in] enableOptionalComponents: Whether to enable loading of optional components of the
+ * mesh that can be loaded from the input file. Default value is `true`.
+ * @return The mesh object containing the loaded mesh.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not recognized.
+ *
+ * @ingroup load
+ */
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType load(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
@@ -32,6 +50,26 @@ MeshType load(const std::string& filename, LogType& log, bool enableOptionalComp
 	return load<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
+/**
+ * @brief Loads a mesh from a file with the given filename and stores it in the returned mesh
+ * object. Checks automatically the file format to load from the fiven filename.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] filename: The filename of the file containing the mesh data.
+ * @param[out] loadedInfo: Information about the mesh components that have been loaded from the
+ * file.
+ * @param[in, out] log: The logger object to use for logging messages during loading. Default is
+ * the nullLogger object.
+ * @param[in] enableOptionalComponents: Whether to enable loading of optional components of the
+ * mesh that can be loaded from the input file. Default value is `true`.
+ * @return The mesh object containing the loaded mesh.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not recognized.
+ *
+ * @ingroup load
+ */
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType load(
 	const std::string& filename,
@@ -44,6 +82,26 @@ MeshType load(
 	return m;
 }
 
+/**
+ * @brief Loads a mesh from a file with the given filename and stores it in the given mesh object.
+ * Checks automatically the file format to load from the fiven filename.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[out] m: The mesh object in which to store the loaded mesh.
+ * @param[in] filename: The filename of the file containing the mesh data.
+ * @param[out] loadedInfo: Information about the mesh components that have been loaded from the
+ * file.
+ * @param[in, out] log: The logger object to use for logging messages during loading. Default is
+ * the nullLogger object.
+ * @param[in] enableOptionalComponents: Whether to enable loading of optional components of the
+ * mesh that can be loaded from the input file. Default value is `true`.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not recognized.
+ *
+ * @ingroup load
+ */
 template<MeshConcept MeshType, LoggerConcept LogType>
 void load(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
@@ -51,6 +109,26 @@ void load(MeshType& m, const std::string& filename, LogType& log, bool enableOpt
 	load(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
+/**
+ * @brief Loads a mesh from a file with the given filename and stores it in the given mesh object.
+ * Checks automatically the file format to load from the fiven filename.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[out] m: The mesh object in which to store the loaded mesh.
+ * @param[in] filename: The filename of the file containing the mesh data.
+ * @param[out] loadedInfo: Information about the mesh components that have been loaded from the
+ * file.
+ * @param[in, out] log: The logger object to use for logging messages during loading. Default is
+ * the nullLogger object.
+ * @param[in] enableOptionalComponents: Whether to enable loading of optional components of the
+ * mesh that can be loaded from the input file. Default value is `true`.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not recognized.
+ *
+ * @ingroup load
+ */
 template<MeshConcept MeshType, LoggerConcept LogType>
 void load(
 	MeshType&          m,

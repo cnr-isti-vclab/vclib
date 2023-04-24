@@ -40,4 +40,12 @@
 #include "algorithms/stat.h"
 #include "algorithms/update.h"
 
+/**
+ * @defgroup algorithms Algorithms
+ *
+ * @brief List of function algorithms of VCLib.
+ *
+ * You can access all the algorithms of VCLib by including `#include <vclib/algorithms.h>`
+ */
+
 #endif // VCL_ALGORITHMS_H

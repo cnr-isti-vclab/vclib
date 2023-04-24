@@ -34,4 +34,10 @@
 #include "misc/timer.h"
 #include "misc/tokenizer.h"
 
+/**
+ * @defgroup miscellaneous Miscellaneous
+ *
+ * @brief List of utility functions, classes and structs used in the library.
+ */
+
 #endif // VCL_MISCELLANEOUS_H

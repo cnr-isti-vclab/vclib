@@ -18,9 +18,6 @@ set(CMAKE_CXX_STANDARD 20)
 ### Options
 option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
 option(VCLIB_IDE "Create an utility target to show the library tree on IDEs" ON)
-option(VCLIB_BUILD_DOCS
-	"Build documentation -
-	requires doxygen and sphinx with readthedocs theme and breathe extensions" OFF)
 
 # In case of building shared libraries, on windows we need to export all symbols
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -278,6 +275,7 @@ set(HEADERS
 	include/vclib/misc/internal/tmp_meshes.h
 	include/vclib/misc/logger/console_logger.h
 	include/vclib/misc/logger/logger.h
+	include/vclib/misc/logger/null_logger.h
 	include/vclib/misc/mark/markable.h
 	include/vclib/misc/mark/markable_vector.h
 	include/vclib/render/drawable_object.h
@@ -611,9 +609,4 @@ endif()
 if (VCLIB_BUILD_TESTS)
 	add_subdirectory(test)
 endif()
-
-if (VCLIB_BUILD_DOCS)
-	add_subdirectory(docs)
-endif()
-
 

@@ -30,6 +30,14 @@
 #include "mesh/per_half_edge.h"
 #include "mesh/per_vertex.h"
 
+/**
+ * @defgroup mesh_concepts Mesh Concepts
+ * @ingroup lconcepts
+ *
+ * @brief List of concepts for types related to the Mesh data structures of the library. They allow
+ * to discriminate between different Mesh types, their elements and the element components.
+ */
+
 namespace vcl {
 
 template<typename... Args> requires HasVertices<Args...>
@@ -70,32 +78,17 @@ concept HasTransformMatrix = comp::HasTransformMatrix<T>;
 
 } // namespace mesh
 
-template<typename MeshType>
-concept HasBoundingBox =
-	mesh::HasBoundingBox<MeshType>;
-
-template<typename MeshType>
-concept HasColor =
-	mesh::HasColor<MeshType>;
-
-template<typename MeshType>
-concept HasMark =
-	mesh::HasMark<MeshType>;
-
-template<typename MeshType>
-concept HasName =
-	mesh::HasName<MeshType>;
-
-template<typename MeshType>
-concept HasTexturePaths =
-	mesh::HasTexturePaths<MeshType>;
-
-template<typename MeshType>
-concept HasTransformMatrix =
-	mesh::HasTransformMatrix<MeshType>;
-
+/**
+ * @brief The Mesh Concept is evaluated to true when the type is a Mesh.
+ *
+ * A type T is a Mesh whem it inherits from or it is a template specialization of the vcl::Mesh
+ * class, and it contains a VertexContainer, which is the only container that is mandatory in
+ * a vcl::Mesh.
+ *
+ * @ingroup mesh_concepts
+ */
 template<typename T>
-concept BaseMeshConcept =
+concept MeshConcept =
 	(mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
 	mesh::HasVertexContainer<T> &&
 	requires(
@@ -134,7 +127,7 @@ concept HasPolygons =
 
 template<typename T>
 concept FaceMeshConcept =
-	BaseMeshConcept<T> && mesh::HasFaceContainer<T> &&
+	MeshConcept<T> && mesh::HasFaceContainer<T> &&
 	requires(
 		T o,
 		const T& co,
@@ -166,7 +159,7 @@ concept PolygonMeshConcept =
 
 template<typename T>
 concept EdgeMeshConcept =
-	BaseMeshConcept<T> && mesh::HasEdgeContainer<T> &&
+	MeshConcept<T> && mesh::HasEdgeContainer<T> &&
 	requires(
 		T o,
 		const T& co,
@@ -194,6 +187,8 @@ concept EdgeMeshConcept =
  * - The Face Element does not have AdjacentFaces component (it is simulated by half edges)
  * - The Face Element does not have WedgeColors component (it is simulated by half edges)
  * - The Face Element does not have WedgeTexCoords component (it is simulated by half edges)
+ *
+ * @ingroup mesh_concepts
  */
 template<typename T>
 concept DcelMeshConcept =
@@ -222,20 +217,52 @@ concept DcelMeshConcept =
 };
 
 /**
- * @brief The MeshConcept is satisfied when a Mesh data structure is considered valid.
+ * @brief Concept that is evaluated true if a Mesh has the BoundingBox component.
  *
- * It is valid if:
- * - the type is derived or is a vcl::Mesh
- *   - to be a vcl::Mesh, a type must contain (derive from) a vcl::VertexContainer
- * - if the mesh is a Dcel, the DcelMeshConcept must be satisfied
- * - if the mesh is not a Dcel:
- *   - the mesh must not have half edges and per vertex/face half edge reference.
+ * @ingroup mesh_concepts
  */
-template<typename T>
-concept MeshConcept =
-	BaseMeshConcept<T> &&
-	(DcelMeshConcept<T> ||
-	 (!HasHalfEdges<T> && !HasPerFaceHalfEdgeReference<T> && !HasPerVertexHalfEdgeReference<T>));
+template<typename MeshType>
+concept HasBoundingBox = MeshConcept<MeshType> && mesh::HasBoundingBox<MeshType>;
+
+/**
+ * @brief Concept that is evaluated true if a Mesh has the Color component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasColor = MeshConcept<MeshType> && mesh::HasColor<MeshType>;
+
+/**
+ * @brief Concept that is evaluated true if a Mesh has the Mark component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasMark = MeshConcept<MeshType> && mesh::HasMark<MeshType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the Name component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasName = MeshConcept<MeshType> && mesh::HasName<MeshType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the TexturePaths component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasTexturePaths = MeshConcept<MeshType> && mesh::HasTexturePaths<MeshType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the TransformMatrix component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasTransformMatrix = MeshConcept<MeshType> && mesh::HasTransformMatrix<MeshType>;
 
 namespace internal {
 
