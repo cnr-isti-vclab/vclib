@@ -721,36 +721,91 @@ Point<Scalar, N> Point<Scalar, N>::operator+(const Point<Scalar, N>& p1) const
 	return Point<Scalar, N>(p + p1.p);
 }
 
+/**
+ * @brief Negates each coordinate of the point.
+ *
+ * This operator negates each coordinate of the point and returns the resulting point. The negation
+ * is performed component-wise on each coordinate of the point.
+ *
+ * @return The point obtained by negating each coordinate of the point.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator-() const
 {
 	return Point<Scalar, N>(-p);
 }
 
+/**
+ * @brief Subtracts a scalar value from each coordinate of the point.
+ *
+ * This operator subtracts a scalar value from each coordinate of the point and returns the
+ * resulting point. The scalar value is subtracted component-wise from each coordinate of the point.
+ *
+ * @param[in] s: The scalar value to subtract.
+ * @return The point obtained by subtracting the scalar value from each coordinate of the point.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator-(const Scalar& s) const
 {
 	return Point<Scalar, N>(p.array() - s);
 }
 
+/**
+ * @brief Subtracts another point from this point.
+ *
+ * This operator subtracts another point from this point and returns the resulting point. The subtraction is performed component-wise
+ * on each coordinate of the two points.
+ *
+ * @param[in] p1: The point to subtract.
+ * @return The point obtained by subtracting the other point from this point.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator-(const Point<Scalar, N>& p1) const
 {
 	return Point<Scalar, N>(p - p1.p);
 }
 
+/**
+ * @brief Multiplies each coordinate of the point by a scalar value.
+ *
+ * This operator multiplies each coordinate of the point by a scalar value and returns the resulting
+ * point. The multiplication is performed component-wise on each coordinate of the point.
+ *
+ * @param[in] s: The scalar value to multiply by.
+ * @return The point obtained by multiplying each coordinate of the point by the scalar value.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator*(const Scalar& s) const
 {
 	return Point<Scalar, N>(p * s);
 }
 
+/**
+ * @brief Computes the dot product of this point with another point.
+ *
+ * This operator computes the dot product of this point with another point and returns the resulting
+ * scalar value. The dot product is computed by taking the component-wise product of the coordinates
+ * of the two points and summing the products.
+ *
+ * @param[in] p1: The point to compute the dot product with.
+ * @return The dot product of this point with the other point.
+ */
 template<typename Scalar, uint N>
 Scalar Point<Scalar, N>::operator*(const Point<Scalar, N>& p1) const
 {
 	return dot(p1);
 }
 
+/**
+ * @brief Multiplies this point by a matrix.
+ *
+ * This operator multiplies this point by a matrix and returns the resulting point. The
+ * multiplication is performed by treating the point as a row vector and the matrix as a linear
+ * transformation that acts on the vector from the left.
+ *
+ * @param[in] m: The matrix to multiply by.
+ * @return The point obtained by multiplying this point by the matrix.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<Scalar, N, N>& m) const
 {
@@ -758,7 +813,14 @@ Point<Scalar, N> Point<Scalar, N>::operator*(const Eigen::Matrix<Scalar, N, N>& 
 }
 
 /**
- * @brief Returns a new 3D point/vector on which has been applied an TRS 4x4 matrix.
+ * @brief Returns a new 3D point/vector on which has been applied a TRS 4x4 matrix.
+ *
+ * This operator returns a new 3D point/vector obtained by applying a 4x4 TRS matrix to this
+ * point/vector. The TRS matrix is a combination of a translation, rotation, and scaling
+ * transformation. This operator is available only for points of size 3.
+ *
+ * @param[in] m: The TRS matrix to apply.
+ * @return The new 3D point/vector obtained by applying the TRS matrix to this point/vector.
  *
  * @note This function is available only on Points having size == 3.
  */
@@ -777,12 +839,33 @@ Point<Scalar, N> Point<Scalar, N>::operator*(
 	return Point(s);
 }
 
+/**
+ * @brief Divides this point by a scalar.
+ *
+ * This operator divides this point by a scalar and returns the resulting point. The division is
+ * performed by dividing each coordinate of the point by the scalar.
+ *
+ * @param[in] s: The scalar to divide by.
+ * @return The point obtained by dividing this point by the scalar.
+ *
+ * @throws std::runtime_error If the scalar is zero.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N> Point<Scalar, N>::operator/(const Scalar& s) const
 {
+	if (s == 0) throw std::runtime_error("Math error: Attempted to divide by Zero\n");
 	return Point<Scalar, N>(p / s);
 }
 
+/**
+ * @brief Adds a scalar value to this point.
+ *
+ * This operator adds a scalar value to each coordinate of this point and returns a reference to
+ * this point. The addition is performed by adding the scalar value to each coordinate of the point.
+ *
+ * @param[in] s: The scalar value to add.
+ * @return A reference to this point after the addition operation.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator+=(const Scalar& s)
 {
@@ -790,6 +873,16 @@ Point<Scalar, N>& Point<Scalar, N>::operator+=(const Scalar& s)
 	return *this;
 }
 
+/**
+ * @brief Adds a point to this point.
+ *
+ * This operator adds each coordinate of another point to the corresponding coordinate of this point
+ * and returns a reference to this point. The addition is performed by adding the coordinates of the
+ * other point to the coordinates of this point element-wise.
+ *
+ * @param[in] p1: The point to add to this point.
+ * @return A reference to this point after the addition operation.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator+=(const Point<Scalar, N>& p1)
 {
@@ -797,6 +890,16 @@ Point<Scalar, N>& Point<Scalar, N>::operator+=(const Point<Scalar, N>& p1)
 	return *this;
 }
 
+/**
+ * @brief Subtracts a scalar value from this point.
+ *
+ * This operator subtracts a scalar value from each coordinate of this point and returns a reference
+ * to this point. The subtraction is performed by subtracting the scalar value from each coordinate
+ * of the point.
+ *
+ * @param[in] s: The scalar value to subtract.
+ * @return A reference to this point after the subtraction operation.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator-=(const Scalar& s)
 {
@@ -804,6 +907,16 @@ Point<Scalar, N>& Point<Scalar, N>::operator-=(const Scalar& s)
 	return *this;
 }
 
+/**
+ * @brief Subtracts a point from this point.
+ *
+ * This operator subtracts each coordinate of another point from the corresponding coordinate of
+ * this point and returns a reference to this point. The subtraction is performed by subtracting the
+ * coordinates of the other point from the coordinates of this point element-wise.
+ *
+ * @param[in] p1: The point to subtract from this point.
+ * @return A reference to this point after the subtraction operation.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator-=(const Point<Scalar, N>& p1)
 {
@@ -811,6 +924,16 @@ Point<Scalar, N>& Point<Scalar, N>::operator-=(const Point<Scalar, N>& p1)
 	return *this;
 }
 
+/**
+ * @brief Multiplies this point by a scalar value.
+ *
+ * This operator multiplies each coordinate of this point by a scalar value and returns a reference
+ * to this point. The multiplication is performed by multiplying the scalar value with each
+ * coordinate of the point.
+ *
+ * @param[in] s: The scalar value to multiply by.
+ * @return A reference to this point after the multiplication operation.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator*=(const Scalar& s)
 {
@@ -818,6 +941,16 @@ Point<Scalar, N>& Point<Scalar, N>::operator*=(const Scalar& s)
 	return *this;
 }
 
+/**
+ * @brief Multiplies this point by a square matrix.
+ *
+ * This operator multiplies this point by a square matrix and returns a reference to this point. The
+ * multiplication is performed by multiplying the square matrix with the column vector
+ * representation of this point.
+ *
+ * @param[in] m: The square matrix to multiply by.
+ * @return A reference to this point after the multiplication operation.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<Scalar, N, N>& m)
 {
@@ -826,8 +959,14 @@ Point<Scalar, N>& Point<Scalar, N>::operator*=(const Eigen::Matrix<Scalar, N, N>
 }
 
 /**
- * @brief Applies to the given point/vector an TRS 4x4 matrix.
- * @param m
+ * @brief Applies a TRS 4x4 matrix transformation to this point.
+ *
+ * This operator applies a TRS 4x4 matrix transformation to this point and returns a reference to
+ * this point. The transformation is performed by multiplying the TRS 4x4 matrix with the
+ * homogeneous coordinate representation of this point.
+ *
+ * @param[in] m: The TRS 4x4 matrix to apply.
+ * @return A reference to this point after the transformation.
  *
  * @note This function is available only on Points having size == 3.
  */
@@ -839,13 +978,35 @@ Point<Scalar,N>& Point<Scalar, N>::operator*=(
 	return *this;
 }
 
+/**
+ * @brief Divides this point by a scalar value.
+ *
+ * This operator divides each coordinate of this point by a scalar value and returns a reference to
+ * this point. The division is performed by dividing each coordinate of the point by the scalar
+ * value.
+ *
+ * @param[in] s: The scalar value to divide by.
+ * @return A reference to this point after the division operation.
+ *
+ * @note If the divisor is zero, a runtime error is thrown.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator/=(const Scalar& s)
 {
+	if (s == 0) throw std::runtime_error("Math error: Attempted to divide by Zero\n");
 	p /= s;
 	return *this;
 }
 
+/**
+ * @brief Assigns this point to a row vector.
+ *
+ * This operator assigns this point to a row vector and returns a reference to this point. The
+ * assignment is performed by setting this point's coordinates to the values of the row vector.
+ *
+ * @param[in] v: The row vector to assign from.
+ * @return A reference to this point after the assignment operation.
+ */
 template<typename Scalar, uint N>
 Point<Scalar, N>& Point<Scalar, N>::operator=(const Eigen::Matrix<Scalar, 1, N>& v)
 {
@@ -853,6 +1014,16 @@ Point<Scalar, N>& Point<Scalar, N>::operator=(const Eigen::Matrix<Scalar, 1, N>&
 	return *this;
 }
 
+/**
+ * @brief Writes this point to an output stream.
+ *
+ * This operator writes this point to an output stream and returns the output stream. The point is
+ * written as a column vector of its coordinates.
+ *
+ * @param[in,out] out: The output stream to write to.
+ * @param[in] p1 The point to write.
+ * @return The output stream after the point is written.
+ */
 template<typename Scalar, uint N>
 std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
 {
@@ -864,6 +1035,15 @@ std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
 
 namespace std {
 
+/**
+ * @brief Computes the hash value for a Point object.
+ *
+ * This function computes the hash value for a Point object by calling the Point's own hash()
+ * function.
+ *
+ * @param[in] id: The Point object to compute the hash value for.
+ * @return The hash value for the Point object.
+ */
 template<typename Scalar, uint N>
 std::size_t hash<vcl::Point<Scalar, N> >::operator()(const vcl::Point<Scalar, N>& id) const noexcept
 {
