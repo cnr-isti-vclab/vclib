@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_COLOR_H
 #define VCL_SPACE_COLOR_H
 
-#include "point/point4.h"
+#include "point.h"
 
 namespace vcl {
 

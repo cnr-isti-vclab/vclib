@@ -131,7 +131,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 			float curvature = (2.0f * (v.normal().dot(edge)) ) / edge.squaredNorm();
 			CoordType t(Tp * edge.eigenVector().transpose());
 			t.normalize();
-			tempMatrix = outerProduct(t, t);
+			tempMatrix = t.outerProduct(t);
 			M += tempMatrix * weights[i] * curvature ;
 		}
 
@@ -146,7 +146,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 
 		// compute the Householder matrix I - 2WW^t
 		Matrix33<ScalarType> Q = Matrix33<ScalarType>::Identity();
-		tempMatrix = outerProduct(w, w);
+		tempMatrix = w.outerProduct(w);
 		Q -= tempMatrix * 2.0f;
 
 		// compute matrix Q^t M Q

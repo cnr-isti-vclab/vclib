@@ -29,13 +29,15 @@
 namespace vcl {
 
 /**
- * @brief Starting a seed, computes the hash of a series of objects.
+ * @brief Starting from a seed, computes the hash of a series of objects.
  *
  * https://stackoverflow.com/a/57595105/5851101
  *
  * @param[in/out] seed: input seed and output hash
  * @param v: first argument object
  * @param rest: rest of the argument objects
+ *
+ * @ingroup misc
  */
 template <typename T, typename... Rest>
 void hashCombine(std::size_t& seed, const T& v, const Rest&... rest)

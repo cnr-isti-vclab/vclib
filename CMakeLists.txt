@@ -318,10 +318,6 @@ set(HEADERS
 	include/vclib/space/grid/static_grid.h
 	include/vclib/space/grid/iterators/cell_iterator.h
 	include/vclib/space/grid/iterators/static_grid_iterator.h
-	include/vclib/space/point/point_t.h
-	include/vclib/space/point/point2.h
-	include/vclib/space/point/point3.h
-	include/vclib/space/point/point4.h
 	include/vclib/space/sampler/mesh_sampler.h
 	include/vclib/space/sampler/point_sampler.h
 	include/vclib/space/sampler/vertex_sampler.h
@@ -504,7 +500,6 @@ set(SOURCES
 	include/vclib/space/grid/static_grid.cpp
 	include/vclib/space/grid/iterators/cell_iterator.cpp
 	include/vclib/space/grid/iterators/static_grid_iterator.cpp
-	include/vclib/space/point/point_t.cpp
 	include/vclib/space/sampler/mesh_sampler.cpp
 	include/vclib/space/sampler/point_sampler.cpp
 	include/vclib/space/sampler/vertex_sampler.cpp)

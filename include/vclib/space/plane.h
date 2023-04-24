@@ -26,7 +26,7 @@
 
 #include <vclib/concepts/space/plane.h>
 
-#include "point/point3.h"
+#include "point.h"
 
 namespace vcl {
 

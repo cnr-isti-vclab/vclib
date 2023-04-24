@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_PRINCIPAL_CURVATURE_H
 #define VCL_SPACE_PRINCIPAL_CURVATURE_H
 
-#include "point/point3.h"
+#include "point.h"
 
 namespace vcl {
 
