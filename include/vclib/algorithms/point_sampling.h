@@ -27,6 +27,21 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/sampler.h>
 
+/**
+ * @defgroup point_sampling Point Sampling Algorithms
+ *
+ * @ingroup algorithms
+ *
+ * @brief List of functions that compute point samplings.
+ *
+ * These functions compute saplings using various simple and complex methods, and return objects
+ * that satisfy the @ref SamplerConcept. A Sampler is an object that allows to store points that
+ * can be results of some geometric function (e.g. a point sample that is computed as the
+ * barycentric coordinate of a triangle).
+ *
+ * You can access these algorithms by including `#include <vclib/algorithms/point_sampling.h>`
+ */
+
 namespace vcl {
 
 template<SamplerConcept SamplerType, MeshConcept MeshType>
