@@ -21,15 +21,17 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "array_t.h"
+#include "array.h"
+
+#include <iomanip>
 
 namespace vcl {
 
 /**
  * @brief Creates an N-Dimensional Array with size 0 for every dimension.
  */
-template<class T, size_t N>
-inline Array<T, N>::Array() : v(0)
+template<class T, uint N>
+Array<T, N>::Array() : v(0)
 {
 	sizes.fill(0);
 }
@@ -40,14 +42,13 @@ inline Array<T, N>::Array() : v(0)
  *
  * @param[in] s: N sizes, one for every dimension of the array.
  */
-template<class T, size_t N>
+template<class T, uint N>
 template<typename... Sizes>
-Array<T, N>::Array(Sizes... s)
+Array<T, N>::Array(Sizes... s) requires(sizeof...(s) == N)
 {
-	static_assert(sizeof...(s) == N, "Wrong number of constructor arguments for Array.");
-	unsigned long int args[N]   = {static_cast<unsigned long int>(s)...};
-	unsigned long int totalSize = 1;
-	for (unsigned int i = 0; i < N; i++) {
+	std::size_t args[N]   = {static_cast<std::size_t>(s)...};
+	std::size_t totalSize = 1;
+	for (uint i = 0; i < N; i++) {
 		sizes[i] = args[i];
 		totalSize *= args[i];
 	}
@@ -78,25 +79,63 @@ Array<T, N>::Array(Sizes... s)
  * @endcode
  * @param[in] values: the nested initializer lists of values.
  */
-template<class T, size_t N>
+template<class T, uint N>
 Array<T, N>::Array(NestedInitializerLists<T, N> values)
 {
 	initializeNestedLists(values);
 }
 
-/**
- * @brief Returns the number of dimensions of the array.
- */
-template<class T, size_t N>
-constexpr unsigned long int Array<T, N>::dimensions() const
-{
-	return N;
-}
-
-template<class T, size_t N>
+template<class T, uint N>
 bool Array<T, N>::empty() const
 {
 	return v.empty();
+}
+
+/**
+ * @brief Returns the size of the given dimension.
+ * @param[in] dim
+ */
+template<class T, uint N>
+std::size_t Array<T, N>::size(std::size_t dim) const
+{
+	assert(dim < N);
+	return sizes[dim];
+}
+
+template<class T, uint N>
+std::size_t Array<T, N>::rows() const requires (N == 2)
+{
+	return sizes[0];
+}
+
+template<class T, uint N>
+std::size_t Array<T, N>::cols() const requires (N == 2)
+{
+	return sizes[1];
+}
+
+template<class T, uint N>
+std::size_t Array<T, N>::sizeX() const requires (N >= 1)
+{
+	return sizes[0];
+}
+
+template<class T, uint N>
+std::size_t Array<T, N>::sizeY() const requires (N >= 2)
+{
+	return sizes[1];
+}
+
+template<class T, uint N>
+std::size_t Array<T, N>::sizeZ() const requires (N >= 3)
+{
+	return sizes[2];
+}
+
+template<class T, uint N>
+std::size_t Array<T, N>::sizeW() const requires (N >= 4)
+{
+	return sizes[3];
 }
 
 /**
@@ -106,11 +145,11 @@ bool Array<T, N>::empty() const
  * A number of indices not equal to N will generate a compilation error.
  * @return a reference to the element of the array.
  */
-template<class T, size_t N>
+template<class T, uint N>
 template<typename... I>
 typename Array<T, N>::Reference Array<T, N>::operator()(I... indices) requires(sizeof...(indices) == N)
 {
-	unsigned long int args[N] = {static_cast<unsigned long int>(indices)...};
+	std::size_t args[N] = {static_cast<std::size_t>(indices)...};
 	return v[getIndex(args)];
 }
 
@@ -121,12 +160,12 @@ typename Array<T, N>::Reference Array<T, N>::operator()(I... indices) requires(s
  * A number of indices not equal to N will generate a compilation error.
  * @return a reference to the element of the array.
  */
-template<class T, size_t N>
+template<class T, uint N>
 template<typename... I>
 typename Array<T, N>::ConstReference Array<T, N>::operator()(I... indices) const
 	requires(sizeof...(indices) == N)
 {
-	unsigned long int args[N] = {static_cast<unsigned long int>(indices)...};
+	std::size_t args[N] = {static_cast<std::size_t>(indices)...};
 	return v[getIndex(args)];
 }
 
@@ -137,12 +176,12 @@ typename Array<T, N>::ConstReference Array<T, N>::operator()(I... indices) const
  * Array<int, 3> array(10, 13, 4);
  * //...
  * int* carray = array.cArray(3); //carray will point to the element in position (3,0,0).
- * for (unsigned int i = 0; i < 13*4; i++)
+ * for (uint i = 0; i < 13*4; i++)
  *    std::cout << carry[i]; // will print all the elements of the sub array starting from
  *                           // position (3,0,0).
  *
  * carray = array.cArray(4, 2); // carray will point to the element in position (4, 2, 0).
- * for (unsigned int i = 0; i < 4; i++)
+ * for (uint i = 0; i < 4; i++)
  *    std::cout << carry[i]; // will print all the elements of the sub array starting from
  *                           // position (4,2,0).
  *
@@ -153,19 +192,18 @@ typename Array<T, N>::ConstReference Array<T, N>::operator()(I... indices) const
  * @param[in] indices: a number of indices that is less than the number of dimensions of the array.
  * @return a C array starting from the indicized element.
  */
-template<class T, size_t N>
+template<class T, uint N>
 template<typename... I>
-T* Array<T, N>::cArray(I... indices)
+typename Array<T, N>::Pointer Array<T, N>::cArray(I... indices) requires(sizeof...(indices) < N)
 {
-	static_assert(sizeof...(indices) < N, "Wrong number of arguments for operator cArray().");
-	const unsigned long int n = sizeof...(indices);
+	const std::size_t n = sizeof...(indices);
 	if (n == 0) {
 		return v.data();
 	}
-	unsigned long int args[] = {static_cast<unsigned long int>(indices)...};
-	unsigned long int ind    = args[0];
+	std::size_t args[] = {static_cast<std::size_t>(indices)...};
+	std::size_t ind    = args[0];
 	assert(args[0] < sizes[0]);
-	unsigned int i;
+	uint i;
 	for (i = 1; i < n; i++) {
 		assert(args[i] < sizes[i]);
 		ind *= sizes[i];
@@ -184,12 +222,12 @@ T* Array<T, N>::cArray(I... indices)
  * Array<int, 3> array(10, 13, 4);
  * //...
  * const int* carray = array.cArray(3); //carray will point to the element in position (3,0,0).
- * for (unsigned int i = 0; i < 13*4; i++)
+ * for (uint i = 0; i < 13*4; i++)
  *    std::cout << carry[i]; // will print all the elements of the sub 2D array starting from
  *                           // (3,0,0).
  *
  * carray = array.cArray(4, 2); // carray will point to the element in position (4, 2, 0).
- * for (unsigned int i = 0; i < 4; i++)
+ * for (uint i = 0; i < 4; i++)
  *    std::cout << carry[i]; // will print all the elements of the sub 1D array starting from
  *                           // (4,2,0).
  *
@@ -200,19 +238,18 @@ T* Array<T, N>::cArray(I... indices)
  * @param[in] indices: a number of indices that is less than the number of dimensions of the array.
  * @return a C array starting from the indicized element.
  */
-template<class T, size_t N>
+template<class T, uint N>
 template<typename... I>
-const T* Array<T, N>::cArray(I... indices) const
+typename Array<T, N>::ConstPointer Array<T, N>::cArray(I... indices) const requires(sizeof...(indices) < N)
 {
-	static_assert(sizeof...(indices) < N, "Wrong number of arguments for operator cArray().");
-	const unsigned long int n = sizeof...(indices);
+	const std::size_t n = sizeof...(indices);
 	if (n == 0) {
 		return v.data();
 	}
-	unsigned long int args[] = {static_cast<unsigned long int>(indices)...};
-	unsigned long int ind    = args[0];
+	std::size_t args[] = {static_cast<std::size_t>(indices)...};
+	std::size_t ind    = args[0];
 	assert(args[0] < sizes[0]);
-	unsigned int i;
+	uint i;
 	for (i = 1; i < n; i++) {
 		assert(args[i] < sizes[i]);
 		ind *= sizes[i];
@@ -224,14 +261,14 @@ const T* Array<T, N>::cArray(I... indices) const
 	return &v[ind];
 }
 
-template<class T, size_t N>
-T* Array<T, N>::data()
+template<class T, uint N>
+typename Array<T, N>::Pointer Array<T, N>::data()
 {
 	return v.data();
 }
 
-template<class T, size_t N>
-const T* Array<T, N>::data() const
+template<class T, uint N>
+typename Array<T, N>::ConstPointer Array<T, N>::data() const
 {
 	return v.data();
 }
@@ -239,7 +276,7 @@ const T* Array<T, N>::data() const
 /**
  * @brief Returns a std::vector containing the elements of the array in row-major order
  */
-template<class T, size_t N>
+template<class T, uint N>
 std::vector<T> Array<T, N>::stdVector()
 {
 	return v;
@@ -248,7 +285,7 @@ std::vector<T> Array<T, N>::stdVector()
 /**
  * @brief Returns a std::vector containing the elements of the array in row-major order
  */
-template<class T, size_t N>
+template<class T, uint N>
 const std::vector<T>& Array<T, N>::stdVector() const
 {
 	return v;
@@ -258,91 +295,43 @@ const std::vector<T>& Array<T, N>::stdVector() const
  * @brief Fills the entire Array with the value t.
  * @param[in] t
  */
-template<class T, size_t N>
+template<class T, uint N>
 void Array<T, N>::fill(const T& t)
 {
 	std::fill(v.begin(), v.end(), t);
 }
 
 /**
- * @brief Fills the entire Array with the values contained in the container c, in row-major
+ * @brief Fills the entire Array with the values contained in the range r, in row-major
  * order.
  *
  * If the size of the container is greater than the total size of the array, the remaining
  * of the container will be ignored. If otherwise the size of the container is less, the
  * remaining values in the array will be left as they were.
  *
- * @param[in] container: a container of the same type of the array (begin() and end() members must
+ * @param[in] r: a range of the same type of the array (begin() and end() members must
  * be provided in the container).
  */
-template<class T, size_t N>
-template<typename C>
-void Array<T, N>::fillContainer(const C& container)
+template<class T, uint N>
+template<Range Rng>
+void Array<T, N>::fill(Rng&& r)
 {
 	uint i = 0;
-	for (auto it = container.begin(); it != container.end() && i < v.size(); ++i, ++it)
+	for (auto it = std::ranges::begin(r); it != std::ranges::end(r) && i < v.size(); ++i, ++it)
 		v[i] = *it;
-}
-
-/**
- * @brief Returns the size of the given dimension.
- * @param[in] dim
- */
-template<class T, size_t N>
-unsigned long int Array<T, N>::size(unsigned long dim) const
-{
-	assert(dim < N);
-	return sizes[dim];
-}
-
-/**
- * @brief Returns a reference to the element which is the minimum contained in the array.
- */
-template<class T, size_t N>
-T& Array<T, N>::min()
-{
-	return *(std::min_element(v.begin(), v.end()));
-}
-
-/**
- * @brief Returns a const reference to the element which is the minimum contained in the array.
- */
-template<class T, size_t N>
-const T& Array<T, N>::min() const
-{
-	return *(std::min_element(v.begin(), v.end()));
-}
-
-/**
- * @brief Returns a reference to the element which is the maximum contained in the array.
- */
-template<class T, size_t N>
-T& Array<T, N>::max()
-{
-	return *(std::max_element(v.begin(), v.end()));
-}
-
-/**
- * @brief Returns a const reference to the element which is the maximum contained in the array.
- */
-template<class T, size_t N>
-const T& Array<T, N>::max() const
-{
-	return *(std::max_element(v.begin(), v.end()));
 }
 
 /**
  * @brief Allows to resize the Array, not conserving the values of the previous array.
  * @param[in] s: N elements representing the new sizes of the Array.
  */
-template<class T, size_t N>
+template<class T, uint N>
 template<typename... Sizes>
-void Array<T, N>::resize(Sizes... s)
+void Array<T, N>::resize(Sizes... s) requires(sizeof...(s) == N)
 {
-	static_assert(sizeof...(s) == N, "Wrong number of resize arguments for Array.");
-	unsigned long int args[N]   = {static_cast<unsigned long int>(s)...};
-	unsigned long int totalSize = 1;
-	for (unsigned int i = 0; i < N; i++) {
+	std::size_t args[N]   = {static_cast<std::size_t>(s)...};
+	std::size_t totalSize = 1;
+	for (uint i = 0; i < N; i++) {
 		sizes[i] = args[i];
 		totalSize *= args[i];
 	}
@@ -353,21 +342,20 @@ void Array<T, N>::resize(Sizes... s)
  * @brief Allows to resize the Array, conserving the values of the previous array.
  * @param[in] s: N elements representing the new sizes of the Array.
  */
-template<class T, size_t N>
+template<class T, uint N>
 template<typename... Sizes>
-void Array<T, N>::conservativeResize(Sizes... s)
+void Array<T, N>::conservativeResize(Sizes... s) requires(sizeof...(s) == N)
 {
-	static_assert(sizeof...(s) == N, "Wrong number of resize arguments for Array.");
-	unsigned long int newSizes[N]  = {static_cast<unsigned long int>(s)...};
-	unsigned long int newTotalSize = 1;
-	for (unsigned int i = 0; i < N; i++)
+	std::size_t newSizes[N]  = {static_cast<std::size_t>(s)...};
+	std::size_t newTotalSize = 1;
+	for (uint i = 0; i < N; i++)
 		newTotalSize *= newSizes[i];
 	std::vector<T> newVector(newTotalSize);
 
-	for (unsigned long int i = 0; i < v.size(); i++) {
-		std::array<unsigned long int, N> indices    = reverseIndex(i);
-		bool                             outOfBound = false;
-		for (unsigned long int j = 0; j < N; j++)
+	for (std::size_t i = 0; i < v.size(); i++) {
+		std::array<std::size_t, N> indices  = reverseIndex(i);
+		bool outOfBound = false;
+		for (std::size_t j = 0; j < N; j++)
 			if (indices[j] >= newSizes[j] || indices[j] >= sizes[j])
 				outOfBound = true;
 		if (!outOfBound) {
@@ -375,7 +363,7 @@ void Array<T, N>::conservativeResize(Sizes... s)
 		}
 	}
 
-	for (unsigned long int i = 0; i < sizes.size(); i++) {
+	for (uint i = 0; i < sizes.size(); i++) {
 		sizes[i] = newSizes[i];
 	}
 
@@ -385,11 +373,11 @@ void Array<T, N>::conservativeResize(Sizes... s)
 /**
  * @brief Clear the entire array, setting every dimension to size 0.
  */
-template<class T, size_t N>
+template<class T, uint N>
 void Array<T, N>::clear()
 {
 	v.clear();
-	for (unsigned int i = 0; i < N; i++)
+	for (uint i = 0; i < N; i++)
 		sizes[i] = 0;
 }
 
@@ -406,14 +394,13 @@ void Array<T, N>::clear()
  *
  * @param r
  */
-template<class T, size_t N>
-Array<T, N - 1> Array<T, N>::subArray(unsigned int r) const
+template<class T, uint N>
+Array<T, N - 1> Array<T, N>::subArray(uint r) const requires (N > 1)
 {
-	static_assert(N > 1, "Impossible to create subArray with an Array having dimension < 2.");
 	assert(r < sizes[0]);
 	Array<T, N - 1> sub;
 	size_t          size = 1;
-	for (unsigned int i = 0; i < sizes.size() - 1; i++) {
+	for (uint i = 0; i < sizes.size() - 1; i++) {
 		sub.sizes[i] = sizes[i + 1];
 		size *= sub.sizes[i];
 	}
@@ -421,12 +408,12 @@ Array<T, N - 1> Array<T, N>::subArray(unsigned int r) const
 	return sub;
 }
 
-template<class T, size_t N>
-unsigned long int Array<T, N>::getIndex(const unsigned long indices[]) const
+template<class T, uint N>
+std::size_t Array<T, N>::getIndex(const std::size_t indices[]) const
 {
-	unsigned long int ind = indices[0];
+	std::size_t ind = indices[0];
 	assert(indices[0] < sizes[0]);
-	for (unsigned int i = 1; i < N; i++) {
+	for (uint i = 1; i < N; i++) {
 		assert(indices[i] < sizes[i]);
 		ind *= sizes[i];
 		ind += indices[i];
@@ -434,10 +421,10 @@ unsigned long int Array<T, N>::getIndex(const unsigned long indices[]) const
 	return ind;
 }
 
-template<class T, size_t N>
-std::array<unsigned long int, N> Array<T, N>::reverseIndex(unsigned int index)
+template<class T, uint N>
+std::array<std::size_t, N> Array<T, N>::reverseIndex(uint index)
 {
-	std::array<unsigned long int, N> indices;
+	std::array<std::size_t, N> indices;
 	for (long int i = N - 1; i >= 0; i--) {
 		indices[i] = index % sizes[i];
 		index /= sizes[i];
@@ -445,12 +432,12 @@ std::array<unsigned long int, N> Array<T, N>::reverseIndex(unsigned int index)
 	return indices;
 }
 
-template<class T, size_t N>
-unsigned long Array<T, N>::getIndex(const unsigned long indices[], const unsigned long sizes[])
+template<class T, uint N>
+std::size_t Array<T, N>::getIndex(const std::size_t indices[], const std::size_t sizes[])
 {
-	unsigned long int ind = indices[0];
+	std::size_t ind = indices[0];
 	assert(indices[0] < sizes[0]);
-	for (unsigned int i = 1; i < N; i++) {
+	for (uint i = 1; i < N; i++) {
 		assert(indices[i] < sizes[i]);
 		ind *= sizes[i];
 		ind += indices[i];
@@ -458,12 +445,13 @@ unsigned long Array<T, N>::getIndex(const unsigned long indices[], const unsigne
 	return ind;
 }
 
-template<typename T, size_t N>
+template<typename T, uint N>
 void Array<T, N>::initializeNestedLists(NestedInitializerLists<T, N> values)
 {
 	std::list<std::size_t> szs = NestedInitializerListsProcessor<T, N>::maxDimensionsLevels(values);
-	unsigned int           i   = 0;
-	size_t                 totalSize = 1;
+
+	uint   i         = 0;
+	size_t totalSize = 1;
 	for (std::size_t s : szs) {
 		totalSize *= s;
 		sizes[i++] = s;
@@ -473,6 +461,18 @@ void Array<T, N>::initializeNestedLists(NestedInitializerLists<T, N> values)
 	typename std::vector<T>::iterator iterator = v.begin();
 	NestedInitializerListsProcessor<T, N>::processElements(
 		values, [&iterator](T value) { *(iterator++) = value; }, szs);
+}
+
+template<typename Scalar>
+std::ostream& operator<<(std::ostream& out, const Array<Scalar, 2>& a)
+{
+	for (uint i = 0; i < a.sizeX(); i++) {
+		for (uint j = 0; j < a.sizeY(); j++) {
+			out << std::setw(4) << a(i, j) << " ";
+		}
+		out << std::endl;
+	}
+	return out;
 }
 
 } // namespace vcl

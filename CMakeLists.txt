@@ -301,11 +301,6 @@ set(HEADERS
 	include/vclib/space/tex_coord.h
 	include/vclib/space/triangle.h
 	include/vclib/space/triangle_wrapper.h
-	include/vclib/space/array/array_t.h
-	include/vclib/space/array/array2.h
-	include/vclib/space/array/array3.h
-	include/vclib/space/array/array4.h
-	include/vclib/space/array/array_bool.h
 	include/vclib/space/graph/undirected_node.h
 	include/vclib/space/graph/bipartite/bipartite_graph.h
 	include/vclib/space/graph/bipartite/iterator/adjacent_left_node_iterator.h
@@ -474,6 +469,7 @@ set(SOURCES
 	include/vclib/render/generic_drawable_mesh.cpp
 	include/vclib/render/mesh_render_buffers.cpp
 	include/vclib/render/mesh_render_settings.cpp
+	include/vclib/space/array.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/matrix.cpp
@@ -487,10 +483,6 @@ set(SOURCES
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/triangle.cpp
 	include/vclib/space/triangle_wrapper.cpp
-	include/vclib/space/array/array_t.cpp
-	include/vclib/space/array/array2.cpp
-	include/vclib/space/array/array3.cpp
-	include/vclib/space/array/array4.cpp
 	include/vclib/space/graph/undirected_node.cpp
 	include/vclib/space/graph/bipartite/bipartite_graph.cpp
 	include/vclib/space/graph/bipartite/iterator/adjacent_node_iterator.cpp
