@@ -24,10 +24,6 @@
 #ifndef VCLIB_CONCEPTS_RANGES_RANGE_H
 #define VCLIB_CONCEPTS_RANGES_RANGE_H
 
-//#ifndef VCLIB_USES_RANGES
-//#include <__ranges/access.h>
-//#endif
-
 #include <ranges>
 
 namespace vcl {
