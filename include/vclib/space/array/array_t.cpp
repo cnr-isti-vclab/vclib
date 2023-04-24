@@ -108,7 +108,7 @@ bool Array<T, N>::empty() const
  */
 template<class T, size_t N>
 template<typename... I>
-Array<T, N>::Reference Array<T, N>::operator()(I... indices) requires(sizeof...(indices) == N)
+typename Array<T, N>::Reference Array<T, N>::operator()(I... indices) requires(sizeof...(indices) == N)
 {
 	unsigned long int args[N] = {static_cast<unsigned long int>(indices)...};
 	return v[getIndex(args)];
@@ -123,7 +123,7 @@ Array<T, N>::Reference Array<T, N>::operator()(I... indices) requires(sizeof...(
  */
 template<class T, size_t N>
 template<typename... I>
-Array<T, N>::ConstReference Array<T, N>::operator()(I... indices) const
+typename Array<T, N>::ConstReference Array<T, N>::operator()(I... indices) const
 	requires(sizeof...(indices) == N)
 {
 	unsigned long int args[N] = {static_cast<unsigned long int>(indices)...};

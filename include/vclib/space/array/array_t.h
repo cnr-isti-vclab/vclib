@@ -92,11 +92,11 @@ class Array
 	friend class Array<T, N + 1>;
 
 public:
-	using ValueType      = std::vector<T>::value_type;
-	using ConstReference = std::vector<T>::const_reference;
-	using Reference      = std::vector<T>::reference;
-	using ConstPointer   = std::vector<T>::const_pointer;
-	using Pointer        = std::vector<T>::pointer;
+	using ValueType      = typename std::vector<T>::value_type;
+	using ConstReference = typename std::vector<T>::const_reference;
+	using Reference      = typename std::vector<T>::reference;
+	using ConstPointer   = typename std::vector<T>::const_pointer;
+	using Pointer        = typename std::vector<T>::pointer;
 
 	Array();
 	template<typename... Sizes>
