@@ -92,6 +92,12 @@ class Array
 	friend class Array<T, N + 1>;
 
 public:
+	using ValueType      = std::vector<T>::value_type;
+	using ConstReference = std::vector<T>::const_reference;
+	using Reference      = std::vector<T>::reference;
+	using ConstPointer   = std::vector<T>::const_pointer;
+	using Pointer        = std::vector<T>::pointer;
+
 	Array();
 	template<typename... Sizes>
 	Array(Sizes... sizes);
@@ -103,9 +109,9 @@ public:
 	bool empty() const;
 
 	template<typename... I>
-	T& operator()(I... indices);
+	Reference operator()(I... indices) requires(sizeof...(indices) == N);
 	template<typename... I>
-	const T& operator()(I... indices) const;
+	ConstReference operator()(I... indices) const requires(sizeof...(indices) == N);
 	template<typename... I>
 	T* cArray(I... indices);
 	template<typename... I>
