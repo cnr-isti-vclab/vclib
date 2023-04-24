@@ -281,11 +281,7 @@ auto boundingBox(const EdgeType* e)
  *
  * @ingroup bounding_box
  */
-#ifdef VCLIB_USES_RANGES
 template<IteratorConcept Iterator>
-#else
-template<typename Iterator>
-#endif
 auto boundingBox(Iterator begin, Iterator end)
 {
 	using BB = decltype(boundingBox(typename Iterator::value_type()));
