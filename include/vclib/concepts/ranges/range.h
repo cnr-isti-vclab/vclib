@@ -24,9 +24,9 @@
 #ifndef VCLIB_CONCEPTS_RANGES_RANGE_H
 #define VCLIB_CONCEPTS_RANGES_RANGE_H
 
-#ifndef VCLIB_USES_RANGES
-#include <__ranges/access.h>
-#endif
+//#ifndef VCLIB_USES_RANGES
+//#include <__ranges/access.h>
+//#endif
 
 #include <ranges>
 
@@ -34,11 +34,25 @@ namespace vcl {
 
 #ifdef VCLIB_USES_RANGES
 
+/**
+ * @brief Utility concept that is evaluated true if T is a range, e.g. if has a begin and an end.
+ *
+ * It is equivalent to std::ranges::range.
+ *
+ * @ingroup uconcepts
+ */
 template<typename T>
 concept Range = std::ranges::range<T>;
 
 #else
 
+/**
+ * @brief Utility concept that is evaluated true if T is a range, e.g. if has a begin and an end.
+ *
+ * It is equivalent to std::ranges::range.
+ *
+ * @ingroup uconcepts
+ */
 template<typename T>
 concept Range = requires(T o)
 {

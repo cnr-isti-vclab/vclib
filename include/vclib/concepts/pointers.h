@@ -28,16 +28,20 @@
 
 namespace vcl {
 
-/*
- * Utility Pointer concept to check if a type is a Pointer
+/**
+ * @brief Utility concept that is evaluated true if T is a Pointer
+ *
+ * @ingroup uconcepts
  */
 template<typename T>
 concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
 
-/*
- * Utility Pointer concept to check if it is a pointer to const object
- * https://stackoverflow.com/a/37370281/5851101
+/**
+ * @brief Utility concept that is evaluated true if T is a Pointer to a constant object.
+ *
+ * @ingroup uconcepts
  */
+// https://stackoverflow.com/a/37370281/5851101
 template<typename T>
 concept IsPointerToConst = IsPointer<T> && IsConst<T>;
 

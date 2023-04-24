@@ -24,6 +24,8 @@
 #ifndef VCL_MISC_LOGGER_NULL_LOGGER_H
 #define VCL_MISC_LOGGER_NULL_LOGGER_H
 
+#include <vclib/concepts/logger.h>
+
 namespace vcl {
 
 /**
@@ -74,6 +76,19 @@ class NullLogger {
  * @ingroup miscellaneous
  */
 static inline NullLogger nullLogger;
+
+/**
+ * @brief The isLoggerValid() function returns true if the type T is not the NullLogger type.
+ *
+ * @tparam T: the type to test if is a valid Logger. It must satisfy the LoggerConcept.
+ *
+ * @return true it T is a valid Logger type.
+ */
+template <LoggerConcept T>
+constexpr bool isLoggerValid()
+{
+	return !std::is_same_v<T, NullLogger>;
+}
 
 } // namespace vcl
 

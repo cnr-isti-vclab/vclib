@@ -29,7 +29,9 @@
 namespace vcl {
 
 /**
- * Utility concept that returns true if T is const or it is a pointer to const
+ * @brief Utility concept that is evaluated true if T is const or it is a pointer to const
+ *
+ * @ingroup uconcepts
  */
 template<typename T>
 concept IsConst = std::is_const_v<typename std::remove_pointer_t<T>>;

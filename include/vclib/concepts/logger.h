@@ -32,6 +32,14 @@ namespace vcl {
 
 class NullLogger;
 
+/**
+ * @brief The LoggerConcept is evaluated to true when the input type is a valid Logger type.
+ *
+ * A valid logger type may be the NullLogger type, or a class that implement all the member
+ * functions of a Logger class.
+ *
+ * @ingroup lconcepts
+ */
 template <typename T>
 concept LoggerConcept =
 	std::is_same<T, NullLogger>::value || requires(
@@ -66,12 +74,6 @@ concept LoggerConcept =
 	{ o.endProgress() }  -> std::same_as<void>;
 	{ o.progress(uint()) }  -> std::same_as<void>;
 };
-
-template <LoggerConcept T>
-constexpr bool isLoggerValid()
-{
-	return !std::is_same_v<T, NullLogger>;
-}
 
 } // nameaspace vcl
 
