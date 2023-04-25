@@ -28,7 +28,9 @@
 namespace vcl {
 
 /**
- * @brief Creates an N-Dimensional Array with size 0 for every dimension.
+ * @brief Default constructor for the Array class.
+ *
+ * Creates an N-dimensional array with size 0 for every dimension.
  */
 template<class T, uint N>
 Array<T, N>::Array() : v(0)
@@ -37,10 +39,14 @@ Array<T, N>::Array() : v(0)
 }
 
 /**
- * @brief Creates an N-Dimensional Array with the given sizes. All its elements are initialized to
- * 0.
+ * @brief Constructor for the Array class that creates an N-dimensional array with the given sizes.
+ * All its elements are initialized to 0.
  *
- * @param[in] s: N sizes, one for every dimension of the array.
+ * @tparam Sizes: Variadic parameter pack containing N sizes, one for every dimension of the array.
+ *
+ * @param[in] s: Variadic parameter pack containing N sizes, one for every dimension of the array.
+ *
+ * @note The number of arguments must match the number of dimensions of the array.
  */
 template<class T, uint N>
 template<typename... Sizes>
@@ -56,8 +62,8 @@ Array<T, N>::Array(Sizes... s) requires(sizeof...(s) == N)
 }
 
 /**
- * @brief Creates and initializes an N-Dimensional Array. Sizes are given by the maximum size of the
- * initializer lists for every dimension, and missing values are automatically setted to zero.
+ * @brief Creates and initializes an N-dimensional array. Sizes are given by the maximum size of the
+ * initializer lists for every dimension, and missing values are automatically set to zero.
  *
  * Example code:
  * @code{.cpp}
@@ -71,13 +77,10 @@ Array<T, N>::Array(Sizes... s) requires(sizeof...(s) == N)
  *  9 10  0  0
  * @endcode
  *
+ * @param[in] values: The nested initializer lists of values.
+ *
  * @warning The number of levels of the nested initializer lists must correspond to the number of
- * dimensions of the array. The following example generates a compilation error:
- * @code{.cpp}
- * Array<int, 2> array = {1, 2, 3}; // Error: it is a 2 dimensional array but the initializer list
- *                                  // has one level.
- * @endcode
- * @param[in] values: the nested initializer lists of values.
+ * dimensions of the array.
  */
 template<class T, uint N>
 Array<T, N>::Array(NestedInitializerLists<T, N> values)
@@ -85,6 +88,11 @@ Array<T, N>::Array(NestedInitializerLists<T, N> values)
 	initializeNestedLists(values);
 }
 
+/**
+ * @brief Checks whether the array is empty.
+ *
+ * @return `true` if the array is empty, `false` otherwise.
+ */
 template<class T, uint N>
 bool Array<T, N>::empty() const
 {
@@ -93,7 +101,10 @@ bool Array<T, N>::empty() const
 
 /**
  * @brief Returns the size of the given dimension.
- * @param[in] dim
+ *
+ * @param[in] dim The dimension to query the size of.
+ *
+ * @return The size of the given dimension.
  */
 template<class T, uint N>
 std::size_t Array<T, N>::size(std::size_t dim) const
@@ -102,36 +113,78 @@ std::size_t Array<T, N>::size(std::size_t dim) const
 	return sizes[dim];
 }
 
+/**
+ * @brief Returns the number of rows of a 2-dimensional array.
+ *
+ * @return The number of rows of the array.
+ *
+ * @note This function can only be called for 2-dimensional arrays.
+ */
 template<class T, uint N>
 std::size_t Array<T, N>::rows() const requires (N == 2)
 {
 	return sizes[0];
 }
 
+/**
+ * @brief Returns the number of columns of a 2-dimensional array.
+ *
+ * @return The number of columns of the array.
+ *
+ * @note This function can only be called for 2-dimensional arrays.
+ */
 template<class T, uint N>
 std::size_t Array<T, N>::cols() const requires (N == 2)
 {
 	return sizes[1];
 }
 
+/**
+ * @brief Returns the size of the X dimension of the array.
+ *
+ * @return The size of the X dimension of the array.
+ *
+ * @note This function can only be called for arrays with at least one dimension.
+ */
 template<class T, uint N>
 std::size_t Array<T, N>::sizeX() const requires (N >= 1)
 {
 	return sizes[0];
 }
 
+/**
+ * @brief Returns the size of the Y dimension of the array.
+ *
+ * @return The size of the Y dimension of the array.
+ *
+ * @note This function can only be called for arrays with at least two dimensions.
+ */
 template<class T, uint N>
 std::size_t Array<T, N>::sizeY() const requires (N >= 2)
 {
 	return sizes[1];
 }
 
+/**
+ * @brief Returns the size of the Z dimension of the array.
+ *
+ * @return The size of the Z dimension of the array.
+ *
+ * @note This function can only be called for arrays with at least three dimensions.
+ */
 template<class T, uint N>
 std::size_t Array<T, N>::sizeZ() const requires (N >= 3)
 {
 	return sizes[2];
 }
 
+/**
+ * @brief Returns the size of the W dimension of the array.
+ *
+ * @return The size of the W dimension of the array.
+ *
+ * @note This function can only be called for arrays with at least four dimensions.
+ */
 template<class T, uint N>
 std::size_t Array<T, N>::sizeW() const requires (N >= 4)
 {
@@ -141,9 +194,13 @@ std::size_t Array<T, N>::sizeW() const requires (N >= 4)
 /**
  * @brief Operator () that allows to access one element of the array. It can be used as left or
  * right value.
- * @param[in] indices: N indices that allows to access to an element of the array.
+ *
+ * @tparam I: Types of the indices used to access the element of the array.
+ *
+ * @param[in] indices: N indices that allow to access an element of the array.
  * A number of indices not equal to N will generate a compilation error.
- * @return a reference to the element of the array.
+ *
+ * @return A reference to the element of the array.
  */
 template<class T, uint N>
 template<typename... I>
@@ -156,9 +213,13 @@ typename Array<T, N>::Reference Array<T, N>::operator()(I... indices) requires(s
 /**
  * @brief Operator () that allows to access one element of the array. It can be used only as right
  * value.
- * @param[in] indices: N indices that allows to access to an element of the array.
+ *
+ * @tparam I: Types of the indices used to access the element of the array.
+ *
+ * @param[in] indices: N indices that allow to access an element of the array.
  * A number of indices not equal to N will generate a compilation error.
- * @return a reference to the element of the array.
+ *
+ * @return A const reference to the element of the array.
  */
 template<class T, uint N>
 template<typename... I>
@@ -170,111 +231,86 @@ typename Array<T, N>::ConstReference Array<T, N>::operator()(I... indices) const
 }
 
 /**
- * @brief Allows to get a C array of the Array, that can be also modified.
+ * @brief Allows to get the data of the Array, through a pointer to the first element.
+ *
+ * The function also allows to get the pointer of a specific position in the array.
+ *
  * Example:
  * @code{.cpp}
  * Array<int, 3> array(10, 13, 4);
  * //...
- * int* carray = array.cArray(3); //carray will point to the element in position (3,0,0).
- * for (uint i = 0; i < 13*4; i++)
- *    std::cout << carry[i]; // will print all the elements of the sub array starting from
- *                           // position (3,0,0).
+ * int* carray = array.data(3); //carray will point to the element in position (3, 0, 0).
  *
- * carray = array.cArray(4, 2); // carray will point to the element in position (4, 2, 0).
- * for (uint i = 0; i < 4; i++)
- *    std::cout << carry[i]; // will print all the elements of the sub array starting from
- *                           // position (4,2,0).
+ * carray = array.data(5, 2); // carray will point to the element in position (5, 2, 0).
  *
- * carray = array.cArray(); // carray will point to the element in position (0, 0, 0).
- *
+ * carray = array.data(); // carray will point to the element in position (0, 0, 0).
  * @endcode
  *
- * @param[in] indices: a number of indices that is less than the number of dimensions of the array.
- * @return a C array starting from the indicized element.
+ * @tparam I: Types of the indices used to access a subarray of the array.
+ *
+ * @param[in] indices: A number of indices that is less than the number of dimensions of the array.
+ *
+ * @return A pointer to the requested subarray.
  */
 template<class T, uint N>
 template<typename... I>
-typename Array<T, N>::Pointer Array<T, N>::cArray(I... indices) requires(sizeof...(indices) < N)
+typename Array<T, N>::Pointer Array<T, N>::data(I... indices) requires(sizeof...(indices) < N)
 {
-	const std::size_t n = sizeof...(indices);
-	if (n == 0) {
-		return v.data();
-	}
-	std::size_t args[] = {static_cast<std::size_t>(indices)...};
-	std::size_t ind    = args[0];
-	assert(args[0] < sizes[0]);
-	uint i;
-	for (i = 1; i < n; i++) {
-		assert(args[i] < sizes[i]);
-		ind *= sizes[i];
-		ind += args[i];
-	}
-	for (; i < N; i++) {
-		ind *= sizes[i];
-	}
-	return &v[ind];
+	return const_cast<Pointer>(std::as_const(*this).data(indices...));
 }
 
 /**
- * @brief Allows to get a C array of the Array, that cannot be modified.
+ * @brief Allows to get the data of the Array, through a pointer to the first element.
+ *
+ * The function also allows to get the pointer of a specific position in the array.
+ *
  * Example:
  * @code{.cpp}
  * Array<int, 3> array(10, 13, 4);
  * //...
- * const int* carray = array.cArray(3); //carray will point to the element in position (3,0,0).
- * for (uint i = 0; i < 13*4; i++)
- *    std::cout << carry[i]; // will print all the elements of the sub 2D array starting from
- *                           // (3,0,0).
+ * const int* carray = array.data(3); //carray will point to the element in position (3, 0, 0).
  *
- * carray = array.cArray(4, 2); // carray will point to the element in position (4, 2, 0).
- * for (uint i = 0; i < 4; i++)
- *    std::cout << carry[i]; // will print all the elements of the sub 1D array starting from
- *                           // (4,2,0).
+ * carray = array.data(5, 2); // carray will point to the element in position (5, 2, 0).
  *
- * carray = array.cArray(); // carray will point to the element in position (0, 0, 0).
- *
+ * carray = array.data(); // carray will point to the element in position (0, 0, 0).
  * @endcode
  *
- * @param[in] indices: a number of indices that is less than the number of dimensions of the array.
- * @return a C array starting from the indicized element.
+ * @tparam I: Types of the indices used to access a subarray of the array.
+ *
+ * @param[in] indices: A number of indices that is less than the number of dimensions of the array.
+ *
+ * @return A const pointer to the requested subarray.
  */
 template<class T, uint N>
 template<typename... I>
-typename Array<T, N>::ConstPointer Array<T, N>::cArray(I... indices) const requires(sizeof...(indices) < N)
+typename Array<T, N>::ConstPointer Array<T, N>::data(I... indices) const
+	requires(sizeof...(indices) < N)
 {
-	const std::size_t n = sizeof...(indices);
-	if (n == 0) {
+	constexpr std::size_t n = sizeof...(indices);
+	if constexpr (n == 0) {
 		return v.data();
 	}
-	std::size_t args[] = {static_cast<std::size_t>(indices)...};
-	std::size_t ind    = args[0];
-	assert(args[0] < sizes[0]);
-	uint i;
-	for (i = 1; i < n; i++) {
-		assert(args[i] < sizes[i]);
-		ind *= sizes[i];
-		ind += args[i];
+	else {
+		std::size_t args[] = {static_cast<std::size_t>(indices)...};
+		std::size_t ind    = args[0];
+		assert(args[0] < sizes[0]);
+		uint i;
+		for (i = 1; i < n; i++) {
+			assert(args[i] < sizes[i]);
+			ind *= sizes[i];
+			ind += args[i];
+		}
+		for (; i < N; i++) {
+			ind *= sizes[i];
+		}
+		return &v[ind];
 	}
-	for (; i < N; i++) {
-		ind *= sizes[i];
-	}
-	return &v[ind];
-}
-
-template<class T, uint N>
-typename Array<T, N>::Pointer Array<T, N>::data()
-{
-	return v.data();
-}
-
-template<class T, uint N>
-typename Array<T, N>::ConstPointer Array<T, N>::data() const
-{
-	return v.data();
 }
 
 /**
  * @brief Returns a std::vector containing the elements of the array in row-major order
+ *
+ * @return A std::vector containing the elements of the array in row-major order.
  */
 template<class T, uint N>
 std::vector<T> Array<T, N>::stdVector()
@@ -284,6 +320,8 @@ std::vector<T> Array<T, N>::stdVector()
 
 /**
  * @brief Returns a std::vector containing the elements of the array in row-major order
+ *
+ * @return A const reference to a std::vector containing the elements of the array in row-major order.
  */
 template<class T, uint N>
 const std::vector<T>& Array<T, N>::stdVector() const
@@ -293,7 +331,8 @@ const std::vector<T>& Array<T, N>::stdVector() const
 
 /**
  * @brief Fills the entire Array with the value t.
- * @param[in] t
+ *
+ * @param[in] t: The value to fill the array with.
  */
 template<class T, uint N>
 void Array<T, N>::fill(const T& t)
@@ -302,15 +341,17 @@ void Array<T, N>::fill(const T& t)
 }
 
 /**
- * @brief Fills the entire Array with the values contained in the range r, in row-major
- * order.
+ * @brief Fills the entire Array with the values contained in the range r, in row-major order.
  *
- * If the size of the container is greater than the total size of the array, the remaining
- * of the container will be ignored. If otherwise the size of the container is less, the
- * remaining values in the array will be left as they were.
+ * If the size of the container is greater than the total size of the array, the remaining elements
+ * of the container will be ignored. If the size of the container is less than the total size of the
+ * array, the remaining values in the array will be left unchanged.
  *
- * @param[in] r: a range of the same type of the array (begin() and end() members must
- * be provided in the container).
+ * @tparam Rng: Type of the range of values to fill the array with. It must satisfy the Range
+ * concept.
+ *
+ * @param[in] r: A range of the same type as the array. The range must have `begin()` and `end()`
+ * members provided.
  */
 template<class T, uint N>
 template<Range Rng>
@@ -323,6 +364,9 @@ void Array<T, N>::fill(Rng&& r)
 
 /**
  * @brief Allows to resize the Array, not conserving the values of the previous array.
+ *
+ * @tparam Sizes: Types of the arguments representing the new sizes of the Array.
+ *
  * @param[in] s: N elements representing the new sizes of the Array.
  */
 template<class T, uint N>
@@ -340,6 +384,12 @@ void Array<T, N>::resize(Sizes... s) requires(sizeof...(s) == N)
 
 /**
  * @brief Allows to resize the Array, conserving the values of the previous array.
+ *
+ * The new array will have the specified sizes if possible, but if any dimension is smaller
+ * than the previous size, then the values in those dimensions will be conserved.
+ *
+ * @tparam Sizes: Types of the arguments representing the new sizes of the Array.
+ *
  * @param[in] s: N elements representing the new sizes of the Array.
  */
 template<class T, uint N>
@@ -385,6 +435,9 @@ void Array<T, N>::clear()
  * @brief Creates a new subArray of dimension N-1, starting from the given index at its first
  * dimension.
  *
+ * The new subArray has the same type as the original array, but one dimension less, and contains
+ * the elements of the original array starting from the given index at its first dimension.
+ *
  * Example:
  * @code{.cpp}
  * Array<int, 3> a(4,2,6);
@@ -392,7 +445,12 @@ void Array<T, N>::clear()
  * // sa is a 2x6 2D Array, containing the elements at the second "row" of Array a.
  * @endcode
  *
- * @param r
+ * @param r: Index at the first dimension to start the sub-array.
+ *
+ * @return The sub-array of dimension N-1.
+ *
+ * @pre N > 1
+ * @pre r < size(0)
  */
 template<class T, uint N>
 Array<T, N - 1> Array<T, N>::subArray(uint r) const requires (N > 1)
@@ -406,6 +464,50 @@ Array<T, N - 1> Array<T, N>::subArray(uint r) const requires (N > 1)
 	}
 	sub.v = std::vector<T>(v.begin() + r * size, v.begin() + (r + 1) * size);
 	return sub;
+}
+
+/**
+ * @brief Returns an iterator to the beginning of the array.
+ *
+ * @return Iterator to the beginning of the array.
+ */
+template<class T, uint N>
+typename Array<T, N>::Iterator Array<T, N>::begin()
+{
+	return v.begin();
+}
+
+/**
+ * @brief Returns an iterator to the end of the array.
+ *
+ * @return Iterator to the end of the array.
+ */
+template<class T, uint N>
+typename Array<T, N>::Iterator Array<T, N>::end()
+{
+	return v.end();
+}
+
+/**
+ * @brief Returns a const iterator to the beginning of the array.
+ *
+ * @return Const iterator to the beginning of the array.
+ */
+template<class T, uint N>
+typename Array<T, N>::ConstIterator Array<T, N>::begin() const
+{
+	return v.begin();
+}
+
+/**
+ * @brief Returns a const iterator to the end of the array.
+ *
+ * @return Const iterator to the end of the array.
+ */
+template<class T, uint N>
+typename Array<T, N>::ConstIterator Array<T, N>::end() const
+{
+	return v.end();
 }
 
 template<class T, uint N>

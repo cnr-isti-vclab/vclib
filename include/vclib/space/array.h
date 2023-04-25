@@ -35,54 +35,22 @@
 namespace vcl {
 
 /**
- * @brief The Array class
- * is a dynamically allocated N-dimensional array, stored in RowWise mode.
- * All its elements are stored contiguously. For array 1D please use std::vector or std::array.
+ * @brief The Array class is a dynamically allocated N-dimensional array stored in RowWise mode.
  *
- * For D-dimensional array you can declare your array in this way:
- * @code{.cpp}
- * vcl::Array<Type, D> array;
- * @endcode
+ * This class is suitable for storing multi-dimensional data that has a fixed size, as it provides
+ * efficient access to its elements. All the elements of the array are stored contiguously in
+ * memory, so the access to them using the () operator is faster than accessing them through nested
+ * vectors.
  *
- * Where Type is a generic primitive or user-defined type and D is an unsigned integer that
- * represents the dimensions of the array.
+ * The size of the array is specified at compile time via the template parameter N, which indicates
+ * the number of dimensions of the array. The size of each dimension can be specified at runtime
+ * either on initialization or by calling the `resize` or `conservativeResize` member functions.
  *
- * You can also specify the sizes of the array on initialization:
- * @code{.cpp}
- * vcl::Array<int, 3> array(n,m,l);
- * @endcode
+ * For one-dimensional arrays, it is recommended to use `std::vector` or `std::array`, as they are
+ * more efficient.
  *
- * In this example, array is a 3-dimensional array with sizes n*m*l.
- * The sizes of the array can be accessed using "size" member function.
- * You can access to its elements by using () operator:
- * @code{.cpp}
- * for (unsigned int i = 0; i < array.size(0); i++)
- *     for (unsigned int j = 0; j < array.size(1); j++)
- *         for (unsigned int k = 0; k < array.size(2); k++)
- *             array(i,j,k) = someFunction();
- * @endcode
- *
- * You can also declare and initialize a generic N-Dimensional Array with nested initializer lists
- * (vcl::NestedInitializerLists).
- *
- * \code{.cpp}
- * vcl::Array<int, 3> array =
- * {
- *     {
- *         {1, 2, 3},
- *         {1, 2   }
- *     },
- *     {
- *         {1},
- *         {1, 4, 7},
- *         {2, 4},
- *         {5}
- *     }
- * }
- * \endcode
- *
- * In this example, array is a 3-dimensional array with sizes 2*4*3.
- * All the missing numbers are filled with zeros (in every dimension).
+ * @tparam T: The type of the elements stored in the array.
+ * @tparam N: The number of dimensions of the array.
  *
  * @ingroup space
  */
@@ -93,14 +61,28 @@ class Array
 	friend class Array<T, N + 1>;
 
 public:
+	/** The type of the elements stored in the array. */
 	using ValueType      = typename std::vector<T>::value_type;
+
+	/** A const reference to the type of the elements stored in the array. */
 	using ConstReference = typename std::vector<T>::const_reference;
+
+	/** A reference to the type of the elements stored in the array. */
 	using Reference      = typename std::vector<T>::reference;
+
+	/** A const pointer to the type of the elements stored in the array. */
 	using ConstPointer   = typename std::vector<T>::const_pointer;
+
+	/** A pointer to the type of the elements stored in the array. */
 	using Pointer        = typename std::vector<T>::pointer;
+
+	/** An iterator to the elements of the array. */
 	using Iterator       = typename std::vector<T>::iterator;
+
+	/** A const iterator to the elements of the array. */
 	using ConstIterator  = typename std::vector<T>::const_iterator;
 
+	/** The number of dimensions of the array. */
 	static constexpr uint DIM = N;
 
 	Array();
@@ -129,13 +111,11 @@ public:
 	ConstReference operator()(I... indices) const requires(sizeof...(indices) == N);
 
 	template<typename... I>
-	Pointer cArray(I... indices) requires(sizeof...(indices) < N);
+	Pointer data(I... indices) requires(sizeof...(indices) < N);
 
 	template<typename... I>
-	ConstPointer cArray(I... indices) const requires(sizeof...(indices) < N);
+	ConstPointer data(I... indices) const requires(sizeof...(indices) < N);
 
-	Pointer               data();
-	ConstPointer          data() const;
 	std::vector<T>        stdVector();
 	const std::vector<T>& stdVector() const;
 
@@ -154,11 +134,16 @@ public:
 
 	Array<T, N - 1> subArray(uint r) const requires (N > 1);
 
-		   /// @private
+	Iterator begin();
+	Iterator end();
+	ConstIterator begin() const;
+	ConstIterator end() const;
+
+	/// @private
 	template<typename S>
 	friend std::ostream& operator<<(std::ostream& out, const Array<S, 2>& a);
 
-protected:
+private:
 	std::size_t getIndex(const std::size_t indices[]) const;
 	std::array<std::size_t, N> reverseIndex(uint index);
 	static std::size_t getIndex(const std::size_t indices[], const std::size_t sizes[]);
@@ -172,12 +157,42 @@ protected:
 template<typename Scalar>
 std::ostream& operator<<(std::ostream& out, const Array<Scalar, 2>& a);
 
+/**
+ * @brief A convenience alias for a 2-dimensional Array.
+ *
+ * The Array2 alias is a shorthand for a Array class template specialization with a scalar type of
+ * Scalar and two dimensions. It is implemented as an alias template for the Array class template.
+ *
+ * @tparam Scalar: The scalar type of the array components.
+ *
+ * @ingroup space
+ */
 template<typename Scalar>
 using Array2 = Array<Scalar, 2>;
 
+/**
+ * @brief A convenience alias for a 3-dimensional Array.
+ *
+ * The Array3 alias is a shorthand for a Array class template specialization with a scalar type of
+ * Scalar and three dimensions. It is implemented as an alias template for the Array class template.
+ *
+ * @tparam Scalar: The scalar type of the array components.
+ *
+ * @ingroup space
+ */
 template<typename Scalar>
 using Array3 = Array<Scalar, 3>;
 
+/**
+ * @brief A convenience alias for a 4-dimensional Array.
+ *
+ * The Array4 alias is a shorthand for a Array class template specialization with a scalar type of
+ * Scalar and four dimensions. It is implemented as an alias template for the Array class template.
+ *
+ * @tparam Scalar: The scalar type of the array components.
+ *
+ * @ingroup space
+ */
 template<typename Scalar>
 using Array4 = Array<Scalar, 4>;
 
