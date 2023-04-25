@@ -12,6 +12,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install dependencies
         run: | # apt doxygen version is buggy - need to use 1.9.6
+          sudo apt-get install graphviz
           mkdir doxygen
           cd doxygen
           wget https://www.doxygen.nl/files/doxygen-1.9.6.linux.bin.tar.gz
