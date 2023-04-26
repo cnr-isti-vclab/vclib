@@ -21,9 +21,60 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATOR_FACE_H
-#define VCL_MESH_ITERATOR_FACE_H
+#ifndef VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_BASE_ITERATOR_H
+#define VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_BASE_ITERATOR_H
 
-#include "face/edge_adj_face_iterator.h"
+#include <iterator>
 
-#endif // VCL_MESH_ITERATOR_FACE_H
+namespace vcl::internal {
+
+// This class is for internal use, and it contains only static member functions.
+// Its functions are meant to be used by the iterators that iterate over Vertex components
+// trough its half edge. Functions are provided here to avoid code duplication, and are
+// the functions for the operators++ and --, prefix and postfix.
+// These functions allow to move to the next-twin / twin-prev half edge checking for the end of the
+// iteration and returning the correct iterator after the operation. This class is meant to be
+// declared as friend of the iterator, and will access to the `current` and `end` members of the
+// iterator passed as parameter of each function (which should be the *this iterator).
+class VertexBaseIterator
+{
+public:
+	template<typename It>
+	static It& increment(It& it)
+	{
+		it.current = it.current->prev();
+		it.current = it.current->twin();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
+	}
+
+	template<typename It>
+	static It postIncrement(It& it)
+	{
+		It tmp = it;
+		increment(it);
+		return tmp;
+	}
+
+	template<typename It>
+	static It& decrement(It& it)
+	{
+		it.current = it.current->twin();
+		if(it.current != nullptr)
+			it.current = it.current->next();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
+	}
+
+	template<typename It>
+	static It postDecrement(It& it)
+	{
+		It tmp = it;
+		decrement(it);
+		return tmp;
+	}
+};
+
+} // namespace vcl::internal
+
+#endif // VCL_ITERATORS_MESH_HALF_EDGE_VERTEX_BASE_ITERATOR_H

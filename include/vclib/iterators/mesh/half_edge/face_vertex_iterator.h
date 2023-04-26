@@ -21,42 +21,45 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_VERTEX_ITERATOR_H
-#define VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_VERTEX_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_VERTEX_ITERATOR_H
+#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_VERTEX_ITERATOR_H
 
-#include "vertex_base_iterator.h"
+#include <vclib/types.h>
+
+#include "face_base_iterator.h"
 
 namespace vcl {
 
 template<typename HalfEdge, bool CNST = false>
-class VertexAdjVertexIterator
+class FaceVertexIterator
 {
-	friend class internal::VertexBaseIterator;
+	friend class internal::FaceBaseIterator;
 
 	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
-public:
+public :
 	using value_type = std::conditional_t<CNST,
 			const typename HalfEdge::VertexType*,
 			typename HalfEdge::VertexType*>;
+
 	using reference  = std::conditional_t<CNST, value_type, value_type&>;
 	using pointer    = value_type*;
 	using difference_type   = ptrdiff_t;
 	using iterator_category = std::forward_iterator_tag;
 
-	VertexAdjVertexIterator() {}
-	VertexAdjVertexIterator(CurrentHEdgeType start) : current(start), end(start) {}
-	VertexAdjVertexIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
+	FaceVertexIterator() = default;
+	FaceVertexIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	FaceVertexIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
 
-	bool operator==(const VertexAdjVertexIterator& oi) const { return current == oi.current; }
-	bool operator!=(const VertexAdjVertexIterator& oi) const { return current != oi.current; }
+	bool operator==(const FaceVertexIterator& oi) const { return current == oi.current; }
+	bool operator!=(const FaceVertexIterator& oi) const { return current != oi.current; }
 
-	reference operator*() const { return current->toVertex(); }
-	pointer operator->() const { return &(current->toVertex()); }
+	reference operator*() const { return current->fromVertex(); }
+	pointer operator->() const { return &(current->fromVertex()); }
 
-	auto& operator++()   { return internal::VertexBaseIterator::increment(*this); }
-	auto operator++(int) { return internal::VertexBaseIterator::postIncrement(*this); }
-	auto& operator--()   { return internal::VertexBaseIterator::decrement(*this); }
-	auto operator--(int) { return internal::VertexBaseIterator::postDecrement(*this); }
+	auto& operator++()   { return internal::FaceBaseIterator::increment(*this); }
+	auto operator++(int) { return internal::FaceBaseIterator::postIncrement(*this); }
+	auto& operator--()   { return internal::FaceBaseIterator::decrement(*this); }
+	auto operator--(int) { return internal::FaceBaseIterator::postDecrement(*this); }
 
 protected:
 	CurrentHEdgeType current = nullptr;
@@ -64,8 +67,8 @@ protected:
 };
 
 template<typename HalfEdge>
-using ConstVertexAdjVertexIterator = VertexAdjVertexIterator<HalfEdge, true>;
+using ConstFaceVertexIterator = FaceVertexIterator<HalfEdge, true>;
 
 } // namespace vcl
 
-#endif // VCL_MESH_ITERATORS_HALF_EDGE_VERTEX_ADJ_VERTEX_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_VERTEX_ITERATOR_H

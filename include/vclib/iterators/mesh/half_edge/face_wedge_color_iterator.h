@@ -21,35 +21,37 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
-#define VCL_MESH_ITERATORS_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_WEDGE_COLOR_ITERATOR_H
+#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_WEDGE_COLOR_ITERATOR_H
 
 #include "face_base_iterator.h"
+
+#include <vclib/space/color.h>
 
 namespace vcl {
 
 template<typename HalfEdge, bool CNST = false>
-class FaceHalfEdgeIterator
+class FaceWedgeColorIterator
 {
 	friend class internal::FaceBaseIterator;
 
 	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public:
-	using value_type = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
-	using reference  = std::conditional_t<CNST, HalfEdge*, HalfEdge*&>;
+	using value_type = std::conditional_t<CNST, const vcl::Color, vcl::Color>;
+	using reference  = value_type&;
 	using pointer    = value_type*;
 	using difference_type   = ptrdiff_t;
 	using iterator_category = std::forward_iterator_tag;
 
-	FaceHalfEdgeIterator() = default;
-	FaceHalfEdgeIterator(CurrentHEdgeType start) : current(start), end(start) {}
-	FaceHalfEdgeIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
+	FaceWedgeColorIterator() = default;
+	FaceWedgeColorIterator(CurrentHEdgeType start) : current(start), end(start) {}
+	FaceWedgeColorIterator(CurrentHEdgeType start, const HalfEdge* end) : current(start), end(end) {}
 
-	bool operator==(const FaceHalfEdgeIterator& oi) const { return current == oi.current; }
-	bool operator!=(const FaceHalfEdgeIterator& oi) const { return current != oi.current; }
+	bool operator==(const FaceWedgeColorIterator& oi) const { return current == oi.current; }
+	bool operator!=(const FaceWedgeColorIterator& oi) const { return current != oi.current; }
 
-	reference operator*() const { return current; }
-	pointer operator->() const { return &current; }
+	reference operator*() const { return current->color(); }
+	pointer operator->() const { return &(current->color()); }
 
 	auto& operator++()   { return internal::FaceBaseIterator::increment(*this); }
 	auto operator++(int) { return internal::FaceBaseIterator::postIncrement(*this); }
@@ -62,8 +64,8 @@ protected:
 };
 
 template<typename HalfEdge>
-using ConstFaceHalfEdgeIterator = FaceHalfEdgeIterator<HalfEdge, true>;
+using ConstFaceWedgeColorIterator = FaceWedgeColorIterator<HalfEdge, true>;
 
 } // namespace vcl
 
-#endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_HALF_EDGE_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_WEDGE_COLOR_ITERATOR_H

@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_ELEMENT_CONTAINER_ITERATOR_H
-#define VCL_MESH_ITERATORS_ELEMENT_CONTAINER_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_ELEMENT_CONTAINER_ITERATOR_H
+#define VCL_ITERATORS_MESH_ELEMENT_CONTAINER_ITERATOR_H
 
 #include <cstddef>
 #include <vector>
@@ -118,4 +118,4 @@ vcl::ElementContainerIterator<Container, T, C> operator+(
 
 #include "element_container_iterator.cpp"
 
-#endif // VCL_MESH_ITERATORS_ELEMENT_CONTAINER_ITERATOR_H
+#endif // VCL_ITERATORS_MESH_ELEMENT_CONTAINER_ITERATOR_H

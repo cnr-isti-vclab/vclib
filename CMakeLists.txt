@@ -174,7 +174,20 @@ set(HEADERS
 	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
 	include/vclib/iterators/iterator_wrapper.h
+	include/vclib/iterators/mesh.h
 	include/vclib/iterators/pointer_iterator.h
+	include/vclib/iterators/mesh/face.h
+	include/vclib/iterators/mesh/element_container_iterator.h
+	include/vclib/iterators/mesh/face/edge_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_base_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_half_edge_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_vertex_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_wedge_color_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_wedge_tex_coord_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_base_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/fibonacci.h
@@ -183,7 +196,6 @@ set(HEADERS
 	include/vclib/math/perlin_noise.h
 	include/vclib/math/random.h
 	include/vclib/math/transform.h
-	include/vclib/mesh/iterators.h
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/requirements.h
@@ -233,18 +245,6 @@ set(HEADERS
 	include/vclib/mesh/elements/half_edge_components.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
-	include/vclib/mesh/iterators/face.h
-	include/vclib/mesh/iterators/element_container_iterator.h
-	include/vclib/mesh/iterators/face/edge_adj_face_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_adj_face_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_base_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_half_edge_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_vertex_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_wedge_color_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_wedge_tex_coord_iterator.h
-	include/vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h
-	include/vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h
-	include/vclib/mesh/iterators/half_edge/vertex_base_iterator.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/half_edge_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
@@ -397,6 +397,8 @@ set(SOURCES
 	include/vclib/io/stl/load.cpp
 	include/vclib/io/stl/save.cpp
 	include/vclib/iterators/iterator_wrapper.cpp
+	include/vclib/iterators/mesh/element_container_iterator.cpp
+	include/vclib/iterators/mesh/face/edge_adj_face_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/fibonacci.cpp
 	include/vclib/math/histogram.cpp
@@ -445,8 +447,6 @@ set(SOURCES
 	include/vclib/mesh/elements/face.cpp
 	include/vclib/mesh/elements/half_edge.cpp
 	include/vclib/mesh/elements/vertex.cpp
-	include/vclib/mesh/iterators/element_container_iterator.cpp
-	include/vclib/mesh/iterators/face/edge_adj_face_iterator.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp

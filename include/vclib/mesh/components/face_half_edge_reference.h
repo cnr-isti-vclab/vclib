@@ -29,13 +29,13 @@
 #include <vclib/concepts/mesh/components/color.h>
 #include <vclib/concepts/mesh/components/face_half_edge_reference.h>
 #include <vclib/concepts/mesh/components/tex_coord.h>
-#include <vclib/mesh/iterators/half_edge/face_adj_face_iterator.h>
-#include <vclib/mesh/iterators/half_edge/face_half_edge_iterator.h>
-#include <vclib/mesh/iterators/half_edge/face_vertex_iterator.h>
-#include <vclib/mesh/iterators/half_edge/face_wedge_color_iterator.h>
-#include <vclib/mesh/iterators/half_edge/face_wedge_tex_coord_iterator.h>
-#include <vclib/views/view.h>
+#include <vclib/iterators/mesh/half_edge/face_adj_face_iterator.h>
+#include <vclib/iterators/mesh/half_edge/face_half_edge_iterator.h>
+#include <vclib/iterators/mesh/half_edge/face_vertex_iterator.h>
+#include <vclib/iterators/mesh/half_edge/face_wedge_color_iterator.h>
+#include <vclib/iterators/mesh/half_edge/face_wedge_tex_coord_iterator.h>
 #include <vclib/space/color.h>
+#include <vclib/views/view.h>
 
 #include "internal/component_data.h"
 

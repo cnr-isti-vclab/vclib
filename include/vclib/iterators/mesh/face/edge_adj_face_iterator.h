@@ -21,59 +21,54 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
-#define VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
+#ifndef VCL_ITERATORS_MESH_EDGE_ADJ_FACE_ITERATOR_H
+#define VCL_ITERATORS_MESH_EDGE_ADJ_FACE_ITERATOR_H
 
 #include <iterator>
 
-namespace vcl::internal {
+#include <vclib/types.h>
 
-// This class is for internal use, and it contains only static member functions.
-// Its functions are meant to be used by the iterators that iterate over Face components
-// trough its half edge. Functions are provided here to avoid code duplication, and are
-// the functions for the operators++ and --, prefix and postfix.
-// These functions allow to move to the next / prev half edge checking for the end of the iteration
-// and returning the correct iterator after the operation.
-// This class is meant to be declared as friend of the iterator,
-// and will access to the `current` and `end` members of the iterator passed as parameter of each
-// function (which should be the *this iterator).
-class FaceBaseIterator
+namespace vcl {
+
+template<typename FaceType, bool CNST = false>
+class EdgeAdjFaceIterator
 {
+	using FT = typename std::conditional_t<CNST, FaceType, const FaceType>;
+
+	using VT = typename std::conditional_t<CNST,
+		typename FT::VertexType,
+		const typename FT::VertexType>;
 public:
+	using difference_type   = ptrdiff_t;
+	using iterator_category = std::forward_iterator_tag;
+	using value_type        = FT*;
+	using reference         = FT*&;
+	using pointer           = FT**;
 
-	template<typename It>
-	static It& increment(It& it)
-	{
-		it.current = it.current->next();
-		if (it.current == it.end) it.current = nullptr;
-		return it;
-	}
+	EdgeAdjFaceIterator();
+	EdgeAdjFaceIterator(FT& f, uint edge);
 
-	template<typename It>
-	static It postIncrement(It& it)
-	{
-		It tmp = it;
-		increment(it);
-		return tmp;
-	}
+	bool operator==(const EdgeAdjFaceIterator& oi) const;
+	bool operator!=(const EdgeAdjFaceIterator& oi) const;
 
-	template<typename It>
-	static It& decrement(It& it)
-	{
-		it.current = it.current->prev();
-		if (it.current == it.end) it.current = nullptr;
-		return it;
-	}
+	EdgeAdjFaceIterator& operator++();
+	EdgeAdjFaceIterator operator++(int);
 
-	template<typename It>
-	static It postDecrement(It& it)
-	{
-		It tmp = it;
-		decrement(it);
-		return tmp;
-	}
+	reference operator*() const;
+	pointer operator->() const;
+
+private:
+	FT* current = nullptr;
+	FT* end     = nullptr;
+	VT* v0      = nullptr;
+	VT* v1      = nullptr;
 };
 
-} // namespace vcl::internal
+template<typename FaceType>
+using ConstEdgeAdjFaceIterator = EdgeAdjFaceIterator<FaceType, true>;
 
-#endif // VCL_MESH_ITERATORS_HALF_EDGE_FACE_BASE_ITERATOR_H
+} // namespace vcl
+
+#include "edge_adj_face_iterator.cpp"
+
+#endif // VCL_ITERATORS_MESH_EDGE_ADJ_FACE_ITERATOR_H

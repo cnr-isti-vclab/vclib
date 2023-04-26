@@ -21,68 +21,59 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "edge_adj_face_iterator.h"
+#ifndef VCL_ITERATORS_MESH_HALF_EDGE_FACE_BASE_ITERATOR_H
+#define VCL_ITERATORS_MESH_HALF_EDGE_FACE_BASE_ITERATOR_H
 
-namespace vcl {
+#include <iterator>
 
-template<typename FaceType, bool CNST>
-EdgeAdjFaceIterator<FaceType, CNST>::EdgeAdjFaceIterator()
+namespace vcl::internal {
+
+// This class is for internal use, and it contains only static member functions.
+// Its functions are meant to be used by the iterators that iterate over Face components
+// trough its half edge. Functions are provided here to avoid code duplication, and are
+// the functions for the operators++ and --, prefix and postfix.
+// These functions allow to move to the next / prev half edge checking for the end of the iteration
+// and returning the correct iterator after the operation.
+// This class is meant to be declared as friend of the iterator,
+// and will access to the `current` and `end` members of the iterator passed as parameter of each
+// function (which should be the *this iterator).
+class FaceBaseIterator
 {
-}
+public:
 
-template<typename FaceType, bool CNST>
-EdgeAdjFaceIterator<FaceType, CNST>::EdgeAdjFaceIterator(FaceType& f, uint edge) :
-		current(&f), end(&f), v0(f.vertex(edge)), v1(f.vertexMod(edge+1))
-{
-}
-
-template<typename FaceType, bool CNST>
-bool EdgeAdjFaceIterator<FaceType, CNST>::operator==(const EdgeAdjFaceIterator& oi) const
-{
-	return current == oi.current && v0 == oi.v0 && v1 == oi.v1;
-}
-
-template<typename FaceType, bool CNST>
-bool EdgeAdjFaceIterator<FaceType, CNST>::operator!=(const EdgeAdjFaceIterator& oi) const
-{
-	return !(*this == oi);
-}
-
-template<typename FaceType, bool CNST>
-EdgeAdjFaceIterator<FaceType, CNST>& EdgeAdjFaceIterator<FaceType, CNST>::operator++()
-{
-	assert(current);
-	int edge = current->indexOfEdge(v0, v1);
-	assert(edge >= 0);
-	current = current->adjFace(edge);
-	if (current == end || current == nullptr) {
-		current = nullptr;
-		v0 = nullptr;
-		v1 = nullptr;
+	template<typename It>
+	static It& increment(It& it)
+	{
+		it.current = it.current->next();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
 	}
-	return *this;
-}
 
-template<typename FaceType, bool CNST>
-EdgeAdjFaceIterator<FaceType, CNST> EdgeAdjFaceIterator<FaceType, CNST>::operator++(int)
-{
-	auto it = *this;
-	++(*this);
-	return it;
-}
+	template<typename It>
+	static It postIncrement(It& it)
+	{
+		It tmp = it;
+		increment(it);
+		return tmp;
+	}
 
-template<typename FaceType, bool CNST>
-typename EdgeAdjFaceIterator<FaceType, CNST>::reference
-EdgeAdjFaceIterator<FaceType, CNST>::operator*() const
-{
-	return current;
-}
+	template<typename It>
+	static It& decrement(It& it)
+	{
+		it.current = it.current->prev();
+		if (it.current == it.end) it.current = nullptr;
+		return it;
+	}
 
-template<typename FaceType, bool CNST>
-typename EdgeAdjFaceIterator<FaceType, CNST>::pointer
-EdgeAdjFaceIterator<FaceType, CNST>::operator->() const
-{
-	return &current;
-}
+	template<typename It>
+	static It postDecrement(It& it)
+	{
+		It tmp = it;
+		decrement(it);
+		return tmp;
+	}
+};
 
-} // namespace vcl
+} // namespace vcl::internal
+
+#endif // VCL_ITERATORS_MESH_HALF_EDGE_FACE_BASE_ITERATOR_H
