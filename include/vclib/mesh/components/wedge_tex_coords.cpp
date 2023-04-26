@@ -224,4 +224,15 @@ WedgeTexCoords<Scalar, N, El, o>::texCoords() const
 	return data.template get<El>(this).texCoords;
 }
 
+template <typename T>
+bool isWedgeTexCoordsEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalWedgeTexCoords<T>) {
+		return element.isWedgeTexCoordsEnabled();
+	}
+	else {
+		return HasWedgeTexCoords<T>;
+	}
+}
+
 } // namespace vcl::comp

@@ -145,15 +145,7 @@ private:
 /* Detector function to check if a class has AdjacentEdges enabled */
 
 template <typename T>
-bool isAdjacentEdgesEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalAdjacentEdges<T>) {
-		return element.isAdjEdgesEnabled();
-	}
-	else {
-		return HasAdjacentEdges<T>;
-	}
-}
+bool isAdjacentEdgesEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

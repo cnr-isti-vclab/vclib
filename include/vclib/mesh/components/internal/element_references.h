@@ -47,8 +47,8 @@ private:
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 public:
 	using DataValueType = Vector<Elem*, N>; // data that the component stores internally (or vertically)
-
-	static const int CONTAINER_SIZE = Base::CONTAINER_SIZE;
+	
+	static const int CONTAINER_SIZE = Base::SIZE;
 
 	/* Iterator Types declaration */
 

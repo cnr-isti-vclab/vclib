@@ -66,15 +66,7 @@ private:
 /* Detector function to check if a class has Normal enabled */
 
 template <typename T>
-bool isNormalEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalNormal<T>) {
-		return element.isNormalEnabled();
-	}
-	else {
-		return HasNormal<T>;
-	}
-}
+bool isNormalEnabledOn(const T& element);
 
 template<
 	typename Scalar,

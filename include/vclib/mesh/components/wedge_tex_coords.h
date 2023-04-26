@@ -54,8 +54,8 @@ public:
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
-
-	static const int WEDGE_TEX_COORD_NUMBER = Base::CONTAINER_SIZE;
+	
+	static const int WEDGE_TEX_COORD_NUMBER = Base::SIZE;
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 
@@ -121,15 +121,7 @@ private:
 /* Detector function to check if a class has WedgeTexCoords enabled */
 
 template <typename T>
-bool isWedgeTexCoordsEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalWedgeTexCoords<T>) {
-		return element.isWedgeTexCoordsEnabled();
-	}
-	else {
-		return HasWedgeTexCoords<T>;
-	}
-}
+bool isWedgeTexCoordsEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

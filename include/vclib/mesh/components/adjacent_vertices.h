@@ -134,15 +134,7 @@ private:
 /* Detector function to check if a class has AdjacentVertices enabled */
 
 template <typename T>
-bool isAdjacentVerticesEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalAdjacentVertices<T>) {
-		return element.isAdjVerticesEnabled();
-	}
-	else {
-		return HasAdjacentVertices<T>;
-	}
-}
+bool isAdjacentVerticesEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

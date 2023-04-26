@@ -72,4 +72,15 @@ const P& NormalT<P, El, o>::n() const
 	return data.template get<El>(this);
 }
 
+template <typename T>
+bool isNormalEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalNormal<T>) {
+		return element.isNormalEnabled();
+	}
+	else {
+		return HasNormal<T>;
+	}
+}
+
 } // namespace vcl::comp

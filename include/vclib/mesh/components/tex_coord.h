@@ -71,15 +71,7 @@ private:
 /* Detector function to check if a class has TexCoord enabled */
 
 template <typename T>
-bool isTexCoordEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalTexCoord<T>) {
-		return element.isTexCoordEnabled();
-	}
-	else {
-		return HasTexCoord<T>;
-	}
-}
+bool isTexCoordEnabledOn(const T& element);
 
 template<typename ElementType = void, bool horizontal = true, bool optional = false>
 using TexCoordf = TexCoord<float, ElementType, optional>;

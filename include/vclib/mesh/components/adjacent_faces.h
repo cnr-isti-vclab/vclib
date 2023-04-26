@@ -145,15 +145,7 @@ private:
 /* Detector function to check if a class has AdjacentFaces enabled */
 
 template <typename T>
-bool isAdjacentFacesEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalAdjacentFaces<T>) {
-		return element.isAdjFacesEnabled();
-	}
-	else {
-		return HasAdjacentFaces<T>;
-	}
-}
+bool isAdjacentFacesEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

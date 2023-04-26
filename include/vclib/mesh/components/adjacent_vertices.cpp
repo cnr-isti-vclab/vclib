@@ -256,4 +256,15 @@ void AdjacentVertices<Vertex, El, o>::importRefsFrom(
 	}
 }
 
+template <typename T>
+bool isAdjacentVerticesEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalAdjacentVertices<T>) {
+		return element.isAdjVerticesEnabled();
+	}
+	else {
+		return HasAdjacentVertices<T>;
+	}
+}
+
 } // namespace vcl::comp

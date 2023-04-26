@@ -110,4 +110,15 @@ const int& Mark<El, o>::m() const
 	return data.template get<El>(this);
 }
 
+template <typename T>
+bool isMarkEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalMark<T>) {
+		return element.isMarkEnabled();
+	}
+	else {
+		return HasMark<T>;
+	}
+}
+
 } // namespace vcl::comp

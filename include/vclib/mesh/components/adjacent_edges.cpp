@@ -323,4 +323,15 @@ void AdjacentEdges<Edge, N, El, o>::importRefsFrom(
 	}
 }
 
+template <typename T>
+bool isAdjacentEdgesEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalAdjacentEdges<T>) {
+		return element.isAdjEdgesEnabled();
+	}
+	else {
+		return HasAdjacentEdges<T>;
+	}
+}
+
 } // namespace vcl::comp

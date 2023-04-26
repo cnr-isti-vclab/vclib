@@ -110,15 +110,7 @@ private:
 /* Detector function to check if a class has Mark enabled */
 
 template <typename T>
-bool isMarkEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalMark<T>) {
-		return element.isMarkEnabled();
-	}
-	else {
-		return HasMark<T>;
-	}
-}
+bool isMarkEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

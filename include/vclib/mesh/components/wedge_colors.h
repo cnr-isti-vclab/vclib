@@ -45,8 +45,8 @@ public:
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
-
-	static const int WEDGE_COLOR_NUMBER = Base::CONTAINER_SIZE;
+	
+	static const int WEDGE_COLOR_NUMBER = Base::SIZE;
 
 	/* Iterator Types declaration */
 
@@ -103,15 +103,7 @@ private:
 /* Detector function to check if a class has WedgeColors enabled */
 
 template <typename T>
-bool isWedgeColorsEnabledOn(const T& element)
-{
-	if constexpr(HasOptionalWedgeColors<T>) {
-		return element.isWedgeColorsEnabled();
-	}
-	else {
-		return HasWedgeColors<T>;
-	}
-}
+bool isWedgeColorsEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

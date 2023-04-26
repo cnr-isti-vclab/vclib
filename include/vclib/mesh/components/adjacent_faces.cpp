@@ -319,4 +319,15 @@ void AdjacentFaces<Face, N, El, o>::importRefsFrom(
 	}
 }
 
+template <typename T>
+bool isAdjacentFacesEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalAdjacentFaces<T>) {
+		return element.isAdjFacesEnabled();
+	}
+	else {
+		return HasAdjacentFaces<T>;
+	}
+}
+
 } // namespace vcl::comp

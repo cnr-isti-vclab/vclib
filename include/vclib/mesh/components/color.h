@@ -72,15 +72,7 @@ private:
 /* Detector function to check if a class has Color enabled */
 
 template <typename T>
-bool isColorEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalColor<T>) {
-		return element.isColorEnabled();
-	}
-	else {
-		return HasColor<T>;
-	}
-}
+bool isColorEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

@@ -71,15 +71,7 @@ private:
 /* Detector function to check if a class has PrincipalCurvature enabled */
 
 template <typename T>
-bool isPrincipalCurvatureEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalPrincipalCurvature<T>) {
-		return element.isPrincipalCurvatureEnabled();
-	}
-	else {
-		return HasPrincipalCurvature<T>;
-	}
-}
+bool isPrincipalCurvatureEnabledOn(const T& element);
 
 template<typename ElementType = void, bool optional = false>
 using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, optional>;

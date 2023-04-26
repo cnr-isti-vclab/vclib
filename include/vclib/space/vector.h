@@ -68,10 +68,6 @@ private:
 		conditional_t<(N >= 0), typename std::array<T, ARRAY_SIZE>, typename std::vector<T>>;
 
 public:
-	Vector();
-
-	static const int CONTAINER_SIZE = N;
-
 	/** The type of the elements stored in the Vector. */
 	using ValueType = typename Container::value_type;
 
@@ -92,6 +88,11 @@ public:
 
 	/** A const iterator to the elements of the Vector. */
 	using ConstIterator = typename Container::const_iterator;
+
+	/** Size of the vector at compile time. It will be -1 if the Vector has dynamic size. */
+	static const int SIZE = N;
+
+	Vector();
 
 	uint size() const;
 

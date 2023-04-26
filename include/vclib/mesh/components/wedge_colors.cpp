@@ -190,4 +190,15 @@ void WedgeColors<N, El, o>::importWedgeColorsFrom(const Element& e)
 	}
 }
 
+template <typename T>
+bool isWedgeColorsEnabledOn(const T& element)
+{
+	if constexpr(HasOptionalWedgeColors<T>) {
+		return element.isWedgeColorsEnabled();
+	}
+	else {
+		return HasWedgeColors<T>;
+	}
+}
+
 } // namespace vcl::comp
