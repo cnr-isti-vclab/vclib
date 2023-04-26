@@ -38,6 +38,11 @@ class EdgeContainer;
 
 namespace vcl {
 
+/**
+ * @brief The Edge class
+ *
+ * @ingroup elements
+ */
 template<typename MeshType, typename... Args>
 class Edge : public Element<MeshType, Args...>
 {

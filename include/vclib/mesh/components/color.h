@@ -69,6 +69,19 @@ private:
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
+/* Detector function to check if a class has Color enabled */
+
+template <typename T>
+bool isColorEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalColor<T>) {
+		return element.isColorEnabled();
+	}
+	else {
+		return HasColor<T>;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "color.cpp"

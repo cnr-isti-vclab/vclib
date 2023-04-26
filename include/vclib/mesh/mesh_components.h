@@ -32,7 +32,21 @@
 #include "components/texture_paths.h"
 #include "components/transform_matrix.h"
 
+/**
+ * @defgroup mesh_components Mesh Components
+ * @ingroup components
+ *
+ * @brief This group lists all the Components that may be used by a Mesh class.
+ *
+ * All these components are listed inside the vcl::mesh namespace.
+ */
+
 namespace vcl::mesh {
+
+/**
+ * @addtogroup mesh_components
+ * @{
+ */
 
 /** Port BoundingBox class into mesh namespace **/
 template<typename P>
@@ -65,6 +79,8 @@ using TransformMatrix = comp::TransformMatrix<Scalar>;
 
 using TransformMatrixf = comp::TransformMatrix<float>;
 using TransformMatrixd = comp::TransformMatrix<double>;
+
+/** @} */ // end of mesh_components group
 
 } // namespace vcl::mesh
 

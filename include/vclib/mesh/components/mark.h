@@ -107,6 +107,19 @@ private:
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
+/* Detector function to check if a class has Mark enabled */
+
+template <typename T>
+bool isMarkEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalMark<T>) {
+		return element.isMarkEnabled();
+	}
+	else {
+		return HasMark<T>;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "mark.cpp"

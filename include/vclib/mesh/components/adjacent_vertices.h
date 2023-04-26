@@ -131,6 +131,19 @@ private:
 	importRefsFrom(const Element& e, Vertex* base, const ElVType* ebase);
 };
 
+/* Detector function to check if a class has AdjacentVertices enabled */
+
+template <typename T>
+bool isAdjacentVerticesEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalAdjacentVertices<T>) {
+		return element.isAdjVerticesEnabled();
+	}
+	else {
+		return HasAdjacentVertices<T>;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "adjacent_vertices.cpp"

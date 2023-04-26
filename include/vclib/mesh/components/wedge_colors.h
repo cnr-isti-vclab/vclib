@@ -100,6 +100,19 @@ private:
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
+/* Detector function to check if a class has WedgeColors enabled */
+
+template <typename T>
+bool isWedgeColorsEnabledOn(const T& element)
+{
+	if constexpr(HasOptionalWedgeColors<T>) {
+		return element.isWedgeColorsEnabled();
+	}
+	else {
+		return HasWedgeColors<T>;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "wedge_colors.cpp"

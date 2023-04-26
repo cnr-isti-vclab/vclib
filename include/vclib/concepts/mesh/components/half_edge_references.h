@@ -35,6 +35,8 @@ namespace vcl::comp {
  * - next()
  * - prev()
  * - twin()
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasHalfEdgeReferences =

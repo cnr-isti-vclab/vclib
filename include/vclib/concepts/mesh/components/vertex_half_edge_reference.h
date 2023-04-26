@@ -33,6 +33,8 @@ namespace vcl::comp {
  *
  * This concept is satisfied only if a class has the following member functions:
  * - halfEdge()
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasVertexHalfEdgeReference = requires(T o)

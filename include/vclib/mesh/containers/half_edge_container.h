@@ -32,6 +32,11 @@
 
 namespace vcl::mesh {
 
+/**
+ * @brief The HalfEdgeContainer class
+ *
+ * @ingroup containers
+ */
 template<HalfEdgeConcept T>
 class HalfEdgeContainer : public ElementContainer<T>
 {

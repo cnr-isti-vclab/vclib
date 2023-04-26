@@ -62,6 +62,19 @@ private:
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
+/* Detector function to check if a class has Scalar enabled */
+
+template <typename T>
+bool isScalarEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalScalar<T>) {
+		return element.isScalarEnabled();
+	}
+	else {
+		return HasScalar<T>;
+	}
+}
+
 template<typename ElementType = void, bool optional = false>
 using Scalarf = Scalar<float, ElementType, optional>;
 

@@ -118,6 +118,19 @@ private:
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
+/* Detector function to check if a class has WedgeTexCoords enabled */
+
+template <typename T>
+bool isWedgeTexCoordsEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalWedgeTexCoords<T>) {
+		return element.isWedgeTexCoordsEnabled();
+	}
+	else {
+		return HasWedgeTexCoords<T>;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "wedge_tex_coords.cpp"

@@ -142,6 +142,19 @@ private:
 	importRefsFrom(const Element& e, Face* base, const ElFType* ebase);
 };
 
+/* Detector function to check if a class has AdjacentFaces enabled */
+
+template <typename T>
+bool isAdjacentFacesEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalAdjacentFaces<T>) {
+		return element.isAdjFacesEnabled();
+	}
+	else {
+		return HasAdjacentFaces<T>;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "adjacent_faces.cpp"

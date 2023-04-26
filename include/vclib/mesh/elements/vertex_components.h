@@ -39,7 +39,21 @@
 #include "../components/vertex_half_edge_reference.h"
 #include "../components/tex_coord.h"
 
+/**
+ * @defgroup vert_components Vertex Components
+ * @ingroup components
+ *
+ * @brief This group lists all the Components that may be used by the Vertex element.
+ *
+ * All these components are listed inside the vcl::vert namespace.
+ */
+
 namespace vcl::vert {
+
+/**
+ * @addtogroup vert_components
+ * @{
+ */
 
 /* Port AdjacentEdges class into vert namespace */
 template<typename Edge>
@@ -235,6 +249,8 @@ using OptionalTexCoordf = comp::TexCoord<float, VertexType, true>;
 
 template<typename VertexType>
 using OptionalTexCoordd = comp::TexCoord<double, VertexType, true>;
+
+/** @} */ // end of edge_components group
 
 } // namespace vcl::vert
 

@@ -38,6 +38,11 @@ class HalfEdgeContainer;
 
 namespace vcl {
 
+/**
+ * @brief The HalfEdge class
+ *
+ * @ingroup elements
+ */
 template<typename MeshType, typename... Args>
 class HalfEdge : public Element<MeshType, Args...>
 {

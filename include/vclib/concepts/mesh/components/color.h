@@ -42,6 +42,8 @@ namespace vcl::comp {
  *
  * To be completely sure that Color is available at runtime, you need to call the member
  * function `isColorEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasColor = requires(
@@ -58,22 +60,11 @@ concept HasColor = requires(
 /**
  * @brief HasOptionalColor concept is satisfied only if a class satisfis the HasColor concept and
  * the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalColor = HasColor<T> && IsOptionalComponent<typename T::ColorComponent>;
-
-/* Detector function to check if a class has Color enabled */
-
-template <typename T>
-bool isColorEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalColor<T>) {
-		return element.isColorEnabled();
-	}
-	else {
-		return HasColor<T>;
-	}
-}
 
 } // namespace vcl::comp
 

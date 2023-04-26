@@ -63,6 +63,19 @@ private:
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
+/* Detector function to check if a class has Normal enabled */
+
+template <typename T>
+bool isNormalEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalNormal<T>) {
+		return element.isNormalEnabled();
+	}
+	else {
+		return HasNormal<T>;
+	}
+}
+
 template<
 	typename Scalar,
 	int N,

@@ -34,7 +34,21 @@
 #include "../components/scalar.h"
 #include "../components/vertex_references.h"
 
+/**
+ * @defgroup edge_components Edge Components
+ * @ingroup components
+ *
+ * @brief This group lists all the Components that may be used by the Edge element.
+ *
+ * All these components are listed inside the vcl::edge namespace.
+ */
+
 namespace vcl::edge {
+
+/**
+ * @addtogroup edge_components
+ * @{
+ */
 
 /* Port AdjacentEdges class into edge namespace */
 template<typename EdgeType>
@@ -113,6 +127,8 @@ using OptionalScalard = comp::Scalar<double, EdgeType, true>;
 /* Port VertexReferences class into edge namespace */
 template<typename VertexType>
 using VertexReferences = comp::VertexReferences<VertexType, 2>;
+
+/** @} */ // end of edge_components group
 
 } // namespace vcl::edge
 

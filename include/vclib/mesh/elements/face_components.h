@@ -41,7 +41,21 @@
 #include "../components/wedge_colors.h"
 #include "../components/wedge_tex_coords.h"
 
+/**
+ * @defgroup face_components Face Components
+ * @ingroup components
+ *
+ * @brief This group lists all the Components that may be used by the Face element.
+ *
+ * All these components are listed inside the vcl::face namespace.
+ */
+
 namespace vcl::face {
+
+/**
+ * @addtogroup face_components
+ * @{
+ */
 
 /* Port AdjacentEdges class into face namespace */
 template<typename EdgeType>
@@ -279,6 +293,8 @@ template<typename FaceType>
 using OptionalTriangleWedgeTexCoordsf = comp::WedgeTexCoords<float, 3, FaceType, true>;
 template<typename FaceType>
 using OptionalTriangleWedgeTexCoordsd = comp::WedgeTexCoords<double, 3, FaceType, true>;
+
+/** @} */ // end of edge_components group
 
 } // namespace vcl::face
 

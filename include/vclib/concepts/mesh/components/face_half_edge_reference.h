@@ -35,6 +35,8 @@ namespace vcl::comp {
  * - outerHalfEdge()
  * - numberHoles(), which returns an uint
  * - innerHalfEdge(uint)
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasFaceHalfEdgeReference = requires(T o)

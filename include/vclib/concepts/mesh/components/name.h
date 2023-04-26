@@ -26,12 +26,16 @@
 
 #include "component.h"
 
+#include <string>
+
 namespace vcl::comp {
 
 /**
  * @brief HasName concept is satisfied only if a Element or Mesh class provides the member
  * functions specified in this concept. These member functions allows to access to a Name
  * component of a given element/mesh.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasName = requires(

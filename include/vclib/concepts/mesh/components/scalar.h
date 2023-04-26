@@ -40,6 +40,8 @@ namespace vcl::comp {
  *
  * To be completely sure that Scalar is available at runtime, you need to call the member
  * function `isScalarEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasScalar = requires(
@@ -56,23 +58,11 @@ concept HasScalar = requires(
 /**
  * @brief HasOptionalScalar concept is satisfied only if a class satisfis the HasScalar concept and
  * the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalScalar = HasScalar<T> && IsOptionalComponent<typename T::ScalarComponent>;
-
-
-/* Detector function to check if a class has Scalar enabled */
-
-template <typename T>
-bool isScalarEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalScalar<T>) {
-		return element.isScalarEnabled();
-	}
-	else {
-		return HasScalar<T>;
-	}
-}
 
 } // namespace vcl::comp
 

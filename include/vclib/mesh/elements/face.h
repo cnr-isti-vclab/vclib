@@ -40,6 +40,11 @@ class FaceContainer;
 
 namespace vcl {
 
+/**
+ * @brief The Face class
+ *
+ * @ingroup elements
+ */
 template<typename MeshType, typename... Args>
 class Face : public Element<MeshType, Args...>
 {

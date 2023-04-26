@@ -142,6 +142,19 @@ private:
 	importRefsFrom(const Element& e, Edge* base, const ElEType* ebase);
 };
 
+/* Detector function to check if a class has AdjacentEdges enabled */
+
+template <typename T>
+bool isAdjacentEdgesEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalAdjacentEdges<T>) {
+		return element.isAdjEdgesEnabled();
+	}
+	else {
+		return HasAdjacentEdges<T>;
+	}
+}
+
 } // namespace vcl::comp
 
 #include "adjacent_edges.cpp"

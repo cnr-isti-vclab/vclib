@@ -39,6 +39,13 @@ namespace vcl {
  */
 
 /**
+ * @defgroup components Components
+ * @ingroup mesh
+ *
+ * @brief List of all the Component classes, along with their concepts and functions.
+ */
+
+/**
  * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
  * containers of Elements (which can be vertices, faces, edges...), plus some other components.
  *
@@ -50,6 +57,8 @@ namespace vcl {
  * status of more than one Container of the Mesh. Other functions are inherited by the Container
  * classes of the Elements of the Mesh, or from its Components, and depend on all the templates
  * that compose a specific Mesh definition.
+ *
+ * @ingroup mesh
  */
 template<typename... Args> requires HasVertices<Args...>
 class Mesh : public Args...

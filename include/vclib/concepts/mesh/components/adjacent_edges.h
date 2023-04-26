@@ -42,6 +42,8 @@ namespace vcl::comp {
  *
  * To be completely sure that AdjacentEdges is available at runtime, you need to call the member
  * function `isAdjEdgesEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasAdjacentEdges = requires(
@@ -83,12 +85,15 @@ concept HasAdjacentEdges = requires(
 /**
  * @brief HasOptionalAdjacentEdges concept is satisfied only if a class satisfies the
  * HasAdjacentEdges concept and the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalAdjacentEdges =
 	HasAdjacentEdges<T> && IsOptionalComponent<typename T::AdjacentEdgesComponent>;
 
 /**
+ * @private
  * @brief HasRightNumberOfAdjacentEdges concept
  *
  * This concept is designed to be used with Face components, where the number of adjacent edges must
@@ -101,6 +106,7 @@ template<typename T>
 concept HasRightNumberOfAdjacentEdges = T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
 
 /**
+ * @private
  * @brief SanityCheckAdjacentEdges concept
  *
  * This concept is designed to be used with Face components, where the number of adjacent edges must
@@ -112,19 +118,6 @@ concept HasRightNumberOfAdjacentEdges = T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
  */
 template<typename T>
 concept SanityCheckAdjacentEdges = !HasAdjacentEdges<T> || HasRightNumberOfAdjacentEdges<T>;
-
-/* Detector function to check if a class has AdjacentEdges enabled */
-
-template <typename T>
-bool isAdjacentEdgesEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalAdjacentEdges<T>) {
-		return element.isAdjEdgesEnabled();
-	}
-	else {
-		return HasAdjacentEdges<T>;
-	}
-}
 
 } // namespace vcl::comp
 

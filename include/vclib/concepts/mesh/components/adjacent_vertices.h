@@ -42,6 +42,8 @@ namespace vcl::comp {
  *
  * To be completely sure that AdjacentVertices is available at runtime, you need to call the member
  * function `isAdjVerticesEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasAdjacentVertices = requires(
@@ -79,6 +81,7 @@ concept HasAdjacentVertices = requires(
 };
 
 /**
+ * @private
  * @brief HasAdjacentVerticesComponent concept is used to discriminate between the AdjacentVertices
  * (or OptionalAdjacentVertices) component, and the VertexHalfEdgeReferences component, which using
  * half edges allows to access to adjacent vertices. This concept is intended only for internal use,
@@ -95,23 +98,12 @@ concept HasAdjacentVerticesComponent = requires(T o)
 /**
  * @brief HasOptionalAdjacentVertices concept is satisfied only if a class satisfies the
  * HasAdjacentVertices concept and has the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalAdjacentVertices =
 	HasAdjacentVerticesComponent<T> && IsOptionalComponent<typename T::AdjacentVerticesComponent>;
-
-/* Detector function to check if a class has AdjacentVertices enabled */
-
-template <typename T>
-bool isAdjacentVerticesEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalAdjacentVertices<T>) {
-		return element.isAdjVerticesEnabled();
-	}
-	else {
-		return HasAdjacentVertices<T>;
-	}
-}
 
 } // namespace vcl::comp
 

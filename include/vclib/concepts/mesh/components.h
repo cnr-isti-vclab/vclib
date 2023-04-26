@@ -48,4 +48,12 @@
 #include "components/wedge_colors.h"
 #include "components/wedge_tex_coords.h"
 
+/**
+ * @defgroup components_concepts Components Concepts
+ * @ingroup mesh_concepts
+ * @ingroup components
+ *
+ * @brief List of concepts for types related to the Component classes the library.
+ */
+
 #endif // VCL_CONCEPTS_MESH_COMPONENTS_H
