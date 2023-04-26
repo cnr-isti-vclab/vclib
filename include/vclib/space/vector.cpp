@@ -22,8 +22,8 @@
  ****************************************************************************/
 
 #include "vector.h"
+
 #include <algorithm>
-#include <bits/ranges_base.h>
 #include <stdexcept>
 #include <string>
 #include <utility>
