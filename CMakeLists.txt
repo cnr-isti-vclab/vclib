@@ -188,6 +188,8 @@ set(HEADERS
 	include/vclib/iterators/mesh/half_edge/vertex_adj_face_iterator.h
 	include/vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h
 	include/vclib/iterators/mesh/half_edge/vertex_base_iterator.h
+	include/vclib/iterators/space/grid/cell_iterator.h
+	include/vclib/iterators/space/grid/static_grid_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/fibonacci.h
@@ -311,8 +313,6 @@ set(HEADERS
 	include/vclib/space/grid/hash_table_grid.h
 	include/vclib/space/grid/regular_grid.h
 	include/vclib/space/grid/static_grid.h
-	include/vclib/space/grid/iterators/cell_iterator.h
-	include/vclib/space/grid/iterators/static_grid_iterator.h
 	include/vclib/space/sampler/mesh_sampler.h
 	include/vclib/space/sampler/point_sampler.h
 	include/vclib/space/sampler/vertex_sampler.h
@@ -399,6 +399,8 @@ set(SOURCES
 	include/vclib/iterators/iterator_wrapper.cpp
 	include/vclib/iterators/mesh/element_container_iterator.cpp
 	include/vclib/iterators/mesh/face/edge_adj_face_iterator.cpp
+	include/vclib/iterators/space/grid/cell_iterator.cpp
+	include/vclib/iterators/space/grid/static_grid_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/fibonacci.cpp
 	include/vclib/math/histogram.cpp
@@ -490,8 +492,6 @@ set(SOURCES
 	include/vclib/space/grid/hash_table_grid.cpp
 	include/vclib/space/grid/regular_grid.cpp
 	include/vclib/space/grid/static_grid.cpp
-	include/vclib/space/grid/iterators/cell_iterator.cpp
-	include/vclib/space/grid/iterators/static_grid_iterator.cpp
 	include/vclib/space/sampler/mesh_sampler.cpp
 	include/vclib/space/sampler/point_sampler.cpp
 	include/vclib/space/sampler/vertex_sampler.cpp)

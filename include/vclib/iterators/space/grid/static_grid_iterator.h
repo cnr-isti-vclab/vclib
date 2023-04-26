@@ -21,45 +21,87 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_ITERATORS_CELL_ITERATOR_H
-#define VCL_SPACE_GRID_ITERATORS_CELL_ITERATOR_H
+#ifndef VCL_ITERATORS_SPACE_GRID_STATIC_GRID_ITERATOR_H
+#define VCL_ITERATORS_SPACE_GRID_STATIC_GRID_ITERATOR_H
 
+#include <vclib/misc/mark.h>
+#include <vclib/misc/pair.h>
 #include <vclib/space/point.h>
 
 namespace vcl {
 
-template<int N>
-class CellIterator
+template<typename KeyType, typename ValueType, typename GridType>
+class StaticGridIterator
 {
+	using VecIt = typename std::vector<std::pair<uint, ValueType>>::iterator;
+
 public:
-	using difference_type   = ptrdiff_t;
-	using value_type        = vcl::Point<uint, N>;
-	using reference         = const vcl::Point<uint, N>&;
-	using pointer           = const vcl::Point<uint, N>*;
-	using iterator_category = std::forward_iterator_tag;
+	using T = SecondRefPair<KeyType, ValueType>;
+	using value_type = T;
 
-	CellIterator();
-	CellIterator(const vcl::Point<uint, N>& end);
-	CellIterator(const vcl::Point<uint, N>& first, const vcl::Point<uint, N>& end);
+	class ArrowHelper
+	{
+		T value;
 
-	reference operator*() const;
-	pointer   operator->() const;
+	public:
+		ArrowHelper(T value) : value(value) {}
+		const T* operator->() const { return &value; }
+	};
 
-	bool operator==(const CellIterator& oi) const;
-	bool operator!=(const CellIterator& oi) const;
+	StaticGridIterator();
+	StaticGridIterator(VecIt it, const GridType& g);
 
-	CellIterator operator++();
-	CellIterator operator++(int);
+	value_type  operator*() const;
+	ArrowHelper operator->() const;
+
+	bool operator==(const StaticGridIterator& oi) const;
+	bool operator!=(const StaticGridIterator& oi) const;
+
+	StaticGridIterator operator++();
+	StaticGridIterator operator++(int);
 
 private:
-	vcl::Point<uint, N> it;
-	vcl::Point<uint, N> first, end;
+	VecIt vecIt;
+	const GridType* g = nullptr;
+};
 
-	void incrementIt(uint d);
+template<typename KeyType, typename ValueType, typename GridType>
+class ConstStaticGridIterator
+{
+	using VecIt = typename std::vector<std::pair<uint, ValueType>>::const_iterator;
+
+public:
+	using T = SecondRefPair<KeyType, const ValueType>;
+	using value_type = T;
+
+	class ArrowHelper
+	{
+		T value;
+
+	public:
+		ArrowHelper(T value) : value(value) {}
+		const T* operator->() const { return &value; }
+	};
+
+	ConstStaticGridIterator();
+	ConstStaticGridIterator(VecIt it, const GridType& g);
+
+	value_type  operator*() const;
+	ArrowHelper operator->() const;
+
+	bool operator==(const ConstStaticGridIterator& oi) const;
+	bool operator!=(const ConstStaticGridIterator& oi) const;
+
+	ConstStaticGridIterator operator++();
+	ConstStaticGridIterator operator++(int);
+
+private:
+	VecIt vecIt;
+	const GridType* g = nullptr;
 };
 
 } // namespace vcl
 
-#include "cell_iterator.cpp"
+#include "static_grid_iterator.cpp"
 
-#endif // VCL_SPACE_GRID_ITERATORS_CELL_ITERATOR_H
+#endif // VCL_ITERATORS_SPACE_GRID_STATIC_GRID_ITERATOR_H
