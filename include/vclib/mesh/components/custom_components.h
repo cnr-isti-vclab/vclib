@@ -38,6 +38,7 @@ namespace vcl::comp {
  * @brief The CustomComponents class is a container of custom and additional components associated
  * to an Element (e.g. Vertex, Face).
  *
+ * @ingroup components
  */
 template<typename ElementType = void>
 class CustomComponents

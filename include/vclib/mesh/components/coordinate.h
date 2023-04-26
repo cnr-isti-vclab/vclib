@@ -30,7 +30,11 @@
 #include "internal/component_data.h"
 
 namespace vcl::comp {
-
+/**
+ * @brief The CoordT class
+ *
+ * @ingroup components
+ */
 template<PointConcept P, typename ElementType = void, bool optional = false>
 class CoordT
 {
@@ -60,6 +64,9 @@ private:
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
+/**
+ * @ingroup components
+ */
 template<
 	typename Scalar,
 	int N,
@@ -67,15 +74,24 @@ template<
 	bool optional        = false>
 using Coordinate = CoordT<Point<Scalar, N>, ElementType, optional>;
 
+/**
+ * @ingroup components
+ */
 template<
 	typename Scalar,
 	typename ElementType = void,
 	bool optional        = false>
 using Coordinate3 = CoordT<Point3<Scalar>, ElementType, optional>;
 
+/**
+ * @ingroup components
+ */
 template<typename ElementType = void, bool optional = false>
 using Coordinate3f = Coordinate3<float, ElementType, optional>;
 
+/**
+ * @ingroup components
+ */
 template<typename ElementType = void, bool optional = false>
 using Coordinate3d = Coordinate3<double, ElementType, optional>;
 

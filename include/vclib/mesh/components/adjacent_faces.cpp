@@ -25,6 +25,9 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ */
 template<typename Face, int N, typename El, bool o>
 void AdjacentFaces<Face, N, El, o>::init()
 {
@@ -238,16 +241,15 @@ AdjacentFaces<Face, N, El, o>::adjFaceEnd() const
 }
 
 template<typename Face, int N, typename El, bool o>
-typename AdjacentFaces<Face, N, El, o>::AdjacentFaceView AdjacentFaces<Face, N, El, o>::adjFaces()
+auto AdjacentFaces<Face, N, El, o>::adjFaces()
 {
-	return AdjacentFaceView(adjFaceBegin(), adjFaceEnd());
+	return View(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename Face, int N, typename El, bool o>
-typename AdjacentFaces<Face, N, El, o>::ConstAdjacentFaceView
-AdjacentFaces<Face, N, El, o>::adjFaces() const
+auto AdjacentFaces<Face, N, El, o>::adjFaces() const
 {
-	return ConstAdjacentFaceView(adjFaceBegin(), adjFaceEnd());
+	return View(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename Face, int N, typename El, bool o>

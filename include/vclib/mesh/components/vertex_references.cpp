@@ -189,16 +189,15 @@ VertexReferences<Vertex, N, El, o>::vertexEnd() const
 }
 
 template<typename Vertex, int N, typename El, bool o>
-typename VertexReferences<Vertex, N, El, o>::VertexView VertexReferences<Vertex, N, El, o>::vertices()
+auto VertexReferences<Vertex, N, El, o>::vertices()
 {
-	return VertexView(vertexBegin(), vertexEnd());
+	return View(vertexBegin(), vertexEnd());
 }
 
 template<typename Vertex, int N, typename El, bool o>
-typename VertexReferences<Vertex, N, El, o>::ConstVertexView
-VertexReferences<Vertex, N, El, o>::vertices() const
+auto VertexReferences<Vertex, N, El, o>::vertices() const
 {
-	return ConstVertexView(vertexBegin(), vertexEnd());
+	return View(vertexBegin(), vertexEnd());
 }
 
 template<typename Vertex, int N, typename ElementType, bool optional>

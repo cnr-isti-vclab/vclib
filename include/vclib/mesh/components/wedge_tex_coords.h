@@ -33,6 +33,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The WedgeTexCoords class
+ *
+ * @ingroup components
+ */
 template<
 	typename Scalar,
 	int N,
@@ -89,8 +94,8 @@ public:
 	WedgeTexCoordsIterator      wedgeTexCoordEnd();
 	ConstWedgeTexCoordsIterator wedgeTexCoordBegin() const;
 	ConstWedgeTexCoordsIterator wedgeTexCoordEnd() const;
-	WedgeTexCoordsView          wedgeTexCoords();
-	ConstWedgeTexCoordsView     wedgeTexCoords() const;
+	auto                        wedgeTexCoords();
+	auto                        wedgeTexCoords() const;
 
 protected:
 	using WedgeTexCoordScalarType = Scalar;

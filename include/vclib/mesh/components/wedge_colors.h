@@ -32,6 +32,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The WedgeColors class
+ *
+ * @ingroup components
+ */
 template<int N, typename ElementType = void, bool optional = false>
 class WedgeColors
 {
@@ -52,8 +57,6 @@ public:
 
 	using WedgeColorsIterator      = typename Base::Iterator;
 	using ConstWedgeColorsIterator = typename Base::ConstIterator;
-	using WedgeColorsView          = vcl::View<WedgeColorsIterator>;
-	using ConstWedgeColorsView     = vcl::View<ConstWedgeColorsIterator>;
 
 	bool isEnabled() const;
 	bool isWedgeColorsEnabled() const;
@@ -75,8 +78,8 @@ public:
 	WedgeColorsIterator      wedgeColorEnd();
 	ConstWedgeColorsIterator wedgeColorBegin() const;
 	ConstWedgeColorsIterator wedgeColorEnd() const;
-	WedgeColorsView          wedgeColors();
-	ConstWedgeColorsView     wedgeColors() const;
+	auto                     wedgeColors();
+	auto                     wedgeColors() const;
 
 protected:
 	/* Member functions specific for vector of wedge colors */

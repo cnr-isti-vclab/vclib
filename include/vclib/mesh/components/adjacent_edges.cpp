@@ -241,17 +241,15 @@ AdjacentEdges<Edge, N, El, o>::adjEdgeEnd() const
 }
 
 template<typename Edge, int N, typename El, bool o>
-typename AdjacentEdges<Edge, N, El, o>::AdjacentEdgeView
-AdjacentEdges<Edge, N, El, o>::adjEdges()
+auto AdjacentEdges<Edge, N, El, o>::adjEdges()
 {
-	return AdjacentEdgeView(adjEdgeBegin(), adjEdgeEnd());
+	return View(adjEdgeBegin(), adjEdgeEnd());
 }
 
 template<typename Edge, int N, typename El, bool o>
-typename AdjacentEdges<Edge, N, El, o>::ConstAdjacentEdgeView
-AdjacentEdges<Edge, N, El, o>::adjEdges() const
+auto AdjacentEdges<Edge, N, El, o>::adjEdges() const
 {
-	return ConstAdjacentEdgeView(adjEdgeBegin(), adjEdgeEnd());
+	return View(adjEdgeBegin(), adjEdgeEnd());
 }
 
 template<typename Edge, int N, typename El, bool o>

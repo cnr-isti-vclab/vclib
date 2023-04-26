@@ -44,6 +44,8 @@ namespace vcl::comp {
  * @code{.cpp}
  * m.boundingBox();
  * @endcode
+ *
+ * @ingroup components
  */
 template<
 	PointConcept PointType,

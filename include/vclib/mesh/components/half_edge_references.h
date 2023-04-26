@@ -32,6 +32,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The HalfEdgeReferences class
+ *
+ * @ingroup components
+ */
 template<
 	typename HalfEdge,
 	typename Vertex,

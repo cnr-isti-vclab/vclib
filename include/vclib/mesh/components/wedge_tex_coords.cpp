@@ -114,17 +114,15 @@ WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoordEnd() const
 }
 
 template<typename Scalar, int N, typename El, bool o>
-typename WedgeTexCoords<Scalar, N, El, o>::WedgeTexCoordsView
-WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords()
+auto WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords()
 {
-	return WedgeTexCoordsView(wedgeTexCoordBegin(), wedgeTexCoordEnd());
+	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }
 
 template<typename Scalar, int N, typename El, bool o>
-typename WedgeTexCoords<Scalar, N, El, o>::ConstWedgeTexCoordsView
-WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords() const
+auto WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords() const
 {
-	return ConstWedgeTexCoordsView(wedgeTexCoordBegin(), wedgeTexCoordEnd());
+	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }
 
 template<typename Scalar, int N, typename El, bool o>

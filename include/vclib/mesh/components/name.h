@@ -43,6 +43,8 @@ namespace vcl::comp {
  * @code{.cpp}
  * m.name();
  * @endcode
+ *
+ * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
 class Name

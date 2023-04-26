@@ -41,6 +41,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The FaceHalfEdgeReference class
+ *
+ * @ingroup components
+ */
 template<
 	typename HalfEdge,
 	typename ElementType = void,

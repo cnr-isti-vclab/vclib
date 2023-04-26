@@ -31,6 +31,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The VertexReferences class
+ *
+ * @ingroup components
+ */
 template<typename Vertex, int N, typename ElementType = void, bool optional = false>
 class VertexReferences :
 		public ReferencesComponentTriggerer<Vertex>,
@@ -55,8 +60,6 @@ public:
 
 	using VertexIterator      = typename Base::Iterator;
 	using ConstVertexIterator = typename Base::ConstIterator;
-	using VertexView          = vcl::View<VertexIterator>;
-	using ConstVertexView     = vcl::View<ConstVertexIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -100,8 +103,8 @@ public:
 	VertexIterator           vertexEnd();
 	ConstVertexIterator      vertexBegin() const;
 	ConstVertexIterator      vertexEnd() const;
-	VertexView               vertices();
-	ConstVertexView          vertices() const;
+	auto                     vertices();
+	auto                     vertices() const;
 
 protected:
 	void updateReferences(const Vertex* oldBase, const Vertex* newBase);

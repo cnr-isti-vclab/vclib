@@ -31,6 +31,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The PrincipalCurvature class
+ *
+ * @ingroup components
+ */
 template<
 	typename Scalar,
 	typename ElementType = void,

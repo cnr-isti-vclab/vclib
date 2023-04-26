@@ -30,6 +30,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The Scalar class
+ *
+ * @ingroup components
+ */
 template<typename T, typename ElementType = void, bool optional = false>
 class Scalar
 {

@@ -28,6 +28,13 @@
 
 #include "element.h"
 
+/**
+ * @defgroup face_concepts Face Concepts
+ * @ingroup element_concepts
+ *
+ * @brief List of concepts for types related to the Face Element.
+ */
+
 namespace vcl {
 
 template<typename, typename...>
@@ -51,6 +58,11 @@ struct IsAFace<Face<Args...>> : // For types matching the pattern Face<Args...>
 		std::true_type
 {
 };
+
+/**
+ * @ingroup face_concepts face_components
+ * @{
+ */
 
 /* Port concepts into the face namespace */
 template<typename T>
@@ -104,13 +116,13 @@ concept HasWedgeTexCoords = comp::HasWedgeTexCoords<T>;
 template<typename T>
 concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
 
+/** @} */ // end of group
+
 } // namespace vcl::face
 
 /**
- * @brief FaceConcept
- *
- * The Face concept describes how a Face element that can be used for a FaceContainer should be
- * organized.
+ * @brief The FaceConcept describes how a Face element that can be used for a FaceContainer should
+ * be organized.
  *
  * The Face concept is satisfied for a class F if ALL the following sentences are true:
  * - The class F is vcl::Face, or derives from it;
@@ -127,6 +139,8 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
  *   vertices;
  * - If the class F has the WedgeTexCoords component (or a derivate), its size must be the same of
  *   the vertices;
+ *
+ * @ingroup face_concepts
  */
 template<typename T>
 concept FaceConcept =
@@ -146,14 +160,14 @@ concept TriangleFaceConcept =
 	T::VERTEX_NUMBER == 3 && FaceConcept<T>;
 
 /**
- * @brief PolygonFaceConcept
- *
- * The PolygonFace concept describes how a Face element class should be organized to be a polygonal
- * face with dynamic size.
+ * @brief The PolygonFaceConcept describes how a Face element class should be organized to be a
+ * polygonal face with dynamic size.
  *
  * The PolygonFace concept is satisfied for a class F if ALL the following sentences are true:
  * - It satisfies the FaceConcept;
  * - The number of vertices of the VertexReferences component is -1 (dynamic size);
+ *
+ * @ingroup face_concepts
  */
 template<typename T>
 concept PolygonFaceConcept =

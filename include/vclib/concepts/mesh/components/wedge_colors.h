@@ -55,8 +55,6 @@ concept HasWedgeColors = requires(
 	T::WEDGE_COLOR_NUMBER;
 	typename T::WedgeColorsIterator;
 	typename T::ConstWedgeColorsIterator;
-	typename T::WedgeColorsView;
-	typename T::ConstWedgeColorsView;
 
 	{ o.wedgeColor(uint()) } -> std::same_as<vcl::Color&>;
 	{ co.wedgeColor(uint()) } -> std::same_as<const vcl::Color&>;
@@ -70,8 +68,8 @@ concept HasWedgeColors = requires(
 	{ o.wedgeColorEnd() } -> std::same_as<typename T::WedgeColorsIterator>;
 	{ co.wedgeColorBegin() } -> std::same_as<typename T::ConstWedgeColorsIterator>;
 	{ co.wedgeColorEnd() } -> std::same_as<typename T::ConstWedgeColorsIterator>;
-	{ o.wedgeColors() } -> std::same_as<typename T::WedgeColorsView>;
-	{ co.wedgeColors() } -> std::same_as<typename T::ConstWedgeColorsView>;
+	o.wedgeColors();
+	co.wedgeColors();
 };
 
 /**

@@ -62,6 +62,8 @@ namespace vcl::comp {
  * m.hasSameMark(m.vertex(4)); // or: m.vertex(4).hasSameMark(m)
  * m.hasSameMark(m.vertex(5)); // or: m.vertex(5).hasSameMark(m)
  * @endcode
+ *
+ * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
 class Mark

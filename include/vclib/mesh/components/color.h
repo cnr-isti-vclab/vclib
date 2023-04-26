@@ -36,6 +36,8 @@ namespace vcl::comp {
  * (e.g. Vertex, Face, ...).
  *
  * Allows to get and set an object of type Color.
+ *
+ * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
 class Color

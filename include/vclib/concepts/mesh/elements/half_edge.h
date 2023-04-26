@@ -28,6 +28,13 @@
 
 #include "element.h"
 
+/**
+ * @defgroup hedge_concepts HalfEdge Concepts
+ * @ingroup element_concepts
+ *
+ * @brief List of concepts for types related to the HalfEdge Element.
+ */
+
 namespace vcl {
 
 template<typename, typename...>
@@ -51,6 +58,11 @@ struct IsAHalfEdge<HalfEdge<Args...>> : // For types matching the pattern HalfEd
 		std::true_type
 {
 };
+
+/**
+ * @ingroup hedge_concepts hedge_components
+ * @{
+ */
 
 /* Port concepts into the hedge namespace */
 template<typename T>
@@ -76,18 +88,20 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
 template<typename T>
 concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 
+/** @} */ // end of group
+
 } // namespace vcl::hedge
 
 /**
- * @brief HalfEdgeConcept
- *
- * The HalfEdge concept describes how a HalfEdge element that can be used for a HalfEdgeContainer
- * should be organized.
+ * @brief The HalfEdgeConcept describes how a HalfEdge element that can be used for a
+ * HalfEdgeContainer should be organized.
  *
  * The HalfEdge concept is satisfied for a class HE if ALL the following sentences are true:
  * - The class HE is a vcl::HalfEdge, or derives from it;
  * - The class HE has the BitFlags component (or a derivate);
  * - The class HE has the HalfEdgeReferences component (or a derivate);
+ *
+ * @ingroup hedge_concepts
  */
 template<typename T>
 concept HalfEdgeConcept =

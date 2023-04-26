@@ -47,6 +47,8 @@ namespace vcl::comp {
  * @code{.cpp}
  * v.adjVerticesNumber();
  * @endcode
+ *
+ * @ingroup components
  */
 template<typename Vertex, typename ElementType = void, bool optional = false>
 class AdjacentVertices :
@@ -70,8 +72,6 @@ public:
 
 	using AdjacentVertexIterator      = typename Base::Iterator;
 	using ConstAdjacentVertexIterator = typename Base::ConstIterator;
-	using AdjacentVertexView          = vcl::View<AdjacentVertexIterator>;
-	using ConstAdjacentVertexView     = vcl::View<ConstAdjacentVertexIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -111,8 +111,8 @@ public:
 	AdjacentVertexIterator           adjVertexEnd();
 	ConstAdjacentVertexIterator      adjVertexBegin() const;
 	ConstAdjacentVertexIterator      adjVertexEnd() const;
-	AdjacentVertexView               adjVertices();
-	ConstAdjacentVertexView          adjVertices() const;
+	auto                             adjVertices();
+	auto                             adjVertices() const;
 
 protected:
 	void updateReferences(const Vertex* oldBase, const Vertex* newBase);

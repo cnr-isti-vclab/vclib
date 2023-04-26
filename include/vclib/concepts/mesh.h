@@ -39,6 +39,14 @@
  * to discriminate between different Mesh types, their elements and the element components.
  */
 
+/**
+ * @defgroup element_concepts Element Concepts
+ * @ingroup mesh_concepts
+ * @ingroup elements
+ *
+ * @brief List of concepts for types related to the Elements of a Mesh.
+ */
+
 namespace vcl {
 
 template<typename... Args> requires HasVertices<Args...>

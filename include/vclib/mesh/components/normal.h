@@ -31,6 +31,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The NormalT class
+ *
+ * @ingroup components
+ */
 template<PointConcept P, typename ElementType = void, bool optional = false>
 class NormalT
 {

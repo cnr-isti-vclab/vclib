@@ -28,6 +28,13 @@
 
 #include "element.h"
 
+/**
+ * @defgroup edge_concepts Edge Concepts
+ * @ingroup element_concepts
+ *
+ * @brief List of concepts for types related to the Edge Element.
+ */
+
 namespace vcl {
 
 template<typename, typename...>
@@ -51,6 +58,11 @@ struct IsAnEdge<Edge<Args...>> : // For types matching the pattern Edge<Args...>
 		std::true_type
 {
 };
+
+/**
+ * @ingroup edge_concepts edge_components
+ * @{
+ */
 
 /* Port concepts into the vert namespace */
 template<typename T>
@@ -80,19 +92,21 @@ concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>
 concept HasVertexReferences = comp::HasVertexReferences<T>;
 
+/** @} */ // end of group
+
 } // namespace vcl::edge
 
 /**
- * @brief EdgeConcept
- *
- * The Edge concept describes how a Edge element that can be used for a EdgeContainer should be
- * organized.
+ * @brief The EdgeConcept describes how a Edge element that can be used for a EdgeContainer should
+ * be organized.
  *
  * The Edge concept is satisfied for a class E if ALL the following sentences are true:
  * - The class E is vcl::Edge, or derives from it;
  * - The class E has the BitFlags component (or a derivate);
  * - The class E has the VertexReferences component (or a derivate);
  * - The number of vertices of the VertexReferences is 2.
+ *
+ * @ingroup edge_concepts
  */
 template<typename T>
 concept EdgeConcept =
