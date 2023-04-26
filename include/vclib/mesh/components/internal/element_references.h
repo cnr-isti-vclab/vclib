@@ -24,7 +24,7 @@
 #ifndef VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H
 #define VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H
 
-#include <vclib/misc/random_access_container.h>
+#include <vclib/space/vector.h>
 
 #include "component_data.h"
 
@@ -42,11 +42,11 @@ template<typename Elem, int N, typename ElementType>
 class ElementReferences
 {
 private:
-	using Base = RandomAccessContainer<Elem*, N>;
+	using Base = Vector<Elem*, N>;
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 public:
-	using DataValueType = RandomAccessContainer<Elem*, N>; // data that the component stores internally (or vertically)
+	using DataValueType = Vector<Elem*, N>; // data that the component stores internally (or vertically)
 
 	static const int CONTAINER_SIZE = Base::CONTAINER_SIZE;
 
@@ -73,10 +73,10 @@ protected:
 	void updateElementReferencesAfterCompact(const Elem* base, const std::vector<int>& newIndices, Comp* comp);
 
 	template<typename Comp>
-	RandomAccessContainer<Elem*, N>& container(Comp* comp);
+	Vector<Elem*, N>& container(Comp* comp);
 
 	template<typename Comp>
-	const RandomAccessContainer<Elem*, N>& container(const Comp* comp) const;
+	const Vector<Elem*, N>& container(const Comp* comp) const;
 
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };

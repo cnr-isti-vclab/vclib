@@ -270,7 +270,6 @@ set(HEADERS
 	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/pair.h
 	include/vclib/misc/parallel.h
-	include/vclib/misc/random_access_container.h
 	include/vclib/misc/string.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
@@ -303,6 +302,7 @@ set(HEADERS
 	include/vclib/space/tex_coord.h
 	include/vclib/space/triangle.h
 	include/vclib/space/triangle_wrapper.h
+	include/vclib/space/vector.h
 	include/vclib/space/graph/undirected_node.h
 	include/vclib/space/graph/bipartite/bipartite_graph.h
 	include/vclib/space/graph/bipartite/iterator/adjacent_left_node_iterator.h
@@ -460,7 +460,6 @@ set(SOURCES
 	include/vclib/misc/file_info.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
 	include/vclib/misc/parallel.cpp
-	include/vclib/misc/random_access_container.cpp
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
@@ -485,6 +484,7 @@ set(SOURCES
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/triangle.cpp
 	include/vclib/space/triangle_wrapper.cpp
+	include/vclib/space/vector.cpp
 	include/vclib/space/graph/undirected_node.cpp
 	include/vclib/space/graph/bipartite/bipartite_graph.cpp
 	include/vclib/space/graph/bipartite/iterator/adjacent_node_iterator.cpp

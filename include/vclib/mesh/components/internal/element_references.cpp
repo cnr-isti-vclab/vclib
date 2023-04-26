@@ -121,14 +121,14 @@ void ElementReferences<Elem, N, El>::updateElementReferencesAfterCompact(
 
 template<typename Elem, int N, typename El>
 template<typename Comp>
-RandomAccessContainer<Elem*, N>& ElementReferences<Elem, N, El>::container(Comp* comp)
+Vector<Elem*, N>& ElementReferences<Elem, N, El>::container(Comp* comp)
 {
 	return data.template get<El>(comp);
 }
 
 template<typename Elem, int N, typename El>
 template<typename Comp>
-const RandomAccessContainer<Elem*, N>& ElementReferences<Elem, N, El>::container(const Comp* comp) const
+const Vector<Elem*, N>& ElementReferences<Elem, N, El>::container(const Comp* comp) const
 {
 	return data.template get<El>(comp);
 }

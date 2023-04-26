@@ -32,7 +32,6 @@ namespace vcl {
  * Utility type that makes possible to treat const pointers in a templated class that can treat a
  * both const and non-const pointer type.
  */
-
 template<typename T>
 struct MakeConstPointer
 {

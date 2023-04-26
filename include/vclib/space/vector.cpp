@@ -21,16 +21,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "random_access_container.h"
+#include "vector.h"
+#include <algorithm>
+#include <bits/ranges_base.h>
+#include <vector>
 
 namespace vcl {
 
 /**
- * @brief Empty constructor of the container. If the container is dynamic, is size is 0. When the
+ * @brief Empty constructor of the Vector. If the container is dynamic, its size is 0. When the
  * container is static, the size is N and its elements are initialized with their empty constructor.
  */
-template<typename C, int N>
-RandomAccessContainer<C, N>::RandomAccessContainer()
+template<typename T, int N>
+Vector<T, N>::Vector()
 {
 }
 
@@ -38,8 +41,8 @@ RandomAccessContainer<C, N>::RandomAccessContainer()
  * @brief Returns the size of the container, which is N if the container is static.
  * @return the size of the container.
  */
-template<typename C, int N>
-uint RandomAccessContainer<C, N>::size() const
+template<typename T, int N>
+uint Vector<T, N>::size() const
 {
 	if constexpr (N >= 0) {
 		return N;
@@ -54,15 +57,15 @@ uint RandomAccessContainer<C, N>::size() const
  * @param i: the position of the element.
  * @return a reference of the element at position i.
  */
-template<typename C, int N>
-C& RandomAccessContainer<C, N>::at(uint i)
+template<typename T, int N>
+T& Vector<T, N>::at(uint i)
 {
 	assert(i < size());
 	return container[i];
 }
 
-template<typename C, int N>
-const C& RandomAccessContainer<C, N>::at(uint i) const
+template<typename T, int N>
+const T& Vector<T, N>::at(uint i) const
 {
 	assert(i < size());
 	return container[i];
@@ -77,71 +80,67 @@ const C& RandomAccessContainer<C, N>::at(uint i) const
  * @param i: the position of the element.
  * @return a reference of the element at position i % size().
  */
-template<typename C, int N>
-C& RandomAccessContainer<C, N>::atMod(int i)
+template<typename T, int N>
+T& Vector<T, N>::atMod(int i)
 {
 	int n = size(); // need to save n as int to avoid unwanted casts
 	return container[(i % n + n) % n];
 }
 
-template<typename C, int N>
-const C& RandomAccessContainer<C, N>::atMod(int i) const
+template<typename T, int N>
+const T& Vector<T, N>::atMod(int i) const
 {
 	int n = size(); // need to save n as int to avoid unwanted casts
 	return container[(i % n + n) % n];
 }
 
-template<typename C, int N>
-void RandomAccessContainer<C, N>::set(const C& e, uint i)
+template<typename T, int N>
+void Vector<T, N>::set(const T& e, uint i)
 {
 	assert(i < size());
 	container[i] = e;
 }
 
-template<typename C, int N>
-void RandomAccessContainer<C, N>::set(const std::vector<C>& list)
+template<typename T, int N>
+template<Range Rng>
+void Vector<T, N>::set(Rng&& r)
 {
 	if constexpr (N >= 0) {
-		assert(list.size() == N);
-		uint i = 0;
-		for (const auto& v : list) {
-			set(v, i);
-			++i;
-		}
+		std::copy_n(std::ranges::begin(r), N, container.begin());
 	}
 	else {
-		container = list;
+		container = std::vector<T>(std::ranges::begin(r), std::ranges::end(r));
 	}
 }
 
-template<typename C, int N>
-void RandomAccessContainer<C, N>::fill(const C& e)
+template<typename T, int N>
+void Vector<T, N>::fill(const T& e)
 {
 	std::fill(container.begin(), container.end(), e);
 }
 
-template<typename C, int N>
-bool RandomAccessContainer<C, N>::contains(const typename MakeConstPointer<C>::type& e) const
+template<typename T, int N>
+bool Vector<T, N>::contains(const typename MakeConstPointer<T>::type& e) const
 {
 	return std::find(container.begin(), container.end(), e) != container.end();
 }
 
-template<typename C, int N>
-typename RandomAccessContainer<C, N>::Iterator
-RandomAccessContainer<C, N>::find(const typename MakeConstPointer<C>::type& e)
+template<typename T, int N>
+typename Vector<T, N>::Iterator
+Vector<T, N>::find(const typename MakeConstPointer<T>::type& e)
 {
 	return std::find(container.begin(), container.end(), e);
 }
 
-template<typename C, int N>
-typename RandomAccessContainer<C, N>::ConstIterator
-RandomAccessContainer<C, N>::find(const typename MakeConstPointer<C>::type& e) const
+template<typename T, int N>
+typename Vector<T, N>::ConstIterator
+Vector<T, N>::find(const typename MakeConstPointer<T>::type& e) const
 {
 	return std::find(container.begin(), container.end(), e);
 }
 
-template<typename C, int N>
-int RandomAccessContainer<C, N>::indexOf(const typename MakeConstPointer<C>::type& e) const
+template<typename T, int N>
+int Vector<T, N>::indexOf(const typename MakeConstPointer<T>::type& e) const
 {
 	auto it = find(e);
 	if (it == end())
@@ -150,58 +149,58 @@ int RandomAccessContainer<C, N>::indexOf(const typename MakeConstPointer<C>::typ
 		return it - begin();
 }
 
-template<typename C, int N>
-void RandomAccessContainer<C, N>::resize(uint n) requires (N < 0)
+template<typename T, int N>
+void Vector<T, N>::resize(uint n) requires (N < 0)
 {
 	container.resize(n);
 }
 
-template<typename C, int N>
-void RandomAccessContainer<C, N>::pushBack(const C& v) requires (N < 0)
+template<typename T, int N>
+void Vector<T, N>::pushBack(const T& v) requires (N < 0)
 {
 	container.push_back(v);
 }
 
-template<typename C, int N>
-void RandomAccessContainer<C, N>::insert(uint i, const C& v) requires (N < 0)
+template<typename T, int N>
+void Vector<T, N>::insert(uint i, const T& v) requires (N < 0)
 {
 	assert(i < size() + 1);
 	container.insert(container.begin() + i, v);
 }
 
-template<typename C, int N>
-void RandomAccessContainer<C, N>::erase(uint i) requires (N < 0)
+template<typename T, int N>
+void Vector<T, N>::erase(uint i) requires (N < 0)
 {
 	assert(i < size());
 	container.erase(container.begin() + i);
 }
 
-template<typename C, int N>
-void RandomAccessContainer<C, N>::clear() requires (N < 0)
+template<typename T, int N>
+void Vector<T, N>::clear() requires (N < 0)
 {
 	container.clear();
 }
 
-template<typename C, int N>
-typename RandomAccessContainer<C, N>::Iterator RandomAccessContainer<C, N>::begin()
+template<typename T, int N>
+typename Vector<T, N>::Iterator Vector<T, N>::begin()
 {
 	return container.begin();
 }
 
-template<typename C, int N>
-typename RandomAccessContainer<C, N>::Iterator RandomAccessContainer<C, N>::end()
+template<typename T, int N>
+typename Vector<T, N>::Iterator Vector<T, N>::end()
 {
 	return container.end();
 }
 
-template<typename C, int N>
-typename RandomAccessContainer<C, N>::ConstIterator RandomAccessContainer<C, N>::begin() const
+template<typename T, int N>
+typename Vector<T, N>::ConstIterator Vector<T, N>::begin() const
 {
 	return container.begin();
 }
 
-template<typename C, int N>
-typename RandomAccessContainer<C, N>::ConstIterator RandomAccessContainer<C, N>::end() const
+template<typename T, int N>
+typename Vector<T, N>::ConstIterator Vector<T, N>::end() const
 {
 	return container.end();
 }

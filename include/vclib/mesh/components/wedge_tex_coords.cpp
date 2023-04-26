@@ -212,13 +212,13 @@ short WedgeTexCoords<Scalar, N, El, o>::texIndex() const
 }
 
 template<typename Scalar, int N, typename El, bool o>
-RandomAccessContainer<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, o>::texCoords()
+Vector<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, o>::texCoords()
 {
 	return data.template get<El>(this).texCoords;
 }
 
 template<typename Scalar, int N, typename El, bool o>
-const RandomAccessContainer<vcl::TexCoord<Scalar>, N>&
+const Vector<vcl::TexCoord<Scalar>, N>&
 WedgeTexCoords<Scalar, N, El, o>::texCoords() const
 {
 	return data.template get<El>(this).texCoords;

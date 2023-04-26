@@ -40,6 +40,7 @@
 #include "space/sphere.h"
 #include "space/tex_coord.h"
 #include "space/triangle_wrapper.h"
+#include "space/vector.h"
 
 /**
  * @defgroup space Spatial Data Structures

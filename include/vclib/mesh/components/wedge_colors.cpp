@@ -110,13 +110,13 @@ typename WedgeColors<N, El, o>::ConstWedgeColorsView WedgeColors<N, El, o>::wedg
 }
 
 template<int N, typename El, bool o>
-RandomAccessContainer<vcl::Color, N>& WedgeColors<N, El, o>::colors()
+Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors()
 {
 	return data.template get<El>(this);
 }
 
 template<int N, typename El, bool o>
-const RandomAccessContainer<vcl::Color, N>& WedgeColors<N, El, o>::colors() const
+const Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors() const
 {
 	return data.template get<El>(this);
 }

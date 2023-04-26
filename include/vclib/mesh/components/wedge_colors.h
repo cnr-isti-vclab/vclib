@@ -26,7 +26,7 @@
 
 #include <vclib/concepts/mesh/components/wedge_colors.h>
 #include <vclib/views/view.h>
-#include <vclib/misc/random_access_container.h>
+#include <vclib/space/vector.h>
 
 #include "internal/component_data.h"
 
@@ -37,10 +37,10 @@ class WedgeColors
 {
 	using ThisType = WedgeColors<N, ElementType, optional>;
 
-	using Base = RandomAccessContainer<vcl::Color, N>;
+	using Base = Vector<vcl::Color, N>;
 
 public:
-	using DataValueType = RandomAccessContainer<vcl::Color, N>; // data that the component stores internally (or vertically)
+	using DataValueType = Vector<vcl::Color, N>; // data that the component stores internally (or vertically)
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
@@ -94,8 +94,8 @@ private:
 	template<typename Element>
 	void importWedgeColorsFrom(const Element& e);
 
-	RandomAccessContainer<vcl::Color, N>& colors();
-	const RandomAccessContainer<vcl::Color, N>& colors() const;
+	Vector<vcl::Color, N>& colors();
+	const Vector<vcl::Color, N>& colors() const;
 
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };

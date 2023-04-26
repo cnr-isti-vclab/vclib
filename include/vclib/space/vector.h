@@ -21,24 +21,27 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_GENERIC_CONTAINER_H
-#define VCL_MESH_COMPONENTS_GENERIC_CONTAINER_H
+#ifndef VCL_SPACE_VECTOR_H
+#define VCL_SPACE_VECTOR_H
 
 #include <algorithm>
 #include <array>
 #include <assert.h>
 #include <vector>
 
+#include <vclib/concepts/ranges/range.h>
 #include <vclib/types.h>
 
 namespace vcl {
 
 /**
- * @brief The RandomAccessContainer class is a generic container class of values, that could be
- * static or dynamic depending on the templated size N.
+ * @brief The Vector class is a generic container of objects of type T, that could have fixed or
+ * dynamic size, depending on the templated size N.
+ *
+ * @ingroup space
  */
-template<typename C, int N>
-class RandomAccessContainer
+template<typename T, int N>
+class Vector
 {
 private:
 	// if we use the vector, the size of the array will be 0
@@ -47,10 +50,10 @@ private:
 
 	// the Container type will be array or vector, depending on N value
 	using Container = typename std::
-		conditional<(N >= 0), typename std::array<C, ARRAY_SIZE>, typename std::vector<C>>::type;
+		conditional<(N >= 0), typename std::array<T, ARRAY_SIZE>, typename std::vector<T>>::type;
 
 public:
-	RandomAccessContainer();
+	Vector();
 
 	static const int CONTAINER_SIZE = N;
 
@@ -59,38 +62,40 @@ public:
 	// if using array, will be the array iterator, the vector iterator otherwise
 	using Iterator = typename std::conditional<
 		(N >= 0),
-		typename std::array<C, ARRAY_SIZE>::iterator,
-		typename std::vector<C>::iterator>::type;
+		typename std::array<T, ARRAY_SIZE>::iterator,
+		typename std::vector<T>::iterator>::type;
 
 	using ConstIterator = typename std::conditional<
 		(N >= 0),
-		typename std::array<C, ARRAY_SIZE>::const_iterator,
-		typename std::vector<C>::const_iterator>::type;
+		typename std::array<T, ARRAY_SIZE>::const_iterator,
+		typename std::vector<T>::const_iterator>::type;
 
 	uint size() const;
 
-	C&       at(uint i);
-	const C& at(uint i) const;
-	C&       atMod(int i);
-	const C& atMod(int i) const;
+	T&       at(uint i);
+	const T& at(uint i) const;
+	T&       atMod(int i);
+	const T& atMod(int i) const;
 
-	void set(const C& e, uint i);
-	void set(const std::vector<C>& list);
+	void set(const T& e, uint i);
 
-	void fill(const C& e);
+	template<Range Rng>
+	void set(Rng&& r);
 
-	bool contains(const typename MakeConstPointer<C>::type& e) const;
+	void fill(const T& e);
 
-	Iterator find(const typename MakeConstPointer<C>::type& e);
-	ConstIterator find(const typename MakeConstPointer<C>::type& e) const;
+	bool contains(const typename MakeConstPointer<T>::type& e) const;
 
-	int indexOf(const typename MakeConstPointer<C>::type& e) const;
+	Iterator find(const typename MakeConstPointer<T>::type& e);
+	ConstIterator find(const typename MakeConstPointer<T>::type& e) const;
+
+	int indexOf(const typename MakeConstPointer<T>::type& e) const;
 
 	/** Member functions specific for vector **/
 
 	void resize(uint n) requires (N < 0);
-	void pushBack(const C& v) requires (N < 0);
-	void insert(uint i, const C& v) requires (N < 0);
+	void pushBack(const T& v) requires (N < 0);
+	void insert(uint i, const T& v) requires (N < 0);
 	void erase(uint i) requires (N < 0);
 	void clear() requires (N < 0);
 
@@ -107,6 +112,6 @@ protected:
 
 } // namespace vcl
 
-#include "random_access_container.cpp"
+#include "vector.cpp"
 
-#endif // VCL_MESH_COMPONENTS_GENERIC_CONTAINER_H
+#endif // VCL_SPACE_VECTOR_H
