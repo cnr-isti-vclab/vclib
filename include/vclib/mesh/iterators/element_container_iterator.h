@@ -29,10 +29,8 @@
 
 namespace vcl {
 
-namespace internal {
-
 template<template<typename, typename...> typename Container, typename T, bool CNST = false>
-class ElemContIterator
+class ElementContainerIterator
 {
 private:
 	using ContIt = typename std::conditional_t<
@@ -47,81 +45,76 @@ public:
 	using pointer           = typename std::conditional_t<CNST, const T*, T*>;
 	using iterator_category = std::random_access_iterator_tag;
 
-	ElemContIterator();
-	ElemContIterator(ContIt it, const Container<T>& vec, bool jumpDeleted = true);
+	ElementContainerIterator();
+	ElementContainerIterator(ContIt it, const Container<T>& vec, bool jumpDeleted = true);
 
 	reference operator*() const;
 	pointer   operator->() const;
 
-	bool operator==(const ElemContIterator& oi) const;
-	bool operator!=(const ElemContIterator& oi) const;
+	bool operator==(const ElementContainerIterator& oi) const;
+	bool operator!=(const ElementContainerIterator& oi) const;
 
-	ElemContIterator& operator++();
-	ElemContIterator operator++(int);
-	ElemContIterator& operator--();
-	ElemContIterator operator--(int);
+	ElementContainerIterator& operator++();
+	ElementContainerIterator operator++(int);
+	ElementContainerIterator& operator--();
+	ElementContainerIterator operator--(int);
 
-	ElemContIterator& operator+=(difference_type n);
-	ElemContIterator& operator-=(difference_type n);
+	ElementContainerIterator& operator+=(difference_type n);
+	ElementContainerIterator& operator-=(difference_type n);
 
-	ElemContIterator operator+(difference_type n) const;
-	ElemContIterator operator-(difference_type n) const;
-	difference_type  operator-(const ElemContIterator& oi) const;
+	ElementContainerIterator operator+(difference_type n) const;
+	ElementContainerIterator operator-(difference_type n) const;
+	difference_type  operator-(const ElementContainerIterator& oi) const;
 	reference operator[](difference_type i);
 
-	bool operator<(const ElemContIterator& oi) const;
-	bool operator>(const ElemContIterator& oi) const;
-	bool operator<=(const ElemContIterator& oi) const;
-	bool operator>=(const ElemContIterator& oi) const;
+	bool operator<(const ElementContainerIterator& oi) const;
+	bool operator>(const ElementContainerIterator& oi) const;
+	bool operator<=(const ElementContainerIterator& oi) const;
+	bool operator>=(const ElementContainerIterator& oi) const;
 
 private:
-	ElemContIterator& incrementJump();
-	ElemContIterator postIncrementJump();
-	ElemContIterator& incrementFast();
-	ElemContIterator postIncrementFast();
+	ElementContainerIterator& incrementJump();
+	ElementContainerIterator postIncrementJump();
+	ElementContainerIterator& incrementFast();
+	ElementContainerIterator postIncrementFast();
 
-	ElemContIterator& decrementJump();
-	ElemContIterator postDecrementJump();
-	ElemContIterator& decrementFast();
-	ElemContIterator postDecrementFast();
+	ElementContainerIterator& decrementJump();
+	ElementContainerIterator postDecrementJump();
+	ElementContainerIterator& decrementFast();
+	ElementContainerIterator postDecrementFast();
 
-	ElemContIterator& assignSumJump(difference_type n);
-	ElemContIterator& assignSumFast(difference_type n);
+	ElementContainerIterator& assignSumJump(difference_type n);
+	ElementContainerIterator& assignSumFast(difference_type n);
 
-	difference_type diffJump(const ElemContIterator& oi) const;
-	difference_type diffFast(const ElemContIterator& oi) const;
+	difference_type diffJump(const ElementContainerIterator& oi) const;
+	difference_type diffFast(const ElementContainerIterator& oi) const;
 
 	// pointer to increment function, assigned in the constructor
-	ElemContIterator& (ElemContIterator::*increment)();
+	ElementContainerIterator& (ElementContainerIterator::*increment)();
 	// pointer to post increment function, assigned in the constructor
-	ElemContIterator (ElemContIterator::*postIncrement)();
+	ElementContainerIterator (ElementContainerIterator::*postIncrement)();
 	// pointer to decrement function, assigned in the constructor
-	ElemContIterator& (ElemContIterator::*decrement)();
+	ElementContainerIterator& (ElementContainerIterator::*decrement)();
 	// pointer to post decrement function, assigned in the constructor
-	ElemContIterator (ElemContIterator::*postDecrement)();
+	ElementContainerIterator (ElementContainerIterator::*postDecrement)();
 	// pointer to assignment sum function, assigned in the constructor
-	ElemContIterator& (ElemContIterator::*assignSum)(difference_type);
+	ElementContainerIterator& (ElementContainerIterator::*assignSum)(difference_type);
 	// pointer to difference between iterators function, assigned in the constructor
-	difference_type (ElemContIterator::*diff)(const ElemContIterator& oi) const;
+	difference_type (ElementContainerIterator::*diff)(const ElementContainerIterator& oi) const;
 
 	ContIt              it;  // the actual iterator
 	const Container<T>* vec = nullptr; // needed to check for end when jumping elements
 };
 
-} // namespace vcl::internal
-
 template<template<typename, typename...> typename Container, typename T>
-using ElementContainerIterator = internal::ElemContIterator<Container, T, false>;
-
-template<template<typename, typename...> typename Container, typename T>
-using ConstElementContainerIterator = internal::ElemContIterator<Container, T, true>;
+using ConstElementContainerIterator = ElementContainerIterator<Container, T, true>;
 
 } // namespace vcl
 
 template<template<typename, typename...> typename Container, typename T, bool C>
-vcl::internal::ElemContIterator<Container, T, C> operator+(
-	typename vcl::internal::ElemContIterator<Container, T, C>::difference_type n,
-	const vcl::internal::ElemContIterator<Container, T, C>& it);
+vcl::ElementContainerIterator<Container, T, C> operator+(
+	typename vcl::ElementContainerIterator<Container, T, C>::difference_type n,
+	const vcl::ElementContainerIterator<Container, T, C>& it);
 
 #include "element_container_iterator.cpp"
 

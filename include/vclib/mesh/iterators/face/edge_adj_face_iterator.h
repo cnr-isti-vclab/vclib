@@ -30,25 +30,23 @@
 
 namespace vcl {
 
-namespace internal {
-
-template<typename FT, bool CNST = false>
+template<typename FaceType, bool CNST = false>
 class EdgeAdjFaceIterator
 {
-	using FaceType = typename std::conditional_t<CNST, FT, const FT>;
+	using FT = typename std::conditional_t<CNST, FaceType, const FaceType>;
 
-	using VertexType = typename std::conditional_t<CNST,
-		typename FaceType::VertexType,
-		const typename FaceType::VertexType>;
+	using VT = typename std::conditional_t<CNST,
+		typename FT::VertexType,
+		const typename FT::VertexType>;
 public:
 	using difference_type   = ptrdiff_t;
 	using iterator_category = std::forward_iterator_tag;
-	using value_type        = FaceType*;
-	using reference         = FaceType*&;
-	using pointer           = FaceType**;
+	using value_type        = FT*;
+	using reference         = FT*&;
+	using pointer           = FT**;
 
 	EdgeAdjFaceIterator();
-	EdgeAdjFaceIterator(FaceType& f, uint edge);
+	EdgeAdjFaceIterator(FT& f, uint edge);
 
 	bool operator==(const EdgeAdjFaceIterator& oi) const;
 	bool operator!=(const EdgeAdjFaceIterator& oi) const;
@@ -60,19 +58,14 @@ public:
 	pointer operator->() const;
 
 private:
-	FaceType* current = nullptr;
-	FaceType* end = nullptr;
-	VertexType* v0 = nullptr;
-	VertexType* v1 = nullptr;
+	FT* current = nullptr;
+	FT* end     = nullptr;
+	VT* v0      = nullptr;
+	VT* v1      = nullptr;
 };
 
-} // namespace vcl::internal
-
 template<typename FaceType>
-using EdgeAdjFaceIterator = internal::EdgeAdjFaceIterator<FaceType, false>;
-
-template<typename FaceType>
-using ConstEdgeAdjFaceIterator = internal::EdgeAdjFaceIterator<FaceType, true>;
+using ConstEdgeAdjFaceIterator = EdgeAdjFaceIterator<FaceType, true>;
 
 } // namespace vcl
 

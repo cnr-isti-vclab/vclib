@@ -33,6 +33,7 @@
 /**
  * @defgroup mesh_concepts Mesh Concepts
  * @ingroup lconcepts
+ * @ingroup mesh
  *
  * @brief List of concepts for types related to the Mesh data structures of the library. They allow
  * to discriminate between different Mesh types, their elements and the element components.

@@ -32,6 +32,13 @@
 namespace vcl {
 
 /**
+ * @defgroup mesh Mesh
+ *
+ * @brief List of classes, aliases, concepts and functions used for the creation, customization,
+ * usage and manipulation of Mesh classes.
+ */
+
+/**
  * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
  * containers of Elements (which can be vertices, faces, edges...), plus some other components.
  *

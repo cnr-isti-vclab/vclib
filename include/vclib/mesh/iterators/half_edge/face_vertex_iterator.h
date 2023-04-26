@@ -30,12 +30,10 @@
 
 namespace vcl {
 
-namespace internal {
-
-template<typename HalfEdge, bool CNST>
+template<typename HalfEdge, bool CNST = false>
 class FaceVertexIterator
 {
-	friend class FaceBaseIterator;
+	friend class internal::FaceBaseIterator;
 
 	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public :
@@ -58,23 +56,18 @@ public :
 	reference operator*() const { return current->fromVertex(); }
 	pointer operator->() const { return &(current->fromVertex()); }
 
-	auto& operator++()   { return FaceBaseIterator::increment(*this); }
-	auto operator++(int) { return FaceBaseIterator::postIncrement(*this); }
-	auto& operator--()   { return FaceBaseIterator::decrement(*this); }
-	auto operator--(int) { return FaceBaseIterator::postDecrement(*this); }
+	auto& operator++()   { return internal::FaceBaseIterator::increment(*this); }
+	auto operator++(int) { return internal::FaceBaseIterator::postIncrement(*this); }
+	auto& operator--()   { return internal::FaceBaseIterator::decrement(*this); }
+	auto operator--(int) { return internal::FaceBaseIterator::postDecrement(*this); }
 
 protected:
 	CurrentHEdgeType current = nullptr;
 	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
-} // namespace vcl::internal
-
 template<typename HalfEdge>
-using FaceVertexIterator = internal::FaceVertexIterator<HalfEdge, false>;
-
-template<typename HalfEdge>
-using ConstFaceVertexIterator = internal::FaceVertexIterator<HalfEdge, true>;
+using ConstFaceVertexIterator = FaceVertexIterator<HalfEdge, true>;
 
 } // namespace vcl
 

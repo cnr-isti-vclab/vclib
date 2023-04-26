@@ -23,7 +23,7 @@
 
 #include "edge_adj_face_iterator.h"
 
-namespace vcl::internal {
+namespace vcl {
 
 template<typename FaceType, bool CNST>
 EdgeAdjFaceIterator<FaceType, CNST>::EdgeAdjFaceIterator()
@@ -85,4 +85,4 @@ EdgeAdjFaceIterator<FaceType, CNST>::operator->() const
 	return &current;
 }
 
-} // namespace vcl::internal
+} // namespace vcl

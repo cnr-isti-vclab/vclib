@@ -30,12 +30,10 @@
 
 namespace vcl {
 
-namespace internal {
-
-template<typename HalfEdge, bool CNST>
+template<typename HalfEdge, bool CNST = false>
 class FaceWedgeTexCoordIterator
 {
-	friend class FaceBaseIterator;
+	friend class internal::FaceBaseIterator;
 
 	using CurrentHEdgeType = std::conditional_t<CNST, const HalfEdge*, HalfEdge*>;
 public:
@@ -57,23 +55,18 @@ public:
 	reference operator*() const { return current->texCoord(); }
 	pointer operator->() const { return &(current->texCoord()); }
 
-	auto& operator++()   { return FaceBaseIterator::increment(*this); }
-	auto operator++(int) { return FaceBaseIterator::postIncrement(*this); }
-	auto& operator--()   { return FaceBaseIterator::decrement(*this); }
-	auto operator--(int) { return FaceBaseIterator::postDecrement(*this); }
+	auto& operator++()   { return internal::FaceBaseIterator::increment(*this); }
+	auto operator++(int) { return internal::FaceBaseIterator::postIncrement(*this); }
+	auto& operator--()   { return internal::FaceBaseIterator::decrement(*this); }
+	auto operator--(int) { return internal::FaceBaseIterator::postDecrement(*this); }
 
 protected:
 	CurrentHEdgeType current = nullptr;
 	const HalfEdge* end = nullptr; // when the current is equal to end, it will be set to nullptr
 };
 
-} // namespace vcl::internal
-
 template<typename HalfEdge>
-using FaceWedgeTexCoordIterator = internal::FaceWedgeTexCoordIterator<HalfEdge, false>;
-
-template<typename HalfEdge>
-using ConstFaceWedgeTexCoordIterator = internal::FaceWedgeTexCoordIterator<HalfEdge, true>;
+using ConstFaceWedgeTexCoordIterator = FaceWedgeTexCoordIterator<HalfEdge, true>;
 
 } // namespace vcl
 
