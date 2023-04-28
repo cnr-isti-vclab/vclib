@@ -24,7 +24,7 @@
 #ifndef VCL_CONCEPTS_SPACE_SAMPLER_H
 #define VCL_CONCEPTS_SPACE_SAMPLER_H
 
-#include <vclib/misc/internal/tmp_meshes.h>
+#include <vclib/types/base.h>
 
 namespace vcl {
 
@@ -59,36 +59,6 @@ concept SamplerConcept = requires(
 	co.begin();
 	co.end();
 #endif
-};
-
-/**
- * @brief A concept for a container that stores Point samples, and allows to generate them using
- * Faces.
- *
- * A type satisfies this concept if it satisfies the SamplerConcept and provides the following
- * interface:
- * - `o.add(f, m)`: adds a sample with barycenter of the given face `f` of the mesh `m`.
- * - `o.set(uint(), f, m)`: sets the sample at the given index with the the given face `f` of the
- *    mesh `m`.
- * - `o.add(f, m, p)`: adds a sample with the coord computed as the barycentric coordinate `p` on
- *    the given face `f` of the mesh `m`.
- * - `o.set(uint(), f, m, p)`: sets the sample at the given index with the coord computed as the
- *    barycentric coordinate `p` on the given face `f` of the mesh `m`.
- *
- * @tparam T: The type to be tested for conformity to the FaceSamplerConcept.
- */
-template<typename T>
-concept FaceSamplerConcept = SamplerConcept<T> &&
-	requires(
-		T o,
-		const internal::TMPSimplePolyMesh::VertexType::CoordType& p,
-		const internal::TMPSimplePolyMesh::FaceType& f)
-{
-	typename T::ScalarType;
-	o.add(f);
-	o.set(uint(), f);
-	o.add(f, p);
-	o.set(uint(), f, p);
 };
 
 } // namespace vcl

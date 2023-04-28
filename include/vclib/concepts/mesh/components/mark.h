@@ -40,6 +40,8 @@ namespace vcl::comp {
  *
  * To be completely sure that Color is available at runtime, you need to call the member
  * function `isMarkEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasMark = requires(
@@ -60,19 +62,6 @@ concept HasMark = requires(
  */
 template<typename T>
 concept HasOptionalMark = HasMark<T> && IsOptionalComponent<typename T::MarkComponent>;
-
-/* Detector function to check if a class has Mark enabled */
-
-template <typename T>
-bool isMarkEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalMark<T>) {
-		return element.isMarkEnabled();
-	}
-	else {
-		return HasMark<T>;
-	}
-}
 
 } // namespace vcl::comp
 

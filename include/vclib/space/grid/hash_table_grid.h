@@ -29,9 +29,8 @@
 
 #include <vclib/mesh/requirements.h>
 
-#include "abstract_ds_grid.h"
-#include "regular_grid2.h"
-#include "regular_grid3.h"
+#include "abstract_grid.h"
+#include "regular_grid.h"
 
 namespace vcl {
 
@@ -45,14 +44,16 @@ namespace vcl {
  * managing this data structure is the same of managing an std::unordered_multimap.
  * The user can allow or disallow the insertion of duplicate values by setting the boolean
  * AllowDuplicates template parameter, that is defaulted to `true`.
+ *
+ * @ingroup space
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates = true>
-class HashTableGrid : public AbstractDSGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>
+class HashTableGrid : public AbstractGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>
 {
-	using AbstractGrid =
-		AbstractDSGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>;
+	using AbsGrid =
+		AbstractGrid<GridType, ValueType, HashTableGrid<GridType, ValueType, AllowDuplicates>>;
 
-	friend AbstractGrid;
+	friend AbsGrid;
 
 public:
 	static_assert(
@@ -60,8 +61,8 @@ public:
 		"Not allowing duplicates in a Spatial Data Structures means that ValueType must implement "
 		"operator==.");
 
-	using KeyType = typename AbstractGrid::KeyType;
-	using IsInCellFunction = typename AbstractGrid::IsInCellFunction;
+	using KeyType = typename AbsGrid::KeyType;
+	using IsInCellFunction = typename AbsGrid::IsInCellFunction;
 
 	using Iterator = typename std::unordered_multimap<KeyType, ValueType>::iterator;
 	using ConstIterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
@@ -105,11 +106,11 @@ private:
 	bool eraseInCell(const KeyType& k, const ValueType& v);
 };
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
-using HashTableGrid2 = HashTableGrid<RegularGrid2<ScalarType>, ValueType, AD>;
+template<typename ValueType, typename ScalarType = double, bool AllowDuplicates = true>
+using HashTableGrid2 = HashTableGrid<RegularGrid2<ScalarType>, ValueType, AllowDuplicates>;
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
-using HashTableGrid3 = HashTableGrid<RegularGrid3<ScalarType>, ValueType, AD>;
+template<typename ValueType, typename ScalarType = double, bool AllowDuplicates = true>
+using HashTableGrid3 = HashTableGrid<RegularGrid3<ScalarType>, ValueType, AllowDuplicates>;
 
 } // namespace vcl
 

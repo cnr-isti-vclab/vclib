@@ -33,7 +33,7 @@ typedef enum {
 	FACE,
 	EDGE,
 	HALF_EDGE
-} ElementType;
+} ElementEnumType;
 
 template<typename T>
 concept ElementConcept = requires (T o, const T& co)

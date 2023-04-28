@@ -27,6 +27,7 @@
     - [ ] weights input argument of all the function should be a range
   - [ ] update adjacent faces optimized for dcel
 - Space:
+  - [ ] Grid data structures work only with const pointers when doing queries (must well manage constness in std::functions for intersection and distance)
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
   - [ ] move random access container in space. In general, every data structure must be in space directory
 - External:

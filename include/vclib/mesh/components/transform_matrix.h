@@ -31,6 +31,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The TransformMatrix class
+ *
+ * @ingroup components
+ */
 template<typename Scalar, typename ElementType = void, bool optional = false>
 class TransformMatrix
 {

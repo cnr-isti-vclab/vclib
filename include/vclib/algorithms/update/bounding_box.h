@@ -28,9 +28,8 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-void updateBoundingBox(MeshType& m)
-	requires vcl::HasBoundingBox<MeshType>;
+template<HasBoundingBox MeshType>
+void updateBoundingBox(MeshType& m);
 
 } // namespace vcl
 

@@ -114,17 +114,15 @@ WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoordEnd() const
 }
 
 template<typename Scalar, int N, typename El, bool o>
-typename WedgeTexCoords<Scalar, N, El, o>::WedgeTexCoordsView
-WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords()
+auto WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords()
 {
-	return WedgeTexCoordsView(wedgeTexCoordBegin(), wedgeTexCoordEnd());
+	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }
 
 template<typename Scalar, int N, typename El, bool o>
-typename WedgeTexCoords<Scalar, N, El, o>::ConstWedgeTexCoordsView
-WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords() const
+auto WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords() const
 {
-	return ConstWedgeTexCoordsView(wedgeTexCoordBegin(), wedgeTexCoordEnd());
+	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }
 
 template<typename Scalar, int N, typename El, bool o>
@@ -212,16 +210,27 @@ short WedgeTexCoords<Scalar, N, El, o>::texIndex() const
 }
 
 template<typename Scalar, int N, typename El, bool o>
-RandomAccessContainer<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, o>::texCoords()
+Vector<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, o>::texCoords()
 {
 	return data.template get<El>(this).texCoords;
 }
 
 template<typename Scalar, int N, typename El, bool o>
-const RandomAccessContainer<vcl::TexCoord<Scalar>, N>&
+const Vector<vcl::TexCoord<Scalar>, N>&
 WedgeTexCoords<Scalar, N, El, o>::texCoords() const
 {
 	return data.template get<El>(this).texCoords;
+}
+
+template <typename T>
+bool isWedgeTexCoordsEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalWedgeTexCoords<T>) {
+		return element.isWedgeTexCoordsEnabled();
+	}
+	else {
+		return HasWedgeTexCoords<T>;
+	}
 }
 
 } // namespace vcl::comp

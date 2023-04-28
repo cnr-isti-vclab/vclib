@@ -10,25 +10,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Install dependencies
-        run: |
-          sudo apt-get install cmake libtbb-dev doxygen graphviz
-          pip3 install sphinx breathe sphinx_rtd_theme readthedocs-sphinx-ext
+        run: | # apt doxygen version is buggy - need to use 1.9.6
+          sudo apt-get install graphviz
+          mkdir doxygen
+          cd doxygen
+          wget https://www.doxygen.nl/files/doxygen-1.9.6.linux.bin.tar.gz
+          tar -xvzf doxygen-1.9.6.linux.bin.tar.gz
+          mv doxygen-*/* .
+          chmod +x bin/*
+          echo "${GITHUB_WORKSPACE}/doxygen/bin" >> $GITHUB_PATH
       - name: Build Docs
         run: |
-          mkdir build
-          cd build
-          cmake -DVCLIB_BUILD_DOCS=ON -DVCLIB_BUILD_TESTS=OFF ..
-          make
+          cd docs
+          doxygen Doxyfile
       - name: Upload Docs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: vclib_docs
-          path: docs/_build/html
+          path: docs/_doxygen/html
 
   upload_docs:
     needs: build_docs
@@ -45,7 +45,7 @@ jobs:
           cd static/vclib
           rm -R *
       - name: Download new docs
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: vclib_docs
           path: static/vclib/

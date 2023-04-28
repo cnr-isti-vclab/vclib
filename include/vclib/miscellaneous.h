@@ -29,9 +29,14 @@
 #include "misc/hash.h"
 #include "misc/logger.h"
 #include "misc/parallel.h"
-#include "misc/random_access_container.h"
 #include "misc/string.h"
 #include "misc/timer.h"
 #include "misc/tokenizer.h"
+
+/**
+ * @defgroup miscellaneous Miscellaneous
+ *
+ * @brief List of utility functions, classes and structs used in the library.
+ */
 
 #endif // VCL_MISCELLANEOUS_H

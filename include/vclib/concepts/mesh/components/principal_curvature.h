@@ -40,6 +40,8 @@ namespace vcl::comp {
  *
  * To be completely sure that PrincipalCurvature is available at runtime, you need to call the
  * member function `isPrincipalCurvatureEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasPrincipalCurvature = requires(
@@ -56,22 +58,11 @@ concept HasPrincipalCurvature = requires(
 /**
  * @brief HasOptionalPrincipalCurvature concept is satisfied only if a class satisfis the
  * HasPrincipalCurvature concept and the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && IsOptionalComponent<typename T::PrincipalCurvatureComponent>;
-
-/* Detector function to check if a class has PrincipalCurvature enabled */
-
-template <typename T>
-bool isPrincipalCurvatureEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalPrincipalCurvature<T>) {
-		return element.isPrincipalCurvatureEnabled();
-	}
-	else {
-		return HasPrincipalCurvature<T>;
-	}
-}
 
 } // namespace vcl::comp
 

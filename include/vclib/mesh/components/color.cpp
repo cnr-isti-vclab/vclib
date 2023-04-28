@@ -78,4 +78,15 @@ const vcl::Color& Color<El, o>::c() const
 	return data.template get<El>(this);
 }
 
+template <typename T>
+bool isColorEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalColor<T>) {
+		return element.isColorEnabled();
+	}
+	else {
+		return HasColor<T>;
+	}
+}
+
 } // namespace vcl::comp

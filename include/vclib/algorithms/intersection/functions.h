@@ -56,7 +56,7 @@ struct IntersFunctionStruct
 template<typename Obj1, typename Obj2>
 auto intersectFunction()
 {
-	return IntersFunctionStruct<Obj1, Obj2>::intersFun;
+	return IntersFunctionStruct<RemoveConstPointer<Obj1>, RemoveConstPointer<Obj2>>::intersFun;
 }
 
 /********* IntersFunctionStruct Specializations *********/
@@ -76,20 +76,16 @@ auto intersectFunction()
 template<Box3Concept Obj1, FaceConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return faceBoxIntersect(o2, o1);
 	};
 };
 
 // Specialization for intersection between Box and Face*
 template<Box3Concept Obj1, FaceConcept Obj2>
-struct IntersFunctionStruct<Obj1, const Obj2*>
+struct IntersFunctionStruct<Obj1, Obj2*>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2* const&)> intersFun =
-		[](const Obj1& o1, const Obj2* const& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2* const& o2) {
 		return faceBoxIntersect(*o2, o1);
 	};
 };
@@ -98,20 +94,16 @@ struct IntersFunctionStruct<Obj1, const Obj2*>
 template<FaceConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return faceBoxIntersect(o1, o2);
 	};
 };
 
 // Specialization for intersection between Face* and Box
 template<FaceConcept Obj1, Box3Concept Obj2>
-struct IntersFunctionStruct<const Obj1*, Obj2>
+struct IntersFunctionStruct<Obj1*, Obj2>
 {
-	static inline const std::function<bool(const Obj1* const&, const Obj2&)> intersFun =
-		[](const Obj1* const& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1* const& o1, const Obj2& o2) {
 		return faceBoxIntersect(*o1, o2);
 	};
 };
@@ -120,20 +112,16 @@ struct IntersFunctionStruct<const Obj1*, Obj2>
 template<SphereConcept Obj1, FaceConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return faceSphereIntersect(o2, o1);
 	};
 };
 
 // Specialization for intersection between Sphere and Face*
 template<SphereConcept Obj1, FaceConcept Obj2>
-struct IntersFunctionStruct<Obj1, const Obj2*>
+struct IntersFunctionStruct<Obj1, Obj2*>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2* const&)> intersFun =
-		[](const Obj1& o1, const Obj2* const& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2* const& o2) {
 		return faceSphereIntersect(*o2, o1);
 	};
 };
@@ -142,20 +130,16 @@ struct IntersFunctionStruct<Obj1, const Obj2*>
 template<FaceConcept Obj1, SphereConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return faceSphereIntersect(o1, o2);
 	};
 };
 
 // Specialization for intersection between Face* and Sphere
 template<FaceConcept Obj1, SphereConcept Obj2>
-struct IntersFunctionStruct<const Obj1*, Obj2>
+struct IntersFunctionStruct<Obj1*, Obj2>
 {
-	static inline const std::function<bool(const Obj1* const&, const Obj2&)> intersFun =
-		[](const Obj1* const& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1* const& o1, const Obj2& o2) {
 		return faceSphereIntersect(*o1, o2);
 	};
 };
@@ -164,9 +148,7 @@ struct IntersFunctionStruct<const Obj1*, Obj2>
 template<PlaneConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return planeBoxIntersect(o1, o2);
 	};
 };
@@ -175,9 +157,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 template<Box3Concept Obj1, PlaneConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return planeBoxIntersect(o2, o1);
 	};
 };
@@ -186,9 +166,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 template<PlaneConcept Obj1, Segment3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return planeSegmentIntersect(o1, o2);
 	};
 };
@@ -197,9 +175,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 template<Segment3Concept Obj1, PlaneConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return planeSegmentIntersect(o2, o1);
 	};
 };
@@ -208,9 +184,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 template<SphereConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return sphereBoxIntersect(o1, o2);
 	};
 };
@@ -219,9 +193,7 @@ struct IntersFunctionStruct<Obj1, Obj2>
 template<Box3Concept Obj1, SphereConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const std::function<bool(const Obj1&, const Obj2&)> intersFun =
-		[](const Obj1& o1, const Obj2& o2)
-	{
+	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return sphereBoxIntersect(o2, o1);
 	};
 };

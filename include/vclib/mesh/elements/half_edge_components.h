@@ -27,14 +27,28 @@
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/custom_components.h"
-#include "../components/half_edge_references.h"
+#include "../components/half_edge_pointers.h"
 #include "../components/mark.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
 #include "../components/scalar.h"
 #include "../components/tex_coord.h"
 
+/**
+ * @defgroup hedge_components HalfEdge Components
+ * @ingroup components
+ *
+ * @brief This group lists all the Components that may be used by the HalfEdge element.
+ *
+ * All these components are listed inside the vcl::hedge namespace.
+ */
+
 namespace vcl::hedge {
+
+/**
+ * @addtogroup hedge_components
+ * @{
+ */
 
 /* Port BitFlags class into hedge namespace */
 using BitFlags = comp::BitFlags<>;
@@ -55,9 +69,9 @@ using OptionalColor = comp::Color<HEdgeType, true>;
 template<typename HEdgeType>
 using CustomComponents = comp::CustomComponents<HEdgeType>;
 
-/* Port HalfEdgeReferences class into hedge namespace */
+/* Port HalfEdgePointers class into hedge namespace */
 template<typename HalfEdgeType, typename VertexType, typename FaceType>
-using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType>;
+using HalfEdgePointers = comp::HalfEdgePointers<HalfEdgeType, VertexType, FaceType>;
 
 /* Port Mark class into hedge namespace */
 using Mark = comp::Mark<>;
@@ -121,6 +135,8 @@ using OptionalTexCoordf = comp::TexCoord<float, HEdgeType, true>;
 
 template<typename HEdgeType>
 using OptionalTexCoordd = comp::TexCoord<double, HEdgeType, true>;
+
+/** @} */ // end of hedge_components group
 
 } // namespace vcl::hedge
 

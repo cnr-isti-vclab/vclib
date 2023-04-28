@@ -98,25 +98,25 @@ typename WedgeColors<N, El, o>::ConstWedgeColorsIterator WedgeColors<N, El, o>::
 }
 
 template<int N, typename El, bool o>
-typename WedgeColors<N, El, o>::WedgeColorsView WedgeColors<N, El, o>::wedgeColors()
+auto WedgeColors<N, El, o>::wedgeColors()
 {
-	return WedgeColorsView(wedgeColorBegin(), wedgeColorEnd());
+	return View(wedgeColorBegin(), wedgeColorEnd());
 }
 
 template<int N, typename El, bool o>
-typename WedgeColors<N, El, o>::ConstWedgeColorsView WedgeColors<N, El, o>::wedgeColors() const
+auto WedgeColors<N, El, o>::wedgeColors() const
 {
-	return ConstWedgeColorsView(wedgeColorBegin(), wedgeColorEnd());
+	return View(wedgeColorBegin(), wedgeColorEnd());
 }
 
 template<int N, typename El, bool o>
-RandomAccessContainer<vcl::Color, N>& WedgeColors<N, El, o>::colors()
+Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors()
 {
 	return data.template get<El>(this);
 }
 
 template<int N, typename El, bool o>
-const RandomAccessContainer<vcl::Color, N>& WedgeColors<N, El, o>::colors() const
+const Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors() const
 {
 	return data.template get<El>(this);
 }
@@ -187,6 +187,17 @@ void WedgeColors<N, El, o>::importWedgeColorsFrom(const Element& e)
 {
 	for (uint i = 0; i < e.vertexNumber(); ++i){
 		wedgeColor(i) = e.wedgeColor(i);
+	}
+}
+
+template <typename T>
+bool isWedgeColorsEnabledOn(const T& element)
+{
+	if constexpr(HasOptionalWedgeColors<T>) {
+		return element.isWedgeColorsEnabled();
+	}
+	else {
+		return HasWedgeColors<T>;
 	}
 }
 

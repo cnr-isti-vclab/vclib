@@ -28,6 +28,13 @@
 
 #include "element.h"
 
+/**
+ * @defgroup vert_concepts Vertex Concepts
+ * @ingroup element_concepts
+ *
+ * @brief List of concepts for types related to the Vertex Element.
+ */
+
 namespace vcl {
 
 template<typename, typename...>
@@ -51,6 +58,11 @@ struct IsAVertex<Vertex<Args...>> : // For types matching the pattern Vertex<Arg
 		std::true_type
 {
 };
+
+/**
+ * @ingroup vert_concepts vert_components
+ * @{
+ */
 
 /* Port concepts into the vert namespace */
 template<typename T>
@@ -76,7 +88,7 @@ concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
 concept HasCoordinate = comp::HasCoordinate<T>;
 template<typename T>
-concept HasHalfEdgeReference = comp::HasVertexHalfEdgeReference<T>;
+concept HasHalfEdgePointer = comp::HasVertexHalfEdgePointer<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
@@ -98,18 +110,20 @@ concept HasTexCoord = comp::HasTexCoord<T>;
 template<typename T>
 concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
 
+/** @} */ // end of group
+
 } // namespace vcl::vert
 
 /**
- * @brief VertexConcept
- *
- * The Vertex concept describes how a Vertex element that can be used for a VertexContainer should
- * be organized.
+ * @brief The VertexConcept describes how a Vertex element that can be used for a VertexContainer
+ * should be organized.
  *
  * The Vertex concept is satisfied for a class V if ALL the following sentences are true:
  * - The class V is a vcl::Vertex, or derives from it;
  * - The class V has the BitFlags component (or a derivate);
  * - The class V has the Coordinate component (or a derivate);
+ *
+ * @ingroup vert_concepts
  */
 template<typename T>
 concept VertexConcept =

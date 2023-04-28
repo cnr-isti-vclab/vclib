@@ -52,18 +52,18 @@ template<FaceMeshConcept MeshType>
 double borderLength(const MeshType& m);
 
 template<PointConcept PointType>
-Matrix33<double> covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
+auto covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
 
 template<MeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfPointCloud(const MeshType& m);
+auto covarianceMatrixOfPointCloud(const MeshType& m);
 
 template<PointConcept PointType>
-Matrix33<double> weightedCovarianceMatrixOfPointCloud(
+auto weightedCovarianceMatrixOfPointCloud(
 	const std::vector<PointType>& pointVec,
 	const std::vector<typename PointType::ScalarType>& weigths);
 
 template<FaceMeshConcept MeshType>
-Matrix33<double> covarianceMatrixOfMesh(const MeshType& m);
+auto covarianceMatrixOfMesh(const MeshType& m);
 
 template<MeshConcept MeshType, typename ScalarType>
 std::vector<ScalarType> vertexRadiusFromWeights(

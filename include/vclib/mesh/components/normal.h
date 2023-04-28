@@ -31,6 +31,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The NormalT class
+ *
+ * @ingroup components
+ */
 template<PointConcept P, typename ElementType = void, bool optional = false>
 class NormalT
 {
@@ -62,6 +67,11 @@ private:
 	// contians the actual data of the component, if the component is horizontal
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
+
+/* Detector function to check if a class has Normal enabled */
+
+template <typename T>
+bool isNormalEnabledOn(const T& element);
 
 template<
 	typename Scalar,

@@ -26,7 +26,7 @@
 
 #include <vclib/concepts/space/plane.h>
 
-#include "point/point3.h"
+#include "point.h"
 
 namespace vcl {
 
@@ -42,6 +42,8 @@ namespace vcl {
  *    plane.direction().dot(p) == plane.offset()
  *
  * A vcl::Plane, once initialized, cannot be changed.
+ *
+ * @ingroup space
  */
 template<typename Scalar, bool NORM=true>
 class Plane

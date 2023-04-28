@@ -43,9 +43,11 @@ namespace vcl {
  * @param[in] m: A const reference to the Mesh object
  * @param[out] birthVertices: A vector of uints that will contain the indices of the sampled
  *                            vertices in the mesh
- * @param[in,opt] onlySelected: A bool that specifies whether to sample only selected vertices
+ * @param[in] onlySelected: A bool that specifies whether to sample only selected vertices
  *
  * @return A SamplerType object that contains the sampled vertices
+ *
+ * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType allVerticesPointSampling(
@@ -85,9 +87,11 @@ SamplerType allVerticesPointSampling(
  * @tparam MeshType: A type that satisfies the MeshConcept
  *
  * @param[in] m: A const reference to the Mesh object
- * @param[in,opt] onlySelected: A bool that specifies whether to sample only selected vertices
+ * @param[in] onlySelected: A bool that specifies whether to sample only selected vertices
  *
  * @return A SamplerType object that contains the sampled vertices
+ *
+ * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType allVerticesPointSampling(const MeshType& m, bool onlySelected)
@@ -106,17 +110,19 @@ SamplerType allVerticesPointSampling(const MeshType& m, bool onlySelected)
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: A const reference to the Mesh object
- * @param[out,opt] birthFaces: A vector of uints that will contain the indices of the sampled faces
+ * @param[out] birthFaces: A vector of uints that will contain the indices of the sampled faces
  *                             in the mesh
- * @param[in,opt] onlySelected: A bool that specifies whether to sample only selected faces
+ * @param[in] onlySelected: A bool that specifies whether to sample only selected faces
  *
  * @return A SamplerType object that contains the sampled points on the faces
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType allFacesPointSampling(
 	const MeshType&    m,
 	std::vector<uint>& birthFaces,
@@ -152,15 +158,17 @@ SamplerType allFacesPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: A const reference to the Mesh object
- * @param[in,opt] onlySelected: A bool that specifies whether to sample only selected faces
+ * @param[in] onlySelected: A bool that specifies whether to sample only selected faces
  *
  * @return A SamplerType object that contains the sampled points on the faces
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected)
 {
 	std::vector<uint> v;
@@ -179,9 +187,11 @@ SamplerType allFacesPointSampling(const MeshType& m, bool onlySelected)
  * @param[in] m: The mesh to sample from.
  * @param[in] nSamples The number of samples to take.
  * @param[out] birthVertices: A vector of indices of the birth vertices.
- * @param[in,opt] onlySelected: Whether to only sample from the selected vertices.
- * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @param[in] onlySelected: Whether to only sample from the selected vertices.
+ * @param[in] deterministic: Whether to use a deterministic random generator.
  * @return A SamplerType object containing the sampled vertices.
+ *
+ * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexUniformPointSampling(
@@ -238,9 +248,11 @@ SamplerType vertexUniformPointSampling(
  *
  * @param[in] m: The mesh to sample from.
  * @param[in] nSamples The number of samples to take.
- * @param[in,opt] onlySelected: Whether to only sample from the selected vertices.
- * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @param[in] onlySelected: Whether to only sample from the selected vertices.
+ * @param[in] deterministic: Whether to use a deterministic random generator.
  * @return A Sampler object containing the sampled vertices.
+ *
+ * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexUniformPointSampling(
@@ -262,18 +274,20 @@ SamplerType vertexUniformPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType A type that satisfies the SamplerConcept
  * @tparam MeshType A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: The mesh to sample from.
  * @param[in] nSamples: The number of samples to take.
  * @param[out] birthFaces: A vector of indices of the birth faces.
- * @param[in,opt] onlySelected: Whether to only sample from the selected faces.
- * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @param[in] onlySelected: Whether to only sample from the selected faces.
+ * @param[in] deterministic: Whether to use a deterministic random generator.
  *
  * @return A SamplerType object that contains the sampled points on the faces.
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
 	const MeshType&    m,
 	uint               nSamples,
@@ -326,17 +340,19 @@ SamplerType faceUniformPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType A type that satisfies the SamplerConcept
  * @tparam MeshType A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: The mesh to sample from.
  * @param[in] nSamples: The number of samples to take.
- * @param[in,opt] onlySelected: Whether to only sample from the selected faces.
- * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @param[in] onlySelected: Whether to only sample from the selected faces.
+ * @param[in] deterministic: Whether to use a deterministic random generator.
  *
  * @return A SamplerType object that contains the sampled points on the faces.
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceUniformPointSampling(
 	const MeshType&    m,
 	uint               nSamples,
@@ -362,9 +378,11 @@ SamplerType faceUniformPointSampling(
  *                     index i. Note: weights.size() == m.vertexContainerSize().
  * @param[in] nSamples: The number of vertices to sample.
  * @param[out] birthVertices: A vector to store the indices of the vertices that were sampled.
- * @param[in,opt] deterministic: If true, sets the random number generator to a deterministic mode.
+ * @param[in] deterministic: If true, sets the random number generator to a deterministic mode.
  *
  * @return A SamplerType object containing the samples selected from the input mesh.
+ *
+ * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
 SamplerType vertexWeightedPointSampling(
@@ -419,9 +437,11 @@ SamplerType vertexWeightedPointSampling(
  * @param[in] weights: A vector of scalars having the i-th entry associated to the vertex having
  *                     index i. Note: weights.size() == m.vertexContainerSize().
  * @param[in] nSamples: The number of vertices to sample.
- * @param[in,opt] deterministic: If true, sets the random number generator to a deterministic mode.
+ * @param[in] deterministic: If true, sets the random number generator to a deterministic mode.
  *
  * @return A SamplerType object containing the samples selected from the input mesh.
+ *
+ * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType, typename ScalarType>
 SamplerType vertexWeightedPointSampling(
@@ -443,7 +463,7 @@ SamplerType vertexWeightedPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  * @tparam ScalarType: The scalar type used for the weights
  *
@@ -452,11 +472,13 @@ SamplerType vertexWeightedPointSampling(
  *                     index i. Note: weights.size() == m.faceContainerSize().
  * @param[in] nSamples: The number of samples to take.
  * @param[out] birthFaces: A vector to store the indices of the faces that were sampled.
- * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @param[in] deterministic: Whether to use a deterministic random generator.
  *
  * @return A SamplerType object that contains the sampled points on the faces.
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
 SamplerType faceWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
@@ -506,7 +528,7 @@ SamplerType faceWeightedPointSampling(
  * The specific sampling method is determined by the implementation of the SamplerType class.
  * However, in general, the sampled point on each face is the face barycenter.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  * @tparam ScalarType: The scalar type used for the weights
  *
@@ -514,11 +536,13 @@ SamplerType faceWeightedPointSampling(
  * @param[in] weights: A vector of scalars having the i-th entry associated to the face having
  *                     index i. Note: weights.size() == m.faceContainerSize().
  * @param[in] nSamples: The number of samples to take.
- * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @param[in] deterministic: Whether to use a deterministic random generator.
  *
  * @return A SamplerType object that contains the sampled points on the faces.
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType, typename ScalarType>
 SamplerType faceWeightedPointSampling(
 	const MeshType&                m,
 	const std::vector<ScalarType>& weights,
@@ -536,6 +560,8 @@ SamplerType faceWeightedPointSampling(
  * @param m
  * @param nSamples
  * @return
+ *
+ * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
 SamplerType vertexScalarWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
@@ -561,8 +587,10 @@ SamplerType vertexScalarWeightedPointSampling(const MeshType& m, uint nSamples, 
  * @param m
  * @param nSamples
  * @return
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceScalarWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	vcl::requirePerFaceScalar(m);
@@ -586,6 +614,8 @@ SamplerType faceScalarWeightedPointSampling(const MeshType& m, uint nSamples, bo
  * @param m
  * @param nSamples
  * @return
+ *
+ * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType vertexAreaWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
@@ -623,8 +653,10 @@ SamplerType vertexAreaWeightedPointSampling(const MeshType& m, uint nSamples, bo
  * @param m
  * @param nSamples
  * @return
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType faceAreaWeightedPointSampling(
 	const MeshType& m,
 	uint nSamples,
@@ -646,17 +678,19 @@ SamplerType faceAreaWeightedPointSampling(
  * a sequence of consecutive segments proportional to the face areas and actually shooting sample
  * over this line. The indices of the sampled faces in the mesh are stored in the birthFaces vector.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: The mesh to sample from.
  * @param[in] nSamples: The number of samples to take.
  * @param[out] birthFaces: A vector to store the indices of the faces that were sampled.
- * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @param[in] deterministic: Whether to use a deterministic random generator.
  *
  * @return A SamplerType object that contains the sampled points on the faces.
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPointSampling(
 	const MeshType&    m,
 	uint               nSamples,
@@ -715,23 +749,25 @@ SamplerType montecarloPointSampling(
  * a sequence of consecutive segments proportional to the face areas and actually shooting sample
  * over this line.
  *
- * @tparam SamplerType: A type that satisfies the FaceSamplerConcept
+ * @tparam SamplerType: A type that satisfies the SamplerConcept
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
  *
  * @param[in] m: The mesh to sample from.
  * @param[in] nSamples: The number of samples to take.
- * @param[in,opt] deterministic: Whether to use a deterministic random generator.
+ * @param[in] deterministic: Whether to use a deterministic random generator.
  *
  * @return A SamplerType object that contains the sampled points on the faces.
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	std::vector<uint> birthFaces;
 	return montecarloPointSampling<SamplerType>(m, nSamples, birthFaces, deterministic);
 }
 
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	using FaceType = typename MeshType::FaceType;
@@ -779,8 +815,10 @@ SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, 
  * @param nSamples
  * @param deterministic
  * @return
+ *
+ * @ingroup point_sampling
  */
-template<FaceSamplerConcept SamplerType, FaceMeshConcept MeshType>
+template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPoissonPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
 	using FaceType = typename MeshType::FaceType;

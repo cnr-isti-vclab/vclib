@@ -27,29 +27,28 @@
 #include <set>
 #include <vector>
 
-#include <vclib/misc/mark.h>
+#include <vclib/concepts/ranges/mesh/vertex_range.h>
+#include <vclib/iterators/space/grid/static_grid_iterator.h>
 
-#include "abstract_ds_grid.h"
-#include "regular_grid2.h"
-#include "regular_grid3.h"
+#include "abstract_grid.h"
+#include "regular_grid.h"
 
-#include "iterators/static_grid_iterator.h"
 
 namespace vcl {
 
 template<typename GridType, typename ValueType>
-class StaticGrid : public AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>
+class StaticGrid : public AbstractGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>
 {
-	using AbstractGrid = AbstractDSGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
+	using AbsGrid = AbstractGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
 
 	using PairType =  std::pair<uint, ValueType>;
 	using PairComparator = FirstElementPairComparator<PairType>;
 
-	friend AbstractGrid;
+	friend AbsGrid;
 
 public:
-	using KeyType = typename AbstractGrid::KeyType;
-	using IsInCellFunction = typename AbstractGrid::IsInCellFunction;
+	using KeyType = typename AbsGrid::KeyType;
+	using IsInCellFunction = typename AbsGrid::IsInCellFunction;
 
 	using Iterator = StaticGridIterator<KeyType, ValueType, GridType>;
 	using ConstIterator = ConstStaticGridIterator<KeyType, ValueType, GridType>;
@@ -91,18 +90,41 @@ private:
 	std::vector<uint> grid;
 
 	// not available member functions
-	using AbstractGrid::erase;
-	using AbstractGrid::eraseAllInCell;
-	using AbstractGrid::eraseInSphere;
+	using AbsGrid::erase;
+	using AbsGrid::eraseAllInCell;
+	using AbsGrid::eraseInSphere;
 
 	bool insertInCell(const KeyType& cell, const ValueType& v);
 	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
 };
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
+// deduction guides
+
+template<PointIteratorConcept It>
+StaticGrid(It, It) -> StaticGrid<
+	RegularGrid<typename It::value_type, It::value_type::DIM>,
+	typename It::value_type::ScalarType>;
+
+template<PointIteratorConcept It, typename F>
+StaticGrid(It, It, F) -> StaticGrid<
+	RegularGrid<typename It::value_type, It::value_type::DIM>,
+	typename It::value_type::ScalarType>;
+
+template<VertexPointerRangeConcept Rng>
+StaticGrid(Rng) -> StaticGrid<
+	RegularGrid<
+		// scalar type used for the grid, the same of the CoordType of the Vertex
+		typename std::remove_pointer_t<
+			typename std::ranges::iterator_t<Rng>::value_type>::CoordType::ScalarType,
+		3>, // the dimension of the Grid
+	// the ValueType of the StaticGrid, which is the iterated type in the given range
+	// (pointer to vertex)
+	typename std::ranges::iterator_t<Rng>::value_type>;
+
+template<typename ValueType, typename ScalarType = double>
 using StaticGrid2 = StaticGrid<RegularGrid2<ScalarType>, ValueType>;
 
-template<typename ValueType, bool AD = true, typename ScalarType = double>
+template<typename ValueType, typename ScalarType = double>
 using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
 
 } // namespace vcl

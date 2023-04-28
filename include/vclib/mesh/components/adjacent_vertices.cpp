@@ -191,17 +191,15 @@ AdjacentVertices<Vertex, El, o>::adjVertexEnd() const
 }
 
 template<typename Vertex, typename El, bool o>
-typename AdjacentVertices<Vertex, El, o>::AdjacentVertexView
-AdjacentVertices<Vertex, El, o>::adjVertices()
+auto AdjacentVertices<Vertex, El, o>::adjVertices()
 {
-	return AdjacentVertexView(adjVertexBegin(), adjVertexEnd());
+	return View(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename Vertex, typename El, bool o>
-typename AdjacentVertices<Vertex, El, o>::ConstAdjacentVertexView
-AdjacentVertices<Vertex, El, o>::adjVertices() const
+auto AdjacentVertices<Vertex, El, o>::adjVertices() const
 {
-	return ConstAdjacentVertexView(adjVertexBegin(), adjVertexEnd());
+	return View(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename Vertex, typename El, bool o>
@@ -253,6 +251,17 @@ void AdjacentVertices<Vertex, El, o>::importRefsFrom(
 				adjVertex(i) = base + (e.adjVertex(i) - ebase);
 			}
 		}
+	}
+}
+
+template <typename T>
+bool isAdjacentVerticesEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalAdjacentVertices<T>) {
+		return element.isAdjVerticesEnabled();
+	}
+	else {
+		return HasAdjacentVertices<T>;
 	}
 }
 

@@ -24,8 +24,41 @@
 #ifndef VCL_CONCEPTS_H
 #define VCL_CONCEPTS_H
 
+#include "concepts/iterators.h"
 #include "concepts/logger.h"
 #include "concepts/mesh.h"
+#include "concepts/pointers.h"
+#include "concepts/range.h"
 #include "concepts/space.h"
+
+/**
+ * @defgroup concepts Concepts
+ *
+ * @brief List of concepts used in the library. They allow to discriminate between all the defined
+ * types of the library, and to constrain the input argument types of templated functions and
+ * classes.
+ *
+ * The library provides both generic utility concepts about iterators, pointers or const correctness
+ * management, and concepts for types that have been defined in this library.
+ * We separate these categories in two subgroups: @ref uconcepts and @ref lconcepts.
+ *
+ * You can access all the concepts of VCLib by including `#include <vclib/concepts.h>`
+ */
+
+/**
+ * @defgroup uconcepts Utility Concepts
+ * @ingroup concepts
+ *
+ * @brief List of utility concepts used in the library, that allows to check and constrain
+ * iterators, pointers, const correctness management, ranges, etc.
+ */
+
+/**
+ * @defgroup lconcepts Library Concepts
+ * @ingroup concepts
+ *
+ * @brief List of concepts for types that have been defined in this library. They are grouped in
+ * different categories depending on the involved types.
+ */
 
 #endif // VCL_CONCEPTS_H

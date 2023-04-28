@@ -131,7 +131,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 			float curvature = (2.0f * (v.normal().dot(edge)) ) / edge.squaredNorm();
 			CoordType t(Tp * edge.eigenVector().transpose());
 			t.normalize();
-			tempMatrix = outerProduct(t, t);
+			tempMatrix = t.outerProduct(t);
 			M += tempMatrix * weights[i] * curvature ;
 		}
 
@@ -146,7 +146,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 
 		// compute the Householder matrix I - 2WW^t
 		Matrix33<ScalarType> Q = Matrix33<ScalarType>::Identity();
-		tempMatrix = outerProduct(w, w);
+		tempMatrix = w.outerProduct(w);
 		Q -= tempMatrix * 2.0f;
 
 		// compute matrix Q^t M Q
@@ -258,7 +258,7 @@ void updatePrincipalCurvaturePCA(
 	using NormalType = typename VertexType::NormalType;
 	using FaceType   = typename MeshType::FaceType;
 
-	using VGrid = typename vcl::StaticGrid3<VertexType*>;
+	using VGrid = typename vcl::StaticGrid3<VertexType*, ScalarType>;
 	using VGridIterator = typename VGrid::ConstIterator;
 
 	VGrid pGrid;
@@ -292,7 +292,8 @@ void updatePrincipalCurvaturePCA(
 		vcl::Matrix33<ScalarType> A, eigenvectors;
 		CoordType bp, eigenvalues;
 		if (montecarloSampling) {
-			std::vector<VGridIterator> vec = pGrid.valuesInSphere({v.coord(), radius});
+			vcl::Sphere s(v.coord(), radius);
+			std::vector<VGridIterator> vec = pGrid.valuesInSphere(s);
 			std::vector<CoordType> points;
 			points.reserve(vec.size());
 			for (const auto& it : vec){

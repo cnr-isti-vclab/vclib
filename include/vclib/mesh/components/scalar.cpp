@@ -72,4 +72,15 @@ const T& Scalar<T, El, o>::s() const
 	return data.template get<El>(this);
 }
 
+template <typename T>
+bool isScalarEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalScalar<T>) {
+		return element.isScalarEnabled();
+	}
+	else {
+		return HasScalar<T>;
+	}
+}
+
 } // namespace vcl::comp

@@ -34,6 +34,8 @@ namespace vcl::comp {
  * @brief HasTexturePaths concept is satisfied only if a Element or Mesh class provides the member
  * functions specified in this concept. These member functions allows to access to a TexturePaths
  * component of a given element/mesh.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasTexturePaths = requires(

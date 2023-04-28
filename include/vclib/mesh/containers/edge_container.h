@@ -32,6 +32,11 @@
 
 namespace vcl::mesh {
 
+/**
+ * @brief The EdgeContainer class
+ *
+ * @ingroup containers
+ */
 template<EdgeConcept T>
 class EdgeContainer : public ElementContainer<T>
 {

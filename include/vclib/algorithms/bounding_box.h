@@ -24,10 +24,23 @@
 #ifndef VCL_ALGORITHMS_BOUNDING_BOX_H
 #define VCL_ALGORITHMS_BOUNDING_BOX_H
 
-#include <vclib/concepts/mesh/elements/edge.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/segment.h>
 #include <vclib/space/sphere.h>
+
+#include <vclib/concepts/mesh/elements/edge.h>
+#include <vclib/concepts/range.h>
+
+/**
+ * @defgroup bounding_box Bounding Box Algorithms
+ *
+ * @ingroup algorithms
+ *
+ * @brief List of overloaded boundingBox functions that take in input an object (or a Range of
+ * objects) and return its bounding box.
+ *
+ * You can access these algorithms by including `#include <vclib/algorithms/bounding_box.h>`
+ */
 
 namespace vcl {
 
@@ -61,8 +74,15 @@ auto boundingBox(const EdgeType& e);
 template<EdgeConcept EdgeType>
 auto boundingBox(const EdgeType* e);
 
+#ifdef VCLIB_USES_RANGES
+template<IteratorConcept Iterator>
+#else
 template<typename Iterator>
+#endif
 auto boundingBox(Iterator begin, Iterator end);
+
+template<Range Rng>
+auto boundingBox(Rng&& r);
 
 } // namespace vcl
 

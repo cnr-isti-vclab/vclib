@@ -42,6 +42,8 @@ namespace vcl::comp {
  *
  * To be completely sure that AdjacentFaces is available at runtime, you need to call the member
  * function `isAdjFacesEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasAdjacentFaces = requires(
@@ -54,8 +56,6 @@ concept HasAdjacentFaces = requires(
 	typename T::AdjacentFaceType;
 	typename T::AdjacentFaceIterator;
 	typename T::ConstAdjacentFaceIterator;
-	typename T::AdjacentFaceView;
-	typename T::ConstAdjacentFaceView;
 
 	{ o.adjFacesNumber() } -> std::same_as<uint>;
 	{ o.adjFace(uint()) } -> std::same_as<typename T::AdjacentFaceType*&>;
@@ -75,11 +75,12 @@ concept HasAdjacentFaces = requires(
 	{ o.adjFaceEnd() } -> std::same_as<typename T::AdjacentFaceIterator>;
 	{ co.adjFaceBegin() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
 	{ co.adjFaceEnd() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
-	{ o.adjFaces() } -> std::same_as<typename T::AdjacentFaceView>;
-	{ co.adjFaces() } -> std::same_as<typename T::ConstAdjacentFaceView>;
+	o.adjFaces();
+	co.adjFaces();
 };
 
 /**
+ * @private
  * @brief HasAdjacentFacesComponent concept is used to discriminate between the AdjacentFaces (or
  * OptionalAdjacentFaces) component, and the FaceHalfEdgeReferences component, which using half
  * edges in a Dcel Mesh data structure, allows to access to adjacent faces. This concept is intended
@@ -96,12 +97,15 @@ concept HasAdjacentFacesComponent = requires(T o)
 /**
  * @brief HasOptionalAdjacentFaces concept is satisfied only if a class satisfies the
  * HasAdjacentFacesComponent concept and the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalAdjacentFaces =
 	HasAdjacentFacesComponent<T> && IsOptionalComponent<typename T::AdjacentFacesComponent>;
 
 /**
+ * @private
  * @brief HasRightNumberOfAdjacentFaces concept
  *
  * This concept is designed to be used with Face components, where the number of adjacent faces must
@@ -114,6 +118,7 @@ template<typename T>
 concept HasRightNumberOfAdjacentFaces = T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
 
 /**
+ * @private
  * @brief SanityCheckAdjacentFaces concept
  *
  * This concept is designed to be used with Face components, where the number of adjacent faces must
@@ -125,19 +130,6 @@ concept HasRightNumberOfAdjacentFaces = T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
  */
 template<typename T>
 concept SanityCheckAdjacentFaces = !HasAdjacentFaces<T> || HasRightNumberOfAdjacentFaces<T>;
-
-/* Detector function to check if a class has AdjacentFaces enabled */
-
-template <typename T>
-bool isAdjacentFacesEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalAdjacentFaces<T>) {
-		return element.isAdjFacesEnabled();
-	}
-	else {
-		return HasAdjacentFaces<T>;
-	}
-}
 
 } // namespace vcl::comp
 

@@ -31,6 +31,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The TexCoord class
+ *
+ * @ingroup components
+ */
 template<
 	typename Scalar,
 	typename ElementType = void,
@@ -67,6 +72,11 @@ private:
 	// contians the actual data of the component, if the component is horizontal
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
+
+/* Detector function to check if a class has TexCoord enabled */
+
+template <typename T>
+bool isTexCoordEnabledOn(const T& element);
 
 template<typename ElementType = void, bool horizontal = true, bool optional = false>
 using TexCoordf = TexCoord<float, ElementType, optional>;

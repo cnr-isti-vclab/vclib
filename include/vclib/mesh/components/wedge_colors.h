@@ -26,34 +26,37 @@
 
 #include <vclib/concepts/mesh/components/wedge_colors.h>
 #include <vclib/views/view.h>
-#include <vclib/misc/random_access_container.h>
+#include <vclib/space/vector.h>
 
 #include "internal/component_data.h"
 
 namespace vcl::comp {
 
+/**
+ * @brief The WedgeColors class
+ *
+ * @ingroup components
+ */
 template<int N, typename ElementType = void, bool optional = false>
 class WedgeColors
 {
 	using ThisType = WedgeColors<N, ElementType, optional>;
 
-	using Base = RandomAccessContainer<vcl::Color, N>;
+	using Base = Vector<vcl::Color, N>;
 
 public:
-	using DataValueType = RandomAccessContainer<vcl::Color, N>; // data that the component stores internally (or vertically)
+	using DataValueType = Vector<vcl::Color, N>; // data that the component stores internally (or vertically)
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
-
-	static const int WEDGE_COLOR_NUMBER = Base::CONTAINER_SIZE;
+	
+	static const int WEDGE_COLOR_NUMBER = Base::SIZE;
 
 	/* Iterator Types declaration */
 
 	using WedgeColorsIterator      = typename Base::Iterator;
 	using ConstWedgeColorsIterator = typename Base::ConstIterator;
-	using WedgeColorsView          = vcl::View<WedgeColorsIterator>;
-	using ConstWedgeColorsView     = vcl::View<ConstWedgeColorsIterator>;
 
 	bool isEnabled() const;
 	bool isWedgeColorsEnabled() const;
@@ -75,8 +78,8 @@ public:
 	WedgeColorsIterator      wedgeColorEnd();
 	ConstWedgeColorsIterator wedgeColorBegin() const;
 	ConstWedgeColorsIterator wedgeColorEnd() const;
-	WedgeColorsView          wedgeColors();
-	ConstWedgeColorsView     wedgeColors() const;
+	auto                     wedgeColors();
+	auto                     wedgeColors() const;
 
 protected:
 	/* Member functions specific for vector of wedge colors */
@@ -94,11 +97,16 @@ private:
 	template<typename Element>
 	void importWedgeColorsFrom(const Element& e);
 
-	RandomAccessContainer<vcl::Color, N>& colors();
-	const RandomAccessContainer<vcl::Color, N>& colors() const;
+	Vector<vcl::Color, N>& colors();
+	const Vector<vcl::Color, N>& colors() const;
 
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
+
+/* Detector function to check if a class has WedgeColors enabled */
+
+template <typename T>
+bool isWedgeColorsEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

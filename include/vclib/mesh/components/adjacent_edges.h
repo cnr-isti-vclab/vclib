@@ -27,12 +27,12 @@
 #include <vclib/concepts/mesh/components/adjacent_edges.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_references.h"
+#include "internal/element_pointers_container.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentEdges class is a container of Edge references. It could be used by any
+ * @brief The AdjacentEdges class is a container of Edge pointers. It could be used by any
  * Element to save adjacencies information (also the Edge element itself).
  *
  * It is a random access container having static or dynamic size, depending on the value of N (a
@@ -51,21 +51,35 @@ namespace vcl::comp {
  * @note If this component is part of a Face Element, the number of Adjacent Edges is tied to the
  * Vertex Number of the Face, therefore all the members that allows to modify the number of
  * Adjacent Edges in case of dynamic size won't be available on Face Elements.
+ *
+ * @ingroup components
  */
 template<typename Edge, int N, typename ElementType = void, bool optional = false>
 class AdjacentEdges :
-		public ReferencesComponentTriggerer<Edge>,
-		protected internal::ElementReferences<Edge, N, ElementType>
+		public PointersComponentTriggerer<Edge>,
+		protected internal::ElementPointersContainer<Edge, N, ElementType>
 {
 	using ThisType = AdjacentEdges<Edge, N, ElementType, optional>;
 
-	using Base = internal::ElementReferences<Edge, N, ElementType>;
+	using Base = internal::ElementPointersContainer<Edge, N, ElementType>;
 
 public:
-	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
-	using AdjacentEdgesComponent = ThisType; // expose the type to allow access to this component
+	/** @private data that the component stores internally (or vertically) */
+	using DataValueType = typename Base::DataValueType;
 
+	/** @brief Allows access to this component type from a derived class type/instance */
+	using AdjacentEdgesComponent = ThisType;
+
+	/**
+	 * @brief Boolean that tells if this component type stores its data vertically (not in the
+	 * Element frame memory, but in another vector).
+	 */
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+
+	/**
+	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
+	 * is vertical.
+	 */
 	static const bool IS_OPTIONAL = optional;
 
 	/// Static size of the container. If the container is dynamic, this value will be negative and
@@ -78,8 +92,6 @@ public:
 
 	using AdjacentEdgeIterator      = typename Base::Iterator;
 	using ConstAdjacentEdgeIterator = typename Base::ConstIterator;
-	using AdjacentEdgeView          = vcl::View<AdjacentEdgeIterator>;
-	using ConstAdjacentEdgeView     = vcl::View<ConstAdjacentEdgeIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -121,8 +133,8 @@ public:
 	AdjacentEdgeIterator      adjEdgeEnd();
 	ConstAdjacentEdgeIterator adjEdgeBegin() const;
 	ConstAdjacentEdgeIterator adjEdgeEnd() const;
-	AdjacentEdgeView          adjEdges();
-	ConstAdjacentEdgeView     adjEdges() const;
+	auto                      adjEdges();
+	auto                      adjEdges() const;
 
 protected:
 	void updateReferences(const Edge* oldBase, const Edge* newBase);
@@ -141,6 +153,11 @@ private:
 	void
 	importRefsFrom(const Element& e, Edge* base, const ElEType* ebase);
 };
+
+/* Detector function to check if a class has AdjacentEdges enabled */
+
+template <typename T>
+bool isAdjacentEdgesEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

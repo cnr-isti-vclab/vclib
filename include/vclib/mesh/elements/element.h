@@ -30,6 +30,13 @@
 #include <vclib/mesh/components/parent_mesh_pointer.h>
 #include <vclib/types.h>
 
+/**
+ * @defgroup elements Elements
+ * @ingroup mesh
+ *
+ * @brief List of all the Element classes, along with their concepts and functions.
+ */
+
 namespace vcl::mesh {
 
 template<ElementConcept>
@@ -39,6 +46,11 @@ class ElementContainer;
 
 namespace vcl {
 
+/**
+ * @brief The Element class
+ *
+ * @ingroup elements
+ */
 template <typename MeshType, typename... Args>
 class Element : public comp::ParentMeshPointer<MeshType>, public Args...
 {

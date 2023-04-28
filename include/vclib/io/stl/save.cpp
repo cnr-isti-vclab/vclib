@@ -95,7 +95,7 @@ void writeTriangle(
  * @brief saveStl
  * @param m
  * @param filename
- * @param[in,opt] magicsMode: indicates whether the STL file should be saved in Magics mode or not.
+ * @param[in] magicsMode: indicates whether the STL file should be saved in Magics mode or not.
  * Magics mode is a specific file format used by the Magics software, which includes more
  * information than the standard STL format, like face colors. The magicsMode works only when binary
  * flag is set to `true`.
@@ -118,7 +118,7 @@ void saveStl(
  * @param m
  * @param filename
  * @param info
- * @param[in,opt] magicsMode: indicates whether the STL file should be saved in Magics mode or not.
+ * @param[in] magicsMode: indicates whether the STL file should be saved in Magics mode or not.
  * Magics mode is a specific file format used by the Magics software, which includes more
  * information than the standard STL format, like face colors. The magicsMode works only when binary
  * flag is set to `true`.

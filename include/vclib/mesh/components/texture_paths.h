@@ -34,6 +34,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The TexturePaths class
+ *
+ * @ingroup components
+ */
 template<typename ElementType = void, bool optional = false>
 class TexturePaths
 {

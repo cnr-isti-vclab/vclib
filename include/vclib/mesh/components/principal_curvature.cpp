@@ -76,4 +76,15 @@ PrincipalCurvature<Scalar, El, o>::princCurv() const
 	return data.template get<El>(this);
 }
 
+template <typename T>
+bool isPrincipalCurvatureEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalPrincipalCurvature<T>) {
+		return element.isPrincipalCurvatureEnabled();
+	}
+	else {
+		return HasPrincipalCurvature<T>;
+	}
+}
+
 } // namespace vcl::comp

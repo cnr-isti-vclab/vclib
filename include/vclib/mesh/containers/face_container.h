@@ -39,6 +39,8 @@ namespace vcl::mesh {
  * This class adds a container (vector) of faces to the Mesh, making available the accessors members
  * to the faces, the face number, iterators... This class will also take care to add
  * enablers/disablers of the eventual optional components of the face.
+ *
+ * @ingroup containers
  */
 template<FaceConcept T>
 class FaceContainer : public ElementContainer<T>

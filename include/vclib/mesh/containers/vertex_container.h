@@ -41,6 +41,8 @@ namespace vcl::mesh {
  * enablers/disablers of the eventual optional components of the vertex.
  *
  * This container can be templated on a type that satisfies the VertexConcept concept.
+ *
+ * @ingroup containers
  */
 template<vcl::VertexConcept T>
 class VertexContainer : public ElementContainer<T>

@@ -168,10 +168,10 @@ void Logger<Stream>::log(uint perc, LogLevel lvl, const std::string& msg)
  *
  * @param[in] msg: the message that will be printed during the progress
  * @param[in] progressSize: the number of iterations made during the progress
- * @param[in,opt] percPrintProgress: interval of percentage on which print a progress message,
+ * @param[in] percPrintProgress: interval of percentage on which print a progress message,
  *                default 10%
- * @param[in,opt] startPerc: start percentage of the progress, default 0%
- * @param[in,opt] endPerc: end percentage of the progress, default 100%
+ * @param[in] startPerc: start percentage of the progress, default 0%
+ * @param[in] endPerc: end percentage of the progress, default 100%
  */
 template<typename Stream>
 void Logger<Stream>::startProgress(

@@ -402,7 +402,7 @@ std::vector<uint> Polygon<PointT>::earCut(Iterator begin, Iterator end)
 	// the polygon.
 	PointType n = normal(begin, end);
 	PointType u, v;
-	orthoBase(n, u, v);
+	n.orthoBase(u, v);
 
 	// Project each vertex onto the plane defined by the orthonormal basis.
 	std::vector<Point2<Scalar>> poly2D;
