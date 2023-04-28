@@ -137,21 +137,19 @@ public:
 	auto                      adjEdges() const;
 
 protected:
-	void updateReferences(const Edge* oldBase, const Edge* newBase);
+	void updatePointers(const Edge* oldBase, const Edge* newBase);
 
-	void updateReferencesAfterCompact(const Edge* base, const std::vector<int>& newIndices);
+	void updatePointersAfterCompact(const Edge* base, const std::vector<int>& newIndices);
 
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElEType>
-	void
-	importReferencesFrom(const Element& e, Edge* base, const ElEType* ebase);
+	void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase);
 
 private:
 	template<typename Element, typename ElEType>
-	void
-	importRefsFrom(const Element& e, Edge* base, const ElEType* ebase);
+	void importPtrsFrom(const Element& e, Edge* base, const ElEType* ebase);
 };
 
 /* Detector function to check if a class has AdjacentEdges enabled */

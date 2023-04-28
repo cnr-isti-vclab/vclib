@@ -49,7 +49,7 @@ class HalfEdge : public Element<MeshType, Args...>
 	template<HalfEdgeConcept>
 	friend class mesh::HalfEdgeContainer;
 
-	// HalfEdge references component of the HalfEdge
+	// HalfEdgePointers component of the HalfEdge
 	using HFPtrs = typename HalfEdge::HalfEdgePointers;
 
 public:

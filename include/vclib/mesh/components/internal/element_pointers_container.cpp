@@ -28,7 +28,7 @@
 namespace vcl::comp::internal {
 
 /*
- * Create a container of Element references (pointers to Elements stored in some other container).
+ * Create a container of Element pointers (pointers to Elements stored in some other container).
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
@@ -43,7 +43,7 @@ ElementPointersContainer<Elem, N, El>::ElementPointersContainer()
 }
 
 /*
- * Create a container of Element references (pointers to Elements stored in some other container).
+ * Create a container of Element pointers (pointers to Elements stored in some other container).
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
@@ -53,12 +53,12 @@ void ElementPointersContainer<Elem, N, El>::init(Comp* comp)
 {
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
-		// There will be a static number of references.
+		// There will be a static number of pointers.
 		container(comp).fill(nullptr);
 	}
 	else {
 		// I'll use the vector, because N is < 0.
-		// There will be a dynamic number of references.
+		// There will be a dynamic number of pointers.
 		container(comp).clear();
 	}
 }
@@ -71,7 +71,7 @@ bool ElementPointersContainer<Elem, N, El>::isEnabled(Comp* comp) const
 }
 
 /*
- * This member function is called when we need to update the references in this container.
+ * This member function is called when we need to update the pointers in this container.
  *
  * This is necessary when, for example, the original container of Elements has been reallocated.
  * When this happens, the all the Elements have been moved in another portion of memory, and
@@ -86,7 +86,7 @@ bool ElementPointersContainer<Elem, N, El>::isEnabled(Comp* comp) const
  */
 template<typename Elem, int N, typename El>
 template<typename Comp>
-void ElementPointersContainer<Elem, N, El>::updateElementReferences(
+void ElementPointersContainer<Elem, N, El>::updateElementPointers(
 	const Elem* oldBase,
 	const Elem* newBase,
 	Comp* comp)
@@ -101,7 +101,7 @@ void ElementPointersContainer<Elem, N, El>::updateElementReferences(
 
 template<typename Elem, int N, typename El>
 template<typename Comp>
-void ElementPointersContainer<Elem, N, El>::updateElementReferencesAfterCompact(
+void ElementPointersContainer<Elem, N, El>::updateElementPointersAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices,
 	Comp* comp)

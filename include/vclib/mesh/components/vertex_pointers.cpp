@@ -201,18 +201,18 @@ auto VertexPointers<Vertex, N, El, o>::vertices() const
 }
 
 template<typename Vertex, int N, typename ElementType, bool optional>
-void VertexPointers<Vertex, N, ElementType, optional>::updateReferences(
+void VertexPointers<Vertex, N, ElementType, optional>::updatePointers(
 	const Vertex* oldBase, const Vertex* newBase)
 {
-	Base::updateElementReferences(oldBase, newBase, this);
+	Base::updateElementPointers(oldBase, newBase, this);
 }
 
 template<typename Vertex, int N, typename ElementType, bool optional>
-void VertexPointers<Vertex, N, ElementType, optional>::updateReferencesAfterCompact(
+void VertexPointers<Vertex, N, ElementType, optional>::updatePointersAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
-	Base::updateElementReferencesAfterCompact(base, newIndices, this);
+	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
 template<typename Vertex, int N, typename El, bool o>
@@ -223,7 +223,7 @@ void VertexPointers<Vertex, N, El, o>::importFrom(const Element&)
 
 template<typename Vertex, int N, typename El, bool o>
 template<typename Element, typename ElVType>
-void VertexPointers<Vertex, N, El, o>::importReferencesFrom(
+void VertexPointers<Vertex, N, El, o>::importPointersFrom(
 	const Element& e,
 	Vertex* base,
 	const ElVType* ebase)
@@ -232,12 +232,12 @@ void VertexPointers<Vertex, N, El, o>::importReferencesFrom(
 		if constexpr(N > 0) {
 			// same size non-polygonal faces
 			if constexpr (N == Element::VERTEX_NUMBER) {
-				importRefsFrom(e, base, ebase);
+				importPtrsFrom(e, base, ebase);
 			}
 			// from polygonal to fixed size, but the polygon size == the fixed face size
 			else if constexpr (Element::VERTEX_NUMBER < 0){
 				if (e.vertexNumber() == N) {
-					importRefsFrom(e, base, ebase);
+					importPtrsFrom(e, base, ebase);
 				}
 			}
 			else {
@@ -247,14 +247,14 @@ void VertexPointers<Vertex, N, El, o>::importReferencesFrom(
 		else {
 			// from fixed to polygonal size: need to resize first, then import
 			resizeVertices(e.vertexNumber());
-			importRefsFrom(e, base, ebase);
+			importPtrsFrom(e, base, ebase);
 		}
 	}
 }
 
 template<typename Vertex, int N, typename El, bool o>
 template<typename Element, typename ElVType>
-void VertexPointers<Vertex, N, El, o>::importRefsFrom(
+void VertexPointers<Vertex, N, El, o>::importPtrsFrom(
 	const Element& e,
 	Vertex* base,
 	const ElVType* ebase)

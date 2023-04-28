@@ -144,14 +144,14 @@ public:
 	ConstAdjacentVertexView     adjVertices() const;
 
 protected:
-	void updateReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
-	void updateReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	template<typename OtherVertex, typename OtherHEType>
-	void importReferencesFrom(const OtherVertex& e, HalfEdge* base, const OtherHEType* ebase);
+	void importPointersFrom(const OtherVertex& e, HalfEdge* base, const OtherHEType* ebase);
 
 private:
 	HalfEdge*& he();

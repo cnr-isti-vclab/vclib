@@ -226,12 +226,12 @@ protected:
 	void clearElements();
 
 	template<typename Cont, typename Element>
-	void updateReferences(
+	void updatePointers(
 		const Element* oldBase,
 		const Element* newBase);
 
 	template<typename Cont, typename Element>
-	void updateReferencesAfterCompact(
+	void updatePointersAfterCompact(
 		const Element*          base,
 		const std::vector<int>& newIndices);
 
@@ -270,10 +270,10 @@ private:
 	void importContainersAndComponents(const OthMesh& m);
 
 	template<typename Cont, typename OthMesh>
-	void importReferences(const OthMesh& m);
+	void importPointers(const OthMesh& m);
 
 	template<typename Cont, typename ElemCont, typename OthMesh>
-	void importReferencesOfElement(const OthMesh& m);
+	void importPointersOfElement(const OthMesh& m);
 
 	template<typename OthMesh>
 	void manageImportTriFromPoly(const OthMesh& m);
@@ -282,7 +282,7 @@ private:
 	void manageImportDcelFromMesh(const OthMesh& m);
 
 	template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
-	static void importTriReferencesHelper(
+	static void importTriPointersHelper(
 		FaceType&                f,
 		const MFaceType&         mf,
 		VertexType*              base,
@@ -299,7 +299,7 @@ private:
 	static auto getContainerBases(const Mesh<A...>& m);
 
 	template<typename Cont, typename Array, typename... A>
-	static void updateReferencesOfContainerType(Mesh<A...>& m, const Array& bases);
+	static void updatePointersOfContainerType(Mesh<A...>& m, const Array& bases);
 
 	// member functions used by friends
 

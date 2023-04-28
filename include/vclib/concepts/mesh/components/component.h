@@ -65,36 +65,36 @@ class PointersComponentTriggerer
 };
 
 /**
- * @brief HasReferencesOfType concept
+ * @brief HasPointersOfType concept
  *
- * Each component that store reference of a type R, must:
+ * Each component that store pointers of a type R, must:
  *
- * - inherit from ReferencesComponentTriggerer<R>
+ * - inherit from PointersComponentTriggerer<R>
  * - provide the following **protected** member functions:
- *   - void updateReferences(const R* oldBase, const R* newBase);
+ *   - void updatePointers(const R* oldBase, const R* newBase);
  *
- *     the function updates the stored R references having the old base of the container and the
+ *     the function updates the stored R pointers having the old base of the container and the
  *     new base of the container.
  *
- *   - void updateReferencesAfterCompact(const R* base, const std::vector<int>& newIndices);
+ *   - void updatePointersAfterCompact(const R* base, const std::vector<int>& newIndices);
  *
- *     the function updates the stored R references having the base of the container, and, for each
+ *     the function updates the stored R pointers having the base of the container, and, for each
  *     old element index, its new index in the container.
  *
  *   - template<typename Element, typename ElRType>
- *     void importReferencesFrom(const Element& e, const R* base, const ElRType* ebase);
+ *     void importPointersFrom(const Element& e, const R* base, const ElRType* ebase);
  *
- *     the function imports the references from the references of another element.
+ *     the function imports the pointers from the pointers of another element.
  *     - e is the another element;
  *     - base is the base of container that stores this element
  *     - ebase is the base of the container that stores the another elements
  */
 template<typename T, typename R>
-concept HasReferencesOfType =
+concept HasPointersOfType =
 	std::is_base_of<PointersComponentTriggerer<R>, T>::value;
 
 template<typename T, typename R>
-concept HasOptionalReferencesOfType = HasReferencesOfType<T, R> && IsOptionalComponent<T>;
+concept HasOptionalPointersOfType = HasPointersOfType<T, R> && IsOptionalComponent<T>;
 
 } // namespace vcl
 

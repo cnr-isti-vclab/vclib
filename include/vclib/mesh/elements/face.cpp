@@ -33,13 +33,16 @@ Face<MeshType, Args...>::Face()
 /**
  * @brief Constructs a Face with the given set of vertices.
  *
- * Sets a list of Vertex references to the face. If the Face size is non-dcel dynamic, will
+ * Sets a list of Vertex pointers to the face. If the Face size is non-dcel dynamic, will
  * take care to update the also the number of adjacent faces and the number of wedge components, if
  * these components are part of the Face and if the size of the Face is changed. On the contrary, if
  * the Face size is static or it belongs to a Dcel mesh, the number of vertices of the list must be
  * equal to the size of the Face (the value returned by vertexNumber()).
  *
- * @note This constructor cannot be called if the Face type belongs to a Dcel mesh.
+ * @note This constructor cannot resize the number of vertices (and other components tied to the
+ * number of vertices) if it called from a Face of a Dcel mesh.
+ *
+ * @todo do proper checks on the number of vertices at compile time and at runtime
  *
  * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
  *                  vertices of the face.
@@ -129,13 +132,12 @@ void Face<MeshType, Args...>::setVertices(V... args)
 }
 
 /**
- * @brief Resize the number of Vertex References of the Face, taking care of updating also the
- * number of adjacent faces and the number of wedge components of the Face, if these components
- * are part of the Face.
+ * @brief Resize the number of Vertex Pointers of the Face, taking care of updating also the
+ * other components of the Face that are tied to that number.
  *
- * If n is greater than the old number of vertex references, n vertex references (and relative
- * wedge components) will be added. If n is lower than the old number of vertex references, the
- * difference of vertex references (and relative wedge components) will be removed.
+ * If n is greater than the old number of vertex pointers, n vertex pointers (and relative
+ * tied components) will be added. If n is lower than the old number of vertex pointers, the
+ * difference of vertex pointers (and relative tied components) will be removed.
  *
  * This member function is available only **if the face is polygonal (its size is dynamic, N < 0)**.
  *

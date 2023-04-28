@@ -100,26 +100,26 @@ public:
 	Face*&      face();
 
 protected:
-	void updateReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
-	void updateReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
-	void updateReferences(const Face* oldBase, const Face* newBase);
-	void updateReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+	void updatePointers(const Face* oldBase, const Face* newBase);
+	void updatePointersAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
-	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
-	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
+	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	template<typename HE, typename HEType>
-	void importReferencesFrom(const HE& e, HalfEdge* base, const HEType* ebase);
+	void importPointersFrom(const HE& e, HalfEdge* base, const HEType* ebase);
 
 	template<typename HE, typename VType>
-	void importReferencesFrom(const HE& e, Vertex* base, const VType* ebase);
+	void importPointersFrom(const HE& e, Vertex* base, const VType* ebase);
 
 	template<typename HE, typename FType>
-	void importReferencesFrom(const HE& e, Face* base, const FType* ebase);
+	void importPointersFrom(const HE& e, Face* base, const FType* ebase);
 
 private:
 	// members that allow to access the data, trough data (horizontal) or trough parent (vertical)

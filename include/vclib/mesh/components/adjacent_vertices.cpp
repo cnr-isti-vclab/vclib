@@ -78,6 +78,23 @@ const Vertex* AdjacentVertices<Vertex, El, o>::adjVertex(uint i) const
 	return Base::container(this).at(i);
 }
 
+/**
+ * @brief Returns a reference of the pointer to the i-th adjacent vertex of this element but using
+ * as index the module between i and the number of adjacent vertices.
+ *
+ * You can use this function if you need to get the "next adjacent vertex after position k", without
+ * check if it is less than the number of adj faces. Works also for negative numbers:
+ *
+ * @code{.cpp}
+ * k = pos; // some position of an adjacent vertex
+ * auto* next = e.adjVertexMod(k+1); // the adj vertex next to k, that may also be at pos 0
+ * auto* last = e.adjVertexMod(-1); // the adj vertex in position adjVertexNumber()-1
+ * @endcode
+ *
+ * @param[in] i: the position of the required adjacent vertex in the container, w.r.t. the position
+ * 0; value is modularized on adjVertexNumber().
+ * @return The pointer to the required adjacent vertex of this element.
+ */
 template<typename Vertex, typename El, bool o>
 Vertex*& AdjacentVertices<Vertex, El, o>::adjVertexMod(int i)
 {
@@ -203,17 +220,17 @@ auto AdjacentVertices<Vertex, El, o>::adjVertices() const
 }
 
 template<typename Vertex, typename El, bool o>
-void AdjacentVertices<Vertex, El, o>::updateReferences(const Vertex* oldBase, const Vertex* newBase)
+void AdjacentVertices<Vertex, El, o>::updatePointers(const Vertex* oldBase, const Vertex* newBase)
 {
-	Base::updateElementReferences(oldBase, newBase, this);
+	Base::updateElementPointers(oldBase, newBase, this);
 }
 
 template<typename Vertex, typename El, bool o>
-void AdjacentVertices<Vertex, El, o>::updateReferencesAfterCompact(
+void AdjacentVertices<Vertex, El, o>::updatePointersAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
-	Base::updateElementReferencesAfterCompact(base, newIndices, this);
+	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
 template<typename Vertex, typename El, bool o>
@@ -224,7 +241,7 @@ void AdjacentVertices<Vertex, El, o>::importFrom(const Element&)
 
 template<typename Vertex, typename El, bool o>
 template<typename Element, typename ElVType>
-void AdjacentVertices<Vertex, El, o>::importReferencesFrom(
+void AdjacentVertices<Vertex, El, o>::importPointersFrom(
 	const Element& e,
 	Vertex*        base,
 	const ElVType* ebase)
@@ -233,14 +250,14 @@ void AdjacentVertices<Vertex, El, o>::importReferencesFrom(
 		if (isAdjacentVerticesEnabledOn(e)) {
 			// from static/dynamic to dynamic size: need to resize first, then import
 			resizeAdjVertices(e.adjVerticesNumber());
-			importRefsFrom(e, base, ebase);
+			importPtrsFrom(e, base, ebase);
 		}
 	}
 }
 
 template<typename Vertex, typename El, bool o>
 template<typename Element, typename ElVType>
-void AdjacentVertices<Vertex, El, o>::importRefsFrom(
+void AdjacentVertices<Vertex, El, o>::importPtrsFrom(
 	const Element& e,
 	Vertex*        base,
 	const ElVType* ebase)

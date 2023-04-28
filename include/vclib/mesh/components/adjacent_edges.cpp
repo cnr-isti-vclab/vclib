@@ -253,17 +253,17 @@ auto AdjacentEdges<Edge, N, El, o>::adjEdges() const
 }
 
 template<typename Edge, int N, typename El, bool o>
-void AdjacentEdges<Edge, N, El, o>::updateReferences(const Edge* oldBase, const Edge* newBase)
+void AdjacentEdges<Edge, N, El, o>::updatePointers(const Edge* oldBase, const Edge* newBase)
 {
-	Base::updateElementReferences(oldBase, newBase, this);
+	Base::updateElementPointers(oldBase, newBase, this);
 }
 
 template<typename Edge, int N, typename El, bool o>
-void AdjacentEdges<Edge, N, El, o>::updateReferencesAfterCompact(
+void AdjacentEdges<Edge, N, El, o>::updatePointersAfterCompact(
 	const Edge*             base,
 	const std::vector<int>& newIndices)
 {
-	Base::updateElementReferencesAfterCompact(base, newIndices, this);
+	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
 template<typename Edge, int N, typename El, bool o>
@@ -274,7 +274,7 @@ void AdjacentEdges<Edge, N, El, o>::importFrom(const Element&)
 
 template<typename Edge, int N, typename El, bool o>
 template<typename Element, typename ElEType>
-void AdjacentEdges<Edge, N, El, o>::importReferencesFrom(
+void AdjacentEdges<Edge, N, El, o>::importPointersFrom(
 	const Element& e,
 	Edge*          base,
 	const ElEType* ebase)
@@ -284,12 +284,12 @@ void AdjacentEdges<Edge, N, El, o>::importReferencesFrom(
 			if constexpr (N > 0) {
 				// same static size
 				if constexpr (N == Element::ADJ_EDGE_NUMBER) {
-					importRefsFrom(e, base, ebase);
+					importPtrsFrom(e, base, ebase);
 				}
 				// from dynamic to static, but dynamic size == static size
 				else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
 					if (e.adjEdgesNumber() == N) {
-						importRefsFrom(e, base, ebase);
+						importPtrsFrom(e, base, ebase);
 					}
 				}
 				else {
@@ -299,7 +299,7 @@ void AdjacentEdges<Edge, N, El, o>::importReferencesFrom(
 			else {
 				// from static/dynamic to dynamic size: need to resize first, then import
 				resizeAdjEdges(e.adjEdgesNumber());
-				importRefsFrom(e, base, ebase);
+				importPtrsFrom(e, base, ebase);
 			}
 		}
 	}
@@ -307,7 +307,7 @@ void AdjacentEdges<Edge, N, El, o>::importReferencesFrom(
 
 template<typename Edge, int N, typename El, bool o>
 template<typename Element, typename ElEType>
-void AdjacentEdges<Edge, N, El, o>::importRefsFrom(
+void AdjacentEdges<Edge, N, El, o>::importPtrsFrom(
 	const Element& e,
 	Edge*          base,
 	const ElEType* ebase)

@@ -165,7 +165,7 @@ concept TriangleFaceConcept =
  *
  * The PolygonFace concept is satisfied for a class F if ALL the following sentences are true:
  * - It satisfies the FaceConcept;
- * - The number of vertices of the VertexReferences component is -1 (dynamic size);
+ * - The number of vertices of the VertexPointers component is -1 (dynamic size);
  *
  * @ingroup face_concepts
  */
