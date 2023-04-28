@@ -583,17 +583,15 @@ FaceHalfEdgePointers<HE, El, o>::adjFaceEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::AdjacentFaceView
-FaceHalfEdgePointers<HE, El, o>::adjFaces()
+auto FaceHalfEdgePointers<HE, El, o>::adjFaces()
 {
-	return AdjacentFaceView(adjFaceBegin(), adjFaceEnd());
+	return View(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstAdjacentFaceView
-FaceHalfEdgePointers<HE, El, o>::adjFaces() const
+auto FaceHalfEdgePointers<HE, El, o>::adjFaces() const
 {
-	return ConstAdjacentFaceView(adjFaceBegin(), adjFaceEnd());
+	return View(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename HE, typename El, bool o>
@@ -641,17 +639,15 @@ FaceHalfEdgePointers<HE, El, o>::halfEdgeEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::HalfEdgeView
-FaceHalfEdgePointers<HE, El, o>::halfEdges()
+auto FaceHalfEdgePointers<HE, El, o>::halfEdges()
 {
-	return HalfEdgeView(halfEdgeBegin(), halfEdgeEnd());
+	return View(halfEdgeBegin(), halfEdgeEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstHalfEdgeView
-FaceHalfEdgePointers<HE, El, o>::halfEdges() const
+auto FaceHalfEdgePointers<HE, El, o>::halfEdges() const
 {
-	return ConstHalfEdgeView(halfEdgeBegin(), halfEdgeEnd());
+	return View(halfEdgeBegin(), halfEdgeEnd());
 }
 
 template<typename HE, typename El, bool o>
@@ -683,17 +679,15 @@ FaceHalfEdgePointers<HE, El, o>::innerHalfEdgeEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::InnerHalfEdgeView
-FaceHalfEdgePointers<HE, El, o>::innerHalfEdges()
+auto FaceHalfEdgePointers<HE, El, o>::innerHalfEdges()
 {
-	return InnerHalfEdgeView(innerHalfEdgeBegin(), innerHalfEdgeEnd());
+	return View(innerHalfEdgeBegin(), innerHalfEdgeEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstInnerHalfEdgeView
-FaceHalfEdgePointers<HE, El, o>::innerHalfEdges() const
+auto FaceHalfEdgePointers<HE, El, o>::innerHalfEdges() const
 {
-	return ConstInnerHalfEdgeView(innerHalfEdgeBegin(), innerHalfEdgeEnd());
+	return View(innerHalfEdgeBegin(), innerHalfEdgeEnd());
 }
 
 template<typename HE, typename El, bool o>
@@ -741,17 +735,15 @@ FaceHalfEdgePointers<HE, El, o>::vertexEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::VertexView
-FaceHalfEdgePointers<HE, El, o>::vertices()
+auto FaceHalfEdgePointers<HE, El, o>::vertices()
 {
-	return VertexView(vertexBegin(), vertexEnd());
+	return View(vertexBegin(), vertexEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstVertexView
-FaceHalfEdgePointers<HE, El, o>::vertices() const
+auto FaceHalfEdgePointers<HE, El, o>::vertices() const
 {
-	return ConstVertexView(vertexBegin(), vertexEnd());
+	return View(vertexBegin(), vertexEnd());
 }
 
 template<typename HE, typename El, bool o>
@@ -783,17 +775,15 @@ FaceHalfEdgePointers<HE, El, o>::wedgeColorEnd() const requires HasColor<HE>
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::WedgeColorsView
-FaceHalfEdgePointers<HE, El, o>::wedgeColors() requires HasColor<HE>
+auto FaceHalfEdgePointers<HE, El, o>::wedgeColors() requires HasColor<HE>
 {
-	return WedgeColorsView(wedgeColorBegin(), wedgeColorEnd());
+	return View(wedgeColorBegin(), wedgeColorEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstWedgeColorsView
-FaceHalfEdgePointers<HE, El, o>::wedgeColors() const requires HasColor<HE>
+auto FaceHalfEdgePointers<HE, El, o>::wedgeColors() const requires HasColor<HE>
 {
-	return ConstWedgeColorsView(wedgeColorBegin(), wedgeColorEnd());
+	return View(wedgeColorBegin(), wedgeColorEnd());
 }
 
 template<typename HE, typename El, bool o>
@@ -825,17 +815,15 @@ FaceHalfEdgePointers<HE, El, o>::wedgeTexCoordEnd() const requires HasTexCoord<H
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::WedgeTexCoordsView
-FaceHalfEdgePointers<HE, El, o>::wedgeTexCoords() requires HasTexCoord<HE>
+auto FaceHalfEdgePointers<HE, El, o>::wedgeTexCoords() requires HasTexCoord<HE>
 {
-	return WedgeTexCoordsView(wedgeTexCoordBegin(), wedgeTexCoordEnd());
+	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstWedgeTexCoordsView
-FaceHalfEdgePointers<HE, El, o>::wedgeTexCoords() const requires HasTexCoord<HE>
+auto FaceHalfEdgePointers<HE, El, o>::wedgeTexCoords() const requires HasTexCoord<HE>
 {
-	return ConstWedgeTexCoordsView(wedgeTexCoordBegin(), wedgeTexCoordEnd());
+	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }
 
 template<typename HE, typename El, bool o>
