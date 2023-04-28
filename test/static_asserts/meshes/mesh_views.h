@@ -34,12 +34,12 @@ void meshViewsStaticAsserts()
 		"The view returned by pipe operation m | views::vertices is not a ConstVertexView.");
 
 	static_assert(
-		vcl::VertexPointerRangeConcept<decltype(m.vertices() | vcl::views::reference)>,
+		vcl::VertexPointerRangeConcept<decltype(m.vertices() | vcl::views::addrOf)>,
 		"The view returned by pipe operation m | views::reference is not a "
 		"VertexPointerRangeConcept.");
 
 	static_assert(
-		vcl::VertexPointerRangeConcept<decltype(cm.vertices() | vcl::views::reference)>,
+		vcl::VertexPointerRangeConcept<decltype(cm.vertices() | vcl::views::addrOf)>,
 		"The view returned by pipe operation cm | views::reference is not a "
 		"VertexPointerRangeConcept.");
 
