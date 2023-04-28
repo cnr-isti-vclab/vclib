@@ -615,7 +615,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::hasPerFaceCustomComponent(
 	const std::string& name) const requires face::HasCustomComponents<T>
 {
-	return Base::ccVecMap.componentExists(name);
+	return Base::hasPerElementCustomComponent(name);
 }
 
 /**

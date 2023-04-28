@@ -232,6 +232,72 @@ void ElementContainer<T>::disableOptionalComponent()
 	vcVecTuple.template disableComponent<C>();
 }
 
+template<ElementConcept T>
+bool ElementContainer<T>::hasPerElementCustomComponent(const std::string& name) const
+	requires comp::HasCustomComponents<T>
+{
+	return ccVecMap.componentExists(name);
+}
+
+template<ElementConcept T>
+std::vector<std::string> ElementContainer<T>::getAllPerElementCustomComponentNames()
+	const requires comp::HasCustomComponents<T>
+{
+	return ccVecMap.allComponentNames();
+}
+
+template<ElementConcept T>
+template<typename K>
+bool ElementContainer<T>::isPerElementCustomComponentOfType(
+	const std::string& name) const requires comp::HasCustomComponents<T>
+{
+	return ccVecMap.template isComponentOfType<K>(name);
+}
+
+template<ElementConcept T>
+template<typename K>
+std::vector<std::string>
+ElementContainer<T>::getPerElementCustomComponentNamesOfType()
+	const requires comp::HasCustomComponents<T>
+{
+	return ccVecMap.template allComponentNamesOfType<K>();
+}
+
+template<ElementConcept T>
+template<typename K>
+void ElementContainer<T>::addPerElementCustomComponent(
+	const std::string& name) requires comp::HasCustomComponents<T>
+{
+	ccVecMap.template addNewComponent<K>(name, elementContainerSize());
+}
+
+template<ElementConcept T>
+void ElementContainer<T>::deletePerElementCustomComponent(
+	const std::string& name) requires comp::HasCustomComponents<T>
+{
+	ccVecMap.deleteComponent(name);
+}
+
+template<ElementConcept T>
+template<typename K>
+CustomComponentVectorHandle<K> ElementContainer<T>::getPerElementCustomComponentVectorHandle(
+	const std::string& name) requires comp::HasCustomComponents<T>
+{
+	std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);
+	CustomComponentVectorHandle<K> v(cc);
+	return v;
+}
+
+template<ElementConcept T>
+template<typename K>
+ConstCustomComponentVectorHandle<K> ElementContainer<T>::getPerElementCustomComponentVectorHandle(
+	const std::string& name) const requires comp::HasCustomComponents<T>
+{
+	const std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);
+	ConstCustomComponentVectorHandle<K> v(cc);
+	return cc;
+}
+
 /**
  * @brief Returns an iterator to the beginning of the container.
  *

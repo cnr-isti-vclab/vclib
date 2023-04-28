@@ -513,7 +513,7 @@ template<EdgeConcept T>
 bool EdgeContainer<T>::hasPerEdgeCustomComponent(
 	const std::string& name) const requires edge::HasCustomComponents<T>
 {
-	return Base::ccVecMap.componentExists(name);
+	return Base::hasPerElementCustomComponent(name);
 }
 
 /**

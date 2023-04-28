@@ -466,7 +466,7 @@ template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(
 	const std::string& name) const requires hedge::HasCustomComponents<T>
 {
-	return Base::ccVecMap.componentExists(name);
+	return Base::hasPerElementCustomComponent(name);
 }
 
 /**

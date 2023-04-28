@@ -24,7 +24,6 @@
 #ifndef VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
 #define VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
 
-#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/vertex.h>
 #include <vclib/mesh/elements/vertex_components.h>
 

@@ -682,7 +682,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::hasPerVertexCustomComponent(const std::string& name)
 	const requires vert::HasCustomComponents<T>
 {
-	return Base::ccVecMap.componentExists(name);
+	return Base::hasPerElementCustomComponent(name);
 }
 
 /**

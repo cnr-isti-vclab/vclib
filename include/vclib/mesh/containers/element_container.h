@@ -30,6 +30,7 @@
 #include <vclib/concepts/mesh/containers.h>
 #include <vclib/concepts/mesh/elements/element.h>
 #include <vclib/iterators/mesh/element_container_iterator.h>
+#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/views/view.h>
 
 #include "custom_components_vector_map.h"
@@ -82,6 +83,36 @@ protected:
 
 	template<typename C>
 	void disableOptionalComponent();
+
+	// Custom Components
+
+	bool hasPerElementCustomComponent(const std::string& name) const
+		requires comp::HasCustomComponents<T>;
+
+	std::vector<std::string> getAllPerElementCustomComponentNames()
+		const requires comp::HasCustomComponents<T>;
+
+	template<typename K>
+	bool isPerElementCustomComponentOfType(
+		const std::string& name) const requires comp::HasCustomComponents<T>;
+
+	template<typename K>
+	std::vector<std::string> getPerElementCustomComponentNamesOfType()
+		const requires comp::HasCustomComponents<T>;
+
+	template<typename K>
+	void addPerElementCustomComponent(const std::string& name) requires comp::HasCustomComponents<T>;
+
+	void deletePerElementCustomComponent(const std::string& name)
+		requires comp::HasCustomComponents<T>;
+
+	template<typename K>
+	CustomComponentVectorHandle<K> getPerElementCustomComponentVectorHandle(
+		const std::string& name) requires comp::HasCustomComponents<T>;
+
+	template<typename K>
+	ConstCustomComponentVectorHandle<K> getPerElementCustomComponentVectorHandle(
+		const std::string& name) const requires comp::HasCustomComponents<T>;
 
 	ElementIterator      elementBegin(bool jumpDeleted = true);
 	ElementIterator      elementEnd();

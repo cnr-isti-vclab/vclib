@@ -36,7 +36,7 @@ void CustomComponentsVectorMap<T, true>::clear()
 {
 	map.clear();
 	needToInitialize.clear();
-	componentType.clear();
+	compType.clear();
 }
 
 /**
@@ -107,7 +107,7 @@ void CustomComponentsVectorMap<T, true>::addNewComponent(
 	std::vector<std::any>& v = map[name];
 	v.resize(size, CompType());
 	needToInitialize[name] = false;
-	componentType.insert({name, typeid(CompType)});
+	compType.insert({name, typeid(CompType)});
 }
 
 /**
@@ -120,7 +120,7 @@ void CustomComponentsVectorMap<T, true>::deleteComponent(const std::string& name
 {
 	map.erase(name);
 	needToInitialize.erase(name);
-	componentType.erase(name);
+	compType.erase(name);
 }
 
 /**
@@ -173,7 +173,20 @@ bool CustomComponentsVectorMap<T, true>::isComponentOfType(
 	const std::string& compName) const
 {
 	std::type_index t(typeid(CompType));
-	return t == componentType.at(compName);
+
+	return t == compType.at(compName);
+}
+
+/**
+ * @brief Returns the std::type_index of the type of the CustomComponent having the input name.
+ *
+ * @param compName
+ * @return
+ */
+template<typename T>
+std::type_index vcl::mesh::CustomComponentsVectorMap<T, true>::componentType(const std::string& compName) const
+{
+	return compType.at(compName);
 }
 
 /**
@@ -187,7 +200,7 @@ std::vector<std::string> CustomComponentsVectorMap<T, true>::allComponentNamesOf
 {
 	std::vector<std::string> names;
 	std::type_index t(typeid(CompType));
-	for (const auto& p : componentType) {
+	for (const auto& p : compType) {
 		if (p.second == t)
 			names.push_back(p.first);
 	}
@@ -258,9 +271,9 @@ void CustomComponentsVectorMap<T, true>::checkComponentType(
 	const std::string& compName) const
 {
 	std::type_index t(typeid(CompType));
-	if (t != componentType.at(compName)) {
+	if (t != compType.at(compName)) {
 		throw BadCustomComponentTypeException(
-			"Expected type " + std::string(componentType.at(compName).name()) + " for " +
+			"Expected type " + std::string(compType.at(compName).name()) + " for " +
 			compName + ", but was " + std::string(t.name()) + ".");
 	}
 }
