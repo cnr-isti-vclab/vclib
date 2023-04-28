@@ -147,7 +147,7 @@ void Face<MeshType, Args...>::resizeVertices(uint n)
 {
 	using F = Face<MeshType, TypeWrapper<Args...>>;
 
-	VRefs::resizeVertices(n);
+	VPtrs::resizeVertices(n);
 
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
@@ -183,7 +183,7 @@ void Face<MeshType, Args...>::pushVertex(VertexType* v) requires NonDcelPolygonF
 {
 	using F = Face<MeshType, TypeWrapper<Args...>>;
 
-	VRefs::pushVertex(v);
+	VPtrs::pushVertex(v);
 
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
@@ -220,7 +220,7 @@ void Face<MeshType, Args...>::insertVertex(uint i, VertexType* v) requires NonDc
 {
 	using F = Face<MeshType, TypeWrapper<Args...>>;
 
-	VRefs::insertVertex(i, v);
+	VPtrs::insertVertex(i, v);
 
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
@@ -257,7 +257,7 @@ void Face<MeshType, Args...>::eraseVertex(uint i) requires NonDcelPolygonFaceCon
 {
 	using F = Face<MeshType, TypeWrapper<Args...>>;
 
-	VRefs::eraseVertex(i);
+	VPtrs::eraseVertex(i);
 
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
@@ -293,7 +293,7 @@ void Face<MeshType, Args...>::clearVertices() requires NonDcelPolygonFaceConcept
 {
 	using F = Face<MeshType, TypeWrapper<Args...>>;
 
-	VRefs::clearVertices();
+	VPtrs::clearVertices();
 
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
