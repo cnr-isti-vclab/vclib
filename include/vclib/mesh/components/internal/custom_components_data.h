@@ -30,6 +30,8 @@
 #include <vector>
 #include <typeindex>
 
+#include <vclib/types.h>
+
 namespace vcl::comp::internal {
 
 //store the data if horizontal
@@ -134,15 +136,6 @@ struct CustomComponentsData<ElementType, true>
 		return std::any_cast<CompType&>(
 			ccVec(elem).template componentVector<CompType>(compName)[thisId(elem)]);
 	}
-
-//	template<typename CompType>
-//	void addCustomComponent(const std::string&, const CompType = CompType())
-//	{
-//	}
-
-//	void deleteCustomComponent(const std::string&)
-//	{
-//	}
 
 private:
 	uint thisId(const ElementType* elem) const
