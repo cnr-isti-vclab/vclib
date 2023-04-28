@@ -62,6 +62,8 @@ namespace vcl::comp {
  * m.hasSameMark(m.vertex(4)); // or: m.vertex(4).hasSameMark(m)
  * m.hasSameMark(m.vertex(5)); // or: m.vertex(5).hasSameMark(m)
  * @endcode
+ *
+ * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
 class Mark
@@ -106,6 +108,11 @@ private:
 	// contians the actual data of the component, if the component is horizontal
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
+
+/* Detector function to check if a class has Mark enabled */
+
+template <typename T>
+bool isMarkEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

@@ -50,7 +50,7 @@ class HalfEdge :
 		public vcl::HalfEdge<
 			DcelMeshT<Scalar>,
 			vcl::hedge::BitFlags,
-			vcl::hedge::HalfEdgeReferences<HalfEdge<Scalar>, Vertex<Scalar>, Face<Scalar>>,
+			vcl::hedge::HalfEdgePointers<HalfEdge<Scalar>, Vertex<Scalar>, Face<Scalar>>,
 			vcl::hedge::OptionalScalar<Scalar, HalfEdge<Scalar>>,
 			vcl::hedge::OptionalColor<HalfEdge<Scalar>>,
 			vcl::hedge::OptionalMark<HalfEdge<Scalar>>,
@@ -68,7 +68,7 @@ class Vertex :
 			vcl::vert::Normal3<Scalar>,
 			vcl::vert::Color,
 			vcl::vert::Scalar<Scalar>,
-			vcl::vert::HalfEdgeReference<HalfEdge<Scalar>>,
+			vcl::vert::HalfEdgePointer<HalfEdge<Scalar>>,
 			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
 			vcl::vert::OptionalMark<Vertex<Scalar>>,
 			vcl::vert::CustomComponents<Vertex<Scalar>>>
@@ -80,7 +80,7 @@ class Face :
 		public vcl::Face<
 			DcelMeshT<Scalar>,
 			vcl::face::BitFlags,
-			vcl::face::HalfEdgeReference<HalfEdge<Scalar>>,
+			vcl::face::HalfEdgePointers<HalfEdge<Scalar>>,
 			vcl::face::Normal3<Scalar>,
 			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,
 			vcl::face::OptionalColor<Face<Scalar>>,

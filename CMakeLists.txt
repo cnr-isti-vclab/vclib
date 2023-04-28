@@ -115,8 +115,8 @@ set(HEADERS
 	include/vclib/concepts/mesh/components/component.h
 	include/vclib/concepts/mesh/components/coordinate.h
 	include/vclib/concepts/mesh/components/custom_components.h
-	include/vclib/concepts/mesh/components/face_half_edge_reference.h
-	include/vclib/concepts/mesh/components/half_edge_references.h
+	include/vclib/concepts/mesh/components/face_half_edge_pointers.h
+	include/vclib/concepts/mesh/components/half_edge_pointers.h
 	include/vclib/concepts/mesh/components/mark.h
 	include/vclib/concepts/mesh/components/name.h
 	include/vclib/concepts/mesh/components/normal.h
@@ -125,8 +125,8 @@ set(HEADERS
 	include/vclib/concepts/mesh/components/tex_coord.h
 	include/vclib/concepts/mesh/components/texture_paths.h
 	include/vclib/concepts/mesh/components/transform_matrix.h
-	include/vclib/concepts/mesh/components/vertex_half_edge_reference.h
-	include/vclib/concepts/mesh/components/vertex_references.h
+	include/vclib/concepts/mesh/components/vertex_half_edge_pointer.h
+	include/vclib/concepts/mesh/components/vertex_pointers.h
 	include/vclib/concepts/mesh/components/wedge_colors.h
 	include/vclib/concepts/mesh/components/wedge_tex_coords.h
 	include/vclib/concepts/mesh/elements/edge.h
@@ -174,6 +174,21 @@ set(HEADERS
 	include/vclib/io/stl/load.h
 	include/vclib/io/stl/save.h
 	include/vclib/iterators/iterator_wrapper.h
+	include/vclib/iterators/mesh.h
+	include/vclib/iterators/mesh/face.h
+	include/vclib/iterators/mesh/element_container_iterator.h
+	include/vclib/iterators/mesh/face/edge_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_base_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_half_edge_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_vertex_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_wedge_color_iterator.h
+	include/vclib/iterators/mesh/half_edge/face_wedge_tex_coord_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_adj_face_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h
+	include/vclib/iterators/mesh/half_edge/vertex_base_iterator.h
+	include/vclib/iterators/space/grid/cell_iterator.h
+	include/vclib/iterators/space/grid/static_grid_iterator.h
 	include/vclib/math/base.h
 	include/vclib/math/distribution.h
 	include/vclib/math/fibonacci.h
@@ -182,7 +197,6 @@ set(HEADERS
 	include/vclib/math/perlin_noise.h
 	include/vclib/math/random.h
 	include/vclib/math/transform.h
-	include/vclib/mesh/iterators.h
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_components.h
 	include/vclib/mesh/requirements.h
@@ -194,8 +208,8 @@ set(HEADERS
 	include/vclib/mesh/components/color.h
 	include/vclib/mesh/components/coordinate.h
 	include/vclib/mesh/components/custom_components.h
-	include/vclib/mesh/components/face_half_edge_reference.h
-	include/vclib/mesh/components/half_edge_references.h
+	include/vclib/mesh/components/face_half_edge_pointers.h
+	include/vclib/mesh/components/half_edge_pointers.h
 	include/vclib/mesh/components/mark.h
 	include/vclib/mesh/components/name.h
 	include/vclib/mesh/components/normal.h
@@ -203,8 +217,8 @@ set(HEADERS
 	include/vclib/mesh/components/polygon_bit_flags.h
 	include/vclib/mesh/components/principal_curvature.h
 	include/vclib/mesh/components/scalar.h
-	include/vclib/mesh/components/vertex_half_edge_reference.h
-	include/vclib/mesh/components/vertex_references.h
+	include/vclib/mesh/components/vertex_half_edge_pointer.h
+	include/vclib/mesh/components/vertex_pointers.h
 	include/vclib/mesh/components/tex_coord.h
 	include/vclib/mesh/components/texture_paths.h
 	include/vclib/mesh/components/transform_matrix.h
@@ -213,7 +227,7 @@ set(HEADERS
 	include/vclib/mesh/components/wedge_tex_coords.h
 	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/custom_components_data.h
-	include/vclib/mesh/components/internal/element_references.h
+	include/vclib/mesh/components/internal/element_pointers_container.h
 	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/custom_component_vector_handle.h
 	include/vclib/mesh/containers/custom_components_vector_map.h
@@ -232,18 +246,6 @@ set(HEADERS
 	include/vclib/mesh/elements/half_edge_components.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
-	include/vclib/mesh/iterators/face.h
-	include/vclib/mesh/iterators/element_container_iterator.h
-	include/vclib/mesh/iterators/face/edge_adj_face_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_adj_face_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_base_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_half_edge_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_vertex_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_wedge_color_iterator.h
-	include/vclib/mesh/iterators/half_edge/face_wedge_tex_coord_iterator.h
-	include/vclib/mesh/iterators/half_edge/vertex_adj_face_iterator.h
-	include/vclib/mesh/iterators/half_edge/vertex_adj_vertex_iterator.h
-	include/vclib/mesh/iterators/half_edge/vertex_base_iterator.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/half_edge_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
@@ -267,7 +269,6 @@ set(HEADERS
 	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/pair.h
 	include/vclib/misc/parallel.h
-	include/vclib/misc/random_access_container.h
 	include/vclib/misc/string.h
 	include/vclib/misc/timer.h
 	include/vclib/misc/tokenizer.h
@@ -300,11 +301,7 @@ set(HEADERS
 	include/vclib/space/tex_coord.h
 	include/vclib/space/triangle.h
 	include/vclib/space/triangle_wrapper.h
-	include/vclib/space/array/array_t.h
-	include/vclib/space/array/array2.h
-	include/vclib/space/array/array3.h
-	include/vclib/space/array/array4.h
-	include/vclib/space/array/array_bool.h
+	include/vclib/space/vector.h
 	include/vclib/space/graph/undirected_node.h
 	include/vclib/space/graph/bipartite/bipartite_graph.h
 	include/vclib/space/graph/bipartite/iterator/adjacent_left_node_iterator.h
@@ -315,8 +312,6 @@ set(HEADERS
 	include/vclib/space/grid/hash_table_grid.h
 	include/vclib/space/grid/regular_grid.h
 	include/vclib/space/grid/static_grid.h
-	include/vclib/space/grid/iterators/cell_iterator.h
-	include/vclib/space/grid/iterators/static_grid_iterator.h
 	include/vclib/space/sampler/mesh_sampler.h
 	include/vclib/space/sampler/point_sampler.h
 	include/vclib/space/sampler/vertex_sampler.h
@@ -401,6 +396,10 @@ set(SOURCES
 	include/vclib/io/stl/load.cpp
 	include/vclib/io/stl/save.cpp
 	include/vclib/iterators/iterator_wrapper.cpp
+	include/vclib/iterators/mesh/element_container_iterator.cpp
+	include/vclib/iterators/mesh/face/edge_adj_face_iterator.cpp
+	include/vclib/iterators/space/grid/cell_iterator.cpp
+	include/vclib/iterators/space/grid/static_grid_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/fibonacci.cpp
 	include/vclib/math/histogram.cpp
@@ -418,8 +417,8 @@ set(SOURCES
 	include/vclib/mesh/components/color.cpp
 	include/vclib/mesh/components/coordinate.cpp
 	include/vclib/mesh/components/custom_components.cpp
-	include/vclib/mesh/components/face_half_edge_reference.cpp
-	include/vclib/mesh/components/half_edge_references.cpp
+	include/vclib/mesh/components/face_half_edge_pointers.cpp
+	include/vclib/mesh/components/half_edge_pointers.cpp
 	include/vclib/mesh/components/mark.cpp
 	include/vclib/mesh/components/name.cpp
 	include/vclib/mesh/components/normal.cpp
@@ -431,11 +430,11 @@ set(SOURCES
 	include/vclib/mesh/components/texture_paths.cpp
 	include/vclib/mesh/components/transform_matrix.cpp
 	include/vclib/mesh/components/triangle_bit_flags.cpp
-	include/vclib/mesh/components/vertex_half_edge_reference.cpp
-	include/vclib/mesh/components/vertex_references.cpp
+	include/vclib/mesh/components/vertex_half_edge_pointer.cpp
+	include/vclib/mesh/components/vertex_pointers.cpp
 	include/vclib/mesh/components/wedge_colors.cpp
 	include/vclib/mesh/components/wedge_tex_coords.cpp
-	include/vclib/mesh/components/internal/element_references.cpp
+	include/vclib/mesh/components/internal/element_pointers_container.cpp
 	include/vclib/mesh/containers/custom_component_vector_handle.cpp
 	include/vclib/mesh/containers/custom_components_vector_map.cpp
 	include/vclib/mesh/containers/edge_container.cpp
@@ -449,8 +448,6 @@ set(SOURCES
 	include/vclib/mesh/elements/face.cpp
 	include/vclib/mesh/elements/half_edge.cpp
 	include/vclib/mesh/elements/vertex.cpp
-	include/vclib/mesh/iterators/element_container_iterator.cpp
-	include/vclib/mesh/iterators/face/edge_adj_face_iterator.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
@@ -462,7 +459,6 @@ set(SOURCES
 	include/vclib/misc/file_info.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
 	include/vclib/misc/parallel.cpp
-	include/vclib/misc/random_access_container.cpp
 	include/vclib/misc/string.cpp
 	include/vclib/misc/timer.cpp
 	include/vclib/misc/tokenizer.cpp
@@ -473,6 +469,7 @@ set(SOURCES
 	include/vclib/render/generic_drawable_mesh.cpp
 	include/vclib/render/mesh_render_buffers.cpp
 	include/vclib/render/mesh_render_settings.cpp
+	include/vclib/space/array.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/matrix.cpp
@@ -486,10 +483,7 @@ set(SOURCES
 	include/vclib/space/tex_coord.cpp
 	include/vclib/space/triangle.cpp
 	include/vclib/space/triangle_wrapper.cpp
-	include/vclib/space/array/array_t.cpp
-	include/vclib/space/array/array2.cpp
-	include/vclib/space/array/array3.cpp
-	include/vclib/space/array/array4.cpp
+	include/vclib/space/vector.cpp
 	include/vclib/space/graph/undirected_node.cpp
 	include/vclib/space/graph/bipartite/bipartite_graph.cpp
 	include/vclib/space/graph/bipartite/iterator/adjacent_node_iterator.cpp
@@ -497,8 +491,6 @@ set(SOURCES
 	include/vclib/space/grid/hash_table_grid.cpp
 	include/vclib/space/grid/regular_grid.cpp
 	include/vclib/space/grid/static_grid.cpp
-	include/vclib/space/grid/iterators/cell_iterator.cpp
-	include/vclib/space/grid/iterators/static_grid_iterator.cpp
 	include/vclib/space/sampler/mesh_sampler.cpp
 	include/vclib/space/sampler/point_sampler.cpp
 	include/vclib/space/sampler/vertex_sampler.cpp)

@@ -42,6 +42,8 @@ namespace vcl::comp {
  *
  * To be completely sure that WedgeColors is available at runtime, you need to call the member
  * function `isWedgeColorsEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasWedgeColors = requires(
@@ -53,8 +55,6 @@ concept HasWedgeColors = requires(
 	T::WEDGE_COLOR_NUMBER;
 	typename T::WedgeColorsIterator;
 	typename T::ConstWedgeColorsIterator;
-	typename T::WedgeColorsView;
-	typename T::ConstWedgeColorsView;
 
 	{ o.wedgeColor(uint()) } -> std::same_as<vcl::Color&>;
 	{ co.wedgeColor(uint()) } -> std::same_as<const vcl::Color&>;
@@ -68,15 +68,16 @@ concept HasWedgeColors = requires(
 	{ o.wedgeColorEnd() } -> std::same_as<typename T::WedgeColorsIterator>;
 	{ co.wedgeColorBegin() } -> std::same_as<typename T::ConstWedgeColorsIterator>;
 	{ co.wedgeColorEnd() } -> std::same_as<typename T::ConstWedgeColorsIterator>;
-	{ o.wedgeColors() } -> std::same_as<typename T::WedgeColorsView>;
-	{ co.wedgeColors() } -> std::same_as<typename T::ConstWedgeColorsView>;
+	o.wedgeColors();
+	co.wedgeColors();
 };
 
 /**
+ * @private
  * @brief HasWedgeColorsComponent concept is used to discriminate between the WedgeColors (or
- * OptionalWedgeColors) component, and the FaceHalfEdgeReferences component, which using half edges
+ * OptionalWedgeColors) component, and the FaceHalfEdgePointers component, which using half edges
  * allows to access to wedge colors. This concept is intended only for internal use, useful to check
- * that a Face does not have both WedgeColors and FaceHalfEdgeReferences components.
+ * that a Face does not have both WedgeColors and FaceHalfEdgePointers components.
  */
 template<typename T>
 concept HasWedgeColorsComponent = requires(T o)
@@ -88,12 +89,15 @@ concept HasWedgeColorsComponent = requires(T o)
 /**
  * @brief HasOptionalWedgeColors concept is satisfied only if a class satisfies the
  * HasWedgeColors concept and has the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalWedgeColors =
 	HasWedgeColorsComponent<T> && IsOptionalComponent<typename T::WedgeColorsComponent>;
 
 /**
+ * @private
  * @brief HasRightNumberOfWedgeColors concept
  *
  * This concept is designed to be used with Face components, where the number of wedge colors must
@@ -106,6 +110,7 @@ template<typename T>
 concept HasRightNumberOfWedgeColors = T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
 
 /**
+ * @private
  * @brief SanityCheckWedgeColors concept
  *
  * This concept is designed to be used with Face components, where the number of wedge colors must
@@ -117,19 +122,6 @@ concept HasRightNumberOfWedgeColors = T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
  */
 template<typename T>
 concept SanityCheckWedgeColors = !HasWedgeColors<T> || HasRightNumberOfWedgeColors<T>;
-
-/* Detector function to check if a class has WedgeColors enabled */
-
-template <typename T>
-bool isWedgeColorsEnabledOn(const T& element)
-{
-	if constexpr(HasOptionalWedgeColors<T>) {
-		return element.isWedgeColorsEnabled();
-	}
-	else {
-		return HasWedgeColors<T>;
-	}
-}
 
 } // namespace vcl::comp
 

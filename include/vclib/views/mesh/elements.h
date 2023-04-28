@@ -36,7 +36,7 @@ template<typename T>
 concept CleanFaceMeshConcept = FaceMeshConcept<RemoveConstRef<T>>;
 
 template<typename T>
-concept CleanVertexRefsConcept = comp::HasVertexReferences<RemoveConstRef<T>>;
+concept CleanVertexPtrsConcept = comp::HasVertexPointers<RemoveConstRef<T>>;
 
 template<typename T>
 concept CleanEdgeMeshConcept = EdgeMeshConcept<RemoveConstRef<T>>;
@@ -54,7 +54,7 @@ struct VerticesView
 		return r.vertices();
 	}
 
-	template <CleanVertexRefsConcept R>
+	template <CleanVertexPtrsConcept R>
 	friend constexpr auto operator|(R&& r, VerticesView)
 	{
 		return r.vertices();

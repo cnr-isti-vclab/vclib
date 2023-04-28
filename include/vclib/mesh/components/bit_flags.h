@@ -59,6 +59,8 @@ namespace vcl::comp {
  * @code{.cpp}
  * v.isDeleted();
  * @endcode
+ *
+ * @ingroup components
  */
 template<typename Component, typename ElementType = void, bool optional = false>
 class BitFlagsT

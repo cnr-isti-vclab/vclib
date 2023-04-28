@@ -52,23 +52,23 @@ struct DereferenceView
 	}
 };
 
-struct ReferenceView
+struct AddressOfView
 {
-	constexpr ReferenceView() = default;
+	constexpr AddressOfView() = default;
 
 	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, ReferenceView)
+	friend constexpr auto operator|(R&& r, AddressOfView)
 	{
 		return std::views::transform(r, [](auto& o) { return &o; });
 	}
 };
 
-struct ConstReferenceView
+struct ConstAddressOfView
 {
-	constexpr ConstReferenceView() = default;
+	constexpr ConstAddressOfView() = default;
 
 	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, ConstReferenceView)
+	friend constexpr auto operator|(R&& r, ConstAddressOfView)
 	{
 		return std::views::transform(r, [](const auto& o) { return &o; });
 	}
@@ -83,28 +83,33 @@ struct ConstReferenceView
 inline constexpr internal::NotNullView notNull;
 
 /**
- * @brief The dereference view allow to dereference the pointers of a range. The resulting
- * view will iterate over the objects pointed by the range of pointers.
+ * @brief The deref view the dereference operator `*` on the input view.
+ *
+ * It allows to dereference the pointers of a range. The resulting view will iterate over the
+ * objects pointed by the range of pointers.
  *
  * @note: no check on the validity of the pointers is performed. If you know that in your range
  * there is the possibility to have `nullptr` pointers, use first the `notNull` view:
  *
  * auto resView = inputRange | notNull | dereference;
  */
-inline constexpr internal::DereferenceView dereference;
+inline constexpr internal::DereferenceView deref;
 
 /**
- * @brief The reference view allow to reference the objects of a range. The resulting view will
- * iterate over the pointers pointing to the object of the input range.
+ * @brief The addrOf view applies the address-of operator `&` on the input view.
+ *
+ * It allows to get the pointers of the objects of a range. The resulting view will iterate over
+ * the pointers pointing to the object of the input range.
  */
-inline constexpr internal::ReferenceView reference;
+inline constexpr internal::AddressOfView addrOf;
 
 /**
- * @brief The constReference view allow to const reference the objects of a range. The resulting
- * view will iterate over the const pointers pointing to the object of the input range (that may be
- * also not const).
+ * @brief The constAddrOf view applies the address-of operator `&` on the input view.
+ *
+ * It allows to get the const pointers of the objects of a range. The resulting view will iterate
+ * over the const pointers pointing to the object of the input range (that may be also not const).
  */
-inline constexpr internal::ConstReferenceView constReference;
+inline constexpr internal::ConstAddressOfView constAddrOf;
 
 } // namespace vcl::views
 

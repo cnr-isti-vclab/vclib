@@ -42,6 +42,8 @@ namespace vcl::comp {
  *
  * To be completely sure that WedgeTexCoords is available at runtime, you need to call the member
  * function `isWedgeTexCoordsEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasWedgeTexCoords = requires(
@@ -54,8 +56,6 @@ concept HasWedgeTexCoords = requires(
 	typename T::WedgeTexCoordType;
 	typename T::WedgeTexCoordsIterator;
 	typename T::ConstWedgeTexCoordsIterator;
-	typename T::WedgeTexCoordsView;
-	typename T::ConstWedgeTexCoordsView;
 
 	{ o.wedgeTexCoord(uint()) } -> std::same_as<typename T::WedgeTexCoordType&>;
 	{ co.wedgeTexCoord(uint()) } -> std::same_as<const typename T::WedgeTexCoordType&>;
@@ -71,17 +71,18 @@ concept HasWedgeTexCoords = requires(
 	{ o.wedgeTexCoordEnd() } -> std::same_as<typename T::WedgeTexCoordsIterator>;
 	{ co.wedgeTexCoordBegin() } -> std::same_as<typename T::ConstWedgeTexCoordsIterator>;
 	{ co.wedgeTexCoordEnd() } -> std::same_as<typename T::ConstWedgeTexCoordsIterator>;
-	{ o.wedgeTexCoords() } -> std::same_as<typename T::WedgeTexCoordsView>;
-	{ co.wedgeTexCoords() } -> std::same_as<typename T::ConstWedgeTexCoordsView>;
+	o.wedgeTexCoords();
+	co.wedgeTexCoords();
 };
 
 /**
+ * @private
  * @brief HasWedgeTexCoordsComponent concept
  *
  * This concept is used to discriminate between the WedgeTexCoords (or OptionalWedgeTexCoords)
- * component, and the FaceHalfEdgeReferences component, which using half edges allows to access
+ * component, and the FaceHalfEdgePointers component, which using half edges allows to access
  * to wedge tex coords. This concept is intended only for internal use, useful to check that a Face
- * does not have both WedgeTexCoords and FaceHalfEdgeReferences components.
+ * does not have both WedgeTexCoords and FaceHalfEdgePointers components.
  */
 template<typename T>
 concept HasWedgeTexCoordsComponent = requires(T o)
@@ -93,12 +94,15 @@ concept HasWedgeTexCoordsComponent = requires(T o)
 /**
  * @brief HasOptionalWedgeTexCoords concept is satisfied only if a class satisfied the
  * HasWedgeCoordsComponent and has the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalWedgeTexCoords =
 	HasWedgeTexCoordsComponent<T> && IsOptionalComponent<typename T::WedgeTexCoordsComponent>;
 
 /**
+ * @private
  * @brief HasRightNumberOfWedgeTexCoords concept
  *
  * This concept is designed to be used with Face components, where the number of wedge texcoords
@@ -111,6 +115,7 @@ template<typename T>
 concept HasRightNumberOfWedgeTexCoords = T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
 
 /**
+ * @private
  * @brief SanityCheckWedgeTexCoords concept
  *
  * This concept is designed to be used with Face components, where the number of wedge texcoords
@@ -122,19 +127,6 @@ concept HasRightNumberOfWedgeTexCoords = T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_
  */
 template<typename T>
 concept SanityCheckWedgeTexCoords = !HasWedgeTexCoords<T> || HasRightNumberOfWedgeTexCoords<T>;
-
-/* Detector function to check if a class has WedgeTexCoords enabled */
-
-template <typename T>
-bool isWedgeTexCoordsEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalWedgeTexCoords<T>) {
-		return element.isWedgeTexCoordsEnabled();
-	}
-	else {
-		return HasWedgeTexCoords<T>;
-	}
-}
 
 } // namespace vcl::comp
 

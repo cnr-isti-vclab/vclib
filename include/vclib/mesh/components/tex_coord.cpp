@@ -72,4 +72,15 @@ const vcl::TexCoord<Scalar>& TexCoord<Scalar, El, o>::t() const
 	return data.template get<El>(this);
 }
 
+template <typename T>
+bool isTexCoordEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalTexCoord<T>) {
+		return element.isTexCoordEnabled();
+	}
+	else {
+		return HasTexCoord<T>;
+	}
+}
+
 } // namespace vcl::comp

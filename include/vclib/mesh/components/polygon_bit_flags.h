@@ -64,6 +64,8 @@ namespace vcl::comp {
  * @code{.cpp}
  * v.isAnyEdgeOnBorder();
  * @endcode
+ *
+ * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
 class PolygonBitFlags : public BitFlagsT<PolygonBitFlags<ElementType, optional>, ElementType, optional>

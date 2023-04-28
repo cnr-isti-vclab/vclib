@@ -274,7 +274,7 @@ void updatePrincipalCurvaturePCA(
 
 	if (montecarloSampling) {
 		area = vcl::surfaceArea(m);
-		pGrid = VGrid(m.vertices() | views::reference);
+		pGrid = VGrid(m.vertices() | views::addrOf);
 		pGrid.build();
 	}
 

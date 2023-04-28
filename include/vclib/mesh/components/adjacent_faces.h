@@ -27,12 +27,12 @@
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_references.h"
+#include "internal/element_pointers_container.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentFaces class is a container of Face references. It could be used by any
+ * @brief The AdjacentFaces class is a container of Face pointers. It could be used by any
  * Element to save adjacencies information (also the Face element itself).
  *
  * It is a random access container having static or dynamic size, depending on the value of N (a
@@ -51,35 +51,52 @@ namespace vcl::comp {
  * @note If this component is part of a Face Element, the number of Adjacent Faces is tied to the
  * Vertex Number of the Face, therefore all the members that allows to modify the number of
  * Adjacent Faces in case of dynamic size won't be available on Face Elements.
+ *
+ * @ingroup components
  */
 template<typename Face, int N, typename ElementType = void, bool optional = false>
 class AdjacentFaces :
-		public ReferencesComponentTriggerer<Face>,
-		protected internal::ElementReferences<Face, N, ElementType>
+		public PointersComponentTriggerer<Face>,
+		protected internal::ElementPointersContainer<Face, N, ElementType>
 {
 	using ThisType = AdjacentFaces<Face, N, ElementType, optional>;
 
-	using Base = internal::ElementReferences<Face, N, ElementType>;
+	using Base = internal::ElementPointersContainer<Face, N, ElementType>;
 
 public:
-	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
+	/** @private data that the component stores internally (or vertically) */
+	using DataValueType = typename Base::DataValueType;
+
+	/** @brief Allows access to this component type from a derived class type/instance */
 	using AdjacentFacesComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
-
-	/// Static size of the container. If the container is dynamic, this value will be negative and
-	/// you should use the adjFacesNumber() member function.
-	static const int ADJ_FACE_NUMBER = Base::CONTAINER_SIZE;
-
+	/**
+	 * @brief Expose the type of the Adjacent Face.
+	 */
 	using AdjacentFaceType = Face;
 
 	/* Iterator Types declaration */
 
 	using AdjacentFaceIterator      = typename Base::Iterator;
 	using ConstAdjacentFaceIterator = typename Base::ConstIterator;
-	using AdjacentFaceView          = vcl::View<AdjacentFaceIterator>;
-	using ConstAdjacentFaceView     = vcl::View<ConstAdjacentFaceIterator>;
+
+	/**
+	 * @brief Boolean that tells if this component type stores its data vertically (not in the
+	 * Element frame memory, but in another vector).
+	 */
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+
+	/**
+	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
+	 * is vertical.
+	 */
+	static const bool IS_OPTIONAL = optional;
+
+	/**
+	 * @brief Static size of the container. If the container is dynamic, this value will be negative
+	 * and you should use the adjFacesNumber() member function.
+	 */
+	static const int ADJ_FACE_NUMBER = Base::CONTAINER_SIZE;
 
 	/* Constructor and isEnabled */
 
@@ -121,26 +138,29 @@ public:
 	AdjacentFaceIterator      adjFaceEnd();
 	ConstAdjacentFaceIterator adjFaceBegin() const;
 	ConstAdjacentFaceIterator adjFaceEnd() const;
-	AdjacentFaceView          adjFaces();
-	ConstAdjacentFaceView     adjFaces() const;
+	auto                      adjFaces();
+	auto                      adjFaces() const;
 
 protected:
-	void updateReferences(const Face* oldBase, const Face* newBase);
+	void updatePointers(const Face* oldBase, const Face* newBase);
 
-	void updateReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+	void updatePointersAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElFType>
-	void
-	importReferencesFrom(const Element& e, Face* base, const ElFType* ebase);
+	void importPointersFrom(const Element& e, Face* base, const ElFType* ebase);
 
 private:
 	template<typename Element, typename ElFType>
-	void
-	importRefsFrom(const Element& e, Face* base, const ElFType* ebase);
+	void importPtrsFrom(const Element& e, Face* base, const ElFType* ebase);
 };
+
+/* Detector function to check if a class has AdjacentFaces enabled */
+
+template <typename T>
+bool isAdjacentFacesEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

@@ -31,6 +31,11 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief The PrincipalCurvature class
+ *
+ * @ingroup components
+ */
 template<
 	typename Scalar,
 	typename ElementType = void,
@@ -67,6 +72,11 @@ private:
 	// contians the actual data of the component, if the component is horizontal
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
+
+/* Detector function to check if a class has PrincipalCurvature enabled */
+
+template <typename T>
+bool isPrincipalCurvatureEnabledOn(const T& element);
 
 template<typename ElementType = void, bool optional = false>
 using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, optional>;

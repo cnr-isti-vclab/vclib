@@ -26,6 +26,10 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ * @brief The ParentMeshPointer class
+ */
 template<typename MeshType>
 class ParentMeshPointer
 {

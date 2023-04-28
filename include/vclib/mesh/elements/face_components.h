@@ -29,7 +29,7 @@
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/custom_components.h"
-#include "../components/face_half_edge_reference.h"
+#include "../components/face_half_edge_pointers.h"
 #include "../components/mark.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
@@ -37,11 +37,25 @@
 #include "../components/principal_curvature.h"
 #include "../components/scalar.h"
 #include "../components/triangle_bit_flags.h"
-#include "../components/vertex_references.h"
+#include "../components/vertex_pointers.h"
 #include "../components/wedge_colors.h"
 #include "../components/wedge_tex_coords.h"
 
+/**
+ * @defgroup face_components Face Components
+ * @ingroup components
+ *
+ * @brief This group lists all the Components that may be used by the Face element.
+ *
+ * All these components are listed inside the vcl::face namespace.
+ */
+
 namespace vcl::face {
+
+/**
+ * @addtogroup face_components
+ * @{
+ */
 
 /* Port AdjacentEdges class into face namespace */
 template<typename EdgeType>
@@ -100,9 +114,9 @@ using OptionalColor = comp::Color<FaceType, true>;
 template<typename FaceType>
 using CustomComponents = comp::CustomComponents<FaceType>;
 
-/* Port Half Edge reference into face namespace*/
+/* Port HalfEdgePointers into face namespace*/
 template<typename HalfEdge>
-using HalfEdgeReference = comp::FaceHalfEdgeReference<HalfEdge>;
+using HalfEdgePointers = comp::FaceHalfEdgePointers<HalfEdge>;
 
 /* Port Mark class into face namespace */
 using Mark = comp::Mark<>;
@@ -211,15 +225,15 @@ using TriangleBitFlags = comp::TriangleBitFlags<>;
 template<typename FaceType>
 using VerticalTriangleBitFlags = comp::TriangleBitFlags<FaceType>;
 
-/* Port VertexReferences class into face namespace */
+/* Port VertexPointers class into face namespace */
 template<typename Vertex, int N>
-using VertexReferences = comp::VertexReferences<Vertex, N>;
+using VertexPointers = comp::VertexPointers<Vertex, N>;
 
 template<typename Vertex>
-using TriangleVertexRefs = comp::VertexReferences<Vertex, 3>;
+using TriangleVertexPtrs = comp::VertexPointers<Vertex, 3>;
 
 template<typename Vertex>
-using PolygonVertexRefs = comp::VertexReferences<Vertex, -1>;
+using PolygonVertexPtrs = comp::VertexPointers<Vertex, -1>;
 
 /* Port WedgeColors class into face namespace */
 using PolygonWedgeColors = comp::WedgeColors<-1>;
@@ -279,6 +293,8 @@ template<typename FaceType>
 using OptionalTriangleWedgeTexCoordsf = comp::WedgeTexCoords<float, 3, FaceType, true>;
 template<typename FaceType>
 using OptionalTriangleWedgeTexCoordsd = comp::WedgeTexCoords<double, 3, FaceType, true>;
+
+/** @} */ // end of edge_components group
 
 } // namespace vcl::face
 

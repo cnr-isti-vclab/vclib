@@ -36,10 +36,24 @@
 #include "../components/parent_mesh_pointer.h"
 #include "../components/principal_curvature.h"
 #include "../components/scalar.h"
-#include "../components/vertex_half_edge_reference.h"
+#include "../components/vertex_half_edge_pointer.h"
 #include "../components/tex_coord.h"
 
+/**
+ * @defgroup vert_components Vertex Components
+ * @ingroup components
+ *
+ * @brief This group lists all the Components that may be used by the Vertex element.
+ *
+ * All these components are listed inside the vcl::vert namespace.
+ */
+
 namespace vcl::vert {
+
+/**
+ * @addtogroup vert_components
+ * @{
+ */
 
 /* Port AdjacentEdges class into vert namespace */
 template<typename Edge>
@@ -112,9 +126,9 @@ using VerticalCoordinate3d = comp::Coordinate3d<VertexType>;
 template<typename VertexType>
 using CustomComponents = comp::CustomComponents<VertexType>;
 
-/* Port Half Edge reference into vert namespace*/
+/* Port HalfEdgePointer into vert namespace*/
 template<typename HalfEdge>
-using HalfEdgeReference = comp::VertexHalfEdgeReference<HalfEdge>;
+using HalfEdgePointer = comp::VertexHalfEdgePointer<HalfEdge>;
 
 /* Port Mark class into vert namespace */
 using Mark = comp::Mark<>;
@@ -235,6 +249,8 @@ using OptionalTexCoordf = comp::TexCoord<float, VertexType, true>;
 
 template<typename VertexType>
 using OptionalTexCoordd = comp::TexCoord<double, VertexType, true>;
+
+/** @} */ // end of edge_components group
 
 } // namespace vcl::vert
 

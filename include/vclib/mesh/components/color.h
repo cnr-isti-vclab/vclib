@@ -36,6 +36,8 @@ namespace vcl::comp {
  * (e.g. Vertex, Face, ...).
  *
  * Allows to get and set an object of type Color.
+ *
+ * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
 class Color
@@ -68,6 +70,11 @@ private:
 	// contians the actual data of the component, if the component is horizontal
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
+
+/* Detector function to check if a class has Color enabled */
+
+template <typename T>
+bool isColorEnabledOn(const T& element);
 
 } // namespace vcl::comp
 

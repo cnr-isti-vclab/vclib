@@ -32,6 +32,8 @@ namespace vcl::comp {
  * @brief HasBitFlags concept is satisfied only if a Element class provides the member functions
  * specified in this concept. These member functions allows to access to a BitFlag component of a
  * given element.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasBitFlags = requires(
@@ -54,6 +56,8 @@ concept HasBitFlags = requires(
 /**
  * @brief Concept for internal use - contains all the flags member functions that are contained on
  * both the BitFlags components for Face Elements.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept FaceBitFlagsConcept = HasBitFlags<T> &&
@@ -89,6 +93,8 @@ concept FaceBitFlagsConcept = HasBitFlags<T> &&
  * @brief HasPolygonBitFlags concept is satisfied only if a Element class (that should be a Face)
  * provides the member functions specified in this concept. These member functions allows to access
  * to PolygonBitFlags component of a given element.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasPolygonBitFlags = FaceBitFlagsConcept<T> &&
@@ -101,6 +107,8 @@ concept HasPolygonBitFlags = FaceBitFlagsConcept<T> &&
  * @brief HasTriangleBitFlags concept is satisfied only if a Element class (that should be a Face)
  * provides the member functions specified in this concept. These member functions allows to access
  * to TriangleBitFlags component of a given element.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasTriangleBitFlags = FaceBitFlagsConcept<T> &&
@@ -113,6 +121,8 @@ concept HasTriangleBitFlags = FaceBitFlagsConcept<T> &&
  * @brief HasFaceBitFlags concept is satisfied if one between HasPolygonBitFlags and
  * HasTriangleBitFlags concept is satisfied. This concept allows to make sure that a Face element
  * has proper FaceBitFlags (Triangle or Polygon).
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasFaceBitFlags = HasPolygonBitFlags<T> || HasTriangleBitFlags<T>;

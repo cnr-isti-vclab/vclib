@@ -120,8 +120,8 @@ HausdorffDistResult samplerMeshHausdorff(
 	if constexpr (vcl::isLoggerValid<LogType>()) {
 		log.log(0, "Building Grid on " + meshName + " vertices...");
 	}
-
-	vcl::StaticGrid3<const VertexType*> grid(m.vertices() | views::reference);
+	
+	vcl::StaticGrid3<const VertexType*> grid(m.vertices() | views::addrOf);
 	grid.build();
 
 	if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -150,7 +150,7 @@ HausdorffDistResult samplerMeshHausdorff(
 			log.log(0, "Building Grid on " + meshName + " vertices...");
 		}
 		
-		vcl::StaticGrid3<const VertexType*, ScalarType> grid(m.vertices() | views::reference);
+		vcl::StaticGrid3<const VertexType*, ScalarType> grid(m.vertices() | views::addrOf);
 		grid.build();
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -163,7 +163,7 @@ HausdorffDistResult samplerMeshHausdorff(
 		if constexpr (vcl::isLoggerValid<LogType>()) {
 			log.log(0, "Building Grid on " + meshName + " faces...");
 		}
-		vcl::StaticGrid3<const FaceType*, ScalarType> grid(m.faces() | views::reference);
+		vcl::StaticGrid3<const FaceType*, ScalarType> grid(m.faces() | views::addrOf);
 		grid.build();
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {

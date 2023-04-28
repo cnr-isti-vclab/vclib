@@ -25,6 +25,9 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ */
 template<typename Face, int N, typename El, bool o>
 void AdjacentFaces<Face, N, El, o>::init()
 {
@@ -238,30 +241,29 @@ AdjacentFaces<Face, N, El, o>::adjFaceEnd() const
 }
 
 template<typename Face, int N, typename El, bool o>
-typename AdjacentFaces<Face, N, El, o>::AdjacentFaceView AdjacentFaces<Face, N, El, o>::adjFaces()
+auto AdjacentFaces<Face, N, El, o>::adjFaces()
 {
-	return AdjacentFaceView(adjFaceBegin(), adjFaceEnd());
+	return View(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename Face, int N, typename El, bool o>
-typename AdjacentFaces<Face, N, El, o>::ConstAdjacentFaceView
-AdjacentFaces<Face, N, El, o>::adjFaces() const
+auto AdjacentFaces<Face, N, El, o>::adjFaces() const
 {
-	return ConstAdjacentFaceView(adjFaceBegin(), adjFaceEnd());
+	return View(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename Face, int N, typename El, bool o>
-void AdjacentFaces<Face, N, El, o>::updateReferences(const Face* oldBase, const Face* newBase)
+void AdjacentFaces<Face, N, El, o>::updatePointers(const Face* oldBase, const Face* newBase)
 {
-	Base::updateElementReferences(oldBase, newBase, this);
+	Base::updateElementPointers(oldBase, newBase, this);
 }
 
 template<typename Face, int N, typename El, bool o>
-void AdjacentFaces<Face, N, El, o>::updateReferencesAfterCompact(
+void AdjacentFaces<Face, N, El, o>::updatePointersAfterCompact(
 	const Face*             base,
 	const std::vector<int>& newIndices)
 {
-	Base::updateElementReferencesAfterCompact(base, newIndices, this);
+	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
 template<typename Face, int N, typename El, bool o>
@@ -272,7 +274,7 @@ void AdjacentFaces<Face, N, El, o>::importFrom(const Element&)
 
 template<typename Face, int N, typename El, bool o>
 template<typename Element, typename ElFType>
-void AdjacentFaces<Face, N, El, o>::importReferencesFrom(
+void AdjacentFaces<Face, N, El, o>::importPointersFrom(
 	const Element& e,
 	Face*          base,
 	const ElFType* ebase)
@@ -282,12 +284,12 @@ void AdjacentFaces<Face, N, El, o>::importReferencesFrom(
 			if constexpr (N > 0) {
 				// same static size
 				if constexpr (N == Element::ADJ_FACE_NUMBER) {
-					importRefsFrom(e, base, ebase);
+					importPtrsFrom(e, base, ebase);
 				}
 				// from dynamic to static, but dynamic size == static size
 				else if constexpr (Element::ADJ_FACE_NUMBER < 0) {
 					if (e.adjFacesNumber() == N) {
-						importRefsFrom(e, base, ebase);
+						importPtrsFrom(e, base, ebase);
 					}
 				}
 				else {
@@ -297,7 +299,7 @@ void AdjacentFaces<Face, N, El, o>::importReferencesFrom(
 			else {
 				// from static/dynamic to dynamic size: need to resize first, then import
 				resizeAdjFaces(e.adjFacesNumber());
-				importRefsFrom(e, base, ebase);
+				importPtrsFrom(e, base, ebase);
 			}
 		}
 	}
@@ -305,7 +307,7 @@ void AdjacentFaces<Face, N, El, o>::importReferencesFrom(
 
 template<typename Face, int N, typename El, bool o>
 template<typename Element, typename ElFType>
-void AdjacentFaces<Face, N, El, o>::importRefsFrom(
+void AdjacentFaces<Face, N, El, o>::importPtrsFrom(
 	const Element& e,
 	Face*          base,
 	const ElFType* ebase)
@@ -316,6 +318,17 @@ void AdjacentFaces<Face, N, El, o>::importRefsFrom(
 				adjFace(i) = base + (e.adjFace(i) - ebase);
 			}
 		}
+	}
+}
+
+template <typename T>
+bool isAdjacentFacesEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalAdjacentFaces<T>) {
+		return element.isAdjFacesEnabled();
+	}
+	else {
+		return HasAdjacentFaces<T>;
 	}
 }
 

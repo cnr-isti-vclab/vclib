@@ -30,6 +30,11 @@
 
 namespace vcl {
 
+/**
+ * @brief The Vertex class
+ *
+ * @ingroup elements
+ */
 template<typename MeshType, typename... Args>
 class Vertex : public Element<MeshType, Args...>
 {

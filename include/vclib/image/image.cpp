@@ -86,13 +86,13 @@ void Image::mirror(bool horizontal, bool vertical)
 {
 	if (horizontal) {
 		for (uint i = 0; i < img.rows(); i++) {
-			std::reverse(img.cArray(i), img.cArray(i) + img.cols());
+			std::reverse(img.data(i), img.data(i) + img.cols());
 		}
 	}
 	if (vertical) {
 		for (uint i = 0; i < img.rows() / 2; i++) {
 			uint mir = img.rows() - i - 1;
-			std::swap_ranges(img.cArray(i), img.cArray(i) + img.cols(), img.cArray(mir));
+			std::swap_ranges(img.data(i), img.data(i) + img.cols(), img.data(mir));
 		}
 	}
 }

@@ -29,4 +29,11 @@
 #include "half_edge_container.h"
 #include "vertex_container.h"
 
+/**
+ * @defgroup containers Containers
+ * @ingroup mesh
+ *
+ * @brief List af all the Element Container classes, along with their concepts and functions.
+ */
+
 #endif // VCL_MESH_CONTAINER_CONTAINERS_H

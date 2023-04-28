@@ -32,6 +32,20 @@
 namespace vcl {
 
 /**
+ * @defgroup mesh Mesh
+ *
+ * @brief List of classes, aliases, concepts and functions used for the creation, customization,
+ * usage and manipulation of Mesh classes.
+ */
+
+/**
+ * @defgroup components Components
+ * @ingroup mesh
+ *
+ * @brief List of all the Component classes, along with their concepts and functions.
+ */
+
+/**
  * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
  * containers of Elements (which can be vertices, faces, edges...), plus some other components.
  *
@@ -43,6 +57,8 @@ namespace vcl {
  * status of more than one Container of the Mesh. Other functions are inherited by the Container
  * classes of the Elements of the Mesh, or from its Components, and depend on all the templates
  * that compose a specific Mesh definition.
+ *
+ * @ingroup mesh
  */
 template<typename... Args> requires HasVertices<Args...>
 class Mesh : public Args...
@@ -210,12 +226,12 @@ protected:
 	void clearElements();
 
 	template<typename Cont, typename Element>
-	void updateReferences(
+	void updatePointers(
 		const Element* oldBase,
 		const Element* newBase);
 
 	template<typename Cont, typename Element>
-	void updateReferencesAfterCompact(
+	void updatePointersAfterCompact(
 		const Element*          base,
 		const std::vector<int>& newIndices);
 
@@ -254,10 +270,10 @@ private:
 	void importContainersAndComponents(const OthMesh& m);
 
 	template<typename Cont, typename OthMesh>
-	void importReferences(const OthMesh& m);
+	void importPointers(const OthMesh& m);
 
 	template<typename Cont, typename ElemCont, typename OthMesh>
-	void importReferencesOfElement(const OthMesh& m);
+	void importPointersOfElement(const OthMesh& m);
 
 	template<typename OthMesh>
 	void manageImportTriFromPoly(const OthMesh& m);
@@ -266,7 +282,7 @@ private:
 	void manageImportDcelFromMesh(const OthMesh& m);
 
 	template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
-	static void importTriReferencesHelper(
+	static void importTriPointersHelper(
 		FaceType&                f,
 		const MFaceType&         mf,
 		VertexType*              base,
@@ -283,7 +299,7 @@ private:
 	static auto getContainerBases(const Mesh<A...>& m);
 
 	template<typename Cont, typename Array, typename... A>
-	static void updateReferencesOfContainerType(Mesh<A...>& m, const Array& bases);
+	static void updatePointersOfContainerType(Mesh<A...>& m, const Array& bases);
 
 	// member functions used by friends
 

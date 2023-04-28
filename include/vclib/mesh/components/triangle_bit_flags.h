@@ -56,6 +56,8 @@ namespace vcl::comp {
  * @code{.cpp}
  * v.isAnyEdgeOnBorder();
  * @endcode
+ *
+ * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
 class TriangleBitFlags : public BitFlagsT<TriangleBitFlags<ElementType, optional>, ElementType, optional>

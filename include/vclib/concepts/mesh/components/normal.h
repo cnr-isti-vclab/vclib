@@ -40,6 +40,8 @@ namespace vcl::comp {
  *
  * To be completely sure that Normal is available at runtime, you need to call the member
  * function `isNormalEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasNormal = requires(
@@ -56,22 +58,11 @@ concept HasNormal = requires(
 /**
  * @brief HasOptionalNormal concept is satisfied only if a class satisfis the HasNormal concept and
  * the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalNormal = HasNormal<T> && IsOptionalComponent<typename T::NormalComponent>;
-
-/* Detector function to check if a class has Normal enabled */
-
-template <typename T>
-bool isNormalEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalNormal<T>) {
-		return element.isNormalEnabled();
-	}
-	else {
-		return HasNormal<T>;
-	}
-}
 
 } // namespace vcl::comp
 

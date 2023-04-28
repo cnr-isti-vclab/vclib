@@ -40,6 +40,8 @@ namespace vcl::comp {
  *
  * To be completely sure that TexCoord is available at runtime, you need to call the member
  * function `isTexCoordEnabled()`.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasTexCoord = requires(
@@ -56,22 +58,11 @@ concept HasTexCoord = requires(
 /**
  * @brief HasOptionalTexCoord concept is satisfied only if a class satisfis the HasTexCoord concept
  * and the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalTexCoord = HasTexCoord<T> && IsOptionalComponent<typename T::TexCoordComponent>;;
-
-/* Detector function to check if a class has TexCoord enabled */
-
-template <typename T>
-bool isTexCoordEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalTexCoord<T>) {
-		return element.isTexCoordEnabled();
-	}
-	else {
-		return HasTexCoord<T>;
-	}
-}
 
 } // namespace vcl::comp
 

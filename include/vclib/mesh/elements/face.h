@@ -40,21 +40,26 @@ class FaceContainer;
 
 namespace vcl {
 
+/**
+ * @brief The Face class
+ *
+ * @ingroup elements
+ */
 template<typename MeshType, typename... Args>
 class Face : public Element<MeshType, Args...>
 {
 	template<FaceConcept>
 	friend class mesh::FaceContainer;
 
-	// Vertex references component of the Face
-	using VRefs = typename Face::VertexReferences;
+	// VertexPointers component of the Face
+	using VPtrs = typename Face::VertexPointers;
 
-	static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
+	static const int NV = VPtrs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
 	static const uint ELEMENT_TYPE = FACE;
 
-	using VertexType = typename VRefs::VertexType;
+	using VertexType = typename VPtrs::VertexType;
 
 	Face();
 
@@ -76,7 +81,7 @@ public:
 	{
 		using F = Face<MeshType, TypeWrapper<Args...>>;
 
-		VRefs::resizeVertices(n);
+		VPtrs::resizeVertices(n);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
@@ -113,7 +118,7 @@ public:
 	{
 		using F = Face<MeshType, TypeWrapper<Args...>>;
 
-		VRefs::pushVertex(v);
+		VPtrs::pushVertex(v);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
@@ -151,7 +156,7 @@ public:
 	{
 		using F = Face<MeshType, TypeWrapper<Args...>>;
 
-		VRefs::insertVertex(i, v);
+		VPtrs::insertVertex(i, v);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
@@ -189,7 +194,7 @@ public:
 	{
 		using F = Face<MeshType, TypeWrapper<Args...>>;
 
-		VRefs::eraseVertex(i);
+		VPtrs::eraseVertex(i);
 
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
@@ -226,7 +231,7 @@ public:
 	{
 		using F = Face<MeshType, TypeWrapper<Args...>>;
 
-		VRefs::clearVertices();
+		VPtrs::clearVertices();
 
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;

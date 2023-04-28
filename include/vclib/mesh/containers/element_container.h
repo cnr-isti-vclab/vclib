@@ -29,8 +29,8 @@
 #include <vclib/concepts/mesh/components/custom_components.h>
 #include <vclib/concepts/mesh/containers.h>
 #include <vclib/concepts/mesh/elements/element.h>
+#include <vclib/iterators/mesh/element_container_iterator.h>
 #include <vclib/views/view.h>
-#include <vclib/mesh/iterators/element_container_iterator.h>
 
 #include "custom_components_vector_map.h"
 #include "vertical_components_vector_tuple.h"
@@ -108,10 +108,10 @@ protected:
 	std::vector<int> compactElements();
 
 	template<typename Element>
-	void updateReferences(const Element* oldBase, const Element* newBase);
+	void updatePointers(const Element* oldBase, const Element* newBase);
 
 	template<typename Element>
-	void updateReferencesAfterCompact(const Element* base, const std::vector<int>& newIndices);
+	void updatePointersAfterCompact(const Element* base, const std::vector<int>& newIndices);
 
 	template<typename OtherMesh>
 	void enableOptionalComponentsOf(const OtherMesh& m);
@@ -119,8 +119,8 @@ protected:
 	template<typename OtherMesh, typename ParentMeshType>
 	void importFrom(const OtherMesh& m, ParentMeshType* parent);
 
-	template<typename OtherMesh, typename ElRefBase>
-	void importReferencesFrom(const OtherMesh& othMesh, ElRefBase* base);
+	template<typename OtherMesh, typename ElPtrBase>
+	void importPointersFrom(const OtherMesh& othMesh, ElPtrBase* base);
 	
 	// filter components of elements, taking only vertical ones
 	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
@@ -149,40 +149,40 @@ protected:
 	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVecMap;
 
 private:
-	template<typename ElRef, typename... Comps>
-	void updateReferencesOnComponents(
-		const ElRef* oldBase,
-		const ElRef* newBase,
+	template<typename ElPtr, typename... Comps>
+	void updatePointersOnComponents(
+		const ElPtr* oldBase,
+		const ElPtr* newBase,
 		TypeWrapper<Comps...>);
 
-	template<typename ElRef, typename... Comps>
-	void updateReferencesAfterCompactOnComponents(
-		const ElRef*            base,
+	template<typename ElPtr, typename... Comps>
+	void updatePointersAfterCompactOnComponents(
+		const ElPtr*            base,
 		const std::vector<int>& newIndices,
 		TypeWrapper<Comps...>);
 
 	template<typename Container, typename MyBase, typename CBase>
-	void importReferencesFromContainer(const Container& c, MyBase* base, const CBase* cbase);
+	void importPointersFromContainer(const Container& c, MyBase* base, const CBase* cbase);
 
-	template<typename Container, typename ElRef, typename CBase, typename... Comps>
-	void importReferencesOnComponentsFrom(
+	template<typename Container, typename ElPtr, typename CBase, typename... Comps>
+	void importPointersOnComponentsFrom(
 		const Container& c,
-		ElRef*           base,
+		ElPtr*           base,
 		const CBase*     cbase,
 		TypeWrapper<Comps...>);
 
-	template<typename Comp, typename ElRef>
-	void updateReferencesOnComponent(const ElRef* oldBase, const ElRef* newBase);
+	template<typename Comp, typename ElPtr>
+	void updatePointersOnComponent(const ElPtr* oldBase, const ElPtr* newBase);
 
-	template<typename Comp, typename ElRef>
-	void updateReferencesAfterCompactOnComponent(
-		const ElRef* base,
+	template<typename Comp, typename ElPtr>
+	void updatePointersAfterCompactOnComponent(
+		const ElPtr* base,
 		const std::vector<int>& newIndices);
 
-	template<typename Comp, typename Container, typename ElRef, typename CBase>
-	void importReferencesOnComponentFrom(
+	template<typename Comp, typename Container, typename ElPtr, typename CBase>
+	void importPointersOnComponentFrom(
 		const Container& c,
-		ElRef*           base,
+		ElPtr*           base,
 		const CBase*     cbase);
 };
 

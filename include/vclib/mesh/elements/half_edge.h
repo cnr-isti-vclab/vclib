@@ -38,20 +38,25 @@ class HalfEdgeContainer;
 
 namespace vcl {
 
+/**
+ * @brief The HalfEdge class
+ *
+ * @ingroup elements
+ */
 template<typename MeshType, typename... Args>
 class HalfEdge : public Element<MeshType, Args...>
 {
 	template<HalfEdgeConcept>
 	friend class mesh::HalfEdgeContainer;
 
-	// HalfEdge references component of the HalfEdge
-	using HFRefs = typename HalfEdge::HalfEdgeReferences;
+	// HalfEdgePointers component of the HalfEdge
+	using HFPtrs = typename HalfEdge::HalfEdgePointers;
 
 public:
 	static const uint ELEMENT_TYPE = HALF_EDGE;
 
-	using VertexType = typename HFRefs::VertexType;
-	using FaceType   = typename HFRefs::FaceType;
+	using VertexType = typename HFPtrs::VertexType;
+	using FaceType   = typename HFPtrs::FaceType;
 
 	uint index() const;
 };

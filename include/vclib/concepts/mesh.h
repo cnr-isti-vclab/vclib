@@ -33,9 +33,18 @@
 /**
  * @defgroup mesh_concepts Mesh Concepts
  * @ingroup lconcepts
+ * @ingroup mesh
  *
  * @brief List of concepts for types related to the Mesh data structures of the library. They allow
  * to discriminate between different Mesh types, their elements and the element components.
+ */
+
+/**
+ * @defgroup element_concepts Element Concepts
+ * @ingroup mesh_concepts
+ * @ingroup elements
+ *
+ * @brief List of concepts for types related to the Elements of a Mesh.
  */
 
 namespace vcl {
@@ -180,9 +189,9 @@ concept EdgeMeshConcept =
  * @brief The DcelMeshConcept is satisfied when:
  * - The FaceMeshConcpt is satisfied
  * - The Mesh has HalfEdge, Face and Vertex containers
- * - The HalfEdge element has HalfEdgeReferences component
- * - The Vertex Element has HalfEdgeReference component
- * - The Face Element has HalfEdgeReference component
+ * - The HalfEdge element has HalfEdgePointers component
+ * - The Vertex Element has HalfEdgePointer component
+ * - The Face Element has HalfEdgePointers component
  * - The Vertex Element does not have AdjacentVertices component (it is simulated by half edges)
  * - The Face Element does not have AdjacentFaces component (it is simulated by half edges)
  * - The Face Element does not have WedgeColors component (it is simulated by half edges)
@@ -194,8 +203,8 @@ template<typename T>
 concept DcelMeshConcept =
 	FaceMeshConcept<T> &&
 	HasHalfEdges<T> &&
-	HasPerVertexHalfEdgeReference<T> &&
-	HasPerFaceHalfEdgeReference<T> &&
+	HasPerVertexHalfEdgePointer<T> &&
+	HasPerFaceHalfEdgePointers<T> &&
 	!comp::HasAdjacentVerticesComponent<typename T::VertexType> &&
 	!comp::HasAdjacentFacesComponent<typename T::FaceType> &&
 	!comp::HasWedgeColorsComponent<typename T::FaceType> &&
