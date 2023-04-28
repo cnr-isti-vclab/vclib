@@ -75,9 +75,9 @@ concept HasWedgeColors = requires(
 /**
  * @private
  * @brief HasWedgeColorsComponent concept is used to discriminate between the WedgeColors (or
- * OptionalWedgeColors) component, and the FaceHalfEdgeReferences component, which using half edges
+ * OptionalWedgeColors) component, and the FaceHalfEdgePointers component, which using half edges
  * allows to access to wedge colors. This concept is intended only for internal use, useful to check
- * that a Face does not have both WedgeColors and FaceHalfEdgeReferences components.
+ * that a Face does not have both WedgeColors and FaceHalfEdgePointers components.
  */
 template<typename T>
 concept HasWedgeColorsComponent = requires(T o)

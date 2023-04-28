@@ -31,7 +31,7 @@ namespace vcl {
 
 /**
  * @brief Checks *at run time* if the mesh m is composed of triangles. If the size of the Face
- * Vertex References is 3, this check is immediate. If it is not 3, the functions checks for each
+ * Vertex Pointers is 3, this check is immediate. If it is not 3, the functions checks for each
  * face if it has 3 vertices.
  *
  * Complexity: *O(n)*
@@ -60,7 +60,7 @@ bool isTriangleMesh(const MeshType& m)
 
 /**
  * @brief Checks *at run time* if the mesh is composed of quads. If the size of the Face Vertex
- * References is 4, this check is immediate. If it is not 4, the functions checks for each face if
+ * Pointers is 4, this check is immediate. If it is not 4, the functions checks for each face if
  * it has 4 vertices.
  *
  * Complexity: *O(n)*

@@ -378,7 +378,7 @@ VertexHalfEdgePointer<HE, El, o>::adjVertices() const
 }
 
 template<typename HE, typename El, bool o>
-void VertexHalfEdgePointer<HE, El, o>::updateReferences(
+void VertexHalfEdgePointer<HE, El, o>::updatePointers(
 	const HE* oldBase,
 	const HE* newBase)
 {
@@ -389,7 +389,7 @@ void VertexHalfEdgePointer<HE, El, o>::updateReferences(
 }
 
 template<typename HE, typename El, bool o>
-void VertexHalfEdgePointer<HE, El, o>::updateReferencesAfterCompact(
+void VertexHalfEdgePointer<HE, El, o>::updatePointersAfterCompact(
 	const HE*         base,
 	const std::vector<int>& newIndices)
 {
@@ -410,7 +410,7 @@ void VertexHalfEdgePointer<HE, El, o>::importFrom(const Element&)
 
 template<typename HE, typename El, bool o>
 template<typename OtherVertex, typename OtherHEType>
-void VertexHalfEdgePointer<HE, El, o>::importReferencesFrom(
+void VertexHalfEdgePointer<HE, El, o>::importPointersFrom(
 	const OtherVertex& e,
 	HE*          base,
 	const OtherHEType* ebase)

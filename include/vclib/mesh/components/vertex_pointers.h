@@ -89,7 +89,7 @@ public:
 	int indexOfVertex(const Vertex* v) const;
 	int indexOfEdge(const Vertex* v1, const Vertex* v2) const;
 
-	/* Member functions specific for vector of references */
+	/* Member functions specific for vector of pointers */
 
 	void resizeVertices(uint n) requires (N < 0);
 	void pushVertex(Vertex* v) requires (N < 0);
@@ -107,20 +107,19 @@ public:
 	auto                     vertices() const;
 
 protected:
-	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
+	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
 
-	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElVType>
-	void importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
 
 private:
 	template<typename Element, typename ElVType>
-	void
-	importRefsFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	void importPtrsFrom(const Element& e, Vertex* base, const ElVType* ebase);
 };
 
 } // namespace vcl::comp

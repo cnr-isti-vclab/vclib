@@ -144,7 +144,7 @@ F*& HalfEdgePointers<HE, V, F, El, o>::face()
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgePointers<HE, V, F, El, o>::updateReferences(
+void HalfEdgePointers<HE, V, F, El, o>::updatePointers(
 	const HE* oldBase,
 	const HE* newBase)
 {
@@ -163,7 +163,7 @@ void HalfEdgePointers<HE, V, F, El, o>::updateReferences(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgePointers<HE, V, F, El, o>::updateReferencesAfterCompact(
+void HalfEdgePointers<HE, V, F, El, o>::updatePointersAfterCompact(
 	const HE*               base,
 	const std::vector<int>& newIndices)
 {
@@ -191,7 +191,7 @@ void HalfEdgePointers<HE, V, F, El, o>::updateReferencesAfterCompact(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgePointers<HE, V, F, El, o>::updateReferences(
+void HalfEdgePointers<HE, V, F, El, o>::updatePointers(
 	const F* oldBase,
 	const F* newBase)
 {
@@ -202,7 +202,7 @@ void HalfEdgePointers<HE, V, F, El, o>::updateReferences(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgePointers<HE, V, F, El, o>::updateReferencesAfterCompact(
+void HalfEdgePointers<HE, V, F, El, o>::updatePointersAfterCompact(
 	const F*                base,
 	const std::vector<int>& newIndices)
 {
@@ -216,7 +216,7 @@ void HalfEdgePointers<HE, V, F, El, o>::updateReferencesAfterCompact(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgePointers<HE, V, F, El, o>::updateReferences(
+void HalfEdgePointers<HE, V, F, El, o>::updatePointers(
 	const V* oldBase,
 	const V* newBase)
 {
@@ -227,7 +227,7 @@ void HalfEdgePointers<HE, V, F, El, o>::updateReferences(
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
-void HalfEdgePointers<HE, V, F, El, o>::updateReferencesAfterCompact(
+void HalfEdgePointers<HE, V, F, El, o>::updatePointersAfterCompact(
 	const V*                base,
 	const std::vector<int>& newIndices)
 {
@@ -247,15 +247,15 @@ void HalfEdgePointers<HE, V, F, El, o>::importFrom(const Element&)
 }
 
 /**
- * @brief Import the half edge references from another half edge (e), which is of a different type.
+ * @brief Import the half edge pointers from another half edge (e), which is of a different type.
  *
- * @param e: the half edge from which import the half edge references
- * @param base: the base of this container: necessary to compute the imported references
- * @param ebase: the base of the other container of half edges, from which we import the references
+ * @param e: the half edge from which import the half edge pointers
+ * @param base: the base of this container: necessary to compute the imported pointers
+ * @param ebase: the base of the other container of half edges, from which we import the pointers
  */
 template<typename HE, typename V, typename F, typename El, bool o>
 template<typename OHE, typename HEType>
-void HalfEdgePointers<HE, V, F, El, o>::importReferencesFrom(
+void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
 	const OHE&    e,
 	HE*           base,
 	const HEType* ebase)
@@ -279,7 +279,7 @@ void HalfEdgePointers<HE, V, F, El, o>::importReferencesFrom(
 
 template<typename HE, typename V, typename F, typename El, bool o>
 template<typename OHE, typename VType>
-void HalfEdgePointers<HE, V, F, El, o>::importReferencesFrom(
+void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
 	const OHE&   e,
 	V*           base,
 	const VType* ebase)
@@ -295,7 +295,7 @@ void HalfEdgePointers<HE, V, F, El, o>::importReferencesFrom(
 
 template<typename HE, typename V, typename F, typename El, bool o>
 template<typename OHE, typename FType>
-void HalfEdgePointers<HE, V, F, El, o>::importReferencesFrom(
+void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
 	const OHE&   e,
 	F*           base,
 	const FType* ebase)

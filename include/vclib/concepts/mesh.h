@@ -189,9 +189,9 @@ concept EdgeMeshConcept =
  * @brief The DcelMeshConcept is satisfied when:
  * - The FaceMeshConcpt is satisfied
  * - The Mesh has HalfEdge, Face and Vertex containers
- * - The HalfEdge element has HalfEdgeReferences component
- * - The Vertex Element has HalfEdgeReference component
- * - The Face Element has HalfEdgeReference component
+ * - The HalfEdge element has HalfEdgePointers component
+ * - The Vertex Element has HalfEdgePointer component
+ * - The Face Element has HalfEdgePointers component
  * - The Vertex Element does not have AdjacentVertices component (it is simulated by half edges)
  * - The Face Element does not have AdjacentFaces component (it is simulated by half edges)
  * - The Face Element does not have WedgeColors component (it is simulated by half edges)

@@ -115,20 +115,19 @@ public:
 	auto                             adjVertices() const;
 
 protected:
-	void updateReferences(const Vertex* oldBase, const Vertex* newBase);
+	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
 
-	void updateReferencesAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElVType>
-	void importReferencesFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
 
 private:
 	template<typename Element, typename ElVType>
-	void
-	importRefsFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	void importPtrsFrom(const Element& e, Vertex* base, const ElVType* ebase);
 };
 
 /* Detector function to check if a class has AdjacentVertices enabled */

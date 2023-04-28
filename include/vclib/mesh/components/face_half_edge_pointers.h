@@ -141,7 +141,7 @@ public:
 	void eraseInnerHalfEdge(uint i);
 	void clearInnerHalfEdges();
 
-	/* VertexReferences compatibility */
+	/* VertexPointers compatibility */
 
 	uint vertexNumber() const;
 
@@ -272,15 +272,15 @@ public:
 	ConstWedgeTexCoordsView     wedgeTexCoords() const     requires HasTexCoord<HalfEdge>;
 
 protected:
-	void updateReferences(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
 
-	void updateReferencesAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	template<typename OtherFace, typename OtherHEdge>
-	void importReferencesFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
+	void importPointersFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
 
 private:
 	HalfEdge*& ohe(); // outer half edge

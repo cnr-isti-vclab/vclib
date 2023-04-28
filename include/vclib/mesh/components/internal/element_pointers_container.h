@@ -68,10 +68,10 @@ public:
 
 protected:
 	template<typename Comp>
-	void updateElementReferences(const Elem* oldBase, const Elem* newBase, Comp* comp);
+	void updateElementPointers(const Elem* oldBase, const Elem* newBase, Comp* comp);
 
 	template<typename Comp>
-	void updateElementReferencesAfterCompact(const Elem* base, const std::vector<int>& newIndices, Comp* comp);
+	void updateElementPointersAfterCompact(const Elem* base, const std::vector<int>& newIndices, Comp* comp);
 
 	template<typename Comp>
 	Vector<Elem*, N>& container(Comp* comp);

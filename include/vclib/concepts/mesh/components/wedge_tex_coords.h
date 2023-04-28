@@ -80,9 +80,9 @@ concept HasWedgeTexCoords = requires(
  * @brief HasWedgeTexCoordsComponent concept
  *
  * This concept is used to discriminate between the WedgeTexCoords (or OptionalWedgeTexCoords)
- * component, and the FaceHalfEdgeReferences component, which using half edges allows to access
+ * component, and the FaceHalfEdgePointers component, which using half edges allows to access
  * to wedge tex coords. This concept is intended only for internal use, useful to check that a Face
- * does not have both WedgeTexCoords and FaceHalfEdgeReferences components.
+ * does not have both WedgeTexCoords and FaceHalfEdgePointers components.
  */
 template<typename T>
 concept HasWedgeTexCoordsComponent = requires(T o)

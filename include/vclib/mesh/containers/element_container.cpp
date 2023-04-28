@@ -483,22 +483,22 @@ std::vector<int> ElementContainer<T>::compactElements()
 
 template<ElementConcept T>
 template<typename Element>
-void ElementContainer<T>::updateReferences(const Element* oldBase, const Element* newBase)
+void ElementContainer<T>::updatePointers(const Element* oldBase, const Element* newBase)
 {
 	using Comps = typename T::Components;
 
-	updateReferencesOnComponents(oldBase, newBase, Comps());
+	updatePointersOnComponents(oldBase, newBase, Comps());
 }
 
 template<ElementConcept T>
 template<typename Element>
-void ElementContainer<T>::updateReferencesAfterCompact(
+void ElementContainer<T>::updatePointersAfterCompact(
 	const Element*          base,
 	const std::vector<int>& newIndices)
 {
 	using Comps = typename T::Components;
 
-	updateReferencesAfterCompactOnComponents(base, newIndices, Comps());
+	updatePointersAfterCompactOnComponents(base, newIndices, Comps());
 }
 
 template<ElementConcept T>
@@ -642,60 +642,60 @@ void ElementContainer<T>::importFrom(const OtherMesh &m, ParentMeshType* parent)
 }
 
 /**
- * This function imports from another mesh, the references of the element ElRefBase stored on this
+ * This function imports from another mesh, the pointers of the element ElPtrBase stored on this
  * container.
  *
- * Checks if the other mesh has two containers: the one of T and the one of ElRefBase.
+ * Checks if the other mesh has two containers: the one of T and the one of ElPtrBase.
  * Only if both containers exists in othMesh, then the import makes sense (e.g. we can import per
- * Vertex Face references (T = Vertex, ElRefBase = Face) if othMesh has both a container of Vertices
+ * Vertex Face pointers (T = Vertex, ElPtrBase = Face) if othMesh has both a container of Vertices
  * and a Container of Faces).
  */
 template<ElementConcept T>
-template<typename OtherMesh, typename ElRefBase>
-void ElementContainer<T>::ElementContainer::importReferencesFrom(
+template<typename OtherMesh, typename ElPtrBase>
+void ElementContainer<T>::ElementContainer::importPointersFrom(
 	const OtherMesh& othMesh,
-	ElRefBase*      base)
+	ElPtrBase*      base)
 {
 	// We need to be sure that the other mesh has two containers (that can be the same, see later):
 	// - the one of Elements of same type as T
-	// - the one of Elements of same type as ElRefBase (the references that we are actually
+	// - the one of Elements of same type as ElPtrBase (the references that we are actually
 	// importing on this Container of T elements)
-	// Note that ElRefBase may be the same of T (e.g. Vertex[T] has references of other
-	// Vertices[ElRefBase]) or different (e.g. Vertex[T] has references of Faces[ElRefBase])
+	// Note that ElPtrBase may be the same of T (e.g. Vertex[T] has pointers of other
+	// Vertices[ElPtrBase]) or different (e.g. Vertex[T] has pointers of Faces[ElPtrBase])
 	if constexpr (
-		OtherMesh::template hasContainerOf<T>() && OtherMesh::template hasContainerOf<ElRefBase>()) {
+		OtherMesh::template hasContainerOf<T>() && OtherMesh::template hasContainerOf<ElPtrBase>()) {
 
 		// get the containe type of the other mesh for MyBase - used for get the base pointer
-		using OthBaseContainer = typename OtherMesh::template GetContainerOf<ElRefBase>::type;
+		using OthBaseContainer = typename OtherMesh::template GetContainerOf<ElPtrBase>::type;
 		// get the container type of the other mesh for T - used to upcast othMesh
 		using OthTContainer = typename OtherMesh::template GetContainerOf<T>::type;
 
-		// get the container base of the other mesh, that we use to import references
+		// get the container base of the other mesh, that we use to import pointers
 		const auto* cbase = othMesh.OthBaseContainer::vec.data();
 
-		// upcast the other mesh to the container and import the references from the OthTContainer
-		importReferencesFromContainer((const OthTContainer&)othMesh, base, cbase);
+		// upcast the other mesh to the container and import the pointers from the OthTContainer
+		importPointersFromContainer((const OthTContainer&)othMesh, base, cbase);
 	}
 }
 
 template<ElementConcept T>
-template<typename ElRef, typename... Comps>
-void ElementContainer<T>::updateReferencesOnComponents(
-	const ElRef* oldBase,
-	const ElRef* newBase,
+template<typename ElPtr, typename... Comps>
+void ElementContainer<T>::updatePointersOnComponents(
+	const ElPtr* oldBase,
+	const ElPtr* newBase,
 	TypeWrapper<Comps...>)
 {
-	(updateReferencesOnComponent<Comps>(oldBase, newBase), ...);
+	(updatePointersOnComponent<Comps>(oldBase, newBase), ...);
 }
 
 template<ElementConcept T>
-template<typename ElRef, typename... Comps>
-void ElementContainer<T>::updateReferencesAfterCompactOnComponents(
-	const ElRef* base,
+template<typename ElPtr, typename... Comps>
+void ElementContainer<T>::updatePointersAfterCompactOnComponents(
+	const ElPtr* base,
 	const std::vector<int>& newIndices,
 	TypeWrapper<Comps...>)
 {
-	(updateReferencesAfterCompactOnComponent<Comps>(base, newIndices), ...);
+	(updatePointersAfterCompactOnComponent<Comps>(base, newIndices), ...);
 }
 
 /**
@@ -720,90 +720,93 @@ void ElementContainer<T>::updateReferencesAfterCompactOnComponents(
  */
 template<ElementConcept T>
 template<typename Container, typename MyBase, typename CBase>
-void ElementContainer<T>::importReferencesFromContainer(const Container& c, MyBase* base, const CBase* cbase)
+void ElementContainer<T>::importPointersFromContainer(
+	const Container& c,
+	MyBase*          base,
+	const CBase*     cbase)
 {
 	using Comps = typename T::Components;
 
-	importReferencesOnComponentsFrom(c, base, cbase, Comps());
+	importPointersOnComponentsFrom(c, base, cbase, Comps());
 }
 
 template<ElementConcept T>
-template<typename Container, typename ElRef, typename CBase, typename... Comps>
-void ElementContainer<T>::importReferencesOnComponentsFrom(
+template<typename Container, typename ElPtr, typename CBase, typename... Comps>
+void ElementContainer<T>::importPointersOnComponentsFrom(
 	const Container& c,
-	ElRef*           base,
+	ElPtr*           base,
 	const CBase*     cbase,
 	TypeWrapper<Comps...>)
 {
-	(importReferencesOnComponentFrom<Comps>(c, base, cbase), ...);
+	(importPointersOnComponentFrom<Comps>(c, base, cbase), ...);
 }
 
 /*
  * This function is called for each component of the element.
  *
- * Only if a component has references of the type ElRef, then the updateReferences on each element
+ * Only if a component has references of the type ElPtr, then the updatePointers on each element
  * will be executed
  */
 template<ElementConcept T>
-template<typename Comp, typename ElRef>
-void ElementContainer<T>::updateReferencesOnComponent(const ElRef* oldBase, const ElRef* newBase)
+template<typename Comp, typename ElPtr>
+void ElementContainer<T>::updatePointersOnComponent(const ElPtr* oldBase, const ElPtr* newBase)
 {
-	if constexpr (comp::HasReferencesOfType<Comp, ElRef>) {
-		if constexpr (comp::HasOptionalReferencesOfType<Comp, ElRef>) {
+	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
+		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
 			if(isOptionalComponentEnabled<Comp>()) {
 				for (T& e : elements()) {
-					e.Comp::updateReferences(oldBase, newBase);
+					e.Comp::updatePointers(oldBase, newBase);
 				}
 			}
 		}
 		else {
 			for (T& e : elements()) {
-				e.Comp::updateReferences(oldBase, newBase);
+				e.Comp::updatePointers(oldBase, newBase);
 			}
 		}
 	}
 }
 
 template<ElementConcept T>
-template<typename Comp, typename ElRef>
-void ElementContainer<T>::updateReferencesAfterCompactOnComponent(
-	const ElRef* base,
+template<typename Comp, typename ElPtr>
+void ElementContainer<T>::updatePointersAfterCompactOnComponent(
+	const ElPtr* base,
 	const std::vector<int>& newIndices)
 {
-	if constexpr (comp::HasReferencesOfType<Comp, ElRef>) {
-		if constexpr (comp::HasOptionalReferencesOfType<Comp, ElRef>) {
+	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
+		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
 			if(isOptionalComponentEnabled<Comp>()) {
 				for (T& e : elements()) {
-					e.Comp::updateReferencesAfterCompact(base, newIndices);
+					e.Comp::updatePointersAfterCompact(base, newIndices);
 				}
 			}
 		}
 		else {
 			for (T& e : elements()) {
-				e.Comp::updateReferencesAfterCompact(base, newIndices);
+				e.Comp::updatePointersAfterCompact(base, newIndices);
 			}
 		}
 	}
 }
 
 template<ElementConcept T>
-template<typename Comp, typename Container, typename ElRef, typename CBase>
-void ElementContainer<T>::importReferencesOnComponentFrom(
+template<typename Comp, typename Container, typename ElPtr, typename CBase>
+void ElementContainer<T>::importPointersOnComponentFrom(
 	const Container& c,
-	ElRef*           base,
+	ElPtr*           base,
 	const CBase*     cbase)
 {
-	if constexpr (comp::HasReferencesOfType<Comp, ElRef>) {
-		if constexpr (comp::HasOptionalReferencesOfType<Comp, ElRef>) {
+	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
+		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
 			if(isOptionalComponentEnabled<Comp>()) {
 				for (uint i = 0; i < elementContainerSize(); ++i) {
-					element(i).Comp::importReferencesFrom(c.element(i), base, cbase);
+					element(i).Comp::importPointersFrom(c.element(i), base, cbase);
 				}
 			}
 		}
 		else {
 			for (uint i = 0; i < elementContainerSize(); ++i) {
-				element(i).Comp::importReferencesFrom(c.element(i), base, cbase);
+				element(i).Comp::importPointersFrom(c.element(i), base, cbase);
 			}
 		}
 	}

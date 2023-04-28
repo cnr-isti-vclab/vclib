@@ -38,7 +38,7 @@ Mesh<Args...>::Mesh()
 
 /**
  * @brief Copy constructor of the Mesh. Will create a deep copy of the given input mesh,
- * taking care of copying everithing and then update all the references
+ * taking care of copying everithing and then update all the pointers
  *
  * @param oth: the mesh from which constructo this Mesh.
  */
@@ -49,15 +49,15 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	// Set to all elements their parent mesh (this)
 	updateAllParentMeshPointers();
 
-	// save base reference of each container of the other mesh
+	// save base pointer of each container of the other mesh
 	constexpr uint N_CONTAINERS = NumberOfTypes<typename Mesh<Args...>::Containers>::value;
 	std::array<const void*, N_CONTAINERS> othBases = Mesh<Args...>::getContainerBases(oth);
 
-	// update all the references contained on each container
-	// use the base reference of each container of oth to update all the references in this mesh
+	// update all the pointers contained on each container
+	// use the base pointer of each container of oth to update all the pointers in this mesh
 	// each pointer of oth that was copied in this mesh, will be updated computing its offset wrt
-	// the base of oth, and then adding that offset to the new base reference of this mesh
-	(Mesh<Args...>::template updateReferencesOfContainerType<Args>(*this, othBases), ...);
+	// the base of oth, and then adding that offset to the new base pointer of this mesh
+	(Mesh<Args...>::template updatePointersOfContainerType<Args>(*this, othBases), ...);
 }
 
 /**
@@ -176,31 +176,31 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 	// Call, for each Container and Component of the mesh, its importFrom function.
 	// In case of containers, it first creates the same number of elements in the container,
 	// and then calls the importFrom function for each new element.
-	// References are not managed here, since they need additional parameters to be imported
+	// Pointers are not managed here, since they need additional parameters to be imported
 	
 	(importContainersAndComponents<Args>(m), ...);
 
 	// Set to all elements their parent mesh (this)
 	updateAllParentMeshPointers();
 
-	// after importing ordinary components, we need to convert the references between containers.
-	// each container can import more than one reference type, e.g.:
-	// - VertexContainer could import vertex references (adjacent vertices), face references
+	// after importing ordinary components, we need to convert the pointers between containers.
+	// each container can import more than one pointer type, e.g.:
+	// - VertexContainer could import vertex pointers (adjacent vertices), face pointers
 	//   (adjacent faces), and so on;
-	// - FaceContainer will always import vertex references, but could also import face references
-	//   (adjacent faces), edge references (adjacent edges)...
-	// for each container of this Mesh, we'll call the importReferences passing the container (Args)
+	// - FaceContainer will always import vertex pointers, but could also import face pointers
+	//   (adjacent faces), edge pointers (adjacent edges)...
+	// for each container of this Mesh, we'll call the importPointers passing the container (Args)
 	// as template parameter. This parameter will be used to call all the possible import functions
 	// available (vertices, faces, edges, half edges)
 
-	(importReferences<Args>(m), ...);
+	(importPointers<Args>(m), ...);
 
 	if constexpr(mesh::HasFaceContainer<Mesh<Args...>> && mesh::HasFaceContainer<OtherMeshType>) {
 		// Now I need to manage imports between different types of meshes (same type of meshes are
-		// already managed from importFrom and importReferencesFrom member functions).
+		// already managed from importFrom and importPointersFrom member functions).
 		//
 		// Generally speaking, Polygon or Dcel meshes can import from any other type of mesh.
-		// We need to take care when this mesh has static vertex references number in the face
+		// We need to take care when this mesh has static vertex pointers number in the face
 		// container (VERTEX_NUMBER >= 3).
 		//
 		// The follwing case don't need to be managed:
@@ -217,13 +217,13 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 		// if this is not a Dcel Mesh
 		if constexpr (!DcelMeshConcept<Mesh<Args...>>) {
 			// in case of import from poly (could be also dcel) to triangle mesh, I need to manage
-			// triangulation of polygons and create additional triangle faces for each of the imported
-			// polygons
-			// this function statically asserts that the import can be done.
+			// triangulation of polygons and create additional triangle faces for each of the
+			// imported polygons. This function statically asserts that the import can be done.
 			manageImportTriFromPoly(m);
 		}
 		else { // if this is a dcel mesh
-			// manage import from another non-dcel mesh (no need to manage the import from another dcel)
+			// manage import from another non-dcel mesh (no need to manage the import from another
+			// dcel)
 			if constexpr(!DcelMeshConcept<OtherMeshType>) {
 				manageImportDcelFromMesh(m);
 			}
@@ -259,9 +259,9 @@ void Mesh<Args...>::swap(Mesh& m2)
 	m1.updateAllParentMeshPointers();
 	m2.updateAllParentMeshPointers();
 
-	// update all the references to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
-	(Mesh<Args...>::template updateReferencesOfContainerType<Args>(m1, m2Bases), ...);
-	(Mesh<Args...>::template updateReferencesOfContainerType<Args>(m2, m1Bases), ...);
+	// update all the pointers to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
+	(Mesh<Args...>::template updatePointersOfContainerType<Args>(m1, m2Bases), ...);
+	(Mesh<Args...>::template updatePointersOfContainerType<Args>(m2, m1Bases), ...);
 }
 
 /**
@@ -304,7 +304,7 @@ uint Mesh<Args...>::index(const typename Mesh::VertexType* v) const
  * @brief Add a new vertex into the mesh, returning the index of the added vertex.
  *
  * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex references contained in the Mesh.
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
  *
  * @return the index of the new vertex.
  */
@@ -321,7 +321,7 @@ uint Mesh<Args...>::addVertex()
  * vertex.
  *
  * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex references contained in the Mesh.
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
  *
  * @param p: coordinate of the new vertex.
  * @return the id of the new vertex.
@@ -343,7 +343,7 @@ uint Mesh<Args...>::addVertex(const typename Mesh::VertexType::CoordType& p)
  * vertices will have id from 4 to id 8 included.
  *
  * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex references contained in the Mesh.
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
  *
  * @param n: the number of vertices to add to the mesh.
  * @return the id of the first added vertex.
@@ -371,7 +371,7 @@ uint Mesh<Args...>::addVertices(uint n)
  * The number of accepted Coordtype arguments is variable.
  *
  * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex references contained in the Mesh.
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
  *
  * @param p: first vertex coordinate
  * @param v: list of other vertex coordinates
@@ -406,7 +406,7 @@ uint Mesh<Args...>::addVertices(
  * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
  *
  * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex references contained in the Mesh.
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
  *
  * @param n: the new capacity of the vertex container.
  */
@@ -421,7 +421,7 @@ void Mesh<Args...>::reserveVertices(uint n)
 /**
  * @brief Compacts the Vertex Container, removing all the vertices marked as deleted. Vertices
  * indices will change accordingly. The function will automatically take care of updating all the
- * Vertex references contained in the Mesh.
+ * Vertex pointers contained in the Mesh.
  */
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::compactVertices()
@@ -706,7 +706,7 @@ uint Mesh<Args...>::addEdge() requires HasEdges<Mesh>
  * edges will have id from 4 to id 8 included.
  *
  * If the call of this function will cause a reallocation of the EdgeContainer, the function
- * will automatically take care of updating all the Edge references contained in the Mesh.
+ * will automatically take care of updating all the Edge pointers contained in the Mesh.
  *
  * This function will be available only **if the Mesh has the Edge Container**.
  *
@@ -732,7 +732,7 @@ uint Mesh<Args...>::addEdges(uint n) requires HasEdges<Mesh>
  * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
  *
  * If the call of this function will cause a reallocation of the Edge container, the function
- * will automatically take care of updating all the Edge references contained in the Mesh.
+ * will automatically take care of updating all the Edge pointers contained in the Mesh.
  *
  * This function will be available only **if the Mesh has the Edge Container**.
  *
@@ -749,7 +749,7 @@ void Mesh<Args...>::reserveEdges(uint n) requires HasEdges<Mesh>
 /**
  * @brief Compacts the EdgeContainer, removing all the edges marked as deleted. Edges indices
  * will change accordingly. The function will automatically take care of updating all the Edge
- * references contained in the Mesh.
+ * pointers contained in the Mesh.
  *
  * This function will be available only **if the Mesh has the Edge Container**.
  */
@@ -802,7 +802,7 @@ uint Mesh<Args...>::addHalfEdge() requires HasHalfEdges<Mesh>
  * Halfedges will have id from 4 to id 8 included.
  *
  * If the call of this function will cause a reallocation of the HalfEdgeContainer, the function
- * will automatically take care of updating all the HalfEdge references contained in the Mesh.
+ * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
  *
  * This function will be available only **if the Mesh has the HalfEdge Container**.
  *
@@ -856,7 +856,7 @@ uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f) requires
  * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
  *
  * If the call of this function will cause a reallocation of the HalfEdge container, the function
- * will automatically take care of updating all the HalfEdge references contained in the Mesh.
+ * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
  *
  * This function will be available only **if the Mesh has the HalfEdge Container**.
  *
@@ -873,7 +873,7 @@ void Mesh<Args...>::reserveHalfEdges(uint n) requires HasHalfEdges<Mesh>
 /**
  * @brief Compacts the HalfEdgeContainer, removing all the Halfedges marked as deleted. HalfEdges
  * indices will change accordingly. The function will automatically take care of updating all the
- * HalfEdge references contained in the Mesh.
+ * HalfEdge pointers contained in the Mesh.
  *
  * This function will be available only **if the Mesh has the HalfEdge Container**.
  */
@@ -896,14 +896,14 @@ uint Mesh<Args...>::addElement()
 	using Element = typename Cont::ElementType;
 
 	// If the base pointer of the container of elements changes, it means that all the elements
-	// references contained in the elements need to be updated
+	// pointers contained in the elements need to be updated
 
 	Element* oldBase = Cont::vec.data();
 	uint     eid     = Cont::addElement(this);
 	Element* newBase = Cont::vec.data();
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the element references in the containers
-		(updateReferences<Args>(oldBase, newBase), ...);
+		// change all the element pointers in the containers
+		(updatePointers<Args>(oldBase, newBase), ...);
 	}
 	return eid;
 }
@@ -915,15 +915,15 @@ uint Mesh<Args...>::addElements(uint n)
 	using Element = typename Cont::ElementType;
 
 	// If the base pointer of the container of elements changes, it means that all the elements
-	// references contained in the other elements need to be updated
+	// pointers contained in the other elements need to be updated
 
 	Element* oldBase = Cont::vec.data();
 	uint     eid     = Cont::addElements(n, this); // add the number elements
 	Element* newBase = Cont::vec.data();
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the element references in the other containers
-		(updateReferences<Args>(oldBase, newBase), ...);
+		// change all the element pointers in the other containers
+		(updatePointers<Args>(oldBase, newBase), ...);
 	}
 	return eid;
 }
@@ -938,7 +938,7 @@ void Mesh<Args...>::reserveElements(uint n)
 	Cont::reserveElements(n, this);
 	Element* newBase = Cont::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
-		(updateReferences<Args>(oldBase, newBase), ...);
+		(updatePointers<Args>(oldBase, newBase), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -952,7 +952,7 @@ void Mesh<Args...>::compactElements()
 			auto* newBase = Cont::vec.data();
 			assert(oldBase == newBase);
 
-			(updateReferencesAfterCompact<Args>(oldBase, newIndices), ...);
+			(updatePointersAfterCompact<Args>(oldBase, newIndices), ...);
 		}
 	}
 }
@@ -968,23 +968,23 @@ void Mesh<Args...>::clearElements()
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename Element>
-void Mesh<Args...>::updateReferences(
+void Mesh<Args...>::updatePointers(
 	const Element* oldBase,
 	const Element* newBase)
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
-		Cont::updateReferences(oldBase, newBase);
+		Cont::updatePointers(oldBase, newBase);
 	}
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename Element>
-void Mesh<Args...>::updateReferencesAfterCompact(
+void Mesh<Args...>::updatePointersAfterCompact(
 	const Element*          base,
 	const std::vector<int>& newIndices)
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
-		Cont::updateReferencesAfterCompact(base, newIndices);
+		Cont::updatePointersAfterCompact(base, newIndices);
 	}
 }
 
@@ -1061,30 +1061,30 @@ void Mesh<Args...>::importContainersAndComponents(const OthMesh &m)
 
 /**
  * This function will import, for a given container of this mesh that is passed as a template
- * parameter Cont, all the references of all the elements from the other mesh m.
+ * parameter Cont, all the pointers of all the elements from the other mesh m.
  */
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename OthMesh>
-void Mesh<Args...>::importReferences(const OthMesh &m)
+void Mesh<Args...>::importPointers(const OthMesh &m)
 {
-	// will loop again on Args. Args will be the element references imported on Cont
-	(importReferencesOfElement<Cont, Args>(m), ...);
+	// will loop again on Args. Args will be the element pointers imported on Cont
+	(importPointersOfElement<Cont, Args>(m), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename ElemCont, typename OthMesh>
-void Mesh<Args...>::importReferencesOfElement(const OthMesh& m)
+void Mesh<Args...>::importPointersOfElement(const OthMesh& m)
 {
 	// if Cont and ElemCont are containers (could be mesh components)
 	if constexpr(mesh::ElementContainerConcept<Cont> && mesh::ElementContainerConcept<ElemCont>) {
-		// import in Cont the ElemCont references from m
-		Cont::importReferencesFrom(m, ElemCont::vec.data());
+		// import in Cont the ElemCont pointers from m
+		Cont::importPointersFrom(m, ElemCont::vec.data());
 	}
 }
 
 /**
  * @brief This function manages the case where we try to import into a TriMesh a PolyMesh
- * Faces have been already imported, but without vertex references and other components that
+ * Faces have been already imported, but without vertex pointers and other components that
  * depend on the number of vertices (e.g. wedges)
  */
 template<typename... Args> requires HasVertices<Args...>
@@ -1101,8 +1101,8 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
 
 	// if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
-	// number of vertex references in this mesh), and this mesh does not have the same
-	// number of vertex references of the other, it means that we don't know how to convert
+	// number of vertex pointers in this mesh), and this mesh does not have the same
+	// number of vertex pointers of the other, it means that we don't know how to convert
 	// these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
 	// mesh, or convert a quad mesh into a pentagonal mesh...)
 	static_assert(
@@ -1121,8 +1121,8 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 
 		for (const MFaceType& mf : m.faces()) {
 			// if the current face has the same number of vertices of this faces (3), then
-			// the vertex references have been correctly imported from the import references
-			// function. The import references function does nothing when importing from a face
+			// the vertex pointers have been correctly imported from the import pointers
+			// function. The import pointers function does nothing when importing from a face
 			// with at least 4 vertices
 			if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
 				// triangulate mf; the first triangle of the triangulation will be
@@ -1136,7 +1136,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 					Polygon<MCoordType>::earCut(faceCoords(mf));
 #endif
 				FaceType& f = FaceContainer::face(m.index(mf));
-				importTriReferencesHelper(f, mf, base, mvbase, tris, 0);
+				importTriPointersHelper(f, mf, base, mvbase, tris, 0);
 
 				// number of other faces to add
 				uint nf = tris.size() / 3 - 1;
@@ -1145,7 +1145,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 				uint i = 3; // index that cycles into tris
 				for (; fid < FaceContainer::faceContainerSize(); ++fid) {
 					FaceType& f = FaceContainer::face(fid);
-					importTriReferencesHelper(f, mf, base, mvbase, tris, i);
+					importTriPointersHelper(f, mf, base, mvbase, tris, i);
 					i+=3;
 				}
 			}
@@ -1155,7 +1155,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 
 /**
  * @brief This function manages the case where we try to import into a Dcel another type of Mesh.
- * Faces have been already imported, but not vertex references (half edges still need to be created)
+ * Faces have been already imported, but not vertex pointers (half edges still need to be created)
  * and other components that depend on the number of vertices (e.g. adjacent faces and wedges)
  */
 template<typename... Args> requires HasVertices<Args...>
@@ -1170,7 +1170,7 @@ void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
 	using FaceContainer = typename Mesh<Args...>::FaceContainer;
 
-	// base and mvbase are needed to convert vertex references from other to this mesh
+	// base and mvbase are needed to convert vertex pointers from other to this mesh
 	VertexType* base = VertexContainer::vec.data();
 	const MVertexType* mvbase = &m.vertex(0);
 
@@ -1184,7 +1184,7 @@ void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
 		addHalfEdgesToFace(mf.vertexNumber(), f);
 
 		// this can be optimized
-		// set each vertex of f computing the right reference from mesh m and face mf
+		// set each vertex of f computing the right pointers from mesh m and face mf
 		for (uint j = 0; j < mf.vertexNumber(); ++j) {
 			f.vertex(j) = base + (mf.vertex(j) - mvbase);
 		}
@@ -1195,7 +1195,7 @@ void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
-void Mesh<Args...>::importTriReferencesHelper(
+void Mesh<Args...>::importTriPointersHelper(
 	FaceType&                f,
 	const MFaceType&         mf,
 	VertexType*              base,
@@ -1266,18 +1266,18 @@ auto Mesh<Args...>::getContainerBases(const Mesh<A...>& m)
 /**
  * This function is called for each container of the mesh.
  *
- * In general, for each container, we need to update all the references contained in it,
+ * In general, for each container, we need to update all the pointers contained in it,
  * that may of any element of the mesh (example: in the VertexContainer there could be
- * Vertex references, but also Face or Edge references).
+ * Vertex pointers, but also Face or Edge pointers).
  *
  * Here in this function, we loop into the containers of the Mesh m using pack expansion, and
- * we use the Cont type to choose which reference type we are updating.
+ * we use the Cont type to choose which pointers type we are updating.
  *
  * bases contains the old bases (the ones of the other mesh) for each container.
  */
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename Array, typename... A>
-void Mesh<Args...>::updateReferencesOfContainerType(Mesh<A...>& m, const Array& bases)
+void Mesh<Args...>::updatePointersOfContainerType(Mesh<A...>& m, const Array& bases)
 {
 	// since this function is called using pack expansion, it means that Cont could be a mesh
 	// component and not a cointainer. We check if Cont is a container
@@ -1290,9 +1290,9 @@ void Mesh<Args...>::updateReferencesOfContainerType(Mesh<A...>& m, const Array& 
 		constexpr uint I = IndexInTypes<Cont, Containers>::value;
 		static_assert(I >= 0 && I != UINT_NULL);
 
-		// for each Container A in m, we update the references of ElType.
+		// for each Container A in m, we update the pointers of ElType.
 		// old base is contained in the array bases, the new base is the base of the container
-		(m.template updateReferences<A>((const ElType*)bases[I], m.Cont::vec.data()), ...);
+		(m.template updatePointers<A>((const ElType*)bases[I], m.Cont::vec.data()), ...);
 	}
 }
 

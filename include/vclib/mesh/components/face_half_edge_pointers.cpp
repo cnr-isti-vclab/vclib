@@ -839,7 +839,7 @@ FaceHalfEdgePointers<HE, El, o>::wedgeTexCoords() const requires HasTexCoord<HE>
 }
 
 template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::updateReferences(
+void FaceHalfEdgePointers<HE, El, o>::updatePointers(
 	const HE* oldBase,
 	const HE* newBase)
 {
@@ -856,7 +856,7 @@ void FaceHalfEdgePointers<HE, El, o>::updateReferences(
 }
 
 template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::updateReferencesAfterCompact(
+void FaceHalfEdgePointers<HE, El, o>::updatePointersAfterCompact(
 	const HE*         base,
 	const std::vector<int>& newIndices)
 {
@@ -886,7 +886,7 @@ void FaceHalfEdgePointers<HE, El, o>::importFrom(const Element &)
 
 template<typename HE, typename El, bool o>
 template<typename OtherFace, typename OtherHEdge>
-void FaceHalfEdgePointers<HE, El, o>::importReferencesFrom(
+void FaceHalfEdgePointers<HE, El, o>::importPointersFrom(
 	const OtherFace&  e,
 	HE*         base,
 	const OtherHEdge* ebase)

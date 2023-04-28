@@ -81,9 +81,9 @@ concept HasAdjacentVertices = requires(
 /**
  * @private
  * @brief HasAdjacentVerticesComponent concept is used to discriminate between the AdjacentVertices
- * (or OptionalAdjacentVertices) component, and the VertexHalfEdgeReferences component, which using
+ * (or OptionalAdjacentVertices) component, and the VertexHalfEdgePointer component, which using
  * half edges allows to access to adjacent vertices. This concept is intended only for internal use,
- * useful to check that a Vertex does not have both AdjacentVertices and VertexHalfEdgeReferences
+ * useful to check that a Vertex does not have both AdjacentVertices and VertexHalfEdgePointer
  * components.
  */
 template<typename T>

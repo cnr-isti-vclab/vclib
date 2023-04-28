@@ -279,7 +279,7 @@ void updatePrincipalCurvaturePCA(
 	if (montecarloSampling) {
 		area = vcl::surfaceArea(m);
 #ifdef VCLIB_USES_RANGES
-		pGrid = VGrid(m.vertices() | views::reference);
+		pGrid = VGrid(m.vertices() | views::addrOf);
 #else
 		using VPI = vcl::PointerIterator<typename MeshType::VertexIterator>;
 		pGrid = VGrid(VPI(m.vertexBegin()), VPI(m.vertexEnd()));

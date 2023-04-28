@@ -142,21 +142,19 @@ public:
 	auto                      adjFaces() const;
 
 protected:
-	void updateReferences(const Face* oldBase, const Face* newBase);
+	void updatePointers(const Face* oldBase, const Face* newBase);
 
-	void updateReferencesAfterCompact(const Face* base, const std::vector<int>& newIndices);
+	void updatePointersAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	template<typename Element, typename ElFType>
-	void
-	importReferencesFrom(const Element& e, Face* base, const ElFType* ebase);
+	void importPointersFrom(const Element& e, Face* base, const ElFType* ebase);
 
 private:
 	template<typename Element, typename ElFType>
-	void
-	importRefsFrom(const Element& e, Face* base, const ElFType* ebase);
+	void importPtrsFrom(const Element& e, Face* base, const ElFType* ebase);
 };
 
 /* Detector function to check if a class has AdjacentFaces enabled */
