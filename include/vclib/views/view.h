@@ -44,6 +44,8 @@ namespace vcl {
  * - faceEnd()
  * To allow view iteration over vertices, the Mesh could expose a vertices() member function that
  * returns a View object that is constructed in this way: View(vertexBegin(), vertexEnd());
+ *
+ * @ingroup views
  */
 template<typename It>
 class View

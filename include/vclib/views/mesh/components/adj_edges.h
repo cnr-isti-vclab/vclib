@@ -61,6 +61,8 @@ struct AdjEdgesView
  * @code{.cpp}
  * for (auto* ae: f | views::adjEdges | views::notNull) { ... }
  * @endcode
+ *
+ * @ingroup views
  */
 inline constexpr internal::AdjEdgesView adjEdges;
 

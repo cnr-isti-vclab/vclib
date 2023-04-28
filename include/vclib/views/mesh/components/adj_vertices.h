@@ -61,6 +61,8 @@ struct AdjVerticesView
  * @code{.cpp}
  * for (auto* av: v | views::adjVertices | views::notNull) { ... }
  * @endcode
+ *
+ * @ingroup views
  */
 inline constexpr internal::AdjVerticesView adjVertices;
 
