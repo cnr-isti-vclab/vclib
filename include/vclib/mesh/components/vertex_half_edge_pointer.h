@@ -21,12 +21,12 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
-#define VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
+#ifndef VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_POINTER_H
+#define VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_POINTER_H
 
 #include <vector>
 
-#include <vclib/concepts/mesh/components/vertex_half_edge_reference.h>
+#include <vclib/concepts/mesh/components/vertex_half_edge_pointer.h>
 #include <vclib/iterators/mesh/half_edge/vertex_adj_face_iterator.h>
 #include <vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h>
 #include <vclib/views/view.h>
@@ -36,7 +36,7 @@
 namespace vcl::comp {
 
 /**
- * @brief The VertexHalfEdgeReference class
+ * @brief The VertexHalfEdgePointer class
  *
  * @ingroup components
  */
@@ -44,17 +44,16 @@ template<
 	typename HalfEdge,
 	typename ElementType = void,
 	bool optional        = false>
-class VertexHalfEdgeReference :
-	public ReferencesComponentTriggerer<HalfEdge>
+class VertexHalfEdgePointer : public PointersComponentTriggerer<HalfEdge>
 {
-	using ThisType = VertexHalfEdgeReference<HalfEdge, ElementType, optional>;
+	using ThisType = VertexHalfEdgePointer<HalfEdge, ElementType, optional>;
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
 
 public:
 	using DataValueType = HalfEdge*; // data that the component stores internally (or vertically)
-	using VertexHalfEdgeReferencesComponent = ThisType; // expose the type to allow access to this component
+	using VertexHalfEdgePointerComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
@@ -75,7 +74,7 @@ public:
 
 	/* Constructor and isEnabled */
 
-	VertexHalfEdgeReference();
+	VertexHalfEdgePointer();
 
 	void init();
 
@@ -163,6 +162,6 @@ private:
 
 } // vcl::comp
 
-#include "vertex_half_edge_reference.cpp"
+#include "vertex_half_edge_pointer.cpp"
 
-#endif // VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
+#endif // VCL_MESH_COMPONENTS_VERTEX_HALF_EDGE_POINTER_H

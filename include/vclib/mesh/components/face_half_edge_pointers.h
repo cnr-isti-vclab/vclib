@@ -21,13 +21,13 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_H
-#define VCL_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_H
+#ifndef VCL_MESH_COMPONENTS_FACE_HALF_EDGE_POINTERS_H
+#define VCL_MESH_COMPONENTS_FACE_HALF_EDGE_POINTERS_H
 
 #include <vector>
 
 #include <vclib/concepts/mesh/components/color.h>
-#include <vclib/concepts/mesh/components/face_half_edge_reference.h>
+#include <vclib/concepts/mesh/components/face_half_edge_pointers.h>
 #include <vclib/concepts/mesh/components/tex_coord.h>
 #include <vclib/iterators/mesh/half_edge/face_adj_face_iterator.h>
 #include <vclib/iterators/mesh/half_edge/face_half_edge_iterator.h>
@@ -42,7 +42,7 @@
 namespace vcl::comp {
 
 /**
- * @brief The FaceHalfEdgeReference class
+ * @brief The FaceHalfEdgePointers class
  *
  * @ingroup components
  */
@@ -50,12 +50,11 @@ template<
 	typename HalfEdge,
 	typename ElementType = void,
 	bool optional        = false>
-class FaceHalfEdgeReference :
-		public ReferencesComponentTriggerer<HalfEdge>
+class FaceHalfEdgePointers : public PointersComponentTriggerer<HalfEdge>
 {
-	using ThisType = FaceHalfEdgeReference<HalfEdge, ElementType, optional>;
+	using ThisType = FaceHalfEdgePointers<HalfEdge, ElementType, optional>;
 
-	struct FHERData {
+	struct FHEPData {
 		HalfEdge*              ohe; // outer half edge
 		std::vector<HalfEdge*> ihe; // inner half edges, one for each hole of the face
 
@@ -66,8 +65,8 @@ class FaceHalfEdgeReference :
 	using Face   = typename HalfEdge::FaceType;
 
 public:
-	using DataValueType = FHERData; // data that the component stores internally (or vertically)
-	using FaceHalfEdgeReferencesComponent = ThisType; // expose the type to allow access to this component
+	using DataValueType = FHEPData; // data that the component stores internally (or vertically)
+	using FaceHalfEdgePointersComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
@@ -109,10 +108,10 @@ public:
 	using WedgeTexCoordsView          = vcl::View<WedgeTexCoordsIterator>;
 	using ConstWedgeTexCoordsView     = vcl::View<ConstWedgeTexCoordsIterator>;
 
-	// Vertex references can be accessed from a face using half edge reference, therefore this
-	// component claims that it is the VertexReferences component. This is done just for
+	// VertexPointers can be accessed from a face using half edge pointer, therefore this
+	// component claims that it is the VertexPointers component. This is done just for
 	// compatibility between mesh types.
-	using VertexReferences         = FaceHalfEdgeReference;
+	using VertexPointers = FaceHalfEdgePointers;
 
 	static const int VERTEX_NUMBER          = -1; // half edges support by design polygonal meshes
 	static const int ADJ_FACE_NUMBER        = -1;
@@ -121,7 +120,7 @@ public:
 
 	/* Constructor and isEnabled */
 
-	FaceHalfEdgeReference();
+	FaceHalfEdgePointers();
 
 	void init();
 
@@ -292,11 +291,11 @@ private:
 	short& texIndex();
 	short texIndex() const;
 
-	internal::ComponentData<FHERData, IS_VERTICAL> data;
+	internal::ComponentData<FHEPData, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp
 
-#include "face_half_edge_reference.cpp"
+#include "face_half_edge_pointers.cpp"
 
-#endif // VCL_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_H
+#endif // VCL_MESH_COMPONENTS_FACE_HALF_EDGE_POINTERS_H

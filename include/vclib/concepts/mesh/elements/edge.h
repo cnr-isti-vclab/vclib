@@ -90,7 +90,7 @@ concept HasScalar = comp::HasScalar<T>;
 template<typename T>
 concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>
-concept HasVertexReferences = comp::HasVertexReferences<T>;
+concept HasVertexPointers = comp::HasVertexPointers<T>;
 
 /** @} */ // end of group
 
@@ -103,8 +103,8 @@ concept HasVertexReferences = comp::HasVertexReferences<T>;
  * The Edge concept is satisfied for a class E if ALL the following sentences are true:
  * - The class E is vcl::Edge, or derives from it;
  * - The class E has the BitFlags component (or a derivate);
- * - The class E has the VertexReferences component (or a derivate);
- * - The number of vertices of the VertexReferences is 2.
+ * - The class E has the VertexPointers component (or a derivate);
+ * - The number of vertices of the VertexPointers is 2.
  *
  * @ingroup edge_concepts
  */
@@ -113,7 +113,7 @@ concept EdgeConcept =
 	T::ELEMENT_TYPE == EDGE &&
 	(edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value) &&
 	edge::HasBitFlags<T> &&
-	edge::HasVertexReferences<T> &&
+	edge::HasVertexPointers<T> &&
 	T::VERTEX_NUMBER == 2;
 
 } // namespace vcl

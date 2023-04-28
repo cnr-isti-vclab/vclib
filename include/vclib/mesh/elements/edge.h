@@ -49,13 +49,13 @@ class Edge : public Element<MeshType, Args...>
 	template<EdgeConcept>
 	friend class mesh::EdgeContainer;
 
-	// Vertex references component of the Edge
-	using VRefs = typename Edge::VertexReferences;
+	// VertexPointers component of the Edge
+	using VPtrs = typename Edge::VertexPointers;
 
 public:
 	static const uint ELEMENT_TYPE = EDGE;
 
-	using VertexType = typename VRefs::VertexType;
+	using VertexType = typename VPtrs::VertexType;
 
 	uint index() const;
 };

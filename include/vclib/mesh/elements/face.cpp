@@ -89,8 +89,8 @@ template<typename MeshType, typename... Args>
 void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 {
 	using F = Face<MeshType, TypeWrapper<Args...>>;
-
-	VRefs::setVertices(list);
+	
+	VPtrs::setVertices(list);
 
 	if constexpr (comp::HasAdjacentEdges<F> && NonDcelPolygonFaceConcept<F>) {
 		using T = typename F::AdjacentEdges;

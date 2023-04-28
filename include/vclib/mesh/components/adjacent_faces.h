@@ -27,12 +27,12 @@
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_references.h"
+#include "internal/element_pointers_container.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentFaces class is a container of Face references. It could be used by any
+ * @brief The AdjacentFaces class is a container of Face pointers. It could be used by any
  * Element to save adjacencies information (also the Face element itself).
  *
  * It is a random access container having static or dynamic size, depending on the value of N (a
@@ -56,12 +56,12 @@ namespace vcl::comp {
  */
 template<typename Face, int N, typename ElementType = void, bool optional = false>
 class AdjacentFaces :
-		public ReferencesComponentTriggerer<Face>,
-		protected internal::ElementReferences<Face, N, ElementType>
+		public PointersComponentTriggerer<Face>,
+		protected internal::ElementPointersContainer<Face, N, ElementType>
 {
 	using ThisType = AdjacentFaces<Face, N, ElementType, optional>;
 
-	using Base = internal::ElementReferences<Face, N, ElementType>;
+	using Base = internal::ElementPointersContainer<Face, N, ElementType>;
 
 public:
 	/** @private data that the component stores internally (or vertically) */

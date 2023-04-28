@@ -115,8 +115,8 @@ set(HEADERS
 	include/vclib/concepts/mesh/components/component.h
 	include/vclib/concepts/mesh/components/coordinate.h
 	include/vclib/concepts/mesh/components/custom_components.h
-	include/vclib/concepts/mesh/components/face_half_edge_reference.h
-	include/vclib/concepts/mesh/components/half_edge_references.h
+	include/vclib/concepts/mesh/components/face_half_edge_pointers.h
+	include/vclib/concepts/mesh/components/half_edge_pointers.h
 	include/vclib/concepts/mesh/components/mark.h
 	include/vclib/concepts/mesh/components/name.h
 	include/vclib/concepts/mesh/components/normal.h
@@ -125,8 +125,8 @@ set(HEADERS
 	include/vclib/concepts/mesh/components/tex_coord.h
 	include/vclib/concepts/mesh/components/texture_paths.h
 	include/vclib/concepts/mesh/components/transform_matrix.h
-	include/vclib/concepts/mesh/components/vertex_half_edge_reference.h
-	include/vclib/concepts/mesh/components/vertex_references.h
+	include/vclib/concepts/mesh/components/vertex_half_edge_pointer.h
+	include/vclib/concepts/mesh/components/vertex_pointers.h
 	include/vclib/concepts/mesh/components/wedge_colors.h
 	include/vclib/concepts/mesh/components/wedge_tex_coords.h
 	include/vclib/concepts/mesh/elements/edge.h
@@ -209,8 +209,8 @@ set(HEADERS
 	include/vclib/mesh/components/color.h
 	include/vclib/mesh/components/coordinate.h
 	include/vclib/mesh/components/custom_components.h
-	include/vclib/mesh/components/face_half_edge_reference.h
-	include/vclib/mesh/components/half_edge_references.h
+	include/vclib/mesh/components/face_half_edge_pointers.h
+	include/vclib/mesh/components/half_edge_pointers.h
 	include/vclib/mesh/components/mark.h
 	include/vclib/mesh/components/name.h
 	include/vclib/mesh/components/normal.h
@@ -218,8 +218,8 @@ set(HEADERS
 	include/vclib/mesh/components/polygon_bit_flags.h
 	include/vclib/mesh/components/principal_curvature.h
 	include/vclib/mesh/components/scalar.h
-	include/vclib/mesh/components/vertex_half_edge_reference.h
-	include/vclib/mesh/components/vertex_references.h
+	include/vclib/mesh/components/vertex_half_edge_pointer.h
+	include/vclib/mesh/components/vertex_pointers.h
 	include/vclib/mesh/components/tex_coord.h
 	include/vclib/mesh/components/texture_paths.h
 	include/vclib/mesh/components/transform_matrix.h
@@ -228,7 +228,7 @@ set(HEADERS
 	include/vclib/mesh/components/wedge_tex_coords.h
 	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/custom_components_data.h
-	include/vclib/mesh/components/internal/element_references.h
+	include/vclib/mesh/components/internal/element_pointers_container.h
 	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/custom_component_vector_handle.h
 	include/vclib/mesh/containers/custom_components_vector_map.h
@@ -418,8 +418,8 @@ set(SOURCES
 	include/vclib/mesh/components/color.cpp
 	include/vclib/mesh/components/coordinate.cpp
 	include/vclib/mesh/components/custom_components.cpp
-	include/vclib/mesh/components/face_half_edge_reference.cpp
-	include/vclib/mesh/components/half_edge_references.cpp
+	include/vclib/mesh/components/face_half_edge_pointers.cpp
+	include/vclib/mesh/components/half_edge_pointers.cpp
 	include/vclib/mesh/components/mark.cpp
 	include/vclib/mesh/components/name.cpp
 	include/vclib/mesh/components/normal.cpp
@@ -431,11 +431,11 @@ set(SOURCES
 	include/vclib/mesh/components/texture_paths.cpp
 	include/vclib/mesh/components/transform_matrix.cpp
 	include/vclib/mesh/components/triangle_bit_flags.cpp
-	include/vclib/mesh/components/vertex_half_edge_reference.cpp
-	include/vclib/mesh/components/vertex_references.cpp
+	include/vclib/mesh/components/vertex_half_edge_pointer.cpp
+	include/vclib/mesh/components/vertex_pointers.cpp
 	include/vclib/mesh/components/wedge_colors.cpp
 	include/vclib/mesh/components/wedge_tex_coords.cpp
-	include/vclib/mesh/components/internal/element_references.cpp
+	include/vclib/mesh/components/internal/element_pointers_container.cpp
 	include/vclib/mesh/containers/custom_component_vector_handle.cpp
 	include/vclib/mesh/containers/custom_components_vector_map.cpp
 	include/vclib/mesh/containers/edge_container.cpp

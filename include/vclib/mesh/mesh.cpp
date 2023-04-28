@@ -485,7 +485,7 @@ uint Mesh<Args...>::addFace(V... args)
 	constexpr uint n = sizeof...(args);
 	static_assert(n >= 3, "Faces must have at least 3 vertices");
 	if constexpr (Face::VERTEX_NUMBER < 0) {
-		if constexpr (!comp::HasFaceHalfEdgeReference<Face>) {
+		if constexpr (!comp::HasFaceHalfEdgePointers<Face>) {
 			f.resizeVertices(n);
 		}
 		else {
@@ -512,8 +512,8 @@ uint Mesh<Args...>::addFace(Iterator begin, Iterator end)
 
 	uint  fid = addFace();
 	Face& f   = FaceContainer::face(fid);
-
-	if constexpr (comp::HasFaceHalfEdgeReference<Face>) {
+	
+	if constexpr (comp::HasFaceHalfEdgePointers<Face>) {
 		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
 		using HalfEdge          = typename HalfEdgeContainer::HalfEdgeType;
 		using Vertex = typename Mesh<Args...>::VertexType;

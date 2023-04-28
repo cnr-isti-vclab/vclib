@@ -21,33 +21,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
-#define VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
+#ifndef VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
+#define VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
 
-#include <vclib/concepts/mesh/components/vertex_references.h>
+#include <vclib/concepts/mesh/components/vertex_pointers.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_references.h"
+#include "internal/element_pointers_container.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The VertexReferences class
+ * @brief The VertexPointers class
  *
  * @ingroup components
  */
 template<typename Vertex, int N, typename ElementType = void, bool optional = false>
-class VertexReferences :
-		public ReferencesComponentTriggerer<Vertex>,
-		protected internal::ElementReferences<Vertex, N, ElementType>
+class VertexPointers :
+		public PointersComponentTriggerer<Vertex>,
+		protected internal::ElementPointersContainer<Vertex, N, ElementType>
 {
-	using ThisType = VertexReferences<Vertex, N, ElementType, optional>;
+	using ThisType = VertexPointers<Vertex, N, ElementType, optional>;
 
-	using Base = internal::ElementReferences<Vertex, N, ElementType>;
+	using Base = internal::ElementPointersContainer<Vertex, N, ElementType>;
 
 public:
 	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
-	using VertexReferencesComponent = ThisType; // expose the type to allow access to this component
+	using VertexPointersComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
@@ -63,7 +63,7 @@ public:
 
 	/* Constructor and isEnabled */
 
-	VertexReferences();
+	VertexPointers();
 
 	void init();
 
@@ -125,6 +125,6 @@ private:
 
 } // namespace vcl::comp
 
-#include "vertex_references.cpp"
+#include "vertex_pointers.cpp"
 
-#endif // VCL_MESH_COMPONENTS_VERTEX_REFERENCES_H
+#endif // VCL_MESH_COMPONENTS_VERTEX_POINTERS_H

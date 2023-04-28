@@ -74,7 +74,7 @@ concept HasOptionalColor = comp::HasOptionalColor<T>;
 template<typename T>
 concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
-concept HasHalfEdgeReferences = comp::HasHalfEdgeReferences<T>;
+concept HasHalfEdgePointers = comp::HasHalfEdgePointers<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
@@ -99,7 +99,7 @@ concept HasOptionalScalar = comp::HasOptionalScalar<T>;
  * The HalfEdge concept is satisfied for a class HE if ALL the following sentences are true:
  * - The class HE is a vcl::HalfEdge, or derives from it;
  * - The class HE has the BitFlags component (or a derivate);
- * - The class HE has the HalfEdgeReferences component (or a derivate);
+ * - The class HE has the HalfEdgePointers component (or a derivate);
  *
  * @ingroup hedge_concepts
  */
@@ -108,7 +108,7 @@ concept HalfEdgeConcept =
 	T::ELEMENT_TYPE == HALF_EDGE &&
 	(hedge::IsDerivedFromHalfEdge<T>::value || hedge::IsAHalfEdge<T>::value) &&
 	hedge::HasBitFlags<T> &&
-	hedge::HasHalfEdgeReferences<T>;
+	hedge::HasHalfEdgePointers<T>;
 
 } // namespace vcl
 

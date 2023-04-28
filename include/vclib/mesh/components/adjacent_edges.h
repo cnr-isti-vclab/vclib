@@ -27,12 +27,12 @@
 #include <vclib/concepts/mesh/components/adjacent_edges.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_references.h"
+#include "internal/element_pointers_container.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentEdges class is a container of Edge references. It could be used by any
+ * @brief The AdjacentEdges class is a container of Edge pointers. It could be used by any
  * Element to save adjacencies information (also the Edge element itself).
  *
  * It is a random access container having static or dynamic size, depending on the value of N (a
@@ -56,12 +56,12 @@ namespace vcl::comp {
  */
 template<typename Edge, int N, typename ElementType = void, bool optional = false>
 class AdjacentEdges :
-		public ReferencesComponentTriggerer<Edge>,
-		protected internal::ElementReferences<Edge, N, ElementType>
+		public PointersComponentTriggerer<Edge>,
+		protected internal::ElementPointersContainer<Edge, N, ElementType>
 {
 	using ThisType = AdjacentEdges<Edge, N, ElementType, optional>;
 
-	using Base = internal::ElementReferences<Edge, N, ElementType>;
+	using Base = internal::ElementPointersContainer<Edge, N, ElementType>;
 
 public:
 	/** @private data that the component stores internally (or vertically) */

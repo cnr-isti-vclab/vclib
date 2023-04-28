@@ -60,7 +60,7 @@ concept IsOptionalComponent = IsVerticalComponent<T> && T::IS_OPTIONAL == true &
 };
 
 template<typename T>
-class ReferencesComponentTriggerer
+class PointersComponentTriggerer
 {
 };
 
@@ -91,7 +91,7 @@ class ReferencesComponentTriggerer
  */
 template<typename T, typename R>
 concept HasReferencesOfType =
-	std::is_base_of<ReferencesComponentTriggerer<R>, T>::value;
+	std::is_base_of<PointersComponentTriggerer<R>, T>::value;
 
 template<typename T, typename R>
 concept HasOptionalReferencesOfType = HasReferencesOfType<T, R> && IsOptionalComponent<T>;

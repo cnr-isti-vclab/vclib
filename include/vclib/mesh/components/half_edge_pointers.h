@@ -21,19 +21,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
-#define VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
+#ifndef VCL_MESH_COMPONENTS_HALF_EDGE_POINTERS_H
+#define VCL_MESH_COMPONENTS_HALF_EDGE_POINTERS_H
 
 #include <vector>
 
-#include <vclib/concepts/mesh/components/half_edge_references.h>
+#include <vclib/concepts/mesh/components/half_edge_pointers.h>
 
 #include "internal/component_data.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The HalfEdgeReferences class
+ * @brief The HalfEdgePointers class
  *
  * @ingroup components
  */
@@ -43,14 +43,14 @@ template<
 	typename Face,
 	typename ElementType = void,
 	bool optional        = false>
-class HalfEdgeReferences :
-		public ReferencesComponentTriggerer<HalfEdge>,
-		public ReferencesComponentTriggerer<Vertex>,
-		public ReferencesComponentTriggerer<Face>
+class HalfEdgePointers :
+		public PointersComponentTriggerer<HalfEdge>,
+		public PointersComponentTriggerer<Vertex>,
+		public PointersComponentTriggerer<Face>
 {
-	using ThisType = HalfEdgeReferences<HalfEdge, Vertex, Face, ElementType, optional>;
+	using ThisType = HalfEdgePointers<HalfEdge, Vertex, Face, ElementType, optional>;
 
-	struct HERData {
+	struct HEPData {
 		HalfEdge* n; // next half edge
 		HalfEdge* p; // prev half edge
 		HalfEdge* t; // twin half edge
@@ -58,8 +58,8 @@ class HalfEdgeReferences :
 		Face*     f; // incident face
 	};
 public:
-	using DataValueType = HERData; // data that the component stores internally (or vertically)
-	using HalfEdgeReferencesComponent = ThisType; // expose the type to allow access to this component
+	using DataValueType = HEPData; // data that the component stores internally (or vertically)
+	using HalfEdgePointersComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
@@ -70,7 +70,7 @@ public:
 
 	/* Constructor and isEnabled */
 
-	HalfEdgeReferences();
+	HalfEdgePointers();
 
 	void init();
 
@@ -134,11 +134,11 @@ private:
 	Face*&     f(); // incident face
 	const Face*     f() const;
 
-	internal::ComponentData<HERData, IS_VERTICAL> data;
+	internal::ComponentData<HEPData, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp
 
-#include "half_edge_references.cpp"
+#include "half_edge_pointers.cpp"
 
-#endif // VCL_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
+#endif // VCL_MESH_COMPONENTS_HALF_EDGE_POINTERS_H

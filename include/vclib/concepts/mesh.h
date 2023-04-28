@@ -203,8 +203,8 @@ template<typename T>
 concept DcelMeshConcept =
 	FaceMeshConcept<T> &&
 	HasHalfEdges<T> &&
-	HasPerVertexHalfEdgeReference<T> &&
-	HasPerFaceHalfEdgeReference<T> &&
+	HasPerVertexHalfEdgePointer<T> &&
+	HasPerFaceHalfEdgePointers<T> &&
 	!comp::HasAdjacentVerticesComponent<typename T::VertexType> &&
 	!comp::HasAdjacentFacesComponent<typename T::FaceType> &&
 	!comp::HasWedgeColorsComponent<typename T::FaceType> &&

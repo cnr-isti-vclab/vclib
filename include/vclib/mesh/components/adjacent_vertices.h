@@ -27,13 +27,13 @@
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_references.h"
+#include "internal/element_pointers_container.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentVertices class is a container of Vertex references. It is a component that
- * makes sense to use mostly on Vertex Elements. For Faces and Edges, see the VertexReferences
+ * @brief The AdjacentVertices class is a container of Vertex pointers. It is a component that
+ * makes sense to use mostly on Vertex Elements. For Faces and Edges, see the VertexPointers
  * component (which is similar, but has different member function names).
  *
  * It is a random access container having dynamic size.
@@ -52,12 +52,12 @@ namespace vcl::comp {
  */
 template<typename Vertex, typename ElementType = void, bool optional = false>
 class AdjacentVertices :
-		public ReferencesComponentTriggerer<Vertex>,
-		protected internal::ElementReferences<Vertex, -1, ElementType>
+		public PointersComponentTriggerer<Vertex>,
+		protected internal::ElementPointersContainer<Vertex, -1, ElementType>
 {
 	using ThisType = AdjacentVertices<Vertex, ElementType, optional>;
 
-	using Base = internal::ElementReferences<Vertex, -1, ElementType>;
+	using Base = internal::ElementPointersContainer<Vertex, -1, ElementType>;
 
 public:
 	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)

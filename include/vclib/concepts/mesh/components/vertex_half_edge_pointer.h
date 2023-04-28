@@ -21,15 +21,15 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_HALF_EDGE_POINTER_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_HALF_EDGE_POINTER_H
 
 #include "component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief HasVertexHalfEdgeReference concept
+ * @brief HasVertexHalfEdgePointer concept
  *
  * This concept is satisfied only if a class has the following member functions:
  * - halfEdge()
@@ -37,7 +37,7 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasVertexHalfEdgeReference = requires(T o)
+concept HasVertexHalfEdgePointer = requires(T o)
 {
 	typename T::HalfEdgeType;
 	o.halfEdge();
@@ -45,4 +45,4 @@ concept HasVertexHalfEdgeReference = requires(T o)
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_HALF_EDGE_REFERENCE_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_HALF_EDGE_POINTER_H

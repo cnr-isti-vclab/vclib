@@ -21,35 +21,33 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_FACE_HALF_EDGE_POINTERS_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_FACE_HALF_EDGE_POINTERS_H
 
 #include "component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief HasHalfEdgeReferences concept
+ * @brief HasFaceHalfEdgePointers concept
  *
  * This concept is satisfied only if a class has the following member functions:
- * - next()
- * - prev()
- * - twin()
+ * - outerHalfEdge()
+ * - numberHoles(), which returns an uint
+ * - innerHalfEdge(uint)
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasHalfEdgeReferences =
-	requires(T o)
+concept HasFaceHalfEdgePointers = requires(T o)
 {
 	typename T::HalfEdgeType;
 	typename T::VertexType;
-	typename T::FaceType;
-	o.next();
-	o.prev();
-	o.twin();
+	o.outerHalfEdge();
+	{ o.numberHoles() } -> std::same_as<uint>;
+	o.innerHalfEdge(uint());
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_HALF_EDGE_REFERENCES_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_FACE_HALF_EDGE_POINTERS_H

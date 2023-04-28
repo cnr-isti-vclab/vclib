@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H
-#define VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H
+#ifndef VCL_MESH_COMPONENTS_ELEMENT_POINTERS_CONTAINER_H
+#define VCL_MESH_COMPONENTS_ELEMENT_POINTERS_CONTAINER_H
 
 #include <vclib/space/vector.h>
 
@@ -31,22 +31,23 @@
 namespace vcl::comp::internal {
 
 /**
- * @brief The ElementReferences class is a generic container of references to another Element
+ * @brief The ElementPointersContainer class is a generic container of pointers to another Element
  * (that could be Vertex, Face...). This class is meant to be inherited and used by Components
- * like Vertex References, Face References: in general, a class that need to store a static or
- * dynamic number of references of another element.
+ * like Vertex Pointers or Adjacent Elements : in general, a class that need to store a static or
+ * dynamic number of pointers of another element type.
  *
  * Its major use is for adjacencies.
  */
 template<typename Elem, int N, typename ElementType>
-class ElementReferences
+class ElementPointersContainer
 {
 private:
 	using Base = Vector<Elem*, N>;
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 public:
-	using DataValueType = Vector<Elem*, N>; // data that the component stores internally (or vertically)
+	/** @private data that the component stores internally (or vertically) */
+	using DataValueType = Vector<Elem*, N>;
 	
 	static const int CONTAINER_SIZE = Base::SIZE;
 
@@ -57,7 +58,7 @@ public:
 
 	/* Constructor and isEnabled */
 
-	ElementReferences();
+	ElementPointersContainer();
 
 	template<typename Comp>
 	void init(Comp* comp);
@@ -83,6 +84,6 @@ protected:
 
 } // namespace vcl::comp::internal
 
-#include "element_references.cpp"
+#include "element_pointers_container.cpp"
 
-#endif // VCL_MESH_COMPONENTS_ELEMENT_REFERENCES_H
+#endif // VCL_MESH_COMPONENTS_ELEMENT_POINTERS_CONTAINER_H

@@ -21,7 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "element_references.h"
+#include "element_pointers_container.h"
 
 #include <algorithm>
 
@@ -33,7 +33,7 @@ namespace vcl::comp::internal {
  * If this Container is a dynamic vector, it will be an empty container.
  */
 template<typename Elem, int N, typename El>
-ElementReferences<Elem, N, El>::ElementReferences()
+ElementPointersContainer<Elem, N, El>::ElementPointersContainer()
 {
 	if constexpr (!IS_VERTICAL) {
 		if constexpr (N >= 0) {
@@ -49,7 +49,7 @@ ElementReferences<Elem, N, El>::ElementReferences()
  */
 template<typename Elem, int N, typename El>
 template<typename Comp>
-void ElementReferences<Elem, N, El>::init(Comp* comp)
+void ElementPointersContainer<Elem, N, El>::init(Comp* comp)
 {
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
@@ -65,7 +65,7 @@ void ElementReferences<Elem, N, El>::init(Comp* comp)
 
 template<typename Elem, int N, typename El>
 template<typename Comp>
-bool ElementReferences<Elem, N, El>::isEnabled(Comp* comp) const
+bool ElementPointersContainer<Elem, N, El>::isEnabled(Comp* comp) const
 {
 	return data.template isComponentEnabled<El>(comp);
 }
@@ -86,7 +86,7 @@ bool ElementReferences<Elem, N, El>::isEnabled(Comp* comp) const
  */
 template<typename Elem, int N, typename El>
 template<typename Comp>
-void ElementReferences<Elem, N, El>::updateElementReferences(
+void ElementPointersContainer<Elem, N, El>::updateElementReferences(
 	const Elem* oldBase,
 	const Elem* newBase,
 	Comp* comp)
@@ -101,7 +101,7 @@ void ElementReferences<Elem, N, El>::updateElementReferences(
 
 template<typename Elem, int N, typename El>
 template<typename Comp>
-void ElementReferences<Elem, N, El>::updateElementReferencesAfterCompact(
+void ElementPointersContainer<Elem, N, El>::updateElementReferencesAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices,
 	Comp* comp)
@@ -121,14 +121,14 @@ void ElementReferences<Elem, N, El>::updateElementReferencesAfterCompact(
 
 template<typename Elem, int N, typename El>
 template<typename Comp>
-Vector<Elem*, N>& ElementReferences<Elem, N, El>::container(Comp* comp)
+Vector<Elem*, N>& ElementPointersContainer<Elem, N, El>::container(Comp* comp)
 {
 	return data.template get<El>(comp);
 }
 
 template<typename Elem, int N, typename El>
 template<typename Comp>
-const Vector<Elem*, N>& ElementReferences<Elem, N, El>::container(const Comp* comp) const
+const Vector<Elem*, N>& ElementPointersContainer<Elem, N, El>::container(const Comp* comp) const
 {
 	return data.template get<El>(comp);
 }

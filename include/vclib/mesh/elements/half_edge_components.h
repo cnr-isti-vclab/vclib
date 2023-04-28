@@ -27,7 +27,7 @@
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/custom_components.h"
-#include "../components/half_edge_references.h"
+#include "../components/half_edge_pointers.h"
 #include "../components/mark.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
@@ -69,9 +69,9 @@ using OptionalColor = comp::Color<HEdgeType, true>;
 template<typename HEdgeType>
 using CustomComponents = comp::CustomComponents<HEdgeType>;
 
-/* Port HalfEdgeReferences class into hedge namespace */
+/* Port HalfEdgePointers class into hedge namespace */
 template<typename HalfEdgeType, typename VertexType, typename FaceType>
-using HalfEdgeReferences = comp::HalfEdgeReferences<HalfEdgeType, VertexType, FaceType>;
+using HalfEdgePointers = comp::HalfEdgePointers<HalfEdgeType, VertexType, FaceType>;
 
 /* Port Mark class into hedge namespace */
 using Mark = comp::Mark<>;

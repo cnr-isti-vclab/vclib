@@ -21,33 +21,58 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
 
 #include "component.h"
+
+#include <vector>
 
 namespace vcl::comp {
 
 /**
- * @brief HasFaceHalfEdgeReference concept
- *
- * This concept is satisfied only if a class has the following member functions:
- * - outerHalfEdge()
- * - numberHoles(), which returns an uint
- * - innerHalfEdge(uint)
+ * @brief HasVertexPointers concept is satisfied only if a Element class provides the types and
+ * member functions specified in this concept. These types and member functions allow to access to
+ * an VertexPointers component of a given element.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasFaceHalfEdgeReference = requires(T o)
+concept HasVertexPointers = requires(
+	T o,
+	const T& co,
+	typename T::VertexType v,
+	std::vector<typename T::VertexType*> vec)
 {
-	typename T::HalfEdgeType;
+	T::VERTEX_NUMBER;
 	typename T::VertexType;
-	o.outerHalfEdge();
-	{ o.numberHoles() } -> std::same_as<uint>;
-	o.innerHalfEdge(uint());
+	typename T::VertexIterator;
+	typename T::ConstVertexIterator;
+
+	{ co.vertexNumber() } -> std::same_as<uint>;
+	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType*&>;
+	{ co.vertex(uint()) } -> std::same_as<const typename T::VertexType*>;
+	{ o.vertexMod(int()) } -> std::same_as<typename T::VertexType*&>;
+	{ co.vertexMod(int()) } -> std::same_as<const typename T::VertexType*>;
+
+	{ o.setVertex(&v, uint()) } -> std::same_as<void>;
+	{ o.setVertices(vec) } -> std::same_as<void>;
+
+	{ co.containsVertex(&v) } -> std::same_as<bool>;
+	{ o.findVertex(&v) } -> std::same_as<typename T::VertexIterator>;
+	{ co.findVertex(&v) } -> std::same_as<typename T::ConstVertexIterator>;
+
+	{ co.indexOfVertex(&v) } -> std::same_as<int>;
+	{ co.indexOfEdge(&v, &v) } -> std::same_as<int>;
+
+	{ o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
+	{ o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
+	{ co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
+	{ co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
+	o.vertices();
+	co.vertices();
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_FACE_HALF_EDGE_REFERENCE_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H

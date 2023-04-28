@@ -84,7 +84,7 @@ concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
 concept HasFaceBitFlags = comp::HasFaceBitFlags<T>;
 template<typename T>
-concept HasHalfEdgeReference = comp::HasFaceHalfEdgeReference<T>;
+concept HasHalfEdgePointers = comp::HasFaceHalfEdgePointers<T>;
 template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
@@ -106,7 +106,7 @@ concept HasOptionalScalar = comp::HasOptionalScalar<T>;
 template<typename T>
 concept HasTriangleBitFlags = comp::HasTriangleBitFlags<T>;
 template<typename T>
-concept HasVertexReferences = comp::HasVertexReferences<T>;
+concept HasVertexPointers = comp::HasVertexPointers<T>;
 template<typename T>
 concept HasWedgeColors = comp::HasWedgeColors<T>;
 template<typename T>
@@ -127,8 +127,8 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
  * The Face concept is satisfied for a class F if ALL the following sentences are true:
  * - The class F is vcl::Face, or derives from it;
  * - The class F has the BitFlags component (or a derivate);
- * - The class F has the VertexReferences component (or a derivate);
- * - The number of vertices of the VertexReferences is -1 (dynamic size) or at least 3 (static size)
+ * - The class F has the VertexPointers component (or a derivate);
+ * - The number of vertices of the VertexPointers is -1 (dynamic size) or at least 3 (static size)
  * - If the class F has the TriangleBitFlags component (or a derivate), the number of vertices must
  *   be 3 (static)
  * - If the class F has the AdjacentEdges component (or a derivate), its size must be the same of
@@ -147,7 +147,7 @@ concept FaceConcept =
 	T::ELEMENT_TYPE == FACE &&
 	(face::IsDerivedFromFace<T>::value || face::IsAFace<T>::value) &&
 	face::HasBitFlags<T> &&
-	face::HasVertexReferences<T> &&
+	face::HasVertexPointers<T> &&
 	(T::VERTEX_NUMBER < 0 || T::VERTEX_NUMBER >= 3) &&
 	(!face::HasTriangleBitFlags<T> || T::VERTEX_NUMBER == 3) &&
 	comp::SanityCheckAdjacentEdges<T> &&
@@ -175,7 +175,7 @@ concept PolygonFaceConcept =
 
 template<typename T>
 concept NonDcelPolygonFaceConcept =
-	T::VERTEX_NUMBER < 0 && FaceConcept<T> && !face::HasHalfEdgeReference<T>;
+	T::VERTEX_NUMBER < 0 && FaceConcept<T> && !face::HasHalfEdgePointers<T>;
 
 } // namespace vcl
 
