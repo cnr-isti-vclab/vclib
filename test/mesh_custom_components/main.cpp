@@ -40,8 +40,8 @@ int main()
 	}
 
 	assert(m.vertex(10).customComponent<int>("flag") == -4);
-
-	vcl::CustomComponentVectorHandle<int> v = m.getPerVertexCustomComponentVectorHandle<int>("flag");
+	
+	vcl::CustomComponentVectorHandle<int> v = m.perVertexCustomComponentVectorHandle<int>("flag");
 
 	for (int& m : v){
 		m = 8;
@@ -69,7 +69,7 @@ int main()
 	vcl::taubinSmoothing(m, 500, 0.7, -0.73);
 
 	vcl::ConstCustomComponentVectorHandle<vcl::Point3f> oldCoords =
-		m.getPerVertexCustomComponentVectorHandle<const vcl::Point3f>("oldCoords");
+		m.perVertexCustomComponentVectorHandle<const vcl::Point3f>("oldCoords");
 
 	double avgDist = 0;
 	using CT = vcl::TriMesh::Vertex::CoordType;

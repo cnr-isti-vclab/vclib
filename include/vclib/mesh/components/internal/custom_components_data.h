@@ -46,7 +46,12 @@ struct CustomComponentsData
 	bool isCustomComponentOfType(const std::string& compName)
 	{
 		std::type_index t(typeid(CompType));
-		return t == componentType.at(compName);
+		return t == compType.at(compName);
+	}
+	
+	std::type_index customComponentType(const std::string& compName)
+	{
+		return compType.at(compName);
 	}
 
 	template<typename CompType>
@@ -54,7 +59,7 @@ struct CustomComponentsData
 	{
 		std::vector<std::string> names;
 		std::type_index t(typeid(CompType));
-		for (const auto& p : componentType) {
+		for (const auto& p : compType) {
 			if (p.second == t)
 				names.push_back(p.first);
 		}
@@ -77,18 +82,18 @@ struct CustomComponentsData
 	void addCustomComponent(const std::string& compName, const CompType c = CompType())
 	{
 		map[compName] = c;
-		componentType.insert({compName, typeid(CompType)});
+		compType.insert({compName, typeid(CompType)});
 	}
 
 	void deleteCustomComponent(const std::string& compName)
 	{
 		map.erase(compName);
-		componentType.erase(compName);
+		compType.erase(compName);
 	}
 
 private:
 	std::unordered_map<std::string, std::any> map;
-	std::unordered_map<std::string, std::type_index> componentType;
+	std::unordered_map<std::string, std::type_index> compType;
 };
 
 template<typename ElementType>
@@ -103,6 +108,11 @@ struct CustomComponentsData<ElementType, true>
 //	bool isCustomComponentOfType(const std::string&)
 //	{
 //		return false;
+//	}
+	
+//	std::type_index customComponentType(const std::string& compName)
+//	{
+//		
 //	}
 
 //	template<typename>

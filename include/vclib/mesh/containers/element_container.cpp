@@ -233,54 +233,59 @@ void ElementContainer<T>::disableOptionalComponent()
 }
 
 template<ElementConcept T>
-bool ElementContainer<T>::hasPerElementCustomComponent(const std::string& name) const
+bool ElementContainer<T>::hasElemCustomComponent(const std::string& name) const
 	requires comp::HasCustomComponents<T>
 {
 	return ccVecMap.componentExists(name);
 }
 
 template<ElementConcept T>
-std::vector<std::string> ElementContainer<T>::getAllPerElementCustomComponentNames()
-	const requires comp::HasCustomComponents<T>
+std::vector<std::string> ElementContainer<T>::elemCustomComponentNames() const
+	requires comp::HasCustomComponents<T>
 {
 	return ccVecMap.allComponentNames();
 }
 
 template<ElementConcept T>
 template<typename K>
-bool ElementContainer<T>::isPerElementCustomComponentOfType(
-	const std::string& name) const requires comp::HasCustomComponents<T>
+bool ElementContainer<T>::isElemCustomComponentOfType(const std::string& name) const
+	requires comp::HasCustomComponents<T>
 {
 	return ccVecMap.template isComponentOfType<K>(name);
 }
 
 template<ElementConcept T>
+std::type_index ElementContainer<T>::elemComponentType(const std::string &name) const
+{
+	return ccVecMap.componentType(name);
+}
+
+template<ElementConcept T>
 template<typename K>
-std::vector<std::string>
-ElementContainer<T>::getPerElementCustomComponentNamesOfType()
-	const requires comp::HasCustomComponents<T>
+std::vector<std::string> ElementContainer<T>::elemCustomComponentNamesOfType() const
+	requires comp::HasCustomComponents<T>
 {
 	return ccVecMap.template allComponentNamesOfType<K>();
 }
 
 template<ElementConcept T>
 template<typename K>
-void ElementContainer<T>::addPerElementCustomComponent(
-	const std::string& name) requires comp::HasCustomComponents<T>
+void ElementContainer<T>::addElemCustomComponent(const std::string& name)
+	requires comp::HasCustomComponents<T>
 {
 	ccVecMap.template addNewComponent<K>(name, elementContainerSize());
 }
 
 template<ElementConcept T>
-void ElementContainer<T>::deletePerElementCustomComponent(
-	const std::string& name) requires comp::HasCustomComponents<T>
+void ElementContainer<T>::deleteElemCustomComponent(const std::string& name)
+	requires comp::HasCustomComponents<T>
 {
 	ccVecMap.deleteComponent(name);
 }
 
 template<ElementConcept T>
 template<typename K>
-CustomComponentVectorHandle<K> ElementContainer<T>::getPerElementCustomComponentVectorHandle(
+CustomComponentVectorHandle<K> ElementContainer<T>::customComponentVectorHandle(
 	const std::string& name) requires comp::HasCustomComponents<T>
 {
 	std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);
@@ -290,7 +295,7 @@ CustomComponentVectorHandle<K> ElementContainer<T>::getPerElementCustomComponent
 
 template<ElementConcept T>
 template<typename K>
-ConstCustomComponentVectorHandle<K> ElementContainer<T>::getPerElementCustomComponentVectorHandle(
+ConstCustomComponentVectorHandle<K> ElementContainer<T>::customComponentVectorHandle(
 	const std::string& name) const requires comp::HasCustomComponents<T>
 {
 	const std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);

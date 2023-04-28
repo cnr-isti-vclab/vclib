@@ -39,6 +39,12 @@ bool CustomComponents<El>::hasCustomComponent(const std::string& attrName) const
 //	return data.template isCustomComponentOfType<CompType>(compName);
 //}
 
+template<typename ElementType>
+std::type_index CustomComponents<ElementType>::customComponentType(const std::string &compName) const
+{
+	return data.customComponentType(compName);
+}
+
 //template<typename El>
 //template<typename CompType>
 //std::vector<std::string> CustomComponents<El>::customComponentNamesOfType() const

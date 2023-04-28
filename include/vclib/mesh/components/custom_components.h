@@ -53,6 +53,8 @@ public:
 	{
 		return data.template isCustomComponentOfType<CompType>(compName);
 	}
+	
+	std::type_index customComponentType(const std::string& compName) const;
 
 	// msvc and clang bug - move in cpp when solved
 	template<typename CompType>

@@ -86,32 +86,35 @@ protected:
 
 	// Custom Components
 
-	bool hasPerElementCustomComponent(const std::string& name) const
+	bool hasElemCustomComponent(const std::string& name) const
 		requires comp::HasCustomComponents<T>;
 
-	std::vector<std::string> getAllPerElementCustomComponentNames()
-		const requires comp::HasCustomComponents<T>;
-
-	template<typename K>
-	bool isPerElementCustomComponentOfType(
-		const std::string& name) const requires comp::HasCustomComponents<T>;
-
-	template<typename K>
-	std::vector<std::string> getPerElementCustomComponentNamesOfType()
-		const requires comp::HasCustomComponents<T>;
-
-	template<typename K>
-	void addPerElementCustomComponent(const std::string& name) requires comp::HasCustomComponents<T>;
-
-	void deletePerElementCustomComponent(const std::string& name)
+	std::vector<std::string> elemCustomComponentNames() const
 		requires comp::HasCustomComponents<T>;
 
 	template<typename K>
-	CustomComponentVectorHandle<K> getPerElementCustomComponentVectorHandle(
-		const std::string& name) requires comp::HasCustomComponents<T>;
+	bool isElemCustomComponentOfType(const std::string& name) const
+		requires comp::HasCustomComponents<T>;
+	
+	std::type_index elemComponentType(const std::string& name) const;
 
 	template<typename K>
-	ConstCustomComponentVectorHandle<K> getPerElementCustomComponentVectorHandle(
+	std::vector<std::string> elemCustomComponentNamesOfType() const
+		requires comp::HasCustomComponents<T>;
+
+	template<typename K>
+	void addElemCustomComponent(const std::string& name)
+		requires comp::HasCustomComponents<T>;
+
+	void deleteElemCustomComponent(const std::string& name)
+		requires comp::HasCustomComponents<T>;
+
+	template<typename K>
+	CustomComponentVectorHandle<K> customComponentVectorHandle(const std::string& name)
+		requires comp::HasCustomComponents<T>;
+
+	template<typename K>
+	ConstCustomComponentVectorHandle<K> customComponentVectorHandle(
 		const std::string& name) const requires comp::HasCustomComponents<T>;
 
 	ElementIterator      elementBegin(bool jumpDeleted = true);

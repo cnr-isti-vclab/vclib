@@ -510,10 +510,10 @@ void EdgeContainer<T>::disablePerEdgeScalar() requires edge::HasOptionalScalar<T
  * @return `true` if the Edge Element has a custom component with the given name.
  */
 template<EdgeConcept T>
-bool EdgeContainer<T>::hasPerEdgeCustomComponent(
-	const std::string& name) const requires edge::HasCustomComponents<T>
+bool EdgeContainer<T>::hasPerEdgeCustomComponent(const std::string& name) const
+	requires edge::HasCustomComponents<T>
 {
-	return Base::hasPerElementCustomComponent(name);
+	return Base::hasElemCustomComponent(name);
 }
 
 /**
@@ -525,10 +525,10 @@ bool EdgeContainer<T>::hasPerEdgeCustomComponent(
  * @return A vector of strings representing all the names of the custom components.
  */
 template<EdgeConcept T>
-std::vector<std::string> EdgeContainer<T>::getAllPerEdgeCustomComponentNames()
-	const requires edge::HasCustomComponents<T>
+std::vector<std::string> EdgeContainer<T>::perEdgeCustomComponentNames() const
+	requires edge::HasCustomComponents<T>
 {
-	return Base::ccVecMap.allComponentNames();
+	return Base::elemCustomComponentNames();
 }
 
 /**
@@ -550,10 +550,10 @@ std::vector<std::string> EdgeContainer<T>::getAllPerEdgeCustomComponentNames()
  */
 template<EdgeConcept T>
 template<typename K>
-bool EdgeContainer<T>::isPerEdgeCustomComponentOfType(
-	const std::string& name) const requires edge::HasCustomComponents<T>
+bool EdgeContainer<T>::isPerEdgeCustomComponentOfType(const std::string& name) const
+	requires edge::HasCustomComponents<T>
 {
-	return Base::ccVecMap.template isComponentOfType<K>(name);
+	return Base::template isElemCustomComponentOfType<K>(name);
 }
 
 /**
@@ -563,7 +563,7 @@ bool EdgeContainer<T>::isPerEdgeCustomComponentOfType(
  * For example, the following code gets a vector containing all the custom components of type
  * `double`:
  * @code{.cpp}
- * std::vector<std::string> cdouble = m.getPerEdgeCustomComponentNamesOfType<double>();
+ * std::vector<std::string> cdouble = m.perEdgeCustomComponentNamesOfType<double>();
  * @endcode
  *
  * @note This function is available only if the Edge Element has the CustomComponents Component.
@@ -573,10 +573,10 @@ bool EdgeContainer<T>::isPerEdgeCustomComponentOfType(
  */
 template<EdgeConcept T>
 template<typename K>
-std::vector<std::string>
-EdgeContainer<T>::getPerEdgeCustomComponentNamesOfType() const requires edge::HasCustomComponents<T>
+std::vector<std::string> EdgeContainer<T>::perEdgeCustomComponentNamesOfType() const
+	requires edge::HasCustomComponents<T>
 {
-	return Base::ccVecMap.template allComponentNamesOfType<K>();
+	return Base::template elemCustomComponentNamesOfType<K>();
 }
 
 /**
@@ -589,10 +589,10 @@ EdgeContainer<T>::getPerEdgeCustomComponentNamesOfType() const requires edge::Ha
  */
 template<EdgeConcept T>
 template<typename K>
-void EdgeContainer<T>::addPerEdgeCustomComponent(
-	const std::string& name) requires edge::HasCustomComponents<T>
+void EdgeContainer<T>::addPerEdgeCustomComponent(const std::string& name)
+	requires edge::HasCustomComponents<T>
 {
-	Base::ccVecMap.template addNewComponent<K>(name, edgeContainerSize());
+	Base::template addElemCustomComponent<K>(name);
 }
 
 /**
@@ -605,10 +605,10 @@ void EdgeContainer<T>::addPerEdgeCustomComponent(
  * @param[in] name: the name of the custom component that will be removed from the Edge.
  */
 template<EdgeConcept T>
-void EdgeContainer<T>::deletePerEdgeCustomComponent(
-	const std::string& name) requires edge::HasCustomComponents<T>
+void EdgeContainer<T>::deletePerEdgeCustomComponent(const std::string& name)
+	requires edge::HasCustomComponents<T>
 {
-	Base::ccVecMap.deleteComponent(name);
+	Base::deleteElemCustomComponent(name);
 }
 
 /**
@@ -639,12 +639,11 @@ void EdgeContainer<T>::deletePerEdgeCustomComponent(
  */
 template<EdgeConcept T>
 template<typename K>
-CustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(
-	const std::string& name) requires edge::HasCustomComponents<T>
+CustomComponentVectorHandle<K>
+EdgeContainer<T>::perEdgeCustomComponentVectorHandle(const std::string& name)
+	requires edge::HasCustomComponents<T>
 {
-	std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
-	CustomComponentVectorHandle<K> v(cc);
-	return v;
+	return Base::template customComponentVectorHandle<K>(name);
 }
 
 /**
@@ -658,7 +657,7 @@ CustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentVector
  *
  * @code{.cpp}
  * // access to the const handle by making const the template parameter:
- * auto handle = m.getPerEdgeCustomComponentVectorHandle<const int>("cc");
+ * auto handle = m.perEdgeCustomComponentVectorHandle<const int>("cc");
  * int sum = 0;
  * for (const Edge& e : m.edges() {
  *    sum += handle[m.index(e)];
@@ -677,12 +676,11 @@ CustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentVector
  */
 template<EdgeConcept T>
 template<typename K>
-ConstCustomComponentVectorHandle<K> EdgeContainer<T>::getPerEdgeCustomComponentVectorHandle(
-	const std::string& name) const requires edge::HasCustomComponents<T>
+ConstCustomComponentVectorHandle<K>
+EdgeContainer<T>::perEdgeCustomComponentVectorHandle(const std::string& name) const
+	requires edge::HasCustomComponents<T>
 {
-	const std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
-	ConstCustomComponentVectorHandle<K> v(cc);
-	return cc;
+	return Base::template customComponentVectorHandle<K>(name);
 }
 
 } // namespace vcl::mesh

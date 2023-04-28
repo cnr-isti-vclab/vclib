@@ -135,29 +135,30 @@ public:
 	bool hasPerVertexCustomComponent(const std::string& name)
 		const requires vert::HasCustomComponents<T>;
 
-	std::vector<std::string> getAllPerVertexCustomComponentNames()
+	std::vector<std::string> perVertexCustomComponentNames() const
+		requires vert::HasCustomComponents<T>;
+
+	template<typename K>
+	bool isPerVertexCustomComponentOfType(const std::string& name) const
+		requires vert::HasCustomComponents<T>;
+
+	template<typename K>
+	std::vector<std::string> perVertexCustomComponentNamesOfType()
 		const requires vert::HasCustomComponents<T>;
 
 	template<typename K>
-	bool isPerVertexCustomComponentOfType(
-		const std::string& name) const requires vert::HasCustomComponents<T>;
-
-	template<typename K>
-	std::vector<std::string> getPerVertexCustomComponentNamesOfType()
-		const requires vert::HasCustomComponents<T>;
-
-	template<typename K>
-	void addPerVertexCustomComponent(const std::string& name) requires vert::HasCustomComponents<T>;
+	void addPerVertexCustomComponent(const std::string& name)
+		requires vert::HasCustomComponents<T>;
 
 	void deletePerVertexCustomComponent(const std::string& name)
 		requires vert::HasCustomComponents<T>;
 
 	template<typename K>
-	CustomComponentVectorHandle<K> getPerVertexCustomComponentVectorHandle(
+	CustomComponentVectorHandle<K> perVertexCustomComponentVectorHandle(
 		const std::string& name) requires vert::HasCustomComponents<T>;
 
 	template<typename K>
-	ConstCustomComponentVectorHandle<K> getPerVertexCustomComponentVectorHandle(
+	ConstCustomComponentVectorHandle<K> perVertexCustomComponentVectorHandle(
 		const std::string& name) const requires vert::HasCustomComponents<T>;
 };
 
