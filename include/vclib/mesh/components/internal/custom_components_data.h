@@ -129,7 +129,7 @@ struct CustomComponentsData<ElementType, true>
 	
 	std::type_index componentType(const std::string& compName, const ElementType* elem) const
 	{
-		return ccVec(elem).template componentType(compName);
+		return ccVec(elem).componentType(compName);
 	}
 
 	template<typename CompType>
