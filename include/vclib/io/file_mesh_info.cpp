@@ -69,7 +69,7 @@ FileMeshInfo::FileMeshInfo(const Mesh& m)
 			DataType dt = getType(m.perVertexCustomComponentType(name));
 			if (dt != UNKNOWN) {
 				setVertexCustomComponents(true);
-				vertexCustomComponents.push_back(CustomComponent{name, dt});
+				vertCustomComps.push_back(CustomComponent{name, dt});
 			}
 		}
 	}
@@ -101,7 +101,7 @@ FileMeshInfo::FileMeshInfo(const Mesh& m)
 				DataType dt = getType(m.perFaceCustomComponentType(name));
 				if (dt != UNKNOWN) {
 					setFaceCustomComponents(true);
-					faceCustomComponents.push_back(CustomComponent{name, dt});
+					faceCustomComps.push_back(CustomComponent{name, dt});
 				}
 			}
 		}
@@ -429,6 +429,16 @@ inline FileMeshInfo::DataType FileMeshInfo::faceWedgeTexCoordsType() const
 inline FileMeshInfo::DataType FileMeshInfo::edgeColorsType() const
 {
 	return modeTypes[EDGE_COLORS];
+}
+
+inline const std::vector<FileMeshInfo::CustomComponent>& FileMeshInfo::vertexCustomComponents() const
+{
+	return vertCustomComps;
+}
+
+inline const std::vector<FileMeshInfo::CustomComponent>& FileMeshInfo::faceCustomComponents() const
+{
+	return faceCustomComps;
 }
 
 /**

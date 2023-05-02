@@ -86,7 +86,7 @@ T readDouble(vcl::Tokenizer::iterator& token, bool isColor = false);
 template<typename T>
 T readProperty(vcl::Tokenizer::iterator& token, PropertyType type, bool isColor = false);
 
-}
+} // vcl::io::internal
 
 #include "io_read.cpp"
 

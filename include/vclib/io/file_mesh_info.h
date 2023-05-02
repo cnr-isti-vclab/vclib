@@ -83,6 +83,15 @@ public:
 	 */
 	typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, UNKNOWN } DataType;
 
+	/**
+	 * @brief The CustomComponent struct is a simple structure that describes a custom component
+	 * of an Element (or of the Mesh)
+	 */
+	struct CustomComponent {
+		std::string name;
+		DataType type;
+	};
+
 	FileMeshInfo();
 
 	template<MeshConcept Mesh>
@@ -160,6 +169,9 @@ public:
 	DataType faceWedgeTexCoordsType() const;
 	DataType edgeColorsType() const;
 
+	const std::vector<CustomComponent>& vertexCustomComponents() const;
+	const std::vector<CustomComponent>& faceCustomComponents() const;
+
 	FileMeshInfo intersect(const FileMeshInfo& i) const;
 
 	void reset();
@@ -187,11 +199,6 @@ private:
 		NUM_MODES
 	};
 
-	struct CustomComponent {
-		std::string name;
-		DataType type;
-	};
-
 	// Tells, for each mode, if it is enabled or not.
 	std::bitset<NUM_MODES> mode = {false};
 
@@ -201,8 +208,8 @@ private:
 	// Mesh Type
 	MeshType type = POLYGON_MESH;
 
-	std::vector<CustomComponent> vertexCustomComponents;
-	std::vector<CustomComponent> faceCustomComponents;
+	std::vector<CustomComponent> vertCustomComps;
+	std::vector<CustomComponent> faceCustomComps;
 
 	template<typename T>
 	static DataType getType();

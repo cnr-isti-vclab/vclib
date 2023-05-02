@@ -155,7 +155,8 @@ bool CustomComponentsVectorMap<T, true>::componentExists(
 template<typename T>
 std::vector<std::string> CustomComponentsVectorMap<T, true>::allComponentNames() const
 {
-	std::vector<std::string> names(map.size());
+	std::vector<std::string> names;
+	names.reserve(map.size());
 	for (const auto& p : map)
 		names.push_back(p.first);
 	return names;

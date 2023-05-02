@@ -21,6 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include "vclib/algorithms/polygon/geometry.h"
 #include <iostream>
 
 #include <vclib/meshes.h>
@@ -65,6 +66,14 @@ int main()
 		assert(!f.isEdgeFaux(0));
 		assert(!f.isEdgeFaux(1));
 		assert(f.isEdgeFaux(2));
+	}
+
+	m.addPerFaceCustomComponent<double>("area");
+	auto areaVec = m.perFaceCustomComponentVectorHandle<double>("area");
+
+	for(const auto& f : m.faces()) {
+		areaVec[m.index(f)] = vcl::faceArea(f);
+		std::cerr << "area " << m.index(f) << ": " << areaVec[m.index(f)] << "\n";
 	}
 
 	// save again the mesh

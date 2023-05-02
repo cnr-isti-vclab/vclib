@@ -176,7 +176,7 @@ void TriangleBitFlags<El, o>::unsetEdgeFaux(uint i)
 }
 
 template<typename El, bool o>
-void TriangleBitFlags<El, o>::unsetAllEdgeFaux()
+void TriangleBitFlags<El, o>::unsetAllEdgesFaux()
 {
 	unsetEdgeFaux(0);
 	unsetEdgeFaux(1);

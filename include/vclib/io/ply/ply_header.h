@@ -48,9 +48,9 @@ public:
 	PlyHeader();
 	PlyHeader(
 		ply::Format              f,
-		const FileMeshInfo&  info,
+		const FileMeshInfo&      info,
 		std::vector<std::string> textureFiles = std::vector<std::string>());
-	PlyHeader(const std::string& filename , std::ifstream& file);
+	PlyHeader(const std::string& filename, std::ifstream& file);
 
 	void clear();
 	bool isValid() const;
@@ -107,7 +107,7 @@ private:
 	std::string nameToString(ply::PropertyName n) const;
 	std::string typeToString(ply::PropertyType t) const;
 
-	ply::Format _format;
+	ply::Format frmt;
 	std::vector<ply::Element> elements;
 	std::vector<std::string> textureFiles;
 
