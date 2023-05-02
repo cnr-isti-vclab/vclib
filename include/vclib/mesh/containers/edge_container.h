@@ -115,6 +115,9 @@ public:
 	bool isPerEdgeCustomComponentOfType(const std::string& name) const
 		requires edge::HasCustomComponents<T>;
 
+	std::type_index perEdgeCustomComponentType(const std::string& name) const
+		requires edge::HasCustomComponents<T>;
+
 	template<typename K>
 	std::vector<std::string> perEdgeCustomComponentNamesOfType() const
 		requires edge::HasCustomComponents<T>;

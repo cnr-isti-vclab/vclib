@@ -130,6 +130,9 @@ public:
 	bool isPerFaceCustomComponentOfType(const std::string& name) const
 		requires face::HasCustomComponents<T>;
 
+	std::type_index perFaceCustomComponentType(const std::string& name) const
+		requires face::HasCustomComponents<T>;
+
 	template<typename K>
 	std::vector<std::string> perFaceCustomComponentNamesOfType() const
 		requires face::HasCustomComponents<T>;

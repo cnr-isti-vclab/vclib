@@ -715,6 +715,7 @@ std::vector<std::string> VertexContainer<T>::perVertexCustomComponentNames() con
  *
  * @tparam K: the type of the custom component to check.
  * @param[in] name: the name of the custom component to check.
+ * @throws std::out_of_range if no custom component of the given name was found.
  * @return `true` if the custom component is of the same type of the template argument.
  */
 template<VertexConcept T>
@@ -723,6 +724,24 @@ bool VertexContainer<T>::isPerVertexCustomComponentOfType(const std::string& nam
 	requires vert::HasCustomComponents<T>
 {
 	return Base::template isElemCustomComponentOfType<K>(name);
+}
+
+/**
+ * @brief Returns the std::type_index of the custom component of the Vertex Element having the given
+ * input name.
+ *
+ * @note This function is available only if the Vertex Element has the CustomComponents Component.
+ *
+ * @param[in] name: the name of the custom component to get the std::type_index from.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
+ * @return The std::type_index of the custom component having the given input name.
+ */
+template<vcl::VertexConcept T>
+std::type_index VertexContainer<T>::perVertexCustomComponentType(const std::string& name) const
+	requires vert::HasCustomComponents<T>
+{
+	return Base::elemComponentType(name);
 }
 
 /**
@@ -802,11 +821,15 @@ void VertexContainer<T>::deletePerVertexCustomComponent(const std::string& name)
  * Using handles allows to access more efficiently to custom components rather accessing from an
  * element object. However, note that references are binded to the container of the mesh.
  *
+ * @note This function is available only if the Vertex Element has the CustomComponents Component.
+ *
  * @note Since the handle contains references, any operation that changes the size of the container
  * could be destructive and invalidate the references contained in the handle.
  *
  * @tparam K: the type of the custom component on which return the handle.
- * @param name: name of the custom component on which return the handle.
+ *
+ * @param[in] name: name of the custom component on which return the handle.
+ * @throws std::out_of_range if no custom component of the given name was found.
  * 
  * @return a vector handle that allows to access to the custom component.
  */
@@ -840,11 +863,15 @@ CustomComponentVectorHandle<K> VertexContainer<T>::perVertexCustomComponentVecto
  * Using handles allows to access more efficiently to custom components rather accessing from an
  * element object. However, note that references are binded to the container of the mesh.
  *
+ * @note This function is available only if the Vertex Element has the CustomComponents Component.
+ *
  * @note Since the handle contains references, any operation that changes the size of the container
  * could be destructive and invalidate the references contained in the handle.
  *
  * @tparam K: the type of the custom component on which return the handle.
- * @param name: name of the custom component on which return the handle.
+ *
+ * @param[in] name: name of the custom component on which return the handle.
+ * @throws std::out_of_range if no custom component of the given name was found.
  * 
  * @return a const vector handle that allows to access to the custom component.
  */

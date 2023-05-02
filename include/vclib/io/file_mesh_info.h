@@ -27,6 +27,7 @@
 #include <array>
 #include <list>
 #include <string>
+#include <typeindex>
 #include <vector>
 #include <bitset>
 
@@ -78,9 +79,9 @@ public:
 	typedef enum { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH } MeshType;
 
 	/**
-	 * @brief Enum used to describe the type of a Component
+	 * @brief Enum used to describe the type of Data
 	 */
-	typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, UNKNOWN } CompType;
+	typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, UNKNOWN } DataType;
 
 	FileMeshInfo();
 
@@ -125,22 +126,22 @@ public:
 	void setPolygonMesh();
 	void setMeshType(MeshType t);
 	void setVertices(bool b = true);
-	void setVertexCoords(bool b = true, CompType t = DOUBLE);
-	void setVertexNormals(bool b = true, CompType t = FLOAT);
-	void setVertexColors(bool b = true, CompType t = UCHAR);
-	void setVertexScalars(bool b = true, CompType t = DOUBLE);
-	void setVertexTexCoords(bool b = true, CompType t = FLOAT);
+	void setVertexCoords(bool b = true, DataType t = DOUBLE);
+	void setVertexNormals(bool b = true, DataType t = FLOAT);
+	void setVertexColors(bool b = true, DataType t = UCHAR);
+	void setVertexScalars(bool b = true, DataType t = DOUBLE);
+	void setVertexTexCoords(bool b = true, DataType t = FLOAT);
 	void setVertexCustomComponents(bool b = true);
 	void setFaces(bool b = true);
 	void setFaceVRefs(bool b = true);
-	void setFaceNormals(bool b = true, CompType t = FLOAT);
-	void setFaceColors(bool b = true, CompType t = UCHAR);
-	void setFaceScalars(bool b = true, CompType t = DOUBLE);
-	void setFaceWedgeTexCoords(bool b = true, CompType t = FLOAT);
+	void setFaceNormals(bool b = true, DataType t = FLOAT);
+	void setFaceColors(bool b = true, DataType t = UCHAR);
+	void setFaceScalars(bool b = true, DataType t = DOUBLE);
+	void setFaceWedgeTexCoords(bool b = true, DataType t = FLOAT);
 	void setFaceCustomComponents(bool b = true);
 	void setEdges(bool b = true);
 	void setEdgeVRefs(bool b = true);
-	void setEdgeColors(bool b = true, CompType t = UCHAR);
+	void setEdgeColors(bool b = true, DataType t = UCHAR);
 	void setTextures(bool b = true);
 
 	/*
@@ -148,16 +149,16 @@ public:
 	 * that needs to use to save a given Component
 	 */
 
-	CompType vertexCoordsType() const;
-	CompType vertexNormalsType() const;
-	CompType vertexColorsType() const;
-	CompType vertexScalarsType() const;
-	CompType vertexTexCoordsType() const;
-	CompType faceNormalsType() const;
-	CompType faceColorsType() const;
-	CompType faceScalarsType() const;
-	CompType faceWedgeTexCoordsType() const;
-	CompType edgeColorsType() const;
+	DataType vertexCoordsType() const;
+	DataType vertexNormalsType() const;
+	DataType vertexColorsType() const;
+	DataType vertexScalarsType() const;
+	DataType vertexTexCoordsType() const;
+	DataType faceNormalsType() const;
+	DataType faceColorsType() const;
+	DataType faceScalarsType() const;
+	DataType faceWedgeTexCoordsType() const;
+	DataType edgeColorsType() const;
 
 	FileMeshInfo intersect(const FileMeshInfo& i) const;
 
@@ -188,14 +189,14 @@ private:
 
 	struct CustomComponent {
 		std::string name;
-		CompType type;
+		DataType type;
 	};
 
 	// Tells, for each mode, if it is enabled or not.
 	std::bitset<NUM_MODES> mode = {false};
 
 	// Tells, for each mode, the type of that mode. Does not apply for all the modes
-	std::array<CompType, NUM_MODES> modeTypes = {UNKNOWN};
+	std::array<DataType, NUM_MODES> modeTypes = {UNKNOWN};
 
 	// Mesh Type
 	MeshType type = POLYGON_MESH;
@@ -204,7 +205,9 @@ private:
 	std::vector<CustomComponent> faceCustomComponents;
 
 	template<typename T>
-	static CompType getPropType();
+	static DataType getType();
+
+	static DataType getType(std::type_index ti);
 };
 
 } // namespace vcl

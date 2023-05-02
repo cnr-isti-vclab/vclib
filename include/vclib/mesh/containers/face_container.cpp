@@ -647,7 +647,10 @@ std::vector<std::string> FaceContainer<T>::perFaceCustomComponentNames() const
  * @note This function is available only if the Face Element has the CustomComponents Component.
  *
  * @tparam K: the type of the custom component to check.
+ *
  * @param[in] name: the name of the custom component to check.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
  * @return `true` if the custom component is of the same type of the template argument.
  */
 template<FaceConcept T>
@@ -656,6 +659,24 @@ bool FaceContainer<T>::isPerFaceCustomComponentOfType(const std::string& name) c
 	requires face::HasCustomComponents<T>
 {
 	return Base::template isElemCustomComponentOfType<K>(name);
+}
+
+/**
+ * @brief Returns the std::type_index of the custom component of the Face Element having the given
+ * input name.
+ *
+ * @note This function is available only if the Face Element has the CustomComponents Component.
+ *
+ * @param[in] name: the name of the custom component to get the std::type_index from.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
+ * @return The std::type_index of the custom component having the given input name.
+ */
+template<vcl::FaceConcept T>
+std::type_index FaceContainer<T>::perFaceCustomComponentType(const std::string& name) const
+	requires face::HasCustomComponents<T>
+{
+	return Base::elemComponentType(name);
 }
 
 /**
@@ -737,7 +758,11 @@ void FaceContainer<T>::deletePerFaceCustomComponent(const std::string& name)
  * could be destructive and invalidate the references contained in the handle.
  *
  * @tparam K: the type of the custom component on which return the handle.
+ *
+ * @throws std::out_of_range if no custom component of the given name was found.
  * @param name: name of the custom component on which return the handle.
+ *
+ * @return a vector handle that allows to access to the custom component.
  */
 template<FaceConcept T>
 template<typename K>
@@ -774,7 +799,11 @@ FaceContainer<T>::perFaceCustomComponentVectorHandle(const std::string& name)
  * could be destructive and invalidate the references contained in the handle.
  *
  * @tparam K: the type of the custom component on which return the handle.
+ *
+ * @throws std::out_of_range if no custom component of the given name was found.
  * @param name: name of the custom component on which return the handle.
+ *
+ * @return a const vector handle that allows to access to the custom component.
  */
 template<FaceConcept T>
 template<typename K>

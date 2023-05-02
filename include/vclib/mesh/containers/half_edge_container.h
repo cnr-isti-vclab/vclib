@@ -103,11 +103,14 @@ public:
 	bool hasPerHalfEdgeCustomComponent(const std::string& name) const
 		requires hedge::HasCustomComponents<T>;
 
-	std::vector<std::string> perHalfEdgeCustomComponentNames_new() const
+	std::vector<std::string> perHalfEdgeCustomComponentNames() const
 		requires hedge::HasCustomComponents<T>;
 
 	template<typename K>
 	bool isPerHalfEdgeCustomComponentOfType(const std::string& name) const
+		requires hedge::HasCustomComponents<T>;
+
+	std::type_index perHalfEdgeCustomComponentType(const std::string& name) const
 		requires hedge::HasCustomComponents<T>;
 
 	template<typename K>

@@ -24,6 +24,7 @@
 #ifndef VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
 #define VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
 
+#include <typeindex>
 #include <vclib/mesh/elements/vertex.h>
 #include <vclib/mesh/elements/vertex_components.h>
 
@@ -140,6 +141,9 @@ public:
 
 	template<typename K>
 	bool isPerVertexCustomComponentOfType(const std::string& name) const
+		requires vert::HasCustomComponents<T>;
+
+	std::type_index perVertexCustomComponentType(const std::string& name) const
 		requires vert::HasCustomComponents<T>;
 
 	template<typename K>

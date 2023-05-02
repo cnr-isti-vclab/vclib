@@ -30,7 +30,7 @@ namespace vcl {
 /**
  * @brief Default constructor.
  *
- * All the Elements/Components are disabled, their type is set to CompType::UNKNOWN and the Mesh
+ * All the Elements/Components are disabled, their type is set to DataType::UNKNOWN and the Mesh
  * Type is set to MeshType::POLYGON_MESH.
  */
 inline FileMeshInfo::FileMeshInfo()
@@ -48,23 +48,30 @@ template<MeshConcept Mesh>
 FileMeshInfo::FileMeshInfo(const Mesh& m)
 {
 	setVertices();
-	setVertexCoords(true, getPropType<typename Mesh::VertexType::CoordType::ScalarType>());
+	setVertexCoords(true, getType<typename Mesh::VertexType::CoordType::ScalarType>());
 	if constexpr (vcl::HasPerVertexNormal<Mesh>)
 		if (vcl::isPerVertexNormalEnabled(m))
-			setVertexNormals(true, getPropType<typename Mesh::VertexType::NormalType::ScalarType>());
+			setVertexNormals(true, getType<typename Mesh::VertexType::NormalType::ScalarType>());
 	if constexpr (vcl::HasPerVertexColor<Mesh>)
 		if (vcl::isPerVertexColorEnabled(m))
 			setVertexColors(true, UCHAR);
 	if constexpr (vcl::HasPerVertexScalar<Mesh>)
 		if (vcl::isPerVertexScalarEnabled(m))
-			setVertexScalars(true, getPropType<typename Mesh::VertexType::ScalarType>());
+			setVertexScalars(true, getType<typename Mesh::VertexType::ScalarType>());
 	if constexpr (vcl::HasPerVertexTexCoord<Mesh>)
 		if (vcl::isPerVertexTexCoordEnabled(m))
 			setVertexTexCoords(
 				true,
-				getPropType<typename Mesh::VertexType::TexCoordType::ScalarType>());
+				getType<typename Mesh::VertexType::TexCoordType::ScalarType>());
 	if constexpr(vcl::HasPerVertexCustomComponents<Mesh>) {
-
+		auto names = m.perVertexCustomComponentNames();
+		for (auto& name : names) {
+			DataType dt = getType(m.perVertexCustomComponentType(name));
+			if (dt != UNKNOWN) {
+				setVertexCustomComponents(true);
+				vertexCustomComponents.push_back(CustomComponent{name, dt});
+			}
+		}
 	}
 
 	if constexpr (vcl::HasFaces<Mesh>) {
@@ -78,16 +85,26 @@ FileMeshInfo::FileMeshInfo(const Mesh& m)
 			setPolygonMesh();
 		if constexpr (vcl::HasPerFaceNormal<Mesh>)
 			if (vcl::isPerFaceNormalEnabled(m))
-				setFaceNormals(true, getPropType<typename Mesh::FaceType::NormalType::ScalarType>());
+				setFaceNormals(true, getType<typename Mesh::FaceType::NormalType::ScalarType>());
 		if constexpr (vcl::HasPerFaceColor<Mesh>)
 			if (vcl::isPerFaceColorEnabled(m))
 				setFaceColors(true, UCHAR);
 		if constexpr (vcl::HasPerFaceScalar<Mesh>)
 			if (vcl::isPerFaceScalarEnabled(m))
-				setFaceScalars(true, getPropType<typename Mesh::FaceType::ScalarType>());
+				setFaceScalars(true, getType<typename Mesh::FaceType::ScalarType>());
 		if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>)
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
-				setFaceWedgeTexCoords(true, getPropType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
+				setFaceWedgeTexCoords(true, getType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
+		if constexpr(vcl::HasPerFaceCustomComponents<Mesh>) {
+			auto names = m.perFaceCustomComponentNames();
+			for (auto& name : names) {
+				DataType dt = getType(m.perFaceCustomComponentType(name));
+				if (dt != UNKNOWN) {
+					setFaceCustomComponents(true);
+					faceCustomComponents.push_back(CustomComponent{name, dt});
+				}
+			}
+		}
 	}
 
 	if constexpr (vcl::HasEdges<Mesh>) {
@@ -259,35 +276,35 @@ inline void FileMeshInfo::setVertices(bool b)
 	mode[VERTICES] = b;
 }
 
-inline void FileMeshInfo::setVertexCoords(bool b, CompType t)
+inline void FileMeshInfo::setVertexCoords(bool b, DataType t)
 {
 	mode[VERTEX_COORDS] = b;
 	if (b)
 		modeTypes[VERTEX_COORDS] = t;
 }
 
-inline void FileMeshInfo::setVertexNormals(bool b, CompType t)
+inline void FileMeshInfo::setVertexNormals(bool b, DataType t)
 {
 	mode[VERTEX_NORMALS] = b;
 	if (b)
 		modeTypes[VERTEX_NORMALS] = t;
 }
 
-inline void FileMeshInfo::setVertexColors(bool b, CompType t)
+inline void FileMeshInfo::setVertexColors(bool b, DataType t)
 {
 	mode[VERTEX_COLORS] = b;
 	if (b)
 		modeTypes[VERTEX_COLORS] = t;
 }
 
-inline void FileMeshInfo::setVertexScalars(bool b, CompType t)
+inline void FileMeshInfo::setVertexScalars(bool b, DataType t)
 {
 	mode[VERTEX_SCALAR] = b;
 	if (b)
 		modeTypes[VERTEX_SCALAR] = t;
 }
 
-void FileMeshInfo::setVertexTexCoords(bool b, CompType t)
+void FileMeshInfo::setVertexTexCoords(bool b, DataType t)
 {
 	mode[VERTEX_TEXCOORDS] = b;
 	if (b)
@@ -309,28 +326,28 @@ inline void FileMeshInfo::setFaceVRefs(bool b)
 	mode[FACE_VREFS] = b;
 }
 
-inline void FileMeshInfo::setFaceNormals(bool b, CompType t)
+inline void FileMeshInfo::setFaceNormals(bool b, DataType t)
 {
 	mode[FACE_NORMALS] = b;
 	if (b)
 		modeTypes[FACE_NORMALS] = t;
 }
 
-inline void FileMeshInfo::setFaceColors(bool b, CompType t)
+inline void FileMeshInfo::setFaceColors(bool b, DataType t)
 {
 	mode[FACE_COLORS] = b;
 	if (b)
 		modeTypes[FACE_COLORS] = t;
 }
 
-inline void FileMeshInfo::setFaceScalars(bool b, CompType t)
+inline void FileMeshInfo::setFaceScalars(bool b, DataType t)
 {
 	mode[FACE_SCALAR] = b;
 	if (b)
 		modeTypes[FACE_SCALAR] = t;
 }
 
-inline void FileMeshInfo::setFaceWedgeTexCoords(bool b, CompType t)
+inline void FileMeshInfo::setFaceWedgeTexCoords(bool b, DataType t)
 {
 	mode[FACE_WEDGE_TEXCOORDS] = b;
 	if (b)
@@ -352,7 +369,7 @@ inline void FileMeshInfo::setEdgeVRefs(bool b)
 	mode[EDGE_VREFS] = b;
 }
 
-inline void FileMeshInfo::setEdgeColors(bool b, CompType t)
+inline void FileMeshInfo::setEdgeColors(bool b, DataType t)
 {
 	mode[EDGE_COLORS] = b;
 	if (b)
@@ -364,52 +381,52 @@ inline void FileMeshInfo::setTextures(bool b)
 	mode[TEXTURES] = b;
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::vertexCoordsType() const
+inline FileMeshInfo::DataType FileMeshInfo::vertexCoordsType() const
 {
 	return modeTypes[VERTEX_COORDS];
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::vertexNormalsType() const
+inline FileMeshInfo::DataType FileMeshInfo::vertexNormalsType() const
 {
 	return modeTypes[VERTEX_NORMALS];
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::vertexColorsType() const
+inline FileMeshInfo::DataType FileMeshInfo::vertexColorsType() const
 {
 	return modeTypes[VERTEX_COLORS];
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::vertexScalarsType() const
+inline FileMeshInfo::DataType FileMeshInfo::vertexScalarsType() const
 {
 	return modeTypes[VERTEX_SCALAR];
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::vertexTexCoordsType() const
+inline FileMeshInfo::DataType FileMeshInfo::vertexTexCoordsType() const
 {
 	return modeTypes[VERTEX_TEXCOORDS];
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::faceNormalsType() const
+inline FileMeshInfo::DataType FileMeshInfo::faceNormalsType() const
 {
 	return modeTypes[FACE_NORMALS];
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::faceColorsType() const
+inline FileMeshInfo::DataType FileMeshInfo::faceColorsType() const
 {
 	return modeTypes[FACE_COLORS];
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::faceScalarsType() const
+inline FileMeshInfo::DataType FileMeshInfo::faceScalarsType() const
 {
 	return modeTypes[FACE_SCALAR];
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::faceWedgeTexCoordsType() const
+inline FileMeshInfo::DataType FileMeshInfo::faceWedgeTexCoordsType() const
 {
 	return modeTypes[FACE_WEDGE_TEXCOORDS];
 }
 
-inline FileMeshInfo::CompType FileMeshInfo::edgeColorsType() const
+inline FileMeshInfo::DataType FileMeshInfo::edgeColorsType() const
 {
 	return modeTypes[EDGE_COLORS];
 }
@@ -418,7 +435,7 @@ inline FileMeshInfo::CompType FileMeshInfo::edgeColorsType() const
  * @brief Returns a FileMeshInfo object that is the intersection between this and `info`.
  *
  * The intersection is a FileMeshInfo object that has Elements/Components enable only if they are
- * enabled both in this object and in `info`.
+ * enabled both in this object and in `info`. Types are imported from this FileMeshInfo.
  *
  * @param[in] info: The info object to compute the intersection with.
  * @return The intersection between this and `info`.
@@ -429,7 +446,7 @@ inline FileMeshInfo FileMeshInfo::intersect(const FileMeshInfo& info) const
 	for (uint i = 0; i < NUM_MODES; ++i){
 		res.mode[i] = mode[i] && info.mode[i];
 		if (res.mode[i]){
-			res.modeTypes[i] = mode[i] ? modeTypes[i] : info.modeTypes[i];
+			res.modeTypes[i] = modeTypes[i];
 		}
 	}
 	if (type == info.type){
@@ -445,8 +462,14 @@ inline void FileMeshInfo::reset()
 	type = TRIANGLE_MESH;
 }
 
+/**
+ * @brief Given the template T, returns the correspoding enum DataType value of T.
+ *
+ * Returns DataType::UNKNOWN if the type T was not part of the type sypported by the DataType enum.
+ * @return
+ */
 template<typename T>
-FileMeshInfo::CompType FileMeshInfo::getPropType()
+FileMeshInfo::DataType FileMeshInfo::getType()
 {
 	if constexpr (std::is_same_v<T, char>) return CHAR;
 	if constexpr (std::is_same_v<T, unsigned char>) return UCHAR;
@@ -458,6 +481,19 @@ FileMeshInfo::CompType FileMeshInfo::getPropType()
 	if constexpr (std::is_same_v<T, float>) return FLOAT;
 	if constexpr (std::is_same_v<T, double>) return DOUBLE;
 	if constexpr (std::is_floating_point_v<T>) return FLOAT; // fallback to float
+	return UNKNOWN;
+}
+
+FileMeshInfo::DataType FileMeshInfo::getType(std::type_index ti)
+{
+	if (ti == typeid(char)) return CHAR;
+	if (ti == typeid(unsigned char)) return UCHAR;
+	if (ti == typeid(short)) return SHORT;
+	if (ti == typeid(unsigned short)) return USHORT;
+	if (ti == typeid(int)) return INT;
+	if (ti == typeid(uint)) return UINT;
+	if (ti == typeid(float)) return FLOAT;
+	if (ti == typeid(double)) return DOUBLE;
 	return UNKNOWN;
 }
 
