@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_WRITE_H
-#define VCL_IO_WRITE_H
+#ifndef VCL_IO_INTERNAL_IO_WRITE_H
+#define VCL_IO_INTERNAL_IO_WRITE_H
 
 #include "io_utils.h"
 
@@ -66,4 +66,4 @@ void writeProperty(
 
 #include "io_write.cpp"
 
-#endif // VCL_IO_WRITE_H
+#endif // VCL_IO_INTERNAL_IO_WRITE_H

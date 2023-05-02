@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_READ_H
-#define VCL_IO_READ_H
+#ifndef VCL_IO_INTERNAL_IO_READ_H
+#define VCL_IO_INTERNAL_IO_READ_H
 
 #include "io_utils.h"
 
@@ -90,4 +90,4 @@ T readProperty(vcl::Tokenizer::iterator& token, PropertyType type, bool isColor 
 
 #include "io_read.cpp"
 
-#endif // VCL_IO_READ_H
+#endif // VCL_IO_INTERNAL_IO_READ_H

@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_UTILS_H
-#define VCL_IO_UTILS_H
+#ifndef VCL_IO_INTERNAL_IO_UTILS_H
+#define VCL_IO_INTERNAL_IO_UTILS_H
 
 #include <fstream>
 
@@ -48,4 +48,4 @@ vcl::Tokenizer nextNonEmptyTokenizedLineNoThrow(std::ifstream& file, char separa
 
 #include "io_utils.cpp"
 
-#endif // VCL_IO_UTILS_H
+#endif // VCL_IO_INTERNAL_IO_UTILS_H
