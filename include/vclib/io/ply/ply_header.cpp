@@ -421,17 +421,17 @@ inline void PlyHeader::setInfo(
 			vElem.properties.push_back(tcv);
 			vElem.properties.push_back(tcn);
 		}
-//		if (info.hasVertexCustomComponents()) {
-//			for (const auto& cc : info.vertexCustomComponents()) {
-//				if (cc.type <= FileMeshInfo::DOUBLE) {
-//					ply::Property pp;
-//					pp.name = unknown;
-//					pp.unknownPropertyName = cc.name;
-//					pp.type = (PropertyType)cc.type;
-//					vElem.properties.push_back(pp);
-//				}
-//			}
-//		}
+		if (info.hasVertexCustomComponents()) {
+			for (const auto& cc : info.vertexCustomComponents()) {
+				if (cc.type <= FileMeshInfo::DOUBLE) {
+					ply::Property pp;
+					pp.name = unknown;
+					pp.unknownPropertyName = cc.name;
+					pp.type = (PropertyType)cc.type;
+					vElem.properties.push_back(pp);
+				}
+			}
+		}
 		elements.push_back(vElem);
 	}
 	if (info.hasFaces()) {
@@ -490,17 +490,17 @@ inline void PlyHeader::setInfo(
 			fElem.properties.push_back(tc);
 			fElem.properties.push_back(tn);
 		}
-//		if (info.hasFaceCustomComponents()) {
-//			for (const auto& cc : info.faceCustomComponents()) {
-//				if (cc.type <= FileMeshInfo::DOUBLE) {
-//					ply::Property pp;
-//					pp.name = unknown;
-//					pp.unknownPropertyName = cc.name;
-//					pp.type = (PropertyType)cc.type;
-//					fElem.properties.push_back(pp);
-//				}
-//			}
-//		}
+		if (info.hasFaceCustomComponents()) {
+			for (const auto& cc : info.faceCustomComponents()) {
+				if (cc.type <= FileMeshInfo::DOUBLE) {
+					ply::Property pp;
+					pp.name = unknown;
+					pp.unknownPropertyName = cc.name;
+					pp.type = (PropertyType)cc.type;
+					fElem.properties.push_back(pp);
+				}
+			}
+		}
 		elements.push_back(fElem);
 	}
 	if (info.hasEdges()) {

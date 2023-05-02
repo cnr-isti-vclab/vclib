@@ -62,6 +62,14 @@ void writeProperty(
 	bool           bin     = true,
 	bool           isColor = false);
 
+template<ElementConcept El>
+void writeCustomComponent(
+	std::ofstream&     file,
+	const El&          elem,
+	const std::string& cName,
+	PropertyType       type,
+	bool               bin = true);
+
 } // namespace vcl::io::internal
 
 #include "io_write.cpp"

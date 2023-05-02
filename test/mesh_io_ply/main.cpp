@@ -22,6 +22,7 @@
  ****************************************************************************/
 
 #include "vclib/algorithms/polygon/geometry.h"
+#include "vclib/misc/logger/null_logger.h"
 #include <iostream>
 
 #include <vclib/meshes.h>
@@ -77,7 +78,7 @@ int main()
 	}
 
 	// save again the mesh
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply");
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", vcl::nullLogger, false);
 
 	return 0;
 }

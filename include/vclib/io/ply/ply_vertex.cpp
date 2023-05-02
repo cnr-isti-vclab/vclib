@@ -29,6 +29,8 @@
 
 #include "../internal/io_read.h"
 #include "../internal/io_write.h"
+#include "vclib/concepts/mesh/per_vertex.h"
+#include "vclib/io/ply/ply.h"
 
 namespace vcl::io::ply {
 
@@ -173,6 +175,14 @@ void saveVertices(
 					const uint a = p.name - ply::texture_u;
 					io::internal::writeProperty(file, v.texCoord()[a], p.type, bin);
 					hasBeenWritten = true;
+				}
+			}
+			if (p.name == ply::unknown) {
+				if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
+					if (mesh.hasPerVertexCustomComponent(p.unknownPropertyName)) {
+						io::internal::writeCustomComponent(file, v, p.unknownPropertyName, p.type, bin);
+						hasBeenWritten = true;
+					}
 				}
 			}
 			if (!hasBeenWritten){

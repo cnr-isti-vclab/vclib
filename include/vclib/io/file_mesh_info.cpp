@@ -462,6 +462,12 @@ inline FileMeshInfo FileMeshInfo::intersect(const FileMeshInfo& info) const
 	if (type == info.type){
 		res.type = type;
 	}
+	if (res.hasVertexCustomComponents()) {
+		res.vertCustomComps = vertCustomComps;
+	}
+	if (res.hasFaceCustomComponents()) {
+		res.faceCustomComps = faceCustomComps;
+	}
 	return res;
 }
 

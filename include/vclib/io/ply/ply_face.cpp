@@ -309,6 +309,14 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 					hasBeenWritten = true;
 				}
 			}
+			if (p.name == ply::unknown) {
+				if constexpr (vcl::HasPerFaceCustomComponents<MeshType>) {
+					if (mesh.hasPerFaceCustomComponent(p.unknownPropertyName)) {
+						io::internal::writeCustomComponent(file, f, p.unknownPropertyName, p.type, bin);
+						hasBeenWritten = true;
+					}
+				}
+			}
 			if (!hasBeenWritten) {
 				// be sure to write something if the header declares some property that is not
 				// in the mesh
