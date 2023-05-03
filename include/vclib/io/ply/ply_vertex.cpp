@@ -96,41 +96,32 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	}
 }
 
-template <MeshConcept MeshType>
-void loadVerticesTxt(
+template<VertexConcept VertexType, MeshConcept MeshType>
+void loadVertexTxt(
 	std::ifstream& file,
-	const PlyHeader& header,
-	MeshType& mesh)
+	VertexType& v,
+	MeshType& mesh,
+	const std::list<ply::Property>& vertexProperties)
 {
-	using VertexType = typename MeshType::VertexType;
-
-	mesh.addVertices(header.numberVertices());
-	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
-		vcl::Tokenizer spaceTokenizer = io::internal::nextNonEmptyTokenizedLine(file);
-		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
-		VertexType& v = mesh.vertex(vid);
-		for (const ply::Property& p : header.vertexProperties()) {
-			if (token == spaceTokenizer.end()){
-				throw vcl::MalformedFileException("Unexpected end of line.");
-			}
-			loadVertexProperty(token, mesh, v, p);
+	vcl::Tokenizer spaceTokenizer = io::internal::nextNonEmptyTokenizedLine(file);
+	vcl::Tokenizer::iterator token = spaceTokenizer.begin();
+	for (const ply::Property& p : vertexProperties) {
+		if (token == spaceTokenizer.end()){
+			throw vcl::MalformedFileException("Unexpected end of line.");
 		}
+		loadVertexProperty(token, mesh, v, p);
 	}
 }
 
-template<MeshConcept MeshType>
-void loadVerticesBin(
+template<VertexConcept VertexType, MeshConcept MeshType>
+void loadVertexBin(
 	std::ifstream& file,
-	const PlyHeader& header,
-	MeshType& mesh)
+	VertexType& v,
+	MeshType& mesh,
+	const std::list<ply::Property>& vertexProperties)
 {
-	using VertexType = typename MeshType::VertexType;
-	mesh.addVertices(header.numberVertices());
-	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
-		VertexType& v = mesh.vertex(vid);
-		for (const ply::Property& p : header.vertexProperties()) {
-			loadVertexProperty(file, mesh, v, p);
-		}
+	for (const ply::Property& p : vertexProperties) {
+		loadVertexProperty(file, mesh, v, p);
 	}
 }
 
@@ -202,11 +193,16 @@ void loadVertices(
 	const PlyHeader& header,
 	MeshType& m)
 {
-	if(header.format() == ply::ASCII) {
-		internal::loadVerticesTxt(file, header, m);
-	}
-	else if(header.format() == ply::BINARY) {
-		internal::loadVerticesBin(file, header, m);
+	m.addVertices(header.numberVertices());
+
+	for(uint vid = 0; vid < header.numberVertices(); ++vid) {
+		auto& v = m.vertex(vid);
+		if(header.format() == ply::ASCII) {
+			internal::loadVertexTxt(file, v, m, header.vertexProperties());
+		}
+		else if(header.format() == ply::BINARY) {
+			internal::loadVertexBin(file, v, m, header.vertexProperties());
+		}
 	}
 }
 

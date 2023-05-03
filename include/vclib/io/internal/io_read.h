@@ -58,11 +58,7 @@ template<typename T>
 T readProperty(std::ifstream& file, PropertyType type, bool isColor = false);
 
 template<typename T, ElementConcept El>
-void readCustomComponent(
-	std::ifstream&     file,
-	const El&          elem,
-	const std::string& cName,
-	PropertyType       type);
+void readCustomComponent(std::ifstream& file, El& elem, const std::string& cName, PropertyType type);
 
 // read/txt
 
@@ -96,7 +92,7 @@ T readProperty(vcl::Tokenizer::iterator& token, PropertyType type, bool isColor 
 template<typename T, ElementConcept El>
 void readCustomComponent(
 	vcl::Tokenizer::iterator& token,
-	const El&                 elem,
+	El&                       elem,
 	const std::string&        cName,
 	PropertyType              type);
 

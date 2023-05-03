@@ -222,37 +222,32 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	}
 }
 
-template<FaceMeshConcept MeshType>
-void loadFacesTxt(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
+template<FaceConcept FaceType, MeshConcept MeshType>
+void loadFaceTxt(
+	std::ifstream& file,
+	FaceType& f,
+	MeshType& mesh,
+	const std::list<ply::Property>& faceProperties)
 {
-	using FaceType       = typename MeshType::FaceType;
-
-	mesh.reserveFaces(header.numberFaces());
-	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
-		vcl::Tokenizer spaceTokenizer = vcl::io::internal::nextNonEmptyTokenizedLine(file);
-		vcl::Tokenizer::iterator token = spaceTokenizer.begin();
-		mesh.addFace();
-		FaceType& f = mesh.face(mesh.faceNumber() - 1);
-		for (const ply::Property& p : header.faceProperties()) {
-			if (token == spaceTokenizer.end()) {
-				throw vcl::MalformedFileException("Unexpected end of line.");
-			}
-			loadFaceProperty(token, mesh, f, p);
+	vcl::Tokenizer spaceTokenizer = vcl::io::internal::nextNonEmptyTokenizedLine(file);
+	vcl::Tokenizer::iterator token = spaceTokenizer.begin();
+	for (const ply::Property& p : faceProperties) {
+		if (token == spaceTokenizer.end()) {
+			throw vcl::MalformedFileException("Unexpected end of line.");
 		}
+		loadFaceProperty(token, mesh, f, p);
 	}
 }
 
-template<FaceMeshConcept MeshType>
-void loadFacesBin(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
+template<FaceConcept FaceType, MeshConcept MeshType>
+void loadFaceBin(
+	std::ifstream& file,
+	FaceType& f,
+	MeshType& mesh,
+	const std::list<ply::Property>& faceProperties)
 {
-	using FaceType = typename MeshType::FaceType;
-	mesh.reserveFaces(header.numberFaces());
-	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
-		uint      ffid = mesh.addFace();
-		FaceType& f    = mesh.face(ffid);
-		for (const ply::Property& p : header.faceProperties()) {
-			loadFaceProperty(file, mesh, f, p);
-		}
+	for (const ply::Property& p : faceProperties) {
+		loadFaceProperty(file, mesh, f, p);
 	}
 }
 
@@ -331,12 +326,19 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 template<FaceMeshConcept MeshType>
 void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
-	if (header.format() == ply::ASCII) {
-		internal::loadFacesTxt(file, header, mesh);
+	using FaceType = typename MeshType::FaceType;
+	mesh.reserveFaces(header.numberFaces());
+	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
+		uint      ffid = mesh.addFace();
+		FaceType& f    = mesh.face(ffid);
+		if (header.format() == ply::ASCII) {
+			internal::loadFaceTxt(file, f, mesh, header.faceProperties());
+		}
+		else {
+			internal::loadFaceBin(file, f, mesh, header.faceProperties());
+		}
 	}
-	else {
-		internal::loadFacesBin(file, header, mesh);
-	}
+
 }
 
 } // namespace vcl::ply
