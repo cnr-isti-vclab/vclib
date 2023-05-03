@@ -41,6 +41,8 @@ namespace vcl {
  * - parallels (default 10): used when mode == `UV`;
  * - meridians (default 20): used when mode == `UV`;
  * - divisions (default 20): used when mode == `NORMALIZED_CUBE` or `SPHERIFIED_CUBE`
+ *
+ * @ingroup create
  */
 struct CreateSphereArgs {
 	typedef enum { UV = 0, NORMALIZED_CUBE, SPHERIFIED_CUBE, ICOSAHEDRON } CreateSphereMode;

@@ -300,10 +300,16 @@ MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
  * @brief Creates a Sphere Mesh centered in `center` point and having radius `radius`, using
  * the generation method given in the argument args.mode (see https://github.com/caosdoar/spheres
  * for more details).
- * @param center
- * @param radius
- * @param args
- * @return
+ *
+ * @tparam MeshType: the type of the mesh to be generated, it must satisfy the FaceMeshConcept.
+ *
+ * @param[in] center: center of the sphere.
+ * @param[in] radius: radius of the sphere.
+ * @param[in] args: arguments for the sphere generation.
+ *
+ * @return the generated sphere mesh.
+ *
+ * @ingroup create
  */
 template<FaceMeshConcept MeshType>
 MeshType createSphere(const SphereConcept auto& sp, const CreateSphereArgs& args)
@@ -330,7 +336,12 @@ MeshType createSphere(const SphereConcept auto& sp, const CreateSphereArgs& args
 /**
  * @brief Creates a Sphere Mesh using the UV mode (https://github.com/caosdoar/spheres), centered in
  * (0, 0, 0), having radius 1, with 10 parallels and 20 meridias.
- * @return
+ *
+ * @tparam MeshType: the type of the mesh to be generated, it must satisfy the FaceMeshConcept.
+ *
+ * @return the generated sphere mesh.
+ *
+ * @ingroup create
  */
 template<FaceMeshConcept MeshType>
 MeshType createSphere()

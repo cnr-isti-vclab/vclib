@@ -31,6 +31,9 @@ namespace vcl {
 /**
  * @brief The Color class represents an RGBA color.
  *
+ * The class is a specialization of the Point4 class, where each component is an unsigned char.
+ * The class provides some useful methods to convert the color from/to different formats.
+ *
  * @ingroup space
  */
 class Color : public Point4<uint8_t>
