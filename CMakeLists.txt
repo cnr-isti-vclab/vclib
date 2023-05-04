@@ -286,6 +286,7 @@ set(HEADERS
 	include/vclib/render/mesh_render_buffers.h
 	include/vclib/render/mesh_render_settings.h
 	include/vclib/space/array.h
+	include/vclib/space/bitset.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
 	include/vclib/space/graph.h
@@ -471,6 +472,7 @@ set(SOURCES
 	include/vclib/render/mesh_render_buffers.cpp
 	include/vclib/render/mesh_render_settings.cpp
 	include/vclib/space/array.cpp
+	include/vclib/space/bitset.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/matrix.cpp
@@ -597,7 +599,8 @@ endif()
 	
 
 if (TARGET vclib-external-qt)
-	add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
+	add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB}
+		include/vclib/space/bitset.h include/vclib/space/bitset.cpp)
 	target_include_directories(vclib-qt PRIVATE ${VCLIB_INCLUDE_DIR})
 	target_link_libraries(vclib-qt PRIVATE ${VCLIB_EXTERNAL_LIBRARIES})
 
