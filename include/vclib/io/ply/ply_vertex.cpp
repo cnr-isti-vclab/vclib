@@ -84,6 +84,14 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 			}
 		}
 	}
+	if (p.name == ply::unknown) {
+		if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
+			if (mesh.hasPerVertexCustomComponent(p.unknownPropertyName)){
+				io::internal::readCustomComponent(file, v, p.unknownPropertyName, p.type);
+				hasBeenRead = true;
+			}
+		}
+	}
 	if (!hasBeenRead) {
 		if (p.list) {
 			uint s = io::internal::readProperty<int>(file, p.listSizeType);

@@ -42,7 +42,7 @@ inline PlyHeader::PlyHeader() :
 {
 }
 
-PlyHeader::PlyHeader(
+inline PlyHeader::PlyHeader(
 	Format                   format,
 	const FileMeshInfo&      info,
 	std::vector<std::string> textureFiles) :
@@ -191,6 +191,10 @@ inline FileMeshInfo PlyHeader::getInfo() const
 			case ply::alpha: mod.setVertexColors(); break;
 			case ply::scalar: mod.setVertexScalars(); break;
 			case ply::texture_u: mod.setVertexTexCoords(); break;
+			case ply::unknown:
+				if (p.type <= PropertyType::DOUBLE) {
+					mod.addVertexCustomComponent(p.unknownPropertyName, (FileMeshInfo::DataType)p.type);
+				}
 			default: break;
 			}
 		}
@@ -209,6 +213,10 @@ inline FileMeshInfo PlyHeader::getInfo() const
 			case ply::alpha: mod.setFaceColors(); break;
 			case ply::scalar: mod.setFaceScalars(); break;
 			case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
+			case ply::unknown:
+				if (p.type <= PropertyType::DOUBLE) {
+					mod.addFaceCustomComponent(p.unknownPropertyName, (FileMeshInfo::DataType)p.type);
+				}
 			default: break;
 			}
 		}
@@ -252,12 +260,12 @@ inline bool PlyHeader::hasEdges() const
 	return edgeElemPos >= 0;
 }
 
-bool PlyHeader::hasTriStrips() const
+inline bool PlyHeader::hasTriStrips() const
 {
 	return trisElemPos >= 0;
 }
 
-bool PlyHeader::hasTextureFileNames() const
+inline bool PlyHeader::hasTextureFileNames() const
 {
 	return textureFiles.size() > 0;
 }
@@ -280,13 +288,13 @@ inline uint PlyHeader::numberEdges() const
 	return elements[edgeElemPos].numberElements;
 }
 
-uint PlyHeader::numberTriStrips() const
+inline uint PlyHeader::numberTriStrips() const
 {
 	assert(hasTriStrips());
 	return elements[trisElemPos].numberElements;
 }
 
-uint PlyHeader::numberTextureFileNames() const
+inline uint PlyHeader::numberTextureFileNames() const
 {
 	return textureFiles.size();
 }
@@ -309,13 +317,13 @@ inline const std::list<Property>& PlyHeader::edgeProperties() const
 	return elements[edgeElemPos].properties;
 }
 
-const std::list<Property>& PlyHeader::triStripsProperties() const
+inline const std::list<Property>& PlyHeader::triStripsProperties() const
 {
 	assert(hasTriStrips());
 	return elements[trisElemPos].properties;
 }
 
-const std::vector<std::string>& PlyHeader::textureFileNames() const
+inline const std::vector<std::string>& PlyHeader::textureFileNames() const
 {
 	return textureFiles;
 }

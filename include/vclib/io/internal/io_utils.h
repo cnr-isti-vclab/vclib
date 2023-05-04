@@ -39,6 +39,12 @@ std::ofstream saveFileStream(const std::string& filename, const std::string& ext
 std::ifstream loadFileStream(const std::string& filename);
 
 template<MeshConcept MeshType>
+void addPerVertexCustomComponent(MeshType& m, const FileMeshInfo::CustomComponent& cc);
+
+template<FaceMeshConcept MeshType>
+void addPerFaceCustomComponent(MeshType& m, const FileMeshInfo::CustomComponent& cc);
+
+template<MeshConcept MeshType>
 void enableOptionalComponents(FileMeshInfo& info, MeshType& m);
 
 vcl::Tokenizer nextNonEmptyTokenizedLine(std::ifstream& file, char separator = ' ');

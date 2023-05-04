@@ -208,6 +208,14 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 			}
 		}
 	}
+	if (p.name == ply::unknown) {
+		if constexpr (vcl::HasPerFaceCustomComponents<MeshType>) {
+			if (mesh.hasPerFaceCustomComponent(p.unknownPropertyName)){
+				io::internal::readCustomComponent(file, f, p.unknownPropertyName, p.type);
+				hasBeenRead = true;
+			}
+		}
+	}
 	// if nothing has been read, it means that there is some data we don't know
 	// we still need to read and discard what we read
 	if (!hasBeenRead) {

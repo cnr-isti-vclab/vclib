@@ -185,8 +185,11 @@ public:
 	void setTextures(bool b = true);
 
 	void addElementCustomComponent(Element el, const std::string& name, DataType t);
+	void clearElementCustomComponents(Element el);
 	void addVertexCustomComponent(const std::string& name, DataType t);
+	void clearVertexCustomComponents();
 	void addFaceCustomComponent(const std::string& name, DataType t);
+	void clearFaceCustomComponents();
 
 	/*
 	 * Getter Component type functions : they are used mostly by save functions to know the type

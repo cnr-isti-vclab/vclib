@@ -58,6 +58,38 @@ inline std::ifstream loadFileStream(const std::string& filename)
 	return fp;
 }
 
+template<MeshConcept MeshType>
+void addPerVertexCustomComponent(MeshType& m, const FileMeshInfo::CustomComponent& cc)
+{
+	switch (cc.type) {
+	case FileMeshInfo::CHAR: m.template addPerVertexCustomComponent<char>(cc.name); break;
+	case FileMeshInfo::UCHAR: m.template addPerVertexCustomComponent<unsigned char>(cc.name); break;
+	case FileMeshInfo::SHORT: m.template addPerVertexCustomComponent<short>(cc.name); break;
+	case FileMeshInfo::USHORT: m.template addPerVertexCustomComponent<unsigned short>(cc.name); break;
+	case FileMeshInfo::INT: m.template addPerVertexCustomComponent<int>(cc.name); break;
+	case FileMeshInfo::UINT: m.template addPerVertexCustomComponent<uint>(cc.name); break;
+	case FileMeshInfo::FLOAT: m.template addPerVertexCustomComponent<float>(cc.name); break;
+	case FileMeshInfo::DOUBLE: m.template addPerVertexCustomComponent<double>(cc.name); break;
+	default: assert(0);
+	}
+}
+
+template<FaceMeshConcept MeshType>
+void addPerFaceCustomComponent(MeshType& m, const FileMeshInfo::CustomComponent& cc)
+{
+	switch (cc.type) {
+	case FileMeshInfo::CHAR: m.template addPerFaceCustomComponent<char>(cc.name); break;
+	case FileMeshInfo::UCHAR: m.template addPerFaceCustomComponent<unsigned char>(cc.name); break;
+	case FileMeshInfo::SHORT: m.template addPerFaceCustomComponent<short>(cc.name); break;
+	case FileMeshInfo::USHORT: m.template addPerFaceCustomComponent<unsigned short>(cc.name); break;
+	case FileMeshInfo::INT: m.template addPerFaceCustomComponent<int>(cc.name); break;
+	case FileMeshInfo::UINT: m.template addPerFaceCustomComponent<uint>(cc.name); break;
+	case FileMeshInfo::FLOAT: m.template addPerFaceCustomComponent<float>(cc.name); break;
+	case FileMeshInfo::DOUBLE: m.template addPerFaceCustomComponent<double>(cc.name); break;
+	default: assert(0);
+	}
+}
+
 /**
  * @brief enableOptionalComponents enables all the components that are in the file mesh info and
  * that may be enabled in the mesh. If these components are not present in the mesh, the info file
@@ -94,6 +126,16 @@ void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
 				info.setVertexTexCoords(false);
 			}
 		}
+		if (info.hasVertexCustomComponents()) {
+			if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
+				for (const auto& cc : info.vertexCustomComponents()) {
+					addPerVertexCustomComponent(m, cc);
+				}
+			}
+			else {
+				info.clearVertexCustomComponents();
+			}
+		}
 	}
 	else {
 		info.setVertices(false);
@@ -118,6 +160,16 @@ void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
 		if (info.hasFaceWedgeTexCoords()) {
 			if (!vcl::enableIfPerFaceWedgeTexCoordsOptional(m)) {
 				info.setFaceWedgeTexCoords(false);
+			}
+		}
+		if (info.hasFaceCustomComponents()) {
+			if constexpr (vcl::HasPerFaceCustomComponents<MeshType>) {
+				for (const auto& cc : info.faceCustomComponents()) {
+					addPerFaceCustomComponent(m, cc);
+				}
+			}
+			else {
+				info.clearFaceCustomComponents();
 			}
 		}
 	}

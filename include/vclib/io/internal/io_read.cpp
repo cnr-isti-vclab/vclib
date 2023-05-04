@@ -114,26 +114,26 @@ T readProperty(std::ifstream& file, PropertyType type, bool isColor)
 	return p;
 }
 
-template<typename T, ElementConcept El>
+template<ElementConcept El>
 void readCustomComponent(std::ifstream& file, El& elem, const std::string& cName, PropertyType type)
 {
 	std::type_index ti = elem.customComponentType(cName);
 	if (ti == typeid(char))
-		elem.template customComponent<char>(cName) = readProperty<T>(file, type);
+		elem.template customComponent<char>(cName) = readProperty<char>(file, type);
 	else if (ti == typeid(unsigned char))
-		elem.template customComponent<unsigned char>(cName) = readProperty<T>(file, type);
+		elem.template customComponent<unsigned char>(cName) = readProperty<unsigned char>(file, type);
 	else if (ti == typeid(short))
-		elem.template customComponent<short>(cName) = readProperty<T>(file, type);
+		elem.template customComponent<short>(cName) = readProperty<short>(file, type);
 	else if (ti == typeid(unsigned short))
-		elem.template customComponent<unsigned short>(cName) = readProperty<T>(file, type);
+		elem.template customComponent<unsigned short>(cName) = readProperty<unsigned short>(file, type);
 	else if (ti == typeid(int))
-		elem.template customComponent<int>(cName) = readProperty<T>(file, type);
+		elem.template customComponent<int>(cName) = readProperty<int>(file, type);
 	else if (ti == typeid(unsigned int))
-		elem.template customComponent<uint>(cName) = readProperty<T>(file, type);
+		elem.template customComponent<uint>(cName) = readProperty<uint>(file, type);
 	else if (ti == typeid(float))
-		elem.template customComponent<float>(cName) = readProperty<T>(file, type);
+		elem.template customComponent<float>(cName) = readProperty<float>(file, type);
 	else if (ti == typeid(double))
-		elem.template customComponent<double>(cName) = readProperty<T>(file, type);
+		elem.template customComponent<double>(cName) = readProperty<double>(file, type);
 	else
 		assert(0);
 }
@@ -224,7 +224,7 @@ T readProperty(vcl::Tokenizer::iterator& token, PropertyType type, bool isColor)
 	return p;
 }
 
-template<typename T, ElementConcept El>
+template<ElementConcept El>
 void readCustomComponent(
 	vcl::Tokenizer::iterator& token,
 	El&                       elem,
@@ -233,21 +233,21 @@ void readCustomComponent(
 {
 	std::type_index ti = elem.customComponentType(cName);
 	if (ti == typeid(char))
-		elem.template customComponent<char>(cName) = readProperty<T>(token, type);
+		elem.template customComponent<char>(cName) = readProperty<char>(token, type);
 	else if (ti == typeid(unsigned char))
-		elem.template customComponent<unsigned char>(cName) = readProperty<T>(token, type);
+		elem.template customComponent<unsigned char>(cName) = readProperty<unsigned char>(token, type);
 	else if (ti == typeid(short))
-		elem.template customComponent<short>(cName) = readProperty<T>(token, type);
+		elem.template customComponent<short>(cName) = readProperty<short>(token, type);
 	else if (ti == typeid(unsigned short))
-		elem.template customComponent<unsigned short>(cName) = readProperty<T>(token, type);
+		elem.template customComponent<unsigned short>(cName) = readProperty<unsigned short>(token, type);
 	else if (ti == typeid(int))
-		elem.template customComponent<int>(cName) = readProperty<T>(token, type);
+		elem.template customComponent<int>(cName) = readProperty<int>(token, type);
 	else if (ti == typeid(unsigned int))
-		elem.template customComponent<uint>(cName) = readProperty<T>(token, type);
+		elem.template customComponent<uint>(cName) = readProperty<uint>(token, type);
 	else if (ti == typeid(float))
-		elem.template customComponent<float>(cName) = readProperty<T>(token, type);
+		elem.template customComponent<float>(cName) = readProperty<float>(token, type);
 	else if (ti == typeid(double))
-		elem.template customComponent<double>(cName) = readProperty<T>(token, type);
+		elem.template customComponent<double>(cName) = readProperty<double>(token, type);
 	else
 		assert(0);
 }

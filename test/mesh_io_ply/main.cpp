@@ -80,5 +80,14 @@ int main()
 	// save again the mesh
 	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", vcl::nullLogger, false);
 
+	vcl::TriMesh mm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", loadedInfo);
+	assert(loadedInfo.hasFaceCustomComponents());
+
+	std::cerr << "Loaded custom component areas: \n";
+	for(const auto& f : mm.faces()) {
+		assert(f.customComponent<double>("area") == 2);
+		std::cerr << "area " << mm.index(f) << ": " << f.customComponent<double>("area") << "\n";
+	}
+
 	return 0;
 }

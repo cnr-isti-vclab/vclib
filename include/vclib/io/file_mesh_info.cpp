@@ -417,14 +417,30 @@ inline void FileMeshInfo::addElementCustomComponent(Element el, const std::strin
 	perElemCustomComponents[el].push_back(CustomComponent{name, t});
 }
 
+inline void FileMeshInfo::clearElementCustomComponents(Element el)
+{
+	setElementComponents(el, CUSTOM_COMPONENTS, false, UNKNOWN);
+	perElemCustomComponents[el].clear();
+}
+
 inline void FileMeshInfo::addVertexCustomComponent(const std::string& name, DataType t)
 {
 	addElementCustomComponent(VERTEX, name, t);
 }
 
+inline void FileMeshInfo::clearVertexCustomComponents()
+{
+	clearElementCustomComponents(VERTEX);
+}
+
 inline void FileMeshInfo::addFaceCustomComponent(const std::string &name, DataType t)
 {
 	addElementCustomComponent(FACE, name, t);
+}
+
+inline void FileMeshInfo::clearFaceCustomComponents()
+{
+	clearElementCustomComponents(FACE);
 }
 
 FileMeshInfo::DataType FileMeshInfo::elementComponentType(Element el, Component comp) const

@@ -103,12 +103,13 @@ void loadPly(
 	if (header.errorWhileLoading())
 		throw MalformedFileException("Header not valid: " + filename);
 
+	m.clear();
+
 	loadedInfo = header.getInfo();
 
 	if (enableOptionalComponents)
 		internal::enableOptionalComponents(loadedInfo, m);
 
-	m.clear();
 	if constexpr (HasName<MeshType>) {
 		m.name() = FileInfo::filenameWithoutExtension(filename);
 	}
