@@ -76,12 +76,35 @@ public:
 	 * @brief Enum used to describe the type of the Mesh - by default, a mesh is considered
 	 * polygonal
 	 */
-	typedef enum { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH } MeshType;
+	enum MeshType { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH };
 
 	/**
-	 * @brief Enum used to describe the type of Data
+	 * @brief Enum used to describe the type of Elements that can be found in a file.
+	 *
+	 * @note: MESH is not an element, but it is used since some components can be stored per mesh.
 	 */
-	typedef enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, UNKNOWN } DataType;
+	enum Element { VERTEX, FACE, EDGE, HALF_EDGE, MESH, NUM_ELEMENTS };
+
+	/**
+	 * @brief Enum used to describe the type of Components that each Element can have.
+	 */
+	enum Component {
+		COORD,
+		VREFS,
+		NORMAL,
+		COLOR,
+		SCALAR,
+		TEXCOORD,
+		WEDGE_TEXCOORDS,
+		CUSTOM_COMPONENTS,
+		TEXTURES,
+		NUM_COMPONENTS
+	};
+
+	/**
+	 * @brief Enum used to describe the type of Data stored in a component
+	 */
+	enum DataType { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, UNKNOWN };
 
 	/**
 	 * @brief The CustomComponent struct is a simple structure that describes a custom component
@@ -97,14 +120,18 @@ public:
 	template<MeshConcept Mesh>
 	FileMeshInfo(const Mesh& m);
 
+	bool isTriangleMesh() const;
+	bool isQuadMesh() const;
+	bool isPolygonMesh() const;
+
 	/*
 	 * Getter Elements/Components functions: they are used mostly after the loading of a Mesh from a
 	 * file, to know if Elements/Components have been loaded.
 	 */
 
-	bool isTriangleMesh() const;
-	bool isQuadMesh() const;
-	bool isPolygonMesh() const;
+	bool hasElement(Element el) const;
+	bool hasPerElementComponent(Element el, Component comp) const;
+
 	bool hasVertices() const;
 	bool hasVertexCoords() const;
 	bool hasVertexNormals() const;
@@ -134,6 +161,10 @@ public:
 	void setQuadMesh();
 	void setPolygonMesh();
 	void setMeshType(MeshType t);
+
+	void setElement(Element el, bool b = true);
+	void setElementComponents(Element el, Component c, bool b, DataType t);
+
 	void setVertices(bool b = true);
 	void setVertexCoords(bool b = true, DataType t = DOUBLE);
 	void setVertexNormals(bool b = true, DataType t = FLOAT);
@@ -153,10 +184,16 @@ public:
 	void setEdgeColors(bool b = true, DataType t = UCHAR);
 	void setTextures(bool b = true);
 
+	void addElementCustomComponent(Element el, const std::string& name, DataType t);
+	void addVertexCustomComponent(const std::string& name, DataType t);
+	void addFaceCustomComponent(const std::string& name, DataType t);
+
 	/*
 	 * Getter Component type functions : they are used mostly by save functions to know the type
 	 * that needs to use to save a given Component
 	 */
+
+	DataType elementComponentType(Element el, Component comp) const;
 
 	DataType vertexCoordsType() const;
 	DataType vertexNormalsType() const;
@@ -177,39 +214,20 @@ public:
 	void reset();
 
 private:
-	enum {
-		VERTICES = 0,
-		VERTEX_COORDS,
-		VERTEX_NORMALS,
-		VERTEX_COLORS,
-		VERTEX_SCALAR,
-		VERTEX_TEXCOORDS,
-		VERTEX_CUSTOM_COMPONENTS,
-		FACES,
-		FACE_VREFS,
-		FACE_NORMALS,
-		FACE_COLORS,
-		FACE_SCALAR,
-		FACE_WEDGE_TEXCOORDS,
-		FACE_CUSTOM_COMPONENTS,
-		EDGES,
-		EDGE_VREFS,
-		EDGE_COLORS,
-		TEXTURES,
-		NUM_MODES
-	};
+	// Tell if elements are present in the file
+	std::bitset<NUM_ELEMENTS> elements = {false};
 
-	// Tells, for each mode, if it is enabled or not.
-	std::bitset<NUM_MODES> mode = {false};
+	// Tell if per element components are present in the file
+	std::array<std::bitset<NUM_COMPONENTS>, NUM_ELEMENTS> perElemComponents = {false};
 
-	// Tells, for each mode, the type of that mode. Does not apply for all the modes
-	std::array<DataType, NUM_MODES> modeTypes = {UNKNOWN};
+	// Tell the data type for each component of each element
+	Eigen::Matrix<DataType, NUM_ELEMENTS, NUM_COMPONENTS> perElemComponentsType;
+
+	// Store name and type of per element custom components
+	std::array<std::vector<CustomComponent>, NUM_ELEMENTS> perElemCustomComponents;
 
 	// Mesh Type
 	MeshType type = POLYGON_MESH;
-
-	std::vector<CustomComponent> vertCustomComps;
-	std::vector<CustomComponent> faceCustomComps;
 
 	template<typename T>
 	static DataType getType();

@@ -35,6 +35,7 @@ namespace vcl {
  */
 inline FileMeshInfo::FileMeshInfo()
 {
+	perElemComponentsType.fill(UNKNOWN);
 }
 
 /**
@@ -68,8 +69,7 @@ FileMeshInfo::FileMeshInfo(const Mesh& m)
 		for (auto& name : names) {
 			DataType dt = getType(m.perVertexCustomComponentType(name));
 			if (dt != UNKNOWN) {
-				setVertexCustomComponents(true);
-				vertCustomComps.push_back(CustomComponent{name, dt});
+				addVertexCustomComponent(name, dt);
 			}
 		}
 	}
@@ -100,8 +100,7 @@ FileMeshInfo::FileMeshInfo(const Mesh& m)
 			for (auto& name : names) {
 				DataType dt = getType(m.perFaceCustomComponentType(name));
 				if (dt != UNKNOWN) {
-					setFaceCustomComponents(true);
-					faceCustomComps.push_back(CustomComponent{name, dt});
+					addFaceCustomComponent(name, dt);
 				}
 			}
 		}
@@ -149,43 +148,77 @@ inline bool FileMeshInfo::isPolygonMesh() const
 	return type == POLYGON_MESH;
 }
 
+inline bool FileMeshInfo::hasElement(Element el) const
+{
+	return elements[el];
+}
+
+inline bool FileMeshInfo::hasPerElementComponent(Element el, Component comp) const
+{
+	return perElemComponents[el][comp];
+}
+
 /**
  * @brief Returns true if the current object has Vertex Elements.
  * @return true if the current object has Vertex Elements.
  */
 inline bool FileMeshInfo::hasVertices() const
 {
-	return mode[VERTICES];
+	return hasElement(VERTEX);
 }
 
+/**
+ * @brief Returns true if the current object has Vertex Coordinates.
+ * @return true if the current object has Vertex Coordinates.
+ */
 inline bool FileMeshInfo::hasVertexCoords() const
 {
-	return mode[VERTEX_COORDS];
+	return hasPerElementComponent(VERTEX, COORD);
 }
 
+/**
+ * @brief Returns true if the current object has Vertex Normals.
+ * @return true if the current object has Vertex Normals.
+ */
 inline bool FileMeshInfo::hasVertexNormals() const
 {
-	return mode[VERTEX_NORMALS];
+	return hasPerElementComponent(VERTEX, NORMAL);
 }
 
+/**
+ * @brief Returns true if the current object has Vertex Colors.
+ * @return true if the current object has Vertex Colors.
+ */
 inline bool FileMeshInfo::hasVertexColors() const
 {
-	return mode[VERTEX_COLORS];
+	return hasPerElementComponent(VERTEX, COLOR);
 }
 
+/**
+ * @brief Returns true if the current object has Vertex Scalars.
+ * @return true if the current object has Vertex Scalars.
+ */
 inline bool FileMeshInfo::hasVertexScalars() const
 {
-	return mode[VERTEX_SCALAR];
+	return hasPerElementComponent(VERTEX, SCALAR);
 }
 
+/**
+ * @brief Returns true if the current object has Vertex Texture Coordinates.
+ * @return true if the current object has Vertex Texture Coordinates.
+ */
 inline bool FileMeshInfo::hasVertexTexCoords() const
 {
-	return mode[VERTEX_TEXCOORDS];
+	return hasPerElementComponent(VERTEX, TEXCOORD);
 }
 
+/**
+ * @brief Returns true if the current object has Vertex Custom Components.
+ * @return true if the current object has Vertex Custom Components.
+ */
 inline bool FileMeshInfo::hasVertexCustomComponents() const
 {
-	return mode[VERTEX_CUSTOM_COMPONENTS];
+	return hasPerElementComponent(VERTEX, CUSTOM_COMPONENTS);
 }
 
 /**
@@ -194,37 +227,41 @@ inline bool FileMeshInfo::hasVertexCustomComponents() const
  */
 inline bool FileMeshInfo::hasFaces() const
 {
-	return mode[FACES];
+	return hasElement(FACE);
 }
 
+/**
+ * @brief Returns true if the current object has per Face Vertex References.
+ * @return true if the current object has per Face Vertex References.
+ */
 inline bool FileMeshInfo::hasFaceVRefs() const
 {
-	return mode[FACE_VREFS];
+	return hasPerElementComponent(FACE, VREFS);
 }
 
 inline bool FileMeshInfo::hasFaceNormals() const
 {
-	return mode[FACE_NORMALS];
+	return hasPerElementComponent(FACE, NORMAL);
 }
 
 inline bool FileMeshInfo::hasFaceColors() const
 {
-	return mode[FACE_COLORS];
+	return hasPerElementComponent(FACE, COLOR);
 }
 
 inline bool FileMeshInfo::hasFaceScalars() const
 {
-	return mode[FACE_SCALAR];
+	return hasPerElementComponent(FACE, SCALAR);
 }
 
 inline bool FileMeshInfo::hasFaceWedgeTexCoords() const
 {
-	return mode[FACE_WEDGE_TEXCOORDS];
+	return hasPerElementComponent(FACE, WEDGE_TEXCOORDS);
 }
 
 inline bool FileMeshInfo::hasFaceCustomComponents() const
 {
-	return mode[FACE_CUSTOM_COMPONENTS];
+	return hasPerElementComponent(FACE, CUSTOM_COMPONENTS);
 }
 
 /**
@@ -233,22 +270,22 @@ inline bool FileMeshInfo::hasFaceCustomComponents() const
  */
 inline bool FileMeshInfo::hasEdges() const
 {
-	return mode[EDGES];
+	return hasElement(EDGE);
 }
 
 inline bool FileMeshInfo::hasEdgeVRefs() const
 {
-	return mode[EDGE_VREFS];
+	return hasPerElementComponent(EDGE, VREFS);
 }
 
 inline bool FileMeshInfo::hasEdgeColors() const
 {
-	return mode[EDGE_COLORS];
+	return hasPerElementComponent(EDGE, COLOR);
 }
 
 inline bool FileMeshInfo::hasTextures() const
 {
-	return mode[TEXTURES];
+	return hasPerElementComponent(MESH, TEXTURES);
 }
 
 inline void FileMeshInfo::setTriangleMesh()
@@ -271,174 +308,188 @@ inline void FileMeshInfo::setMeshType(MeshType t)
 	type = t;
 }
 
+void FileMeshInfo::setElement(Element el, bool b)
+{
+	elements[el] = b;
+}
+
+void FileMeshInfo::setElementComponents(Element el, Component c, bool b, DataType t)
+{
+	elements[el] = b;
+	perElemComponents[el][c] = b;
+	if (b)
+		perElemComponentsType(el, c) = t;
+}
+
 inline void FileMeshInfo::setVertices(bool b)
 {
-	mode[VERTICES] = b;
+	setElement(VERTEX, b);
 }
 
 inline void FileMeshInfo::setVertexCoords(bool b, DataType t)
 {
-	mode[VERTEX_COORDS] = b;
-	if (b)
-		modeTypes[VERTEX_COORDS] = t;
+	setElementComponents(VERTEX, COORD, b, t);
 }
 
 inline void FileMeshInfo::setVertexNormals(bool b, DataType t)
 {
-	mode[VERTEX_NORMALS] = b;
-	if (b)
-		modeTypes[VERTEX_NORMALS] = t;
+	setElementComponents(VERTEX, NORMAL, b, t);
 }
 
 inline void FileMeshInfo::setVertexColors(bool b, DataType t)
 {
-	mode[VERTEX_COLORS] = b;
-	if (b)
-		modeTypes[VERTEX_COLORS] = t;
+	setElementComponents(VERTEX, COLOR, b, t);
 }
 
 inline void FileMeshInfo::setVertexScalars(bool b, DataType t)
 {
-	mode[VERTEX_SCALAR] = b;
-	if (b)
-		modeTypes[VERTEX_SCALAR] = t;
+	setElementComponents(VERTEX, SCALAR, b, t);
 }
 
 void FileMeshInfo::setVertexTexCoords(bool b, DataType t)
 {
-	mode[VERTEX_TEXCOORDS] = b;
-	if (b)
-		modeTypes[VERTEX_TEXCOORDS] = t;
+	setElementComponents(VERTEX, TEXCOORD, b, t);
 }
 
 inline void FileMeshInfo::setVertexCustomComponents(bool b)
 {
-	mode[VERTEX_CUSTOM_COMPONENTS] = b;
+	setElementComponents(VERTEX, CUSTOM_COMPONENTS, b, UNKNOWN);
 }
 
 inline void FileMeshInfo::setFaces(bool b)
 {
-	mode[FACES] = b;
+	setElement(FACE, b);
 }
 
 inline void FileMeshInfo::setFaceVRefs(bool b)
 {
-	mode[FACE_VREFS] = b;
+	setElementComponents(FACE, VREFS, b, UNKNOWN);
 }
 
 inline void FileMeshInfo::setFaceNormals(bool b, DataType t)
 {
-	mode[FACE_NORMALS] = b;
-	if (b)
-		modeTypes[FACE_NORMALS] = t;
+	setElementComponents(FACE, NORMAL, b, t);
 }
 
 inline void FileMeshInfo::setFaceColors(bool b, DataType t)
 {
-	mode[FACE_COLORS] = b;
-	if (b)
-		modeTypes[FACE_COLORS] = t;
+	setElementComponents(FACE, COLOR, b, t);
 }
 
 inline void FileMeshInfo::setFaceScalars(bool b, DataType t)
 {
-	mode[FACE_SCALAR] = b;
-	if (b)
-		modeTypes[FACE_SCALAR] = t;
+	setElementComponents(FACE, SCALAR, b, t);
 }
 
 inline void FileMeshInfo::setFaceWedgeTexCoords(bool b, DataType t)
 {
-	mode[FACE_WEDGE_TEXCOORDS] = b;
-	if (b)
-		modeTypes[FACE_WEDGE_TEXCOORDS] = t;
+	setElementComponents(FACE, WEDGE_TEXCOORDS, b, t);
 }
 
 inline void FileMeshInfo::setFaceCustomComponents(bool b)
 {
-	mode[FACE_CUSTOM_COMPONENTS] = b;
+	setElementComponents(FACE, CUSTOM_COMPONENTS, b, UNKNOWN);
 }
 
 inline void FileMeshInfo::setEdges(bool b)
 {
-	mode[EDGES] = b;
+	setElement(EDGE, b);
 }
 
 inline void FileMeshInfo::setEdgeVRefs(bool b)
 {
-	mode[EDGE_VREFS] = b;
+	setElementComponents(EDGE, VREFS, b, UNKNOWN);
 }
 
 inline void FileMeshInfo::setEdgeColors(bool b, DataType t)
 {
-	mode[EDGE_COLORS] = b;
-	if (b)
-		modeTypes[EDGE_COLORS] = t;
+	setElementComponents(EDGE, COLOR, b, t);
 }
 
 inline void FileMeshInfo::setTextures(bool b)
 {
-	mode[TEXTURES] = b;
+	setElementComponents(MESH, TEXTURES, b, UNKNOWN);
+}
+
+inline void FileMeshInfo::addElementCustomComponent(Element el, const std::string &name, DataType t)
+{
+	setElementComponents(el, CUSTOM_COMPONENTS, true, UNKNOWN);
+	perElemCustomComponents[el].push_back(CustomComponent{name, t});
+}
+
+inline void FileMeshInfo::addVertexCustomComponent(const std::string& name, DataType t)
+{
+	addElementCustomComponent(VERTEX, name, t);
+}
+
+inline void FileMeshInfo::addFaceCustomComponent(const std::string &name, DataType t)
+{
+	addElementCustomComponent(FACE, name, t);
+}
+
+FileMeshInfo::DataType FileMeshInfo::elementComponentType(Element el, Component comp) const
+{
+	return perElemComponentsType(el, comp);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::vertexCoordsType() const
 {
-	return modeTypes[VERTEX_COORDS];
+	return elementComponentType(VERTEX, COORD);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::vertexNormalsType() const
 {
-	return modeTypes[VERTEX_NORMALS];
+	return elementComponentType(VERTEX, NORMAL);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::vertexColorsType() const
 {
-	return modeTypes[VERTEX_COLORS];
+	return elementComponentType(VERTEX, COLOR);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::vertexScalarsType() const
 {
-	return modeTypes[VERTEX_SCALAR];
+	return elementComponentType(VERTEX, SCALAR);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::vertexTexCoordsType() const
 {
-	return modeTypes[VERTEX_TEXCOORDS];
+	return elementComponentType(VERTEX, TEXCOORD);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::faceNormalsType() const
 {
-	return modeTypes[FACE_NORMALS];
+	return elementComponentType(FACE, NORMAL);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::faceColorsType() const
 {
-	return modeTypes[FACE_COLORS];
+	return elementComponentType(FACE, COLOR);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::faceScalarsType() const
 {
-	return modeTypes[FACE_SCALAR];
+	return elementComponentType(FACE, SCALAR);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::faceWedgeTexCoordsType() const
 {
-	return modeTypes[FACE_WEDGE_TEXCOORDS];
+	return elementComponentType(FACE, WEDGE_TEXCOORDS);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::edgeColorsType() const
 {
-	return modeTypes[EDGE_COLORS];
+	return elementComponentType(EDGE, COLOR);
 }
 
 inline const std::vector<FileMeshInfo::CustomComponent>& FileMeshInfo::vertexCustomComponents() const
 {
-	return vertCustomComps;
+	return perElemCustomComponents[VERTEX];
 }
 
 inline const std::vector<FileMeshInfo::CustomComponent>& FileMeshInfo::faceCustomComponents() const
 {
-	return faceCustomComps;
+	return perElemCustomComponents[FACE];
 }
 
 /**
@@ -453,28 +504,35 @@ inline const std::vector<FileMeshInfo::CustomComponent>& FileMeshInfo::faceCusto
 inline FileMeshInfo FileMeshInfo::intersect(const FileMeshInfo& info) const
 {
 	FileMeshInfo res;
-	for (uint i = 0; i < NUM_MODES; ++i){
-		res.mode[i] = mode[i] && info.mode[i];
-		if (res.mode[i]){
-			res.modeTypes[i] = modeTypes[i];
+	for (uint i = 0; i < NUM_ELEMENTS; ++i) {
+		res.elements[i] = elements[i] && info.elements[i];
+		for (uint j = 0; j < NUM_COMPONENTS; ++j) {
+			res.perElemComponents[i][j] = perElemComponents[i][j] && info.perElemComponents[i][j];
+
+			if (res.perElemComponents[i][j]){
+				res.perElemComponentsType(i, j) = perElemComponentsType(i, j);
+			}
 		}
 	}
+
 	if (type == info.type){
 		res.type = type;
 	}
-	if (res.hasVertexCustomComponents()) {
-		res.vertCustomComps = vertCustomComps;
-	}
-	if (res.hasFaceCustomComponents()) {
-		res.faceCustomComps = faceCustomComps;
-	}
+	res.perElemCustomComponents = perElemCustomComponents;
+
 	return res;
 }
 
 inline void FileMeshInfo::reset()
 {
-	mode.reset();
-	modeTypes = {UNKNOWN};
+	elements.reset();
+	for (auto& comp : perElemComponents)
+		comp.reset();
+	perElemComponentsType.fill(UNKNOWN);
+
+	for (auto& v : perElemCustomComponents)
+		v.clear();
+
 	type = TRIANGLE_MESH;
 }
 
