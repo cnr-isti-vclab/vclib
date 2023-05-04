@@ -55,6 +55,13 @@ public:
 
 	bool operator[](uint i) const;
 	BitProxy operator[](uint i);
+	
+	bool at(uint i) const;
+	BitProxy at(uint i);
+	
+	bool all() const;
+	bool any() const;
+	bool none() const;
 
 private:
 	T bits = 0;

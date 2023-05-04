@@ -23,6 +23,8 @@
 
 #include "bitset.h"
 
+#include <string>
+
 namespace vcl {
 
 /**
@@ -43,6 +45,11 @@ constexpr std::size_t BitSet<T>::size() const
 	return SIZE;
 }
 
+/**
+ * @brief Returns the i-th bit value of the BitSet
+ * @param[in] i: the position of the bit
+ * @return the boolean value of the bit
+ */
 template<std::integral T>
 bool BitSet<T>::operator[](uint i) const
 {
@@ -50,6 +57,11 @@ bool BitSet<T>::operator[](uint i) const
 	return bits & (1 << i);
 }
 
+/**
+ * @brief Returns a reference of the i-th bit value of the BitSet
+ * @param[in] i: the position of the bit
+ * @return a reference of the boolean value of the bit
+ */
 template<std::integral T>
 BitProxy BitSet<T>::operator[](uint i)
 {
@@ -57,6 +69,64 @@ BitProxy BitSet<T>::operator[](uint i)
 	return BitProxy(bits, i);
 }
 
+/**
+ * @brief Returns the i-th bit value of the BitSet, with bounds checking.
+ * @param[in] i: the position of the bit
+ * @throws std::out_of_range if i is >= BitSet<T>::SIZE
+ * @return the boolean value of the bit
+ */
+template<std::integral T>
+bool BitSet<T>::at(uint i) const
+{
+	if (i < SIZE)
+		return bits & (1 << i);
+	else
+		throw std::out_of_range(std::to_string(i) + " out of range.");
+}
 
+/**
+ * @brief Returns a reference of the i-th bit value of the BitSet, with bounds checking.
+ * @param[in] i: the position of the bit
+ * @throws std::out_of_range if i is >= BitSet<T>::SIZE
+ * @return a reference of the boolean value of the bit
+ */
+template<std::integral T>
+BitProxy BitSet<T>::at(uint i)
+{
+	if (i < SIZE)
+		return BitProxy(bits, i);
+	else
+		throw std::out_of_range(std::to_string(i) + " out of range.");
+}
+
+/**
+ * @brief Returns true if all the bits of the BitSet are set to true.
+ * @return true if all the bits of the BitSet are set to true.
+ */
+template<std::integral T>
+bool BitSet<T>::all() const
+{
+	return ((bits+1) & bits) == 0;
+}
+
+/**
+ * @brief Returns true if any of the bits of the BitSet are set to true.
+ * @return true if any of the bits of the BitSet are set to true.
+ */
+template<std::integral T>
+bool BitSet<T>::any() const
+{
+	return !none();
+}
+
+/**
+ * @brief Returns true if none of the bits of the BitSet is set to true.
+ * @return true if none of the bits of the BitSet is set to true.
+ */
+template<std::integral T>
+bool BitSet<T>::none() const
+{
+	return bits == 0;
+}
 
 } // namespace vcl
