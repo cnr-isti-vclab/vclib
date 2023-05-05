@@ -25,52 +25,52 @@
 
 namespace vcl::comp {
 
-template<typename C, typename El, bool o>
-BitFlagsT<C, El, o>::BitFlagsT()
+template<typename El, bool o>
+BitFlags<El, o>::BitFlags()
 {
 	if constexpr (!IS_VERTICAL) {
 		init();
 	}
 }
 
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::init()
+template<typename El, bool o>
+void BitFlags<El, o>::init()
 {
 	flags().reset();
 }
 
-template<typename C, typename El, bool o>
-bool BitFlagsT<C, El, o>::isEnabled() const
+template<typename El, bool o>
+bool BitFlags<El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(static_cast<const C*>(this));
+	return data.template isComponentEnabled<El>(this);
 }
 
-template<typename Component, typename ElementType, bool optional>
-bool BitFlagsT<Component, ElementType, optional>::deleted() const
+template<typename El, bool o>
+bool BitFlags<El, o>::deleted() const
 {
 	return flags()[DELETED];
 }
 
-template<typename Component, typename ElementType, bool optional>
-BitProxy<int> BitFlagsT<Component, ElementType, optional>::selected()
+template<typename El, bool o>
+BitProxy<int> BitFlags<El, o>::selected()
 {
 	return flags()[SELECTED];
 }
 
-template<typename Component, typename ElementType, bool optional>
-bool BitFlagsT<Component, ElementType, optional>::selected() const
+template<typename El, bool o>
+bool BitFlags<El, o>::selected() const
 {
 	return flags()[SELECTED];
 }
 
-template<typename Component, typename ElementType, bool optional>
-BitProxy<int> BitFlagsT<Component, ElementType, optional>::onBorder()
+template<typename El, bool o>
+BitProxy<int> BitFlags<El, o>::onBorder()
 {
 	return flags()[BORDER];
 }
 
-template<typename Component, typename ElementType, bool optional>
-bool BitFlagsT<Component, ElementType, optional>::onBorder() const
+template<typename El, bool o>
+bool BitFlags<El, o>::onBorder() const
 {
 	return flags()[BORDER];
 }
@@ -82,14 +82,14 @@ bool BitFlagsT<Component, ElementType, optional>::onBorder() const
  * @param[in] bit: the position of the bit that will be returned.
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
-template<typename C, typename El, bool o>
-bool BitFlagsT<C, El, o>::userBit(uint bit) const
+template<typename El, bool o>
+bool BitFlags<El, o>::userBit(uint bit) const
 {
 	return flags()[bit + FIRST_USER_BIT];
 }
 
-template<typename Component, typename ElementType, bool optional>
-BitProxy<int> BitFlagsT<Component, ElementType, optional>::userBit(uint bit)
+template<typename ElementType, bool optional>
+BitProxy<int> BitFlags<ElementType, optional>::userBit(uint bit)
 {
 	return flags()[bit + FIRST_USER_BIT];
 }
@@ -98,16 +98,16 @@ BitProxy<int> BitFlagsT<Component, ElementType, optional>::userBit(uint bit)
  * @brief Unsets all the flags of this Element and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
  */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::resetBitFlags()
+template<typename El, bool o>
+void BitFlags<El, o>::resetBitFlags()
 {
 	bool isD = deleted();
 	flags().reset();
 	deleted() = isD;
 }
 
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::importFromVCGFlags(int f)
+template<typename El, bool o>
+void BitFlags<El, o>::importFromVCGFlags(int f)
 {
 	resetBitFlags();
 	if (f & 0x0020)
@@ -116,8 +116,8 @@ void BitFlagsT<C, El, o>::importFromVCGFlags(int f)
 		onBorder() = true;
 }
 
-template<typename C, typename El, bool o>
-int BitFlagsT<C, El, o>::exportToVCGFlags() const
+template<typename El, bool o>
+int BitFlags<El, o>::exportToVCGFlags() const
 {
 	int f = 0;
 	if (selected())
@@ -127,15 +127,15 @@ int BitFlagsT<C, El, o>::exportToVCGFlags() const
 	return f;
 }
 
-template<typename Component, typename ElementType, bool optional>
-BitProxy<int> BitFlagsT<Component, ElementType, optional>::deleted()
+template<typename ElementType, bool optional>
+BitProxy<int> BitFlags<ElementType, optional>::deleted()
 {
 	return flags()[DELETED];
 }
 
-template<typename C, typename El, bool o>
+template<typename El, bool o>
 template<typename Element>
-void BitFlagsT<C, El, o>::importFrom(const Element& e)
+void BitFlags<El, o>::importFrom(const Element& e)
 {
 	if constexpr (HasBitFlags<Element>) {
 		resetBitFlags();
@@ -151,16 +151,16 @@ void BitFlagsT<C, El, o>::importFrom(const Element& e)
 	}
 }
 
-template<typename C, typename El, bool o>
-BitSet<int>& BitFlagsT<C, El, o>::flags()
+template<typename El, bool o>
+BitSet<int>& BitFlags<El, o>::flags()
 {
-	return data.template get<El>(static_cast<C*>(this));
+	return data.template get<El>(this);
 }
 
-template<typename C, typename El, bool o>
-BitSet<int> BitFlagsT<C, El, o>::flags() const
+template<typename El, bool o>
+BitSet<int> BitFlags<El, o>::flags() const
 {
-	return data.template get<El>(static_cast<const C*>(this));
+	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

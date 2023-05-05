@@ -59,12 +59,16 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename Component, typename ElementType = void, bool optional = false>
-class BitFlagsT
+template<typename ElementType = void, bool optional = false>
+class BitFlags
 {
 	template<typename, typename, bool>
 	friend class BitFlagsT;
+
+	using ThisType = BitFlags<ElementType, optional>;
 public:
+	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
+
 	using DataValueType = BitSet<int>; // data that the component stores internally (or vertically)
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
@@ -72,7 +76,7 @@ public:
 
 	/* Constructor and isEnabled */
 
-	BitFlagsT();
+	BitFlags();
 
 	void init();
 
@@ -119,14 +123,6 @@ protected:
 private:
 	// contians the actual data of the component, if the component is horizontal
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
-};
-
-template<typename ElementType = void, bool optional = false>
-class BitFlags : public BitFlagsT<BitFlags<ElementType, optional>, ElementType, optional>
-{
-	using ThisType = BitFlags<ElementType, optional>;
-public:
-	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 };
 
 } // namespace vcl::comp
