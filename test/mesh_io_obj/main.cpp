@@ -26,40 +26,6 @@
 #include <vclib/meshes.h>
 #include <vclib/load_save.h>
 
-//template<typename T>
-//concept MyConcept = std::is_integral<T>::value; //could be anything...
-
-//template<typename T>
-//class F {
-//public:
-//	void foo() requires MyConcept<F>;
-//};
-
-//template<typename T>
-//void F<T>::foo() requires MyConcept<F<T>>
-//{
-//  //long implementation...
-//}
-
-//----//
-
-//template<typename T>
-//class F {
-//public:
-//	void foo() {};
-//};
-
-//template<MyConcept T>
-//class F<T> {
-//public:
-//	void foo();
-//};
-
-//template<MyConcept T>
-//void F<T>::foo()
-//{
-//}
-
 int main()
 {
 	vcl::FileMeshInfo loadedInfo;

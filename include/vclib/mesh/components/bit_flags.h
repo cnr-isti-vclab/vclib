@@ -41,14 +41,11 @@ namespace vcl::comp {
  * - 0: deleted: if the current Element has been deleted
  * - 1: selected: if the current Element has been selected
  * - 2: border: if the current Element is on border
+ * - 3: visited:
  * - other: user bits that can have custom meanings to the user
  *
- * This class provides 29 user bits, that can be accessed using the member functions
- * - `userBitFlag`
- * - `setUserBit`
- * - `unsetUserBit`
- *
- * with position in the interval [0, 28].
+ * This class provides 28 user bits, that can be accessed using the member function userBit(uint i)
+ * with position in the interval [0, 27].
  *
  * The member functions of this class will be available in the instance of any Element that will
  * contain this component.
@@ -57,7 +54,7 @@ namespace vcl::comp {
  * access to this component member functions from `v`:
  *
  * @code{.cpp}
- * v.isDeleted();
+ * bool isD = v.deleted();
  * @endcode
  *
  * @ingroup components
@@ -83,10 +80,6 @@ public:
 
 	/* Member functions */
 
-	bool userBitFlag(uint bit) const;
-
-	void setUserBit(uint bit);
-
 	bool deleted() const;
 
 	BitProxy<int> selected();
@@ -95,22 +88,16 @@ public:
 	BitProxy<int> onBorder();
 	bool onBorder() const;
 
-	void unsetAllFlags();
-	void unsetUserBit(uint bit);
+	bool userBit(uint bit) const;
+	BitProxy<int> userBit(uint bit);
+
+	void resetBitFlags();
 
 	void importFromVCGFlags(int f);
 	int exportToVCGFlags() const;
 
 protected:
 	BitProxy<int> deleted();
-
-	bool flagValue(uint bit) const;
-	void setFlag(uint bit);
-	void unsetFlag(uint bit);
-
-	bool userBitFlag(uint bit, uint firstBit) const;
-	void setUserBit(uint bit, uint firstBit);
-	void unsetUserBit(uint bit, uint firstBit);
 
 	template<typename Element>
 	void importFrom(const Element& e);
@@ -119,13 +106,14 @@ protected:
 	BitSet<int>& flags();
 	BitSet<int> flags() const;
 
-	static const uint FIRST_USER_BIT = 3;
+	static const uint FIRST_USER_BIT = 4;
 
-	// indices of the bits, used for flagValue, setFlag and unsetFlag member functions
+	// indices of the bits
 	enum {
 		DELETED  = 0, // bit 0
 		SELECTED = 1, // bit 1
-		BORDER   = 2  // bit 2
+		BORDER   = 2, // bit 2
+		VISITED  = 3  // bit 3
 	};
 
 private:

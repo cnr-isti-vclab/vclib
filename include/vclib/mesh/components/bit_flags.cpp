@@ -45,31 +45,6 @@ bool BitFlagsT<C, El, o>::isEnabled() const
 	return data.template isComponentEnabled<El>(static_cast<const C*>(this));
 }
 
-/**
- * @brief Returns the value of the user bit of this Element given in input. The bit is checked
- * to be less than the total number of assigned user bits, which in this class is 29.
- *
- * @param[in] bit: the position of the bit that will be returned.
- * @return `true` if the required bit is enabled, `false` otherwise.
- */
-template<typename C, typename El, bool o>
-bool BitFlagsT<C, El, o>::userBitFlag(uint bit) const
-{
-	return userBitFlag(bit, FIRST_USER_BIT);
-}
-
-/**
- * @brief Sets to `true` the value of the bit of this Element given in input. The bit is checked
- * to be less than the total number of assigned user bits, which in this class is 29.
- *
- * @param[in] bit: the position of the bit that will be set.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::setUserBit(uint bit)
-{
-	setUserBit(bit, FIRST_USER_BIT);
-}
-
 template<typename Component, typename ElementType, bool optional>
 bool BitFlagsT<Component, ElementType, optional>::deleted() const
 {
@@ -101,34 +76,40 @@ bool BitFlagsT<Component, ElementType, optional>::onBorder() const
 }
 
 /**
+ * @brief Returns the value of the user bit of this Element given in input. The bit is checked
+ * to be less than the total number of assigned user bits, which in this class is 28.
+ *
+ * @param[in] bit: the position of the bit that will be returned.
+ * @return `true` if the required bit is enabled, `false` otherwise.
+ */
+template<typename C, typename El, bool o>
+bool BitFlagsT<C, El, o>::userBit(uint bit) const
+{
+	return flags()[bit + FIRST_USER_BIT];
+}
+
+template<typename Component, typename ElementType, bool optional>
+BitProxy<int> BitFlagsT<Component, ElementType, optional>::userBit(uint bit)
+{
+	return flags()[bit + FIRST_USER_BIT];
+}
+
+/**
  * @brief Unsets all the flags of this Element and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
  */
 template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::unsetAllFlags()
+void BitFlagsT<C, El, o>::resetBitFlags()
 {
 	bool isD = deleted();
 	flags().reset();
-	if (isD)
-		setFlag(DELETED);
-}
-
-/**
- * @brief Sets to `false` the value of the user bit of this Element given in input. The bit is
- * checked to be less than the total number of assigned user bits, which in this class is 29.
- *
- * @param[in] bit: the position of the bit that will be reset.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::unsetUserBit(uint bit)
-{
-	unsetUserBit(bit, FIRST_USER_BIT);
+	deleted() = isD;
 }
 
 template<typename C, typename El, bool o>
 void BitFlagsT<C, El, o>::importFromVCGFlags(int f)
 {
-	unsetAllFlags();
+	resetBitFlags();
 	if (f & 0x0020)
 		selected() = true;
 	if (f & 0x0100)
@@ -152,104 +133,12 @@ BitProxy<int> BitFlagsT<Component, ElementType, optional>::deleted()
 	return flags()[DELETED];
 }
 
-/**
- * @brief Returns the value of the given bit (index of the bit in the mask).
- *
- * @param bit: index of the bit to return.
- * @return whether the bit is `true` or `false`.
- */
-template<typename C, typename El, bool o>
-bool BitFlagsT<C, El, o>::flagValue(uint bit) const
-{
-	return flags()[bit];
-}
-
-/**
- * @brief Sets to `true` the value of the given bit (index of the bit in the mask).
- *
- * @param[in] bit: index of the bit to set.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::setFlag(uint bit)
-{
-	flags()[bit] = true;
-}
-
-/**
- * @brief Sets to `false` the value of the given bit (index of the bit in the mask).
- *
- * @param[in] bit: index of the bit to reset.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::unsetFlag(uint bit)
-{
-	flags()[bit] = false;
-}
-
-/**
- * @brief Returns the value of the bit given in input. The bit is checked
- * to be less than the total number of assigned user bits.
- *
- * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
- * different from the one of this class, and it is useful to avoid code duplication,
- * In fact the value of firstBit should be exactly the first available bit that can be used as
- * custom bit by the user.
- *
- * @param[in] bit: position of the bit
- * @param[in] firstBit: first user bit available (must be < than bit)
- * @return the value of the bit
- */
-template<typename C, typename El, bool o>
-bool BitFlagsT<C, El, o>::userBitFlag(uint bit, uint firstBit) const
-{
-	assert(bit < 32 - firstBit);
-	return flagValue(firstBit + bit);
-}
-
-/**
- * @brief Sets to `true` the value of the bit given in input. The bit is
- * checked to be less than the total number of assigned user bits.
- *
- * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
- * different from the one of this class, and it is useful to avoid code duplication,
- * In fact the value of firstBit should be exactly the first available bit that can be used as
- * custom bit by the user.
- *
- * @param[in] bit: position of the bit
- * @param[in] firstBit: first user bit available (must be < than bit)
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::setUserBit(uint bit, uint firstBit)
-{
-	assert(bit < 32 - firstBit);
-	setFlag(firstBit + bit);
-}
-
-/**
- * @brief Sets to `false` the value of the bit given in input. he bit is
- * checked to be less than the total number of assigned user bits.
- *
- * This member function is meant to be used by derived clases that may have a FIRST_USER_BIT
- * different from the one of this class, and it is useful to avoid code duplication,
- * In fact the value of firstBit should be exactly the first available bit that can be used as
- * custom bit by the user.
- *
- * @param[in] bit: position of the bit
- * @param[in] firstBit: first user bit available (must be < than bit)
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::unsetUserBit(uint bit, uint firstBit)
-{
-	assert(bit < 32 - firstBit);
-	unsetFlag(firstBit + bit);
-}
-
 template<typename C, typename El, bool o>
 template<typename Element>
 void BitFlagsT<C, El, o>::importFrom(const Element& e)
 {
 	if constexpr (HasBitFlags<Element>) {
-		unsetAllFlags();
+		resetBitFlags();
 		if constexpr (HasPolygonBitFlags<Element>) {
 			// todo
 		}

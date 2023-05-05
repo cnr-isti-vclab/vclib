@@ -64,9 +64,9 @@ int main()
 	// try to load a polygonal mesh into a trimesh
 	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply", loadedInfo);
 	for (const vcl::TriMesh::Face& f : m.faces()){
-		assert(!f.isEdgeFaux(0));
-		assert(!f.isEdgeFaux(1));
-		assert(f.isEdgeFaux(2));
+		assert(!f.edgeFaux(0));
+		assert(!f.edgeFaux(1));
+		assert(f.edgeFaux(2));
 	}
 
 	m.addPerFaceCustomComponent<double>("area");

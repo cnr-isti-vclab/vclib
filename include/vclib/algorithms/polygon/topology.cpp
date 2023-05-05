@@ -420,11 +420,11 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 
 	if constexpr(face::HasFaceBitFlags<FaceType>) {
 		if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) == unorderedEdges.end())
-			f.setEdgeFaux(0);
+			f.edgeFaux(0) = true;
 		if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) == unorderedEdges.end())
-			f.setEdgeFaux(1);
+			f.edgeFaux(1) = true;
 		if (unorderedEdges.find(std::make_pair(tris[2], tris[0])) == unorderedEdges.end())
-			f.setEdgeFaux(2);
+			f.edgeFaux(2) = true;
 	}
 
 	// remaining triangles, need to create more faces in the mesh
@@ -448,11 +448,11 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 
 		if constexpr(face::HasFaceBitFlags<FaceType>) {
 			if (unorderedEdges.find(std::make_pair(tris[i], tris[i+1])) == unorderedEdges.end())
-				m.face(ff).setEdgeFaux(0);
+				m.face(ff).edgeFaux(0) = true;
 			if (unorderedEdges.find(std::make_pair(tris[i+1], tris[i+2])) == unorderedEdges.end())
-				m.face(ff).setEdgeFaux(1);
+				m.face(ff).edgeFaux(1) = true;
 			if (unorderedEdges.find(std::make_pair(tris[i+2], tris[i+0])) == unorderedEdges.end())
-				m.face(ff).setEdgeFaux(2);
+				m.face(ff).edgeFaux(2) = true;
 		}
 	}
 }

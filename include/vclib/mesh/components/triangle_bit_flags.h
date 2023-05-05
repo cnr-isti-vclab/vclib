@@ -35,17 +35,14 @@ namespace vcl::comp {
  * The bits have the following meaning (first 3 bits inherited from BitFlags):
  * - 0:  deleted: if the current Triangle has been deleted
  * - 1:  selected: if the current Triangle has been selected
- * - from 2 to 4: edge border: if the current Triangle has is i-th edge (i in [0, 2]) on border
- * - from 5 to 7: edge selection: if the current Triangle has is i-th edge (i in [0, 2]) selected
- * - from 8 to 10: edge faux: if the current Triangle has is i-th edge (i in [0, 2]) marked as faux
- * - from 11 to 31: user bits that can have custom meanings to the user
+ * - 2:  visited:
+ * - from 3 to 5: edge border: if the current Triangle has is i-th edge (i in [0, 2]) on border
+ * - from 6 to 8: edge selection: if the current Triangle has is i-th edge (i in [0, 2]) selected
+ * - from 9 to 11: edge faux: if the current Triangle has is i-th edge (i in [0, 2]) marked as faux
+ * - from 12 to 31: user bits that can have custom meanings to the user
  *
- * This class provides 21 user bits, that can be accessed using the member functions
- * - `userBitFlag`
- * - `setUserBit`
- * - `unsetUserBit`
- *
- * with position in the interval [0, 20].
+ * This class provides 20 user bits, that can be accessed using the member function userBit(uint i)
+ * with position in the interval [0, 19].
  *
  * The member functions of this class will be available in the instance of any Element that will
  * contain this component.
@@ -54,47 +51,52 @@ namespace vcl::comp {
  * able to access to this component member functions from `f`:
  *
  * @code{.cpp}
- * v.isAnyEdgeOnBorder();
+ * v.edgeSelected(1) = true;
  * @endcode
  *
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class TriangleBitFlags : public BitFlagsT<TriangleBitFlags<ElementType, optional>, ElementType, optional>
+class TriangleBitFlags
 {
-	using Base = BitFlagsT<TriangleBitFlags<ElementType, optional>, ElementType, optional>;
 	using ThisType = TriangleBitFlags<ElementType, optional>;
 public:
-	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
-	bool userBitFlag(uint bit) const;
-	void setUserBit(uint bit);
-	void unsetUserBit(uint bit);
+	using DataValueType = BitSet<int>; // data that the component stores internally (or vertically)
 
-	bool isEdgeOnBorder(uint i) const;
-	bool isAnyEdgeOnBorder() const;
+	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+	static const bool IS_OPTIONAL = optional;
+
+	/* Constructor and isEnabled */
+	TriangleBitFlags();
+
+	void init();
+
+	bool isEnabled() const;
+
+	/* Member functions */
+
+	bool deleted() const;
+
+	BitProxy<int> selected();
+	bool selected() const;
+
 	bool onBorder() const;
 
-	bool isEdgeSelected(uint i) const;
-	bool isAnyEdgeSelected() const;
+	BitProxy<int> edgeOnBorder(uint i);
+	bool edgeOnBorder(uint i) const;
 
-	bool isEdgeFaux(uint i) const;
-	bool isAnyEdgeFaux() const;
+	BitProxy<int> edgeSelected(uint i);
+	bool edgeSelected(uint i) const;
 
-	void setEdgeOnBorder(uint i);
+	BitProxy<int> edgeFaux(uint i);
+	bool edgeFaux(uint i) const;
 
-	void setEdgeSelected(uint i);
+	bool userBit(uint bit) const;
+	BitProxy<int> userBit(uint bit);
 
-	void setEdgeFaux(uint i);
-
-	void unsetEdgeOnBorder(uint i);
-	void unsetAllEdgesOnBorder();
-
-	void unsetEdgeSelected(uint i);
-	void unsetAllEdgesSelected();
-
-	void unsetEdgeFaux(uint i);
-	void unsetAllEdgesFaux();
+	void resetBitFlags();
 
 	void importFromVCGFlags(int f);
 	int exportToVCGFlags() const;
@@ -103,27 +105,34 @@ public:
 	void __triangleBitFlags() const {}
 
 protected:
+	BitProxy<int> deleted();
+
 	template<typename Element>
 	void importFrom(const Element& e);
 
-protected:
-	// indices of the bits, used for flagValue, setFlag and unsetFlag member functions
+	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
+	BitSet<int>& flags();
+	BitSet<int> flags() const;
+
+	static const uint FIRST_USER_BIT = 12; // bits [12, 31]
+
+	// indices of the bits
 	enum {
+		DELETED  = 0, // bit 0
+		SELECTED = 1, // bit 1
+		VISITED  = 2, // bit 2
 		// Edge border
-		// BORDER0 is BORDER, inherited from superclass  bits [2, 4]
+		BORDER0  = 3, // bits [3, 5]
 		// Edge selection
-		EDGESEL0 = Base::FIRST_USER_BIT + 2, // bits [5, 7]
+		EDGESEL0 = 6, // bits [6, 8]
 		// Faux edges: when representing polygonal meshes on triangle meshes, some triangle edges
 		// can be marked as "faux", meaning that they are internal on the polygon
-		FAUX0 = Base::FIRST_USER_BIT + 5 // bits [8, 10]
+		FAUX0 = 9 // bits [9, 11]
 	};
 
-	// hide base class constant, 8 is the number of bits used by this class
-	static const uint FIRST_USER_BIT = Base::FIRST_USER_BIT + 8; // bits [11, 31]
-
 private:
-	// will use this members as onBorder0
-	using Base::onBorder;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

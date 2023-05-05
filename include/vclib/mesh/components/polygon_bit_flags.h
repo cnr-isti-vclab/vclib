@@ -68,41 +68,46 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class PolygonBitFlags : public BitFlagsT<PolygonBitFlags<ElementType, optional>, ElementType, optional>
+class PolygonBitFlags
 {
-	using Base = BitFlagsT<PolygonBitFlags<ElementType, optional>, ElementType, optional>;
 	using ThisType = PolygonBitFlags<ElementType, optional>;
 public:
-	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
-	bool userBitFlag(uint bit) const;
-	void setUserBit(uint bit);
-	void unsetUserBit(uint bit);
+	using DataValueType = BitSet<int>; // data that the component stores internally (or vertically)
 
-	bool isEdgeOnBorder(uint i) const;
-	bool isAnyEdgeOnBorder() const;
+	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
+
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+	static const bool IS_OPTIONAL = optional;
+
+	/* Constructor and isEnabled */
+	PolygonBitFlags();
+
+	void init();
+
+	bool isEnabled() const;
+
+	/* Member functions */
+
+	bool deleted() const;
+
+	BitProxy<int> selected();
+	bool selected() const;
+
 	bool onBorder() const;
 
-	bool isEdgeSelected(uint i) const;
-	bool isAnyEdgeSelected() const;
+	BitProxy<int> edgeOnBorder(uint i);
+	bool edgeOnBorder(uint i) const;
 
-	bool isEdgeFaux(uint i) const;
-	bool isAnyEdgeFaux() const;
+	BitProxy<int> edgeSelected(uint i);
+	bool edgeSelected(uint i) const;
 
-	void setEdgeOnBorder(uint i);
+	BitProxy<int> edgeFaux(uint i);
+	bool edgeFaux(uint i) const;
 
-	void setEdgeSelected(uint i);
+	bool userBit(uint bit) const;
+	BitProxy<int> userBit(uint bit);
 
-	void setEdgeFaux(uint i);
-
-	void unsetEdgeOnBorder(uint i);
-	void unsetAllEdgesOnBorder();
-
-	void unsetEdgeSelected(uint i);
-	void unsetAllEdgesSelected();
-
-	void unsetEdgeFaux(uint i);
-	void unsetAllEdgesFaux();
+	void resetBitFlags();
 
 	void importFromVCGFlags(int f);
 	int exportToVCGFlags() const;
@@ -111,25 +116,33 @@ public:
 	void __polygonBitFlags() const {}
 
 protected:
+	BitProxy<int> deleted();
+
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
+	BitSet<int>& flags();
+	BitSet<int> flags() const;
+
+	static const uint FIRST_USER_BIT = 30; // bits [29, 31]
+
 	// indices of the bits, used for flagValue, setFlag and unsetFlag member functions
 	enum {
+		DELETED  = 0, // bit 0
+		SELECTED = 1, // bit 1
+		VISITED  = 2, // bit 2
 		// Edge border
-		// BORDER0 is BORDER, inherited from superclass - bits [2, 13]
+		BORDER0  = 3, // bits [3, 14]
 		// Edge selection
-		EDGESEL0 = Base::FIRST_USER_BIT + 11, // bits [14, 25]
+		EDGESEL0 = 15, // bits [15, 26]
 		// Faux edges, for portability with TriangleBits
-		FAUX0 = Base::FIRST_USER_BIT + 23 // bits [26, 28]
+		FAUX0 = 27 // bits [27, 29]
 	};
 
-	// hide base class constant, 26 is the number of bits used by this class
-	static const uint FIRST_USER_BIT = Base::FIRST_USER_BIT + 26; // bits [29, 31]
-
 private:
-	// will use this members as onBorder0
-	using Base::onBorder;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

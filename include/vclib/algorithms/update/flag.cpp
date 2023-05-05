@@ -60,7 +60,7 @@ void updateBorder(MeshType& m)
 	do {
 		if (pe == e.end() || *pe != *ps) { // Trovo blocco di edge uguali
 			if (pe - ps == 1) {
-				ps->f->setEdgeOnBorder(ps->e);
+				ps->f->edgeOnBorder(ps->e) = true;
 			}
 			ps = pe;
 		}

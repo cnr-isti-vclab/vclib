@@ -316,7 +316,7 @@ void setPerVertexColorFromFaceBorderFlag(
 
 	for (FaceType& f : m.faces()) {
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
-			if (f.isEdgeOnBorder(i)) {
+			if (f.edgeOnBorder(i)) {
 				if (f.vertex(i).color() == baseColor)
 					f.vertex(i).color() = borderColor;
 				if (f.vertex(i).color() == internalColor)
@@ -433,7 +433,7 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
 		if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
 			if (checkFauxEdges && isPerFaceAdjacentFacesEnabled(m)) {
 				for (uint i = 0; i < f.vertexNumber(); ++i) {
-					if (f.isEdgeFaux(i)) {
+					if (f.edgeFaux(i)) {
 						assert(f.adjFace(i) != nullptr);
 						f.adjFace(i)->color = f.color();
 					}

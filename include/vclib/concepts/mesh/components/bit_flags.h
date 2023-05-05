@@ -43,12 +43,9 @@ concept HasBitFlags = requires(
 	{ co.deleted() } -> std::same_as<bool>;
 	{ co.selected() } -> std::same_as<bool>;
 	{ co.onBorder() } -> std::same_as<bool>;
-	{ co.userBitFlag(uint()) } -> std::same_as<bool>;
+	{ co.userBit(uint()) } -> std::same_as<bool>;
 
-	{ o.setUserBit(uint()) } -> std::same_as<void>;
-
-	{ o.unsetAllFlags() } -> std::same_as<void>;
-	{ o.unsetUserBit(uint()) } -> std::same_as<void>;
+	{ o.resetBitFlags() } -> std::same_as<void>;
 };
 
 /**
@@ -63,25 +60,9 @@ concept FaceBitFlagsConcept = HasBitFlags<T> &&
 		T o,
 		const T& co)
 {
-	{ co.isEdgeOnBorder(uint()) } -> std::same_as<bool>;
-	{ co.isAnyEdgeOnBorder() } -> std::same_as<bool>;
-
-	{ co.isEdgeSelected(uint()) } -> std::same_as<bool>;
-	{ co.isAnyEdgeSelected() } -> std::same_as<bool>;
-
-	{ co.isEdgeFaux(uint()) } -> std::same_as<bool>;
-	{ co.isAnyEdgeFaux() } -> std::same_as<bool>;
-
-	{ o.setEdgeOnBorder(uint()) } -> std::same_as<void>;
-	{ o.setEdgeSelected(uint()) } -> std::same_as<void>;
-	{ o.setEdgeFaux(uint()) } -> std::same_as<void>;
-
-	{ o.unsetEdgeOnBorder(uint()) } -> std::same_as<void>;
-	{ o.unsetAllEdgesOnBorder() } -> std::same_as<void>;
-	{ o.unsetEdgeSelected(uint()) } -> std::same_as<void>;
-	{ o.unsetAllEdgesSelected() } -> std::same_as<void>;
-	{ o.unsetEdgeFaux(uint()) } -> std::same_as<void>;
-	{ o.unsetAllEdgesFaux() } -> std::same_as<void>;
+	{ co.edgeOnBorder(uint()) } -> std::same_as<bool>;
+	{ co.edgeSelected(uint()) } -> std::same_as<bool>;
+	{ co.edgeFaux(uint()) } -> std::same_as<bool>;
 
 	{ o.importFromVCGFlags(int())} -> std::same_as<void>;
 	{ co.exportToVCGFlags() } -> std::same_as<int>;
