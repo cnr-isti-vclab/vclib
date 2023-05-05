@@ -45,30 +45,50 @@ bool BitFlags<El, o>::isEnabled() const
 	return data.template isComponentEnabled<El>(this);
 }
 
+/**
+ * @brief Returns whether the current Element is deleted or not.
+ * @return true if the Element is deleted, false otherwise.
+ */
 template<typename El, bool o>
 bool BitFlags<El, o>::deleted() const
 {
 	return flags()[DELETED];
 }
 
+/**
+ * @brief Accesses the 'selected' bit of this Element, returning a reference to it.
+ * @return a reference to the 'selected' bit of this Element.
+ */
 template<typename El, bool o>
 BitProxy<int> BitFlags<El, o>::selected()
 {
 	return flags()[SELECTED];
 }
 
+/**
+ * @brief Returns whether the current Element is selected or not.
+ * @return true if the Element is selected, false otherwise.
+ */
 template<typename El, bool o>
 bool BitFlags<El, o>::selected() const
 {
 	return flags()[SELECTED];
 }
 
+/**
+ * @brief Accesses the 'onBorder' bit of this Element, returning a reference to it.
+ * @return a reference to the 'onBorder' bit of this Element.
+ */
 template<typename El, bool o>
 BitProxy<int> BitFlags<El, o>::onBorder()
 {
 	return flags()[BORDER];
 }
 
+/**
+ * @brief Returns whether the current Element is on border or not.
+ * @return true if the Element is on border, false otherwise.
+ */
 template<typename El, bool o>
 bool BitFlags<El, o>::onBorder() const
 {
@@ -76,11 +96,11 @@ bool BitFlags<El, o>::onBorder() const
 }
 
 /**
- * @brief Returns the value of the user bit of this Element given in input. The bit is checked
- * to be less than the total number of assigned user bits, which in this class is 28.
+ * @brief Returns a reference to the value of the user bit of this Element given in input. The bit
+ * is checked to be less than the total number of assigned user bits, which in this class is 28.
  *
- * @param[in] bit: the position of the bit that will be returned.
- * @return `true` if the required bit is enabled, `false` otherwise.
+ * @param[in] bit: the position of the bit that will be returned by reference.
+ * @return a reference to the desired user bit.
  */
 template<typename El, bool o>
 bool BitFlags<El, o>::userBit(uint bit) const
@@ -88,6 +108,13 @@ bool BitFlags<El, o>::userBit(uint bit) const
 	return flags()[bit + FIRST_USER_BIT];
 }
 
+/**
+ * @brief Returns the boolean value of the user bit of this Element given in input. The bit
+ * is checked to be less than the total number of assigned user bits, which in this class is 28.
+ *
+ * @param[in] bit: the position of the bit that will be returned by reference.
+ * @return `true` if the required bit is enabled, `false` otherwise.
+ */
 template<typename ElementType, bool optional>
 BitProxy<int> BitFlags<ElementType, optional>::userBit(uint bit)
 {
