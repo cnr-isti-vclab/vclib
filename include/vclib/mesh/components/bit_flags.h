@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
 #include <vclib/concepts/mesh/components/bit_flags.h>
-#include <vclib/space/bit_set/bit_proxy.h>
+#include <vclib/space/bit_set.h>
 
 #include "internal/component_data.h"
 
@@ -68,7 +68,7 @@ class BitFlagsT
 	template<typename, typename, bool>
 	friend class BitFlagsT;
 public:
-	using DataValueType = int; // data that the component stores internally (or vertically)
+    using DataValueType = BitSet<int>; // data that the component stores internally (or vertically)
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
@@ -91,6 +91,8 @@ public:
 	void setSelected();
 	void setOnBorder();
 	void setUserBit(uint bit);
+
+	bool deleted() const;
 
 	BitProxy<int> selected();
 	bool selected() const;
@@ -119,8 +121,8 @@ protected:
 	void importFrom(const Element& e);
 
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
-	int& flags();
-	int flags() const;
+	BitSet<int>& flags();
+	BitSet<int> flags() const;
 
 	static const uint FIRST_USER_BIT = 3;
 

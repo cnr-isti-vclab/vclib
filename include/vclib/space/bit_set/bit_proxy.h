@@ -22,8 +22,6 @@ class BitProxy
 public:
 	BitProxy(T& mask, uint index);
 
-	void setIndex(uint ind);
-
 	operator bool() const;
 
 	void operator=(bool bit);
@@ -36,7 +34,7 @@ public:
 
 private:
 	std::reference_wrapper<T> mask;
-	uint index;
+	const uint index;
 };
 
 } // namespace vcl

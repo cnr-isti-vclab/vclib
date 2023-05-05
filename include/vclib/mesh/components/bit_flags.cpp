@@ -36,7 +36,7 @@ BitFlagsT<C, El, o>::BitFlagsT()
 template<typename C, typename El, bool o>
 void BitFlagsT<C, El, o>::init()
 {
-	flags() = 0;
+	flags().reset();
 }
 
 template<typename C, typename El, bool o>
@@ -122,15 +122,21 @@ void BitFlagsT<C, El, o>::setUserBit(uint bit)
 }
 
 template<typename Component, typename ElementType, bool optional>
+bool BitFlagsT<Component, ElementType, optional>::deleted() const
+{
+	return flags()[DELETED];
+}
+
+template<typename Component, typename ElementType, bool optional>
 BitProxy<int> BitFlagsT<Component, ElementType, optional>::selected()
 {
-	return BitProxy(flags(), SELECTED);
+	return flags()[SELECTED];
 }
 
 template<typename Component, typename ElementType, bool optional>
 bool BitFlagsT<Component, ElementType, optional>::selected() const
 {
-	return isSelected();
+	return flags()[SELECTED];
 }
 
 /**
@@ -141,7 +147,7 @@ template<typename C, typename El, bool o>
 void BitFlagsT<C, El, o>::unsetAllFlags()
 {
 	bool isD = isDeleted();
-	flags()  = 0;
+	flags().reset();
 	if (isD)
 		setFlag(DELETED);
 }
@@ -224,8 +230,7 @@ void BitFlagsT<C, El, o>::unsetDeleted()
 template<typename C, typename El, bool o>
 bool BitFlagsT<C, El, o>::flagValue(uint bit) const
 {
-	assert(bit < 32);
-	return flags() & (1 << bit);
+	return flags()[bit];
 }
 
 /**
@@ -236,7 +241,7 @@ bool BitFlagsT<C, El, o>::flagValue(uint bit) const
 template<typename C, typename El, bool o>
 void BitFlagsT<C, El, o>::setFlag(uint bit)
 {
-	flags() |= (1 << bit);
+	flags()[bit] = true;
 }
 
 /**
@@ -247,7 +252,7 @@ void BitFlagsT<C, El, o>::setFlag(uint bit)
 template<typename C, typename El, bool o>
 void BitFlagsT<C, El, o>::unsetFlag(uint bit)
 {
-	flags() &= ~(1 << bit);
+	flags()[bit] = false;
 }
 
 /**
@@ -327,13 +332,13 @@ void BitFlagsT<C, El, o>::importFrom(const Element& e)
 }
 
 template<typename C, typename El, bool o>
-int& BitFlagsT<C, El, o>::flags()
+BitSet<int>& BitFlagsT<C, El, o>::flags()
 {
 	return data.template get<El>(static_cast<C*>(this));
 }
 
 template<typename C, typename El, bool o>
-int BitFlagsT<C, El, o>::flags() const
+BitSet<int> BitFlagsT<C, El, o>::flags() const
 {
 	return data.template get<El>(static_cast<const C*>(this));
 }
