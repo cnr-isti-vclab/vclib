@@ -212,7 +212,7 @@ template<typename El, bool o>
 int TriangleBitFlags<El, o>::exportToVCGFlags() const
 {
 	int f = 0;
-	if (Base::isSelected())
+	if (Base::selected())
 		f &= 0x00000020;
 	if (isEdgeOnBorder(0))
 		f &= 0x00000040;

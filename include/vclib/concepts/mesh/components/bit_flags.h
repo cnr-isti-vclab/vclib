@@ -40,8 +40,8 @@ concept HasBitFlags = requires(
 	T o,
 	const T& co)
 {
-	{ co.isDeleted() } -> std::same_as<bool>;
-	{ co.isSelected() } -> std::same_as<bool>;
+	{ co.deleted() } -> std::same_as<bool>;
+	{ co.selected() } -> std::same_as<bool>;
 	{ co.isOnBorder() } -> std::same_as<bool>;
 	{ co.userBitFlag(uint()) } -> std::same_as<bool>;
 

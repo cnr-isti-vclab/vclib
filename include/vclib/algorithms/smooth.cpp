@@ -139,7 +139,7 @@ void laplacianSmoothing(
 		internal::accumulateLaplacianInfo(m, laplData, cotangentWeight);
 		for (VertexType& v : m.vertices()) {
 			if (laplData[m.index(v)].cnt > 0) {
-				if (!smoothSelected || v.isSelected()) {
+				if (!smoothSelected || v.selected()) {
 					v.coord() =
 						(v.coord() + laplData[m.index(v)].sum) / (laplData[m.index(v)].cnt + 1);
 				}
@@ -167,7 +167,7 @@ void taubinSmoothing(
 		internal::accumulateLaplacianInfo(m, laplData);
 		for (VertexType& v : m.vertices()) {
 			if (laplData[m.index(v)].cnt > 0) {
-				if (!smoothSelected || v.isSelected()) {
+				if (!smoothSelected || v.selected()) {
 					CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
 					v.coord() = v.coord() + delta * lambda;
 				}
@@ -177,7 +177,7 @@ void taubinSmoothing(
 		internal::accumulateLaplacianInfo(m, laplData);
 		for (VertexType& v : m.vertices()) {
 			if (laplData[m.index(v)].cnt > 0) {
-				if (!smoothSelected || v.isSelected()) {
+				if (!smoothSelected || v.selected()) {
 					CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
 					v.coord() = v.coord() + delta * mu;
 				}

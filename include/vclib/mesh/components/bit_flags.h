@@ -68,7 +68,7 @@ class BitFlagsT
 	template<typename, typename, bool>
 	friend class BitFlagsT;
 public:
-    using DataValueType = BitSet<int>; // data that the component stores internally (or vertically)
+	using DataValueType = BitSet<int>; // data that the component stores internally (or vertically)
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
@@ -83,7 +83,6 @@ public:
 
 	/* Member functions */
 
-	bool isDeleted() const;
 	bool isSelected() const;
 	bool isOnBorder() const;
 	bool userBitFlag(uint bit) const;
@@ -106,8 +105,7 @@ public:
 	int exportToVCGFlags() const;
 
 protected:
-	void setDeleted();
-	void unsetDeleted();
+	BitProxy<int> deleted();
 
 	bool flagValue(uint bit) const;
 	void setFlag(uint bit);

@@ -37,7 +37,7 @@ uint vertexSelectionNumber(const MeshType &m)
 	
 	uint cnt = 0;
 	for (const VertexType& v : m.vertices())
-		if (v.isSelected())
+		if (v.selected())
 			cnt++;
 	
 	return cnt;
@@ -54,7 +54,7 @@ uint faceSelectionNumber(const MeshType &m)
 	
 	uint cnt = 0;
 	for (const FaceType& f : m.faces())
-		if (f.isSelected())
+		if (f.selected())
 			cnt++;
 	
 	return cnt;

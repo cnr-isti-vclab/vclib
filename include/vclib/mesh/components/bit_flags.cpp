@@ -46,17 +46,6 @@ bool BitFlagsT<C, El, o>::isEnabled() const
 }
 
 /**
- * @brief Returns whether this Element is marked as deleted.
- *
- * @return `true` if this Element is deleted, `false` otherwise.
- */
-template<typename C, typename El, bool o>
-bool BitFlagsT<C, El, o>::isDeleted() const
-{
-	return flagValue(DELETED);
-}
-
-/**
  * @brief Returns whether this Element is marked as selected.
  *
  * @return `true` if this Element is seleced, `false` otherwise.
@@ -146,7 +135,7 @@ bool BitFlagsT<Component, ElementType, optional>::selected() const
 template<typename C, typename El, bool o>
 void BitFlagsT<C, El, o>::unsetAllFlags()
 {
-	bool isD = isDeleted();
+	bool isD = deleted();
 	flags().reset();
 	if (isD)
 		setFlag(DELETED);
@@ -203,22 +192,10 @@ int BitFlagsT<C, El, o>::exportToVCGFlags() const
 	return f;
 }
 
-/**
- * @brief Marks as deleted this Element.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::setDeleted()
+template<typename Component, typename ElementType, bool optional>
+BitProxy<int> BitFlagsT<Component, ElementType, optional>::deleted()
 {
-	setFlag(DELETED);
-}
-
-/**
- * @brief Marks as non-deleted this Element.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::unsetDeleted()
-{
-	unsetFlag(DELETED);
+	return flags()[DELETED];
 }
 
 /**

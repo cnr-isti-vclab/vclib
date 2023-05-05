@@ -27,7 +27,9 @@
 
 int main()
 {
-	vcl::BitSet<uint> b;
+	vcl::BitSet<int> b;
+
+	static_assert(sizeof(b) == 4, "");
 
 	b.set();
 

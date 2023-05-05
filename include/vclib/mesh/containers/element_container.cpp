@@ -122,7 +122,7 @@ inline uint ElementContainer<T>::deletedElementNumber() const
 template<ElementConcept T>
 inline void ElementContainer<T>::deleteElement(uint i)
 {
-	vec[i].setDeleted();
+	vec[i].deleted() = true;
 	--en;
 }
 
@@ -163,7 +163,7 @@ uint ElementContainer<T>::elementIndexIfCompact(uint i) const
 	else {
 		uint cnt = 0;
 		for (uint ii = 0; ii < i; ii++) {
-			if (!vec[ii].isDeleted())
+			if (!vec[ii].deleted())
 				++cnt;
 		}
 		return cnt;
@@ -186,7 +186,7 @@ std::vector<int> ElementContainer<T>::elementCompactIndices() const
 	std::vector<int> newIndices(vec.size());
 	uint             k = 0;
 	for (uint i = 0; i < vec.size(); ++i) {
-		if (!vec[i].isDeleted()) {
+		if (!vec[i].deleted()) {
 			newIndices[i] = k;
 			k++;
 		}
@@ -319,7 +319,7 @@ typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementBegin(
 	if (jumpDeleted) {
 		// if the user asked to jump the deleted elements, and the first element is deleted, we need
 		// to move forward until we find the first non-deleted element
-		while (it != vec.end() && it->isDeleted()) {
+		while (it != vec.end() && it->deleted()) {
 			++it;
 		}
 	}
@@ -352,7 +352,7 @@ typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementB
 	if (jumpDeleted) {
 		// if the user asked to jump the deleted elements, and the first element is deleted, we need
 		// to move forward until we find the first non-deleted element
-		while (it != vec.end() && it->isDeleted()) {
+		while (it != vec.end() && it->deleted()) {
 			++it;
 		}
 	}
