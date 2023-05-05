@@ -25,7 +25,7 @@
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
 #include <vclib/concepts/mesh/components/bit_flags.h>
-#include <vclib/misc/bit_proxy.h>
+#include <vclib/space/bit_set/bit_proxy.h>
 
 #include "internal/component_data.h"
 
@@ -92,7 +92,7 @@ public:
 	void setOnBorder();
 	void setUserBit(uint bit);
 
-	BitProxy selected();
+	BitProxy<int> selected();
 	bool selected() const;
 
 	void unsetAllFlags();

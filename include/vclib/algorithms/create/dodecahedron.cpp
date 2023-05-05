@@ -34,6 +34,8 @@ namespace vcl {
  * The returned mesh will contain 12 pentagons.
  *
  * @return A Mesh containing a dodecahedron.
+ *
+ * @ingroup create
  */
 template<PolygonMeshConcept MeshType, LoggerConcept LogType>
 MeshType createDodecahedron(LogType& log)
@@ -109,6 +111,8 @@ MeshType createDodecahedron(LogType& log)
  * If the mesh is polygonal, a mesh containing 12 pentagons will be returned.
  *
  * @return A Mesh containing a dodecahedron.
+ *
+ * @ingroup create
  */
 template<TriangleMeshConcept MeshType, LoggerConcept LogType>
 MeshType createDodecahedron(LogType& log)

@@ -30,10 +30,23 @@
 #include <vector>
 #include <typeindex>
 
+#include <vclib/types.h>
+
 namespace vcl::comp::internal {
 
-//store the data if horizontal
+/*
+ * The CustomComponentData is the data structure that manages the access to the custom 
+ * components from an Element. If the custom components are horizontal, they need to be
+ * stored in the Element memory frame, if they are vertical they need to be stored by the 
+ * Container of elements.
+ * 
+ * The CustomComponentData stores the data horizontally
+ * The CustomComponentData<El, true> (specialized on the boolean template) stores the
+ * data vertically.
+ * 
+ */
 
+// horizontal, not specialized. Store the custom component in this struct
 template<typename ElementType, bool vertical>
 struct CustomComponentsData
 {
@@ -43,18 +56,23 @@ struct CustomComponentsData
 	}
 
 	template<typename CompType>
-	bool isCustomComponentOfType(const std::string& compName)
+	bool isComponentOfType(const std::string& compName, const ElementType*) const
 	{
 		std::type_index t(typeid(CompType));
-		return t == componentType.at(compName);
+		return t == compType.at(compName);
+	}
+	
+	std::type_index componentType(const std::string& compName, const ElementType*) const
+	{
+		return compType.at(compName);
 	}
 
 	template<typename CompType>
-	std::vector<std::string> customComponentNamesOfType() const
+	std::vector<std::string> componentNamesOfType(const ElementType*) const
 	{
 		std::vector<std::string> names;
 		std::type_index t(typeid(CompType));
-		for (const auto& p : componentType) {
+		for (const auto& p : compType) {
 			if (p.second == t)
 				names.push_back(p.first);
 		}
@@ -77,20 +95,24 @@ struct CustomComponentsData
 	void addCustomComponent(const std::string& compName, const CompType c = CompType())
 	{
 		map[compName] = c;
-		componentType.insert({compName, typeid(CompType)});
+		compType.insert({compName, typeid(CompType)});
 	}
 
 	void deleteCustomComponent(const std::string& compName)
 	{
 		map.erase(compName);
-		componentType.erase(compName);
+		compType.erase(compName);
 	}
 
 private:
 	std::unordered_map<std::string, std::any> map;
-	std::unordered_map<std::string, std::type_index> componentType;
+	std::unordered_map<std::string, std::type_index> compType;
 };
 
+// vertical, specialized on the boolean.
+// Access to the data stored in the Container of elements, trough the
+// member function ccVec(elem), where elem is the pointer to the Element
+// that is asking for the data
 template<typename ElementType>
 struct CustomComponentsData<ElementType, true>
 {
@@ -99,17 +121,22 @@ struct CustomComponentsData<ElementType, true>
 		return ccVec(elem).componentExists(compName);
 	}
 
-//	template<typename>
-//	bool isCustomComponentOfType(const std::string&)
-//	{
-//		return false;
-//	}
+	template<typename CompType>
+	bool isComponentOfType(const std::string& compName, const ElementType* elem) const
+	{
+		return ccVec(elem).template isComponentOfType<CompType>(compName);
+	}
+	
+	std::type_index componentType(const std::string& compName, const ElementType* elem) const
+	{
+		return ccVec(elem).componentType(compName);
+	}
 
-//	template<typename>
-//	std::vector<std::string> customComponentNamesOfType() const
-//	{
-//		return std::vector<std::string>();
-//	}
+	template<typename CompType>
+	std::vector<std::string> componentNamesOfType(const ElementType* elem) const
+	{
+		return ccVec(elem).template allComponentNamesOfType<CompType>();
+	}
 
 	template<typename CompType>
 	const CompType& get(const std::string& compName, const ElementType* elem) const
@@ -125,15 +152,6 @@ struct CustomComponentsData<ElementType, true>
 			ccVec(elem).template componentVector<CompType>(compName)[thisId(elem)]);
 	}
 
-//	template<typename CompType>
-//	void addCustomComponent(const std::string&, const CompType = CompType())
-//	{
-//	}
-
-//	void deleteCustomComponent(const std::string&)
-//	{
-//	}
-
 private:
 	uint thisId(const ElementType* elem) const
 	{
@@ -144,14 +162,14 @@ private:
 	auto& ccVec(ElementType* elem)
 	{
 		assert(elem->parentMesh());
-		// get the tuple of vector of vertical components
+		// get the vector of custom components
 		return elem->parentMesh()->template customComponents<ElementType>();
 	}
 
 	const auto& ccVec(const ElementType* elem) const
 	{
 		assert(elem->parentMesh());
-		// get the tuple of vector of vertical components
+		// get the vector of custom components
 		return elem->parentMesh()->template customComponents<ElementType>();
 	}
 };

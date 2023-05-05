@@ -100,33 +100,37 @@ public:
 	void disablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>;
 
 	// Custom Components
-	bool hasPerHalfEdgeCustomComponent(
-		const std::string& name) const requires hedge::HasCustomComponents<T>;
+	bool hasPerHalfEdgeCustomComponent(const std::string& name) const
+		requires hedge::HasCustomComponents<T>;
 
-	std::vector<std::string> getAllPerHalfEdgeCustomComponentNames()
-		const requires hedge::HasCustomComponents<T>;
-
-	template<typename K>
-	bool isPerHalfEdgeCustomComponentOfType(
-		const std::string& name) const requires hedge::HasCustomComponents<T>;
+	std::vector<std::string> perHalfEdgeCustomComponentNames() const
+		requires hedge::HasCustomComponents<T>;
 
 	template<typename K>
-	std::vector<std::string> getPerHalfEdgeCustomComponentNamesOfType()
-		const requires hedge::HasCustomComponents<T>;
+	bool isPerHalfEdgeCustomComponentOfType(const std::string& name) const
+		requires hedge::HasCustomComponents<T>;
+
+	std::type_index perHalfEdgeCustomComponentType(const std::string& name) const
+		requires hedge::HasCustomComponents<T>;
+
+	template<typename K>
+	std::vector<std::string> perHalfEdgeCustomComponentNamesOfType() const
+		requires hedge::HasCustomComponents<T>;
 
 	template<typename K>
 	void addPerHalfEdgeCustomComponent(const std::string& name)
 		requires hedge::HasCustomComponents<T>;
 
-	void deletePerHalfEdgeCustomComponent(
-		const std::string& name) requires hedge::HasCustomComponents<T>;
+	void deletePerHalfEdgeCustomComponent(const std::string& name)
+		requires hedge::HasCustomComponents<T>;
 
 	template<typename K>
-	CustomComponentVectorHandle<K> getPerHalfEdgeCustomComponentVectorHandle(
-		const std::string& name) requires hedge::HasCustomComponents<T>;
+	CustomComponentVectorHandle<K>
+	perHalfEdgeCustomComponentVectorHandle(const std::string& name)
+		requires hedge::HasCustomComponents<T>;
 
 	template<typename K>
-	ConstCustomComponentVectorHandle<K> getPerHalfEdgeCustomComponentVectorHandle(
+	ConstCustomComponentVectorHandle<K> perHalfEdgeCustomComponentVectorHandle(
 		const std::string& name) const requires hedge::HasCustomComponents<T>;
 };
 

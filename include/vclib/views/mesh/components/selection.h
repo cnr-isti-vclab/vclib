@@ -24,6 +24,7 @@
 #ifndef VCL_VIEWS_MESH_COMPONENTS_SELECTION_H
 #define VCL_VIEWS_MESH_COMPONENTS_SELECTION_H
 
+#include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
 
 #include <ranges>

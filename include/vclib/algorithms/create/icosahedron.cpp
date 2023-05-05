@@ -25,6 +25,16 @@
 
 namespace vcl {
 
+/**
+ * @brief Creates and returns an icosahedron mesh.
+ *
+ * @tparam MeshType: The type of the mesh to create, it must satisfy the FaceMeshConcept.
+ * @param[in] normalizeVertices: If true, the vertices are normalized.
+ *
+ * @return The icosahedron mesh.
+ *
+ * @ingroup create
+ */
 template<FaceMeshConcept MeshType>
 MeshType createIcosahedron(bool normalizeVertices)
 {

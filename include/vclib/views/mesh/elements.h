@@ -96,9 +96,42 @@ struct HalfEdgesView
 
 } // namespace vcl::views::internal
 
+/**
+ * @brief A view that allows to iterate over the Vertex elements of an object.
+ *
+ * This view can be applied to objects having type that satisfies the following concepts:
+ * - MeshConcept
+ * - HasVertexPointers
+ *
+ * @ingroup views
+ */
 inline constexpr internal::VerticesView vertices;
+
+/**
+ * @brief A view that allows to iterate overt the Face elements of an object.
+ *
+ * This view can be applied to objects having type that satisfies the FaceMeshConcept
+ *
+ * @ingroup views
+ */
 inline constexpr internal::FacesView faces;
+
+/**
+ * @brief A view that allows to iterate overt the Edge elements of an object.
+ *
+ * This view can be applied to objects having type that satisfies the EdgeMeshConcept
+ *
+ * @ingroup views
+ */
 inline constexpr internal::EdgesView edges;
+
+/**
+ * @brief A view that allows to iterate overt the HalfEdge elements of an object.
+ *
+ * This view can be applied to objects having type that satisfies the HalfEdgeMeshConcept
+ *
+ * @ingroup views
+ */
 inline constexpr internal::HalfEdgesView halfEdges;
 
 } // namespace vcl::views

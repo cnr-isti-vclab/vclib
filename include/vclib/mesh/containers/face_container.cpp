@@ -612,10 +612,10 @@ void FaceContainer<T>::disablePerFaceScalar() requires face::HasOptionalScalar<T
  * @return `true` if the Face Element has a custom component with the given name.
  */
 template<FaceConcept T>
-bool FaceContainer<T>::hasPerFaceCustomComponent(
-	const std::string& name) const requires face::HasCustomComponents<T>
+bool FaceContainer<T>::hasPerFaceCustomComponent(const std::string& name) const
+	requires face::HasCustomComponents<T>
 {
-	return Base::ccVecMap.componentExists(name);
+	return Base::hasElemCustomComponent(name);
 }
 
 /**
@@ -627,10 +627,10 @@ bool FaceContainer<T>::hasPerFaceCustomComponent(
  * @return A vector of strings representing all the names of the custom components.
  */
 template<FaceConcept T>
-std::vector<std::string> FaceContainer<T>::getAllPerFaceCustomComponentNames()
-	const requires face::HasCustomComponents<T>
+std::vector<std::string> FaceContainer<T>::perFaceCustomComponentNames() const
+	requires face::HasCustomComponents<T>
 {
-	return Base::ccVecMap.allComponentNames();
+	return Base::elemCustomComponentNames();
 }
 
 /**
@@ -647,7 +647,10 @@ std::vector<std::string> FaceContainer<T>::getAllPerFaceCustomComponentNames()
  * @note This function is available only if the Face Element has the CustomComponents Component.
  *
  * @tparam K: the type of the custom component to check.
+ *
  * @param[in] name: the name of the custom component to check.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
  * @return `true` if the custom component is of the same type of the template argument.
  */
 template<FaceConcept T>
@@ -655,7 +658,25 @@ template<typename K>
 bool FaceContainer<T>::isPerFaceCustomComponentOfType(const std::string& name) const
 	requires face::HasCustomComponents<T>
 {
-	return Base::ccVecMap.template isComponentOfType<K>(name);
+	return Base::template isElemCustomComponentOfType<K>(name);
+}
+
+/**
+ * @brief Returns the std::type_index of the custom component of the Face Element having the given
+ * input name.
+ *
+ * @note This function is available only if the Face Element has the CustomComponents Component.
+ *
+ * @param[in] name: the name of the custom component to get the std::type_index from.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
+ * @return The std::type_index of the custom component having the given input name.
+ */
+template<vcl::FaceConcept T>
+std::type_index FaceContainer<T>::perFaceCustomComponentType(const std::string& name) const
+	requires face::HasCustomComponents<T>
+{
+	return Base::elemComponentType(name);
 }
 
 /**
@@ -665,7 +686,7 @@ bool FaceContainer<T>::isPerFaceCustomComponentOfType(const std::string& name) c
  * For example, the following code gets a vector containing all the custom components of type
  * `double`:
  * @code{.cpp}
- * std::vector<std::string> cdouble = m.getPerFaceCustomComponentNamesOfType<double>();
+ * std::vector<std::string> cdouble = m.perFaceCustomComponentNamesOfType<double>();
  * @endcode
  *
  * @note This function is available only if the Face Element has the CustomComponents Component.
@@ -675,10 +696,10 @@ bool FaceContainer<T>::isPerFaceCustomComponentOfType(const std::string& name) c
  */
 template<FaceConcept T>
 template<typename K>
-std::vector<std::string> FaceContainer<T>::getPerFaceCustomComponentNamesOfType()
-	const requires face::HasCustomComponents<T>
+std::vector<std::string> FaceContainer<T>::perFaceCustomComponentNamesOfType() const
+	requires face::HasCustomComponents<T>
 {
-	return Base::ccVecMap.template allComponentNamesOfType<K>();
+	return Base::template elemCustomComponentNamesOfType<K>();
 }
 
 /**
@@ -691,10 +712,10 @@ std::vector<std::string> FaceContainer<T>::getPerFaceCustomComponentNamesOfType(
  */
 template<FaceConcept T>
 template<typename K>
-void FaceContainer<T>::addPerFaceCustomComponent(
-	const std::string& name) requires face::HasCustomComponents<T>
+void FaceContainer<T>::addPerFaceCustomComponent(const std::string& name)
+	requires face::HasCustomComponents<T>
 {
-	Base::ccVecMap.template addNewComponent<K>(name, faceContainerSize());
+	Base::template addElemCustomComponent<K>(name);
 }
 
 /**
@@ -707,10 +728,10 @@ void FaceContainer<T>::addPerFaceCustomComponent(
  * @param[in] name: the name of the custom component that will be removed from the Face.
  */
 template<FaceConcept T>
-void FaceContainer<T>::deletePerFaceCustomComponent(
-	const std::string& name) requires face::HasCustomComponents<T>
+void FaceContainer<T>::deletePerFaceCustomComponent(const std::string& name)
+	requires face::HasCustomComponents<T>
 {
-	Base::ccVecMap.deleteComponent(name);
+	Base::deleteElemCustomComponent(name);
 }
 
 /**
@@ -723,7 +744,7 @@ void FaceContainer<T>::deletePerFaceCustomComponent(
  * For example, assuming that the mesh has a face custom component named "cc" of type int:
  *
  * @code{.cpp}
- * auto handle = m.getPerFaceCustomComponentVectorHandle<int>("cc");
+ * auto handle = m.perFaceCustomComponentVectorHandle<int>("cc");
  * for (Face& f : m.faces() {
  *    handle[m.index(f)] = 5; // f.customComponent<int>("cc") == 5
  *    assert(f.customComponent<int>("cc") == 5);
@@ -737,16 +758,19 @@ void FaceContainer<T>::deletePerFaceCustomComponent(
  * could be destructive and invalidate the references contained in the handle.
  *
  * @tparam K: the type of the custom component on which return the handle.
+ *
+ * @throws std::out_of_range if no custom component of the given name was found.
  * @param name: name of the custom component on which return the handle.
+ *
+ * @return a vector handle that allows to access to the custom component.
  */
 template<FaceConcept T>
 template<typename K>
-CustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentVectorHandle(
-	const std::string& name) requires face::HasCustomComponents<T>
+CustomComponentVectorHandle<K>
+FaceContainer<T>::perFaceCustomComponentVectorHandle(const std::string& name)
+	requires face::HasCustomComponents<T>
 {
-	std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
-	CustomComponentVectorHandle<K> v(cc);
-	return v;
+	return Base::template customComponentVectorHandle<K>(name);
 }
 
 /**
@@ -760,7 +784,7 @@ CustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentVector
  *
  * @code{.cpp}
  * // access to the const handle by making const the template parameter:
- * auto handle = m.getPerFaceCustomComponentVectorHandle<const int>("cc");
+ * auto handle = m.perFaceCustomComponentVectorHandle<const int>("cc");
  * int sum = 0;
  * for (const Face& f : m.faces() {
  *    sum += handle[m.index(f)];
@@ -775,16 +799,18 @@ CustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentVector
  * could be destructive and invalidate the references contained in the handle.
  *
  * @tparam K: the type of the custom component on which return the handle.
+ *
+ * @throws std::out_of_range if no custom component of the given name was found.
  * @param name: name of the custom component on which return the handle.
+ *
+ * @return a const vector handle that allows to access to the custom component.
  */
 template<FaceConcept T>
 template<typename K>
-ConstCustomComponentVectorHandle<K> FaceContainer<T>::getPerFaceCustomComponentVectorHandle(
+ConstCustomComponentVectorHandle<K> FaceContainer<T>::perFaceCustomComponentVectorHandle(
 	const std::string& name) const requires face::HasCustomComponents<T>
 {
-	const std::vector<std::any>& cc = Base::ccVecMap.template componentVector<K>(name);
-	ConstCustomComponentVectorHandle<K> v(cc);
-	return cc;
+	return Base::template customComponentVectorHandle<K>(name);
 }
 
 /**

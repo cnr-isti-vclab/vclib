@@ -21,6 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include "vclib/algorithms/polygon/geometry.h"
+#include "vclib/misc/logger/null_logger.h"
 #include <iostream>
 
 #include <vclib/meshes.h>
@@ -67,8 +69,25 @@ int main()
 		assert(f.isEdgeFaux(2));
 	}
 
+	m.addPerFaceCustomComponent<double>("area");
+	auto areaVec = m.perFaceCustomComponentVectorHandle<double>("area");
+
+	for(const auto& f : m.faces()) {
+		areaVec[m.index(f)] = vcl::faceArea(f);
+		std::cerr << "area " << m.index(f) << ": " << areaVec[m.index(f)] << "\n";
+	}
+
 	// save again the mesh
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply");
+	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", vcl::nullLogger, false);
+
+	vcl::TriMesh mm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", loadedInfo);
+	assert(loadedInfo.hasFaceCustomComponents());
+
+	std::cerr << "Loaded custom component areas: \n";
+	for(const auto& f : mm.faces()) {
+		assert(f.customComponent<double>("area") == 2);
+		std::cerr << "area " << mm.index(f) << ": " << f.customComponent<double>("area") << "\n";
+	}
 
 	return 0;
 }

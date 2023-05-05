@@ -120,33 +120,38 @@ public:
 	void disablePerFaceScalar() requires face::HasOptionalScalar<T>;
 
 	// Custom Components
-	bool hasPerFaceCustomComponent(
-		const std::string& name) const requires face::HasCustomComponents<T>;
+	bool hasPerFaceCustomComponent(const std::string& name) const
+		requires face::HasCustomComponents<T>;
 
-	std::vector<std::string> getAllPerFaceCustomComponentNames()
-		const requires face::HasCustomComponents<T>;
-
-	template<typename K>
-	bool isPerFaceCustomComponentOfType(
-		const std::string& name) const requires face::HasCustomComponents<T>;
+	std::vector<std::string> perFaceCustomComponentNames() const
+		requires face::HasCustomComponents<T>;
 
 	template<typename K>
-	std::vector<std::string> getPerFaceCustomComponentNamesOfType()
-		const requires face::HasCustomComponents<T>;
+	bool isPerFaceCustomComponentOfType(const std::string& name) const
+		requires face::HasCustomComponents<T>;
+
+	std::type_index perFaceCustomComponentType(const std::string& name) const
+		requires face::HasCustomComponents<T>;
 
 	template<typename K>
-	void addPerFaceCustomComponent(const std::string& name) requires face::HasCustomComponents<T>;
+	std::vector<std::string> perFaceCustomComponentNamesOfType() const
+		requires face::HasCustomComponents<T>;
+
+	template<typename K>
+	void addPerFaceCustomComponent(const std::string& name)
+		requires face::HasCustomComponents<T>;
 
 	void deletePerFaceCustomComponent(
 		const std::string& name) requires face::HasCustomComponents<T>;
 
 	template<typename K>
-	CustomComponentVectorHandle<K> getPerFaceCustomComponentVectorHandle(
-		const std::string& name) requires face::HasCustomComponents<T>;
+	CustomComponentVectorHandle<K> perFaceCustomComponentVectorHandle(const std::string& name)
+		requires face::HasCustomComponents<T>;
 
 	template<typename K>
-	ConstCustomComponentVectorHandle<K> getPerFaceCustomComponentVectorHandle(
-		const std::string& name) const requires face::HasCustomComponents<T>;
+	ConstCustomComponentVectorHandle<K>
+	perFaceCustomComponentVectorHandle(const std::string& name) const
+		requires face::HasCustomComponents<T>;
 
 protected:
 	// WedgeColors

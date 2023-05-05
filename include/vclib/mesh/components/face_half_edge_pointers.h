@@ -78,35 +78,23 @@ public:
 
 	using AdjacentFaceIterator      = vcl::FaceAdjFaceIterator<HalfEdge>;
 	using ConstAdjacentFaceIterator = vcl::ConstFaceAdjFaceIterator<HalfEdge>;
-	using AdjacentFaceView          = vcl::View<AdjacentFaceIterator>;
-	using ConstAdjacentFaceView     = vcl::View<ConstAdjacentFaceIterator>;
 
 	using HalfEdgeIterator      = vcl::FaceHalfEdgeIterator<HalfEdge>;
 	using ConstHalfEdgeIterator = vcl::ConstFaceHalfEdgeIterator<HalfEdge>;
-	using HalfEdgeView          = vcl::View<HalfEdgeIterator>;
-	using ConstHalfEdgeView     = vcl::View<ConstHalfEdgeIterator>;
 
 	using InnerHalfEdgeIterator      = typename std::vector<HalfEdge*>::iterator;
 	using ConstInnerHalfEdgeIterator = typename std::vector<HalfEdge*>::const_iterator;
-	using InnerHalfEdgeView         = vcl::View<InnerHalfEdgeIterator>;
-	using ConstInnerHalfEdgeView    = vcl::View<ConstInnerHalfEdgeIterator>;
 
 	using VertexIterator      = vcl::FaceVertexIterator<HalfEdge>;
 	using ConstVertexIterator = vcl::ConstFaceVertexIterator<HalfEdge>;
-	using VertexView          = vcl::View<VertexIterator>;
-	using ConstVertexView     = vcl::View<ConstVertexIterator>;
 
 	// these types won't be used when half edge has no colors - all member functions are disabled
 	using WedgeColorsIterator      = vcl::FaceWedgeColorIterator<HalfEdge>;
 	using ConstWedgeColorsIterator = vcl::ConstFaceWedgeColorIterator<HalfEdge>;
-	using WedgeColorsView          = vcl::View<WedgeColorsIterator>;
-	using ConstWedgeColorsView     = vcl::View<ConstWedgeColorsIterator>;
 
 	// these types won't be used when half edge has no texcoords - all member functions are disabled
 	using WedgeTexCoordsIterator      = vcl::FaceWedgeTexCoordIterator<HalfEdge>;
 	using ConstWedgeTexCoordsIterator = vcl::ConstFaceWedgeTexCoordIterator<HalfEdge>;
-	using WedgeTexCoordsView          = vcl::View<WedgeTexCoordsIterator>;
-	using ConstWedgeTexCoordsView     = vcl::View<ConstWedgeTexCoordsIterator>;
 
 	// VertexPointers can be accessed from a face using half edge pointer, therefore this
 	// component claims that it is the VertexPointers component. This is done just for
@@ -229,8 +217,8 @@ public:
 	ConstAdjacentFaceIterator adjFaceBegin() const;
 	ConstAdjacentFaceIterator adjFaceBegin(const HalfEdge* he) const;
 	ConstAdjacentFaceIterator adjFaceEnd() const;
-	AdjacentFaceView          adjFaces();
-	ConstAdjacentFaceView     adjFaces() const;
+	auto                      adjFaces();
+	auto                      adjFaces() const;
 
 	HalfEdgeIterator      haflEdgeBegin();
 	HalfEdgeIterator      haflEdgeBegin(HalfEdge* he);
@@ -238,15 +226,15 @@ public:
 	ConstHalfEdgeIterator halfEdgeBegin(const HalfEdge* he) const;
 	HalfEdgeIterator      halfEdgeEnd();
 	ConstHalfEdgeIterator halfEdgeEnd() const;
-	HalfEdgeView          halfEdges();
-	ConstHalfEdgeView     halfEdges() const;
+	auto                  halfEdges();
+	auto                  halfEdges() const;
 
 	InnerHalfEdgeIterator      innerHalfEdgeBegin();
 	ConstInnerHalfEdgeIterator innerHalfEdgeBegin() const;
 	InnerHalfEdgeIterator      innerHalfEdgeEnd();
 	ConstInnerHalfEdgeIterator innerHalfEdgeEnd() const;
-	InnerHalfEdgeView         innerHalfEdges();
-	ConstInnerHalfEdgeView    innerHalfEdges() const;
+	auto                       innerHalfEdges();
+	auto                       innerHalfEdges() const;
 
 	VertexIterator      vertexBegin();
 	VertexIterator      vertexBegin(HalfEdge* he);
@@ -254,22 +242,22 @@ public:
 	ConstVertexIterator vertexBegin(const HalfEdge* he) const;
 	VertexIterator      vertexEnd();
 	ConstVertexIterator vertexEnd() const;
-	VertexView          vertices();
-	ConstVertexView     vertices() const;
+	auto                vertices();
+	auto                vertices() const;
 
-	WedgeColorsIterator      wedgeColorBegin()       requires HasColor<HalfEdge>;
-	WedgeColorsIterator      wedgeColorEnd()         requires HasColor<HalfEdge>;
+	WedgeColorsIterator      wedgeColorBegin() requires HasColor<HalfEdge>;
+	WedgeColorsIterator      wedgeColorEnd() requires HasColor<HalfEdge>;
 	ConstWedgeColorsIterator wedgeColorBegin() const requires HasColor<HalfEdge>;
-	ConstWedgeColorsIterator wedgeColorEnd() const   requires HasColor<HalfEdge>;
-	WedgeColorsView          wedgeColors()           requires HasColor<HalfEdge>;
-	ConstWedgeColorsView     wedgeColors() const     requires HasColor<HalfEdge>;
+	ConstWedgeColorsIterator wedgeColorEnd() const requires HasColor<HalfEdge>;
+	auto                     wedgeColors() requires HasColor<HalfEdge>;
+	auto                     wedgeColors() const requires HasColor<HalfEdge>;
 
 	WedgeTexCoordsIterator      wedgeTexCoordBegin()       requires HasTexCoord<HalfEdge>;
 	WedgeTexCoordsIterator      wedgeTexCoordEnd()         requires HasTexCoord<HalfEdge>;
 	ConstWedgeTexCoordsIterator wedgeTexCoordBegin() const requires HasTexCoord<HalfEdge>;
 	ConstWedgeTexCoordsIterator wedgeTexCoordEnd() const   requires HasTexCoord<HalfEdge>;
-	WedgeTexCoordsView          wedgeTexCoords()           requires HasTexCoord<HalfEdge>;
-	ConstWedgeTexCoordsView     wedgeTexCoords() const     requires HasTexCoord<HalfEdge>;
+	auto                        wedgeTexCoords()           requires HasTexCoord<HalfEdge>;
+	auto                        wedgeTexCoords() const     requires HasTexCoord<HalfEdge>;
 
 protected:
 	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);

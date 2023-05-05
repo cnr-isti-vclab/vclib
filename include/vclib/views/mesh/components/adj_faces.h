@@ -61,6 +61,8 @@ struct AdjFacesView
  * @code{.cpp}
  * for (auto* af: f | views::adjFaces | views::notNull) { ... }
  * @endcode
+ *
+ * @ingroup views
  */
 inline constexpr internal::AdjFacesView adjFaces;
 

@@ -21,55 +21,82 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_BIT_PROXY_H
-#define VCL_MISC_BIT_PROXY_H
+#ifndef VCL_SPACE_BIT_SET_H
+#define VCL_SPACE_BIT_SET_H
 
-#include <functional>
 
-#include <vclib/types.h>
+
+#include "bit_set/bit_proxy.h"
 
 namespace vcl {
 
 /**
- * @brief The BitProxy class allows to access to a bool reference from a bit saved in a mask,
- * and then allow assignment.
+ * @brief The BitSet class allows to treat an integral type as an array of booleans of a guaranteed
+ * size.
  *
- * See: https://stackoverflow.com/a/10145050/5851101
+ * This class is necessary w.r.t. the std::bitset because the realization of the std::bitset class
+ * is implementation defined, and the standard does not constraint the size of the bitset itself.
+ *
+ * This class guarantess that the sizeof(BitSet<T>) is equal to sizeof(T).
+ *
+ * @tparam T: The type to use as a storage for the bits. It must satisfy the std::integral concept.
+ *
+ * @ingroup space
  */
-class BitProxy
+template<std::integral T>
+class BitSet
 {
 public:
-	BitProxy(int& mask, uint index) : mask(mask), index(index) {}
+	BitSet();
 
-	void setIndex(uint ind) { index = ind; }
+	static constexpr std::size_t SIZE = sizeof(T) * 8;
 
-	operator bool() const { return mask.get() & (1 << index); }
+	constexpr std::size_t size() const;
 
-	void operator=(bool bit) { mask.get() = (mask.get() & ~(bit << index)) | (bit << index); }
-
-	BitProxy& operator|=(bool bit)
-	{
-		mask.get() |= (bit << index);
-		return *this;
-	}
-
-	BitProxy& operator&=(bool bit)
-	{
-		mask.get() &= ~(bit << index);
-		return *this;
-	}
-
-	BitProxy& operator/=(bool bit)
-	{
-		mask.get() ^= (bit << index);
-		return *this;
-	}
+	bool operator[](uint i) const;
+	BitProxy<T> operator[](uint i);
+	
+	bool at(uint i) const;
+	BitProxy<T> at(uint i);
+	
+	bool all() const;
+	bool any() const;
+	bool none() const;
 
 private:
-	std::reference_wrapper<int> mask;
-	uint index;
+	T bits = 0;
 };
+
+/**
+ * @brief BitSet8 is a BitSet of 8 bits.
+ *
+ * @ingroup space
+ */
+using BitSet8  = BitSet<char>;
+
+/**
+ * @brief BitSet16 is a BitSet of 16 bits.
+ *
+ * @ingroup space
+ */
+using BitSet16 = BitSet<short>;
+
+/**
+ * @brief BitSet32 is a BitSet of 32 bits.
+ *
+ * @ingroup space
+ */
+using BitSet32 = BitSet<int>;
+
+/**
+ * @brief BitSet64 is a BitSet of 64 bits.
+ *
+ * @ingroup space
+ */
+using BitSet64 = BitSet<std::size_t>;
 
 } // namespace vcl
 
-#endif // VCL_MISC_BIT_PROXY_H
+#include "bit_set.cpp"
+
+#endif // VCL_SPACE_BIT_SET_H

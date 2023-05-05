@@ -31,21 +31,25 @@ bool CustomComponents<El>::hasCustomComponent(const std::string& attrName) const
 	return data.componentExists(attrName, static_cast<const El*>(this));
 }
 
-//template<typename El>
-//template<typename CompType>
-//bool CustomComponents<El>::isCustomComponentOfType(const std::string& compName) const
-//	requires(!IS_VERTICAL)
-//{
-//	return data.template isCustomComponentOfType<CompType>(compName);
-//}
+template<typename El>
+template<typename CompType>
+bool CustomComponents<El>::isCustomComponentOfType(const std::string& compName) const
+{
+	return data.template isComponentOfType<CompType>(compName, static_cast<const El*>(this));
+}
 
-//template<typename El>
-//template<typename CompType>
-//std::vector<std::string> CustomComponents<El>::customComponentNamesOfType() const
-//	requires(!IS_VERTICAL)
-//{
-//	return data.template customComponentNamesOfType<CompType>();
-//}
+template<typename El>
+std::type_index CustomComponents<El>::customComponentType(const std::string &compName) const
+{
+	return data.componentType(compName, static_cast<const El*>(this));
+}
+
+template<typename El>
+template<typename CompType>
+std::vector<std::string> CustomComponents<El>::customComponentNamesOfType() const
+{
+	return data.template componentNamesOfType<CompType>(static_cast<const El*>(this));
+}
 
 template<typename El>
 template<typename CompType>

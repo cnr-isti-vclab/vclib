@@ -22,6 +22,7 @@
  ****************************************************************************/
 
 #include "io_write.h"
+#include <typeindex>
 
 namespace vcl::io::internal {
 
@@ -135,6 +136,35 @@ void writeProperty(std::ofstream& file, const T& p, PropertyType type, bool bin,
 	case DOUBLE: writeDouble(file, p, bin, isColor); break;
 	default: assert(0);
 	}
+}
+
+template<ElementConcept El>
+void writeCustomComponent(
+	std::ofstream&     file,
+	const El&          elem,
+	const std::string& cName,
+	PropertyType       type,
+	bool               bin)
+{
+	std::type_index ti = elem.customComponentType(cName);
+	if (ti == typeid(char))
+		writeProperty(file, elem.template customComponent<char>(cName), type, bin);
+	else if (ti == typeid(unsigned char))
+		writeProperty(file, elem.template customComponent<unsigned char>(cName), type, bin);
+	else if (ti == typeid(short))
+		writeProperty(file, elem.template customComponent<short>(cName), type, bin);
+	else if (ti == typeid(unsigned short))
+		writeProperty(file, elem.template customComponent<unsigned short>(cName), type, bin);
+	else if (ti == typeid(int))
+		writeProperty(file, elem.template customComponent<int>(cName), type, bin);
+	else if (ti == typeid(unsigned int))
+		writeProperty(file, elem.template customComponent<uint>(cName), type, bin);
+	else if (ti == typeid(float))
+		writeProperty(file, elem.template customComponent<float>(cName), type, bin);
+	else if (ti == typeid(double))
+		writeProperty(file, elem.template customComponent<double>(cName), type, bin);
+	else
+		assert(0);
 }
 
 } // namespace vcl::io::internal

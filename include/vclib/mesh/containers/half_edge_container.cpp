@@ -463,10 +463,10 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeTexCoord() requires hedge::HasOptio
  * @return `true` if the HalfEdge Element has a custom component with the given name.
  */
 template<HalfEdgeConcept T>
-bool HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(
-	const std::string& name) const requires hedge::HasCustomComponents<T>
+bool HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(const std::string& name) const
+	requires hedge::HasCustomComponents<T>
 {
-	return Base::ccVecMap.componentExists(name);
+	return Base::hasElemCustomComponent(name);
 }
 
 /**
@@ -478,10 +478,10 @@ bool HalfEdgeContainer<T>::hasPerHalfEdgeCustomComponent(
  * @return A vector of strings representing all the names of the custom components.
  */
 template<HalfEdgeConcept T>
-std::vector<std::string> HalfEdgeContainer<T>::getAllPerHalfEdgeCustomComponentNames()
-	const requires hedge::HasCustomComponents<T>
+std::vector<std::string> HalfEdgeContainer<T>::perHalfEdgeCustomComponentNames() const
+	requires hedge::HasCustomComponents<T>
 {
-	return Base::ccVecMap.allComponentNames();
+	return Base::elemCustomComponentNames();
 }
 
 /**
@@ -498,15 +498,34 @@ std::vector<std::string> HalfEdgeContainer<T>::getAllPerHalfEdgeCustomComponentN
  * @note This function is available only if the HalfEdge Element has the CustomComponents Component.
  *
  * @tparam K: the type of the custom component to check.
+ *
  * @param[in] name: the name of the custom component to check.
  * @return `true` if the custom component is of the same type of the template argument.
  */
 template<HalfEdgeConcept T>
 template<typename K>
-bool HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(
-	const std::string& name) const requires hedge::HasCustomComponents<T>
+bool HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(const std::string& name) const
+	requires hedge::HasCustomComponents<T>
 {
-	return Base::ccVecMap.template isComponentOfType<K>(name);
+	return Base::template isElemCustomComponentOfType<K>(name);
+}
+
+/**
+ * @brief Returns the std::type_index of the custom component of the HalfEdge Element having the
+ * given input name.
+ *
+ * @note This function is available only if the HalfEdge Element has the CustomComponents Component.
+ *
+ * @param[in] name: the name of the custom component to get the std::type_index from.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
+ * @return The std::type_index of the custom component having the given input name.
+ */
+template<vcl::HalfEdgeConcept T>
+std::type_index HalfEdgeContainer<T>::perHalfEdgeCustomComponentType(const std::string& name) const
+	requires hedge::HasCustomComponents<T>
+{
+	return Base::elemComponentType(name);
 }
 
 /**
@@ -516,7 +535,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(
  * For example, the following code gets a vector containing all the custom components of type
  * `double`:
  * @code{.cpp}
- * std::vector<std::string> cdouble = m.getPerHalfEdgeCustomComponentNamesOfType<double>();
+ * std::vector<std::string> cdouble = m.perHalfEdgeCustomComponentNamesOfType<double>();
  * @endcode
  *
  * @note This function is available only if the HalfEdge Element has the CustomComponents Component.
@@ -526,10 +545,10 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeCustomComponentOfType(
  */
 template<HalfEdgeConcept T>
 template<typename K>
-std::vector<std::string> HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentNamesOfType()
-	const requires hedge::HasCustomComponents<T>
+std::vector<std::string> HalfEdgeContainer<T>::perHalfEdgeCustomComponentNamesOfType() const
+	requires hedge::HasCustomComponents<T>
 {
-	return Base::ccVecMap.template allComponentNamesOfType<K>();
+	return Base::template elemCustomComponentNamesOfType<K>();
 }
 
 /**
@@ -545,7 +564,7 @@ template<typename K>
 void HalfEdgeContainer<T>::addPerHalfEdgeCustomComponent(const std::string& name)
 	requires hedge::HasCustomComponents<T>
 {
-	Base::ccVecMap.template addNewComponent<K>(name, halfEdgeContainerSize());
+	Base::template addElemCustomComponent<K>(name);
 }
 
 /**
@@ -558,10 +577,10 @@ void HalfEdgeContainer<T>::addPerHalfEdgeCustomComponent(const std::string& name
  * @param[in] name: the name of the custom component that will be removed from the HalfEdge.
  */
 template<HalfEdgeConcept T>
-void HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(
-	const std::string& name) requires hedge::HasCustomComponents<T>
+void HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(const std::string& name)
+	requires hedge::HasCustomComponents<T>
 {
-	Base::ccVecMap.deleteComponent(name);
+	Base::deleteElemCustomComponent(name);
 }
 
 /**
@@ -574,7 +593,7 @@ void HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(
  * For example, assuming that the mesh has a edge custom component named "cc" of type int:
  *
  * @code{.cpp}
- * auto handle = m.getPerHalfEdgeCustomComponentVectorHandle<int>("cc");
+ * auto handle = m.perHalfEdgeCustomComponentVectorHandle<int>("cc");
  * for (HalfEdge& e : m.halfEdges() {
  *    handle[m.index(e)] = 5; // e.customComponent<int>("cc") == 5
  *    assert(e.customComponent<int>("cc") == 5);
@@ -584,20 +603,25 @@ void HalfEdgeContainer<T>::deletePerHalfEdgeCustomComponent(
  * Using handles allows to access more efficiently to custom components rather accessing from an
  * element object. However, note that references are binded to the container of the mesh.
  *
+ * @note This function is available only if the HalfEdge Element has the CustomComponents Component.
+ *
  * @note Since the handle contains references, any operation that changes the size of the container
  * could be destructive and invalidate the references contained in the handle.
  *
  * @tparam K: the type of the custom component on which return the handle.
- * @param name: name of the custom component on which return the handle.
+ *
+ * @param[in] name: name of the custom component on which return the handle.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
+ * @return a vector handle that allows to access to the custom component.
  */
 template<HalfEdgeConcept T>
 template<typename K>
-CustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(
-	const std::string& name) requires hedge::HasCustomComponents<T>
+CustomComponentVectorHandle<K>
+HalfEdgeContainer<T>::perHalfEdgeCustomComponentVectorHandle(const std::string& name)
+	requires hedge::HasCustomComponents<T>
 {
-	std::vector<std::any>&         cc = Base::ccVecMap.template componentVector<K>(name);
-	CustomComponentVectorHandle<K> v(cc);
-	return v;
+	return Base::template customComponentVectorHandle<K>(name);
 }
 
 /**
@@ -611,7 +635,7 @@ CustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomCompone
  *
  * @code{.cpp}
  * // access to the const handle by making const the template parameter:
- * auto handle = m.getPerHalfEdgeCustomComponentVectorHandle<const int>("cc");
+ * auto handle = m.perHalfEdgeCustomComponentVectorHandle<const int>("cc");
  * int sum = 0;
  * for (const HalfEdge& e : m.halfEdges() {
  *    sum += handle[m.index(e)];
@@ -622,20 +646,24 @@ CustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomCompone
  * Using handles allows to access more efficiently to custom components rather accessing from an
  * element object. However, note that references are binded to the container of the mesh.
  *
+ * @note This function is available only if the HalfEdge Element has the CustomComponents Component.
+ *
  * @note Since the handle contains references, any operation that changes the size of the container
  * could be destructive and invalidate the references contained in the handle.
  *
  * @tparam K: the type of the custom component on which return the handle.
- * @param name: name of the custom component on which return the handle.
+ *
+ * @param[in] name: name of the custom component on which return the handle.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
+ * @return a const vector handle that allows to access to the custom component.
  */
 template<HalfEdgeConcept T>
 template<typename K>
-ConstCustomComponentVectorHandle<K> HalfEdgeContainer<T>::getPerHalfEdgeCustomComponentVectorHandle(
+ConstCustomComponentVectorHandle<K> HalfEdgeContainer<T>::perHalfEdgeCustomComponentVectorHandle(
 	const std::string& name) const requires hedge::HasCustomComponents<T>
 {
-	const std::vector<std::any>&        cc = Base::ccVecMap.template componentVector<K>(name);
-	ConstCustomComponentVectorHandle<K> v(cc);
-	return cc;
+	return Base::template customComponentVectorHandle<K>(name);
 }
 
 } // namespace vcl::mesh

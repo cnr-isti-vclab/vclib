@@ -71,6 +71,8 @@ public:
 	template<typename CompType>
 	bool isComponentOfType(const std::string& compName) const;
 
+	std::type_index componentType(const std::string& compName) const;
+
 	template<typename CompType>
 	std::vector<std::string> allComponentNamesOfType() const;
 
@@ -91,7 +93,7 @@ private:
 	// custom component vector).
 	mutable std::unordered_map<std::string, bool> needToInitialize;
 	// types used for each custom component
-	std::unordered_map<std::string, std::type_index> componentType;
+	std::unordered_map<std::string, std::type_index> compType;
 
 	template<typename CompType>
 	void checkComponentType(const std::string& compName) const;

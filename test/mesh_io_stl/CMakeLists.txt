@@ -9,11 +9,11 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-load-stl)
+project(vclib-mesh-io-stl)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-mesh-load-stl ${SOURCES})
+add_executable(vclib-mesh-io-stl ${SOURCES})
 
-target_link_libraries(vclib-mesh-load-stl PUBLIC vclib)
+target_link_libraries(vclib-mesh-io-stl PUBLIC vclib)

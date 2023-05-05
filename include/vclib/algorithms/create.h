@@ -30,4 +30,14 @@
 #include "create/sphere.h"
 #include "create/tetrahedron.h"
 
+/**
+ * @defgroup create Mesh Creation Algorithms
+ *
+ * @ingroup algorithms
+ *
+ * @brief List of Mesh Creation algorithms.
+ *
+ * You can access these algorithms by including `#include <vclib/algorithms/create.h>`
+ */
+
 #endif // VCL_ALGORITHMS_CREATE_H

@@ -33,7 +33,7 @@
 namespace vcl::io::ply {
 
 inline PlyHeader::PlyHeader() :
-		_format(ply::UNKNOWN),
+		frmt(ply::UNKNOWN),
 		valid(false),
 		vertElemPos(-1),
 		faceElemPos(-1),
@@ -42,11 +42,11 @@ inline PlyHeader::PlyHeader() :
 {
 }
 
-PlyHeader::PlyHeader(
+inline PlyHeader::PlyHeader(
 	Format                   format,
-	const FileMeshInfo&  info,
+	const FileMeshInfo&      info,
 	std::vector<std::string> textureFiles) :
-		_format(format),
+		frmt(format),
 		valid(true),
 		vertElemPos(-1),
 		faceElemPos(-1),
@@ -56,7 +56,8 @@ PlyHeader::PlyHeader(
 	setInfo(info, textureFiles, format == BINARY);
 }
 
-inline PlyHeader::PlyHeader(const std::string& filename, std::ifstream& file) : _format(ply::UNKNOWN), valid(false)
+inline PlyHeader::PlyHeader(const std::string& filename, std::ifstream& file) :
+		frmt(ply::UNKNOWN), valid(false)
 {
 	clear();
 	if (file.is_open()) {
@@ -77,11 +78,11 @@ inline PlyHeader::PlyHeader(const std::string& filename, std::ifstream& file) : 
 					if (headerLine == "format") {
 						token++;
 						if (*token == "ascii")
-							_format = ply::ASCII;
+							frmt = ply::ASCII;
 						else if (
 							*token == "binary_big_endian" || *token == "binary_little_endian" ||
 							*token == "binary")
-							_format = ply::BINARY;
+							frmt = ply::BINARY;
 					}
 					// reading a comment, may be a texture file...
 					else if (headerLine == "comment") {
@@ -149,7 +150,7 @@ inline PlyHeader::PlyHeader(const std::string& filename, std::ifstream& file) : 
 
 inline void PlyHeader::clear()
 {
-	_format = ply::UNKNOWN;
+	frmt = ply::UNKNOWN;
 	elements.clear();
 	textureFiles.clear();
 	valid = false;
@@ -166,7 +167,7 @@ bool PlyHeader::isValid() const
 
 inline ply::Format PlyHeader::format() const
 {
-	return _format;
+	return frmt;
 }
 
 inline FileMeshInfo PlyHeader::getInfo() const
@@ -190,6 +191,10 @@ inline FileMeshInfo PlyHeader::getInfo() const
 			case ply::alpha: mod.setVertexColors(); break;
 			case ply::scalar: mod.setVertexScalars(); break;
 			case ply::texture_u: mod.setVertexTexCoords(); break;
+			case ply::unknown:
+				if (p.type <= PropertyType::DOUBLE) {
+					mod.addVertexCustomComponent(p.unknownPropertyName, (FileMeshInfo::DataType)p.type);
+				}
 			default: break;
 			}
 		}
@@ -208,6 +213,10 @@ inline FileMeshInfo PlyHeader::getInfo() const
 			case ply::alpha: mod.setFaceColors(); break;
 			case ply::scalar: mod.setFaceScalars(); break;
 			case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
+			case ply::unknown:
+				if (p.type <= PropertyType::DOUBLE) {
+					mod.addFaceCustomComponent(p.unknownPropertyName, (FileMeshInfo::DataType)p.type);
+				}
 			default: break;
 			}
 		}
@@ -251,12 +260,12 @@ inline bool PlyHeader::hasEdges() const
 	return edgeElemPos >= 0;
 }
 
-bool PlyHeader::hasTriStrips() const
+inline bool PlyHeader::hasTriStrips() const
 {
 	return trisElemPos >= 0;
 }
 
-bool PlyHeader::hasTextureFileNames() const
+inline bool PlyHeader::hasTextureFileNames() const
 {
 	return textureFiles.size() > 0;
 }
@@ -279,13 +288,13 @@ inline uint PlyHeader::numberEdges() const
 	return elements[edgeElemPos].numberElements;
 }
 
-uint PlyHeader::numberTriStrips() const
+inline uint PlyHeader::numberTriStrips() const
 {
 	assert(hasTriStrips());
 	return elements[trisElemPos].numberElements;
 }
 
-uint PlyHeader::numberTextureFileNames() const
+inline uint PlyHeader::numberTextureFileNames() const
 {
 	return textureFiles.size();
 }
@@ -308,13 +317,13 @@ inline const std::list<Property>& PlyHeader::edgeProperties() const
 	return elements[edgeElemPos].properties;
 }
 
-const std::list<Property>& PlyHeader::triStripsProperties() const
+inline const std::list<Property>& PlyHeader::triStripsProperties() const
 {
 	assert(hasTriStrips());
 	return elements[trisElemPos].properties;
 }
 
-const std::vector<std::string>& PlyHeader::textureFileNames() const
+inline const std::vector<std::string>& PlyHeader::textureFileNames() const
 {
 	return textureFiles;
 }
@@ -356,7 +365,7 @@ inline void PlyHeader::setInfo(
 	bool binary)
 {
 	clear();
-	_format             = binary ? BINARY : ASCII;
+	frmt             = binary ? BINARY : ASCII;
 	valid             = true;
 	textureFiles = textureFileNames;
 	if (info.hasVertices()) {
@@ -420,6 +429,17 @@ inline void PlyHeader::setInfo(
 			vElem.properties.push_back(tcv);
 			vElem.properties.push_back(tcn);
 		}
+		if (info.hasVertexCustomComponents()) {
+			for (const auto& cc : info.vertexCustomComponents()) {
+				if (cc.type <= FileMeshInfo::DOUBLE) {
+					ply::Property pp;
+					pp.name = unknown;
+					pp.unknownPropertyName = cc.name;
+					pp.type = (PropertyType)cc.type;
+					vElem.properties.push_back(pp);
+				}
+			}
+		}
 		elements.push_back(vElem);
 	}
 	if (info.hasFaces()) {
@@ -478,6 +498,17 @@ inline void PlyHeader::setInfo(
 			fElem.properties.push_back(tc);
 			fElem.properties.push_back(tn);
 		}
+		if (info.hasFaceCustomComponents()) {
+			for (const auto& cc : info.faceCustomComponents()) {
+				if (cc.type <= FileMeshInfo::DOUBLE) {
+					ply::Property pp;
+					pp.name = unknown;
+					pp.unknownPropertyName = cc.name;
+					pp.type = (PropertyType)cc.type;
+					fElem.properties.push_back(pp);
+				}
+			}
+		}
 		elements.push_back(fElem);
 	}
 	if (info.hasEdges()) {
@@ -503,7 +534,7 @@ inline std::string PlyHeader::toString() const
 	std::string s;
 
 	s += "ply\nformat ";
-	s += (_format == ASCII ? "ascii 1.0\n" : "binary_little_endian 1.0\n");
+	s += (frmt == ASCII ? "ascii 1.0\n" : "binary_little_endian 1.0\n");
 	s += "comment Generated by vclib\n";
 	for (const std::string& str : textureFiles) {
 		s += "comment TextureFile " + str + "\n";
@@ -538,7 +569,7 @@ inline std::string PlyHeader::toString() const
 
 inline void PlyHeader::setFormat(ply::Format f)
 {
-	_format = f;
+	frmt = f;
 }
 
 inline PlyHeader::iterator PlyHeader::begin() const

@@ -122,7 +122,7 @@ void BitFlagsT<C, El, o>::setUserBit(uint bit)
 }
 
 template<typename Component, typename ElementType, bool optional>
-BitProxy BitFlagsT<Component, ElementType, optional>::selected()
+BitProxy<int> BitFlagsT<Component, ElementType, optional>::selected()
 {
 	return BitProxy(flags(), SELECTED);
 }
