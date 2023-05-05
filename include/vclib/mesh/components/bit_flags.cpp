@@ -46,17 +46,6 @@ bool BitFlagsT<C, El, o>::isEnabled() const
 }
 
 /**
- * @brief Returns whether this Element is marked as selected.
- *
- * @return `true` if this Element is seleced, `false` otherwise.
- */
-template<typename C, typename El, bool o>
-bool BitFlagsT<C, El, o>::isSelected() const
-{
-	return flagValue(SELECTED);
-}
-
-/**
  * @brief Returns whether this Element is marked to be on border.
  *
  * @return `true` if this Element is marked to be on border, `false` otherwise.
@@ -78,15 +67,6 @@ template<typename C, typename El, bool o>
 bool BitFlagsT<C, El, o>::userBitFlag(uint bit) const
 {
 	return userBitFlag(bit, FIRST_USER_BIT);
-}
-
-/**
- * @brief Marks as selected this Element.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::setSelected()
-{
-	setFlag(SELECTED);
 }
 
 /**
@@ -142,15 +122,6 @@ void BitFlagsT<C, El, o>::unsetAllFlags()
 }
 
 /**
- * @brief Marks as non-selected this Element.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::unsetSelected()
-{
-	unsetFlag(SELECTED);
-}
-
-/**
  * @brief Marks as non-on-border this Element.
  */
 template<typename C, typename El, bool o>
@@ -176,7 +147,7 @@ void BitFlagsT<C, El, o>::importFromVCGFlags(int f)
 {
 	unsetAllFlags();
 	if (f & 0x0020)
-		setSelected();
+		selected() = true;
 	if (f & 0x0100)
 		setOnBorder();
 }
@@ -185,7 +156,7 @@ template<typename C, typename El, bool o>
 int BitFlagsT<C, El, o>::exportToVCGFlags() const
 {
 	int f = 0;
-	if (isSelected())
+	if (selected())
 		f &= 0x0020;
 	if (isOnBorder())
 		f &= 0x0100;

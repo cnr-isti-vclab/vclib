@@ -35,7 +35,7 @@ template<vcl::Range Rng>
 void clearSelection(Rng&& r)
 {
 	for (auto& e : r) {
-		e.unsetSelected();
+		e.selected() = false;
 	}
 }
 
@@ -74,10 +74,10 @@ void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst)
 
 	for (VertexType& v : m.vertices()) {
 		if (nonManifoldVertices[m.index(v)]) {
-			v.setSelected();
+			v.selected() = true;
 		}
 		else if (clearSelectionFirst) {
-			v.unsetSelected();
+			v.selected() = false;
 		}
 	}
 }

@@ -83,11 +83,9 @@ public:
 
 	/* Member functions */
 
-	bool isSelected() const;
 	bool isOnBorder() const;
 	bool userBitFlag(uint bit) const;
 
-	void setSelected();
 	void setOnBorder();
 	void setUserBit(uint bit);
 
@@ -97,7 +95,6 @@ public:
 	bool selected() const;
 
 	void unsetAllFlags();
-	void unsetSelected();
 	void unsetOnBorder();
 	void unsetUserBit(uint bit);
 

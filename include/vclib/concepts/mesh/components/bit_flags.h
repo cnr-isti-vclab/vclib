@@ -45,11 +45,9 @@ concept HasBitFlags = requires(
 	{ co.isOnBorder() } -> std::same_as<bool>;
 	{ co.userBitFlag(uint()) } -> std::same_as<bool>;
 
-	{ o.setSelected() } -> std::same_as<void>;
 	{ o.setUserBit(uint()) } -> std::same_as<void>;
 
 	{ o.unsetAllFlags() } -> std::same_as<void>;
-	{ o.unsetSelected() } -> std::same_as<void>;
 	{ o.unsetUserBit(uint()) } -> std::same_as<void>;
 };
 

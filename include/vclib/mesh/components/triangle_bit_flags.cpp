@@ -187,7 +187,7 @@ template<typename El, bool o>
 void TriangleBitFlags<El, o>::importFromVCGFlags(int f)
 {
 	if (f & 0x00000020)
-		Base::setSelected();
+		Base::selected() = true;
 	if (f & 0x00000040)
 		setEdgeOnBorder(0);
 	if (f & 0x00000080)
