@@ -31,6 +31,11 @@
 
 namespace vcl {
 
+/**
+ * @brief The CustomComponentVectorHandle is a class that allows to access to the 
+ * custom components stored in a Contaner of Elements, trough the classic std::vector 
+ * accessors.
+ */
 template<typename T>
 class CustomComponentVectorHandle
 {

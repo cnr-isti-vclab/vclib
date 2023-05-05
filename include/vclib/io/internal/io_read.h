@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_READ_H
-#define VCL_IO_READ_H
+#ifndef VCL_IO_INTERNAL_IO_READ_H
+#define VCL_IO_INTERNAL_IO_READ_H
 
 #include "io_utils.h"
 
@@ -57,6 +57,9 @@ T readDouble(std::ifstream& file, bool isColor = false);
 template<typename T>
 T readProperty(std::ifstream& file, PropertyType type, bool isColor = false);
 
+template<ElementConcept El>
+void readCustomComponent(std::ifstream& file, El& elem, const std::string& cName, PropertyType type);
+
 // read/txt
 
 template<typename T>
@@ -86,8 +89,15 @@ T readDouble(vcl::Tokenizer::iterator& token, bool isColor = false);
 template<typename T>
 T readProperty(vcl::Tokenizer::iterator& token, PropertyType type, bool isColor = false);
 
-}
+template<ElementConcept El>
+void readCustomComponent(
+	vcl::Tokenizer::iterator& token,
+	El&                       elem,
+	const std::string&        cName,
+	PropertyType              type);
+
+} // vcl::io::internal
 
 #include "io_read.cpp"
 
-#endif // VCL_IO_READ_H
+#endif // VCL_IO_INTERNAL_IO_READ_H

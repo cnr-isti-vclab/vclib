@@ -259,7 +259,6 @@ set(HEADERS
 	include/vclib/meshes/point_cloud.h
 	include/vclib/meshes/poly_mesh.h
 	include/vclib/meshes/tri_mesh.h
-	include/vclib/misc/bit_proxy.h
 	include/vclib/misc/compactness.h
 	include/vclib/misc/comparators.h
 	include/vclib/misc/file_info.h
@@ -285,6 +284,7 @@ set(HEADERS
 	include/vclib/render/mesh_render_buffers.h
 	include/vclib/render/mesh_render_settings.h
 	include/vclib/space/array.h
+	include/vclib/space/bit_set.h
 	include/vclib/space/box.h
 	include/vclib/space/color.h
 	include/vclib/space/graph.h
@@ -302,6 +302,7 @@ set(HEADERS
 	include/vclib/space/triangle.h
 	include/vclib/space/triangle_wrapper.h
 	include/vclib/space/vector.h
+	include/vclib/space/bit_set/bit_proxy.h
 	include/vclib/space/graph/undirected_node.h
 	include/vclib/space/graph/bipartite/bipartite_graph.h
 	include/vclib/space/graph/bipartite/iterator/adjacent_left_node_iterator.h
@@ -470,6 +471,7 @@ set(SOURCES
 	include/vclib/render/mesh_render_buffers.cpp
 	include/vclib/render/mesh_render_settings.cpp
 	include/vclib/space/array.cpp
+	include/vclib/space/bit_set.cpp
 	include/vclib/space/box.cpp
 	include/vclib/space/color.cpp
 	include/vclib/space/matrix.cpp
@@ -484,6 +486,7 @@ set(SOURCES
 	include/vclib/space/triangle.cpp
 	include/vclib/space/triangle_wrapper.cpp
 	include/vclib/space/vector.cpp
+	include/vclib/space/bit_set/bit_proxy.cpp
 	include/vclib/space/graph/undirected_node.cpp
 	include/vclib/space/graph/bipartite/bipartite_graph.cpp
 	include/vclib/space/graph/bipartite/iterator/adjacent_node_iterator.cpp

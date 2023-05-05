@@ -94,7 +94,7 @@ public:
 	void unsetAllEdgesSelected();
 
 	void unsetEdgeFaux(uint i);
-	void unsetAllEdgeFaux();
+	void unsetAllEdgesFaux();
 
 	void importFromVCGFlags(int f);
 	int exportToVCGFlags() const;

@@ -67,6 +67,8 @@ void fillHexahedronQuads(MeshType& m)
  * If the mesh is composed of quads or polygons, a mesh containing 6 quads will be returned.
  *
  * @return A Mesh containing a ``[(-1, -1, -1), (1, 1, 1)]``Hexahedron .
+ *
+ * @ingroup create
  */
 template<FaceMeshConcept MeshType>
 MeshType createHexahedron()
@@ -82,7 +84,9 @@ MeshType createHexahedron()
  * If the mesh is composed of triangles, the the returned mesh is already triangulated.
  * If the mesh is composed of quads or polygons, a mesh containing 6 quads will be returned.
  *
- * @return A Mesh containing a ``[min, max]``Hexahedron .
+ * @return A Mesh containing a ``[min, max]``Hexahedron.
+ *
+ * @ingroup create
  */
 template<FaceMeshConcept MeshType, PointConcept CoordType>
 MeshType createHexahedron(const CoordType& min, const CoordType& max)
@@ -117,6 +121,8 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max)
  * If the mesh is composed of quads or polygons, a mesh containing 6 quads will be returned.
  *
  * @return A Mesh containing a ``[min, min+edgeLength]`` Cube.
+ *
+ * @ingroup create
  */
 template<FaceMeshConcept MeshType, PointConcept CoordType>
 MeshType createCube(

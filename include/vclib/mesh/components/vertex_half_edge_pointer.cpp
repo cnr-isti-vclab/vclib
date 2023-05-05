@@ -322,17 +322,15 @@ VertexHalfEdgePointer<HE, El, o>::adjFaceEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgePointer<HE, El, o>::AdjacentFaceView
-VertexHalfEdgePointer<HE, El, o>::adjFaces()
+auto VertexHalfEdgePointer<HE, El, o>::adjFaces()
 {
-	return AdjacentFaceView(adjFaceBegin(), adjFaceEnd());
+	return View(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgePointer<HE, El, o>::ConstAdjacentFaceView
-VertexHalfEdgePointer<HE, El, o>::adjFaces() const
+auto VertexHalfEdgePointer<HE, El, o>::adjFaces() const
 {
-	return ConstAdjacentFaceView(adjFaceBegin(), adjFaceEnd());
+	return View(adjFaceBegin(), adjFaceEnd());
 }
 
 template<typename HE, typename El, bool o>
@@ -364,17 +362,15 @@ VertexHalfEdgePointer<HE, El, o>::adjVertexEnd() const
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgePointer<HE, El, o>::AdjacentVertexView
-VertexHalfEdgePointer<HE, El, o>::adjVertices()
+auto VertexHalfEdgePointer<HE, El, o>::adjVertices()
 {
-	return AdjacentVertexView(adjVertexBegin(), adjVertexEnd());
+	return View(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename HE, typename El, bool o>
-typename VertexHalfEdgePointer<HE, El, o>::ConstAdjacentVertexView
-VertexHalfEdgePointer<HE, El, o>::adjVertices() const
+auto VertexHalfEdgePointer<HE, El, o>::adjVertices() const
 {
-	return ConstAdjacentVertexView(adjVertexBegin(), adjVertexEnd());
+	return View(adjVertexBegin(), adjVertexEnd());
 }
 
 template<typename HE, typename El, bool o>

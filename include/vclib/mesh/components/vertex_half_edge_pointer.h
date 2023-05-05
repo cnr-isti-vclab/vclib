@@ -64,13 +64,9 @@ public:
 
 	using AdjacentFaceIterator      = vcl::VertexAdjFaceIterator<HalfEdge>;
 	using ConstAdjacentFaceIterator = vcl::ConstVertexAdjFaceIterator<HalfEdge>;
-	using AdjacentFaceView          = vcl::View<AdjacentFaceIterator>;
-	using ConstAdjacentFaceView     = vcl::View<ConstAdjacentFaceIterator>;
 
 	using AdjacentVertexIterator      = vcl::VertexAdjVertexIterator<HalfEdge>;
 	using ConstAdjacentVertexIterator = vcl::ConstVertexAdjVertexIterator<HalfEdge>;
-	using AdjacentVertexView          = vcl::View<AdjacentVertexIterator>;
-	using ConstAdjacentVertexView     = vcl::View<ConstAdjacentVertexIterator>;
 
 	/* Constructor and isEnabled */
 
@@ -133,15 +129,15 @@ public:
 	AdjacentFaceIterator      adjFaceEnd();
 	ConstAdjacentFaceIterator adjFaceBegin() const;
 	ConstAdjacentFaceIterator adjFaceEnd() const;
-	AdjacentFaceView          adjFaces();
-	ConstAdjacentFaceView     adjFaces() const;
+	auto                      adjFaces();
+	auto                      adjFaces() const;
 
 	AdjacentVertexIterator      adjVertexBegin();
 	AdjacentVertexIterator      adjVertexEnd();
 	ConstAdjacentVertexIterator adjVertexBegin() const;
 	ConstAdjacentVertexIterator adjVertexEnd() const;
-	AdjacentVertexView          adjVertices();
-	ConstAdjacentVertexView     adjVertices() const;
+	auto                        adjVertices();
+	auto                        adjVertices() const;
 
 protected:
 	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);

@@ -27,6 +27,7 @@
 #include "base.h"
 
 #include <tuple>
+#include <typeindex>
 
 namespace vcl {
 
@@ -64,12 +65,40 @@ constexpr uint indexInTypePack() {
 	}
 	else {
 		if constexpr (sizeof...(Us)) { // there is at least another type to check
-			return 1 + indexInTypePack<T, Us...>();
+			constexpr uint res = indexInTypePack<T, Us...>(); // look in the rest of the types
+			if constexpr (res == UINT_NULL) // not found in the rest of the types
+				return UINT_NULL;
+			else
+				return 1 + res; // found
 		}
 		else { // not found
 			return UINT_NULL;
 		}
 	}
+}
+
+template <typename U, typename... Us>
+uint indexInTypePack(std::type_index ti) {
+	if (ti == typeid(U)) {
+		return 0;
+	}
+	else {
+		if constexpr (sizeof...(Us)) { // there is at least another type to check
+			uint res = indexInTypePack<Us...>(ti);
+			if (res == UINT_NULL)
+				return UINT_NULL;
+			else
+				return 1 + res;
+		}
+		else { // not found
+			return UINT_NULL;
+		}
+	}
+}
+
+template<typename... Args>
+uint indexInTypePack(std::type_index ti, TypeWrapper<Args...>) {
+	return indexInTypePack<Args...>(ti);
 }
 
 template<typename T, typename... Us>

@@ -105,33 +105,38 @@ public:
 	void disablePerEdgeScalar() requires edge::HasOptionalScalar<T>;
 
 	// Custom Components
-	bool hasPerEdgeCustomComponent(
-		const std::string& name) const requires edge::HasCustomComponents<T>;
+	bool hasPerEdgeCustomComponent(const std::string& name) const
+		requires edge::HasCustomComponents<T>;
 
-	std::vector<std::string> getAllPerEdgeCustomComponentNames()
-		const requires edge::HasCustomComponents<T>;
-
-	template<typename K>
-	bool isPerEdgeCustomComponentOfType(
-		const std::string& name) const requires edge::HasCustomComponents<T>;
+	std::vector<std::string> perEdgeCustomComponentNames() const
+		requires edge::HasCustomComponents<T>;
 
 	template<typename K>
-	std::vector<std::string> getPerEdgeCustomComponentNamesOfType()
-		const requires edge::HasCustomComponents<T>;
+	bool isPerEdgeCustomComponentOfType(const std::string& name) const
+		requires edge::HasCustomComponents<T>;
+
+	std::type_index perEdgeCustomComponentType(const std::string& name) const
+		requires edge::HasCustomComponents<T>;
 
 	template<typename K>
-	void addPerEdgeCustomComponent(const std::string& name) requires edge::HasCustomComponents<T>;
-
-	void deletePerEdgeCustomComponent(
-		const std::string& name) requires edge::HasCustomComponents<T>;
+	std::vector<std::string> perEdgeCustomComponentNamesOfType() const
+		requires edge::HasCustomComponents<T>;
 
 	template<typename K>
-	CustomComponentVectorHandle<K> getPerEdgeCustomComponentVectorHandle(
-		const std::string& name) requires edge::HasCustomComponents<T>;
+	void addPerEdgeCustomComponent(const std::string& name)
+		requires edge::HasCustomComponents<T>;
+
+	void deletePerEdgeCustomComponent(const std::string& name)
+		requires edge::HasCustomComponents<T>;
 
 	template<typename K>
-	ConstCustomComponentVectorHandle<K> getPerEdgeCustomComponentVectorHandle(
-		const std::string& name) const requires edge::HasCustomComponents<T>;
+	CustomComponentVectorHandle<K> perEdgeCustomComponentVectorHandle(const std::string& name)
+		requires edge::HasCustomComponents<T>;
+
+	template<typename K>
+	ConstCustomComponentVectorHandle<K>
+	perEdgeCustomComponentVectorHandle(const std::string& name) const
+		requires edge::HasCustomComponents<T>;
 
 protected:
 	template<typename MeshType>
