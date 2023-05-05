@@ -13,6 +13,8 @@ namespace vcl {
  * and then allow assignment.
  *
  * See: https://stackoverflow.com/a/10145050/5851101
+ *
+ * @ingroup space
  */
 template<std::integral T>
 class BitProxy

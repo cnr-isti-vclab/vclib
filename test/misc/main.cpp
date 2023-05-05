@@ -21,34 +21,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_H
-#define VCL_SPACE_H
+#include <iostream>
 
-#include "space/array.h"
-#include "space/bit_set.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/graph.h"
-#include "space/grid.h"
-#include "space/kd_tree.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/triangle_wrapper.h"
-#include "space/vector.h"
+#include <vclib/space.h>
 
-/**
- * @defgroup space Spatial Data Structures
- *
- * @brief List of Spatial Data Structures of VCLib.
- *
- * You can access all the algorithms of VCLib by including `#include <vclib/space.h>`
- */
+int main()
+{
+	vcl::BitSet<uint> b;
 
-#endif // VCL_SPACE_H
+	b.set();
+
+	for(uint i = 0; i < b.size(); ++i) {
+		assert(b[i] == true);
+	}
+
+	assert(b.all());
+
+	return 0;
+}
