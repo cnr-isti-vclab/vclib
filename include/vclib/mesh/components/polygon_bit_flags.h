@@ -81,7 +81,7 @@ public:
 
 	bool isEdgeOnBorder(uint i) const;
 	bool isAnyEdgeOnBorder() const;
-	bool isOnBorder() const;
+	bool onBorder() const;
 
 	bool isEdgeSelected(uint i) const;
 	bool isAnyEdgeSelected() const;
@@ -128,10 +128,8 @@ protected:
 	static const uint FIRST_USER_BIT = Base::FIRST_USER_BIT + 26; // bits [29, 31]
 
 private:
-	// will use these members as isOnBorder0, setOnBorder0 and unsetOnBorder0
-	using Base::unsetOnBorder;
-	using Base::isOnBorder;
-	using Base::setOnBorder;
+	// will use this members as onBorder0
+	using Base::onBorder;
 };
 
 } // namespace vcl::comp

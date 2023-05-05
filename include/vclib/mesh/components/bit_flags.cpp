@@ -46,17 +46,6 @@ bool BitFlagsT<C, El, o>::isEnabled() const
 }
 
 /**
- * @brief Returns whether this Element is marked to be on border.
- *
- * @return `true` if this Element is marked to be on border, `false` otherwise.
- */
-template<typename C, typename El, bool o>
-bool BitFlagsT<C, El, o>::isOnBorder() const
-{
-	return flagValue(BORDER);
-}
-
-/**
  * @brief Returns the value of the user bit of this Element given in input. The bit is checked
  * to be less than the total number of assigned user bits, which in this class is 29.
  *
@@ -67,15 +56,6 @@ template<typename C, typename El, bool o>
 bool BitFlagsT<C, El, o>::userBitFlag(uint bit) const
 {
 	return userBitFlag(bit, FIRST_USER_BIT);
-}
-
-/**
- * @brief Marks as on-border this Element.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::setOnBorder()
-{
-	setFlag(BORDER);
 }
 
 /**
@@ -108,6 +88,18 @@ bool BitFlagsT<Component, ElementType, optional>::selected() const
 	return flags()[SELECTED];
 }
 
+template<typename Component, typename ElementType, bool optional>
+BitProxy<int> BitFlagsT<Component, ElementType, optional>::onBorder()
+{
+	return flags()[BORDER];
+}
+
+template<typename Component, typename ElementType, bool optional>
+bool BitFlagsT<Component, ElementType, optional>::onBorder() const
+{
+	return flags()[BORDER];
+}
+
 /**
  * @brief Unsets all the flags of this Element and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
@@ -119,15 +111,6 @@ void BitFlagsT<C, El, o>::unsetAllFlags()
 	flags().reset();
 	if (isD)
 		setFlag(DELETED);
-}
-
-/**
- * @brief Marks as non-on-border this Element.
- */
-template<typename C, typename El, bool o>
-void BitFlagsT<C, El, o>::unsetOnBorder()
-{
-	unsetFlag(BORDER);
 }
 
 /**
@@ -149,7 +132,7 @@ void BitFlagsT<C, El, o>::importFromVCGFlags(int f)
 	if (f & 0x0020)
 		selected() = true;
 	if (f & 0x0100)
-		setOnBorder();
+		onBorder() = true;
 }
 
 template<typename C, typename El, bool o>
@@ -158,7 +141,7 @@ int BitFlagsT<C, El, o>::exportToVCGFlags() const
 	int f = 0;
 	if (selected())
 		f &= 0x0020;
-	if (isOnBorder())
+	if (onBorder())
 		f &= 0x0100;
 	return f;
 }

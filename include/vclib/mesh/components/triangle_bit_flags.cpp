@@ -86,7 +86,7 @@ bool TriangleBitFlags<El, o>::isAnyEdgeOnBorder() const
 }
 
 template<typename El, bool o>
-bool TriangleBitFlags<El, o>::isOnBorder() const
+bool TriangleBitFlags<El, o>::onBorder() const
 {
 	return isAnyEdgeOnBorder();
 }

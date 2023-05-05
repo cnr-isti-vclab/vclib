@@ -94,7 +94,7 @@ bool PolygonBitFlags<El, o>::isAnyEdgeOnBorder() const
 }
 
 template<typename El, bool o>
-bool PolygonBitFlags<El, o>::isOnBorder() const
+bool PolygonBitFlags<El, o>::onBorder() const
 {
 	return isAnyEdgeOnBorder();
 }

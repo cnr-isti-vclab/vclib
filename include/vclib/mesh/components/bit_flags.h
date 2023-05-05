@@ -83,10 +83,8 @@ public:
 
 	/* Member functions */
 
-	bool isOnBorder() const;
 	bool userBitFlag(uint bit) const;
 
-	void setOnBorder();
 	void setUserBit(uint bit);
 
 	bool deleted() const;
@@ -94,8 +92,10 @@ public:
 	BitProxy<int> selected();
 	bool selected() const;
 
+	BitProxy<int> onBorder();
+	bool onBorder() const;
+
 	void unsetAllFlags();
-	void unsetOnBorder();
 	void unsetUserBit(uint bit);
 
 	void importFromVCGFlags(int f);
