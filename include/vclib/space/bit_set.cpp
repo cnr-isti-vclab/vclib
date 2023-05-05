@@ -21,8 +21,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "bitset.h"
+#include "bit_set.h"
 
+#include <stdexcept>
 #include <string>
 
 namespace vcl {
@@ -63,7 +64,7 @@ bool BitSet<T>::operator[](uint i) const
  * @return a reference of the boolean value of the bit
  */
 template<std::integral T>
-BitProxy BitSet<T>::operator[](uint i)
+BitProxy<T> BitSet<T>::operator[](uint i)
 {
 	assert(i < SIZE);
 	return BitProxy(bits, i);
@@ -91,7 +92,7 @@ bool BitSet<T>::at(uint i) const
  * @return a reference of the boolean value of the bit
  */
 template<std::integral T>
-BitProxy BitSet<T>::at(uint i)
+BitProxy<T> BitSet<T>::at(uint i)
 {
 	if (i < SIZE)
 		return BitProxy(bits, i);
