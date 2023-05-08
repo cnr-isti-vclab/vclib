@@ -52,7 +52,7 @@ bool PolygonBitFlags<El, o>::deleted() const
 }
 
 template<typename El, bool o>
-BitProxy<int> PolygonBitFlags<El, o>::selected()
+BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::selected()
 {
 	return flags()[SELECTED];
 }
@@ -72,7 +72,7 @@ bool PolygonBitFlags<El, o>::onBorder() const
 }
 
 template<typename El, bool o>
-BitProxy<int> PolygonBitFlags<El, o>::edgeOnBorder(uint i)
+BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::edgeOnBorder(uint i)
 {
 	assert(i < 12);
 	return flags()[BORDER0 + i];
@@ -86,7 +86,7 @@ bool PolygonBitFlags<El, o>::edgeOnBorder(uint i) const
 }
 
 template<typename El, bool o>
-BitProxy<int> PolygonBitFlags<El, o>::edgeSelected(uint i)
+BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::edgeSelected(uint i)
 {
 	assert(i < 12);
 	return flags()[EDGESEL0 + i];
@@ -100,7 +100,7 @@ bool PolygonBitFlags<El, o>::edgeSelected(uint i) const
 }
 
 template<typename El, bool o>
-BitProxy<int> PolygonBitFlags<El, o>::edgeFaux(uint i)
+BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::edgeFaux(uint i)
 {
 	assert(i < 3);
 	return flags()[FAUX0 + i];
@@ -120,7 +120,7 @@ bool PolygonBitFlags<El, o>::userBit(uint bit) const
 }
 
 template<typename El, bool o>
-BitProxy<int> PolygonBitFlags<El, o>::userBit(uint bit)
+BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::userBit(uint bit)
 {
 	return flags()[bit + FIRST_USER_BIT];
 }
@@ -186,7 +186,7 @@ int PolygonBitFlags<El, o>::exportToVCGFlags() const
 }
 
 template<typename El, bool o>
-BitProxy<int> PolygonBitFlags<El, o>::deleted()
+BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::deleted()
 {
 	return flags()[DELETED];
 }
@@ -210,13 +210,13 @@ void PolygonBitFlags<El, o>::importFrom(const Element& e)
 }
 
 template<typename El, bool o>
-BitSet<int>& PolygonBitFlags<El, o>::flags()
+BitSet<typename PolygonBitFlags<El, o>::FT>& PolygonBitFlags<El, o>::flags()
 {
 	return data.template get<El>(this);
 }
 
 template<typename El, bool o>
-BitSet<int> PolygonBitFlags<El, o>::flags() const
+BitSet<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::flags() const
 {
 	return data.template get<El>(this);
 }

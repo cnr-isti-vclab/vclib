@@ -24,7 +24,10 @@
 #ifndef VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 
-#include "bit_flags.h"
+#include <vclib/concepts/mesh/components/bit_flags.h>
+#include <vclib/space/bit_set.h>
+
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -60,8 +63,10 @@ template<typename ElementType = void, bool optional = false>
 class TriangleBitFlags
 {
 	using ThisType = TriangleBitFlags<ElementType, optional>;
+
+	using FT = int; // FlagsType, the integral type used for the flags
 public:
-	using DataValueType = BitSet<int>; // data that the component stores internally (or vertically)
+	using DataValueType = BitSet<FT>; // data that the component stores internally (or vertically)
 
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 
@@ -79,22 +84,22 @@ public:
 
 	bool deleted() const;
 
-	BitProxy<int> selected();
+	BitProxy<FT> selected();
 	bool selected() const;
 
 	bool onBorder() const;
 
-	BitProxy<int> edgeOnBorder(uint i);
+	BitProxy<FT> edgeOnBorder(uint i);
 	bool edgeOnBorder(uint i) const;
 
-	BitProxy<int> edgeSelected(uint i);
+	BitProxy<FT> edgeSelected(uint i);
 	bool edgeSelected(uint i) const;
 
-	BitProxy<int> edgeFaux(uint i);
+	BitProxy<FT> edgeFaux(uint i);
 	bool edgeFaux(uint i) const;
 
 	bool userBit(uint bit) const;
-	BitProxy<int> userBit(uint bit);
+	BitProxy<FT> userBit(uint bit);
 
 	void resetBitFlags();
 
@@ -105,14 +110,14 @@ public:
 	void __triangleBitFlags() const {}
 
 protected:
-	BitProxy<int> deleted();
+	BitProxy<FT> deleted();
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
-	BitSet<int>& flags();
-	BitSet<int> flags() const;
+	BitSet<FT>& flags();
+	BitSet<FT> flags() const;
 
 	static const uint FIRST_USER_BIT = 12; // bits [12, 31]
 

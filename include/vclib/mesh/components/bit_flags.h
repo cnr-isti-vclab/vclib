@@ -62,14 +62,13 @@ namespace vcl::comp {
 template<typename ElementType = void, bool optional = false>
 class BitFlags
 {
-	template<typename, typename, bool>
-	friend class BitFlagsT;
-
 	using ThisType = BitFlags<ElementType, optional>;
+
+	using FT = int; // FlagsType, the integral type used for the flags
 public:
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 
-	using DataValueType = BitSet<int>; // data that the component stores internally (or vertically)
+	using DataValueType = BitSet<FT>; // data that the component stores internally (or vertically)
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
@@ -86,14 +85,14 @@ public:
 
 	bool deleted() const;
 
-	BitProxy<int> selected();
+	BitProxy<FT> selected();
 	bool selected() const;
 
-	BitProxy<int> onBorder();
+	BitProxy<FT> onBorder();
 	bool onBorder() const;
 
 	bool userBit(uint bit) const;
-	BitProxy<int> userBit(uint bit);
+	BitProxy<FT> userBit(uint bit);
 
 	void resetBitFlags();
 
@@ -101,14 +100,14 @@ public:
 	int exportToVCGFlags() const;
 
 protected:
-	BitProxy<int> deleted();
+	BitProxy<FT> deleted();
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
-	BitSet<int>& flags();
-	BitSet<int> flags() const;
+	BitSet<FT>& flags();
+	BitSet<FT> flags() const;
 
 	static const uint FIRST_USER_BIT = 4;
 

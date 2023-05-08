@@ -52,7 +52,7 @@ bool TriangleBitFlags<El, o>::deleted() const
 }
 
 template<typename El, bool o>
-BitProxy<int> TriangleBitFlags<El, o>::selected()
+BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::selected()
 {
 	return flags()[SELECTED];
 }
@@ -70,7 +70,7 @@ bool TriangleBitFlags<El, o>::onBorder() const
 }
 
 template<typename El, bool o>
-BitProxy<int> TriangleBitFlags<El, o>::edgeOnBorder(uint i)
+BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::edgeOnBorder(uint i)
 {
 	assert(i < 3);
 	return flags()[BORDER0 + i];
@@ -84,7 +84,7 @@ bool TriangleBitFlags<El, o>::edgeOnBorder(uint i) const
 }
 
 template<typename El, bool o>
-BitProxy<int> TriangleBitFlags<El, o>::edgeSelected(uint i)
+BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::edgeSelected(uint i)
 {
 	assert(i < 3);
 	return flags()[EDGESEL0 + i];
@@ -98,7 +98,7 @@ bool TriangleBitFlags<El, o>::edgeSelected(uint i) const
 }
 
 template<typename El, bool o>
-BitProxy<int> TriangleBitFlags<El, o>::edgeFaux(uint i)
+BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::edgeFaux(uint i)
 {
 	assert(i < 3);
 	return flags()[FAUX0 + i];
@@ -118,7 +118,7 @@ bool TriangleBitFlags<El, o>::userBit(uint bit) const
 }
 
 template<typename El, bool o>
-BitProxy<int> TriangleBitFlags<El, o>::userBit(uint bit)
+BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::userBit(uint bit)
 {
 	return flags()[bit + FIRST_USER_BIT];
 }
@@ -188,7 +188,7 @@ int TriangleBitFlags<El, o>::exportToVCGFlags() const
 }
 
 template<typename El, bool o>
-BitProxy<int> TriangleBitFlags<El, o>::deleted()
+BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::deleted()
 {
 	return flags()[DELETED];
 }
@@ -212,13 +212,13 @@ void TriangleBitFlags<El, o>::importFrom(const Element& e)
 }
 
 template<typename El, bool o>
-BitSet<int>& TriangleBitFlags<El, o>::flags()
+BitSet<typename TriangleBitFlags<El, o>::FT>& TriangleBitFlags<El, o>::flags()
 {
 	return data.template get<El>(this);
 }
 
 template<typename El, bool o>
-BitSet<int> TriangleBitFlags<El, o>::flags() const
+BitSet<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::flags() const
 {
 	return data.template get<El>(this);
 }

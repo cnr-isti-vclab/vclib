@@ -60,7 +60,7 @@ bool BitFlags<El, o>::deleted() const
  * @return a reference to the 'selected' bit of this Element.
  */
 template<typename El, bool o>
-BitProxy<int> BitFlags<El, o>::selected()
+BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::selected()
 {
 	return flags()[SELECTED];
 }
@@ -80,7 +80,7 @@ bool BitFlags<El, o>::selected() const
  * @return a reference to the 'onBorder' bit of this Element.
  */
 template<typename El, bool o>
-BitProxy<int> BitFlags<El, o>::onBorder()
+BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::onBorder()
 {
 	return flags()[BORDER];
 }
@@ -116,8 +116,8 @@ bool BitFlags<El, o>::userBit(uint bit) const
  * reference.
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
-template<typename ElementType, bool optional>
-BitProxy<int> BitFlags<ElementType, optional>::userBit(uint bit)
+template<typename El, bool o>
+BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::userBit(uint bit)
 {
 	return flags()[bit + FIRST_USER_BIT];
 }
@@ -155,8 +155,8 @@ int BitFlags<El, o>::exportToVCGFlags() const
 	return f;
 }
 
-template<typename ElementType, bool optional>
-BitProxy<int> BitFlags<ElementType, optional>::deleted()
+template<typename El, bool o>
+BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::deleted()
 {
 	return flags()[DELETED];
 }
@@ -180,13 +180,13 @@ void BitFlags<El, o>::importFrom(const Element& e)
 }
 
 template<typename El, bool o>
-BitSet<int>& BitFlags<El, o>::flags()
+BitSet<typename BitFlags<El, o>::FT>& BitFlags<El, o>::flags()
 {
 	return data.template get<El>(this);
 }
 
 template<typename El, bool o>
-BitSet<int> BitFlags<El, o>::flags() const
+BitSet<typename BitFlags<El, o>::FT> BitFlags<El, o>::flags() const
 {
 	return data.template get<El>(this);
 }
