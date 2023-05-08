@@ -433,7 +433,7 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 			for (FaceType& f : m.faces()) {
 				bool deg = false;
 				for (VertexType* v : f.vertices()) {
-					if (v->isDeleted()) {
+					if (v->deleted()) {
 						deg = true;
 					}
 				}

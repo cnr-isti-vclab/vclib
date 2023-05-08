@@ -25,6 +25,7 @@
 #define VCL_SPACE_H
 
 #include "space/array.h"
+#include "space/bit_set.h"
 #include "space/box.h"
 #include "space/color.h"
 #include "space/graph.h"

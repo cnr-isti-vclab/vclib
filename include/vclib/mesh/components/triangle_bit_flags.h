@@ -24,28 +24,28 @@
 #ifndef VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 
-#include "bit_flags.h"
+#include <vclib/concepts/mesh/components/bit_flags.h>
+#include <vclib/space/bit_set.h>
+
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The TriangleBitFlags class represents a collection of 32 bits that will be part of a
+ * @brief The TriangleBitFlags class represents a collection of 16 bits that will be part of a
  * Triangle of a Mesh.
  *
- * The bits have the following meaning (first 3 bits inherited from BitFlags):
- * - 0:  deleted: if the current Triangle has been deleted
- * - 1:  selected: if the current Triangle has been selected
- * - from 2 to 4: edge border: if the current Triangle has is i-th edge (i in [0, 2]) on border
- * - from 5 to 7: edge selection: if the current Triangle has is i-th edge (i in [0, 2]) selected
- * - from 8 to 10: edge faux: if the current Triangle has is i-th edge (i in [0, 2]) marked as faux
- * - from 11 to 31: user bits that can have custom meanings to the user
+ * The bits have the following meaning:
+ * - 0: deleted: if the current Triangle has been deleted - read only
+ * - 1: selected: if the current Triangle has been selected
+ * - 2: visited: if the current Triangle has been visited (useful for some visit algorithms)
+ * - from 3 to 5: edge border: if the current Triangle has the i-th edge (i in [0, 2]) on border
+ * - from 6 to 8: edge selection: if the current Triangle has the i-th edge (i in [0, 2]) selected
+ * - from 9 to 11: edge faux: if the current Triangle has the i-th edge (i in [0, 2]) marked as faux
+ * - from 12 to 15: user bits that can have custom meanings to the user
  *
- * This class provides 21 user bits, that can be accessed using the member functions
- * - `userBitFlag`
- * - `setUserBit`
- * - `unsetUserBit`
- *
- * with position in the interval [0, 20].
+ * This class provides 4 user bits, that can be accessed using the member function userBit(uint i)
+ * with position in the interval [0, 3].
  *
  * The member functions of this class will be available in the instance of any Element that will
  * contain this component.
@@ -54,47 +54,57 @@ namespace vcl::comp {
  * able to access to this component member functions from `f`:
  *
  * @code{.cpp}
- * v.isAnyEdgeOnBorder();
+ * v.edgeSelected(1) = true;
  * @endcode
  *
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class TriangleBitFlags : public BitFlagsT<TriangleBitFlags<ElementType, optional>, ElementType, optional>
+class TriangleBitFlags
 {
-	using Base = BitFlagsT<TriangleBitFlags<ElementType, optional>, ElementType, optional>;
 	using ThisType = TriangleBitFlags<ElementType, optional>;
+
+	using FT = short; // FlagsType, the integral type used for the flags
 public:
+	using DataValueType = BitSet<FT>; // data that the component stores internally (or vertically)
+
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-	// member fuction that hide base members (to use the FIRST_USER_BIT value set here)
-	bool userBitFlag(uint bit) const;
-	void setUserBit(uint bit);
-	void unsetUserBit(uint bit);
 
-	bool isEdgeOnBorder(uint i) const;
-	bool isAnyEdgeOnBorder() const;
-	bool isOnBorder() const;
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+	static const bool IS_OPTIONAL = optional;
 
-	bool isEdgeSelected(uint i) const;
-	bool isAnyEdgeSelected() const;
+	/* Constructor and isEnabled */
+	TriangleBitFlags();
 
-	bool isEdgeFaux(uint i) const;
-	bool isAnyEdgeFaux() const;
+	void init();
 
-	void setEdgeOnBorder(uint i);
+	bool isEnabled() const;
 
-	void setEdgeSelected(uint i);
+	/* Member functions */
 
-	void setEdgeFaux(uint i);
+	bool deleted() const;
 
-	void unsetEdgeOnBorder(uint i);
-	void unsetAllEdgesOnBorder();
+	BitProxy<FT> selected();
+	bool selected() const;
 
-	void unsetEdgeSelected(uint i);
-	void unsetAllEdgesSelected();
+	BitProxy<FT> visited();
+	bool visited() const;
 
-	void unsetEdgeFaux(uint i);
-	void unsetAllEdgesFaux();
+	bool onBorder() const;
+
+	BitProxy<FT> edgeOnBorder(uint i);
+	bool edgeOnBorder(uint i) const;
+
+	BitProxy<FT> edgeSelected(uint i);
+	bool edgeSelected(uint i) const;
+
+	BitProxy<FT> edgeFaux(uint i);
+	bool edgeFaux(uint i) const;
+
+	bool userBit(uint bit) const;
+	BitProxy<FT> userBit(uint bit);
+
+	void resetBitFlags();
 
 	void importFromVCGFlags(int f);
 	int exportToVCGFlags() const;
@@ -103,29 +113,35 @@ public:
 	void __triangleBitFlags() const {}
 
 protected:
+	BitProxy<FT> deleted();
+
 	template<typename Element>
 	void importFrom(const Element& e);
 
-protected:
-	// indices of the bits, used for flagValue, setFlag and unsetFlag member functions
+	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
+	BitSet<FT>& flags();
+	BitSet<FT> flags() const;
+
+	static const uint FIRST_USER_BIT = 12;
+	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;
+
+	// indices of the bits
 	enum {
+		DELETED  = 0, // bit 0
+		SELECTED = 1, // bit 1
+		VISITED  = 2, // bit 2
 		// Edge border
-		// BORDER0 is BORDER, inherited from superclass  bits [2, 4]
+		BORDER0  = 3, // bits [3, 5]
 		// Edge selection
-		EDGESEL0 = Base::FIRST_USER_BIT + 2, // bits [5, 7]
+		EDGESEL0 = 6, // bits [6, 8]
 		// Faux edges: when representing polygonal meshes on triangle meshes, some triangle edges
 		// can be marked as "faux", meaning that they are internal on the polygon
-		FAUX0 = Base::FIRST_USER_BIT + 5 // bits [8, 10]
+		FAUX0 = 9 // bits [9, 11]
 	};
 
-	// hide base class constant, 8 is the number of bits used by this class
-	static const uint FIRST_USER_BIT = Base::FIRST_USER_BIT + 8; // bits [11, 31]
-
 private:
-	// will use these members as isOnBorder0, setOnBorder0 and unsetOnBorder0
-	using Base::isOnBorder;
-	using Base::setOnBorder;
-	using Base::unsetOnBorder;
+	// contians the actual data of the component, if the component is horizontal
+	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

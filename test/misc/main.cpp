@@ -21,52 +21,23 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "flag.h"
+#include <iostream>
 
-#include <vclib/algorithms/sort.h>
+#include <vclib/space.h>
 
-namespace vcl {
-
-/**
- * @brief Computes per-face border flags without requiring any kind of
- * topology info.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices
- *   - Faces
- *
- * Complexity: O(NF log (NF))
- *
- * @param m: the mesh on which the border flags will be updated
- */
-template<FaceMeshConcept MeshType>
-void updateBorder(MeshType& m)
+int main()
 {
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
+	vcl::BitSet<int> b;
 
-	for (FaceType& f : m.faces())
-		f.unsetAllEdgesOnBorder();
+	static_assert(sizeof(b) == 4, "");
 
-	if (m.faceNumber() == 0)
-		return;
+	b.set();
 
-	std::vector<MeshEdgeUtil<MeshType>> e = fillAndSortMeshEdgeUtilVector(m);
+	for(uint i = 0; i < b.size(); ++i) {
+		assert(b[i] == true);
+	}
 
-	typename std::vector<MeshEdgeUtil<MeshType>>::iterator pe, ps;
-	ps = e.begin();
-	pe = e.begin();
-	do {
-		if (pe == e.end() || *pe != *ps) { // Trovo blocco di edge uguali
-			if (pe - ps == 1) {
-				ps->f->edgeOnBorder(ps->e) = true;
-			}
-			ps = pe;
-		}
-		if (pe != e.end())
-			++pe;
-	} while (pe != e.end());
+	assert(b.all());
+
+	return 0;
 }
-
-} // namespace vcl

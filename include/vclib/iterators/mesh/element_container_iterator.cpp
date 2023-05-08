@@ -22,6 +22,7 @@
  ****************************************************************************/
 
 #include "element_container_iterator.h"
+#include <utility>
 
 namespace vcl {
 
@@ -196,7 +197,7 @@ ElementContainerIterator<Container, T, CNST>::incrementJump()
 {
 	do {
 		++it;
-	} while (it != vec->end() && it->isDeleted());
+	} while (it != vec->end() && std::as_const(*it).deleted());
 	return *this;
 }
 
@@ -210,7 +211,7 @@ ElementContainerIterator<Container, T, CNST>::postIncrementJump()
 	ElementContainerIterator old = *this;
 	do {
 		++it;
-	} while (it != vec->end() && it->isDeleted());
+	} while (it != vec->end() && std::as_const(*it).deleted());
 	return old;
 }
 
@@ -246,7 +247,7 @@ ElementContainerIterator<Container, T, CNST>::decrementJump()
 {
 	do {
 		--it;
-	} while (it != vec->begin() && it->isDeleted());
+	} while (it != vec->begin() && std::as_const(*it).deleted());
 	return *this;
 }
 
@@ -260,7 +261,7 @@ ElementContainerIterator<Container, T, CNST>::postDecrementJump()
 	ElementContainerIterator old = *this;
 	do {
 		--it;
-	} while (it != vec->begin() && it->isDeleted());
+	} while (it != vec->begin() && std::as_const(*it).deleted());
 	return old;
 }
 

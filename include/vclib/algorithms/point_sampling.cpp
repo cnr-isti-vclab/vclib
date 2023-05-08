@@ -69,7 +69,7 @@ SamplerType allVerticesPointSampling(
 
 	// Loop through all the vertices in the mesh and add them to the sampler if they are selected
 	for (const VertexType& v : m.vertices()) {
-		if (!onlySelected || v.isSelected()) {
+		if (!onlySelected || v.selected()) {
 			sampler.add(v);
 			birthVertices.push_back(m.index(v));
 		}
@@ -141,7 +141,7 @@ SamplerType allFacesPointSampling(
 	birthFaces.clear();
 
 	for (const FaceType& f : m.faces()) {
-		if (!onlySelected || f.isSelected()) {
+		if (!onlySelected || f.selected()) {
 			sampler.add(f);
 			birthFaces.push_back(m.index(f));
 		}
@@ -226,8 +226,8 @@ SamplerType vertexUniformPointSampling(
 
 	while (nVisited < nSamples) {
 		uint vi = dist(gen);
-		if (!m.vertex(vi).isDeleted() && !visited[vi] &&
-			(!onlySelected || m.vertex(vi).isSelected())) {
+		if (!m.vertex(vi).deleted() && !visited[vi] &&
+			(!onlySelected || m.vertex(vi).selected())) {
 			visited[vi] = true;
 			nVisited++;
 			ps.add(m.vertex(vi));
@@ -320,8 +320,8 @@ SamplerType faceUniformPointSampling(
 
 	while (nVisited < nSamples) {
 		uint fi = dist(gen);
-		if (!m.face(fi).isDeleted() && !visited[fi] &&
-			(!onlySelected || m.face(fi).isSelected())) {
+		if (!m.face(fi).deleted() && !visited[fi] &&
+			(!onlySelected || m.face(fi).selected())) {
 			visited[fi] = true;
 			nVisited++;
 			ps.add(m.face(fi));
@@ -413,7 +413,7 @@ SamplerType vertexWeightedPointSampling(
 
 	while (nVisited < nSamples) {
 		uint vi = dist(gen);
-		if (vi < m.vertexContainerSize() && !m.vertex(vi).isDeleted() && !visited[vi]) {
+		if (vi < m.vertexContainerSize() && !m.vertex(vi).deleted() && !visited[vi]) {
 			visited[vi] = true;
 			nVisited++;
 			ps.add(m.vertex(vi));
@@ -509,7 +509,7 @@ SamplerType faceWeightedPointSampling(
 
 	while (nVisited < nSamples) {
 		uint fi = dist(gen);
-		if (fi < m.faceContainerSize() && !m.face(fi).isDeleted() && !visited[fi]) {
+		if (fi < m.faceContainerSize() && !m.face(fi).deleted() && !visited[fi]) {
 			visited[fi] = true;
 			nVisited++;
 			ps.add(m.face(fi));

@@ -39,7 +39,7 @@ std::vector<bool> boolVectorFromVertexSelection(const MeshType& m)
 
 	std::vector<bool> res(m.vertexContainerSize(), false);
 	for (const VertexType& v : m.vertices()) {
-		if (v.isSelected())
+		if (v.selected())
 			res[m.index(v)] = true;
 	}
 	return res;
@@ -58,7 +58,7 @@ std::vector<bool> boolVectorFromFaceSelection(const MeshType& m)
 
 	std::vector<bool> res(m.faceContainerSize(), false);
 	for (const FaceType& f : m.faces()) {
-		if (f.isSelected())
+		if (f.selected())
 			res[m.index(f)] = true;
 	}
 	return res;

@@ -70,7 +70,7 @@ void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
 	using VertexType = typename MeshType::VertexType;
 	
 	for (VertexType& v : m.vertices()) {
-		if (!onlySelected || v.isSelected()) {
+		if (!onlySelected || v.selected()) {
 			v.color() = c;
 		}
 	}
@@ -106,7 +106,7 @@ void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
 	using FaceType = typename MeshType::FaceType;
 	
 	for (FaceType& f : m.faces()) {
-		if (!onlySelected || f.isSelected()) {
+		if (!onlySelected || f.selected()) {
 			f.color() = c;
 		}
 	}
@@ -316,7 +316,7 @@ void setPerVertexColorFromFaceBorderFlag(
 
 	for (FaceType& f : m.faces()) {
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
-			if (f.isEdgeOnBorder(i)) {
+			if (f.edgeOnBorder(i)) {
 				if (f.vertex(i).color() == baseColor)
 					f.vertex(i).color() = borderColor;
 				if (f.vertex(i).color() == internalColor)
@@ -433,7 +433,7 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
 		if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
 			if (checkFauxEdges && isPerFaceAdjacentFacesEnabled(m)) {
 				for (uint i = 0; i < f.vertexNumber(); ++i) {
-					if (f.isEdgeFaux(i)) {
+					if (f.edgeFaux(i)) {
 						assert(f.adjFace(i) != nullptr);
 						f.adjFace(i)->color = f.color();
 					}
@@ -470,7 +470,7 @@ void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offse
 	PointType p[3];
 
 	for (VertexType& v : m.vertices()) {
-		if (!onSelected || v.isSelected()) {
+		if (!onSelected || v.selected()) {
 			p[0]      = (v.coord() / period[0]) + offset;
 			p[1]      = (v.coord() / period[1]) + offset;
 			p[2]      = (v.coord() / period[2]) + offset;
@@ -513,7 +513,7 @@ void setPerVertexPerlinColor(
 	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		if (!onSelected || v.isSelected()) {
+		if (!onSelected || v.selected()) {
 			PointType p = v.coord() / period + offset;
 
 			double factor = (perlinNoise(p[0], p[1], p[2]) + 1.0) / 2.0;

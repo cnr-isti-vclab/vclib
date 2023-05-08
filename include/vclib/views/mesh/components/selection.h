@@ -36,20 +36,20 @@ namespace internal {
 inline constexpr auto isSelected = [](const auto& e)
 {
 	if constexpr(vcl::IsPointer<decltype(e)>) {
-		return e->isSelected();
+		return e->selected();
 	}
 	else {
-		return e.isSelected();
+		return e.selected();
 	}
 };
 
 inline constexpr auto isNotSelected = [](const auto& e)
 {
 	if constexpr(vcl::IsPointer<decltype(e)>) {
-		return !e->isSelected();
+		return !e->selected();
 	}
 	else {
-		return !e.isSelected();
+		return !e.selected();
 	}
 };
 

@@ -95,6 +95,11 @@ void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 	
 	VPtrs::setVertices(list);
 
+	if constexpr (comp::HasPolygonBitFlags<F>) {
+		using T = typename F::PolygonBitFlags;
+		T::resizeBitFlags(list.size());
+	}
+
 	if constexpr (comp::HasAdjacentEdges<F> && NonDcelPolygonFaceConcept<F>) {
 		using T = typename F::AdjacentEdges;
 
@@ -151,6 +156,11 @@ void Face<MeshType, Args...>::resizeVertices(uint n)
 
 	VPtrs::resizeVertices(n);
 
+	if constexpr (comp::HasPolygonBitFlags<F>) {
+		using T = typename F::PolygonBitFlags;
+		T::resizeBitFlags(n);
+	}
+
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
 
@@ -186,6 +196,11 @@ void Face<MeshType, Args...>::pushVertex(VertexType* v) requires NonDcelPolygonF
 	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	VPtrs::pushVertex(v);
+
+	if constexpr (comp::HasPolygonBitFlags<F>) {
+		using T = typename F::PolygonBitFlags;
+		T::pushBitFlag();
+	}
 
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
@@ -224,6 +239,11 @@ void Face<MeshType, Args...>::insertVertex(uint i, VertexType* v) requires NonDc
 
 	VPtrs::insertVertex(i, v);
 
+	if constexpr (comp::HasPolygonBitFlags<F>) {
+		using T = typename F::PolygonBitFlags;
+		T::insertBitFlag(i);
+	}
+
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
 
@@ -261,6 +281,11 @@ void Face<MeshType, Args...>::eraseVertex(uint i) requires NonDcelPolygonFaceCon
 
 	VPtrs::eraseVertex(i);
 
+	if constexpr (comp::HasPolygonBitFlags<F>) {
+		using T = typename F::PolygonBitFlags;
+		T::eraseBitFlag(i);
+	}
+
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
 
@@ -296,6 +321,11 @@ void Face<MeshType, Args...>::clearVertices() requires NonDcelPolygonFaceConcept
 	using F = Face<MeshType, TypeWrapper<Args...>>;
 
 	VPtrs::clearVertices();
+
+	if constexpr (comp::HasPolygonBitFlags<F>) {
+		using T = typename F::PolygonBitFlags;
+		T::clearBitFlags();
+	}
 
 	if constexpr (face::HasAdjacentEdges<F>) {
 		using T = typename F::AdjacentEdges;
