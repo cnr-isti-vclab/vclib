@@ -95,6 +95,11 @@ void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 	
 	VPtrs::setVertices(list);
 
+	if constexpr (comp::HasPolygonBitFlags<F>) {
+		using T = typename F::PolygonBitFlags;
+		T::resizeBitFlags(list.size());
+	}
+
 	if constexpr (comp::HasAdjacentEdges<F> && NonDcelPolygonFaceConcept<F>) {
 		using T = typename F::AdjacentEdges;
 

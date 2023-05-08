@@ -96,29 +96,51 @@ bool BitFlags<El, o>::onBorder() const
 }
 
 /**
+ * @brief Accesses the 'visited' bit of this Element, returning a reference to it.
+ * @return a reference to the 'visited' bit of this Element.
+ */
+template<typename El, bool o>
+BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::visited()
+{
+	return flags()[VISITED];
+}
+
+/**
+ * @brief Returns whether the current Element has been visited or not.
+ * @return true if the Element has been visited, false otherwise.
+ */
+template<typename El, bool o>
+bool BitFlags<El, o>::visited() const
+{
+	return flags()[VISITED];
+}
+
+/**
  * @brief Returns a reference to the value of the user bit of this Element given in input. The bit
- * is checked to be less than the total number of assigned user bits, which in this class is 28.
+ * is checked to be less than the total number of assigned user bits, which in this class is 4.
  *
- * @param[in] bit: the position of the bit, in the interval [0 - 27].
+ * @param[in] bit: the position of the bit, in the interval [0 - 3].
  * @return a reference to the desired user bit.
  */
 template<typename El, bool o>
 bool BitFlags<El, o>::userBit(uint bit) const
 {
+	assert(bit < N_USER_BITS);
 	return flags()[bit + FIRST_USER_BIT];
 }
 
 /**
  * @brief Returns the boolean value of the user bit of this Element given in input. The bit
- * is checked to be less than the total number of assigned user bits, which in this class is 28.
+ * is checked to be less than the total number of assigned user bits, which in this class is 4.
  *
- * @param[in] bit: the position of the bit, in the interval [0 - 27], that will be returned by
+ * @param[in] bit: the position of the bit, in the interval [0 - 3], that will be returned by
  * reference.
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
 template<typename El, bool o>
 BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::userBit(uint bit)
 {
+	assert(bit < N_USER_BITS);
 	return flags()[bit + FIRST_USER_BIT];
 }
 

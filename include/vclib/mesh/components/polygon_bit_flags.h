@@ -32,31 +32,28 @@
 namespace vcl::comp {
 
 /**
- * @brief The PolygonBitFlags class represents a collection of 32 bits that will be part of a
- * generic Polygonal Face of a Mesh.
- *
- * Polygons that use this class for Bit flags can mark as border or as selected a maximum number of
- * 12 edges. If you need bigger polygons on your mesh, you should use the @todo BigPolygonBitFlags
- * class.
+ * @brief The PolygonBitFlags class represents a collection of 8 bits plus 8 bits for each edge that
+ * will be part of a generic Polygonal Face of a Mesh.
  *
  * This class also provides 3 flags for faux edges. These flags are added just to make portable all
  * the algorithms that use faux flags also for PolygonMeshes. However, these flags should be used
  * only when the mesh is a Triangle mesh, that is when each face has vertexNumber() == 3.
  *
- * The bits have the follwing meaning (first 3 bits inherited from BitFlags):
- * - 0: deleted: if the current Polygon has been deleted
+ * The bits have the follwing meaning:
+ * - 0: deleted: if the current Polygon has been deleted - read only
  * - 1: selected: if the current Polygon has been selected
- * - from 2 to 13: edge border: if the current Face has is i-th edge (i in [0, 11]) on border
- * - from 14 to 25: edge selection: if the current Face has is i-th edge (i in [0, 11]) selected
- * - from 26 to 28: edge faux: if the current Face has is i-th edge (i in [0, 2]) marked as faux
- * - from 29 to 31: user bits that can have custom meanings to the user
+ * - 2: visited:if the current Polygon has been visited (useful for some visit algorithms)
+ * - from 3 to 5: edge faux: if the current Face has is i-th edge (i in [0, 2]) marked as faux
+ * - from 6 to 7: user bits that can have custom meanings to the user
  *
- * This class provides 3 user bits, that can be accessed using the member functions
- * - `userBitFlag`
- * - `setUserBit`
- * - `unsetUserBit`
+ * This class provides 2 user bits, that can be accessed using the member function userBit(uint i)
+ * with position in the interval [0, 1].
  *
- * with position in the interval [0, 2].
+ * Additionally, this class provides the following bits for each edge of the Polygonal Face:
+ * - 0: edge border: if the current Polygonal face has the i-th edge on border
+ * - 1: edge selection: if  the current Polygonal face has the i-th edge selected
+ * - 2: edge visited: if the i-th edge of the current Polygonal face has been visited
+ * - from 3 to 7: user bits of the i-th edge that can have custo meanings to the user
  *
  * The member functions of this class will be available in the instance of any Element that will
  * contain this component.
@@ -77,8 +74,13 @@ class PolygonBitFlags
 
 	using FT = int; // FlagsType, the integral type used for the flags
 
+	struct PolyFlags {
+		BitSet<FT> flags;
+		std::vector<BitSet<FT>> edgeFlags;
+	};
+
 public:
-	using DataValueType = BitSet<FT>; // data that the component stores internally (or vertically)
+	using DataValueType = PolyFlags; // data that the component stores internally (or vertically)
 
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 
@@ -99,6 +101,9 @@ public:
 	BitProxy<FT> selected();
 	bool selected() const;
 
+	BitProxy<FT> visited();
+	bool visited() const;
+
 	bool onBorder() const;
 
 	BitProxy<FT> edgeOnBorder(uint i);
@@ -107,11 +112,17 @@ public:
 	BitProxy<FT> edgeSelected(uint i);
 	bool edgeSelected(uint i) const;
 
+	BitProxy<FT> edgeVisited(uint i);
+	bool edgeVisited(uint i) const;
+
 	BitProxy<FT> edgeFaux(uint i);
 	bool edgeFaux(uint i) const;
 
 	bool userBit(uint bit) const;
 	BitProxy<FT> userBit(uint bit);
+
+	bool edgeUserBit(uint i, uint bit) const;
+	BitProxy<FT> edgeUserBit(uint i, uint bit);
 
 	void resetBitFlags();
 
@@ -122,28 +133,40 @@ public:
 	void __polygonBitFlags() const {}
 
 protected:
+	void resizeBitFlags(uint n);
+	void pushBitFlag(BitSet<FT> f = BitSet<FT>());
+	void insertBitFlag(uint i, BitSet<FT> f = BitSet<FT>());
+	void eraseBitFlag(uint i);
+	void clearBitFlags();
+
 	BitProxy<FT> deleted();
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
-	BitSet<FT>& flags();
-	BitSet<FT> flags() const;
+	PolyFlags& flags();
+	PolyFlags flags() const;
 
-	static const uint FIRST_USER_BIT = 30; // bits [29, 31]
+	static const uint FIRST_USER_BIT = 6;
+	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;
+	static const uint FIRST_EDGE_USER_BIT = 3;
+	static const uint N_EDGE_USER_BITS = sizeof(FT) * 8 - FIRST_EDGE_USER_BIT;
 
-	// indices of the bits, used for flagValue, setFlag and unsetFlag member functions
+	// indices of the bits
 	enum {
 		DELETED  = 0, // bit 0
 		SELECTED = 1, // bit 1
 		VISITED  = 2, // bit 2
-		// Edge border
-		BORDER0  = 3, // bits [3, 14]
-		// Edge selection
-		EDGESEL0 = 15, // bits [15, 26]
 		// Faux edges, for portability with TriangleBits
-		FAUX0 = 27 // bits [27, 29]
+		FAUX0 = 3 // bits [3, 5]
+	};
+
+	// indices of the bits used for each edge of the polygon
+	enum {
+		EDGEBORD = 0,
+		EDGESEL  = 1,
+		EDGEVIS  = 2
 	};
 
 private:

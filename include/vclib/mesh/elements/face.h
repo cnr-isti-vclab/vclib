@@ -83,6 +83,11 @@ public:
 
 		VPtrs::resizeVertices(n);
 
+		if constexpr (comp::HasPolygonBitFlags<F>) {
+			using T = typename F::PolygonBitFlags;
+			T::resizeBitFlags(n);
+		}
+
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
 
@@ -119,6 +124,11 @@ public:
 		using F = Face<MeshType, TypeWrapper<Args...>>;
 
 		VPtrs::pushVertex(v);
+
+		if constexpr (comp::HasPolygonBitFlags<F>) {
+			using T = typename F::PolygonBitFlags;
+			T::pushBitFlag();
+		}
 
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
@@ -158,6 +168,11 @@ public:
 
 		VPtrs::insertVertex(i, v);
 
+		if constexpr (comp::HasPolygonBitFlags<F>) {
+			using T = typename F::PolygonBitFlags;
+			T::insertBitFlag(i);
+		}
+
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
 
@@ -196,6 +211,11 @@ public:
 
 		VPtrs::eraseVertex(i);
 
+		if constexpr (comp::HasPolygonBitFlags<F>) {
+			using T = typename F::PolygonBitFlags;
+			T::eraseBitFlag(i);
+		}
+
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;
 
@@ -232,6 +252,11 @@ public:
 		using F = Face<MeshType, TypeWrapper<Args...>>;
 
 		VPtrs::clearVertices();
+
+		if constexpr (comp::HasPolygonBitFlags<F>) {
+			using T = typename F::PolygonBitFlags;
+			T::clearBitFlags();
+		}
 
 		if constexpr (face::HasAdjacentEdges<F>) {
 			using T = typename F::AdjacentEdges;

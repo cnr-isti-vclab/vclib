@@ -45,24 +45,61 @@ bool TriangleBitFlags<El, o>::isEnabled() const
 	return data.template isComponentEnabled<El>(this);
 }
 
+/**
+ * @brief Returns whether the current Triangle is deleted or not.
+ * @return true if the Triangle is deleted, false otherwise.
+ */
 template<typename El, bool o>
 bool TriangleBitFlags<El, o>::deleted() const
 {
 	return flags()[DELETED];
 }
 
+/**
+ * @brief Accesses the 'selected' bit of this Triangle, returning a reference to it.
+ * @return a reference to the 'selected' bit of this Triangle.
+ */
 template<typename El, bool o>
 BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::selected()
 {
 	return flags()[SELECTED];
 }
 
+/**
+ * @brief Returns whether the current Triangle is selected or not.
+ * @return true if the Triangle is selected, false otherwise.
+ */
 template<typename El, bool o>
 bool TriangleBitFlags<El, o>::selected() const
 {
 	return flags()[SELECTED];
 }
 
+/**
+ * @brief Accesses the 'visited' bit of this Triangle, returning a reference to it.
+ * @return a reference to the 'visited' bit of this Triangle.
+ */
+template<typename El, bool o>
+BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::visited()
+{
+	return flags()[VISITED];
+}
+
+/**
+ * @brief Returns whether the current Triangle has been visited or not.
+ * @return true if the Triangle has been visited, false otherwise.
+ */
+template<typename El, bool o>
+bool TriangleBitFlags<El, o>::visited() const
+{
+	return flags()[VISITED];
+}
+
+/**
+ * @brief Returns whether the current Triangle is on border or not, by checking whether at least one
+ * of its three edges are on border or not.
+ * @return true if at least one edge of the Triangle is on border, false otherwise.
+ */
 template<typename El, bool o>
 bool TriangleBitFlags<El, o>::onBorder() const
 {
@@ -111,20 +148,37 @@ bool TriangleBitFlags<El, o>::edgeFaux(uint i) const
 	return flags()[FAUX0 + i];
 }
 
+/**
+ * @brief Returns a reference to the value of the user bit of this Triangle given in input. The bit
+ * is checked to be less than the total number of assigned user bits, which in this class is 4.
+ *
+ * @param[in] bit: the position of the bit, in the interval [0 - 3].
+ * @return a reference to the desired user bit.
+ */
 template<typename El, bool o>
 bool TriangleBitFlags<El, o>::userBit(uint bit) const
 {
-	return flags()[bit + FIRST_USER_BIT];
-}
-
-template<typename El, bool o>
-BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::userBit(uint bit)
-{
+	assert(bit < N_USER_BITS);
 	return flags()[bit + FIRST_USER_BIT];
 }
 
 /**
- * @brief Unsets all the flags of this Element and sets them to `false`, **except the deleted
+ * @brief Returns the boolean value of the user bit of this Triangle given in input. The bit
+ * is checked to be less than the total number of assigned user bits, which in this class is 4.
+ *
+ * @param[in] bit: the position of the bit, in the interval [0 - 3], that will be returned by
+ * reference.
+ * @return `true` if the required bit is enabled, `false` otherwise.
+ */
+template<typename El, bool o>
+BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::userBit(uint bit)
+{
+	assert(bit < N_USER_BITS);
+	return flags()[bit + FIRST_USER_BIT];
+}
+
+/**
+ * @brief Unsets all the flags of this Triangle and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
  */
 template<typename El, bool o>

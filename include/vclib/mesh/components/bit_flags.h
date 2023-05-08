@@ -32,20 +32,20 @@
 namespace vcl::comp {
 
 /**
- * @brief The BitFlags component class represents a collection of 32 bits that will be part of an
+ * @brief The BitFlags component class represents a collection of 8 bits that will be part of an
  * Element (e.g. Vertex, Face, ...).
  *
  * This Component (or a specialization) is mandatory into every Element of the mesh.
  *
  * The bits have the following meaning:
- * - 0: deleted: if the current Element has been deleted
+ * - 0: deleted: if the current Element has been deleted - read only
  * - 1: selected: if the current Element has been selected
  * - 2: border: if the current Element is on border
- * - 3: visited:
+ * - 3: visited: if the current Element has been visited (useful for some visit algorithms)
  * - other: user bits that can have custom meanings to the user
  *
- * This class provides 28 user bits, that can be accessed using the member function userBit(uint i)
- * with position in the interval [0, 27].
+ * This class provides 4 user bits, that can be accessed using the member function userBit(uint i)
+ * with position in the interval [0, 3].
  *
  * The member functions of this class will be available in the instance of any Element that will
  * contain this component.
@@ -64,7 +64,7 @@ class BitFlags
 {
 	using ThisType = BitFlags<ElementType, optional>;
 
-	using FT = int; // FlagsType, the integral type used for the flags
+	using FT = char; // FlagsType, the integral type used for the flags
 public:
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 
@@ -91,6 +91,9 @@ public:
 	BitProxy<FT> onBorder();
 	bool onBorder() const;
 
+	BitProxy<FT> visited();
+	bool visited() const;
+
 	bool userBit(uint bit) const;
 	BitProxy<FT> userBit(uint bit);
 
@@ -110,6 +113,7 @@ protected:
 	BitSet<FT> flags() const;
 
 	static const uint FIRST_USER_BIT = 4;
+	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;
 
 	// indices of the bits
 	enum {

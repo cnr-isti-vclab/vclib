@@ -32,20 +32,20 @@
 namespace vcl::comp {
 
 /**
- * @brief The TriangleBitFlags class represents a collection of 32 bits that will be part of a
+ * @brief The TriangleBitFlags class represents a collection of 16 bits that will be part of a
  * Triangle of a Mesh.
  *
- * The bits have the following meaning (first 3 bits inherited from BitFlags):
- * - 0:  deleted: if the current Triangle has been deleted
- * - 1:  selected: if the current Triangle has been selected
- * - 2:  visited:
- * - from 3 to 5: edge border: if the current Triangle has is i-th edge (i in [0, 2]) on border
- * - from 6 to 8: edge selection: if the current Triangle has is i-th edge (i in [0, 2]) selected
- * - from 9 to 11: edge faux: if the current Triangle has is i-th edge (i in [0, 2]) marked as faux
- * - from 12 to 31: user bits that can have custom meanings to the user
+ * The bits have the following meaning:
+ * - 0: deleted: if the current Triangle has been deleted - read only
+ * - 1: selected: if the current Triangle has been selected
+ * - 2: visited: if the current Triangle has been visited (useful for some visit algorithms)
+ * - from 3 to 5: edge border: if the current Triangle has the i-th edge (i in [0, 2]) on border
+ * - from 6 to 8: edge selection: if the current Triangle has the i-th edge (i in [0, 2]) selected
+ * - from 9 to 11: edge faux: if the current Triangle has the i-th edge (i in [0, 2]) marked as faux
+ * - from 12 to 15: user bits that can have custom meanings to the user
  *
- * This class provides 20 user bits, that can be accessed using the member function userBit(uint i)
- * with position in the interval [0, 19].
+ * This class provides 4 user bits, that can be accessed using the member function userBit(uint i)
+ * with position in the interval [0, 3].
  *
  * The member functions of this class will be available in the instance of any Element that will
  * contain this component.
@@ -64,7 +64,7 @@ class TriangleBitFlags
 {
 	using ThisType = TriangleBitFlags<ElementType, optional>;
 
-	using FT = int; // FlagsType, the integral type used for the flags
+	using FT = short; // FlagsType, the integral type used for the flags
 public:
 	using DataValueType = BitSet<FT>; // data that the component stores internally (or vertically)
 
@@ -86,6 +86,9 @@ public:
 
 	BitProxy<FT> selected();
 	bool selected() const;
+
+	BitProxy<FT> visited();
+	bool visited() const;
 
 	bool onBorder() const;
 
@@ -119,7 +122,8 @@ protected:
 	BitSet<FT>& flags();
 	BitSet<FT> flags() const;
 
-	static const uint FIRST_USER_BIT = 12; // bits [12, 31]
+	static const uint FIRST_USER_BIT = 12;
+	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;
 
 	// indices of the bits
 	enum {
