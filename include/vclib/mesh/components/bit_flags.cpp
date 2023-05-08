@@ -99,7 +99,7 @@ bool BitFlags<El, o>::onBorder() const
  * @brief Returns a reference to the value of the user bit of this Element given in input. The bit
  * is checked to be less than the total number of assigned user bits, which in this class is 28.
  *
- * @param[in] bit: the position of the bit that will be returned by reference.
+ * @param[in] bit: the position of the bit, in the interval [0 - 27].
  * @return a reference to the desired user bit.
  */
 template<typename El, bool o>
@@ -112,7 +112,8 @@ bool BitFlags<El, o>::userBit(uint bit) const
  * @brief Returns the boolean value of the user bit of this Element given in input. The bit
  * is checked to be less than the total number of assigned user bits, which in this class is 28.
  *
- * @param[in] bit: the position of the bit that will be returned by reference.
+ * @param[in] bit: the position of the bit, in the interval [0 - 27], that will be returned by
+ * reference.
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
 template<typename ElementType, bool optional>

@@ -46,6 +46,8 @@ concept HasBitFlags = requires(
 	{ co.userBit(uint()) } -> std::same_as<bool>;
 
 	{ o.resetBitFlags() } -> std::same_as<void>;
+	{ o.importFromVCGFlags(int())} -> std::same_as<void>;
+	{ co.exportToVCGFlags() } -> std::same_as<int>;
 };
 
 /**
@@ -63,9 +65,6 @@ concept FaceBitFlagsConcept = HasBitFlags<T> &&
 	{ co.edgeOnBorder(uint()) } -> std::same_as<bool>;
 	{ co.edgeSelected(uint()) } -> std::same_as<bool>;
 	{ co.edgeFaux(uint()) } -> std::same_as<bool>;
-
-	{ o.importFromVCGFlags(int())} -> std::same_as<void>;
-	{ co.exportToVCGFlags() } -> std::same_as<int>;
 };
 
 /**
