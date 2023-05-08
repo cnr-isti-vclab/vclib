@@ -24,11 +24,12 @@
 #ifndef VCL_MESH_COMPONENTS_ELEMENT_POINTERS_CONTAINER_H
 #define VCL_MESH_COMPONENTS_ELEMENT_POINTERS_CONTAINER_H
 
+#include <vclib/concepts/mesh/components/component.h>
 #include <vclib/space/vector.h>
 
-#include "component_data.h"
+#include "internal/component_data.h"
 
-namespace vcl::comp::internal {
+namespace vcl::comp {
 
 /**
  * @brief The ElementPointersContainer class is a generic container of pointers to another Element
@@ -38,17 +39,29 @@ namespace vcl::comp::internal {
  *
  * Its major use is for adjacencies.
  */
-template<typename Elem, int N, typename ElementType>
-class ElementPointersContainer
+template<typename Elem, int N, typename ElementType, bool optional>
+class ElementPointersContainer : public PointersComponentTriggerer<Elem>
 {
 private:
 	using Base = Vector<Elem*, N>;
 
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 public:
 	/** @private data that the component stores internally (or vertically) */
 	using DataValueType = Vector<Elem*, N>;
-	
+
+	/**
+	 * @brief Boolean that tells if this component type stores its data vertically (not in the
+	 * Element frame memory, but in another vector).
+	 */
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+
+	/**
+	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
+	 * is vertical.
+	 */
+	static const bool IS_OPTIONAL = optional;
+
+protected:
 	static const int CONTAINER_SIZE = Base::SIZE;
 
 	/* Iterator Types declaration */
@@ -66,7 +79,6 @@ public:
 	template<typename Comp>
 	bool isEnabled(Comp* comp) const;
 
-protected:
 	template<typename Comp>
 	void updateElementPointers(const Elem* oldBase, const Elem* newBase, Comp* comp);
 
@@ -79,10 +91,11 @@ protected:
 	template<typename Comp>
 	const Vector<Elem*, N>& container(const Comp* comp) const;
 
+private:
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
-} // namespace vcl::comp::internal
+} // namespace vcl::comp
 
 #include "element_pointers_container.cpp"
 

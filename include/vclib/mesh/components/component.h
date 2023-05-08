@@ -21,22 +21,40 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "loggers.h"
-#include "meshes.h"
-#include "space.h"
+#ifndef VCL_MESH_COMPONENTS_COMPONENT_H
+#define VCL_MESH_COMPONENTS_COMPONENT_H
 
-int main()
+#include <vclib/concepts/mesh/components/component.h>
+
+namespace vcl::comp {
+
+template<
+	typename DataType,
+	typename ElementType,
+	bool optional,
+	bool TTVN = false,
+	int N = 0,
+	typename... PointedTypes>
+class Component : public PointersComponentTriggerer<PointedTypes>...
 {
-	static_assert(vcl::comp::HasPointersOfType<vcl::TriMesh::Face, vcl::TriMesh::Vertex>, "");
+public:
+	using DataValueType = DataType;
 
-	loggersStaticAsserts();
+	/**
+	 * @brief Boolean that tells if this component type stores its data vertically (not in the
+	 * Element frame memory, but in another vector).
+	 */
+	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 
-	dcelStaticAsserts();
-	edgemeshStaticAsserts();
-	pointcloudStaticAsserts();
-	polymeshStaticAsserts();
-	trimeshStaticAsserts();
+	/**
+	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
+	 * is vertical.
+	 */
+	static const bool IS_OPTIONAL = optional;
 
-	spaceStaticAsserts();
-	return 0;
-}
+
+};
+
+} // namespace vcl::comp
+
+#endif // VCL_MESH_COMPONENTS_COMPONENT_H

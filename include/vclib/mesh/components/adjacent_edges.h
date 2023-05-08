@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/adjacent_edges.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_pointers_container.h"
+#include "element_pointers_container.h"
 
 namespace vcl::comp {
 
@@ -55,32 +55,15 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Edge, int N, typename ElementType = void, bool optional = false>
-class AdjacentEdges :
-		public PointersComponentTriggerer<Edge>,
-		protected internal::ElementPointersContainer<Edge, N, ElementType>
+class AdjacentEdges : public ElementPointersContainer<Edge, N, ElementType, optional>
 {
 	using ThisType = AdjacentEdges<Edge, N, ElementType, optional>;
 
-	using Base = internal::ElementPointersContainer<Edge, N, ElementType>;
+	using Base = ElementPointersContainer<Edge, N, ElementType, optional>;
 
 public:
-	/** @private data that the component stores internally (or vertically) */
-	using DataValueType = typename Base::DataValueType;
-
 	/** @brief Allows access to this component type from a derived class type/instance */
 	using AdjacentEdgesComponent = ThisType;
-
-	/**
-	 * @brief Boolean that tells if this component type stores its data vertically (not in the
-	 * Element frame memory, but in another vector).
-	 */
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-
-	/**
-	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
-	 * is vertical.
-	 */
-	static const bool IS_OPTIONAL = optional;
 
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjEdgesNumber() member function.

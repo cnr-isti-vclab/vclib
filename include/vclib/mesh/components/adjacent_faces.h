@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_pointers_container.h"
+#include "element_pointers_container.h"
 
 namespace vcl::comp {
 
@@ -55,18 +55,13 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Face, int N, typename ElementType = void, bool optional = false>
-class AdjacentFaces :
-		public PointersComponentTriggerer<Face>,
-		protected internal::ElementPointersContainer<Face, N, ElementType>
+class AdjacentFaces : public ElementPointersContainer<Face, N, ElementType, optional>
 {
 	using ThisType = AdjacentFaces<Face, N, ElementType, optional>;
 
-	using Base = internal::ElementPointersContainer<Face, N, ElementType>;
+	using Base = ElementPointersContainer<Face, N, ElementType, optional>;
 
 public:
-	/** @private data that the component stores internally (or vertically) */
-	using DataValueType = typename Base::DataValueType;
-
 	/** @brief Allows access to this component type from a derived class type/instance */
 	using AdjacentFacesComponent = ThisType; // expose the type to allow access to this component
 
@@ -79,18 +74,6 @@ public:
 
 	using AdjacentFaceIterator      = typename Base::Iterator;
 	using ConstAdjacentFaceIterator = typename Base::ConstIterator;
-
-	/**
-	 * @brief Boolean that tells if this component type stores its data vertically (not in the
-	 * Element frame memory, but in another vector).
-	 */
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-
-	/**
-	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
-	 * is vertical.
-	 */
-	static const bool IS_OPTIONAL = optional;
 
 	/**
 	 * @brief Static size of the container. If the container is dynamic, this value will be negative

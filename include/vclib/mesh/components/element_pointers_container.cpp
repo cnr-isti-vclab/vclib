@@ -25,15 +25,15 @@
 
 #include <algorithm>
 
-namespace vcl::comp::internal {
+namespace vcl::comp {
 
 /*
  * Create a container of Element pointers (pointers to Elements stored in some other container).
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
-template<typename Elem, int N, typename El>
-ElementPointersContainer<Elem, N, El>::ElementPointersContainer()
+template<typename Elem, int N, typename El, bool o>
+ElementPointersContainer<Elem, N, El, o>::ElementPointersContainer()
 {
 	if constexpr (!IS_VERTICAL) {
 		if constexpr (N >= 0) {
@@ -47,9 +47,9 @@ ElementPointersContainer<Elem, N, El>::ElementPointersContainer()
  * If this Container is a static array, all its element will be initialized to nullptr.
  * If this Container is a dynamic vector, it will be an empty container.
  */
-template<typename Elem, int N, typename El>
+template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
-void ElementPointersContainer<Elem, N, El>::init(Comp* comp)
+void ElementPointersContainer<Elem, N, El, o>::init(Comp* comp)
 {
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
@@ -63,9 +63,9 @@ void ElementPointersContainer<Elem, N, El>::init(Comp* comp)
 	}
 }
 
-template<typename Elem, int N, typename El>
+template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
-bool ElementPointersContainer<Elem, N, El>::isEnabled(Comp* comp) const
+bool ElementPointersContainer<Elem, N, El, o>::isEnabled(Comp* comp) const
 {
 	return data.template isComponentEnabled<El>(comp);
 }
@@ -84,9 +84,9 @@ bool ElementPointersContainer<Elem, N, El>::isEnabled(Comp* comp) const
  * w.r.t. the first element of the Container, and update the the pointer accordingly using the
  * newBase.
  */
-template<typename Elem, int N, typename El>
+template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
-void ElementPointersContainer<Elem, N, El>::updateElementPointers(
+void ElementPointersContainer<Elem, N, El, o>::updateElementPointers(
 	const Elem* oldBase,
 	const Elem* newBase,
 	Comp* comp)
@@ -99,9 +99,9 @@ void ElementPointersContainer<Elem, N, El>::updateElementPointers(
 	}
 }
 
-template<typename Elem, int N, typename El>
+template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
-void ElementPointersContainer<Elem, N, El>::updateElementPointersAfterCompact(
+void ElementPointersContainer<Elem, N, El, o>::updateElementPointersAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices,
 	Comp* comp)
@@ -119,18 +119,18 @@ void ElementPointersContainer<Elem, N, El>::updateElementPointersAfterCompact(
 	}
 }
 
-template<typename Elem, int N, typename El>
+template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
-Vector<Elem*, N>& ElementPointersContainer<Elem, N, El>::container(Comp* comp)
+Vector<Elem*, N>& ElementPointersContainer<Elem, N, El, o>::container(Comp* comp)
 {
 	return data.template get<El>(comp);
 }
 
-template<typename Elem, int N, typename El>
+template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
-const Vector<Elem*, N>& ElementPointersContainer<Elem, N, El>::container(const Comp* comp) const
+const Vector<Elem*, N>& ElementPointersContainer<Elem, N, El, o>::container(const Comp* comp) const
 {
 	return data.template get<El>(comp);
 }
 
-} // namespace vcl::comp::internal
+} // namespace vcl::comp

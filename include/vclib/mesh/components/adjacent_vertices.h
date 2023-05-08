@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_pointers_container.h"
+#include "element_pointers_container.h"
 
 namespace vcl::comp {
 
@@ -51,20 +51,14 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Vertex, typename ElementType = void, bool optional = false>
-class AdjacentVertices :
-		public PointersComponentTriggerer<Vertex>,
-		protected internal::ElementPointersContainer<Vertex, -1, ElementType>
+class AdjacentVertices : public ElementPointersContainer<Vertex, -1, ElementType, optional>
 {
 	using ThisType = AdjacentVertices<Vertex, ElementType, optional>;
 
-	using Base = internal::ElementPointersContainer<Vertex, -1, ElementType>;
+	using Base = ElementPointersContainer<Vertex, -1, ElementType, optional>;
 
 public:
-	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
 	using AdjacentVerticesComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	using AdjacentVertexType = Vertex;
 

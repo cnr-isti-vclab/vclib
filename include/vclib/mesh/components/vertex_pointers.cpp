@@ -26,14 +26,6 @@
 namespace vcl::comp {
 
 template<typename Vertex, int N, typename El, bool o>
-VertexPointers<Vertex, N, El, o>::VertexPointers()
-{
-	if constexpr (!IS_VERTICAL) {
-		init();
-	}
-}
-
-template<typename Vertex, int N, typename El, bool o>
 void VertexPointers<Vertex, N, El, o>::init()
 {
 	Base::init(this);

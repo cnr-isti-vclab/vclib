@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/vertex_pointers.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_pointers_container.h"
+#include "element_pointers_container.h"
 
 namespace vcl::comp {
 
@@ -37,20 +37,14 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Vertex, int N, typename ElementType = void, bool optional = false>
-class VertexPointers :
-		public PointersComponentTriggerer<Vertex>,
-		protected internal::ElementPointersContainer<Vertex, N, ElementType>
+class VertexPointers : public ElementPointersContainer<Vertex, N, ElementType, optional>
 {
 	using ThisType = VertexPointers<Vertex, N, ElementType, optional>;
 
-	using Base = internal::ElementPointersContainer<Vertex, N, ElementType>;
+	using Base = ElementPointersContainer<Vertex, N, ElementType, optional>;
 
 public:
-	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
 	using VertexPointersComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	using VertexType = Vertex;
 
@@ -62,8 +56,6 @@ public:
 	using ConstVertexIterator = typename Base::ConstIterator;
 
 	/* Constructor and isEnabled */
-
-	VertexPointers();
 
 	void init();
 
