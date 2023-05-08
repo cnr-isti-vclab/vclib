@@ -25,30 +25,27 @@
 #define VCL_MESH_COMPONENTS_BIT_FLAGS_H
 
 #include <vclib/concepts/mesh/components/bit_flags.h>
-#include <vclib/space/bit_set/bit_proxy.h>
+#include <vclib/space/bit_set.h>
 
 #include "internal/component_data.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The BitFlags component class represents a collection of 32 bits that will be part of an
+ * @brief The BitFlags component class represents a collection of 8 bits that will be part of an
  * Element (e.g. Vertex, Face, ...).
  *
  * This Component (or a specialization) is mandatory into every Element of the mesh.
  *
  * The bits have the following meaning:
- * - 0: deleted: if the current Element has been deleted
+ * - 0: deleted: if the current Element has been deleted - read only
  * - 1: selected: if the current Element has been selected
  * - 2: border: if the current Element is on border
+ * - 3: visited: if the current Element has been visited (useful for some visit algorithms)
  * - other: user bits that can have custom meanings to the user
  *
- * This class provides 29 user bits, that can be accessed using the member functions
- * - `userBitFlag`
- * - `setUserBit`
- * - `unsetUserBit`
- *
- * with position in the interval [0, 28].
+ * This class provides 4 user bits, that can be accessed using the member function userBit(uint i)
+ * with position in the interval [0, 3].
  *
  * The member functions of this class will be available in the instance of any Element that will
  * contain this component.
@@ -57,25 +54,28 @@ namespace vcl::comp {
  * access to this component member functions from `v`:
  *
  * @code{.cpp}
- * v.isDeleted();
+ * bool isD = v.deleted();
  * @endcode
  *
  * @ingroup components
  */
-template<typename Component, typename ElementType = void, bool optional = false>
-class BitFlagsT
+template<typename ElementType = void, bool optional = false>
+class BitFlags
 {
-	template<typename, typename, bool>
-	friend class BitFlagsT;
+	using ThisType = BitFlags<ElementType, optional>;
+
+	using FT = char; // FlagsType, the integral type used for the flags
 public:
-	using DataValueType = int; // data that the component stores internally (or vertically)
+	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
+
+	using DataValueType = BitSet<FT>; // data that the component stores internally (or vertically)
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 	static const bool IS_OPTIONAL = optional;
 
 	/* Constructor and isEnabled */
 
-	BitFlagsT();
+	BitFlags();
 
 	void init();
 
@@ -83,65 +83,49 @@ public:
 
 	/* Member functions */
 
-	bool isDeleted() const;
-	bool isSelected() const;
-	bool isOnBorder() const;
-	bool userBitFlag(uint bit) const;
+	bool deleted() const;
 
-	void setSelected();
-	void setOnBorder();
-	void setUserBit(uint bit);
-
-	BitProxy<int> selected();
+	BitProxy<FT> selected();
 	bool selected() const;
 
-	void unsetAllFlags();
-	void unsetSelected();
-	void unsetOnBorder();
-	void unsetUserBit(uint bit);
+	BitProxy<FT> onBorder();
+	bool onBorder() const;
+
+	BitProxy<FT> visited();
+	bool visited() const;
+
+	bool userBit(uint bit) const;
+	BitProxy<FT> userBit(uint bit);
+
+	void resetBitFlags();
 
 	void importFromVCGFlags(int f);
 	int exportToVCGFlags() const;
 
 protected:
-	void setDeleted();
-	void unsetDeleted();
-
-	bool flagValue(uint bit) const;
-	void setFlag(uint bit);
-	void unsetFlag(uint bit);
-
-	bool userBitFlag(uint bit, uint firstBit) const;
-	void setUserBit(uint bit, uint firstBit);
-	void unsetUserBit(uint bit, uint firstBit);
+	BitProxy<FT> deleted();
 
 	template<typename Element>
 	void importFrom(const Element& e);
 
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
-	int& flags();
-	int flags() const;
+	BitSet<FT>& flags();
+	BitSet<FT> flags() const;
 
-	static const uint FIRST_USER_BIT = 3;
+	static const uint FIRST_USER_BIT = 4;
+	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;
 
-	// indices of the bits, used for flagValue, setFlag and unsetFlag member functions
+	// indices of the bits
 	enum {
 		DELETED  = 0, // bit 0
 		SELECTED = 1, // bit 1
-		BORDER   = 2  // bit 2
+		BORDER   = 2, // bit 2
+		VISITED  = 3  // bit 3
 	};
 
 private:
 	// contians the actual data of the component, if the component is horizontal
 	internal::ComponentData<DataValueType, IS_VERTICAL> data;
-};
-
-template<typename ElementType = void, bool optional = false>
-class BitFlags : public BitFlagsT<BitFlags<ElementType, optional>, ElementType, optional>
-{
-	using ThisType = BitFlags<ElementType, optional>;
-public:
-	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 };
 
 } // namespace vcl::comp

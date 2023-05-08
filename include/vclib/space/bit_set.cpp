@@ -107,7 +107,7 @@ BitProxy<T> BitSet<T>::at(uint i)
 template<std::integral T>
 bool BitSet<T>::all() const
 {
-	return ((bits+1) & bits) == 0;
+	return bits == ~static_cast<T>(0);
 }
 
 /**
@@ -127,7 +127,77 @@ bool BitSet<T>::any() const
 template<std::integral T>
 bool BitSet<T>::none() const
 {
-	return bits == 0;
+	return bits == static_cast<T>(0);
+}
+
+/**
+ * @brief Sets all the bits to true
+ * @return `*this`
+ */
+template<std::integral T>
+BitSet<T> BitSet<T>::set()
+{
+	bits = ~static_cast<T>(0);
+	return *this;
+}
+
+/**
+ * @brief Sets the bit at position i to b
+ * @param[in] i: the position of the bit
+ * @param[in] b: the boolena value to assign to the bit
+ * @return `*this`
+ */
+template<std::integral T>
+BitSet<T> BitSet<T>::set(uint i, bool b)
+{
+	at(i) = b;
+	return *this;
+}
+
+/**
+ * @brief Sets all the bits to false
+ * @return `*this`
+ */
+template<std::integral T>
+BitSet<T> BitSet<T>::reset()
+{
+	bits = 0;
+	return *this;
+}
+
+/**
+ * @brief Sets the bit at position i to false
+ * @param[in] i: the position of the bit
+ * @return `*this`
+ */
+template<std::integral T>
+BitSet<T> BitSet<T>::reset(uint i)
+{
+	at(i) = false;
+	return *this;
+}
+
+/**
+ * @brief Flips all the bits of the BitSet
+ * @return `*this`
+ */
+template<std::integral T>
+BitSet<T> BitSet<T>::flip()
+{
+	bits = ~bits;
+	return *this;
+}
+
+/**
+ * @brief Flips the bit at position i
+ * @param[in] i: the position of the bit
+ * @return `*this`
+ */
+template<std::integral T>
+BitSet<T> BitSet<T>::flip(uint i)
+{
+	at(i) = !at(i);
+	return *this;
 }
 
 } // namespace vcl

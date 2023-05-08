@@ -24,8 +24,6 @@
 #ifndef VCL_SPACE_BIT_SET_H
 #define VCL_SPACE_BIT_SET_H
 
-
-
 #include "bit_set/bit_proxy.h"
 
 namespace vcl {
@@ -63,8 +61,17 @@ public:
 	bool any() const;
 	bool none() const;
 
+	BitSet<T> set();
+	BitSet<T> set(uint i, bool b = true);
+
+	BitSet<T> reset();
+	BitSet<T> reset(uint i);
+
+	BitSet<T> flip();
+	BitSet<T> flip(uint i);
+
 private:
-	T bits = 0;
+	T bits = static_cast<T>(0);
 };
 
 /**

@@ -13,14 +13,14 @@ namespace vcl {
  * and then allow assignment.
  *
  * See: https://stackoverflow.com/a/10145050/5851101
+ *
+ * @ingroup space
  */
 template<std::integral T>
 class BitProxy
 {
 public:
 	BitProxy(T& mask, uint index);
-
-	void setIndex(uint ind);
 
 	operator bool() const;
 
@@ -34,7 +34,7 @@ public:
 
 private:
 	std::reference_wrapper<T> mask;
-	uint index;
+	const uint index;
 };
 
 } // namespace vcl

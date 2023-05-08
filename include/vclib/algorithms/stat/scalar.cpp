@@ -178,7 +178,7 @@ Histogram<HScalar> vertexScalarHistogram(const MeshType& m, bool selectionOnly, 
 
 	vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
 	for (const VertexType& v : m.vertices()) {
-		if (!selectionOnly || v.isSelected()) {
+		if (!selectionOnly || v.selected()) {
 			assert(!isDegenerate(v.scalar()));
 			h.addValue(v.scalar());
 		}
@@ -198,7 +198,7 @@ Histogram<HScalar> faceScalarHistogram(const MeshType& m, bool selectionOnly, ui
 
 	vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
 	for (const FaceType& f : m.faces()) {
-		if (!selectionOnly || f.isSelected()) {
+		if (!selectionOnly || f.selected()) {
 			assert(!isDegenerate(f.scalar()));
 			h.addValue(f.scalar());
 		}
