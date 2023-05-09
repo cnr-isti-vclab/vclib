@@ -62,21 +62,21 @@ const Vector<T, N>& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::container(
 	}
 }
 
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
-template<typename Comp, typename AdDt>
-AdDt& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::additionalData(Comp* comp)
-	requires(HAS_ADDITIONAL_DATA)
-{
-	return std::get<1>(Base::data(comp));
-}
+//template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+//template<typename Comp, typename AdDt>
+//AdDt& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::additionalData(Comp* comp)
+//	requires(HAS_ADDITIONAL_DATA)
+//{
+//	return std::get<1>(Base::data(comp));
+//}
 
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
-template<typename Comp, typename AdDt>
-const AdDt& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::additionalData(const Comp* comp) const
-	requires(HAS_ADDITIONAL_DATA)
-{
-	return std::get<1>(Base::data(comp));
-}
+//template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+//template<typename Comp, typename AdDt>
+//const AdDt& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::additionalData(const Comp* comp) const
+//	requires(HAS_ADDITIONAL_DATA)
+//{
+//	return std::get<1>(Base::data(comp));
+//}
 
 template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
 void ContainerComponent<T, N, AD, El, o, TTVN, PT...>::resize(uint n) requires (N < 0)
