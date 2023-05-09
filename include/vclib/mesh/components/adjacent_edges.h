@@ -67,7 +67,7 @@ public:
 
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjEdgesNumber() member function.
-	static const int ADJ_EDGE_NUMBER = Base::CONTAINER_SIZE;
+	static const int ADJ_EDGE_NUMBER = Base::SIZE;
 
 	using AdjacentEdgeType = Edge;
 

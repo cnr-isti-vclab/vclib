@@ -48,7 +48,7 @@ public:
 
 	using VertexType = Vertex;
 
-	static const int VERTEX_NUMBER = Base::CONTAINER_SIZE;
+	static const int VERTEX_NUMBER = Base::SIZE;
 
 	/* Iterator Types declaration */
 

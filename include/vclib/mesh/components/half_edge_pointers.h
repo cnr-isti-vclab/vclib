@@ -28,7 +28,7 @@
 
 #include <vclib/concepts/mesh/components/half_edge_pointers.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 

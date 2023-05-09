@@ -37,7 +37,7 @@
 #include <vclib/space/color.h>
 #include <vclib/views/view.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 

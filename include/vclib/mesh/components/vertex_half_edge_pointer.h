@@ -31,7 +31,7 @@
 #include <vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h>
 #include <vclib/views/view.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 

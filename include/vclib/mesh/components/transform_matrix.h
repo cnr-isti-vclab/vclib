@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/transform_matrix.h>
 #include <vclib/space/matrix.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 

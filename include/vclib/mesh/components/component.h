@@ -75,13 +75,13 @@ public:
 
 	static const int SIZE = N;
 
+protected:
 	template<typename Comp>
 	bool isEnabled(const Comp* c) const
 	{
 		return cdata.template isComponentEnabled<ElementType>(c);
 	}
 
-protected:
 	template<typename Comp>
 	DataValueType& data(Comp* c)
 	{

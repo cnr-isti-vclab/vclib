@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/bounding_box.h>
 #include <vclib/space/box.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -51,15 +51,12 @@ template<
 	PointConcept PointType,
 	typename ElementType = void,
 	bool optional        = false>
-class BoundingBox
+class BoundingBox : public Component<Box<PointType>, ElementType, optional>
 {
+	using Base = Component<Box<PointType>, ElementType, optional>;
 	using ThisType = BoundingBox<PointType, ElementType, optional>;
 public:
-	using DataValueType = Box<PointType>; // data that the component stores internally (or vertically)
 	using BoundingBoxComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	using BoundingBoxType = Box<PointType>;
 
@@ -69,13 +66,6 @@ public:
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
-
-private:
-	Box<PointType>& box();
-	const Box<PointType>& box() const;
-
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 template <typename S, typename ElementType = void, bool optional= false>

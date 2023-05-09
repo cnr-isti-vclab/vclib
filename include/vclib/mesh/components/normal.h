@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/normal.h>
 #include <vclib/space/point.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 

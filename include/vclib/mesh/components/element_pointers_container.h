@@ -41,18 +41,16 @@ namespace vcl::comp {
  */
 template<typename Elem, int N, typename ElementType, bool optional>
 class ElementPointersContainer :
-		public Component<Vector<Elem*, N>, ElementType, optional, false, N, Elem>
+		public Component<Vector<Elem*, N>, ElementType, optional, true, N, Elem>
 {
 private:
-	using Base = Component<Vector<Elem*, N>, ElementType, optional, false, N, Elem>;
+	using Base = Component<Vector<Elem*, N>, ElementType, optional, true, N, Elem>;
 
 protected:
-	static const int CONTAINER_SIZE = Vector<Elem*, N>::SIZE;
-
 	/* Iterator Types declaration */
 
-	using Iterator              = typename Vector<Elem*, N>::Iterator;
-	using ConstIterator         = typename Vector<Elem*, N>::ConstIterator;
+	using Iterator      = typename Vector<Elem*, N>::Iterator;
+	using ConstIterator = typename Vector<Elem*, N>::ConstIterator;
 
 	/* Constructor and isEnabled */
 

@@ -26,7 +26,7 @@
 
 #include <vclib/concepts/mesh/components/mark.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 

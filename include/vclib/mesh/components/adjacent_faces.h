@@ -79,7 +79,7 @@ public:
 	 * @brief Static size of the container. If the container is dynamic, this value will be negative
 	 * and you should use the adjFacesNumber() member function.
 	 */
-	static const int ADJ_FACE_NUMBER = Base::CONTAINER_SIZE;
+	static const int ADJ_FACE_NUMBER = Base::SIZE;
 
 	/* Constructor and isEnabled */
 
