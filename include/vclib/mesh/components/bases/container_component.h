@@ -10,13 +10,23 @@ namespace vcl::comp {
 template<
 	typename T,
 	int N,
+	typename AdditionalData,
 	typename ElementType,
 	bool optional,
 	bool TTVN,
 	typename... PointedTypes>
 class ContainerComponent :
-		public Component<Vector<T, N>, ElementType, optional, PointedTypes...>
+		public std::conditional_t<
+			std::is_same_v<AdditionalData, void>,
+			Component<Vector<T, N>, ElementType, optional, PointedTypes...>,
+			Component<
+				std::tuple<Vector<T, N>, AdditionalData>,
+				ElementType,
+				optional,
+				PointedTypes...>>
 {
+	static constexpr bool HAS_ADDITIONAL_DATA = !std::is_same_v<AdditionalData, void>;
+
 	using Base = Component<Vector<T, N>, ElementType, optional, PointedTypes...>;
 
 public:
@@ -51,6 +61,12 @@ protected:
 
 	template<typename Comp>
 	const Vector<T, N>& container(const Comp* comp) const;
+
+	template<typename Comp, typename AdDt = AdditionalData>
+	AdDt& additionalData(Comp* comp) requires (HAS_ADDITIONAL_DATA);
+
+	template<typename Comp, typename AdDt = AdditionalData>
+	const AdDt& additionalData(const Comp* comp) const requires (HAS_ADDITIONAL_DATA);
 
 	void resize(uint n) requires (N < 0);
 	void pushBack(const T& c = T()) requires (N < 0);

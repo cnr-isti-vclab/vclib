@@ -40,9 +40,9 @@ namespace vcl::comp {
  */
 template<typename Elem, int N, typename ElementType, bool optional>
 class PointersContainerComponent :
-		public ContainerComponent<Elem*, N, ElementType, optional, true, Elem>
+		public ContainerComponent<Elem*, N, void, ElementType, optional, true, Elem>
 {
-	using Base = ContainerComponent<Elem*, N, ElementType, optional, true, Elem>;
+	using Base = ContainerComponent<Elem*, N, void, ElementType, optional, true, Elem>;
 
 protected:
 	using Base::container;
