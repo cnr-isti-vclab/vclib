@@ -43,7 +43,6 @@ template<typename Elem, int N, typename ElementType, bool optional>
 class ElementPointersContainer :
 		public Component<Vector<Elem*, N>, ElementType, optional, true, N, Elem>
 {
-private:
 	using Base = Component<Vector<Elem*, N>, ElementType, optional, true, N, Elem>;
 
 protected:

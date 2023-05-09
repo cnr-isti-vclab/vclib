@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<typename El, bool o>
 PolygonBitFlags<El, o>::PolygonBitFlags()
 {
-	if constexpr (!IS_VERTICAL) {
+	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
@@ -42,7 +42,7 @@ void PolygonBitFlags<El, o>::init()
 template<typename El, bool o>
 bool PolygonBitFlags<El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 /**
@@ -328,15 +328,15 @@ void PolygonBitFlags<El, o>::importFrom(const Element& e)
 }
 
 template<typename El, bool o>
-typename PolygonBitFlags<El, o>::PolyFlags& PolygonBitFlags<El, o>::flags()
+internal::PolyFlags<int>& PolygonBitFlags<El, o>::flags()
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template<typename El, bool o>
-typename PolygonBitFlags<El, o>::PolyFlags PolygonBitFlags<El, o>::flags() const
+internal::PolyFlags<int> PolygonBitFlags<El, o>::flags() const
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 } // namespace vcl::comp

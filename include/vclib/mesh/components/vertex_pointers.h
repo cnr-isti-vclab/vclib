@@ -40,7 +40,6 @@ template<typename Vertex, int N, typename ElementType = void, bool optional = fa
 class VertexPointers : public ElementPointersContainer<Vertex, N, ElementType, optional>
 {
 	using ThisType = VertexPointers<Vertex, N, ElementType, optional>;
-
 	using Base = ElementPointersContainer<Vertex, N, ElementType, optional>;
 
 public:

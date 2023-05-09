@@ -66,6 +66,7 @@ class BitFlags : public Component<BitSet<char>, ElementType, optional>
 	using ThisType = BitFlags<ElementType, optional>;
 
 	using FT = char; // FlagsType, the integral type used for the flags
+
 public:
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
 

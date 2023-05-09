@@ -44,6 +44,7 @@ class Color : public Component<vcl::Color, ElementType, optional>
 {
 	using Base = Component<vcl::Color, ElementType, optional>;
 	using ThisType = Color<ElementType, optional>;
+
 public:
 	using ColorComponent = ThisType; // expose the type to allow access to this component
 

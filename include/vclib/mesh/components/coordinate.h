@@ -40,6 +40,7 @@ class Coordinate : public Component<P, ElementType, optional>
 {
 	using Base = Component<P, ElementType, optional>;
 	using ThisType = Coordinate<P, ElementType, optional>;
+
 public:
 	using CoordComponent = ThisType; // expose the type to allow access to this component
 

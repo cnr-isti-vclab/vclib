@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<typename Scalar, typename El, bool o>
 bool PrincipalCurvature<Scalar, El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<typename Scalar, typename El, bool o>
@@ -41,14 +41,14 @@ template<typename Scalar, typename El, bool o>
 const typename PrincipalCurvature<Scalar, El, o>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar, El, o>::principalCurvature() const
 {
-	return princCurv();
+	return Base::data(this);
 }
 
 template<typename Scalar, typename El, bool o>
 typename PrincipalCurvature<Scalar, El, o>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar, El, o>::principalCurvature()
 {
-	return princCurv();
+	return Base::data(this);
 }
 
 template<typename Scalar, typename El, bool o>
@@ -57,23 +57,9 @@ void PrincipalCurvature<Scalar, El, o>::importFrom(const Element& e)
 {
 	if constexpr (HasPrincipalCurvature<Element>) {
 		if (isPrincipalCurvatureEnabledOn(e)) {
-			princCurv() = e.principalCurvature().template cast<Scalar>();
+			principalCurvature() = e.principalCurvature().template cast<Scalar>();
 		}
 	}
-}
-
-template<typename Scalar, typename El, bool o>
-typename PrincipalCurvature<Scalar, El, o>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, o>::princCurv()
-{
-	return data.template get<El>(this);
-}
-
-template<typename Scalar, typename El, bool o>
-const typename PrincipalCurvature<Scalar, El, o>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, o>::princCurv() const
-{
-	return data.template get<El>(this);
 }
 
 template <typename T>

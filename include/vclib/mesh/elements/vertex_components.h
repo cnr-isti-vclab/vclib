@@ -141,7 +141,7 @@ using OptionalMark = comp::Mark<VertexType, true>;
 
 /* Port Normal classes into vert namespace */
 template<typename ScalarType, int N>
-using Normal = comp::Normal<ScalarType, N>;
+using Normal = comp::Normal<Point<ScalarType, N>>;
 
 template<typename ScalarType>
 using Normal3 = comp::Normal3<ScalarType>;
@@ -150,7 +150,7 @@ using Normal3f = comp::Normal3f<>;
 using Normal3d = comp::Normal3d<>;
 
 template<typename ScalarType, int N, typename VertexType>
-using VerticalNormal = comp::Normal<ScalarType, N, VertexType>;
+using VerticalNormal = comp::Normal<Point<ScalarType, N>, VertexType>;
 
 template<typename ScalarType, typename VertexType>
 using VerticalNormal3 = comp::Normal3<ScalarType, VertexType>;
@@ -162,7 +162,7 @@ template<typename VertexType>
 using VerticalNormal3d = comp::Normal3d<VertexType>;
 
 template<typename ScalarType, int N, typename VertexType>
-using OptionalNormal = comp::Normal<ScalarType, N, VertexType, true>;
+using OptionalNormal = comp::Normal<Point<ScalarType, N>, VertexType, true>;
 
 template<typename ScalarType, typename VertexType>
 using OptionalNormal3 = comp::Normal3<ScalarType, VertexType, true>;

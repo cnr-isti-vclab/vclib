@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<typename El, bool o>
 TriangleBitFlags<El, o>::TriangleBitFlags()
 {
-	if constexpr (!IS_VERTICAL) {
+	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
@@ -42,7 +42,7 @@ void TriangleBitFlags<El, o>::init()
 template<typename El, bool o>
 bool TriangleBitFlags<El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 /**
@@ -268,13 +268,13 @@ void TriangleBitFlags<El, o>::importFrom(const Element& e)
 template<typename El, bool o>
 BitSet<typename TriangleBitFlags<El, o>::FT>& TriangleBitFlags<El, o>::flags()
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template<typename El, bool o>
 BitSet<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::flags() const
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 } // namespace vcl::comp

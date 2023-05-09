@@ -37,15 +37,13 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<PointConcept P, typename ElementType = void, bool optional = false>
-class NormalT
+class Normal : public Component<P, ElementType, optional>
 {
-	using ThisType = NormalT<P, ElementType, optional>;
-public:
-	using DataValueType = P;         // data that the component stores internally (or vertically)
-	using NormalComponent = ThisType; // expose the type to allow access to this component
+	using Base = Component<P, ElementType, optional>;
+	using ThisType = Normal<P, ElementType, optional>;
 
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
+public:
+	using NormalComponent = ThisType; // expose the type to allow access to this component
 
 	using NormalType = P;
 
@@ -58,14 +56,6 @@ public:
 protected:
 	template<typename Element>
 	void importFrom(const Element& e);
-
-private:
-	// members that allow to access the normal, trough data (horizontal) or trough parent (vertical)
-	P& n();
-	const P& n() const;
-
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 /* Detector function to check if a class has Normal enabled */
@@ -75,16 +65,9 @@ bool isNormalEnabledOn(const T& element);
 
 template<
 	typename Scalar,
-	int N,
 	typename ElementType = void,
 	bool optional        = false>
-using Normal = NormalT<Point<Scalar, N>, ElementType, optional>;
-
-template<
-	typename Scalar,
-	typename ElementType = void,
-	bool optional        = false>
-using Normal3 = NormalT<Point3<Scalar>, ElementType, optional>;
+using Normal3 = Normal<Point3<Scalar>, ElementType, optional>;
 
 template<typename ElementType = void, bool optional = false>
 using Normal3f = Normal3<float, ElementType, optional>;

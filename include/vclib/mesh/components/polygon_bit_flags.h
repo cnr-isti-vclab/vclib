@@ -31,6 +31,16 @@
 
 namespace vcl::comp {
 
+namespace internal {
+
+template<std::integral FT>
+struct PolyFlags {
+	BitSet<FT> flags;
+	std::vector<BitSet<FT>> edgeFlags;
+};
+
+} // namespace vcl::comp::internal
+
 /**
  * @brief The PolygonBitFlags class represents a collection of 8 bits plus 8 bits for each edge that
  * will be part of a generic Polygonal Face of a Mesh.
@@ -68,24 +78,15 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class PolygonBitFlags
+class PolygonBitFlags : public Component<internal::PolyFlags<int>, ElementType, optional>
 {
+	using Base = Component<internal::PolyFlags<int>, ElementType, optional>;
 	using ThisType = PolygonBitFlags<ElementType, optional>;
 
 	using FT = int; // FlagsType, the integral type used for the flags
 
-	struct PolyFlags {
-		BitSet<FT> flags;
-		std::vector<BitSet<FT>> edgeFlags;
-	};
-
 public:
-	using DataValueType = PolyFlags; // data that the component stores internally (or vertically)
-
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	/* Constructor and isEnabled */
 	PolygonBitFlags();
@@ -145,8 +146,8 @@ protected:
 	void importFrom(const Element& e);
 
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
-	PolyFlags& flags();
-	PolyFlags flags() const;
+	internal::PolyFlags<int>& flags();
+	internal::PolyFlags<int> flags() const;
 
 	static const uint FIRST_USER_BIT = 6;
 	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;
@@ -168,10 +169,6 @@ protected:
 		EDGESEL  = 1,
 		EDGEVIS  = 2
 	};
-
-private:
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

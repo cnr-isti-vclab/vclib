@@ -55,6 +55,7 @@ class BoundingBox : public Component<Box<PointType>, ElementType, optional>
 {
 	using Base = Component<Box<PointType>, ElementType, optional>;
 	using ThisType = BoundingBox<PointType, ElementType, optional>;
+
 public:
 	using BoundingBoxComponent = ThisType; // expose the type to allow access to this component
 

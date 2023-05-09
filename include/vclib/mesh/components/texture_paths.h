@@ -34,22 +34,27 @@
 
 namespace vcl::comp {
 
+namespace internal {
+
+struct TPData {
+	std::vector<std::string> texPaths;
+	std::string meshPath;
+};
+
+} // namespace vcl::comp::internal
+
 /**
  * @brief The TexturePaths class
  *
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class TexturePaths
+class TexturePaths : public Component<internal::TPData, ElementType, optional>
 {
+	using Base = Component<internal::TPData, ElementType, optional>;
 	using ThisType = TexturePaths<ElementType, optional>;
 
-	struct TPData {
-		std::vector<std::string> texPaths;
-		std::string meshPath;
-	};
 public:
-	using DataValueType = TPData; // data that the component stores internally (or vertically)
 	using TexturePathsComponent = ThisType; // expose the type to allow access to this component
 
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
@@ -58,8 +63,6 @@ public:
 	// iterators
 	using TexFileNamesIterator      = std::vector<std::string>::iterator;
 	using ConstTexFileNamesIterator = std::vector<std::string>::const_iterator;
-	using TexFileNamesView          = vcl::View<TexFileNamesIterator>;
-	using ConstTexFileNamesView     = vcl::View<ConstTexFileNamesIterator>;
 
 	uint textureNumber() const;
 
@@ -76,8 +79,8 @@ public:
 	TexFileNamesIterator      texturePathEnd();
 	ConstTexFileNamesIterator texturePathBegin() const;
 	ConstTexFileNamesIterator texturePathEnd() const;
-	TexFileNamesView          texturePaths();
-	ConstTexFileNamesView     texturePaths() const;
+	auto                      texturePaths();
+	auto                      texturePaths() const;
 
 protected:
 	template<typename Element>
@@ -89,8 +92,6 @@ private:
 	const std::vector<std::string>& texPaths() const;
 	std::string& meshPath();
 	const std::string& meshPath() const;
-
-	internal::ComponentData<TPData, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp
