@@ -30,7 +30,7 @@ namespace vcl::comp {
 template<typename HE, typename V, typename F, typename El, bool o>
 HalfEdgePointers<HE, V, F, El, o>::HalfEdgePointers()
 {
-	if constexpr (!IS_VERTICAL) {
+	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
@@ -48,7 +48,7 @@ void HalfEdgePointers<HE, V, F, El, o>::init()
 template<typename HE, typename V, typename F, typename El, bool o>
 bool HalfEdgePointers<HE, V, F, El, o>::isEnabled()
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
@@ -312,61 +312,61 @@ void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
 template<typename HE, typename V, typename F, typename El, bool o>
 HE*& HalfEdgePointers<HE, V, F, El, o>::n()
 {
-	return data.template get<El>(this).n;
+	return Base::data(this).n;
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
 const HE* HalfEdgePointers<HE, V, F, El, o>::n() const
 {
-	return data.template get<El>(this).n;
+	return Base::data(this).n;
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
 HE*& HalfEdgePointers<HE, V, F, El, o>::p()
 {
-	return data.template get<El>(this).p;
+	return Base::data(this).p;
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
 const HE* HalfEdgePointers<HE, V, F, El, o>::p() const
 {
-	return data.template get<El>(this).p;
+	return Base::data(this).p;
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
 HE*& HalfEdgePointers<HE, V, F, El, o>::t()
 {
-	return data.template get<El>(this).t;
+	return Base::data(this).t;
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
 const HE* HalfEdgePointers<HE, V, F, El, o>::t() const
 {
-	return data.template get<El>(this).t;
+	return Base::data(this).t;
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
 V*& HalfEdgePointers<HE, V, F, El, o>::v()
 {
-	return data.template get<El>(this).v;
+	return Base::data(this).v;
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
 const V* HalfEdgePointers<HE, V, F, El, o>::v() const
 {
-	return data.template get<El>(this).v;
+	return Base::data(this).v;
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
 F*& HalfEdgePointers<HE, V, F, El, o>::f()
 {
-	return data.template get<El>(this).f;
+	return Base::data(this).f;
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
 const F* HalfEdgePointers<HE, V, F, El, o>::f() const
 {
-	return data.template get<El>(this).f;
+	return Base::data(this).f;
 }
 
 } // namespace vcl::comp

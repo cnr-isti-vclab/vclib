@@ -44,19 +44,17 @@ template<
 	typename HalfEdge,
 	typename ElementType = void,
 	bool optional        = false>
-class VertexHalfEdgePointer : public PointersComponentTriggerer<HalfEdge>
+class VertexHalfEdgePointer : public Component<HalfEdge*, ElementType, optional, false, 0, HalfEdge>
 {
+	using Base = Component<HalfEdge*, ElementType, optional, false, 0, HalfEdge>;
 	using ThisType = VertexHalfEdgePointer<HalfEdge, ElementType, optional>;
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
 
 public:
-	using DataValueType = HalfEdge*; // data that the component stores internally (or vertically)
-	using VertexHalfEdgePointerComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
+	// expose the type to allow access to this component
+	using VertexHalfEdgePointerComponent = ThisType;
 
 	using HalfEdgeType = HalfEdge;
 
@@ -152,8 +150,6 @@ protected:
 private:
 	HalfEdge*& he();
 	const HalfEdge* he() const;
-
-	internal::ComponentData<HalfEdge*, IS_VERTICAL> data;
 };
 
 } // vcl::comp

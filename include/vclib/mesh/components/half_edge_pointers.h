@@ -32,6 +32,19 @@
 
 namespace vcl::comp {
 
+namespace internal {
+
+template<typename HalfEdge, typename Vertex, typename Face>
+struct HEPData {
+	HalfEdge* n; // next half edge
+	HalfEdge* p; // prev half edge
+	HalfEdge* t; // twin half edge
+	Vertex*   v; // from vertex
+	Face*     f; // incident face
+};
+
+} // namespace vcl::comp::internal
+
 /**
  * @brief The HalfEdgePointers class
  *
@@ -44,25 +57,29 @@ template<
 	typename ElementType = void,
 	bool optional        = false>
 class HalfEdgePointers :
-		public PointersComponentTriggerer<HalfEdge>,
-		public PointersComponentTriggerer<Vertex>,
-		public PointersComponentTriggerer<Face>
+		public Component<
+			internal::HEPData<HalfEdge, Vertex, Face>,
+			ElementType,
+			optional,
+			false,
+			0,
+			HalfEdge,
+			Vertex,
+			Face>
 {
+	using Base = Component<
+		internal::HEPData<HalfEdge, Vertex, Face>,
+		ElementType,
+		optional,
+		false,
+		0,
+		HalfEdge,
+		Vertex,
+		Face>;
 	using ThisType = HalfEdgePointers<HalfEdge, Vertex, Face, ElementType, optional>;
 
-	struct HEPData {
-		HalfEdge* n; // next half edge
-		HalfEdge* p; // prev half edge
-		HalfEdge* t; // twin half edge
-		Vertex*   v; // from vertex
-		Face*     f; // incident face
-	};
 public:
-	using DataValueType = HEPData; // data that the component stores internally (or vertically)
 	using HalfEdgePointersComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	using HalfEdgeType = HalfEdge;
 	using VertexType   = Vertex;
@@ -133,8 +150,6 @@ private:
 	const Vertex*   v() const;
 	Face*&     f(); // incident face
 	const Face*     f() const;
-
-	internal::ComponentData<HEPData, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

@@ -41,35 +41,36 @@
 
 namespace vcl::comp {
 
+namespace internal {
+
+template<typename HalfEdge>
+struct FHEPData {
+	HalfEdge*              ohe; // outer half edge
+	std::vector<HalfEdge*> ihe; // inner half edges, one for each hole of the face
+
+	short texIndex;
+};
+
+} // namespace vcl::comp::internal
+
 /**
  * @brief The FaceHalfEdgePointers class
  *
  * @ingroup components
  */
-template<
-	typename HalfEdge,
-	typename ElementType = void,
-	bool optional        = false>
-class FaceHalfEdgePointers : public PointersComponentTriggerer<HalfEdge>
+template<typename HalfEdge, typename ElementType = void, bool optional = false>
+class FaceHalfEdgePointers :
+		public Component<internal::FHEPData<HalfEdge>, ElementType, optional, false, 0, HalfEdge>
 {
+	using Base = Component<internal::FHEPData<HalfEdge>, ElementType, optional, false, 0, HalfEdge>;
 	using ThisType = FaceHalfEdgePointers<HalfEdge, ElementType, optional>;
-
-	struct FHEPData {
-		HalfEdge*              ohe; // outer half edge
-		std::vector<HalfEdge*> ihe; // inner half edges, one for each hole of the face
-
-		short texIndex;
-	};
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
 
 public:
-	using DataValueType = FHEPData; // data that the component stores internally (or vertically)
-	using FaceHalfEdgePointersComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
+	// expose the type to allow access to this component
+	using FaceHalfEdgePointersComponent = ThisType;
 
 	using HalfEdgeType = HalfEdge;
 	using VertexType   = typename HalfEdge::VertexType;
@@ -278,8 +279,6 @@ private:
 
 	short& texIndex();
 	short texIndex() const;
-
-	internal::ComponentData<FHEPData, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp
