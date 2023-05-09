@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/tex_coord.h>
 #include <vclib/space/tex_coord.h>
 
-#include "component.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 

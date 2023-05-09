@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
 #include <vclib/views/view.h>
 
-#include "element_pointers_container.h"
+#include "bases/pointers_container_component.h"
 
 namespace vcl::comp {
 
@@ -55,11 +55,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Face, int N, typename ElementType = void, bool optional = false>
-class AdjacentFaces : public ElementPointersContainer<Face, N, ElementType, optional>
+class AdjacentFaces : public PointersContainerComponent<Face, N, ElementType, optional>
 {
 	using ThisType = AdjacentFaces<Face, N, ElementType, optional>;
-
-	using Base = ElementPointersContainer<Face, N, ElementType, optional>;
+	
+	using Base = PointersContainerComponent<Face, N, ElementType, optional>;
 
 public:
 	/** @brief Allows access to this component type from a derived class type/instance */

@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/vertex_pointers.h>
 #include <vclib/views/view.h>
 
-#include "element_pointers_container.h"
+#include "bases/pointers_container_component.h"
 
 namespace vcl::comp {
 
@@ -37,10 +37,10 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Vertex, int N, typename ElementType = void, bool optional = false>
-class VertexPointers : public ElementPointersContainer<Vertex, N, ElementType, optional>
+class VertexPointers : public PointersContainerComponent<Vertex, N, ElementType, optional>
 {
 	using ThisType = VertexPointers<Vertex, N, ElementType, optional>;
-	using Base = ElementPointersContainer<Vertex, N, ElementType, optional>;
+	using Base = PointersContainerComponent<Vertex, N, ElementType, optional>;
 
 public:
 	using VertexPointersComponent = ThisType; // expose the type to allow access to this component

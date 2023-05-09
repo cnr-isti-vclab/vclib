@@ -31,7 +31,7 @@
 #include <vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h>
 #include <vclib/views/view.h>
 
-#include "component.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -44,9 +44,9 @@ template<
 	typename HalfEdge,
 	typename ElementType = void,
 	bool optional        = false>
-class VertexHalfEdgePointer : public Component<HalfEdge*, ElementType, optional, false, 0, HalfEdge>
+class VertexHalfEdgePointer : public Component<HalfEdge*, ElementType, optional, HalfEdge>
 {
-	using Base = Component<HalfEdge*, ElementType, optional, false, 0, HalfEdge>;
+	using Base = Component<HalfEdge*, ElementType, optional, HalfEdge>;
 	using ThisType = VertexHalfEdgePointer<HalfEdge, ElementType, optional>;
 
 	using Vertex = typename HalfEdge::VertexType;

@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/adjacent_edges.h>
 #include <vclib/views/view.h>
 
-#include "element_pointers_container.h"
+#include "bases/pointers_container_component.h"
 
 namespace vcl::comp {
 
@@ -55,11 +55,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Edge, int N, typename ElementType = void, bool optional = false>
-class AdjacentEdges : public ElementPointersContainer<Edge, N, ElementType, optional>
+class AdjacentEdges : public PointersContainerComponent<Edge, N, ElementType, optional>
 {
 	using ThisType = AdjacentEdges<Edge, N, ElementType, optional>;
-
-	using Base = ElementPointersContainer<Edge, N, ElementType, optional>;
+	
+	using Base = PointersContainerComponent<Edge, N, ElementType, optional>;
 
 public:
 	/** @brief Allows access to this component type from a derived class type/instance */

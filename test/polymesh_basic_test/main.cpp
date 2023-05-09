@@ -44,7 +44,7 @@ int main()
 
 	assert(f.vertexNumber() == 0);
 
-	f.pushVertex(&m.vertex(0));
+	f.pushVertex(&m.vertex(0));	
 
 	assert(f.vertexNumber() == 1);
 	assert(m.face(0).vertexNumber() == 1);
@@ -52,6 +52,8 @@ int main()
 	assert(&m.vertex(0) == f.vertex(0));
 
 	m.enablePerFaceAdjacentFaces();
+
+	f.resizeAdjFaces(2);
 
 	assert(vcl::isPerFaceAdjacentFacesEnabled(m));
 

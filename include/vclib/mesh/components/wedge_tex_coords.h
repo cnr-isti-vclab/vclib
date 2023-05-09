@@ -29,7 +29,7 @@
 #include <vclib/space/tex_coord.h>
 #include <vclib/space/vector.h>
 
-#include "component.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -50,15 +50,28 @@ struct WTCData {
  */
 template<typename Scalar, int N, typename ElementType = void, bool optional = false>
 class WedgeTexCoords :
-		public Component<internal::WTCData<Scalar, N>, ElementType, optional, true, N>
+		public Component<internal::WTCData<Scalar, N>, ElementType, optional>
 {
-	using Base = Component<internal::WTCData<Scalar, N>, ElementType, optional, true, N>;
+	using Base = Component<internal::WTCData<Scalar, N>, ElementType, optional>;
 	using ThisType = WedgeTexCoords<Scalar, N, ElementType, optional>;
 
 public:
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
+
+	/**
+	 * @brief Boolean that tells if this component stores a container having its size tied to the
+	 * number of the vertices of the Element.
+	 *
+	 * E.g. suppose to have a Polygonal Face f, having 5 vertices (and 5 edges).
+	 * This means that it the Face has the AdjacentFaces component, then it should store 5 adjacent
+	 * faces (the same number of the vertices). In this case, the AdjacentFaces component will have
+	 * the boolean TIED_TO_VERTEX_NUMBER set to true.
+	 */
+	static const bool TIED_TO_VERTEX_NUMBER = true;
+
+	static const int SIZE = N;
 	
-	static const int WEDGE_TEX_COORD_NUMBER = Base::SIZE;
+	static const int WEDGE_TEX_COORD_NUMBER = N;
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 

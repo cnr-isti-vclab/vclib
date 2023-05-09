@@ -21,47 +21,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "element_pointers_container.h"
+#include "pointers_container_component.h"
 
 #include <algorithm>
 
 namespace vcl::comp {
-
-/*
- * Create a container of Element pointers (pointers to Elements stored in some other container).
- * If this Container is a static array, all its element will be initialized to nullptr.
- * If this Container is a dynamic vector, it will be an empty container.
- */
-template<typename Elem, int N, typename El, bool o>
-ElementPointersContainer<Elem, N, El, o>::ElementPointersContainer()
-{
-	if constexpr (!Base::IS_VERTICAL) {
-		if constexpr (N >= 0) {
-			Base::data((void*)nullptr).fill(nullptr);
-		}
-	}
-}
-
-/*
- * Create a container of Element pointers (pointers to Elements stored in some other container).
- * If this Container is a static array, all its element will be initialized to nullptr.
- * If this Container is a dynamic vector, it will be an empty container.
- */
-template<typename Elem, int N, typename El, bool o>
-template<typename Comp>
-void ElementPointersContainer<Elem, N, El, o>::init(Comp* comp)
-{
-	if constexpr (N >= 0) {
-		// I'll use the array, N is >= 0.
-		// There will be a static number of pointers.
-		container(comp).fill(nullptr);
-	}
-	else {
-		// I'll use the vector, because N is < 0.
-		// There will be a dynamic number of pointers.
-		container(comp).clear();
-	}
-}
 
 /*
  * This member function is called when we need to update the pointers in this container.
@@ -79,7 +43,7 @@ void ElementPointersContainer<Elem, N, El, o>::init(Comp* comp)
  */
 template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
-void ElementPointersContainer<Elem, N, El, o>::updateElementPointers(
+void PointersContainerComponent<Elem, N, El, o>::updateElementPointers(
 	const Elem* oldBase,
 	const Elem* newBase,
 	Comp* comp)
@@ -94,7 +58,7 @@ void ElementPointersContainer<Elem, N, El, o>::updateElementPointers(
 
 template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
-void ElementPointersContainer<Elem, N, El, o>::updateElementPointersAfterCompact(
+void PointersContainerComponent<Elem, N, El, o>::updateElementPointersAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices,
 	Comp* comp)
@@ -110,20 +74,6 @@ void ElementPointersContainer<Elem, N, El, o>::updateElementPointersAfterCompact
 			}
 		}
 	}
-}
-
-template<typename Elem, int N, typename El, bool o>
-template<typename Comp>
-Vector<Elem*, N>& ElementPointersContainer<Elem, N, El, o>::container(Comp* comp)
-{
-	return Base::data(comp);
-}
-
-template<typename Elem, int N, typename El, bool o>
-template<typename Comp>
-const Vector<Elem*, N>& ElementPointersContainer<Elem, N, El, o>::container(const Comp* comp) const
-{
-	return Base::data(comp);
 }
 
 } // namespace vcl::comp

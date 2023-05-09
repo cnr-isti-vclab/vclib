@@ -112,13 +112,13 @@ auto WedgeColors<N, El, o>::wedgeColors() const
 template<int N, typename El, bool o>
 Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors()
 {
-	return Base::data(this);
+	return Base::container(this);
 }
 
 template<int N, typename El, bool o>
 const Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors() const
 {
-	return Base::data(this);
+	return Base::container(this);
 }
 
 template<int N, typename El, bool o>

@@ -37,7 +37,7 @@
 #include <vclib/space/color.h>
 #include <vclib/views/view.h>
 
-#include "component.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -60,9 +60,9 @@ struct FHEPData {
  */
 template<typename HalfEdge, typename ElementType = void, bool optional = false>
 class FaceHalfEdgePointers :
-		public Component<internal::FHEPData<HalfEdge>, ElementType, optional, false, 0, HalfEdge>
+		public Component<internal::FHEPData<HalfEdge>, ElementType, optional, HalfEdge>
 {
-	using Base = Component<internal::FHEPData<HalfEdge>, ElementType, optional, false, 0, HalfEdge>;
+	using Base = Component<internal::FHEPData<HalfEdge>, ElementType, optional, HalfEdge>;
 	using ThisType = FaceHalfEdgePointers<HalfEdge, ElementType, optional>;
 
 	using Vertex = typename HalfEdge::VertexType;

@@ -30,7 +30,7 @@
 #include <vclib/concepts/mesh/components/texture_paths.h>
 #include <vclib/views/view.h>
 
-#include "component.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 

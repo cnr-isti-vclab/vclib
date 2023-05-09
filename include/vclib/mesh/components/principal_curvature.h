@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/principal_curvature.h>
 #include <vclib/space/principal_curvature.h>
 
-#include "component.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 

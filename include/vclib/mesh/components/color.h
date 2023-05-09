@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/color.h>
 #include <vclib/space/color.h>
 
-#include "component.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 

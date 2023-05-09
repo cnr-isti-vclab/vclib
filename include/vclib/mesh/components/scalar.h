@@ -26,7 +26,7 @@
 
 #include <vclib/concepts/mesh/components/scalar.h>
 
-#include "component.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 

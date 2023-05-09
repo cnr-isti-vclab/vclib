@@ -28,7 +28,7 @@
 #include <vclib/views/view.h>
 #include <vclib/space/vector.h>
 
-#include "component.h"
+#include "bases/container_component.h"
 
 namespace vcl::comp {
 
@@ -38,9 +38,9 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<int N, typename ElementType = void, bool optional = false>
-class WedgeColors : public Component<Vector<vcl::Color, N>, ElementType, optional, true, N>
+class WedgeColors : public ContainerComponent<vcl::Color, N, ElementType, optional, true>
 {
-	using Base = Component<Vector<vcl::Color, N>, ElementType, optional, true, N>;
+	using Base = ContainerComponent<vcl::Color, N, ElementType, optional, true>;
 	using ThisType = WedgeColors<N, ElementType, optional>;
 
 public:
@@ -50,8 +50,8 @@ public:
 
 	/* Iterator Types declaration */
 
-	using WedgeColorsIterator      = typename Vector<vcl::Color, N>::Iterator;
-	using ConstWedgeColorsIterator = typename Vector<vcl::Color, N>::ConstIterator;
+	using WedgeColorsIterator      = typename Base::Iterator;
+	using ConstWedgeColorsIterator = typename Base::ConstIterator;
 
 	bool isEnabled() const;
 	bool isWedgeColorsEnabled() const;

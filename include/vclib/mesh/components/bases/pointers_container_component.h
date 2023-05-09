@@ -21,58 +21,44 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ELEMENT_POINTERS_CONTAINER_H
-#define VCL_MESH_COMPONENTS_ELEMENT_POINTERS_CONTAINER_H
+#ifndef VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H
+#define VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H
 
-#include <vclib/concepts/mesh/components/component.h>
 #include <vclib/space/vector.h>
 
-#include "component.h"
+#include "container_component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The ElementPointersContainer class is a generic container of pointers to another Element
- * (that could be Vertex, Face...). This class is meant to be inherited and used by Components
- * like Vertex Pointers or Adjacent Elements : in general, a class that need to store a static or
- * dynamic number of pointers of another element type.
+ * @brief The PointersContainerComponent class is a generic component that stores a container of
+ * pointers to another Element (that could be Vertex, Face...). This class is meant to be inherited
+ * and used by Components like Vertex Pointers or Adjacent Elements : in general, a class that need
+ * to store a static or dynamic number of pointers of another element type.
  *
  * Its major use is for adjacencies.
  */
 template<typename Elem, int N, typename ElementType, bool optional>
-class ElementPointersContainer :
-		public Component<Vector<Elem*, N>, ElementType, optional, true, N, Elem>
+class PointersContainerComponent :
+		public ContainerComponent<Elem*, N, ElementType, optional, true, Elem>
 {
-	using Base = Component<Vector<Elem*, N>, ElementType, optional, true, N, Elem>;
+	using Base = ContainerComponent<Elem*, N, ElementType, optional, true, Elem>;
 
 protected:
-	/* Iterator Types declaration */
-
-	using Iterator      = typename Vector<Elem*, N>::Iterator;
-	using ConstIterator = typename Vector<Elem*, N>::ConstIterator;
-
-	/* Constructor and isEnabled */
-
-	ElementPointersContainer();
-
-	template<typename Comp>
-	void init(Comp* comp);
+	using Base::container;
 
 	template<typename Comp>
 	void updateElementPointers(const Elem* oldBase, const Elem* newBase, Comp* comp);
 
 	template<typename Comp>
-	void updateElementPointersAfterCompact(const Elem* base, const std::vector<int>& newIndices, Comp* comp);
-
-	template<typename Comp>
-	Vector<Elem*, N>& container(Comp* comp);
-
-	template<typename Comp>
-	const Vector<Elem*, N>& container(const Comp* comp) const;
+	void updateElementPointersAfterCompact(
+		const Elem*             base,
+		const std::vector<int>& newIndices,
+		Comp*                   comp);
 };
 
 } // namespace vcl::comp
 
-#include "element_pointers_container.cpp"
+#include "pointers_container_component.cpp"
 
-#endif // VCL_MESH_COMPONENTS_ELEMENT_POINTERS_CONTAINER_H
+#endif // VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H

@@ -21,11 +21,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_COMPONENT_H
-#define VCL_MESH_COMPONENTS_COMPONENT_H
+#ifndef VCL_MESH_COMPONENTS_BASES_COMPONENT_H
+#define VCL_MESH_COMPONENTS_BASES_COMPONENT_H
 
 #include <vclib/concepts/mesh/components/component.h>
-#include "internal/component_data.h"
+#include "../internal/component_data.h"
 
 namespace vcl::comp {
 
@@ -42,8 +42,6 @@ template<
 	typename DataType,
 	typename ElementType,
 	bool optional,
-	bool TTVN = false,
-	int N = 0,
 	typename... PointedTypes>
 class Component : public PointersComponentTriggerer<PointedTypes>...
 {
@@ -61,19 +59,6 @@ public:
 	 * is vertical.
 	 */
 	static const bool IS_OPTIONAL = optional;
-
-	/**
-	 * @brief Boolean that tells if this component stores a container having its size tied to the
-	 * number of the vertices of the Element.
-	 *
-	 * E.g. suppose to have a Polygonal Face f, having 5 vertices (and 5 edges).
-	 * This means that it the Face has the AdjacentFaces component, then it should store 5 adjacent
-	 * faces (the same number of the vertices). In this case, the AdjacentFaces component will have
-	 * the boolean TIED_TO_VERTEX_NUMBER set to true.
-	 */
-	static const bool TIED_TO_VERTEX_NUMBER = TTVN;
-
-	static const int SIZE = N;
 
 protected:
 	template<typename Comp>
@@ -100,4 +85,4 @@ private:
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_COMPONENT_H
+#endif // VCL_MESH_COMPONENTS_BASES_COMPONENT_H

@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
 #include <vclib/views/view.h>
 
-#include "element_pointers_container.h"
+#include "bases/pointers_container_component.h"
 
 namespace vcl::comp {
 
@@ -51,11 +51,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Vertex, typename ElementType = void, bool optional = false>
-class AdjacentVertices : public ElementPointersContainer<Vertex, -1, ElementType, optional>
+class AdjacentVertices : public PointersContainerComponent<Vertex, -1, ElementType, optional>
 {
 	using ThisType = AdjacentVertices<Vertex, ElementType, optional>;
-
-	using Base = ElementPointersContainer<Vertex, -1, ElementType, optional>;
+	
+	using Base = PointersContainerComponent<Vertex, -1, ElementType, optional>;
 
 public:
 	using AdjacentVerticesComponent = ThisType; // expose the type to allow access to this component

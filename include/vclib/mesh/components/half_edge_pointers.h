@@ -28,7 +28,7 @@
 
 #include <vclib/concepts/mesh/components/half_edge_pointers.h>
 
-#include "component.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -61,8 +61,6 @@ class HalfEdgePointers :
 			internal::HEPData<HalfEdge, Vertex, Face>,
 			ElementType,
 			optional,
-			false,
-			0,
 			HalfEdge,
 			Vertex,
 			Face>
@@ -71,8 +69,6 @@ class HalfEdgePointers :
 		internal::HEPData<HalfEdge, Vertex, Face>,
 		ElementType,
 		optional,
-		false,
-		0,
 		HalfEdge,
 		Vertex,
 		Face>;
