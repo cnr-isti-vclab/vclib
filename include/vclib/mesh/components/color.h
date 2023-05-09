@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/color.h>
 #include <vclib/space/color.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -40,15 +40,12 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class Color
+class Color : public Component<vcl::Color, ElementType, optional>
 {
+	using Base = Component<vcl::Color, ElementType, optional>;
 	using ThisType = Color<ElementType, optional>;
 public:
-	using DataValueType = vcl::Color; // data that the component stores internally (or vertically)
 	using ColorComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	using ColorType = vcl::Color;
 
@@ -66,9 +63,6 @@ protected:
 private:
 	vcl::Color& c();
 	const vcl::Color& c() const;
-
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 /* Detector function to check if a class has Color enabled */

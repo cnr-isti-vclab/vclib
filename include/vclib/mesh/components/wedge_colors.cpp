@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<int N, typename El, bool o>
 bool WedgeColors<N, El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<int N, typename El, bool o>
@@ -112,13 +112,13 @@ auto WedgeColors<N, El, o>::wedgeColors() const
 template<int N, typename El, bool o>
 Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors()
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template<int N, typename El, bool o>
 const Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors() const
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template<int N, typename El, bool o>

@@ -102,7 +102,7 @@ using OptionalColor = comp::Color<VertexType, true>;
 
 /* Port Coordinate class into vert namespace */
 template<typename ScalarType, int N>
-using Coordinate = comp::Coordinate<ScalarType, N>;
+using Coordinate = comp::Coordinate<Point<ScalarType, N>>;
 
 template<typename ScalarType>
 using Coordinate3 = comp::Coordinate3<ScalarType>;
@@ -111,7 +111,7 @@ using Coordinate3f = comp::Coordinate3f<>;
 using Coordinate3d = comp::Coordinate3d<>;
 
 template<typename ScalarType, int N, typename VertexType>
-using VerticalCoordinate = comp::Coordinate<ScalarType, N, VertexType>;
+using VerticalCoordinate = comp::Coordinate<Point<ScalarType, N>, VertexType>;
 
 template<typename ScalarType, typename VertexType>
 using VerticalCoordinate3 = comp::Coordinate3<ScalarType, VertexType>;

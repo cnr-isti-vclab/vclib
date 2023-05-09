@@ -29,36 +29,34 @@
 #include <vclib/space/tex_coord.h>
 #include <vclib/space/vector.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
+
+namespace internal {
+
+template<typename Scalar, int N>
+struct WTCData {
+	Vector<vcl::TexCoord<Scalar>, N> texCoords;
+	short texIndex;
+};
+
+} // namespace vcl::comp::internal
 
 /**
  * @brief The WedgeTexCoords class
  *
  * @ingroup components
  */
-template<
-	typename Scalar,
-	int N,
-	typename ElementType = void,
-	bool optional        = false>
-class WedgeTexCoords
+template<typename Scalar, int N, typename ElementType = void, bool optional = false>
+class WedgeTexCoords :
+		public Component<internal::WTCData<Scalar, N>, ElementType, optional, true, N>
 {
+	using Base = Component<internal::WTCData<Scalar, N>, ElementType, optional, true, N>;
 	using ThisType = WedgeTexCoords<Scalar, N, ElementType, optional>;
 
-	struct WTCData {
-		Vector<vcl::TexCoord<Scalar>, N> texCoords;
-		short texIndex;
-	};
-
-	using Base = Vector<vcl::TexCoord<Scalar>, N>;
 public:
-	using DataValueType = WTCData; // data that the component stores internally (or vertically)
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 	
 	static const int WEDGE_TEX_COORD_NUMBER = Base::SIZE;
 
@@ -66,8 +64,8 @@ public:
 
 	/* Iterator Types declaration */
 
-	using WedgeTexCoordsIterator      = typename Base::Iterator;
-	using ConstWedgeTexCoordsIterator = typename Base::ConstIterator;
+	using WedgeTexCoordsIterator      = typename Vector<vcl::TexCoord<Scalar>, N>::Iterator;
+	using ConstWedgeTexCoordsIterator = typename Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
 	using WedgeTexCoordsView          = vcl::View<WedgeTexCoordsIterator>;
 	using ConstWedgeTexCoordsView     = vcl::View<ConstWedgeTexCoordsIterator>;
 
@@ -119,8 +117,6 @@ private:
 	short texIndex() const;
 	Vector<vcl::TexCoord<Scalar>, N>& texCoords();
 	const Vector<vcl::TexCoord<Scalar>, N>& texCoords() const;
-
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 /* Detector function to check if a class has WedgeTexCoords enabled */

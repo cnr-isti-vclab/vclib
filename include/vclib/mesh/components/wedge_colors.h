@@ -28,7 +28,7 @@
 #include <vclib/views/view.h>
 #include <vclib/space/vector.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -38,25 +38,20 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<int N, typename ElementType = void, bool optional = false>
-class WedgeColors
+class WedgeColors : public Component<Vector<vcl::Color, N>, ElementType, optional, true, N>
 {
+	using Base = Component<Vector<vcl::Color, N>, ElementType, optional, true, N>;
 	using ThisType = WedgeColors<N, ElementType, optional>;
 
-	using Base = Vector<vcl::Color, N>;
-
 public:
-	using DataValueType = Vector<vcl::Color, N>; // data that the component stores internally (or vertically)
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 	
 	static const int WEDGE_COLOR_NUMBER = Base::SIZE;
 
 	/* Iterator Types declaration */
 
-	using WedgeColorsIterator      = typename Base::Iterator;
-	using ConstWedgeColorsIterator = typename Base::ConstIterator;
+	using WedgeColorsIterator      = typename Vector<vcl::Color, N>::Iterator;
+	using ConstWedgeColorsIterator = typename Vector<vcl::Color, N>::ConstIterator;
 
 	bool isEnabled() const;
 	bool isWedgeColorsEnabled() const;
@@ -99,8 +94,6 @@ private:
 
 	Vector<vcl::Color, N>& colors();
 	const Vector<vcl::Color, N>& colors() const;
-
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 /* Detector function to check if a class has WedgeColors enabled */

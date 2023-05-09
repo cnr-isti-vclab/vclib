@@ -25,9 +25,19 @@
 #define VCL_MESH_COMPONENTS_COMPONENT_H
 
 #include <vclib/concepts/mesh/components/component.h>
+#include "internal/component_data.h"
 
 namespace vcl::comp {
 
+/**
+ * @brief The Component class is the base class for almost all the components of VCLib (with the
+ * exception of CustomComponents).
+ *
+ * Inheriting from this class, a component will have all the necessary definitions to be used
+ * smoothly by the vcl::Mesh class, managing all the possible features of a component automatically.
+ *
+ * All the features of a Component can be defined trough its template parameters.
+ */
 template<
 	typename DataType,
 	typename ElementType,
@@ -52,7 +62,40 @@ public:
 	 */
 	static const bool IS_OPTIONAL = optional;
 
+	/**
+	 * @brief Boolean that tells if this component stores a container having its size tied to the
+	 * number of the vertices of the Element.
+	 *
+	 * E.g. suppose to have a Polygonal Face f, having 5 vertices (and 5 edges).
+	 * This means that it the Face has the AdjacentFaces component, then it should store 5 adjacent
+	 * faces (the same number of the vertices). In this case, the AdjacentFaces component will have
+	 * the boolean TIED_TO_VERTEX_NUMBER set to true.
+	 */
+	static const bool TIED_TO_VERTEX_NUMBER = TTVN;
 
+	static const int SIZE = N;
+
+	template<typename Comp>
+	bool isEnabled(const Comp* c) const
+	{
+		return cdata.template isComponentEnabled<ElementType>(c);
+	}
+
+protected:
+	template<typename Comp>
+	DataValueType& data(Comp* c)
+	{
+		return cdata.template get<ElementType>(c);
+	}
+
+	template<typename Comp>
+	const DataValueType& data(const Comp* c) const
+	{
+		return cdata.template get<ElementType>(c);
+	}
+
+private:
+	internal::ComponentData<DataValueType, IS_VERTICAL> cdata;
 };
 
 } // namespace vcl::comp

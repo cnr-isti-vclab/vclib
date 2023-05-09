@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<typename Scalar, int N, typename El, bool o>
 bool WedgeTexCoords<Scalar, N, El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<typename Scalar, int N, typename El, bool o>
@@ -200,26 +200,26 @@ void WedgeTexCoords<Scalar, N, El, o>::importWedgeTexCoordsFrom(const Element& e
 template<typename Scalar, int N, typename El, bool o>
 short& WedgeTexCoords<Scalar, N, El, o>::texIndex()
 {
-	return data.template get<El>(this).texIndex;
+	return Base::data(this).texIndex;
 }
 
 template<typename Scalar, int N, typename El, bool o>
 short WedgeTexCoords<Scalar, N, El, o>::texIndex() const
 {
-	return data.template get<El>(this).texIndex;
+	return Base::data(this).texIndex;
 }
 
 template<typename Scalar, int N, typename El, bool o>
 Vector<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, o>::texCoords()
 {
-	return data.template get<El>(this).texCoords;
+	return Base::data(this).texCoords;
 }
 
 template<typename Scalar, int N, typename El, bool o>
 const Vector<vcl::TexCoord<Scalar>, N>&
 WedgeTexCoords<Scalar, N, El, o>::texCoords() const
 {
-	return data.template get<El>(this).texCoords;
+	return Base::data(this).texCoords;
 }
 
 template <typename T>

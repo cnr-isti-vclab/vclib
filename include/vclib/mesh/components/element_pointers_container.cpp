@@ -35,9 +35,9 @@ namespace vcl::comp {
 template<typename Elem, int N, typename El, bool o>
 ElementPointersContainer<Elem, N, El, o>::ElementPointersContainer()
 {
-	if constexpr (!IS_VERTICAL) {
+	if constexpr (!Base::IS_VERTICAL) {
 		if constexpr (N >= 0) {
-			data.template get<El, void*>(nullptr).fill(nullptr);
+			Base::data((void*)nullptr).fill(nullptr);
 		}
 	}
 }
@@ -61,13 +61,6 @@ void ElementPointersContainer<Elem, N, El, o>::init(Comp* comp)
 		// There will be a dynamic number of pointers.
 		container(comp).clear();
 	}
-}
-
-template<typename Elem, int N, typename El, bool o>
-template<typename Comp>
-bool ElementPointersContainer<Elem, N, El, o>::isEnabled(Comp* comp) const
-{
-	return data.template isComponentEnabled<El>(comp);
 }
 
 /*
@@ -123,14 +116,14 @@ template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
 Vector<Elem*, N>& ElementPointersContainer<Elem, N, El, o>::container(Comp* comp)
 {
-	return data.template get<El>(comp);
+	return Base::data(comp);
 }
 
 template<typename Elem, int N, typename El, bool o>
 template<typename Comp>
 const Vector<Elem*, N>& ElementPointersContainer<Elem, N, El, o>::container(const Comp* comp) const
 {
-	return data.template get<El>(comp);
+	return Base::data(comp);
 }
 
 } // namespace vcl::comp

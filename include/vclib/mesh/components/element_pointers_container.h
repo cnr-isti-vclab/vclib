@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/component.h>
 #include <vclib/space/vector.h>
 
-#include "internal/component_data.h"
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -40,34 +40,19 @@ namespace vcl::comp {
  * Its major use is for adjacencies.
  */
 template<typename Elem, int N, typename ElementType, bool optional>
-class ElementPointersContainer : public PointersComponentTriggerer<Elem>
+class ElementPointersContainer :
+		public Component<Vector<Elem*, N>, ElementType, optional, false, N, Elem>
 {
 private:
-	using Base = Vector<Elem*, N>;
-
-public:
-	/** @private data that the component stores internally (or vertically) */
-	using DataValueType = Vector<Elem*, N>;
-
-	/**
-	 * @brief Boolean that tells if this component type stores its data vertically (not in the
-	 * Element frame memory, but in another vector).
-	 */
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-
-	/**
-	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
-	 * is vertical.
-	 */
-	static const bool IS_OPTIONAL = optional;
+	using Base = Component<Vector<Elem*, N>, ElementType, optional, false, N, Elem>;
 
 protected:
-	static const int CONTAINER_SIZE = Base::SIZE;
+	static const int CONTAINER_SIZE = Vector<Elem*, N>::SIZE;
 
 	/* Iterator Types declaration */
 
-	using Iterator              = typename Base::Iterator;
-	using ConstIterator         = typename Base::ConstIterator;
+	using Iterator              = typename Vector<Elem*, N>::Iterator;
+	using ConstIterator         = typename Vector<Elem*, N>::ConstIterator;
 
 	/* Constructor and isEnabled */
 
@@ -75,9 +60,6 @@ protected:
 
 	template<typename Comp>
 	void init(Comp* comp);
-
-	template<typename Comp>
-	bool isEnabled(Comp* comp) const;
 
 	template<typename Comp>
 	void updateElementPointers(const Elem* oldBase, const Elem* newBase, Comp* comp);
@@ -90,9 +72,6 @@ protected:
 
 	template<typename Comp>
 	const Vector<Elem*, N>& container(const Comp* comp) const;
-
-private:
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp
