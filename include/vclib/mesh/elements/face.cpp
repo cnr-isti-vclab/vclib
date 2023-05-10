@@ -101,7 +101,7 @@ void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 
 	if constexpr (comp::HasPolygonBitFlags<F>) {
 		using T = typename F::PolygonBitFlags;
-		T::resizeBitFlags(list.size());
+		T::resize(list.size());
 	}
 
 	if constexpr (comp::HasAdjacentEdges<F> && NonDcelPolygonFaceConcept<F>) {

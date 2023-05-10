@@ -85,7 +85,7 @@ public:
 
 		if constexpr (comp::HasPolygonBitFlags<F>) {
 			using T = typename F::PolygonBitFlags;
-			T::resizeBitFlags(n);
+			T::resize(n);
 		}
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -127,7 +127,7 @@ public:
 
 		if constexpr (comp::HasPolygonBitFlags<F>) {
 			using T = typename F::PolygonBitFlags;
-			T::pushBitFlag();
+			T::pushBack();
 		}
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -170,7 +170,7 @@ public:
 
 		if constexpr (comp::HasPolygonBitFlags<F>) {
 			using T = typename F::PolygonBitFlags;
-			T::insertBitFlag(i);
+			T::insert(i);
 		}
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -213,7 +213,7 @@ public:
 
 		if constexpr (comp::HasPolygonBitFlags<F>) {
 			using T = typename F::PolygonBitFlags;
-			T::eraseBitFlag(i);
+			T::erase(i);
 		}
 
 		if constexpr (face::HasAdjacentEdges<F>) {
@@ -255,7 +255,7 @@ public:
 
 		if constexpr (comp::HasPolygonBitFlags<F>) {
 			using T = typename F::PolygonBitFlags;
-			T::clearBitFlags();
+			T::clear();
 		}
 
 		if constexpr (face::HasAdjacentEdges<F>) {

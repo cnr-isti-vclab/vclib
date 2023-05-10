@@ -273,36 +273,6 @@ int PolygonBitFlags<N, El, o>::exportToVCGFlags() const
 	return f;
 }
 
-template<int N, typename ElementType, bool optional>
-void PolygonBitFlags<N, ElementType, optional>::resizeBitFlags(uint n)
-{
-	edgeFlags().resize(n);
-}
-
-template<int N, typename ElementType, bool optional>
-void PolygonBitFlags<N, ElementType, optional>::pushBitFlag(BitSet<FT> f)
-{
-	edgeFlags().pushBack(f);
-}
-
-template<int N, typename ElementType, bool optional>
-void PolygonBitFlags<N, ElementType, optional>::insertBitFlag(uint i, BitSet<FT> f)
-{
-	edgeFlags().insert(edgeFlags().begin() + i, f);
-}
-
-template<int N, typename ElementType, bool optional>
-void PolygonBitFlags<N, ElementType, optional>::eraseBitFlag(uint i)
-{
-	edgeFlags().erase(edgeFlags().begin() + i);
-}
-
-template<int N, typename ElementType, bool optional>
-void PolygonBitFlags<N, ElementType, optional>::clearBitFlags()
-{
-	edgeFlags().clear();
-}
-
 template<int N, typename El, bool o>
 BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::deleted()
 {
@@ -326,6 +296,36 @@ void PolygonBitFlags<N, El, o>::importFrom(const Element& e)
 			// TODO
 		}
 	}
+}
+
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::resize(uint n) requires (N < 0)
+{
+	edgeFlags().resize(n);
+}
+
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::pushBack(BitSet<FT> f) requires (N < 0)
+{
+	edgeFlags().pushBack(f);
+}
+
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::insert(uint i, BitSet<FT> f) requires (N < 0)
+{
+	edgeFlags().insert(edgeFlags().begin() + i, f);
+}
+
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::erase(uint i) requires (N < 0)
+{
+	edgeFlags().erase(edgeFlags().begin() + i);
+}
+
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::clear() requires (N < 0)
+{
+	edgeFlags().clear();
 }
 
 template<int N, typename El, bool o>

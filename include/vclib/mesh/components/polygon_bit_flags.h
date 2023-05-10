@@ -125,17 +125,18 @@ public:
 	void __polygonBitFlags() const {}
 
 protected:
-	void resizeBitFlags(uint n);
-	void pushBitFlag(BitSet<FT> f = BitSet<FT>());
-	void insertBitFlag(uint i, BitSet<FT> f = BitSet<FT>());
-	void eraseBitFlag(uint i);
-	void clearBitFlags();
-
 	BitProxy<FT> deleted();
 
 	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
+
+	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(BitSet<FT> f = BitSet<FT>()) requires (N < 0);
+	void insert(uint i, BitSet<FT> f = BitSet<FT>()) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 private:
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)

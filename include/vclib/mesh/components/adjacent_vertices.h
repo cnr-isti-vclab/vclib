@@ -101,12 +101,12 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentVertexIterator           adjVertexBegin();
-	AdjacentVertexIterator           adjVertexEnd();
-	ConstAdjacentVertexIterator      adjVertexBegin() const;
-	ConstAdjacentVertexIterator      adjVertexEnd() const;
-	auto                             adjVertices();
-	auto                             adjVertices() const;
+	AdjacentVertexIterator      adjVertexBegin();
+	AdjacentVertexIterator      adjVertexEnd();
+	ConstAdjacentVertexIterator adjVertexBegin() const;
+	ConstAdjacentVertexIterator adjVertexEnd() const;
+	auto                        adjVertices();
+	auto                        adjVertices() const;
 
 protected:
 	// Component interface function
