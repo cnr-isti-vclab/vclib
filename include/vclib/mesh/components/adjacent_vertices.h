@@ -109,15 +109,19 @@ public:
 	auto                             adjVertices() const;
 
 protected:
+	// Component interface function
+	template <typename Element>
+	void importFrom(const Element& e);
+
+	// PointersContainerComponent interface functions
+	template<typename Element, typename ElVType>
+	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
+
 	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
 
 	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
-	template<typename Element, typename ElVType>
-	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	// ContainerComponent interface functions
 
 private:
 	template<typename Element, typename ElVType>

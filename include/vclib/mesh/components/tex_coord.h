@@ -55,6 +55,7 @@ public:
 	TexCoordType&       texCoord();
 
 protected:
+	// PointersComponent interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
 };

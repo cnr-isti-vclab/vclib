@@ -253,20 +253,6 @@ auto AdjacentFaces<Face, N, TT, El, o>::adjFaces() const
 }
 
 template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::updatePointers(const Face* oldBase, const Face* newBase)
-{
-	Base::updateElementPointers(oldBase, newBase, this);
-}
-
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::updatePointersAfterCompact(
-	const Face*             base,
-	const std::vector<int>& newIndices)
-{
-	Base::updateElementPointersAfterCompact(base, newIndices, this);
-}
-
-template<typename Face, int N, bool TT, typename El, bool o>
 template<typename Element>
 void AdjacentFaces<Face, N, TT, El, o>::importFrom(const Element&)
 {
@@ -303,6 +289,20 @@ void AdjacentFaces<Face, N, TT, El, o>::importPointersFrom(
 			}
 		}
 	}
+}
+
+template<typename Face, int N, bool TT, typename El, bool o>
+void AdjacentFaces<Face, N, TT, El, o>::updatePointers(const Face* oldBase, const Face* newBase)
+{
+	Base::updateElementPointers(oldBase, newBase, this);
+}
+
+template<typename Face, int N, bool TT, typename El, bool o>
+void AdjacentFaces<Face, N, TT, El, o>::updatePointersAfterCompact(
+	const Face*             base,
+	const std::vector<int>& newIndices)
+{
+	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
 template<typename Face, int N, bool TT, typename El, bool o>

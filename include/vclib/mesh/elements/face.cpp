@@ -95,6 +95,10 @@ void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 	
 	VPtrs::setVertices(list);
 
+//	if constexpr (VPtrs::SIZE < 0) {
+//		(resizeComponent<Args>(list.size()), ...);
+//	}
+
 	if constexpr (comp::HasPolygonBitFlags<F>) {
 		using T = typename F::PolygonBitFlags;
 		T::resizeBitFlags(list.size());

@@ -144,6 +144,75 @@ F*& HalfEdgePointers<HE, V, F, El, o>::face()
 }
 
 template<typename HE, typename V, typename F, typename El, bool o>
+template<typename Element>
+void HalfEdgePointers<HE, V, F, El, o>::importFrom(const Element&)
+{
+}
+
+/**
+ * @brief Import the half edge pointers from another half edge (e), which is of a different type.
+ *
+ * @param e: the half edge from which import the half edge pointers
+ * @param base: the base of this container: necessary to compute the imported pointers
+ * @param ebase: the base of the other container of half edges, from which we import the pointers
+ */
+template<typename HE, typename V, typename F, typename El, bool o>
+template<typename OHE, typename HEType>
+void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
+	const OHE&    e,
+	HE*           base,
+	const HEType* ebase)
+{
+	if constexpr (HasHalfEdgePointers<OHE>) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.next() != nullptr) { // if the other half edge has a next
+				// this next will be the base of this container plus the offset between the next of
+				// the other half edge and the base of the other container
+				n() = base + (e.next() - ebase);
+			}
+			if (e.prev() != nullptr) {
+				p() = base + (e.prev() - ebase);
+			}
+			if (e.twin() != nullptr) {
+				t() = base + (e.twin() - ebase);
+			}
+		}
+	}
+}
+
+template<typename HE, typename V, typename F, typename El, bool o>
+template<typename OHE, typename VType>
+void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
+	const OHE&   e,
+	V*           base,
+	const VType* ebase)
+{
+	if constexpr (HasHalfEdgePointers<OHE>) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.fromVertex() != nullptr) {
+				v() = base + (e.fromVertex() - ebase);
+			}
+		}
+	}
+}
+
+template<typename HE, typename V, typename F, typename El, bool o>
+template<typename OHE, typename FType>
+void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
+	const OHE&   e,
+	F*           base,
+	const FType* ebase)
+{
+	if constexpr (HasHalfEdgePointers<OHE>) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.face() != nullptr) {
+				f() = base + (e.face() - ebase);
+			}
+		}
+	}
+}
+
+template<typename HE, typename V, typename F, typename El, bool o>
 void HalfEdgePointers<HE, V, F, El, o>::updatePointers(
 	const HE* oldBase,
 	const HE* newBase)
@@ -237,75 +306,6 @@ void HalfEdgePointers<HE, V, F, El, o>::updatePointersAfterCompact(
 			v() = nullptr;
 		else
 			v() = base + newIndices[diff];
-	}
-}
-
-template<typename HE, typename V, typename F, typename El, bool o>
-template<typename Element>
-void HalfEdgePointers<HE, V, F, El, o>::importFrom(const Element&)
-{
-}
-
-/**
- * @brief Import the half edge pointers from another half edge (e), which is of a different type.
- *
- * @param e: the half edge from which import the half edge pointers
- * @param base: the base of this container: necessary to compute the imported pointers
- * @param ebase: the base of the other container of half edges, from which we import the pointers
- */
-template<typename HE, typename V, typename F, typename El, bool o>
-template<typename OHE, typename HEType>
-void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
-	const OHE&    e,
-	HE*           base,
-	const HEType* ebase)
-{
-	if constexpr (HasHalfEdgePointers<OHE>) {
-		if (base != nullptr && ebase != nullptr) {
-			if (e.next() != nullptr) { // if the other half edge has a next
-				// this next will be the base of this container plus the offset between the next of
-				// the other half edge and the base of the other container
-				n() = base + (e.next() - ebase);
-			}
-			if (e.prev() != nullptr) {
-				p() = base + (e.prev() - ebase);
-			}
-			if (e.twin() != nullptr) {
-				t() = base + (e.twin() - ebase);
-			}
-		}
-	}
-}
-
-template<typename HE, typename V, typename F, typename El, bool o>
-template<typename OHE, typename VType>
-void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
-	const OHE&   e,
-	V*           base,
-	const VType* ebase)
-{
-	if constexpr (HasHalfEdgePointers<OHE>) {
-		if (base != nullptr && ebase != nullptr) {
-			if (e.fromVertex() != nullptr) {
-				v() = base + (e.fromVertex() - ebase);
-			}
-		}
-	}
-}
-
-template<typename HE, typename V, typename F, typename El, bool o>
-template<typename OHE, typename FType>
-void HalfEdgePointers<HE, V, F, El, o>::importPointersFrom(
-	const OHE&   e,
-	F*           base,
-	const FType* ebase)
-{
-	if constexpr (HasHalfEdgePointers<OHE>) {
-		if (base != nullptr && ebase != nullptr) {
-			if (e.face() != nullptr) {
-				f() = base + (e.face() - ebase);
-			}
-		}
 	}
 }
 

@@ -94,8 +94,11 @@ protected:
 	void eraseWedgeTexCoord(uint i) requires (N < 0);
 	void clearWedgeTexCoord() requires (N < 0);
 
+	// Component interface function
 	template <typename Element>
 	void importFrom(const Element& e);
+
+	// ContainerComponent interface functions
 
 private:
 	template<typename Element>

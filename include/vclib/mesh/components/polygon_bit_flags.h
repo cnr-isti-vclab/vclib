@@ -133,15 +133,16 @@ protected:
 
 	BitProxy<FT> deleted();
 
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 
+private:
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
 	BitSet<FT>& flags();
 	const BitSet<FT>& flags() const;
 	Vector<BitSet<FT>, -1>& edgeFlags();
 	const Vector<BitSet<FT>, -1>& edgeFlags() const;
-
 
 	static const uint FIRST_USER_BIT = 6;
 	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;

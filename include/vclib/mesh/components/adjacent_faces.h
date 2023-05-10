@@ -125,15 +125,19 @@ public:
 	auto                      adjFaces() const;
 
 protected:
+	// Component interface function
+	template <typename Element>
+	void importFrom(const Element& e);
+
+	// PointersComponent interface functions
+	template<typename Element, typename ElFType>
+	void importPointersFrom(const Element& e, Face* base, const ElFType* ebase);
+
 	void updatePointers(const Face* oldBase, const Face* newBase);
 
 	void updatePointersAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
-	template<typename Element, typename ElFType>
-	void importPointersFrom(const Element& e, Face* base, const ElFType* ebase);
+	// ContainerComponent interface functions
 
 private:
 	template<typename Element, typename ElFType>

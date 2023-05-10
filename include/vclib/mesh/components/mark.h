@@ -95,6 +95,7 @@ public:
 	void decrementMark();
 
 protected:
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 

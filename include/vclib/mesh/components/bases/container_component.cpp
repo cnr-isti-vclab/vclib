@@ -78,34 +78,4 @@ const Vector<T, N>& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::container(
 //	return std::get<1>(Base::data(comp));
 //}
 
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
-void ContainerComponent<T, N, AD, El, o, TTVN, PT...>::resize(uint n) requires (N < 0)
-{
-	container().resize(n);
-}
-
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
-void ContainerComponent<T, N, AD, El, o, TTVN, PT...>::pushBack(const T& c) requires (N < 0)
-{
-	container().pushBack(c);
-}
-
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
-void ContainerComponent<T, N, AD, El, o, TTVN, PT...>::insert(uint i, const T& c) requires (N < 0)
-{
-	container().insert(i, c);
-}
-
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
-void ContainerComponent<T, N, AD, El, o, TTVN, PT...>::erase(uint i) requires (N < 0)
-{
-	container().erase(i);
-}
-
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
-void ContainerComponent<T, N, AD, El, o, TTVN, PT...>::clear() requires (N < 0)
-{
-	container().clear();
-}
-
 } // namespace vcl::comp

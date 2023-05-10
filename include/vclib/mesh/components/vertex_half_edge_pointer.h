@@ -138,14 +138,16 @@ public:
 	auto                        adjVertices() const;
 
 protected:
-	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
-	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
-
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	// PointersComponent interface functions
 	template<typename OtherVertex, typename OtherHEType>
 	void importPointersFrom(const OtherVertex& e, HalfEdge* base, const OtherHEType* ebase);
+
+	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
 private:
 	HalfEdge*& he();

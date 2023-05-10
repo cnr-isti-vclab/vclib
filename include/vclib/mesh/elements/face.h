@@ -286,6 +286,16 @@ public:
 				T::clearWedgeTexCoord();
 		}
 	}
+
+private:
+	template<typename Comp>
+	void resizeComponent(uint n)
+	{
+		if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+			if (Comp::isEnabled())
+				Comp::resize(n);
+		}
+	}
 };
 
 template<typename MeshType, typename... Args>

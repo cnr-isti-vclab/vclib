@@ -120,15 +120,19 @@ public:
 	auto                      adjEdges() const;
 
 protected:
+	// Component interface function
+	template <typename Element>
+	void importFrom(const Element& e);
+
+	// PointersComponent interface functions
+	template<typename Element, typename ElEType>
+	void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase);
+
 	void updatePointers(const Edge* oldBase, const Edge* newBase);
 
 	void updatePointersAfterCompact(const Edge* base, const std::vector<int>& newIndices);
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
-	template<typename Element, typename ElEType>
-	void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase);
+	// ContainerComponent interface functions
 
 private:
 	template<typename Element, typename ElEType>

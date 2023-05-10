@@ -54,6 +54,7 @@ public:
 	P&       normal();
 
 protected:
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 };

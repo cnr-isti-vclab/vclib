@@ -80,12 +80,6 @@ protected:
 	{
 		return std::get<1>(Base::data(comp));
 	}
-
-	void resize(uint n) requires (N < 0);
-	void pushBack(const T& c = T()) requires (N < 0);
-	void insert(uint i, const T& c = T()) requires (N < 0);
-	void erase(uint i) requires (N < 0);
-	void clear() requires (N < 0);
 };
 
 } // namespace vcl::comp

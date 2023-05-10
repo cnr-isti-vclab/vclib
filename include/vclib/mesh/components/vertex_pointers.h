@@ -98,15 +98,17 @@ public:
 	auto                     vertices() const;
 
 protected:
-	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
-
-	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
-
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	// PointersComponent interface functions
 	template<typename Element, typename ElVType>
 	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
+
+	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
+
+	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 private:
 	template<typename Element, typename ElVType>

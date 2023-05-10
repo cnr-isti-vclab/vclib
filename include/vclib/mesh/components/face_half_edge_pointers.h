@@ -261,20 +261,22 @@ public:
 	auto                        wedgeTexCoords() const     requires HasTexCoord<HalfEdge>;
 
 protected:
+	// Component interface function
+	template<typename Element>
+	void importFrom(const Element& e);
+
+	// PointersComponent interface functions
+	template<typename OtherFace, typename OtherHEdge>
+	void importPointersFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
+
 	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
 
 	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
-	template<typename Element>
-	void importFrom(const Element& e);
-
-	template<typename OtherFace, typename OtherHEdge>
-	void importPointersFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
-
 private:
 	HalfEdge*& ohe(); // outer half edge
 	const HalfEdge* ohe() const;
-	std::vector<HalfEdge*>& ihe();           // inner half edges, one for each hole of the face
+	std::vector<HalfEdge*>& ihe(); // inner half edges, one for each hole of the face
 	const std::vector<HalfEdge*>& ihe() const;
 
 	short& texIndex();

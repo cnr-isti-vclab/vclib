@@ -374,6 +374,28 @@ auto VertexHalfEdgePointer<HE, El, o>::adjVertices() const
 }
 
 template<typename HE, typename El, bool o>
+template<typename Element>
+void VertexHalfEdgePointer<HE, El, o>::importFrom(const Element&)
+{
+}
+
+template<typename HE, typename El, bool o>
+template<typename OtherVertex, typename OtherHEType>
+void VertexHalfEdgePointer<HE, El, o>::importPointersFrom(
+	const OtherVertex& e,
+	HE*          base,
+	const OtherHEType* ebase)
+{
+	if constexpr (HasVertexHalfEdgePointer<OtherVertex>) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.halfEdge() != nullptr) {
+				he() = base + (e.halfEdge() - ebase);
+			}
+		}
+	}
+}
+
+template<typename HE, typename El, bool o>
 void VertexHalfEdgePointer<HE, El, o>::updatePointers(
 	const HE* oldBase,
 	const HE* newBase)
@@ -395,28 +417,6 @@ void VertexHalfEdgePointer<HE, El, o>::updatePointersAfterCompact(
 			he() = nullptr;
 		else
 			he() = (HE*)base + newIndices[diff];
-	}
-}
-
-template<typename HE, typename El, bool o>
-template<typename Element>
-void VertexHalfEdgePointer<HE, El, o>::importFrom(const Element&)
-{
-}
-
-template<typename HE, typename El, bool o>
-template<typename OtherVertex, typename OtherHEType>
-void VertexHalfEdgePointer<HE, El, o>::importPointersFrom(
-	const OtherVertex& e,
-	HE*          base,
-	const OtherHEType* ebase)
-{
-	if constexpr (HasVertexHalfEdgePointer<OtherVertex>) {
-		if (base != nullptr && ebase != nullptr) {
-			if (e.halfEdge() != nullptr) {
-				he() = base + (e.halfEdge() - ebase);
-			}
-		}
 	}
 }
 

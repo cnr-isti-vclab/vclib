@@ -253,20 +253,6 @@ auto AdjacentEdges<Edge, N, TT, El, o>::adjEdges() const
 }
 
 template<typename Edge, int N, bool TT, typename El, bool o>
-void AdjacentEdges<Edge, N, TT, El, o>::updatePointers(const Edge* oldBase, const Edge* newBase)
-{
-	Base::updateElementPointers(oldBase, newBase, this);
-}
-
-template<typename Edge, int N, bool TT, typename El, bool o>
-void AdjacentEdges<Edge, N, TT, El, o>::updatePointersAfterCompact(
-	const Edge*             base,
-	const std::vector<int>& newIndices)
-{
-	Base::updateElementPointersAfterCompact(base, newIndices, this);
-}
-
-template<typename Edge, int N, bool TT, typename El, bool o>
 template<typename Element>
 void AdjacentEdges<Edge, N, TT, El, o>::importFrom(const Element&)
 {
@@ -303,6 +289,20 @@ void AdjacentEdges<Edge, N, TT, El, o>::importPointersFrom(
 			}
 		}
 	}
+}
+
+template<typename Edge, int N, bool TT, typename El, bool o>
+void AdjacentEdges<Edge, N, TT, El, o>::updatePointers(const Edge* oldBase, const Edge* newBase)
+{
+	Base::updateElementPointers(oldBase, newBase, this);
+}
+
+template<typename Edge, int N, bool TT, typename El, bool o>
+void AdjacentEdges<Edge, N, TT, El, o>::updatePointersAfterCompact(
+	const Edge*             base,
+	const std::vector<int>& newIndices)
+{
+	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool o>

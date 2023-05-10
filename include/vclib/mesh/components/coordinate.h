@@ -50,6 +50,7 @@ public:
 	P&       coord();
 
 protected:
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& v);
 

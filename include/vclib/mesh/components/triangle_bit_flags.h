@@ -112,9 +112,11 @@ public:
 protected:
 	BitProxy<FT> deleted();
 
+	// PointersComponent interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
 
+private:
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
 	BitSet<FT>& flags();
 	BitSet<FT> flags() const;

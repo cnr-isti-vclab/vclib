@@ -827,6 +827,34 @@ auto FaceHalfEdgePointers<HE, El, o>::wedgeTexCoords() const requires HasTexCoor
 }
 
 template<typename HE, typename El, bool o>
+template<typename Element>
+void FaceHalfEdgePointers<HE, El, o>::importFrom(const Element &)
+{
+}
+
+template<typename HE, typename El, bool o>
+template<typename OtherFace, typename OtherHEdge>
+void FaceHalfEdgePointers<HE, El, o>::importPointersFrom(
+	const OtherFace&  e,
+	HE*         base,
+	const OtherHEdge* ebase)
+{
+	if constexpr (HasFaceHalfEdgePointers<OtherFace>) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.outerHalfEdge() != nullptr) {
+				ohe() = (HE*)base + (e.outerHalfEdge() - ebase);
+			}
+			ihe().resize(e.numberHoles());
+			for (uint i = 0; i < ihe().size(); ++i) {
+				if (e.innerHalfEdge(i) != nullptr) {
+					ihe()[i] = (HE*)base + (e.innerHalfEdge(i) - ebase);
+				}
+			}
+		}
+	}
+}
+
+template<typename HE, typename El, bool o>
 void FaceHalfEdgePointers<HE, El, o>::updatePointers(
 	const HE* oldBase,
 	const HE* newBase)
@@ -862,34 +890,6 @@ void FaceHalfEdgePointers<HE, El, o>::updatePointersAfterCompact(
 				ihe()[i] = nullptr;
 			else
 				ihe()[i] = (HE*)base + newIndices[diff];
-		}
-	}
-}
-
-template<typename HE, typename El, bool o>
-template<typename Element>
-void FaceHalfEdgePointers<HE, El, o>::importFrom(const Element &)
-{
-}
-
-template<typename HE, typename El, bool o>
-template<typename OtherFace, typename OtherHEdge>
-void FaceHalfEdgePointers<HE, El, o>::importPointersFrom(
-	const OtherFace&  e,
-	HE*         base,
-	const OtherHEdge* ebase)
-{
-	if constexpr (HasFaceHalfEdgePointers<OtherFace>) {
-		if (base != nullptr && ebase != nullptr) {
-			if (e.outerHalfEdge() != nullptr) {
-				ohe() = (HE*)base + (e.outerHalfEdge() - ebase);
-			}
-			ihe().resize(e.numberHoles());
-			for (uint i = 0; i < ihe().size(); ++i) {
-				if (e.innerHalfEdge(i) != nullptr) {
-					ihe()[i] = (HE*)base + (e.innerHalfEdge(i) - ebase);
-				}
-			}
 		}
 	}
 }

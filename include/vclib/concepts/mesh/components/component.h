@@ -66,6 +66,9 @@ concept HasIsEnabledMemberFunction = requires(T o)
 };
 
 template<typename T>
+concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
+
+template<typename T>
 concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o)
 {
 	typename T::DataValueType;

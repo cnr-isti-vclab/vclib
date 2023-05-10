@@ -192,21 +192,6 @@ auto VertexPointers<Vertex, N, El, o>::vertices() const
 	return View(vertexBegin(), vertexEnd());
 }
 
-template<typename Vertex, int N, typename ElementType, bool optional>
-void VertexPointers<Vertex, N, ElementType, optional>::updatePointers(
-	const Vertex* oldBase, const Vertex* newBase)
-{
-	Base::updateElementPointers(oldBase, newBase, this);
-}
-
-template<typename Vertex, int N, typename ElementType, bool optional>
-void VertexPointers<Vertex, N, ElementType, optional>::updatePointersAfterCompact(
-	const Vertex*           base,
-	const std::vector<int>& newIndices)
-{
-	Base::updateElementPointersAfterCompact(base, newIndices, this);
-}
-
 template<typename Vertex, int N, typename El, bool o>
 template<typename Element>
 void VertexPointers<Vertex, N, El, o>::importFrom(const Element&)
@@ -242,6 +227,21 @@ void VertexPointers<Vertex, N, El, o>::importPointersFrom(
 			importPtrsFrom(e, base, ebase);
 		}
 	}
+}
+
+template<typename Vertex, int N, typename ElementType, bool optional>
+void VertexPointers<Vertex, N, ElementType, optional>::updatePointers(
+	const Vertex* oldBase, const Vertex* newBase)
+{
+	Base::updateElementPointers(oldBase, newBase, this);
+}
+
+template<typename Vertex, int N, typename ElementType, bool optional>
+void VertexPointers<Vertex, N, ElementType, optional>::updatePointersAfterCompact(
+	const Vertex*           base,
+	const std::vector<int>& newIndices)
+{
+	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
 template<typename Vertex, int N, typename El, bool o>

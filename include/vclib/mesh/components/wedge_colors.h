@@ -85,8 +85,11 @@ protected:
 	void eraseWedgeColor(uint i) requires (N < 0);
 	void clearWedgeColor() requires (N < 0);
 
+	// Component interface function
 	template <typename Element>
 	void importFrom(const Element& e);
+
+	// ContainerComponent interface functions
 
 private:
 	template<typename Element>

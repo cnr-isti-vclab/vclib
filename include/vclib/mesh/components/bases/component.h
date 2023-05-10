@@ -33,10 +33,31 @@ namespace vcl::comp {
  * @brief The Component class is the base class for almost all the components of VCLib (with the
  * exception of CustomComponents).
  *
- * Inheriting from this class, a component will have all the necessary definitions to be used
+ * Inheriting from this class, a component will have some necessary definitions to be used
  * smoothly by the vcl::Mesh class, managing all the possible features of a component automatically.
  *
  * All the features of a Component can be defined trough its template parameters.
+ *
+ * The user, to properly implement a Component class, must define the following protected member
+ * function:
+ *
+ * ```cpp
+ * template <typename Element>
+ * void importFrom(const Element& e);
+ * ```
+ *
+ * Moreover, if the component has at least one PointedType (meaning that the component stores a
+ * pointer of a particular type that may be updated due to reallocation), it must define the
+ * following protected member functions:
+ *
+ * ```cpp
+ * template<typename Element, typename ElEType>
+ * void importPointersFrom(const Element& e, PointedType* base, const ElEType* ebase);
+ *
+ * void updatePointers(const PointedType* oldBase, const PointedType* newBase);
+ *
+ * void updatePointersAfterCompact(const PointedType* base, const std::vector<int>& newIndices);
+ * ```
  */
 template<
 	typename DataType,
