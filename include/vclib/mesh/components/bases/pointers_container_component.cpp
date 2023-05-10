@@ -41,9 +41,9 @@ namespace vcl::comp {
  * w.r.t. the first element of the Container, and update the the pointer accordingly using the
  * newBase.
  */
-template<typename Elem, int N, typename El, bool o>
+template<typename Elem, int N, typename El, bool o, bool TT>
 template<typename Comp>
-void PointersContainerComponent<Elem, N, El, o>::updateElementPointers(
+void PointersContainerComponent<Elem, N, El, o, TT>::updateElementPointers(
 	const Elem* oldBase,
 	const Elem* newBase,
 	Comp* comp)
@@ -56,9 +56,9 @@ void PointersContainerComponent<Elem, N, El, o>::updateElementPointers(
 	}
 }
 
-template<typename Elem, int N, typename El, bool o>
+template<typename Elem, int N, typename El, bool o, bool TT>
 template<typename Comp>
-void PointersContainerComponent<Elem, N, El, o>::updateElementPointersAfterCompact(
+void PointersContainerComponent<Elem, N, El, o, TT>::updateElementPointersAfterCompact(
 	const Elem*             base,
 	const std::vector<int>& newIndices,
 	Comp* comp)

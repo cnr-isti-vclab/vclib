@@ -25,22 +25,22 @@
 
 namespace vcl::comp {
 
-template<typename El, bool o>
-PolygonBitFlags<El, o>::PolygonBitFlags()
+template<int N, typename El, bool o>
+PolygonBitFlags<N, El, o>::PolygonBitFlags()
 {
 	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
 
-template<typename El, bool o>
-void PolygonBitFlags<El, o>::init()
+template<int N, typename El, bool o>
+void PolygonBitFlags<N, El, o>::init()
 {
 	flags().reset();
 }
 
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::isEnabled() const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
@@ -49,8 +49,8 @@ bool PolygonBitFlags<El, o>::isEnabled() const
  * @brief Returns whether the current Polygon is deleted or not.
  * @return true if the Polygon is deleted, false otherwise.
  */
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::deleted() const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::deleted() const
 {
 	return flags()[DELETED];
 }
@@ -59,8 +59,8 @@ bool PolygonBitFlags<El, o>::deleted() const
  * @brief Accesses the 'selected' bit of this Polygon, returning a reference to it.
  * @return a reference to the 'selected' bit of this Polygon.
  */
-template<typename El, bool o>
-BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::selected()
+template<int N, typename El, bool o>
+BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::selected()
 {
 	return flags()[SELECTED];
 }
@@ -69,8 +69,8 @@ BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::selected()
  * @brief Returns whether the current Polygon is selected or not.
  * @return true if the Polygon is selected, false otherwise.
  */
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::selected() const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::selected() const
 {
 	return flags()[SELECTED];
 }
@@ -79,8 +79,8 @@ bool PolygonBitFlags<El, o>::selected() const
  * @brief Accesses the 'visited' bit of this Polygon, returning a reference to it.
  * @return a reference to the 'visited' bit of this Polygon.
  */
-template<typename El, bool o>
-BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::visited()
+template<int N, typename El, bool o>
+BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::visited()
 {
 	return flags()[VISITED];
 }
@@ -89,8 +89,8 @@ BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::visited()
  * @brief Returns whether the current Polygon has been visited or not.
  * @return true if the Polygon has been visited, false otherwise.
  */
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::visited() const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::visited() const
 {
 	return flags()[VISITED];
 }
@@ -100,65 +100,65 @@ bool PolygonBitFlags<El, o>::visited() const
  * of its edges are on border or not.
  * @return true if at least one edge of the Polygon is on border, false otherwise.
  */
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::onBorder() const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::onBorder() const
 {
 	for (uint i = 0; i < 12; ++i)
 		if (edgeOnBorder(i)) return true;
 	return false;
 }
 
-template<typename El, bool o>
-BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::edgeOnBorder(uint i)
+template<int N, typename El, bool o>
+BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::edgeOnBorder(uint i)
 {
 	assert(i < edgeFlags().size());
 	return edgeFlags()[i][EDGEBORD];
 }
 
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::edgeOnBorder(uint i) const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::edgeOnBorder(uint i) const
 {
 	assert(i < edgeFlags().size());
 	return edgeFlags()[i][EDGEBORD];
 }
 
-template<typename El, bool o>
-BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::edgeSelected(uint i)
+template<int N, typename El, bool o>
+BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::edgeSelected(uint i)
 {
 	assert(i < edgeFlags().size());
 	return edgeFlags()[i][EDGESEL];
 }
 
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::edgeSelected(uint i) const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::edgeSelected(uint i) const
 {
 	assert(i < edgeFlags().size());
 	return edgeFlags()[i][EDGESEL];
 }
 
-template<typename El, bool o>
-BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::edgeVisited(uint i)
+template<int N, typename El, bool o>
+BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::edgeVisited(uint i)
 {
 	assert(i < edgeFlags().size());
 	return edgeFlags()[i][EDGEVIS];
 }
 
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::edgeVisited(uint i) const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::edgeVisited(uint i) const
 {
 	assert(i < edgeFlags().size());
 	return edgeFlags()[i][EDGEVIS];
 }
 
-template<typename El, bool o>
-BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::edgeFaux(uint i)
+template<int N, typename El, bool o>
+BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::edgeFaux(uint i)
 {
 	assert(i < 3);
 	return flags()[FAUX0 + i];
 }
 
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::edgeFaux(uint i) const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::edgeFaux(uint i) const
 {
 	assert(i < 3);
 	return flags()[FAUX0 + i];
@@ -171,8 +171,8 @@ bool PolygonBitFlags<El, o>::edgeFaux(uint i) const
  * @param[in] bit: the position of the bit, in the interval [0 - 1].
  * @return a reference to the desired user bit.
  */
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::userBit(uint bit) const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::userBit(uint bit) const
 {
 	assert(bit < N_USER_BITS);
 	return flags()[bit + FIRST_USER_BIT];
@@ -186,22 +186,22 @@ bool PolygonBitFlags<El, o>::userBit(uint bit) const
  * reference.
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
-template<typename El, bool o>
-BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::userBit(uint bit)
+template<int N, typename El, bool o>
+BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::userBit(uint bit)
 {
 	assert(bit < N_USER_BITS);
 	return flags()[bit + FIRST_USER_BIT];
 }
 
-template<typename El, bool o>
-bool PolygonBitFlags<El, o>::edgeUserBit(uint i, uint bit) const
+template<int N, typename El, bool o>
+bool PolygonBitFlags<N, El, o>::edgeUserBit(uint i, uint bit) const
 {
 	assert(bit < N_EDGE_USER_BITS);
 	return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
 }
 
-template<typename El, bool o>
-BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::edgeUserBit(uint i, uint bit)
+template<int N, typename El, bool o>
+BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::edgeUserBit(uint i, uint bit)
 {
 	assert(bit < N_EDGE_USER_BITS);
 	return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
@@ -211,8 +211,8 @@ BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::edgeUserBi
  * @brief Unsets all the flags of this Polygon and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
  */
-template<typename El, bool o>
-void PolygonBitFlags<El, o>::resetBitFlags()
+template<int N, typename El, bool o>
+void PolygonBitFlags<N, El, o>::resetBitFlags()
 {
 	bool isD = deleted();
 	flags().reset();
@@ -221,8 +221,8 @@ void PolygonBitFlags<El, o>::resetBitFlags()
 	deleted() = isD;
 }
 
-template<typename El, bool o>
-void PolygonBitFlags<El, o>::importFromVCGFlags(int f)
+template<int N, typename El, bool o>
+void PolygonBitFlags<N, El, o>::importFromVCGFlags(int f)
 {
 	if (f & 0x00000020)
 		selected() = true;
@@ -246,8 +246,8 @@ void PolygonBitFlags<El, o>::importFromVCGFlags(int f)
 		edgeFaux(2) = true;
 }
 
-template<typename El, bool o>
-int PolygonBitFlags<El, o>::exportToVCGFlags() const
+template<int N, typename El, bool o>
+int PolygonBitFlags<N, El, o>::exportToVCGFlags() const
 {
 	int f = 0;
 	if (selected())
@@ -273,45 +273,45 @@ int PolygonBitFlags<El, o>::exportToVCGFlags() const
 	return f;
 }
 
-template<typename ElementType, bool optional>
-void PolygonBitFlags<ElementType, optional>::resizeBitFlags(uint n)
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::resizeBitFlags(uint n)
 {
 	edgeFlags().resize(n);
 }
 
-template<typename ElementType, bool optional>
-void PolygonBitFlags<ElementType, optional>::pushBitFlag(BitSet<FT> f)
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::pushBitFlag(BitSet<FT> f)
 {
 	edgeFlags().pushBack(f);
 }
 
-template<typename ElementType, bool optional>
-void PolygonBitFlags<ElementType, optional>::insertBitFlag(uint i, BitSet<FT> f)
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::insertBitFlag(uint i, BitSet<FT> f)
 {
 	edgeFlags().insert(edgeFlags().begin() + i, f);
 }
 
-template<typename ElementType, bool optional>
-void PolygonBitFlags<ElementType, optional>::eraseBitFlag(uint i)
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::eraseBitFlag(uint i)
 {
 	edgeFlags().erase(edgeFlags().begin() + i);
 }
 
-template<typename ElementType, bool optional>
-void PolygonBitFlags<ElementType, optional>::clearBitFlags()
+template<int N, typename ElementType, bool optional>
+void PolygonBitFlags<N, ElementType, optional>::clearBitFlags()
 {
 	edgeFlags().clear();
 }
 
-template<typename El, bool o>
-BitProxy<typename PolygonBitFlags<El, o>::FT> PolygonBitFlags<El, o>::deleted()
+template<int N, typename El, bool o>
+BitProxy<typename PolygonBitFlags<N, El, o>::FT> PolygonBitFlags<N, El, o>::deleted()
 {
 	return flags()[DELETED];
 }
 
-template<typename El, bool o>
+template<int N, typename El, bool o>
 template<typename Element>
-void PolygonBitFlags<El, o>::importFrom(const Element& e)
+void PolygonBitFlags<N, El, o>::importFrom(const Element& e)
 {
 	if constexpr (HasBitFlags<Element>) {
 		resetBitFlags();
@@ -328,27 +328,27 @@ void PolygonBitFlags<El, o>::importFrom(const Element& e)
 	}
 }
 
-template<typename El, bool o>
-BitSet<typename PolygonBitFlags<El, o>::FT>& PolygonBitFlags<El, o>::flags()
+template<int N, typename El, bool o>
+BitSet<typename PolygonBitFlags<N, El, o>::FT>& PolygonBitFlags<N, El, o>::flags()
 {
 	return Base::additionalData(this);
 }
 
-template<typename El, bool o>
-const BitSet<typename PolygonBitFlags<El, o>::FT>& PolygonBitFlags<El, o>::flags() const
+template<int N, typename El, bool o>
+const BitSet<typename PolygonBitFlags<N, El, o>::FT>& PolygonBitFlags<N, El, o>::flags() const
 {
 	return Base::additionalData(this);
 }
 
-template<typename El, bool o>
-Vector<BitSet<typename PolygonBitFlags<El, o>::FT>, -1>& PolygonBitFlags<El, o>::edgeFlags()
+template<int N, typename El, bool o>
+Vector<BitSet<typename PolygonBitFlags<N, El, o>::FT>, -1>& PolygonBitFlags<N, El, o>::edgeFlags()
 {
 	return Base::container(this);
 }
 
-template<typename El, bool o>
-const Vector<BitSet<typename PolygonBitFlags<El, o>::FT>, -1>&
-PolygonBitFlags<El, o>::edgeFlags() const
+template<int N, typename El, bool o>
+const Vector<BitSet<typename PolygonBitFlags<N, El, o>::FT>, -1>&
+PolygonBitFlags<N, El, o>::edgeFlags() const
 {
 	return Base::container(this);
 }

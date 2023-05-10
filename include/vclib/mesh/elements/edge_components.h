@@ -52,13 +52,13 @@ namespace vcl::edge {
 
 /* Port AdjacentEdges class into edge namespace */
 template<typename EdgeType>
-using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
+using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false>;
 
 template<typename EdgeType>
-using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, EdgeType>;
+using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, EdgeType>;
 
 template<typename EdgeType>
-using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, EdgeType, true>;
+using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true>;
 
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>

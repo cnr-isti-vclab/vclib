@@ -51,11 +51,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Vertex, typename ElementType = void, bool optional = false>
-class AdjacentVertices : public PointersContainerComponent<Vertex, -1, ElementType, optional>
+class AdjacentVertices : public PointersContainerComponent<Vertex, -1, ElementType, optional, false>
 {
 	using ThisType = AdjacentVertices<Vertex, ElementType, optional>;
 	
-	using Base = PointersContainerComponent<Vertex, -1, ElementType, optional>;
+	using Base = PointersContainerComponent<Vertex, -1, ElementType, optional, false>;
 
 public:
 	using AdjacentVerticesComponent = ThisType; // expose the type to allow access to this component

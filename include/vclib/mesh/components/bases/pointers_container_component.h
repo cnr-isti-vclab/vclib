@@ -38,11 +38,11 @@ namespace vcl::comp {
  *
  * Its major use is for adjacencies.
  */
-template<typename Elem, int N, typename ElementType, bool optional>
+template<typename Elem, int N, typename ElementType, bool optional, bool TTVN>
 class PointersContainerComponent :
-		public ContainerComponent<Elem*, N, void, ElementType, optional, true, Elem>
+		public ContainerComponent<Elem*, N, void, ElementType, optional, TTVN, Elem>
 {
-	using Base = ContainerComponent<Elem*, N, void, ElementType, optional, true, Elem>;
+	using Base = ContainerComponent<Elem*, N, void, ElementType, optional, TTVN, Elem>;
 
 protected:
 	using Base::container;

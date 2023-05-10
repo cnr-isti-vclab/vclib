@@ -55,11 +55,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Face, int N, typename ElementType = void, bool optional = false>
-class AdjacentFaces : public PointersContainerComponent<Face, N, ElementType, optional>
+class AdjacentFaces : public PointersContainerComponent<Face, N, ElementType, optional, true>
 {
 	using ThisType = AdjacentFaces<Face, N, ElementType, optional>;
 	
-	using Base = PointersContainerComponent<Face, N, ElementType, optional>;
+	using Base = PointersContainerComponent<Face, N, ElementType, optional, true>;
 
 public:
 	/** @brief Allows access to this component type from a derived class type/instance */

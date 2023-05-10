@@ -59,22 +59,22 @@ namespace vcl::face {
 
 /* Port AdjacentEdges class into face namespace */
 template<typename EdgeType>
-using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1>;
+using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, true>;
 
 template<typename EdgeType>
-using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3>;
+using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true>;
 
 template<typename EdgeType, typename FaceType>
-using VerticalAdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, FaceType>;
+using VerticalAdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, true, FaceType>;
 
 template<typename EdgeType, typename FaceType>
-using VerticalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, FaceType>;
+using VerticalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true, FaceType>;
 
 template<typename EdgeType, typename FaceType>
-using OptionalAdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, FaceType, true>;
+using OptionalAdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, true, FaceType, true>;
 
 template<typename EdgeType, typename FaceType>
-using OptionalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, FaceType, true>;
+using OptionalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true, FaceType, true>;
 
 /* Port AdjacentFaces class into face namespace */
 template<typename FaceType>
@@ -166,10 +166,10 @@ template<typename MeshType>
 using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port PolygonBitFlags class into face namespace */
-using PolygonBitFlags = comp::PolygonBitFlags<>;
+using PolygonBitFlags = comp::PolygonBitFlags<-1>;
 
 template<typename FaceType>
-using VerticalPolygonBitFlags = comp::PolygonBitFlags<FaceType>;
+using VerticalPolygonBitFlags = comp::PolygonBitFlags<-1, FaceType>;
 
 /* Port PrincipalCurvature class into face namespace */
 template<typename FaceType>

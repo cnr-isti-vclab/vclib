@@ -48,19 +48,6 @@ class WedgeTexCoords :
 public:
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
 
-	/**
-	 * @brief Boolean that tells if this component stores a container having its size tied to the
-	 * number of the vertices of the Element.
-	 *
-	 * E.g. suppose to have a Polygonal Face f, having 5 vertices (and 5 edges).
-	 * This means that it the Face has the AdjacentFaces component, then it should store 5 adjacent
-	 * faces (the same number of the vertices). In this case, the AdjacentFaces component will have
-	 * the boolean TIED_TO_VERTEX_NUMBER set to true.
-	 */
-	static const bool TIED_TO_VERTEX_NUMBER = true;
-
-	static const int SIZE = N;
-	
 	static const int WEDGE_TEX_COORD_NUMBER = N;
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
@@ -69,8 +56,6 @@ public:
 
 	using WedgeTexCoordsIterator      = typename Vector<vcl::TexCoord<Scalar>, N>::Iterator;
 	using ConstWedgeTexCoordsIterator = typename Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
-	using WedgeTexCoordsView          = vcl::View<WedgeTexCoordsIterator>;
-	using ConstWedgeTexCoordsView     = vcl::View<ConstWedgeTexCoordsIterator>;
 
 	/* Member functions */
 
