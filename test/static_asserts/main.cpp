@@ -27,6 +27,8 @@
 
 int main()
 {
+	static_assert(vcl::comp::HasPointersOfType<vcl::TriMesh::Face, vcl::TriMesh::Vertex>, "");
+
 	loggersStaticAsserts();
 
 	dcelStaticAsserts();

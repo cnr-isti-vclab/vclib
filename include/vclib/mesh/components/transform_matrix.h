@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/transform_matrix.h>
 #include <vclib/space/matrix.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -37,16 +37,13 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Scalar, typename ElementType = void, bool optional = false>
-class TransformMatrix
+class TransformMatrix : public Component<Matrix44<Scalar>, ElementType, optional>
 {
+	using Base = Component<Matrix44<Scalar>, ElementType, optional>;
 	using ThisType = TransformMatrix<Scalar, ElementType, optional>;
-public:
-	// data that the component stores internally (or vertically)
-	using DataValueType = Matrix44<Scalar>;
-	using TransformMatrixComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
+public:
+	using TransformMatrixComponent = ThisType; // expose the type to allow access to this component
 
 	using TransformMatrixType = Matrix44<Scalar>;
 
@@ -64,16 +61,9 @@ public:
 	TransformMatrixType&       transformMatrix();
 
 protected:
+	// PointersComponent interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
-
-private:
-	// members that allow to access the matrix, trough data (horizontal) or trough parent (vertical)
-	Matrix44<Scalar>& tr();
-	const Matrix44<Scalar>& tr() const;
-
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

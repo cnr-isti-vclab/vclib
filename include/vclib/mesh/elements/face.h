@@ -84,6 +84,22 @@ public:
 	void eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face>;
 
 	void clearVertices() requires NonDcelPolygonFaceConcept<Face>;
+
+private:
+	template<typename Comp>
+	void resizeTTVNComponent(uint n);
+
+	template<typename Comp>
+	void pushBackTTVNComponent();
+
+	template<typename Comp>
+	void insertTTVNComponent(uint i);
+
+	template<typename Comp>
+	void eraseTTVNComponent(uint i);
+
+	template<typename Comp>
+	void clearTTVNComponent();
 };
 
 template<typename MeshType, typename... Args>

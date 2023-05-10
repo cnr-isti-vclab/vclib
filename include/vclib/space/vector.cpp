@@ -250,6 +250,30 @@ int Vector<T, N>::indexOf(const typename MakeConstPointer<T>::type& e) const
 }
 
 /**
+ * @brief Returns a reference to the element at specified location i. No bounds checking is
+ * performed.
+ * @param[in] i: Position of the element to return
+ * @return A reference to the requested element.
+ */
+template<typename T, int N>
+typename Vector<T, N>::Reference Vector<T, N>::operator[](uint i)
+{
+	return container[i];
+}
+
+/**
+ * @brief Returns a const reference to the element at specified location i. No bounds checking is
+ * performed.
+ * @param[in] i: Position of the element to return
+ * @return A const reference to the requested element.
+ */
+template<typename T, int N>
+typename Vector<T, N>::ConstReference Vector<T, N>::operator[](uint i) const
+{
+	return container[i];
+}
+
+/**
  * @brief Resize the Vector to the specified size.
  *
  * Resizes the Vector to the specified size `n` by resizing the underlying `std::vector`. This

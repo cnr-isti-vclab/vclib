@@ -31,7 +31,7 @@
 #include <vclib/iterators/mesh/half_edge/vertex_adj_vertex_iterator.h>
 #include <vclib/views/view.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -44,19 +44,17 @@ template<
 	typename HalfEdge,
 	typename ElementType = void,
 	bool optional        = false>
-class VertexHalfEdgePointer : public PointersComponentTriggerer<HalfEdge>
+class VertexHalfEdgePointer : public Component<HalfEdge*, ElementType, optional, HalfEdge>
 {
+	using Base = Component<HalfEdge*, ElementType, optional, HalfEdge>;
 	using ThisType = VertexHalfEdgePointer<HalfEdge, ElementType, optional>;
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
 
 public:
-	using DataValueType = HalfEdge*; // data that the component stores internally (or vertically)
-	using VertexHalfEdgePointerComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
+	// expose the type to allow access to this component
+	using VertexHalfEdgePointerComponent = ThisType;
 
 	using HalfEdgeType = HalfEdge;
 
@@ -140,20 +138,20 @@ public:
 	auto                        adjVertices() const;
 
 protected:
-	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
-	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
-
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	// PointersComponent interface functions
 	template<typename OtherVertex, typename OtherHEType>
 	void importPointersFrom(const OtherVertex& e, HalfEdge* base, const OtherHEType* ebase);
+
+	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
 private:
 	HalfEdge*& he();
 	const HalfEdge* he() const;
-
-	internal::ComponentData<HalfEdge*, IS_VERTICAL> data;
 };
 
 } // vcl::comp

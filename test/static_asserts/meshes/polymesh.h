@@ -26,6 +26,9 @@ void polymeshStaticAsserts()
 	static_assert(!HasQuads<PolyMesh>, "");
 	static_assert(HasPolygons<PolyMesh>, "");
 
+	static_assert(comp::IsTiedToVertexNumber<PolyMesh::Face::AdjacentFacesComponent>, "");
+	static_assert(!comp::IsTiedToVertexNumber<PolyMesh::Vertex::AdjacentFacesComponent>, "");
+
 	meshViewsStaticAsserts<PolyMesh>();
 }
 

@@ -26,7 +26,7 @@
 
 #include <vclib/concepts/mesh/components/mark.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -66,15 +66,13 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class Mark
+class Mark : public Component<int, ElementType, optional>
 {
+	using Base = Component<int, ElementType, optional>;
 	using ThisType = Mark<ElementType, optional>;
-public:
-	using DataValueType = int; // data that the component stores internally (or vertically)
-	using MarkComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
+public:
+	using MarkComponent = ThisType; // expose the type to allow access to this component
 
 	/* Constructor and isEnabled */
 
@@ -97,16 +95,14 @@ public:
 	void decrementMark();
 
 protected:
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 
 private:
 	// members that allow to access the point, trough data (horizontal) or trough parent (vertical)
 	int& m();
-	const int& m() const;
-
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
+	int m() const;
 };
 
 /* Detector function to check if a class has Mark enabled */

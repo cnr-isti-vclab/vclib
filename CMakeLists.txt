@@ -226,9 +226,11 @@ set(HEADERS
 	include/vclib/mesh/components/triangle_bit_flags.h
 	include/vclib/mesh/components/wedge_colors.h
 	include/vclib/mesh/components/wedge_tex_coords.h
+	include/vclib/mesh/components/bases/component.h
+	include/vclib/mesh/components/bases/container_component.h
+	include/vclib/mesh/components/bases/pointers_container_component.h
 	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/custom_components_data.h
-	include/vclib/mesh/components/internal/element_pointers_container.h
 	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/custom_component_vector_handle.h
 	include/vclib/mesh/containers/custom_components_vector_map.h
@@ -436,7 +438,8 @@ set(SOURCES
 	include/vclib/mesh/components/vertex_pointers.cpp
 	include/vclib/mesh/components/wedge_colors.cpp
 	include/vclib/mesh/components/wedge_tex_coords.cpp
-	include/vclib/mesh/components/internal/element_pointers_container.cpp
+	include/vclib/mesh/components/bases/container_component.cpp
+	include/vclib/mesh/components/bases/pointers_container_component.cpp
 	include/vclib/mesh/containers/custom_component_vector_handle.cpp
 	include/vclib/mesh/containers/custom_components_vector_map.cpp
 	include/vclib/mesh/containers/edge_container.cpp

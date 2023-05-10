@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<typename HalfEdge, typename El, bool o>
 FaceHalfEdgePointers<HalfEdge, El, o>::FaceHalfEdgePointers()
 {
-	if constexpr (!IS_VERTICAL) {
+	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
@@ -43,7 +43,7 @@ void FaceHalfEdgePointers<HE, El, o>::init()
 template<typename HalfEdge, typename El, bool o>
 bool FaceHalfEdgePointers<HalfEdge, El, o>::isEnabled()
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<typename HE, typename El, bool o>
@@ -827,6 +827,34 @@ auto FaceHalfEdgePointers<HE, El, o>::wedgeTexCoords() const requires HasTexCoor
 }
 
 template<typename HE, typename El, bool o>
+template<typename Element>
+void FaceHalfEdgePointers<HE, El, o>::importFrom(const Element &)
+{
+}
+
+template<typename HE, typename El, bool o>
+template<typename OtherFace, typename OtherHEdge>
+void FaceHalfEdgePointers<HE, El, o>::importPointersFrom(
+	const OtherFace&  e,
+	HE*         base,
+	const OtherHEdge* ebase)
+{
+	if constexpr (HasFaceHalfEdgePointers<OtherFace>) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.outerHalfEdge() != nullptr) {
+				ohe() = (HE*)base + (e.outerHalfEdge() - ebase);
+			}
+			ihe().resize(e.numberHoles());
+			for (uint i = 0; i < ihe().size(); ++i) {
+				if (e.innerHalfEdge(i) != nullptr) {
+					ihe()[i] = (HE*)base + (e.innerHalfEdge(i) - ebase);
+				}
+			}
+		}
+	}
+}
+
+template<typename HE, typename El, bool o>
 void FaceHalfEdgePointers<HE, El, o>::updatePointers(
 	const HE* oldBase,
 	const HE* newBase)
@@ -867,67 +895,39 @@ void FaceHalfEdgePointers<HE, El, o>::updatePointersAfterCompact(
 }
 
 template<typename HE, typename El, bool o>
-template<typename Element>
-void FaceHalfEdgePointers<HE, El, o>::importFrom(const Element &)
-{
-}
-
-template<typename HE, typename El, bool o>
-template<typename OtherFace, typename OtherHEdge>
-void FaceHalfEdgePointers<HE, El, o>::importPointersFrom(
-	const OtherFace&  e,
-	HE*         base,
-	const OtherHEdge* ebase)
-{
-	if constexpr (HasFaceHalfEdgePointers<OtherFace>) {
-		if (base != nullptr && ebase != nullptr) {
-			if (e.outerHalfEdge() != nullptr) {
-				ohe() = (HE*)base + (e.outerHalfEdge() - ebase);
-			}
-			ihe().resize(e.numberHoles());
-			for (uint i = 0; i < ihe().size(); ++i) {
-				if (e.innerHalfEdge(i) != nullptr) {
-					ihe()[i] = (HE*)base + (e.innerHalfEdge(i) - ebase);
-				}
-			}
-		}
-	}
-}
-
-template<typename HE, typename El, bool o>
 HE*& FaceHalfEdgePointers<HE, El, o>::ohe()
 {
-	return data.template get<El>(this).ohe;
+	return Base::data(this).ohe;
 }
 
 template<typename HE, typename El, bool o>
 const HE* FaceHalfEdgePointers<HE, El, o>::ohe() const
 {
-	return data.template get<El>(this).ohe;
+	return Base::data(this).ohe;
 }
 
 template<typename HE, typename El, bool o>
 std::vector<HE*>& FaceHalfEdgePointers<HE, El, o>::ihe()
 {
-	return data.template get<El>(this).ihe;
+	return Base::data(this).ihe;
 }
 
 template<typename HE, typename El, bool o>
 const std::vector<HE*>& FaceHalfEdgePointers<HE, El, o>::ihe() const
 {
-	return data.template get<El>(this).ihe;
+	return Base::data(this).ihe;
 }
 
 template<typename HE, typename El, bool o>
 short& FaceHalfEdgePointers<HE, El, o>::texIndex()
 {
-	return data.template get<El>(this).texIndex;
+	return Base::data(this).texIndex;
 }
 
 template<typename HE, typename El, bool o>
 short FaceHalfEdgePointers<HE, El, o>::texIndex() const
 {
-	return data.template get<El>(this).texIndex;
+	return Base::data(this).texIndex;
 }
 
 } // namespace vcl::comp

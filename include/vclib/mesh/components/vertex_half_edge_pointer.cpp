@@ -30,7 +30,7 @@ namespace vcl::comp {
 template<typename HE, typename El, bool o>
 VertexHalfEdgePointer<HE, El, o>::VertexHalfEdgePointer()
 {
-	if constexpr (!IS_VERTICAL) {
+	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
@@ -44,7 +44,7 @@ void VertexHalfEdgePointer<HE, El, o>::init()
 template<typename HE, typename El, bool o>
 bool VertexHalfEdgePointer<HE, El, o>::isEnabled()
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<typename HE, typename El, bool o>
@@ -374,6 +374,28 @@ auto VertexHalfEdgePointer<HE, El, o>::adjVertices() const
 }
 
 template<typename HE, typename El, bool o>
+template<typename Element>
+void VertexHalfEdgePointer<HE, El, o>::importFrom(const Element&)
+{
+}
+
+template<typename HE, typename El, bool o>
+template<typename OtherVertex, typename OtherHEType>
+void VertexHalfEdgePointer<HE, El, o>::importPointersFrom(
+	const OtherVertex& e,
+	HE*          base,
+	const OtherHEType* ebase)
+{
+	if constexpr (HasVertexHalfEdgePointer<OtherVertex>) {
+		if (base != nullptr && ebase != nullptr) {
+			if (e.halfEdge() != nullptr) {
+				he() = base + (e.halfEdge() - ebase);
+			}
+		}
+	}
+}
+
+template<typename HE, typename El, bool o>
 void VertexHalfEdgePointer<HE, El, o>::updatePointers(
 	const HE* oldBase,
 	const HE* newBase)
@@ -399,37 +421,15 @@ void VertexHalfEdgePointer<HE, El, o>::updatePointersAfterCompact(
 }
 
 template<typename HE, typename El, bool o>
-template<typename Element>
-void VertexHalfEdgePointer<HE, El, o>::importFrom(const Element&)
-{
-}
-
-template<typename HE, typename El, bool o>
-template<typename OtherVertex, typename OtherHEType>
-void VertexHalfEdgePointer<HE, El, o>::importPointersFrom(
-	const OtherVertex& e,
-	HE*          base,
-	const OtherHEType* ebase)
-{
-	if constexpr (HasVertexHalfEdgePointer<OtherVertex>) {
-		if (base != nullptr && ebase != nullptr) {
-			if (e.halfEdge() != nullptr) {
-				he() = base + (e.halfEdge() - ebase);
-			}
-		}
-	}
-}
-
-template<typename HE, typename El, bool o>
 HE*& VertexHalfEdgePointer<HE, El, o>::he()
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template<typename HE, typename El, bool o>
 const HE* VertexHalfEdgePointer<HE, El, o>::he() const
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 } // namespace vcl::comp

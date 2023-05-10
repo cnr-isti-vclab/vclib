@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<typename El, bool o>
 bool Color<El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<typename El, bool o>
@@ -69,13 +69,13 @@ void Color<El, o>::importFrom(const Element& e)
 template<typename El, bool o>
 vcl::Color& Color<El, o>::c()
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template<typename El, bool o>
 const vcl::Color& Color<El, o>::c() const
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template <typename T>

@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<int N, typename El, bool o>
 bool WedgeColors<N, El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<int N, typename El, bool o>
@@ -110,48 +110,6 @@ auto WedgeColors<N, El, o>::wedgeColors() const
 }
 
 template<int N, typename El, bool o>
-Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors()
-{
-	return data.template get<El>(this);
-}
-
-template<int N, typename El, bool o>
-const Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors() const
-{
-	return data.template get<El>(this);
-}
-
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::resizeWedgeColors(uint n) requires (N < 0)
-{
-	colors().resize(n);
-}
-
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::pushWedgeColor(const vcl::Color& c) requires (N < 0)
-{
-	colors().pushBack(c);
-}
-
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::insertWedgeColor(uint i, const vcl::Color& c) requires (N < 0)
-{
-	colors().insert(i, c);
-}
-
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::eraseWedgeColor(uint i) requires (N < 0)
-{
-	colors().erase(i);
-}
-
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::clearWedgeColor() requires (N < 0)
-{
-	colors().clear();
-}
-
-template<int N, typename El, bool o>
 template<typename Element>
 void WedgeColors<N, El, o>::importFrom(const Element& e)
 {
@@ -174,11 +132,41 @@ void WedgeColors<N, El, o>::importFrom(const Element& e)
 			}
 			else {
 				// from static/dynamic to dynamic size: need to resize first, then import
-				resizeWedgeColors(e.vertexNumber());
+				resize(e.vertexNumber());
 				importWedgeColorsFrom(e);
 			}
 		}
 	}
+}
+
+template<int N, typename El, bool o>
+void WedgeColors<N, El, o>::resize(uint n) requires (N < 0)
+{
+	colors().resize(n);
+}
+
+template<int N, typename El, bool o>
+void WedgeColors<N, El, o>::pushBack(const vcl::Color& c) requires (N < 0)
+{
+	colors().pushBack(c);
+}
+
+template<int N, typename El, bool o>
+void WedgeColors<N, El, o>::insert(uint i, const vcl::Color& c) requires (N < 0)
+{
+	colors().insert(i, c);
+}
+
+template<int N, typename El, bool o>
+void WedgeColors<N, El, o>::erase(uint i) requires (N < 0)
+{
+	colors().erase(i);
+}
+
+template<int N, typename El, bool o>
+void WedgeColors<N, El, o>::clear() requires (N < 0)
+{
+	colors().clear();
 }
 
 template<int N, typename El, bool o>
@@ -188,6 +176,18 @@ void WedgeColors<N, El, o>::importWedgeColorsFrom(const Element& e)
 	for (uint i = 0; i < e.vertexNumber(); ++i){
 		wedgeColor(i) = e.wedgeColor(i);
 	}
+}
+
+template<int N, typename El, bool o>
+Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors()
+{
+	return Base::container(this);
+}
+
+template<int N, typename El, bool o>
+const Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors() const
+{
+	return Base::container(this);
 }
 
 template <typename T>

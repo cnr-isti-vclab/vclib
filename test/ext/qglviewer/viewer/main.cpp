@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 
 	vcl::FileMeshInfo loadedInfo;
 
-	vcl::PolyMesh tm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/VertTextureDouble.ply", loadedInfo);
+	vcl::PolyMesh tm = vcl::load<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
 	vcl::updatePerFaceNormals(tm);
 	vcl::updatePerVertexNormals(tm);
 	tm.enablePerFaceColor();

@@ -27,6 +27,9 @@ void trimeshStaticAsserts()
 	static_assert(!HasQuads<TriMesh>, "");
 	static_assert(!HasPolygons<TriMesh>, "");
 
+	static_assert(comp::IsTiedToVertexNumber<TriMesh::Face::AdjacentFacesComponent>, "");
+	static_assert(!comp::IsTiedToVertexNumber<TriMesh::Vertex::AdjacentFacesComponent>, "");
+
 	// mesh views
 	meshViewsStaticAsserts<TriMesh>();
 }

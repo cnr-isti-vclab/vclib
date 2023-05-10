@@ -220,20 +220,6 @@ auto AdjacentVertices<Vertex, El, o>::adjVertices() const
 }
 
 template<typename Vertex, typename El, bool o>
-void AdjacentVertices<Vertex, El, o>::updatePointers(const Vertex* oldBase, const Vertex* newBase)
-{
-	Base::updateElementPointers(oldBase, newBase, this);
-}
-
-template<typename Vertex, typename El, bool o>
-void AdjacentVertices<Vertex, El, o>::updatePointersAfterCompact(
-	const Vertex*           base,
-	const std::vector<int>& newIndices)
-{
-	Base::updateElementPointersAfterCompact(base, newIndices, this);
-}
-
-template<typename Vertex, typename El, bool o>
 template<typename Element>
 void AdjacentVertices<Vertex, El, o>::importFrom(const Element&)
 {
@@ -253,6 +239,20 @@ void AdjacentVertices<Vertex, El, o>::importPointersFrom(
 			importPtrsFrom(e, base, ebase);
 		}
 	}
+}
+
+template<typename Vertex, typename El, bool o>
+void AdjacentVertices<Vertex, El, o>::updatePointers(const Vertex* oldBase, const Vertex* newBase)
+{
+	Base::updateElementPointers(oldBase, newBase, this);
+}
+
+template<typename Vertex, typename El, bool o>
+void AdjacentVertices<Vertex, El, o>::updatePointersAfterCompact(
+	const Vertex*           base,
+	const std::vector<int>& newIndices)
+{
+	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
 template<typename Vertex, typename El, bool o>

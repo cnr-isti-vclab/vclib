@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/principal_curvature.h>
 #include <vclib/space/principal_curvature.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -36,21 +36,15 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<
-	typename Scalar,
-	typename ElementType = void,
-	bool optional        = false>
-class PrincipalCurvature
+template<typename Scalar, typename ElementType = void, bool optional = false>
+class PrincipalCurvature : public Component<vcl::PrincipalCurvature<Scalar>, ElementType, optional>
 {
+	using Base = Component<vcl::PrincipalCurvature<Scalar>, ElementType, optional>;
 	using ThisType = PrincipalCurvature<Scalar, ElementType, optional>;
+
 public:
-	// data that the component stores internally (or vertically)
-	using DataValueType = vcl::PrincipalCurvature<Scalar>;
 	// expose the type to allow access to this component
 	using PrincipalCurvatureComponent = ThisType;
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
@@ -61,16 +55,9 @@ public:
 	PrincipalCurvatureType&       principalCurvature();
 
 protected:
+	// PointersComponent interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
-
-private:
-	// members that allow to access the curvature, trough data (hor) or trough parent (vert)
-	vcl::PrincipalCurvature<Scalar>& princCurv();
-	const vcl::PrincipalCurvature<Scalar>& princCurv() const;
-
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 /* Detector function to check if a class has PrincipalCurvature enabled */

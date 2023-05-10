@@ -27,24 +27,22 @@
 #include <vclib/concepts/mesh/components/coordinate.h>
 #include <vclib/space/point.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 /**
- * @brief The CoordT class
+ * @brief The Coordinate class
  *
  * @ingroup components
  */
 template<PointConcept P, typename ElementType = void, bool optional = false>
-class CoordT
+class Coordinate : public Component<P, ElementType, optional>
 {
-	using ThisType = CoordT<P, ElementType, optional>;
-public:
-	using DataValueType = P;         // data that the component stores internally (or vertically)
-	using CoordComponent = ThisType; // expose the type to allow access to this component
+	using Base = Component<P, ElementType, optional>;
+	using ThisType = Coordinate<P, ElementType, optional>;
 
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
+public:
+	using CoordComponent = ThisType; // expose the type to allow access to this component
 
 	using CoordType = P;
 
@@ -52,6 +50,7 @@ public:
 	P&       coord();
 
 protected:
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& v);
 
@@ -59,9 +58,6 @@ private:
 	// members that allow to access the point, trough data (horizontal) or trough parent (vertical)
 	P& p();
 	const P& p() const;
-
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 /**
@@ -69,19 +65,9 @@ private:
  */
 template<
 	typename Scalar,
-	int N,
 	typename ElementType = void,
 	bool optional        = false>
-using Coordinate = CoordT<Point<Scalar, N>, ElementType, optional>;
-
-/**
- * @ingroup components
- */
-template<
-	typename Scalar,
-	typename ElementType = void,
-	bool optional        = false>
-using Coordinate3 = CoordT<Point3<Scalar>, ElementType, optional>;
+using Coordinate3 = Coordinate<Point3<Scalar>, ElementType, optional>;
 
 /**
  * @ingroup components

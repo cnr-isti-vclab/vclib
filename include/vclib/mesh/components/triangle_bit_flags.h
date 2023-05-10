@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/bit_flags.h>
 #include <vclib/space/bit_set.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -60,18 +60,15 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class TriangleBitFlags
+class TriangleBitFlags : public Component<BitSet<short>, ElementType, optional>
 {
+	using Base = Component<BitSet<short>, ElementType, optional>;
 	using ThisType = TriangleBitFlags<ElementType, optional>;
 
 	using FT = short; // FlagsType, the integral type used for the flags
+
 public:
-	using DataValueType = BitSet<FT>; // data that the component stores internally (or vertically)
-
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	/* Constructor and isEnabled */
 	TriangleBitFlags();
@@ -115,9 +112,11 @@ public:
 protected:
 	BitProxy<FT> deleted();
 
+	// PointersComponent interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
 
+private:
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
 	BitSet<FT>& flags();
 	BitSet<FT> flags() const;
@@ -138,10 +137,6 @@ protected:
 		// can be marked as "faux", meaning that they are internal on the polygon
 		FAUX0 = 9 // bits [9, 11]
 	};
-
-private:
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

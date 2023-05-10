@@ -338,12 +338,6 @@ template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 {
 	Base::template enableOptionalComponent<typename T::AdjacentEdgesComponent>();
-	static const int N = T::VERTEX_NUMBER;
-	if constexpr (N < 0) {
-		for (T& f : edges()) {
-			f.resizeAdjEdges(f.vertexNumber());
-		}
-	}
 }
 
 /**

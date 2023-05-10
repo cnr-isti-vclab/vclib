@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<typename Scalar, int N, typename El, bool o>
 bool WedgeTexCoords<Scalar, N, El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<typename Scalar, int N, typename El, bool o>
@@ -126,38 +126,6 @@ auto WedgeTexCoords<Scalar, N, El, o>::wedgeTexCoords() const
 }
 
 template<typename Scalar, int N, typename El, bool o>
-void WedgeTexCoords<Scalar, N, El, o>::resizeWedgeTexCoords(uint n) requires (N < 0)
-{
-	texCoords().resize(n);
-}
-
-template<typename Scalar, int N, typename El, bool o>
-void WedgeTexCoords<Scalar, N, El, o>::pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t) requires (N < 0)
-{
-	texCoords().pushBack(t);
-}
-
-template<typename Scalar, int N, typename El, bool o>
-void WedgeTexCoords<Scalar, N, El, o>::insertWedgeTexCoord(
-	uint                         i,
-	const vcl::TexCoord<Scalar>& t) requires(N < 0)
-{
-	texCoords().insert(i, t);
-}
-
-template<typename Scalar, int N, typename El, bool o>
-void WedgeTexCoords<Scalar, N, El, o>::eraseWedgeTexCoord(uint i) requires (N < 0)
-{
-	texCoords().erase(i);
-}
-
-template<typename Scalar, int N, typename El, bool o>
-void WedgeTexCoords<Scalar, N, El, o>::clearWedgeTexCoord() requires (N < 0)
-{
-	texCoords().clear();
-}
-
-template<typename Scalar, int N, typename El, bool o>
 template<typename Element>
 void WedgeTexCoords<Scalar, N, El, o>::importFrom(const Element& e)
 {
@@ -180,11 +148,42 @@ void WedgeTexCoords<Scalar, N, El, o>::importFrom(const Element& e)
 			}
 			else {
 				// from static/dynamic to dynamic size: need to resize first, then import
-				resizeWedgeTexCoords(e.vertexNumber());
+				resize(e.vertexNumber());
 				importWedgeTexCoordsFrom(e);
 			}
 		}
 	}
+}
+
+template<typename Scalar, int N, typename El, bool o>
+void WedgeTexCoords<Scalar, N, El, o>::resize(uint n) requires (N < 0)
+{
+	texCoords().resize(n);
+}
+
+template<typename Scalar, int N, typename El, bool o>
+void WedgeTexCoords<Scalar, N, El, o>::pushBack(const vcl::TexCoord<Scalar>& t) requires (N < 0)
+{
+	texCoords().pushBack(t);
+}
+
+template<typename Scalar, int N, typename El, bool o>
+void WedgeTexCoords<Scalar, N, El, o>::insert(uint i, const vcl::TexCoord<Scalar>& t)
+	requires(N < 0)
+{
+	texCoords().insert(i, t);
+}
+
+template<typename Scalar, int N, typename El, bool o>
+void WedgeTexCoords<Scalar, N, El, o>::erase(uint i) requires (N < 0)
+{
+	texCoords().erase(i);
+}
+
+template<typename Scalar, int N, typename El, bool o>
+void WedgeTexCoords<Scalar, N, El, o>::clear() requires (N < 0)
+{
+	texCoords().clear();
 }
 
 template<typename Scalar, int N, typename El, bool o>
@@ -200,26 +199,26 @@ void WedgeTexCoords<Scalar, N, El, o>::importWedgeTexCoordsFrom(const Element& e
 template<typename Scalar, int N, typename El, bool o>
 short& WedgeTexCoords<Scalar, N, El, o>::texIndex()
 {
-	return data.template get<El>(this).texIndex;
+	return Base::additionalData(this);
 }
 
 template<typename Scalar, int N, typename El, bool o>
 short WedgeTexCoords<Scalar, N, El, o>::texIndex() const
 {
-	return data.template get<El>(this).texIndex;
+	return Base::additionalData(this);
 }
 
 template<typename Scalar, int N, typename El, bool o>
 Vector<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, o>::texCoords()
 {
-	return data.template get<El>(this).texCoords;
+	return Base::container(this);
 }
 
 template<typename Scalar, int N, typename El, bool o>
 const Vector<vcl::TexCoord<Scalar>, N>&
 WedgeTexCoords<Scalar, N, El, o>::texCoords() const
 {
-	return data.template get<El>(this).texCoords;
+	return Base::container(this);
 }
 
 template <typename T>

@@ -218,9 +218,19 @@ template<typename C>
 void ElementContainer<T>::enableOptionalComponent()
 {
 	vcVecTuple.template enableComponent<C>();
+	// first call init on all the just enabled components
 	if constexpr (comp::HasInitMemberFunction<C>) {
 		for (auto& e : elements()) {
 			e.C::init();
+		}
+	}
+	// then resize the component containers with tied size to vertex number
+	if constexpr (comp::IsTiedToVertexNumber<C>) {
+		static const int N = T::VERTEX_NUMBER;
+		if constexpr (N < 0) {
+			for (auto& e : elements()) {
+				e.C::resize(e.vertexNumber());
+			}
 		}
 	}
 }

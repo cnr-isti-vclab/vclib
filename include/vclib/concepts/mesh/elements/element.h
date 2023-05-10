@@ -28,12 +28,12 @@
 
 namespace vcl {
 
-typedef enum {
+enum ElementEnumType {
 	VERTEX = 0,
 	FACE,
 	EDGE,
 	HALF_EDGE
-} ElementEnumType;
+};
 
 template<typename T>
 concept ElementConcept = requires (T o, const T& co)

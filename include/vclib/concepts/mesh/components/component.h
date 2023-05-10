@@ -28,6 +28,31 @@
 
 namespace vcl::comp {
 
+enum ComponentEnumType {
+	ADJ_EDGES = 0,
+	ADJ_FACES,
+	ADJ_VERTICES,
+	BIT_FLAGS,
+	BOUNDING_BOX,
+	COLOR,
+	COORDINATE,
+	CUSTOM_COMPONENTS,
+	FACE_HALF_EDGE_PTRS,
+	HALF_EDGE_PTRS,
+	MARK,
+	NAME,
+	NORMAL,
+	PRINCIPAL_CURVATURE,
+	SCALAR,
+	TEX_COORD,
+	TEXTURE_PATHS,
+	TRANSFORM_MATRIX,
+	VERTEX_HALF_EDGE_PTRS,
+	VERTEX_PTRS,
+	WEDGE_COLORS,
+	WEDGE_TEX_COORDS
+};
+
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
 {
@@ -39,6 +64,9 @@ concept HasIsEnabledMemberFunction = requires(T o)
 {
 	{ o.isEnabled() } -> std::same_as<bool>;
 };
+
+template<typename T>
+concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
 
 template<typename T>
 concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o)

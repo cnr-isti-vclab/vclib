@@ -59,41 +59,41 @@ namespace vcl::face {
 
 /* Port AdjacentEdges class into face namespace */
 template<typename EdgeType>
-using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1>;
+using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, true>;
 
 template<typename EdgeType>
-using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3>;
+using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true>;
 
 template<typename EdgeType, typename FaceType>
-using VerticalAdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, FaceType>;
+using VerticalAdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, true, FaceType>;
 
 template<typename EdgeType, typename FaceType>
-using VerticalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, FaceType>;
+using VerticalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true, FaceType>;
 
 template<typename EdgeType, typename FaceType>
-using OptionalAdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, FaceType, true>;
+using OptionalAdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, true, FaceType, true>;
 
 template<typename EdgeType, typename FaceType>
-using OptionalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, FaceType, true>;
+using OptionalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true, FaceType, true>;
 
 /* Port AdjacentFaces class into face namespace */
 template<typename FaceType>
-using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1>;
+using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true>;
 
 template<typename FaceType>
-using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3>;
+using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true>;
 
 template<typename FaceType>
-using VerticalAdjacentPolygons = comp::AdjacentFaces<FaceType, -1, FaceType>;
+using VerticalAdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true, FaceType>;
 
 template<typename FaceType>
-using VerticalAdjacentTriangles = comp::AdjacentFaces<FaceType, 3, FaceType>;
+using VerticalAdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true, FaceType>;
 
 template<typename FaceType>
-using OptionalAdjacentPolygons = comp::AdjacentFaces<FaceType, -1, FaceType, true>;
+using OptionalAdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true, FaceType, true>;
 
 template<typename FaceType>
-using OptionalAdjacentTriangles = comp::AdjacentFaces<FaceType, 3, FaceType, true>;
+using OptionalAdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true, FaceType, true>;
 
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags<>;
@@ -129,7 +129,7 @@ using OptionalMark = comp::Mark<FaceType, true>;
 
 /* Port Normal classes into face namespace */
 template<typename ScalarType, int N>
-using Normal = comp::Normal<ScalarType, N>;
+using Normal = comp::Normal<Point<ScalarType, N>>;
 
 template<typename ScalarType>
 using Normal3 = comp::Normal3<ScalarType>;
@@ -138,7 +138,7 @@ using Normal3f = comp::Normal3f<>;
 using Normal3d = comp::Normal3d<>;
 
 template<typename ScalarType, int N, typename VertexType>
-using VerticalNormal = comp::Normal<ScalarType, N, VertexType>;
+using VerticalNormal = comp::Normal<Point<ScalarType, N>, VertexType>;
 
 template<typename ScalarType, typename VertexType>
 using VerticalNormal3 = comp::Normal3<ScalarType, VertexType>;
@@ -150,7 +150,7 @@ template<typename VertexType>
 using VerticalNormal3d = comp::Normal3d<VertexType>;
 
 template<typename ScalarType, int N, typename FaceType>
-using OptionalNormal = comp::Normal<ScalarType, N, FaceType, true>;
+using OptionalNormal = comp::Normal<Point<ScalarType, N>, FaceType, true>;
 
 template<typename ScalarType, typename FaceType>
 using OptionalNormal3 = comp::Normal3<ScalarType, FaceType, true>;
@@ -166,10 +166,10 @@ template<typename MeshType>
 using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
 /* Port PolygonBitFlags class into face namespace */
-using PolygonBitFlags = comp::PolygonBitFlags<>;
+using PolygonBitFlags = comp::PolygonBitFlags<-1>;
 
 template<typename FaceType>
-using VerticalPolygonBitFlags = comp::PolygonBitFlags<FaceType>;
+using VerticalPolygonBitFlags = comp::PolygonBitFlags<-1, FaceType>;
 
 /* Port PrincipalCurvature class into face namespace */
 template<typename FaceType>
