@@ -36,19 +36,36 @@ namespace vcl::comp {
  * Inheriting from this class, a component will have some necessary definitions to be used
  * smoothly by the vcl::Mesh class, managing all the possible features of a component automatically.
  *
- * All the features of a Component can be defined trough its template parameters.
+ * The features that a Component could have are:
  *
- * The user, to properly implement a Component class, must define the following protected member
- * function:
+ * - possibility to be horizontal, vertical or optional:
+ *   - a component is horizontal when its data is stored in the memory frame of the Element that
+ *     has the component;
+ *   - a component is vertical when its data is not stored in the memory frame of the Element, but
+ *     in a separated Conainer; in this case, the data will be in a contiguous array;
+ *   - a component is optional if it is vertical and can be enabled/disabled at runtime;
+ * - possibility to store pointers to other Elements that must be updated when a reallocation
+ *   happens
+ *   - An example is the VertexPointers component: it stores the pointers to the Vertices of an
+ *     Element (e.g. a Face). When a a reallocation of the VertexContainer happens, all the pointers
+ *     to the vertices must be updated, and this operation will be made automatically if the Vertex
+ *     type will be part of the PointedTypes.
+ *
+ * There are also some additional features that are given by the @ref ContainerComponent and
+ * @ref PointersContainerComponent classes. If you need to implement a Component that stores a
+ * Container of data or a Container of Pointers, take a look to that classes.
+ *
+ * All the features of a Component can be defined trough its template parameters, and implementing
+ * some protected member functions. To properly implement a Component class, must define the
+ * following protected member function:
  *
  * ```cpp
  * template <typename Element>
  * void importFrom(const Element& e);
  * ```
  *
- * Moreover, if the component has at least one PointedType (meaning that the component stores a
- * pointer of a particular type that may be updated due to reallocation), it must define the
- * following protected member functions:
+ * Moreover, if the component has at least one PointedType, it must define the following protected
+ * member functions:
  *
  * ```cpp
  * template<typename Element, typename ElEType>
@@ -58,6 +75,23 @@ namespace vcl::comp {
  *
  * void updatePointersAfterCompact(const PointedType* base, const std::vector<int>& newIndices);
  * ```
+ *
+ * If your component stores a Container of pointers, look for the @ref PointersContainerComponent
+ * class, that provides the implementation of these functions!
+ *
+ * For further details , please refer to the page @ref implement_component page.
+ *
+ * @tparam DataType: The type of the data that the component needs to store. E.g. a Normal component
+ * would store a vcl::Point3d.
+ * @tparam ElementType: This type is used to discriminate between horizontal and vertical
+ * components. When a component is horizontal, this type must be void. When a component is vertical,
+ * this type must be the type of the Element that has the component, and it will be used by the
+ * vcl::Mesh to access to the data stored vertically.
+ * @tparam optional: When a component is vertical, it could be optional, that means that could be
+ * enabled/disabled at runtime. To make the component optional, this template parameter must be
+ * true.
+ * @tparam PointedTypes: Variadic Template types of all the Pointer types that the component stores,
+ * and that need to be updated when some reallocation happens.
  */
 template<
 	typename DataType,

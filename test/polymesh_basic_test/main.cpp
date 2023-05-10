@@ -55,7 +55,7 @@ int main()
 
 	m.enablePerFaceAdjacentFaces();
 
-	//f.resizeAdjFaces(2);
+	//f.resizeAdjFaces(2); <- can't do this: adjFaces number tied to vertex number of the face
 
 	assert(vcl::isPerFaceAdjacentFacesEnabled(m));
 	assert(m.face(0).adjFacesNumber() == 1);

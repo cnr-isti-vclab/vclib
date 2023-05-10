@@ -181,35 +181,35 @@ int AdjacentFaces<Face, N, TT, El, o>::indexOfAdjFace(const Face* f) const
  */
 template<typename Face, int N, bool TT, typename El, bool o>
 void AdjacentFaces<Face, N, TT, El, o>::resizeAdjFaces(uint n)
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).resize(n);
 }
 
 template<typename Face, int N, bool TT, typename El, bool o>
 void AdjacentFaces<Face, N, TT, El, o>::pushAdjFace(Face* f)
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).pushBack(f);
 }
 
 template<typename Face, int N, bool TT, typename El, bool o>
 void AdjacentFaces<Face, N, TT, El, o>::insertAdjFace(uint i, Face* f)
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).insert(i, f);
 }
 
 template<typename Face, int N, bool TT, typename El, bool o>
 void AdjacentFaces<Face, N, TT, El, o>::eraseAdjFace(uint i)
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).erase(i);
 }
 
 template<typename Face, int N, bool TT, typename El, bool o>
 void AdjacentFaces<Face, N, TT, El, o>::clearAdjFaces()
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).clear();
 }

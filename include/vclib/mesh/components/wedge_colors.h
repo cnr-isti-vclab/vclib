@@ -35,6 +35,10 @@ namespace vcl::comp {
 /**
  * @brief The WedgeColors class
  *
+ * @note This component is *Tied To Vertex Number*: it means that the size of the container,
+ * if dynamic, will change automatically along the Vertex Number of the Component.
+ * For further details check the documentation of the @ref ContainerComponent class.
+ *
  * @ingroup components
  */
 template<int N, typename ElementType = void, bool optional = false>

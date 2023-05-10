@@ -179,35 +179,35 @@ int AdjacentEdges<Edge, N, TT, El, o>::indexOfAdjEdge(const Edge* e) const
  */
 template<typename Edge, int N, bool TT, typename El, bool o>
 void AdjacentEdges<Edge, N, TT, El, o>::resizeAdjEdges(uint n)
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).resize(n);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool o>
 void AdjacentEdges<Edge, N, TT, El, o>::pushAdjEdge(Edge* e)
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).pushBack(e);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool o>
 void AdjacentEdges<Edge, N, TT, El, o>::insertAdjEdge(uint i, Edge* e)
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).insert(i, e);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool o>
 void AdjacentEdges<Edge, N, TT, El, o>::eraseAdjEdge(uint i)
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).erase(i);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool o>
 void AdjacentEdges<Edge, N, TT, El, o>::clearAdjEdges()
-	requires(N < 0)
+	requires(N < 0 && !TT)
 {
 	Base::container(this).clear();
 }

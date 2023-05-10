@@ -48,9 +48,11 @@ namespace vcl::comp {
  * v.adjEdgesNumber();
  * @endcode
  *
- * @note If this component is part of a Face Element, the number of Adjacent Edges is tied to the
- * Vertex Number of the Face, therefore all the members that allows to modify the number of
- * Adjacent Edges in case of dynamic size won't be available on Face Elements.
+ * @note This component can be *Tied To Vertex Number*: it means that the size of the container,
+ * if dynamic, will change automatically along the Vertex Number of the Component.
+ * Check the `TTVN` template value on the specialization of your component to check if it is tied to
+ * the Vertex Number. For further details check the documentation of the @ref ContainerComponent
+ * class.
  *
  * @ingroup components
  */
@@ -104,11 +106,11 @@ public:
 
 	/* Member functions specific for vector of adjacent edges */
 
-	void resizeAdjEdges(uint n) requires (N < 0);
-	void pushAdjEdge(Edge* e) requires (N < 0);
-	void insertAdjEdge(uint i, Edge* e) requires (N < 0);
-	void eraseAdjEdge(uint i) requires (N < 0);
-	void clearAdjEdges() requires (N < 0);
+	void resizeAdjEdges(uint n) requires (N < 0 && !TTVN);
+	void pushAdjEdge(Edge* e) requires (N < 0 && !TTVN);
+	void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVN);
+	void eraseAdjEdge(uint i) requires (N < 0 && !TTVN);
+	void clearAdjEdges() requires (N < 0 && !TTVN);
 
 	/* Iterator Member functions */
 

@@ -31,12 +31,28 @@
 namespace vcl::comp {
 
 /**
- * @brief The PointersContainerComponent class is a generic component that stores a container of
- * pointers to another Element (that could be Vertex, Face...). This class is meant to be inherited
- * and used by Components like Vertex Pointers or Adjacent Elements : in general, a class that need
- * to store a static or dynamic number of pointers of another element type.
+ * @brief The PointersContainerComponent is the base class for all the components of VCLib that
+ * store a container of pointers to an Element.
  *
- * Its major use is for adjacencies.
+ * A component that inherits from this class will have all the features of the @ref Component and
+ * @ref ContainerComponent classes, and will have access to the implementations of
+ * updateElementPointers and updateElementPointersAfterCompact member functions, that should be used
+ * by the Derived Component.
+ *
+ * For further details , please refer to the page @ref implement_component page.
+ *
+ * @tparam Elem: The type of the Element of which the pointers are stored. E.g. a VertexPointers
+ * component would have VertexType as Elem.
+ * @tparam N: The size of the container: if >= 0 the size is static, if < 0 the size is dynamic.
+ * @tparam optional: When a component is vertical, it could be optional, that means that could be
+ * enabled/disabled at runtime. To make the component optional, this template parameter must be
+ * true.
+ * @tparam TTVN: "Tied To Vertex Number", this boolean tells whether the component should leave
+ * liberty to control the size of the Container to the user, or it should be tied to the vertex
+ * number and changed automatically when the number of vertices changes. E.g. a AdjacentFaces
+ * component, if part of a Face element, should be tied to the vertex number of the Face, meaning
+ * that the number of face pointers should be always be the same of the number of vertices.
+ * Setting this value to true will tie the size of this container to the number of vertices.
  */
 template<typename Elem, int N, typename ElementType, bool optional, bool TTVN>
 class PointersContainerComponent :
