@@ -67,13 +67,13 @@ using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, VertexTyp
 
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
 
 template<typename FaceType, typename VertexType>
-using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, VertexType>;
+using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, VertexType>;
 
 template<typename FaceType, typename VertexType>
-using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, VertexType, true>;
+using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, VertexType, true>;
 
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>

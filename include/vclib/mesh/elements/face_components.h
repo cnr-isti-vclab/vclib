@@ -78,22 +78,22 @@ using OptionalAdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true, Fac
 
 /* Port AdjacentFaces class into face namespace */
 template<typename FaceType>
-using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1>;
+using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true>;
 
 template<typename FaceType>
-using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3>;
+using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true>;
 
 template<typename FaceType>
-using VerticalAdjacentPolygons = comp::AdjacentFaces<FaceType, -1, FaceType>;
+using VerticalAdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true, FaceType>;
 
 template<typename FaceType>
-using VerticalAdjacentTriangles = comp::AdjacentFaces<FaceType, 3, FaceType>;
+using VerticalAdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true, FaceType>;
 
 template<typename FaceType>
-using OptionalAdjacentPolygons = comp::AdjacentFaces<FaceType, -1, FaceType, true>;
+using OptionalAdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true, FaceType, true>;
 
 template<typename FaceType>
-using OptionalAdjacentTriangles = comp::AdjacentFaces<FaceType, 3, FaceType, true>;
+using OptionalAdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true, FaceType, true>;
 
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags<>;
