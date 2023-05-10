@@ -79,221 +79,67 @@ public:
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void resizeVertices(uint n) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<MeshType, TypeWrapper<Args...>>;
-
 		VPtrs::resizeVertices(n);
 
-		if constexpr (comp::HasPolygonBitFlags<F>) {
-			using T = typename F::PolygonBitFlags;
-			T::resize(n);
-		}
-
-		if constexpr (face::HasAdjacentEdges<F>) {
-			using T = typename F::AdjacentEdges;
-
-			if (T::isAdjEdgesEnabled())
-				T::resize(n);
-		}
-
-		if constexpr (face::HasAdjacentFaces<F>) {
-			using T = typename F::AdjacentFaces;
-
-			if (T::isAdjFacesEnabled())
-				T::resize(n);
-		}
-
-		if constexpr (face::HasWedgeColors<F>) {
-			using T = typename F::WedgeColors;
-
-			if (T::isWedgeColorsEnabled())
-				T::resize(n);
-		}
-
-		if constexpr (face::HasWedgeTexCoords<F>) {
-			using T = typename F::WedgeTexCoords;
-
-			if (T::isWedgeTexCoordsEnabled())
-				T::resize(n);
-		}
+		// Now I need to resize all the TTVN components
+		(resizeTTVNComponent<Args>(n), ...);
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<MeshType, TypeWrapper<Args...>>;
-
 		VPtrs::pushVertex(v);
 
-		if constexpr (comp::HasPolygonBitFlags<F>) {
-			using T = typename F::PolygonBitFlags;
-			T::pushBack();
-		}
-
-		if constexpr (face::HasAdjacentEdges<F>) {
-			using T = typename F::AdjacentEdges;
-
-			if (T::isAdjEdgesEnabled())
-				T::pushBack();
-		}
-
-		if constexpr (face::HasAdjacentFaces<F>) {
-			using T = typename F::AdjacentFaces;
-
-			if (T::isAdjFacesEnabled())
-				T::pushBack();
-		}
-
-		if constexpr (face::HasWedgeColors<F>) {
-			using T = typename F::WedgeColors;
-
-			if (T::isWedgeColorsEnabled())
-				T::pushBack();
-		}
-
-		if constexpr (face::HasWedgeTexCoords<F>) {
-			using T = typename F::WedgeTexCoords;
-
-			if (T::isWedgeTexCoordsEnabled())
-				T::pushBack();
-		}
+		// Now I need to pushBack in all the TTVN components
+		(pushBackTTVNComponent<Args>(), ...);
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<MeshType, TypeWrapper<Args...>>;
-
 		VPtrs::insertVertex(i, v);
 
-		if constexpr (comp::HasPolygonBitFlags<F>) {
-			using T = typename F::PolygonBitFlags;
-			T::insert(i);
-		}
-
-		if constexpr (face::HasAdjacentEdges<F>) {
-			using T = typename F::AdjacentEdges;
-
-			if (T::isAdjEdgesEnabled())
-				T::insert(i);
-		}
-
-		if constexpr (face::HasAdjacentFaces<F>) {
-			using T = typename F::AdjacentFaces;
-
-			if (T::isAdjFacesEnabled())
-				T::insert(i);
-		}
-
-		if constexpr (face::HasWedgeColors<F>) {
-			using T = typename F::WedgeColors;
-
-			if (T::isWedgeColorsEnabled())
-				T::insert(i);
-		}
-
-		if constexpr (face::HasWedgeTexCoords<F>) {
-			using T = typename F::WedgeTexCoords;
-
-			if (T::isWedgeTexCoordsEnabled())
-				T::insert(i);
-		}
+		// Now I need to insert in all the TTVN components
+		(insertTTVNComponent<Args>(i), ...);
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<MeshType, TypeWrapper<Args...>>;
-
 		VPtrs::eraseVertex(i);
 
-		if constexpr (comp::HasPolygonBitFlags<F>) {
-			using T = typename F::PolygonBitFlags;
-			T::erase(i);
-		}
-
-		if constexpr (face::HasAdjacentEdges<F>) {
-			using T = typename F::AdjacentEdges;
-
-			if (T::isAdjEdgesEnabled())
-				T::erase(i);
-		}
-
-		if constexpr (face::HasAdjacentFaces<F>) {
-			using T = typename F::AdjacentFaces;
-
-			if (T::isAdjFacesEnabled())
-				T::erase(i);
-		}
-
-		if constexpr (face::HasWedgeColors<F>) {
-			using T = typename F::WedgeColors;
-
-			if (T::isWedgeColorsEnabled())
-				T::erase(i);
-		}
-
-		if constexpr (face::HasWedgeTexCoords<F>) {
-			using T = typename F::WedgeTexCoords;
-
-			if (T::isWedgeTexCoordsEnabled())
-				T::erase(i);
-		}
+		// Now I need to erase in all the TTVN components
+		(eraseTTVNComponent<Args>(i), ...);
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
 	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
 	void clearVertices() requires NonDcelPolygonFaceConcept<Face>
 	{
-		using F = Face<MeshType, TypeWrapper<Args...>>;
-
 		VPtrs::clearVertices();
 
-		if constexpr (comp::HasPolygonBitFlags<F>) {
-			using T = typename F::PolygonBitFlags;
-			T::clear();
-		}
-
-		if constexpr (face::HasAdjacentEdges<F>) {
-			using T = typename F::AdjacentEdges;
-
-			if (T::isAdjEdgesEnabled())
-				T::clear();
-		}
-
-		if constexpr (face::HasAdjacentFaces<F>) {
-			using T = typename F::AdjacentFaces;
-
-			if (T::isAdjFacesEnabled())
-				T::clear();
-		}
-
-		if constexpr (face::HasWedgeColors<F>) {
-			using T = typename F::WedgeColors;
-
-			if (T::isWedgeColorsEnabled())
-				T::clear();
-		}
-
-		if constexpr (face::HasWedgeTexCoords<F>) {
-			using T = typename F::WedgeTexCoords;
-
-			if (T::isWedgeTexCoordsEnabled())
-				T::clear();
-		}
+		// Now I need to clear all the TTVN components
+		(clearTTVNComponent<Args>(), ...);
 	}
 
 private:
 	template<typename Comp>
-	void resizeComponent(uint n)
-	{
-		if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-			if (Comp::isEnabled())
-				Comp::resize(n);
-		}
-	}
+	void resizeTTVNComponent(uint n);
+
+	template<typename Comp>
+	void pushBackTTVNComponent();
+
+	template<typename Comp>
+	void insertTTVNComponent(uint i);
+
+	template<typename Comp>
+	void eraseTTVNComponent(uint i);
+
+	template<typename Comp>
+	void clearTTVNComponent();
 };
 
 template<typename MeshType, typename... Args>
