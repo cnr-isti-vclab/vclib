@@ -200,26 +200,26 @@ void WedgeTexCoords<Scalar, N, El, o>::importWedgeTexCoordsFrom(const Element& e
 template<typename Scalar, int N, typename El, bool o>
 short& WedgeTexCoords<Scalar, N, El, o>::texIndex()
 {
-	return Base::data(this).texIndex;
+	return Base::additionalData(this);
 }
 
 template<typename Scalar, int N, typename El, bool o>
 short WedgeTexCoords<Scalar, N, El, o>::texIndex() const
 {
-	return Base::data(this).texIndex;
+	return Base::additionalData(this);
 }
 
 template<typename Scalar, int N, typename El, bool o>
 Vector<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, o>::texCoords()
 {
-	return Base::data(this).texCoords;
+	return Base::container(this);
 }
 
 template<typename Scalar, int N, typename El, bool o>
 const Vector<vcl::TexCoord<Scalar>, N>&
 WedgeTexCoords<Scalar, N, El, o>::texCoords() const
 {
-	return Base::data(this).texCoords;
+	return Base::container(this);
 }
 
 template <typename T>

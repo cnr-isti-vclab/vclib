@@ -29,19 +29,9 @@
 #include <vclib/space/tex_coord.h>
 #include <vclib/space/vector.h>
 
-#include "bases/component.h"
+#include "bases/container_component.h"
 
 namespace vcl::comp {
-
-namespace internal {
-
-template<typename Scalar, int N>
-struct WTCData {
-	Vector<vcl::TexCoord<Scalar>, N> texCoords;
-	short texIndex;
-};
-
-} // namespace vcl::comp::internal
 
 /**
  * @brief The WedgeTexCoords class
@@ -50,9 +40,9 @@ struct WTCData {
  */
 template<typename Scalar, int N, typename ElementType = void, bool optional = false>
 class WedgeTexCoords :
-		public Component<internal::WTCData<Scalar, N>, ElementType, optional>
+		public ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, optional, true>
 {
-	using Base = Component<internal::WTCData<Scalar, N>, ElementType, optional>;
+	using Base = ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, optional, true>;
 	using ThisType = WedgeTexCoords<Scalar, N, ElementType, optional>;
 
 public:

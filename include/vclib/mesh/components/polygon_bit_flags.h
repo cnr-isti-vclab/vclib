@@ -27,19 +27,9 @@
 #include <vclib/concepts/mesh/components/bit_flags.h>
 #include <vclib/space/bit_set.h>
 
-#include "bases/component.h"
+#include "bases/container_component.h"
 
 namespace vcl::comp {
-
-namespace internal {
-
-template<std::integral FT>
-struct PolyFlags {
-	BitSet<FT> flags;
-	std::vector<BitSet<FT>> edgeFlags;
-};
-
-} // namespace vcl::comp::internal
 
 /**
  * @brief The PolygonBitFlags class represents a collection of 8 bits plus 8 bits for each edge that
@@ -78,12 +68,13 @@ struct PolyFlags {
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class PolygonBitFlags : public Component<internal::PolyFlags<int>, ElementType, optional>
+class PolygonBitFlags :
+		public ContainerComponent<BitSet<int>, -1, BitSet<int>, ElementType, optional, true>
 {
-	using Base = Component<internal::PolyFlags<int>, ElementType, optional>;
-	using ThisType = PolygonBitFlags<ElementType, optional>;
-
 	using FT = int; // FlagsType, the integral type used for the flags
+
+	using Base = ContainerComponent<BitSet<FT>, -1, BitSet<FT>, ElementType, optional, true>;
+	using ThisType = PolygonBitFlags<ElementType, optional>;
 
 public:
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
@@ -146,8 +137,11 @@ protected:
 	void importFrom(const Element& e);
 
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
-	internal::PolyFlags<int>& flags();
-	internal::PolyFlags<int> flags() const;
+	BitSet<FT>& flags();
+	const BitSet<FT>& flags() const;
+	Vector<BitSet<FT>, -1>& edgeFlags();
+	const Vector<BitSet<FT>, -1>& edgeFlags() const;
+
 
 	static const uint FIRST_USER_BIT = 6;
 	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;

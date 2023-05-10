@@ -7,6 +7,16 @@
 
 namespace vcl::comp {
 
+namespace internal {
+
+template<typename T, int N, typename AD, typename El, bool o, bool TT, typename... PT>
+using ContCompBase = std::conditional_t<
+	std::is_same_v<AD, void>,
+	Component<Vector<T, N>, El, o, PT...>,
+	Component<std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
+
+} // namespace vcl::comp::internal
+
 template<
 	typename T,
 	int N,
@@ -16,18 +26,13 @@ template<
 	bool TTVN,
 	typename... PointedTypes>
 class ContainerComponent :
-		public std::conditional_t<
-			std::is_same_v<AdditionalData, void>,
-			Component<Vector<T, N>, ElementType, optional, PointedTypes...>,
-			Component<
-				std::tuple<Vector<T, N>, AdditionalData>,
-				ElementType,
-				optional,
-				PointedTypes...>>
+		public internal::
+			ContCompBase<T, N, AdditionalData, ElementType, optional, TTVN, PointedTypes...>
 {
 	static constexpr bool HAS_ADDITIONAL_DATA = !std::is_same_v<AdditionalData, void>;
 
-	using Base = Component<Vector<T, N>, ElementType, optional, PointedTypes...>;
+	using Base =
+		internal::ContCompBase<T, N, AdditionalData, ElementType, optional, TTVN, PointedTypes...>;
 
 public:
 	/**
