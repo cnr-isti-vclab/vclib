@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/adjacent_edges.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_pointers_container.h"
+#include "bases/pointers_container_component.h"
 
 namespace vcl::comp {
 
@@ -48,43 +48,28 @@ namespace vcl::comp {
  * v.adjEdgesNumber();
  * @endcode
  *
- * @note If this component is part of a Face Element, the number of Adjacent Edges is tied to the
- * Vertex Number of the Face, therefore all the members that allows to modify the number of
- * Adjacent Edges in case of dynamic size won't be available on Face Elements.
+ * @note This component can be *Tied To Vertex Number*: it means that the size of the container,
+ * if dynamic, will change automatically along the Vertex Number of the Component.
+ * Check the `TTVN` template value on the specialization of your component to check if it is tied to
+ * the Vertex Number. For further details check the documentation of the @ref ContainerComponent
+ * class.
  *
  * @ingroup components
  */
-template<typename Edge, int N, typename ElementType = void, bool optional = false>
-class AdjacentEdges :
-		public PointersComponentTriggerer<Edge>,
-		protected internal::ElementPointersContainer<Edge, N, ElementType>
+template<typename Edge, int N, bool TTVN, typename ElementType = void, bool optional = false>
+class AdjacentEdges : public PointersContainerComponent<Edge, N, ElementType, optional, TTVN>
 {
-	using ThisType = AdjacentEdges<Edge, N, ElementType, optional>;
-
-	using Base = internal::ElementPointersContainer<Edge, N, ElementType>;
+	using ThisType = AdjacentEdges<Edge, N, TTVN, ElementType, optional>;
+	
+	using Base = PointersContainerComponent<Edge, N, ElementType, optional, TTVN>;
 
 public:
-	/** @private data that the component stores internally (or vertically) */
-	using DataValueType = typename Base::DataValueType;
-
 	/** @brief Allows access to this component type from a derived class type/instance */
 	using AdjacentEdgesComponent = ThisType;
 
-	/**
-	 * @brief Boolean that tells if this component type stores its data vertically (not in the
-	 * Element frame memory, but in another vector).
-	 */
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-
-	/**
-	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
-	 * is vertical.
-	 */
-	static const bool IS_OPTIONAL = optional;
-
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjEdgesNumber() member function.
-	static const int ADJ_EDGE_NUMBER = Base::CONTAINER_SIZE;
+	static const int ADJ_EDGE_NUMBER = Base::SIZE;
 
 	using AdjacentEdgeType = Edge;
 
@@ -121,11 +106,11 @@ public:
 
 	/* Member functions specific for vector of adjacent edges */
 
-	void resizeAdjEdges(uint n) requires (N < 0);
-	void pushAdjEdge(Edge* e) requires (N < 0);
-	void insertAdjEdge(uint i, Edge* e) requires (N < 0);
-	void eraseAdjEdge(uint i) requires (N < 0);
-	void clearAdjEdges() requires (N < 0);
+	void resizeAdjEdges(uint n) requires (N < 0 && !TTVN);
+	void pushAdjEdge(Edge* e) requires (N < 0 && !TTVN);
+	void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVN);
+	void eraseAdjEdge(uint i) requires (N < 0 && !TTVN);
+	void clearAdjEdges() requires (N < 0 && !TTVN);
 
 	/* Iterator Member functions */
 
@@ -137,15 +122,24 @@ public:
 	auto                      adjEdges() const;
 
 protected:
+	// Component interface function
+	template <typename Element>
+	void importFrom(const Element& e);
+
+	// PointersComponent interface functions
+	template<typename Element, typename ElEType>
+	void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase);
+
 	void updatePointers(const Edge* oldBase, const Edge* newBase);
 
 	void updatePointersAfterCompact(const Edge* base, const std::vector<int>& newIndices);
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
-	template<typename Element, typename ElEType>
-	void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase);
+	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(Edge* e = nullptr) requires (N < 0);
+	void insert(uint i, Edge* e = nullptr) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 private:
 	template<typename Element, typename ElEType>

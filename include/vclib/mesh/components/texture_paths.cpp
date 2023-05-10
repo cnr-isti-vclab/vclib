@@ -92,15 +92,15 @@ typename TexturePaths<El, o>::ConstTexFileNamesIterator TexturePaths<El, o>::tex
 }
 
 template<typename El, bool o>
-typename TexturePaths<El, o>::TexFileNamesView TexturePaths<El, o>::texturePaths()
+auto TexturePaths<El, o>::texturePaths()
 {
-	return TexFileNamesView(texturePathBegin(), texturePathEnd());
+	return View(texturePathBegin(), texturePathEnd());
 }
 
 template<typename El, bool o>
-typename TexturePaths<El, o>::ConstTexFileNamesView TexturePaths<El, o>::texturePaths() const
+auto TexturePaths<El, o>::texturePaths() const
 {
-	return ConstTexFileNamesView(texturePathBegin(), texturePathEnd());
+	return View(texturePathBegin(), texturePathEnd());
 }
 
 template<typename El, bool o>
@@ -116,25 +116,25 @@ void TexturePaths<El, o>::importFrom(const Element& e)
 template<typename El, bool o>
 std::vector<std::string>& TexturePaths<El, o>::texPaths()
 {
-	return data.template get<El>(this).texPaths;
+	return Base::data(this).texPaths;
 }
 
 template<typename El, bool o>
 const std::vector<std::string>& TexturePaths<El, o>::texPaths() const
 {
-	return data.template get<El>(this).texPaths;
+	return Base::data(this).texPaths;
 }
 
 template<typename El, bool o>
 std::string& TexturePaths<El, o>::meshPath()
 {
-	return data.template get<El>(this).meshPath;
+	return Base::data(this).meshPath;
 }
 
 template<typename El, bool o>
 const std::string& TexturePaths<El, o>::meshPath() const
 {
-	return data.template get<El>(this).meshPath;
+	return Base::data(this).meshPath;
 }
 
 } // namespace vcl::comp

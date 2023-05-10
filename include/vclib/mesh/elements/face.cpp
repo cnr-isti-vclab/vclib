@@ -95,37 +95,9 @@ void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 	
 	VPtrs::setVertices(list);
 
-	if constexpr (comp::HasPolygonBitFlags<F>) {
-		using T = typename F::PolygonBitFlags;
-		T::resizeBitFlags(list.size());
-	}
-
-	if constexpr (comp::HasAdjacentEdges<F> && NonDcelPolygonFaceConcept<F>) {
-		using T = typename F::AdjacentEdges;
-
-		if (T::isAdjEdgesEnabled())
-			T::resizeAdjEdges(list.size());
-	}
-
-	if constexpr (face::HasAdjacentFaces<F> && NonDcelPolygonFaceConcept<F>) {
-		using T = typename F::AdjacentFaces;
-
-		if (T::isAdjFacesEnabled())
-			T::resizeAdjFaces(list.size());
-	}
-
-	if constexpr (face::HasWedgeColors<F> && NonDcelPolygonFaceConcept<F>) {
-		using T = typename F::WedgeColors;
-
-		if (T::isWedgeColorsEnabled())
-			T::resizeWedgeColors(list.size());
-	}
-
-	if constexpr (face::HasWedgeTexCoords<F> && NonDcelPolygonFaceConcept<F>) {
-		using T = typename F::WedgeTexCoords;
-
-		if (T::isWedgeTexCoordsEnabled())
-			T::resizeWedgeTexCoords(list.size());
+	// if polygonal, I need to resize all the TTVN components
+	if constexpr (NV < 0) {
+		(resizeTTVNComponent<Args>(list.size()), ...);
 	}
 }
 
@@ -182,6 +154,71 @@ void Face<MeshType, Args...>::setVertices(V... args)
 //{
 
 //}
+
+/**
+ * Calls the resize(n) on all the component containers that are tied to the vertex number
+ */
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Face<MeshType, Args...>::resizeTTVNComponent(uint n)
+{
+	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+		if (Comp::isEnabled())
+			Comp::resize(n);
+	}
+}
+
+/**
+ * Calls the pushBack() on all the component containers that are tied to the vertex number
+ */
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Face<MeshType, Args...>::pushBackTTVNComponent()
+{
+	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+		if (Comp::isEnabled())
+			Comp::pushBack();
+	}
+}
+
+/**
+ * Calls the insert(i) on all the component containers that are tied to the vertex number
+ */
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Face<MeshType, Args...>::insertTTVNComponent(uint i)
+{
+	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+		if (Comp::isEnabled())
+			Comp::insert(i);
+	}
+}
+
+/**
+ * Calls the erase(i) on all the component containers that are tied to the vertex number
+ */
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Face<MeshType, Args...>::eraseTTVNComponent(uint i)
+{
+	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+		if (Comp::isEnabled())
+			Comp::erase(i);
+	}
+}
+
+/**
+ * Calls the clear() on all the component containers that are tied to the vertex number
+ */
+template<typename MeshType, typename... Args>
+template<typename Comp>
+void Face<MeshType, Args...>::clearTTVNComponent()
+{
+	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+		if (Comp::isEnabled())
+			Comp::clear();
+	}
+}
 
 } // namespace vcl
 

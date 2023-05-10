@@ -32,7 +32,7 @@ namespace vcl::comp {
 template<typename El, bool o>
 std::string& Name<El, o>::name()
 {
-	return n();
+	return Base::data(this);
 }
 
 /**
@@ -42,7 +42,7 @@ std::string& Name<El, o>::name()
 template<typename El, bool o>
 const std::string& Name<El, o>::name() const
 {
-	return n();
+	return Base::data(this);
 }
 
 template<typename El, bool o>
@@ -50,20 +50,8 @@ template<typename Element>
 void Name<El, o>::importFrom(const Element &e)
 {
 	if constexpr(HasName<Element>) {
-		n() = e.name();
+		name() = e.name();
 	}
-}
-
-template<typename El, bool o>
-std::string &Name<El, o>::n()
-{
-	return data.template get<El>(this);
-}
-
-template<typename El, bool o>
-const std::string &Name<El, o>::n() const
-{
-	return data.template get<El>(this);
 }
 
 } // namespace vcl::comp

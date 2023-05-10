@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/bit_flags.h>
 #include <vclib/space/bit_set.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -60,18 +60,15 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool optional = false>
-class BitFlags
+class BitFlags : public Component<BitSet<char>, ElementType, optional>
 {
+	using Base = Component<BitSet<char>, ElementType, optional>;
 	using ThisType = BitFlags<ElementType, optional>;
 
 	using FT = char; // FlagsType, the integral type used for the flags
+
 public:
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-
-	using DataValueType = BitSet<FT>; // data that the component stores internally (or vertically)
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	/* Constructor and isEnabled */
 
@@ -105,9 +102,11 @@ public:
 protected:
 	BitProxy<FT> deleted();
 
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 
+private:
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
 	BitSet<FT>& flags();
 	BitSet<FT> flags() const;
@@ -122,10 +121,6 @@ protected:
 		BORDER   = 2, // bit 2
 		VISITED  = 3  // bit 3
 	};
-
-private:
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

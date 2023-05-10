@@ -37,39 +37,40 @@
 #include <vclib/space/color.h>
 #include <vclib/views/view.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
+
+namespace internal {
+
+template<typename HalfEdge>
+struct FHEPData {
+	HalfEdge*              ohe; // outer half edge
+	std::vector<HalfEdge*> ihe; // inner half edges, one for each hole of the face
+
+	short texIndex;
+};
+
+} // namespace vcl::comp::internal
 
 /**
  * @brief The FaceHalfEdgePointers class
  *
  * @ingroup components
  */
-template<
-	typename HalfEdge,
-	typename ElementType = void,
-	bool optional        = false>
-class FaceHalfEdgePointers : public PointersComponentTriggerer<HalfEdge>
+template<typename HalfEdge, typename ElementType = void, bool optional = false>
+class FaceHalfEdgePointers :
+		public Component<internal::FHEPData<HalfEdge>, ElementType, optional, HalfEdge>
 {
+	using Base = Component<internal::FHEPData<HalfEdge>, ElementType, optional, HalfEdge>;
 	using ThisType = FaceHalfEdgePointers<HalfEdge, ElementType, optional>;
-
-	struct FHEPData {
-		HalfEdge*              ohe; // outer half edge
-		std::vector<HalfEdge*> ihe; // inner half edges, one for each hole of the face
-
-		short texIndex;
-	};
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
 
 public:
-	using DataValueType = FHEPData; // data that the component stores internally (or vertically)
-	using FaceHalfEdgePointersComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
+	// expose the type to allow access to this component
+	using FaceHalfEdgePointersComponent = ThisType;
 
 	using HalfEdgeType = HalfEdge;
 	using VertexType   = typename HalfEdge::VertexType;
@@ -260,26 +261,26 @@ public:
 	auto                        wedgeTexCoords() const     requires HasTexCoord<HalfEdge>;
 
 protected:
+	// Component interface function
+	template<typename Element>
+	void importFrom(const Element& e);
+
+	// PointersComponent interface functions
+	template<typename OtherFace, typename OtherHEdge>
+	void importPointersFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
+
 	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
 
 	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
 
-	template<typename Element>
-	void importFrom(const Element& e);
-
-	template<typename OtherFace, typename OtherHEdge>
-	void importPointersFrom(const OtherFace& e, HalfEdge* base, const OtherHEdge* ebase);
-
 private:
 	HalfEdge*& ohe(); // outer half edge
 	const HalfEdge* ohe() const;
-	std::vector<HalfEdge*>& ihe();           // inner half edges, one for each hole of the face
+	std::vector<HalfEdge*>& ihe(); // inner half edges, one for each hole of the face
 	const std::vector<HalfEdge*>& ihe() const;
 
 	short& texIndex();
 	short texIndex() const;
-
-	internal::ComponentData<FHEPData, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

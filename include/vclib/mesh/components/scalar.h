@@ -26,7 +26,7 @@
 
 #include <vclib/concepts/mesh/components/scalar.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
 
@@ -36,15 +36,13 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename T, typename ElementType = void, bool optional = false>
-class Scalar
+class Scalar : public Component<T, ElementType, optional>
 {
+	using Base = Component<T, ElementType, optional>;
 	using ThisType = Scalar<T, ElementType, optional>;
-public:
-	using DataValueType = T;         // data that the component stores internally (or vertically)
-	using ScalarComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
+public:
+	using ScalarComponent = ThisType; // expose the type to allow access to this component
 
 	using ScalarType = T;
 
@@ -55,16 +53,9 @@ public:
 	ScalarType&       scalar();
 
 protected:
+	// PointersComponent interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
-
-private:
-	// members that allow to access the scalar, trough data (horizontal) or trough parent (vertical)
-	ScalarType& s();
-	const ScalarType& s() const;
-
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 /* Detector function to check if a class has Scalar enabled */

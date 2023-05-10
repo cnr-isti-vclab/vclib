@@ -28,28 +28,27 @@
 #include <vclib/views/view.h>
 #include <vclib/space/vector.h>
 
-#include "internal/component_data.h"
+#include "bases/container_component.h"
 
 namespace vcl::comp {
 
 /**
  * @brief The WedgeColors class
  *
+ * @note This component is *Tied To Vertex Number*: it means that the size of the container,
+ * if dynamic, will change automatically along the Vertex Number of the Component.
+ * For further details check the documentation of the @ref ContainerComponent class.
+ *
  * @ingroup components
  */
 template<int N, typename ElementType = void, bool optional = false>
-class WedgeColors
+class WedgeColors : public ContainerComponent<vcl::Color, N, void, ElementType, optional, true>
 {
+	using Base = ContainerComponent<vcl::Color, N, void, ElementType, optional, true>;
 	using ThisType = WedgeColors<N, ElementType, optional>;
 
-	using Base = Vector<vcl::Color, N>;
-
 public:
-	using DataValueType = Vector<vcl::Color, N>; // data that the component stores internally (or vertically)
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 	
 	static const int WEDGE_COLOR_NUMBER = Base::SIZE;
 
@@ -82,16 +81,16 @@ public:
 	auto                     wedgeColors() const;
 
 protected:
-	/* Member functions specific for vector of wedge colors */
-
-	void resizeWedgeColors(uint n) requires (N < 0);
-	void pushWedgeColor(const vcl::Color& c) requires (N < 0);
-	void insertWedgeColor(uint i, const vcl::Color& c) requires (N < 0);
-	void eraseWedgeColor(uint i) requires (N < 0);
-	void clearWedgeColor() requires (N < 0);
-
+	// Component interface function
 	template <typename Element>
 	void importFrom(const Element& e);
+
+	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(const vcl::Color& c = vcl::Color()) requires (N < 0);
+	void insert(uint i, const vcl::Color& c = vcl::Color()) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 private:
 	template<typename Element>
@@ -99,8 +98,6 @@ private:
 
 	Vector<vcl::Color, N>& colors();
 	const Vector<vcl::Color, N>& colors() const;
-
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 /* Detector function to check if a class has WedgeColors enabled */

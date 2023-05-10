@@ -29,47 +29,37 @@
 #include <vclib/space/tex_coord.h>
 #include <vclib/space/vector.h>
 
-#include "internal/component_data.h"
+#include "bases/container_component.h"
 
 namespace vcl::comp {
 
 /**
  * @brief The WedgeTexCoords class
  *
+ * @note This component is *Tied To Vertex Number*: it means that the size of the container,
+ * if dynamic, will change automatically along the Vertex Number of the Component.
+ * For further details check the documentation of the @ref ContainerComponent class.
+ *
  * @ingroup components
  */
-template<
-	typename Scalar,
-	int N,
-	typename ElementType = void,
-	bool optional        = false>
-class WedgeTexCoords
+template<typename Scalar, int N, typename ElementType = void, bool optional = false>
+class WedgeTexCoords :
+		public ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, optional, true>
 {
+	using Base = ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, optional, true>;
 	using ThisType = WedgeTexCoords<Scalar, N, ElementType, optional>;
 
-	struct WTCData {
-		Vector<vcl::TexCoord<Scalar>, N> texCoords;
-		short texIndex;
-	};
-
-	using Base = Vector<vcl::TexCoord<Scalar>, N>;
 public:
-	using DataValueType = WTCData; // data that the component stores internally (or vertically)
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
 
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
-	
-	static const int WEDGE_TEX_COORD_NUMBER = Base::SIZE;
+	static const int WEDGE_TEX_COORD_NUMBER = N;
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
 
 	/* Iterator Types declaration */
 
-	using WedgeTexCoordsIterator      = typename Base::Iterator;
-	using ConstWedgeTexCoordsIterator = typename Base::ConstIterator;
-	using WedgeTexCoordsView          = vcl::View<WedgeTexCoordsIterator>;
-	using ConstWedgeTexCoordsView     = vcl::View<ConstWedgeTexCoordsIterator>;
+	using WedgeTexCoordsIterator      = typename Vector<vcl::TexCoord<Scalar>, N>::Iterator;
+	using ConstWedgeTexCoordsIterator = typename Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
 
 	/* Member functions */
 
@@ -100,16 +90,16 @@ public:
 protected:
 	using WedgeTexCoordScalarType = Scalar;
 
-	/* Member functions specific for vector */
-
-	void resizeWedgeTexCoords(uint n) requires (N < 0);
-	void pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t) requires (N < 0);
-	void insertWedgeTexCoord(uint i, const vcl::TexCoord<Scalar>& t) requires (N < 0);
-	void eraseWedgeTexCoord(uint i) requires (N < 0);
-	void clearWedgeTexCoord() requires (N < 0);
-
+	// Component interface function
 	template <typename Element>
 	void importFrom(const Element& e);
+
+	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(const vcl::TexCoord<Scalar>& t = vcl::TexCoord<Scalar>()) requires (N < 0);
+	void insert(uint i, const vcl::TexCoord<Scalar>& t = vcl::TexCoord<Scalar>()) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 private:
 	template<typename Element>
@@ -119,8 +109,6 @@ private:
 	short texIndex() const;
 	Vector<vcl::TexCoord<Scalar>, N>& texCoords();
 	const Vector<vcl::TexCoord<Scalar>, N>& texCoords() const;
-
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 /* Detector function to check if a class has WedgeTexCoords enabled */

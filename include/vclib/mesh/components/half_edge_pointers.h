@@ -28,9 +28,22 @@
 
 #include <vclib/concepts/mesh/components/half_edge_pointers.h>
 
-#include "internal/component_data.h"
+#include "bases/component.h"
 
 namespace vcl::comp {
+
+namespace internal {
+
+template<typename HalfEdge, typename Vertex, typename Face>
+struct HEPData {
+	HalfEdge* n; // next half edge
+	HalfEdge* p; // prev half edge
+	HalfEdge* t; // twin half edge
+	Vertex*   v; // from vertex
+	Face*     f; // incident face
+};
+
+} // namespace vcl::comp::internal
 
 /**
  * @brief The HalfEdgePointers class
@@ -44,25 +57,25 @@ template<
 	typename ElementType = void,
 	bool optional        = false>
 class HalfEdgePointers :
-		public PointersComponentTriggerer<HalfEdge>,
-		public PointersComponentTriggerer<Vertex>,
-		public PointersComponentTriggerer<Face>
+		public Component<
+			internal::HEPData<HalfEdge, Vertex, Face>,
+			ElementType,
+			optional,
+			HalfEdge,
+			Vertex,
+			Face>
 {
+	using Base = Component<
+		internal::HEPData<HalfEdge, Vertex, Face>,
+		ElementType,
+		optional,
+		HalfEdge,
+		Vertex,
+		Face>;
 	using ThisType = HalfEdgePointers<HalfEdge, Vertex, Face, ElementType, optional>;
 
-	struct HEPData {
-		HalfEdge* n; // next half edge
-		HalfEdge* p; // prev half edge
-		HalfEdge* t; // twin half edge
-		Vertex*   v; // from vertex
-		Face*     f; // incident face
-	};
 public:
-	using DataValueType = HEPData; // data that the component stores internally (or vertically)
 	using HalfEdgePointersComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	using HalfEdgeType = HalfEdge;
 	using VertexType   = Vertex;
@@ -100,18 +113,11 @@ public:
 	Face*&      face();
 
 protected:
-	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
-	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
-
-	void updatePointers(const Face* oldBase, const Face* newBase);
-	void updatePointersAfterCompact(const Face* base, const std::vector<int>& newIndices);
-
-	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
-	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
-
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	// PointersComponent interface functions
 	template<typename HE, typename HEType>
 	void importPointersFrom(const HE& e, HalfEdge* base, const HEType* ebase);
 
@@ -120,6 +126,15 @@ protected:
 
 	template<typename HE, typename FType>
 	void importPointersFrom(const HE& e, Face* base, const FType* ebase);
+
+	void updatePointers(const HalfEdge* oldBase, const HalfEdge* newBase);
+	void updatePointersAfterCompact(const HalfEdge* base, const std::vector<int>& newIndices);
+
+	void updatePointers(const Face* oldBase, const Face* newBase);
+	void updatePointersAfterCompact(const Face* base, const std::vector<int>& newIndices);
+
+	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
+	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 private:
 	// members that allow to access the data, trough data (horizontal) or trough parent (vertical)
@@ -133,8 +148,6 @@ private:
 	const Vertex*   v() const;
 	Face*&     f(); // incident face
 	const Face*     f() const;
-
-	internal::ComponentData<HEPData, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

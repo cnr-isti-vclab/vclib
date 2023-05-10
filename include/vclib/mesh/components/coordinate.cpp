@@ -26,20 +26,20 @@
 namespace vcl::comp {
 
 template<PointConcept P, typename El, bool o>
-const P& CoordT<P, El, o>::coord() const
+const P& Coordinate<P, El, o>::coord() const
 {
 	return p();
 }
 
 template<PointConcept P, typename El, bool o>
-P& CoordT<P, El, o>::coord()
+P& Coordinate<P, El, o>::coord()
 {
 	return p();
 }
 
 template<PointConcept P, typename El, bool o>
 template<typename Element>
-void CoordT<P, El, o>::importFrom(const Element& v)
+void Coordinate<P, El, o>::importFrom(const Element& v)
 {
 	if constexpr (HasCoordinate<Element>) {
 		p() = v.coord().template cast<typename CoordType::ScalarType>();
@@ -47,15 +47,15 @@ void CoordT<P, El, o>::importFrom(const Element& v)
 }
 
 template<PointConcept P, typename El, bool o>
-P& CoordT<P, El, o>::p()
+P& Coordinate<P, El, o>::p()
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template<PointConcept P, typename El, bool o>
-const P& CoordT<P, El, o>::p() const
+const P& Coordinate<P, El, o>::p() const
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 } // namespace vcl::comp

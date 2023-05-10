@@ -52,23 +52,23 @@ namespace vcl::edge {
 
 /* Port AdjacentEdges class into edge namespace */
 template<typename EdgeType>
-using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1>;
+using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false>;
 
 template<typename EdgeType>
-using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, EdgeType>;
+using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, EdgeType>;
 
 template<typename EdgeType>
-using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, EdgeType, true>;
+using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true>;
 
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
 
 template<typename FaceType, typename EdgeType>
-using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, EdgeType>;
+using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, EdgeType>;
 
 template<typename FaceType, typename EdgeType>
-using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, EdgeType, true>;
+using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, EdgeType, true>;
 
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags<>;

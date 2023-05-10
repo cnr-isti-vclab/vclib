@@ -19,6 +19,7 @@
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] import dcel from mesh: update adjacent faces and wedges 
+    - [ ] Dcel Mesh shouldn't use PolygonBitFlags, but implement them in the FaceHalfEdgePointers component
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] intersection functions (like distance functions)

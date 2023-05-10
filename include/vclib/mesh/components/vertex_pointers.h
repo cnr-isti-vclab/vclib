@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/vertex_pointers.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_pointers_container.h"
+#include "bases/pointers_container_component.h"
 
 namespace vcl::comp {
 
@@ -37,24 +37,17 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Vertex, int N, typename ElementType = void, bool optional = false>
-class VertexPointers :
-		public PointersComponentTriggerer<Vertex>,
-		protected internal::ElementPointersContainer<Vertex, N, ElementType>
+class VertexPointers : public PointersContainerComponent<Vertex, N, ElementType, optional, false>
 {
 	using ThisType = VertexPointers<Vertex, N, ElementType, optional>;
-
-	using Base = internal::ElementPointersContainer<Vertex, N, ElementType>;
+	using Base = PointersContainerComponent<Vertex, N, ElementType, optional, false>;
 
 public:
-	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
 	using VertexPointersComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	using VertexType = Vertex;
 
-	static const int VERTEX_NUMBER = Base::CONTAINER_SIZE;
+	static const int VERTEX_NUMBER = Base::SIZE;
 
 	/* Iterator Types declaration */
 
@@ -62,8 +55,6 @@ public:
 	using ConstVertexIterator = typename Base::ConstIterator;
 
 	/* Constructor and isEnabled */
-
-	VertexPointers();
 
 	void init();
 
@@ -107,15 +98,17 @@ public:
 	auto                     vertices() const;
 
 protected:
-	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
-
-	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
-
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	// PointersComponent interface functions
 	template<typename Element, typename ElVType>
 	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
+
+	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
+
+	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
 private:
 	template<typename Element, typename ElVType>

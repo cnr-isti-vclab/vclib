@@ -45,8 +45,6 @@ concept HasTexturePaths = requires(
 {
 	typename T::TexFileNamesIterator;
 	typename T::ConstTexFileNamesIterator;
-	typename T::TexFileNamesView;
-	typename T::ConstTexFileNamesView;
 
 	{ co.textureNumber() } -> std::same_as<uint>;
 	{ co.texturePath(uint()) } -> std::same_as<const std::string&>;
@@ -61,8 +59,8 @@ concept HasTexturePaths = requires(
 	{ o.texturePathEnd() } -> std::same_as<typename T::TexFileNamesIterator>;
 	{ co.texturePathBegin() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
 	{ co.texturePathEnd() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
-	{ o.texturePaths() } -> std::same_as<typename T::TexFileNamesView>;
-	{ co.texturePaths() } -> std::same_as<typename T::ConstTexFileNamesView>;
+	o.texturePaths();
+	co.texturePaths();
 };
 
 } // namespace vcl::comp

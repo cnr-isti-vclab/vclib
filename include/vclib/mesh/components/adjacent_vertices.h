@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_pointers_container.h"
+#include "bases/pointers_container_component.h"
 
 namespace vcl::comp {
 
@@ -51,20 +51,14 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Vertex, typename ElementType = void, bool optional = false>
-class AdjacentVertices :
-		public PointersComponentTriggerer<Vertex>,
-		protected internal::ElementPointersContainer<Vertex, -1, ElementType>
+class AdjacentVertices : public PointersContainerComponent<Vertex, -1, ElementType, optional, false>
 {
 	using ThisType = AdjacentVertices<Vertex, ElementType, optional>;
-
-	using Base = internal::ElementPointersContainer<Vertex, -1, ElementType>;
+	
+	using Base = PointersContainerComponent<Vertex, -1, ElementType, optional, false>;
 
 public:
-	using DataValueType = typename Base::DataValueType; // data that the component stores internally (or vertically)
 	using AdjacentVerticesComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	using AdjacentVertexType = Vertex;
 
@@ -107,23 +101,27 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentVertexIterator           adjVertexBegin();
-	AdjacentVertexIterator           adjVertexEnd();
-	ConstAdjacentVertexIterator      adjVertexBegin() const;
-	ConstAdjacentVertexIterator      adjVertexEnd() const;
-	auto                             adjVertices();
-	auto                             adjVertices() const;
+	AdjacentVertexIterator      adjVertexBegin();
+	AdjacentVertexIterator      adjVertexEnd();
+	ConstAdjacentVertexIterator adjVertexBegin() const;
+	ConstAdjacentVertexIterator adjVertexEnd() const;
+	auto                        adjVertices();
+	auto                        adjVertices() const;
 
 protected:
+	// Component interface function
+	template <typename Element>
+	void importFrom(const Element& e);
+
+	// PointersContainerComponent interface functions
+	template<typename Element, typename ElVType>
+	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
+
 	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
 
 	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
-	template<typename Element, typename ElVType>
-	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	// ContainerComponent interface functions
 
 private:
 	template<typename Element, typename ElVType>

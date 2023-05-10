@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<typename El, bool o>
 Mark<El, o>::Mark()
 {
-	if constexpr (!IS_VERTICAL) {
+	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
@@ -42,7 +42,7 @@ void Mark<El, o>::init()
 template<typename El, bool o>
 bool Mark<El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 template<typename El, bool o>
@@ -101,13 +101,13 @@ void Mark<El, o>::importFrom(const Element& e)
 template<typename El, bool o>
 int& Mark<El, o>::m()
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template<typename El, bool o>
-const int& Mark<El, o>::m() const
+int Mark<El, o>::m() const
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template <typename T>

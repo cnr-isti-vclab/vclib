@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
 #include <vclib/views/view.h>
 
-#include "internal/element_pointers_container.h"
+#include "bases/pointers_container_component.h"
 
 namespace vcl::comp {
 
@@ -48,25 +48,22 @@ namespace vcl::comp {
  * v.adjFacesNumber();
  * @endcode
  *
- * @note If this component is part of a Face Element, the number of Adjacent Faces is tied to the
- * Vertex Number of the Face, therefore all the members that allows to modify the number of
- * Adjacent Faces in case of dynamic size won't be available on Face Elements.
+ * @note This component can be *Tied To Vertex Number*: it means that the size of the container,
+ * if dynamic, will change automatically along the Vertex Number of the Component.
+ * Check the `TTVN` template value on the specialization of your component to check if it is tied to
+ * the Vertex Number. For further details check the documentation of the @ref ContainerComponent
+ * class.
  *
  * @ingroup components
  */
-template<typename Face, int N, typename ElementType = void, bool optional = false>
-class AdjacentFaces :
-		public PointersComponentTriggerer<Face>,
-		protected internal::ElementPointersContainer<Face, N, ElementType>
+template<typename Face, int N, bool TTVN, typename ElementType = void, bool optional = false>
+class AdjacentFaces : public PointersContainerComponent<Face, N, ElementType, optional, TTVN>
 {
-	using ThisType = AdjacentFaces<Face, N, ElementType, optional>;
-
-	using Base = internal::ElementPointersContainer<Face, N, ElementType>;
+	using ThisType = AdjacentFaces<Face, N, TTVN, ElementType, optional>;
+	
+	using Base = PointersContainerComponent<Face, N, ElementType, optional, TTVN>;
 
 public:
-	/** @private data that the component stores internally (or vertically) */
-	using DataValueType = typename Base::DataValueType;
-
 	/** @brief Allows access to this component type from a derived class type/instance */
 	using AdjacentFacesComponent = ThisType; // expose the type to allow access to this component
 
@@ -81,22 +78,10 @@ public:
 	using ConstAdjacentFaceIterator = typename Base::ConstIterator;
 
 	/**
-	 * @brief Boolean that tells if this component type stores its data vertically (not in the
-	 * Element frame memory, but in another vector).
-	 */
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-
-	/**
-	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
-	 * is vertical.
-	 */
-	static const bool IS_OPTIONAL = optional;
-
-	/**
 	 * @brief Static size of the container. If the container is dynamic, this value will be negative
 	 * and you should use the adjFacesNumber() member function.
 	 */
-	static const int ADJ_FACE_NUMBER = Base::CONTAINER_SIZE;
+	static const int ADJ_FACE_NUMBER = Base::SIZE;
 
 	/* Constructor and isEnabled */
 
@@ -126,11 +111,11 @@ public:
 
 	/* Member functions specific for vector adjacent faces */
 
-	void resizeAdjFaces(uint n) requires (N < 0);
-	void pushAdjFace(Face* f) requires (N < 0);
-	void insertAdjFace(uint i, Face* f) requires (N < 0);
-	void eraseAdjFace(uint i) requires (N < 0);
-	void clearAdjFaces() requires (N < 0);
+	void resizeAdjFaces(uint n) requires (N < 0 && !TTVN);
+	void pushAdjFace(Face* f) requires (N < 0 && !TTVN);
+	void insertAdjFace(uint i, Face* f) requires (N < 0 && !TTVN);
+	void eraseAdjFace(uint i) requires (N < 0 && !TTVN);
+	void clearAdjFaces() requires (N < 0 && !TTVN);
 
 	/* Iterator Member functions */
 
@@ -142,15 +127,24 @@ public:
 	auto                      adjFaces() const;
 
 protected:
+	// Component interface function
+	template <typename Element>
+	void importFrom(const Element& e);
+
+	// PointersComponent interface functions
+	template<typename Element, typename ElFType>
+	void importPointersFrom(const Element& e, Face* base, const ElFType* ebase);
+
 	void updatePointers(const Face* oldBase, const Face* newBase);
 
 	void updatePointersAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
-	template <typename Element>
-	void importFrom(const Element& e);
-
-	template<typename Element, typename ElFType>
-	void importPointersFrom(const Element& e, Face* base, const ElFType* ebase);
+	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(Face* f = nullptr) requires (N < 0);
+	void insert(uint i, Face* f = nullptr) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 private:
 	template<typename Element, typename ElFType>

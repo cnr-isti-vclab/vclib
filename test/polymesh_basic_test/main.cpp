@@ -36,6 +36,8 @@ int main()
 
 	assert(m.vertexNumber() == 1);
 
+	m.addVertex();
+
 	m.addFace();
 
 	assert(m.faceNumber() == 1);
@@ -44,7 +46,7 @@ int main()
 
 	assert(f.vertexNumber() == 0);
 
-	f.pushVertex(&m.vertex(0));
+	f.pushVertex(&m.vertex(0));	
 
 	assert(f.vertexNumber() == 1);
 	assert(m.face(0).vertexNumber() == 1);
@@ -53,11 +55,28 @@ int main()
 
 	m.enablePerFaceAdjacentFaces();
 
+	//f.resizeAdjFaces(2); <- can't do this: adjFaces number tied to vertex number of the face
+
 	assert(vcl::isPerFaceAdjacentFacesEnabled(m));
+	assert(m.face(0).adjFacesNumber() == 1);
+
+	f.pushVertex(&m.vertex(1));
+	assert(f.vertexNumber() == 2);
+	assert(f.adjFacesNumber() == 2);
+	assert(m.face(0).adjFacesNumber() == 2);
+	assert(m.face(0).vertexNumber() == 2);
 
 	f.clearVertices();
 
 	assert(m.face(0).vertexNumber() == 0);
+	assert(f.adjFacesNumber() == 0);
+
+	f.setVertices(&m.vertex(0), &m.vertex(1));
+
+	assert(f.vertexNumber() == 2);
+	assert(f.adjFacesNumber() == 2);
+	assert(m.face(0).adjFacesNumber() == 2);
+	assert(m.face(0).vertexNumber() == 2);
 
 	return 0;
 }

@@ -28,7 +28,7 @@ namespace vcl::comp {
 template<typename El, bool o>
 BitFlags<El, o>::BitFlags()
 {
-	if constexpr (!IS_VERTICAL) {
+	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
@@ -42,7 +42,7 @@ void BitFlags<El, o>::init()
 template<typename El, bool o>
 bool BitFlags<El, o>::isEnabled() const
 {
-	return data.template isComponentEnabled<El>(this);
+	return Base::isEnabled(this);
 }
 
 /**
@@ -204,13 +204,13 @@ void BitFlags<El, o>::importFrom(const Element& e)
 template<typename El, bool o>
 BitSet<typename BitFlags<El, o>::FT>& BitFlags<El, o>::flags()
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 template<typename El, bool o>
 BitSet<typename BitFlags<El, o>::FT> BitFlags<El, o>::flags() const
 {
-	return data.template get<El>(this);
+	return Base::data(this);
 }
 
 } // namespace vcl::comp

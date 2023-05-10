@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh/components/bit_flags.h>
 #include <vclib/space/bit_set.h>
 
-#include "internal/component_data.h"
+#include "bases/container_component.h"
 
 namespace vcl::comp {
 
@@ -65,27 +65,23 @@ namespace vcl::comp {
  * v.isAnyEdgeOnBorder();
  * @endcode
  *
+ * @note This component is *Tied To Vertex Number*: it means that the size of the container,
+ * if dynamic, will change automatically along the Vertex Number of the Component.
+ * For further details check the documentation of the @ref ContainerComponent class.
+ *
  * @ingroup components
  */
-template<typename ElementType = void, bool optional = false>
-class PolygonBitFlags
+template<int N, typename ElementType = void, bool optional = false>
+class PolygonBitFlags :
+		public ContainerComponent<BitSet<int>, N, BitSet<int>, ElementType, optional, true>
 {
-	using ThisType = PolygonBitFlags<ElementType, optional>;
-
 	using FT = int; // FlagsType, the integral type used for the flags
 
-	struct PolyFlags {
-		BitSet<FT> flags;
-		std::vector<BitSet<FT>> edgeFlags;
-	};
+	using Base = ContainerComponent<BitSet<FT>, N, BitSet<FT>, ElementType, optional, true>;
+	using ThisType = PolygonBitFlags<N, ElementType, optional>;
 
 public:
-	using DataValueType = PolyFlags; // data that the component stores internally (or vertically)
-
 	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	/* Constructor and isEnabled */
 	PolygonBitFlags();
@@ -133,20 +129,25 @@ public:
 	void __polygonBitFlags() const {}
 
 protected:
-	void resizeBitFlags(uint n);
-	void pushBitFlag(BitSet<FT> f = BitSet<FT>());
-	void insertBitFlag(uint i, BitSet<FT> f = BitSet<FT>());
-	void eraseBitFlag(uint i);
-	void clearBitFlags();
-
 	BitProxy<FT> deleted();
 
+	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
 
+	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(BitSet<FT> f = BitSet<FT>()) requires (N < 0);
+	void insert(uint i, BitSet<FT> f = BitSet<FT>()) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
+
+private:
 	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
-	PolyFlags& flags();
-	PolyFlags flags() const;
+	BitSet<FT>& flags();
+	const BitSet<FT>& flags() const;
+	Vector<BitSet<FT>, -1>& edgeFlags();
+	const Vector<BitSet<FT>, -1>& edgeFlags() const;
 
 	static const uint FIRST_USER_BIT = 6;
 	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;
@@ -168,10 +169,6 @@ protected:
 		EDGESEL  = 1,
 		EDGEVIS  = 2
 	};
-
-private:
-	// contians the actual data of the component, if the component is horizontal
-	internal::ComponentData<DataValueType, IS_VERTICAL> data;
 };
 
 } // namespace vcl::comp

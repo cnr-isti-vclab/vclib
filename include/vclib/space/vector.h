@@ -128,6 +128,10 @@ public:
 	void clear()
 		requires(N < 0);
 
+	/** Operators **/
+	Reference operator[](uint i);
+	ConstReference operator[](uint i) const;
+
 	/** Iterator Member functions **/
 
 	Iterator      begin();

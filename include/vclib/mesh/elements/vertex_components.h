@@ -57,23 +57,23 @@ namespace vcl::vert {
 
 /* Port AdjacentEdges class into vert namespace */
 template<typename Edge>
-using AdjacentEdges = comp::AdjacentEdges<Edge, -1>;
+using AdjacentEdges = comp::AdjacentEdges<Edge, -1, false>;
 
 template<typename EdgeType, typename VertexType>
-using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, VertexType>;
+using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, VertexType>;
 
 template<typename EdgeType, typename VertexType>
-using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, VertexType, true>;
+using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, VertexType, true>;
 
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1>;
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
 
 template<typename FaceType, typename VertexType>
-using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, VertexType>;
+using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, VertexType>;
 
 template<typename FaceType, typename VertexType>
-using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, VertexType, true>;
+using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, VertexType, true>;
 
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>
@@ -102,7 +102,7 @@ using OptionalColor = comp::Color<VertexType, true>;
 
 /* Port Coordinate class into vert namespace */
 template<typename ScalarType, int N>
-using Coordinate = comp::Coordinate<ScalarType, N>;
+using Coordinate = comp::Coordinate<Point<ScalarType, N>>;
 
 template<typename ScalarType>
 using Coordinate3 = comp::Coordinate3<ScalarType>;
@@ -111,7 +111,7 @@ using Coordinate3f = comp::Coordinate3f<>;
 using Coordinate3d = comp::Coordinate3d<>;
 
 template<typename ScalarType, int N, typename VertexType>
-using VerticalCoordinate = comp::Coordinate<ScalarType, N, VertexType>;
+using VerticalCoordinate = comp::Coordinate<Point<ScalarType, N>, VertexType>;
 
 template<typename ScalarType, typename VertexType>
 using VerticalCoordinate3 = comp::Coordinate3<ScalarType, VertexType>;
@@ -141,7 +141,7 @@ using OptionalMark = comp::Mark<VertexType, true>;
 
 /* Port Normal classes into vert namespace */
 template<typename ScalarType, int N>
-using Normal = comp::Normal<ScalarType, N>;
+using Normal = comp::Normal<Point<ScalarType, N>>;
 
 template<typename ScalarType>
 using Normal3 = comp::Normal3<ScalarType>;
@@ -150,7 +150,7 @@ using Normal3f = comp::Normal3f<>;
 using Normal3d = comp::Normal3d<>;
 
 template<typename ScalarType, int N, typename VertexType>
-using VerticalNormal = comp::Normal<ScalarType, N, VertexType>;
+using VerticalNormal = comp::Normal<Point<ScalarType, N>, VertexType>;
 
 template<typename ScalarType, typename VertexType>
 using VerticalNormal3 = comp::Normal3<ScalarType, VertexType>;
@@ -162,7 +162,7 @@ template<typename VertexType>
 using VerticalNormal3d = comp::Normal3d<VertexType>;
 
 template<typename ScalarType, int N, typename VertexType>
-using OptionalNormal = comp::Normal<ScalarType, N, VertexType, true>;
+using OptionalNormal = comp::Normal<Point<ScalarType, N>, VertexType, true>;
 
 template<typename ScalarType, typename VertexType>
 using OptionalNormal3 = comp::Normal3<ScalarType, VertexType, true>;
