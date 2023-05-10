@@ -77,19 +77,16 @@ public:
 	auto                     wedgeColors() const;
 
 protected:
-	/* Member functions specific for vector of wedge colors */
-
-	void resizeWedgeColors(uint n) requires (N < 0);
-	void pushWedgeColor(const vcl::Color& c) requires (N < 0);
-	void insertWedgeColor(uint i, const vcl::Color& c) requires (N < 0);
-	void eraseWedgeColor(uint i) requires (N < 0);
-	void clearWedgeColor() requires (N < 0);
-
 	// Component interface function
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(const vcl::Color& c = vcl::Color()) requires (N < 0);
+	void insert(uint i, const vcl::Color& c = vcl::Color()) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 private:
 	template<typename Element>

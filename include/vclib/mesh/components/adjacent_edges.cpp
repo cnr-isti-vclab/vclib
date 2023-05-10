@@ -284,7 +284,7 @@ void AdjacentEdges<Edge, N, TT, El, o>::importPointersFrom(
 			}
 			else {
 				// from static/dynamic to dynamic size: need to resize first, then import
-				resizeAdjEdges(e.adjEdgesNumber());
+				resize(e.adjEdgesNumber());
 				importPtrsFrom(e, base, ebase);
 			}
 		}
@@ -303,6 +303,36 @@ void AdjacentEdges<Edge, N, TT, El, o>::updatePointersAfterCompact(
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementPointersAfterCompact(base, newIndices, this);
+}
+
+template<typename Edge, int N, bool TT, typename El, bool o>
+void AdjacentEdges<Edge, N, TT, El, o>::resize(uint n) requires (N < 0)
+{
+	Base::container(this).resize(n);
+}
+
+template<typename Edge, int N, bool TT, typename El, bool o>
+void AdjacentEdges<Edge, N, TT, El, o>::pushBack(Edge* e) requires (N < 0)
+{
+	Base::container(this).pushBack(e);
+}
+
+template<typename Edge, int N, bool TT, typename El, bool o>
+void AdjacentEdges<Edge, N, TT, El, o>::insert(uint i, Edge* e) requires (N < 0)
+{
+	Base::container(this).insert(i, e);
+}
+
+template<typename Edge, int N, bool TT, typename El, bool o>
+void AdjacentEdges<Edge, N, TT, El, o>::erase(uint i) requires (N < 0)
+{
+	Base::container(this).erase(i);
+}
+
+template<typename Edge, int N, bool TT, typename El, bool o>
+void AdjacentEdges<Edge, N, TT, El, o>::clear() requires (N < 0)
+{
+	Base::container(this).clear();
 }
 
 template<typename Edge, int N, bool TT, typename El, bool o>

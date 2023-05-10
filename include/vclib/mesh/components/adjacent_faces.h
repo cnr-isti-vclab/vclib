@@ -138,6 +138,11 @@ protected:
 	void updatePointersAfterCompact(const Face* base, const std::vector<int>& newIndices);
 
 	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(Face* f = nullptr) requires (N < 0);
+	void insert(uint i, Face* f = nullptr) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 private:
 	template<typename Element, typename ElFType>

@@ -92,28 +92,28 @@ public:
 			using T = typename F::AdjacentEdges;
 
 			if (T::isAdjEdgesEnabled())
-				T::resizeAdjEdges(n);
+				T::resize(n);
 		}
 
 		if constexpr (face::HasAdjacentFaces<F>) {
 			using T = typename F::AdjacentFaces;
 
 			if (T::isAdjFacesEnabled())
-				T::resizeAdjFaces(n);
+				T::resize(n);
 		}
 
 		if constexpr (face::HasWedgeColors<F>) {
 			using T = typename F::WedgeColors;
 
 			if (T::isWedgeColorsEnabled())
-				T::resizeWedgeColors(n);
+				T::resize(n);
 		}
 
 		if constexpr (face::HasWedgeTexCoords<F>) {
 			using T = typename F::WedgeTexCoords;
 
 			if (T::isWedgeTexCoordsEnabled())
-				T::resizeWedgeTexCoords(n);
+				T::resize(n);
 		}
 	}
 
@@ -134,29 +134,28 @@ public:
 			using T = typename F::AdjacentEdges;
 
 			if (T::isAdjEdgesEnabled())
-				T::pushAdjEdge(nullptr);
+				T::pushBack();
 		}
 
 		if constexpr (face::HasAdjacentFaces<F>) {
 			using T = typename F::AdjacentFaces;
 
 			if (T::isAdjFacesEnabled())
-				T::pushAdjFace(nullptr);
+				T::pushBack();
 		}
 
 		if constexpr (face::HasWedgeColors<F>) {
 			using T = typename F::WedgeColors;
 
 			if (T::isWedgeColorsEnabled())
-				T::pushWedgeTexColors(Color());
+				T::pushBack();
 		}
 
 		if constexpr (face::HasWedgeTexCoords<F>) {
-			using S = typename F::WedgeTexCoordScalarType;
 			using T = typename F::WedgeTexCoords;
 
 			if (T::isWedgeTexCoordsEnabled())
-				T::pushWedgeTexCoord(TexCoord<S>());
+				T::pushBack();
 		}
 	}
 
@@ -177,29 +176,28 @@ public:
 			using T = typename F::AdjacentEdges;
 
 			if (T::isAdjEdgesEnabled())
-				T::insertAdjEdge(i, nullptr);
+				T::insert(i);
 		}
 
 		if constexpr (face::HasAdjacentFaces<F>) {
 			using T = typename F::AdjacentFaces;
 
 			if (T::isAdjFacesEnabled())
-				T::insertAdjFace(i, nullptr);
+				T::insert(i);
 		}
 
 		if constexpr (face::HasWedgeColors<F>) {
 			using T = typename F::WedgeColors;
 
 			if (T::isWedgeColorsEnabled())
-				T::insertWedgeColor(i, Color());
+				T::insert(i);
 		}
 
 		if constexpr (face::HasWedgeTexCoords<F>) {
-			using S = typename F::WedgeTexCoordScalarType;
 			using T = typename F::WedgeTexCoords;
 
 			if (T::isWedgeTexCoordsEnabled())
-				T::insertWedgeTexCoord(i, TexCoord<S>());
+				T::insert(i);
 		}
 	}
 
@@ -220,28 +218,28 @@ public:
 			using T = typename F::AdjacentEdges;
 
 			if (T::isAdjEdgesEnabled())
-				T::eraseAdjEdge(i);
+				T::erase(i);
 		}
 
 		if constexpr (face::HasAdjacentFaces<F>) {
 			using T = typename F::AdjacentFaces;
 
 			if (T::isAdjFacesEnabled())
-				T::eraseAdjFace(i);
+				T::erase(i);
 		}
 
 		if constexpr (face::HasWedgeColors<F>) {
 			using T = typename F::WedgeColors;
 
 			if (T::isWedgeColorsEnabled())
-				T::eraseWedgeColor(i);
+				T::erase(i);
 		}
 
 		if constexpr (face::HasWedgeTexCoords<F>) {
 			using T = typename F::WedgeTexCoords;
 
 			if (T::isWedgeTexCoordsEnabled())
-				T::eraseWedgeTexCoord(i);
+				T::erase(i);
 		}
 	}
 
@@ -262,28 +260,28 @@ public:
 			using T = typename F::AdjacentEdges;
 
 			if (T::isAdjEdgesEnabled())
-				T::clearAdjEdges();
+				T::clear();
 		}
 
 		if constexpr (face::HasAdjacentFaces<F>) {
 			using T = typename F::AdjacentFaces;
 
 			if (T::isAdjFacesEnabled())
-				T::clearAdjFaces();
+				T::clear();
 		}
 
 		if constexpr (face::HasWedgeColors<F>) {
 			using T = typename F::WedgeColors;
 
 			if (T::isWedgeColorsEnabled())
-				T::clearWedgeColor();
+				T::clear();
 		}
 
 		if constexpr (face::HasWedgeTexCoords<F>) {
 			using T = typename F::WedgeTexCoords;
 
 			if (T::isWedgeTexCoordsEnabled())
-				T::clearWedgeTexCoord();
+				T::clear();
 		}
 	}
 

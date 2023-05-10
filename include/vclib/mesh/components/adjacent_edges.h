@@ -133,6 +133,11 @@ protected:
 	void updatePointersAfterCompact(const Edge* base, const std::vector<int>& newIndices);
 
 	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(Edge* e = nullptr) requires (N < 0);
+	void insert(uint i, Edge* e = nullptr) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 private:
 	template<typename Element, typename ElEType>

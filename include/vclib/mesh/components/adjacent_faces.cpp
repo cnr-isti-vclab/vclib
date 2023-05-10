@@ -284,7 +284,7 @@ void AdjacentFaces<Face, N, TT, El, o>::importPointersFrom(
 			}
 			else {
 				// from static/dynamic to dynamic size: need to resize first, then import
-				resizeAdjFaces(e.adjFacesNumber());
+				resize(e.adjFacesNumber());
 				importPtrsFrom(e, base, ebase);
 			}
 		}
@@ -303,6 +303,36 @@ void AdjacentFaces<Face, N, TT, El, o>::updatePointersAfterCompact(
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementPointersAfterCompact(base, newIndices, this);
+}
+
+template<typename Face, int N, bool TT, typename El, bool o>
+void AdjacentFaces<Face, N, TT, El, o>::resize(uint n) requires (N < 0)
+{
+	Base::container(this).resize(n);
+}
+
+template<typename Face, int N, bool TT, typename El, bool o>
+void AdjacentFaces<Face, N, TT, El, o>::pushBack(Face* f) requires (N < 0)
+{
+	Base::container(this).pushBack(f);
+}
+
+template<typename Face, int N, bool TT, typename El, bool o>
+void AdjacentFaces<Face, N, TT, El, o>::insert(uint i, Face* f) requires (N < 0)
+{
+	Base::container(this).insert(i, f);
+}
+
+template<typename Face, int N, bool TT, typename El, bool o>
+void AdjacentFaces<Face, N, TT, El, o>::erase(uint i) requires (N < 0)
+{
+	Base::container(this).erase(i);
+}
+
+template<typename Face, int N, bool TT, typename El, bool o>
+void AdjacentFaces<Face, N, TT, El, o>::clear() requires (N < 0)
+{
+	Base::container(this).clear();
 }
 
 template<typename Face, int N, bool TT, typename El, bool o>

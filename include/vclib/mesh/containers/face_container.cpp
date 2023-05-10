@@ -354,12 +354,6 @@ template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>
 {
 	Base::template enableOptionalComponent<typename T::AdjacentEdgesComponent>();
-	static const int N = T::VERTEX_NUMBER;
-	if constexpr (N < 0) {
-		for (T& f : faces()) {
-			f.resizeAdjEdges(f.vertexNumber());
-		}
-	}
 }
 
 /**
@@ -403,12 +397,6 @@ template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>
 {
 	Base::template enableOptionalComponent<typename T::AdjacentFacesComponent>();
-	static const int N = T::VERTEX_NUMBER;
-	if constexpr (N < 0) {
-		for (T& f : faces()) {
-			f.resizeAdjFaces(f.vertexNumber());
-		}
-	}
 }
 
 /**
@@ -839,12 +827,6 @@ template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
 {
 	return Base::template enableOptionalComponent<typename T::WedgeColorsComponent>();
-	static const int N = T::VERTEX_NUMBER;
-	if constexpr (N < 0) {
-		for (T& f : faces()) {
-			f.resizeWedgeColors(f.vertexNumber());
-		}
-	}
 }
 
 /**
@@ -886,12 +868,6 @@ template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
 {
 	return Base::template enableOptionalComponent<typename T::WedgeTexCoordsComponent>();
-	static const int N = T::VERTEX_NUMBER;
-	if constexpr (N < 0) {
-		for (T& f : faces()) {
-			f.resizeWedgeTexCoords(f.vertexNumber());
-		}
-	}
 }
 
 /**

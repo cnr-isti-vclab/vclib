@@ -86,19 +86,16 @@ public:
 protected:
 	using WedgeTexCoordScalarType = Scalar;
 
-	/* Member functions specific for vector */
-
-	void resizeWedgeTexCoords(uint n) requires (N < 0);
-	void pushWedgeTexCoord(const vcl::TexCoord<Scalar>& t) requires (N < 0);
-	void insertWedgeTexCoord(uint i, const vcl::TexCoord<Scalar>& t) requires (N < 0);
-	void eraseWedgeTexCoord(uint i) requires (N < 0);
-	void clearWedgeTexCoord() requires (N < 0);
-
 	// Component interface function
 	template <typename Element>
 	void importFrom(const Element& e);
 
 	// ContainerComponent interface functions
+	void resize(uint n) requires (N < 0);
+	void pushBack(const vcl::TexCoord<Scalar>& t = vcl::TexCoord<Scalar>()) requires (N < 0);
+	void insert(uint i, const vcl::TexCoord<Scalar>& t = vcl::TexCoord<Scalar>()) requires (N < 0);
+	void erase(uint i) requires (N < 0);
+	void clear() requires (N < 0);
 
 private:
 	template<typename Element>

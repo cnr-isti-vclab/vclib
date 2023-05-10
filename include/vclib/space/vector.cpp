@@ -256,7 +256,7 @@ int Vector<T, N>::indexOf(const typename MakeConstPointer<T>::type& e) const
  * @return A reference to the requested element.
  */
 template<typename T, int N>
-Vector<T, N>::Reference Vector<T, N>::operator[](uint i)
+typename Vector<T, N>::Reference Vector<T, N>::operator[](uint i)
 {
 	return container[i];
 }
@@ -268,7 +268,7 @@ Vector<T, N>::Reference Vector<T, N>::operator[](uint i)
  * @return A const reference to the requested element.
  */
 template<typename T, int N>
-Vector<T, N>::ConstReference Vector<T, N>::operator[](uint i) const
+typename Vector<T, N>::ConstReference Vector<T, N>::operator[](uint i) const
 {
 	return container[i];
 }

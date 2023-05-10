@@ -108,28 +108,28 @@ void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
 		using T = typename F::AdjacentEdges;
 
 		if (T::isAdjEdgesEnabled())
-			T::resizeAdjEdges(list.size());
+			T::resize(list.size());
 	}
 
 	if constexpr (face::HasAdjacentFaces<F> && NonDcelPolygonFaceConcept<F>) {
 		using T = typename F::AdjacentFaces;
 
 		if (T::isAdjFacesEnabled())
-			T::resizeAdjFaces(list.size());
+			T::resize(list.size());
 	}
 
 	if constexpr (face::HasWedgeColors<F> && NonDcelPolygonFaceConcept<F>) {
 		using T = typename F::WedgeColors;
 
 		if (T::isWedgeColorsEnabled())
-			T::resizeWedgeColors(list.size());
+			T::resize(list.size());
 	}
 
 	if constexpr (face::HasWedgeTexCoords<F> && NonDcelPolygonFaceConcept<F>) {
 		using T = typename F::WedgeTexCoords;
 
 		if (T::isWedgeTexCoordsEnabled())
-			T::resizeWedgeTexCoords(list.size());
+			T::resize(list.size());
 	}
 }
 
