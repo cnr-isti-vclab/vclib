@@ -39,7 +39,7 @@
 #include "components/name.h"
 #include "components/normal.h"
 #include "components/principal_curvature.h"
-#include "components/scalar.h"
+#include "components/quality.h"
 #include "components/tex_coord.h"
 #include "components/texture_paths.h"
 #include "components/transform_matrix.h"

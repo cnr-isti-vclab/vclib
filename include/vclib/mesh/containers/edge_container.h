@@ -99,10 +99,10 @@ public:
 	void enablePerEdgeMark() requires edge::HasOptionalMark<T>;
 	void disablePerEdgeMark() requires edge::HasOptionalMark<T>;
 
-	// Scalar
-	bool isPerEdgeScalarEnabled() const requires edge::HasOptionalScalar<T>;
-	void enablePerEdgeScalar() requires edge::HasOptionalScalar<T>;
-	void disablePerEdgeScalar() requires edge::HasOptionalScalar<T>;
+	// Quality
+	bool isPerEdgeQualityEnabled() const requires edge::HasOptionalQuality<T>;
+	void enablePerEdgeQuality() requires edge::HasOptionalQuality<T>;
+	void disablePerEdgeQuality() requires edge::HasOptionalQuality<T>;
 
 	// Custom Components
 	bool hasPerEdgeCustomComponent(const std::string& name) const

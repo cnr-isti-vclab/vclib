@@ -47,14 +47,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<
-	PointConcept PointType,
-	typename ElementType = void,
-	bool optional        = false>
-class BoundingBox : public Component<Box<PointType>, ElementType, optional>
+template<PointConcept PointType, typename ElementType = void, bool OPTIONAL = false>
+class BoundingBox : public Component<Box<PointType>, ElementType, OPTIONAL>
 {
-	using Base = Component<Box<PointType>, ElementType, optional>;
-	using ThisType = BoundingBox<PointType, ElementType, optional>;
+	using Base = Component<Box<PointType>, ElementType, OPTIONAL>;
+	using ThisType = BoundingBox<PointType, ElementType, OPTIONAL>;
 
 public:
 	using BoundingBoxComponent = ThisType; // expose the type to allow access to this component
@@ -70,14 +67,14 @@ protected:
 	void importFrom(const Element& e);
 };
 
-template <typename S, typename ElementType = void, bool optional= false>
-using BoundingBox3  = BoundingBox<Point3<S>, ElementType, optional>;
+template <typename S, typename ElementType = void, bool OPTIONAL= false>
+using BoundingBox3  = BoundingBox<Point3<S>, ElementType, OPTIONAL>;
 
-template<typename ElementType = void, bool optional= false>
-using BoundingBox3f = BoundingBox<Point3f, ElementType, optional>;
+template<typename ElementType = void, bool OPTIONAL= false>
+using BoundingBox3f = BoundingBox<Point3f, ElementType, OPTIONAL>;
 
-template<typename ElementType = void, bool optional= false>
-using BoundingBox3d = BoundingBox<Point3d, ElementType, optional>;
+template<typename ElementType = void, bool OPTIONAL= false>
+using BoundingBox3d = BoundingBox<Point3d, ElementType, OPTIONAL>;
 
 } // namespace vcl::comp
 

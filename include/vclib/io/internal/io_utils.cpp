@@ -116,9 +116,9 @@ void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
 				info.setVertexNormals(false);
 			}
 		}
-		if (info.hasVertexScalars()) {
-			if (!vcl::enableIfPerVertexScalarOptional(m)) {
-				info.setVertexScalars(false);
+		if (info.hasVertexQuality()) {
+			if (!vcl::enableIfPerVertexQualityOptional(m)) {
+				info.setVertexQuality(false);
 			}
 		}
 		if (info.hasVertexTexCoords()) {
@@ -152,9 +152,9 @@ void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
 				info.setFaceNormals(false);
 			}
 		}
-		if (info.hasFaceScalars()) {
-			if (!vcl::enableIfPerFaceScalarOptional(m)) {
-				info.setFaceScalars(false);
+		if (info.hasFaceQuality()) {
+			if (!vcl::enableIfPerFaceQualityOptional(m)) {
+				info.setFaceQuality(false);
 			}
 		}
 		if (info.hasFaceWedgeTexCoords()) {

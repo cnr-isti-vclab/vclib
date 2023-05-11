@@ -244,7 +244,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 template<FaceMeshConcept MeshType, LoggerConcept LogType>
 void updatePrincipalCurvaturePCA(
 	MeshType&  m,
-	typename MeshType::VertexType::ScalarType radius,
+	typename MeshType::VertexType::CoordType::ScalarType radius,
 	bool       montecarloSampling,
 	LogType&   log)
 {

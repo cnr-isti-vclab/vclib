@@ -21,69 +21,69 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_UPDATE_SCALAR_H
-#define VCL_ALGORITHMS_UPDATE_SCALAR_H
+#ifndef VCL_ALGORITHMS_UPDATE_QUALITY_H
+#define VCL_ALGORITHMS_UPDATE_QUALITY_H
 
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
 template<MeshConcept MeshType>
-void setPerVertexScalar(MeshType& m, typename MeshType::VertexType::ScalarType s);
+void setPerVertexQuality(MeshType& m, typename MeshType::VertexType::QualityType s);
 
 template<FaceMeshConcept MeshType>
-void setPerFaceScalar(MeshType& m, typename MeshType::FaceType::ScalarType s);
+void setPerFaceQuality(MeshType& m, typename MeshType::FaceType::QualityType s);
 
 template<MeshConcept MeshType>
-void clampPerVertexScalar(
+void clampPerVertexQuality(
 	MeshType&                                 m,
-	typename MeshType::VertexType::ScalarType minS,
-	typename MeshType::VertexType::ScalarType maxS);
+	typename MeshType::VertexType::QualityType minS,
+	typename MeshType::VertexType::QualityType maxS);
 
 template<FaceMeshConcept MeshType>
-void clampPerFaceScalar(
+void clampPerFaceQuality(
 	MeshType&                               m,
-	typename MeshType::FaceType::ScalarType minS,
-	typename MeshType::FaceType::ScalarType maxS);
+	typename MeshType::FaceType::QualityType minS,
+	typename MeshType::FaceType::QualityType maxS);
 
 template<MeshConcept MeshType>
-void normalizePerVertexScalar(
+void normalizePerVertexQuality(
 	MeshType&                                 m,
-	typename MeshType::VertexType::ScalarType minS = 0,
-	typename MeshType::VertexType::ScalarType maxS = 1);
+	typename MeshType::VertexType::QualityType minS = 0,
+	typename MeshType::VertexType::QualityType maxS = 1);
 
 template<FaceMeshConcept MeshType>
-void normalizePerFaceScalar(
+void normalizePerFaceQuality(
 	MeshType&                               m,
-	typename MeshType::FaceType::ScalarType minS = 0,
-	typename MeshType::FaceType::ScalarType maxS = 1);
+	typename MeshType::FaceType::QualityType minS = 0,
+	typename MeshType::FaceType::QualityType maxS = 1);
 
 template<FaceMeshConcept MeshType>
-void setPerVertexScalarFromVertexValence(MeshType& m);
+void setPerVertexQualityFromVertexValence(MeshType& m);
 
 template<FaceMeshConcept MeshType>
-void setPerFaceScalarFromFaceArea(MeshType& m);
+void setPerFaceQualityFromFaceArea(MeshType& m);
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureGaussian(MeshType& m);
+void setPerVertexQualityFromPrincipalCurvatureGaussian(MeshType& m);
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureMean(MeshType& m);
+void setPerVertexQualityFromPrincipalCurvatureMean(MeshType& m);
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureMinValue(MeshType& m);
+void setPerVertexQualityFromPrincipalCurvatureMinValue(MeshType& m);
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureMaxValue(MeshType& m);
+void setPerVertexQualityFromPrincipalCurvatureMaxValue(MeshType& m);
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureShapeIndex(MeshType& m);
+void setPerVertexQualityFromPrincipalCurvatureShapeIndex(MeshType& m);
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureCurvedness(MeshType& m);
+void setPerVertexQualityFromPrincipalCurvatureCurvedness(MeshType& m);
 
 } // namespace vcl
 
-#include "scalar.cpp"
+#include "quality.cpp"
 
-#endif // VCL_ALGORITHMS_UPDATE_SCALAR_H
+#endif // VCL_ALGORITHMS_UPDATE_QUALITY_H

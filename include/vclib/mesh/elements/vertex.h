@@ -35,22 +35,16 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template<typename MeshType, typename... Args>
-class Vertex : public Element<MeshType, Args...>
+template<typename MeshType, typename... Comps>
+class Vertex : public Element<VERTEX, MeshType, Comps...>
 {
-public:
-	static const uint ELEMENT_TYPE = VERTEX;
-
-	uint index() const;
 };
 
-template<typename MeshType, typename... Args>
-class Vertex<MeshType, TypeWrapper<Args...>> : public Vertex<MeshType, Args...>
+template<typename MeshType, typename... Comps>
+class Vertex<MeshType, TypeWrapper<Comps...>> : public Vertex<MeshType, Comps...>
 {
 };
 
 } // namespace vcl
-
-#include "vertex.cpp"
 
 #endif // VCL_MESH_ELEMENTS_VERTEX_H

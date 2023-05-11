@@ -21,14 +21,56 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "half_edge.h"
+#ifndef VCL_MESH_COMPONENTS_QUALITY_H
+#define VCL_MESH_COMPONENTS_QUALITY_H
 
-namespace vcl {
+#include <vclib/concepts/mesh/components/quality.h>
 
-template<typename MeshType, typename... Args>
-uint HalfEdge<MeshType, Args...>::index() const
+#include "bases/component.h"
+
+namespace vcl::comp {
+
+/**
+ * @brief The Quality class
+ *
+ * @ingroup components
+ */
+template<typename T, typename ElementType = void, bool OPTIONAL = false>
+class Quality : public Component<T, ElementType, OPTIONAL>
 {
-	return Element<MeshType, Args...>::template index<typename MeshType::HalfEdgeType>();
-}
+	using Base = Component<T, ElementType, OPTIONAL>;
+	using ThisType = Quality<T, ElementType, OPTIONAL>;
 
-} // namespace vcl
+public:
+	using QualityComponent = ThisType; // expose the type to allow access to this component
+
+	using QualityType = T;
+
+	bool isEnabled() const;
+	bool isQualityEnabled() const;
+
+	const QualityType& quality() const;
+	QualityType&       quality();
+
+protected:
+	// PointersComponent interface functions
+	template<typename Element>
+	void importFrom(const Element& e);
+};
+
+/* Detector function to check if a class has Quality enabled */
+
+template <typename T>
+bool isQualityEnabledOn(const T& element);
+
+template<typename ElementType = void, bool OPTIONAL = false>
+using Qualityf = Quality<float, ElementType, OPTIONAL>;
+
+template<typename ElementType = void, bool OPTIONAL = false>
+using Qualityd = Quality<double, ElementType, OPTIONAL>;
+
+} // namespace vcl::comp
+
+#include "quality.cpp"
+
+#endif // VCL_MESH_COMPONENTS_QUALITY_H

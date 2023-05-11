@@ -25,14 +25,14 @@
 
 namespace vcl::comp {
 
-template<typename El, bool o>
-bool Color<El, o>::isEnabled() const
+template<typename El, bool O>
+bool Color<El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
-template<typename El, bool o>
-bool Color<El, o>::isColorEnabled() const
+template<typename El, bool O>
+bool Color<El, O>::isColorEnabled() const
 {
 	return isEnabled();
 }
@@ -40,8 +40,8 @@ bool Color<El, o>::isColorEnabled() const
 /**
  * @brief Returns const reference of the color of the element.
  */
-template<typename El, bool o>
-const vcl::Color& Color<El, o>::color() const
+template<typename El, bool O>
+const vcl::Color& Color<El, O>::color() const
 {
 	return c();
 }
@@ -49,15 +49,15 @@ const vcl::Color& Color<El, o>::color() const
 /**
  * @brief Returns a reference pf the color of the element.
  */
-template<typename El, bool o>
-vcl::Color& Color<El, o>::color()
+template<typename El, bool O>
+vcl::Color& Color<El, O>::color()
 {
 	return c();
 }
 
-template<typename El, bool o>
+template<typename El, bool O>
 template<typename Element>
-void Color<El, o>::importFrom(const Element& e)
+void Color<El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasColor<Element>) {
 		if (isColorEnabledOn(e)) {
@@ -66,14 +66,14 @@ void Color<El, o>::importFrom(const Element& e)
 	}
 }
 
-template<typename El, bool o>
-vcl::Color& Color<El, o>::c()
+template<typename El, bool O>
+vcl::Color& Color<El, O>::c()
 {
 	return Base::data(this);
 }
 
-template<typename El, bool o>
-const vcl::Color& Color<El, o>::c() const
+template<typename El, bool O>
+const vcl::Color& Color<El, O>::c() const
 {
 	return Base::data(this);
 }

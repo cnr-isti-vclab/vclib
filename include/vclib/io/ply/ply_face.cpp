@@ -195,15 +195,15 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 			}
 		}
 	}
-	if (p.name == ply::scalar) { // loading the scalar component
-		if constexpr (vcl::HasPerFaceScalar<MeshType>) {
-			using Scalar = typename FaceType::ScalarType;
-			if (vcl::isPerFaceScalarEnabled(mesh)) {
-				Scalar s    = io::internal::readProperty<Scalar>(file, p.type);
-				hasBeenRead = true;
+	if (p.name == ply::quality) { // loading the quality component
+		if constexpr (vcl::HasPerFaceQuality<MeshType>) {
+			using QualityType = typename FaceType::QualityType;
+			if (vcl::isPerFaceQualityEnabled(mesh)) {
+				QualityType s = io::internal::readProperty<QualityType>(file, p.type);
+				hasBeenRead   = true;
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh
 				for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
-					mesh.face(ff).scalar() = s;
+					mesh.face(ff).quality() = s;
 				}
 			}
 		}
@@ -290,9 +290,9 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 					hasBeenWritten = true;
 				}
 			}
-			if (p.name == ply::scalar) {
-				if constexpr (vcl::HasPerFaceScalar<MeshType>) {
-					io::internal::writeProperty(file, f.scalar(), p.type, bin);
+			if (p.name == ply::quality) {
+				if constexpr (vcl::HasPerFaceQuality<MeshType>) {
+					io::internal::writeProperty(file, f.quality(), p.type, bin);
 					hasBeenWritten = true;
 				}
 			}

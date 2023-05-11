@@ -35,6 +35,8 @@ enum ElementEnumType {
 	HALF_EDGE
 };
 
+inline static constexpr uint ELEMENTS_NUMBER = 4;
+
 template<typename T>
 concept ElementConcept = requires (T o, const T& co)
 {

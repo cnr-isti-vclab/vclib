@@ -178,84 +178,84 @@ void setPerFaceColorFromVertexColor(MeshType& m)
 }
 
 /**
- * @brief Sets the vertex colors from the scalar values by computing a shading in the given color
- * map (default is Red to Blue color map), in the given interval [minScalar, maxScalar].
+ * @brief Sets the vertex colors from the quality values by computing a shading in the given color
+ * map (default is Red to Blue color map), in the given interval [minQuality, maxQuality].
  *
- * If minScalar and maxScalar are not set (or if they are equal), the range is automatically
+ * If minQuality and maxQuality are not set (or if they are equal), the range is automatically
  * computed.
  *
  * Requirements:
  * - Mesh:
  *   - Vertices:
  *     - Color
- *     - Scalar
+ *     - Quality
  *
  * @param[in,out] m: mesh on which compute the vertex color.
  * @param[in] colorMap: the colormap to use to color the vertices of the mesh (default: RedBlue).
- * @param[in] minScalar: the minimum value of the range to use for coloring (default: 0).
- * @param[in] maxScalar: the maximum value of the range to use for coloring (default: 0).
+ * @param[in] minQuality: the minimum value of the range to use for coloring (default: 0).
+ * @param[in] maxQuality: the maximum value of the range to use for coloring (default: 0).
  */
 template<MeshConcept MeshType>
-void setPerVertexColorFromScalar(
+void setPerVertexColorFromQuality(
 	MeshType&                                 m,
 	vcl::Color::ColorMap                      colorMap,
-	typename MeshType::VertexType::ScalarType minScalar,
-	typename MeshType::VertexType::ScalarType maxScalar)
+	typename MeshType::VertexType::QualityType minQuality,
+	typename MeshType::VertexType::QualityType maxQuality)
 {
 	vcl::requirePerVertexColor(m);
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
+	using QualityType = typename VertexType::QualityType;
 
-	if (minScalar == maxScalar) {
-		std::pair<ScalarType, ScalarType> pair = vertexScalarMinMax(m);
-		minScalar                              = pair.first;
-		maxScalar                              = pair.second;
+	if (minQuality == maxQuality) {
+		std::pair<QualityType, QualityType> pair = vertexQualityMinMax(m);
+		minQuality                              = pair.first;
+		maxQuality                              = pair.second;
 	}
 	for (VertexType& v : m.vertices()) {
-		v.color() = colorFromInterval(minScalar, maxScalar, v.scalar(), colorMap);
+		v.color() = colorFromInterval(minQuality, maxQuality, v.quality(), colorMap);
 	}
 }
 
 /**
- * @brief Sets the face colors from the scalar values by computing a shading in the given color
- * map (default is Red to Blue color map), in the given interval [minScalar, maxScalar].
+ * @brief Sets the face colors from the quality values by computing a shading in the given color
+ * map (default is Red to Blue color map), in the given interval [minQuality, maxQuality].
  *
- * If minScalar and maxScalar are not set (or if they are equal), the range is automatically
+ * If minQuality and maxQuality are not set (or if they are equal), the range is automatically
  * computed.
  *
  * Requirements:
  * - Mesh:
  *   - Faces:
  *     - Color
- *     - Scalar
+ *     - Quality
  *
  * @param[in,out] m: mesh on which compute the face color.
  * @param[in] colorMap: the colormap to use to color the faces of the mesh (default: RedBlue).
- * @param[in] minScalar: the minimum value of the range to use for coloring (default: 0).
- * @param[in] maxScalar: the maximum value of the range to use for coloring (default: 0).
+ * @param[in] minQuality: the minimum value of the range to use for coloring (default: 0).
+ * @param[in] maxQuality: the maximum value of the range to use for coloring (default: 0).
  */
 template<FaceMeshConcept MeshType>
-void setPerFaceColorFromScalar(
+void setPerFaceColorFromQuality(
 	MeshType&                               m,
 	vcl::Color::ColorMap                    colorMap,
-	typename MeshType::FaceType::ScalarType minScalar,
-	typename MeshType::FaceType::ScalarType maxScalar)
+	typename MeshType::FaceType::QualityType minQuality,
+	typename MeshType::FaceType::QualityType maxQuality)
 {
 	vcl::requirePerFaceColor(m);
-	vcl::requirePerFaceScalar(m);
+	vcl::requirePerFaceQuality(m);
 
 	using FaceType   = typename MeshType::FaceType;
-	using ScalarType = typename FaceType::ScalarType;
+	using QualityType = typename FaceType::QualityType;
 
-	if (minScalar == maxScalar) {
-		std::pair<ScalarType, ScalarType> pair = faceScalarMinMax(m);
-		minScalar                              = pair.first;
-		maxScalar                              = pair.second;
+	if (minQuality == maxQuality) {
+		std::pair<QualityType, QualityType> pair = faceQualityMinMax(m);
+		minQuality                              = pair.first;
+		maxQuality                              = pair.second;
 	}
 	for (FaceType& f : m.faces()) {
-		f.color() = colorFromInterval(minScalar, maxScalar, f.scalar(), colorMap);
+		f.color() = colorFromInterval(minQuality, maxQuality, f.quality(), colorMap);
 	}
 }
 

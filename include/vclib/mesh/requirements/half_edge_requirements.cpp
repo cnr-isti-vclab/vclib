@@ -101,22 +101,22 @@ bool enableIfPerHalfEdgeMarkOptional(MeshType& m)
 }
 
 template<DcelMeshConcept MeshType>
-bool isPerHalfEdgeScalarEnabled(const MeshType& m)
+bool isPerHalfEdgeQualityEnabled(const MeshType& m)
 {
-	if constexpr (vcl::hedge::HasOptionalScalar<typename MeshType::HalfEdgeType>) {
-		return m.isPerHalfEdgeScalarEnabled();
+	if constexpr (vcl::hedge::HasOptionalQuality<typename MeshType::HalfEdgeType>) {
+		return m.isPerHalfEdgeQualityEnabled();
 	}
 	else {
-		return vcl::hedge::HasScalar<typename MeshType::HalfEdgeType>;
+		return vcl::hedge::HasQuality<typename MeshType::HalfEdgeType>;
 	}
 }
 
 template<DcelMeshConcept MeshType>
-bool enableIfPerHalfEdgeScalarOptional(MeshType& m)
+bool enableIfPerHalfEdgeQualityOptional(MeshType& m)
 {
-	if constexpr (HasPerHalfEdgeScalar<MeshType>) {
-		if constexpr(vcl::hedge::HasOptionalScalar<typename MeshType::HalfEdgeType>) {
-			m.enablePerHalfEdgeScalar();
+	if constexpr (HasPerHalfEdgeQuality<MeshType>) {
+		if constexpr(vcl::hedge::HasOptionalQuality<typename MeshType::HalfEdgeType>) {
+			m.enablePerHalfEdgeQuality();
 		}
 		return true;
 	}
@@ -178,11 +178,11 @@ void requirePerHalfEdgeMark(const MeshType& m)
 }
 
 template<DcelMeshConcept MeshType>
-void requirePerHalfEdgeScalar(const MeshType& m)
-	requires HasPerHalfEdgeScalar<MeshType>
+void requirePerHalfEdgeQuality(const MeshType& m)
+	requires HasPerHalfEdgeQuality<MeshType>
 {
-	if (!isPerHalfEdgeScalarEnabled(m))
-		throw vcl::MissingComponentException("HalfEdge scalar not enabled.");
+	if (!isPerHalfEdgeQualityEnabled(m))
+		throw vcl::MissingComponentException("HalfEdge quality not enabled.");
 }
 
 template<DcelMeshConcept MeshType>

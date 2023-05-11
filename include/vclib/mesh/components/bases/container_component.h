@@ -39,7 +39,7 @@ using ContCompBase = std::conditional_t<
  * components. When a component is horizontal, this type must be void. When a component is vertical,
  * this type must be the type of the Element that has the component, and it will be used by the
  * vcl::Mesh to access to the data stored vertically.
- * @tparam optional: When a component is vertical, it could be optional, that means that could be
+ * @tparam OPTIONAL: When a component is vertical, it could be optional, that means that could be
  * enabled/disabled at runtime. To make the component optional, this template parameter must be
  * true.
  * @tparam TTVN: "Tied To Vertex Number", this boolean tells whether the component should leave
@@ -56,17 +56,17 @@ template<
 	int N,
 	typename AdditionalData,
 	typename ElementType,
-	bool optional,
+	bool OPTIONAL,
 	bool TTVN,
 	typename... PointedTypes>
 class ContainerComponent :
 		public internal::
-			ContCompBase<T, N, AdditionalData, ElementType, optional, TTVN, PointedTypes...>
+			ContCompBase<T, N, AdditionalData, ElementType, OPTIONAL, TTVN, PointedTypes...>
 {
 	static constexpr bool HAS_ADDITIONAL_DATA = !std::is_same_v<AdditionalData, void>;
 
 	using Base =
-		internal::ContCompBase<T, N, AdditionalData, ElementType, optional, TTVN, PointedTypes...>;
+		internal::ContCompBase<T, N, AdditionalData, ElementType, OPTIONAL, TTVN, PointedTypes...>;
 
 public:
 	/**

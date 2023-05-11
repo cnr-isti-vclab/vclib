@@ -36,11 +36,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename Scalar, typename ElementType = void, bool optional = false>
-class TransformMatrix : public Component<Matrix44<Scalar>, ElementType, optional>
+template<typename Scalar, typename ElementType = void, bool OPTIONAL = false>
+class TransformMatrix : public Component<Matrix44<Scalar>, ElementType, OPTIONAL>
 {
-	using Base = Component<Matrix44<Scalar>, ElementType, optional>;
-	using ThisType = TransformMatrix<Scalar, ElementType, optional>;
+	using Base = Component<Matrix44<Scalar>, ElementType, OPTIONAL>;
+	using ThisType = TransformMatrix<Scalar, ElementType, OPTIONAL>;
 
 public:
 	using TransformMatrixComponent = ThisType; // expose the type to allow access to this component

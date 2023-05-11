@@ -25,31 +25,30 @@
 
 namespace vcl {
 
-template <typename MeshType, typename... Args>
-template<typename ElType>
-void Element<MeshType, Args...>::importFrom(const ElType& v)
-{
-	(Args::importFrom(v), ...);
-}
-
-template <typename MeshType, typename... Args>
-template<typename ElType>
-uint Element<MeshType, Args...>::index() const
+template <uint ELEM_TYPE, typename MeshType, typename... Comps>
+uint Element<ELEM_TYPE, MeshType, Comps...>::index() const
 {
 	assert(comp::ParentMeshPointer<MeshType>::parentMesh());
-	return comp::ParentMeshPointer<MeshType>::parentMesh()->index(
-		static_cast<const ElType*>(this));
+	return comp::ParentMeshPointer<MeshType>::parentMesh()
+		->template elementIndex<ELEM_TYPE>(this);
 }
 
-template<typename MeshType, typename... Args>
-void Element<MeshType, Args...>::initVerticalComponents()
+template <uint ELEM_TYPE, typename MeshType, typename... Comps>
+template<typename ElType>
+void Element<ELEM_TYPE, MeshType, Comps...>::importFrom(const ElType& v)
 {
-	(construct<Args>(), ...);
+	(Comps::importFrom(v), ...);
 }
 
-template<typename MeshType, typename... Args>
+template<uint ELEM_TYPE, typename MeshType, typename... Comps>
+void Element<ELEM_TYPE, MeshType, Comps...>::initVerticalComponents()
+{
+	(construct<Comps>(), ...);
+}
+
+template<uint ELEM_TYPE, typename MeshType, typename... Comps>
 template<typename Comp>
-void Element<MeshType, Args...>::construct()
+void Element<ELEM_TYPE, MeshType, Comps...>::construct()
 {
 	if constexpr (comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>) {
 		if constexpr (comp::HasIsEnabledMemberFunction<Comp>) {

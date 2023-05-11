@@ -29,7 +29,7 @@
 #include "update/curvature.h"
 #include "update/flag.h"
 #include "update/normal.h"
-#include "update/scalar.h"
+#include "update/quality.h"
 #include "update/selection.h"
 #include "update/topology.h"
 #include "update/transform.h"

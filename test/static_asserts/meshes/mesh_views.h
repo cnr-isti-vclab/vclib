@@ -48,7 +48,7 @@ void meshViewsStaticAsserts()
 	static_assert(
 		std::ranges::range<decltype(m.vertices() | vcl::views::coords)>, "");
 	static_assert(
-		std::ranges::range<decltype(m.vertices() | vcl::views::scalars)>, "");
+		std::ranges::range<decltype(m.vertices() | vcl::views::quality)>, "");
 	static_assert(
 		std::ranges::range<decltype(m.vertices() | vcl::views::selection)>, "");
 	static_assert(

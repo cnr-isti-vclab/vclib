@@ -25,47 +25,47 @@
 
 namespace vcl::comp {
 
-template<typename El, bool o>
-Mark<El, o>::Mark()
+template<typename El, bool O>
+Mark<El, O>::Mark()
 {
 	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
 
-template<typename El, bool o>
-void Mark<El, o>::init()
+template<typename El, bool O>
+void Mark<El, O>::init()
 {
 	m() = 0;
 }
 
-template<typename El, bool o>
-bool Mark<El, o>::isEnabled() const
+template<typename El, bool O>
+bool Mark<El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
-template<typename El, bool o>
-bool Mark<El, o>::isMarkEnabled() const
+template<typename El, bool O>
+bool Mark<El, O>::isMarkEnabled() const
 {
 	return isEnabled();
 }
 
-template<typename El, bool o>
-int Mark<El, o>::mark() const
+template<typename El, bool O>
+int Mark<El, O>::mark() const
 {
 	return m();
 }
 
-template<typename El, bool o>
-void Mark<El, o>::resetMark()
+template<typename El, bool O>
+void Mark<El, O>::resetMark()
 {
 	m() = 0;
 }
 
-template<typename El, bool o>
+template<typename El, bool O>
 template<typename E>
-bool Mark<El, o>::hasSameMark(const E& e) const
+bool Mark<El, O>::hasSameMark(const E& e) const
 {
 	if constexpr (std::is_pointer<E>::value) {
 		return e->mark() == m();
@@ -75,21 +75,21 @@ bool Mark<El, o>::hasSameMark(const E& e) const
 	}
 }
 
-template<typename El, bool o>
-void Mark<El, o>::incrementMark()
+template<typename El, bool O>
+void Mark<El, O>::incrementMark()
 {
 	m()++;
 }
 
-template<typename El, bool o>
-void Mark<El, o>::decrementMark()
+template<typename El, bool O>
+void Mark<El, O>::decrementMark()
 {
 	m()--;
 }
 
-template<typename El, bool o>
+template<typename El, bool O>
 template<typename Element>
-void Mark<El, o>::importFrom(const Element& e)
+void Mark<El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasMark<Element>) {
 		if (isMarkEnabledOn(e)) {
@@ -98,14 +98,14 @@ void Mark<El, o>::importFrom(const Element& e)
 	}
 }
 
-template<typename El, bool o>
-int& Mark<El, o>::m()
+template<typename El, bool O>
+int& Mark<El, O>::m()
 {
 	return Base::data(this);
 }
 
-template<typename El, bool o>
-int Mark<El, o>::m() const
+template<typename El, bool O>
+int Mark<El, O>::m() const
 {
 	return Base::data(this);
 }

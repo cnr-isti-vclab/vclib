@@ -25,35 +25,35 @@
 
 namespace vcl::comp {
 
-template<typename Scalar, typename El, bool o>
-bool PrincipalCurvature<Scalar, El, o>::isEnabled() const
+template<typename Scalar, typename El, bool O>
+bool PrincipalCurvature<Scalar, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
-template<typename Scalar, typename El, bool o>
-bool PrincipalCurvature<Scalar, El, o>::isPrincipalCurvatureEnabled() const
+template<typename Scalar, typename El, bool O>
+bool PrincipalCurvature<Scalar, El, O>::isPrincipalCurvatureEnabled() const
 {
 	return isEnabled();
 }
 
-template<typename Scalar, typename El, bool o>
-const typename PrincipalCurvature<Scalar, El, o>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, o>::principalCurvature() const
+template<typename Scalar, typename El, bool O>
+const typename PrincipalCurvature<Scalar, El, O>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, O>::principalCurvature() const
 {
 	return Base::data(this);
 }
 
-template<typename Scalar, typename El, bool o>
-typename PrincipalCurvature<Scalar, El, o>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, o>::principalCurvature()
+template<typename Scalar, typename El, bool O>
+typename PrincipalCurvature<Scalar, El, O>::PrincipalCurvatureType&
+PrincipalCurvature<Scalar, El, O>::principalCurvature()
 {
 	return Base::data(this);
 }
 
-template<typename Scalar, typename El, bool o>
+template<typename Scalar, typename El, bool O>
 template<typename Element>
-void PrincipalCurvature<Scalar, El, o>::importFrom(const Element& e)
+void PrincipalCurvature<Scalar, El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasPrincipalCurvature<Element>) {
 		if (isPrincipalCurvatureEnabledOn(e)) {

@@ -47,7 +47,7 @@ namespace vcl::comp::internal {
  */
 
 // horizontal, not specialized. Store the custom component in this struct
-template<typename ElementType, bool vertical>
+template<typename ElementType, bool VERTICAL>
 struct CustomComponentsData
 {
 	bool componentExists(const std::string& compName, const ElementType*) const

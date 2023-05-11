@@ -35,7 +35,7 @@
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
 #include "../components/principal_curvature.h"
-#include "../components/scalar.h"
+#include "../components/quality.h"
 #include "../components/vertex_half_edge_pointer.h"
 #include "../components/tex_coord.h"
 
@@ -200,30 +200,30 @@ using OptionalPrincipalCurvaturef = comp::PrincipalCurvaturef<VertexType, true>;
 template<typename VertexType>
 using OptionalPrincipalCurvatured = comp::PrincipalCurvatured<VertexType, true>;
 
-/* Port Scalar class into vert namespace */
-template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType>;
+/* Port Quality class into vert namespace */
+template<typename QualityType>
+using Quality = comp::Quality<QualityType>;
 
-using Scalarf = comp::Scalarf<>;
-using Scalard = comp::Scalard<>;
+using Qualityf = comp::Qualityf<>;
+using Qualityd = comp::Qualityd<>;
 
-template<typename ScalarType, typename FaceType>
-using VerticalScalar = comp::Scalar<ScalarType, FaceType>;
-
-template<typename FaceType>
-using VerticalScalarf = comp::Scalar<float, FaceType>;
+template<typename QualityType, typename FaceType>
+using VerticalQuality = comp::Quality<QualityType, FaceType>;
 
 template<typename FaceType>
-using VerticalScalard = comp::Scalar<double, FaceType>;
+using VerticalQualityf = comp::Quality<float, FaceType>;
 
-template<typename ScalarType, typename VertexType>
-using OptionalScalar = comp::Scalar<ScalarType, VertexType, true>;
+template<typename FaceType>
+using VerticalQualityd = comp::Quality<double, FaceType>;
+
+template<typename QualityType, typename VertexType>
+using OptionalQuality = comp::Quality<QualityType, VertexType, true>;
 
 template<typename VertexType>
-using OptionalScalarf = comp::Scalar<float, VertexType, true>;
+using OptionalQualityf = comp::Quality<float, VertexType, true>;
 
 template<typename VertexType>
-using OptionalScalard = comp::Scalar<double, VertexType, true>;
+using OptionalQualityd = comp::Quality<double, VertexType, true>;
 
 /* Port TexCoord class into vert namespace */
 template<typename ScalarType>

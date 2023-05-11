@@ -31,7 +31,7 @@ template<MeshConcept MeshType>
 MeshSampler<MeshType>::MeshSampler()
 {
 	vcl::enableIfPerVertexNormalOptional(m);
-	vcl::enableIfPerVertexScalarOptional(m);
+	vcl::enableIfPerVertexQualityOptional(m);
 	if constexpr (vcl::HasName<MeshType>) {
 		m.name() = "Sampling";
 	}
@@ -110,14 +110,14 @@ void MeshSampler<MeshType>::set(uint i, const VertexType& v)
 
 template<MeshConcept MeshType>
 template<EdgeConcept EdgeType>
-void MeshSampler<MeshType>::add(const EdgeType& e, double u, bool copyScalar)
+void MeshSampler<MeshType>::add(const EdgeType& e, double u, bool copyQuality)
 {
 	uint vi        = m.addVertex((e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u));
 
-	if constexpr (vcl::HasPerVertexScalar<MeshType> && vcl::edge::HasScalar<EdgeType>) {
-		if (copyScalar) {
-			if (vcl::isPerVertexScalarEnabled(m) && e.isScalarEnabled()) {
-				m.vertex(vi).scalar() = e.scalar();
+	if constexpr (vcl::HasPerVertexQuality<MeshType> && vcl::edge::HasQuality<EdgeType>) {
+		if (copyQuality) {
+			if (vcl::isPerVertexQualityEnabled(m) && e.isQualityEnabled()) {
+				m.vertex(vi).quality() = e.quality();
 			}
 		}
 	}
@@ -127,14 +127,14 @@ void MeshSampler<MeshType>::add(const EdgeType& e, double u, bool copyScalar)
 
 template<MeshConcept MeshType>
 template<EdgeConcept EdgeType>
-void MeshSampler<MeshType>::set(uint i, const EdgeType& e, double u, bool copyScalar)
+void MeshSampler<MeshType>::set(uint i, const EdgeType& e, double u, bool copyQuality)
 {
 	m.vertex(i).coord() = (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u);
 
-	if constexpr (vcl::HasPerVertexScalar<MeshType> && vcl::edge::HasScalar<EdgeType>) {
-		if (copyScalar) {
-			if (vcl::isPerVertexScalarEnabled(m) && e.isScalarEnabled()) {
-				m.vertex(i).scalar() = e.scalar();
+	if constexpr (vcl::HasPerVertexQuality<MeshType> && vcl::edge::HasQuality<EdgeType>) {
+		if (copyQuality) {
+			if (vcl::isPerVertexQualityEnabled(m) && e.isQualityEnabled()) {
+				m.vertex(i).quality() = e.quality();
 			}
 		}
 	}
@@ -144,21 +144,21 @@ void MeshSampler<MeshType>::set(uint i, const EdgeType& e, double u, bool copySc
 
 template<MeshConcept MeshType>
 template<FaceConcept FaceType>
-void MeshSampler<MeshType>::add(const FaceType& f, bool copyNormal, bool copyScalar)
+void MeshSampler<MeshType>::add(const FaceType& f, bool copyNormal, bool copyQuality)
 {
 	uint vi = m.addVertex(vcl::faceBarycenter(f));
 
-	copyComponents(vi, f, copyNormal, copyScalar);
+	copyComponents(vi, f, copyNormal, copyQuality);
 	setBirthElement(vi, "birthFace", f.index());
 }
 
 template<MeshConcept MeshType>
 template<FaceConcept FaceType>
-void MeshSampler<MeshType>::set(uint i, const FaceType& f, bool copyNormal, bool copyScalar)
+void MeshSampler<MeshType>::set(uint i, const FaceType& f, bool copyNormal, bool copyQuality)
 {
 	m.vertex(i).coord() = vcl::faceBarycenter(f);
 
-	copyComponents(i, f, copyNormal, copyScalar);
+	copyComponents(i, f, copyNormal, copyQuality);
 	setBirthElement(i, "birthFace", f.index());
 }
 
@@ -168,7 +168,7 @@ void MeshSampler<MeshType>::add(
 	const FaceType& f,
 	const std::vector<ScalarType>&      barCoords,
 	bool                                copyNormal,
-	bool                                copyScalar)
+	bool                                copyQuality)
 {
 	assert(f.vertexNumber() <= barCoords.size());
 
@@ -178,7 +178,7 @@ void MeshSampler<MeshType>::add(
 
 	uint vi = m.addVertex(p);
 
-	copyComponents(vi, f, copyNormal, copyScalar);
+	copyComponents(vi, f, copyNormal, copyQuality);
 	setBirthElement(vi, "birthFace", f.index());
 }
 
@@ -189,7 +189,7 @@ void MeshSampler<MeshType>::set(
 	const FaceType& f,
 	const std::vector<ScalarType>&      barCoords,
 	bool                                copyNormal,
-	bool                                copyScalar)
+	bool                                copyQuality)
 {
 	assert(f.vertexNumber() <= barCoords.size());
 
@@ -199,7 +199,7 @@ void MeshSampler<MeshType>::set(
 
 	m.vertex(i).coord() = p;
 
-	copyComponents(i, f, copyNormal, copyScalar);
+	copyComponents(i, f, copyNormal, copyQuality);
 	setBirthElement(i, "birthFace", f.index());
 }
 
@@ -209,7 +209,7 @@ void MeshSampler<MeshType>::add(
 	const FaceType& f,
 	const PointType&                    barCoords,
 	bool                                copyNormal,
-	bool                                copyScalar)
+	bool                                copyQuality)
 {
 	static_assert(FaceType::NV == 3 || FaceType::NV == -1);
 	if constexpr(FaceType::NV == -1) {
@@ -220,7 +220,7 @@ void MeshSampler<MeshType>::add(
 
 	uint vi = m.addVertex(p);
 
-	copyComponents(vi, f, copyNormal, copyScalar);
+	copyComponents(vi, f, copyNormal, copyQuality);
 	setBirthElement(vi, "birthFace", f.index());
 }
 
@@ -231,7 +231,7 @@ void MeshSampler<MeshType>::set(
 	const FaceType& f,
 	const PointType&                    barCoords,
 	bool                                copyNormal,
-	bool                                copyScalar)
+	bool                                copyQuality)
 {
 	static_assert(FaceType::NV == 3 || FaceType::NV == -1);
 	if constexpr(FaceType::NV == -1) {
@@ -242,7 +242,7 @@ void MeshSampler<MeshType>::set(
 
 	m.vertex(i).coord() = p;
 
-	copyComponents(i, f, copyNormal, copyScalar);
+	copyComponents(i, f, copyNormal, copyQuality);
 	setBirthElement(i, "birthFace", f.index());
 }
 
@@ -264,7 +264,7 @@ void MeshSampler<MeshType>::copyComponents(
 	uint            vi,
 	const FaceType& f,
 	bool            copyNormal,
-	bool            copyScalar)
+	bool            copyQuality)
 {
 	if constexpr (vcl::HasPerVertexNormal<MeshType> && vcl::face::HasNormal<FaceType>) {
 		if (copyNormal) {
@@ -274,10 +274,10 @@ void MeshSampler<MeshType>::copyComponents(
 		}
 	}
 
-	if constexpr (vcl::HasPerVertexScalar<MeshType> && vcl::face::HasScalar<FaceType>) {
-		if (copyScalar) {
-			if (vcl::isPerVertexScalarEnabled(m) && f.isScalarEnabled()) {
-				m.vertex(vi).scalar() = f.scalar();
+	if constexpr (vcl::HasPerVertexQuality<MeshType> && vcl::face::HasQuality<FaceType>) {
+		if (copyQuality) {
+			if (vcl::isPerVertexQualityEnabled(m) && f.isQualityEnabled()) {
+				m.vertex(vi).quality() = f.quality();
 			}
 		}
 	}

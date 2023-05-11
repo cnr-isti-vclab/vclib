@@ -21,53 +21,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_SCALARS_H
-#define VCL_VIEWS_MESH_COMPONENTS_SCALARS_H
+#ifndef VCL_ALGORITHMS_STAT_QUALITY_H
+#define VCL_ALGORITHMS_STAT_QUALITY_H
 
-#include <vclib/concepts/pointers.h>
-#include <vclib/types.h>
+#include <vclib/math/histogram.h>
+#include <vclib/mesh/requirements.h>
 
-#include <ranges>
+namespace vcl {
 
-namespace vcl::views {
+template<MeshConcept MeshType>
+std::pair<typename MeshType::VertexType::QualityType, typename MeshType::VertexType::QualityType>
+vertexQualityMinMax(const MeshType& m);
 
-namespace internal {
+template<FaceMeshConcept MeshType>
+std::pair<typename MeshType::FaceType::QualityType, typename MeshType::FaceType::QualityType>
+faceQualityMinMax(const MeshType& m);
 
-struct ScalarView
-{
-	constexpr ScalarView() = default;
+template<MeshConcept MeshType>
+typename MeshType::VertexType::QualityType vertexQualityAverage(const MeshType& m);
 
-	inline static constexpr auto constScalar = [](const auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->scalar();
-		else
-			return p.scalar();
-	};
+template<FaceMeshConcept MeshType>
+typename MeshType::FaceType::QualityType faceQualityAverage(const MeshType& m);
 
-	inline static constexpr auto scalar = [](auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->scalar();
-		else
-			return p.scalar();
-	};
+template<MeshConcept MeshType>
+std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
+	const MeshType& m,
+	double          diskRadius,
+	double          radiusVariance,
+	bool            invert = false);
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, ScalarView)
-	{
-		using ElemType = std::ranges::range_value_t<R>;
-		if constexpr(IsConst<ElemType>)
-			return std::forward<R>(r) | std::views::transform(constScalar);
-		else
-			return std::forward<R>(r) | std::views::transform(scalar);
-	}
-};
+template<MeshConcept MeshType, typename HScalar = double>
+Histogram<HScalar> vertexQualityHistogram(
+	const MeshType& m,
+	bool selectionOnly = false,
+	uint histSize = 10000);
 
-} // namespace vcl::views::internal
+template<FaceMeshConcept MeshType, typename HScalar = double>
+Histogram<HScalar> faceQualityHistogram(
+	const MeshType& m,
+	bool selectionOnly = false,
+	uint histSize = 10000);
 
-inline constexpr internal::ScalarView scalars;
+} // namespace vcl
 
-} // namespace vcl::views
+#include "quality.cpp"
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_SCALARS_H
+#endif // VCL_ALGORITHMS_STAT_QUALITY_H

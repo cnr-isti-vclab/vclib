@@ -50,7 +50,7 @@ class Vertex :
 			vcl::vert::Coordinate3<Scalar>,                                 // 12 or 24b
 			vcl::vert::Normal3<Scalar>,                                     // 12 or 24b
 			vcl::vert::Color,                                               // 4b
-			vcl::vert::Scalar<Scalar>,                                      // 4 or 8b
+			vcl::vert::Quality<Scalar>,                                     // 4 or 8b
 			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
 			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
 			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
@@ -67,7 +67,7 @@ class Face :
 			vcl::face::TriangleBitFlags,                                     // 4b
 			vcl::face::TriangleVertexPtrs<Vertex<Scalar>>,                   // 24b
 			vcl::face::Normal3<Scalar>,                                      // 12 or 24b
-			vcl::face::OptionalScalar<Scalar, Face<Scalar>>,                 // 0b
+			vcl::face::OptionalQuality<Scalar, Face<Scalar>>,                // 0b
 			vcl::face::OptionalColor<Face<Scalar>>,                          // 0b
 			vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,              // 0b
 			vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>, // 0b

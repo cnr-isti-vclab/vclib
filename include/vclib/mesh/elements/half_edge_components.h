@@ -31,7 +31,7 @@
 #include "../components/mark.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
-#include "../components/scalar.h"
+#include "../components/quality.h"
 #include "../components/tex_coord.h"
 
 /**
@@ -86,30 +86,30 @@ using OptionalMark = comp::Mark<HEdgeType, true>;
 template<typename MeshType>
 using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
-/* Port Scalar class into hedge namespace */
-template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType>;
+/* Port Quality class into hedge namespace */
+template<typename QualityType>
+using Quality = comp::Quality<QualityType>;
 
-using Scalarf = comp::Scalarf<>;
-using Scalard = comp::Scalard<>;
+using Qualityf = comp::Qualityf<>;
+using Qualityd = comp::Qualityd<>;
 
-template<typename ScalarType, typename HEdgeType>
-using VerticalScalar = comp::Scalar<ScalarType, HEdgeType>;
-
-template<typename HEdgeType>
-using VerticalScalarf = comp::Scalar<float, HEdgeType>;
+template<typename QualityType, typename HEdgeType>
+using VerticalQuality = comp::Quality<QualityType, HEdgeType>;
 
 template<typename HEdgeType>
-using VerticalScalard = comp::Scalar<double, HEdgeType>;
-
-template<typename ScalarType, typename HEdgeType>
-using OptionalScalar = comp::Scalar<ScalarType, HEdgeType, true>;
+using VerticalQualityf = comp::Quality<float, HEdgeType>;
 
 template<typename HEdgeType>
-using OptionalScalarf = comp::Scalar<float, HEdgeType, true>;
+using VerticalQualityd = comp::Quality<double, HEdgeType>;
+
+template<typename QualityType, typename HEdgeType>
+using OptionalQuality = comp::Quality<QualityType, HEdgeType, true>;
 
 template<typename HEdgeType>
-using OptionalScalard = comp::Scalar<double, HEdgeType, true>;
+using OptionalQualityf = comp::Quality<float, HEdgeType, true>;
+
+template<typename HEdgeType>
+using OptionalQualityd = comp::Quality<double, HEdgeType, true>;
 
 /* Port TexCoord class into hedge namespace */
 template<typename ScalarType>

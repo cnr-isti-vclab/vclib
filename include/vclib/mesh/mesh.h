@@ -72,6 +72,9 @@ class Mesh : public Args...
 	template<ElementConcept T>
 	friend class mesh::ElementContainer;
 
+	template <uint ELEM_TYPE, typename MeshType, typename... Comps>
+	friend class Element;
+
 public:
 	// filter Components of the Mesh, taking only the Container
 	// Containers is a vcl::TypeWrapper containing all the containers that were in Args
@@ -103,10 +106,15 @@ public:
 
 	Mesh& operator=(Mesh oth);
 
+	/*** Generic Element functions ***/
+	template<ElementConcept El>
+	uint index(const El& e) const requires (hasContainerOf<El>());
+
+	template<ElementConcept El>
+	uint index(const El* e) const requires (hasContainerOf<El>());
+
 	/*** Vertices ***/
 
-	uint index(const typename Mesh::VertexType& v) const;
-	uint index(const typename Mesh::VertexType* v) const;
 	uint addVertex();
 	uint addVertex(const typename Mesh::VertexType::CoordType& p);
 	uint addVertices(uint n);
@@ -118,12 +126,6 @@ public:
 	void compactVertices();
 
 	/*** Faces ***/
-
-	template<HasFaces M = Mesh>
-	uint index(const typename M::FaceType& f) const;
-
-	template<HasFaces M = Mesh>
-	uint index(const typename M::FaceType* f) const;
 
 	template<HasFaces M = Mesh>
 	uint addFace();
@@ -169,12 +171,6 @@ public:
 	/*** Edges ***/
 
 	template<HasEdges M = Mesh>
-	uint index(const typename M::EdgeType& e) const;
-
-	template<HasEdges M = Mesh>
-	uint index(const typename M::EdgeType* v) const;
-
-	template<HasEdges M = Mesh>
 	uint addEdge();
 
 	template<HasEdges M = Mesh>
@@ -187,12 +183,6 @@ public:
 	void compactEdges();
 
 	/*** HalfEdges ***/
-
-	template<HasHalfEdges M = Mesh>
-	uint index(const typename M::HalfEdgeType& e) const;
-
-	template<HasHalfEdges M = Mesh>
-	uint index(const typename M::HalfEdgeType* v) const;
 
 	template<HasHalfEdges M = Mesh>
 	uint addHalfEdge();
@@ -239,6 +229,9 @@ private:
 	// hide init and isEnabled members
 	void init() {};
 	bool isEnabled() { return true; }
+
+	template<uint EL_TYPE, typename T>
+	uint elementIndex(const T* el) const;
 
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);
@@ -344,8 +337,8 @@ private:
 		static constexpr bool value = ContainerOfTypeIndexPred<El::ELEMENT_TYPE>::value;
 	};
 
-	template<ElementConcept El>
-	struct GetContainerOf
+	template<uint EL_TYPE>
+	struct GetContainerOfElID
 	{
 	private:
 		template<typename>
@@ -358,7 +351,21 @@ private:
 		};
 	public:
 		using type = typename TypeUnwrapper<
-			typename ContainerOfTypeIndexPred<El::ELEMENT_TYPE>::type>::type;
+			typename ContainerOfTypeIndexPred<EL_TYPE>::type>::type;
+	};
+
+	/**
+	 * @brief The GetContainerOf struct allows to get the Container of an Element on this Mesh.
+	 *
+	 * Usage:
+	 *
+	 * ```cpp
+	 * using Container = GetContainerOf<ElementType>::type;
+	 * ```
+	 */
+	template<ElementConcept El>
+	struct GetContainerOf : public GetContainerOfElID<El::ELEMENT_TYPE>
+	{
 	};
 };
 

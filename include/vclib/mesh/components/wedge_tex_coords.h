@@ -42,12 +42,12 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename Scalar, int N, typename ElementType = void, bool optional = false>
+template<typename Scalar, int N, typename ElementType = void, bool OPTIONAL = false>
 class WedgeTexCoords :
-		public ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, optional, true>
+		public ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, OPTIONAL, true>
 {
-	using Base = ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, optional, true>;
-	using ThisType = WedgeTexCoords<Scalar, N, ElementType, optional>;
+	using Base = ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, OPTIONAL, true>;
+	using ThisType = WedgeTexCoords<Scalar, N, ElementType, OPTIONAL>;
 
 public:
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component

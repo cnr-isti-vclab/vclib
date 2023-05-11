@@ -111,17 +111,17 @@ int main()
 	}
 
 
-	// scalar
+	// quality
 
 	i = 0;
-	for (auto& scal : m.vertices() | vcl::views::scalars) {
-		scal = ++i;
+	for (auto& qual : m.vertices() | vcl::views::quality) {
+		qual = ++i;
 	}
 
-	std::cerr << "\n\nPrint Scalars:\n";
+	std::cerr << "\n\nPrint Vertex Quality:\n";
 
-	for (const auto& scal : cm.vertices() | vcl::views::scalars) {
-		std::cerr << scal << "\n";
+	for (const auto& qual : cm.vertices() | vcl::views::quality) {
+		std::cerr << qual << "\n";
 	}
 	return 0;
 

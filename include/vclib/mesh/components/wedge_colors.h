@@ -41,11 +41,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<int N, typename ElementType = void, bool optional = false>
-class WedgeColors : public ContainerComponent<vcl::Color, N, void, ElementType, optional, true>
+template<int N, typename ElementType = void, bool OPTIONAL = false>
+class WedgeColors : public ContainerComponent<vcl::Color, N, void, ElementType, OPTIONAL, true>
 {
-	using Base = ContainerComponent<vcl::Color, N, void, ElementType, optional, true>;
-	using ThisType = WedgeColors<N, ElementType, optional>;
+	using Base = ContainerComponent<vcl::Color, N, void, ElementType, OPTIONAL, true>;
+	using ThisType = WedgeColors<N, ElementType, OPTIONAL>;
 
 public:
 	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component

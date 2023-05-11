@@ -225,14 +225,14 @@ bool enableIfPerVertexPrincipalCurvatureOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool isPerVertexScalarEnabled(const MeshType& m)
+bool isPerVertexQualityEnabled(const MeshType& m)
 {
 	if constexpr (HasVertices<MeshType>) {
-		if constexpr (vcl::vert::HasOptionalScalar<typename MeshType::VertexType>) {
-			return m.isPerVertexScalarEnabled();
+		if constexpr (vcl::vert::HasOptionalQuality<typename MeshType::VertexType>) {
+			return m.isPerVertexQualityEnabled();
 		}
 		else {
-			return vcl::vert::HasScalar<typename MeshType::VertexType>;
+			return vcl::vert::HasQuality<typename MeshType::VertexType>;
 		}
 	}
 	else {
@@ -241,11 +241,11 @@ bool isPerVertexScalarEnabled(const MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool enableIfPerVertexScalarOptional(MeshType& m)
+bool enableIfPerVertexQualityOptional(MeshType& m)
 {
-	if constexpr (HasPerVertexScalar<MeshType>) {
-		if constexpr(vcl::vert::HasOptionalScalar<typename MeshType::VertexType>) {
-			m.enablePerVertexScalar();
+	if constexpr (HasPerVertexQuality<MeshType>) {
+		if constexpr(vcl::vert::HasOptionalQuality<typename MeshType::VertexType>) {
+			m.enablePerVertexQuality();
 		}
 		return true;
 	}
@@ -344,11 +344,11 @@ void requirePerVertexPrincipalCurvature(const MeshType& m)
 }
 
 template<typename MeshType>
-void requirePerVertexScalar(const MeshType& m)
-	requires HasPerVertexScalar<MeshType>
+void requirePerVertexQuality(const MeshType& m)
+	requires HasPerVertexQuality<MeshType>
 {
-	if (!isPerVertexScalarEnabled(m))
-		throw vcl::MissingComponentException("Vertex scalars not enabled.");
+	if (!isPerVertexQualityEnabled(m))
+		throw vcl::MissingComponentException("Vertex quality not enabled.");
 }
 
 template<typename MeshType>

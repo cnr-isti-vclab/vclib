@@ -21,7 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "scalar.h"
+#include "quality.h"
 
 #include <vclib/math/base.h>
 #include <vclib/views/mesh.h>
@@ -29,99 +29,100 @@
 namespace vcl {
 
 /**
- * @brief Returns a pair containing the min and the maximum vertex scalars.
+ * @brief Returns a pair containing the min and the maximum vertex quality.
  *
  * Requirements:
  * - Mesh:
  *   - Vertices:
- *     - Scalar
+ *     - Quality
  *
- * @param[in] m: the input Mesh on which compute the minimum and the maximum scalars.
+ * @param[in] m: the input Mesh on which compute the minimum and the maximum quality.
  * @return A `std::pair` having as first element the minimum, and as second element the maximum
- * scalar.
+ * quality.
  */
 template<MeshConcept MeshType>
-std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
-vertexScalarMinMax(const MeshType& m)
+std::pair<typename MeshType::VertexType::QualityType, typename MeshType::VertexType::QualityType>
+vertexQualityMinMax(const MeshType& m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
-	auto [min, max] = std::ranges::minmax(m.vertices() | views::scalars);
+	auto [min, max] = std::ranges::minmax(m.vertices() | views::quality);
 	return std::make_pair(min, max);;
 }
 
 /**
- * @brief Returns a pair containing the min and the maximum face scalars.
+ * @brief Returns a pair containing the min and the maximum face quality.
  *
  * Requirements:
  * - Mesh:
  *   - Faces:
- *     - Scalar
+ *     - Quality
  *
- * @param[in] m: the input Mesh on which compute the minimum and the maximum scalars.
+ * @param[in] m: the input Mesh on which compute the minimum and the maximum quality.
  * @return A `std::pair` having as first element the minimum, and as second element the maximum
- * scalar.
+ * quality.
  */
 template<FaceMeshConcept MeshType>
-std::pair<typename MeshType::FaceType::ScalarType, typename MeshType::FaceType::ScalarType>
-faceScalarMinMax(const MeshType& m)
+std::pair<typename MeshType::FaceType::QualityType, typename MeshType::FaceType::QualityType>
+faceQualityMinMax(const MeshType& m)
 {
-	vcl::requirePerFaceScalar(m);
-	
-	auto [min, max] = std::ranges::minmax(m.faces() | views::scalars);
+	vcl::requirePerFaceQuality(m);
+
+	auto [min, max] = std::ranges::minmax(m.faces() | views::quality);
+
 	return std::make_pair(min, max);
 }
 
 /**
- * @brief Returns a scalar that is the average of the vertex scalars.
+ * @brief Returns a scalar that is the average of the vertex quality.
  *
  * Requirements:
  * - Mesh:
  *   - Vertices:
- *     - Scalar
+ *     - Quality
  *
- * @param[in] m: the input Mesh on which compute the average of the scalars.
- * @return The average of the vertex scalars of the given mesh.
+ * @param[in] m: the input Mesh on which compute the average of the quality.
+ * @return The average of the vertex quality of the given mesh.
  */
 template<MeshConcept MeshType>
-typename MeshType::VertexType::ScalarType vertexScalarAverage(const MeshType& m)
+typename MeshType::VertexType::QualityType vertexQualityAverage(const MeshType& m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
+	using QualityType = typename VertexType::QualityType;
 
-	ScalarType avg = 0;
+	QualityType avg = 0;
 
 	for (const VertexType& v : m.vertices())
-		avg += v.scalar();
+		avg += v.quality();
 
 	return avg / m.vertexNumber();
 }
 
 /**
- * @brief Returns a scalar that is the average of the face scalars.
+ * @brief Returns a scalar that is the average of the face quality.
  *
  * Requirements:
  * - Mesh:
  *   - Faces:
- *     - Scalar
+ *     - Quality
  *
- * @param[in] m: the input Mesh on which compute the average of the scalars.
- * @return The average of the face scalars of the given mesh.
+ * @param[in] m: the input Mesh on which compute the average of the quality.
+ * @return The average of the face quality of the given mesh.
  */
 template<FaceMeshConcept MeshType>
-typename MeshType::FaceType::ScalarType faceScalarAverage(const MeshType& m)
+typename MeshType::FaceType::QualityType faceQualityAverage(const MeshType& m)
 {
-	vcl::requirePerFaceScalar(m);
+	vcl::requirePerFaceQuality(m);
 
 	using FaceType   = typename MeshType::FaceType;
-	using ScalarType = typename FaceType::ScalarType;
+	using QualityType = typename FaceType::QualityType;
 
-	ScalarType avg = 0;
+	QualityType avg = 0;
 
 	for (const FaceType& f : m.faces())
-		avg += f.scalar();
+		avg += f.quality();
 
 	return avg / m.faceNumber();
 }
@@ -129,7 +130,7 @@ typename MeshType::FaceType::ScalarType faceScalarAverage(const MeshType& m)
 /**
  * @brief When performing an adptive pruning for each sample we expect a varying radius to be
  * removed.
- * The radius is a PerVertex attribute that we compute from the current per vertex scalar component.
+ * The radius is a PerVertex attribute that we compute from the current per vertex quality component.
  * The expected radius of the sample is computed so that it linearly maps the quality between
  * diskradius and diskradius*variance
  *
@@ -140,19 +141,19 @@ typename MeshType::FaceType::ScalarType faceScalarAverage(const MeshType& m)
  * @return
  */
 template<MeshConcept MeshType>
-std::vector<typename MeshType::VertexType::ScalarType> vertexRadiusFromScalar(
+std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
 	const MeshType& m,
 	double diskRadius,
 	double radiusVariance,
 	bool invert)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
+	using QualityType = typename VertexType::QualityType;
 
-	std::vector<ScalarType> radius(m.vertexContainerSize());
-	std::pair<ScalarType, ScalarType> minmax = vertexScalarMinMax(m);
+	std::vector<QualityType> radius(m.vertexContainerSize());
+	std::pair<QualityType, QualityType> minmax = vertexQualityMinMax(m);
 	float minRad = diskRadius;
 	float maxRad = diskRadius * radiusVariance;
 	float deltaQ = minmax.second - minmax.first;
@@ -160,47 +161,45 @@ std::vector<typename MeshType::VertexType::ScalarType> vertexRadiusFromScalar(
 	for (const VertexType& v : m.vertices()) {
 		radius[m.index(v)] =
 			minRad +
-			deltaRad * ((invert ? minmax.second - v.scalar() : v.scalar() - minmax.first) / deltaQ);
+			deltaRad * ((invert ? minmax.second - v.quality() : v.quality() - minmax.first) / deltaQ);
 	}
 
 	return radius;
 }
 
 template<MeshConcept MeshType, typename HScalar>
-Histogram<HScalar> vertexScalarHistogram(const MeshType& m, bool selectionOnly, uint histSize)
+Histogram<HScalar> vertexQualityHistogram(const MeshType& m, bool selectionOnly, uint histSize)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
 
-	auto minmax = vertexScalarMinMax(m);
+	auto minmax = vertexQualityMinMax(m);
 
 	vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
 	for (const VertexType& v : m.vertices()) {
 		if (!selectionOnly || v.selected()) {
-			assert(!isDegenerate(v.scalar()));
-			h.addValue(v.scalar());
+			assert(!isDegenerate(v.quality()));
+			h.addValue(v.quality());
 		}
 	}
 	return h;
 }
 
 template<FaceMeshConcept MeshType, typename HScalar>
-Histogram<HScalar> faceScalarHistogram(const MeshType& m, bool selectionOnly, uint histSize)
+Histogram<HScalar> faceQualityHistogram(const MeshType& m, bool selectionOnly, uint histSize)
 {
-	vcl::requirePerFaceScalar(m);
+	vcl::requirePerFaceQuality(m);
 
 	using FaceType = typename MeshType::FaceType;
-	using ScalarType = typename FaceType::ScalarType;
 
-	auto minmax = vertexScalarMinMax(m);
+	auto minmax = vertexQualityMinMax(m);
 
 	vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
 	for (const FaceType& f : m.faces()) {
 		if (!selectionOnly || f.selected()) {
-			assert(!isDegenerate(f.scalar()));
-			h.addValue(f.scalar());
+			assert(!isDegenerate(f.quality()));
+			h.addValue(f.quality());
 		}
 	}
 	return h;
