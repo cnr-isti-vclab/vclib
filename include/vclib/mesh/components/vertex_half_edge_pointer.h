@@ -43,11 +43,11 @@ namespace vcl::comp {
 template<
 	typename HalfEdge,
 	typename ElementType = void,
-	bool OPTIONAL        = false>
-class VertexHalfEdgePointer : public Component<HalfEdge*, ElementType, OPTIONAL, HalfEdge>
+	bool OPT        = false>
+class VertexHalfEdgePointer : public Component<HalfEdge*, ElementType, OPT, HalfEdge>
 {
-	using Base = Component<HalfEdge*, ElementType, OPTIONAL, HalfEdge>;
-	using ThisType = VertexHalfEdgePointer<HalfEdge, ElementType, OPTIONAL>;
+	using Base = Component<HalfEdge*, ElementType, OPT, HalfEdge>;
+	using ThisType = VertexHalfEdgePointer<HalfEdge, ElementType, OPT>;
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
