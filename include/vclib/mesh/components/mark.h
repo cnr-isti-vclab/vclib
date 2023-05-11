@@ -69,13 +69,9 @@ template<typename ElementType = void, bool OPT = false>
 class Mark : public Component<MARK, int, ElementType, OPT>
 {
 	using Base = Component<MARK, int, ElementType, OPT>;
-	using ThisType = Mark<ElementType, OPT>;
 
 public:
-	using MarkComponent = ThisType; // expose the type to allow access to this component
-
 	/* Constructor and isEnabled */
-
 	Mark();
 
 	void init();

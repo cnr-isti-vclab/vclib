@@ -40,11 +40,8 @@ template<typename Vertex, int N, typename ElementType = void, bool OPT = false>
 class VertexPointers : public PointersContainerComponent<VERTEX_PTRS, Vertex, N, ElementType, OPT, false>
 {
 	using Base = PointersContainerComponent<VERTEX_PTRS, Vertex, N, ElementType, OPT, false>;
-	using ThisType = VertexPointers<Vertex, N, ElementType, OPT>;
 
 public:
-	using VertexPointersComponent = ThisType; // expose the type to allow access to this component
-
 	using VertexType = Vertex;
 
 	static const int VERTEX_NUMBER = Base::SIZE;

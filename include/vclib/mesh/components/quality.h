@@ -39,11 +39,8 @@ template<typename T, typename ElementType = void, bool OPT = false>
 class Quality : public Component<QUALITY, T, ElementType, OPT>
 {
 	using Base = Component<QUALITY, T, ElementType, OPT>;
-	using ThisType = Quality<T, ElementType, OPT>;
 
 public:
-	using QualityComponent = ThisType; // expose the type to allow access to this component
-
 	using QualityType = T;
 
 	bool isEnabled() const;

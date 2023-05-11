@@ -47,15 +47,11 @@ template<
 class VertexHalfEdgePointer : public Component<VERTEX_HALF_EDGE_PTRS, HalfEdge*, ElementType, OPT, HalfEdge>
 {
 	using Base = Component<VERTEX_HALF_EDGE_PTRS, HalfEdge*, ElementType, OPT, HalfEdge>;
-	using ThisType = VertexHalfEdgePointer<HalfEdge, ElementType, OPT>;
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
 
 public:
-	// expose the type to allow access to this component
-	using VertexHalfEdgePointerComponent = ThisType;
-
 	using HalfEdgeType = HalfEdge;
 
 	/* Iterator Types declaration */

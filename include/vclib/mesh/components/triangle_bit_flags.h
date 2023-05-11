@@ -63,13 +63,10 @@ template<typename ElementType = void, bool OPT = false>
 class TriangleBitFlags : public Component<BIT_FLAGS, BitSet<short>, ElementType, OPT>
 {
 	using Base = Component<BIT_FLAGS, BitSet<short>, ElementType, OPT>;
-	using ThisType = TriangleBitFlags<ElementType, OPT>;
 
 	using FT = short; // FlagsType, the integral type used for the flags
 
 public:
-	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-
 	/* Constructor and isEnabled */
 	TriangleBitFlags();
 

@@ -50,11 +50,8 @@ template<typename ElementType = void, bool OPT = false>
 class Name : public Component<NAME, std::string, ElementType, OPT>
 {
 	using Base = Component<NAME, std::string, ElementType, OPT>;
-	using ThisType = Name<ElementType, OPT>;
 
 public:
-	using NameComponent = ThisType; // expose the type to allow access to this component
-
 	std::string& name();
 	const std::string& name() const;
 

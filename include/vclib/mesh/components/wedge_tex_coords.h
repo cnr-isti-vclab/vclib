@@ -47,11 +47,8 @@ class WedgeTexCoords :
 		public ContainerComponent<WEDGE_TEX_COORDS, vcl::TexCoord<Scalar>, N, short, ElementType, OPT, true>
 {
 	using Base = ContainerComponent<WEDGE_TEX_COORDS, vcl::TexCoord<Scalar>, N, short, ElementType, OPT, true>;
-	using ThisType = WedgeTexCoords<Scalar, N, ElementType, OPT>;
 
 public:
-	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
-
 	static const int WEDGE_TEX_COORD_NUMBER = N;
 
 	using WedgeTexCoordType = vcl::TexCoord<Scalar>;
@@ -86,6 +83,9 @@ public:
 	ConstWedgeTexCoordsIterator wedgeTexCoordEnd() const;
 	auto                        wedgeTexCoords();
 	auto                        wedgeTexCoords() const;
+
+	// dummy member to discriminate between WedgeTexCoords and FaceHalfEdgePointers
+	void __wedgeTexCoords() const {}
 
 protected:
 	using WedgeTexCoordScalarType = Scalar;

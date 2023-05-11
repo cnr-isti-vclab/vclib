@@ -811,7 +811,7 @@ ConstCustomComponentVectorHandle<K> FaceContainer<T>::perFaceCustomComponentVect
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::WedgeColorsComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::WedgeColors>();
 }
 
 /**
@@ -826,7 +826,7 @@ bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOpt
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
 {
-	return Base::template enableOptionalComponent<typename T::WedgeColorsComponent>();
+	return Base::template enableOptionalComponent<typename T::WedgeColors>();
 }
 
 /**
@@ -837,7 +837,7 @@ void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedg
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
 {
-	return Base::template disableOptionalComponent<typename T::WedgeColorsComponent>();
+	return Base::template disableOptionalComponent<typename T::WedgeColors>();
 }
 
 /**
@@ -851,7 +851,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
 	const requires face::HasOptionalWedgeTexCoords<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::WedgeTexCoordsComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::WedgeTexCoords>();
 }
 
 /**
@@ -867,7 +867,7 @@ bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
 {
-	return Base::template enableOptionalComponent<typename T::WedgeTexCoordsComponent>();
+	return Base::template enableOptionalComponent<typename T::WedgeTexCoords>();
 }
 
 /**
@@ -879,7 +879,7 @@ void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalW
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
 {
-	return Base::template disableOptionalComponent<typename T::WedgeTexCoordsComponent>();
+	return Base::template disableOptionalComponent<typename T::WedgeTexCoords>();
 }
 
 } // namespace vcl::mesh

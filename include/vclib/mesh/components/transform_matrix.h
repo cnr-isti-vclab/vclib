@@ -40,11 +40,8 @@ template<typename Scalar, typename ElementType = void, bool OPT = false>
 class TransformMatrix : public Component<TRANSFORM_MATRIX, Matrix44<Scalar>, ElementType, OPT>
 {
 	using Base = Component<TRANSFORM_MATRIX, Matrix44<Scalar>, ElementType, OPT>;
-	using ThisType = TransformMatrix<Scalar, ElementType, OPT>;
 
 public:
-	using TransformMatrixComponent = ThisType; // expose the type to allow access to this component
-
 	using TransformMatrixType = Matrix44<Scalar>;
 
 	/* Constructor and isEnabled */

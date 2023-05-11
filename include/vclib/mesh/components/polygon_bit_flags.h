@@ -78,11 +78,8 @@ class PolygonBitFlags :
 	using FT = int; // FlagsType, the integral type used for the flags
 
 	using Base = ContainerComponent<BIT_FLAGS, BitSet<FT>, N, BitSet<FT>, ElementType, OPT, true>;
-	using ThisType = PolygonBitFlags<N, ElementType, OPT>;
 
 public:
-	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-
 	/* Constructor and isEnabled */
 	PolygonBitFlags();
 

@@ -74,11 +74,8 @@ class HalfEdgePointers :
 		HalfEdge,
 		Vertex,
 		Face>;
-	using ThisType = HalfEdgePointers<HalfEdge, Vertex, Face, ElementType, OPT>;
 
 public:
-	using HalfEdgePointersComponent = ThisType; // expose the type to allow access to this component
-
 	using HalfEdgeType = HalfEdge;
 	using VertexType   = Vertex;
 	using FaceType     = Face;

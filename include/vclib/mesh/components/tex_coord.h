@@ -40,12 +40,8 @@ template<typename Scalar, typename ElementType = void, bool OPT = false>
 class TexCoord : public Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>
 {
 	using Base = Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>;
-	using ThisType = TexCoord<Scalar, ElementType, OPT>;
 
 public:
-	// expose the type to allow access to this component
-	using TexCoordComponent = ThisType;
-
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
 	bool isEnabled() const;

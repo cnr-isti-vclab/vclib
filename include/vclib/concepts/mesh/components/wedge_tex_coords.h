@@ -85,10 +85,9 @@ concept HasWedgeTexCoords = requires(
  * does not have both WedgeTexCoords and FaceHalfEdgePointers components.
  */
 template<typename T>
-concept HasWedgeTexCoordsComponent = requires(T o)
+concept HasWedgeTexCoordsComponent = HasWedgeTexCoords<T> && requires(T o)
 {
-	requires HasWedgeTexCoords<T>;
-	typename T::WedgeTexCoordsComponent;
+	{ o.__wedgeTexCoords() } -> std::same_as<void>;
 };
 
 /**
