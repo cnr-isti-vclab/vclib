@@ -60,11 +60,17 @@ class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
 public:
 	using ParentMeshType = MeshType;
 	using Components = typename vcl::
-        FilterTypesByCondition<comp::IsComponentPred, vcl::TypeWrapper<Comps...>>::type;
+		FilterTypesByCondition<comp::IsComponentPred, vcl::TypeWrapper<Comps...>>::type;
 
 	static const uint ELEMENT_TYPE = ELEM_TYPE;
 
 	uint index() const;
+
+	template<uint COMPONENT_ID>
+	auto& component();
+
+	template<uint COMPONENT_ID>
+	const auto& component() const;
 
 	template<typename ElType>
 	void importFrom(const ElType& v);
@@ -79,6 +85,45 @@ private:
 
 	template<typename Comp>
 	void construct();
+
+	// Predicate structures
+	// Components can be individuated with their ID, which is an unsigned int.
+	// This struct sets its bool `value` to true if this Element has a Component with the
+	// given unsigned integer Cmp
+	// Sets also `type` with a TypeWrapper contianing the Component that satisfied the condition.
+	// the TypeWrapper will be empty if no Components were found.
+	template<uint Cmp>
+	struct ComponentIndexPred
+	{
+	private:
+		template <typename Cont>
+		struct SameCmpPred
+		{
+			static constexpr bool value = Cont::COMPONENT_TYPE == Cmp;
+		};
+
+	public:
+		// TypeWrapper of the found component, if any
+		using type = typename vcl::FilterTypesByCondition<SameCmpPred, Components>::type;
+		static constexpr bool value = NumberOfTypes<type>::value == 1;
+	};
+
+	template<uint Cmp>
+	struct GetComponentFromID
+	{
+	private:
+		template<typename>
+		struct TypeUnwrapper {};
+
+		template<typename C>
+		struct TypeUnwrapper<TypeWrapper<C>>
+		{
+			using type = C;
+		};
+	public:
+		using type = typename TypeUnwrapper<
+		    typename ComponentIndexPred<Cmp>::type>::type;
+	};
 };
 
 } // namespace vcl
