@@ -290,7 +290,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El& e) const requires (hasContainerOf<El>())
 {
-	using Container = GetContainerOf<El>::type;
+	using Container = typename GetContainerOf<El>::type;
 	return Container::index(&e);
 }
 
@@ -308,7 +308,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 {
-	using Container = GetContainerOf<El>::type;
+	using Container = typename GetContainerOf<El>::type;
 	return Container::index(e);
 }
 
