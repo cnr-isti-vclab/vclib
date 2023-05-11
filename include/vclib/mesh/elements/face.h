@@ -26,17 +26,8 @@
 
 #include <vclib/concepts/mesh/elements/face.h>
 #include <vclib/views/view.h>
-#include <vclib/space/tex_coord.h>
 
 #include "element.h"
-
-namespace vcl::mesh {
-
-// FaceContainer class declaration
-template<FaceConcept>
-class FaceContainer;
-
-} // namespace vcl::mesh
 
 namespace vcl {
 
@@ -45,20 +36,15 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template<typename MeshType, typename... Args>
-class Face : public Element<MeshType, Args...>
+template<typename MeshType, typename... Comps>
+class Face : public Element<FACE, MeshType, Comps...>
 {
-	template<FaceConcept>
-	friend class mesh::FaceContainer;
-
 	// VertexPointers component of the Face
 	using VPtrs = typename Face::VertexPointers;
 
 	static const int NV = VPtrs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
-	static const uint ELEMENT_TYPE = FACE;
-
 	using VertexType = typename VPtrs::VertexType;
 
 	Face();
@@ -67,8 +53,6 @@ public:
 
 	template<typename... V>
 	Face(V... args); // todo add requires
-
-	uint index() const;
 
 	void setVertices(const std::vector<VertexType*>& list);
 
@@ -82,7 +66,7 @@ public:
 		VPtrs::resizeVertices(n);
 
 		// Now I need to resize all the TTVN components
-		(resizeTTVNComponent<Args>(n), ...);
+		(resizeTTVNComponent<Comps>(n), ...);
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
@@ -92,7 +76,7 @@ public:
 		VPtrs::pushVertex(v);
 
 		// Now I need to pushBack in all the TTVN components
-		(pushBackTTVNComponent<Args>(), ...);
+		(pushBackTTVNComponent<Comps>(), ...);
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
@@ -102,7 +86,7 @@ public:
 		VPtrs::insertVertex(i, v);
 
 		// Now I need to insert in all the TTVN components
-		(insertTTVNComponent<Args>(i), ...);
+		(insertTTVNComponent<Comps>(i), ...);
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
@@ -112,7 +96,7 @@ public:
 		VPtrs::eraseVertex(i);
 
 		// Now I need to erase in all the TTVN components
-		(eraseTTVNComponent<Args>(i), ...);
+		(eraseTTVNComponent<Comps>(i), ...);
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
@@ -122,7 +106,7 @@ public:
 		VPtrs::clearVertices();
 
 		// Now I need to clear all the TTVN components
-		(clearTTVNComponent<Args>(), ...);
+		(clearTTVNComponent<Comps>(), ...);
 	}
 
 private:
@@ -142,8 +126,8 @@ private:
 	void clearTTVNComponent();
 };
 
-template<typename MeshType, typename... Args>
-class Face<MeshType, TypeWrapper<Args...>> : public Face<MeshType, Args...>
+template<typename MeshType, typename... Comps>
+class Face<MeshType, TypeWrapper<Comps...>> : public Face<MeshType, Comps...>
 {
 };
 

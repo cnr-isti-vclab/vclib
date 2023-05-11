@@ -28,14 +28,6 @@
 
 #include "element.h"
 
-namespace vcl::mesh {
-
-// EdgeContainer class declaration
-template<HalfEdgeConcept>
-class HalfEdgeContainer;
-
-} // namespace vcl::mesh
-
 namespace vcl {
 
 /**
@@ -43,31 +35,23 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template<typename MeshType, typename... Args>
-class HalfEdge : public Element<MeshType, Args...>
+template<typename MeshType, typename... Comps>
+class HalfEdge : public Element<HALF_EDGE, MeshType, Comps...>
 {
-	template<HalfEdgeConcept>
-	friend class mesh::HalfEdgeContainer;
-
 	// HalfEdgePointers component of the HalfEdge
 	using HFPtrs = typename HalfEdge::HalfEdgePointers;
 
 public:
-	static const uint ELEMENT_TYPE = HALF_EDGE;
-
 	using VertexType = typename HFPtrs::VertexType;
 	using FaceType   = typename HFPtrs::FaceType;
 
-	uint index() const;
 };
 
-template<typename MeshType, typename... Args>
-class HalfEdge<MeshType, TypeWrapper<Args...>> : public HalfEdge<MeshType, Args...>
+template<typename MeshType, typename... Comps>
+class HalfEdge<MeshType, TypeWrapper<Comps...>> : public HalfEdge<MeshType, Comps...>
 {
 };
 
 } // namespace vcl
-
-#include "half_edge.cpp"
 
 #endif // VCL_MESH_ELEMENTS_HALF_EDGE_H

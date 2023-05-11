@@ -72,6 +72,9 @@ class Mesh : public Args...
 	template<ElementConcept T>
 	friend class mesh::ElementContainer;
 
+	template <uint ELEM_TYPE, typename MeshType, typename... Comps>
+	friend class Element;
+
 public:
 	// filter Components of the Mesh, taking only the Container
 	// Containers is a vcl::TypeWrapper containing all the containers that were in Args
@@ -227,6 +230,9 @@ private:
 	void init() {};
 	bool isEnabled() { return true; }
 
+	template<uint EL_TYPE, typename T>
+	uint elementIndex(const T* el) const;
+
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);
 
@@ -331,17 +337,8 @@ private:
 		static constexpr bool value = ContainerOfTypeIndexPred<El::ELEMENT_TYPE>::value;
 	};
 
-	/**
-	 * @brief The GetContainerOf struct allows to get the Container of an Element on this Mesh.
-	 *
-	 * Usage:
-	 *
-	 * ```cpp
-	 * using Container = GetContainerOf<ElementType>::type;
-	 * ```
-	 */
-	template<ElementConcept El>
-	struct GetContainerOf
+	template<uint EL_TYPE>
+	struct GetContainerOfElID
 	{
 	private:
 		template<typename>
@@ -354,7 +351,21 @@ private:
 		};
 	public:
 		using type = typename TypeUnwrapper<
-			typename ContainerOfTypeIndexPred<El::ELEMENT_TYPE>::type>::type;
+			typename ContainerOfTypeIndexPred<EL_TYPE>::type>::type;
+	};
+
+	/**
+	 * @brief The GetContainerOf struct allows to get the Container of an Element on this Mesh.
+	 *
+	 * Usage:
+	 *
+	 * ```cpp
+	 * using Container = GetContainerOf<ElementType>::type;
+	 * ```
+	 */
+	template<ElementConcept El>
+	struct GetContainerOf : public GetContainerOfElID<El::ELEMENT_TYPE>
+	{
 	};
 };
 

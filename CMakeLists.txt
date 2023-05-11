@@ -448,11 +448,8 @@ set(SOURCES
 	include/vclib/mesh/containers/face_container.cpp
 	include/vclib/mesh/containers/vertex_container.cpp
 	include/vclib/mesh/containers/vertical_components_vector_tuple.cpp
-	include/vclib/mesh/elements/edge.cpp
 	include/vclib/mesh/elements/element.cpp
 	include/vclib/mesh/elements/face.cpp
-	include/vclib/mesh/elements/half_edge.cpp
-	include/vclib/mesh/elements/vertex.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
