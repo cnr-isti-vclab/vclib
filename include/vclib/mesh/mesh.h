@@ -103,10 +103,15 @@ public:
 
 	Mesh& operator=(Mesh oth);
 
+	/*** Generic Element functions ***/
+	template<ElementConcept El>
+	uint index(const El& e) const requires (hasContainerOf<El>());
+
+	template<ElementConcept El>
+	uint index(const El* e) const requires (hasContainerOf<El>());
+
 	/*** Vertices ***/
 
-	uint index(const typename Mesh::VertexType& v) const;
-	uint index(const typename Mesh::VertexType* v) const;
 	uint addVertex();
 	uint addVertex(const typename Mesh::VertexType::CoordType& p);
 	uint addVertices(uint n);
@@ -118,12 +123,6 @@ public:
 	void compactVertices();
 
 	/*** Faces ***/
-
-	template<HasFaces M = Mesh>
-	uint index(const typename M::FaceType& f) const;
-
-	template<HasFaces M = Mesh>
-	uint index(const typename M::FaceType* f) const;
 
 	template<HasFaces M = Mesh>
 	uint addFace();
@@ -169,12 +168,6 @@ public:
 	/*** Edges ***/
 
 	template<HasEdges M = Mesh>
-	uint index(const typename M::EdgeType& e) const;
-
-	template<HasEdges M = Mesh>
-	uint index(const typename M::EdgeType* v) const;
-
-	template<HasEdges M = Mesh>
 	uint addEdge();
 
 	template<HasEdges M = Mesh>
@@ -187,12 +180,6 @@ public:
 	void compactEdges();
 
 	/*** HalfEdges ***/
-
-	template<HasHalfEdges M = Mesh>
-	uint index(const typename M::HalfEdgeType& e) const;
-
-	template<HasHalfEdges M = Mesh>
-	uint index(const typename M::HalfEdgeType* v) const;
 
 	template<HasHalfEdges M = Mesh>
 	uint addHalfEdge();
@@ -344,6 +331,15 @@ private:
 		static constexpr bool value = ContainerOfTypeIndexPred<El::ELEMENT_TYPE>::value;
 	};
 
+	/**
+	 * @brief The GetContainerOf struct allows to get the Container of an Element on this Mesh.
+	 *
+	 * Usage:
+	 *
+	 * ```cpp
+	 * using Container = GetContainerOf<ElementType>::type;
+	 * ```
+	 */
 	template<ElementConcept El>
 	struct GetContainerOf
 	{
