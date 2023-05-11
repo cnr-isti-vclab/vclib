@@ -53,7 +53,6 @@ concept HasAdjacentEdges = requires(
 	std::vector<typename T::AdjacentEdgeType*> v)
 {
 	T::ADJ_EDGE_NUMBER;
-	typename T::AdjacentEdgesComponent;
 	typename T::AdjacentEdgeType;
 	typename T::AdjacentEdgeIterator;
 	typename T::ConstAdjacentEdgeIterator;
@@ -88,7 +87,7 @@ concept HasAdjacentEdges = requires(
  */
 template<typename T>
 concept HasOptionalAdjacentEdges =
-	HasAdjacentEdges<T> && IsOptionalComponent<typename T::AdjacentEdgesComponent>;
+	HasAdjacentEdges<T> && IsOptionalComponent<typename T::AdjacentEdges>;
 
 /**
  * @private

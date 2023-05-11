@@ -99,7 +99,7 @@ concept HasWedgeTexCoordsComponent = requires(T o)
  */
 template<typename T>
 concept HasOptionalWedgeTexCoords =
-	HasWedgeTexCoordsComponent<T> && IsOptionalComponent<typename T::WedgeTexCoordsComponent>;
+	HasWedgeTexCoordsComponent<T> && IsOptionalComponent<typename T::WedgeTexCoords>;
 
 /**
  * @private

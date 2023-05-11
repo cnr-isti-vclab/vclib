@@ -603,8 +603,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 
 				// short circuited or: if optional, then I check if enabled; if not optional, then true
 				if (!comp::HasOptionalAdjacentEdges<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::AdjacentEdgesComponent>()) {
-					enableOptionalComponent<typename T::AdjacentEdgesComponent>();
+					c.template isOptionalComponentEnabled<typename CT::AdjacentEdges>()) {
+					enableOptionalComponent<typename T::AdjacentEdges>();
 				}
 			}
 		}
@@ -612,8 +612,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalAdjacentFaces<T>) {
 			if constexpr (comp::HasAdjacentFaces<CT>) {
 				if (!comp::HasOptionalAdjacentFaces<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::AdjacentFacesComponent>()) {
-					enableOptionalComponent<typename T::AdjacentFacesComponent>();
+					c.template isOptionalComponentEnabled<typename CT::AdjacentFaces>()) {
+					enableOptionalComponent<typename T::AdjacentFaces>();
 				}
 			}
 		}
@@ -621,8 +621,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalAdjacentVertices<T>) {
 			if constexpr (comp::HasAdjacentVertices<CT>) {
 				if (!comp::HasOptionalAdjacentVertices<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::AdjacentVerticesComponent>()) {
-					enableOptionalComponent<typename T::AdjacentVerticesComponent>();
+					c.template isOptionalComponentEnabled<typename CT::AdjacentVertices>()) {
+					enableOptionalComponent<typename T::AdjacentVertices>();
 				}
 			}
 		}
@@ -630,8 +630,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalColor<T>) {
 			if constexpr (comp::HasColor<CT>) {
 				if (!comp::HasOptionalColor<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::ColorComponent>()) {
-					enableOptionalComponent<typename T::ColorComponent>();
+					c.template isOptionalComponentEnabled<typename CT::Color>()) {
+					enableOptionalComponent<typename T::Color>();
 				}
 			}
 		}
@@ -639,8 +639,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalMark<T>) {
 			if constexpr (comp::HasMark<CT>) {
 				if (!comp::HasOptionalMark<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::MarkComponent>()) {
-					enableOptionalComponent<typename T::MarkComponent>();
+					c.template isOptionalComponentEnabled<typename CT::Mark>()) {
+					enableOptionalComponent<typename T::Mark>();
 				}
 			}
 		}
@@ -648,8 +648,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalNormal<T>) {
 			if constexpr (comp::HasNormal<CT>) {
 				if (!comp::HasOptionalNormal<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::NormalComponent>()) {
-					enableOptionalComponent<typename T::NormalComponent>();
+					c.template isOptionalComponentEnabled<typename CT::Normal>()) {
+					enableOptionalComponent<typename T::Normal>();
 				}
 			}
 		}
@@ -657,8 +657,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalPrincipalCurvature<T>) {
 			if constexpr (comp::HasPrincipalCurvature<CT>) {
 				if (!comp::HasOptionalPrincipalCurvature<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::PrincipalCurvatureComponent>()) {
-					enableOptionalComponent<typename T::PrincipalCurvatureComponent>();
+					c.template isOptionalComponentEnabled<typename CT::PrincipalCurvature>()) {
+					enableOptionalComponent<typename T::PrincipalCurvature>();
 				}
 			}
 		}
@@ -666,8 +666,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalQuality<T>) {
 			if constexpr (comp::HasQuality<CT>) {
 				if (!comp::HasOptionalQuality<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::QualityComponent>()) {
-					enableOptionalComponent<typename T::QualityComponent>();
+					c.template isOptionalComponentEnabled<typename CT::Quality>()) {
+					enableOptionalComponent<typename T::Quality>();
 				}
 			}
 		}
@@ -675,8 +675,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalTexCoord<T>) {
 			if constexpr (comp::HasTexCoord<CT>) {
 				if (!comp::HasOptionalTexCoord<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::TexCoordComponent>()) {
-					enableOptionalComponent<typename T::TexCoordComponent>();
+					c.template isOptionalComponentEnabled<typename CT::TexCoord>()) {
+					enableOptionalComponent<typename T::TexCoord>();
 				}
 			}
 		}
@@ -684,8 +684,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalWedgeColors<T>) {
 			if constexpr (comp::HasWedgeColors<CT>) {
 				if (!comp::HasOptionalWedgeColors<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::WedgeColorsComponent>()) {
-					enableOptionalComponent<typename T::WedgeColorsComponent>();
+					c.template isOptionalComponentEnabled<typename CT::WedgeColors>()) {
+					enableOptionalComponent<typename T::WedgeColors>();
 				}
 			}
 		}
@@ -693,8 +693,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 		if constexpr (comp::HasOptionalWedgeTexCoords<T>) {
 			if constexpr (comp::HasWedgeTexCoords<CT>) {
 				if (!comp::HasOptionalWedgeTexCoords<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::WedgeTexCoordsComponent>()) {
-					enableOptionalComponent<typename T::WedgeTexCoordsComponent>();
+					c.template isOptionalComponentEnabled<typename CT::WedgeTexCoords>()) {
+					enableOptionalComponent<typename T::WedgeTexCoords>();
 				}
 			}
 		}

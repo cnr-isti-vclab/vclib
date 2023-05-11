@@ -49,7 +49,6 @@ concept HasNormal = requires(
 	const T& co)
 {
 	typename T::NormalType;
-	typename T::NormalComponent;
 	{ o.normal() } -> std::same_as<typename T::NormalType&>;
 	{ co.normal() } -> std::same_as<const typename T::NormalType&>;
 	{ co.isNormalEnabled() } -> std::same_as<bool>;
@@ -62,7 +61,7 @@ concept HasNormal = requires(
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalNormal = HasNormal<T> && IsOptionalComponent<typename T::NormalComponent>;
+concept HasOptionalNormal = HasNormal<T> && IsOptionalComponent<typename T::Normal>;
 
 } // namespace vcl::comp
 

@@ -94,7 +94,7 @@ concept HasWedgeColorsComponent = requires(T o)
  */
 template<typename T>
 concept HasOptionalWedgeColors =
-	HasWedgeColorsComponent<T> && IsOptionalComponent<typename T::WedgeColorsComponent>;
+	HasWedgeColorsComponent<T> && IsOptionalComponent<typename T::WedgeColors>;
 
 /**
  * @private

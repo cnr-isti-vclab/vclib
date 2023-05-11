@@ -59,14 +59,9 @@ namespace vcl::comp {
 template<typename Face, int N, bool TTVN, typename ElementType = void, bool OPT = false>
 class AdjacentFaces : public PointersContainerComponent<ADJ_FACES, Face, N, ElementType, OPT, TTVN>
 {
-	using ThisType = AdjacentFaces<Face, N, TTVN, ElementType, OPT>;
-	
 	using Base = PointersContainerComponent<ADJ_FACES, Face, N, ElementType, OPT, TTVN>;
 
 public:
-	/** @brief Allows access to this component type from a derived class type/instance */
-	using AdjacentFacesComponent = ThisType; // expose the type to allow access to this component
-
 	/**
 	 * @brief Expose the type of the Adjacent Face.
 	 */
@@ -125,6 +120,9 @@ public:
 	ConstAdjacentFaceIterator adjFaceEnd() const;
 	auto                      adjFaces();
 	auto                      adjFaces() const;
+
+	// dummy member to discriminate between AdjacentFaces and FaceHalfEdgePointers
+	void __adjacentFaces() const {}
 
 protected:
 	// Component interface function

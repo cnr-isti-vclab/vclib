@@ -101,7 +101,7 @@ concept HasAdjacentVerticesComponent = requires(T o)
  */
 template<typename T>
 concept HasOptionalAdjacentVertices =
-	HasAdjacentVerticesComponent<T> && IsOptionalComponent<typename T::AdjacentVerticesComponent>;
+	HasAdjacentVerticesComponent<T> && IsOptionalComponent<typename T::AdjacentVertices>;
 
 } // namespace vcl::comp
 
