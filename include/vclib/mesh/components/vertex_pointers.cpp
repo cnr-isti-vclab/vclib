@@ -229,15 +229,15 @@ void VertexPointers<Vertex, N, El, O>::importPointersFrom(
 	}
 }
 
-template<typename Vertex, int N, typename ElementType, bool OPTIONAL>
-void VertexPointers<Vertex, N, ElementType, OPTIONAL>::updatePointers(
+template<typename Vertex, int N, typename ElementType, bool OPT>
+void VertexPointers<Vertex, N, ElementType, OPT>::updatePointers(
 	const Vertex* oldBase, const Vertex* newBase)
 {
 	Base::updateElementPointers(oldBase, newBase, this);
 }
 
-template<typename Vertex, int N, typename ElementType, bool OPTIONAL>
-void VertexPointers<Vertex, N, ElementType, OPTIONAL>::updatePointersAfterCompact(
+template<typename Vertex, int N, typename ElementType, bool OPT>
+void VertexPointers<Vertex, N, ElementType, OPT>::updatePointersAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {

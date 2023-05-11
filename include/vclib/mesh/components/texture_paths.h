@@ -48,11 +48,11 @@ struct TPData {
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPTIONAL = false>
-class TexturePaths : public Component<internal::TPData, ElementType, OPTIONAL>
+template<typename ElementType = void, bool OPT = false>
+class TexturePaths : public Component<internal::TPData, ElementType, OPT>
 {
-	using Base = Component<internal::TPData, ElementType, OPTIONAL>;
-	using ThisType = TexturePaths<ElementType, OPTIONAL>;
+	using Base = Component<internal::TPData, ElementType, OPT>;
+	using ThisType = TexturePaths<ElementType, OPT>;
 
 public:
 	using TexturePathsComponent = ThisType; // expose the type to allow access to this component

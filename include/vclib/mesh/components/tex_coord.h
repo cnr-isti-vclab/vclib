@@ -36,11 +36,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename Scalar, typename ElementType = void, bool OPTIONAL = false>
-class TexCoord : public Component<vcl::TexCoord<Scalar>, ElementType, OPTIONAL>
+template<typename Scalar, typename ElementType = void, bool OPT = false>
+class TexCoord : public Component<vcl::TexCoord<Scalar>, ElementType, OPT>
 {
-	using Base = Component<vcl::TexCoord<Scalar>, ElementType, OPTIONAL>;
-	using ThisType = TexCoord<Scalar, ElementType, OPTIONAL>;
+	using Base = Component<vcl::TexCoord<Scalar>, ElementType, OPT>;
+	using ThisType = TexCoord<Scalar, ElementType, OPT>;
 
 public:
 	// expose the type to allow access to this component
@@ -65,11 +65,11 @@ protected:
 template <typename T>
 bool isTexCoordEnabledOn(const T& element);
 
-template<typename ElementType = void, bool horizontal = true, bool OPTIONAL = false>
-using TexCoordf = TexCoord<float, ElementType, OPTIONAL>;
+template<typename ElementType = void, bool horizontal = true, bool OPT = false>
+using TexCoordf = TexCoord<float, ElementType, OPT>;
 
-template<typename ElementType = void, bool horizontal = true, bool OPTIONAL = false>
-using TexCoordd = TexCoord<double, ElementType, OPTIONAL>;
+template<typename ElementType = void, bool horizontal = true, bool OPT = false>
+using TexCoordd = TexCoord<double, ElementType, OPT>;
 
 } // namespace vcl::comp
 

@@ -35,11 +35,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename T, typename ElementType = void, bool OPTIONAL = false>
-class Quality : public Component<T, ElementType, OPTIONAL>
+template<typename T, typename ElementType = void, bool OPT = false>
+class Quality : public Component<T, ElementType, OPT>
 {
-	using Base = Component<T, ElementType, OPTIONAL>;
-	using ThisType = Quality<T, ElementType, OPTIONAL>;
+	using Base = Component<T, ElementType, OPT>;
+	using ThisType = Quality<T, ElementType, OPT>;
 
 public:
 	using QualityComponent = ThisType; // expose the type to allow access to this component
@@ -63,11 +63,11 @@ protected:
 template <typename T>
 bool isQualityEnabledOn(const T& element);
 
-template<typename ElementType = void, bool OPTIONAL = false>
-using Qualityf = Quality<float, ElementType, OPTIONAL>;
+template<typename ElementType = void, bool OPT = false>
+using Qualityf = Quality<float, ElementType, OPT>;
 
-template<typename ElementType = void, bool OPTIONAL = false>
-using Qualityd = Quality<double, ElementType, OPTIONAL>;
+template<typename ElementType = void, bool OPT = false>
+using Qualityd = Quality<double, ElementType, OPT>;
 
 } // namespace vcl::comp
 

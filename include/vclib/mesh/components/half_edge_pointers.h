@@ -55,12 +55,12 @@ template<
 	typename Vertex,
 	typename Face,
 	typename ElementType = void,
-	bool OPTIONAL        = false>
+	bool OPT        = false>
 class HalfEdgePointers :
 		public Component<
 			internal::HEPData<HalfEdge, Vertex, Face>,
 			ElementType,
-			OPTIONAL,
+			OPT,
 			HalfEdge,
 			Vertex,
 			Face>
@@ -68,11 +68,11 @@ class HalfEdgePointers :
 	using Base = Component<
 		internal::HEPData<HalfEdge, Vertex, Face>,
 		ElementType,
-		OPTIONAL,
+		OPT,
 		HalfEdge,
 		Vertex,
 		Face>;
-	using ThisType = HalfEdgePointers<HalfEdge, Vertex, Face, ElementType, OPTIONAL>;
+	using ThisType = HalfEdgePointers<HalfEdge, Vertex, Face, ElementType, OPT>;
 
 public:
 	using HalfEdgePointersComponent = ThisType; // expose the type to allow access to this component

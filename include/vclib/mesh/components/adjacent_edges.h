@@ -56,12 +56,12 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename Edge, int N, bool TTVN, typename ElementType = void, bool OPTIONAL = false>
-class AdjacentEdges : public PointersContainerComponent<Edge, N, ElementType, OPTIONAL, TTVN>
+template<typename Edge, int N, bool TTVN, typename ElementType = void, bool OPT = false>
+class AdjacentEdges : public PointersContainerComponent<Edge, N, ElementType, OPT, TTVN>
 {
-	using ThisType = AdjacentEdges<Edge, N, TTVN, ElementType, OPTIONAL>;
+	using ThisType = AdjacentEdges<Edge, N, TTVN, ElementType, OPT>;
 	
-	using Base = PointersContainerComponent<Edge, N, ElementType, OPTIONAL, TTVN>;
+	using Base = PointersContainerComponent<Edge, N, ElementType, OPT, TTVN>;
 
 public:
 	/** @brief Allows access to this component type from a derived class type/instance */

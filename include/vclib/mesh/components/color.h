@@ -39,11 +39,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPTIONAL = false>
-class Color : public Component<vcl::Color, ElementType, OPTIONAL>
+template<typename ElementType = void, bool OPT = false>
+class Color : public Component<vcl::Color, ElementType, OPT>
 {
-	using Base = Component<vcl::Color, ElementType, OPTIONAL>;
-	using ThisType = Color<ElementType, OPTIONAL>;
+	using Base = Component<vcl::Color, ElementType, OPT>;
+	using ThisType = Color<ElementType, OPT>;
 
 public:
 	using ColorComponent = ThisType; // expose the type to allow access to this component
