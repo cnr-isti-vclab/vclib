@@ -21,56 +21,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "scalar.h"
+#ifndef VCL_ALGORITHMS_STAT_QUALITY_H
+#define VCL_ALGORITHMS_STAT_QUALITY_H
 
-namespace vcl::comp {
+#include <vclib/math/histogram.h>
+#include <vclib/mesh/requirements.h>
 
+namespace vcl {
 
+template<MeshConcept MeshType>
+std::pair<typename MeshType::VertexType::QualityType, typename MeshType::VertexType::QualityType>
+vertexQualityMinMax(const MeshType& m);
 
-template<typename T, typename El, bool O>
-bool Scalar<T, El, O>::isEnabled() const
-{
-	return Base::isEnabled(this);
-}
+template<FaceMeshConcept MeshType>
+std::pair<typename MeshType::FaceType::QualityType, typename MeshType::FaceType::QualityType>
+faceQualityMinMax(const MeshType& m);
 
-template<typename T, typename El, bool O>
-bool Scalar<T, El, O>::isScalarEnabled() const
-{
-	return isEnabled();
-}
+template<MeshConcept MeshType>
+typename MeshType::VertexType::QualityType vertexQualityAverage(const MeshType& m);
 
-template<typename T, typename El, bool O>
-const T& Scalar<T, El, O>::scalar() const
-{
-	return Base::data(this);
-}
+template<FaceMeshConcept MeshType>
+typename MeshType::FaceType::QualityType faceQualityAverage(const MeshType& m);
 
-template<typename T, typename El, bool O>
-T& Scalar<T, El, O>::scalar()
-{
-	return Base::data(this);
-}
+template<MeshConcept MeshType>
+std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
+	const MeshType& m,
+	double          diskRadius,
+	double          radiusVariance,
+	bool            invert = false);
 
-template<typename T, typename El, bool O>
-template<typename Element>
-void Scalar<T, El, O>::importFrom(const Element& e)
-{
-	if constexpr (HasScalar<Element>) {
-		if (isScalarEnabledOn(e)){
-			scalar() = e.scalar();
-		}
-	}
-}
+template<MeshConcept MeshType, typename HScalar = double>
+Histogram<HScalar> vertexQualityHistogram(
+	const MeshType& m,
+	bool selectionOnly = false,
+	uint histSize = 10000);
 
-template <typename T>
-bool isScalarEnabledOn(const T& element)
-{
-	if constexpr (HasOptionalScalar<T>) {
-		return element.isScalarEnabled();
-	}
-	else {
-		return HasScalar<T>;
-	}
-}
+template<FaceMeshConcept MeshType, typename HScalar = double>
+Histogram<HScalar> faceQualityHistogram(
+	const MeshType& m,
+	bool selectionOnly = false,
+	uint histSize = 10000);
 
-} // namespace vcl::comp
+} // namespace vcl
+
+#include "quality.cpp"
+
+#endif // VCL_ALGORITHMS_STAT_QUALITY_H

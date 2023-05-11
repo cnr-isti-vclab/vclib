@@ -77,8 +77,8 @@ int main()
 	for (auto& v : m.vertices())
 		v.customComponent<char>("prova") = 'a'; // set the custom component for each vertex
 	
-	// enable per face scalar, which is optional
-	m.enablePerFaceScalar();
+	// enable per face quality, which is optional
+	m.enablePerFaceQuality();
 
 	// add some faces
 	m.addFace();
@@ -92,7 +92,7 @@ int main()
 
 	// set vertices of f0
 	m.face(0).setVertices(&m.vertex(0), &m.vertex(1), &m.vertex(2));
-	m.face(0).scalar() = 4;
+	m.face(0).quality() = 4;
 
 	// setting some colors to all the faces of the mesh
 	uint i = 17;
@@ -104,7 +104,7 @@ int main()
 	m.addVertex();
 	m.addVertex();
 
-	std::cerr << "f0 scalar: " << m.face(0).scalar() << "\n";
+	std::cerr << "f0 quality: " << m.face(0).quality() << "\n";
 	for (const vcl::TriMesh::Face& f : m.faces())
 		std::cerr << m.index(f) << " Color: " << f.color() << "\n";
 

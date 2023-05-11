@@ -21,49 +21,54 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_SCALAR_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_SCALAR_H
-
-#include "component.h"
+#include "quality.h"
 
 namespace vcl::comp {
 
-/**
- * @brief HasScalar concept is satisfied only if a Element class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * Scalar component of a given element.
- *
- * Note that this concept does not discriminate between the Horizontal Scalar component
- * and the vertical OptionalScalar component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides Scalar component at runtime
- * (it is guaranteed only that the proper member functions are available at compile time).
- *
- * To be completely sure that Scalar is available at runtime, you need to call the member
- * function `isScalarEnabled()`.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasScalar = requires(
-	T o,
-	const T& co)
+template<typename T, typename El, bool O>
+bool Quality<T, El, O>::isEnabled() const
 {
-	typename T::ScalarType;
-	typename T::ScalarComponent;
-	{ o.scalar() } -> std::same_as<typename T::ScalarType&>;
-	{ co.scalar() } -> std::same_as<const typename T::ScalarType&>;
-	{ co.isScalarEnabled() } -> std::same_as<bool>;
-};
+	return Base::isEnabled(this);
+}
 
-/**
- * @brief HasOptionalScalar concept is satisfied only if a class satisfis the HasScalar concept and
- * the static boolean constant IS_OPTIONAL is set to true.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasOptionalScalar = HasScalar<T> && IsOptionalComponent<typename T::ScalarComponent>;
+template<typename T, typename El, bool O>
+bool Quality<T, El, O>::isQualityEnabled() const
+{
+	return isEnabled();
+}
+
+template<typename T, typename El, bool O>
+const T& Quality<T, El, O>::quality() const
+{
+	return Base::data(this);
+}
+
+template<typename T, typename El, bool O>
+T& Quality<T, El, O>::quality()
+{
+	return Base::data(this);
+}
+
+template<typename T, typename El, bool O>
+template<typename Element>
+void Quality<T, El, O>::importFrom(const Element& e)
+{
+	if constexpr (HasQuality<Element>) {
+		if (isQualityEnabledOn(e)){
+			quality() = e.quality();
+		}
+	}
+}
+
+template <typename T>
+bool isQualityEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalQuality<T>) {
+		return element.isQualityEnabled();
+	}
+	else {
+		return HasQuality<T>;
+	}
+}
 
 } // namespace vcl::comp
-
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_SCALAR_H

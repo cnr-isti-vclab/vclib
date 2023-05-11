@@ -21,56 +21,55 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_SCALAR_H
-#define VCL_MESH_COMPONENTS_SCALAR_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_QUALITY_H
+#define VCL_VIEWS_MESH_COMPONENTS_QUALITY_H
 
-#include <vclib/concepts/mesh/components/scalar.h>
+#include <vclib/concepts/pointers.h>
+#include <vclib/types.h>
 
-#include "bases/component.h"
+#include <ranges>
 
-namespace vcl::comp {
+namespace vcl::views {
 
-/**
- * @brief The Scalar class
- *
- * @ingroup components
- */
-template<typename T, typename ElementType = void, bool OPTIONAL = false>
-class Scalar : public Component<T, ElementType, OPTIONAL>
+namespace internal {
+
+struct QualityView
 {
-	using Base = Component<T, ElementType, OPTIONAL>;
-	using ThisType = Scalar<T, ElementType, OPTIONAL>;
+	constexpr QualityView() = default;
 
-public:
-	using ScalarComponent = ThisType; // expose the type to allow access to this component
+	inline static constexpr auto constQuality = [](const auto& p) -> decltype(auto)
+	{
+		if constexpr(IsPointer<decltype(p)>)
+			return p->quality();
+		else
+			return p.quality();
+	};
 
-	using ScalarType = T;
-
-	bool isEnabled() const;
-	bool isScalarEnabled() const;
-
-	const ScalarType& scalar() const;
-	ScalarType&       scalar();
-
-protected:
-	// PointersComponent interface functions
-	template<typename Element>
-	void importFrom(const Element& e);
+	inline static constexpr auto quality = [](auto& p) -> decltype(auto)
+	{
+		if constexpr(IsPointer<decltype(p)>)
+			return p->quality();
+		else
+			return p.quality();
+	};
+	
+#ifdef VCLIB_USES_RANGES
+	template <std::ranges::range R>
+	friend constexpr auto operator|(R&& r, QualityView)
+	{
+		using ElemType = std::ranges::range_value_t<R>;
+		if constexpr(IsConst<ElemType>)
+			return std::forward<R>(r) | std::views::transform(constQuality);
+		else
+			return std::forward<R>(r) | std::views::transform(quality);
+	}
+#endif
 };
 
-/* Detector function to check if a class has Scalar enabled */
+} // namespace vcl::views::internal
 
-template <typename T>
-bool isScalarEnabledOn(const T& element);
+inline constexpr internal::QualityView quality;
 
-template<typename ElementType = void, bool OPTIONAL = false>
-using Scalarf = Scalar<float, ElementType, OPTIONAL>;
+} // namespace vcl::views
 
-template<typename ElementType = void, bool OPTIONAL = false>
-using Scalard = Scalar<double, ElementType, OPTIONAL>;
-
-} // namespace vcl::comp
-
-#include "scalar.cpp"
-
-#endif // VCL_MESH_COMPONENTS_SCALAR_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_QUALITY_H

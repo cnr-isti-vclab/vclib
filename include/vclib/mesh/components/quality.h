@@ -21,49 +21,56 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_SCALAR_H
-#define VCL_ALGORITHMS_STAT_SCALAR_H
+#ifndef VCL_MESH_COMPONENTS_QUALITY_H
+#define VCL_MESH_COMPONENTS_QUALITY_H
 
-#include <vclib/math/histogram.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/concepts/mesh/components/quality.h>
 
-namespace vcl {
+#include "bases/component.h"
 
-template<MeshConcept MeshType>
-std::pair<typename MeshType::VertexType::ScalarType, typename MeshType::VertexType::ScalarType>
-vertexScalarMinMax(const MeshType& m);
+namespace vcl::comp {
 
-template<FaceMeshConcept MeshType>
-std::pair<typename MeshType::FaceType::ScalarType, typename MeshType::FaceType::ScalarType>
-faceScalarMinMax(const MeshType& m);
+/**
+ * @brief The Quality class
+ *
+ * @ingroup components
+ */
+template<typename T, typename ElementType = void, bool OPTIONAL = false>
+class Quality : public Component<T, ElementType, OPTIONAL>
+{
+	using Base = Component<T, ElementType, OPTIONAL>;
+	using ThisType = Quality<T, ElementType, OPTIONAL>;
 
-template<MeshConcept MeshType>
-typename MeshType::VertexType::ScalarType vertexScalarAverage(const MeshType& m);
+public:
+	using QualityComponent = ThisType; // expose the type to allow access to this component
 
-template<FaceMeshConcept MeshType>
-typename MeshType::FaceType::ScalarType faceScalarAverage(const MeshType& m);
+	using QualityType = T;
 
-template<MeshConcept MeshType>
-std::vector<typename MeshType::VertexType::ScalarType> vertexRadiusFromScalar(
-	const MeshType& m,
-	double          diskRadius,
-	double          radiusVariance,
-	bool            invert = false);
+	bool isEnabled() const;
+	bool isQualityEnabled() const;
 
-template<MeshConcept MeshType, typename HScalar = double>
-Histogram<HScalar> vertexScalarHistogram(
-	const MeshType& m,
-	bool selectionOnly = false,
-	uint histSize = 10000);
+	const QualityType& quality() const;
+	QualityType&       quality();
 
-template<FaceMeshConcept MeshType, typename HScalar = double>
-Histogram<HScalar> faceScalarHistogram(
-	const MeshType& m,
-	bool selectionOnly = false,
-	uint histSize = 10000);
+protected:
+	// PointersComponent interface functions
+	template<typename Element>
+	void importFrom(const Element& e);
+};
 
-} // namespace vcl
+/* Detector function to check if a class has Quality enabled */
 
-#include "scalar.cpp"
+template <typename T>
+bool isQualityEnabledOn(const T& element);
 
-#endif // VCL_ALGORITHMS_STAT_SCALAR_H
+template<typename ElementType = void, bool OPTIONAL = false>
+using Qualityf = Quality<float, ElementType, OPTIONAL>;
+
+template<typename ElementType = void, bool OPTIONAL = false>
+using Qualityd = Quality<double, ElementType, OPTIONAL>;
+
+} // namespace vcl::comp
+
+#include "quality.cpp"
+
+#endif // VCL_MESH_COMPONENTS_QUALITY_H

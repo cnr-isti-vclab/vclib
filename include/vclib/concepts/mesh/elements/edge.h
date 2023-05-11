@@ -86,9 +86,9 @@ concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
 template<typename T>
-concept HasScalar = comp::HasScalar<T>;
+concept HasQuality = comp::HasQuality<T>;
 template<typename T>
-concept HasOptionalScalar = comp::HasOptionalScalar<T>;
+concept HasOptionalQuality = comp::HasOptionalQuality<T>;
 template<typename T>
 concept HasVertexPointers = comp::HasVertexPointers<T>;
 

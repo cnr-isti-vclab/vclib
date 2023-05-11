@@ -35,7 +35,7 @@
 #include "../components/parent_mesh_pointer.h"
 #include "../components/polygon_bit_flags.h"
 #include "../components/principal_curvature.h"
-#include "../components/scalar.h"
+#include "../components/quality.h"
 #include "../components/triangle_bit_flags.h"
 #include "../components/vertex_pointers.h"
 #include "../components/wedge_colors.h"
@@ -194,30 +194,30 @@ using OptionalPrincipalCurvaturef = comp::PrincipalCurvaturef<FaceType, true>;
 template<typename FaceType>
 using OptionalPrincipalCurvatured = comp::PrincipalCurvatured<FaceType, true>;
 
-/* Port Scalar class into face namespace */
-template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType>;
+/* Port Quality class into face namespace */
+template<typename QualityType>
+using Quality = comp::Quality<QualityType>;
 
-using Scalarf = comp::Scalarf<>;
-using Scalard = comp::Scalard<>;
+using Qualityf = comp::Qualityf<>;
+using Qualityd = comp::Qualityd<>;
 
-template<typename ScalarType, typename FaceType>
-using VerticalScalar = comp::Scalar<ScalarType, FaceType>;
-
-template<typename FaceType>
-using VerticalScalarf = comp::Scalar<float, FaceType>;
+template<typename QualityType, typename FaceType>
+using VerticalQuality = comp::Quality<QualityType, FaceType>;
 
 template<typename FaceType>
-using VerticalScalard = comp::Scalar<double, FaceType>;
-
-template<typename ScalarType, typename FaceType>
-using OptionalScalar = comp::Scalar<ScalarType, FaceType, true>;
+using VerticalQualityf = comp::Quality<float, FaceType>;
 
 template<typename FaceType>
-using OptionalScalarf = comp::Scalar<float, FaceType, true>;
+using VerticalQualityd = comp::Quality<double, FaceType>;
+
+template<typename QualityType, typename FaceType>
+using OptionalQuality = comp::Quality<QualityType, FaceType, true>;
 
 template<typename FaceType>
-using OptionalScalard = comp::Scalar<double, FaceType, true>;
+using OptionalQualityf = comp::Quality<float, FaceType, true>;
+
+template<typename FaceType>
+using OptionalQualityd = comp::Quality<double, FaceType, true>;
 
 /* Port TriangleBitFlags class into face namespace */
 using TriangleBitFlags = comp::TriangleBitFlags<>;

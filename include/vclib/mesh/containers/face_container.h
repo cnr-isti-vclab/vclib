@@ -114,10 +114,10 @@ public:
 	void enablePerFacePrincipalCurvature() requires face::HasOptionalPrincipalCurvature<T>;
 	void disablePerFacePrincipalCurvature() requires face::HasOptionalPrincipalCurvature<T>;
 
-	// Scalar
-	bool isPerFaceScalarEnabled() const requires face::HasOptionalScalar<T>;
-	void enablePerFaceScalar() requires face::HasOptionalScalar<T>;
-	void disablePerFaceScalar() requires face::HasOptionalScalar<T>;
+	// Quality
+	bool isPerFaceQualityEnabled() const requires face::HasOptionalQuality<T>;
+	void enablePerFaceQuality() requires face::HasOptionalQuality<T>;
+	void disablePerFaceQuality() requires face::HasOptionalQuality<T>;
 
 	// Custom Components
 	bool hasPerFaceCustomComponent(const std::string& name) const

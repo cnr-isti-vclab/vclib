@@ -56,9 +56,9 @@ FileMeshInfo::FileMeshInfo(const Mesh& m)
 	if constexpr (vcl::HasPerVertexColor<Mesh>)
 		if (vcl::isPerVertexColorEnabled(m))
 			setVertexColors(true, UCHAR);
-	if constexpr (vcl::HasPerVertexScalar<Mesh>)
-		if (vcl::isPerVertexScalarEnabled(m))
-			setVertexScalars(true, getType<typename Mesh::VertexType::ScalarType>());
+	if constexpr (vcl::HasPerVertexQuality<Mesh>)
+		if (vcl::isPerVertexQualityEnabled(m))
+			setVertexQuality(true, getType<typename Mesh::VertexType::QualityType>());
 	if constexpr (vcl::HasPerVertexTexCoord<Mesh>)
 		if (vcl::isPerVertexTexCoordEnabled(m))
 			setVertexTexCoords(
@@ -89,9 +89,9 @@ FileMeshInfo::FileMeshInfo(const Mesh& m)
 		if constexpr (vcl::HasPerFaceColor<Mesh>)
 			if (vcl::isPerFaceColorEnabled(m))
 				setFaceColors(true, UCHAR);
-		if constexpr (vcl::HasPerFaceScalar<Mesh>)
-			if (vcl::isPerFaceScalarEnabled(m))
-				setFaceScalars(true, getType<typename Mesh::FaceType::ScalarType>());
+		if constexpr (vcl::HasPerFaceQuality<Mesh>)
+			if (vcl::isPerFaceQualityEnabled(m))
+				setFaceQuality(true, getType<typename Mesh::FaceType::QualityType>());
 		if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>)
 			if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
 				setFaceWedgeTexCoords(true, getType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
@@ -195,12 +195,12 @@ inline bool FileMeshInfo::hasVertexColors() const
 }
 
 /**
- * @brief Returns true if the current object has Vertex Scalars.
- * @return true if the current object has Vertex Scalars.
+ * @brief Returns true if the current object has Vertex Quality.
+ * @return true if the current object has Vertex Quality.
  */
-inline bool FileMeshInfo::hasVertexScalars() const
+inline bool FileMeshInfo::hasVertexQuality() const
 {
-	return hasPerElementComponent(VERTEX, SCALAR);
+	return hasPerElementComponent(VERTEX, QUALITY);
 }
 
 /**
@@ -249,9 +249,9 @@ inline bool FileMeshInfo::hasFaceColors() const
 	return hasPerElementComponent(FACE, COLOR);
 }
 
-inline bool FileMeshInfo::hasFaceScalars() const
+inline bool FileMeshInfo::hasFaceQuality() const
 {
-	return hasPerElementComponent(FACE, SCALAR);
+	return hasPerElementComponent(FACE, QUALITY);
 }
 
 inline bool FileMeshInfo::hasFaceWedgeTexCoords() const
@@ -341,9 +341,9 @@ inline void FileMeshInfo::setVertexColors(bool b, DataType t)
 	setElementComponents(VERTEX, COLOR, b, t);
 }
 
-inline void FileMeshInfo::setVertexScalars(bool b, DataType t)
+inline void FileMeshInfo::setVertexQuality(bool b, DataType t)
 {
-	setElementComponents(VERTEX, SCALAR, b, t);
+	setElementComponents(VERTEX, QUALITY, b, t);
 }
 
 void FileMeshInfo::setVertexTexCoords(bool b, DataType t)
@@ -376,9 +376,9 @@ inline void FileMeshInfo::setFaceColors(bool b, DataType t)
 	setElementComponents(FACE, COLOR, b, t);
 }
 
-inline void FileMeshInfo::setFaceScalars(bool b, DataType t)
+inline void FileMeshInfo::setFaceQuality(bool b, DataType t)
 {
-	setElementComponents(FACE, SCALAR, b, t);
+	setElementComponents(FACE, QUALITY, b, t);
 }
 
 inline void FileMeshInfo::setFaceWedgeTexCoords(bool b, DataType t)
@@ -463,9 +463,9 @@ inline FileMeshInfo::DataType FileMeshInfo::vertexColorsType() const
 	return elementComponentType(VERTEX, COLOR);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::vertexScalarsType() const
+inline FileMeshInfo::DataType FileMeshInfo::vertexQualityType() const
 {
-	return elementComponentType(VERTEX, SCALAR);
+	return elementComponentType(VERTEX, QUALITY);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::vertexTexCoordsType() const
@@ -483,9 +483,9 @@ inline FileMeshInfo::DataType FileMeshInfo::faceColorsType() const
 	return elementComponentType(FACE, COLOR);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::faceScalarsType() const
+inline FileMeshInfo::DataType FileMeshInfo::faceQualityType() const
 {
-	return elementComponentType(FACE, SCALAR);
+	return elementComponentType(FACE, QUALITY);
 }
 
 inline FileMeshInfo::DataType FileMeshInfo::faceWedgeTexCoordsType() const

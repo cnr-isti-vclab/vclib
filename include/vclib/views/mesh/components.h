@@ -30,7 +30,7 @@
 #include "components/colors.h"
 #include "components/coords.h"
 #include "components/normals.h"
-#include "components/scalars.h"
+#include "components/quality.h"
 #include "components/selection.h"
 #include "components/tex_coords.h"
 

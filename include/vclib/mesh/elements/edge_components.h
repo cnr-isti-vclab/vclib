@@ -31,7 +31,7 @@
 #include "../components/custom_components.h"
 #include "../components/mark.h"
 #include "../components/parent_mesh_pointer.h"
-#include "../components/scalar.h"
+#include "../components/quality.h"
 #include "../components/vertex_pointers.h"
 
 /**
@@ -99,30 +99,30 @@ using OptionalMark = comp::Mark<EdgeType, true>;
 template<typename MeshType>
 using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 
-/* Port Scalar class into edge namespace */
-template<typename ScalarType>
-using Scalar = comp::Scalar<ScalarType>;
+/* Port Quality class into edge namespace */
+template<typename QualityType>
+using Quality = comp::Quality<QualityType>;
 
-using Scalarf = comp::Scalarf<>;
-using Scalard = comp::Scalard<>;
+using Qualityf = comp::Qualityf<>;
+using Qualityd = comp::Qualityd<>;
 
-template<typename ScalarType, typename EdgeType>
-using VerticalScalar = comp::Scalar<ScalarType, EdgeType>;
-
-template<typename EdgeType>
-using VerticalScalarf = comp::Scalar<float, EdgeType>;
+template<typename QualityType, typename EdgeType>
+using VerticalQuality = comp::Quality<QualityType, EdgeType>;
 
 template<typename EdgeType>
-using VerticalScalard = comp::Scalar<double, EdgeType>;
-
-template<typename ScalarType, typename EdgeType>
-using OptionalScalar = comp::Scalar<ScalarType, EdgeType, true>;
+using VerticalQualityf = comp::Quality<float, EdgeType>;
 
 template<typename EdgeType>
-using OptionalScalarf = comp::Scalar<float, EdgeType, true>;
+using VerticalQualityd = comp::Quality<double, EdgeType>;
+
+template<typename QualityType, typename EdgeType>
+using OptionalQuality = comp::Quality<QualityType, EdgeType, true>;
 
 template<typename EdgeType>
-using OptionalScalard = comp::Scalar<double, EdgeType, true>;
+using OptionalQualityf = comp::Quality<float, EdgeType, true>;
+
+template<typename EdgeType>
+using OptionalQualityd = comp::Quality<double, EdgeType, true>;
 
 /* Port VertexPointers class into edge namespace */
 template<typename VertexType>

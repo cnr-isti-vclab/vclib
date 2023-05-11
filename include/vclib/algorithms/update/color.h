@@ -47,18 +47,18 @@ template<FaceMeshConcept MeshType>
 void setPerFaceColorFromVertexColor(MeshType& m);
 
 template<MeshConcept MeshType>
-void setPerVertexColorFromScalar(
-	MeshType&                                 m,
-	vcl::Color::ColorMap                      colorMap  = vcl::Color::RedBlue,
-	typename MeshType::VertexType::ScalarType minScalar = 0,
-	typename MeshType::VertexType::ScalarType maxScalar = 0);
+void setPerVertexColorFromQuality(
+	MeshType&                                  m,
+	vcl::Color::ColorMap                       colorMap  = vcl::Color::RedBlue,
+	typename MeshType::VertexType::QualityType minQuality = 0,
+	typename MeshType::VertexType::QualityType maxQuality = 0);
 
 template<FaceMeshConcept MeshType>
-void setPerFaceColorFromScalar(
-	MeshType&                               m,
-	vcl::Color::ColorMap                    colorMap  = vcl::Color::RedBlue,
-	typename MeshType::FaceType::ScalarType minScalar = 0,
-	typename MeshType::FaceType::ScalarType maxScalar = 0);
+void setPerFaceColorFromQuality(
+	MeshType&                                m,
+	vcl::Color::ColorMap                     colorMap  = vcl::Color::RedBlue,
+	typename MeshType::FaceType::QualityType minQuality = 0,
+	typename MeshType::FaceType::QualityType maxQuality = 0);
 
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceBorderFlag(

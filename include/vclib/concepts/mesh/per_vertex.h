@@ -62,8 +62,8 @@ concept HasPerVertexPrincipalCurvature =
 	HasVertices<MeshType> && vcl::vert::HasPrincipalCurvature<typename MeshType::VertexType>;
 
 template<typename MeshType>
-concept HasPerVertexScalar =
-	HasVertices<MeshType> && vcl::vert::HasScalar<typename MeshType::VertexType>;
+concept HasPerVertexQuality =
+	HasVertices<MeshType> && vcl::vert::HasQuality<typename MeshType::VertexType>;
 
 template<typename MeshType>
 concept HasPerVertexTexCoord =

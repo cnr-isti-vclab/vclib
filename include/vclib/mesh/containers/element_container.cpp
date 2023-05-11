@@ -662,12 +662,12 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 				}
 			}
 		}
-		// Scalar
-		if constexpr (comp::HasOptionalScalar<T>) {
-			if constexpr (comp::HasScalar<CT>) {
-				if (!comp::HasOptionalScalar<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::ScalarComponent>()) {
-					enableOptionalComponent<typename T::ScalarComponent>();
+		// Quality
+		if constexpr (comp::HasOptionalQuality<T>) {
+			if constexpr (comp::HasQuality<CT>) {
+				if (!comp::HasOptionalQuality<CT> ||
+					c.template isOptionalComponentEnabled<typename CT::QualityComponent>()) {
+					enableOptionalComponent<typename T::QualityComponent>();
 				}
 			}
 		}

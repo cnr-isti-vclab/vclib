@@ -58,8 +58,8 @@ concept HasPerFacePrincipalCurvature =
 	HasFaces<MeshType> && vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
 
 template<typename MeshType>
-concept HasPerFaceScalar =
-	HasFaces<MeshType> && vcl::face::HasScalar<typename MeshType::FaceType>;
+concept HasPerFaceQuality =
+	HasFaces<MeshType> && vcl::face::HasQuality<typename MeshType::FaceType>;
 
 template<typename MeshType>
 concept HasPerFaceWedgeColors =

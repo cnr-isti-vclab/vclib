@@ -77,13 +77,13 @@ bool isPerFacePrincipalCurvatureEnabled(const MeshType&);
 template<FaceMeshConcept MeshType>
 bool enableIfPerFacePrincipalCurvatureOptional(MeshType&);
 
-// Face Scalar
+// Face Quality
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceScalarEnabled(const MeshType&);
+bool isPerFaceQualityEnabled(const MeshType&);
 
 template<FaceMeshConcept MeshType>
-bool enableIfPerFaceScalarOptional(MeshType&);
+bool enableIfPerFaceQualityOptional(MeshType&);
 
 // Face Wedge Colors
 
@@ -140,11 +140,11 @@ template<FaceMeshConcept MeshType>
 void requirePerFacePrincipalCurvature(const MeshType& m)
 	requires HasPerFacePrincipalCurvature<MeshType>;
 
-// Face Scalar
+// Face Quality
 
 template<FaceMeshConcept MeshType>
-void requirePerFaceScalar(const MeshType& m)
-	requires HasPerFaceScalar<MeshType>;
+void requirePerFaceQuality(const MeshType& m)
+	requires HasPerFaceQuality<MeshType>;
 
 // Face Wedge Colors
 

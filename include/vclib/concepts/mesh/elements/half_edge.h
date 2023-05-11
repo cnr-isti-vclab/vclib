@@ -80,13 +80,14 @@ concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
 template<typename T>
-concept HasScalar = comp::HasScalar<T>;
+concept HasQuality = comp::HasQuality<T>;
+template<typename T>
+concept HasOptionalQuality = comp::HasOptionalQuality<T>;
 template<typename T>
 concept HasTexCoord = comp::HasTexCoord<T>;
 template<typename T>
 concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
-template<typename T>
-concept HasOptionalScalar = comp::HasOptionalScalar<T>;
+
 
 /** @} */ // end of group
 

@@ -49,7 +49,7 @@ typedef enum {
 	green,
 	blue,
 	alpha,
-	scalar,
+	quality,
 	texture_u,
 	texture_v,
 	texnumber,
