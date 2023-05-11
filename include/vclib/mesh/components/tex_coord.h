@@ -37,9 +37,9 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
-class TexCoord : public Component<vcl::TexCoord<Scalar>, ElementType, OPT>
+class TexCoord : public Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>
 {
-	using Base = Component<vcl::TexCoord<Scalar>, ElementType, OPT>;
+	using Base = Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>;
 	using ThisType = TexCoord<Scalar, ElementType, OPT>;
 
 public:

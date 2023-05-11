@@ -37,9 +37,9 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<PointConcept P, typename ElementType = void, bool OPT = false>
-class Normal : public Component<P, ElementType, OPT>
+class Normal : public Component<NORMAL, P, ElementType, OPT>
 {
-	using Base = Component<P, ElementType, OPT>;
+	using Base = Component<NORMAL, P, ElementType, OPT>;
 	using ThisType = Normal<P, ElementType, OPT>;
 
 public:

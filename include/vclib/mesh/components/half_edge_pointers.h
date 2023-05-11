@@ -58,6 +58,7 @@ template<
 	bool OPT        = false>
 class HalfEdgePointers :
 		public Component<
+			HALF_EDGE_PTRS,
 			internal::HEPData<HalfEdge, Vertex, Face>,
 			ElementType,
 			OPT,
@@ -66,6 +67,7 @@ class HalfEdgePointers :
 			Face>
 {
 	using Base = Component<
+		HALF_EDGE_PTRS,
 		internal::HEPData<HalfEdge, Vertex, Face>,
 		ElementType,
 		OPT,

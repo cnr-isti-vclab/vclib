@@ -47,9 +47,9 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
-class Name : public Component<std::string, ElementType, OPT>
+class Name : public Component<NAME, std::string, ElementType, OPT>
 {
-	using Base = Component<std::string, ElementType, OPT>;
+	using Base = Component<NAME, std::string, ElementType, OPT>;
 	using ThisType = Name<ElementType, OPT>;
 
 public:

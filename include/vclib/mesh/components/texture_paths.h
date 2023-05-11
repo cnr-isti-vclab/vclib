@@ -49,9 +49,9 @@ struct TPData {
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
-class TexturePaths : public Component<internal::TPData, ElementType, OPT>
+class TexturePaths : public Component<TEXTURE_PATHS, internal::TPData, ElementType, OPT>
 {
-	using Base = Component<internal::TPData, ElementType, OPT>;
+	using Base = Component<TEXTURE_PATHS, internal::TPData, ElementType, OPT>;
 	using ThisType = TexturePaths<ElementType, OPT>;
 
 public:

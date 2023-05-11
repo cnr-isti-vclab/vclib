@@ -44,9 +44,9 @@ template<
 	typename HalfEdge,
 	typename ElementType = void,
 	bool OPT        = false>
-class VertexHalfEdgePointer : public Component<HalfEdge*, ElementType, OPT, HalfEdge>
+class VertexHalfEdgePointer : public Component<VERTEX_HALF_EDGE_PTRS, HalfEdge*, ElementType, OPT, HalfEdge>
 {
-	using Base = Component<HalfEdge*, ElementType, OPT, HalfEdge>;
+	using Base = Component<VERTEX_HALF_EDGE_PTRS, HalfEdge*, ElementType, OPT, HalfEdge>;
 	using ThisType = VertexHalfEdgePointer<HalfEdge, ElementType, OPT>;
 
 	using Vertex = typename HalfEdge::VertexType;

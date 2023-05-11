@@ -42,9 +42,9 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<int N, typename ElementType = void, bool OPT = false>
-class WedgeColors : public ContainerComponent<vcl::Color, N, void, ElementType, OPT, true>
+class WedgeColors : public ContainerComponent<WEDGE_COLORS, vcl::Color, N, void, ElementType, OPT, true>
 {
-	using Base = ContainerComponent<vcl::Color, N, void, ElementType, OPT, true>;
+	using Base = ContainerComponent<WEDGE_COLORS, vcl::Color, N, void, ElementType, OPT, true>;
 	using ThisType = WedgeColors<N, ElementType, OPT>;
 
 public:

@@ -44,9 +44,9 @@ namespace vcl::comp {
  */
 template<typename Scalar, int N, typename ElementType = void, bool OPT = false>
 class WedgeTexCoords :
-		public ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, OPT, true>
+		public ContainerComponent<WEDGE_TEX_COORDS, vcl::TexCoord<Scalar>, N, short, ElementType, OPT, true>
 {
-	using Base = ContainerComponent<vcl::TexCoord<Scalar>, N, short, ElementType, OPT, true>;
+	using Base = ContainerComponent<WEDGE_TEX_COORDS, vcl::TexCoord<Scalar>, N, short, ElementType, OPT, true>;
 	using ThisType = WedgeTexCoords<Scalar, N, ElementType, OPT>;
 
 public:
