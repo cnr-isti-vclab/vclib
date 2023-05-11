@@ -25,93 +25,93 @@
 
 namespace vcl::comp {
 
-template<int N, typename El, bool o>
-bool WedgeColors<N, El, o>::isEnabled() const
+template<int N, typename El, bool O>
+bool WedgeColors<N, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
-template<int N, typename El, bool o>
-bool WedgeColors<N, El, o>::isWedgeColorsEnabled() const
+template<int N, typename El, bool O>
+bool WedgeColors<N, El, O>::isWedgeColorsEnabled() const
 {
 	return isEnabled();
 }
 
-template<int N, typename El, bool o>
-vcl::Color& WedgeColors<N, El, o>::wedgeColor(uint i)
+template<int N, typename El, bool O>
+vcl::Color& WedgeColors<N, El, O>::wedgeColor(uint i)
 {
 	return colors().at(i);
 }
 
-template<int N, typename El, bool o>
-const vcl::Color& WedgeColors<N, El, o>::wedgeColor(uint i) const
+template<int N, typename El, bool O>
+const vcl::Color& WedgeColors<N, El, O>::wedgeColor(uint i) const
 {
 	return colors().at(i);
 }
 
-template<int N, typename El, bool o>
-vcl::Color& WedgeColors<N, El, o>::wedgeColorMod(int i)
+template<int N, typename El, bool O>
+vcl::Color& WedgeColors<N, El, O>::wedgeColorMod(int i)
 {
 	return colors().atMod(i);
 }
 
-template<int N, typename El, bool o>
-const vcl::Color& WedgeColors<N, El, o>::wedgeColorMod(int i) const
+template<int N, typename El, bool O>
+const vcl::Color& WedgeColors<N, El, O>::wedgeColorMod(int i) const
 {
 	return colors().atMod(i);
 }
 
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::setWedgeColor(const vcl::Color& t, uint i)
+template<int N, typename El, bool O>
+void WedgeColors<N, El, O>::setWedgeColor(const vcl::Color& t, uint i)
 {
 	colors().set(t, i);
 }
 
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::setWedgeColors(const std::vector<vcl::Color>& list)
+template<int N, typename El, bool O>
+void WedgeColors<N, El, O>::setWedgeColors(const std::vector<vcl::Color>& list)
 {
 	colors().set(list);
 }
 
-template<int N, typename El, bool o>
-typename WedgeColors<N, El, o>::WedgeColorsIterator WedgeColors<N, El, o>::wedgeColorBegin()
+template<int N, typename El, bool O>
+typename WedgeColors<N, El, O>::WedgeColorsIterator WedgeColors<N, El, O>::wedgeColorBegin()
 {
 	return colors().begin();
 }
 
-template<int N, typename El, bool o>
-typename WedgeColors<N, El, o>::WedgeColorsIterator WedgeColors<N, El, o>::wedgeColorEnd()
+template<int N, typename El, bool O>
+typename WedgeColors<N, El, O>::WedgeColorsIterator WedgeColors<N, El, O>::wedgeColorEnd()
 {
 	return colors().end();
 }
 
-template<int N, typename El, bool o>
-typename WedgeColors<N, El, o>::ConstWedgeColorsIterator WedgeColors<N, El, o>::wedgeColorBegin() const
+template<int N, typename El, bool O>
+typename WedgeColors<N, El, O>::ConstWedgeColorsIterator WedgeColors<N, El, O>::wedgeColorBegin() const
 {
 	return colors().begin();
 }
 
-template<int N, typename El, bool o>
-typename WedgeColors<N, El, o>::ConstWedgeColorsIterator WedgeColors<N, El, o>::wedgeColorEnd() const
+template<int N, typename El, bool O>
+typename WedgeColors<N, El, O>::ConstWedgeColorsIterator WedgeColors<N, El, O>::wedgeColorEnd() const
 {
 	return colors().end();
 }
 
-template<int N, typename El, bool o>
-auto WedgeColors<N, El, o>::wedgeColors()
+template<int N, typename El, bool O>
+auto WedgeColors<N, El, O>::wedgeColors()
 {
 	return View(wedgeColorBegin(), wedgeColorEnd());
 }
 
-template<int N, typename El, bool o>
-auto WedgeColors<N, El, o>::wedgeColors() const
+template<int N, typename El, bool O>
+auto WedgeColors<N, El, O>::wedgeColors() const
 {
 	return View(wedgeColorBegin(), wedgeColorEnd());
 }
 
-template<int N, typename El, bool o>
+template<int N, typename El, bool O>
 template<typename Element>
-void WedgeColors<N, El, o>::importFrom(const Element& e)
+void WedgeColors<N, El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasWedgeColors<Element>) {
 		if (isWedgeColorsEnabledOn(e)) {
@@ -139,53 +139,53 @@ void WedgeColors<N, El, o>::importFrom(const Element& e)
 	}
 }
 
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::resize(uint n) requires (N < 0)
+template<int N, typename El, bool O>
+void WedgeColors<N, El, O>::resize(uint n) requires (N < 0)
 {
 	colors().resize(n);
 }
 
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::pushBack(const vcl::Color& c) requires (N < 0)
+template<int N, typename El, bool O>
+void WedgeColors<N, El, O>::pushBack(const vcl::Color& c) requires (N < 0)
 {
 	colors().pushBack(c);
 }
 
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::insert(uint i, const vcl::Color& c) requires (N < 0)
+template<int N, typename El, bool O>
+void WedgeColors<N, El, O>::insert(uint i, const vcl::Color& c) requires (N < 0)
 {
 	colors().insert(i, c);
 }
 
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::erase(uint i) requires (N < 0)
+template<int N, typename El, bool O>
+void WedgeColors<N, El, O>::erase(uint i) requires (N < 0)
 {
 	colors().erase(i);
 }
 
-template<int N, typename El, bool o>
-void WedgeColors<N, El, o>::clear() requires (N < 0)
+template<int N, typename El, bool O>
+void WedgeColors<N, El, O>::clear() requires (N < 0)
 {
 	colors().clear();
 }
 
-template<int N, typename El, bool o>
+template<int N, typename El, bool O>
 template<typename Element>
-void WedgeColors<N, El, o>::importWedgeColorsFrom(const Element& e)
+void WedgeColors<N, El, O>::importWedgeColorsFrom(const Element& e)
 {
 	for (uint i = 0; i < e.vertexNumber(); ++i){
 		wedgeColor(i) = e.wedgeColor(i);
 	}
 }
 
-template<int N, typename El, bool o>
-Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors()
+template<int N, typename El, bool O>
+Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors()
 {
 	return Base::container(this);
 }
 
-template<int N, typename El, bool o>
-const Vector<vcl::Color, N>& WedgeColors<N, El, o>::colors() const
+template<int N, typename El, bool O>
+const Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors() const
 {
 	return Base::container(this);
 }

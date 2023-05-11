@@ -25,37 +25,25 @@
 
 namespace vcl::comp {
 
-template<PointConcept P, typename El, bool o>
-const P& Coordinate<P, El, o>::coord() const
+template<PointConcept P, typename El, bool O>
+const P& Coordinate<P, El, O>::coord() const
 {
-	return p();
+	return Base::data(this);
 }
 
-template<PointConcept P, typename El, bool o>
-P& Coordinate<P, El, o>::coord()
+template<PointConcept P, typename El, bool O>
+P& Coordinate<P, El, O>::coord()
 {
-	return p();
+	return Base::data(this);
 }
 
-template<PointConcept P, typename El, bool o>
+template<PointConcept P, typename El, bool O>
 template<typename Element>
-void Coordinate<P, El, o>::importFrom(const Element& v)
+void Coordinate<P, El, O>::importFrom(const Element& v)
 {
 	if constexpr (HasCoordinate<Element>) {
-		p() = v.coord().template cast<typename CoordType::ScalarType>();
+		coord() = v.coord().template cast<typename CoordType::ScalarType>();
 	}
-}
-
-template<PointConcept P, typename El, bool o>
-P& Coordinate<P, El, o>::p()
-{
-	return Base::data(this);
-}
-
-template<PointConcept P, typename El, bool o>
-const P& Coordinate<P, El, o>::p() const
-{
-	return Base::data(this);
 }
 
 } // namespace vcl::comp

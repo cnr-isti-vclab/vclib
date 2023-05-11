@@ -36,11 +36,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename Vertex, int N, typename ElementType = void, bool optional = false>
-class VertexPointers : public PointersContainerComponent<Vertex, N, ElementType, optional, false>
+template<typename Vertex, int N, typename ElementType = void, bool OPTIONAL = false>
+class VertexPointers : public PointersContainerComponent<Vertex, N, ElementType, OPTIONAL, false>
 {
-	using ThisType = VertexPointers<Vertex, N, ElementType, optional>;
-	using Base = PointersContainerComponent<Vertex, N, ElementType, optional, false>;
+	using ThisType = VertexPointers<Vertex, N, ElementType, OPTIONAL>;
+	using Base = PointersContainerComponent<Vertex, N, ElementType, OPTIONAL, false>;
 
 public:
 	using VertexPointersComponent = ThisType; // expose the type to allow access to this component

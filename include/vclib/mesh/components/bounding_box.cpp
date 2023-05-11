@@ -29,8 +29,8 @@ namespace vcl::comp {
  * @brief Returns the bounding box of this object.
  * @return The bounding box of this object.
  */
-template<PointConcept P, typename El, bool o>
-const Box<P>& BoundingBox<P, El, o>::boundingBox() const
+template<PointConcept P, typename El, bool O>
+const Box<P>& BoundingBox<P, El, O>::boundingBox() const
 {
 	return Base::data(this);
 }
@@ -39,15 +39,15 @@ const Box<P>& BoundingBox<P, El, o>::boundingBox() const
  * @brief Returns the bounding box of this object.
  * @return The bounding box of this object.
  */
-template<PointConcept P, typename El, bool o>
-Box<P>& BoundingBox<P, El, o>::boundingBox()
+template<PointConcept P, typename El, bool O>
+Box<P>& BoundingBox<P, El, O>::boundingBox()
 {
 	return Base::data(this);
 }
 
-template<PointConcept P, typename El, bool o>
+template<PointConcept P, typename El, bool O>
 template<typename Element>
-void BoundingBox<P, El, o>::importFrom(const Element& e)
+void BoundingBox<P, El, O>::importFrom(const Element& e)
 {
 	if constexpr(HasBoundingBox<Element>) {
 		using ScalarType = typename P::ScalarType;

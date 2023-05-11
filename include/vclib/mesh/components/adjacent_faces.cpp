@@ -28,20 +28,20 @@ namespace vcl::comp {
 /**
  * @private
  */
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::init()
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::init()
 {
 	Base::init(this);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-bool AdjacentFaces<Face, N, TT, El, o>::isEnabled() const
+template<typename Face, int N, bool TT, typename El, bool O>
+bool AdjacentFaces<Face, N, TT, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-bool AdjacentFaces<Face, N, TT, El, o>::isAdjFacesEnabled() const
+template<typename Face, int N, bool TT, typename El, bool O>
+bool AdjacentFaces<Face, N, TT, El, O>::isAdjFacesEnabled() const
 {
 	return isEnabled();
 }
@@ -50,8 +50,8 @@ bool AdjacentFaces<Face, N, TT, El, o>::isAdjFacesEnabled() const
  * @brief Returns the number of adjacent faces of this element.
  * @return The number of adjacent faces of this element.
  */
-template<typename Face, int N, bool TT, typename El, bool o>
-uint AdjacentFaces<Face, N, TT, El, o>::adjFacesNumber() const
+template<typename Face, int N, bool TT, typename El, bool O>
+uint AdjacentFaces<Face, N, TT, El, O>::adjFacesNumber() const
 {
 	return Base::container(this).size();
 }
@@ -69,8 +69,8 @@ uint AdjacentFaces<Face, N, TT, El, o>::adjFacesNumber() const
  * between 0 and the number of adj faces.
  * @return The pointer to the i-th adjacent face of this element.
  */
-template<typename Face, int N, bool TT, typename El, bool o>
-Face*& AdjacentFaces<Face, N, TT, El, o>::adjFace(uint i)
+template<typename Face, int N, bool TT, typename El, bool O>
+Face*& AdjacentFaces<Face, N, TT, El, O>::adjFace(uint i)
 {
 	return Base::container(this).at(i);
 }
@@ -81,8 +81,8 @@ Face*& AdjacentFaces<Face, N, TT, El, o>::adjFace(uint i)
  * between 0 and the number of adj faces.
  * @return The pointer to the i-th adjacent face of this element.
  */
-template<typename Face, int N, bool TT, typename El, bool o>
-const Face* AdjacentFaces<Face, N, TT, El, o>::adjFace(uint i) const
+template<typename Face, int N, bool TT, typename El, bool O>
+const Face* AdjacentFaces<Face, N, TT, El, O>::adjFace(uint i) const
 {
 	return Base::container(this).at(i);
 }
@@ -103,8 +103,8 @@ const Face* AdjacentFaces<Face, N, TT, El, o>::adjFace(uint i) const
  * value is modularized on adjFaceNumber().
  * @return The pointer to the required adjacent face of this element.
  */
-template<typename Face, int N, bool TT, typename El, bool o>
-Face*& AdjacentFaces<Face, N, TT, El, o>::adjFaceMod(int i)
+template<typename Face, int N, bool TT, typename El, bool O>
+Face*& AdjacentFaces<Face, N, TT, El, O>::adjFaceMod(int i)
 {
 	return Base::container(this).atMod(i);
 }
@@ -115,8 +115,8 @@ Face*& AdjacentFaces<Face, N, TT, El, o>::adjFaceMod(int i)
  * value is modularized on adjFaceNumber().
  * @return The pointer to the required adjacent face of this element.
  */
-template<typename Face, int N, bool TT, typename El, bool o>
-const Face* AdjacentFaces<Face, N, TT, El, o>::adjFaceMod(int i) const
+template<typename Face, int N, bool TT, typename El, bool O>
+const Face* AdjacentFaces<Face, N, TT, El, O>::adjFaceMod(int i) const
 {
 	return Base::container(this).atMod(i);
 }
@@ -127,8 +127,8 @@ const Face* AdjacentFaces<Face, N, TT, El, o>::adjFaceMod(int i) const
  * @param[in] i: the position in the container on which set the adj face; the value must be
  * between 0 and the number of adj faces.
  */
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::setAdjFace(Face* f, uint i)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::setAdjFace(Face* f, uint i)
 {
 	Base::container(this).set(f, i);
 }
@@ -141,34 +141,34 @@ void AdjacentFaces<Face, N, TT, El, o>::setAdjFace(Face* f, uint i)
  *
  * @param[in] list: vector of adjacent faces to set.
  */
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::setAdjFaces(const std::vector<Face*>& list)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::setAdjFaces(const std::vector<Face*>& list)
 {
 	Base::container(this).set(list);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-bool AdjacentFaces<Face, N, TT, El, o>::containsAdjFace(const Face* f) const
+template<typename Face, int N, bool TT, typename El, bool O>
+bool AdjacentFaces<Face, N, TT, El, O>::containsAdjFace(const Face* f) const
 {
 	return Base::container(this).contains(f);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-typename AdjacentFaces<Face, N, TT, El, o>::AdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, o>::findAdjFace(const Face* f)
+template<typename Face, int N, bool TT, typename El, bool O>
+typename AdjacentFaces<Face, N, TT, El, O>::AdjacentFaceIterator
+AdjacentFaces<Face, N, TT, El, O>::findAdjFace(const Face* f)
 {
 	return Base::container(this).find(f);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-typename AdjacentFaces<Face, N, TT, El, o>::ConstAdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, o>::findAdjFace(const Face* f) const
+template<typename Face, int N, bool TT, typename El, bool O>
+typename AdjacentFaces<Face, N, TT, El, O>::ConstAdjacentFaceIterator
+AdjacentFaces<Face, N, TT, El, O>::findAdjFace(const Face* f) const
 {
 	return Base::container(this).find(f);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-int AdjacentFaces<Face, N, TT, El, o>::indexOfAdjFace(const Face* f) const
+template<typename Face, int N, bool TT, typename El, bool O>
+int AdjacentFaces<Face, N, TT, El, O>::indexOfAdjFace(const Face* f) const
 {
 	return Base::container(this).indexOf(f);
 }
@@ -179,88 +179,88 @@ int AdjacentFaces<Face, N, TT, El, o>::indexOfAdjFace(const Face* f) const
  * size.
  * @param n
  */
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::resizeAdjFaces(uint n)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::resizeAdjFaces(uint n)
 	requires(N < 0 && !TT)
 {
 	Base::container(this).resize(n);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::pushAdjFace(Face* f)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::pushAdjFace(Face* f)
 	requires(N < 0 && !TT)
 {
 	Base::container(this).pushBack(f);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::insertAdjFace(uint i, Face* f)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::insertAdjFace(uint i, Face* f)
 	requires(N < 0 && !TT)
 {
 	Base::container(this).insert(i, f);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::eraseAdjFace(uint i)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::eraseAdjFace(uint i)
 	requires(N < 0 && !TT)
 {
 	Base::container(this).erase(i);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::clearAdjFaces()
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::clearAdjFaces()
 	requires(N < 0 && !TT)
 {
 	Base::container(this).clear();
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-typename AdjacentFaces<Face, N, TT, El, o>::AdjacentFaceIterator AdjacentFaces<Face, N, TT, El, o>::adjFaceBegin()
+template<typename Face, int N, bool TT, typename El, bool O>
+typename AdjacentFaces<Face, N, TT, El, O>::AdjacentFaceIterator AdjacentFaces<Face, N, TT, El, O>::adjFaceBegin()
 {
 	return Base::container(this).begin();
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-typename AdjacentFaces<Face, N, TT, El, o>::AdjacentFaceIterator AdjacentFaces<Face, N, TT, El, o>::adjFaceEnd()
+template<typename Face, int N, bool TT, typename El, bool O>
+typename AdjacentFaces<Face, N, TT, El, O>::AdjacentFaceIterator AdjacentFaces<Face, N, TT, El, O>::adjFaceEnd()
 {
 	return Base::container(this).end();
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-typename AdjacentFaces<Face, N, TT, El, o>::ConstAdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, o>::adjFaceBegin() const
+template<typename Face, int N, bool TT, typename El, bool O>
+typename AdjacentFaces<Face, N, TT, El, O>::ConstAdjacentFaceIterator
+AdjacentFaces<Face, N, TT, El, O>::adjFaceBegin() const
 {
 	return Base::container(this).begin();
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-typename AdjacentFaces<Face, N, TT, El, o>::ConstAdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, o>::adjFaceEnd() const
+template<typename Face, int N, bool TT, typename El, bool O>
+typename AdjacentFaces<Face, N, TT, El, O>::ConstAdjacentFaceIterator
+AdjacentFaces<Face, N, TT, El, O>::adjFaceEnd() const
 {
 	return Base::container(this).end();
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-auto AdjacentFaces<Face, N, TT, El, o>::adjFaces()
+template<typename Face, int N, bool TT, typename El, bool O>
+auto AdjacentFaces<Face, N, TT, El, O>::adjFaces()
 {
 	return View(adjFaceBegin(), adjFaceEnd());
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-auto AdjacentFaces<Face, N, TT, El, o>::adjFaces() const
+template<typename Face, int N, bool TT, typename El, bool O>
+auto AdjacentFaces<Face, N, TT, El, O>::adjFaces() const
 {
 	return View(adjFaceBegin(), adjFaceEnd());
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
+template<typename Face, int N, bool TT, typename El, bool O>
 template<typename Element>
-void AdjacentFaces<Face, N, TT, El, o>::importFrom(const Element&)
+void AdjacentFaces<Face, N, TT, El, O>::importFrom(const Element&)
 {
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
+template<typename Face, int N, bool TT, typename El, bool O>
 template<typename Element, typename ElFType>
-void AdjacentFaces<Face, N, TT, El, o>::importPointersFrom(
+void AdjacentFaces<Face, N, TT, El, O>::importPointersFrom(
 	const Element& e,
 	Face*          base,
 	const ElFType* ebase)
@@ -291,53 +291,53 @@ void AdjacentFaces<Face, N, TT, El, o>::importPointersFrom(
 	}
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::updatePointers(const Face* oldBase, const Face* newBase)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::updatePointers(const Face* oldBase, const Face* newBase)
 {
 	Base::updateElementPointers(oldBase, newBase, this);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::updatePointersAfterCompact(
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::updatePointersAfterCompact(
 	const Face*             base,
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::resize(uint n) requires (N < 0)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::resize(uint n) requires (N < 0)
 {
 	Base::container(this).resize(n);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::pushBack(Face* f) requires (N < 0)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::pushBack(Face* f) requires (N < 0)
 {
 	Base::container(this).pushBack(f);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::insert(uint i, Face* f) requires (N < 0)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::insert(uint i, Face* f) requires (N < 0)
 {
 	Base::container(this).insert(i, f);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::erase(uint i) requires (N < 0)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::erase(uint i) requires (N < 0)
 {
 	Base::container(this).erase(i);
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
-void AdjacentFaces<Face, N, TT, El, o>::clear() requires (N < 0)
+template<typename Face, int N, bool TT, typename El, bool O>
+void AdjacentFaces<Face, N, TT, El, O>::clear() requires (N < 0)
 {
 	Base::container(this).clear();
 }
 
-template<typename Face, int N, bool TT, typename El, bool o>
+template<typename Face, int N, bool TT, typename El, bool O>
 template<typename Element, typename ElFType>
-void AdjacentFaces<Face, N, TT, El, o>::importPtrsFrom(
+void AdjacentFaces<Face, N, TT, El, O>::importPtrsFrom(
 	const Element& e,
 	Face*          base,
 	const ElFType* ebase)

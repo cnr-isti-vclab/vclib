@@ -25,33 +25,33 @@
 
 namespace vcl::comp {
 
-template<PointConcept P, typename El, bool o>
-bool Normal<P, El, o>::isEnabled() const
+template<PointConcept P, typename El, bool O>
+bool Normal<P, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
-template<PointConcept P, typename El, bool o>
-bool Normal<P, El, o>::isNormalEnabled() const
+template<PointConcept P, typename El, bool O>
+bool Normal<P, El, O>::isNormalEnabled() const
 {
 	return isEnabled();
 }
 
-template<PointConcept P, typename El, bool o>
-const P& Normal<P, El, o>::normal() const
+template<PointConcept P, typename El, bool O>
+const P& Normal<P, El, O>::normal() const
 {
 	return Base::data(this);
 }
 
-template<PointConcept P, typename El, bool o>
-P& Normal<P, El, o>::normal()
+template<PointConcept P, typename El, bool O>
+P& Normal<P, El, O>::normal()
 {
 	return Base::data(this);
 }
 
-template<PointConcept P, typename El, bool o>
+template<PointConcept P, typename El, bool O>
 template<typename Element>
-void Normal<P, El, o>::importFrom(const Element& e)
+void Normal<P, El, O>::importFrom(const Element& e)
 {
 	if constexpr(HasNormal<Element>) {
 		if (isNormalEnabledOn(e)){

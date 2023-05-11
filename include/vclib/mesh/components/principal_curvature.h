@@ -36,11 +36,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename Scalar, typename ElementType = void, bool optional = false>
-class PrincipalCurvature : public Component<vcl::PrincipalCurvature<Scalar>, ElementType, optional>
+template<typename Scalar, typename ElementType = void, bool OPTIONAL = false>
+class PrincipalCurvature : public Component<vcl::PrincipalCurvature<Scalar>, ElementType, OPTIONAL>
 {
-	using Base = Component<vcl::PrincipalCurvature<Scalar>, ElementType, optional>;
-	using ThisType = PrincipalCurvature<Scalar, ElementType, optional>;
+	using Base = Component<vcl::PrincipalCurvature<Scalar>, ElementType, OPTIONAL>;
+	using ThisType = PrincipalCurvature<Scalar, ElementType, OPTIONAL>;
 
 public:
 	// expose the type to allow access to this component
@@ -65,11 +65,11 @@ protected:
 template <typename T>
 bool isPrincipalCurvatureEnabledOn(const T& element);
 
-template<typename ElementType = void, bool optional = false>
-using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, optional>;
+template<typename ElementType = void, bool OPTIONAL = false>
+using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, OPTIONAL>;
 
-template<typename ElementType = void, bool optional = false>
-using PrincipalCurvatured = PrincipalCurvature<double, ElementType, optional>;
+template<typename ElementType = void, bool OPTIONAL = false>
+using PrincipalCurvatured = PrincipalCurvature<double, ElementType, OPTIONAL>;
 
 } // namespace vcl::comp
 

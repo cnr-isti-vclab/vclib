@@ -48,7 +48,7 @@ Face<MeshType, Args...>::Face()
  *                  vertices of the face.
  */
 template<typename MeshType, typename... Args>
-Face<MeshType, Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
+Face<MeshType, Args...>::Face(const std::vector<VertexType*>& list) // TODO add requires
 {
 	setVertices(list);
 }
@@ -73,7 +73,7 @@ uint Face<MeshType, Args...>::index() const
  */
 template<typename MeshType, typename... Args>
 template<typename... V>
-Face<MeshType, Args...>::Face(V... args) // todo add requires
+Face<MeshType, Args...>::Face(V... args) // TODO add requires
 {
 	setVertices({args...});
 }

@@ -36,11 +36,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<PointConcept P, typename ElementType = void, bool optional = false>
-class Normal : public Component<P, ElementType, optional>
+template<PointConcept P, typename ElementType = void, bool OPTIONAL = false>
+class Normal : public Component<P, ElementType, OPTIONAL>
 {
-	using Base = Component<P, ElementType, optional>;
-	using ThisType = Normal<P, ElementType, optional>;
+	using Base = Component<P, ElementType, OPTIONAL>;
+	using ThisType = Normal<P, ElementType, OPTIONAL>;
 
 public:
 	using NormalComponent = ThisType; // expose the type to allow access to this component
@@ -67,14 +67,14 @@ bool isNormalEnabledOn(const T& element);
 template<
 	typename Scalar,
 	typename ElementType = void,
-	bool optional        = false>
-using Normal3 = Normal<Point3<Scalar>, ElementType, optional>;
+	bool OPTIONAL        = false>
+using Normal3 = Normal<Point3<Scalar>, ElementType, OPTIONAL>;
 
-template<typename ElementType = void, bool optional = false>
-using Normal3f = Normal3<float, ElementType, optional>;
+template<typename ElementType = void, bool OPTIONAL = false>
+using Normal3f = Normal3<float, ElementType, OPTIONAL>;
 
-template<typename ElementType = void, bool optional = false>
-using Normal3d = Normal3<double, ElementType, optional>;
+template<typename ElementType = void, bool OPTIONAL = false>
+using Normal3d = Normal3<double, ElementType, OPTIONAL>;
 
 } // namespace vcl::comp
 

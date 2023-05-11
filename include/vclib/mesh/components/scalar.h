@@ -35,11 +35,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename T, typename ElementType = void, bool optional = false>
-class Scalar : public Component<T, ElementType, optional>
+template<typename T, typename ElementType = void, bool OPTIONAL = false>
+class Scalar : public Component<T, ElementType, OPTIONAL>
 {
-	using Base = Component<T, ElementType, optional>;
-	using ThisType = Scalar<T, ElementType, optional>;
+	using Base = Component<T, ElementType, OPTIONAL>;
+	using ThisType = Scalar<T, ElementType, OPTIONAL>;
 
 public:
 	using ScalarComponent = ThisType; // expose the type to allow access to this component
@@ -63,11 +63,11 @@ protected:
 template <typename T>
 bool isScalarEnabledOn(const T& element);
 
-template<typename ElementType = void, bool optional = false>
-using Scalarf = Scalar<float, ElementType, optional>;
+template<typename ElementType = void, bool OPTIONAL = false>
+using Scalarf = Scalar<float, ElementType, OPTIONAL>;
 
-template<typename ElementType = void, bool optional = false>
-using Scalard = Scalar<double, ElementType, optional>;
+template<typename ElementType = void, bool OPTIONAL = false>
+using Scalard = Scalar<double, ElementType, OPTIONAL>;
 
 } // namespace vcl::comp
 

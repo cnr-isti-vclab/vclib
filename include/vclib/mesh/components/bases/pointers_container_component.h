@@ -44,7 +44,7 @@ namespace vcl::comp {
  * @tparam Elem: The type of the Element of which the pointers are stored. E.g. a VertexPointers
  * component would have VertexType as Elem.
  * @tparam N: The size of the container: if >= 0 the size is static, if < 0 the size is dynamic.
- * @tparam optional: When a component is vertical, it could be optional, that means that could be
+ * @tparam OPTIONAL: When a component is vertical, it could be optional, that means that could be
  * enabled/disabled at runtime. To make the component optional, this template parameter must be
  * true.
  * @tparam TTVN: "Tied To Vertex Number", this boolean tells whether the component should leave
@@ -54,11 +54,11 @@ namespace vcl::comp {
  * that the number of face pointers should be always be the same of the number of vertices.
  * Setting this value to true will tie the size of this container to the number of vertices.
  */
-template<typename Elem, int N, typename ElementType, bool optional, bool TTVN>
+template<typename Elem, int N, typename ElementType, bool OPTIONAL, bool TTVN>
 class PointersContainerComponent :
-		public ContainerComponent<Elem*, N, void, ElementType, optional, TTVN, Elem>
+		public ContainerComponent<Elem*, N, void, ElementType, OPTIONAL, TTVN, Elem>
 {
-	using Base = ContainerComponent<Elem*, N, void, ElementType, optional, TTVN, Elem>;
+	using Base = ContainerComponent<Elem*, N, void, ElementType, OPTIONAL, TTVN, Elem>;
 
 protected:
 	using Base::container;

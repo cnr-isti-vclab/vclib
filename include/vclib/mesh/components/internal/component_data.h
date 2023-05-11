@@ -29,7 +29,7 @@
 namespace vcl::comp::internal {
 
 // store the data if horizontal
-template<typename Data, bool vertical>
+template<typename Data, bool VERTICAL>
 struct ComponentData
 {
 	template<typename, typename Comp>

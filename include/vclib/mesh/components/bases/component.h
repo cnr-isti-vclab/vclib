@@ -87,7 +87,7 @@ namespace vcl::comp {
  * components. When a component is horizontal, this type must be void. When a component is vertical,
  * this type must be the type of the Element that has the component, and it will be used by the
  * vcl::Mesh to access to the data stored vertically.
- * @tparam optional: When a component is vertical, it could be optional, that means that could be
+ * @tparam OPTIONAL: When a component is vertical, it could be optional, that means that could be
  * enabled/disabled at runtime. To make the component optional, this template parameter must be
  * true.
  * @tparam PointedTypes: Variadic Template types of all the Pointer types that the component stores,
@@ -96,7 +96,7 @@ namespace vcl::comp {
 template<
 	typename DataType,
 	typename ElementType,
-	bool optional,
+	bool OPTIONAL,
 	typename... PointedTypes>
 class Component : public PointersComponentTriggerer<PointedTypes>...
 {
@@ -113,7 +113,7 @@ public:
 	 * @brief Boolean that tells if this component is optional. Makes sense only when the component
 	 * is vertical.
 	 */
-	static const bool IS_OPTIONAL = optional;
+	static const bool IS_OPTIONAL = OPTIONAL;
 
 protected:
 	template<typename Comp>

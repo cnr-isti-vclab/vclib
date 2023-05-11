@@ -25,91 +25,91 @@
 
 namespace vcl::comp {
 
-template<typename HalfEdge, typename El, bool o>
-FaceHalfEdgePointers<HalfEdge, El, o>::FaceHalfEdgePointers()
+template<typename HalfEdge, typename El, bool O>
+FaceHalfEdgePointers<HalfEdge, El, O>::FaceHalfEdgePointers()
 {
 	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::init()
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::init()
 {
 	ohe() = nullptr;
 	texIndex() = 0;
 }
 
-template<typename HalfEdge, typename El, bool o>
-bool FaceHalfEdgePointers<HalfEdge, El, o>::isEnabled()
+template<typename HalfEdge, typename El, bool O>
+bool FaceHalfEdgePointers<HalfEdge, El, O>::isEnabled()
 {
 	return Base::isEnabled(this);
 }
 
-template<typename HE, typename El, bool o>
-const HE* FaceHalfEdgePointers<HE, El, o>::outerHalfEdge() const
+template<typename HE, typename El, bool O>
+const HE* FaceHalfEdgePointers<HE, El, O>::outerHalfEdge() const
 {
 	return ohe();
 }
 
-template<typename HE, typename El, bool o>
-HE*& FaceHalfEdgePointers<HE, El, o>::outerHalfEdge()
+template<typename HE, typename El, bool O>
+HE*& FaceHalfEdgePointers<HE, El, O>::outerHalfEdge()
 {
 	return ohe();
 }
 
-template<typename HE, typename El, bool o>
-uint FaceHalfEdgePointers<HE, El, o>::numberHoles() const
+template<typename HE, typename El, bool O>
+uint FaceHalfEdgePointers<HE, El, O>::numberHoles() const
 {
 	return ihe().size();
 }
 
-template<typename HE, typename El, bool o>
-const HE* FaceHalfEdgePointers<HE, El, o>::innerHalfEdge(uint i) const
+template<typename HE, typename El, bool O>
+const HE* FaceHalfEdgePointers<HE, El, O>::innerHalfEdge(uint i) const
 {
 	return ihe()[i];
 }
 
-template<typename HE, typename El, bool o>
-HE*& FaceHalfEdgePointers<HE, El, o>::innerHalfEdge(uint i)
+template<typename HE, typename El, bool O>
+HE*& FaceHalfEdgePointers<HE, El, O>::innerHalfEdge(uint i)
 {
 	return ihe()[i];
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::resizeInnerHalfEdges(uint n)
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::resizeInnerHalfEdges(uint n)
 {
 	ihe().resize(n);
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::pushInnerHalfEdge(HE* he)
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::pushInnerHalfEdge(HE* he)
 {
 	ihe().push_back(he);
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::insertInnerHalfEdge(uint i, HE* he)
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::insertInnerHalfEdge(uint i, HE* he)
 {
 	assert(i < ihe().size());
 	ihe().insert(ihe().begin() + i, he);
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::eraseInnerHalfEdge(uint i)
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::eraseInnerHalfEdge(uint i)
 {
 	assert(i < ihe().size());
 	ihe().erase(ihe().begin() + i);
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::clearInnerHalfEdges()
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::clearInnerHalfEdges()
 {
 	ihe().clear();
 }
 
-template<typename HE, typename El, bool o>
-uint FaceHalfEdgePointers<HE, El, o>::vertexNumber() const
+template<typename HE, typename El, bool O>
+uint FaceHalfEdgePointers<HE, El, O>::vertexNumber() const
 {
 	uint cnt = 0;
 	for (const Vertex* v : vertices())
@@ -117,8 +117,8 @@ uint FaceHalfEdgePointers<HE, El, o>::vertexNumber() const
 	return cnt;
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::Vertex*& FaceHalfEdgePointers<HE, El, o>::vertex(uint i)
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::Vertex*& FaceHalfEdgePointers<HE, El, O>::vertex(uint i)
 {
 	uint           j  = 0;
 	VertexIterator it = vertexBegin();
@@ -129,9 +129,9 @@ typename FaceHalfEdgePointers<HE, El, o>::Vertex*& FaceHalfEdgePointers<HE, El, 
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-const typename FaceHalfEdgePointers<HE, El, o>::Vertex*
-FaceHalfEdgePointers<HE, El, o>::vertex(uint i) const
+template<typename HE, typename El, bool O>
+const typename FaceHalfEdgePointers<HE, El, O>::Vertex*
+FaceHalfEdgePointers<HE, El, O>::vertex(uint i) const
 {
 	uint                j  = 0;
 	ConstVertexIterator it = vertexBegin();
@@ -142,8 +142,8 @@ FaceHalfEdgePointers<HE, El, o>::vertex(uint i) const
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::Vertex*& FaceHalfEdgePointers<HE, El, o>::vertexMod(int i)
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::Vertex*& FaceHalfEdgePointers<HE, El, O>::vertexMod(int i)
 {
 	uint           j  = 0;
 	VertexIterator it = VertexIterator(ohe(), nullptr); // this iterator does not have an end
@@ -157,9 +157,9 @@ typename FaceHalfEdgePointers<HE, El, o>::Vertex*& FaceHalfEdgePointers<HE, El, 
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-const typename FaceHalfEdgePointers<HE, El, o>::Vertex*
-FaceHalfEdgePointers<HE, El, o>::vertexMod(int i) const
+template<typename HE, typename El, bool O>
+const typename FaceHalfEdgePointers<HE, El, O>::Vertex*
+FaceHalfEdgePointers<HE, El, O>::vertexMod(int i) const
 {
 	uint                j = 0;
 	ConstVertexIterator it =
@@ -174,14 +174,14 @@ FaceHalfEdgePointers<HE, El, o>::vertexMod(int i) const
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::setVertex(Vertex* v, uint i)
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::setVertex(Vertex* v, uint i)
 {
 	vertex(i) = v;
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::setVertices(const std::vector<Vertex*>& list)
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::setVertices(const std::vector<Vertex*>& list)
 {
 	assert(list.size() == vertexNumber());
 	uint i = 0;
@@ -190,28 +190,28 @@ void FaceHalfEdgePointers<HE, El, o>::setVertices(const std::vector<Vertex*>& li
 	}
 }
 
-template<typename HE, typename El, bool o>
-bool FaceHalfEdgePointers<HE, El, o>::containsVertex(const Vertex* v) const
+template<typename HE, typename El, bool O>
+bool FaceHalfEdgePointers<HE, El, O>::containsVertex(const Vertex* v) const
 {
 	return findVertex(v) != vertexEnd();
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::VertexIterator
-FaceHalfEdgePointers<HE, El, o>::findVertex(const Vertex* v)
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::VertexIterator
+FaceHalfEdgePointers<HE, El, O>::findVertex(const Vertex* v)
 {
 	return std::find(vertexBegin(), vertexEnd(), v);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstVertexIterator
-FaceHalfEdgePointers<HE, El, o>::findVertex(const Vertex* v) const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstVertexIterator
+FaceHalfEdgePointers<HE, El, O>::findVertex(const Vertex* v) const
 {
 	return std::find(vertexBegin(), vertexEnd(), v);
 }
 
-template<typename HE, typename El, bool o>
-int FaceHalfEdgePointers<HE, El, o>::indexOfVertex(const Vertex* v) const
+template<typename HE, typename El, bool O>
+int FaceHalfEdgePointers<HE, El, O>::indexOfVertex(const Vertex* v) const
 {
 	uint i = 0;
 	for (const Vertex* vv : vertices()) {
@@ -222,8 +222,8 @@ int FaceHalfEdgePointers<HE, El, o>::indexOfVertex(const Vertex* v) const
 	return -1;
 }
 
-template<typename HE, typename El, bool o>
-int FaceHalfEdgePointers<HE, El, o>::indexOfEdge(const Vertex* v1, const Vertex* v2) const
+template<typename HE, typename El, bool O>
+int FaceHalfEdgePointers<HE, El, O>::indexOfEdge(const Vertex* v1, const Vertex* v2) const
 {
 	int vid = 0;
 	for (const HE* he : halfEdges()) {
@@ -236,14 +236,14 @@ int FaceHalfEdgePointers<HE, El, o>::indexOfEdge(const Vertex* v1, const Vertex*
 	return -1;
 }
 
-template<typename HE, typename El, bool o>
-uint FaceHalfEdgePointers<HE, El, o>::adjFacesNumber() const
+template<typename HE, typename El, bool O>
+uint FaceHalfEdgePointers<HE, El, O>::adjFacesNumber() const
 {
 	return vertexNumber();
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::Face*& FaceHalfEdgePointers<HE, El, o>::adjFace(uint i)
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::Face*& FaceHalfEdgePointers<HE, El, O>::adjFace(uint i)
 {
 	uint                 j  = 0;
 	AdjacentFaceIterator it = adjFaceBegin();
@@ -254,9 +254,9 @@ typename FaceHalfEdgePointers<HE, El, o>::Face*& FaceHalfEdgePointers<HE, El, o>
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-const typename FaceHalfEdgePointers<HE, El, o>::Face*
-FaceHalfEdgePointers<HE, El, o>::adjFace(uint i) const
+template<typename HE, typename El, bool O>
+const typename FaceHalfEdgePointers<HE, El, O>::Face*
+FaceHalfEdgePointers<HE, El, O>::adjFace(uint i) const
 {
 	uint                      j  = 0;
 	ConstAdjacentFaceIterator it = adjFaceBegin();
@@ -267,8 +267,8 @@ FaceHalfEdgePointers<HE, El, o>::adjFace(uint i) const
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::Face*& FaceHalfEdgePointers<HE, El, o>::adjFaceMod(int i)
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::Face*& FaceHalfEdgePointers<HE, El, O>::adjFaceMod(int i)
 {
 	uint                 j = 0;
 	AdjacentFaceIterator it =
@@ -283,9 +283,9 @@ typename FaceHalfEdgePointers<HE, El, o>::Face*& FaceHalfEdgePointers<HE, El, o>
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-const typename FaceHalfEdgePointers<HE, El, o>::Face*
-FaceHalfEdgePointers<HE, El, o>::adjFaceMod(int i) const
+template<typename HE, typename El, bool O>
+const typename FaceHalfEdgePointers<HE, El, O>::Face*
+FaceHalfEdgePointers<HE, El, O>::adjFaceMod(int i) const
 {
 	uint                      j = 0;
 	ConstAdjacentFaceIterator it =
@@ -300,14 +300,14 @@ FaceHalfEdgePointers<HE, El, o>::adjFaceMod(int i) const
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::setAdjFace(Face* f, uint i)
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::setAdjFace(Face* f, uint i)
 {
 	adjFace(i) = f;
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::setAdjFaces(const std::vector<Face*>& list)
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::setAdjFaces(const std::vector<Face*>& list)
 {
 	assert(list.size() == vertexNumber());
 	uint i = 0;
@@ -316,28 +316,28 @@ void FaceHalfEdgePointers<HE, El, o>::setAdjFaces(const std::vector<Face*>& list
 	}
 }
 
-template<typename HE, typename El, bool o>
-bool FaceHalfEdgePointers<HE, El, o>::containsAdjFace(const Face* f) const
+template<typename HE, typename El, bool O>
+bool FaceHalfEdgePointers<HE, El, O>::containsAdjFace(const Face* f) const
 {
 	return findAdjFace(f) != adjFaceEnd();
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::AdjacentFaceIterator
-FaceHalfEdgePointers<HE, El, o>::findAdjFace(const Face* f)
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::AdjacentFaceIterator
+FaceHalfEdgePointers<HE, El, O>::findAdjFace(const Face* f)
 {
 	return std::find(adjFaceBegin(), adjFaceEnd(), f);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstAdjacentFaceIterator
-FaceHalfEdgePointers<HE, El, o>::findAdjFace(const Face* f) const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstAdjacentFaceIterator
+FaceHalfEdgePointers<HE, El, O>::findAdjFace(const Face* f) const
 {
 	return std::find(adjFaceBegin(), adjFaceEnd(), f);
 }
 
-template<typename HE, typename El, bool o>
-int FaceHalfEdgePointers<HE, El, o>::indexOfAdjFace(const Face* f) const
+template<typename HE, typename El, bool O>
+int FaceHalfEdgePointers<HE, El, O>::indexOfAdjFace(const Face* f) const
 {
 	uint i = 0;
 	for (const Face* ff : adjFaces()) {
@@ -348,8 +348,8 @@ int FaceHalfEdgePointers<HE, El, o>::indexOfAdjFace(const Face* f) const
 	return -1;
 }
 
-template<typename HE, typename El, bool o>
-vcl::Color &FaceHalfEdgePointers<HE, El, o>::wedgeColor(uint i) requires HasColor<HE>
+template<typename HE, typename El, bool O>
+vcl::Color &FaceHalfEdgePointers<HE, El, O>::wedgeColor(uint i) requires HasColor<HE>
 {
 	uint                j  = 0;
 	WedgeColorsIterator it = wedgeColorBegin();
@@ -360,9 +360,9 @@ vcl::Color &FaceHalfEdgePointers<HE, El, o>::wedgeColor(uint i) requires HasColo
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 const vcl::Color&
-FaceHalfEdgePointers<HE, El, o>::wedgeColor(uint i) const requires HasColor<HE>
+FaceHalfEdgePointers<HE, El, O>::wedgeColor(uint i) const requires HasColor<HE>
 {
 	uint                     j  = 0;
 	ConstWedgeColorsIterator it = wedgeColorBegin();
@@ -373,8 +373,8 @@ FaceHalfEdgePointers<HE, El, o>::wedgeColor(uint i) const requires HasColor<HE>
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-vcl::Color& FaceHalfEdgePointers<HE, El, o>::wedgeColorMod(int i) requires HasColor<HE>
+template<typename HE, typename El, bool O>
+vcl::Color& FaceHalfEdgePointers<HE, El, O>::wedgeColorMod(int i) requires HasColor<HE>
 {
 	uint                j  = 0;
 	WedgeColorsIterator it = WedgeColorsIterator(ohe(), nullptr); // this iterator does not have end
@@ -388,9 +388,9 @@ vcl::Color& FaceHalfEdgePointers<HE, El, o>::wedgeColorMod(int i) requires HasCo
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 const vcl::Color&
-FaceHalfEdgePointers<HE, El, o>::wedgeColorMod(int i) const requires HasColor<HE>
+FaceHalfEdgePointers<HE, El, O>::wedgeColorMod(int i) const requires HasColor<HE>
 {
 	uint                j  = 0;
 	ConstWedgeColorsIterator it =
@@ -405,15 +405,15 @@ FaceHalfEdgePointers<HE, El, o>::wedgeColorMod(int i) const requires HasColor<HE
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::setWedgeColor(const vcl::Color& t, uint i) requires
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::setWedgeColor(const vcl::Color& t, uint i) requires
 	HasColor<HE>
 {
 	wedgeColor(i) = t;
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::setWedgeColors(
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::setWedgeColors(
 	const std::vector<vcl::Color>& list) requires HasColor<HE>
 {
 	assert(list.size() == vertexNumber());
@@ -423,8 +423,8 @@ void FaceHalfEdgePointers<HE, El, o>::setWedgeColors(
 	}
 }
 
-template<typename HE, typename El, bool o>
-bool FaceHalfEdgePointers<HE, El, o>::isWedgeColorsEnabled() const requires HasColor<HE>
+template<typename HE, typename El, bool O>
+bool FaceHalfEdgePointers<HE, El, O>::isWedgeColorsEnabled() const requires HasColor<HE>
 {
 	if constexpr (HasOptionalColor<HE>) {
 		return ohe()->isColorEnabled();
@@ -434,9 +434,9 @@ bool FaceHalfEdgePointers<HE, El, o>::isWedgeColorsEnabled() const requires HasC
 	}
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<HasTexCoord OHE>
-typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, o>::wedgeTexCoord(uint i)
+typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, O>::wedgeTexCoord(uint i)
 {
 	uint                   j  = 0;
 	WedgeTexCoordsIterator it = wedgeTexCoordBegin();
@@ -447,9 +447,9 @@ typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, o>::wedgeTexCoord(uint 
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<HasTexCoord OHE>
-const typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, o>::wedgeTexCoord(uint i) const
+const typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, O>::wedgeTexCoord(uint i) const
 {
 	uint                        j  = 0;
 	ConstWedgeTexCoordsIterator it = wedgeTexCoordBegin();
@@ -460,9 +460,9 @@ const typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, o>::wedgeTexCoord
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<HasTexCoord OHE>
-typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, o>::wedgeTexCoordMod(int i)
+typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, O>::wedgeTexCoordMod(int i)
 {
 	uint                   j  = 0;
 	WedgeTexCoordsIterator it =
@@ -477,9 +477,9 @@ typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, o>::wedgeTexCoordMod(in
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<HasTexCoord OHE>
-const typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, o>::wedgeTexCoordMod(int i) const
+const typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, O>::wedgeTexCoordMod(int i) const
 {
 	uint                        j  = 0;
 	ConstWedgeTexCoordsIterator it =
@@ -494,16 +494,16 @@ const typename OHE::TexCoordType& FaceHalfEdgePointers<HE, El, o>::wedgeTexCoord
 	return *it;
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<HasTexCoord OHE>
-void FaceHalfEdgePointers<HE, El, o>::setWedgeTexCoord(const typename OHE::TexCoordType& t, uint i)
+void FaceHalfEdgePointers<HE, El, O>::setWedgeTexCoord(const typename OHE::TexCoordType& t, uint i)
 {
 	wedgeTexCoord(i) = t;
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<HasTexCoord OHE>
-void FaceHalfEdgePointers<HE, El, o>::setWedgeTexCoords(
+void FaceHalfEdgePointers<HE, El, O>::setWedgeTexCoords(
 	const std::vector<typename OHE::TexCoordType>& list)
 {
 	assert(list.size() == vertexNumber());
@@ -513,22 +513,22 @@ void FaceHalfEdgePointers<HE, El, o>::setWedgeTexCoords(
 	}
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<HasTexCoord OHE>
-short& FaceHalfEdgePointers<HE, El, o>::textureIndex()
+short& FaceHalfEdgePointers<HE, El, O>::textureIndex()
 {
 	return texIndex();
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<HasTexCoord OHE>
-short FaceHalfEdgePointers<HE, El, o>::textureIndex() const
+short FaceHalfEdgePointers<HE, El, O>::textureIndex() const
 {
 	return texIndex();
 }
 
-template<typename HE, typename El, bool o>
-bool FaceHalfEdgePointers<HE, El, o>::isWedgeTexCoordsEnabled() const requires HasTexCoord<HE>
+template<typename HE, typename El, bool O>
+bool FaceHalfEdgePointers<HE, El, O>::isWedgeTexCoordsEnabled() const requires HasTexCoord<HE>
 {
 	if constexpr (HasOptionalTexCoord<HE>) {
 		return ohe()->isTexCoordEnabled();
@@ -538,303 +538,303 @@ bool FaceHalfEdgePointers<HE, El, o>::isWedgeTexCoordsEnabled() const requires H
 	}
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::AdjacentFaceIterator
-FaceHalfEdgePointers<HE, El, o>::adjFaceBegin()
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::AdjacentFaceIterator
+FaceHalfEdgePointers<HE, El, O>::adjFaceBegin()
 {
 	return AdjacentFaceIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::AdjacentFaceIterator
-FaceHalfEdgePointers<HE, El, o>::adjFaceBegin(HE* he)
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::AdjacentFaceIterator
+FaceHalfEdgePointers<HE, El, O>::adjFaceBegin(HE* he)
 {
 	assert(he->face() == this);
 	return AdjacentFaceIterator(he);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::AdjacentFaceIterator
-FaceHalfEdgePointers<HE, El, o>::adjFaceEnd()
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::AdjacentFaceIterator
+FaceHalfEdgePointers<HE, El, O>::adjFaceEnd()
 {
 	return AdjacentFaceIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstAdjacentFaceIterator
-FaceHalfEdgePointers<HE, El, o>::adjFaceBegin() const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstAdjacentFaceIterator
+FaceHalfEdgePointers<HE, El, O>::adjFaceBegin() const
 {
 	return ConstAdjacentFaceIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstAdjacentFaceIterator
-FaceHalfEdgePointers<HE, El, o>::adjFaceBegin(const HE* he) const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstAdjacentFaceIterator
+FaceHalfEdgePointers<HE, El, O>::adjFaceBegin(const HE* he) const
 {
 	assert(he->face() == this);
 	return ConstAdjacentFaceIterator(he);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstAdjacentFaceIterator
-FaceHalfEdgePointers<HE, El, o>::adjFaceEnd() const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstAdjacentFaceIterator
+FaceHalfEdgePointers<HE, El, O>::adjFaceEnd() const
 {
 	return ConstAdjacentFaceIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::adjFaces()
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::adjFaces()
 {
 	return View(adjFaceBegin(), adjFaceEnd());
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::adjFaces() const
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::adjFaces() const
 {
 	return View(adjFaceBegin(), adjFaceEnd());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::HalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::haflEdgeBegin()
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::HalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::haflEdgeBegin()
 {
 	return HalfEdgeIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::HalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::haflEdgeBegin(HE* he)
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::HalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::haflEdgeBegin(HE* he)
 {
 	assert(he->face() == this);
 	return HalfEdgeIterator(he);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstHalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::halfEdgeBegin() const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstHalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::halfEdgeBegin() const
 {
 	return ConstHalfEdgeIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstHalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::halfEdgeBegin(const HE* he) const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstHalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::halfEdgeBegin(const HE* he) const
 {
 	assert(he->face() == this);
 	return ConstHalfEdgeIterator(he);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::HalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::halfEdgeEnd()
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::HalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::halfEdgeEnd()
 {
 	return HalfEdgeIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstHalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::halfEdgeEnd() const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstHalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::halfEdgeEnd() const
 {
 	return ConstHalfEdgeIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::halfEdges()
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::halfEdges()
 {
 	return View(halfEdgeBegin(), halfEdgeEnd());
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::halfEdges() const
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::halfEdges() const
 {
 	return View(halfEdgeBegin(), halfEdgeEnd());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::InnerHalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::innerHalfEdgeBegin()
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::InnerHalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::innerHalfEdgeBegin()
 {
 	return ihe().begin();
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstInnerHalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::innerHalfEdgeBegin() const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstInnerHalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::innerHalfEdgeBegin() const
 {
 	return ihe().begin();
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::InnerHalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::innerHalfEdgeEnd()
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::InnerHalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::innerHalfEdgeEnd()
 {
 	return ihe().end();
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstInnerHalfEdgeIterator
-FaceHalfEdgePointers<HE, El, o>::innerHalfEdgeEnd() const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstInnerHalfEdgeIterator
+FaceHalfEdgePointers<HE, El, O>::innerHalfEdgeEnd() const
 {
 	return ihe().end();
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::innerHalfEdges()
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::innerHalfEdges()
 {
 	return View(innerHalfEdgeBegin(), innerHalfEdgeEnd());
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::innerHalfEdges() const
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::innerHalfEdges() const
 {
 	return View(innerHalfEdgeBegin(), innerHalfEdgeEnd());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::VertexIterator
-FaceHalfEdgePointers<HE, El, o>::vertexBegin()
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::VertexIterator
+FaceHalfEdgePointers<HE, El, O>::vertexBegin()
 {
 	return VertexIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::VertexIterator
-FaceHalfEdgePointers<HE, El, o>::vertexBegin(HE* he)
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::VertexIterator
+FaceHalfEdgePointers<HE, El, O>::vertexBegin(HE* he)
 {
 	assert(he->face() == this);
 	return VertexIterator(he);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstVertexIterator
-FaceHalfEdgePointers<HE, El, o>::vertexBegin() const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstVertexIterator
+FaceHalfEdgePointers<HE, El, O>::vertexBegin() const
 {
 	return ConstVertexIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstVertexIterator
-FaceHalfEdgePointers<HE, El, o>::vertexBegin(const HE* he) const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstVertexIterator
+FaceHalfEdgePointers<HE, El, O>::vertexBegin(const HE* he) const
 {
 	assert(he->face() == this);
 	return ConstVertexIterator(he);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::VertexIterator
-FaceHalfEdgePointers<HE, El, o>::vertexEnd()
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::VertexIterator
+FaceHalfEdgePointers<HE, El, O>::vertexEnd()
 {
 	return VertexIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstVertexIterator
-FaceHalfEdgePointers<HE, El, o>::vertexEnd() const
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstVertexIterator
+FaceHalfEdgePointers<HE, El, O>::vertexEnd() const
 {
 	return ConstVertexIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::vertices()
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::vertices()
 {
 	return View(vertexBegin(), vertexEnd());
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::vertices() const
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::vertices() const
 {
 	return View(vertexBegin(), vertexEnd());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::WedgeColorsIterator
-FaceHalfEdgePointers<HE, El, o>::wedgeColorBegin() requires HasColor<HE>
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::WedgeColorsIterator
+FaceHalfEdgePointers<HE, El, O>::wedgeColorBegin() requires HasColor<HE>
 {
 	return WedgeColorsIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::WedgeColorsIterator
-FaceHalfEdgePointers<HE, El, o>::wedgeColorEnd() requires HasColor<HE>
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::WedgeColorsIterator
+FaceHalfEdgePointers<HE, El, O>::wedgeColorEnd() requires HasColor<HE>
 {
 	return WedgeColorsIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstWedgeColorsIterator
-FaceHalfEdgePointers<HE, El, o>::wedgeColorBegin() const requires HasColor<HE>
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstWedgeColorsIterator
+FaceHalfEdgePointers<HE, El, O>::wedgeColorBegin() const requires HasColor<HE>
 {
 	return ConstWedgeColorsIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstWedgeColorsIterator
-FaceHalfEdgePointers<HE, El, o>::wedgeColorEnd() const requires HasColor<HE>
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstWedgeColorsIterator
+FaceHalfEdgePointers<HE, El, O>::wedgeColorEnd() const requires HasColor<HE>
 {
 	return ConstWedgeColorsIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::wedgeColors() requires HasColor<HE>
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::wedgeColors() requires HasColor<HE>
 {
 	return View(wedgeColorBegin(), wedgeColorEnd());
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::wedgeColors() const requires HasColor<HE>
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::wedgeColors() const requires HasColor<HE>
 {
 	return View(wedgeColorBegin(), wedgeColorEnd());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::WedgeTexCoordsIterator
-FaceHalfEdgePointers<HE, El, o>::wedgeTexCoordBegin() requires HasTexCoord<HE>
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::WedgeTexCoordsIterator
+FaceHalfEdgePointers<HE, El, O>::wedgeTexCoordBegin() requires HasTexCoord<HE>
 {
 	return WedgeTexCoordsIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::WedgeTexCoordsIterator
-FaceHalfEdgePointers<HE, El, o>::wedgeTexCoordEnd() requires HasTexCoord<HE>
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::WedgeTexCoordsIterator
+FaceHalfEdgePointers<HE, El, O>::wedgeTexCoordEnd() requires HasTexCoord<HE>
 {
 	return WedgeTexCoordsIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstWedgeTexCoordsIterator
-FaceHalfEdgePointers<HE, El, o>::wedgeTexCoordBegin() const requires HasTexCoord<HE>
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstWedgeTexCoordsIterator
+FaceHalfEdgePointers<HE, El, O>::wedgeTexCoordBegin() const requires HasTexCoord<HE>
 {
 	return ConstWedgeTexCoordsIterator(ohe());
 }
 
-template<typename HE, typename El, bool o>
-typename FaceHalfEdgePointers<HE, El, o>::ConstWedgeTexCoordsIterator
-FaceHalfEdgePointers<HE, El, o>::wedgeTexCoordEnd() const requires HasTexCoord<HE>
+template<typename HE, typename El, bool O>
+typename FaceHalfEdgePointers<HE, El, O>::ConstWedgeTexCoordsIterator
+FaceHalfEdgePointers<HE, El, O>::wedgeTexCoordEnd() const requires HasTexCoord<HE>
 {
 	return ConstWedgeTexCoordsIterator(nullptr);
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::wedgeTexCoords() requires HasTexCoord<HE>
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::wedgeTexCoords() requires HasTexCoord<HE>
 {
 	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }
 
-template<typename HE, typename El, bool o>
-auto FaceHalfEdgePointers<HE, El, o>::wedgeTexCoords() const requires HasTexCoord<HE>
+template<typename HE, typename El, bool O>
+auto FaceHalfEdgePointers<HE, El, O>::wedgeTexCoords() const requires HasTexCoord<HE>
 {
 	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<typename Element>
-void FaceHalfEdgePointers<HE, El, o>::importFrom(const Element &)
+void FaceHalfEdgePointers<HE, El, O>::importFrom(const Element &)
 {
 }
 
-template<typename HE, typename El, bool o>
+template<typename HE, typename El, bool O>
 template<typename OtherFace, typename OtherHEdge>
-void FaceHalfEdgePointers<HE, El, o>::importPointersFrom(
+void FaceHalfEdgePointers<HE, El, O>::importPointersFrom(
 	const OtherFace&  e,
 	HE*         base,
 	const OtherHEdge* ebase)
@@ -854,8 +854,8 @@ void FaceHalfEdgePointers<HE, El, o>::importPointersFrom(
 	}
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::updatePointers(
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::updatePointers(
 	const HE* oldBase,
 	const HE* newBase)
 {
@@ -871,8 +871,8 @@ void FaceHalfEdgePointers<HE, El, o>::updatePointers(
 	}
 }
 
-template<typename HE, typename El, bool o>
-void FaceHalfEdgePointers<HE, El, o>::updatePointersAfterCompact(
+template<typename HE, typename El, bool O>
+void FaceHalfEdgePointers<HE, El, O>::updatePointersAfterCompact(
 	const HE*         base,
 	const std::vector<int>& newIndices)
 {
@@ -894,38 +894,38 @@ void FaceHalfEdgePointers<HE, El, o>::updatePointersAfterCompact(
 	}
 }
 
-template<typename HE, typename El, bool o>
-HE*& FaceHalfEdgePointers<HE, El, o>::ohe()
+template<typename HE, typename El, bool O>
+HE*& FaceHalfEdgePointers<HE, El, O>::ohe()
 {
 	return Base::data(this).ohe;
 }
 
-template<typename HE, typename El, bool o>
-const HE* FaceHalfEdgePointers<HE, El, o>::ohe() const
+template<typename HE, typename El, bool O>
+const HE* FaceHalfEdgePointers<HE, El, O>::ohe() const
 {
 	return Base::data(this).ohe;
 }
 
-template<typename HE, typename El, bool o>
-std::vector<HE*>& FaceHalfEdgePointers<HE, El, o>::ihe()
+template<typename HE, typename El, bool O>
+std::vector<HE*>& FaceHalfEdgePointers<HE, El, O>::ihe()
 {
 	return Base::data(this).ihe;
 }
 
-template<typename HE, typename El, bool o>
-const std::vector<HE*>& FaceHalfEdgePointers<HE, El, o>::ihe() const
+template<typename HE, typename El, bool O>
+const std::vector<HE*>& FaceHalfEdgePointers<HE, El, O>::ihe() const
 {
 	return Base::data(this).ihe;
 }
 
-template<typename HE, typename El, bool o>
-short& FaceHalfEdgePointers<HE, El, o>::texIndex()
+template<typename HE, typename El, bool O>
+short& FaceHalfEdgePointers<HE, El, O>::texIndex()
 {
 	return Base::data(this).texIndex;
 }
 
-template<typename HE, typename El, bool o>
-short FaceHalfEdgePointers<HE, El, o>::texIndex() const
+template<typename HE, typename El, bool O>
+short FaceHalfEdgePointers<HE, El, O>::texIndex() const
 {
 	return Base::data(this).texIndex;
 }
