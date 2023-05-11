@@ -55,34 +55,34 @@ typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
 }
 
 /**
- * @brief Returns the barycenter of the mesh weighted on the per vertex scalar values.
+ * @brief Returns the barycenter of the mesh weighted on the per vertex quality values.
  *
  * The output baryceter is computed as a weighted average of the vertices of the mesh, using the
- * per Vertex Scalar values as weights.
+ * per Vertex Quality values as weights.
  *
  * Requirements:
  * - Mesh:
  *   - Vertices:
- *     - Scalar
+ *     - Quality
  *
  * @param[in] m: input mesh on which compute the barycenter.
- * @return The barycenter weighted on the per vertex scalats.
+ * @return The barycenter weighted on the per vertex quality.
  */
 template <MeshConcept MeshType>
 typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
-	using ScalarType = typename VertexType::ScalarType;
+	using QualityType = typename VertexType::QualityType;
 
 	CoordType bar;
-	ScalarType weightedSum = 0;
+	QualityType weightedSum = 0;
 
 	for (const VertexType& v : m.vertices()) {
-		bar += v.coord() * v.scalar();
-		weightedSum += v.scalar();
+		bar += v.coord() * v.quality();
+		weightedSum += v.quality();
 	}
 
 	return bar / weightedSum;

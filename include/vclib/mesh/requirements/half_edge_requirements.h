@@ -53,13 +53,13 @@ bool isPerHalfEdgeMarkEnabled(const MeshType&);
 template<DcelMeshConcept MeshType>
 bool enableIfPerHalfEdgeMarkOptional(MeshType&);
 
-// HalfEdge Scalar
+// HalfEdge Quality
 
 template<DcelMeshConcept MeshType>
-bool isPerHalfEdgeScalarEnabled(const MeshType&);
+bool isPerHalfEdgeQualityEnabled(const MeshType&);
 
 template<DcelMeshConcept MeshType>
-bool enableIfPerHalfEdgeScalarOptional(MeshType&);
+bool enableIfPerHalfEdgeQualityOptional(MeshType&);
 
 // HalfEdge TexCoord
 
@@ -90,11 +90,11 @@ template<DcelMeshConcept MeshType>
 void requirePerHalfEdgeMark(const MeshType& m)
 	requires HasPerHalfEdgeMark<MeshType>;
 
-// HalfEdge Scalar
+// HalfEdge Quality
 
 template<DcelMeshConcept MeshType>
-void requirePerHalfEdgeScalar(const MeshType& m)
-	requires HasPerHalfEdgeScalar<MeshType>;
+void requirePerHalfEdgeQuality(const MeshType& m)
+	requires HasPerHalfEdgeQuality<MeshType>;
 
 // HalfEdge TexCoord
 

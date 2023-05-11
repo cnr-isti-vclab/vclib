@@ -21,7 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "scalar.h"
+#include "quality.h"
 
 #include "../polygon.h"
 #include "../stat.h"
@@ -29,272 +29,273 @@
 namespace vcl {
 
 /**
- * @brief Sets a constant value to all the vertex scalars of the mesh.
+ * @brief Sets a constant value to all the vertex quality of the mesh.
  *
  * Requirements:
  * - Mesh:
  *   - Vertices:
- *     - Scalar
+ *     - Quality
  *
- * @param[in,out] m: mesh on which set the vertex scalars
- * @param[in] s: scalar value to set
+ * @param[in,out] m: mesh on which set the vertex quality
+ * @param[in] s: quality value to set
  */
 template<MeshConcept MeshType>
-void setPerVertexScalar(MeshType& m, typename MeshType::VertexType::ScalarType s)
+void setPerVertexQuality(MeshType& m, typename MeshType::VertexType::QualityType s)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		v.scalar() = s;
+		v.quality() = s;
 	}
 }
 
 /**
- * @brief Sets a constant value to all the face scalars of the mesh.
+ * @brief Sets a constant value to all the face quality of the mesh.
  *
  * Requirements:
  * - Mesh:
  *   - Faces:
- *     - Scalar
+ *     - Quality
  *
- * @param[in,out] m: mesh on which set the face scalars
- * @param[in] s: scalar value to set
+ * @param[in,out] m: mesh on which set the face quality
+ * @param[in] s: quality value to set
  */
 template <FaceMeshConcept MeshType>
-void setPerFaceScalar(MeshType& m, typename MeshType::FaceType::ScalarType s)
+void setPerFaceQuality(MeshType& m, typename MeshType::FaceType::QualityType s)
 {
-	vcl::requirePerFaceScalar(m);
+	vcl::requirePerFaceQuality(m);
 
 	using FaceType = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
-		f.scalar() = s;
+		f.quality() = s;
 	}
 }
 
 /**
- * @brief Clamps the vertex scalars of a mesh in a given interval.
+ * @brief Clamps the vertex quality of a mesh in a given interval.
  *
  * Requirements:
  * - Mesh:
  *   - Vertices:
- *     - Scalar
+ *     - Quality
  *
- * @param[in,out] m: mesh on which clamp the vertex scalars
+ * @param[in,out] m: mesh on which clamp the vertex quality
  * @param[in] minS: minimum value of the clamping interval
  * @param[in] maxS: maximum value of the clamping interval
  */
 template<MeshConcept MeshType>
-void clampPerVertexScalar(
+void clampPerVertexQuality(
 	MeshType&                                 m,
-	typename MeshType::VertexType::ScalarType minS,
-	typename MeshType::VertexType::ScalarType maxS)
+	typename MeshType::VertexType::QualityType minS,
+	typename MeshType::VertexType::QualityType maxS)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		v.scalar() = std::min(maxS, std::max(minS, v.scalar()));
+		v.quality() = std::min(maxS, std::max(minS, v.quality()));
 	}
 }
 
 /**
- * @brief Clamps the face scalars of a mesh in a given interval.
+ * @brief Clamps the face quality of a mesh in a given interval.
  *
  * Requirements:
  * - Mesh:
  *   - Faces:
- *     - Scalar
+ *     - Quality
  *
- * @param[in,out] m: mesh on which clamp the face scalars
+ * @param[in,out] m: mesh on which clamp the face quality
  * @param[in] minS: minimum value of the clamping interval
  * @param[in] maxS: maximum value of the clamping interval
  */
 template<FaceMeshConcept MeshType>
-void clampPerFaceScalar(
+void clampPerFaceQuality(
 	MeshType&                                 m,
-	typename MeshType::FaceType::ScalarType minS,
-	typename MeshType::FaceType::ScalarType maxS)
+	typename MeshType::FaceType::QualityType minS,
+	typename MeshType::FaceType::QualityType maxS)
 {
-	vcl::requirePerFaceScalar(m);
+	vcl::requirePerFaceQuality(m);
 
 	using FaceType = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
-		f.scalar() = std::min(maxS, std::max(minS, f.scalar()));
+		f.quality() = std::min(maxS, std::max(minS, f.quality()));
 	}
 }
 
 /**
- * @brief Normalizes the vertex scalars of a mesh in a given interval (default [0, 1]).
+ * @brief Normalizes the vertex quality of a mesh in a given interval (default [0, 1]).
  *
  * Requirements:
  * - Mesh:
  *   - Vertices:
- *     - Scalar
+ *     - Quality
  *
- * @param[in,out] m: mesh on which normalize the vertex scalars
+ * @param[in,out] m: mesh on which normalize the vertex quality
  * @param[in] minS: minimum value of the normalizing interval, default 0
  * @param[in] maxS: maximum value of the normalizing interval, default 1
  */
 template<MeshConcept MeshType>
-void normalizePerVertexScalar(
+void normalizePerVertexQuality(
 	MeshType&                                 m,
-	typename MeshType::VertexType::ScalarType minS,
-	typename MeshType::VertexType::ScalarType maxS)
+	typename MeshType::VertexType::QualityType minS,
+	typename MeshType::VertexType::QualityType maxS)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
+	using QualityType = typename VertexType::QualityType;
 
-	ScalarType range = maxS - minS;
-	std::pair<ScalarType, ScalarType> p = vertexScalarMinMax(m);
+	QualityType range = maxS - minS;
+	std::pair<QualityType, QualityType> p = vertexQualityMinMax(m);
 
 	for (VertexType& v : m.vertices()) {
-		v.scalar() = minS + range * ((v.scalar() - p.first)/(p.second-p.first));
+		v.quality() = minS + range * ((v.quality() - p.first)/(p.second-p.first));
 	}
 }
 
 /**
- * @brief Normalizes the face scalars of a mesh in a given interval (default [0, 1]).
+ * @brief Normalizes the face quality of a mesh in a given interval (default [0, 1]).
  *
  * Requirements:
  * - Mesh:
  *   - Faces:
- *     - Scalar
+ *     - Quality
  *
- * @param[in,out] m: mesh on which normalize the face scalars
+ * @param[in,out] m: mesh on which normalize the face quality
  * @param[in] minS: minimum value of the normalizing interval, default 0
  * @param[in] maxS: maximum value of the normalizing interval, default 1
  */
 template<FaceMeshConcept MeshType>
-void normalizePerFaceScalar(
+void normalizePerFaceQuality(
 	MeshType&                                 m,
-	typename MeshType::FaceType::ScalarType minS,
-	typename MeshType::FaceType::ScalarType maxS)
+	typename MeshType::FaceType::QualityType minS,
+	typename MeshType::FaceType::QualityType maxS)
 {
-	vcl::requirePerFaceScalar(m);
+	vcl::requirePerFaceQuality(m);
 
 	using FaceType = typename MeshType::FaceType;
-	using ScalarType = typename FaceType::ScalarType;
+	using QualityType = typename FaceType::QualityType;
 
-	ScalarType range = maxS - minS;
-	std::pair<ScalarType, ScalarType> p = faceScalarMinMax(m);
+	QualityType range = maxS - minS;
+	std::pair<QualityType, QualityType> p = faceQualityMinMax(m);
 
 	for (FaceType& f : m.faces()) {
-		f.scalar() = minS + range * ((f.scalar() - p.first)/(p.second-p.first));
+		f.quality() = minS + range * ((f.quality() - p.first)/(p.second-p.first));
 	}
 }
 
 /**
- * @brief Assign to the vertex scalars of the mesh the valence of each vertex, that is the number of
+ * @brief Assign to the vertex quality of the mesh the valence of each vertex, that is the number of
  * adjacent faces of the vertex.
  *
  * Requirements:
  * - Mesh:
  *   - Vertices:
- *     - Scalar
+ *     - Quality
  *   - Faces
  *
- * @param[in,out] m: mesh on which set the vertex scalars to the vertex valence
+ * @param[in,out] m: mesh on which set the vertex quality to the vertex valence
  */
 template<FaceMeshConcept MeshType>
-void setPerVertexScalarFromVertexValence(MeshType& m)
+void setPerVertexQualityFromVertexValence(MeshType& m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
 
-	setPerVertexScalar(m, 0);
+	setPerVertexQuality(m, 0);
 
 	for (FaceType& f : m.faces()) {
 		for (VertexType* v : f.vertices()) {
-			v->scalar() += 1;
+			v->quality() += 1;
 		}
 	}
 }
 
 /**
- * @brief Assign to the face scalars of the mesh the area of each face.
+ * @brief Assign to the face quality of the mesh the area of each face.
  *
  * Requirements:
  * - Mesh:
  *   - Faces
+ *     - Quality
  *
- * @param[in,out] m: mesh on which set the face scalars to the face area
+ * @param[in,out] m: mesh on which set the face quality to the face area
  */
 template<FaceMeshConcept MeshType>
-void setPerFaceScalarFromFaceArea(MeshType& m)
+void setPerFaceQualityFromFaceArea(MeshType& m)
 {
-	vcl::requirePerFaceScalar(m);
+	vcl::requirePerFaceQuality(m);
 
 	using FaceType = typename MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
-		f.scalar() = faceArea(f);
+		f.quality() = faceArea(f);
 	}
 }
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureGaussian(MeshType &m)
+void setPerVertexQualityFromPrincipalCurvatureGaussian(MeshType &m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 	vcl::requirePerVertexPrincipalCurvature(m);
 
 	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		v.scalar() = v.principalCurvature().maxValue() * v.principalCurvature().minValue();
+		v.quality() = v.principalCurvature().maxValue() * v.principalCurvature().minValue();
 	}
 }
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureMean(MeshType& m)
+void setPerVertexQualityFromPrincipalCurvatureMean(MeshType& m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 	vcl::requirePerVertexPrincipalCurvature(m);
 
 	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		v.scalar() = (v.principalCurvature().maxValue() + v.principalCurvature().minValue()) / 2;
+		v.quality() = (v.principalCurvature().maxValue() + v.principalCurvature().minValue()) / 2;
 	}
 }
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureMinValue(MeshType& m)
+void setPerVertexQualityFromPrincipalCurvatureMinValue(MeshType& m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 	vcl::requirePerVertexPrincipalCurvature(m);
 
 	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		v.scalar() = v.principalCurvature().minValue();
+		v.quality() = v.principalCurvature().minValue();
 	}
 }
 
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureMaxValue(MeshType& m)
+void setPerVertexQualityFromPrincipalCurvatureMaxValue(MeshType& m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 	vcl::requirePerVertexPrincipalCurvature(m);
 
 	using VertexType = typename MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		v.scalar() = v.principalCurvature().maxValue();
+		v.quality() = v.principalCurvature().maxValue();
 	}
 }
 
 /**
  * @brief Computes the Shape Index S from the Principal Curvature, as defined by [Koenderink 1992]
- * and stores it in the per-vertex scalar.
+ * and stores it in the per-vertex quality.
  *
  * S = 2/pi atan(k1+k2/k1-k2)
  *
@@ -304,9 +305,9 @@ void setPerVertexScalarFromPrincipalCurvatureMaxValue(MeshType& m)
  * @param m
  */
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureShapeIndex(MeshType& m)
+void setPerVertexQualityFromPrincipalCurvatureShapeIndex(MeshType& m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 	vcl::requirePerVertexPrincipalCurvature(m);
 
 	using VertexType = typename MeshType::VertexType;
@@ -316,13 +317,13 @@ void setPerVertexScalarFromPrincipalCurvatureShapeIndex(MeshType& m)
 		ScalarType k1 = v.principalCurvature().maxValue();
 		ScalarType k2 = v.principalCurvature().minValue();
 		if (k1 < k2) std::swap(k1, k2);
-		v.scalar() = (2.0 / M_PI) * std::atan2(k1 + k2, k1 - k2);
+		v.quality() = (2.0 / M_PI) * std::atan2(k1 + k2, k1 - k2);
 	}
 }
 
 /**
  * @brief Computes the Curvedness C from the Principal Curvature, as defined by [Koenderink 1992]
- * and stores it in the per-vertex scalar.
+ * and stores it in the per-vertex quality.
  *
  * C =  Sqrt((k1*k1+k2*k2)/2.0)
  *
@@ -332,9 +333,9 @@ void setPerVertexScalarFromPrincipalCurvatureShapeIndex(MeshType& m)
  * @param m
  */
 template<MeshConcept MeshType>
-void setPerVertexScalarFromPrincipalCurvatureCurvedness(MeshType& m)
+void setPerVertexQualityFromPrincipalCurvatureCurvedness(MeshType& m)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 	vcl::requirePerVertexPrincipalCurvature(m);
 
 	using VertexType = typename MeshType::VertexType;
@@ -344,7 +345,7 @@ void setPerVertexScalarFromPrincipalCurvatureCurvedness(MeshType& m)
 		ScalarType k1 = v.principalCurvature().maxValue();
 		ScalarType k2 = v.principalCurvature().minValue();
 
-		v.scalar() = std::sqrt((k1 * k1 + k2 * k2) / 2.0);
+		v.quality() = std::sqrt((k1 * k1 + k2 * k2) / 2.0);
 	}
 }
 

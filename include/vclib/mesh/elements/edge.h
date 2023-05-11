@@ -28,14 +28,6 @@
 
 #include "element.h"
 
-namespace vcl::mesh {
-
-// EdgeContainer class declaration
-template<EdgeConcept>
-class EdgeContainer;
-
-} // namespace vcl::mesh
-
 namespace vcl {
 
 /**
@@ -43,30 +35,21 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template<typename MeshType, typename... Args>
-class Edge : public Element<MeshType, Args...>
+template<typename MeshType, typename... Comps>
+class Edge : public Element<EDGE, MeshType, Comps...>
 {
-	template<EdgeConcept>
-	friend class mesh::EdgeContainer;
-
 	// VertexPointers component of the Edge
 	using VPtrs = typename Edge::VertexPointers;
 
 public:
-	static const uint ELEMENT_TYPE = EDGE;
-
 	using VertexType = typename VPtrs::VertexType;
-
-	uint index() const;
 };
 
-template<typename MeshType, typename... Args>
-class Edge<MeshType, TypeWrapper<Args...>> : public Edge<MeshType, Args...>
+template<typename MeshType, typename... Comps>
+class Edge<MeshType, TypeWrapper<Comps...>> : public Edge<MeshType, Comps...>
 {
 };
 
 } // namespace vcl
-
-#include "edge.cpp"
 
 #endif // VCL_MESH_ELEMENTS_EDGE_H

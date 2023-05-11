@@ -29,8 +29,8 @@ namespace vcl::comp {
  * @brief Returns the name of this object.
  * @return The name of this object.
  */
-template<typename El, bool o>
-std::string& Name<El, o>::name()
+template<typename El, bool O>
+std::string& Name<El, O>::name()
 {
 	return Base::data(this);
 }
@@ -39,15 +39,15 @@ std::string& Name<El, o>::name()
  * @brief Returns the name of this object.
  * @return The name of this object.
  */
-template<typename El, bool o>
-const std::string& Name<El, o>::name() const
+template<typename El, bool O>
+const std::string& Name<El, O>::name() const
 {
 	return Base::data(this);
 }
 
-template<typename El, bool o>
+template<typename El, bool O>
 template<typename Element>
-void Name<El, o>::importFrom(const Element &e)
+void Name<El, O>::importFrom(const Element &e)
 {
 	if constexpr(HasName<Element>) {
 		name() = e.name();

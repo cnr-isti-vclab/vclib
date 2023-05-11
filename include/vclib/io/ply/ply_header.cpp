@@ -189,7 +189,7 @@ inline FileMeshInfo PlyHeader::getInfo() const
 			case ply::green:
 			case ply::blue:
 			case ply::alpha: mod.setVertexColors(); break;
-			case ply::scalar: mod.setVertexScalars(); break;
+			case ply::quality: mod.setVertexQuality(); break;
 			case ply::texture_u: mod.setVertexTexCoords(); break;
 			case ply::unknown:
 				if (p.type <= PropertyType::DOUBLE) {
@@ -211,7 +211,7 @@ inline FileMeshInfo PlyHeader::getInfo() const
 			case ply::green:
 			case ply::blue:
 			case ply::alpha: mod.setFaceColors(); break;
-			case ply::scalar: mod.setFaceScalars(); break;
+			case ply::quality: mod.setFaceQuality(); break;
 			case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
 			case ply::unknown:
 				if (p.type <= PropertyType::DOUBLE) {
@@ -233,7 +233,7 @@ inline FileMeshInfo PlyHeader::getInfo() const
 			case ply::green:
 			case ply::blue:
 			case ply::alpha: mod.setFaceColors(); break;
-			case ply::scalar: mod.setFaceScalars(); break;
+			case ply::quality: mod.setFaceQuality(); break;
 			case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
 			default: break;
 			}
@@ -411,10 +411,10 @@ inline void PlyHeader::setInfo(
 			vElem.properties.push_back(vcb);
 			vElem.properties.push_back(vca);
 		}
-		if (info.hasVertexScalars()) {
+		if (info.hasVertexQuality()) {
 			ply::Property vs;
-			vs.name = scalar;
-			vs.type = (PropertyType)info.vertexScalarsType();
+			vs.name = quality;
+			vs.type = (PropertyType)info.vertexQualityType();
 			vElem.properties.push_back(vs);
 		}
 		if (info.hasVertexTexCoords()) {
@@ -481,10 +481,10 @@ inline void PlyHeader::setInfo(
 			fElem.properties.push_back(fcb);
 			fElem.properties.push_back(fca);
 		}
-		if (info.hasFaceScalars()) {
+		if (info.hasFaceQuality()) {
 			ply::Property fs;
-			fs.name = scalar;
-			fs.type = (PropertyType)info.faceScalarsType();
+			fs.name = quality;
+			fs.type = (PropertyType)info.faceQualityType();
 			fElem.properties.push_back(fs);
 		}
 		if (info.hasFaceWedgeTexCoords()) {
@@ -663,7 +663,7 @@ inline ply::PropertyName PlyHeader::stringToName(const std::string& name) const
 	if (name == "alpha")
 		pn = ply::alpha;
 	if (name == "quality" || name == "scalar")
-		pn = ply::scalar;
+		pn = ply::quality;
 	if (name == "texture_u")
 		pn = ply::texture_u;
 	if (name == "texture_v")
@@ -717,7 +717,7 @@ inline std::string PlyHeader::nameToString(PropertyName n) const
 	case ply::green: return "green";
 	case ply::blue: return "blue";
 	case ply::alpha: return "alpha";
-	case ply::scalar: return "scalar";
+	case ply::quality: return "quality";
 	case ply::texture_u: return "texture_u";
 	case ply::texture_v: return "texture_v";
 	case ply::texnumber: return "texnumber";

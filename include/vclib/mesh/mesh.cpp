@@ -277,27 +277,39 @@ Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
 }
 
 /**
- * @brief Returns the index of the given vertex in the VertexContainer of the Mesh.
- * @param v: a reference of a vertex of the Mesh.
- * @return the index of the given vertex.
+ * @brief Returns the index of the given element in its Container of the Mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type El. Otherwise, a compiler
+ * error will be triggered.
+ *
+ * @tparam El: The type of the Element, it must satisfy the ElementConcept.
+ * @param e: a reference of an element of the Mesh.
+ * @return the index of the given element.
  */
 template<typename... Args> requires HasVertices<Args...>
-uint Mesh<Args...>::index(const typename Mesh::VertexType& v) const
+template<ElementConcept El>
+uint Mesh<Args...>::index(const El& e) const requires (hasContainerOf<El>())
 {
-	using VertexContainer = typename Mesh::VertexContainer;
-	return VertexContainer::index(&v);
+	using Container = typename GetContainerOf<El>::type;
+	return Container::index(&e);
 }
 
 /**
- * @brief Returns the index of the given vertex in the VertexContainer of the Mesh.
- * @param v: a pointer of a vertex of the Mesh.
- * @return the index of the given vertex.
+ * @brief Returns the index of the given element in its Container of the Mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type El. Otherwise, a compiler
+ * error will be triggered.
+ *
+ * @tparam El: The type of the Element, it must satisfy the ElementConcept.
+ * @param e: a pointer to an element of the Mesh.
+ * @return the index of the given element.
  */
 template<typename... Args> requires HasVertices<Args...>
-uint Mesh<Args...>::index(const typename Mesh::VertexType* v) const
+template<ElementConcept El>
+uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 {
-	using VertexContainer = typename Mesh::VertexContainer;
-	return VertexContainer::index(v);
+	using Container = typename GetContainerOf<El>::type;
+	return Container::index(e);
 }
 
 /**
@@ -429,38 +441,6 @@ void Mesh<Args...>::compactVertices()
 	using VertexContainer = typename Mesh::VertexContainer;
 
 	compactElements<VertexContainer>();
-}
-
-/**
- * @brief Returns the index of the given face in the FaceContainer of the Mesh.
- *
- * This function will be available only **if the Mesh has the Face Container**.
- *
- * @param f: a reference of a face of the Mesh.
- * @return the index of the given face.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-uint Mesh<Args...>::index(const typename M::FaceType& f) const
-{
-	using FaceContainer = typename M::FaceContainer;
-	return FaceContainer::index(&f);
-}
-
-/**
- * @brief Returns the index of the given face in the FaceContainer of the Mesh.
- *
- * This function will be available only **if the Mesh has the Face Container**.
- *
- * @param f: a pointer of a face of the Mesh.
- * @return the index of the given face.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-uint Mesh<Args...>::index(const typename M::FaceType* f) const
-{
-	using FaceContainer = typename M::FaceContainer;
-	return FaceContainer::index(f);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -665,32 +645,6 @@ void Mesh<Args...>::disablePerFaceWedgeTexCoords()
 	}
 }
 
-/**
- * @brief Returns the index of the given edge in the EdgeContainer of the Mesh.
- * @param e: a reference of an edge of the Mesh.
- * @return the index of the given edge.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-uint Mesh<Args...>::index(const typename M::EdgeType& e) const
-{
-	using EdgeContainer = typename M::EdgeContainer;
-	return EdgeContainer::index(&e);
-}
-
-/**
- * @brief Returns the index of the given edge in the EdgeContainer of the Mesh.
- * @param e: a pointer of an edge of the Mesh.
- * @return the index of the given edge.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-uint Mesh<Args...>::index(const typename M::EdgeType* e) const
-{
-	using EdgeContainer = typename M::EdgeContainer;
-	return EdgeContainer::index(e);
-}
-
 template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::addEdge() requires HasEdges<Mesh>
 {
@@ -759,32 +713,6 @@ void Mesh<Args...>::compactEdges() requires HasEdges<Mesh>
 	using EdgeContainer = typename Mesh::EdgeContainer;
 
 	compactElements<EdgeContainer>();
-}
-
-/**
- * @brief Returns the index of the given Halfedge in the HalfEdgeContainer of the Mesh.
- * @param e: a reference of an Halfedge of the Mesh.
- * @return the index of the given Halfedge.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-uint Mesh<Args...>::index(const typename M::HalfEdgeType& e) const
-{
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-	return HalfEdgeContainer::index(&e);
-}
-
-/**
- * @brief Returns the index of the given Halfedge in the HalfEdgeContainer of the Mesh.
- * @param e: a pointer of an Halfedge of the Mesh.
- * @return the index of the given Halfedge.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-uint Mesh<Args...>::index(const typename M::HalfEdgeType* e) const
-{
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-	return HalfEdgeContainer::index(e);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -986,6 +914,15 @@ void Mesh<Args...>::updatePointersAfterCompact(
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updatePointersAfterCompact(base, newIndices);
 	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, typename T>
+uint Mesh<Args...>::elementIndex(const T* el) const
+{
+	using Cont = typename GetContainerOfElID<EL_TYPE>::type;
+	using ElType = typename Cont::ElementType;
+	return index(static_cast<const ElType*>(el));
 }
 
 template<typename... Args> requires HasVertices<Args...>

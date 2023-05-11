@@ -83,14 +83,14 @@ set(HEADERS
 	include/vclib/algorithms/intersection/misc.h
 	include/vclib/algorithms/polygon/geometry.h
 	include/vclib/algorithms/polygon/topology.h
-	include/vclib/algorithms/stat/scalar.h
+	include/vclib/algorithms/stat/quality.h
 	include/vclib/algorithms/stat/selection.h
 	include/vclib/algorithms/update/bounding_box.h
 	include/vclib/algorithms/update/color.h
 	include/vclib/algorithms/update/curvature.h
 	include/vclib/algorithms/update/flag.h
 	include/vclib/algorithms/update/normal.h
-	include/vclib/algorithms/update/scalar.h
+	include/vclib/algorithms/update/quality.h
 	include/vclib/algorithms/update/selection.h
 	include/vclib/algorithms/update/topology.h
 	include/vclib/algorithms/update/transform.h
@@ -121,7 +121,7 @@ set(HEADERS
 	include/vclib/concepts/mesh/components/name.h
 	include/vclib/concepts/mesh/components/normal.h
 	include/vclib/concepts/mesh/components/principal_curvature.h
-	include/vclib/concepts/mesh/components/scalar.h
+	include/vclib/concepts/mesh/components/quality.h
 	include/vclib/concepts/mesh/components/tex_coord.h
 	include/vclib/concepts/mesh/components/texture_paths.h
 	include/vclib/concepts/mesh/components/transform_matrix.h
@@ -217,7 +217,7 @@ set(HEADERS
 	include/vclib/mesh/components/parent_mesh_pointer.h
 	include/vclib/mesh/components/polygon_bit_flags.h
 	include/vclib/mesh/components/principal_curvature.h
-	include/vclib/mesh/components/scalar.h
+	include/vclib/mesh/components/quality.h
 	include/vclib/mesh/components/vertex_half_edge_pointer.h
 	include/vclib/mesh/components/vertex_pointers.h
 	include/vclib/mesh/components/tex_coord.h
@@ -336,7 +336,7 @@ set(HEADERS
 	include/vclib/views/mesh/components/coords.h
 	include/vclib/views/mesh/components/normals.h
 	include/vclib/views/mesh/components/principal_curvatures.h
-	include/vclib/views/mesh/components/scalars.h
+	include/vclib/views/mesh/components/quality.h
 	include/vclib/views/mesh/components/selection.h
 	include/vclib/views/mesh/components/tex_coords.h
 )
@@ -365,14 +365,14 @@ set(SOURCES
 	include/vclib/algorithms/intersection/misc.cpp
 	include/vclib/algorithms/polygon/geometry.cpp
 	include/vclib/algorithms/polygon/topology.cpp
-	include/vclib/algorithms/stat/scalar.cpp
+	include/vclib/algorithms/stat/quality.cpp
 	include/vclib/algorithms/stat/selection.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
 	include/vclib/algorithms/update/color.cpp
 	include/vclib/algorithms/update/curvature.cpp
 	include/vclib/algorithms/update/flag.cpp
 	include/vclib/algorithms/update/normal.cpp
-	include/vclib/algorithms/update/scalar.cpp
+	include/vclib/algorithms/update/quality.cpp
 	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
@@ -429,7 +429,7 @@ set(SOURCES
 	include/vclib/mesh/components/parent_mesh_pointer.cpp
 	include/vclib/mesh/components/polygon_bit_flags.cpp
 	include/vclib/mesh/components/principal_curvature.cpp
-	include/vclib/mesh/components/scalar.cpp
+	include/vclib/mesh/components/quality.cpp
 	include/vclib/mesh/components/tex_coord.cpp
 	include/vclib/mesh/components/texture_paths.cpp
 	include/vclib/mesh/components/transform_matrix.cpp
@@ -448,11 +448,8 @@ set(SOURCES
 	include/vclib/mesh/containers/face_container.cpp
 	include/vclib/mesh/containers/vertex_container.cpp
 	include/vclib/mesh/containers/vertical_components_vector_tuple.cpp
-	include/vclib/mesh/elements/edge.cpp
 	include/vclib/mesh/elements/element.cpp
 	include/vclib/mesh/elements/face.cpp
-	include/vclib/mesh/elements/half_edge.cpp
-	include/vclib/mesh/elements/vertex.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/half_edge_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp

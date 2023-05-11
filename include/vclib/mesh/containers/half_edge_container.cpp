@@ -296,8 +296,8 @@ void HalfEdgeContainer<T>::enableAllPerHalfEdgeOptionalComponents()
 		enablePerHalfEdgeColor();
 	if constexpr (hedge::HasOptionalMark<T>)
 		enablePerHalfEdgeMark();
-	if constexpr (hedge::HasOptionalScalar<T>)
-		enablePerHalfEdgeScalar();
+	if constexpr (hedge::HasOptionalQuality<T>)
+		enablePerHalfEdgeQuality();
 }
 
 /**
@@ -311,8 +311,8 @@ void HalfEdgeContainer<T>::disableAllPerHalfEdgeOptionalComponents()
 		disablePerHalfEdgeColor();
 	if constexpr (hedge::HasOptionalMark<T>)
 		disablePerHalfEdgeMark();
-	if constexpr (hedge::HasOptionalScalar<T>)
-		disablePerHalfEdgeScalar();
+	if constexpr (hedge::HasOptionalQuality<T>)
+		disablePerHalfEdgeQuality();
 }
 
 /**
@@ -386,37 +386,37 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeMark() requires hedge::HasOptionalM
 }
 
 /**
- * @brief Checks if the halfedge Optional Scalar is enabled.
+ * @brief Checks if the halfedge Optional Quality is enabled.
  *
- * @note This function is available only if the HalfEdge Element has the OptionalScalar Component.
+ * @note This function is available only if the HalfEdge Element has the OptionalQuality Component.
  *
- * @return true if the Optional Scalar is enabled, false otherwise.
+ * @return true if the Optional Quality is enabled, false otherwise.
  */
 template<HalfEdgeConcept T>
-bool HalfEdgeContainer<T>::isPerHalfEdgeScalarEnabled() const requires hedge::HasOptionalScalar<T>
+bool HalfEdgeContainer<T>::isPerHalfEdgeQualityEnabled() const requires hedge::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::QualityComponent>();
 }
 /**
- * @brief Enables the Optional Scalar of the halfedge.
+ * @brief Enables the Optional Quality of the halfedge.
  *
- * @note This function is available only if the HalfEdge Element has the OptionalScalar Component.
+ * @note This function is available only if the HalfEdge Element has the OptionalQuality Component.
  */
 template<HalfEdgeConcept T>
-void HalfEdgeContainer<T>::enablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>
+void HalfEdgeContainer<T>::enablePerHalfEdgeQuality() requires hedge::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
+	return Base::template enableOptionalComponent<typename T::QualityComponent>();
 }
 
 /**
- * @brief Disables the Optional Scalar of the halfedge.
+ * @brief Disables the Optional Quality of the halfedge.
  *
- * @note This function is available only if the HalfEdge Element has the OptionalScalar Component.
+ * @note This function is available only if the HalfEdge Element has the OptionalQuality Component.
  */
 template<HalfEdgeConcept T>
-void HalfEdgeContainer<T>::disablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>
+void HalfEdgeContainer<T>::disablePerHalfEdgeQuality() requires hedge::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
+	return Base::template disableOptionalComponent<typename T::QualityComponent>();
 }
 
 /**

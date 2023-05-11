@@ -47,7 +47,7 @@ class Vertex :
 			vcl::vert::Coordinate3<Scalar>,                      // 24b
 			vcl::vert::Normal3<Scalar>,                          // 24b
 			vcl::vert::Color,                                    // 4b
-			vcl::vert::Scalar<Scalar>,                           // 8b
+			vcl::vert::Quality<Scalar>,                          // 8b
 			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>, // 0b
 			vcl::vert::OptionalMark<Vertex<Scalar>>,             // 0b
 			vcl::vert::CustomComponents<Vertex<Scalar>>>         // 0b

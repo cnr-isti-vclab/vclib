@@ -65,11 +65,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool optional = false>
-class Mark : public Component<int, ElementType, optional>
+template<typename ElementType = void, bool OPT = false>
+class Mark : public Component<int, ElementType, OPT>
 {
-	using Base = Component<int, ElementType, optional>;
-	using ThisType = Mark<ElementType, optional>;
+	using Base = Component<int, ElementType, OPT>;
+	using ThisType = Mark<ElementType, OPT>;
 
 public:
 	using MarkComponent = ThisType; // expose the type to allow access to this component

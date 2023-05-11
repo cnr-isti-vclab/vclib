@@ -21,14 +21,56 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "edge.h"
+#ifndef VCL_MESH_COMPONENTS_QUALITY_H
+#define VCL_MESH_COMPONENTS_QUALITY_H
 
-namespace vcl {
+#include <vclib/concepts/mesh/components/quality.h>
 
-template<typename MeshType, typename... Args>
-uint Edge<MeshType, Args...>::index() const
+#include "bases/component.h"
+
+namespace vcl::comp {
+
+/**
+ * @brief The Quality class
+ *
+ * @ingroup components
+ */
+template<typename T, typename ElementType = void, bool OPT = false>
+class Quality : public Component<T, ElementType, OPT>
 {
-	return Element<MeshType, Args...>::template index<typename MeshType::EdgeType>();
-}
+	using Base = Component<T, ElementType, OPT>;
+	using ThisType = Quality<T, ElementType, OPT>;
 
-} // namespace vcl
+public:
+	using QualityComponent = ThisType; // expose the type to allow access to this component
+
+	using QualityType = T;
+
+	bool isEnabled() const;
+	bool isQualityEnabled() const;
+
+	const QualityType& quality() const;
+	QualityType&       quality();
+
+protected:
+	// PointersComponent interface functions
+	template<typename Element>
+	void importFrom(const Element& e);
+};
+
+/* Detector function to check if a class has Quality enabled */
+
+template <typename T>
+bool isQualityEnabledOn(const T& element);
+
+template<typename ElementType = void, bool OPT = false>
+using Qualityf = Quality<float, ElementType, OPT>;
+
+template<typename ElementType = void, bool OPT = false>
+using Qualityd = Quality<double, ElementType, OPT>;
+
+} // namespace vcl::comp
+
+#include "quality.cpp"
+
+#endif // VCL_MESH_COMPONENTS_QUALITY_H

@@ -21,14 +21,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "half_edge.h"
+#ifndef VCL_ALGORITHMS_STAT_QUALITY_H
+#define VCL_ALGORITHMS_STAT_QUALITY_H
+
+#include <vclib/math/histogram.h>
+#include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template<typename MeshType, typename... Args>
-uint HalfEdge<MeshType, Args...>::index() const
-{
-	return Element<MeshType, Args...>::template index<typename MeshType::HalfEdgeType>();
-}
+template<MeshConcept MeshType>
+std::pair<typename MeshType::VertexType::QualityType, typename MeshType::VertexType::QualityType>
+vertexQualityMinMax(const MeshType& m);
+
+template<FaceMeshConcept MeshType>
+std::pair<typename MeshType::FaceType::QualityType, typename MeshType::FaceType::QualityType>
+faceQualityMinMax(const MeshType& m);
+
+template<MeshConcept MeshType>
+typename MeshType::VertexType::QualityType vertexQualityAverage(const MeshType& m);
+
+template<FaceMeshConcept MeshType>
+typename MeshType::FaceType::QualityType faceQualityAverage(const MeshType& m);
+
+template<MeshConcept MeshType>
+std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
+	const MeshType& m,
+	double          diskRadius,
+	double          radiusVariance,
+	bool            invert = false);
+
+template<MeshConcept MeshType, typename HScalar = double>
+Histogram<HScalar> vertexQualityHistogram(
+	const MeshType& m,
+	bool selectionOnly = false,
+	uint histSize = 10000);
+
+template<FaceMeshConcept MeshType, typename HScalar = double>
+Histogram<HScalar> faceQualityHistogram(
+	const MeshType& m,
+	bool selectionOnly = false,
+	uint histSize = 10000);
 
 } // namespace vcl
+
+#include "quality.cpp"
+
+#endif // VCL_ALGORITHMS_STAT_QUALITY_H

@@ -48,17 +48,14 @@ struct TPData {
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool optional = false>
-class TexturePaths : public Component<internal::TPData, ElementType, optional>
+template<typename ElementType = void, bool OPT = false>
+class TexturePaths : public Component<internal::TPData, ElementType, OPT>
 {
-	using Base = Component<internal::TPData, ElementType, optional>;
-	using ThisType = TexturePaths<ElementType, optional>;
+	using Base = Component<internal::TPData, ElementType, OPT>;
+	using ThisType = TexturePaths<ElementType, OPT>;
 
 public:
 	using TexturePathsComponent = ThisType; // expose the type to allow access to this component
-
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
-	static const bool IS_OPTIONAL = optional;
 
 	// iterators
 	using TexFileNamesIterator      = std::vector<std::string>::iterator;

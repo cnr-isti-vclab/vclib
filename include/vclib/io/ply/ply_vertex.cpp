@@ -65,11 +65,11 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 			}
 		}
 	}
-	if (p.name == ply::scalar) {
-		if constexpr (vcl::HasPerVertexScalar<MeshType>) {
-			using Scalar = typename VertexType::ScalarType;
-			if (vcl::isPerVertexScalarEnabled(mesh)) {
-				v.scalar() = io::internal::readProperty<Scalar>(file, p.type);
+	if (p.name == ply::quality) {
+		if constexpr (vcl::HasPerVertexQuality<MeshType>) {
+			using QualityType = typename VertexType::QualityType;
+			if (vcl::isPerVertexQualityEnabled(mesh)) {
+				v.quality() = io::internal::readProperty<QualityType>(file, p.type);
 				hasBeenRead = true;
 			}
 		}
@@ -163,9 +163,9 @@ void saveVertices(
 					hasBeenWritten = true;
 				}
 			}
-			if (p.name == ply::scalar) {
-				if constexpr (vcl::HasPerVertexScalar<MeshType>) {
-					io::internal::writeProperty(file, v.scalar(), p.type, bin);
+			if (p.name == ply::quality) {
+				if constexpr (vcl::HasPerVertexQuality<MeshType>) {
+					io::internal::writeProperty(file, v.quality(), p.type, bin);
 					hasBeenWritten = true;
 				}
 			}

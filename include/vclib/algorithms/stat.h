@@ -28,7 +28,7 @@
 
 #include <vclib/space/matrix.h>
 
-#include "stat/scalar.h"
+#include "stat/quality.h"
 #include "stat/selection.h"
 
 namespace vcl {

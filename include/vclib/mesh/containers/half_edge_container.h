@@ -89,10 +89,10 @@ public:
 	void enablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>;
 	void disablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>;
 
-	// Scalar
-	bool isPerHalfEdgeScalarEnabled() const requires hedge::HasOptionalScalar<T>;
-	void enablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>;
-	void disablePerHalfEdgeScalar() requires hedge::HasOptionalScalar<T>;
+	// Quality
+	bool isPerHalfEdgeQualityEnabled() const requires hedge::HasOptionalQuality<T>;
+	void enablePerHalfEdgeQuality() requires hedge::HasOptionalQuality<T>;
+	void disablePerHalfEdgeQuality() requires hedge::HasOptionalQuality<T>;
 
 	// TexCoord
 	bool isPerHalfEdgeTexCoordEnabled() const requires hedge::HasOptionalTexCoord<T>;

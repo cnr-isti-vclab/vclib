@@ -42,8 +42,8 @@ concept HasPerHalfEdgeMark =
 	HasHalfEdges<MeshType> && vcl::hedge::HasMark<typename MeshType::HalfEdgeType>;
 
 template<typename MeshType>
-concept HasPerHalfEdgeScalar =
-	HasHalfEdges<MeshType> && vcl::hedge::HasScalar<typename MeshType::HalfEdgeType>;
+concept HasPerHalfEdgeQuality =
+	HasHalfEdges<MeshType> && vcl::hedge::HasQuality<typename MeshType::HalfEdgeType>;
 
 
 template<typename MeshType>

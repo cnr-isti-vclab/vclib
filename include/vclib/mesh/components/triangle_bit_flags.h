@@ -59,11 +59,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool optional = false>
-class TriangleBitFlags : public Component<BitSet<short>, ElementType, optional>
+template<typename ElementType = void, bool OPT = false>
+class TriangleBitFlags : public Component<BitSet<short>, ElementType, OPT>
 {
-	using Base = Component<BitSet<short>, ElementType, optional>;
-	using ThisType = TriangleBitFlags<ElementType, optional>;
+	using Base = Component<BitSet<short>, ElementType, OPT>;
+	using ThisType = TriangleBitFlags<ElementType, OPT>;
 
 	using FT = short; // FlagsType, the integral type used for the flags
 

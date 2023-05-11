@@ -301,8 +301,8 @@ void VertexContainer<T>::enableAllPerVertexOptionalComponents()
 		enablePerVertexNormal();
 	if constexpr (vert::HasOptionalPrincipalCurvature<T>)
 		enablePerVertexPrincipalCurvature();
-	if constexpr (vert::HasOptionalScalar<T>)
-		enablePerVertexScalar();
+	if constexpr (vert::HasOptionalQuality<T>)
+		enablePerVertexQuality();
 	if constexpr (vert::HasOptionalTexCoord<T>)
 		enablePerVertexTexCoord();
 }
@@ -328,8 +328,8 @@ void VertexContainer<T>::disableAllPerVertexOptionalComponents()
 		disablePerVertexNormal();
 	if constexpr (vert::HasOptionalPrincipalCurvature<T>)
 		disablePerVertexPrincipalCurvature();
-	if constexpr (vert::HasOptionalScalar<T>)
-		disablePerVertexScalar();
+	if constexpr (vert::HasOptionalQuality<T>)
+		disablePerVertexQuality();
 	if constexpr (vert::HasOptionalTexCoord<T>)
 		disablePerVertexTexCoord();
 }
@@ -600,38 +600,38 @@ void VertexContainer<T>::disablePerVertexPrincipalCurvature()
 }
 
 /**
- * @brief Checks if the vertex Optional Scalar is enabled.
+ * @brief Checks if the vertex Optional Quality is enabled.
  *
- * @note This function is available only if the Vertex Element has the OptionalScalar Component.
+ * @note This function is available only if the Vertex Element has the OptionalQuality Component.
  *
- * @return true if the Optional Scalar is enabled, false otherwise.
+ * @return true if the Optional Quality is enabled, false otherwise.
  */
 template<VertexConcept T>
-bool VertexContainer<T>::isPerVertexScalarEnabled() const requires vert::HasOptionalScalar<T>
+bool VertexContainer<T>::isPerVertexQualityEnabled() const requires vert::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::QualityComponent>();
 }
 
 /**
- * @brief Enables the Optional Scalar of the vertex.
+ * @brief Enables the Optional Quality of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalScalar Component.
+ * @note This function is available only if the Vertex Element has the OptionalQuality Component.
  */
 template<VertexConcept T>
-void VertexContainer<T>::enablePerVertexScalar() requires vert::HasOptionalScalar<T>
+void VertexContainer<T>::enablePerVertexQuality() requires vert::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
+	return Base::template enableOptionalComponent<typename T::QualityComponent>();
 }
 
 /**
- * @brief Disables the Optional Scalar of the vertex.
+ * @brief Disables the Optional Quality of the vertex.
  *
- * @note This function is available only if the Vertex Element has the OptionalScalar Component.
+ * @note This function is available only if the Vertex Element has the OptionalQuality Component.
  */
 template<VertexConcept T>
-void VertexContainer<T>::disablePerVertexScalar() requires vert::HasOptionalScalar<T>
+void VertexContainer<T>::disablePerVertexQuality() requires vert::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
+	return Base::template disableOptionalComponent<typename T::QualityComponent>();
 }
 
 /**

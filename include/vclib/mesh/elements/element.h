@@ -51,22 +51,22 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template <typename MeshType, typename... Args>
-class Element : public comp::ParentMeshPointer<MeshType>, public Args...
+template <uint ELEM_TYPE, typename MeshType, typename... Comps>
+class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
 {
 	template<ElementConcept>
 	friend class mesh::ElementContainer;
+
 public:
 	using ParentMeshType = MeshType;
-	using Components = TypeWrapper<Args...>;
+	using Components = TypeWrapper<Comps...>;
+
+	static const uint ELEMENT_TYPE = ELEM_TYPE;
+
+	uint index() const;
 
 	template<typename ElType>
 	void importFrom(const ElType& v);
-
-protected:
-
-	template<typename ElType>
-	uint index() const;
 
 private:
 	// hide init and isEnabled members

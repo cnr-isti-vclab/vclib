@@ -46,11 +46,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool optional = false>
-class Name : public Component<std::string, ElementType, optional>
+template<typename ElementType = void, bool OPT = false>
+class Name : public Component<std::string, ElementType, OPT>
 {
-	using Base = Component<std::string, ElementType, optional>;
-	using ThisType = Name<ElementType, optional>;
+	using Base = Component<std::string, ElementType, OPT>;
+	using ThisType = Name<ElementType, OPT>;
 
 public:
 	using NameComponent = ThisType; // expose the type to allow access to this component

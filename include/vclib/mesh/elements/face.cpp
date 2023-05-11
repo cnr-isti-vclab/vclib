@@ -25,8 +25,8 @@
 
 namespace vcl {
 
-template<typename MeshType, typename... Args>
-Face<MeshType, Args...>::Face()
+template<typename MeshType, typename... Comps>
+Face<MeshType, Comps...>::Face()
 {
 }
 
@@ -47,16 +47,10 @@ Face<MeshType, Args...>::Face()
  * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
  *                  vertices of the face.
  */
-template<typename MeshType, typename... Args>
-Face<MeshType, Args...>::Face(const std::vector<VertexType*>& list) // todo add requires
+template<typename MeshType, typename... Comps>
+Face<MeshType, Comps...>::Face(const std::vector<VertexType*>& list) // TODO add requires
 {
 	setVertices(list);
-}
-
-template<typename MeshType, typename... Args>
-uint Face<MeshType, Args...>::index() const
-{
-	return Element<MeshType, Args...>::template index<typename MeshType::FaceType>();
 }
 
 /**
@@ -71,9 +65,9 @@ uint Face<MeshType, Args...>::index() const
  * @param[in] args: a variable number of vertex pointers in counterclockwise order that will be set
  *                  as vertices of the face.
  */
-template<typename MeshType, typename... Args>
+template<typename MeshType, typename... Comps>
 template<typename... V>
-Face<MeshType, Args...>::Face(V... args) // todo add requires
+Face<MeshType, Comps...>::Face(V... args) // TODO add requires
 {
 	setVertices({args...});
 }
@@ -88,22 +82,22 @@ Face<MeshType, Args...>::Face(V... args) // todo add requires
  * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
  *                  vertices of the face.
  */
-template<typename MeshType, typename... Args>
-void Face<MeshType, Args...>::setVertices(const std::vector<VertexType*>& list)
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::setVertices(const std::vector<VertexType*>& list)
 {
-	using F = Face<MeshType, TypeWrapper<Args...>>;
+	using F = Face<MeshType, TypeWrapper<Comps...>>;
 	
 	VPtrs::setVertices(list);
 
 	// if polygonal, I need to resize all the TTVN components
 	if constexpr (NV < 0) {
-		(resizeTTVNComponent<Args>(list.size()), ...);
+		(resizeTTVNComponent<Comps>(list.size()), ...);
 	}
 }
 
-template<typename MeshType, typename... Args>
+template<typename MeshType, typename... Comps>
 template<typename... V>
-void Face<MeshType, Args...>::setVertices(V... args)
+void Face<MeshType, Comps...>::setVertices(V... args)
 {
 	setVertices({args...});
 }
@@ -120,58 +114,58 @@ void Face<MeshType, Args...>::setVertices(V... args)
  *
  * @param n: the new number of vertices.
  */
-template<typename MeshType, typename... Args>
-void Face<MeshType, Args...>::resizeVertices(uint n)
-	requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::resizeVertices(uint n)
+	requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::resizeVertices(n);
 
 	// Now I need to resize all the TTVN components
-	(resizeTTVNComponent<Args>(n), ...);
+	(resizeTTVNComponent<Comps>(n), ...);
 }
 
-template<typename MeshType, typename... Args>
-void Face<MeshType, Args...>::pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::pushVertex(v);
 
 	// Now I need to pushBack in all the TTVN components
-	(pushBackTTVNComponent<Args>(), ...);
+	(pushBackTTVNComponent<Comps>(), ...);
 }
 
-template<typename MeshType, typename... Args>
-void Face<MeshType, Args...>::insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::insertVertex(i, v);
 
 	// Now I need to insert in all the TTVN components
-	(insertTTVNComponent<Args>(i), ...);
+	(insertTTVNComponent<Comps>(i), ...);
 }
 
-template<typename MeshType, typename... Args>
-void Face<MeshType, Args...>::eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::eraseVertex(i);
 
 	// Now I need to erase in all the TTVN components
-	(eraseTTVNComponent<Args>(i), ...);
+	(eraseTTVNComponent<Comps>(i), ...);
 }
 
-template<typename MeshType, typename... Args>
-void Face<MeshType, Args...>::clearVertices() requires NonDcelPolygonFaceConcept<Face<MeshType, Args...>>
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::clearVertices() requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::clearVertices();
 
 	// Now I need to clear all the TTVN components
-	(clearTTVNComponent<Args>(), ...);
+	(clearTTVNComponent<Comps>(), ...);
 }
 
 /**
  * Calls the resize(n) on all the component containers that are tied to the vertex number
  */
-template<typename MeshType, typename... Args>
+template<typename MeshType, typename... Comps>
 template<typename Comp>
-void Face<MeshType, Args...>::resizeTTVNComponent(uint n)
+void Face<MeshType, Comps...>::resizeTTVNComponent(uint n)
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
 		if (Comp::isEnabled())
@@ -182,9 +176,9 @@ void Face<MeshType, Args...>::resizeTTVNComponent(uint n)
 /**
  * Calls the pushBack() on all the component containers that are tied to the vertex number
  */
-template<typename MeshType, typename... Args>
+template<typename MeshType, typename... Comps>
 template<typename Comp>
-void Face<MeshType, Args...>::pushBackTTVNComponent()
+void Face<MeshType, Comps...>::pushBackTTVNComponent()
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
 		if (Comp::isEnabled())
@@ -195,9 +189,9 @@ void Face<MeshType, Args...>::pushBackTTVNComponent()
 /**
  * Calls the insert(i) on all the component containers that are tied to the vertex number
  */
-template<typename MeshType, typename... Args>
+template<typename MeshType, typename... Comps>
 template<typename Comp>
-void Face<MeshType, Args...>::insertTTVNComponent(uint i)
+void Face<MeshType, Comps...>::insertTTVNComponent(uint i)
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
 		if (Comp::isEnabled())
@@ -208,9 +202,9 @@ void Face<MeshType, Args...>::insertTTVNComponent(uint i)
 /**
  * Calls the erase(i) on all the component containers that are tied to the vertex number
  */
-template<typename MeshType, typename... Args>
+template<typename MeshType, typename... Comps>
 template<typename Comp>
-void Face<MeshType, Args...>::eraseTTVNComponent(uint i)
+void Face<MeshType, Comps...>::eraseTTVNComponent(uint i)
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
 		if (Comp::isEnabled())
@@ -221,9 +215,9 @@ void Face<MeshType, Args...>::eraseTTVNComponent(uint i)
 /**
  * Calls the clear() on all the component containers that are tied to the vertex number
  */
-template<typename MeshType, typename... Args>
+template<typename MeshType, typename... Comps>
 template<typename Comp>
-void Face<MeshType, Args...>::clearTTVNComponent()
+void Face<MeshType, Comps...>::clearTTVNComponent()
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
 		if (Comp::isEnabled())

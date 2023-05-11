@@ -93,7 +93,7 @@ public:
 		VREFS,
 		NORMAL,
 		COLOR,
-		SCALAR,
+		QUALITY,
 		TEXCOORD,
 		WEDGE_TEXCOORDS,
 		CUSTOM_COMPONENTS,
@@ -136,14 +136,14 @@ public:
 	bool hasVertexCoords() const;
 	bool hasVertexNormals() const;
 	bool hasVertexColors() const;
-	bool hasVertexScalars() const;
+	bool hasVertexQuality() const;
 	bool hasVertexTexCoords() const;
 	bool hasVertexCustomComponents() const;
 	bool hasFaces() const;
 	bool hasFaceVRefs() const;
 	bool hasFaceNormals() const;
 	bool hasFaceColors() const;
-	bool hasFaceScalars() const;
+	bool hasFaceQuality() const;
 	bool hasFaceWedgeTexCoords() const;
 	bool hasFaceCustomComponents() const;
 	bool hasEdges() const;
@@ -169,14 +169,14 @@ public:
 	void setVertexCoords(bool b = true, DataType t = DOUBLE);
 	void setVertexNormals(bool b = true, DataType t = FLOAT);
 	void setVertexColors(bool b = true, DataType t = UCHAR);
-	void setVertexScalars(bool b = true, DataType t = DOUBLE);
+	void setVertexQuality(bool b = true, DataType t = DOUBLE);
 	void setVertexTexCoords(bool b = true, DataType t = FLOAT);
 	void setVertexCustomComponents(bool b = true);
 	void setFaces(bool b = true);
 	void setFaceVRefs(bool b = true);
 	void setFaceNormals(bool b = true, DataType t = FLOAT);
 	void setFaceColors(bool b = true, DataType t = UCHAR);
-	void setFaceScalars(bool b = true, DataType t = DOUBLE);
+	void setFaceQuality(bool b = true, DataType t = DOUBLE);
 	void setFaceWedgeTexCoords(bool b = true, DataType t = FLOAT);
 	void setFaceCustomComponents(bool b = true);
 	void setEdges(bool b = true);
@@ -201,11 +201,11 @@ public:
 	DataType vertexCoordsType() const;
 	DataType vertexNormalsType() const;
 	DataType vertexColorsType() const;
-	DataType vertexScalarsType() const;
+	DataType vertexQualityType() const;
 	DataType vertexTexCoordsType() const;
 	DataType faceNormalsType() const;
 	DataType faceColorsType() const;
-	DataType faceScalarsType() const;
+	DataType faceQualityType() const;
 	DataType faceWedgeTexCoordsType() const;
 	DataType edgeColorsType() const;
 

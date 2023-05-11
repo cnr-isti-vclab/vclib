@@ -25,88 +25,88 @@
 
 namespace vcl::comp {
 
-template<typename Vertex, int N, typename El, bool o>
-void VertexPointers<Vertex, N, El, o>::init()
+template<typename Vertex, int N, typename El, bool O>
+void VertexPointers<Vertex, N, El, O>::init()
 {
 	Base::init(this);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-bool VertexPointers<Vertex, N, El, o>::isEnabled()
+template<typename Vertex, int N, typename El, bool O>
+bool VertexPointers<Vertex, N, El, O>::isEnabled()
 {
 	return Base::isEnabled(this);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-uint VertexPointers<Vertex, N, El, o>::vertexNumber() const
+template<typename Vertex, int N, typename El, bool O>
+uint VertexPointers<Vertex, N, El, O>::vertexNumber() const
 {
 	return Base::container(this).size();
 }
 
-template<typename Vertex, int N, typename El, bool o>
-Vertex*& VertexPointers<Vertex, N, El, o>::vertex(uint i)
+template<typename Vertex, int N, typename El, bool O>
+Vertex*& VertexPointers<Vertex, N, El, O>::vertex(uint i)
 {
 	return Base::container(this).at(i);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-const Vertex* VertexPointers<Vertex, N, El, o>::vertex(uint i) const
+template<typename Vertex, int N, typename El, bool O>
+const Vertex* VertexPointers<Vertex, N, El, O>::vertex(uint i) const
 {
 	return Base::container(this).at(i);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-Vertex*& VertexPointers<Vertex, N, El, o>::vertexMod(int i)
+template<typename Vertex, int N, typename El, bool O>
+Vertex*& VertexPointers<Vertex, N, El, O>::vertexMod(int i)
 {
 	return Base::container(this).atMod(i);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-const Vertex* VertexPointers<Vertex, N, El, o>::vertexMod(int i) const
+template<typename Vertex, int N, typename El, bool O>
+const Vertex* VertexPointers<Vertex, N, El, O>::vertexMod(int i) const
 {
 	return Base::container(this).atMod(i);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-void VertexPointers<Vertex, N, El, o>::setVertex(Vertex* v, uint i)
+template<typename Vertex, int N, typename El, bool O>
+void VertexPointers<Vertex, N, El, O>::setVertex(Vertex* v, uint i)
 {
 	Base::container(this).set(v, i);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-void VertexPointers<Vertex, N, El, o>::setVertices(const std::vector<Vertex*>& list)
+template<typename Vertex, int N, typename El, bool O>
+void VertexPointers<Vertex, N, El, O>::setVertices(const std::vector<Vertex*>& list)
 {
 	Base::container(this).set(list);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-bool VertexPointers<Vertex, N, El, o>::containsVertex(const Vertex* v) const
+template<typename Vertex, int N, typename El, bool O>
+bool VertexPointers<Vertex, N, El, O>::containsVertex(const Vertex* v) const
 {
 	return Base::container(this).contains(v);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-typename VertexPointers<Vertex, N, El, o>::VertexIterator
-VertexPointers<Vertex, N, El, o>::findVertex(const Vertex* v)
+template<typename Vertex, int N, typename El, bool O>
+typename VertexPointers<Vertex, N, El, O>::VertexIterator
+VertexPointers<Vertex, N, El, O>::findVertex(const Vertex* v)
 {
 	return Base::container(this).find(v);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-typename VertexPointers<Vertex, N, El, o>::ConstVertexIterator
-VertexPointers<Vertex, N, El, o>::findVertex(const Vertex* v) const
+template<typename Vertex, int N, typename El, bool O>
+typename VertexPointers<Vertex, N, El, O>::ConstVertexIterator
+VertexPointers<Vertex, N, El, O>::findVertex(const Vertex* v) const
 {
 	return Base::container(this).find(v);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-int VertexPointers<Vertex, N, El, o>::indexOfVertex(const Vertex* v) const
+template<typename Vertex, int N, typename El, bool O>
+int VertexPointers<Vertex, N, El, O>::indexOfVertex(const Vertex* v) const
 {
 	return Base::container(this).indexOf(v);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-int VertexPointers<Vertex, N, El, o>::indexOfEdge(const Vertex* v1, const Vertex* v2) const
+template<typename Vertex, int N, typename El, bool O>
+int VertexPointers<Vertex, N, El, O>::indexOfEdge(const Vertex* v1, const Vertex* v2) const
 {
 	int vid = indexOfVertex(v1);
 	if (vid < 0) {
@@ -124,83 +124,83 @@ int VertexPointers<Vertex, N, El, o>::indexOfEdge(const Vertex* v1, const Vertex
 	}
 }
 
-template<typename Vertex, int N, typename El, bool o>
-void VertexPointers<Vertex, N, El, o>::resizeVertices(uint n) requires (N < 0)
+template<typename Vertex, int N, typename El, bool O>
+void VertexPointers<Vertex, N, El, O>::resizeVertices(uint n) requires (N < 0)
 {
 	Base::container(this).resize(n);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-void VertexPointers<Vertex, N, El, o>::pushVertex(Vertex* v) requires (N < 0)
+template<typename Vertex, int N, typename El, bool O>
+void VertexPointers<Vertex, N, El, O>::pushVertex(Vertex* v) requires (N < 0)
 {
 	Base::container(this).pushBack(v);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-void VertexPointers<Vertex, N, El, o>::insertVertex(uint i, Vertex* v) requires (N < 0)
+template<typename Vertex, int N, typename El, bool O>
+void VertexPointers<Vertex, N, El, O>::insertVertex(uint i, Vertex* v) requires (N < 0)
 {
 	Base::container(this).insert(i, v);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-void VertexPointers<Vertex, N, El, o>::eraseVertex(uint i) requires (N < 0)
+template<typename Vertex, int N, typename El, bool O>
+void VertexPointers<Vertex, N, El, O>::eraseVertex(uint i) requires (N < 0)
 {
 	Base::container(this).erase(i);
 }
 
-template<typename Vertex, int N, typename El, bool o>
-void VertexPointers<Vertex, N, El, o>::clearVertices() requires (N < 0)
+template<typename Vertex, int N, typename El, bool O>
+void VertexPointers<Vertex, N, El, O>::clearVertices() requires (N < 0)
 {
 	Base::container(this).clear();
 }
 
-template<typename Vertex, int N, typename El, bool o>
-typename VertexPointers<Vertex, N, El, o>::VertexIterator VertexPointers<Vertex, N, El, o>::vertexBegin()
+template<typename Vertex, int N, typename El, bool O>
+typename VertexPointers<Vertex, N, El, O>::VertexIterator VertexPointers<Vertex, N, El, O>::vertexBegin()
 {
 	return Base::container(this).begin();
 }
 
-template<typename Vertex, int N, typename El, bool o>
-typename VertexPointers<Vertex, N, El, o>::VertexIterator VertexPointers<Vertex, N, El, o>::vertexEnd()
+template<typename Vertex, int N, typename El, bool O>
+typename VertexPointers<Vertex, N, El, O>::VertexIterator VertexPointers<Vertex, N, El, O>::vertexEnd()
 {
 	return Base::container(this).end();
 }
 
-template<typename Vertex, int N, typename El, bool o>
-typename VertexPointers<Vertex, N, El, o>::ConstVertexIterator
-VertexPointers<Vertex, N, El, o>::vertexBegin() const
+template<typename Vertex, int N, typename El, bool O>
+typename VertexPointers<Vertex, N, El, O>::ConstVertexIterator
+VertexPointers<Vertex, N, El, O>::vertexBegin() const
 {
 	return Base::container(this).begin();
 }
 
-template<typename Vertex, int N, typename El, bool o>
-typename VertexPointers<Vertex, N, El, o>::ConstVertexIterator
-VertexPointers<Vertex, N, El, o>::vertexEnd() const
+template<typename Vertex, int N, typename El, bool O>
+typename VertexPointers<Vertex, N, El, O>::ConstVertexIterator
+VertexPointers<Vertex, N, El, O>::vertexEnd() const
 {
 	return Base::container(this).end();
 }
 
-template<typename Vertex, int N, typename El, bool o>
-auto VertexPointers<Vertex, N, El, o>::vertices()
+template<typename Vertex, int N, typename El, bool O>
+auto VertexPointers<Vertex, N, El, O>::vertices()
 {
 	return View(vertexBegin(), vertexEnd());
 }
 
-template<typename Vertex, int N, typename El, bool o>
-auto VertexPointers<Vertex, N, El, o>::vertices() const
+template<typename Vertex, int N, typename El, bool O>
+auto VertexPointers<Vertex, N, El, O>::vertices() const
 {
 	return View(vertexBegin(), vertexEnd());
 }
 
-template<typename Vertex, int N, typename El, bool o>
+template<typename Vertex, int N, typename El, bool O>
 template<typename Element>
-void VertexPointers<Vertex, N, El, o>::importFrom(const Element&)
+void VertexPointers<Vertex, N, El, O>::importFrom(const Element&)
 {
 }
 
-template<typename Vertex, int N, typename El, bool o>
+template<typename Vertex, int N, typename El, bool O>
 template<typename Element, typename ElVType>
-void VertexPointers<Vertex, N, El, o>::importPointersFrom(
+void VertexPointers<Vertex, N, El, O>::importPointersFrom(
 	const Element& e,
 	Vertex* base,
 	const ElVType* ebase)
@@ -229,24 +229,24 @@ void VertexPointers<Vertex, N, El, o>::importPointersFrom(
 	}
 }
 
-template<typename Vertex, int N, typename ElementType, bool optional>
-void VertexPointers<Vertex, N, ElementType, optional>::updatePointers(
+template<typename Vertex, int N, typename ElementType, bool OPT>
+void VertexPointers<Vertex, N, ElementType, OPT>::updatePointers(
 	const Vertex* oldBase, const Vertex* newBase)
 {
 	Base::updateElementPointers(oldBase, newBase, this);
 }
 
-template<typename Vertex, int N, typename ElementType, bool optional>
-void VertexPointers<Vertex, N, ElementType, optional>::updatePointersAfterCompact(
+template<typename Vertex, int N, typename ElementType, bool OPT>
+void VertexPointers<Vertex, N, ElementType, OPT>::updatePointersAfterCompact(
 	const Vertex*           base,
 	const std::vector<int>& newIndices)
 {
 	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }
 
-template<typename Vertex, int N, typename El, bool o>
+template<typename Vertex, int N, typename El, bool O>
 template<typename Element, typename ElVType>
-void VertexPointers<Vertex, N, El, o>::importPtrsFrom(
+void VertexPointers<Vertex, N, El, O>::importPtrsFrom(
 	const Element& e,
 	Vertex* base,
 	const ElVType* ebase)

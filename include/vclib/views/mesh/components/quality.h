@@ -21,14 +21,55 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "vertex.h"
+#ifndef VCL_VIEWS_MESH_COMPONENTS_QUALITY_H
+#define VCL_VIEWS_MESH_COMPONENTS_QUALITY_H
 
-namespace vcl {
+#include <vclib/concepts/pointers.h>
+#include <vclib/types.h>
 
-template<typename MeshType, typename... Args>
-uint Vertex<MeshType, Args...>::index() const
+#include <ranges>
+
+namespace vcl::views {
+
+namespace internal {
+
+struct QualityView
 {
-	return Element<MeshType, Args...>::template index<typename MeshType::VertexType>();
-}
+	constexpr QualityView() = default;
 
-} // namespace vcl
+	inline static constexpr auto constQuality = [](const auto& p) -> decltype(auto)
+	{
+		if constexpr(IsPointer<decltype(p)>)
+			return p->quality();
+		else
+			return p.quality();
+	};
+
+	inline static constexpr auto quality = [](auto& p) -> decltype(auto)
+	{
+		if constexpr(IsPointer<decltype(p)>)
+			return p->quality();
+		else
+			return p.quality();
+	};
+	
+#ifdef VCLIB_USES_RANGES
+	template <std::ranges::range R>
+	friend constexpr auto operator|(R&& r, QualityView)
+	{
+		using ElemType = std::ranges::range_value_t<R>;
+		if constexpr(IsConst<ElemType>)
+			return std::forward<R>(r) | std::views::transform(constQuality);
+		else
+			return std::forward<R>(r) | std::views::transform(quality);
+	}
+#endif
+};
+
+} // namespace vcl::views::internal
+
+inline constexpr internal::QualityView quality;
+
+} // namespace vcl::views
+
+#endif // VCL_VIEWS_MESH_COMPONENTS_QUALITY_H

@@ -286,8 +286,8 @@ void EdgeContainer<T>::enableAllPerEdgeOptionalComponents()
 		enablePerEdgeColor();
 	if constexpr (edge::HasOptionalMark<T>)
 		enablePerEdgeMark();
-	if constexpr (edge::HasOptionalScalar<T>)
-		enablePerEdgeScalar();
+	if constexpr (edge::HasOptionalQuality<T>)
+		enablePerEdgeQuality();
 }
 
 /**
@@ -305,8 +305,8 @@ void EdgeContainer<T>::disableAllPerEdgeOptionalComponents()
 		disablePerEdgeColor();
 	if constexpr (edge::HasOptionalMark<T>)
 		disablePerEdgeMark();
-	if constexpr (edge::HasOptionalScalar<T>)
-		disablePerEdgeScalar();
+	if constexpr (edge::HasOptionalQuality<T>)
+		disablePerEdgeQuality();
 }
 
 /**
@@ -461,37 +461,37 @@ void EdgeContainer<T>::disablePerEdgeMark() requires edge::HasOptionalMark<T>
 }
 
 /**
- * @brief Checks if the edge Optional Scalar is enabled.
+ * @brief Checks if the edge Optional Quality is enabled.
  *
- * @note This function is available only if the Edge Element has the OptionalScalar Component.
+ * @note This function is available only if the Edge Element has the OptionalQuality Component.
  *
- * @return true if the Optional Scalar is enabled, false otherwise.
+ * @return true if the Optional Quality is enabled, false otherwise.
  */
 template<EdgeConcept T>
-bool EdgeContainer<T>::isPerEdgeScalarEnabled() const requires edge::HasOptionalScalar<T>
+bool EdgeContainer<T>::isPerEdgeQualityEnabled() const requires edge::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::QualityComponent>();
 }
 /**
- * @brief Enables the Optional Scalar of the edge.
+ * @brief Enables the Optional Quality of the edge.
  *
- * @note This function is available only if the Edge Element has the OptionalScalar Component.
+ * @note This function is available only if the Edge Element has the OptionalQuality Component.
  */
 template<EdgeConcept T>
-void EdgeContainer<T>::enablePerEdgeScalar() requires edge::HasOptionalScalar<T>
+void EdgeContainer<T>::enablePerEdgeQuality() requires edge::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
+	return Base::template enableOptionalComponent<typename T::QualityComponent>();
 }
 
 /**
- * @brief Disables the Optional Scalar of the edge.
+ * @brief Disables the Optional Quality of the edge.
  *
- * @note This function is available only if the Edge Element has the OptionalScalar Component.
+ * @note This function is available only if the Edge Element has the OptionalQuality Component.
  */
 template<EdgeConcept T>
-void EdgeContainer<T>::disablePerEdgeScalar() requires edge::HasOptionalScalar<T>
+void EdgeContainer<T>::disablePerEdgeQuality() requires edge::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
+	return Base::template disableOptionalComponent<typename T::QualityComponent>();
 }
 
 /**

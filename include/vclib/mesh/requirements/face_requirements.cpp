@@ -195,14 +195,14 @@ bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
 }
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceScalarEnabled(const MeshType& m)
+bool isPerFaceQualityEnabled(const MeshType& m)
 {
 	if constexpr (HasFaces<MeshType>) {
-		if constexpr (vcl::face::HasOptionalScalar<typename MeshType::FaceType>) {
-			return m.isPerFaceScalarEnabled();
+		if constexpr (vcl::face::HasOptionalQuality<typename MeshType::FaceType>) {
+			return m.isPerFaceQualityEnabled();
 		}
 		else {
-			return vcl::face::HasScalar<typename MeshType::FaceType>;
+			return vcl::face::HasQuality<typename MeshType::FaceType>;
 		}
 	}
 	else {
@@ -211,11 +211,11 @@ bool isPerFaceScalarEnabled(const MeshType& m)
 }
 
 template<FaceMeshConcept MeshType>
-bool enableIfPerFaceScalarOptional(MeshType& m)
+bool enableIfPerFaceQualityOptional(MeshType& m)
 {
-	if constexpr (HasPerFaceScalar<MeshType>) {
-		if constexpr(vcl::face::HasOptionalScalar<typename MeshType::FaceType>) {
-			m.enablePerFaceScalar();
+	if constexpr (HasPerFaceQuality<MeshType>) {
+		if constexpr(vcl::face::HasOptionalQuality<typename MeshType::FaceType>) {
+			m.enablePerFaceQuality();
 		}
 		return true;
 	}
@@ -336,11 +336,11 @@ void requirePerFacePrincipalCurvature(const MeshType& m)
 }
 
 template<FaceMeshConcept MeshType>
-void requirePerFaceScalar(const MeshType& m)
-	requires HasPerFaceScalar<MeshType>
+void requirePerFaceQuality(const MeshType& m)
+	requires HasPerFaceQuality<MeshType>
 {
-	if (!isPerFaceScalarEnabled(m))
-		throw vcl::MissingComponentException("Face scalars not enabled.");
+	if (!isPerFaceQualityEnabled(m))
+		throw vcl::MissingComponentException("Face quality not enabled.");
 }
 
 template<FaceMeshConcept MeshType>

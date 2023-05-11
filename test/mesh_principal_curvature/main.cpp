@@ -54,10 +54,10 @@ int main(int argc, char **argv)
 	log.startTimer();
 	vcl::updatePrincipalCurvaturePCA(m, radius, true, log);
 
-	vcl::setPerVertexScalarFromPrincipalCurvatureMean(m);
-	vcl::Histogramd h = vcl::vertexScalarHistogram(m);
+	vcl::setPerVertexQualityFromPrincipalCurvatureMean(m);
+	vcl::Histogramd h = vcl::vertexQualityHistogram(m);
 
-	vcl::setPerVertexColorFromScalar(m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
+	vcl::setPerVertexColorFromQuality(m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
 
 	std::cout << "Curvature range: " << h.minRangeValue() << " " << h.maxRangeValue() << "\n";
 	std::cout << "Used 90 percentile: " << h.percentile(0.1) << " " << h.percentile(0.9) << "\n";

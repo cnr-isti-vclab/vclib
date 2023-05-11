@@ -50,7 +50,7 @@ class Vertex :
 			vcl::vert::Coordinate3<Scalar>,                                 // 24b
 			vcl::vert::Normal3<Scalar>,                                     // 24b
 			vcl::vert::Color,                                               // 4b
-			vcl::vert::Scalar<Scalar>,                                      // 8b
+			vcl::vert::Quality<Scalar>,                                     // 8b
 			vcl::vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>, // 0b
 			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
 			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
@@ -63,13 +63,13 @@ template<typename Scalar>
 class Edge :
 		public vcl::Edge<
 			EdgeMeshT<Scalar>,
-			vcl::edge::BitFlags,                             // 4b
-			vcl::edge::VertexPointers<Vertex<Scalar>>,       // 24b
-			vcl::edge::OptionalScalar<Scalar, Edge<Scalar>>, // 0b
-			vcl::edge::OptionalColor<Edge<Scalar>>,          // 0b
-			vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,  // 0b
-			vcl::edge::OptionalMark<Edge<Scalar>>,           // 0b
-			vcl::edge::CustomComponents<Edge<Scalar>>>       // 0b
+			vcl::edge::BitFlags,                              // 4b
+			vcl::edge::VertexPointers<Vertex<Scalar>>,        // 24b
+			vcl::edge::OptionalQuality<Scalar, Edge<Scalar>>, // 0b
+			vcl::edge::OptionalColor<Edge<Scalar>>,           // 0b
+			vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,   // 0b
+			vcl::edge::OptionalMark<Edge<Scalar>>,            // 0b
+			vcl::edge::CustomComponents<Edge<Scalar>>>        // 0b
 {
 };
 

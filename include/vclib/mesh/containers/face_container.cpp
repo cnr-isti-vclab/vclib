@@ -290,8 +290,8 @@ void FaceContainer<T>::enableAllPerFaceOptionalComponents()
 		enablePerFaceNormal();
 	if constexpr (face::HasOptionalPrincipalCurvature<T>)
 		enablePerFacePrincipalCurvature();
-	if constexpr (face::HasOptionalScalar<T>)
-		enablePerFaceScalar();
+	if constexpr (face::HasOptionalQuality<T>)
+		enablePerFaceQuality();
 	if constexpr (face::HasOptionalWedgeColors<T>)
 		enablePerFaceWedgeColors();
 	if constexpr (face::HasOptionalWedgeTexCoords<T>)
@@ -317,8 +317,8 @@ void FaceContainer<T>::disableAllPerFaceOptionalComponents()
 		disablePerFaceNormal();
 	if constexpr (face::HasOptionalPrincipalCurvature<T>)
 		disablePerFacePrincipalCurvature();
-	if constexpr (face::HasOptionalScalar<T>)
-		disablePerFaceScalar();
+	if constexpr (face::HasOptionalQuality<T>)
+		disablePerFaceQuality();
 	if constexpr (face::HasOptionalWedgeColors<T>)
 		disablePerFaceWedgeColors();
 	if constexpr (face::HasOptionalWedgeTexCoords<T>)
@@ -557,37 +557,37 @@ void FaceContainer<T>::disablePerFacePrincipalCurvature()
 }
 
 /**
- * @brief Checks if the face Optional Scalar is enabled.
+ * @brief Checks if the face Optional Quality is enabled.
  *
- * @note This function is available only if the Face Element has the OptionalScalar Component.
+ * @note This function is available only if the Face Element has the OptionalQuality Component.
  *
- * @return true if the Optional Scalar is enabled, false otherwise.
+ * @return true if the Optional Quality is enabled, false otherwise.
  */
 template<FaceConcept T>
-bool FaceContainer<T>::isPerFaceScalarEnabled() const requires face::HasOptionalScalar<T>
+bool FaceContainer<T>::isPerFaceQualityEnabled() const requires face::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::ScalarComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::QualityComponent>();
 }
 /**
- * @brief Enables the Optional Scalar of the face.
+ * @brief Enables the Optional Quality of the face.
  *
- * @note This function is available only if the Face Element has the OptionalScalar Component.
+ * @note This function is available only if the Face Element has the OptionalQuality Component.
  */
 template<FaceConcept T>
-void FaceContainer<T>::enablePerFaceScalar() requires face::HasOptionalScalar<T>
+void FaceContainer<T>::enablePerFaceQuality() requires face::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponent<typename T::ScalarComponent>();
+	return Base::template enableOptionalComponent<typename T::QualityComponent>();
 }
 
 /**
- * @brief Disables the Optional Scalar of the face.
+ * @brief Disables the Optional Quality of the face.
  *
- * @note This function is available only if the Face Element has the OptionalScalar Component.
+ * @note This function is available only if the Face Element has the OptionalQuality Component.
  */
 template<FaceConcept T>
-void FaceContainer<T>::disablePerFaceScalar() requires face::HasOptionalScalar<T>
+void FaceContainer<T>::disablePerFaceQuality() requires face::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponent<typename T::ScalarComponent>();
+	return Base::template disableOptionalComponent<typename T::QualityComponent>();
 }
 
 /**

@@ -35,11 +35,11 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<PointConcept P, typename ElementType = void, bool optional = false>
-class Coordinate : public Component<P, ElementType, optional>
+template<PointConcept P, typename ElementType = void, bool OPT = false>
+class Coordinate : public Component<P, ElementType, OPT>
 {
-	using Base = Component<P, ElementType, optional>;
-	using ThisType = Coordinate<P, ElementType, optional>;
+	using Base = Component<P, ElementType, OPT>;
+	using ThisType = Coordinate<P, ElementType, OPT>;
 
 public:
 	using CoordComponent = ThisType; // expose the type to allow access to this component
@@ -53,11 +53,6 @@ protected:
 	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& v);
-
-private:
-	// members that allow to access the point, trough data (horizontal) or trough parent (vertical)
-	P& p();
-	const P& p() const;
 };
 
 /**
@@ -66,20 +61,20 @@ private:
 template<
 	typename Scalar,
 	typename ElementType = void,
-	bool optional        = false>
-using Coordinate3 = Coordinate<Point3<Scalar>, ElementType, optional>;
+	bool OPT        = false>
+using Coordinate3 = Coordinate<Point3<Scalar>, ElementType, OPT>;
 
 /**
  * @ingroup components
  */
-template<typename ElementType = void, bool optional = false>
-using Coordinate3f = Coordinate3<float, ElementType, optional>;
+template<typename ElementType = void, bool OPT = false>
+using Coordinate3f = Coordinate3<float, ElementType, OPT>;
 
 /**
  * @ingroup components
  */
-template<typename ElementType = void, bool optional = false>
-using Coordinate3d = Coordinate3<double, ElementType, optional>;
+template<typename ElementType = void, bool OPT = false>
+using Coordinate3d = Coordinate3<double, ElementType, OPT>;
 
 } // namespace vcl::comp
 

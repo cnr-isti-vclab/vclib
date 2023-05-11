@@ -25,22 +25,22 @@
 
 namespace vcl::comp {
 
-template<typename El, bool o>
-TriangleBitFlags<El, o>::TriangleBitFlags()
+template<typename El, bool O>
+TriangleBitFlags<El, O>::TriangleBitFlags()
 {
 	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
 
-template<typename El, bool o>
-void TriangleBitFlags<El, o>::init()
+template<typename El, bool O>
+void TriangleBitFlags<El, O>::init()
 {
 	flags().reset();
 }
 
-template<typename El, bool o>
-bool TriangleBitFlags<El, o>::isEnabled() const
+template<typename El, bool O>
+bool TriangleBitFlags<El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
@@ -49,8 +49,8 @@ bool TriangleBitFlags<El, o>::isEnabled() const
  * @brief Returns whether the current Triangle is deleted or not.
  * @return true if the Triangle is deleted, false otherwise.
  */
-template<typename El, bool o>
-bool TriangleBitFlags<El, o>::deleted() const
+template<typename El, bool O>
+bool TriangleBitFlags<El, O>::deleted() const
 {
 	return flags()[DELETED];
 }
@@ -59,8 +59,8 @@ bool TriangleBitFlags<El, o>::deleted() const
  * @brief Accesses the 'selected' bit of this Triangle, returning a reference to it.
  * @return a reference to the 'selected' bit of this Triangle.
  */
-template<typename El, bool o>
-BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::selected()
+template<typename El, bool O>
+BitProxy<typename TriangleBitFlags<El, O>::FT> TriangleBitFlags<El, O>::selected()
 {
 	return flags()[SELECTED];
 }
@@ -69,8 +69,8 @@ BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::selected
  * @brief Returns whether the current Triangle is selected or not.
  * @return true if the Triangle is selected, false otherwise.
  */
-template<typename El, bool o>
-bool TriangleBitFlags<El, o>::selected() const
+template<typename El, bool O>
+bool TriangleBitFlags<El, O>::selected() const
 {
 	return flags()[SELECTED];
 }
@@ -79,8 +79,8 @@ bool TriangleBitFlags<El, o>::selected() const
  * @brief Accesses the 'visited' bit of this Triangle, returning a reference to it.
  * @return a reference to the 'visited' bit of this Triangle.
  */
-template<typename El, bool o>
-BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::visited()
+template<typename El, bool O>
+BitProxy<typename TriangleBitFlags<El, O>::FT> TriangleBitFlags<El, O>::visited()
 {
 	return flags()[VISITED];
 }
@@ -89,8 +89,8 @@ BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::visited(
  * @brief Returns whether the current Triangle has been visited or not.
  * @return true if the Triangle has been visited, false otherwise.
  */
-template<typename El, bool o>
-bool TriangleBitFlags<El, o>::visited() const
+template<typename El, bool O>
+bool TriangleBitFlags<El, O>::visited() const
 {
 	return flags()[VISITED];
 }
@@ -100,49 +100,49 @@ bool TriangleBitFlags<El, o>::visited() const
  * of its three edges are on border or not.
  * @return true if at least one edge of the Triangle is on border, false otherwise.
  */
-template<typename El, bool o>
-bool TriangleBitFlags<El, o>::onBorder() const
+template<typename El, bool O>
+bool TriangleBitFlags<El, O>::onBorder() const
 {
 	return edgeOnBorder(0) || edgeOnBorder(1) || edgeOnBorder(2);
 }
 
-template<typename El, bool o>
-BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::edgeOnBorder(uint i)
+template<typename El, bool O>
+BitProxy<typename TriangleBitFlags<El, O>::FT> TriangleBitFlags<El, O>::edgeOnBorder(uint i)
 {
 	assert(i < 3);
 	return flags()[BORDER0 + i];
 }
 
-template<typename El, bool o>
-bool TriangleBitFlags<El, o>::edgeOnBorder(uint i) const
+template<typename El, bool O>
+bool TriangleBitFlags<El, O>::edgeOnBorder(uint i) const
 {
 	assert(i < 3);
 	return flags()[BORDER0 + i];
 }
 
-template<typename El, bool o>
-BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::edgeSelected(uint i)
+template<typename El, bool O>
+BitProxy<typename TriangleBitFlags<El, O>::FT> TriangleBitFlags<El, O>::edgeSelected(uint i)
 {
 	assert(i < 3);
 	return flags()[EDGESEL0 + i];
 }
 
-template<typename El, bool o>
-bool TriangleBitFlags<El, o>::edgeSelected(uint i) const
+template<typename El, bool O>
+bool TriangleBitFlags<El, O>::edgeSelected(uint i) const
 {
 	assert(i < 3);
 	return flags()[EDGESEL0 + i];
 }
 
-template<typename El, bool o>
-BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::edgeFaux(uint i)
+template<typename El, bool O>
+BitProxy<typename TriangleBitFlags<El, O>::FT> TriangleBitFlags<El, O>::edgeFaux(uint i)
 {
 	assert(i < 3);
 	return flags()[FAUX0 + i];
 }
 
-template<typename El, bool o>
-bool TriangleBitFlags<El, o>::edgeFaux(uint i) const
+template<typename El, bool O>
+bool TriangleBitFlags<El, O>::edgeFaux(uint i) const
 {
 	assert(i < 3);
 	return flags()[FAUX0 + i];
@@ -155,8 +155,8 @@ bool TriangleBitFlags<El, o>::edgeFaux(uint i) const
  * @param[in] bit: the position of the bit, in the interval [0 - 3].
  * @return a reference to the desired user bit.
  */
-template<typename El, bool o>
-bool TriangleBitFlags<El, o>::userBit(uint bit) const
+template<typename El, bool O>
+bool TriangleBitFlags<El, O>::userBit(uint bit) const
 {
 	assert(bit < N_USER_BITS);
 	return flags()[bit + FIRST_USER_BIT];
@@ -170,8 +170,8 @@ bool TriangleBitFlags<El, o>::userBit(uint bit) const
  * reference.
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
-template<typename El, bool o>
-BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::userBit(uint bit)
+template<typename El, bool O>
+BitProxy<typename TriangleBitFlags<El, O>::FT> TriangleBitFlags<El, O>::userBit(uint bit)
 {
 	assert(bit < N_USER_BITS);
 	return flags()[bit + FIRST_USER_BIT];
@@ -181,16 +181,16 @@ BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::userBit(
  * @brief Unsets all the flags of this Triangle and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
  */
-template<typename El, bool o>
-void TriangleBitFlags<El, o>::resetBitFlags()
+template<typename El, bool O>
+void TriangleBitFlags<El, O>::resetBitFlags()
 {
 	bool isD = deleted();
 	flags().reset();
 	deleted() = isD;
 }
 
-template<typename El, bool o>
-void TriangleBitFlags<El, o>::importFromVCGFlags(int f)
+template<typename El, bool O>
+void TriangleBitFlags<El, O>::importFromVCGFlags(int f)
 {
 	if (f & 0x00000020)
 		selected() = true;
@@ -214,8 +214,8 @@ void TriangleBitFlags<El, o>::importFromVCGFlags(int f)
 		edgeFaux(2) = true;
 }
 
-template<typename El, bool o>
-int TriangleBitFlags<El, o>::exportToVCGFlags() const
+template<typename El, bool O>
+int TriangleBitFlags<El, O>::exportToVCGFlags() const
 {
 	int f = 0;
 	if (selected())
@@ -241,15 +241,15 @@ int TriangleBitFlags<El, o>::exportToVCGFlags() const
 	return f;
 }
 
-template<typename El, bool o>
-BitProxy<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::deleted()
+template<typename El, bool O>
+BitProxy<typename TriangleBitFlags<El, O>::FT> TriangleBitFlags<El, O>::deleted()
 {
 	return flags()[DELETED];
 }
 
-template<typename El, bool o>
+template<typename El, bool O>
 template<typename Element>
-void TriangleBitFlags<El, o>::importFrom(const Element& e)
+void TriangleBitFlags<El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasBitFlags<Element>) {
 		resetBitFlags();
@@ -265,14 +265,14 @@ void TriangleBitFlags<El, o>::importFrom(const Element& e)
 	}
 }
 
-template<typename El, bool o>
-BitSet<typename TriangleBitFlags<El, o>::FT>& TriangleBitFlags<El, o>::flags()
+template<typename El, bool O>
+BitSet<typename TriangleBitFlags<El, O>::FT>& TriangleBitFlags<El, O>::flags()
 {
 	return Base::data(this);
 }
 
-template<typename El, bool o>
-BitSet<typename TriangleBitFlags<El, o>::FT> TriangleBitFlags<El, o>::flags() const
+template<typename El, bool O>
+BitSet<typename TriangleBitFlags<El, O>::FT> TriangleBitFlags<El, O>::flags() const
 {
 	return Base::data(this);
 }

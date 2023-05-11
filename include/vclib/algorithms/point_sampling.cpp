@@ -554,8 +554,8 @@ SamplerType faceWeightedPointSampling(
 }
 
 /**
- * @brief Samples the vertices in a weighted way, using the per vertex Scalar component. Each vertex
- * has a probability of being chosen that is proportional to its scalar value.
+ * @brief Samples the vertices in a weighted way, using the per vertex Quality component. Each vertex
+ * has a probability of being chosen that is proportional to its quality value.
  *
  * @param m
  * @param nSamples
@@ -564,25 +564,25 @@ SamplerType faceWeightedPointSampling(
  * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType vertexScalarWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
+SamplerType vertexQualityWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
+	using QualityType = typename VertexType::QualityType;
 
-	std::vector<ScalarType> weights;
+	std::vector<QualityType> weights;
 	weights.resize(m.vertexContainerSize(), 0);
 	for (const VertexType& v : m.vertices()) {
-		weights[m.index(v)] = v.scalar();
+		weights[m.index(v)] = v.quality();
 	}
 
 	return vertexWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
 }
 
 /**
- * @brief Samples the faces in a weighted way, using the per face Scalar component. Each face
- * has a probability of being chosen that is proportional to its scalar value.
+ * @brief Samples the faces in a weighted way, using the per face Quality component. Each face
+ * has a probability of being chosen that is proportional to its quality value.
  *
  * @param m
  * @param nSamples
@@ -591,17 +591,17 @@ SamplerType vertexScalarWeightedPointSampling(const MeshType& m, uint nSamples, 
  * @ingroup point_sampling
  */
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType faceScalarWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
+SamplerType faceQualityWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
-	vcl::requirePerFaceScalar(m);
+	vcl::requirePerFaceQuality(m);
 
 	using FaceType = typename MeshType::FaceType;
-	using ScalarType = typename FaceType::ScalarType;
+	using QualityType = typename FaceType::QualityType;
 
-	std::vector<ScalarType> weights;
+	std::vector<QualityType> weights;
 	weights.resize(m.faceContainerSize(), 0);
 	for (const FaceType& f : m.faces()) {
-		weights[m.index(f)] = f.scalar();
+		weights[m.index(f)] = f.quality();
 	}
 
 	return faceWeightedPointSampling<SamplerType>(m, weights, nSamples, deterministic);
@@ -698,7 +698,7 @@ SamplerType montecarloPointSampling(
 	bool               deterministic)
 {
 	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
+	using ScalarType = typename VertexType::CoordType::ScalarType;
 	using FaceType = typename MeshType::FaceType;
 	using Interval = std::pair<ScalarType, const FaceType*>;
 
@@ -901,21 +901,21 @@ SamplerType vertexWeightedMontecarloPointSampling(
 }
 
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType vertexScalarWeightedMontecarloPointSampling(
+SamplerType vertexQualityWeightedMontecarloPointSampling(
 	const MeshType& m,
 	uint nSamples,
 	double variance,
 	bool deterministic)
 {
-	vcl::requirePerVertexScalar(m);
+	vcl::requirePerVertexQuality(m);
 
 	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
+	using QualityType = typename VertexType::QualityType;
 
-	std::vector<ScalarType> weights;
+	std::vector<QualityType> weights;
 	weights.resize(m.vertexContainerSize(), 0);
 	for (const VertexType& v : m.vertices()) {
-		weights[m.index(v)] = v.scalar();
+		weights[m.index(v)] = v.quality();
 	}
 
 	return vertexWeightedMontecarloPointSampling<SamplerType>(m, weights, nSamples, variance, deterministic);

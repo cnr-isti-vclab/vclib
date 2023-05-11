@@ -25,22 +25,22 @@
 
 namespace vcl::comp {
 
-template<typename El, bool o>
-BitFlags<El, o>::BitFlags()
+template<typename El, bool O>
+BitFlags<El, O>::BitFlags()
 {
 	if constexpr (!Base::IS_VERTICAL) {
 		init();
 	}
 }
 
-template<typename El, bool o>
-void BitFlags<El, o>::init()
+template<typename El, bool O>
+void BitFlags<El, O>::init()
 {
 	flags().reset();
 }
 
-template<typename El, bool o>
-bool BitFlags<El, o>::isEnabled() const
+template<typename El, bool O>
+bool BitFlags<El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
@@ -49,8 +49,8 @@ bool BitFlags<El, o>::isEnabled() const
  * @brief Returns whether the current Element is deleted or not.
  * @return true if the Element is deleted, false otherwise.
  */
-template<typename El, bool o>
-bool BitFlags<El, o>::deleted() const
+template<typename El, bool O>
+bool BitFlags<El, O>::deleted() const
 {
 	return flags()[DELETED];
 }
@@ -59,8 +59,8 @@ bool BitFlags<El, o>::deleted() const
  * @brief Accesses the 'selected' bit of this Element, returning a reference to it.
  * @return a reference to the 'selected' bit of this Element.
  */
-template<typename El, bool o>
-BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::selected()
+template<typename El, bool O>
+BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::selected()
 {
 	return flags()[SELECTED];
 }
@@ -69,8 +69,8 @@ BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::selected()
  * @brief Returns whether the current Element is selected or not.
  * @return true if the Element is selected, false otherwise.
  */
-template<typename El, bool o>
-bool BitFlags<El, o>::selected() const
+template<typename El, bool O>
+bool BitFlags<El, O>::selected() const
 {
 	return flags()[SELECTED];
 }
@@ -79,8 +79,8 @@ bool BitFlags<El, o>::selected() const
  * @brief Accesses the 'onBorder' bit of this Element, returning a reference to it.
  * @return a reference to the 'onBorder' bit of this Element.
  */
-template<typename El, bool o>
-BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::onBorder()
+template<typename El, bool O>
+BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::onBorder()
 {
 	return flags()[BORDER];
 }
@@ -89,8 +89,8 @@ BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::onBorder()
  * @brief Returns whether the current Element is on border or not.
  * @return true if the Element is on border, false otherwise.
  */
-template<typename El, bool o>
-bool BitFlags<El, o>::onBorder() const
+template<typename El, bool O>
+bool BitFlags<El, O>::onBorder() const
 {
 	return flags()[BORDER];
 }
@@ -99,8 +99,8 @@ bool BitFlags<El, o>::onBorder() const
  * @brief Accesses the 'visited' bit of this Element, returning a reference to it.
  * @return a reference to the 'visited' bit of this Element.
  */
-template<typename El, bool o>
-BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::visited()
+template<typename El, bool O>
+BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::visited()
 {
 	return flags()[VISITED];
 }
@@ -109,8 +109,8 @@ BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::visited()
  * @brief Returns whether the current Element has been visited or not.
  * @return true if the Element has been visited, false otherwise.
  */
-template<typename El, bool o>
-bool BitFlags<El, o>::visited() const
+template<typename El, bool O>
+bool BitFlags<El, O>::visited() const
 {
 	return flags()[VISITED];
 }
@@ -122,8 +122,8 @@ bool BitFlags<El, o>::visited() const
  * @param[in] bit: the position of the bit, in the interval [0 - 3].
  * @return a reference to the desired user bit.
  */
-template<typename El, bool o>
-bool BitFlags<El, o>::userBit(uint bit) const
+template<typename El, bool O>
+bool BitFlags<El, O>::userBit(uint bit) const
 {
 	assert(bit < N_USER_BITS);
 	return flags()[bit + FIRST_USER_BIT];
@@ -137,8 +137,8 @@ bool BitFlags<El, o>::userBit(uint bit) const
  * reference.
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
-template<typename El, bool o>
-BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::userBit(uint bit)
+template<typename El, bool O>
+BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::userBit(uint bit)
 {
 	assert(bit < N_USER_BITS);
 	return flags()[bit + FIRST_USER_BIT];
@@ -148,16 +148,16 @@ BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::userBit(uint bit)
  * @brief Unsets all the flags of this Element and sets them to `false`, **except the deleted
  * flag**, which needs to be manually reset.
  */
-template<typename El, bool o>
-void BitFlags<El, o>::resetBitFlags()
+template<typename El, bool O>
+void BitFlags<El, O>::resetBitFlags()
 {
 	bool isD = deleted();
 	flags().reset();
 	deleted() = isD;
 }
 
-template<typename El, bool o>
-void BitFlags<El, o>::importFromVCGFlags(int f)
+template<typename El, bool O>
+void BitFlags<El, O>::importFromVCGFlags(int f)
 {
 	resetBitFlags();
 	if (f & 0x0020)
@@ -166,8 +166,8 @@ void BitFlags<El, o>::importFromVCGFlags(int f)
 		onBorder() = true;
 }
 
-template<typename El, bool o>
-int BitFlags<El, o>::exportToVCGFlags() const
+template<typename El, bool O>
+int BitFlags<El, O>::exportToVCGFlags() const
 {
 	int f = 0;
 	if (selected())
@@ -177,15 +177,15 @@ int BitFlags<El, o>::exportToVCGFlags() const
 	return f;
 }
 
-template<typename El, bool o>
-BitProxy<typename BitFlags<El, o>::FT> BitFlags<El, o>::deleted()
+template<typename El, bool O>
+BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::deleted()
 {
 	return flags()[DELETED];
 }
 
-template<typename El, bool o>
+template<typename El, bool O>
 template<typename Element>
-void BitFlags<El, o>::importFrom(const Element& e)
+void BitFlags<El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasBitFlags<Element>) {
 		resetBitFlags();
@@ -201,14 +201,14 @@ void BitFlags<El, o>::importFrom(const Element& e)
 	}
 }
 
-template<typename El, bool o>
-BitSet<typename BitFlags<El, o>::FT>& BitFlags<El, o>::flags()
+template<typename El, bool O>
+BitSet<typename BitFlags<El, O>::FT>& BitFlags<El, O>::flags()
 {
 	return Base::data(this);
 }
 
-template<typename El, bool o>
-BitSet<typename BitFlags<El, o>::FT> BitFlags<El, o>::flags() const
+template<typename El, bool O>
+BitSet<typename BitFlags<El, O>::FT> BitFlags<El, O>::flags() const
 {
 	return Base::data(this);
 }

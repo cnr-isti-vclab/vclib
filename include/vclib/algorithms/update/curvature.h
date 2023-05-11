@@ -42,7 +42,7 @@ template<
 	LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvaturePCA(
 	MeshType&  m,
-	typename MeshType::VertexType::ScalarType radius,
+	typename MeshType::VertexType::CoordType::ScalarType radius,
 	bool       montecarloSampling = true,
 	LogType&   log                = nullLogger);
 

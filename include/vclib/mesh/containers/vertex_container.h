@@ -122,10 +122,10 @@ public:
 	void enablePerVertexPrincipalCurvature() requires vert::HasOptionalPrincipalCurvature<T>;
 	void disablePerVertexPrincipalCurvature() requires vert::HasOptionalPrincipalCurvature<T>;
 
-	// Scalar
-	bool isPerVertexScalarEnabled() const requires vert::HasOptionalScalar<T>;
-	void enablePerVertexScalar() requires vert::HasOptionalScalar<T>;
-	void disablePerVertexScalar() requires vert::HasOptionalScalar<T>;
+	// Quality
+	bool isPerVertexQualityEnabled() const requires vert::HasOptionalQuality<T>;
+	void enablePerVertexQuality() requires vert::HasOptionalQuality<T>;
+	void disablePerVertexQuality() requires vert::HasOptionalQuality<T>;
 
 	// TexCoord
 	bool isPerVertexTexCoordEnabled() const requires vert::HasOptionalTexCoord<T>;

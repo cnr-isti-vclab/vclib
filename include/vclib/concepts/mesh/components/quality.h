@@ -21,55 +21,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_SCALARS_H
-#define VCL_VIEWS_MESH_COMPONENTS_SCALARS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_QUALITY_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_QUALITY_H
 
-#include <vclib/concepts/pointers.h>
-#include <vclib/types.h>
+#include "component.h"
 
-#include <ranges>
+namespace vcl::comp {
 
-namespace vcl::views {
-
-namespace internal {
-
-struct ScalarView
+/**
+ * @brief HasQuality concept is satisfied only if a Element class provides the types and member
+ * functions specified in this concept. These types and member functions allow to access to a
+ * Quality component of a given element.
+ *
+ * Note that this concept does not discriminate between the Horizontal Quality component
+ * and the vertical OptionalQuality component, therefore it does not guarantee that a
+ * template Element type that satisfies this concept provides Quality component at runtime
+ * (it is guaranteed only that the proper member functions are available at compile time).
+ *
+ * To be completely sure that Quality is available at runtime, you need to call the member
+ * function `isQualityEnabled()`.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasQuality = requires(
+	T o,
+	const T& co)
 {
-	constexpr ScalarView() = default;
-
-	inline static constexpr auto constScalar = [](const auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->scalar();
-		else
-			return p.scalar();
-	};
-
-	inline static constexpr auto scalar = [](auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->scalar();
-		else
-			return p.scalar();
-	};
-	
-#ifdef VCLIB_USES_RANGES
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, ScalarView)
-	{
-		using ElemType = std::ranges::range_value_t<R>;
-		if constexpr(IsConst<ElemType>)
-			return std::forward<R>(r) | std::views::transform(constScalar);
-		else
-			return std::forward<R>(r) | std::views::transform(scalar);
-	}
-#endif
+	typename T::QualityType;
+	typename T::QualityComponent;
+	{ o.quality() } -> std::same_as<typename T::QualityType&>;
+	{ co.quality() } -> std::same_as<const typename T::QualityType&>;
+	{ co.isQualityEnabled() } -> std::same_as<bool>;
 };
 
-} // namespace vcl::views::internal
+/**
+ * @brief HasOptionalQuality concept is satisfied only if a class satisfis the HasQuality concept and
+ * the static boolean constant IS_OPTIONAL is set to true.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalQuality = HasQuality<T> && IsOptionalComponent<typename T::QualityComponent>;
 
-inline constexpr internal::ScalarView scalars;
+} // namespace vcl::comp
 
-} // namespace vcl::views
-
-#endif // VCL_VIEWS_MESH_COMPONENTS_SCALARS_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_QUALITY_H

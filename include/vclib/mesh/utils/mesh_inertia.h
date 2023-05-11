@@ -54,7 +54,7 @@ class MeshInertia
 {
 	using VertexType = typename MeshType::VertexType;
 	using FaceType   = typename MeshType::FaceType;
-	using ScalarType = typename VertexType::ScalarType;
+	using ScalarType = typename VertexType::CoordType::ScalarType;
 
 public:
 	MeshInertia(const MeshType& m);

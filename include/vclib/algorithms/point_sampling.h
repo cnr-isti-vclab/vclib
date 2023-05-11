@@ -123,7 +123,7 @@ SamplerType faceWeightedPointSampling(
 	bool                           deterministic = false);
 
 template<SamplerConcept SamplerType, MeshConcept MeshType>
-SamplerType vertexScalarWeightedPointSampling(
+SamplerType vertexQualityWeightedPointSampling(
 	const MeshType& m,
 	uint nSamples,
 	bool deterministic = false);
@@ -171,7 +171,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
 	bool deterministic = false);
 
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
-SamplerType vertexScalarWeightedMontecarloPointSampling(
+SamplerType vertexQualityWeightedMontecarloPointSampling(
 	const MeshType& m,
 	uint nSamples,
 	double variance,
