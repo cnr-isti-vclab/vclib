@@ -76,14 +76,19 @@ class Mesh : public Args...
 	friend class Element;
 
 public:
-	// filter Components of the Mesh, taking only the Container
-	// Containers is a vcl::TypeWrapper containing all the containers that were in Args
-	// Containers are the types that satisfy the concept IsElementContainer
-	//
-	// Using this type, you can iterate over containers of a mesh and call generic functions on
-	// them, regardless the actual type of the container
+	/**
+	 * @brief Containers is a vcl::TypeWrapper that wraps all the types from which the Mesh inherits
+	 * (Args) that are ElementContainers (they satisfy the ElementContainerConcept).
+	 */
 	using Containers = typename vcl::
 		FilterTypesByCondition<mesh::IsElementContainerPred, vcl::TypeWrapper<Args...>>::type;
+
+	/**
+	 * @brief Components is a vcl::TypeWrapper that wraps all the types from which the Mesh inherits
+	 * (Args) that are Components (they satisfy the ComponentConcept).
+	 */
+	using Components = typename vcl::
+		FilterTypesByCondition<comp::IsComponentPred, vcl::TypeWrapper<Args...>>::type;
 
 	Mesh();
 	Mesh(const Mesh& oth);

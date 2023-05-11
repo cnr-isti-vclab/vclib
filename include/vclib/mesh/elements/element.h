@@ -59,7 +59,8 @@ class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
 
 public:
 	using ParentMeshType = MeshType;
-	using Components = TypeWrapper<Comps...>;
+	using Components = typename vcl::
+        FilterTypesByCondition<comp::IsComponentPred, vcl::TypeWrapper<Comps...>>::type;
 
 	static const uint ELEMENT_TYPE = ELEM_TYPE;
 
