@@ -52,8 +52,11 @@ concept HasFaceContainer = requires(T o, const T& co, typename T::FaceType* f)
 	{ co.faceBegin() } -> std::same_as<typename T::ConstFaceIterator>;
 	{ o.faceEnd() } -> std::same_as<typename T::FaceIterator>;
 	{ co.faceEnd() } -> std::same_as<typename T::ConstFaceIterator>;
+
+#ifdef VCLIB_USES_RANGES
 	std::ranges::range<decltype(o.faces())>;
 	std::ranges::range<decltype(co.faces())>;
+#endif
 };
 
 } // namespace vcl::mesh
