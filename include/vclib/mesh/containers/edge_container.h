@@ -51,8 +51,6 @@ public:
 	using EdgeType          = T;
 	using EdgeIterator      = typename Base::ElementIterator;
 	using ConstEdgeIterator = typename Base::ConstElementIterator;
-	using EdgeView          = typename Base::ElementView;
-	using ConstEdgeView     = typename Base::ConstElementView;
 
 	EdgeContainer();
 
@@ -73,8 +71,8 @@ public:
 	EdgeIterator      edgeEnd();
 	ConstEdgeIterator edgeBegin(bool jumpDeleted = true) const;
 	ConstEdgeIterator edgeEnd() const;
-	EdgeView          edges(bool jumpDeleted = true);
-	ConstEdgeView     edges(bool jumpDeleted = true) const;
+	auto              edges(bool jumpDeleted = true);
+	auto              edges(bool jumpDeleted = true) const;
 
 	void enableAllPerEdgeOptionalComponents();
 	void disableAllPerEdgeOptionalComponents();

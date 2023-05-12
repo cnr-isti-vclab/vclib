@@ -49,7 +49,6 @@ concept HasTexCoord = requires(
 	const T& co)
 {
 	typename T::TexCoordType;
-	typename T::TexCoordComponent;
 	{ o.texCoord() } -> std::same_as<typename T::TexCoordType&>;
 	{ co.texCoord() } -> std::same_as<const typename T::TexCoordType&>;
 	{ co.isTexCoordEnabled() } -> std::same_as<bool>;
@@ -62,7 +61,7 @@ concept HasTexCoord = requires(
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalTexCoord = HasTexCoord<T> && IsOptionalComponent<typename T::TexCoordComponent>;;
+concept HasOptionalTexCoord = HasTexCoord<T> && IsOptionalComponent<typename T::TexCoord>;
 
 } // namespace vcl::comp
 

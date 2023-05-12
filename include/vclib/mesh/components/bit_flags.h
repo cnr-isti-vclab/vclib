@@ -60,16 +60,13 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
-class BitFlags : public Component<BitSet<char>, ElementType, OPT>
+class BitFlags : public Component<BIT_FLAGS, BitSet<char>, ElementType, OPT>
 {
-	using Base = Component<BitSet<char>, ElementType, OPT>;
-	using ThisType = BitFlags<ElementType, OPT>;
+	using Base = Component<BIT_FLAGS, BitSet<char>, ElementType, OPT>;
 
 	using FT = char; // FlagsType, the integral type used for the flags
 
 public:
-	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-
 	/* Constructor and isEnabled */
 
 	BitFlags();

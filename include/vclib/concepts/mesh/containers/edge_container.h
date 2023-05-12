@@ -21,54 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEX_COORD_H
-#define VCL_MESH_COMPONENTS_TEX_COORD_H
+#ifndef VCL_CONCEPTS_MESH_CONTAINERS_EDGE_CONTAINER_H
+#define VCL_CONCEPTS_MESH_CONTAINERS_EDGE_CONTAINER_H
 
-#include <vclib/concepts/mesh/components/tex_coord.h>
-#include <vclib/space/tex_coord.h>
+#include "element_container.h"
 
-#include "bases/component.h"
-
-namespace vcl::comp {
-
-/**
- * @brief The TexCoord class
- *
- * @ingroup components
- */
-template<typename Scalar, typename ElementType = void, bool OPT = false>
-class TexCoord : public Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>
-{
-	using Base = Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>;
-
-public:
-	using TexCoordType = vcl::TexCoord<Scalar>;
-
-	bool isEnabled() const;
-	bool isTexCoordEnabled() const;
-
-	const TexCoordType& texCoord() const;
-	TexCoordType&       texCoord();
-
-protected:
-	// PointersComponent interface functions
-	template<typename Element>
-	void importFrom(const Element& e);
-};
-
-/* Detector function to check if a class has TexCoord enabled */
+namespace vcl {
+namespace mesh {
 
 template <typename T>
-bool isTexCoordEnabledOn(const T& element);
+concept HasEdgeContainer = requires(T o)
+{
+	typename T::EdgeType;
+	o.edge(uint());
+};
 
-template<typename ElementType = void, bool horizontal = true, bool OPT = false>
-using TexCoordf = TexCoord<float, ElementType, OPT>;
+} // namespace vcl::mesh
 
-template<typename ElementType = void, bool horizontal = true, bool OPT = false>
-using TexCoordd = TexCoord<double, ElementType, OPT>;
+/**
+ * @brief HasEdges concepts is satisfied when at least one of its types is (or inherits from)
+ * a EdgeContainer. It can be used both to check if a Mesh has edges, or if in a list of types
+ * there is a EdgeContainer.
+ *
+ * In the following example, a MyMesh type can be instatiated only if one of its template Args is a
+ * EdgeContainer:
+ * @code{.cpp}
+ * template <typename... Args> requires HasEdges<Args...>
+ * class MyMesh {
+ *     // ...
+ * };
+ *
+ * // ...
+ *
+ * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
+ * MyMesh<vcl::EdgeContainer<MyEdge>> m2; // ok
+ * MyMesh<vcl::VertexContainer<MyVertex>, vcl::EdgeContainer<MyEdge>> m3; // ok
+ * @endcode
+ *
+ * To check if a type has (inherits from) EdgeContainer:
+ * @code{.cpp}
+ * if constexpr (vcl::HasEdges<MyMeshType>) {
+ *     // ...
+ * }
+ * @endcode
+ */
+template<typename... Args>
+concept HasEdges = (vcl::mesh::HasEdgeContainer<Args> || ...);
 
-} // namespace vcl::comp
+} // namespace vcl
 
-#include "tex_coord.cpp"
-
-#endif // VCL_MESH_COMPONENTS_TEXCOORD_H
+#endif // VCL_CONCEPTS_MESH_CONTAINERS_EDGE_CONTAINER_H

@@ -80,10 +80,9 @@ concept HasWedgeColors = requires(
  * that a Face does not have both WedgeColors and FaceHalfEdgePointers components.
  */
 template<typename T>
-concept HasWedgeColorsComponent = requires(T o)
+concept HasWedgeColorsComponent = HasWedgeColors<T> && requires(T o)
 {
-	requires HasWedgeColors<T>;
-	typename T::WedgeColorsComponent;
+	{ o.__wedgeColors() } -> std::same_as<void>;
 };
 
 /**
@@ -94,7 +93,7 @@ concept HasWedgeColorsComponent = requires(T o)
  */
 template<typename T>
 concept HasOptionalWedgeColors =
-	HasWedgeColorsComponent<T> && IsOptionalComponent<typename T::WedgeColorsComponent>;
+	HasWedgeColorsComponent<T> && IsOptionalComponent<typename T::WedgeColors>;
 
 /**
  * @private

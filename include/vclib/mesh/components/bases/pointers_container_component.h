@@ -54,11 +54,11 @@ namespace vcl::comp {
  * that the number of face pointers should be always be the same of the number of vertices.
  * Setting this value to true will tie the size of this container to the number of vertices.
  */
-template<typename Elem, int N, typename ElementType, bool OPT, bool TTVN>
+template<uint COMP_TYPE, typename Elem, int N, typename ElementType, bool OPT, bool TTVN>
 class PointersContainerComponent :
-		public ContainerComponent<Elem*, N, void, ElementType, OPT, TTVN, Elem>
+		public ContainerComponent<COMP_TYPE, Elem*, N, void, ElementType, OPT, TTVN, Elem>
 {
-	using Base = ContainerComponent<Elem*, N, void, ElementType, OPT, TTVN, Elem>;
+	using Base = ContainerComponent<COMP_TYPE, Elem*, N, void, ElementType, OPT, TTVN, Elem>;
 
 protected:
 	using Base::container;

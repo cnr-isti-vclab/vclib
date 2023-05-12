@@ -12,26 +12,20 @@ void meshViewsStaticAsserts()
 	const MeshType& cm = m;
 
 	static_assert(
-		vcl::VertexRangeConcept<typename MeshType::VertexView>,
+		vcl::VertexRangeConcept<decltype(m.vertices())>,
 		"The MeshType VertexView is not a valid range of vertices.");
 
 	static_assert(
-		vcl::VertexRangeConcept<typename MeshType::ConstVertexView>,
-		"The MeshType VertexView is not a valid range of vertices.");
+		vcl::VertexRangeConcept<decltype(cm.vertices())>,
+		"The MeshType ConstVertexView is not a valid range of vertices.");
 
 #ifdef VCLIB_USES_RANGES
 	static_assert(
 		std::ranges::range<decltype(m | vcl::views::vertices)>,
 		"The view returned by pipe operation m | views::vertices is not a valid range.");
 	static_assert(
-		std::is_same_v<decltype(m | vcl::views::vertices), typename MeshType::VertexView>,
-		"The view returned by pipe operation m | views::vertices is not a VertexView.");
-	static_assert(
 		std::ranges::range<decltype(cm | vcl::views::vertices)>,
 		"The view returned by pipe operation cm | views::vertices is not a valid range.");
-	static_assert(
-		std::is_same_v<decltype(cm | vcl::views::vertices), typename MeshType::ConstVertexView>,
-		"The view returned by pipe operation m | views::vertices is not a ConstVertexView.");
 
 	static_assert(
 		vcl::VertexPointerRangeConcept<decltype(m.vertices() | vcl::views::addrOf)>,
@@ -61,10 +55,10 @@ void meshViewsStaticAsserts()
 
 	if constexpr (vcl::HasFaces<MeshType>) {
 		static_assert(
-			std::ranges::range<typename MeshType::FaceView>,
+			std::ranges::range<decltype(m.faces())>,
 			"The MeshType FaceView is not a valid range.");
 		static_assert(
-			std::ranges::range<typename MeshType::ConstFaceView>,
+			std::ranges::range<decltype(cm.faces())>,
 			"The MeshType ConstFaceView is not a valid range.");
 
 		static_assert(
@@ -77,10 +71,10 @@ void meshViewsStaticAsserts()
 
 	if constexpr (vcl::HasEdges<MeshType>) {
 		static_assert(
-			std::ranges::range<typename MeshType::EdgeView>,
+			std::ranges::range<decltype(m.edges())>,
 			"The MeshType EdgeView is not a valid range.");
 		static_assert(
-			std::ranges::range<typename MeshType::ConstEdgeView>,
+			std::ranges::range<decltype(cm.edges())>,
 			"The MeshType ConstEdgeView is not a valid range.");
 
 		static_assert(
@@ -93,10 +87,10 @@ void meshViewsStaticAsserts()
 
 	if constexpr (vcl::HasHalfEdges<MeshType>) {
 		static_assert(
-			std::ranges::range<typename MeshType::HalfEdgeView>,
+			std::ranges::range<decltype(m.halfEdges())>,
 			"The MeshType HalfEdgeView is not a valid range.");
 		static_assert(
-			std::ranges::range<typename MeshType::ConstHalfEdgeView>,
+			std::ranges::range<decltype(cm.halfEdges())>,
 			"The MeshType ConstHalfEdgeView is not a valid range.");
 
 		static_assert(

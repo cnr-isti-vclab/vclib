@@ -49,7 +49,6 @@ concept HasQuality = requires(
 	const T& co)
 {
 	typename T::QualityType;
-	typename T::QualityComponent;
 	{ o.quality() } -> std::same_as<typename T::QualityType&>;
 	{ co.quality() } -> std::same_as<const typename T::QualityType&>;
 	{ co.isQualityEnabled() } -> std::same_as<bool>;
@@ -62,7 +61,7 @@ concept HasQuality = requires(
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalQuality = HasQuality<T> && IsOptionalComponent<typename T::QualityComponent>;
+concept HasOptionalQuality = HasQuality<T> && IsOptionalComponent<typename T::Quality>;
 
 } // namespace vcl::comp
 

@@ -56,8 +56,6 @@ public:
 protected:
 	using ElementIterator      = ElementContainerIterator<std::vector, T>;
 	using ConstElementIterator = ConstElementContainerIterator<std::vector, T>;
-	using ElementView          = vcl::View<ElementIterator>;
-	using ConstElementView     = vcl::View<ConstElementIterator>;
 
 	const T& element(uint i) const;
 	T& element(uint i);
@@ -121,8 +119,8 @@ protected:
 	ElementIterator      elementEnd();
 	ConstElementIterator elementBegin(bool jumpDeleted = true) const;
 	ConstElementIterator elementEnd() const;
-	ElementView          elements(bool jumpDeleted = true);
-	ConstElementView     elements(bool jumpDeleted = true) const;
+	auto                 elements(bool jumpDeleted = true);
+	auto                 elements(bool jumpDeleted = true) const;
 
 	uint index(const T *e) const;
 	void clearElements();
