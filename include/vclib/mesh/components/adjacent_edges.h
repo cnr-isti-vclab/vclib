@@ -57,16 +57,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Edge, int N, bool TTVN, typename ElementType = void, bool OPT = false>
-class AdjacentEdges : public PointersContainerComponent<Edge, N, ElementType, OPT, TTVN>
-{
-	using ThisType = AdjacentEdges<Edge, N, TTVN, ElementType, OPT>;
-	
-	using Base = PointersContainerComponent<Edge, N, ElementType, OPT, TTVN>;
+class AdjacentEdges : public PointersContainerComponent<ADJ_EDGES, Edge, N, ElementType, OPT, TTVN>
+{	
+	using Base = PointersContainerComponent<ADJ_EDGES, Edge, N, ElementType, OPT, TTVN>;
 
 public:
-	/** @brief Allows access to this component type from a derived class type/instance */
-	using AdjacentEdgesComponent = ThisType;
-
 	/// Static size of the container. If the container is dynamic, this value will be negative and
 	/// you should use the adjEdgesNumber() member function.
 	static const int ADJ_EDGE_NUMBER = Base::SIZE;

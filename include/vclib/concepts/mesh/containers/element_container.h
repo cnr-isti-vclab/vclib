@@ -21,54 +21,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_TEX_COORD_H
-#define VCL_MESH_COMPONENTS_TEX_COORD_H
+#ifndef VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
+#define VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 
-#include <vclib/concepts/mesh/components/tex_coord.h>
-#include <vclib/space/tex_coord.h>
+#include <vclib/concepts/mesh/elements/element.h>
 
-#include "bases/component.h"
+namespace vcl {
+namespace mesh {
 
-namespace vcl::comp {
-
-/**
- * @brief The TexCoord class
- *
- * @ingroup components
- */
-template<typename Scalar, typename ElementType = void, bool OPT = false>
-class TexCoord : public Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>
+class ElementContainerTriggerer
 {
-	using Base = Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>;
-
-public:
-	using TexCoordType = vcl::TexCoord<Scalar>;
-
-	bool isEnabled() const;
-	bool isTexCoordEnabled() const;
-
-	const TexCoordType& texCoord() const;
-	TexCoordType&       texCoord();
-
-protected:
-	// PointersComponent interface functions
-	template<typename Element>
-	void importFrom(const Element& e);
 };
 
-/* Detector function to check if a class has TexCoord enabled */
+/**
+ * @brief ElementContainerConcept is a concept satisfied when the type T is an Element Container.
+ */
+template<typename T>
+concept ElementContainerConcept =
+	std::is_base_of<ElementContainerTriggerer, T>::value;
 
-template <typename T>
-bool isTexCoordEnabledOn(const T& element);
+/**
+ * @brief The predicate IsElementContainerPred sets its bool `value` to `true` when the type T
+ * satisfies the ElementContainerConcept concept
+ */
+template<typename T>
+struct IsElementContainerPred
+{
+	static const bool value = ElementContainerConcept<T>;
+};
 
-template<typename ElementType = void, bool horizontal = true, bool OPT = false>
-using TexCoordf = TexCoord<float, ElementType, OPT>;
+} // namespace vcl::mesh
+} // namespace vcl
 
-template<typename ElementType = void, bool horizontal = true, bool OPT = false>
-using TexCoordd = TexCoord<double, ElementType, OPT>;
-
-} // namespace vcl::comp
-
-#include "tex_coord.cpp"
-
-#endif // VCL_MESH_COMPONENTS_TEXCOORD_H
+#endif // VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H

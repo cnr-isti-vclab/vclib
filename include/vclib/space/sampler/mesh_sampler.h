@@ -34,7 +34,7 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshSampler
 {
-	using CoordView = decltype(typename MeshType::VertexView() | views::coords);
+	using CoordView = decltype(typename vcl::View<typename MeshType::VertexIterator>() | views::coords);
 public:
 	using PointType  = typename MeshType::VertexType::CoordType;
 	using ScalarType = typename PointType::ScalarType;

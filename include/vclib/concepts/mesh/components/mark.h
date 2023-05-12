@@ -48,7 +48,6 @@ concept HasMark = requires(
 	T o,
 	const T& co)
 {
-	typename T::MarkComponent;
 	{ co.mark() } -> std::same_as<int>;
 	{ o.resetMark() } -> std::same_as<void>;
 	{ o.incrementMark() } -> std::same_as<void>;
@@ -61,7 +60,7 @@ concept HasMark = requires(
  * and the static boolean constant IS_OPTIONAL is set to true.
  */
 template<typename T>
-concept HasOptionalMark = HasMark<T> && IsOptionalComponent<typename T::MarkComponent>;
+concept HasOptionalMark = HasMark<T> && IsOptionalComponent<typename T::Mark>;
 
 } // namespace vcl::comp
 

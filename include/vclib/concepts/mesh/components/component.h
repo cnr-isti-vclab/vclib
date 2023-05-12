@@ -29,28 +29,45 @@
 namespace vcl::comp {
 
 enum ComponentEnumType {
-	ADJ_EDGES = 0,
+	BIT_FLAGS = 0,
+	COORDINATE,
+	NORMAL,
+	COLOR,
+	QUALITY,
+	MARK,
+	PRINCIPAL_CURVATURE,
+	TEX_COORD,
+	VERTEX_PTRS,
+	ADJ_EDGES,
 	ADJ_FACES,
 	ADJ_VERTICES,
-	BIT_FLAGS,
-	BOUNDING_BOX,
-	COLOR,
-	COORDINATE,
-	CUSTOM_COMPONENTS,
+	WEDGE_COLORS,
+	WEDGE_TEX_COORDS,
 	FACE_HALF_EDGE_PTRS,
 	HALF_EDGE_PTRS,
-	MARK,
+	VERTEX_HALF_EDGE_PTRS,
+	BOUNDING_BOX,
 	NAME,
-	NORMAL,
-	PRINCIPAL_CURVATURE,
-	QUALITY,
-	TEX_COORD,
 	TEXTURE_PATHS,
 	TRANSFORM_MATRIX,
-	VERTEX_HALF_EDGE_PTRS,
-	VERTEX_PTRS,
-	WEDGE_COLORS,
-	WEDGE_TEX_COORDS
+	CUSTOM_COMPONENTS
+};
+
+inline static constexpr uint COMPONENTS_NUMBER = 22;
+
+template<typename T>
+concept ComponentConcept = requires {
+	{ T::COMPONENT_TYPE } -> std::same_as<const uint&>;
+};
+
+/**
+ * @brief The predicate IsComponentPred sets its bool `value` to `true` when the type T
+ * satisfies the ComponentConcept concept
+ */
+template<typename T>
+struct IsComponentPred
+{
+	static const bool value = ComponentConcept<T>;
 };
 
 template<typename T>
@@ -97,7 +114,7 @@ class PointersComponentTriggerer
  *
  * Each component that store pointers of a type R, must:
  *
- * - inherit from PointersComponentTriggerer<R>
+ * - inherit from PointersComponentTriggerer<R> (automatic from Component class)
  * - provide the following **protected** member functions:
  *   - void updatePointers(const R* oldBase, const R* newBase);
  *

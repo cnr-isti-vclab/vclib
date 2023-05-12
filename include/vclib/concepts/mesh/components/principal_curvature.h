@@ -49,7 +49,6 @@ concept HasPrincipalCurvature = requires(
 	const T& co)
 {
 	typename T::PrincipalCurvatureType;
-	typename T::PrincipalCurvatureComponent;
 	{ o.principalCurvature() } -> std::same_as<typename T::PrincipalCurvatureType&>;
 	{ co.principalCurvature() } -> std::same_as<const typename T::PrincipalCurvatureType&>;
 	{ co.isPrincipalCurvatureEnabled() } -> std::same_as<bool>;
@@ -62,7 +61,7 @@ concept HasPrincipalCurvature = requires(
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && IsOptionalComponent<typename T::PrincipalCurvatureComponent>;
+concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && IsOptionalComponent<typename T::PrincipalCurvature>;
 
 } // namespace vcl::comp
 

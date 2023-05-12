@@ -9,11 +9,11 @@ namespace vcl::comp {
 
 namespace internal {
 
-template<typename T, int N, typename AD, typename El, bool o, bool TT, typename... PT>
+template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TT, typename... PT>
 using ContCompBase = std::conditional_t<
 	std::is_same_v<AD, void>,
-	Component<Vector<T, N>, El, o, PT...>,
-	Component<std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
+	Component<CT, Vector<T, N>, El, o, PT...>,
+	Component<CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
 
 } // namespace vcl::comp::internal
 
@@ -28,7 +28,7 @@ using ContCompBase = std::conditional_t<
  *
  * For further details , please refer to the page @ref implement_component page.
  *
- * @tparam DataType: The type of the data that the component needs to store in a Container. E.g. a
+ * @tparam T: The type of the data that the component needs to store in a Container. E.g. a
  * WedgeTexCoord component would have vcl::TexCoordd as DataType.
  * @tparam N: The size of the container: if >= 0 the size is static, if < 0 the size is dynamic.
  * @tparam AdditionalData: the type of additional data that could be stored outside the Container.
@@ -52,6 +52,7 @@ using ContCompBase = std::conditional_t<
  * and that need to be updated when some reallocation happens.
  */
 template<
+	uint COMP_TYPE,
 	typename T,
 	int N,
 	typename AdditionalData,
@@ -61,12 +62,12 @@ template<
 	typename... PointedTypes>
 class ContainerComponent :
 		public internal::
-			ContCompBase<T, N, AdditionalData, ElementType, OPT, TTVN, PointedTypes...>
+			ContCompBase<COMP_TYPE, T, N, AdditionalData, ElementType, OPT, TTVN, PointedTypes...>
 {
 	static constexpr bool HAS_ADDITIONAL_DATA = !std::is_same_v<AdditionalData, void>;
 
-	using Base =
-		internal::ContCompBase<T, N, AdditionalData, ElementType, OPT, TTVN, PointedTypes...>;
+	using Base = internal::
+		ContCompBase<COMP_TYPE, T, N, AdditionalData, ElementType, OPT, TTVN, PointedTypes...>;
 
 public:
 	/**

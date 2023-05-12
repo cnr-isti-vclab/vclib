@@ -60,18 +60,14 @@ struct FHEPData {
  */
 template<typename HalfEdge, typename ElementType = void, bool OPT = false>
 class FaceHalfEdgePointers :
-		public Component<internal::FHEPData<HalfEdge>, ElementType, OPT, HalfEdge>
+		public Component<FACE_HALF_EDGE_PTRS, internal::FHEPData<HalfEdge>, ElementType, OPT, HalfEdge>
 {
-	using Base = Component<internal::FHEPData<HalfEdge>, ElementType, OPT, HalfEdge>;
-	using ThisType = FaceHalfEdgePointers<HalfEdge, ElementType, OPT>;
+	using Base = Component<FACE_HALF_EDGE_PTRS, internal::FHEPData<HalfEdge>, ElementType, OPT, HalfEdge>;
 
 	using Vertex = typename HalfEdge::VertexType;
 	using Face   = typename HalfEdge::FaceType;
 
 public:
-	// expose the type to allow access to this component
-	using FaceHalfEdgePointersComponent = ThisType;
-
 	using HalfEdgeType = HalfEdge;
 	using VertexType   = typename HalfEdge::VertexType;
 

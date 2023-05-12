@@ -241,7 +241,7 @@ typename FaceContainer<T>::ConstFaceIterator FaceContainer<T>::faceEnd() const
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<FaceConcept T>
-typename FaceContainer<T>::FaceView FaceContainer<T>::faces(bool jumpDeleted)
+auto FaceContainer<T>::faces(bool jumpDeleted)
 {
 	return Base::elements(jumpDeleted);
 }
@@ -266,7 +266,7 @@ typename FaceContainer<T>::FaceView FaceContainer<T>::faces(bool jumpDeleted)
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<FaceConcept T>
-typename FaceContainer<T>::ConstFaceView FaceContainer<T>::faces(bool jumpDeleted) const
+auto FaceContainer<T>::faces(bool jumpDeleted) const
 {
 	return Base::elements(jumpDeleted);
 }
@@ -337,7 +337,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceAdjacentEdgesEnabled()
 	const requires face::HasOptionalAdjacentEdges<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdgesComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdges>();
 }
 
 /**
@@ -353,7 +353,7 @@ bool FaceContainer<T>::isPerFaceAdjacentEdgesEnabled()
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>
 {
-	Base::template enableOptionalComponent<typename T::AdjacentEdgesComponent>();
+	Base::template enableOptionalComponent<typename T::AdjacentEdges>();
 }
 
 /**
@@ -365,7 +365,7 @@ void FaceContainer<T>::enablePerFaceAdjacentEdges() requires face::HasOptionalAd
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>
 {
-	Base::template disableOptionalComponent<typename T::AdjacentEdgesComponent>();
+	Base::template disableOptionalComponent<typename T::AdjacentEdges>();
 }
 
 /**
@@ -380,7 +380,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceAdjacentFacesEnabled()
 	const requires face::HasOptionalAdjacentFaces<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::AdjacentFacesComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentFaces>();
 }
 
 /**
@@ -396,7 +396,7 @@ bool FaceContainer<T>::isPerFaceAdjacentFacesEnabled()
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>
 {
-	Base::template enableOptionalComponent<typename T::AdjacentFacesComponent>();
+	Base::template enableOptionalComponent<typename T::AdjacentFaces>();
 }
 
 /**
@@ -408,7 +408,7 @@ void FaceContainer<T>::enablePerFaceAdjacentFaces() requires face::HasOptionalAd
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>
 {
-	Base::template disableOptionalComponent<typename T::AdjacentFacesComponent>();
+	Base::template disableOptionalComponent<typename T::AdjacentFaces>();
 }
 
 /**
@@ -421,7 +421,7 @@ void FaceContainer<T>::disablePerFaceAdjacentFaces() requires face::HasOptionalA
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceColorEnabled() const requires face::HasOptionalColor<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::ColorComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::Color>();
 }
 
 /**
@@ -432,7 +432,7 @@ bool FaceContainer<T>::isPerFaceColorEnabled() const requires face::HasOptionalC
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceColor() requires face::HasOptionalColor<T>
 {
-	return Base::template enableOptionalComponent<typename T::ColorComponent>();
+	return Base::template enableOptionalComponent<typename T::Color>();
 }
 
 /**
@@ -443,7 +443,7 @@ void FaceContainer<T>::enablePerFaceColor() requires face::HasOptionalColor<T>
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceColor() requires face::HasOptionalColor<T>
 {
-	return Base::template disableOptionalComponent<typename T::ColorComponent>();
+	return Base::template disableOptionalComponent<typename T::Color>();
 }
 
 /**
@@ -456,7 +456,7 @@ void FaceContainer<T>::disablePerFaceColor() requires face::HasOptionalColor<T>
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceMarkEnabled() const requires face::HasOptionalMark<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::MarkComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::Mark>();
 }
 
 /**
@@ -467,7 +467,7 @@ bool FaceContainer<T>::isPerFaceMarkEnabled() const requires face::HasOptionalMa
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceMark() requires face::HasOptionalMark<T>
 {
-	return Base::template enableOptionalComponent<typename T::MarkComponent>();
+	return Base::template enableOptionalComponent<typename T::Mark>();
 }
 
 /**
@@ -478,7 +478,7 @@ void FaceContainer<T>::enablePerFaceMark() requires face::HasOptionalMark<T>
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceMark() requires face::HasOptionalMark<T>
 {
-	return Base::template disableOptionalComponent<typename T::MarkComponent>();
+	return Base::template disableOptionalComponent<typename T::Mark>();
 }
 
 /**
@@ -491,7 +491,7 @@ void FaceContainer<T>::disablePerFaceMark() requires face::HasOptionalMark<T>
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceNormalEnabled() const requires face::HasOptionalNormal<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::NormalComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::Normal>();
 }
 
 /**
@@ -502,7 +502,7 @@ bool FaceContainer<T>::isPerFaceNormalEnabled() const requires face::HasOptional
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceNormal() requires face::HasOptionalNormal<T>
 {
-	return Base::template enableOptionalComponent<typename T::NormalComponent>();
+	return Base::template enableOptionalComponent<typename T::Normal>();
 }
 
 /**
@@ -513,7 +513,7 @@ void FaceContainer<T>::enablePerFaceNormal() requires face::HasOptionalNormal<T>
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceNormal() requires face::HasOptionalNormal<T>
 {
-	return Base::template disableOptionalComponent<typename T::NormalComponent>();
+	return Base::template disableOptionalComponent<typename T::Normal>();
 }
 
 /**
@@ -528,7 +528,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFacePrincipalCurvatureEnabled()
 	const requires face::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::PrincipalCurvatureComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::PrincipalCurvature>();
 }
 /**
  * @brief Enables the Optional PrincipalCurvature of the face.
@@ -540,7 +540,7 @@ template<FaceConcept T>
 void FaceContainer<T>::enablePerFacePrincipalCurvature()
 	requires face::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template enableOptionalComponent<typename T::PrincipalCurvatureComponent>();
+	return Base::template enableOptionalComponent<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -553,7 +553,7 @@ template<FaceConcept T>
 void FaceContainer<T>::disablePerFacePrincipalCurvature()
 	requires face::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template disableOptionalComponent<typename T::PrincipalCurvatureComponent>();
+	return Base::template disableOptionalComponent<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -566,7 +566,7 @@ void FaceContainer<T>::disablePerFacePrincipalCurvature()
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceQualityEnabled() const requires face::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::QualityComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::Quality>();
 }
 /**
  * @brief Enables the Optional Quality of the face.
@@ -576,7 +576,7 @@ bool FaceContainer<T>::isPerFaceQualityEnabled() const requires face::HasOptiona
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceQuality() requires face::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponent<typename T::QualityComponent>();
+	return Base::template enableOptionalComponent<typename T::Quality>();
 }
 
 /**
@@ -587,7 +587,7 @@ void FaceContainer<T>::enablePerFaceQuality() requires face::HasOptionalQuality<
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceQuality() requires face::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponent<typename T::QualityComponent>();
+	return Base::template disableOptionalComponent<typename T::Quality>();
 }
 
 /**
@@ -811,7 +811,7 @@ ConstCustomComponentVectorHandle<K> FaceContainer<T>::perFaceCustomComponentVect
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::WedgeColorsComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::WedgeColors>();
 }
 
 /**
@@ -826,7 +826,7 @@ bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOpt
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
 {
-	return Base::template enableOptionalComponent<typename T::WedgeColorsComponent>();
+	return Base::template enableOptionalComponent<typename T::WedgeColors>();
 }
 
 /**
@@ -837,7 +837,7 @@ void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedg
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
 {
-	return Base::template disableOptionalComponent<typename T::WedgeColorsComponent>();
+	return Base::template disableOptionalComponent<typename T::WedgeColors>();
 }
 
 /**
@@ -851,7 +851,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
 	const requires face::HasOptionalWedgeTexCoords<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::WedgeTexCoordsComponent>();
+	return Base::template isOptionalComponentEnabled<typename T::WedgeTexCoords>();
 }
 
 /**
@@ -867,7 +867,7 @@ bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
 {
-	return Base::template enableOptionalComponent<typename T::WedgeTexCoordsComponent>();
+	return Base::template enableOptionalComponent<typename T::WedgeTexCoords>();
 }
 
 /**
@@ -879,7 +879,7 @@ void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalW
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
 {
-	return Base::template disableOptionalComponent<typename T::WedgeTexCoordsComponent>();
+	return Base::template disableOptionalComponent<typename T::WedgeTexCoords>();
 }
 
 } // namespace vcl::mesh

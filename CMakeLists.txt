@@ -129,6 +129,11 @@ set(HEADERS
 	include/vclib/concepts/mesh/components/vertex_pointers.h
 	include/vclib/concepts/mesh/components/wedge_colors.h
 	include/vclib/concepts/mesh/components/wedge_tex_coords.h
+	include/vclib/concepts/mesh/containers/edge_container.h
+	include/vclib/concepts/mesh/containers/element_container.h
+	include/vclib/concepts/mesh/containers/face_container.h
+	include/vclib/concepts/mesh/containers/half_edge_container.h
+	include/vclib/concepts/mesh/containers/vertex_container.h
 	include/vclib/concepts/mesh/elements/edge.h
 	include/vclib/concepts/mesh/elements/element.h
 	include/vclib/concepts/mesh/elements/face.h

@@ -85,6 +85,8 @@ class CustomComponents
 {
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 public:
+	static const uint COMPONENT_TYPE = CUSTOM_COMPONENTS;
+
 	bool hasCustomComponent(const std::string& attrName) const;
 
 	template<typename CompType>

@@ -7,8 +7,8 @@ namespace vcl::comp {
  * If this Container is a static array, all its element will be initialized to T().
  * If this Container is a dynamic vector, it will be an empty container.
  */
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
-ContainerComponent<T, N, AD, El, o, TTVN, PT...>::ContainerComponent()
+template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::ContainerComponent()
 {
 	if constexpr (!Base::IS_VERTICAL) {
 		if constexpr (N >= 0) {
@@ -22,9 +22,9 @@ ContainerComponent<T, N, AD, El, o, TTVN, PT...>::ContainerComponent()
  * If this Container is a static array, all its element will be initialized to T().
  * If this Container is a dynamic vector, it will be an empty container.
  */
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
 template<typename Comp>
-void ContainerComponent<T, N, AD, El, o, TTVN, PT...>::init(Comp* comp)
+void ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::init(Comp* comp)
 {
 	if constexpr (N >= 0) {
 		// I'll use the array, N is >= 0.
@@ -38,9 +38,9 @@ void ContainerComponent<T, N, AD, El, o, TTVN, PT...>::init(Comp* comp)
 	}
 }
 
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
 template<typename Comp>
-Vector<T, N>& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::container(Comp* comp)
+Vector<T, N>& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::container(Comp* comp)
 {
 	if constexpr (HAS_ADDITIONAL_DATA) {
 		return std::get<0>(Base::data(comp));
@@ -50,9 +50,9 @@ Vector<T, N>& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::container(Comp* 
 	}
 }
 
-template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
 template<typename Comp>
-const Vector<T, N>& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::container(const Comp* comp) const
+const Vector<T, N>& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::container(const Comp* comp) const
 {
 	if constexpr (HAS_ADDITIONAL_DATA) {
 		return std::get<0>(Base::data(comp));
@@ -62,17 +62,17 @@ const Vector<T, N>& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::container(
 	}
 }
 
-//template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+//template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
 //template<typename Comp, typename AdDt>
-//AdDt& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::additionalData(Comp* comp)
+//AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::additionalData(Comp* comp)
 //	requires(HAS_ADDITIONAL_DATA)
 //{
 //	return std::get<1>(Base::data(comp));
 //}
 
-//template<typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+//template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
 //template<typename Comp, typename AdDt>
-//const AdDt& ContainerComponent<T, N, AD, El, o, TTVN, PT...>::additionalData(const Comp* comp) const
+//const AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::additionalData(const Comp* comp) const
 //	requires(HAS_ADDITIONAL_DATA)
 //{
 //	return std::get<1>(Base::data(comp));

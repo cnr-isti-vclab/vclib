@@ -42,14 +42,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<int N, typename ElementType = void, bool OPT = false>
-class WedgeColors : public ContainerComponent<vcl::Color, N, void, ElementType, OPT, true>
+class WedgeColors : public ContainerComponent<WEDGE_COLORS, vcl::Color, N, void, ElementType, OPT, true>
 {
-	using Base = ContainerComponent<vcl::Color, N, void, ElementType, OPT, true>;
-	using ThisType = WedgeColors<N, ElementType, OPT>;
+	using Base = ContainerComponent<WEDGE_COLORS, vcl::Color, N, void, ElementType, OPT, true>;
 
 public:
-	using WedgeTexCoordsComponent = ThisType; // expose the type to allow access to this component
-	
 	static const int WEDGE_COLOR_NUMBER = Base::SIZE;
 
 	/* Iterator Types declaration */
@@ -79,6 +76,9 @@ public:
 	ConstWedgeColorsIterator wedgeColorEnd() const;
 	auto                     wedgeColors();
 	auto                     wedgeColors() const;
+
+	// dummy member to discriminate between WedgeColors and FaceHalfEdgePointers
+	void __wedgeColors() const {}
 
 protected:
 	// Component interface function

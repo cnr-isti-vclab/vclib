@@ -36,14 +36,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<PointConcept P, typename ElementType = void, bool OPT = false>
-class Coordinate : public Component<P, ElementType, OPT>
+class Coordinate : public Component<COORDINATE, P, ElementType, OPT>
 {
-	using Base = Component<P, ElementType, OPT>;
-	using ThisType = Coordinate<P, ElementType, OPT>;
+	using Base = Component<COORDINATE, P, ElementType, OPT>;
 
 public:
-	using CoordComponent = ThisType; // expose the type to allow access to this component
-
 	using CoordType = P;
 
 	const P& coord() const;
