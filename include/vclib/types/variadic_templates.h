@@ -31,9 +31,9 @@
 
 namespace vcl {
 
-/*
- * A simple structure that wraps a list of variadic templates, without instantiating anything.
- * Useful when you need to wrap a list of types, and consider them as a single type.
+/**
+ * @brief A simple structure that wraps a list of variadic templates, without instantiating
+ * anything. Useful when you need to wrap a list of types, and consider them as a single type.
  */
 template<typename...>
 struct TypeWrapper

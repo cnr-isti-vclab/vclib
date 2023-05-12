@@ -315,48 +315,19 @@ private:
 
 	// Predicate structures
 
-	// Elements can be individuated with their ID, which is an unsigned int.
-	// This struct sets its bool `value` to true if this Mesh has a Container of Elements with the
-	// given unsigned integer El
-	// Sets also `type` with a TypeWrapper contianing the Container that satisfied the condition.
-	// the TypeWrapper will be empty if no Containers were found.
-	template<uint El>
-	struct ContainerOfTypeIndexPred
-	{
-	private:
-		template <typename Cont>
-		struct SameElPred
-		{
-			static constexpr bool value = Cont::ELEMENT_TYPE == El;
-		};
-
-	public:
-		// TypeWrapper of the found container, if any
-		using type = typename vcl::FilterTypesByCondition<SameElPred, Containers>::type;
-		static constexpr bool value = NumberOfTypes<type>::value == 1;
-	};
-
 	template<ElementConcept El>
 	struct HasContainerOfPred
 	{
-		static constexpr bool value = ContainerOfTypeIndexPred<El::ELEMENT_TYPE>::value;
+		static constexpr bool value =
+			mesh::ContainerOfElementPred<El::ELEMENT_TYPE, Containers>::value;
 	};
 
 	template<uint EL_TYPE>
 	struct GetContainerOfElID
 	{
-	private:
-		template<typename>
-		struct TypeUnwrapper {};
-
-		template<typename C>
-		struct TypeUnwrapper<TypeWrapper<C>>
-		{
-			using type = C;
-		};
 	public:
-		using type = typename TypeUnwrapper<
-			typename ContainerOfTypeIndexPred<EL_TYPE>::type>::type;
+		using type = typename FirstType<
+			typename mesh::ContainerOfElementPred<EL_TYPE, Containers>::type>::type;
 	};
 
 	/**

@@ -61,13 +61,13 @@ using IsDerivedFromMesh = IsDerivedFromTemplateSpecialization<Derived, Mesh>;
 // checks if a type is a vcl::Mesh<Args...>
 template<class T>
 struct IsAMesh : // Default case, no pattern match
-				 std::false_type
+		 std::false_type
 {
 };
 
 template<class... Args>
 struct IsAMesh<Mesh<Args...>> : // For types matching the pattern Mesh<Args...>
-								std::true_type
+		std::true_type
 {
 };
 
