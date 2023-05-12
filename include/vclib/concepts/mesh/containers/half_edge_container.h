@@ -21,12 +21,53 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef  VCL_CONCEPTS_MESH_CONTAINERS_H
-#define  VCL_CONCEPTS_MESH_CONTAINERS_H
+#ifndef VCL_CONCEPTS_MESH_CONTAINERS_HALF_EDGE_CONTAINER_H
+#define VCL_CONCEPTS_MESH_CONTAINERS_HALF_EDGE_CONTAINER_H
 
-#include "containers/edge_container.h"
-#include "containers/face_container.h"
-#include "containers/half_edge_container.h"
-#include "containers/vertex_container.h"
+#include "element_container.h"
 
-#endif //  VCL_CONCEPTS_MESH_CONTAINERS_H
+namespace vcl {
+namespace mesh {
+
+template <typename T>
+concept HasHalfEdgeContainer = requires(T o)
+{
+	typename T::HalfEdgeType;
+	o.halfEdge(uint());
+};
+
+} // namespace vcl::mesh
+
+/**
+ * @brief HasHalfEdges concepts is satisfied when at least one of its types is (or inherits from)
+ * a HalfEdgeContainer. It can be used both to check if a Mesh has half edges, or if in a list of
+ * types there is a HalfEdgeContainer.
+ *
+ * In the following example, a MyMesh type can be instatiated only if one of its template Args is a
+ * HalfEdgeContainer:
+ * @code{.cpp}
+ * template <typename... Args> requires HasHalfEdges<Args...>
+ * class MyMesh {
+ *     // ...
+ * };
+ *
+ * // ...
+ *
+ * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
+ * MyMesh<vcl::HalfEdgeContainer<MyHalfEdge>> m2; // ok
+ * MyMesh<vcl::VertexContainer<MyVertex>, vcl::HalfEdgeContainer<MyHalfEdge>> m3; // ok
+ * @endcode
+ *
+ * To check if a type has (inherits from) HalfEdgeContainer:
+ * @code{.cpp}
+ * if constexpr (vcl::HasHalfEdges<MyMeshType>) {
+ *     // ...
+ * }
+ * @endcode
+ */
+template<typename... Args>
+concept HasHalfEdges = (vcl::mesh::HasHalfEdgeContainer<Args> | ...);
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_MESH_CONTAINERS_HALF_EDGE_CONTAINER_H

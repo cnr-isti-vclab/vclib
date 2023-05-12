@@ -21,12 +21,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef  VCL_CONCEPTS_MESH_CONTAINERS_H
-#define  VCL_CONCEPTS_MESH_CONTAINERS_H
+#ifndef VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
+#define VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 
-#include "containers/edge_container.h"
-#include "containers/face_container.h"
-#include "containers/half_edge_container.h"
-#include "containers/vertex_container.h"
+#include <vclib/concepts/mesh/elements/element.h>
 
-#endif //  VCL_CONCEPTS_MESH_CONTAINERS_H
+namespace vcl {
+namespace mesh {
+
+class ElementContainerTriggerer
+{
+};
+
+/**
+ * @brief ElementContainerConcept is a concept satisfied when the type T is an Element Container.
+ */
+template<typename T>
+concept ElementContainerConcept =
+	std::is_base_of<ElementContainerTriggerer, T>::value;
+
+/**
+ * @brief The predicate IsElementContainerPred sets its bool `value` to `true` when the type T
+ * satisfies the ElementContainerConcept concept
+ */
+template<typename T>
+struct IsElementContainerPred
+{
+	static const bool value = ElementContainerConcept<T>;
+};
+
+} // namespace vcl::mesh
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
