@@ -94,6 +94,7 @@ namespace vcl::comp {
  * and that need to be updated when some reallocation happens.
  */
 template<
+	uint COMP_TYPE,
 	typename DataType,
 	typename ElementType,
 	bool OPT,
@@ -101,7 +102,12 @@ template<
 class Component : public PointersComponentTriggerer<PointedTypes>...
 {
 public:
+	/**
+	 * @brief The Data that the component will store (e.g. a vcl::Point3d for a Normal component).
+	 */
 	using DataValueType = DataType;
+
+	static const uint COMPONENT_TYPE = COMP_TYPE;
 
 	/**
 	 * @brief Boolean that tells if this component type stores its data vertically (not in the

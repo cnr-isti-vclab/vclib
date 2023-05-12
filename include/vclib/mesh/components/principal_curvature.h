@@ -37,15 +37,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
-class PrincipalCurvature : public Component<vcl::PrincipalCurvature<Scalar>, ElementType, OPT>
+class PrincipalCurvature : public Component<PRINCIPAL_CURVATURE, vcl::PrincipalCurvature<Scalar>, ElementType, OPT>
 {
-	using Base = Component<vcl::PrincipalCurvature<Scalar>, ElementType, OPT>;
-	using ThisType = PrincipalCurvature<Scalar, ElementType, OPT>;
+	using Base = Component<PRINCIPAL_CURVATURE, vcl::PrincipalCurvature<Scalar>, ElementType, OPT>;
 
 public:
-	// expose the type to allow access to this component
-	using PrincipalCurvatureComponent = ThisType;
-
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
 	bool isEnabled() const;

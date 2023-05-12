@@ -73,16 +73,13 @@ namespace vcl::comp {
  */
 template<int N, typename ElementType = void, bool OPT = false>
 class PolygonBitFlags :
-		public ContainerComponent<BitSet<int>, N, BitSet<int>, ElementType, OPT, true>
+		public ContainerComponent<BIT_FLAGS, BitSet<int>, N, BitSet<int>, ElementType, OPT, true>
 {
 	using FT = int; // FlagsType, the integral type used for the flags
 
-	using Base = ContainerComponent<BitSet<FT>, N, BitSet<FT>, ElementType, OPT, true>;
-	using ThisType = PolygonBitFlags<N, ElementType, OPT>;
+	using Base = ContainerComponent<BIT_FLAGS, BitSet<FT>, N, BitSet<FT>, ElementType, OPT, true>;
 
 public:
-	using BitFlagsComponent = ThisType; // expose the type to allow access to this component
-
 	/* Constructor and isEnabled */
 	PolygonBitFlags();
 

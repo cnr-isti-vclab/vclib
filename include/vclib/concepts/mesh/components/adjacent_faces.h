@@ -88,10 +88,9 @@ concept HasAdjacentFaces = requires(
  * FaceHalfEdgePointers components.
  */
 template<typename T>
-concept HasAdjacentFacesComponent = requires(T o)
+concept HasAdjacentFacesComponent = HasAdjacentFaces<T> && requires(T o)
 {
-	requires HasAdjacentFaces<T>;
-	typename T::AdjacentFacesComponent;
+	{ o.__adjacentFaces() } -> std::same_as<void>;
 };
 
 /**
@@ -102,7 +101,7 @@ concept HasAdjacentFacesComponent = requires(T o)
  */
 template<typename T>
 concept HasOptionalAdjacentFaces =
-	HasAdjacentFacesComponent<T> && IsOptionalComponent<typename T::AdjacentFacesComponent>;
+	HasAdjacentFacesComponent<T> && IsOptionalComponent<typename T::AdjacentFaces>;
 
 /**
  * @private

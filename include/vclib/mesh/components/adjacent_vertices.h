@@ -51,15 +51,12 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Vertex, typename ElementType = void, bool OPT = false>
-class AdjacentVertices : public PointersContainerComponent<Vertex, -1, ElementType, OPT, false>
+class AdjacentVertices :
+		public PointersContainerComponent<ADJ_VERTICES, Vertex, -1, ElementType, OPT, false>
 {
-	using ThisType = AdjacentVertices<Vertex, ElementType, OPT>;
-	
-	using Base = PointersContainerComponent<Vertex, -1, ElementType, OPT, false>;
+	using Base = PointersContainerComponent<ADJ_VERTICES, Vertex, -1, ElementType, OPT, false>;
 
 public:
-	using AdjacentVerticesComponent = ThisType; // expose the type to allow access to this component
-
 	using AdjacentVertexType = Vertex;
 
 	/* Iterator Types declaration */
@@ -107,6 +104,9 @@ public:
 	ConstAdjacentVertexIterator adjVertexEnd() const;
 	auto                        adjVertices();
 	auto                        adjVertices() const;
+
+	// dummy member to discriminate between AdjacentVertices and VertexHalfEdgePointers
+	void __adjacentVertices() const {}
 
 protected:
 	// Component interface function

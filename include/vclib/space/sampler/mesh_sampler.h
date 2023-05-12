@@ -35,7 +35,8 @@ template<MeshConcept MeshType>
 class MeshSampler
 {
 #ifdef VCLIB_USES_RANGES
-	using CoordView = decltype(typename MeshType::VertexView() | views::coords);
+	using CoordView =
+		decltype(typename vcl::View<typename MeshType::VertexIterator>() | views::coords);
 #endif
 public:
 	using PointType  = typename MeshType::VertexType::CoordType;

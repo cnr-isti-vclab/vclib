@@ -40,14 +40,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
-class Color : public Component<vcl::Color, ElementType, OPT>
+class Color : public Component<COLOR, vcl::Color, ElementType, OPT>
 {
-	using Base = Component<vcl::Color, ElementType, OPT>;
-	using ThisType = Color<ElementType, OPT>;
+	using Base = Component<COLOR, vcl::Color, ElementType, OPT>;
 
 public:
-	using ColorComponent = ThisType; // expose the type to allow access to this component
-
 	using ColorType = vcl::Color;
 
 	bool isEnabled() const;

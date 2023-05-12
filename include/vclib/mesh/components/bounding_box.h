@@ -48,14 +48,11 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<PointConcept PointType, typename ElementType = void, bool OPT = false>
-class BoundingBox : public Component<Box<PointType>, ElementType, OPT>
+class BoundingBox : public Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>
 {
-	using Base = Component<Box<PointType>, ElementType, OPT>;
-	using ThisType = BoundingBox<PointType, ElementType, OPT>;
+	using Base = Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>;
 
 public:
-	using BoundingBoxComponent = ThisType; // expose the type to allow access to this component
-
 	using BoundingBoxType = Box<PointType>;
 
 	const BoundingBoxType& boundingBox() const;
