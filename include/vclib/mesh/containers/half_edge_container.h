@@ -51,8 +51,6 @@ public:
 	using HalfEdgeType          = T;
 	using HalfEdgeIterator      = typename Base::ElementIterator;
 	using ConstHalfEdgeIterator = typename Base::ConstElementIterator;
-	using HalfEdgeView          = typename Base::ElementView;
-	using ConstHalfEdgeView     = typename Base::ConstElementView;
 
 	HalfEdgeContainer();
 
@@ -73,8 +71,8 @@ public:
 	HalfEdgeIterator      halfEdgeEnd();
 	ConstHalfEdgeIterator halfEdgeBegin(bool jumpDeleted = true) const;
 	ConstHalfEdgeIterator halfEdgeEnd() const;
-	HalfEdgeView          halfEdges(bool jumpDeleted = true);
-	ConstHalfEdgeView     halfEdges(bool jumpDeleted = true) const;
+	auto                  halfEdges(bool jumpDeleted = true);
+	auto                  halfEdges(bool jumpDeleted = true) const;
 
 	void enableAllPerHalfEdgeOptionalComponents();
 	void disableAllPerHalfEdgeOptionalComponents();

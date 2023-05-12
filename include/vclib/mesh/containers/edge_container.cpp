@@ -241,7 +241,7 @@ typename EdgeContainer<T>::ConstEdgeIterator EdgeContainer<T>::edgeEnd() const
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<EdgeConcept T>
-typename EdgeContainer<T>::EdgeView EdgeContainer<T>::edges(bool jumpDeleted)
+auto EdgeContainer<T>::edges(bool jumpDeleted)
 {
 	return Base::elements(jumpDeleted);
 }
@@ -266,7 +266,7 @@ typename EdgeContainer<T>::EdgeView EdgeContainer<T>::edges(bool jumpDeleted)
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<EdgeConcept T>
-typename EdgeContainer<T>::ConstEdgeView EdgeContainer<T>::edges(bool jumpDeleted) const
+auto EdgeContainer<T>::edges(bool jumpDeleted) const
 {
 	return Base::elements(jumpDeleted);
 }

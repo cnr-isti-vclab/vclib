@@ -251,8 +251,7 @@ typename HalfEdgeContainer<T>::ConstHalfEdgeIterator HalfEdgeContainer<T>::halfE
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<HalfEdgeConcept T>
-typename HalfEdgeContainer<T>::HalfEdgeView
-HalfEdgeContainer<T>::halfEdges(bool jumpDeleted)
+auto HalfEdgeContainer<T>::halfEdges(bool jumpDeleted)
 {
 	return Base::elements(jumpDeleted);
 }
@@ -279,8 +278,7 @@ HalfEdgeContainer<T>::halfEdges(bool jumpDeleted)
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<HalfEdgeConcept T>
-typename HalfEdgeContainer<T>::ConstHalfEdgeView
-HalfEdgeContainer<T>::halfEdges(bool jumpDeleted) const
+auto HalfEdgeContainer<T>::halfEdges(bool jumpDeleted) const
 {
 	return Base::elements(jumpDeleted);
 }

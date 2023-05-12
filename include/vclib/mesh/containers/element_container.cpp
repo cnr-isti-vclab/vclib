@@ -380,7 +380,7 @@ typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementE
 }
 
 /**
- * @brief Returns a small utility object that allows to iterate over the elements of the containers,
+ * @brief Returns a view object that allows to iterate over the elements of the containers,
  * providing two member functions begin() and end().
  *
  * This member function is very useful when you want to iterate over the elements using the C++ foreach
@@ -399,13 +399,13 @@ typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementE
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<ElementConcept T>
-typename ElementContainer<T>::ElementView ElementContainer<T>::elements(bool jumpDeleted)
+auto ElementContainer<T>::elements(bool jumpDeleted)
 {
-	return ElementView(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
+	return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
 }
 
 /**
- * @brief Returns a small utility object that allows to iterate over the elements of the containers,
+ * @brief Returns a view object that allows to iterate over the elements of the containers,
  * providing two member functions begin() and end().
  *
  * This member function is very useful when you want to iterate over the elements using the C++ foreach
@@ -424,9 +424,9 @@ typename ElementContainer<T>::ElementView ElementContainer<T>::elements(bool jum
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<ElementConcept T>
-typename ElementContainer<T>::ConstElementView ElementContainer<T>::elements(bool jumpDeleted) const
+auto ElementContainer<T>::elements(bool jumpDeleted) const
 {
-	return ConstElementView(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
+	return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
 }
 
 template<ElementConcept T>
