@@ -120,7 +120,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept El>
 constexpr bool Mesh<Args...>::hasContainerOf()
 {
-	return HasContainerOfPred<El>::value;
+	return mesh::HasContainerOfPred<Mesh<Args...>, El>::value;
 }
 
 /**
@@ -292,7 +292,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El& e) const requires (hasContainerOf<El>())
 {
-	using Container = typename GetContainerOf<El>::type;
+	using Container = typename ContainerOf<El>::type;
 	return Container::index(&e);
 }
 
@@ -310,8 +310,17 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 {
-	using Container = typename GetContainerOf<El>::type;
+	using Container = typename ContainerOf<El>::type;
 	return Container::index(e);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+uint Mesh<Args...>::addElement()
+{
+	using Cont = ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::addElement();
 }
 
 /**
@@ -325,9 +334,7 @@ uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::addVertex()
 {
-	using VertexContainer = typename Mesh::VertexContainer;
-
-	return addElement<VertexContainer>();
+	return addElement<VERTEX>();
 }
 
 /**
@@ -449,9 +456,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 uint Mesh<Args...>::addFace()
 {
-	using FaceContainer = typename M::FaceContainer;
-
-	return addElement<FaceContainer>();
+	return addElement<FACE>();
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -655,9 +660,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasEdges M>
 uint Mesh<Args...>::addEdge()
 {
-	using EdgeContainer = typename M::EdgeContainer;
-
-	return addElement<EdgeContainer>();
+	return addElement<EDGE>();
 }
 
 /**
@@ -729,9 +732,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasHalfEdges M>
 uint Mesh<Args...>::addHalfEdge()
 {
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-
-	return addElement<HalfEdgeContainer>();
+	return addElement<HALF_EDGE>();
 }
 
 /**
@@ -833,13 +834,6 @@ void Mesh<Args...>::compactHalfEdges()
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
-uint Mesh<Args...>::addElement()
-{
-	return Cont::addElement();
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
 uint Mesh<Args...>::addElements(uint n)
 {
 	return Cont::addElements(n); // add the number elements
@@ -915,7 +909,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE, typename T>
 uint Mesh<Args...>::elementIndex(const T* el) const
 {
-	using Cont = typename GetContainerOfElID<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 	using ElType = typename Cont::ElementType;
 	return index(static_cast<const ElType*>(el));
 }
@@ -1220,7 +1214,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 auto& Mesh<Args...>::customComponents()
 {
-	using ElCont = typename GetContainerOf<El>::type;
+	using ElCont = typename ContainerOf<El>::type;
 
 	return ElCont::ccVecMap;
 }
@@ -1229,7 +1223,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 const auto& Mesh<Args...>::customComponents() const
 {
-	using ElCont = typename GetContainerOf<El>::type;
+	using ElCont = typename ContainerOf<El>::type;
 
 	return ElCont::ccVecMap;
 }
@@ -1238,7 +1232,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 auto& Mesh<Args...>::verticalComponents()
 {
-	using ElCont = typename GetContainerOf<El>::type;
+	using ElCont = typename ContainerOf<El>::type;
 
 	return ElCont::vcVecTuple;
 }
@@ -1247,7 +1241,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 const auto& Mesh<Args...>::verticalComponents() const
 {
-	using ElCont = typename GetContainerOf<El>::type;
+	using ElCont = typename ContainerOf<El>::type;
 
 	return ElCont::vcVecTuple;
 }

@@ -118,6 +118,9 @@ public:
 	template<ElementConcept El>
 	uint index(const El* e) const requires (hasContainerOf<El>());
 
+	template<uint EL_TYPE>
+	uint addElement();
+
 	/*** Vertices ***/
 
 	uint addVertex();
@@ -205,9 +208,6 @@ public:
 	void compactHalfEdges();
 
 protected:
-	template<typename Cont>
-	uint addElement();
-
 	template<typename Cont>
 	uint addElements(uint n);
 
@@ -318,15 +318,8 @@ private:
 
 	// Predicate structures
 
-	template<ElementConcept El>
-	struct HasContainerOfPred
-	{
-		static constexpr bool value =
-			mesh::ContainerOfElementPred<El::ELEMENT_TYPE, Containers>::value;
-	};
-
 	template<uint EL_TYPE>
-	struct GetContainerOfElID
+	struct ContainerOfElement
 	{
 	public:
 		using type = typename FirstType<
@@ -334,16 +327,16 @@ private:
 	};
 
 	/**
-	 * @brief The GetContainerOf struct allows to get the Container of an Element on this Mesh.
+	 * @brief The ContainerOf struct allows to get the Container of an Element on this Mesh.
 	 *
 	 * Usage:
 	 *
 	 * ```cpp
-	 * using Container = GetContainerOf<ElementType>::type;
+	 * using Container = ContainerOf<ElementType>::type;
 	 * ```
 	 */
 	template<ElementConcept El>
-	struct GetContainerOf : public GetContainerOfElID<El::ELEMENT_TYPE>
+	struct ContainerOf : public ContainerOfElement<El::ELEMENT_TYPE>
 	{
 	};
 };

@@ -592,7 +592,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using Container = typename OtherMesh::template GetContainerOf<T>::type;
+		using Container = typename OtherMesh::template ContainerOf<T>::type;
 
 		const Container& c = (const Container&)m;
 
@@ -711,7 +711,7 @@ void ElementContainer<T>::importFrom(const OtherMesh &m)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using Container = typename OtherMesh::template GetContainerOf<T>::type;
+		using Container = typename OtherMesh::template ContainerOf<T>::type;
 
 		const Container& c = (const Container&)m;
 
@@ -751,9 +751,9 @@ void ElementContainer<T>::ElementContainer::importPointersFrom(
 		OtherMesh::template hasContainerOf<T>() && OtherMesh::template hasContainerOf<ElPtrBase>()) {
 
 		// get the containe type of the other mesh for MyBase - used for get the base pointer
-		using OthBaseContainer = typename OtherMesh::template GetContainerOf<ElPtrBase>::type;
+		using OthBaseContainer = typename OtherMesh::template ContainerOf<ElPtrBase>::type;
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using OthTContainer = typename OtherMesh::template GetContainerOf<T>::type;
+		using OthTContainer = typename OtherMesh::template ContainerOf<T>::type;
 
 		// get the container base of the other mesh, that we use to import pointers
 		const auto* cbase = othMesh.OthBaseContainer::vec.data();
