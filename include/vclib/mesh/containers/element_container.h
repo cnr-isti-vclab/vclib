@@ -47,7 +47,8 @@ class ElementContainer : public ElementContainerTriggerer
 	using ElementContainerType = ElementContainer<T>;
 
 public:
-	using ElementType          = T;
+	using ElementType    = T;
+	using ParentMeshType = typename T::ParentMeshType;
 
 	static const uint ELEMENT_TYPE = T::ELEMENT_TYPE;
 
@@ -70,8 +71,7 @@ protected:
 	uint elementIndexIfCompact(uint i) const;
 	std::vector<int> elementCompactIndices() const;
 
-	template<typename MeshType>
-	void setParentMeshPointers(MeshType* parentMesh);
+	void setParentMeshPointers(void* pm);
 
 	template<typename C>
 	bool isOptionalComponentEnabled() const;
@@ -148,15 +148,17 @@ protected:
 	template<typename OtherMesh>
 	void enableOptionalComponentsOf(const OtherMesh& m);
 
-	template<typename OtherMesh, typename ParentMeshType>
-	void importFrom(const OtherMesh& m, ParentMeshType* parent);
+	template<typename OtherMesh, typename MeshType>
+	void importFrom(const OtherMesh& m, MeshType* parent);
 
 	template<typename OtherMesh, typename ElPtrBase>
 	void importPointersFrom(const OtherMesh& othMesh, ElPtrBase* base);
 	
 	// filter components of elements, taking only vertical ones
 	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
-	
+
+    ParentMeshType* parentMesh = nullptr;
+
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.

@@ -34,6 +34,8 @@ namespace vcl {
 template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>::Mesh()
 {
+	// Set to all element containers their parent mesh (this)
+	updateAllParentMeshPointers();
 }
 
 /**
@@ -46,7 +48,7 @@ template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		Args(oth)... // call auto copy constructors for all the container elements and components
 {
-	// Set to all elements their parent mesh (this)
+	// Set to all element containers their parent mesh (this)
 	updateAllParentMeshPointers();
 
 	// save base pointer of each container of the other mesh
@@ -180,7 +182,7 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 	
 	(importContainersAndComponents<Args>(m), ...);
 
-	// Set to all elements their parent mesh (this)
+	// Set to all element containers their parent mesh (this)
 	updateAllParentMeshPointers();
 
 	// after importing ordinary components, we need to convert the pointers between containers.

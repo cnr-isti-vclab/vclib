@@ -198,11 +198,11 @@ std::vector<int> ElementContainer<T>::elementCompactIndices() const
 }
 
 template<ElementConcept T>
-template<typename MeshType>
-void ElementContainer<T>::setParentMeshPointers(MeshType* parentMesh)
+void ElementContainer<T>::setParentMeshPointers(void* pm)
 {
+	parentMesh = static_cast<ParentMeshType*>(pm);
 	for (auto& e : elements(false)) {
-		e.setParentMesh(parentMesh);
+		e.setParentMesh(pm);
 	}
 }
 
@@ -702,8 +702,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 }
 
 template<ElementConcept T>
-template<typename OtherMesh, typename ParentMeshType>
-void ElementContainer<T>::importFrom(const OtherMesh &m, ParentMeshType* parent)
+template<typename OtherMesh, typename MeshType>
+void ElementContainer<T>::importFrom(const OtherMesh &m, MeshType* parent)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast othMesh
