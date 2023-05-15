@@ -323,6 +323,24 @@ uint Mesh<Args...>::addElement()
 	return Cont::addElement();
 }
 
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+uint Mesh<Args...>::addElements(uint n)
+{
+	using Cont = ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::addElements(n); // add the number elements
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+void Mesh<Args...>::reserveElements(uint n)
+{
+	using Cont = ContainerOfElement<EL_TYPE>::type;
+
+	Cont::reserveElements(n);
+}
+
 /**
  * @brief Add a new vertex into the mesh, returning the index of the added vertex.
  *
@@ -372,9 +390,7 @@ uint Mesh<Args...>::addVertex(const typename Mesh::VertexType::CoordType& p)
 template<typename... Args> requires HasVertices<Args...>
 uint Mesh<Args...>::addVertices(uint n)
 {
-	using VertexContainer = typename Mesh::VertexContainer;
-
-	return addElements<VertexContainer>(n);
+	return addElements<VERTEX>(n);
 }
 
 /**
@@ -434,9 +450,7 @@ uint Mesh<Args...>::addVertices(
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::reserveVertices(uint n)
 {
-	using VertexContainer = typename Mesh::VertexContainer;
-
-	reserveElements<VertexContainer>(n);
+	reserveElements<VERTEX>(n);
 }
 
 /**
@@ -545,18 +559,14 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 uint Mesh<Args...>::addFaces(uint n)
 {
-	using FaceContainer = typename M::FaceContainer;
-
-	return addElements<FaceContainer>(n);
+	return addElements<FACE>(n);
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 void Mesh<Args...>::reserveFaces(uint n)
 {
-	using FaceContainer = typename M::FaceContainer;
-
-	reserveElements<FaceContainer>(n);
+	reserveElements<FACE>(n);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -681,9 +691,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasEdges M>
 uint Mesh<Args...>::addEdges(uint n)
 {
-	using EdgeContainer = typename M::EdgeContainer;
-
-	return addElements<EdgeContainer>(n);
+	return addElements<EDGE>(n);
 }
 
 /**
@@ -707,9 +715,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasEdges M>
 void Mesh<Args...>::reserveEdges(uint n)
 {
-	using EdgeContainer = typename M::EdgeContainer;
-
-	reserveElements<EdgeContainer>(n);
+	reserveElements<EDGE>(n);
 }
 
 /**
@@ -753,9 +759,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasHalfEdges M>
 uint Mesh<Args...>::addHalfEdges(uint n)
 {
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-
-	return addElements<HalfEdgeContainer>(n);
+	return addElements<HALF_EDGE>(n);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -807,9 +811,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasHalfEdges M>
 void Mesh<Args...>::reserveHalfEdges(uint n)
 {
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-
-	reserveElements<HalfEdgeContainer>(n);
+	reserveElements<HALF_EDGE>(n);
 }
 
 /**
@@ -831,20 +833,6 @@ void Mesh<Args...>::compactHalfEdges()
 /*********************
  * Protected Members *
  *********************/
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
-uint Mesh<Args...>::addElements(uint n)
-{
-	return Cont::addElements(n); // add the number elements
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
-void Mesh<Args...>::reserveElements(uint n)
-{
-	Cont::reserveElements(n);
-}
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>

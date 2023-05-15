@@ -121,6 +121,12 @@ public:
 	template<uint EL_TYPE>
 	uint addElement();
 
+	template<uint EL_TYPE>
+	uint addElements(uint n);
+
+	template<uint EL_TYPE>
+	void reserveElements(uint n);
+
 	/*** Vertices ***/
 
 	uint addVertex();
@@ -208,12 +214,6 @@ public:
 	void compactHalfEdges();
 
 protected:
-	template<typename Cont>
-	uint addElements(uint n);
-
-	template<typename Cont>
-	void reserveElements(uint n);
-
 	template<typename Cont>
 	void compactElements();
 
