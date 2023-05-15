@@ -179,8 +179,8 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 	// In case of containers, it first creates the same number of elements in the container,
 	// and then calls the importFrom function for each new element.
 	// Pointers are not managed here, since they need additional parameters to be imported
-	
-	(importContainersAndComponents<Args>(m), ...);
+
+	(Args::importFrom(m), ...);
 
 	// Set to all element containers their parent mesh (this)
 	updateAllParentMeshPointers();
@@ -841,7 +841,7 @@ uint Mesh<Args...>::addElement()
 	// pointers contained in the elements need to be updated
 
 	Element* oldBase = Cont::vec.data();
-	uint     eid     = Cont::addElement(this);
+	uint     eid     = Cont::addElement();
 	Element* newBase = Cont::vec.data();
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
 		// change all the element pointers in the containers
@@ -860,7 +860,7 @@ uint Mesh<Args...>::addElements(uint n)
 	// pointers contained in the other elements need to be updated
 
 	Element* oldBase = Cont::vec.data();
-	uint     eid     = Cont::addElements(n, this); // add the number elements
+	uint     eid     = Cont::addElements(n); // add the number elements
 	Element* newBase = Cont::vec.data();
 
 	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
@@ -877,7 +877,7 @@ void Mesh<Args...>::reserveElements(uint n)
 	using Element = typename Cont::ElementType;
 
 	Element* oldBase = Cont::vec.data();
-	Cont::reserveElements(n, this);
+	Cont::reserveElements(n);
 	Element* newBase = Cont::vec.data();
 	if (oldBase != nullptr && oldBase != newBase)
 		(updatePointers<Args>(oldBase, newBase), ...);
@@ -998,18 +998,6 @@ void Mesh<Args...>::setParentMeshPointers()
 	}
 }
 
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont, typename OthMesh>
-void Mesh<Args...>::importContainersAndComponents(const OthMesh &m)
-{
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
-		Cont::importFrom(m, this);
-	}
-	else {
-		Cont::importFrom(m);
-	}
-}
-
 /**
  * This function will import, for a given container of this mesh that is passed as a template
  * parameter Cont, all the pointers of all the elements from the other mesh m.
@@ -1091,7 +1079,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 
 				// number of other faces to add
 				uint nf = tris.size() / 3 - 1;
-				uint fid = FaceContainer::addElements(nf, this);
+				uint fid = FaceContainer::addElements(nf);
 
 				uint i = 3; // index that cycles into tris
 				for (; fid < FaceContainer::faceContainerSize(); ++fid) {

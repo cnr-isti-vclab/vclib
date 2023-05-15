@@ -447,8 +447,7 @@ void ElementContainer<T>::clearElements()
 }
 
 template<ElementConcept T>
-template<typename MeshType>
-uint ElementContainer<T>::addElement(MeshType* parentMesh)
+uint ElementContainer<T>::addElement()
 {
 	vcVecTuple.resize(vec.size() + 1);
 	ccVecMap.resize(vec.size() + 1);
@@ -477,8 +476,7 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
  * @return the id of the first added element.
  */
 template<ElementConcept T>
-template<typename MeshType>
-uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
+uint ElementContainer<T>::addElements(uint size)
 {
 	ccVecMap.resize(vec.size() + size);
 	vcVecTuple.resize(vec.size() + size);
@@ -502,8 +500,7 @@ uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 }
 
 template<ElementConcept T>
-template<typename MeshType>
-void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
+void ElementContainer<T>::reserveElements(uint size)
 {
 	T* oldB = vec.data();
 	vec.reserve(size);
@@ -518,8 +515,7 @@ void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 }
 
 template<ElementConcept T>
-template<typename MeshType>
-void ElementContainer<T>::resizeElements(uint size, MeshType* parentMesh)
+void ElementContainer<T>::resizeElements(uint size)
 {
 	T* oldB = vec.data();
 	vec.resize(size);
@@ -702,8 +698,8 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 }
 
 template<ElementConcept T>
-template<typename OtherMesh, typename MeshType>
-void ElementContainer<T>::importFrom(const OtherMesh &m, MeshType* parent)
+template<typename OtherMesh>
+void ElementContainer<T>::importFrom(const OtherMesh &m)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast othMesh
@@ -713,7 +709,7 @@ void ElementContainer<T>::importFrom(const OtherMesh &m, MeshType* parent)
 
 		clearElements();
 		// pointer to parent mesh needs to be updated later by the mesh
-		addElements(c.elementContainerSize(), parent);
+		addElements(c.elementContainerSize());
 		unsigned int eid = 0;
 		for (const typename Container::ElementType& e : c.elements(false)) {
 			element(eid).importFrom(e);

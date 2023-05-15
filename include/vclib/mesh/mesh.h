@@ -265,9 +265,6 @@ private:
 	// private import member functions
 
 	template<typename Cont, typename OthMesh>
-	void importContainersAndComponents(const OthMesh& m);
-
-	template<typename Cont, typename OthMesh>
 	void importPointers(const OthMesh& m);
 
 	template<typename Cont, typename ElemCont, typename OthMesh>
