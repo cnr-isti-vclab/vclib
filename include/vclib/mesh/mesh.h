@@ -244,9 +244,6 @@ private:
 	void init() {};
 	bool isEnabled() { return true; }
 
-	template<uint EL_TYPE, typename T>
-	uint elementIndex(const T* el) const;
-
 	template<HasFaces M = Mesh>
 	void addFaceHelper(typename M::FaceType& f);
 
@@ -306,6 +303,9 @@ private:
 	static void updatePointersOfContainerType(Mesh<A...>& m, const Array& bases);
 
 	// member functions used by friends
+
+	template<uint EL_TYPE, typename T>
+	uint elementIndex(const T* el) const;
 
 	template<typename El>
 	auto& customComponents();

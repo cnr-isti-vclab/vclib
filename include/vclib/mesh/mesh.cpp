@@ -895,15 +895,6 @@ void Mesh<Args...>::updatePointersAfterCompact(
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<uint EL_TYPE, typename T>
-uint Mesh<Args...>::elementIndex(const T* el) const
-{
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
-	using ElType = typename Cont::ElementType;
-	return index(static_cast<const ElType*>(el));
-}
-
-template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 void Mesh<Args...>::addFaceHelper(typename M::FaceType&)
 {
@@ -1197,6 +1188,15 @@ void Mesh<Args...>::updatePointersOfContainerType(Mesh<A...>& m, const Array& ba
 		// old base is contained in the array bases, the new base is the base of the container
 		(m.template updatePointers<A>((const ElType*)bases[I], m.Cont::vec.data()), ...);
 	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, typename T>
+uint Mesh<Args...>::elementIndex(const T* el) const
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using ElType = typename Cont::ElementType;
+	return index(static_cast<const ElType*>(el));
 }
 
 template<typename... Args> requires HasVertices<Args...>
