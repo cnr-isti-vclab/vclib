@@ -127,6 +127,9 @@ public:
 	template<uint EL_TYPE>
 	void reserveElements(uint n);
 
+	template<uint EL_TYPE>
+	void compactElements();
+
 	/*** Vertices ***/
 
 	uint addVertex();
@@ -215,10 +218,10 @@ public:
 
 protected:
 	template<typename Cont>
-	void compactElements();
+	void compactContainer();
 
 	template<typename Cont>
-	void clearElements();
+	void clearContainer();
 
 	template<ElementConcept Element>
 	void updateAllPointers(const Element* oldBase, const Element* newBase);

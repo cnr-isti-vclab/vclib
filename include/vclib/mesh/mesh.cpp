@@ -81,13 +81,13 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::clear()
 {
-	(clearElements<Args>(), ...);
+    (clearContainer<Args>(), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::compact()
 {
-	(compactElements<Args>(), ...);
+	(compactContainer<Args>(), ...);
 }
 
 /**
@@ -341,6 +341,15 @@ void Mesh<Args...>::reserveElements(uint n)
 	Cont::reserveElements(n);
 }
 
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+void Mesh<Args...>::compactElements()
+{
+	using Cont = ContainerOfElement<EL_TYPE>::type;
+
+	Cont::compactElements();
+}
+
 /**
  * @brief Add a new vertex into the mesh, returning the index of the added vertex.
  *
@@ -461,9 +470,7 @@ void Mesh<Args...>::reserveVertices(uint n)
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::compactVertices()
 {
-	using VertexContainer = typename Mesh::VertexContainer;
-
-	compactElements<VertexContainer>();
+	compactElements<VERTEX>();
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -573,9 +580,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasFaces M>
 void Mesh<Args...>::compactFaces()
 {
-	using FaceContainer = typename M::FaceContainer;
-
-	compactElements<FaceContainer>();
+	compactElements<FACE>();
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -729,9 +734,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasEdges M>
 void Mesh<Args...>::compactEdges()
 {
-	using EdgeContainer = typename M::EdgeContainer;
-
-	compactElements<EdgeContainer>();
+	compactElements<EDGE>();
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -825,9 +828,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<HasHalfEdges M>
 void Mesh<Args...>::compactHalfEdges()
 {
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-
-	compactElements<HalfEdgeContainer>();
+	compactElements<HALF_EDGE>();
 }
 
 /*********************
@@ -836,7 +837,7 @@ void Mesh<Args...>::compactHalfEdges()
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
-void Mesh<Args...>::compactElements()
+void Mesh<Args...>::compactContainer()
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		if (Cont::elementNumber() != Cont::elementContainerSize()) {
@@ -847,7 +848,7 @@ void Mesh<Args...>::compactElements()
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
-void Mesh<Args...>::clearElements()
+void Mesh<Args...>::clearContainer()
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::clearElements();
