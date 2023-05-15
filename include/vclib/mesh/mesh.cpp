@@ -318,7 +318,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
 uint Mesh<Args...>::addElement()
 {
-	using Cont = ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	return Cont::addElement();
 }
@@ -327,7 +327,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
 uint Mesh<Args...>::addElements(uint n)
 {
-	using Cont = ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	return Cont::addElements(n); // add the number elements
 }
@@ -336,7 +336,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
 void Mesh<Args...>::reserveElements(uint n)
 {
-	using Cont = ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	Cont::reserveElements(n);
 }
@@ -345,7 +345,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
 void Mesh<Args...>::compactElements()
 {
-	using Cont = ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	Cont::compactElements();
 }
