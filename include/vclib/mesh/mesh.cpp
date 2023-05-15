@@ -835,52 +835,21 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
 uint Mesh<Args...>::addElement()
 {
-	using Element = typename Cont::ElementType;
-
-	// If the base pointer of the container of elements changes, it means that all the elements
-	// pointers contained in the elements need to be updated
-
-	Element* oldBase = Cont::vec.data();
-	uint     eid     = Cont::addElement();
-	Element* newBase = Cont::vec.data();
-	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the element pointers in the containers
-		(updatePointers<Args>(oldBase, newBase), ...);
-	}
-	return eid;
+	return Cont::addElement();
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
 uint Mesh<Args...>::addElements(uint n)
 {
-	using Element = typename Cont::ElementType;
-
-	// If the base pointer of the container of elements changes, it means that all the elements
-	// pointers contained in the other elements need to be updated
-
-	Element* oldBase = Cont::vec.data();
-	uint     eid     = Cont::addElements(n); // add the number elements
-	Element* newBase = Cont::vec.data();
-
-	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the element pointers in the other containers
-		(updatePointers<Args>(oldBase, newBase), ...);
-	}
-	return eid;
+	return Cont::addElements(n); // add the number elements
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
 void Mesh<Args...>::reserveElements(uint n)
 {
-	using Element = typename Cont::ElementType;
-
-	Element* oldBase = Cont::vec.data();
 	Cont::reserveElements(n);
-	Element* newBase = Cont::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updatePointers<Args>(oldBase, newBase), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -889,12 +858,7 @@ void Mesh<Args...>::compactElements()
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		if (Cont::elementNumber() != Cont::elementContainerSize()) {
-			auto* oldBase = Cont::vec.data();
-			std::vector<int> newIndices = Cont::compactElements();
-			auto* newBase = Cont::vec.data();
-			assert(oldBase == newBase);
-
-			(updatePointersAfterCompact<Args>(oldBase, newIndices), ...);
+			Cont::compactElements();
 		}
 	}
 }
@@ -909,6 +873,14 @@ void Mesh<Args...>::clearElements()
 }
 
 template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept Element>
+void Mesh<Args...>::updateAllPointers(const Element* oldBase, const Element* newBase)
+{
+	if (oldBase != nullptr && oldBase != newBase)
+		(updatePointers<Args>(oldBase, newBase), ...);
+}
+
+template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename Element>
 void Mesh<Args...>::updatePointers(
 	const Element* oldBase,
@@ -917,6 +889,15 @@ void Mesh<Args...>::updatePointers(
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updatePointers(oldBase, newBase);
 	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept Element>
+void Mesh<Args...>::updateAllPointersAfterCompact(
+	const Element* base,
+	const std::vector<int>& newIndices)
+{
+	(updatePointersAfterCompact<Args>(base, newIndices), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>

@@ -462,6 +462,7 @@ uint ElementContainer<T>::addElement()
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
 	}
 
 	return vec.size() - 1;
@@ -494,6 +495,7 @@ uint ElementContainer<T>::addElements(uint size)
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
 	}
 
 	return baseId;
@@ -511,6 +513,7 @@ void ElementContainer<T>::reserveElements(uint size)
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
 	}
 }
 
@@ -526,6 +529,7 @@ void ElementContainer<T>::resizeElements(uint size)
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
 	}
 }
 
@@ -550,10 +554,14 @@ std::vector<int> ElementContainer<T>::compactElements()
 			}
 		}
 		k++;
+		T* base = vec.data();
 		vec.resize(k);
+		assert(base == vec.data());
 
 		ccVecMap.compact(newIndices);
 		vcVecTuple.compact(newIndices);
+
+		parentMesh->updateAllPointersAfterCompact(base, newIndices);
 	}
 	return newIndices;
 }
