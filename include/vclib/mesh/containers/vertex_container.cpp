@@ -132,7 +132,7 @@ uint VertexContainer<T>::addVertex()
  * @return the id of the new vertex.
  */
 template<vcl::VertexConcept T>
-uint VertexContainer<T>::addVertex(const T::CoordType& p)
+uint VertexContainer<T>::addVertex(const typename T::CoordType& p)
 {
 	uint vid = addVertex();  // using the previously defined addVertex function
 	vertex(vid).coord() = p; // set the coordinate to the vertex
@@ -180,7 +180,7 @@ uint VertexContainer<T>::addVertices(uint n)
  */
 template<vcl::VertexConcept T>
 template<typename... VC>
-uint VertexContainer<T>::addVertices(const T::CoordType& p, const VC&... v)
+uint VertexContainer<T>::addVertices(const typename T::CoordType& p, const VC&... v)
 {
 	uint vid = vertexContainerSize();
 	reserveVertices(vid + sizeof...(VC) + 1); // reserve the new number of vertices
