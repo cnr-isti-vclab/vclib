@@ -120,8 +120,6 @@ uint EdgeContainer<T>::addEdge()
  * If the call of this function will cause a reallocation of the EdgeContainer, the function
  * will automatically take care of updating all the Edge pointers contained in the Mesh.
  *
- * This function will be available only **if the Mesh has the Edge Container**.
- *
  * @param n: the number of edges to add to the mesh.
  * @return the id of the first added edge.
  */
@@ -144,8 +142,6 @@ uint EdgeContainer<T>::addEdges(uint n)
  * If the call of this function will cause a reallocation of the Edge container, the function
  * will automatically take care of updating all the Edge pointers contained in the Mesh.
  *
- * This function will be available only **if the Mesh has the Edge Container**.
- *
  * @param n: the new capacity of the edge container.
  */
 template<EdgeConcept T>
@@ -158,8 +154,6 @@ void EdgeContainer<T>::reserveEdges(uint n)
  * @brief Compacts the EdgeContainer, removing all the edges marked as deleted. Edges indices
  * will change accordingly. The function will automatically take care of updating all the Edge
  * pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the Edge Container**.
  */
 template<EdgeConcept T>
 void EdgeContainer<T>::compactEdges()

@@ -107,6 +107,62 @@ uint HalfEdgeContainer<T>::deletedHalfEdgeNumber() const
 	return Base::deletedElementNumber();
 }
 
+template<HalfEdgeConcept T>
+uint HalfEdgeContainer<T>::addHalfEdge()
+{
+	return Base::addElement();
+}
+
+/**
+ * @brief Add an arbitrary number of n Halfedges, returning the id of the first added Halfedge.
+ *
+ * This means that, if you want to add 5 Halfedges and this member function returns 4, the added
+ * Halfedges will have id from 4 to id 8 included.
+ *
+ * If the call of this function will cause a reallocation of the HalfEdgeContainer, the function
+ * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
+ *
+ * @param n: the number of Halfedges to add to the mesh.
+ * @return the id of the first added Halfedge.
+ */
+template<HalfEdgeConcept T>
+uint HalfEdgeContainer<T>::addHalfEdges(uint n)
+{
+	return Base::addElements(n);
+}
+
+/**
+ * @brief Reserve a number of Halfedges in the container of HalfEdges. This is useful when you know
+ * (or you have an idea) of how much Halfedges are going to add into a newly of existing mesh.
+ * Calling this function before any addHalfEdge() call will avoid unuseful reallocations of the
+ * container, saving execution time.
+ *
+ * The filosofy of this function is similar to the one of the
+ * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
+ * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
+ *
+ * If the call of this function will cause a reallocation of the HalfEdge container, the function
+ * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
+ *
+ * @param n: the new capacity of the Halfedge container.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::reserveHalfEdges(uint n)
+{
+	Base::reserveElements(n);
+}
+
+/**
+ * @brief Compacts the HalfEdgeContainer, removing all the Halfedges marked as deleted. HalfEdges
+ * indices will change accordingly. The function will automatically take care of updating all the
+ * HalfEdge pointers contained in the Mesh.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::compactHalfEdges()
+{
+	Base::compactElements();
+}
+
 /**
  * @brief Marks as deleted the halfedge with the given id.
  *

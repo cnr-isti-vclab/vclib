@@ -152,20 +152,8 @@ public:
 
 	/*** HalfEdges ***/
 
-	template<HasHalfEdges M = Mesh>
-	uint addHalfEdge();
-
-	template<HasHalfEdges M = Mesh>
-	uint addHalfEdges(uint n);
-
 	template<typename M = Mesh> requires HasHalfEdges<M> && HasFaces<M>
 	uint addHalfEdgesToFace(uint n, typename M::FaceType& f);
-
-	template<HasHalfEdges M = Mesh>
-	void reserveHalfEdges(uint n);
-
-	template<HasHalfEdges M = Mesh>
-	void compactHalfEdges();
 
 protected:
 	template<typename Cont>

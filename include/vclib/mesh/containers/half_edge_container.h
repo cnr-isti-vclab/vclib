@@ -61,6 +61,11 @@ public:
 	uint halfEdgeContainerSize() const;
 	uint deletedHalfEdgeNumber() const;
 
+	uint addHalfEdge();
+	uint addHalfEdges(uint n);
+	void reserveHalfEdges(uint n);
+	void compactHalfEdges();
+
 	void deleteHalfEdge(uint i);
 	void deleteHalfEdge(const HalfEdgeType* e);
 

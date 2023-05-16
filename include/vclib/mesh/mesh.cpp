@@ -407,7 +407,7 @@ uint Mesh<Args...>::addFace(Iterator begin, Iterator end)
 		HalfEdge* curr;
 		for (Iterator it = begin; it != end; ++it) {
 			Vertex* v = &VertexContainer::vertex(*it);
-			uint heid = addHalfEdge();
+			uint heid = HalfEdgeContainer::addHalfEdge();
 			curr = &HalfEdgeContainer::halfEdge(heid);
 			curr->fromVertex() = v;
 			v->halfEdge() = curr;
@@ -461,41 +461,13 @@ void Mesh<Args...>::compactFaces()
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-uint Mesh<Args...>::addHalfEdge()
-{
-	return addElement<HALF_EDGE>();
-}
-
-/**
- * @brief Add an arbitrary number of n Halfedges, returning the id of the first added Halfedge.
- *
- * This means that, if you want to add 5 Halfedges and this member function returns 4, the added
- * Halfedges will have id from 4 to id 8 included.
- *
- * If the call of this function will cause a reallocation of the HalfEdgeContainer, the function
- * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the HalfEdge Container**.
- *
- * @param n: the number of Halfedges to add to the mesh.
- * @return the id of the first added Halfedge.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-uint Mesh<Args...>::addHalfEdges(uint n)
-{
-	return addElements<HALF_EDGE>(n);
-}
-
-template<typename... Args> requires HasVertices<Args...>
 template<typename M> requires HasHalfEdges<M> && HasFaces<M>
 uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
 {
 	using HalfEdge = typename Mesh<Args...>::HalfEdgeType;
 	using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
 
-	uint first = addHalfEdges(n);
+	uint first = HalfEdgeContainer::addHalfEdges(n);
 	HalfEdge* hef =  &HalfEdgeContainer::halfEdge(first);
 	uint curr;
 	HalfEdge* prev = nullptr;
@@ -514,44 +486,6 @@ uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
 	}
 	f.outerHalfEdge() = hef;
 	return first;
-}
-
-/**
- * @brief Reserve a number of Halfedges in the container of HalfEdges. This is useful when you know
- * (or you have an idea) of how much Halfedges are going to add into a newly of existing mesh.
- * Calling this function before any addHalfEdge() call will avoid unuseful reallocations of the
- * container, saving execution time.
- *
- * The filosofy of this function is similar to the one of the
- * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
- * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
- *
- * If the call of this function will cause a reallocation of the HalfEdge container, the function
- * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the HalfEdge Container**.
- *
- * @param n: the new capacity of the Halfedge container.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-void Mesh<Args...>::reserveHalfEdges(uint n)
-{
-	reserveElements<HALF_EDGE>(n);
-}
-
-/**
- * @brief Compacts the HalfEdgeContainer, removing all the Halfedges marked as deleted. HalfEdges
- * indices will change accordingly. The function will automatically take care of updating all the
- * HalfEdge pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the HalfEdge Container**.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-void Mesh<Args...>::compactHalfEdges()
-{
-	compactElements<HALF_EDGE>();
 }
 
 /*********************
