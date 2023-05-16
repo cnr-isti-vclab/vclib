@@ -61,6 +61,11 @@ public:
 	uint edgeContainerSize() const;
 	uint deletedEdgeNumber() const;
 
+	uint addEdge();
+	uint addEdges(uint n);
+	void reserveEdges(uint n);
+	void compactEdges();
+
 	void deleteEdge(uint i);
 	void deleteEdge(const EdgeType* e);
 

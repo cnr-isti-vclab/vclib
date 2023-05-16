@@ -23,6 +23,9 @@
 
 #include "wedge_colors.h"
 
+#include <vclib/concepts/mesh/components/color.h>
+#include <vclib/concepts/mesh/components/face_half_edge_pointers.h>
+
 namespace vcl::comp {
 
 template<int N, typename El, bool O>
@@ -193,7 +196,17 @@ const Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors() const
 template <typename T>
 bool isWedgeColorsEnabledOn(const T& element)
 {
-	if constexpr(HasOptionalWedgeColors<T>) {
+	if constexpr (HasFaceHalfEdgePointers<T>) { // Dcel case
+		// Half edges with optional colors
+		if constexpr (HasOptionalColor<typename T::HalfEdgeType>) {
+			return element.outerHalfEdge() != nullptr &&
+				   element.outerHalfEdge()->isTexCoordEnabled();
+		}
+		else { // half edge with/out static colors
+			return HasColor<typename T::HalfEdgeType>;
+		}
+	}
+	else if constexpr(HasOptionalWedgeColors<T>) { // No Dcel case
 		return element.isWedgeColorsEnabled();
 	}
 	else {

@@ -105,6 +105,68 @@ uint EdgeContainer<T>::deletedEdgeNumber() const
 	return Base::deletedElementNumber();
 }
 
+template<EdgeConcept T>
+uint EdgeContainer<T>::addEdge()
+{
+	return Base::addElement();
+}
+
+/**
+ * @brief Add an arbitrary number of n edges, returning the id of the first added edge.
+ *
+ * This means that, if you want to add 5 edges and this member function returns 4, the added
+ * edges will have id from 4 to id 8 included.
+ *
+ * If the call of this function will cause a reallocation of the EdgeContainer, the function
+ * will automatically take care of updating all the Edge pointers contained in the Mesh.
+ *
+ * This function will be available only **if the Mesh has the Edge Container**.
+ *
+ * @param n: the number of edges to add to the mesh.
+ * @return the id of the first added edge.
+ */
+template<EdgeConcept T>
+uint EdgeContainer<T>::addEdges(uint n)
+{
+	return Base::addElements(n);
+}
+
+/**
+ * @brief Reserve a number of edges in the container of Edges. This is useful when you know
+ * (or you have an idea) of how much edges are going to add into a newly of existing mesh.
+ * Calling this function before any addEdge() call will avoid unuseful reallocations of the
+ * container, saving execution time.
+ *
+ * The filosofy of this function is similar to the one of the
+ * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
+ * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
+ *
+ * If the call of this function will cause a reallocation of the Edge container, the function
+ * will automatically take care of updating all the Edge pointers contained in the Mesh.
+ *
+ * This function will be available only **if the Mesh has the Edge Container**.
+ *
+ * @param n: the new capacity of the edge container.
+ */
+template<EdgeConcept T>
+void EdgeContainer<T>::reserveEdges(uint n)
+{
+	Base::reserveElements(n);
+}
+
+/**
+ * @brief Compacts the EdgeContainer, removing all the edges marked as deleted. Edges indices
+ * will change accordingly. The function will automatically take care of updating all the Edge
+ * pointers contained in the Mesh.
+ *
+ * This function will be available only **if the Mesh has the Edge Container**.
+ */
+template<EdgeConcept T>
+void EdgeContainer<T>::compactEdges()
+{
+	Base::compactElements();
+}
+
 /**
  * @brief Marks as deleted the edge with the given id.
  *

@@ -150,20 +150,6 @@ public:
 	template<HasFaces M = Mesh>
 	void compactFaces();
 
-	/*** Edges ***/
-
-	template<HasEdges M = Mesh>
-	uint addEdge();
-
-	template<HasEdges M = Mesh>
-	uint addEdges(uint n);
-
-	template<HasEdges M = Mesh>
-	void reserveEdges(uint n);
-
-	template<HasEdges M = Mesh>
-	void compactEdges();
-
 	/*** HalfEdges ***/
 
 	template<HasHalfEdges M = Mesh>
