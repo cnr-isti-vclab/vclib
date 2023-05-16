@@ -68,6 +68,16 @@ public:
 	uint vertexContainerSize() const;
 	uint deletedVertexNumber() const;
 
+	uint addVertex();
+	uint addVertex(const typename T::CoordType& p);
+	uint addVertices(uint n);
+
+	template<typename... VC>
+	uint addVertices(const typename T::CoordType& p, const VC&... v);
+
+	void reserveVertices(uint n);
+	void compactVertices();
+
 	void deleteVertex(uint i);
 	void deleteVertex(const VertexType* v);
 

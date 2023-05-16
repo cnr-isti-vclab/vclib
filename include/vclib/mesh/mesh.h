@@ -130,18 +130,6 @@ public:
 	template<uint EL_TYPE>
 	void compactElements();
 
-	/*** Vertices ***/
-
-	uint addVertex();
-	uint addVertex(const typename Mesh::VertexType::CoordType& p);
-	uint addVertices(uint n);
-
-	template<typename... VC>
-	uint addVertices(const typename Mesh::VertexType::CoordType& p, const VC&... v);
-
-	void reserveVertices(uint n);
-	void compactVertices();
-
 	/*** Faces ***/
 
 	template<HasFaces M = Mesh>
