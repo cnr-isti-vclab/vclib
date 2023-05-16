@@ -162,29 +162,6 @@ public:
 	template<HasFaces M = Mesh>
 	void compactFaces();
 
-	// functions that could involve other components
-	// need to be here and not in the FaceContainer due to the possibility to be in a Dcel
-
-	// WedgeColors
-	template<HasFaces M = Mesh>
-	bool isPerFaceWedgeColorsEnabled() const requires internal::OptionalWedgeColorsConcept<M>;
-
-	template<HasFaces M = Mesh>
-	void enablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>;
-
-	template<HasFaces M = Mesh>
-	void disablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>;
-
-	// WedgeTexCoords
-	template<HasFaces M = Mesh>
-	bool isPerFaceWedgeTexCoordsEnabled() const requires internal::OptionalWedgeTexCoordsConcept<M>;
-
-	template<HasFaces M = Mesh>
-	void enablePerFaceWedgeTexCoords() requires internal::OptionalWedgeTexCoordsConcept<M>;
-
-	template<HasFaces M = Mesh>
-	void disablePerFaceWedgeTexCoords() requires internal::OptionalWedgeTexCoordsConcept<M>;
-
 	/*** Edges ***/
 
 	template<HasEdges M = Mesh>

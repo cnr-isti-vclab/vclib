@@ -68,8 +68,9 @@ class FaceHalfEdgePointers :
 	using Face   = typename HalfEdge::FaceType;
 
 public:
-	using HalfEdgeType = HalfEdge;
-	using VertexType   = typename HalfEdge::VertexType;
+	using HalfEdgeType      = HalfEdge;
+	using VertexType        = typename HalfEdge::VertexType;
+	using WedgeTexCoordType = typename HalfEdge::TexCoordType;
 
 	/* Iterator Types declaration */
 

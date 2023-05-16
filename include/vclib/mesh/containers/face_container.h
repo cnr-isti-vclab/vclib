@@ -117,6 +117,16 @@ public:
 	void enablePerFaceQuality() requires face::HasOptionalQuality<T>;
 	void disablePerFaceQuality() requires face::HasOptionalQuality<T>;
 
+	// WedgeColors
+	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
+	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
+	void disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
+
+	// WedgeTexCoords
+	bool isPerFaceWedgeTexCoordsEnabled() const requires face::HasOptionalWedgeTexCoords<T>;
+	void enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
+	void disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
+
 	// Custom Components
 	bool hasPerFaceCustomComponent(const std::string& name) const
 		requires face::HasCustomComponents<T>;
@@ -150,17 +160,6 @@ public:
 	ConstCustomComponentVectorHandle<K>
 	perFaceCustomComponentVectorHandle(const std::string& name) const
 		requires face::HasCustomComponents<T>;
-
-protected:
-	// WedgeColors
-	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
-	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
-	void disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
-
-	// WedgeTexCoords
-	bool isPerFaceWedgeTexCoordsEnabled() const requires face::HasOptionalWedgeTexCoords<T>;
-	void enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
-	void disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
 
 };
 

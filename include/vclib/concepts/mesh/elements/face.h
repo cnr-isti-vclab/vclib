@@ -110,11 +110,15 @@ concept HasVertexPointers = comp::HasVertexPointers<T>;
 template<typename T>
 concept HasWedgeColors = comp::HasWedgeColors<T>;
 template<typename T>
-concept HasOptionalWedgeColors = comp::HasOptionalWedgeColors<T>;
+concept HasOptionalWedgeColors =
+	(comp::HasOptionalWedgeColors<T> ||
+		(comp::HasFaceHalfEdgePointers<T> && comp::HasOptionalColor<typename T::HalfEdgeType>));
 template<typename T>
 concept HasWedgeTexCoords = comp::HasWedgeTexCoords<T>;
 template<typename T>
-concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
+concept HasOptionalWedgeTexCoords =
+	(comp::HasOptionalWedgeTexCoords<T> ||
+		(comp::HasFaceHalfEdgePointers<T> && comp::HasOptionalTexCoord<typename T::HalfEdgeType>));
 
 /** @} */ // end of group
 

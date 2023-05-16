@@ -591,6 +591,105 @@ void FaceContainer<T>::disablePerFaceQuality() requires face::HasOptionalQuality
 }
 
 /**
+ * @brief Checks if the face Optional WedgeColors Faces is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
+ *
+ * @return true if the Optional WedgeColors is enabled, false otherwise.
+ */
+template<FaceConcept T>
+bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>
+{
+	if constexpr (comp::HasOptionalWedgeColors<T>)
+		return Base::template isOptionalComponentEnabled<typename T::WedgeColors>();
+	else
+		return Base::parentMesh->isPerHalfEdgeColorEnabled();
+}
+
+/**
+ * @brief Enable the Optional Wedge Colors of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
+ *
+ * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge colors number will
+ * be the same of the vertex number for each face of the container. This is because, for Faces,
+ * Wedge Colors number is tied to the number of vertices.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
+{
+	if constexpr (comp::HasOptionalWedgeColors<T>)
+		Base::template enableOptionalComponent<typename T::WedgeColors>();
+	else
+		Base::parentMesh->enablePerHalfEdgeColor();
+}
+
+/**
+ * @brief Disables the Optional Wedge Colors of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
+{
+	if constexpr (comp::HasOptionalWedgeColors<T>)
+		Base::template disableOptionalComponent<typename T::WedgeColors>();
+	else
+		Base::parentMesh->disablePerHalfEdgeColor();
+}
+
+/**
+ * @brief Checks if the face Optional WedgeTexCoords Faces is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
+ * Component.
+ * @return true if the Optional WedgeTexCoords is enabled, false otherwise.
+ */
+template<FaceConcept T>
+bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
+	const requires face::HasOptionalWedgeTexCoords<T>
+{
+	if constexpr (comp::HasOptionalWedgeTexCoords<T>)
+		return Base::template isOptionalComponentEnabled<typename T::WedgeTexCoords>();
+	else
+		return Base::parentMesh->isPerHalfEdgeTexCoordEnabled();
+}
+
+/**
+ * @brief Enables the Optional Wedge TexCoords of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
+ * Component.
+ *
+ * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge texcoord number
+ * will be the same of the vertex number for each face of the container. This is because, for Faces,
+ * Wedge TexCoords number is tied to the number of vertices.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
+{
+	if constexpr (comp::HasOptionalWedgeTexCoords<T>)
+		Base::template enableOptionalComponent<typename T::WedgeTexCoords>();
+	else
+		Base::parentMesh->enablePerHalfEdgeTexCoord();
+}
+
+/**
+ * @brief Disables the Optional WedgeTex Coords of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
+ * Component.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
+{
+	if constexpr (comp::HasOptionalWedgeTexCoords<T>)
+		Base::template disableOptionalComponent<typename T::WedgeTexCoords>();
+	else
+		Base::parentMesh->disablePerHalfEdgeTexCoord();
+}
+
+/**
  * @brief Checks if faces have a custom component with the given name.
  *
  * This function does not take into account the type of the custom component.
@@ -799,87 +898,6 @@ ConstCustomComponentVectorHandle<K> FaceContainer<T>::perFaceCustomComponentVect
 	const std::string& name) const requires face::HasCustomComponents<T>
 {
 	return Base::template customComponentVectorHandle<K>(name);
-}
-
-/**
- * @brief Checks if the face Optional WedgeColors Faces is enabled.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
- *
- * @return true if the Optional WedgeColors is enabled, false otherwise.
- */
-template<FaceConcept T>
-bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>
-{
-	return Base::template isOptionalComponentEnabled<typename T::WedgeColors>();
-}
-
-/**
- * @brief Enable the Optional Wedge Colors of the face.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
- *
- * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge colors number will
- * be the same of the vertex number for each face of the container. This is because, for Faces,
- * Wedge Colors number is tied to the number of vertices.
- */
-template<FaceConcept T>
-void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
-{
-	return Base::template enableOptionalComponent<typename T::WedgeColors>();
-}
-
-/**
- * @brief Disables the Optional Wedge Colors of the face.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
- */
-template<FaceConcept T>
-void FaceContainer<T>::disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
-{
-	return Base::template disableOptionalComponent<typename T::WedgeColors>();
-}
-
-/**
- * @brief Checks if the face Optional WedgeTexCoords Faces is enabled.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
- * Component.
- * @return true if the Optional WedgeTexCoords is enabled, false otherwise.
- */
-template<FaceConcept T>
-bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
-	const requires face::HasOptionalWedgeTexCoords<T>
-{
-	return Base::template isOptionalComponentEnabled<typename T::WedgeTexCoords>();
-}
-
-/**
- * @brief Enables the Optional Wedge TexCoords of the face.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
- * Component.
- *
- * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge texcoord number
- * will be the same of the vertex number for each face of the container. This is because, for Faces,
- * Wedge TexCoords number is tied to the number of vertices.
- */
-template<FaceConcept T>
-void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
-{
-	return Base::template enableOptionalComponent<typename T::WedgeTexCoords>();
-}
-
-/**
- * @brief Disables the Optional WedgeTex Coords of the face.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
- * Component.
- */
-template<FaceConcept T>
-void FaceContainer<T>::disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
-{
-	return Base::template disableOptionalComponent<typename T::WedgeTexCoords>();
 }
 
 } // namespace vcl::mesh
