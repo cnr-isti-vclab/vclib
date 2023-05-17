@@ -30,8 +30,10 @@ void trimeshStaticAsserts()
 	static_assert(comp::IsTiedToVertexNumber<TriMesh::Face::AdjacentFaces>, "");
 	static_assert(!comp::IsTiedToVertexNumber<TriMesh::Vertex::AdjacentFaces>, "");
 
-    static_assert(!comp::ComponentConcept<TriMesh::VertexContainer>, "");
+	static_assert(!comp::ComponentConcept<TriMesh::VertexContainer>, "");
 	static_assert(comp::ComponentConcept<TriMesh::BoundingBox>, "");
+
+	static_assert(comp::HasOptionalComponentOfType<TriMesh::Face, comp::WEDGE_TEX_COORDS>, "");
 
 	// mesh views
 	meshViewsStaticAsserts<TriMesh>();

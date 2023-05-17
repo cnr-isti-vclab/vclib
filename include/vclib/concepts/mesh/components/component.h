@@ -104,11 +104,6 @@ struct ComponentOfTypePred<COMP_TYPE, TypeWrapper<Containers...>> :
 template<typename T, uint COMP_TYPE>
 concept HasComponentOfType = ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
 
-template<typename T, uint COMP_TYPE>
-concept HasOptionalComponentOfType =
-	HasComponentOfType<T, COMP_TYPE> &&
-	ComponentOfTypePred<COMP_TYPE, typename T::Components>::type::IS_OPTIONAL;
-
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
 {
@@ -131,6 +126,12 @@ concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o)
 	{ o.IS_VERTICAL } -> std::same_as<const bool&>;
 };
 
+template<typename T, uint COMP_TYPE>
+concept HasVerticalComponentOfType
+	= HasComponentOfType<T, COMP_TYPE>
+	  && IsVerticalComponent<typename FirstType<
+		  typename ComponentOfTypePred<COMP_TYPE, typename T::Components>::type>::type>;
+
 template<typename T>
 struct IsVerticalComponentPred
 {
@@ -142,6 +143,12 @@ concept IsOptionalComponent = IsVerticalComponent<T> && T::IS_OPTIONAL == true &
 {
 	{ o.IS_OPTIONAL } -> std::same_as<const bool&>;
 };
+
+template<typename T, uint COMP_TYPE>
+concept HasOptionalComponentOfType
+	= HasComponentOfType<T, COMP_TYPE>
+	  && IsOptionalComponent<typename FirstType<
+		  typename ComponentOfTypePred<COMP_TYPE, typename T::Components>::type>::type>;
 
 template<typename T>
 class PointersComponentTriggerer

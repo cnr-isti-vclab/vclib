@@ -1000,7 +1000,7 @@ void FaceContainer<F>::addFaceHelper(F&)
 
 template<FaceConcept F>
 template<typename... V>
-void FaceContainer<F>::addFaceHelper(F& f, F::VertexType* v, V... args)
+void FaceContainer<F>::addFaceHelper(F& f, typename F::VertexType* v, V... args)
 {
 	// position on which add the vertex
 	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;

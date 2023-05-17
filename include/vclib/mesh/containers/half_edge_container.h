@@ -64,7 +64,7 @@ public:
 	uint addHalfEdge();
 	uint addHalfEdges(uint n);
 
-	template<typename M = Base::ParentMeshType> requires HasFaces<M>
+	template<typename M = typename Base::ParentMeshType> requires HasFaces<M>
 	uint addHalfEdgesToFace(uint n, typename M::FaceType& f);
 
 	void reserveHalfEdges(uint n);
