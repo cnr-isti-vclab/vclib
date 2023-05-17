@@ -130,31 +130,6 @@ public:
 	template<uint EL_TYPE>
 	void compactElements();
 
-	/*** Faces ***/
-
-	template<HasFaces M = Mesh>
-	uint addFace();
-
-	template<HasFaces M = Mesh, typename... V>
-	uint addFace(V... args);
-
-	template<HasFaces M = Mesh, typename Iterator>
-	uint addFace(Iterator begin, Iterator end);
-
-	template<HasFaces M = Mesh>
-	uint addFaces(uint n);
-
-	template<HasFaces M = Mesh>
-	void reserveFaces(uint n);
-
-	template<HasFaces M = Mesh>
-	void compactFaces();
-
-	/*** HalfEdges ***/
-
-	template<typename M = Mesh> requires HasHalfEdges<M> && HasFaces<M>
-	uint addHalfEdgesToFace(uint n, typename M::FaceType& f);
-
 protected:
 	template<typename Cont>
 	void compactContainer();
@@ -182,18 +157,6 @@ private:
 	// hide init and isEnabled members
 	void init() {};
 	bool isEnabled() { return true; }
-
-	template<HasFaces M = Mesh>
-	void addFaceHelper(typename M::FaceType& f);
-
-	template<HasFaces M = Mesh, typename... V>
-	void addFaceHelper(
-		typename M::FaceType&   f,
-		typename Mesh<Args...>::VertexType* v,
-		V... args);
-
-	template<HasFaces M = Mesh, typename... V>
-	void addFaceHelper(typename M::FaceType& f, uint vid, V... args);
 
 	// enable optional components
 

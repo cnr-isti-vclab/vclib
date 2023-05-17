@@ -105,6 +105,98 @@ uint FaceContainer<T>::deletedFaceNumber() const
 	return Base::deletedElementNumber();
 }
 
+template<FaceConcept T>
+uint FaceContainer<T>::addFace()
+{
+	return Base::addElement();
+}
+
+template<FaceConcept T>
+template<typename... V>
+uint FaceContainer<T>::addFace(V... args) requires (sizeof...(args) >= 3)
+{
+	uint  fid = addFace();
+	Face& f   = face(fid);
+
+	constexpr uint n = sizeof...(args);
+
+	if constexpr (T::VERTEX_NUMBER < 0) {
+		if constexpr (!comp::HasFaceHalfEdgePointers<T>) {
+			f.resizeVertices(n);
+		}
+		else {
+			Base::parentMesh->addHalfEdgesToFace(n, f);
+		}
+	}
+	else {
+		static_assert(n == T::VERTEX_NUMBER, "Wrong number of vertices in Mesh::addFace.");
+	}
+
+	addFaceHelper(f, args...);
+	return fid;
+}
+
+template<FaceConcept T>
+template<typename Iterator>
+uint FaceContainer<T>::addFace(Iterator begin, Iterator end)
+{
+	if (begin == end) return UINT_NULL;
+	uint n = std::distance(begin, end);
+
+	uint fid = UINT_NULL;
+
+	assert(n >= 3);
+	if (n < 3) return UINT_NULL;
+
+	if constexpr (T::VERTEX_NUMBER < 0) {
+		fid = addFace();
+
+		if constexpr (!comp::HasFaceHalfEdgePointers<T>) {
+			face(fid).resizeVertices(n);
+		}
+		else {
+			Base::parentMesh->addHalfEdgesToFace(n, face(fid));
+		}
+	}
+	else {
+		assert(n == T::VERTEX_NUMBER);
+		if (n == T::VERTEX_NUMBER)
+			fid = addFace();
+	}
+
+	if (fid != UINT_NULL) {
+		Face& f = face(fid);
+
+		unsigned int i = 0;
+		for (Iterator it = begin; it != end; ++it) {
+			if constexpr (std::integral<typename Iterator::value_type>)
+				f.vertex(i) = &Base::parentMesh->vertex(*it);
+			else
+				f.vertex(i) = *it;
+			++i;
+		}
+	}
+	return fid;
+}
+
+template<FaceConcept T>
+uint FaceContainer<T>::addFaces(uint n)
+{
+	return Base::addElements(n);
+}
+
+template<FaceConcept T>
+void FaceContainer<T>::reserveFaces(uint n)
+{
+	return Base::reserveElements(n);
+}
+
+template<FaceConcept T>
+void FaceContainer<T>::compactFaces()
+{
+	return Base::compactElements();
+}
+
 /**
  * @brief Marks as deleted the face with the given id.
  *
@@ -898,6 +990,32 @@ ConstCustomComponentVectorHandle<K> FaceContainer<T>::perFaceCustomComponentVect
 	const std::string& name) const requires face::HasCustomComponents<T>
 {
 	return Base::template customComponentVectorHandle<K>(name);
+}
+
+template<FaceConcept F>
+void FaceContainer<F>::addFaceHelper(F&)
+{
+	// base case: no need to add any other vertices
+}
+
+template<FaceConcept F>
+template<typename... V>
+void FaceContainer<F>::addFaceHelper(F& f, F::VertexType* v, V... args)
+{
+	// position on which add the vertex
+	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+	f.vertex(n)         = v;   // set the vertex
+	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
+}
+
+template<FaceConcept F>
+template<typename... V>
+void FaceContainer<F>::addFaceHelper(F& f, uint vid, V... args)
+{
+	// position on which add the vertex
+	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+	f.vertex(n)         = &Base::parentMesh->vertex(vid); // set the vertex
+	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
 } // namespace vcl::mesh

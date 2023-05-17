@@ -131,6 +131,31 @@ uint HalfEdgeContainer<T>::addHalfEdges(uint n)
 	return Base::addElements(n);
 }
 
+template<HalfEdgeConcept T>
+template<typename M> requires HasFaces<M>
+uint HalfEdgeContainer<T>::addHalfEdgesToFace(uint n, M::FaceType& f)
+{
+	uint first = addHalfEdges(n);
+	HalfEdge* hef =  &halfEdge(first);
+	uint curr;
+	HalfEdge* prev = nullptr;
+	for (curr = first; curr < halfEdgeNumber(); ++curr) {
+		HalfEdge& he = halfEdge(curr);
+		he.face() = &f;
+		if (prev != nullptr) {
+			he.prev() = prev;
+			prev->next() = &he;
+		}
+		prev = &he;
+	}
+	if (prev != nullptr) {
+		hef->prev() = prev;
+		prev->next() = hef;
+	}
+	f.outerHalfEdge() = hef;
+	return first;
+}
+
 /**
  * @brief Reserve a number of Halfedges in the container of HalfEdges. This is useful when you know
  * (or you have an idea) of how much Halfedges are going to add into a newly of existing mesh.

@@ -66,6 +66,18 @@ public:
 	uint faceContainerSize() const;
 	uint deletedFaceNumber() const;
 
+	uint addFace();
+
+	template<typename... V>
+	uint addFace(V... args) requires (sizeof...(args) >= 3);
+
+	template<typename Iterator>
+	uint addFace(Iterator begin, Iterator end);
+
+	uint addFaces(uint n);
+	void reserveFaces(uint n);
+	void compactFaces();
+
 	void deleteFace(uint i);
 	void deleteFace(const FaceType* f);
 
@@ -161,6 +173,14 @@ public:
 	perFaceCustomComponentVectorHandle(const std::string& name) const
 		requires face::HasCustomComponents<T>;
 
+private:
+	void addFaceHelper(T& f);
+
+	template<typename... V>
+	void addFaceHelper(T& f, typename T::VertexType* v, V... args);
+
+	template<typename... V>
+	void addFaceHelper(T& f, uint vid, V... args);
 };
 
 } // namespace vcl::mesh

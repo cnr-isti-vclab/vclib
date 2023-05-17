@@ -350,144 +350,6 @@ void Mesh<Args...>::compactElements()
 	Cont::compactElements();
 }
 
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-uint Mesh<Args...>::addFace()
-{
-	return addElement<FACE>();
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename... V>
-uint Mesh<Args...>::addFace(V... args)
-{
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
-
-	uint  fid = addFace();
-	Face& f   = FaceContainer::face(fid);
-
-	constexpr uint n = sizeof...(args);
-	static_assert(n >= 3, "Faces must have at least 3 vertices");
-	if constexpr (Face::VERTEX_NUMBER < 0) {
-		if constexpr (!comp::HasFaceHalfEdgePointers<Face>) {
-			f.resizeVertices(n);
-		}
-		else {
-			addHalfEdgesToFace(n, f);
-		}
-	}
-	else {
-		static_assert(n == Face::VERTEX_NUMBER, "Wrong number of vertices in Mesh::addFace.");
-	}
-
-	addFaceHelper(f, args...);
-	return fid;
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename Iterator>
-uint Mesh<Args...>::addFace(Iterator begin, Iterator end)
-{
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
-	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-
-	if (begin == end) return UINT_NULL;
-
-	uint  fid = addFace();
-	Face& f   = FaceContainer::face(fid);
-	
-	if constexpr (comp::HasFaceHalfEdgePointers<Face>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		using HalfEdge          = typename HalfEdgeContainer::HalfEdgeType;
-		using Vertex = typename Mesh<Args...>::VertexType;
-		HalfEdge* first = nullptr;
-		HalfEdge* prev = nullptr;
-		HalfEdge* curr;
-		for (Iterator it = begin; it != end; ++it) {
-			Vertex* v = &VertexContainer::vertex(*it);
-			uint heid = HalfEdgeContainer::addHalfEdge();
-			curr = &HalfEdgeContainer::halfEdge(heid);
-			curr->fromVertex() = v;
-			v->halfEdge() = curr;
-			if (prev != nullptr) {
-				prev->next() = curr;
-				curr->prev() = prev;
-			}
-			if (first == nullptr)
-				first = curr;
-			prev = curr;
-		}
-		first->prev() = curr;
-		curr->next() = first;
-		f.outerHalfEdge() = first;
-	}
-	else {
-		if constexpr (Face::VERTEX_NUMBER < 0) {
-			uint n = std::distance(begin, end);
-			f.resizeVertices(n);
-		}
-
-		unsigned int i = 0;
-		for (Iterator it = begin; it != end; ++it) {
-			f.vertex(i) = &VertexContainer::vertex(*it);
-			++i;
-		}
-	}
-
-	return fid;
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-uint Mesh<Args...>::addFaces(uint n)
-{
-	return addElements<FACE>(n);
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::reserveFaces(uint n)
-{
-	reserveElements<FACE>(n);
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::compactFaces()
-{
-	compactElements<FACE>();
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename M> requires HasHalfEdges<M> && HasFaces<M>
-uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
-{
-	using HalfEdge = typename Mesh<Args...>::HalfEdgeType;
-	using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-
-	uint first = HalfEdgeContainer::addHalfEdges(n);
-	HalfEdge* hef =  &HalfEdgeContainer::halfEdge(first);
-	uint curr;
-	HalfEdge* prev = nullptr;
-	for (curr = first; curr < HalfEdgeContainer::halfEdgeNumber(); ++curr) {
-		HalfEdge& he = HalfEdgeContainer::halfEdge(curr);
-		he.face() = &f;
-		if (prev != nullptr) {
-			he.prev() = prev;
-			prev->next() = &he;
-		}
-		prev = &he;
-	}
-	if (prev != nullptr) {
-		hef->prev() = prev;
-		prev->next() = hef;
-	}
-	f.outerHalfEdge() = hef;
-	return first;
-}
-
 /*********************
  * Protected Members *
  *********************/
@@ -549,41 +411,6 @@ void Mesh<Args...>::updatePointersAfterCompact(
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updatePointersAfterCompact(base, newIndices);
 	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::addFaceHelper(typename M::FaceType&)
-{
-	// base case: no need to add any other vertices
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename... V>
-void Mesh<Args...>::addFaceHelper(
-	typename M::FaceType&   f,
-	typename Mesh<Args...>::VertexType* v,
-	V... args)
-{
-	using FaceContainer = typename Mesh<Args...>::FaceContainer;
-
-	// position on which add the vertex
-	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-	f.vertex(n)         = v;   // set the vertex
-	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename... V>
-void Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
-{
-	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
-	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-
-	// position on which add the vertex
-	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-	f.vertex(n)         = &VertexContainer::vertex(vid); // set the vertex
-	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -720,6 +547,7 @@ void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
 
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
 	using FaceContainer = typename Mesh<Args...>::FaceContainer;
+	using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
 
 	// base and mvbase are needed to convert vertex pointers from other to this mesh
 	VertexType* base = VertexContainer::vec.data();
@@ -732,7 +560,7 @@ void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
 		// add mf.vertexNumber() half edges to this mesh, and all these half edges are adjacent to
 		// face f (all next and prev relations are set here, and therefore they will allow to
 		// iterate over f components)
-		addHalfEdgesToFace(mf.vertexNumber(), f);
+		HalfEdgeContainer::addHalfEdgesToFace(mf.vertexNumber(), f);
 
 		// this can be optimized
 		// set each vertex of f computing the right pointers from mesh m and face mf
@@ -740,7 +568,7 @@ void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
 			f.vertex(j) = base + (mf.vertex(j) - mvbase);
 		}
 
-		// todo: adjacent faces and wedges
+		// TODO: adjacent faces and wedges
 	}
 }
 
