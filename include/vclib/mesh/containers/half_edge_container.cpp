@@ -133,7 +133,7 @@ uint HalfEdgeContainer<T>::addHalfEdges(uint n)
 
 template<HalfEdgeConcept T>
 template<typename M> requires HasFaces<M>
-uint HalfEdgeContainer<T>::addHalfEdgesToFace(uint n, M::FaceType& f)
+uint HalfEdgeContainer<T>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
 {
 	uint first = addHalfEdges(n);
 	HalfEdge* hef =  &halfEdge(first);

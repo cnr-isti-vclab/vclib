@@ -74,6 +74,7 @@ public:
 	static constexpr bool value = NumberOfTypes<type>::value == 1;
 };
 
+// TypeWrapper specialization
 template<uint EL_TPE, typename ... Containers>
 struct ContainerOfElementPred<EL_TPE, TypeWrapper<Containers...>> :
 		public ContainerOfElementPred<EL_TPE, Containers...>

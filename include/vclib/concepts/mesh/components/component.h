@@ -70,6 +70,45 @@ struct IsComponentPred
 	static const bool value = ComponentConcept<T>;
 };
 
+/**
+ * @brief Given the ComponentEnumType of a Component and a list of Components, this predicate
+ * sets its bool `value` to `true` if there exists a Component in the list having the ID COMP_TYPE,
+ * and sets `type` to the TypeWrapper of the found component.
+ *
+ * If no Component was found, value will be set to `false` and type will contain an empty
+ * TypeWrapper.
+ */
+template<uint COMP_TYPE, typename ... Components>
+struct ComponentOfTypePred
+{
+private:
+	template <typename Comp>
+	struct SameCompPred
+	{
+		static constexpr bool value = Comp::COMPONENT_TYPE == COMP_TYPE;
+	};
+
+public:
+	// TypeWrapper of the found container, if any
+	using type = typename vcl::FilterTypesByCondition<SameCompPred, Components...>::type;
+	static constexpr bool value = NumberOfTypes<type>::value == 1;
+};
+
+// TypeWrapper specialization
+template<uint COMP_TYPE, typename ... Containers>
+struct ComponentOfTypePred<COMP_TYPE, TypeWrapper<Containers...>> :
+		public ComponentOfTypePred<COMP_TYPE, Containers...>
+{
+};
+
+template<typename T, uint COMP_TYPE>
+concept HasComponentOfType = ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
+
+template<typename T, uint COMP_TYPE>
+concept HasOptionalComponentOfType =
+	HasComponentOfType<T, COMP_TYPE> &&
+	ComponentOfTypePred<COMP_TYPE, typename T::Components>::type::IS_OPTIONAL;
+
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
 {
