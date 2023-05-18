@@ -102,18 +102,15 @@ public:
 };
 
 // TypeWrapper specialization
-template<uint COMP_TYPE, typename ... Containers>
-struct ComponentOfTypePred<COMP_TYPE, TypeWrapper<Containers...>> :
-		public ComponentOfTypePred<COMP_TYPE, Containers...>
+template<uint COMP_TYPE, typename ... Components>
+struct ComponentOfTypePred<COMP_TYPE, TypeWrapper<Components...>> :
+		public ComponentOfTypePred<COMP_TYPE, Components...>
 {
 };
 
 template<uint COMP_TYPE, typename... Components>
 using ComponentOfTypeT =
 	typename FirstType<typename ComponentOfTypePred<COMP_TYPE, Components...>::type>::type;
-
-template<typename T, uint COMP_TYPE>
-concept HasComponentOfType = ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
 
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
@@ -137,10 +134,7 @@ concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o)
 	{ o.IS_VERTICAL } -> std::same_as<const bool&>;
 };
 
-template<typename T, uint COMP_TYPE>
-concept HasVerticalComponentOfType
-	= HasComponentOfType<T, COMP_TYPE>
-	  && IsVerticalComponent<ComponentOfTypeT<COMP_TYPE, typename T::Components>>;
+
 
 template<typename T>
 struct IsVerticalComponentPred
@@ -153,11 +147,6 @@ concept IsOptionalComponent = IsVerticalComponent<T> && T::IS_OPTIONAL == true &
 {
 	{ o.IS_OPTIONAL } -> std::same_as<const bool&>;
 };
-
-template<typename T, uint COMP_TYPE>
-concept HasOptionalComponentOfType
-	= HasComponentOfType<T, COMP_TYPE>
-	  && IsOptionalComponent<ComponentOfTypeT<COMP_TYPE, typename T::Components>>;
 
 template<typename T>
 class PointersComponentTriggerer
@@ -195,6 +184,24 @@ concept HasPointersOfType =
 
 template<typename T, typename R>
 concept HasOptionalPointersOfType = HasPointersOfType<T, R> && IsOptionalComponent<T>;
+
+// ======== Has Component Concepts ======== //
+// Concepts that needs to be called on a type T that has the "Components" type defined as a
+// TypeWrapper of components.
+// The type T is generally a Mesh or a MeshElement.
+
+template<typename T, uint COMP_TYPE>
+concept HasComponentOfType = ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
+
+template<typename T, uint COMP_TYPE>
+concept HasVerticalComponentOfType
+	= HasComponentOfType<T, COMP_TYPE>
+	  && IsVerticalComponent<ComponentOfTypeT<COMP_TYPE, typename T::Components>>;
+
+template<typename T, uint COMP_TYPE>
+concept HasOptionalComponentOfType
+	= HasComponentOfType<T, COMP_TYPE>
+	  && IsOptionalComponent<ComponentOfTypeT<COMP_TYPE, typename T::Components>>;
 
 } // namespace vcl
 

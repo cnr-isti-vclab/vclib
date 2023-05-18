@@ -244,7 +244,7 @@ void ElementContainer<T>::enableOptionalComponentType()
 
 template<ElementConcept T>
 template<uint COMP_TYPE>
-void ElementContainer<T>::enaleOptionalComponent()
+void ElementContainer<T>::enableOptionalComponent()
 {
 	using C = comp::ComponentOfTypeT<COMP_TYPE, typename T::Components>;
 	enableOptionalComponentType<C>();
@@ -614,116 +614,11 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using Container = typename OtherMesh::template ContainerOf<T>::type;
+		using OContainer = typename OtherMesh::template ContainerOf<T>::type;
 
-		const Container& c = (const Container&)m;
+		const OContainer& c = static_cast<const OContainer&>(m);
 
-		// unfortunately, this function cannot be shortened in a smart way
-		using CT = typename Container::ElementType;
-
-		// Adjacent Edges
-		// if this Element of this container has optional adjacent edges
-		if constexpr (comp::HasOptionalAdjacentEdges<T>) {
-			// if the other Container Element type has adjacent edges
-			if constexpr (comp::HasAdjacentEdges<CT>) {
-
-				// short circuited or: if optional, then I check if enabled; if not optional, then true
-				if (!comp::HasOptionalAdjacentEdges<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::AdjacentEdges>()) {
-					enableOptionalComponentType<typename T::AdjacentEdges>();
-				}
-			}
-		}
-		// Adjacent Faces
-		if constexpr (comp::HasOptionalAdjacentFaces<T>) {
-			if constexpr (comp::HasAdjacentFaces<CT>) {
-				if (!comp::HasOptionalAdjacentFaces<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::AdjacentFaces>()) {
-					enableOptionalComponentType<typename T::AdjacentFaces>();
-				}
-			}
-		}
-		// Adjacent Vertices
-		if constexpr (comp::HasOptionalAdjacentVertices<T>) {
-			if constexpr (comp::HasAdjacentVertices<CT>) {
-				if (!comp::HasOptionalAdjacentVertices<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::AdjacentVertices>()) {
-					enableOptionalComponentType<typename T::AdjacentVertices>();
-				}
-			}
-		}
-		// Color
-		if constexpr (comp::HasOptionalColor<T>) {
-			if constexpr (comp::HasColor<CT>) {
-				if (!comp::HasOptionalColor<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::Color>()) {
-					enableOptionalComponentType<typename T::Color>();
-				}
-			}
-		}
-		// Mark
-		if constexpr (comp::HasOptionalMark<T>) {
-			if constexpr (comp::HasMark<CT>) {
-				if (!comp::HasOptionalMark<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::Mark>()) {
-					enableOptionalComponentType<typename T::Mark>();
-				}
-			}
-		}
-		// Normal
-		if constexpr (comp::HasOptionalNormal<T>) {
-			if constexpr (comp::HasNormal<CT>) {
-				if (!comp::HasOptionalNormal<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::Normal>()) {
-					enableOptionalComponentType<typename T::Normal>();
-				}
-			}
-		}
-		// Principal Curvature
-		if constexpr (comp::HasOptionalPrincipalCurvature<T>) {
-			if constexpr (comp::HasPrincipalCurvature<CT>) {
-				if (!comp::HasOptionalPrincipalCurvature<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::PrincipalCurvature>()) {
-					enableOptionalComponentType<typename T::PrincipalCurvature>();
-				}
-			}
-		}
-		// Quality
-		if constexpr (comp::HasOptionalQuality<T>) {
-			if constexpr (comp::HasQuality<CT>) {
-				if (!comp::HasOptionalQuality<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::Quality>()) {
-					enableOptionalComponentType<typename T::Quality>();
-				}
-			}
-		}
-		// TexCoord
-		if constexpr (comp::HasOptionalTexCoord<T>) {
-			if constexpr (comp::HasTexCoord<CT>) {
-				if (!comp::HasOptionalTexCoord<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::TexCoord>()) {
-					enableOptionalComponentType<typename T::TexCoord>();
-				}
-			}
-		}
-		// Wedge Colors
-		if constexpr (comp::HasOptionalWedgeColors<T>) {
-			if constexpr (comp::HasWedgeColors<CT>) {
-				if (!comp::HasOptionalWedgeColors<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::WedgeColors>()) {
-					enableOptionalComponentType<typename T::WedgeColors>();
-				}
-			}
-		}
-		// Wedge TexCoords
-		if constexpr (comp::HasOptionalWedgeTexCoords<T>) {
-			if constexpr (comp::HasWedgeTexCoords<CT>) {
-				if (!comp::HasOptionalWedgeTexCoords<CT> ||
-					c.template isOptionalComponentTypeEnabled<typename CT::WedgeTexCoords>()) {
-					enableOptionalComponentType<typename T::WedgeTexCoords>();
-				}
-			}
-		}
+		EnableComponentsStruct<typename T::Components>::enableSameOptionalComponents(*this, c);
 	}
 }
 
@@ -917,6 +812,43 @@ void ElementContainer<T>::importPointersOnComponentFrom(
 			}
 		}
 	}
+}
+
+template<ElementConcept T>
+template<typename ...Comps>
+template<typename Cont1, typename Cont2>
+void ElementContainer<T>::EnableComponentsStruct<Comps...>::enableSameOptionalComponents(
+	Cont1& c1,
+	const Cont2& c2)
+{
+	// for each Component in Comps, will call enableSameOptionalComponent
+	(enableSameOptionalComponent<Comps>(c1, c2), ...);
+}
+
+template<ElementConcept T>
+template<typename ...Comps>
+template<typename Comp, typename Cont1, typename Cont2>
+void ElementContainer<T>::EnableComponentsStruct<Comps...>::enableSameOptionalComponent(
+	Cont1& c1,
+	const Cont2& c2)
+{
+	// if Comp is an optional component in Cont1
+	if constexpr (comp::IsOptionalComponent<Comp>) {
+		// if Comp is available in Cont2
+		if constexpr (comp::HasComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>){
+			// if Comp is optional in Cont2
+			if constexpr (comp::HasOptionalComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>) {
+				// if Comp is enabled in Cont2, we enable it in Cont1
+				if (c2.template isOptionalComponentEnabled<Comp::COMPONENT_TYPE>()) {
+					c1.template enableOptionalComponent<Comp::COMPONENT_TYPE>();
+				}
+			}
+			else { // if Comp is not optional (but is available), we enable it in Cont1
+				c1.template enableOptionalComponent<Comp::COMPONENT_TYPE>();
+			}
+		}
+	}
+
 }
 
 } // namespace vcl::mesh
