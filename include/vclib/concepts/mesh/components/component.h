@@ -55,14 +55,21 @@ enum ComponentEnumType {
 
 inline static constexpr uint COMPONENTS_NUMBER = 22;
 
+/**
+ * @brief The ComponentConcept is evaluated to true whenever the type T is a valid component.
+ *
+ * @tparam T: the type to be evaluated
+ */
 template<typename T>
 concept ComponentConcept = requires {
 	{ T::COMPONENT_TYPE } -> std::same_as<const uint&>;
 };
 
 /**
- * @brief The predicate IsComponentPred sets its bool `value` to `true` when the type T
+ * @brief The predicate struct IsComponentPred sets its bool `value` to `true` when the type T
  * satisfies the ComponentConcept concept
+ *
+ * @tparam T: the type to be evaluated
  */
 template<typename T>
 struct IsComponentPred
@@ -101,6 +108,10 @@ struct ComponentOfTypePred<COMP_TYPE, TypeWrapper<Containers...>> :
 {
 };
 
+template<uint COMP_TYPE, typename... Components>
+using ComponentOfTypeT =
+	typename FirstType<typename ComponentOfTypePred<COMP_TYPE, Components...>::type>::type;
+
 template<typename T, uint COMP_TYPE>
 concept HasComponentOfType = ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
 
@@ -129,8 +140,7 @@ concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o)
 template<typename T, uint COMP_TYPE>
 concept HasVerticalComponentOfType
 	= HasComponentOfType<T, COMP_TYPE>
-	  && IsVerticalComponent<typename FirstType<
-		  typename ComponentOfTypePred<COMP_TYPE, typename T::Components>::type>::type>;
+	  && IsVerticalComponent<ComponentOfTypeT<COMP_TYPE, typename T::Components>>;
 
 template<typename T>
 struct IsVerticalComponentPred
@@ -147,8 +157,7 @@ concept IsOptionalComponent = IsVerticalComponent<T> && T::IS_OPTIONAL == true &
 template<typename T, uint COMP_TYPE>
 concept HasOptionalComponentOfType
 	= HasComponentOfType<T, COMP_TYPE>
-	  && IsOptionalComponent<typename FirstType<
-		  typename ComponentOfTypePred<COMP_TYPE, typename T::Components>::type>::type>;
+	  && IsOptionalComponent<ComponentOfTypeT<COMP_TYPE, typename T::Components>>;
 
 template<typename T>
 class PointersComponentTriggerer

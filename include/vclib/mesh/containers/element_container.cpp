@@ -214,6 +214,13 @@ bool ElementContainer<T>::isOptionalComponentEnabled() const
 }
 
 template<ElementConcept T>
+template<uint COMP_TYPE>
+bool ElementContainer<T>::isOptionalComponentEnabled() const
+{
+	return vcVecTuple.template isComponentEnabled<COMP_TYPE>();
+}
+
+template<ElementConcept T>
 template<typename C>
 void ElementContainer<T>::enableOptionalComponent()
 {

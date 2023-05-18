@@ -76,6 +76,9 @@ protected:
 	template<typename C>
 	bool isOptionalComponentEnabled() const;
 
+	template<uint COMP_TYPE>
+	bool isOptionalComponentEnabled() const;
+
 	template<typename C>
 	void enableOptionalComponent();
 
